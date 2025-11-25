@@ -1,0 +1,142 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project Overview
+
+**Paperlyte** is a lightning-fast, distraction-free note-taking application that prioritizes simplicity over feature bloat. The landing page aims to communicate this value proposition to frustrated note-takers who are overwhelmed by complex tools like Notion, Evernote, and OneNote.
+
+**Core Promise**: "Your thoughts, unchained from complexity"
+
+**Key Differentiators**:
+- Lightning Speed: Instant startup, real-time sync, no loading delays
+- Beautiful Simplicity: Paper-inspired design that feels natural
+- Tag-Based Organization: Smart categorization without rigid folder structures
+- Universal Access: Seamless experience across all devices
+- Offline-First: Full functionality without internet dependency
+
+This is a React application built with TypeScript and Vite, currently in early development stages.
+
+## Development Commands
+
+```bash
+# Start development server with HMR
+npm run dev
+
+# Build for production (runs TypeScript compiler + Vite build)
+npm run build
+
+# Lint all files
+npm run lint
+
+# Preview production build
+npm run preview
+```
+
+## Tech Stack
+
+- **React**: 19.2.0 (with React DOM 19.2.0)
+- **TypeScript**: ~5.9.3 with strict mode enabled
+- **Build Tool**: Vite 7.2.4 with @vitejs/plugin-react
+- **Linting**: ESLint 9.39.1 with TypeScript ESLint, React Hooks, and React Refresh plugins
+
+## Project Structure
+
+```
+src/
+├── main.tsx          # Application entry point (renders App in StrictMode)
+├── App.tsx           # Main App component
+├── App.css           # App-specific styles
+├── index.css         # Global styles
+└── assets/           # Static assets (images, etc.)
+```
+
+## TypeScript Configuration
+
+The project uses TypeScript's project references with two configs:
+
+- `tsconfig.app.json`: Application code (src/) with strict mode, ES2022 target, and bundler module resolution
+- `tsconfig.node.json`: Build tooling configuration
+
+Key compiler settings:
+- Strict mode enabled with additional unused variable/parameter checks
+- JSX mode: `react-jsx` (automatic runtime)
+- Module resolution: `bundler` (Vite-specific)
+- `noEmit: true` (Vite handles transpilation)
+
+## ESLint Configuration
+
+ESLint is configured with the flat config format (eslint.config.js) including:
+- Base JavaScript/TypeScript recommended rules
+- React Hooks rules (enforces hooks best practices)
+- React Refresh rules (ensures HMR compatibility)
+- Ignores `dist/` directory
+
+## Entry Point
+
+The application mounts at `<div id="root">` in index.html and renders the App component wrapped in React StrictMode.
+
+## Design System
+
+### Visual Identity
+- **Color Palette**: Paper-inspired whites, subtle grays, vibrant purple primary
+- **Typography**: Inter font family with clear hierarchy and readable sizes
+- **Iconography**: Font Awesome icons with consistent sizing and spacing
+- **Animation**: Subtle, performance-optimized, respectful of motion preferences (`prefers-reduced-motion`)
+
+### UX Principles
+1. **Speed First**: Every interaction should feel instantaneous
+2. **Clarity Over Cleverness**: Clear communication over creative copy
+3. **Mobile Excellence**: Mobile experience must be as good as desktop (60%+ mobile traffic expected)
+4. **Accessibility**: Usable by everyone, regardless of ability
+5. **Progressive Enhancement**: Core content must be accessible without JavaScript
+
+## Performance & Quality Targets
+
+These targets are critical to the product's "lightning-fast" value proposition:
+
+- **Page Load Speed**: <2 seconds initial load
+- **Lighthouse Performance**: >90 score
+- **Lighthouse Accessibility**: >95 score (WCAG 2.1 AA compliance)
+- **Core Web Vitals**: Must pass all metrics
+- **Bounce Rate**: Target <45% for organic traffic
+- **Engagement Time**: Average session >2 minutes
+
+## Development Phases
+
+### Phase 1: MVP Landing Page (Current)
+Essential sections to implement first:
+- Hero section with clear value proposition
+- Feature grid (6 core features with icons)
+- Call-to-action section with download buttons
+- Sticky navigation header
+- Footer with social/legal links
+
+Technical requirements:
+- Intersection Observer for scroll animations
+- Hardware-accelerated CSS transforms
+- Semantic HTML structure
+- Keyboard navigation support
+- Screen reader friendly markup
+
+### Phase 2: Conversion Optimization (Post-Launch)
+High-priority additions:
+- Newsletter signup form (email capture)
+- Testimonial slider
+- Feature comparison table (vs. competitors)
+- Pricing teaser section
+- FAQ section
+
+### Phase 3: Advanced Features (Growth Stage)
+- Privacy-first analytics (cookie-less, GDPR-compliant)
+- Dark mode toggle with system preference detection
+- Advanced scroll animations and parallax effects
+- Social sharing functionality
+
+## Important Constraints
+
+- **No Feature Bloat**: Paperlyte's core value is simplicity - avoid over-engineering
+- **Mobile-First**: Design and develop for mobile first, then enhance for desktop
+- **Accessibility Required**: Not optional - every feature must be accessible
+- **Performance Budget**: If a feature slows the page, it doesn't ship
+- **Reduced Motion**: Always respect `prefers-reduced-motion` for animations

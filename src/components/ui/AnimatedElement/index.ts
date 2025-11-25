@@ -1,0 +1,1 @@
+export { AnimatedElement } from './AnimatedElement';

@@ -9,19 +9,19 @@ interface SectionProps {
   padding?: 'default' | 'large' | 'none';
 }
 
-export const Section: React.FC<SectionProps> = ({
+export const Section = ({
   id,
   children,
   className = '',
   background = 'default',
   padding = 'default',
-}) => {
+}: SectionProps): React.ReactElement => {
   const classNames = [
     styles.section,
     styles[`bg-${background}`],
     styles[`padding-${padding}`],
     className,
-  ].join(' ');
+  ].filter(Boolean).join(' ');
 
   return (
     <section id={id} className={classNames}>

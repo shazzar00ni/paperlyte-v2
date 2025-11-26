@@ -13,7 +13,7 @@ interface ButtonProps {
   ariaLabel?: string;
 }
 
-export const Button: React.FC<ButtonProps> = ({
+export const Button = ({
   children,
   variant = 'primary',
   size = 'medium',
@@ -23,13 +23,13 @@ export const Button: React.FC<ButtonProps> = ({
   disabled = false,
   className = '',
   ariaLabel,
-}) => {
+}: ButtonProps): React.ReactElement => {
   const classNames = [
     styles.button,
     styles[variant],
     styles[size],
     className,
-  ].join(' ');
+  ].filter(Boolean).join(' ');
 
   const content = (
     <>

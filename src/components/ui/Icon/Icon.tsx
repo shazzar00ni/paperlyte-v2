@@ -14,20 +14,19 @@ export const Icon: React.FC<IconProps> = ({
   color,
 }) => {
   const sizeClass = {
-    sm: 'fa-sm',
-    md: 'fa-lg',
-    lg: 'fa-xl',
-    xl: 'fa-2xl',
-    '2x': 'fa-2x',
-    '3x': 'fa-3x',
+      sm: 'fa-sm',
+      md: 'fa-lg', // or '' if you want md as default (no class)
+      lg: 'fa-lg',
+      xl: 'fa-xl',
+      '2x': 'fa-2x',
+      '3x': 'fa-3x',
   }[size];
 
   return (
     <i
-      className={`fa-solid ${name} ${sizeClass} ${className}`}
+      className={`fa-solid ${name} ${sizeClass} ${className}${color ? ` icon-color-${color.replace('#', '')}` : ''}`}
       aria-label={ariaLabel}
-      aria-hidden={!ariaLabel}
-      style={color ? { color } : undefined}
+      aria-hidden={ariaLabel ? 'false' : 'true'}
     />
   );
 };

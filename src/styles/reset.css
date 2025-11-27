@@ -24,6 +24,7 @@ body {
   color: var(--color-text-primary);
   background-color: var(--color-background);
   min-height: 100vh;
+  transition: background-color var(--transition-base), color var(--transition-base);
 }
 
 img,

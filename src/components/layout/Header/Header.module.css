@@ -2,11 +2,11 @@
   position: sticky;
   top: 0;
   width: 100%;
-  background-color: rgba(255, 255, 255, 0.95);
+  background-color: var(--color-background);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--color-border);
   z-index: var(--z-header);
-  transition: box-shadow var(--transition-base);
+  transition: background-color var(--transition-base), box-shadow var(--transition-base);
 }
 
 .header:hover {
@@ -70,6 +70,12 @@
   margin-left: var(--spacing-sm);
 }
 
+.navActions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
 .mobileMenuButton {
   display: none;
   background: none;
@@ -95,7 +101,7 @@
     top: var(--header-height);
     left: 0;
     right: 0;
-    background-color: white;
+    background-color: var(--color-background);
     flex-direction: column;
     align-items: stretch;
     gap: 0;

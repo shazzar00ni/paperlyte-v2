@@ -1,20 +1,21 @@
 .header {
   text-align: center;
-  margin-bottom: var(--spacing-3xl);
+  max-width: 700px;
+  margin: 0 auto var(--spacing-3xl);
 }
 
 .title {
   font-size: var(--font-size-4xl);
   font-weight: var(--font-weight-bold);
   color: var(--color-text-primary);
-  margin: 0 0 var(--spacing-md) 0;
+  margin-bottom: var(--spacing-md);
 }
 
 .subtitle {
-  font-size: var(--font-size-xl);
+  font-size: var(--font-size-lg);
   color: var(--color-text-secondary);
-  max-width: 600px;
-  margin: 0 auto;
+  line-height: var(--line-height-relaxed);
+  margin: 0;
 }
 
 .grid {
@@ -24,29 +25,27 @@
 }
 
 .card {
-  background-color: white;
-  padding: var(--spacing-xl);
-  border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-sm);
-  transition: all var(--transition-base);
+  background-color: var(--color-background);
   border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-xl);
+  transition: all var(--transition-base);
 }
 
 .card:hover {
-  box-shadow: var(--shadow-lg);
   transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
   border-color: var(--color-primary);
 }
 
 .iconWrapper {
-  width: 56px;
-  height: 56px;
-  border-radius: var(--border-radius-md);
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(124, 58, 237, 0.05) 100%);
+  border-radius: var(--border-radius-lg);
   margin-bottom: var(--spacing-md);
 }
 
@@ -54,17 +53,17 @@
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-primary);
-  margin: 0 0 var(--spacing-sm) 0;
+  margin-bottom: var(--spacing-sm);
 }
 
 .cardDescription {
   font-size: var(--font-size-base);
-  line-height: var(--line-height-relaxed);
   color: var(--color-text-secondary);
+  line-height: var(--line-height-relaxed);
   margin: 0;
 }
 
-/* Tablet: 2 columns */
+/* Tablet and up: 2 columns */
 @media (min-width: 768px) {
   .grid {
     grid-template-columns: repeat(2, 1fr);
@@ -90,7 +89,7 @@
   }
 
   .subtitle {
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-base);
   }
 
   .card {

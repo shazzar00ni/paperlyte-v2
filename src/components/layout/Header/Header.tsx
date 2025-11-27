@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@components/ui/Button';
 import { Icon } from '@components/ui/Icon';
+import { ThemeToggle } from '@components/ui/ThemeToggle';
 import styles from './Header.module.css';
 
 export const Header = (): React.ReactElement => {
@@ -55,18 +56,22 @@ export const Header = (): React.ReactElement => {
             </li>
           </ul>
 
-          <button
-            className={styles.mobileMenuButton}
-            onClick={toggleMobileMenu}
-            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
-            aria-expanded={mobileMenuOpen}
-          >
-            <Icon
-              name={mobileMenuOpen ? 'fa-xmark' : 'fa-bars'}
-              size="lg"
-              ariaLabel={mobileMenuOpen ? 'Close icon' : 'Menu icon'}
-            />
-          </button>
+          <div className={styles.navActions}>
+            <ThemeToggle />
+            <button
+              type="button"
+              className={styles.mobileMenuButton}
+              onClick={toggleMobileMenu}
+              aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={String(mobileMenuOpen)}
+            >
+              <Icon
+                name={mobileMenuOpen ? 'fa-xmark' : 'fa-bars'}
+                size="lg"
+                ariaLabel={mobileMenuOpen ? 'Close icon' : 'Menu icon'}
+              />
+            </button>
+          </div>
         </nav>
       </div>
     </header>

@@ -1,100 +1,69 @@
 import { Section } from '@components/layout/Section';
 import { Button } from '@components/ui/Button';
 import { AnimatedElement } from '@components/ui/AnimatedElement';
-import { Icon } from '@components/ui/Icon';
 import styles from './CTA.module.css';
 
 export const CTA = (): React.ReactElement => {
   return (
-    <Section id="download" background="primary">
+    <Section id="download" background="primary" className={styles.cta}>
       <div className={styles.content}>
         <AnimatedElement animation="fadeIn">
           <h2 className={styles.title}>Ready to declutter your mind?</h2>
         </AnimatedElement>
 
-        <AnimatedElement animation="fadeIn" delay={100}>
+        <AnimatedElement animation="fadeIn" delay={150}>
           <p className={styles.subtitle}>
-            Join thousands of people who've simplified their note-taking with Paperlyte
+            Join thousands simplifying their notes. Start free, stay focused.
           </p>
-        </AnimatedElement>
-
-        <AnimatedElement animation="slideUp" delay={200}>
-          <div className={styles.downloads}>
-            <Button
-              variant="secondary"
-              size="large"
-              className={styles.downloadButton}
-              ariaLabel="Download for macOS"
-            >
-              <Icon name="fa-apple" size="lg" />
-              <div className={styles.downloadText}>
-                <span className={styles.downloadLabel}>Download for</span>
-                <span className={styles.downloadPlatform}>macOS</span>
-              </div>
-            </Button>
-
-            <Button
-              variant="secondary"
-              size="large"
-              className={styles.downloadButton}
-              ariaLabel="Download for Windows"
-            >
-              <Icon name="fa-windows" size="lg" />
-              <div className={styles.downloadText}>
-                <span className={styles.downloadLabel}>Download for</span>
-                <span className={styles.downloadPlatform}>Windows</span>
-              </div>
-            </Button>
-
-            <Button
-              variant="secondary"
-              size="large"
-              className={styles.downloadButton}
-              ariaLabel="Download for Linux"
-            >
-              <Icon name="fa-linux" size="lg" />
-              <div className={styles.downloadText}>
-                <span className={styles.downloadLabel}>Download for</span>
-                <span className={styles.downloadPlatform}>Linux</span>
-              </div>
-            </Button>
-          </div>
         </AnimatedElement>
 
         <AnimatedElement animation="fadeIn" delay={300}>
-          <div className={styles.mobileBadges}>
-            <a
+          <div className={styles.buttons}>
+            <Button
+              variant="secondary"
+              size="large"
+              icon="fa-apple"
               href="#"
-              className={styles.mobileBadge}
-              aria-label="Download on the App Store"
+              className={styles.downloadButton}
             >
-              <Icon name="fa-app-store-ios" size="2x" />
-              <span>App Store</span>
-            </a>
-            <a
+              Download for Mac
+            </Button>
+            <Button
+              variant="secondary"
+              size="large"
+              icon="fa-windows"
               href="#"
-              className={styles.mobileBadge}
-              aria-label="Get it on Google Play"
+              className={styles.downloadButton}
             >
-              <Icon name="fa-google-play" size="2x" />
-              <span>Google Play</span>
-            </a>
+              Download for Windows
+            </Button>
           </div>
         </AnimatedElement>
 
-        <AnimatedElement animation="fadeIn" delay={400}>
-          <p className={styles.note}>
-            <Icon name="fa-github" size="sm" />
-            Open source and free forever. View on{' '}
-            <a
-              href="https://github.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.link}
-            >
-              GitHub
-            </a>
-          </p>
+        <AnimatedElement animation="fadeIn" delay={450}>
+          <div className={styles.platforms}>
+            <p className={styles.platformText}>
+              Also available for{' '}
+              <a href="#" className={styles.platformLink}>
+                iOS
+              </a>
+              ,{' '}
+              <a href="#" className={styles.platformLink}>
+                Android
+              </a>
+              , and{' '}
+              <a href="#" className={styles.platformLink}>
+                Linux
+              </a>
+            </p>
+          </div>
+        </AnimatedElement>
+
+        <AnimatedElement animation="fadeIn" delay={600}>
+          <div className={styles.badge}>
+            <i className="fa-brands fa-github" aria-hidden="true" />
+            <span>Open source on GitHub</span>
+          </div>
         </AnimatedElement>
       </div>
     </Section>

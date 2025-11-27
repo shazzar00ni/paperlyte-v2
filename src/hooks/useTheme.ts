@@ -2,11 +2,22 @@ import { useEffect, useState } from 'react';
 
 type Theme = 'light' | 'dark';
 
+const isBrowser = typeof window !== 'undefined';
+
+const isValidTheme = (value: string | null): value is Theme => {
+  return value === 'light' || value === 'dark';
+};
+
 export const useTheme = () => {
   const [theme, setTheme] = useState<Theme>(() => {
+    // SSR guard: return default theme if not in browser
+    if (!isBrowser) return 'light';
+
     // Check localStorage first
-    const stored = localStorage.getItem('theme') as Theme | null;
-    if (stored) return stored;
+    const stored = localStorage.getItem('theme');
+    if (stored && isValidTheme(stored)) {
+      return stored;
+    }
 
     // Check system preference
     if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -17,6 +28,9 @@ export const useTheme = () => {
   });
 
   useEffect(() => {
+    // SSR guard: skip if not in browser
+    if (!isBrowser) return;
+
     const root = document.documentElement;
 
     // Apply theme to document
@@ -32,10 +46,14 @@ export const useTheme = () => {
 
   // Listen for system preference changes
   useEffect(() => {
+    // SSR guard: skip if not in browser
+    if (!isBrowser) return;
+
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handleChange = (e: MediaQueryListEvent) => {
       // Only update if user hasn't manually set a preference
-      if (!localStorage.getItem('theme')) {
+      const stored = localStorage.getItem('theme');
+      if (!stored || !isValidTheme(stored)) {
         setTheme(e.matches ? 'dark' : 'light');
       }
     };

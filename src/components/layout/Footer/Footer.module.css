@@ -72,10 +72,19 @@
   text-decoration: none;
   font-size: var(--font-size-sm);
   transition: color var(--transition-base);
+  border-radius: var(--border-radius-sm);
+  padding: var(--spacing-xs) 0;
 }
 
-.link:hover {
+.link:hover,
+.link:focus-visible {
   color: var(--color-primary);
+  outline: none;
+}
+
+.link:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
 .socialLinks {
@@ -87,8 +96,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
   border-radius: var(--border-radius-md);
   background-color: var(--color-background);
   color: var(--color-text-secondary);
@@ -96,10 +105,16 @@
   transition: all var(--transition-base);
 }
 
-.socialLink:hover {
+.socialLink:hover,
+.socialLink:focus-visible {
   background-color: var(--color-primary);
-  color: white;
+  color: var(--color-text-on-primary);
   transform: translateY(-2px);
+}
+
+.socialLink:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 4px;
 }
 
 .bottom {

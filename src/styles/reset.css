@@ -17,6 +17,13 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Respect user's motion preferences from the start */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 body {
   line-height: var(--line-height-normal);
   font-family: var(--font-family);
@@ -80,14 +87,25 @@ ol {
   outline: none;
 }
 
-/* Reduced motion preference */
+/*
+ * Reduced Motion Preference
+ * Respects user's accessibility settings for motion sensitivity
+ * Uses 0.01ms instead of 0ms to prevent breaking some animations
+ * See: https://web.dev/prefers-reduced-motion/
+ */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
-    animation-duration: 0.01ms !important;
+    /* Minimize animation duration while preventing animation breakage */
+    animation-duration: var(--reduced-motion-duration, 0.01ms) !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+
+    /* Minimize transition duration */
+    transition-duration: var(--reduced-motion-duration, 0.01ms) !important;
+    transition-delay: 0ms !important;
+
+    /* Disable smooth scrolling */
     scroll-behavior: auto !important;
   }
 }

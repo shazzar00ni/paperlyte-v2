@@ -1,0 +1,28 @@
+# CODEOWNERS
+# This file defines code ownership for the Paperlyte landing page repository.
+# Code owners are automatically requested for review when someone opens a pull request
+# that modifies code they own.
+#
+# More info: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default ownership - all files
+* @shannonlockett
+
+# Core configuration files
+/package.json @shannonlockett
+/tsconfig*.json @shannonlockett
+/vite.config.ts @shannonlockett
+/eslint.config.js @shannonlockett
+
+# Build and deployment configuration
+/.github/ @shannonlockett
+/netlify.toml @shannonlockett
+
+# Design system and styles
+/src/styles/ @shannonlockett
+/src/constants/ @shannonlockett
+
+# Documentation
+/README.md @shannonlockett
+/CLAUDE.md @shannonlockett
+/LICENSE @shannonlockett

@@ -63,7 +63,7 @@ export const Header = (): React.ReactElement => {
               className={styles.mobileMenuButton}
               onClick={toggleMobileMenu}
               aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
-              aria-expanded={String(mobileMenuOpen)}
+              aria-expanded={mobileMenuOpen}
             >
               <Icon
                 name={mobileMenuOpen ? 'fa-xmark' : 'fa-bars'}

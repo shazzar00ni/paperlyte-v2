@@ -56,7 +56,7 @@ export const Hero = (): React.ReactElement => {
               <i className="fa-solid fa-lock" aria-hidden="true" /> Privacy First
             </span>
             <span className={styles.tag}>
-              <i className="fa-solid fa-cloud" aria-hidden="true" /> Offline Ready
+              <i className="fa-solid fa-wifi-slash" aria-hidden="true" /> Offline Ready
             </span>
           </div>
         </AnimatedElement>

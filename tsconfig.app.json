@@ -1,23 +1,39 @@
 {
   "compilerOptions": {
+    /* Build Configuration */
+    // Store TypeScript incremental build info for faster rebuilds
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    // Target modern browsers with ES2022 features
     "target": "ES2022",
+    // Use standard class field initialization
     "useDefineForClassFields": true,
+    // Include ES2022, DOM, and DOM.Iterable type definitions
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    // Use ESNext module system
     "module": "ESNext",
+    // Include Vite-specific types (e.g., import.meta.env)
     "types": ["vite/client"],
+    // Skip type checking of declaration files for faster builds
     "skipLibCheck": true,
 
-    /* Bundler mode */
+    /* Bundler mode - Optimized for Vite */
+    // Use bundler-specific module resolution (supports .ts imports)
     "moduleResolution": "bundler",
+    // Allow importing .ts files directly (Vite handles transpilation)
     "allowImportingTsExtensions": true,
+    // Preserve exact import syntax (no elision)
     "verbatimModuleSyntax": true,
+    // Force all files to be treated as modules
     "moduleDetection": "force",
+    // Don't emit JavaScript (Vite handles transpilation)
     "noEmit": true,
+    // Use React 17+ JSX transform (no need to import React)
     "jsx": "react-jsx",
 
-    /* Path aliases */
+    /* Path aliases - Enables cleaner imports */
+    // Base directory for path resolution
     "baseUrl": ".",
+    // Path mapping for cleaner imports (e.g., @components/Button instead of ../../../components/Button)
     "paths": {
       "@/*": ["./src/*"],
       "@components/*": ["./src/components/*"],
@@ -28,14 +44,22 @@
       "@utils/*": ["./src/utils/*"]
     },
 
-    /* Linting */
+    /* Strict Type Checking - Enforces best practices */
+    // Enable all strict type checking options
     "strict": true,
+    // Report errors on unused local variables
     "noUnusedLocals": true,
+    // Report errors on unused parameters
     "noUnusedParameters": true,
+    // Only allow syntax that can be safely erased (isolatedModules compatible)
     "erasableSyntaxOnly": true,
+    // Report errors for switch statement fallthrough
     "noFallthroughCasesInSwitch": true,
+    // Report errors on potentially unsafe side-effect imports
     "noUncheckedSideEffectImports": true,
+    // Enforce consistent file name casing (prevents cross-platform issues)
     "forceConsistentCasingInFileNames": true
   },
+  // Include all files in the src directory
   "include": ["src"]
 }

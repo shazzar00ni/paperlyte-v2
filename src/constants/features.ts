@@ -1,10 +1,23 @@
+/**
+ * Represents a feature of the Paperlyte application
+ */
 export interface Feature {
+  /** Unique identifier for the feature */
   id: string;
+  /** Font Awesome icon class (e.g., 'fa-bolt') */
   icon: string;
+  /** Feature title/heading */
   title: string;
+  /** Detailed description of the feature */
   description: string;
 }
 
+/**
+ * Core features of Paperlyte showcased on the landing page
+ *
+ * These features represent the main value propositions that differentiate
+ * Paperlyte from competitors like Notion, Evernote, and OneNote.
+ */
 export const FEATURES: Feature[] = [
   {
     id: 'speed',

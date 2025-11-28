@@ -224,6 +224,11 @@ Use this checklist to track your progress toward legal compliance and production
 - [ ] Terms - Governing law appropriate
 - [ ] Terms - Payment terms compliant
 - [ ] Terms - SLA guarantees realistic
+- [ ] Payment Processing - PCI DSS compliance requirements
+- [ ] Payment Processing - Stripe/payment provider terms compliance
+- [ ] Payment Processing - Refund policy legally sound
+- [ ] Payment Processing - Auto-renewal disclosures adequate
+- [ ] Payment Processing - Sales tax/VAT collection requirements
 
 ### Revisions
 - [ ] Attorney feedback received
@@ -367,6 +372,7 @@ Before going to production, verify:
 - [ ] ✅ All links in app point to correct documents
 - [ ] ✅ Privacy request process documented
 - [ ] ✅ Security incident response plan ready
+- [ ] ✅ DPA (Data Processing Agreement) prepared (required for GDPR/B2B customers)
 - [ ] ✅ Team trained on compliance procedures
 - [ ] ✅ Logging and tracking systems in place
 

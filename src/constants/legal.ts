@@ -27,12 +27,9 @@ export const LEGAL_CONFIG = {
   },
 
   // Legal Document URLs
-  // Option 1: Link to GitHub (for development)
-  // Option 2: Host on separate domain (e.g., https://paperlyte.com/legal/privacy)
-  // Option 3: Create modal/overlay on landing page
   documents: {
-    privacy: 'https://github.com/shazzar00ni/paperlyte-v2/blob/main/docs/PRIVACY-POLICY.md',
-    terms: 'https://github.com/shazzar00ni/paperlyte-v2/blob/main/docs/TERMS-OF-SERVICE.md',
+    privacy: '/privacy.html',
+    terms: '/terms.html',
     cookies: '#', // TODO: Create cookie policy
     security: '#', // TODO: Create security practices doc
     dmca: '#', // TODO: Create DMCA policy

@@ -237,13 +237,110 @@ Use this checklist to track your progress toward legal compliance and production
 - [ ] Updated documents sent for re-review
 - [ ] Final attorney approval received
 
-### Additional Policies (if recommended)
-- [ ] Cookie Policy
-- [ ] DMCA Policy
-- [ ] Acceptable Use Policy
-- [ ] Data Processing Agreement (DPA)
-- [ ] Security Practices document
-- [ ] Accessibility Statement
+### Additional Policies (Critical Compliance Gaps)
+
+#### Required for Most SaaS Applications
+- [ ] **Cookie Policy** - Required by GDPR/ePrivacy if using cookies
+  - [ ] Cookie consent mechanism implemented
+  - [ ] Cookie banner/notice designed
+  - [ ] Cookie preference center created
+  - [ ] Analytics cookies documented
+- [ ] **Acceptable Use Policy (AUP)** - Defines prohibited uses
+  - [ ] Prohibited content types listed
+  - [ ] Abuse reporting mechanism
+  - [ ] Enforcement procedures defined
+  - [ ] Account suspension/termination criteria
+- [ ] **Data Processing Agreement (DPA)** - Required for B2B/GDPR
+  - [ ] Article 28 GDPR requirements met
+  - [ ] Sub-processor list included
+  - [ ] Data transfer mechanisms specified
+  - [ ] Security measures documented
+- [ ] **Accessibility Statement** - WCAG 2.1 AA compliance
+  - [ ] Conformance level documented (A, AA, AAA)
+  - [ ] Known limitations listed
+  - [ ] Contact for accessibility issues
+  - [ ] Remediation timeline provided
+
+#### Content & Intellectual Property
+- [ ] **DMCA Policy** - Required if users generate content
+  - [ ] Designated DMCA agent registered with Copyright Office
+  - [ ] Takedown procedure documented
+  - [ ] Counter-notice process defined
+  - [ ] Repeat infringer policy established
+- [ ] **Intellectual Property Policy** - Clarifies ownership
+  - [ ] User content ownership terms
+  - [ ] License grants defined
+  - [ ] Platform IP protection
+  - [ ] Third-party content usage rights
+
+#### Security & Data Protection
+- [ ] **Security Practices Document** - Transparency about security
+  - [ ] Encryption standards documented
+  - [ ] Access controls described
+  - [ ] Audit logging practices
+  - [ ] Incident response procedures
+- [ ] **Data Retention Policy** - Required by GDPR Article 13
+  - [ ] Retention periods for each data type
+  - [ ] Deletion procedures documented
+  - [ ] Archive policies defined
+  - [ ] Legal hold procedures
+- [ ] **Subprocessor List** - GDPR Article 28 requirement
+  - [ ] All third-party services listed
+  - [ ] Processing purposes specified
+  - [ ] Data transfer locations
+  - [ ] Notification process for changes
+
+#### Business Operations
+- [ ] **Service Level Agreement (SLA)** - If offering guarantees
+  - [ ] Uptime commitments specified
+  - [ ] Performance metrics defined
+  - [ ] Remedies for SLA breaches
+  - [ ] Measurement methodology
+- [ ] **API Terms of Service** - If offering API access
+  - [ ] Rate limiting policies
+  - [ ] API key management requirements
+  - [ ] Usage restrictions
+  - [ ] Attribution requirements
+- [ ] **Reseller/Partner Agreement** - If offering partnerships
+  - [ ] Commission structure
+  - [ ] Brand usage guidelines
+  - [ ] Support responsibilities
+  - [ ] Termination conditions
+
+#### Regulatory Compliance (Industry-Specific)
+- [ ] **COPPA Compliance** - If allowing users under 13 (US)
+  - [ ] Parental consent mechanism
+  - [ ] Child data collection limitations
+  - [ ] Parental rights procedures
+- [ ] **HIPAA Business Associate Agreement** - If handling health data
+  - [ ] BAA template prepared
+  - [ ] HIPAA security measures documented
+  - [ ] Breach notification procedures
+- [ ] **FERPA Compliance** - If handling education records
+  - [ ] School official designation
+  - [ ] Student data usage restrictions
+  - [ ] Parent access procedures
+- [ ] **PCI DSS Documentation** - If storing payment data
+  - [ ] AOC (Attestation of Compliance) obtained
+  - [ ] SAQ (Self-Assessment Questionnaire) completed
+  - [ ] Network segmentation documented
+
+#### Transparency & Trust
+- [ ] **Transparency Report** - Building user trust
+  - [ ] Government data requests disclosed
+  - [ ] Takedown requests statistics
+  - [ ] Security incidents summary
+  - [ ] Published annually or quarterly
+- [ ] **Bug Bounty Program Terms** - If running security research program
+  - [ ] Scope of eligible vulnerabilities
+  - [ ] Reward structure
+  - [ ] Disclosure timeline
+  - [ ] Safe harbor provisions
+- [ ] **Open Source License Compliance** - For dependencies
+  - [ ] Third-party licenses documented
+  - [ ] Attribution requirements met
+  - [ ] GPL/AGPL compliance verified
+  - [ ] License compatibility checked
 
 **Attorney Name**: _________________
 **Contact**: _________________
@@ -355,6 +452,40 @@ Use this checklist to track your progress toward legal compliance and production
 - [ ] Team trained on security reporting
 - [ ] Team trained on email responses
 - [ ] Annual refresher training scheduled
+
+### International Compliance Monitoring
+- [ ] Quarterly review of global privacy regulations
+- [ ] Monitoring system for new regional laws (LGPD, PIPEDA, APPI, etc.)
+- [ ] Risk assessment for each target jurisdiction
+  - [ ] Brazil (LGPD) - If serving Brazilian users
+  - [ ] Canada (PIPEDA) - If serving Canadian users
+  - [ ] Australia (Privacy Act) - If serving Australian users
+  - [ ] Japan (APPI) - If serving Japanese users
+  - [ ] South Korea (PIPA) - If serving Korean users
+  - [ ] India (DPDPA) - If serving Indian users
+  - [ ] Switzerland (FADP) - If serving Swiss users
+  - [ ] Other jurisdictions: _________________
+- [ ] Regulatory change notification system established
+  - [ ] Subscribe to legal/compliance newsletters
+  - [ ] Set up Google Alerts for privacy law changes
+  - [ ] Join industry compliance groups/forums
+  - [ ] Schedule quarterly attorney consultation
+- [ ] Process for updating policies when regulations change
+  - [ ] Change assessment workflow defined
+  - [ ] Impact analysis template created
+  - [ ] Stakeholder notification process
+  - [ ] Emergency update procedure for urgent changes
+- [ ] Expansion compliance checklist
+  - [ ] Pre-launch legal review for new regions
+  - [ ] Local language policy translations
+  - [ ] Local representative requirements assessed
+  - [ ] Data localization requirements reviewed
+  - [ ] Cross-border transfer mechanisms evaluated
+- [ ] Compliance documentation
+  - [ ] Jurisdiction compliance matrix maintained
+  - [ ] Regulatory change log updated
+  - [ ] Risk assessment reports filed
+  - [ ] Quarterly compliance reports generated
 
 **Status**: ⬜ Not Started | 🟡 In Progress | ✅ Complete
 

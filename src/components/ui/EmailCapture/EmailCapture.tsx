@@ -157,7 +157,7 @@ export const EmailCapture = ({
             />
             <span className={styles.gdprText}>
               I agree to receive emails from Paperlyte. View our{' '}
-              <a href="/privacy" className={styles.link} target="_blank" rel="noopener noreferrer">
+              <a href="/privacy.html" className={styles.link} target="_blank" rel="noopener noreferrer">
                 Privacy Policy
               </a>
             </span>

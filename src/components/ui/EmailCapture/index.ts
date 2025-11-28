@@ -1,0 +1,1 @@
+export { EmailCapture } from './EmailCapture';

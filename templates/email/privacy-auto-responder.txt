@@ -1,0 +1,44 @@
+Subject: Privacy Request Received - Ticket #{{TICKET_ID}}
+
+Dear {{SENDER_NAME}},
+
+Thank you for contacting Paperlyte regarding your privacy request.
+
+We have received your request and take your privacy rights seriously. We will respond to your request within 30 days as required by applicable privacy laws (GDPR, CCPA, etc.).
+
+Request Details:
+- Reference Number: {{TICKET_ID}}
+- Received: {{DATE_RECEIVED}}
+- Type: {{REQUEST_TYPE}} (Access / Deletion / Correction / Opt-Out / Other)
+
+What Happens Next:
+1. Our privacy team will review your request within 2 business days
+2. We may contact you if we need additional information to verify your identity
+3. We will fulfill your request or explain why we cannot within 30 days
+4. You will receive a confirmation email when your request is complete
+
+If your request is urgent or if you have questions, please reply to this email with "URGENT" in the subject line.
+
+Important Information:
+- Keep this reference number for your records: {{TICKET_ID}}
+- All communications regarding this request will reference this number
+- We will only communicate via this email address for security purposes
+
+Your Rights:
+Under GDPR (EU) and CCPA (California), you have the right to:
+- Access your personal data
+- Request deletion of your personal data
+- Correct inaccurate personal data
+- Object to processing of your personal data
+- Data portability
+- Lodge a complaint with a supervisory authority
+
+For more information about our privacy practices, please see our Privacy Policy:
+https://paperlyte.com/legal/privacy
+
+Best regards,
+Paperlyte Privacy Team
+privacy@paperlyte.com
+
+---
+This is an automated response. Please do not reply to this message unless you have additional information to provide.

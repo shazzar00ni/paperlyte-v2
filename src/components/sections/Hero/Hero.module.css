@@ -48,6 +48,18 @@
   margin-right: auto;
 }
 
+.emailWrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.secondaryCta {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--spacing-xl);
+}
+
 .ctas {
   display: flex;
   gap: var(--spacing-md);

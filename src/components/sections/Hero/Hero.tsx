@@ -1,5 +1,6 @@
 import { Button } from '@components/ui/Button';
 import { AnimatedElement } from '@components/ui/AnimatedElement';
+import { EmailCapture } from '@components/ui/EmailCapture';
 import { Section } from '@components/layout/Section';
 import styles from './Hero.module.css';
 
@@ -28,21 +29,23 @@ export const Hero = (): React.ReactElement => {
         </AnimatedElement>
 
         <AnimatedElement animation="fadeIn" delay={300}>
-          <div className={styles.ctas}>
+          <div className={styles.emailWrapper}>
+            <EmailCapture
+              variant="inline"
+              placeholder="your@email.com"
+              buttonText="Join Waitlist"
+            />
+          </div>
+        </AnimatedElement>
+
+        <AnimatedElement animation="fadeIn" delay={375}>
+          <div className={styles.secondaryCta}>
             <Button
-              variant="primary"
-              size="large"
-              icon="fa-download"
-              onClick={() => scrollToSection('download')}
-            >
-              Download Now
-            </Button>
-            <Button
-              variant="secondary"
-              size="large"
+              variant="ghost"
+              size="medium"
               onClick={() => scrollToSection('features')}
             >
-              See Features
+              See Features →
             </Button>
           </div>
         </AnimatedElement>

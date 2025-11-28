@@ -1,25 +1,39 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 type Theme = 'light' | 'dark';
 
 const isBrowser = typeof window !== 'undefined';
+const THEME_STORAGE_KEY = 'theme';
+const USER_PREFERENCE_KEY = 'theme-user-preference';
 
 const isValidTheme = (value: string | null): value is Theme => {
   return value === 'light' || value === 'dark';
 };
 
 export const useTheme = () => {
+  // Get initial user preference flag from localStorage (only during init, not reactive)
+  const getInitialUserPreference = (): boolean => {
+    if (!isBrowser) return false;
+    return localStorage.getItem(USER_PREFERENCE_KEY) === 'true';
+  };
+
+  // Track if user has explicitly set a preference (not just from system)
+  const userHasExplicitPreference = useRef(getInitialUserPreference());
+
   const [theme, setTheme] = useState<Theme>(() => {
     // SSR guard: return default theme if not in browser
     if (!isBrowser) return 'light';
 
-    // Check localStorage first
-    const stored = localStorage.getItem('theme');
-    if (stored && isValidTheme(stored)) {
+    // Check if user has explicitly set a preference before
+    const hasUserPreference = getInitialUserPreference();
+
+    // Check localStorage for saved theme
+    const stored = localStorage.getItem(THEME_STORAGE_KEY);
+    if (stored && isValidTheme(stored) && hasUserPreference) {
       return stored;
     }
 
-    // Check system preference
+    // Fall back to system preference
     if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
       return 'dark';
     }
@@ -41,7 +55,12 @@ export const useTheme = () => {
     }
 
     // Save to localStorage
-    localStorage.setItem('theme', theme);
+    localStorage.setItem(THEME_STORAGE_KEY, theme);
+
+    // Save user preference flag if they've explicitly chosen
+    if (userHasExplicitPreference.current) {
+      localStorage.setItem(USER_PREFERENCE_KEY, 'true');
+    }
   }, [theme]);
 
   // Listen for system preference changes
@@ -51,9 +70,8 @@ export const useTheme = () => {
 
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handleChange = (e: MediaQueryListEvent) => {
-      // Only update if user hasn't manually set a preference
-      const stored = localStorage.getItem('theme');
-      if (!stored || !isValidTheme(stored)) {
+      // Only update if user hasn't explicitly set a preference
+      if (!userHasExplicitPreference.current) {
         setTheme(e.matches ? 'dark' : 'light');
       }
     };
@@ -63,6 +81,8 @@ export const useTheme = () => {
   }, []);
 
   const toggleTheme = () => {
+    // Mark that user has explicitly set a preference
+    userHasExplicitPreference.current = true;
     setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
   };
 

@@ -26,7 +26,8 @@ export const Icon: React.FC<IconProps> = ({
     <i
       className={`fa-solid ${name} ${sizeClass} ${className}${color ? ` icon-color-${color.replace('#', '')}` : ''}`}
       aria-label={ariaLabel}
-      aria-hidden={ariaLabel ? 'false' : 'true'}
+      aria-hidden={!ariaLabel}
+      {...(ariaLabel && { role: 'img' })}
     />
   );
 };

@@ -37,6 +37,7 @@ export const useIntersectionObserver = (
       if (currentRef) {
         observer.unobserve(currentRef);
       }
+      observer.disconnect();
     };
   }, [threshold, rootMargin, triggerOnce]);
 

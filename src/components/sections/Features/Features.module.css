@@ -96,3 +96,27 @@
     padding: var(--spacing-lg);
   }
 }
+
+/* Extra small screens */
+@media (max-width: 480px) {
+  .title {
+    font-size: var(--font-size-2xl);
+  }
+
+  .subtitle {
+    font-size: var(--font-size-sm);
+  }
+
+  .card {
+    padding: var(--spacing-md);
+  }
+
+  .cardTitle {
+    font-size: var(--font-size-lg);
+  }
+
+  .iconWrapper {
+    width: 56px;
+    height: 56px;
+  }
+}

@@ -118,3 +118,24 @@
     width: 100%;
   }
 }
+
+/* Extra small screens */
+@media (max-width: 480px) {
+  .headline {
+    font-size: var(--font-size-3xl);
+    line-height: 1.2;
+  }
+
+  .subheadline {
+    font-size: var(--font-size-base);
+  }
+
+  .tags {
+    gap: var(--spacing-xs);
+  }
+
+  .tag {
+    font-size: var(--font-size-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+}

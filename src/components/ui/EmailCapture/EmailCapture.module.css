@@ -171,8 +171,8 @@
   border: 0;
 }
 
-/* Responsive */
-@media (max-width: 640px) {
+/* Responsive - standardized to match site-wide breakpoint */
+@media (max-width: 768px) {
   .inputGroup {
     flex-direction: column;
   }

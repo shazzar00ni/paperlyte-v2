@@ -40,7 +40,7 @@
   padding-bottom: 0;
 }
 
-/* Responsive adjustments */
+/* Responsive adjustments - Tablet */
 @media (max-width: 768px) {
   .padding-default {
     padding-top: var(--spacing-2xl);
@@ -50,5 +50,13 @@
   .padding-large {
     padding-top: var(--spacing-3xl);
     padding-bottom: var(--spacing-3xl);
+  }
+}
+
+/* Extra small screens - Reduced horizontal padding */
+@media (max-width: 480px) {
+  .container {
+    padding-left: var(--spacing-sm);
+    padding-right: var(--spacing-sm);
   }
 }

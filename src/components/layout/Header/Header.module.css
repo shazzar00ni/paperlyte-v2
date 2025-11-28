@@ -149,3 +149,15 @@
     width: 100%;
   }
 }
+
+/* Extra small screens - Optimized spacing */
+@media (max-width: 480px) {
+  .container {
+    padding-left: var(--spacing-sm);
+    padding-right: var(--spacing-sm);
+  }
+
+  .logo {
+    font-size: var(--font-size-lg);
+  }
+}

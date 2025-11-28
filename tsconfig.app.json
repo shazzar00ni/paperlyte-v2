@@ -61,5 +61,7 @@
     "forceConsistentCasingInFileNames": true
   },
   // Include all files in the src directory
-  "include": ["src"]
+  "include": ["src"],
+  // Exclude test files from the build (they're handled by Vitest)
+  "exclude": ["src/**/*.test.tsx", "src/**/*.test.ts", "src/test"]
 }

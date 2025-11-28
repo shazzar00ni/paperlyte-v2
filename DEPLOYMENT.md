@@ -1,533 +1,292 @@
 # Deployment Guide
 
-This guide covers deploying Paperlyte to various hosting platforms and environments.
+This document outlines the deployment process for the Paperlyte landing page on Netlify.
 
 ## Table of Contents
 
 - [Prerequisites](#prerequisites)
-- [Build Process](#build-process)
-- [Environment Variables](#environment-variables)
-- [Deployment Platforms](#deployment-platforms)
-  - [Vercel](#vercel-recommended)
-  - [Netlify](#netlify)
-  - [GitHub Pages](#github-pages)
-  - [Custom Server](#custom-server)
-- [CI/CD Setup](#cicd-setup)
-- [Performance Optimization](#performance-optimization)
-- [Monitoring](#monitoring)
-- [Rollback Procedures](#rollback-procedures)
+- [Initial Netlify Setup](#initial-netlify-setup)
+- [Environment Configuration](#environment-configuration)
+- [Custom Domain Setup](#custom-domain-setup)
+- [Continuous Deployment](#continuous-deployment)
+- [Deploy Previews](#deploy-previews)
+- [Rollback Strategy](#rollback-strategy)
+- [Troubleshooting](#troubleshooting)
 
 ## Prerequisites
 
-Before deploying, ensure:
+- GitHub repository with the Paperlyte codebase
+- Netlify account (free tier is sufficient)
+- Custom domain: `paperlyte.app` (when ready)
+- Admin access to domain DNS settings
 
-- [x] All tests pass: `npm test`
-- [x] Build succeeds: `npm run build`
-- [x] No linting errors: `npm run lint`
-- [x] Performance targets met (Lighthouse > 90)
-- [x] Accessibility compliance (WCAG 2.1 AA)
+## Initial Netlify Setup
 
-## Build Process
+### 1. Connect Repository to Netlify
 
-### Local Build
+1. Log in to [Netlify](https://app.netlify.com/)
+2. Click "Add new site" → "Import an existing project"
+3. Choose "GitHub" as your Git provider
+4. Authorize Netlify to access your GitHub account
+5. Select the `paperlyte-v2` repository
 
-```bash
-# Install dependencies
-npm install
+### 2. Configure Build Settings
 
-# Run production build
-npm run build
+The build settings are automatically configured via `netlify.toml`, but you can verify them in the Netlify UI:
 
-# Preview production build locally
-npm run preview
-```
+- **Base directory**: (leave empty)
+- **Build command**: `npm run build`
+- **Publish directory**: `dist`
+- **Node version**: 18 (set via environment variable in netlify.toml)
 
-The build output will be in the `dist/` directory.
+### 3. Deploy Site
 
-### Build Configuration
+1. Click "Deploy site"
+2. Netlify will assign a random subdomain (e.g., `random-name-123.netlify.app`)
+3. Wait for the initial build to complete (~2-3 minutes)
+4. Verify the site is accessible at the Netlify URL
 
-Build settings are in `vite.config.ts`:
+## Environment Configuration
 
-```typescript
-export default defineConfig({
-  plugins: [react()],
-  build: {
-    outDir: 'dist',
-    sourcemap: false, // Disable in production
-    minify: 'esbuild',
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          // Code splitting for better caching
-          vendor: ['react', 'react-dom']
-        }
-      }
-    }
-  }
-});
-```
+### Build Environment Variables
 
-## Environment Variables
+Currently, no environment variables are required for the landing page. If needed in the future:
 
-### Required Variables
+1. Navigate to Site settings → Build & deploy → Environment
+2. Click "Add a variable"
+3. Add key-value pairs as needed
 
-Create a `.env.production` file:
+### Node Version
 
-```bash
-# API endpoint (when backend is implemented)
-VITE_API_BASE_URL=https://api.paperlyte.com
-
-# Feature flags
-VITE_FEATURE_ANALYTICS=true
-VITE_FEATURE_DARK_MODE=false
-
-# Analytics
-VITE_ANALYTICS_ID=your-analytics-id
-```
-
-### Variable Naming
-
-- All client-side variables **must** be prefixed with `VITE_`
-- Never commit `.env.production` to version control
-- Use your platform's environment variable UI for sensitive values
-
-## Deployment Platforms
-
-### Vercel (Recommended)
-
-Vercel provides optimal deployment for Vite/React applications.
-
-#### Setup
-
-1. **Install Vercel CLI**:
-   ```bash
-   npm install -g vercel
-   ```
-
-2. **Login**:
-   ```bash
-   vercel login
-   ```
-
-3. **Deploy**:
-   ```bash
-   # Deploy to preview
-   vercel
-
-   # Deploy to production
-   vercel --prod
-   ```
-
-#### Configuration
-
-Create `vercel.json`:
-
-```json
-{
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "framework": "vite",
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
-  ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
-        },
-        {
-          "key": "X-XSS-Protection",
-          "value": "1; mode=block"
-        },
-        {
-          "key": "Referrer-Policy",
-          "value": "strict-origin-when-cross-origin"
-        }
-      ]
-    },
-    {
-      "source": "/assets/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
-      ]
-    }
-  ]
-}
-```
-
-#### Environment Variables in Vercel
-
-```bash
-# Via CLI
-vercel env add VITE_API_BASE_URL production
-
-# Or use the Vercel dashboard
-```
-
-### Netlify
-
-#### Setup
-
-1. **Install Netlify CLI**:
-   ```bash
-   npm install -g netlify-cli
-   ```
-
-2. **Login**:
-   ```bash
-   netlify login
-   ```
-
-3. **Deploy**:
-   ```bash
-   # Deploy to preview
-   netlify deploy
-
-   # Deploy to production
-   netlify deploy --prod
-   ```
-
-#### Configuration
-
-Create `netlify.toml`:
+The Node version is set to 18.x in `netlify.toml`:
 
 ```toml
 [build]
-  command = "npm run build"
-  publish = "dist"
+  environment = { NODE_VERSION = "18" }
+```
 
+## Custom Domain Setup
+
+### 1. Add Custom Domain
+
+1. Go to Site settings → Domain management
+2. Click "Add custom domain"
+3. Enter `paperlyte.app`
+4. Confirm ownership
+
+### 2. Configure DNS Records
+
+Add the following DNS records at your domain registrar:
+
+**A Record** (for apex domain):
+```
+Type: A
+Name: @
+Value: 75.2.60.5  (Netlify's load balancer IP)
+TTL: 3600
+```
+
+**CNAME Record** (for www subdomain):
+```
+Type: CNAME
+Name: www
+Value: random-name-123.netlify.app  (your Netlify site URL)
+TTL: 3600
+```
+
+**Alternative: Using Netlify DNS** (Recommended)
+
+1. Click "Set up Netlify DNS" in Domain settings
+2. Copy the provided nameservers
+3. Update nameservers at your domain registrar:
+   - `dns1.p01.nsone.net`
+   - `dns2.p01.nsone.net`
+   - `dns3.p01.nsone.net`
+   - `dns4.p01.nsone.net`
+4. Wait for DNS propagation (can take up to 48 hours, usually <1 hour)
+
+### 3. Enable HTTPS
+
+1. Netlify automatically provisions an SSL certificate via Let's Encrypt
+2. Wait for SSL certificate to be issued (~1-2 minutes)
+3. Enable "Force HTTPS" in Domain settings
+4. All HTTP requests will now redirect to HTTPS
+
+### 4. Set Primary Domain
+
+1. Choose which domain variant should be primary:
+   - `paperlyte.app` (apex domain) - **Recommended**
+   - `www.paperlyte.app` (www subdomain)
+2. Non-primary variant will automatically redirect to primary
+
+## Continuous Deployment
+
+### Automatic Deployments from Main Branch
+
+The `main` branch is configured for automatic deployment:
+
+1. Any push to `main` triggers a new deployment
+2. Build process runs automatically
+3. Site goes live upon successful build
+4. Failed builds do NOT deploy (previous version remains live)
+
+### Branch Protection Rules
+
+Set up branch protection for `main` on GitHub:
+
+1. Go to repository Settings → Branches
+2. Add rule for `main` branch
+3. Enable:
+   - ✅ Require status checks to pass before merging
+   - ✅ Require branches to be up to date before merging
+   - ✅ Required status checks:
+     - `CI Success` (from GitHub Actions)
+     - `netlify/paperlyte-v2/deploy-preview` (from Netlify)
+   - ✅ Require pull request reviews before merging (at least 1)
+   - ✅ Include administrators
+
+## Deploy Previews
+
+Deploy Previews are automatically created for all pull requests:
+
+1. Open a pull request on GitHub
+2. Netlify automatically builds and deploys a preview
+3. Preview URL is posted as a comment on the PR
+4. Preview URL format: `deploy-preview-[PR_NUMBER]--random-name-123.netlify.app`
+5. Preview is updated with each new commit to the PR branch
+6. Preview is deleted when PR is closed or merged
+
+### Viewing Deploy Previews
+
+- **In Netlify**: Go to "Deploys" → "Deploy Previews"
+- **In GitHub**: Check the PR "Checks" tab for Netlify status
+- **Direct link**: Posted as a comment by Netlify bot
+
+## Rollback Strategy
+
+### Instant Rollback
+
+Netlify keeps a history of all deployments. To rollback:
+
+1. Go to "Deploys" in Netlify dashboard
+2. Find the previous stable deployment
+3. Click "..." menu → "Publish deploy"
+4. Confirm rollback
+5. Previous version goes live immediately
+
+### Rollback via Git
+
+1. Identify the commit hash of the stable version:
+   ```bash
+   git log --oneline
+   ```
+
+2. Create a revert commit:
+   ```bash
+   git revert <commit-hash>
+   git push origin main
+   ```
+
+3. Netlify will automatically deploy the reverted version
+
+## Performance Monitoring
+
+### Netlify Analytics (Optional)
+
+Netlify provides built-in analytics:
+
+1. Go to Site settings → Analytics
+2. Enable "Analytics" ($9/month per site)
+3. View traffic, performance, and user behavior
+
+### Lighthouse CI
+
+Automated Lighthouse audits run on every deployment via GitHub Actions:
+
+1. View results in GitHub Actions tab
+2. Check "Lighthouse CI" job for performance scores
+3. Download artifacts to view detailed reports
+
+### Performance Targets
+
+Monitor these metrics to meet Paperlyte's performance goals:
+
+- **Lighthouse Performance**: > 90
+- **Lighthouse Accessibility**: > 95
+- **Page Load Time**: < 2 seconds
+- **LCP (Largest Contentful Paint)**: < 2.5s
+- **FID (First Input Delay)**: < 100ms
+- **CLS (Cumulative Layout Shift)**: < 0.1
+
+## Troubleshooting
+
+### Build Failures
+
+**Problem**: Build fails with error message
+
+**Solutions**:
+1. Check build logs in Netlify dashboard
+2. Verify `package.json` scripts work locally
+3. Ensure all dependencies are in `package.json` (not `devDependencies` only)
+4. Clear Netlify build cache: Site settings → Build & deploy → Clear cache and retry deploy
+
+### 404 Errors on Refresh
+
+**Problem**: Navigating directly to routes shows 404
+
+**Solution**: Redirect rules in `netlify.toml` handle SPA routing. Verify:
+```toml
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-
-[[headers]]
-  for = "/*"
-  [headers.values]
-    X-Frame-Options = "DENY"
-    X-XSS-Protection = "1; mode=block"
-    X-Content-Type-Options = "nosniff"
-    Referrer-Policy = "strict-origin-when-cross-origin"
-
-[[headers]]
-  for = "/assets/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
 ```
 
-### GitHub Pages
+### SSL Certificate Issues
 
-#### Setup
+**Problem**: SSL certificate not provisioning
 
-1. **Install gh-pages**:
-   ```bash
-   npm install --save-dev gh-pages
-   ```
+**Solutions**:
+1. Verify DNS is correctly configured
+2. Wait 24 hours for DNS propagation
+3. Try "Renew certificate" in Domain settings
+4. Contact Netlify support if issue persists
 
-2. **Update vite.config.ts**:
-   ```typescript
-   export default defineConfig({
-     base: '/paperlyte-v2/', // Replace with your repo name
-     // ... other config
-   });
-   ```
+### Slow Build Times
 
-3. **Add deploy script to package.json**:
-   ```json
-   {
-     "scripts": {
-       "predeploy": "npm run build",
-       "deploy": "gh-pages -d dist"
-     }
-   }
-   ```
+**Problem**: Builds taking longer than expected
 
-4. **Deploy**:
-   ```bash
-   npm run deploy
-   ```
+**Solutions**:
+1. Enable build cache (enabled by default)
+2. Optimize dependencies (remove unused packages)
+3. Use `npm ci` instead of `npm install` (already configured)
 
-5. **Configure GitHub**:
-   - Go to repository Settings > Pages
-   - Select `gh-pages` branch as source
+### Deploy Preview Not Appearing
 
-### Custom Server
+**Problem**: Deploy preview not created for PR
 
-For deploying to your own server:
+**Solutions**:
+1. Verify Netlify GitHub integration is active
+2. Check "Deploy Previews" setting is enabled: Site settings → Build & deploy → Deploy contexts
+3. Ensure PR is from a branch in the same repository (not a fork)
 
-#### Using Nginx
+## Security Best Practices
 
-```nginx
-server {
-    listen 80;
-    server_name paperlyte.com;
+1. **Environment Variables**: Never commit secrets to git
+2. **HTTPS Only**: Always enforce HTTPS (configured in netlify.toml)
+3. **Security Headers**: Review and adjust CSP in netlify.toml as needed
+4. **Dependencies**: Regularly update dependencies for security patches
+5. **Access Control**: Limit Netlify admin access to trusted team members
 
-    root /var/www/paperlyte/dist;
-    index index.html;
+## Additional Resources
 
-    # Gzip compression
-    gzip on;
-    gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
-
-    # Security headers
-    add_header X-Frame-Options "DENY" always;
-    add_header X-Content-Type-Options "nosniff" always;
-    add_header X-XSS-Protection "1; mode=block" always;
-    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
-
-    # Handle client-side routing
-    location / {
-        try_files $uri $uri/ /index.html;
-    }
-
-    # Cache static assets
-    location /assets/ {
-        expires 1y;
-        add_header Cache-Control "public, immutable";
-    }
-
-    # Disable cache for index.html
-    location = /index.html {
-        add_header Cache-Control "no-cache";
-    }
-}
-```
-
-#### Using Apache
-
-```apache
-<VirtualHost *:80>
-    ServerName paperlyte.com
-    DocumentRoot /var/www/paperlyte/dist
-
-    <Directory /var/www/paperlyte/dist>
-        Options -Indexes +FollowSymLinks
-        AllowOverride All
-        Require all granted
-
-        # Handle client-side routing
-        RewriteEngine On
-        RewriteBase /
-        RewriteRule ^index\.html$ - [L]
-        RewriteCond %{REQUEST_FILENAME} !-f
-        RewriteCond %{REQUEST_FILENAME} !-d
-        RewriteRule . /index.html [L]
-    </Directory>
-
-    # Security headers
-    Header always set X-Frame-Options "DENY"
-    Header always set X-Content-Type-Options "nosniff"
-    Header always set X-XSS-Protection "1; mode=block"
-    Header always set Referrer-Policy "strict-origin-when-cross-origin"
-
-    # Cache static assets
-    <FilesMatch "\.(js|css|jpg|jpeg|png|gif|ico|svg|woff|woff2|ttf|eot)$">
-        Header set Cache-Control "max-age=31536000, public, immutable"
-    </FilesMatch>
-</VirtualHost>
-```
-
-## CI/CD Setup
-
-### GitHub Actions
-
-Create `.github/workflows/deploy.yml`:
-
-```yaml
-name: Deploy to Production
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run linter
-        run: npm run lint
-
-      - name: Run tests
-        run: npm test
-
-      - name: Build
-        run: npm run build
-
-  deploy:
-    needs: test
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build
-        run: npm run build
-        env:
-          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
-          VITE_ANALYTICS_ID: ${{ secrets.VITE_ANALYTICS_ID }}
-
-      - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: '--prod'
-```
-
-## Performance Optimization
-
-### Pre-Deployment Checklist
-
-- [ ] Run Lighthouse audit (target: > 90)
-- [ ] Test on slow 3G connection
-- [ ] Check bundle size: `npm run build -- --stats`
-- [ ] Verify Core Web Vitals:
-  - LCP < 2.5s
-  - FID < 100ms
-  - CLS < 0.1
-
-### Optimization Techniques
-
-1. **Code Splitting**: Implemented in `vite.config.ts`
-2. **Asset Optimization**: Images compressed and served in modern formats
-3. **Font Loading**: Preload critical fonts
-4. **Critical CSS**: Inline above-the-fold CSS
-5. **Service Worker**: For offline functionality (future)
-
-### Bundle Analysis
-
-```bash
-# Install bundle analyzer
-npm install --save-dev rollup-plugin-visualizer
-
-# Analyze bundle
-npm run build -- --stats
-```
-
-## Monitoring
-
-### Recommended Tools
-
-- **Vercel Analytics**: Built-in performance monitoring
-- **Sentry**: Error tracking and performance monitoring
-- **Google Analytics 4**: Privacy-focused analytics
-- **Lighthouse CI**: Automated performance audits
-
-### Setting Up Monitoring
-
-```bash
-# Install Sentry (example)
-npm install @sentry/react
-
-# Configure in src/main.tsx
-import * as Sentry from '@sentry/react';
-
-Sentry.init({
-  dsn: import.meta.env.VITE_SENTRY_DSN,
-  environment: import.meta.env.MODE,
-  tracesSampleRate: 1.0,
-});
-```
-
-## Rollback Procedures
-
-### Vercel
-
-```bash
-# List deployments
-vercel list
-
-# Promote a previous deployment to production
-vercel promote [deployment-url]
-```
-
-### Netlify
-
-```bash
-# List deployments
-netlify deploy list
-
-# Restore a previous deployment
-netlify deploy restore [deployment-id]
-```
-
-### GitHub Pages
-
-```bash
-# Revert to previous commit and redeploy
-git revert HEAD
-git push origin main
-npm run deploy
-```
-
-## Troubleshooting
-
-### Common Issues
-
-**Build fails with "out of memory"**:
-```bash
-# Increase Node memory limit
-NODE_OPTIONS=--max-old-space-size=4096 npm run build
-```
-
-**Routes return 404**:
-- Ensure SPA fallback is configured (see platform configs above)
-- Check that `base` URL in `vite.config.ts` is correct
-
-**Environment variables not working**:
-- Verify variables are prefixed with `VITE_`
-- Check that variables are set in platform dashboard
-- Rebuild after adding new variables
-
-## Security Checklist
-
-Before deploying to production:
-
-- [ ] All secrets in environment variables (not in code)
-- [ ] HTTPS enabled
-- [ ] Security headers configured
-- [ ] Content Security Policy implemented
-- [ ] Dependencies audited: `npm audit`
-- [ ] No console.logs in production build
-- [ ] Source maps disabled in production
-
-## Support
-
-For deployment issues:
-
-- Check [GitHub Issues](https://github.com/shazzar00ni/paperlyte-v2/issues)
-- Consult platform documentation (Vercel, Netlify, etc.)
-- Contact the development team
+- [Netlify Documentation](https://docs.netlify.com/)
+- [Netlify Build Configuration](https://docs.netlify.com/configure-builds/file-based-configuration/)
+- [Custom Domain Setup](https://docs.netlify.com/domains-https/custom-domains/)
+- [Deploy Previews](https://docs.netlify.com/site-deploys/deploy-previews/)
+- [Netlify Status Page](https://www.netlifystatus.com/)
 
 ---
 
-**Last Updated**: 2025-01-27
+**Last Updated**: 2025-11-28
+**Maintained By**: Paperlyte Team

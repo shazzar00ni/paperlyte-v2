@@ -49,7 +49,7 @@ export const FEATURES: Feature[] = [
   },
   {
     id: 'offline',
-    icon: 'fa-cloud-check',
+    icon: 'fa-wifi-slash',
     title: 'Offline-First',
     description:
       'Full functionality without internet. Your notes work everywhere, sync automatically when online.',

@@ -407,6 +407,103 @@ Use this checklist to track your progress toward legal compliance and production
 - [ ] Sitemap includes legal pages
 - [ ] robots.txt allows indexing
 
+### Accessibility Compliance (WCAG 2.1 AA)
+
+#### Automated Testing
+- [ ] Run axe DevTools accessibility scan
+- [ ] Run Lighthouse accessibility audit (score >95)
+- [ ] Run WAVE Web Accessibility Evaluation Tool
+- [ ] Check color contrast ratios (4.5:1 for normal text, 3:1 for large text)
+- [ ] Validate HTML structure with W3C Validator
+- [ ] Test with Pa11y or similar automated tool
+
+#### Manual Testing
+- [ ] **Keyboard Navigation**
+  - [ ] All interactive elements accessible via Tab key
+  - [ ] Focus indicators clearly visible
+  - [ ] Skip navigation links work correctly
+  - [ ] No keyboard traps
+  - [ ] Modal dialogs trap focus appropriately
+- [ ] **Screen Reader Testing**
+  - [ ] Test with NVDA (Windows) or JAWS
+  - [ ] Test with VoiceOver (Mac/iOS)
+  - [ ] Test with TalkBack (Android)
+  - [ ] All images have appropriate alt text
+  - [ ] Form labels properly associated
+  - [ ] ARIA labels correct and meaningful
+  - [ ] Heading structure logical (h1-h6)
+- [ ] **Visual Accessibility**
+  - [ ] Test at 200% browser zoom
+  - [ ] Content reflows without horizontal scrolling
+  - [ ] Text resizing doesn't break layout
+  - [ ] No text in images (unless decorative)
+  - [ ] Animations respect prefers-reduced-motion
+- [ ] **Mobile Accessibility**
+  - [ ] Touch targets minimum 44x44 pixels
+  - [ ] Pinch-to-zoom enabled
+  - [ ] Landscape and portrait orientations supported
+  - [ ] No reliance on hover states
+
+#### WCAG 2.1 Criteria Verification
+- [ ] **Level A Requirements (Must Have)**
+  - [ ] 1.1.1 Non-text Content - Alt text provided
+  - [ ] 2.1.1 Keyboard - All functionality keyboard accessible
+  - [ ] 2.4.1 Bypass Blocks - Skip navigation implemented
+  - [ ] 3.1.1 Language of Page - HTML lang attribute set
+  - [ ] 4.1.2 Name, Role, Value - ARIA labels correct
+- [ ] **Level AA Requirements (Should Have)**
+  - [ ] 1.4.3 Contrast (Minimum) - 4.5:1 contrast ratio
+  - [ ] 1.4.5 Images of Text - No text in images
+  - [ ] 2.4.6 Headings and Labels - Descriptive headings
+  - [ ] 2.4.7 Focus Visible - Clear focus indicators
+  - [ ] 3.2.3 Consistent Navigation - Navigation consistent across pages
+
+#### Legal Accessibility Requirements
+- [ ] **ADA Compliance (US)** - Americans with Disabilities Act
+  - [ ] Website considered "place of public accommodation"
+  - [ ] WCAG 2.1 AA as defensible standard
+  - [ ] Remediation plan for issues
+- [ ] **Section 508 Compliance (US Government)** - If B2G sales
+  - [ ] VPAT (Voluntary Product Accessibility Template) prepared
+  - [ ] Section 508 standards met
+  - [ ] Documentation provided to government customers
+- [ ] **European Accessibility Act (EU)** - Effective June 2025
+  - [ ] Requirements apply to e-commerce platforms
+  - [ ] Accessibility statement published
+  - [ ] Conformance level documented
+- [ ] **EN 301 549 (EU)** - European accessibility standard
+  - [ ] Harmonized with WCAG 2.1 AA
+  - [ ] Additional requirements verified
+
+#### Accessibility Statement
+- [ ] **Create and Publish Accessibility Statement**
+  - [ ] Conformance level claimed (WCAG 2.1 AA target)
+  - [ ] Date of last assessment
+  - [ ] Known accessibility barriers listed
+  - [ ] Workarounds for known issues
+  - [ ] Contact method for accessibility issues
+  - [ ] Feedback mechanism provided
+  - [ ] Commitment to accessibility stated
+  - [ ] Remediation timeline for outstanding issues
+  - [ ] Link from footer to accessibility statement
+- [ ] **Accessibility Statement URL**: _________________
+
+#### Ongoing Accessibility Maintenance
+- [ ] Accessibility review process for new features
+- [ ] Quarterly accessibility audits scheduled
+- [ ] Accessibility training for development team
+- [ ] User feedback mechanism for accessibility issues
+- [ ] Bug tracking system includes accessibility category
+- [ ] Accessibility included in QA checklist
+
+#### Third-Party Accessibility Review (Recommended)
+- [ ] Budget allocated for professional accessibility audit
+- [ ] Accessibility consultant/firm selected
+- [ ] Comprehensive audit conducted
+- [ ] Remediation recommendations received
+- [ ] Conformance certificate obtained (if available)
+- [ ] Annual re-certification scheduled
+
 **Status**: ⬜ Not Started | 🟡 In Progress | ✅ Complete
 
 ---

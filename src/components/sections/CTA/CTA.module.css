@@ -89,6 +89,7 @@
   color: white;
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   text-decoration: none;
   cursor: pointer;

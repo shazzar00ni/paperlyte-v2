@@ -8,6 +8,9 @@
   # Directory with the build output (relative to repo root)
   publish = "dist"
 
+  # Serverless functions directory
+  functions = "netlify/functions"
+
   # Node version to use
   environment = { NODE_VERSION = "18" }
 

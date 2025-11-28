@@ -55,29 +55,35 @@ export const EmailCapture = ({
     setErrorMessage('');
 
     try {
-      // TODO: Replace with actual ConvertKit API endpoint
-      // const response = await fetch('/api/subscribe', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ email }),
-      // });
+      // Call Netlify serverless function
+      const response = await fetch('/.netlify/functions/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
 
-      // Simulate API call for now
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const data = await response.json();
 
-      // Mock success
-      // if (!response.ok) throw new Error('Subscription failed');
+      if (!response.ok) {
+        throw new Error(data.error || 'Subscription failed');
+      }
 
       setStatus('success');
       setEmail('');
       setGdprConsent(false);
 
       // Track conversion (optional - add analytics here)
-      // trackEvent('email_signup', { email });
+      if (typeof window !== 'undefined' && (window as any).gtag) {
+        (window as any).gtag('event', 'email_signup', {
+          event_category: 'engagement',
+          event_label: 'waitlist',
+        });
+      }
 
     } catch (error) {
       setStatus('error');
-      setErrorMessage('Something went wrong. Please try again.');
+      const message = error instanceof Error ? error.message : 'Something went wrong. Please try again.';
+      setErrorMessage(message);
       console.error('Email subscription error:', error);
     }
   };

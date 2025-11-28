@@ -31,7 +31,15 @@ body {
   color: var(--color-text-primary);
   background-color: var(--color-background);
   min-height: 100vh;
+  /* Theme transitions - respects prefers-reduced-motion via global override below */
   transition: background-color var(--transition-base), color var(--transition-base);
+}
+
+/* Explicitly disable body transitions for reduced motion users */
+@media (prefers-reduced-motion: reduce) {
+  body {
+    transition: none;
+  }
 }
 
 img,

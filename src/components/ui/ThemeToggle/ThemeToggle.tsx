@@ -1,3 +1,4 @@
+import type React from 'react';
 import { useTheme } from '@hooks/useTheme';
 import { Icon } from '@components/ui/Icon';
 import styles from './ThemeToggle.module.css';

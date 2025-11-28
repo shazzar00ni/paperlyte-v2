@@ -3,6 +3,8 @@
   --color-primary: #7C3AED;        /* Purple 600 */
   --color-primary-dark: #6D28D9;   /* Purple 700 */
   --color-primary-light: #A78BFA;  /* Purple 400 */
+  --color-primary-faint: rgba(124, 58, 237, 0.1);  /* 10% opacity for backgrounds */
+  --color-primary-fainter: rgba(124, 58, 237, 0.05); /* 5% opacity for subtle backgrounds */
   --color-background: #FFFFFF;
   --color-surface: #F9FAFB;        /* Gray 50 */
   --color-text-primary: #111827;   /* Gray 900 */
@@ -76,6 +78,8 @@
   --color-primary: #7C3AED;        /* Purple 600 - WCAG AA compliant 6.5:1 contrast with white */
   --color-primary-dark: #6D28D9;   /* Purple 700 */
   --color-primary-light: #8B5CF6;  /* Purple 500 */
+  --color-primary-faint: rgba(124, 58, 237, 0.1);  /* 10% opacity for backgrounds */
+  --color-primary-fainter: rgba(124, 58, 237, 0.05); /* 5% opacity for subtle backgrounds */
   --color-background: #0F172A;     /* Slate 900 */
   --color-surface: #1E293B;        /* Slate 800 */
   --color-text-primary: #F1F5F9;   /* Slate 100 */
@@ -92,6 +96,8 @@
     --color-primary: #7C3AED;        /* Purple 600 - WCAG AA compliant 6.5:1 contrast */
     --color-primary-dark: #6D28D9;   /* Purple 700 */
     --color-primary-light: #8B5CF6;  /* Purple 500 */
+    --color-primary-faint: rgba(124, 58, 237, 0.1);  /* 10% opacity for backgrounds */
+    --color-primary-fainter: rgba(124, 58, 237, 0.05); /* 5% opacity for subtle backgrounds */
     --color-background: #0F172A;
     --color-surface: #1E293B;
     --color-text-primary: #F1F5F9;

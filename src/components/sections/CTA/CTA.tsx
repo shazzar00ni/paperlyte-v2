@@ -1,6 +1,7 @@
 import { Section } from '@components/layout/Section';
 import { Button } from '@components/ui/Button';
 import { AnimatedElement } from '@components/ui/AnimatedElement';
+import { DOWNLOAD_URLS, GITHUB_URL } from '@/constants/downloads';
 import styles from './CTA.module.css';
 
 export const CTA = (): React.ReactElement => {
@@ -23,7 +24,7 @@ export const CTA = (): React.ReactElement => {
               variant="secondary"
               size="large"
               icon="fa-apple"
-              href="#"
+              href={DOWNLOAD_URLS.mac}
               className={styles.downloadButton}
             >
               Download for Mac
@@ -32,7 +33,7 @@ export const CTA = (): React.ReactElement => {
               variant="secondary"
               size="large"
               icon="fa-windows"
-              href="#"
+              href={DOWNLOAD_URLS.windows}
               className={styles.downloadButton}
             >
               Download for Windows
@@ -44,15 +45,15 @@ export const CTA = (): React.ReactElement => {
           <div className={styles.platforms}>
             <p className={styles.platformText}>
               Also available for{' '}
-              <a href="#" className={styles.platformLink}>
+              <a href={DOWNLOAD_URLS.ios} className={styles.platformLink}>
                 iOS
               </a>
               ,{' '}
-              <a href="#" className={styles.platformLink}>
+              <a href={DOWNLOAD_URLS.android} className={styles.platformLink}>
                 Android
               </a>
               , and{' '}
-              <a href="#" className={styles.platformLink}>
+              <a href={DOWNLOAD_URLS.linux} className={styles.platformLink}>
                 Linux
               </a>
             </p>
@@ -60,10 +61,10 @@ export const CTA = (): React.ReactElement => {
         </AnimatedElement>
 
         <AnimatedElement animation="fadeIn" delay={600}>
-          <div className={styles.badge}>
+          <a href={GITHUB_URL} className={styles.badge} target="_blank" rel="noopener noreferrer">
             <i className="fa-brands fa-github" aria-hidden="true" />
             <span>Open source on GitHub</span>
-          </div>
+          </a>
         </AnimatedElement>
       </div>
     </Section>

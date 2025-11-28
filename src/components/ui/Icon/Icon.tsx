@@ -15,7 +15,7 @@ export const Icon: React.FC<IconProps> = ({
 }) => {
   const sizeClass = {
       sm: 'fa-sm',
-      md: 'fa-lg', // or '' if you want md as default (no class)
+      md: '',
       lg: 'fa-lg',
       xl: 'fa-xl',
       '2x': 'fa-2x',
@@ -26,7 +26,7 @@ export const Icon: React.FC<IconProps> = ({
     <i
       className={`fa-solid ${name} ${sizeClass} ${className}${color ? ` icon-color-${color.replace('#', '')}` : ''}`}
       aria-label={ariaLabel}
-      aria-hidden={!ariaLabel}
+      aria-hidden={ariaLabel ? "false" : "true"}
       {...(ariaLabel && { role: 'img' })}
     />
   );

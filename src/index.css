@@ -1,3 +1,6 @@
+/* Tailwind CSS (v4 uses single import) */
+@import 'tailwindcss';
+
 /* Import CSS foundation */
 @import './styles/variables.css';
 @import './styles/reset.css';

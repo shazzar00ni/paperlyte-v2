@@ -1,4 +1,5 @@
 import { Icon } from '@components/ui/Icon';
+import { LEGAL_CONFIG } from '@/constants/legal';
 import styles from './Footer.module.css';
 
 export const Footer = (): React.ReactElement => {
@@ -38,12 +39,22 @@ export const Footer = (): React.ReactElement => {
             <h3 className={styles.linkGroupTitle}>Legal</h3>
             <ul className={styles.linkList}>
               <li>
-                <a href="#privacy" className={styles.link}>
+                <a
+                  href={LEGAL_CONFIG.documents.privacy}
+                  className={styles.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   Privacy Policy
                 </a>
               </li>
               <li>
-                <a href="#terms" className={styles.link}>
+                <a
+                  href={LEGAL_CONFIG.documents.terms}
+                  className={styles.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   Terms of Service
                 </a>
               </li>
@@ -54,7 +65,7 @@ export const Footer = (): React.ReactElement => {
             <h3 className={styles.linkGroupTitle}>Connect</h3>
             <div className={styles.socialLinks}>
               <a
-                href="https://github.com"
+                href={LEGAL_CONFIG.social.github}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.socialLink}
@@ -63,7 +74,7 @@ export const Footer = (): React.ReactElement => {
                 <Icon name="fa-github" size="lg" />
               </a>
               <a
-                href="https://twitter.com"
+                href={LEGAL_CONFIG.social.twitter}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.socialLink}
@@ -72,7 +83,7 @@ export const Footer = (): React.ReactElement => {
                 <Icon name="fa-twitter" size="lg" />
               </a>
               <a
-                href="mailto:hello@paperlyte.com"
+                href={`mailto:${LEGAL_CONFIG.company.email}`}
                 className={styles.socialLink}
                 aria-label="Email"
               >
@@ -84,7 +95,7 @@ export const Footer = (): React.ReactElement => {
 
         <div className={styles.bottom}>
           <p className={styles.copyright}>
-            © {currentYear} Paperlyte. All rights reserved.
+            © {currentYear} {LEGAL_CONFIG.company.name}. All rights reserved.
           </p>
         </div>
       </div>

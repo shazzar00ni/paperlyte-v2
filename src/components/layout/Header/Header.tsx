@@ -115,24 +115,24 @@ export const Header = (): React.ReactElement => {
               </Button>
             </li>
           </ul>
-
-          <div className={styles.navActions}>
-            <ThemeToggle />
-            <button
-              ref={menuButtonRef}
-              type="button"
-              className={styles.mobileMenuButton}
-              onClick={toggleMobileMenu}
-              aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
-              aria-expanded={mobileMenuOpen}
-            >
-              <Icon
-                name={mobileMenuOpen ? 'fa-xmark' : 'fa-bars'}
-                size="lg"
-              />
-            </button>
-          </div>
         </nav>
+
+        <div className={styles.navActions}>
+          <ThemeToggle />
+          <button
+            ref={menuButtonRef}
+            type="button"
+            className={styles.mobileMenuButton}
+            onClick={toggleMobileMenu}
+            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={mobileMenuOpen ? "true" : "false"}
+          >
+            <Icon
+              name={mobileMenuOpen ? 'fa-xmark' : 'fa-bars'}
+              size="lg"
+            />
+          </button>
+        </div>
       </div>
     </header>
   );

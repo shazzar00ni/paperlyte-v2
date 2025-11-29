@@ -25,18 +25,18 @@ Complete the remaining manual infrastructure configuration tasks that require Gi
 **Branch:** `main`
 
 **Required settings:**
-- [ ] ✅ Require a pull request before merging
-- [ ] ✅ Require approvals: **1**
-- [ ] ✅ Dismiss stale pull request approvals when new commits are pushed
-- [ ] ✅ Require status checks to pass before merging
+- [ ] Require a pull request before merging
+- [ ] Require approvals: **1**
+- [ ] Dismiss stale pull request approvals when new commits are pushed
+- [ ] Require status checks to pass before merging
   - Required status checks:
     - [ ] `lint-and-typecheck`
     - [ ] `build`
     - [ ] `lighthouse`
     - [ ] `ci-success`
-- [ ] ✅ Require branches to be up to date before merging
-- [ ] ✅ Require conversation resolution before merging
-- [ ] ✅ Do not allow bypassing the above settings
+- [ ] Require branches to be up to date before merging
+- [ ] Require conversation resolution before merging
+- [ ] Do not allow bypassing the above settings
 
 **Optional:** Repeat for `develop` branch if using GitFlow workflow
 
@@ -80,7 +80,8 @@ Complete the remaining manual infrastructure configuration tasks that require Gi
 - [ ] Test site at `https://paperlyte.app`
 
 **DNS Records (if using Option B):**
-```
+
+```text
 Type    Name    Value
 A       @       75.2.60.5 (Netlify's load balancer - verify current IP)
 CNAME   www     [your-site].netlify.app

@@ -124,7 +124,7 @@ Technical requirements:
 - Intersection Observer for scroll animations
 - Hardware-accelerated CSS transforms
 - Semantic HTML structure
-- Keyboard navigation support
+- Keyboard-navigation support
 - Screen reader friendly markup
 
 ### Phase 2: Conversion Optimization (Post-Launch)

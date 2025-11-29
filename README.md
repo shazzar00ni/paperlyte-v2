@@ -69,12 +69,14 @@ This repository contains the landing page for Paperlyte, built with modern web t
 ### Installation
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/yourusername/paperlyte-v2.git
 cd paperlyte-v2
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 ```
@@ -146,9 +148,10 @@ The project uses path aliases for cleaner imports:
 - `@styles/*` → `src/styles/*`
 
 Example:
+
 ```typescript
-import { Button } from '@components/ui/Button';
-import { useTheme } from '@hooks/useTheme';
+import { Button } from '@components/ui/Button'
+import { useTheme } from '@hooks/useTheme'
 ```
 
 ## Performance Targets
@@ -170,6 +173,7 @@ The application is deployed on Netlify with automatic deployments from the `main
 ### Netlify Configuration
 
 Build settings:
+
 - **Build command**: `npm run build`
 - **Publish directory**: `dist`
 - **Node version**: 18.x

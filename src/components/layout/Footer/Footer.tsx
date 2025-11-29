@@ -1,8 +1,8 @@
-import { Icon } from '@components/ui/Icon';
-import styles from './Footer.module.css';
+import { Icon } from '@components/ui/Icon'
+import styles from './Footer.module.css'
 
 export const Footer = (): React.ReactElement => {
-  const currentYear = new Date().getFullYear();
+  const currentYear = new Date().getFullYear()
 
   return (
     <footer className={styles.footer}>
@@ -12,9 +12,7 @@ export const Footer = (): React.ReactElement => {
             <Icon name="fa-feather" size="lg" ariaLabel="Paperlyte logo" />
             <span className={styles.logoText}>Paperlyte</span>
           </div>
-          <p className={styles.tagline}>
-            Your thoughts, unchained from complexity
-          </p>
+          <p className={styles.tagline}>Your thoughts, unchained from complexity</p>
         </div>
 
         <div className={styles.links}>
@@ -71,11 +69,7 @@ export const Footer = (): React.ReactElement => {
               >
                 <Icon name="fa-twitter" size="lg" />
               </a>
-              <a
-                href="mailto:hello@paperlyte.com"
-                className={styles.socialLink}
-                aria-label="Email"
-              >
+              <a href="mailto:hello@paperlyte.com" className={styles.socialLink} aria-label="Email">
                 <Icon name="fa-envelope" size="lg" />
               </a>
             </div>
@@ -83,11 +77,9 @@ export const Footer = (): React.ReactElement => {
         </div>
 
         <div className={styles.bottom}>
-          <p className={styles.copyright}>
-            © {currentYear} Paperlyte. All rights reserved.
-          </p>
+          <p className={styles.copyright}>© {currentYear} Paperlyte. All rights reserved.</p>
         </div>
       </div>
     </footer>
-  );
-};
+  )
+}

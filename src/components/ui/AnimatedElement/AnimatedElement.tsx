@@ -1,22 +1,22 @@
-import { type ReactNode } from 'react';
-import { useIntersectionObserver } from '@hooks/useIntersectionObserver';
-import { useReducedMotion } from '@hooks/useReducedMotion';
-import styles from './AnimatedElement.module.css';
+import { type ReactNode } from 'react'
+import { useIntersectionObserver } from '@hooks/useIntersectionObserver'
+import { useReducedMotion } from '@hooks/useReducedMotion'
+import styles from './AnimatedElement.module.css'
 
 /**
  * Props for the AnimatedElement component
  */
 interface AnimatedElementProps {
   /** Content to be animated */
-  children: ReactNode;
+  children: ReactNode
   /** Type of animation to apply (default: 'fadeIn') */
-  animation?: 'fadeIn' | 'slideUp' | 'slideInLeft' | 'slideInRight' | 'scale';
+  animation?: 'fadeIn' | 'slideUp' | 'slideInLeft' | 'slideInRight' | 'scale'
   /** Animation delay in milliseconds (default: 0) */
-  delay?: number;
+  delay?: number
   /** Intersection Observer threshold (0-1, default: 0.1) */
-  threshold?: number;
+  threshold?: number
   /** Additional CSS class names to apply */
-  className?: string;
+  className?: string
 }
 
 /**
@@ -51,24 +51,18 @@ export const AnimatedElement = ({
   threshold = 0.1,
   className = '',
 }: AnimatedElementProps): React.ReactElement => {
-  const { ref, isVisible } = useIntersectionObserver({ threshold });
-  const prefersReducedMotion = useReducedMotion();
+  const { ref, isVisible } = useIntersectionObserver({ threshold })
+  const prefersReducedMotion = useReducedMotion()
 
-  const animationClass = prefersReducedMotion ? '' : styles[animation];
+  const animationClass = prefersReducedMotion ? '' : styles[animation]
 
-  const classes = [
-    animationClass,
-    isVisible ? styles.visible : '',
-    className
-  ].filter(Boolean).join(' ');
+  const classes = [animationClass, isVisible ? styles.visible : '', className]
+    .filter(Boolean)
+    .join(' ')
 
   return (
-    <div
-      ref={ref}
-      className={classes}
-      style={{ animationDelay: `${delay}ms` }}
-    >
+    <div ref={ref} className={classes} style={{ animationDelay: `${delay}ms` }}>
       {children}
     </div>
-  );
-};
+  )
+}

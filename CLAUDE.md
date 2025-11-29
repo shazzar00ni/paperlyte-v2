@@ -9,6 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **Core Promise**: "Your thoughts, unchained from complexity"
 
 **Key Differentiators**:
+
 - Lightning Speed: Instant startup, real-time sync, no loading delays
 - Beautiful Simplicity: Paper-inspired design that feels natural
 - Tag-Based Organization: Smart categorization without rigid folder structures
@@ -59,6 +60,7 @@ The project uses TypeScript's project references with two configs:
 - `tsconfig.node.json`: Build tooling configuration
 
 Key compiler settings:
+
 - Strict mode enabled with additional unused variable/parameter checks
 - JSX mode: `react-jsx` (automatic runtime)
 - Module resolution: `bundler` (Vite-specific)
@@ -67,6 +69,7 @@ Key compiler settings:
 ## ESLint Configuration
 
 ESLint is configured with the flat config format (eslint.config.js) including:
+
 - Base JavaScript/TypeScript recommended rules
 - React Hooks rules (enforces hooks best practices)
 - React Refresh rules (ensures HMR compatibility)
@@ -79,12 +82,14 @@ The application mounts at `<div id="root">` in index.html and renders the App co
 ## Design System
 
 ### Visual Identity
+
 - **Color Palette**: Paper-inspired whites, subtle grays, vibrant purple primary
 - **Typography**: Inter font family with clear hierarchy and readable sizes
 - **Iconography**: Font Awesome icons with consistent sizing and spacing
 - **Animation**: Subtle, performance-optimized, respectful of motion preferences (`prefers-reduced-motion`)
 
 ### UX Principles
+
 1. **Speed First**: Every interaction should feel instantaneous
 2. **Clarity Over Cleverness**: Clear communication over creative copy
 3. **Mobile Excellence**: Mobile experience must be as good as desktop (60%+ mobile traffic expected)
@@ -105,7 +110,9 @@ These targets are critical to the product's "lightning-fast" value proposition:
 ## Development Phases
 
 ### Phase 1: MVP Landing Page (Current)
+
 Essential sections to implement first:
+
 - Hero section with clear value proposition
 - Feature grid (6 core features with icons)
 - Call-to-action section with download buttons
@@ -113,6 +120,7 @@ Essential sections to implement first:
 - Footer with social/legal links
 
 Technical requirements:
+
 - Intersection Observer for scroll animations
 - Hardware-accelerated CSS transforms
 - Semantic HTML structure
@@ -120,7 +128,9 @@ Technical requirements:
 - Screen reader friendly markup
 
 ### Phase 2: Conversion Optimization (Post-Launch)
+
 High-priority additions:
+
 - Newsletter signup form (email capture)
 - Testimonial slider
 - Feature comparison table (vs. competitors)
@@ -128,6 +138,7 @@ High-priority additions:
 - FAQ section
 
 ### Phase 3: Advanced Features (Growth Stage)
+
 - Privacy-first analytics (cookie-less, GDPR-compliant)
 - Dark mode toggle with system preference detection
 - Advanced scroll animations and parallax effects

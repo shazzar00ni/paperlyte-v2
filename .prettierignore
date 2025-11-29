@@ -1,0 +1,29 @@
+# Build outputs
+dist
+build
+.vite
+
+# Dependencies
+node_modules
+
+# Coverage
+coverage
+
+# Logs
+*.log
+
+# Environment files
+.env
+.env.*
+
+# IDE
+.vscode
+.idea
+
+# Lighthouse
+.lighthouseci
+
+# Other
+package-lock.json
+*.min.js
+*.min.css

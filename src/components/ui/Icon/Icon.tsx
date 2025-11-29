@@ -1,9 +1,9 @@
 interface IconProps {
-  name: string;
-  size?: 'sm' | 'md' | 'lg' | 'xl' | '2x' | '3x';
-  className?: string;
-  ariaLabel?: string;
-  color?: string;
+  name: string
+  size?: 'sm' | 'md' | 'lg' | 'xl' | '2x' | '3x'
+  className?: string
+  ariaLabel?: string
+  color?: string
 }
 
 export const Icon: React.FC<IconProps> = ({
@@ -14,13 +14,13 @@ export const Icon: React.FC<IconProps> = ({
   color,
 }) => {
   const sizeClass = {
-      sm: 'fa-sm',
-      md: 'fa-lg', // or '' if you want md as default (no class)
-      lg: 'fa-lg',
-      xl: 'fa-xl',
-      '2x': 'fa-2x',
-      '3x': 'fa-3x',
-  }[size];
+    sm: 'fa-sm',
+    md: 'fa-lg', // or '' if you want md as default (no class)
+    lg: 'fa-lg',
+    xl: 'fa-xl',
+    '2x': 'fa-2x',
+    '3x': 'fa-3x',
+  }[size]
 
   return (
     <i
@@ -29,5 +29,5 @@ export const Icon: React.FC<IconProps> = ({
       aria-hidden={!ariaLabel}
       {...(ariaLabel && { role: 'img' })}
     />
-  );
-};
+  )
+}

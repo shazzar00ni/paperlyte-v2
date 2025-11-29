@@ -1,80 +1,80 @@
-import { useState, useEffect, useRef } from 'react';
-import { Button } from '@components/ui/Button';
-import { Icon } from '@components/ui/Icon';
-import { ThemeToggle } from '@components/ui/ThemeToggle';
-import styles from './Header.module.css';
+import { useState, useEffect, useRef } from 'react'
+import { Button } from '@components/ui/Button'
+import { Icon } from '@components/ui/Icon'
+import { ThemeToggle } from '@components/ui/ThemeToggle'
+import styles from './Header.module.css'
 
 export const Header = (): React.ReactElement => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const menuButtonRef = useRef<HTMLButtonElement>(null);
-  const menuRef = useRef<HTMLUListElement>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const menuButtonRef = useRef<HTMLButtonElement>(null)
+  const menuRef = useRef<HTMLUListElement>(null)
 
   const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen);
-  };
+    setMobileMenuOpen(!mobileMenuOpen)
+  }
 
   const closeMobileMenu = () => {
-    setMobileMenuOpen(false);
+    setMobileMenuOpen(false)
     // Return focus to menu button when closing
-    menuButtonRef.current?.focus();
-  };
+    menuButtonRef.current?.focus()
+  }
 
   const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
+    const element = document.getElementById(sectionId)
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-      closeMobileMenu();
+      element.scrollIntoView({ behavior: 'smooth' })
+      closeMobileMenu()
     }
-  };
+  }
 
   // Handle Escape key to close menu
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && mobileMenuOpen) {
-        closeMobileMenu();
+        closeMobileMenu()
       }
-    };
+    }
 
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
-  }, [mobileMenuOpen]);
+    document.addEventListener('keydown', handleEscape)
+    return () => document.removeEventListener('keydown', handleEscape)
+  }, [mobileMenuOpen])
 
   // Focus trap for mobile menu
   useEffect(() => {
-    if (!mobileMenuOpen || !menuRef.current) return;
+    if (!mobileMenuOpen || !menuRef.current) return
 
-    const menu = menuRef.current;
+    const menu = menuRef.current
     const focusableElements = menu.querySelectorAll<HTMLElement>(
       'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-    );
-    const firstFocusable = focusableElements[0];
-    const lastFocusable = focusableElements[focusableElements.length - 1];
+    )
+    const firstFocusable = focusableElements[0]
+    const lastFocusable = focusableElements[focusableElements.length - 1]
 
     const handleTabKey = (event: KeyboardEvent) => {
-      if (event.key !== 'Tab') return;
+      if (event.key !== 'Tab') return
 
       if (event.shiftKey) {
         // Shift + Tab
         if (document.activeElement === firstFocusable) {
-          event.preventDefault();
-          lastFocusable?.focus();
+          event.preventDefault()
+          lastFocusable?.focus()
         }
       } else {
         // Tab
         if (document.activeElement === lastFocusable) {
-          event.preventDefault();
-          firstFocusable?.focus();
+          event.preventDefault()
+          firstFocusable?.focus()
         }
       }
-    };
+    }
 
-    menu.addEventListener('keydown', handleTabKey);
+    menu.addEventListener('keydown', handleTabKey)
 
     // Focus first element when menu opens
-    firstFocusable?.focus();
+    firstFocusable?.focus()
 
-    return () => menu.removeEventListener('keydown', handleTabKey);
-  }, [mobileMenuOpen]);
+    return () => menu.removeEventListener('keydown', handleTabKey)
+  }, [mobileMenuOpen])
 
   return (
     <header className={styles.header}>
@@ -90,27 +90,17 @@ export const Header = (): React.ReactElement => {
             className={`${styles.navList} ${mobileMenuOpen ? styles.navListOpen : ''}`}
           >
             <li>
-              <button
-                onClick={() => scrollToSection('features')}
-                className={styles.navLink}
-              >
+              <button onClick={() => scrollToSection('features')} className={styles.navLink}>
                 Features
               </button>
             </li>
             <li>
-              <button
-                onClick={() => scrollToSection('download')}
-                className={styles.navLink}
-              >
+              <button onClick={() => scrollToSection('download')} className={styles.navLink}>
                 Download
               </button>
             </li>
             <li className={styles.navCta}>
-              <Button
-                variant="primary"
-                size="small"
-                onClick={() => scrollToSection('download')}
-              >
+              <Button variant="primary" size="small" onClick={() => scrollToSection('download')}>
                 Get Started
               </Button>
             </li>
@@ -126,14 +116,11 @@ export const Header = (): React.ReactElement => {
               aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={mobileMenuOpen}
             >
-              <Icon
-                name={mobileMenuOpen ? 'fa-xmark' : 'fa-bars'}
-                size="lg"
-              />
+              <Icon name={mobileMenuOpen ? 'fa-xmark' : 'fa-bars'} size="lg" />
             </button>
           </div>
         </nav>
       </div>
     </header>
-  );
-};
+  )
+}

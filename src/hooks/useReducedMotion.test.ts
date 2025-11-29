@@ -1,6 +1,6 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { renderHook } from '@testing-library/react';
-import { useReducedMotion } from './useReducedMotion';
+import { describe, it, expect, beforeEach } from 'vitest'
+import { renderHook } from '@testing-library/react'
+import { useReducedMotion } from './useReducedMotion'
 
 describe('useReducedMotion', () => {
   beforeEach(() => {
@@ -17,13 +17,13 @@ describe('useReducedMotion', () => {
         removeEventListener: () => {},
         dispatchEvent: () => true,
       }),
-    });
-  });
+    })
+  })
 
   it('should return false when user does not prefer reduced motion', () => {
-    const { result } = renderHook(() => useReducedMotion());
-    expect(result.current).toBe(false);
-  });
+    const { result } = renderHook(() => useReducedMotion())
+    expect(result.current).toBe(false)
+  })
 
   it('should return true when user prefers reduced motion', () => {
     Object.defineProperty(window, 'matchMedia', {
@@ -38,9 +38,9 @@ describe('useReducedMotion', () => {
         removeEventListener: () => {},
         dispatchEvent: () => true,
       }),
-    });
+    })
 
-    const { result } = renderHook(() => useReducedMotion());
-    expect(result.current).toBe(true);
-  });
-});
+    const { result } = renderHook(() => useReducedMotion())
+    expect(result.current).toBe(true)
+  })
+})

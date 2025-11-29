@@ -6,6 +6,7 @@
  * - TypeScript strict type checking
  * - React Hooks rules for proper hook usage
  * - React Refresh rules for HMR compatibility
+ * - Prettier integration for code formatting
  *
  * @see https://eslint.org/docs/latest/use/configure/configuration-files
  */
@@ -14,6 +15,7 @@ import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint from 'typescript-eslint'
+import prettierConfig from 'eslint-config-prettier'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
@@ -33,6 +35,8 @@ export default defineConfig([
       reactHooks.configs.flat.recommended,
       // React Refresh rules (ensures components can be hot-reloaded)
       reactRefresh.configs.vite,
+      // Prettier config (disables conflicting ESLint rules)
+      prettierConfig,
     ],
 
     languageOptions: {

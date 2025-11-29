@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - JSDoc documentation for all components, hooks, and utilities
 - Comprehensive README.md with project overview and setup instructions
 - CONTRIBUTING.md with development guidelines and standards
@@ -31,23 +32,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - CSS reset for consistency
 
 ### Changed
+
 - N/A
 
 ### Deprecated
+
 - N/A
 
 ### Removed
+
 - N/A
 
 ### Fixed
+
 - N/A
 
 ### Security
+
 - N/A
 
 ## [0.0.0] - 2025-01-XX
 
 ### Added
+
 - Initial project setup with Vite, React 19, and TypeScript
 - ESLint configuration with React and TypeScript rules
 - Basic project structure and build configuration
@@ -59,19 +66,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### [Version] - YYYY-MM-DD
 
 ### Added
+
 - New features and capabilities
 
 ### Changed
+
 - Changes to existing functionality
 
 ### Deprecated
+
 - Features that will be removed in future versions
 
 ### Removed
+
 - Features that have been removed
 
 ### Fixed
+
 - Bug fixes
 
 ### Security
+
 - Security vulnerability fixes and improvements

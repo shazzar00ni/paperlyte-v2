@@ -1,8 +1,9 @@
 # Paperlyte Landing Page
 
 > **Your thoughts, unchained from complexity**
+ 
+**Paperlyte is a lightning-fast, distraction-free note-taking app designed for people who are tired of bloated, complex tools. We focus on speed, simplicity, and getting out of your way so you can focus on your thoughts. This landing page was built with React, TypeScript, and Vite.**
 
-Lightning-fast, distraction-free note-taking application landing page built with React, TypeScript, and Vite.
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![React](https://img.shields.io/badge/React-19.2.0-blue)

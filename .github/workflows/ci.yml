@@ -98,6 +98,7 @@ jobs:
           name: lighthouse-results
           path: .lighthouseci/
           retention-days: 30
+          if-no-files-found: ignore
 
   # Status check job that all required jobs depend on
   ci-success:

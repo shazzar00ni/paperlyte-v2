@@ -90,12 +90,20 @@ export const Header = (): React.ReactElement => {
             className={`${styles.navList} ${mobileMenuOpen ? styles.navListOpen : ''}`}
           >
             <li>
-              <button onClick={() => scrollToSection('features')} className={styles.navLink}>
+              <button
+                type="button"
+                onClick={() => scrollToSection('features')}
+                className={styles.navLink}
+              >
                 Features
               </button>
             </li>
             <li>
-              <button onClick={() => scrollToSection('download')} className={styles.navLink}>
+              <button
+                type="button"
+                onClick={() => scrollToSection('download')}
+                className={styles.navLink}
+              >
                 Download
               </button>
             </li>

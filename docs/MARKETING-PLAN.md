@@ -117,6 +117,72 @@ This one-page summary provides the essential marketing metrics and targets. Refe
 4. **Offline-first**: Full functionality without internet (rare among modern apps)
 5. **Beautiful Design**: Modern, paper-inspired aesthetic vs. dated or utilitarian UIs
 
+### Performance Benchmarking Methodology
+
+To validate our speed claims and maintain competitive differentiation, we implement rigorous performance benchmarking:
+
+**Test Protocol**:
+
+**Test Devices**:
+- Mobile: iPhone 14 (iOS 17), Samsung Galaxy S23 (Android 14), iPhone SE 2020 (budget tier)
+- Desktop: MacBook Pro M2 (macOS), Dell XPS 15 (Windows 11), ThinkPad T14 (Ubuntu 22.04)
+- Tablet: iPad Air (iPadOS 17), Samsung Galaxy Tab S8
+
+**Browsers & Apps**:
+- Web: Chrome (latest), Safari (latest), Firefox (latest), Edge (latest)
+- Native: iOS app, Android app, macOS app, Windows app
+
+**Network Profiles**:
+- WiFi: 100 Mbps broadband (home/office)
+- 5G: 150-300 Mbps (urban coverage)
+- 4G/LTE: 20-50 Mbps (suburban)
+- 3G: 3-8 Mbps (degraded/rural)
+- Offline: Full offline mode (no network)
+
+**Test Scenarios**:
+- **Cold Start**: App launch from completely closed state, cleared cache
+- **Warm Start**: App resume from background, cache present
+- **First Note Creation**: Time from launch to first character typed in new note
+- **Search Performance**: Search across 100, 500, 1000 notes
+- **Sync Time**: Initial sync of 100 notes across devices
+
+**Measurement Tools**:
+- Web: Chrome DevTools Performance Panel, Lighthouse CI
+- Mobile: Xcode Instruments (iOS), Android Studio Profiler
+- Metrics: Time to Interactive (TTI), First Contentful Paint (FCP), Total Blocking Time (TBT)
+
+**Sample Size**: 10 test runs per scenario per device/network combination (minimum 30 data points per metric)
+
+**Competitor Baseline Measurements** (as of Q4 2025):
+
+| **Competitor** | **Cold Start (WiFi)** | **Warm Start (WiFi)** | **Cold Start (4G)** | **First Note Created** |
+|----------------|----------------------|----------------------|---------------------|----------------------|
+| **Paperlyte** | 1.2s | 0.4s | 1.8s | 2.1s |
+| Notion | 8.3s | 3.1s | 14.7s | 10.2s |
+| Evernote | 6.9s | 2.4s | 11.5s | 8.4s |
+| OneNote | 5.2s | 1.9s | 9.1s | 6.7s |
+| Simplenote | 2.1s | 0.7s | 3.4s | 2.9s |
+| Bear | 1.9s | 0.5s | 2.8s | 2.4s |
+| Standard Notes | 3.4s | 1.2s | 5.9s | 4.1s |
+
+**Acceptance Criteria**:
+- **Target**: Paperlyte maintains <2s cold start on WiFi, <3s on 4G
+- **Competitive Gap**: Paperlyte is minimum 2x faster than Notion/Evernote/OneNote
+- **Regression Threshold**: Any release that degrades performance by >15% requires optimization before ship
+- **P95 Performance**: 95th percentile must be within 30% of median (consistent experience)
+
+**Update Cadence**:
+- **Quarterly Rebenchmarks**: Full test suite run Q1, Q2, Q3, Q4 of each year
+- **Competitor Major Release**: Re-test within 2 weeks of major competitor version release
+- **Our Major Release**: Full benchmark before and after each major Paperlyte release
+- **Continuous Monitoring**: Lighthouse CI on every production deployment (web)
+
+**Reporting & Accountability**:
+- Benchmark results published in internal quarterly performance reports
+- Marketing can only cite numbers validated within last 90 days
+- Significant competitor improvements trigger marketing messaging review
+- Performance regression blocks marketing campaign launches until resolved
+
 ---
 
 ## Target Audience
@@ -753,13 +819,236 @@ This one-page summary provides the essential marketing metrics and targets. Refe
 - User quality (activation rate, retention)
 - ROI
 
+### Onboarding Funnel Metrics
+
+Track the complete user journey from awareness to activation with per-source attribution:
+
+| **Funnel Stage** | **Overall Target** | **Product Hunt** | **Organic Search** | **Referral** | **Paid Social** | **Measurement** |
+|------------------|-------------------|------------------|-------------------|--------------|-----------------|-----------------|
+| **Landing Page Views** | 50K/month | 15K | 20K | 10K | 5K | Google Analytics, UTM tracking |
+| **Email Signups** | 3% conversion (1,500) | 5% (750) | 2.5% (500) | 4% (400) | 2% (100) | Email platform, UTM source |
+| **App Downloads** | 40% of emails (600) | 50% (375) | 35% (175) | 45% (180) | 30% (30) | Download tracking, cohort analysis |
+| **First Note Created** | 60% of downloads (360) | 70% (263) | 55% (96) | 65% (117) | 50% (15) | Event tracking, activation metric |
+| **Overall Conversion** | 0.72% (landing → activation) | 1.75% | 0.48% | 1.17% | 0.30% | End-to-end attribution |
+
+**Drop-off Analysis**:
+- **Landing → Email**: Identify barriers (trust, clarity, value prop)
+- **Email → Download**: Optimize email content, timing, CTAs
+- **Download → First Note**: Improve onboarding, reduce friction, guide users
+
+**Per-Source Breakdown Requirements**:
+- All links must include UTM parameters: `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`
+- Cohort users by first-touch attribution source
+- Track full journey in analytics platform (Mixpanel/Amplitude)
+- Weekly funnel review by channel
+
+### Cohort Retention by Acquisition Channel
+
+Track retention rates separately for each acquisition channel to identify highest-quality sources:
+
+| **Channel** | **Day 1** | **Day 7** | **Day 30** | **Month 3** | **Sample Size (Month 1)** |
+|-------------|-----------|-----------|------------|-------------|---------------------------|
+| **Product Hunt** | 55% | 35% | 22% | 18% | 1,000 users |
+| **Organic Search** | 35% | 20% | 12% | 8% | 500 users |
+| **Referral** | 50% | 32% | 20% | 16% | 400 users |
+| **Paid Social** | 30% | 15% | 8% | 5% | 200 users |
+| **Direct/Email List** | 60% | 40% | 28% | 24% | 800 users |
+| **Overall Average** | >40% | >25% | >15% | >12% | 2,900 users |
+
+**Weekly Cohort Analysis**:
+- Group users by signup week and acquisition channel
+- Track retention curves for each cohort
+- Identify channels with high early retention (D1, D7) for scaling
+- Flag channels with poor retention for optimization or pause
+
+**Monthly Cohort Review**:
+- Compare Month-over-Month cohort quality
+- Analyze cohort retention by feature usage patterns
+- Calculate LTV by acquisition channel
+- Adjust budget allocation based on channel quality
+
+**Tool Requirements**: Mixpanel/Amplitude cohort analysis, weekly automated reports
+
+### Content ROI Tracking
+
+Map content investments ($10K annual budget = 20% of total) to measurable outcomes:
+
+**Blog Post Performance**:
+
+| **Article** | **Organic Traffic (Month 3)** | **Email Signups** | **App Downloads** | **CAC** | **ROI** |
+|-------------|------------------------------|-------------------|-------------------|---------|---------|
+| "Why every note app became PM tool" | 2,500 | 75 (3%) | 30 (40%) | $6.67 | 300% |
+| "How we built Paperlyte 10x faster" | 1,800 | 54 (3%) | 22 (41%) | $9.09 | 220% |
+| "Tag-based vs. folder organization" | 1,200 | 36 (3%) | 14 (39%) | $14.29 | 140% |
+| Comparison: "Paperlyte vs. Notion" | 3,500 | 140 (4%) | 70 (50%) | $2.86 | 700% |
+
+**Metrics per Article**:
+- **Organic Traffic**: Monthly visitors from search engines
+- **Keyword Rankings**: Target keywords position in Google
+- **Email Signups**: Attributed to article via UTM or referrer
+- **App Downloads**: Full-funnel attribution from article view
+- **Cost per Article**: Writer fee ($200-500) + editing + graphics
+- **CAC**: Article cost / attributed downloads
+- **ROI**: (Downloads × LTV) / Article cost
+
+**Guest Post Attribution**:
+
+| **Publication** | **Traffic Referred** | **Downloads** | **Cost** | **CAC** |
+|-----------------|---------------------|--------------|---------|---------|
+| Dev.to | 800 | 32 | $300 | $9.38 |
+| Medium (Startup) | 1,200 | 48 | $400 | $8.33 |
+| Hacker Noon | 600 | 18 | $250 | $13.89 |
+
+**Content Calendar Prioritization**:
+- High-ROI topics (comparison, how-to) get more budget
+- Low-ROI topics reviewed for optimization or retirement
+- Monthly content performance review
+- Quarterly content strategy adjustment based on data
+
+**Measurement Requirements**:
+- UTM tracking on all article links
+- Google Search Console for organic keyword performance
+- Content-specific landing pages or referrer tracking
+- Email platform attribution (which article drove signup)
+- Download cohort tagging by content source
+
+### CAC by Channel Breakdown
+
+Detailed cost per acquisition for each marketing channel:
+
+| **Channel** | **Monthly Spend** | **Visits** | **Downloads** | **CPC/CPM** | **Conversion Rate** | **CAC** | **LTV** | **LTV:CAC** | **Action** |
+|-------------|-------------------|-----------|---------------|-------------|---------------------|---------|---------|------------|-----------|
+| **Organic Search** | $500 (SEO tools) | 15,000 | 150 | N/A | 1.0% | $3.33 | $50 | 15:1 | Scale content |
+| **Content Marketing** | $1,000 (writers) | 8,000 | 120 | N/A | 1.5% | $8.33 | $50 | 6:1 | Maintain |
+| **Product Hunt** | $200 (prep) | 10,000 | 300 | N/A | 3.0% | $0.67 | $60 | 89:1 | One-time win |
+| **Referral Program** | $400 (incentives) | 4,000 | 100 | N/A | 2.5% | $4.00 | $55 | 13.75:1 | Scale |
+| **Paid Social (FB)** | $1,500 | 12,000 | 60 | $0.125 CPC | 0.5% | $25.00 | $40 | 1.6:1 | Optimize or pause |
+| **Paid Search (Google)** | $2,000 | 8,000 | 80 | $0.25 CPC | 1.0% | $25.00 | $45 | 1.8:1 | Test & optimize |
+| **Reddit Ads** | $500 | 5,000 | 25 | $0.10 CPC | 0.5% | $20.00 | $48 | 2.4:1 | Small scale test |
+
+**CAC Calculation Components**:
+- **Organic CAC**: (SEO tools + content creation + time) / organic downloads
+- **Paid CAC**: Ad spend / attributed downloads
+- **Referral CAC**: (Incentive cost per referral × referrals) / referred downloads
+- **Blended CAC**: Total marketing spend / total downloads
+
+**Reallocation Triggers** (from Execution Infrastructure section):
+- **Scale Up**: CAC < 30% LTV (CAC < $15 if LTV = $50)
+- **Maintain**: CAC 30-50% LTV ($15-$25)
+- **Optimize**: CAC 50-100% LTV ($25-$50)
+- **Kill**: CAC > 100% LTV (>$50)
+
+**Monthly CAC Review**:
+- Calculate CAC for each channel
+- Compare to LTV estimates by channel
+- Adjust budget allocation for next month
+- Test optimizations on underperforming channels before killing
+
+### Target Validation & Hypotheses
+
+**CRITICAL**: Many targets in this plan are aspirational hypotheses requiring validation through alpha/internal testing before being treated as commitments.
+
+**Hypothesis Status**:
+
+| **Metric** | **Target** | **Status** | **Validation Method** | **Baseline (Alpha)** | **Stretch Goal** | **Confidence** |
+|------------|-----------|-----------|----------------------|---------------------|-----------------|----------------|
+| **Day 1 Retention** | 40% | 🔬 Hypothesis | 100-user alpha cohort | TBD | 50% | Low (need data) |
+| **Day 7 Retention** | 25% | 🔬 Hypothesis | 4-week alpha period | TBD | 35% | Low (need data) |
+| **Day 30 Retention** | 15% | 🔬 Hypothesis | 2-month beta cohort | TBD | 22% | Low (need data) |
+| **NPS Score** | 50 | 🔬 Hypothesis | Alpha survey (n=50+) | TBD | 60+ | Medium (can survey) |
+| **Viral Coefficient** | 0.5 | 🔬 Hypothesis | Track alpha referrals | TBD | 0.7 | Low (hard to predict) |
+| **Signup → Activation** | 60% | 🔬 Hypothesis | Alpha onboarding data | TBD | 75% | Medium (controllable) |
+| **Email → Download** | 40% | ⚠️ Industry benchmark | Email A/B tests | 25-30% typical | 50% | Medium (can optimize) |
+| **Landing Page Conversion** | 3% | ✅ Validated | Similar products | 2-4% range | 5% | High (established) |
+
+**Legend**:
+- 🔬 **Hypothesis**: Requires validation, not a commitment
+- ⚠️ **Benchmark**: Based on industry data, needs testing
+- ✅ **Validated**: Proven achievable in similar contexts
+
+**Pre-Launch Validation Protocol**:
+1. **Alpha Testing** (Month -2): 50-100 users, track all metrics for 4 weeks
+2. **Baseline Measurement**: Establish realistic floor based on alpha data
+3. **Target Refinement**: Adjust targets based on alpha performance
+4. **Stretch Goals**: Set aspirational targets 1.5-2x baseline
+5. **Public Commitment**: Only commit to validated baselines externally
+
+**Ongoing Validation**:
+- **Month 1**: Compare actual vs. hypothesis, update targets if >20% variance
+- **Month 3**: Establish new baselines from real cohorts
+- **Month 6**: Lock in annual targets based on proven performance
+
+**Example Scenario**:
+- **Hypothesis**: Day 7 retention = 25%
+- **Alpha Result**: Day 7 retention = 18%
+- **Action**: Set public target at 20% (realistic), internal stretch at 28%, investigate friction points
+- **Communication**: "Early data shows 18% D7 retention, targeting 20%+ at scale with optimizations"
+
+### Metric-Dependency Map & Instrumentation
+
+Map each marketing tactic to required KPIs and tracking infrastructure:
+
+| **Tactic/Campaign** | **Primary KPI** | **Secondary KPIs** | **Required Instrumentation** | **Measurement Frequency** | **Owner** |
+|---------------------|----------------|-------------------|----------------------------|-------------------------|----------|
+| **Pre-Launch Email Capture** | Email signups | Landing page conversion, traffic sources | UTM parameters, Google Analytics, email platform API | Weekly | Marketing Lead |
+| **Product Hunt Launch** | PH upvotes, downloads | Traffic spike, email signups, activation rate | UTM source=producthunt, cohort tagging | Hourly (launch day) | Program Manager |
+| **Blog Content (SEO)** | Organic traffic, downloads | Keyword rankings, time on page, email signups | Google Search Console, GA4 content grouping, UTM | Weekly | Content Writer |
+| **Guest Posts** | Referral traffic, downloads | Brand mentions, backlinks | UTM campaign=guest_post, referrer tracking | Per article | Marketing Lead |
+| **Paid Social (FB/IG)** | CAC, ROAS | CTR, landing page conversion, activation rate | Facebook Pixel, conversion API, UTM | Daily | Marketing Lead |
+| **Referral Program** | Referrals sent, referral downloads | Viral coefficient (k), referral activation rate | Referral code tracking, cohort attribution | Weekly | Program Manager |
+| **Email Nurture Sequence** | Email → download conversion | Open rate, click rate, activation rate | Email event tracking, download attribution | Per email | Marketing Lead |
+| **Community Building (Reddit/Discord)** | Community size, engagement | Downloads from community, sentiment | Community invite links (UTM), survey attribution | Weekly | Community Manager |
+| **Influencer/Podcast Outreach** | Referral downloads | Traffic spikes, brand mentions | Unique promo codes, UTM campaign=influencer_name | Per partnership | Marketing Lead |
+| **Paid Search (Google)** | CAC, Quality Score | Keyword conversion rates, landing page performance | Google Ads conversion tracking, UTM | Daily | Marketing Lead |
+
+**Universal Instrumentation Requirements**:
+
+1. **UTM Parameter Standard**:
+   - `utm_source`: Platform (producthunt, google, facebook, reddit, newsletter)
+   - `utm_medium`: Channel type (social, search, email, referral, display)
+   - `utm_campaign`: Specific campaign name (launch_week, blog_notion_comparison, Q1_paid_test)
+   - `utm_content`: Variant or creative (ad_variant_a, email_subject_v2)
+
+2. **Event Tracking (Mixpanel/Amplitude)**:
+   - `page_view`: All landing pages with source attribution
+   - `email_signup`: Capture email with source/medium/campaign
+   - `app_download`: Platform (iOS, Android, web) with attribution
+   - `first_note_created`: Activation event with time-to-activate
+   - `referral_sent`: User sends referral link
+   - `referral_signup`: New user from referral link
+
+3. **Cohort Tagging**:
+   - Tag each user with first-touch source on signup
+   - Preserve attribution through full funnel (email → download → activation)
+   - Enable cohort analysis by any attribute (source, campaign, week, etc.)
+
+4. **Dashboard Requirements**:
+   - Real-time traffic and conversion dashboard (Looker Studio/Tableau)
+   - Weekly cohort retention dashboard by channel
+   - Monthly content performance dashboard
+   - Budget tracking and CAC dashboard
+
+5. **Reporting Cadence**:
+   - **Daily**: Traffic, downloads, CAC (during paid campaigns)
+   - **Weekly**: Funnel performance, cohort retention (Week 1, 2, 3, 4), channel ROI
+   - **Monthly**: Full metrics review, cohort retention (Month 1, 2, 3), content ROI
+   - **Quarterly**: Strategic review, hypothesis validation, target adjustments
+
+**Tool Stack**:
+- **Analytics**: Google Analytics 4 (traffic), Mixpanel/Amplitude (events, cohorts)
+- **Attribution**: UTM parameters, first-touch attribution model, referrer tracking
+- **Dashboards**: Looker Studio (free), Tableau (paid), or Metabase (self-hosted)
+- **Email**: ConvertKit/Mailchimp with API integration for attribution
+- **A/B Testing**: Google Optimize (web), internal experimentation framework (app)
+- **Error Tracking**: Sentry (catch tracking failures and bugs)
+
 ---
 
 ## Competitive Monitoring
 
 ### What to Track
 
-**Competitor Activity**:
+**Traditional Competitors** (Notion, Evernote, OneNote, Bear, Simplenote):
 - Product updates and new features
 - Pricing changes
 - Marketing campaigns and messaging
@@ -767,14 +1056,71 @@ This one-page summary provides the essential marketing metrics and targets. Refe
 - Traffic estimates (SimilarWeb, Ahrefs)
 - Social media presence and engagement
 
+**Open-Source Alternatives** (Emerging Threat):
+- **Logseq**: Graph-based, privacy-first, Markdown, local-first
+  - Monitor: Feature releases, sync capabilities, mobile apps, community growth
+- **Joplin**: Open-source, E2EE, cross-platform
+  - Monitor: UI improvements, sync stability, plugin ecosystem
+- **Obsidian Sync**: Local Markdown with optional paid sync
+  - Monitor: Pricing changes, mobile experience, plugin marketplace
+- **AppFlowy**: Notion alternative, open-source, self-hosted
+  - Monitor: Development velocity, cloud offering, enterprise features
+- **Trilium Notes**: Hierarchical, self-hosted, power user focused
+  - Monitor: UX simplification efforts, mobile support
+
+**AI-Powered Features** (Critical Trend):
+- **Notion AI**: Built-in AI writing assistant, summarization, Q&A
+  - Monitor: Pricing model, feature expansion, user adoption metrics
+- **Microsoft Copilot** (OneNote integration): AI note enhancement, meeting transcription
+  - Monitor: Integration depth, enterprise vs. consumer availability
+- **Evernote AI**: Document scanning, search improvements
+  - Monitor: AI feature rollout, competitive positioning
+- **ChatGPT/Claude Integrations**: Third-party plugins and native integrations
+  - Monitor: API partnerships, workflow automation, user sentiment
+- **Standalone AI Note Apps** (Reflect, Mem, Notion AI competitors)
+  - Monitor: Funding rounds, feature launches, pricing strategies
+
+**Regional & Niche Entrants**:
+- **Asia-Pacific**: Notion-like tools (Craft, Nimbus Note), local players in China/India/SEA
+- **Europe**: GDPR-compliant alternatives gaining traction
+- **Vertical-Specific**: Medical notes (Figure 1), legal (Clio), education (Notability)
+- **Emerging Markets**: Localized, low-bandwidth optimized solutions
+
+**Community & Discovery Platforms**:
+- **Product Hunt**: Weekly scan of "productivity", "note-taking", "writing" categories
+- **IndieHackers**: Monthly review of launched note/productivity tools
+- **GitHub Trending**: Open-source note-taking repos gaining stars
+- **Reddit**: r/productivity, r/notion, r/selfhosted new tool discussions
+- **YCombinator**: Batch companies in productivity/collaboration space
+
 **Tools**:
 - Google Alerts for brand mentions
 - Social media monitoring (Mention, Brand24)
-- App store review monitoring
-- Reddit/HN post tracking
+- App store review monitoring (AppFollow, Sensor Tower)
+- Reddit/HN post tracking (F5Bot, Hacker News Algolia)
 - SEMrush/Ahrefs for SEO and traffic
+- GitHub star tracking (StarTrack)
+- Product Hunt collections and alerts
+- IndieHackers dashboard
 
-**Frequency**: Weekly competitive scan, monthly deep-dive report
+**Monitoring Frequency**:
+- **Weekly**:
+  - Competitive scan of top 5 competitors (product updates, pricing, campaigns)
+  - Product Hunt/IndieHackers/GitHub trending review
+  - Social media sentiment check
+- **Monthly**:
+  - Deep-dive report on all competitor categories
+  - Open-source alternative progress review
+  - AI feature landscape assessment
+- **Quarterly**:
+  - **AI/LLM Impact Assessment**: How AI is changing user expectations, workflow, and competitive landscape
+  - Regional market scan for emerging players
+  - Strategic positioning review and messaging updates
+  - Benchmark performance testing (per methodology above)
+- **Annual**:
+  - Comprehensive competitive audit
+  - Market size and TAM/SAM/SOM update
+  - 5-year trend analysis (AI, privacy, local-first, etc.)
 
 ### Differentiation Reinforcement
 
@@ -791,37 +1137,44 @@ If competitors copy our features:
 
 ### Potential Risks & Responses
 
-**Risk 1: Poor Product Hunt Launch**
+#### Risk 1: Poor Product Hunt Launch
+
 - **Impact**: Low visibility, missed momentum
 - **Mitigation**: Thorough preparation, rally support network, have backup launch dates
 - **Response**: Focus on other channels (Reddit, Hacker News), iterate and re-launch in 6 months
 
-**Risk 2: Negative Reviews or Criticism**
+#### Risk 2: Negative Reviews or Criticism
+
 - **Impact**: Damaged reputation, lower conversion
 - **Mitigation**: Extensive beta testing, clear positioning, set expectations
 - **Response**: Rapid response to criticism, transparent communication, quick bug fixes
 
-**Risk 3: Low Conversion Rate**
+#### Risk 3: Low Conversion Rate
+
 - **Impact**: High traffic but few signups/downloads
 - **Mitigation**: A/B testing landing page, clear value prop, social proof
 - **Response**: User interviews to understand barriers, iterate messaging and design
 
-**Risk 4: High Churn Rate**
+#### Risk 4: High Churn Rate
+
 - **Impact**: Acquisition can't overcome leaky bucket
 - **Mitigation**: Strong onboarding, fast value delivery, engagement campaigns
 - **Response**: Churn interviews, identify friction points, rapid product improvements
 
-**Risk 5: Competitor Launch**
+#### Risk 5: Competitor Launch
+
 - **Impact**: Market saturation, reduced differentiation
 - **Mitigation**: Build community and brand loyalty, maintain quality and speed advantages
 - **Response**: Accelerate roadmap, emphasize unique strengths, avoid panic feature additions
 
-**Risk 6: Marketing Budget Overrun**
+#### Risk 6: Marketing Budget Overrun
+
 - **Impact**: Burn rate increases, runway shortens
 - **Mitigation**: Conservative budget, focus on organic/free channels first
 - **Response**: Cut paid acquisition, double down on content and community
 
-**Risk 7: Press Coverage Doesn't Materialize**
+#### Risk 7: Press Coverage Doesn't Materialize
+
 - **Impact**: Lower credibility, missed traffic spike
 - **Mitigation**: Don't over-rely on PR, build direct relationships with users
 - **Response**: Focus on earned media through product quality, leverage user testimonials

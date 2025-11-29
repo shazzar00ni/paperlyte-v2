@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { Button } from '@components/ui/Button';
+import { Icon } from '@components/ui/Icon';
 import styles from './EmailCapture.module.css';
 
 interface EmailCaptureProps {
@@ -92,7 +93,7 @@ export const EmailCapture = ({
     return (
       <div className={`${styles.container} ${styles[variant]}`}>
         <div className={styles.success} role="alert">
-          <i className="fa-solid fa-circle-check" aria-hidden="true" />
+          <Icon name="fa-circle-check" size="lg" />
           <p className={styles.successMessage}>
             <strong>You're on the list!</strong><br />
             Check your email to confirm your subscription.
@@ -142,7 +143,7 @@ export const EmailCapture = ({
           >
             {status === 'loading' ? (
               <>
-                <i className="fa-solid fa-spinner fa-spin" aria-hidden="true" />
+                <Icon name="fa-spinner" size="sm" className={styles.spinner} />
                 Joining...
               </>
             ) : (
@@ -177,7 +178,7 @@ export const EmailCapture = ({
             role="alert"
             aria-live="polite"
           >
-            <i className="fa-solid fa-circle-exclamation" aria-hidden="true" />
+            <Icon name="fa-circle-exclamation" size="sm" />
             {errorMessage}
           </div>
         )}

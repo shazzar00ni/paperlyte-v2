@@ -6,7 +6,7 @@
 .scale {
   opacity: 0;
   transition: opacity var(--transition-slow), transform var(--transition-slow);
-  will-change: opacity, transform;
+  transition-delay: var(--animation-delay, 0ms);
 }
 
 /* Animation specific transforms */

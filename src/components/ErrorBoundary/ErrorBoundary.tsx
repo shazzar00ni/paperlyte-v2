@@ -1,4 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
+import { Icon } from '@components/ui/Icon';
 import styles from './ErrorBoundary.module.css';
 
 interface ErrorBoundaryProps {
@@ -54,7 +55,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
         <div className={styles.errorContainer} role="alert">
           <div className={styles.errorContent}>
             <div className={styles.errorIcon} aria-hidden="true">
-              <i className="fa-solid fa-triangle-exclamation" />
+              <Icon name="fa-triangle-exclamation" size="xl" />
             </div>
             <h2 className={styles.errorTitle}>Something went wrong</h2>
             <p className={styles.errorMessage}>

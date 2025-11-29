@@ -2,6 +2,7 @@ import { Button } from '@components/ui/Button';
 import { AnimatedElement } from '@components/ui/AnimatedElement';
 import { EmailCapture } from '@components/ui/EmailCapture';
 import { Section } from '@components/layout/Section';
+import { Icon } from '@components/ui/Icon';
 import styles from './Hero.module.css';
 
 export const Hero = (): React.ReactElement => {
@@ -53,13 +54,13 @@ export const Hero = (): React.ReactElement => {
         <AnimatedElement animation="fadeIn" delay={450}>
           <div className={styles.tags}>
             <span className={styles.tag}>
-              <i className="fa-solid fa-bolt" aria-hidden="true" /> Lightning Fast
+              <Icon name="fa-bolt" size="sm" /> Lightning Fast
             </span>
             <span className={styles.tag}>
-              <i className="fa-solid fa-lock" aria-hidden="true" /> Privacy First
+              <Icon name="fa-lock" size="sm" /> Privacy First
             </span>
             <span className={styles.tag}>
-              <i className="fa-solid fa-wifi-slash" aria-hidden="true" /> Offline Ready
+              <Icon name="fa-wifi-slash" size="sm" /> Offline Ready
             </span>
           </div>
         </AnimatedElement>

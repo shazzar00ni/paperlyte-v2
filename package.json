@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "lighthouse": "npm run build && npx @lhci/cli autorun"
+    "lighthouse": "npm run build && npx @lhci/cli autorun",
+    "size": "size-limit"
   },
   "dependencies": {
     "react": "^19.2.0",
@@ -18,7 +19,7 @@
     "@eslint/js": "^9.39.1",
     "@lhci/cli": "^0.15.1",
     "@netlify/functions": "^5.1.0",
-    "@tailwindcss/postcss": "^4.1.17",
+    "@size-limit/preset-app": "^12.0.0",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
@@ -29,9 +30,23 @@
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
     "postcss": "^8.5.6",
-    "tailwindcss": "^4.1.17",
+    "terser": "^5.44.1",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.4",
     "vite": "^7.2.4"
-  }
+  },
+  "size-limit": [
+    {
+      "name": "Main bundle (JS)",
+      "path": "dist/assets/*.js",
+      "limit": "150 KB",
+      "gzip": true
+    },
+    {
+      "name": "Main bundle (CSS)",
+      "path": "dist/assets/*.css",
+      "limit": "30 KB",
+      "gzip": true
+    }
+  ]
 }

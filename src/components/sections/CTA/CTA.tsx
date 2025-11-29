@@ -1,6 +1,7 @@
 import { Section } from '@components/layout/Section';
 import { Button } from '@components/ui/Button';
 import { AnimatedElement } from '@components/ui/AnimatedElement';
+import { Icon } from '@components/ui/Icon';
 import { DOWNLOAD_URLS, GITHUB_URL } from '@/constants/downloads';
 import styles from './CTA.module.css';
 
@@ -62,7 +63,7 @@ export const CTA = (): React.ReactElement => {
 
         <AnimatedElement animation="fadeIn" delay={600}>
           <a href={GITHUB_URL} className={styles.badge} target="_blank" rel="noopener noreferrer">
-            <i className="fa-brands fa-github" aria-hidden="true" />
+            <Icon name="fa-github" size="sm" />
             <span>Open source on GitHub</span>
           </a>
         </AnimatedElement>

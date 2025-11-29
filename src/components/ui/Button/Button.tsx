@@ -1,4 +1,5 @@
-import { type ReactNode } from 'react';
+import React, { type ReactNode, useMemo } from 'react';
+import { Icon } from '@components/ui/Icon';
 import styles from './Button.module.css';
 
 interface ButtonProps {
@@ -13,7 +14,7 @@ interface ButtonProps {
   ariaLabel?: string;
 }
 
-export const Button = ({
+export const Button = React.memo<ButtonProps>(({
   children,
   variant = 'primary',
   size = 'medium',
@@ -23,17 +24,15 @@ export const Button = ({
   disabled = false,
   className = '',
   ariaLabel,
-}: ButtonProps): React.ReactElement => {
-  const classNames = [
-    styles.button,
-    styles[variant],
-    styles[size],
-    className,
-  ].filter(Boolean).join(' ');
+}) => {
+  const classNames = useMemo(
+    () => [styles.button, styles[variant], styles[size], className].filter(Boolean).join(' '),
+    [variant, size, className]
+  );
 
   const content = (
     <>
-      {icon && <i className={`fa-solid ${icon} ${styles.icon}`} aria-hidden="true" />}
+      {icon && <Icon name={icon} size="sm" className={styles.icon} />}
       {children}
     </>
   );
@@ -65,4 +64,6 @@ export const Button = ({
       {content}
     </button>
   );
-};
+});
+
+Button.displayName = 'Button';

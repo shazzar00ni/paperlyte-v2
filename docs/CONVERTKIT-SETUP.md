@@ -94,14 +94,50 @@ This guide will help you set up ConvertKit integration for email capture on your
 
 5. Check your ConvertKit dashboard to verify the subscriber was added
 
+**Port Conflicts:**
+If port 8888 is already in use, you have several options:
+
+1. **Use a different port:**
+   ```bash
+   netlify dev --port 3000
+   ```
+
+2. **Find and kill the process using port 8888:**
+   ```bash
+   # macOS/Linux
+   lsof -ti:8888 | xargs kill -9
+
+   # Windows (PowerShell)
+   Get-Process -Id (Get-NetTCPConnection -LocalPort 8888).OwningProcess | Stop-Process -Force
+   ```
+
+3. **Let Netlify CLI auto-assign a port:**
+   - Netlify Dev will automatically try the next available port if 8888 is taken
+   - Check the terminal output for the actual port being used
+
 ### Testing Rate Limiting
 
 The API enforces rate limiting: **3 requests per minute per IP address**
 
-Try submitting 4 times quickly - the 4th should fail with:
-```
-"Too many requests. Please try again in a minute."
-```
+**How Rate Limiting Works:**
+- Uses a **fixed 1-minute window** (not sliding)
+- Each IP address gets 3 requests per window
+- Window starts on your first request
+- After 60 seconds, the window resets and you get 3 new requests
+
+**To Test:**
+1. Submit 3 requests quickly - all should succeed
+2. Submit a 4th request - should fail with:
+   ```
+   "Too many requests. Please try again in a minute."
+   ```
+3. Wait 60 seconds from your first request
+4. Submit again - should succeed (new window)
+
+**Resetting Rate Limit During Development:**
+- Rate limits are stored in-memory (serverless function)
+- Simply restart `netlify dev` to clear all rate limits
+- Or wait 60 seconds for the window to reset naturally
 
 ---
 
@@ -190,9 +226,43 @@ POST /.netlify/functions/subscribe
 
 ### CORS Errors
 
-- The serverless function includes CORS headers
-- If using a custom domain, no changes needed
-- For localhost testing, use `netlify dev` instead of `npm run dev`
+**How CORS is Configured:**
+
+The subscribe function restricts requests to a specific origin for security. By default, it only accepts requests from `https://paperlyte.com`.
+
+**Environment Variable:**
+- `ALLOWED_ORIGIN` - Set this to your domain (default: `https://paperlyte.com`)
+
+**Configuration Examples:**
+
+1. **Production (Netlify):**
+   ```bash
+   ALLOWED_ORIGIN=https://yourdomain.com
+   ```
+
+2. **Staging/Preview:**
+   ```bash
+   ALLOWED_ORIGIN=https://preview.yourdomain.com
+   ```
+
+3. **Development (using Netlify Dev):**
+   - No configuration needed
+   - `netlify dev` proxies requests correctly
+   - **Important:** Use `netlify dev`, NOT `npm run dev`
+
+**Troubleshooting CORS Issues:**
+
+- **Error:** "CORS policy: No 'Access-Control-Allow-Origin' header"
+  - **Cause:** Request coming from unauthorized origin
+  - **Fix:** Add your domain to `ALLOWED_ORIGIN` environment variable
+
+- **Multiple Domains:**
+  - The function currently supports one origin
+  - To support multiple domains, modify `netlify/functions/subscribe.ts` to check against an array of allowed origins
+
+- **Development Issues:**
+  - Always use `netlify dev` for local testing
+  - Direct Vite dev server (`npm run dev`) won't work with serverless functions
 
 ### Rate Limiting Too Strict
 
@@ -255,7 +325,7 @@ View function logs in Netlify:
 
 - **ConvertKit Support**: https://help.convertkit.com/
 - **Netlify Functions Docs**: https://docs.netlify.com/functions/overview/
-- **Project Issues**: [Create an issue on GitHub](https://github.com/shazzar00ni/paperlyte-v2/issues)
+- **Project Issues**: Check your repository's issue tracker for project-specific support
 
 ---
 

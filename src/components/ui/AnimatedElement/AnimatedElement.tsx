@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react';
+import React, { type ReactNode, useMemo, useEffect } from 'react';
 import { useIntersectionObserver } from '@hooks/useIntersectionObserver';
 import { useReducedMotion } from '@hooks/useReducedMotion';
 import styles from './AnimatedElement.module.css';
@@ -11,31 +11,38 @@ interface AnimatedElementProps {
   className?: string;
 }
 
-export const AnimatedElement = ({
+export const AnimatedElement = React.memo<AnimatedElementProps>(({
   children,
   animation = 'fadeIn',
   delay = 0,
   threshold = 0.1,
   className = '',
-}: AnimatedElementProps): React.ReactElement => {
+}) => {
   const { ref, isVisible } = useIntersectionObserver({ threshold });
   const prefersReducedMotion = useReducedMotion();
 
   const animationClass = prefersReducedMotion ? '' : styles[animation];
 
-  const classes = [
-    animationClass,
-    isVisible ? styles.visible : '',
-    className
-  ].filter(Boolean).join(' ');
+  const classes = useMemo(
+    () => [animationClass, isVisible ? styles.visible : '', className].filter(Boolean).join(' '),
+    [animationClass, isVisible, className]
+  );
+
+  // Set CSS custom property for animation delay programmatically
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.style.setProperty('--animation-delay', `${delay}ms`);
+    }
+  }, [delay, ref]);
 
   return (
     <div
       ref={ref}
       className={classes}
-      style={{ animationDelay: `${delay}ms` }}
     >
       {children}
     </div>
   );
-};
+});
+
+AnimatedElement.displayName = 'AnimatedElement';

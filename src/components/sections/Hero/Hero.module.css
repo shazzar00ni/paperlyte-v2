@@ -95,7 +95,7 @@
 /* Mobile styles */
 @media (max-width: 768px) {
   .hero {
-    min-height: auto;
+    min-height: 0;
     padding-top: var(--spacing-3xl);
     padding-bottom: var(--spacing-3xl);
   }

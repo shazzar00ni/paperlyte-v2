@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react';
+import React, { type ReactNode, useMemo } from 'react';
 import styles from './Section.module.css';
 
 interface SectionProps {
@@ -9,23 +9,28 @@ interface SectionProps {
   padding?: 'default' | 'large' | 'none';
 }
 
-export const Section = ({
+export const Section = React.memo<SectionProps>(({
   id,
   children,
   className = '',
   background = 'default',
   padding = 'default',
-}: SectionProps): React.ReactElement => {
-  const classNames = [
-    styles.section,
-    styles[`bg-${background}`],
-    styles[`padding-${padding}`],
-    className,
-  ].filter(Boolean).join(' ');
+}) => {
+  const classNames = useMemo(
+    () => [
+      styles.section,
+      styles[`bg-${background}`],
+      styles[`padding-${padding}`],
+      className,
+    ].filter(Boolean).join(' '),
+    [background, padding, className]
+  );
 
   return (
     <section id={id} className={classNames}>
       <div className={styles.container}>{children}</div>
     </section>
   );
-};
+});
+
+Section.displayName = 'Section';

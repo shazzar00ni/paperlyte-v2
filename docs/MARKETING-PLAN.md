@@ -21,6 +21,57 @@ Paperlyte is positioned to capture market share from frustrated note-takers over
 
 ---
 
+## Quick Reference: Marketing Plan at a Glance
+
+**For Stakeholders & Quick Review**
+
+This one-page summary provides the essential marketing metrics and targets. Refer to detailed sections below for complete strategy, tactics, and rationale.
+
+| **Category** | **Target / Metric** | **Timeline** |
+|--------------|---------------------|--------------|
+| **Primary Goal** | 10,000 users | 6 months post-launch |
+| **Email Pre-Launch** | 5,000 subscribers | Month -3 to 0 |
+| **Launch Conversion** | 40% email → app | Month 0-1 |
+| **Key Metrics** | 60% WAU/MAU, NPS >50 | Ongoing |
+| **Year 1 Budget** | $50,000 (Bootstrap) | Year 1 |
+| **Go-Live Channels** | Product Hunt, Content Marketing, Organic Social | Month 0 |
+
+### Critical Milestones
+
+| **Milestone** | **Target Date** | **Success Criteria** |
+|---------------|-----------------|----------------------|
+| **Pre-Launch Complete** | Month -1 | 5,000 email subscribers, press kit ready, PH page live |
+| **Launch Week** | Month 0, Week 1 | 3,000+ downloads, Product Hunt Top 5, 3+ press mentions |
+| **Month 3 Checkpoint** | Month 3 | 5,000 users, 50% activation, 25% D7 retention, NPS >40 |
+| **Month 6 Target** | Month 6 | 10,000 users, 60% activation, 30% D7 retention, NPS >50 |
+
+### Budget Allocation Summary
+
+| **Channel** | **% of Budget** | **Amount** | **Purpose** |
+|-------------|-----------------|------------|-------------|
+| Content Marketing | 20% | $10,000 | Blog, SEO, guest posts |
+| Paid Acquisition | 24% | $12,000 | Testing FB, Google, Reddit ads |
+| PR & Influencer | 16% | $8,000 | Press kit, media outreach, gifts |
+| Creative & Design | 12% | $6,000 | Video, graphics, assets |
+| Community & Social | 10% | $5,000 | Management, tools |
+| Tools & Software | 10% | $5,000 | Email, analytics, SEO |
+| Events & Sponsorships | 4% | $2,000 | Small sponsorships, swag |
+| Reserve | 4% | $2,000 | Contingency |
+
+### Top 5 Marketing Priorities
+
+1. **Product Hunt Launch Excellence** - Ship page prep, rally support, founder engagement (Month 0)
+2. **Content-Driven SEO** - 2x blog posts/month, competitor comparisons, how-to guides (Ongoing)
+3. **Email Nurture Sequence** - Pre-launch captures → launch conversion → onboarding (Month -3 to +1)
+4. **Community Building** - Reddit, Twitter, Discord engagement; build advocates (Ongoing)
+5. **Referral Program** - Launch Month 2, incentivize word-of-mouth growth (Month 2+)
+
+---
+
+> **📝 Note**: This Quick Reference should be updated whenever targets, budgets, or priorities change. Review monthly and adjust based on actual performance data.
+
+---
+
 ## Market Analysis
 
 ### Target Market Size
@@ -51,7 +102,7 @@ Paperlyte is positioned to capture market share from frustrated note-takers over
    - Weaknesses: Apple ecosystem only, subscription required
 
 3. **Standard Notes**
-   - Strengths: Privacy-first, encrypted, open source
+   - Strengths: Privacy-first, encrypted, open-source
    - Weaknesses: Complex pricing, overwhelming security focus
 
 **Indirect Competitors**:
@@ -242,7 +293,7 @@ Paperlyte is positioned to capture market share from frustrated note-takers over
 **Blog Posts** (2x/month):
 - "Why every note-taking app became a project management tool"
 - "The hidden cost of feature bloat"
-- "How we made Paperlyte 10x faster than Notion"
+- "How we built Paperlyte 10x faster than Notion"
 - "Paper-inspired design: Why analog thinking improves digital tools"
 - "Tag-based vs. folder-based organization: What science says"
 
@@ -350,7 +401,7 @@ Paperlyte is positioned to capture market share from frustrated note-takers over
 - Encourage reviews from happy early users
 
 **Website SEO**:
-- Optimize for keywords: "simple note app", "fast note taking", "offline notes", "privacy note app"
+- Optimize for keywords: "simple note app", "fast note-taking", "offline notes", "privacy note app"
 - Create comparison pages: "Paperlyte vs. Notion", "Paperlyte vs. Evernote"
 - Add schema markup for rich snippets
 - Build backlinks through guest posting and PR
@@ -606,7 +657,7 @@ Paperlyte is positioned to capture market share from frustrated note-takers over
 ### SEO Strategy
 
 **Target Keywords** (Month 1-3):
-- Primary: "simple note app", "fast note taking app", "offline note app"
+- Primary: "simple note app", "fast note-taking app", "offline note app"
 - Secondary: "Notion alternative", "minimalist note app", "privacy note app"
 - Long-tail: "best note app for speed", "tag-based note organization", "distraction-free writing app"
 
@@ -909,6 +960,14 @@ If competitors copy our features:
 - Key partnerships
 - Community leadership
 
+**Project/Program Manager** (full-time):
+- Owns execution of 80+ tactics across all phases
+- Manages channel experiments and A/B testing calendar
+- Coordinates weekly adjustments based on performance data
+- Maintains marketing project tracker and accountability
+- Ensures cross-functional alignment (product, marketing, support)
+- Weekly status reporting and roadblock escalation
+
 **Marketing Lead/Generalist** (full-time):
 - Content creation and management
 - Social media management
@@ -922,9 +981,15 @@ If competitors copy our features:
 - Graphic designer (social assets, website)
 - SEO specialist (technical optimization)
 
-**Community/Part-time**:
-- Community manager (Discord, Reddit, forums)
-- Customer success/onboarding support
+**Community Manager** (Hybrid: 30 hrs/week or full-time depending on scale):
+- **Capacity**: 30 hours/week (Month 0-3), scaling to full-time (Month 4+)
+- **Responsibilities**: Discord, Reddit, forums, social media engagement
+- **SLAs**:
+  - Respond to community questions within 4 hours (business hours)
+  - Daily monitoring of all community channels
+  - Weekly community health report (sentiment, top questions, escalations)
+- **Escalation**: Peak launch periods (Month 0-1) or crisis situations escalate to Founder/Community Lead for backup coverage
+- **Customer Success/Onboarding**: First 30-day user journey, onboarding email responses, feature adoption tracking
 
 ### As You Scale (Month 6+)
 
@@ -933,6 +998,175 @@ If competitors copy our features:
 - **Social Media Manager**: Dedicated social presence
 - **Developer Advocate**: Technical content and community
 - **Partnerships Manager**: B2B and integration partnerships
+
+### Execution Infrastructure
+
+**RACI Matrix Requirement**:
+
+Maintain a RACI (Responsible, Accountable, Consulted, Informed) matrix for each marketing phase to ensure clear ownership and accountability.
+
+| **Tactic/Phase** | **Responsible** | **Accountable** | **Consulted** | **Informed** |
+|------------------|-----------------|-----------------|---------------|--------------|
+| **Pre-Launch (Month -3 to 0)** |
+| Landing page & email capture | Marketing Lead | Program Manager | Founder | Engineering |
+| Content marketing (blog) | Content Writer | Marketing Lead | Founder, SEO Specialist | Community |
+| Product Hunt prep | Program Manager | Founder | Marketing Lead | All |
+| Press kit & PR outreach | Marketing Lead | Founder | Program Manager | - |
+| **Launch (Month 0-1)** |
+| Product Hunt launch day | Founder | Program Manager | Marketing Lead, Community | All |
+| Social media blitz | Marketing Lead | Program Manager | Community Manager | Founder |
+| Email launch sequence | Marketing Lead | Program Manager | Founder | Community |
+| Press follow-ups | Founder | Marketing Lead | Program Manager | - |
+| **Growth (Month 2-6)** |
+| Referral program | Marketing Lead | Program Manager | Engineering | Founder |
+| Paid acquisition testing | Marketing Lead | Program Manager | Founder | Finance |
+| Content SEO expansion | Content Writer | Marketing Lead | SEO Specialist | Program Manager |
+| Community building | Community Manager | Program Manager | Founder | Marketing Lead |
+
+**Weekly Dashboard** (Owned by Project/Program Manager):
+
+Create and maintain a live dashboard tracking:
+
+1. **Channel Performance**:
+   - Visitors by channel (organic, referral, social, paid, direct)
+   - Conversion rate by channel (visitor → email → download → activation)
+   - Cost per acquisition (CPA) by paid channel
+   - ROI by channel (attributed revenue/value vs. spend)
+
+2. **Spend Tracking**:
+   - Budget allocated vs. spent by channel
+   - Burn rate and runway remaining
+   - Top 5 expense items
+   - Budget variance alerts (>10% over/under)
+
+3. **Conversion Funnel**:
+   - Landing page views → email signups
+   - Email signups → app downloads
+   - Downloads → first note created
+   - Drop-off points and friction indicators
+
+4. **Key Metrics**:
+   - Total users, WAU, DAU
+   - Activation rate, D7/D30 retention
+   - NPS score, churn rate
+   - Referral/viral coefficient
+
+**Tools**: Google Sheets (MVP), Tableau/Metabase (scale), or Airtable with connected data sources
+
+**Monthly Review & Go/No-Go Cadence**:
+
+**Schedule**: First Monday of each month, 90-minute session
+
+**Attendees**: Founder, Program Manager, Marketing Lead, Finance (if applicable)
+
+**Agenda**:
+1. **Review Previous Month** (30 min):
+   - Actual vs. target metrics (acquisition, engagement, retention)
+   - Channel performance analysis (what worked, what didn't)
+   - Budget review (spend vs. plan, CAC vs. LTV)
+   - Top wins and failures
+
+2. **Go/No-Go Decisions** (30 min):
+   - Continue, pause, or kill underperforming channels
+   - Scale successful experiments
+   - Budget reallocation recommendations
+   - Roadblock identification and resolution
+
+3. **Plan Next Month** (30 min):
+   - Priority tactics and experiments
+   - Resource allocation
+   - Risk mitigation
+   - Success criteria and targets
+
+**Output**: Updated marketing plan, budget allocation, and action items with owners
+
+**Attribution Modeling & Budget Reallocation**:
+
+**Attribution Model**: Multi-touch attribution with weighted credit
+- First touch: 30% (awareness channel)
+- Middle touches: 20% distributed (nurture/consideration)
+- Last touch: 50% (conversion channel)
+
+**Implementation**:
+- UTM parameters on all external links (source, medium, campaign, content)
+- Unique landing pages or codes for each channel
+- Cohort tracking by acquisition source
+- Customer journey mapping (awareness → consideration → conversion → retention)
+
+**Budget Reallocation Triggers**:
+1. **Scale Up** (increase budget by 50-100%):
+   - Channel CAC < 30% of LTV for 2+ consecutive weeks
+   - Positive ROI with room to scale (not hitting ceiling)
+   - High user quality (activation >60%, retention >D7 30%+)
+
+2. **Maintain** (no change):
+   - On-target performance
+   - Testing/learning phase (first 4 weeks)
+   - Strategic importance despite neutral ROI (e.g., brand building)
+
+3. **Scale Down** (reduce budget by 50%):
+   - CAC > 50% of LTV for 2+ consecutive weeks
+   - Declining performance trend
+   - Low user quality (poor activation or retention)
+
+4. **Kill** (stop immediately):
+   - CAC > 100% of LTV with no improvement path
+   - Consistently missing targets for 4+ weeks
+   - Reputational risk or brand misalignment
+   - Better alternatives identified
+
+**Reallocation Process**:
+- Weekly: Program Manager flags opportunities/concerns
+- Bi-weekly: Marketing Lead proposes reallocation (< $1K changes)
+- Monthly: Leadership approves major shifts (> $1K or strategic pivots)
+
+**Tools & Meeting Recommendations**:
+
+**Project Management**:
+- **Option A** (Lean): Google Sheets + Asana/Trello
+- **Option B** (Scale): Airtable + Monday.com
+- **Features needed**: Task tracking, deadlines, dependencies, status updates, file attachments
+
+**Analytics & Dashboards**:
+- **Free tier**: Google Analytics 4 + Google Sheets + Looker Studio
+- **Paid tier**: Mixpanel/Amplitude + Tableau/Metabase
+- **Requirements**: Event tracking, cohort analysis, funnel visualization, custom reports
+
+**Communication**:
+- **Async**: Slack/Discord with dedicated marketing channel
+- **Sync**: Weekly video sync (Zoom/Google Meet)
+
+**Weekly Marketing Sync Agenda Template**:
+
+**Meeting**: Every Monday, 10:00 AM, 60 minutes
+
+**Attendees**: Founder, Program Manager, Marketing Lead, Community Manager
+
+**Agenda**:
+1. **Wins & Metrics Review** (15 min):
+   - Top 3 wins from last week
+   - Dashboard review (traffic, conversions, spend, key metrics)
+   - Any red flags or anomalies
+
+2. **In-Progress Updates** (20 min):
+   - Each owner shares status on active campaigns/tactics
+   - Blockers and support needed
+   - A/B test results and learnings
+
+3. **Upcoming Week Plan** (15 min):
+   - Priority tasks for each owner
+   - New experiments launching
+   - Dependencies and handoffs
+
+4. **Budget & Resources** (5 min):
+   - Spend tracking vs. plan
+   - Resource needs (freelancers, tools, creative assets)
+
+5. **Open Discussion & Decisions** (5 min):
+   - Ad-hoc topics
+   - Quick decisions needed
+
+**Action Items**: Documented in project management tool with owners and deadlines
 
 ---
 

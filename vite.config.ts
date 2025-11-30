@@ -4,10 +4,13 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 
 /**
- * Plugin to inject environment-aware Content Security Policy
+ * Plugin to inject development-only Content Security Policy
  *
- * Development: Relaxed CSP to allow Vite HMR (WebSockets + unsafe-eval)
- * Production: Strict CSP for maximum security
+ * Development: Relaxed CSP meta tag to allow Vite HMR (WebSockets + unsafe-eval)
+ * Production: CSP delivered via HTTP headers in vercel.json (supports frame-ancestors)
+ *
+ * Note: Meta tag CSP cannot enforce frame-ancestors and lacks initial-response protection.
+ * Production uses proper HTTP headers configured in vercel.json.
  */
 function cspPlugin(): Plugin {
   let isDev = false
@@ -18,22 +21,33 @@ function cspPlugin(): Plugin {
       isDev = config.mode === 'development'
     },
     transformIndexHtml(html) {
+      // Only inject CSP meta tag in development mode
+      // Production CSP is delivered via HTTP headers in vercel.json
+      if (!isDev) {
+        return html
+      }
+
       // Development CSP: Allow WebSockets for HMR and unsafe-eval for fast refresh
-      const devCSP = `default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self' https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' ws: wss:; frame-ancestors 'none'; base-uri 'self'; form-action 'self';`
+      // - 'unsafe-eval' is required for Vite's HMR and React Fast Refresh (development only)
+      // - ws:/wss: enables WebSocket connections for Vite dev server HMR
+      // - Font Awesome icons loaded from CDN require cdnjs in style-src
+      // - Fonts are self-hosted via @fontsource/inter (no external font CDN)
+      // - No unsafe-inline needed - all styles use external CSS or CSS modules
+      const devCSP = `default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' https://cdnjs.cloudflare.com; font-src 'self'; img-src 'self' data:; connect-src 'self' ws: wss:; frame-ancestors 'none'; base-uri 'self'; form-action 'self';`
 
-      // Production CSP: Strict policy without unsafe-eval or WebSocket access
-      const prodCSP = `default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self' https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';`
+      // Inject CSP meta tag before closing </head> tag (dev only)
+      const cspMetaTag = `    <!-- Content Security Policy (development only) -->
+    <meta http-equiv="Content-Security-Policy" content="${devCSP}" />
+  </head>`
 
-      const csp = isDev ? devCSP : prodCSP
+      const modifiedHtml = html.replace('</head>', cspMetaTag)
 
-      // Inject CSP meta tag after the viewport meta tag
-      return html.replace(
-        '<meta name="viewport" content="width=device-width, initial-scale=1.0" />',
-        `<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      // Warn if injection failed (no </head> tag found)
+      if (modifiedHtml === html) {
+        console.warn('[csp-plugin] Warning: Could not inject CSP meta tag - </head> tag not found in HTML')
+      }
 
-    <!-- Content Security Policy (environment-aware) -->
-    <meta http-equiv="Content-Security-Policy" content="${csp}" />`
-      )
+      return modifiedHtml
     }
   }
 }

@@ -21,7 +21,8 @@ describe('AnimatedElement', () => {
     );
 
     const wrapper = container.firstChild as HTMLElement;
-    expect(wrapper).toHaveStyle({ animationDelay: '200ms' });
+    // Check for delay200 class (CSP-compliant CSS class approach)
+    expect(wrapper.className).toContain('delay200');
   });
 
   it('should use default animation delay of 0ms', () => {
@@ -32,7 +33,8 @@ describe('AnimatedElement', () => {
     );
 
     const wrapper = container.firstChild as HTMLElement;
-    expect(wrapper).toHaveStyle({ animationDelay: '0ms' });
+    // Check for delay0 class (CSP-compliant CSS class approach)
+    expect(wrapper.className).toContain('delay0');
   });
 
   it('should apply custom className', () => {

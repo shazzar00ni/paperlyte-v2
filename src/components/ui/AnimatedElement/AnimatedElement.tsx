@@ -44,6 +44,22 @@ interface AnimatedElementProps {
  * </AnimatedElement>
  * ```
  */
+/**
+ * Maps delay values to CSS class names
+ * Rounds to nearest predefined delay for CSP compliance (no inline styles)
+ */
+const getDelayClass = (delay: number): string => {
+  // Predefined delay values that have corresponding CSS classes
+  const delays = [0, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000];
+
+  // Round to nearest predefined delay
+  const nearest = delays.reduce((prev, curr) =>
+    Math.abs(curr - delay) < Math.abs(prev - delay) ? curr : prev
+  );
+
+  return styles[`delay${nearest}`] || '';
+};
+
 export const AnimatedElement = ({
   children,
   animation = 'fadeIn',
@@ -55,9 +71,11 @@ export const AnimatedElement = ({
   const prefersReducedMotion = useReducedMotion();
 
   const animationClass = prefersReducedMotion ? '' : styles[animation];
+  const delayClass = prefersReducedMotion ? '' : getDelayClass(delay);
 
   const classes = [
     animationClass,
+    delayClass,
     isVisible ? styles.visible : '',
     className
   ].filter(Boolean).join(' ');
@@ -66,7 +84,6 @@ export const AnimatedElement = ({
     <div
       ref={ref}
       className={classes}
-      style={{ animationDelay: `${delay}ms` }}
     >
       {children}
     </div>

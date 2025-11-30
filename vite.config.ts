@@ -11,6 +11,25 @@ import path from 'path'
  *
  * Note: Meta tag CSP cannot enforce frame-ancestors and lacks initial-response protection.
  * Production uses proper HTTP headers configured in vercel.json.
+ *
+ * SECURITY NOTICE - Development unsafe-eval:
+ * The development CSP includes 'unsafe-eval' which permits eval() execution. This is
+ * required for Vite's Hot Module Replacement (HMR) and React Fast Refresh to function.
+ *
+ * Risk: If malicious code is introduced during development (e.g., compromised npm package,
+ * malicious browser extension), unsafe-eval could be exploited for code execution.
+ *
+ * Mitigation:
+ * - Production CSP (vercel.json) does NOT include unsafe-eval (strict policy)
+ * - Only run trusted code in development environment
+ * - Regularly audit dependencies with `npm audit`
+ * - Use lock files (package-lock.json) to prevent supply chain attacks
+ * - Consider using browser profiles dedicated to development (no untrusted extensions)
+ *
+ * Alternative approaches (not currently implemented):
+ * - Nonce-based CSP: Would require server-side nonce generation for each dev request
+ * - Disable CSP in dev: Would lose all CSP protection during development
+ * Current approach balances security with developer experience (standard Vite practice).
  */
 function cspPlugin(): Plugin {
   let isDev = false

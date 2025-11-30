@@ -1,6 +1,42 @@
 import { defineConfig } from 'vite'
+import type { Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
+
+/**
+ * Plugin to inject environment-aware Content Security Policy
+ *
+ * Development: Relaxed CSP to allow Vite HMR (WebSockets + unsafe-eval)
+ * Production: Strict CSP for maximum security
+ */
+function cspPlugin(): Plugin {
+  let isDev = false
+
+  return {
+    name: 'csp-plugin',
+    configResolved(config) {
+      isDev = config.mode === 'development'
+    },
+    transformIndexHtml(html) {
+      // Development CSP: Allow WebSockets for HMR and unsafe-eval for fast refresh
+      const devCSP = `default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self' https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' ws: wss:; frame-ancestors 'none'; base-uri 'self'; form-action 'self';`
+
+      // Production CSP: Strict policy without unsafe-eval or WebSocket access
+      const prodCSP = `default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self' https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';`
+
+      const csp = isDev ? devCSP : prodCSP
+
+      // Inject CSP meta tag after the viewport meta tag
+      return html.replace(
+        '<meta name="viewport" content="width=device-width, initial-scale=1.0" />',
+        `<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Content Security Policy (environment-aware) -->
+    <meta http-equiv="Content-Security-Policy" content="${csp}" />`
+      )
+    }
+  }
+}
 
 /**
  * Vite configuration for Paperlyte
@@ -10,12 +46,14 @@ import path from 'path'
  * - Path aliases for cleaner imports
  * - Production build optimizations
  * - Development server settings
+ * - Environment-aware Content Security Policy
  *
  * @see https://vite.dev/config/
  */
 export default defineConfig({
   // React plugin with Fast Refresh for instant Hot Module Replacement
-  plugins: [react()],
+  // CSP plugin for environment-aware security headers
+  plugins: [react(), cspPlugin()],
 
   // Path resolution configuration
   resolve: {

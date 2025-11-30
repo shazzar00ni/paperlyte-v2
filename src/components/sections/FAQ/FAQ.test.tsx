@@ -181,6 +181,7 @@ describe('FAQ', () => {
       await user.click(questionButton);
 
       const ariaControls = questionButton.getAttribute('aria-controls');
+      expect(ariaControls).toBeTruthy();
       const answerElement = document.getElementById(ariaControls!);
 
       expect(answerElement).toHaveAttribute('aria-hidden', 'false');

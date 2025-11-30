@@ -1,29 +1,36 @@
 import type { Handler, HandlerEvent } from "@netlify/functions";
+import { z } from "zod";
 
 // Rate limiting store (in-memory, resets on cold start)
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
 let requestCounter = 0;
+let lastCleanupTime = Date.now();
 
 // Rate limit: 3 requests per minute per IP
 const RATE_LIMIT_REQUESTS = 3;
 const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
 const CLEANUP_INTERVAL = 50; // Clean up every 50 requests
+const CLEANUP_TIME_INTERVAL = 5 * 60 * 1000; // Also cleanup every 5 minutes
 const MAX_STORE_SIZE = 1000; // Prevent unbounded growth
 
 interface SubscribeRequest {
   email: string;
 }
 
-interface ConvertKitResponse {
-  subscription: {
-    id: number;
-    state: string;
-    created_at: string;
-    subscriber: {
-      id: number;
-    };
-  };
-}
+// Zod schema for runtime validation of ConvertKit API response
+const ConvertKitResponseSchema = z.object({
+  subscription: z.object({
+    id: z.number(),
+    state: z.string(),
+    created_at: z.string(),
+    subscriber: z.object({
+      id: z.number(),
+    }),
+  }),
+});
+
+// TypeScript type inferred from Zod schema (ensures type/schema consistency)
+type ConvertKitResponse = z.infer<typeof ConvertKitResponseSchema>;
 
 /**
  * Clean up expired rate limit entries to prevent memory leak
@@ -43,18 +50,36 @@ function cleanupExpiredEntries(): void {
 function checkRateLimit(ip: string): boolean {
   const now = Date.now();
 
-  // Deterministic cleanup every N requests to prevent memory leak
+  // Multi-strategy cleanup to prevent memory leaks:
+  // 1. Request-based: cleanup every N requests
   requestCounter++;
   if (requestCounter % CLEANUP_INTERVAL === 0) {
     cleanupExpiredEntries();
+    lastCleanupTime = now;
   }
 
-  // Enforce maximum store size as additional safeguard
-  if (rateLimitStore.size >= MAX_STORE_SIZE) {
+  // 2. Time-based: cleanup every N minutes (handles low-traffic scenarios)
+  if (now - lastCleanupTime >= CLEANUP_TIME_INTERVAL) {
     cleanupExpiredEntries();
+    lastCleanupTime = now;
   }
 
   const record = rateLimitStore.get(ip);
+  const willAddNewEntry = !record || now > record.resetTime;
+
+  // 3. Size-based: enforce maximum store size before potentially adding new entry
+  if (willAddNewEntry && rateLimitStore.size >= MAX_STORE_SIZE) {
+    cleanupExpiredEntries();
+    lastCleanupTime = now;
+
+    // If still at capacity after cleanup, remove oldest entry (LRU eviction)
+    if (rateLimitStore.size >= MAX_STORE_SIZE) {
+      const firstKey = rateLimitStore.keys().next().value;
+      if (firstKey !== undefined) {
+        rateLimitStore.delete(firstKey);
+      }
+    }
+  }
 
   if (!record || now > record.resetTime) {
     // New window - remove old entry if it exists
@@ -119,7 +144,7 @@ async function subscribeToConvertKit(email: string): Promise<ConvertKitResponse>
     throw new Error("Failed to subscribe email");
   }
 
-  // Parse and validate response structure
+  // Parse and validate response structure with Zod
   let data: unknown;
   try {
     data = await response.json();
@@ -128,21 +153,13 @@ async function subscribeToConvertKit(email: string): Promise<ConvertKitResponse>
     throw new Error("Invalid response from email service");
   }
 
-  // Validate response structure
-  if (
-    !data ||
-    typeof data !== "object" ||
-    !("subscription" in data) ||
-    typeof data.subscription !== "object" ||
-    data.subscription === null ||
-    !("id" in data.subscription) ||
-    typeof data.subscription.id !== "number"
-  ) {
-    console.error("ConvertKit response missing required fields");
+  // Validate response structure using Zod schema
+  try {
+    return ConvertKitResponseSchema.parse(data);
+  } catch (error) {
+    console.error("ConvertKit response validation failed:", error instanceof Error ? error.message : "Unknown error");
     throw new Error("Invalid response from email service");
   }
-
-  return data as ConvertKitResponse;
 }
 
 /**
@@ -232,9 +249,9 @@ export const handler: Handler = async (event: HandlerEvent) => {
     // Subscribe to ConvertKit
     const result = await subscribeToConvertKit(email);
 
-    // Defensive check for response structure
+    // Defensive check: ensure response structure is valid (guards against API changes)
     if (!result?.subscription?.id) {
-      console.error("Invalid ConvertKit response structure");
+      console.error("Unexpected ConvertKit response structure");
       throw new Error("Invalid response from email service");
     }
 

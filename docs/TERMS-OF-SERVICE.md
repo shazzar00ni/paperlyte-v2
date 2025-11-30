@@ -451,7 +451,7 @@ We'll attempt to resolve disputes informally within 60 days.
 - Administered by American Arbitration Association (AAA)
 - AAA Consumer Arbitration Rules apply
 - Single arbitrator, selected per AAA rules
-- Arbitration location: [Your state/country] or virtual
+- Arbitration location: [State/Country] or virtual
 
 **Costs:**
 - We'll pay arbitration fees for claims under $10,000
@@ -549,12 +549,17 @@ English version controls in case of conflicts with translations.
 
 ## 18. Additional Resources
 
-- [Privacy Policy](./PRIVACY-POLICY.md)
-- [Cookie Policy](./COOKIE-POLICY.md)
-- [Acceptable Use Policy](./ACCEPTABLE-USE.md)
-- [Security Practices](./SECURITY.md)
-- [DMCA Policy](./DMCA.md)
-- [Accessibility Statement](./ACCESSIBILITY.md)
+**Available Policies:**
+- [Privacy Policy](./PRIVACY-POLICY.md) - Complete
+
+**Planned Policies** (Coming Soon):
+- Cookie Policy - In development
+- Acceptable Use Policy - In development
+- Security Practices - In development
+- DMCA Policy - In development (if user-generated content)
+- Accessibility Statement - In development
+
+For questions about these policies, contact [legal@paperlyte.com](mailto:legal@paperlyte.com)
 
 ---
 

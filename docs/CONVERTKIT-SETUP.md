@@ -204,8 +204,38 @@ POST /.netlify/functions/subscribe
 ✅ **Rate Limiting**: 3 requests per minute per IP
 ✅ **Honeypot Field**: Catches spam bots
 ✅ **Email Validation**: Client-side and server-side
-✅ **CORS Protection**: Configured for your domain
+✅ **CORS Protection**: Configured via `ALLOWED_ORIGIN` environment variable (see [CORS Configuration](#cors-errors) below)
 ✅ **Error Masking**: Internal errors not exposed to users
+
+### CORS Configuration Details
+
+The serverless function implements Cross-Origin Resource Sharing (CORS) to prevent unauthorized domains from submitting requests.
+
+**Default Configuration:**
+- **Allowed Origin**: `https://paperlyte.com` (production domain)
+- **Allowed Methods**: `POST, OPTIONS`
+- **Allowed Headers**: `Content-Type`
+
+**Environment Variables:**
+- `ALLOWED_ORIGIN` - Set to your production domain (e.g., `https://yourdomain.com`)
+  - **Development**: Use `http://localhost:5173` for Vite dev server
+  - **Netlify Dev**: Use `http://localhost:8888`
+  - **Production**: Use your full domain with HTTPS (e.g., `https://paperlyte.com`)
+  - **Multiple Origins**: Not supported by default (security best practice)
+
+**Setting in Netlify:**
+1. Go to Site settings → Environment variables
+2. Add `ALLOWED_ORIGIN` with your domain value
+3. For local development, add to `.env`:
+   ```
+   ALLOWED_ORIGIN=http://localhost:5173
+   ```
+
+**Important Notes:**
+- Always use HTTPS in production (HTTP will be blocked by browsers)
+- Do not use wildcards (`*`) for `ALLOWED_ORIGIN` in production (security risk)
+- The function will return a 403 Forbidden if origin doesn't match
+- Browser will show CORS error in console if origin is misconfigured
 
 ---
 

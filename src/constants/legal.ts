@@ -15,6 +15,7 @@ export const LEGAL_CONFIG = {
     legalEmail: 'legal@paperlyte.com',
     securityEmail: 'security@paperlyte.com',
     dpoEmail: 'dpo@paperlyte.com',
+    arbitrationOptOutEmail: 'arbitration-opt-out@paperlyte.com',
   },
 
   // Physical Address

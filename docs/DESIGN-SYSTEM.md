@@ -259,10 +259,52 @@ Paper-inspired shadow system for depth and hierarchy.
 
 **CRITICAL**: All animations and transitions must respect `prefers-reduced-motion`.
 
-The design system automatically handles this:
-- CSS variables use `var(--reduced-motion-duration, 0.01ms)` fallback
-- Global override reduces all animations to 0.01ms
-- Smooth scrolling is disabled
+#### CSS Variable Definition
+
+The `--reduced-motion-duration` variable is defined in [src/styles/variables.css](../src/styles/variables.css):
+
+```css
+:root {
+  --animation-duration: 250ms;
+  --reduced-motion-duration: 0.01ms;
+}
+```
+
+#### How It Works
+
+The design system provides two approaches for respecting reduced motion preferences:
+
+**1. Using CSS Variables (Recommended)**
+```css
+/* In your CSS, use the reduced-motion-duration variable */
+.my-element {
+  animation-duration: var(--reduced-motion-duration, 0.01ms);
+  transition-duration: var(--reduced-motion-duration, 0.01ms);
+}
+```
+
+**2. Using Media Query (Alternative)**
+```css
+.my-element {
+  animation-duration: 250ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .my-element {
+    animation-duration: 0.01ms;
+  }
+}
+```
+
+#### Global Overrides Applied
+
+The design system automatically applies these overrides when `prefers-reduced-motion: reduce` is detected:
+- ✅ All animations reduced to 0.01ms duration
+- ✅ All transitions reduced to 0.01ms duration
+- ✅ Smooth scrolling disabled (`scroll-behavior: auto`)
+- ✅ Auto-playing animations paused
+
+**Note**: We use 0.01ms instead of 0ms because some browser animation APIs treat 0ms as "infinite" or cause unexpected behavior.
 
 ## Z-Index Layers
 

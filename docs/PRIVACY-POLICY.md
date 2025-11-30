@@ -87,11 +87,13 @@ We use your information solely to provide and improve Paperlyte:
 
 ### 3.2 Security Measures
 
-- **End-to-End Encryption**: Your notes are encrypted with your password
-- **Zero-Knowledge Architecture**: We cannot read your encrypted notes
-- **Two-Factor Authentication**: Optional 2FA for enhanced security
-- **Regular Security Audits**: Third-party penetration testing
-- **Employee Access Controls**: Strict need-to-know access policies
+- **Data Encryption**: All data encrypted in transit (TLS 1.3) and at rest (AES-256)
+- **Secure Authentication**: Industry-standard authentication mechanisms
+- **Access Controls**: Strict need-to-know access policies for employees
+- **Security Monitoring**: Continuous monitoring for suspicious activity
+- **Regular Security Audits**: Planned third-party penetration testing
+
+**⚠️ IMPORTANT**: This application is currently in development. Advanced security features including end-to-end encryption, zero-knowledge architecture, and two-factor authentication are planned for future releases. Until these features are implemented, assume that authorized personnel may have access to your data for support and maintenance purposes.
 
 ### 3.3 Data Retention
 

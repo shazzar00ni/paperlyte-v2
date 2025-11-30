@@ -2,19 +2,19 @@
 
 This guide will help you customize the legal documents and company information for your Paperlyte deployment.
 
-## =À Overview
+## üìã Overview
 
 Paperlyte includes template legal documents that need to be customized with your actual company information:
 
 -  [Privacy Policy](./PRIVACY-POLICY.md) - Complete template
 -  [Terms of Service](./TERMS-OF-SERVICE.md) - Complete template
-- ô [Legal Configuration](../src/constants/legal.ts) - Centralized config file
+- ÔøΩ [Legal Configuration](../src/constants/legal.ts) - Centralized config file
 
 ---
 
-## =® Important: Before Production
+## ‚ö†Ô∏è Important: Before Production
 
-**† WARNING: These are TEMPLATE documents. You MUST:**
+**ÔøΩ WARNING: These are TEMPLATE documents. You MUST:**
 
 1. **Consult with a lawyer** - Have an attorney review and customize these documents
 2. **Update all placeholders** - Replace `[Company Name]`, `[Address]`, etc.
@@ -25,7 +25,7 @@ Paperlyte includes template legal documents that need to be customized with your
 
 ---
 
-## =› Step 1: Update Legal Configuration
+## 1Ô∏è‚É£ Step 1: Update Legal Configuration
 
 All company and legal information is centralized in one file for easy management.
 
@@ -38,7 +38,7 @@ Open this file and replace all placeholders marked with `[...]`:
 ```typescript
 company: {
   name: 'Paperlyte',                    //  Already set
-  legalName: '[Company Legal Name]',     // † TODO: e.g., "Paperlyte Inc."
+  legalName: '[Company Legal Name]',     // ÔøΩ TODO: e.g., "Paperlyte Inc."
   email: 'hello@paperlyte.com',         //  Update if needed
   supportEmail: 'support@paperlyte.com',//  Update if needed
   privacyEmail: 'privacy@paperlyte.com',//  Update if needed
@@ -59,11 +59,11 @@ company: {
 
 ```typescript
 address: {
-  street: '[Street Address]',  // † TODO: e.g., "123 Main Street"
-  city: '[City]',              // † TODO: e.g., "San Francisco"
-  state: '[State]',            // † TODO: e.g., "CA"
-  zip: '[ZIP]',                // † TODO: e.g., "94102"
-  country: '[Country]',        // † TODO: e.g., "United States"
+  street: '[Street Address]',  // ÔøΩ TODO: e.g., "123 Main Street"
+  city: '[City]',              // ÔøΩ TODO: e.g., "San Francisco"
+  state: '[State]',            // ÔøΩ TODO: e.g., "CA"
+  zip: '[ZIP]',                // ÔøΩ TODO: e.g., "94102"
+  country: '[Country]',        // ÔøΩ TODO: e.g., "United States"
 }
 ```
 
@@ -79,10 +79,10 @@ address: {
 documents: {
   privacy: 'https://github.com/shazzar00ni/paperlyte-v2/blob/main/docs/PRIVACY-POLICY.md',
   terms: 'https://github.com/shazzar00ni/paperlyte-v2/blob/main/docs/TERMS-OF-SERVICE.md',
-  cookies: '#',      // † TODO: Create cookie policy
-  security: '#',     // † TODO: Create security practices doc
-  dmca: '#',         // † TODO: Create DMCA policy (if applicable)
-  accessibility: '#', // † TODO: Create accessibility statement
+  cookies: '#',      // ÔøΩ TODO: Create cookie policy
+  security: '#',     // ÔøΩ TODO: Create security practices doc
+  dmca: '#',         // ÔøΩ TODO: Create DMCA policy (if applicable)
+  accessibility: '#', // ÔøΩ TODO: Create accessibility statement
 }
 ```
 
@@ -100,7 +100,7 @@ social: {
   github: 'https://github.com/paperlyte/paperlyte',
   twitter: 'https://twitter.com/paperlyte',
   linkedin: 'https://linkedin.com/company/paperlyte',
-  discord: '#', // † TODO: Add if applicable
+  discord: '#', // ÔøΩ TODO: Add if applicable
 }
 ```
 
@@ -118,8 +118,8 @@ metadata: {
   privacyLastUpdated: '2025-11-28',   //  Set automatically
   termsLastUpdated: '2025-11-28',     //  Set automatically
   termsVersion: '1.0',                //  Update when you revise
-  jurisdiction: '[State/Country]',    // † TODO: e.g., "California, USA"
-  governingLaw: '[State] law',        // † TODO: e.g., "California law"
+  jurisdiction: '[State/Country]',    // ÔøΩ TODO: e.g., "California, USA"
+  governingLaw: '[State] law',        // ÔøΩ TODO: e.g., "California law"
 }
 ```
 
@@ -130,7 +130,7 @@ metadata: {
 
 ---
 
-## =ƒ Step 2: Customize Legal Documents
+## 2Ô∏è‚É£ Step 2: Customize Legal Documents
 
 ### Privacy Policy
 
@@ -248,7 +248,43 @@ Use this checklist to ensure everything is properly configured:
 
 ---
 
-## >Í Step 4: Testing
+## ‚úÖ Step 3: Verification Checklist
+
+Use this checklist to ensure everything is properly configured:
+
+### Configuration File (`src/constants/legal.ts`)
+
+- [ ] Company legal name updated
+- [ ] All email addresses are valid and monitored
+- [ ] Physical address is complete and accurate
+- [ ] Document URLs point to production hosting
+- [ ] Social media links are correct
+- [ ] Jurisdiction and governing law are set
+- [ ] No placeholders remain (check with `needsLegalReview()`)
+
+### Privacy Policy (`docs/PRIVACY-POLICY.md`)
+
+- [ ] Company name and address updated
+- [ ] Cloud provider information is accurate
+- [ ] Service provider table reflects actual providers
+- [ ] Data retention policies match your practices
+- [ ] Contact information is correct
+- [ ] DPO information added (if EU users)
+- [ ] Regional compliance sections reviewed (GDPR, CCPA, UK)
+
+### Terms of Service (`docs/TERMS-OF-SERVICE.md`)
+
+- [ ] Company name and address updated
+- [ ] Governing law and jurisdiction set
+- [ ] Pricing and refund policies accurate
+- [ ] SLA guarantees match your capabilities
+- [ ] Liability limitations reviewed by attorney
+- [ ] Arbitration clause reviewed by attorney
+- [ ] Service descriptions match what you offer
+
+---
+
+## üß™ Step 4: Testing
 
 ### Check for Placeholders
 
@@ -279,7 +315,7 @@ Before launching:
 
 ---
 
-## =≈ Step 5: Ongoing Maintenance
+## üîÑ Step 5: Ongoing Maintenance
 
 ### When to Update
 
@@ -307,7 +343,7 @@ Before launching:
 
 ---
 
-## =Á Email Setup
+## üìß Email Setup
 
 ### Required Email Addresses
 
@@ -324,12 +360,12 @@ Ensure these emails are set up and monitored:
 ### Email Forwarding
 
 If you don't want separate inboxes, set up forwarding:
-- All í `hello@paperlyte.com` (with filters/labels)
+- All ‚Üí `hello@paperlyte.com` (with filters/labels)
 - Or use email aliases in your email provider
 
 ---
 
-## ñ Legal Review Checklist
+## ÔøΩ Legal Review Checklist
 
 **Before production, have your attorney review:**
 
@@ -388,7 +424,7 @@ Similar to GDPR:
 
 ---
 
-## S FAQ
+## ‚ùì FAQ
 
 ### Do I really need a lawyer?
 
@@ -430,7 +466,7 @@ Templates for these are noted as TODO in the legal config.
 
 ---
 
-## =ﬁ Need Help?
+## üí¨ Need Help?
 
 If you have questions about this setup:
 

@@ -74,8 +74,8 @@ export const EmailCapture = ({
       setGdprConsent(false);
 
       // Track conversion (optional - add analytics here)
-      if (typeof window !== 'undefined' && (window as any).gtag) {
-        (window as any).gtag('event', 'email_signup', {
+      if (typeof window !== 'undefined' && 'gtag' in window && typeof window.gtag === 'function') {
+        window.gtag('event', 'email_signup', {
           event_category: 'engagement',
           event_label: 'waitlist',
         });

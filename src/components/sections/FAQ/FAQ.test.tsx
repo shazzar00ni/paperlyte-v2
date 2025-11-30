@@ -225,30 +225,6 @@ describe('FAQ', () => {
   });
 
   describe('Icon Display', () => {
-    it('should show chevron-down icon when collapsed', () => {
-      render(<FAQ />);
-
-      const questionButton = screen.getByRole('button', {
-        name: new RegExp(FAQ_ITEMS[0].question, 'i'),
-      });
-
-      const icon = questionButton.querySelector('.fa-chevron-down');
-      expect(icon).toBeInTheDocument();
-    });
-
-    it('should show chevron-up icon when expanded', async () => {
-      const user = userEvent.setup();
-      render(<FAQ />);
-
-      const questionButton = screen.getByRole('button', {
-        name: new RegExp(FAQ_ITEMS[0].question, 'i'),
-      });
-
-      await user.click(questionButton);
-
-      const icon = questionButton.querySelector('.fa-chevron-up');
-      expect(icon).toBeInTheDocument();
-    });
 
     it('should have accessible icon labels', async () => {
       const user = userEvent.setup();

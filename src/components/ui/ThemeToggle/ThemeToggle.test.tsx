@@ -181,14 +181,12 @@ describe('ThemeToggle', () => {
     });
 
     it('should update aria-label when theme changes', () => {
-      const { rerender } = render(<ThemeToggle />);
-
       vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
         theme: 'light',
         toggleTheme: mockToggleTheme,
       });
 
-      rerender(<ThemeToggle />);
+      const { rerender } = render(<ThemeToggle />);
       expect(screen.getByRole('button', { name: /switch to dark mode/i })).toBeInTheDocument();
 
       vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({

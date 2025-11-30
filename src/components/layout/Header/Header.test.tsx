@@ -164,9 +164,9 @@ describe('Header', () => {
       // Tab should move focus through menu items
       await user.keyboard('{Tab}');
 
-      // One of the focusable elements should have focus
-      const focusedElement = document.activeElement;
-      expect(focusedElement).toBeTruthy();
+      // Focus should be on a focusable element within the navigation
+      const nav = screen.getByRole('navigation');
+      expect(nav.contains(document.activeElement)).toBe(true);
     });
 
     it('should trap focus with Tab at end of menu', async () => {

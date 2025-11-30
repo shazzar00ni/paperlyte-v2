@@ -136,7 +136,7 @@ describe('Hero', () => {
       await user.click(downloadButton);
 
       // scrollIntoView should not be called if element doesn't exist
-      // (it will be called 0 times since getElementById returns null)
+      expect(Element.prototype.scrollIntoView).not.toHaveBeenCalled();
     });
   });
 

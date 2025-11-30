@@ -501,9 +501,9 @@ describe('Marketing Plan Document Validation', () => {
           if (section.includes('|') && section.split('\n').length > 2) {
             const sectionLines = section.split('\n');
             const hasHeader = sectionLines[0].includes('|');
-            const hasSeparator = sectionLines[1].match(/^|[:\s-]+|$/);
+            const hasSeparator = /^\|[:\s-]+\|$/.test(sectionLines[1]);
             if (hasHeader) {
-              expect(hasSeparator).toBeTruthy();
+              expect(hasSeparator).toBe(true);
             }
           }
         });

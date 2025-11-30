@@ -196,7 +196,7 @@ describe('Hero', () => {
     });
 
     it('should render subheadline in paragraph tag', () => {
-      const { container } = render(<Hero />);
+      render(<Hero />);
 
       const subheadline = screen.getByText(/lightning-fast, distraction-free note-taking/i);
       expect(subheadline.tagName).toBe('P');

@@ -100,6 +100,7 @@ npm install && npm run dev
 ```
 
 All checks pass:
+
 - ✅ Dependencies install successfully
 - ✅ Format check passes: `npm run format:check`
 - ✅ Linting passes: `npm run lint`
@@ -120,6 +121,7 @@ The following tasks require manual configuration via GitHub and Netlify UIs:
 Navigate to: **Settings** → **Branches** → **Add branch protection rule**
 
 For the `main` branch, configure:
+
 - ✅ Require a pull request before merging
 - ✅ Require approvals: 1
 - ✅ Dismiss stale pull request approvals when new commits are pushed
@@ -150,6 +152,7 @@ Optionally, configure the same for `develop` branch.
 #### 3. Configure Custom Domain
 
 After the site is deployed:
+
 1. Go to **Site settings** → **Domain management**
 2. Click **Add custom domain**
 3. Enter `paperlyte.app`
@@ -162,6 +165,7 @@ After the site is deployed:
 #### 4. Enable Deploy Previews (Should be automatic)
 
 Verify in **Site settings** → **Build & deploy** → **Deploy contexts**:
+
 - ✅ Production branch: `main`
 - ✅ Branch deploys: All branches
 - ✅ Deploy previews: Automatically build deploy previews for all pull requests
@@ -169,6 +173,7 @@ Verify in **Site settings** → **Build & deploy** → **Deploy contexts**:
 #### 5. Environment Variables (If needed in the future)
 
 Currently, no environment variables are required. If needed later:
+
 1. Go to **Site settings** → **Build & deploy** → **Environment**
 2. Click **Add variable**
 3. Add key-value pairs as needed
@@ -210,23 +215,24 @@ npm test              # Run tests
 
 ## 📊 Definition of Done - Status
 
-| Requirement | Status |
-|------------|--------|
-| Repository is publicly accessible | ✅ Complete |
-| Netlify deployment configuration ready | ✅ Complete |
-| One-command dev setup works | ✅ Complete (`npm install && npm run dev`) |
-| CI/CD pipeline configured | ✅ Complete |
-| All format/lint/build checks pass | ✅ Complete |
-| README contains clear setup instructions | ✅ Complete |
-| Branch protection rules configured | ⚠️ **Manual task required** |
-| Netlify connected and live | ⚠️ **Manual task required** |
-| Custom domain configured | ⚠️ **Manual task required** |
+| Requirement                              | Status                                     |
+| ---------------------------------------- | ------------------------------------------ |
+| Repository is publicly accessible        | ✅ Complete                                |
+| Netlify deployment configuration ready   | ✅ Complete                                |
+| One-command dev setup works              | ✅ Complete (`npm install && npm run dev`) |
+| CI/CD pipeline configured                | ✅ Complete                                |
+| All format/lint/build checks pass        | ✅ Complete                                |
+| README contains clear setup instructions | ✅ Complete                                |
+| Branch protection rules configured       | ⚠️ **Manual task required**                |
+| Netlify connected and live               | ⚠️ **Manual task required**                |
+| Custom domain configured                 | ⚠️ **Manual task required**                |
 
 ---
 
 ## 🎉 Summary
 
 **Automated Infrastructure (100% Complete):**
+
 - Git repository with comprehensive documentation
 - Netlify configuration ready to deploy
 - Complete CI/CD pipeline with format checking, linting, type checking, build verification, and Lighthouse CI
@@ -234,6 +240,7 @@ npm test              # Run tests
 - All npm scripts configured and tested
 
 **Manual Tasks Remaining (3):**
+
 1. Configure GitHub branch protection rules
 2. Connect repository to Netlify and deploy
 3. Configure custom domain `paperlyte.app`

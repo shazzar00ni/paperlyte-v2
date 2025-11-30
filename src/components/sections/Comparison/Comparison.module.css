@@ -1,0 +1,158 @@
+/* Comparison Section Styles */
+
+.header {
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+}
+
+.title {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.subtitle {
+  font-size: var(--font-size-lg);
+  color: var(--color-text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  margin-bottom: var(--spacing-lg);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--color-surface);
+  font-size: var(--font-size-base);
+}
+
+.table thead {
+  background: var(--color-background);
+  border-bottom: 2px solid var(--color-border);
+}
+
+.table th,
+.table td {
+  padding: var(--spacing-md);
+  text-align: left;
+}
+
+.featureHeader {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  width: 30%;
+  min-width: 180px;
+}
+
+.competitorHeader {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  text-align: center;
+  width: 17.5%;
+  min-width: 100px;
+  position: relative;
+}
+
+.badge {
+  display: inline-block;
+  margin-left: var(--spacing-xs);
+  padding: 2px 8px;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  background: var(--color-primary);
+  color: var(--color-white);
+  border-radius: var(--border-radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.table tbody tr {
+  border-bottom: 1px solid var(--color-border);
+  transition: background-color var(--transition-fast);
+}
+
+.table tbody tr:hover {
+  background: var(--color-background);
+}
+
+.table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.featureCell {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+.cell {
+  text-align: center;
+  color: var(--color-text-secondary);
+}
+
+.highlightCell {
+  background: var(--color-primary-light, rgba(138, 43, 226, 0.05));
+  font-weight: var(--font-weight-semibold);
+}
+
+.textValue {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.disclaimer {
+  text-align: center;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-tertiary);
+  font-style: italic;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .title {
+    font-size: var(--font-size-2xl);
+  }
+
+  .subtitle {
+    font-size: var(--font-size-base);
+  }
+
+  .table {
+    font-size: var(--font-size-sm);
+  }
+
+  .table th,
+  .table td {
+    padding: var(--spacing-sm);
+  }
+
+  .featureHeader {
+    min-width: 120px;
+  }
+
+  .competitorHeader {
+    min-width: 80px;
+    font-size: var(--font-size-xs);
+  }
+
+  .badge {
+    display: block;
+    margin: var(--spacing-xs) auto 0;
+    width: fit-content;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .table tbody tr {
+    transition: none;
+  }
+}

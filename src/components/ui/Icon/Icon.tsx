@@ -15,7 +15,7 @@ export const Icon: React.FC<IconProps> = ({
 }) => {
   const sizeClass = {
     sm: 'fa-sm',
-    md: 'fa-lg', // or '' if you want md as default (no class)
+    md: '', // Medium size is default (no class)
     lg: 'fa-lg',
     xl: 'fa-xl',
     '2x': 'fa-2x',

@@ -3,6 +3,7 @@
     "collect": {
       "staticDistDir": "./dist",
       "numberOfRuns": 3,
+      "outputDir": "./.lighthouseci",
       "settings": {
         "preset": "desktop",
         "throttling": {

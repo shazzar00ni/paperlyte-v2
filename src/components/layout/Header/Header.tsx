@@ -39,7 +39,7 @@ export const Header = (): React.ReactElement => {
     return () => document.removeEventListener('keydown', handleEscape)
   }, [mobileMenuOpen])
 
-  // Focus trap for mobile menu
+  // Focus trap and arrow key navigation for mobile menu
   useEffect(() => {
     if (!mobileMenuOpen || !menuRef.current) return
 
@@ -50,30 +50,68 @@ export const Header = (): React.ReactElement => {
     const firstFocusable = focusableElements[0]
     const lastFocusable = focusableElements[focusableElements.length - 1]
 
-    const handleTabKey = (event: KeyboardEvent) => {
-      if (event.key !== 'Tab') return
+    const handleKeyboardNavigation = (event: KeyboardEvent) => {
+      const { key, shiftKey } = event
 
-      if (event.shiftKey) {
-        // Shift + Tab
-        if (document.activeElement === firstFocusable) {
-          event.preventDefault()
-          lastFocusable?.focus()
+      // Handle Tab key for focus trap
+      if (key === 'Tab') {
+        if (shiftKey) {
+          // Shift + Tab
+          if (document.activeElement === firstFocusable) {
+            event.preventDefault()
+            lastFocusable?.focus()
+          }
+        } else {
+          // Tab
+          if (document.activeElement === lastFocusable) {
+            event.preventDefault()
+            firstFocusable?.focus()
+          }
         }
-      } else {
-        // Tab
-        if (document.activeElement === lastFocusable) {
-          event.preventDefault()
-          firstFocusable?.focus()
+        return
+      }
+
+      // Handle arrow keys, Home, and End for menu navigation
+      if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(key)) {
+        event.preventDefault()
+
+        const currentIndex = Array.from(focusableElements).indexOf(
+          document.activeElement as HTMLElement
+        )
+
+        let targetIndex: number
+
+        switch (key) {
+          case 'ArrowDown':
+            // Move to next item, wrap to first if at end
+            targetIndex = currentIndex < focusableElements.length - 1 ? currentIndex + 1 : 0
+            break
+          case 'ArrowUp':
+            // Move to previous item, wrap to last if at beginning
+            targetIndex = currentIndex > 0 ? currentIndex - 1 : focusableElements.length - 1
+            break
+          case 'Home':
+            // Jump to first item
+            targetIndex = 0
+            break
+          case 'End':
+            // Jump to last item
+            targetIndex = focusableElements.length - 1
+            break
+          default:
+            return
         }
+
+        focusableElements[targetIndex]?.focus()
       }
     }
 
-    menu.addEventListener('keydown', handleTabKey)
+    menu.addEventListener('keydown', handleKeyboardNavigation)
 
     // Focus first element when menu opens
     firstFocusable?.focus()
 
-    return () => menu.removeEventListener('keydown', handleTabKey)
+    return () => menu.removeEventListener('keydown', handleKeyboardNavigation)
   }, [mobileMenuOpen])
 
   return (

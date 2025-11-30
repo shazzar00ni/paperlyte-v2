@@ -1,1 +1,1 @@
-export { Comparison } from './Comparison';
+export { Comparison } from './Comparison'

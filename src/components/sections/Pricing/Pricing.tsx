@@ -1,9 +1,9 @@
-import { Section } from '@components/layout/Section';
-import { AnimatedElement } from '@components/ui/AnimatedElement';
-import { Button } from '@components/ui/Button';
-import { Icon } from '@components/ui/Icon';
-import { PRICING_PLANS } from '@constants/pricing';
-import styles from './Pricing.module.css';
+import { Section } from '@components/layout/Section'
+import { AnimatedElement } from '@components/ui/AnimatedElement'
+import { Button } from '@components/ui/Button'
+import { Icon } from '@components/ui/Icon'
+import { PRICING_PLANS } from '@constants/pricing'
+import styles from './Pricing.module.css'
 
 export const Pricing = (): React.ReactElement => {
   return (
@@ -21,14 +21,8 @@ export const Pricing = (): React.ReactElement => {
 
       <div className={styles.grid}>
         {PRICING_PLANS.map((plan, index) => (
-          <AnimatedElement
-            key={plan.id}
-            animation="slideUp"
-            delay={150 + index * 100}
-          >
-            <article
-              className={`${styles.card} ${plan.isPopular ? styles.popularCard : ''}`}
-            >
+          <AnimatedElement key={plan.id} animation="slideUp" delay={150 + index * 100}>
+            <article className={`${styles.card} ${plan.isPopular ? styles.popularCard : ''}`}>
               {plan.isPopular && (
                 <div className={styles.popularBadge}>
                   <Icon name="fa-star" size="sm" ariaLabel="Most popular" />
@@ -98,5 +92,5 @@ export const Pricing = (): React.ReactElement => {
         </div>
       </AnimatedElement>
     </Section>
-  );
-};
+  )
+}

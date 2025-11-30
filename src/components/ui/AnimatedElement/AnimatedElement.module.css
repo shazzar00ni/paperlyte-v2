@@ -5,7 +5,9 @@
 .slideInRight,
 .scale {
   opacity: 0;
-  transition: opacity var(--transition-slow), transform var(--transition-slow);
+  transition:
+    opacity var(--transition-slow),
+    transform var(--transition-slow);
   will-change: opacity, transform;
 }
 

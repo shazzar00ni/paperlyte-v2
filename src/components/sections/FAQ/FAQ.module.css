@@ -91,7 +91,9 @@
 .answer {
   max-height: 0;
   overflow: hidden;
-  transition: max-height var(--transition-base), padding var(--transition-base);
+  transition:
+    max-height var(--transition-base),
+    padding var(--transition-base);
 }
 
 .answerOpen {

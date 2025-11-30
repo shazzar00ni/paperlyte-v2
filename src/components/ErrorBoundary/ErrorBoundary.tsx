@@ -1,35 +1,35 @@
-import { Component, type ErrorInfo, type ReactNode } from 'react';
-import styles from './ErrorBoundary.module.css';
+import { Component, type ErrorInfo, type ReactNode } from 'react'
+import styles from './ErrorBoundary.module.css'
 
 interface ErrorBoundaryProps {
-  children: ReactNode;
-  fallback?: ReactNode;
+  children: ReactNode
+  fallback?: ReactNode
 }
 
 interface ErrorBoundaryState {
-  hasError: boolean;
-  error: Error | null;
+  hasError: boolean
+  error: Error | null
 }
 
 export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
-    super(props);
+    super(props)
     this.state = {
       hasError: false,
       error: null,
-    };
+    }
   }
 
   static getDerivedStateFromError(error: Error): ErrorBoundaryState {
     return {
       hasError: true,
       error,
-    };
+    }
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     // Log error to console in development
-    console.error('ErrorBoundary caught an error:', error, errorInfo);
+    console.error('ErrorBoundary caught an error:', error, errorInfo)
 
     // In production, you might want to send this to an error reporting service
     // Example: Sentry.captureException(error, { extra: errorInfo });
@@ -39,14 +39,14 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     this.setState({
       hasError: false,
       error: null,
-    });
-  };
+    })
+  }
 
   render(): ReactNode {
     if (this.state.hasError) {
       // Use custom fallback if provided
       if (this.props.fallback) {
-        return this.props.fallback;
+        return this.props.fallback
       }
 
       // Default fallback UI
@@ -71,11 +71,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               </details>
             )}
             <div className={styles.errorActions}>
-              <button
-                onClick={this.handleReset}
-                className={styles.retryButton}
-                type="button"
-              >
+              <button onClick={this.handleReset} className={styles.retryButton} type="button">
                 Try Again
               </button>
               <button
@@ -88,9 +84,9 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             </div>
           </div>
         </div>
-      );
+      )
     }
 
-    return this.props.children;
+    return this.props.children
   }
 }

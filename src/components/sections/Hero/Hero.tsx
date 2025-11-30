@@ -1,29 +1,27 @@
-import { Button } from '@components/ui/Button';
-import { AnimatedElement } from '@components/ui/AnimatedElement';
-import { Section } from '@components/layout/Section';
-import styles from './Hero.module.css';
+import { Button } from '@components/ui/Button'
+import { AnimatedElement } from '@components/ui/AnimatedElement'
+import { Section } from '@components/layout/Section'
+import styles from './Hero.module.css'
 
 export const Hero = (): React.ReactElement => {
   const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
+    const element = document.getElementById(sectionId)
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      element.scrollIntoView({ behavior: 'smooth' })
     }
-  };
+  }
 
   return (
     <Section id="hero" className={styles.hero} padding="large">
       <div className={styles.content}>
         <AnimatedElement animation="fadeIn">
-          <h1 className={styles.headline}>
-            Your thoughts, unchained from complexity
-          </h1>
+          <h1 className={styles.headline}>Your thoughts, unchained from complexity</h1>
         </AnimatedElement>
 
         <AnimatedElement animation="fadeIn" delay={150}>
           <p className={styles.subheadline}>
-            Lightning-fast, distraction-free note-taking. No bloat, no friction.
-            Just you and your ideas, the way it should be.
+            Lightning-fast, distraction-free note-taking. No bloat, no friction. Just you and your
+            ideas, the way it should be.
           </p>
         </AnimatedElement>
 
@@ -37,11 +35,7 @@ export const Hero = (): React.ReactElement => {
             >
               Download Now
             </Button>
-            <Button
-              variant="secondary"
-              size="large"
-              onClick={() => scrollToSection('features')}
-            >
+            <Button variant="secondary" size="large" onClick={() => scrollToSection('features')}>
               See Features
             </Button>
           </div>
@@ -62,5 +56,5 @@ export const Hero = (): React.ReactElement => {
         </AnimatedElement>
       </div>
     </Section>
-  );
-};
+  )
+}

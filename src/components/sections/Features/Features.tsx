@@ -1,8 +1,8 @@
-import { Section } from '@components/layout/Section';
-import { AnimatedElement } from '@components/ui/AnimatedElement';
-import { Icon } from '@components/ui/Icon';
-import { FEATURES } from '@constants/features';
-import styles from './Features.module.css';
+import { Section } from '@components/layout/Section'
+import { AnimatedElement } from '@components/ui/AnimatedElement'
+import { Icon } from '@components/ui/Icon'
+import { FEATURES } from '@constants/features'
+import styles from './Features.module.css'
 
 export const Features = (): React.ReactElement => {
   return (
@@ -20,11 +20,7 @@ export const Features = (): React.ReactElement => {
 
       <div className={styles.grid}>
         {FEATURES.map((feature, index) => (
-          <AnimatedElement
-            key={feature.id}
-            animation="slideUp"
-            delay={150 + index * 75}
-          >
+          <AnimatedElement key={feature.id} animation="slideUp" delay={150 + index * 75}>
             <article className={styles.card}>
               <div className={styles.iconWrapper}>
                 <Icon
@@ -41,5 +37,5 @@ export const Features = (): React.ReactElement => {
         ))}
       </div>
     </Section>
-  );
-};
+  )
+}

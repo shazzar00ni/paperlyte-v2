@@ -165,6 +165,7 @@ describe('FAQ', () => {
       const item = FAQ_ITEMS[0];
       const questionButton = screen.getByRole('button', { name: new RegExp(item.question, 'i') });
       const ariaControls = questionButton.getAttribute('aria-controls');
+      expect(ariaControls).toBeTruthy();
       const answerElement = document.getElementById(ariaControls!);
 
       expect(answerElement).toHaveAttribute('aria-hidden', 'true');

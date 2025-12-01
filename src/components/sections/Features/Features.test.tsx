@@ -142,7 +142,7 @@ describe('Features', () => {
   });
 
   it('should have proper heading hierarchy', () => {
-    const { container } = render(<Features />);
+    render(<Features />);
 
     // Main heading should be h2
     const mainHeading = screen.getByText(

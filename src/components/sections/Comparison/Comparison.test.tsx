@@ -92,7 +92,7 @@ describe('Comparison', () => {
     render(<Comparison />);
 
     // Check for specific string values from the comparison data
-    const startupTimes = screen.getAllByText(/1s/i); // Includes "<1s", "3-5s", etc.
+    const startupTimes = screen.getAllByText(/\b<1s\b|\b\d+-\d+s\b/i); // Matches "<1s", "3-5s", etc.
     expect(startupTimes.length).toBeGreaterThan(0);
 
     expect(screen.getByText('Paid only')).toBeInTheDocument(); // Evernote offline access

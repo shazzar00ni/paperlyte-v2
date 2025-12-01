@@ -1,1 +1,1 @@
-export { EmailCapture } from './EmailCapture';
+export { EmailCapture } from "./EmailCapture";

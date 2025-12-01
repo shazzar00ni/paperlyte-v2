@@ -1,28 +1,40 @@
 :root {
   /* Colors - Paper-inspired palette (Light Mode) */
-  --color-primary: #7C3AED;        /* Purple 600 */
-  --color-primary-dark: #6D28D9;   /* Purple 700 */
-  --color-primary-light: #A78BFA;  /* Purple 400 */
-  --color-primary-faint: rgba(124, 58, 237, 0.1);  /* 10% opacity for backgrounds */
-  --color-primary-fainter: rgba(124, 58, 237, 0.05); /* 5% opacity for subtle backgrounds */
-  --color-background: #FFFFFF;
-  --color-surface: #F9FAFB;        /* Gray 50 */
-  --color-text-primary: #111827;   /* Gray 900 */
-  --color-text-secondary: #6B7280; /* Gray 500 */
-  --color-text-on-primary: #FFFFFF; /* White text on primary background */
-  --color-border: #E5E7EB;         /* Gray 200 */
+  --color-primary: #7c3aed; /* Purple 600 */
+  --color-primary-dark: #6d28d9; /* Purple 700 */
+  --color-primary-light: #a78bfa; /* Purple 400 */
+  --color-primary-faint: rgba(
+    124,
+    58,
+    237,
+    0.1
+  ); /* 10% opacity for backgrounds */
+  --color-primary-fainter: rgba(
+    124,
+    58,
+    237,
+    0.05
+  ); /* 5% opacity for subtle backgrounds */
+  --color-background: #ffffff;
+  --color-surface: #f9fafb; /* Gray 50 */
+  --color-text-primary: #111827; /* Gray 900 */
+  --color-text-secondary: #6b7280; /* Gray 500 */
+  --color-text-on-primary: #ffffff; /* White text on primary background */
+  --color-border: #e5e7eb; /* Gray 200 */
 
   /* Typography */
-  --font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-size-xs: 0.75rem;    /* 12px */
-  --font-size-sm: 0.875rem;   /* 14px */
-  --font-size-base: 1rem;     /* 16px */
-  --font-size-lg: 1.125rem;   /* 18px */
-  --font-size-xl: 1.25rem;    /* 20px */
-  --font-size-2xl: 1.5rem;    /* 24px */
-  --font-size-3xl: 1.875rem;  /* 30px */
-  --font-size-4xl: 2.25rem;   /* 36px */
-  --font-size-5xl: 3rem;      /* 48px */
+  --font-family:
+    "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  --font-size-xs: 0.75rem; /* 12px */
+  --font-size-sm: 0.875rem; /* 14px */
+  --font-size-base: 1rem; /* 16px */
+  --font-size-lg: 1.125rem; /* 18px */
+  --font-size-xl: 1.25rem; /* 20px */
+  --font-size-2xl: 1.5rem; /* 24px */
+  --font-size-3xl: 1.875rem; /* 30px */
+  --font-size-4xl: 2.25rem; /* 36px */
+  --font-size-5xl: 3rem; /* 48px */
   --font-weight-normal: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
@@ -32,21 +44,21 @@
   --line-height-relaxed: 1.75;
 
   /* Spacing */
-  --spacing-xs: 0.5rem;   /* 8px */
-  --spacing-sm: 1rem;     /* 16px */
-  --spacing-md: 1.5rem;   /* 24px */
-  --spacing-lg: 2rem;     /* 32px */
-  --spacing-xl: 3rem;     /* 48px */
-  --spacing-2xl: 4rem;    /* 64px */
-  --spacing-3xl: 6rem;    /* 96px */
+  --spacing-xs: 0.5rem; /* 8px */
+  --spacing-sm: 1rem; /* 16px */
+  --spacing-md: 1.5rem; /* 24px */
+  --spacing-lg: 2rem; /* 32px */
+  --spacing-xl: 3rem; /* 48px */
+  --spacing-2xl: 4rem; /* 64px */
+  --spacing-3xl: 6rem; /* 96px */
 
   /* Layout */
   --max-width: 1280px;
   --max-width-content: 1024px;
   --header-height: 64px;
-  --border-radius-sm: 0.25rem;  /* 4px */
-  --border-radius-md: 0.5rem;   /* 8px */
-  --border-radius-lg: 1rem;     /* 16px */
+  --border-radius-sm: 0.25rem; /* 4px */
+  --border-radius-md: 0.5rem; /* 8px */
+  --border-radius-lg: 1rem; /* 16px */
 
   /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
@@ -73,18 +85,28 @@
 }
 
 /* Dark Mode */
-[data-theme='dark'] {
+[data-theme="dark"] {
   /* Colors - Dark Mode palette */
-  --color-primary: #7C3AED;        /* Purple 600 - WCAG AA compliant 6.5:1 contrast with white */
-  --color-primary-dark: #6D28D9;   /* Purple 700 */
-  --color-primary-light: #8B5CF6;  /* Purple 500 */
-  --color-primary-faint: rgba(124, 58, 237, 0.1);  /* 10% opacity for backgrounds */
-  --color-primary-fainter: rgba(124, 58, 237, 0.05); /* 5% opacity for subtle backgrounds */
-  --color-background: #0F172A;     /* Slate 900 */
-  --color-surface: #1E293B;        /* Slate 800 */
-  --color-text-primary: #F1F5F9;   /* Slate 100 */
-  --color-text-secondary: #94A3B8; /* Slate 400 */
-  --color-border: #334155;         /* Slate 700 */
+  --color-primary: #7c3aed; /* Purple 600 - WCAG AA compliant 6.5:1 contrast with white */
+  --color-primary-dark: #6d28d9; /* Purple 700 */
+  --color-primary-light: #8b5cf6; /* Purple 500 */
+  --color-primary-faint: rgba(
+    124,
+    58,
+    237,
+    0.1
+  ); /* 10% opacity for backgrounds */
+  --color-primary-fainter: rgba(
+    124,
+    58,
+    237,
+    0.05
+  ); /* 5% opacity for subtle backgrounds */
+  --color-background: #0f172a; /* Slate 900 */
+  --color-surface: #1e293b; /* Slate 800 */
+  --color-text-primary: #f1f5f9; /* Slate 100 */
+  --color-text-secondary: #94a3b8; /* Slate 400 */
+  --color-border: #334155; /* Slate 700 */
 
   /* Theme transition */
   color-scheme: dark;
@@ -92,16 +114,26 @@
 
 /* System preference detection */
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    --color-primary: #7C3AED;        /* Purple 600 - WCAG AA compliant 6.5:1 contrast */
-    --color-primary-dark: #6D28D9;   /* Purple 700 */
-    --color-primary-light: #8B5CF6;  /* Purple 500 */
-    --color-primary-faint: rgba(124, 58, 237, 0.1);  /* 10% opacity for backgrounds */
-    --color-primary-fainter: rgba(124, 58, 237, 0.05); /* 5% opacity for subtle backgrounds */
-    --color-background: #0F172A;
-    --color-surface: #1E293B;
-    --color-text-primary: #F1F5F9;
-    --color-text-secondary: #94A3B8;
+  :root:not([data-theme="light"]) {
+    --color-primary: #7c3aed; /* Purple 600 - WCAG AA compliant 6.5:1 contrast */
+    --color-primary-dark: #6d28d9; /* Purple 700 */
+    --color-primary-light: #8b5cf6; /* Purple 500 */
+    --color-primary-faint: rgba(
+      124,
+      58,
+      237,
+      0.1
+    ); /* 10% opacity for backgrounds */
+    --color-primary-fainter: rgba(
+      124,
+      58,
+      237,
+      0.05
+    ); /* 5% opacity for subtle backgrounds */
+    --color-background: #0f172a;
+    --color-surface: #1e293b;
+    --color-text-primary: #f1f5f9;
+    --color-text-secondary: #94a3b8;
     --color-border: #334155;
 
     color-scheme: dark;
@@ -112,19 +144,19 @@
 @media (max-width: 768px) {
   :root {
     --font-size-4xl: 1.875rem; /* 30px on tablet */
-    --font-size-5xl: 2.25rem;  /* 36px on tablet */
-    --spacing-3xl: 4rem;       /* Reduce on tablet/mobile */
+    --font-size-5xl: 2.25rem; /* 36px on tablet */
+    --spacing-3xl: 4rem; /* Reduce on tablet/mobile */
   }
 }
 
 /* Extra small screens (phones < 480px) */
 @media (max-width: 480px) {
   :root {
-    --font-size-3xl: 1.5rem;   /* 24px on small phones */
-    --font-size-4xl: 1.75rem;  /* 28px on small phones */
-    --font-size-5xl: 2rem;     /* 32px on small phones */
-    --spacing-md: 1rem;        /* 16px padding on small screens */
-    --spacing-2xl: 3rem;       /* 48px on small screens */
-    --spacing-3xl: 3rem;       /* 48px on small screens */
+    --font-size-3xl: 1.5rem; /* 24px on small phones */
+    --font-size-4xl: 1.75rem; /* 28px on small phones */
+    --font-size-5xl: 2rem; /* 32px on small phones */
+    --spacing-md: 1rem; /* 16px padding on small screens */
+    --spacing-2xl: 3rem; /* 48px on small screens */
+    --spacing-3xl: 3rem; /* 48px on small screens */
   }
 }

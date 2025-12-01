@@ -14,7 +14,7 @@ Paperlyte includes template legal documents that need to be customized with your
 
 ## ⚠️ Important: Before Production
 
-**� WARNING: These are TEMPLATE documents. You MUST:**
+**⚠️ WARNING: These are TEMPLATE documents. You MUST:**
 
 1. **Consult with a lawyer** - Have an attorney review and customize these documents
 2. **Update all placeholders** - Replace `[Company Name]`, `[Address]`, etc.
@@ -35,20 +35,21 @@ Open this file and replace all placeholders marked with `[...]`:
 
 ### Company Information
 
-```typescript
+````typescript
 company: {
   name: 'Paperlyte',                    //  Already set
-  legalName: '[Company Legal Name]',     // � TODO: e.g., "Paperlyte Inc."
-  email: 'hello@paperlyte.com',         //  Update if needed
-  supportEmail: 'support@paperlyte.com',//  Update if needed
-  privacyEmail: 'privacy@paperlyte.com',//  Update if needed
-  legalEmail: 'legal@paperlyte.com',    //  Update if needed
-  securityEmail: 'security@paperlyte.com', //  Update if needed
-  dpoEmail: 'dpo@paperlyte.com',        //  Update if needed (GDPR)
-}
-```
+   legalName: '[Company Legal Name]',     // TODO: e.g., "Paperlyte Inc."
+   email: 'hello@paperlyte.com',         // ✓ Update if needed
+   supportEmail: 'support@paperlyte.com',// ✓ Update if needed
+   privacyEmail: 'privacy@paperlyte.com',// ✓ Update if needed
+   legalEmail: 'legal@paperlyte.com',    // ✓ Update if needed
+   securityEmail: 'security@paperlyte.com', // ✓ Update if needed
+   dpoEmail: 'dpo@paperlyte.com',        // ✓ Update if needed (GDPR)
 
-**Action Items:**
+- 📄 [Privacy Policy](./PRIVACY-POLICY.md) - Complete template
+- 📄 [Terms of Service](./TERMS-OF-SERVICE.md) - Complete template
+- 🛠️ [Legal Configuration](../src/constants/legal.ts) - Centralized config file
+
 - [ ] Set `legalName` to your registered company name
 - [ ] Verify all email addresses are active and monitored
 - [ ] Set up email forwarding or aliases if needed
@@ -59,15 +60,16 @@ company: {
 
 ```typescript
 address: {
-  street: '[Street Address]',  // � TODO: e.g., "123 Main Street"
-  city: '[City]',              // � TODO: e.g., "San Francisco"
-  state: '[State]',            // � TODO: e.g., "CA"
-  zip: '[ZIP]',                // � TODO: e.g., "94102"
-  country: '[Country]',        // � TODO: e.g., "United States"
+   street: '[Street Address]',  // TODO: e.g., "123 Main Street"
+   city: '[City]',              // TODO: e.g., "San Francisco"
+   state: '[State]',            // TODO: e.g., "CA"
+   zip: '[ZIP]',                // TODO: e.g., "94102"
+   country: '[Country]',        // TODO: e.g., "United States"
 }
-```
+````
 
 **Action Items:**
+
 - [ ] Add your company's registered business address
 - [ ] Ensure this matches your business registration
 
@@ -79,14 +81,15 @@ address: {
 documents: {
   privacy: 'https://github.com/shazzar00ni/paperlyte-v2/blob/main/docs/PRIVACY-POLICY.md',
   terms: 'https://github.com/shazzar00ni/paperlyte-v2/blob/main/docs/TERMS-OF-SERVICE.md',
-  cookies: '#',      // � TODO: Create cookie policy
-  security: '#',     // � TODO: Create security practices doc
-  dmca: '#',         // � TODO: Create DMCA policy (if applicable)
-  accessibility: '#', // � TODO: Create accessibility statement
+   cookies: '#',      // TODO: Create cookie policy
+   security: '#',     // TODO: Create security practices doc
+   dmca: '#',         // TODO: Create DMCA policy (if applicable)
+   accessibility: '#', // TODO: Create accessibility statement
 }
 ```
 
 **Action Items:**
+
 - [ ] Update URLs to point to your hosted documents (not GitHub in production)
 - [ ] Create additional policies as needed
 - [ ] Consider hosting on your main domain (e.g., `https://paperlyte.com/legal/privacy`)
@@ -100,11 +103,12 @@ social: {
   github: 'https://github.com/paperlyte/paperlyte',
   twitter: 'https://twitter.com/paperlyte',
   linkedin: 'https://linkedin.com/company/paperlyte',
-  discord: '#', // � TODO: Add if applicable
+   discord: '#', // TODO: Add if applicable
 }
 ```
 
 **Action Items:**
+
 - [ ] Update with your actual social media profiles
 - [ ] Remove platforms you don't use
 - [ ] Add any additional platforms (Discord, Reddit, etc.)
@@ -115,15 +119,16 @@ social: {
 
 ```typescript
 metadata: {
-  privacyLastUpdated: '2025-11-28',   //  Set automatically
-  termsLastUpdated: '2025-11-28',     //  Set automatically
-  termsVersion: '1.0',                //  Update when you revise
-  jurisdiction: '[State/Country]',    // � TODO: e.g., "California, USA"
-  governingLaw: '[State] law',        // � TODO: e.g., "California law"
+   privacyLastUpdated: '2025-11-28',   // ✓ Set automatically
+   termsLastUpdated: '2025-11-28',     // ✓ Set automatically
+   termsVersion: '1.0',                // ✓ Update when you revise
+   jurisdiction: '[State/Country]',    // TODO: e.g., "California, USA"
+   governingLaw: '[State] law',        // TODO: e.g., "California law"
 }
 ```
 
 **Action Items:**
+
 - [ ] Set jurisdiction to your company's location
 - [ ] Confirm governing law with your attorney
 - [ ] Update dates when you revise documents
@@ -138,29 +143,32 @@ File: `docs/PRIVACY-POLICY.md`
 
 **Search and replace these placeholders:**
 
-| Placeholder | Replace With | Example |
-|-------------|-------------|---------|
-| `[Company Legal Name]` | Your registered company name | "Paperlyte Inc." |
-| `[Street Address]` | Your business address | "123 Main Street" |
-| `[City, State, ZIP]` | Your city, state, and ZIP | "San Francisco, CA 94102" |
-| `[Country]` | Your country | "United States" |
-| `[Cloud provider name]` | Your hosting provider | "AWS", "Google Cloud", etc. |
-| `[region]` | Data center region | "US East", "EU West", etc. |
-| `[primary region]` | Your primary region | "United States", "European Union" |
+| Placeholder             | Replace With                 | Example                           |
+| ----------------------- | ---------------------------- | --------------------------------- |
+| `[Company Legal Name]`  | Your registered company name | "Paperlyte Inc."                  |
+| `[Street Address]`      | Your business address        | "123 Main Street"                 |
+| `[City, State, ZIP]`    | Your city, state, and ZIP    | "San Francisco, CA 94102"         |
+| `[Country]`             | Your country                 | "United States"                   |
+| `[Cloud provider name]` | Your hosting provider        | "AWS", "Google Cloud", etc.       |
+| `[region]`              | Data center region           | "US East", "EU West", etc.        |
+| `[primary region]`      | Your primary region          | "United States", "European Union" |
 
 **Key sections to review:**
 
 1. **Section 3: Data Storage & Security**
+
    - Update cloud provider details
    - Verify encryption standards
    - Confirm backup policies
 
 2. **Section 4: Data Sharing**
+
    - List your actual service providers
    - Update the service provider table
    - Add or remove providers as needed
 
 3. **Section 8: International Data Transfers**
+
    - Verify transfer mechanisms (SCCs, etc.)
    - Update if operating internationally
 
@@ -176,32 +184,36 @@ File: `docs/TERMS-OF-SERVICE.md`
 
 **Search and replace these placeholders:**
 
-| Placeholder | Replace With | Example |
-|-------------|-------------|---------|
-| `[State]` | Your governing jurisdiction | "California", "Delaware" |
-| `[State/Country]` | Full jurisdiction | "California, USA" |
-| `[Company Legal Name]` | Your registered company name | "Paperlyte Inc." |
-| `[Street Address]` | Your business address | "123 Main Street" |
-| `[City, State, ZIP]` | Your city, state, and ZIP | "San Francisco, CA 94102" |
-| `[Country]` | Your country | "United States" |
+| Placeholder            | Replace With                 | Example                   |
+| ---------------------- | ---------------------------- | ------------------------- |
+| `[State]`              | Your governing jurisdiction  | "California", "Delaware"  |
+| `[State/Country]`      | Full jurisdiction            | "California, USA"         |
+| `[Company Legal Name]` | Your registered company name | "Paperlyte Inc."          |
+| `[Street Address]`     | Your business address        | "123 Main Street"         |
+| `[City, State, ZIP]`   | Your city, state, and ZIP    | "San Francisco, CA 94102" |
+| `[Country]`            | Your country                 | "United States"           |
 
 **Key sections to review with your attorney:**
 
 1. **Section 5: Payment & Subscriptions**
+
    - Verify pricing and refund policies match your business model
    - Update payment methods
    - Confirm tax handling
 
 2. **Section 6: Service Availability**
+
    - Review SLA guarantees (99.9% uptime)
    - Update support response times
    - Adjust for your service tiers
 
 3. **Section 9: Limitation of Liability**
+
    - **CRITICAL**: Have attorney review liability caps
    - Ensure compliance with local consumer protection laws
 
 4. **Section 15: Dispute Resolution**
+
    - **CRITICAL**: Arbitration clauses vary by jurisdiction
    - Confirm class action waiver is enforceable in your region
    - Update arbitration provider (AAA vs. others)
@@ -212,7 +224,9 @@ File: `docs/TERMS-OF-SERVICE.md`
 
 ---
 
-## = Step 3: Verification Checklist
+## 📋 Step 3: Verification Checklist
+
+Step 3: Verification Checklist
 
 Use this checklist to ensure everything is properly configured:
 
@@ -291,11 +305,11 @@ Use this checklist to ensure everything is properly configured:
 Run this in your browser console or add to your tests:
 
 ```typescript
-import { needsLegalReview, getPlaceholderFields } from '@/constants/legal';
+import { needsLegalReview, getPlaceholderFields } from "@/constants/legal";
 
 if (needsLegalReview()) {
-  console.warn('Legal documents need review!');
-  console.warn('Missing:', getPlaceholderFields());
+  console.warn("Legal documents need review!");
+  console.warn("Missing:", getPlaceholderFields());
 }
 ```
 
@@ -308,6 +322,7 @@ if (needsLegalReview()) {
 ### Test in Production
 
 Before launching:
+
 - [ ] Legal document URLs are accessible
 - [ ] Documents open in new tabs
 - [ ] Mobile footer links work correctly
@@ -320,6 +335,7 @@ Before launching:
 ### When to Update
 
 **Update your legal documents when:**
+
 - You add new features or data collection
 - You add/remove third-party services
 - Privacy laws change (e.g., new state privacy laws)
@@ -349,23 +365,24 @@ Before launching:
 
 Ensure these emails are set up and monitored:
 
-| Email | Purpose | Response Time |
-|-------|---------|---------------|
-| `support@` | General support | 24-48 hours |
-| `privacy@` | Privacy requests (GDPR, CCPA) | 30 days (legal requirement) |
-| `legal@` | Legal inquiries | As needed |
-| `security@` | Security vulnerability reports | 24 hours |
-| `dpo@` | Data Protection Officer (EU) | 30 days (GDPR) |
+| Email       | Purpose                        | Response Time               |
+| ----------- | ------------------------------ | --------------------------- |
+| `support@`  | General support                | 24-48 hours                 |
+| `privacy@`  | Privacy requests (GDPR, CCPA)  | 30 days (legal requirement) |
+| `legal@`    | Legal inquiries                | As needed                   |
+| `security@` | Security vulnerability reports | 24 hours                    |
+| `dpo@`      | Data Protection Officer (EU)   | 30 days (GDPR)              |
 
 ### Email Forwarding
 
 If you don't want separate inboxes, set up forwarding:
+
 - All → `hello@paperlyte.com` (with filters/labels)
 - Or use email aliases in your email provider
 
 ---
 
-## � Legal Review Checklist
+## 📝 Legal Review Checklist
 
 **Before production, have your attorney review:**
 
@@ -377,6 +394,7 @@ If you don't want separate inboxes, set up forwarding:
 - [ ] **Other Jurisdictions** - Based on your user base
 
 **Attorney should verify:**
+
 - [ ] Liability limitations are enforceable
 - [ ] Arbitration clauses comply with local law
 - [ ] Warranty disclaimers are adequate
@@ -386,11 +404,14 @@ If you don't want separate inboxes, set up forwarding:
 
 ---
 
-## < International Considerations
+## 🌍 International Considerations
+
+International Considerations
 
 ### European Union (GDPR)
 
 If you have EU users:
+
 - [ ] Appoint a Data Protection Officer (DPO)
 - [ ] Implement Standard Contractual Clauses (SCCs) for data transfers
 - [ ] Provide data subject access request (DSAR) process
@@ -400,6 +421,7 @@ If you have EU users:
 ### California (CCPA/CPRA)
 
 If you have California users:
+
 - [ ] Provide "Do Not Sell My Personal Information" link (if applicable)
 - [ ] Honor opt-out requests within 15 days
 - [ ] Provide data access and deletion rights
@@ -408,21 +430,16 @@ If you have California users:
 ### United Kingdom
 
 Similar to GDPR:
+
 - [ ] Comply with UK GDPR
 - [ ] Register with ICO if required
 - [ ] Appoint UK representative if not UK-based
 
 ---
 
-## = Additional Resources
+## 📚 Additional Resources
 
-- [GDPR Portal](https://gdpr.eu/)
-- [CCPA Guide](https://oag.ca.gov/privacy/ccpa)
-- [UK ICO](https://ico.org.uk/)
-- [Termsfeed Privacy Policy Generator](https://www.termsfeed.com/privacy-policy-generator/)
-- [IAPP (Privacy Professionals)](https://iapp.org/)
-
----
+## ❓ FAQ
 
 ## ❓ FAQ
 
@@ -433,6 +450,7 @@ Similar to GDPR:
 ### Can I use these templates as-is?
 
 **No.** These are templates with placeholders. You must:
+
 1. Replace all placeholders
 2. Customize for your specific business practices
 3. Have an attorney review
@@ -441,6 +459,7 @@ Similar to GDPR:
 ### What if I'm just testing/developing?
 
 For development and testing:
+
 - Replace placeholders with dummy data
 - Add a banner: "Development Version - Not for Production"
 - Don't collect real user data without proper legal coverage
@@ -448,6 +467,7 @@ For development and testing:
 ### How often should I review these documents?
 
 **At least annually**, or whenever:
+
 - You make significant service changes
 - New privacy laws are enacted
 - You expand to new regions
@@ -456,6 +476,7 @@ For development and testing:
 ### What about other policies?
 
 You may also need:
+
 - Cookie Policy (if using cookies)
 - DMCA Policy (if users can upload content)
 - Acceptable Use Policy (more detailed version)
@@ -480,4 +501,4 @@ If you have questions about this setup:
 
 ---
 
-*Last Updated: November 28, 2025*
+_Last Updated: November 28, 2025_

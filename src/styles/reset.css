@@ -32,7 +32,9 @@ body {
   background-color: var(--color-background);
   min-height: 100vh;
   /* Theme transitions - respects prefers-reduced-motion via global override below */
-  transition: background-color var(--transition-base), color var(--transition-base);
+  transition:
+    background-color var(--transition-base),
+    color var(--transition-base);
 }
 
 /* Explicitly disable body transitions for reduced motion users */
@@ -108,6 +110,7 @@ ol {
     /* Minimize animation duration while preventing animation breakage */
     animation-duration: var(--reduced-motion-duration, 0.01ms) !important;
     animation-iteration-count: 1 !important;
+    animation-play-state: paused !important;
 
     /* Minimize transition duration */
     transition-duration: var(--reduced-motion-duration, 0.01ms) !important;

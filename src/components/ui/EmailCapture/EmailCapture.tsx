@@ -1,23 +1,25 @@
-import { useState, type FormEvent } from 'react';
-import { Button } from '@components/ui/Button';
-import { Icon } from '@components/ui/Icon';
-import styles from './EmailCapture.module.css';
+import { useState, type FormEvent } from "react";
+import { Button } from "@components/ui/Button";
+import { Icon } from "@components/ui/Icon";
+import styles from "./EmailCapture.module.css";
 
 interface EmailCaptureProps {
-  variant?: 'inline' | 'centered';
+  variant?: "inline" | "centered";
   placeholder?: string;
   buttonText?: string;
 }
 
 export const EmailCapture = ({
-  variant = 'inline',
-  placeholder = 'Enter your email',
-  buttonText = 'Join Waitlist',
+  variant = "inline",
+  placeholder = "Enter your email",
+  buttonText = "Join Waitlist",
 }: EmailCaptureProps): React.ReactElement => {
-  const [email, setEmail] = useState('');
-  const [honeypot, setHoneypot] = useState(''); // Spam protection
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [email, setEmail] = useState("");
+  const [honeypot, setHoneypot] = useState(""); // Spam protection
+  const [status, setStatus] = useState<
+    "idle" | "loading" | "success" | "error"
+  >("idle");
+  const [errorMessage, setErrorMessage] = useState("");
   const [gdprConsent, setGdprConsent] = useState(false);
 
   const validateEmail = (email: string): boolean => {
@@ -35,67 +37,74 @@ export const EmailCapture = ({
 
     // Validation
     if (!email.trim()) {
-      setStatus('error');
-      setErrorMessage('Please enter your email address');
+      setStatus("error");
+      setErrorMessage("Please enter your email address");
       return;
     }
 
     if (!validateEmail(email)) {
-      setStatus('error');
-      setErrorMessage('Please enter a valid email address');
+      setStatus("error");
+      setErrorMessage("Please enter a valid email address");
       return;
     }
 
     if (!gdprConsent) {
-      setStatus('error');
-      setErrorMessage('Please agree to receive emails from Paperlyte');
+      setStatus("error");
+      setErrorMessage("Please agree to receive emails from Paperlyte");
       return;
     }
 
-    setStatus('loading');
-    setErrorMessage('');
+    setStatus("loading");
+    setErrorMessage("");
 
     try {
       // Call Netlify serverless function
-      const response = await fetch('/.netlify/functions/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/.netlify/functions/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Subscription failed');
+        throw new Error(data.error || "Subscription failed");
       }
 
-      setStatus('success');
-      setEmail('');
+      setStatus("success");
+      setEmail("");
       setGdprConsent(false);
 
       // Track conversion (optional - add analytics here)
-      if (typeof window !== 'undefined' && 'gtag' in window && typeof window.gtag === 'function') {
-        window.gtag('event', 'email_signup', {
-          event_category: 'engagement',
-          event_label: 'waitlist',
+      if (
+        typeof window !== "undefined" &&
+        "gtag" in window &&
+        typeof window.gtag === "function"
+      ) {
+        window.gtag("event", "email_signup", {
+          event_category: "engagement",
+          event_label: "waitlist",
         });
       }
-
     } catch (error) {
-      setStatus('error');
-      const message = error instanceof Error ? error.message : 'Something went wrong. Please try again.';
+      setStatus("error");
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Something went wrong. Please try again.";
       setErrorMessage(message);
-      console.error('Email subscription error:', error);
+      console.error("Email subscription error:", error);
     }
   };
 
-  if (status === 'success') {
+  if (status === "success") {
     return (
       <div className={`${styles.container} ${styles[variant]}`}>
         <div className={styles.success} role="alert">
           <Icon name="fa-circle-check" size="lg" />
           <p className={styles.successMessage}>
-            <strong>You're on the list!</strong><br />
+            <strong>You're on the list!</strong>
+            <br />
             Check your email to confirm your subscription.
           </p>
         </div>
@@ -130,18 +139,18 @@ export const EmailCapture = ({
             onChange={(e) => setEmail(e.target.value)}
             placeholder={placeholder}
             className={styles.input}
-            disabled={status === 'loading'}
+            disabled={status === "loading"}
             required
-            aria-invalid={status === 'error'}
-            aria-describedby={status === 'error' ? 'email-error' : undefined}
+            aria-invalid={status === "error"}
+            aria-describedby={status === "error" ? "email-error" : undefined}
           />
           <Button
             variant="primary"
             size="medium"
-            disabled={status === 'loading'}
+            disabled={status === "loading"}
             className={styles.button}
           >
-            {status === 'loading' ? (
+            {status === "loading" ? (
               <>
                 <Icon name="fa-spinner" size="sm" className={styles.spinner} />
                 Joining...
@@ -159,19 +168,24 @@ export const EmailCapture = ({
               checked={gdprConsent}
               onChange={(e) => setGdprConsent(e.target.checked)}
               className={styles.checkbox}
-              disabled={status === 'loading'}
+              disabled={status === "loading"}
               required
             />
             <span className={styles.gdprText}>
-              I agree to receive emails from Paperlyte. View our{' '}
-              <a href="/privacy.html" className={styles.link} target="_blank" rel="noopener noreferrer">
+              I agree to receive emails from Paperlyte. View our{" "}
+              <a
+                href="/privacy.html"
+                className={styles.link}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 Privacy Policy
               </a>
             </span>
           </label>
         </div>
 
-        {status === 'error' && errorMessage && (
+        {status === "error" && errorMessage && (
           <div
             id="email-error"
             className={styles.error}

@@ -1,3 +1,19 @@
+- [ ] Payment processor fees (percentage + per-transaction) recorded as deductible business expenses, classified in a dedicated “payment processor fees” expense account, cross-checked monthly against processor statements, and retained for 7 years for tax and audit compliance
+  - Guidance: Ensure all payment processing fees are transparently tracked, reconciled monthly, and retained per the 7-year record retention policy for accurate tax reporting and audit readiness.
+
+### Anti-Spam Law Compliance (CAN-SPAM / CASL)
+
+- [ ] Clear sender identification and valid physical postal address in all marketing emails
+- [ ] Accurate, non-misleading subject lines
+- [ ] Visible and functional unsubscribe mechanism in every marketing email
+- [ ] Unsubscribe requests honored within statutory timeframes (CAN-SPAM: 10 business days; CASL: 2 business days)
+- [ ] Suppression/opt-out lists maintained and respected
+- [ ] Consent/opt-in evidence and unsubscribe logs recorded and retained for audits
+- [ ] Controls applied to all marketing/transactional emails (e.g., privacy@, support@, hello@)
+- [ ] Provider/platform supports automated unsubscribe handling
+- [ ] Provider/platform supports suppression lists
+- [ ] Provider/platform supports consent record retention
+
 # Legal Compliance Checklist
 
 **Last Updated**: November 28, 2025
@@ -15,7 +31,32 @@ Use this checklist to track your progress toward legal compliance and production
 - [ ] Phase 4: Production Deployment (Issue #33)
 - [ ] Phase 5: Ongoing Compliance
 
-**Estimated Completion**: ___ weeks
+**Estimated Completion**: \_\_\_ weeks
+
+<details>
+<summary><strong>Timeline Guidance</strong></summary>
+
+<ul>
+  <li><strong>Typical Range:</strong> <br>
+    <ul>
+      <li>4–8 weeks for straightforward SaaS legal compliance with an experienced team and no major legal complications.</li>
+      <li>8–12+ weeks if external counsel, complex international requirements, or significant document customization are needed.</li>
+    </ul>
+  </li>
+  <li><strong>Factors Affecting Duration:</strong>
+    <ul>
+      <li>Team size and availability</li>
+      <li>Complexity of product and data flows</li>
+      <li>Attorney or external counsel response times</li>
+      <li>Number of required legal documents and reviews</li>
+      <li>Regulatory scope (e.g., GDPR, CCPA, international)</li>
+      <li>Internal review and approval cycles</li>
+    </ul>
+  </li>
+</ul>
+<em>Choose an estimate that reflects your specific situation and update as needed.</em>
+
+</details>
 
 ---
 
@@ -24,6 +65,7 @@ Use this checklist to track your progress toward legal compliance and production
 ### Issue #29: Legal Configuration (`src/constants/legal.ts`)
 
 #### Company Information
+
 - [ ] Update `legalName` with registered business name
 - [ ] Verify `email` (hello@paperlyte.com)
 - [ ] Verify `supportEmail` (support@paperlyte.com)
@@ -33,6 +75,7 @@ Use this checklist to track your progress toward legal compliance and production
 - [ ] Verify `dpoEmail` (dpo@paperlyte.com) - if EU users
 
 #### Physical Address
+
 - [ ] Add street address
 - [ ] Add city
 - [ ] Add state/province
@@ -40,17 +83,20 @@ Use this checklist to track your progress toward legal compliance and production
 - [ ] Add country
 
 #### Legal Metadata
+
 - [ ] Set jurisdiction (e.g., "California, USA")
 - [ ] Set governing law (e.g., "California law")
 - [ ] Update document URLs for production
 
 #### Social Media
+
 - [ ] Update GitHub URL
 - [ ] Update Twitter/X URL
 - [ ] Update LinkedIn URL
 - [ ] Add Discord link (if applicable)
 
 #### Verification
+
 - [ ] Run placeholder checker: `npx ts-node scripts/check-legal-placeholders.ts`
 - [ ] All placeholders replaced
 - [ ] All URLs are valid
@@ -63,17 +109,19 @@ Use this checklist to track your progress toward legal compliance and production
 ### Issue #30: Privacy Policy (`docs/PRIVACY-POLICY.md`)
 
 #### Search and Replace
-- [ ] `[Company Legal Name]` → _________________
-- [ ] `[Street Address]` → _________________
-- [ ] `[City]` → _________________
-- [ ] `[State]` → _________________
-- [ ] `[ZIP]` → _________________
-- [ ] `[Country]` → _________________
-- [ ] `[Cloud provider name]` → _________________
-- [ ] `[region]` → _________________
-- [ ] `[primary region]` → _________________
+
+- [ ] `[Company Legal Name]` → **\*\*\*\***\_**\*\*\*\***
+- [ ] `[Street Address]` → **\*\*\*\***\_**\*\*\*\***
+- [ ] `[City]` → **\*\*\*\***\_**\*\*\*\***
+- [ ] `[State]` → **\*\*\*\***\_**\*\*\*\***
+- [ ] `[ZIP]` → **\*\*\*\***\_**\*\*\*\***
+- [ ] `[Country]` → **\*\*\*\***\_**\*\*\*\***
+- [ ] `[Cloud provider name]` → **\*\*\*\***\_**\*\*\*\***
+- [ ] `[region]` → **\*\*\*\***\_**\*\*\*\***
+- [ ] `[primary region]` → **\*\*\*\***\_**\*\*\*\***
 
 #### Content Review
+
 - [ ] Section 1: Introduction - Verify company info
 - [ ] Section 2: Data Collection - Accurate list
 - [ ] Section 3: Data Storage - Verify encryption, providers
@@ -86,6 +134,7 @@ Use this checklist to track your progress toward legal compliance and production
 - [ ] Section 10: Contact Info - All emails correct
 
 #### Compliance Checks
+
 - [ ] GDPR compliance sections accurate (if EU users)
 - [ ] CCPA compliance sections accurate (if CA users)
 - [ ] UK GDPR sections accurate (if UK users)
@@ -100,14 +149,16 @@ Use this checklist to track your progress toward legal compliance and production
 ### Issue #31: Terms of Service (`docs/TERMS-OF-SERVICE.md`)
 
 #### Search and Replace
-- [ ] `[Company Legal Name]` → _________________
-- [ ] `[Street Address]` → _________________
-- [ ] `[City, State, ZIP]` → _________________
-- [ ] `[Country]` → _________________
-- [ ] `[State]` → _________________ (governing law)
-- [ ] `[State/Country]` → _________________
+
+- [ ] `[Company Legal Name]` → **\*\*\*\***\_**\*\*\*\***
+- [ ] `[Street Address]` → **\*\*\*\***\_**\*\*\*\***
+- [ ] `[City, State, ZIP]` → **\*\*\*\***\_**\*\*\*\***
+- [ ] `[Country]` → **\*\*\*\***\_**\*\*\*\***
+- [ ] `[State]` → **\*\*\*\***\_**\*\*\*\*** (governing law)
+- [ ] `[State/Country]` → **\*\*\*\***\_**\*\*\*\***
 
 #### Critical Sections (⚠️ Requires Attorney Review)
+
 - [ ] Section 5: Payment & Subscriptions
   - [ ] Pricing tiers match offering
   - [ ] Refund policy verified
@@ -133,6 +184,7 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] Correct jurisdiction set
 
 #### Version Control
+
 - [ ] Update "Last Updated" date
 - [ ] Update "Effective Date"
 - [ ] Add entry to Version History table
@@ -145,6 +197,7 @@ Use this checklist to track your progress toward legal compliance and production
 ## Phase 2: Email Setup (Issue #34)
 
 ### Email Account Creation
+
 - [ ] `privacy@paperlyte.com` - Created and monitored
 - [ ] `support@paperlyte.com` - Created and monitored
 - [ ] `legal@paperlyte.com` - Created and monitored
@@ -153,7 +206,9 @@ Use this checklist to track your progress toward legal compliance and production
 - [ ] `dpo@paperlyte.com` - Created (if EU users)
 
 ### Email Provider Setup
-**Provider**: _________________
+
+**Provider**: **\*\*\*\***\_**\*\*\*\***
+
 - [ ] Domain verified with email provider
 - [ ] SPF record configured
 - [ ] DKIM configured
@@ -161,8 +216,14 @@ Use this checklist to track your progress toward legal compliance and production
 - [ ] 2FA enabled on all accounts
 - [ ] Strong passwords set
 - [ ] Mobile access configured
+- [ ] **TLS/SSL Enforcement**
+  - [ ] SMTP/TLS enforced for all inbound and outbound mail (test with mail-tester.com or similar)
+  - [ ] Provider supports and enforces TLS 1.2+ for all connections
+  - [ ] Document TLS/SSL configuration and verification steps
+  - [ ] Responsible owner assigned: **\*\*\*\***\_**\*\*\*\***
 
 ### Auto-Responders
+
 - [ ] Privacy auto-responder configured
 - [ ] Security auto-responder configured
 - [ ] Support auto-responder configured
@@ -172,6 +233,7 @@ Use this checklist to track your progress toward legal compliance and production
 - [ ] Test emails sent and received
 
 ### Monitoring & Alerts
+
 - [ ] Email forwarding configured
 - [ ] Mobile notifications enabled
 - [ ] Ticketing system set up (if applicable)
@@ -179,8 +241,15 @@ Use this checklist to track your progress toward legal compliance and production
 - [ ] Team members assigned to each inbox
 - [ ] Escalation procedures documented
 - [ ] Weekly reminder set up
+- [ ] **DLP (Data Loss Prevention) Rules Configured**
+  - [ ] Sensitive data detection enabled (e.g., PII, financial, health info)
+  - [ ] Attachment and keyword blocking rules set (e.g., block SSNs, credit card numbers)
+  - [ ] Exception workflow documented for legitimate business needs
+  - [ ] DLP policy and rules documented
+  - [ ] Responsible owner assigned: **\*\*\*\***\_**\*\*\*\***
 
 ### Testing
+
 - [ ] Send test to privacy@
 - [ ] Send test to security@
 - [ ] Send test to support@
@@ -190,10 +259,17 @@ Use this checklist to track your progress toward legal compliance and production
 - [ ] Verify all auto-responders work
 - [ ] Check deliverability (not in spam)
 - [ ] Test from multiple email providers
+- [ ] **Retention, Archival, and Legal Hold Policies**
+  - [ ] Email retention periods defined and documented for each account type
+  - [ ] Automated archiving configured per policy
+  - [ ] Legal hold process defined and tested (e.g., for litigation or regulatory requirements)
+  - [ ] Policy owner and escalation contact assigned: **\*\*\*\***\_**\*\*\*\***
+  - [ ] Verification: Review policy documentation and test archiving/legal hold procedures
 
 ### Email Security & Compliance
 
 #### Encryption & Transport Security
+
 - [ ] **TLS/SSL Encryption** - All emails encrypted in transit
   - [ ] Verify TLS 1.2+ enforced for incoming mail
   - [ ] Verify TLS 1.2+ enforced for outgoing mail
@@ -203,13 +279,16 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] Confirm provider encrypts stored emails (AES-256 recommended)
   - [ ] Document encryption standards in privacy policy
   - [ ] Verify backup encryption enabled
-- [ ] **S/MIME or PGP** (Optional but recommended for security@)
+- [ ] **S/MIME or PGP** (Recommended — prefer S/MIME; PGP for external researchers)
+  - [ ] Use S/MIME as the default for SaaS email workflows (built-in support in most clients; preferred when resources are limited)
+  - [ ] Use PGP for communication with security researchers or external stakeholders who already use PGP
   - [ ] Generate S/MIME certificates for sensitive addresses
-  - [ ] Public keys published on website
+  - [ ] Publish S/MIME and PGP public keys on website or security.txt
   - [ ] Team trained on encrypted email handling
-  - [ ] Key management procedures documented
+  - [ ] Key management and publication procedures documented and followed
 
 #### Authentication & Anti-Spoofing
+
 - [ ] **SPF (Sender Policy Framework)**
   - [ ] SPF record published in DNS
   - [ ] SPF record includes all authorized senders
@@ -232,6 +311,7 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] Logo appears in supported email clients
 
 #### Access Control & Authentication
+
 - [ ] **Multi-Factor Authentication (MFA/2FA)**
   - [ ] 2FA enabled on all email accounts
   - [ ] Backup codes stored securely
@@ -255,14 +335,15 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] IP allowlist configured (if applicable)
 
 #### Data Retention & Deletion
+
 - [ ] **Retention Policies**
   - [ ] Email retention periods defined per account type:
-    - [ ] privacy@ - Retention: _____ (recommend 3-7 years for compliance)
-    - [ ] legal@ - Retention: _____ (recommend 7+ years)
-    - [ ] security@ - Retention: _____ (recommend 3 years minimum)
-    - [ ] support@ - Retention: _____ (recommend 2-3 years)
-    - [ ] hello@ - Retention: _____ (recommend 1-2 years)
-    - [ ] dpo@ - Retention: _____ (recommend 3-7 years)
+    - [ ] privacy@ - Retention: **\_** (recommend 3-7 years for compliance)
+    - [ ] legal@ - Retention: **\_** (recommend 7+ years)
+    - [ ] security@ - Retention: **\_** (recommend 3 years minimum)
+    - [ ] support@ - Retention: **\_** (recommend 2-3 years)
+    - [ ] hello@ - Retention: **\_** (recommend 1-2 years)
+    - [ ] dpo@ - Retention: **\_** (recommend 3-7 years)
   - [ ] Auto-deletion rules configured in email provider
   - [ ] Legal hold process defined for litigation
   - [ ] Retention policy documented and published
@@ -273,6 +354,7 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] Deletion logs maintained for audit trail
 
 #### Audit Logging & Monitoring
+
 - [ ] **Email Activity Logging**
   - [ ] Login attempts logged (successful and failed)
   - [ ] Email send/receive activity logged
@@ -292,6 +374,7 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] Regular security report review scheduled
 
 #### GDPR/Privacy Compliance for Emails
+
 - [ ] **Data Subject Request Handling**
   - [ ] Process to search emails for personal data
   - [ ] Email export capability for access requests
@@ -313,6 +396,7 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] Data localization requirements met (if applicable)
 
 #### Business Continuity & Disaster Recovery
+
 - [ ] **Email Backup**
   - [ ] Automated backup configured (daily recommended)
   - [ ] Backup retention period defined
@@ -321,8 +405,8 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] Off-site backup storage configured
 - [ ] **Disaster Recovery Plan**
   - [ ] Email recovery procedures documented
-  - [ ] RTO (Recovery Time Objective) defined: _____ hours
-  - [ ] RPO (Recovery Point Objective) defined: _____ hours
+  - [ ] RTO (Recovery Time Objective) defined: **\_** hours
+  - [ ] RPO (Recovery Point Objective) defined: **\_** hours
   - [ ] Failover email provider identified (if applicable)
   - [ ] DR plan tested annually
 - [ ] **Account Recovery**
@@ -332,6 +416,7 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] DNS management access documented
 
 #### Third-Party Email Provider Compliance
+
 - [ ] **Provider Due Diligence**
   - [ ] Provider's SOC 2 Type II report reviewed
   - [ ] Provider's ISO 27001 certification verified
@@ -352,6 +437,7 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] Compliance certifications validated
 
 #### Email Security Best Practices
+
 - [ ] **Phishing Protection**
   - [ ] Anti-phishing training completed by team
   - [ ] Email header inspection enabled
@@ -377,6 +463,7 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] Lost device procedure documented
 
 #### Compliance Documentation
+
 - [ ] **Email Security Policy**
   - [ ] Acceptable use policy for email
   - [ ] Email retention policy published
@@ -403,13 +490,15 @@ Use this checklist to track your progress toward legal compliance and production
 ## Phase 3: Legal Review (Issue #32)
 
 ### Find Attorney
+
 - [ ] Attorney selected
 - [ ] Experience in tech/privacy law verified
-- [ ] Budget agreed upon: $_________
-- [ ] Timeline agreed upon: _____ weeks
+- [ ] Budget agreed upon: $\***\*\_\*\***
+- [ ] Timeline agreed upon: **\_** weeks
 - [ ] Engagement letter signed
 
 ### Document Submission
+
 - [ ] Privacy Policy submitted
 - [ ] Terms of Service submitted
 - [ ] Legal configuration shared
@@ -420,6 +509,7 @@ Use this checklist to track your progress toward legal compliance and production
 ### Attorney Review Areas
 
 #### Privacy Policy Review
+
 - [ ] Privacy Policy - Data practices compliance
 - [ ] Privacy Policy - GDPR compliance (if EU)
 - [ ] Privacy Policy - CCPA compliance (if CA)
@@ -427,7 +517,14 @@ Use this checklist to track your progress toward legal compliance and production
 - [ ] Privacy Policy - Payment data handling disclosed
 - [ ] Privacy Policy - Third-party payment processor listed
 
+#### Payment Processing Compliance
+
+- [ ] Payment Processing - PCI DSS compliance (if payments processed)
+- [ ] Payment Processing - Third-party payment processor terms reviewed
+- [ ] Payment Processing - Data retention policy for payment data
+
 #### Terms of Service Review
+
 - [ ] Terms - Liability limitations enforceable
 - [ ] Terms - Warranty disclaimers adequate
 - [ ] Terms - Arbitration clause enforceable
@@ -440,6 +537,7 @@ Use this checklist to track your progress toward legal compliance and production
 #### Payment Processing & Financial Compliance
 
 ##### PCI DSS Compliance (Payment Card Industry Data Security Standard)
+
 - [ ] **Compliance Level Determination**
   - [ ] Transaction volume assessed (determines SAQ level)
   - [ ] SAQ-A (payment processor handles all card data) - Most common for SaaS
@@ -461,6 +559,7 @@ Use this checklist to track your progress toward legal compliance and production
 ##### Consumer Protection Laws
 
 ###### United States Federal Laws
+
 - [ ] **Electronic Fund Transfer Act (EFTA) / Regulation E**
   - [ ] ACH payment disclosures compliant
   - [ ] Error resolution procedures defined
@@ -480,6 +579,7 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] Fee transparency requirements met
 
 ###### US State Laws
+
 - [ ] **California Consumer Protection Laws**
   - [ ] SB 343 automatic renewal compliance (if CA customers)
   - [ ] Clear and conspicuous auto-renewal disclosures
@@ -495,6 +595,7 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] Tax exemption certificate handling procedures
 
 ###### International Consumer Protection
+
 - [ ] **EU Consumer Rights Directive**
   - [ ] 14-day withdrawal right for EU consumers
   - [ ] Pre-contractual information requirements met
@@ -515,6 +616,7 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] Automatic renewal requirements (if AU customers)
 
 ##### Subscription & Recurring Billing Compliance
+
 - [ ] **Subscription Disclosure Requirements**
   - [ ] Subscription terms clearly stated before purchase
   - [ ] Billing frequency prominently displayed
@@ -542,6 +644,7 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] Downgrade/upgrade handling procedures
 
 ##### Refund, Cancellation & Chargeback Policies
+
 - [ ] **Refund Policy Compliance**
   - [ ] Refund policy clearly stated and easily accessible
   - [ ] Refund timeframes specified
@@ -567,6 +670,7 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] Excessive chargeback monitoring (Visa/MC thresholds)
 
 ##### Sales Tax, VAT & International Tax Compliance
+
 - [ ] **US Sales Tax**
   - [ ] Economic nexus analysis by state
   - [ ] Sales tax rates by jurisdiction
@@ -600,6 +704,7 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] Country-specific digital services taxes
 
 ##### Payment Processor Agreements & Compliance
+
 - [ ] **Payment Processor Selection & Agreement**
   - [ ] Processor agreement terms reviewed by attorney
   - [ ] Processing fees and rate structure verified
@@ -628,6 +733,7 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] Cryptocurrency payment regulations (if accepted)
 
 ##### Payment Data Security & Privacy
+
 - [ ] **Payment Data Handling**
   - [ ] Payment card data never logged or stored
   - [ ] Payment tokens used instead of card numbers
@@ -650,6 +756,7 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] Manual review process for flagged transactions
 
 ##### Financial Record Keeping & Reporting
+
 - [ ] **Transaction Records**
   - [ ] All transactions logged with timestamps
   - [ ] Failed transaction logging and monitoring
@@ -670,6 +777,7 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] Sales tax liability accounts maintained
 
 ##### Payment Method Specific Requirements
+
 - [ ] **Credit/Debit Card Processing**
   - [ ] Card brand rules compliance (Visa, Mastercard, Amex, Discover)
   - [ ] Card brand logos used properly (trademark guidelines)
@@ -689,6 +797,7 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] Wallet-specific refund handling
 
 ##### International Payment Regulations
+
 - [ ] **Cross-Border Payment Compliance**
   - [ ] Foreign exchange rate disclosure
   - [ ] Currency conversion transparency
@@ -707,6 +816,7 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] Local payment method compliance (Alipay, WeChat Pay, etc.)
 
 ### Revisions
+
 - [ ] Attorney feedback received
 - [ ] Required changes documented
 - [ ] Changes implemented
@@ -716,6 +826,7 @@ Use this checklist to track your progress toward legal compliance and production
 ### Additional Policies (Critical Compliance Gaps)
 
 #### Required for Most SaaS Applications
+
 - [ ] **Cookie Policy** - Required by GDPR/ePrivacy if using cookies
   - [ ] Cookie consent mechanism implemented
   - [ ] Cookie banner/notice designed
@@ -738,6 +849,7 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] Remediation timeline provided
 
 #### Content & Intellectual Property
+
 - [ ] **DMCA Policy** - Required if users generate content
   - [ ] Designated DMCA agent registered with Copyright Office
   - [ ] Takedown procedure documented
@@ -750,6 +862,7 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] Third-party content usage rights
 
 #### Security & Data Protection
+
 - [ ] **Security Practices Document** - Transparency about security
   - [ ] Encryption standards documented
   - [ ] Access controls described
@@ -767,6 +880,7 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] Notification process for changes
 
 #### Business Operations
+
 - [ ] **Service Level Agreement (SLA)** - If offering guarantees
   - [ ] Uptime commitments specified
   - [ ] Performance metrics defined
@@ -784,6 +898,7 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] Termination conditions
 
 #### Regulatory Compliance (Industry-Specific)
+
 - [ ] **COPPA Compliance** - If allowing users under 13 (US)
   - [ ] Parental consent mechanism
   - [ ] Child data collection limitations
@@ -802,6 +917,7 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] Network segmentation documented
 
 #### Transparency & Trust
+
 - [ ] **Transparency Report** - Building user trust
   - [ ] Government data requests disclosed
   - [ ] Takedown requests statistics
@@ -818,10 +934,10 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] GPL/AGPL compliance verified
   - [ ] License compatibility checked
 
-**Attorney Name**: _________________
-**Contact**: _________________
-**Review Date**: _________________
-**Approval Date**: _________________
+**Attorney Name**: **\*\*\*\***\_**\*\*\*\***
+**Contact**: **\*\*\*\***\_**\*\*\*\***
+**Review Date**: **\*\*\*\***\_**\*\*\*\***
+**Approval Date**: **\*\*\*\***\_**\*\*\*\***
 
 **Status**: ⬜ Not Started | 🟡 In Progress | ✅ Complete
 
@@ -830,18 +946,22 @@ Use this checklist to track your progress toward legal compliance and production
 ## Phase 4: Production Deployment (Issue #33)
 
 ### Hosting Decision
+
 **Selected Option**:
+
 - [ ] Option 1: Dedicated legal pages on main domain
 - [ ] Option 2: Static site
 - [ ] Option 3: Subdomain
 - [ ] Option 4: Documentation site
 
 **URLs**:
-- Privacy Policy: _________________
-- Terms of Service: _________________
-- Other: _________________
+
+- Privacy Policy: **\*\*\*\***\_**\*\*\*\***
+- Terms of Service: **\*\*\*\***\_**\*\*\*\***
+- Other: **\*\*\*\***\_**\*\*\*\***
 
 ### Document Conversion
+
 - [ ] Convert Privacy Policy to HTML
 - [ ] Convert Terms of Service to HTML
 - [ ] Apply styling/branding
@@ -852,6 +972,7 @@ Use this checklist to track your progress toward legal compliance and production
 - [ ] Add Open Graph tags
 
 ### Deployment
+
 - [ ] Upload documents to hosting
 - [ ] Configure SSL/HTTPS
 - [ ] Test all URLs work
@@ -862,6 +983,7 @@ Use this checklist to track your progress toward legal compliance and production
 - [ ] Configure CDN (if applicable)
 
 ### Update Application
+
 - [ ] Update `src/constants/legal.ts` URLs
 - [ ] Update Privacy Policy link
 - [ ] Update Terms of Service link
@@ -871,6 +993,7 @@ Use this checklist to track your progress toward legal compliance and production
 - [ ] Check on production deployment
 
 ### Version Control & Archival
+
 - [ ] Keep old versions archived
 - [ ] Set up version tracking system
 - [ ] Automated backups configured
@@ -878,6 +1001,7 @@ Use this checklist to track your progress toward legal compliance and production
 - [ ] Version history accessible
 
 ### SEO & Discoverability
+
 - [ ] Submit to Google Search Console
 - [ ] Submit to Bing Webmaster Tools
 - [ ] Sitemap includes legal pages
@@ -886,6 +1010,7 @@ Use this checklist to track your progress toward legal compliance and production
 ### Accessibility Compliance (WCAG 2.1 AA)
 
 #### Automated Testing
+
 - [ ] Run axe DevTools accessibility scan
 - [ ] Run Lighthouse accessibility audit (score >95)
 - [ ] Run WAVE Web Accessibility Evaluation Tool
@@ -894,6 +1019,7 @@ Use this checklist to track your progress toward legal compliance and production
 - [ ] Test with Pa11y or similar automated tool
 
 #### Manual Testing
+
 - [ ] **Keyboard Navigation**
   - [ ] All interactive elements accessible via Tab key
   - [ ] Focus indicators clearly visible
@@ -921,6 +1047,7 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] No reliance on hover states
 
 #### WCAG 2.1 Criteria Verification
+
 - [ ] **Level A Requirements (Must Have)**
   - [ ] 1.1.1 Non-text Content - Alt text provided
   - [ ] 2.1.1 Keyboard - All functionality keyboard accessible
@@ -935,6 +1062,7 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] 3.2.3 Consistent Navigation - Navigation consistent across pages
 
 #### Legal Accessibility Requirements
+
 - [ ] **ADA Compliance (US)** - Americans with Disabilities Act
   - [ ] Website considered "place of public accommodation"
   - [ ] WCAG 2.1 AA as defensible standard
@@ -952,6 +1080,7 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] Additional requirements verified
 
 #### Accessibility Statement
+
 - [ ] **Create and Publish Accessibility Statement**
   - [ ] Conformance level claimed (WCAG 2.1 AA target)
   - [ ] Date of last assessment
@@ -962,9 +1091,10 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] Commitment to accessibility stated
   - [ ] Remediation timeline for outstanding issues
   - [ ] Link from footer to accessibility statement
-- [ ] **Accessibility Statement URL**: _________________
+- [ ] **Accessibility Statement URL**: **\*\*\*\***\_**\*\*\*\***
 
 #### Ongoing Accessibility Maintenance
+
 - [ ] Accessibility review process for new features
 - [ ] Quarterly accessibility audits scheduled
 - [ ] Accessibility training for development team
@@ -973,6 +1103,7 @@ Use this checklist to track your progress toward legal compliance and production
 - [ ] Accessibility included in QA checklist
 
 #### Third-Party Accessibility Review (Recommended)
+
 - [ ] Budget allocated for professional accessibility audit
 - [ ] Accessibility consultant/firm selected
 - [ ] Comprehensive audit conducted
@@ -986,13 +1117,24 @@ Use this checklist to track your progress toward legal compliance and production
 
 ## Phase 5: Ongoing Compliance
 
+### Regulatory Change Monitoring
+
+- [ ] Subscribe to regulatory/legal update newsletters (e.g., IAPP, OneTrust, law firm alerts)
+- [ ] Perform quarterly review of global privacy regulations (e.g., LGPD, PIPEDA, Australia Privacy Act, APPI, FADP, DPDPA, etc.)
+- [ ] Document impact assessment for each regulatory change (include summary, affected policies, and required actions)
+- [ ] Define timeline and assign owner for each required policy update
+- [ ] Maintain a regulatory change log and update compliance matrix
+
 ### Regular Reviews
+
 - [ ] Annual legal document review scheduled
 - [ ] Quarterly privacy practice audit
 - [ ] Monthly email monitoring check
 - [ ] Ongoing attorney relationship established
+- [ ] Quarterly audit of international regulatory changes and jurisdictional risk assessment
 
 ### Privacy Request Handling
+
 - [ ] GDPR/CCPA request process documented
 - [ ] Identity verification process defined
 - [ ] Data export tool/process ready
@@ -1001,6 +1143,7 @@ Use this checklist to track your progress toward legal compliance and production
 - [ ] Request log maintained
 
 ### Security Incident Response
+
 - [ ] Security incident response plan created
 - [ ] Breach notification procedures defined
 - [ ] 72-hour GDPR notification process (if EU)
@@ -1008,12 +1151,14 @@ Use this checklist to track your progress toward legal compliance and production
 - [ ] Security team designated
 
 ### User Notifications
+
 - [ ] Process for notifying users of policy changes
 - [ ] 30-day advance notice procedure
 - [ ] Email template for policy updates
 - [ ] In-app notification system
 
 ### Compliance Monitoring
+
 - [ ] Response time tracking
 - [ ] Privacy request log maintained
 - [ ] Security incident log maintained
@@ -1021,12 +1166,14 @@ Use this checklist to track your progress toward legal compliance and production
 - [ ] Regulatory changes monitored
 
 ### Team Training
+
 - [ ] Team trained on privacy procedures
 - [ ] Team trained on security reporting
 - [ ] Team trained on email responses
 - [ ] Annual refresher training scheduled
 
 ### International Compliance Monitoring
+
 - [ ] Quarterly review of global privacy regulations
 - [ ] Monitoring system for new regional laws (LGPD, PIPEDA, APPI, etc.)
 - [ ] Risk assessment for each target jurisdiction
@@ -1037,7 +1184,7 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] South Korea (PIPA) - If serving Korean users
   - [ ] India (DPDPA) - If serving Indian users
   - [ ] Switzerland (FADP) - If serving Swiss users
-  - [ ] Other jurisdictions: _________________
+  - [ ] Other jurisdictions: **\*\*\*\***\_**\*\*\*\***
 - [ ] Regulatory change notification system established
   - [ ] Subscribe to legal/compliance newsletters
   - [ ] Set up Google Alerts for privacy law changes
@@ -1077,6 +1224,7 @@ Before going to production, verify:
 - [ ] ✅ Privacy request process documented
 - [ ] ✅ Security incident response plan ready
 - [ ] ✅ DPA (Data Processing Agreement) prepared (required for GDPR/B2B customers)
+- [ ] ✅ Data Processing Agreement signed (if processing EU/UK user data)
 - [ ] ✅ Team trained on compliance procedures
 - [ ] ✅ Logging and tracking systems in place
 
@@ -1087,18 +1235,20 @@ Before going to production, verify:
 ## 📞 Key Contacts
 
 ### Internal Team
-- **Legal Lead**: _________________
-- **Privacy Officer**: _________________
-- **DPO** (if applicable): _________________
-- **Security Lead**: _________________
-- **Support Manager**: _________________
+
+- **Legal Lead**: **\*\*\*\***\_**\*\*\*\***
+- **Privacy Officer**: **\*\*\*\***\_**\*\*\*\***
+- **DPO** (if applicable): **\*\*\*\***\_**\*\*\*\***
+- **Security Lead**: **\*\*\*\***\_**\*\*\*\***
+- **Support Manager**: **\*\*\*\***\_**\*\*\*\***
 
 ### External
-- **Attorney**: _________________
-  - Phone: _________________
-  - Email: _________________
-- **Email Provider Support**: _________________
-- **Hosting Provider Support**: _________________
+
+- **Attorney**: **\*\*\*\***\_**\*\*\*\***
+  - Phone: **\*\*\*\***\_**\*\*\*\***
+  - Email: **\*\*\*\***\_**\*\*\*\***
+- **Email Provider Support**: **\*\*\*\***\_**\*\*\*\***
+- **Hosting Provider Support**: **\*\*\*\***\_**\*\*\*\***
 
 ---
 
@@ -1117,7 +1267,8 @@ When setting targets for compliance metrics, consider:
 ### Compliance Metrics
 
 **Privacy Requests**
-- Privacy requests received: _____/month
+
+- Privacy requests received: **\_**/month
   - **Target Setting Guidance**:
     - Early stage (0-10K users): 1-5 requests/month
     - Growth stage (10K-100K users): 5-20 requests/month
@@ -1125,7 +1276,8 @@ When setting targets for compliance metrics, consider:
   - **Baseline**: Track for 3 months before setting improvement targets
 
 **Response Time**
-- Average response time: _____ days (legal maximum: 30 days GDPR/CCPA)
+
+- Average response time: **\_** days (legal maximum: 30 days GDPR/CCPA)
   - **Target Setting Guidance**:
     - Best-in-class: <7 days
     - Good: 7-14 days
@@ -1133,7 +1285,8 @@ When setting targets for compliance metrics, consider:
     - **Never exceed 30 days** (regulatory violation)
 
 **Security Reports**
-- Security reports received: _____/month
+
+- Security reports received: **\_**/month
   - **Target Setting Guidance**:
     - More reports = better security culture (not a negative metric)
     - Early stage: 0-2 reports/month expected
@@ -1141,35 +1294,57 @@ When setting targets for compliance metrics, consider:
     - Consider implementing bug bounty when receiving <5/month organically
 
 **Support Tickets**
-- Support tickets resolved: _____/month
+
+- Support Ticket Metrics:
+  1. **First Response Time**: Average time from ticket creation to first agent reply (target: <24 hours)
+  - Measured by ticketing system timestamps; aim for 90%+ of tickets to receive a first response within 24 hours.
+  2. **Time to Resolution**: Average time from ticket creation to final ticket close (target: 24–72 hours depending on complexity)
+  - Track separately for simple, moderate, and complex issues; set realistic targets by category.
+  3. **Customer Satisfaction Score (CSAT)**: Average score from post-resolution customer surveys (target: 85%+ positive)
+  - Measured via 1–5 star or thumbs up/down survey after ticket closure; calculate as % positive responses.
   - **Target Setting Guidance**:
-    - Track resolution rate % (aim for >95%)
-    - Track average time to resolution
-    - Set targets based on support team capacity
-    - Monitor ticket volume trends for resource planning
+  - Set and review targets for each metric based on team capacity and historical data
+  - Monitor trends and adjust processes to improve response, resolution, and satisfaction rates
 
 **Compliance Violations**
-- Compliance violations: _____ (target: 0, always)
+
+- Compliance violations: **\_** (target: 0, always)
   - **Target**: Maintain zero violations every month
-  - **Action threshold**: Any violation triggers immediate:
-    - Root cause analysis
-    - Corrective action plan
-    - Attorney consultation (if serious)
-    - Process improvement
+  - **Action threshold**: Any violation triggers immediate action according to severity:
+    - **Minor** (e.g., documentation errors, outdated links):
+      - Internal review and root cause analysis
+      - Corrective action plan by compliance lead
+      - No attorney consultation required
+      - Timeline: Resolve within 7 days
+    - **Major** (e.g., missing required policy clauses, missed regulatory deadlines):
+      - Internal review and root cause analysis
+      - Corrective action plan drafted
+      - Attorney review required before finalizing corrective plan
+      - Notify compliance lead and legal lead
+      - Timeline: Begin resolution within 3 days, resolve within 14 days
+    - **Critical** (e.g., data breach, failure to respond to legal requests):
+      - Immediate escalation to attorney and incident response team
+      - Initiate incident response plan
+      - Notify executive team and DPO (if applicable)
+      - Timeline: Begin response within 24 hours
+  - **Zero tolerance:** All violations must be logged, tracked, and resolved according to the above policy.
 
 ### Email Response Metrics
 
 **Privacy Email Response Time**
-- privacy@ response time: _____ days (target: <30)
+
+- privacy@ response time: **\_** days (target: <30)
   - **Legal requirement**: 30 days maximum (GDPR/CCPA)
-  - **Best practice targets**:
-    - Acknowledgment: Within 48 hours
-    - Initial response: Within 7 days
-    - Full resolution: Within 30 days (legal max)
-  - **Recommended target**: 7-14 days average
+  - **Best practice targets by complexity**:
+    - Simple requests: <7 days (e.g., basic access or deletion for a single user account)
+    - Moderate requests: 7–14 days (e.g., requests involving multiple data types or moderate data volume)
+    - Complex requests: 14–30 days (never exceed 30 days; e.g., user with >10K records, requests requiring cross-database deletions, bulk exports, or third-party data retrieval)
+  - **Complex request guidance**: Route and escalate complex cases to privacy/legal leads, document all steps, and justify any extended timeline. Always resolve within 30 days.
+  - **Recommended target**: 7–14 days average for most requests
 
 **Security Email Response Time**
-- security@ response time: _____ hours (target: <24)
+
+- security@ response time: **\_** hours (target: <24)
   - **Critical vulnerabilities**: <4 hours
   - **High severity**: <24 hours (1 day)
   - **Medium severity**: <72 hours (3 days)
@@ -1177,7 +1352,8 @@ When setting targets for compliance metrics, consider:
   - **Recommended target**: 24 hours average acknowledgment
 
 **Support Email Response Time**
-- support@ response time: _____ hours (target: 24-48)
+
+- support@ response time: **\_** hours (target: 24-48)
   - **First response (acknowledgment)**: <24 hours
   - **Full resolution time**: Varies by issue complexity
   - **Recommended targets**:
@@ -1189,44 +1365,50 @@ When setting targets for compliance metrics, consider:
 ### Additional Recommended Metrics
 
 **Payment & Billing Metrics** (if accepting payments)
-- Chargeback rate: _____% (target: <1%, alert at 0.65%)
+
+- Chargeback rate: **\_**% (target: <1%, alert at 0.65%)
   - **Visa threshold**: 0.9% (Visa Dispute Monitoring Program)
   - **Mastercard threshold**: 1.5% (Excessive Chargeback Program)
   - **Best practice**: <0.5%
-- Failed payment rate: _____% (target: <5%)
-- Refund rate: _____% (target: varies by industry, typically 5-10%)
-- Subscription cancellation rate: _____% (target: <5% monthly churn)
+- Failed payment rate: **\_**% (target: <5%)
+- Refund rate: **\_**% (target: varies by industry, typically 5-10%)
+- Subscription cancellation rate: **\_**% (target: <5% monthly churn)
 
 **Email Deliverability Metrics**
-- Email bounce rate: _____% (target: <2%)
+
+- Email bounce rate: **\_**% (target: <2%)
   - Hard bounces: <0.5%
   - Soft bounces: <2%
-- Spam complaint rate: _____% (target: <0.1%)
+- Spam complaint rate: **\_**% (target: <0.1%)
   - **Alert threshold**: 0.1% (risksender reputation)
   - **Critical threshold**: 0.5% (may trigger ESP suspension)
-- Unsubscribe rate: _____% (target: <0.5% per email)
+- Unsubscribe rate: **\_**% (target: <0.5% per email)
 
 **Accessibility Metrics** (if tracking)
-- Accessibility issues reported: _____/month
-- WCAG compliance score: _____% (target: 100% AA compliance)
-- Accessibility-related support tickets: _____/month
-- Remediation time for accessibility bugs: _____ days (target: <14 days)
+
+- Accessibility issues reported: **\_**/month
+- WCAG compliance score: **\_**% (target: 100% AA compliance)
+- Accessibility-related support tickets: **\_**/month
+- Remediation time for accessibility bugs: **\_** days (target: <14 days)
 
 **Data Breach/Security Metrics**
-- Security incidents: _____ (target: 0)
-- Mean time to detect (MTTD): _____ hours (target: <24 hours)
-- Mean time to respond (MTTR): _____ hours (target: <72 hours)
-- Phishing simulation click rate: _____% (target: <10%)
+
+- Security incidents: **\_** (target: 0)
+- Mean time to detect (MTTD): **\_** hours (target: <24 hours)
+- Mean time to respond (MTTR): **\_** hours (target: <72 hours)
+- Phishing simulation click rate: **\_**% (target: <10%)
 
 ### Setting Your Baseline
 
 **First 90 Days**: Collect data without targets
+
 1. Month 1-3: Track all metrics without judgment
 2. Calculate averages and identify patterns
 3. Set initial targets at 90th percentile of current performance
 4. Review and adjust quarterly
 
 **After Baseline Period**: Progressive improvement
+
 1. Quarter 1: Meet baseline targets consistently
 2. Quarter 2: Improve by 10-20%
 3. Quarter 3-4: Approach industry best practices
@@ -1236,14 +1418,14 @@ When setting targets for compliance metrics, consider:
 
 ## 🔍 Audit Log
 
-| Date | Action | Completed By | Notes |
-|------|--------|-------------|-------|
-| ___ | Legal config updated | ___ | ___ |
-| ___ | Privacy Policy customized | ___ | ___ |
-| ___ | Terms of Service customized | ___ | ___ |
-| ___ | Emails set up | ___ | ___ |
-| ___ | Attorney review completed | ___ | ___ |
-| ___ | Production deployment | ___ | ___ |
+| Date   | Action                      | Completed By | Notes  |
+| ------ | --------------------------- | ------------ | ------ |
+| \_\_\_ | Legal config updated        | \_\_\_       | \_\_\_ |
+| \_\_\_ | Privacy Policy customized   | \_\_\_       | \_\_\_ |
+| \_\_\_ | Terms of Service customized | \_\_\_       | \_\_\_ |
+| \_\_\_ | Emails set up               | \_\_\_       | \_\_\_ |
+| \_\_\_ | Attorney review completed   | \_\_\_       | \_\_\_ |
+| \_\_\_ | Production deployment       | \_\_\_       | \_\_\_ |
 
 ---
 
@@ -1263,4 +1445,4 @@ When setting targets for compliance metrics, consider:
 
 ---
 
-*Last Updated: November 28, 2025*
+_Last Updated: November 28, 2025_

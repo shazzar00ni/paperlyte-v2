@@ -13,17 +13,23 @@ Three environment files control the application's URLs and SEO metadata:
 ## Available Variables
 
 ### `VITE_BASE_URL`
+
 The base URL of your application (no trailing slash).
+
 - **Development**: `http://localhost:5173`
 - **Production**: `https://paperlyte.com`
 - **Staging**: `https://staging.paperlyte.com` (if applicable)
 
 ### `VITE_SEO_KEYWORDS`
+
 Comma-separated keywords for SEO meta tags.
+
 - Default: `"note-taking app, simple notes, fast notes, offline notes, tag-based organization, distraction-free writing, minimalist notes"`
 
 ### `VITE_OG_IMAGE`
+
 Open Graph image for social media previews.
+
 - **Development**: `/og-image.png` (relative path)
 - **Production**: `https://paperlyte.com/og-image.png` (absolute URL)
 
@@ -37,18 +43,19 @@ Open Graph image for social media previews.
 ## Usage in Code
 
 ```typescript
-import { env } from './utils/env';
+import { env } from "./utils/env";
 
-console.log(env.baseUrl);      // http://localhost:5173 or https://paperlyte.com
-console.log(env.seoKeywords);  // SEO keywords string
-console.log(env.ogImage);      // Full OG image URL
+console.log(env.baseUrl); // http://localhost:5173 or https://paperlyte.com
+console.log(env.seoKeywords); // SEO keywords string
+console.log(env.ogImage); // Full OG image URL
 console.log(env.isDevelopment); // true/false
-console.log(env.isProduction);  // true/false
+console.log(env.isProduction); // true/false
 ```
 
 ## Local Development
 
 1. Copy `.env.example` to `.env.local` for custom local overrides:
+
    ```bash
    cp .env.example .env.local
    ```
@@ -82,11 +89,18 @@ VITE_OG_IMAGE=https://paperlyte.com/og-image.png
 
 Verify environment configuration in browser console (development mode):
 
-```javascript
-// Check if meta tags are updated correctly
 document.querySelector('link[rel="canonical"]').href
 document.querySelector('meta[property="og:url"]').content
 document.querySelector('meta[property="og:image"]').content
+
+```javascript
+// Check if meta tags are updated correctly (defensive: won't throw if missing)
+const canonical = document.querySelector('link[rel="canonical"]');
+console.log("Canonical:", canonical ? canonical.href : "Not found");
+const ogUrl = document.querySelector('meta[property="og:url"]');
+console.log("OG URL:", ogUrl ? ogUrl.content : "Not found");
+const ogImage = document.querySelector('meta[property="og:image"]');
+console.log("OG Image:", ogImage ? ogImage.content : "Not found");
 ```
 
 ## Important Notes
@@ -100,16 +114,19 @@ document.querySelector('meta[property="og:image"]').content
 ## Troubleshooting
 
 ### Meta tags not updating?
+
 - Check console for environment log (development mode only)
 - Verify `updateMetaTags()` is called in `main.tsx`
 - Ensure variables start with `VITE_` prefix
 
 ### Wrong URL in production?
+
 - Check `.env.production` values
 - Verify build command uses production mode
 - Clear build cache: `rm -rf dist && npm run build`
 
 ### Open Graph preview not working?
+
 - Ensure production OG image URL is absolute
 - Test with [Facebook Sharing Debugger](https://developers.facebook.com/tools/debug/)
 - Test with [Twitter Card Validator](https://cards-dev.twitter.com/validator)

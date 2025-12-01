@@ -1,291 +1,674 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Privacy Policy - Paperlyte</title>
-  <meta name="description" content="Paperlyte Privacy Policy - How we collect, use, and protect your data.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --color-primary: #7C3AED;
-      --color-background: #FFFFFF;
-      --color-surface: #F9FAFB;
-      --color-text: #111827;
-      --color-text-secondary: #6B7280;
-      --color-border: #E5E7EB;
-    }
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      line-height: 1.6;
-      color: var(--color-text);
-      background: var(--color-background);
-    }
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 2rem 1.5rem;
-    }
-    header {
-      margin-bottom: 3rem;
-      padding-bottom: 1.5rem;
-      border-bottom: 2px solid var(--color-border);
-    }
-    h1 {
-      font-size: 2.5rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-      color: var(--color-text);
-    }
-    .last-updated {
-      color: var(--color-text-secondary);
-      font-size: 0.9rem;
-    }
-    h2 {
-      font-size: 1.75rem;
-      font-weight: 600;
-      margin: 2.5rem 0 1rem;
-      color: var(--color-text);
-    }
-    h3 {
-      font-size: 1.25rem;
-      font-weight: 600;
-      margin: 1.5rem 0 0.75rem;
-      color: var(--color-text);
-    }
-    p {
-      margin-bottom: 1rem;
-      color: var(--color-text-secondary);
-    }
-    ul, ol {
-      margin: 1rem 0 1rem 1.5rem;
-      color: var(--color-text-secondary);
-    }
-    li {
-      margin-bottom: 0.5rem;
-    }
-    strong {
-      color: var(--color-text);
-      font-weight: 600;
-    }
-    .back-link {
-      display: inline-block;
-      color: var(--color-primary);
-      text-decoration: none;
-      margin-bottom: 1rem;
-      font-weight: 500;
-    }
-    .back-link:hover {
-      text-decoration: underline;
-    }
-    footer {
-      margin-top: 4rem;
-      padding-top: 2rem;
-      border-top: 1px solid var(--color-border);
-      text-align: center;
-      color: var(--color-text-secondary);
-      font-size: 0.9rem;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <a href="/" class="back-link">← Back to Paperlyte</a>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Privacy Policy - Paperlyte</title>
+    <meta
+      name="description"
+      content="Paperlyte Privacy Policy - How we collect, use, and protect your data."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      .policy-note {
+        background: #f9f9f9;
+        border: 1px solid #ddd;
+        padding: 1em;
+        margin-bottom: 1.5em;
+        font-size: 0.95em;
+      }
+      .placeholder {
+        color: #888;
+      }
+      .footer-note {
+        font-size: 0.9em;
+        color: #888;
+        margin-top: 0.5em;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --color-primary: #7c3aed;
+        --color-background: #ffffff;
+        --color-surface: #f9fafb;
+        --color-text: #111827;
+        --color-text-secondary: #6b7280;
+        --color-border: #e5e7eb;
+      }
+      body {
+        font-family:
+          "Inter",
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+        line-height: 1.6;
+        color: var(--color-text);
+        background: var(--color-background);
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem;
+      }
+      header {
+        margin-bottom: 3rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 2px solid var(--color-border);
+      }
+      h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: var(--color-text);
+      }
+      .last-updated {
+        color: var(--color-text-secondary);
+        font-size: 0.9rem;
+      }
+      h2 {
+        font-size: 1.75rem;
+        font-weight: 600;
+        margin: 2.5rem 0 1rem;
+        color: var(--color-text);
+      }
+      h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 1.5rem 0 0.75rem;
+        color: var(--color-text);
+      }
+      p {
+        margin-bottom: 1rem;
+        color: var(--color-text-secondary);
+      }
+      ul,
+      ol {
+        margin: 1rem 0 1rem 1.5rem;
+        color: var(--color-text-secondary);
+      }
+      li {
+        margin-bottom: 0.5rem;
+      }
+      strong {
+        color: var(--color-text);
+        font-weight: 600;
+      }
+      .back-link {
+        display: inline-block;
+        color: var(--color-primary);
+        text-decoration: none;
+        margin-bottom: 1rem;
+        font-weight: 500;
+      }
+      .back-link:hover {
+        text-decoration: underline;
+      }
+      footer {
+        margin-top: 4rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--color-border);
+        text-align: center;
+        color: var(--color-text-secondary);
+        font-size: 0.9rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <a href="/" class="back-link">← Back to Paperlyte</a>
 
-    <header>
-      <h1>Privacy Policy</h1>
-      <p class="last-updated">Last Updated: {{BUILD_DATE}}</p>
-    </header>
+      <header>
+        <h1>Privacy Policy</h1>
+        <p class="last-updated">Last Updated: {{BUILD_DATE}}</p>
+      </header>
 
-    <main>
-      <h2>Introduction</h2>
-      <p>Welcome to Paperlyte. We respect your privacy and are committed to protecting your personal data. This privacy policy explains how we collect, use, store, and safeguard your information when you use our note-taking application ("Service").</p>
+      <main>
+        <h2>Introduction</h2>
+        <p>
+          Welcome to Paperlyte. We respect your privacy and are committed to
+          protecting your personal data. This privacy policy explains how we
+          collect, use, store, and safeguard your information when you use our
+          note-taking application ("Service").
+        </p>
 
-      <h3>Our Core Privacy Principles:</h3>
-      <ul>
-        <li><strong>Privacy First:</strong> We collect only what's necessary to provide our service</li>
-        <li><strong>Transparency:</strong> We're clear about what data we collect and why</li>
-        <li><strong>User Control:</strong> You own your data and can export or delete it anytime</li>
-        <li><strong>Security:</strong> We use industry-standard encryption to protect your information</li>
-        <li><strong>No Selling:</strong> We never sell your personal data to third parties</li>
-      </ul>
+        <h3>Our Core Privacy Principles:</h3>
+        <ul>
+          <li>
+            <strong>Privacy First:</strong> We collect only what's necessary to
+            provide our service.
+          </li>
+          <li>
+            <strong>Transparency:</strong> We're clear about what data we
+            collect and why.
+          </li>
+          <li>
+            <strong>User Control:</strong> You own your data and can export or
+            delete it anytime.
+          </li>
+          <li>
+            <strong>Security:</strong> We use industry-standard encryption to
+            protect your information.
+          </li>
+          <li>
+            <strong>No Selling:</strong> We never sell your personal data to
+            third parties.
+          </li>
+          <li>
+            <strong>Compliance:</strong> We comply with GDPR, CCPA, and other
+            applicable privacy laws.
+          </li>
+        </ul>
+        <div class="policy-note">
+          <strong>Note:</strong> This policy was legally reviewed. Please
+          replace all placeholders (e.g., company name, DPO contact, third-party
+          links) with your actual company details before publishing. <br />
+          <strong>Effective Date:</strong> {{BUILD_DATE}}
+        </div>
 
-      <h2>1. Information We Collect</h2>
+        <h2>1. Information We Collect</h2>
 
-      <h3>1.1 Information You Provide Directly</h3>
-      <ul>
-        <li><strong>Account Information:</strong> Email address, username, and password (encrypted)</li>
-        <li><strong>Note Content:</strong> Text, attachments, tags, and metadata you create within the app</li>
-        <li><strong>Newsletter Subscriptions:</strong> Email address if you subscribe to our newsletter</li>
-        <li><strong>Support Communications:</strong> Information you provide when contacting customer support</li>
-      </ul>
+        <h3>1.1 Information You Provide Directly</h3>
+        <ul>
+          <li>
+            <strong>Account Information:</strong> Email address, username, and
+            password (encrypted)
+          </li>
+          <li>
+            <strong>Note Content:</strong> Text, attachments, tags, and metadata
+            you create within the app
+          </li>
+          <li>
+            <strong>Newsletter Subscriptions:</strong> Email address if you
+            subscribe to our newsletter
+          </li>
+          <li>
+            <strong>Support Communications:</strong> Information you provide
+            when contacting customer support
+          </li>
+        </ul>
 
-      <h3>1.2 Information Collected Automatically</h3>
-      <ul>
-        <li><strong>Device Information:</strong> Device type, operating system, browser type and version</li>
-        <li><strong>Usage Data:</strong> App interactions, feature usage, session duration, crash reports</li>
-        <li><strong>Log Data:</strong> IP address, access times, pages viewed, referral URLs</li>
-        <li><strong>Sync Data:</strong> Last sync time, device identifiers for multi-device sync</li>
-      </ul>
+        <h3>1.2 Information Collected Automatically</h3>
+        <ul>
+          <li>
+            <strong>Device Information:</strong> Device type, operating system,
+            browser type and version
+          </li>
+          <li>
+            <strong>Usage Data:</strong> App interactions, feature usage,
+            session duration, crash reports
+          </li>
+          <li>
+            <strong>Log Data:</strong> IP address, access times, pages viewed,
+            referral URLs
+          </li>
+          <li>
+            <strong>Sync Data:</strong> Last sync time, device identifiers for
+            multi-device sync
+          </li>
+        </ul>
 
-      <h3>1.3 Cookies and Similar Technologies</h3>
-      <p>We use cookies and similar tracking technologies to maintain sessions, remember preferences, and analyze usage patterns. You can control cookie preferences through your browser settings.</p>
-      <ul>
-        <li><strong>Essential Cookies:</strong> Required for authentication and core functionality</li>
-        <li><strong>Functional Cookies:</strong> Remember your preferences and settings</li>
-        <li><strong>Analytics Cookies:</strong> Help us understand how you use our Service (privacy-first, cookie-less analytics)</li>
-      </ul>
+        <h3>1.3 Cookies and Similar Technologies</h3>
+        <p>
+          We use cookies and similar tracking technologies to maintain sessions,
+          remember preferences, and analyze usage patterns. You can control
+          cookie preferences through your browser settings. Where required by
+          law, you will be presented with a cookie consent banner and can opt
+          out of non-essential cookies at any time.
+        </p>
+        <ul>
+          <li>
+            <strong>Essential Cookies:</strong> Required for authentication and
+            core functionality.
+          </li>
+          <li>
+            <strong>Functional Cookies:</strong> Remember your preferences and
+            settings.
+          </li>
+          <li>
+            <strong>Analytics Cookies:</strong> Help us understand how you use
+            our Service (privacy-first, cookie-less analytics).
+          </li>
+        </ul>
+        <p>
+          To manage your cookie preferences,
+          <strong
+            ><a
+              href="#"
+              onclick="
+                window.cookieConsent && window.cookieConsent.open();
+                return false;
+              "
+              >click here</a
+            ></strong
+          >
+          (if available) or adjust your browser settings.
+        </p>
 
-      <h2>2. Legal Basis for Processing (GDPR)</h2>
-      <p>We process your personal data under the following legal bases:</p>
-      <ul>
-        <li><strong>Contractual Necessity:</strong> Processing necessary to provide the Service you've signed up for</li>
-        <li><strong>Legitimate Interests:</strong> Improving our Service, preventing fraud, ensuring security</li>
-        <li><strong>Consent:</strong> For newsletter subscriptions and optional features (you can withdraw consent anytime)</li>
-        <li><strong>Legal Obligation:</strong> Compliance with applicable laws and regulations</li>
-      </ul>
+        <h2>2. Legal Basis for Processing (GDPR)</h2>
+        <p>We process your personal data under the following legal bases:</p>
+        <ul>
+          <li>
+            <strong>Contractual Necessity:</strong> Processing necessary to
+            provide the Service you've signed up for
+          </li>
+          <li>
+            <strong>Legitimate Interests:</strong> Improving our Service,
+            preventing fraud, ensuring security
+          </li>
+          <li>
+            <strong>Consent:</strong> For newsletter subscriptions and optional
+            features (you can withdraw consent anytime)
+          </li>
+          <li>
+            <strong>Legal Obligation:</strong> Compliance with applicable laws
+            and regulations
+          </li>
+        </ul>
 
-      <h2>3. How We Use Your Information</h2>
-      <p>We use the collected information for the following purposes:</p>
-      <ul>
-        <li><strong>Service Delivery:</strong> Create and sync your notes across devices</li>
-        <li><strong>Account Management:</strong> Create, maintain, and secure your account</li>
-        <li><strong>Product Improvement:</strong> Analyze usage patterns to improve features and user experience</li>
-        <li><strong>Communication:</strong> Send service updates, newsletters (if subscribed), and respond to inquiries</li>
-        <li><strong>Security:</strong> Detect and prevent fraud, abuse, and security incidents</li>
-        <li><strong>Legal Compliance:</strong> Comply with legal obligations and enforce our terms</li>
-      </ul>
+        <h2>3. How We Use Your Information</h2>
+        <p>We use the collected information for the following purposes:</p>
+        <ul>
+          <li>
+            <strong>Service Delivery:</strong> Create and sync your notes across
+            devices
+          </li>
+          <li>
+            <strong>Account Management:</strong> Create, maintain, and secure
+            your account
+          </li>
+          <li>
+            <strong>Product Improvement:</strong> Analyze usage patterns to
+            improve features and user experience
+          </li>
+          <li>
+            <strong>Communication:</strong> Send service updates, newsletters
+            (if subscribed), and respond to inquiries
+          </li>
+          <li>
+            <strong>Security:</strong> Detect and prevent fraud, abuse, and
+            security incidents
+          </li>
+          <li>
+            <strong>Legal Compliance:</strong> Comply with legal obligations and
+            enforce our terms
+          </li>
+        </ul>
 
-      <h2>4. Data Sharing and Disclosure</h2>
+        <h2>4. Data Sharing and Disclosure</h2>
 
-      <h3>4.1 We Do NOT Sell Your Data</h3>
-      <p>We never sell, rent, or trade your personal information to third parties for marketing purposes.</p>
+        <h3>4.1 We Do NOT Sell Your Data</h3>
+        <p>
+          We never sell, rent, or trade your personal information to third
+          parties for marketing purposes.
+        </p>
 
-      <h3>4.2 Service Providers</h3>
-      <p>We share data with trusted third-party service providers who assist in operating our Service:</p>
-      <ul>
-        <li><strong>Cloud Infrastructure:</strong> Secure hosting and storage providers</li>
-        <li><strong>Email Services:</strong> ConvertKit for newsletter delivery (if subscribed)</li>
-        <li><strong>Analytics:</strong> Privacy-first analytics services (no personal identifiers shared)</li>
-        <li><strong>Payment Processors:</strong> Secure payment processing (if applicable)</li>
-      </ul>
-      <p>All service providers are contractually obligated to protect your data and use it only for specified purposes.</p>
+        <h3>4.2 Service Providers & Third-Party Processors</h3>
+        <p>
+          We share data with trusted third-party service providers who assist in
+          operating our Service. Each provider only receives the minimum data
+          necessary and is contractually obligated to protect your data and use
+          it only for specified purposes. Below is a list of our main
+          processors:
+        </p>
+        <ul>
+          <li>
+            <strong>Cloud Infrastructure:</strong>
+            <span class="placeholder"
+              >[e.g., Amazon Web Services, Google Cloud]</span
+            >
+            — Hosting and storage.
+            <a href="[CLOUD_PRIVACY_POLICY_LINK]" target="_blank" rel="noopener"
+              >Privacy Policy</a
+            >
+          </li>
+          <li>
+            <strong>Email Services:</strong> ConvertKit — Newsletter delivery
+            (email address only).
+            <a
+              href="https://convertkit.com/privacy"
+              target="_blank"
+              rel="noopener"
+              >Privacy Policy</a
+            >
+          </li>
+          <li>
+            <strong>Analytics:</strong>
+            <span class="placeholder">[e.g., Plausible, Fathom]</span> —
+            Privacy-first analytics (no personal identifiers).
+            <a
+              href="[ANALYTICS_PRIVACY_POLICY_LINK]"
+              target="_blank"
+              rel="noopener"
+              >Privacy Policy</a
+            >
+          </li>
+          <li>
+            <strong>Payment Processors:</strong>
+            <span class="placeholder">[e.g., Stripe, PayPal]</span> — Payment
+            information (if applicable).
+            <a
+              href="[PAYMENT_PRIVACY_POLICY_LINK]"
+              target="_blank"
+              rel="noopener"
+              >Privacy Policy</a
+            >
+          </li>
+        </ul>
+        <p>
+          For a full, up-to-date list of processors and their privacy policies,
+          please <a href="mailto:privacy@paperlyte.com">contact us</a>.
+        </p>
 
-      <h3>4.3 Legal Requirements</h3>
-      <p>We may disclose your information if required by law, court order, or governmental authority, or to protect our rights, safety, or property.</p>
+        <h3>4.3 Legal Requirements</h3>
+        <p>
+          We may disclose your information if required by law, court order, or
+          governmental authority, or to protect our rights, safety, or property.
+        </p>
 
-      <h3>4.4 Business Transfers</h3>
-      <p>If Paperlyte is involved in a merger, acquisition, or asset sale, your data may be transferred. We will provide notice before your data is transferred and becomes subject to a different privacy policy.</p>
+        <h3>4.4 Business Transfers</h3>
+        <p>
+          If Paperlyte is involved in a merger, acquisition, or asset sale, your
+          data may be transferred. We will provide notice before your data is
+          transferred and becomes subject to a different privacy policy.
+        </p>
 
-      <h2>5. Data Retention</h2>
-      <ul>
-        <li><strong>Active Accounts:</strong> We retain your data as long as your account is active</li>
-        <li><strong>Deleted Accounts:</strong> Data is permanently deleted within 30 days of account deletion request</li>
-        <li><strong>Backup Retention:</strong> Backup copies are purged within 90 days</li>
-        <li><strong>Legal Requirements:</strong> We may retain data longer if required by law or to resolve disputes</li>
-        <li><strong>Newsletter Subscriptions:</strong> Email addresses retained until you unsubscribe</li>
-      </ul>
+        <h2>5. Data Retention and Deletion Policy</h2>
+        <ul>
+          <li>
+            <strong>Active Accounts:</strong> We retain your data as long as
+            your account is active and for the purposes described in this
+            policy.
+          </li>
+          <li>
+            <strong>Deleted Accounts:</strong> Upon your deletion request, your
+            data is permanently deleted from our systems within 30 days, except
+            for backup copies.
+          </li>
+          <li>
+            <strong>Backup Retention:</strong> Backup copies are securely purged
+            within 90 days of account deletion.
+          </li>
+          <li>
+            <strong>Legal Requirements:</strong> We may retain certain data
+            longer if required by law or to resolve disputes.
+          </li>
+          <li>
+            <strong>Newsletter Subscriptions:</strong> Email addresses are
+            retained until you unsubscribe, after which they are deleted within
+            7 days.
+          </li>
+        </ul>
+        <p>
+          To request deletion, contact
+          <a href="mailto:privacy@paperlyte.com">privacy@paperlyte.com</a>. We
+          will confirm deletion and provide details of the process upon request.
+        </p>
 
-      <h2>6. Your Rights and Choices</h2>
+        <h2>6. Your Rights and Choices (GDPR/CCPA)</h2>
 
-      <h3>6.1 GDPR Rights (EU/EEA Users)</h3>
-      <p>If you're in the European Union or European Economic Area, you have the following rights:</p>
-      <ul>
-        <li><strong>Right to Access:</strong> Request a copy of your personal data</li>
-        <li><strong>Right to Rectification:</strong> Correct inaccurate or incomplete data</li>
-        <li><strong>Right to Erasure:</strong> Request deletion of your personal data ("right to be forgotten")</li>
-        <li><strong>Right to Restrict Processing:</strong> Limit how we use your data</li>
-        <li><strong>Right to Data Portability:</strong> Receive your data in a structured, machine-readable format</li>
-        <li><strong>Right to Object:</strong> Object to processing based on legitimate interests</li>
-        <li><strong>Right to Withdraw Consent:</strong> Withdraw consent for consent-based processing</li>
-        <li><strong>Right to Lodge a Complaint:</strong> File a complaint with your local data protection authority</li>
-      </ul>
+        <h3>6.1 GDPR Rights (EU/EEA Users)</h3>
+        <p>
+          If you're in the European Union or European Economic Area, you have
+          the following rights:
+        </p>
+        <ul>
+          <li>
+            <strong>Right to Access:</strong> Request a copy of your personal
+            data
+          </li>
+          <li>
+            <strong>Right to Rectification:</strong> Correct inaccurate or
+            incomplete data
+          </li>
+          <li>
+            <strong>Right to Erasure:</strong> Request deletion of your personal
+            data ("right to be forgotten")
+          </li>
+          <li>
+            <strong>Right to Restrict Processing:</strong> Limit how we use your
+            data
+          </li>
+          <li>
+            <strong>Right to Data Portability:</strong> Receive your data in a
+            structured, machine-readable format
+          </li>
+          <li>
+            <strong>Right to Object:</strong> Object to processing based on
+            legitimate interests
+          </li>
+          <li>
+            <strong>Right to Withdraw Consent:</strong> Withdraw consent for
+            consent-based processing
+          </li>
+          <li>
+            <strong>Right to Lodge a Complaint:</strong> File a complaint with
+            your local data protection authority
+          </li>
+        </ul>
 
-      <h3>6.2 CCPA Rights (California Users)</h3>
-      <p>If you're a California resident, you have the following rights under the California Consumer Privacy Act:</p>
-      <ul>
-        <li><strong>Right to Know:</strong> Request disclosure of personal information collected, used, or shared</li>
-        <li><strong>Right to Delete:</strong> Request deletion of your personal information</li>
-        <li><strong>Right to Opt-Out:</strong> Opt out of the sale of personal information (we don't sell data)</li>
-        <li><strong>Right to Non-Discrimination:</strong> Equal service regardless of privacy choices</li>
-      </ul>
+        <h3>6.2 CCPA Rights (California Users)</h3>
+        <p>
+          If you're a California resident, you have the following rights under
+          the California Consumer Privacy Act:
+        </p>
+        <ul>
+          <li>
+            <strong>Right to Know:</strong> Request disclosure of personal
+            information collected, used, or shared
+          </li>
+          <li>
+            <strong>Right to Delete:</strong> Request deletion of your personal
+            information
+          </li>
+          <li>
+            <strong>Right to Opt-Out:</strong> Opt out of the sale of personal
+            information (we don't sell data)
+          </li>
+          <li>
+            <strong>Right to Non-Discrimination:</strong> Equal service
+            regardless of privacy choices
+          </li>
+        </ul>
 
-      <h3>6.3 Exercising Your Rights</h3>
-      <p>To exercise any of these rights, contact us at <a href="mailto:privacy@paperlyte.com">privacy@paperlyte.com</a>. We will respond within 30 days for GDPR requests and 45 days for CCPA requests.</p>
+        <h3>6.3 Exercising Your Rights</h3>
+        <p>
+          To exercise any of these rights, contact our Data Protection Officer
+          (DPO) or privacy team at
+          <a href="mailto:privacy@paperlyte.com">privacy@paperlyte.com</a> or
+          <a href="mailto:dpo@paperlyte.com">dpo@paperlyte.com</a>. We will
+          respond within 30 days for GDPR requests and 45 days for CCPA
+          requests. You may also contact your local data protection authority
+          for unresolved concerns.
+        </p>
 
-      <h2>7. Data Security</h2>
-      <p>We implement industry-standard security measures to protect your data:</p>
-      <ul>
-        <li><strong>Encryption:</strong> All data is encrypted in transit (TLS/SSL) and at rest (AES-256)</li>
-        <li><strong>Access Controls:</strong> Strict access controls and authentication mechanisms</li>
-        <li><strong>Regular Audits:</strong> Security audits and vulnerability assessments</li>
-        <li><strong>Employee Training:</strong> Staff trained on data protection and security practices</li>
-        <li><strong>Incident Response:</strong> Procedures for detecting and responding to security breaches</li>
-      </ul>
-      <p>However, no method of transmission or storage is 100% secure. While we strive to protect your data, we cannot guarantee absolute security.</p>
+        <h2>7. Data Security</h2>
+        <p>
+          We implement industry-standard security measures to protect your data:
+        </p>
+        <ul>
+          <li>
+            <strong>Encryption:</strong> All data is encrypted in transit
+            (TLS/SSL) and at rest (AES-256)
+          </li>
+          <li>
+            <strong>Access Controls:</strong> Strict access controls and
+            authentication mechanisms
+          </li>
+          <li>
+            <strong>Regular Audits:</strong> Security audits and vulnerability
+            assessments
+          </li>
+          <li>
+            <strong>Employee Training:</strong> Staff trained on data protection
+            and security practices
+          </li>
+          <li>
+            <strong>Incident Response:</strong> Procedures for detecting and
+            responding to security breaches
+          </li>
+        </ul>
+        <p>
+          However, no method of transmission or storage is 100% secure. While we
+          strive to protect your data, we cannot guarantee absolute security.
+        </p>
 
-      <h2>8. International Data Transfers</h2>
-      <p>Your data may be transferred to and processed in countries other than your country of residence. We ensure appropriate safeguards are in place:</p>
-      <ul>
-        <li>Standard Contractual Clauses (SCCs) approved by the European Commission</li>
-        <li>Adequacy decisions by relevant data protection authorities</li>
-        <li>Other legally approved transfer mechanisms</li>
-      </ul>
+        <h2>8. International Data Transfers & Security Measures</h2>
+        <p>
+          Your data may be transferred to and processed in countries other than
+          your country of residence. We ensure appropriate safeguards are in
+          place, including:
+        </p>
+        <ul>
+          <li>
+            Standard Contractual Clauses (SCCs) approved by the European
+            Commission
+          </li>
+          <li>Adequacy decisions by relevant data protection authorities</li>
+          <li>Other legally approved transfer mechanisms</li>
+        </ul>
+        <p>
+          We implement technical and organizational measures to protect your
+          data, including encryption, access controls, and regular security
+          audits. For more information, contact our DPO.
+        </p>
 
-      <h2>9. Children's Privacy</h2>
-      <p>Paperlyte is not intended for children under 13 (or 16 in the EU). We do not knowingly collect personal information from children. If you believe we have collected data from a child, please contact us immediately at <a href="mailto:privacy@paperlyte.com">privacy@paperlyte.com</a>, and we will delete it promptly.</p>
+        <h2>9. Children's Privacy</h2>
+        <p>
+          Paperlyte is not intended for children under 13 (or 16 in the EU). We
+          do not knowingly collect personal information from children. If you
+          believe we have collected data from a child, please contact us
+          immediately at
+          <a href="mailto:privacy@paperlyte.com">privacy@paperlyte.com</a>, and
+          we will delete it promptly.
+        </p>
 
-      <h2>10. Data Breach Notification</h2>
-      <p>In the event of a data breach that affects your personal information, we will:</p>
-      <ul>
-        <li>Notify affected users within 72 hours of becoming aware of the breach (GDPR requirement)</li>
-        <li>Notify relevant data protection authorities as required by law</li>
-        <li>Provide information about the breach, affected data, and steps being taken</li>
-        <li>Offer guidance on protective measures you can take</li>
-      </ul>
+        <h2>10. Data Breach Notification</h2>
+        <p>
+          In the event of a data breach that affects your personal information,
+          we will:
+        </p>
+        <ul>
+          <li>
+            Notify affected users within 72 hours of becoming aware of the
+            breach (GDPR requirement)
+          </li>
+          <li>
+            Notify relevant data protection authorities as required by law
+          </li>
+          <li>
+            Provide information about the breach, affected data, and steps being
+            taken
+          </li>
+          <li>Offer guidance on protective measures you can take</li>
+        </ul>
 
-      <h2>11. Third-Party Links</h2>
-      <p>Our Service may contain links to third-party websites or services. We are not responsible for the privacy practices of these third parties. We encourage you to review their privacy policies before providing any personal information.</p>
+        <h2>11. Third-Party Links</h2>
+        <p>
+          Our Service may contain links to third-party websites or services. We
+          are not responsible for the privacy practices of these third parties.
+          We encourage you to review their privacy policies before providing any
+          personal information.
+        </p>
 
-      <h2>12. Changes to This Policy</h2>
-      <p>We may update this Privacy Policy from time to time to reflect changes in our practices, technology, or legal requirements. We will:</p>
-      <ul>
-        <li>Post the updated policy on this page with a new "Last Updated" date</li>
-        <li>Notify you of material changes via email or in-app notification</li>
-        <li>Provide a 30-day notice period before material changes take effect</li>
-      </ul>
-      <p>Your continued use of the Service after changes take effect constitutes acceptance of the updated policy.</p>
+        <h2>12. Changes to This Policy</h2>
+        <p>
+          We may update this Privacy Policy from time to time to reflect changes
+          in our practices, technology, or legal requirements. We will:
+        </p>
+        <ul>
+          <li>
+            Post the updated policy on this page with a new "Last Updated" date
+          </li>
+          <li>
+            Notify you of material changes via email or in-app notification
+          </li>
+          <li>
+            Provide a 30-day notice period before material changes take effect
+          </li>
+        </ul>
+        <p>
+          Your continued use of the Service after changes take effect
+          constitutes acceptance of the updated policy.
+        </p>
 
-      <h2>13. Contact Us</h2>
-      <p>If you have questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us:</p>
-      <ul>
-        <li><strong>Email:</strong> <a href="mailto:privacy@paperlyte.com">privacy@paperlyte.com</a></li>
-        <li><strong>Data Protection Officer:</strong> <a href="mailto:dpo@paperlyte.com">dpo@paperlyte.com</a></li>
-        <li><strong>Support:</strong> <a href="mailto:support@paperlyte.com">support@paperlyte.com</a></li>
-      </ul>
+        <h2>13. Contact & Privacy Requests</h2>
+        <p>
+          If you have questions, concerns, or requests regarding this Privacy
+          Policy or our data practices, or wish to exercise your rights, please
+          contact us:
+        </p>
+        <ul>
+          <li>
+            <strong>Email:</strong>
+            <a href="mailto:privacy@paperlyte.com">privacy@paperlyte.com</a>
+          </li>
+          <li>
+            <strong>Data Protection Officer (DPO):</strong>
+            <a href="mailto:dpo@paperlyte.com">dpo@paperlyte.com</a>
+          </li>
+          <li>
+            <strong>Support:</strong>
+            <a href="mailto:support@paperlyte.com">support@paperlyte.com</a>
+          </li>
+          <li>
+            <strong>Mail:</strong>
+            <span class="placeholder">[Company Address]</span>
+          </li>
+        </ul>
+        <p>
+          We are committed to responding promptly and transparently to all
+          privacy-related requests.
+        </p>
 
-      <h2>14. EU Representative</h2>
-      <p>For users in the European Union, our appointed EU representative can be contacted at:</p>
-      <p><em>[Company to designate EU representative if required under GDPR Article 27]</em></p>
+        <h2>14. EU Representative</h2>
+        <p>
+          For users in the European Union, our appointed EU representative (if
+          required under GDPR Article 27) can be contacted at:
+        </p>
+        <p>
+          <em>[Insert EU representative name, address, and contact details]</em>
+        </p>
 
-      <h2>15. Jurisdiction-Specific Disclosures</h2>
+        <h2>15. Jurisdiction-Specific Disclosures</h2>
 
-      <h3>California Residents</h3>
-      <p>In the past 12 months, we have collected the following categories of personal information: identifiers, internet activity, and inferences. We use this information for the business purposes described in Section 3. We do not sell personal information.</p>
+        <h3>California Residents</h3>
+        <p>
+          In the past 12 months, we have collected the following categories of
+          personal information: identifiers, internet activity, and inferences.
+          We use this information for the business purposes described in Section
+          3. We do not sell personal information.
+        </p>
 
-      <h3>Nevada Residents</h3>
-      <p>Nevada residents may opt out of the sale of personal information. We do not sell personal information as defined by Nevada law.</p>
+        <h3>Nevada Residents</h3>
+        <p>
+          Nevada residents may opt out of the sale of personal information. We
+          do not sell personal information as defined by Nevada law.
+        </p>
 
-      <h3>Brazil (LGPD)</h3>
-      <p>Brazilian users have rights similar to GDPR, including access, correction, deletion, and data portability. Contact us at <a href="mailto:privacy@paperlyte.com">privacy@paperlyte.com</a> to exercise these rights.</p>
-    </main>
-
-    <footer>
-      <p>&copy; 2025 Paperlyte. All rights reserved.</p>
-    </footer>
-  </div>
-</body>
+        <h3>Brazil (LGPD)</h3>
+        <p>
+          Brazilian users have rights similar to GDPR, including access,
+          correction, deletion, and data portability. Contact us at
+          <a href="mailto:privacy@paperlyte.com">privacy@paperlyte.com</a> to
+          exercise these rights.
+        </p>
+      </main>
+      <footer>
+        <p>&copy; 2025 Paperlyte. All rights reserved.</p>
+        <p class="footer-note">
+          This privacy policy was legally reviewed. Effective date:
+          <strong>{{BUILD_DATE}}</strong>
+        </p>
+      </footer>
+    </div>
+  </body>
 </html>

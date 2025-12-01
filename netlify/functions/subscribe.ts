@@ -3,46 +3,57 @@ import { z } from "zod";
 
 // Rate limiting store (in-memory, resets on cold start)
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
-let requestCounter = 0;
-let lastCleanupTime = Date.now();
 
-// Rate limit: 3 requests per minute per IP
-const RATE_LIMIT_REQUESTS = 3;
-const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
-const CLEANUP_INTERVAL = 50; // Clean up every 50 requests
-const CLEANUP_TIME_INTERVAL = 5 * 60 * 1000; // Also cleanup every 5 minutes
-const MAX_STORE_SIZE = 1000; // Prevent unbounded growth
-
-interface SubscribeRequest {
-  email: string;
-}
-
-// Zod schema for runtime validation of ConvertKit API response
-const ConvertKitResponseSchema = z.object({
-  subscription: z.object({
-    id: z.number(),
-    state: z.string(),
-    created_at: z.string(),
-    subscriber: z.object({
-      id: z.number(),
-    }),
-  }),
-});
-
-// TypeScript type inferred from Zod schema (ensures type/schema consistency)
-type ConvertKitResponse = z.infer<typeof ConvertKitResponseSchema>;
-
-/**
- * Clean up expired rate limit entries to prevent memory leak
- */
-function cleanupExpiredEntries(): void {
+// Periodic cleanup: remove expired entries every minute
+const CLEANUP_INTERVAL_MS = 60 * 1000; // 1 minute
+const cleanupInterval = setInterval(() => {
   const now = Date.now();
   for (const [ip, record] of rateLimitStore.entries()) {
     if (now > record.resetTime) {
       rateLimitStore.delete(ip);
     }
   }
+}, CLEANUP_INTERVAL_MS);
+
+// Ensure cleanup interval is cleared on shutdown
+if (typeof process !== "undefined" && process.on) {
+  process.on("exit", () => clearInterval(cleanupInterval));
+  process.on("SIGINT", () => {
+    clearInterval(cleanupInterval);
+    process.exit();
+  });
+  process.on("SIGTERM", () => {
+    clearInterval(cleanupInterval);
+    process.exit();
+  });
 }
+
+// Rate limit: 3 requests per minute per IP
+const RATE_LIMIT_REQUESTS = 3;
+const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
+const MAX_STORE_SIZE = 1000; // Prevent unbounded growth
+
+interface SubscribeRequest {
+  email: string;
+}
+
+// Zod schema for runtime validation of only the fields actually used
+const ConvertKitResponseSchema = z.object({
+  subscription: z.object({
+    id: z.number(),
+  }),
+});
+
+// TypeScript type inferred from Zod schema (ensures type/schema consistency)
+type ConvertKitResponse = {
+  subscription: {
+    id: number;
+  };
+};
+
+/**
+ * Clean up expired rate limit entries to prevent memory leak
+ */
 
 /**
  * Check rate limit for IP address
@@ -50,29 +61,23 @@ function cleanupExpiredEntries(): void {
 function checkRateLimit(ip: string): boolean {
   const now = Date.now();
 
-  // Multi-strategy cleanup to prevent memory leaks:
-  // 1. Request-based: cleanup every N requests
-  requestCounter++;
-  if (requestCounter % CLEANUP_INTERVAL === 0) {
-    cleanupExpiredEntries();
-    lastCleanupTime = now;
-  }
-
-  // 2. Time-based: cleanup every N minutes (handles low-traffic scenarios)
-  if (now - lastCleanupTime >= CLEANUP_TIME_INTERVAL) {
-    cleanupExpiredEntries();
-    lastCleanupTime = now;
-  }
-
+  // Remove expired entry on access
   const record = rateLimitStore.get(ip);
-  const willAddNewEntry = !record || now > record.resetTime;
+  if (record && now > record.resetTime) {
+    rateLimitStore.delete(ip);
+  }
+  const freshRecord = rateLimitStore.get(ip);
+  const willAddNewEntry = !freshRecord;
 
-  // 3. Size-based: enforce maximum store size before potentially adding new entry
+  // Size-based: enforce maximum store size before potentially adding new entry
   if (willAddNewEntry && rateLimitStore.size >= MAX_STORE_SIZE) {
-    cleanupExpiredEntries();
-    lastCleanupTime = now;
-
-    // If still at capacity after cleanup, remove oldest entry (LRU eviction)
+    // Remove expired entries first (handled by periodic cleanup, but do again for safety)
+    for (const [key, rec] of rateLimitStore.entries()) {
+      if (now > rec.resetTime) {
+        rateLimitStore.delete(key);
+      }
+    }
+    // If still at capacity after cleanup, remove oldest entry (FIFO eviction)
     if (rateLimitStore.size >= MAX_STORE_SIZE) {
       const firstKey = rateLimitStore.keys().next().value;
       if (firstKey !== undefined) {
@@ -81,11 +86,7 @@ function checkRateLimit(ip: string): boolean {
     }
   }
 
-  if (!record || now > record.resetTime) {
-    // New window - remove old entry if it exists
-    if (record) {
-      rateLimitStore.delete(ip);
-    }
+  if (!freshRecord) {
     rateLimitStore.set(ip, {
       count: 1,
       resetTime: now + RATE_LIMIT_WINDOW,
@@ -93,18 +94,20 @@ function checkRateLimit(ip: string): boolean {
     return true;
   }
 
-  if (record.count >= RATE_LIMIT_REQUESTS) {
+  if (freshRecord.count >= RATE_LIMIT_REQUESTS) {
     return false;
   }
 
-  record.count++;
+  freshRecord.count++;
   return true;
 }
 
 /**
  * Subscribe email to ConvertKit
  */
-async function subscribeToConvertKit(email: string): Promise<ConvertKitResponse> {
+async function subscribeToConvertKit(
+  email: string
+): Promise<ConvertKitResponse> {
   const apiKey = process.env.CONVERTKIT_API_KEY;
   const formId = process.env.CONVERTKIT_FORM_ID;
 
@@ -157,7 +160,10 @@ async function subscribeToConvertKit(email: string): Promise<ConvertKitResponse>
   try {
     return ConvertKitResponseSchema.parse(data);
   } catch (error) {
-    console.error("ConvertKit response validation failed:", error instanceof Error ? error.message : "Unknown error");
+    console.error(
+      "ConvertKit response validation failed:",
+      error instanceof Error ? error.message : "Unknown error"
+    );
     throw new Error("Invalid response from email service");
   }
 }
@@ -249,12 +255,6 @@ export const handler: Handler = async (event: HandlerEvent) => {
     // Subscribe to ConvertKit
     const result = await subscribeToConvertKit(email);
 
-    // Defensive check: ensure response structure is valid (guards against API changes)
-    if (!result?.subscription?.id) {
-      console.error("Unexpected ConvertKit response structure");
-      throw new Error("Invalid response from email service");
-    }
-
     // Log success without PII (privacy-compliant)
     console.log("Successfully subscribed user to newsletter");
 
@@ -269,7 +269,10 @@ export const handler: Handler = async (event: HandlerEvent) => {
     };
   } catch (error) {
     // Log error type without PII (don't log error object which may contain email)
-    console.error("Subscription error:", error instanceof Error ? error.message : "Unknown error");
+    console.error(
+      "Subscription error:",
+      error instanceof Error ? error.message : "Unknown error"
+    );
 
     // Don't expose internal errors to client
     return {

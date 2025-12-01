@@ -1,20 +1,20 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef } from "react";
 
-type Theme = 'light' | 'dark';
+type Theme = "light" | "dark";
 
-const isBrowser = typeof window !== 'undefined';
-const THEME_STORAGE_KEY = 'theme';
-const USER_PREFERENCE_KEY = 'theme-user-preference';
+const isBrowser = typeof window !== "undefined";
+const THEME_STORAGE_KEY = "theme";
+const USER_PREFERENCE_KEY = "theme-user-preference";
 
 const isValidTheme = (value: string | null): value is Theme => {
-  return value === 'light' || value === 'dark';
+  return value === "light" || value === "dark";
 };
 
 export const useTheme = () => {
   // Get initial user preference flag from localStorage (only during init, not reactive)
   const getInitialUserPreference = (): boolean => {
     if (!isBrowser) return false;
-    return localStorage.getItem(USER_PREFERENCE_KEY) === 'true';
+    return localStorage.getItem(USER_PREFERENCE_KEY) === "true";
   };
 
   // Track if user has explicitly set a preference (not just from system)
@@ -22,7 +22,7 @@ export const useTheme = () => {
 
   const [theme, setTheme] = useState<Theme>(() => {
     // SSR guard: return default theme if not in browser
-    if (!isBrowser) return 'light';
+    if (!isBrowser) return "light";
 
     // Check if user has explicitly set a preference before
     const hasUserPreference = getInitialUserPreference();
@@ -34,11 +34,11 @@ export const useTheme = () => {
     }
 
     // Fall back to system preference
-    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark';
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      return "dark";
     }
 
-    return 'light';
+    return "light";
   });
 
   useEffect(() => {
@@ -48,10 +48,10 @@ export const useTheme = () => {
     const root = document.documentElement;
 
     // Apply theme to document
-    if (theme === 'dark') {
-      root.setAttribute('data-theme', 'dark');
+    if (theme === "dark") {
+      root.setAttribute("data-theme", "dark");
     } else {
-      root.setAttribute('data-theme', 'light');
+      root.setAttribute("data-theme", "light");
     }
 
     // Save to localStorage
@@ -59,7 +59,7 @@ export const useTheme = () => {
 
     // Save user preference flag if they've explicitly chosen
     if (userHasExplicitPreference.current) {
-      localStorage.setItem(USER_PREFERENCE_KEY, 'true');
+      localStorage.setItem(USER_PREFERENCE_KEY, "true");
     }
   }, [theme]);
 
@@ -68,22 +68,22 @@ export const useTheme = () => {
     // SSR guard: skip if not in browser
     if (!isBrowser) return;
 
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     const handleChange = (e: MediaQueryListEvent) => {
       // Only update if user hasn't explicitly set a preference
       if (!userHasExplicitPreference.current) {
-        setTheme(e.matches ? 'dark' : 'light');
+        setTheme(e.matches ? "dark" : "light");
       }
     };
 
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
   }, []);
 
   const toggleTheme = () => {
     // Mark that user has explicitly set a preference
     userHasExplicitPreference.current = true;
-    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
   };
 
   return { theme, toggleTheme };

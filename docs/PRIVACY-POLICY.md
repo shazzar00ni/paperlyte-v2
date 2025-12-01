@@ -7,6 +7,7 @@
 Welcome to Paperlyte. We respect your privacy and are committed to protecting your personal data. This privacy policy explains how we collect, use, and safeguard your information when you use our note-taking application.
 
 **Our Core Privacy Principles:**
+
 - **Privacy First**: We collect only what's necessary to provide our service
 - **Transparency**: We're clear about what data we collect and why
 - **User Control**: You own your data and can export or delete it anytime
@@ -20,28 +21,33 @@ Welcome to Paperlyte. We respect your privacy and are committed to protecting yo
 ### 1.1 Information You Provide
 
 **Account Information:**
+
 - Email address (for account creation and recovery)
 - Display name (optional)
 - Password (encrypted and never stored in plain text)
 
 **Content Data:**
+
 - Notes and documents you create
 - Tags and organization preferences
 - Settings and customizations
 
 **Communication Data:**
+
 - Support requests and correspondence
 - Feedback and survey responses
 
 ### 1.2 Automatically Collected Information
 
 **Usage Data:**
+
 - Device type and operating system
 - Browser type and version
 - App version and features used
 - Timestamps of actions (for sync purposes)
 
 **Technical Data:**
+
 - IP address (for security and fraud prevention)
 - Device identifiers (for multi-device sync)
 - Crash reports and error logs (anonymized)
@@ -60,17 +66,20 @@ Welcome to Paperlyte. We respect your privacy and are committed to protecting yo
 We use your information solely to provide and improve Paperlyte:
 
 ### 2.1 Essential Services
+
 - **Account Management**: Create and maintain your account
 - **Sync & Storage**: Sync your notes across devices
 - **Security**: Protect your account from unauthorized access
 - **Support**: Respond to your questions and issues
 
 ### 2.2 Service Improvement
+
 - **Product Development**: Understand how features are used to improve them
 - **Bug Fixes**: Diagnose and fix technical issues
 - **Performance**: Optimize app speed and reliability
 
 ### 2.3 Communication
+
 - **Service Updates**: Notify you of important changes
 - **Security Alerts**: Inform you of security-related matters
 - **Feature Announcements**: Share new features (you can opt out)
@@ -78,6 +87,9 @@ We use your information solely to provide and improve Paperlyte:
 ---
 
 ## 3. Data Storage & Security
+
+> **⚠️ Development-Stage Security Notice:**
+> Advanced security features (end-to-end encryption, zero-knowledge architecture, two-factor authentication) are **planned for future releases**. Until these are implemented, **authorized personnel** (support team, system administrators, and engineers) may access your data **only for support and maintenance purposes**. All access is logged and subject to regular audits. If you require strict confidentiality, do not store sensitive information until these features are available.
 
 ### 3.1 Where We Store Your Data
 
@@ -114,15 +126,16 @@ We will never sell, rent, or trade your personal information to third parties fo
 
 We share data only with trusted service providers who help us operate Paperlyte:
 
-| Provider Type | Purpose | Data Shared |
-|--------------|---------|-------------|
-| Cloud Hosting | Data storage & sync | Encrypted notes, account data |
+| Provider Type     | Purpose              | Data Shared                                       |
+| ----------------- | -------------------- | ------------------------------------------------- |
+| Cloud Hosting     | Data storage & sync  | Encrypted notes, account data                     |
 | Payment Processor | Subscription billing | Email, payment info (we don't store card details) |
-| Email Service | Transactional emails | Email address only |
-| Analytics | App performance | Anonymized usage data |
-| Support Tools | Customer support | Support ticket content |
+| Email Service     | Transactional emails | Email address only                                |
+| Analytics         | App performance      | Anonymized usage data                             |
+| Support Tools     | Customer support     | Support ticket content                            |
 
 **All service providers are contractually required to:**
+
 - Protect your data
 - Use it only for specified purposes
 - Comply with applicable privacy laws
@@ -130,6 +143,7 @@ We share data only with trusted service providers who help us operate Paperlyte:
 ### 4.3 Legal Requirements
 
 We may disclose your information if required by law:
+
 - Court orders or legal process
 - Fraud prevention and security investigations
 - Protection of our rights and safety
@@ -142,11 +156,13 @@ We will notify you of legal requests unless prohibited by law.
 ## 5. Your Privacy Rights
 
 ### 5.1 Access & Portability
+
 - **View Your Data**: Access all personal data we hold about you
 - **Export Your Notes**: Download your data in standard formats (Markdown, JSON)
 - **Data Portability**: Transfer your data to another service
 
 ### 5.2 Control & Deletion
+
 - **Edit Information**: Update your account details anytime
 - **Delete Account**: Permanently remove your account and data
 - **Opt-Out**: Unsubscribe from marketing emails (service emails still sent)
@@ -154,18 +170,21 @@ We will notify you of legal requests unless prohibited by law.
 ### 5.3 Regional Rights
 
 **For EU/EEA Residents (GDPR):**
+
 - Right to access, rectify, erase, and restrict processing
 - Right to data portability
 - Right to object to processing
 - Right to lodge a complaint with your supervisory authority
 
 **For California Residents (CCPA):**
+
 - Right to know what personal information is collected
 - Right to delete personal information
 - Right to opt-out of sale (we don't sell data)
 - Right to non-discrimination for exercising privacy rights
 
 **For UK Residents:**
+
 - Similar rights to GDPR
 - Contact the UK Information Commissioner's Office (ICO)
 
@@ -174,6 +193,7 @@ We will notify you of legal requests unless prohibited by law.
 Email us at: **privacy@paperlyte.com**
 
 We'll respond within:
+
 - 30 days (standard requests)
 - 45 days (complex requests, with notification)
 
@@ -183,11 +203,11 @@ We'll respond within:
 
 ### 6.1 Cookies We Use
 
-| Type | Purpose | Duration |
-|------|---------|----------|
-| Essential | Authentication, security | Session/1 year |
-| Functional | Remember preferences | 1 year |
-| Analytics | Understand usage (anonymized) | 1 year |
+| Type       | Purpose                       | Duration       |
+| ---------- | ----------------------------- | -------------- |
+| Essential  | Authentication, security      | Session/1 year |
+| Functional | Remember preferences          | 1 year         |
+| Analytics  | Understand usage (anonymized) | 1 year         |
 
 ### 6.2 Cookie Controls
 
@@ -224,11 +244,13 @@ If you're outside [primary region], your data may be transferred internationally
 ## 9. Changes to This Policy
 
 We may update this privacy policy to reflect:
+
 - Changes in our practices
 - New features or services
 - Legal or regulatory changes
 
 **We'll notify you of material changes via:**
+
 - Email to your registered address
 - In-app notification
 - Notice on our website
@@ -265,6 +287,7 @@ We believe in transparency. View our annual transparency report at:
 **https://paperlyte.com/transparency**
 
 This report includes:
+
 - Number of government data requests
 - Types of data requested
 - Our responses to requests
@@ -286,4 +309,4 @@ If you don't agree with this policy, please don't use our service.
 
 ---
 
-*This privacy policy is effective as of the date listed above and was written in plain language to be as clear and transparent as possible. If you have questions or concerns, please contact us.*
+_This privacy policy is effective as of the date listed above and was written in plain language to be as clear and transparent as possible. If you have questions or concerns, please contact us._

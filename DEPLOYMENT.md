@@ -79,6 +79,7 @@ The Node version is set to 18.x in `netlify.toml`:
 Add the following DNS records at your domain registrar:
 
 **A Record** (for apex domain):
+
 ```
 Type: A
 Name: @
@@ -87,6 +88,7 @@ TTL: 3600
 ```
 
 **CNAME Record** (for www subdomain):
+
 ```
 Type: CNAME
 Name: www
@@ -177,11 +179,13 @@ Netlify keeps a history of all deployments. To rollback:
 ### Rollback via Git
 
 1. Identify the commit hash of the stable version:
+
    ```bash
    git log --oneline
    ```
 
 2. Create a revert commit:
+
    ```bash
    git revert <commit-hash>
    git push origin main
@@ -225,6 +229,7 @@ Monitor these metrics to meet Paperlyte's performance goals:
 **Problem**: Build fails with error message
 
 **Solutions**:
+
 1. Check build logs in Netlify dashboard
 2. Verify `package.json` scripts work locally
 3. Ensure all dependencies are in `package.json` (not `devDependencies` only)
@@ -235,6 +240,7 @@ Monitor these metrics to meet Paperlyte's performance goals:
 **Problem**: Navigating directly to routes shows 404
 
 **Solution**: Redirect rules in `netlify.toml` handle SPA routing. Verify:
+
 ```toml
 [[redirects]]
   from = "/*"
@@ -247,6 +253,7 @@ Monitor these metrics to meet Paperlyte's performance goals:
 **Problem**: SSL certificate not provisioning
 
 **Solutions**:
+
 1. Verify DNS is correctly configured
 2. Wait 24 hours for DNS propagation
 3. Try "Renew certificate" in Domain settings
@@ -257,6 +264,7 @@ Monitor these metrics to meet Paperlyte's performance goals:
 **Problem**: Builds taking longer than expected
 
 **Solutions**:
+
 1. Enable build cache (enabled by default)
 2. Optimize dependencies (remove unused packages)
 3. Use `npm ci` instead of `npm install` (already configured)
@@ -266,6 +274,7 @@ Monitor these metrics to meet Paperlyte's performance goals:
 **Problem**: Deploy preview not created for PR
 
 **Solutions**:
+
 1. Verify Netlify GitHub integration is active
 2. Check "Deploy Previews" setting is enabled: Site settings → Build & deploy → Deploy contexts
 3. Ensure PR is from a branch in the same repository (not a fork)

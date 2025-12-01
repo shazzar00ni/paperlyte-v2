@@ -46,11 +46,13 @@ This guide will help you set up ConvertKit integration for email capture on your
 ### For Local Development
 
 1. Copy `.env.example` to `.env`:
+
    ```bash
    cp .env.example .env
    ```
 
 2. Fill in your ConvertKit credentials:
+
    ```bash
    CONVERTKIT_API_KEY=your_actual_api_key_here
    CONVERTKIT_FORM_ID=123456
@@ -79,16 +81,19 @@ This guide will help you set up ConvertKit integration for email capture on your
 ### Local Testing with Netlify CLI
 
 1. Install Netlify CLI globally:
+
    ```bash
    npm install -g netlify-cli
    ```
 
 2. Start the dev server with functions:
+
    ```bash
    netlify dev
    ```
 
 3. Open http://localhost:8888 (Netlify Dev uses port 8888 by default)
+   - If port 8888 is unavailable, Netlify Dev will automatically select the next available port and print the served URL in the console output. Check your terminal for the correct local URL to open in your browser.
 
 4. Try submitting your email in the form
 
@@ -98,11 +103,13 @@ This guide will help you set up ConvertKit integration for email capture on your
 If port 8888 is already in use, you have several options:
 
 1. **Use a different port:**
+
    ```bash
    netlify dev --port 3000
    ```
 
 2. **Find and kill the process using port 8888:**
+
    ```bash
    # macOS/Linux
    lsof -ti:8888 | xargs kill -9
@@ -120,12 +127,14 @@ If port 8888 is already in use, you have several options:
 The API enforces rate limiting: **3 requests per minute per IP address**
 
 **How Rate Limiting Works:**
+
 - Uses a **fixed 1-minute window** (not sliding)
 - Each IP address gets 3 requests per window
 - Window starts on your first request
 - After 60 seconds, the window resets and you get 3 new requests
 
 **To Test:**
+
 1. Submit 3 requests quickly - all should succeed
 2. Submit a 4th request - should fail with:
    ```
@@ -135,6 +144,7 @@ The API enforces rate limiting: **3 requests per minute per IP address**
 4. Submit again - should succeed (new window)
 
 **Resetting Rate Limit During Development:**
+
 - Rate limits are stored in-memory (serverless function)
 - Simply restart `netlify dev` to clear all rate limits
 - Or wait 60 seconds for the window to reset naturally
@@ -154,11 +164,13 @@ The API enforces rate limiting: **3 requests per minute per IP address**
 ## API Endpoint Details
 
 ### Endpoint
+
 ```
 POST /.netlify/functions/subscribe
 ```
 
 ### Request Body
+
 ```json
 {
   "email": "user@example.com"
@@ -166,6 +178,7 @@ POST /.netlify/functions/subscribe
 ```
 
 ### Success Response (200)
+
 ```json
 {
   "success": true,
@@ -177,6 +190,7 @@ POST /.netlify/functions/subscribe
 ### Error Responses
 
 **400 - Invalid Email**
+
 ```json
 {
   "error": "Invalid email address"
@@ -184,6 +198,7 @@ POST /.netlify/functions/subscribe
 ```
 
 **429 - Rate Limited**
+
 ```json
 {
   "error": "Too many requests. Please try again in a minute."
@@ -191,6 +206,7 @@ POST /.netlify/functions/subscribe
 ```
 
 **500 - Server Error**
+
 ```json
 {
   "error": "Failed to process subscription. Please try again later."
@@ -200,6 +216,21 @@ POST /.netlify/functions/subscribe
 ---
 
 ## Security Features
+
+### CORS (Cross-Origin Resource Sharing)
+
+- **Default Whitelisted Domains:**
+  - Development: `http://localhost:8888` (Netlify Dev), or your Vite dev server (e.g., `http://localhost:5173`)
+  - Staging: `https://staging.paperlyte.com` (or your staging domain)
+  - Production: `https://paperlyte.com` (your live domain)
+
+- **How to Configure CORS per Environment:**
+  - **Development:** Set `ALLOWED_ORIGIN=http://localhost:8888` (or your dev port) in your `.env` or Netlify environment variables.
+  - **Staging:** Set `ALLOWED_ORIGIN=https://staging.paperlyte.com` in your Netlify environment variables.
+  - **Production:** Set `ALLOWED_ORIGIN=https://paperlyte.com` in your Netlify environment variables.
+
+- **Where CORS Is Configured:**
+  - CORS is enforced in the serverless function at [`netlify/functions/subscribe.ts`](../../netlify/functions/subscribe.ts) using the `ALLOWED_ORIGIN` environment variable. See the code for details on how allowed origins are checked and headers are set.
 
 ✅ **Rate Limiting**: 3 requests per minute per IP
 ✅ **Honeypot Field**: Catches spam bots
@@ -212,11 +243,13 @@ POST /.netlify/functions/subscribe
 The serverless function implements Cross-Origin Resource Sharing (CORS) to prevent unauthorized domains from submitting requests.
 
 **Default Configuration:**
+
 - **Allowed Origin**: `https://paperlyte.com` (production domain)
 - **Allowed Methods**: `POST, OPTIONS`
 - **Allowed Headers**: `Content-Type`
 
 **Environment Variables:**
+
 - `ALLOWED_ORIGIN` - Set to your production domain (e.g., `https://yourdomain.com`)
   - **Development**: Use `http://localhost:5173` for Vite dev server
   - **Netlify Dev**: Use `http://localhost:8888`
@@ -224,6 +257,7 @@ The serverless function implements Cross-Origin Resource Sharing (CORS) to preve
   - **Multiple Origins**: Not supported by default (security best practice)
 
 **Setting in Netlify:**
+
 1. Go to Site settings → Environment variables
 2. Add `ALLOWED_ORIGIN` with your domain value
 3. For local development, add to `.env`:
@@ -232,6 +266,7 @@ The serverless function implements Cross-Origin Resource Sharing (CORS) to preve
    ```
 
 **Important Notes:**
+
 - Always use HTTPS in production (HTTP will be blocked by browsers)
 - Do not use wildcards (`*`) for `ALLOWED_ORIGIN` in production (security risk)
 - The function will return a 403 Forbidden if origin doesn't match
@@ -261,16 +296,19 @@ The serverless function implements Cross-Origin Resource Sharing (CORS) to preve
 The subscribe function restricts requests to a specific origin for security. By default, it only accepts requests from `https://paperlyte.com`.
 
 **Environment Variable:**
+
 - `ALLOWED_ORIGIN` - Set this to your domain (default: `https://paperlyte.com`)
 
 **Configuration Examples:**
 
 1. **Production (Netlify):**
+
    ```bash
    ALLOWED_ORIGIN=https://yourdomain.com
    ```
 
 2. **Staging/Preview:**
+
    ```bash
    ALLOWED_ORIGIN=https://preview.yourdomain.com
    ```
@@ -297,9 +335,10 @@ The subscribe function restricts requests to a specific origin for security. By 
 ### Rate Limiting Too Strict
 
 To adjust rate limits, edit `netlify/functions/subscribe.ts`:
+
 ```typescript
-const RATE_LIMIT_REQUESTS = 5;  // Increase from 3
-const RATE_LIMIT_WINDOW = 60 * 1000;  // 1 minute
+const RATE_LIMIT_REQUESTS = 5; // Increase from 3
+const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
 ```
 
 ---
@@ -326,6 +365,7 @@ Before going live, verify:
 ### ConvertKit Dashboard
 
 Monitor your subscribers in real-time:
+
 - Total subscribers
 - Growth rate
 - Confirmation rate
@@ -334,6 +374,7 @@ Monitor your subscribers in real-time:
 ### Netlify Function Logs
 
 View function logs in Netlify:
+
 1. Go to **Functions** tab in Netlify dashboard
 2. Click on `subscribe` function
 3. View logs for each invocation

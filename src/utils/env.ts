@@ -24,8 +24,10 @@ export const getBaseUrl = (): string => {
  * Get SEO keywords for meta tags
  */
 export const getSeoKeywords = (): string => {
-  return import.meta.env.VITE_SEO_KEYWORDS ||
-    'note-taking app, simple notes, fast notes, offline notes, tag-based organization, distraction-free writing, minimalist notes';
+  return (
+    import.meta.env.VITE_SEO_KEYWORDS ||
+    "note-taking app, simple notes, fast notes, offline notes, tag-based organization, distraction-free writing, minimalist notes"
+  );
 };
 
 /**
@@ -33,11 +35,11 @@ export const getSeoKeywords = (): string => {
  * Returns absolute URL for production, relative for development
  */
 export const getOgImage = (): string => {
-  const ogImage = import.meta.env.VITE_OG_IMAGE || '/og-image.png';
+  const ogImage = import.meta.env.VITE_OG_IMAGE || "/og-image.png";
   const baseUrl = getBaseUrl();
 
   // If image is already absolute URL, return as-is
-  if (ogImage.startsWith('http://') || ogImage.startsWith('https://')) {
+  if (ogImage.startsWith("http://") || ogImage.startsWith("https://")) {
     return ogImage;
   }
 
@@ -64,30 +66,30 @@ export const updateMetaTags = (): void => {
   // Update canonical URL
   const canonical = document.querySelector('link[rel="canonical"]');
   if (canonical) {
-    canonical.setAttribute('href', env.baseUrl + '/');
+    canonical.setAttribute("href", env.baseUrl + "/");
   }
 
   // Update keywords
   const keywords = document.querySelector('meta[name="keywords"]');
   if (keywords) {
-    keywords.setAttribute('content', env.seoKeywords);
+    keywords.setAttribute("content", env.seoKeywords);
   }
 
   // Update Open Graph URL
   const ogUrl = document.querySelector('meta[property="og:url"]');
   if (ogUrl) {
-    ogUrl.setAttribute('content', env.baseUrl + '/');
+    ogUrl.setAttribute("content", env.baseUrl + "/");
   }
 
   // Update Open Graph image
   const ogImage = document.querySelector('meta[property="og:image"]');
   if (ogImage) {
-    ogImage.setAttribute('content', env.ogImage);
+    ogImage.setAttribute("content", env.ogImage);
   }
 
   // Log environment info in development
   if (env.isDevelopment) {
-    console.log('🌍 Environment:', {
+    console.log("🌍 Environment:", {
       baseUrl: env.baseUrl,
       ogImage: env.ogImage,
       mode: import.meta.env.MODE,

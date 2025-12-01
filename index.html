@@ -6,20 +6,32 @@
 
     <!-- SEO Meta Tags -->
     <title>Paperlyte - Lightning-Fast, Distraction-Free Notes</title>
-    <meta name="description" content="Your thoughts, unchained from complexity. The simplest, fastest note-taking app with offline-first sync and tag-based organization." />
-    <meta name="keywords" content="note-taking app, simple notes, fast notes, offline notes, tag-based organization, distraction-free writing, minimalist notes" />
+    <meta
+      name="description"
+      content="Your thoughts, unchained from complexity. The simplest, fastest note-taking app with offline-first sync and tag-based organization."
+    />
+    <meta
+      name="keywords"
+      content="__META_KEYWORDS__"
+    />
     <meta name="author" content="Paperlyte" />
-    <!-- Canonical URL - Updated dynamically by env.ts -->
-    <link rel="canonical" href="https://paperlyte.com/" />
+    <!-- Canonical URL - Injected at build time -->
+    <link rel="canonical" href="__SITE_URL__" />
 
     <!-- Open Graph Meta Tags -->
     <meta property="og:type" content="website" />
-    <!-- OG URL - Updated dynamically by env.ts -->
-    <meta property="og:url" content="https://paperlyte.com/" />
-    <meta property="og:title" content="Paperlyte - Lightning-Fast, Distraction-Free Notes" />
-    <meta property="og:description" content="Your thoughts, unchained from complexity. The simplest, fastest note-taking app with offline-first sync and tag-based organization." />
-    <!-- OG Image - Updated dynamically by env.ts -->
-    <meta property="og:image" content="https://paperlyte.com/og-image.png" />
+    <!-- OG URL - Injected at build time -->
+    <meta property="og:url" content="__SITE_URL__/" />
+    <meta
+      property="og:title"
+      content="Paperlyte - Lightning-Fast, Distraction-Free Notes"
+    />
+    <meta
+      property="og:description"
+      content="Your thoughts, unchained from complexity. The simplest, fastest note-taking app with offline-first sync and tag-based organization."
+    />
+    <!-- OG Image - Injected at build time -->
+    <meta property="og:image" content="__OG_IMAGE_URL__" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:site_name" content="Paperlyte" />
@@ -27,10 +39,16 @@
 
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="https://paperlyte.com/" />
-    <meta name="twitter:title" content="Paperlyte - Lightning-Fast, Distraction-Free Notes" />
-    <meta name="twitter:description" content="Your thoughts, unchained from complexity. The simplest, fastest note-taking app with offline-first sync and tag-based organization." />
-    <meta name="twitter:image" content="https://paperlyte.com/og-image.png" />
+    <meta name="twitter:url" content="__SITE_URL__/" />
+    <meta
+      name="twitter:title"
+      content="Paperlyte - Lightning-Fast, Distraction-Free Notes"
+    />
+    <meta
+      name="twitter:description"
+      content="Your thoughts, unchained from complexity. The simplest, fastest note-taking app with offline-first sync and tag-based organization."
+    />
+    <meta name="twitter:image" content="__OG_IMAGE_URL__" />
     <meta name="twitter:creator" content="@paperlyte" />
 
     <!-- Additional Meta Tags -->
@@ -62,49 +80,50 @@
 
     <!-- Schema.org Structured Data -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "Paperlyte",
-      "applicationCategory": "ProductivityApplication",
-      "operatingSystem": "Web, iOS, Android, Windows, macOS, Linux",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      },
-      "description": "Lightning-fast, distraction-free note-taking app with offline-first sync and tag-based organization.",
-      "url": "https://paperlyte.com",
-      "screenshot": "https://paperlyte.com/screenshot.png",
-      "featureList": [
-        "Lightning-fast performance",
-        "Offline-first functionality",
-        "Tag-based organization",
-        "Cross-platform sync",
-        "Distraction-free interface",
-        "Real-time sync"
-      ]
-    }
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Paperlyte",
+        "applicationCategory": "ProductivityApplication",
+        "operatingSystem": "Web, iOS, Android, Windows, macOS, Linux",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "description": "Lightning-fast, distraction-free note-taking app with offline-first sync and tag-based organization.",
+        "url": "https://paperlyte.com",
+        "screenshot": "https://paperlyte.com/screenshot.png",
+        "featureList": [
+          "Lightning-fast performance",
+          "Offline-first functionality",
+          "Tag-based organization",
+          "Cross-platform sync",
+          "Distraction-free interface",
+          "Real-time sync"
+        ]
+      }
     </script>
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "Paperlyte",
-      "url": "https://paperlyte.com",
-      "logo": "https://paperlyte.com/logo.png",
-      "sameAs": [
-        "https://twitter.com/paperlyte",
-        "https://github.com/paperlyte"
-      ]
-    }
-    </script>
-  </head>
-  <body>
-    <!-- Skip to main content (accessibility) -->
-    <a href="#main" class="skip-link">Skip to main content</a>
-
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Paperlyte",
+        "applicationCategory": "ProductivityApplication",
+        "operatingSystem": "Web, iOS, Android, Windows, macOS, Linux",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "description": "Lightning-fast, distraction-free note-taking app with offline-first sync and tag-based organization.",
+        "url": "https://paperlyte.com",
+        "screenshot": "https://paperlyte.com/screenshot.png",
+        "featureList": [
+          "Lightning-fast performance",
+          "Offline-first functionality",
+          "Tag-based organization",
+          "Cross-platform sync",
+          "Distraction-free interface",
+          "Real-time sync"
+        ]
+      }

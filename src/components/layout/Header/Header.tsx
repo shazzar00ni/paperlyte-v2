@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
-import { Button } from '@components/ui/Button';
-import { Icon } from '@components/ui/Icon';
-import { ThemeToggle } from '@components/ui/ThemeToggle';
-import styles from './Header.module.css';
+import { useState, useEffect, useRef } from "react";
+import { Button } from "@components/ui/Button";
+import { Icon } from "@components/ui/Icon";
+import { ThemeToggle } from "@components/ui/ThemeToggle";
+import styles from "./Header.module.css";
 
 export const Header = (): React.ReactElement => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -22,7 +22,7 @@ export const Header = (): React.ReactElement => {
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      element.scrollIntoView({ behavior: "smooth" });
       closeMobileMenu();
     }
   };
@@ -30,13 +30,13 @@ export const Header = (): React.ReactElement => {
   // Handle Escape key to close menu
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && mobileMenuOpen) {
+      if (event.key === "Escape" && mobileMenuOpen) {
         closeMobileMenu();
       }
     };
 
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
   }, [mobileMenuOpen]);
 
   // Focus trap for mobile menu
@@ -45,13 +45,13 @@ export const Header = (): React.ReactElement => {
 
     const menu = menuRef.current;
     const focusableElements = menu.querySelectorAll<HTMLElement>(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
     );
     const firstFocusable = focusableElements[0];
     const lastFocusable = focusableElements[focusableElements.length - 1];
 
     const handleTabKey = (event: KeyboardEvent) => {
-      if (event.key !== 'Tab') return;
+      if (event.key !== "Tab") return;
 
       if (event.shiftKey) {
         // Shift + Tab
@@ -68,12 +68,12 @@ export const Header = (): React.ReactElement => {
       }
     };
 
-    menu.addEventListener('keydown', handleTabKey);
+    menu.addEventListener("keydown", handleTabKey);
 
     // Focus first element when menu opens
     firstFocusable?.focus();
 
-    return () => menu.removeEventListener('keydown', handleTabKey);
+    return () => menu.removeEventListener("keydown", handleTabKey);
   }, [mobileMenuOpen]);
 
   return (
@@ -87,14 +87,14 @@ export const Header = (): React.ReactElement => {
         <nav className={styles.nav} aria-label="Main navigation">
           <ul
             ref={menuRef}
-            className={`${styles.navList} ${mobileMenuOpen ? styles.navListOpen : ''}`}
+            className={`${styles.navList} ${mobileMenuOpen ? styles.navListOpen : ""}`}
           >
             <li>
               <a
                 href="#features"
                 onClick={(e) => {
                   e.preventDefault();
-                  scrollToSection('features');
+                  scrollToSection("features");
                 }}
                 className={styles.navLink}
               >
@@ -106,7 +106,7 @@ export const Header = (): React.ReactElement => {
                 href="#download"
                 onClick={(e) => {
                   e.preventDefault();
-                  scrollToSection('download');
+                  scrollToSection("download");
                 }}
                 className={styles.navLink}
               >
@@ -117,7 +117,7 @@ export const Header = (): React.ReactElement => {
               <Button
                 variant="primary"
                 size="small"
-                onClick={() => scrollToSection('download')}
+                onClick={() => scrollToSection("download")}
               >
                 Get Started
               </Button>
@@ -132,13 +132,10 @@ export const Header = (): React.ReactElement => {
             type="button"
             className={styles.mobileMenuButton}
             onClick={toggleMobileMenu}
-            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileMenuOpen}
           >
-            <Icon
-              name={mobileMenuOpen ? 'fa-xmark' : 'fa-bars'}
-              size="lg"
-            />
+            <Icon name={mobileMenuOpen ? "fa-xmark" : "fa-bars"} size="lg" />
           </button>
         </div>
       </div>

@@ -5,6 +5,7 @@ This document outlines the design system for Paperlyte, a lightning-fast, distra
 ## Philosophy
 
 Paperlyte's design philosophy prioritizes:
+
 - **Lightning Speed**: Instant startup, real-time sync, no loading delays
 - **Beautiful Simplicity**: Paper-inspired design that feels natural
 - **Accessibility First**: WCAG 2.1 AA compliance, keyboard navigation, screen reader support
@@ -17,15 +18,21 @@ Paperlyte's design philosophy prioritizes:
 The primary color is **Purple 600** (`#7C3AED`), chosen for its vibrant, modern feel while maintaining WCAG AA contrast compliance.
 
 #### CSS Variables
+
 ```css
---color-primary: #7C3AED;        /* Purple 600 */
---color-primary-dark: #6D28D9;   /* Purple 700 */
---color-primary-light: #A78BFA;  /* Purple 400 */
---color-primary-faint: rgba(124, 58, 237, 0.1);   /* 10% opacity */
+--color-primary: #7c3aed; /* Purple 600 */
+--color-primary-dark: #6d28d9; /* Purple 700 */
+--color-primary-light: #a78bfa; /* Purple 400 */
+--color-primary-faint: rgba(124, 58, 237, 0.1); /* 10% opacity */
 --color-primary-fainter: rgba(124, 58, 237, 0.05); /* 5% opacity */
 ```
 
 #### Tailwind Classes
+
+#### Developer Responsibility
+
+> **Important:** The reduced motion approaches above are recommended per-selector patterns. Developers must explicitly apply one of these patterns to each component or animation/transition. Only a global fallback is provided in the CSS reset (see Accessibility section); this fallback is not a substitute for proper per-component implementation. Always ensure your custom animations and transitions respect user motion preferences by using these patterns.
+
 ```html
 <!-- Primary color -->
 <div class="bg-primary text-white">Primary</div>
@@ -42,27 +49,31 @@ The primary color is **Purple 600** (`#7C3AED`), chosen for its vibrant, modern 
 ### Background & Surface
 
 #### Light Mode
+
 - **Background**: `#FFFFFF` (White)
 - **Surface**: `#F9FAFB` (Gray 50)
 
 #### Dark Mode
+
 - **Background**: `#0F172A` (Slate 900)
 - **Surface**: `#1E293B` (Slate 800)
 
 #### CSS Variables
+
 ```css
 /* Light mode (default) */
---color-background: #FFFFFF;
---color-surface: #F9FAFB;
+--color-background: #ffffff;
+--color-surface: #f9fafb;
 
 /* Dark mode */
-[data-theme='dark'] {
-  --color-background: #0F172A;
-  --color-surface: #1E293B;
+[data-theme="dark"] {
+  --color-background: #0f172a;
+  --color-surface: #1e293b;
 }
 ```
 
 #### Tailwind Classes
+
 ```html
 <!-- Background -->
 <div class="bg-background dark:bg-background-dark">Background</div>
@@ -72,27 +83,31 @@ The primary color is **Purple 600** (`#7C3AED`), chosen for its vibrant, modern 
 ### Text Colors
 
 #### Light Mode
+
 - **Primary Text**: `#111827` (Gray 900)
 - **Secondary Text**: `#6B7280` (Gray 500)
 - **On Primary**: `#FFFFFF` (White)
 
 #### Dark Mode
+
 - **Primary Text**: `#F1F5F9` (Slate 100)
 - **Secondary Text**: `#94A3B8` (Slate 400)
 
 #### CSS Variables
-```css
---color-text-primary: #111827;    /* Light mode */
---color-text-secondary: #6B7280;  /* Light mode */
---color-text-on-primary: #FFFFFF;
 
-[data-theme='dark'] {
-  --color-text-primary: #F1F5F9;
-  --color-text-secondary: #94A3B8;
+```css
+--color-text-primary: #111827; /* Light mode */
+--color-text-secondary: #6b7280; /* Light mode */
+--color-text-on-primary: #ffffff;
+
+[data-theme="dark"] {
+  --color-text-primary: #f1f5f9;
+  --color-text-secondary: #94a3b8;
 }
 ```
 
 #### Tailwind Classes
+
 ```html
 <p class="text-text-primary dark:text-text-primary-dark">Primary text</p>
 <p class="text-text-secondary dark:text-text-secondary-dark">Secondary text</p>
@@ -102,15 +117,17 @@ The primary color is **Purple 600** (`#7C3AED`), chosen for its vibrant, modern 
 ### Border Colors
 
 #### CSS Variables
-```css
---color-border: #E5E7EB;  /* Light mode - Gray 200 */
 
-[data-theme='dark'] {
-  --color-border: #334155;  /* Dark mode - Slate 700 */
+```css
+--color-border: #e5e7eb; /* Light mode - Gray 200 */
+
+[data-theme="dark"] {
+  --color-border: #334155; /* Dark mode - Slate 700 */
 }
 ```
 
 #### Tailwind Classes
+
 ```html
 <div class="border border-border dark:border-border-dark">Bordered element</div>
 ```
@@ -122,11 +139,14 @@ The primary color is **Purple 600** (`#7C3AED`), chosen for its vibrant, modern 
 **Inter** is the primary font family, with system font fallbacks.
 
 #### CSS Variable
+
 ```css
---font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+--font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+  sans-serif;
 ```
 
 #### Tailwind Classes
+
 ```html
 <p class="font-sans">Text using Inter font</p>
 ```
@@ -135,56 +155,59 @@ The primary color is **Purple 600** (`#7C3AED`), chosen for its vibrant, modern 
 
 8-tier scale optimized for readability and hierarchy.
 
-| Name | CSS Variable | Tailwind | Size | Pixels |
-|------|-------------|----------|------|--------|
-| XS | `--font-size-xs` | `text-xs` | 0.75rem | 12px |
-| SM | `--font-size-sm` | `text-sm` | 0.875rem | 14px |
-| Base | `--font-size-base` | `text-base` | 1rem | 16px |
-| LG | `--font-size-lg` | `text-lg` | 1.125rem | 18px |
-| XL | `--font-size-xl` | `text-xl` | 1.25rem | 20px |
-| 2XL | `--font-size-2xl` | `text-2xl` | 1.5rem | 24px |
-| 3XL | `--font-size-3xl` | `text-3xl` | 1.875rem | 30px |
-| 4XL | `--font-size-4xl` | `text-4xl` | 2.25rem | 36px |
-| 5XL | `--font-size-5xl` | `text-5xl` | 3rem | 48px |
+| Name | CSS Variable       | Tailwind    | Size     | Pixels |
+| ---- | ------------------ | ----------- | -------- | ------ |
+| XS   | `--font-size-xs`   | `text-xs`   | 0.75rem  | 12px   |
+| SM   | `--font-size-sm`   | `text-sm`   | 0.875rem | 14px   |
+| Base | `--font-size-base` | `text-base` | 1rem     | 16px   |
+| LG   | `--font-size-lg`   | `text-lg`   | 1.125rem | 18px   |
+| XL   | `--font-size-xl`   | `text-xl`   | 1.25rem  | 20px   |
+| 2XL  | `--font-size-2xl`  | `text-2xl`  | 1.5rem   | 24px   |
+| 3XL  | `--font-size-3xl`  | `text-3xl`  | 1.875rem | 30px   |
+| 4XL  | `--font-size-4xl`  | `text-4xl`  | 2.25rem  | 36px   |
+| 5XL  | `--font-size-5xl`  | `text-5xl`  | 3rem     | 48px   |
 
 #### Responsive Typography
+
 On mobile (< 768px):
+
 - 4XL scales down to 1.875rem (30px)
 - 5XL scales down to 2.25rem (36px)
 - 3XL spacing reduces to 4rem
 
 ### Font Weights
 
-| Name | CSS Variable | Tailwind | Weight |
-|------|-------------|----------|--------|
-| Normal | `--font-weight-normal` | `font-normal` | 400 |
-| Medium | `--font-weight-medium` | `font-medium` | 500 |
-| Semibold | `--font-weight-semibold` | `font-semibold` | 600 |
-| Bold | `--font-weight-bold` | `font-bold` | 700 |
+| Name     | CSS Variable             | Tailwind        | Weight |
+| -------- | ------------------------ | --------------- | ------ |
+| Normal   | `--font-weight-normal`   | `font-normal`   | 400    |
+| Medium   | `--font-weight-medium`   | `font-medium`   | 500    |
+| Semibold | `--font-weight-semibold` | `font-semibold` | 600    |
+| Bold     | `--font-weight-bold`     | `font-bold`     | 700    |
 
 ### Line Heights
 
-| Name | CSS Variable | Tailwind | Height |
-|------|-------------|----------|--------|
-| Tight | `--line-height-tight` | `leading-tight` | 1.25 |
-| Normal | `--line-height-normal` | `leading-normal` | 1.5 |
-| Relaxed | `--line-height-relaxed` | `leading-relaxed` | 1.75 |
+| Name    | CSS Variable            | Tailwind          | Height |
+| ------- | ----------------------- | ----------------- | ------ |
+| Tight   | `--line-height-tight`   | `leading-tight`   | 1.25   |
+| Normal  | `--line-height-normal`  | `leading-normal`  | 1.5    |
+| Relaxed | `--line-height-relaxed` | `leading-relaxed` | 1.75   |
 
 ## Spacing
 
 8px base unit spacing scale for consistent rhythm.
 
-| Name | CSS Variable | Tailwind | Size | Pixels |
-|------|-------------|----------|------|--------|
-| XS | `--spacing-xs` | `spacing-xs` or `m-xs` | 0.5rem | 8px |
-| SM | `--spacing-sm` | `spacing-sm` or `m-sm` | 1rem | 16px |
-| MD | `--spacing-md` | `spacing-md` or `m-md` | 1.5rem | 24px |
-| LG | `--spacing-lg` | `spacing-lg` or `m-lg` | 2rem | 32px |
-| XL | `--spacing-xl` | `spacing-xl` or `m-xl` | 3rem | 48px |
-| 2XL | `--spacing-2xl` | `spacing-2xl` or `m-2xl` | 4rem | 64px |
-| 3XL | `--spacing-3xl` | `spacing-3xl` or `m-3xl` | 6rem | 96px |
+| Name | CSS Variable    | Tailwind                 | Size   | Pixels |
+| ---- | --------------- | ------------------------ | ------ | ------ |
+| XS   | `--spacing-xs`  | `spacing-xs` or `m-xs`   | 0.5rem | 8px    |
+| SM   | `--spacing-sm`  | `spacing-sm` or `m-sm`   | 1rem   | 16px   |
+| MD   | `--spacing-md`  | `spacing-md` or `m-md`   | 1.5rem | 24px   |
+| LG   | `--spacing-lg`  | `spacing-lg` or `m-lg`   | 2rem   | 32px   |
+| XL   | `--spacing-xl`  | `spacing-xl` or `m-xl`   | 3rem   | 48px   |
+| 2XL  | `--spacing-2xl` | `spacing-2xl` or `m-2xl` | 4rem   | 64px   |
+| 3XL  | `--spacing-3xl` | `spacing-3xl` or `m-3xl` | 6rem   | 96px   |
 
 #### Example Usage
+
 ```html
 <!-- Tailwind -->
 <div class="p-lg m-md">Content with spacing</div>
@@ -198,59 +221,62 @@ On mobile (< 768px):
 
 ### Max Widths
 
-| Name | CSS Variable | Tailwind | Size |
-|------|-------------|----------|------|
-| Container | `--max-width` | `max-w-container` | 1280px |
-| Content | `--max-width-content` | `max-w-content` | 1024px |
+| Name      | CSS Variable          | Tailwind          | Size   |
+| --------- | --------------------- | ----------------- | ------ |
+| Container | `--max-width`         | `max-w-container` | 1280px |
+| Content   | `--max-width-content` | `max-w-content`   | 1024px |
 
 ### Border Radius
 
-| Name | CSS Variable | Tailwind | Size | Pixels |
-|------|-------------|----------|------|--------|
-| Small | `--border-radius-sm` | `rounded-sm` | 0.25rem | 4px |
-| Medium | `--border-radius-md` | `rounded-md` | 0.5rem | 8px |
-| Large | `--border-radius-lg` | `rounded-lg` | 1rem | 16px |
+| Name   | CSS Variable         | Tailwind     | Size    | Pixels |
+| ------ | -------------------- | ------------ | ------- | ------ |
+| Small  | `--border-radius-sm` | `rounded-sm` | 0.25rem | 4px    |
+| Medium | `--border-radius-md` | `rounded-md` | 0.5rem  | 8px    |
+| Large  | `--border-radius-lg` | `rounded-lg` | 1rem    | 16px   |
 
 ## Shadows
 
 Paper-inspired shadow system for depth and hierarchy.
 
-| Name | CSS Variable | Tailwind | Definition |
-|------|-------------|----------|------------|
-| Small | `--shadow-sm` | `shadow-sm` | `0 1px 2px 0 rgba(0, 0, 0, 0.05)` |
-| Medium | `--shadow-md` | `shadow-md` | `0 4px 6px -1px rgba(0, 0, 0, 0.1)` |
-| Large | `--shadow-lg` | `shadow-lg` | `0 10px 15px -3px rgba(0, 0, 0, 0.1)` |
+| Name        | CSS Variable  | Tailwind    | Definition                            |
+| ----------- | ------------- | ----------- | ------------------------------------- |
+| Small       | `--shadow-sm` | `shadow-sm` | `0 1px 2px 0 rgba(0, 0, 0, 0.05)`     |
+| Medium      | `--shadow-md` | `shadow-md` | `0 4px 6px -1px rgba(0, 0, 0, 0.1)`   |
+| Large       | `--shadow-lg` | `shadow-lg` | `0 10px 15px -3px rgba(0, 0, 0, 0.1)` |
 | Extra Large | `--shadow-xl` | `shadow-xl` | `0 20px 25px -5px rgba(0, 0, 0, 0.1)` |
 
 ## Transitions & Animations
 
 ### Transition Durations
 
-| Name | CSS Variable | Tailwind | Duration |
-|------|-------------|----------|----------|
-| Fast | `--transition-fast` | `duration-fast` | 150ms |
-| Base | `--transition-base` | `duration-base` | 250ms |
-| Slow | `--transition-slow` | `duration-slow` | 350ms |
+| Name | CSS Variable        | Tailwind        | Duration |
+| ---- | ------------------- | --------------- | -------- |
+| Fast | `--transition-fast` | `duration-fast` | 150ms    |
+| Base | `--transition-base` | `duration-base` | 250ms    |
+| Slow | `--transition-slow` | `duration-slow` | 350ms    |
 
 ### Timing Function
 
-| Name | CSS Variable | Tailwind | Function |
-|------|-------------|----------|----------|
-| Smooth | N/A | `ease-smooth` | `cubic-bezier(0.4, 0, 0.2, 1)` |
+| Name   | CSS Variable | Tailwind      | Function                       |
+| ------ | ------------ | ------------- | ------------------------------ |
+| Smooth | N/A          | `ease-smooth` | `cubic-bezier(0.4, 0, 0.2, 1)` |
 
 ### Keyframe Animations
 
 #### Fade In
+
 ```html
 <div class="animate-fadeIn">Fades in on load</div>
 ```
 
 #### Slide Up
+
 ```html
 <div class="animate-slideUp">Slides up on load</div>
 ```
 
 #### Float
+
 ```html
 <div class="animate-float">Floats continuously</div>
 ```
@@ -258,6 +284,8 @@ Paper-inspired shadow system for depth and hierarchy.
 ### Reduced Motion
 
 **CRITICAL**: All animations and transitions must respect `prefers-reduced-motion`.
+
+> **Note:** The `--reduced-motion-duration` variable is defined in [`src/styles/variables.css`](../src/styles/variables.css) at line 64 with a default value of `0.01ms`.
 
 #### CSS Variable Definition
 
@@ -275,6 +303,7 @@ The `--reduced-motion-duration` variable is defined in [src/styles/variables.css
 The design system provides two approaches for respecting reduced motion preferences:
 
 **1. Using CSS Variables (Recommended)**
+
 ```css
 /* In your CSS, use the reduced-motion-duration variable */
 .my-element {
@@ -284,6 +313,7 @@ The design system provides two approaches for respecting reduced motion preferen
 ```
 
 **2. Using Media Query (Alternative)**
+
 ```css
 .my-element {
   animation-duration: 250ms;
@@ -299,6 +329,7 @@ The design system provides two approaches for respecting reduced motion preferen
 #### Global Overrides Applied
 
 The design system automatically applies these overrides when `prefers-reduced-motion: reduce` is detected:
+
 - ✅ All animations reduced to 0.01ms duration
 - ✅ All transitions reduced to 0.01ms duration
 - ✅ Smooth scrolling disabled (`scroll-behavior: auto`)
@@ -310,11 +341,11 @@ The design system automatically applies these overrides when `prefers-reduced-mo
 
 Consistent layering for UI elements.
 
-| Name | CSS Variable | Tailwind | Value |
-|------|-------------|----------|-------|
-| Header | `--z-header` | `z-header` | 1000 |
-| Modal | `--z-modal` | `z-modal` | 2000 |
-| Tooltip | `--z-tooltip` | `z-tooltip` | 3000 |
+| Name    | CSS Variable  | Tailwind    | Value |
+| ------- | ------------- | ----------- | ----- |
+| Header  | `--z-header`  | `z-header`  | 1000  |
+| Modal   | `--z-modal`   | `z-modal`   | 2000  |
+| Tooltip | `--z-tooltip` | `z-tooltip` | 3000  |
 
 ## Dark Mode
 
@@ -325,9 +356,9 @@ Dark mode is controlled by the `data-theme` attribute on the `<html>` element:
 ```html
 <!-- Light mode (default) -->
 <html>
-
-<!-- Dark mode -->
-<html data-theme="dark">
+  <!-- Dark mode -->
+  <html data-theme="dark"></html>
+</html>
 ```
 
 ### Tailwind Dark Mode
@@ -337,12 +368,19 @@ Tailwind is configured to use the `data-theme="dark"` selector:
 ```javascript
 // tailwind.config.js
 export default {
-  darkMode: ['class', '[data-theme="dark"]'],
+  darkMode: ["class", '[data-theme="dark"]'],
   // ...
-}
+};
 ```
 
-### Usage Examples
+Global Overrides Applied
+
+The design system automatically applies these overrides when `prefers-reduced-motion: reduce` is detected:
+
+- ✅ All animations reduced to 0.01ms duration
+- ✅ All transitions reduced to 0.01ms duration
+- ✅ Smooth scrolling disabled (`scroll-behavior: auto`)
+- ✅ **CSS animations are paused** (`animation-play-state: paused` via [src/styles/reset.css](../src/styles/reset.css))
 
 ```html
 <!-- Background changes based on theme -->
@@ -353,9 +391,7 @@ export default {
 </div>
 
 <!-- Border colors -->
-<div class="border border-border dark:border-border-dark">
-  Themed borders
-</div>
+<div class="border border-border dark:border-border-dark">Themed borders</div>
 ```
 
 ## Usage Guidelines
@@ -363,12 +399,14 @@ export default {
 ### When to Use CSS Variables vs Tailwind
 
 **Use CSS Variables when:**
+
 - Building reusable components with CSS Modules
 - Need dynamic theming or runtime color changes
 - Prefer scoped, component-specific styling
 - Working with existing CSS codebase
 
 **Use Tailwind when:**
+
 - Rapidly prototyping new features
 - Building utility-first UI layouts
 - Need responsive design with minimal CSS
@@ -380,12 +418,10 @@ You can use both together:
 
 ```tsx
 // Component using CSS Modules
-import styles from './Card.module.css';
+import styles from "./Card.module.css";
 
 export const Card = ({ children }) => (
-  <div className={`${styles.card} p-lg rounded-lg shadow-md`}>
-    {children}
-  </div>
+  <div className={`${styles.card} p-lg rounded-lg shadow-md`}>{children}</div>
 );
 ```
 

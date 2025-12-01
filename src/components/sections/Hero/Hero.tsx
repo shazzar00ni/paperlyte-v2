@@ -1,15 +1,15 @@
-import { Button } from '@components/ui/Button';
-import { AnimatedElement } from '@components/ui/AnimatedElement';
-import { EmailCapture } from '@components/ui/EmailCapture';
-import { Section } from '@components/layout/Section';
-import { Icon } from '@components/ui/Icon';
-import styles from './Hero.module.css';
+import { Button } from "@components/ui/Button";
+import { AnimatedElement } from "@components/ui/AnimatedElement";
+import { EmailCapture } from "@components/ui/EmailCapture";
+import { Section } from "@components/layout/Section";
+import { Icon } from "@components/ui/Icon";
+import styles from "./Hero.module.css";
 
 export const Hero = (): React.ReactElement => {
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      element.scrollIntoView({ behavior: "smooth" });
     }
   };
 
@@ -44,7 +44,7 @@ export const Hero = (): React.ReactElement => {
             <Button
               variant="ghost"
               size="medium"
-              onClick={() => scrollToSection('features')}
+              onClick={() => scrollToSection("features")}
             >
               See Features →
             </Button>

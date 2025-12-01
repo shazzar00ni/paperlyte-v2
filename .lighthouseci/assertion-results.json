@@ -3,11 +3,7 @@
     "name": "minScore",
     "expected": 0.9,
     "actual": 0.5,
-    "values": [
-      0,
-      0,
-      0.5
-    ],
+    "values": [0, 0, 0.5],
     "operator": ">=",
     "passed": false,
     "auditId": "unused-css-rules",
@@ -20,11 +16,7 @@
     "name": "minScore",
     "expected": 0.9,
     "actual": 0.5,
-    "values": [
-      0.5,
-      0.5,
-      0.5
-    ],
+    "values": [0.5, 0.5, 0.5],
     "operator": ">=",
     "passed": false,
     "auditId": "unused-javascript",

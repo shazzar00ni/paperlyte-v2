@@ -1,36 +1,41 @@
-import React, { type ReactNode, useMemo } from 'react';
-import styles from './Section.module.css';
+import React, { type ReactNode, useMemo } from "react";
+import styles from "./Section.module.css";
 
 interface SectionProps {
   id?: string;
   children: ReactNode;
   className?: string;
-  background?: 'default' | 'surface' | 'primary';
-  padding?: 'default' | 'large' | 'none';
+  background?: "default" | "surface" | "primary";
+  padding?: "default" | "large" | "none";
 }
 
-export const Section = React.memo<SectionProps>(({
-  id,
-  children,
-  className = '',
-  background = 'default',
-  padding = 'default',
-}) => {
-  const classNames = useMemo(
-    () => [
-      styles.section,
-      styles[`bg-${background}`],
-      styles[`padding-${padding}`],
-      className,
-    ].filter(Boolean).join(' '),
-    [background, padding, className]
-  );
+export const Section = React.memo<SectionProps>(
+  ({
+    id,
+    children,
+    className = "",
+    background = "default",
+    padding = "default",
+  }) => {
+    const classNames = useMemo(
+      () =>
+        [
+          styles.section,
+          styles[`bg-${background}`],
+          styles[`padding-${padding}`],
+          className,
+        ]
+          .filter(Boolean)
+          .join(" "),
+      [background, padding, className],
+    );
 
-  return (
-    <section id={id} className={classNames}>
-      <div className={styles.container}>{children}</div>
-    </section>
-  );
-});
+    return (
+      <section id={id} className={classNames}>
+        <div className={styles.container}>{children}</div>
+      </section>
+    );
+  },
+);
 
-Section.displayName = 'Section';
+Section.displayName = "Section";

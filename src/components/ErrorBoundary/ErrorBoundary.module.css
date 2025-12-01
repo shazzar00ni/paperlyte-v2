@@ -53,7 +53,7 @@
 }
 
 .errorStack {
-  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
   font-size: var(--font-size-xs);
   color: var(--color-text-secondary);
   overflow-x: auto;

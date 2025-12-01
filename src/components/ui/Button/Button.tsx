@@ -1,11 +1,11 @@
-import React, { type ReactNode, useMemo } from 'react';
-import { Icon } from '@components/ui/Icon';
-import styles from './Button.module.css';
+import React, { type ReactNode, useMemo } from "react";
+import { Icon } from "@components/ui/Icon";
+import styles from "./Button.module.css";
 
 interface ButtonProps {
   children: ReactNode;
-  variant?: 'primary' | 'secondary' | 'ghost';
-  size?: 'small' | 'medium' | 'large';
+  variant?: "primary" | "secondary" | "ghost";
+  size?: "small" | "medium" | "large";
   href?: string;
   onClick?: () => void;
   icon?: string;
@@ -14,56 +14,61 @@ interface ButtonProps {
   ariaLabel?: string;
 }
 
-export const Button = React.memo<ButtonProps>(({
-  children,
-  variant = 'primary',
-  size = 'medium',
-  href,
-  onClick,
-  icon,
-  disabled = false,
-  className = '',
-  ariaLabel,
-}) => {
-  const classNames = useMemo(
-    () => [styles.button, styles[variant], styles[size], className].filter(Boolean).join(' '),
-    [variant, size, className]
-  );
+export const Button = React.memo<ButtonProps>(
+  ({
+    children,
+    variant = "primary",
+    size = "medium",
+    href,
+    onClick,
+    icon,
+    disabled = false,
+    className = "",
+    ariaLabel,
+  }) => {
+    const classNames = useMemo(
+      () =>
+        [styles.button, styles[variant], styles[size], className]
+          .filter(Boolean)
+          .join(" "),
+      [variant, size, className],
+    );
 
-  const content = (
-    <>
-      {icon && <Icon name={icon} size="sm" className={styles.icon} />}
-      {children}
-    </>
-  );
+    const content = (
+      <>
+        {icon && <Icon name={icon} size="sm" className={styles.icon} />}
+        {children}
+      </>
+    );
 
-  if (href) {
+    if (href) {
+      return (
+        <a
+          href={href}
+          className={classNames}
+          aria-label={ariaLabel}
+          {...(href.startsWith("http") && {
+            target: "_blank",
+            rel: "noopener noreferrer",
+          })}
+        >
+          {content}
+        </a>
+      );
+    }
+
     return (
-      <a
-        href={href}
+      <button
+        type="button"
         className={classNames}
+        onClick={onClick}
+        disabled={disabled}
         aria-label={ariaLabel}
-        {...(href.startsWith('http') && {
-          target: '_blank',
-          rel: 'noopener noreferrer',
-        })}
       >
         {content}
-      </a>
+      </button>
     );
-  }
+  },
+);
 
-  return (
-    <button
-      type="button"
-      className={classNames}
-      onClick={onClick}
-      disabled={disabled}
-      aria-label={ariaLabel}
-    >
-      {content}
-    </button>
-  );
-});
-
-Button.displayName = 'Button';
+Button.displayName = "Button";

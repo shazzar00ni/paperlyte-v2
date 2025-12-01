@@ -1,4 +1,4 @@
-import { LEGAL_CONFIG } from './legal';
+import { LEGAL_CONFIG } from "./legal";
 
 /**
  * Download URLs for Paperlyte across different platforms
@@ -13,8 +13,8 @@ import { LEGAL_CONFIG } from './legal';
 export const DOWNLOAD_URLS = {
   mac: `${LEGAL_CONFIG.social.github}/releases/latest/download/Paperlyte-macOS.dmg`,
   windows: `${LEGAL_CONFIG.social.github}/releases/latest/download/Paperlyte-Windows.exe`,
-  ios: 'https://apps.apple.com/app/paperlyte',
-  android: 'https://play.google.com/store/apps/details?id=com.paperlyte.app',
+  ios: "https://apps.apple.com/app/paperlyte",
+  android: "https://play.google.com/store/apps/details?id=com.paperlyte.app",
   linux: `${LEGAL_CONFIG.social.github}/releases/latest`,
 } as const;
 

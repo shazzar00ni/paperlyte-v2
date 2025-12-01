@@ -5,24 +5,28 @@ This directory contains email auto-responder templates for various legal and sup
 ## Available Templates
 
 ### 1. Privacy Auto-Responder
+
 **File**: `privacy-auto-responder.txt`
 **Email**: `privacy@paperlyte.com`
 **Use**: GDPR/CCPA privacy requests
 **Response Time**: 30 days (legal requirement)
 
 ### 2. Security Auto-Responder
+
 **File**: `security-auto-responder.txt`
 **Email**: `security@paperlyte.com`
 **Use**: Security vulnerability reports
 **Response Time**: 24 hours (recommended)
 
 ### 3. Support Auto-Responder
+
 **File**: `support-auto-responder.txt`
 **Email**: `support@paperlyte.com`
 **Use**: General support requests
 **Response Time**: 24-48 hours
 
 ### 4. DPO Auto-Responder
+
 **File**: `dpo-auto-responder.txt`
 **Email**: `dpo@paperlyte.com`
 **Use**: Data Protection Officer inquiries (EU)
@@ -34,18 +38,18 @@ This directory contains email auto-responder templates for various legal and sup
 
 All templates use placeholder variables that should be replaced by your email system:
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `{{TICKET_ID}}` | Unique ticket/reference number | `PRIV-2025-001` |
-| `{{SENDER_NAME}}` | Name of the sender | `John Doe` |
-| `{{DATE_RECEIVED}}` | Date/time received | `November 28, 2025 at 3:45 PM` |
-| `{{REQUEST_TYPE}}` | Type of request | `Data Access Request` |
-| `{{SEVERITY}}` | Security issue severity | `Medium` |
-| `{{PRIORITY}}` | Support priority | `Normal` |
-| `{{INQUIRY_TYPE}}` | DPO inquiry type | `DSAR` |
-| `{{BOUNTY_INFO}}` | Bug bounty program info | `We offer rewards...` |
-| `{{COMPANY_ADDRESS}}` | Physical address | `123 Main St...` |
-| `{{DPO_NAME}}` | DPO name | `Jane Smith` |
+| Variable              | Description                    | Example                        |
+| --------------------- | ------------------------------ | ------------------------------ |
+| `{{TICKET_ID}}`       | Unique ticket/reference number | `PRIV-2025-001`                |
+| `{{SENDER_NAME}}`     | Name of the sender             | `John Doe`                     |
+| `{{DATE_RECEIVED}}`   | Date/time received             | `November 28, 2025 at 3:45 PM` |
+| `{{REQUEST_TYPE}}`    | Type of request                | `Data Access Request`          |
+| `{{SEVERITY}}`        | Security issue severity        | `Medium`                       |
+| `{{PRIORITY}}`        | Support priority               | `Normal`                       |
+| `{{INQUIRY_TYPE}}`    | DPO inquiry type               | `DSAR`                         |
+| `{{BOUNTY_INFO}}`     | Bug bounty program info        | `We offer rewards...`          |
+| `{{COMPANY_ADDRESS}}` | Physical address               | `123 Main St...`               |
+| `{{DPO_NAME}}`        | DPO name                       | `Jane Smith`                   |
 
 ---
 
@@ -60,13 +64,14 @@ All templates use placeholder variables that should be replaced by your email sy
 5. Replace variables with actual values or use Apps Script
 
 #### Using Apps Script for Auto-Variables:
+
 ```javascript
 function autoResponder(e) {
   var message = e.message;
-  var ticketId = 'PRIV-' + new Date().getTime();
-  var template = 'Your template here with {{TICKET_ID}}';
-  template = template.replace('{{TICKET_ID}}', ticketId);
-  template = template.replace('{{DATE_RECEIVED}}', new Date().toString());
+  var ticketId = "PRIV-" + new Date().getTime();
+  var template = "Your template here with {{TICKET_ID}}";
+  template = template.replace("{{TICKET_ID}}", ticketId);
+  template = template.replace("{{DATE_RECEIVED}}", new Date().toString());
   // Send auto-response
   message.reply(template);
 }
@@ -82,16 +87,19 @@ function autoResponder(e) {
 ### Option 3: Email Service Providers
 
 #### Help Scout
+
 1. Go to Manage → Saved Replies
 2. Create saved reply for each template
 3. Use `{{ticket.id}}` syntax for variables
 
 #### Zendesk
+
 1. Go to Admin → Triggers
 2. Create trigger for each email type
 3. Use `{{ticket.id}}` for ticket number
 
 #### Freshdesk
+
 1. Go to Admin → Email Notifications
 2. Create auto-response for each email
 3. Use placeholders: `{{ticket.id}}`, `{{contact.name}}`
@@ -119,6 +127,7 @@ Before using these templates, customize:
 ## Testing
 
 ### Test Each Template:
+
 1. Send test email to each address
 2. Verify auto-responder is sent
 3. Check all variables are replaced
@@ -128,6 +137,7 @@ Before using these templates, customize:
 7. Verify deliverability (not in spam)
 
 ### Test Deliverability:
+
 - Send to Gmail, Outlook, Yahoo
 - Check spam folders
 - Verify SPF, DKIM, DMARC are configured
@@ -138,18 +148,21 @@ Before using these templates, customize:
 ## Compliance Notes
 
 ### Privacy Requests (GDPR/CCPA)
+
 - **Must** respond within 30 days
 - **Must** verify identity before providing data
 - **Must** log all requests for compliance
 - **Should** use secure methods for data transfer
 
 ### Security Reports
+
 - **Should** respond within 24 hours
 - **Should** have escalation process for critical issues
 - **Consider** bug bounty program
 - **Must** not ignore reports
 
 ### Data Protection Officer (GDPR)
+
 - **Required** if you process data of EU residents at scale
 - **Must** be independent and have expertise
 - **Must** be contactable by supervisory authorities
@@ -161,15 +174,16 @@ Before using these templates, customize:
 
 ### Response Time SLAs
 
-| Email | Target Response | Legal Requirement | Escalation |
-|-------|----------------|-------------------|------------|
-| privacy@ | 30 days | ✅ Yes (GDPR/CCPA) | 7 days overdue |
-| dpo@ | 30 days | ✅ Yes (GDPR) | 7 days overdue |
-| security@ | 24 hours | ❌ No (best practice) | 48 hours overdue |
-| support@ | 24-48 hours | ❌ No | 72 hours overdue |
-| legal@ | As needed | ❌ No | 7 days overdue |
+| Email     | Target Response | Legal Requirement     | Escalation       |
+| --------- | --------------- | --------------------- | ---------------- |
+| privacy@  | 30 days         | ✅ Yes (GDPR/CCPA)    | 7 days overdue   |
+| dpo@      | 30 days         | ✅ Yes (GDPR)         | 7 days overdue   |
+| security@ | 24 hours        | ❌ No (best practice) | 48 hours overdue |
+| support@  | 24-48 hours     | ❌ No                 | 72 hours overdue |
+| legal@    | As needed       | ❌ No                 | 7 days overdue   |
 
 ### Monitoring Checklist
+
 - [ ] Set up email forwarding/monitoring
 - [ ] Configure auto-responders
 - [ ] Set up ticketing system
@@ -193,6 +207,7 @@ Before using these templates, customize:
 ## Support
 
 For questions about these templates:
+
 - See [LEGAL-SETUP.md](../../docs/LEGAL-SETUP.md)
 - See GitHub Issue #34
 - Contact your legal advisor

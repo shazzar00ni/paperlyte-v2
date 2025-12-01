@@ -1,6 +1,6 @@
-import { Component, type ErrorInfo, type ReactNode } from 'react';
-import { Icon } from '@components/ui/Icon';
-import styles from './ErrorBoundary.module.css';
+import { Component, type ErrorInfo, type ReactNode } from "react";
+import { Icon } from "@components/ui/Icon";
+import styles from "./ErrorBoundary.module.css";
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -12,7 +12,10 @@ interface ErrorBoundaryState {
   error: Error | null;
 }
 
-export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+export class ErrorBoundary extends Component<
+  ErrorBoundaryProps,
+  ErrorBoundaryState
+> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = {
@@ -30,7 +33,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     // Log error to console in development
-    console.error('ErrorBoundary caught an error:', error, errorInfo);
+    console.error("ErrorBoundary caught an error:", error, errorInfo);
 
     // In production, you might want to send this to an error reporting service
     // Example: Sentry.captureException(error, { extra: errorInfo });
@@ -59,14 +62,15 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             </div>
             <h2 className={styles.errorTitle}>Something went wrong</h2>
             <p className={styles.errorMessage}>
-              We're sorry, but something unexpected happened. Please try refreshing the page.
+              We're sorry, but something unexpected happened. Please try
+              refreshing the page.
             </p>
             {this.state.error && import.meta.env.DEV && (
               <details className={styles.errorDetails}>
                 <summary>Error details (development only)</summary>
                 <pre className={styles.errorStack}>
                   {this.state.error.toString()}
-                  {'\n'}
+                  {"\n"}
                   {this.state.error.stack}
                 </pre>
               </details>

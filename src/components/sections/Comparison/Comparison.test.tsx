@@ -102,9 +102,13 @@ describe('Comparison', () => {
   });
 
   it('should render disclaimer with current date', () => {
+    vi.useFakeTimers();
+    const fixedDate = new Date('2025-01-15T00:00:00Z');
+    vi.setSystemTime(fixedDate);
+
     render(<Comparison />);
 
-    const currentDate = new Date().toLocaleDateString('en-US', {
+    const currentDate = fixedDate.toLocaleDateString('en-US', {
       month: 'long',
       year: 'numeric',
     });
@@ -116,6 +120,8 @@ describe('Comparison', () => {
         )
       )
     ).toBeInTheDocument();
+
+    vi.useRealTimers();
   });
 
   it('should have proper table structure with thead and tbody', () => {

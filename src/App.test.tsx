@@ -155,9 +155,7 @@ describe('App Integration', () => {
     expect(screen.getByText('Ready to declutter your mind?')).toBeInTheDocument();
   });
 
-  it('should wrap content in ErrorBoundary', () => {
-    // The App component should render successfully
-    // If ErrorBoundary wasn't working, this test would fail
+  it('should render all components successfully', () => {
     const { container } = render(<App />);
     expect(container).toBeInTheDocument();
 

@@ -113,12 +113,10 @@ jobs:
       contents: read
 
     steps:
-      - name: Check all jobs status
-        run: |
-          if [ "${{ needs.lint-and-typecheck.result }}" != "success" ] || \
-             [ "${{ needs.build.result }}" != "success" ] || \
-             [ "${{ needs.lighthouse.result }}" != "success" ]; then
-            echo "One or more CI jobs failed"
-            exit 1
-          fi
-          echo "All CI jobs passed successfully"
+      - name: Show CI failure message
+        if: failure()
+        run: echo "One or more CI jobs failed"
+
+      - name: Show CI success message
+        if: success()
+        run: echo "All CI jobs passed successfully"

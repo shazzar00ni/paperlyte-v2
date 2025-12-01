@@ -169,7 +169,7 @@ describe('Comparison', () => {
   });
 
   it('should highlight Paperlyte column with special styling', () => {
-    const { container } = render(<Comparison />);
+    render(<Comparison />);
 
     // Find Paperlyte header
     const paperlyteTh = screen.getByRole('columnheader', { name: /Paperlyte/i });

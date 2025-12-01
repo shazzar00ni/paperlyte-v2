@@ -168,9 +168,9 @@ describe('Comparison', () => {
     // Find Paperlyte header
     const paperlyteTh = screen.getByRole('columnheader', { name: /Paperlyte/i });
 
-    // Should have color styling (inline style)
-    expect(paperlyteTh).toHaveStyle({ color: 'var(--color-primary)' });
-    expect(paperlyteTh).toHaveStyle({ fontWeight: '700' });
+    // Should have special styling class
+    expect(paperlyteTh).toHaveClass('paperlyte-header');
+    // TODO: If the class name changes, update this test accordingly.
   });
 
   it('should render specific comparison feature: Startup Time', () => {

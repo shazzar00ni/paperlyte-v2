@@ -133,7 +133,7 @@ describe('CTA', () => {
   });
 
   it('should use large button size for download buttons', () => {
-    const { container } = render(<CTA />);
+    render(<CTA />);
 
     const macButton = screen.getByRole('link', { name: 'Download for Mac' });
     const windowsButton = screen.getByRole('link', {

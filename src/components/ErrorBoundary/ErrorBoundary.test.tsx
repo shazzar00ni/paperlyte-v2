@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { userEvent } from '@testing-library/user-event';
+import userEvent from '@testing-library/user-event';
 import { ErrorBoundary } from './ErrorBoundary';
 
 // Component that throws an error
@@ -12,7 +12,6 @@ const ThrowError = ({ shouldThrow = false }: { shouldThrow?: boolean }) => {
 
 describe('ErrorBoundary', () => {
   const originalConsoleError = console.error;
-  const originalEnv = import.meta.env.DEV;
 
   beforeEach(() => {
     // Suppress console.error in tests to keep output clean
@@ -21,8 +20,8 @@ describe('ErrorBoundary', () => {
 
   afterEach(() => {
     console.error = originalConsoleError;
-    // Restore original environment
-    import.meta.env.DEV = originalEnv;
+    // Restore all environment stubs
+    vi.unstubAllEnvs();
   });
 
   describe('Normal Operation', () => {
@@ -106,7 +105,7 @@ describe('ErrorBoundary', () => {
   describe('Development Mode', () => {
     it('should show error details in development mode', () => {
       // Set DEV mode
-      import.meta.env.DEV = true;
+      vi.stubEnv('DEV', true);
 
       render(
         <ErrorBoundary>
@@ -119,7 +118,7 @@ describe('ErrorBoundary', () => {
     });
 
     it('should display error stack trace in development mode', () => {
-      import.meta.env.DEV = true;
+      vi.stubEnv('DEV', true);
 
       render(
         <ErrorBoundary>
@@ -133,7 +132,7 @@ describe('ErrorBoundary', () => {
 
     it('should hide error details in production mode', () => {
       // Set production mode
-      import.meta.env.DEV = false;
+      vi.stubEnv('DEV', false);
 
       render(
         <ErrorBoundary>
@@ -319,7 +318,7 @@ describe('ErrorBoundary', () => {
     });
 
     it('should store the error in state', () => {
-      import.meta.env.DEV = true;
+      vi.stubEnv('DEV', true);
 
       render(
         <ErrorBoundary>

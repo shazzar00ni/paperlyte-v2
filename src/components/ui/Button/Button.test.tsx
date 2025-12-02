@@ -76,9 +76,9 @@ describe('Button', () => {
   });
 
   it('should render with icon', () => {
-    render(<Button icon="fa-download">Download</Button>);
+    const { container } = render(<Button icon="fa-download">Download</Button>);
 
-    const icon = document.querySelector('.fa-download');
+    const icon = container.querySelector('.fa-download');
     expect(icon).toBeInTheDocument();
     expect(icon).toHaveAttribute('aria-hidden', 'true');
   });

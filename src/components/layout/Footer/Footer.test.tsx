@@ -9,9 +9,9 @@ describe('Footer', () => {
   });
 
   it('should render Paperlyte logo with icon and text', () => {
-    render(<Footer />);
+    const { container } = render(<Footer />);
 
-    const logoIcon = document.querySelector('.fa-feather');
+    const logoIcon = container.querySelector('.fa-feather');
     expect(logoIcon).toBeInTheDocument();
     expect(logoIcon).toHaveAttribute('aria-label', 'Paperlyte logo');
 
@@ -60,7 +60,7 @@ describe('Footer', () => {
   });
 
   it('should render GitHub link with proper attributes', () => {
-    render(<Footer />);
+    const { container } = render(<Footer />);
 
     const githubLink = screen.getByRole('link', { name: 'GitHub' });
     expect(githubLink).toBeInTheDocument();
@@ -68,12 +68,12 @@ describe('Footer', () => {
     expect(githubLink).toHaveAttribute('target', '_blank');
     expect(githubLink).toHaveAttribute('rel', 'noopener noreferrer');
 
-    const githubIcon = document.querySelector('.fa-github');
+    const githubIcon = container.querySelector('.fa-github');
     expect(githubIcon).toBeInTheDocument();
   });
 
   it('should render Twitter link with proper attributes', () => {
-    render(<Footer />);
+    const { container } = render(<Footer />);
 
     const twitterLink = screen.getByRole('link', { name: 'Twitter' });
     expect(twitterLink).toBeInTheDocument();
@@ -81,19 +81,19 @@ describe('Footer', () => {
     expect(twitterLink).toHaveAttribute('target', '_blank');
     expect(twitterLink).toHaveAttribute('rel', 'noopener noreferrer');
 
-    const twitterIcon = document.querySelector('.fa-twitter');
+    const twitterIcon = container.querySelector('.fa-twitter');
     expect(twitterIcon).toBeInTheDocument();
   });
 
   it('should render Email link with mailto', () => {
-    render(<Footer />);
+    const { container } = render(<Footer />);
 
     const emailLink = screen.getByRole('link', { name: 'Email' });
     expect(emailLink).toBeInTheDocument();
     expect(emailLink).toHaveAttribute('href', 'mailto:hello@paperlyte.com');
     expect(emailLink).not.toHaveAttribute('target');
 
-    const emailIcon = document.querySelector('.fa-envelope');
+    const emailIcon = container.querySelector('.fa-envelope');
     expect(emailIcon).toBeInTheDocument();
   });
 

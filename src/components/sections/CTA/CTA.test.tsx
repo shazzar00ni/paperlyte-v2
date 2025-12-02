@@ -28,19 +28,19 @@ describe('CTA', () => {
   });
 
   it('should render Download for Mac button', () => {
-    render(<CTA />);
+    const { container } = render(<CTA />);
 
     const macButton = screen.getByRole('link', { name: 'Download for Mac' });
     expect(macButton).toBeInTheDocument();
     expect(macButton).toHaveAttribute('href', '#');
 
     // Check for Apple icon
-    const appleIcon = document.querySelector('.fa-apple');
+    const appleIcon = container.querySelector('.fa-apple');
     expect(appleIcon).toBeInTheDocument();
   });
 
   it('should render Download for Windows button', () => {
-    render(<CTA />);
+    const { container } = render(<CTA />);
 
     const windowsButton = screen.getByRole('link', {
       name: 'Download for Windows',
@@ -49,7 +49,7 @@ describe('CTA', () => {
     expect(windowsButton).toHaveAttribute('href', '#');
 
     // Check for Windows icon
-    const windowsIcon = document.querySelector('.fa-windows');
+    const windowsIcon = container.querySelector('.fa-windows');
     expect(windowsIcon).toBeInTheDocument();
   });
 
@@ -72,11 +72,11 @@ describe('CTA', () => {
   });
 
   it('should render GitHub badge', () => {
-    render(<CTA />);
+    const { container } = render(<CTA />);
 
     expect(screen.getByText('Open source on GitHub')).toBeInTheDocument();
 
-    const githubIcon = document.querySelector('.fa-github');
+    const githubIcon = container.querySelector('.fa-github');
     expect(githubIcon).toBeInTheDocument();
     expect(githubIcon).toHaveAttribute('aria-hidden', 'true');
   });

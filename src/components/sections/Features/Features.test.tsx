@@ -41,17 +41,17 @@ describe('Features', () => {
   });
 
   it('should render feature icons with proper attributes', () => {
-    render(<Features />);
+    const { container } = render(<Features />);
 
     FEATURES.forEach((feature) => {
-      const icon = document.querySelector(`.${feature.icon}`);
+      const icon = container.querySelector(`.${feature.icon}`);
       expect(icon).toBeInTheDocument();
       expect(icon).toHaveAttribute('aria-label', `${feature.title} icon`);
     });
   });
 
   it('should render Lightning Speed feature', () => {
-    render(<Features />);
+    const { container } = render(<Features />);
 
     expect(screen.getByText('Lightning Speed')).toBeInTheDocument();
     expect(
@@ -60,12 +60,12 @@ describe('Features', () => {
       )
     ).toBeInTheDocument();
 
-    const speedIcon = document.querySelector('.fa-bolt');
+    const speedIcon = container.querySelector('.fa-bolt');
     expect(speedIcon).toBeInTheDocument();
   });
 
   it('should render Beautiful Simplicity feature', () => {
-    render(<Features />);
+    const { container } = render(<Features />);
 
     expect(screen.getByText('Beautiful Simplicity')).toBeInTheDocument();
     expect(
@@ -74,12 +74,12 @@ describe('Features', () => {
       )
     ).toBeInTheDocument();
 
-    const simplicityIcon = document.querySelector('.fa-pen-nib');
+    const simplicityIcon = container.querySelector('.fa-pen-nib');
     expect(simplicityIcon).toBeInTheDocument();
   });
 
   it('should render Tag-Based Organization feature', () => {
-    render(<Features />);
+    const { container } = render(<Features />);
 
     expect(screen.getByText('Tag-Based Organization')).toBeInTheDocument();
     expect(
@@ -88,12 +88,12 @@ describe('Features', () => {
       )
     ).toBeInTheDocument();
 
-    const tagsIcon = document.querySelector('.fa-tags');
+    const tagsIcon = container.querySelector('.fa-tags');
     expect(tagsIcon).toBeInTheDocument();
   });
 
   it('should render Universal Access feature', () => {
-    render(<Features />);
+    const { container } = render(<Features />);
 
     expect(screen.getByText('Universal Access')).toBeInTheDocument();
     expect(
@@ -102,12 +102,12 @@ describe('Features', () => {
       )
     ).toBeInTheDocument();
 
-    const universalIcon = document.querySelector('.fa-mobile-screen');
+    const universalIcon = container.querySelector('.fa-mobile-screen');
     expect(universalIcon).toBeInTheDocument();
   });
 
   it('should render Offline-First feature', () => {
-    render(<Features />);
+    const { container } = render(<Features />);
 
     expect(screen.getByText('Offline-First')).toBeInTheDocument();
     expect(
@@ -116,12 +116,12 @@ describe('Features', () => {
       )
     ).toBeInTheDocument();
 
-    const offlineIcon = document.querySelector('.fa-wifi-slash');
+    const offlineIcon = container.querySelector('.fa-wifi-slash');
     expect(offlineIcon).toBeInTheDocument();
   });
 
   it('should render Privacy Focused feature', () => {
-    render(<Features />);
+    const { container } = render(<Features />);
 
     expect(screen.getByText('Privacy Focused')).toBeInTheDocument();
     expect(
@@ -130,7 +130,7 @@ describe('Features', () => {
       )
     ).toBeInTheDocument();
 
-    const privacyIcon = document.querySelector('.fa-shield-halved');
+    const privacyIcon = container.querySelector('.fa-shield-halved');
     expect(privacyIcon).toBeInTheDocument();
   });
 

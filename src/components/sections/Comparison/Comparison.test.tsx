@@ -63,10 +63,10 @@ describe('Comparison', () => {
   });
 
   it('should render checkmark icons for true boolean values', () => {
-    render(<Comparison />);
+    const { container } = render(<Comparison />);
 
     // Find all checkmarks
-    const checkmarks = document.querySelectorAll('.fa-check');
+    const checkmarks = container.querySelectorAll('.fa-check');
     expect(checkmarks.length).toBeGreaterThan(0);
 
     // Check they have proper accessibility labels
@@ -76,10 +76,10 @@ describe('Comparison', () => {
   });
 
   it('should render X icons for false boolean values', () => {
-    render(<Comparison />);
+    const { container } = render(<Comparison />);
 
     // Find all X marks
-    const xmarks = document.querySelectorAll('.fa-xmark');
+    const xmarks = container.querySelectorAll('.fa-xmark');
     expect(xmarks.length).toBeGreaterThan(0);
 
     // Check they have proper accessibility labels
@@ -174,9 +174,9 @@ describe('Comparison', () => {
     // Find Paperlyte header
     const paperlyteTh = screen.getByRole('columnheader', { name: /Paperlyte/i });
 
-    // Should have special styling class
-    expect(paperlyteTh).toHaveClass('paperlyte-header');
-    // TODO: If the class name changes, update this test accordingly.
+    // Should have color styling (inline style)
+    expect(paperlyteTh).toHaveStyle({ color: 'var(--color-primary)' });
+    expect(paperlyteTh).toHaveStyle({ fontWeight: '700' });
   });
 
   it('should render specific comparison feature: Startup Time', () => {

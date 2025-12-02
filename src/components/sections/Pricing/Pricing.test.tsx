@@ -82,22 +82,22 @@ describe('Pricing', () => {
   });
 
   it('should render "Most Popular" badge for Pro plan', () => {
-    render(<Pricing />);
+    const { container } = render(<Pricing />);
 
     const popularBadge = screen.getByLabelText('Most popular');
     expect(popularBadge).toBeInTheDocument();
 
-    const starIcon = document.querySelector('.fa-star');
+    const starIcon = container.querySelector('.fa-star');
     expect(starIcon).toBeInTheDocument();
     expect(starIcon).toHaveAttribute('aria-label', 'Most popular');
   });
 
   it('should render plan icons', () => {
-    render(<Pricing />);
+    const { container } = render(<Pricing />);
 
     PRICING_PLANS.forEach((plan) => {
       if (plan.icon) {
-        const icon = document.querySelector(`.${plan.icon}`);
+        const icon = container.querySelector(`.${plan.icon}`);
         expect(icon).toBeInTheDocument();
         expect(icon).toHaveAttribute('aria-label', `${plan.name} plan icon`);
       }
@@ -138,9 +138,9 @@ describe('Pricing', () => {
   });
 
   it('should render checkmark icons for all features', () => {
-    render(<Pricing />);
+    const { container } = render(<Pricing />);
 
-    const checkmarks = document.querySelectorAll('.fa-check');
+    const checkmarks = container.querySelectorAll('.fa-check');
 
     // Count total features across all plans
     const totalFeatures = PRICING_PLANS.reduce(
@@ -165,7 +165,7 @@ describe('Pricing', () => {
   });
 
   it('should render guarantee section', () => {
-    render(<Pricing />);
+    const { container } = render(<Pricing />);
 
     expect(
       screen.getByText(
@@ -173,7 +173,7 @@ describe('Pricing', () => {
       )
     ).toBeInTheDocument();
 
-    const shieldIcon = document.querySelector('.fa-shield-check');
+    const shieldIcon = container.querySelector('.fa-shield-check');
     expect(shieldIcon).toBeInTheDocument();
     expect(shieldIcon).toHaveAttribute('aria-label', 'Guarantee');
   });

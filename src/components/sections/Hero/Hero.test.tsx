@@ -4,16 +4,23 @@ import { Hero } from './Hero';
 
 describe('Hero', () => {
   let scrollIntoViewMock: ReturnType<typeof vi.fn>;
+  let originalScrollIntoView: typeof Element.prototype.scrollIntoView;
 
   beforeEach(() => {
+    // Capture original scrollIntoView before replacing it
+    originalScrollIntoView = Element.prototype.scrollIntoView;
+
     // Mock scrollIntoView
     scrollIntoViewMock = vi.fn();
     Element.prototype.scrollIntoView = scrollIntoViewMock;
   });
 
   afterEach(() => {
-    // Restore scrollIntoView
-    vi.restoreAllMocks();
+    // Restore original scrollIntoView
+    Element.prototype.scrollIntoView = originalScrollIntoView;
+
+    // Clear mock call history
+    vi.clearAllMocks();
   });
 
   describe('Rendering', () => {

@@ -2,12 +2,18 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Hero } from './Hero';
 
-// Mock scrollIntoView
-Element.prototype.scrollIntoView = vi.fn();
-
 describe('Hero', () => {
+  let scrollIntoViewMock: ReturnType<typeof vi.fn>;
+
   beforeEach(() => {
-    vi.clearAllMocks();
+    // Mock scrollIntoView
+    scrollIntoViewMock = vi.fn();
+    Element.prototype.scrollIntoView = scrollIntoViewMock;
+  });
+
+  afterEach(() => {
+    // Restore scrollIntoView
+    vi.restoreAllMocks();
   });
 
   describe('Rendering', () => {
@@ -89,7 +95,7 @@ describe('Hero', () => {
       const downloadButton = screen.getByRole('button', { name: /download now/i });
       await user.click(downloadButton);
 
-      expect(Element.prototype.scrollIntoView).toHaveBeenCalledWith({
+      expect(scrollIntoViewMock).toHaveBeenCalledWith({
         behavior: 'smooth',
       });
 
@@ -110,7 +116,7 @@ describe('Hero', () => {
       const featuresButton = screen.getByRole('button', { name: /see features/i });
       await user.click(featuresButton);
 
-      expect(Element.prototype.scrollIntoView).toHaveBeenCalledWith({
+      expect(scrollIntoViewMock).toHaveBeenCalledWith({
         behavior: 'smooth',
       });
 
@@ -136,7 +142,7 @@ describe('Hero', () => {
       await user.click(downloadButton);
 
       // scrollIntoView should not be called if element doesn't exist
-      expect(Element.prototype.scrollIntoView).not.toHaveBeenCalled();
+      expect(scrollIntoViewMock).not.toHaveBeenCalled();
     });
   });
 
@@ -231,7 +237,7 @@ describe('Hero', () => {
 
       await user.keyboard('{Enter}');
 
-      expect(Element.prototype.scrollIntoView).toHaveBeenCalled();
+      expect(scrollIntoViewMock).toHaveBeenCalled();
 
       // Cleanup
       document.body.removeChild(section);
@@ -253,7 +259,7 @@ describe('Hero', () => {
       await user.click(featuresButton);
       await user.click(featuresButton);
 
-      expect(Element.prototype.scrollIntoView).toHaveBeenCalledTimes(3);
+      expect(scrollIntoViewMock).toHaveBeenCalledTimes(3);
 
       // Cleanup
       document.body.removeChild(section);

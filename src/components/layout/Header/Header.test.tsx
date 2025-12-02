@@ -2,12 +2,18 @@ import { render, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { Header } from './Header';
 
-// Mock the scrollIntoView method
-Element.prototype.scrollIntoView = vi.fn();
-
 describe('Header', () => {
+  let scrollIntoViewMock: ReturnType<typeof vi.fn>;
+
   beforeEach(() => {
-    vi.clearAllMocks();
+    // Mock the scrollIntoView method
+    scrollIntoViewMock = vi.fn();
+    Element.prototype.scrollIntoView = scrollIntoViewMock;
+  });
+
+  afterEach(() => {
+    // Restore scrollIntoView
+    vi.restoreAllMocks();
   });
 
   describe('Rendering', () => {
@@ -251,7 +257,7 @@ describe('Header', () => {
       const featuresButton = screen.getByRole('button', { name: /^features$/i });
       await user.click(featuresButton);
 
-      expect(Element.prototype.scrollIntoView).toHaveBeenCalledWith({
+      expect(scrollIntoViewMock).toHaveBeenCalledWith({
         behavior: 'smooth',
       });
 
@@ -272,7 +278,7 @@ describe('Header', () => {
       const downloadButton = screen.getByRole('button', { name: /^download$/i });
       await user.click(downloadButton);
 
-      expect(Element.prototype.scrollIntoView).toHaveBeenCalledWith({
+      expect(scrollIntoViewMock).toHaveBeenCalledWith({
         behavior: 'smooth',
       });
 
@@ -332,7 +338,7 @@ describe('Header', () => {
       // Click the first Get Started button
       await user.click(getStartedButtons[0]);
 
-      expect(Element.prototype.scrollIntoView).toHaveBeenCalledWith({
+      expect(scrollIntoViewMock).toHaveBeenCalledWith({
         behavior: 'smooth',
       });
 

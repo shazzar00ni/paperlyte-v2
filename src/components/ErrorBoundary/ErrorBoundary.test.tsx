@@ -202,10 +202,14 @@ describe('ErrorBoundary', () => {
       const user = userEvent.setup();
       const reloadSpy = vi.fn();
 
-      // Mock window.location.reload
+      // Store original location
+      const originalLocation = window.location;
+
+      // Replace entire location object with a mock
       Object.defineProperty(window, 'location', {
-        value: { reload: reloadSpy },
+        configurable: true,
         writable: true,
+        value: { ...originalLocation, reload: reloadSpy },
       });
 
       render(
@@ -218,6 +222,13 @@ describe('ErrorBoundary', () => {
       await user.click(reloadButton);
 
       expect(reloadSpy).toHaveBeenCalledTimes(1);
+
+      // Restore original location
+      Object.defineProperty(window, 'location', {
+        configurable: true,
+        writable: true,
+        value: originalLocation,
+      });
     });
   });
 
@@ -260,7 +271,9 @@ describe('ErrorBoundary', () => {
   });
 
   describe('Edge Cases', () => {
-    it('should handle multiple consecutive errors', () => {
+    it('should handle multiple consecutive errors', async () => {
+      const user = userEvent.setup();
+
       const { rerender } = render(
         <ErrorBoundary>
           <ThrowError shouldThrow={false} />
@@ -277,7 +290,7 @@ describe('ErrorBoundary', () => {
 
       // Reset
       const tryAgainButton = screen.getByRole('button', { name: /try again/i });
-      tryAgainButton.click();
+      await user.click(tryAgainButton);
 
       // Another error
       rerender(

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { Comparison } from './Comparison';
 import { COMPARISON_FEATURES, COMPETITORS } from '@constants/comparison';
 

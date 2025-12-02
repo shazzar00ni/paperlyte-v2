@@ -96,7 +96,7 @@ describe('CTA', () => {
   });
 
   it('should render all content sections', () => {
-    const { container } = render(<CTA />);
+    render(<CTA />);
 
     // Check for main title
     expect(screen.getByText('Ready to declutter your mind?')).toBeInTheDocument();

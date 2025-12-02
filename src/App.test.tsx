@@ -93,7 +93,7 @@ describe('App Integration', () => {
   });
 
   it('should render sections in correct order', () => {
-    const { container } = render(<App />);
+    render(<App />);
 
     const main = document.getElementById('main');
     expect(main).toBeInTheDocument();

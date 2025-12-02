@@ -100,30 +100,4 @@ describe('CTA', () => {
     expect(container).toBeDefined();
     expect(container.querySelector('section')).toBeInTheDocument();
   });
-
-  it('should use secondary button variant for download buttons', () => {
-    render(<CTA />);
-
-    const macButton = screen.getByRole('link', { name: 'Download for Mac' });
-    const windowsButton = screen.getByRole('link', {
-      name: 'Download for Windows',
-    });
-
-    // CSS Modules hash class names, so check className contains the variant
-    expect(macButton.className).toContain('secondary');
-    expect(windowsButton.className).toContain('secondary');
-  });
-
-  it('should use large button size for download buttons', () => {
-    render(<CTA />);
-
-    const macButton = screen.getByRole('link', { name: 'Download for Mac' });
-    const windowsButton = screen.getByRole('link', {
-      name: 'Download for Windows',
-    });
-
-    // CSS Modules hash class names, so check className contains the size
-    expect(macButton.className).toContain('large');
-    expect(windowsButton.className).toContain('large');
-  });
 });

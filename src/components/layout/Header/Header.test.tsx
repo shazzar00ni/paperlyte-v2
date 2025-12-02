@@ -197,10 +197,21 @@ describe('Header', () => {
       const menuButton = screen.getByLabelText(/open menu/i);
       await user.click(menuButton);
 
+      // Capture initial focused element (should be first menu item after opening)
+      const initialElement = document.activeElement;
+      expect(initialElement).toBeTruthy();
+
       await user.keyboard('{ArrowDown}');
 
-      // Focus should have moved
-      expect(document.activeElement).toBeTruthy();
+      // Focus should have moved to a different element
+      expect(document.activeElement).not.toBe(initialElement);
+
+      // The new focused element should be within the navigation menu
+      const nav = screen.getByRole('navigation');
+      expect(nav.contains(document.activeElement)).toBe(true);
+
+      // Should be a focusable menu item (button)
+      expect(document.activeElement?.tagName).toBe('BUTTON');
     });
 
     it('should navigate with ArrowUp key', async () => {
@@ -210,10 +221,21 @@ describe('Header', () => {
       const menuButton = screen.getByLabelText(/open menu/i);
       await user.click(menuButton);
 
+      // Capture initial focused element (should be first menu item after opening)
+      const initialElement = document.activeElement;
+      expect(initialElement).toBeTruthy();
+
       await user.keyboard('{ArrowUp}');
 
-      // Focus should have moved
-      expect(document.activeElement).toBeTruthy();
+      // Focus should have moved to a different element (wraps to last item)
+      expect(document.activeElement).not.toBe(initialElement);
+
+      // The new focused element should be within the navigation menu
+      const nav = screen.getByRole('navigation');
+      expect(nav.contains(document.activeElement)).toBe(true);
+
+      // Should be a focusable menu item (button)
+      expect(document.activeElement?.tagName).toBe('BUTTON');
     });
 
     it('should jump to first item with Home key', async () => {
@@ -223,10 +245,22 @@ describe('Header', () => {
       const menuButton = screen.getByLabelText(/open menu/i);
       await user.click(menuButton);
 
+      // Get all focusable elements in the menu list (not including mobile menu button)
+      const nav = screen.getByRole('navigation');
+      const menuList = nav.querySelector('ul');
+      const focusableElements = menuList?.querySelectorAll<HTMLElement>('button, [href]');
+      const firstElement = focusableElements?.[0];
+
+      // Move to another element first
+      await user.keyboard('{ArrowDown}');
+      expect(document.activeElement).not.toBe(firstElement);
+
+      // Press Home to jump to first
       await user.keyboard('{Home}');
 
-      // First focusable element should have focus
-      expect(document.activeElement).toBeTruthy();
+      // Should be on the first focusable element within the menu list
+      expect(document.activeElement).toBe(firstElement);
+      expect(menuList?.contains(document.activeElement)).toBe(true);
     });
 
     it('should jump to last item with End key', async () => {
@@ -236,10 +270,18 @@ describe('Header', () => {
       const menuButton = screen.getByLabelText(/open menu/i);
       await user.click(menuButton);
 
+      // Get all focusable elements in the menu list (not including mobile menu button)
+      const nav = screen.getByRole('navigation');
+      const menuList = nav.querySelector('ul');
+      const focusableElements = menuList?.querySelectorAll<HTMLElement>('button, [href]');
+      const lastElement = focusableElements?.[focusableElements.length - 1];
+
+      // Press End to jump to last
       await user.keyboard('{End}');
 
-      // Last focusable element should have focus
-      expect(document.activeElement).toBeTruthy();
+      // Should be on the last focusable element within the menu list
+      expect(document.activeElement).toBe(lastElement);
+      expect(menuList?.contains(document.activeElement)).toBe(true);
     });
   });
 

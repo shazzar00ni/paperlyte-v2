@@ -10,6 +10,10 @@ describe('ThemeToggle', () => {
     vi.clearAllMocks();
   });
 
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   describe('Rendering', () => {
     it('should render a button', () => {
       vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({

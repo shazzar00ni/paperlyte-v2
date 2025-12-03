@@ -257,25 +257,30 @@ describe("Marketing Plan Document Validation", () => {
 
   describe("Budget and Resource Allocation", () => {
     it("should have a defined budget table", () => {
-      const budget =
-        sections.get("Marketing Channels & Budget Allocation")?.content ||
-        content;
-      expect(budget).toMatch(/\|\s*Channel\s*\|.*Budget/);
+      const budgetSection = sections.get(
+        "Marketing Channels & Budget Allocation",
+      );
+      expect(budgetSection).toBeDefined();
+      expect(budgetSection?.content).toMatch(/\|\s*Channel\s*\|.*Budget/);
     });
 
     it("should include budget breakdown by channel", () => {
-      const budget =
-        sections.get("Marketing Channels & Budget Allocation")?.content ||
-        content;
+      const budgetSection = sections.get(
+        "Marketing Channels & Budget Allocation",
+      );
+      expect(budgetSection).toBeDefined();
+      const budget = budgetSection!.content;
       expect(budget).toMatch(/Content Marketing/i);
       expect(budget).toMatch(/Paid Acquisition/i);
       expect(budget).toMatch(/Community.*Social/i);
     });
 
     it("should have budget percentages that add up reasonably", () => {
-      const budget =
-        sections.get("Marketing Channels & Budget Allocation")?.content ||
-        content;
+      const budgetSection = sections.get(
+        "Marketing Channels & Budget Allocation",
+      );
+      expect(budgetSection).toBeDefined();
+      const budget = budgetSection!.content;
 
       // Extract percentage values from the budget table
       const percentages = budget.match(/\|\s*\d+%\s*\|/g);
@@ -292,9 +297,11 @@ describe("Marketing Plan Document Validation", () => {
     });
 
     it("should prioritize channels into tiers", () => {
-      const budget =
-        sections.get("Marketing Channels & Budget Allocation")?.content ||
-        content;
+      const budgetSection = sections.get(
+        "Marketing Channels & Budget Allocation",
+      );
+      expect(budgetSection).toBeDefined();
+      const budget = budgetSection!.content;
       expect(budget).toMatch(/Tier 1/i);
       expect(budget).toMatch(/Tier 2/i);
     });

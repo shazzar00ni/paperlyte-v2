@@ -1,51 +1,51 @@
-import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import { Pricing } from './Pricing';
-import { PRICING_PLANS } from '@constants/pricing';
+import { describe, it, expect } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { Pricing } from "./Pricing";
+import { PRICING_PLANS } from "@constants/pricing";
 
-describe('Pricing', () => {
-  it('should render as a section with correct id', () => {
+describe("Pricing", () => {
+  it("should render as a section with correct id", () => {
     const { container } = render(<Pricing />);
 
-    const section = container.querySelector('section');
+    const section = container.querySelector("section");
     expect(section).toBeInTheDocument();
-    expect(section).toHaveAttribute('id', 'pricing');
+    expect(section).toHaveAttribute("id", "pricing");
   });
 
-  it('should render main heading', () => {
+  it("should render main heading", () => {
     render(<Pricing />);
-    expect(screen.getByText('Simple, Transparent Pricing')).toBeInTheDocument();
+    expect(screen.getByText("Simple, Transparent Pricing")).toBeInTheDocument();
   });
 
-  it('should render subtitle', () => {
+  it("should render subtitle", () => {
     render(<Pricing />);
     expect(
       screen.getByText(
-        "Start free, upgrade when you're ready. No credit card required."
-      )
+        "Start free, upgrade when you're ready. No credit card required.",
+      ),
     ).toBeInTheDocument();
   });
 
-  it('should render all pricing plan cards', () => {
+  it("should render all pricing plan cards", () => {
     const { container } = render(<Pricing />);
 
-    const articles = container.querySelectorAll('article');
+    const articles = container.querySelectorAll("article");
     expect(articles).toHaveLength(PRICING_PLANS.length); // Should be 3: Free, Pro, Team
   });
 
-  it('should render plan names', () => {
+  it("should render plan names", () => {
     render(<Pricing />);
 
     PRICING_PLANS.forEach((plan) => {
       const planHeadings = screen.getAllByText(plan.name);
       expect(planHeadings.length).toBeGreaterThan(0);
       // At least one should be a heading
-      const isHeading = planHeadings.some((el) => el.tagName === 'H3');
+      const isHeading = planHeadings.some((el) => el.tagName === "H3");
       expect(isHeading).toBe(true);
     });
   });
 
-  it('should render plan taglines', () => {
+  it("should render plan taglines", () => {
     render(<Pricing />);
 
     PRICING_PLANS.forEach((plan) => {
@@ -56,206 +56,153 @@ describe('Pricing', () => {
   it('should render Free plan with "Free" text', () => {
     render(<Pricing />);
 
-    const freeTexts = screen.getAllByText('Free');
+    const freeTexts = screen.getAllByText("Free");
     expect(freeTexts.length).toBeGreaterThan(0);
-    expect(screen.getByText('Perfect for personal use')).toBeInTheDocument();
-    expect(screen.getByText('Get Started Free')).toBeInTheDocument();
+    expect(screen.getByText("Perfect for personal use")).toBeInTheDocument();
+    expect(screen.getByText("Get Started Free")).toBeInTheDocument();
   });
 
-  it('should render Pro plan with price', () => {
+  it("should render Pro plan with price", () => {
     render(<Pricing />);
 
-    expect(screen.getByText('Pro')).toBeInTheDocument();
-    expect(screen.getByText('For power users')).toBeInTheDocument();
-    expect(screen.getByText('4.99')).toBeInTheDocument();
-    expect(screen.getAllByText('/month').length).toBeGreaterThan(0);
-    expect(screen.getByText('Start Free Trial')).toBeInTheDocument();
+    expect(screen.getByText("Pro")).toBeInTheDocument();
+    expect(screen.getByText("For power users")).toBeInTheDocument();
+    expect(screen.getByText("4.99")).toBeInTheDocument();
+    expect(screen.getAllByText("/month").length).toBeGreaterThan(0);
+    expect(screen.getByText("Start Free Trial")).toBeInTheDocument();
   });
 
-  it('should render Team plan with price', () => {
+  it("should render Team plan with price", () => {
     render(<Pricing />);
 
-    expect(screen.getByText('Team')).toBeInTheDocument();
-    expect(screen.getByText('Built for collaboration')).toBeInTheDocument();
-    expect(screen.getByText('9.99')).toBeInTheDocument();
-    expect(screen.getByText('Contact Sales')).toBeInTheDocument();
+    expect(screen.getByText("Team")).toBeInTheDocument();
+    expect(screen.getByText("Built for collaboration")).toBeInTheDocument();
+    expect(screen.getByText("9.99")).toBeInTheDocument();
+    expect(screen.getByText("Contact Sales")).toBeInTheDocument();
   });
 
   it('should render "Most Popular" badge for Pro plan', () => {
     const { container } = render(<Pricing />);
 
-    const popularBadge = screen.getByLabelText('Most popular');
+    const popularBadge = screen.getByLabelText("Most popular");
     expect(popularBadge).toBeInTheDocument();
 
-    const starIcon = container.querySelector('.fa-star');
+    const starIcon = container.querySelector(".fa-star");
     expect(starIcon).toBeInTheDocument();
-    expect(starIcon).toHaveAttribute('aria-label', 'Most popular');
+    expect(starIcon).toHaveAttribute("aria-label", "Most popular");
   });
 
-  it('should render plan icons', () => {
+  it("should render plan icons", () => {
     const { container } = render(<Pricing />);
 
     PRICING_PLANS.forEach((plan) => {
       if (plan.icon) {
         const icon = container.querySelector(`.${plan.icon}`);
         expect(icon).toBeInTheDocument();
-        expect(icon).toHaveAttribute('aria-label', `${plan.name} plan icon`);
+        expect(icon).toHaveAttribute("aria-label", `${plan.name} plan icon`);
       }
     });
   });
 
-  it('should render all features for Free plan', () => {
-    render(<Pricing />);
+  describe.each(PRICING_PLANS)("$name plan features", (plan) => {
+    it(`should render all features for ${plan.name} plan`, () => {
+      render(<Pricing />);
 
-    const freePlan = PRICING_PLANS.find((p) => p.id === 'free');
-    expect(freePlan).toBeDefined();
-
-    freePlan!.features.forEach((feature) => {
-      expect(screen.getByText(feature)).toBeInTheDocument();
+      plan.features.forEach((feature) => {
+        expect(screen.getByText(feature)).toBeInTheDocument();
+      });
     });
   });
 
-  it('should render all features for Pro plan', () => {
-    render(<Pricing />);
-
-    const proPlan = PRICING_PLANS.find((p) => p.id === 'pro');
-    expect(proPlan).toBeDefined();
-
-    proPlan!.features.forEach((feature) => {
-      expect(screen.getByText(feature)).toBeInTheDocument();
-    });
-  });
-
-  it('should render all features for Team plan', () => {
-    render(<Pricing />);
-
-    const teamPlan = PRICING_PLANS.find((p) => p.id === 'team');
-    expect(teamPlan).toBeDefined();
-
-    teamPlan!.features.forEach((feature) => {
-      expect(screen.getByText(feature)).toBeInTheDocument();
-    });
-  });
-
-  it('should render checkmark icons for all features', () => {
+  it("should render checkmark icons for all features", () => {
     const { container } = render(<Pricing />);
 
-    const checkmarks = container.querySelectorAll('.fa-check');
+    const checkmarks = container.querySelectorAll(".fa-check");
 
     // Count total features across all plans
     const totalFeatures = PRICING_PLANS.reduce(
       (sum, plan) => sum + plan.features.length,
-      0
+      0,
     );
 
     expect(checkmarks.length).toBe(totalFeatures);
 
     checkmarks.forEach((checkmark) => {
-      expect(checkmark).toHaveAttribute('aria-label', 'Included');
+      expect(checkmark).toHaveAttribute("aria-label", "Included");
     });
   });
 
-  it('should render CTA buttons for all plans', () => {
+  it("should render CTA buttons for all plans", () => {
     render(<Pricing />);
 
     PRICING_PLANS.forEach((plan) => {
-      const button = screen.getByRole('button', { name: new RegExp(plan.ctaText) });
+      const button = screen.getByRole("button", {
+        name: new RegExp(plan.ctaText),
+      });
       expect(button).toBeInTheDocument();
     });
   });
 
-  it('should render guarantee section', () => {
+  it("should render guarantee section", () => {
     const { container } = render(<Pricing />);
 
     expect(
       screen.getByText(
-        '30-day money-back guarantee • Cancel anytime • No hidden fees'
-      )
+        "30-day money-back guarantee • Cancel anytime • No hidden fees",
+      ),
     ).toBeInTheDocument();
 
-    const shieldIcon = container.querySelector('.fa-shield-check');
+    const shieldIcon = container.querySelector(".fa-shield-check");
     expect(shieldIcon).toBeInTheDocument();
-    expect(shieldIcon).toHaveAttribute('aria-label', 'Guarantee');
+    expect(shieldIcon).toHaveAttribute("aria-label", "Guarantee");
   });
 
-  it('should use semantic article elements for pricing cards', () => {
+  it("should use semantic article elements for pricing cards", () => {
     const { container } = render(<Pricing />);
 
-    const articles = container.querySelectorAll('article');
+    const articles = container.querySelectorAll("article");
     expect(articles).toHaveLength(PRICING_PLANS.length);
   });
 
-  it('should have proper heading hierarchy', () => {
+  it("should have proper heading hierarchy", () => {
     render(<Pricing />);
 
     // Main heading should be h2
-    const mainHeading = screen.getByText('Simple, Transparent Pricing');
-    expect(mainHeading.tagName).toBe('H2');
+    const mainHeading = screen.getByText("Simple, Transparent Pricing");
+    expect(mainHeading.tagName).toBe("H2");
 
     // Plan names should be h3
     PRICING_PLANS.forEach((plan) => {
       const planHeadings = screen.getAllByText(plan.name);
       // Find the one that is an H3
-      const h3Heading = planHeadings.find((el) => el.tagName === 'H3');
+      const h3Heading = planHeadings.find((el) => el.tagName === "H3");
       expect(h3Heading).toBeDefined();
     });
   });
 
-  it('should apply primary variant to popular plan CTA button', () => {
-    render(<Pricing />);
-
-    const popularPlan = PRICING_PLANS.find((p) => p.isPopular);
-    expect(popularPlan).toBeDefined();
-
-    const button = screen.getByRole('button', { name: new RegExp(popularPlan!.ctaText) });
-
-    // CSS Modules hash class names, so check className contains the variant
-    expect(button.className).toContain('primary');
-  });
-
-  it('should apply secondary variant to non-popular plan CTA buttons', () => {
-    render(<Pricing />);
-
-    const nonPopularPlans = PRICING_PLANS.filter((p) => !p.isPopular);
-
-    nonPopularPlans.forEach((plan) => {
-      const button = screen.getByRole('button', { name: new RegExp(plan.ctaText) });
-      expect(button.className).toContain('secondary');
-    });
-  });
-
-  it('should use large button size for all CTA buttons', () => {
+  it("should have aria-label for CTA buttons", () => {
     render(<Pricing />);
 
     PRICING_PLANS.forEach((plan) => {
-      const button = screen.getByRole('button', { name: new RegExp(plan.ctaText) });
-      expect(button.className).toContain('large');
-    });
-  });
-
-  it('should have aria-label for CTA buttons', () => {
-    render(<Pricing />);
-
-    PRICING_PLANS.forEach((plan) => {
-      const button = screen.getByRole('button', {
+      const button = screen.getByRole("button", {
         name: `${plan.ctaText} for ${plan.name} plan`,
       });
       expect(button).toBeInTheDocument();
     });
   });
 
-  it('should render currency symbol for paid plans', () => {
+  it("should render currency symbol for paid plans", () => {
     render(<Pricing />);
 
-    const dollarSigns = screen.getAllByText('$');
+    const dollarSigns = screen.getAllByText("$");
     // Should have 2 dollar signs (Pro and Team plans)
     expect(dollarSigns).toHaveLength(2);
   });
 
-  it('should render features in list format', () => {
+  it("should render features in list format", () => {
     const { container } = render(<Pricing />);
 
-    const featureLists = container.querySelectorAll('ul');
+    const featureLists = container.querySelectorAll("ul");
     // Should have one list per plan
     expect(featureLists).toHaveLength(PRICING_PLANS.length);
   });

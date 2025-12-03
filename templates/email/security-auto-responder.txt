@@ -30,11 +30,10 @@ If this is a critical/urgent security issue, please:
 
 Security Bounty Program:
 {{BOUNTY_INFO}}
-(If you have a bug bounty program, add details here)
 
 Encryption:
 For sensitive security reports, you can use our PGP key:
-https://paperlyte.com/security/pgp-key.asc
+{{PGP_KEY_URL}}
 
 Contact:
 - Email: security@paperlyte.com

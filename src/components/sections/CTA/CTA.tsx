@@ -46,15 +46,33 @@ export const CTA = (): React.ReactElement => {
           <div className={styles.platforms}>
             <p className={styles.platformText}>
               Also available for{" "}
-              <a href={DOWNLOAD_URLS.ios} className={styles.platformLink}>
+              <a
+                href={DOWNLOAD_URLS.ios}
+                className={styles.platformLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Download for iOS (opens in new tab)"
+              >
                 iOS
               </a>
               ,{" "}
-              <a href={DOWNLOAD_URLS.android} className={styles.platformLink}>
+              <a
+                href={DOWNLOAD_URLS.android}
+                className={styles.platformLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Download for Android (opens in new tab)"
+              >
                 Android
               </a>
               , and{" "}
-              <a href={DOWNLOAD_URLS.linux} className={styles.platformLink}>
+              <a
+                href={DOWNLOAD_URLS.linux}
+                className={styles.platformLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Download for Linux (opens in new tab)"
+              >
                 Linux
               </a>
             </p>
@@ -67,6 +85,7 @@ export const CTA = (): React.ReactElement => {
             className={styles.badge}
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="Open source on GitHub (opens in new tab)"
           >
             <Icon name="fa-github" size="sm" />
             <span>Open source on GitHub</span>

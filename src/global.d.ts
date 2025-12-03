@@ -1,14 +1,20 @@
 // Global type declarations
 
 interface Window {
+  // Google Analytics 4
+  dataLayer: unknown[];
   gtag?: (
-    command: "event",
+    command: "config" | "event" | "js" | "set",
+    targetIdOrEventName: string | Date,
+    params?: Record<string, unknown>,
+  ) => void;
+
+  // Plausible Analytics
+  plausible?: (
     eventName: string,
-    eventParams?: {
-      event_category?: string;
-      event_label?: string;
-      value?: number;
-      [key: string]: unknown;
+    options?: {
+      props?: Record<string, string | number | boolean>;
+      callback?: () => void;
     },
   ) => void;
 }

@@ -53,7 +53,7 @@
 
 .input:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+  box-shadow: 0 0 0 3px var(--color-primary-faint);
 }
 
 .input::placeholder {
@@ -66,7 +66,7 @@
 }
 
 .input[aria-invalid="true"] {
-  border-color: var(--color-error, #ef4444);
+  border-color: var(--color-error);
 }
 
 .button {
@@ -85,6 +85,13 @@
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* Respect prefers-reduced-motion for spinner */
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
   }
 }
 
@@ -133,15 +140,15 @@
   align-items: center;
   gap: 1rem;
   padding: 1.5rem;
-  background-color: rgba(34, 197, 94, 0.1);
-  border: 2px solid rgba(34, 197, 94, 0.3);
+  background-color: var(--color-success-bg);
+  border: 2px solid var(--color-success-border);
   border-radius: 12px;
   color: var(--color-text);
 }
 
 .success i {
   font-size: 2rem;
-  color: #22c55e;
+  color: var(--color-success);
   flex-shrink: 0;
 }
 
@@ -155,7 +162,7 @@
   display: block;
   font-size: 1.05rem;
   margin-bottom: 0.25rem;
-  color: #22c55e;
+  color: var(--color-success);
 }
 
 /* Error State */
@@ -164,10 +171,10 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1rem;
-  background-color: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  background-color: var(--color-error-bg);
+  border: 1px solid var(--color-error-border);
   border-radius: 8px;
-  color: #dc2626;
+  color: var(--color-error);
   font-size: 0.875rem;
 }
 

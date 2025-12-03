@@ -30,10 +30,8 @@ export default defineConfig({
       output: {
         manualChunks: (id) => {
           // Split React and React DOM into separate vendor chunk
-          if (
-            id.includes("node_modules/react") ||
-            id.includes("node_modules/react-dom")
-          ) {
+          const reactRegex = /node_modules[\\/](react|react-dom)[\\/]/;
+          if (reactRegex.test(id)) {
             return "react-vendor";
           }
           // Keep all other node_modules in a single vendor chunk
@@ -48,8 +46,7 @@ export default defineConfig({
       },
     },
     // Performance optimizations
-    chunkSizeWarningLimit: 1000,
-    assetsInlineLimit: 4096, // Inline assets smaller than 4kb
+    chunkSizeWarningLimit: 1000, // Intentionally raised to suppress warnings for large vendor chunks. TODO: Monitor bundle size and lower if needed.
   },
   server: {
     port: 3000,

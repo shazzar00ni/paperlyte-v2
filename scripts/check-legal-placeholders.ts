@@ -53,12 +53,16 @@ function findPlaceholders(filePath: string): PlaceholderMatch[] {
     const placeholderRegex = /\[([^\]]+)\]/g;
 
     lines.forEach((line, index) => {
-      let match;
-      while ((match = placeholderRegex.exec(line)) !== null) {
+      const matches = line.matchAll(placeholderRegex);
+      for (const match of matches) {
+        const matchEnd = match.index! + match[0].length;
         // Skip markdown links and legitimate brackets
+        const beforeMatch = line.substring(0, match.index);
+        const afterMatch = line.substring(match.index + match[0].length);
+        const isMarkdownLink = afterMatch.trimStart().startsWith("(");
+
         if (
-          !line.includes("](") && // Not a markdown link
-          !line.includes("https://") && // Not a URL
+          !isMarkdownLink && // Not a markdown link
           !match[1].match(/^\d+$/) && // Not a number reference
           !match[1].includes("http") // Not a URL inside brackets
         ) {
@@ -74,7 +78,7 @@ function findPlaceholders(filePath: string): PlaceholderMatch[] {
   } catch (error) {
     console.error(
       `${colors.red}Error reading file ${filePath}:${colors.reset}`,
-      error,
+      error
     );
   }
 
@@ -94,7 +98,7 @@ function checkFiles(): FileCheck[] {
   });
 }
 
-function printResults(results: FileCheck[]) {
+function printResults(results: FileCheck[]): void {
   console.log("\n" + "=".repeat(70));
   console.log(`${colors.cyan}Legal Placeholder Check Results${colors.reset}`);
   console.log("=".repeat(70) + "\n");
@@ -105,7 +109,7 @@ function printResults(results: FileCheck[]) {
   results.forEach((result) => {
     if (!result.exists) {
       console.log(
-        `${colors.red}✗ ${result.path} - File not found!${colors.reset}`,
+        `${colors.red}✗ ${result.path} - File not found!${colors.reset}`
       );
       hasIssues = true;
       return;
@@ -113,18 +117,18 @@ function printResults(results: FileCheck[]) {
 
     if (result.placeholders.length === 0) {
       console.log(
-        `${colors.green}✓ ${result.path} - No placeholders found${colors.reset}`,
+        `${colors.green}✓ ${result.path} - No placeholders found${colors.reset}`
       );
     } else {
       console.log(
-        `${colors.yellow}⚠ ${result.path} - ${result.placeholders.length} placeholder(s) found${colors.reset}`,
+        `${colors.yellow}⚠ ${result.path} - ${result.placeholders.length} placeholder(s) found${colors.reset}`
       );
       totalPlaceholders += result.placeholders.length;
       hasIssues = true;
 
       result.placeholders.forEach((p) => {
         console.log(
-          `  ${colors.blue}Line ${p.line}:${colors.reset} ${p.placeholder}`,
+          `  ${colors.blue}Line ${p.line}:${colors.reset} ${p.placeholder}`
         );
         console.log(`    ${colors.magenta}${p.content}${colors.reset}`);
       });
@@ -136,16 +140,16 @@ function printResults(results: FileCheck[]) {
 
   if (!hasIssues) {
     console.log(
-      `\n${colors.green}✓ All checks passed! Ready for production.${colors.reset}\n`,
+      `\n${colors.green}✓ All checks passed! Ready for production.${colors.reset}\n`
     );
     process.exit(0);
   } else {
     console.log(
-      `\n${colors.yellow}⚠ Found ${totalPlaceholders} placeholder(s) that need attention.${colors.reset}`,
+      `\n${colors.yellow}⚠ Found ${totalPlaceholders} placeholder(s) that need attention.${colors.reset}`
     );
     console.log(`\n${colors.cyan}Next steps:${colors.reset}`);
     console.log(
-      `  1. Update src/constants/legal.ts with your company information`,
+      `  1. Update src/constants/legal.ts with your company information`
     );
     console.log(`  2. Replace placeholders in docs/PRIVACY-POLICY.md`);
     console.log(`  3. Replace placeholders in docs/TERMS-OF-SERVICE.md`);
@@ -161,7 +165,7 @@ function printResults(results: FileCheck[]) {
 
 // Main execution
 console.log(
-  `${colors.cyan}Checking legal documents for placeholders...${colors.reset}\n`,
+  `${colors.cyan}Checking legal documents for placeholders...${colors.reset}\n`
 );
 const results = checkFiles();
 printResults(results);

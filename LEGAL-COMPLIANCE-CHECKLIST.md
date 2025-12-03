@@ -14,6 +14,15 @@
 - [ ] Provider/platform supports suppression lists
 - [ ] Provider/platform supports consent record retention
 
+## Placeholder Conventions
+
+**All placeholders in this document use the short format:** `**_**`
+
+- Use `**_**` for any information that must be filled in (e.g., company name, address, dates, contacts, numbers).
+- Example: `Attorney Name: **_**`, `Budget agreed upon: $**_**`, `Retention: **_** years`
+
+Replace all placeholders with actual values before launch. If you see `**_**`, it means the information is required and must be updated.
+
 # Legal Compliance Checklist
 
 **Last Updated**: November 28, 2025
@@ -31,7 +40,7 @@ Use this checklist to track your progress toward legal compliance and production
 - [ ] Phase 4: Production Deployment (Issue #33)
 - [ ] Phase 5: Ongoing Compliance
 
-**Estimated Completion**: \_\_\_ weeks
+**Estimated Completion**: **\_** weeks
 
 <details>
 <summary><strong>Timeline Guidance</strong></summary>
@@ -425,6 +434,11 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] Provider's uptime SLA acceptable (99.9%+ recommended)
 - [ ] **Contractual Requirements**
   - [ ] Data Processing Agreement (DPA) signed
+    - [ ] (Optional) HIPAA Business Associate Agreement (BAA) signed (if handling US health data)
+    - [ ] (Optional) LGPD Addendum signed (if serving Brazilian users)
+    - [ ] (Optional) PIPEDA Clauses/Addendum signed (if serving Canadian users)
+    - [ ] (Optional) Other jurisdiction-specific data processing addendums signed (e.g., Swiss FADP, APPI for Japan, etc.)
+    - _Note: Complete these as required for each regulated market. Mark each as completed when the relevant agreement is prepared and signed._
   - [ ] Subprocessor list provided by vendor
   - [ ] Data breach notification terms defined (24-72 hours)
   - [ ] Data deletion upon termination guaranteed
@@ -493,7 +507,7 @@ Use this checklist to track your progress toward legal compliance and production
 
 - [ ] Attorney selected
 - [ ] Experience in tech/privacy law verified
-- [ ] Budget agreed upon: $\***\*\_\*\***
+- [ ] Budget agreed upon: $**\_**
 - [ ] Timeline agreed upon: **\_** weeks
 - [ ] Engagement letter signed
 
@@ -518,6 +532,20 @@ Use this checklist to track your progress toward legal compliance and production
 - [ ] Privacy Policy - Third-party payment processor listed
 
 #### Payment Processing Compliance
+
+- [ ] **Attorney confirms compliance with all applicable state/country money transmitter and payment licensing laws**
+  - [ ] Jurisdiction-specific money transmitter license requirements reviewed (e.g., US states, EU, UK, AU, CA, etc.)
+  - [ ] Exemptions or registration thresholds analyzed for each region of operation
+  - [ ] Documentation of license status or exemption for each relevant jurisdiction
+- [ ] **Attorney confirms compliance with region-specific refund window and consumer protection regulations**
+  - [ ] Minimum refund/cancellation periods by jurisdiction (e.g., EU 14-day right of withdrawal, US state laws, UK, AU, etc.)
+  - [ ] Local requirements for digital goods/services refunds verified
+  - [ ] Policy and user disclosures updated to reflect local rules
+- [ ] **Attorney confirms all local payment and tax registration requirements are met**
+
+  - [ ] Local payment processor registration/notification requirements checked (e.g., India, Brazil, EU, US states)
+  - [ ] Local sales tax/VAT/GST registration and remittance obligations confirmed for each region
+  - [ ] Documentation of registration numbers and compliance status
 
 - [ ] Payment Processing - PCI DSS compliance (if payments processed)
 - [ ] Payment Processing - Third-party payment processor terms reviewed
@@ -823,7 +851,7 @@ Use this checklist to track your progress toward legal compliance and production
 - [ ] Updated documents sent for re-review
 - [ ] Final attorney approval received
 
-### Additional Policies (Critical Compliance Gaps)
+#### Additional Policies (Critical Compliance Gaps)
 
 #### Required for Most SaaS Applications
 
@@ -842,11 +870,28 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] Sub-processor list included
   - [ ] Data transfer mechanisms specified
   - [ ] Security measures documented
-- [ ] **Accessibility Statement** - WCAG 2.1 AA compliance
-  - [ ] Conformance level documented (A, AA, AAA)
-  - [ ] Known limitations listed
-  - [ ] Contact for accessibility issues
-  - [ ] Remediation timeline provided
+
+#### Accessibility & WCAG 2.1 AA Compliance (Phase 3 Legal Review)
+
+- [ ] **Accessibility (WCAG 2.1 AA) Compliance**
+  - [ ] Automated accessibility scan (axe, Lighthouse, WAVE, etc.)
+  - [ ] Manual keyboard navigation audit (all interactive elements, focus order, skip links)
+  - [ ] Manual screen reader audit (VoiceOver, NVDA, or JAWS)
+  - [ ] Remediation SLA:
+    - [ ] Critical issues: fix before launch
+    - [ ] High severity: fix within 30 days
+    - [ ] Medium/Low: fix within 90 days
+  - [ ] Post-launch monitoring:
+    - [ ] Weekly automated scans for first 90 days
+    - [ ] Monthly automated scans thereafter
+  - [ ] Blocker policy:
+    - [ ] WCAG AA is a hard blocker for launch unless counsel confirms jurisdiction allows post-launch remediation
+    - [ ] Consult legal counsel for jurisdictional minimums and document any exceptions
+  - [ ] Accessibility statement:
+    - [ ] Conformance level documented (A, AA, AAA)
+    - [ ] Known limitations listed
+    - [ ] Contact for accessibility issues
+    - [ ] Remediation timeline provided
 
 #### Content & Intellectual Property
 
@@ -1184,7 +1229,16 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] South Korea (PIPA) - If serving Korean users
   - [ ] India (DPDPA) - If serving Indian users
   - [ ] Switzerland (FADP) - If serving Swiss users
-  - [ ] Other jurisdictions: **\*\*\*\***\_**\*\*\*\***
+  - [ ] Other jurisdictions (complete only if the service targets jurisdictions not already listed):
+    - [ ] Jurisdiction name: **\_**
+    - [ ] Applicable regulation(s): **\_**
+    - [ ] Risk level (Low/Medium/High): **\_**
+    - [ ] Assessment date (YYYY-MM-DD): **\_**
+    - _Example:_
+      - [ ] Jurisdiction name: Singapore
+      - [ ] Applicable regulation(s): Personal Data Protection Act (PDPA)
+      - [ ] Risk level (Low/Medium/High): Medium
+      - [ ] Assessment date (YYYY-MM-DD): 2025-12-02
 - [ ] Regulatory change notification system established
   - [ ] Subscribe to legal/compliance newsletters
   - [ ] Set up Google Alerts for privacy law changes
@@ -1236,19 +1290,19 @@ Before going to production, verify:
 
 ### Internal Team
 
-- **Legal Lead**: **\*\*\*\***\_**\*\*\*\***
-- **Privacy Officer**: **\*\*\*\***\_**\*\*\*\***
-- **DPO** (if applicable): **\*\*\*\***\_**\*\*\*\***
-- **Security Lead**: **\*\*\*\***\_**\*\*\*\***
-- **Support Manager**: **\*\*\*\***\_**\*\*\*\***
+- **Legal Lead**: **\_**
+- **Privacy Officer**: **\_**
+- **DPO** (if applicable): **\_**
+- **Security Lead**: **\_**
+- **Support Manager**: **\_**
 
 ### External
 
-- **Attorney**: **\*\*\*\***\_**\*\*\*\***
-  - Phone: **\*\*\*\***\_**\*\*\*\***
-  - Email: **\*\*\*\***\_**\*\*\*\***
-- **Email Provider Support**: **\*\*\*\***\_**\*\*\*\***
-- **Hosting Provider Support**: **\*\*\*\***\_**\*\*\*\***
+- **Attorney**: **\_**
+  - Phone: **\_**
+  - Email: **\_**
+- **Email Provider Support**: **\_**
+- **Hosting Provider Support**: **\_**
 
 ---
 
@@ -1264,7 +1318,16 @@ When setting targets for compliance metrics, consider:
 4. **Progressive Improvement**: Start conservative, then tighten targets as processes mature
 5. **Review Frequency**: Reassess targets quarterly based on actual performance
 
-### Compliance Metrics
+### Target-setting & Measurement Guidance
+
+- **1. Set Baselines:**
+  - Use historical averages (if available) or expected volume (e.g., projected user count × industry rates) to set initial targets. Example: If baseline is 5 privacy requests/month, set response target to <30 days, then tighten as volume and maturity increase.
+- **2. Define Response Time:**
+  - Response time = time from receipt of request/ticket to first meaningful response (not auto-acknowledgment) or to full resolution—choose one and state it in your metric. For privacy/legal, use time to resolution unless otherwise required.
+- **3. Define Compliance Violation:**
+  - A compliance violation is any missed legal/regulatory deadline (e.g., >30 days for GDPR/CCPA), failure to honor opt-outs, unremediated security incident, or unapproved policy deviation. Severity: Minor (late response, quickly remediated), Major (user harm, regulatory notice), Critical (regulatory action, data breach).
+- **4. Tracking & Tools:**
+  - Use ticketing systems (e.g., Zendesk, Freshdesk), analytics dashboards, or shared spreadsheets. Review metrics at least monthly; automate reporting where possible. Dashboards should highlight overdue items and trends.
 
 **Privacy Requests**
 

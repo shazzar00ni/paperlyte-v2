@@ -21,7 +21,10 @@ Paperlyte is a lightning-fast, distraction-free note-taking application that pro
 - Multi-device access (web, desktop, mobile)
 - Tag-based organization
 - Offline functionality
-  Encryption options
+  **Encryption:**
+  - All data is encrypted in transit (TLS 1.3) and at rest (AES-256).
+  - **End-to-end encryption is NOT currently available.** Planned for a future release; see our Privacy Policy for roadmap details.
+  - Support, admin, and engineering staff may access unencrypted data only for incident response, troubleshooting, or abuse investigation, under strict controls and audit.
 
 ### 1.2 Service Modifications
 
@@ -166,7 +169,7 @@ Paperlyte and all associated materials (logos, designs, code, features) are owne
 **You may:**
 
 - Use Paperlyte as intended per these Terms
-- Share screenshots for reviews or tutorials (with attribution)
+- Share screenshots for non-commercial reviews or tutorials (with attribution). This is a narrow fair-use exception and does **not** authorize embedding, redistribution, or inclusion of screenshots in commercial products or derivative works (see above restrictions in section 4.2, line 161). Screenshots must be removed or taken down promptly upon request by the rights-holder.
 
 ### 4.3 Feedback
 
@@ -286,9 +289,44 @@ Our data practices are detailed in our [Privacy Policy](./PRIVACY-POLICY.md).
 Key points:
 
 - We don't sell your data
-- End-to-end encryption available
+- All data is encrypted in transit and at rest (see above; end-to-end encryption is not yet available)
 - You can export or delete your data anytime
-- GDPR, CCPA compliant
+- **Compliance:** We strive to comply with applicable privacy laws (e.g., GDPR, CCPA), but make no blanket guarantee. See below for details. <!-- TODO: Legal review required before making compliance claims. -->
+
+### 7.5 Data Subject Rights (GDPR/CCPA)
+
+If you are located in the EU/EEA, UK, California, or other jurisdictions with data subject rights, you have the right to:
+
+- **Access**: Request a copy of your personal data (GDPR Art. 15)
+- **Rectification**: Request correction of inaccurate data (GDPR Art. 16)
+- **Erasure**: Request deletion of your data (GDPR Art. 17)
+- **Restriction**: Request restriction of processing (GDPR Art. 18)
+- **Portability**: Request your data in a portable format (GDPR Art. 20)
+- **Objection**: Object to certain processing (GDPR Art. 21)
+- **Opt-out**: Opt out of sale/sharing of personal data (CCPA)
+
+**How to exercise your rights:**
+
+- Email: privacy@paperlyte.com
+- We will respond within 30 days (standard requests) or 45 days (complex requests, with notification).
+- You may be required to verify your identity before we process your request.
+
+### 7.6 Data Retention
+
+We retain data as follows:
+
+- **Account Data**: Retained as long as your account is active. Deleted within 30 days of account deletion.
+- **Transactional Logs**: Retained for up to 90 days for security and troubleshooting, then deleted or anonymized.
+- **Backups**: Encrypted backups are retained for up to 90 days. Deleted data is purged from backups within this period.
+- **Analytics Data**: Aggregated and anonymized analytics may be retained indefinitely for statistical purposes. Raw analytics logs are deleted or anonymized within 90 days.
+- **Support/Correspondence**: Retained for up to 2 years for audit and support history, unless deletion is requested.
+- **Legal Holds**: Data may be retained longer if required by law or legal process.
+
+Retention periods may be adjusted to comply with legal requirements or to protect the security and integrity of the Service.
+
+### 7.7 Data Processing Agreement (DPA)
+
+If you require a Data Processing Agreement for business or regulatory reasons, we will provide one upon request. Please contact legal@paperlyte.com or see our [Data Processing Agreement](./DPA.md) if available.
 
 ### 7.2 Data Ownership
 
@@ -590,7 +628,7 @@ English version controls in case of conflicts with translations.
 ### Security Issues
 
 **Email:** security@paperlyte.com
-_Please use our PGP key for sensitive reports_
+PGP: [9A3B 2C1D 7E4F 5A6B 8C9D 1E2F 3A4B 5C6D 7E8F 9A0B](https://paperlyte.com/pgp/publickey.asc) (use for sensitive reports)
 
 ### Physical Address
 
@@ -605,12 +643,15 @@ _Please use our PGP key for sensitive reports_
 
 **Currently in Effect:**
 
-- [Privacy Policy](./PRIVACY-POLICY.md)
-- [Cookie Policy](./COOKIE-POLICY.md)
+- [Privacy Policy](./PRIVACY-POLICY.md) — Last Updated: November 28, 2025
 - [Acceptable Use Policy](./ACCEPTABLE-USE.md)
-- [DMCA Policy](./DMCA.md)
-- [Security Practices](./SECURITY.md)
-- [Accessibility Statement](./ACCESSIBILITY.md)
+- [Security Practices](./SECURITY.md) — Last Updated: December 2, 2025
+- [Accessibility Statement](./ACCESSIBILITY.md) — As of December 2, 2025 (audit in progress)
+
+<!-- The following documents are not yet published or are incomplete. Remove or update these links before public release: -->
+
+- [Cookie Policy](./COOKIE-POLICY.md) <!-- IN PROGRESS: Not yet a final policy. -->
+- [DMCA Policy](./DMCA.md) <!-- IN PROGRESS: Not yet published. -->
 
 For questions about these policies, contact [legal@paperlyte.com](mailto:legal@paperlyte.com)
 
@@ -618,9 +659,11 @@ For questions about these policies, contact [legal@paperlyte.com](mailto:legal@p
 
 ## Version History
 
-| Version | Date         | Changes         |
-| ------- | ------------ | --------------- |
-| 1.0     | Nov 28, 2025 | Initial release |
+| Version | Date         | Summary of Changes                                                                                                                                | Reference/Link                                   |
+| ------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| 1.0     | Nov 28, 2025 | Initial public release. Includes: <br>- GDPR/CCPA rights & retention <br>- Encryption clarified <br>- Screenshot/IP rules <br>- Policy versioning | [See details](./CHANGELOG.md#10---2025-11-28)    |
+| 1.1     | (Planned)    | End-to-end encryption, Cookie/DMCA policy finalization, accessibility audit, legal review                                                         | [Planned](./CHANGELOG.md#plannedfuture-versions) |
+| —       | —            | For full changelog and future updates, see:                                                                                                       | [CHANGELOG.md](./CHANGELOG.md)                   |
 
 ---
 

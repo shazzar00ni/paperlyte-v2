@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Button } from "@components/ui/Button";
 import { Icon } from "@components/ui/Icon";
 import { ThemeToggle } from "@components/ui/ThemeToggle";
@@ -13,19 +13,22 @@ export const Header = (): React.ReactElement => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
-  const closeMobileMenu = () => {
+  const closeMobileMenu = useCallback(() => {
     setMobileMenuOpen(false);
     // Return focus to menu button when closing
     menuButtonRef.current?.focus();
-  };
+  }, []);
 
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-      closeMobileMenu();
-    }
-  };
+  const scrollToSection = useCallback(
+    (sectionId: string) => {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+        closeMobileMenu();
+      }
+    },
+    [closeMobileMenu],
+  );
 
   // Handle Escape key to close menu
   useEffect(() => {
@@ -37,7 +40,7 @@ export const Header = (): React.ReactElement => {
 
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
-  }, [mobileMenuOpen]);
+  }, [mobileMenuOpen, closeMobileMenu]);
 
   // Focus trap for mobile menu
   useEffect(() => {
@@ -86,6 +89,7 @@ export const Header = (): React.ReactElement => {
 
         <nav className={styles.nav} aria-label="Main navigation">
           <ul
+            id="main-menu"
             ref={menuRef}
             className={`${styles.navList} ${mobileMenuOpen ? styles.navListOpen : ""}`}
           >
@@ -129,11 +133,12 @@ export const Header = (): React.ReactElement => {
           <ThemeToggle />
           <button
             ref={menuButtonRef}
-            type="button"
+            aria-expanded={mobileMenuOpen}
             className={styles.mobileMenuButton}
             onClick={toggleMobileMenu}
             aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileMenuOpen}
+            aria-controls="main-menu"
           >
             <Icon name={mobileMenuOpen ? "fa-xmark" : "fa-bars"} size="lg" />
           </button>

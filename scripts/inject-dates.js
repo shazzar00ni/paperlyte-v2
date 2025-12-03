@@ -27,13 +27,19 @@ FILES_TO_PROCESS.forEach((file) => {
   const filePath = join(DIST_DIR, file);
 
   try {
-    let content = readFileSync(filePath, "utf8");
+    const originalContent = readFileSync(filePath, "utf8");
+    let content = originalContent;
 
     // Replace placeholder with actual build date
     content = content.replace(/{{BUILD_DATE}}/g, BUILD_DATE);
 
-    writeFileSync(filePath, content, "utf8");
-    console.log(`✓ Updated ${file}`);
+    // Verify that placeholders were actually replaced
+    if (originalContent === content) {
+      console.warn(`⚠ Warning: No {{BUILD_DATE}} placeholder found in ${file}`);
+    } else {
+      writeFileSync(filePath, content, "utf8");
+      console.log(`✓ Updated ${file}`);
+    }
   } catch (error) {
     console.error(`✗ Failed to process ${file}:`, error.message);
     process.exit(1);

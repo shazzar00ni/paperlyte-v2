@@ -29,7 +29,9 @@ The primary color is **Purple 600** (`#7C3AED`), chosen for its vibrant, modern 
 
 #### Tailwind Classes
 
-#### Developer Responsibility
+### Reduced Motion
+
+**CRITICAL**: All animations and transitions must respect `prefers-reduced-motion`.
 
 > **Important:** The reduced motion approaches above are recommended per-selector patterns. Developers must explicitly apply one of these patterns to each component or animation/transition. Only a global fallback is provided in the CSS reset (see Accessibility section); this fallback is not a substitute for proper per-component implementation. Always ensure your custom animations and transitions respect user motion preferences by using these patterns.
 
@@ -356,8 +358,12 @@ Dark mode is controlled by the `data-theme` attribute on the `<html>` element:
 ```html
 <!-- Light mode (default) -->
 <html>
-  <!-- Dark mode -->
-  <html data-theme="dark"></html>
+  ...
+</html>
+
+<!-- Dark mode -->
+<html data-theme="dark">
+  ...
 </html>
 ```
 
@@ -372,15 +378,6 @@ export default {
   // ...
 };
 ```
-
-Global Overrides Applied
-
-The design system automatically applies these overrides when `prefers-reduced-motion: reduce` is detected:
-
-- ✅ All animations reduced to 0.01ms duration
-- ✅ All transitions reduced to 0.01ms duration
-- ✅ Smooth scrolling disabled (`scroll-behavior: auto`)
-- ✅ **CSS animations are paused** (`animation-play-state: paused` via [src/styles/reset.css](../src/styles/reset.css))
 
 ```html
 <!-- Background changes based on theme -->

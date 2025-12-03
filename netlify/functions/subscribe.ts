@@ -4,30 +4,6 @@ import { z } from "zod";
 // Rate limiting store (in-memory, resets on cold start)
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
 
-// Periodic cleanup: remove expired entries every minute
-const CLEANUP_INTERVAL_MS = 60 * 1000; // 1 minute
-const cleanupInterval = setInterval(() => {
-  const now = Date.now();
-  for (const [ip, record] of rateLimitStore.entries()) {
-    if (now > record.resetTime) {
-      rateLimitStore.delete(ip);
-    }
-  }
-}, CLEANUP_INTERVAL_MS);
-
-// Ensure cleanup interval is cleared on shutdown
-if (typeof process !== "undefined" && process.on) {
-  process.on("exit", () => clearInterval(cleanupInterval));
-  process.on("SIGINT", () => {
-    clearInterval(cleanupInterval);
-    process.exit();
-  });
-  process.on("SIGTERM", () => {
-    clearInterval(cleanupInterval);
-    process.exit();
-  });
-}
-
 // Rate limit: 3 requests per minute per IP
 const RATE_LIMIT_REQUESTS = 3;
 const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
@@ -44,16 +20,8 @@ const ConvertKitResponseSchema = z.object({
   }),
 });
 
-// TypeScript type inferred from Zod schema (ensures type/schema consistency)
-type ConvertKitResponse = {
-  subscription: {
-    id: number;
-  };
-};
-
-/**
- * Clean up expired rate limit entries to prevent memory leak
- */
+// TypeScript type derived from Zod schema (ensures type/schema consistency)
+export type ConvertKitResponse = z.infer<typeof ConvertKitResponseSchema>;
 
 /**
  * Check rate limit for IP address

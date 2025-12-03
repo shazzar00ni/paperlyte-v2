@@ -4,34 +4,29 @@
         xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 
-  <!-- Homepage -->
   <url>
     <loc>https://paperlyte.com/</loc>
-    <lastmod>2025-11-29</lastmod>
+    <lastmod>2025-12-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
 
-  <!-- Privacy Policy -->
   <url>
     <loc>https://paperlyte.com/privacy</loc>
-    <lastmod>2025-11-29</lastmod>
+    <lastmod>2025-12-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
 
-  <!-- Terms of Service -->
   <url>
     <loc>https://paperlyte.com/terms</loc>
-    <lastmod>2025-11-29</lastmod>
+    <lastmod>2025-12-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
 
-  <!-- Data Deletion Request -->
   <url>
     <loc>https://paperlyte.com/data-deletion</loc>
-    <lastmod>2025-11-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>

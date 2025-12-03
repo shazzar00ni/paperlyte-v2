@@ -9,6 +9,8 @@ Lightning-fast, distraction-free note-taking application landing page built with
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-blue)
 ![Vite](https://img.shields.io/badge/Vite-7.2.4-646CFF)
 
+> **Security:** See our [Security Practices](./docs/SECURITY.md) for vulnerability reporting, contributor guidelines, and supply chain security.
+
 ## Table of Contents
 
 - [About Paperlyte](#about-paperlyte)
@@ -189,6 +191,7 @@ Production: [https://paperlyte.app](https://paperlyte.app) (when configured)
 We welcome contributions! Please follow these guidelines:
 
 1. **Branch naming**: Use descriptive names with prefixes
+
    - `feature/` - New features
    - `fix/` - Bug fixes
    - `docs/` - Documentation updates
@@ -196,6 +199,7 @@ We welcome contributions! Please follow these guidelines:
    - `test/` - Test additions/updates
 
 2. **Code style**: Follow the existing ESLint configuration
+
    - Run `npm run lint` before committing
    - Use TypeScript strict mode
    - Write accessible, semantic HTML
@@ -203,6 +207,7 @@ We welcome contributions! Please follow these guidelines:
 3. **Commits**: Write clear, descriptive commit messages
 
 4. **Pull requests**:
+
    - Ensure all CI checks pass
    - Include Lighthouse scores if UI changes are made
    - Request review from code owners
@@ -218,3 +223,28 @@ This project is licensed under the MIT License - see the [LICENSE](./LICENSE) fi
 ---
 
 Built with by the Paperlyte team. Questions? Open an issue or contact us at [hello@paperlyte.app](mailto:hello@paperlyte.app).
+
+## Lighthouse CI: Configurable numberOfRuns for Local vs. CI
+
+By default, `.lighthouserc.json` sets `numberOfRuns` to `1` for fast local development. For more statistically reliable Lighthouse metrics in CI, override this value using the `LIGHTHOUSE_RUNS` environment variable:
+
+- **Local/dev:**
+  - `numberOfRuns` = 1 (default)
+- **CI/CD:**
+
+  - Set `LIGHTHOUSE_RUNS=3` (or higher) in your CI pipeline or before running LHCI:
+
+    ```sh
+    LIGHTHOUSE_RUNS=3 npx lhci autorun
+    ```
+
+  - This will run Lighthouse 3 times per URL for more consistent results.
+
+**Why?**
+
+- Single run is fast for local feedback.
+- Multiple runs in CI reduce noise and improve reliability of performance scores.
+
+> If your CI system does not support environment variable substitution, you can edit `.lighthouserc.json` before running LHCI, or use a pre-step script.
+
+See `.lighthouserc.json` for the current default and update your pipeline as needed.

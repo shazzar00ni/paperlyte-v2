@@ -149,3 +149,35 @@
     padding: var(--spacing-xs) var(--spacing-md);
   }
 }
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .cta::before {
+    /* Enhance gradient vibrancy in dark mode */
+    opacity: 1;
+  }
+
+  .badge {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+
+  .badge:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.35);
+  }
+}
+
+[data-theme="dark"] .cta::before {
+  opacity: 1;
+}
+
+[data-theme="dark"] .badge {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+[data-theme="dark"] .badge:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.35);
+}

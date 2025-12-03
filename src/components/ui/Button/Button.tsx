@@ -1,4 +1,4 @@
-import React, { type ReactNode, useMemo } from "react";
+import { type ReactNode } from "react";
 import { Icon } from "@components/ui/Icon";
 import styles from "./Button.module.css";
 
@@ -12,63 +12,65 @@ interface ButtonProps {
   disabled?: boolean;
   className?: string;
   ariaLabel?: string;
+  type?: "button" | "submit" | "reset";
 }
 
-export const Button = React.memo<ButtonProps>(
-  ({
-    children,
-    variant = "primary",
-    size = "medium",
-    href,
-    onClick,
-    icon,
-    disabled = false,
-    className = "",
-    ariaLabel,
-  }) => {
-    const classNames = useMemo(
-      () =>
-        [styles.button, styles[variant], styles[size], className]
-          .filter(Boolean)
-          .join(" "),
-      [variant, size, className],
-    );
+export const Button = ({
+  children,
+  variant = "primary",
+  size = "medium",
+  href,
+  onClick,
+  icon,
+  disabled = false,
+  className = "",
+  ariaLabel,
+  type = "button",
+}: ButtonProps): React.ReactElement => {
+  const classNames = [
+    styles.button,
+    styles[variant],
+    styles[size],
+    disabled && styles.disabled,
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
 
-    const content = (
-      <>
-        {icon && <Icon name={icon} size="sm" className={styles.icon} />}
-        {children}
-      </>
-    );
+  const content = (
+    <>
+      {icon && <Icon name={icon} size="sm" className={styles.icon} />}
+      {children}
+    </>
+  );
 
-    if (href) {
-      return (
-        <a
-          href={href}
-          className={classNames}
-          aria-label={ariaLabel}
-          {...(href.startsWith("http") && {
-            target: "_blank",
-            rel: "noopener noreferrer",
-          })}
-        >
-          {content}
-        </a>
-      );
-    }
-
+  if (href) {
     return (
-      <button
-        type="button"
+      <a
+        href={disabled ? undefined : href}
         className={classNames}
-        onClick={onClick}
-        disabled={disabled}
         aria-label={ariaLabel}
+        aria-disabled={disabled ? "true" : "false"}
+        onClick={disabled ? (e) => e.preventDefault() : onClick}
+        {...(href.startsWith("http") && {
+          target: "_blank",
+          rel: "noopener noreferrer",
+        })}
       >
         {content}
-      </button>
+      </a>
     );
-  },
-);
+  }
 
-Button.displayName = "Button";
+  return (
+    <button
+      type={type}
+      className={classNames}
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={ariaLabel}
+    >
+      {content}
+    </button>
+  );
+};

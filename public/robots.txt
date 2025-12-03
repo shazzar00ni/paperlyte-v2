@@ -1,3 +1,4 @@
+Sitemap: https://paperlyte.com/sitemap.xml
 # robots.txt for Paperlyte
 # Allow all crawlers to access all content
 

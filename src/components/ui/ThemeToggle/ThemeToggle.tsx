@@ -1,9 +1,9 @@
-import type React from "react";
+import type { ReactElement } from "react";
 import { useTheme } from "@hooks/useTheme";
 import { Icon } from "@components/ui/Icon";
 import styles from "./ThemeToggle.module.css";
 
-export const ThemeToggle = (): React.ReactElement => {
+export const ThemeToggle = (): ReactElement => {
   const { theme, toggleTheme } = useTheme();
 
   return (

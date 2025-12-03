@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Button } from "@components/ui/Button";
 import { Icon } from "@components/ui/Icon";
+import { trackEvent } from "@utils/analytics";
 import styles from "./EmailCapture.module.css";
 
 interface EmailCaptureProps {
@@ -8,6 +9,12 @@ interface EmailCaptureProps {
   placeholder?: string;
   buttonText?: string;
 }
+
+// Pure validation function - moved outside component to avoid recreation on every render
+const validateEmail = (email: string): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
 
 export const EmailCapture = ({
   variant = "inline",
@@ -21,11 +28,6 @@ export const EmailCapture = ({
   >("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const [gdprConsent, setGdprConsent] = useState(false);
-
-  const validateEmail = (email: string): boolean => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -75,17 +77,11 @@ export const EmailCapture = ({
       setEmail("");
       setGdprConsent(false);
 
-      // Track conversion (optional - add analytics here)
-      if (
-        typeof window !== "undefined" &&
-        "gtag" in window &&
-        typeof window.gtag === "function"
-      ) {
-        window.gtag("event", "email_signup", {
-          event_category: "engagement",
-          event_label: "waitlist",
-        });
-      }
+      // Track conversion
+      trackEvent("email_signup", {
+        category: "engagement",
+        label: "waitlist",
+      });
     } catch (error) {
       setStatus("error");
       const message =
@@ -145,6 +141,7 @@ export const EmailCapture = ({
             aria-describedby={status === "error" ? "email-error" : undefined}
           />
           <Button
+            type="submit"
             variant="primary"
             size="medium"
             disabled={status === "loading"}
@@ -162,9 +159,10 @@ export const EmailCapture = ({
         </div>
 
         <div className={styles.gdprWrapper}>
-          <label className={styles.gdprLabel}>
+          <label htmlFor="gdpr-consent" className={styles.gdprLabel}>
             <input
               type="checkbox"
+              id="gdpr-consent"
               checked={gdprConsent}
               onChange={(e) => setGdprConsent(e.target.checked)}
               className={styles.checkbox}

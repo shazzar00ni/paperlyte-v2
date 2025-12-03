@@ -44,9 +44,9 @@ export const LEGAL_CONFIG = {
     accessibility: "#", // TODO: Create accessibility statement
   },
   social: {
-    github: "https://github.com/paperlyte/paperlyte",
-    twitter: "https://twitter.com/paperlyte",
-    linkedin: "https://linkedin.com/company/paperlyte",
+    github: "#", // TODO: Create GitHub account or update to existing account
+    twitter: "#", // TODO: Create Twitter/X account or update to existing account
+    linkedin: "#", // TODO: Create LinkedIn company page or update to existing page
     discord: "#", // TODO: Add Discord server link
   },
   metadata: {

@@ -1,4 +1,4 @@
-import React, { type ReactNode, useMemo, useEffect } from "react";
+import { type ReactNode, useEffect } from "react";
 import { useIntersectionObserver } from "@hooks/useIntersectionObserver";
 import { useReducedMotion } from "@hooks/useReducedMotion";
 import styles from "./AnimatedElement.module.css";
@@ -11,40 +11,34 @@ interface AnimatedElementProps {
   className?: string;
 }
 
-export const AnimatedElement = React.memo<AnimatedElementProps>(
-  ({
-    children,
-    animation = "fadeIn",
-    delay = 0,
-    threshold = 0.1,
-    className = "",
-  }) => {
-    const { ref, isVisible } = useIntersectionObserver({ threshold });
-    const prefersReducedMotion = useReducedMotion();
+export const AnimatedElement = ({
+  children,
+  animation = "fadeIn",
+  delay = 0,
+  threshold = 0.1,
+  className = "",
+}: AnimatedElementProps): React.ReactElement => {
+  const { ref, isVisible } = useIntersectionObserver({ threshold });
+  const prefersReducedMotion = useReducedMotion();
 
-    const animationClass = prefersReducedMotion ? "" : styles[animation];
+  const animationClass = prefersReducedMotion ? "" : styles[animation];
 
-    const classes = useMemo(
-      () =>
-        [animationClass, isVisible ? styles.visible : "", className]
-          .filter(Boolean)
-          .join(" "),
-      [animationClass, isVisible, className],
-    );
+  const classes = [animationClass, isVisible ? styles.visible : "", className]
+    .filter(Boolean)
+    .join(" ");
 
-    // Set CSS custom property for animation delay programmatically
-    useEffect(() => {
-      if (ref.current) {
-        ref.current.style.setProperty("--animation-delay", `${delay}ms`);
-      }
-    }, [delay, ref]);
+  // Set CSS custom property for animation delay programmatically
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.style.setProperty("--animation-delay", `${delay}ms`);
+    }
+    // ref is a stable object and doesn't need to be in dependencies
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [delay]);
 
-    return (
-      <div ref={ref} className={classes}>
-        {children}
-      </div>
-    );
-  },
-);
-
-AnimatedElement.displayName = "AnimatedElement";
+  return (
+    <div ref={ref} className={classes}>
+      {children}
+    </div>
+  );
+};

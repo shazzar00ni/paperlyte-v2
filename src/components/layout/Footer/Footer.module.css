@@ -79,7 +79,6 @@
 .link:hover,
 .link:focus-visible {
   color: var(--color-primary);
-  outline: none;
 }
 
 .link:focus-visible {

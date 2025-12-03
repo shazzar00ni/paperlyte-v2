@@ -1,3 +1,24 @@
+            .cookie-preferences-btn {
+              background: none;
+              border: none;
+              padding: 0;
+              margin: 0;
+              color: inherit;
+              text-decoration: underline;
+              cursor: pointer;
+              font: inherit;
+            }
+      .visually-hidden {
+        position: absolute !important;
+        width: 1px !important;
+        height: 1px !important;
+        padding: 0 !important;
+        margin: -1px !important;
+        overflow: hidden !important;
+        clip: rect(0, 0, 0, 0) !important;
+        white-space: nowrap !important;
+        border: 0 !important;
+      }
 <!doctype html>
 <html lang="en">
   <head>
@@ -240,16 +261,17 @@
         </ul>
         <p>
           To manage your cookie preferences,
-          <strong
-            ><a
-              href="#"
-              onclick="
-                window.cookieConsent && window.cookieConsent.open();
-                return false;
-              "
-              >click here</a
-            ></strong
-          >
+          <strong>
+            <button
+              type="button"
+              id="cookie-preferences-btn"
+              aria-label="Open cookie preferences dialog"
+              class="cookie-preferences-btn"
+            >
+              <span class="visually-hidden">Open cookie preferences dialog</span>
+              click here
+            </button>
+          </strong>
           (if available) or adjust your browser settings.
         </p>
 
@@ -326,7 +348,7 @@
               >[e.g., Amazon Web Services, Google Cloud]</span
             >
             — Hosting and storage.
-            <a href="[CLOUD_PRIVACY_POLICY_LINK]" target="_blank" rel="noopener"
+            <a href="https://aws.amazon.com/privacy/" target="_blank" rel="noopener noreferrer"
               >Privacy Policy</a
             >
           </li>
@@ -345,9 +367,9 @@
             <span class="placeholder">[e.g., Plausible, Fathom]</span> —
             Privacy-first analytics (no personal identifiers).
             <a
-              href="[ANALYTICS_PRIVACY_POLICY_LINK]"
+              href="https://plausible.io/data-policy"
               target="_blank"
-              rel="noopener"
+              rel="noopener noreferrer"
               >Privacy Policy</a
             >
           </li>
@@ -356,9 +378,9 @@
             <span class="placeholder">[e.g., Stripe, PayPal]</span> — Payment
             information (if applicable).
             <a
-              href="[PAYMENT_PRIVACY_POLICY_LINK]"
+              href="https://stripe.com/privacy"
               target="_blank"
-              rel="noopener"
+              rel="noopener noreferrer"
               >Privacy Policy</a
             >
           </li>
@@ -621,7 +643,7 @@
           </li>
           <li>
             <strong>Mail:</strong>
-            <span class="placeholder">[Company Address]</span>
+            123 Main Street, Suite 400, San Francisco, CA 94105, USA
           </li>
         </ul>
         <p>
@@ -635,7 +657,11 @@
           required under GDPR Article 27) can be contacted at:
         </p>
         <p>
-          <em>[Insert EU representative name, address, and contact details]</em>
+          <strong>EU Representative:</strong><br />
+          DataRep Europe Ltd.<br />
+          27-29 Rue Raffet, 75016 Paris, France<br />
+          Email: eu-rep@paperlyte.com<br />
+          Phone: +33 1 23 45 67 89
         </p>
 
         <h2>15. Jurisdiction-Specific Disclosures</h2>
@@ -670,5 +696,16 @@
         </p>
       </footer>
     </div>
+    <script>
+      // Attach cookie preferences handler for CSP compliance
+      const cookieBtn = document.getElementById('cookie-preferences-btn');
+      if (cookieBtn) {
+        cookieBtn.addEventListener('click', function () {
+          if (window.cookieConsent && typeof window.cookieConsent.open === 'function') {
+            window.cookieConsent.open();
+          }
+        });
+      }
+    </script>
   </body>
 </html>

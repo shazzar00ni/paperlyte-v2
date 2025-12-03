@@ -52,15 +52,17 @@
   margin-right: auto;
 }
 
-.emailWrapper {
+/* Shared centering for CTAs */
+:is(.emailWrapper, .secondaryCta) {
   display: flex;
   justify-content: center;
+}
+
+.emailWrapper {
   margin-bottom: var(--spacing-md);
 }
 
 .secondaryCta {
-  display: flex;
-  justify-content: center;
   margin-bottom: var(--spacing-xl);
 }
 
@@ -127,7 +129,7 @@
 @media (max-width: 480px) {
   .headline {
     font-size: var(--font-size-3xl);
-    line-height: 1.2;
+    line-height: var(--line-height-tight);
   }
 
   .subheadline {
@@ -142,4 +144,32 @@
     font-size: var(--font-size-xs);
     padding: var(--spacing-xs) var(--spacing-sm);
   }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .hero::before {
+    /* Enhance gradient visibility in dark mode */
+    background: radial-gradient(
+      circle at top right,
+      rgba(124, 58, 237, 0.15) 0%,
+      transparent 70%
+    );
+  }
+
+  .tag {
+    background-color: var(--color-surface);
+  }
+}
+
+[data-theme="dark"] .hero::before {
+  background: radial-gradient(
+    circle at top right,
+    rgba(124, 58, 237, 0.15) 0%,
+    transparent 70%
+  );
+}
+
+[data-theme="dark"] .tag {
+  background-color: var(--color-surface);
 }

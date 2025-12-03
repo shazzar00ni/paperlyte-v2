@@ -89,13 +89,17 @@ We use your information solely to provide and improve Paperlyte:
 ## 3. Data Storage & Security
 
 > **⚠️ Development-Stage Security Notice:**
-> Advanced security features (end-to-end encryption, zero-knowledge architecture, two-factor authentication) are **planned for future releases**. Until these are implemented, **authorized personnel** (support team, system administrators, and engineers) may access your data **only for support and maintenance purposes**. All access is logged and subject to regular audits. If you require strict confidentiality, do not store sensitive information until these features are available.
+> Advanced security features (end-to-end encryption, zero-knowledge architecture, two-factor authentication) are **targeting release in Q2 2026**. Until these are implemented, access by support, system administrators, and engineers is limited strictly to incident response, troubleshooting, or abuse investigation, and is performed under role-based access controls and multi-factor authentication. All accesses are logged and subject to regular audits.
+>
+> **Do not store highly sensitive data in Paperlyte until these features are released (Q2 2026) or are listed as available in our [release notes](https://paperlyte.com/release-notes).**
+>
+> To request verification of current security status or updates, contact support@paperlyte.com.
 
 ### 3.1 Where We Store Your Data
 
-- **Primary Storage**: [Cloud provider name] data centers in [region]
-- **Encryption**: All data encrypted in transit (TLS 1.3) and at rest (AES-256)
-- **Backups**: Encrypted backups stored in geographically distributed locations
+**Primary Storage**: AWS data centers in us-east-1
+**Encryption**: All data encrypted in transit (TLS 1.3) and at rest (AES-256)
+**Backups**: Encrypted backups stored in geographically distributed locations
 
 ### 3.2 Security Measures
 
@@ -105,7 +109,7 @@ We use your information solely to provide and improve Paperlyte:
 - **Security Monitoring**: Continuous monitoring for suspicious activity
 - **Regular Security Audits**: Planned third-party penetration testing
 
-**⚠️ IMPORTANT**: This application is currently in development. Advanced security features including end-to-end encryption, zero-knowledge architecture, and two-factor authentication are planned for future releases. Until these features are implemented, assume that authorized personnel may have access to your data for support and maintenance purposes.
+**⚠️ IMPORTANT**: For details on current security limitations and access by authorized personnel, see the Development-Stage Security Notice at the start of this section.
 
 ### 3.3 Data Retention
 
@@ -126,19 +130,21 @@ We will never sell, rent, or trade your personal information to third parties fo
 
 We share data only with trusted service providers who help us operate Paperlyte:
 
-| Provider Type     | Purpose              | Data Shared                                       |
-| ----------------- | -------------------- | ------------------------------------------------- |
-| Cloud Hosting     | Data storage & sync  | Encrypted notes, account data                     |
-| Payment Processor | Subscription billing | Email, payment info (we don't store card details) |
-| Email Service     | Transactional emails | Email address only                                |
-| Analytics         | App performance      | Anonymized usage data                             |
-| Support Tools     | Customer support     | Support ticket content                            |
+| Provider Type     | Purpose              | Data Shared                                                |
+| ----------------- | -------------------- | ---------------------------------------------------------- |
+| Cloud Hosting     | Data storage & sync  | Encrypted notes, account data                              |
+| Payment Processor | Subscription billing | Email, payment reference IDs (we don't store card details) |
+| Email Service     | Transactional emails | Email address only                                         |
+| Analytics         | App performance      | Anonymized usage data                                      |
+| Support Tools     | Customer support     | Support ticket content                                     |
 
 **All service providers are contractually required to:**
 
 - Protect your data
 - Use it only for specified purposes
 - Comply with applicable privacy laws
+
+You can find our current list of subprocessors at [https://paperlyte.com/subprocessors](https://paperlyte.com/subprocessors). This list is kept up to date, and we will notify customers of any changes via email and/or our public changelog.
 
 ### 4.3 Legal Requirements
 
@@ -284,7 +290,7 @@ For GDPR-related inquiries:
 ## 11. Transparency Report
 
 We believe in transparency. View our annual transparency report at:
-**https://paperlyte.com/transparency**
+**https://paperlyte.com/transparency** <!-- TODO: Replace with working transparency report URL before release. Current link is broken. -->
 
 This report includes:
 

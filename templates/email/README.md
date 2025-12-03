@@ -8,8 +8,8 @@ This directory contains email auto-responder templates for various legal and sup
 
 **File**: `privacy-auto-responder.txt`
 **Email**: `privacy@paperlyte.com`
-**Use**: GDPR/CCPA privacy requests
-**Response Time**: 30 days (legal requirement)
+**Use**: Privacy requests (GDPR, CCPA, and other jurisdictions)
+**Response Time**: GDPR: 30 days (Article 12); CCPA: 45 days (may be extended by 45 days with notice). Clearly indicate which law applies to your request; check local law for other jurisdictions.
 
 ### 2. Security Auto-Responder
 
@@ -30,7 +30,14 @@ This directory contains email auto-responder templates for various legal and sup
 **File**: `dpo-auto-responder.txt`
 **Email**: `dpo@paperlyte.com`
 **Use**: Data Protection Officer inquiries (EU)
-**Response Time**: 30 days (GDPR requirement)
+**Response Time**: GDPR: 30 days (Article 12)
+
+### 5. Legal Auto-Responder
+
+**File**: `legal-auto-responder.txt`
+**Email**: `legal@paperlyte.com`
+**Use**: Legal inquiries, contracts, compliance
+**Response Time**: 30 days (recommended)
 
 ---
 
@@ -50,6 +57,7 @@ All templates use placeholder variables that should be replaced by your email sy
 | `{{BOUNTY_INFO}}`     | Bug bounty program info        | `We offer rewards...`          |
 | `{{COMPANY_ADDRESS}}` | Physical address               | `123 Main St...`               |
 | `{{DPO_NAME}}`        | DPO name                       | `Jane Smith`                   |
+|                       | Example response time (CCPA)   | `45 days`                      |
 
 ---
 
@@ -149,7 +157,7 @@ Before using these templates, customize:
 
 ### Privacy Requests (GDPR/CCPA)
 
-- **Must** respond within 30 days
+- **Must** respond within 30 days (GDPR Article 12); CCPA: 45 days (may be extended by 45 days with notice); check local law for other jurisdictions
 - **Must** verify identity before providing data
 - **Must** log all requests for compliance
 - **Should** use secure methods for data transfer
@@ -174,13 +182,14 @@ Before using these templates, customize:
 
 ### Response Time SLAs
 
-| Email     | Target Response | Legal Requirement     | Escalation       |
-| --------- | --------------- | --------------------- | ---------------- |
-| privacy@  | 30 days         | ✅ Yes (GDPR/CCPA)    | 7 days overdue   |
-| dpo@      | 30 days         | ✅ Yes (GDPR)         | 7 days overdue   |
-| security@ | 24 hours        | ❌ No (best practice) | 48 hours overdue |
-| support@  | 24-48 hours     | ❌ No                 | 72 hours overdue |
-| legal@    | As needed       | ❌ No                 | 7 days overdue   |
+| Email     | Target Response              | Legal Requirement                         | Escalation       |
+| --------- | ---------------------------- | ----------------------------------------- | ---------------- |
+| privacy@  | GDPR: 30 days; CCPA: 45 days | ✅ Yes (see jurisdiction)                 | 7 days overdue   |
+| dpo@      | 30 days (GDPR)               | ✅ Yes (GDPR)                             | 7 days overdue   |
+| security@ | 24 hours                     | ❌ No (best practice)                     | 48 hours overdue |
+| support@  | 24-48 hours                  | ❌ No                                     | 72 hours overdue |
+| legal@    | As needed                    | ❌ No                                     | 7 days overdue   |
+|           |                              | _Check local law for other jurisdictions_ |                  |
 
 ### Monitoring Checklist
 
@@ -209,7 +218,7 @@ Before using these templates, customize:
 For questions about these templates:
 
 - See [LEGAL-SETUP.md](../../docs/LEGAL-SETUP.md)
-- See GitHub Issue #34
+- For ongoing questions or template updates, see [LEGAL-SETUP.md](../../docs/LEGAL-SETUP.md) or contact your support channel.
 - Contact your legal advisor
 
 ---

@@ -53,9 +53,9 @@ export const iconPaths: Record<string, string> = {
 export const iconViewBox: Record<string, string> = {
   "fa-apple": "0 0 24 24",
   "fa-windows": "0 0 23 24",
-  // Default for all others
 };
 
+// Returns the viewBox for the given icon, defaulting to "0 0 24 24" for icons not listed above
 export const getIconViewBox = (name: string): string => {
   return iconViewBox[name] || "0 0 24 24";
 };

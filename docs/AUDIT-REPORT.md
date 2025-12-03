@@ -1,5 +1,8 @@
 # Paperlyte Landing Page - Technical Audit Report
 
+> **Note for Authors:**
+> For each finding or issue, include: a clear summary, root cause, steps to reproduce, impact, severity, recommended remediation, owner, and expected ETA. Where possible, link to related tickets or include tracking IDs to ensure all findings are actionable and traceable.
+
 **Date:** YYYY-MM-DD
 **Auditor:** Your Name
 **Baseline Version:** v1.0 (pre-optimization)
@@ -10,10 +13,10 @@
 
 ## Lighthouse Scores
 
-- Performance: \_\_/100
-- Accessibility: \_\_/100
-- Best Practices: \_\_/100
-- SEO: \_\_/100
+- Performance: >90/100 (target)
+- Accessibility: >95/100 (target)
+- Best Practices: ≥90/100 (target)
+- SEO: ≥90/100 (target)
 
 ## Critical Issues (P0)
 
@@ -40,7 +43,9 @@
 
 ## Accessibility Violations
 
-[WCAG compliance issues]
+_Evaluated against WCAG 2.1 Level AA_
+
+[List of WCAG compliance issues]
 
 ## Recommendations Roadmap
 

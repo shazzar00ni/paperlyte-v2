@@ -7,7 +7,7 @@ import styles from "./Features.module.css";
 export const Features = (): React.ReactElement => {
   return (
     <Section id="features" background="surface">
-      <div className={styles.header}>
+      <header className={styles.header}>
         <AnimatedElement animation="fadeIn">
           <h2 className={styles.title}>
             Everything you need. Nothing you don't.
@@ -19,7 +19,7 @@ export const Features = (): React.ReactElement => {
             the tool.
           </p>
         </AnimatedElement>
-      </div>
+      </header>
 
       <div className={styles.grid}>
         {FEATURES.map((feature, index) => (

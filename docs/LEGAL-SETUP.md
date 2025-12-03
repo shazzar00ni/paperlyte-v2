@@ -6,9 +6,9 @@ This guide will help you customize the legal documents and company information f
 
 Paperlyte includes template legal documents that need to be customized with your actual company information:
 
--  [Privacy Policy](./PRIVACY-POLICY.md) - Complete template
--  [Terms of Service](./TERMS-OF-SERVICE.md) - Complete template
-- � [Legal Configuration](../src/constants/legal.ts) - Centralized config file
+- 📄 [Privacy Policy](./PRIVACY-POLICY.md) - Complete template
+- 📄 [Terms of Service](./TERMS-OF-SERVICE.md) - Complete template
+- 🛠️ [Legal Configuration](../src/constants/legal.ts) - Centralized config file
 
 ---
 
@@ -406,8 +406,6 @@ If you don't want separate inboxes, set up forwarding:
 
 ## 🌍 International Considerations
 
-International Considerations
-
 ### European Union (GDPR)
 
 If you have EU users:
@@ -438,8 +436,6 @@ Similar to GDPR:
 ---
 
 ## 📚 Additional Resources
-
-## ❓ FAQ
 
 ## ❓ FAQ
 

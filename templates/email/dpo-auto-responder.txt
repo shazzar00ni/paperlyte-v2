@@ -11,18 +11,94 @@ Inquiry Details:
 - Received: {{DATE_RECEIVED}}
 - Type: {{INQUIRY_TYPE}}
 
+Jurisdiction-Specific Guidance
+--------------------------------
+To ensure your data protection rights are handled according to the correct law, please indicate your country or jurisdiction in your request. We will apply the relevant legal framework and response timelines. If you do not specify, we will use our best efforts to determine the applicable law based on your location or account details.
+
+Below are summaries for major jurisdictions. If your country is not listed, please state your country so we can route your request appropriately.
+
+------------------------------
+**European Union (GDPR)**
+------------------------------
+Applicable Law: General Data Protection Regulation (GDPR)
 Response Timeline:
 - Standard inquiries: Within 30 days (GDPR Article 12)
 - Complex requests: Up to 60 days with notification
 - Urgent matters: Prioritized for faster response
 
-Common Data Protection Requests:
+Key Rights:
+- Access, rectification, erasure, restriction, portability, objection, automated decision-making
+
+Supervisory Authority: Your local or national data protection authority
+EU Supervisory Authorities List: https://edpb.europa.eu/about-edpb/about-edpb/members_en
+
+------------------------------
+**United Kingdom (UK-GDPR & DPA 2018)**
+------------------------------
+Applicable Law: UK General Data Protection Regulation (UK-GDPR) & Data Protection Act 2018
+Response Timeline:
+- Standard inquiries: Within 1 month
+- Complex requests: Up to 2 months with notification
+
+Key Rights:
+- Same as GDPR, with UK-specific regulator
+
+Supervisory Authority: Information Commissioner's Office (ICO)
+ICO: https://ico.org.uk/make-a-complaint/
+
+------------------------------
+**United States (California - CCPA/CPRA)**
+------------------------------
+Applicable Law: California Consumer Privacy Act (CCPA) & California Privacy Rights Act (CPRA)
+Response Timeline:
+- Within 45 days (may be extended by 45 days with notice)
+
+Key Rights (for California residents):
+- Right to know/access, right to delete, right to correct, right to opt out of sale/sharing, right to non-discrimination
+
+Regulator: California Privacy Protection Agency (CPPA)
+CPPA: https://cppa.ca.gov/complaints/
+
+------------------------------
+**Canada (PIPEDA)**
+------------------------------
+Applicable Law: Personal Information Protection and Electronic Documents Act (PIPEDA)
+Response Timeline:
+- Within 30 days (may be extended with notice)
+
+Key Rights:
+- Access, correction, withdraw consent, challenge compliance
+
+Regulator: Office of the Privacy Commissioner of Canada (OPC)
+OPC: https://www.priv.gc.ca/en/report-a-concern/
+
+------------------------------
+**Australia (Privacy Act 1988)**
+------------------------------
+Applicable Law: Privacy Act 1988 (Cth)
+Response Timeline:
+- Within 30 days
+
+Key Rights:
+- Access, correction, complaint, restrict direct marketing
+
+Regulator: Office of the Australian Information Commissioner (OAIC)
+OAIC: https://www.oaic.gov.au/privacy/privacy-complaints
+
+------------------------------
+**Other Jurisdictions**
+------------------------------
+If you are located in a country not listed above, please specify your country or jurisdiction in your request. We will review your request under the applicable local law and inform you of your rights and the relevant supervisory authority.
+
+--------------------------------
+Common Data Protection Requests (All Jurisdictions):
+--------------------------------
 1. **Data Subject Access Request (DSAR)**: Request a copy of your personal data
-2. **Right to Erasure**: Request deletion of your personal data
-3. **Right to Rectification**: Correct inaccurate personal data
-4. **Right to Restrict Processing**: Limit how we use your data
-5. **Right to Data Portability**: Receive your data in a portable format
-6. **Right to Object**: Object to certain types of processing
+2. **Right to Erasure/Deletion**: Request deletion of your personal data
+3. **Right to Rectification/Correction**: Correct inaccurate personal data
+4. **Right to Restrict Processing/Use**: Limit how we use your data
+5. **Right to Data Portability**: Receive your data in a portable format (where applicable)
+6. **Right to Object/Opt Out**: Object to certain types of processing or opt out of sale/sharing (where applicable)
 7. **Supervisory Authority Complaint**: Information about filing complaints
 
 Identity Verification:
@@ -32,28 +108,9 @@ For security purposes, we may need to verify your identity before processing you
 - Recent activity information
 - Government-issued ID (for deletion requests)
 
-GDPR Rights Information:
-Under GDPR, you have the right to:
-- Be informed about how your data is used
-- Access your personal data
-- Rectify incorrect data
-- Erase your data ("right to be forgotten")
-- Restrict processing
-- Data portability
-- Object to processing
-- Rights related to automated decision-making
-
-If you believe we have not handled your data properly, you have the right to lodge a complaint with:
-- Your local supervisory authority
-- The supervisory authority of your country of residence
-- The supervisory authority where the alleged infringement occurred
-
-EU Supervisory Authorities List:
-https://edpb.europa.eu/about-edpb/about-edpb/members_en
-
 Privacy Policy:
 For more information about our data protection practices:
-https://paperlyte.com/legal/privacy
+{{PRIVACY_URL}}
 
 Data Protection Officer Contact:
 - Email: dpo@paperlyte.com

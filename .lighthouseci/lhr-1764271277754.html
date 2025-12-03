@@ -11444,7 +11444,7 @@ details[open] .lh-clump-toggletext--hide { display: block;}
                 d = !!l.children && Object.keys(l.children).length > 0,
                 p = Array.isArray(i) ? i.slice(0) : [];
               return (
-                typeof a < "u" && p.push(!a),
+                typeof a !== "undefined" && p.push(!a),
                 {
                   node: l,
                   isLastChild: c,
@@ -13113,26 +13113,34 @@ details[open] .lh-clump-toggletext--hide { display: block;}
         };
         function K(r, e) {
           let t = r.rootEl;
-          typeof e > "u"
-            ? t.classList.toggle("lh-dark")
-            : t.classList.toggle("lh-dark", e);
+          if (typeof e === "undefined") {
+            t.classList.toggle("lh-dark");
+          } else {
+            t.classList.toggle("lh-dark", e);
+          }
         }
         var yt =
-            typeof btoa < "u" ? btoa : (r) => Buffer.from(r).toString("base64"),
+            typeof btoa !== "undefined" ? btoa : (r) => Buffer.from(r).toString("base64"),
           xt =
-            typeof atob < "u"
+            typeof atob !== "undefined"
               ? atob
               : (r) => Buffer.from(r, "base64").toString();
         async function Et(r, e) {
           let t = new TextEncoder().encode(r);
-          if (e.gzip)
-            if (typeof CompressionStream < "u") {
+          if (e.gzip) {
+            if (typeof CompressionStream !== "undefined") {
               let i = new CompressionStream("gzip"),
                 a = i.writable.getWriter();
               (a.write(t), a.close());
               let l = await new Response(i.readable).arrayBuffer();
               t = new Uint8Array(l);
-            } else t = window.pako.gzip(r);
+            } else if (typeof window.pako === "object" && window.pako && typeof window.pako.gzip === "function") {
+              t = window.pako.gzip(r);
+            } else {
+              // No gzip support available, degrade gracefully
+              // Treat as if e.gzip is false (no compression)
+            }
+          }
           let n = "",
             o = 5e3;
           for (let i = 0; i < t.length; i += o)
@@ -13142,9 +13150,17 @@ details[open] .lh-clump-toggletext--hide { display: block;}
         function kt(r, e) {
           let t = xt(r),
             n = Uint8Array.from(t, (o) => o.charCodeAt(0));
-          return e.gzip
-            ? window.pako.ungzip(n, { to: "string" })
-            : new TextDecoder().decode(n);
+          if (e.gzip) {
+            if (typeof window.pako === "object" && window.pako && typeof window.pako.ungzip === "function") {
+              return window.pako.ungzip(n, { to: "string" });
+            } else {
+              // No ungzip support available, degrade gracefully
+              // Fallback: treat as if e.gzip is false (no decompression)
+              return new TextDecoder().decode(n);
+            }
+          } else {
+            return new TextDecoder().decode(n);
+          }
         }
         var ze = { toBase64: Et, fromBase64: kt };
         function pe() {
@@ -13481,13 +13497,25 @@ details[open] .lh-clump-toggletext--hide { display: block;}
                 : document;
           }
           _setUpCollapseDetailsAfterPrinting() {
-            "onbeforeprint" in self
-              ? self.addEventListener("afterprint", this.collapseAllDetails)
-              : self.matchMedia("print").addListener((t) => {
-                  t.matches
-                    ? this.expandAllDetails()
-                    : this.collapseAllDetails();
-                });
+            if ("onbeforeprint" in self) {
+              self.addEventListener("afterprint", this.collapseAllDetails);
+            } else {
+              const mql = self.matchMedia("print");
+              const handler = (event) => {
+                // event.matches is true if the document is being printed
+                if (event.matches) {
+                  this.expandAllDetails();
+                } else {
+                  this.collapseAllDetails();
+                }
+              };
+              if (typeof mql.addEventListener === "function") {
+                mql.addEventListener("change", handler);
+              } else if (typeof mql.addListener === "function") {
+                // Fallback for older browsers
+                mql.addListener(handler);
+              }
+            }
           }
           _setupStickyHeader() {
             ((this.topbarEl = this._dom.find(
@@ -13944,7 +13972,10 @@ details[open] .lh-clump-toggletext--hide { display: block;}
       //# sourceURL=compiled-reportrenderer.js
     </script>
     <script>
-      console.log("window.__LIGHTHOUSE_JSON__", __LIGHTHOUSE_JSON__);
+      // Only log Lighthouse JSON if ?lighthouse_debug=1 is present in the URL
+      if (window.location.search.includes('lighthouse_debug=1')) {
+        console.log("window.__LIGHTHOUSE_JSON__", window.__LIGHTHOUSE_JSON__);
+      }
     </script>
   </body>
 </html>

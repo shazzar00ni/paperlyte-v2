@@ -6,6 +6,7 @@ SPDX-License-Identifier: Apache-2.0
 <!doctype html>
 <html lang="en">
   <head>
+      <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' data:; script-src 'self'; style-src 'self' 'unsafe-inline'; base-uri 'none'; frame-ancestors 'none';" />
     <meta charset="utf-8" />
     <meta
       name="viewport"
@@ -6941,17 +6942,23 @@ SPDX-License-Identifier: Apache-2.0
             }
             static truncate(e, t, n = "\u2026") {
               if (e.length <= t) return e;
-              let i = new Intl.Segmenter(void 0, { granularity: "grapheme" })
-                  .segment(e)
-                  [Symbol.iterator](),
-                a = 0;
-              for (let l = 0; l <= t - n.length; l++) {
-                let s = i.next();
-                if (s.done) return e;
-                a = s.value.index;
+              if (typeof Intl !== "undefined" && typeof Intl.Segmenter === "function") {
+                let i = new Intl.Segmenter(void 0, { granularity: "grapheme" })
+                    .segment(e)
+                    [Symbol.iterator](),
+                  a = 0;
+                for (let l = 0; l <= t - n.length; l++) {
+                  let s = i.next();
+                  if (s.done) return e;
+                  a = s.value.index;
+                }
+                for (let l = 0; l < n.length; l++) if (i.next().done) return e;
+                return e.slice(0, a) + n;
+              } else {
+                // Fallback: simple substring-based truncation
+                if (e.length <= t) return e;
+                return e.slice(0, t - n.length) + n;
               }
-              for (let l = 0; l < n.length; l++) if (i.next().done) return e;
-              return e.slice(0, a) + n;
             }
             static getURLDisplayName(e, t) {
               t = t || {
@@ -13102,14 +13109,20 @@ details[open] .lh-clump-toggletext--hide { display: block;}
               : (r) => Buffer.from(r, "base64").toString();
         async function Et(r, e) {
           let t = new TextEncoder().encode(r);
-          if (e.gzip)
-            if (typeof CompressionStream < "u") {
+          if (e.gzip) {
+            if (typeof CompressionStream !== "undefined") {
               let i = new CompressionStream("gzip"),
                 a = i.writable.getWriter();
               (a.write(t), a.close());
               let l = await new Response(i.readable).arrayBuffer();
               t = new Uint8Array(l);
-            } else t = window.pako.gzip(r);
+            } else if (typeof window.pako === "object" && window.pako && typeof window.pako.gzip === "function") {
+              t = window.pako.gzip(r);
+            } else {
+              // No gzip support available, degrade gracefully
+              // Treat as if e.gzip is false (no compression)
+            }
+          }
           let n = "",
             o = 5e3;
           for (let i = 0; i < t.length; i += o)
@@ -13119,9 +13132,17 @@ details[open] .lh-clump-toggletext--hide { display: block;}
         function kt(r, e) {
           let t = xt(r),
             n = Uint8Array.from(t, (o) => o.charCodeAt(0));
-          return e.gzip
-            ? window.pako.ungzip(n, { to: "string" })
-            : new TextDecoder().decode(n);
+          if (e.gzip) {
+            if (typeof window.pako === "object" && window.pako && typeof window.pako.ungzip === "function") {
+              return window.pako.ungzip(n, { to: "string" });
+            } else {
+              // No ungzip support available, degrade gracefully
+              // Fallback: treat as if e.gzip is false (no decompression)
+              return new TextDecoder().decode(n);
+            }
+          } else {
+            return new TextDecoder().decode(n);
+          }
         }
         var ze = { toBase64: Et, fromBase64: kt };
         function pe() {
@@ -13409,21 +13430,39 @@ details[open] .lh-clump-toggletext--hide { display: block;}
                 eventAction: "copy",
               },
             });
-            try {
-              this._dom.document().queryCommandSupported("copy") &&
-                ((this._copyAttempt = !0),
-                this._dom.document().execCommand("copy") ||
-                  ((this._copyAttempt = !1),
+            const text = JSON.stringify(this.lhr, null, 2);
+            if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+              navigator.clipboard.writeText(text)
+                .then(() => {
+                  this._dom.fireEventOn("lh-log", this._dom.document(), {
+                    cmd: "log",
+                    msg: "Report JSON copied to clipboard",
+                  });
+                })
+                .catch((e) => {
                   this._dom.fireEventOn("lh-log", this._dom.document(), {
                     cmd: "warn",
-                    msg: "Your browser does not support copy to clipboard.",
-                  })));
-            } catch (e) {
-              ((this._copyAttempt = !1),
-                this._dom.fireEventOn("lh-log", this._dom.document(), {
-                  cmd: "log",
-                  msg: e.message,
-                }));
+                    msg: "Clipboard API failed: " + e.message,
+                  });
+                });
+            } else {
+              // Fallback for older browsers
+              try {
+                this._dom.document().queryCommandSupported("copy") &&
+                  ((this._copyAttempt = !0),
+                  this._dom.document().execCommand("copy") ||
+                    ((this._copyAttempt = !1),
+                    this._dom.fireEventOn("lh-log", this._dom.document(), {
+                      cmd: "warn",
+                      msg: "Your browser does not support copy to clipboard.",
+                    })));
+              } catch (e) {
+                ((this._copyAttempt = !1),
+                  this._dom.fireEventOn("lh-log", this._dom.document(), {
+                    cmd: "log",
+                    msg: e.message,
+                  }));
+              }
             }
           }
           onKeyUp(e) {
@@ -13458,13 +13497,25 @@ details[open] .lh-clump-toggletext--hide { display: block;}
                 : document;
           }
           _setUpCollapseDetailsAfterPrinting() {
-            "onbeforeprint" in self
-              ? self.addEventListener("afterprint", this.collapseAllDetails)
-              : self.matchMedia("print").addListener((t) => {
-                  t.matches
-                    ? this.expandAllDetails()
-                    : this.collapseAllDetails();
-                });
+            if ("onbeforeprint" in self) {
+              self.addEventListener("afterprint", this.collapseAllDetails);
+            } else {
+              const mql = self.matchMedia("print");
+              const handler = (event) => {
+                // event.matches is true if the document is being printed
+                if (event.matches) {
+                  this.expandAllDetails();
+                } else {
+                  this.collapseAllDetails();
+                }
+              };
+              if (typeof mql.addEventListener === "function") {
+                mql.addEventListener("change", handler);
+              } else if (typeof mql.addListener === "function") {
+                // Fallback for older browsers
+                mql.addListener(handler);
+              }
+            }
           }
           _setupStickyHeader() {
             ((this.topbarEl = this._dom.find(
@@ -13919,9 +13970,6 @@ details[open] .lh-clump-toggletext--hide { display: block;}
 
       __initLighthouseReport__();
       //# sourceURL=compiled-reportrenderer.js
-    </script>
-    <script>
-      console.log("window.__LIGHTHOUSE_JSON__", __LIGHTHOUSE_JSON__);
     </script>
   </body>
 </html>

@@ -469,25 +469,25 @@ describe("Marketing Plan Document Validation", () => {
 
   describe("Content Strategy", () => {
     it("should define content pillars", () => {
-      const content = sections.get("Content Strategy")?.content || "";
-      expect(content).toMatch(/Content Pillars/i);
+      const sectionContent = sections.get("Content Strategy")?.content || "";
+      expect(sectionContent).toMatch(/Content Pillars/i);
     });
 
     it("should include a content calendar", () => {
-      const content = sections.get("Content Strategy")?.content || "";
-      expect(content).toMatch(/Content Calendar/i);
-      expect(content).toMatch(/Week \d+/);
+      const sectionContent = sections.get("Content Strategy")?.content || "";
+      expect(sectionContent).toMatch(/Content Calendar/i);
+      expect(sectionContent).toMatch(/Week \d+/);
     });
 
     it("should have SEO strategy", () => {
-      const content = sections.get("Content Strategy")?.content || "";
-      expect(content).toMatch(/SEO Strategy/i);
-      expect(content).toMatch(/Target Keywords/i);
+      const sectionContent = sections.get("Content Strategy")?.content || "";
+      expect(sectionContent).toMatch(/SEO Strategy/i);
+      expect(sectionContent).toMatch(/Target Keywords/i);
     });
 
     it("should define content types", () => {
-      const content = sections.get("Content Strategy")?.content || "";
-      expect(content).toMatch(/Blog.*Video.*Social/is);
+      const sectionContent = sections.get("Content Strategy")?.content || "";
+      expect(sectionContent).toMatch(/Blog.*Video.*Social/is);
     });
   });
 

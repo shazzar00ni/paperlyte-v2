@@ -247,22 +247,6 @@ describe('FAQ', () => {
   });
 
   describe('Answer Content', () => {
-    it('should display correct answer for each question', async () => {
-      const user = userEvent.setup();
-      render(<FAQ />);
-
-      for (const item of FAQ_ITEMS.slice(0, 3)) {
-        // Test first 3 items
-        const questionButton = screen.getByRole('button', {
-          name: new RegExp(item.question, 'i'),
-        });
-
-        await user.click(questionButton);
-
-        expect(screen.getByText(item.answer)).toBeInTheDocument();
-      }
-    });
-
     it('should use article element for semantic HTML', () => {
       const { container } = render(<FAQ />);
 

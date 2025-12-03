@@ -389,8 +389,15 @@ describe('Header', () => {
       const menuButton = screen.getByLabelText(/open menu/i);
       await user.click(menuButton);
 
+      // Get the first focusable element in the menu list
+      const nav = screen.getByRole('navigation');
+      const menuList = nav.querySelector('ul');
+      const focusableElements = menuList?.querySelectorAll<HTMLElement>('button, [href]');
+      const firstElement = focusableElements?.[0];
+
       // After menu opens, first focusable element should have focus
-      expect(document.activeElement).not.toBe(document.body);
+      expect(firstElement).toBeTruthy();
+      expect(document.activeElement).toBe(firstElement);
     });
 
     it('should return focus to menu button when closing via navigation', async () => {

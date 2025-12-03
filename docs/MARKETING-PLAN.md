@@ -1360,17 +1360,17 @@ Maintain a RACI (Responsible, Accountable, Consulted, Informed) matrix for each 
 
 | **Tactic/Phase** | **Responsible** | **Accountable** | **Consulted** | **Informed** |
 |------------------|-----------------|-----------------|---------------|--------------|
-| **Pre-Launch (Month -3 to 0)** |
+| **Pre-Launch (Month -3 to 0)** | - | - | - | - |
 | Landing page & email capture | Marketing Lead | Program Manager | Founder | Engineering |
 | Content marketing (blog) | Content Writer | Marketing Lead | Founder, SEO Specialist | Community |
 | Product Hunt prep | Program Manager | Founder | Marketing Lead | All |
 | Press kit & PR outreach | Marketing Lead | Founder | Program Manager | - |
-| **Launch (Month 0-1)** |
+| **Launch (Month 0-1)** | - | - | - | - |
 | Product Hunt launch day | Founder | Program Manager | Marketing Lead, Community | All |
 | Social media blitz | Marketing Lead | Program Manager | Community Manager | Founder |
 | Email launch sequence | Marketing Lead | Program Manager | Founder | Community |
 | Press follow-ups | Founder | Marketing Lead | Program Manager | - |
-| **Growth (Month 2-6)** |
+| **Growth (Month 2-6)** | - | - | - | - |
 | Referral program | Marketing Lead | Program Manager | Engineering | Founder |
 | Paid acquisition testing | Marketing Lead | Program Manager | Founder | Finance |
 | Content SEO expansion | Content Writer | Marketing Lead | SEO Specialist | Program Manager |

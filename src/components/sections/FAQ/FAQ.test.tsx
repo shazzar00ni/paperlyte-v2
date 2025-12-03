@@ -225,7 +225,6 @@ describe('FAQ', () => {
   });
 
   describe('Icon Display', () => {
-
     it('should have accessible icon labels', async () => {
       const user = userEvent.setup();
       render(<FAQ />);

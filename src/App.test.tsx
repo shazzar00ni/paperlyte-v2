@@ -3,25 +3,70 @@ import { render, screen } from '@testing-library/react';
 import App from './App';
 
 describe('App Integration', () => {
-  it('should render without crashing', () => {
-    const { container } = render(<App />);
-    expect(container).toBeInTheDocument();
-  });
-
-  it('should render Header component', () => {
+  it('should render with proper semantic structure and section order', () => {
     const { container } = render(<App />);
 
-    // Header should contain navigation
+    // Verify semantic landmark regions
     const header = container.querySelector('header');
+    const main = container.querySelector('main');
+    const footer = container.querySelector('footer');
+
     expect(header).toBeInTheDocument();
+    expect(main).toBeInTheDocument();
+    expect(main).toHaveAttribute('id', 'main');
+    expect(footer).toBeInTheDocument();
+
+    // Verify header contains navigation
+    expect(header?.querySelector('nav')).toBeInTheDocument();
+
+    // Verify sections exist and are in correct order
+    const sections = main?.querySelectorAll('section');
+    expect(sections).toBeDefined();
+    expect(sections!.length).toBeGreaterThanOrEqual(6);
+
+    const sectionIds = Array.from(sections!).map((section) =>
+      section.getAttribute('id')
+    );
+
+    // Check all sections are present
+    expect(sectionIds).toContain('hero');
+    expect(sectionIds).toContain('features');
+    expect(sectionIds).toContain('comparison');
+    expect(sectionIds).toContain('pricing');
+    expect(sectionIds).toContain('faq');
+    expect(sectionIds).toContain('download');
+
+    // Verify correct order
+    const heroIndex = sectionIds.indexOf('hero');
+    const featuresIndex = sectionIds.indexOf('features');
+    const comparisonIndex = sectionIds.indexOf('comparison');
+    const pricingIndex = sectionIds.indexOf('pricing');
+    const faqIndex = sectionIds.indexOf('faq');
+    const downloadIndex = sectionIds.indexOf('download');
+
+    expect(heroIndex).toBeLessThan(featuresIndex);
+    expect(featuresIndex).toBeLessThan(comparisonIndex);
+    expect(comparisonIndex).toBeLessThan(pricingIndex);
+    expect(pricingIndex).toBeLessThan(faqIndex);
+    expect(faqIndex).toBeLessThan(downloadIndex);
   });
 
-  it('should render main element with correct id', () => {
+  it('should have accessible landmark regions with proper roles', () => {
     render(<App />);
 
-    const main = document.getElementById('main');
+    // Use role queries for accessibility testing
+    const banner = screen.getByRole('banner'); // header
+    const main = screen.getByRole('main');
+    const contentinfo = screen.getByRole('contentinfo'); // footer
+
+    expect(banner).toBeInTheDocument();
     expect(main).toBeInTheDocument();
-    expect(main?.tagName).toBe('MAIN');
+    expect(main).toHaveAttribute('id', 'main');
+    expect(contentinfo).toBeInTheDocument();
+
+    // Verify navigation is accessible
+    const navigation = screen.getByRole('navigation');
+    expect(navigation).toBeInTheDocument();
   });
 
   it('should render Hero section', () => {
@@ -92,89 +137,6 @@ describe('App Integration', () => {
     expect(taglines.length).toBeGreaterThan(0);
   });
 
-  it('should render sections in correct order', () => {
-    render(<App />);
-
-    const main = document.getElementById('main');
-    expect(main).toBeInTheDocument();
-
-    const sections = main?.querySelectorAll('section');
-    expect(sections).toBeDefined();
-    expect(sections!.length).toBeGreaterThanOrEqual(6);
-
-    // Check section order by ID
-    const sectionIds = Array.from(sections!).map((section) =>
-      section.getAttribute('id')
-    );
-
-    // Expected order: hero, features, comparison, pricing, faq, download (CTA)
-    expect(sectionIds).toContain('hero');
-    expect(sectionIds).toContain('features');
-    expect(sectionIds).toContain('comparison');
-    expect(sectionIds).toContain('pricing');
-    expect(sectionIds).toContain('faq');
-    expect(sectionIds).toContain('download');
-
-    // Verify order is correct
-    const heroIndex = sectionIds.indexOf('hero');
-    const featuresIndex = sectionIds.indexOf('features');
-    const comparisonIndex = sectionIds.indexOf('comparison');
-    const pricingIndex = sectionIds.indexOf('pricing');
-    const faqIndex = sectionIds.indexOf('faq');
-    const downloadIndex = sectionIds.indexOf('download');
-
-    expect(heroIndex).toBeLessThan(featuresIndex);
-    expect(featuresIndex).toBeLessThan(comparisonIndex);
-    expect(comparisonIndex).toBeLessThan(pricingIndex);
-    expect(pricingIndex).toBeLessThan(faqIndex);
-    expect(faqIndex).toBeLessThan(downloadIndex);
-  });
-
-  it('should have proper semantic HTML structure', () => {
-    const { container } = render(<App />);
-
-    // Should have header
-    expect(container.querySelector('header')).toBeInTheDocument();
-
-    // Should have main
-    expect(container.querySelector('main')).toBeInTheDocument();
-
-    // Should have footer
-    expect(container.querySelector('footer')).toBeInTheDocument();
-  });
-
-  it('should render all major headings', () => {
-    render(<App />);
-
-    // Check for key headings from each section
-    expect(
-      screen.getByText("Everything you need. Nothing you don't.")
-    ).toBeInTheDocument();
-    expect(screen.getByText('See How We Compare')).toBeInTheDocument();
-    expect(screen.getByText('Simple, Transparent Pricing')).toBeInTheDocument();
-    expect(screen.getByText('Ready to declutter your mind?')).toBeInTheDocument();
-  });
-
-  it('should render all components successfully', () => {
-    const { container } = render(<App />);
-    expect(container).toBeInTheDocument();
-
-    // Verify that all main components are rendered
-    expect(container.querySelector('header')).toBeInTheDocument();
-    expect(container.querySelector('main')).toBeInTheDocument();
-    expect(container.querySelector('footer')).toBeInTheDocument();
-  });
-
-  it('should render navigation links in header', () => {
-    const { container } = render(<App />);
-
-    const header = container.querySelector('header');
-    expect(header).toBeInTheDocument();
-
-    // Header should contain navigation elements
-    const nav = header?.querySelector('nav');
-    expect(nav).toBeInTheDocument();
-  });
 
   it('should render download buttons in CTA section', () => {
     render(<App />);
@@ -227,19 +189,6 @@ describe('App Integration', () => {
 
     const privacyFocused = screen.getAllByText('Privacy Focused');
     expect(privacyFocused.length).toBeGreaterThan(0);
-  });
-
-  it('should have accessible landmark regions', () => {
-    const { container } = render(<App />);
-
-    // Check for proper landmark regions
-    expect(container.querySelector('header')).toBeInTheDocument();
-    expect(container.querySelector('main')).toBeInTheDocument();
-    expect(container.querySelector('footer')).toBeInTheDocument();
-
-    // Main should have the correct id
-    const main = container.querySelector('main');
-    expect(main).toHaveAttribute('id', 'main');
   });
 
   it('should render social links in footer', () => {

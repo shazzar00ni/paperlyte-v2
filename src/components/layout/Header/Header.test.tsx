@@ -6,9 +6,14 @@ describe('Header', () => {
   let scrollIntoViewMock: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
+    // Ensure scrollIntoView exists (jsdom doesn't define it by default)
+    if (!Element.prototype.scrollIntoView) {
+      Element.prototype.scrollIntoView = () => {};
+    }
+
     // Mock the scrollIntoView method
     scrollIntoViewMock = vi.fn();
-    Element.prototype.scrollIntoView = scrollIntoViewMock;
+    vi.spyOn(Element.prototype, 'scrollIntoView').mockImplementation(scrollIntoViewMock);
   });
 
   afterEach(() => {

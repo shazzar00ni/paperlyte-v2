@@ -49,12 +49,12 @@ This one-page summary provides the essential marketing metrics and targets. Refe
 
 | **Channel** | **% of Budget** | **Amount** | **Purpose** |
 |-------------|-----------------|------------|-------------|
-| Content Marketing | 20% | $10,000 | Blog, SEO, guest posts |
-| Paid Acquisition | 24% | $12,000 | Testing FB, Google, Reddit ads |
+| Content Marketing | 28% | $14,000 | Blog, SEO, guest posts |
+| Community & Social | 16% | $8,000 | Management, tools |
 | PR & Influencer | 16% | $8,000 | Press kit, media outreach, gifts |
+| Tools & Software | 14% | $7,000 | Email, analytics, SEO |
 | Creative & Design | 12% | $6,000 | Video, graphics, assets |
-| Community & Social | 10% | $5,000 | Management, tools |
-| Tools & Software | 10% | $5,000 | Email, analytics, SEO |
+| Paid Acquisition | 6% | $3,000 | Small-scale experiments (max $1k/mo, 3-month limit) |
 | Events & Sponsorships | 4% | $2,000 | Small sponsorships, swag |
 | Reserve | 4% | $2,000 | Contingency |
 
@@ -544,16 +544,30 @@ To validate our speed claims and maintain competitive differentiation, we implem
 - Webinar collaborations
 
 #### 5. Paid Acquisition (Testing Phase)
-**Start Small**:
-- $500-1,000/month initial budget
-- Test channels: Facebook/Instagram, Google Search, Reddit Ads
-- Focus on retargeting website visitors first
-- Measure CAC (Customer Acquisition Cost) vs. LTV (Lifetime Value)
 
-**Criteria for Scaling**:
-- Only scale channels with CAC < 30% of LTV
-- Maintain profitability or clear path to profitability
-- Prioritize organic growth over paid if organic is working
+**Philosophy**: Paperlyte is an organic-first product. Paid acquisition is **testing-only** with strict guardrails to validate channel efficiency before any significant investment.
+
+**Experiment Constraints**:
+- **Monthly Cap**: Maximum $1,000/month spend
+- **Duration Limit**: 3-month testing window (Months 3-5)
+- **Total Budget**: $3,000 maximum allocation
+- **Channels**: Facebook/Instagram, Google Search, Reddit Ads (one channel at a time)
+- **Focus**: Retargeting website visitors first (warmest audience)
+
+**Kill Criteria** (stop immediately if any trigger):
+1. **CAC > 50% of LTV**: If Customer Acquisition Cost exceeds 50% of estimated Lifetime Value
+2. **Qualified Signup Rate < 10%**: If fewer than 10% of paid visitors create their first note within 7 days
+3. **Negative ROI after Month 2**: No path to profitability within 6-month cohort retention
+4. **Organic Channels Underperforming**: If content/community shows signs of neglect or declining performance
+
+**Success Criteria for Scaling** (must meet ALL):
+- CAC < 30% of LTV (target: <20%)
+- Qualified signup rate > 25%
+- Day 7 retention matches or exceeds organic cohorts
+- Clear attribution (no credit-stealing from organic channels)
+- Founder approval based on data review
+
+**Reporting**: Weekly CAC, conversion rates, and cohort retention comparison (paid vs. organic) shared with all stakeholders. Any red flags trigger immediate pause and team review.
 
 ---
 
@@ -632,11 +646,11 @@ To validate our speed claims and maintain competitive differentiation, we implem
 
 | Channel | Budget | % | Expected Outcome |
 |---------|--------|---|------------------|
-| **Content Marketing** | $10,000 | 20% | Blog, SEO, guest posts, freelance writers |
-| **Community & Social** | $5,000 | 10% | Community management, social media tools |
+| **Content Marketing** | $14,000 | 28% | Blog, SEO, guest posts, freelance writers |
+| **Community & Social** | $8,000 | 16% | Community management, social media tools |
 | **PR & Influencer Outreach** | $8,000 | 16% | Press kit, media database, influencer gifts |
-| **Paid Acquisition (Testing)** | $12,000 | 24% | Facebook, Google, Reddit ads testing |
-| **Tools & Software** | $5,000 | 10% | Email marketing, analytics, SEO tools |
+| **Paid Acquisition (Testing)** | $3,000 | 6% | Small-scale experiments with strict guardrails (max $1k/month, 3-month limit) |
+| **Tools & Software** | $7,000 | 14% | Email marketing, analytics, SEO tools |
 | **Creative & Design** | $6,000 | 12% | Video production, graphics, website updates |
 | **Events & Sponsorships** | $2,000 | 4% | Small event sponsorships, swag |
 | **Reserve/Contingency** | $2,000 | 4% | Unexpected opportunities |

@@ -559,20 +559,34 @@ describe("Marketing Plan Document Validation", () => {
     });
 
     it("should have proper table formatting", () => {
-      const tableLines = lines.filter((line) => line.match(/^\|.*\|$/));
-      if (tableLines.length > 0) {
-        // Each table should have header separator
-        const tableSections = content.split("\n\n");
-        tableSections.forEach((section) => {
-          if (section.includes("|") && section.split("\n").length > 2) {
-            const sectionLines = section.split("\n");
-            const hasHeader = sectionLines[0].includes("|");
-            const hasSeparator = sectionLines[1].match(/^|[:\s-]+|$/);
-            if (hasHeader) {
-              expect(hasSeparator).toBeTruthy();
-            }
+      // Scan for consecutive table lines (lines that start and end with |)
+      let i = 0;
+      while (i < lines.length) {
+        // Find the start of a table
+        if (lines[i].match(/^\|.*\|$/)) {
+          const tableStart = i;
+          let tableEnd = i;
+          // Find the end of the table (consecutive lines with |...|)
+          while (
+            tableEnd + 1 < lines.length &&
+            lines[tableEnd + 1].match(/^\|.*\|$/)
+          ) {
+            tableEnd++;
           }
-        });
+          // Table must have at least 3 lines (header, separator, at least one row)
+          if (tableEnd - tableStart + 1 >= 3) {
+            const tableLines = lines.slice(tableStart, tableEnd + 1);
+            // Check header (first line) and separator (second line)
+            const header = tableLines[0];
+            const separator = tableLines[1];
+            // Separator must be like | --- | or |:---:| etc.
+            const separatorPattern = /^\|([ \t]*:?-{3,}:?[ \t]*\|)+$/;
+            expect(separator).toMatch(separatorPattern);
+          }
+          i = tableEnd + 1;
+        } else {
+          i++;
+        }
       }
     });
 

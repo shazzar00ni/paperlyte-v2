@@ -46,9 +46,11 @@ describe('Header', () => {
     it('should render ThemeToggle component', () => {
       render(<Header />);
 
-      // ThemeToggle should render a button
-      const buttons = screen.getAllByRole('button');
-      expect(buttons.length).toBeGreaterThan(0);
+      // ThemeToggle should render a button with accessible label
+      const themeToggle = screen.getByRole('button', {
+        name: /switch to (dark|light) mode/i,
+      });
+      expect(themeToggle).toBeInTheDocument();
     });
 
     it('should render mobile menu button', () => {

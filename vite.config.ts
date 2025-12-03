@@ -49,10 +49,10 @@ function cspPlugin(): Plugin {
       // Development CSP: Allow WebSockets for HMR and unsafe-eval for fast refresh
       // - 'unsafe-eval' is required for Vite's HMR and React Fast Refresh (development only)
       // - ws:/wss: enables WebSocket connections for Vite dev server HMR
-      // - Font Awesome icons loaded from CDN require cdnjs in style-src
-      // - Fonts are self-hosted via @fontsource/inter (no external font CDN)
+      // - All fonts and icons are self-hosted (no external CDN dependencies)
+      // - Fonts: @fontsource/inter, Icons: @fortawesome/fontawesome-free
       // - No unsafe-inline needed - all styles use external CSS or CSS modules
-      const devCSP = `default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' https://cdnjs.cloudflare.com; font-src 'self'; img-src 'self' data:; connect-src 'self' ws: wss:; frame-ancestors 'none'; base-uri 'self'; form-action 'self';`
+      const devCSP = `default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self' ws: wss:; frame-ancestors 'none'; base-uri 'self'; form-action 'self';`
 
       // Inject CSP meta tag before closing </head> tag (dev only)
       const cspMetaTag = `    <!-- Content Security Policy (development only) -->

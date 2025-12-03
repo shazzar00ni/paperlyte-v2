@@ -84,8 +84,11 @@ describe('CTA', () => {
   it('should have proper heading hierarchy', () => {
     render(<CTA />);
 
-    const mainHeading = screen.getByText('Ready to declutter your mind?');
-    expect(mainHeading.tagName).toBe('H2');
+    const mainHeading = screen.getByRole('heading', {
+      level: 2,
+      name: /Ready to declutter your mind\?/i,
+    });
+    expect(mainHeading).toBeInTheDocument();
   });
 
   it('should render download buttons with correct styling classes', () => {

@@ -29,10 +29,11 @@ describe('Features', () => {
   });
 
   it('should render all feature cards', () => {
-    render(<Features />);
+    const { container } = render(<Features />);
 
-    // Should render 6 features
-    expect(FEATURES).toHaveLength(6);
+    // Verify correct number of feature cards are rendered
+    const articles = container.querySelectorAll('article');
+    expect(articles).toHaveLength(FEATURES.length);
 
     FEATURES.forEach((feature) => {
       expect(screen.getByText(feature.title)).toBeInTheDocument();

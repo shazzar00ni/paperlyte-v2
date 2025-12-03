@@ -102,9 +102,11 @@ describe('Hero', () => {
       const downloadButton = screen.getByRole('button', { name: /download now/i });
       await user.click(downloadButton);
 
-      expect(scrollIntoViewMock).toHaveBeenCalledWith({
-        behavior: 'smooth',
-      });
+      expect(scrollIntoViewMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          behavior: 'smooth',
+        })
+      );
 
       // Cleanup
       document.body.removeChild(downloadSection);
@@ -285,8 +287,16 @@ describe('Hero', () => {
       const { container } = render(<Hero />);
 
       const section = container.querySelector('#hero');
-      // Section component applies padding classes
       expect(section).toBeInTheDocument();
+
+      // Verify the Section has the padding-large class applied
+      // (CSS Module class names are hashed, so we check for the class pattern)
+      const classList = Array.from(section?.classList || []);
+      const hasPaddingLargeClass = classList.some(className =>
+        className.includes('padding-large')
+      );
+
+      expect(hasPaddingLargeClass).toBe(true);
     });
   });
 

@@ -186,8 +186,17 @@ describe('Header', () => {
       const nav = screen.getByRole('navigation');
       const focusableElements = nav.querySelectorAll('button, [href]');
 
-      // Focus should cycle through elements
       expect(focusableElements.length).toBeGreaterThan(0);
+
+      // Move focus to the last element
+      await user.keyboard('{Tab}'.repeat(focusableElements.length));
+      expect(document.activeElement).toBe(
+        focusableElements[focusableElements.length - 1],
+      );
+
+      // Next Tab should wrap back inside the menu (e.g., to the first item)
+      await user.keyboard('{Tab}');
+      expect(nav.contains(document.activeElement)).toBe(true);
     });
 
     it('should navigate with ArrowDown key', async () => {

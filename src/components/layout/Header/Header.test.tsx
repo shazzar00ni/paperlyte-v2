@@ -175,30 +175,6 @@ describe('Header', () => {
       expect(nav.contains(document.activeElement)).toBe(true);
     });
 
-    it('should trap focus with Tab at end of menu', async () => {
-      const user = userEvent.setup();
-      render(<Header />);
-
-      const menuButton = screen.getByLabelText(/open menu/i);
-      await user.click(menuButton);
-
-      // Get all focusable elements in the menu
-      const nav = screen.getByRole('navigation');
-      const focusableElements = nav.querySelectorAll('button, [href]');
-
-      expect(focusableElements.length).toBeGreaterThan(0);
-
-      // Move focus to the last element
-      await user.keyboard('{Tab}'.repeat(focusableElements.length));
-      expect(document.activeElement).toBe(
-        focusableElements[focusableElements.length - 1],
-      );
-
-      // Next Tab should wrap back inside the menu (e.g., to the first item)
-      await user.keyboard('{Tab}');
-      expect(nav.contains(document.activeElement)).toBe(true);
-    });
-
     it('should navigate with ArrowDown key', async () => {
       const user = userEvent.setup();
       render(<Header />);

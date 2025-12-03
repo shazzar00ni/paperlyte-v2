@@ -2,6 +2,22 @@ import { describe, it, expect, beforeAll } from "vitest";
 import { readFileSync } from "fs";
 import { join } from "path";
 
+/**
+ * Helper function to assert that a regex match is not null and return the matches array.
+ * Provides clear failure message when match fails.
+ */
+function assertMatches(
+  str: string,
+  regex: RegExp,
+  errorMessage: string,
+): RegExpMatchArray {
+  const matches = str.match(regex);
+  if (!matches) {
+    throw new Error(errorMessage);
+  }
+  return matches;
+}
+
 describe("Marketing Plan Document Validation", () => {
   let content: string;
   let lines: string[];
@@ -112,9 +128,12 @@ describe("Marketing Plan Document Validation", () => {
 
     it("should have quantifiable metrics in goals", () => {
       const summary = sections.get("Executive Summary")?.content || "";
-      const numbers = summary.match(/\d+[,\d]*[%+]?/g);
-      expect(numbers).toBeTruthy();
-      expect(numbers!.length).toBeGreaterThan(3);
+      const numbers = assertMatches(
+        summary,
+        /\d+[,\d]*[%+]?/g,
+        "Expected Executive Summary to contain quantifiable metrics (numbers with optional commas, %, or +)",
+      );
+      expect(numbers.length).toBeGreaterThan(3);
     });
   });
 
@@ -149,9 +168,12 @@ describe("Marketing Plan Document Validation", () => {
 
     it("should have market size numbers", () => {
       const analysis = sections.get("Market Analysis")?.content || "";
-      const marketSizes = analysis.match(/\d+[MK]?\+?\s*users/gi);
-      expect(marketSizes).toBeTruthy();
-      expect(marketSizes!.length).toBeGreaterThan(3);
+      const marketSizes = assertMatches(
+        analysis,
+        /\d+[MK]?\+?\s*users/gi,
+        "Expected Market Analysis to contain market size numbers (e.g., '100M users', '500K+ users')",
+      );
+      expect(marketSizes.length).toBeGreaterThan(3);
     });
   });
 
@@ -169,23 +191,32 @@ describe("Marketing Plan Document Validation", () => {
 
     it("should identify pain points for personas", () => {
       const audience = sections.get("Target Audience")?.content || "";
-      const painPoints = audience.match(/\*\*Pain Points\*\*/gi);
-      expect(painPoints).toBeTruthy();
-      expect(painPoints!.length).toBeGreaterThan(2);
+      const painPoints = assertMatches(
+        audience,
+        /\*\*Pain Points\*\*/gi,
+        "Expected Target Audience to contain '**Pain Points**' sections for multiple personas",
+      );
+      expect(painPoints.length).toBeGreaterThan(2);
     });
 
     it("should list motivations for each persona", () => {
       const audience = sections.get("Target Audience")?.content || "";
-      const motivations = audience.match(/\*\*Motivations\*\*/gi);
-      expect(motivations).toBeTruthy();
-      expect(motivations!.length).toBeGreaterThan(2);
+      const motivations = assertMatches(
+        audience,
+        /\*\*Motivations\*\*/gi,
+        "Expected Target Audience to contain '**Motivations**' sections for multiple personas",
+      );
+      expect(motivations.length).toBeGreaterThan(2);
     });
 
     it("should specify channels for reaching each persona", () => {
       const audience = sections.get("Target Audience")?.content || "";
-      const channels = audience.match(/\*\*Channels\*\*/gi);
-      expect(channels).toBeTruthy();
-      expect(channels!.length).toBeGreaterThan(2);
+      const channels = assertMatches(
+        audience,
+        /\*\*Channels\*\*/gi,
+        "Expected Target Audience to contain '**Channels**' sections for multiple personas",
+      );
+      expect(channels.length).toBeGreaterThan(2);
     });
   });
 
@@ -225,16 +256,22 @@ describe("Marketing Plan Document Validation", () => {
 
     it("should define objectives for each phase", () => {
       const strategy = sections.get("Marketing Strategy")?.content || "";
-      const objectives = strategy.match(/\*\*Objectives\*\*/gi);
-      expect(objectives).toBeTruthy();
-      expect(objectives!.length).toBeGreaterThan(3);
+      const objectives = assertMatches(
+        strategy,
+        /\*\*Objectives\*\*/gi,
+        "Expected Marketing Strategy to contain '**Objectives**' sections for multiple phases",
+      );
+      expect(objectives.length).toBeGreaterThan(3);
     });
 
     it("should list tactics for each phase", () => {
       const strategy = sections.get("Marketing Strategy")?.content || "";
-      const tactics = strategy.match(/\*\*Tactics\*\*/gi);
-      expect(tactics).toBeTruthy();
-      expect(tactics!.length).toBeGreaterThan(1);
+      const tactics = assertMatches(
+        strategy,
+        /\*\*Tactics\*\*/gi,
+        "Expected Marketing Strategy to contain '**Tactics**' sections for multiple phases",
+      );
+      expect(tactics.length).toBeGreaterThan(1);
     });
 
     it("should include Product Hunt launch strategy", () => {
@@ -337,11 +374,12 @@ describe("Marketing Plan Document Validation", () => {
     it("should have measurement frequencies for metrics", () => {
       const metrics = sections.get("Metrics & KPIs")?.content || "";
       expect(metrics).toMatch(/Daily|Weekly|Monthly|Quarterly/);
-      const frequencies = metrics.match(
+      const frequencies = assertMatches(
+        metrics,
         /\|\s*(Daily|Weekly|Monthly|Quarterly)\s*\|/g,
+        "Expected Metrics & KPIs to contain measurement frequencies (Daily, Weekly, Monthly, Quarterly) in table format",
       );
-      expect(frequencies).toBeTruthy();
-      expect(frequencies!.length).toBeGreaterThan(5);
+      expect(frequencies.length).toBeGreaterThan(5);
     });
 
     it("should include virality metrics", () => {
@@ -389,9 +427,12 @@ describe("Marketing Plan Document Validation", () => {
 
     it("should have checkboxes for tasks", () => {
       const timeline = sections.get("Launch Timeline")?.content || "";
-      const checkboxes = timeline.match(/✅/g);
-      expect(checkboxes).toBeTruthy();
-      expect(checkboxes!.length).toBeGreaterThan(10);
+      const checkboxes = assertMatches(
+        timeline,
+        /✅/g,
+        "Expected Launch Timeline to contain checkboxes (✅) for tracking tasks",
+      );
+      expect(checkboxes.length).toBeGreaterThan(10);
     });
 
     it("should define success criteria at milestones", () => {
@@ -416,9 +457,12 @@ describe("Marketing Plan Document Validation", () => {
 
     it("should include go/no-go decision points", () => {
       const success = sections.get("Success Criteria")?.content || "";
-      const decisions = success.match(/Go\/No-Go Decision/gi);
-      expect(decisions).toBeTruthy();
-      expect(decisions!.length).toBeGreaterThanOrEqual(2);
+      const decisions = assertMatches(
+        success,
+        /Go\/No-Go Decision/gi,
+        "Expected Success Criteria to contain 'Go/No-Go Decision' points",
+      );
+      expect(decisions.length).toBeGreaterThanOrEqual(2);
     });
   });
 
@@ -430,23 +474,32 @@ describe("Marketing Plan Document Validation", () => {
 
     it("should include impact assessment for each risk", () => {
       const risks = sections.get("Risk Mitigation")?.content || "";
-      const impacts = risks.match(/\*\*Impact\*\*/gi);
-      expect(impacts).toBeTruthy();
-      expect(impacts!.length).toBeGreaterThan(3);
+      const impacts = assertMatches(
+        risks,
+        /\*\*Impact\*\*/gi,
+        "Expected Risk Mitigation to contain '**Impact**' assessments for multiple risks",
+      );
+      expect(impacts.length).toBeGreaterThan(3);
     });
 
     it("should have mitigation strategies", () => {
       const risks = sections.get("Risk Mitigation")?.content || "";
-      const mitigations = risks.match(/\*\*Mitigation\*\*/gi);
-      expect(mitigations).toBeTruthy();
-      expect(mitigations!.length).toBeGreaterThan(3);
+      const mitigations = assertMatches(
+        risks,
+        /\*\*Mitigation\*\*/gi,
+        "Expected Risk Mitigation to contain '**Mitigation**' strategies for multiple risks",
+      );
+      expect(mitigations.length).toBeGreaterThan(3);
     });
 
     it("should have response plans", () => {
       const risks = sections.get("Risk Mitigation")?.content || "";
-      const responses = risks.match(/\*\*Response\*\*/gi);
-      expect(responses).toBeTruthy();
-      expect(responses!.length).toBeGreaterThan(3);
+      const responses = assertMatches(
+        risks,
+        /\*\*Response\*\*/gi,
+        "Expected Risk Mitigation to contain '**Response**' plans for multiple risks",
+      );
+      expect(responses.length).toBeGreaterThan(3);
     });
   });
 
@@ -619,36 +672,40 @@ describe("Marketing Plan Document Validation", () => {
   describe("Actionability", () => {
     it("should have specific, measurable targets", () => {
       // Count quantified targets throughout the document
-      const targets = content.match(
+      const targets = assertMatches(
+        content,
         /\d+[,\d]*\+?\s*(users|subscribers|%|downloads)/gi,
+        "Expected document to contain specific, measurable targets (e.g., '10,000 users', '5,000+ subscribers', '40%')",
       );
-      expect(targets).toBeTruthy();
-      expect(targets!.length).toBeGreaterThan(20);
+      expect(targets.length).toBeGreaterThan(20);
     });
 
     it("should include specific action items", () => {
-      const actionVerbs = content.match(
+      const actionVerbs = assertMatches(
+        content,
         /\b(Launch|Create|Build|Develop|Write|Run|Execute|Track|Monitor|Analyze|Review)\b/gi,
+        "Expected document to contain action verbs (Launch, Create, Build, Develop, Write, Run, Execute, Track, Monitor, Analyze, Review)",
       );
-      expect(actionVerbs).toBeTruthy();
-      expect(actionVerbs!.length).toBeGreaterThan(30);
+      expect(actionVerbs.length).toBeGreaterThan(30);
     });
 
     it("should reference specific tools and platforms", () => {
-      const tools = content.match(
+      const tools = assertMatches(
+        content,
         /\b(Product Hunt|Twitter|Reddit|Instagram|LinkedIn|Discord|Slack|ConvertKit|Mailchimp|Google Analytics|Mixpanel|Amplitude)\b/gi,
+        "Expected document to reference specific tools and platforms (Product Hunt, Twitter, Reddit, etc.)",
       );
-      expect(tools).toBeTruthy();
-      expect(tools!.length).toBeGreaterThan(10);
+      expect(tools.length).toBeGreaterThan(10);
     });
 
     it("should provide concrete examples", () => {
       // Look for example indicators
-      const examples = content.match(
+      const examples = assertMatches(
+        content,
         /Example:|For example|e\.g\.|such as|"[^"]+"/gi,
+        "Expected document to provide concrete examples (Example:, For example, e.g., such as, quoted text)",
       );
-      expect(examples).toBeTruthy();
-      expect(examples!.length).toBeGreaterThan(15);
+      expect(examples.length).toBeGreaterThan(15);
     });
   });
 });

@@ -924,7 +924,7 @@ Detailed cost per acquisition for each marketing channel:
 | **Referral Program** | $400 (incentives) | 4,000 | 100 | N/A | 2.5% | $4.00 | $55 | 13.75:1 | Scale |
 | **Paid Social (FB)** | $1,500 | 12,000 | 60 | $0.125 CPC | 0.5% | $25.00 | $40 | 1.6:1 | Optimize or pause |
 | **Paid Search (Google)** | $2,000 | 8,000 | 80 | $0.25 CPC | 1.0% | $25.00 | $45 | 1.8:1 | Test & optimize |
-| **Reddit Ads** | $500 | 5,000 | 25 | $0.10 CPC | 0.5% | $20.00 | $48 | 2.4:1 | Small scale test |
+| **Reddit Ads** | $500 | 5,000 | 25 | $0.10 CPC | 0.5% | $20.00 | $48 | 2.4:1 | small-scale test |
 
 **CAC Calculation Components**:
 - **Organic CAC**: (SEO tools + content creation + time) / organic downloads
@@ -1341,7 +1341,7 @@ If competitors copy our features:
   - Respond to community questions within 4 hours (business hours)
   - Daily monitoring of all community channels
   - Weekly community health report (sentiment, top questions, escalations)
-- **Escalation**: Peak launch periods (Month 0-1) or crisis situations escalate to Founder/Community Lead for backup coverage
+- **Escalation**: Peak launch periods (Month 0-1) or crises escalate to Founder/Community Lead for backup coverage
 - **Customer Success/Onboarding**: First 30-day user journey, onboarding email responses, feature adoption tracking
 
 ### As You Scale (Month 6+)

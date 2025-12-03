@@ -28,16 +28,19 @@ Comprehensive validation suite for `docs/MARKETING-PLAN.md` that verifies:
 ## Running Tests
 
 Run all documentation tests:
+
 ```bash
 npm test -- src/test/docs
 ```
 
 Run a specific test file:
+
 ```bash
 npm test -- src/test/docs/marketing-plan.test.ts
 ```
 
 Run with coverage:
+
 ```bash
 npm test -- src/test/docs --coverage
 ```

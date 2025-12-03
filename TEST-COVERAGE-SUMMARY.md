@@ -17,38 +17,44 @@ A comprehensive validation test suite that ensures the marketing plan document m
 
 #### Test Categories
 
-**Document Structure (4 tests)**
+##### Document Structure (4 tests)
+
 - Validates title and metadata presence
 - Ensures all 12 required major sections are present
 - Checks proper header formatting
 - Verifies consistent markdown structure
 
-**Executive Summary (3 tests)**
+##### Executive Summary (3 tests)
+
 - Validates primary goal with specific targets (10,000 users in 6 months)
 - Ensures secondary goals are defined
 - Checks for quantifiable metrics
 
-**Market Analysis (5 tests)**
+##### Market Analysis (5 tests)
+
 - Verifies TAM/SAM/SOM market sizing
 - Identifies direct competitors (Simplenote, Bear, Standard Notes)
 - Identifies indirect competitors (Notion, Evernote, Obsidian)
 - Lists competitive advantages
 - Validates market size numbers
 
-**Target Audience (5 tests)**
+##### Target Audience (5 tests)
+
 - Confirms primary personas are defined
 - Validates demographics for each persona
 - Ensures pain points are documented
 - Checks that motivations are listed
 - Verifies marketing channels are specified
 
-**Brand Positioning (4 tests)**
+##### Brand Positioning (4 tests)
+
 - Validates value proposition clarity
 - Checks brand voice and tone definitions
 - Ensures tone examples include do's and don'ts (✅/❌)
 - Verifies brand personality description
 
-**Marketing Strategy (6 tests)**
+##### Marketing Strategy (6 tests)
+
 - Validates 4-phase strategy structure
 - Checks objectives for each phase
 - Ensures tactics are defined
@@ -56,13 +62,15 @@ A comprehensive validation test suite that ensures the marketing plan document m
 - Checks email marketing sequences
 - Confirms referral program details
 
-**Budget and Resource Allocation (4 tests)**
+##### Budget and Resource Allocation (4 tests)
+
 - Validates budget table structure
 - Checks channel breakdown
 - Verifies budget percentages sum to 100%
 - Confirms channel prioritization (Tier 1/2/3)
 
-**Metrics and KPIs (7 tests)**
+##### Metrics and KPIs (7 tests)
+
 - Validates North Star Metric (WAU)
 - Checks acquisition metrics table
 - Ensures engagement metrics (DAU/WAU)
@@ -71,7 +79,8 @@ A comprehensive validation test suite that ensures the marketing plan document m
 - Confirms virality metrics (NPS, Viral Coefficient)
 - Validates realistic percentage targets
 
-**Timeline and Milestones (6 tests)**
+##### Timeline and Milestones (6 tests)
+
 - Validates pre-launch timeline (Month -3)
 - Checks launch timeline (Month 0)
 - Ensures post-launch timeline (Months 1-6)
@@ -79,29 +88,34 @@ A comprehensive validation test suite that ensures the marketing plan document m
 - Confirms task checkboxes (✅)
 - Validates success criteria
 
-**Success Criteria (3 tests)**
+##### Success Criteria (3 tests)
+
 - Checks Month 3 and Month 6 checkpoints
-- Distinguishes must-have vs nice-to-have items
+- Distinguishes must-have vs. nice-to-have items
 - Validates go/no-go decision points
 
-**Risk Mitigation (4 tests)**
+##### Risk Mitigation (4 tests)
+
 - Identifies potential risks
 - Validates impact assessments
 - Ensures mitigation strategies exist
 - Confirms response plans
 
-**Team and Responsibilities (3 tests)**
+##### Team and Responsibilities (3 tests)
+
 - Validates team roles definition
 - Checks responsibility assignments
 - Ensures scaling considerations
 
-**Content Strategy (4 tests)**
+##### Content Strategy (4 tests)
+
 - Validates content pillars
 - Checks content calendar presence
 - Ensures SEO strategy
 - Confirms content type definitions
 
-**Document Quality (6 tests)**
+##### Document Quality (6 tests)
+
 - Checks for broken markdown formatting
 - Validates consistent list formatting
 - Ensures proper table structure
@@ -109,7 +123,8 @@ A comprehensive validation test suite that ensures the marketing plan document m
 - Flags excessive line lengths
 - Checks consistent spacing around headers
 
-**Completeness and Consistency (4 tests)**
+##### Completeness and Consistency (4 tests)
+
 - Confirms conclusion section
 - Checks for related documents references
 - Validates document version history
@@ -117,7 +132,8 @@ A comprehensive validation test suite that ensures the marketing plan document m
 - Verifies consistent terminology usage
 - Validates consistent date formatting
 
-**Actionability (4 tests)**
+##### Actionability (4 tests)
+
 - Validates specific, measurable targets (20+ instances)
 - Ensures action items with verbs (30+ instances)
 - Confirms specific tools/platforms mentioned (10+ instances)

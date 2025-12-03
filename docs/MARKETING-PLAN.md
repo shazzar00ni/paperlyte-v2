@@ -165,6 +165,7 @@ To validate our speed claims and maintain competitive differentiation, we implem
 | Bear | 1.9s | 0.5s | 2.8s | 2.4s |
 | Standard Notes | 3.4s | 1.2s | 5.9s | 4.1s |
 
+> **Note:** The above performance data reflects measurements as of Q4 2025. These numbers may become outdated as competitors release new versions or as Paperlyte evolves. Please refer to the [Update Cadence](#update-cadence) section below for details on rebenchmarking frequency and ensure you verify when these numbers were last validated before making marketing claims.
 **Acceptance Criteria**:
 - **Target**: Paperlyte maintains <2s cold start on WiFi, <3s on 4G
 - **Competitive Gap**: Paperlyte is minimum 2x faster than Notion/Evernote/OneNote

@@ -1,19 +1,25 @@
-import { useState } from 'react';
-import { Section } from '@components/layout/Section';
-import { AnimatedElement } from '@components/ui/AnimatedElement';
-import { Icon } from '@components/ui/Icon';
-import { FAQ_ITEMS } from '@constants/faq';
-import styles from './FAQ.module.css';
+import { useState } from 'react'
+import { Section } from '@components/layout/Section'
+import { AnimatedElement } from '@components/ui/AnimatedElement'
+import { Icon } from '@components/ui/Icon'
+import { FAQ_ITEMS } from '@constants/faq'
+import styles from './FAQ.module.css'
 
 interface FAQItemProps {
-  question: string;
-  answer: string;
-  isOpen: boolean;
-  onToggle: () => void;
-  delay: number;
+  question: string
+  answer: string
+  isOpen: boolean
+  onToggle: () => void
+  delay: number
 }
 
-const FAQItemComponent = ({ question, answer, isOpen, onToggle, delay }: FAQItemProps): React.ReactElement => {
+const FAQItemComponent = ({
+  question,
+  answer,
+  isOpen,
+  onToggle,
+  delay,
+}: FAQItemProps): React.ReactElement => {
   return (
     <AnimatedElement animation="slideUp" delay={delay}>
       <article className={styles.item}>
@@ -40,23 +46,23 @@ const FAQItemComponent = ({ question, answer, isOpen, onToggle, delay }: FAQItem
         </div>
       </article>
     </AnimatedElement>
-  );
-};
+  )
+}
 
 export const FAQ = (): React.ReactElement => {
-  const [openItems, setOpenItems] = useState<Set<string>>(new Set());
+  const [openItems, setOpenItems] = useState<Set<string>>(new Set())
 
   const toggleItem = (id: string) => {
     setOpenItems((prev) => {
-      const newSet = new Set(prev);
+      const newSet = new Set(prev)
       if (newSet.has(id)) {
-        newSet.delete(id);
+        newSet.delete(id)
       } else {
-        newSet.add(id);
+        newSet.add(id)
       }
-      return newSet;
-    });
-  };
+      return newSet
+    })
+  }
 
   return (
     <Section id="faq" background="default">
@@ -104,5 +110,5 @@ export const FAQ = (): React.ReactElement => {
         </div>
       </AnimatedElement>
     </Section>
-  );
-};
+  )
+}

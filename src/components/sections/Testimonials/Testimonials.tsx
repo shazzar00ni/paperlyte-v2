@@ -208,7 +208,6 @@ export const Testimonials = (): React.ReactElement => {
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
         aria-label="Testimonials"
-        aria-live="polite"
         tabIndex={0}
       >
         <AnimatedElement animation="slideUp" delay={100}>

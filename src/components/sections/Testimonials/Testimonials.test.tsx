@@ -55,8 +55,9 @@ describe('Testimonials', () => {
     const { container } = render(<Testimonials />)
 
     const starElements = container.querySelectorAll('.fa-star')
-    // With 8 testimonials all having 5 stars, we should have 40 filled stars
-    expect(starElements.length).toBeGreaterThan(0)
+    // Calculate expected number of filled stars based on testimonial ratings
+    const expectedFilledStars = TESTIMONIALS.reduce((sum, t) => sum + t.rating, 0)
+    expect(starElements.length).toBe(expectedFilledStars)
   })
 
   it('should display avatars with initials when no image provided', () => {

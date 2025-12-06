@@ -93,11 +93,11 @@ export const Testimonials = (): React.ReactElement => {
   const handleTouchEnd = () => {
     const start = touchStart
     const end = touchEnd
-    
+
     // Reset touch state first
     setTouchStart(0)
     setTouchEnd(0)
-    
+
     if (!start || !end) return
 
     const distance = start - end
@@ -167,12 +167,7 @@ export const Testimonials = (): React.ReactElement => {
         <div className={styles.author}>
           <div className={styles.avatar} aria-hidden="true">
             {testimonial.avatar ? (
-              <img
-                src={testimonial.avatar}
-                alt=""
-                loading="lazy"
-                className={styles.avatarImage}
-              />
+              <img src={testimonial.avatar} alt="" loading="lazy" className={styles.avatarImage} />
             ) : (
               <span className={styles.initials}>{testimonial.initials}</span>
             )}
@@ -267,10 +262,7 @@ export const Testimonials = (): React.ReactElement => {
           aria-label={isPlaying ? 'Pause auto-rotation' : 'Play auto-rotation'}
           type="button"
         >
-          <Icon
-            name={isPlaying ? 'fa-pause' : 'fa-play'}
-            size="sm"
-          />
+          <Icon name={isPlaying ? 'fa-pause' : 'fa-play'} size="sm" />
         </button>
       </section>
 

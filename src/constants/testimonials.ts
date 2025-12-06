@@ -13,7 +13,7 @@ export interface Testimonial {
   /** Testimonial quote */
   quote: string
   /** Star rating (1-5) */
-  rating: number
+  rating: 1 | 2 | 3 | 4 | 5
   /** URL to user's avatar image (optional) */
   avatar?: string
   /** Initials for fallback avatar */

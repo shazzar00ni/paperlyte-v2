@@ -199,7 +199,7 @@ export const Testimonials = (): React.ReactElement => {
         </div>
       </AnimatedElement>
 
-      <div
+      <section
         ref={carouselRef}
         className={styles.carouselWrapper}
         onMouseEnter={() => setIsPlaying(false)}
@@ -207,7 +207,6 @@ export const Testimonials = (): React.ReactElement => {
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-        role="region"
         aria-label="Testimonials"
         aria-live="polite"
         tabIndex={0}

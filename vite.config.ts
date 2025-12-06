@@ -63,11 +63,13 @@ function cspPlugin(): Plugin {
 
       // Warn if injection failed (no </head> tag found)
       if (modifiedHtml === html) {
-        console.warn('[csp-plugin] Warning: Could not inject CSP meta tag - </head> tag not found in HTML')
+        console.warn(
+          '[csp-plugin] Warning: Could not inject CSP meta tag - </head> tag not found in HTML'
+        )
       }
 
       return modifiedHtml
-    }
+    },
   }
 }
 

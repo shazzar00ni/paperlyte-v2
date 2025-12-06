@@ -146,9 +146,10 @@ export const Testimonials = (): React.ReactElement => {
         {[...Array(5)].map((_, index) => (
           <Icon
             key={index}
-            name={index < rating ? 'fa-star' : 'fa-star-o'}
+            name="fa-star"
             size="sm"
             color={index < rating ? 'var(--color-primary)' : 'var(--color-text-tertiary)'}
+            style={index < rating ? {} : { opacity: 0.3 }}
           />
         ))}
       </div>

@@ -556,7 +556,7 @@ describe('Marketing Plan Document Validation', () => {
           // Table must have at least 3 lines (header, separator, at least one row)
           if (tableEnd - tableStart + 1 >= 3) {
             const tableLines = lines.slice(tableStart, tableEnd + 1)
-            // Check header (first line) and separator (second line)
+            // Check separator (second line)
             const separator = tableLines[1]
             // Separator must be like | --- | or |:---:| etc.
             const separatorPattern = /^\|([ \t]*:?-{3,}:?[ \t]*\|)+$/
@@ -574,7 +574,7 @@ describe('Marketing Plan Document Validation', () => {
         .map((line, index) => ({ line, index }))
         .filter(({ line }) => line.match(/^#{1,6}\s+/))
 
-      headings.forEach(({ line, index }) => {
+      headings.forEach(({ line }) => {
         const level = (line.match(/^#+/) || [''])[0].length
         expect(level).toBeGreaterThan(0)
         expect(level).toBeLessThanOrEqual(6)
@@ -652,6 +652,15 @@ describe('Marketing Plan Document Validation', () => {
         // If term is used multiple times, check consistency
         const firstUse = hasConsistentWAU[0]
         hasConsistentWAU.forEach((use) => {
+          // Allow for some variation but check general consistency
+          expect(use.toLowerCase()).toBe(firstUse.toLowerCase())
+        })
+      }
+
+      if (hasConsistentDAU && hasConsistentDAU.length > 1) {
+        // If term is used multiple times, check consistency
+        const firstUse = hasConsistentDAU[0]
+        hasConsistentDAU.forEach((use) => {
           // Allow for some variation but check general consistency
           expect(use.toLowerCase()).toBe(firstUse.toLowerCase())
         })

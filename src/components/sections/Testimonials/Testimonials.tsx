@@ -272,7 +272,7 @@ export const Testimonials = (): React.ReactElement => {
             size="sm"
           />
         </button>
-      </div>
+      </section>
 
       {/* Screen reader announcement */}
       <div className={styles.srOnly} aria-live="polite" aria-atomic="true">

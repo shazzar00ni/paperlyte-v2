@@ -71,11 +71,10 @@ describe('Testimonials', () => {
   })
 
   it('should have proper ARIA labels for carousel region', () => {
-    const { container } = render(<Testimonials />)
+    render(<Testimonials />)
 
-    const carouselRegion = container.querySelector('[role="region"]')
+    const carouselRegion = screen.getByRole('region', { name: 'Testimonials' })
     expect(carouselRegion).toBeInTheDocument()
-    expect(carouselRegion).toHaveAttribute('aria-label', 'Testimonials')
     expect(carouselRegion).toHaveAttribute('aria-live', 'polite')
   })
 
@@ -163,29 +162,24 @@ describe('Testimonials', () => {
   })
 
   it('should have auto-rotation functionality', () => {
-    const { container } = render(<Testimonials />)
+    render(<Testimonials />)
 
     // Verify the component has the necessary structure for auto-rotation
-    const carousel = container.querySelector('[role="region"]')
+    const carousel = screen.getByRole('region', { name: 'Testimonials' })
     expect(carousel).toBeInTheDocument()
 
     // Play/pause button indicates auto-rotation is implemented
     const playPauseButton = screen.getByLabelText('Pause auto-rotation')
     expect(playPauseButton).toBeInTheDocument()
-
-    // Verify carousel track exists for animation
-    const track = container.querySelector('[class*="track"]')
-    expect(track).toBeInTheDocument()
   })
 
   it('should pause auto-rotation on mouse enter', () => {
-    const { container } = render(<Testimonials />)
+    render(<Testimonials />)
 
-    const carousel = container.querySelector('[role="region"]')
-    expect(carousel).toBeInTheDocument()
+    const carousel = screen.getByRole('region', { name: 'Testimonials' })
 
     // Trigger mouse enter
-    fireEvent.mouseEnter(carousel!)
+    fireEvent.mouseEnter(carousel)
 
     // Check that play button is now available (indicates paused state)
     const playPauseButton = screen.getByLabelText('Play auto-rotation')
@@ -193,14 +187,13 @@ describe('Testimonials', () => {
   })
 
   it('should resume auto-rotation on mouse leave', () => {
-    const { container } = render(<Testimonials />)
+    render(<Testimonials />)
 
-    const carousel = container.querySelector('[role="region"]')
-    expect(carousel).toBeInTheDocument()
+    const carousel = screen.getByRole('region', { name: 'Testimonials' })
 
     // Trigger mouse enter then leave
-    fireEvent.mouseEnter(carousel!)
-    fireEvent.mouseLeave(carousel!)
+    fireEvent.mouseEnter(carousel)
+    fireEvent.mouseLeave(carousel)
 
     // Check that pause button is back (indicates playing state)
     const playPauseButton = screen.getByLabelText('Pause auto-rotation')
@@ -260,18 +253,16 @@ describe('Testimonials', () => {
   it('should support touch swipe gestures', () => {
     const { container } = render(<Testimonials />)
 
-    const carousel = container.querySelector('[role="region"]')
+    const carousel = screen.getByRole('region', { name: 'Testimonials' })
     const dots = container.querySelectorAll('[role="tab"]')
-
-    expect(carousel).toBeInTheDocument()
 
     // Initially at first slide
     expect(dots[0]).toHaveAttribute('aria-current', 'true')
 
     // Simulate left swipe (next)
-    fireEvent.touchStart(carousel!, { targetTouches: [{ clientX: 200 }] })
-    fireEvent.touchMove(carousel!, { targetTouches: [{ clientX: 100 }] })
-    fireEvent.touchEnd(carousel!)
+    fireEvent.touchStart(carousel, { targetTouches: [{ clientX: 200 }] })
+    fireEvent.touchMove(carousel, { targetTouches: [{ clientX: 100 }] })
+    fireEvent.touchEnd(carousel)
 
     // Should move to next slide
     expect(dots[1]).toHaveAttribute('aria-current', 'true')
@@ -280,17 +271,122 @@ describe('Testimonials', () => {
   it('should support right swipe to go to previous slide', () => {
     const { container } = render(<Testimonials />)
 
-    const carousel = container.querySelector('[role="region"]')
+    const carousel = screen.getByRole('region', { name: 'Testimonials' })
     const dots = container.querySelectorAll('[role="tab"]')
 
-    expect(carousel).toBeInTheDocument()
-
     // Simulate right swipe (previous)
-    fireEvent.touchStart(carousel!, { targetTouches: [{ clientX: 100 }] })
-    fireEvent.touchMove(carousel!, { targetTouches: [{ clientX: 200 }] })
-    fireEvent.touchEnd(carousel!)
+    fireEvent.touchStart(carousel, { targetTouches: [{ clientX: 100 }] })
+    fireEvent.touchMove(carousel, { targetTouches: [{ clientX: 200 }] })
+    fireEvent.touchEnd(carousel)
 
     // Should move to last slide (wrap around)
     expect(dots[TESTIMONIALS.length - 1]).toHaveAttribute('aria-current', 'true')
+  })
+
+  it('should navigate to next slide with ArrowRight key', () => {
+    const { container } = render(<Testimonials />)
+
+    const carousel = screen.getByRole('region', { name: 'Testimonials' })
+    const dots = container.querySelectorAll('[role="tab"]')
+
+    // Initially at first slide
+    expect(dots[0]).toHaveAttribute('aria-current', 'true')
+
+    // Press ArrowRight key
+    fireEvent.keyDown(carousel, { key: 'ArrowRight' })
+
+    // Should move to second slide
+    expect(dots[1]).toHaveAttribute('aria-current', 'true')
+  })
+
+  it('should navigate to previous slide with ArrowLeft key', () => {
+    const { container } = render(<Testimonials />)
+
+    const carousel = screen.getByRole('region', { name: 'Testimonials' })
+    const dots = container.querySelectorAll('[role="tab"]')
+
+    // Initially at first slide
+    expect(dots[0]).toHaveAttribute('aria-current', 'true')
+
+    // Press ArrowLeft key (should wrap to last slide)
+    fireEvent.keyDown(carousel, { key: 'ArrowLeft' })
+
+    // Should move to last slide (wrap around)
+    expect(dots[TESTIMONIALS.length - 1]).toHaveAttribute('aria-current', 'true')
+  })
+
+  it('should navigate multiple slides with keyboard', () => {
+    const { container } = render(<Testimonials />)
+
+    const carousel = screen.getByRole('region', { name: 'Testimonials' })
+    const dots = container.querySelectorAll('[role="tab"]')
+
+    // Navigate forward 3 times
+    fireEvent.keyDown(carousel, { key: 'ArrowRight' })
+    fireEvent.keyDown(carousel, { key: 'ArrowRight' })
+    fireEvent.keyDown(carousel, { key: 'ArrowRight' })
+
+    // Should be at fourth slide (index 3)
+    expect(dots[3]).toHaveAttribute('aria-current', 'true')
+
+    // Navigate back 1 time
+    fireEvent.keyDown(carousel, { key: 'ArrowLeft' })
+
+    // Should be at third slide (index 2)
+    expect(dots[2]).toHaveAttribute('aria-current', 'true')
+  })
+
+  it('should be keyboard focusable with tabIndex', () => {
+    render(<Testimonials />)
+
+    const carousel = screen.getByRole('region', { name: 'Testimonials' })
+    expect(carousel).toHaveAttribute('tabIndex', '0')
+  })
+
+  it('should prevent default behavior for arrow keys', () => {
+    render(<Testimonials />)
+
+    const carousel = screen.getByRole('region', { name: 'Testimonials' })
+
+    // Create event with preventDefault
+    const arrowRightEvent = new KeyboardEvent('keydown', {
+      key: 'ArrowRight',
+      bubbles: true,
+      cancelable: true,
+    })
+    const preventDefaultSpy = vi.spyOn(arrowRightEvent, 'preventDefault')
+
+    carousel.dispatchEvent(arrowRightEvent)
+    expect(preventDefaultSpy).toHaveBeenCalled()
+
+    // Test ArrowLeft as well
+    const arrowLeftEvent = new KeyboardEvent('keydown', {
+      key: 'ArrowLeft',
+      bubbles: true,
+      cancelable: true,
+    })
+    const preventDefaultSpy2 = vi.spyOn(arrowLeftEvent, 'preventDefault')
+
+    carousel.dispatchEvent(arrowLeftEvent)
+    expect(preventDefaultSpy2).toHaveBeenCalled()
+  })
+
+  it('should wrap around when navigating past last slide with ArrowRight', () => {
+    const { container } = render(<Testimonials />)
+
+    const carousel = screen.getByRole('region', { name: 'Testimonials' })
+    const dots = container.querySelectorAll('[role="tab"]')
+
+    // Navigate to last slide
+    for (let i = 0; i < TESTIMONIALS.length - 1; i++) {
+      fireEvent.keyDown(carousel, { key: 'ArrowRight' })
+    }
+
+    // Verify we're at last slide
+    expect(dots[TESTIMONIALS.length - 1]).toHaveAttribute('aria-current', 'true')
+
+    // Press ArrowRight again - should wrap to first slide
+    fireEvent.keyDown(carousel, { key: 'ArrowRight' })
+    expect(dots[0]).toHaveAttribute('aria-current', 'true')
   })
 })

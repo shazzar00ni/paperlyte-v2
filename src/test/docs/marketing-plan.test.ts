@@ -557,7 +557,6 @@ describe('Marketing Plan Document Validation', () => {
           if (tableEnd - tableStart + 1 >= 3) {
             const tableLines = lines.slice(tableStart, tableEnd + 1)
             // Check header (first line) and separator (second line)
-            const header = tableLines[0]
             const separator = tableLines[1]
             // Separator must be like | --- | or |:---:| etc.
             const separatorPattern = /^\|([ \t]*:?-{3,}:?[ \t]*\|)+$/

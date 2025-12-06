@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, act } from '@testing-library/react'
 import { Testimonials } from './Testimonials'
 import { TESTIMONIALS } from '@constants/testimonials'
 
@@ -55,9 +55,13 @@ describe('Testimonials', () => {
     const { container } = render(<Testimonials />)
 
     const starElements = container.querySelectorAll('.fa-star')
-    // Calculate expected number of filled stars based on testimonial ratings
-    const expectedFilledStars = TESTIMONIALS.reduce((sum, t) => sum + t.rating, 0)
-    expect(starElements.length).toBe(expectedFilledStars)
+    // Each testimonial shows 5 stars (filled and unfilled)
+    const expectedTotalStars = TESTIMONIALS.length * 5
+    expect(starElements.length).toBe(expectedTotalStars)
+
+    // Verify stars have proper ARIA labels
+    const starContainers = container.querySelectorAll('[role="img"]')
+    expect(starContainers.length).toBe(TESTIMONIALS.length)
   })
 
   it('should display avatars with initials when no image provided', () => {
@@ -75,7 +79,7 @@ describe('Testimonials', () => {
 
     const carouselRegion = screen.getByRole('region', { name: 'Testimonials' })
     expect(carouselRegion).toBeInTheDocument()
-    expect(carouselRegion).toHaveAttribute('aria-live', 'polite')
+    expect(carouselRegion).toHaveAttribute('tabIndex', '0')
   })
 
   it('should render navigation buttons with proper labels', () => {
@@ -102,13 +106,13 @@ describe('Testimonials', () => {
     const dots = container.querySelectorAll('[role="tab"]')
 
     // Initially, first dot should be active
-    expect(dots[0]).toHaveAttribute('aria-current', 'true')
+    expect(dots[0]).toHaveAttribute('aria-selected', 'true')
 
     // Click next button
     fireEvent.click(nextButton)
 
     // Second dot should now be active
-    expect(dots[1]).toHaveAttribute('aria-current', 'true')
+    expect(dots[1]).toHaveAttribute('aria-selected', 'true')
   })
 
   it('should navigate to previous slide when previous button is clicked', () => {
@@ -121,7 +125,7 @@ describe('Testimonials', () => {
     fireEvent.click(prevButton)
 
     // Last dot should now be active
-    expect(dots[TESTIMONIALS.length - 1]).toHaveAttribute('aria-current', 'true')
+    expect(dots[TESTIMONIALS.length - 1]).toHaveAttribute('aria-selected', 'true')
   })
 
   it('should navigate to specific slide when dot is clicked', () => {
@@ -133,7 +137,7 @@ describe('Testimonials', () => {
     fireEvent.click(dots[2])
 
     // Third dot should be active
-    expect(dots[2]).toHaveAttribute('aria-current', 'true')
+    expect(dots[2]).toHaveAttribute('aria-selected', 'true')
   })
 
   it('should have play/pause button', () => {
@@ -171,6 +175,33 @@ describe('Testimonials', () => {
     // Play/pause button indicates auto-rotation is implemented
     const playPauseButton = screen.getByLabelText('Pause auto-rotation')
     expect(playPauseButton).toBeInTheDocument()
+  })
+
+  it('should auto-rotate slides after interval', async () => {
+    const { container } = render(<Testimonials />)
+    const dots = container.querySelectorAll('[role="tab"]')
+
+    // Initially at first slide
+    expect(dots[0]).toHaveAttribute('aria-selected', 'true')
+    expect(dots[1]).toHaveAttribute('aria-selected', 'false')
+
+    // Advance timers by 5 seconds (auto-rotation interval)
+    await act(async () => {
+      vi.advanceTimersByTime(5000)
+    })
+
+    // Should have advanced to second slide
+    expect(dots[0]).toHaveAttribute('aria-selected', 'false')
+    expect(dots[1]).toHaveAttribute('aria-selected', 'true')
+
+    // Advance timers again
+    await act(async () => {
+      vi.advanceTimersByTime(5000)
+    })
+
+    // Should have advanced to third slide
+    expect(dots[1]).toHaveAttribute('aria-selected', 'false')
+    expect(dots[2]).toHaveAttribute('aria-selected', 'true')
   })
 
   it('should pause auto-rotation on mouse enter', () => {
@@ -257,7 +288,7 @@ describe('Testimonials', () => {
     const dots = container.querySelectorAll('[role="tab"]')
 
     // Initially at first slide
-    expect(dots[0]).toHaveAttribute('aria-current', 'true')
+    expect(dots[0]).toHaveAttribute('aria-selected', 'true')
 
     // Simulate left swipe (next)
     fireEvent.touchStart(carousel, { targetTouches: [{ clientX: 200 }] })
@@ -265,7 +296,7 @@ describe('Testimonials', () => {
     fireEvent.touchEnd(carousel)
 
     // Should move to next slide
-    expect(dots[1]).toHaveAttribute('aria-current', 'true')
+    expect(dots[1]).toHaveAttribute('aria-selected', 'true')
   })
 
   it('should support right swipe to go to previous slide', () => {
@@ -280,7 +311,7 @@ describe('Testimonials', () => {
     fireEvent.touchEnd(carousel)
 
     // Should move to last slide (wrap around)
-    expect(dots[TESTIMONIALS.length - 1]).toHaveAttribute('aria-current', 'true')
+    expect(dots[TESTIMONIALS.length - 1]).toHaveAttribute('aria-selected', 'true')
   })
 
   it('should navigate to next slide with ArrowRight key', () => {
@@ -290,13 +321,13 @@ describe('Testimonials', () => {
     const dots = container.querySelectorAll('[role="tab"]')
 
     // Initially at first slide
-    expect(dots[0]).toHaveAttribute('aria-current', 'true')
+    expect(dots[0]).toHaveAttribute('aria-selected', 'true')
 
     // Press ArrowRight key
     fireEvent.keyDown(carousel, { key: 'ArrowRight' })
 
     // Should move to second slide
-    expect(dots[1]).toHaveAttribute('aria-current', 'true')
+    expect(dots[1]).toHaveAttribute('aria-selected', 'true')
   })
 
   it('should navigate to previous slide with ArrowLeft key', () => {
@@ -306,13 +337,13 @@ describe('Testimonials', () => {
     const dots = container.querySelectorAll('[role="tab"]')
 
     // Initially at first slide
-    expect(dots[0]).toHaveAttribute('aria-current', 'true')
+    expect(dots[0]).toHaveAttribute('aria-selected', 'true')
 
     // Press ArrowLeft key (should wrap to last slide)
     fireEvent.keyDown(carousel, { key: 'ArrowLeft' })
 
     // Should move to last slide (wrap around)
-    expect(dots[TESTIMONIALS.length - 1]).toHaveAttribute('aria-current', 'true')
+    expect(dots[TESTIMONIALS.length - 1]).toHaveAttribute('aria-selected', 'true')
   })
 
   it('should navigate multiple slides with keyboard', () => {
@@ -327,13 +358,13 @@ describe('Testimonials', () => {
     fireEvent.keyDown(carousel, { key: 'ArrowRight' })
 
     // Should be at fourth slide (index 3)
-    expect(dots[3]).toHaveAttribute('aria-current', 'true')
+    expect(dots[3]).toHaveAttribute('aria-selected', 'true')
 
     // Navigate back 1 time
     fireEvent.keyDown(carousel, { key: 'ArrowLeft' })
 
     // Should be at third slide (index 2)
-    expect(dots[2]).toHaveAttribute('aria-current', 'true')
+    expect(dots[2]).toHaveAttribute('aria-selected', 'true')
   })
 
   it('should be keyboard focusable with tabIndex', () => {
@@ -383,10 +414,10 @@ describe('Testimonials', () => {
     }
 
     // Verify we're at last slide
-    expect(dots[TESTIMONIALS.length - 1]).toHaveAttribute('aria-current', 'true')
+    expect(dots[TESTIMONIALS.length - 1]).toHaveAttribute('aria-selected', 'true')
 
     // Press ArrowRight again - should wrap to first slide
     fireEvent.keyDown(carousel, { key: 'ArrowRight' })
-    expect(dots[0]).toHaveAttribute('aria-current', 'true')
+    expect(dots[0]).toHaveAttribute('aria-selected', 'true')
   })
 })

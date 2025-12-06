@@ -53,7 +53,7 @@ export const TESTIMONIALS: Testimonial[] = [
     company: 'MIT',
     quote:
       'The offline-first feature is a lifesaver. I can take notes anywhere—on the subway, in the library—without worrying about connectivity.',
-    rating: 5,
+    rating: 4,
     initials: 'ER',
   },
   {
@@ -82,7 +82,7 @@ export const TESTIMONIALS: Testimonial[] = [
     company: 'StartupLab',
     quote:
       "I switched from Notion and haven't looked back. Paperlyte's speed and tag-based organization match how my brain actually works.",
-    rating: 5,
+    rating: 4,
     initials: 'AK',
   },
   {
@@ -92,7 +92,7 @@ export const TESTIMONIALS: Testimonial[] = [
     company: 'BrandCo',
     quote:
       'Cross-device sync that actually works seamlessly. Start a thought on my phone, finish it on my laptop. No friction, no lost ideas.',
-    rating: 5,
+    rating: 4,
     initials: 'LA',
   },
   {

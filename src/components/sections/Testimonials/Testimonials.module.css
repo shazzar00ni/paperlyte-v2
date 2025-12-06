@@ -276,7 +276,7 @@
 }
 
 /* Mobile adjustments */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .header {
     margin-bottom: var(--spacing-2xl);
   }

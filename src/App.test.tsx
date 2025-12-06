@@ -22,7 +22,7 @@ describe('App Integration', () => {
     // Verify sections exist and are in correct order
     const sections = main?.querySelectorAll('section')
     expect(sections).toBeDefined()
-    expect(sections!.length).toBeGreaterThanOrEqual(6)
+    expect(sections!.length).toBeGreaterThanOrEqual(7)
 
     const sectionIds = Array.from(sections!).map((section) => section.getAttribute('id'))
 
@@ -30,6 +30,7 @@ describe('App Integration', () => {
     expect(sectionIds).toContain('hero')
     expect(sectionIds).toContain('features')
     expect(sectionIds).toContain('comparison')
+    expect(sectionIds).toContain('testimonials')
     expect(sectionIds).toContain('pricing')
     expect(sectionIds).toContain('faq')
     expect(sectionIds).toContain('download')
@@ -38,13 +39,15 @@ describe('App Integration', () => {
     const heroIndex = sectionIds.indexOf('hero')
     const featuresIndex = sectionIds.indexOf('features')
     const comparisonIndex = sectionIds.indexOf('comparison')
+    const testimonialsIndex = sectionIds.indexOf('testimonials')
     const pricingIndex = sectionIds.indexOf('pricing')
     const faqIndex = sectionIds.indexOf('faq')
     const downloadIndex = sectionIds.indexOf('download')
 
     expect(heroIndex).toBeLessThan(featuresIndex)
     expect(featuresIndex).toBeLessThan(comparisonIndex)
-    expect(comparisonIndex).toBeLessThan(pricingIndex)
+    expect(comparisonIndex).toBeLessThan(testimonialsIndex)
+    expect(testimonialsIndex).toBeLessThan(pricingIndex)
     expect(pricingIndex).toBeLessThan(faqIndex)
     expect(faqIndex).toBeLessThan(downloadIndex)
   })
@@ -93,6 +96,16 @@ describe('App Integration', () => {
 
     // Verify comparison content is present
     expect(screen.getByText('See How We Compare')).toBeInTheDocument()
+  })
+
+  it('should render Testimonials section', () => {
+    const { container } = render(<App />)
+
+    const testimonialsSection = container.querySelector('#testimonials')
+    expect(testimonialsSection).toBeInTheDocument()
+
+    // Verify testimonials content is present
+    expect(screen.getByText('Loved by thousands of note-takers')).toBeInTheDocument()
   })
 
   it('should render Pricing section', () => {

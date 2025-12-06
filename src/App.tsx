@@ -9,6 +9,11 @@ import { Pricing } from '@components/sections/Pricing'
 import { FAQ } from '@components/sections/FAQ'
 import { CTA } from '@components/sections/CTA'
 
+/**
+ * Top-level application component that composes the page layout and sections.
+ *
+ * @returns The root JSX element rendering the app: an ErrorBoundary wrapping the Header, a `main` element containing Hero, Features, Comparison, Testimonials, Pricing, FAQ, and CTA sections, and the Footer.
+ */
 function App() {
   return (
     <ErrorBoundary>

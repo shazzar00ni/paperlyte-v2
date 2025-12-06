@@ -4,6 +4,7 @@ interface IconProps {
   className?: string
   ariaLabel?: string
   color?: string
+  style?: React.CSSProperties
 }
 
 export const Icon: React.FC<IconProps> = ({
@@ -12,6 +13,7 @@ export const Icon: React.FC<IconProps> = ({
   className = '',
   ariaLabel,
   color,
+  style,
 }) => {
   const sizeClass = {
     sm: 'fa-sm',
@@ -27,6 +29,7 @@ export const Icon: React.FC<IconProps> = ({
       className={`fa-solid ${name} ${sizeClass} ${className}${color ? ` icon-color-${color.replace('#', '')}` : ''}`}
       aria-label={ariaLabel}
       aria-hidden={!ariaLabel}
+      style={style}
       {...(ariaLabel && { role: 'img' })}
     />
   )

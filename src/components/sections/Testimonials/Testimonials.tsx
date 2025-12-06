@@ -142,7 +142,7 @@ export const Testimonials = (): React.ReactElement => {
    */
   const renderStars = (rating: number) => {
     return (
-      <div className={styles.stars} aria-label={`${rating} out of 5 stars`}>
+      <div className={styles.stars} role="img" aria-label={`${rating} out of 5 stars`}>
         {[...Array(5)].map((_, index) => (
           <Icon
             key={index}

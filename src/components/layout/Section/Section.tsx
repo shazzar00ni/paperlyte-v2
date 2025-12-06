@@ -1,20 +1,20 @@
-import { type ReactNode } from 'react';
-import styles from './Section.module.css';
+import { type ReactNode } from 'react'
+import styles from './Section.module.css'
 
 /**
  * Props for the Section component
  */
 interface SectionProps {
   /** Optional ID for anchor linking and navigation */
-  id?: string;
+  id?: string
   /** Content to be rendered inside the section */
-  children: ReactNode;
+  children: ReactNode
   /** Additional CSS class names to apply */
-  className?: string;
+  className?: string
   /** Background color variant (default: 'default') */
-  background?: 'default' | 'surface' | 'primary';
+  background?: 'default' | 'surface' | 'primary'
   /** Padding size variant (default: 'default') */
-  padding?: 'default' | 'large' | 'none';
+  padding?: 'default' | 'large' | 'none'
 }
 
 /**
@@ -53,11 +53,13 @@ export const Section = ({
     styles[`bg-${background}`],
     styles[`padding-${padding}`],
     className,
-  ].filter(Boolean).join(' ');
+  ]
+    .filter(Boolean)
+    .join(' ')
 
   return (
     <section id={id} className={classNames}>
       <div className={styles.container}>{children}</div>
     </section>
-  );
-};
+  )
+}

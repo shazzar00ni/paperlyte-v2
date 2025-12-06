@@ -13,6 +13,7 @@ This security review analyzed the Paperlyte v2 landing page application for comm
 **Overall Security Rating:** 🟢 **GOOD** (with 1 critical fix required)
 
 ### Key Findings Summary
+
 - ✅ **0 dependency vulnerabilities** (npm audit clean)
 - ⚠️ **1 CRITICAL issue** requiring immediate attention
 - ⚠️ **3 MEDIUM issues** recommended for resolution
@@ -32,6 +33,7 @@ This security review analyzed the Paperlyte v2 landing page application for comm
 The `.gitignore` file does not include `.env` files, creating a high risk of accidentally committing sensitive environment variables to version control.
 
 **Current .gitignore content:**
+
 ```gitignore
 # Logs
 logs
@@ -42,17 +44,20 @@ npm-debug.log*
 ```
 
 **Evidence:**
+
 - `.env.example` exists at project root with placeholder for sensitive data
 - File includes comment: "NEVER commit .env files with real credentials to version control"
 - No `.env` pattern found in `.gitignore`
 
 **Impact:**
+
 - HIGH: Could expose API keys, tokens, and credentials if `.env` file is created
 - Violates security best practice mentioned in `.env.example:3`
 - Creates compliance risks (GDPR, PCI-DSS if handling sensitive data)
 
 **Recommendation:**
 Add the following entries to `.gitignore` immediately:
+
 ```gitignore
 # Environment variables
 .env
@@ -85,6 +90,7 @@ None found. ✅
 Font Awesome is loaded from cdnjs.cloudflare.com with integrity hash, but Google Fonts are loaded without SRI protection.
 
 **Current implementation:**
+
 ```html
 <!-- Has SRI ✅ -->
 <link
@@ -96,20 +102,26 @@ Font Awesome is loaded from cdnjs.cloudflare.com with integrity hash, but Google
 />
 
 <!-- Missing SRI ⚠️ -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+  rel="stylesheet"
+/>
 ```
 
 **Impact:**
+
 - MEDIUM: Compromised Google Fonts CDN could inject malicious CSS
 - Lower risk than JavaScript injection but still exploitable
 - Affects all users loading the page
 
 **Recommendation:**
+
 1. Consider self-hosting fonts for better security and performance
 2. If using CDN, generate and add SRI hashes
 3. Alternative: Use font-display: swap with local fallbacks
 
 **Justification for Medium (not High):**
+
 - Google Fonts CDN is highly trusted and monitored
 - CSS injection is less dangerous than JS injection
 - Current implementation includes crossorigin for Font Awesome
@@ -128,11 +140,13 @@ Font Awesome is loaded from cdnjs.cloudflare.com with integrity hash, but Google
 No Content Security Policy (CSP) headers are configured in the HTML or expected to be set at the server level.
 
 **Current state:**
+
 - No `<meta http-equiv="Content-Security-Policy">` in `index.html`
 - No CSP headers configuration found in deployment configs
 - Application loads external resources from multiple origins
 
 **Impact:**
+
 - MEDIUM: Lacks defense-in-depth against XSS attacks
 - No restriction on script sources, styles, or frames
 - Could allow unauthorized inline scripts if code is compromised
@@ -141,7 +155,9 @@ No Content Security Policy (CSP) headers are configured in the HTML or expected 
 Add CSP meta tag to `index.html` or configure server headers:
 
 ```html
-<meta http-equiv="Content-Security-Policy" content="
+<meta
+  http-equiv="Content-Security-Policy"
+  content="
   default-src 'self';
   script-src 'self';
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
@@ -151,7 +167,8 @@ Add CSP meta tag to `index.html` or configure server headers:
   frame-ancestors 'none';
   base-uri 'self';
   form-action 'self';
-">
+"
+/>
 ```
 
 **Note:** `'unsafe-inline'` for styles is required for React's CSS-in-JS. Consider moving to CSS Modules fully to remove this.
@@ -170,12 +187,14 @@ Add CSP meta tag to `index.html` or configure server headers:
 The application appears to lack additional security headers that should be set at the server/hosting level.
 
 **Missing headers:**
+
 1. `X-Frame-Options: DENY` - Prevents clickjacking
 2. `X-Content-Type-Options: nosniff` - Prevents MIME-sniffing attacks
 3. `Referrer-Policy: strict-origin-when-cross-origin` - Controls referrer information
 4. `Permissions-Policy` - Restricts browser features
 
 **Impact:**
+
 - MEDIUM: Increases attack surface for browser-based exploits
 - Clickjacking could trick users into unintended actions
 - MIME-sniffing could lead to XSS in edge cases
@@ -192,6 +211,7 @@ X-XSS-Protection: 1; mode=block
 ```
 
 **For Vercel** (vercel.json):
+
 ```json
 {
   "headers": [
@@ -224,18 +244,21 @@ X-XSS-Protection: 1; mode=block
 The application stores user theme preference in localStorage without encryption.
 
 **Code:**
+
 ```typescript
-localStorage.setItem('theme', theme);
-const stored = localStorage.getItem('theme');
+localStorage.setItem('theme', theme)
+const stored = localStorage.getItem('theme')
 ```
 
 **Impact:**
+
 - LOW: Only stores 'light' or 'dark' string value
 - No sensitive data involved
 - XSS could modify theme preference (minor annoyance only)
 
 **Recommendation:**
 No action required for current use case. If storing sensitive data in future:
+
 1. Use encryption for sensitive localStorage data
 2. Consider sessionStorage for temporary data
 3. Implement proper input validation (already done with `isValidTheme()`)
@@ -254,6 +277,7 @@ No action required for current use case. If storing sensitive data in future:
 ErrorBoundary component displays error stack traces when `import.meta.env.DEV` is true.
 
 **Code:**
+
 ```typescript
 {this.state.error && import.meta.env.DEV && (
   <details className={styles.errorDetails}>
@@ -268,12 +292,14 @@ ErrorBoundary component displays error stack traces when `import.meta.env.DEV` i
 ```
 
 **Impact:**
+
 - LOW: Information only shown in development builds
 - Production builds will not include stack traces
 - Properly gated with environment check
 
 **Recommendation:**
 Current implementation is secure. Consider adding:
+
 1. Error reporting service for production (e.g., Sentry)
 2. User-friendly error messages without technical details
 3. Logging errors server-side with full context
@@ -292,18 +318,21 @@ Current implementation is secure. Consider adding:
 Download buttons and platform links use `href="#"` placeholders.
 
 **Code:**
+
 ```tsx
 <Button href="#" variant="secondary">Download for Mac</Button>
 <a href="#" className={styles.platformLink}>iOS</a>
 ```
 
 **Impact:**
+
 - LOW: No security impact
 - UX issue - users cannot download the app
 - Could be seen as deceptive if deployed to production
 
 **Recommendation:**
 Before production deployment:
+
 1. Replace with actual download URLs
 2. Implement download tracking analytics
 3. Add fallback for browsers/platforms not supported
@@ -317,40 +346,52 @@ Before production deployment:
 The following security best practices were observed and should be maintained:
 
 ### 1. ✅ Zero Dependency Vulnerabilities
+
 ```bash
 npm audit
 # 0 vulnerabilities found
 ```
+
 - All 332 dependencies are up-to-date and secure
 - React 19.2.0 (latest stable)
 - TypeScript 5.9.3 with strict mode
 - Vite 7.2.4 (modern, secure build tool)
 
 ### 2. ✅ No XSS Vectors Detected
+
 - No use of `dangerouslySetInnerHTML` anywhere in codebase
 - No `eval()`, `Function()`, or string-based code execution
 - No `setTimeout`/`setInterval` with string arguments
 - All user-controlled content properly escaped by React
 
 ### 3. ✅ External Links Properly Secured
+
 **File:** `src/components/ui/Button/Button.tsx:83-86`
+
 ```typescript
-{href.startsWith('http') && {
-  target: '_blank',
-  rel: 'noopener noreferrer',
-}}
+{
+  href.startsWith('http') && {
+    target: '_blank',
+    rel: 'noopener noreferrer',
+  }
+}
 ```
+
 **File:** `src/components/layout/Footer/Footer.tsx:58-59`
+
 ```typescript
-target="_blank"
-rel="noopener noreferrer"
+target = '_blank'
+rel = 'noopener noreferrer'
 ```
+
 - All external links include `rel="noopener noreferrer"`
 - Prevents reverse tabnabbing attacks
 - Protects window.opener from being accessed
 
 ### 4. ✅ TypeScript Strict Mode Enabled
+
 **File:** `tsconfig.json:4`
+
 ```json
 {
   "compilerOptions": {
@@ -359,48 +400,60 @@ rel="noopener noreferrer"
   }
 }
 ```
+
 - Type safety enforced at compile time
 - Reduces runtime errors and potential security issues
 - Catches undefined/null errors early
 
 ### 5. ✅ React StrictMode Enabled
+
 **File:** `src/main.tsx:6-9`
+
 ```typescript
 <StrictMode>
   <App />
 </StrictMode>
 ```
+
 - Identifies unsafe lifecycle methods
 - Warns about deprecated APIs
 - Helps find side effects in rendering
 
 ### 6. ✅ Input Validation Present
+
 **File:** `src/hooks/useTheme.ts:7-9`
+
 ```typescript
 const isValidTheme = (value: string | null): value is Theme => {
-  return value === 'light' || value === 'dark';
-};
+  return value === 'light' || value === 'dark'
+}
 ```
+
 - localStorage values validated before use
 - Type guards prevent invalid states
 - Fail-safe defaults implemented
 
 ### 7. ✅ SSR Guards for Browser APIs
+
 **File:** `src/hooks/useTheme.ts:5,14,32,50`
+
 ```typescript
-const isBrowser = typeof window !== 'undefined';
-if (!isBrowser) return 'light';
+const isBrowser = typeof window !== 'undefined'
+if (!isBrowser) return 'light'
 ```
+
 - Prevents server-side rendering errors
 - Graceful degradation for non-browser environments
 - No assumption about global objects
 
 ### 8. ✅ No Hardcoded Secrets
+
 - Searched for API_KEY, SECRET, PASSWORD, TOKEN, PRIVATE
 - Only found in comments and package metadata
 - `.env.example` used correctly for documentation
 
 ### 9. ✅ Proper Accessibility (Security-Adjacent)
+
 - ARIA labels on interactive elements
 - Semantic HTML structure
 - Keyboard navigation support
@@ -408,7 +461,9 @@ if (!isBrowser) return 'light';
 - Reduces social engineering attack surface via confusion
 
 ### 10. ✅ CI/CD Security Pipeline
+
 **File:** `.github/workflows/ci.yml`
+
 - Automated linting and type checking
 - Build verification on every PR
 - Lighthouse CI for performance/security audits
@@ -420,21 +475,27 @@ if (!isBrowser) return 'light';
 ## Additional Observations
 
 ### Build Configuration Security
+
 **File:** `vite.config.ts`
+
 - Uses esbuild for fast, safe minification
 - CSS code splitting for better caching
 - Manual chunks for vendor code separation
 - No dangerous build plugins detected
 
 ### ESLint Configuration
+
 **File:** `eslint.config.js`
+
 - React Hooks rules prevent state management bugs
 - TypeScript ESLint catches type-related issues
 - Recommended rule sets applied
 - Flat config format (modern ESLint 9+)
 
 ### Environment Variables
+
 **File:** `.env.example`
+
 - Proper documentation of required variables
 - All variables prefixed with `VITE_` (client-side safe)
 - Clear warnings about not committing .env files
@@ -487,12 +548,14 @@ if (!isBrowser) return 'light';
 ## Compliance Considerations
 
 ### GDPR Compliance
+
 - ✅ No cookies used (theme stored in localStorage only)
 - ✅ No personal data collected
 - ✅ No third-party tracking scripts
 - ⚠️ Future consideration: If analytics added, ensure GDPR compliance
 
 ### WCAG 2.1 AA Accessibility
+
 - ✅ ARIA labels present
 - ✅ Semantic HTML structure
 - ✅ Keyboard navigation supported
@@ -501,6 +564,7 @@ if (!isBrowser) return 'light';
 - Lighthouse accessibility target: >95 score
 
 ### OWASP Top 10 (2021)
+
 1. **A01:2021 - Broken Access Control** - ✅ N/A (no authentication)
 2. **A02:2021 - Cryptographic Failures** - ✅ No sensitive data
 3. **A03:2021 - Injection** - ✅ No injection vectors
@@ -517,11 +581,13 @@ if (!isBrowser) return 'light';
 ## Recommendations by Priority
 
 ### Immediate (Before Next Commit)
+
 1. **Add .env to .gitignore** - CRITICAL
    - Prevents accidental secret exposure
    - 5-minute fix
 
 ### Before Production Deployment
+
 2. **Add security headers** (CSP, X-Frame-Options, etc.)
    - Implement via hosting provider configuration
    - 30-minute setup
@@ -536,6 +602,7 @@ if (!isBrowser) return 'light';
    - 15-minute update
 
 ### Future Enhancements
+
 5. **Implement error logging service**
    - Use Sentry or similar for production errors
    - Helps identify security issues in production
@@ -556,6 +623,7 @@ if (!isBrowser) return 'light';
 ## Testing Performed
 
 ### Static Analysis
+
 - ✅ npm audit for dependency vulnerabilities
 - ✅ Grep analysis for dangerous patterns (eval, dangerouslySetInnerHTML)
 - ✅ Manual code review of all components
@@ -563,6 +631,7 @@ if (!isBrowser) return 'light';
 - ✅ Secret scanning (API keys, tokens, passwords)
 
 ### Manual Review
+
 - ✅ 20 TypeScript/TSX files reviewed
 - ✅ Build and deployment configurations analyzed
 - ✅ Third-party dependencies evaluated
@@ -570,6 +639,7 @@ if (!isBrowser) return 'light';
 - ✅ Error handling and logging reviewed
 
 ### Not Performed (Out of Scope)
+
 - ❌ Dynamic application security testing (DAST)
 - ❌ Penetration testing
 - ❌ Load/DoS testing
@@ -583,14 +653,13 @@ if (!isBrowser) return 'light';
 Paperlyte v2 demonstrates **strong security fundamentals** with modern development practices. The codebase is clean, well-typed, and follows React security best practices.
 
 **Critical Actions Required:**
+
 1. Add `.env` to `.gitignore` immediately
 
-**Recommended Actions:**
-2. Add Content Security Policy headers
-3. Configure additional security headers (X-Frame-Options, etc.)
-4. Self-host fonts or add SRI to Google Fonts
+**Recommended Actions:** 2. Add Content Security Policy headers 3. Configure additional security headers (X-Frame-Options, etc.) 4. Self-host fonts or add SRI to Google Fonts
 
 **Strengths:**
+
 - Zero dependency vulnerabilities
 - No XSS vectors or dangerous code patterns
 - Proper external link security (noopener noreferrer)
@@ -624,4 +693,3 @@ With the critical .gitignore fix applied and security headers configured, this a
 **Review Duration:** Comprehensive analysis
 **Files Analyzed:** 39 source files, 9 configuration files
 **Next Review:** Recommended after major feature additions or before production deployment
-

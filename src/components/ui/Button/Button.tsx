@@ -1,28 +1,28 @@
-import { type ReactNode } from 'react';
-import styles from './Button.module.css';
+import { type ReactNode } from 'react'
+import styles from './Button.module.css'
 
 /**
  * Props for the Button component
  */
 interface ButtonProps {
   /** Content to be displayed inside the button */
-  children: ReactNode;
+  children: ReactNode
   /** Visual style variant (default: 'primary') */
-  variant?: 'primary' | 'secondary' | 'ghost';
+  variant?: 'primary' | 'secondary' | 'ghost'
   /** Size of the button (default: 'medium') */
-  size?: 'small' | 'medium' | 'large';
+  size?: 'small' | 'medium' | 'large'
   /** If provided, renders as a link instead of a button */
-  href?: string;
+  href?: string
   /** Click handler function (only for button mode) */
-  onClick?: () => void;
+  onClick?: () => void
   /** Font Awesome icon class (e.g., 'fa-download') */
-  icon?: string;
+  icon?: string
   /** Whether the button is disabled (default: false) */
-  disabled?: boolean;
+  disabled?: boolean
   /** Additional CSS class names to apply */
-  className?: string;
+  className?: string
   /** Accessible label for screen readers */
-  ariaLabel?: string;
+  ariaLabel?: string
 }
 
 /**
@@ -60,19 +60,16 @@ export const Button = ({
   className = '',
   ariaLabel,
 }: ButtonProps): React.ReactElement => {
-  const classNames = [
-    styles.button,
-    styles[variant],
-    styles[size],
-    className,
-  ].filter(Boolean).join(' ');
+  const classNames = [styles.button, styles[variant], styles[size], className]
+    .filter(Boolean)
+    .join(' ')
 
   const content = (
     <>
       {icon && <i className={`fa-solid ${icon} ${styles.icon}`} aria-hidden="true" />}
       {children}
     </>
-  );
+  )
 
   if (href) {
     return (
@@ -87,7 +84,7 @@ export const Button = ({
       >
         {content}
       </a>
-    );
+    )
   }
 
   return (
@@ -100,5 +97,5 @@ export const Button = ({
     >
       {content}
     </button>
-  );
-};
+  )
+}

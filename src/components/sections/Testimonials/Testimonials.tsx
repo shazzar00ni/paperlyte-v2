@@ -253,7 +253,7 @@ export const Testimonials = (): React.ReactElement => {
               className={`${styles.dot} ${index === currentIndex ? styles.dotActive : ''}`}
               onClick={() => goToSlide(index)}
               aria-label={`Go to testimonial ${index + 1}`}
-              aria-current={index === currentIndex ? 'true' : 'false'}
+              aria-selected={index === currentIndex}
               role="tab"
               type="button"
             />

@@ -4,15 +4,15 @@
   justify-content: center;
   gap: var(--spacing-xs);
   font-family: var(--font-family);
-  font-weight: var(--font-weight-semibold);
-  border-radius: var(--border-radius-md);
-  border: 2px solid transparent;
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--border-radius-full);
+  border: 1px solid transparent;
   cursor: pointer;
   transition: all var(--transition-base);
   text-decoration: none;
   white-space: nowrap;
-  min-height: 48px;
-  min-width: 48px;
+  min-height: 44px;
+  min-width: 44px;
 }
 
 .button:disabled {
@@ -23,14 +23,14 @@
 /* Variants */
 .primary {
   background-color: var(--color-primary);
-  color: white;
+  color: var(--color-text-on-primary);
   border-color: var(--color-primary);
 }
 
 .primary:hover:not(:disabled) {
   background-color: var(--color-primary-dark);
   border-color: var(--color-primary-dark);
-  transform: translateY(-2px);
+  transform: translateY(-1px);
   box-shadow: var(--shadow-md);
 }
 
@@ -40,15 +40,14 @@
 
 .secondary {
   background-color: transparent;
-  color: var(--color-primary);
-  border-color: var(--color-primary);
+  color: var(--color-text-primary);
+  border-color: var(--color-border);
 }
 
 .secondary:hover:not(:disabled) {
-  background-color: var(--color-primary);
-  color: white;
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  background-color: var(--color-surface);
+  border-color: var(--color-text-secondary);
+  transform: translateY(-1px);
 }
 
 .secondary:active:not(:disabled) {
@@ -63,35 +62,35 @@
 
 .ghost:hover:not(:disabled) {
   background-color: var(--color-surface);
-  color: var(--color-primary);
+  color: var(--color-text-primary);
 }
 
 /* Sizes */
 .small {
-  padding: var(--spacing-xs) var(--spacing-sm);
+  padding: 0.5rem 1.25rem;
   font-size: var(--font-size-sm);
-  min-height: 48px;
-  min-width: 48px;
+  min-height: 40px;
+  min-width: 40px;
 }
 
 .medium {
-  padding: var(--spacing-sm) var(--spacing-lg);
+  padding: 0.75rem 1.5rem;
   font-size: var(--font-size-base);
 }
 
 .large {
-  padding: var(--spacing-md) var(--spacing-xl);
-  font-size: var(--font-size-lg);
-  min-height: 56px;
-  min-width: 56px;
+  padding: 1rem 2rem;
+  font-size: var(--font-size-base);
+  min-height: 52px;
+  min-width: 52px;
 }
 
 .icon {
-  font-size: 1.2em;
+  font-size: 1em;
 }
 
 /* Focus styles for accessibility */
 .button:focus-visible {
   outline: 2px solid var(--color-primary);
-  outline-offset: 4px;
+  outline-offset: 2px;
 }

@@ -1,6 +1,7 @@
 import { Button } from '@components/ui/Button'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { Section } from '@components/layout/Section'
+import { Icon } from '@components/ui/Icon'
 import styles from './Hero.module.css'
 
 export const Hero = (): React.ReactElement => {
@@ -11,50 +12,101 @@ export const Hero = (): React.ReactElement => {
     }
   }
 
+  const trustedCompanies = ['Acme Corp', 'Global', 'Nebula', 'Vertex', 'Horizon']
+
   return (
     <Section id="hero" className={styles.hero} padding="large">
-      <div className={styles.content}>
-        <AnimatedElement animation="fadeIn">
-          <h1 className={styles.headline}>Your thoughts, unchained from complexity</h1>
-        </AnimatedElement>
+      <div className={styles.container}>
+        <div className={styles.content}>
+          <AnimatedElement animation="fadeIn">
+            <div className={styles.badge}>
+              <Icon name="fa-sparkles" size="sm" />
+              <span>Version 2.0 is now live</span>
+            </div>
+          </AnimatedElement>
 
-        <AnimatedElement animation="fadeIn" delay={150}>
-          <p className={styles.subheadline}>
-            Lightning-fast, distraction-free note-taking. No bloat, no friction. Just you and your
-            ideas, the way it should be.
-          </p>
-        </AnimatedElement>
+          <AnimatedElement animation="fadeIn" delay={100}>
+            <h1 className={styles.headline}>
+              Thoughts,
+              <br />
+              <em className={styles.headlineItalic}>organized.</em>
+            </h1>
+          </AnimatedElement>
 
-        <AnimatedElement animation="fadeIn" delay={300}>
-          <div className={styles.ctas}>
-            <Button
-              variant="primary"
-              size="large"
-              icon="fa-download"
-              onClick={() => scrollToSection('download')}
-            >
-              Download Now
-            </Button>
-            <Button variant="secondary" size="large" onClick={() => scrollToSection('features')}>
-              See Features
-            </Button>
-          </div>
-        </AnimatedElement>
+          <AnimatedElement animation="fadeIn" delay={200}>
+            <p className={styles.subheadline}>
+              The minimal workspace for busy professionals. Capture ideas, structure documents, and
+              focus on what truly matters—without the clutter.
+            </p>
+          </AnimatedElement>
 
-        <AnimatedElement animation="fadeIn" delay={450}>
-          <div className={styles.tags}>
-            <span className={styles.tag}>
-              <i className="fa-solid fa-bolt" aria-hidden="true" /> Lightning Fast
-            </span>
-            <span className={styles.tag}>
-              <i className="fa-solid fa-lock" aria-hidden="true" /> Privacy First
-            </span>
-            <span className={styles.tag}>
-              <i className="fa-solid fa-wifi-slash" aria-hidden="true" /> Offline Ready
-            </span>
+          <AnimatedElement animation="fadeIn" delay={300}>
+            <div className={styles.ctas}>
+              <Button
+                variant="primary"
+                size="large"
+                icon="fa-arrow-right"
+                onClick={() => scrollToSection('download')}
+              >
+                Start Writing for Free
+              </Button>
+              <Button variant="secondary" size="large" onClick={() => scrollToSection('features')}>
+                View the Demo
+              </Button>
+            </div>
+          </AnimatedElement>
+        </div>
+
+        <AnimatedElement animation="fadeIn" delay={400}>
+          <div className={styles.mockup}>
+            <div className={styles.mockupCard}>
+              <div className={styles.mockupHeader}>
+                <div className={styles.mockupDot} />
+                <div className={styles.mockupTitle} />
+              </div>
+              <div className={styles.mockupContent}>
+                <div className={styles.mockupLine} style={{ width: '90%' }} />
+                <div className={styles.mockupLine} style={{ width: '100%' }} />
+                <div className={styles.mockupLine} style={{ width: '85%' }} />
+                <div className={styles.mockupLine} style={{ width: '70%' }} />
+                <div className={styles.mockupSpacer} />
+                <div className={styles.mockupCheckbox}>
+                  <div className={styles.mockupCheck} />
+                  <div className={styles.mockupLine} style={{ width: '60%' }} />
+                </div>
+                <div className={styles.mockupCheckbox}>
+                  <div className={styles.mockupCheck} />
+                  <div className={styles.mockupLine} style={{ width: '55%' }} />
+                </div>
+              </div>
+              <div className={styles.mockupStats}>
+                <div className={styles.mockupStatCard}>
+                  <div className={styles.mockupStatIcon}>
+                    <Icon name="fa-clock" size="sm" />
+                  </div>
+                  <span className={styles.mockupStatLabel}>PRODUCTIVITY</span>
+                  <span className={styles.mockupStatValue}>+120%</span>
+                  <span className={styles.mockupStatDesc}>Focus increase reported by users</span>
+                </div>
+                <button className={styles.mockupShareBtn}>Share</button>
+              </div>
+            </div>
           </div>
         </AnimatedElement>
       </div>
+
+      <AnimatedElement animation="fadeIn" delay={500}>
+        <div className={styles.trusted}>
+          <span className={styles.trustedLabel}>TRUSTED BY TEAMS AT</span>
+          <div className={styles.trustedLogos}>
+            {trustedCompanies.map((company) => (
+              <span key={company} className={styles.trustedLogo}>
+                {company}
+              </span>
+            ))}
+          </div>
+        </div>
+      </AnimatedElement>
     </Section>
   )
 }

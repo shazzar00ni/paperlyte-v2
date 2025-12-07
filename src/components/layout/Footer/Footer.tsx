@@ -7,15 +7,16 @@ export const Footer = (): React.ReactElement => {
   return (
     <footer className={styles.footer}>
       <div className={styles.container}>
-        <div className={styles.brand}>
-          <div className={styles.logo}>
-            <Icon name="fa-feather" size="lg" ariaLabel="Paperlyte logo" />
-            <span className={styles.logoText}>Paperlyte</span>
+        <div className={styles.grid}>
+          <div className={styles.brand}>
+            <div className={styles.logo}>
+              <Icon name="fa-feather" size="lg" ariaLabel="Paperlyte logo" />
+              <span className={styles.logoText}>Paperlyte.</span>
+            </div>
+            <p className={styles.tagline}>Designed for clarity in a chaotic world.</p>
+            <p className={styles.copyright}>© {currentYear} All rights reserved.</p>
           </div>
-          <p className={styles.tagline}>Your thoughts, unchained from complexity</p>
-        </div>
 
-        <div className={styles.links}>
           <div className={styles.linkGroup}>
             <h3 className={styles.linkGroupTitle}>Product</h3>
             <ul className={styles.linkList}>
@@ -25,24 +26,44 @@ export const Footer = (): React.ReactElement => {
                 </a>
               </li>
               <li>
+                <a href="#mobile" className={styles.link}>
+                  Mobile App
+                </a>
+              </li>
+              <li>
                 <a href="#download" className={styles.link}>
-                  Download
+                  Desktop App
+                </a>
+              </li>
+              <li>
+                <a href="#pricing" className={styles.link}>
+                  Pricing
                 </a>
               </li>
             </ul>
           </div>
 
           <div className={styles.linkGroup}>
-            <h3 className={styles.linkGroupTitle}>Legal</h3>
+            <h3 className={styles.linkGroupTitle}>Company</h3>
             <ul className={styles.linkList}>
               <li>
-                <a href="#privacy" className={styles.link}>
-                  Privacy Policy
+                <a href="#about" className={styles.link}>
+                  About
                 </a>
               </li>
               <li>
-                <a href="#terms" className={styles.link}>
-                  Terms of Service
+                <a href="#blog" className={styles.link}>
+                  Blog
+                </a>
+              </li>
+              <li>
+                <a href="#careers" className={styles.link}>
+                  Careers
+                </a>
+              </li>
+              <li>
+                <a href="#contact" className={styles.link}>
+                  Contact
                 </a>
               </li>
             </ul>
@@ -50,34 +71,44 @@ export const Footer = (): React.ReactElement => {
 
           <div className={styles.linkGroup}>
             <h3 className={styles.linkGroupTitle}>Connect</h3>
-            <div className={styles.socialLinks}>
-              <a
-                href="https://github.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.socialLink}
-                aria-label="GitHub"
-              >
-                <Icon name="fa-github" size="lg" />
-              </a>
-              <a
-                href="https://twitter.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.socialLink}
-                aria-label="Twitter"
-              >
-                <Icon name="fa-twitter" size="lg" />
-              </a>
-              <a href="mailto:hello@paperlyte.com" className={styles.socialLink} aria-label="Email">
-                <Icon name="fa-envelope" size="lg" />
-              </a>
-            </div>
+            <ul className={styles.linkList}>
+              <li>
+                <a
+                  href="https://twitter.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.link}
+                >
+                  Twitter
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://instagram.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.link}
+                >
+                  Instagram
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://linkedin.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.link}
+                >
+                  LinkedIn
+                </a>
+              </li>
+              <li>
+                <a href="mailto:hello@paperlyte.com" className={styles.link}>
+                  Email
+                </a>
+              </li>
+            </ul>
           </div>
-        </div>
-
-        <div className={styles.bottom}>
-          <p className={styles.copyright}>© {currentYear} Paperlyte. All rights reserved.</p>
         </div>
       </div>
     </footer>

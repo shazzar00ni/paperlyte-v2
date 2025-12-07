@@ -1,0 +1,72 @@
+.floating {
+  /* GPU acceleration */
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+}
+
+/* Vertical float animation */
+.floatVertical {
+  animation: floatVertical var(--float-duration, 3s) ease-in-out var(--float-delay, 0s) infinite;
+}
+
+@keyframes floatVertical {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, calc(var(--float-distance, 20px) * -1), 0);
+  }
+}
+
+/* Horizontal float animation */
+.floatHorizontal {
+  animation: floatHorizontal var(--float-duration, 3s) ease-in-out var(--float-delay, 0s) infinite;
+}
+
+@keyframes floatHorizontal {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(var(--float-distance, 20px), 0, 0);
+  }
+}
+
+/* Circular orbit animation */
+.floatCircular {
+  animation: floatCircular var(--float-duration, 3s) linear var(--float-delay, 0s) infinite;
+}
+
+@keyframes floatCircular {
+  0% {
+    transform: translate3d(0, calc(var(--float-distance, 20px) * -1), 0);
+  }
+  25% {
+    transform: translate3d(var(--float-distance, 20px), 0, 0);
+  }
+  50% {
+    transform: translate3d(0, var(--float-distance, 20px), 0);
+  }
+  75% {
+    transform: translate3d(calc(var(--float-distance, 20px) * -1), 0, 0);
+  }
+  100% {
+    transform: translate3d(0, calc(var(--float-distance, 20px) * -1), 0);
+  }
+}
+
+/* Pause animation when out of viewport */
+.paused {
+  animation-play-state: paused;
+}
+
+/* Disable floating animations for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .floating {
+    animation: none !important;
+    will-change: auto !important;
+  }
+}

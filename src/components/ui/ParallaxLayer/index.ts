@@ -1,0 +1,1 @@
+export { ParallaxLayer } from './ParallaxLayer'

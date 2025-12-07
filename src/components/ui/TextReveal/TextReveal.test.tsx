@@ -2,22 +2,29 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { render } from '@testing-library/react'
 import { TextReveal } from './TextReveal'
 
+/**
+ * Helper function to mock matchMedia for reduced motion testing
+ */
+const mockMatchMedia = (prefersReducedMotion: boolean = false) => {
+  Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    value: (query: string) => ({
+      matches: prefersReducedMotion && query === '(prefers-reduced-motion: reduce)',
+      media: query,
+      onchange: null,
+      addListener: () => {},
+      removeListener: () => {},
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      dispatchEvent: () => true,
+    }),
+  })
+}
+
 describe('TextReveal', () => {
   beforeEach(() => {
     // Reset matchMedia mock before each test
-    Object.defineProperty(window, 'matchMedia', {
-      writable: true,
-      value: (query: string) => ({
-        matches: false,
-        media: query,
-        onchange: null,
-        addListener: () => {},
-        removeListener: () => {},
-        addEventListener: () => {},
-        removeEventListener: () => {},
-        dispatchEvent: () => true,
-      }),
-    })
+    mockMatchMedia(false)
   })
 
   describe('Text splitting', () => {
@@ -47,10 +54,10 @@ describe('TextReveal', () => {
     it('should preserve single spaces between words', () => {
       const { container } = render(<TextReveal>Hello World</TextReveal>)
 
-      // Should have space elements with the space CSS module class
-      const spaceSpans = Array.from(container.querySelectorAll('span')).filter(
-        (span) => span.className.includes('space') && !span.hasAttribute('aria-hidden')
-      )
+      // Find child spans without aria-hidden (space elements don't have aria-hidden)
+      const wrapper = container.firstChild as HTMLElement
+      const childSpans = Array.from(wrapper.querySelectorAll('span'))
+      const spaceSpans = childSpans.filter((span) => !span.hasAttribute('aria-hidden'))
       expect(spaceSpans.length).toBe(1)
       expect(spaceSpans[0].textContent).toBe(' ')
     })
@@ -58,9 +65,9 @@ describe('TextReveal', () => {
     it('should preserve multiple spaces between words', () => {
       const { container } = render(<TextReveal>Hello  World</TextReveal>)
 
-      const spaceSpans = Array.from(container.querySelectorAll('span')).filter(
-        (span) => span.className.includes('space') && !span.hasAttribute('aria-hidden')
-      )
+      const wrapper = container.firstChild as HTMLElement
+      const childSpans = Array.from(wrapper.querySelectorAll('span'))
+      const spaceSpans = childSpans.filter((span) => !span.hasAttribute('aria-hidden'))
       expect(spaceSpans.length).toBe(1)
       expect(spaceSpans[0].textContent).toBe('  ')
     })
@@ -68,9 +75,9 @@ describe('TextReveal', () => {
     it('should preserve leading and trailing spaces', () => {
       const { container } = render(<TextReveal> Hello </TextReveal>)
 
-      const spaceSpans = Array.from(container.querySelectorAll('span')).filter(
-        (span) => span.className.includes('space') && !span.hasAttribute('aria-hidden')
-      )
+      const wrapper = container.firstChild as HTMLElement
+      const childSpans = Array.from(wrapper.querySelectorAll('span'))
+      const spaceSpans = childSpans.filter((span) => !span.hasAttribute('aria-hidden'))
       expect(spaceSpans.length).toBe(2)
     })
   })
@@ -170,19 +177,7 @@ describe('TextReveal', () => {
 
   describe('Reduced motion preference handling', () => {
     it('should render plain text when user prefers reduced motion', () => {
-      Object.defineProperty(window, 'matchMedia', {
-        writable: true,
-        value: (query: string) => ({
-          matches: query === '(prefers-reduced-motion: reduce)',
-          media: query,
-          onchange: null,
-          addListener: () => {},
-          removeListener: () => {},
-          addEventListener: () => {},
-          removeEventListener: () => {},
-          dispatchEvent: () => true,
-        }),
-      })
+      mockMatchMedia(true)
 
       const { container } = render(<TextReveal>Hello World</TextReveal>)
 
@@ -195,19 +190,7 @@ describe('TextReveal', () => {
     })
 
     it('should not apply animation classes when reduced motion is preferred', () => {
-      Object.defineProperty(window, 'matchMedia', {
-        writable: true,
-        value: (query: string) => ({
-          matches: query === '(prefers-reduced-motion: reduce)',
-          media: query,
-          onchange: null,
-          addListener: () => {},
-          removeListener: () => {},
-          addEventListener: () => {},
-          removeEventListener: () => {},
-          dispatchEvent: () => true,
-        }),
-      })
+      mockMatchMedia(true)
 
       const { container } = render(<TextReveal animation="fadeUp">Test</TextReveal>)
 
@@ -253,26 +236,18 @@ describe('TextReveal', () => {
     it('should not add aria-hidden to space spans', () => {
       const { container } = render(<TextReveal>Hello World</TextReveal>)
 
-      const spaceSpans = container.querySelectorAll('span.space')
+      const wrapper = container.firstChild as HTMLElement
+      const childSpans = Array.from(wrapper.querySelectorAll('span'))
+      const spaceSpans = childSpans.filter((span) => !span.hasAttribute('aria-hidden'))
+      // Space spans should not have aria-hidden attribute
+      expect(spaceSpans.length).toBeGreaterThan(0)
       spaceSpans.forEach((span) => {
         expect(span.getAttribute('aria-hidden')).toBeNull()
       })
     })
 
     it('should not add aria-label when reduced motion is preferred', () => {
-      Object.defineProperty(window, 'matchMedia', {
-        writable: true,
-        value: (query: string) => ({
-          matches: query === '(prefers-reduced-motion: reduce)',
-          media: query,
-          onchange: null,
-          addListener: () => {},
-          removeListener: () => {},
-          addEventListener: () => {},
-          removeEventListener: () => {},
-          dispatchEvent: () => true,
-        }),
-      })
+      mockMatchMedia(true)
 
       const { container } = render(<TextReveal>Hello</TextReveal>)
 

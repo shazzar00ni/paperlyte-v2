@@ -120,6 +120,7 @@ describe('SVGPathAnimation', () => {
         // Force effects to flush
       })
 
+      // Effects flush automatically in testing-library, no need to force
       const paths = container.querySelectorAll('path')
       expect(paths).toHaveLength(2)
       

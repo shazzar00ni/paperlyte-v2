@@ -142,7 +142,8 @@ export const useParallax = (options: UseParallaxOptions = {}) => {
       }
       observer.disconnect()
     }
-  }, [isActive, updateDimensions, calculateOffset])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isActive])
 
   // Add scroll listener when in view
   useEffect(() => {

@@ -5,9 +5,27 @@ import { SVGPathAnimation } from '@components/ui/SVGPathAnimation'
 import styles from './Statistics.module.css'
 
 /**
+ * Represents a single statistic item for the counter animations
+ */
+interface StatisticItem {
+  /** The numeric value to count up to */
+  value: number
+  /** Display label shown below the counter */
+  label: string
+  /** Font Awesome icon class (e.g., 'fa-users') */
+  icon: string
+  /** Text displayed after the number (e.g., '+', '%', 'M+') */
+  suffix?: string
+  /** Text displayed before the number (e.g., '$') */
+  prefix?: string
+  /** Number of decimal places to display */
+  decimals?: number
+}
+
+/**
  * Statistics data for the counter animations
  */
-const statistics = [
+const statistics: StatisticItem[] = [
   {
     value: 50000,
     suffix: '+',
@@ -29,7 +47,6 @@ const statistics = [
   },
   {
     value: 4.9,
-    prefix: '',
     suffix: '/5',
     decimals: 1,
     label: 'User Rating',

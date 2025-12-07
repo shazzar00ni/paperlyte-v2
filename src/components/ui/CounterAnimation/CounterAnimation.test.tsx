@@ -24,15 +24,45 @@ const mockReducedMotion = (prefersReduced: boolean) => {
 /**
  * Helper to create IntersectionObserver mock with configurable behavior
  */
-const mockIntersectionObserver = (triggerImmediately = false) => {
+const mockIntersectionObserver = (triggerImmediately = false, spyOnMethods = false) => {
   let observerCallback: IntersectionObserverCallback | null = null
+  const mockObserve = spyOnMethods ? vi.fn() : () => {}
+  const mockDisconnect = spyOnMethods ? vi.fn() : () => {}
+
+  const observeFunction = () => {
+    if (spyOnMethods) mockObserve()
+    if (triggerImmediately && observerCallback) {
+      observerCallback(
+        [
+          {
+            isIntersecting: true,
+            target: document.body,
+            intersectionRatio: 0.5,
+          } as IntersectionObserverEntry,
+        ],
+        {} as IntersectionObserver
+      )
+    }
+  }
 
   global.IntersectionObserver = class IntersectionObserver {
     constructor(callback: IntersectionObserverCallback) {
       observerCallback = callback
     }
-    observe = () => {
-      if (triggerImmediately && observerCallback) {
+    observe = observeFunction
+    disconnect = () => {
+      if (spyOnMethods) mockDisconnect()
+    }
+    takeRecords = () => []
+    unobserve = () => {}
+  } as unknown as typeof global.IntersectionObserver
+
+  return {
+    observerCallback,
+    mockObserve: spyOnMethods ? mockObserve : undefined,
+    mockDisconnect: spyOnMethods ? mockDisconnect : undefined,
+    triggerIntersection: () => {
+      if (observerCallback) {
         observerCallback(
           [
             {
@@ -44,13 +74,8 @@ const mockIntersectionObserver = (triggerImmediately = false) => {
           {} as IntersectionObserver
         )
       }
-    }
-    disconnect = () => {}
-    takeRecords = () => []
-    unobserve = () => {}
-  } as unknown as typeof global.IntersectionObserver
-
-  return { observerCallback }
+    },
+  }
 }
 
 describe('CounterAnimation', () => {
@@ -189,37 +214,12 @@ describe('CounterAnimation', () => {
 
     it('should only animate once when visible', async () => {
       mockReducedMotion(false)
-
-      // Mock IntersectionObserver to trigger visibility
-      const mockObserve = vi.fn()
-      const mockDisconnect = vi.fn()
-      let observerCallback: IntersectionObserverCallback | null = null
-
-      global.IntersectionObserver = class IntersectionObserver {
-        constructor(callback: IntersectionObserverCallback) {
-          observerCallback = callback
-        }
-        observe = mockObserve
-        disconnect = mockDisconnect
-        takeRecords = () => []
-        unobserve = () => {}
-      } as unknown as typeof global.IntersectionObserver
+      const { mockObserve, triggerIntersection } = mockIntersectionObserver(false, true)
 
       render(<CounterAnimation end={100} start={0} />)
 
       // Trigger intersection
-      if (observerCallback) {
-        observerCallback(
-          [
-            {
-              isIntersecting: true,
-              target: document.body,
-              intersectionRatio: 0.5,
-            } as IntersectionObserverEntry,
-          ],
-          {} as IntersectionObserver
-        )
-      }
+      triggerIntersection()
 
       expect(mockObserve).toHaveBeenCalled()
     })

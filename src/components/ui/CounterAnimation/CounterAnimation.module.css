@@ -1,0 +1,11 @@
+.counter {
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+  /* Prevent layout shifts during counting */
+  min-width: 1em;
+}
+
+/* Ensure smooth font rendering */
+.counter span {
+  display: inline-block;
+}

@@ -1,0 +1,201 @@
+.container {
+  display: inline;
+}
+
+.space {
+  white-space: pre;
+}
+
+.unit {
+  display: inline-block;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+/* Animation: Fade Up */
+.fadeUp {
+  opacity: 0;
+  transform: translate3d(0, 20px, 0);
+  transition:
+    opacity var(--transition-slow),
+    transform var(--transition-slow);
+}
+
+.fadeUp.visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+/* Animation: Fade In */
+.fadeIn {
+  opacity: 0;
+  transition: opacity var(--transition-slow);
+}
+
+.fadeIn.visible {
+  opacity: 1;
+}
+
+/* Animation: Slide Up */
+.slideUp {
+  opacity: 0;
+  transform: translate3d(0, 100%, 0);
+  transition:
+    opacity var(--transition-slow),
+    transform var(--transition-slow);
+}
+
+.slideUp.visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+/* Animation: Blur */
+.blur {
+  opacity: 0;
+  filter: blur(8px);
+  transition:
+    opacity var(--transition-slow),
+    filter var(--transition-slow);
+}
+
+.blur.visible {
+  opacity: 1;
+  filter: blur(0);
+}
+
+/* Delay classes (CSP compliant, 50ms increments up to 2000ms) */
+.delay0 {
+  transition-delay: 0ms;
+}
+.delay50 {
+  transition-delay: 50ms;
+}
+.delay100 {
+  transition-delay: 100ms;
+}
+.delay150 {
+  transition-delay: 150ms;
+}
+.delay200 {
+  transition-delay: 200ms;
+}
+.delay250 {
+  transition-delay: 250ms;
+}
+.delay300 {
+  transition-delay: 300ms;
+}
+.delay350 {
+  transition-delay: 350ms;
+}
+.delay400 {
+  transition-delay: 400ms;
+}
+.delay450 {
+  transition-delay: 450ms;
+}
+.delay500 {
+  transition-delay: 500ms;
+}
+.delay550 {
+  transition-delay: 550ms;
+}
+.delay600 {
+  transition-delay: 600ms;
+}
+.delay650 {
+  transition-delay: 650ms;
+}
+.delay700 {
+  transition-delay: 700ms;
+}
+.delay750 {
+  transition-delay: 750ms;
+}
+.delay800 {
+  transition-delay: 800ms;
+}
+.delay850 {
+  transition-delay: 850ms;
+}
+.delay900 {
+  transition-delay: 900ms;
+}
+.delay950 {
+  transition-delay: 950ms;
+}
+.delay1000 {
+  transition-delay: 1000ms;
+}
+.delay1050 {
+  transition-delay: 1050ms;
+}
+.delay1100 {
+  transition-delay: 1100ms;
+}
+.delay1150 {
+  transition-delay: 1150ms;
+}
+.delay1200 {
+  transition-delay: 1200ms;
+}
+.delay1250 {
+  transition-delay: 1250ms;
+}
+.delay1300 {
+  transition-delay: 1300ms;
+}
+.delay1350 {
+  transition-delay: 1350ms;
+}
+.delay1400 {
+  transition-delay: 1400ms;
+}
+.delay1450 {
+  transition-delay: 1450ms;
+}
+.delay1500 {
+  transition-delay: 1500ms;
+}
+.delay1550 {
+  transition-delay: 1550ms;
+}
+.delay1600 {
+  transition-delay: 1600ms;
+}
+.delay1650 {
+  transition-delay: 1650ms;
+}
+.delay1700 {
+  transition-delay: 1700ms;
+}
+.delay1750 {
+  transition-delay: 1750ms;
+}
+.delay1800 {
+  transition-delay: 1800ms;
+}
+.delay1850 {
+  transition-delay: 1850ms;
+}
+.delay1900 {
+  transition-delay: 1900ms;
+}
+.delay1950 {
+  transition-delay: 1950ms;
+}
+.delay2000 {
+  transition-delay: 2000ms;
+}
+
+/* Disable animations for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .unit {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+    will-change: auto !important;
+  }
+}

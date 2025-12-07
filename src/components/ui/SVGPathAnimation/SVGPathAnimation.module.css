@@ -1,0 +1,46 @@
+.container {
+  display: inline-block;
+  line-height: 0;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Drawing animation */
+.drawing path {
+  animation: drawPath var(--draw-duration, 2000ms) var(--draw-easing, ease-out) forwards;
+}
+
+@keyframes drawPath {
+  from {
+    stroke-dashoffset: var(--path-length, 1000);
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Fill animation after draw completes */
+.filled {
+  transition: fill var(--transition-slow);
+}
+
+/* Animating state */
+.animating .svg {
+  will-change: stroke-dashoffset;
+}
+
+/* Disable animations for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .drawing path {
+    animation: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+
+  .container .svg {
+    will-change: auto !important;
+  }
+}

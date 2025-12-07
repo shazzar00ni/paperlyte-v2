@@ -11,7 +11,7 @@
 
 /* Drawing animation */
 .drawing path {
-  animation: drawPath var(--draw-duration, 2000ms) var(--draw-easing, ease-out) forwards;
+  animation: drawPath var(--draw-duration, 2000ms) var(--draw-easing, ease-out) var(--path-delay, 0ms) forwards;
 }
 
 @keyframes drawPath {

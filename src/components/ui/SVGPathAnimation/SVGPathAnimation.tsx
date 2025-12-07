@@ -1,15 +1,4 @@
-import {
-  type ReactNode,
-  type ReactElement,
-  type CSSProperties,
-  type SVGProps,
-  useEffect,
-  useRef,
-  useState,
-  Children,
-  cloneElement,
-  isValidElement,
-} from 'react'
+import { Children, isValidElement, type ReactNode, useEffect, useRef, useState } from 'react'
 import { useIntersectionObserver } from '@hooks/useIntersectionObserver'
 import { useReducedMotion } from '@hooks/useReducedMotion'
 import styles from './SVGPathAnimation.module.css'
@@ -34,6 +23,11 @@ interface SVGPathAnimationProps {
    * @default 0
    */
   delay?: number
+  /**
+   * Delay between each path animation when multiple paths are present (in milliseconds)
+   * @default 200
+   */
+  staggerDelay?: number
   /**
    * CSS timing function for the animation
    * @default 'ease-out'
@@ -109,6 +103,7 @@ export const SVGPathAnimation = ({
   children,
   duration = 2000,
   delay = 0,
+  staggerDelay = 200,
   easing = 'ease-out',
   width = 100,
   height = 100,
@@ -202,30 +197,29 @@ export const SVGPathAnimation = ({
         >
           {/* Clone children and apply animation styles to paths */}
           {Children.map(children, (child, index) => {
-            if (!isValidElement(child)) {
-              return child
-            }
+            if (!isValidElement(child)) return child
 
-            const pathLength = pathLengths[index] ?? 0
-            const childProps = child.props as { className?: string }
-            const existingClassName = childProps.className || ''
-            const animatingClassName = isAnimating ? styles.drawing : ''
-            const mergedClassName = [existingClassName, animatingClassName]
-              .filter(Boolean)
-              .join(' ')
+            const pathLength = pathLengths[index]
+            const pathDelay = staggerDelay * index
 
-            // Cast to ReactElement with SVG props to satisfy TypeScript
-            const svgChild = child as ReactElement<SVGProps<SVGPathElement>>
-            return cloneElement(svgChild, {
-              style: pathLength
-                ? ({
-                    ['--path-length' as string]: pathLength,
-                    strokeDasharray: pathLength,
-                    strokeDashoffset: showFinalState ? 0 : pathLength,
-                  } as CSSProperties)
-                : undefined,
-              className: mergedClassName || undefined,
-            })
+            return (
+              <g
+                key={index}
+                style={
+                  pathLength
+                    ? ({
+                        ['--path-length' as string]: pathLength,
+                        ['--path-delay' as string]: `${pathDelay}ms`,
+                        strokeDasharray: pathLength,
+                        strokeDashoffset: showFinalState ? 0 : isAnimating ? 0 : pathLength,
+                      } as React.CSSProperties)
+                    : undefined
+                }
+                className={isAnimating ? styles.drawing : ''}
+              >
+                {child}
+              </g>
+            )
           })}
         </g>
       </svg>

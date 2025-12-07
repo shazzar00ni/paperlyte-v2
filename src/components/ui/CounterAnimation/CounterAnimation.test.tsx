@@ -2,6 +2,57 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { CounterAnimation } from './CounterAnimation'
 
+/**
+ * Helper to mock matchMedia with reduced motion preference
+ */
+const mockReducedMotion = (prefersReduced: boolean) => {
+  Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    value: (query: string) => ({
+      matches: prefersReduced && query === '(prefers-reduced-motion: reduce)',
+      media: query,
+      onchange: null,
+      addListener: () => {},
+      removeListener: () => {},
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      dispatchEvent: () => true,
+    }),
+  })
+}
+
+/**
+ * Helper to create IntersectionObserver mock with configurable behavior
+ */
+const mockIntersectionObserver = (triggerImmediately = false) => {
+  let observerCallback: IntersectionObserverCallback | null = null
+
+  global.IntersectionObserver = class IntersectionObserver {
+    constructor(callback: IntersectionObserverCallback) {
+      observerCallback = callback
+    }
+    observe = () => {
+      if (triggerImmediately && observerCallback) {
+        observerCallback(
+          [
+            {
+              isIntersecting: true,
+              target: document.body,
+              intersectionRatio: 0.5,
+            } as IntersectionObserverEntry,
+          ],
+          {} as IntersectionObserver
+        )
+      }
+    }
+    disconnect = () => {}
+    takeRecords = () => []
+    unobserve = () => {}
+  } as unknown as typeof global.IntersectionObserver
+
+  return { observerCallback }
+}
+
 describe('CounterAnimation', () => {
   beforeEach(() => {
     // Mock requestAnimationFrame for controlled testing
@@ -39,21 +90,7 @@ describe('CounterAnimation', () => {
 
   describe('Number Formatting', () => {
     it('should format numbers with thousands separator by default', () => {
-      // Mock reduced motion to show end value immediately
-      Object.defineProperty(window, 'matchMedia', {
-        writable: true,
-        value: (query: string) => ({
-          matches: query === '(prefers-reduced-motion: reduce)',
-          media: query,
-          onchange: null,
-          addListener: () => {},
-          removeListener: () => {},
-          addEventListener: () => {},
-          removeEventListener: () => {},
-          dispatchEvent: () => true,
-        }),
-      })
-
+      mockReducedMotion(true)
       render(<CounterAnimation end={1000} />)
 
       const counter = screen.getByLabelText('1000')
@@ -61,20 +98,7 @@ describe('CounterAnimation', () => {
     })
 
     it('should format numbers without separator when disabled', () => {
-      Object.defineProperty(window, 'matchMedia', {
-        writable: true,
-        value: (query: string) => ({
-          matches: query === '(prefers-reduced-motion: reduce)',
-          media: query,
-          onchange: null,
-          addListener: () => {},
-          removeListener: () => {},
-          addEventListener: () => {},
-          removeEventListener: () => {},
-          dispatchEvent: () => true,
-        }),
-      })
-
+      mockReducedMotion(true)
       render(<CounterAnimation end={1000} separator={false} />)
 
       const counter = screen.getByLabelText('1000')
@@ -82,20 +106,7 @@ describe('CounterAnimation', () => {
     })
 
     it('should handle decimal places correctly', () => {
-      Object.defineProperty(window, 'matchMedia', {
-        writable: true,
-        value: (query: string) => ({
-          matches: query === '(prefers-reduced-motion: reduce)',
-          media: query,
-          onchange: null,
-          addListener: () => {},
-          removeListener: () => {},
-          addEventListener: () => {},
-          removeEventListener: () => {},
-          dispatchEvent: () => true,
-        }),
-      })
-
+      mockReducedMotion(true)
       render(<CounterAnimation end={99.99} decimals={2} prefix="$" />)
 
       const counter = screen.getByLabelText('$99.99')
@@ -103,20 +114,7 @@ describe('CounterAnimation', () => {
     })
 
     it('should format large numbers with separator and decimals', () => {
-      Object.defineProperty(window, 'matchMedia', {
-        writable: true,
-        value: (query: string) => ({
-          matches: query === '(prefers-reduced-motion: reduce)',
-          media: query,
-          onchange: null,
-          addListener: () => {},
-          removeListener: () => {},
-          addEventListener: () => {},
-          removeEventListener: () => {},
-          dispatchEvent: () => true,
-        }),
-      })
-
+      mockReducedMotion(true)
       render(<CounterAnimation end={1234567.89} decimals={2} />)
 
       const counter = screen.getByLabelText('1234567.89')
@@ -126,21 +124,7 @@ describe('CounterAnimation', () => {
 
   describe('Reduced Motion Support', () => {
     it('should show end value immediately when reduced motion is preferred', () => {
-      // Mock prefers-reduced-motion: reduce
-      Object.defineProperty(window, 'matchMedia', {
-        writable: true,
-        value: (query: string) => ({
-          matches: query === '(prefers-reduced-motion: reduce)',
-          media: query,
-          onchange: null,
-          addListener: () => {},
-          removeListener: () => {},
-          addEventListener: () => {},
-          removeEventListener: () => {},
-          dispatchEvent: () => true,
-        }),
-      })
-
+      mockReducedMotion(true)
       render(<CounterAnimation end={100} start={0} />)
 
       // Should immediately show end value without animation
@@ -150,21 +134,7 @@ describe('CounterAnimation', () => {
 
     it('should not trigger animation when reduced motion is preferred', () => {
       const rafSpy = vi.spyOn(window, 'requestAnimationFrame')
-
-      Object.defineProperty(window, 'matchMedia', {
-        writable: true,
-        value: (query: string) => ({
-          matches: query === '(prefers-reduced-motion: reduce)',
-          media: query,
-          onchange: null,
-          addListener: () => {},
-          removeListener: () => {},
-          addEventListener: () => {},
-          removeEventListener: () => {},
-          dispatchEvent: () => true,
-        }),
-      })
-
+      mockReducedMotion(true)
       render(<CounterAnimation end={100} start={0} />)
 
       // requestAnimationFrame should not be called when reduced motion is preferred
@@ -174,20 +144,7 @@ describe('CounterAnimation', () => {
 
   describe('Animation Behavior', () => {
     it('should start animation from start value', () => {
-      Object.defineProperty(window, 'matchMedia', {
-        writable: true,
-        value: () => ({
-          matches: false,
-          media: '',
-          onchange: null,
-          addListener: () => {},
-          removeListener: () => {},
-          addEventListener: () => {},
-          removeEventListener: () => {},
-          dispatchEvent: () => true,
-        }),
-      })
-
+      mockReducedMotion(false)
       render(<CounterAnimation end={100} start={0} />)
 
       // Initial value should be start value
@@ -196,20 +153,7 @@ describe('CounterAnimation', () => {
     })
 
     it('should animate to end value with custom start', () => {
-      Object.defineProperty(window, 'matchMedia', {
-        writable: true,
-        value: () => ({
-          matches: false,
-          media: '',
-          onchange: null,
-          addListener: () => {},
-          removeListener: () => {},
-          addEventListener: () => {},
-          removeEventListener: () => {},
-          dispatchEvent: () => true,
-        }),
-      })
-
+      mockReducedMotion(false)
       render(<CounterAnimation end={100} start={50} />)
 
       const counter = screen.getByLabelText('100')
@@ -218,46 +162,8 @@ describe('CounterAnimation', () => {
 
     it('should cleanup requestAnimationFrame on unmount', () => {
       const cancelSpy = vi.spyOn(window, 'cancelAnimationFrame')
-
-      Object.defineProperty(window, 'matchMedia', {
-        writable: true,
-        value: () => ({
-          matches: false,
-          media: '',
-          onchange: null,
-          addListener: () => {},
-          removeListener: () => {},
-          addEventListener: () => {},
-          removeEventListener: () => {},
-          dispatchEvent: () => true,
-        }),
-      })
-
-      // Mock IntersectionObserver to trigger visibility and start animation
-      let observerCallback: IntersectionObserverCallback | null = null
-      global.IntersectionObserver = class IntersectionObserver {
-        constructor(callback: IntersectionObserverCallback) {
-          observerCallback = callback
-        }
-        observe = () => {
-          // Trigger intersection immediately to start animation
-          if (observerCallback) {
-            observerCallback(
-              [
-                {
-                  isIntersecting: true,
-                  target: document.body,
-                  intersectionRatio: 0.5,
-                } as IntersectionObserverEntry,
-              ],
-              {} as IntersectionObserver
-            )
-          }
-        }
-        disconnect = () => {}
-        takeRecords = () => []
-        unobserve = () => {}
-      } as unknown as typeof global.IntersectionObserver
+      mockReducedMotion(false)
+      mockIntersectionObserver(true)
 
       const { unmount } = render(<CounterAnimation end={100} />)
 
@@ -282,24 +188,12 @@ describe('CounterAnimation', () => {
     })
 
     it('should only animate once when visible', async () => {
-      Object.defineProperty(window, 'matchMedia', {
-        writable: true,
-        value: () => ({
-          matches: false,
-          media: '',
-          onchange: null,
-          addListener: () => {},
-          removeListener: () => {},
-          addEventListener: () => {},
-          removeEventListener: () => {},
-          dispatchEvent: () => true,
-        }),
-      })
+      mockReducedMotion(false)
 
       // Mock IntersectionObserver to trigger visibility
-      let observerCallback: IntersectionObserverCallback | null = null
       const mockObserve = vi.fn()
       const mockDisconnect = vi.fn()
+      let observerCallback: IntersectionObserverCallback | null = null
 
       global.IntersectionObserver = class IntersectionObserver {
         constructor(callback: IntersectionObserverCallback) {
@@ -356,20 +250,7 @@ describe('CounterAnimation', () => {
 
   describe('Edge Cases', () => {
     it('should handle zero as end value', () => {
-      Object.defineProperty(window, 'matchMedia', {
-        writable: true,
-        value: (query: string) => ({
-          matches: query === '(prefers-reduced-motion: reduce)',
-          media: query,
-          onchange: null,
-          addListener: () => {},
-          removeListener: () => {},
-          addEventListener: () => {},
-          removeEventListener: () => {},
-          dispatchEvent: () => true,
-        }),
-      })
-
+      mockReducedMotion(true)
       render(<CounterAnimation end={0} />)
 
       const counter = screen.getByLabelText('0')
@@ -377,20 +258,7 @@ describe('CounterAnimation', () => {
     })
 
     it('should handle negative numbers', () => {
-      Object.defineProperty(window, 'matchMedia', {
-        writable: true,
-        value: (query: string) => ({
-          matches: query === '(prefers-reduced-motion: reduce)',
-          media: query,
-          onchange: null,
-          addListener: () => {},
-          removeListener: () => {},
-          addEventListener: () => {},
-          removeEventListener: () => {},
-          dispatchEvent: () => true,
-        }),
-      })
-
+      mockReducedMotion(true)
       render(<CounterAnimation end={-50} />)
 
       const counter = screen.getByLabelText('-50')
@@ -398,20 +266,7 @@ describe('CounterAnimation', () => {
     })
 
     it('should handle very large numbers', () => {
-      Object.defineProperty(window, 'matchMedia', {
-        writable: true,
-        value: (query: string) => ({
-          matches: query === '(prefers-reduced-motion: reduce)',
-          media: query,
-          onchange: null,
-          addListener: () => {},
-          removeListener: () => {},
-          addEventListener: () => {},
-          removeEventListener: () => {},
-          dispatchEvent: () => true,
-        }),
-      })
-
+      mockReducedMotion(true)
       render(<CounterAnimation end={10000000} suffix="+" />)
 
       const counter = screen.getByLabelText('10000000+')

@@ -39,9 +39,9 @@ describe('useScrollPosition', () => {
 
     // Mock addEventListener to capture scroll event handlers
     const originalAddEventListener = window.addEventListener
-    vi.spyOn(window, 'addEventListener').mockImplementation((event: string, handler: any) => {
+    vi.spyOn(window, 'addEventListener').mockImplementation((event: string, handler: EventListenerOrEventListenerObject) => {
       if (event === 'scroll') {
-        scrollCallbacks.push(handler)
+        scrollCallbacks.push(handler as (e: Event) => void)
       }
       return originalAddEventListener.call(window, event, handler)
     })
@@ -109,7 +109,7 @@ describe('useScrollPosition', () => {
   })
 
   it('should use requestAnimationFrame for scroll updates', () => {
-    const { result } = renderHook(() => useScrollPosition())
+    renderHook(() => useScrollPosition())
 
     // Trigger scroll event
     scrollCallbacks.forEach((cb) => cb(new Event('scroll')))
@@ -118,10 +118,10 @@ describe('useScrollPosition', () => {
   })
 
   it('should throttle scroll updates with requestAnimationFrame', () => {
-    const { result } = renderHook(() => useScrollPosition())
+    renderHook(() => useScrollPosition())
 
     // Mock RAF to not execute immediately
-    vi.mocked(window.requestAnimationFrame).mockImplementation((cb: FrameRequestCallback) => {
+    vi.mocked(window.requestAnimationFrame).mockImplementation(() => {
       return 1
     })
 

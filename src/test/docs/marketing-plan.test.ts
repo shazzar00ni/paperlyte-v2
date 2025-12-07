@@ -667,7 +667,6 @@ describe('Marketing Plan Document Validation', () => {
       }
     })
 
-
     it('should maintain consistent date formatting', () => {
       const dates = content.match(/November \d{4}|Month [0-6-]+|Day \d+/g)
       expect(dates).toBeTruthy()

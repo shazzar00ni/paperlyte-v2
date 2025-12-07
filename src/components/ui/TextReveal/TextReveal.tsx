@@ -44,7 +44,8 @@ interface TextRevealProps {
  * Rounds to nearest predefined delay for performance
  */
 const getDelayClass = (index: number, stagger: number, baseDelay: number): string => {
-  const delay = baseDelay + index * stagger
+  // Compute delay and ensure it's never negative
+  const delay = Math.max(0, baseDelay + index * stagger)
   // Round to nearest 50ms for predefined CSS classes
   const rounded = Math.round(delay / 50) * 50
   // Cap at 2000ms
@@ -87,7 +88,8 @@ export const TextReveal = ({
   className = '',
   threshold = 0.2,
 }: TextRevealProps): React.ReactElement => {
-  const { ref, isVisible } = useIntersectionObserver({ threshold })
+  // Use HTMLElement generic to support all possible Component element types
+  const { ref, isVisible } = useIntersectionObserver<HTMLElement>({ threshold })
   const prefersReducedMotion = useReducedMotion()
 
   // Split text into units (characters or words)
@@ -99,10 +101,15 @@ export const TextReveal = ({
     return children.split(/(\s+)/)
   }, [children, type])
 
+  // Cast ref for compatibility with dynamic element types
+  // Safe because all allowed Component types (h1-h4, p, span, div) extend HTMLElement
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const elementRef = ref as React.RefObject<any>
+
   // If user prefers reduced motion, render plain text
   if (prefersReducedMotion) {
     return (
-      <Component ref={ref} className={className}>
+      <Component ref={elementRef} className={className}>
         {children}
       </Component>
     )
@@ -112,7 +119,7 @@ export const TextReveal = ({
   const containerClasses = [styles.container, className].filter(Boolean).join(' ')
 
   return (
-    <Component ref={ref} className={containerClasses} aria-label={children}>
+    <Component ref={elementRef} className={containerClasses} aria-label={children}>
       {units.map((unit, index) => {
         // Handle whitespace units
         if (/^\s+$/.test(unit)) {
@@ -124,7 +131,12 @@ export const TextReveal = ({
         }
 
         const delayClass = getDelayClass(index, stagger, delay)
-        const unitClasses = [styles.unit, animationClass, delayClass, isVisible ? styles.visible : '']
+        const unitClasses = [
+          styles.unit,
+          animationClass,
+          delayClass,
+          isVisible ? styles.visible : '',
+        ]
           .filter(Boolean)
           .join(' ')
 

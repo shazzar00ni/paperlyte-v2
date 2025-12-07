@@ -129,7 +129,7 @@ export const TextReveal = ({
           .join(' ')
 
         return (
-          <span key={`${unit}-${index}`} className={unitClasses} aria-hidden="true">
+          <span key={`unit-${index}`} className={unitClasses} aria-hidden="true">
             {unit}
           </span>
         )

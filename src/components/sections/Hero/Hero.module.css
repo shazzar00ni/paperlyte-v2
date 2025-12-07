@@ -203,13 +203,18 @@
   }
 }
 
-/* Respect reduced motion preferences */
+/*
+ * Reduced motion handling:
+ * - FloatingElement component early-returns without animation classes when
+ *   prefers-reduced-motion is detected (no CSS animations applied)
+ * - ParallaxLayer/useParallax hook returns isActive=false, skipping all
+ *   requestAnimationFrame calls and applying no JS transforms
+ * - See: src/components/ui/FloatingElement/FloatingElement.tsx (lines 86-93)
+ * - See: src/hooks/useParallax.ts (lines 115, 118-121, 148-151, 166)
+ */
 @media (prefers-reduced-motion: reduce) {
-  .floatingIcon {
-    /* Static positioning when reduced motion is preferred */
-  }
-
   .shape {
+    /* Reduce blur intensity for performance with static shapes */
     filter: blur(40px);
   }
 }

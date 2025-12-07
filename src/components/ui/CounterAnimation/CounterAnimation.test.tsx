@@ -29,9 +29,9 @@ const mockIntersectionObserver = (triggerImmediately = false, spyOnMethods = fal
   const mockObserve = spyOnMethods ? vi.fn() : () => {}
   const mockDisconnect = spyOnMethods ? vi.fn() : () => {}
 
-  const observeFunction = () => {
-    if (spyOnMethods) mockObserve()
-    if (triggerImmediately && observerCallback) {
+  // Shared helper to trigger intersection callback
+  const triggerIntersectionCallback = () => {
+    if (observerCallback) {
       observerCallback(
         [
           {
@@ -42,6 +42,13 @@ const mockIntersectionObserver = (triggerImmediately = false, spyOnMethods = fal
         ],
         {} as IntersectionObserver
       )
+    }
+  }
+
+  const observeFunction = () => {
+    if (spyOnMethods) mockObserve()
+    if (triggerImmediately) {
+      triggerIntersectionCallback()
     }
   }
 
@@ -61,20 +68,7 @@ const mockIntersectionObserver = (triggerImmediately = false, spyOnMethods = fal
     observerCallback,
     mockObserve: spyOnMethods ? mockObserve : undefined,
     mockDisconnect: spyOnMethods ? mockDisconnect : undefined,
-    triggerIntersection: () => {
-      if (observerCallback) {
-        observerCallback(
-          [
-            {
-              isIntersecting: true,
-              target: document.body,
-              intersectionRatio: 0.5,
-            } as IntersectionObserverEntry,
-          ],
-          {} as IntersectionObserver
-        )
-      }
-    },
+    triggerIntersection: triggerIntersectionCallback,
   }
 }
 

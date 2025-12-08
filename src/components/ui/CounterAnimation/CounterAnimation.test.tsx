@@ -268,18 +268,24 @@ describe('CounterAnimation', () => {
       // Spy on IntersectionObserver constructor to verify threshold
       let capturedOptions: IntersectionObserverInit | undefined
       const OriginalIO = global.IntersectionObserver
-      global.IntersectionObserver = class IntersectionObserver {
-        constructor(callback: IntersectionObserverCallback, options?: IntersectionObserverInit) {
-          capturedOptions = options
-          return new OriginalIO(callback, options)
-        }
-      } as unknown as typeof global.IntersectionObserver
+      
+      try {
+        global.IntersectionObserver = class IntersectionObserver {
+          constructor(callback: IntersectionObserverCallback, options?: IntersectionObserverInit) {
+            capturedOptions = options
+            return new OriginalIO(callback, options)
+          }
+        } as unknown as typeof global.IntersectionObserver
 
-      render(<CounterAnimation end={100} />)
+        render(<CounterAnimation end={100} />)
 
-      // Verify threshold is 0.3 (as defined in useIntersectionObserver call)
-      expect(capturedOptions).toBeDefined()
-      expect(capturedOptions?.threshold).toBe(0.3)
+        // Verify threshold is 0.3 (as defined in useIntersectionObserver call)
+        expect(capturedOptions).toBeDefined()
+        expect(capturedOptions?.threshold).toBe(0.3)
+      } finally {
+        // Restore original IntersectionObserver
+        global.IntersectionObserver = OriginalIO
+      }
     })
 
     it('should only animate once when visible', async () => {
@@ -356,9 +362,11 @@ describe('CounterAnimation', () => {
         })
       }
 
-      // With easeOutQuart at 50% progress: 1 - (1-0.5)^4 = 1 - 0.0625 = 0.9375
-      // So value should be 93.75, but formatted to 0 decimals = 94
-      expect(counter.textContent).toBe('94')
+      // Calculate expected value using easeOutQuart formula: 1 - (1-t)^4
+      const progress = 0.5
+      const easedProgress = 1 - Math.pow(1 - progress, 4) // 1 - 0.0625 = 0.9375
+      const expectedValue = Math.round(0 + (100 - 0) * easedProgress) // 94
+      expect(counter.textContent).toBe(expectedValue.toString())
     })
 
     it('should apply easeOutExpo easing function', () => {
@@ -385,9 +393,11 @@ describe('CounterAnimation', () => {
         })
       }
 
-      // With easeOutExpo at 50% progress: 1 - 2^(-10*0.5) = 1 - 2^(-5) = 1 - 0.03125 = 0.96875
-      // So value should be 96.875, but formatted to 0 decimals = 97
-      expect(counter.textContent).toBe('97')
+      // Calculate expected value using easeOutExpo formula: 1 - 2^(-10*t)
+      const progress = 0.5
+      const easedProgress = 1 - Math.pow(2, -10 * progress) // 1 - 0.03125 = 0.96875
+      const expectedValue = Math.round(0 + (100 - 0) * easedProgress) // 97
+      expect(counter.textContent).toBe(expectedValue.toString())
     })
   })
 

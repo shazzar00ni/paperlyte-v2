@@ -24,7 +24,7 @@ export const Mobile = (): React.ReactElement => {
           </AnimatedElement>
 
           <AnimatedElement animation="fadeIn" delay={200}>
-            <a href="#download" className={styles.link}>
+            <a href="#mobile" className={styles.link}>
               Explore Mobile Features
               <Icon name="fa-arrow-right" size="sm" />
             </a>

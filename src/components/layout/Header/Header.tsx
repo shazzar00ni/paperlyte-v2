@@ -146,7 +146,7 @@ export const Header = (): React.ReactElement => {
                 onClick={() => scrollToSection('download')}
                 className={styles.navLink}
               >
-                Log in
+                Download
               </button>
             </li>
             <li className={styles.navCta}>

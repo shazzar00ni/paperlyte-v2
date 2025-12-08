@@ -29,8 +29,8 @@ export const CTA = (): React.ReactElement => {
             <Button variant="primary" size="large" onClick={() => scrollToSection('hero')}>
               Get Started for Free
             </Button>
-            <Button variant="secondary" size="large" onClick={() => scrollToSection('pricing')}>
-              Compare Plans
+            <Button variant="secondary" size="large" onClick={() => scrollToSection('features')}>
+              Learn More
             </Button>
           </div>
         </AnimatedElement>

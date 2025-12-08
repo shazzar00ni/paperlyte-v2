@@ -127,3 +127,14 @@
     --spacing-3xl: 4rem;
   }
 }
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --transition-fast: 0.01ms !important;
+    --transition-base: 0.01ms !important;
+    --transition-slow: 0.01ms !important;
+    --animation-duration: 0.01ms !important;
+    --reduced-motion-duration: 0.01ms !important;
+  }
+}

@@ -69,10 +69,6 @@
   color: var(--color-text-primary);
 }
 
-.navDivider {
-  display: none;
-}
-
 .navCta {
   margin-left: var(--spacing-sm);
 }
@@ -138,10 +134,6 @@
 
   .navList li:last-child {
     border-bottom: none;
-  }
-
-  .navDivider {
-    display: none;
   }
 
   .navLink {

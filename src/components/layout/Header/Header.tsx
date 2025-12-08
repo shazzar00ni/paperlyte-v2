@@ -134,13 +134,12 @@ export const Header = (): React.ReactElement => {
             <li>
               <button
                 type="button"
-                onClick={() => scrollToSection('pricing')}
+                onClick={() => scrollToSection('testimonials')}
                 className={styles.navLink}
               >
-                Pricing
+                Testimonials
               </button>
             </li>
-            <li className={styles.navDivider} aria-hidden="true" />
             <li>
               <button
                 type="button"

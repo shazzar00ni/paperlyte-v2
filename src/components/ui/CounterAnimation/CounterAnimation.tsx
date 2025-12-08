@@ -92,7 +92,7 @@ export const CounterAnimation = ({
   minWidth,
 }: CounterAnimationProps): React.ReactElement => {
   const [animatedValue, setAnimatedValue] = useState(start)
-  const { ref, isVisible } = useIntersectionObserver({ threshold: 0.3 })
+  const { ref, isVisible } = useIntersectionObserver<HTMLOutputElement>({ threshold: 0.3 })
   const prefersReducedMotion = useReducedMotion()
   const hasAnimated = useRef(false)
   const rafId = useRef<number | null>(null)
@@ -174,6 +174,5 @@ export const CounterAnimation = ({
         {suffix}
       </span>
     </output>
-  )
   )
 }

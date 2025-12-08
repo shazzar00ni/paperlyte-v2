@@ -25,6 +25,7 @@ const mockReducedMotion = (prefersReduced: boolean) => {
  * Helper to create IntersectionObserver mock with configurable behavior
  */
 const mockIntersectionObserver = (triggerImmediately = false, spyOnMethods = false) => {
+  // observerCallback is captured from the constructor and used by triggerIntersectionCallback
   let observerCallback: IntersectionObserverCallback | null = null
   const mockObserve = spyOnMethods ? vi.fn() : () => {}
   const mockDisconnect = spyOnMethods ? vi.fn() : () => {}
@@ -270,10 +271,10 @@ describe('CounterAnimation', () => {
       const OriginalIO = global.IntersectionObserver
       
       try {
-        global.IntersectionObserver = class IntersectionObserver {
+        global.IntersectionObserver = class IntersectionObserver extends OriginalIO {
           constructor(callback: IntersectionObserverCallback, options?: IntersectionObserverInit) {
+            super(callback, options)
             capturedOptions = options
-            return new OriginalIO(callback, options)
           }
         } as unknown as typeof global.IntersectionObserver
 
@@ -290,7 +291,11 @@ describe('CounterAnimation', () => {
 
     it('should only animate once when visible', async () => {
       mockReducedMotion(false)
-      const { triggerIntersection } = mockIntersectionObserver(false, false)
+      // Don't trigger immediately, no method spying needed
+      const { triggerIntersection } = mockIntersectionObserver(
+        /* triggerImmediately */ false,
+        /* spyOnMethods */ false
+      )
       const rafSpy = vi.spyOn(window, 'requestAnimationFrame')
 
       render(<CounterAnimation end={100} start={0} />)

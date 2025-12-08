@@ -131,6 +131,11 @@ export const SVGPathAnimation = ({
 
   // Start animation when visible
   useEffect(() => {
+    if (prefersReducedMotion) {
+      // No timers; SVG is rendered directly in its final state via showFinalState
+      return
+    }
+
     let delayTimer: ReturnType<typeof setTimeout> | null = null
     let animationTimer: ReturnType<typeof setTimeout> | null = null
 
@@ -153,11 +158,10 @@ export const SVGPathAnimation = ({
         clearTimeout(animationTimer)
       }
     }
-  }, [isVisible, pathLengths, delay, duration, isAnimating, isComplete])
+  }, [isVisible, pathLengths, delay, duration, isAnimating, isComplete, prefersReducedMotion])
 
   // If user prefers reduced motion, show completed state immediately
   const showFinalState = prefersReducedMotion || isComplete
-
   const containerClasses = [styles.container, isAnimating ? styles.animating : '', className]
     .filter(Boolean)
     .join(' ')

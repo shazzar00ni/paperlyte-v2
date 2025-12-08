@@ -108,6 +108,8 @@ describe('useParallax', () => {
 
     expect(result.current).toBeDefined()
     expect(result.current.isActive).toBe(true)
+    // Verify horizontal direction produces horizontal transform format
+    expect(result.current.transform).toBe('translate3d(0px, 0, 0)')
   })
 
   describe('IntersectionObserver integration', () => {

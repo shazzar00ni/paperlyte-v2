@@ -90,7 +90,7 @@ export const Statistics = (): React.ReactElement => {
                     strokeColor="var(--color-primary)"
                     strokeWidth={2}
                   >
-                    <circle cx="24" cy="24" r="20" fill="none" />
+                    <path d="M 24 4 A 20 20 0 1 1 23.99 4" fill="none" />
                   </SVGPathAnimation>
                   <i className={`fa-solid ${stat.icon}`} aria-hidden="true" />
                 </div>

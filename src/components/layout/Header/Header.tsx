@@ -128,7 +128,7 @@ export const Header = (): React.ReactElement => {
                 onClick={() => scrollToSection('mobile')}
                 className={styles.navLink}
               >
-                Methodology
+                Mobile
               </button>
             </li>
             <li>

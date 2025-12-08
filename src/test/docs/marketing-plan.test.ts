@@ -126,5 +126,113 @@ describe('Marketing Plan Document Validation', () => {
     })
   })
 
-  // ...rest of tests remain unchanged
+  describe('Completeness and Consistency', () => {
+    it('should have a conclusion section', () => {
+      expect(sections.has('Conclusion')).toBe(true)
+    })
+
+    it('should reference related documents', () => {
+      const conclusion = sections.get('Conclusion')?.content || ''
+      expect(conclusion).toMatch(/Related Documents/i)
+    })
+
+    it('should have document version history', () => {
+      expect(content).toMatch(/Version History|Document Version/i)
+    })
+
+    it('should have consistent metric formatting', () => {
+      // Numbers should use consistent thousand separators
+      // The regex /\d{1,3}(,\d{3})+/g matches numbers where the first group is 1-3 digits,
+      // followed by one or more groups of exactly 3 digits separated by commas (e.g., 1,000 or 12,345,678).
+      // The code below further checks that all parts after the first are exactly 3 digits,
+      // and (for clarity) that the first part is 1-3 digits.
+      const numbers = content.match(/\d{1,3}(,\d{3})+/g)
+      if (numbers) {
+        numbers.forEach((num) => {
+          // Verify format is correct (e.g., 10,000 not 10,00)
+          const parts = num.split(',')
+          // Explicitly check that the first part is 1-3 digits (for clarity, though regex already enforces this)
+          expect(parts[0].length).toBeGreaterThanOrEqual(1)
+          expect(parts[0].length).toBeLessThanOrEqual(3)
+          parts.slice(1).forEach((part) => {
+            expect(part.length).toBe(3)
+          })
+        })
+      }
+    })
+
+    it('should have consistent terminology', () => {
+      // Check for consistent use of key terms
+      const hasConsistentWAU = content.match(/Weekly Active Users/gi)
+      const hasConsistentDAU = content.match(/Daily Active Users/gi)
+
+      if (hasConsistentWAU && hasConsistentWAU.length > 1) {
+        // If term is used multiple times, check consistency
+        const firstUse = hasConsistentWAU[0]
+        hasConsistentWAU.forEach((use) => {
+          // Allow for some variation but check general consistency
+          expect(use.toLowerCase()).toBe(firstUse.toLowerCase())
+        })
+      }
+
+      if (hasConsistentDAU && hasConsistentDAU.length > 1) {
+        // If term is used multiple times, check consistency
+        const firstUse = hasConsistentDAU[0]
+        hasConsistentDAU.forEach((use) => {
+          // Allow for some variation but check general consistency
+          expect(use.toLowerCase()).toBe(firstUse.toLowerCase())
+        })
+      }
+    })
+
+    it('should maintain consistent date formatting', () => {
+      const dates = content.match(/November \d{4}|Month [0-6-]+|Day \d+/g)
+      expect(dates).toBeTruthy()
+
+      // Dates should follow consistent format
+      dates?.forEach((date) => {
+        expect(date).toMatch(/^(November \d{4}|Month [-\d]+|Day \d+)$/)
+      })
+    })
+  })
+
+  describe('Actionability', () => {
+    it('should have specific, measurable targets', () => {
+      // Count quantified targets throughout the document
+      const targets = assertMatches(
+        content,
+        /\d+[,\d]*\+?\s*(users|subscribers|%|downloads)/gi,
+        "Expected document to contain specific, measurable targets (e.g., '10,000 users', '5,000+ subscribers', '40%')"
+      )
+      expect(targets.length).toBeGreaterThan(20)
+    })
+
+    it('should include specific action items', () => {
+      const actionVerbs = assertMatches(
+        content,
+        /\b(Launch|Create|Build|Develop|Write|Run|Execute|Track|Monitor|Analyze|Review)\b/gi,
+        'Expected document to contain action verbs (Launch, Create, Build, Develop, Write, Run, Execute, Track, Monitor, Analyze, Review)'
+      )
+      expect(actionVerbs.length).toBeGreaterThan(30)
+    })
+
+    it('should reference specific tools and platforms', () => {
+      const tools = assertMatches(
+        content,
+        /\b(Product Hunt|Twitter|Reddit|Instagram|LinkedIn|Discord|Slack|ConvertKit|Mailchimp|Google Analytics|Mixpanel|Amplitude)\b/gi,
+        'Expected document to reference specific tools and platforms (Product Hunt, Twitter, Reddit, etc.)'
+      )
+      expect(tools.length).toBeGreaterThan(10)
+    })
+
+    it('should provide concrete examples', () => {
+      // Look for example indicators
+      const examples = assertMatches(
+        content,
+        /Example:|For example|e\.g\.|such as|"[^"]+"/gi,
+        'Expected document to provide concrete examples (Example:, For example, e.g., such as, quoted text)'
+      )
+      expect(examples.length).toBeGreaterThan(15)
+    })
+  })
 })

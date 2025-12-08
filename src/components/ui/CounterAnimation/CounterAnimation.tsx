@@ -98,9 +98,12 @@ export const CounterAnimation = ({
   const rafId = useRef<number | null>(null)
   const startTime = useRef<number | null>(null)
 
+  // Clamp duration to non-negative to avoid division by zero or infinite loops
+  const safeDuration = Math.max(0, duration)
+
   useEffect(() => {
-    // Skip animation if reduced motion is preferred
-    if (prefersReducedMotion) {
+    // Skip animation if reduced motion is preferred or duration is 0
+    if (prefersReducedMotion || safeDuration === 0) {
       return
     }
 
@@ -110,7 +113,7 @@ export const CounterAnimation = ({
       startTime.current = null
 
       // Capture current props values at animation start time
-      const animDuration = duration
+      const animDuration = safeDuration
       const animEnd = end
       const animStart = start
       const animEasing = easing
@@ -140,10 +143,10 @@ export const CounterAnimation = ({
         cancelAnimationFrame(rafId.current)
       }
     }
-  }, [isVisible, prefersReducedMotion, end, duration, start, easing])
+  }, [isVisible, prefersReducedMotion, end, safeDuration, start, easing])
 
-  // Compute display value: use end value if reduced motion, otherwise use animated value
-  const displayValue = prefersReducedMotion ? end : animatedValue
+  // Compute display value: use end value if reduced motion or zero duration, otherwise use animated value
+  const displayValue = prefersReducedMotion || safeDuration === 0 ? end : animatedValue
   const formattedValue = formatNumber(displayValue, decimals, separator)
 
   // Calculate minimum width based on final formatted value to prevent layout shift

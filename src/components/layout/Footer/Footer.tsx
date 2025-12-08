@@ -36,8 +36,8 @@ export const Footer = (): React.ReactElement => {
                 </a>
               </li>
               <li>
-                <a href="#pricing" className={styles.link}>
-                  Pricing
+                <a href="#testimonials" className={styles.link}>
+                  Testimonials
                 </a>
               </li>
             </ul>

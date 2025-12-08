@@ -28,6 +28,12 @@ interface CounterAnimationProps {
   easing?: 'linear' | 'easeOutQuart' | 'easeOutExpo'
   /** Whether to add thousands separator (default: true) */
   separator?: boolean
+  /**
+   * Minimum width to prevent layout shift during animation.
+   * If not provided, automatically calculated based on the final formatted value.
+   * Accepts any valid CSS width value (e.g., "4ch", "80px", "5em")
+   */
+  minWidth?: string
 }
 
 /**
@@ -83,6 +89,7 @@ export const CounterAnimation = ({
   className = '',
   easing = 'easeOutQuart',
   separator = true,
+  minWidth,
 }: CounterAnimationProps): React.ReactElement => {
   const [animatedValue, setAnimatedValue] = useState(start)
   const { ref, isVisible } = useIntersectionObserver({ threshold: 0.3 })
@@ -139,8 +146,26 @@ export const CounterAnimation = ({
   const displayValue = prefersReducedMotion ? end : animatedValue
   const formattedValue = formatNumber(displayValue, decimals, separator)
 
+  // Calculate minimum width based on final formatted value to prevent layout shift
+  // Uses ch units (width of "0" character) with a small buffer for non-monospace fonts
+  const calculatedMinWidth = (() => {
+    const finalFormatted = formatNumber(end, decimals, separator)
+    const totalChars = prefix.length + finalFormatted.length + suffix.length
+    // Add 0.5ch buffer for font variations and rounding
+    return `${totalChars + 0.5}ch`
+  })()
+
+  const effectiveMinWidth = minWidth ?? calculatedMinWidth
+
   return (
-    <span ref={ref} className={`${styles.counter} ${className}`} aria-label={`${prefix}${end}${suffix}`}>
+    <span
+      ref={ref}
+      className={`${styles.counter} ${className}`}
+      role="status"
+      aria-live="polite"
+      aria-label={`${prefix}${formatNumber(end, decimals, separator)}${suffix}`}
+      style={{ minWidth: effectiveMinWidth }}
+    >
       <span aria-hidden="true">
         {prefix}
         {formattedValue}

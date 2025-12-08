@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useRef, useState } from 'react'
+import { type ReactNode, type ReactElement, useEffect, useRef, useState, Children, cloneElement, isValidElement } from 'react'
 import { useIntersectionObserver } from '@hooks/useIntersectionObserver'
 import { useReducedMotion } from '@hooks/useReducedMotion'
 import styles from './SVGPathAnimation.module.css'
@@ -65,7 +65,7 @@ interface SVGPathAnimationProps {
  * Component that animates SVG paths with a drawing effect
  *
  * Uses stroke-dasharray and stroke-dashoffset for the drawing animation.
- * Automatically calculates path lengths using getBBox.
+ * Automatically calculates path lengths using element.getTotalLength().
  * Respects prefers-reduced-motion for accessibility.
  *
  * @example
@@ -131,17 +131,27 @@ export const SVGPathAnimation = ({
 
   // Start animation when visible
   useEffect(() => {
+    let delayTimer: ReturnType<typeof setTimeout> | null = null
+    let animationTimer: ReturnType<typeof setTimeout> | null = null
+
     if (isVisible && pathLengths.length > 0 && !isAnimating && !isComplete) {
-      const timer = setTimeout(() => {
+      delayTimer = setTimeout(() => {
         setIsAnimating(true)
         // Mark as complete after animation finishes
-        setTimeout(() => {
+        animationTimer = setTimeout(() => {
           setIsAnimating(false)
           setIsComplete(true)
         }, duration)
       }, delay)
+    }
 
-      return () => clearTimeout(timer)
+    return () => {
+      if (delayTimer !== null) {
+        clearTimeout(delayTimer)
+      }
+      if (animationTimer !== null) {
+        clearTimeout(animationTimer)
+      }
     }
   }, [isVisible, pathLengths, delay, duration, isAnimating, isComplete])
 
@@ -175,24 +185,30 @@ export const SVGPathAnimation = ({
           className={showFinalState && animateFill ? styles.filled : ''}
         >
           {/* Clone children and apply animation styles to paths */}
-          {Array.isArray(children) ? (
-            children
-          ) : (
-            <g
-              style={
-                pathLengths[0]
-                  ? ({
-                      ['--path-length' as string]: pathLengths[0],
-                      strokeDasharray: pathLengths[0],
-                      strokeDashoffset: showFinalState ? 0 : isAnimating ? 0 : pathLengths[0],
-                    } as React.CSSProperties)
-                  : undefined
-              }
-              className={isAnimating ? styles.drawing : ''}
-            >
-              {children}
-            </g>
-          )}
+          {Children.map(children, (child, index) => {
+            if (!isValidElement(child)) {
+              return child
+            }
+
+            const pathLength = pathLengths[index] ?? 0
+            const childProps = child.props as { className?: string }
+            const existingClassName = childProps.className || ''
+            const animatingClassName = isAnimating ? styles.drawing : ''
+            const mergedClassName = [existingClassName, animatingClassName].filter(Boolean).join(' ')
+
+            // Cast to ReactElement with SVG props to satisfy TypeScript
+            const svgChild = child as ReactElement<React.SVGProps<SVGPathElement>>
+            return cloneElement(svgChild, {
+              style: pathLength
+                ? ({
+                    ['--path-length' as string]: pathLength,
+                    strokeDasharray: pathLength,
+                    strokeDashoffset: showFinalState ? 0 : pathLength,
+                  } as React.CSSProperties)
+                : undefined,
+              className: mergedClassName || undefined,
+            })
+          })}
         </g>
       </svg>
     </div>

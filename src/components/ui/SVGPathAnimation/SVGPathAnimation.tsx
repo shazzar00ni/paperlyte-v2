@@ -1,4 +1,15 @@
-import { type ReactNode, type ReactElement, useEffect, useRef, useState, Children, cloneElement, isValidElement } from 'react'
+import {
+  type ReactNode,
+  type ReactElement,
+  type CSSProperties,
+  type SVGProps,
+  useEffect,
+  useRef,
+  useState,
+  Children,
+  cloneElement,
+  isValidElement,
+} from 'react'
 import { useIntersectionObserver } from '@hooks/useIntersectionObserver'
 import { useReducedMotion } from '@hooks/useReducedMotion'
 import styles from './SVGPathAnimation.module.css'
@@ -8,8 +19,9 @@ import styles from './SVGPathAnimation.module.css'
  */
 interface SVGPathAnimationProps {
   /**
-   * SVG content to animate (should contain <path> elements)
-   * The component will automatically measure and animate path lengths
+   * SVG content to animate, expected as direct `<path>` children.
+   * The component will automatically measure and animate each path's length.
+   * Note: Nested structures (e.g., `<g>` with inner paths) are not supported.
    */
   children: ReactNode
   /**
@@ -105,7 +117,7 @@ export const SVGPathAnimation = ({
   strokeWidth = 2,
   fillColor = 'none',
   animateFill = false,
-}: SVGPathAnimationProps): React.ReactElement => {
+}: SVGPathAnimationProps): ReactElement => {
   const { ref, isVisible } = useIntersectionObserver({ threshold: 0.3 })
   const prefersReducedMotion = useReducedMotion()
   const svgRef = useRef<SVGSVGElement>(null)
@@ -176,7 +188,7 @@ export const SVGPathAnimation = ({
           {
             ['--draw-duration' as string]: `${duration}ms`,
             ['--draw-easing' as string]: easing,
-          } as React.CSSProperties
+          } as CSSProperties
         }
         aria-hidden="true"
       >
@@ -198,17 +210,19 @@ export const SVGPathAnimation = ({
             const childProps = child.props as { className?: string }
             const existingClassName = childProps.className || ''
             const animatingClassName = isAnimating ? styles.drawing : ''
-            const mergedClassName = [existingClassName, animatingClassName].filter(Boolean).join(' ')
+            const mergedClassName = [existingClassName, animatingClassName]
+              .filter(Boolean)
+              .join(' ')
 
             // Cast to ReactElement with SVG props to satisfy TypeScript
-            const svgChild = child as ReactElement<React.SVGProps<SVGPathElement>>
+            const svgChild = child as ReactElement<SVGProps<SVGPathElement>>
             return cloneElement(svgChild, {
               style: pathLength
                 ? ({
                     ['--path-length' as string]: pathLength,
                     strokeDasharray: pathLength,
                     strokeDashoffset: showFinalState ? 0 : pathLength,
-                  } as React.CSSProperties)
+                  } as CSSProperties)
                 : undefined,
               className: mergedClassName || undefined,
             })

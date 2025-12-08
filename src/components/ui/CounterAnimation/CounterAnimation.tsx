@@ -158,10 +158,9 @@ export const CounterAnimation = ({
   const effectiveMinWidth = minWidth ?? calculatedMinWidth
 
   return (
-    <span
+    <output
       ref={ref}
       className={`${styles.counter} ${className}`}
-      role="status"
       aria-live="polite"
       aria-label={`${prefix}${formatNumber(end, decimals, separator)}${suffix}`}
       style={{ minWidth: effectiveMinWidth }}
@@ -171,6 +170,7 @@ export const CounterAnimation = ({
         {formattedValue}
         {suffix}
       </span>
-    </span>
+    </output>
+  )
   )
 }

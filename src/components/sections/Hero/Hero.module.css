@@ -116,6 +116,27 @@
   background-color: var(--color-border-light);
   border-radius: var(--border-radius-sm);
   margin-bottom: var(--spacing-xs);
+  width: 100%;
+}
+
+.mockupLineLong {
+  width: 90%;
+}
+
+.mockupLineMedium {
+  width: 85%;
+}
+
+.mockupLineShort {
+  width: 70%;
+}
+
+.mockupLineCheckbox {
+  width: 60%;
+}
+
+.mockupLineCheckboxShort {
+  width: 55%;
 }
 
 .mockupSpacer {

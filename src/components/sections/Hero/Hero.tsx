@@ -65,18 +65,18 @@ export const Hero = (): React.ReactElement => {
                 <div className={styles.mockupTitle} />
               </div>
               <div className={styles.mockupContent}>
-                <div className={styles.mockupLine} style={{ width: '90%' }} />
-                <div className={styles.mockupLine} style={{ width: '100%' }} />
-                <div className={styles.mockupLine} style={{ width: '85%' }} />
-                <div className={styles.mockupLine} style={{ width: '70%' }} />
+                <div className={`${styles.mockupLine} ${styles.mockupLineLong}`} />
+                <div className={styles.mockupLine} />
+                <div className={`${styles.mockupLine} ${styles.mockupLineMedium}`} />
+                <div className={`${styles.mockupLine} ${styles.mockupLineShort}`} />
                 <div className={styles.mockupSpacer} />
                 <div className={styles.mockupCheckbox}>
                   <div className={styles.mockupCheck} />
-                  <div className={styles.mockupLine} style={{ width: '60%' }} />
+                  <div className={`${styles.mockupLine} ${styles.mockupLineCheckbox}`} />
                 </div>
                 <div className={styles.mockupCheckbox}>
                   <div className={styles.mockupCheck} />
-                  <div className={styles.mockupLine} style={{ width: '55%' }} />
+                  <div className={`${styles.mockupLine} ${styles.mockupLineCheckboxShort}`} />
                 </div>
               </div>
               <div className={styles.mockupStats}>

@@ -180,19 +180,33 @@ describe('CounterAnimation', () => {
     })
 
     it('should cleanup requestAnimationFrame on unmount', () => {
-      const cancelSpy = vi.spyOn(window, 'cancelAnimationFrame')
       mockReducedMotion(false)
       mockIntersectionObserver(true)
 
+      // Mock requestAnimationFrame and cancelAnimationFrame
+      let rafCallback: FrameRequestCallback | null = null
+      const frameId = 1234
+      const rafSpy = vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+        rafCallback = cb
+        return frameId
+      })
+      const cancelSpy = vi.spyOn(window, 'cancelAnimationFrame')
+
       const { unmount } = render(<CounterAnimation end={100} />)
 
-      // Give time for the observer callback to fire
-      vi.runAllTimers()
+      // Simulate the animation frame firing so that rafId is set
+      if (rafCallback) {
+        rafCallback(performance.now())
+      }
 
       unmount()
 
-      // cancelAnimationFrame should be called on cleanup if animation was started
-      expect(cancelSpy).toHaveBeenCalled()
+      // cancelAnimationFrame should be called on cleanup with the correct frame id
+      expect(cancelSpy).toHaveBeenCalledWith(frameId)
+
+      // Restore mocks
+      rafSpy.mockRestore()
+      cancelSpy.mockRestore()
     })
   })
 

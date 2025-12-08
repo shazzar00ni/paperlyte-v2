@@ -7,6 +7,13 @@ import { Mobile } from '@components/sections/Mobile'
 import { Testimonials } from '@components/sections/Testimonials'
 import { CTA } from '@components/sections/CTA'
 
+/**
+ * Root application component that composes the page layout and main sections.
+ *
+ * Renders the Header, a main content area (Hero, Features, Mobile, Testimonials, CTA), and Footer wrapped in an ErrorBoundary to isolate rendering/runtime errors.
+ *
+ * @returns The root React element for the application layout
+ */
 function App() {
   return (
     <ErrorBoundary>

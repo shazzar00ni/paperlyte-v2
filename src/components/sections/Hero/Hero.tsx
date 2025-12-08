@@ -61,11 +61,15 @@ export const Hero = (): React.ReactElement => {
 
       <div className={styles.content}>
         <AnimatedElement animation="fadeIn">
-          <h1 className={styles.headline}>
-            <TextReveal type="word" stagger={80} animation="fadeUp">
-              Your thoughts, unchained from complexity
-            </TextReveal>
-          </h1>
+          <TextReveal
+            as="h1"
+            type="word"
+            stagger={80}
+            animation="fadeUp"
+            className={styles.headline}
+          >
+            Your thoughts, unchained from complexity
+          </TextReveal>
         </AnimatedElement>
 
         <AnimatedElement animation="fadeIn" delay={150}>

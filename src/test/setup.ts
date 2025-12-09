@@ -44,7 +44,7 @@ if (typeof SVGPathElement === 'undefined') {
 }
 
 // Add getTotalLength as a configurable property so tests can override it
-if (typeof SVGPathElement !== 'undefined') {
+if (typeof SVGPathElement !== 'undefined' && typeof SVGPathElement.prototype.getTotalLength === 'undefined') {
   Object.defineProperty(SVGPathElement.prototype, 'getTotalLength', {
     writable: true,
     configurable: true,

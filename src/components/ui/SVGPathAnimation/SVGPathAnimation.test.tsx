@@ -60,9 +60,9 @@ describe('SVGPathAnimation', () => {
       const path = container.querySelector('path')
       expect(path).toBeInTheDocument()
       
-      // Path length should be set after mount (uses default from setup.ts: 100)
-      const group = container.querySelector('g[style*="--path-length"]')
-      expect(group).toBeInTheDocument()
+      // Path length should be set directly on path element after mount (uses default from setup.ts: 100)
+      const pathWithStyles = container.querySelector('path[style*="--path-length"]')
+      expect(pathWithStyles).toBeInTheDocument()
     })
 
     it('should fallback to 1000 when getTotalLength() throws', () => {
@@ -84,11 +84,11 @@ describe('SVGPathAnimation', () => {
       // Trigger intersection to start animation
       triggerIntersection(true)
 
-      const group = container.querySelector('g[style*="--path-length"]')
-      expect(group).toBeInTheDocument()
-      // Check if fallback length 1000 is used
-      if (group) {
-        const style = (group as HTMLElement).style
+      const path = container.querySelector('path[style*="--path-length"]')
+      expect(path).toBeInTheDocument()
+      // Check if fallback length 1000 is used (styles now on path, not group)
+      if (path) {
+        const style = (path as HTMLElement).style
         expect(style.getPropertyValue('--path-length')).toBe('1000')
       }
 
@@ -181,8 +181,8 @@ describe('SVGPathAnimation', () => {
       // Verify the delay prop is accepted (component uses it for setTimeout)
       // The actual delay timing is tested in the component implementation
       // Testing async timing with fake timers is complex due to React state updates
-      const group = container.querySelector('g[style*="--path-length"]')
-      expect(group).toBeInTheDocument()
+      const path = container.querySelector('path[style*="--path-length"]')
+      expect(path).toBeInTheDocument()
     })
   })
 
@@ -194,10 +194,10 @@ describe('SVGPathAnimation', () => {
         </SVGPathAnimation>
       )
 
-      const group = container.querySelector('g[style*="--path-length"]')
-      expect(group).toBeInTheDocument()
-      if (group) {
-        const style = (group as HTMLElement).style
+      const path = container.querySelector('path[style*="--path-length"]')
+      expect(path).toBeInTheDocument()
+      if (path) {
+        const style = (path as HTMLElement).style
         // Should have a path length (either calculated or fallback 1000)
         const pathLength = style.getPropertyValue('--path-length')
         expect(pathLength).toBeTruthy()
@@ -213,10 +213,10 @@ describe('SVGPathAnimation', () => {
         </SVGPathAnimation>
       )
 
-      const group = container.querySelector('g[style*="--path-length"]')
-      expect(group).toBeInTheDocument()
-      if (group) {
-        const style = (group as HTMLElement).style
+      const path = container.querySelector('path[style*="--path-length"]')
+      expect(path).toBeInTheDocument()
+      if (path) {
+        const style = (path as HTMLElement).style
         // Before animation starts, offset should equal path length
         const pathLength = style.getPropertyValue('--path-length')
         expect(style.strokeDashoffset).toBe(pathLength)
@@ -381,9 +381,9 @@ describe('SVGPathAnimation', () => {
         </SVGPathAnimation>
       )
 
-      // Verify paths are measured
-      const group = container.querySelector('g[style*="--path-length"]')
-      expect(group).toBeInTheDocument()
+      // Verify paths are measured (styles now applied to path, not group)
+      const path = container.querySelector('path[style*="--path-length"]')
+      expect(path).toBeInTheDocument()
 
       // The component should set up IntersectionObserver on mount
       // (we've mocked IntersectionObserver in beforeEach to capture the callback)
@@ -399,12 +399,12 @@ describe('SVGPathAnimation', () => {
         </SVGPathAnimation>
       )
 
-      // Verify paths are measured (pathLengths state is populated)
-      const group = container.querySelector('g[style*="--path-length"]')
-      expect(group).toBeInTheDocument()
+      // Verify paths are measured (pathLengths state is populated, styles on path now)
+      const path = container.querySelector('path[style*="--path-length"]')
+      expect(path).toBeInTheDocument()
       
       // Get initial dashoffset (should equal path length before animation)
-      const initialOffset = group ? (group as HTMLElement).style.strokeDashoffset : null
+      const initialOffset = path ? (path as HTMLElement).style.strokeDashoffset : null
       expect(initialOffset).toBeTruthy()
 
       // Trigger visibility to start animation
@@ -416,7 +416,7 @@ describe('SVGPathAnimation', () => {
       })
       
       // Now dashoffset should be 0 (animating)
-      const animatingOffset = group ? (group as HTMLElement).style.strokeDashoffset : null
+      const animatingOffset = path ? (path as HTMLElement).style.strokeDashoffset : null
       expect(animatingOffset).toBe('0')
 
       vi.useRealTimers()
@@ -431,14 +431,14 @@ describe('SVGPathAnimation', () => {
 
       // Verify the component has the necessary structure for animation tracking
       // The component uses isAnimating and isComplete state to control animation lifecycle
-      const group = container.querySelector('g[style*="--path-length"]')
-      expect(group).toBeInTheDocument()
+      const path = container.querySelector('path[style*="--path-length"]')
+      expect(path).toBeInTheDocument()
       
       // Verify IntersectionObserver is set up (captured in beforeEach)
       expect(intersectionObserverCallback).not.toBeNull()
       
       // The animation prevention logic is verified by the component implementation:
-      // useEffect at line 134 checks: isVisible && pathLengths.length > 0 && !isAnimating && !isComplete
+      // useEffect checks: isVisible && pathLengths.length > 0 && !isAnimating && !isComplete
       // Once isComplete is true, the animation won't restart
     })
   })
@@ -465,11 +465,10 @@ describe('SVGPathAnimation', () => {
       const paths = container.querySelectorAll('path')
       expect(paths).toHaveLength(2)
       
-      // Note: Array children are rendered directly without animation wrapper
-      // (component implementation at lines 178-179 passes through array children)
-      // This is by design - animation styles are only applied to single children
-      const animatedGroup = container.querySelector('g[style*="--path-length"]')
-      expect(animatedGroup).not.toBeInTheDocument()
+      // Note: With new implementation using Children.map, each path gets animation styles
+      // The component now clones each child and applies styles directly to it
+      const animatedPaths = container.querySelectorAll('path[style*="--path-length"]')
+      expect(animatedPaths).toHaveLength(2)
     })
 
     it('should handle nested SVG elements', () => {

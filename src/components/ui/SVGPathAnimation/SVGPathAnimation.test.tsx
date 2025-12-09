@@ -37,7 +37,7 @@ describe('SVGPathAnimation', () => {
 
     const path = container.querySelector('path[data-testid="test-path"]') as SVGPathElement
     expect(path).toBeDefined()
-    
+
     // Path should have dash array and offset styles (once pathLengths are calculated)
     // Initially, before useEffect runs, these might not be set
     // We're testing the structure is correct
@@ -55,7 +55,7 @@ describe('SVGPathAnimation', () => {
 
     const paths = container.querySelectorAll('path')
     expect(paths).toHaveLength(3)
-    
+
     // Verify all paths are rendered
     expect(container.querySelector('path[data-testid="path-1"]')).toBeInTheDocument()
     expect(container.querySelector('path[data-testid="path-2"]')).toBeInTheDocument()

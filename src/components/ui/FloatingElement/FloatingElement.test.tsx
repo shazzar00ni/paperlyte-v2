@@ -111,7 +111,7 @@ describe('FloatingElement', () => {
 
       const floatingElement = container.querySelector('[class*="floating"]') as HTMLElement
       expect(floatingElement).toBeInTheDocument()
-      
+
       // Check default values
       expect(floatingElement.style.getPropertyValue('--float-duration')).toBe('3s')
       expect(floatingElement.style.getPropertyValue('--float-delay')).toBe('0s')
@@ -177,7 +177,7 @@ describe('FloatingElement', () => {
       // due to the default IntersectionObserver mock behavior
       const floatingElement = container.querySelector('[class*="floating"]')
       expect(floatingElement).toBeInTheDocument()
-      
+
       // The paused class should be applied initially since isVisible defaults to false
       expect(floatingElement?.className).toContain('paused')
     })
@@ -191,7 +191,7 @@ describe('FloatingElement', () => {
 
       const floatingElement = container.querySelector('[class*="floating"]')
       expect(floatingElement).toBeInTheDocument()
-      
+
       // Even though element is not visible, paused should not be applied
       expect(floatingElement?.className).not.toContain('paused')
     })
@@ -205,7 +205,7 @@ describe('FloatingElement', () => {
 
       const floatingElement = container.querySelector('[class*="floating"]')
       expect(floatingElement).toBeInTheDocument()
-      
+
       // Default behavior should pause when hidden
       expect(floatingElement?.className).toContain('paused')
     })
@@ -286,7 +286,8 @@ describe('FloatingElement', () => {
         takeRecords = vi.fn(() => [])
       }
 
-      global.IntersectionObserver = MockIntersectionObserver as unknown as typeof IntersectionObserver
+      global.IntersectionObserver =
+        MockIntersectionObserver as unknown as typeof IntersectionObserver
 
       render(
         <FloatingElement>
@@ -296,7 +297,7 @@ describe('FloatingElement', () => {
 
       // IntersectionObserver should be instantiated
       expect(instanceCount).toBeGreaterThan(0)
-      
+
       // observe should be called on the ref element
       expect(observeMock).toHaveBeenCalled()
     })

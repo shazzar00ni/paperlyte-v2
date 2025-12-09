@@ -36,16 +36,18 @@ describe('useScrollPosition', () => {
 
     // Mock addEventListener to capture scroll event handlers
     const originalAddEventListener = window.addEventListener
-    vi.spyOn(window, 'addEventListener').mockImplementation((
-      event: string, 
-      handler: EventListenerOrEventListenerObject,
-      options?: boolean | AddEventListenerOptions
-    ) => {
-      if (event === 'scroll') {
-        scrollCallbacks.push(handler as (e: Event) => void)
+    vi.spyOn(window, 'addEventListener').mockImplementation(
+      (
+        event: string,
+        handler: EventListenerOrEventListenerObject,
+        options?: boolean | AddEventListenerOptions
+      ) => {
+        if (event === 'scroll') {
+          scrollCallbacks.push(handler as (e: Event) => void)
+        }
+        return originalAddEventListener.call(window, event, handler, options)
       }
-      return originalAddEventListener.call(window, event, handler, options)
-    })
+    )
 
     // Mock requestAnimationFrame
     let rafId = 0
@@ -224,7 +226,7 @@ describe('useScrollPosition', () => {
   it('should return valid initial state', () => {
     // Verify that the hook returns valid initial state with expected properties
     const { result } = renderHook(() => useScrollPosition())
-    
+
     expect(result.current).toHaveProperty('scrollX')
     expect(result.current).toHaveProperty('scrollY')
     expect(result.current).toHaveProperty('scrollProgress')
@@ -253,11 +255,9 @@ describe('useScrollPosition', () => {
   it('should register scroll listener with passive option', () => {
     renderHook(() => useScrollPosition())
 
-    expect(window.addEventListener).toHaveBeenCalledWith(
-      'scroll',
-      expect.any(Function),
-      { passive: true }
-    )
+    expect(window.addEventListener).toHaveBeenCalledWith('scroll', expect.any(Function), {
+      passive: true,
+    })
   })
 
   it('should update all scroll values simultaneously', async () => {

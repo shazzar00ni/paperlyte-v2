@@ -30,7 +30,7 @@
 
 /* Animating state */
 .animating .svg {
-  will-change: stroke-dashoffset;
+  will-change: auto;
 }
 
 /* Disable animations for users who prefer reduced motion */

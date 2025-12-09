@@ -153,6 +153,7 @@ export const useParallax = (options: UseParallaxOptions = {}) => {
       }
       observer.disconnect()
     }
+    // updateDimensions and calculateOffset are used in the observer callback and must be included to avoid stale closures
   }, [isActive, updateDimensions, calculateOffset])
 
   // Add scroll listener when in view

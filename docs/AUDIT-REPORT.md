@@ -776,7 +776,7 @@ import '@fontsource/inter/latin-700.css'
 | 1 | **Add Open Graph meta tags** | High | Low (30 min) | Proper social media previews |
 | 2 | **Add Twitter Card meta tags** | High | Low (15 min) | Proper Twitter/X sharing |
 | 3 | **Create social media images** | High | Medium (2-3 hours) | Professional sharing experience |
-| 4 | **Replace Vite favicon with branding** | Medium | Low (1 hour) | Brand recognition |
+| 4 | **Replace Vite favicon with branding** | High | Low (1 hour) | Brand recognition |
 
 ### 🟡 Medium Priority (Post-Launch)
 

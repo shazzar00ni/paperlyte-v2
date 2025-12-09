@@ -706,7 +706,7 @@ import '@fontsource/inter/latin-700.css'
 
 **Recommendation:** Add JSON-LD structured data for:
 
-1. **Organization Schema:**
+1. **SoftwareApplication Schema:**
 ```json
 {
   "@context": "https://schema.org",

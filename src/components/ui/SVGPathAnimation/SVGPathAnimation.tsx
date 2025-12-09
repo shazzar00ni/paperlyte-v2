@@ -201,6 +201,10 @@ export const SVGPathAnimation = ({
             if (!isValidElement(child)) return child
 
             const pathLength = pathLengths[index]
+            if (pathLength === undefined || pathLength === null) {
+              return child
+            }
+
             const pathDelay = staggerDelay * index
 
             return (

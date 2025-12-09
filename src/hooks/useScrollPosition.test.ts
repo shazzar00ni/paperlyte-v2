@@ -7,9 +7,6 @@ describe('useScrollPosition', () => {
 
   beforeEach(() => {
     // Ensure window exists (important after SSR test)
-    if (typeof window === 'undefined') {
-      return
-    }
 
     // Reset scroll position
     Object.defineProperty(window, 'scrollX', {

@@ -12,8 +12,12 @@ export const Hero = (): React.ReactElement => {
     }
   }
 
-  const trustedCompanies = ['Acme Corp', 'Global', 'Nebula', 'Vertex', 'Horizon']
+const trustedCompanies = ['Acme Corp', 'Global', 'Nebula', 'Vertex', 'Horizon']
 
+export const Hero = (): React.ReactElement => {
+  const scrollToSection = (sectionId: string) => {
+    ...
+  }
   return (
     <Section id="hero" className={styles.hero} padding="large">
       <div className={styles.container}>

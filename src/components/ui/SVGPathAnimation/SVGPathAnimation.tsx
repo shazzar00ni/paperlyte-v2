@@ -215,7 +215,7 @@ export const SVGPathAnimation = ({
 
             // Guard against undefined pathLengths to prevent flash of unstyled content
             const pathLength = pathLengths[index]
-            if (!pathLength) {
+            if (pathLength === undefined || pathLength === null) {
               return child
             }
 

@@ -260,10 +260,6 @@ describe('CounterAnimation', () => {
 
       // cancelAnimationFrame should be called on cleanup with the correct frame id
       expect(cancelSpy).toHaveBeenCalledWith(frameId)
-
-      // Restore mocks
-      rafSpy.mockRestore()
-      cancelSpy.mockRestore()
     })
   })
 

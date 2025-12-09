@@ -3,13 +3,13 @@
  */
 export interface FAQItem {
   /** Unique identifier */
-  id: string;
+  id: string
   /** The question */
-  question: string;
+  question: string
   /** The answer (supports basic HTML) */
-  answer: string;
+  answer: string
   /** Optional category for grouping */
-  category?: 'general' | 'pricing' | 'privacy' | 'features';
+  category?: 'general' | 'pricing' | 'privacy' | 'features'
 }
 
 /**
@@ -88,4 +88,4 @@ export const FAQ_ITEMS: FAQItem[] = [
     answer:
       'We obsess over performance. Paperlyte uses cutting-edge web technologies, aggressive caching, and local-first architecture. Every millisecond counts, and we optimize ruthlessly to keep you in flow.',
   },
-];
+]

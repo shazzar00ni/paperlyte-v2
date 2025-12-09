@@ -1,122 +1,118 @@
-import { useState, useEffect, useRef } from 'react';
-import { Button } from '@components/ui/Button';
-import { Icon } from '@components/ui/Icon';
-import { ThemeToggle } from '@components/ui/ThemeToggle';
-import styles from './Header.module.css';
+import { useState, useEffect, useRef } from 'react'
+import { Button } from '@components/ui/Button'
+import { Icon } from '@components/ui/Icon'
+import { ThemeToggle } from '@components/ui/ThemeToggle'
+import styles from './Header.module.css'
 
 export const Header = (): React.ReactElement => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const menuButtonRef = useRef<HTMLButtonElement>(null);
-  const menuRef = useRef<HTMLUListElement>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const menuButtonRef = useRef<HTMLButtonElement>(null)
+  const menuRef = useRef<HTMLUListElement>(null)
 
   const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen);
-  };
+    setMobileMenuOpen(!mobileMenuOpen)
+  }
 
   const closeMobileMenu = () => {
-    setMobileMenuOpen(false);
+    setMobileMenuOpen(false)
     // Return focus to menu button when closing
-    menuButtonRef.current?.focus();
-  };
+    menuButtonRef.current?.focus()
+  }
 
   const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
+    const element = document.getElementById(sectionId)
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-      closeMobileMenu();
+      element.scrollIntoView({ behavior: 'smooth' })
+      closeMobileMenu()
     }
-  };
+  }
 
   // Handle Escape key to close menu
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && mobileMenuOpen) {
-        closeMobileMenu();
+        closeMobileMenu()
       }
-    };
+    }
 
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
-  }, [mobileMenuOpen]);
+    document.addEventListener('keydown', handleEscape)
+    return () => document.removeEventListener('keydown', handleEscape)
+  }, [mobileMenuOpen])
 
   // Focus trap and arrow key navigation for mobile menu
   useEffect(() => {
-    if (!mobileMenuOpen || !menuRef.current) return;
+    if (!mobileMenuOpen || !menuRef.current) return
 
-    const menu = menuRef.current;
+    const menu = menuRef.current
     const focusableElements = menu.querySelectorAll<HTMLElement>(
       'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-    );
-    const firstFocusable = focusableElements[0];
-    const lastFocusable = focusableElements[focusableElements.length - 1];
+    )
+    const firstFocusable = focusableElements[0]
+    const lastFocusable = focusableElements[focusableElements.length - 1]
 
     const handleKeyboardNavigation = (event: KeyboardEvent) => {
-      const { key, shiftKey } = event;
+      const { key, shiftKey } = event
 
       // Handle Tab key for focus trap
       if (key === 'Tab') {
         if (shiftKey) {
           // Shift + Tab
           if (document.activeElement === firstFocusable) {
-            event.preventDefault();
-            lastFocusable?.focus();
+            event.preventDefault()
+            lastFocusable?.focus()
           }
         } else {
           // Tab
           if (document.activeElement === lastFocusable) {
-            event.preventDefault();
-            firstFocusable?.focus();
+            event.preventDefault()
+            firstFocusable?.focus()
           }
         }
-        return;
+        return
       }
 
       // Handle arrow keys, Home, and End for menu navigation
       if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(key)) {
-        event.preventDefault();
+        event.preventDefault()
 
         const currentIndex = Array.from(focusableElements).indexOf(
           document.activeElement as HTMLElement
-        );
+        )
 
-        let targetIndex: number;
+        let targetIndex: number
 
         switch (key) {
           case 'ArrowDown':
             // Move to next item, wrap to first if at end
-            targetIndex = currentIndex < focusableElements.length - 1
-              ? currentIndex + 1
-              : 0;
-            break;
+            targetIndex = currentIndex < focusableElements.length - 1 ? currentIndex + 1 : 0
+            break
           case 'ArrowUp':
             // Move to previous item, wrap to last if at beginning
-            targetIndex = currentIndex > 0
-              ? currentIndex - 1
-              : focusableElements.length - 1;
-            break;
+            targetIndex = currentIndex > 0 ? currentIndex - 1 : focusableElements.length - 1
+            break
           case 'Home':
             // Jump to first item
-            targetIndex = 0;
-            break;
+            targetIndex = 0
+            break
           case 'End':
             // Jump to last item
-            targetIndex = focusableElements.length - 1;
-            break;
+            targetIndex = focusableElements.length - 1
+            break
           default:
-            return;
+            return
         }
 
-        focusableElements[targetIndex]?.focus();
+        focusableElements[targetIndex]?.focus()
       }
-    };
+    }
 
-    menu.addEventListener('keydown', handleKeyboardNavigation);
+    menu.addEventListener('keydown', handleKeyboardNavigation)
 
     // Focus first element when menu opens
-    firstFocusable?.focus();
+    firstFocusable?.focus()
 
-    return () => menu.removeEventListener('keydown', handleKeyboardNavigation);
-  }, [mobileMenuOpen]);
+    return () => menu.removeEventListener('keydown', handleKeyboardNavigation)
+  }, [mobileMenuOpen])
 
   return (
     <header className={styles.header}>
@@ -133,6 +129,7 @@ export const Header = (): React.ReactElement => {
           >
             <li>
               <button
+                type="button"
                 onClick={() => scrollToSection('features')}
                 className={styles.navLink}
               >
@@ -141,6 +138,7 @@ export const Header = (): React.ReactElement => {
             </li>
             <li>
               <button
+                type="button"
                 onClick={() => scrollToSection('download')}
                 className={styles.navLink}
               >
@@ -148,11 +146,7 @@ export const Header = (): React.ReactElement => {
               </button>
             </li>
             <li className={styles.navCta}>
-              <Button
-                variant="primary"
-                size="small"
-                onClick={() => scrollToSection('download')}
-              >
+              <Button variant="primary" size="small" onClick={() => scrollToSection('download')}>
                 Get Started
               </Button>
             </li>
@@ -168,14 +162,11 @@ export const Header = (): React.ReactElement => {
               aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={mobileMenuOpen}
             >
-              <Icon
-                name={mobileMenuOpen ? 'fa-xmark' : 'fa-bars'}
-                size="lg"
-              />
+              <Icon name={mobileMenuOpen ? 'fa-xmark' : 'fa-bars'} size="lg" />
             </button>
           </div>
         </nav>
       </div>
     </header>
-  );
-};
+  )
+}

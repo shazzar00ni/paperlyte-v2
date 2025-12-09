@@ -5,8 +5,11 @@
 .slideInRight,
 .scale {
   opacity: 0;
-  transition: opacity var(--transition-slow), transform var(--transition-slow);
+  transition:
+    opacity var(--transition-slow),
+    transform var(--transition-slow);
   will-change: opacity, transform;
+  animation-delay: var(--animation-delay, 0ms);
 }
 
 /* Animation specific transforms */
@@ -30,6 +33,56 @@
 .visible {
   opacity: 1 !important;
   transform: translateY(0) translateX(0) scale(1) !important;
+}
+
+/* Animation delay utility classes */
+.delay0 {
+  --animation-delay: 0ms;
+}
+.delay50 {
+  --animation-delay: 50ms;
+}
+.delay100 {
+  --animation-delay: 100ms;
+}
+.delay150 {
+  --animation-delay: 150ms;
+}
+.delay200 {
+  --animation-delay: 200ms;
+}
+.delay250 {
+  --animation-delay: 250ms;
+}
+.delay300 {
+  --animation-delay: 300ms;
+}
+.delay350 {
+  --animation-delay: 350ms;
+}
+.delay400 {
+  --animation-delay: 400ms;
+}
+.delay450 {
+  --animation-delay: 450ms;
+}
+.delay500 {
+  --animation-delay: 500ms;
+}
+.delay600 {
+  --animation-delay: 600ms;
+}
+.delay700 {
+  --animation-delay: 700ms;
+}
+.delay800 {
+  --animation-delay: 800ms;
+}
+.delay900 {
+  --animation-delay: 900ms;
+}
+.delay1000 {
+  --animation-delay: 1000ms;
 }
 
 /* Respect prefers-reduced-motion */

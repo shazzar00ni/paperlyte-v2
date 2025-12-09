@@ -112,7 +112,7 @@ Use descriptive branch names following this pattern:
 
 Example:
 
-```typescript
+````typescript
 /**
  * Custom hook that tracks element visibility in viewport
  *
@@ -126,8 +126,8 @@ Example:
  */
 export const useIntersectionObserver = (options = {}) => {
   // Implementation
-};
-```
+}
+````
 
 ### CSS/Styling
 
@@ -214,21 +214,26 @@ fix(hook): resolve issue with X
 
 ```markdown
 ## Description
+
 Brief description of changes
 
 ## Type of Change
+
 - [ ] Bug fix
 - [ ] New feature
 - [ ] Breaking change
 - [ ] Documentation update
 
 ## Testing
+
 Describe how you tested your changes
 
 ## Screenshots (if applicable)
+
 Add screenshots for UI changes
 
 ## Checklist
+
 - [ ] Code follows project style guidelines
 - [ ] Self-reviewed my own code
 - [ ] Commented complex code sections

@@ -1,7 +1,7 @@
-import { Section } from '@components/layout/Section';
-import { Button } from '@components/ui/Button';
-import { AnimatedElement } from '@components/ui/AnimatedElement';
-import styles from './CTA.module.css';
+import { Section } from '@components/layout/Section'
+import { Button } from '@components/ui/Button'
+import { AnimatedElement } from '@components/ui/AnimatedElement'
+import styles from './CTA.module.css'
 
 export const CTA = (): React.ReactElement => {
   return (
@@ -67,5 +67,5 @@ export const CTA = (): React.ReactElement => {
         </AnimatedElement>
       </div>
     </Section>
-  );
-};
+  )
+}

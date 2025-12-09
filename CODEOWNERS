@@ -6,23 +6,23 @@
 # More info: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
 
 # Default ownership - all files
-* @shannonlockett
+* @shazzar00ni
 
 # Core configuration files
-/package.json @shannonlockett
-/tsconfig*.json @shannonlockett
-/vite.config.ts @shannonlockett
-/eslint.config.js @shannonlockett
+/package.json @shazzar00ni
+/tsconfig*.json @shazzar00ni
+/vite.config.ts @shazzar00ni
+/eslint.config.js @shazzar00ni
 
 # Build and deployment configuration
-/.github/ @shannonlockett
-/netlify.toml @shannonlockett
+/.github/ @shazzar00ni
+/netlify.toml @shazzar00ni
 
 # Design system and styles
-/src/styles/ @shannonlockett
-/src/constants/ @shannonlockett
+/src/styles/ @shazzar00ni
+/src/constants/ @shazzar00ni
 
 # Documentation
-/README.md @shannonlockett
-/CLAUDE.md @shannonlockett
-/LICENSE @shannonlockett
+/README.md @shazzar00ni
+/CLAUDE.md @shazzar00ni
+/LICENSE @shazzar00ni

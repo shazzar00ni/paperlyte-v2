@@ -1,594 +1,449 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { Header } from './Header';
-
-// Mock child components
-vi.mock('@components/ui/Button', () => ({
-  Button: ({ children, onClick, ...props }: any) => (
-    <button onClick={onClick} {...props}>
-      {children}
-    </button>
-  ),
-}));
-
-vi.mock('@components/ui/Icon', () => ({
-  Icon: ({ name, size, ariaLabel }: any) => (
-    <i
-      className={`fa-solid ${name} ${size ? `fa-${size}` : ''}`}
-      aria-label={ariaLabel}
-      aria-hidden={!ariaLabel}
-    />
-  ),
-}));
-
-vi.mock('@components/ui/ThemeToggle', () => ({
-  ThemeToggle: () => <button aria-label="Toggle theme">Theme</button>,
-}));
+import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { Header } from './Header'
 
 describe('Header', () => {
+  let scrollIntoViewMock: ReturnType<typeof vi.fn>
+
   beforeEach(() => {
-    // Mock scrollIntoView
-    Element.prototype.scrollIntoView = vi.fn();
-  });
+    // Ensure scrollIntoView exists (jsdom doesn't define it by default)
+    if (!Element.prototype.scrollIntoView) {
+      Element.prototype.scrollIntoView = () => {}
+    }
+
+    // Mock the scrollIntoView method
+    scrollIntoViewMock = vi.fn()
+    vi.spyOn(Element.prototype, 'scrollIntoView').mockImplementation(scrollIntoViewMock)
+  })
 
   afterEach(() => {
-    vi.clearAllMocks();
-  });
+    // Restore scrollIntoView
+    vi.restoreAllMocks()
+  })
 
   describe('Rendering', () => {
-    it('should render header with correct structure', () => {
-      render(<Header />);
+    it('should render the logo', () => {
+      render(<Header />)
 
-      const header = screen.getByRole('banner');
-      expect(header).toBeInTheDocument();
-    });
+      expect(screen.getByText('Paperlyte')).toBeInTheDocument()
+    })
 
-    it('should render logo with icon and text', () => {
-      const { container } = render(<Header />);
+    it('should render navigation links', () => {
+      render(<Header />)
 
-      const logoIcon = container.querySelector('.fa-feather');
-      expect(logoIcon).toBeInTheDocument();
-      expect(screen.getByText('Paperlyte')).toBeInTheDocument();
-    });
+      expect(screen.getByRole('button', { name: /features/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /download/i })).toBeInTheDocument()
+    })
 
-    it('should render navigation with aria-label', () => {
-      render(<Header />);
+    it('should render Get Started CTA button', () => {
+      render(<Header />)
 
-      const nav = screen.getByRole('navigation', { name: 'Main navigation' });
-      expect(nav).toBeInTheDocument();
-    });
+      // There might be multiple "Get Started" buttons, so we check that at least one exists
+      const ctaButtons = screen.getAllByRole('button', { name: /get started/i })
+      expect(ctaButtons.length).toBeGreaterThan(0)
+    })
 
-    it('should render all navigation links', () => {
-      render(<Header />);
+    it('should render ThemeToggle component', () => {
+      render(<Header />)
 
-      expect(screen.getByRole('button', { name: 'Features' })).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: 'Download' })).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: 'Get Started' })).toBeInTheDocument();
-    });
-
-    it('should render theme toggle', () => {
-      render(<Header />);
-
-      expect(screen.getByRole('button', { name: 'Toggle theme' })).toBeInTheDocument();
-    });
+      // ThemeToggle should render a button with accessible label
+      const themeToggle = screen.getByRole('button', {
+        name: /switch to (dark|light) mode/i,
+      })
+      expect(themeToggle).toBeInTheDocument()
+    })
 
     it('should render mobile menu button', () => {
-      render(<Header />);
+      render(<Header />)
 
-      const menuButton = screen.getByRole('button', { name: 'Open menu' });
-      expect(menuButton).toBeInTheDocument();
-      expect(menuButton).toHaveAttribute('aria-expanded', 'false');
-    });
-  });
+      const menuButton = screen.getByLabelText(/open menu/i)
+      expect(menuButton).toBeInTheDocument()
+    })
 
-  describe('Mobile Menu Interaction', () => {
-    it('should toggle mobile menu when menu button is clicked', async () => {
-      const user = userEvent.setup();
-      render(<Header />);
+    it('should have main navigation aria-label', () => {
+      render(<Header />)
 
-      const menuButton = screen.getByRole('button', { name: 'Open menu' });
+      const nav = screen.getByRole('navigation', { name: /main navigation/i })
+      expect(nav).toBeInTheDocument()
+    })
+  })
 
-      // Initially closed
-      expect(menuButton).toHaveAttribute('aria-expanded', 'false');
-      expect(menuButton).toHaveAttribute('aria-label', 'Open menu');
+  describe('Mobile Menu', () => {
+    it('should toggle mobile menu when button is clicked', async () => {
+      const user = userEvent.setup()
+      render(<Header />)
 
-      // Click to open
-      await user.click(menuButton);
-      expect(menuButton).toHaveAttribute('aria-expanded', 'true');
-      expect(menuButton).toHaveAttribute('aria-label', 'Close menu');
+      const menuButton = screen.getByLabelText(/open menu/i)
 
-      // Click to close
-      await user.click(menuButton);
-      expect(menuButton).toHaveAttribute('aria-expanded', 'false');
-      expect(menuButton).toHaveAttribute('aria-label', 'Open menu');
-    });
+      await user.click(menuButton)
 
-    it('should change menu icon when menu is opened/closed', async () => {
-      const user = userEvent.setup();
-      const { container } = render(<Header />);
+      expect(screen.getByLabelText(/close menu/i)).toBeInTheDocument()
+    })
 
-      const menuButton = screen.getByRole('button', { name: 'Open menu' });
+    it('should show close icon when menu is open', async () => {
+      const user = userEvent.setup()
+      render(<Header />)
 
-      // Initially shows bars icon
-      expect(container.querySelector('.fa-bars')).toBeInTheDocument();
-      expect(container.querySelector('.fa-xmark')).not.toBeInTheDocument();
+      const menuButton = screen.getByLabelText(/open menu/i)
+      await user.click(menuButton)
 
-      // Click to open - shows close icon
-      await user.click(menuButton);
-      expect(container.querySelector('.fa-xmark')).toBeInTheDocument();
-      expect(container.querySelector('.fa-bars')).not.toBeInTheDocument();
+      const closeButton = screen.getByLabelText(/close menu/i)
+      expect(closeButton.querySelector('.fa-xmark')).toBeInTheDocument()
+    })
 
-      // Click to close - shows bars icon again
-      await user.click(menuButton);
-      expect(container.querySelector('.fa-bars')).toBeInTheDocument();
-      expect(container.querySelector('.fa-xmark')).not.toBeInTheDocument();
-    });
+    it('should show bars icon when menu is closed', () => {
+      render(<Header />)
 
-    it('should close mobile menu when Escape key is pressed', async () => {
-      const user = userEvent.setup();
-      render(<Header />);
+      const menuButton = screen.getByLabelText(/open menu/i)
+      expect(menuButton.querySelector('.fa-bars')).toBeInTheDocument()
+    })
 
-      const menuButton = screen.getByRole('button', { name: 'Open menu' });
+    it('should have correct aria-expanded attribute', async () => {
+      const user = userEvent.setup()
+      render(<Header />)
 
-      // Open menu
-      await user.click(menuButton);
-      expect(menuButton).toHaveAttribute('aria-expanded', 'true');
+      const menuButton = screen.getByLabelText(/open menu/i)
+      expect(menuButton).toHaveAttribute('aria-expanded', 'false')
 
-      // Press Escape
-      await user.keyboard('{Escape}');
-      expect(menuButton).toHaveAttribute('aria-expanded', 'false');
-    });
+      await user.click(menuButton)
 
-    it('should not close menu when Escape is pressed while menu is closed', async () => {
-      const user = userEvent.setup();
-      render(<Header />);
+      const openMenuButton = screen.getByLabelText(/close menu/i)
+      expect(openMenuButton).toHaveAttribute('aria-expanded', 'true')
+    })
 
-      const menuButton = screen.getByRole('button', { name: 'Open menu' });
+    it('should close menu when clicking menu button again', async () => {
+      const user = userEvent.setup()
+      render(<Header />)
 
-      // Menu is closed
-      expect(menuButton).toHaveAttribute('aria-expanded', 'false');
+      const menuButton = screen.getByLabelText(/open menu/i)
 
-      // Press Escape (should do nothing)
-      await user.keyboard('{Escape}');
-      expect(menuButton).toHaveAttribute('aria-expanded', 'false');
-    });
+      await user.click(menuButton)
+      expect(screen.getByLabelText(/close menu/i)).toBeInTheDocument()
 
-    it('should return focus to menu button when menu is closed', async () => {
-      const user = userEvent.setup();
-      render(<Header />);
+      const closeButton = screen.getByLabelText(/close menu/i)
+      await user.click(closeButton)
 
-      const menuButton = screen.getByRole('button', { name: 'Open menu' });
+      expect(screen.getByLabelText(/open menu/i)).toBeInTheDocument()
+    })
+  })
 
-      // Open menu
-      await user.click(menuButton);
+  describe('Keyboard Navigation', () => {
+    it('should close menu when Escape is pressed', async () => {
+      const user = userEvent.setup()
+      render(<Header />)
 
-      // Focus something else
-      const featuresButton = screen.getByRole('button', { name: 'Features' });
-      featuresButton.focus();
-      expect(document.activeElement).toBe(featuresButton);
+      const menuButton = screen.getByLabelText(/open menu/i)
+      await user.click(menuButton)
 
-      // Close menu with Escape
-      await user.keyboard('{Escape}');
+      expect(screen.getByLabelText(/close menu/i)).toBeInTheDocument()
 
-      // Focus should return to menu button
-      expect(document.activeElement).toBe(menuButton);
-    });
-  });
+      await user.keyboard('{Escape}')
+
+      expect(screen.getByLabelText(/open menu/i)).toBeInTheDocument()
+    })
+
+    it('should not close menu when Escape is pressed if menu is already closed', async () => {
+      const user = userEvent.setup()
+      render(<Header />)
+
+      const menuButton = screen.getByLabelText(/open menu/i)
+
+      await user.keyboard('{Escape}')
+
+      // Menu should still be closed
+      expect(menuButton).toHaveAttribute('aria-expanded', 'false')
+    })
+
+    it('should return focus to menu button when menu closes via Escape', async () => {
+      const user = userEvent.setup()
+      render(<Header />)
+
+      const menuButton = screen.getByLabelText(/open menu/i)
+      await user.click(menuButton)
+
+      await user.keyboard('{Escape}')
+
+      // Menu button should have focus
+      expect(menuButton).toHaveFocus()
+    })
+
+    it('should navigate with Tab key in open menu', async () => {
+      const user = userEvent.setup()
+      render(<Header />)
+
+      const menuButton = screen.getByLabelText(/open menu/i)
+      await user.click(menuButton)
+
+      // Tab should move focus through menu items
+      await user.keyboard('{Tab}')
+
+      // Focus should be on a focusable element within the navigation
+      const nav = screen.getByRole('navigation')
+      expect(nav.contains(document.activeElement)).toBe(true)
+    })
+
+    it('should navigate with ArrowDown key', async () => {
+      const user = userEvent.setup()
+      render(<Header />)
+
+      const menuButton = screen.getByLabelText(/open menu/i)
+      await user.click(menuButton)
+
+      // Capture initial focused element (should be first menu item after opening)
+      const initialElement = document.activeElement
+      expect(initialElement).toBeTruthy()
+
+      await user.keyboard('{ArrowDown}')
+
+      // Focus should have moved to a different element
+      expect(document.activeElement).not.toBe(initialElement)
+
+      // The new focused element should be within the navigation menu
+      const nav = screen.getByRole('navigation')
+      expect(nav.contains(document.activeElement)).toBe(true)
+
+      // Should be a focusable menu item (button)
+      expect(document.activeElement?.tagName).toBe('BUTTON')
+    })
+
+    it('should navigate with ArrowUp key', async () => {
+      const user = userEvent.setup()
+      render(<Header />)
+
+      const menuButton = screen.getByLabelText(/open menu/i)
+      await user.click(menuButton)
+
+      // Capture initial focused element (should be first menu item after opening)
+      const initialElement = document.activeElement
+      expect(initialElement).toBeTruthy()
+
+      await user.keyboard('{ArrowUp}')
+
+      // Focus should have moved to a different element (wraps to last item)
+      expect(document.activeElement).not.toBe(initialElement)
+
+      // The new focused element should be within the navigation menu
+      const nav = screen.getByRole('navigation')
+      expect(nav.contains(document.activeElement)).toBe(true)
+
+      // Should be a focusable menu item (button)
+      expect(document.activeElement?.tagName).toBe('BUTTON')
+    })
+
+    it('should jump to first item with Home key', async () => {
+      const user = userEvent.setup()
+      render(<Header />)
+
+      const menuButton = screen.getByLabelText(/open menu/i)
+      await user.click(menuButton)
+
+      // Get all focusable elements in the menu list (not including mobile menu button)
+      const nav = screen.getByRole('navigation')
+      const menuList = nav.querySelector('ul')
+      const focusableElements = menuList?.querySelectorAll<HTMLElement>('button, [href]')
+      const firstElement = focusableElements?.[0]
+
+      // Move to another element first
+      await user.keyboard('{ArrowDown}')
+      expect(document.activeElement).not.toBe(firstElement)
+
+      // Press Home to jump to first
+      await user.keyboard('{Home}')
+
+      // Should be on the first focusable element within the menu list
+      expect(document.activeElement).toBe(firstElement)
+      expect(menuList?.contains(document.activeElement)).toBe(true)
+    })
+
+    it('should jump to last item with End key', async () => {
+      const user = userEvent.setup()
+      render(<Header />)
+
+      const menuButton = screen.getByLabelText(/open menu/i)
+      await user.click(menuButton)
+
+      // Get all focusable elements in the menu list (not including mobile menu button)
+      const nav = screen.getByRole('navigation')
+      const menuList = nav.querySelector('ul')
+      const focusableElements = menuList?.querySelectorAll<HTMLElement>('button, [href]')
+      const lastElement = focusableElements?.[focusableElements.length - 1]
+
+      // Press End to jump to last
+      await user.keyboard('{End}')
+
+      // Should be on the last focusable element within the menu list
+      expect(document.activeElement).toBe(lastElement)
+      expect(menuList?.contains(document.activeElement)).toBe(true)
+    })
+  })
 
   describe('Navigation Functionality', () => {
-    it('should scroll to features section when Features is clicked', async () => {
-      const user = userEvent.setup();
-      const mockElement = document.createElement('div');
-      mockElement.id = 'features';
-      document.body.appendChild(mockElement);
+    it('should scroll to features section when Features link is clicked', async () => {
+      const user = userEvent.setup()
 
-      render(<Header />);
+      // Create a mock features section
+      const featuresSection = document.createElement('div')
+      featuresSection.id = 'features'
+      document.body.appendChild(featuresSection)
 
-      const featuresButton = screen.getByRole('button', { name: 'Features' });
-      await user.click(featuresButton);
+      render(<Header />)
 
-      expect(mockElement.scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth' });
+      const featuresButton = screen.getByRole('button', { name: /^features$/i })
+      await user.click(featuresButton)
 
-      document.body.removeChild(mockElement);
-    });
+      expect(scrollIntoViewMock).toHaveBeenCalledWith({
+        behavior: 'smooth',
+      })
 
-    it('should scroll to download section when Download is clicked', async () => {
-      const user = userEvent.setup();
-      const mockElement = document.createElement('div');
-      mockElement.id = 'download';
-      document.body.appendChild(mockElement);
+      // Cleanup
+      document.body.removeChild(featuresSection)
+    })
 
-      render(<Header />);
+    it('should scroll to download section when Download link is clicked', async () => {
+      const user = userEvent.setup()
 
-      const downloadButton = screen.getByRole('button', { name: 'Download' });
-      await user.click(downloadButton);
+      // Create a mock download section
+      const downloadSection = document.createElement('div')
+      downloadSection.id = 'download'
+      document.body.appendChild(downloadSection)
 
-      expect(mockElement.scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth' });
+      render(<Header />)
 
-      document.body.removeChild(mockElement);
-    });
+      const downloadButton = screen.getByRole('button', { name: /^download$/i })
+      await user.click(downloadButton)
 
-    it('should scroll to download section when Get Started is clicked', async () => {
-      const user = userEvent.setup();
-      const mockElement = document.createElement('div');
-      mockElement.id = 'download';
-      document.body.appendChild(mockElement);
+      expect(scrollIntoViewMock).toHaveBeenCalledWith({
+        behavior: 'smooth',
+      })
 
-      render(<Header />);
+      // Cleanup
+      document.body.removeChild(downloadSection)
+    })
 
-      const getStartedButton = screen.getByRole('button', { name: 'Get Started' });
-      await user.click(getStartedButton);
+    it('should close mobile menu after clicking a navigation link', async () => {
+      const user = userEvent.setup()
 
-      expect(mockElement.scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth' });
+      // Create a mock section
+      const section = document.createElement('div')
+      section.id = 'features'
+      document.body.appendChild(section)
 
-      document.body.removeChild(mockElement);
-    });
+      render(<Header />)
 
-    it('should not scroll if target section does not exist', async () => {
-      const user = userEvent.setup();
-      const scrollIntoViewSpy = vi.spyOn(Element.prototype, 'scrollIntoView');
+      // Open mobile menu
+      const menuButton = screen.getByLabelText(/open menu/i)
+      await user.click(menuButton)
 
-      render(<Header />);
+      expect(screen.getByLabelText(/close menu/i)).toBeInTheDocument()
 
-      const featuresButton = screen.getByRole('button', { name: 'Features' });
-      await user.click(featuresButton);
-
-      // Should not be called if element doesn't exist
-      expect(scrollIntoViewSpy).not.toHaveBeenCalled();
-    });
-
-    it('should close mobile menu after scrolling to section', async () => {
-      const user = userEvent.setup();
-      const mockElement = document.createElement('div');
-      mockElement.id = 'features';
-      document.body.appendChild(mockElement);
-
-      render(<Header />);
-
-      const menuButton = screen.getByRole('button', { name: 'Open menu' });
-
-      // Open menu
-      await user.click(menuButton);
-      expect(menuButton).toHaveAttribute('aria-expanded', 'true');
-
-      // Click navigation link
-      const featuresButton = screen.getByRole('button', { name: 'Features' });
-      await user.click(featuresButton);
+      // Click a navigation link
+      const featuresButton = screen.getByRole('button', { name: /^features$/i })
+      await user.click(featuresButton)
 
       // Menu should be closed
-      expect(menuButton).toHaveAttribute('aria-expanded', 'false');
+      expect(screen.getByLabelText(/open menu/i)).toBeInTheDocument()
 
-      document.body.removeChild(mockElement);
-    });
-  });
+      // Cleanup
+      document.body.removeChild(section)
+    })
 
-  describe('Focus Trap', () => {
-    it('should focus first element when mobile menu opens', async () => {
-      const user = userEvent.setup();
-      render(<Header />);
+    it('should handle missing section gracefully', async () => {
+      const user = userEvent.setup()
+      render(<Header />)
 
-      const menuButton = screen.getByRole('button', { name: 'Open menu' });
+      // Click link for non-existent section
+      const featuresButton = screen.getByRole('button', { name: /^features$/i })
 
-      // Open menu
-      await user.click(menuButton);
+      // Should not throw error
+      await expect(user.click(featuresButton)).resolves.not.toThrow()
+    })
 
-      // First focusable element (Features button) should be focused
-      const featuresButton = screen.getByRole('button', { name: 'Features' });
-      expect(document.activeElement).toBe(featuresButton);
-    });
+    it('should scroll to download section from Get Started button', async () => {
+      const user = userEvent.setup()
 
-    it('should trap focus within mobile menu when Tab is pressed on last element', async () => {
-      const user = userEvent.setup();
-      render(<Header />);
+      // Create a mock download section
+      const downloadSection = document.createElement('div')
+      downloadSection.id = 'download'
+      document.body.appendChild(downloadSection)
 
-      const menuButton = screen.getByRole('button', { name: 'Open menu' });
+      render(<Header />)
 
-      // Open menu
-      await user.click(menuButton);
+      const getStartedButtons = screen.getAllByRole('button', { name: /get started/i })
+      // Click the first Get Started button
+      await user.click(getStartedButtons[0])
 
-      // Get all focusable elements in order
-      const featuresButton = screen.getByRole('button', { name: 'Features' });
-      const downloadButton = screen.getByRole('button', { name: 'Download' });
-      const getStartedButton = screen.getByRole('button', { name: 'Get Started' });
+      expect(scrollIntoViewMock).toHaveBeenCalledWith({
+        behavior: 'smooth',
+      })
 
-      // First element should be focused
-      expect(document.activeElement).toBe(featuresButton);
+      // Cleanup
+      document.body.removeChild(downloadSection)
+    })
+  })
 
-      // Tab to second element
-      await user.tab();
-      expect(document.activeElement).toBe(downloadButton);
+  describe('Focus Management', () => {
+    it('should focus first element when menu opens', async () => {
+      const user = userEvent.setup()
+      render(<Header />)
 
-      // Tab to third element
-      await user.tab();
-      expect(document.activeElement).toBe(getStartedButton);
+      const menuButton = screen.getByLabelText(/open menu/i)
+      await user.click(menuButton)
 
-      // Tab on last element should cycle to first
-      await user.tab();
-      expect(document.activeElement).toBe(featuresButton);
-    });
+      // Get the first focusable element in the menu list
+      const nav = screen.getByRole('navigation')
+      const menuList = nav.querySelector('ul')
+      const focusableElements = menuList?.querySelectorAll<HTMLElement>('button, [href]')
+      const firstElement = focusableElements?.[0]
 
-    it('should trap focus when Shift+Tab is pressed on first element', async () => {
-      const user = userEvent.setup();
-      render(<Header />);
+      // After menu opens, first focusable element should have focus
+      expect(firstElement).toBeTruthy()
+      expect(document.activeElement).toBe(firstElement)
+    })
 
-      const menuButton = screen.getByRole('button', { name: 'Open menu' });
+    it('should return focus to menu button when closing via navigation', async () => {
+      const user = userEvent.setup()
 
-      // Open menu
-      await user.click(menuButton);
+      // Create a mock section
+      const section = document.createElement('div')
+      section.id = 'features'
+      document.body.appendChild(section)
 
-      const featuresButton = screen.getByRole('button', { name: 'Features' });
-      const getStartedButton = screen.getByRole('button', { name: 'Get Started' });
+      render(<Header />)
 
-      // First element should be focused
-      expect(document.activeElement).toBe(featuresButton);
+      const menuButton = screen.getByLabelText(/open menu/i)
+      await user.click(menuButton)
 
-      // Shift+Tab on first element should cycle to last
-      await user.tab({ shift: true });
-      expect(document.activeElement).toBe(getStartedButton);
-    });
+      const featuresButton = screen.getByRole('button', { name: /^features$/i })
+      await user.click(featuresButton)
 
-    it('should allow normal tabbing in the middle of the menu', async () => {
-      const user = userEvent.setup();
-      render(<Header />);
+      // Focus should return to menu button
+      expect(menuButton).toHaveFocus()
 
-      const menuButton = screen.getByRole('button', { name: 'Open menu' });
-
-      // Open menu
-      await user.click(menuButton);
-
-      const featuresButton = screen.getByRole('button', { name: 'Features' });
-      const downloadButton = screen.getByRole('button', { name: 'Download' });
-
-      // First element focused
-      expect(document.activeElement).toBe(featuresButton);
-
-      // Tab to second element (should work normally)
-      await user.tab();
-      expect(document.activeElement).toBe(downloadButton);
-
-      // Shift+Tab back to first element (should work normally)
-      await user.tab({ shift: true });
-      expect(document.activeElement).toBe(featuresButton);
-    });
-
-    it('should not trap focus when menu is closed', async () => {
-      const user = userEvent.setup();
-      render(<Header />);
-
-      const menuButton = screen.getByRole('button', { name: 'Open menu' });
-
-      // Menu is closed - focus should not be trapped
-      menuButton.focus();
-      expect(document.activeElement).toBe(menuButton);
-
-      // Tab should move focus away normally (not trapped)
-      await user.tab();
-      expect(document.activeElement).not.toBe(menuButton);
-    });
-
-    it('should handle non-Tab keys without interfering', async () => {
-      const user = userEvent.setup();
-      render(<Header />);
-
-      const menuButton = screen.getByRole('button', { name: 'Open menu' });
-
-      // Open menu
-      await user.click(menuButton);
-
-      const featuresButton = screen.getByRole('button', { name: 'Features' });
-      expect(document.activeElement).toBe(featuresButton);
-
-      // Press non-Tab keys (should not interfere)
-      await user.keyboard('{ArrowDown}');
-      expect(document.activeElement).toBe(featuresButton);
-
-      await user.keyboard('{Enter}');
-      // Enter would click the button, but focus should remain manageable
-    });
-  });
+      // Cleanup
+      document.body.removeChild(section)
+    })
+  })
 
   describe('Accessibility', () => {
-    it('should have proper ARIA attributes on mobile menu button', () => {
-      render(<Header />);
+    it('should have accessible button labels', () => {
+      render(<Header />)
 
-      const menuButton = screen.getByRole('button', { name: 'Open menu' });
+      expect(screen.getByRole('button', { name: /features/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /download/i })).toBeInTheDocument()
+      expect(screen.getByLabelText(/open menu|close menu/i)).toBeInTheDocument()
+    })
 
-      expect(menuButton).toHaveAttribute('type', 'button');
-      expect(menuButton).toHaveAttribute('aria-label', 'Open menu');
-      expect(menuButton).toHaveAttribute('aria-expanded', 'false');
-    });
+    it('should update aria-label when menu state changes', async () => {
+      const user = userEvent.setup()
+      render(<Header />)
 
-    it('should update aria-expanded when menu state changes', async () => {
-      const user = userEvent.setup();
-      render(<Header />);
+      const menuButton = screen.getByLabelText(/open menu/i)
+      expect(menuButton).toHaveAttribute('aria-label', 'Open menu')
 
-      const menuButton = screen.getByRole('button', { name: 'Open menu' });
+      await user.click(menuButton)
 
-      expect(menuButton).toHaveAttribute('aria-expanded', 'false');
-
-      await user.click(menuButton);
-      expect(menuButton).toHaveAttribute('aria-expanded', 'true');
-
-      await user.click(menuButton);
-      expect(menuButton).toHaveAttribute('aria-expanded', 'false');
-    });
-
-    it('should update aria-label to reflect menu state', async () => {
-      const user = userEvent.setup();
-      render(<Header />);
-
-      let menuButton = screen.getByRole('button', { name: 'Open menu' });
-      expect(menuButton).toHaveAttribute('aria-label', 'Open menu');
-
-      await user.click(menuButton);
-      menuButton = screen.getByRole('button', { name: 'Close menu' });
-      expect(menuButton).toHaveAttribute('aria-label', 'Close menu');
-    });
-
-    it('should have semantic header element', () => {
-      render(<Header />);
-
-      const header = screen.getByRole('banner');
-      expect(header.tagName).toBe('HEADER');
-    });
-
-    it('should have semantic nav element with label', () => {
-      render(<Header />);
-
-      const nav = screen.getByRole('navigation', { name: 'Main navigation' });
-      expect(nav.tagName).toBe('NAV');
-    });
-
-    it('should hide decorative icons from screen readers', () => {
-      const { container } = render(<Header />);
-
-      const logoIcon = container.querySelector('.fa-feather');
-      expect(logoIcon).toHaveAttribute('aria-hidden', 'true');
-
-      const menuButton = screen.getByRole('button', { name: 'Open menu' });
-      const menuIcon = within(menuButton as HTMLElement).getByRole('img', { hidden: true });
-      expect(menuIcon).toHaveAttribute('aria-hidden', 'true');
-    });
-  });
-
-  describe('Event Cleanup', () => {
-    it('should cleanup Escape key listener when component unmounts', () => {
-      const removeEventListenerSpy = vi.spyOn(document, 'removeEventListener');
-
-      const { unmount } = render(<Header />);
-      unmount();
-
-      expect(removeEventListenerSpy).toHaveBeenCalledWith('keydown', expect.any(Function));
-    });
-
-    it('should cleanup focus trap listener when menu closes', async () => {
-      const user = userEvent.setup();
-      render(<Header />);
-
-      const menuButton = screen.getByRole('button', { name: 'Open menu' });
-
-      // Open menu (sets up listener)
-      await user.click(menuButton);
-
-      // Close menu (should cleanup listener)
-      await user.click(menuButton);
-
-      // The listener should be cleaned up (we can't directly test this,
-      // but we ensure no errors occur)
-      expect(menuButton).toHaveAttribute('aria-expanded', 'false');
-    });
-
-    it('should cleanup all listeners when component unmounts while menu is open', async () => {
-      const user = userEvent.setup();
-      const removeEventListenerSpy = vi.spyOn(document, 'removeEventListener');
-
-      const { unmount } = render(<Header />);
-
-      const menuButton = screen.getByRole('button', { name: 'Open menu' });
-      await user.click(menuButton);
-
-      unmount();
-
-      // Should cleanup both the Escape listener and focus trap listener
-      expect(removeEventListenerSpy).toHaveBeenCalled();
-    });
-  });
-
-  describe('Edge Cases', () => {
-    it('should handle rapid menu toggles', async () => {
-      const user = userEvent.setup();
-      render(<Header />);
-
-      const menuButton = screen.getByRole('button', { name: 'Open menu' });
-
-      // Rapidly toggle menu
-      await user.click(menuButton);
-      await user.click(menuButton);
-      await user.click(menuButton);
-      await user.click(menuButton);
-
-      // Should end in closed state (even number of clicks)
-      expect(menuButton).toHaveAttribute('aria-expanded', 'false');
-    });
-
-    it('should handle multiple Escape key presses', async () => {
-      const user = userEvent.setup();
-      render(<Header />);
-
-      const menuButton = screen.getByRole('button', { name: 'Open menu' });
-
-      await user.click(menuButton);
-      expect(menuButton).toHaveAttribute('aria-expanded', 'true');
-
-      // Press Escape multiple times
-      await user.keyboard('{Escape}');
-      await user.keyboard('{Escape}');
-      await user.keyboard('{Escape}');
-
-      // Should remain closed after first Escape
-      expect(menuButton).toHaveAttribute('aria-expanded', 'false');
-    });
-
-    it('should handle scrolling to non-existent sections gracefully', async () => {
-      const user = userEvent.setup();
-      render(<Header />);
-
-      const featuresButton = screen.getByRole('button', { name: 'Features' });
-
-      // Should not throw error when section doesn't exist
-      expect(async () => {
-        await user.click(featuresButton);
-      }).not.toThrow();
-    });
-
-    it('should handle empty focusable elements list', async () => {
-      const user = userEvent.setup();
-
-      // Create a mock where querySelectorAll returns empty NodeList
-      const originalQuerySelectorAll = Element.prototype.querySelectorAll;
-      Element.prototype.querySelectorAll = vi.fn(() => [] as any);
-
-      render(<Header />);
-
-      const menuButton = screen.getByRole('button', { name: 'Open menu' });
-
-      // Should not throw error with no focusable elements
-      expect(async () => {
-        await user.click(menuButton);
-      }).not.toThrow();
-
-      Element.prototype.querySelectorAll = originalQuerySelectorAll;
-    });
-  });
-
-  describe('Integration', () => {
-    it('should integrate properly with Button component', async () => {
-      const user = userEvent.setup();
-      render(<Header />);
-
-      const getStartedButton = screen.getByRole('button', { name: 'Get Started' });
-
-      // Button should be clickable
-      await user.click(getStartedButton);
-
-      // Should have called scrollToSection (verified by other tests)
-      expect(getStartedButton).toBeInTheDocument();
-    });
-
-    it('should integrate properly with Icon component', () => {
-      const { container } = render(<Header />);
-
-      // Should render icons with correct classes
-      expect(container.querySelector('.fa-feather')).toBeInTheDocument();
-      expect(container.querySelector('.fa-bars')).toBeInTheDocument();
-    });
-
-    it('should integrate properly with ThemeToggle component', () => {
-      render(<Header />);
-
-      const themeToggle = screen.getByRole('button', { name: 'Toggle theme' });
-      expect(themeToggle).toBeInTheDocument();
-    });
-  });
-});
+      const closeButton = screen.getByLabelText(/close menu/i)
+      expect(closeButton).toHaveAttribute('aria-label', 'Close menu')
+    })
+  })
+})

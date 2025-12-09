@@ -44,26 +44,16 @@ export const Footer = (): React.ReactElement => {
           </div>
 
           <div className={styles.linkGroup}>
-            <h3 className={styles.linkGroupTitle}>Company</h3>
+            <h3 className={styles.linkGroupTitle}>Legal</h3>
             <ul className={styles.linkList}>
               <li>
-                <a href="#about" className={styles.link}>
-                  About
+                <a href="#" className={styles.link}>
+                  Privacy Policy
                 </a>
               </li>
               <li>
-                <a href="#blog" className={styles.link}>
-                  Blog
-                </a>
-              </li>
-              <li>
-                <a href="#careers" className={styles.link}>
-                  Careers
-                </a>
-              </li>
-              <li>
-                <a href="#contact" className={styles.link}>
-                  Contact
+                <a href="#" className={styles.link}>
+                  Terms of Service
                 </a>
               </li>
             </ul>

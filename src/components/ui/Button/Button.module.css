@@ -69,8 +69,8 @@
 .small {
   padding: 0.5rem 1.25rem;
   font-size: var(--font-size-sm);
-  min-height: 40px;
-  min-width: 40px;
+  min-height: 44px;
+  min-width: 44px;
 }
 
 .medium {

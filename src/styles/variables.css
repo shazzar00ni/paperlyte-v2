@@ -11,6 +11,7 @@
   --color-text-tertiary: #9ca3af; /* Gray 400 */
   --color-text-on-primary: #ffffff;
   --color-text-on-dark: #ffffff;
+  --color-text-on-dark-secondary: rgba(255, 255, 255, 0.7);
   --color-border: #e5e7eb; /* Gray 200 */
   --color-border-light: #f3f4f6; /* Gray 100 */
 

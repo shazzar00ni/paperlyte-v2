@@ -25,14 +25,16 @@ describe('Header', () => {
     it('should render the logo', () => {
       render(<Header />)
 
-      expect(screen.getByText('Paperlyte')).toBeInTheDocument()
+      expect(screen.getByText('Paperlyte.')).toBeInTheDocument()
     })
 
     it('should render navigation links', () => {
       render(<Header />)
 
       expect(screen.getByRole('button', { name: /features/i })).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: /download/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /methodology/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /pricing/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /log in/i })).toBeInTheDocument()
     })
 
     it('should render Get Started CTA button', () => {
@@ -41,16 +43,6 @@ describe('Header', () => {
       // There might be multiple "Get Started" buttons, so we check that at least one exists
       const ctaButtons = screen.getAllByRole('button', { name: /get started/i })
       expect(ctaButtons.length).toBeGreaterThan(0)
-    })
-
-    it('should render ThemeToggle component', () => {
-      render(<Header />)
-
-      // ThemeToggle should render a button with accessible label
-      const themeToggle = screen.getByRole('button', {
-        name: /switch to (dark|light) mode/i,
-      })
-      expect(themeToggle).toBeInTheDocument()
     })
 
     it('should render mobile menu button', () => {
@@ -299,25 +291,25 @@ describe('Header', () => {
       document.body.removeChild(featuresSection)
     })
 
-    it('should scroll to download section when Download link is clicked', async () => {
+    it('should scroll to mobile section when Methodology link is clicked', async () => {
       const user = userEvent.setup()
 
-      // Create a mock download section
-      const downloadSection = document.createElement('div')
-      downloadSection.id = 'download'
-      document.body.appendChild(downloadSection)
+      // Create a mock mobile section
+      const mobileSection = document.createElement('div')
+      mobileSection.id = 'mobile'
+      document.body.appendChild(mobileSection)
 
       render(<Header />)
 
-      const downloadButton = screen.getByRole('button', { name: /^download$/i })
-      await user.click(downloadButton)
+      const methodologyButton = screen.getByRole('button', { name: /^methodology$/i })
+      await user.click(methodologyButton)
 
       expect(scrollIntoViewMock).toHaveBeenCalledWith({
         behavior: 'smooth',
       })
 
       // Cleanup
-      document.body.removeChild(downloadSection)
+      document.body.removeChild(mobileSection)
     })
 
     it('should close mobile menu after clicking a navigation link', async () => {
@@ -429,7 +421,8 @@ describe('Header', () => {
       render(<Header />)
 
       expect(screen.getByRole('button', { name: /features/i })).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: /download/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /methodology/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /pricing/i })).toBeInTheDocument()
       expect(screen.getByLabelText(/open menu|close menu/i)).toBeInTheDocument()
     })
 

@@ -24,7 +24,8 @@ interface SVGPathAnimationProps {
    */
   delay?: number
   /**
-   * Delay between each path animation when multiple paths are present (in milliseconds)
+   * Incremental delay applied to each subsequent path (in milliseconds).
+   * The first path has no delay, the second has staggerDelay, the third has 2×staggerDelay, etc.
    * @default 200
    */
   staggerDelay?: number

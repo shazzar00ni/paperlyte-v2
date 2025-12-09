@@ -62,6 +62,11 @@ export const useScrollPosition = () => {
   }, [updateScrollPosition])
 
   useEffect(() => {
+    // Guard for SSR/non-DOM environments
+    if (typeof window === 'undefined') {
+      return
+    }
+
     window.addEventListener('scroll', handleScroll, { passive: true })
 
     return () => {

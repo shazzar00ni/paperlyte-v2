@@ -91,15 +91,26 @@ export const useParallax = (options: UseParallaxOptions = {}) => {
     const scrollY = window.scrollY
     const windowHeight = window.innerHeight
 
+    // Read ref values safely
+    const elemHeight = elementHeight.current
+    const elemTop = elementTop.current
+
     // Calculate how far the element center is from viewport center
-    const elementCenter = elementTop.current + elementHeight.current / 2
+    const elementCenter = elemTop + elemHeight / 2
     const viewportCenter = scrollY + windowHeight / 2
     const distanceFromCenter = elementCenter - viewportCenter
 
     // Apply parallax speed multiplier
     const parallaxOffset = distanceFromCenter * speed
 
-    setRawOffset(parallaxOffset)
+    // Compute a reasonable max offset to prevent elements moving completely off-screen
+    // Based on the element being able to move at most half the combined height
+    const maxOffset = (windowHeight + elemHeight) / 2
+
+    // Clamp the offset to the safe range
+    const clampedOffset = Math.max(-maxOffset, Math.min(maxOffset, parallaxOffset))
+
+    setRawOffset(clampedOffset)
     ticking.current = false
   }, [isInView, speed])
 
@@ -142,6 +153,7 @@ export const useParallax = (options: UseParallaxOptions = {}) => {
       }
       observer.disconnect()
     }
+    // updateDimensions and calculateOffset are used in the observer callback and must be included to avoid stale closures
   }, [isActive, updateDimensions, calculateOffset])
 
   // Add scroll listener when in view

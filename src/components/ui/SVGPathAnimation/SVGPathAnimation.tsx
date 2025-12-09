@@ -1,4 +1,15 @@
-import { type ReactNode, useEffect, useRef, useState } from 'react'
+import {
+  type ReactNode,
+  type ReactElement,
+  type CSSProperties,
+  type SVGProps,
+  useEffect,
+  useRef,
+  useState,
+  Children,
+  cloneElement,
+  isValidElement,
+} from 'react'
 import { useIntersectionObserver } from '@hooks/useIntersectionObserver'
 import { useReducedMotion } from '@hooks/useReducedMotion'
 import styles from './SVGPathAnimation.module.css'
@@ -8,8 +19,9 @@ import styles from './SVGPathAnimation.module.css'
  */
 interface SVGPathAnimationProps {
   /**
-   * SVG content to animate (should contain <path> elements)
-   * The component will automatically measure and animate path lengths
+   * SVG content to animate, expected as direct `<path>` children.
+   * The component will automatically measure and animate each path's length.
+   * Note: Nested structures (e.g., `<g>` with inner paths) are not supported.
    */
   children: ReactNode
   /**
@@ -22,6 +34,12 @@ interface SVGPathAnimationProps {
    * @default 0
    */
   delay?: number
+  /**
+   * Incremental delay applied to each subsequent path (in milliseconds).
+   * The first path has no delay, the second has staggerDelay, the third has 2×staggerDelay, etc.
+   * @default 200
+   */
+  staggerDelay?: number
   /**
    * CSS timing function for the animation
    * @default 'ease-out'
@@ -65,7 +83,7 @@ interface SVGPathAnimationProps {
  * Component that animates SVG paths with a drawing effect
  *
  * Uses stroke-dasharray and stroke-dashoffset for the drawing animation.
- * Automatically calculates path lengths using getBBox.
+ * Automatically calculates path lengths using element.getTotalLength().
  * Respects prefers-reduced-motion for accessibility.
  *
  * @example
@@ -97,6 +115,7 @@ export const SVGPathAnimation = ({
   children,
   duration = 2000,
   delay = 0,
+  staggerDelay = 200,
   easing = 'ease-out',
   width = 100,
   height = 100,
@@ -105,7 +124,7 @@ export const SVGPathAnimation = ({
   strokeWidth = 2,
   fillColor = 'none',
   animateFill = false,
-}: SVGPathAnimationProps): React.ReactElement => {
+}: SVGPathAnimationProps): ReactElement => {
   const { ref, isVisible } = useIntersectionObserver({ threshold: 0.3 })
   const prefersReducedMotion = useReducedMotion()
   const svgRef = useRef<SVGSVGElement>(null)
@@ -131,23 +150,37 @@ export const SVGPathAnimation = ({
 
   // Start animation when visible
   useEffect(() => {
+    if (prefersReducedMotion) {
+      // No timers; SVG is rendered directly in its final state via showFinalState
+      return
+    }
+
+    let delayTimer: ReturnType<typeof setTimeout> | null = null
+    let animationTimer: ReturnType<typeof setTimeout> | null = null
+
     if (isVisible && pathLengths.length > 0 && !isAnimating && !isComplete) {
-      const timer = setTimeout(() => {
+      delayTimer = setTimeout(() => {
         setIsAnimating(true)
         // Mark as complete after animation finishes
-        setTimeout(() => {
+        animationTimer = setTimeout(() => {
           setIsAnimating(false)
           setIsComplete(true)
         }, duration)
       }, delay)
-
-      return () => clearTimeout(timer)
     }
-  }, [isVisible, pathLengths, delay, duration, isAnimating, isComplete])
+
+    return () => {
+      if (delayTimer !== null) {
+        clearTimeout(delayTimer)
+      }
+      if (animationTimer !== null) {
+        clearTimeout(animationTimer)
+      }
+    }
+  }, [isVisible, pathLengths, delay, duration, isAnimating, isComplete, prefersReducedMotion])
 
   // If user prefers reduced motion, show completed state immediately
   const showFinalState = prefersReducedMotion || isComplete
-
   const containerClasses = [styles.container, isAnimating ? styles.animating : '', className]
     .filter(Boolean)
     .join(' ')
@@ -162,7 +195,7 @@ export const SVGPathAnimation = ({
           {
             ['--draw-duration' as string]: `${duration}ms`,
             ['--draw-easing' as string]: easing,
-          } as React.CSSProperties
+          } as CSSProperties
         }
         aria-hidden="true"
       >
@@ -175,24 +208,38 @@ export const SVGPathAnimation = ({
           className={showFinalState && animateFill ? styles.filled : ''}
         >
           {/* Clone children and apply animation styles to paths */}
-          {Array.isArray(children) ? (
-            children
-          ) : (
-            <g
-              style={
-                pathLengths[0]
-                  ? ({
-                      ['--path-length' as string]: pathLengths[0],
-                      strokeDasharray: pathLengths[0],
-                      strokeDashoffset: showFinalState ? 0 : isAnimating ? 0 : pathLengths[0],
-                    } as React.CSSProperties)
-                  : undefined
-              }
-              className={isAnimating ? styles.drawing : ''}
-            >
-              {children}
-            </g>
-          )}
+          {Children.map(children, (child, index) => {
+            if (!isValidElement(child)) {
+              return child
+            }
+
+            // Guard against undefined pathLengths to prevent flash of unstyled content
+            const pathLength = pathLengths[index]
+            if (pathLength === undefined || pathLength === null) {
+              return child
+            }
+
+            const pathDelay = staggerDelay * index
+            const childProps = child.props as { className?: string }
+            const existingClassName = childProps.className || ''
+            const animatingClassName = isAnimating ? styles.drawing : ''
+            const mergedClassName = [existingClassName, animatingClassName]
+              .filter(Boolean)
+              .join(' ')
+
+            // Cast to ReactElement with SVG props to satisfy TypeScript
+            const svgChild = child as ReactElement<SVGProps<SVGPathElement>>
+            return cloneElement(svgChild, {
+              key: child.key ?? index,
+              style: {
+                ['--path-length' as string]: pathLength,
+                ['--path-delay' as string]: `${pathDelay}ms`,
+                strokeDasharray: pathLength,
+                strokeDashoffset: showFinalState || isAnimating ? 0 : pathLength,
+              } as CSSProperties,
+              className: mergedClassName || undefined,
+            })
+          })}
         </g>
       </svg>
     </div>

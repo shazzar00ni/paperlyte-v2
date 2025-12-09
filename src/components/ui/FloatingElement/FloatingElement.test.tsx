@@ -387,7 +387,7 @@ describe('FloatingElement', () => {
           <div>
             <span>Nested</span>
             <div>
-              <button>Button</button>
+              <button type="button">Button</button>
             </div>
           </div>
         </FloatingElement>

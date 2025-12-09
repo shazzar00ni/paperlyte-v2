@@ -92,7 +92,7 @@ export const Hero = (): React.ReactElement => {
                   <span className={styles.mockupStatValue}>+120%</span>
                   <span className={styles.mockupStatDesc}>Focus increase reported by users</span>
                 </div>
-                <button className={styles.mockupShareBtn}>Share</button>
+                <button type="button" className={styles.mockupShareBtn}>Share</button>
               </div>
             </div>
           </div>

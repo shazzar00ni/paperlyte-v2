@@ -1,0 +1,352 @@
+/* Header Section */
+.header {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto var(--spacing-3xl);
+}
+
+.title {
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-md);
+}
+
+.subtitle {
+  font-size: var(--font-size-lg);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-relaxed);
+  margin: 0;
+}
+
+/* Carousel Wrapper */
+.carouselWrapper {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing-lg) 0;
+}
+
+.carouselWrapper:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 4px;
+  border-radius: var(--border-radius-lg);
+}
+
+/* Carousel Container */
+.carousel {
+  overflow: hidden;
+  border-radius: var(--border-radius-lg);
+  position: relative;
+}
+
+/* Carousel Track */
+.track {
+  display: flex;
+  /* Transition handled inline for proper reduced-motion support */
+}
+
+/* Testimonial Card */
+.card {
+  flex: 0 0 100%;
+  padding: var(--spacing-xl);
+  background-color: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+  margin: 0 var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  min-height: 280px;
+}
+
+/* Star Rating */
+.stars {
+  display: flex;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-sm);
+}
+
+/* Quote */
+.quote {
+  font-size: var(--font-size-lg);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-relaxed);
+  font-style: italic;
+  margin: 0;
+  flex: 1;
+}
+
+/* Author Section */
+.author {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-top: auto;
+}
+
+/* Avatar */
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary) 0%, rgba(124, 58, 237, 0.7) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.avatarImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.initials {
+  color: white;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base);
+}
+
+/* Author Info */
+.authorInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.name {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  font-style: normal;
+}
+
+.role {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+/* Navigation Buttons */
+.navButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  z-index: 10;
+  color: var(--color-text-primary);
+}
+
+.navButton:hover {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.navButton:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.navButton:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.navPrev {
+  left: -24px;
+}
+
+.navNext {
+  right: -24px;
+}
+
+/* Navigation Dots */
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-xl);
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--color-border);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  padding: 0;
+}
+
+.dot:hover {
+  background-color: var(--color-text-secondary);
+  transform: scale(1.2);
+}
+
+.dot:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.dotActive {
+  background-color: var(--color-primary);
+  width: 32px;
+  border-radius: 6px;
+}
+
+/* Play/Pause Button */
+.playPauseButton {
+  position: absolute;
+  bottom: var(--spacing-md);
+  right: var(--spacing-md);
+  background-color: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  color: var(--color-text-primary);
+  opacity: 0.7;
+}
+
+.playPauseButton:hover {
+  opacity: 1;
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+}
+
+.playPauseButton:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  opacity: 1;
+}
+
+/* Screen Reader Only */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Tablet and up: 2 cards visible */
+@media (min-width: 768px) {
+  .card {
+    flex: 0 0 calc(50% - var(--spacing-md) * 2);
+  }
+
+  .navPrev {
+    left: -56px;
+  }
+
+  .navNext {
+    right: -56px;
+  }
+}
+
+/* Desktop: 3 cards visible */
+@media (min-width: 1024px) {
+  .card {
+    flex: 0 0 calc(33.333% - var(--spacing-md) * 2);
+  }
+}
+
+/* Mobile adjustments */
+@media (max-width: 767px) {
+  .header {
+    margin-bottom: var(--spacing-2xl);
+  }
+
+  .title {
+    font-size: var(--font-size-3xl);
+  }
+
+  .subtitle {
+    font-size: var(--font-size-base);
+  }
+
+  .carouselWrapper {
+    padding: var(--spacing-md) 0;
+  }
+
+  .card {
+    padding: var(--spacing-lg);
+    margin: 0 var(--spacing-sm);
+    min-height: 240px;
+  }
+
+  .quote {
+    font-size: var(--font-size-base);
+  }
+
+  /* Hide navigation arrows on mobile, rely on swipe */
+  .navButton {
+    display: none;
+  }
+
+  .playPauseButton {
+    bottom: var(--spacing-sm);
+    right: var(--spacing-sm);
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    transition: none !important;
+  }
+
+  .navButton,
+  .dot,
+  .playPauseButton {
+    transition: none;
+  }
+
+  .navButton:hover,
+  .dot:hover {
+    transform: none;
+  }
+
+  .navButton:active {
+    transform: translateY(-50%);
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .card {
+    border-width: 2px;
+  }
+
+  .navButton,
+  .dot,
+  .playPauseButton {
+    border-width: 2px;
+  }
+}

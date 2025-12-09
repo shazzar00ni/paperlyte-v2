@@ -212,7 +212,7 @@ export const SVGPathAnimation = ({
                         ['--path-length' as string]: pathLength,
                         ['--path-delay' as string]: `${pathDelay}ms`,
                         strokeDasharray: pathLength,
-                        strokeDashoffset: showFinalState ? 0 : isAnimating ? 0 : pathLength,
+                        strokeDashoffset: showFinalState || isAnimating ? 0 : pathLength,
                       } as React.CSSProperties)
                     : undefined
                 }

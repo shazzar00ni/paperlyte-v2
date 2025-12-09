@@ -168,7 +168,6 @@ describe('useScrollPosition', () => {
 
     await waitFor(() => {
       expect(result.current.scrollProgress).toBe(1)
-      expect(result.current.scrollProgress).toBeLessThanOrEqual(1)
     })
   })
 

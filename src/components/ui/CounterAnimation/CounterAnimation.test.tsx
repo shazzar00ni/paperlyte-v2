@@ -267,25 +267,21 @@ describe('CounterAnimation', () => {
     it('should use IntersectionObserver with correct threshold', () => {
       // Spy on IntersectionObserver constructor to verify threshold
       let capturedOptions: IntersectionObserverInit | undefined
-      const OriginalIO = global.IntersectionObserver
-      
-      try {
-        global.IntersectionObserver = class IntersectionObserver extends OriginalIO {
-          constructor(callback: IntersectionObserverCallback, options?: IntersectionObserverInit) {
-            super(callback, options)
-            capturedOptions = options
-          }
-        } as unknown as typeof global.IntersectionObserver
+      global.IntersectionObserver = class IntersectionObserver {
+        constructor(_callback: IntersectionObserverCallback, options?: IntersectionObserverInit) {
+          capturedOptions = options
+        }
+        observe = () => {}
+        disconnect = () => {}
+        takeRecords = () => []
+        unobserve = () => {}
+      } as unknown as typeof global.IntersectionObserver
 
-        render(<CounterAnimation end={100} />)
+      render(<CounterAnimation end={100} />)
 
-        // Verify threshold is 0.3 (as defined in useIntersectionObserver call)
-        expect(capturedOptions).toBeDefined()
-        expect(capturedOptions?.threshold).toBe(0.3)
-      } finally {
-        // Restore original IntersectionObserver
-        global.IntersectionObserver = OriginalIO
-      }
+      // Verify threshold is 0.3 (as defined in useIntersectionObserver call)
+      expect(capturedOptions).toBeDefined()
+      expect(capturedOptions?.threshold).toBe(0.3)
     })
 
     it('should only animate once when visible', async () => {

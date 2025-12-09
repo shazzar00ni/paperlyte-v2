@@ -35,6 +35,12 @@ interface SVGPathAnimationProps {
    */
   delay?: number
   /**
+   * Incremental delay applied to each subsequent path (in milliseconds).
+   * The first path has no delay, the second has staggerDelay, the third has 2×staggerDelay, etc.
+   * @default 200
+   */
+  staggerDelay?: number
+  /**
    * CSS timing function for the animation
    * @default 'ease-out'
    */
@@ -109,6 +115,7 @@ export const SVGPathAnimation = ({
   children,
   duration = 2000,
   delay = 0,
+  staggerDelay = 200,
   easing = 'ease-out',
   width = 100,
   height = 100,
@@ -206,7 +213,13 @@ export const SVGPathAnimation = ({
               return child
             }
 
-            const pathLength = pathLengths[index] ?? 0
+            // Guard against undefined pathLengths to prevent flash of unstyled content
+            const pathLength = pathLengths[index]
+            if (pathLength === undefined || pathLength === null) {
+              return child
+            }
+
+            const pathDelay = staggerDelay * index
             const childProps = child.props as { className?: string }
             const existingClassName = childProps.className || ''
             const animatingClassName = isAnimating ? styles.drawing : ''
@@ -217,13 +230,13 @@ export const SVGPathAnimation = ({
             // Cast to ReactElement with SVG props to satisfy TypeScript
             const svgChild = child as ReactElement<SVGProps<SVGPathElement>>
             return cloneElement(svgChild, {
-              style: pathLength
-                ? ({
-                    ['--path-length' as string]: pathLength,
-                    strokeDasharray: pathLength,
-                    strokeDashoffset: showFinalState ? 0 : pathLength,
-                  } as CSSProperties)
-                : undefined,
+              key: child.key ?? index,
+              style: {
+                ['--path-length' as string]: pathLength,
+                ['--path-delay' as string]: `${pathDelay}ms`,
+                strokeDasharray: pathLength,
+                strokeDashoffset: showFinalState || isAnimating ? 0 : pathLength,
+              } as CSSProperties,
               className: mergedClassName || undefined,
             })
           })}

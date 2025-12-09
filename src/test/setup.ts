@@ -37,7 +37,7 @@ Object.defineProperty(window, 'matchMedia', {
 })
 
 // Mock SVGPathElement (not fully implemented in jsdom)
-// Note: Tests can override getTotalLength by setting the method on the prototype
+// Note: Tests can override getTotalLength using Object.defineProperty on the prototype
 if (typeof SVGPathElement === 'undefined') {
   // @ts-expect-error - SVGPathElement is not defined in jsdom
   global.SVGPathElement = class SVGPathElement extends SVGElement {}

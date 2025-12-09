@@ -153,8 +153,8 @@ export const useParallax = (options: UseParallaxOptions = {}) => {
       }
       observer.disconnect()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- updateDimensions and calculateOffset are captured in closure, used only for initialization, and don't need to trigger observer recreation
-  }, [isActive])
+    // updateDimensions and calculateOffset are used in the observer callback and must be included to avoid stale closures
+  }, [isActive, updateDimensions, calculateOffset])
 
   // Add scroll listener when in view
   useEffect(() => {

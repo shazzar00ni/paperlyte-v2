@@ -1,3 +1,4 @@
+import React from 'react'
 import { Section } from '@components/layout/Section'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { CounterAnimation } from '@components/ui/CounterAnimation'
@@ -5,9 +6,27 @@ import { SVGPathAnimation } from '@components/ui/SVGPathAnimation'
 import styles from './Statistics.module.css'
 
 /**
+ * Represents a single statistic item for the counter animations
+ */
+interface StatisticItem {
+  /** The numeric value to count up to */
+  value: number
+  /** Display label shown below the counter */
+  label: string
+  /** Font Awesome icon class (e.g., 'fa-users') */
+  icon: string
+  /** Text displayed after the number (e.g., '+', '%', 'M+') */
+  suffix?: string
+  /** Text displayed before the number (e.g., '$') */
+  prefix?: string
+  /** Number of decimal places to display */
+  decimals?: number
+}
+
+/**
  * Statistics data for the counter animations
  */
-const statistics = [
+const statistics: StatisticItem[] = [
   {
     value: 50000,
     suffix: '+',
@@ -29,7 +48,6 @@ const statistics = [
   },
   {
     value: 4.9,
-    prefix: '',
     suffix: '/5',
     decimals: 1,
     label: 'User Rating',
@@ -72,7 +90,7 @@ export const Statistics = (): React.ReactElement => {
                     strokeColor="var(--color-primary)"
                     strokeWidth={2}
                   >
-                    <circle cx="24" cy="24" r="20" fill="none" />
+                    <path d="M 24 4 A 20 20 0 1 1 23.99 4" fill="none" />
                   </SVGPathAnimation>
                   <i className={`fa-solid ${stat.icon}`} aria-hidden="true" />
                 </div>

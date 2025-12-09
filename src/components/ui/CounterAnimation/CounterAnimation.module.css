@@ -1,8 +1,7 @@
 .counter {
   display: inline-block;
   font-variant-numeric: tabular-nums;
-  /* Prevent layout shifts during counting */
-  min-width: 1em;
+  /* min-width is applied via inline style based on final formatted value */
 }
 
 /* Ensure smooth font rendering */

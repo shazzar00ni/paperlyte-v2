@@ -28,6 +28,12 @@ interface CounterAnimationProps {
   easing?: 'linear' | 'easeOutQuart' | 'easeOutExpo'
   /** Whether to add thousands separator (default: true) */
   separator?: boolean
+  /**
+   * Minimum width to prevent layout shift during animation.
+   * If not provided, automatically calculated based on the final formatted value.
+   * Accepts any valid CSS width value (e.g., "4ch", "80px", "5em")
+   */
+  minWidth?: string
 }
 
 /**
@@ -83,17 +89,21 @@ export const CounterAnimation = ({
   className = '',
   easing = 'easeOutQuart',
   separator = true,
+  minWidth,
 }: CounterAnimationProps): React.ReactElement => {
   const [animatedValue, setAnimatedValue] = useState(start)
-  const { ref, isVisible } = useIntersectionObserver({ threshold: 0.3 })
+  const { ref, isVisible } = useIntersectionObserver<HTMLOutputElement>({ threshold: 0.3 })
   const prefersReducedMotion = useReducedMotion()
   const hasAnimated = useRef(false)
   const rafId = useRef<number | null>(null)
   const startTime = useRef<number | null>(null)
 
+  // Clamp duration to non-negative to avoid division by zero or infinite loops
+  const safeDuration = Math.max(0, duration)
+
   useEffect(() => {
-    // Skip animation if reduced motion is preferred
-    if (prefersReducedMotion) {
+    // Skip animation if reduced motion is preferred or duration is 0
+    if (prefersReducedMotion || safeDuration === 0) {
       return
     }
 
@@ -103,7 +113,7 @@ export const CounterAnimation = ({
       startTime.current = null
 
       // Capture current props values at animation start time
-      const animDuration = duration
+      const animDuration = safeDuration
       const animEnd = end
       const animStart = start
       const animEasing = easing
@@ -133,19 +143,36 @@ export const CounterAnimation = ({
         cancelAnimationFrame(rafId.current)
       }
     }
-  }, [isVisible, prefersReducedMotion, end, duration, start, easing])
+  }, [isVisible, prefersReducedMotion, end, safeDuration, start, easing])
 
-  // Compute display value: use end value if reduced motion, otherwise use animated value
-  const displayValue = prefersReducedMotion ? end : animatedValue
+  // Compute display value: use end value if reduced motion or zero duration, otherwise use animated value
+  const displayValue = prefersReducedMotion || safeDuration === 0 ? end : animatedValue
   const formattedValue = formatNumber(displayValue, decimals, separator)
 
+  // Calculate minimum width based on final formatted value to prevent layout shift
+  // Uses ch units (width of "0" character) with a small buffer for non-monospace fonts
+  const calculatedMinWidth = (() => {
+    const finalFormatted = formatNumber(end, decimals, separator)
+    const totalChars = prefix.length + finalFormatted.length + suffix.length
+    // Add 0.5ch buffer for font variations and rounding
+    return `${totalChars + 0.5}ch`
+  })()
+
+  const effectiveMinWidth = minWidth ?? calculatedMinWidth
+
   return (
-    <span ref={ref} className={`${styles.counter} ${className}`} aria-label={`${prefix}${end}${suffix}`}>
+    <output
+      ref={ref}
+      className={`${styles.counter} ${className}`}
+      aria-live="polite"
+      aria-label={`${prefix}${formatNumber(end, decimals, separator)}${suffix}`}
+      style={{ minWidth: effectiveMinWidth }}
+    >
       <span aria-hidden="true">
         {prefix}
         {formattedValue}
         {suffix}
       </span>
-    </span>
+    </output>
   )
 }

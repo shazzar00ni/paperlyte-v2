@@ -39,7 +39,9 @@
   background-color: var(--color-background);
   border: 1px solid var(--color-border);
   border-radius: var(--border-radius-lg);
-  transition: transform var(--transition-base), box-shadow var(--transition-base);
+  transition:
+    transform var(--transition-base),
+    box-shadow var(--transition-base);
 }
 
 .card:hover {

@@ -43,4 +43,8 @@
   .container .svg {
     will-change: auto !important;
   }
+
+  .filled {
+    transition: none !important;
+  }
 }

@@ -63,12 +63,10 @@ describe('useParallax', () => {
     } as unknown as typeof global.IntersectionObserver
 
     // Mock requestAnimationFrame
-    vi.spyOn(window, 'requestAnimationFrame').mockImplementation(
-      (cb: FrameRequestCallback) => {
-        cb(0)
-        return 0
-      }
-    )
+    vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb: FrameRequestCallback) => {
+      cb(0)
+      return 0
+    })
 
     vi.spyOn(window, 'cancelAnimationFrame').mockImplementation(() => {})
   })
@@ -115,7 +113,7 @@ describe('useParallax', () => {
   describe('IntersectionObserver integration', () => {
     it('should create IntersectionObserver when hook is active', () => {
       let observerCreated = false
-      
+
       global.IntersectionObserver = class MockIntersectionObserver {
         constructor(callback: IntersectionObserverCallback) {
           observerCreated = true
@@ -429,9 +427,7 @@ describe('useParallax', () => {
     })
 
     it('should update transform format based on offset for horizontal direction', () => {
-      const { result } = renderHook(() =>
-        useParallax({ speed: 0.5, direction: 'horizontal' })
-      )
+      const { result } = renderHook(() => useParallax({ speed: 0.5, direction: 'horizontal' }))
 
       const mockElement = document.createElement('div')
       Object.defineProperty(mockElement, 'getBoundingClientRect', {

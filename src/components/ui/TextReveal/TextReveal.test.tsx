@@ -63,7 +63,7 @@ describe('TextReveal', () => {
     })
 
     it('should preserve multiple spaces between words', () => {
-      const { container } = render(<TextReveal>Hello  World</TextReveal>)
+      const { container } = render(<TextReveal>Hello World</TextReveal>)
 
       const wrapper = container.firstChild as HTMLElement
       const childSpans = Array.from(wrapper.querySelectorAll('span'))
@@ -139,7 +139,11 @@ describe('TextReveal', () => {
     })
 
     it('should apply base delay to all words', () => {
-      const { container } = render(<TextReveal delay={200} stagger={50}>One Two</TextReveal>)
+      const { container } = render(
+        <TextReveal delay={200} stagger={50}>
+          One Two
+        </TextReveal>
+      )
 
       const spans = container.querySelectorAll('span[aria-hidden="true"]')
       // Index includes spaces: "One"=0, " "=1, "Two"=2

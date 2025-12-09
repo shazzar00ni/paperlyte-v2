@@ -10,7 +10,7 @@ vi.mock('@hooks/useParallax', () => ({
 import { useParallax } from '@hooks/useParallax'
 
 describe('ParallaxLayer', () => {
-  const mockUseParallax = useParallax as ReturnType<typeof vi.fn>
+  const mockUseParallax = useParallax as unknown as vi.MockedFunction<typeof useParallax>
   const mockRef = { current: null }
 
   beforeEach(() => {

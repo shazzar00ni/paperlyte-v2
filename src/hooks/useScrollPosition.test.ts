@@ -118,13 +118,14 @@ describe('useScrollPosition', () => {
   })
 
   it('should throttle scroll updates with requestAnimationFrame', () => {
-    renderHook(() => useScrollPosition())
-
-    // Mock RAF to not execute immediately
+    // Mock RAF to not execute immediately BEFORE rendering the hook
     const mockRafId = 1
+    vi.mocked(window.requestAnimationFrame).mockClear()
     vi.mocked(window.requestAnimationFrame).mockImplementation(() => {
       return mockRafId
     })
+
+    renderHook(() => useScrollPosition())
 
     // Trigger multiple scroll events rapidly
     scrollCallbacks.forEach((cb) => cb(new Event('scroll')))
@@ -194,26 +195,18 @@ describe('useScrollPosition', () => {
   })
 
   it('should cancel animation frame on unmount', () => {
-    // Save original requestAnimationFrame
-    const originalRAF = window.requestAnimationFrame
-    const originalCAF = window.cancelAnimationFrame
-
-    // Set up spies and pending frame tracking
-    const cancelAnimationFrameSpy = vi.spyOn(window, 'cancelAnimationFrame')
+    // Clear the default mock and set up a new one that doesn't execute immediately
+    vi.mocked(window.requestAnimationFrame).mockClear()
     let pendingCallback: FrameRequestCallback | null = null
-    let pendingId = 12345
+    const pendingId = 12345
 
     // Mock requestAnimationFrame to store callback but not execute it
-    window.requestAnimationFrame = vi.fn((cb: FrameRequestCallback) => {
+    vi.mocked(window.requestAnimationFrame).mockImplementation((cb: FrameRequestCallback) => {
       pendingCallback = cb
       return pendingId
     })
-    window.cancelAnimationFrame = vi.fn((id: number) => {
-      // Simulate cancellation by clearing pendingCallback
-      if (id === pendingId) {
-        pendingCallback = null
-      }
-    })
+
+    const cancelAnimationFrameSpy = vi.spyOn(window, 'cancelAnimationFrame')
 
     const { unmount } = renderHook(() => useScrollPosition())
 
@@ -226,19 +219,12 @@ describe('useScrollPosition', () => {
     unmount()
 
     expect(cancelAnimationFrameSpy).toHaveBeenCalledWith(pendingId)
-
-    // Restore original mocks
-    window.requestAnimationFrame = originalRAF
-    window.cancelAnimationFrame = originalCAF
   })
 
-  it('should handle SSR environment (no window)', () => {
-    // Test the getScrollPosition function behavior in SSR
-    // We can't actually delete window in jsdom, so we'll test the initial value
-    // In a real SSR environment, the hook would return zeros
+  it('should return valid initial state', () => {
+    // Verify that the hook returns valid initial state with expected properties
     const { result } = renderHook(() => useScrollPosition())
     
-    // The hook should work without errors and return valid initial state
     expect(result.current).toHaveProperty('scrollX')
     expect(result.current).toHaveProperty('scrollY')
     expect(result.current).toHaveProperty('scrollProgress')

@@ -369,10 +369,6 @@ describe('SVGPathAnimation', () => {
         </SVGPathAnimation>
       )
 
-      act(() => {
-        // Force effects to flush
-      })
-
       // With reduced motion, dashoffset should be 0 immediately
       const group = container.querySelector('g[style*="strokeDashoffset"]')
       if (group) {

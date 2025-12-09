@@ -1,6 +1,6 @@
-import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import { Header } from './Header'
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { Header } from './Header';
 
 describe('Header', () => {
   let scrollIntoViewMock: ReturnType<typeof vi.fn>

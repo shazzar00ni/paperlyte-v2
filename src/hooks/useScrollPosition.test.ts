@@ -194,15 +194,42 @@ describe('useScrollPosition', () => {
   })
 
   it('should cancel animation frame on unmount', () => {
+    // Save original requestAnimationFrame
+    const originalRAF = window.requestAnimationFrame
+    const originalCAF = window.cancelAnimationFrame
+
+    // Set up spies and pending frame tracking
     const cancelAnimationFrameSpy = vi.spyOn(window, 'cancelAnimationFrame')
+    let pendingCallback: FrameRequestCallback | null = null
+    let pendingId = 12345
+
+    // Mock requestAnimationFrame to store callback but not execute it
+    window.requestAnimationFrame = vi.fn((cb: FrameRequestCallback) => {
+      pendingCallback = cb
+      return pendingId
+    })
+    window.cancelAnimationFrame = vi.fn((id: number) => {
+      // Simulate cancellation by clearing pendingCallback
+      if (id === pendingId) {
+        pendingCallback = null
+      }
+    })
+
     const { unmount } = renderHook(() => useScrollPosition())
 
     // Trigger a scroll to create a pending animation frame
     scrollCallbacks.forEach((cb) => cb(new Event('scroll')))
 
+    // At this point, pendingCallback should be set, but not executed
+    expect(typeof pendingCallback).toBe('function')
+
     unmount()
 
-    expect(cancelAnimationFrameSpy).toHaveBeenCalled()
+    expect(cancelAnimationFrameSpy).toHaveBeenCalledWith(pendingId)
+
+    // Restore original mocks
+    window.requestAnimationFrame = originalRAF
+    window.cancelAnimationFrame = originalCAF
   })
 
   it('should handle SSR environment (no window)', () => {

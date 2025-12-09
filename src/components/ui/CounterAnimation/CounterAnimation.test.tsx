@@ -73,6 +73,8 @@ const mockIntersectionObserver = (triggerImmediately = false, spyOnMethods = fal
 }
 
 describe('CounterAnimation', () => {
+  const OriginalIntersectionObserver = global.IntersectionObserver
+
   beforeEach(() => {
     // Mock requestAnimationFrame for controlled testing
     vi.useFakeTimers()
@@ -81,6 +83,7 @@ describe('CounterAnimation', () => {
   afterEach(() => {
     vi.restoreAllMocks()
     vi.useRealTimers()
+    global.IntersectionObserver = OriginalIntersectionObserver
   })
 
   describe('Basic Rendering', () => {

@@ -243,7 +243,7 @@ describe('CounterAnimation', () => {
       // Mock requestAnimationFrame and cancelAnimationFrame
       let rafCallback: FrameRequestCallback | null = null
       const frameId = 1234
-      const rafSpy = vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+      vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
         rafCallback = cb
         return frameId
       })

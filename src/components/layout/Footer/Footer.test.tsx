@@ -40,9 +40,9 @@ describe('Footer', () => {
     expect(desktopLink).toBeInTheDocument()
     expect(desktopLink).toHaveAttribute('href', '#download')
 
-    const pricingLink = screen.getByRole('link', { name: 'Pricing' })
-    expect(pricingLink).toBeInTheDocument()
-    expect(pricingLink).toHaveAttribute('href', '#pricing')
+    const testimonialsLink = screen.getByRole('link', { name: 'Testimonials' })
+    expect(testimonialsLink).toBeInTheDocument()
+    expect(testimonialsLink).toHaveAttribute('href', '#testimonials')
   })
 
   it('should render Legal link group', () => {

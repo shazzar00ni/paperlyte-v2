@@ -581,17 +581,23 @@ import '@fontsource/inter/latin-700.css'
 1. **Font Awesome Tree-Shaking** 🟡 **Medium Priority**
    - Currently imports entire Font Awesome library
    - Only using ~15-20 icons
-   - **Recommendation:** Use individual icon imports
-   ```typescript
-   // Instead of:
-   import '@fortawesome/fontawesome-free/css/all.min.css'
-   
-   // Consider:
-   import { library } from '@fortawesome/fontawesome-svg-core'
-   import { faBolt, faLock, faWifiSlash } from '@fortawesome/free-solid-svg-icons'
-   library.add(faBolt, faLock, faWifiSlash)
-   ```
-   - **Expected Savings:** ~150-180 KB
+   - **Recommendation:** For maximum savings, switch to individual icon imports using the SVG-based Font Awesome packages.
+     - **Note:** This requires installing new packages (`@fortawesome/fontawesome-svg-core`, `@fortawesome/react-fontawesome`, and `@fortawesome/free-solid-svg-icons`) and refactoring how icons are rendered in your components.
+     - Example migration:
+     ```typescript
+     // Instead of:
+     import '@fortawesome/fontawesome-free/css/all.min.css'
+     
+     // Use:
+     import { library } from '@fortawesome/fontawesome-svg-core'
+     import { faBolt, faLock, faWifiSlash } from '@fortawesome/free-solid-svg-icons'
+     library.add(faBolt, faLock, faWifiSlash)
+     // And use <FontAwesomeIcon icon="bolt" /> in your components
+     ```
+     - **Expected Savings:** ~150-180 KB
+   - **Alternative (if you wish to keep using `@fortawesome/fontawesome-free`):**
+     - Use a tool like [PurgeCSS](https://purgecss.com/) or Vite's built-in CSS optimization to remove unused icon CSS classes from your final bundle.
+     - This can significantly reduce the size of the included Font Awesome CSS if only a subset of icons is used.
 
 2. **CSS Tree-Shaking** 🟢 **Low Priority**
    - 19 KB of unused CSS rules

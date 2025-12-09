@@ -139,6 +139,7 @@ export const Header = (): React.ReactElement => {
               >
                 Testimonials
               </button>
+            </li>
             <li>
               <button
                 type="button"

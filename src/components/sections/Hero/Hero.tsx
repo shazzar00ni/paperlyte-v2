@@ -5,7 +5,6 @@ import { scrollToSection } from '@utils/navigation'
 import styles from './Hero.module.css'
 
 export const Hero = (): React.ReactElement => {
-
   return (
     <Section id="hero" className={styles.hero} padding="large">
       <div className={styles.content}>

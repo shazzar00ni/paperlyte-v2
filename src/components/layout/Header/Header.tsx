@@ -21,10 +21,8 @@ export const Header = (): React.ReactElement => {
   }
 
   const scrollToSection = (sectionId: string) => {
-    const scrolled = scrollToSectionUtil(sectionId)
-    if (scrolled) {
-      closeMobileMenu()
-    }
+    scrollToSectionUtil(sectionId)
+    closeMobileMenu()
   }
 
   // Handle Escape key to close menu

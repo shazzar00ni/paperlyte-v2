@@ -75,6 +75,10 @@ export const useParallax = (options: UseParallaxOptions = {}) => {
   const elementTop = useRef(0)
   const elementHeight = useRef(0)
 
+  // Store functions in refs to avoid effect dependency churn
+  const updateDimensionsRef = useRef<() => void>(() => {})
+  const calculateOffsetRef = useRef<() => void>(() => {})
+
   // Pre-calculate element dimensions to prevent layout shifts
   const updateDimensions = useCallback(() => {
     if (ref.current) {
@@ -114,13 +118,19 @@ export const useParallax = (options: UseParallaxOptions = {}) => {
     ticking.current = false
   }, [isInView, speed])
 
+  // Keep refs in sync with latest callbacks via effect
+  useEffect(() => {
+    updateDimensionsRef.current = updateDimensions
+    calculateOffsetRef.current = calculateOffset
+  })
+
   // Handle scroll with requestAnimationFrame
   const handleScroll = useCallback(() => {
     if (!ticking.current && isInView) {
-      rafId.current = requestAnimationFrame(calculateOffset)
+      rafId.current = requestAnimationFrame(() => calculateOffsetRef.current())
       ticking.current = true
     }
-  }, [calculateOffset, isInView])
+  }, [isInView])
 
   // Determine if effect should be active
   const isActive = !prefersReducedMotion && !(disableOnMobile && isMobile)
@@ -135,8 +145,9 @@ export const useParallax = (options: UseParallaxOptions = {}) => {
       ([entry]) => {
         setIsInView(entry.isIntersecting)
         if (entry.isIntersecting) {
-          updateDimensions()
-          calculateOffset()
+          // Call via refs to avoid stale closures without adding to effect deps
+          updateDimensionsRef.current()
+          calculateOffsetRef.current()
         }
       },
       { rootMargin: '50px' }
@@ -148,13 +159,9 @@ export const useParallax = (options: UseParallaxOptions = {}) => {
     }
 
     return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef)
-      }
       observer.disconnect()
     }
-    // updateDimensions and calculateOffset are used in the observer callback and must be included to avoid stale closures
-  }, [isActive, updateDimensions, calculateOffset])
+  }, [isActive])
 
   // Add scroll listener when in view
   useEffect(() => {
@@ -162,17 +169,19 @@ export const useParallax = (options: UseParallaxOptions = {}) => {
       return
     }
 
+    const handleResize = () => updateDimensionsRef.current()
+
     window.addEventListener('scroll', handleScroll, { passive: true })
-    window.addEventListener('resize', updateDimensions, { passive: true })
+    window.addEventListener('resize', handleResize, { passive: true })
 
     return () => {
       window.removeEventListener('scroll', handleScroll)
-      window.removeEventListener('resize', updateDimensions)
+      window.removeEventListener('resize', handleResize)
       if (rafId.current !== null) {
         cancelAnimationFrame(rafId.current)
       }
     }
-  }, [handleScroll, updateDimensions, isInView, isActive])
+  }, [handleScroll, isInView, isActive])
 
   // Compute final offset - 0 when inactive, raw value otherwise
   const offset = isActive ? rawOffset : 0

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Button } from '@components/ui/Button'
 import { Icon } from '@components/ui/Icon'
 import { ThemeToggle } from '@components/ui/ThemeToggle'
+import { scrollToSection as scrollToSectionUtil } from '@utils/navigation'
 import styles from './Header.module.css'
 
 export const Header = (): React.ReactElement => {
@@ -20,11 +21,8 @@ export const Header = (): React.ReactElement => {
   }
 
   const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId)
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' })
-      closeMobileMenu()
-    }
+    scrollToSectionUtil(sectionId)
+    closeMobileMenu()
   }
 
   // Handle Escape key to close menu

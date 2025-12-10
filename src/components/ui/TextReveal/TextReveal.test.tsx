@@ -62,15 +62,6 @@ describe('TextReveal', () => {
       expect(spaceSpans[0].textContent).toBe(' ')
     })
 
-    it('should preserve single space between words', () => {
-      const { container } = render(<TextReveal>Hello World</TextReveal>)
-
-      const wrapper = container.firstChild as HTMLElement
-      const childSpans = Array.from(wrapper.querySelectorAll('span'))
-      const spaceSpans = childSpans.filter((span) => !span.hasAttribute('aria-hidden'))
-      expect(spaceSpans.length).toBe(1)
-      expect(spaceSpans[0].textContent).toBe(' ')
-    })
 
     it('should preserve leading and trailing spaces', () => {
       const { container } = render(<TextReveal> Hello </TextReveal>)

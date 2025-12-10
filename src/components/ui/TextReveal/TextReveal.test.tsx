@@ -63,7 +63,9 @@ describe('TextReveal', () => {
     })
 
     it('should preserve multiple spaces between words', () => {
-      const { container } = render(<TextReveal>Hello World</TextReveal>)
+      // Use a string variable to preserve multiple spaces (JSX text children collapse whitespace)
+      const textWithDoubleSpace = 'Hello  World'
+      const { container } = render(<TextReveal>{textWithDoubleSpace}</TextReveal>)
 
       const wrapper = container.firstChild as HTMLElement
       const childSpans = Array.from(wrapper.querySelectorAll('span'))

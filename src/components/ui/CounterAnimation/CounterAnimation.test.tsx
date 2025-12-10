@@ -115,7 +115,7 @@ describe('CounterAnimation', () => {
       mockReducedMotion(true)
       render(<CounterAnimation end={1000} />)
 
-      const counter = screen.getByLabelText('1000')
+      const counter = screen.getByLabelText('1,000')
       expect(counter.textContent).toBe('1,000')
     })
 
@@ -139,7 +139,7 @@ describe('CounterAnimation', () => {
       mockReducedMotion(true)
       render(<CounterAnimation end={1234567.89} decimals={2} />)
 
-      const counter = screen.getByLabelText('1234567.89')
+      const counter = screen.getByLabelText('1,234,567.89')
       expect(counter.textContent).toBe('1,234,567.89')
     })
   })
@@ -422,7 +422,7 @@ describe('CounterAnimation', () => {
       mockReducedMotion(true)
       render(<CounterAnimation end={10000000} suffix="+" />)
 
-      const counter = screen.getByLabelText('10000000+')
+      const counter = screen.getByLabelText('10,000,000+')
       expect(counter.textContent).toBe('10,000,000+')
     })
 
@@ -458,7 +458,7 @@ describe('CounterAnimation', () => {
     it('should have proper aria-label with formatted value', () => {
       render(<CounterAnimation end={1000} prefix="$" suffix="+" />)
 
-      const counter = screen.getByLabelText('$1000+')
+      const counter = screen.getByLabelText('$1,000+')
       expect(counter).toBeInTheDocument()
     })
 

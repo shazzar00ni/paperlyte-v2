@@ -1,4 +1,13 @@
-import { Children, isValidElement, type ReactNode, useEffect, useRef, useState } from 'react'
+import {
+  Children,
+  isValidElement,
+  type CSSProperties,
+  type ReactElement,
+  type ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { useIntersectionObserver } from '@hooks/useIntersectionObserver'
 import { useReducedMotion } from '@hooks/useReducedMotion'
 import styles from './SVGPathAnimation.module.css'
@@ -217,7 +226,7 @@ export const SVGPathAnimation = ({
                         ['--path-delay' as string]: `${pathDelay}ms`,
                         strokeDasharray: pathLength,
                         strokeDashoffset: showFinalState || isAnimating ? 0 : pathLength,
-                      } as React.CSSProperties)
+                      } as CSSProperties)
                     : undefined
                 }
                 className={isAnimating ? styles.drawing : ''}

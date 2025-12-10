@@ -220,10 +220,12 @@ describe('SVGPathAnimation', () => {
       )
 
       const path = screen.getByTestId('test-path')
+      // Styles are applied to the parent <g> element
+      const parentGroup = path.parentElement
 
       // When reduced motion is preferred, strokeDashoffset should be 0 (final state)
       // The showFinalState flag should be true, so strokeDashoffset = 0
-      expect(path).toHaveStyle({ strokeDashoffset: '0' })
+      expect(parentGroup).toHaveStyle({ strokeDashoffset: '0' })
     })
 
     it('should not start animation timers when user prefers reduced motion', () => {
@@ -267,8 +269,10 @@ describe('SVGPathAnimation', () => {
       )
 
       const path = screen.getByTestId('test-path')
+      // Styles are applied to the parent <g> element
+      const parentGroup = path.parentElement
       // The mock returns 100 for getTotalLength
-      expect(path).toHaveStyle({ strokeDasharray: '100' })
+      expect(parentGroup).toHaveStyle({ strokeDasharray: '100' })
     })
 
     it('should set strokeDashoffset to path length initially when not in final state', () => {
@@ -281,9 +285,11 @@ describe('SVGPathAnimation', () => {
       )
 
       const path = screen.getByTestId('test-path')
+      // Styles are applied to the parent <g> element
+      const parentGroup = path.parentElement
       // showFinalState is false initially (isComplete=false, prefersReducedMotion=false)
       // So strokeDashoffset should be pathLength (100)
-      expect(path).toHaveStyle({ strokeDashoffset: '100' })
+      expect(parentGroup).toHaveStyle({ strokeDashoffset: '100' })
     })
   })
 
@@ -298,9 +304,12 @@ describe('SVGPathAnimation', () => {
 
       const path1 = screen.getByTestId('path-1')
       const path2 = screen.getByTestId('path-2')
+      // Styles are applied to the parent <g> elements
+      const parentGroup1 = path1.parentElement
+      const parentGroup2 = path2.parentElement
 
-      expect(path1).toHaveStyle({ strokeDasharray: '100' })
-      expect(path2).toHaveStyle({ strokeDasharray: '100' })
+      expect(parentGroup1).toHaveStyle({ strokeDasharray: '100' })
+      expect(parentGroup2).toHaveStyle({ strokeDasharray: '100' })
     })
 
     it('should handle non-element children gracefully', () => {

@@ -2,18 +2,6 @@ import { describe, it, expect, beforeAll } from 'vitest'
 import { readFileSync } from 'fs'
 import { join } from 'path'
 
-/**
- * Helper function to assert that a regex match is not null and return the matches array.
- * Provides clear failure message when match fails.
- */
-function assertMatches(str: string, regex: RegExp, errorMessage: string): RegExpMatchArray {
-  const matches = str.match(regex)
-  if (!matches) {
-    throw new Error(errorMessage)
-  }
-  return matches
-}
-
 describe('Marketing Plan Document Validation', () => {
   let content: string
   let lines: string[]

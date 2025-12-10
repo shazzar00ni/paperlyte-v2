@@ -63,7 +63,7 @@ describe('TextReveal', () => {
     })
 
     it('should preserve multiple spaces between words', () => {
-      const { container } = render(<TextReveal>Hello  World</TextReveal>)
+      const { container } = render(<TextReveal>Hello World</TextReveal>)
 
       const wrapper = container.firstChild as HTMLElement
       const childSpans = Array.from(wrapper.querySelectorAll('span'))

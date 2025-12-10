@@ -295,8 +295,8 @@ describe('useScrollPosition', () => {
     scrollCallbacks.forEach((cb) => cb(new Event('scroll')))
 
     await waitFor(() => {
-      expect(result.current.scrollProgress).toBeGreaterThanOrEqual(0)
-      expect(result.current.scrollProgress).toBeLessThanOrEqual(1)
+      // Negative scroll values should be clamped to 0
+      expect(result.current.scrollProgress).toBe(0)
     })
   })
 })

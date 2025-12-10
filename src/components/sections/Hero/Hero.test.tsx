@@ -52,10 +52,11 @@ describe('Hero', () => {
     })
 
     it('should render mockup element', () => {
-      const { container } = render(<Hero />)
+      render(<Hero />)
 
-      const mockup = container.querySelector('[aria-hidden="true"]')
+      const mockup = screen.getByTestId('hero-mockup')
       expect(mockup).toBeInTheDocument()
+      expect(mockup).toHaveAttribute('aria-hidden', 'true')
     })
 
     it('should render trusted by section', () => {
@@ -185,10 +186,11 @@ describe('Hero', () => {
 
   describe('App Mockup', () => {
     it('should render app mockup as decorative (aria-hidden)', () => {
-      const { container } = render(<Hero />)
+      render(<Hero />)
 
-      const mockup = container.querySelector('[aria-hidden="true"]')
+      const mockup = screen.getByTestId('hero-mockup')
       expect(mockup).toBeInTheDocument()
+      expect(mockup).toHaveAttribute('aria-hidden', 'true')
     })
 
     it('should render mockup productivity stat', () => {

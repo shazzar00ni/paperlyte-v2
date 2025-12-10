@@ -540,6 +540,7 @@ styles/
 **Resolution:** Switched to Latin-only font subset to reduce bundle size
 
 **Implementation in `main.tsx`:**
+
 ```typescript
 // Self-hosted Google Fonts (Inter) for better security and performance
 // Using Latin-only subset to reduce bundle size (~800 KB savings)
@@ -658,6 +659,7 @@ import '@fontsource/inter/latin-700.css'
 **Status:** ✅ **IMPLEMENTED** (December 10, 2024)
 
 **Implementation:** Added to `index.html`:
+
 ```html
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website" />
@@ -676,6 +678,7 @@ import '@fontsource/inter/latin-700.css'
 **Status:** ✅ **ALREADY IMPLEMENTED** (Previously added)
 
 **Implementation:** Present in `index.html`:
+
 ```html
 <!-- Twitter Card Tags -->
 <meta name="twitter:card" content="summary_large_image" />
@@ -871,25 +874,25 @@ Based on this audit, the following issues are recommended:
 
 ### ⚠️ Remaining Items
 
-6. **#[TBD] Replace Vite default favicon with Paperlyte branding** (High Priority)
+1. **#[TBD] Replace Vite default favicon with Paperlyte branding** (High Priority)
    - Design favicon.svg
    - Generate PNG sizes (16x16, 32x32, 180x180)
    - Create site.webmanifest
    - Update `index.html` with new references
 
-7. **#[TBD] Create social media preview images** (High Priority)
+2. **#[TBD] Create social media preview images** (High Priority)
    - Design OG image (1200x630px)
    - Design Twitter image (1200x675px)
    - Add to public directory
    - Update meta tags to reference actual images
 
-8. **#[TBD] Optimize Font Awesome bundle size** (Medium Priority)
+3. **#[TBD] Optimize Font Awesome bundle size** (Medium Priority)
    - Audit which icons are actually used
    - Implement tree-shaking or individual imports
    - Reduce bundle by ~150-180 KB
    - Verify icons still display correctly
 
-9. **#[TBD] Enable text compression on hosting** (Medium Priority)
+4. **#[TBD] Enable text compression on hosting** (Medium Priority)
    - Configure gzip/brotli on Netlify/Vercel
    - Test compression is applied
    - Measure file size reduction

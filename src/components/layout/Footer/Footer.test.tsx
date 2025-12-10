@@ -99,9 +99,7 @@ describe('Footer', () => {
     render(<Footer />)
 
     const currentYear = new Date().getFullYear()
-    expect(
-      screen.getByText(`© ${currentYear} Paperlyte. All rights reserved.`)
-    ).toBeInTheDocument()
+    expect(screen.getByText(`© ${currentYear} Paperlyte. All rights reserved.`)).toBeInTheDocument()
   })
 
   it('should have proper accessibility structure', () => {

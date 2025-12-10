@@ -82,6 +82,7 @@ describe('Header', () => {
     // Nav items are buttons, not links
     const menuItem = screen.getByRole('button', { name: /features/i })
     await user.click(menuItem)
-    expect(scrollIntoViewMock).toHaveBeenCalled()
+
+    expect(scrollIntoViewMock).toHaveBeenCalledWith({ behavior: 'smooth' })
   })
 })

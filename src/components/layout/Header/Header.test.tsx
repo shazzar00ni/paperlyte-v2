@@ -32,9 +32,9 @@ describe('Header', () => {
       render(<Header />)
 
       expect(screen.getByRole('button', { name: /features/i })).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: /methodology/i })).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: /pricing/i })).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: /log in/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /mobile/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /testimonials/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /download/i })).toBeInTheDocument()
     })
 
     it('should render Get Started CTA button', () => {
@@ -291,7 +291,7 @@ describe('Header', () => {
       document.body.removeChild(featuresSection)
     })
 
-    it('should scroll to mobile section when Methodology link is clicked', async () => {
+    it('should scroll to mobile section when Mobile link is clicked', async () => {
       const user = userEvent.setup()
 
       // Create a mock mobile section
@@ -301,8 +301,8 @@ describe('Header', () => {
 
       render(<Header />)
 
-      const methodologyButton = screen.getByRole('button', { name: /^methodology$/i })
-      await user.click(methodologyButton)
+      const mobileButton = screen.getByRole('button', { name: /^mobile$/i })
+      await user.click(mobileButton)
 
       expect(scrollIntoViewMock).toHaveBeenCalledWith({
         behavior: 'smooth',
@@ -421,8 +421,8 @@ describe('Header', () => {
       render(<Header />)
 
       expect(screen.getByRole('button', { name: /features/i })).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: /methodology/i })).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: /pricing/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /mobile/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /testimonials/i })).toBeInTheDocument()
       expect(screen.getByLabelText(/open menu|close menu/i)).toBeInTheDocument()
     })
 

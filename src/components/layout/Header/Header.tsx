@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react'
 import { Button } from '@components/ui/Button'
 import { Icon } from '@components/ui/Icon'
+import { scrollToSection } from '@/utils/navigation'
 import styles from './Header.module.css'
 
-export const Header = (): React.ReactElement => {
+export const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const menuButtonRef = useRef<HTMLButtonElement>(null)
   const menuRef = useRef<HTMLUListElement>(null)
@@ -17,12 +18,9 @@ export const Header = (): React.ReactElement => {
     menuButtonRef.current?.focus()
   }
 
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId)
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' })
-      closeMobileMenu()
-    }
+  const handleNavClick = (sectionId: string) => {
+    scrollToSection(sectionId)
+    closeMobileMenu()
   }
 
   useEffect(() => {
@@ -116,7 +114,7 @@ export const Header = (): React.ReactElement => {
             <li>
               <button
                 type="button"
-                onClick={() => scrollToSection('features')}
+                onClick={() => handleNavClick('features')}
                 className={styles.navLink}
               >
                 Features
@@ -125,7 +123,7 @@ export const Header = (): React.ReactElement => {
             <li>
               <button
                 type="button"
-                onClick={() => scrollToSection('mobile')}
+                onClick={() => handleNavClick('mobile')}
                 className={styles.navLink}
               >
                 Mobile
@@ -134,7 +132,7 @@ export const Header = (): React.ReactElement => {
             <li>
               <button
                 type="button"
-                onClick={() => scrollToSection('testimonials')}
+                onClick={() => handleNavClick('testimonials')}
                 className={styles.navLink}
               >
                 Testimonials
@@ -143,14 +141,14 @@ export const Header = (): React.ReactElement => {
             <li>
               <button
                 type="button"
-                onClick={() => scrollToSection('download')}
+                onClick={() => handleNavClick('download')}
                 className={styles.navLink}
               >
                 Download
               </button>
             </li>
             <li className={styles.navCta}>
-              <Button variant="primary" size="small" onClick={() => scrollToSection('download')}>
+              <Button variant="primary" size="small" onClick={() => handleNavClick('download')}>
                 Get Started
               </Button>
             </li>

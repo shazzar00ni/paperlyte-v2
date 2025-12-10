@@ -30,10 +30,10 @@ describe('CTA', () => {
     expect(button).toBeInTheDocument()
   })
 
-  it('should render Compare Plans button', () => {
+  it('should render Learn More button', () => {
     render(<CTA />)
 
-    const button = screen.getByRole('button', { name: /Compare Plans/i })
+    const button = screen.getByRole('button', { name: /Learn More/i })
     expect(button).toBeInTheDocument()
   })
 

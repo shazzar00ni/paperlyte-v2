@@ -1,16 +1,10 @@
 import { Section } from '@components/layout/Section'
 import { Button } from '@components/ui/Button'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
+import { scrollToSection } from '@/utils/navigation'
 import styles from './CTA.module.css'
 
-export const CTA = (): React.ReactElement => {
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId)
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' })
-    }
-  }
-
+export const CTA = () => {
   return (
     <Section id="download" background="default" className={styles.cta}>
       <div className={styles.container}>

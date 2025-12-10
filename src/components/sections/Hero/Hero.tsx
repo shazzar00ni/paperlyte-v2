@@ -2,22 +2,12 @@ import { Button } from '@components/ui/Button'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { Section } from '@components/layout/Section'
 import { Icon } from '@components/ui/Icon'
+import { scrollToSection } from '@/utils/navigation'
 import styles from './Hero.module.css'
-
-export const Hero = (): React.ReactElement => {
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId)
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' })
-    }
-  }
 
 const trustedCompanies = ['Acme Corp', 'Global', 'Nebula', 'Vertex', 'Horizon']
 
-export const Hero = (): React.ReactElement => {
-  const scrollToSection = (sectionId: string) => {
-    ...
-  }
+export const Hero = () => {
   return (
     <Section id="hero" className={styles.hero} padding="large">
       <div className={styles.container}>

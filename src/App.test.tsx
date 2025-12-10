@@ -126,7 +126,7 @@ describe('App Integration', () => {
     render(<App />)
 
     expect(screen.getByRole('button', { name: /Get Started for Free/i })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /Compare Plans/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Learn More/i })).toBeInTheDocument()
   })
 
   it('should render feature cards', () => {

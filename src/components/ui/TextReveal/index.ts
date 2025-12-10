@@ -1,0 +1,1 @@
+export { TextReveal } from './TextReveal'

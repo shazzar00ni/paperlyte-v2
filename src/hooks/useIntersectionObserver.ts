@@ -23,6 +23,7 @@ interface UseIntersectionObserverOptions {
 /**
  * Custom hook that tracks when an element becomes visible in the viewport using Intersection Observer API
  *
+ * @typeParam T - The HTML element type for the ref (defaults to HTMLDivElement)
  * @param options - Configuration options for the Intersection Observer
  * @returns Object containing a ref to attach to the target element and visibility state
  *
@@ -37,11 +38,20 @@ interface UseIntersectionObserverOptions {
  *     </div>
  *   );
  * };
+ *
+ * // With custom element type
+ * const HeadingComponent = () => {
+ *   const { ref, isVisible } = useIntersectionObserver<HTMLHeadingElement>();
+ *
+ *   return <h1 ref={ref}>{isVisible ? 'Visible!' : 'Not yet'}</h1>;
+ * };
  * ```
  */
-export const useIntersectionObserver = (options: UseIntersectionObserverOptions = {}) => {
+export const useIntersectionObserver = <T extends HTMLElement = HTMLDivElement>(
+  options: UseIntersectionObserverOptions = {}
+) => {
   const { threshold = 0.1, rootMargin = '0px', triggerOnce = true } = options
-  const ref = useRef<HTMLDivElement>(null)
+  const ref = useRef<T>(null)
   const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {

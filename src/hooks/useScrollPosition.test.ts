@@ -208,8 +208,6 @@ describe('useScrollPosition', () => {
       return pendingId
     })
 
-    const cancelAnimationFrameSpy = vi.spyOn(window, 'cancelAnimationFrame')
-
     const { unmount } = renderHook(() => useScrollPosition())
 
     // Trigger a scroll to create a pending animation frame
@@ -220,7 +218,7 @@ describe('useScrollPosition', () => {
 
     unmount()
 
-    expect(cancelAnimationFrameSpy).toHaveBeenCalledWith(pendingId)
+    expect(window.cancelAnimationFrame).toHaveBeenCalledWith(pendingId)
   })
 
   it('should return valid initial state', () => {

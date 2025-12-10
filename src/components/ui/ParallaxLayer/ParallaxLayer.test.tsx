@@ -13,15 +13,24 @@ describe('ParallaxLayer', () => {
   const mockUseParallax = useParallax as unknown as vi.MockedFunction<typeof useParallax>
   const mockRef = { current: null }
 
+  // Factory helper for creating parallax state with defaults
+  const createParallaxState = (
+    overrides: Partial<ReturnType<typeof useParallax>> = {}
+  ): ReturnType<typeof useParallax> => ({
+    ref: mockRef,
+    transform: 'translate3d(0, 50px, 0)',
+    isActive: true,
+    offset: 50,
+    isInView: true,
+    ...overrides,
+  })
+
+  // Helper to get the layer element from a rendered container
+  const getLayerElement = (container: HTMLElement) => container.firstChild as HTMLElement
+
   beforeEach(() => {
-    // Reset mock before each test
-    mockUseParallax.mockReturnValue({
-      ref: mockRef,
-      transform: 'translate3d(0, 50px, 0)',
-      isActive: true,
-      offset: 50,
-      isInView: true,
-    })
+    // Reset mock before each test with default state
+    mockUseParallax.mockReturnValue(createParallaxState())
   })
 
   afterEach(() => {
@@ -105,13 +114,7 @@ describe('ParallaxLayer', () => {
 
   describe('Transform Application When Active', () => {
     it('should apply transform when isActive is true', () => {
-      mockUseParallax.mockReturnValue({
-        ref: mockRef,
-        transform: 'translate3d(0, 50px, 0)',
-        isActive: true,
-        offset: 50,
-        isInView: true,
-      })
+      mockUseParallax.mockReturnValue(createParallaxState())
 
       const { container } = render(
         <ParallaxLayer>
@@ -119,18 +122,14 @@ describe('ParallaxLayer', () => {
         </ParallaxLayer>
       )
 
-      const layerElement = container.firstChild as HTMLElement
+      const layerElement = getLayerElement(container)
       expect(layerElement.style.transform).toBe('translate3d(0, 50px, 0)')
     })
 
     it('should apply different transform values based on hook output', () => {
-      mockUseParallax.mockReturnValue({
-        ref: mockRef,
-        transform: 'translate3d(0, -25px, 0)',
-        isActive: true,
-        offset: -25,
-        isInView: true,
-      })
+      mockUseParallax.mockReturnValue(
+        createParallaxState({ transform: 'translate3d(0, -25px, 0)', offset: -25 })
+      )
 
       const { container } = render(
         <ParallaxLayer speed={-0.5}>
@@ -138,18 +137,12 @@ describe('ParallaxLayer', () => {
         </ParallaxLayer>
       )
 
-      const layerElement = container.firstChild as HTMLElement
+      const layerElement = getLayerElement(container)
       expect(layerElement.style.transform).toBe('translate3d(0, -25px, 0)')
     })
 
     it('should apply willChange when isActive is true', () => {
-      mockUseParallax.mockReturnValue({
-        ref: mockRef,
-        transform: 'translate3d(0, 50px, 0)',
-        isActive: true,
-        offset: 50,
-        isInView: true,
-      })
+      mockUseParallax.mockReturnValue(createParallaxState())
 
       const { container } = render(
         <ParallaxLayer>
@@ -157,20 +150,14 @@ describe('ParallaxLayer', () => {
         </ParallaxLayer>
       )
 
-      const layerElement = container.firstChild as HTMLElement
+      const layerElement = getLayerElement(container)
       expect(layerElement.style.willChange).toBe('transform')
     })
   })
 
   describe('Static Behavior When Inactive', () => {
     it('should not apply transform when isActive is false (reduced motion)', () => {
-      mockUseParallax.mockReturnValue({
-        ref: mockRef,
-        transform: 'translate3d(0, 50px, 0)',
-        isActive: false,
-        offset: 0,
-        isInView: true,
-      })
+      mockUseParallax.mockReturnValue(createParallaxState({ isActive: false, offset: 0 }))
 
       const { container } = render(
         <ParallaxLayer>
@@ -178,18 +165,12 @@ describe('ParallaxLayer', () => {
         </ParallaxLayer>
       )
 
-      const layerElement = container.firstChild as HTMLElement
+      const layerElement = getLayerElement(container)
       expect(layerElement.style.transform).toBe('')
     })
 
     it('should not apply willChange when isActive is false', () => {
-      mockUseParallax.mockReturnValue({
-        ref: mockRef,
-        transform: 'translate3d(0, 50px, 0)',
-        isActive: false,
-        offset: 0,
-        isInView: true,
-      })
+      mockUseParallax.mockReturnValue(createParallaxState({ isActive: false, offset: 0 }))
 
       const { container } = render(
         <ParallaxLayer>
@@ -197,18 +178,14 @@ describe('ParallaxLayer', () => {
         </ParallaxLayer>
       )
 
-      const layerElement = container.firstChild as HTMLElement
+      const layerElement = getLayerElement(container)
       expect(layerElement.style.willChange).toBe('')
     })
 
     it('should render content without parallax on mobile', () => {
-      mockUseParallax.mockReturnValue({
-        ref: mockRef,
-        transform: 'translate3d(0, 0px, 0)',
-        isActive: false,
-        offset: 0,
-        isInView: true,
-      })
+      mockUseParallax.mockReturnValue(
+        createParallaxState({ transform: 'translate3d(0, 0px, 0)', isActive: false, offset: 0 })
+      )
 
       render(
         <ParallaxLayer>
@@ -228,7 +205,7 @@ describe('ParallaxLayer', () => {
         </ParallaxLayer>
       )
 
-      const layerElement = container.firstChild as HTMLElement
+      const layerElement = getLayerElement(container)
       expect(layerElement.style.zIndex).toBe('0')
     })
 
@@ -239,7 +216,7 @@ describe('ParallaxLayer', () => {
         </ParallaxLayer>
       )
 
-      const layerElement = container.firstChild as HTMLElement
+      const layerElement = getLayerElement(container)
       expect(layerElement.style.zIndex).toBe('10')
     })
 
@@ -250,7 +227,7 @@ describe('ParallaxLayer', () => {
         </ParallaxLayer>
       )
 
-      const layerElement = container.firstChild as HTMLElement
+      const layerElement = getLayerElement(container)
       expect(layerElement.style.zIndex).toBe('-1')
     })
 
@@ -261,7 +238,7 @@ describe('ParallaxLayer', () => {
         </ParallaxLayer>
       )
 
-      const layerElement = container.firstChild as HTMLElement
+      const layerElement = getLayerElement(container)
       expect(layerElement.style.opacity).toBe('1')
     })
 
@@ -272,7 +249,7 @@ describe('ParallaxLayer', () => {
         </ParallaxLayer>
       )
 
-      const layerElement = container.firstChild as HTMLElement
+      const layerElement = getLayerElement(container)
       expect(layerElement.style.opacity).toBe('0.5')
     })
 
@@ -283,18 +260,14 @@ describe('ParallaxLayer', () => {
         </ParallaxLayer>
       )
 
-      const layerElement = container.firstChild as HTMLElement
+      const layerElement = getLayerElement(container)
       expect(layerElement.style.opacity).toBe('0')
     })
 
     it('should apply all style props together', () => {
-      mockUseParallax.mockReturnValue({
-        ref: mockRef,
-        transform: 'translate3d(0, 100px, 0)',
-        isActive: true,
-        offset: 100,
-        isInView: true,
-      })
+      mockUseParallax.mockReturnValue(
+        createParallaxState({ transform: 'translate3d(0, 100px, 0)', offset: 100 })
+      )
 
       const { container } = render(
         <ParallaxLayer zIndex={5} opacity={0.8}>
@@ -302,7 +275,7 @@ describe('ParallaxLayer', () => {
         </ParallaxLayer>
       )
 
-      const layerElement = container.firstChild as HTMLElement
+      const layerElement = getLayerElement(container)
       expect(layerElement.style.zIndex).toBe('5')
       expect(layerElement.style.opacity).toBe('0.8')
       expect(layerElement.style.transform).toBe('translate3d(0, 100px, 0)')
@@ -318,7 +291,7 @@ describe('ParallaxLayer', () => {
         </ParallaxLayer>
       )
 
-      const layerElement = container.firstChild as HTMLElement
+      const layerElement = getLayerElement(container)
       expect(layerElement.className).not.toContain('absolute')
     })
 
@@ -329,7 +302,7 @@ describe('ParallaxLayer', () => {
         </ParallaxLayer>
       )
 
-      const layerElement = container.firstChild as HTMLElement
+      const layerElement = getLayerElement(container)
       expect(layerElement.className).toContain('absolute')
     })
 
@@ -340,7 +313,7 @@ describe('ParallaxLayer', () => {
         </ParallaxLayer>
       )
 
-      const layerElement = container.firstChild as HTMLElement
+      const layerElement = getLayerElement(container)
       expect(layerElement.className).toContain('absolute')
       expect(layerElement.className).toContain('custom-layer')
     })
@@ -352,7 +325,7 @@ describe('ParallaxLayer', () => {
         </ParallaxLayer>
       )
 
-      const layerElement = container.firstChild as HTMLElement
+      const layerElement = getLayerElement(container)
       expect(layerElement.className).toContain('custom-layer')
       expect(layerElement.className).not.toContain('absolute')
     })
@@ -364,20 +337,16 @@ describe('ParallaxLayer', () => {
         </ParallaxLayer>
       )
 
-      const layerElement = container.firstChild as HTMLElement
+      const layerElement = getLayerElement(container)
       expect(layerElement.className).toContain('layer')
     })
   })
 
   describe('Complete Integration Scenarios', () => {
     it('should create background parallax layer', () => {
-      mockUseParallax.mockReturnValue({
-        ref: mockRef,
-        transform: 'translate3d(0, 20px, 0)',
-        isActive: true,
-        offset: 20,
-        isInView: true,
-      })
+      mockUseParallax.mockReturnValue(
+        createParallaxState({ transform: 'translate3d(0, 20px, 0)', offset: 20 })
+      )
 
       const { container } = render(
         <ParallaxLayer speed={0.2} absolute zIndex={-1} opacity={0.6}>
@@ -385,7 +354,7 @@ describe('ParallaxLayer', () => {
         </ParallaxLayer>
       )
 
-      const layerElement = container.firstChild as HTMLElement
+      const layerElement = getLayerElement(container)
       expect(layerElement.className).toContain('layer')
       expect(layerElement.className).toContain('absolute')
       expect(layerElement.style.zIndex).toBe('-1')
@@ -396,13 +365,9 @@ describe('ParallaxLayer', () => {
     })
 
     it('should create foreground parallax layer', () => {
-      mockUseParallax.mockReturnValue({
-        ref: mockRef,
-        transform: 'translate3d(0, -30px, 0)',
-        isActive: true,
-        offset: -30,
-        isInView: true,
-      })
+      mockUseParallax.mockReturnValue(
+        createParallaxState({ transform: 'translate3d(0, -30px, 0)', offset: -30 })
+      )
 
       const { container } = render(
         <ParallaxLayer speed={0.8} zIndex={10}>
@@ -410,7 +375,7 @@ describe('ParallaxLayer', () => {
         </ParallaxLayer>
       )
 
-      const layerElement = container.firstChild as HTMLElement
+      const layerElement = getLayerElement(container)
       expect(layerElement.className).toContain('layer')
       expect(layerElement.className).not.toContain('absolute')
       expect(layerElement.style.zIndex).toBe('10')
@@ -419,13 +384,9 @@ describe('ParallaxLayer', () => {
     })
 
     it('should handle static layer with reduced motion', () => {
-      mockUseParallax.mockReturnValue({
-        ref: mockRef,
-        transform: 'translate3d(0, 0px, 0)',
-        isActive: false,
-        offset: 0,
-        isInView: true,
-      })
+      mockUseParallax.mockReturnValue(
+        createParallaxState({ transform: 'translate3d(0, 0px, 0)', isActive: false, offset: 0 })
+      )
 
       const { container } = render(
         <ParallaxLayer speed={0.5}>
@@ -433,7 +394,7 @@ describe('ParallaxLayer', () => {
         </ParallaxLayer>
       )
 
-      const layerElement = container.firstChild as HTMLElement
+      const layerElement = getLayerElement(container)
       expect(layerElement.style.transform).toBe('')
       expect(layerElement.style.willChange).toBe('')
       expect(screen.getByText('Static content')).toBeInTheDocument()

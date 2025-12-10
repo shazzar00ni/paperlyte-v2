@@ -92,7 +92,7 @@ describe('Footer', () => {
 
     const currentYear = new Date().getFullYear()
     expect(
-      screen.getByText(`© ${currentYear} Paperlyte. All rights reserved.`)
+      screen.getByText(`© ${currentYear} All rights reserved.`)
     ).toBeInTheDocument()
   })
 

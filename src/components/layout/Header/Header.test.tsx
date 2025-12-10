@@ -46,7 +46,7 @@ describe('Header', () => {
   it('should render the header with logo', () => {
     render(<Header />)
     expect(screen.getByRole('banner')).toBeInTheDocument()
-    expect(screen.getByText('Paperlyte')).toBeInTheDocument()
+    expect(screen.getByText('Paperlyte.')).toBeInTheDocument()
   })
 
   it('should render navigation buttons', () => {

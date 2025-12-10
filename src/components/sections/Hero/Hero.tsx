@@ -57,12 +57,6 @@ export const Hero = () => {
       </div>
 
       <div className={styles.content}>
-        <AnimatedElement animation="fadeIn">
-          <TextReveal as="h1" type="word" stagger={80} animation="fadeUp" className={styles.headline}>
-            Your thoughts, unchained from complexity
-          </TextReveal>
-        </AnimatedElement>
-
         <AnimatedElement animation="fadeIn" delay={100}>
           <h1 className={styles.headline}>
             Thoughts,

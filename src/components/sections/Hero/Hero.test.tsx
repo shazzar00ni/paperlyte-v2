@@ -51,10 +51,11 @@ describe('Hero', () => {
       expect(screen.getByRole('button', { name: /view the demo/i })).toBeInTheDocument()
     })
 
-    it('should render version badge', () => {
-      render(<Hero />)
+    it('should render mockup element', () => {
+      const { container } = render(<Hero />)
 
-      expect(screen.getByText(/Version 2.0 is now live/i)).toBeInTheDocument()
+      const mockup = container.querySelector('[aria-hidden="true"]')
+      expect(mockup).toBeInTheDocument()
     })
 
     it('should render trusted by section', () => {

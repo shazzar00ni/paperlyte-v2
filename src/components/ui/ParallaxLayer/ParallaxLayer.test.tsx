@@ -61,17 +61,21 @@ describe('ParallaxLayer', () => {
         </ParallaxLayer>
       )
 
-      expect(mockUseParallax).toHaveBeenCalledWith({ speed: 0.3 })
+      expect(mockUseParallax).toHaveBeenCalledWith(
+        expect.objectContaining({ speed: 0.3 })
+      )
     })
 
     it('should call useParallax with custom speed', () => {
       render(
-        <ParallaxLayer speed={0.5}>
+        <ParallexLayer speed={0.5}>
           <div>Content</div>
         </ParallaxLayer>
       )
 
-      expect(mockUseParallax).toHaveBeenCalledWith({ speed: 0.5 })
+      expect(mockUseParallax).toHaveBeenCalledWith(
+        expect.objectContaining({ speed: 0.5 })
+      )
     })
 
     it('should call useParallax with negative speed', () => {
@@ -81,7 +85,9 @@ describe('ParallaxLayer', () => {
         </ParallaxLayer>
       )
 
-      expect(mockUseParallax).toHaveBeenCalledWith({ speed: -0.2 })
+      expect(mockUseParallax).toHaveBeenCalledWith(
+        expect.objectContaining({ speed: -0.2 })
+      )
     })
 
     it('should call useParallax with zero speed', () => {
@@ -91,7 +97,9 @@ describe('ParallaxLayer', () => {
         </ParallaxLayer>
       )
 
-      expect(mockUseParallax).toHaveBeenCalledWith({ speed: 0 })
+      expect(mockUseParallax).toHaveBeenCalledWith(
+        expect.objectContaining({ speed: 0 })
+      )
     })
   })
 

@@ -14,6 +14,9 @@ export const Header = () => {
   }
 
   const closeMobileMenu = () => {
+    if (!mobileMenuOpen) {
+      return
+    }
     setMobileMenuOpen(false)
     menuButtonRef.current?.focus()
   }

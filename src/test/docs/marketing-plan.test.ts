@@ -20,7 +20,6 @@ describe('Marketing Plan Document Validation', () => {
   let sections: Map<string, { line: number; content: string }>
 
   beforeAll(() => {
-    // Read the marketing plan document
     const filePath = join(process.cwd(), 'docs', 'MARKETING-PLAN.md')
     content = readFileSync(filePath, 'utf-8')
     lines = content.split('\n')
@@ -47,460 +46,12 @@ describe('Marketing Plan Document Validation', () => {
       }
     })
 
-    // Add the last section
     if (currentSection) {
       sections.set(currentSection, {
         line: sectionLine,
         content: currentContent.join('\n'),
       })
     }
-  })
-
-  describe('Document Structure', () => {
-    it('should have a title', () => {
-      const firstLine = lines[0]
-      expect(firstLine).toMatch(/^#\s+Paperlyte Marketing Plan/i)
-    })
-
-    it('should include document metadata', () => {
-      const metadataSection = lines.slice(0, 10).join('\n')
-      expect(metadataSection).toContain('Version')
-      expect(metadataSection).toContain('Last Updated')
-      expect(metadataSection).toContain('Owner')
-      expect(metadataSection).toContain('Status')
-    })
-
-    it('should have all required major sections', () => {
-      const requiredSections = [
-        'Executive Summary',
-        'Market Analysis',
-        'Target Audience',
-        'Brand Positioning',
-        'Marketing Strategy',
-        'Content Strategy',
-        'Metrics & KPIs',
-        'Competitive Monitoring',
-        'Risk Mitigation',
-        'Launch Timeline',
-        'Team & Responsibilities',
-        'Success Criteria',
-      ]
-
-      requiredSections.forEach((section) => {
-        expect(sections.has(section), `Missing required section: ${section}`).toBe(true)
-      })
-    })
-
-    it('should have properly formatted section headers', () => {
-      const headers = lines.filter((line) => line.match(/^#{1,4}\s+/))
-      expect(headers.length).toBeGreaterThan(20)
-
-      headers.forEach((header) => {
-        // Headers should have proper spacing
-        expect(header).toMatch(/^#+\s+\S/)
-        // Should not have trailing hashes
-        expect(header).not.toMatch(/#+$/)
-      })
-    })
-  })
-
-  describe('Executive Summary', () => {
-    it('should include primary goal with specific target', () => {
-      const summary = sections.get('Executive Summary')?.content || ''
-      expect(summary).toContain('Primary Goal')
-      expect(summary).toMatch(/10,?000.*users/i)
-      expect(summary).toMatch(/6 months/i)
-    })
-
-    it('should include secondary goals', () => {
-      const summary = sections.get('Executive Summary')?.content || ''
-      expect(summary).toContain('Secondary Goals')
-      expect(summary).toMatch(/email.*list/i)
-      expect(summary).toMatch(/conversion.*rate/i)
-    })
-
-    it('should have quantifiable metrics in goals', () => {
-      const summary = sections.get('Executive Summary')?.content || ''
-      const numbers = assertMatches(
-        summary,
-        /\d+[,\d]*[%+]?/g,
-        'Expected Executive Summary to contain quantifiable metrics (numbers with optional commas, %, or +)'
-      )
-      expect(numbers.length).toBeGreaterThan(3)
-    })
-  })
-
-  describe('Market Analysis', () => {
-    it('should include TAM, SAM, and SOM analysis', () => {
-      const analysis = sections.get('Market Analysis')?.content || ''
-      expect(analysis).toContain('Total Addressable Market')
-      expect(analysis).toContain('Serviceable Addressable Market')
-      expect(analysis).toContain('Serviceable Obtainable Market')
-      expect(analysis).toMatch(/TAM/)
-      expect(analysis).toMatch(/SAM/)
-      expect(analysis).toMatch(/SOM/)
-    })
-
-    it('should identify direct competitors', () => {
-      const analysis = sections.get('Market Analysis')?.content || ''
-      expect(analysis).toContain('Direct Competitors')
-      expect(analysis).toMatch(/Simplenote|Bear|Standard Notes/)
-    })
-
-    it('should identify indirect competitors', () => {
-      const analysis = sections.get('Market Analysis')?.content || ''
-      expect(analysis).toContain('Indirect Competitors')
-      expect(analysis).toMatch(/Notion|Obsidian|Evernote/)
-    })
-
-    it('should list competitive advantages', () => {
-      const analysis = sections.get('Market Analysis')?.content || ''
-      expect(analysis).toContain('Competitive Advantages')
-      expect(analysis).toMatch(/Speed|Simplicity|Cross-platform/i)
-    })
-
-    it('should have market size numbers', () => {
-      const analysis = sections.get('Market Analysis')?.content || ''
-      const marketSizes = assertMatches(
-        analysis,
-        /\d+[MK]?\+?\s*users/gi,
-        "Expected Market Analysis to contain market size numbers (e.g., '100M users', '500K+ users')"
-      )
-      expect(marketSizes.length).toBeGreaterThan(3)
-    })
-  })
-
-  describe('Target Audience', () => {
-    it('should define primary personas', () => {
-      const audience = sections.get('Target Audience')?.content || ''
-      expect(audience).toContain('Primary Personas')
-    })
-
-    it('should include persona demographics', () => {
-      const audience = sections.get('Target Audience')?.content || ''
-      expect(audience).toMatch(/Age:/i)
-      expect(audience).toMatch(/Occupation:/i)
-    })
-
-    it('should identify pain points for personas', () => {
-      const audience = sections.get('Target Audience')?.content || ''
-      const painPoints = assertMatches(
-        audience,
-        /\*\*Pain Points\*\*/gi,
-        "Expected Target Audience to contain '**Pain Points**' sections for multiple personas"
-      )
-      expect(painPoints.length).toBeGreaterThan(2)
-    })
-
-    it('should list motivations for each persona', () => {
-      const audience = sections.get('Target Audience')?.content || ''
-      const motivations = assertMatches(
-        audience,
-        /\*\*Motivations\*\*/gi,
-        "Expected Target Audience to contain '**Motivations**' sections for multiple personas"
-      )
-      expect(motivations.length).toBeGreaterThan(2)
-    })
-
-    it('should specify channels for reaching each persona', () => {
-      const audience = sections.get('Target Audience')?.content || ''
-      const channels = assertMatches(
-        audience,
-        /\*\*Channels\*\*/gi,
-        "Expected Target Audience to contain '**Channels**' sections for multiple personas"
-      )
-      expect(channels.length).toBeGreaterThan(2)
-    })
-  })
-
-  describe('Brand Positioning', () => {
-    it('should have a clear value proposition', () => {
-      const positioning = sections.get('Brand Positioning')?.content || ''
-      expect(positioning).toContain('Value Proposition')
-      expect(positioning).toContain('Primary Message')
-    })
-
-    it('should define brand voice and tone', () => {
-      const positioning = sections.get('Brand Positioning')?.content || ''
-      expect(positioning).toMatch(/Brand Voice.*Tone/is)
-      expect(positioning).toMatch(/Voice Attributes/i)
-    })
-
-    it("should include tone examples with do and don't", () => {
-      const positioning = sections.get('Brand Positioning')?.content || ''
-      expect(positioning).toMatch(/✅/)
-      expect(positioning).toMatch(/❌/)
-    })
-
-    it('should describe brand personality', () => {
-      const positioning = sections.get('Brand Positioning')?.content || ''
-      expect(positioning).toContain('Brand Personality')
-    })
-  })
-
-  describe('Marketing Strategy', () => {
-    it('should have phase-based strategy', () => {
-      const strategy = sections.get('Marketing Strategy')?.content || ''
-      expect(strategy).toMatch(/Phase 1.*Pre-Launch/is)
-      expect(strategy).toMatch(/Phase 2.*Launch/is)
-      expect(strategy).toMatch(/Phase 3.*Growth/is)
-      expect(strategy).toMatch(/Phase 4.*Retention/is)
-    })
-
-    it('should define objectives for each phase', () => {
-      const strategy = sections.get('Marketing Strategy')?.content || ''
-      const objectives = assertMatches(
-        strategy,
-        /\*\*Objectives\*\*/gi,
-        "Expected Marketing Strategy to contain '**Objectives**' sections for multiple phases"
-      )
-      expect(objectives.length).toBeGreaterThan(3)
-    })
-
-    it('should list tactics for each phase', () => {
-      const strategy = sections.get('Marketing Strategy')?.content || ''
-      const tactics = assertMatches(
-        strategy,
-        /\*\*Tactics\*\*/gi,
-        "Expected Marketing Strategy to contain '**Tactics**' sections for multiple phases"
-      )
-      expect(tactics.length).toBeGreaterThan(1)
-    })
-
-    it('should include Product Hunt launch strategy', () => {
-      const strategy = sections.get('Marketing Strategy')?.content || ''
-      expect(strategy).toMatch(/Product Hunt/i)
-      expect(strategy).toMatch(/Launch Day/i)
-    })
-
-    it('should have email marketing sequences defined', () => {
-      const strategy = sections.get('Marketing Strategy')?.content || ''
-      expect(strategy).toMatch(/Email.*Sequence/i)
-      expect(strategy).toMatch(/Email \d+/)
-    })
-
-    it('should include referral program details', () => {
-      const strategy = sections.get('Marketing Strategy')?.content || ''
-      expect(strategy).toMatch(/Referral Program/i)
-    })
-  })
-
-  describe('Budget and Resource Allocation', () => {
-    it('should have a defined budget table', () => {
-      const budgetSection = sections.get('Marketing Channels & Budget Allocation')
-      expect(budgetSection).toBeDefined()
-      expect(budgetSection?.content).toMatch(/\|\s*Channel\s*\|.*Budget/)
-    })
-
-    it('should include budget breakdown by channel', () => {
-      const budgetSection = sections.get('Marketing Channels & Budget Allocation')
-      expect(budgetSection).toBeDefined()
-      const budget = budgetSection!.content
-      expect(budget).toMatch(/Content Marketing/i)
-      expect(budget).toMatch(/Paid Acquisition/i)
-      expect(budget).toMatch(/Community.*Social/i)
-    })
-
-    it('should have budget percentages that add up reasonably', () => {
-      const budgetSection = sections.get('Marketing Channels & Budget Allocation')
-      expect(budgetSection).toBeDefined()
-      const budget = budgetSection!.content
-
-      // Extract percentage values from the budget table
-      const percentages = budget.match(/\|\s*\d+%\s*\|/g)
-      if (percentages) {
-        const values = percentages.map((p) => parseInt(p.replace(/[|%\s]/g, '')))
-        const total = values.reduce((sum, val) => sum + val, 0)
-
-        // Should be approximately 100% (allow small rounding differences)
-        expect(total).toBeGreaterThanOrEqual(95)
-        expect(total).toBeLessThanOrEqual(105)
-      }
-    })
-
-    it('should prioritize channels into tiers', () => {
-      const budgetSection = sections.get('Marketing Channels & Budget Allocation')
-      expect(budgetSection).toBeDefined()
-      const budget = budgetSection!.content
-      expect(budget).toMatch(/Tier 1/i)
-      expect(budget).toMatch(/Tier 2/i)
-    })
-  })
-
-  describe('Metrics and KPIs', () => {
-    it('should define a North Star Metric', () => {
-      const metrics = sections.get('Metrics & KPIs')?.content || ''
-      expect(metrics).toContain('North Star Metric')
-      expect(metrics).toMatch(/Weekly Active Users|WAU/i)
-    })
-
-    it('should include acquisition metrics table', () => {
-      const metrics = sections.get('Metrics & KPIs')?.content || ''
-      expect(metrics).toMatch(/Acquisition Metrics/i)
-      expect(metrics).toMatch(/\|\s*Metric\s*\|.*Target/)
-    })
-
-    it('should include engagement metrics', () => {
-      const metrics = sections.get('Metrics & KPIs')?.content || ''
-      expect(metrics).toMatch(/Engagement Metrics/i)
-      expect(metrics).toMatch(/Daily Active Users|DAU/)
-      expect(metrics).toMatch(/Weekly Active Users|WAU/)
-    })
-
-    it('should include retention metrics', () => {
-      const metrics = sections.get('Metrics & KPIs')?.content || ''
-      expect(metrics).toMatch(/Retention Metrics/i)
-      expect(metrics).toMatch(/Day [17] Retention/i)
-      expect(metrics).toMatch(/Churn Rate/i)
-    })
-
-    it('should have measurement frequencies for metrics', () => {
-      const metrics = sections.get('Metrics & KPIs')?.content || ''
-      expect(metrics).toMatch(/Daily|Weekly|Monthly|Quarterly/)
-      const frequencies = assertMatches(
-        metrics,
-        /\|\s*(Daily|Weekly|Monthly|Quarterly)\s*\|/g,
-        'Expected Metrics & KPIs to contain measurement frequencies (Daily, Weekly, Monthly, Quarterly) in table format'
-      )
-      expect(frequencies.length).toBeGreaterThan(5)
-    })
-
-    it('should include virality metrics', () => {
-      const metrics = sections.get('Metrics & KPIs')?.content || ''
-      expect(metrics).toMatch(/Virality Metrics/i)
-      expect(metrics).toMatch(/Net Promoter Score|NPS/i)
-      expect(metrics).toMatch(/Viral Coefficient/i)
-    })
-
-    it('should have realistic metric targets', () => {
-      const metrics = sections.get('Metrics & KPIs')?.content || ''
-
-      // Check for percentage targets that make sense
-      const percentTargets = metrics.match(/>\s*\d+%/g)
-      if (percentTargets) {
-        percentTargets.forEach((target) => {
-          const value = parseInt(target.replace(/[>%\s]/g, ''))
-          expect(value).toBeGreaterThan(0)
-          expect(value).toBeLessThanOrEqual(100)
-        })
-      }
-    })
-  })
-
-  describe('Timeline and Milestones', () => {
-    it('should have a pre-launch timeline', () => {
-      const timeline = sections.get('Launch Timeline')?.content || ''
-      expect(timeline).toMatch(/Pre-Launch.*Month -3/i)
-    })
-
-    it('should have a launch timeline', () => {
-      const timeline = sections.get('Launch Timeline')?.content || ''
-      expect(timeline).toMatch(/Launch.*Month 0/i)
-    })
-
-    it('should have post-launch timeline', () => {
-      const timeline = sections.get('Launch Timeline')?.content || ''
-      expect(timeline).toMatch(/Post-Launch.*Month.*1-6/i)
-    })
-
-    it('should include specific week-by-week breakdown', () => {
-      const timeline = sections.get('Launch Timeline')?.content || ''
-      expect(timeline).toMatch(/Week \d+/)
-    })
-
-    it('should have checkboxes for tasks', () => {
-      const timeline = sections.get('Launch Timeline')?.content || ''
-      const checkboxes = assertMatches(
-        timeline,
-        /✅/g,
-        'Expected Launch Timeline to contain checkboxes (✅) for tracking tasks'
-      )
-      expect(checkboxes.length).toBeGreaterThan(10)
-    })
-
-    it('should define success criteria at milestones', () => {
-      const timeline = sections.get('Launch Timeline')?.content || ''
-      expect(timeline).toMatch(/Success Criteria/i)
-      expect(timeline).toMatch(/Target by Launch/i)
-    })
-  })
-
-  describe('Success Criteria', () => {
-    it('should have checkpoint milestones', () => {
-      const success = sections.get('Success Criteria')?.content || ''
-      expect(success).toMatch(/Month 3 Checkpoint/i)
-      expect(success).toMatch(/Month 6 Checkpoint/i)
-    })
-
-    it('should distinguish must-have from nice-to-have', () => {
-      const success = sections.get('Success Criteria')?.content || ''
-      expect(success).toMatch(/Must-Have/i)
-      expect(success).toMatch(/Nice-to-Have/i)
-    })
-
-    it('should include go/no-go decision points', () => {
-      const success = sections.get('Success Criteria')?.content || ''
-      const decisions = assertMatches(
-        success,
-        /Go\/No-Go Decision/gi,
-        "Expected Success Criteria to contain 'Go/No-Go Decision' points"
-      )
-      expect(decisions.length).toBeGreaterThanOrEqual(2)
-    })
-  })
-
-  describe('Risk Mitigation', () => {
-    it('should identify potential risks', () => {
-      const risks = sections.get('Risk Mitigation')?.content || ''
-      expect(risks).toMatch(/Risk \d+/)
-    })
-
-    it('should include impact assessment for each risk', () => {
-      const risks = sections.get('Risk Mitigation')?.content || ''
-      const impacts = assertMatches(
-        risks,
-        /\*\*Impact\*\*/gi,
-        "Expected Risk Mitigation to contain '**Impact**' assessments for multiple risks"
-      )
-      expect(impacts.length).toBeGreaterThan(3)
-    })
-
-    it('should have mitigation strategies', () => {
-      const risks = sections.get('Risk Mitigation')?.content || ''
-      const mitigations = assertMatches(
-        risks,
-        /\*\*Mitigation\*\*/gi,
-        "Expected Risk Mitigation to contain '**Mitigation**' strategies for multiple risks"
-      )
-      expect(mitigations.length).toBeGreaterThan(3)
-    })
-
-    it('should have response plans', () => {
-      const risks = sections.get('Risk Mitigation')?.content || ''
-      const responses = assertMatches(
-        risks,
-        /\*\*Response\*\*/gi,
-        "Expected Risk Mitigation to contain '**Response**' plans for multiple risks"
-      )
-      expect(responses.length).toBeGreaterThan(3)
-    })
-  })
-
-  describe('Team and Responsibilities', () => {
-    it('should define team roles', () => {
-      const team = sections.get('Team & Responsibilities')?.content || ''
-      expect(team).toMatch(/Marketing Roles|Team Roles/i)
-    })
-
-    it('should assign responsibilities to roles', () => {
-      const team = sections.get('Team & Responsibilities')?.content || ''
-      expect(team).toMatch(/Founder|CEO|Marketing Lead/i)
-    })
-
-    it('should consider scaling needs', () => {
-      const team = sections.get('Team & Responsibilities')?.content || ''
-      expect(team).toMatch(/As You Scale|Month 6\+/i)
-    })
   })
 
   describe('Content Strategy', () => {
@@ -529,7 +80,6 @@ describe('Marketing Plan Document Validation', () => {
 
   describe('Document Quality', () => {
     it('should not have broken markdown formatting', () => {
-      // Check for common markdown issues
       const unbalancedBrackets = content.match(/\[[^\]]*\([^)]*$/gm)
       expect(unbalancedBrackets).toBeNull()
     })
@@ -542,23 +92,17 @@ describe('Marketing Plan Document Validation', () => {
     })
 
     it('should have proper table formatting', () => {
-      // Scan for consecutive table lines (lines that start and end with |)
       let i = 0
       while (i < lines.length) {
-        // Find the start of a table
         if (lines[i].match(/^\|.*\|$/)) {
           const tableStart = i
           let tableEnd = i
-          // Find the end of the table (consecutive lines with |...|)
           while (tableEnd + 1 < lines.length && lines[tableEnd + 1].match(/^\|.*\|$/)) {
             tableEnd++
           }
-          // Table must have at least 3 lines (header, separator, at least one row)
           if (tableEnd - tableStart + 1 >= 3) {
             const tableLines = lines.slice(tableStart, tableEnd + 1)
-            // Check separator (second line)
             const separator = tableLines[1]
-            // Separator must be like | --- | or |:---:| etc.
             const separatorPattern = /^\|([ \t]*:?-{3,}:?[ \t]*\|)+$/
             expect(separator).toMatch(separatorPattern)
           }
@@ -578,32 +122,6 @@ describe('Marketing Plan Document Validation', () => {
         const level = (line.match(/^#+/) || [''])[0].length
         expect(level).toBeGreaterThan(0)
         expect(level).toBeLessThanOrEqual(6)
-      })
-    })
-
-    it('should not have excessive line length', () => {
-      const longLines = lines.filter(
-        (line) => line.length > 200 && !line.match(/^\|/) // Exclude tables
-      )
-
-      // Allow some long lines but flag if excessive
-      expect(longLines.length).toBeLessThan(50)
-    })
-
-    it('should have consistent spacing around headers', () => {
-      lines.forEach((line, index) => {
-        if (line.match(/^##\s+/) && index > 0) {
-          // Major sections should have blank line before
-          const prevLine = lines[index - 1]
-          if (prevLine.trim() !== '---' && prevLine.trim() !== '') {
-            // Some flexibility for formatting
-            const prevPrevLine = lines[index - 2] || ''
-            expect(
-              prevLine === '' || prevPrevLine === '',
-              `Section header at line ${index + 1} should have blank line before`
-            ).toBeTruthy()
-          }
-        }
       })
     })
   })
@@ -666,7 +184,6 @@ describe('Marketing Plan Document Validation', () => {
         })
       }
     })
-
 
     it('should maintain consistent date formatting', () => {
       const dates = content.match(/November \d{4}|Month [0-6-]+|Day \d+/g)

@@ -1,0 +1,10 @@
+.counter {
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+  /* min-width is applied via inline style based on final formatted value */
+}
+
+/* Ensure smooth font rendering */
+.counter span {
+  display: inline-block;
+}

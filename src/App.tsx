@@ -4,15 +4,17 @@ import { Footer } from '@components/layout/Footer'
 import { Hero } from '@components/sections/Hero'
 import { Features } from '@components/sections/Features'
 import { Mobile } from '@components/sections/Mobile'
+import { Statistics } from '@components/sections/Statistics'
+import { Comparison } from '@components/sections/Comparison'
 import { Testimonials } from '@components/sections/Testimonials'
 import { CTA } from '@components/sections/CTA'
 
 /**
- * Root application component that composes the page layout and main sections.
+ * Root application component.
  *
- * Renders the Header, a main content area (Hero, Features, Mobile, Testimonials, CTA), and Footer wrapped in an ErrorBoundary to isolate rendering/runtime errors.
- *
- * @returns The root React element for the application layout
+ * @returns The root JSX element rendering the app: an ErrorBoundary wrapping
+ * the Header, and a main element containing Hero, Features, Mobile, Statistics,
+ * Comparison, Testimonials, and CTA sections, then the Footer.
  */
 function App() {
   return (
@@ -22,6 +24,8 @@ function App() {
         <Hero />
         <Features />
         <Mobile />
+        <Statistics />
+        <Comparison />
         <Testimonials />
         <CTA />
       </main>

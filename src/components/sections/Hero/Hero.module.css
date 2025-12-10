@@ -19,6 +19,85 @@
   width: 100%;
 }
 
+/* Decorations container */
+.decorations {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* Parallax background shapes */
+.shape {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--color-primary) 0%, transparent 70%);
+  filter: blur(60px);
+}
+
+.shape1 {
+  width: 400px;
+  height: 400px;
+  top: -100px;
+  right: -100px;
+}
+
+.shape2 {
+  width: 300px;
+  height: 300px;
+  bottom: -50px;
+  left: -80px;
+}
+
+.shape3 {
+  width: 200px;
+  height: 200px;
+  top: 40%;
+  left: 60%;
+}
+
+/* Floating icons container */
+.floatingContainer {
+  position: absolute;
+  inset: 0;
+}
+
+/* Floating icon base styles */
+.floatingIcon {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--border-radius-md);
+  background-color: var(--color-background);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-md);
+  color: var(--color-primary);
+  font-size: var(--font-size-xl);
+}
+
+.floatingIcon1 {
+  top: 15%;
+  left: 10%;
+}
+
+.floatingIcon2 {
+  top: 25%;
+  right: 12%;
+}
+
+.floatingIcon3 {
+  bottom: 30%;
+  left: 8%;
+}
+
+.floatingIcon4 {
+  bottom: 20%;
+  right: 15%;
+}
+
 .content {
   position: relative;
   z-index: 1;
@@ -327,5 +406,42 @@
 
   .trustedLogo {
     font-size: var(--font-size-base);
+  }
+
+  /* Hide floating icons on mobile for cleaner experience */
+  .floatingContainer {
+    display: none;
+  }
+
+  /* Reduce shape sizes on mobile */
+  .shape1 {
+    width: 200px;
+    height: 200px;
+  }
+
+  .shape2 {
+    width: 150px;
+    height: 150px;
+  }
+
+  .shape3 {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+/*
+ * Reduced motion handling:
+ * - FloatingElement component early-returns without animation classes when
+ *   prefers-reduced-motion is detected (no CSS animations applied)
+ * - ParallaxLayer/useParallax hook returns isActive=false, skipping all
+ *   requestAnimationFrame calls and applying no JS transforms
+ * - See: src/components/ui/FloatingElement/FloatingElement.tsx (lines 86-93)
+ * - See: src/hooks/useParallax.ts (lines 115, 118-121, 148-151, 166)
+ */
+@media (prefers-reduced-motion: reduce) {
+  .shape {
+    /* Reduce blur intensity for performance with static shapes */
+    filter: blur(40px);
   }
 }

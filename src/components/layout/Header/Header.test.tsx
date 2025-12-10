@@ -24,7 +24,7 @@ describe('Header', () => {
   it('should render the header with logo', () => {
     render(<Header />)
     expect(screen.getByRole('banner')).toBeInTheDocument()
-    expect(screen.getByAltText(/logo/i)).toBeInTheDocument()
+    expect(screen.getByText('Paperlyte')).toBeInTheDocument()
   })
 
   it('should open menu when menu button is clicked', async () => {
@@ -38,26 +38,40 @@ describe('Header', () => {
   it('should close menu when menu button is clicked again', async () => {
     render(<Header />)
     const user = userEvent.setup()
-    const menuButton = screen.getByRole('button', { name: /menu/i })
+    const menuButton = screen.getByRole('button', { name: /open menu/i })
     await user.click(menuButton)
+    expect(menuButton).toHaveAttribute('aria-expanded', 'true')
     await user.click(menuButton)
-    expect(screen.getByRole('navigation')).not.toBeVisible()
+    expect(menuButton).toHaveAttribute('aria-expanded', 'false')
   })
 
   it('should not close menu when Escape is pressed if menu is already closed', async () => {
     render(<Header />)
     const user = userEvent.setup()
+    const menuButton = screen.getByRole('button', { name: /open menu/i })
+    expect(menuButton).toHaveAttribute('aria-expanded', 'false')
     await user.keyboard('{Escape}')
-    expect(screen.getByRole('navigation')).not.toBeVisible()
+    expect(menuButton).toHaveAttribute('aria-expanded', 'false')
   })
 
   it('should scroll to section when menu item clicked', async () => {
     render(<Header />)
     const user = userEvent.setup()
+
+    // Create a mock element for scrollToSection to find
+    const mockSection = document.createElement('section')
+    mockSection.id = 'features'
+    mockSection.scrollIntoView = scrollIntoViewMock
+    document.body.appendChild(mockSection)
+
     const menuButton = screen.getByRole('button', { name: /menu/i })
     await user.click(menuButton)
-    const menuItem = screen.getByRole('link', { name: /about/i })
+    const menuItem = screen.getByRole('button', { name: /features/i })
     await user.click(menuItem)
-    expect(scrollIntoViewMock).toHaveBeenCalled()
+
+    expect(scrollIntoViewMock).toHaveBeenCalledWith({ behavior: 'smooth' })
+
+    // Cleanup
+    document.body.removeChild(mockSection)
   })
 })

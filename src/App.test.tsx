@@ -22,34 +22,28 @@ describe('App Integration', () => {
     // Verify sections exist and are in correct order
     const sections = main?.querySelectorAll('section')
     expect(sections).toBeDefined()
-    expect(sections!.length).toBeGreaterThanOrEqual(7)
+    expect(sections!.length).toBeGreaterThanOrEqual(5)
 
     const sectionIds = Array.from(sections!).map((section) => section.getAttribute('id'))
 
     // Check all sections are present
     expect(sectionIds).toContain('hero')
     expect(sectionIds).toContain('features')
-    expect(sectionIds).toContain('comparison')
+    expect(sectionIds).toContain('mobile')
     expect(sectionIds).toContain('testimonials')
-    expect(sectionIds).toContain('pricing')
-    expect(sectionIds).toContain('faq')
     expect(sectionIds).toContain('download')
 
     // Verify correct order
     const heroIndex = sectionIds.indexOf('hero')
     const featuresIndex = sectionIds.indexOf('features')
-    const comparisonIndex = sectionIds.indexOf('comparison')
+    const mobileIndex = sectionIds.indexOf('mobile')
     const testimonialsIndex = sectionIds.indexOf('testimonials')
-    const pricingIndex = sectionIds.indexOf('pricing')
-    const faqIndex = sectionIds.indexOf('faq')
     const downloadIndex = sectionIds.indexOf('download')
 
     expect(heroIndex).toBeLessThan(featuresIndex)
-    expect(featuresIndex).toBeLessThan(comparisonIndex)
-    expect(comparisonIndex).toBeLessThan(testimonialsIndex)
-    expect(testimonialsIndex).toBeLessThan(pricingIndex)
-    expect(pricingIndex).toBeLessThan(faqIndex)
-    expect(faqIndex).toBeLessThan(downloadIndex)
+    expect(featuresIndex).toBeLessThan(mobileIndex)
+    expect(mobileIndex).toBeLessThan(testimonialsIndex)
+    expect(testimonialsIndex).toBeLessThan(downloadIndex)
   })
 
   it('should have accessible landmark regions with proper roles', () => {
@@ -85,17 +79,17 @@ describe('App Integration', () => {
     expect(featuresSection).toBeInTheDocument()
 
     // Verify features content is present
-    expect(screen.getByText("Everything you need. Nothing you don't.")).toBeInTheDocument()
+    expect(screen.getByText('Distraction-free Writing')).toBeInTheDocument()
   })
 
-  it('should render Comparison section', () => {
+  it('should render Mobile section', () => {
     const { container } = render(<App />)
 
-    const comparisonSection = container.querySelector('#comparison')
-    expect(comparisonSection).toBeInTheDocument()
+    const mobileSection = container.querySelector('#mobile')
+    expect(mobileSection).toBeInTheDocument()
 
-    // Verify comparison content is present
-    expect(screen.getByText('See How We Compare')).toBeInTheDocument()
+    // Verify mobile content is present
+    expect(screen.getByText(/Capture inspiration/i)).toBeInTheDocument()
   })
 
   it('should render Testimonials section', () => {
@@ -105,24 +99,7 @@ describe('App Integration', () => {
     expect(testimonialsSection).toBeInTheDocument()
 
     // Verify testimonials content is present
-    expect(screen.getByText('Loved by thousands of note-takers')).toBeInTheDocument()
-  })
-
-  it('should render Pricing section', () => {
-    const { container } = render(<App />)
-
-    const pricingSection = container.querySelector('#pricing')
-    expect(pricingSection).toBeInTheDocument()
-
-    // Verify pricing content is present
-    expect(screen.getByText('Simple, Transparent Pricing')).toBeInTheDocument()
-  })
-
-  it('should render FAQ section', () => {
-    const { container } = render(<App />)
-
-    const faqSection = container.querySelector('#faq')
-    expect(faqSection).toBeInTheDocument()
+    expect(screen.getByText(/Sarah Jenkins/i)).toBeInTheDocument()
   })
 
   it('should render CTA section', () => {
@@ -141,66 +118,29 @@ describe('App Integration', () => {
     const footer = container.querySelector('footer')
     expect(footer).toBeInTheDocument()
 
-    // Verify footer content is present (appears in both Hero and Footer)
-    const taglines = screen.getAllByText('Your thoughts, unchained from complexity')
-    expect(taglines.length).toBeGreaterThan(0)
+    // Verify footer content is present
+    expect(screen.getByText('Designed for clarity in a chaotic world.')).toBeInTheDocument()
   })
 
-  it('should render download buttons in CTA section', () => {
+  it('should render CTA buttons in download section', () => {
     render(<App />)
 
-    expect(screen.getByRole('link', { name: 'Download for Mac' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Download for Windows' })).toBeInTheDocument()
-  })
-
-  it('should render all pricing plans', () => {
-    render(<App />)
-
-    // Check all three pricing plans are present (appear multiple times on page)
-    const freeTexts = screen.getAllByText('Free')
-    expect(freeTexts.length).toBeGreaterThan(0)
-
-    const proTexts = screen.getAllByText('Pro')
-    expect(proTexts.length).toBeGreaterThan(0)
-
-    const teamTexts = screen.getAllByText('Team')
-    expect(teamTexts.length).toBeGreaterThan(0)
-  })
-
-  it('should render comparison table', () => {
-    render(<App />)
-
-    const table = screen.getByRole('table')
-    expect(table).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Get Started for Free/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Learn More/i })).toBeInTheDocument()
   })
 
   it('should render feature cards', () => {
     render(<App />)
 
-    // Check for specific features (some appear in multiple places)
-    const lightningSpeed = screen.getAllByText('Lightning Speed')
-    expect(lightningSpeed.length).toBeGreaterThan(0)
-
-    const beautifulSimplicity = screen.getAllByText('Beautiful Simplicity')
-    expect(beautifulSimplicity.length).toBeGreaterThan(0)
-
-    const tagBased = screen.getAllByText('Tag-Based Organization')
-    expect(tagBased.length).toBeGreaterThan(0)
-
-    const universalAccess = screen.getAllByText('Universal Access')
-    expect(universalAccess.length).toBeGreaterThan(0)
-
-    const offlineFirst = screen.getAllByText('Offline-First')
-    expect(offlineFirst.length).toBeGreaterThan(0)
-
-    const privacyFocused = screen.getAllByText('Privacy Focused')
-    expect(privacyFocused.length).toBeGreaterThan(0)
+    // Check for specific features
+    expect(screen.getByText('Distraction-free Writing')).toBeInTheDocument()
+    expect(screen.getByText('Private by Design')).toBeInTheDocument()
+    expect(screen.getByText('Seamless Workflow')).toBeInTheDocument()
   })
 
   it('should render social links in footer', () => {
     render(<App />)
 
-    expect(screen.getByRole('link', { name: 'GitHub' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Twitter' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Email' })).toBeInTheDocument()
   })

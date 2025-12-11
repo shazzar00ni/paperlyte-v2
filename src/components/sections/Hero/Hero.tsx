@@ -4,10 +4,13 @@ import { ParallaxLayer } from '@components/ui/ParallaxLayer'
 import { FloatingElement } from '@components/ui/FloatingElement'
 import { TextReveal } from '@components/ui/TextReveal'
 import { Section } from '@components/layout/Section'
-import { scrollToSection } from '@utils/navigation'
+import { Icon } from '@components/ui/Icon'
+import { scrollToSection } from '@/utils/navigation'
 import styles from './Hero.module.css'
 
-export const Hero = (): React.ReactElement => {
+const trustedCompanies = ['Acme Corp', 'Global', 'Nebula', 'Vertex', 'Horizon']
+
+export const Hero = () => {
   return (
     <Section id="hero" className={styles.hero} padding="large">
       {/* Parallax background decorations */}
@@ -55,21 +58,22 @@ export const Hero = (): React.ReactElement => {
 
       <div className={styles.content}>
         <AnimatedElement animation="fadeIn">
-          <TextReveal
-            as="h1"
-            type="word"
-            stagger={80}
-            animation="fadeUp"
-            className={styles.headline}
-          >
+          <TextReveal as="h1" type="word" stagger={80} animation="fadeUp" className={styles.headline}>
             Your thoughts, unchained from complexity
           </TextReveal>
         </AnimatedElement>
 
-        <AnimatedElement animation="fadeIn" delay={150}>
+        <AnimatedElement animation="fadeIn" delay={100}>
+          <h1 className={styles.headline}>
+            Thoughts,
+            <br />
+            <em className={styles.headlineItalic}>organized.</em>
+          </h1>
+        </AnimatedElement>
+
+        <AnimatedElement animation="fadeIn" delay={200}>
           <p className={styles.subheadline}>
-            Lightning-fast, distraction-free note-taking. No bloat, no friction. Just you and your
-            ideas, the way it should be.
+            The minimal workspace for busy professionals. Capture ideas, structure documents, and focus on what truly matters—without the clutter.
           </p>
         </AnimatedElement>
 
@@ -78,31 +82,67 @@ export const Hero = (): React.ReactElement => {
             <Button
               variant="primary"
               size="large"
-              icon="fa-download"
+              icon="fa-arrow-right"
               onClick={() => scrollToSection('download')}
             >
-              Download Now
+              Start Writing for Free
             </Button>
             <Button variant="secondary" size="large" onClick={() => scrollToSection('features')}>
-              See Features
+              View the Demo
             </Button>
-          </div>
-        </AnimatedElement>
-
-        <AnimatedElement animation="fadeIn" delay={450}>
-          <div className={styles.tags}>
-            <span className={styles.tag}>
-              <i className="fa-solid fa-bolt" aria-hidden="true" /> Lightning Fast
-            </span>
-            <span className={styles.tag}>
-              <i className="fa-solid fa-lock" aria-hidden="true" /> Privacy First
-            </span>
-            <span className={styles.tag}>
-              <i className="fa-solid fa-wifi-slash" aria-hidden="true" /> Offline Ready
-            </span>
           </div>
         </AnimatedElement>
       </div>
+
+      <AnimatedElement animation="fadeIn" delay={400}>
+        <div className={styles.mockup} aria-hidden="true">
+          <div className={styles.mockupCard}>
+            <div className={styles.mockupHeader}>
+              <div className={styles.mockupDot} />
+              <div className={styles.mockupTitle} />
+            </div>
+            <div className={styles.mockupContent}>
+              <div className={`${styles.mockupLine} ${styles.mockupLineLong}`} />
+              <div className={styles.mockupLine} />
+              <div className={`${styles.mockupLine} ${styles.mockupLineMedium}`} />
+              <div className={`${styles.mockupLine} ${styles.mockupLineShort}`} />
+              <div className={styles.mockupSpacer} />
+              <div className={styles.mockupCheckbox}>
+                <div className={styles.mockupCheck} />
+                <div className={`${styles.mockupLine} ${styles.mockupLineCheckbox}`} />
+              </div>
+              <div className={styles.mockupCheckbox}>
+                <div className={styles.mockupCheck} />
+                <div className={`${styles.mockupLine} ${styles.mockupLineCheckboxShort}`} />
+              </div>
+            </div>
+            <div className={styles.mockupStats}>
+              <div className={styles.mockupStatCard}>
+                <div className={styles.mockupStatIcon}>
+                  <Icon name="fa-clock" size="sm" />
+                </div>
+                <span className={styles.mockupStatLabel}>PRODUCTIVITY</span>
+                <span className={styles.mockupStatValue}>+120%</span>
+                <span className={styles.mockupStatDesc}>Focus increase reported by users</span>
+              </div>
+              <button type="button" className={styles.mockupShareBtn}>Share</button>
+            </div>
+          </div>
+        </div>
+      </AnimatedElement>
+
+      <AnimatedElement animation="fadeIn" delay={500}>
+        <div className={styles.trusted}>
+          <span className={styles.trustedLabel}>TRUSTED BY TEAMS AT</span>
+          <div className={styles.trustedLogos}>
+            {trustedCompanies.map((company) => (
+              <span key={company} className={styles.trustedLogo}>
+                {company}
+              </span>
+            ))}
+          </div>
+        </div>
+      </AnimatedElement>
     </Section>
   )
 }

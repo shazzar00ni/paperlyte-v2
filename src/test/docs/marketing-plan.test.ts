@@ -2,6 +2,17 @@ import { describe, it, expect, beforeAll } from 'vitest'
 import { readFileSync } from 'fs'
 import { join } from 'path'
 
+/**
+ * Helper function to assert and return regex matches with a custom error message
+ */
+function assertMatches(content: string, pattern: RegExp, message: string): RegExpMatchArray {
+  const matches = content.match(pattern)
+  if (!matches || matches.length === 0) {
+    throw new Error(message)
+  }
+  return matches
+}
+
 describe('Marketing Plan Document Validation', () => {
   let content: string
   let lines: string[]

@@ -1,11 +1,10 @@
 import { useState, useEffect, useRef } from 'react'
 import { Button } from '@components/ui/Button'
 import { Icon } from '@components/ui/Icon'
-import { ThemeToggle } from '@components/ui/ThemeToggle'
-import { scrollToSection as scrollToSectionUtil } from '@utils/navigation'
+import { scrollToSection } from '@/utils/navigation'
 import styles from './Header.module.css'
 
-export const Header = (): React.ReactElement => {
+export const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const menuButtonRef = useRef<HTMLButtonElement>(null)
   const menuRef = useRef<HTMLUListElement>(null)
@@ -15,17 +14,18 @@ export const Header = (): React.ReactElement => {
   }
 
   const closeMobileMenu = () => {
+    if (!mobileMenuOpen) {
+      return
+    }
     setMobileMenuOpen(false)
-    // Return focus to menu button when closing
     menuButtonRef.current?.focus()
   }
 
-  const scrollToSection = (sectionId: string) => {
-    scrollToSectionUtil(sectionId)
+  const handleNavClick = (sectionId: string) => {
+    scrollToSection(sectionId)
     closeMobileMenu()
   }
 
-  // Handle Escape key to close menu
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && mobileMenuOpen) {
@@ -37,7 +37,6 @@ export const Header = (): React.ReactElement => {
     return () => document.removeEventListener('keydown', handleEscape)
   }, [mobileMenuOpen])
 
-  // Focus trap and arrow key navigation for mobile menu
   useEffect(() => {
     if (!mobileMenuOpen || !menuRef.current) return
 
@@ -51,16 +50,13 @@ export const Header = (): React.ReactElement => {
     const handleKeyboardNavigation = (event: KeyboardEvent) => {
       const { key, shiftKey } = event
 
-      // Handle Tab key for focus trap
       if (key === 'Tab') {
         if (shiftKey) {
-          // Shift + Tab
           if (document.activeElement === firstFocusable) {
             event.preventDefault()
             lastFocusable?.focus()
           }
         } else {
-          // Tab
           if (document.activeElement === lastFocusable) {
             event.preventDefault()
             firstFocusable?.focus()
@@ -69,7 +65,6 @@ export const Header = (): React.ReactElement => {
         return
       }
 
-      // Handle arrow keys, Home, and End for menu navigation
       if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(key)) {
         event.preventDefault()
 
@@ -81,19 +76,15 @@ export const Header = (): React.ReactElement => {
 
         switch (key) {
           case 'ArrowDown':
-            // Move to next item, wrap to first if at end
             targetIndex = currentIndex < focusableElements.length - 1 ? currentIndex + 1 : 0
             break
           case 'ArrowUp':
-            // Move to previous item, wrap to last if at beginning
             targetIndex = currentIndex > 0 ? currentIndex - 1 : focusableElements.length - 1
             break
           case 'Home':
-            // Jump to first item
             targetIndex = 0
             break
           case 'End':
-            // Jump to last item
             targetIndex = focusableElements.length - 1
             break
           default:
@@ -105,8 +96,6 @@ export const Header = (): React.ReactElement => {
     }
 
     menu.addEventListener('keydown', handleKeyboardNavigation)
-
-    // Focus first element when menu opens
     firstFocusable?.focus()
 
     return () => menu.removeEventListener('keydown', handleKeyboardNavigation)
@@ -117,7 +106,7 @@ export const Header = (): React.ReactElement => {
       <div className={styles.container}>
         <div className={styles.logo}>
           <Icon name="fa-feather" size="lg" />
-          <span className={styles.logoText}>Paperlyte</span>
+          <span className={styles.logoText}>Paperlyte.</span>
         </div>
 
         <nav className={styles.nav} aria-label="Main navigation">
@@ -128,7 +117,7 @@ export const Header = (): React.ReactElement => {
             <li>
               <button
                 type="button"
-                onClick={() => scrollToSection('features')}
+                onClick={() => handleNavClick('features')}
                 className={styles.navLink}
               >
                 Features
@@ -137,21 +126,38 @@ export const Header = (): React.ReactElement => {
             <li>
               <button
                 type="button"
-                onClick={() => scrollToSection('download')}
+                onClick={() => handleNavClick('mobile')}
+                className={styles.navLink}
+              >
+                Mobile
+              </button>
+            </li>
+            <li>
+              <button
+                type="button"
+                onClick={() => handleNavClick('testimonials')}
+                className={styles.navLink}
+              >
+                Testimonials
+              </button>
+            </li>
+            <li>
+              <button
+                type="button"
+                onClick={() => handleNavClick('download')}
                 className={styles.navLink}
               >
                 Download
               </button>
             </li>
             <li className={styles.navCta}>
-              <Button variant="primary" size="small" onClick={() => scrollToSection('download')}>
+              <Button variant="primary" size="small" onClick={() => handleNavClick('download')}>
                 Get Started
               </Button>
             </li>
           </ul>
 
           <div className={styles.navActions}>
-            <ThemeToggle />
             <button
               ref={menuButtonRef}
               type="button"

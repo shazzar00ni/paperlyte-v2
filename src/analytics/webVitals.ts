@@ -307,7 +307,8 @@ export function initWebVitals(onReport: (vitals: CoreWebVitals) => void): void {
   // Report on visibility change
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'hidden') {
-      reportVitals()
+      // Small delay to allow individual metric handlers to update first
+      setTimeout(reportVitals, 0)
     }
   })
 

@@ -150,14 +150,8 @@ function trackCLS(callback: ReportCallback): void {
       })
     }
 
-    // Report on visibility change and page unload
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'hidden') {
-        reportCLS()
-      }
-    })
-
-    window.addEventListener('pagehide', reportCLS)
+    // Do not add visibilitychange or pagehide listeners here.
+    // The main initWebVitals function should call reportCLS when appropriate.
   } catch (error) {
     console.warn('[WebVitals] CLS tracking failed:', error)
   }

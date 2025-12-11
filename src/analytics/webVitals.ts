@@ -253,8 +253,20 @@ function trackINP(callback: ReportCallback): void {
     // Report INP on page hide
     const reportINP = () => {
       if (interactions.length > 0) {
-        // INP is the worst (longest) interaction
-        const value = Math.max(...interactions)
+        let value: number
+
+        // For pages with few interactions, use max
+        // For pages with many interactions, use 98th percentile
+        if (interactions.length <= 10) {
+          // Use the worst (longest) interaction for few interactions
+          value = Math.max(...interactions)
+        } else {
+          // Use 98th percentile for many interactions
+          const sortedInteractions = [...interactions].sort((a, b) => a - b)
+          const index = Math.max(0, Math.ceil(0.98 * sortedInteractions.length) - 1)
+          value = sortedInteractions[index]
+        }
+
         callback({
           name: 'INP',
           value,

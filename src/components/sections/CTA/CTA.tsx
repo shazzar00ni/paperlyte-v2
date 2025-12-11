@@ -53,29 +53,32 @@ export const CTA = (): React.ReactElement => {
           <div className={styles.platforms}>
             <p className={styles.platformText}>
               Also available for{' '}
-              <a
-                href="#"
+              <button
+                type="button"
                 className={styles.platformLink}
                 onClick={() => handleDownloadClick('ios')}
+                aria-label="Download for iOS"
               >
                 iOS
-              </a>
+              </button>
               ,{' '}
-              <a
-                href="#"
+              <button
+                type="button"
                 className={styles.platformLink}
                 onClick={() => handleDownloadClick('android')}
+                aria-label="Download for Android"
               >
                 Android
-              </a>
+              </button>
               , and{' '}
-              <a
-                href="#"
+              <button
+                type="button"
                 className={styles.platformLink}
                 onClick={() => handleDownloadClick('linux')}
+                aria-label="Download for Linux"
               >
                 Linux
-              </a>
+              </button>
             </p>
           </div>
         </AnimatedElement>

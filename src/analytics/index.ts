@@ -91,11 +91,14 @@ class Analytics {
       case 'umami':
       case 'simple':
       case 'custom':
-        // Throw error for unimplemented providers to prevent silent failures
+        // TODO: Implement additional analytics providers
+        // Track progress at: https://github.com/shazzar00ni/paperlyte-v2/issues/[ISSUE_NUMBER]
+        // Required providers: Fathom, Umami, Simple Analytics, Custom
+        // See src/analytics/README.md for implementation requirements
         throw new Error(
           `[Analytics] Provider "${provider}" is not yet implemented. ` +
             `Please use "plausible" for now. ` +
-            `See src/analytics/README.md for supported providers.`
+            `Track implementation progress at: https://github.com/shazzar00ni/paperlyte-v2/issues`
         )
       default:
         // Fallback to Plausible for any other value (with warning in dev)

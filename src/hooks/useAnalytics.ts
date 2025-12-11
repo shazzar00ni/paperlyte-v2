@@ -52,7 +52,8 @@ export function useAnalytics(): UseAnalyticsReturn {
     trackPageView: (url?: string) => analytics.trackPageView(url),
     trackCTAClick: (buttonName: string, location: string) =>
       analytics.trackCTAClick(buttonName, location),
-    trackDownload: (platform: string, location: string) => analytics.trackDownload(platform, location),
+    trackDownload: (platform: string, location: string) =>
+      analytics.trackDownload(platform, location),
     trackNavigation: (target: string, source: string) => analytics.trackNavigation(target, source),
     isEnabled: () => analytics.isEnabled(),
   }

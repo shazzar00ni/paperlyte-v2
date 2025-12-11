@@ -91,7 +91,9 @@ export class PlausibleProvider implements AnalyticsProvider {
         'simpleanalytics.com',
       ]
 
-      const isKnownProvider = knownProviders.some((provider) => parsedUrl.hostname.endsWith(provider))
+      const isKnownProvider = knownProviders.some((provider) =>
+        parsedUrl.hostname.endsWith(provider)
+      )
       const hasValidPath = parsedUrl.pathname.endsWith('.js')
 
       if (!hasValidPath) {
@@ -252,7 +254,12 @@ export class PlausibleProvider implements AnalyticsProvider {
    * Check if analytics is enabled
    */
   isEnabled(): boolean {
-    return this.initialized && this.scriptLoaded && typeof window !== 'undefined' && typeof window.plausible === 'function'
+    return (
+      this.initialized &&
+      this.scriptLoaded &&
+      typeof window !== 'undefined' &&
+      typeof window.plausible === 'function'
+    )
   }
 
   /**

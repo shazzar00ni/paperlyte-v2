@@ -72,7 +72,7 @@ export const Statistics = (): React.ReactElement => {
           <div className={styles.header}>
             <h2 className={styles.title}>Join thousands who've simplified their notes</h2>
             <p className={styles.subtitle}>
-              Real people, real productivity gains, real peace of mind
+              Real people, real productivity gains, real peace of mind.
             </p>
           </div>
         </AnimatedElement>

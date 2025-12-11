@@ -9,7 +9,7 @@ While we've created SVG templates, most social media platforms (Facebook, Twitte
 ## Generating Social Media Images
 
 ### Method 1: Online Converter (Quickest)
-1. Visit https://cloudconvert.com/svg-to-jpg or https://svgtopng.com/
+1. Visit <https://cloudconvert.com/svg-to-jpg> or <https://svgtopng.com/>
 2. Upload `public/og-image.svg` and `public/twitter-image.svg`
 3. Set quality to 90-95%
 4. Download as JPG

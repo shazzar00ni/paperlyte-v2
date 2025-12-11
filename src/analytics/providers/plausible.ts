@@ -7,12 +7,7 @@
  * @see https://plausible.io/docs
  */
 
-import type {
-  AnalyticsConfig,
-  AnalyticsEvent,
-  AnalyticsProvider,
-  CoreWebVitals,
-} from '../types'
+import type { AnalyticsConfig, AnalyticsEvent, AnalyticsProvider, CoreWebVitals } from '../types'
 
 /**
  * Plausible window interface for TypeScript
@@ -71,7 +66,8 @@ export class PlausibleProvider implements AnalyticsProvider {
    * Uses async loading to prevent blocking page render
    */
   private loadScript(): void {
-    if (this.scriptLoaded || typeof window === 'undefined') {
+    // Guard against SSR/Node.js environments
+    if (this.scriptLoaded || typeof window === 'undefined' || typeof document === 'undefined') {
       return
     }
 
@@ -110,7 +106,8 @@ export class PlausibleProvider implements AnalyticsProvider {
    * Plausible automatically tracks pageviews, but this can be used for SPAs
    */
   trackPageView(url?: string): void {
-    if (!this.isEnabled() || !window.plausible) {
+    // Guard against SSR/Node.js environments
+    if (!this.isEnabled() || typeof window === 'undefined' || !window.plausible) {
       return
     }
 
@@ -130,7 +127,8 @@ export class PlausibleProvider implements AnalyticsProvider {
    * Sends event with optional properties to Plausible
    */
   trackEvent(event: AnalyticsEvent): void {
-    if (!this.isEnabled() || !window.plausible) {
+    // Guard against SSR/Node.js environments
+    if (!this.isEnabled() || typeof window === 'undefined' || !window.plausible) {
       return
     }
 
@@ -199,13 +197,18 @@ export class PlausibleProvider implements AnalyticsProvider {
     this.scriptLoaded = false
     this.config = null
 
-    // Remove Plausible script if it exists
-    const script = document.querySelector('script[data-domain]')
-    if (script) {
-      script.remove()
+    // Guard against SSR/Node.js environments
+    if (typeof document !== 'undefined') {
+      // Remove Plausible script if it exists
+      const script = document.querySelector('script[data-domain]')
+      if (script) {
+        script.remove()
+      }
     }
 
-    delete window.plausible
+    if (typeof window !== 'undefined' && window.plausible) {
+      delete window.plausible
+    }
 
     if (debug) {
       console.log('[Analytics] Plausible disabled')
@@ -216,7 +219,8 @@ export class PlausibleProvider implements AnalyticsProvider {
    * Check if Do Not Track is enabled in browser
    */
   private isDNTEnabled(): boolean {
-    if (typeof window === 'undefined') {
+    // Guard against SSR/Node.js environments
+    if (typeof window === 'undefined' || typeof navigator === 'undefined') {
       return false
     }
 

@@ -33,6 +33,7 @@ class Analytics {
   private provider: AnalyticsProvider | null = null
   private config: AnalyticsConfig | null = null
   private initialized = false
+  private scrollTracker: { disable: () => void } | null = null
 
   /**
    * Initialize analytics with configuration
@@ -62,7 +63,7 @@ class Analytics {
 
     // Initialize scroll depth tracking if enabled
     if (config.trackScrollDepth !== false) {
-      createScrollTracker((depth) => {
+      this.scrollTracker = createScrollTracker((depth) => {
         this.trackEvent({
           name: 'scroll_depth',
           properties: { depth },
@@ -79,6 +80,7 @@ class Analytics {
 
   /**
    * Create analytics provider instance
+   * @throws {Error} If the requested provider is not implemented
    */
   private createProvider(provider: AnalyticsConfig['provider']): AnalyticsProvider {
     switch (provider) {
@@ -88,10 +90,20 @@ class Analytics {
       case 'umami':
       case 'simple':
       case 'custom':
-        // TODO: Implement other providers
-        console.warn(`[Analytics] Provider "${provider}" not yet implemented, using Plausible`)
-        return new PlausibleProvider()
+        // Throw error for unimplemented providers to prevent silent failures
+        throw new Error(
+          `[Analytics] Provider "${provider}" is not yet implemented. ` +
+            `Please use "plausible" for now. ` +
+            `See src/analytics/README.md for supported providers.`
+        )
       default:
+        // Fallback to Plausible for any other value (with warning in dev)
+        if (import.meta.env.DEV) {
+          console.warn(
+            `[Analytics] Unknown provider "${provider}", falling back to Plausible. ` +
+              `Supported providers: plausible`
+          )
+        }
         return new PlausibleProvider()
     }
   }
@@ -109,7 +121,10 @@ class Analytics {
     this.provider?.trackPageView(url)
 
     if (this.config?.debug) {
-      console.log('[Analytics] Page view tracked:', url || (typeof window !== 'undefined' ? window.location.pathname : '/'))
+      console.log(
+        '[Analytics] Page view tracked:',
+        url || (typeof window !== 'undefined' ? window.location.pathname : '/')
+      )
     }
   }
 
@@ -212,7 +227,16 @@ class Analytics {
 
     const debug = this.config?.debug
 
+    // Disable provider
     this.provider?.disable()
+
+    // Disable scroll tracker
+    if (this.scrollTracker) {
+      this.scrollTracker.disable()
+      this.scrollTracker = null
+    }
+
+    // Reset state
     this.initialized = false
     this.config = null
     this.provider = null

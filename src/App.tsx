@@ -29,13 +29,13 @@ function App() {
     if (config) {
       analytics.init(config)
 
-      if (config.debug) {
+      // Only log in development or debug mode to avoid console pollution in production
+      if (config.debug || import.meta.env.DEV) {
         console.log('[App] Analytics initialized successfully')
       }
-    } else {
-      if (process.env.NODE_ENV !== 'production') {
-        console.log('[App] Analytics disabled (no configuration found)')
-      }
+    } else if (import.meta.env.DEV) {
+      // Only log this message in development to avoid leaking configuration details
+      console.log('[App] Analytics disabled (no configuration found)')
     }
   }, [])
 

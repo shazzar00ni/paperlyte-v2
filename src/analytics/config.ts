@@ -11,25 +11,50 @@ import type { AnalyticsConfig } from './types'
  * Get analytics configuration from environment variables
  *
  * Environment variables (defined in .env):
- * - VITE_ANALYTICS_ENABLED: Enable/disable analytics (default: true in production)
+ * - VITE_ANALYTICS_ENABLED: Enable/disable analytics
+ *   - Default: 'true' in production, 'false' in development
+ *   - Explicitly set to 'true' to enable or 'false' to disable
  * - VITE_ANALYTICS_PROVIDER: Analytics provider (plausible, fathom, umami, simple)
  * - VITE_ANALYTICS_DOMAIN: Domain/site ID for analytics service
  * - VITE_ANALYTICS_API_URL: Custom API endpoint (optional)
  * - VITE_ANALYTICS_DEBUG: Enable debug mode (default: false)
  */
 export function getAnalyticsConfig(): AnalyticsConfig | null {
-  // Check if analytics is enabled
-  const enabled = import.meta.env.VITE_ANALYTICS_ENABLED !== 'false'
   const domain = import.meta.env.VITE_ANALYTICS_DOMAIN
 
-  // Analytics is disabled if not enabled or no domain is provided
-  if (!enabled || !domain) {
+  // If no domain is provided, analytics cannot be enabled
+  if (!domain) {
     return null
   }
 
+  // Determine if analytics is enabled based on environment
+  // Default behavior: enabled in production, disabled in development
+  let enabled: boolean
+  const enabledEnv = import.meta.env.VITE_ANALYTICS_ENABLED
+
+  if (enabledEnv === 'true') {
+    // Explicitly enabled
+    enabled = true
+  } else if (enabledEnv === 'false') {
+    // Explicitly disabled
+    enabled = false
+  } else {
+    // Not set - use default based on environment
+    // Enable in production, disable in development
+    enabled = import.meta.env.PROD
+  }
+
+  // Analytics is disabled if not enabled
+  if (!enabled) {
+    return null
+  }
+
+  // Validate and set analytics provider
   const validProviders = ['plausible', 'fathom', 'umami', 'simple', 'custom'] as const
   const rawProvider = import.meta.env.VITE_ANALYTICS_PROVIDER || 'plausible'
-  const provider: AnalyticsConfig['provider'] = validProviders.includes(rawProvider as typeof validProviders[number])
+  const provider: AnalyticsConfig['provider'] = validProviders.includes(
+    rawProvider as (typeof validProviders)[number]
+  )
     ? (rawProvider as AnalyticsConfig['provider'])
     : 'plausible'
   const apiUrl = import.meta.env.VITE_ANALYTICS_API_URL

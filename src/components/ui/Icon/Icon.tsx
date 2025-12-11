@@ -1,3 +1,7 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import type { IconProp, SizeProp, IconName } from '@fortawesome/fontawesome-svg-core'
+import { convertIconName } from '../../../utils/iconLibrary'
+
 interface IconProps {
   name: string
   size?: 'sm' | 'md' | 'lg' | 'xl' | '2x' | '3x'
@@ -15,21 +19,27 @@ export const Icon: React.FC<IconProps> = ({
   color,
   style,
 }) => {
-  const sizeClass = {
-    sm: 'fa-sm',
-    md: '', // Medium size is default (no class)
-    lg: 'fa-lg',
-    xl: 'fa-xl',
-    '2x': 'fa-2x',
-    '3x': 'fa-3x',
-  }[size]
+  // Convert old icon name format (fa-bolt) to new format (bolt)
+  const iconName = convertIconName(name)
+
+  // Map our size format to FontAwesome's SizeProp format
+  const faSize: SizeProp | undefined = size === 'md' ? undefined : (size as SizeProp)
+
+  // Determine the icon type (brand vs solid)
+  // Brand icons: github, twitter, apple, windows
+  const isBrandIcon = ['github', 'twitter', 'apple', 'windows'].includes(iconName)
+  const iconProp: IconProp = isBrandIcon
+    ? (['fab', iconName as IconName] as IconProp)
+    : (['fas', iconName as IconName] as IconProp)
 
   return (
-    <i
-      className={`fa-solid ${name} ${sizeClass} ${className}${color ? ` icon-color-${color.replace('#', '')}` : ''}`}
+    <FontAwesomeIcon
+      icon={iconProp}
+      size={faSize}
+      className={className}
       aria-label={ariaLabel}
       aria-hidden={!ariaLabel}
-      style={style}
+      style={{ ...style, ...(color ? { color } : {}) }}
       {...(ariaLabel && { role: 'img' })}
     />
   )

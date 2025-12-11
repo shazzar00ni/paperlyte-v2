@@ -8,7 +8,7 @@ The `favicon.svg` file serves as the source for all app icons and favicons.
 To generate the required PNG icons from the SVG source, use one of these methods:
 
 ### Method 1: Online Tool (Quickest)
-1. Visit https://realfavicongenerator.net/
+1. Visit <https://realfavicongenerator.net/>
 2. Upload `public/favicon.svg`
 3. Customize if desired
 4. Generate and download the icons

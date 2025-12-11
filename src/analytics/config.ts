@@ -58,7 +58,9 @@ export function getAnalyticsConfig(): AnalyticsConfig | null {
     ? (rawProvider as AnalyticsConfig['provider'])
     : 'plausible'
   const apiUrl = import.meta.env.VITE_ANALYTICS_API_URL
-  const debug = import.meta.env.VITE_ANALYTICS_DEBUG === 'true' || import.meta.env.DEV
+  const debug =
+    import.meta.env.VITE_ANALYTICS_DEBUG === 'true' ||
+    (import.meta.env.DEV && import.meta.env.VITE_ANALYTICS_DEBUG !== 'false')
 
   return {
     provider,

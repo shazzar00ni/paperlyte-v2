@@ -1,9 +1,16 @@
 import { Section } from '@components/layout/Section'
 import { Button } from '@components/ui/Button'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
+import { useAnalytics } from '@hooks/useAnalytics'
 import styles from './CTA.module.css'
 
 export const CTA = (): React.ReactElement => {
+  const { trackDownload } = useAnalytics()
+
+  const handleDownloadClick = (platform: string) => {
+    trackDownload(platform, 'cta-section')
+  }
+
   return (
     <Section id="download" background="primary" className={styles.cta}>
       <div className={styles.content}>
@@ -25,6 +32,7 @@ export const CTA = (): React.ReactElement => {
               icon="fa-apple"
               href="#"
               className={styles.downloadButton}
+              onClick={() => handleDownloadClick('mac')}
             >
               Download for Mac
             </Button>
@@ -34,6 +42,7 @@ export const CTA = (): React.ReactElement => {
               icon="fa-windows"
               href="#"
               className={styles.downloadButton}
+              onClick={() => handleDownloadClick('windows')}
             >
               Download for Windows
             </Button>
@@ -44,15 +53,27 @@ export const CTA = (): React.ReactElement => {
           <div className={styles.platforms}>
             <p className={styles.platformText}>
               Also available for{' '}
-              <a href="#" className={styles.platformLink}>
+              <a
+                href="#"
+                className={styles.platformLink}
+                onClick={() => handleDownloadClick('ios')}
+              >
                 iOS
               </a>
               ,{' '}
-              <a href="#" className={styles.platformLink}>
+              <a
+                href="#"
+                className={styles.platformLink}
+                onClick={() => handleDownloadClick('android')}
+              >
                 Android
               </a>
               , and{' '}
-              <a href="#" className={styles.platformLink}>
+              <a
+                href="#"
+                className={styles.platformLink}
+                onClick={() => handleDownloadClick('linux')}
+              >
                 Linux
               </a>
             </p>

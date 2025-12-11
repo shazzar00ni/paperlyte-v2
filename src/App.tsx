@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { ErrorBoundary } from '@components/ErrorBoundary'
 import { Header } from '@components/layout/Header'
 import { Footer } from '@components/layout/Footer'
@@ -9,13 +10,33 @@ import { Testimonials } from '@components/sections/Testimonials'
 import { Pricing } from '@components/sections/Pricing'
 import { FAQ } from '@components/sections/FAQ'
 import { CTA } from '@components/sections/CTA'
+import { analytics } from '@/analytics'
+import { getAnalyticsConfig } from '@/analytics/config'
 
 /**
  * Top-level application component that composes the page layout and sections.
  *
+ * Initializes privacy-first analytics on mount and renders the full landing page
+ * with all sections wrapped in an ErrorBoundary for resilience.
+ *
  * @returns The root JSX element rendering the app: an ErrorBoundary wrapping the Header, a `main` element containing Hero, Features, Statistics, Comparison, Testimonials, Pricing, FAQ, and CTA sections, and the Footer.
  */
 function App() {
+  // Initialize analytics on app mount
+  useEffect(() => {
+    const config = getAnalyticsConfig()
+
+    if (config) {
+      analytics.init(config)
+
+      if (config.debug) {
+        console.log('[App] Analytics initialized successfully')
+      }
+    } else {
+      console.log('[App] Analytics disabled (no configuration found)')
+    }
+  }, [])
+
   return (
     <ErrorBoundary>
       <Header />

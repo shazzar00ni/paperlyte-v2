@@ -5,9 +5,22 @@ import { FloatingElement } from '@components/ui/FloatingElement'
 import { TextReveal } from '@components/ui/TextReveal'
 import { Section } from '@components/layout/Section'
 import { scrollToSection } from '@utils/navigation'
+import { useAnalytics } from '@hooks/useAnalytics'
 import styles from './Hero.module.css'
 
 export const Hero = (): React.ReactElement => {
+  const { trackCTAClick, trackNavigation } = useAnalytics()
+
+  const handleDownloadClick = () => {
+    trackCTAClick('Download Now', 'hero')
+    scrollToSection('download')
+  }
+
+  const handleFeaturesClick = () => {
+    trackNavigation('features', 'hero')
+    scrollToSection('features')
+  }
+
   return (
     <Section id="hero" className={styles.hero} padding="large">
       {/* Parallax background decorations */}
@@ -75,15 +88,10 @@ export const Hero = (): React.ReactElement => {
 
         <AnimatedElement animation="fadeIn" delay={300}>
           <div className={styles.ctas}>
-            <Button
-              variant="primary"
-              size="large"
-              icon="fa-download"
-              onClick={() => scrollToSection('download')}
-            >
+            <Button variant="primary" size="large" icon="fa-download" onClick={handleDownloadClick}>
               Download Now
             </Button>
-            <Button variant="secondary" size="large" onClick={() => scrollToSection('features')}>
+            <Button variant="secondary" size="large" onClick={handleFeaturesClick}>
               See Features
             </Button>
           </div>

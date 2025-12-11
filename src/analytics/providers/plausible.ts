@@ -75,7 +75,6 @@ export class PlausibleProvider implements AnalyticsProvider {
     const script = document.createElement('script')
     const apiUrl = this.config?.apiUrl || 'https://plausible.io/js/script.js'
 
-    script.defer = true
     script.async = true
     script.src = apiUrl
     script.setAttribute('data-domain', this.config?.domain || '')

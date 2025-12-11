@@ -68,13 +68,13 @@ export const FAQ = (): React.ReactElement => {
     <Section id="faq" background="default">
       <div className={styles.header}>
         <AnimatedElement animation="fadeIn">
-          <h2 className={styles.title}>Frequently Asked Questions</h2>
+          <h2 className={styles.title}>Questions? We've got answers</h2>
         </AnimatedElement>
         <AnimatedElement animation="fadeIn" delay={100}>
           <p className={styles.subtitle}>
-            Everything you need to know about Paperlyte. Can't find an answer?{' '}
+            Everything you need to know. Can't find what you're looking for?{' '}
             <a href="#contact" className={styles.link}>
-              Contact our support team
+              Contact us
             </a>
             .
           </p>

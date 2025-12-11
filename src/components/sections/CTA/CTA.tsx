@@ -8,12 +8,12 @@ export const CTA = (): React.ReactElement => {
     <Section id="download" background="primary" className={styles.cta}>
       <div className={styles.content}>
         <AnimatedElement animation="fadeIn">
-          <h2 className={styles.title}>Ready to declutter your mind?</h2>
+          <h2 className={styles.title}>Start capturing your thoughts instantly</h2>
         </AnimatedElement>
 
         <AnimatedElement animation="fadeIn" delay={150}>
           <p className={styles.subtitle}>
-            Join thousands simplifying their notes. Start free, stay focused.
+            Free to start. No credit card required. Available on all your devices.
           </p>
         </AnimatedElement>
 

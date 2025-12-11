@@ -68,8 +68,8 @@ export const Hero = (): React.ReactElement => {
 
         <AnimatedElement animation="fadeIn" delay={150}>
           <p className={styles.subheadline}>
-            Lightning-fast, distraction-free note-taking. No bloat, no friction. Just you and your
-            ideas, the way it should be.
+            Lightning-fast note capture. No loading, no lag, no waiting. Just you and your ideas,
+            the way it should be.
           </p>
         </AnimatedElement>
 

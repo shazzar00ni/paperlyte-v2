@@ -70,9 +70,9 @@ export const Statistics = (): React.ReactElement => {
       <div className={styles.container}>
         <AnimatedElement animation="fadeIn">
           <div className={styles.header}>
-            <h2 className={styles.title}>Trusted by Note-Takers Worldwide</h2>
+            <h2 className={styles.title}>Join thousands who've simplified their notes</h2>
             <p className={styles.subtitle}>
-              Join thousands of users who have simplified their note-taking workflow
+              Real people, real productivity gains, real peace of mind
             </p>
           </div>
         </AnimatedElement>

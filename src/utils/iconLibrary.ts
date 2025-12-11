@@ -33,6 +33,7 @@ import {
   faSun,            // Light mode toggle
   faLock,           // Security/privacy indicator
   faCheck,          // Checkmark/success
+  faCircleQuestion, // Fallback icon for missing/invalid icons
 } from '@fortawesome/free-solid-svg-icons'
 
 // Brand icons (from free-brands-svg-icons)
@@ -64,6 +65,7 @@ library.add(
   faSun,
   faLock,
   faCheck,
+  faCircleQuestion, // Fallback icon (not exposed via iconNameMap)
   // Brand icons
   faGithub,
   faTwitter,
@@ -101,10 +103,40 @@ export const iconNameMap: Record<string, string> = {
 }
 
 /**
+ * Set of brand icon names (derived from imported brand icons)
+ * Used to determine the icon prefix (fab vs fas) dynamically
+ */
+export const brandIconNames = new Set<string>(['github', 'twitter', 'apple', 'windows'])
+
+/**
+ * Set of all valid icon names in the library
+ * Used for runtime validation to prevent rendering invalid icons
+ */
+export const validIconNames = new Set<string>(Object.values(iconNameMap))
+
+/**
  * Helper function to convert old icon names to new format
  * @param oldName - The old Font Awesome class name (e.g., 'fa-bolt')
  * @returns The new icon name (e.g., 'bolt')
  */
 export const convertIconName = (oldName: string): string => {
   return iconNameMap[oldName] || oldName.replace('fa-', '')
+}
+
+/**
+ * Check if an icon name is a brand icon
+ * @param iconName - The converted icon name (e.g., 'github')
+ * @returns true if the icon is a brand icon, false otherwise
+ */
+export const isBrandIcon = (iconName: string): boolean => {
+  return brandIconNames.has(iconName)
+}
+
+/**
+ * Check if an icon name exists in the library
+ * @param iconName - The converted icon name (e.g., 'bolt')
+ * @returns true if the icon exists in the library, false otherwise
+ */
+export const isValidIcon = (iconName: string): boolean => {
+  return validIconNames.has(iconName)
 }

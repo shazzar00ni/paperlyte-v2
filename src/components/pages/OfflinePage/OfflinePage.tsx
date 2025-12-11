@@ -1,0 +1,175 @@
+import { type FC, useState, useEffect } from 'react'
+import { Icon } from '@/components/ui/Icon'
+import styles from './OfflinePage.module.css'
+
+interface OfflinePageProps {
+  /**
+   * Custom message to display (optional)
+   */
+  message?: string
+  /**
+   * Show cached content availability info (optional)
+   */
+  showCachedInfo?: boolean
+  /**
+   * Callback when connection is restored (optional)
+   */
+  onConnectionRestored?: () => void
+}
+
+export const OfflinePage: FC<OfflinePageProps> = ({
+  message,
+  showCachedInfo = true,
+  onConnectionRestored,
+}) => {
+  const [isOnline, setIsOnline] = useState(navigator.onLine)
+  const [isChecking, setIsChecking] = useState(false)
+
+  useEffect(() => {
+    const handleOnline = (): void => {
+      setIsOnline(true)
+      if (onConnectionRestored) {
+        onConnectionRestored()
+      }
+    }
+
+    const handleOffline = (): void => {
+      setIsOnline(false)
+    }
+
+    window.addEventListener('online', handleOnline)
+    window.addEventListener('offline', handleOffline)
+
+    return () => {
+      window.removeEventListener('online', handleOnline)
+      window.removeEventListener('offline', handleOffline)
+    }
+  }, [onConnectionRestored])
+
+  const handleRetry = async (): Promise<void> => {
+    setIsChecking(true)
+
+    // Check connection by making a simple fetch request
+    try {
+      await fetch('/', { method: 'HEAD', cache: 'no-cache' })
+      // If successful, reload the page
+      window.location.reload()
+    } catch {
+      // Connection still not available
+      setIsChecking(false)
+    }
+  }
+
+  return (
+    <div
+      className={styles.container}
+      role="alert"
+      aria-live="polite"
+      aria-labelledby="offline-title"
+    >
+      <div className={styles.content}>
+        {/* Connection status illustration */}
+        <div className={styles.illustration} aria-hidden="true">
+          <div className={styles.iconWrapper}>
+            <Icon name="fa-wifi" size="3x" />
+            <div className={styles.disconnectedSlash} />
+          </div>
+          <div className={styles.statusIndicator}>
+            <span
+              className={isOnline ? styles.statusOnline : styles.statusOffline}
+              aria-label={isOnline ? 'Online' : 'Offline'}
+            />
+            <span className={styles.statusText}>{isOnline ? 'Connected' : 'Disconnected'}</span>
+          </div>
+        </div>
+
+        {/* Main content */}
+        <h1 id="offline-title" className={styles.title}>
+          {isOnline ? 'Connection Restored!' : "You're offline"}
+        </h1>
+
+        <p className={styles.message}>
+          {isOnline
+            ? 'Your internet connection has been restored. You can now continue using Paperlyte.'
+            : message ||
+              "It looks like you've lost your internet connection. Don't worry, Paperlyte is designed to work offline."}
+        </p>
+
+        {/* Action buttons */}
+        <div className={styles.actions}>
+          <button
+            onClick={handleRetry}
+            className={styles.primaryButton}
+            type="button"
+            disabled={isChecking}
+            aria-label="Check connection and retry"
+          >
+            <Icon name={isChecking ? 'fa-spinner fa-spin' : 'fa-rotate-right'} />
+            <span>{isChecking ? 'Checking...' : 'Try Again'}</span>
+          </button>
+
+          {isOnline && (
+            <button
+              onClick={() => window.location.reload()}
+              className={styles.secondaryButton}
+              type="button"
+              aria-label="Reload the page"
+            >
+              <Icon name="fa-arrow-rotate-right" />
+              <span>Reload Page</span>
+            </button>
+          )}
+        </div>
+
+        {/* Offline features */}
+        {!isOnline && showCachedInfo && (
+          <div className={styles.featuresInfo}>
+            <h2 className={styles.featuresTitle}>
+              <Icon name="fa-circle-check" size="sm" />
+              <span>What you can still do:</span>
+            </h2>
+            <ul className={styles.featuresList}>
+              <li>
+                <Icon name="fa-pen" size="sm" />
+                <span>Create and edit notes (they'll sync when you're back online)</span>
+              </li>
+              <li>
+                <Icon name="fa-book" size="sm" />
+                <span>View all your previously loaded content</span>
+              </li>
+              <li>
+                <Icon name="fa-magnifying-glass" size="sm" />
+                <span>Search through your existing notes</span>
+              </li>
+            </ul>
+          </div>
+        )}
+
+        {/* Connection tips */}
+        {!isOnline && (
+          <div className={styles.tipsInfo}>
+            <h3 className={styles.tipsTitle}>Connection troubleshooting:</h3>
+            <ul className={styles.tipsList}>
+              <li>
+                <Icon name="fa-wifi" size="sm" />
+                <span>Check your WiFi or mobile data is enabled</span>
+              </li>
+              <li>
+                <Icon name="fa-plane" size="sm" />
+                <span>Make sure airplane mode is turned off</span>
+              </li>
+              <li>
+                <Icon name="fa-router" size="sm" />
+                <span>Try moving closer to your router</span>
+              </li>
+              <li>
+                <Icon name="fa-arrow-rotate-left" size="sm" />
+                <span>Restart your device if the issue persists</span>
+              </li>
+            </ul>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}

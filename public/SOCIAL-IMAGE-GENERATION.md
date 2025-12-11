@@ -74,10 +74,11 @@ After generating and deploying the images, test them with:
 - Paste your site URL
 - Click "Scrape Again" to refresh cache
 
-### Twitter Card Validator
-- URL: https://cards-dev.twitter.com/validator
-- Paste your site URL
-- Verify image displays correctly
+### Twitter/X Card Validation
+- Twitter/X no longer provides a public Card Validator tool.
+- To validate your Twitter/X cards:
+  - Use the [Twitter Developer Portal](https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/abouts-cards) for documentation and troubleshooting.
+  - Alternatively, use a meta tag preview tool like [metatags.io](https://metatags.io/) to check your card rendering.
 
 ### LinkedIn Post Inspector
 - URL: https://www.linkedin.com/post-inspector/

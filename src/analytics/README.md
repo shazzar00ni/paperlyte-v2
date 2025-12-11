@@ -125,10 +125,11 @@ The following metrics are tracked automatically when analytics is enabled:
 
 ### Plausible (Recommended)
 
-- **Website**: https://plausible.io
+- **Website**: <https://plausible.io>
 - **Pricing**: $9/month for 10k monthly pageviews
 - **Features**: Cookie-less, GDPR-compliant, lightweight (<1KB)
 - **Configuration**:
+
   ```bash
   VITE_ANALYTICS_PROVIDER=plausible
   VITE_ANALYTICS_DOMAIN=yourdomain.com
@@ -136,10 +137,11 @@ The following metrics are tracked automatically when analytics is enabled:
 
 ### Fathom Analytics
 
-- **Website**: https://usefathom.com
+- **Website**: <https://usefathom.com>
 - **Pricing**: $14/month for 100k pageviews
 - **Features**: Privacy-focused, GDPR-compliant, beautiful dashboards
 - **Configuration**:
+
   ```bash
   VITE_ANALYTICS_PROVIDER=fathom
   VITE_ANALYTICS_DOMAIN=YOUR_SITE_ID
@@ -147,10 +149,11 @@ The following metrics are tracked automatically when analytics is enabled:
 
 ### Umami (Self-Hosted)
 
-- **Website**: https://umami.is
+- **Website**: <https://umami.is>
 - **Pricing**: Free (self-hosted), $20/month (cloud)
 - **Features**: Open-source, privacy-focused, self-hostable
 - **Configuration**:
+
   ```bash
   VITE_ANALYTICS_PROVIDER=umami
   VITE_ANALYTICS_DOMAIN=YOUR_WEBSITE_ID
@@ -159,10 +162,11 @@ The following metrics are tracked automatically when analytics is enabled:
 
 ### Simple Analytics
 
-- **Website**: https://simpleanalytics.com
+- **Website**: <https://simpleanalytics.com>
 - **Pricing**: $19/month for 100k pageviews
 - **Features**: Privacy-friendly, no cookies, clean UI
 - **Configuration**:
+
   ```bash
   VITE_ANALYTICS_PROVIDER=simple
   VITE_ANALYTICS_DOMAIN=yourdomain.com

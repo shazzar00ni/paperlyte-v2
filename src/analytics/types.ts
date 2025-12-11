@@ -69,7 +69,12 @@ export interface AnalyticsConfig {
   provider: 'plausible' | 'fathom' | 'umami' | 'simple' | 'custom'
   /** Domain or site ID for the analytics service */
   domain: string
-  /** API endpoint URL (optional, uses default provider endpoint if not specified) */
+  /**
+   * Script URL used to load the analytics provider script (optional)
+   * - For Plausible: defaults to https://plausible.io/js/script.js
+   * - For self-hosted: provide your custom script URL
+   * - Example: https://your-domain.com/js/script.js
+   */
   apiUrl?: string
   /** Enable debug mode for development */
   debug?: boolean

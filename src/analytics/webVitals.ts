@@ -199,15 +199,17 @@ function trackFCP(callback: ReportCallback): void {
   try {
     const observer = new PerformanceObserver((list) => {
       const entries = list.getEntries()
-      const firstEntry = entries[0]
 
-      if (firstEntry) {
-        const value = firstEntry.startTime
+      // Find the first-contentful-paint entry specifically (not first-paint)
+      const fcpEntry = entries.find((entry) => entry.name === 'first-contentful-paint')
+
+      if (fcpEntry) {
+        const value = fcpEntry.startTime
         callback({
           name: 'FCP',
           value,
           rating: getRating('FCP', value),
-          entries,
+          entries: [fcpEntry],
         })
 
         // FCP should only be reported once

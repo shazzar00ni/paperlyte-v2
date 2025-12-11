@@ -29,6 +29,7 @@ export class PlausibleProvider implements AnalyticsProvider {
   private config: AnalyticsConfig | null = null
   private initialized = false
   private scriptLoaded = false
+  private scriptElement: HTMLScriptElement | null = null
 
   /**
    * Initialize Plausible Analytics
@@ -98,6 +99,8 @@ export class PlausibleProvider implements AnalyticsProvider {
       }
     }
 
+    // Store reference to the script element for cleanup
+    this.scriptElement = script
     document.head.appendChild(script)
   }
 
@@ -197,15 +200,16 @@ export class PlausibleProvider implements AnalyticsProvider {
     this.scriptLoaded = false
     this.config = null
 
-    // Guard against SSR/Node.js environments
-    if (typeof document !== 'undefined') {
-      // Remove Plausible script if it exists
-      const script = document.querySelector('script[data-domain]')
-      if (script) {
-        script.remove()
+    // Guard against SSR/Node.js environments and remove only the script we created
+    if (typeof document !== 'undefined' && this.scriptElement) {
+      // Remove the exact script element we created (not a broad selector)
+      if (this.scriptElement.parentNode) {
+        this.scriptElement.parentNode.removeChild(this.scriptElement)
       }
+      this.scriptElement = null
     }
 
+    // Clean up window global
     if (typeof window !== 'undefined' && window.plausible) {
       delete window.plausible
     }

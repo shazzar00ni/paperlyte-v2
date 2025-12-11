@@ -186,7 +186,7 @@ export class PlausibleProvider implements AnalyticsProvider {
    * Check if analytics is enabled
    */
   isEnabled(): boolean {
-    return this.initialized && this.scriptLoaded
+    return this.initialized && this.scriptLoaded && typeof window !== 'undefined' && typeof window.plausible === 'function'
   }
 
   /**

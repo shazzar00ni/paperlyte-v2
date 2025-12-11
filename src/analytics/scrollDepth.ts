@@ -20,7 +20,7 @@ type ScrollCallback = (depth: ScrollDepth) => void
 export class ScrollDepthTracker {
   private callback: ScrollCallback
   private trackedDepths: Set<ScrollDepth> = new Set()
-  private throttleTimeout: number | null = null
+  private throttleTimeout: ReturnType<typeof setTimeout> | null = null
   private isEnabled = false
 
   /**
@@ -57,7 +57,7 @@ export class ScrollDepthTracker {
       return
     }
 
-    this.throttleTimeout = window.setTimeout(() => {
+    this.throttleTimeout = setTimeout(() => {
       this.checkScrollDepth()
       this.throttleTimeout = null
     }, 250) // Throttle to max 4 checks per second

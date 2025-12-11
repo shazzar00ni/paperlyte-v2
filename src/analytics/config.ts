@@ -16,7 +16,7 @@ import type { AnalyticsConfig } from './types'
  *   - Explicitly set to 'true' to enable or 'false' to disable
  * - VITE_ANALYTICS_PROVIDER: Analytics provider (plausible, fathom, umami, simple)
  * - VITE_ANALYTICS_DOMAIN: Domain/site ID for analytics service
- * - VITE_ANALYTICS_API_URL: Custom API endpoint (optional)
+ * - VITE_ANALYTICS_SCRIPT_URL: Custom script URL (optional)
  * - VITE_ANALYTICS_DEBUG: Enable debug mode (default: false)
  */
 export function getAnalyticsConfig(): AnalyticsConfig | null {
@@ -57,7 +57,7 @@ export function getAnalyticsConfig(): AnalyticsConfig | null {
   )
     ? (rawProvider as AnalyticsConfig['provider'])
     : 'plausible'
-  const apiUrl = import.meta.env.VITE_ANALYTICS_API_URL
+  const scriptUrl = import.meta.env.VITE_ANALYTICS_SCRIPT_URL
   const debug =
     import.meta.env.VITE_ANALYTICS_DEBUG === 'true' ||
     (import.meta.env.DEV && import.meta.env.VITE_ANALYTICS_DEBUG !== 'false')
@@ -65,7 +65,7 @@ export function getAnalyticsConfig(): AnalyticsConfig | null {
   return {
     provider,
     domain,
-    apiUrl,
+    scriptUrl,
     debug,
     trackPageviews: true,
     trackWebVitals: true,

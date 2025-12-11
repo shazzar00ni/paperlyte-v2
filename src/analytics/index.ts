@@ -34,6 +34,7 @@ class Analytics {
   private config: AnalyticsConfig | null = null
   private initialized = false
   private scrollTracker: { disable: () => void } | null = null
+  private webVitalsCleanup: (() => void) | null = null
 
   /**
    * Initialize analytics with configuration
@@ -56,7 +57,7 @@ class Analytics {
 
     // Initialize Core Web Vitals tracking if enabled
     if (config.trackWebVitals !== false) {
-      initWebVitals((vitals) => {
+      this.webVitalsCleanup = initWebVitals((vitals) => {
         this.trackWebVitals(vitals)
       })
     }
@@ -138,10 +139,16 @@ class Analytics {
       return
     }
 
-    this.provider?.trackEvent(event)
+    // Ensure timestamp is set (defaults to Date.now() if not provided)
+    const eventWithTimestamp: AnalyticsEvent = {
+      ...event,
+      timestamp: event.timestamp ?? Date.now(),
+    }
+
+    this.provider?.trackEvent(eventWithTimestamp)
 
     if (this.config?.debug) {
-      console.log('[Analytics] Event tracked:', event)
+      console.log('[Analytics] Event tracked:', eventWithTimestamp)
     }
   }
 
@@ -234,6 +241,12 @@ class Analytics {
     if (this.scrollTracker) {
       this.scrollTracker.disable()
       this.scrollTracker = null
+    }
+
+    // Cleanup web vitals tracking
+    if (this.webVitalsCleanup) {
+      this.webVitalsCleanup()
+      this.webVitalsCleanup = null
     }
 
     // Reset state

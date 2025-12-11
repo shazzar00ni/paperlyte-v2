@@ -75,7 +75,7 @@ export interface AnalyticsConfig {
    * - For self-hosted: provide your custom script URL
    * - Example: https://your-domain.com/js/script.js
    */
-  apiUrl?: string
+  scriptUrl?: string
   /** Enable debug mode for development */
   debug?: boolean
   /** Track pageviews automatically (default: true) */

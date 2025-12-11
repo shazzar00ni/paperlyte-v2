@@ -29,8 +29,8 @@ VITE_ANALYTICS_PROVIDER=plausible
 # Your domain/site ID
 VITE_ANALYTICS_DOMAIN=paperlyte.com
 
-# Optional: Custom API endpoint (for self-hosted)
-# VITE_ANALYTICS_API_URL=https://your-domain.com/js/script.js
+# Optional: Custom script URL (for self-hosted)
+# VITE_ANALYTICS_SCRIPT_URL=https://your-domain.com/js/script.js
 
 # Optional: Enable debug mode
 VITE_ANALYTICS_DEBUG=false
@@ -123,10 +123,12 @@ The following metrics are tracked automatically when analytics is enabled:
 
 ## Supported Analytics Providers
 
+> **Note**: Pricing information is subject to change. Please check provider websites for current pricing details.
+
 ### Plausible (Recommended)
 
 - **Website**: <https://plausible.io>
-- **Pricing**: $9/month for 10k monthly pageviews
+- **Pricing**: Starting at ~$9/month (check website for current pricing)
 - **Features**: Cookie-less, GDPR-compliant, lightweight (<1KB)
 - **Configuration**:
 
@@ -138,7 +140,7 @@ The following metrics are tracked automatically when analytics is enabled:
 ### Fathom Analytics
 
 - **Website**: <https://usefathom.com>
-- **Pricing**: $14/month for 100k pageviews
+- **Pricing**: Starting at ~$14/month (check website for current pricing)
 - **Features**: Privacy-focused, GDPR-compliant, beautiful dashboards
 - **Configuration**:
 
@@ -150,20 +152,20 @@ The following metrics are tracked automatically when analytics is enabled:
 ### Umami (Self-Hosted)
 
 - **Website**: <https://umami.is>
-- **Pricing**: Free (self-hosted), $20/month (cloud)
+- **Pricing**: Free (self-hosted), cloud plans available (check website)
 - **Features**: Open-source, privacy-focused, self-hostable
 - **Configuration**:
 
   ```bash
   VITE_ANALYTICS_PROVIDER=umami
   VITE_ANALYTICS_DOMAIN=YOUR_WEBSITE_ID
-  VITE_ANALYTICS_API_URL=https://your-umami-instance.com/script.js
+  VITE_ANALYTICS_SCRIPT_URL=https://your-umami-instance.com/script.js
   ```
 
 ### Simple Analytics
 
 - **Website**: <https://simpleanalytics.com>
-- **Pricing**: $19/month for 100k pageviews
+- **Pricing**: Starting at ~$19/month (check website for current pricing)
 - **Features**: Privacy-friendly, no cookies, clean UI
 - **Configuration**:
 
@@ -276,7 +278,7 @@ Or remove the `VITE_ANALYTICS_DOMAIN` from your `.env` file.
 
 ## Architecture
 
-```
+```text
 src/analytics/
 ├── index.ts              # Main analytics module (singleton)
 ├── config.ts             # Configuration loader

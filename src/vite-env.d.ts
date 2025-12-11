@@ -18,8 +18,8 @@ interface ImportMetaEnv {
   readonly VITE_ANALYTICS_PROVIDER?: string
   /** Domain/site ID for analytics service */
   readonly VITE_ANALYTICS_DOMAIN?: string
-  /** Custom API endpoint for analytics */
-  readonly VITE_ANALYTICS_API_URL?: string
+  /** Custom script URL for analytics provider */
+  readonly VITE_ANALYTICS_SCRIPT_URL?: string
   /** Enable debug mode for analytics */
   readonly VITE_ANALYTICS_DEBUG?: string
 }

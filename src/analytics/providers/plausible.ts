@@ -63,6 +63,57 @@ export class PlausibleProvider implements AnalyticsProvider {
   }
 
   /**
+   * Validate script URL to prevent script injection attacks
+   * Only allows HTTPS URLs from known analytics providers or valid domains
+   *
+   * @param url - The URL to validate
+   * @returns true if URL is valid and safe, false otherwise
+   */
+  private isValidScriptUrl(url: string): boolean {
+    try {
+      const parsedUrl = new URL(url)
+
+      // Only allow HTTPS for security
+      if (parsedUrl.protocol !== 'https:') {
+        if (this.config?.debug) {
+          console.warn('[Analytics] Script URL must use HTTPS protocol:', url)
+        }
+        return false
+      }
+
+      // Whitelist known analytics providers or allow any HTTPS domain
+      // This prevents obviously malicious URLs while allowing self-hosted instances
+      const knownProviders = [
+        'plausible.io',
+        'analytics.google.com',
+        'fathom.com',
+        'umami.is',
+        'simpleanalytics.com',
+      ]
+
+      const isKnownProvider = knownProviders.some((provider) => parsedUrl.hostname.endsWith(provider))
+      const hasValidPath = parsedUrl.pathname.endsWith('.js')
+
+      if (!hasValidPath) {
+        if (this.config?.debug) {
+          console.warn('[Analytics] Script URL must point to a .js file:', url)
+        }
+        return false
+      }
+
+      // Allow known providers or any HTTPS URL pointing to a .js file
+      // (for self-hosted instances)
+      return isKnownProvider || parsedUrl.protocol === 'https:'
+    } catch (error) {
+      // Invalid URL format
+      if (this.config?.debug) {
+        console.warn('[Analytics] Invalid script URL format:', url, error)
+      }
+      return false
+    }
+  }
+
+  /**
    * Load Plausible analytics script
    * Uses async loading to prevent blocking page render
    */
@@ -72,11 +123,23 @@ export class PlausibleProvider implements AnalyticsProvider {
       return
     }
 
+    const scriptUrl = this.config?.scriptUrl || 'https://plausible.io/js/script.js'
+
+    // Validate script URL to prevent injection attacks
+    if (!this.isValidScriptUrl(scriptUrl)) {
+      if (this.config?.debug || import.meta.env.DEV) {
+        console.error(
+          '[Analytics] Invalid or unsafe script URL. Must be HTTPS and point to a .js file:',
+          scriptUrl
+        )
+      }
+      return
+    }
+
     const script = document.createElement('script')
-    const apiUrl = this.config?.apiUrl || 'https://plausible.io/js/script.js'
 
     script.async = true
-    script.src = apiUrl
+    script.src = scriptUrl
     script.setAttribute('data-domain', this.config?.domain || '')
 
     // Add optional tracking features
@@ -166,11 +229,15 @@ export class PlausibleProvider implements AnalyticsProvider {
     // Track each metric separately for better analysis
     Object.entries(vitals).forEach(([metric, value]) => {
       if (value !== undefined) {
+        // Preserve sub-integer precision for CLS (typically < 1)
+        // Round to milliseconds for time-based metrics
+        const formattedValue = metric === 'CLS' ? Number(value.toFixed(3)) : Math.round(value)
+
         this.trackEvent({
           name: 'web_vitals',
           properties: {
             metric,
-            value: Math.round(value),
+            value: formattedValue,
           },
         })
       }

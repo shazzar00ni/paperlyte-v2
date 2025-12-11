@@ -3,9 +3,12 @@
  *
  * React hook for easy analytics integration in components.
  * Provides convenient methods for tracking events, page views, and user interactions.
+ *
+ * Note: Methods are not memoized since they're thin wrappers around stable singleton methods.
+ * The analytics singleton is stable throughout the application lifecycle, so memoization
+ * provides no performance benefit.
  */
 
-import { useCallback } from 'react'
 import { analytics } from '@/analytics'
 import type { AnalyticsEvent } from '@/analytics/types'
 
@@ -44,36 +47,13 @@ interface UseAnalyticsReturn {
  * ```
  */
 export function useAnalytics(): UseAnalyticsReturn {
-  const trackEvent = useCallback((event: AnalyticsEvent) => {
-    analytics.trackEvent(event)
-  }, [])
-
-  const trackPageView = useCallback((url?: string) => {
-    analytics.trackPageView(url)
-  }, [])
-
-  const trackCTAClick = useCallback((buttonName: string, location: string) => {
-    analytics.trackCTAClick(buttonName, location)
-  }, [])
-
-  const trackDownload = useCallback((platform: string, location: string) => {
-    analytics.trackDownload(platform, location)
-  }, [])
-
-  const trackNavigation = useCallback((target: string, source: string) => {
-    analytics.trackNavigation(target, source)
-  }, [])
-
-  const isEnabled = useCallback(() => {
-    return analytics.isEnabled()
-  }, [])
-
   return {
-    trackEvent,
-    trackPageView,
-    trackCTAClick,
-    trackDownload,
-    trackNavigation,
-    isEnabled,
+    trackEvent: (event: AnalyticsEvent) => analytics.trackEvent(event),
+    trackPageView: (url?: string) => analytics.trackPageView(url),
+    trackCTAClick: (buttonName: string, location: string) =>
+      analytics.trackCTAClick(buttonName, location),
+    trackDownload: (platform: string, location: string) => analytics.trackDownload(platform, location),
+    trackNavigation: (target: string, source: string) => analytics.trackNavigation(target, source),
+    isEnabled: () => analytics.isEnabled(),
   }
 }

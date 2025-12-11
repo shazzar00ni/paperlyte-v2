@@ -113,17 +113,31 @@ function trackFID(callback: ReportCallback): void {
 }
 
 /**
+ * Tracker interface for metrics that need finalization
+ */
+interface MetricTracker {
+  finalize: () => void
+  cleanup: () => void
+}
+
+/**
  * Track Cumulative Layout Shift (CLS)
  * Measures visual stability - sum of all unexpected layout shifts
+ *
+ * Note: CLS accumulates over time, so it must be finalized before reporting.
+ * The returned finalize() function should be called when the page is hidden.
  */
-function trackCLS(callback: ReportCallback): void {
-  if (!('PerformanceObserver' in window)) return
+function trackCLS(callback: ReportCallback): MetricTracker {
+  if (!('PerformanceObserver' in window)) {
+    return { finalize: () => {}, cleanup: () => {} }
+  }
 
   try {
     let clsValue = 0
     const entries: PerformanceEntry[] = []
+    let observer: PerformanceObserver | null = null
 
-    const observer = new PerformanceObserver((list) => {
+    observer = new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
         // Only count layout shifts without recent user input
         const layoutShiftEntry = entry as PerformanceEntry & {
@@ -140,8 +154,8 @@ function trackCLS(callback: ReportCallback): void {
 
     observer.observe({ type: 'layout-shift', buffered: true })
 
-    // Report CLS on page hide (when user leaves the page)
-    const reportCLS = () => {
+    // Finalize function to report final CLS value
+    const finalize = () => {
       callback({
         name: 'CLS',
         value: clsValue,
@@ -150,10 +164,18 @@ function trackCLS(callback: ReportCallback): void {
       })
     }
 
-    // Do not add visibilitychange or pagehide listeners here.
-    // The main initWebVitals function should call reportCLS when appropriate.
+    // Cleanup function to disconnect observer
+    const cleanup = () => {
+      if (observer) {
+        observer.disconnect()
+        observer = null
+      }
+    }
+
+    return { finalize, cleanup }
   } catch (error) {
     console.warn('[WebVitals] CLS tracking failed:', error)
+    return { finalize: () => {}, cleanup: () => {} }
   }
 }
 
@@ -220,14 +242,20 @@ function trackFCP(callback: ReportCallback): void {
 /**
  * Track Interaction to Next Paint (INP)
  * Measures overall responsiveness by observing all click, tap, and keyboard interactions
+ *
+ * Note: INP accumulates interactions over time, so it must be finalized before reporting.
+ * The returned finalize() function should be called when the page is hidden.
  */
-function trackINP(callback: ReportCallback): void {
-  if (!('PerformanceObserver' in window)) return
+function trackINP(callback: ReportCallback): MetricTracker {
+  if (!('PerformanceObserver' in window)) {
+    return { finalize: () => {}, cleanup: () => {} }
+  }
 
   try {
     const interactions: number[] = []
+    let observer: PerformanceObserver | null = null
 
-    const observer = new PerformanceObserver((list) => {
+    observer = new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
         const eventEntry = entry as PerformanceEntry & {
           processingStart?: number
@@ -244,8 +272,8 @@ function trackINP(callback: ReportCallback): void {
 
     observer.observe({ type: 'event', buffered: true })
 
-    // Report INP on page hide
-    const reportINP = () => {
+    // Finalize function to report final INP value
+    const finalize = () => {
       if (interactions.length > 0) {
         let value: number
 
@@ -269,18 +297,21 @@ function trackINP(callback: ReportCallback): void {
       }
     }
 
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'hidden') {
-        reportINP()
+    // Cleanup function to disconnect observer
+    const cleanup = () => {
+      if (observer) {
+        observer.disconnect()
+        observer = null
       }
-    })
+    }
 
-    window.addEventListener('pagehide', reportINP)
+    return { finalize, cleanup }
   } catch (error) {
     // INP is a newer metric, may not be supported in all browsers
     if (error instanceof Error && !error.message.includes('event')) {
       console.warn('[WebVitals] INP tracking failed:', error)
     }
+    return { finalize: () => {}, cleanup: () => {} }
   }
 }
 
@@ -289,8 +320,9 @@ function trackINP(callback: ReportCallback): void {
  * Sets up observers for all key performance metrics
  *
  * @param onReport - Callback function called when metrics are collected
+ * @returns Cleanup function to remove all event listeners and timers
  */
-export function initWebVitals(onReport: (vitals: CoreWebVitals) => void): void {
+export function initWebVitals(onReport: (vitals: CoreWebVitals) => void): () => void {
   const vitals: CoreWebVitals = {}
 
   const handleMetric = (metric: PerformanceMetric) => {
@@ -298,31 +330,57 @@ export function initWebVitals(onReport: (vitals: CoreWebVitals) => void): void {
   }
 
   // Track all Core Web Vitals
+  // Metrics that report immediately (LCP, FID, TTFB, FCP)
   trackLCP(handleMetric)
   trackFID(handleMetric)
-  trackCLS(handleMetric)
   trackTTFB(handleMetric)
   trackFCP(handleMetric)
-  trackINP(handleMetric)
+
+  // Metrics that need finalization (CLS, INP)
+  const clsTracker = trackCLS(handleMetric)
+  const inpTracker = trackINP(handleMetric)
 
   // Report vitals when page is hidden or unloaded
   const reportVitals = () => {
+    // Finalize accumulated metrics before reporting
+    clsTracker.finalize()
+    inpTracker.finalize()
+
+    // Report all collected metrics
     if (Object.keys(vitals).length > 0) {
       onReport(vitals)
     }
   }
 
-  // Report on visibility change
-  document.addEventListener('visibilitychange', () => {
+  // Visibility change handler
+  const handleVisibilityChange = () => {
     if (document.visibilityState === 'hidden') {
-      // Small delay to allow individual metric handlers to update first
-      setTimeout(reportVitals, 0)
+      reportVitals()
     }
-  })
+  }
 
-  // Report on page unload (backup for browsers without pagehide)
+  // Report on visibility change
+  document.addEventListener('visibilitychange', handleVisibilityChange)
+
+  // Report on page unload (backup for browsers that don't support visibilitychange)
   window.addEventListener('pagehide', reportVitals)
 
   // Also report after a delay for metrics that are collected early
-  setTimeout(reportVitals, 10000) // Report after 10 seconds
+  const reportTimeout = setTimeout(reportVitals, 10000) // Report after 10 seconds
+
+  // Return cleanup function
+  return () => {
+    // Remove event listeners
+    document.removeEventListener('visibilitychange', handleVisibilityChange)
+    window.removeEventListener('pagehide', reportVitals)
+
+    // Clear timeout
+    clearTimeout(reportTimeout)
+
+    // Cleanup trackers (disconnect PerformanceObservers)
+    clsTracker.cleanup()
+    inpTracker.cleanup()
+
+    // Note: Other PerformanceObservers (FID, FCP) disconnect themselves after first report
+  }
 }

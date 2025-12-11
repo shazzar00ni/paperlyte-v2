@@ -27,7 +27,11 @@ export function getAnalyticsConfig(): AnalyticsConfig | null {
     return null
   }
 
-  const provider = (import.meta.env.VITE_ANALYTICS_PROVIDER || 'plausible') as AnalyticsConfig['provider']
+  const validProviders = ['plausible', 'fathom', 'umami', 'simple', 'custom'] as const
+  const rawProvider = import.meta.env.VITE_ANALYTICS_PROVIDER || 'plausible'
+  const provider: AnalyticsConfig['provider'] = validProviders.includes(rawProvider as typeof validProviders[number])
+    ? (rawProvider as AnalyticsConfig['provider'])
+    : 'plausible'
   const apiUrl = import.meta.env.VITE_ANALYTICS_API_URL
   const debug = import.meta.env.VITE_ANALYTICS_DEBUG === 'true' || import.meta.env.DEV
 

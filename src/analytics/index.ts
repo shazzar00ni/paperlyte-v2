@@ -109,7 +109,7 @@ class Analytics {
     this.provider?.trackPageView(url)
 
     if (this.config?.debug) {
-      console.log('[Analytics] Page view tracked:', url || window.location.pathname)
+      console.log('[Analytics] Page view tracked:', url || (typeof window !== 'undefined' ? window.location.pathname : '/'))
     }
   }
 

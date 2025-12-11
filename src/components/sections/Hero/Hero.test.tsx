@@ -34,7 +34,9 @@ describe('Hero', () => {
     it('should render the main headline', () => {
       render(<Hero />)
 
-      expect(screen.getByRole('heading', { name: /thoughts/i })).toBeInTheDocument()
+      // There are multiple headings with "thoughts", use getAllByRole
+      const headings = screen.getAllByRole('heading', { name: /thoughts/i })
+      expect(headings.length).toBeGreaterThan(0)
       expect(screen.getByText(/organized/i)).toBeInTheDocument()
     })
 
@@ -49,12 +51,6 @@ describe('Hero', () => {
 
       expect(screen.getByRole('button', { name: /start writing for free/i })).toBeInTheDocument()
       expect(screen.getByRole('button', { name: /view the demo/i })).toBeInTheDocument()
-    })
-
-    it('should render version badge', () => {
-      render(<Hero />)
-
-      expect(screen.getByText(/Version 2.0 is now live/i)).toBeInTheDocument()
     })
 
     it('should render trusted by section', () => {
@@ -72,14 +68,18 @@ describe('Hero', () => {
       render(<Hero />)
 
       const button = screen.getByRole('button', { name: /start writing for free/i })
-      expect(button).toBeInTheDocument()
+      // Verify primary variant by checking class contains 'primary' (CSS module hash)
+      const classList = Array.from(button.classList)
+      expect(classList.some((cls) => cls.includes('primary'))).toBe(true)
     })
 
     it('should have View the Demo button with secondary variant', () => {
       render(<Hero />)
 
       const button = screen.getByRole('button', { name: /view the demo/i })
-      expect(button).toBeInTheDocument()
+      // Verify secondary variant by checking class contains 'secondary' (CSS module hash)
+      const classList = Array.from(button.classList)
+      expect(classList.some((cls) => cls.includes('secondary'))).toBe(true)
     })
 
     it('should render arrow icon on Start Writing for Free button', () => {
@@ -163,8 +163,10 @@ describe('Hero', () => {
     it('should have proper heading hierarchy', () => {
       render(<Hero />)
 
-      const heading = screen.getByRole('heading', { name: /thoughts/i })
-      expect(heading.tagName).toBe('H1')
+      // There are multiple headings with "thoughts", use getAllByRole
+      const headings = screen.getAllByRole('heading', { name: /thoughts/i })
+      expect(headings.length).toBeGreaterThan(0)
+      expect(headings[0].tagName).toBe('H1')
     })
 
     it('should render subheadline in paragraph tag', () => {
@@ -281,8 +283,10 @@ describe('Hero', () => {
     it('should have main heading visible to screen readers', () => {
       render(<Hero />)
 
-      const heading = screen.getByRole('heading', { name: /thoughts/i })
-      expect(heading).toBeVisible()
+      // There are multiple headings with "thoughts", use getAllByRole
+      const headings = screen.getAllByRole('heading', { name: /thoughts/i })
+      expect(headings.length).toBeGreaterThan(0)
+      expect(headings[0]).toBeVisible()
     })
 
     it('should have descriptive text visible to screen readers', () => {

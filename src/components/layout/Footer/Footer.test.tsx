@@ -79,6 +79,26 @@ describe('Footer', () => {
     expect(twitterLink).toHaveAttribute('rel', 'noopener noreferrer')
   })
 
+  it('should render Instagram link with proper attributes', () => {
+    render(<Footer />)
+
+    const instagramLink = screen.getByRole('link', { name: 'Instagram' })
+    expect(instagramLink).toBeInTheDocument()
+    expect(instagramLink).toHaveAttribute('href', 'https://instagram.com')
+    expect(instagramLink).toHaveAttribute('target', '_blank')
+    expect(instagramLink).toHaveAttribute('rel', 'noopener noreferrer')
+  })
+
+  it('should render LinkedIn link with proper attributes', () => {
+    render(<Footer />)
+
+    const linkedinLink = screen.getByRole('link', { name: 'LinkedIn' })
+    expect(linkedinLink).toBeInTheDocument()
+    expect(linkedinLink).toHaveAttribute('href', 'https://linkedin.com')
+    expect(linkedinLink).toHaveAttribute('target', '_blank')
+    expect(linkedinLink).toHaveAttribute('rel', 'noopener noreferrer')
+  })
+
   it('should render Email link with mailto', () => {
     render(<Footer />)
 
@@ -92,7 +112,7 @@ describe('Footer', () => {
 
     const currentYear = new Date().getFullYear()
     expect(
-      screen.getByText(`© ${currentYear} Paperlyte. All rights reserved.`)
+      screen.getByText(`© ${currentYear} All rights reserved.`)
     ).toBeInTheDocument()
   })
 

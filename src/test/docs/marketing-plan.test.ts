@@ -3,13 +3,12 @@ import { readFileSync } from 'fs'
 import { join } from 'path'
 
 /**
- * Helper function to assert that a regex match is not null and return the matches array.
- * Provides clear failure message when match fails.
+ * Helper function to assert and return regex matches with a custom error message
  */
-function assertMatches(str: string, regex: RegExp, errorMessage: string): RegExpMatchArray {
-  const matches = str.match(regex)
-  if (!matches) {
-    throw new Error(errorMessage)
+function assertMatches(content: string, pattern: RegExp, message: string): RegExpMatchArray {
+  const matches = content.match(pattern)
+  if (!matches || matches.length === 0) {
+    throw new Error(message)
   }
   return matches
 }

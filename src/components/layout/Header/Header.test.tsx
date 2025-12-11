@@ -134,7 +134,7 @@ describe('Header', () => {
     const featuresButton = screen.getByRole('button', { name: /features/i })
     await user.click(featuresButton)
 
-    expect(scrollIntoViewMock).toHaveBeenCalled()
+    expect(scrollIntoViewMock).toHaveBeenCalledWith({ behavior: 'smooth' })
   })
 
   it('should scroll to download section from Get Started', async () => {

@@ -13,7 +13,8 @@ export const Features = (): React.ReactElement => {
         </AnimatedElement>
         <AnimatedElement animation="fadeIn" delay={100}>
           <p className={styles.subtitle}>
-            Built for speed, designed for simplicity. Focus on your ideas, not the tool.
+            We built Paperlyte to get out of your way. Fast, simple, and designed for how you
+            actually think.
           </p>
         </AnimatedElement>
       </div>

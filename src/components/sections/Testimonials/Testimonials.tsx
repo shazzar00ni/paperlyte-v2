@@ -188,9 +188,9 @@ export const Testimonials = (): React.ReactElement => {
     <Section id="testimonials" background="surface">
       <AnimatedElement animation="fadeIn">
         <div className={styles.header}>
-          <h2 className={styles.title}>Loved by thousands of note-takers</h2>
+          <h2 className={styles.title}>What people are saying</h2>
           <p className={styles.subtitle}>
-            Join the community that's rediscovered the joy of simple, fast note-taking
+            Real feedback from people who switched to Paperlyte
           </p>
         </div>
       </AnimatedElement>

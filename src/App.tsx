@@ -33,7 +33,9 @@ function App() {
         console.log('[App] Analytics initialized successfully')
       }
     } else {
-      console.log('[App] Analytics disabled (no configuration found)')
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('[App] Analytics disabled (no configuration found)')
+      }
     }
   }, [])
 

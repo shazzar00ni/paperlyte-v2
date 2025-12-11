@@ -40,6 +40,13 @@ export class PlausibleProvider implements AnalyticsProvider {
    * Loads the Plausible script asynchronously and sets up configuration
    */
   init(config: AnalyticsConfig): void {
+    if (this.initialized) {
+      if (config.debug) {
+        console.log('[Analytics] Plausible already initialized')
+      }
+      return
+    }
+
     // Check if user has Do Not Track enabled
     if (config.respectDNT !== false && this.isDNTEnabled()) {
       if (config.debug) {

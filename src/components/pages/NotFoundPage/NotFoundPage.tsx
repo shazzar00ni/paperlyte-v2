@@ -25,7 +25,11 @@ export const NotFoundPage: FC<NotFoundPageProps> = ({ message, onGoHome }) => {
   }
 
   return (
-    <div className={styles.container} role="main" aria-labelledby="not-found-title">
+    <main className={styles.container} aria-labelledby="not-found-title">
+      <div className={styles.content}>
+        {/* ... */}
+      </div>
+    </main>
       <div className={styles.content}>
         {/* Decorative illustration */}
         <div className={styles.illustration} aria-hidden="true">

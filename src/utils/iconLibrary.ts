@@ -2,8 +2,9 @@
  * Font Awesome Icon Library
  *
  * This file centralizes all Font Awesome icon imports for the application.
- * Only icons that are actually used are imported, enabling tree-shaking
- * and reducing bundle size by ~150-180 KB.
+ * Only icons that are actually used are imported, enabling tree-shaking.
+ * Note: While CSS for unused icons is eliminated, the SVG icon data increases the JavaScript bundle size.
+ * This approach enables better tree-shaking for unused icons and removes the need for separate CSS icon files.
  *
  * To add a new icon:
  * 1. Import it from '@fortawesome/free-solid-svg-icons' or '@fortawesome/free-brands-svg-icons'

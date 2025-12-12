@@ -64,6 +64,14 @@
   .statusOnline {
     animation: none;
   }
+
+  /* Disable interactive transforms for buttons */
+  .primaryButton:hover:not(:disabled),
+  .secondaryButton:hover,
+  .primaryButton:active:not(:disabled),
+  .secondaryButton:active {
+    transform: none;
+  }
 }
 
 .statusIndicator {

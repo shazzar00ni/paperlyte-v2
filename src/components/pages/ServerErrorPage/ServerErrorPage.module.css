@@ -93,6 +93,14 @@
   .errorBadge {
     animation: none;
   }
+
+  /* Disable interactive transforms for buttons */
+  .primaryButton:hover,
+  .secondaryButton:hover,
+  .primaryButton:active,
+  .secondaryButton:active {
+    transform: none;
+  }
 }
 
 /* Title and message */

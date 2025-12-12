@@ -1,4 +1,4 @@
-import { type FC, useState, useEffect } from 'react'
+import { type FC, useState, useEffect, useCallback } from 'react'
 import { Icon } from '@/components/ui/Icon'
 import styles from './OfflinePage.module.css'
 
@@ -25,26 +25,29 @@ export const OfflinePage: FC<OfflinePageProps> = ({
   const [isOnline, setIsOnline] = useState(navigator.onLine)
   const [isChecking, setIsChecking] = useState(false)
 
+  // Memoize handlers to ensure stable references and proper cleanup
+  const handleOnline = useCallback((): void => {
+    setIsOnline(true)
+    if (onConnectionRestored) {
+      onConnectionRestored()
+    }
+  }, [onConnectionRestored])
+
+  const handleOffline = useCallback((): void => {
+    setIsOnline(false)
+  }, [])
+
   useEffect(() => {
-    const handleOnline = (): void => {
-      setIsOnline(true)
-      if (onConnectionRestored) {
-        onConnectionRestored()
-      }
-    }
-
-    const handleOffline = (): void => {
-      setIsOnline(false)
-    }
-
+    // Add event listeners
     window.addEventListener('online', handleOnline)
     window.addEventListener('offline', handleOffline)
 
+    // Cleanup function - guaranteed to run on unmount
     return () => {
       window.removeEventListener('online', handleOnline)
       window.removeEventListener('offline', handleOffline)
     }
-  }, [onConnectionRestored])
+  }, [handleOnline, handleOffline])
 
   const handleRetry = async (): Promise<void> => {
     setIsChecking(true)

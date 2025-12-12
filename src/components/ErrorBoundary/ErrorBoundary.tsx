@@ -50,8 +50,9 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
       }
 
       // Use the ServerErrorPage component with error details
+      // Prefer error.stack (which includes the message) to avoid duplication
       const errorDetails = this.state.error
-        ? `${this.state.error.toString()}\n${this.state.error.stack || ''}`
+        ? this.state.error.stack || this.state.error.toString()
         : undefined
 
       return <ServerErrorPage errorDetails={errorDetails} onRetry={this.handleReset} />

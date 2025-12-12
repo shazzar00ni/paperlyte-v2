@@ -1,5 +1,6 @@
 import { type FC } from 'react'
 import { Icon } from '@/components/ui/Icon'
+import { CONTACT } from '@/constants/config'
 import styles from './ServerErrorPage.module.css'
 
 interface ServerErrorPageProps {
@@ -106,7 +107,7 @@ export const ServerErrorPage: FC<ServerErrorPageProps> = ({
               <Icon name="fa-circle-info" size="sm" />
               <span>
                 If this problem persists, please{' '}
-                <a href="mailto:support@paperlyte.com" className={styles.supportLink}>
+                <a href={`mailto:${CONTACT.supportEmail}`} className={styles.supportLink}>
                   contact our support team
                 </a>
                 .

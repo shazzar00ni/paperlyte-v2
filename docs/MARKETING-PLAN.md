@@ -9,7 +9,7 @@
 
 ## Executive Summary
 
-Paperlyte is positioned to capture market share from frustrated note-takers overwhelmed by feature-bloated tools like Notion, Evernote, and OneNote. Our core value proposition—"Your thoughts, unchained from complexity"—resonates with a growing segment of users experiencing "app fatigue" and seeking simplicity without sacrificing functionality.
+Paperlyte is positioned to capture market share from frustrated note-takers overwhelmed by feature-bloated tools like Notion, Evernote, and OneNote. Our core value proposition—"Your thoughts, unchained."—resonates with a growing segment of users experiencing "app fatigue" and seeking simplicity without sacrificing functionality.
 
 **Primary Goal**: Acquire 10,000 active users within the first 6 months post-launch.
 
@@ -296,13 +296,14 @@ To validate our speed claims and maintain competitive differentiation, we implem
 ### Value Proposition
 
 **Primary Message**:
-*"Your thoughts, unchained from complexity"*
+*"Your thoughts, unchained."*
 
 **Supporting Messages**:
-- Lightning-fast note capture—no loading, no lag, no waiting
-- Beautiful simplicity that feels like writing on paper
-- Smart organization without the organizational overhead
-- Works everywhere, works offline, works instantly
+- Zero-lag typing—8ms response, 25x faster than Notion
+- Tag-based organization without rigid folder hierarchies
+- Cross-platform sync that works offline-first
+- Distraction-free interface that disappears when you type
+- Private by design with local-first architecture
 
 ### Brand Voice & Tone
 

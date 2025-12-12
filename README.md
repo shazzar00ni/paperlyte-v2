@@ -1,6 +1,6 @@
 # Paperlyte Landing Page
 
-> **Your thoughts, unchained from complexity**
+> **Your thoughts, unchained.**
 
 **Paperlyte is a lightning-fast, distraction-free note-taking app designed for people who are tired of bloated, complex tools. We focus on speed, simplicity, and getting out of your way so you can focus on your thoughts. This landing page was built with React, TypeScript, and Vite.**
 
@@ -30,10 +30,11 @@ Paperlyte is a note-taking application designed for users who are frustrated wit
 
 ### Core Differentiators
 
-- **Lightning Speed**: Instant startup, real-time sync, no loading delays
-- **Beautiful Simplicity**: Paper-inspired design that feels natural
-- **Tag-Based Organization**: Smart categorization without rigid folder structures
-- **Universal Access**: Seamless experience across all devices
+- **Zero-Lag Typing**: 8ms keystroke response (25x faster than Notion's 200ms)
+- **Tag-Based Organization**: Inline #tags instead of rigid folder hierarchies
+- **Cross-Platform Sync**: Works offline-first across Mac, Windows, Linux, iOS, Android, web
+- **Distraction-Free Writing**: Interface that disappears when you start typing
+- **Private by Design**: Local-first architecture with optional end-to-end encrypted sync
 - **Offline-First**: Full functionality without internet dependency
 
 This repository contains the landing page for Paperlyte, built with modern web technologies and optimized for performance and accessibility.

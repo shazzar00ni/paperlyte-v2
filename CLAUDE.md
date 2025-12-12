@@ -6,14 +6,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Paperlyte** is a lightning-fast, distraction-free note-taking application that prioritizes simplicity over feature bloat. The landing page aims to communicate this value proposition to frustrated note-takers who are overwhelmed by complex tools like Notion, Evernote, and OneNote.
 
-**Core Promise**: "Your thoughts, unchained from complexity"
+**Core Promise**: "Your thoughts, unchained."
 
 **Key Differentiators**:
 
-- Lightning Speed: Instant startup, real-time sync, no loading delays
-- Beautiful Simplicity: Paper-inspired design that feels natural
-- Tag-Based Organization: Smart categorization without rigid folder structures
-- Universal Access: Seamless experience across all devices
+- Zero-Lag Typing: 8ms keystroke response (25x faster than Notion's 200ms)
+- Tag-Based Organization: Inline #tags instead of rigid folder hierarchies
+- Cross-Platform Sync: Works offline-first across Mac, Windows, Linux, iOS, Android, web
+- Distraction-Free Writing: Interface that disappears when you start typing
+- Private by Design: Local-first architecture with optional end-to-end encrypted sync
 - Offline-First: Full functionality without internet dependency
 
 This is a React application built with TypeScript and Vite, currently in early development stages.
@@ -113,9 +114,9 @@ These targets are critical to the product's "lightning-fast" value proposition:
 
 Essential sections to implement first:
 
-- Hero section with clear value proposition
-- Feature grid (6 core features with icons)
-- Call-to-action section with download buttons
+- Hero section with clear value proposition and Q2 2025 launch messaging
+- Feature grid (6 core features with performance metrics and icons)
+- Call-to-action section with "Join the Waitlist" buttons
 - Sticky navigation header
 - Footer with social/legal links
 

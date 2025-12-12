@@ -140,7 +140,15 @@
   font-size: var(--font-size-lg);
   line-height: var(--line-height-relaxed);
   color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-md);
+  max-width: 480px;
+}
+
+.microcopy {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-tertiary);
   margin-bottom: var(--spacing-xl);
+  font-weight: var(--font-weight-medium);
   max-width: 480px;
 }
 
@@ -345,6 +353,11 @@
   }
 
   .subheadline {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .microcopy {
     margin-left: auto;
     margin-right: auto;
   }

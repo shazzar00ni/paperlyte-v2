@@ -22,7 +22,9 @@ export const OfflinePage: FC<OfflinePageProps> = ({
   showCachedInfo = true,
   onConnectionRestored,
 }) => {
-  const [isOnline, setIsOnline] = useState(navigator.onLine)
+  const [isOnline, setIsOnline] = useState(
+    typeof navigator !== 'undefined' ? navigator.onLine : true
+  )
   const [isChecking, setIsChecking] = useState(false)
 
   // Memoize handlers to ensure stable references and proper cleanup

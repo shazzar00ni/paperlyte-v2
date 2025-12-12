@@ -16,33 +16,46 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 
 // Solid icons (from free-solid-svg-icons)
 import {
-  faBolt,           // Lightning Speed feature
-  faPenNib,         // Beautiful Simplicity feature
-  faTags,           // Tag-Based Organization feature
-  faMobileScreen,   // Universal Access feature
-  faPlaneSlash,     // Offline-First feature (airplane mode/offline indicator)
-  faShieldHalved,   // Privacy Focused feature
-  faFeather,        // Logo/brand icon
-  faXmark,          // Close/exit (mobile menu)
-  faBars,           // Menu (mobile menu open)
-  faEnvelope,       // Contact/email
-  faStar,           // Most popular/featured
-  faCircleCheck,    // Guarantee/security check
-  faHeart,          // Used in tests
-  faDownload,       // Download CTA
-  faMoon,           // Dark mode toggle
-  faSun,            // Light mode toggle
-  faLock,           // Security/privacy indicator
-  faCheck,          // Checkmark/success
+  faBolt, // Lightning Speed feature
+  faPenNib, // Beautiful Simplicity feature
+  faTags, // Tag-Based Organization feature
+  faMobileScreen, // Universal Access feature
+  faPlaneSlash, // Offline-First feature (airplane mode/offline indicator)
+  faShieldHalved, // Privacy Focused feature
+  faFeather, // Logo/brand icon
+  faXmark, // Close/exit (mobile menu)
+  faBars, // Menu (mobile menu open)
+  faEnvelope, // Contact/email
+  faStar, // Most popular/featured
+  faCircleCheck, // Guarantee/security check
+  faHeart, // Used in tests
+  faDownload, // Download CTA
+  faMoon, // Dark mode toggle
+  faSun, // Light mode toggle
+  faLock, // Security/privacy indicator
+  faCheck, // Checkmark/success
   faCircleQuestion, // Fallback icon for missing/invalid icons
+  faChevronLeft, // Testimonials carousel navigation
+  faChevronRight, // Testimonials carousel navigation
+  faChevronUp, // FAQ accordion
+  faChevronDown, // FAQ accordion
+  faPause, // Testimonials autoplay control
+  faPlay, // Testimonials autoplay control
+  faNoteSticky, // Hero section features, Statistics
+  faPen, // Hero section features
+  faLightbulb, // Hero section features
+  faLeaf, // Pricing plans (eco-friendly)
+  faRocket, // Pricing plans (premium features)
+  faUsers, // Pricing plans, Statistics (team/community)
+  faServer, // Statistics (infrastructure)
 } from '@fortawesome/free-solid-svg-icons'
 
 // Brand icons (from free-brands-svg-icons)
 import {
-  faGithub,         // GitHub social link
-  faTwitter,        // Twitter/X social link
-  faApple,          // Apple platform
-  faWindows,        // Windows platform
+  faGithub, // GitHub social link
+  faTwitter, // Twitter/X social link
+  faApple, // Apple platform
+  faWindows, // Windows platform
 } from '@fortawesome/free-brands-svg-icons'
 
 // Add all icons to the library
@@ -67,11 +80,24 @@ library.add(
   faLock,
   faCheck,
   faCircleQuestion, // Fallback icon (not exposed via iconNameMap)
+  faChevronLeft,
+  faChevronRight,
+  faChevronUp,
+  faChevronDown,
+  faPause,
+  faPlay,
+  faNoteSticky,
+  faPen,
+  faLightbulb,
+  faLeaf,
+  faRocket,
+  faUsers,
+  faServer,
   // Brand icons
   faGithub,
   faTwitter,
   faApple,
-  faWindows,
+  faWindows
 )
 
 /**
@@ -83,20 +109,33 @@ export const iconNameMap: Record<string, string> = {
   'fa-pen-nib': 'pen-nib',
   'fa-tags': 'tags',
   'fa-mobile-screen': 'mobile-screen',
-  'fa-wifi-slash': 'plane-slash',      // Using plane-slash as offline indicator
+  'fa-wifi-slash': 'plane-slash', // Using plane-slash as offline indicator
   'fa-shield-halved': 'shield-halved',
   'fa-feather': 'feather',
   'fa-xmark': 'xmark',
   'fa-bars': 'bars',
   'fa-envelope': 'envelope',
   'fa-star': 'star',
-  'fa-shield-check': 'circle-check',   // Using circle-check for guarantee/verification
+  'fa-shield-check': 'circle-check', // Using circle-check for guarantee/verification
   'fa-heart': 'heart',
   'fa-download': 'download',
   'fa-moon': 'moon',
   'fa-sun': 'sun',
   'fa-lock': 'lock',
   'fa-check': 'check',
+  'fa-chevron-left': 'chevron-left',
+  'fa-chevron-right': 'chevron-right',
+  'fa-chevron-up': 'chevron-up',
+  'fa-chevron-down': 'chevron-down',
+  'fa-pause': 'pause',
+  'fa-play': 'play',
+  'fa-note-sticky': 'note-sticky',
+  'fa-pen': 'pen',
+  'fa-lightbulb': 'lightbulb',
+  'fa-leaf': 'leaf',
+  'fa-rocket': 'rocket',
+  'fa-users': 'users',
+  'fa-server': 'server',
   'fa-github': 'github',
   'fa-twitter': 'twitter',
   'fa-apple': 'apple',

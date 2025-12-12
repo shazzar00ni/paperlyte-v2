@@ -245,11 +245,11 @@ describe('OfflinePage', () => {
       expect(illustration).toBeInTheDocument()
     })
 
-    it('should have aria-label on status indicator', () => {
+    it('should display connection status text', () => {
       render(<OfflinePage />)
 
-      const statusIndicator = screen.getByLabelText('Offline')
-      expect(statusIndicator).toBeInTheDocument()
+      // Status text should be visible and provide the connection state
+      expect(screen.getByText('Disconnected')).toBeInTheDocument()
     })
 
     it('should have proper button types', () => {

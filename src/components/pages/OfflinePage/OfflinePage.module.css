@@ -85,8 +85,8 @@
 }
 
 .statusOnline {
-  background-color: #10b981;
-  box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+  background-color: var(--color-success);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--color-success) 50%, transparent);
   animation: pulse 2s ease-in-out infinite;
 }
 

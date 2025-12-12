@@ -57,7 +57,7 @@ describe('ErrorBoundary', () => {
       )
 
       expect(screen.getByRole('alert')).toBeInTheDocument()
-      expect(screen.getByText('Something went wrong')).toBeInTheDocument()
+      expect(screen.getByText(/something went wrong/i)).toBeInTheDocument()
     })
 
     it('should display default error message', () => {
@@ -98,7 +98,7 @@ describe('ErrorBoundary', () => {
       )
 
       expect(screen.getByText('Custom error message')).toBeInTheDocument()
-      expect(screen.queryByText('Something went wrong')).not.toBeInTheDocument()
+      expect(screen.queryByText(/something went wrong/i)).not.toBeInTheDocument()
     })
   })
 
@@ -152,17 +152,17 @@ describe('ErrorBoundary', () => {
         </ErrorBoundary>
       )
 
-      expect(screen.getByRole('button', { name: /try again/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /retry loading the page/i })).toBeInTheDocument()
     })
 
-    it('should render "Reload Page" button', () => {
+    it('should render "Go to Homepage" button', () => {
       render(
         <ErrorBoundary>
           <ThrowError shouldThrow={true} />
         </ErrorBoundary>
       )
 
-      expect(screen.getByRole('button', { name: /reload page/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /return to homepage/i })).toBeInTheDocument()
     })
 
     it('should reset error state when "Try Again" is clicked', async () => {
@@ -183,31 +183,28 @@ describe('ErrorBoundary', () => {
       )
 
       // Error should be shown
-      expect(screen.getByText('Something went wrong')).toBeInTheDocument()
+      expect(screen.getByText(/something went wrong/i)).toBeInTheDocument()
 
       // Fix the error condition
       shouldThrow = false
 
       // Click Try Again
-      const tryAgainButton = screen.getByRole('button', { name: /try again/i })
+      const tryAgainButton = screen.getByRole('button', { name: /retry loading the page/i })
       await user.click(tryAgainButton)
 
       // Should show recovered component
       expect(screen.getByText('Component recovered')).toBeInTheDocument()
     })
 
-    it('should reload page when "Reload Page" is clicked', async () => {
+    it('should navigate to homepage when "Go to Homepage" is clicked', async () => {
       const user = userEvent.setup()
-      const reloadSpy = vi.fn()
-
-      // Store original location
       const originalLocation = window.location
 
       // Replace entire location object with a mock
       Object.defineProperty(window, 'location', {
         configurable: true,
         writable: true,
-        value: { ...originalLocation, reload: reloadSpy },
+        value: { ...originalLocation, href: '' },
       })
 
       render(
@@ -216,10 +213,10 @@ describe('ErrorBoundary', () => {
         </ErrorBoundary>
       )
 
-      const reloadButton = screen.getByRole('button', { name: /reload page/i })
-      await user.click(reloadButton)
+      const homeButton = screen.getByRole('button', { name: /return to homepage/i })
+      await user.click(homeButton)
 
-      expect(reloadSpy).toHaveBeenCalledTimes(1)
+      expect(window.location.href).toBe('/')
 
       // Restore original location
       Object.defineProperty(window, 'location', {
@@ -260,11 +257,11 @@ describe('ErrorBoundary', () => {
         </ErrorBoundary>
       )
 
-      const tryAgainButton = screen.getByRole('button', { name: /try again/i })
-      const reloadButton = screen.getByRole('button', { name: /reload page/i })
+      const tryAgainButton = screen.getByRole('button', { name: /retry loading the page/i })
+      const homeButton = screen.getByRole('button', { name: /return to homepage/i })
 
       expect(tryAgainButton).toHaveAttribute('type', 'button')
-      expect(reloadButton).toHaveAttribute('type', 'button')
+      expect(homeButton).toHaveAttribute('type', 'button')
     })
   })
 
@@ -284,10 +281,10 @@ describe('ErrorBoundary', () => {
           <ThrowError shouldThrow={true} />
         </ErrorBoundary>
       )
-      expect(screen.getByText('Something went wrong')).toBeInTheDocument()
+      expect(screen.getByText(/something went wrong/i)).toBeInTheDocument()
 
       // Reset
-      const tryAgainButton = screen.getByRole('button', { name: /try again/i })
+      const tryAgainButton = screen.getByRole('button', { name: /retry loading the page/i })
       await user.click(tryAgainButton)
 
       // Another error
@@ -296,7 +293,7 @@ describe('ErrorBoundary', () => {
           <ThrowError shouldThrow={true} />
         </ErrorBoundary>
       )
-      expect(screen.getByText('Something went wrong')).toBeInTheDocument()
+      expect(screen.getByText(/something went wrong/i)).toBeInTheDocument()
     })
 
     it('should handle errors with no stack trace', () => {
@@ -312,7 +309,7 @@ describe('ErrorBoundary', () => {
         </ErrorBoundary>
       )
 
-      expect(screen.getByText('Something went wrong')).toBeInTheDocument()
+      expect(screen.getByText(/something went wrong/i)).toBeInTheDocument()
     })
   })
 

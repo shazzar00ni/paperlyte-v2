@@ -77,7 +77,7 @@ describe('OfflinePage', () => {
     })
 
     it('should detect when user goes offline', async () => {
-      vi.spyOn(navigator, 'onLine', 'get').mockReturnValue(true)
+      onLineSpy.mockReturnValue(true)
       render(<OfflinePage />)
 
       expect(screen.getByText('Connected')).toBeInTheDocument()
@@ -116,15 +116,18 @@ describe('OfflinePage', () => {
 
     it('should show checking state when retry is clicked', async () => {
       const user = userEvent.setup()
-      global.fetch = vi.fn(() => Promise.reject(new Error('Network error')))
+      // Use a pending promise that doesn't resolve immediately
+      global.fetch = vi.fn(() => new Promise(() => {}))
 
       render(<OfflinePage />)
 
       const retryButton = screen.getByRole('button', { name: /check connection and retry/i })
       await user.click(retryButton)
 
-      expect(screen.getByText('Checking...')).toBeInTheDocument()
-      expect(retryButton).toBeDisabled()
+      await waitFor(() => {
+        expect(screen.getByText('Checking...')).toBeInTheDocument()
+        expect(retryButton).toBeDisabled()
+      })
     })
 
     it('should attempt to reload page when connection check succeeds', async () => {
@@ -289,15 +292,19 @@ describe('OfflinePage', () => {
 
     it('should show spinner icon when checking connection', async () => {
       const user = userEvent.setup()
-      global.fetch = vi.fn(() => Promise.reject(new Error('Network error')))
+      // Use a pending promise that doesn't resolve immediately
+      global.fetch = vi.fn(() => new Promise(() => {}))
 
       render(<OfflinePage />)
 
       const retryButton = screen.getByRole('button', { name: /check connection and retry/i })
       await user.click(retryButton)
 
-      const spinnerIcon = retryButton.querySelector('i.fa-spinner.fa-spin')
-      expect(spinnerIcon).toBeInTheDocument()
+      await waitFor(() => {
+        const spinnerIcon = retryButton.querySelector('i.fa-spinner')
+        expect(spinnerIcon).toBeInTheDocument()
+        expect(spinnerIcon).toHaveClass('fa-spin')
+      })
     })
   })
 

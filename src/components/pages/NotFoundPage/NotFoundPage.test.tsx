@@ -29,7 +29,8 @@ describe('NotFoundPage', () => {
     it('should render the 404 illustration', () => {
       render(<NotFoundPage />)
 
-      const illustration = screen.getByText('4').parentElement
+      const numbers = screen.getAllByText('4')
+      const illustration = numbers[0].parentElement?.parentElement
       expect(illustration).toHaveAttribute('aria-hidden', 'true')
     })
   })
@@ -47,17 +48,28 @@ describe('NotFoundPage', () => {
       expect(screen.getByRole('button', { name: /go to previous page/i })).toBeInTheDocument()
     })
 
-    it('should scroll to top when "Back to Home" is clicked by default', async () => {
+    it('should navigate to homepage when "Back to Home" is clicked by default', async () => {
       const user = userEvent.setup()
-      const scrollToSpy = vi.fn()
-      window.scrollTo = scrollToSpy
+      const originalLocation = window.location
+
+      Object.defineProperty(window, 'location', {
+        configurable: true,
+        writable: true,
+        value: { ...originalLocation, href: '' },
+      })
 
       render(<NotFoundPage />)
 
       const homeButton = screen.getByRole('button', { name: /return to homepage/i })
       await user.click(homeButton)
 
-      expect(scrollToSpy).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' })
+      expect(window.location.href).toBe('/')
+
+      Object.defineProperty(window, 'location', {
+        configurable: true,
+        writable: true,
+        value: originalLocation,
+      })
     })
 
     it('should call custom onGoHome callback when provided', async () => {
@@ -130,7 +142,8 @@ describe('NotFoundPage', () => {
     it('should have aria-hidden on decorative illustration', () => {
       render(<NotFoundPage />)
 
-      const illustration = screen.getByText('4').parentElement
+      const numbers = screen.getAllByText('4')
+      const illustration = numbers[0].parentElement?.parentElement
       expect(illustration).toHaveAttribute('aria-hidden', 'true')
     })
 

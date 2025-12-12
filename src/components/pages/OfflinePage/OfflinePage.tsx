@@ -51,7 +51,8 @@ export const OfflinePage: FC<OfflinePageProps> = ({
 
     // Check connection by making a simple fetch request
     try {
-      await fetch('/', { method: 'HEAD', cache: 'no-cache' })
+      // Use a reliable external endpoint to check for real internet connectivity
+      await fetch('https://www.gstatic.com/generate_204', { method: 'HEAD', cache: 'no-cache' })
       // If successful, reload the page
       window.location.reload()
     } catch {

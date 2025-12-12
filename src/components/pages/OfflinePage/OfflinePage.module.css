@@ -252,7 +252,7 @@
 /* Tips info */
 .tipsInfo {
   padding: var(--spacing-lg);
-  background-color: rgba(124, 58, 237, 0.05);
+  background-color: var(--color-primary-alpha-5);
   border-radius: var(--border-radius-md);
   border-left: 4px solid var(--color-primary);
 }

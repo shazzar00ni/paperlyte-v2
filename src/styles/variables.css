@@ -8,7 +8,18 @@
   --color-text-primary: #111827; /* Gray 900 */
   --color-text-secondary: #6b7280; /* Gray 500 */
   --color-text-on-primary: #ffffff; /* White text on primary background */
+  --color-text-tertiary: #9ca3af; /* Gray 400 */
   --color-border: #e5e7eb; /* Gray 200 */
+
+  /* Semantic colors */
+  --color-success: #10b981; /* Emerald 500 */
+  --color-error: #ef4444; /* Red 500 */
+  --color-warning: #f59e0b; /* Amber 500 */
+  --color-info: #3b82f6; /* Blue 500 */
+
+  /* Semi-transparent backgrounds */
+  --color-primary-alpha-5: rgba(124, 58, 237, 0.05);
+  --color-primary-alpha-10: rgba(124, 58, 237, 0.1);
 
   /* Typography */
   --font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -80,7 +91,18 @@
   --color-surface: #1e293b; /* Slate 800 */
   --color-text-primary: #f1f5f9; /* Slate 100 */
   --color-text-secondary: #94a3b8; /* Slate 400 */
+  --color-text-tertiary: #64748b; /* Slate 500 */
   --color-border: #334155; /* Slate 700 */
+
+  /* Semantic colors (dark mode adjusted) */
+  --color-success: #34d399; /* Emerald 400 */
+  --color-error: #f87171; /* Red 400 */
+  --color-warning: #fbbf24; /* Amber 400 */
+  --color-info: #60a5fa; /* Blue 400 */
+
+  /* Semi-transparent backgrounds */
+  --color-primary-alpha-5: rgba(124, 58, 237, 0.1);
+  --color-primary-alpha-10: rgba(124, 58, 237, 0.15);
 
   /* Theme transition */
   color-scheme: dark;
@@ -96,7 +118,18 @@
     --color-surface: #1e293b;
     --color-text-primary: #f1f5f9;
     --color-text-secondary: #94a3b8;
+    --color-text-tertiary: #64748b;
     --color-border: #334155;
+
+    /* Semantic colors (dark mode adjusted) */
+    --color-success: #34d399;
+    --color-error: #f87171;
+    --color-warning: #fbbf24;
+    --color-info: #60a5fa;
+
+    /* Semi-transparent backgrounds */
+    --color-primary-alpha-5: rgba(124, 58, 237, 0.1);
+    --color-primary-alpha-10: rgba(124, 58, 237, 0.15);
 
     color-scheme: dark;
   }

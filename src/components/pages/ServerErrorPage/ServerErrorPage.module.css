@@ -126,7 +126,7 @@
   padding: var(--spacing-lg);
   background-color: var(--color-surface);
   border-radius: var(--border-radius-md);
-  border: 2px solid #ef4444;
+  border: 2px solid var(--color-error);
 }
 
 .detailsSummary {
@@ -269,7 +269,7 @@
 /* Status information */
 .statusInfo {
   padding: var(--spacing-md);
-  background-color: rgba(124, 58, 237, 0.05);
+  background-color: var(--color-primary-alpha-5);
   border-radius: var(--border-radius-md);
   border: 1px solid var(--color-border);
 }

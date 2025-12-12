@@ -19,8 +19,8 @@ export const NotFoundPage: FC<NotFoundPageProps> = ({ message, onGoHome }) => {
     if (onGoHome) {
       onGoHome()
     } else {
-      // Default behavior: scroll to top of page
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      // Default behavior: navigate to homepage
+      window.location.href = '/'
     }
   }
 

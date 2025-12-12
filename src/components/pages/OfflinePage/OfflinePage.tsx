@@ -77,6 +77,7 @@ export const OfflinePage: FC<OfflinePageProps> = ({
           <div className={styles.statusIndicator}>
             <span
               className={isOnline ? styles.statusOnline : styles.statusOffline}
+              role="status"
               aria-label={isOnline ? 'Online' : 'Offline'}
             />
             <span className={styles.statusText}>{isOnline ? 'Connected' : 'Disconnected'}</span>

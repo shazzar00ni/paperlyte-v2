@@ -60,6 +60,10 @@
   .disconnectedSlash {
     animation: none;
   }
+
+  .statusOnline {
+    animation: none;
+  }
 }
 
 .statusIndicator {

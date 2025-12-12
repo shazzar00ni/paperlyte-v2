@@ -91,7 +91,7 @@
 }
 
 .statusOffline {
-  background-color: #6b7280;
+  background-color: var(--color-text-tertiary);
 }
 
 @keyframes pulse {

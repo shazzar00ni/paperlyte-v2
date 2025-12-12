@@ -52,7 +52,7 @@ describe('OfflinePage', () => {
 
   describe('Connection Status', () => {
     it('should detect when user comes online', async () => {
-      const { rerender } = render(<OfflinePage />)
+      render(<OfflinePage />)
 
       expect(screen.getByText('Disconnected')).toBeInTheDocument()
 

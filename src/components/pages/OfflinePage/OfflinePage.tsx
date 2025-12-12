@@ -54,14 +54,29 @@ export const OfflinePage: FC<OfflinePageProps> = ({
   const handleRetry = async (): Promise<void> => {
     setIsChecking(true)
 
-    // Check connection by making a simple fetch request
+    // Create abort controller with timeout to prevent hanging
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 5000) // 5 second timeout
+
     try {
       // Use a reliable external endpoint to check for real internet connectivity
-      await fetch('https://www.gstatic.com/generate_204', { method: 'HEAD', cache: 'no-cache' })
-      // If successful, reload the page
-      window.location.reload()
+      const response = await fetch('https://www.gstatic.com/generate_204', {
+        method: 'HEAD',
+        cache: 'no-cache',
+        signal: controller.signal,
+      })
+
+      clearTimeout(timeoutId)
+
+      // Only reload if we got a successful response
+      if (response.ok || response.status === 204) {
+        window.location.reload()
+      }
     } catch {
-      // Connection still not available
+      // Connection still not available (or timeout/abort)
+      clearTimeout(timeoutId)
+    } finally {
+      // Always reset checking state
       setIsChecking(false)
     }
   }

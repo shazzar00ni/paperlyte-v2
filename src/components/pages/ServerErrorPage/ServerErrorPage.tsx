@@ -32,13 +32,17 @@ export const ServerErrorPage: FC<ServerErrorPageProps> = ({
     if (onRetry) {
       onRetry()
     } else {
-      // Default behavior: reload the page
+      // Default behavior: full page reload to clear error state
+      // Note: window.location.reload() is intentional for error recovery.
+      // In an SPA with routing, consider passing a custom onRetry callback.
       window.location.reload()
     }
   }
 
   const handleGoHome = (): void => {
-    // Navigate to home (or scroll to top for single-page apps)
+    // Full page navigation to homepage
+    // Note: window.location.href is intentional for error recovery.
+    // In an SPA with routing, consider using navigate('/') via callback.
     window.location.href = '/'
   }
 

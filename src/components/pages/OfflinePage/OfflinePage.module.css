@@ -39,18 +39,19 @@
   width: 80px;
   height: 4px;
   background-color: var(--color-error);
-  transform: translate(-50%, -50%) rotate(-45deg);
+  transform: translate(-50%, -50%) rotate(-45deg) scaleX(1);
+  transform-origin: center;
   border-radius: 2px;
   animation: slideIn 0.3s ease-out;
 }
 
 @keyframes slideIn {
   from {
-    width: 0;
+    transform: translate(-50%, -50%) rotate(-45deg) scaleX(0);
     opacity: 0;
   }
   to {
-    width: 80px;
+    transform: translate(-50%, -50%) rotate(-45deg) scaleX(1);
     opacity: 1;
   }
 }

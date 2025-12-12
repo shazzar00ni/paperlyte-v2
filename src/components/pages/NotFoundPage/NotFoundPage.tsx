@@ -9,7 +9,7 @@ interface NotFoundPageProps {
   message?: string
   /**
    * Custom callback for the home button (optional)
-   * Defaults to scrolling to top
+   * Defaults to navigating to '/' (homepage)
    */
   onGoHome?: () => void
 }

@@ -3,13 +3,24 @@ import userEvent from '@testing-library/user-event'
 import { OfflinePage } from './OfflinePage'
 
 describe('OfflinePage', () => {
+  let onLineSpy: ReturnType<typeof vi.spyOn>
+  const originalFetch = global.fetch
+  const originalLocation = window.location
+
   beforeEach(() => {
     // Reset online status before each test
-    vi.spyOn(navigator, 'onLine', 'get').mockReturnValue(false)
+    onLineSpy = vi.spyOn(navigator, 'onLine', 'get').mockReturnValue(false)
   })
 
   afterEach(() => {
+    // Restore all mocks and globals
     vi.restoreAllMocks()
+    global.fetch = originalFetch
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      writable: true,
+      value: originalLocation,
+    })
   })
 
   describe('Rendering', () => {
@@ -42,7 +53,7 @@ describe('OfflinePage', () => {
     })
 
     it('should show online status when connection is restored', () => {
-      vi.spyOn(navigator, 'onLine', 'get').mockReturnValue(true)
+      onLineSpy.mockReturnValue(true)
 
       render(<OfflinePage />)
 
@@ -57,7 +68,7 @@ describe('OfflinePage', () => {
       expect(screen.getByText('Disconnected')).toBeInTheDocument()
 
       // Simulate going online
-      vi.spyOn(navigator, 'onLine', 'get').mockReturnValue(true)
+      onLineSpy.mockReturnValue(true)
       window.dispatchEvent(new Event('online'))
 
       await waitFor(() => {
@@ -72,7 +83,7 @@ describe('OfflinePage', () => {
       expect(screen.getByText('Connected')).toBeInTheDocument()
 
       // Simulate going offline
-      vi.spyOn(navigator, 'onLine', 'get').mockReturnValue(false)
+      onLineSpy.mockReturnValue(false)
       window.dispatchEvent(new Event('offline'))
 
       await waitFor(() => {
@@ -85,7 +96,7 @@ describe('OfflinePage', () => {
       render(<OfflinePage onConnectionRestored={onConnectionRestored} />)
 
       // Simulate going online
-      vi.spyOn(navigator, 'onLine', 'get').mockReturnValue(true)
+      onLineSpy.mockReturnValue(true)
       window.dispatchEvent(new Event('online'))
 
       await waitFor(() => {

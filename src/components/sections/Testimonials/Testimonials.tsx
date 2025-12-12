@@ -189,7 +189,7 @@ export const Testimonials = (): React.ReactElement => {
       <AnimatedElement animation="fadeIn">
         <div className={styles.header}>
           <h2 className={styles.title}>What people are saying</h2>
-          <p className={styles.subtitle}>Real feedback from people who switched to Paperlyte</p>
+          <p className={styles.subtitle}>Real feedback from people who switched to Paperlyte.</p>
         </div>
       </AnimatedElement>
 

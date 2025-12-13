@@ -41,9 +41,9 @@ async function generateIcon(outputName, size) {
   try {
     const outputPath = join(publicDir, outputName)
 
-    await sharp(faviconSource)
+    await sharp(faviconSource, { density: 300 }) // High DPI for crisp rasterization
       .resize(size, size, {
-        fit: 'contain',
+        fit: 'cover', // Source SVG is square, avoid padding
         background: { r: 0, g: 0, b: 0, alpha: 0 }, // Transparent background
       })
       .png()
@@ -51,8 +51,12 @@ async function generateIcon(outputName, size) {
 
     console.log(`✅ Generated ${outputName} (${size}x${size})`)
   } catch (error) {
-    console.error(`❌ Failed to generate ${outputName}:`, error.message)
-    throw error
+    // Safely handle any thrown value (may not be an Error object)
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    console.error(`❌ Failed to generate ${outputName}:`, errorMessage)
+
+    // Always throw a normalized Error instance for consistent error handling
+    throw new Error(`Failed to generate ${outputName}: ${errorMessage}`)
   }
 }
 

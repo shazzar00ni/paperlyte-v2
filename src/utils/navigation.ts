@@ -83,10 +83,11 @@ export function isSafeUrl(url: string): boolean {
  * Only allows relative URLs and same-origin absolute URLs to prevent open redirect attacks.
  *
  * @param url - The URL to navigate to
- * @returns true if navigation was performed, false if URL was rejected
+ * @returns true if navigation was performed, false if URL was rejected or navigation not needed (SSR)
  */
 export function safeNavigate(url: string): boolean {
-  // SSR guard
+  // SSR guard - return false as navigation is not applicable in server-side context
+  // This indicates 'navigation not performed' rather than 'navigation failed'
   if (typeof window === 'undefined') {
     return false
   }

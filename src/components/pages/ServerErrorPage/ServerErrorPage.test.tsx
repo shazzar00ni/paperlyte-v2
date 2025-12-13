@@ -17,6 +17,8 @@ describe('ServerErrorPage', () => {
       writable: true,
       value: originalLocation,
     })
+    // Restore environment stubs
+    vi.unstubAllEnvs()
   })
 
   describe('Rendering', () => {

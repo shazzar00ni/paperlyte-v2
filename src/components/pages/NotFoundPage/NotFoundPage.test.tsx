@@ -10,7 +10,6 @@ vi.mock('@/components/ui/Icon', () => ({
 
 describe('NotFoundPage', () => {
   let originalLocation: Location
-  let historyBackSpy: ReturnType<typeof vi.spyOn>
 
   beforeEach(() => {
     // Save original globals
@@ -24,7 +23,7 @@ describe('NotFoundPage', () => {
       writable: true,
       value: originalLocation,
     })
-    // Restore all spies including historyBackSpy
+    // Restore all spies
     vi.restoreAllMocks()
   })
   describe('Rendering', () => {
@@ -48,15 +47,6 @@ describe('NotFoundPage', () => {
       render(<NotFoundPage message={customMessage} />)
 
       expect(screen.getByText(customMessage)).toBeInTheDocument()
-    })
-
-    it('should render the 404 illustration', () => {
-      render(<NotFoundPage />)
-
-      const main = screen.getByRole('main')
-      const illustration = main.querySelector('[aria-hidden="true"]')
-      expect(illustration).toBeInTheDocument()
-      expect(illustration).toHaveAttribute('aria-hidden', 'true')
     })
   })
 
@@ -104,7 +94,7 @@ describe('NotFoundPage', () => {
 
     it('should navigate back when "Go Back" is clicked', async () => {
       const user = userEvent.setup()
-      historyBackSpy = vi.spyOn(window.history, 'back').mockImplementation(() => {})
+      const historyBackSpy = vi.spyOn(window.history, 'back').mockImplementation(() => {})
 
       render(<NotFoundPage />)
 

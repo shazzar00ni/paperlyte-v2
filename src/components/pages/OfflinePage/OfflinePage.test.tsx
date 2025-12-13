@@ -15,6 +15,7 @@ describe('OfflinePage', () => {
   afterEach(() => {
     // Restore all mocks and globals
     vi.restoreAllMocks()
+    vi.useRealTimers() // Ensure fake timers are always cleaned up
     global.fetch = originalFetch
     Object.defineProperty(window, 'location', {
       configurable: true,
@@ -159,6 +160,59 @@ describe('OfflinePage', () => {
       await waitFor(() => {
         expect(reloadSpy).toHaveBeenCalledTimes(1)
       })
+    })
+
+    it('should not reload when fetch fails', async () => {
+      const user = userEvent.setup()
+      const reloadSpy = vi.fn()
+
+      // Mock fetch to reject (network error)
+      global.fetch = vi.fn(() => Promise.reject(new Error('Network error')))
+      Object.defineProperty(window, 'location', {
+        configurable: true,
+        writable: true,
+        value: { reload: reloadSpy },
+      })
+
+      render(<OfflinePage />)
+
+      const retryButton = screen.getByRole('button', { name: /check connection and retry/i })
+      await user.click(retryButton)
+
+      // Wait for button to be re-enabled after error
+      await waitFor(() => {
+        expect(retryButton).not.toBeDisabled()
+      })
+
+      // Reload should not have been called
+      expect(reloadSpy).not.toHaveBeenCalled()
+    })
+
+    it('should not reload when fetch is aborted', async () => {
+      const user = userEvent.setup()
+      const reloadSpy = vi.fn()
+
+      // Mock fetch to reject with abort error
+      global.fetch = vi.fn(() => Promise.reject(new DOMException('Aborted', 'AbortError')))
+
+      Object.defineProperty(window, 'location', {
+        configurable: true,
+        writable: true,
+        value: { reload: reloadSpy },
+      })
+
+      render(<OfflinePage />)
+
+      const retryButton = screen.getByRole('button', { name: /check connection and retry/i })
+      await user.click(retryButton)
+
+      // Wait for button to be re-enabled after abort
+      await waitFor(() => {
+        expect(retryButton).not.toBeDisabled()
+      })
+
+      // Reload should not have been called
+      expect(reloadSpy).not.toHaveBeenCalled()
     })
 
     it('should show reload button when online', () => {

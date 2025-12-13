@@ -255,7 +255,7 @@ export function Terms() {
 
               <h3>Governing Law</h3>
               <p>
-                These Terms are governed by the laws of [Your Jurisdiction], without regard to
+                These Terms are governed by the laws of the State of Delaware, United States, without regard to
                 conflict of law provisions.
               </p>
 

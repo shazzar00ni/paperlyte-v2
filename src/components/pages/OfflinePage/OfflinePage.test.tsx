@@ -162,7 +162,7 @@ describe('OfflinePage', () => {
     })
 
     it('should show reload button when online', () => {
-      vi.spyOn(navigator, 'onLine', 'get').mockReturnValue(true)
+      onLineSpy.mockReturnValue(true)
 
       render(<OfflinePage />)
 

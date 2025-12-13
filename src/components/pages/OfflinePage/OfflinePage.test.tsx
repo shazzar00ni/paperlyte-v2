@@ -190,7 +190,7 @@ describe('OfflinePage', () => {
     })
 
     it('should not show offline features when online', () => {
-      vi.spyOn(navigator, 'onLine', 'get').mockReturnValue(true)
+      onLineSpy.mockReturnValue(true)
 
       render(<OfflinePage />)
 

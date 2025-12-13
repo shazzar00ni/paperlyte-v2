@@ -111,16 +111,34 @@ export default defineConfig({
     cssCodeSplit: true,
     // Use esbuild for faster minification
     minify: 'esbuild',
+    // Target modern browsers for smaller bundle sizes
+    target: 'es2020',
+    // Enable CSS minification
+    cssMinify: true,
     // Rollup-specific options for advanced bundling
     rollupOptions: {
       output: {
         // Separate React libraries into their own chunk for better caching
         // This ensures React/ReactDOM don't get re-downloaded when app code changes
-        manualChunks: {
-          'react-vendor': ['react', 'react-dom'],
+        manualChunks(id) {
+          // Only split out large, shared libraries for better caching.
+          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
+            return 'react-vendor'
+          }
+          // Optionally, split out constants if they are large/shared.
+          if (id.includes('/src/constants/')) {
+            return 'constants'
+          }
+          // Do not split UI or section components into separate chunks to avoid too many small chunks.
         },
+        // Optimize chunk file names for better caching
+        chunkFileNames: 'assets/[name]-[hash].js',
+        entryFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash].[ext]',
       },
     },
+    // Increase chunk size warning limit (default is 500kb)
+    chunkSizeWarningLimit: 1000,
   },
 
   // Development server configuration

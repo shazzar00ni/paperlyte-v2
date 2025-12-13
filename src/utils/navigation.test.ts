@@ -144,6 +144,12 @@ describe('navigation utilities', () => {
       const result = safeNavigate('/')
       expect(result).toBe(true)
       expect(window.location.href).toBe('/')
+      // Restore window.location
+      Object.defineProperty(window, 'location', {
+        value: originalLocation,
+        writable: true,
+        configurable: true,
+      })
     })
 
     it('should block navigation to unsafe URLs', () => {

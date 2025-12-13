@@ -160,15 +160,19 @@ export function trackPageView(pagePath: string, pageTitle?: string): void {
  * }
  * ```
  */
+// Keep track of which scroll depth milestones have been tracked
+const trackedScrollMilestones = new Set<number>();
+
 export function trackScrollDepth(depthPercentage: number): void {
   // Only track milestone percentages
-  const milestones = [25, 50, 75, 100]
-  const milestone = milestones.find((m) => depthPercentage >= m && depthPercentage < m + 5)
-
-  if (milestone) {
-    trackEvent(AnalyticsEvents.SCROLL_DEPTH, {
-      depth_percentage: milestone,
-    })
+  const milestones = [25, 50, 75, 100];
+  for (const milestone of milestones) {
+    if (depthPercentage >= milestone && !trackedScrollMilestones.has(milestone)) {
+      trackEvent(AnalyticsEvents.SCROLL_DEPTH, {
+        depth_percentage: milestone,
+      });
+      trackedScrollMilestones.add(milestone);
+    }
   }
 }
 

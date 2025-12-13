@@ -84,8 +84,7 @@ export const OfflinePage: FC<OfflinePageProps> = ({
   return (
     <div
       className={styles.container}
-      role="alert"
-      aria-live="polite"
+      role="status"
       aria-labelledby="offline-title"
     >
       <div className={styles.content}>

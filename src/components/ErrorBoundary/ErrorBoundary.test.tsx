@@ -56,7 +56,7 @@ describe('ErrorBoundary', () => {
         </ErrorBoundary>
       )
 
-      expect(screen.getByRole('alert')).toBeInTheDocument()
+      expect(screen.getByRole('main')).toBeInTheDocument()
       expect(screen.getByText(/something went wrong/i)).toBeInTheDocument()
     })
 
@@ -228,15 +228,15 @@ describe('ErrorBoundary', () => {
   })
 
   describe('Accessibility', () => {
-    it('should have role="alert" on error container', () => {
+    it('should have role="main" on error container', () => {
       render(
         <ErrorBoundary>
           <ThrowError shouldThrow={true} />
         </ErrorBoundary>
       )
 
-      const alert = screen.getByRole('alert')
-      expect(alert).toBeInTheDocument()
+      const main = screen.getByRole('main')
+      expect(main).toBeInTheDocument()
     })
 
     it('should have aria-hidden on error icon', () => {
@@ -246,7 +246,7 @@ describe('ErrorBoundary', () => {
         </ErrorBoundary>
       )
 
-      const icon = screen.getByRole('alert').querySelector('[aria-hidden="true"]')
+      const icon = screen.getByRole('main').querySelector('[aria-hidden="true"]')
       expect(icon).toBeInTheDocument()
     })
 
@@ -322,7 +322,7 @@ describe('ErrorBoundary', () => {
       )
 
       // If hasError is true, fallback UI should be shown
-      expect(screen.getByRole('alert')).toBeInTheDocument()
+      expect(screen.getByRole('main')).toBeInTheDocument()
     })
 
     it('should store the error in state', () => {

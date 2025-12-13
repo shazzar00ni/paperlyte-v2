@@ -27,7 +27,7 @@ describe('OfflinePage', () => {
     it('should render the offline page', () => {
       render(<OfflinePage />)
 
-      expect(screen.getByRole('alert')).toBeInTheDocument()
+      expect(screen.getByRole('status')).toBeInTheDocument()
       expect(screen.getByText(/You're offline/i)).toBeInTheDocument()
     })
 
@@ -237,12 +237,11 @@ describe('OfflinePage', () => {
   })
 
   describe('Accessibility', () => {
-    it('should have role="alert" with aria-live', () => {
+    it('should have role="status" with proper labeling', () => {
       render(<OfflinePage />)
 
-      const alert = screen.getByRole('alert')
-      expect(alert).toHaveAttribute('aria-live', 'polite')
-      expect(alert).toHaveAttribute('aria-labelledby', 'offline-title')
+      const status = screen.getByRole('status')
+      expect(status).toHaveAttribute('aria-labelledby', 'offline-title')
     })
 
     it('should have accessible heading', () => {
@@ -255,7 +254,7 @@ describe('OfflinePage', () => {
     it('should have aria-hidden on decorative illustration', () => {
       render(<OfflinePage />)
 
-      const illustration = screen.getByRole('alert').querySelector('[aria-hidden="true"]')
+      const illustration = screen.getByRole('status').querySelector('[aria-hidden="true"]')
       expect(illustration).toBeInTheDocument()
     })
 
@@ -278,7 +277,7 @@ describe('OfflinePage', () => {
     it('should render wifi icon in illustration', () => {
       render(<OfflinePage />)
 
-      const wifiIcon = screen.getByRole('alert').querySelector('i.fa-wifi')
+      const wifiIcon = screen.getByRole('status').querySelector('i.fa-wifi')
       expect(wifiIcon).toBeInTheDocument()
     })
 

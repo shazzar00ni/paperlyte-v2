@@ -7,7 +7,7 @@ describe('ServerErrorPage', () => {
     it('should render the 500 error page', () => {
       render(<ServerErrorPage />)
 
-      expect(screen.getByRole('alert')).toBeInTheDocument()
+      expect(screen.getByRole('main')).toBeInTheDocument()
       expect(screen.getByText(/Oops! Something went wrong/i)).toBeInTheDocument()
     })
 
@@ -29,7 +29,7 @@ describe('ServerErrorPage', () => {
     it('should render the error illustration with icon', () => {
       render(<ServerErrorPage />)
 
-      const illustration = screen.getByRole('alert').querySelector('[aria-hidden="true"]')
+      const illustration = screen.getByRole('main').querySelector('[aria-hidden="true"]')
       expect(illustration).toBeInTheDocument()
     })
 
@@ -176,11 +176,11 @@ describe('ServerErrorPage', () => {
   })
 
   describe('Accessibility', () => {
-    it('should have role="alert" on container', () => {
+    it('should have role="main" on container', () => {
       render(<ServerErrorPage />)
 
-      const alert = screen.getByRole('alert')
-      expect(alert).toHaveAttribute('aria-labelledby', 'error-title')
+      const main = screen.getByRole('main')
+      expect(main).toHaveAttribute('aria-labelledby', 'error-title')
     })
 
     it('should have accessible heading', () => {
@@ -193,7 +193,7 @@ describe('ServerErrorPage', () => {
     it('should have aria-hidden on decorative illustration', () => {
       render(<ServerErrorPage />)
 
-      const illustration = screen.getByRole('alert').querySelector('[aria-hidden="true"]')
+      const illustration = screen.getByRole('main').querySelector('[aria-hidden="true"]')
       expect(illustration).toBeInTheDocument()
     })
 
@@ -219,14 +219,14 @@ describe('ServerErrorPage', () => {
     it('should render server icon in illustration', () => {
       render(<ServerErrorPage />)
 
-      const serverIcon = screen.getByRole('alert').querySelector('i.fa-server')
+      const serverIcon = screen.getByRole('main').querySelector('i.fa-server')
       expect(serverIcon).toBeInTheDocument()
     })
 
     it('should render warning icon in error badge', () => {
       render(<ServerErrorPage />)
 
-      const warningIcon = screen.getByRole('alert').querySelector('i.fa-triangle-exclamation')
+      const warningIcon = screen.getByRole('main').querySelector('i.fa-triangle-exclamation')
       expect(warningIcon).toBeInTheDocument()
     })
 

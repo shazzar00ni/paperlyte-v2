@@ -47,7 +47,7 @@ export const ServerErrorPage: FC<ServerErrorPageProps> = ({
   }
 
   return (
-    <div className={styles.container} role="alert" aria-labelledby="error-title">
+    <main className={styles.container} aria-labelledby="error-title">
       <div className={styles.content}>
         {/* Error illustration */}
         <div className={styles.illustration} aria-hidden="true">
@@ -131,6 +131,6 @@ export const ServerErrorPage: FC<ServerErrorPageProps> = ({
           </p>
         </div>
       </div>
-    </div>
+    </main>
   )
 }

@@ -19,62 +19,22 @@ describe('CTA', () => {
   it('should render subtitle', () => {
     render(<CTA />)
     expect(
-      screen.getByText('Join thousands simplifying their notes. Start free, stay focused.')
+      screen.getByText(/Join 20,000\+ professionals organizing their life with Paperlyte/i)
     ).toBeInTheDocument()
   })
 
-  it('should render Download for Mac button', () => {
-    const { container } = render(<CTA />)
-
-    const macButton = screen.getByRole('link', { name: 'Download for Mac' })
-    expect(macButton).toBeInTheDocument()
-    expect(macButton).toHaveAttribute('href', '#')
-
-    // Check for Apple icon
-    const appleIcon = container.querySelector('.fa-apple')
-    expect(appleIcon).toBeInTheDocument()
-  })
-
-  it('should render Download for Windows button', () => {
-    const { container } = render(<CTA />)
-
-    const windowsButton = screen.getByRole('link', {
-      name: 'Download for Windows',
-    })
-    expect(windowsButton).toBeInTheDocument()
-    expect(windowsButton).toHaveAttribute('href', '#')
-
-    // Check for Windows icon
-    const windowsIcon = container.querySelector('.fa-windows')
-    expect(windowsIcon).toBeInTheDocument()
-  })
-
-  it('should render platform links for iOS, Android, and Linux', () => {
+  it('should render Get Started for Free button', () => {
     render(<CTA />)
 
-    expect(screen.getByText(/Also available for/i)).toBeInTheDocument()
-
-    const iosLink = screen.getByRole('link', { name: 'iOS' })
-    expect(iosLink).toBeInTheDocument()
-    expect(iosLink).toHaveAttribute('href', '#')
-
-    const androidLink = screen.getByRole('link', { name: 'Android' })
-    expect(androidLink).toBeInTheDocument()
-    expect(androidLink).toHaveAttribute('href', '#')
-
-    const linuxLink = screen.getByRole('link', { name: 'Linux' })
-    expect(linuxLink).toBeInTheDocument()
-    expect(linuxLink).toHaveAttribute('href', '#')
+    const button = screen.getByRole('button', { name: /Get Started for Free/i })
+    expect(button).toBeInTheDocument()
   })
 
-  it('should render GitHub badge', () => {
-    const { container } = render(<CTA />)
+  it('should render Learn More button', () => {
+    render(<CTA />)
 
-    expect(screen.getByText('Open source on GitHub')).toBeInTheDocument()
-
-    const githubIcon = container.querySelector('.fa-github')
-    expect(githubIcon).toBeInTheDocument()
-    expect(githubIcon).toHaveAttribute('aria-hidden', 'true')
+    const button = screen.getByRole('button', { name: /Learn More/i })
+    expect(button).toBeInTheDocument()
   })
 
   it('should have proper heading hierarchy', () => {
@@ -87,11 +47,11 @@ describe('CTA', () => {
     expect(mainHeading).toBeInTheDocument()
   })
 
-  it('should render download buttons with correct styling classes', () => {
-    const { container } = render(<CTA />)
+  it('should render two CTA buttons', () => {
+    render(<CTA />)
 
-    const buttons = container.querySelectorAll('a[class*="downloadButton"]')
-    expect(buttons).toHaveLength(2) // Mac and Windows buttons
+    const buttons = screen.getAllByRole('button')
+    expect(buttons).toHaveLength(2)
   })
 
   it('should render without crashing', () => {

@@ -2,25 +2,26 @@ import { Button } from '@components/ui/Button'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { ParallaxLayer } from '@components/ui/ParallaxLayer'
 import { FloatingElement } from '@components/ui/FloatingElement'
-import { TextReveal } from '@components/ui/TextReveal'
 import { Section } from '@components/layout/Section'
-import { scrollToSection } from '@utils/navigation'
+import { Icon } from '@components/ui/Icon'
+import { scrollToSection } from '@/utils/navigation'
 import { useAnalytics } from '@hooks/useAnalytics'
 import styles from './Hero.module.css'
 
-export const Hero = (): React.ReactElement => {
-  const { trackCTAClick, trackNavigation } = useAnalytics()
+const trustedCompanies = ['Acme Corp', 'Global', 'Nebula', 'Vertex', 'Horizon']
 
-  const handleDownloadClick = () => {
-    trackCTAClick('Download Now', 'hero')
+export const Hero = () => {
+  const { trackCTAClick } = useAnalytics()
+
+  const handleStartWritingClick = () => {
+    trackCTAClick('Start Writing for Free', 'hero')
     scrollToSection('download')
   }
 
-  const handleFeaturesClick = () => {
-    trackNavigation('features', 'hero')
+  const handleViewDemoClick = () => {
+    trackCTAClick('View the Demo', 'hero')
     scrollToSection('features')
   }
-
   return (
     <Section id="hero" className={styles.hero} padding="large">
       {/* Parallax background decorations */}
@@ -67,50 +68,86 @@ export const Hero = (): React.ReactElement => {
       </div>
 
       <div className={styles.content}>
-        <AnimatedElement animation="fadeIn">
-          <TextReveal
-            as="h1"
-            type="word"
-            stagger={80}
-            animation="fadeUp"
-            className={styles.headline}
-          >
-            Your thoughts, unchained from complexity
-          </TextReveal>
+        <AnimatedElement animation="fadeIn" delay={100}>
+          <h1 className={styles.headline}>
+            Thoughts,
+            <br />
+            <em className={styles.headlineItalic}>organized.</em>
+          </h1>
         </AnimatedElement>
 
-        <AnimatedElement animation="fadeIn" delay={150}>
+        <AnimatedElement animation="fadeIn" delay={200}>
           <p className={styles.subheadline}>
-            Lightning-fast, distraction-free note-taking. No bloat, no friction. Just you and your
-            ideas, the way it should be.
+            The minimal workspace for busy professionals. Capture ideas, structure documents, and focus on what truly matters—without the clutter.
           </p>
         </AnimatedElement>
 
         <AnimatedElement animation="fadeIn" delay={300}>
           <div className={styles.ctas}>
-            <Button variant="primary" size="large" icon="fa-download" onClick={handleDownloadClick}>
-              Download Now
+            <Button
+              variant="primary"
+              size="large"
+              icon="fa-arrow-right"
+              onClick={handleStartWritingClick}
+            >
+              Start Writing for Free
             </Button>
-            <Button variant="secondary" size="large" onClick={handleFeaturesClick}>
-              See Features
+            <Button variant="secondary" size="large" onClick={handleViewDemoClick}>
+              View the Demo
             </Button>
-          </div>
-        </AnimatedElement>
-
-        <AnimatedElement animation="fadeIn" delay={450}>
-          <div className={styles.tags}>
-            <span className={styles.tag}>
-              <i className="fa-solid fa-bolt" aria-hidden="true" /> Lightning Fast
-            </span>
-            <span className={styles.tag}>
-              <i className="fa-solid fa-lock" aria-hidden="true" /> Privacy First
-            </span>
-            <span className={styles.tag}>
-              <i className="fa-solid fa-wifi-slash" aria-hidden="true" /> Offline Ready
-            </span>
           </div>
         </AnimatedElement>
       </div>
+
+      <AnimatedElement animation="fadeIn" delay={400}>
+        <div className={styles.mockup} aria-hidden="true">
+          <div className={styles.mockupCard}>
+            <div className={styles.mockupHeader}>
+              <div className={styles.mockupDot} />
+              <div className={styles.mockupTitle} />
+            </div>
+            <div className={styles.mockupContent}>
+              <div className={`${styles.mockupLine} ${styles.mockupLineLong}`} />
+              <div className={styles.mockupLine} />
+              <div className={`${styles.mockupLine} ${styles.mockupLineMedium}`} />
+              <div className={`${styles.mockupLine} ${styles.mockupLineShort}`} />
+              <div className={styles.mockupSpacer} />
+              <div className={styles.mockupCheckbox}>
+                <div className={styles.mockupCheck} />
+                <div className={`${styles.mockupLine} ${styles.mockupLineCheckbox}`} />
+              </div>
+              <div className={styles.mockupCheckbox}>
+                <div className={styles.mockupCheck} />
+                <div className={`${styles.mockupLine} ${styles.mockupLineCheckboxShort}`} />
+              </div>
+            </div>
+            <div className={styles.mockupStats}>
+              <div className={styles.mockupStatCard}>
+                <div className={styles.mockupStatIcon}>
+                  <Icon name="fa-clock" size="sm" />
+                </div>
+                <span className={styles.mockupStatLabel}>PRODUCTIVITY</span>
+                <span className={styles.mockupStatValue}>+120%</span>
+                <span className={styles.mockupStatDesc}>Focus increase reported by users</span>
+              </div>
+              <button type="button" className={styles.mockupShareBtn}>Share</button>
+            </div>
+          </div>
+        </div>
+      </AnimatedElement>
+
+      <AnimatedElement animation="fadeIn" delay={500}>
+        <div className={styles.trusted}>
+          <span className={styles.trustedLabel}>TRUSTED BY TEAMS AT</span>
+          <div className={styles.trustedLogos}>
+            {trustedCompanies.map((company) => (
+              <span key={company} className={styles.trustedLogo}>
+                {company}
+              </span>
+            ))}
+          </div>
+        </div>
+      </AnimatedElement>
     </Section>
   )
 }

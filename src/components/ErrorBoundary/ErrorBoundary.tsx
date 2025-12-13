@@ -1,5 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react'
-import styles from './ErrorBoundary.module.css'
+import { ServerErrorPage } from '@/components/pages/ServerErrorPage'
 
 interface ErrorBoundaryProps {
   children: ReactNode
@@ -28,8 +28,10 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    // Log error to console in development
-    console.error('ErrorBoundary caught an error:', error, errorInfo)
+    // Log error to console in development only
+    if (import.meta.env.DEV) {
+      console.error('ErrorBoundary caught an error:', error, errorInfo)
+    }
 
     // In production, you might want to send this to an error reporting service
     // Example: Sentry.captureException(error, { extra: errorInfo });
@@ -49,42 +51,13 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
         return this.props.fallback
       }
 
-      // Default fallback UI
-      return (
-        <div className={styles.errorContainer} role="alert">
-          <div className={styles.errorContent}>
-            <div className={styles.errorIcon} aria-hidden="true">
-              <i className="fa-solid fa-triangle-exclamation" />
-            </div>
-            <h2 className={styles.errorTitle}>Something went wrong</h2>
-            <p className={styles.errorMessage}>
-              We're sorry, but something unexpected happened. Please try refreshing the page.
-            </p>
-            {this.state.error && import.meta.env.DEV && (
-              <details className={styles.errorDetails}>
-                <summary>Error details (development only)</summary>
-                <pre className={styles.errorStack}>
-                  {this.state.error.toString()}
-                  {'\n'}
-                  {this.state.error.stack}
-                </pre>
-              </details>
-            )}
-            <div className={styles.errorActions}>
-              <button onClick={this.handleReset} className={styles.retryButton} type="button">
-                Try Again
-              </button>
-              <button
-                onClick={() => window.location.reload()}
-                className={styles.reloadButton}
-                type="button"
-              >
-                Reload Page
-              </button>
-            </div>
-          </div>
-        </div>
-      )
+      // Use the ServerErrorPage component with error details
+      // Prefer error.stack (which includes the message) to avoid duplication
+      const errorDetails = this.state.error
+        ? this.state.error.stack || this.state.error.toString()
+        : undefined
+
+      return <ServerErrorPage errorDetails={errorDetails} onRetry={this.handleReset} />
     }
 
     return this.props.children

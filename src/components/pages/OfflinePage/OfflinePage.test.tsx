@@ -214,7 +214,7 @@ describe('OfflinePage', () => {
     })
 
     it('should not show connection tips when online', () => {
-      vi.spyOn(navigator, 'onLine', 'get').mockReturnValue(true)
+      onLineSpy.mockReturnValue(true)
 
       render(<OfflinePage />)
 

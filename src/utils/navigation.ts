@@ -1,8 +1,15 @@
 /**
- * Scrolls to a section by its ID with smooth behavior
- * @param sectionId - The ID of the section to scroll to
+ * Scrolls smoothly to a section identified by its ID.
+ * If the section doesn't exist or running in SSR, the function does nothing.
+ *
+ * @param sectionId - The ID of the section to scroll to (without the # prefix)
  */
-export const scrollToSection = (sectionId: string): void => {
+export function scrollToSection(sectionId: string): void {
+  // SSR guard - document is not available during server-side rendering
+  if (typeof document === 'undefined') {
+    return
+  }
+
   const element = document.getElementById(sectionId)
   if (element) {
     element.scrollIntoView({ behavior: 'smooth' })

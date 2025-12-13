@@ -185,9 +185,9 @@ describe('Header', () => {
       await user.click(menuButton)
 
       // Get all focusable menu items
-      const menuButtons = screen.getAllByRole('button').filter(
-        (btn) => btn.textContent !== '' && btn.getAttribute('aria-label') !== 'Close menu'
-      )
+      const menuButtons = screen
+        .getAllByRole('button')
+        .filter((btn) => btn.textContent !== '' && btn.getAttribute('aria-label') !== 'Close menu')
       const closeButton = screen.getByLabelText(/close menu/i)
 
       // Tab through all items and verify focus cycles back

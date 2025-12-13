@@ -13,16 +13,25 @@ const ThrowError = ({ shouldThrow = false }: { shouldThrow?: boolean }) => {
 
 describe('ErrorBoundary', () => {
   const originalConsoleError = console.error
+  let originalLocation: Location
 
   beforeEach(() => {
     // Suppress console.error in tests to keep output clean
     console.error = vi.fn()
+    // Save original location
+    originalLocation = window.location
   })
 
   afterEach(() => {
     console.error = originalConsoleError
     // Restore all environment stubs
     vi.unstubAllEnvs()
+    // Restore window.location
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      writable: true,
+      value: originalLocation,
+    })
   })
 
   describe('Normal Operation', () => {
@@ -199,9 +208,7 @@ describe('ErrorBoundary', () => {
 
     it('should navigate to homepage when "Go to Homepage" is clicked', async () => {
       const user = userEvent.setup()
-      const originalLocation = window.location
 
-      // Replace entire location object with a mock
       Object.defineProperty(window, 'location', {
         configurable: true,
         writable: true,
@@ -218,13 +225,6 @@ describe('ErrorBoundary', () => {
       await user.click(homeButton)
 
       expect(window.location.href).toBe('/')
-
-      // Restore original location
-      Object.defineProperty(window, 'location', {
-        configurable: true,
-        writable: true,
-        value: originalLocation,
-      })
     })
   })
 

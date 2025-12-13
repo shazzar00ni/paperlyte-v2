@@ -116,18 +116,28 @@ describe('OfflinePage', () => {
 
     it('should show checking state when retry is clicked', async () => {
       const user = userEvent.setup()
-      // Use a pending promise that doesn't resolve immediately
-      global.fetch = vi.fn(() => new Promise(() => {}))
+
+      // Use a pending promise to check loading state
+      let resolveFetch: () => void
+      const fetchPromise = new Promise<Response>((resolve) => {
+        resolveFetch = () => resolve(new Response())
+      })
+      global.fetch = vi.fn(() => fetchPromise)
 
       render(<OfflinePage />)
 
       const retryButton = screen.getByRole('button', { name: /check connection and retry/i })
-      await user.click(retryButton)
+      const clickPromise = user.click(retryButton)
 
+      // Check the loading state is active (without awaiting click to complete)
       await waitFor(() => {
         expect(screen.getByText('Checking...')).toBeInTheDocument()
         expect(retryButton).toBeDisabled()
       })
+
+      // Clean up: resolve the fetch to allow the click handler to complete
+      resolveFetch!()
+      await clickPromise
     })
 
     it('should attempt to reload page when connection check succeeds', async () => {
@@ -291,19 +301,29 @@ describe('OfflinePage', () => {
 
     it('should show spinner icon when checking connection', async () => {
       const user = userEvent.setup()
-      // Use a pending promise that doesn't resolve immediately
-      global.fetch = vi.fn(() => new Promise(() => {}))
+
+      // Use a controlled promise for proper cleanup
+      let resolveFetch: () => void
+      const fetchPromise = new Promise<Response>((resolve) => {
+        resolveFetch = () => resolve(new Response())
+      })
+      global.fetch = vi.fn(() => fetchPromise)
 
       render(<OfflinePage />)
 
       const retryButton = screen.getByRole('button', { name: /check connection and retry/i })
-      await user.click(retryButton)
+      const clickPromise = user.click(retryButton)
 
+      // Check spinner is shown while checking (without awaiting click to complete)
       await waitFor(() => {
         const spinnerIcon = retryButton.querySelector('i.fa-spinner')
         expect(spinnerIcon).toBeInTheDocument()
         expect(spinnerIcon).toHaveClass('fa-spin')
       })
+
+      // Clean up: resolve promise to allow click handler to complete
+      resolveFetch!()
+      await clickPromise
     })
   })
 

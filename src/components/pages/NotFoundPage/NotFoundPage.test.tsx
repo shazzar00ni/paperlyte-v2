@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { vi } from 'vitest'
 import { NotFoundPage } from './NotFoundPage'
 
 // Mock the Icon component to avoid testing Font Awesome implementation details
@@ -103,7 +104,7 @@ describe('NotFoundPage', () => {
 
     it('should navigate back when "Go Back" is clicked', async () => {
       const user = userEvent.setup()
-      historyBackSpy = vi.spyOn(window.history, 'back')
+      historyBackSpy = vi.spyOn(window.history, 'back').mockImplementation(() => {})
 
       render(<NotFoundPage />)
 
@@ -201,7 +202,7 @@ describe('NotFoundPage', () => {
       // Verify the suggestion icons are present
       expect(screen.getByTestId('icon-fa-magnifying-glass')).toBeInTheDocument()
       expect(screen.getByTestId('icon-fa-house')).toBeInTheDocument()
-      expect(screen.getByTestId('icon-fa-arrow-left')).toBeInTheDocument()
+      expect(screen.getByTestId('icon-fa-arrow-rotate-left')).toBeInTheDocument()
     })
   })
 })

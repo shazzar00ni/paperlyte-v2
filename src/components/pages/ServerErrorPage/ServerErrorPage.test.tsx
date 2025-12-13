@@ -3,6 +3,22 @@ import userEvent from '@testing-library/user-event'
 import { ServerErrorPage } from './ServerErrorPage'
 
 describe('ServerErrorPage', () => {
+  let originalLocation: Location
+
+  beforeEach(() => {
+    // Save original globals
+    originalLocation = window.location
+  })
+
+  afterEach(() => {
+    // Restore original globals
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      writable: true,
+      value: originalLocation,
+    })
+  })
+
   describe('Rendering', () => {
     it('should render the 500 error page', () => {
       render(<ServerErrorPage />)
@@ -110,7 +126,7 @@ describe('ServerErrorPage', () => {
       Object.defineProperty(window, 'location', {
         configurable: true,
         writable: true,
-        value: { reload: reloadSpy },
+        value: { ...originalLocation, reload: reloadSpy },
       })
 
       render(<ServerErrorPage />)
@@ -123,7 +139,6 @@ describe('ServerErrorPage', () => {
 
     it('should navigate to homepage when "Go to Homepage" is clicked', async () => {
       const user = userEvent.setup()
-      const originalLocation = window.location
 
       Object.defineProperty(window, 'location', {
         configurable: true,
@@ -137,12 +152,6 @@ describe('ServerErrorPage', () => {
       await user.click(homeButton)
 
       expect(window.location.href).toBe('/')
-
-      Object.defineProperty(window, 'location', {
-        configurable: true,
-        writable: true,
-        value: originalLocation,
-      })
     })
   })
 

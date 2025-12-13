@@ -1,5 +1,6 @@
 import { type FC } from 'react'
 import { Icon } from '@/components/ui/Icon'
+import { safeNavigate } from '@/utils/navigation'
 import styles from './NotFoundPage.module.css'
 
 interface NotFoundPageProps {
@@ -19,8 +20,8 @@ export const NotFoundPage: FC<NotFoundPageProps> = ({ message, onGoHome }) => {
     if (onGoHome) {
       onGoHome()
     } else {
-      // Default behavior: navigate to homepage
-      window.location.href = '/'
+      // Default behavior: navigate to homepage using safe navigation
+      safeNavigate('/')
     }
   }
 

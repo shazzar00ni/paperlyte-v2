@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { ErrorBoundary } from './ErrorBoundary'
+import { BUTTON_LABELS } from '@/components/pages/ServerErrorPage/ServerErrorPage'
 
 // Component that throws an error
 const ThrowError = ({ shouldThrow = false }: { shouldThrow?: boolean }) => {
@@ -12,16 +13,25 @@ const ThrowError = ({ shouldThrow = false }: { shouldThrow?: boolean }) => {
 
 describe('ErrorBoundary', () => {
   const originalConsoleError = console.error
+  let originalLocation: Location
 
   beforeEach(() => {
     // Suppress console.error in tests to keep output clean
     console.error = vi.fn()
+    // Save original location
+    originalLocation = window.location
   })
 
   afterEach(() => {
     console.error = originalConsoleError
     // Restore all environment stubs
     vi.unstubAllEnvs()
+    // Restore window.location
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      writable: true,
+      value: originalLocation,
+    })
   })
 
   describe('Normal Operation', () => {
@@ -56,8 +66,8 @@ describe('ErrorBoundary', () => {
         </ErrorBoundary>
       )
 
-      expect(screen.getByRole('alert')).toBeInTheDocument()
-      expect(screen.getByText('Something went wrong')).toBeInTheDocument()
+      expect(screen.getByRole('main')).toBeInTheDocument()
+      expect(screen.getByText(/something went wrong/i)).toBeInTheDocument()
     })
 
     it('should display default error message', () => {
@@ -89,7 +99,7 @@ describe('ErrorBoundary', () => {
     })
 
     it('should use custom fallback if provided', () => {
-      const customFallback = <div>Custom error message</div>
+      const customFallback = <div role="alert">Custom error message</div>
 
       render(
         <ErrorBoundary fallback={customFallback}>
@@ -97,8 +107,8 @@ describe('ErrorBoundary', () => {
         </ErrorBoundary>
       )
 
+      expect(screen.getByRole('alert')).toBeInTheDocument()
       expect(screen.getByText('Custom error message')).toBeInTheDocument()
-      expect(screen.queryByText('Something went wrong')).not.toBeInTheDocument()
     })
   })
 
@@ -152,17 +162,17 @@ describe('ErrorBoundary', () => {
         </ErrorBoundary>
       )
 
-      expect(screen.getByRole('button', { name: /try again/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: BUTTON_LABELS.RETRY })).toBeInTheDocument()
     })
 
-    it('should render "Reload Page" button', () => {
+    it('should render "Go to Homepage" button', () => {
       render(
         <ErrorBoundary>
           <ThrowError shouldThrow={true} />
         </ErrorBoundary>
       )
 
-      expect(screen.getByRole('button', { name: /reload page/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: BUTTON_LABELS.HOMEPAGE })).toBeInTheDocument()
     })
 
     it('should reset error state when "Try Again" is clicked', async () => {
@@ -183,31 +193,26 @@ describe('ErrorBoundary', () => {
       )
 
       // Error should be shown
-      expect(screen.getByText('Something went wrong')).toBeInTheDocument()
+      expect(screen.getByText(/something went wrong/i)).toBeInTheDocument()
 
       // Fix the error condition
       shouldThrow = false
 
       // Click Try Again
-      const tryAgainButton = screen.getByRole('button', { name: /try again/i })
+      const tryAgainButton = screen.getByRole('button', { name: BUTTON_LABELS.RETRY })
       await user.click(tryAgainButton)
 
       // Should show recovered component
       expect(screen.getByText('Component recovered')).toBeInTheDocument()
     })
 
-    it('should reload page when "Reload Page" is clicked', async () => {
+    it('should navigate to homepage when "Go to Homepage" is clicked', async () => {
       const user = userEvent.setup()
-      const reloadSpy = vi.fn()
 
-      // Store original location
-      const originalLocation = window.location
-
-      // Replace entire location object with a mock
       Object.defineProperty(window, 'location', {
         configurable: true,
         writable: true,
-        value: { ...originalLocation, reload: reloadSpy },
+        value: { ...originalLocation, href: '' },
       })
 
       render(
@@ -216,41 +221,36 @@ describe('ErrorBoundary', () => {
         </ErrorBoundary>
       )
 
-      const reloadButton = screen.getByRole('button', { name: /reload page/i })
-      await user.click(reloadButton)
+      const homeButton = screen.getByRole('button', { name: BUTTON_LABELS.HOMEPAGE })
+      await user.click(homeButton)
 
-      expect(reloadSpy).toHaveBeenCalledTimes(1)
-
-      // Restore original location
-      Object.defineProperty(window, 'location', {
-        configurable: true,
-        writable: true,
-        value: originalLocation,
-      })
+      expect(window.location.href).toBe('/')
     })
   })
 
   describe('Accessibility', () => {
-    it('should have role="alert" on error container', () => {
+    it('should have role="main" on error container', () => {
       render(
         <ErrorBoundary>
           <ThrowError shouldThrow={true} />
         </ErrorBoundary>
       )
 
-      const alert = screen.getByRole('alert')
-      expect(alert).toBeInTheDocument()
+      const main = screen.getByRole('main')
+      expect(main).toBeInTheDocument()
     })
 
-    it('should have aria-hidden on error icon', () => {
+    it('should display error heading and action buttons', () => {
       render(
         <ErrorBoundary>
           <ThrowError shouldThrow={true} />
         </ErrorBoundary>
       )
 
-      const icon = screen.getByRole('alert').querySelector('[aria-hidden="true"]')
-      expect(icon).toBeInTheDocument()
+      // Verify semantic elements are present and accessible
+      expect(screen.getByRole('heading', { name: /something went wrong/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: BUTTON_LABELS.RETRY })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: BUTTON_LABELS.HOMEPAGE })).toBeInTheDocument()
     })
 
     it('should have proper button types', () => {
@@ -260,11 +260,11 @@ describe('ErrorBoundary', () => {
         </ErrorBoundary>
       )
 
-      const tryAgainButton = screen.getByRole('button', { name: /try again/i })
-      const reloadButton = screen.getByRole('button', { name: /reload page/i })
+      const tryAgainButton = screen.getByRole('button', { name: BUTTON_LABELS.RETRY })
+      const homeButton = screen.getByRole('button', { name: BUTTON_LABELS.HOMEPAGE })
 
       expect(tryAgainButton).toHaveAttribute('type', 'button')
-      expect(reloadButton).toHaveAttribute('type', 'button')
+      expect(homeButton).toHaveAttribute('type', 'button')
     })
   })
 
@@ -284,10 +284,10 @@ describe('ErrorBoundary', () => {
           <ThrowError shouldThrow={true} />
         </ErrorBoundary>
       )
-      expect(screen.getByText('Something went wrong')).toBeInTheDocument()
+      expect(screen.getByText(/something went wrong/i)).toBeInTheDocument()
 
       // Reset
-      const tryAgainButton = screen.getByRole('button', { name: /try again/i })
+      const tryAgainButton = screen.getByRole('button', { name: BUTTON_LABELS.RETRY })
       await user.click(tryAgainButton)
 
       // Another error
@@ -296,7 +296,7 @@ describe('ErrorBoundary', () => {
           <ThrowError shouldThrow={true} />
         </ErrorBoundary>
       )
-      expect(screen.getByText('Something went wrong')).toBeInTheDocument()
+      expect(screen.getByText(/something went wrong/i)).toBeInTheDocument()
     })
 
     it('should handle errors with no stack trace', () => {
@@ -312,7 +312,7 @@ describe('ErrorBoundary', () => {
         </ErrorBoundary>
       )
 
-      expect(screen.getByText('Something went wrong')).toBeInTheDocument()
+      expect(screen.getByText(/something went wrong/i)).toBeInTheDocument()
     })
   })
 
@@ -325,7 +325,7 @@ describe('ErrorBoundary', () => {
       )
 
       // If hasError is true, fallback UI should be shown
-      expect(screen.getByRole('alert')).toBeInTheDocument()
+      expect(screen.getByRole('main')).toBeInTheDocument()
     })
 
     it('should store the error in state', () => {

@@ -1,6 +1,13 @@
-- [ ] Payment processor fees (percentage + per-transaction) recorded as deductible business expenses, classified in a dedicated “payment processor fees” expense account, cross-checked monthly against processor statements, and retained for 7 years for tax and audit compliance
-  - Guidance: Ensure all payment processing fees are transparently tracked, reconciled monthly, and retained per the 7-year record retention policy for accurate tax reporting and audit readiness.
+# Legal Compliance Checklist
 
+This checklist tracks legal compliance and production readiness for Paperlyte.
+
+---
+
+## Payment Processing Compliance
+
+- [ ] Payment processor fees (percentage + per-transaction) recorded as deductible business expenses, classified in a dedicated "payment processor fees" expense account, cross-checked monthly against processor statements, and retained for 7 years for tax and audit compliance
+  - Guidance: Ensure all payment processing fees are transparently tracked, reconciled monthly, and retained per the 7-year record retention policy for accurate tax reporting and audit readiness.
 ### Anti-Spam Law Compliance (CAN-SPAM / CASL)
 
 - [ ] Clear sender identification and valid physical postal address in all marketing emails

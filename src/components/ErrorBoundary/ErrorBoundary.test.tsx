@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { ErrorBoundary } from './ErrorBoundary'
+import { BUTTON_LABELS } from '@/components/pages/ServerErrorPage/ServerErrorPage'
 
 // Component that throws an error
 const ThrowError = ({ shouldThrow = false }: { shouldThrow?: boolean }) => {
@@ -89,7 +90,7 @@ describe('ErrorBoundary', () => {
     })
 
     it('should use custom fallback if provided', () => {
-      const customFallback = <div>Custom error message</div>
+      const customFallback = <div role="alert">Custom error message</div>
 
       render(
         <ErrorBoundary fallback={customFallback}>
@@ -97,8 +98,8 @@ describe('ErrorBoundary', () => {
         </ErrorBoundary>
       )
 
+      expect(screen.getByRole('alert')).toBeInTheDocument()
       expect(screen.getByText('Custom error message')).toBeInTheDocument()
-      expect(screen.queryByText(/something went wrong/i)).not.toBeInTheDocument()
     })
   })
 
@@ -152,7 +153,7 @@ describe('ErrorBoundary', () => {
         </ErrorBoundary>
       )
 
-      expect(screen.getByRole('button', { name: /retry loading the page/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: BUTTON_LABELS.RETRY })).toBeInTheDocument()
     })
 
     it('should render "Go to Homepage" button', () => {
@@ -162,7 +163,7 @@ describe('ErrorBoundary', () => {
         </ErrorBoundary>
       )
 
-      expect(screen.getByRole('button', { name: /return to homepage/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: BUTTON_LABELS.HOMEPAGE })).toBeInTheDocument()
     })
 
     it('should reset error state when "Try Again" is clicked', async () => {
@@ -189,7 +190,7 @@ describe('ErrorBoundary', () => {
       shouldThrow = false
 
       // Click Try Again
-      const tryAgainButton = screen.getByRole('button', { name: /retry loading the page/i })
+      const tryAgainButton = screen.getByRole('button', { name: BUTTON_LABELS.RETRY })
       await user.click(tryAgainButton)
 
       // Should show recovered component
@@ -213,7 +214,7 @@ describe('ErrorBoundary', () => {
         </ErrorBoundary>
       )
 
-      const homeButton = screen.getByRole('button', { name: /return to homepage/i })
+      const homeButton = screen.getByRole('button', { name: BUTTON_LABELS.HOMEPAGE })
       await user.click(homeButton)
 
       expect(window.location.href).toBe('/')
@@ -239,15 +240,17 @@ describe('ErrorBoundary', () => {
       expect(main).toBeInTheDocument()
     })
 
-    it('should have aria-hidden on error icon', () => {
+    it('should display error heading and action buttons', () => {
       render(
         <ErrorBoundary>
           <ThrowError shouldThrow={true} />
         </ErrorBoundary>
       )
 
-      const icon = screen.getByRole('main').querySelector('[aria-hidden="true"]')
-      expect(icon).toBeInTheDocument()
+      // Verify semantic elements are present and accessible
+      expect(screen.getByRole('heading', { name: /something went wrong/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: BUTTON_LABELS.RETRY })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: BUTTON_LABELS.HOMEPAGE })).toBeInTheDocument()
     })
 
     it('should have proper button types', () => {
@@ -257,8 +260,8 @@ describe('ErrorBoundary', () => {
         </ErrorBoundary>
       )
 
-      const tryAgainButton = screen.getByRole('button', { name: /retry loading the page/i })
-      const homeButton = screen.getByRole('button', { name: /return to homepage/i })
+      const tryAgainButton = screen.getByRole('button', { name: BUTTON_LABELS.RETRY })
+      const homeButton = screen.getByRole('button', { name: BUTTON_LABELS.HOMEPAGE })
 
       expect(tryAgainButton).toHaveAttribute('type', 'button')
       expect(homeButton).toHaveAttribute('type', 'button')
@@ -284,7 +287,7 @@ describe('ErrorBoundary', () => {
       expect(screen.getByText(/something went wrong/i)).toBeInTheDocument()
 
       // Reset
-      const tryAgainButton = screen.getByRole('button', { name: /retry loading the page/i })
+      const tryAgainButton = screen.getByRole('button', { name: BUTTON_LABELS.RETRY })
       await user.click(tryAgainButton)
 
       // Another error

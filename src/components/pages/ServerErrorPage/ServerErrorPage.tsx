@@ -3,6 +3,12 @@ import { Icon } from '@/components/ui/Icon'
 import { CONTACT } from '@/constants/config'
 import styles from './ServerErrorPage.module.css'
 
+// Export button labels for test stability
+export const BUTTON_LABELS = {
+  RETRY: 'Retry loading the page',
+  HOMEPAGE: 'Return to homepage',
+} as const
+
 interface ServerErrorPageProps {
   /**
    * Custom error message to display (optional)
@@ -87,7 +93,7 @@ export const ServerErrorPage: FC<ServerErrorPageProps> = ({
             onClick={handleRetry}
             className={styles.primaryButton}
             type="button"
-            aria-label="Retry loading the page"
+            aria-label={BUTTON_LABELS.RETRY}
           >
             <Icon name="fa-rotate-right" />
             <span>Try Again</span>
@@ -97,7 +103,7 @@ export const ServerErrorPage: FC<ServerErrorPageProps> = ({
             onClick={handleGoHome}
             className={styles.secondaryButton}
             type="button"
-            aria-label="Return to homepage"
+            aria-label={BUTTON_LABELS.HOMEPAGE}
           >
             <Icon name="fa-home" />
             <span>Go to Homepage</span>

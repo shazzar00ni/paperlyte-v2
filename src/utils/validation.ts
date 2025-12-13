@@ -246,10 +246,11 @@ export function validateForm(formData: Record<string, unknown>): ValidationResul
   // Validate name if present
   if ('name' in formData) {
     const name = formData.name as string
-    if (!name || name.trim().length < 2) {
+    const trimmedName = name?.trim() ?? ''
+    if (trimmedName.length < 2) {
       errors.name = 'Name must be at least 2 characters'
     }
-    if (name && name.length > 100) {
+    if (trimmedName.length > 100) {
       errors.name = 'Name is too long'
     }
   }

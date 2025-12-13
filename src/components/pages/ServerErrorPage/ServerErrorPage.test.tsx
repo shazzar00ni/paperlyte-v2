@@ -172,7 +172,7 @@ describe('ServerErrorPage', () => {
       render(<ServerErrorPage />)
 
       const supportLink = screen.getByRole('link', { name: /contact our support team/i })
-      expect(supportLink).toHaveAttribute('href', 'mailto:support@paperlyte.com')
+      expect(supportLink).toHaveAttribute('href', `mailto:${CONTACT.supportEmail}`)
     })
 
     it('should display status notification', () => {

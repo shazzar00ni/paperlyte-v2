@@ -3,6 +3,24 @@ import userEvent from '@testing-library/user-event'
 import { NotFoundPage } from './NotFoundPage'
 
 describe('NotFoundPage', () => {
+  let originalLocation: Location
+  let historyBackSpy: ReturnType<typeof vi.spyOn>
+
+  beforeEach(() => {
+    // Save original globals
+    originalLocation = window.location
+  })
+
+  afterEach(() => {
+    // Restore original globals
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      writable: true,
+      value: originalLocation,
+    })
+    // Restore all spies including historyBackSpy
+    vi.restoreAllMocks()
+  })
   describe('Rendering', () => {
     it('should render the 404 error page', () => {
       render(<NotFoundPage />)
@@ -29,8 +47,9 @@ describe('NotFoundPage', () => {
     it('should render the 404 illustration', () => {
       render(<NotFoundPage />)
 
-      const numbers = screen.getAllByText('4')
-      const illustration = numbers[0].parentElement?.parentElement
+      const main = screen.getByRole('main')
+      const illustration = main.querySelector('[aria-hidden="true"]')
+      expect(illustration).toBeInTheDocument()
       expect(illustration).toHaveAttribute('aria-hidden', 'true')
     })
   })
@@ -50,7 +69,6 @@ describe('NotFoundPage', () => {
 
     it('should navigate to homepage when "Back to Home" is clicked by default', async () => {
       const user = userEvent.setup()
-      const originalLocation = window.location
 
       Object.defineProperty(window, 'location', {
         configurable: true,
@@ -64,12 +82,6 @@ describe('NotFoundPage', () => {
       await user.click(homeButton)
 
       expect(window.location.href).toBe('/')
-
-      Object.defineProperty(window, 'location', {
-        configurable: true,
-        writable: true,
-        value: originalLocation,
-      })
     })
 
     it('should call custom onGoHome callback when provided', async () => {
@@ -86,15 +98,14 @@ describe('NotFoundPage', () => {
 
     it('should navigate back when "Go Back" is clicked', async () => {
       const user = userEvent.setup()
-      const backSpy = vi.fn()
-      window.history.back = backSpy
+      historyBackSpy = vi.spyOn(window.history, 'back')
 
       render(<NotFoundPage />)
 
       const backButton = screen.getByRole('button', { name: /go to previous page/i })
       await user.click(backButton)
 
-      expect(backSpy).toHaveBeenCalledTimes(1)
+      expect(historyBackSpy).toHaveBeenCalledTimes(1)
     })
   })
 
@@ -142,8 +153,9 @@ describe('NotFoundPage', () => {
     it('should have aria-hidden on decorative illustration', () => {
       render(<NotFoundPage />)
 
-      const numbers = screen.getAllByText('4')
-      const illustration = numbers[0].parentElement?.parentElement
+      const main = screen.getByRole('main')
+      const illustration = main.querySelector('[aria-hidden="true"]')
+      expect(illustration).toBeInTheDocument()
       expect(illustration).toHaveAttribute('aria-hidden', 'true')
     })
 

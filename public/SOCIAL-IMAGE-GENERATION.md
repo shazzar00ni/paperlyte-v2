@@ -70,7 +70,7 @@ node scripts/generate-social-images.js
 After generating and deploying the images, test them with:
 
 ### Facebook Debugger
-- URL: https://developers.facebook.com/tools/debug/
+- URL: <https://developers.facebook.com/tools/debug/>
 - Paste your site URL
 - Click "Scrape Again" to refresh cache
 
@@ -81,7 +81,7 @@ After generating and deploying the images, test them with:
   - Alternatively, use a meta tag preview tool like [metatags.io](https://metatags.io/) to check your card rendering.
 
 ### LinkedIn Post Inspector
-- URL: https://www.linkedin.com/post-inspector/
+- URL: <https://www.linkedin.com/post-inspector/>
 - Paste your site URL
 - Check preview rendering
 

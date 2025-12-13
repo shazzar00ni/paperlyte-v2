@@ -48,7 +48,16 @@ export const Icon: React.FC<IconProps> = ({
   }
 
   // Map our size format to FontAwesome's SizeProp format
-  const faSize: SizeProp | undefined = size === 'md' ? undefined : (size as SizeProp)
+  // Explicit mapping ensures type safety without unsafe casts
+  const sizeMap: Record<NonNullable<IconProps['size']>, SizeProp | undefined> = {
+    sm: 'sm',
+    md: undefined, // Medium is the default size (no size prop needed)
+    lg: 'lg',
+    xl: 'xl',
+    '2x': '2x',
+    '3x': '3x',
+  }
+  const faSize = sizeMap[size]
 
   // Determine the icon type (brand vs solid) using helper function
   const isBrandIconType = isBrandIcon(iconName)

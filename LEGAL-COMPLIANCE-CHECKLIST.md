@@ -83,12 +83,12 @@ Use this checklist to track your progress toward legal compliance and production
 #### Company Information
 
 - [ ] Update `legalName` with registered business name
-- [ ] Verify `email` (hello@paperlyte.com)
-- [ ] Verify `supportEmail` (support@paperlyte.com)
-- [ ] Verify `privacyEmail` (privacy@paperlyte.com)
-- [ ] Verify `legalEmail` (legal@paperlyte.com)
-- [ ] Verify `securityEmail` (security@paperlyte.com)
-- [ ] Verify `dpoEmail` (dpo@paperlyte.com) - if EU users
+- [ ] Verify `email` (<hello@paperlyte.com>)
+- [ ] Verify `supportEmail` (<support@paperlyte.com>)
+- [ ] Verify `privacyEmail` (<privacy@paperlyte.com>)
+- [ ] Verify `legalEmail` (<legal@paperlyte.com>)
+- [ ] Verify `securityEmail` (<security@paperlyte.com>)
+- [ ] Verify `dpoEmail` (<dpo@paperlyte.com>) - if EU users
 
 #### Physical Address
 

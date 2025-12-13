@@ -15,8 +15,7 @@ const FEATURES: Feature[] = [
     id: 'distraction-free',
     icon: 'fa-feather-pointed',
     title: 'Distraction-free Writing',
-    description:
-      'An interface that disappears when you start typing. Just you and your thoughts.',
+    description: 'An interface that disappears when you start typing. Just you and your thoughts.',
   },
   {
     id: 'private',
@@ -29,8 +28,7 @@ const FEATURES: Feature[] = [
     id: 'workflow',
     icon: 'fa-circle-check',
     title: 'Seamless Workflow',
-    description:
-      'Quick capture, markdown support, and keyboard shortcuts for power users.',
+    description: 'Quick capture, markdown support, and keyboard shortcuts for power users.',
   },
 ]
 

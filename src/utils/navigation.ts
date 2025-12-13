@@ -37,6 +37,10 @@ export function isSafeUrl(url: string): boolean {
 
     const trimmedUrl = url.trim()
 
+    // Reject URLs containing ASCII control characters (null bytes, etc.)
+    if (/[\x00-\x1F\x7F]/.test(trimmedUrl)) {
+      return false
+    }
     // Block protocol-relative URLs (//example.com)
     if (trimmedUrl.startsWith('//')) {
       return false

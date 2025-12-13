@@ -152,8 +152,10 @@ export const brandIconNames = new Set<string>(['github', 'twitter', 'apple', 'wi
  * Set of all valid icon names in the library
  * Used for runtime validation to prevent rendering invalid icons
  */
-export const validIconNames = new Set<string>(Object.values(iconNameMap))
-
+export const validIconNames = new Set<string>([
+  ...Object.values(iconNameMap),
+  'circle-question', // Fallback icon
+])
 /**
  * Helper function to convert old icon names to new format
  * @param oldName - The old Font Awesome class name (e.g., 'fa-bolt')

@@ -323,7 +323,12 @@ export function Terms() {
                 <li>
                   Email: <a href="mailto:legal@paperlyte.app">legal@paperlyte.app</a>
                 </li>
-                <li>Website: https://paperlyte.app/contact</li>
+                <li>
+                  Website:{' '}
+                  <a href="https://paperlyte.app/contact" rel="noopener noreferrer">
+                    https://paperlyte.app/contact
+                  </a>
+                </li>
               </ul>
             </section>
           </div>

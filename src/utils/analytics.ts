@@ -252,6 +252,7 @@ export function initScrollDepthTracking(): () => void {
     const windowHeight = window.innerHeight
     const documentHeight = document.documentElement.scrollHeight
     const scrollTop = window.scrollY
+    if (documentHeight <= 0) return
 
     const scrollPercent = ((scrollTop + windowHeight) / documentHeight) * 100
     const roundedPercent = Math.round(scrollPercent)

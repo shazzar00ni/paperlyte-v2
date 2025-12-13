@@ -47,9 +47,31 @@ export function isSafeUrl(url: string): boolean {
     }
 
     // Block javascript:, data:, vbscript:, and other dangerous protocols
+    // Check both before and after removing whitespace to catch variations like 'javascript :alert(1)'
     const dangerousProtocolPattern = /^(javascript|data|vbscript|file|about):/i
-    if (dangerousProtocolPattern.test(trimmedUrl)) {
+    const urlWithoutWhitespace = trimmedUrl.replace(/\s/g, '')
+    if (
+      dangerousProtocolPattern.test(trimmedUrl) ||
+      dangerousProtocolPattern.test(urlWithoutWhitespace)
+    ) {
       return false
+    }
+
+    // Block URL-encoded variations of dangerous protocols
+    // Check if the URL contains % encoding before a colon (could be trying to hide a dangerous protocol)
+    // Match patterns like "java%73cript:" or "%6A%61%76%61script:"
+    const hasEncodedProtocol = /^[a-z%0-9]+:/i.test(trimmedUrl) && /%[0-9a-f]{2}/i.test(trimmedUrl)
+    if (hasEncodedProtocol) {
+      // Try to decode and check if it's a dangerous protocol
+      try {
+        const decoded = decodeURIComponent(trimmedUrl)
+        if (dangerousProtocolPattern.test(decoded)) {
+          return false
+        }
+      } catch {
+        // If decoding fails, reject it as suspicious
+        return false
+      }
     }
 
     // Allow single slash relative URLs (but check they don't contain ://)

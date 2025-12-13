@@ -68,6 +68,20 @@ describe('navigation utilities', () => {
       expect(isSafeUrl('/path/to/page')).toBe(true)
     })
 
+    it('should allow URLs with query parameters and fragments', () => {
+      expect(isSafeUrl('/page?param=value')).toBe(true)
+      expect(isSafeUrl('/page?foo=bar&baz=qux')).toBe(true)
+      expect(isSafeUrl('/page#section')).toBe(true)
+      expect(isSafeUrl('/page?param=value#section')).toBe(true)
+      expect(isSafeUrl('/#fragment')).toBe(true)
+    })
+
+    it('should reject unsafe URLs with query parameters and fragments', () => {
+      expect(isSafeUrl('//evil.com?param=value')).toBe(false)
+      expect(isSafeUrl('//evil.com#section')).toBe(false)
+      expect(isSafeUrl('//evil.com?foo=bar#section')).toBe(false)
+    })
+
     it('should allow relative URLs starting with ./', () => {
       expect(isSafeUrl('./')).toBe(true)
       expect(isSafeUrl('./page')).toBe(true)
@@ -102,6 +116,41 @@ describe('navigation utilities', () => {
 
     it('should reject data: protocol URLs', () => {
       expect(isSafeUrl('data:text/html,<script>alert(1)</script>')).toBe(false)
+    })
+
+    it('should reject vbscript:, file:, and about: protocol URLs', () => {
+      expect(isSafeUrl('vbscript:alert(1)')).toBe(false)
+      expect(isSafeUrl('file:///etc/passwd')).toBe(false)
+      expect(isSafeUrl('file://c:/windows/system32')).toBe(false)
+      expect(isSafeUrl('about:blank')).toBe(false)
+      expect(isSafeUrl('about:config')).toBe(false)
+    })
+
+    it('should reject case-insensitive variations of dangerous protocols', () => {
+      expect(isSafeUrl('JavaScript:alert(1)')).toBe(false)
+      expect(isSafeUrl('JAVASCRIPT:alert(1)')).toBe(false)
+      expect(isSafeUrl('JaVaScRiPt:alert(1)')).toBe(false)
+      expect(isSafeUrl('Data:text/html,<script>alert(1)</script>')).toBe(false)
+      expect(isSafeUrl('DATA:text/html')).toBe(false)
+      expect(isSafeUrl('VbScRiPt:alert(1)')).toBe(false)
+      expect(isSafeUrl('FILE:///etc/passwd')).toBe(false)
+      expect(isSafeUrl('ABOUT:blank')).toBe(false)
+    })
+
+    it('should reject dangerous protocols with whitespace variations', () => {
+      expect(isSafeUrl(' javascript:alert(1)')).toBe(false)
+      expect(isSafeUrl('javascript :alert(1)')).toBe(false)
+      expect(isSafeUrl(' data:text/html')).toBe(false)
+      expect(isSafeUrl('  javascript:alert(1)  ')).toBe(false)
+      expect(isSafeUrl('\tjavascript:alert(1)')).toBe(false)
+      expect(isSafeUrl('\njavascript:alert(1)')).toBe(false)
+    })
+
+    it('should reject URL-encoded dangerous protocols', () => {
+      // These should fail URL parsing and be caught by the try-catch block
+      expect(isSafeUrl('java%73cript:alert(1)')).toBe(false)
+      expect(isSafeUrl('%6A%61%76%61%73%63%72%69%70%74:alert(1)')).toBe(false)
+      expect(isSafeUrl('java\u0000script:alert(1)')).toBe(false)
     })
 
     it('should allow same-origin absolute URLs', () => {

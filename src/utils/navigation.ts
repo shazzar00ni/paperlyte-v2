@@ -60,7 +60,10 @@ export function isSafeUrl(url: string): boolean {
     // Block URL-encoded variations of dangerous protocols
     // Check if the URL contains % encoding before a colon (could be trying to hide a dangerous protocol)
     // Match patterns like "java%73cript:" or "%6A%61%76%61script:"
-    const hasEncodedProtocol = /^[a-z%0-9]+:/i.test(trimmedUrl) && /%[0-9a-f]{2}/i.test(trimmedUrl)
+    // Only check the protocol part (before the first colon)
+    const colonIndex = trimmedUrl.indexOf(':')
+    const hasEncodedProtocol =
+      colonIndex > 0 && /%[0-9a-f]{2}/i.test(trimmedUrl.substring(0, colonIndex))
     if (hasEncodedProtocol) {
       // Try to decode and check if it's a dangerous protocol
       try {

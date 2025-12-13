@@ -20,9 +20,7 @@ describe('Footer', () => {
 
   it('should render tagline', () => {
     render(<Footer />)
-    expect(
-      screen.getByText('Designed for clarity in a chaotic world.')
-    ).toBeInTheDocument()
+    expect(screen.getByText('Designed for clarity in a chaotic world.')).toBeInTheDocument()
   })
 
   it('should render Product link group', () => {
@@ -111,9 +109,7 @@ describe('Footer', () => {
     render(<Footer />)
 
     const currentYear = new Date().getFullYear()
-    expect(
-      screen.getByText(`© ${currentYear} All rights reserved.`)
-    ).toBeInTheDocument()
+    expect(screen.getByText(`© ${currentYear} All rights reserved.`)).toBeInTheDocument()
   })
 
   it('should have proper accessibility structure', () => {

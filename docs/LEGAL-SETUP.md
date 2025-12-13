@@ -224,44 +224,6 @@ File: `docs/TERMS-OF-SERVICE.md`
 
 ---
 
-## 📋 Step 3: Verification Checklist
-
-Step 3: Verification Checklist
-
-Use this checklist to ensure everything is properly configured:
-
-### Configuration File (`src/constants/legal.ts`)
-
-- [ ] Company legal name updated
-- [ ] All email addresses are valid and monitored
-- [ ] Physical address is complete and accurate
-- [ ] Document URLs point to production hosting
-- [ ] Social media links are correct
-- [ ] Jurisdiction and governing law are set
-- [ ] No placeholders remain (check with `needsLegalReview()`)
-
-### Privacy Policy (`docs/PRIVACY-POLICY.md`)
-
-- [ ] Company name and address updated
-- [ ] Cloud provider information is accurate
-- [ ] Service provider table reflects actual providers
-- [ ] Data retention policies match your practices
-- [ ] Contact information is correct
-- [ ] DPO information added (if EU users)
-- [ ] Regional compliance sections reviewed (GDPR, CCPA, UK)
-
-### Terms of Service (`docs/TERMS-OF-SERVICE.md`)
-
-- [ ] Company name and address updated
-- [ ] Governing law and jurisdiction set
-- [ ] Pricing and refund policies accurate
-- [ ] SLA guarantees match your capabilities
-- [ ] Liability limitations reviewed by attorney
-- [ ] Arbitration clause reviewed by attorney
-- [ ] Service descriptions match what you offer
-
----
-
 ## ✅ Step 3: Verification Checklist
 
 Use this checklist to ensure everything is properly configured:
@@ -295,7 +257,6 @@ Use this checklist to ensure everything is properly configured:
 - [ ] Liability limitations reviewed by attorney
 - [ ] Arbitration clause reviewed by attorney
 - [ ] Service descriptions match what you offer
-
 ---
 
 ## 🧪 Step 4: Testing

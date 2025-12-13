@@ -2,6 +2,11 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { NotFoundPage } from './NotFoundPage'
 
+// Mock the Icon component to avoid testing Font Awesome implementation details
+vi.mock('@/components/ui/Icon', () => ({
+  Icon: ({ name }: { name: string }) => <span data-testid={`icon-${name}`} />,
+}))
+
 describe('NotFoundPage', () => {
   let originalLocation: Location
   let historyBackSpy: ReturnType<typeof vi.spyOn>
@@ -181,25 +186,22 @@ describe('NotFoundPage', () => {
     it('should render home icon in primary button', () => {
       render(<NotFoundPage />)
 
-      const homeButton = screen.getByRole('button', { name: /return to homepage/i })
-      const icon = homeButton.querySelector('i.fa-home')
-      expect(icon).toBeInTheDocument()
+      expect(screen.getByTestId('icon-fa-home')).toBeInTheDocument()
     })
 
     it('should render arrow-left icon in secondary button', () => {
       render(<NotFoundPage />)
 
-      const backButton = screen.getByRole('button', { name: /go to previous page/i })
-      const icon = backButton.querySelector('i.fa-arrow-left')
-      expect(icon).toBeInTheDocument()
+      expect(screen.getByTestId('icon-fa-arrow-left')).toBeInTheDocument()
     })
 
     it('should render icons in suggestions list', () => {
       render(<NotFoundPage />)
 
-      const suggestionsList = screen.getByRole('list')
-      const icons = suggestionsList.querySelectorAll('i')
-      expect(icons.length).toBeGreaterThan(0)
+      // Verify the suggestion icons are present
+      expect(screen.getByTestId('icon-fa-magnifying-glass')).toBeInTheDocument()
+      expect(screen.getByTestId('icon-fa-house')).toBeInTheDocument()
+      expect(screen.getByTestId('icon-fa-arrow-left')).toBeInTheDocument()
     })
   })
 })

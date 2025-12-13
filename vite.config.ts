@@ -121,22 +121,15 @@ export default defineConfig({
         // Separate React libraries into their own chunk for better caching
         // This ensures React/ReactDOM don't get re-downloaded when app code changes
         manualChunks(id) {
-          // React core libraries
+          // Only split out large, shared libraries for better caching.
           if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
             return 'react-vendor'
           }
-          // UI components - lazy load separately
-          if (id.includes('/src/components/ui/')) {
-            return 'ui-components'
-          }
-          // Section components - lazy load separately
-          if (id.includes('/src/components/sections/')) {
-            return 'sections'
-          }
-          // Constants and data
+          // Optionally, split out constants if they are large/shared.
           if (id.includes('/src/constants/')) {
             return 'constants'
           }
+          // Do not split UI or section components into separate chunks to avoid too many small chunks.
         },
         // Optimize chunk file names for better caching
         chunkFileNames: 'assets/[name]-[hash].js',

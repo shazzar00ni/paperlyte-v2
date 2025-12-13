@@ -2,15 +2,26 @@ import { Button } from '@components/ui/Button'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { ParallaxLayer } from '@components/ui/ParallaxLayer'
 import { FloatingElement } from '@components/ui/FloatingElement'
-import { TextReveal } from '@components/ui/TextReveal'
 import { Section } from '@components/layout/Section'
 import { Icon } from '@components/ui/Icon'
 import { scrollToSection } from '@/utils/navigation'
+import { useAnalytics } from '@hooks/useAnalytics'
 import styles from './Hero.module.css'
 
 const trustedCompanies = ['Acme Corp', 'Global', 'Nebula', 'Vertex', 'Horizon']
 
 export const Hero = () => {
+  const { trackCTAClick } = useAnalytics()
+
+  const handleStartWritingClick = () => {
+    trackCTAClick('Start Writing for Free', 'hero')
+    scrollToSection('download')
+  }
+
+  const handleViewDemoClick = () => {
+    trackCTAClick('View the Demo', 'hero')
+    scrollToSection('features')
+  }
   return (
     <Section id="hero" className={styles.hero} padding="large">
       {/* Parallax background decorations */}
@@ -57,12 +68,6 @@ export const Hero = () => {
       </div>
 
       <div className={styles.content}>
-        <AnimatedElement animation="fadeIn">
-          <TextReveal as="h1" type="word" stagger={80} animation="fadeUp" className={styles.headline}>
-            Your thoughts, unchained from complexity
-          </TextReveal>
-        </AnimatedElement>
-
         <AnimatedElement animation="fadeIn" delay={100}>
           <h1 className={styles.headline}>
             Thoughts,
@@ -83,11 +88,11 @@ export const Hero = () => {
               variant="primary"
               size="large"
               icon="fa-arrow-right"
-              onClick={() => scrollToSection('download')}
+              onClick={handleStartWritingClick}
             >
               Start Writing for Free
             </Button>
-            <Button variant="secondary" size="large" onClick={() => scrollToSection('features')}>
+            <Button variant="secondary" size="large" onClick={handleViewDemoClick}>
               View the Demo
             </Button>
           </div>

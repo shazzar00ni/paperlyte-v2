@@ -4,6 +4,7 @@ import { CONTACT } from '@/constants/config'
 import styles from './ServerErrorPage.module.css'
 
 // Export button labels for test stability
+// eslint-disable-next-line react-refresh/only-export-components
 export const BUTTON_LABELS = {
   RETRY: 'Retry loading the page',
   HOMEPAGE: 'Return to homepage',

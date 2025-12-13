@@ -2,9 +2,21 @@ import { Section } from '@components/layout/Section'
 import { Button } from '@components/ui/Button'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { scrollToSection } from '@/utils/navigation'
+import { useAnalytics } from '@hooks/useAnalytics'
 import styles from './CTA.module.css'
 
 export const CTA = () => {
+  const { trackCTAClick } = useAnalytics()
+
+  const handleGetStartedClick = () => {
+    trackCTAClick('Get Started for Free', 'cta-section')
+    scrollToSection('hero')
+  }
+
+  const handleLearnMoreClick = () => {
+    trackCTAClick('Learn More', 'cta-section')
+    scrollToSection('features')
+  }
   return (
     <Section id="download" background="default" className={styles.cta}>
       <div className={styles.container}>
@@ -20,10 +32,10 @@ export const CTA = () => {
 
         <AnimatedElement animation="fadeIn" delay={200}>
           <div className={styles.buttons}>
-            <Button variant="primary" size="large" onClick={() => scrollToSection('hero')}>
+            <Button variant="primary" size="large" onClick={handleGetStartedClick}>
               Get Started for Free
             </Button>
-            <Button variant="secondary" size="large" onClick={() => scrollToSection('features')}>
+            <Button variant="secondary" size="large" onClick={handleLearnMoreClick}>
               Learn More
             </Button>
           </div>

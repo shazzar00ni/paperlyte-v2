@@ -12,9 +12,30 @@ interface Feature {
 
 const FEATURES: Feature[] = [
   {
+    id: 'zero-lag',
+    icon: 'fa-bolt',
+    title: 'Zero-Lag Typing',
+    description:
+      '8ms keystroke response—25x faster than Notion. No lag, no waiting, just pure speed.',
+  },
+  {
+    id: 'tags',
+    icon: 'fa-tags',
+    title: 'Tag-Based Organization',
+    description:
+      'Organize with inline #tags, not rigid folders. Find anything instantly with smart search.',
+  },
+  {
+    id: 'cross-platform',
+    icon: 'fa-arrows-rotate',
+    title: 'Cross-Platform Sync',
+    description:
+      'Mac, Windows, Linux, iOS, Android, web. One app, everywhere you work.',
+  },
+  {
     id: 'distraction-free',
     icon: 'fa-feather-pointed',
-    title: 'Distraction-free Writing',
+    title: 'Distraction-Free Writing',
     description:
       'An interface that disappears when you start typing. Just you and your thoughts.',
   },
@@ -26,11 +47,11 @@ const FEATURES: Feature[] = [
       'Local-first architecture with optional end-to-end encrypted sync. Your data is yours.',
   },
   {
-    id: 'workflow',
-    icon: 'fa-circle-check',
-    title: 'Seamless Workflow',
+    id: 'offline',
+    icon: 'fa-wifi-slash',
+    title: 'Offline-First',
     description:
-      'Quick capture, markdown support, and keyboard shortcuts for power users.',
+      'Full functionality without internet. Work anywhere, sync when connected.',
   },
 ]
 

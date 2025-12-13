@@ -24,7 +24,7 @@ A comprehensive design system for Paperlyte - a lightning-fast, distraction-free
 
 ## Design Principles
 
-**Core Promise:** "Your thoughts, unchained from complexity"
+**Core Promise:** "Your thoughts, unchained."
 
 ### UX Principles
 1. **Speed First** - Every interaction should feel instantaneous

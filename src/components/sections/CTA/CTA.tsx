@@ -14,14 +14,14 @@ export const CTA = () => {
 
         <AnimatedElement animation="fadeIn" delay={100}>
           <p className={styles.subtitle}>
-            Join 20,000+ professionals organizing their life with Paperlyte.
+            Be the first to try Paperlyte when we launch in Q2 2025.
           </p>
         </AnimatedElement>
 
         <AnimatedElement animation="fadeIn" delay={200}>
           <div className={styles.buttons}>
             <Button variant="primary" size="large" onClick={() => scrollToSection('hero')}>
-              Get Started for Free
+              Join the Waitlist
             </Button>
             <Button variant="secondary" size="large" onClick={() => scrollToSection('features')}>
               Learn More

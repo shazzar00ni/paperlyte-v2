@@ -2,7 +2,6 @@ import { Button } from '@components/ui/Button'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { ParallaxLayer } from '@components/ui/ParallaxLayer'
 import { FloatingElement } from '@components/ui/FloatingElement'
-import { TextReveal } from '@components/ui/TextReveal'
 import { Section } from '@components/layout/Section'
 import { Icon } from '@components/ui/Icon'
 import { scrollToSection } from '@/utils/navigation'
@@ -58,22 +57,20 @@ export const Hero = () => {
 
       <div className={styles.content}>
         <AnimatedElement animation="fadeIn">
-          <TextReveal as="h1" type="word" stagger={80} animation="fadeUp" className={styles.headline}>
-            Your thoughts, unchained from complexity
-          </TextReveal>
-        </AnimatedElement>
-
-        <AnimatedElement animation="fadeIn" delay={100}>
           <h1 className={styles.headline}>
-            Thoughts,
-            <br />
-            <em className={styles.headlineItalic}>organized.</em>
+            Your thoughts, unchained.
           </h1>
         </AnimatedElement>
 
-        <AnimatedElement animation="fadeIn" delay={200}>
+        <AnimatedElement animation="fadeIn" delay={100}>
           <p className={styles.subheadline}>
-            The minimal workspace for busy professionals. Capture ideas, structure documents, and focus on what truly matters—without the clutter.
+            The fastest, simplest way to capture ideas—no folders, no clutter, no friction.
+          </p>
+        </AnimatedElement>
+
+        <AnimatedElement animation="fadeIn" delay={200}>
+          <p className={styles.microcopy}>
+            Be the first to try Paperlyte when we launch in Q2 2025
           </p>
         </AnimatedElement>
 
@@ -85,7 +82,7 @@ export const Hero = () => {
               icon="fa-arrow-right"
               onClick={() => scrollToSection('download')}
             >
-              Start Writing for Free
+              Join the Waitlist
             </Button>
             <Button variant="secondary" size="large" onClick={() => scrollToSection('features')}>
               View the Demo

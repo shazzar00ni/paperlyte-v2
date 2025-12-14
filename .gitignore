@@ -24,7 +24,7 @@ dist-ssr
 *.sw?
 
 # Environment variables
-# Environment variables
+.env
 .env
 
 # Deployment platforms

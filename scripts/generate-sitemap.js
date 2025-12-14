@@ -35,6 +35,15 @@ const pages = [
   },
 ];
 
+/**
+ * Retrieve the last Git commit date for the given file as `YYYY-MM-DD`.
+ *
+ * Attempts to read the most recent commit date for the file from Git. If the date
+ * is present and matches the `YYYY-MM-DD` pattern, it is returned; otherwise `null` is returned.
+ *
+ * @param {string} filePath - Path to the file (as passed to `git`) to query.
+ * @returns {string|null} The last commit date in `YYYY-MM-DD` format, or `null` if unavailable or invalid.
+ */
 function getLastGitCommitDate(filePath) {
   try {
     const date = execSync(
@@ -51,6 +60,14 @@ function getLastGitCommitDate(filePath) {
   }
 }
 
+/**
+ * Build an XML sitemap string containing each page's URL and metadata.
+ *
+ * Constructs a sitemap with a <url> entry for every element in `pages`. If a page has an associated source `file` and a valid Git commit date is available, a `<lastmod>` element is included for that entry. Every entry includes `<loc>`, `<changefreq>`, and `<priority>`.
+ *
+ * @param {Array<{url: string, file: string|null, changefreq: string, priority: string}>} pages - Array of page descriptors; `file` may be null when no source file is available.
+ * @returns {string} The complete sitemap XML as a string.
+ */
 function buildSitemap(pages) {
   const lines = [
     '<?xml version="1.0" encoding="UTF-8"?>',

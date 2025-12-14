@@ -15,9 +15,11 @@ export interface ErrorContext {
 }
 
 /**
- * Log an error with context
- * In production, reports to analytics and error monitoring services
- * In development, logs to console with full details
+ * Report an Error with optional metadata, routing to console in development or to analytics/error-monitoring in production.
+ *
+ * @param error - The Error to report
+ * @param context - Optional metadata about the error (e.g., `componentStack`, `errorInfo`, `severity`, `tags`)
+ * @param source - Optional label identifying the error's origin (for example, a component or subsystem name)
  */
 export function logError(
   error: Error,
@@ -83,7 +85,10 @@ export function logError(
 }
 
 /**
- * Log a warning (non-critical issue)
+ * Record a non-critical warning message for development consoles or production telemetry.
+ *
+ * @param message - Human-readable warning text; in production this is truncated to 200 characters.
+ * @param context - Optional additional metadata to include with the warning (logged to console in development or merged into the telemetry event in production)
  */
 export function logWarning(
   message: string,
@@ -102,7 +107,11 @@ export function logWarning(
 }
 
 /**
- * Log performance metrics
+ * Record an application performance metric.
+ *
+ * @param metric - Metric name (for example, "db_query_time" or "render_duration")
+ * @param value - Measured value for the metric
+ * @param unit - Unit of `value`; one of `"ms"`, `"bytes"`, or `"count"`. Defaults to `"ms"`.
  */
 export function logPerformance(
   metric: string,
@@ -122,7 +131,10 @@ export function logPerformance(
 }
 
 /**
- * Log a custom event (for application-specific tracking)
+ * Log a custom analytics event for application-specific tracking.
+ *
+ * @param eventName - Name of the event to record
+ * @param properties - Optional key-value properties to include with the event
  */
 export function logEvent(
   eventName: string,

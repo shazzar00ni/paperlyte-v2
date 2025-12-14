@@ -7,6 +7,13 @@ import { Features } from "@components/sections/Features";
 import { CTA } from "@components/sections/CTA";
 import { analytics } from "@utils/analytics";
 
+/**
+ * Root application component that renders the app layout and initializes analytics on mount.
+ *
+ * Renders Header, a main content area containing Hero, Features, and CTA, and Footer wrapped in an ErrorBoundary.
+ *
+ * @returns The top-level React element for the application.
+ */
 function App() {
   // Initialize analytics on mount
   useEffect(() => {

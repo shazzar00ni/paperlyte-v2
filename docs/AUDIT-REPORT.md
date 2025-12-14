@@ -43,7 +43,7 @@
 
 ## Accessibility Violations
 
-_Evaluated against WCAG 2.1 Level AA_
+### Evaluated against WCAG 2.1 Level AA
 
 [List of WCAG compliance issues]
 

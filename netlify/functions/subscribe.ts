@@ -147,10 +147,10 @@ export const handler: Handler = async (event: HandlerEvent) => {
   // CORS headers - restrict to allowed origin for security
   const allowedOrigin = process.env.ALLOWED_ORIGIN || "https://paperlyte.com";
   const origin = event.headers.origin || event.headers.Origin || "";
-  const corsOrigin = origin === allowedOrigin ? allowedOrigin : "null";
+  const isAllowedOrigin = origin === allowedOrigin;
 
   const headers = {
-    "Access-Control-Allow-Origin": corsOrigin,
+    ...(isAllowedOrigin && { "Access-Control-Allow-Origin": allowedOrigin }),
     "Access-Control-Allow-Headers": "Content-Type",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Content-Type": "application/json",

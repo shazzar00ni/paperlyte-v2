@@ -2,13 +2,8 @@ import { type FC } from 'react'
 import { Icon } from '@/components/ui/Icon'
 import { CONTACT } from '@/constants/config'
 import { safeNavigate } from '@/utils/navigation'
+import { BUTTON_LABELS } from './constants'
 import styles from './ServerErrorPage.module.css'
-
-// Export button labels for test stability
-export const BUTTON_LABELS = {
-  RETRY: 'Retry loading the page',
-  HOMEPAGE: 'Return to homepage',
-} as const
 
 interface ServerErrorPageProps {
   /**

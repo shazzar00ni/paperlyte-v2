@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { ErrorBoundary } from './ErrorBoundary'
-import { BUTTON_LABELS } from '@/components/pages/ServerErrorPage/ServerErrorPage'
+import { BUTTON_LABELS } from '@/components/pages/ServerErrorPage/constants'
 
 // Component that throws an error
 const ThrowError = ({ shouldThrow = false }: { shouldThrow?: boolean }) => {

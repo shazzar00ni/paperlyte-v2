@@ -27,8 +27,8 @@ If you haven't already, please include:
 
 While You Wait:
 Check out these resources that might help:
-- Help Center: https://help.paperlyte.com
-- FAQ: https://paperlyte.com/faq
+- Help Center: {{HELP_CENTER_URL}}
+- FAQ: {{FAQ_URL}}
 - Community Forum: https://community.paperlyte.com
 - Status Page: https://status.paperlyte.com
 

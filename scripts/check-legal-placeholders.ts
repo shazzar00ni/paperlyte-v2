@@ -42,6 +42,14 @@ const filesToCheck = [
   "docs/TERMS-OF-SERVICE.md",
 ];
 
+/**
+ * Finds unresolved square-bracket placeholders in the given file.
+ *
+ * Ignores markdown links, numeric-only bracketed references, and bracketed URLs.
+ *
+ * @param filePath - Path to the file to scan
+ * @returns An array of `PlaceholderMatch` objects describing each found placeholder (file, 1-based line number, trimmed line content, and the exact bracketed placeholder)
+ */
 function findPlaceholders(filePath: string): PlaceholderMatch[] {
   const placeholders: PlaceholderMatch[] = [];
 
@@ -85,6 +93,11 @@ function findPlaceholders(filePath: string): PlaceholderMatch[] {
   return placeholders;
 }
 
+/**
+ * Checks each path listed in `filesToCheck` for file existence and any detected placeholders.
+ *
+ * @returns An array of `FileCheck` objects where `path` is the relative file path, `exists` indicates whether the file exists, and `placeholders` contains any found `PlaceholderMatch` entries (empty if none or if the file does not exist)
+ */
 function checkFiles(): FileCheck[] {
   return filesToCheck.map((file) => {
     const fullPath = path.join(process.cwd(), file);
@@ -98,6 +111,13 @@ function checkFiles(): FileCheck[] {
   });
 }
 
+/**
+ * Prints a colored, human-readable report of placeholder checks for the provided files.
+ *
+ * Exits the process with status 0 when no placeholders or missing files are detected, otherwise exits with status 1.
+ *
+ * @param results - Array of file check results where each entry contains the file path, an existence flag, and any detected placeholder matches used to generate the report
+ */
 function printResults(results: FileCheck[]): void {
   console.log("\n" + "=".repeat(70));
   console.log(`${colors.cyan}Legal Placeholder Check Results${colors.reset}`);

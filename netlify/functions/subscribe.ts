@@ -24,7 +24,12 @@ const ConvertKitResponseSchema = z.object({
 export type ConvertKitResponse = z.infer<typeof ConvertKitResponseSchema>;
 
 /**
- * Check rate limit for IP address
+ * Enforces the per-IP rate limit and updates the in-memory store for the given client IP.
+ *
+ * May evict expired entries or the oldest entry when the store is at capacity to make room for new IPs.
+ *
+ * @param ip - Client IP address used as the rate-limiting key
+ * @returns `true` if the IP is under the limit and the request is allowed, `false` if the rate limit has been exceeded
  */
 function checkRateLimit(ip: string): boolean {
   const now = Date.now();
@@ -71,7 +76,13 @@ function checkRateLimit(ip: string): boolean {
 }
 
 /**
- * Subscribe email to ConvertKit
+ * Subscribe an email address to a configured ConvertKit form.
+ *
+ * @param email - The subscriber's email address
+ * @returns The validated ConvertKit response containing the `subscription` object with its `id`
+ * @throws If ConvertKit API credentials (API key or form ID) are not configured
+ * @throws If the ConvertKit API request fails (non-OK HTTP response)
+ * @throws If the ConvertKit response is not valid JSON or does not match the expected schema
  */
 async function subscribeToConvertKit(
   email: string

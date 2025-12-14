@@ -1,9 +1,11 @@
 /**
- * Update meta tags to be environment-aware
- * - In development: sets robots to noindex, removes keywords, updates OG/Twitter URLs
- * - In production: uses production URLs (no changes needed)
+ * Make document meta tags environment-aware for development.
  *
- * Note: Canonical URL always points to production (not updated in dev)
+ * In development, sets `meta[name="robots"]` to `"noindex, nofollow"`, removes
+ * `meta[name="keywords"]`, prefixes the `<title>` with `[DEV]` if not present,
+ * and rewrites Open Graph and Twitter `url`/`image` meta values to use the current
+ * origin. In production, no changes are made. The canonical URL is intentionally
+ * left unchanged and continues to point to production.
  */
 export function initializeMetaTags(): void {
   const isProd = import.meta.env.PROD;

@@ -450,7 +450,7 @@ If you have questions about this setup:
 
 1. **Legal Questions**: Consult with an attorney
 2. **Technical Questions**: Open an issue on GitHub
-3. **Privacy Questions**: Contact privacy@paperlyte.com
+3. **Privacy Questions**: Contact [privacy@paperlyte.com](mailto:privacy@paperlyte.com)
 
 ---
 

@@ -112,7 +112,7 @@ export class ErrorBoundary extends Component<
                   onClick={this.handleReset}
                   className={styles.retryButton}
                   type="button"
-                  aria-label={`Try again (attempt ${this.state.retryCount} of ${maxRetries})`}
+                  aria-label={`Try again (attempt ${this.state.retryCount + 1} of ${maxRetries})`}
                 >
                   Try Again
                 </button>

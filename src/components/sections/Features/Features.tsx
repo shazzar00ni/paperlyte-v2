@@ -30,7 +30,7 @@ const FEATURES: Feature[] = [
     icon: 'fa-arrows-rotate',
     title: 'Cross-Platform Sync',
     description:
-      'Mac, Windows, Linux, iOS, Android, web. One app, everywhere you work.',
+      'Seamless sync across Mac, Windows, Linux, iOS, Android, and web. Start on one device, continue on another.',
   },
   {
     id: 'distraction-free',

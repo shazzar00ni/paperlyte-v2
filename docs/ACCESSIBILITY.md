@@ -36,9 +36,8 @@ We are actively working to address these issues. If you encounter a problem not 
 
 If you experience difficulty accessing any part of the Paperlyte platform, or wish to request an accommodation, report a bug, or provide feedback, please contact us:
 
-- Email: accessibility@paperlyte.com
-- Alternate: legal@paperlyte.com
-
+- Email: [accessibility@paperlyte.com](mailto:accessibility@paperlyte.com)
+- Alternate: [legal@paperlyte.com](mailto:legal@paperlyte.com)
 We aim to respond to accessibility requests within 5 business days.
 
 ## Accessibility Remediation Plan

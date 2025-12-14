@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { Button } from '@components/ui/Button'
 import { Icon } from '@components/ui/Icon'
 import { scrollToSection } from '@/utils/navigation'
@@ -13,13 +13,13 @@ export const Header = () => {
     setMobileMenuOpen(!mobileMenuOpen)
   }
 
-  const closeMobileMenu = () => {
+  const closeMobileMenu = useCallback(() => {
     if (!mobileMenuOpen) {
       return
     }
     setMobileMenuOpen(false)
     menuButtonRef.current?.focus()
-  }
+  }, [mobileMenuOpen])
 
   const handleNavClick = (sectionId: string) => {
     scrollToSection(sectionId)
@@ -35,7 +35,7 @@ export const Header = () => {
 
     document.addEventListener('keydown', handleEscape)
     return () => document.removeEventListener('keydown', handleEscape)
-  }, [mobileMenuOpen])
+  }, [mobileMenuOpen, closeMobileMenu])
 
   useEffect(() => {
     if (!mobileMenuOpen || !menuRef.current) return

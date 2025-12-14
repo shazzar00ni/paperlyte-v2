@@ -3,9 +3,19 @@ import { render, screen } from '@testing-library/react'
 import { Features } from './Features'
 
 const EXPECTED_FEATURES = [
-  { title: 'Distraction-free Writing', description: 'An interface that disappears when you start typing. Just you and your thoughts.' },
-  { title: 'Private by Design', description: 'Local-first architecture with optional end-to-end encrypted sync. Your data is yours.' },
-  { title: 'Seamless Workflow', description: 'Quick capture, markdown support, and keyboard shortcuts for power users.' },
+  {
+    title: 'Distraction-free Writing',
+    description: 'An interface that disappears when you start typing. Just you and your thoughts.',
+  },
+  {
+    title: 'Private by Design',
+    description:
+      'Local-first architecture with optional end-to-end encrypted sync. Your data is yours.',
+  },
+  {
+    title: 'Seamless Workflow',
+    description: 'Quick capture, markdown support, and keyboard shortcuts for power users.',
+  },
 ]
 
 describe('Features', () => {

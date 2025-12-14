@@ -92,7 +92,7 @@ This guide will help you set up ConvertKit integration for email capture on your
    netlify dev
    ```
 
-3. Open http://localhost:8888 (Netlify Dev uses port 8888 by default)
+3. Open [http://localhost:8888](http://localhost:8888) (Netlify Dev uses port 8888 by default)
    - If port 8888 is unavailable, Netlify Dev will automatically select the next available port and print the served URL in the console output. Check your terminal for the correct local URL to open in your browser.
 
 4. Try submitting your email in the form

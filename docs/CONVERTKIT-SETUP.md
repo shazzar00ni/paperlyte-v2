@@ -394,8 +394,9 @@ View function logs in Netlify:
 
 ## Support
 
-- **ConvertKit Support**: https://help.convertkit.com/
-- **Netlify Functions Docs**: https://docs.netlify.com/functions/overview/
+- **ConvertKit Support**: [https://help.convertkit.com/](https://help.convertkit.com/)
+- **Netlify Functions Docs**: [https://docs.netlify.com/functions/overview/](https://docs.netlify.com/functions/overview/)
+- **Project Issues**: Check your repository's issue tracker for project-specific support
 - **Project Issues**: Check your repository's issue tracker for project-specific support
 
 ---

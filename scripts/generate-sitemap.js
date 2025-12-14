@@ -45,6 +45,9 @@ const pages = [
  * @returns {string|null} The last commit date in `YYYY-MM-DD` format, or `null` if unavailable or invalid.
  */
 function getLastGitCommitDate(filePath) {
+  if (!fs.existsSync(filePath)) {
+    return null;
+  }
   try {
     const date = execSync(
       `git log -1 --format=%cs -- "${filePath}"`,

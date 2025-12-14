@@ -19,7 +19,7 @@ export default defineConfig({
   build: {
     cssCodeSplit: true,
     minify: "terser",
-    sourcemap: false,
+    sourcemap: 'hidden',
     terserOptions: {
       compress: {
         drop_console: true,

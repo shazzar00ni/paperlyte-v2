@@ -166,7 +166,7 @@ describe('navigation utilities', () => {
       const result1 = isSafeUrl('not a url at all')
       const result2 = isSafeUrl('http://')
       const result3 = isSafeUrl('://invalid')
-      
+
       // These should all be handled safely (either allowed as relative or rejected)
       expect(typeof result1).toBe('boolean')
       expect(typeof result2).toBe('boolean')

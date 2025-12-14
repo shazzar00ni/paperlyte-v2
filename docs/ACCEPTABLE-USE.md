@@ -40,7 +40,7 @@ Paperlyte reserves the right to investigate any violation of this AUP or misuse 
 
 ## 5. Reporting Violations
 
-If you become aware of any violation of this AUP, please report it immediately to legal@paperlyte.com. Provide as much detail as possible, including relevant URLs, account information, and a description of the violation.
+If you become aware of any violation of this AUP, please report it immediately to [legal@paperlyte.com](mailto:legal@paperlyte.com). Provide as much detail as possible, including relevant URLs, account information, and a description of the violation.
 
 ## 6. Changes to this Policy
 

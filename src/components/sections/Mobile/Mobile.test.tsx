@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { render, screen, within } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { Mobile } from './Mobile'
 
 describe('Mobile', () => {
@@ -67,10 +67,6 @@ describe('Mobile', () => {
   describe('Content Structure', () => {
     it('should render content in correct order', () => {
       const { container } = render(<Mobile />)
-
-      const heading = screen.getByRole('heading', { level: 2 })
-      const description = screen.getByText(/Our mobile app is designed for speed/i)
-      const link = screen.getByRole('link', { name: /Explore Mobile Features/i })
 
       // Verify DOM order by checking parent positions
       const content = container.querySelector('[class*="content"]')

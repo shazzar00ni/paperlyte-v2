@@ -105,7 +105,7 @@ export const Solution = (): React.ReactElement => {
               variant="primary"
               size="large"
               icon="fa-arrow-right"
-              onClick={() => scrollToSection('download')}
+              onClick={() => scrollToSection('email-capture')}
             >
               Join the Waitlist
             </Button>

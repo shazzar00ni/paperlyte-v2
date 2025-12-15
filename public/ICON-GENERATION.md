@@ -28,19 +28,22 @@ convert public/favicon.svg -resize 192x192 public/android-chrome-192x192.png
 convert public/favicon.svg -resize 512x512 public/android-chrome-512x512.png
 ```
 
-### Method 3: Using Node.js (Automated)
+### Method 3: Using Node.js (Automated - Recommended)
 ```bash
-# Install sharp package
-npm install --save-dev sharp
+# Install required packages
+npm install --save-dev sharp png-to-ico
 
-# Create and run generation script
-node scripts/generate-icons.js
+# Run the automated generation script
+npm run generate-icons
 ```
+
+This method automatically generates all PNG icons and `favicon.ico` with multi-resolution support for legacy browsers.
 
 ## Required Icon Sizes
 
 - `favicon-16x16.png` - Browser tab icon (small)
 - `favicon-32x32.png` - Browser tab icon (standard)
+- `favicon.ico` - Multi-resolution ICO file (16x16, 32x32) for legacy browser support
 - `apple-touch-icon.png` (180x180) - iOS home screen
 - `android-chrome-192x192.png` - Android home screen
 - `android-chrome-512x512.png` - Android splash screen
@@ -49,6 +52,7 @@ node scripts/generate-icons.js
 
 ✅ `favicon.svg` - Created (vector source)
 ✅ `site.webmanifest` - Created (PWA manifest)
-⚠️  PNG icons - Need to be generated (see methods above)
+✅ PNG icons - Auto-generated via build pipeline
+✅ `favicon.ico` - Auto-generated for legacy browser support
 
-The SVG favicon will work in all modern browsers, but PNG fallbacks are recommended for older browsers and native app icons.
+The SVG favicon works in all modern browsers, with PNG fallbacks and ICO file for older browsers and native app icons. All icon files are automatically generated during the build process via the `prebuild` script.

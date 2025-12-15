@@ -42,6 +42,7 @@
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
     "jsdom": "^27.2.0",
+    "png-to-ico": "^3.0.1",
     "prettier": "^3.7.2",
     "sharp": "^0.34.5",
     "typescript": "~5.9.3",

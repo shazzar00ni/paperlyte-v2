@@ -14,12 +14,9 @@ export const Header = () => {
   }
 
   const closeMobileMenu = useCallback(() => {
-    if (!mobileMenuOpen) {
-      return
-    }
     setMobileMenuOpen(false)
     menuButtonRef.current?.focus()
-  }, [mobileMenuOpen])
+  }, [])
 
   const handleNavClick = (sectionId: string) => {
     scrollToSection(sectionId)

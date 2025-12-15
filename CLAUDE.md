@@ -12,10 +12,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - Zero-Lag Typing: 8ms keystroke response (25x faster than Notion's 200ms)
 - Tag-Based Organization: Inline #tags instead of rigid folder hierarchies
-- Cross-Platform Sync: Works offline-first across Mac, Windows, Linux, iOS, Android, web
+- Cross-Platform Sync: Mac, Windows, Linux, iOS, Android, web
 - Distraction-Free Writing: Interface that disappears when you start typing
-- Private by Design: Local-first architecture with optional end-to-end encrypted sync
-- Offline-First: Full functionality without internet dependency
+- Private by Design: Local-first architecture with optional end-to-end encrypted sync and full offline support
 
 This is a React application built with TypeScript and Vite, currently in early development stages.
 

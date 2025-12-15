@@ -1,18 +1,20 @@
 /**
- * PNG Icon Generation Script
+ * Icon Generation Script
  *
- * Generates PNG icons from the SVG favicon source file
- * using the sharp image processing library.
+ * Generates PNG icons and favicon.ico from the SVG favicon source file.
+ * - PNG icons: Using the sharp image processing library
+ * - ICO file: Multi-resolution favicon.ico for legacy browser support
  *
  * Usage: node scripts/generate-icons.js
  *
- * Requires: npm install --save-dev sharp
+ * Requires: npm install --save-dev sharp png-to-ico
  */
 
 import sharp from 'sharp'
+import pngToIco from 'png-to-ico'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
-import { existsSync } from 'fs'
+import { existsSync, writeFileSync } from 'fs'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -61,6 +63,33 @@ async function generateIcon(outputName, size) {
 }
 
 /**
+ * Generate favicon.ico from PNG sources
+ * Creates a multi-resolution ICO file for legacy browser support
+ */
+async function generateFaviconIco() {
+  try {
+    const favicon16Path = join(publicDir, 'favicon-16x16.png')
+    const favicon32Path = join(publicDir, 'favicon-32x32.png')
+    const icoOutputPath = join(publicDir, 'favicon.ico')
+
+    // Verify source PNG files exist
+    if (!existsSync(favicon16Path) || !existsSync(favicon32Path)) {
+      throw new Error('Required PNG files (16x16 and 32x32) not found')
+    }
+
+    // Generate ICO file with multiple resolutions
+    const icoBuffer = await pngToIco([favicon16Path, favicon32Path])
+    writeFileSync(icoOutputPath, icoBuffer)
+
+    console.log(`✅ Generated favicon.ico (16x16, 32x32)`)
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    console.error(`❌ Failed to generate favicon.ico:`, errorMessage)
+    throw new Error(`Failed to generate favicon.ico: ${errorMessage}`)
+  }
+}
+
+/**
  * Main execution function
  */
 async function main() {
@@ -78,15 +107,20 @@ async function main() {
 
   // Generate all icon sizes
   try {
+    // Generate PNG icons first
     for (const { name, size } of iconSizes) {
       await generateIcon(name, size)
     }
+
+    // Generate favicon.ico from the PNG files
+    await generateFaviconIco()
 
     console.log('\n✨ All icons generated successfully!')
     console.log('\nGenerated files:')
     iconSizes.forEach(({ name }) => {
       console.log(`  - ${name}`)
     })
+    console.log(`  - favicon.ico`)
   } catch (error) {
     console.error('\n❌ Icon generation failed')
     process.exit(1)

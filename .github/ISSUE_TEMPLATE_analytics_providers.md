@@ -47,7 +47,6 @@ Currently, only Plausible Analytics is implemented. We need to add support for a
 
 Each provider must implement the `AnalyticsProvider` interface:
 
-
 ```typescript
 interface AnalyticsProvider {
   init(config: AnalyticsConfig): void

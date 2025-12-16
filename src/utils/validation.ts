@@ -198,12 +198,16 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
  * For critical user-generated content, always sanitize on the backend as well.
  *
  * @param input - User input to sanitize
- * @returns Sanitized string
+ * @returns Sanitized string with HTML entities encoded
  *
  * @example
  * ```tsx
  * const clean = sanitizeInput('<script>alert("xss")</script>')
- * // Returns: 'scriptalert("xss")/script'
+ * // Returns: 'scriptalert(&quot;xss&quot;)/script'
+ * // Note: angle brackets removed, quotes encoded as &quot;
+ *
+ * const clean2 = sanitizeInput('Hello & goodbye')
+ * // Returns: 'Hello &amp; goodbye'
  * ```
  */
 export function sanitizeInput(input: string): string {

@@ -3,6 +3,7 @@ import {
   validateEmail,
   normalizeEmail,
   sanitizeInput,
+  encodeHtmlEntities,
   validateForm,
   suggestEmailCorrection,
 } from './validation'
@@ -86,18 +87,51 @@ describe('normalizeEmail', () => {
 
 describe('sanitizeInput', () => {
   it('should remove HTML tags', () => {
-    expect(sanitizeInput('<script>alert("xss")</script>')).toBe('scriptalert("xss")/script')
+    // Note: quotes and ampersands are encoded as HTML entities
+    expect(sanitizeInput('<script>alert("xss")</script>')).toBe(
+      'scriptalert(&quot;xss&quot;)/script'
+    )
     expect(sanitizeInput('<div>Hello</div>')).toBe('divHello/div')
   })
 
   it('should remove javascript: protocol', () => {
-    expect(sanitizeInput('javascript:alert("xss")')).toBe('alert("xss")')
-    expect(sanitizeInput('JAVASCRIPT:alert("xss")')).toBe('alert("xss")')
+    expect(sanitizeInput('javascript:alert("xss")')).toBe('alert(&quot;xss&quot;)')
+    expect(sanitizeInput('JAVASCRIPT:alert("xss")')).toBe('alert(&quot;xss&quot;)')
+  })
+
+  it('should remove data: protocol', () => {
+    expect(sanitizeInput('data:text/html,<script>alert("xss")</script>')).toBe(
+      'text/html,scriptalert(&quot;xss&quot;)/script'
+    )
+    expect(sanitizeInput('DATA:text/plain,test')).toBe('text/plain,test')
+  })
+
+  it('should remove vbscript: protocol', () => {
+    expect(sanitizeInput('vbscript:msgbox("xss")')).toBe('msgbox(&quot;xss&quot;)')
+    expect(sanitizeInput('VBSCRIPT:msgbox("xss")')).toBe('msgbox(&quot;xss&quot;)')
+  })
+
+  it('should remove file: and about: protocols', () => {
+    // Note: file:/// removes protocol AND all slashes for safety
+    expect(sanitizeInput('file:///etc/passwd')).toBe('etc/passwd')
+    expect(sanitizeInput('about:blank')).toBe('blank')
   })
 
   it('should remove event handlers', () => {
     expect(sanitizeInput('onclick=alert(1)')).toBe('alert(1)')
     expect(sanitizeInput('onload=malicious()')).toBe('malicious()')
+    expect(sanitizeInput('onerror=bad()')).toBe('bad()')
+  })
+
+  it('should remove event handlers with spaces', () => {
+    expect(sanitizeInput('onclick = alert(1)')).toBe('alert(1)')
+    expect(sanitizeInput('onload  =  malicious()')).toBe('malicious()')
+  })
+
+  it('should encode HTML entities', () => {
+    expect(sanitizeInput('test & check')).toBe('test &amp; check')
+    expect(sanitizeInput('say "hello"')).toBe('say &quot;hello&quot;')
+    expect(sanitizeInput("it's")).toBe('it&#x27;s')
   })
 
   it('should trim whitespace', () => {
@@ -112,6 +146,42 @@ describe('sanitizeInput', () => {
 
   it('should handle empty input', () => {
     expect(sanitizeInput('')).toBe('')
+  })
+
+  it('should handle complex XSS attempts', () => {
+    const xss = '<img src=x onerror=alert(1)>'
+    const result = sanitizeInput(xss)
+    // Should remove < >, encode quotes, and remove onerror
+    expect(result).not.toContain('<')
+    expect(result).not.toContain('>')
+    expect(result).not.toContain('onerror')
+  })
+})
+
+describe('encodeHtmlEntities', () => {
+  it('should encode HTML special characters', () => {
+    const result = encodeHtmlEntities('<script>alert("xss")</script>')
+    expect(result).toBe('&lt;script&gt;alert("xss")&lt;/script&gt;')
+  })
+
+  it('should preserve text content while encoding', () => {
+    const result = encodeHtmlEntities('Hello <b>World</b>')
+    expect(result).toBe('Hello &lt;b&gt;World&lt;/b&gt;')
+  })
+
+  it('should handle empty input', () => {
+    expect(encodeHtmlEntities('')).toBe('')
+  })
+
+  it('should limit output length', () => {
+    const longInput = 'a'.repeat(600)
+    const result = encodeHtmlEntities(longInput)
+    expect(result.length).toBe(500)
+  })
+
+  it('should encode ampersands', () => {
+    const result = encodeHtmlEntities('Tom & Jerry')
+    expect(result).toBe('Tom &amp; Jerry')
   })
 })
 

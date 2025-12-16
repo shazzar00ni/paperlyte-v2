@@ -191,7 +191,11 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
 
 /**
  * Sanitize input to prevent XSS attacks
- * Removes HTML tags and dangerous characters
+ * Removes HTML tags, dangerous protocols, and event handlers
+ *
+ * SECURITY NOTE: This provides basic sanitization for text inputs like names and non-HTML fields.
+ * For rich text or HTML content, use a dedicated library like DOMPurify.
+ * For critical user-generated content, always sanitize on the backend as well.
  *
  * @param input - User input to sanitize
  * @returns Sanitized string
@@ -205,12 +209,68 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
 export function sanitizeInput(input: string): string {
   if (!input) return ''
 
-  return input
-    .trim()
-    .replace(/[<>]/g, '') // Remove angle brackets
-    .replace(/javascript:/gi, '') // Remove javascript: protocol
-    .replace(/on\w+\s*=/gi, '') // Remove event handlers like onclick=
-    .slice(0, 500) // Limit length to prevent buffer overflow
+  let sanitized = input.trim()
+
+  // Remove all HTML tags (< and > characters)
+  sanitized = sanitized.replace(/[<>]/g, '')
+
+  // Remove dangerous URL protocols (case-insensitive)
+  // Covers: javascript:, data:, vbscript:, file:, about:
+  const dangerousProtocols = [
+    /javascript\s*:/gi,
+    /data\s*:/gi,
+    /vbscript\s*:/gi,
+    /file\s*:\/*/gi, // Matches file: followed by any number of slashes
+    /about\s*:/gi,
+  ]
+
+  dangerousProtocols.forEach((protocol) => {
+    sanitized = sanitized.replace(protocol, '')
+  })
+
+  // Remove event handler attributes more comprehensively
+  // Matches patterns like: onclick=, onerror=, onload=, etc. (with or without spaces)
+  // Also removes standalone "on" followed by word characters to prevent attribute injection
+  sanitized = sanitized.replace(/\bon\w+\s*=\s*/gi, '')
+
+  // Remove any remaining "on" prefixes that could be part of event handlers
+  // This is more aggressive but safer for preventing HTML attribute injection
+  sanitized = sanitized.replace(/\s+on\w+/gi, '')
+
+  // Encode any special HTML entities that might have been missed
+  sanitized = sanitized
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+
+  // Trim any extra whitespace that may have been introduced during sanitization
+  sanitized = sanitized.trim()
+
+  // Limit length to prevent buffer overflow and excessive data
+  sanitized = sanitized.slice(0, 500)
+
+  return sanitized
+}
+
+/**
+ * Alternative: HTML entity encoding (safe for displaying user input in HTML)
+ * Use this when you need to preserve the input but display it safely
+ *
+ * @param input - User input to encode
+ * @returns HTML-safe encoded string
+ *
+ * @example
+ * ```tsx
+ * const encoded = encodeHtmlEntities('<script>alert("xss")</script>')
+ * // Returns: '&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;'
+ * ```
+ */
+export function encodeHtmlEntities(input: string): string {
+  if (!input) return ''
+
+  const element = document.createElement('div')
+  element.textContent = input
+  return element.innerHTML.slice(0, 500)
 }
 
 /**

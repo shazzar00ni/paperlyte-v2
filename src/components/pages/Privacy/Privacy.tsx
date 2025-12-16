@@ -5,15 +5,22 @@ import styles from './Privacy.module.css'
  * Privacy Policy page component
  * Displays Paperlyte's privacy policy and data handling practices
  *
+ * Note: Update LAST_UPDATED constant whenever policy changes are made
+ *
  * @returns Privacy Policy page JSX
  */
+
+// Last update date for the privacy policy
+// TODO: Update this date whenever the policy is revised
+const LAST_UPDATED = 'December 13, 2024'
+
 export function Privacy() {
   return (
     <>
       <Section className={styles.privacyHero}>
         <div className={styles.container}>
           <h1 className={styles.title}>Privacy Policy</h1>
-          <p className={styles.lastUpdated}>Last Updated: December 12, 2025</p>
+          <p className={styles.lastUpdated}>Last Updated: {LAST_UPDATED}</p>
         </div>
       </Section>
 

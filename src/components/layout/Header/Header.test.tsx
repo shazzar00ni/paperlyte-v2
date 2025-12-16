@@ -184,7 +184,6 @@ describe('Header', () => {
       const menuButton = screen.getByRole('button', { name: /open menu/i })
       await user.click(menuButton)
 
-      // Get all focusable menu items
       const closeButton = screen.getByLabelText(/close menu/i)
 
       // Tab through all items and verify focus cycles back

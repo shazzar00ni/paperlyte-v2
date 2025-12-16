@@ -63,8 +63,6 @@ function findPlaceholders(filePath: string): PlaceholderMatch[] {
     lines.forEach((line, index) => {
       const matches = line.matchAll(placeholderRegex);
       for (const match of matches) {
-         // Skip markdown links and legitimate brackets
-         const beforeMatch = line.substring(0, match.index);
         // Skip markdown links and legitimate brackets
         const beforeMatch = line.substring(0, match.index);
         const afterMatch = line.substring(match.index + match[0].length);

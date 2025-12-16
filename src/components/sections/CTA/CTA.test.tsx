@@ -13,28 +13,43 @@ describe('CTA', () => {
 
   it('should render main heading', () => {
     render(<CTA />)
-    expect(screen.getByText('Ready to declutter your mind?')).toBeInTheDocument()
+    expect(screen.getByText('Stop fighting your tools. Start thinking clearly.')).toBeInTheDocument()
   })
 
-  it('should render subtitle', () => {
+  it('should render subtitle about note-taking', () => {
     render(<CTA />)
     expect(
-      screen.getByText(/Join 20,000\+ professionals organizing their life with Paperlyte/i)
+      screen.getByText(/Note-taking shouldn't feel like work/i)
     ).toBeInTheDocument()
   })
 
-  it('should render Get Started for Free button', () => {
+  it('should render waitlist message', () => {
+    render(<CTA />)
+    expect(
+      screen.getByText(/Join the waitlist today and be among the first/i)
+    ).toBeInTheDocument()
+  })
+
+  it('should render Join the Waitlist button', () => {
     render(<CTA />)
 
-    const button = screen.getByRole('button', { name: /Get Started for Free/i })
+    const button = screen.getByRole('button', { name: /Join the Waitlist/i })
     expect(button).toBeInTheDocument()
   })
 
-  it('should render Learn More button', () => {
+  it('should render Watch the Demo Again button', () => {
     render(<CTA />)
 
-    const button = screen.getByRole('button', { name: /Learn More/i })
+    const button = screen.getByRole('button', { name: /Watch the Demo Again/i })
     expect(button).toBeInTheDocument()
+  })
+
+  it('should render microcopy with launch details', () => {
+    render(<CTA />)
+
+    expect(screen.getByText(/Launching Q2 2025/i)).toBeInTheDocument()
+    expect(screen.getByText(/500\+ already waiting/i)).toBeInTheDocument()
+    expect(screen.getByText(/No credit card required/i)).toBeInTheDocument()
   })
 
   it('should have proper heading hierarchy', () => {
@@ -42,7 +57,7 @@ describe('CTA', () => {
 
     const mainHeading = screen.getByRole('heading', {
       level: 2,
-      name: /Ready to declutter your mind\?/i,
+      name: /Stop fighting your tools/i,
     })
     expect(mainHeading).toBeInTheDocument()
   })
@@ -55,7 +70,7 @@ describe('CTA', () => {
   })
 
   it('should render without crashing', () => {
-    const { container } = render(<CTA />)
+    const { container} = render(<CTA />)
     expect(container).toBeDefined()
     expect(container.querySelector('section')).toBeInTheDocument()
   })

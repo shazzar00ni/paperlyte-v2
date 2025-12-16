@@ -8,20 +8,23 @@ interface Testimonial {
   authorRole: string
 }
 
-const FEATURED_TESTIMONIAL: Testimonial = {
+const PLACEHOLDER_TESTIMONIAL: Testimonial = {
   quote:
-    "I've tried every note-taking app out there. This is the only one that actually helps me think clearer, not just store information.",
-  authorName: 'Sarah Jenkins',
-  authorRole: 'Creative Director at Studio M',
+    'Finally, a note-taking app that doesn\'t get in my way. Paperlyte is what Notion should have been.',
+  authorName: '[Beta User]',
+  authorRole: '[Role/Title]',
 }
 
 export const Testimonials = (): React.ReactElement => {
-  const { quote, authorName, authorRole } = FEATURED_TESTIMONIAL
+  const { quote, authorName, authorRole } = PLACEHOLDER_TESTIMONIAL
 
   return (
     <Section id="testimonials" background="default">
       <div className={styles.container}>
         <AnimatedElement animation="fadeIn">
+          <h2 className={styles.title}>Built for people who think fast</h2>
+        </AnimatedElement>
+        <AnimatedElement animation="fadeIn" delay={100}>
           <div className={styles.content}>
             <div className={styles.quoteIcon} aria-hidden="true">
               "
@@ -32,6 +35,11 @@ export const Testimonials = (): React.ReactElement => {
               <span className={styles.authorRole}>{authorRole}</span>
             </div>
           </div>
+        </AnimatedElement>
+        <AnimatedElement animation="fadeIn" delay={200}>
+          <p className={styles.note}>
+            Real testimonials coming soon from beta users. Want to be featured? Join the waitlist.
+          </p>
         </AnimatedElement>
       </div>
     </Section>

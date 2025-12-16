@@ -19,73 +19,66 @@ export interface FAQItem {
  */
 export const FAQ_ITEMS: FAQItem[] = [
   {
-    id: 'what-is-paperlyte',
+    id: 'launch-date',
     category: 'general',
-    question: 'What is Paperlyte?',
+    question: 'When will Paperlyte launch?',
     answer:
-      'Paperlyte is a lightning-fast, distraction-free note-taking app designed for people who are tired of bloated, complex tools. We focus on speed, simplicity, and getting out of your way so you can focus on your thoughts.',
+      'We\'re targeting Q2 2025 for public launch. Waitlist members get early access 2 weeks before everyone else.',
   },
   {
-    id: 'offline-access',
-    category: 'features',
-    question: 'Can I use Paperlyte offline?',
-    answer:
-      'Yes! Paperlyte is offline-first, meaning all features work without an internet connection. Your notes are stored locally on your device and automatically sync across devices when you are online.',
-  },
-  {
-    id: 'data-privacy',
-    category: 'privacy',
-    question: 'How secure are my notes?',
-    answer:
-      'Your privacy is our priority. Free users get basic encryption, while Pro users get end-to-end encryption. Your notes are stored locally first and encrypted during sync. We never read, analyze, or sell your data.',
-  },
-  {
-    id: 'free-tier',
+    id: 'pricing',
     category: 'pricing',
-    question: 'Is the free tier really unlimited?',
+    question: 'How much will it cost?',
     answer:
-      'Yes! You can create unlimited notes and use all core features for free. The free tier includes tag-based organization, offline access, and real-time sync across up to 3 devices. No credit card required.',
+      'Paperlyte will be free for personal use with unlimited notes. We\'ll offer a Plus plan (~$5/month) for advanced features like team collaboration and extended storage. Waitlist members get 50% off for life.',
   },
   {
     id: 'supported-platforms',
     category: 'general',
-    question: 'What devices and platforms are supported?',
+    question: 'What platforms do you support?',
     answer:
-      'Paperlyte works seamlessly across all major platforms: Web, iOS, Android, macOS, Windows, and Linux. Your notes stay in sync automatically across all devices.',
+      'At launch: Responsive web app (works on all devices). Native iOS & Android apps coming in Q2 2026. Works seamlessly across Mac, Windows, and Linux via web.',
   },
   {
-    id: 'import-notes',
-    category: 'features',
-    question: 'Can I import notes from other apps?',
+    id: 'data-privacy',
+    category: 'privacy',
+    question: 'How is my data protected?',
     answer:
-      'Yes! We support importing from Notion, Evernote, OneNote, Apple Notes, and standard formats like Markdown, plain text, and HTML. Migration guides are available in our help center.',
-  },
-  {
-    id: 'collaboration',
-    category: 'features',
-    question: 'Can I share notes with others?',
-    answer:
-      'Shared notebooks and real-time collaboration are available on the Team plan. Free and Pro users can export notes to share as files or links.',
-  },
-  {
-    id: 'cancel-subscription',
-    category: 'pricing',
-    question: 'Can I cancel my subscription anytime?',
-    answer:
-      'Absolutely. You can cancel your Pro or Team subscription at any time with one click. Your data remains accessible, and you can downgrade to the free tier without losing your notes.',
+      'End-to-end encryption before anything leaves your device. We use zero-knowledge architecture—we literally cannot read your notes even if we wanted to. Your data stays yours.',
   },
   {
     id: 'data-export',
     category: 'privacy',
-    question: 'Can I export my data?',
+    question: 'Can I export my notes?',
     answer:
-      'Yes! You own your data. You can export all your notes anytime in multiple formats: Markdown, PDF, HTML, or plain text. No lock-in, no hidden fees.',
+      'Absolutely. Export all notes as Markdown anytime. No lock-in, ever. Your data is portable.',
   },
   {
-    id: 'speed-secret',
+    id: 'mobile-app',
     category: 'features',
-    question: 'How is Paperlyte so fast?',
+    question: 'Will there be a mobile app?',
     answer:
-      'We obsess over performance. Paperlyte uses cutting-edge web technologies, aggressive caching, and local-first architecture. Every millisecond counts, and we optimize ruthlessly to keep you in flow.',
+      'Yes! The responsive web app works great on mobile browsers now. Native iOS and Android apps are planned for Q2 2026 with offline sync and system integration.',
+  },
+  {
+    id: 'vs-competitors',
+    category: 'general',
+    question: 'How is this different from Notion/Obsidian/Evernote?',
+    answer:
+      'Speed. We load 7x faster than Notion. Simplicity. We removed features instead of adding them. Privacy. End-to-end encryption is built-in, not an afterthought. We\'re not trying to be an all-in-one workspace—we\'re focused on doing one thing perfectly: capturing your thoughts.',
+  },
+  {
+    id: 'free-trial',
+    category: 'pricing',
+    question: 'Do you have a free trial?',
+    answer:
+      'The core app will be free forever for personal use. No trial needed—no credit card, no expiration.',
+  },
+  {
+    id: 'more-questions',
+    category: 'general',
+    question: 'What if I have more questions?',
+    answer:
+      'Email us at hello@paperlyte.com. We read every message and typically respond within 24 hours.',
   },
 ]

@@ -237,19 +237,19 @@ export function sanitizeInput(input: string): string {
     } while (sanitized.length !== prevLength)
   })
 
-  // Remove event handler attributes more comprehensively
-  // Matches patterns like: onclick=, onerror=, onload=, etc. (with or without spaces)
-  // Repeat until all occurrences are removed (prevents incomplete sanitization like ononclick=)
+
+  // Remove angle brackets
+  sanitized = sanitized.replace(/[<>]/g, '')
+
+  // Repeatedly remove javascript: protocol until none remain (handles nested patterns)
   do {
-    prevLength = sanitized.length
-    sanitized = sanitized.replace(/\bon\w+\s*=\s*/gi, '')
+    let prevLength = sanitized.length
+    sanitized = sanitized.replace(/javascript:/gi, '')
   } while (sanitized.length !== prevLength)
 
-  // Remove any remaining "on" prefixes that could be part of event handlers
-  // This is more aggressive but safer for preventing HTML attribute injection
-  // Repeat until all occurrences are removed (prevents incomplete sanitization)
+  // Repeatedly remove event handlers until none remain (handles nested patterns like ononclick=)
   do {
-    prevLength = sanitized.length
+    let prevLength = sanitized.length
     sanitized = sanitized.replace(/\s+on\w+/gi, '')
   } while (sanitized.length !== prevLength)
 

@@ -16,7 +16,7 @@ const FEATURES: Feature[] = [
     icon: 'fa-bolt',
     title: 'Zero-Lag Typing',
     description:
-      '8ms keystroke response—25x faster than Notion. No lag, no waiting, just pure speed.',
+      'Sub-10ms keystroke response so typing feels instant, even in large docs.',
   },
   {
     id: 'tags',
@@ -51,7 +51,7 @@ const FEATURES: Feature[] = [
     icon: 'fa-wifi-slash',
     title: 'Offline-First',
     description:
-      'Full functionality without internet. Work anywhere, sync when connected.',
+      'Core writing and organization work fully offline. Capture anywhere, sync when connected.',
   },
 ]
 

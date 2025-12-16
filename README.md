@@ -30,12 +30,12 @@ Paperlyte is a note-taking application designed for users who are frustrated wit
 
 ### Core Differentiators
 
-- **Zero-Lag Typing**: 8ms keystroke response (25x faster than Notion's 200ms)
+- **Zero-Lag Typing**: Sub-10ms keystroke response so typing feels instant, even in large docs
 - **Tag-Based Organization**: Inline #tags instead of rigid folder hierarchies
 - **Cross-Platform Sync**: Works offline-first across Mac, Windows, Linux, iOS, Android, web
 - **Distraction-Free Writing**: Interface that disappears when you start typing
 - **Private by Design**: Local-first architecture with optional end-to-end encrypted sync
-- **Offline-First**: Full functionality without internet dependency
+- **Offline-First**: Core writing and organization work fully offline, sync when connected
 
 This repository contains the landing page for Paperlyte, built with modern web technologies and optimized for performance and accessibility.
 

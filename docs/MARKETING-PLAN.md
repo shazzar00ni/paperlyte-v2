@@ -299,11 +299,12 @@ To validate our speed claims and maintain competitive differentiation, we implem
 *"Your thoughts, unchained."*
 
 **Supporting Messages**:
-- Zero-lag typing—8ms response, 25x faster than Notion
+- Zero-lag typing—sub-10ms response so typing feels instant
 - Tag-based organization without rigid folder hierarchies
 - Cross-platform sync that works offline-first
 - Distraction-free interface that disappears when you type
 - Private by design with local-first architecture
+- Core writing and organization work fully offline
 
 ### Brand Voice & Tone
 

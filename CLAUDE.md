@@ -10,11 +10,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Key Differentiators**:
 
-- Zero-Lag Typing: 8ms keystroke response (25x faster than Notion's 200ms)
+- Zero-Lag Typing: Sub-10ms keystroke response so typing feels instant, even in large docs
 - Tag-Based Organization: Inline #tags instead of rigid folder hierarchies
 - Cross-Platform Sync: Mac, Windows, Linux, iOS, Android, web
 - Distraction-Free Writing: Interface that disappears when you start typing
-- Private by Design: Local-first architecture with optional end-to-end encrypted sync and full offline support
+- Private by Design: Local-first architecture with optional end-to-end encrypted sync
+- Offline-First: Core writing and organization work fully offline, sync when connected
 
 This is a React application built with TypeScript and Vite, currently in early development stages.
 
@@ -113,7 +114,7 @@ These targets are critical to the product's "lightning-fast" value proposition:
 
 Essential sections to implement first:
 
-- Hero section with clear value proposition and Q2 2025 launch messaging
+- Hero section with clear value proposition and upcoming launch messaging
 - Feature grid (6 core features with performance metrics and icons)
 - Call-to-action section with "Join the Waitlist" buttons
 - Sticky navigation header

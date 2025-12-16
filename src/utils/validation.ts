@@ -237,12 +237,28 @@ export function sanitizeInput(input: string): string {
     } while (sanitized.length !== prevLength)
   })
 
-  // Remove all event handler attributes (e.g., onclick=, onmouseover=, etc.)
-  // Use iterative removal to prevent incomplete multi-character sanitization
+  // Remove all event handler attributes using a comprehensive two-stage approach
+  // Stage 1: Remove complete event handler patterns (e.g., "onclick=", "onload=")
+  // Stage 2: Remove any orphaned event-handler-like patterns without "="
+  // This prevents incomplete multi-character sanitization vulnerabilities
   prevLength = 0 // Reset to avoid stale value from protocol loop
+  
+  // Stage 1: Iteratively remove complete event handler patterns
   do {
     prevLength = sanitized.length
+    // Matches: "on" + word characters + optional whitespace + "="
+    // Examples: "onclick=", "onload =", "onmouseover="
     sanitized = sanitized.replace(/on\w+\s*=/gi, '')
+  } while (sanitized.length !== prevLength)
+  
+  // Stage 2: Remove orphaned event handler prefixes that may exist without "="
+  // This catches cases where "=" was already removed or patterns like "onclick" without assignment
+  // We match specific event handler names to preserve legitimate words like "online", "money"
+  // This addresses CodeQL's incomplete multi-character sanitization concern
+  const eventHandlerPattern = /\bon(?:click|dblclick|mouse\w+|key\w+|load|unload|focus|blur|change|submit|error|drag\w*|touch\w+|pointer\w+)/gi
+  do {
+    prevLength = sanitized.length
+    sanitized = sanitized.replace(eventHandlerPattern, '')
   } while (sanitized.length !== prevLength)
 
   // Encode any special HTML entities that might have been missed

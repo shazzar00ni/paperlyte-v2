@@ -1,14 +1,9 @@
 import { type FC } from 'react'
 import { Icon } from '@/components/ui/Icon'
 import { CONTACT } from '@/constants/config'
+import { safeNavigate } from '@/utils/navigation'
+import { BUTTON_LABELS } from './constants'
 import styles from './ServerErrorPage.module.css'
-
-// Export button labels for test stability
-// eslint-disable-next-line react-refresh/only-export-components
-export const BUTTON_LABELS = {
-  RETRY: 'Retry loading the page',
-  HOMEPAGE: 'Return to homepage',
-} as const
 
 interface ServerErrorPageProps {
   /**
@@ -47,10 +42,9 @@ export const ServerErrorPage: FC<ServerErrorPageProps> = ({
   }
 
   const handleGoHome = (): void => {
-    // Full page navigation to homepage
-    // Note: window.location.href is intentional for error recovery.
-    // In an SPA with routing, consider using navigate('/') via callback.
-    window.location.href = '/'
+    // Full page navigation to homepage using safe navigation
+    // This validates the URL to prevent open redirect vulnerabilities
+    safeNavigate('/')
   }
 
   return (

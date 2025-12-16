@@ -2,6 +2,7 @@ import { Button } from '@components/ui/Button'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { ParallaxLayer } from '@components/ui/ParallaxLayer'
 import { FloatingElement } from '@components/ui/FloatingElement'
+import { TextReveal } from '@components/ui/TextReveal'
 import { Section } from '@components/layout/Section'
 import { Icon } from '@components/ui/Icon'
 import { scrollToSection } from '@/utils/navigation'
@@ -68,17 +69,22 @@ export const Hero = () => {
       </div>
 
       <div className={styles.content}>
-        <AnimatedElement animation="fadeIn" delay={100}>
-          <h1 className={styles.headline}>
-            Thoughts,
-            <br />
-            <em className={styles.headlineItalic}>organized.</em>
-          </h1>
+        <AnimatedElement animation="fadeIn">
+          <TextReveal
+            as="h1"
+            type="word"
+            stagger={80}
+            animation="fadeUp"
+            className={styles.headline}
+          >
+            Your thoughts, unchained from complexity
+          </TextReveal>
         </AnimatedElement>
 
         <AnimatedElement animation="fadeIn" delay={200}>
           <p className={styles.subheadline}>
-            The minimal workspace for busy professionals. Capture ideas, structure documents, and focus on what truly matters—without the clutter.
+            The minimal workspace for busy professionals. Capture ideas, structure documents, and
+            focus on what truly matters—without the clutter.
           </p>
         </AnimatedElement>
 
@@ -130,7 +136,9 @@ export const Hero = () => {
                 <span className={styles.mockupStatValue}>+120%</span>
                 <span className={styles.mockupStatDesc}>Focus increase reported by users</span>
               </div>
-              <button type="button" className={styles.mockupShareBtn}>Share</button>
+              <button type="button" className={styles.mockupShareBtn}>
+                Share
+              </button>
             </div>
           </div>
         </div>

@@ -23,9 +23,7 @@ describe('Mobile', () => {
     it('should render the description paragraph', () => {
       render(<Mobile />)
 
-      expect(
-        screen.getByText(/Our mobile app is designed for speed/i)
-      ).toBeInTheDocument()
+      expect(screen.getByText(/Our mobile app is designed for speed/i)).toBeInTheDocument()
     })
   })
 
@@ -74,19 +72,11 @@ describe('Mobile', () => {
       const content = container.querySelector('[class*="content"]')
       expect(content).toBeInTheDocument()
 
-      const children = Array.from(content?.children || []).map(
-        (child) => child.textContent
-      )
+      const children = Array.from(content?.children || []).map((child) => child.textContent)
 
-      const headingIndex = children.findIndex((text) =>
-        text?.includes('Capture inspiration')
-      )
-      const descIndex = children.findIndex((text) =>
-        text?.includes('Our mobile app')
-      )
-      const linkIndex = children.findIndex((text) =>
-        text?.includes('Explore Mobile')
-      )
+      const headingIndex = children.findIndex((text) => text?.includes('Capture inspiration'))
+      const descIndex = children.findIndex((text) => text?.includes('Our mobile app'))
+      const linkIndex = children.findIndex((text) => text?.includes('Explore Mobile'))
 
       expect(headingIndex).toBeLessThan(descIndex)
       expect(descIndex).toBeLessThan(linkIndex)

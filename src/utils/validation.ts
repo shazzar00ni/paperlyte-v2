@@ -242,16 +242,11 @@ export function sanitizeInput(input: string): string {
   sanitized = sanitized.replace(/[<>]/g, '')
 
   // Repeatedly remove javascript: protocol until none remain (handles nested patterns)
-  do {
-    let prevLength = sanitized.length
-    sanitized = sanitized.replace(/javascript:/gi, '')
-  } while (sanitized.length !== prevLength)
+  // Remove all javascript: protocols (case-insensitive, global)
+  sanitized = sanitized.replace(/javascript:/gi, '')
 
-  // Repeatedly remove event handlers until none remain (handles nested patterns like ononclick=)
-  do {
-    let prevLength = sanitized.length
-    sanitized = sanitized.replace(/\s+on\w+/gi, '')
-  } while (sanitized.length !== prevLength)
+  // Remove all event handler attributes (e.g., onclick=, onmouseover=, etc.)
+  sanitized = sanitized.replace(/on\w+\s*=/gi, '')
 
   // Encode any special HTML entities that might have been missed
   sanitized = sanitized.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;')

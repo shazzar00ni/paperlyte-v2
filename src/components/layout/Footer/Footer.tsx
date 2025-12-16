@@ -61,43 +61,42 @@ export const Footer = (): React.ReactElement => {
 
           <div className={styles.linkGroup}>
             <h3 className={styles.linkGroupTitle}>Connect</h3>
-            <ul className={styles.linkList}>
-              <li>
-                <a
-                  href="https://twitter.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.link}
-                >
-                  Twitter
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://instagram.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.link}
-                >
-                  Instagram
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://linkedin.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.link}
-                >
-                  LinkedIn
-                </a>
-              </li>
-              <li>
-                <a href="mailto:hello@paperlyte.com" className={styles.link}>
-                  Email
-                </a>
-              </li>
-            </ul>
+            <div className={styles.socialIcons}>
+              <a
+                href="https://github.com/paperlyte"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.socialLink}
+                aria-label="Follow us on GitHub"
+              >
+                <Icon name="fa-github" variant="brands" size="xl" />
+              </a>
+              <a
+                href="https://x.com/paperlyte"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.socialLink}
+                aria-label="Follow us on X (Twitter)"
+              >
+                <Icon name="fa-x-twitter" variant="brands" size="xl" />
+              </a>
+              <a
+                href="https://instagram.com/paperlytefilms"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.socialLink}
+                aria-label="Follow us on Instagram"
+              >
+                <Icon name="fa-instagram" variant="brands" size="xl" />
+              </a>
+              <a
+                href="mailto:hello@paperlyte.com"
+                className={styles.socialLink}
+                aria-label="Email us"
+              >
+                <Icon name="fa-envelope" size="xl" />
+              </a>
+            </div>
           </div>
         </div>
       </div>

@@ -237,16 +237,13 @@ export function sanitizeInput(input: string): string {
     } while (sanitized.length !== prevLength)
   })
 
-
-  // Remove angle brackets
-  sanitized = sanitized.replace(/[<>]/g, '')
-
-  // Repeatedly remove javascript: protocol until none remain (handles nested patterns)
-  // Remove all javascript: protocols (case-insensitive, global)
-  sanitized = sanitized.replace(/javascript:/gi, '')
-
   // Remove all event handler attributes (e.g., onclick=, onmouseover=, etc.)
-  sanitized = sanitized.replace(/on\w+\s*=/gi, '')
+  // Use iterative removal to prevent incomplete multi-character sanitization
+  prevLength = 0 // Reset to avoid stale value from protocol loop
+  do {
+    prevLength = sanitized.length
+    sanitized = sanitized.replace(/on\w+\s*=/gi, '')
+  } while (sanitized.length !== prevLength)
 
   // Encode any special HTML entities that might have been missed
   sanitized = sanitized.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;')

@@ -205,11 +205,11 @@ const MAX_SANITIZATION_ITERATIONS = 100
  */
 function iterativeReplace(input: string, pattern: RegExp, replacement = ''): string {
   let sanitized = input
-  let prevLength = 0
+  let prevValue = ''
   let iterations = 0
 
-  while (sanitized.length !== prevLength && iterations < MAX_SANITIZATION_ITERATIONS) {
-    prevLength = sanitized.length
+  while (sanitized !== prevValue && iterations < MAX_SANITIZATION_ITERATIONS) {
+    prevValue = sanitized
     sanitized = sanitized.replace(pattern, replacement)
     iterations++
   }

@@ -118,14 +118,17 @@ Create a web app manifest for PWA support (optional but recommended):
 
 ### Conversion Tools (SVG to PNG):
 ```bash
-# If ImageMagick is available:
-convert -density 300 -background none favicon.svg -resize 32x32 favicon-32x32.png
-convert -density 300 -background none favicon.svg -resize 16x16 favicon-16x16.png
-convert -density 300 -background white favicon.svg -resize 180x180 apple-touch-icon.png
-
-# Or use online tools:
-# - https://cloudconvert.com/svg-to-png
-# - https://www.svgtopng.com/
+# Check if ImageMagick is available
+if command -v convert &> /dev/null; then
+  convert -density 300 -background none favicon.svg -resize 32x32 favicon-32x32.png
+  convert -density 300 -background none favicon.svg -resize 16x16 favicon-16x16.png
+  convert -density 300 -background white favicon.svg -resize 180x180 apple-touch-icon.png
+  echo "✓ PNG favicons generated successfully"
+else
+  echo "⚠ ImageMagick not found. Please use online tools:"
+  echo "  - https://cloudconvert.com/svg-to-png"
+  echo "  - https://www.svgtopng.com/"
+fi
 ```
 
 ## After Creating Assets

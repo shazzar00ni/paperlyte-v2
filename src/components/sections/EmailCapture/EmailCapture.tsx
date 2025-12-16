@@ -55,13 +55,34 @@ export const EmailCapture = (): React.ReactElement => {
               <div className={styles.shareSection}>
                 <p className={styles.shareText}>Share Paperlyte with friends</p>
                 <div className={styles.socialButtons}>
-                  <Button variant="secondary" size="medium" icon="fa-brands fa-twitter">
+                  <Button
+                    variant="secondary"
+                    size="medium"
+                    icon="fa-brands fa-twitter"
+                    href={`https://twitter.com/intent/tweet?text=${encodeURIComponent("Check out Paperlyte – the productivity tool for modern teams! Get early access:")}&url=${encodeURIComponent(window.location.origin)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     Twitter
                   </Button>
-                  <Button variant="secondary" size="medium" icon="fa-brands fa-facebook">
+                  <Button
+                    variant="secondary"
+                    size="medium"
+                    icon="fa-brands fa-facebook"
+                    href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.origin)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     Facebook
                   </Button>
-                  <Button variant="secondary" size="medium" icon="fa-brands fa-linkedin">
+                  <Button
+                    variant="secondary"
+                    size="medium"
+                    icon="fa-brands fa-linkedin"
+                    href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(window.location.origin)}&title=${encodeURIComponent("Check out Paperlyte – the productivity tool for modern teams!")}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     LinkedIn
                   </Button>
                 </div>

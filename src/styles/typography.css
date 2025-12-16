@@ -1,5 +1,15 @@
 /* Typography styles and utilities */
 
+/* Self-hosted Inter Variable Font */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/Inter-Variable.woff2") format("woff2-variations");
+  font-named-instance: "Regular";
+}
+
 h1,
 h2,
 h3,

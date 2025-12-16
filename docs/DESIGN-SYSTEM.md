@@ -1199,12 +1199,12 @@ module.exports = {
 
 ## Resources
 
-- **Tailwind CSS:** https://tailwindcss.com/docs/customizing-colors
-- **Inter Font:** https://fonts.google.com/specimen/Inter
-- **Font Awesome:** https://fontawesome.com/search?o=r&m=free&s=solid
-- **WCAG 2.1 Guidelines:** https://www.w3.org/WAI/WCAG21/quickref/
-- **Material Design (Reference):** https://material.io/design/typography/
-- **WebAIM Contrast Checker:** https://webaim.org/resources/contrastchecker/
+- **Tailwind CSS:** [Documentation](https://tailwindcss.com/docs/customizing-colors)
+- **Inter Font:** [Google Fonts](https://fonts.google.com/specimen/Inter)
+- **Font Awesome:** [Icon Search](https://fontawesome.com/search?o=r&m=free&s=solid)
+- **WCAG 2.1 Guidelines:** [Quick Reference](https://www.w3.org/WAI/WCAG21/quickref/)
+- **Material Design (Reference):** [Typography Guide](https://material.io/design/typography/)
+- **WebAIM Contrast Checker:** [Tool](https://webaim.org/resources/contrastchecker/)
 
 ---
 

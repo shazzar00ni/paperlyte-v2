@@ -738,9 +738,9 @@ import '@fontsource/inter/latin-700.css'
    - OG Image: 1200x630px
    - Twitter Image: 1200x675px
 2. Test with validators:
-   - Facebook Debugger: https://developers.facebook.com/tools/debug/
-   - Twitter Card Validator: https://cards-dev.twitter.com/validator
-   - LinkedIn Post Inspector: https://www.linkedin.com/post-inspector/
+   - [Facebook Debugger](https://developers.facebook.com/tools/debug/)
+   - [Twitter Card Validator](https://cards-dev.twitter.com/validator)
+   - [LinkedIn Post Inspector](https://www.linkedin.com/post-inspector/)
 
 ### 6.6 Favicon and App Icons
 

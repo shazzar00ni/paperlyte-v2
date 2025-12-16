@@ -209,6 +209,8 @@ export function sanitizeInput(input: string): string {
     .trim()
     .replace(/[<>]/g, '') // Remove angle brackets
     .replace(/javascript:/gi, '') // Remove javascript: protocol
+    .replace(/data:/gi, '') // Remove data: protocol
+    .replace(/vbscript:/gi, '') // Remove vbscript: protocol
     .replace(/on\w+\s*=/gi, '') // Remove event handlers like onclick=
     .slice(0, 500) // Limit length to prevent buffer overflow
 }

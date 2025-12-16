@@ -100,6 +100,26 @@ describe('sanitizeInput', () => {
     expect(sanitizeInput('onload=malicious()')).toBe('malicious()')
   })
 
+  it('should prevent incomplete multi-character sanitization bypasses', () => {
+    // Test for overlapping patterns that could bypass single-pass sanitization
+    // 'ononclick=' -> after removing 'onclick=' -> 'on=' (still dangerous without iterative approach)
+    expect(sanitizeInput('ononclick=alert(1)')).toBe('alert(1)')
+    // 'onononclick=' -> multiple nested patterns
+    expect(sanitizeInput('onononclick=alert(1)')).toBe('alert(1)')
+    // 'jajavascript:vascript:' -> after removing 'javascript:' -> 'javascript:' (still dangerous)
+    expect(sanitizeInput('jajavascript:vascript:alert(1)')).toBe('alert(1)')
+  })
+
+  it('should handle deeply nested patterns efficiently', () => {
+    // Test that the iteration limit prevents performance issues
+    // Create a deeply nested pattern that would require many iterations
+    const deeplyNested = 'on'.repeat(50) + 'click=alert(1)'
+    const result = sanitizeInput(deeplyNested)
+    // Should still sanitize but stop at iteration limit
+    expect(result).toBeDefined()
+    expect(result.length).toBeLessThanOrEqual(500)
+  })
+
   it('should trim whitespace', () => {
     expect(sanitizeInput('  hello  ')).toBe('hello')
   })

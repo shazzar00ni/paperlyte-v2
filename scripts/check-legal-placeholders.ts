@@ -66,7 +66,6 @@ function findPlaceholders(filePath: string): PlaceholderMatch[] {
          // Skip markdown links and legitimate brackets
          const beforeMatch = line.substring(0, match.index);
         // Skip markdown links and legitimate brackets
-        const beforeMatch = line.substring(0, match.index);
         const afterMatch = line.substring(match.index + match[0].length);
         const isMarkdownLink = afterMatch.trimStart().startsWith("(");
 

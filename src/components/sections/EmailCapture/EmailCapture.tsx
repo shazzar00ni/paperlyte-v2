@@ -4,6 +4,7 @@ import { Section } from '@components/layout/Section'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { Button } from '@components/ui/Button'
 import { Icon } from '@components/ui/Icon'
+import { WAITLIST_COUNT, LAUNCH_QUARTER } from '@constants/waitlist'
 import styles from './EmailCapture.module.css'
 
 const BENEFITS = [
@@ -17,16 +18,23 @@ export const EmailCapture = (): React.ReactElement => {
   const [email, setEmail] = useState('')
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsLoading(true)
+    setError(null)
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-
-    setIsLoading(false)
-    setIsSubmitted(true)
+    try {
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      
+      setIsLoading(false)
+      setIsSubmitted(true)
+    } catch (err) {
+      setIsLoading(false)
+      setError('Failed to join waitlist. Please try again.')
+    }
   }
 
   if (isSubmitted) {
@@ -60,8 +68,6 @@ export const EmailCapture = (): React.ReactElement => {
                     size="medium"
                     icon="fa-brands fa-twitter"
                     href={`https://twitter.com/intent/tweet?text=${encodeURIComponent("Check out Paperlyte – the productivity tool for modern teams! Get early access:")}&url=${encodeURIComponent(window.location.origin)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
                   >
                     Twitter
                   </Button>
@@ -70,8 +76,6 @@ export const EmailCapture = (): React.ReactElement => {
                     size="medium"
                     icon="fa-brands fa-facebook"
                     href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.origin)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
                   >
                     Facebook
                   </Button>
@@ -80,8 +84,6 @@ export const EmailCapture = (): React.ReactElement => {
                     size="medium"
                     icon="fa-brands fa-linkedin"
                     href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(window.location.origin)}&title=${encodeURIComponent("Check out Paperlyte – the productivity tool for modern teams!")}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
                   >
                     LinkedIn
                   </Button>
@@ -98,12 +100,12 @@ export const EmailCapture = (): React.ReactElement => {
     <Section id="email-capture" background="surface">
       <div className={styles.container}>
         <AnimatedElement animation="fadeIn">
-          <h2 className={styles.title}>Join 500+ people on the waitlist</h2>
+          <h2 className={styles.title}>Join {WAITLIST_COUNT} people on the waitlist</h2>
         </AnimatedElement>
 
         <AnimatedElement animation="fadeIn" delay={100}>
           <p className={styles.subtitle}>
-            We're launching in Q2 2025. Join the waitlist now to:
+            We're launching in {LAUNCH_QUARTER}. Join the waitlist now to:
           </p>
         </AnimatedElement>
 
@@ -141,6 +143,11 @@ export const EmailCapture = (): React.ReactElement => {
                 {!isLoading && <i className="fa-solid fa-arrow-right" style={{ marginLeft: '0.5rem' }} />}
               </button>
             </div>
+            {error && (
+              <p className={styles.error} role="alert">
+                {error}
+              </p>
+            )}
             <p className={styles.privacy}>
               We respect your privacy. Unsubscribe anytime. No spam, ever.
             </p>

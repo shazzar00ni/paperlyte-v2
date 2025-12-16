@@ -108,6 +108,13 @@
   position: relative;
 }
 
+.error {
+  font-size: 0.875rem;
+  color: var(--color-error);
+  margin: 0.5rem 0;
+  font-weight: 500;
+}
+
 .privacy {
   font-size: 0.875rem;
   color: var(--color-text-tertiary);

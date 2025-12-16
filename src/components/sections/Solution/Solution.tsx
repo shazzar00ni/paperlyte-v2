@@ -3,6 +3,7 @@ import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { Button } from '@components/ui/Button'
 import { Icon } from '@components/ui/Icon'
 import { scrollToSection } from '@/utils/navigation'
+import { WAITLIST_COUNT } from '@constants/waitlist'
 import styles from './Solution.module.css'
 
 interface ValueProp {
@@ -110,7 +111,7 @@ export const Solution = (): React.ReactElement => {
               Join the Waitlist
             </Button>
             <p className={styles.ctaMicrocopy}>
-              500+ people already ahead of you. Don't miss early access.
+              {WAITLIST_COUNT} people already ahead of you. Don't miss early access.
             </p>
           </div>
         </AnimatedElement>

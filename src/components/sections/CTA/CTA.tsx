@@ -2,6 +2,7 @@ import { Section } from '@components/layout/Section'
 import { Button } from '@components/ui/Button'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { scrollToSection } from '@/utils/navigation'
+import { WAITLIST_COUNT, LAUNCH_QUARTER } from '@constants/waitlist'
 import styles from './CTA.module.css'
 
 export const CTA = () => {
@@ -29,6 +30,7 @@ export const CTA = () => {
               Join the Waitlist
             </Button>
             <button 
+              type="button"
               className={styles.textLink} 
               onClick={() => scrollToSection('hero')}
             >
@@ -39,7 +41,7 @@ export const CTA = () => {
 
         <AnimatedElement animation="fadeIn" delay={300}>
           <p className={styles.microcopy}>
-            Launching Q2 2025 · 500+ already waiting · No credit card required
+            Launching {LAUNCH_QUARTER} · {WAITLIST_COUNT} already waiting · No credit card required
           </p>
         </AnimatedElement>
       </div>

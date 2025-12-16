@@ -110,13 +110,24 @@ describe('sanitizeInput', () => {
     expect(sanitizeInput('jajavascript:vascript:alert(1)')).toBe('alert(1)')
   })
 
-  it('should handle deeply nested patterns efficiently', () => {
-    // Test that the iteration limit prevents performance issues
-    // Create a deeply nested pattern that would require many iterations
-    const deeplyNested = 'on'.repeat(50) + 'click=alert(1)'
-    const result = sanitizeInput(deeplyNested)
-    // Should still sanitize but stop at iteration limit
+  it('should handle complex nested patterns without performance issues', () => {
+    // Test that the function handles complex inputs efficiently
+    // Create a pattern with multiple nested layers that requires several iterations
+    // Pattern: 'on<nested>aclick=' where nested also contains similar patterns
+    let complexInput = 'alert(1)'
+    for (let i = 0; i < 50; i++) {
+      const char = String.fromCharCode(97 + (i % 26)) // a-z
+      complexInput = 'on' + complexInput + char + 'click='
+    }
+    
+    const result = sanitizeInput(complexInput)
+    
+    // Should complete sanitization without hanging
     expect(result).toBeDefined()
+    // Should not contain any remaining dangerous patterns
+    expect(result).not.toMatch(/on\w+\s*=/)
+    expect(result).not.toMatch(/javascript:/i)
+    // Should respect length limit
     expect(result.length).toBeLessThanOrEqual(500)
   })
 

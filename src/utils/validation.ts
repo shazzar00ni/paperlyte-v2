@@ -239,6 +239,7 @@ export function sanitizeInput(input: string): string {
 
   // Remove all event handler attributes (e.g., onclick=, onmouseover=, etc.)
   // Use iterative removal to prevent incomplete multi-character sanitization
+  prevLength = 0 // Reset to avoid stale value from protocol loop
   do {
     prevLength = sanitized.length
     sanitized = sanitized.replace(/on\w+\s*=/gi, '')

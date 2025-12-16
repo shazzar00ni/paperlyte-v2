@@ -92,6 +92,33 @@
   outline-offset: 2px;
 }
 
+.socialIcons {
+  display: flex;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.socialLink {
+  color: var(--color-text-secondary);
+  transition: color var(--transition-base), transform var(--transition-base);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.socialLink:hover,
+.socialLink:focus-visible {
+  color: var(--color-primary);
+  transform: translateY(-2px);
+  outline: none;
+}
+
+.socialLink:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
 /* Tablet */
 @media (max-width: 1024px) {
   .grid {

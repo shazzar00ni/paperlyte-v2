@@ -205,12 +205,27 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
 export function sanitizeInput(input: string): string {
   if (!input) return ''
 
-  return input
-    .trim()
-    .replace(/[<>]/g, '') // Remove angle brackets
-    .replace(/javascript:/gi, '') // Remove javascript: protocol
-    .replace(/on\w+\s*=/gi, '') // Remove event handlers like onclick=
-    .slice(0, 500) // Limit length to prevent buffer overflow
+  let sanitized = input.trim()
+  
+  // Remove angle brackets
+  sanitized = sanitized.replace(/[<>]/g, '')
+  
+  // Iteratively remove javascript: protocol to prevent bypasses like 'jajavascript:vascript:'
+  let prevLength = 0
+  while (sanitized.length !== prevLength) {
+    prevLength = sanitized.length
+    sanitized = sanitized.replace(/javascript:/gi, '')
+  }
+  
+  // Iteratively remove event handlers to prevent bypasses like 'oonclick='
+  prevLength = 0
+  while (sanitized.length !== prevLength) {
+    prevLength = sanitized.length
+    sanitized = sanitized.replace(/on\w+\s*=/gi, '')
+  }
+  
+  // Limit length to prevent buffer overflow
+  return sanitized.slice(0, 500)
 }
 
 /**

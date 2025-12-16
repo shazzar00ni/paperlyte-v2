@@ -9,19 +9,26 @@ import { scrollToSection } from '@/utils/navigation'
 import { useAnalytics } from '@hooks/useAnalytics'
 import styles from './Hero.module.css'
 
+// Constants for CTA labels and navigation targets
+const START_WRITING_LABEL = 'Start Writing for Free'
+const VIEW_DEMO_LABEL = 'View the Demo'
+const DOWNLOAD_SECTION_ID = 'download'
+const FEATURES_SECTION_ID = 'features'
+const HERO_LOCATION = 'hero'
+
 const trustedCompanies = ['Acme Corp', 'Global', 'Nebula', 'Vertex', 'Horizon']
 
 export const Hero = () => {
   const { trackCTAClick } = useAnalytics()
 
   const handleStartWritingClick = () => {
-    trackCTAClick('Start Writing for Free', 'hero')
-    scrollToSection('download')
+    trackCTAClick(START_WRITING_LABEL, HERO_LOCATION)
+    scrollToSection(DOWNLOAD_SECTION_ID)
   }
 
   const handleViewDemoClick = () => {
-    trackCTAClick('View the Demo', 'hero')
-    scrollToSection('features')
+    trackCTAClick(VIEW_DEMO_LABEL, HERO_LOCATION)
+    scrollToSection(FEATURES_SECTION_ID)
   }
   return (
     <Section id="hero" className={styles.hero} padding="large">
@@ -96,10 +103,10 @@ export const Hero = () => {
               icon="fa-arrow-right"
               onClick={handleStartWritingClick}
             >
-              Start Writing for Free
+              {START_WRITING_LABEL}
             </Button>
             <Button variant="secondary" size="large" onClick={handleViewDemoClick}>
-              View the Demo
+              {VIEW_DEMO_LABEL}
             </Button>
           </div>
         </AnimatedElement>

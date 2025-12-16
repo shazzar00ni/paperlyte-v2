@@ -225,12 +225,12 @@ export function sanitizeInput(input: string): string {
   }
 
   // Remove event handlers iteratively to prevent bypass attacks
-  previousValue = ''
-  iterations = 0
-  while (sanitized !== previousValue && iterations < MAX_ITERATIONS) {
-    previousValue = sanitized
+  let prevEventValue = ''
+  let eventIterations = 0
+  while (sanitized !== prevEventValue && eventIterations < MAX_ITERATIONS) {
+    prevEventValue = sanitized
     sanitized = sanitized.replace(/on\w+\s*=/gi, '')
-    iterations++
+    eventIterations++
   }
 
   // Limit length to prevent buffer overflow

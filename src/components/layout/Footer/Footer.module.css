@@ -100,9 +100,7 @@
 
 .socialLink {
   color: var(--color-text-secondary);
-  transition:
-    color var(--transition-base),
-    transform var(--transition-base);
+  transition: color var(--transition-base);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -111,7 +109,6 @@
 .socialLink:hover,
 .socialLink:focus-visible {
   color: var(--color-primary);
-  transform: translateY(-2px);
   outline: none;
 }
 
@@ -119,6 +116,20 @@
   outline: 2px solid var(--color-primary);
   outline-offset: 4px;
   border-radius: 4px;
+}
+
+/* Only apply transform animations when motion is allowed */
+@media (prefers-reduced-motion: no-preference) {
+  .socialLink {
+    transition:
+      color var(--transition-base),
+      transform var(--transition-base);
+  }
+
+  .socialLink:hover,
+  .socialLink:focus-visible {
+    transform: translateY(-2px);
+  }
 }
 
 /* Tablet */

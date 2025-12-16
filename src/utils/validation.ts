@@ -235,7 +235,12 @@ export function sanitizeInput(input: string): string {
 
   // Remove any remaining "on" prefixes that could be part of event handlers
   // This is more aggressive but safer for preventing HTML attribute injection
-  sanitized = sanitized.replace(/\s+on\w+/gi, '')
+  // Repeat until all occurrences are removed (prevents incomplete sanitization)
+  let prevSanitized;
+  do {
+    prevSanitized = sanitized;
+    sanitized = sanitized.replace(/\s+on\w+/gi, '');
+  } while (sanitized !== prevSanitized);
 
   // Encode any special HTML entities that might have been missed
   sanitized = sanitized

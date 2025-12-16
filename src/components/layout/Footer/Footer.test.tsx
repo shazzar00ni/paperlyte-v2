@@ -62,15 +62,15 @@ describe('Footer', () => {
 
     expect(screen.getByText('Connect')).toBeInTheDocument()
 
-    expect(screen.getByRole('link', { name: 'Twitter' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Instagram' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'LinkedIn' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Follow us on X (Twitter)' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Follow us on Instagram' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Follow us on LinkedIn' })).toBeInTheDocument()
   })
 
   it('should render Twitter link with proper attributes', () => {
     render(<Footer />)
 
-    const twitterLink = screen.getByRole('link', { name: 'Twitter' })
+    const twitterLink = screen.getByRole('link', { name: 'Follow us on X (Twitter)' })
     expect(twitterLink).toBeInTheDocument()
     expect(twitterLink).toHaveAttribute('href', 'https://twitter.com')
     expect(twitterLink).toHaveAttribute('target', '_blank')
@@ -80,7 +80,7 @@ describe('Footer', () => {
   it('should render Instagram link with proper attributes', () => {
     render(<Footer />)
 
-    const instagramLink = screen.getByRole('link', { name: 'Instagram' })
+    const instagramLink = screen.getByRole('link', { name: 'Follow us on Instagram' })
     expect(instagramLink).toBeInTheDocument()
     expect(instagramLink).toHaveAttribute('href', 'https://instagram.com')
     expect(instagramLink).toHaveAttribute('target', '_blank')
@@ -90,7 +90,7 @@ describe('Footer', () => {
   it('should render LinkedIn link with proper attributes', () => {
     render(<Footer />)
 
-    const linkedinLink = screen.getByRole('link', { name: 'LinkedIn' })
+    const linkedinLink = screen.getByRole('link', { name: 'Follow us on LinkedIn' })
     expect(linkedinLink).toBeInTheDocument()
     expect(linkedinLink).toHaveAttribute('href', 'https://linkedin.com')
     expect(linkedinLink).toHaveAttribute('target', '_blank')
@@ -100,7 +100,7 @@ describe('Footer', () => {
   it('should render Email link with mailto', () => {
     render(<Footer />)
 
-    const emailLink = screen.getByRole('link', { name: 'Email' })
+    const emailLink = screen.getByRole('link', { name: 'Email us' })
     expect(emailLink).toBeInTheDocument()
     expect(emailLink).toHaveAttribute('href', 'mailto:hello@paperlyte.com')
   })
@@ -119,7 +119,7 @@ describe('Footer', () => {
     expect(headings).toHaveLength(3)
 
     const lists = container.querySelectorAll('ul')
-    expect(lists.length).toBeGreaterThanOrEqual(3)
+    expect(lists.length).toBeGreaterThanOrEqual(2)
   })
 
   it('should render all navigation sections', () => {

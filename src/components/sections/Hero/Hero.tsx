@@ -69,14 +69,6 @@ export const Hero = () => {
           </TextReveal>
         </AnimatedElement>
 
-        <AnimatedElement animation="fadeIn" delay={100}>
-          <h1 className={styles.headline}>
-            Thoughts,
-            <br />
-            <em className={styles.headlineItalic}>organized.</em>
-          </h1>
-        </AnimatedElement>
-
         <AnimatedElement animation="fadeIn" delay={200}>
           <p className={styles.subheadline}>
             The minimal workspace for busy professionals. Capture ideas, structure documents, and

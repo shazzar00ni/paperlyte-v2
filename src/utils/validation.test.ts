@@ -100,6 +100,17 @@ describe('sanitizeInput', () => {
     expect(sanitizeInput('onload=malicious()')).toBe('malicious()')
   })
 
+  it('should handle nested/repeated attack patterns', () => {
+    // Test nested onclick pattern (ononclick= becomes onclick= after first pass)
+    expect(sanitizeInput('ononclick=alert(1)')).toBe('alert(1)')
+    // Test multiple nested patterns
+    expect(sanitizeInput('onononclick=alert(1)')).toBe('alert(1)')
+    // Test nested javascript: protocol
+    expect(sanitizeInput('javascript:javascript:alert(1)')).toBe('alert(1)')
+    // Test mixed nested patterns
+    expect(sanitizeInput('ononmouseover=javascript:javascript:alert(1)')).toBe('alert(1)')
+  })
+
   it('should trim whitespace', () => {
     expect(sanitizeInput('  hello  ')).toBe('hello')
   })

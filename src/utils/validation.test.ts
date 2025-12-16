@@ -127,6 +127,18 @@ describe('sanitizeInput', () => {
     expect(sanitizeInput('onload=malicious()')).toBe('malicious()')
   })
 
+  it('should prevent bypass attacks with nested event handlers', () => {
+    // Greedy regex matching prevents simple nesting bypasses
+    // "ononclick=" matches as one token, leaving "click=" which is harmless
+    expect(sanitizeInput('ononclick=click=alert(1)')).toBe('click=alert(1)')
+    // Multiple passes still remove all valid event handlers
+    expect(sanitizeInput('onload=onclick=alert(1)')).toBe('alert(1)')
+    // Verify dangerous event handlers are removed
+    const result = sanitizeInput('onclick=onload=test')
+    expect(result).not.toContain('onclick=')
+    expect(result).not.toContain('onload=')
+  })
+
   it('should trim whitespace', () => {
     expect(sanitizeInput('  hello  ')).toBe('hello')
   })

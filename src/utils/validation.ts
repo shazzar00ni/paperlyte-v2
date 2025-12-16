@@ -220,8 +220,12 @@ export function sanitizeInput(input: string): string {
     sanitized = sanitized.replace(/(javascript|data|vbscript):/gi, '')
   }
 
-  // Remove event handlers like onclick=
-  sanitized = sanitized.replace(/on\w+\s*=/gi, '')
+  // Remove event handlers iteratively to prevent bypass attacks
+  previousValue = ''
+  while (sanitized !== previousValue) {
+    previousValue = sanitized
+    sanitized = sanitized.replace(/on\w+\s*=/gi, '')
+  }
 
   // Limit length to prevent buffer overflow
   return sanitized.slice(0, 500)

@@ -133,7 +133,7 @@ export const Header = (): React.ReactElement => {
           <ThemeToggle />
           <button
             ref={menuButtonRef}
-            aria-expanded={mobileMenuOpen}
+            type="button"
             className={styles.mobileMenuButton}
             onClick={toggleMobileMenu}
             aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}

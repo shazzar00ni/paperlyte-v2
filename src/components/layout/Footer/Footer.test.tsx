@@ -62,8 +62,20 @@ describe('Footer', () => {
 
     expect(screen.getByText('Connect')).toBeInTheDocument()
 
+    expect(screen.getByRole('link', { name: 'Follow us on GitHub' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Follow us on X (Twitter)' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Follow us on Instagram' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Email us' })).toBeInTheDocument()
+  })
+
+  it('should render GitHub link with proper attributes', () => {
+    render(<Footer />)
+
+    const githubLink = screen.getByRole('link', { name: 'Follow us on GitHub' })
+    expect(githubLink).toBeInTheDocument()
+    expect(githubLink).toHaveAttribute('href', 'https://github.com/paperlyte')
+    expect(githubLink).toHaveAttribute('target', '_blank')
+    expect(githubLink).toHaveAttribute('rel', 'noopener noreferrer')
   })
 
   it('should render Twitter link with proper attributes', () => {
@@ -71,7 +83,7 @@ describe('Footer', () => {
 
     const twitterLink = screen.getByRole('link', { name: 'Follow us on X (Twitter)' })
     expect(twitterLink).toBeInTheDocument()
-    expect(twitterLink).toHaveAttribute('href', 'https://twitter.com')
+    expect(twitterLink).toHaveAttribute('href', 'https://x.com/paperlyte')
     expect(twitterLink).toHaveAttribute('target', '_blank')
     expect(twitterLink).toHaveAttribute('rel', 'noopener noreferrer')
   })
@@ -81,19 +93,9 @@ describe('Footer', () => {
 
     const instagramLink = screen.getByRole('link', { name: 'Follow us on Instagram' })
     expect(instagramLink).toBeInTheDocument()
-    expect(instagramLink).toHaveAttribute('href', 'https://instagram.com')
+    expect(instagramLink).toHaveAttribute('href', 'https://instagram.com/paperlytefilms')
     expect(instagramLink).toHaveAttribute('target', '_blank')
     expect(instagramLink).toHaveAttribute('rel', 'noopener noreferrer')
-  })
-
-  it('should render LinkedIn link with proper attributes', () => {
-    render(<Footer />)
-
-    const linkedinLink = screen.getByRole('link', { name: 'Follow us on LinkedIn' })
-    expect(linkedinLink).toBeInTheDocument()
-    expect(linkedinLink).toHaveAttribute('href', 'https://linkedin.com')
-    expect(linkedinLink).toHaveAttribute('target', '_blank')
-    expect(linkedinLink).toHaveAttribute('rel', 'noopener noreferrer')
   })
 
   it('should render Email link with mailto', () => {

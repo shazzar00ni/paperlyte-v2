@@ -101,9 +101,8 @@ export function useAnalytics(enableScrollTracking = true) {
   )
 
   const trackFAQExpand = useCallback(
-    (questionText: string, questionIndex: number) => {
+    (questionIndex: number) => {
       track(AnalyticsEvents.FAQ_EXPAND, {
-        question_text: questionText,
         question_index: questionIndex,
       })
     },

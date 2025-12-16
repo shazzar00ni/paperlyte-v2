@@ -253,9 +253,21 @@ export function sanitizeInput(input: string): string {
   
   // Stage 2: Remove orphaned event handler prefixes that may exist without "="
   // This catches cases where "=" was already removed or patterns like "onclick" without assignment
-  // We match specific event handler names to preserve legitimate words like "online", "money"
+  // We match specific event handler names to preserve legitimate words like "online", "money", "monitor"
   // This addresses CodeQL's incomplete multi-character sanitization concern
-  const eventHandlerPattern = /\bon(?:click|dblclick|mouse\w+|key\w+|load|unload|focus|blur|change|submit|error|drag\w*|touch\w+|pointer\w+)/gi
+  //
+  // Event handler categories covered:
+  // - Mouse: click, dblclick, mousedown, mouseup, mouseover, mousemove, mouseout, mouseenter, mouseleave
+  // - Keyboard: keydown, keyup, keypress
+  // - Form: focus, blur, change, input, submit, reset, select
+  // - Media: load, unload, error, abort, canplay, etc.
+  // - Drag: drag, dragstart, dragend, dragenter, dragleave, dragover, drop
+  // - Touch: touchstart, touchmove, touchend, touchcancel
+  // - Pointer: pointerdown, pointermove, pointerup, pointercancel, etc.
+  // - Window: resize, scroll, beforeunload, hashchange, contextmenu
+  // - Animation: animationstart, animationend, animationiteration, transitionend
+  // - Wheel: wheel
+  const eventHandlerPattern = /\bon(?:click|dblclick|mouse\w+|key\w+|load|unload|beforeunload|focus|blur|change|input|submit|reset|select|error|abort|resize|scroll|contextmenu|hashchange|drag\w*|touch\w+|pointer\w+|wheel|animation\w+|transition\w+|can\w+|play\w*|pause|seeking|seeked|stalled|suspend|time\w+|volume\w+|waiting|duration\w+|emptied|ended|loaded\w+|progress|rate\w+|copy|cut|paste)/gi
   do {
     prevLength = sanitized.length
     sanitized = sanitized.replace(eventHandlerPattern, '')

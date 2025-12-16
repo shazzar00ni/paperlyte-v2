@@ -107,6 +107,13 @@ export const Footer = (): React.ReactElement => {
               >
                 <Icon name="fa-linkedin" variant="brands" size="xl" />
               </a>
+              <a
+                href="mailto:hello@paperlyte.com"
+                className={styles.socialLink}
+                aria-label="Email us"
+              >
+                <Icon name="fa-envelope" size="xl" />
+              </a>
             </div>
           </div>
         </div>

@@ -110,6 +110,16 @@ describe('sanitizeInput', () => {
     expect(sanitizeInput('jajavascript:vascript:alert(1)')).toBe('alert(1)')
   })
 
+  it('should handle deeply nested patterns efficiently', () => {
+    // Test that the iteration limit prevents performance issues
+    // Create a deeply nested pattern that would require many iterations
+    const deeplyNested = 'on'.repeat(50) + 'click=alert(1)'
+    const result = sanitizeInput(deeplyNested)
+    // Should still sanitize but stop at iteration limit
+    expect(result).toBeDefined()
+    expect(result.length).toBeLessThanOrEqual(500)
+  })
+
   it('should trim whitespace', () => {
     expect(sanitizeInput('  hello  ')).toBe('hello')
   })

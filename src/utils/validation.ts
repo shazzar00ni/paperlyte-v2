@@ -211,17 +211,24 @@ export function sanitizeInput(input: string): string {
   sanitized = sanitized.replace(/[<>]/g, '')
   
   // Iteratively remove javascript: protocol to prevent bypasses like 'jajavascript:vascript:'
+  // Use iteration limit to prevent DoS attacks
+  const MAX_ITERATIONS = 100
   let prevLength = 0
-  while (sanitized.length !== prevLength) {
+  let iterations = 0
+  while (sanitized.length !== prevLength && iterations < MAX_ITERATIONS) {
     prevLength = sanitized.length
     sanitized = sanitized.replace(/javascript:/gi, '')
+    iterations++
   }
   
-  // Iteratively remove event handlers to prevent bypasses like 'oonclick='
+  // Iteratively remove event handlers to prevent bypasses like 'ononclick='
+  // Use iteration limit to prevent DoS attacks
   prevLength = 0
-  while (sanitized.length !== prevLength) {
+  iterations = 0
+  while (sanitized.length !== prevLength && iterations < MAX_ITERATIONS) {
     prevLength = sanitized.length
     sanitized = sanitized.replace(/on\w+\s*=/gi, '')
+    iterations++
   }
   
   // Limit length to prevent buffer overflow

@@ -214,11 +214,12 @@ export function sanitizeInput(input: string): string {
   if (!input) return ''
 
   let sanitized = input.trim()
+  let prevLength: number
 
   // Remove all HTML tags (< and > characters)
   sanitized = sanitized.replace(/[<>]/g, '')
 
-  // Remove dangerous URL protocols (case-insensitive)
+  // Remove dangerous URL protocols (case-insensitive) with iterative removal to handle nested patterns
   // Covers: javascript:, data:, vbscript:, file:, about:
   const dangerousProtocols = [
     /javascript\s*:/gi,
@@ -228,23 +229,24 @@ export function sanitizeInput(input: string): string {
     /about\s*:/gi,
   ]
 
+  // Repeatedly remove each protocol until none remain (handles nested patterns like javascript:javascript:)
   dangerousProtocols.forEach((protocol) => {
-    sanitized = sanitized.replace(protocol, '')
+    do {
+      prevLength = sanitized.length
+      sanitized = sanitized.replace(protocol, '')
+    } while (sanitized.length !== prevLength)
   })
 
-  // Remove event handler attributes more comprehensively
-  // Matches patterns like: onclick=, onerror=, onload=, etc. (with or without spaces)
-  // Also removes standalone "on" followed by word characters to prevent attribute injection
-  sanitized = sanitized.replace(/\bon\w+\s*=\s*/gi, '')
 
-  // Remove any remaining "on" prefixes that could be part of event handlers
-  // This is more aggressive but safer for preventing HTML attribute injection
-  // Repeat until all occurrences are removed (prevents incomplete sanitization)
-  let prevSanitized
-  do {
-    prevSanitized = sanitized
-    sanitized = sanitized.replace(/\s+on\w+/gi, '')
-  } while (sanitized !== prevSanitized)
+  // Remove angle brackets
+  sanitized = sanitized.replace(/[<>]/g, '')
+
+  // Repeatedly remove javascript: protocol until none remain (handles nested patterns)
+  // Remove all javascript: protocols (case-insensitive, global)
+  sanitized = sanitized.replace(/javascript:/gi, '')
+
+  // Remove all event handler attributes (e.g., onclick=, onmouseover=, etc.)
+  sanitized = sanitized.replace(/on\w+\s*=/gi, '')
 
   // Encode any special HTML entities that might have been missed
   sanitized = sanitized.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;')

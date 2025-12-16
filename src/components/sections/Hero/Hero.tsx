@@ -22,7 +22,7 @@ export const Hero = (): React.ReactElement => {
           </h1>
         </AnimatedElement>
 
-        <AnimatedElement animation="fadeIn" delay={150}>
+        <AnimatedElement animation="fadeIn" delay={200}>
           <p className={styles.subheadline}>
             Lightning-fast, distraction-free note-taking. No bloat, no friction.
             Just you and your ideas, the way it should be.

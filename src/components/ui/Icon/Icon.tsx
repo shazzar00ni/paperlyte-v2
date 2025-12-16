@@ -5,9 +5,11 @@ import "./Icon.css";
 interface IconProps {
   name: string;
   size?: "sm" | "md" | "lg" | "xl" | "2x" | "3x";
+  variant?: "solid" | "brands" | "regular";
   className?: string;
   ariaLabel?: string;
   color?: string;
+  style?: React.CSSProperties;
 }
 
 // Static size map - moved outside component to avoid recreation on every render
@@ -23,9 +25,11 @@ const SIZE_MAP = {
 export const Icon = ({
   name,
   size = "md",
+  variant = "solid",
   className = "",
   ariaLabel,
   color,
+  style,
 }: IconProps): React.ReactElement => {
   const iconSize = SIZE_MAP[size];
   const paths = iconPaths[name];
@@ -42,10 +46,16 @@ export const Icon = ({
     console.warn(
       `Icon "${name}" not found in icon set, using Font Awesome fallback`,
     );
+    const variantClass = {
+      solid: "fa-solid",
+      brands: "fa-brands",
+      regular: "fa-regular",
+    }[variant];
+
     return (
-      <span
-        className={`fa-solid ${name} icon-fallback ${className}`}
-        style={{ fontSize: iconSize }}
+      <i
+        className={`${variantClass} ${name} icon-fallback ${className}`}
+        style={{ fontSize: iconSize, ...style }}
         aria-label={ariaLabel}
         aria-hidden={ariaLabel ? "false" : "true"}
         {...(ariaLabel ? { role: "img" } : {})}
@@ -64,6 +74,7 @@ export const Icon = ({
       strokeLinecap="round"
       strokeLinejoin="round"
       className={`icon-svg ${className}`}
+      style={style}
       aria-label={ariaLabel}
       aria-hidden={ariaLabel ? "false" : "true"}
       {...(ariaLabel && { role: "img" })}

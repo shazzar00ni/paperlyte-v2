@@ -63,31 +63,40 @@ export const Footer = (): React.ReactElement => {
 
           <div className={styles.linkGroup}>
             <h3 className={styles.linkGroupTitle}>Connect</h3>
-            <div className={styles.socialLinks}>
+            <div className={styles.socialIcons}>
               <a
-                href={LEGAL_CONFIG.social.github}
+                href="https://github.com/paperlyte"
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.socialLink}
-                aria-label="GitHub"
+                aria-label="Follow us on GitHub"
               >
-                <Icon name="fa-github" size="lg" />
+                <Icon name="fa-github" variant="brands" size="xl" />
               </a>
               <a
-                href={LEGAL_CONFIG.social.twitter}
+                href="https://x.com/paperlyte"
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.socialLink}
-                aria-label="Twitter"
+                aria-label="Follow us on X (Twitter)"
               >
-                <Icon name="fa-twitter" size="lg" />
+                <Icon name="fa-x-twitter" variant="brands" size="xl" />
               </a>
               <a
-                href={`mailto:${LEGAL_CONFIG.company.email}`}
+                href="https://instagram.com/paperlytefilms"
+                target="_blank"
+                rel="noopener noreferrer"
                 className={styles.socialLink}
-                aria-label="Email"
+                aria-label="Follow us on Instagram"
               >
-                <Icon name="fa-envelope" size="lg" />
+                <Icon name="fa-instagram" variant="brands" size="xl" />
+              </a>
+              <a
+                href="mailto:hello@paperlyte.com"
+                className={styles.socialLink}
+                aria-label="Email us"
+              >
+                <Icon name="fa-envelope" size="xl" />
               </a>
             </div>
           </div>

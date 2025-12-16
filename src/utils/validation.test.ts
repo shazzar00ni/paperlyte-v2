@@ -105,6 +105,23 @@ describe('sanitizeInput', () => {
     expect(sanitizeInput('VBSCRIPT:msgbox("xss")')).toBe('msgbox("xss")')
   })
 
+  it('should prevent bypass attacks with nested protocols', () => {
+    // Test for "jajavascript:vascript:" bypass - removes all "javascript:" instances iteratively
+    expect(sanitizeInput('jajavascript:vascript:alert("xss")')).toBe('alert("xss")')
+    // Test for "daddata:ata:" bypass - removes all "data:" instances, leaving harmless "da" prefix
+    expect(sanitizeInput('daddata:ata:text/html,malicious')).toBe('datext/html,malicious')
+    // Test for "vbvbscript:script:" bypass - removes all "vbscript:" instances iteratively
+    expect(sanitizeInput('vbvbscript:script:msgbox("xss")')).toBe('msgbox("xss")')
+    // Test for mixed case nested bypass
+    expect(sanitizeInput('jaJAVASCRIPT:vascript:alert(1)')).toBe('alert(1)')
+    // Test for multiple layers of nesting (javajavascript:script: -> javascript: -> empty)
+    expect(sanitizeInput('javajavascript:script:alert(1)')).toBe('alert(1)')
+    // Verify the dangerous protocols are completely removed
+    expect(sanitizeInput('daddata:ata:text/html')).not.toContain('data:')
+    expect(sanitizeInput('jajavascript:vascript:alert')).not.toContain('javascript:')
+    expect(sanitizeInput('vbvbscript:script:msgbox')).not.toContain('vbscript:')
+  })
+
   it('should remove event handlers', () => {
     expect(sanitizeInput('onclick=alert(1)')).toBe('alert(1)')
     expect(sanitizeInput('onload=malicious()')).toBe('malicious()')

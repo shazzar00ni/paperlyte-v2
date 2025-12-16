@@ -205,14 +205,26 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
 export function sanitizeInput(input: string): string {
   if (!input) return ''
 
-  return input
-    .trim()
-    .replace(/[<>]/g, '') // Remove angle brackets
-    .replace(/javascript:/gi, '') // Remove javascript: protocol
-    .replace(/data:/gi, '') // Remove data: protocol
-    .replace(/vbscript:/gi, '') // Remove vbscript: protocol
-    .replace(/on\w+\s*=/gi, '') // Remove event handlers like onclick=
-    .slice(0, 500) // Limit length to prevent buffer overflow
+  let sanitized = input.trim()
+
+  // Remove angle brackets
+  sanitized = sanitized.replace(/[<>]/g, '')
+
+  // Remove dangerous protocols iteratively to prevent bypass attacks
+  // like "jajavascript:vascript:" which would become "javascript:" after one pass
+  let previousValue = ''
+  
+  // Keep removing dangerous protocols until no more changes occur
+  while (sanitized !== previousValue) {
+    previousValue = sanitized
+    sanitized = sanitized.replace(/(javascript|data|vbscript):/gi, '')
+  }
+
+  // Remove event handlers like onclick=
+  sanitized = sanitized.replace(/on\w+\s*=/gi, '')
+
+  // Limit length to prevent buffer overflow
+  return sanitized.slice(0, 500)
 }
 
 /**

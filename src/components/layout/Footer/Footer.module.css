@@ -100,7 +100,9 @@
 
 .socialLink {
   color: var(--color-text-secondary);
-  transition: color var(--transition-base), transform var(--transition-base);
+  transition:
+    color var(--transition-base),
+    transform var(--transition-base);
   display: inline-flex;
   align-items: center;
   justify-content: center;

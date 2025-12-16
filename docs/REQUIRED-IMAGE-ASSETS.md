@@ -81,7 +81,7 @@ Create a web app manifest for PWA support (optional but recommended):
       "type": "image/png"
     }
   ],
-  "theme_color": "#7c3aed",
+  "theme_color": "#7C3AED",
   "background_color": "#ffffff",
   "display": "standalone"
 }

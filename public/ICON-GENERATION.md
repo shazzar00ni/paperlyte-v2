@@ -1,6 +1,7 @@
 # Icon Generation Instructions
 
 ## Overview
+
 The `favicon.svg` file serves as the source for all app icons and favicons.
 
 ## Generating PNG Icons
@@ -8,6 +9,7 @@ The `favicon.svg` file serves as the source for all app icons and favicons.
 To generate the required PNG icons from the SVG source, use one of these methods:
 
 ### Method 1: Online Tool (Quickest)
+
 1. Visit <https://realfavicongenerator.net/>
 2. Upload `public/favicon.svg`
 3. Customize if desired
@@ -15,6 +17,7 @@ To generate the required PNG icons from the SVG source, use one of these methods
 5. Extract to the `public/` directory
 
 ### Method 2: Using ImageMagick (Command Line)
+
 ```bash
 # Install ImageMagick if not already installed
 # macOS: brew install imagemagick
@@ -29,6 +32,7 @@ convert public/favicon.svg -resize 512x512 public/android-chrome-512x512.png
 ```
 
 ### Method 3: Using Node.js (Automated - Recommended)
+
 ```bash
 # Install required packages
 npm install --save-dev sharp png-to-ico

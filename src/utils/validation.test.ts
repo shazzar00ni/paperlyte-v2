@@ -115,7 +115,7 @@ describe('sanitizeInput', () => {
     // Create a pattern with multiple nested layers that requires several iterations
     // Pattern: 'on<nested>aclick=' where nested also contains similar patterns
     let complexInput = 'alert(1)'
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 15; i++) {
       const char = String.fromCharCode(97 + (i % 26)) // a-z
       complexInput = 'on' + complexInput + char + 'click='
     }

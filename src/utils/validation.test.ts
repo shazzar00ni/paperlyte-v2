@@ -139,6 +139,15 @@ describe('sanitizeInput', () => {
     expect(result).not.toContain('onload=')
   })
 
+  it('should handle deeply nested patterns without hanging', () => {
+    // Create a deeply nested pattern (would require many iterations)
+    const deeplyNested = 'ja'.repeat(20) + 'javascript:' + 'va'.repeat(20) + 'script:alert(1)'
+    const result = sanitizeInput(deeplyNested)
+    // Should complete without hanging (max 10 iterations)
+    expect(result).toBeDefined()
+    expect(result.length).toBeGreaterThan(0)
+  })
+
   it('should trim whitespace', () => {
     expect(sanitizeInput('  hello  ')).toBe('hello')
   })

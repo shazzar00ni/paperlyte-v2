@@ -212,19 +212,25 @@ export function sanitizeInput(input: string): string {
 
   // Remove dangerous protocols iteratively to prevent bypass attacks
   // like "jajavascript:vascript:" which would become "javascript:" after one pass
+  // Limit iterations to prevent DoS attacks with deeply nested payloads
   let previousValue = ''
+  let iterations = 0
+  const MAX_ITERATIONS = 10
   
   // Keep removing dangerous protocols until no more changes occur
-  while (sanitized !== previousValue) {
+  while (sanitized !== previousValue && iterations < MAX_ITERATIONS) {
     previousValue = sanitized
     sanitized = sanitized.replace(/(javascript|data|vbscript):/gi, '')
+    iterations++
   }
 
   // Remove event handlers iteratively to prevent bypass attacks
   previousValue = ''
-  while (sanitized !== previousValue) {
+  iterations = 0
+  while (sanitized !== previousValue && iterations < MAX_ITERATIONS) {
     previousValue = sanitized
     sanitized = sanitized.replace(/on\w+\s*=/gi, '')
+    iterations++
   }
 
   // Limit length to prevent buffer overflow

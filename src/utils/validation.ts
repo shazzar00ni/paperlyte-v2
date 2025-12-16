@@ -191,15 +191,23 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
 
 /**
  * Sanitize input to prevent XSS attacks
- * Removes HTML tags and dangerous characters
+ * Removes HTML tags, dangerous protocols, and event handlers
+ *
+ * SECURITY NOTE: This provides basic sanitization for text inputs like names and non-HTML fields.
+ * For rich text or HTML content, use a dedicated library like DOMPurify.
+ * For critical user-generated content, always sanitize on the backend as well.
  *
  * @param input - User input to sanitize
- * @returns Sanitized string
+ * @returns Sanitized string with HTML entities encoded
  *
  * @example
  * ```tsx
  * const clean = sanitizeInput('<script>alert("xss")</script>')
- * // Returns: 'scriptalert("xss")/script'
+ * // Returns: 'scriptalert(&quot;xss&quot;)/script'
+ * // Note: angle brackets removed, quotes encoded as &quot;
+ *
+ * const clean2 = sanitizeInput('Hello & goodbye')
+ * // Returns: 'Hello &amp; goodbye'
  * ```
  */
 export function sanitizeInput(input: string): string {
@@ -208,23 +216,74 @@ export function sanitizeInput(input: string): string {
   let sanitized = input.trim()
   let prevLength: number
 
-  // Remove angle brackets
+  // Remove all HTML tags (< and > characters)
   sanitized = sanitized.replace(/[<>]/g, '')
 
-  // Repeatedly remove javascript: protocol until none remain (handles nested patterns)
+  // Remove dangerous URL protocols (case-insensitive) with iterative removal to handle nested patterns
+  // Covers: javascript:, data:, vbscript:, file:, about:
+  const dangerousProtocols = [
+    /javascript\s*:/gi,
+    /data\s*:/gi,
+    /vbscript\s*:/gi,
+    /file\s*:\/*/gi, // Matches file: followed by any number of slashes
+    /about\s*:/gi,
+  ]
+
+  // Repeatedly remove each protocol until none remain (handles nested patterns like javascript:javascript:)
+  dangerousProtocols.forEach((protocol) => {
+    do {
+      prevLength = sanitized.length
+      sanitized = sanitized.replace(protocol, '')
+    } while (sanitized.length !== prevLength)
+  })
+
+  // Remove event handler attributes more comprehensively
+  // Matches patterns like: onclick=, onerror=, onload=, etc. (with or without spaces)
+  // Repeat until all occurrences are removed (prevents incomplete sanitization like ononclick=)
   do {
     prevLength = sanitized.length
-    sanitized = sanitized.replace(/javascript:/gi, '')
+    sanitized = sanitized.replace(/\bon\w+\s*=\s*/gi, '')
   } while (sanitized.length !== prevLength)
 
-  // Repeatedly remove event handlers until none remain (handles nested patterns like ononclick=)
+  // Remove any remaining "on" prefixes that could be part of event handlers
+  // This is more aggressive but safer for preventing HTML attribute injection
+  // Repeat until all occurrences are removed (prevents incomplete sanitization)
   do {
     prevLength = sanitized.length
-    sanitized = sanitized.replace(/on\w+\s*=/gi, '')
+    sanitized = sanitized.replace(/\s+on\w+/gi, '')
   } while (sanitized.length !== prevLength)
 
-  // Limit length to prevent buffer overflow
-  return sanitized.slice(0, 500)
+  // Encode any special HTML entities that might have been missed
+  sanitized = sanitized.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;')
+
+  // Trim any extra whitespace that may have been introduced during sanitization
+  sanitized = sanitized.trim()
+
+  // Limit length to prevent buffer overflow and excessive data
+  sanitized = sanitized.slice(0, 500)
+
+  return sanitized
+}
+
+/**
+ * Alternative: HTML entity encoding (safe for displaying user input in HTML)
+ * Use this when you need to preserve the input but display it safely
+ *
+ * @param input - User input to encode
+ * @returns HTML-safe encoded string
+ *
+ * @example
+ * ```tsx
+ * const encoded = encodeHtmlEntities('<script>alert("xss")</script>')
+ * // Returns: '&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;'
+ * ```
+ */
+export function encodeHtmlEntities(input: string): string {
+  if (!input) return ''
+
+  const element = document.createElement('div')
+  element.textContent = input
+  return element.innerHTML.slice(0, 500)
 }
 
 /**

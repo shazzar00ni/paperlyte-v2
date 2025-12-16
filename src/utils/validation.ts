@@ -190,6 +190,34 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
 }
 
 /**
+ * Maximum iterations for sanitization loops to prevent DoS attacks
+ */
+const MAX_SANITIZATION_ITERATIONS = 100
+
+/**
+ * Helper function to iteratively apply a replacement pattern
+ * Continues until no more matches or iteration limit is reached
+ *
+ * @param input - String to sanitize
+ * @param pattern - Regex pattern to replace
+ * @param replacement - Replacement string (default: empty string)
+ * @returns Sanitized string
+ */
+function iterativeReplace(input: string, pattern: RegExp, replacement = ''): string {
+  let sanitized = input
+  let prevLength = 0
+  let iterations = 0
+
+  while (sanitized.length !== prevLength && iterations < MAX_SANITIZATION_ITERATIONS) {
+    prevLength = sanitized.length
+    sanitized = sanitized.replace(pattern, replacement)
+    iterations++
+  }
+
+  return sanitized
+}
+
+/**
  * Sanitize input to prevent XSS attacks
  * Removes HTML tags and dangerous characters
  *
@@ -206,31 +234,16 @@ export function sanitizeInput(input: string): string {
   if (!input) return ''
 
   let sanitized = input.trim()
-  
+
   // Remove angle brackets
   sanitized = sanitized.replace(/[<>]/g, '')
-  
+
   // Iteratively remove javascript: protocol to prevent bypasses like 'jajavascript:vascript:'
-  // Use iteration limit to prevent DoS attacks
-  const MAX_ITERATIONS = 100
-  let prevLength = 0
-  let iterations = 0
-  while (sanitized.length !== prevLength && iterations < MAX_ITERATIONS) {
-    prevLength = sanitized.length
-    sanitized = sanitized.replace(/javascript:/gi, '')
-    iterations++
-  }
-  
+  sanitized = iterativeReplace(sanitized, /javascript:/gi)
+
   // Iteratively remove event handlers to prevent bypasses like 'ononclick='
-  // Use iteration limit to prevent DoS attacks
-  prevLength = 0
-  iterations = 0
-  while (sanitized.length !== prevLength && iterations < MAX_ITERATIONS) {
-    prevLength = sanitized.length
-    sanitized = sanitized.replace(/on\w+\s*=/gi, '')
-    iterations++
-  }
-  
+  sanitized = iterativeReplace(sanitized, /on\w+\s*=/gi)
+
   // Limit length to prevent buffer overflow
   return sanitized.slice(0, 500)
 }

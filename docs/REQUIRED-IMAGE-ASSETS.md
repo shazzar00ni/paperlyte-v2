@@ -5,6 +5,7 @@ This document outlines the image assets that need to be created for the Paperlyt
 ## Current Status
 
 ### ✅ Completed
+
 - **SVG Favicon**: `/public/favicon.svg` - Created with brand purple (#7c3aed)
 - **Open Graph Meta Tags**: Added to `index.html`
 - **Twitter Card Meta Tags**: Added to `index.html`
@@ -16,6 +17,7 @@ The following image files are referenced in the HTML meta tags but do not yet ex
 ## 1. Social Media Preview Images
 
 ### Open Graph Image (Facebook, LinkedIn, etc.)
+
 - **File**: `public/og-image.jpg`
 - **Dimensions**: 1200 x 630 pixels
 - **Format**: JPG (optimized for web)
@@ -28,6 +30,7 @@ The following image files are referenced in the HTML meta tags but do not yet ex
   - High contrast for readability on social media feeds
 
 ### Twitter Card Image
+
 - **File**: `public/twitter-image.jpg`
 - **Dimensions**: 1200 x 675 pixels (16:9 aspect ratio)
 - **Format**: JPG (optimized for web)
@@ -41,6 +44,7 @@ The following image files are referenced in the HTML meta tags but do not yet ex
 While the SVG favicon is now in place, additional PNG formats are recommended for broader compatibility:
 
 ### Standard Favicons
+
 - **File**: `public/favicon-32x32.png`
   - **Dimensions**: 32 x 32 pixels
   - **Format**: PNG with transparency
@@ -52,6 +56,7 @@ While the SVG favicon is now in place, additional PNG formats are recommended fo
   - **Source**: Convert from `/public/favicon.svg`
 
 ### Apple Touch Icon
+
 - **File**: `public/apple-touch-icon.png`
   - **Dimensions**: 180 x 180 pixels
   - **Format**: PNG (no transparency - use solid background)
@@ -64,6 +69,7 @@ Create a web app manifest for PWA support (optional but recommended):
 
 - **File**: `public/site.webmanifest`
 - **Content**:
+
 ```json
 {
   "name": "Paperlyte",
@@ -88,22 +94,26 @@ Create a web app manifest for PWA support (optional but recommended):
 ```
 
 ### PWA Icons (if implementing manifest)
+
 - `public/favicon-192x192.png` (192 x 192 pixels)
 - `public/favicon-512x512.png` (512 x 512 pixels)
 
 ## Brand Guidelines
 
 ### Colors
+
 - **Primary Purple**: `#7c3aed`
 - **Text Dark**: `#1e293b`
 - **Text Secondary**: `#64748b`
 - **Background**: `#ffffff`
 
 ### Typography
+
 - **Font Family**: Inter (already loaded via @fontsource/inter)
 - **Weights**: 400 (regular), 500 (medium), 600 (semi-bold), 700 (bold)
 
 ### Visual Style
+
 - Paper-inspired design
 - Clean, minimal aesthetic
 - Lightning bolt icon for speed emphasis
@@ -112,11 +122,13 @@ Create a web app manifest for PWA support (optional but recommended):
 ## Tools for Image Creation
 
 ### Design Tools (recommended):
+
 - **Figma** - Professional design tool (free tier available)
 - **Canva** - Quick mockups and social media images
 - **Adobe Illustrator** - For vector graphics
 
 ### Conversion Tools (SVG to PNG):
+
 ```bash
 # If ImageMagick is available:
 convert -density 300 -background none favicon.svg -resize 32x32 favicon-32x32.png
@@ -134,6 +146,7 @@ Once all image assets are created:
 
 1. Place them in the `public/` directory
 2. Update `index.html` to reference the PNG favicons:
+
    ```html
    <!-- Favicon -->
    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -144,9 +157,9 @@ Once all image assets are created:
    ```
 
 3. Test social media previews:
-   - Facebook Debugger: https://developers.facebook.com/tools/debug/
-   - Twitter Card Validator: https://cards-dev.twitter.com/validator
-   - LinkedIn Post Inspector: https://www.linkedin.com/post-inspector/
+   - [Facebook Debugger](https://developers.facebook.com/tools/debug/)
+   - [Twitter Card Validator](https://cards-dev.twitter.com/validator)
+   - [LinkedIn Post Inspector](https://www.linkedin.com/post-inspector/)
 
 ## Priority
 

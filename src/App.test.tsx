@@ -141,7 +141,7 @@ describe('App Integration', () => {
   it('should render social links in footer', () => {
     render(<App />)
 
-    expect(screen.getByRole('link', { name: 'Twitter' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Email' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Follow us on X (Twitter)' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Email us' })).toBeInTheDocument()
   })
 })

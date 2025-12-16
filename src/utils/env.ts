@@ -64,9 +64,16 @@ export const env: EnvConfig = {
  */
 export const updateMetaTags = (): void => {
   // Update canonical URL
+const normalizeUrl = (base: string, path: string = '/'): string => {
+  const normalizedBase = base.endsWith('/') ? base.slice(0, -1) : base;
+  return `${normalizedBase}${path}`;
+};
+
+export const updateMetaTags = (): void => {
+  // Update canonical URL
   const canonical = document.querySelector('link[rel="canonical"]');
   if (canonical) {
-    canonical.setAttribute("href", env.baseUrl + "/");
+    canonical.setAttribute("href", normalizeUrl(env.baseUrl, '/'));
   }
 
   // Update keywords
@@ -78,7 +85,7 @@ export const updateMetaTags = (): void => {
   // Update Open Graph URL
   const ogUrl = document.querySelector('meta[property="og:url"]');
   if (ogUrl) {
-    ogUrl.setAttribute("content", env.baseUrl + "/");
+    ogUrl.setAttribute("content", normalizeUrl(env.baseUrl, '/'));
   }
 
   // Update Open Graph image

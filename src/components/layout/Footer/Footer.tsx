@@ -63,7 +63,7 @@ export const Footer = (): React.ReactElement => {
             <h3 className={styles.linkGroupTitle}>Connect</h3>
             <div className={styles.socialIcons}>
               <a
-                href="https://github.com"
+                href="https://github.com/paperlyte"
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.socialLink}
@@ -72,7 +72,7 @@ export const Footer = (): React.ReactElement => {
                 <Icon name="fa-github" variant="brands" size="xl" />
               </a>
               <a
-                href="https://twitter.com"
+                href="https://x.com/paperlyte"
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.socialLink}
@@ -81,31 +81,13 @@ export const Footer = (): React.ReactElement => {
                 <Icon name="fa-x-twitter" variant="brands" size="xl" />
               </a>
               <a
-                href="https://facebook.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.socialLink}
-                aria-label="Follow us on Facebook"
-              >
-                <Icon name="fa-facebook" variant="brands" size="xl" />
-              </a>
-              <a
-                href="https://instagram.com"
+                href="https://instagram.com/paperlytefilms"
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.socialLink}
                 aria-label="Follow us on Instagram"
               >
                 <Icon name="fa-instagram" variant="brands" size="xl" />
-              </a>
-              <a
-                href="https://linkedin.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.socialLink}
-                aria-label="Follow us on LinkedIn"
-              >
-                <Icon name="fa-linkedin" variant="brands" size="xl" />
               </a>
               <a
                 href="mailto:hello@paperlyte.com"

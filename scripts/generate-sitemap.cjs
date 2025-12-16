@@ -6,28 +6,31 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
+// Base domain for sitemap URLs
+const DOMAIN = 'https://paperlyte.com';
+
 // Map URLs to their source files for lastmod tracking
 const pages = [
   {
-    url: 'https://paperlyte.com/',
+    url: `${DOMAIN}/`,
     file: path.join(__dirname, '../index.html'),
     changefreq: 'weekly',
     priority: '1.0',
   },
   {
-    url: 'https://paperlyte.com/privacy',
+    url: `${DOMAIN}/privacy`,
     file: path.join(__dirname, '../public/privacy.html'),
     changefreq: 'monthly',
     priority: '0.5',
   },
   {
-    url: 'https://paperlyte.com/terms',
+    url: `${DOMAIN}/terms`,
     file: path.join(__dirname, '../public/terms.html'),
     changefreq: 'monthly',
     priority: '0.5',
   },
   {
-    url: 'https://paperlyte.com/data-deletion',
+    url: `${DOMAIN}/data-deletion`,
     // No direct file, so omit lastmod
     file: null,
     changefreq: 'monthly',

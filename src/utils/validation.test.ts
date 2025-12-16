@@ -95,6 +95,16 @@ describe('sanitizeInput', () => {
     expect(sanitizeInput('JAVASCRIPT:alert("xss")')).toBe('alert("xss")')
   })
 
+  it('should remove data: protocol', () => {
+    expect(sanitizeInput('data:text/html,<script>alert("xss")</script>')).toBe('text/html,scriptalert("xss")/script')
+    expect(sanitizeInput('DATA:image/svg+xml;base64,PHN2Zz4=')).toBe('image/svg+xml;base64,PHN2Zz4=')
+  })
+
+  it('should remove vbscript: protocol', () => {
+    expect(sanitizeInput('vbscript:msgbox("xss")')).toBe('msgbox("xss")')
+    expect(sanitizeInput('VBSCRIPT:msgbox("xss")')).toBe('msgbox("xss")')
+  })
+
   it('should remove event handlers', () => {
     expect(sanitizeInput('onclick=alert(1)')).toBe('alert(1)')
     expect(sanitizeInput('onload=malicious()')).toBe('malicious()')

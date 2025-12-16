@@ -246,7 +246,11 @@ export function sanitizeInput(input: string): string {
   sanitized = sanitized.replace(/javascript:/gi, '')
 
   // Remove all event handler attributes (e.g., onclick=, onmouseover=, etc.)
-  sanitized = sanitized.replace(/on\w+\s*=/gi, '')
+  // Use iterative removal to prevent incomplete multi-character sanitization
+  do {
+    prevLength = sanitized.length
+    sanitized = sanitized.replace(/on\w+\s*=/gi, '')
+  } while (sanitized.length !== prevLength)
 
   // Encode any special HTML entities that might have been missed
   sanitized = sanitized.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;')

@@ -206,23 +206,22 @@ export function sanitizeInput(input: string): string {
   if (!input) return ''
 
   let sanitized = input.trim()
+  let prevLength: number
 
   // Remove angle brackets
   sanitized = sanitized.replace(/[<>]/g, '')
 
   // Repeatedly remove javascript: protocol until none remain (handles nested patterns)
-  let prevLength = 0
-  while (sanitized.length !== prevLength && /javascript:/i.test(sanitized)) {
+  do {
     prevLength = sanitized.length
     sanitized = sanitized.replace(/javascript:/gi, '')
-  }
+  } while (sanitized.length !== prevLength)
 
   // Repeatedly remove event handlers until none remain (handles nested patterns like ononclick=)
-  prevLength = 0
-  while (sanitized.length !== prevLength && /on\w+\s*=/i.test(sanitized)) {
+  do {
     prevLength = sanitized.length
     sanitized = sanitized.replace(/on\w+\s*=/gi, '')
-  }
+  } while (sanitized.length !== prevLength)
 
   // Limit length to prevent buffer overflow
   return sanitized.slice(0, 500)

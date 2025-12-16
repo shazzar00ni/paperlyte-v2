@@ -332,7 +332,7 @@ export function Terms() {
                 </li>
                 <li>
                   Website:{' '}
-                  <a href="https://paperlyte.app/contact" rel="noopener noreferrer">
+                  <a href="https://paperlyte.app/contact" target="_blank" rel="noopener noreferrer">
                     https://paperlyte.app/contact
                   </a>
                 </li>

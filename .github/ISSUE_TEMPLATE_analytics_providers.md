@@ -71,7 +71,6 @@ interface AnalyticsProvider {
 
 Each provider should support:
 
-
 ```typescript
 {
   provider: 'fathom' | 'umami' | 'simple' | 'custom',

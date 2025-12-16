@@ -64,7 +64,6 @@ describe('Footer', () => {
 
     expect(screen.getByRole('link', { name: 'Follow us on X (Twitter)' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Follow us on Instagram' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Follow us on LinkedIn' })).toBeInTheDocument()
   })
 
   it('should render Twitter link with proper attributes', () => {

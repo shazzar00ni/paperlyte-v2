@@ -1135,7 +1135,7 @@ Small, pill-shaped badges for announcements or status indicators:
 
 .headlineItalic {
   font-style: italic;
-  color: var(--color-text-tertiary);      /* Muted gray */
+  color: var(--color-text-primary);      /* High-contrast emphasis */
 }
 ```
 

@@ -113,40 +113,23 @@ export const Hero = () => {
       </div>
 
       <AnimatedElement animation="fadeIn" delay={400}>
-        <div className={styles.mockup} aria-hidden="true">
-          <div className={styles.mockupCard}>
-            <div className={styles.mockupHeader}>
-              <div className={styles.mockupDot} />
-              <div className={styles.mockupTitle} />
-            </div>
-            <div className={styles.mockupContent}>
-              <div className={`${styles.mockupLine} ${styles.mockupLineLong}`} />
-              <div className={styles.mockupLine} />
-              <div className={`${styles.mockupLine} ${styles.mockupLineMedium}`} />
-              <div className={`${styles.mockupLine} ${styles.mockupLineShort}`} />
-              <div className={styles.mockupSpacer} />
-              <div className={styles.mockupCheckbox}>
-                <div className={styles.mockupCheck} />
-                <div className={`${styles.mockupLine} ${styles.mockupLineCheckbox}`} />
-              </div>
-              <div className={styles.mockupCheckbox}>
-                <div className={styles.mockupCheck} />
-                <div className={`${styles.mockupLine} ${styles.mockupLineCheckboxShort}`} />
-              </div>
-            </div>
-            <div className={styles.mockupStats}>
-              <div className={styles.mockupStatCard}>
-                <div className={styles.mockupStatIcon}>
-                  <Icon name="fa-clock" size="sm" />
-                </div>
-                <span className={styles.mockupStatLabel}>PRODUCTIVITY</span>
-                <span className={styles.mockupStatValue}>+120%</span>
-                <span className={styles.mockupStatDesc}>Focus increase reported by users</span>
-              </div>
-              <button type="button" className={styles.mockupShareBtn}>
-                Share
-              </button>
-            </div>
+        <div className={styles.mockupContainer}>
+          {/* Primary mockup - Notes list view */}
+          <div className={styles.mockupPrimary}>
+            <img
+              src="/mockups/notes-list.png"
+              alt="Paperlyte notes list showing Today's Notes with three items: Project Ideas for brainstorming, Meeting Notes with key takeaways, and Quick Thoughts being written"
+              className={styles.mockupImage}
+            />
+          </div>
+
+          {/* Secondary mockup - Note detail view (floating) */}
+          <div className={styles.mockupSecondary}>
+            <img
+              src="/mockups/note-detail.png"
+              alt="Paperlyte note editor with bullet points including quick project ideas, meeting reminders, and presentation notes"
+              className={styles.mockupImage}
+            />
           </div>
         </div>
       </AnimatedElement>

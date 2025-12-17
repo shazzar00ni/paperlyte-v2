@@ -150,148 +150,62 @@
   flex-wrap: wrap;
 }
 
-/* App Mockup */
-.mockup {
+/* App Mockup Container */
+.mockupContainer {
   position: relative;
-}
-
-.mockupCard {
-  background-color: var(--color-background);
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-xl);
-  padding: var(--spacing-lg);
-  box-shadow: var(--shadow-xl);
-}
-
-.mockupHeader {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-md);
-}
-
-.mockupDot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background-color: var(--color-border);
-}
-
-.mockupTitle {
-  height: 12px;
-  width: 80px;
-  background-color: var(--color-border-light);
-  border-radius: var(--border-radius-sm);
-}
-
-.mockupContent {
-  margin-bottom: var(--spacing-lg);
-  padding-bottom: var(--spacing-lg);
-  border-bottom: 1px dashed var(--color-border);
-}
-
-.mockupLine {
-  height: 10px;
-  background-color: var(--color-border-light);
-  border-radius: var(--border-radius-sm);
-  margin-bottom: var(--spacing-xs);
   width: 100%;
-}
-
-.mockupLineLong {
-  width: 90%;
-}
-
-.mockupLineMedium {
-  width: 85%;
-}
-
-.mockupLineShort {
-  width: 70%;
-}
-
-.mockupLineCheckbox {
-  width: 60%;
-}
-
-.mockupLineCheckboxShort {
-  width: 55%;
-}
-
-.mockupSpacer {
-  height: var(--spacing-md);
-}
-
-.mockupCheckbox {
+  max-width: 700px;
+  margin: 0 auto;
+  aspect-ratio: 16 / 10;
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-xs);
+  justify-content: center;
 }
 
-.mockupCheck {
-  width: 16px;
-  height: 16px;
-  border: 2px solid var(--color-border);
-  border-radius: var(--border-radius-sm);
-  flex-shrink: 0;
+/* Primary mockup (Notes list) - Main focus */
+.mockupPrimary {
+  position: relative;
+  width: 85%;
+  max-width: 550px;
+  z-index: 2;
+  border-radius: var(--border-radius-xl);
+  overflow: hidden;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(0, 0, 0, 0.05);
+  transition: transform var(--transition-base);
 }
 
-.mockupStats {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: var(--spacing-md);
+.mockupPrimary:hover {
+  transform: translateY(-4px);
 }
 
-.mockupStatCard {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+/* Secondary mockup (Note detail) - Floating accent */
+.mockupSecondary {
+  position: absolute;
+  bottom: -5%;
+  right: -5%;
+  width: 50%;
+  max-width: 320px;
+  z-index: 3;
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  box-shadow:
+    0 25px 70px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(0, 0, 0, 0.08);
+  transition: transform var(--transition-base);
 }
 
-.mockupStatIcon {
-  color: var(--color-text-tertiary);
-  margin-bottom: 0.25rem;
+.mockupSecondary:hover {
+  transform: translateY(-8px) translateX(4px);
 }
 
-.mockupStatLabel {
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-text-tertiary);
-  letter-spacing: 0.05em;
-}
-
-.mockupStatValue {
-  font-family: var(--font-family-serif);
-  font-size: var(--font-size-3xl);
-  font-weight: var(--font-weight-normal);
-  color: var(--color-text-primary);
-  line-height: 1;
-}
-
-.mockupStatDesc {
-  font-size: var(--font-size-xs);
-  color: var(--color-text-tertiary);
-}
-
-.mockupShareBtn {
-  padding: 0.5rem 1.25rem;
-  background-color: var(--color-primary);
-  color: var(--color-text-on-primary);
-  border: none;
-  border-radius: var(--border-radius-md);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  cursor: pointer;
-  transition:
-    background-color var(--transition-base),
-    color var(--transition-base),
-    transform var(--transition-base);
-}
-
-.mockupShareBtn:hover {
-  background-color: var(--color-primary-dark);
+/* Mockup images */
+.mockupImage {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: inherit;
 }
 
 /* Trusted By Section */
@@ -356,9 +270,15 @@
     justify-content: center;
   }
 
-  .mockup {
+  .mockupContainer {
     max-width: 500px;
     margin: 0 auto;
+  }
+
+  .mockupSecondary {
+    width: 45%;
+    bottom: -3%;
+    right: -3%;
   }
 
   .trusted {
@@ -399,8 +319,18 @@
     justify-content: center;
   }
 
-  .mockupCard {
-    padding: var(--spacing-md);
+  .mockupContainer {
+    aspect-ratio: 4 / 3;
+  }
+
+  .mockupPrimary {
+    width: 90%;
+  }
+
+  .mockupSecondary {
+    width: 55%;
+    bottom: -2%;
+    right: -2%;
   }
 
   .trustedLogos {
@@ -446,5 +376,16 @@
   .shape {
     /* Reduce blur intensity for performance with static shapes */
     filter: blur(40px);
+  }
+
+  .mockupPrimary,
+  .mockupSecondary {
+    /* Disable hover transforms for users preferring reduced motion */
+    transition: none;
+  }
+
+  .mockupPrimary:hover,
+  .mockupSecondary:hover {
+    transform: none;
   }
 }

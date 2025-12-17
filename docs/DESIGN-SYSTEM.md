@@ -1008,9 +1008,9 @@ section {
 
 ### Touch Target Sizes
 
-**Minimum touch target size: 44x44px** (WCAG 2.5.5 Level AA)
+**Minimum implemented touch target size: 44x44px** (meets WCAG 2.5.5 Level AAA; WCAG 2.5.5 Level AA minimum is 24x24px)
 
-The design uses 44px as the minimum touch target, meeting WCAG 2.5.5 Level AA compliance. This ensures all interactive elements are easily tappable on mobile devices.
+The design uses 44px as the minimum touch target, exceeding the WCAG 2.5.5 Level AA requirement (24x24px) and meeting Level AAA. This ensures all interactive elements are easily tappable on mobile devices.
 
 ```css
 button,

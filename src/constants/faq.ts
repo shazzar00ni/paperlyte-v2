@@ -23,7 +23,7 @@ export const FAQ_ITEMS: FAQItem[] = [
     category: 'general',
     question: 'When will Paperlyte launch?',
     answer:
-      'We\'re targeting Q2 2025 for public launch. Waitlist members get early access 2 weeks before everyone else.',
+      'We\'re targeting Q2 2026 for public launch. Waitlist members get early access 2 weeks before everyone else.',
   },
   {
     id: 'pricing',

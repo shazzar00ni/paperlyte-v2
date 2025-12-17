@@ -23,9 +23,9 @@ const VALUE_PROPS: ValueProp[] = [
     title: 'Your thoughts move fast. So should your app.',
     body: [
       'Every keystroke responds instantly. No stuttering. No waiting. No watching the cursor lag behind your brain.',
-      'We\'ve optimized Paperlyte to respond in 8 milliseconds—faster than you can perceive. While Notion takes 200ms+ per keystroke (that\'s 25x slower), Paperlyte disappears into the background and lets you think.',
+      'We\'ve optimized Paperlyte to respond in under 10 milliseconds—faster than you can perceive. Paperlyte disappears into the background and lets you think.',
     ],
-    proof: 'Load time: 0.4 seconds | Keystroke response: 8ms | Your ideas: Captured',
+    proof: 'Sub-10ms keystroke response | Instant load time | Your ideas: Captured',
   },
   {
     icon: 'fa-tags',

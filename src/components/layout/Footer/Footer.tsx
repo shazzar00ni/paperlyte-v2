@@ -13,8 +13,12 @@ export const Footer = (): React.ReactElement => {
               <Icon name="fa-feather" size="lg" ariaLabel="Paperlyte logo" />
               <span className={styles.logoText}>Paperlyte.</span>
             </div>
-            <p className={styles.tagline}>Designed for clarity in a chaotic world.</p>
-            <p className={styles.copyright}>© {currentYear} All rights reserved.</p>
+            <p className={styles.tagline}>Your thoughts, unchained.</p>
+            <p className={styles.copyright}>
+              © {currentYear} Paperlyte. All rights reserved.
+              <br />
+              Built with 💙 for people who think fast.
+            </p>
           </div>
 
           <div className={styles.linkGroup}>
@@ -26,18 +30,39 @@ export const Footer = (): React.ReactElement => {
                 </a>
               </li>
               <li>
-                <a href="#mobile" className={styles.link}>
-                  Mobile App
+                <a href="#pricing" className={styles.link}>
+                  Pricing
                 </a>
               </li>
               <li>
-                <a href="#download" className={styles.link}>
-                  Desktop App
+                <a href="#roadmap" className={styles.link}>
+                  Roadmap
                 </a>
               </li>
               <li>
-                <a href="#testimonials" className={styles.link}>
-                  Testimonials
+                <a href="#changelog" className={styles.link}>
+                  Changelog
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div className={styles.linkGroup}>
+            <h3 className={styles.linkGroupTitle}>Company</h3>
+            <ul className={styles.linkList}>
+              <li>
+                <a href="#about" className={styles.link}>
+                  About
+                </a>
+              </li>
+              <li>
+                <a href="#blog" className={styles.link}>
+                  Blog
+                </a>
+              </li>
+              <li>
+                <a href="mailto:hello@paperlyte.com" className={styles.link}>
+                  Contact
                 </a>
               </li>
             </ul>
@@ -47,13 +72,18 @@ export const Footer = (): React.ReactElement => {
             <h3 className={styles.linkGroupTitle}>Legal</h3>
             <ul className={styles.linkList}>
               <li>
-                <a href="#" className={styles.link}>
+                <a href="#privacy" className={styles.link}>
                   Privacy Policy
                 </a>
               </li>
               <li>
-                <a href="#" className={styles.link}>
-                  Terms of Service
+                <a href="#terms" className={styles.link}>
+                  Terms
+                </a>
+              </li>
+              <li>
+                <a href="#security" className={styles.link}>
+                  Security
                 </a>
               </li>
             </ul>
@@ -64,7 +94,7 @@ export const Footer = (): React.ReactElement => {
             <ul className={styles.linkList}>
               <li>
                 <a
-                  href="https://twitter.com"
+                  href="https://twitter.com/paperlyte"
                   target="_blank"
                   rel="noopener noreferrer"
                   className={styles.link}
@@ -74,22 +104,22 @@ export const Footer = (): React.ReactElement => {
               </li>
               <li>
                 <a
-                  href="https://instagram.com"
+                  href="https://github.com/paperlyte"
                   target="_blank"
                   rel="noopener noreferrer"
                   className={styles.link}
                 >
-                  Instagram
+                  GitHub
                 </a>
               </li>
               <li>
                 <a
-                  href="https://linkedin.com"
+                  href="https://discord.gg/paperlyte"
                   target="_blank"
                   rel="noopener noreferrer"
                   className={styles.link}
                 >
-                  LinkedIn
+                  Discord
                 </a>
               </li>
               <li>

@@ -1,14 +1,17 @@
 # Social Media Image Generation
 
 ## Overview
+
 The `og-image.svg` (1200x630) and `twitter-image.svg` (1200x675) files serve as source templates for social media preview images.
 
 ## Why JPG/PNG is Required
+
 While we've created SVG templates, most social media platforms (Facebook, Twitter/X, LinkedIn) require **raster images** (JPG or PNG) for preview cards. SVG is not supported.
 
 ## Generating Social Media Images
 
 ### Method 1: Online Converter (Quickest)
+
 1. Visit <https://cloudconvert.com/svg-to-jpg> or <https://svgtopng.com/>
 2. Upload `public/og-image.svg` and `public/twitter-image.svg`
 3. Set quality to 90-95%
@@ -19,6 +22,7 @@ While we've created SVG templates, most social media platforms (Facebook, Twitte
 6. Place in `public/` directory
 
 ### Method 2: Using ImageMagick (Command Line)
+
 ```bash
 # Install ImageMagick if not already installed
 # macOS: brew install imagemagick
@@ -30,6 +34,7 @@ convert public/twitter-image.svg -quality 95 public/twitter-image.jpg
 ```
 
 ### Method 3: Using Browser DevTools
+
 1. Open `public/og-image.svg` in a browser
 2. Open DevTools (F12)
 3. Zoom to 100%
@@ -39,6 +44,7 @@ convert public/twitter-image.svg -quality 95 public/twitter-image.jpg
 7. Repeat for `twitter-image.svg`
 
 ### Method 4: Using Node.js (Automated)
+
 ```bash
 # Install sharp package
 npm install --save-dev sharp
@@ -50,6 +56,7 @@ node scripts/generate-social-images.js
 ## Image Specifications
 
 ### Open Graph (Facebook, LinkedIn)
+
 - **File**: `og-image.jpg`
 - **Dimensions**: 1200 x 630 pixels
 - **Aspect Ratio**: 1.91:1
@@ -58,6 +65,7 @@ node scripts/generate-social-images.js
 - **Recommended**: 95% quality JPG
 
 ### Twitter Card
+
 - **File**: `twitter-image.jpg`
 - **Dimensions**: 1200 x 675 pixels (or use 1200x630)
 - **Aspect Ratio**: 16:9 (or 1.91:1)
@@ -70,17 +78,20 @@ node scripts/generate-social-images.js
 After generating and deploying the images, test them with:
 
 ### Facebook Debugger
+
 - URL: <https://developers.facebook.com/tools/debug/>
 - Paste your site URL
 - Click "Scrape Again" to refresh cache
 
 ### Twitter/X Card Validation
+
 - Twitter/X no longer provides a public Card Validator tool.
 - To validate your Twitter/X cards:
   - Use the [Twitter Developer Portal](https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/abouts-cards) for documentation and troubleshooting.
   - Alternatively, use a meta tag preview tool like [metatags.io](https://metatags.io/) to check your card rendering.
 
 ### LinkedIn Post Inspector
+
 - URL: <https://www.linkedin.com/post-inspector/>
 - Paste your site URL
 - Check preview rendering
@@ -95,6 +106,7 @@ After generating and deploying the images, test them with:
 ## Temporary Fallback
 
 The HTML currently references `.jpg` files. Until these are generated:
+
 - Social media platforms may show a broken image or no preview
 - The site will still function normally
 - Update meta tags to use `.svg` temporarily if needed for testing
@@ -104,26 +116,26 @@ The HTML currently references `.jpg` files. Until these are generated:
 Create `scripts/generate-social-images.js`:
 
 ```javascript
-const sharp = require('sharp');
-const fs = require('fs');
+const sharp = require('sharp')
+const fs = require('fs')
 
 async function generateSocialImages() {
   // Convert OG image
   await sharp('public/og-image.svg')
     .resize(1200, 630)
     .jpeg({ quality: 95 })
-    .toFile('public/og-image.jpg');
+    .toFile('public/og-image.jpg')
 
   // Convert Twitter image
   await sharp('public/twitter-image.svg')
     .resize(1200, 675)
     .jpeg({ quality: 95 })
-    .toFile('public/twitter-image.jpg');
+    .toFile('public/twitter-image.jpg')
 
-  console.log('✅ Social media images generated successfully!');
+  console.log('✅ Social media images generated successfully!')
 }
 
-generateSocialImages().catch(console.error);
+generateSocialImages().catch(console.error)
 ```
 
 Run with: `node scripts/generate-social-images.js`

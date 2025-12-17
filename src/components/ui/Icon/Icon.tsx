@@ -23,6 +23,25 @@ export const Icon: React.FC<IconProps> = ({
   // Convert old icon name format (fa-bolt) to new format (bolt)
   const iconName = convertIconName(name)
 
+  // Normalize color: add # prefix if missing and color looks like a hex code
+  const normalizedColor = color
+    ? color.startsWith('#') || color.match(/^(rgb|hsl|var|currentColor)/i)
+      ? color
+      : `#${color}`
+    : undefined
+
+  // Map our size format to FontAwesome's SizeProp format
+  // Explicit mapping ensures type safety without unsafe casts
+  const sizeMap: Record<NonNullable<IconProps['size']>, SizeProp | undefined> = {
+    sm: 'sm',
+    md: undefined, // Medium is the default size (no size prop needed)
+    lg: 'lg',
+    xl: 'xl',
+    '2x': '2x',
+    '3x': '3x',
+  }
+  const faSize = sizeMap[size]
+
   // Validate icon exists in library
   if (!isValidIcon(iconName)) {
     // Development-time warning
@@ -37,27 +56,15 @@ export const Icon: React.FC<IconProps> = ({
     return (
       <FontAwesomeIcon
         icon={faCircleQuestion}
-        size={size === 'md' ? undefined : (size as SizeProp)}
+        size={faSize}
         className={className}
         aria-label={ariaLabel || `Unknown icon: ${name}`}
         aria-hidden={!ariaLabel}
-        style={{ ...style, ...(color ? { color } : {}) }}
+        style={{ ...style, ...(normalizedColor ? { color: normalizedColor } : {}) }}
         {...(ariaLabel && { role: 'img' })}
       />
     )
   }
-
-  // Map our size format to FontAwesome's SizeProp format
-  // Explicit mapping ensures type safety without unsafe casts
-  const sizeMap: Record<NonNullable<IconProps['size']>, SizeProp | undefined> = {
-    sm: 'sm',
-    md: undefined, // Medium is the default size (no size prop needed)
-    lg: 'lg',
-    xl: 'xl',
-    '2x': '2x',
-    '3x': '3x',
-  }
-  const faSize = sizeMap[size]
 
   // Determine the icon type (brand vs solid) using helper function
   const isBrandIconType = isBrandIcon(iconName)
@@ -72,7 +79,7 @@ export const Icon: React.FC<IconProps> = ({
       className={className}
       aria-label={ariaLabel}
       aria-hidden={!ariaLabel}
-      style={{ ...style, ...(color ? { color } : {}) }}
+      style={{ ...style, ...(normalizedColor ? { color: normalizedColor } : {}) }}
       {...(ariaLabel && { role: 'img' })}
     />
   )

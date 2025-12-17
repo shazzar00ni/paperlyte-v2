@@ -68,6 +68,7 @@ describe('Icon', () => {
     const { container } = render(<Icon name="fa-heart" color="FF0000" />)
     const icon = container.querySelector('svg')
 
-    expect(icon).toHaveStyle({ color: 'FF0000' })
+    // Browser normalizes #FF0000 to rgb(255, 0, 0)
+    expect(icon).toHaveStyle({ color: '#FF0000' })
   })
 })

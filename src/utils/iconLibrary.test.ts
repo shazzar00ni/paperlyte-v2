@@ -47,15 +47,24 @@ describe('iconLibrary', () => {
       expect(validIconNames.has('circle-question')).toBe(true)
     })
 
-    it('should not have brand icons overlap with non-brand icons', () => {
+    it('should not have brand icons overlap with solid icons', () => {
       // Brand and solid icons should be mutually exclusive
-      const brandArray = Array.from(brandIconNames)
-      const validArray = Array.from(validIconNames)
+      const solidIcons = Array.from(validIconNames).filter(
+        (icon) => !brandIconNames.has(icon)
+      )
 
-      // All brand icons should be in valid icons
+      // Check that no brand icon appears in the solid icon set
+      const brandArray = Array.from(brandIconNames)
       brandArray.forEach((brandIcon) => {
-        expect(validArray.includes(brandIcon)).toBe(true)
+        expect(
+          solidIcons.includes(brandIcon),
+          `Brand icon "${brandIcon}" should not appear in solid icons set`
+        ).toBe(false)
       })
+
+      // Verify intersection is empty
+      const intersection = brandArray.filter((icon) => solidIcons.includes(icon))
+      expect(intersection.length).toBe(0)
     })
   })
 

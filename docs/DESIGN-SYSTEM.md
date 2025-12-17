@@ -145,7 +145,7 @@ cursor: not-allowed;
 - Test colors in both light and dark modes
 
 ❌ **DON'T:**
-- Introduce colors outside the monochrome palette (except semantic colors like success/error)
+- Introduce new colors outside the monochrome palette; semantic states (success, error, warning, info) must also be expressed using the existing monochrome palette (e.g., icons, borders, typography) rather than unique hues
 - Use text-tertiary for important information (low contrast)
 - Place secondary text on colored backgrounds without checking contrast
 - Use color alone to convey information (add icons or text)

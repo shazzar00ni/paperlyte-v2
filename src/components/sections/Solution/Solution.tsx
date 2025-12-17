@@ -23,9 +23,9 @@ const VALUE_PROPS: ValueProp[] = [
     title: 'Your thoughts move fast. So should your app.',
     body: [
       'Every keystroke responds instantly. No stuttering. No waiting. No watching the cursor lag behind your brain.',
-      'We\'ve optimized Paperlyte to respond in under 10 milliseconds—faster than you can perceive. Paperlyte disappears into the background and lets you think.',
+      'We\'ve optimized Paperlyte to respond in 8 milliseconds—faster than you can perceive. Paperlyte disappears into the background and lets you think.',
     ],
-    proof: 'Sub-10ms keystroke response | Instant load time | Your ideas: Captured',
+    proof: '8ms keystroke response | Instant load time | Your ideas: Captured',
   },
   {
     icon: 'fa-tags',

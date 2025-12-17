@@ -43,6 +43,8 @@ This repository contains the landing page for Paperlyte, built with modern web t
 - Modern React 19 with TypeScript for type safety
 - Vite for lightning-fast development and optimized builds
 - CSS Modules for scoped, maintainable styling
+- **Monochrome design aesthetic** with sophisticated black/white palette
+- **Dual typography system**: Inter for UI, Playfair Display for headlines
 - Dark mode with system preference detection
 - Fully responsive design (mobile-first approach)
 - WCAG 2.1 AA accessibility compliance
@@ -54,9 +56,9 @@ This repository contains the landing page for Paperlyte, built with modern web t
 - **Framework**: React 19.2.0
 - **Language**: TypeScript 5.9.3 (strict mode)
 - **Build Tool**: Vite 7.2.4
-- **Styling**: CSS Modules
+- **Styling**: CSS Modules with custom design tokens
 - **Icons**: Font Awesome Free 6.5.1 (CDN)
-- **Fonts**: Inter (Google Fonts)
+- **Fonts**: Inter + Playfair Display (Google Fonts)
 - **Linting**: ESLint 9.39.1 with TypeScript and React plugins
 
 ## Getting Started

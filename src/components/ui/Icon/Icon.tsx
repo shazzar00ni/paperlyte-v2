@@ -68,22 +68,25 @@ export const Icon: React.FC<IconProps> = ({
     )
   }
 
-  // Determine the icon type (brand vs solid) using helper function
-  const isBrandIconType = isBrandIcon(iconName)
-  const iconProp: IconProp = isBrandIconType
-    ? (['fab', iconName as IconName] as IconProp)
-    : (['fas', iconName as IconName] as IconProp)
-
-  const variantClass = {
-    solid: 'fa-solid',
-    brands: 'fa-brands',
-    regular: 'fa-regular',
-  }[variant]
+  // Determine the icon prefix based on variant prop or auto-detect for brands
+  const variantPrefix = {
+    solid: 'fas',
+    brands: 'fab',
+    regular: 'far',
+  }[variant] as 'fas' | 'fab' | 'far'
+  
+  // Auto-detect brand icons if variant is 'solid' but icon is actually a brand icon
+  const isBrandIconType = variant === 'solid' && isBrandIcon(iconName)
+  const finalPrefix = isBrandIconType ? 'fab' : variantPrefix
+  
+  const iconProp: IconProp = [finalPrefix, iconName as IconName] as IconProp
 
   return (
-    <i
-      className={`${variantClass} ${name} ${sizeClass} ${className}${color ? ` icon-color-${color.replace('#', '')}` : ''}`}
-      aria-label={ariaLabel}
+    <FontAwesomeIcon
+      icon={iconProp}
+      size={faSize}
+      className={className}
+      aria-label={ariaLabel || iconName}
       aria-hidden={!ariaLabel}
       style={{ ...style, ...(normalizedColor ? { color: normalizedColor } : {}) }}
       {...(ariaLabel && { role: 'img' })}

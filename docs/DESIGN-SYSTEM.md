@@ -95,7 +95,7 @@ A comprehensive design system for Paperlyte - a lightning-fast, distraction-free
 |------------|------------|----------------|------------|----------|
 | `#111827` (Text Primary) | `#FFFFFF` (Background) | 16.1:1 | AAA | Body text (light mode) |
 | `#6B7280` (Text Secondary) | `#FFFFFF` (Background) | 4.6:1 | AA | Supporting text (light mode) |
-| `#9CA3AF` (Text Tertiary) | `#FFFFFF` (Background) | 3.1:1 | AA (Large Text) | Muted text (light mode) |
+| `#9CA3AF` (Text Tertiary) | `#FFFFFF` (Background) | 3.1:1 | AA (Large Text Only) | Large text (18pt+/14pt+ bold), metadata, non-critical labels |
 | `#1a1a1a` (Primary) | `#FFFFFF` (Background) | 16.8:1 | AAA | Primary buttons, text |
 | `#FFFFFF` (Text) | `#1a1a1a` (Primary) | 16.8:1 | AAA | Text on primary buttons |
 | `#F1F5F9` (Text Primary) | `#0F172A` (Background) | 15.8:1 | AAA | Body text (dark mode) |
@@ -146,10 +146,82 @@ cursor: not-allowed;
 
 ❌ **DON'T:**
 - Introduce colors outside the monochrome palette (except semantic colors like success/error)
-- Use text-tertiary for important information (low contrast)
+- **Use text-tertiary (#9CA3AF) for normal body text** - it only meets AA standards for large text (18pt+/14pt+ bold)
+- Use text-tertiary for critical information - reserve it for non-essential metadata, timestamps, and labels
 - Place secondary text on colored backgrounds without checking contrast
 - Use color alone to convey information (add icons or text)
 - Override focus outline colors (accessibility requirement)
+
+### Semantic States
+
+While the design is primarily monochrome, **semantic colors are allowed as exceptions** for success, error, warning, and info states. However, **never rely on color alone** - always combine with icons and clear text.
+
+```css
+/* Semantic colors (from variables.css) */
+--color-success: #10b981;  /* Emerald 500 */
+--color-error: #ef4444;    /* Red 500 */
+--color-warning: #f59e0b;  /* Amber 500 */
+--color-info: #3b82f6;     /* Blue 500 */
+```
+
+**Best Practices for Semantic States:**
+
+1. **Always combine color with icons:**
+   - Success: `fa-circle-check` + green
+   - Error: `fa-exclamation-circle` + red
+   - Warning: `fa-exclamation-triangle` + amber
+   - Info: `fa-info-circle` + blue
+
+2. **Use subtle color application:**
+   - Prefer colored borders/icons rather than full backgrounds
+   - Use monochrome backgrounds with colored accents
+   - Keep text in monochrome palette for readability
+
+3. **Monochrome-only alternative (if avoiding all color):**
+   ```css
+   /* Use icon + border weight variations */
+   .success { border: 2px solid var(--color-text-primary); }
+   .error { border: 3px solid var(--color-primary-dark); }
+   .warning { border: 2px dashed var(--color-border); }
+   .info { border: 1px solid var(--color-border); }
+   ```
+
+**Example Implementation:**
+
+```tsx
+import styles from './Alert.module.css'
+
+// With semantic color (preferred for critical states)
+<div className={styles.alert}>
+  <i className={`fa-solid fa-exclamation-circle ${styles.errorIcon}`} />
+  <p>Error: Please check your input</p>
+</div>
+
+// Monochrome alternative
+<div className={styles.alert}>
+  <i className="fa-solid fa-exclamation-circle" />
+  <strong>Error:</strong> Please check your input
+</div>
+```
+
+```css
+/* Alert.module.css */
+.errorIcon {
+  color: var(--color-error);
+}
+
+.successIcon {
+  color: var(--color-success);
+}
+
+.warningIcon {
+  color: var(--color-warning);
+}
+
+.infoIcon {
+  color: var(--color-info);
+}
+```
 
 ---
 
@@ -230,29 +302,60 @@ Typography automatically adjusts on mobile devices for better readability and sp
 
 ### Typography Examples
 
+**Using CSS Modules (recommended):**
+
 ```tsx
+import styles from './Component.module.css'
+
 // Hero headline (Playfair Display serif)
-<h1 style={{ fontFamily: 'var(--font-family-serif)' }}>
-  Your thoughts, <em>unchained</em> from complexity
-</h1>  // 72px (52px mobile), normal weight, tight line-height, italic emphasis
+<h1 className={styles.headline}>
+  Your thoughts, <em className={styles.headlineItalic}>unchained</em> from complexity
+</h1>
 
 // Section header (Playfair Display)
-<h2 style={{ fontFamily: 'var(--font-family-serif)' }}>
-  Beautiful Simplicity
-</h2>  // 30px, bold, snug line-height
+<h2 className={styles.sectionTitle}>Beautiful Simplicity</h2>
 
 // Subsection header (Inter)
-<h3>Feature Details</h3>  // 24px, bold, snug
+<h3>Feature Details</h3>
 
 // Card title (Inter)
-<h4>Lightning Speed</h4>  // 20px, semibold, snug
+<h4>Lightning Speed</h4>
 
 // Body text (Inter)
 <p>Regular paragraph text with relaxed line height for optimal readability.</p>
+```
 
-// Utility classes
+**CSS Module styles:**
+
+```css
+/* Component.module.css */
+.headline {
+  font-family: var(--font-family-serif);  /* Playfair Display */
+  font-size: var(--font-size-7xl);        /* 72px */
+  font-weight: var(--font-weight-normal); /* 400 */
+  line-height: var(--line-height-tight);  /* 1.1 */
+  letter-spacing: -0.02em;
+}
+
+.headlineItalic {
+  font-style: italic;
+  color: var(--color-text-tertiary);
+}
+
+.sectionTitle {
+  font-family: var(--font-family-serif);  /* Playfair Display */
+  font-size: var(--font-size-3xl);        /* 30px */
+  font-weight: var(--font-weight-bold);   /* 700 */
+  line-height: var(--line-height-snug);   /* 1.25 */
+}
+```
+
+**Global utility classes** (from src/styles/typography.css):
+
+```tsx
 <p className="font-semibold">Emphasized text</p>
 <p className="text-center">Centered text</p>
+<p className="text-primary">Primary colored text</p>
 ```
 
 ### ✅ Do's and ❌ Don'ts
@@ -439,7 +542,8 @@ section {
 
 #### Variants
 
-**1. Primary Button**
+##### 1. Primary Button
+
 - **Use:** Primary CTAs, main actions
 - **Style:** Filled with primary color, full pill-shaped border-radius
 - **States:** Default, hover (lifted + shadow), active, disabled
@@ -467,7 +571,8 @@ section {
 }
 ```
 
-**2. Secondary Button**
+##### 2. Secondary Button
+
 - **Use:** Secondary actions, alternative options
 - **Style:** Outlined with subtle border, pill-shaped
 - **States:** Transparent → surface background on hover
@@ -493,7 +598,8 @@ section {
 }
 ```
 
-**3. Ghost Button**
+##### 3. Ghost Button
+
 - **Use:** Tertiary actions, navigation links
 - **Style:** No border, minimal styling, pill-shaped
 - **States:** Subtle background on hover
@@ -1140,7 +1246,7 @@ Small, pill-shaped badges for announcements or status indicators:
 
 #### 3. Parallax Background Shapes
 
-Blurred, gradient shapes that move at different speeds on scroll:
+Blurred, gradient shapes that move at different speeds on scroll. These create subtle, abstract visual interest without distracting from content.
 
 ```css
 .shape {
@@ -1148,12 +1254,22 @@ Blurred, gradient shapes that move at different speeds on scroll:
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    var(--color-primary) 0%,
-    transparent 70%
+    var(--color-primary) 0%,    /* Near-black center in light mode */
+    transparent 70%             /* Fades to transparent */
   );
-  filter: blur(60px);
+  filter: blur(60px);            /* Heavy blur creates soft gradient */
+  opacity: 0.03;                 /* Very subtle - barely visible */
+}
+
+/* Reduce blur on mobile for better performance */
+@media (max-width: 768px) {
+  .shape {
+    filter: blur(40px);          /* Reduced blur for mobile */
+  }
 }
 ```
+
+**Visual Effect:** The heavy blur (60px) combined with low opacity (0.03) creates extremely subtle, soft shadows that add depth without being distracting. In light mode, the near-black (#1a1a1a) creates gentle gray gradients. In dark mode, white creates soft light halos. Blur is reduced to 40px on mobile for better performance.
 
 **Reduced Motion:** Parallax effects are disabled when `prefers-reduced-motion` is active.
 
@@ -1253,10 +1369,58 @@ The mockup includes:
 
 ### Performance Considerations
 
-- **Blur Effects:** Use sparingly; reduce blur on mobile (60px → 40px)
-- **Parallax:** Implemented with `requestAnimationFrame` for 60fps performance
-- **Floating Animations:** CSS-based with `will-change: transform` hint
-- **Reduced Motion:** All animations disabled when user prefers reduced motion
+- **Blur Effects:** Use sparingly; blur is reduced for users with `prefers-reduced-motion` (60px → 40px) to improve performance with static shapes
+- **Parallax:** Implemented with `requestAnimationFrame` for 60fps performance; completely disabled when `prefers-reduced-motion` is active
+  - **Implementation:** Uses `useParallax` hook (src/hooks/useParallax.ts) and `ParallaxLayer` component (src/components/ui/ParallaxLayer)
+  - **How it works:** Uses Intersection Observer to only calculate when in viewport, requestAnimationFrame for smooth updates
+  - **Automatic optimizations:** Respects prefers-reduced-motion, can disable on mobile (default: true)
+- **Floating Animations:** CSS-based with `will-change: transform` hint; hidden on mobile for cleaner UX
+- **Reduced Motion:** All animations and parallax effects are disabled when user prefers reduced motion
+
+**Parallax Implementation Example:**
+
+```tsx
+import { useParallax } from '@hooks/useParallax'
+
+const MyParallaxComponent = () => {
+  const { ref, offset, isActive } = useParallax({
+    speed: 0.3,  // Move slower than scroll for background effect
+    disableOnMobile: true  // Disable on mobile for performance
+  })
+
+  return (
+    <div ref={ref}>
+      <div style={{ transform: `translateY(${offset}px)` }}>
+        {/* Parallax content */}
+      </div>
+    </div>
+  )
+}
+```
+
+**CSS Optimizations:**
+
+```css
+/* Reduce blur for better performance when motion is reduced */
+@media (prefers-reduced-motion: reduce) {
+  .shape {
+    filter: blur(40px);  /* Reduced from 60px */
+  }
+}
+
+/* Hide floating elements on mobile */
+@media (max-width: 768px) {
+  .floatingContainer {
+    display: none;
+  }
+
+  .shape {
+    /* Optionally reduce shape sizes on mobile for performance */
+    width: 250px;
+    height: 250px;
+  }
+}
+```
 
 ---
 
@@ -1424,9 +1588,14 @@ Always respect `prefers-reduced-motion`:
 
 ## Design Tokens (Tailwind Config Ready)
 
+**Note:** This project uses **CSS Custom Properties** for dynamic theming (see src/styles/variables.css). Dark mode is handled automatically via CSS variables that respond to `[data-theme='dark']` and `@media (prefers-color-scheme: dark)`.
+
+If you prefer to use Tailwind's built-in dark mode instead, here's the configuration:
+
 ```js
 // tailwind.config.js
 module.exports = {
+  darkMode: 'class',  // or 'media' for automatic system preference
   theme: {
     extend: {
       colors: {
@@ -1435,15 +1604,19 @@ module.exports = {
           dark: '#000000',     // Pure black
           light: '#333333',    // Dark gray
         },
-        background: '#FFFFFF',
+        background: {
+          DEFAULT: '#FFFFFF',
+          dark: '#0F172A',     // Slate 900 (dark mode)
+        },
         surface: {
           DEFAULT: '#F9FAFB',
-          dark: '#18181b',
+          dark: '#1E293B',     // Slate 800 (dark mode)
+          'dark-alt': '#18181b', // Zinc 900 (dark sections)
         },
         text: {
           primary: '#111827',
           secondary: '#6B7280',
-          tertiary: '#9CA3AF',
+          tertiary: '#9CA3AF',  // Use only for large text (18pt+/14pt+ bold)
         },
         border: {
           DEFAULT: '#E5E7EB',
@@ -1496,13 +1669,23 @@ module.exports = {
 };
 ```
 
+**Dark Mode Implementation:**
+
+The design uses CSS custom properties that automatically respond to dark mode. In dark mode, the monochrome palette inverts:
+
+- Primary: `#1a1a1a` → `#ffffff` (white becomes primary)
+- Background: `#ffffff` → `#0F172A` (slate 900)
+- Text Primary: `#111827` → `#F1F5F9` (slate 100)
+
+This inversion is handled automatically via the CSS variables in `src/styles/variables.css`.
+
 ---
 
 ## Version History
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 2.0.0 | 2025-12-17 | Major rebrand to monochrome aesthetic. Added Playfair Display serif font for headlines. Updated all buttons to pill-shaped design. Added hero section design patterns. Expanded spacing scale and type scale. Updated all color references from purple to black/white. |
+| 2.0.0 | 2025-12-17 | Major monochrome rebrand: colors (purple → black/white), Playfair Display typography, pill buttons, hero patterns, expanded scales. See full documentation for details. |
 | 1.0.0 | 2025-11-29 | Initial design system documentation |
 
 ---

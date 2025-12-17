@@ -16,8 +16,9 @@ export const Footer = (): React.ReactElement => {
             <p className={styles.tagline}>Your thoughts, unchained.</p>
             <p className={styles.copyright}>
               © {currentYear} Paperlyte. All rights reserved.
-              <br />
-              Built with 💙 for people who think fast.
+            </p>
+            <p className={styles.taglineSecondary}>
+              Built with <span aria-label="love">💙</span> for people who think fast.
             </p>
           </div>
 

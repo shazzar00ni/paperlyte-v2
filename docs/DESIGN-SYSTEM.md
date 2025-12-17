@@ -1503,7 +1503,7 @@ module.exports = {
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 2.0.0 | 2025-12-17 | Major rebrand to monochrome aesthetic. Added Playfair Display serif font for headlines. Updated all buttons to pill-shaped design. Added hero section design patterns. Expanded spacing scale and type scale. Updated all color references from purple to black/white. |
+| 2.0.0 | 2025-12-17 | Major monochrome rebrand with Playfair Display headlines, pill-shaped buttons, new hero patterns, expanded spacing/type scales, and colors updated from purple to black/white. |
 | 1.0.0 | 2025-11-29 | Initial design system documentation |
 
 ---

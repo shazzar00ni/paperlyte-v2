@@ -235,7 +235,7 @@ On mobile, `--font-size-6xl` intentionally scales from 3.75rem (60px) to 2.75rem
 // Hero headline (Playfair Display serif)
 <h1 style={{ fontFamily: 'var(--font-family-serif)' }}>
   Your thoughts, <em>unchained</em> from complexity
-</h1>  // 72px (52px mobile), normal weight, tight line-height, italic emphasis
+</h1>  // var(--font-size-7xl) - 72px desktop, 52px mobile; normal weight, tight line-height, italic emphasis
 
 // Section header (Playfair Display)
 <h2 style={{ fontFamily: 'var(--font-family-serif)' }}>

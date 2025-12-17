@@ -1236,7 +1236,7 @@ The mockup includes:
 @media (max-width: 768px) {
   /* Reduce headline size */
   .headline {
-    font-size: var(--font-size-5xl);  /* 72px → 36px */
+    font-size: var(--font-size-5xl);  /* 72px → 48px (3rem) */
   }
 
   /* Stack CTAs vertically */

@@ -49,9 +49,7 @@ describe('iconLibrary', () => {
 
     it('should not have brand icons overlap with solid icons', () => {
       // Brand and solid icons should be mutually exclusive
-      const solidIcons = Array.from(validIconNames).filter(
-        (icon) => !brandIconNames.has(icon)
-      )
+      const solidIcons = Array.from(validIconNames).filter((icon) => !brandIconNames.has(icon))
 
       // Check that no brand icon appears in the solid icon set
       const brandArray = Array.from(brandIconNames)

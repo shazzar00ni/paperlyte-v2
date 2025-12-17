@@ -6,6 +6,7 @@ import { convertIconName, isBrandIcon, isValidIcon } from '../../../utils/iconLi
 interface IconProps {
   name: string
   size?: 'sm' | 'md' | 'lg' | 'xl' | '2x' | '3x'
+  variant?: 'solid' | 'brands' | 'regular'
   className?: string
   ariaLabel?: string
   color?: string
@@ -15,6 +16,7 @@ interface IconProps {
 export const Icon: React.FC<IconProps> = ({
   name,
   size = 'md',
+  variant = 'solid',
   className = '',
   ariaLabel,
   color,
@@ -72,11 +74,15 @@ export const Icon: React.FC<IconProps> = ({
     ? (['fab', iconName as IconName] as IconProp)
     : (['fas', iconName as IconName] as IconProp)
 
+  const variantClass = {
+    solid: 'fa-solid',
+    brands: 'fa-brands',
+    regular: 'fa-regular',
+  }[variant]
+
   return (
-    <FontAwesomeIcon
-      icon={iconProp}
-      size={faSize}
-      className={className}
+    <i
+      className={`${variantClass} ${name} ${sizeClass} ${className}${color ? ` icon-color-${color.replace('#', '')}` : ''}`}
       aria-label={ariaLabel}
       aria-hidden={!ariaLabel}
       style={{ ...style, ...(normalizedColor ? { color: normalizedColor } : {}) }}

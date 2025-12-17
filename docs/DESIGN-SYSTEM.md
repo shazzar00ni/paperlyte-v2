@@ -226,6 +226,7 @@ Typography automatically adjusts on mobile devices for better readability and sp
 }
 ```
 
+On mobile, `--font-size-6xl` intentionally scales from 3.75rem (60px) to 2.75rem (44px), staying larger than `--font-size-5xl` to preserve the visual hierarchy without overpowering smaller screens.
 **Note:** Hero headlines reduce significantly on mobile to maintain visual balance and prevent overwhelming small screens.
 
 ### Typography Examples

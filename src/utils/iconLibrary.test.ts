@@ -76,7 +76,7 @@ describe('iconLibrary', () => {
     })
 
     it('should only strip leading fa- prefix', () => {
-      // Should not strip fa- from middle of string
+      // Should only strip leading 'fa-' prefix; preserve 'fa-' occurrences elsewhere in the string
       expect(convertIconName('fa-wifi-fa-test')).toBe('wifi-fa-test')
     })
 
@@ -183,7 +183,7 @@ describe('iconLibrary', () => {
   describe('Regression Prevention', () => {
     it('should have at least 31 solid icons registered', () => {
       // Based on current imports - prevents accidental removal
-      // Count: 32 solid icons total, minus 1 fallback = 31
+      // Icon breakdown: 31 solid (non-fallback) + 4 brand + 1 fallback = 36 total
       const solidIcons = Array.from(validIconNames).filter(
         (icon) => !brandIconNames.has(icon) && icon !== 'circle-question'
       )
@@ -192,12 +192,12 @@ describe('iconLibrary', () => {
     })
 
     it('should have exactly 4 brand icons registered', () => {
-      // Current brand icons: github, twitter, apple, windows
+      // Icon breakdown: 31 solid (non-fallback) + 4 brand + 1 fallback = 36 total
       expect(brandIconNames.size).toBe(4)
     })
 
     it('should maintain icon count in validIconNames', () => {
-      // Total icons: 31 solid + 4 brand + 1 fallback = 36
+      // Icon breakdown: 31 solid (non-fallback) + 4 brand + 1 fallback = 36 total
       expect(validIconNames.size).toBeGreaterThanOrEqual(36)
     })
   })

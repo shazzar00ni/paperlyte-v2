@@ -3,12 +3,8 @@
   top: 0;
   width: 100%;
   background-color: var(--color-background);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--color-border);
   z-index: var(--z-header);
-  transition:
-    background-color var(--transition-base),
-    box-shadow var(--transition-base);
+  transition: box-shadow var(--transition-base);
 }
 
 .header:hover {
@@ -28,15 +24,20 @@
 .logo {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-xs);
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-bold);
-  color: var(--color-primary);
+  color: var(--color-text-primary);
   cursor: pointer;
+}
+
+.logo i {
+  color: var(--color-text-primary);
 }
 
 .logoText {
   color: var(--color-text-primary);
+  font-family: var(--font-family);
 }
 
 .nav {
@@ -57,7 +58,7 @@
   background: none;
   border: none;
   color: var(--color-text-secondary);
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   cursor: pointer;
   transition: color var(--transition-base);
@@ -65,7 +66,7 @@
 }
 
 .navLink:hover {
-  color: var(--color-primary);
+  color: var(--color-text-primary);
 }
 
 .navCta {
@@ -91,7 +92,7 @@
 }
 
 .mobileMenuButton:hover {
-  color: var(--color-primary);
+  color: var(--color-text-secondary);
 }
 
 /* Mobile styles */

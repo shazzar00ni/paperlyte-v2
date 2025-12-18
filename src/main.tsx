@@ -6,8 +6,9 @@ import '@fontsource/inter/latin-400.css'
 import '@fontsource/inter/latin-500.css'
 import '@fontsource/inter/latin-600.css'
 import '@fontsource/inter/latin-700.css'
-// Self-hosted Font Awesome for better security and performance
-import '@fortawesome/fontawesome-free/css/all.min.css'
+// Font Awesome icon library (tree-shaken, ~150-180 KB savings)
+// Only icons actually used in the app are imported
+import './utils/iconLibrary'
 import './index.css'
 import App from './App.tsx'
 

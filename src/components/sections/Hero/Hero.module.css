@@ -156,6 +156,8 @@
   width: 100%;
   max-width: 700px;
   margin: 0 auto;
+  /* Fallback for browsers that don't support aspect-ratio */
+  min-height: 260px;
   aspect-ratio: 16 / 10;
   display: flex;
   align-items: center;

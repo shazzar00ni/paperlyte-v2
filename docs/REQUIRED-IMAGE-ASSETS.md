@@ -28,9 +28,6 @@ The following image files could be created to enhance social media previews:
   - Tagline: "Your thoughts, unchained from complexity"
   - Paper icon visual
   - Clean, readable design
-  - Clean, modern design matching landing page aesthetic
-  - Paper-inspired visual elements
-  - High contrast for readability on social media feeds
 - **Future Enhancement**: Consider creating a custom-designed version with:
   - Professional graphic design polish
   - More sophisticated paper-inspired visual elements
@@ -46,7 +43,7 @@ The following image files could be created to enhance social media previews:
 
 ## 2. Favicon Files (PNG formats)
 
-While the SVG favicon is now in place, additional PNG formats are recommended for broader compatibility. [web:20]
+While the SVG favicon is now in place, additional PNG formats are recommended for broader compatibility:
 
 ### Standard Favicons
 
@@ -54,6 +51,7 @@ While the SVG favicon is now in place, additional PNG formats are recommended fo
   - **Dimensions**: 32 x 32 pixels
   - **Format**: PNG with transparency
   - **Source**: Convert from `/public/favicon.svg`
+
 - **File**: `public/favicon-16x16.png`
   - **Dimensions**: 16 x 16 pixels
   - **Format**: PNG with transparency
@@ -69,32 +67,33 @@ While the SVG favicon is now in place, additional PNG formats are recommended fo
 
 ## 3. Web App Manifest
 
-Create a web app manifest for PWA support (optional but recommended). [web:20]
+Create a web app manifest for PWA support (optional but recommended):
 
 - **File**: `public/site.webmanifest`
 - **Content**:
 
+```json
 {
-"name": "Paperlyte",
-"short_name": "Paperlyte",
-"description": "Lightning-fast, distraction-free notes",
-"icons": [
-{
-"src": "/favicon-192x192.png",
-"sizes": "192x192",
-"type": "image/png"
-},
-{
-"src": "/favicon-512x512.png",
-"sizes": "512x512",
-"type": "image/png"
+  "name": "Paperlyte",
+  "short_name": "Paperlyte",
+  "description": "Lightning-fast, distraction-free notes",
+  "icons": [
+    {
+      "src": "/favicon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#7C3AED",
+  "background_color": "#ffffff",
+  "display": "standalone"
 }
-],
-"theme_color": "#7C3AED",
-"background_color": "#ffffff",
-"display": "standalone"
-}
-
+```
 
 ### PWA Icons (if implementing manifest)
 
@@ -124,64 +123,67 @@ Create a web app manifest for PWA support (optional but recommended). [web:20]
 
 ## Tools for Image Creation
 
-### Design Tools (recommended)
+### Design Tools (recommended):
 
 - **Figma** - Professional design tool (free tier available)
 - **Canva** - Quick mockups and social media images
 - **Adobe Illustrator** - For vector graphics
 
-### Conversion Tools (SVG to PNG)
+### Conversion Tools (SVG to PNG):
 
-Check if ImageMagick is available
+```bash
+# Check if ImageMagick is available
 if command -v convert &> /dev/null; then
-convert -density 300 -background none favicon.svg -resize 32x32 favicon-32x32.png
-convert -density 300 -background none favicon.svg -resize 16x16 favicon-16x16.png
-convert -density 300 -background white favicon.svg -resize 180x180 apple-touch-icon.png
-echo "✓ PNG favicons generated successfully"
+  convert -density 300 -background none favicon.svg -resize 32x32 favicon-32x32.png
+  convert -density 300 -background none favicon.svg -resize 16x16 favicon-16x16.png
+  convert -density 300 -background white favicon.svg -resize 180x180 apple-touch-icon.png
+  echo "✓ PNG favicons generated successfully"
 else
-echo "⚠ ImageMagick not found. Please use online tools:"
-echo " - https://cloudconvert.com/svg-to-png"
-echo " - https://www.svgtopng.com/"
+  echo "⚠ ImageMagick not found. Please use online tools:"
+  echo "  - https://cloudconvert.com/svg-to-png"
+  echo "  - https://www.svgtopng.com/"
 fi
-
+```
 
 ## After Creating Assets
 
 Once all image assets are created:
 
-1. Place them in the `public/` directory.
+1. Place them in the `public/` directory
 2. Update `index.html` to reference the PNG favicons:
 
-<!-- Favicon --> <link rel="icon" type="image/svg+xml" href="/favicon.svg" /> <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" /> <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" /> <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" /> <link rel="manifest" href="/site.webmanifest" /> ```
-Test social media previews:
+   ```html
+   <!-- Favicon -->
+   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+   <link rel="manifest" href="/site.webmanifest" />
+   ```
 
-Facebook Debugger
+3. Test social media previews:
+   - [Facebook Debugger](https://developers.facebook.com/tools/debug/)
+   - [Twitter Card Validator](https://cards-dev.twitter.com/validator)
+   - [LinkedIn Post Inspector](https://www.linkedin.com/post-inspector/)
 
-Twitter Card Validator
+## Priority
 
-LinkedIn Post Inspector
-
-Priority
 According to the audit report:
+- **Social media images**: ✅ **PLACEHOLDER COMPLETE** - Generated placeholder prevents broken previews
+  - Optional: Custom-designed OG image (2-3 hours effort for professional design)
+- **Favicon PNGs**: 🟡 **MEDIUM PRIORITY** (1 hour effort)
+- **PWA manifest**: 🟢 **LOW PRIORITY** (optional enhancement)
 
-Social media images: ✅ PLACEHOLDER COMPLETE - Generated placeholder prevents broken previews ✅
+## Estimated Effort (Remaining Optional Work)
 
-Optional: Custom-designed OG image (2-3 hours effort for professional design)
+- Custom-designed social media images: 2-3 hours (optional enhancement)
+- PNG favicon generation: 30 minutes
+- PWA manifest setup: 30 minutes
+- **Total**: 3-4 hours for optional enhancements
 
-Favicon PNGs: 🟡 MEDIUM PRIORITY (1 hour effort)
+---
 
-PWA manifest: 🟢 LOW PRIORITY (optional enhancement)
-
-Estimated Effort (Remaining Optional Work)
-Custom-designed social media images: 2-3 hours (optional enhancement)
-
-PNG favicon generation: 30 minutes
-
-PWA manifest setup: 30 minutes
-
-Total: 3-4 hours for optional enhancements
-
-Created: December 10, 2024
-Last Updated: December 16, 2024
-Status: Placeholder OG image created - prevents broken social media previews ✅
-Related: AUDIT-REPORT.md Section 7 (High Priority Recommendations)
+**Created**: December 10, 2024
+**Last Updated**: December 16, 2024
+**Status**: Placeholder OG image created - prevents broken social media previews ✅
+**Related**: AUDIT-REPORT.md Section 7 (High Priority Recommendations)

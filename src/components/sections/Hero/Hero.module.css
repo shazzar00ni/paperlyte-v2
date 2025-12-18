@@ -205,7 +205,7 @@
   width: 100%;
   height: auto;
   display: block;
-  border-radius: inherit;
+  border-radius: 0;
 }
 
 /* Trusted By Section */

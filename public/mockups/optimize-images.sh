@@ -13,8 +13,11 @@ echo "Optimizing mockup images for web..."
 if [ ! -f "notes-list.png" ] && [ ! -f "note-detail.png" ]; then
   echo "Error: No images found in current directory"
   echo "Please place your original images here first:"
-  echo "  - notes-list.png (or any name, will be converted)"
-  echo "  - note-detail.png (or any name, will be converted)"
+  echo "  - notes-list-original.png (or notes-list.png)"
+  echo "  - note-detail-original.png (or note-detail.png)"
+  echo ""
+  echo "Or pass custom filenames as arguments:"
+  echo "  ./optimize-images.sh my-list.png my-detail.png"
   exit 1
 fi
 

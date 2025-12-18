@@ -5,6 +5,7 @@ This directory contains product screenshot mockups used throughout the Paperlyte
 ## Required Images
 
 ### 1. `notes-list.png`
+
 **Purpose**: Primary hero mockup showing the notes list view
 **Content**: "Today's Notes" interface with 3 notes displayed:
 - "Project Ideas" (blue dot) - Brainstorming session for the new app...
@@ -18,6 +19,7 @@ This directory contains product screenshot mockups used throughout the Paperlyte
 - File size: < 500KB (optimize for web)
 
 ### 2. `note-detail.png`
+
 **Purpose**: Secondary floating mockup showing note editor view
 **Content**: Single note editor with macOS window controls (red, yellow, green dots) and bullet points:
 - Quick idea about the new project...

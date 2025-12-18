@@ -74,11 +74,10 @@ export const Icon: React.FC<IconProps> = ({
     brands: 'fab',
     regular: 'far',
   }[variant] as 'fas' | 'fab' | 'far'
-  
+
   // Auto-detect brand icons if variant is 'solid' or 'regular' but icon is actually a brand icon
   const isBrandIconType = (variant === 'solid' || variant === 'regular') && isBrandIcon(iconName)
   const finalPrefix = isBrandIconType ? 'fab' : variantPrefix
-  
   const iconProp: IconProp = [finalPrefix, iconName as IconName] as IconProp
 
   return (

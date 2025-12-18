@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import type { IconProp, SizeProp, IconName } from '@fortawesome/fontawesome-svg-core'
+import type { SizeProp } from '@fortawesome/fontawesome-svg-core'
 import { faCircleQuestion } from '@fortawesome/free-solid-svg-icons'
 import { convertIconName, isBrandIcon, isValidIcon } from '../../../utils/iconLibrary'
 
@@ -68,17 +68,18 @@ export const Icon: React.FC<IconProps> = ({
     )
   }
 
-  // Determine the icon type (brand vs solid) using helper function
+  // Determine variant class based on icon type
   const isBrandIconType = isBrandIcon(iconName)
-  const iconProp: IconProp = isBrandIconType
-    ? (['fab', iconName as IconName] as IconProp)
-    : (['fas', iconName as IconName] as IconProp)
+  const variantClass = isBrandIconType
+    ? 'fa-brands'
+    : {
+        solid: 'fa-solid',
+        brands: 'fa-brands',
+        regular: 'fa-regular',
+      }[variant]
 
-  const variantClass = {
-    solid: 'fa-solid',
-    brands: 'fa-brands',
-    regular: 'fa-regular',
-  }[variant]
+  // Map size to FontAwesome size class
+  const sizeClass = size === 'md' ? '' : `fa-${size}`
 
   return (
     <i

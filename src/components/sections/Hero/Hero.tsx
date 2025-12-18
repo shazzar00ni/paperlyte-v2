@@ -119,6 +119,10 @@ export const Hero = () => {
             <img
               src="/mockups/notes-list.png"
               alt="Paperlyte notes list showing Today's Notes with three items: Project Ideas for brainstorming, Meeting Notes with key takeaways, and Quick Thoughts being written"
+              width={1100}
+              height={800}
+              loading="eager"
+              decoding="async"
               className={styles.mockupImage}
             />
           </div>
@@ -128,6 +132,10 @@ export const Hero = () => {
             <img
               src="/mockups/note-detail.png"
               alt="Paperlyte note editor with bullet points including quick project ideas, meeting reminders, and presentation notes"
+              width={800}
+              height={600}
+              loading="lazy"
+              decoding="async"
               className={styles.mockupImage}
             />
           </div>

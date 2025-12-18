@@ -75,8 +75,8 @@ export const Icon: React.FC<IconProps> = ({
     regular: 'far',
   }[variant] as 'fas' | 'fab' | 'far'
   
-  // Auto-detect brand icons if variant is 'solid' but icon is actually a brand icon
-  const isBrandIconType = variant === 'solid' && isBrandIcon(iconName)
+  // Auto-detect brand icons if variant is 'solid' or 'regular' but icon is actually a brand icon
+  const isBrandIconType = (variant === 'solid' || variant === 'regular') && isBrandIcon(iconName)
   const finalPrefix = isBrandIconType ? 'fab' : variantPrefix
   
   const iconProp: IconProp = [finalPrefix, iconName as IconName] as IconProp
@@ -86,7 +86,7 @@ export const Icon: React.FC<IconProps> = ({
       icon={iconProp}
       size={faSize}
       className={className}
-      aria-label={ariaLabel || iconName}
+      aria-label={ariaLabel}
       aria-hidden={!ariaLabel}
       style={{ ...style, ...(normalizedColor ? { color: normalizedColor } : {}) }}
       {...(ariaLabel && { role: 'img' })}

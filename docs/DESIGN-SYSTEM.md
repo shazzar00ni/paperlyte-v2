@@ -108,6 +108,7 @@ A comprehensive design system for Paperlyte - a lightning-fast, distraction-free
 
 #### Hover States
 ```css
+
 /* Primary Button Hover */
 background-color: var(--color-primary-dark); /* #000000 */
 transform: translateY(-1px);
@@ -198,6 +199,7 @@ cursor: not-allowed;
 ### Font Weights
 
 ```css
+
 --font-weight-normal: 400;    /* Body text */
 --font-weight-medium: 500;    /* Emphasis */
 --font-weight-semibold: 600;  /* Strong emphasis */
@@ -207,6 +209,7 @@ cursor: not-allowed;
 ### Line Heights
 
 ```css
+
 --line-height-tight: 1.1;     /* Hero headlines (Playfair Display) */
 --line-height-snug: 1.25;     /* Headings */
 --line-height-normal: 1.5;    /* UI elements, small text */
@@ -232,6 +235,7 @@ On mobile, `--font-size-6xl` intentionally scales from 3.75rem (60px) to 2.75rem
 ### Typography Examples
 
 ```tsx
+
 // Hero headline (Playfair Display serif)
 <h1 style={{ fontFamily: 'var(--font-family-serif)' }}>
   Your thoughts, <em>unchained</em> from complexity

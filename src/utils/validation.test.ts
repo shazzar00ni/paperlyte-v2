@@ -167,6 +167,26 @@ describe('sanitizeInput', () => {
     expect(result).not.toContain('>')
     expect(result).not.toContain('onerror')
   })
+
+  it('should prevent nested event handler bypass attacks', () => {
+    // ononclick= should be fully removed, not leave onclick=
+    expect(sanitizeInput('ononclick=alert(1)')).toBe('alert(1)')
+    expect(sanitizeInput('onononclick=alert(1)')).toBe('alert(1)')
+    expect(sanitizeInput('ononload=bad()')).toBe('bad()')
+  })
+
+  it('should prevent nested protocol bypass attacks', () => {
+    // javascript:javascript: should be fully removed
+    expect(sanitizeInput('javascript:javascript:alert(1)')).toBe('alert(1)')
+    expect(sanitizeInput('jajavascript:vascript:alert(1)')).toBe('alert(1)')
+    expect(sanitizeInput('data:data:text/html,test')).toBe('text/html,test')
+  })
+
+  it('should handle deeply nested bypass attempts', () => {
+    // Multiple layers of nesting
+    expect(sanitizeInput('ononononclick=alert(1)')).toBe('alert(1)')
+    expect(sanitizeInput('jajajavascript:vascript:vascript:alert(1)')).toBe('alert(1)')
+  })
 })
 
 describe('encodeHtmlEntities', () => {

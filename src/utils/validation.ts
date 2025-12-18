@@ -229,21 +229,42 @@ export function sanitizeInput(input: string): string {
     /about\s*:/gi,
   ]
 
-  // Repeatedly remove each protocol until none remain (handles nested patterns like javascript:javascript:)
+  // Iteratively remove dangerous protocols to prevent bypass attacks
+  // Prevents nested patterns like javascript:javascript: or jajavascript:vascript:
+  let iterationCount = 0
+  const maxIterations = 100 // DoS protection
+
   dangerousProtocols.forEach((protocol) => {
+    let prevSanitized
+    iterationCount = 0
     do {
-      prevLength = sanitized.length
+      prevSanitized = sanitized
       sanitized = sanitized.replace(protocol, '')
-    } while (sanitized.length !== prevLength)
+      iterationCount++
+    } while (sanitized !== prevSanitized && iterationCount < maxIterations)
   })
 
-  // Remove all event handler attributes (e.g., onclick=, onmouseover=, etc.)
-  // Use iterative removal to prevent incomplete multi-character sanitization
-  prevLength = 0 // Reset to avoid stale value from protocol loop
+  // Iteratively remove event handler attributes to prevent bypass attacks
+  // Prevents nested patterns like ononclick= → onclick=
+  // Matches patterns like: onclick=, onerror=, onload=, etc. (with or without spaces)
+  let prevSanitized
+  iterationCount = 0
   do {
-    prevLength = sanitized.length
-    sanitized = sanitized.replace(/on\w+\s*=/gi, '')
-  } while (sanitized.length !== prevLength)
+    prevSanitized = sanitized
+    sanitized = sanitized.replace(/\bon\w+\s*=\s*/gi, '')
+    iterationCount++
+  } while (sanitized !== prevSanitized && iterationCount < maxIterations)
+
+  // Remove any remaining "on" prefixes that could be part of event handlers
+  // This is more aggressive but safer for preventing HTML attribute injection
+  // Repeat until all occurrences are removed (prevents incomplete sanitization)
+  prevSanitized = ''
+  iterationCount = 0
+  do {
+    prevSanitized = sanitized
+    sanitized = sanitized.replace(/\s+on\w+/gi, '')
+    iterationCount++
+  } while (sanitized !== prevSanitized && iterationCount < maxIterations)
 
   // Encode any special HTML entities that might have been missed
   sanitized = sanitized.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;')

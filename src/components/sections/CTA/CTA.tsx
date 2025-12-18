@@ -1,43 +1,68 @@
 import { Section } from '@components/layout/Section'
 import { Button } from '@components/ui/Button'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
-import { scrollToSection } from '@/utils/navigation'
-import { useAnalytics } from '@hooks/useAnalytics'
 import styles from './CTA.module.css'
 
-export const CTA = () => {
-  const { trackCTAClick } = useAnalytics()
-
-  const handleGetStartedClick = () => {
-    trackCTAClick('Get Started for Free', 'cta-section')
-    scrollToSection('hero')
-  }
-
-  const handleLearnMoreClick = () => {
-    trackCTAClick('Learn More', 'cta-section')
-    scrollToSection('features')
-  }
+export const CTA = (): React.ReactElement => {
   return (
-    <Section id="download" background="default" className={styles.cta}>
-      <div className={styles.container}>
+    <Section id="download" background="primary" className={styles.cta}>
+      <div className={styles.content}>
         <AnimatedElement animation="fadeIn">
-          <h2 className={styles.title}>Ready to declutter your mind?</h2>
+          <h2 className={styles.title}>Start capturing your thoughts instantly</h2>
         </AnimatedElement>
 
-        <AnimatedElement animation="fadeIn" delay={100}>
+        <AnimatedElement animation="fadeIn" delay={150}>
           <p className={styles.subtitle}>
-            Join 20,000+ professionals organizing their life with Paperlyte.
+            Free to start. No credit card required. Available on all your devices.
           </p>
         </AnimatedElement>
 
-        <AnimatedElement animation="fadeIn" delay={200}>
+        <AnimatedElement animation="fadeIn" delay={300}>
           <div className={styles.buttons}>
-            <Button variant="primary" size="large" onClick={handleGetStartedClick}>
-              Get Started for Free
+            <Button
+              variant="secondary"
+              size="large"
+              icon="fa-apple"
+              href="#"
+              className={styles.downloadButton}
+            >
+              Download for Mac
             </Button>
-            <Button variant="secondary" size="large" onClick={handleLearnMoreClick}>
-              Learn More
+            <Button
+              variant="secondary"
+              size="large"
+              icon="fa-windows"
+              href="#"
+              className={styles.downloadButton}
+            >
+              Download for Windows
             </Button>
+          </div>
+        </AnimatedElement>
+
+        <AnimatedElement animation="fadeIn" delay={450}>
+          <div className={styles.platforms}>
+            <p className={styles.platformText}>
+              Also available for{' '}
+              <a href="#" className={styles.platformLink}>
+                iOS
+              </a>
+              ,{' '}
+              <a href="#" className={styles.platformLink}>
+                Android
+              </a>
+              , and{' '}
+              <a href="#" className={styles.platformLink}>
+                Linux
+              </a>
+            </p>
+          </div>
+        </AnimatedElement>
+
+        <AnimatedElement animation="fadeIn" delay={600}>
+          <div className={styles.badge}>
+            <i className="fa-brands fa-github" aria-hidden="true" />
+            <span>Open source on GitHub</span>
           </div>
         </AnimatedElement>
       </div>

@@ -21,7 +21,7 @@ This directory contains product screenshot mockups used throughout the Paperlyte
 ### 2. `note-detail.png`
 
 **Purpose**: Secondary floating mockup showing note editor view
-**Content**: Single note editor with macOS window controls (red, yellow, green dots) and bullet points:
+**Content**: Single note editor window, using either generic window chrome or (optionally) macOS-style window controls (red, yellow, green dots), and bullet points:
 - Quick idea about the new project...
 - Remember to call Sarah about the meeting
 - Brain dump for tomorrow's presentation...

@@ -1,7 +1,16 @@
 #!/bin/bash
 # Image optimization script for Paperlyte mockups
 #
-# Usage: ./optimize-images.sh
+# Usage: ./optimize-images.sh [SOURCE1] [SOURCE2]
+#
+# Arguments (all optional):
+#   SOURCE1 - Path to source image for notes-list.png (default: notes-list-original.png or notes-list.png)
+#   SOURCE2 - Path to source image for note-detail.png (default: note-detail-original.png or note-detail.png)
+#
+# The script expects PNG format images and will:
+#   - Resize to recommended dimensions (1100x800 for notes-list, 800x600 for note-detail)
+#   - Optimize quality and strip metadata
+#   - Compress with pngquant for web delivery
 #
 # Prerequisites:
 #   - ImageMagick: sudo apt-get install imagemagick

@@ -39,6 +39,20 @@ These images are displayed in the Hero section of the landing page (`src/compone
 - **Primary mockup** (`notes-list.png`): Main focus, displayed prominently
 - **Secondary mockup** (`note-detail.png`): Floating accent, overlapping the primary mockup for visual depth
 
+### Fallback Strategy
+
+The Hero component uses `<picture>` elements with:
+
+- **PNG source** (preferred): High-quality optimized images for production
+- **SVG fallback** (included): Lightweight vector placeholders used when PNG files are missing
+
+Current placeholder files:
+
+- `notes-list.svg` - SVG placeholder matching the notes list layout
+- `note-detail.svg` - SVG placeholder matching the note detail layout
+
+**For production**: Replace placeholders by adding optimized PNG files as specified above.
+
 ## Image Optimization
 
 Before adding images, ensure they are optimized for web:

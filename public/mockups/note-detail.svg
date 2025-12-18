@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <!-- Window background -->
+  <rect width="800" height="600" fill="#FFFFFF" rx="12"/>
+
+  <!-- macOS window controls -->
+  <circle cx="24" cy="24" r="8" fill="#FF5F56"/>
+  <circle cx="48" cy="24" r="8" fill="#FFBD2E"/>
+  <circle cx="72" cy="24" r="8" fill="#27C93F"/>
+
+  <!-- Window border -->
+  <rect width="800" height="600" fill="none" stroke="#E5E5E5" stroke-width="1" rx="12"/>
+
+  <!-- Content area -->
+  <!-- Bullet point 1 -->
+  <circle cx="48" cy="100" r="6" fill="#5B7FFF"/>
+  <text x="72" y="106" font-family="Inter, system-ui, sans-serif" font-size="20" fill="#0A0A0A">Quick idea about the new project...</text>
+
+  <!-- Bullet point 2 -->
+  <circle cx="48" cy="180" r="6" fill="#A855F7"/>
+  <text x="72" y="186" font-family="Inter, system-ui, sans-serif" font-size="20" fill="#0A0A0A">Remember to call Sarah about the meeting</text>
+
+  <!-- Bullet point 3 -->
+  <circle cx="48" cy="260" r="6" fill="#10B981"/>
+  <text x="72" y="266" font-family="Inter, system-ui, sans-serif" font-size="20" fill="#0A0A0A">Brain dump for tomorrow's presentation...</text>
+</svg>

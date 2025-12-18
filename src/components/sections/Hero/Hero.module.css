@@ -162,6 +162,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  /* Add padding to accommodate floating secondary mockup overflow */
+  padding: 0 8% 8% 0;
 }
 
 /* Primary mockup (Notes list) - Main focus */

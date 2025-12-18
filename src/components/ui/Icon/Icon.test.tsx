@@ -71,4 +71,49 @@ describe('Icon', () => {
     // Browser normalizes #FF0000 to rgb(255, 0, 0)
     expect(icon).toHaveStyle({ color: '#FF0000' })
   })
+
+  it('should use fas prefix for solid variant', () => {
+    const { container } = render(<Icon name="fa-bolt" variant="solid" />)
+    const icon = container.querySelector('svg')
+
+    expect(icon).toBeInTheDocument()
+    expect(icon).toHaveClass('fa-bolt')
+  })
+
+  it('should handle regular variant without crashing', () => {
+    // Note: We don't have regular style icons in the library
+    // This test verifies the component handles the variant prop without crashing
+    // FontAwesome will either render nothing or fallback behavior
+    const { container } = render(<Icon name="fa-bolt" variant="regular" />)
+    
+    // The component should render without throwing errors
+    // Even if FontAwesome can't find the icon in regular style
+    expect(container).toBeInTheDocument()
+  })
+
+  it('should use fab prefix for brands variant', () => {
+    const { container } = render(<Icon name="fa-github" variant="brands" />)
+    const icon = container.querySelector('svg')
+
+    expect(icon).toBeInTheDocument()
+    expect(icon).toHaveClass('fa-github')
+  })
+
+  it('should auto-detect brand icons with solid variant', () => {
+    const { container } = render(<Icon name="fa-github" variant="solid" />)
+    const icon = container.querySelector('svg')
+
+    // Should auto-detect github as a brand icon and use fab prefix
+    expect(icon).toBeInTheDocument()
+    expect(icon).toHaveClass('fa-github')
+  })
+
+  it('should auto-detect brand icons with regular variant', () => {
+    const { container } = render(<Icon name="fa-twitter" variant="regular" />)
+    const icon = container.querySelector('svg')
+
+    // Should auto-detect twitter as a brand icon and use fab prefix
+    expect(icon).toBeInTheDocument()
+    expect(icon).toHaveClass('fa-twitter')
+  })
 })

@@ -108,6 +108,7 @@ A comprehensive design system for Paperlyte - a lightning-fast, distraction-free
 
 #### Hover States
 ```css
+
 /* Primary Button Hover */
 background-color: var(--color-primary-dark); /* #000000 */
 transform: translateY(-1px);
@@ -270,6 +271,7 @@ import styles from './Alert.module.css'
 ### Font Weights
 
 ```css
+
 --font-weight-normal: 400;    /* Body text */
 --font-weight-medium: 500;    /* Emphasis */
 --font-weight-semibold: 600;  /* Strong emphasis */
@@ -279,6 +281,7 @@ import styles from './Alert.module.css'
 ### Line Heights
 
 ```css
+
 --line-height-tight: 1.1;     /* Hero headlines (Playfair Display) */
 --line-height-snug: 1.25;     /* Headings */
 --line-height-normal: 1.5;    /* UI elements, small text */
@@ -298,6 +301,7 @@ Typography automatically adjusts on mobile devices for better readability and sp
 }
 ```
 
+On mobile, `--font-size-6xl` intentionally scales from 3.75rem (60px) to 2.75rem (44px), staying larger than `--font-size-5xl` to preserve the visual hierarchy without overpowering smaller screens.
 **Note:** Hero headlines reduce significantly on mobile to maintain visual balance and prevent overwhelming small screens.
 
 ### Typography Examples
@@ -305,6 +309,7 @@ Typography automatically adjusts on mobile devices for better readability and sp
 **Using CSS Modules (recommended):**
 
 ```tsx
+
 import styles from './Component.module.css'
 
 // Hero headline (Playfair Display serif)
@@ -1113,9 +1118,9 @@ section {
 
 ### Touch Target Sizes
 
-**Minimum touch target size: 44x44px** (WCAG 2.5.5 Level AA)
+**Minimum implemented touch target size: 44x44px** (meets WCAG 2.5.5 Level AAA; WCAG 2.5.5 Level AA minimum is 24x24px)
 
-The design uses 44px as the minimum touch target, meeting WCAG 2.5.5 Level AA compliance. This ensures all interactive elements are easily tappable on mobile devices.
+The design uses 44px as the minimum touch target, exceeding the WCAG 2.5.5 Level AA requirement (24x24px) and meeting Level AAA. This ensures all interactive elements are easily tappable on mobile devices.
 
 ```css
 button,
@@ -1240,7 +1245,7 @@ Small, pill-shaped badges for announcements or status indicators:
 
 .headlineItalic {
   font-style: italic;
-  color: var(--color-text-tertiary);      /* Muted gray */
+  color: var(--color-text-primary);      /* High-contrast emphasis */
 }
 ```
 
@@ -1351,7 +1356,7 @@ The mockup includes:
 @media (max-width: 768px) {
   /* Reduce headline size */
   .headline {
-    font-size: var(--font-size-5xl);  /* 72px → 36px */
+    font-size: var(--font-size-5xl);  /* 72px → 48px (3rem) */
   }
 
   /* Stack CTAs vertically */

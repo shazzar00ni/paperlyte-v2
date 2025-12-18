@@ -85,7 +85,7 @@ describe('Icon', () => {
     // This test verifies the component handles the variant prop without crashing
     // FontAwesome will either render nothing or fallback behavior
     const { container } = render(<Icon name="fa-bolt" variant="regular" />)
-    
+
     // The component should render without throwing errors
     // Even if FontAwesome can't find the icon in regular style
     expect(container).toBeInTheDocument()

@@ -1,3 +1,5 @@
+import { LAUNCH_QUARTER } from './waitlist'
+
 /**
  * Represents a frequently asked question
  */
@@ -23,7 +25,7 @@ export const FAQ_ITEMS: FAQItem[] = [
     category: 'general',
     question: 'When will Paperlyte launch?',
     answer:
-      'We\'re targeting Q2 2026 for public launch. Waitlist members get early access 2 weeks before everyone else.',
+      `We're targeting ${LAUNCH_QUARTER} for public launch. Waitlist members get early access 2 weeks before everyone else.`,
   },
   {
     id: 'pricing',
@@ -58,7 +60,7 @@ export const FAQ_ITEMS: FAQItem[] = [
     category: 'features',
     question: 'Will there be a mobile app?',
     answer:
-      'Yes! The responsive web app works great on mobile browsers now. Native iOS and Android apps are planned for Q2 2026 with offline sync and system integration.',
+      `Yes! The responsive web app works great on mobile browsers now. Native iOS and Android apps are planned for ${LAUNCH_QUARTER} with offline sync and system integration.`,
   },
   {
     id: 'vs-competitors',

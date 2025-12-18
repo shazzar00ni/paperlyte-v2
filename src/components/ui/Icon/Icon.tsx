@@ -70,11 +70,7 @@ export const Icon: React.FC<IconProps> = ({
 
   // Determine the icon type based on variant and brand detection
   const isBrandIconType = isBrandIcon(iconName)
-  const iconPrefix = isBrandIconType
-    ? 'fab'
-    : variant === 'regular'
-      ? 'far'
-      : 'fas'
+  const iconPrefix = isBrandIconType ? 'fab' : variant === 'regular' ? 'far' : 'fas'
   const iconProp: IconProp = [iconPrefix, iconName as IconName] as IconProp
 
   return (

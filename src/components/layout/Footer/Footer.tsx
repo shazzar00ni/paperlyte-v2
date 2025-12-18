@@ -18,7 +18,7 @@ export const Footer = (): React.ReactElement => {
               © {currentYear} Paperlyte. All rights reserved.
             </p>
             <p className={styles.taglineSecondary}>
-              Built with <span aria-label="love">💙</span> for people who think fast.
+              Built with <span role="img" aria-label="love">💙</span> for people who think fast.
             </p>
           </div>
 

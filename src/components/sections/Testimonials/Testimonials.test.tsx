@@ -14,7 +14,7 @@ describe('Testimonials', () => {
   it('should render the section title', () => {
     render(<Testimonials />)
 
-    expect(screen.getByText('Built for people who think fast')).toBeInTheDocument()
+    expect(screen.getByText('What people are saying')).toBeInTheDocument()
   })
 
   it('should render the testimonial quote', () => {

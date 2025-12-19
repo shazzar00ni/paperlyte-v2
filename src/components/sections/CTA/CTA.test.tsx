@@ -70,7 +70,7 @@ describe('CTA', () => {
   })
 
   it('should render without crashing', () => {
-    const { container} = render(<CTA />)
+    const { container } = render(<CTA />)
     expect(container).toBeDefined()
     expect(container.querySelector('section')).toBeInTheDocument()
   })

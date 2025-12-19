@@ -31,10 +31,10 @@ export const EmailCapture = (): React.ReactElement => {
     try {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000))
-      
+
       setIsLoading(false)
       setIsSubmitted(true)
-    } catch (err) {
+    } catch {
       setIsLoading(false)
       setError('Failed to join waitlist. Please try again.')
     }

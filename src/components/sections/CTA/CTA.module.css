@@ -116,11 +116,22 @@
   text-decoration: underline;
   cursor: pointer;
   padding: 0;
-  transition: color 0.2s ease;
 }
 
 .textLink:hover {
   color: var(--color-primary-dark);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .textLink {
+    transition: color 0.2s ease;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .textLink {
+    transition: none;
+  }
 }
 
 .microcopy {

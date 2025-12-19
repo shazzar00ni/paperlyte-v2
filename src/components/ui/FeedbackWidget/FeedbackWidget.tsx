@@ -85,9 +85,22 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
 
           // Get existing feedback from localStorage
           const existingFeedback = localStorage.getItem('paperlyte_feedback')
-          const feedbackArray = existingFeedback ? JSON.parse(existingFeedback) : []
-          feedbackArray.push(feedbackEntry)
+          let feedbackArray: unknown = []
 
+          if (existingFeedback) {
+            try {
+              feedbackArray = JSON.parse(existingFeedback)
+            } catch (parseError) {
+              console.error('Failed to parse stored feedback from localStorage', parseError)
+              feedbackArray = []
+            }
+          }
+
+          if (!Array.isArray(feedbackArray)) {
+            feedbackArray = []
+          }
+
+          ;(feedbackArray as unknown[]).push(feedbackEntry)
           // Store updated feedback
           localStorage.setItem('paperlyte_feedback', JSON.stringify(feedbackArray))
           console.log('Feedback submitted:', feedbackEntry)

@@ -102,7 +102,14 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
 
           ;(feedbackArray as unknown[]).push(feedbackEntry)
           // Store updated feedback
-          localStorage.setItem('paperlyte_feedback', JSON.stringify(feedbackArray))
+          try {
+            localStorage.setItem('paperlyte_feedback', JSON.stringify(feedbackArray))
+          } catch (storageError) {
+            // Provide a clearer message for storage-related issues
+            throw new Error(
+              'Unable to save feedback locally. Your browser storage may be full or disabled.'
+            )
+          }
           console.log('Feedback submitted:', feedbackEntry)
         }
 

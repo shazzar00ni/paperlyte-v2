@@ -11,7 +11,7 @@ import { analytics } from '@utils/analytics'
 /**
  * Root application component that renders the app layout and initializes analytics on mount.
  *
- * Renders Header, a main content area containing Hero, Features, and CTA, Footer, and FeedbackWidget wrapped in an ErrorBoundary.
+ * Renders the Header, main content area (Hero, Features, and CTA sections), Footer, and FeedbackWidget, all wrapped in an ErrorBoundary.
  *
  * @returns The top-level React element for the application.
  */

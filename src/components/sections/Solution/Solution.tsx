@@ -47,7 +47,7 @@ const VALUE_PROPS: ValueProp[] = [
       'Real-time sync across every device—Mac, Windows, Linux, iOS, Android, and web. But unlike cloud-dependent apps, Paperlyte works offline-first.',
       'On a plane? Underground subway? Spotty café WiFi? Keep writing. Everything syncs automatically when you\'re back online.',
     ],
-import { WAITLIST_COUNT, LAUNCH_QUARTER } from '@constants/waitlist'
+    proof: 'Mac, Windows, Linux, iOS, Android, Web | Offline-first | Auto-sync when online',
   },
 ]
 

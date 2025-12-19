@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { ErrorBoundary } from '@components/ErrorBoundary'
 import { Header } from '@components/layout/Header'
 import { Footer } from '@components/layout/Footer'
@@ -12,9 +13,10 @@ import { Testimonials } from '@components/sections/Testimonials'
 import { EmailCapture } from '@components/sections/EmailCapture'
 import { FAQ } from '@components/sections/FAQ'
 import { CTA } from '@components/sections/CTA'
+import { analytics } from '@utils/analytics'
 
 /**
- * Root application component.
+ * Root application component that renders the app layout and initializes analytics on mount.
  *
  * @returns The root JSX element rendering the app: an ErrorBoundary wrapping
  * the Header, and a main element containing Hero, Problem, Solution, Features,
@@ -22,6 +24,11 @@ import { CTA } from '@components/sections/CTA'
  * then the Footer.
  */
 function App() {
+  // Initialize analytics on mount
+  useEffect(() => {
+    analytics.init()
+  }, [])
+
   return (
     <ErrorBoundary>
       <Header />

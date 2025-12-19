@@ -20,9 +20,7 @@ describe('Testimonials', () => {
   it('should render the testimonial quote', () => {
     render(<Testimonials />)
 
-    expect(
-      screen.getByText(/Finally, a note-taking app that doesn't get in my way/i)
-    ).toBeInTheDocument()
+    expect(screen.getByText(/I've tried every note-taking app out there/i)).toBeInTheDocument()
   })
 
   it('should render placeholder author name', () => {

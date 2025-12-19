@@ -1,77 +1,35 @@
 import { Section } from '@components/layout/Section'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { Icon } from '@components/ui/Icon'
+import { FEATURES } from '@constants/features'
 import styles from './Features.module.css'
-
-interface Feature {
-  id: string
-  icon: string
-  title: string
-  description: string
-}
-
-const FEATURES: Feature[] = [
-  {
-    id: 'zero-lag',
-    icon: 'fa-bolt',
-    title: 'Zero-Lag Typing',
-    description:
-      'Sub-10ms keystroke response so typing feels instant, even in large docs.',
-  },
-  {
-    id: 'tags',
-    icon: 'fa-tags',
-    title: 'Tag-Based Organization',
-    description:
-      'Organize with inline #tags, not rigid folders. Find anything instantly with smart search.',
-  },
-  {
-    id: 'cross-platform',
-    icon: 'fa-arrows-rotate',
-    title: 'Cross-Platform Sync',
-    description:
-      'Available on Mac, Windows, Linux, iOS, Android, and web. Start on one device, continue on another with automatic sync.',
-  },
-  {
-    id: 'distraction-free',
-    icon: 'fa-feather-pointed',
-    title: 'Distraction-Free Writing',
-    description:
-      'An interface that disappears when you start typing. Just you and your thoughts.',
-  },
-  {
-    id: 'private',
-    icon: 'fa-lock',
-    title: 'Private by Design',
-    description:
-      'Local-first architecture with optional end-to-end encrypted sync. Your data is yours.',
-  },
-  {
-    id: 'offline',
-    icon: 'fa-wifi-slash',
-    title: 'Offline-First',
-    description:
-      'Core writing and organization work fully offline. Capture anywhere, sync when connected.',
-  },
-]
 
 export const Features = (): React.ReactElement => {
   return (
-    <Section id="features" background="default">
-      <div className={styles.container}>
-        <div className={styles.grid}>
-          {FEATURES.map((feature, index) => (
-            <AnimatedElement key={feature.id} animation="fadeIn" delay={100 + index * 100}>
-              <article className={styles.feature}>
-                <div className={styles.iconWrapper}>
-                  <Icon name={feature.icon} size="lg" ariaLabel={`${feature.title} icon`} />
-                </div>
-                <h3 className={styles.featureTitle}>{feature.title}</h3>
-                <p className={styles.featureDescription}>{feature.description}</p>
-              </article>
-            </AnimatedElement>
-          ))}
-        </div>
+    <Section id="features" background="surface">
+      <header className={styles.header}>
+        <AnimatedElement animation="fadeIn">
+          <h2 className={styles.title}>Everything you need. Nothing you don't.</h2>
+        </AnimatedElement>
+        <AnimatedElement animation="fadeIn" delay={100}>
+          <p className={styles.subtitle}>
+            Built for speed, designed for simplicity. Focus on your ideas, not the tool.
+          </p>
+        </AnimatedElement>
+      </header>
+
+      <div className={styles.grid}>
+        {FEATURES.map((feature, index) => (
+          <AnimatedElement key={feature.id} animation="slideUp" delay={150 + index * 75}>
+            <article className={styles.card}>
+              <div className={styles.iconWrapper}>
+                <Icon name={feature.icon} size="2x" color="var(--color-primary)" />
+              </div>
+              <h3 className={styles.cardTitle}>{feature.title}</h3>
+              <p className={styles.cardDescription}>{feature.description}</p>
+            </article>
+          </AnimatedElement>
+        ))}
       </div>
     </Section>
   )

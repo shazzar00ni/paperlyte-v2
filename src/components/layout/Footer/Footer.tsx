@@ -1,4 +1,5 @@
 import { Icon } from '@components/ui/Icon'
+import { LEGAL_CONFIG } from '@/constants/legal'
 import styles from './Footer.module.css'
 
 export const Footer = (): React.ReactElement => {
@@ -73,18 +74,23 @@ export const Footer = (): React.ReactElement => {
             <h3 className={styles.linkGroupTitle}>Legal</h3>
             <ul className={styles.linkList}>
               <li>
-                <a href="#" className={styles.link}>
+                <a
+                  href={LEGAL_CONFIG.documents.privacy}
+                  className={styles.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   Privacy Policy
                 </a>
               </li>
               <li>
-                <a href="#" className={styles.link}>
-                  Terms
-                </a>
-              </li>
-              <li>
-                <a href="#" className={styles.link}>
-                  Security
+                <a
+                  href={LEGAL_CONFIG.documents.terms}
+                  className={styles.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Terms of Service
                 </a>
               </li>
             </ul>
@@ -92,43 +98,42 @@ export const Footer = (): React.ReactElement => {
 
           <div className={styles.linkGroup}>
             <h3 className={styles.linkGroupTitle}>Connect</h3>
-            <ul className={styles.linkList}>
-              <li>
-                <a
-                  href="https://twitter.com/paperlyte"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.link}
-                >
-                  Twitter
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://github.com/paperlyte"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.link}
-                >
-                  GitHub
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://discord.gg/paperlyte"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.link}
-                >
-                  Discord
-                </a>
-              </li>
-              <li>
-                <a href="mailto:hello@paperlyte.com" className={styles.link}>
-                  Email
-                </a>
-              </li>
-            </ul>
+            <div className={styles.socialIcons}>
+              <a
+                href="https://github.com/paperlyte"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.socialLink}
+                aria-label="Follow us on GitHub"
+              >
+                <Icon name="fa-github" variant="brands" size="xl" />
+              </a>
+              <a
+                href="https://x.com/paperlyte"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.socialLink}
+                aria-label="Follow us on X (Twitter)"
+              >
+                <Icon name="fa-x-twitter" variant="brands" size="xl" />
+              </a>
+              <a
+                href="https://instagram.com/paperlytefilms"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.socialLink}
+                aria-label="Follow us on Instagram"
+              >
+                <Icon name="fa-instagram" variant="brands" size="xl" />
+              </a>
+              <a
+                href="mailto:hello@paperlyte.com"
+                className={styles.socialLink}
+                aria-label="Email us"
+              >
+                <Icon name="fa-envelope" size="xl" />
+              </a>
+            </div>
           </div>
         </div>
       </div>

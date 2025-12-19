@@ -70,6 +70,15 @@ export const FAQ = (): React.ReactElement => {
         <AnimatedElement animation="fadeIn">
           <h2 className={styles.title}>Questions? We've got answers.</h2>
         </AnimatedElement>
+        <AnimatedElement animation="fadeIn" delay={100}>
+          <p className={styles.subtitle}>
+            Everything you need to know. Can't find what you're looking for?{' '}
+            <a href="#contact" className={styles.link}>
+              Contact us
+            </a>
+            .
+          </p>
+        </AnimatedElement>
       </div>
 
       <div className={styles.grid}>

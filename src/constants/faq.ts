@@ -39,7 +39,7 @@ export const FAQ_ITEMS: FAQItem[] = [
     category: 'general',
     question: 'What platforms do you support?',
     answer:
-      'At launch: Responsive web app (works on all devices). Native iOS & Android apps coming in Q2 2026. Works seamlessly across Mac, Windows, and Linux via web.',
+      `At launch: Responsive web app (works on all devices). Native iOS & Android apps coming in ${LAUNCH_QUARTER}. Works seamlessly across Mac, Windows, and Linux via web.`,
   },
   {
     id: 'data-privacy',

@@ -35,11 +35,6 @@
   border: 1px solid var(--color-border);
   border-radius: 16px;
   padding: 3rem;
-.valueProp {
-  background: var(--color-background-secondary);
-  border: 1px solid var(--color-border);
-  border-radius: 16px;
-  padding: 3rem;
 }
 
 .valueProp:hover {
@@ -51,7 +46,6 @@
   .valueProp {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
-}
 }
 
 .valueHeader {

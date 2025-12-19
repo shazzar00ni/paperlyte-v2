@@ -2,18 +2,12 @@ import { describe, it, expect } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { EmailCapture } from './EmailCapture'
-
-describe('EmailCapture Section', () => {
-  it('renders the section title', () => {
-    render(<EmailCapture />)
 import { WAITLIST_COUNT } from '@/constants/waitlist'
 
 describe('EmailCapture Section', () => {
   it('renders the section title', () => {
     render(<EmailCapture />)
     expect(screen.getByText(`Join ${WAITLIST_COUNT} people on the waitlist`)).toBeInTheDocument()
-  })
-})
   })
 
   it('renders the form with email input and submit button', () => {

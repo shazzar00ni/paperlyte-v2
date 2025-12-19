@@ -20,6 +20,9 @@ export const EmailCapture = (): React.ReactElement => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  // Safe origin for SSR compatibility
+  const origin = typeof window !== 'undefined' ? window.location.origin : ''
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsLoading(true)
@@ -67,7 +70,7 @@ export const EmailCapture = (): React.ReactElement => {
                     variant="secondary"
                     size="medium"
                     icon="fa-brands fa-twitter"
-                    href={`https://twitter.com/intent/tweet?text=${encodeURIComponent("Check out Paperlyte – the productivity tool for modern teams! Get early access:")}&url=${encodeURIComponent(window.location.origin)}`}
+                    href={`https://twitter.com/intent/tweet?text=${encodeURIComponent("Check out Paperlyte – the note-taking app that gets out of your way. Get early access:")}&url=${encodeURIComponent(origin)}`}
                   >
                     Twitter
                   </Button>
@@ -75,7 +78,7 @@ export const EmailCapture = (): React.ReactElement => {
                     variant="secondary"
                     size="medium"
                     icon="fa-brands fa-facebook"
-                    href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.origin)}`}
+                    href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(origin)}`}
                   >
                     Facebook
                   </Button>
@@ -83,7 +86,7 @@ export const EmailCapture = (): React.ReactElement => {
                     variant="secondary"
                     size="medium"
                     icon="fa-brands fa-linkedin"
-                    href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(window.location.origin)}&title=${encodeURIComponent("Check out Paperlyte – the productivity tool for modern teams!")}`}
+                    href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(origin)}&title=${encodeURIComponent("Check out Paperlyte – the note-taking app that gets out of your way")}`}
                   >
                     LinkedIn
                   </Button>

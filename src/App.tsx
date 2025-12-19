@@ -1,11 +1,11 @@
-import { useEffect } from "react";
-import { ErrorBoundary } from "@components/ErrorBoundary";
-import { Header } from "@components/layout/Header";
-import { Footer } from "@components/layout/Footer";
-import { Hero } from "@components/sections/Hero";
-import { Features } from "@components/sections/Features";
-import { CTA } from "@components/sections/CTA";
-import { analytics } from "@utils/analytics";
+import { useEffect } from 'react'
+import { ErrorBoundary } from '@components/ErrorBoundary'
+import { Header } from '@components/layout/Header'
+import { Footer } from '@components/layout/Footer'
+import { Hero } from '@components/sections/Hero'
+import { Features } from '@components/sections/Features'
+import { CTA } from '@components/sections/CTA'
+import { analytics } from '@utils/analytics'
 
 /**
  * Root application component that renders the app layout and initializes analytics on mount.
@@ -17,8 +17,8 @@ import { analytics } from "@utils/analytics";
 function App() {
   // Initialize analytics on mount
   useEffect(() => {
-    analytics.init();
-  }, []);
+    analytics.init()
+  }, [])
 
   return (
     <ErrorBoundary>
@@ -30,7 +30,7 @@ function App() {
       </main>
       <Footer />
     </ErrorBoundary>
-  );
+  )
 }
 
-export default App;
+export default App

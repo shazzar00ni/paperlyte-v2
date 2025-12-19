@@ -1,15 +1,15 @@
-import { useMemo } from "react";
-import { iconPaths, getIconViewBox } from "./icons";
-import "./Icon.css";
+import { useMemo } from 'react'
+import { iconPaths, getIconViewBox } from './icons'
+import './Icon.css'
 
 interface IconProps {
-  name: string;
-  size?: "sm" | "md" | "lg" | "xl" | "2x" | "3x";
-  variant?: "solid" | "brands" | "regular";
-  className?: string;
-  ariaLabel?: string;
-  color?: string;
-  style?: React.CSSProperties;
+  name: string
+  size?: 'sm' | 'md' | 'lg' | 'xl' | '2x' | '3x'
+  variant?: 'solid' | 'brands' | 'regular'
+  className?: string
+  ariaLabel?: string
+  color?: string
+  style?: React.CSSProperties
 }
 
 // Static size map - moved outside component to avoid recreation on every render
@@ -18,49 +18,47 @@ const SIZE_MAP = {
   md: 20,
   lg: 24,
   xl: 32,
-  "2x": 40,
-  "3x": 48,
-} as const;
+  '2x': 40,
+  '3x': 48,
+} as const
 
 export const Icon = ({
   name,
-  size = "md",
-  variant = "solid",
-  className = "",
+  size = 'md',
+  variant = 'solid',
+  className = '',
   ariaLabel,
   color,
   style,
 }: IconProps): React.ReactElement => {
-  const iconSize = SIZE_MAP[size];
-  const paths = iconPaths[name];
-  const viewBox = getIconViewBox(name);
+  const iconSize = SIZE_MAP[size]
+  const paths = iconPaths[name]
+  const viewBox = getIconViewBox(name)
 
   // Memoize path array splitting for better performance
   const pathArray = useMemo(() => {
-    if (!paths) return [];
-    return paths.split(" M ");
-  }, [paths]);
+    if (!paths) return []
+    return paths.split(' M ')
+  }, [paths])
 
   // Fallback to Font Awesome class if icon not found in our set
   if (!paths) {
-    console.warn(
-      `Icon "${name}" not found in icon set, using Font Awesome fallback`,
-    );
+    console.warn(`Icon "${name}" not found in icon set, using Font Awesome fallback`)
     const variantClass = {
-      solid: "fa-solid",
-      brands: "fa-brands",
-      regular: "fa-regular",
-    }[variant];
+      solid: 'fa-solid',
+      brands: 'fa-brands',
+      regular: 'fa-regular',
+    }[variant]
 
     return (
       <i
         className={`${variantClass} ${name} icon-fallback ${className}`}
         style={{ fontSize: iconSize, ...style }}
         aria-label={ariaLabel}
-        aria-hidden={ariaLabel ? "false" : "true"}
-        {...(ariaLabel ? { role: "img" } : {})}
+        aria-hidden={ariaLabel ? 'false' : 'true'}
+        {...(ariaLabel ? { role: 'img' } : {})}
       />
-    );
+    )
   }
 
   return (
@@ -69,27 +67,23 @@ export const Icon = ({
       height={iconSize}
       viewBox={viewBox}
       fill="none"
-      stroke={color || "currentColor"}
+      stroke={color || 'currentColor'}
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
       className={`icon-svg ${className}`}
       style={style}
       aria-label={ariaLabel}
-      aria-hidden={ariaLabel ? "false" : "true"}
-      {...(ariaLabel && { role: "img" })}
+      aria-hidden={ariaLabel ? 'false' : 'true'}
+      {...(ariaLabel && { role: 'img' })}
     >
       {pathArray.map((pathData, index) => (
         <path
           key={index}
           d={index === 0 ? pathData : `M ${pathData}`}
-          fill={
-            name.includes("circle") || name.includes("shield")
-              ? "none"
-              : undefined
-          }
+          fill={name.includes('circle') || name.includes('shield') ? 'none' : undefined}
         />
       ))}
     </svg>
-  );
-};
+  )
+}

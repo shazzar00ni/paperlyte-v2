@@ -1,7 +1,7 @@
-import { defineConfig } from "vite";
-import type { Plugin } from "vite";
-import react from "@vitejs/plugin-react";
-import path from "path";
+import { defineConfig } from 'vite'
+import type { Plugin } from 'vite'
+import react from '@vitejs/plugin-react'
+import path from 'path'
 
 /**
  * Plugin to inject development-only Content Security Policy
@@ -32,18 +32,18 @@ import path from "path";
  * Current approach balances security with developer experience (standard Vite practice).
  */
 function cspPlugin(): Plugin {
-  let isDev = false;
+  let isDev = false
 
   return {
-    name: "csp-plugin",
+    name: 'csp-plugin',
     configResolved(config) {
-      isDev = config.mode === "development";
+      isDev = config.mode === 'development'
     },
     transformIndexHtml(html) {
       // Only inject CSP meta tag in development mode
       // Production CSP is delivered via HTTP headers in vercel.json
       if (!isDev) {
-        return html;
+        return html
       }
 
       // Development CSP: Allow WebSockets for HMR and unsafe-eval for fast refresh
@@ -52,25 +52,25 @@ function cspPlugin(): Plugin {
       // - ws: wss: enables WebSocket connections for Vite dev server HMR
       // - All fonts and icons are self-hosted (no external CDN dependencies)
       // - Fonts: @fontsource/inter, Icons: @fortawesome/fontawesome-free
-      const devCSP = `default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' ws: wss:; frame-ancestors 'none'; base-uri 'self'; form-action 'self';`;
+      const devCSP = `default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' ws: wss:; frame-ancestors 'none'; base-uri 'self'; form-action 'self';`
 
       // Inject CSP meta tag before closing </head> tag (dev only)
       const cspMetaTag = `    <!-- Content Security Policy (development only) -->
     <meta http-equiv="Content-Security-Policy" content="${devCSP}" />
-  </head>`;
+  </head>`
 
-      const modifiedHtml = html.replace("</head>", cspMetaTag);
+      const modifiedHtml = html.replace('</head>', cspMetaTag)
 
       // Warn if injection failed (no </head> tag found)
       if (modifiedHtml === html) {
         console.warn(
-          "[csp-plugin] Warning: Could not inject CSP meta tag - </head> tag not found in HTML"
-        );
+          '[csp-plugin] Warning: Could not inject CSP meta tag - </head> tag not found in HTML'
+        )
       }
 
-      return modifiedHtml;
+      return modifiedHtml
     },
-  };
+  }
 }
 
 /**
@@ -93,13 +93,13 @@ export default defineConfig({
   // Path resolution configuration
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
-      "@components": path.resolve(__dirname, "./src/components"),
-      "@hooks": path.resolve(__dirname, "./src/hooks"),
-      "@styles": path.resolve(__dirname, "./src/styles"),
-      "@types": path.resolve(__dirname, "./src/types"),
-      "@constants": path.resolve(__dirname, "./src/constants"),
-      "@utils": path.resolve(__dirname, "./src/utils"),
+      '@': path.resolve(__dirname, './src'),
+      '@components': path.resolve(__dirname, './src/components'),
+      '@hooks': path.resolve(__dirname, './src/hooks'),
+      '@styles': path.resolve(__dirname, './src/styles'),
+      '@types': path.resolve(__dirname, './src/types'),
+      '@constants': path.resolve(__dirname, './src/constants'),
+      '@utils': path.resolve(__dirname, './src/utils'),
     },
   },
 
@@ -107,8 +107,8 @@ export default defineConfig({
   build: {
     // Split CSS into separate files for better caching
     cssCodeSplit: true,
-    minify: "terser",
-    sourcemap: "hidden",
+    minify: 'terser',
+    sourcemap: 'hidden',
     terserOptions: {
       compress: {
         drop_console: true,
@@ -119,19 +119,19 @@ export default defineConfig({
       output: {
         manualChunks: (id) => {
           // Split React and React DOM into separate vendor chunk
-          const reactRegex = /node_modules[\\/](react|react-dom)[\\/]/;
+          const reactRegex = /node_modules[\\/](react|react-dom)[\\/]/
           if (reactRegex.test(id)) {
-            return "react-vendor";
+            return 'react-vendor'
           }
           // Keep all other node_modules in a single vendor chunk
-          if (id.includes("node_modules")) {
-            return "vendor";
+          if (id.includes('node_modules')) {
+            return 'vendor'
           }
         },
         // Optimize chunk file names
-        chunkFileNames: "assets/[name]-[hash].js",
-        entryFileNames: "assets/[name]-[hash].js",
-        assetFileNames: "assets/[name]-[hash].[ext]",
+        chunkFileNames: 'assets/[name]-[hash].js',
+        entryFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash].[ext]',
       },
     },
     // Performance optimizations
@@ -145,4 +145,4 @@ export default defineConfig({
     // Automatically open browser when dev server starts
     open: true,
   },
-});
+})

@@ -1,31 +1,31 @@
-import { type ReactNode } from "react";
-import { Icon } from "@components/ui/Icon";
-import styles from "./Button.module.css";
+import { type ReactNode } from 'react'
+import { Icon } from '@components/ui/Icon'
+import styles from './Button.module.css'
 
 interface ButtonProps {
-  children: ReactNode;
-  variant?: "primary" | "secondary" | "ghost";
-  size?: "small" | "medium" | "large";
-  href?: string;
-  onClick?: () => void;
-  icon?: string;
-  disabled?: boolean;
-  className?: string;
-  ariaLabel?: string;
-  type?: "button" | "submit" | "reset";
+  children: ReactNode
+  variant?: 'primary' | 'secondary' | 'ghost'
+  size?: 'small' | 'medium' | 'large'
+  href?: string
+  onClick?: () => void
+  icon?: string
+  disabled?: boolean
+  className?: string
+  ariaLabel?: string
+  type?: 'button' | 'submit' | 'reset'
 }
 
 export const Button = ({
   children,
-  variant = "primary",
-  size = "medium",
+  variant = 'primary',
+  size = 'medium',
   href,
   onClick,
   icon,
   disabled = false,
-  className = "",
+  className = '',
   ariaLabel,
-  type = "button",
+  type = 'button',
 }: ButtonProps): React.ReactElement => {
   const classNames = [
     styles.button,
@@ -35,14 +35,14 @@ export const Button = ({
     className,
   ]
     .filter(Boolean)
-    .join(" ");
+    .join(' ')
 
   const content = (
     <>
       {icon && <Icon name={icon} size="sm" className={styles.icon} />}
       {children}
     </>
-  );
+  )
 
   if (href) {
     return (
@@ -50,16 +50,16 @@ export const Button = ({
         href={disabled ? undefined : href}
         className={classNames}
         aria-label={ariaLabel}
-        aria-disabled={disabled ? "true" : "false"}
+        aria-disabled={disabled ? 'true' : 'false'}
         onClick={disabled ? (e) => e.preventDefault() : onClick}
-        {...(href.startsWith("http") && {
-          target: "_blank",
-          rel: "noopener noreferrer",
+        {...(href.startsWith('http') && {
+          target: '_blank',
+          rel: 'noopener noreferrer',
         })}
       >
         {content}
       </a>
-    );
+    )
   }
 
   return (
@@ -72,5 +72,5 @@ export const Button = ({
     >
       {content}
     </button>
-  );
-};
+  )
+}

@@ -2,19 +2,19 @@
 
 interface Window {
   // Google Analytics 4
-  dataLayer: unknown[];
+  dataLayer: unknown[]
   gtag?: (
-    command: "config" | "event" | "js" | "set",
+    command: 'config' | 'event' | 'js' | 'set',
     targetIdOrEventName: string | Date,
-    params?: Record<string, unknown>,
-  ) => void;
+    params?: Record<string, unknown>
+  ) => void
 
   // Plausible Analytics
   plausible?: (
     eventName: string,
     options?: {
-      props?: Record<string, string | number | boolean>;
-      callback?: () => void;
-    },
-  ) => void;
+      props?: Record<string, string | number | boolean>
+      callback?: () => void
+    }
+  ) => void
 }

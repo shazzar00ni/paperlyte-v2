@@ -8,6 +8,7 @@ This checklist tracks legal compliance and production readiness for Paperlyte.
 
 - [ ] Payment processor fees (percentage + per-transaction) recorded as deductible business expenses, classified in a dedicated "payment processor fees" expense account, cross-checked monthly against processor statements, and retained for 7 years for tax and audit compliance
   - Guidance: Ensure all payment processing fees are transparently tracked, reconciled monthly, and retained per the 7-year record retention policy for accurate tax reporting and audit readiness.
+
 ### Anti-Spam Law Compliance (CAN-SPAM / CASL)
 
 - [ ] Clear sender identification and valid physical postal address in all marketing emails
@@ -549,7 +550,6 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] Local requirements for digital goods/services refunds verified
   - [ ] Policy and user disclosures updated to reflect local rules
 - [ ] **Attorney confirms all local payment and tax registration requirements are met**
-
   - [ ] Local payment processor registration/notification requirements checked (e.g., India, Brazil, EU, US states)
   - [ ] Local sales tax/VAT/GST registration and remittance obligations confirmed for each region
   - [ ] Documentation of registration numbers and compliance status

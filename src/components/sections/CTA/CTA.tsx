@@ -1,9 +1,9 @@
-import { Section } from "@components/layout/Section";
-import { Button } from "@components/ui/Button";
-import { AnimatedElement } from "@components/ui/AnimatedElement";
-import { Icon } from "@components/ui/Icon";
-import { DOWNLOAD_URLS, GITHUB_URL } from "@/constants/downloads";
-import styles from "./CTA.module.css";
+import { Section } from '@components/layout/Section'
+import { Button } from '@components/ui/Button'
+import { AnimatedElement } from '@components/ui/AnimatedElement'
+import { Icon } from '@components/ui/Icon'
+import { DOWNLOAD_URLS, GITHUB_URL } from '@/constants/downloads'
+import styles from './CTA.module.css'
 
 export const CTA = (): React.ReactElement => {
   return (
@@ -45,7 +45,7 @@ export const CTA = (): React.ReactElement => {
         <AnimatedElement animation="fadeIn" delay={450}>
           <div className={styles.platforms}>
             <p className={styles.platformText}>
-              Also available for{" "}
+              Also available for{' '}
               <a
                 href={DOWNLOAD_URLS.ios}
                 className={styles.platformLink}
@@ -55,7 +55,7 @@ export const CTA = (): React.ReactElement => {
               >
                 iOS
               </a>
-              ,{" "}
+              ,{' '}
               <a
                 href={DOWNLOAD_URLS.android}
                 className={styles.platformLink}
@@ -65,7 +65,7 @@ export const CTA = (): React.ReactElement => {
               >
                 Android
               </a>
-              , and{" "}
+              , and{' '}
               <a
                 href={DOWNLOAD_URLS.linux}
                 className={styles.platformLink}
@@ -93,5 +93,5 @@ export const CTA = (): React.ReactElement => {
         </AnimatedElement>
       </div>
     </Section>
-  );
-};
+  )
+}

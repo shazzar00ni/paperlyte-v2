@@ -36,12 +36,12 @@ export const Footer = (): React.ReactElement => {
                 </a>
               </li>
               <li>
-                <a href="/roadmap" className={styles.link}>
+                <a href="#" className={styles.link}>
                   Roadmap
                 </a>
               </li>
               <li>
-                <a href="/changelog" className={styles.link}>
+                <a href="#" className={styles.link}>
                   Changelog
                 </a>
               </li>
@@ -52,12 +52,12 @@ export const Footer = (): React.ReactElement => {
             <h3 className={styles.linkGroupTitle}>Company</h3>
             <ul className={styles.linkList}>
               <li>
-                <a href="/about" className={styles.link}>
+                <a href="#" className={styles.link}>
                   About
                 </a>
               </li>
               <li>
-                <a href="/blog" className={styles.link}>
+                <a href="#" className={styles.link}>
                   Blog
                 </a>
               </li>
@@ -73,17 +73,17 @@ export const Footer = (): React.ReactElement => {
             <h3 className={styles.linkGroupTitle}>Legal</h3>
             <ul className={styles.linkList}>
               <li>
-                <a href="/privacy" className={styles.link}>
+                <a href="#" className={styles.link}>
                   Privacy Policy
                 </a>
               </li>
               <li>
-                <a href="/terms" className={styles.link}>
+                <a href="#" className={styles.link}>
                   Terms
                 </a>
               </li>
               <li>
-                <a href="/security" className={styles.link}>
+                <a href="#" className={styles.link}>
                   Security
                 </a>
               </li>

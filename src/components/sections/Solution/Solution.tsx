@@ -3,7 +3,7 @@ import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { Button } from '@components/ui/Button'
 import { Icon } from '@components/ui/Icon'
 import { scrollToSection } from '@/utils/navigation'
-import { WAITLIST_COUNT } from '@constants/waitlist'
+import { WAITLIST_COUNT, LAUNCH_QUARTER } from '@constants/waitlist'
 import styles from './Solution.module.css'
 
 interface ValueProp {
@@ -44,10 +44,10 @@ const VALUE_PROPS: ValueProp[] = [
     headline: 'Works Everywhere, Always',
     title: 'Plane mode? No problem.',
     body: [
-      'Real-time sync across every device—Mac, Windows, Linux, iOS, Android, and web. But unlike cloud-dependent apps, Paperlyte works offline-first.',
+      `Real-time sync across web, Mac, Windows, and Linux at launch. Native iOS & Android apps coming ${LAUNCH_QUARTER}. But unlike cloud-dependent apps, Paperlyte works offline-first.`,
       'On a plane? Underground subway? Spotty café WiFi? Keep writing. Everything syncs automatically when you\'re back online.',
     ],
-    proof: 'Mac, Windows, Linux, iOS, Android, Web | Offline-first | Auto-sync when online',
+    proof: `Web, Mac, Windows, Linux available now | Native iOS & Android coming ${LAUNCH_QUARTER} | Offline-first`,
   },
 ]
 

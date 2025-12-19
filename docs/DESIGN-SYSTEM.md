@@ -49,6 +49,7 @@ A comprehensive design system for Paperlyte - a lightning-fast, distraction-free
 ```
 
 #### Color Usage
+
 - **Primary (#1a1a1a)** - CTAs, primary buttons, bold statements
 - **Primary Dark (#000000)** - Hover states on primary elements
 - **Primary Light (#333333)** - Subtle accents, muted elements
@@ -107,8 +108,8 @@ A comprehensive design system for Paperlyte - a lightning-fast, distraction-free
 ### Color State Guidelines
 
 #### Hover States
-```css
 
+```css
 /* Primary Button Hover */
 background-color: var(--color-primary-dark); /* #000000 */
 transform: translateY(-1px);
@@ -179,6 +180,7 @@ While the design is primarily monochrome, **semantic colors are allowed as excep
    - Keep text in monochrome palette for readability
 
 3. **Monochrome-only alternative (if avoiding all color):**
+
    ```css
    /* Use icon + border weight variations */
    .success { border: 2px solid var(--color-text-primary); }
@@ -242,6 +244,7 @@ import styles from './Alert.module.css'
 **Fallback:** System fonts for fast loading and graceful degradation
 
 **Loading Strategy:**
+
 ```html
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

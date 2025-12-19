@@ -10,18 +10,6 @@
 import type { AnalyticsConfig, AnalyticsEvent, AnalyticsProvider, CoreWebVitals } from '../types'
 
 /**
- * Plausible window interface for TypeScript
- */
-declare global {
-  interface Window {
-    plausible?: (
-      eventName: string,
-      options?: { props?: Record<string, string | number | boolean> }
-    ) => void
-  }
-}
-
-/**
  * Plausible Analytics provider
  * Implements privacy-first, cookie-less analytics tracking
  */

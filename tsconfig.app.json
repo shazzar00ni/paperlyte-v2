@@ -31,7 +31,7 @@
     "jsx": "react-jsx",
 
     /* Path aliases - Enables cleaner imports */
-    // Base directory for path resolution
+    // Base directory for path resolution (required for paths to work)
     "baseUrl": ".",
     // Path mapping for cleaner imports (e.g., @components/Button instead of ../../../components/Button)
     "paths": {

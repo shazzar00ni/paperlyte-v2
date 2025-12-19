@@ -1,19 +1,21 @@
-import { Section } from '@components/layout/Section'
-import { Button } from '@components/ui/Button'
-import { AnimatedElement } from '@components/ui/AnimatedElement'
-import styles from './CTA.module.css'
+import { Section } from "@components/layout/Section";
+import { Button } from "@components/ui/Button";
+import { AnimatedElement } from "@components/ui/AnimatedElement";
+import { Icon } from "@components/ui/Icon";
+import { DOWNLOAD_URLS, GITHUB_URL } from "@/constants/downloads";
+import styles from "./CTA.module.css";
 
 export const CTA = (): React.ReactElement => {
   return (
     <Section id="download" background="primary" className={styles.cta}>
       <div className={styles.content}>
         <AnimatedElement animation="fadeIn">
-          <h2 className={styles.title}>Start capturing your thoughts instantly</h2>
+          <h2 className={styles.title}>Ready to declutter your mind?</h2>
         </AnimatedElement>
 
         <AnimatedElement animation="fadeIn" delay={150}>
           <p className={styles.subtitle}>
-            Free to start. No credit card required. Available on all your devices.
+            Join thousands simplifying their notes. Start free, stay focused.
           </p>
         </AnimatedElement>
 
@@ -23,7 +25,7 @@ export const CTA = (): React.ReactElement => {
               variant="secondary"
               size="large"
               icon="fa-apple"
-              href="#"
+              href={DOWNLOAD_URLS.mac}
               className={styles.downloadButton}
             >
               Download for Mac
@@ -32,7 +34,7 @@ export const CTA = (): React.ReactElement => {
               variant="secondary"
               size="large"
               icon="fa-windows"
-              href="#"
+              href={DOWNLOAD_URLS.windows}
               className={styles.downloadButton}
             >
               Download for Windows
@@ -43,16 +45,34 @@ export const CTA = (): React.ReactElement => {
         <AnimatedElement animation="fadeIn" delay={450}>
           <div className={styles.platforms}>
             <p className={styles.platformText}>
-              Also available for{' '}
-              <a href="#" className={styles.platformLink}>
+              Also available for{" "}
+              <a
+                href={DOWNLOAD_URLS.ios}
+                className={styles.platformLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Download for iOS (opens in new tab)"
+              >
                 iOS
               </a>
-              ,{' '}
-              <a href="#" className={styles.platformLink}>
+              ,{" "}
+              <a
+                href={DOWNLOAD_URLS.android}
+                className={styles.platformLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Download for Android (opens in new tab)"
+              >
                 Android
               </a>
-              , and{' '}
-              <a href="#" className={styles.platformLink}>
+              , and{" "}
+              <a
+                href={DOWNLOAD_URLS.linux}
+                className={styles.platformLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Download for Linux (opens in new tab)"
+              >
                 Linux
               </a>
             </p>
@@ -60,12 +80,18 @@ export const CTA = (): React.ReactElement => {
         </AnimatedElement>
 
         <AnimatedElement animation="fadeIn" delay={600}>
-          <div className={styles.badge}>
-            <i className="fa-brands fa-github" aria-hidden="true" />
+          <a
+            href={GITHUB_URL}
+            className={styles.badge}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Open source on GitHub (opens in new tab)"
+          >
+            <Icon name="fa-github" size="sm" />
             <span>Open source on GitHub</span>
-          </div>
+          </a>
         </AnimatedElement>
       </div>
     </Section>
-  )
-}
+  );
+};

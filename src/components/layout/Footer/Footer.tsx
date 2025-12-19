@@ -37,15 +37,18 @@ export const Footer = (): React.ReactElement => {
                 </a>
               </li>
               <li>
-                <a href="#" className={styles.link}>
-                  Roadmap
+                <a href="#features" className={styles.link}>
+                  Features
                 </a>
               </li>
               <li>
-                <a href="#" className={styles.link}>
-                  Changelog
+                <a href="#pricing" className={styles.link}>
+                  Pricing
                 </a>
               </li>
+              {/* TODO: Add Roadmap link when page is available */}
+              {/* TODO: Add Changelog link when page is available */}
+            </ul>
             </ul>
           </div>
 

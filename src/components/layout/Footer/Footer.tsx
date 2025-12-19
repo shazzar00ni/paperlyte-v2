@@ -36,19 +36,8 @@ export const Footer = (): React.ReactElement => {
                   Pricing
                 </a>
               </li>
-              <li>
-                <a href="#features" className={styles.link}>
-                  Features
-                </a>
-              </li>
-              <li>
-                <a href="#pricing" className={styles.link}>
-                  Pricing
-                </a>
-              </li>
               {/* TODO: Add Roadmap link when page is available */}
               {/* TODO: Add Changelog link when page is available */}
-            </ul>
             </ul>
           </div>
 
@@ -56,20 +45,12 @@ export const Footer = (): React.ReactElement => {
             <h3 className={styles.linkGroupTitle}>Company</h3>
             <ul className={styles.linkList}>
               <li>
-                <a href="#" className={styles.link}>
-                  About
-                </a>
-              </li>
-              <li>
-                <a href="#" className={styles.link}>
-                  Blog
-                </a>
-              </li>
-              <li>
                 <a href="mailto:hello@paperlyte.com" className={styles.link}>
                   Contact
                 </a>
               </li>
+              {/* TODO: Add About link when page is available */}
+              {/* TODO: Add Blog link when page is available */}
             </ul>
           </div>
 

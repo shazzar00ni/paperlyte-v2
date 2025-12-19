@@ -47,7 +47,7 @@ describe('CTA', () => {
   it('should render microcopy with launch details', () => {
     render(<CTA />)
 
-    expect(screen.getByText(/Launching Q2 2025/i)).toBeInTheDocument()
+    expect(screen.getByText(/Launching Q2 2026/i)).toBeInTheDocument()
     expect(screen.getByText(/500\+ already waiting/i)).toBeInTheDocument()
     expect(screen.getByText(/No credit card required/i)).toBeInTheDocument()
   })

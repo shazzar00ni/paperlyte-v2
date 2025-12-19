@@ -3,9 +3,11 @@
   "short_name": "Paperlyte",
   "description": "Lightning-fast, distraction-free note-taking app",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#7c3aed",
+  "theme_color": "#7C3AED",
+  "orientation": "portrait-primary",
   "icons": [
     {
       "src": "/favicon-16x16.png",
@@ -25,12 +27,29 @@
     {
       "src": "/android-chrome-192x192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "/android-chrome-512x512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "utilities"],
+  "screenshots": [
+    {
+      "src": "/screenshots/screenshot-desktop.png",
+      "sizes": "1280x800",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/screenshots/screenshot-mobile.png",
+      "sizes": "375x812",
+      "type": "image/png",
+      "form_factor": "narrow"
     }
   ]
 }

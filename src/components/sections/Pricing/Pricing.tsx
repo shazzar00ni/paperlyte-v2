@@ -10,11 +10,11 @@ export const Pricing = (): React.ReactElement => {
     <Section id="pricing" background="surface">
       <div className={styles.header}>
         <AnimatedElement animation="fadeIn">
-          <h2 className={styles.title}>Simple, Transparent Pricing</h2>
+          <h2 className={styles.title}>Simple pricing. No surprises.</h2>
         </AnimatedElement>
         <AnimatedElement animation="fadeIn" delay={100}>
           <p className={styles.subtitle}>
-            Start free, upgrade when you're ready. No credit card required.
+            Start free, upgrade whenever. No credit card needed to get started.
           </p>
         </AnimatedElement>
       </div>

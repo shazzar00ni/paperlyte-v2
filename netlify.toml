@@ -8,8 +8,11 @@
   # Directory with the build output (relative to repo root)
   publish = "dist"
 
+  # Serverless functions directory
+  functions = "netlify/functions"
+
   # Node version to use
-  environment = { NODE_VERSION = "18" }
+  environment = { NODE_VERSION = "20" }
 
 # Production context: all deploys from the main branch
 [context.production]
@@ -64,19 +67,6 @@
     Cache-Control = "public, max-age=31536000, immutable"
 
 # Performance optimizations
+# Skip Netlify's build processing since Vite handles bundling and optimization
 [build.processing]
-  skip_processing = false
-
-[build.processing.css]
-  bundle = true
-  minify = true
-
-[build.processing.js]
-  bundle = true
-  minify = true
-
-[build.processing.html]
-  pretty_urls = true
-
-[build.processing.images]
-  compress = true
+  skip_processing = true

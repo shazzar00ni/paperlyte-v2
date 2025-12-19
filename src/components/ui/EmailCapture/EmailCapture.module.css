@@ -65,7 +65,7 @@
   cursor: not-allowed;
 }
 
-.input[aria-invalid="true"] {
+.input[aria-invalid='true'] {
   border-color: var(--color-error);
 }
 

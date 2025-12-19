@@ -759,13 +759,13 @@ select:focus {
 
 ✅ **DO:**
 - Use primary buttons for main CTAs (max 1-2 per section)
-- Maintain 48px minimum touch target size
+- Maintain 44px minimum touch target size (meets WCAG 2.5.5 Level AAA)
 - Show clear hover/focus states for interactive elements
 - Use semantic button types (`<button type="button">`)
 
 ❌ **DON'T:**
 - Use more than one primary button in close proximity
-- Create buttons smaller than 48x48px
+- Create buttons smaller than 44x44px (violates WCAG 2.5.5 Level AAA)
 - Remove focus indicators
 - Use `<div>` for clickable elements (use `<button>`)
 

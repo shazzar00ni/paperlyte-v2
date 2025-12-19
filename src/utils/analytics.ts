@@ -11,30 +11,29 @@
  * - VITE_ANALYTICS_ID: Your analytics site ID or measurement ID
  */
 
-type AnalyticsProvider = "plausible" | "ga4" | "none";
+type AnalyticsProvider = 'plausible' | 'ga4' | 'none'
 
 interface AnalyticsConfig {
-  provider: AnalyticsProvider;
-  siteId?: string;
-  enabled: boolean;
+  provider: AnalyticsProvider
+  siteId?: string
+  enabled: boolean
 }
 
 interface AnalyticsEvent {
-  name: string;
-  properties?: Record<string, string | number | boolean>;
+  name: string
+  properties?: Record<string, string | number | boolean>
 }
 
 class Analytics {
-  private config: AnalyticsConfig;
-  private initialized = false;
+  private config: AnalyticsConfig
+  private initialized = false
 
   constructor() {
     this.config = {
-      provider: (import.meta.env.VITE_ANALYTICS_PROVIDER ||
-        "none") as AnalyticsProvider,
+      provider: (import.meta.env.VITE_ANALYTICS_PROVIDER || 'none') as AnalyticsProvider,
       siteId: import.meta.env.VITE_ANALYTICS_ID,
       enabled: import.meta.env.PROD && import.meta.env.VITE_ANALYTICS_ID,
-    };
+    }
   }
 
   /**
@@ -42,21 +41,21 @@ class Analytics {
    */
   init(): void {
     if (!this.config.enabled || this.initialized) {
-      return;
+      return
     }
 
     switch (this.config.provider) {
-      case "plausible":
-        this.initPlausible();
-        break;
-      case "ga4":
-        this.initGA4();
-        break;
+      case 'plausible':
+        this.initPlausible()
+        break
+      case 'ga4':
+        this.initGA4()
+        break
       default:
-        console.log("Analytics: No provider configured");
+        console.log('Analytics: No provider configured')
     }
 
-    this.initialized = true;
+    this.initialized = true
   }
 
   /**
@@ -65,18 +64,18 @@ class Analytics {
   trackEvent(event: AnalyticsEvent): void {
     if (!this.config.enabled) {
       if (import.meta.env.DEV) {
-        console.log("[Analytics DEV]", event.name, event.properties);
+        console.log('[Analytics DEV]', event.name, event.properties)
       }
-      return;
+      return
     }
 
     switch (this.config.provider) {
-      case "plausible":
-        this.trackPlausibleEvent(event);
-        break;
-      case "ga4":
-        this.trackGA4Event(event);
-        break;
+      case 'plausible':
+        this.trackPlausibleEvent(event)
+        break
+      case 'ga4':
+        this.trackGA4Event(event)
+        break
     }
   }
 
@@ -85,25 +84,25 @@ class Analytics {
    */
   trackPageView(url?: string): void {
     if (!this.config.enabled) {
-      return;
+      return
     }
 
-    const pageUrl = url || window.location.pathname + window.location.search;
+    const pageUrl = url || window.location.pathname + window.location.search
 
     switch (this.config.provider) {
-      case "plausible":
+      case 'plausible':
         // Plausible tracks page views automatically
         if (window.plausible) {
-          window.plausible("pageview");
+          window.plausible('pageview')
         }
-        break;
-      case "ga4":
+        break
+      case 'ga4':
         if (window.gtag) {
-          window.gtag("event", "page_view", {
+          window.gtag('event', 'page_view', {
             page_path: pageUrl,
-          });
+          })
         }
-        break;
+        break
     }
   }
 
@@ -112,19 +111,19 @@ class Analytics {
    */
   private initPlausible(): void {
     if (!this.config.siteId) {
-      console.warn("Analytics: Plausible site ID not configured");
-      return;
+      console.warn('Analytics: Plausible site ID not configured')
+      return
     }
 
     // Load Plausible script
-    const script = document.createElement("script");
-    script.defer = true;
-    script.dataset.domain = this.config.siteId;
-    script.src = "https://plausible.io/js/script.js";
+    const script = document.createElement('script')
+    script.defer = true
+    script.dataset.domain = this.config.siteId
+    script.src = 'https://plausible.io/js/script.js'
 
-    document.head.appendChild(script);
+    document.head.appendChild(script)
 
-    console.log("Analytics: Plausible initialized");
+    console.log('Analytics: Plausible initialized')
   }
 
   /**
@@ -132,31 +131,31 @@ class Analytics {
    */
   private initGA4(): void {
     if (!this.config.siteId) {
-      console.warn("Analytics: GA4 measurement ID not configured");
-      return;
+      console.warn('Analytics: GA4 measurement ID not configured')
+      return
     }
 
     // Load gtag.js
-    const script = document.createElement("script");
-    script.async = true;
-    script.src = `https://www.googletagmanager.com/gtag/js?id=${this.config.siteId}`;
-    document.head.appendChild(script);
+    const script = document.createElement('script')
+    script.async = true
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${this.config.siteId}`
+    document.head.appendChild(script)
 
     // Initialize gtag with privacy settings
-    window.dataLayer = window.dataLayer || [];
+    window.dataLayer = window.dataLayer || []
     window.gtag = function gtag(...args: unknown[]) {
-      window.dataLayer.push(args);
-    };
+      window.dataLayer.push(args)
+    }
 
-    window.gtag("js", new Date());
-    window.gtag("config", this.config.siteId, {
+    window.gtag('js', new Date())
+    window.gtag('config', this.config.siteId, {
       anonymize_ip: true, // Anonymize IP addresses
-      cookie_flags: "SameSite=None;Secure", // Secure cookies
+      cookie_flags: 'SameSite=None;Secure', // Secure cookies
       allow_google_signals: false, // Disable Google signals
       allow_ad_personalization_signals: false, // Disable ad personalization
-    });
+    })
 
-    console.log("Analytics: GA4 initialized with privacy settings");
+    console.log('Analytics: GA4 initialized with privacy settings')
   }
 
   /**
@@ -166,7 +165,7 @@ class Analytics {
     if (window.plausible) {
       window.plausible(event.name, {
         props: event.properties,
-      });
+      })
     }
   }
 
@@ -175,22 +174,22 @@ class Analytics {
    */
   private trackGA4Event(event: AnalyticsEvent): void {
     if (window.gtag) {
-      window.gtag("event", event.name, event.properties);
+      window.gtag('event', event.name, event.properties)
     }
   }
 }
 
 // Export singleton instance
-export const analytics = new Analytics();
+export const analytics = new Analytics()
 
 // Convenience functions
 export const trackEvent = (
   name: string,
-  properties?: Record<string, string | number | boolean>,
+  properties?: Record<string, string | number | boolean>
 ): void => {
-  analytics.trackEvent({ name, properties });
-};
+  analytics.trackEvent({ name, properties })
+}
 
 export const trackPageView = (url?: string): void => {
-  analytics.trackPageView(url);
-};
+  analytics.trackPageView(url)
+}

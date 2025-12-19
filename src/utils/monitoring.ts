@@ -5,13 +5,13 @@
  * Handles error reporting to analytics and external services.
  */
 
-import { trackEvent } from "./analytics";
+import { trackEvent } from './analytics'
 
 export interface ErrorContext {
-  componentStack?: string;
-  errorInfo?: Record<string, unknown>;
-  severity?: "low" | "medium" | "high" | "critical";
-  tags?: Record<string, string>;
+  componentStack?: string
+  errorInfo?: Record<string, unknown>
+  severity?: 'low' | 'medium' | 'high' | 'critical'
+  tags?: Record<string, string>
 }
 
 /**
@@ -21,41 +21,37 @@ export interface ErrorContext {
  * @param context - Optional metadata about the error (e.g., `componentStack`, `errorInfo`, `severity`, `tags`)
  * @param source - Optional label identifying the error's origin (for example, a component or subsystem name)
  */
-export function logError(
-  error: Error,
-  context?: ErrorContext,
-  source?: string,
-): void {
-  const severity = context?.severity || "medium";
-  const errorSource = source || "unknown";
+export function logError(error: Error, context?: ErrorContext, source?: string): void {
+  const severity = context?.severity || 'medium'
+  const errorSource = source || 'unknown'
 
   // Always log to console in development
   if (import.meta.env.DEV) {
-    console.group(`[${severity.toUpperCase()}] Error from ${errorSource}`);
-    console.error(error);
+    console.group(`[${severity.toUpperCase()}] Error from ${errorSource}`)
+    console.error(error)
     if (context?.componentStack) {
-      console.log("Component Stack:", context.componentStack);
+      console.log('Component Stack:', context.componentStack)
     }
     if (context?.errorInfo) {
-      console.log("Additional Info:", context.errorInfo);
+      console.log('Additional Info:', context.errorInfo)
     }
     if (context?.tags) {
-      console.log("Tags:", context.tags);
+      console.log('Tags:', context.tags)
     }
-    console.groupEnd();
-    return;
+    console.groupEnd()
+    return
   }
 
   // In production, report to monitoring services
   try {
     // Track in analytics
-    trackEvent("application_error", {
+    trackEvent('application_error', {
       error_name: error.name,
       error_message: error.message.slice(0, 200),
       error_source: errorSource,
       severity,
       ...context?.tags,
-    });
+    })
 
     // Send to error monitoring service (e.g., Sentry)
     // Note: Uncomment and configure when error monitoring is set up
@@ -77,10 +73,10 @@ export function logError(
     console.error(`[${errorSource}]`, error.message, {
       severity,
       tags: context?.tags,
-    });
+    })
   } catch (monitoringError) {
     // Fail silently in production - don't let monitoring errors break the app
-    console.error("Monitoring error:", monitoringError);
+    console.error('Monitoring error:', monitoringError)
   }
 }
 
@@ -90,20 +86,17 @@ export function logError(
  * @param message - Human-readable warning text; in production this is truncated to 200 characters.
  * @param context - Optional additional metadata to include with the warning (logged to console in development or merged into the telemetry event in production)
  */
-export function logWarning(
-  message: string,
-  context?: Record<string, unknown>,
-): void {
+export function logWarning(message: string, context?: Record<string, unknown>): void {
   if (import.meta.env.DEV) {
-    console.warn(message, context);
-    return;
+    console.warn(message, context)
+    return
   }
 
   // In production, track as low-severity event
-  trackEvent("application_warning", {
+  trackEvent('application_warning', {
     message: message.slice(0, 200),
     ...context,
-  });
+  })
 }
 
 /**
@@ -116,18 +109,18 @@ export function logWarning(
 export function logPerformance(
   metric: string,
   value: number,
-  unit: "ms" | "bytes" | "count" = "ms",
+  unit: 'ms' | 'bytes' | 'count' = 'ms'
 ): void {
   if (import.meta.env.DEV) {
-    console.log(`[Performance] ${metric}: ${value}${unit}`);
-    return;
+    console.log(`[Performance] ${metric}: ${value}${unit}`)
+    return
   }
 
-  trackEvent("performance_metric", {
+  trackEvent('performance_metric', {
     metric,
     value,
     unit,
-  });
+  })
 }
 
 /**
@@ -138,11 +131,11 @@ export function logPerformance(
  */
 export function logEvent(
   eventName: string,
-  properties?: Record<string, string | number | boolean>,
+  properties?: Record<string, string | number | boolean>
 ): void {
   if (import.meta.env.DEV) {
-    console.log(`[Event] ${eventName}`, properties);
+    console.log(`[Event] ${eventName}`, properties)
   }
 
-  trackEvent(eventName, properties);
+  trackEvent(eventName, properties)
 }

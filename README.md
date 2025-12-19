@@ -154,8 +154,8 @@ The project uses path aliases for cleaner imports:
 Example:
 
 ```typescript
-import { Button } from "@components/ui/Button";
-import { useTheme } from "@hooks/useTheme";
+import { Button } from '@components/ui/Button'
+import { useTheme } from '@hooks/useTheme'
 ```
 
 ## Performance Targets
@@ -193,7 +193,6 @@ Production: [https://paperlyte.app](https://paperlyte.app) (when configured)
 We welcome contributions! Please follow these guidelines:
 
 1. **Branch naming**: Use descriptive names with prefixes
-
    - `feature/` - New features
    - `fix/` - Bug fixes
    - `docs/` - Documentation updates
@@ -201,7 +200,6 @@ We welcome contributions! Please follow these guidelines:
    - `test/` - Test additions/updates
 
 2. **Code style**: Follow the existing ESLint configuration
-
    - Run `npm run lint` before committing
    - Use TypeScript strict mode
    - Write accessible, semantic HTML
@@ -209,7 +207,6 @@ We welcome contributions! Please follow these guidelines:
 3. **Commits**: Write clear, descriptive commit messages
 
 4. **Pull requests**:
-
    - Ensure all CI checks pass
    - Include Lighthouse scores if UI changes are made
    - Request review from code owners
@@ -233,7 +230,6 @@ By default, `.lighthouserc.json` sets `numberOfRuns` to `1` for fast local devel
 - **Local/dev:**
   - `numberOfRuns` = 1 (default)
 - **CI/CD:**
-
   - Set `LIGHTHOUSE_RUNS=3` (or higher) in your CI pipeline or before running LHCI:
 
     ```sh

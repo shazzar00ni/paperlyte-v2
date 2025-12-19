@@ -1,1 +1,1 @@
-export { AnimatedElement } from "./AnimatedElement";
+export { AnimatedElement } from './AnimatedElement'

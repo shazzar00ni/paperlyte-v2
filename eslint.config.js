@@ -10,20 +10,20 @@
  *
  * @see https://eslint.org/docs/latest/use/configure/configuration-files
  */
-import js from "@eslint/js";
-import globals from "globals";
-import reactHooks from "eslint-plugin-react-hooks";
-import reactRefresh from "eslint-plugin-react-refresh";
-import tseslint from "typescript-eslint";
-import prettierConfig from "eslint-config-prettier";
-import { defineConfig, globalIgnores } from "eslint/config";
+import js from '@eslint/js'
+import globals from 'globals'
+import reactHooks from 'eslint-plugin-react-hooks'
+import reactRefresh from 'eslint-plugin-react-refresh'
+import tseslint from 'typescript-eslint'
+import prettierConfig from 'eslint-config-prettier'
+import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
   // Ignore build output directory
-  globalIgnores(["dist"]),
+  globalIgnores(['dist']),
   {
     // Apply to all TypeScript and TSX files
-    files: ["**/*.{ts,tsx}"],
+    files: ['**/*.{ts,tsx}'],
 
     // Extend recommended configurations
     extends: [
@@ -46,4 +46,4 @@ export default defineConfig([
       globals: globals.browser,
     },
   },
-]);
+])

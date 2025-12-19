@@ -3,18 +3,8 @@
   --color-primary: #7c3aed; /* Purple 600 */
   --color-primary-dark: #6d28d9; /* Purple 700 */
   --color-primary-light: #a78bfa; /* Purple 400 */
-  --color-primary-faint: rgba(
-    124,
-    58,
-    237,
-    0.1
-  ); /* 10% opacity for backgrounds */
-  --color-primary-fainter: rgba(
-    124,
-    58,
-    237,
-    0.05
-  ); /* 5% opacity for subtle backgrounds */
+  --color-primary-faint: rgba(124, 58, 237, 0.1); /* 10% opacity for backgrounds */
+  --color-primary-fainter: rgba(124, 58, 237, 0.05); /* 5% opacity for subtle backgrounds */
   --color-background: #ffffff;
   --color-surface: #f9fafb; /* Gray 50 */
   --color-text-primary: #111827; /* Gray 900 */
@@ -31,9 +21,7 @@
   --color-error-border: rgba(239, 68, 68, 0.3);
 
   /* Typography */
-  --font-family:
-    "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    sans-serif;
+  --font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-size-xs: 0.75rem; /* 12px */
   --font-size-sm: 0.875rem; /* 14px */
   --font-size-base: 1rem; /* 16px */
@@ -97,23 +85,13 @@
 }
 
 /* Dark Mode */
-[data-theme="dark"] {
+[data-theme='dark'] {
   /* Colors - Dark Mode palette */
   --color-primary: #7c3aed; /* Purple 600 - WCAG AA compliant 6.5:1 contrast with white */
   --color-primary-dark: #6d28d9; /* Purple 700 */
   --color-primary-light: #8b5cf6; /* Purple 500 */
-  --color-primary-faint: rgba(
-    124,
-    58,
-    237,
-    0.1
-  ); /* 10% opacity for backgrounds */
-  --color-primary-fainter: rgba(
-    124,
-    58,
-    237,
-    0.05
-  ); /* 5% opacity for subtle backgrounds */
+  --color-primary-faint: rgba(124, 58, 237, 0.1); /* 10% opacity for backgrounds */
+  --color-primary-fainter: rgba(124, 58, 237, 0.05); /* 5% opacity for subtle backgrounds */
   --color-background: #0f172a; /* Slate 900 */
   --color-surface: #1e293b; /* Slate 800 */
   --color-text-primary: #f1f5f9; /* Slate 100 */
@@ -134,22 +112,12 @@
 
 /* System preference detection */
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
+  :root:not([data-theme='light']) {
     --color-primary: #7c3aed; /* Purple 600 - WCAG AA compliant 6.5:1 contrast */
     --color-primary-dark: #6d28d9; /* Purple 700 */
     --color-primary-light: #8b5cf6; /* Purple 500 */
-    --color-primary-faint: rgba(
-      124,
-      58,
-      237,
-      0.1
-    ); /* 10% opacity for backgrounds */
-    --color-primary-fainter: rgba(
-      124,
-      58,
-      237,
-      0.05
-    ); /* 5% opacity for subtle backgrounds */
+    --color-primary-faint: rgba(124, 58, 237, 0.1); /* 10% opacity for backgrounds */
+    --color-primary-fainter: rgba(124, 58, 237, 0.05); /* 5% opacity for subtle backgrounds */
     --color-background: #0f172a;
     --color-surface: #1e293b;
     --color-text-primary: #f1f5f9;

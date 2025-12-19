@@ -1,9 +1,9 @@
-import { Icon } from "@components/ui/Icon";
-import { LEGAL_CONFIG } from "@/constants/legal";
-import styles from "./Footer.module.css";
+import { Icon } from '@components/ui/Icon'
+import { LEGAL_CONFIG } from '@/constants/legal'
+import styles from './Footer.module.css'
 
 export const Footer = (): React.ReactElement => {
-  const currentYear = new Date().getFullYear();
+  const currentYear = new Date().getFullYear()
 
   return (
     <footer className={styles.footer}>
@@ -13,9 +13,7 @@ export const Footer = (): React.ReactElement => {
             <Icon name="fa-feather" size="lg" ariaLabel="Paperlyte logo" />
             <span className={styles.logoText}>Paperlyte</span>
           </div>
-          <p className={styles.tagline}>
-            Your thoughts, unchained from complexity
-          </p>
+          <p className={styles.tagline}>Your thoughts, unchained from complexity</p>
         </div>
 
         <div className={styles.links}>
@@ -109,5 +107,5 @@ export const Footer = (): React.ReactElement => {
         </div>
       </div>
     </footer>
-  );
-};
+  )
+}

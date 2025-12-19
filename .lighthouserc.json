@@ -1,9 +1,7 @@
 {
   "ci": {
     "collect": {
-      "url": [
-        "http://localhost:4173/"
-      ],
+      "url": ["http://localhost:4173/"],
       "startServerCommand": "npm run preview",
       "numberOfRuns": 1,
       "settings": {

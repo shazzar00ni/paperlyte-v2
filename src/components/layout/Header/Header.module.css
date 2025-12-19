@@ -20,7 +20,7 @@
   }
 }
 
-[data-theme="dark"] .header {
+[data-theme='dark'] .header {
   background-color: rgba(15, 23, 42, 0.95);
 }
 
@@ -186,7 +186,7 @@
 
 /* Dark mode for mobile menu - data attribute */
 @media (max-width: 768px) {
-  [data-theme="dark"] .navList {
+  [data-theme='dark'] .navList {
     background-color: rgba(15, 23, 42, 0.95);
   }
 }

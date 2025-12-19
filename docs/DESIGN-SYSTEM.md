@@ -738,7 +738,7 @@ select:focus {
 ### Navigation
 
 **Header:**
-- Height: `--header-height` (64px)
+- Height: `--header-height` (72px)
 - Position: Sticky or fixed
 - Z-index: `--z-header` (1000)
 - Background: `--color-background` with subtle shadow

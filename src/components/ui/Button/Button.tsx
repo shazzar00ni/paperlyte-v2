@@ -45,9 +45,12 @@ export const Button = ({
     </>
   )
 
+  const isBrowser = typeof window !== 'undefined'
+
   if (href) {
-    // Validate URL for security - prevent javascript:, data:, and other dangerous protocols
-    if (!isSafeUrl(href)) {
+    // Validate URL for security - prevent javascript:, data:, and other dangerous protocols.
+    // Skip this check during SSR (when window is undefined) to avoid disabling links on initial render.
+    if (isBrowser && !isSafeUrl(href)) {
       // In development, log a warning to help developers catch the issue
       if (import.meta.env.DEV) {
         console.warn(

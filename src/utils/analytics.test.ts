@@ -7,6 +7,7 @@ import {
   trackCTAClick,
   trackExternalLink,
   trackSocialClick,
+  resetScrollDepthTracking,
   AnalyticsEvents,
 } from './analytics'
 
@@ -98,6 +99,11 @@ describe('Analytics Utility', () => {
   })
 
   describe('trackScrollDepth', () => {
+    beforeEach(() => {
+      // Reset tracked milestones to ensure test isolation
+      resetScrollDepthTracking()
+    })
+
     it('should track milestone percentages', () => {
       const mockGtag = vi.fn()
       ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
@@ -121,9 +127,10 @@ describe('Analytics Utility', () => {
       const mockGtag = vi.fn()
       ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
 
+      // Test values below the first milestone (25%) shouldn't trigger tracking
       trackScrollDepth(10)
-      trackScrollDepth(37)
-      trackScrollDepth(88)
+      trackScrollDepth(15)
+      trackScrollDepth(24)
 
       expect(mockGtag).not.toHaveBeenCalled()
     })

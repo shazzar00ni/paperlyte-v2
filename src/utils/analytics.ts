@@ -269,6 +269,14 @@ export function trackScrollDepth(depthPercentage: number): void {
 }
 
 /**
+ * Reset tracked scroll milestones (for testing purposes)
+ * @internal
+ */
+export function resetScrollDepthTracking(): void {
+  trackedScrollMilestones.clear()
+}
+
+/**
  * Track CTA button clicks with location context
  *
  * @param buttonText - Text content of the button

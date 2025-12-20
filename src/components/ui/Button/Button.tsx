@@ -55,7 +55,8 @@ export const Button = ({
       if (import.meta.env.DEV) {
         console.warn(
           `Button component: Unsafe URL rejected: "${href}". ` +
-            'Only relative URLs and same-origin absolute URLs are allowed.'
+            'Only http://, https://, and relative URLs are allowed. ' +
+            'Dangerous protocols like javascript:, data:, vbscript: are blocked for security.'
         )
       }
       // Render as disabled button instead of unsafe link

@@ -899,7 +899,10 @@ jobs:
 - [ ] Install and configure Playwright
 - [ ] Write initial E2E tests for critical user flows
 - [ ] Create E2E workflow that triggers on deployment
+- [ ] Test E2E workflow triggers
+- [ ] Verify E2E tests can access deployment URLs
 - [ ] Integrate E2E test results with PR comments
+- [ ] Validate PR comment integration works
 
 ### Phase 3: PR Automation (Week 3)
 - [ ] Set up preview deployments

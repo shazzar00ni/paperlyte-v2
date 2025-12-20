@@ -46,7 +46,19 @@ describe('validateEmail', () => {
   it('should reject emails with consecutive dots', () => {
     const result = validateEmail('user..name@example.com')
     expect(result.isValid).toBe(false)
-    expect(result.error).toContain('consecutive dots')
+    expect(result.error).toContain('valid email')
+  })
+
+  it('should reject emails with dots at the start of local part', () => {
+    const result = validateEmail('.user@example.com')
+    expect(result.isValid).toBe(false)
+    expect(result.error).toContain('valid email')
+  })
+
+  it('should reject emails with dots at the end of local part', () => {
+    const result = validateEmail('user.@example.com')
+    expect(result.isValid).toBe(false)
+    expect(result.error).toContain('valid email')
   })
 
   it('should reject emails that are too long', () => {

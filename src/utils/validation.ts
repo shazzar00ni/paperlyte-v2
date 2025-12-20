@@ -24,12 +24,15 @@ export interface ValidationResult {
  * Follows RFC 5322 simplified pattern for practical use
  *
  * Pattern breakdown:
- * - Local part: alphanumeric, dots, hyphens, underscores, plus signs
+ * - Local part: starts with alphanumeric, then allows dots/hyphens/underscores/plus between alphanumeric chars
  * - @ symbol required
- * - Domain: alphanumeric with dots and hyphens
- * - TLD: 2+ characters
+ * - Domain: starts with alphanumeric, then allows dots/hyphens between alphanumeric chars
+ * - TLD: 2+ alphabetic characters
+ *
+ * Prevents invalid patterns like .user@example.com or user.@example.com
  */
-const EMAIL_REGEX = /^[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+const EMAIL_REGEX =
+  /^[a-zA-Z0-9]+(?:[._+-][a-zA-Z0-9]+)*@[a-zA-Z0-9]+(?:[.-][a-zA-Z0-9]+)*\.[a-zA-Z]{2,}$/
 
 /**
  * Common disposable email domains to block
@@ -72,19 +75,11 @@ export function validateEmail(email: string): EmailValidationResult {
   // Trim whitespace
   const trimmedEmail = email.trim()
 
-  // Check basic format
+  // Check basic format (this now also prevents consecutive dots and dots at boundaries)
   if (!EMAIL_REGEX.test(trimmedEmail)) {
     return {
       isValid: false,
       error: 'Please enter a valid email address',
-    }
-  }
-
-  // Check for consecutive dots (invalid per RFC 5322)
-  if (trimmedEmail.includes('..')) {
-    return {
-      isValid: false,
-      error: 'Email address cannot contain consecutive dots',
     }
   }
 
@@ -193,9 +188,12 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
  * Sanitize input to prevent XSS attacks
  * Removes HTML tags, dangerous protocols, and event handlers
  *
- * SECURITY NOTE: This provides basic sanitization for text inputs like names and non-HTML fields.
+ * SECURITY NOTE: This provides basic sanitization for simple text inputs like names and non-HTML fields.
  * For rich text or HTML content, use a dedicated library like DOMPurify.
  * For critical user-generated content, always sanitize on the backend as well.
+ *
+ * PRODUCTION RECOMMENDATION: For any untrusted input beyond simple text fields, migrate to DOMPurify
+ * or similar battle-tested library to ensure comprehensive XSS protection against edge-case bypasses.
  *
  * @param input - User input to sanitize
  * @returns Sanitized string with HTML entities encoded
@@ -323,21 +321,28 @@ export function validateForm(formData: Record<string, unknown>): ValidationResul
 
   // Validate email if present
   if ('email' in formData) {
-    const emailValidation = validateEmail(formData.email as string)
-    if (!emailValidation.isValid) {
-      errors.email = emailValidation.error || 'Invalid email'
+    if (typeof formData.email !== 'string') {
+      errors.email = 'Email must be a string'
+    } else {
+      const emailValidation = validateEmail(formData.email)
+      if (!emailValidation.isValid) {
+        errors.email = emailValidation.error || 'Invalid email'
+      }
     }
   }
 
   // Validate name if present
   if ('name' in formData) {
-    const name = formData.name as string
-    const trimmedName = name?.trim() ?? ''
-    if (trimmedName.length < 2) {
-      errors.name = 'Name must be at least 2 characters'
-    }
-    if (trimmedName.length > 100) {
-      errors.name = 'Name is too long'
+    if (typeof formData.name !== 'string') {
+      errors.name = 'Name must be a string'
+    } else {
+      const trimmedName = formData.name.trim()
+      if (trimmedName.length < 2) {
+        errors.name = 'Name must be at least 2 characters'
+      }
+      if (trimmedName.length > 100) {
+        errors.name = 'Name is too long'
+      }
     }
   }
 

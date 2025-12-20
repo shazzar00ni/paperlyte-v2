@@ -20,23 +20,6 @@ export const Hero = (): React.ReactElement => {
           </p>
         </AnimatedElement>
 
-import { LAUNCH_QUARTER } from '@/constants/waitlist'
-import styles from './Hero.module.css'
-
-export const Hero = (): React.ReactElement => {
-  return (
-    <Section id="hero" className={styles.hero} padding="large">
-      <div className={styles.content}>
-        <AnimatedElement animation="fadeIn">
-          <h1 className={styles.headline}>Your thoughts, unchained.</h1>
-        </AnimatedElement>
-
-        <AnimatedElement animation="fadeIn" delay={100}>
-          <p className={styles.subheadline}>
-            The fastest, simplest way to capture ideas—no folders, no clutter, no friction.
-          </p>
-        </AnimatedElement>
-
         <AnimatedElement animation="fadeIn" delay={200}>
           <p className={styles.microcopy}>
             Be the first to try Paperlyte when we launch in {LAUNCH_QUARTER}

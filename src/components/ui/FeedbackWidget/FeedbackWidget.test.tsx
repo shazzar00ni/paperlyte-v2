@@ -165,16 +165,14 @@ describe('FeedbackWidget', () => {
         expect(screen.getByRole('dialog')).toBeInTheDocument()
       })
 
-      // Type some spaces and then clear to trigger validation
+      // Type only whitespace
       const textarea = screen.getByRole('textbox')
       await user.type(textarea, '   ')
 
-      // Clear the textarea
-      await user.clear(textarea)
-
-      // Try to submit
-      const form = screen.getByRole('textbox').closest('form')
-      fireEvent.submit(form!)
+      // Try to submit the form directly (tests defensive validation logic)
+      const form = textarea.closest('form')
+      if (!form) throw new Error('Form not found in test')
+      fireEvent.submit(form)
 
       await waitFor(() => {
         expect(screen.getByRole('alert')).toBeInTheDocument()
@@ -350,9 +348,9 @@ describe('FeedbackWidget', () => {
         const textarea = screen.getByRole('textbox')
         fireEvent.change(textarea, { target: { value: 'Test auto-close' } })
 
-        // Submit form
-        const form = textarea.closest('form')!
-        fireEvent.submit(form)
+        // Submit form by clicking submit button
+        const submitButton = screen.getByRole('button', { name: /send feedback/i })
+        fireEvent.click(submitButton)
 
         // Confirmation should be shown
         await vi.waitFor(() => {
@@ -391,8 +389,8 @@ describe('FeedbackWidget', () => {
         // Enter feedback message and submit
         const textarea = screen.getByRole('textbox')
         fireEvent.change(textarea, { target: { value: 'Test timeout cleanup' } })
-        const form = textarea.closest('form')!
-        fireEvent.submit(form)
+        const submitButton = screen.getByRole('button', { name: /send feedback/i })
+        fireEvent.click(submitButton)
 
         // Wait for confirmation
         await vi.waitFor(() => {

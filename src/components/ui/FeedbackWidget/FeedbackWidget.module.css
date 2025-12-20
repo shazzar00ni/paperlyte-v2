@@ -5,7 +5,7 @@
   right: var(--spacing-lg);
   width: 56px;
   height: 56px;
-  border-radius: 50%;
+  border-radius: 9999px;
   background-color: var(--color-primary);
   color: var(--color-text-on-primary);
   border: none;

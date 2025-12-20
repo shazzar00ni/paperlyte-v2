@@ -90,6 +90,68 @@
   color: var(--color-primary);
 }
 
+/* App Mockup Container */
+.mockupContainer {
+  position: relative;
+  width: 100%;
+  max-width: 700px;
+  margin: var(--spacing-3xl) auto 0;
+  /* Fallback for browsers that don't support aspect-ratio */
+  min-height: 260px;
+  aspect-ratio: 16 / 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Add padding to accommodate floating secondary mockup overflow */
+  padding: 0 8% 8% 0;
+}
+
+/* Primary mockup (Notes list) - Main focus */
+.mockupPrimary {
+  position: relative;
+  width: 85%;
+  max-width: 550px;
+  z-index: 2;
+  border-radius: var(--border-radius-xl);
+  overflow: hidden;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(0, 0, 0, 0.05);
+  transition: transform var(--transition-base);
+}
+
+.mockupPrimary:hover {
+  transform: translateY(-4px);
+}
+
+/* Secondary mockup (Note detail) - Floating accent */
+.mockupSecondary {
+  position: absolute;
+  bottom: -5%;
+  right: -5%;
+  width: 50%;
+  max-width: 320px;
+  z-index: 3;
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  box-shadow:
+    0 25px 70px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(0, 0, 0, 0.08);
+  transition: transform var(--transition-base);
+}
+
+.mockupSecondary:hover {
+  transform: translateY(-8px) translateX(4px);
+}
+
+/* Mockup images */
+.mockupImage {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 0;
+}
+
 /* Mobile styles */
 @media (max-width: 768px) {
   .hero {
@@ -115,6 +177,17 @@
   .ctas a {
     width: 100%;
   }
+
+  .mockupContainer {
+    max-width: 500px;
+    margin: var(--spacing-2xl) auto 0;
+  }
+
+  .mockupSecondary {
+    width: 45%;
+    bottom: -3%;
+    right: -3%;
+  }
 }
 
 /* Extra small screens */
@@ -136,6 +209,20 @@
     font-size: var(--font-size-xs);
     padding: var(--spacing-xs) var(--spacing-sm);
   }
+
+  .mockupContainer {
+    aspect-ratio: 4 / 3;
+  }
+
+  .mockupPrimary {
+    width: 90%;
+  }
+
+  .mockupSecondary {
+    width: 55%;
+    bottom: -2%;
+    right: -2%;
+  }
 }
 
 /* Dark mode support */
@@ -156,4 +243,18 @@
 
 [data-theme='dark'] .tag {
   background-color: var(--color-surface);
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .mockupPrimary,
+  .mockupSecondary {
+    /* Disable hover transforms for users preferring reduced motion */
+    transition: none;
+  }
+
+  .mockupPrimary:hover,
+  .mockupSecondary:hover {
+    transform: none;
+  }
 }

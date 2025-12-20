@@ -16,7 +16,7 @@ export const Footer = (): React.ReactElement => {
           <p className={styles.tagline}>Your thoughts, unchained from complexity</p>
         </div>
 
-        <div className={styles.links}>
+        <nav className={styles.links} aria-label="Footer navigation">
           <div className={styles.linkGroup}>
             <h3 className={styles.linkGroupTitle}>Product</h3>
             <ul className={styles.linkList}>
@@ -61,7 +61,7 @@ export const Footer = (): React.ReactElement => {
 
           <div className={styles.linkGroup}>
             <h3 className={styles.linkGroupTitle}>Connect</h3>
-            <div className={styles.socialIcons}>
+            <div className={styles.socialIcons} role="list" aria-label="Social media links">
               <a
                 href="https://github.com/paperlyte"
                 target="_blank"
@@ -98,7 +98,7 @@ export const Footer = (): React.ReactElement => {
               </a>
             </div>
           </div>
-        </div>
+        </nav>
 
         <div className={styles.bottom}>
           <p className={styles.copyright}>

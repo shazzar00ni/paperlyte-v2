@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef, type FormEvent } from 'react'
 import { Icon } from '@components/ui/Icon'
 import { Button } from '@components/ui/Button'
+import { isActivationKey, handleArrowNavigation, getFocusableElements } from '@utils/keyboard'
 import styles from './FeedbackWidget.module.css'
 
 type FeedbackType = 'bug' | 'feature'
@@ -39,6 +40,7 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
   const triggerElementRef = useRef<HTMLElement | null>(null)
   const modalRef = useRef<HTMLDivElement>(null)
   const closeButtonRef = useRef<HTMLButtonElement>(null)
+  const typeSelectorRef = useRef<HTMLDivElement>(null)
 
   // Handle modal open
   const handleOpen = useCallback(() => {
@@ -166,6 +168,32 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
     }
   }, [isOpen])
 
+  // Arrow key navigation for type selector buttons
+  useEffect(() => {
+    if (!isOpen || !typeSelectorRef.current) return
+
+    const typeSelector = typeSelectorRef.current
+
+    const handleArrowKeys = (event: KeyboardEvent) => {
+      const focusableElements = getFocusableElements(typeSelector)
+      if (focusableElements.length === 0) return
+
+      const currentIndex = focusableElements.findIndex((el) => el === document.activeElement)
+      if (currentIndex === -1) return
+
+      // Handle Arrow keys (horizontal navigation between bug/feature buttons)
+      const newIndex = handleArrowNavigation(event, focusableElements, currentIndex, 'horizontal')
+      if (newIndex !== null) {
+        event.preventDefault()
+        focusableElements[newIndex]?.focus()
+      }
+    }
+
+    typeSelector.addEventListener('keydown', handleArrowKeys)
+
+    return () => typeSelector.removeEventListener('keydown', handleArrowKeys)
+  }, [isOpen])
+
   // Focus trap - prevent tabbing out of modal
   useEffect(() => {
     if (!isOpen || !modalRef.current) return
@@ -271,7 +299,7 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
               /* Feedback form */
               <form onSubmit={handleSubmit} className={styles.form}>
                 {/* Feedback type selection */}
-                <div className={styles.typeSelector}>
+                <div className={styles.typeSelector} ref={typeSelectorRef} role="group" aria-label="Feedback type selection">
                   <button
                     type="button"
                     className={`${styles.typeButton} ${feedbackType === 'bug' ? styles.typeButtonActive : ''}`}

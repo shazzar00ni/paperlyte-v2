@@ -86,15 +86,26 @@ ol {
   list-style: none;
 }
 
-/* Focus styles for accessibility */
+/*
+ * Focus styles for accessibility with sufficient contrast
+ * Uses a dual-ring approach for better visibility in both light and dark themes
+ * - Inner ring: background color for separation
+ * - Outer ring: primary color for clear focus indication
+ * Ensures WCAG 2.1 Level AA compliance (3:1 contrast ratio minimum)
+ */
 :focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
+  /* Add a subtle inner ring using box-shadow for enhanced visibility */
+  box-shadow:
+    0 0 0 2px var(--color-background),
+    0 0 0 4px var(--color-primary);
 }
 
 /* Remove default focus on mouse click */
 :focus:not(:focus-visible) {
   outline: none;
+  box-shadow: none;
 }
 
 /*

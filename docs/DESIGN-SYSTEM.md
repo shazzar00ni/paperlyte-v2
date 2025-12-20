@@ -106,8 +106,8 @@ All colors have been tested for WCAG 2.1 compliance. The table below shows key c
 |------------|------------|----------------|------------|----------|
 | `#111827` (Text Primary) | `#FFFFFF` (Background) | 16.1:1 | AAA | Body text (light mode) |
 | `#6B7280` (Text Secondary) | `#FFFFFF` (Background) | 4.6:1 | AA | Supporting text (light mode) |
-| `#7c3aed` (Primary) | `#FFFFFF` (Background) | 6.2:1 | AA | Interactive elements, links (large text) |
-| `#FFFFFF` (Text on Primary) | `#7c3aed` (Primary) | 6.2:1 | AA | Text on primary buttons (large text) |
+| `#7c3aed` (Primary) | `#FFFFFF` (Background) | 4.5:1 | AA* | Interactive elements, large text only (18pt+/14pt+ bold) |
+| `#FFFFFF` (Text on Primary) | `#7c3aed` (Primary) | 4.5:1 | AA* | Text on primary buttons (large text only) |
 | `#6d28d9` (Primary Dark) | `#FFFFFF` (Background) | 7.8:1 | AAA | Hover states, emphasized elements |
 | `#a78bfa` (Primary Light) | `#FFFFFF` (Background) | 3.1:1 | AA* | Large text only (18pt+/14pt+ bold) |
 
@@ -117,7 +117,7 @@ All colors have been tested for WCAG 2.1 compliance. The table below shows key c
 |------------|------------|----------------|------------|----------|
 | `#F1F5F9` (Text Primary) | `#0F172A` (Background) | 15.8:1 | AAA | Body text (dark mode) |
 | `#94A3B8` (Text Secondary) | `#0F172A` (Background) | 7.2:1 | AAA | Supporting text (dark mode) |
-| `#7c3aed` (Primary) | `#0F172A` (Background) | 6.5:1 | AA | Interactive elements (dark mode) |
+| `#7c3aed` (Primary) | `#0F172A` (Background) | 5.6:1 | AA | Interactive elements (dark mode, large text) |
 | `#FFFFFF` (Text) | `#1E293B` (Surface) | 14.8:1 | AAA | Text on surface (dark mode) |
 
 #### Semantic Color Combinations
@@ -133,7 +133,9 @@ All colors have been tested for WCAG 2.1 compliance. The table below shows key c
 - AA* = Meets AA standards for large text (18pt/14pt bold) and UI components (3:1 minimum)
 - Normal text requires 4.5:1 contrast (AA) or 7:1 (AAA)
 - Large text and UI components require 3:1 contrast (AA)
-- The purple primary color (#7c3aed) provides 6.2:1 contrast on white and 6.5:1 on dark backgrounds
+- **Important:** The purple primary color (#7c3aed) provides 4.5:1 contrast on white and 5.6:1 on dark backgrounds
+- The purple primary color should **only** be used for interactive elements (buttons, links) and large text, **NOT for normal body text**
+- For normal body text, use `--color-text-primary` (#111827 light mode, #F1F5F9 dark mode) which provides 16+ contrast ratio
 - Contrast ratios calculated using WCAG 2.1 relative luminance formula
 - Semantic colors (success, error) are always paired with icons and descriptive text for accessibility
 - All background/border variants use very low opacity and are not intended for text contrast

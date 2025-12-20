@@ -121,7 +121,18 @@
   color-scheme: dark;
 }
 
-/* System preference detection */
+/* System preference detection
+ *
+ * NOTE: The dark mode tokens below are intentionally duplicated from [data-theme='dark'].
+ * This duplication is necessary to support two distinct use cases:
+ * 1. Explicit theme selection via [data-theme='dark'] attribute
+ * 2. System preference detection when no explicit theme is set
+ *
+ * The selector :root:not([data-theme='light']) ensures system preference is only
+ * applied when the user hasn't explicitly chosen light mode.
+ *
+ * If palette changes are needed, both blocks must be updated in sync.
+ */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
     --color-primary: #ffffff; /* Pure white - Primary in dark mode */

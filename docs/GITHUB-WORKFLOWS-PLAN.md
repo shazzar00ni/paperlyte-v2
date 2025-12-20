@@ -179,6 +179,8 @@ export default defineConfig({
     },
   ],
 
+  // Local development: Start preview server automatically
+  // CI: Use deployed preview URL (passed via BASE_URL env var in E2E workflow)
   webServer: process.env.CI
     ? undefined
     : {
@@ -475,6 +477,7 @@ jobs:
         run: npm run build
 
       - name: Deploy preview to Netlify
+        id: netlify-deploy
         uses: nwtgck/actions-netlify@v3
         with:
           publish-dir: './dist'
@@ -490,12 +493,12 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const url = `https://pr-${{ github.event.number }}--paperlyte.netlify.app`;
+            const deployUrl = '${{ steps.netlify-deploy.outputs.deploy-url }}';
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `🚀 **Preview deployment ready!**\n\n[View preview](${url})\n\n*This preview will update with new commits.*`
+              body: `🚀 **Preview deployment ready!**\n\n[View preview](${deployUrl})\n\n*This preview will update with new commits.*`
             });
 ```
 
@@ -928,6 +931,7 @@ jobs:
 
 - [ ] Add test execution to CI workflow
 - [ ] Add code formatting check to CI
+- [ ] Fix artifact version mismatch in CI (use `@v6` for both upload and download)
 - [ ] Set up Codecov for coverage reporting
 - [ ] Update `ci-success` job dependencies
 
@@ -1032,6 +1036,50 @@ jobs:
 3. ✅ Require code review for all PRs
 4. ✅ Keep dependencies updated weekly
 5. ✅ Monitor performance metrics continuously
+
+### 🔒 SECURITY BEST PRACTICES:
+
+**Third-Party Action Pinning**:
+
+- ⚠️ **IMPORTANT**: The workflow examples in this document use version tags (e.g., `@v3`, `@v5`) for readability, but this is NOT recommended for production
+- 🔐 **RECOMMENDED**: Pin third-party actions to **immutable commit SHAs** to prevent supply chain attacks
+- 🎯 **Especially critical** for actions that receive secrets (deployment tokens, API keys, etc.)
+
+**Actions requiring SHA pinning**:
+
+1. `nwtgck/actions-netlify@v3` → Use `nwtgck/actions-netlify@<commit-sha>`
+   - Has access to `NETLIFY_AUTH_TOKEN` and `NETLIFY_SITE_ID`
+   - Compromised tag could leak deployment credentials
+2. `mikepenz/release-changelog-builder-action@v5` → Use commit SHA
+   - Has `contents: write` permission via `GITHUB_TOKEN`
+   - Could modify releases and tags if compromised
+3. `softprops/action-gh-release@v2` → Use commit SHA
+   - Has `contents: write` permission
+   - Could tamper with published artifacts
+4. `amondnet/vercel-action@v25` → Use commit SHA (if using Vercel)
+   - Has access to `VERCEL_TOKEN` and project credentials
+
+**How to find commit SHA**:
+
+```bash
+# For nwtgck/actions-netlify@v3 example:
+# 1. Go to https://github.com/nwtgck/actions-netlify/releases/tag/v3.0.0
+# 2. Find the commit SHA (e.g., a1c3e9ab1e17e7e1e4c3f9f4b7e8d9c0e1f2a3b4)
+# 3. Use: nwtgck/actions-netlify@a1c3e9ab1e17e7e1e4c3f9f4b7e8d9c0e1f2a3b4
+```
+
+**Maintenance**:
+
+- Review and update pinned SHAs quarterly or when security updates are released
+- Use Dependabot to track GitHub Actions updates (already configured in Phase 4)
+- Document the version tag alongside SHA for easier updates:
+
+```yaml
+# Good practice: Comment the version for reference
+- uses: nwtgck/actions-netlify@a1c3e9ab # v3.0.0
+```
+
+**Note**: First-party GitHub actions (`actions/*`) are generally safe to pin to tags, but SHA pinning is still recommended for maximum security.
 
 ---
 

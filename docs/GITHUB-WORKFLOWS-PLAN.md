@@ -669,7 +669,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: ['javascript', 'typescript']
+        language: ['javascript']
 
     steps:
       - name: Checkout code

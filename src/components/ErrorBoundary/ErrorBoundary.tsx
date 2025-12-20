@@ -1,6 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from "react";
 import { Icon } from "@components/ui/Icon";
-import { logError } from "@utils/monitoring";
 import styles from "./ErrorBoundary.module.css";
 
 interface ErrorBoundaryProps {
@@ -40,19 +39,11 @@ export class ErrorBoundary extends Component<
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    // Log error using centralized monitoring utility
-    logError(
-      error,
-      {
-        componentStack: errorInfo.componentStack || undefined,
-        errorInfo: errorInfo as Record<string, unknown>,
-        severity: "high",
-        tags: {
-          retry_count: String(this.state.retryCount),
-        },
-      },
-      "ErrorBoundary",
-    );
+    // Log error to console in development
+    if (import.meta.env.DEV) {
+      console.error("Error caught by ErrorBoundary:", error);
+      console.error("Error info:", errorInfo);
+    }
   }
 
   handleReset = (): void => {

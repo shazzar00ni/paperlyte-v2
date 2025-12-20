@@ -21,7 +21,8 @@ This directory contains product screenshot mockups used throughout the Paperlyte
 ### 2. `note-detail.png`
 
 **Purpose**: Secondary floating mockup showing note editor view
-**Content**: Single note editor window, using either generic window chrome or (optionally) macOS-style window controls (red, yellow, green dots), and bullet points:
+
+**Content**: Single note editor window with bullet points:
 - Quick idea about the new project...
 - Remember to call Sarah about the meeting
 - Brain dump for tomorrow's presentation...
@@ -51,7 +52,9 @@ SVG placeholder files (included in this directory):
 - `notes-list.svg` - SVG placeholder matching the notes list layout
 - `note-detail.svg` - SVG placeholder matching the note detail layout
 
-These files are present as initial fallbacks. **For production**: Replace with optimized PNG files as specified above.
+**Current Status**: SVG fallbacks are active. The `<picture>` element in Hero.tsx will prefer PNG sources when available, but gracefully falls back to SVG placeholders when PNG files are missing.
+
+**Before Production Deployment**: Replace SVG placeholders with optimized PNG files as specified above to ensure optimal visual quality and performance.
 
 ## Image Optimization
 

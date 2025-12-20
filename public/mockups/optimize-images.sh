@@ -18,6 +18,27 @@
 
 echo "Optimizing mockup images for web..."
 
+# Check prerequisites
+MISSING_TOOLS=""
+
+if ! command -v convert &> /dev/null; then
+  MISSING_TOOLS="${MISSING_TOOLS}- ImageMagick (convert command)\n"
+fi
+
+if ! command -v pngquant &> /dev/null; then
+  MISSING_TOOLS="${MISSING_TOOLS}- pngquant\n"
+fi
+
+if [ -n "$MISSING_TOOLS" ]; then
+  echo "Error: Required tools are not installed:"
+  echo -e "$MISSING_TOOLS"
+  echo "Install missing tools:"
+  echo "  sudo apt-get install imagemagick pngquant"
+  echo "  # or on macOS:"
+  echo "  brew install imagemagick pngquant"
+  exit 1
+fi
+
 # Check if images exist
 if [ ! -f "notes-list.png" ] && [ ! -f "note-detail.png" ]; then
   echo "Error: No images found in current directory"

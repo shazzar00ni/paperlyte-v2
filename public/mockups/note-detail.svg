@@ -2,11 +2,6 @@
   <!-- Window background -->
   <rect width="800" height="600" fill="#FFFFFF" rx="12"/>
 
-  <!-- macOS window controls -->
-  <circle cx="24" cy="24" r="8" fill="#FF5F56"/>
-  <circle cx="48" cy="24" r="8" fill="#FFBD2E"/>
-  <circle cx="72" cy="24" r="8" fill="#27C93F"/>
-
   <!-- Window border -->
   <rect width="800" height="600" fill="none" stroke="#E5E5E5" stroke-width="1" rx="12"/>
 

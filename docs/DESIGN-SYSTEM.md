@@ -1,6 +1,6 @@
 # Paperlyte Design System
 
-> **Version:** 1.0.0
+> **Version:** 2.1.0
 > **Last Updated:** December 20, 2025
 
 A comprehensive design system for Paperlyte - a lightning-fast, distraction-free note-taking application that prioritizes simplicity and performance through a clean, modern aesthetic with a purple accent color.
@@ -15,10 +15,18 @@ A comprehensive design system for Paperlyte - a lightning-fast, distraction-free
 4. [Spacing System](#spacing-system)
 5. [Layout & Grid](#layout--grid)
 6. [Component Library](#component-library)
+   - [Available Components](#available-components)
+   - [Detailed Component API](#detailed-component-api)
+   - [Layout Components](#layout-components)
+   - [Section Components](#section-components)
+   - [Hooks & Utilities](#hooks--utilities)
+   - [Architectural Patterns](#architectural-patterns)
 7. [Iconography](#iconography)
 8. [Animation Guidelines](#animation-guidelines)
 9. [Responsive Design](#responsive-design)
 10. [Accessibility](#accessibility)
+11. [Design Tokens](#design-tokens-tailwind-config-ready)
+12. [Version History](#version-history)
 
 ---
 
@@ -550,6 +558,1136 @@ Paperlyte's component library provides reusable UI elements that follow the desi
 | **FeedbackWidget** | `ui/FeedbackWidget` | User feedback collection widget |
 | **ThemeToggle** | `ui/ThemeToggle` | Light/dark mode toggle switch |
 
+---
+
+## Detailed Component API
+
+### UI Components
+
+#### Button
+
+**Location:** `src/components/ui/Button`
+
+**Purpose:** Versatile button component with multiple variants, sizes, and support for icons and links.
+
+**Props Interface:**
+
+```typescript
+interface ButtonProps {
+  children: ReactNode              // Button content/label
+  variant?: 'primary' | 'secondary' | 'ghost'  // Button style variant (default: 'primary')
+  size?: 'small' | 'medium' | 'large'          // Button size (default: 'medium')
+  href?: string                                 // Optional link URL (renders as <a> if provided)
+  onClick?: () => void                          // Click handler
+  icon?: string                                 // Font Awesome icon name (e.g., 'fa-download')
+  disabled?: boolean                            // Disabled state (default: false)
+  className?: string                            // Additional CSS classes
+  ariaLabel?: string                            // Accessibility label
+  type?: 'button' | 'submit' | 'reset'         // Button type (default: 'button')
+}
+```
+
+**Variants:**
+- `primary` - Filled with primary color, for main CTAs
+- `secondary` - Outlined with border, for alternative actions
+- `ghost` - Transparent background, for tertiary actions
+
+**Sizes:**
+- `small` - 44px min-height, 14px font
+- `medium` - 44px min-height, 16px font (default)
+- `large` - 52px min-height, 16px font
+
+**Usage Examples:**
+
+```tsx
+// Primary button with icon
+<Button variant="primary" icon="fa-download" onClick={handleDownload}>
+  Download App
+</Button>
+
+// Link button
+<Button variant="secondary" href="/learn-more">
+  Learn More
+</Button>
+
+// Submit button in form
+<Button type="submit" variant="primary" disabled={isLoading}>
+  {isLoading ? 'Submitting...' : 'Submit'}
+</Button>
+
+// Ghost button
+<Button variant="ghost" size="small" onClick={handleCancel}>
+  Cancel
+</Button>
+```
+
+**Design Tokens:**
+- Background: `--color-primary` (primary), transparent (secondary/ghost)
+- Border Radius: `--border-radius-full` (9999px - pill shape)
+- Minimum Touch Target: 44x44px (WCAG 2.5.5 Level AAA)
+
+---
+
+#### Icon
+
+**Location:** `src/components/ui/Icon`
+
+**Purpose:** SVG icon component with Font Awesome fallback, consistent sizing, and accessibility support.
+
+**Props Interface:**
+
+```typescript
+interface IconProps {
+  name: string                           // Icon name (e.g., 'fa-bolt', 'fa-circle-check')
+  size?: 'sm' | 'md' | 'lg' | 'xl' | '2x' | '3x'  // Icon size (default: 'md')
+  variant?: 'solid' | 'brands' | 'regular'         // Icon variant (default: 'solid')
+  className?: string                               // Additional CSS classes
+  ariaLabel?: string                               // Accessibility label (required for semantic icons)
+  color?: string                                   // Custom color (default: currentColor)
+  style?: React.CSSProperties                      // Inline styles
+}
+```
+
+**Size Mapping:**
+- `sm` - 16px
+- `md` - 20px (default)
+- `lg` - 24px
+- `xl` - 32px
+- `2x` - 40px
+- `3x` - 48px
+
+**Usage Examples:**
+
+```tsx
+// Decorative icon (no aria-label needed)
+<Icon name="fa-bolt" size="md" aria-hidden="true" />
+
+// Semantic icon (requires aria-label)
+<Icon name="fa-circle-check" size="lg" ariaLabel="Success" />
+
+// Icon with custom color
+<Icon name="fa-heart" size="xl" color="#ef4444" />
+
+// Icon in button
+<Button icon="fa-download">Download</Button>
+```
+
+**Accessibility:**
+- Decorative icons: Use `aria-hidden="true"`, no `ariaLabel`
+- Semantic icons: Provide descriptive `ariaLabel`, automatic `role="img"`
+- Falls back to Font Awesome if icon not in custom set
+
+---
+
+#### ThemeToggle
+
+**Location:** `src/components/ui/ThemeToggle`
+
+**Purpose:** Button to toggle between light and dark themes.
+
+**Props:** None (controlled by `useTheme` hook)
+
+**Usage Example:**
+
+```tsx
+<ThemeToggle />
+```
+
+**Features:**
+- Automatic icon switching (moon/sun)
+- Aria-label updates based on current theme
+- Integrates with `useTheme` hook
+- Persists preference to localStorage
+
+---
+
+#### EmailCapture
+
+**Location:** `src/components/ui/EmailCapture`
+
+**Purpose:** Email signup form with validation, GDPR consent, and spam protection.
+
+**Props Interface:**
+
+```typescript
+interface EmailCaptureProps {
+  variant?: 'inline' | 'centered'   // Layout variant (default: 'inline')
+  placeholder?: string               // Input placeholder (default: 'Enter your email')
+  buttonText?: string                // Submit button text (default: 'Join Waitlist')
+}
+```
+
+**Features:**
+- Email validation
+- Honeypot spam protection
+- GDPR consent checkbox
+- Loading and success states
+- Error handling with user-friendly messages
+- Integrates with Netlify serverless functions
+- Analytics tracking on successful signup
+
+**Usage Examples:**
+
+```tsx
+// Inline variant (for headers/CTAs)
+<EmailCapture variant="inline" buttonText="Get Early Access" />
+
+// Centered variant (for dedicated sections)
+<EmailCapture variant="centered" placeholder="your@email.com" />
+```
+
+**States:**
+- `idle` - Initial state
+- `loading` - Submitting form
+- `success` - Email submitted successfully
+- `error` - Validation or submission error
+
+---
+
+#### FeedbackWidget
+
+**Location:** `src/components/ui/FeedbackWidget`
+
+**Purpose:** Floating feedback button with modal for bug reports and feature requests.
+
+**Props Interface:**
+
+```typescript
+interface FeedbackWidgetProps {
+  onSubmit?: (data: FeedbackFormData) => Promise<void> | void  // Optional submit handler
+}
+
+interface FeedbackFormData {
+  type: 'bug' | 'feature'   // Feedback type
+  message: string            // User's feedback message
+}
+```
+
+**Features:**
+- Floating button accessible from anywhere
+- Modal with form (bug report or feature request)
+- Focus management and keyboard navigation
+- Focus trap within modal
+- Escape key to close
+- Backdrop click to close
+- Confirmation message after submission
+- Mobile responsive
+- Default localStorage storage if no `onSubmit` provided
+
+**Usage Examples:**
+
+```tsx
+// Default behavior (stores in localStorage)
+<FeedbackWidget />
+
+// Custom submit handler
+<FeedbackWidget 
+  onSubmit={async (data) => {
+    await fetch('/api/feedback', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+  }}
+/>
+```
+
+**Accessibility:**
+- Modal uses `role="dialog"` and `aria-modal="true"`
+- Focus trapped within modal
+- Focus restored to trigger button on close
+- Screen reader announcements for errors/confirmation
+
+---
+
+#### AnimatedElement
+
+**Location:** `src/components/ui/AnimatedElement`
+
+**Purpose:** Wrapper component for scroll-triggered animations using Intersection Observer.
+
+**Props Interface:**
+
+```typescript
+interface AnimatedElementProps {
+  children: ReactNode                    // Content to animate
+  animation?: 'fadeIn' | 'slideUp' | 'slideInLeft' | 'slideInRight' | 'scale'  // Animation type (default: 'fadeIn')
+  delay?: number                         // Animation delay in ms (default: 0)
+  threshold?: number                     // Intersection Observer threshold 0-1 (default: 0.1)
+  className?: string                     // Additional CSS classes
+}
+```
+
+**Animation Types:**
+- `fadeIn` - Opacity fade in
+- `slideUp` - Slide up from below with fade
+- `slideInLeft` - Slide in from left
+- `slideInRight` - Slide in from right
+- `scale` - Scale up from 95% to 100%
+
+**Usage Examples:**
+
+```tsx
+// Basic fade in
+<AnimatedElement animation="fadeIn">
+  <h1>Welcome</h1>
+</AnimatedElement>
+
+// Slide up with delay
+<AnimatedElement animation="slideUp" delay={200}>
+  <p>Content appears after 200ms delay</p>
+</AnimatedElement>
+
+// Custom threshold (trigger when 50% visible)
+<AnimatedElement animation="scale" threshold={0.5}>
+  <div className="card">...</div>
+</AnimatedElement>
+```
+
+**Accessibility:**
+- Automatically disabled when `prefers-reduced-motion` is set
+- Uses CSS transitions with hardware acceleration
+
+---
+
+#### ParallaxLayer
+
+**Location:** `src/components/ui/ParallaxLayer`
+
+**Purpose:** Creates parallax scrolling effect for background elements and content.
+
+**Props Interface:**
+
+```typescript
+interface ParallaxLayerProps {
+  children: ReactNode       // Content to apply parallax effect to
+  speed?: number            // Parallax speed multiplier (default: 0.3)
+  zIndex?: number           // Z-index for layering (default: 0)
+  className?: string        // Additional CSS classes
+  absolute?: boolean        // Position absolute for background layers (default: false)
+  opacity?: number          // Layer opacity (default: 1)
+}
+```
+
+**Speed Guidelines:**
+- `0` - No movement (static)
+- `0.1-0.3` - Subtle background effect (recommended)
+- `0.4-0.6` - Medium parallax
+- `0.7-1.0` - Strong foreground effect
+- Negative values - Reverse direction
+
+**Usage Examples:**
+
+```tsx
+// Background parallax layer
+<ParallaxLayer speed={0.2} absolute zIndex={-1}>
+  <div className="background-decoration" />
+</ParallaxLayer>
+
+// Content with subtle parallax
+<ParallaxLayer speed={0.1}>
+  <h1>Hero Title</h1>
+</ParallaxLayer>
+
+// Multiple layers for depth
+<ParallaxLayer speed={0.1} zIndex={1}>
+  <div className="back-layer" />
+</ParallaxLayer>
+<ParallaxLayer speed={0.3} zIndex={2}>
+  <div className="front-layer" />
+</ParallaxLayer>
+```
+
+**Performance:**
+- GPU-accelerated CSS transforms (60fps)
+- Disabled on mobile by default (via `useParallax` hook)
+- Respects `prefers-reduced-motion`
+- Only calculates when in viewport (Intersection Observer)
+
+---
+
+#### FloatingElement
+
+**Location:** `src/components/ui/FloatingElement`
+
+**Purpose:** Creates gentle floating/bobbing animation effects for decorative elements.
+
+**Props Interface:**
+
+```typescript
+interface FloatingElementProps {
+  children: ReactNode                          // Content to float
+  duration?: number                            // Animation duration in seconds (default: 3)
+  delay?: number                               // Animation delay in seconds (default: 0)
+  distance?: number                            // Float distance in pixels (default: 20)
+  direction?: 'vertical' | 'horizontal' | 'circular'  // Float direction (default: 'vertical')
+  className?: string                           // Additional CSS classes
+  pauseWhenHidden?: boolean                    // Pause when out of viewport (default: true)
+}
+```
+
+**Usage Examples:**
+
+```tsx
+// Gentle vertical float
+<FloatingElement duration={4} distance={15}>
+  <div className="floating-icon">🌟</div>
+</FloatingElement>
+
+// Fast horizontal float with delay
+<FloatingElement direction="horizontal" duration={2} delay={0.5}>
+  <span>→</span>
+</FloatingElement>
+
+// Circular orbit
+<FloatingElement direction="circular" duration={8} distance={30}>
+  <div className="orbiting-element" />
+</FloatingElement>
+```
+
+**Performance:**
+- CSS animations with GPU acceleration
+- Automatically pauses when out of viewport (saves CPU)
+- Respects `prefers-reduced-motion`
+
+---
+
+#### CounterAnimation
+
+**Location:** `src/components/ui/CounterAnimation`
+
+**Purpose:** Animates numbers counting up from start to end value.
+
+**Props Interface:**
+
+```typescript
+interface CounterAnimationProps {
+  end: number                              // Target number to count to
+  start?: number                           // Starting number (default: 0)
+  duration?: number                        // Animation duration in ms (default: 2000)
+  prefix?: string                          // Prefix before number (e.g., "$")
+  suffix?: string                          // Suffix after number (e.g., "+", "%")
+  decimals?: number                        // Decimal places to show (default: 0)
+  className?: string                       // Additional CSS classes
+  easing?: 'linear' | 'easeOutQuart' | 'easeOutExpo'  // Easing function (default: 'easeOutQuart')
+  separator?: boolean                      // Add thousands separator (default: true)
+  minWidth?: string                        // Min width to prevent layout shift
+}
+```
+
+**Usage Examples:**
+
+```tsx
+// Simple counter
+<CounterAnimation end={1000} />
+
+// Currency counter
+<CounterAnimation end={99.99} prefix="$" decimals={2} />
+
+// Percentage counter
+<CounterAnimation end={99} suffix="%" duration={3000} />
+
+// Large number with custom easing
+<CounterAnimation end={10000000} easing="easeOutExpo" suffix="+" />
+```
+
+**Features:**
+- requestAnimationFrame for smooth 60fps
+- Intersection Observer triggers animation when scrolled into view
+- Automatic thousands separator formatting
+- Customizable easing functions
+- Prevents layout shift with automatic minimum width calculation
+
+---
+
+#### TextReveal
+
+**Location:** `src/components/ui/TextReveal`
+
+**Purpose:** Animates text revealing character by character or word by word.
+
+**Props Interface:**
+
+```typescript
+interface TextRevealProps {
+  children: string                        // Text content to animate
+  type?: 'character' | 'word'             // Reveal type (default: 'word')
+  delay?: number                          // Base delay before start in ms (default: 0)
+  stagger?: number                        // Delay between units in ms (default: 50)
+  animation?: 'fadeUp' | 'fadeIn' | 'slideUp' | 'blur'  // Effect type (default: 'fadeUp')
+  as?: 'h1' | 'h2' | 'h3' | 'h4' | 'p' | 'span' | 'div'  // HTML tag to render as
+  className?: string                      // Additional CSS classes
+  threshold?: number                      // Intersection threshold 0-1 (default: 0.2)
+}
+```
+
+**Usage Examples:**
+
+```tsx
+// Word-by-word reveal
+<TextReveal as="h1">
+  Welcome to Paperlyte
+</TextReveal>
+
+// Character reveal with custom timing
+<TextReveal type="character" stagger={30} animation="blur">
+  Lightning Fast
+</TextReveal>
+
+// Word reveal with delay
+<TextReveal delay={500} animation="slideUp">
+  Your thoughts, unchained
+</TextReveal>
+```
+
+**Animation Types:**
+- `fadeUp` - Fade in with upward slide
+- `fadeIn` - Simple opacity fade
+- `slideUp` - Slide up from below
+- `blur` - Blur to clear effect
+
+---
+
+#### SVGPathAnimation
+
+**Location:** `src/components/ui/SVGPathAnimation`
+
+**Purpose:** Animates SVG paths with a drawing effect.
+
+**Props Interface:**
+
+```typescript
+interface SVGPathAnimationProps {
+  children: ReactNode                     // SVG <path> elements to animate
+  duration?: number                       // Animation duration in ms (default: 2000)
+  delay?: number                          // Delay before start in ms (default: 0)
+  staggerDelay?: number                   // Delay between paths in ms (default: 200)
+  easing?: string                         // CSS timing function (default: 'ease-out')
+  width?: number                          // SVG viewBox width (default: 100)
+  height?: number                         // SVG viewBox height (default: 100)
+  className?: string                      // Additional CSS classes
+  strokeColor?: string                    // Stroke color (default: 'currentColor')
+  strokeWidth?: number                    // Stroke width (default: 2)
+  fillColor?: string                      // Fill color (default: 'none')
+  animateFill?: boolean                   // Animate fill after stroke (default: false)
+}
+```
+
+**Usage Examples:**
+
+```tsx
+// Simple path draw
+<SVGPathAnimation duration={1500}>
+  <path d="M10 10 L90 90" />
+</SVGPathAnimation>
+
+// Complex shape with fill
+<SVGPathAnimation
+  width={200}
+  height={200}
+  strokeColor="#7c3aed"
+  fillColor="#7c3aed"
+  animateFill
+>
+  <path d="M100 10 L190 90 L10 90 Z" />
+</SVGPathAnimation>
+
+// Multiple paths with stagger
+<SVGPathAnimation duration={2000} staggerDelay={300}>
+  <path d="M10 50 Q50 10 90 50" />
+  <path d="M10 70 Q50 110 90 70" />
+</SVGPathAnimation>
+```
+
+**Features:**
+- Automatic path length calculation
+- Multiple paths with staggered animation
+- Optional fill animation after stroke completes
+- GPU-accelerated stroke-dashoffset animation
+
+---
+
+### Layout Components
+
+#### Section
+
+**Location:** `src/components/layout/Section`
+
+**Purpose:** Reusable section wrapper with consistent spacing and backgrounds.
+
+**Props Interface:**
+
+```typescript
+interface SectionProps {
+  id?: string                             // Section ID for navigation
+  children: ReactNode                     // Section content
+  className?: string                      // Additional CSS classes
+  background?: 'default' | 'surface' | 'primary'  // Background variant (default: 'default')
+  padding?: 'default' | 'large' | 'none'          // Padding size (default: 'default')
+}
+```
+
+**Background Variants:**
+- `default` - Uses `--color-background`
+- `surface` - Uses `--color-surface` (subtle gray)
+- `primary` - Uses `--color-primary` (purple accent)
+
+**Padding Sizes:**
+- `default` - Standard section spacing (64px vertical)
+- `large` - Extra spacing for hero sections (96px vertical)
+- `none` - No padding (for custom layouts)
+
+**Usage Examples:**
+
+```tsx
+// Standard section
+<Section id="features" background="surface">
+  <h2>Features</h2>
+  {/* content */}
+</Section>
+
+// Hero section with large padding
+<Section id="hero" padding="large">
+  {/* hero content */}
+</Section>
+
+// Custom background
+<Section background="primary" className={styles.customSection}>
+  {/* content */}
+</Section>
+```
+
+**Features:**
+- Consistent max-width container
+- Responsive padding adjustments
+- Semantic `<section>` element
+- Memoized for performance
+
+---
+
+#### Header
+
+**Location:** `src/components/layout/Header`
+
+**Purpose:** Main navigation header with mobile menu support.
+
+**Props:** None (self-contained component)
+
+**Features:**
+- Sticky/fixed positioning
+- Mobile hamburger menu
+- Focus management and keyboard navigation
+- Escape key closes menu
+- Focus trap in mobile menu
+- Theme toggle integration
+- Smooth scroll to sections
+
+**Usage Example:**
+
+```tsx
+<Header />
+```
+
+**Accessibility:**
+- ARIA roles and labels
+- Keyboard navigation support
+- Focus trap in mobile menu
+- Screen reader friendly
+
+---
+
+#### Footer
+
+**Location:** `src/components/layout/Footer`
+
+**Purpose:** Site footer with links and copyright information.
+
+**Props:** None (self-contained component)
+
+**Usage Example:**
+
+```tsx
+<Footer />
+```
+
+---
+
+### Section Components
+
+Section components are pre-composed layouts for specific page sections.
+
+#### Hero
+
+**Location:** `src/components/sections/Hero`
+
+**Purpose:** Hero section with headline, subheading, email capture, and tags.
+
+**Props:** None
+
+**Features:**
+- AnimatedElement integration for staggered entrance
+- EmailCapture component
+- Icon tags for key features
+- Smooth scroll to features section
+
+---
+
+#### Features
+
+**Location:** `src/components/sections/Features`
+
+**Purpose:** Feature grid displaying application capabilities.
+
+**Props:** None
+
+**Features:**
+- Pulls feature data from `@constants/features`
+- Responsive grid layout (1-2-3 columns)
+- Animated card entrance with stagger
+- Icon integration
+
+---
+
+#### Pricing
+
+**Location:** `src/components/sections/Pricing`
+
+**Purpose:** Pricing tiers and plan comparison.
+
+**Props:** None
+
+---
+
+#### Testimonials
+
+**Location:** `src/components/sections/Testimonials`
+
+**Purpose:** Customer testimonials with ratings.
+
+**Props:** None
+
+**Features:**
+- Testimonial data from constants
+- Responsive layout
+- Animated entrance
+
+---
+
+#### Comparison
+
+**Location:** `src/components/sections/Comparison`
+
+**Purpose:** Feature comparison table vs competitors.
+
+**Props:** None
+
+**Features:**
+- Comparison data from `@constants/comparison`
+- Checkmark/cross icons
+- Mobile-responsive table
+
+---
+
+#### Statistics
+
+**Location:** `src/components/sections/Statistics`
+
+**Purpose:** Key metrics and statistics display.
+
+**Props:** None
+
+**Features:**
+- CounterAnimation integration
+- Grid layout
+- Animated number counting
+
+---
+
+#### FAQ
+
+**Location:** `src/components/sections/FAQ`
+
+**Purpose:** Frequently asked questions with collapsible answers.
+
+**Props:** None
+
+**Features:**
+- FAQ data from constants
+- Collapsible accordion pattern
+- Keyboard navigation
+
+---
+
+#### CTA
+
+**Location:** `src/components/sections/CTA`
+
+**Purpose:** Call-to-action section with email capture.
+
+**Props:** None
+
+**Features:**
+- EmailCapture integration
+- Prominent positioning
+- Action-focused copy
+
+---
+
+#### Mobile
+
+**Location:** `src/components/sections/Mobile`
+
+**Purpose:** Mobile app showcase section.
+
+**Props:** None
+
+---
+
+## Hooks & Utilities
+
+### useMediaQuery
+
+**Location:** `src/hooks/useMediaQuery.ts`
+
+**Purpose:** React hook for responsive design with programmatic breakpoint detection.
+
+**Signature:**
+
+```typescript
+function useMediaQuery(query: string): boolean
+```
+
+**Parameters:**
+- `query` - CSS media query string (e.g., `'(min-width: 768px)'`)
+
+**Returns:**
+- `boolean` - Whether the media query currently matches
+
+**Usage Examples:**
+
+```tsx
+import { useMediaQuery } from '@hooks/useMediaQuery'
+
+function ResponsiveComponent() {
+  const isMobile = useMediaQuery('(max-width: 768px)')
+  const isTablet = useMediaQuery('(min-width: 769px) and (max-width: 1023px)')
+  const isDesktop = useMediaQuery('(min-width: 1024px)')
+  
+  return (
+    <div>
+      {isMobile && <MobileView />}
+      {isTablet && <TabletView />}
+      {isDesktop && <DesktopView />}
+    </div>
+  )
+}
+
+// Conditional rendering based on screen size
+function Navigation() {
+  const isMobile = useMediaQuery('(max-width: 768px)')
+  
+  return isMobile ? <MobileNav /> : <DesktopNav />
+}
+
+// Hide elements on specific breakpoints
+function HeroSection() {
+  const showFloatingIcons = useMediaQuery('(min-width: 769px)')
+  
+  return (
+    <section>
+      {showFloatingIcons && <FloatingDecorations />}
+      <HeroContent />
+    </section>
+  )
+}
+```
+
+**How It Works:**
+- Wraps `window.matchMedia()` with reactive state
+- Listens to viewport changes via `MediaQueryListEvent`
+- Updates component when media query match status changes
+- SSR-safe (returns `false` when `window` is undefined)
+
+**Common Breakpoints:**
+
+```tsx
+// Mobile
+const isMobile = useMediaQuery('(max-width: 768px)')
+
+// Tablet
+const isTablet = useMediaQuery('(min-width: 769px) and (max-width: 1023px)')
+
+// Desktop
+const isDesktop = useMediaQuery('(min-width: 1024px)')
+
+// Large desktop
+const isLargeDesktop = useMediaQuery('(min-width: 1280px)')
+
+// Portrait orientation
+const isPortrait = useMediaQuery('(orientation: portrait)')
+
+// Reduced motion
+const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)')
+
+// Dark mode preference
+const prefersDark = useMediaQuery('(prefers-color-scheme: dark)')
+```
+
+**When to Use CSS vs useMediaQuery:**
+
+**Use CSS media queries for:**
+- Pure visual changes (layout, spacing, sizing)
+- No conditional logic needed
+- Better performance (no JS execution)
+- Style-only responsive adjustments
+
+**Use useMediaQuery hook for:**
+- Conditional component rendering
+- Different component trees for different screen sizes
+- Logic that depends on viewport size
+- Dynamic content loading based on screen size
+
+**Performance Notes:**
+- Hook only re-renders when match status actually changes
+- Safe to use in multiple components simultaneously
+- No polling - event-based updates only
+- Minimal overhead compared to resize listeners
+
+---
+
+### Other Hooks
+
+#### useParallax
+
+**Location:** `src/hooks/useParallax.ts`
+
+**Purpose:** Creates parallax scrolling effects.
+
+**Features:**
+- GPU-accelerated transforms
+- Intersection Observer for viewport detection
+- Automatic mobile/reduced motion disabling
+- requestAnimationFrame for smooth updates
+
+---
+
+#### useIntersectionObserver
+
+**Location:** `src/hooks/useIntersectionObserver.ts`
+
+**Purpose:** Detects when element enters viewport.
+
+**Features:**
+- Configurable threshold
+- Optional trigger-once behavior
+- Used by AnimatedElement, ParallaxLayer, etc.
+
+---
+
+#### useReducedMotion
+
+**Location:** `src/hooks/useReducedMotion.ts`
+
+**Purpose:** Detects user's motion preference.
+
+**Returns:** `boolean` - true if user prefers reduced motion
+
+---
+
+#### useTheme
+
+**Location:** `src/hooks/useTheme.ts`
+
+**Purpose:** Manages light/dark theme state.
+
+**Features:**
+- localStorage persistence
+- System preference detection
+- Theme toggle function
+
+---
+
+#### useScrollPosition
+
+**Location:** `src/hooks/useScrollPosition.ts`
+
+**Purpose:** Tracks current scroll position.
+
+---
+
+## Architectural Patterns
+
+### File Structure
+
+All components follow a consistent structure:
+
+```
+ComponentName/
+├── index.ts                 # Barrel export
+├── ComponentName.tsx        # Main component
+├── ComponentName.module.css # Scoped styles
+└── ComponentName.test.tsx   # Unit tests
+```
+
+### Barrel Export Pattern
+
+Every component directory has an `index.ts` file that re-exports the component:
+
+```typescript
+// index.ts
+export { ComponentName } from './ComponentName'
+export type { ComponentNameProps } from './ComponentName'
+```
+
+**Benefits:**
+- Clean imports: `from '@components/ui/Button'` instead of `from '@components/ui/Button/Button'`
+- Easy to refactor internal structure
+- Type exports available alongside component
+
+### TypeScript Props Interfaces
+
+All components define a TypeScript interface for their props:
+
+```typescript
+interface ComponentNameProps {
+  // Props definition
+}
+
+export const ComponentName = (props: ComponentNameProps): React.ReactElement => {
+  // Component implementation
+}
+```
+
+**Conventions:**
+- Interface name matches component name + `Props`
+- Export props interface for type composition
+- Use `ReactElement` or `ReactNode` for return types
+- Use `?` for optional props with defaults
+
+### React.memo Pattern
+
+Layout and section components use `React.memo` for performance:
+
+```typescript
+export const Section = React.memo<SectionProps>(
+  ({ id, children, className }) => {
+    // Component implementation
+  }
+)
+
+Section.displayName = 'Section'
+```
+
+**When to Use:**
+- Layout components that rarely change props
+- Section components with static content
+- Components in lists or grids
+
+**When NOT to Use:**
+- Components with props that change frequently
+- Components with children that update often
+- Small, simple components (overhead not worth it)
+
+### CSS Modules
+
+All components use CSS Modules for scoped styling:
+
+```tsx
+import styles from './Component.module.css'
+
+<div className={styles.container}>
+  <h1 className={styles.title}>Title</h1>
+</div>
+```
+
+**Benefits:**
+- No class name conflicts
+- Co-located with component
+- Type-safe with TypeScript
+- Automatic optimization/minification
+
+**Naming Conventions:**
+- Use camelCase for class names
+- Descriptive names (`.primaryButton` not `.pb`)
+- BEM-like modifiers: `.button`, `.buttonPrimary`, `.buttonDisabled`
+
+### Design Token Integration
+
+Components reference CSS custom properties from `src/styles/variables.css`:
+
+```css
+/* Component.module.css */
+.button {
+  background-color: var(--color-primary);
+  border-radius: var(--border-radius-full);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-base);
+  transition: all var(--transition-base);
+}
+```
+
+**Never hardcode values that exist as design tokens:**
+- ❌ `color: #7c3aed`
+- ✅ `color: var(--color-primary)`
+- ❌ `padding: 16px 24px`
+- ✅ `padding: var(--spacing-sm) var(--spacing-md)`
+
+### Component Testing
+
+All components have accompanying test files using Vitest and React Testing Library:
+
+```typescript
+import { render, screen } from '@testing-library/react'
+import { Button } from './Button'
+
+describe('Button', () => {
+  it('renders with children', () => {
+    render(<Button>Click me</Button>)
+    expect(screen.getByText('Click me')).toBeInTheDocument()
+  })
+  
+  it('calls onClick when clicked', () => {
+    const handleClick = vi.fn()
+    render(<Button onClick={handleClick}>Click</Button>)
+    screen.getByText('Click').click()
+    expect(handleClick).toHaveBeenCalledOnce()
+  })
+})
+```
+
+**Testing Best Practices:**
+- Test user behavior, not implementation
+- Use `screen` queries from Testing Library
+- Test accessibility (aria labels, keyboard navigation)
+- Test different prop combinations
+- Test error states and edge cases
+
+### Accessibility Guidelines
+
+All components must meet WCAG 2.1 AA standards:
+
+**Required:**
+- Semantic HTML elements
+- Proper heading hierarchy
+- ARIA labels for interactive elements
+- Keyboard navigation support
+- Focus indicators
+- Color contrast ratios (see [Color Palette](#color-palette))
+- Touch target sizes (44x44px minimum)
+
+**Animation Accessibility:**
+- All animations respect `prefers-reduced-motion`
+- Use `useReducedMotion` hook
+- Provide static fallbacks
+- Never rely on motion alone to convey information
+
+**Form Accessibility:**
+- Associate labels with inputs
+- Provide error messages with `role="alert"`
+- Use `aria-invalid` for validation states
+- Include `aria-describedby` for help text
+
+---
+
 ### Buttons
 
 #### Variants
@@ -1073,6 +2211,227 @@ Use `will-change` for animations to enable GPU acceleration:
   .grid { grid-template-columns: repeat(2, 1fr); }
 }
 ```
+
+### Responsive Utility Classes
+
+Paperlyte provides utility classes in `src/styles/utilities.css` for common responsive needs.
+
+**Visibility Utilities:**
+
+```css
+/* Hide on mobile (< 768px) */
+.hidden-mobile {
+  display: none; /* Only on mobile */
+}
+
+/* Hide on desktop (>= 769px) */
+.hidden-desktop {
+  display: none; /* Only on desktop */
+}
+
+/* Hide completely */
+.hidden {
+  display: none;
+}
+
+/* Screen reader only (visually hidden but accessible) */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+```
+
+**Usage Examples:**
+
+```tsx
+// Hide decorative elements on mobile
+<div className="hidden-mobile">
+  <FloatingElement>...</FloatingElement>
+</div>
+
+// Show mobile navigation only on mobile
+<nav className="hidden-desktop">
+  <MobileNav />
+</nav>
+
+// Screen reader only text
+<span className="sr-only">Skip to main content</span>
+```
+
+**Container Utilities:**
+
+```css
+.container {
+  width: 100%;
+  max-width: var(--max-width);        /* 1280px */
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--spacing-md);    /* 24px */
+  padding-right: var(--spacing-md);
+}
+
+.container-content {
+  max-width: var(--max-width-content); /* 1024px */
+}
+```
+
+**Flexbox Utilities:**
+
+```css
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+
+/* Gap utilities */
+.gap-xs { gap: var(--spacing-xs); }  /* 8px */
+.gap-sm { gap: var(--spacing-sm); }  /* 16px */
+.gap-md { gap: var(--spacing-md); }  /* 24px */
+.gap-lg { gap: var(--spacing-lg); }  /* 32px */
+```
+
+**Spacing Utilities:**
+
+```css
+/* Margin top */
+.mt-xs { margin-top: var(--spacing-xs); }  /* 8px */
+.mt-sm { margin-top: var(--spacing-sm); }  /* 16px */
+.mt-md { margin-top: var(--spacing-md); }  /* 24px */
+.mt-lg { margin-top: var(--spacing-lg); }  /* 32px */
+.mt-xl { margin-top: var(--spacing-xl); }  /* 48px */
+
+/* Margin bottom */
+.mb-xs { margin-bottom: var(--spacing-xs); }
+.mb-sm { margin-bottom: var(--spacing-sm); }
+.mb-md { margin-bottom: var(--spacing-md); }
+.mb-lg { margin-bottom: var(--spacing-lg); }
+.mb-xl { margin-bottom: var(--spacing-xl); }
+```
+
+### CSS vs Programmatic Responsive Patterns
+
+**Use CSS Media Queries For:**
+
+```css
+/* Visual-only changes - no logic needed */
+.hero-title {
+  font-size: var(--font-size-5xl);  /* 48px */
+}
+
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: var(--font-size-4xl);  /* 36px */
+  }
+}
+
+/* Layout adjustments */
+.grid {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 1023px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+```
+
+**Use useMediaQuery Hook For:**
+
+```tsx
+import { useMediaQuery } from '@hooks/useMediaQuery'
+
+function HeroSection() {
+  // Conditional component rendering
+  const isMobile = useMediaQuery('(max-width: 768px)')
+  const showParallax = useMediaQuery('(min-width: 1024px)')
+  
+  return (
+    <section>
+      {/* Different components for different screens */}
+      {isMobile ? <MobileHero /> : <DesktopHero />}
+      
+      {/* Conditionally render expensive features */}
+      {showParallax && <ParallaxBackground />}
+      
+      {/* Different content structure */}
+      {isMobile ? (
+        <SimpleLayout />
+      ) : (
+        <ComplexTwoColumnLayout />
+      )}
+    </section>
+  )
+}
+
+// Dynamic data loading based on screen size
+function ImageGallery() {
+  const isMobile = useMediaQuery('(max-width: 768px)')
+  const imageSize = isMobile ? 'small' : 'large'
+  
+  return (
+    <div>
+      {images.map(img => (
+        <img src={img[imageSize]} alt={img.alt} />
+      ))}
+    </div>
+  )
+}
+```
+
+**Combining Both Approaches:**
+
+```tsx
+function FeatureSection() {
+  // Use hook for component logic
+  const showAnimations = useMediaQuery('(min-width: 769px)')
+  
+  return (
+    // Use CSS class for styling
+    <section className={styles.features}>
+      <div className={styles.grid}> {/* CSS handles grid columns */}
+        {features.map((feature) => (
+          showAnimations ? (
+            <AnimatedElement key={feature.id} animation="slideUp">
+              <FeatureCard {...feature} />
+            </AnimatedElement>
+          ) : (
+            <FeatureCard key={feature.id} {...feature} />
+          )
+        ))}
+      </div>
+    </section>
+  )
+}
+```
+
+**Performance Best Practices:**
+
+✅ **DO:**
+- Use CSS for visual-only changes (better performance)
+- Use `useMediaQuery` sparingly for conditional logic
+- Combine CSS classes with media queries for most cases
+- Cache media query results when possible
+
+❌ **DON'T:**
+- Use `useMediaQuery` for simple hiding/showing (use CSS classes)
+- Create many `useMediaQuery` hooks with same query (use once, pass down)
+- Poll `window.innerWidth` manually (use `useMediaQuery` instead)
+- Forget that `useMediaQuery` causes re-renders on viewport changes
 
 ### Mobile-First Approach
 
@@ -1730,6 +3089,7 @@ This is handled automatically via the CSS variables in `src/styles/variables.css
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.1.0 | 2025-12-20 | **Major expansion**: Added comprehensive component library documentation (28 components), TypeScript prop interfaces, detailed hook documentation (useMediaQuery, useParallax, etc.), architectural patterns, responsive utility classes, CSS vs programmatic patterns, and enhanced cross-referencing. |
 | 1.0.0 | 2025-12-20 | Updated documentation to match current implementation: Purple accent color (#7c3aed), Inter-only typography, accurate WCAG contrast ratios, current breakpoints, and comprehensive component library documentation. |
 
 ---

@@ -94,13 +94,13 @@ A comprehensive design system for Paperlyte - a lightning-fast, distraction-free
 |------------|------------|----------------|------------|----------|
 | `#111827` (Text Primary) | `#FFFFFF` (Background) | 16.1:1 | AAA | Body text (light mode) |
 | `#6B7280` (Text Secondary) | `#FFFFFF` (Background) | 4.6:1 | AA | Supporting text (light mode) |
-| `#7c3aed` (Primary) | `#FFFFFF` (Background) | 6.5:1 | AA | Interactive elements, links |
-| `#FFFFFF` (Text) | `#7c3aed` (Primary) | 6.5:1 | AA | Text on primary buttons |
+| `#7c3aed` (Primary) | `#FFFFFF` (Background) | 6.2:1 | AA | Interactive elements, links |
+| `#FFFFFF` (Text) | `#7c3aed` (Primary) | 6.2:1 | AA | Text on primary buttons |
 | `#F1F5F9` (Text Primary) | `#0F172A` (Background) | 15.8:1 | AAA | Body text (dark mode) |
 | `#94A3B8` (Text Secondary) | `#0F172A` (Background) | 7.2:1 | AAA | Supporting text (dark mode) |
 | `#7c3aed` (Primary) | `#0F172A` (Background) | 6.5:1 | AA | Interactive elements (dark mode) |
 
-**All color combinations meet WCAG 2.1 AA standards (minimum 4.5:1 for normal text, 3:1 for large text and interactive elements). The purple primary color provides a 6.5:1 contrast ratio, exceeding the AA requirement for both light and dark modes.**
+**All color combinations meet WCAG 2.1 AA standards (minimum 4.5:1 for normal text, 3:1 for large text and interactive elements). The purple primary color provides excellent contrast ratios, meeting or exceeding AA requirements in both light and dark modes.**
 
 ### Color State Guidelines
 

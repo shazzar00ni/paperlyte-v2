@@ -108,4 +108,96 @@ describe('Button', () => {
     expect(link).not.toHaveAttribute('target')
     expect(link).not.toHaveAttribute('rel')
   })
+
+  describe('URL Security Validation', () => {
+    it('should render as disabled button for javascript: protocol URLs', () => {
+      render(<Button href="javascript:alert(1)">Dangerous</Button>)
+
+      const button = screen.getByRole('button')
+      expect(button).toBeInTheDocument()
+      expect(button).toBeDisabled()
+      expect(button).toHaveAttribute('aria-disabled', 'true')
+      expect(button).not.toHaveAttribute('href')
+    })
+
+    it('should render as disabled button for data: protocol URLs', () => {
+      render(<Button href="data:text/html,<script>alert(1)</script>">Dangerous</Button>)
+
+      const button = screen.getByRole('button')
+      expect(button).toBeDisabled()
+    })
+
+    it('should render as disabled button for vbscript: protocol URLs', () => {
+      render(<Button href="vbscript:msgbox(1)">Dangerous</Button>)
+
+      const button = screen.getByRole('button')
+      expect(button).toBeDisabled()
+    })
+
+    it('should render as disabled button for file: protocol URLs', () => {
+      render(<Button href="file:///etc/passwd">Dangerous</Button>)
+
+      const button = screen.getByRole('button')
+      expect(button).toBeDisabled()
+    })
+
+    it('should allow safe external HTTPS URLs', () => {
+      render(<Button href="https://example.com">Safe External</Button>)
+
+      const link = screen.getByRole('link')
+      expect(link).toBeInTheDocument()
+      expect(link).toHaveAttribute('href', 'https://example.com')
+      expect(link).toHaveAttribute('target', '_blank')
+      expect(link).toHaveAttribute('rel', 'noopener noreferrer')
+    })
+
+    it('should allow safe external HTTP URLs', () => {
+      render(<Button href="http://example.com">Safe External HTTP</Button>)
+
+      const link = screen.getByRole('link')
+      expect(link).toBeInTheDocument()
+      expect(link).toHaveAttribute('href', 'http://example.com')
+    })
+
+    it('should allow safe relative URLs starting with /', () => {
+      render(<Button href="/about">About</Button>)
+
+      const link = screen.getByRole('link')
+      expect(link).toBeInTheDocument()
+      expect(link).toHaveAttribute('href', '/about')
+    })
+
+    it('should allow safe relative URLs starting with ./', () => {
+      render(<Button href="./page">Page</Button>)
+
+      const link = screen.getByRole('link')
+      expect(link).toBeInTheDocument()
+      expect(link).toHaveAttribute('href', './page')
+    })
+
+    it('should allow safe relative URLs starting with ../', () => {
+      render(<Button href="../parent">Parent</Button>)
+
+      const link = screen.getByRole('link')
+      expect(link).toBeInTheDocument()
+      expect(link).toHaveAttribute('href', '../parent')
+    })
+
+    it('should warn in development mode for unsafe URLs', () => {
+      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+      render(<Button href="javascript:alert(1)">Dangerous</Button>)
+
+      if (import.meta.env.DEV) {
+        expect(consoleSpy).toHaveBeenCalledWith(
+          expect.stringContaining('Button component: Unsafe URL rejected')
+        )
+        expect(consoleSpy).toHaveBeenCalledWith(
+          expect.stringContaining('javascript:alert(1)')
+        )
+      }
+
+      consoleSpy.mockRestore()
+    })
+  })
 })

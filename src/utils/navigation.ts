@@ -17,8 +17,9 @@ export function scrollToSection(sectionId: string): void {
 }
 
 /**
- * Validates if a URL is safe for navigation (prevents open redirect vulnerabilities).
- * Only allows relative URLs and same-origin absolute URLs.
+ * Validates if a URL is safe for navigation (prevents XSS and injection attacks).
+ * Allows relative URLs, same-origin URLs, and legitimate external HTTPS/HTTP URLs.
+ * Blocks dangerous protocols like javascript:, data:, vbscript:, etc.
  *
  * @param url - The URL to validate
  * @returns true if the URL is safe for navigation, false otherwise
@@ -96,11 +97,17 @@ export function isSafeUrl(url: string): boolean {
       return true
     }
 
-    // For absolute URLs or anything else, try to parse and validate
+    // For absolute URLs, parse and validate the protocol
     const parsedUrl = new URL(trimmedUrl, window.location.origin)
+    
+    // Allow http: and https: protocols (safe for external links)
+    // Allow same-origin URLs with any protocol
+    if (parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:') {
+      return true
+    }
+    
+    // For other protocols, only allow if same-origin
     const currentOrigin = window.location.origin
-
-    // Only allow same-origin URLs
     return parsedUrl.origin === currentOrigin
   } catch {
     // If URL parsing fails, it's not safe

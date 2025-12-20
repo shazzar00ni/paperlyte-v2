@@ -46,12 +46,12 @@ The Hero component uses `<picture>` elements with:
 - **PNG source** (preferred): High-quality optimized images for production
 - **SVG fallback** (included): Lightweight vector placeholders used when PNG files are missing
 
-Current placeholder files:
+SVG placeholder files (included in this directory):
 
 - `notes-list.svg` - SVG placeholder matching the notes list layout
 - `note-detail.svg` - SVG placeholder matching the note detail layout
 
-**For production**: Replace placeholders by adding optimized PNG files as specified above.
+These files are present as initial fallbacks. **For production**: Replace with optimized PNG files as specified above.
 
 ## Image Optimization
 

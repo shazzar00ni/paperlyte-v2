@@ -3,6 +3,7 @@ import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { Section } from '@components/layout/Section'
 import { Icon } from '@components/ui/Icon'
 import { scrollToSection } from '@/utils/navigation'
+import { LAUNCH_QUARTER } from '@constants/waitlist'
 import styles from './Hero.module.css'
 
 export const Hero = (): React.ReactElement => {

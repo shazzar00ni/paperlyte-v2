@@ -1,7 +1,7 @@
 # Paperlyte Design System
 
 > **Version:** 1.0.0
-> **Last Updated:** December 20, 2024
+> **Last Updated:** December 20, 2025
 
 A comprehensive design system for Paperlyte - a lightning-fast, distraction-free note-taking application that prioritizes simplicity and performance through a clean, modern aesthetic with a purple accent color.
 
@@ -1155,7 +1155,7 @@ section {
 
 ### Touch Target Sizes
 
-**Minimum implemented touch target size: 44x44px** (meets WCAG 2.5.5 Level AAA; WCAG 2.5.5 Level AA minimum is 24x24px)
+**Minimum implemented touch target size: 44x44px** (WCAG 2.5.5 Level AAA; Level AA minimum is 24x24px)
 
 The design uses 44px as the minimum touch target, exceeding the WCAG 2.5.5 Level AA requirement (24x24px) and meeting Level AAA. This ensures all interactive elements are easily tappable on mobile devices.
 
@@ -1730,7 +1730,7 @@ This is handled automatically via the CSS variables in `src/styles/variables.css
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.0.0 | 2024-12-20 | Updated documentation to match current implementation: Purple accent color (#7c3aed), Inter-only typography, accurate WCAG contrast ratios, current breakpoints, and comprehensive component library documentation. |
+| 1.0.0 | 2025-12-20 | Updated documentation to match current implementation: Purple accent color (#7c3aed), Inter-only typography, accurate WCAG contrast ratios, current breakpoints, and comprehensive component library documentation. |
 
 ---
 

@@ -44,6 +44,16 @@ export const iconPaths: Record<string, string> = {
     'M12 20.94c1.5 0 2.75 1.06 4.5 2.03V21c0-.5-.5-1-.5-1s-1.5-.5-4-.5-4 .5-4 .5-.5.5-.5 1v2c1.75-1 3-2.03 4.5-2.03z M12 12a6.5 6.5 0 0 1-6.5-6.5A6.5 6.5 0 0 1 12 0a6.5 6.5 0 0 1 6.5 6.5A6.5 6.5 0 0 1 12 12z',
   'fa-windows':
     'M0 3.45L8.73 2.2v8.45H0V3.45zm8.73 8.35v8.45L0 19.05v-7.25h8.73zM9.82 2L23 0v10.66H9.82V2zm0 10.66H23V24l-13.18-2V12.66z',
+
+  // Feedback Widget Icons
+  'fa-comment-dots':
+    'M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z M12 11h.01 M8 11h.01 M16 11h.01',
+  'fa-x': 'M18 6L6 18 M6 6l12 12',
+  'fa-bug':
+    'M8 2v4 M16 2v4 M12 14v1 M2 9h4 M18 9h4 M2 15h4 M18 15h4 M8 2.5c.5-.3 1.2-.5 2-.5h4c.8 0 1.5.2 2 .5 M6 8c0-2.2 1.8-4 4-4h4c2.2 0 4 1.8 4 4v8c0 2.2-1.8 4-4 4h-4c-2.2 0-4-1.8-4-4V8z',
+  'fa-lightbulb':
+    'M9 18h6 M10 22h4 M15 8a3 3 0 0 0-6 0c0 2 2 3 2 5v1h2v-1c0-2 2-3 2-5z M12 2v1',
+  'fa-paper-plane': 'M22 2L11 13 M22 2l-7 20-4-9-9-4 20-7z',
 }
 
 // Icon viewBox configurations (most use 0 0 24 24, but some may differ)

@@ -840,12 +840,46 @@ jobs:
 
 **Solution**:
 ```yaml
-# Enhance existing size-check job in ci.yml
-- name: Compare bundle sizes
-  uses: andresz1/size-limit-action@v1
-  with:
-    github_token: ${{ secrets.GITHUB_TOKEN }}
-    skip_step: install
+# Excerpt from .github/workflows/ci.yml
+
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  size-check:
+    name: Bundle size check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build bundles
+        run: npm run build
+
+      - name: Check bundle size limits
+        run: npx size-limit
+
+      # Enhance existing size-check job in ci.yml with PR comparison + comment
+      - name: Compare bundle sizes
+        uses: andresz1/size-limit-action@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          skip_step: install
 ```
 
 ---

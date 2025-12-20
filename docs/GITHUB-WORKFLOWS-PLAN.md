@@ -279,17 +279,16 @@ test.describe('Landing Page', () => {
 
   test('should pass Core Web Vitals', async ({ page }) => {
     await page.goto('/');
+    await page.waitForLoadState('load');
 
-    // Measure FCP
+    // Measure FCP using Performance Timeline
     const fcp = await page.evaluate(() => {
-      return new Promise((resolve) => {
-        new PerformanceObserver((list) => {
-          const entries = list.getEntries();
-          resolve(entries[0].startTime);
-        }).observe({ type: 'paint', buffered: true });
-      });
+      const paintEntries = performance.getEntriesByType('paint');
+      const fcpEntry = paintEntries.find((entry) => entry.name === 'first-contentful-paint');
+      return fcpEntry ? fcpEntry.startTime : null;
     });
 
+    expect(fcp).not.toBeNull();
     expect(fcp).toBeLessThan(2000); // FCP < 2s
   });
 

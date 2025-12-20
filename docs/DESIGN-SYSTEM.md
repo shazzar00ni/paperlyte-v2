@@ -1,9 +1,9 @@
 # Paperlyte Design System
 
-> **Version:** 2.0.0
-> **Last Updated:** December 17, 2025
+> **Version:** 1.0.0
+> **Last Updated:** December 20, 2024
 
-A comprehensive design system for Paperlyte - a lightning-fast, distraction-free note-taking application that prioritizes simplicity and performance through a clean, monochrome aesthetic.
+A comprehensive design system for Paperlyte - a lightning-fast, distraction-free note-taking application that prioritizes simplicity and performance through a clean, modern aesthetic with a purple accent color.
 
 ---
 
@@ -37,22 +37,26 @@ A comprehensive design system for Paperlyte - a lightning-fast, distraction-free
 
 ## Color Palette
 
-**Design Philosophy:** Paperlyte uses a sophisticated monochrome palette that emphasizes clarity, elegance, and timelessness. The near-black and pure white color scheme creates a paper-like aesthetic that's both modern and classic.
+**Design Philosophy:** Paperlyte uses a clean, paper-inspired palette with purple (#7C3AED) as the primary accent color. The design emphasizes clarity and readability with high-contrast neutral colors, while the purple accent adds visual interest to interactive elements and calls-to-action.
 
 ### Primary Colors
 
 ```css
 /* Light Mode */
---color-primary: #1a1a1a;        /* Near black - Main brand color */
---color-primary-dark: #000000;   /* Pure black - Hover states */
---color-primary-light: #333333;  /* Dark gray - Accents */
+--color-primary: #7c3aed;         /* Purple 600 - Main brand color */
+--color-primary-dark: #6d28d9;    /* Purple 700 - Hover states */
+--color-primary-light: #a78bfa;   /* Purple 400 - Accents */
+--color-primary-faint: rgba(124, 58, 237, 0.1);    /* 10% opacity for backgrounds */
+--color-primary-fainter: rgba(124, 58, 237, 0.05); /* 5% opacity for subtle backgrounds */
 ```
 
 #### Color Usage
 
-- **Primary (#1a1a1a)** - CTAs, primary buttons, bold statements
-- **Primary Dark (#000000)** - Hover states on primary elements
-- **Primary Light (#333333)** - Subtle accents, muted elements
+- **Primary (#7c3aed)** - CTAs, primary buttons, links, interactive elements
+- **Primary Dark (#6d28d9)** - Hover states on primary elements
+- **Primary Light (#a78bfa)** - Subtle accents, secondary highlights
+- **Primary Faint** - Background tints for focus states, subtle backgrounds
+- **Primary Fainter** - Very subtle backgrounds, hover states
 
 ### Neutral Colors
 
@@ -60,34 +64,28 @@ A comprehensive design system for Paperlyte - a lightning-fast, distraction-free
 /* Light Mode */
 --color-background: #FFFFFF;      /* Pure white - Main background */
 --color-surface: #F9FAFB;         /* Gray 50 - Card backgrounds */
---color-surface-dark: #18181b;    /* Zinc 900 - Dark surface sections */
 --color-text-primary: #111827;    /* Gray 900 - Headings, body text */
 --color-text-secondary: #6B7280;  /* Gray 500 - Supporting text */
---color-text-tertiary: #9CA3AF;   /* Gray 400 - Muted text */
---color-border: #E5E7EB;          /* Gray 200 - Borders, dividers */
---color-border-light: #F3F4F6;    /* Gray 100 - Subtle borders */
 --color-text-on-primary: #FFFFFF; /* White text on primary backgrounds */
---color-text-on-dark: #FFFFFF;    /* White text on dark surfaces */
---color-text-on-dark-secondary: rgba(255, 255, 255, 0.7); /* Semi-transparent white */
+--color-border: #E5E7EB;          /* Gray 200 - Borders, dividers */
 ```
 
 ### Dark Mode Colors
 
-**Dark Mode Philosophy:** In dark mode, the palette inverts while maintaining the monochrome aesthetic. White becomes the primary color, creating a sophisticated light-on-dark experience.
+**Dark Mode Philosophy:** In dark mode, the palette maintains readability while providing a comfortable low-light experience. The purple accent remains consistent for brand recognition.
 
 ```css
 /* Dark Mode */
---color-primary: #FFFFFF;        /* Pure white - Primary in dark mode */
---color-primary-dark: #F1F5F9;   /* Slate 100 - Hover states */
---color-primary-light: #E2E8F0;  /* Slate 200 - Accents */
+--color-primary: #7c3aed;        /* Purple 600 - Consistent brand color */
+--color-primary-dark: #6d28d9;   /* Purple 700 - Hover states */
+--color-primary-light: #8b5cf6;  /* Purple 500 - Accents */
+--color-primary-faint: rgba(124, 58, 237, 0.1);    /* 10% opacity for backgrounds */
+--color-primary-fainter: rgba(124, 58, 237, 0.05); /* 5% opacity for subtle backgrounds */
 --color-background: #0F172A;     /* Slate 900 - Dark background */
 --color-surface: #1E293B;        /* Slate 800 - Card backgrounds */
---color-surface-dark: #0F172A;   /* Slate 900 - Dark sections */
 --color-text-primary: #F1F5F9;   /* Slate 100 - Light text */
 --color-text-secondary: #94A3B8; /* Slate 400 - Supporting text */
---color-text-tertiary: #64748B;  /* Slate 500 - Muted text */
 --color-border: #334155;         /* Slate 700 - Borders */
---color-border-light: #1E293B;   /* Slate 800 - Subtle borders */
 ```
 
 ### WCAG Compliance Matrix
@@ -96,14 +94,13 @@ A comprehensive design system for Paperlyte - a lightning-fast, distraction-free
 |------------|------------|----------------|------------|----------|
 | `#111827` (Text Primary) | `#FFFFFF` (Background) | 16.1:1 | AAA | Body text (light mode) |
 | `#6B7280` (Text Secondary) | `#FFFFFF` (Background) | 4.6:1 | AA | Supporting text (light mode) |
-| `#9CA3AF` (Text Tertiary) | `#FFFFFF` (Background) | 3.1:1 | AA (Large Text Only) | Large text (18pt+/14pt+ bold), metadata, non-critical labels |
-| `#1a1a1a` (Primary) | `#FFFFFF` (Background) | 16.8:1 | AAA | Primary buttons, text |
-| `#FFFFFF` (Text) | `#1a1a1a` (Primary) | 16.8:1 | AAA | Text on primary buttons |
+| `#7c3aed` (Primary) | `#FFFFFF` (Background) | 6.5:1 | AA | Interactive elements, links |
+| `#FFFFFF` (Text) | `#7c3aed` (Primary) | 6.5:1 | AA | Text on primary buttons |
 | `#F1F5F9` (Text Primary) | `#0F172A` (Background) | 15.8:1 | AAA | Body text (dark mode) |
 | `#94A3B8` (Text Secondary) | `#0F172A` (Background) | 7.2:1 | AAA | Supporting text (dark mode) |
-| `#64748B` (Text Tertiary) | `#0F172A` (Background) | 5.1:1 | AA | Muted text (dark mode) |
+| `#7c3aed` (Primary) | `#0F172A` (Background) | 6.5:1 | AA | Interactive elements (dark mode) |
 
-**All color combinations meet WCAG 2.1 AA standards (minimum 4.5:1 for normal text, 3:1 for large text). The monochrome palette provides exceptional contrast ratios, exceeding AAA standards for most combinations.**
+**All color combinations meet WCAG 2.1 AA standards (minimum 4.5:1 for normal text, 3:1 for large text and interactive elements). The purple primary color provides a 6.5:1 contrast ratio, exceeding the AA requirement for both light and dark modes.**
 
 ### Color State Guidelines
 
@@ -111,7 +108,7 @@ A comprehensive design system for Paperlyte - a lightning-fast, distraction-free
 
 ```css
 /* Primary Button Hover */
-background-color: var(--color-primary-dark); /* #000000 */
+background-color: var(--color-primary-dark); /* #6d28d9 */
 transform: translateY(-1px);
 box-shadow: var(--shadow-md);
 
@@ -140,30 +137,38 @@ cursor: not-allowed;
 ### ✅ Do's and ❌ Don'ts
 
 ✅ **DO:**
-- Use primary color (#1a1a1a in light, #ffffff in dark) for CTAs and important actions
-- Leverage the high contrast of the monochrome palette for clarity
+- Use primary color (#7c3aed) for CTAs and important interactive elements
+- Leverage high contrast of neutral colors for readability
 - Use text-secondary (#6B7280) for supporting information
-- Use text-tertiary (#9CA3AF) sparingly for subtle metadata
 - Test colors in both light and dark modes
+- Use purple sparingly to draw attention to key actions
 
 ❌ **DON'T:**
-- Introduce colors outside the monochrome palette (except semantic colors like success/error)
-- **Use text-tertiary (#9CA3AF) for normal body text** - it only meets AA standards for large text (18pt+/14pt+ bold)
-- Use text-tertiary for critical information - reserve it for non-essential metadata, timestamps, and labels
+- Overuse the purple accent - it should highlight, not overwhelm
 - Place secondary text on colored backgrounds without checking contrast
 - Use color alone to convey information (add icons or text)
 - Override focus outline colors (accessibility requirement)
 
 ### Semantic States
 
-While the design is primarily monochrome, **semantic colors are allowed as exceptions** for success, error, warning, and info states. However, **never rely on color alone** - always combine with icons and clear text.
+Semantic colors are used for success, error, warning, and info states. **Never rely on color alone** - always combine with icons and clear text.
 
 ```css
-/* Semantic colors (from variables.css) */
---color-success: #10b981;  /* Emerald 500 */
---color-error: #ef4444;    /* Red 500 */
---color-warning: #f59e0b;  /* Amber 500 */
---color-info: #3b82f6;     /* Blue 500 */
+/* Semantic colors (Light Mode) */
+--color-success: #22c55e;  /* Green 500 */
+--color-success-bg: rgba(34, 197, 94, 0.1);
+--color-success-border: rgba(34, 197, 94, 0.3);
+--color-error: #dc2626;    /* Red 600 */
+--color-error-bg: rgba(239, 68, 68, 0.1);
+--color-error-border: rgba(239, 68, 68, 0.3);
+
+/* Semantic colors (Dark Mode) */
+--color-success: #4ade80;  /* Green 400 - higher contrast */
+--color-success-bg: rgba(74, 222, 128, 0.15);
+--color-success-border: rgba(74, 222, 128, 0.35);
+--color-error: #f87171;    /* Red 400 - higher contrast */
+--color-error-bg: rgba(248, 113, 113, 0.15);
+--color-error-border: rgba(248, 113, 113, 0.35);
 ```
 
 **Best Practices for Semantic States:**
@@ -171,58 +176,48 @@ While the design is primarily monochrome, **semantic colors are allowed as excep
 1. **Always combine color with icons:**
    - Success: `fa-circle-check` + green
    - Error: `fa-exclamation-circle` + red
-   - Warning: `fa-exclamation-triangle` + amber
-   - Info: `fa-info-circle` + blue
 
 2. **Use subtle color application:**
    - Prefer colored borders/icons rather than full backgrounds
-   - Use monochrome backgrounds with colored accents
-   - Keep text in monochrome palette for readability
-
-3. **Monochrome-only alternative (if avoiding all color):**
-
-   ```css
-   /* Use icon + border weight variations */
-   .success { border: 2px solid var(--color-text-primary); }
-   .error { border: 3px solid var(--color-primary-dark); }
-   .warning { border: 2px dashed var(--color-border); }
-   .info { border: 1px solid var(--color-border); }
-   ```
+   - Use neutral backgrounds with colored accents
+   - Keep text in neutral palette for readability
 
 **Example Implementation:**
 
 ```tsx
 import styles from './Alert.module.css'
 
-// With semantic color (preferred for critical states)
+// Success state with icon
 <div className={styles.alert}>
-  <i className={`fa-solid fa-exclamation-circle ${styles.errorIcon}`} />
-  <p>Error: Please check your input</p>
+  <i className={`fa-solid fa-circle-check ${styles.successIcon}`} />
+  <p>Successfully saved your changes</p>
 </div>
 
-// Monochrome alternative
+// Error state with icon
 <div className={styles.alert}>
-  <i className="fa-solid fa-exclamation-circle" />
-  <strong>Error:</strong> Please check your input
+  <i className={`fa-solid fa-exclamation-circle ${styles.errorIcon}`} />
+  <p><strong>Error:</strong> Please check your input</p>
 </div>
 ```
 
 ```css
 /* Alert.module.css */
-.errorIcon {
-  color: var(--color-error);
-}
-
 .successIcon {
   color: var(--color-success);
 }
 
-.warningIcon {
-  color: var(--color-warning);
+.errorIcon {
+  color: var(--color-error);
 }
 
-.infoIcon {
-  color: var(--color-info);
+.alert {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  border-radius: var(--border-radius-md);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
 }
 ```
 
@@ -230,51 +225,50 @@ import styles from './Alert.module.css'
 
 ## Typography
 
-**Typography Philosophy:** Paperlyte combines the clarity of Inter for UI and body text with the elegance of Playfair Display for headlines, creating a sophisticated contrast between functional and expressive typography.
+**Typography Philosophy:** Paperlyte uses Inter, a clean and highly readable sans-serif font family, for all text. This creates a consistent, professional appearance across the application while maintaining excellent legibility at all sizes.
 
 ### Font Families
 
 ```css
 --font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
---font-family-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
 ```
 
-**Primary:** Inter (Google Fonts) - Clean, readable sans-serif for UI and body text
-**Display:** Playfair Display (Google Fonts) - Elegant serif for headlines and emphasis
+**Primary:** Inter (Variable Font) - Clean, readable sans-serif for all text
 **Fallback:** System fonts for fast loading and graceful degradation
 
 **Loading Strategy:**
 
 ```html
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+<!-- Preload critical font for faster rendering -->
+<link
+  rel="preload"
+  as="font"
+  type="font/woff2"
+  href="/fonts/Inter-Variable.woff2"
+  crossorigin
+/>
 ```
 
 **Font Usage Guidelines:**
-- **Inter**: Navigation, buttons, body text, UI components, feature descriptions
-- **Playfair Display**: Hero headlines, section titles, large display text, emphasis text (italic)
+- **Inter**: All text - navigation, buttons, headings, body text, UI components
 
 ### Type Scale
 
-| Name | Size | rem | px | Line Height | Font Family | Use Case |
-|------|------|-----|----|-------------|-------------|----------|
-| **Hero** | `--font-size-7xl` | 4.5rem | 72px | 1.1 (tight) | Playfair Display | Hero headlines (desktop) |
-| **Display XL** | `--font-size-6xl` | 3.75rem | 60px | 1.1 (tight) | Playfair Display | Large display headlines |
-| **Display** | `--font-size-5xl` | 3rem | 48px | 1.1 (tight) | Playfair Display | Display headlines |
-| **H1** | `--font-size-4xl` | 2.25rem | 36px | 1.25 (snug) | Inter or Playfair | Page titles |
-| **H2** | `--font-size-3xl` | 1.875rem | 30px | 1.25 (snug) | Playfair Display | Section headers |
-| **H3** | `--font-size-2xl` | 1.5rem | 24px | 1.25 (snug) | Inter | Subsection headers |
-| **H4** | `--font-size-xl` | 1.25rem | 20px | 1.25 (snug) | Inter | Card titles |
-| **H5** | `--font-size-lg` | 1.125rem | 18px | 1.25 (snug) | Inter | Small headers |
-| **Body** | `--font-size-base` | 1rem | 16px | 1.75 (relaxed) | Inter | Body text, paragraphs |
-| **Small** | `--font-size-sm` | 0.875rem | 14px | 1.5 (normal) | Inter | Captions, labels |
-| **Tiny** | `--font-size-xs` | 0.75rem | 12px | 1.5 (normal) | Inter | Metadata, timestamps |
+| Name | Size | rem | px | Line Height | Use Case |
+|------|------|-----|----|-------------|----------|
+| **5xl** | `--font-size-5xl` | 3rem | 48px | 1.25 (tight) | Hero headlines |
+| **4xl** | `--font-size-4xl` | 2.25rem | 36px | 1.25 (tight) | Page titles |
+| **3xl** | `--font-size-3xl` | 1.875rem | 30px | 1.25 (tight) | Section headers |
+| **2xl** | `--font-size-2xl` | 1.5rem | 24px | 1.25 (tight) | Subsection headers |
+| **XL** | `--font-size-xl` | 1.25rem | 20px | 1.25 (normal) | Card titles |
+| **LG** | `--font-size-lg` | 1.125rem | 18px | 1.5 (normal) | Small headers, emphasized text |
+| **Base** | `--font-size-base` | 1rem | 16px | 1.75 (relaxed) | Body text, paragraphs |
+| **SM** | `--font-size-sm` | 0.875rem | 14px | 1.5 (normal) | Captions, labels, small text |
+| **XS** | `--font-size-xs` | 0.75rem | 12px | 1.5 (normal) | Metadata, timestamps |
 
 ### Font Weights
 
 ```css
-
 --font-weight-normal: 400;    /* Body text */
 --font-weight-medium: 500;    /* Emphasis */
 --font-weight-semibold: 600;  /* Strong emphasis */
@@ -284,9 +278,7 @@ import styles from './Alert.module.css'
 ### Line Heights
 
 ```css
-
---line-height-tight: 1.1;     /* Hero headlines (Playfair Display) */
---line-height-snug: 1.25;     /* Headings */
+--line-height-tight: 1.25;    /* Headings */
 --line-height-normal: 1.5;    /* UI elements, small text */
 --line-height-relaxed: 1.75;  /* Body text, paragraphs */
 ```
@@ -297,14 +289,18 @@ Typography automatically adjusts on mobile devices for better readability and sp
 
 ```css
 @media (max-width: 768px) {
-  --font-size-7xl: 3.25rem;  /* 72px → 52px */
-  --font-size-6xl: 2.75rem;  /* 60px → 44px */
-  --font-size-5xl: 2.25rem;  /* 48px → 36px */
   --font-size-4xl: 1.875rem; /* 36px → 30px */
+  --font-size-5xl: 2.25rem;  /* 48px → 36px */
+  --spacing-3xl: 4rem;       /* 96px → 64px */
+}
+
+@media (max-width: 480px) {
+  --font-size-3xl: 1.5rem;   /* 30px → 24px */
+  --font-size-4xl: 1.75rem;  /* 30px → 28px */
+  --font-size-5xl: 2rem;     /* 36px → 32px */
 }
 ```
 
-On mobile, `--font-size-6xl` intentionally scales from 3.75rem (60px) to 2.75rem (44px), staying larger than `--font-size-5xl` to preserve the visual hierarchy without overpowering smaller screens.
 **Note:** Hero headlines reduce significantly on mobile to maintain visual balance and prevent overwhelming small screens.
 
 ### Typography Examples
@@ -312,24 +308,23 @@ On mobile, `--font-size-6xl` intentionally scales from 3.75rem (60px) to 2.75rem
 **Using CSS Modules (recommended):**
 
 ```tsx
-
 import styles from './Component.module.css'
 
-// Hero headline (Playfair Display serif)
-<h1 className={styles.headline}>
-  Your thoughts, <em className={styles.headlineItalic}>unchained</em> from complexity
+// Hero headline
+<h1 className={styles.hero}>
+  Your thoughts, <em>unchained</em> from complexity
 </h1>
 
-// Section header (Playfair Display)
+// Section header
 <h2 className={styles.sectionTitle}>Beautiful Simplicity</h2>
 
-// Subsection header (Inter)
-<h3>Feature Details</h3>
+// Subsection header
+<h3 className={styles.subsection}>Feature Details</h3>
 
-// Card title (Inter)
-<h4>Lightning Speed</h4>
+// Card title
+<h4 className={styles.cardTitle}>Lightning Speed</h4>
 
-// Body text (Inter)
+// Body text
 <p>Regular paragraph text with relaxed line height for optimal readability.</p>
 ```
 
@@ -337,24 +332,19 @@ import styles from './Component.module.css'
 
 ```css
 /* Component.module.css */
-.headline {
-  font-family: var(--font-family-serif);  /* Playfair Display */
-  font-size: var(--font-size-7xl);        /* 72px */
-  font-weight: var(--font-weight-normal); /* 400 */
-  line-height: var(--line-height-tight);  /* 1.1 */
-  letter-spacing: -0.02em;
-}
-
-.headlineItalic {
-  font-style: italic;
-  color: var(--color-text-tertiary);
+.hero {
+  font-family: var(--font-family);
+  font-size: var(--font-size-5xl);        /* 48px */
+  font-weight: var(--font-weight-bold);   /* 700 */
+  line-height: var(--line-height-tight);  /* 1.25 */
+  letter-spacing: -0.01em;
 }
 
 .sectionTitle {
-  font-family: var(--font-family-serif);  /* Playfair Display */
+  font-family: var(--font-family);
   font-size: var(--font-size-3xl);        /* 30px */
   font-weight: var(--font-weight-bold);   /* 700 */
-  line-height: var(--line-height-snug);   /* 1.25 */
+  line-height: var(--line-height-tight);  /* 1.25 */
 }
 ```
 
@@ -369,20 +359,17 @@ import styles from './Component.module.css'
 ### ✅ Do's and ❌ Don'ts
 
 ✅ **DO:**
-- Use Playfair Display for hero headlines and major section titles
-- Use Inter for UI, navigation, buttons, and body text
-- Use italic Playfair Display for emphasis within headlines
+- Use Inter for all text consistently
 - Use semantic HTML headings (h1-h6) in hierarchical order
 - Use relaxed line-height (1.75) for body text
 - Limit line length to 60-80 characters for readability
-- Use font-weight-normal (400) for Playfair Display headlines
+- Use font-weight variations (medium, semibold, bold) to create hierarchy
 
 ❌ **DON'T:**
-- Mix serif and sans-serif within the same text block (except for italic emphasis)
-- Use Playfair Display for body text or small UI elements
+- Mix multiple font families
 - Skip heading levels (h1 → h3)
 - Use font sizes smaller than 12px (--font-size-xs)
-- Set line-height below 1.1 (readability issues)
+- Set line-height below 1.25 (readability issues)
 - Use more than 2-3 font weights in a single section
 
 ---
@@ -502,7 +489,7 @@ section {
 ```css
 --max-width: 1280px;           /* Maximum page width */
 --max-width-content: 1024px;   /* Maximum content width for readability */
---header-height: 72px;         /* Fixed header height (increased for better presence) */
+--header-height: 64px;         /* Fixed header height */
 ```
 
 ### Border Radius
@@ -511,28 +498,27 @@ section {
 --border-radius-sm: 0.25rem;   /* 4px  - Small elements, checkboxes */
 --border-radius-md: 0.5rem;    /* 8px  - Cards, inputs */
 --border-radius-lg: 1rem;      /* 16px - Large cards, feature boxes */
---border-radius-xl: 1.5rem;    /* 24px - Hero cards, prominent elements */
 --border-radius-full: 9999px;  /* Full - Pills, badges, primary buttons */
 ```
 
 **Usage Notes:**
 - **Full border-radius** is the signature style for buttons and badges in the Paperlyte design
 - Cards and inputs use moderate radius (md) for a clean, professional look
-- Large radius (lg, xl) is reserved for prominent content containers
+- Large radius (lg) is reserved for prominent content containers
 
 ### Shadows
 
 ```css
---shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);                              /* Subtle elevation */
---shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);                            /* Buttons, hover states */
---shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);                          /* Modals, dropdowns */
---shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);                          /* Hero mockup, large modals */
---shadow-card: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06); /* Layered shadow for cards */
+--shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);       /* Subtle elevation */
+--shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);     /* Buttons, hover states */
+--shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);   /* Modals, dropdowns */
+--shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);   /* Hero mockup, large modals */
 ```
 
 **Shadow Usage:**
-- Use shadows sparingly in the monochrome design to create depth without clutter
-- `shadow-card` provides a subtle, layered shadow perfect for the minimalist aesthetic
+- Use shadows to create depth and establish visual hierarchy
+- Apply sparingly for a clean, minimalist aesthetic
+- Darker shadows for more prominent elevation
 
 ### Z-Index Layers
 
@@ -738,7 +724,7 @@ select:focus {
 ### Navigation
 
 **Header:**
-- Height: `--header-height` (72px)
+- Height: `--header-height` (64px)
 - Position: Sticky or fixed
 - Z-index: `--z-header` (1000)
 - Background: `--color-background` with subtle shadow
@@ -1138,7 +1124,7 @@ a {
 ✅ **DO:**
 - Design for mobile first, enhance for desktop
 - Test on real devices, not just browser DevTools
-- Ensure touch targets are at least 48x48px
+- Ensure touch targets are at least 44x44px (meets WCAG 2.5.5 Level AAA)
 - Use relative units (rem, em, %) for better scaling
 
 ❌ **DON'T:**
@@ -1235,20 +1221,20 @@ Small, pill-shaped badges for announcements or status indicators:
 }
 ```
 
-#### 2. Headline with Italic Emphasis
+#### 2. Headline with Emphasis
 
 ```css
 .headline {
-  font-family: var(--font-family-serif);  /* Playfair Display */
-  font-size: var(--font-size-7xl);        /* 72px */
-  font-weight: var(--font-weight-normal); /* 400 */
-  line-height: var(--line-height-tight);  /* 1.1 */
-  letter-spacing: -0.02em;                /* Tight tracking */
+  font-family: var(--font-family);        /* Inter */
+  font-size: var(--font-size-5xl);        /* 48px */
+  font-weight: var(--font-weight-bold);   /* 700 */
+  line-height: var(--line-height-tight);  /* 1.25 */
+  letter-spacing: -0.01em;                /* Slightly tight tracking */
 }
 
 .headlineItalic {
   font-style: italic;
-  color: var(--color-text-primary);      /* High-contrast emphasis */
+  color: var(--color-primary);            /* Purple accent for emphasis */
 }
 ```
 
@@ -1262,7 +1248,7 @@ Blurred, gradient shapes that move at different speeds on scroll. These create s
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    var(--color-primary) 0%,    /* Near-black center in light mode */
+    var(--color-primary) 0%,    /* Purple center */
     transparent 70%             /* Fades to transparent */
   );
   filter: blur(60px);            /* Heavy blur creates soft gradient */
@@ -1277,7 +1263,7 @@ Blurred, gradient shapes that move at different speeds on scroll. These create s
 }
 ```
 
-**Visual Effect:** The heavy blur (60px) combined with low opacity (0.03) creates extremely subtle, soft shadows that add depth without being distracting. In light mode, the near-black (#1a1a1a) creates gentle gray gradients. In dark mode, white creates soft light halos. Blur is reduced to 40px on mobile for better performance.
+**Visual Effect:** The heavy blur (60px) combined with low opacity (0.03) creates extremely subtle, soft purple halos that add depth without being distracting. Blur is reduced to 40px on mobile for better performance.
 
 **Reduced Motion:** Parallax effects are disabled when `prefers-reduced-motion` is active.
 
@@ -1309,7 +1295,7 @@ Animated icons positioned absolutely, floating with subtle motion:
 .mockupCard {
   background-color: var(--color-background);
   border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-xl);  /* 24px */
+  border-radius: var(--border-radius-lg);  /* 16px */
   padding: var(--spacing-lg);
   box-shadow: var(--shadow-xl);
 }
@@ -1319,7 +1305,7 @@ The mockup includes:
 - Header with window dots
 - Skeleton content lines
 - Checkboxes
-- Statistics with serif numbers (Playfair Display)
+- Statistics with clear numbers
 - Primary CTA button
 
 #### 6. Trusted By Section
@@ -1329,14 +1315,14 @@ The mockup includes:
   display: flex;
   align-items: center;
   gap: var(--spacing-xl);
-  border-top: 1px solid var(--color-border-light);
+  border-top: 1px solid var(--color-border);
   padding: var(--spacing-xl) var(--spacing-md);
 }
 
 .trustedLabel {
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);
-  color: var(--color-text-tertiary);
+  color: var(--color-text-secondary);
   letter-spacing: 0.05em;  /* Wide tracking for labels */
 }
 ```
@@ -1359,7 +1345,7 @@ The mockup includes:
 @media (max-width: 768px) {
   /* Reduce headline size */
   .headline {
-    font-size: var(--font-size-5xl);  /* 48px → 36px */
+    font-size: var(--font-size-4xl);  /* 48px → 30px */
   }
 
   /* Stack CTAs vertically */
@@ -1608,9 +1594,11 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#1a1a1a',  // Near black (light mode)
-          dark: '#000000',     // Pure black
-          light: '#333333',    // Dark gray
+          DEFAULT: '#7c3aed',  // Purple 600
+          dark: '#6d28d9',     // Purple 700
+          light: '#a78bfa',    // Purple 400
+          faint: 'rgba(124, 58, 237, 0.1)',
+          fainter: 'rgba(124, 58, 237, 0.05)',
         },
         background: {
           DEFAULT: '#FFFFFF',
@@ -1619,21 +1607,25 @@ module.exports = {
         surface: {
           DEFAULT: '#F9FAFB',
           dark: '#1E293B',     // Slate 800 (dark mode)
-          'dark-alt': '#18181b', // Zinc 900 (dark sections)
         },
         text: {
           primary: '#111827',
           secondary: '#6B7280',
-          tertiary: '#9CA3AF',  // Use only for large text (18pt+/14pt+ bold)
         },
         border: {
           DEFAULT: '#E5E7EB',
-          light: '#F3F4F6',
+        },
+        success: {
+          DEFAULT: '#22c55e',  // Green 500
+          dark: '#4ade80',     // Green 400 (dark mode)
+        },
+        error: {
+          DEFAULT: '#dc2626',  // Red 600
+          dark: '#f87171',     // Red 400 (dark mode)
         },
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
-        serif: ['Playfair Display', 'Georgia', 'Times New Roman', 'serif'],
       },
       fontSize: {
         xs: '0.75rem',    // 12px
@@ -1645,8 +1637,6 @@ module.exports = {
         '3xl': '1.875rem',// 30px
         '4xl': '2.25rem', // 36px
         '5xl': '3rem',    // 48px
-        '6xl': '3.75rem', // 60px
-        '7xl': '4.5rem',  // 72px
       },
       spacing: {
         xs: '0.5rem',   // 8px
@@ -1656,13 +1646,11 @@ module.exports = {
         xl: '3rem',     // 48px
         '2xl': '4rem',  // 64px
         '3xl': '6rem',  // 96px
-        '4xl': '8rem',  // 128px
       },
       borderRadius: {
         sm: '0.25rem',  // 4px
         md: '0.5rem',   // 8px
         lg: '1rem',     // 16px
-        xl: '1.5rem',   // 24px
         full: '9999px', // Pill shape
       },
       boxShadow: {
@@ -1670,7 +1658,6 @@ module.exports = {
         md: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
         lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
         xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
-        card: '0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06)',
       },
     },
   },
@@ -1679,13 +1666,15 @@ module.exports = {
 
 **Dark Mode Implementation:**
 
-The design uses CSS custom properties that automatically respond to dark mode. In dark mode, the monochrome palette inverts:
+The design uses CSS custom properties that automatically respond to dark mode. In dark mode:
 
-- Primary: `#1a1a1a` → `#ffffff` (white becomes primary)
+- Primary: `#7c3aed` (purple remains consistent for brand recognition)
 - Background: `#ffffff` → `#0F172A` (slate 900)
+- Surface: `#F9FAFB` → `#1E293B` (slate 800)
 - Text Primary: `#111827` → `#F1F5F9` (slate 100)
+- Text Secondary: `#6B7280` → `#94A3B8` (slate 400)
 
-This inversion is handled automatically via the CSS variables in `src/styles/variables.css`.
+This is handled automatically via the CSS variables in `src/styles/variables.css`.
 
 ---
 
@@ -1693,8 +1682,7 @@ This inversion is handled automatically via the CSS variables in `src/styles/var
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 2.0.0 | 2025-12-17 | Major monochrome rebrand: colors (purple → black/white), Playfair Display typography, pill buttons, hero patterns, expanded scales. See full documentation for details. |
-| 1.0.0 | 2025-11-29 | Initial design system documentation |
+| 1.0.0 | 2024-12-20 | Updated documentation to match current implementation: Purple accent color (#7c3aed), Inter-only typography, accurate WCAG contrast ratios, current breakpoints, and comprehensive component library documentation. |
 
 ---
 

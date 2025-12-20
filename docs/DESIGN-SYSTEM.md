@@ -106,8 +106,8 @@ All colors have been tested for WCAG 2.1 compliance. The table below shows key c
 |------------|------------|----------------|------------|----------|
 | `#111827` (Text Primary) | `#FFFFFF` (Background) | 16.1:1 | AAA | Body text (light mode) |
 | `#6B7280` (Text Secondary) | `#FFFFFF` (Background) | 4.6:1 | AA | Supporting text (light mode) |
-| `#7c3aed` (Primary) | `#FFFFFF` (Background) | 4.5:1 | AA* | Interactive elements, large text only (18pt+/14pt+ bold) |
-| `#FFFFFF` (Text on Primary) | `#7c3aed` (Primary) | 4.5:1 | AA* | Text on primary buttons (large text only) |
+| `#7c3aed` (Primary) | `#FFFFFF` (Background) | 4.5:1 | AA* | Interactive elements and large text only (18pt+/14pt+ bold) |
+| `#FFFFFF` (Text on Primary) | `#7c3aed` (Primary) | 4.5:1 | AA* | Large text on primary buttons only (18pt+/14pt+ bold) |
 | `#6d28d9` (Primary Dark) | `#FFFFFF` (Background) | 7.8:1 | AAA | Hover states, emphasized elements |
 | `#a78bfa` (Primary Light) | `#FFFFFF` (Background) | 3.1:1 | AA* | Large text only (18pt+/14pt+ bold) |
 
@@ -117,7 +117,7 @@ All colors have been tested for WCAG 2.1 compliance. The table below shows key c
 |------------|------------|----------------|------------|----------|
 | `#F1F5F9` (Text Primary) | `#0F172A` (Background) | 15.8:1 | AAA | Body text (dark mode) |
 | `#94A3B8` (Text Secondary) | `#0F172A` (Background) | 7.2:1 | AAA | Supporting text (dark mode) |
-| `#7c3aed` (Primary) | `#0F172A` (Background) | 5.6:1 | AA | Interactive elements (dark mode, large text) |
+| `#7c3aed` (Primary) | `#0F172A` (Background) | 5.6:1 | AA | Interactive elements and large text only (18pt+/14pt+ bold) |
 | `#FFFFFF` (Text) | `#1E293B` (Surface) | 14.8:1 | AAA | Text on surface (dark mode) |
 
 #### Semantic Color Combinations

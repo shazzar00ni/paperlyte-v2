@@ -98,5 +98,11 @@ function buildSitemap(pages) {
 
 const sitemap = buildSitemap(pages);
 const outPath = path.join(__dirname, '../public/sitemap.xml');
-fs.writeFileSync(outPath, sitemap, 'utf8');
-console.log(`Sitemap generated at ${outPath}`);
+
+try {
+  fs.writeFileSync(outPath, sitemap, 'utf8');
+  console.log(`✓ Sitemap generated at ${outPath}`);
+} catch (error) {
+  console.error(`✗ Failed to write sitemap: ${error.message}`);
+  process.exit(1);
+}

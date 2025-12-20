@@ -597,7 +597,7 @@ Components are organized into three categories:
 
 **UI Components** - Reusable, atomic interface elements
 - [Button](#button) - Primary, secondary, ghost button variants
-- [Icon](#icon) - SVG icons with accessibility
+- [Icon](#icon) - SVG icons with Font Awesome fallback and accessibility
 - [ThemeToggle](#themetoggle) - Theme switcher
 - [EmailCapture](#emailcapture) - Email signup form
 - [FeedbackWidget](#feedbackwidget) - User feedback modal
@@ -2305,12 +2305,12 @@ Paperlyte provides utility classes in `src/styles/utilities.css` for common resp
 ```css
 /* Hide on mobile (< 768px) */
 .hidden-mobile {
-  display: none; /* Only on mobile */
+  display: none; /* Hidden on mobile, visible on desktop */
 }
 
 /* Hide on desktop (>= 769px) */
 .hidden-desktop {
-  display: none; /* Only on desktop */
+  display: none; /* Hidden on desktop, visible on mobile */
 }
 
 /* Hide completely */

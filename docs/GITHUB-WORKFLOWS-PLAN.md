@@ -724,7 +724,7 @@ jobs:
           configuration-path: .github/labeler.yml
 
       - name: Label PR size
-        uses: codelytv/pr-size-labeler@v1
+        uses: codelytv/pr-size-labeler@v1.10.1
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           xs_label: 'size/xs'

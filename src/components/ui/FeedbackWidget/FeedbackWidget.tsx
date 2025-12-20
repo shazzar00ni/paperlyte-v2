@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, type FormEvent } from 'react'
+import { useState, useEffect, useCallback, useRef, type FormEvent } from 'react'
 import { Icon } from '@components/ui/Icon'
 import { Button } from '@components/ui/Button'
 import styles from './FeedbackWidget.module.css'
@@ -35,6 +35,7 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const closeTimeoutRef = useRef<number | null>(null)
 
   // Handle modal open
   const handleOpen = useCallback(() => {
@@ -45,6 +46,11 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
 
   // Handle modal close
   const handleClose = useCallback(() => {
+    // Clear any pending timeout to prevent memory leaks
+    if (closeTimeoutRef.current !== null) {
+      clearTimeout(closeTimeoutRef.current)
+      closeTimeoutRef.current = null
+    }
     setIsOpen(false)
     setMessage('')
     setFeedbackType('bug')
@@ -117,8 +123,8 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
         setShowConfirmation(true)
         setMessage('')
 
-        // Close modal after 2 seconds
-        setTimeout(() => {
+        // Close modal after 2 seconds (store timeout ID for cleanup)
+        closeTimeoutRef.current = window.setTimeout(() => {
           handleClose()
         }, 2000)
       } catch (err) {
@@ -130,6 +136,15 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
     },
     [feedbackType, message, onSubmit, handleClose]
   )
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (closeTimeoutRef.current !== null) {
+        clearTimeout(closeTimeoutRef.current)
+      }
+    }
+  }, [])
 
   // Handle escape key to close modal
   useEffect(() => {

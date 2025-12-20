@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Button } from "@components/ui/Button";
 import { Icon } from "@components/ui/Icon";
-import { trackEvent } from "@utils/analytics";
+import { LEGAL_CONFIG } from "@/constants/legal";
 import styles from "./EmailCapture.module.css";
 
 interface EmailCaptureProps {
@@ -76,12 +76,6 @@ export const EmailCapture = ({
       setStatus("success");
       setEmail("");
       setGdprConsent(false);
-
-      // Track conversion
-      trackEvent("email_signup", {
-        category: "engagement",
-        label: "waitlist",
-      });
     } catch (error) {
       setStatus("error");
       const message =
@@ -172,7 +166,7 @@ export const EmailCapture = ({
             <span className={styles.gdprText}>
               I agree to receive emails from Paperlyte. View our{" "}
               <a
-                href="/privacy.html"
+                href={LEGAL_CONFIG.documents.privacy}
                 className={styles.link}
                 target="_blank"
                 rel="noopener noreferrer"

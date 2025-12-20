@@ -775,7 +775,7 @@ jobs:
   - 'src/components/sections/**/*'
 
 'type: bugfix':
-  - any: ['**/*.test.ts', '**/*.test.tsx']
+  - any: ['tests/**/*.test.ts', 'tests/**/*.test.tsx']
 
 'documentation':
   - '**/*.md'

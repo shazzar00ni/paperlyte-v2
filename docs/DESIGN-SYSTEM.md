@@ -532,6 +532,24 @@ section {
 
 ## Component Library
 
+Paperlyte's component library provides reusable UI elements that follow the design system principles. All components are built with TypeScript, accessibility in mind, and support dark mode.
+
+### Available Components
+
+| Component | Location | Purpose |
+|-----------|----------|---------|
+| **Button** | `ui/Button` | Primary, secondary, and ghost button variants |
+| **Icon** | `ui/Icon` | Font Awesome icon wrapper with accessibility |
+| **AnimatedElement** | `ui/AnimatedElement` | Scroll-triggered animations (fade, slide, scale) |
+| **ParallaxLayer** | `ui/ParallaxLayer` | Parallax scrolling effects for backgrounds |
+| **FloatingElement** | `ui/FloatingElement` | Floating/bobbing animations for decorative elements |
+| **TextReveal** | `ui/TextReveal` | Text reveal animations |
+| **CounterAnimation** | `ui/CounterAnimation` | Animated number counting |
+| **SVGPathAnimation** | `ui/SVGPathAnimation` | SVG path drawing animations |
+| **EmailCapture** | `ui/EmailCapture` | Email signup form component |
+| **FeedbackWidget** | `ui/FeedbackWidget` | User feedback collection widget |
+| **ThemeToggle** | `ui/ThemeToggle` | Light/dark mode toggle switch |
+
 ### Buttons
 
 #### Variants
@@ -550,7 +568,7 @@ section {
 
 ```css
 .primary {
-  background-color: var(--color-primary);      /* #1a1a1a (light) or #ffffff (dark) */
+  background-color: var(--color-primary);      /* #7c3aed */
   color: var(--color-text-on-primary);         /* #ffffff */
   border: 1px solid transparent;
   border-radius: var(--border-radius-full);    /* 9999px - pill shape */
@@ -559,7 +577,7 @@ section {
 }
 
 .primary:hover {
-  background-color: var(--color-primary-dark); /* #000000 (light) or #f1f5f9 (dark) */
+  background-color: var(--color-primary-dark); /* #6d28d9 */
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
 }
@@ -1025,6 +1043,36 @@ Use `will-change` for animations to enable GPU acceleration:
 | **Tablet** | 769px - 1023px | Tablets, small laptops |
 | **Desktop** | 1024px - 1279px | Laptops, desktops |
 | **Large Desktop** | ≥ 1280px | Large monitors |
+
+### Quick Reference
+
+**CSS Variables (min-width approach):**
+```css
+/* These breakpoints are implemented in variables.css */
+@media (max-width: 768px)  { /* Mobile */ }
+@media (max-width: 480px)  { /* Small mobile (extra adjustments) */ }
+@media (min-width: 769px)  { /* Tablet and above */ }
+@media (min-width: 1024px) { /* Desktop and above */ }
+@media (min-width: 1280px) { /* Large desktop */ }
+```
+
+**Common Patterns:**
+```css
+/* Hide on mobile, show on tablet+ */
+@media (max-width: 768px) {
+  .desktop-only { display: none; }
+}
+
+/* Show on mobile, hide on tablet+ */
+@media (min-width: 769px) {
+  .mobile-only { display: none; }
+}
+
+/* Adjust layout at tablet breakpoint */
+@media (min-width: 769px) {
+  .grid { grid-template-columns: repeat(2, 1fr); }
+}
+```
 
 ### Mobile-First Approach
 

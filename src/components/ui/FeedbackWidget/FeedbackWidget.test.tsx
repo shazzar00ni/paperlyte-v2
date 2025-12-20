@@ -139,9 +139,13 @@ describe('FeedbackWidget', () => {
       fireEvent.click(openButton)
 
       await waitFor(() => {
-        const featureButton = screen.getByRole('button', { name: /request a feature/i })
-        fireEvent.click(featureButton)
+        expect(screen.getByRole('button', { name: /request a feature/i })).toBeInTheDocument()
+      })
 
+      const featureButton = screen.getByRole('button', { name: /request a feature/i })
+      fireEvent.click(featureButton)
+
+      await waitFor(() => {
         expect(featureButton).toHaveAttribute('aria-pressed', 'true')
         expect(screen.getByText(/share your feature idea/i)).toBeInTheDocument()
       })

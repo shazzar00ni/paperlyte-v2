@@ -62,8 +62,6 @@ export const env: EnvConfig = {
  * Update meta tags dynamically based on environment
  * Call this in your main.tsx or App.tsx
  */
-export const updateMetaTags = (): void => {
-  // Update canonical URL
 const normalizeUrl = (base: string, path: string = '/'): string => {
   const normalizedBase = base.endsWith('/') ? base.slice(0, -1) : base;
   return `${normalizedBase}${path}`;

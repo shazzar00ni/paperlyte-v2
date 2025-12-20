@@ -100,7 +100,7 @@ A comprehensive design system for Paperlyte - a lightning-fast, distraction-free
 | `#94A3B8` (Text Secondary) | `#0F172A` (Background) | 7.2:1 | AAA | Supporting text (dark mode) |
 | `#7c3aed` (Primary) | `#0F172A` (Background) | 6.5:1 | AA | Interactive elements (dark mode) |
 
-**All color combinations meet WCAG 2.1 AA standards (minimum 4.5:1 for normal text, 3:1 for large text and interactive elements). The purple primary color provides excellent contrast ratios, meeting or exceeding AA requirements in both light and dark modes.**
+**All documented color pairings meet WCAG 2.1 AA standards for their specified use cases (minimum 4.5:1 for normal body text colors, 3:1 for large text and interactive elements). The purple primary color (#7c3aed) is reserved for large text and interactive elements only, and is not intended for normal body text on either light or dark backgrounds.**
 
 ### Color State Guidelines
 

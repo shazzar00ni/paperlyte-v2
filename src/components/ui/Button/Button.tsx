@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react'
 import { Icon } from '@components/ui/Icon'
+import { isSafeUrl } from '@utils/navigation'
 import styles from './Button.module.css'
 
 interface ButtonProps {
@@ -45,6 +46,29 @@ export const Button = ({
   )
 
   if (href) {
+    // Validate URL for security - prevent javascript:, data:, and other dangerous protocols
+    if (!isSafeUrl(href)) {
+      // In development, log a warning to help developers catch the issue
+      if (import.meta.env.DEV) {
+        console.warn(
+          `Button component: Unsafe URL rejected: "${href}". ` +
+            'Only relative URLs and same-origin absolute URLs are allowed.'
+        )
+      }
+      // Render as disabled button instead of unsafe link
+      return (
+        <button
+          type="button"
+          className={classNames}
+          disabled={true}
+          aria-label={ariaLabel}
+          aria-disabled="true"
+        >
+          {content}
+        </button>
+      )
+    }
+
     return (
       <a
         href={disabled ? undefined : href}

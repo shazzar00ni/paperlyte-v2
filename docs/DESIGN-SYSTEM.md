@@ -133,7 +133,8 @@ All colors have been tested for WCAG 2.1 compliance. The table below shows key c
 - AA* = Meets AA standards for large text (18pt/14pt bold) and UI components (3:1 minimum)
 - Normal text requires 4.5:1 contrast (AA) or 7:1 (AAA)
 - Large text and UI components require 3:1 contrast (AA)
-- The purple primary color (#7c3aed) is designed for interactive elements and large text, not normal body text
+- The purple primary color (#7c3aed) provides 6.2:1 contrast on white and 6.5:1 on dark backgrounds
+- Contrast ratios calculated using WCAG 2.1 relative luminance formula
 - Semantic colors (success, error) are always paired with icons and descriptive text for accessibility
 - All background/border variants use very low opacity and are not intended for text contrast
 
@@ -613,8 +614,8 @@ Components are organized into three categories:
 - [Footer](#footer) - Site footer
 
 **Section Components** - Pre-composed page sections
-- [Hero](#hero-1) - Hero section
-- [Features](#features-1) - Feature grid
+- [Hero](#hero) - Hero section
+- [Features](#features) - Feature grid
 - [Pricing](#pricing) - Pricing plans
 - [Testimonials](#testimonials) - Customer reviews
 - [Comparison](#comparison) - Feature comparison

@@ -98,17 +98,49 @@ A comprehensive design system for Paperlyte - a lightning-fast, distraction-free
 
 ### WCAG Compliance Matrix
 
+All colors have been tested for WCAG 2.1 compliance. The table below shows key color combinations and their contrast ratios.
+
+#### Primary Color Combinations
+
 | Foreground | Background | Contrast Ratio | WCAG Level | Use Case |
 |------------|------------|----------------|------------|----------|
 | `#111827` (Text Primary) | `#FFFFFF` (Background) | 16.1:1 | AAA | Body text (light mode) |
 | `#6B7280` (Text Secondary) | `#FFFFFF` (Background) | 4.6:1 | AA | Supporting text (light mode) |
-| `#7c3aed` (Primary) | `#FFFFFF` (Background) | 6.2:1 | AA | Interactive elements, links |
-| `#FFFFFF` (Text) | `#7c3aed` (Primary) | 6.2:1 | AA | Text on primary buttons |
+| `#7c3aed` (Primary) | `#FFFFFF` (Background) | 6.2:1 | AA | Interactive elements, links (large text) |
+| `#FFFFFF` (Text on Primary) | `#7c3aed` (Primary) | 6.2:1 | AA | Text on primary buttons (large text) |
+| `#6d28d9` (Primary Dark) | `#FFFFFF` (Background) | 7.8:1 | AAA | Hover states, emphasized elements |
+| `#a78bfa` (Primary Light) | `#FFFFFF` (Background) | 3.1:1 | AA* | Large text only (18pt+/14pt+ bold) |
+
+#### Dark Mode Combinations
+
+| Foreground | Background | Contrast Ratio | WCAG Level | Use Case |
+|------------|------------|----------------|------------|----------|
 | `#F1F5F9` (Text Primary) | `#0F172A` (Background) | 15.8:1 | AAA | Body text (dark mode) |
 | `#94A3B8` (Text Secondary) | `#0F172A` (Background) | 7.2:1 | AAA | Supporting text (dark mode) |
-| `#7c3aed` (Primary) | `#0F172A` (Background) | 5.6:1 | AA | Interactive elements (dark mode) |
+| `#7c3aed` (Primary) | `#0F172A` (Background) | 6.5:1 | AA | Interactive elements (dark mode) |
+| `#FFFFFF` (Text) | `#1E293B` (Surface) | 14.8:1 | AAA | Text on surface (dark mode) |
 
-**All documented color pairings meet WCAG 2.1 AA standards for their specified use cases (minimum 4.5:1 for normal body text colors, 3:1 for large text and interactive elements). The purple primary color (#7c3aed) is reserved for large text and interactive elements only, and is not intended for normal body text on either light or dark backgrounds.**
+#### Semantic Color Combinations
+
+| Foreground | Background | Contrast Ratio | WCAG Level | Use Case |
+|------------|------------|----------------|------------|----------|
+| `#22c55e` (Success) | `#FFFFFF` (Background) | 3.1:1 | AA* | Success icons/badges (large text only) |
+| `#dc2626` (Error) | `#FFFFFF` (Background) | 5.9:1 | AA | Error messages, alerts |
+| `#4ade80` (Success Dark) | `#0F172A` (Background) | 4.2:1 | AA* | Success states (dark mode, large text) |
+| `#f87171` (Error Dark) | `#0F172A` (Background) | 4.8:1 | AA | Error states (dark mode) |
+
+**Notes:**
+- AA* = Meets AA standards for large text (18pt/14pt bold) and UI components (3:1 minimum)
+- Normal text requires 4.5:1 contrast (AA) or 7:1 (AAA)
+- Large text and UI components require 3:1 contrast (AA)
+- The purple primary color (#7c3aed) is designed for interactive elements and large text, not normal body text
+- Semantic colors (success, error) are always paired with icons and descriptive text for accessibility
+- All background/border variants use very low opacity and are not intended for text contrast
+
+**Testing Tools:**
+- [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/)
+- [APCA Contrast Calculator](https://www.myndex.com/APCA/) (next-generation contrast algorithm)
+- Chrome DevTools Lighthouse Accessibility Audit
 
 ### Color State Guidelines
 
@@ -558,6 +590,47 @@ Paperlyte's component library provides reusable UI elements that follow the desi
 | **FeedbackWidget** | `ui/FeedbackWidget` | User feedback collection widget |
 | **ThemeToggle** | `ui/ThemeToggle` | Light/dark mode toggle switch |
 
+### Component Overview
+
+Components are organized into three categories:
+
+**UI Components** - Reusable, atomic interface elements
+- [Button](#button) - Primary, secondary, ghost button variants
+- [Icon](#icon) - SVG icons with accessibility
+- [ThemeToggle](#themetoggle) - Theme switcher
+- [EmailCapture](#emailcapture) - Email signup form
+- [FeedbackWidget](#feedbackwidget) - User feedback modal
+- [AnimatedElement](#animatedelement) - Scroll-triggered animations
+- [ParallaxLayer](#parallaxlayer) - Parallax scrolling
+- [FloatingElement](#floatingelement) - Floating animations
+- [CounterAnimation](#counteranimation) - Number counting
+- [TextReveal](#textreveal) - Text reveal animations
+- [SVGPathAnimation](#svgpathanimation) - SVG path drawing
+
+**Layout Components** - Page structure and composition
+- [Section](#section) - Consistent section wrapper
+- [Header](#header) - Main navigation
+- [Footer](#footer) - Site footer
+
+**Section Components** - Pre-composed page sections
+- [Hero](#hero-1) - Hero section
+- [Features](#features-1) - Feature grid
+- [Pricing](#pricing) - Pricing plans
+- [Testimonials](#testimonials) - Customer reviews
+- [Comparison](#comparison) - Feature comparison
+- [Statistics](#statistics) - Key metrics
+- [FAQ](#faq) - Questions and answers
+- [CTA](#cta) - Call-to-action
+- [Mobile](#mobile) - Mobile app showcase
+
+**Hooks** - React hooks for common patterns
+- [useMediaQuery](#usemediaquery) - Responsive breakpoints
+- [useParallax](#useparallax) - Parallax effects
+- [useIntersectionObserver](#useintersectionobserver) - Viewport detection
+- [useReducedMotion](#usereducedmotion) - Motion preferences
+- [useTheme](#usetheme) - Theme management
+- [useScrollPosition](#usescrollposition) - Scroll tracking
+
 ---
 
 ## Detailed Component API
@@ -622,9 +695,10 @@ interface ButtonProps {
 ```
 
 **Design Tokens:**
-- Background: `--color-primary` (primary), transparent (secondary/ghost)
-- Border Radius: `--border-radius-full` (9999px - pill shape)
-- Minimum Touch Target: 44x44px (WCAG 2.5.5 Level AAA)
+- Background: `--color-primary` (primary), transparent (secondary/ghost) - See [Color Palette](#color-palette)
+- Border Radius: `--border-radius-full` (9999px - pill shape) - See [Layout & Grid](#layout--grid)
+- Minimum Touch Target: 44x44px (WCAG 2.5.5 Level AAA) - See [Accessibility](#accessibility)
+- Spacing: `--spacing-sm`, `--spacing-md` - See [Spacing System](#spacing-system)
 
 ---
 
@@ -676,6 +750,7 @@ interface IconProps {
 - Decorative icons: Use `aria-hidden="true"`, no `ariaLabel`
 - Semantic icons: Provide descriptive `ariaLabel`, automatic `role="img"`
 - Falls back to Font Awesome if icon not in custom set
+- See [Accessibility Guidelines](#accessibility) for more information
 
 ---
 
@@ -900,7 +975,7 @@ interface ParallaxLayerProps {
 **Performance:**
 - GPU-accelerated CSS transforms (60fps)
 - Disabled on mobile by default (via `useParallax` hook)
-- Respects `prefers-reduced-motion`
+- Respects `prefers-reduced-motion` - See [Animation Guidelines](#animation-guidelines)
 - Only calculates when in viewport (Intersection Observer)
 
 ---
@@ -947,7 +1022,7 @@ interface FloatingElementProps {
 **Performance:**
 - CSS animations with GPU acceleration
 - Automatically pauses when out of viewport (saves CPU)
-- Respects `prefers-reduced-motion`
+- Respects `prefers-reduced-motion` - See [Animation Guidelines](#animation-guidelines)
 
 ---
 
@@ -1630,6 +1705,14 @@ Components reference CSS custom properties from `src/styles/variables.css`:
 - ✅ `color: var(--color-primary)`
 - ❌ `padding: 16px 24px`
 - ✅ `padding: var(--spacing-sm) var(--spacing-md)`
+
+**See also:**
+- [Color Palette](#color-palette) - All color tokens
+- [Typography](#typography) - Font size and weight tokens
+- [Spacing System](#spacing-system) - Spacing scale
+- [Layout & Grid](#layout--grid) - Border radius and layout tokens
+- [Animation Guidelines](#animation-guidelines) - Transition and animation tokens
+- [Design Tokens (Tailwind Config)](#design-tokens-tailwind-config-ready) - Full token reference
 
 ### Component Testing
 

@@ -66,6 +66,7 @@ export const FAQ = (): React.ReactElement => {
   const [openItems, setOpenItems] = useState<Set<string>>(new Set())
   const [announcement, setAnnouncement] = useState('')
   const gridRef = useRef<HTMLDivElement>(null)
+  const announcementTimeoutRef = useRef<number | null>(null)
 
   const toggleItem = (id: string) => {
     setOpenItems((prev) => {
@@ -81,14 +82,31 @@ export const FAQ = (): React.ReactElement => {
       // Announce the change for screen readers
       const item = FAQ_ITEMS.find((item) => item.id === id)
       if (item) {
+        // Clear any pending timeout to prevent memory leaks
+        if (announcementTimeoutRef.current !== null) {
+          clearTimeout(announcementTimeoutRef.current)
+        }
+
         setAnnouncement(`${item.question} ${isOpening ? 'expanded' : 'collapsed'}`)
         // Clear announcement after it's been read
-        setTimeout(() => setAnnouncement(''), 1000)
+        announcementTimeoutRef.current = window.setTimeout(() => {
+          setAnnouncement('')
+          announcementTimeoutRef.current = null
+        }, 1000)
       }
 
       return newSet
     })
   }
+
+  // Cleanup timeout on unmount to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      if (announcementTimeoutRef.current !== null) {
+        clearTimeout(announcementTimeoutRef.current)
+      }
+    }
+  }, [])
 
   // Keyboard navigation for FAQ items
   useEffect(() => {

@@ -36,9 +36,14 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const closeTimeoutRef = useRef<number | null>(null)
+  const triggerElementRef = useRef<HTMLElement | null>(null)
+  const modalRef = useRef<HTMLDivElement>(null)
+  const closeButtonRef = useRef<HTMLButtonElement>(null)
 
   // Handle modal open
   const handleOpen = useCallback(() => {
+    // Store the element that triggered the modal for focus restoration
+    triggerElementRef.current = document.activeElement as HTMLElement
     setIsOpen(true)
     setError(null)
     setShowConfirmation(false)
@@ -56,6 +61,11 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
     setFeedbackType('bug')
     setError(null)
     setShowConfirmation(false)
+
+    // Restore focus to the element that triggered the modal
+    if (triggerElementRef.current) {
+      triggerElementRef.current.focus()
+    }
   }, [])
 
   // Handle form submission
@@ -112,8 +122,11 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
             localStorage.setItem('paperlyte_feedback', JSON.stringify(feedbackArray))
           } catch (storageError) {
             // Provide a clearer message for storage-related issues
+            console.error('LocalStorage error:', storageError)
             throw new Error(
-              'Unable to save feedback locally. Your browser storage may be full or disabled.'
+              `Unable to save feedback locally. Your browser storage may be full or disabled. ${
+                storageError instanceof Error ? storageError.message : String(storageError)
+              }`
             )
           }
           console.log('Feedback submitted:', feedbackEntry)
@@ -146,22 +159,53 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
     }
   }, [])
 
-  // Handle escape key to close modal
+  // Focus management - move focus to close button when modal opens
   useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) {
+    if (isOpen && closeButtonRef.current) {
+      closeButtonRef.current.focus()
+    }
+  }, [isOpen])
+
+  // Focus trap - prevent tabbing out of modal
+  useEffect(() => {
+    if (!isOpen || !modalRef.current) return
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Handle Escape key
+      if (e.key === 'Escape') {
         handleClose()
+        return
+      }
+
+      // Handle Tab key for focus trapping
+      if (e.key === 'Tab') {
+        const modal = modalRef.current
+        if (!modal) return
+
+        const focusableElements = modal.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )
+        const firstElement = focusableElements[0]
+        const lastElement = focusableElements[focusableElements.length - 1]
+
+        if (e.shiftKey && document.activeElement === firstElement) {
+          // Shift+Tab on first element - go to last element
+          e.preventDefault()
+          lastElement.focus()
+        } else if (!e.shiftKey && document.activeElement === lastElement) {
+          // Tab on last element - go to first element
+          e.preventDefault()
+          firstElement.focus()
+        }
       }
     }
 
-    if (isOpen) {
-      document.addEventListener('keydown', handleEscape)
-      // Prevent body scroll when modal is open
-      document.body.style.overflow = 'hidden'
-    }
+    document.addEventListener('keydown', handleKeyDown)
+    // Prevent body scroll when modal is open
+    document.body.style.overflow = 'hidden'
 
     return () => {
-      document.removeEventListener('keydown', handleEscape)
+      document.removeEventListener('keydown', handleKeyDown)
       document.body.style.overflow = ''
     }
   }, [isOpen, handleClose])
@@ -197,13 +241,14 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
           aria-modal="true"
           aria-labelledby="feedback-modal-title"
         >
-          <div className={styles.modalContent}>
+          <div className={styles.modalContent} ref={modalRef}>
             {/* Modal header */}
             <div className={styles.modalHeader}>
               <h2 id="feedback-modal-title" className={styles.modalTitle}>
                 Send Feedback
               </h2>
               <button
+                ref={closeButtonRef}
                 className={styles.closeButton}
                 onClick={handleClose}
                 aria-label="Close feedback form"

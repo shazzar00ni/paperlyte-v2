@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { FeedbackWidget } from './FeedbackWidget'
 
@@ -326,6 +326,92 @@ describe('FeedbackWidget', () => {
       await waitFor(() => {
         expect(screen.getByText(/thank you!/i)).toBeInTheDocument()
       })
+    })
+
+    it('automatically closes modal 2 seconds after successful submission', async () => {
+      vi.useFakeTimers()
+
+      try {
+        render(<FeedbackWidget />)
+
+        // Open modal
+        const openButton = screen.getByRole('button', { name: /open feedback form/i })
+        fireEvent.click(openButton)
+
+        await vi.waitFor(() => {
+          expect(screen.getByRole('dialog')).toBeInTheDocument()
+        })
+
+        // Enter feedback message
+        const textarea = screen.getByRole('textbox')
+        fireEvent.change(textarea, { target: { value: 'Test auto-close' } })
+
+        // Submit form
+        const form = textarea.closest('form')!
+        fireEvent.submit(form)
+
+        // Confirmation should be shown
+        await vi.waitFor(() => {
+          expect(screen.getByText(/thank you!/i)).toBeInTheDocument()
+        })
+
+        // Modal should still be open
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+
+        // Fast-forward time by 2 seconds
+        act(() => {
+          vi.advanceTimersByTime(2000)
+        })
+
+        // Modal should now be closed
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+      } finally {
+        vi.useRealTimers()
+      }
+    })
+
+    it('clears timeout when modal is manually closed before auto-close', async () => {
+      vi.useFakeTimers()
+
+      try {
+        render(<FeedbackWidget />)
+
+        // Open modal
+        const openButton = screen.getByRole('button', { name: /open feedback form/i })
+        fireEvent.click(openButton)
+
+        await vi.waitFor(() => {
+          expect(screen.getByRole('dialog')).toBeInTheDocument()
+        })
+
+        // Enter feedback message and submit
+        const textarea = screen.getByRole('textbox')
+        fireEvent.change(textarea, { target: { value: 'Test timeout cleanup' } })
+        const form = textarea.closest('form')!
+        fireEvent.submit(form)
+
+        // Wait for confirmation
+        await vi.waitFor(() => {
+          expect(screen.getByText(/thank you!/i)).toBeInTheDocument()
+        })
+
+        // Manually close the modal before the 2-second auto-close
+        const closeButton = screen.getByRole('button', { name: /close feedback form/i })
+        fireEvent.click(closeButton)
+
+        // Modal should be closed immediately
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+
+        // Fast-forward past the original timeout
+        act(() => {
+          vi.advanceTimersByTime(2000)
+        })
+
+        // Modal should remain closed (timeout was cleaned up)
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+      } finally {
+        vi.useRealTimers()
+      }
     })
   })
 

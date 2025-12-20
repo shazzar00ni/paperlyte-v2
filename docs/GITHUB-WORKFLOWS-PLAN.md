@@ -207,9 +207,14 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
+      - name: Start preview server
+        run: |
+          npm run preview -- --host 0.0.0.0 --port 4173 &
+          npx wait-on http://127.0.0.1:4173
+
       - name: Run Playwright tests
         env:
-          BASE_URL: ${{ github.event.deployment_status.target_url }}
+          BASE_URL: http://127.0.0.1:4173
         run: npx playwright test
 
       - name: Upload test results

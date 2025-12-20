@@ -241,16 +241,30 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const prNumber = context.payload.deployment_status.deployment.payload.pr_number;
+            const deploymentStatus = context.payload.deployment_status;
+            const deployment = deploymentStatus && deploymentStatus.deployment;
 
-            if (prNumber) {
-              await github.rest.issues.createComment({
-                issue_number: prNumber,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: `✅ **E2E Tests Passed**\n\nPlaywright tests completed successfully on the preview deployment.\n\n[View full report](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})`
-              });
+            let prNumber = deployment && deployment.payload && deployment.payload.pr_number;
+
+            // Fallback: try to derive PR number from the deployment ref (e.g. "refs/pull/123/merge")
+            if (!prNumber && deployment && typeof deployment.ref === 'string') {
+              const match = deployment.ref.match(/^refs\/pull\/(\d+)\/(merge|head)$/);
+              if (match) {
+                prNumber = parseInt(match[1], 10);
+              }
             }
+
+            if (!prNumber) {
+              core.info('No pull request number found for this deployment; skipping PR comment.');
+              return;
+            }
+
+            await github.rest.issues.createComment({
+              issue_number: prNumber,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `✅ **E2E Tests Passed**\n\nPlaywright tests completed successfully on the preview deployment.\n\n[View full report](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})`
+            });
 ```
 
 **Example E2E Test** (`tests/e2e/landing-page.spec.ts`):
@@ -782,7 +796,7 @@ jobs:
   - 'src/components/sections/**/*'
 
 'type: bugfix':
-  - any: ['**/*.test.ts', '**/*.test.tsx']
+  - any: ['tests/**/*.test.ts', 'tests/**/*.test.tsx']
 
 'documentation':
   - '**/*.md'

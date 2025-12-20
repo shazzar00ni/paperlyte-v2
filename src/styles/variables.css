@@ -1,16 +1,21 @@
 :root {
-  /* Colors - Paper-inspired palette (Light Mode) */
-  --color-primary: #7c3aed; /* Purple 600 */
-  --color-primary-dark: #6d28d9; /* Purple 700 */
-  --color-primary-light: #a78bfa; /* Purple 400 */
-  --color-primary-faint: rgba(124, 58, 237, 0.1); /* 10% opacity for backgrounds */
-  --color-primary-fainter: rgba(124, 58, 237, 0.05); /* 5% opacity for subtle backgrounds */
-  --color-background: #ffffff;
-  --color-surface: #f9fafb; /* Gray 50 */
-  --color-text-primary: #111827; /* Gray 900 */
-  --color-text-secondary: #6b7280; /* Gray 500 */
-  --color-text-on-primary: #ffffff; /* White text on primary background */
-  --color-border: #e5e7eb; /* Gray 200 */
+  /* Colors - Monochrome palette (Light Mode) */
+  --color-primary: #1a1a1a; /* Near black - Main brand color */
+  --color-primary-dark: #000000; /* Pure black - Hover states */
+  --color-primary-light: #333333; /* Dark gray - Accents */
+  --color-primary-faint: rgba(26, 26, 26, 0.1); /* 10% opacity for backgrounds */
+  --color-primary-fainter: rgba(26, 26, 26, 0.05); /* 5% opacity for subtle backgrounds */
+  --color-background: #ffffff; /* Pure white - Main background */
+  --color-surface: #f9fafb; /* Gray 50 - Card backgrounds */
+  --color-surface-dark: #18181b; /* Zinc 900 - Dark surface sections */
+  --color-text-primary: #111827; /* Gray 900 - Headings, body text */
+  --color-text-secondary: #6b7280; /* Gray 500 - Supporting text */
+  --color-text-tertiary: #9ca3af; /* Gray 400 - Muted text (large text only) */
+  --color-text-on-primary: #ffffff; /* White text on primary backgrounds */
+  --color-text-on-dark: #ffffff; /* White text on dark surfaces */
+  --color-text-on-dark-secondary: rgba(255, 255, 255, 0.7); /* Semi-transparent white */
+  --color-border: #e5e7eb; /* Gray 200 - Borders, dividers */
+  --color-border-light: #f3f4f6; /* Gray 100 - Subtle borders */
 
   /* Semantic Colors */
   --color-success: #22c55e; /* Green 500 */
@@ -86,17 +91,23 @@
 
 /* Dark Mode */
 [data-theme='dark'] {
-  /* Colors - Dark Mode palette */
-  --color-primary: #7c3aed; /* Purple 600 - WCAG AA compliant 6.5:1 contrast with white */
-  --color-primary-dark: #6d28d9; /* Purple 700 */
-  --color-primary-light: #8b5cf6; /* Purple 500 */
-  --color-primary-faint: rgba(124, 58, 237, 0.1); /* 10% opacity for backgrounds */
-  --color-primary-fainter: rgba(124, 58, 237, 0.05); /* 5% opacity for subtle backgrounds */
-  --color-background: #0f172a; /* Slate 900 */
-  --color-surface: #1e293b; /* Slate 800 */
-  --color-text-primary: #f1f5f9; /* Slate 100 */
-  --color-text-secondary: #94a3b8; /* Slate 400 */
-  --color-border: #334155; /* Slate 700 */
+  /* Colors - Monochrome palette (Dark Mode - inverted) */
+  --color-primary: #ffffff; /* Pure white - Primary in dark mode */
+  --color-primary-dark: #f1f5f9; /* Slate 100 - Hover states */
+  --color-primary-light: #e2e8f0; /* Slate 200 - Accents */
+  --color-primary-faint: rgba(255, 255, 255, 0.1); /* 10% opacity for backgrounds */
+  --color-primary-fainter: rgba(255, 255, 255, 0.05); /* 5% opacity for subtle backgrounds */
+  --color-background: #0f172a; /* Slate 900 - Dark background */
+  --color-surface: #1e293b; /* Slate 800 - Card backgrounds */
+  --color-surface-dark: #0f172a; /* Slate 900 - Dark sections */
+  --color-text-primary: #f1f5f9; /* Slate 100 - Light text */
+  --color-text-secondary: #94a3b8; /* Slate 400 - Supporting text */
+  --color-text-tertiary: #64748b; /* Slate 500 - Muted text */
+  --color-text-on-primary: #000000; /* Black text on white primary (dark mode) */
+  --color-text-on-dark: #ffffff; /* White text on dark surfaces */
+  --color-text-on-dark-secondary: rgba(255, 255, 255, 0.7); /* Semi-transparent white */
+  --color-border: #334155; /* Slate 700 - Borders */
+  --color-border-light: #1e293b; /* Slate 800 - Subtle borders */
 
   /* Semantic Colors - Dark Mode */
   --color-success: #4ade80; /* Green 400 - higher contrast for dark backgrounds */
@@ -113,16 +124,22 @@
 /* System preference detection */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --color-primary: #7c3aed; /* Purple 600 - WCAG AA compliant 6.5:1 contrast */
-    --color-primary-dark: #6d28d9; /* Purple 700 */
-    --color-primary-light: #8b5cf6; /* Purple 500 */
-    --color-primary-faint: rgba(124, 58, 237, 0.1); /* 10% opacity for backgrounds */
-    --color-primary-fainter: rgba(124, 58, 237, 0.05); /* 5% opacity for subtle backgrounds */
-    --color-background: #0f172a;
-    --color-surface: #1e293b;
-    --color-text-primary: #f1f5f9;
-    --color-text-secondary: #94a3b8;
-    --color-border: #334155;
+    --color-primary: #ffffff; /* Pure white - Primary in dark mode */
+    --color-primary-dark: #f1f5f9; /* Slate 100 - Hover states */
+    --color-primary-light: #e2e8f0; /* Slate 200 - Accents */
+    --color-primary-faint: rgba(255, 255, 255, 0.1); /* 10% opacity for backgrounds */
+    --color-primary-fainter: rgba(255, 255, 255, 0.05); /* 5% opacity for subtle backgrounds */
+    --color-background: #0f172a; /* Slate 900 - Dark background */
+    --color-surface: #1e293b; /* Slate 800 - Card backgrounds */
+    --color-surface-dark: #0f172a; /* Slate 900 - Dark sections */
+    --color-text-primary: #f1f5f9; /* Slate 100 - Light text */
+    --color-text-secondary: #94a3b8; /* Slate 400 - Supporting text */
+    --color-text-tertiary: #64748b; /* Slate 500 - Muted text */
+    --color-text-on-primary: #000000; /* Black text on white primary (dark mode) */
+    --color-text-on-dark: #ffffff; /* White text on dark surfaces */
+    --color-text-on-dark-secondary: rgba(255, 255, 255, 0.7); /* Semi-transparent white */
+    --color-border: #334155; /* Slate 700 - Borders */
+    --color-border-light: #1e293b; /* Slate 800 - Subtle borders */
 
     /* Semantic Colors - Dark Mode */
     --color-success: #4ade80;

@@ -79,7 +79,6 @@
 .link:hover,
 .link:focus-visible {
   color: var(--color-primary);
-  outline: none;
 }
 
 .link:focus-visible {
@@ -87,34 +86,44 @@
   outline-offset: 2px;
 }
 
-.socialLinks {
+.socialIcons {
   display: flex;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
 }
 
 .socialLink {
-  display: flex;
+  color: var(--color-text-secondary);
+  transition: color var(--transition-base);
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: var(--border-radius-md);
-  background-color: var(--color-background);
-  color: var(--color-text-secondary);
-  text-decoration: none;
-  transition: all var(--transition-base);
 }
 
 .socialLink:hover,
 .socialLink:focus-visible {
-  background-color: var(--color-primary);
-  color: var(--color-text-on-primary);
-  transform: translateY(-2px);
+  color: var(--color-primary);
+  outline: none;
 }
 
 .socialLink:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 4px;
+  border-radius: 4px;
+}
+
+/* Only apply transform animations when motion is allowed */
+@media (prefers-reduced-motion: no-preference) {
+  .socialLink {
+    transition:
+      color var(--transition-base),
+      transform var(--transition-base);
+  }
+
+  .socialLink:hover,
+  .socialLink:focus-visible {
+    transform: translateY(-2px);
+  }
 }
 
 .bottom {
@@ -136,5 +145,24 @@
   .links {
     grid-template-columns: 1fr;
     gap: var(--spacing-lg);
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+  .container {
+    padding: 0 var(--spacing-sm);
+  }
+
+  .footer {
+    padding: var(--spacing-xl) 0 var(--spacing-sm);
+  }
+
+  .logo {
+    font-size: var(--font-size-lg);
+  }
+
+  .tagline {
+    font-size: var(--font-size-sm);
   }
 }

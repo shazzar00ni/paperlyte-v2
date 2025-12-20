@@ -53,7 +53,7 @@ Complete the remaining manual infrastructure configuration tasks that require Gi
 - [ ] Verify Netlify auto-detects settings from `netlify.toml`:
   - Build command: `npm run build`
   - Publish directory: `dist`
-  - Node version: 18
+  - Node version: 20
 - [ ] Click **Deploy site**
 - [ ] Wait for initial deployment to complete
 - [ ] Verify site is accessible at temporary Netlify URL

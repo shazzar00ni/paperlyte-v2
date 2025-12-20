@@ -77,9 +77,16 @@
   font-weight: var(--font-weight-semibold);
   border-radius: var(--border-radius-md);
   cursor: pointer;
-  transition: all var(--transition-base);
   min-height: 48px;
   min-width: 120px;
+}
+
+/* Only apply transitions if user hasn't requested reduced motion */
+@media (prefers-reduced-motion: no-preference) {
+  .retryButton,
+  .reloadButton {
+    transition: all var(--transition-base);
+  }
 }
 
 .retryButton {
@@ -91,8 +98,15 @@
 .retryButton:hover {
   background-color: var(--color-primary-dark);
   border-color: var(--color-primary-dark);
-  transform: translateY(-2px);
   box-shadow: var(--shadow-md);
+}
+
+/* Only apply transform if user hasn't requested reduced motion */
+@media (prefers-reduced-motion: no-preference) {
+  .retryButton:hover,
+  .reloadButton:hover {
+    transform: translateY(-2px);
+  }
 }
 
 .reloadButton {
@@ -104,7 +118,6 @@
 .reloadButton:hover {
   background-color: var(--color-primary);
   color: var(--color-text-on-primary);
-  transform: translateY(-2px);
   box-shadow: var(--shadow-md);
 }
 

@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#7c3aed;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#6d28d9;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bgGradient)"/>
+
+  <!-- Decorative circles -->
+  <circle cx="100" cy="100" r="120" fill="white" opacity="0.05"/>
+  <circle cx="1100" cy="530" r="150" fill="white" opacity="0.05"/>
+
+  <!-- Main content container -->
+  <g transform="translate(100, 150)">
+    <!-- App icon -->
+    <g transform="translate(0, 0)">
+      <rect x="0" y="0" width="120" height="120" rx="24" fill="white" filter="url(#shadow)"/>
+      <g transform="translate(30, 25)">
+        <rect x="0" y="0" width="60" height="70" rx="6" fill="#7c3aed" opacity="0.9"/>
+        <line x1="12" y1="20" x2="48" y2="20" stroke="white" stroke-width="3" opacity="0.8"/>
+        <line x1="12" y1="32" x2="48" y2="32" stroke="white" stroke-width="3" opacity="0.8"/>
+        <line x1="12" y1="44" x2="38" y2="44" stroke="white" stroke-width="3" opacity="0.8"/>
+      </g>
+    </g>
+
+    <!-- Text content -->
+    <g transform="translate(160, 0)">
+      <!-- Brand name -->
+      <text x="0" y="45" font-family="Inter, -apple-system, sans-serif" font-size="56" font-weight="700" fill="white">
+        Paperlyte
+      </text>
+
+      <!-- Tagline -->
+      <text x="0" y="100" font-family="Inter, -apple-system, sans-serif" font-size="32" font-weight="400" fill="white" opacity="0.95">
+        Lightning-Fast, Distraction-Free Notes
+      </text>
+    </g>
+  </g>
+
+  <!-- Feature highlights -->
+  <g transform="translate(100, 380)">
+    <g transform="translate(0, 0)">
+      <circle cx="12" cy="12" r="12" fill="white" opacity="0.9"/>
+      <text x="40" y="20" font-family="Inter, sans-serif" font-size="24" font-weight="500" fill="white" opacity="0.9">
+        ⚡ Instant startup
+      </text>
+    </g>
+    <g transform="translate(300, 0)">
+      <circle cx="12" cy="12" r="12" fill="white" opacity="0.9"/>
+      <text x="40" y="20" font-family="Inter, sans-serif" font-size="24" font-weight="500" fill="white" opacity="0.9">
+        🏷️ Tag-based organization
+      </text>
+    </g>
+    <g transform="translate(700, 0)">
+      <circle cx="12" cy="12" r="12" fill="white" opacity="0.9"/>
+      <text x="40" y="20" font-family="Inter, sans-serif" font-size="24" font-weight="500" fill="white" opacity="0.9">
+        📱 Works offline
+      </text>
+    </g>
+  </g>
+
+  <!-- Bottom tagline -->
+  <g transform="translate(600, 560)">
+    <text x="0" y="0" text-anchor="middle" font-family="Inter, sans-serif" font-size="20" font-weight="400" fill="white" opacity="0.7">
+      Your thoughts, unchained from complexity
+    </text>
+  </g>
+</svg>

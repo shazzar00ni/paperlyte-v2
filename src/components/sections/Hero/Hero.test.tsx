@@ -34,60 +34,66 @@ describe('Hero', () => {
     it('should render the main headline', () => {
       render(<Hero />)
 
-      expect(
-        screen.getByRole('heading', { name: /your thoughts, unchained from complexity/i })
-      ).toBeInTheDocument()
+      // There are multiple headings with "thoughts", use getAllByRole
+      const headings = screen.getAllByRole('heading', { name: /thoughts/i })
+      expect(headings.length).toBeGreaterThan(0)
+      expect(screen.getByText(/organized/i)).toBeInTheDocument()
     })
 
     it('should render the subheadline', () => {
       render(<Hero />)
 
-      expect(screen.getByText(/lightning-fast, distraction-free note-taking/i)).toBeInTheDocument()
+      expect(screen.getByText(/The minimal workspace for busy professionals/i)).toBeInTheDocument()
     })
 
     it('should render CTA buttons', () => {
       render(<Hero />)
 
-      expect(screen.getByRole('button', { name: /download now/i })).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: /see features/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /start writing for free/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /view the demo/i })).toBeInTheDocument()
     })
 
-    it('should render feature tags', () => {
+    it('should render trusted by section', () => {
       render(<Hero />)
 
-      expect(screen.getByText(/lightning fast/i)).toBeInTheDocument()
-      expect(screen.getByText(/privacy first/i)).toBeInTheDocument()
-      expect(screen.getByText(/offline ready/i)).toBeInTheDocument()
+      expect(screen.getByText(/TRUSTED BY TEAMS AT/i)).toBeInTheDocument()
+      expect(screen.getByText('Acme Corp')).toBeInTheDocument()
+      expect(screen.getByText('Global')).toBeInTheDocument()
+      expect(screen.getByText('Nebula')).toBeInTheDocument()
     })
   })
 
   describe('CTA Buttons', () => {
-    it('should have Download Now button with primary variant', () => {
+    it('should have Start Writing for Free button with primary variant', () => {
       render(<Hero />)
 
-      const downloadButton = screen.getByRole('button', { name: /download now/i })
-      expect(downloadButton).toBeInTheDocument()
+      const button = screen.getByRole('button', { name: /start writing for free/i })
+      // Verify primary variant by checking class contains 'primary' (CSS module hash)
+      const classList = Array.from(button.classList)
+      expect(classList.some((cls) => cls.includes('primary'))).toBe(true)
     })
 
-    it('should have See Features button with secondary variant', () => {
+    it('should have View the Demo button with secondary variant', () => {
       render(<Hero />)
 
-      const featuresButton = screen.getByRole('button', { name: /see features/i })
-      expect(featuresButton).toBeInTheDocument()
+      const button = screen.getByRole('button', { name: /view the demo/i })
+      // Verify secondary variant by checking class contains 'secondary' (CSS module hash)
+      const classList = Array.from(button.classList)
+      expect(classList.some((cls) => cls.includes('secondary'))).toBe(true)
     })
 
-    it('should render download icon on Download Now button', () => {
+    it('should render arrow icon on Start Writing for Free button', () => {
       render(<Hero />)
 
-      const downloadButton = screen.getByRole('button', { name: /download now/i })
-      const icon = downloadButton.querySelector('.fa-download')
+      const button = screen.getByRole('button', { name: /start writing for free/i })
+      const icon = button.querySelector('.fa-arrow-right')
 
       expect(icon).toBeInTheDocument()
     })
   })
 
   describe('Scroll Behavior', () => {
-    it('should scroll to download section when Download Now is clicked', async () => {
+    it('should scroll to download section when Start Writing for Free is clicked', async () => {
       const user = userEvent.setup()
 
       // Create mock download section
@@ -97,8 +103,8 @@ describe('Hero', () => {
 
       render(<Hero />)
 
-      const downloadButton = screen.getByRole('button', { name: /download now/i })
-      await user.click(downloadButton)
+      const button = screen.getByRole('button', { name: /start writing for free/i })
+      await user.click(button)
 
       expect(scrollIntoViewMock).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -110,7 +116,7 @@ describe('Hero', () => {
       document.body.removeChild(downloadSection)
     })
 
-    it('should scroll to features section when See Features is clicked', async () => {
+    it('should scroll to features section when View the Demo is clicked', async () => {
       const user = userEvent.setup()
 
       // Create mock features section
@@ -120,8 +126,8 @@ describe('Hero', () => {
 
       render(<Hero />)
 
-      const featuresButton = screen.getByRole('button', { name: /see features/i })
-      await user.click(featuresButton)
+      const button = screen.getByRole('button', { name: /view the demo/i })
+      await user.click(button)
 
       expect(scrollIntoViewMock).toHaveBeenCalledWith({
         behavior: 'smooth',
@@ -135,65 +141,21 @@ describe('Hero', () => {
       const user = userEvent.setup()
       render(<Hero />)
 
-      const downloadButton = screen.getByRole('button', { name: /download now/i })
+      const button = screen.getByRole('button', { name: /start writing for free/i })
 
       // Should not throw error when section doesn't exist
-      await expect(user.click(downloadButton)).resolves.not.toThrow()
+      await expect(user.click(button)).resolves.not.toThrow()
     })
 
     it('should not scroll if target element is null', async () => {
       const user = userEvent.setup()
       render(<Hero />)
 
-      const downloadButton = screen.getByRole('button', { name: /download now/i })
-      await user.click(downloadButton)
+      const button = screen.getByRole('button', { name: /start writing for free/i })
+      await user.click(button)
 
       // scrollIntoView should not be called if element doesn't exist
       expect(scrollIntoViewMock).not.toHaveBeenCalled()
-    })
-  })
-
-  describe('Feature Tags', () => {
-    it('should render Lightning Fast tag with correct icon', () => {
-      render(<Hero />)
-
-      const tag = screen.getByText(/lightning fast/i).closest('span')
-      expect(tag).toBeInTheDocument()
-
-      const icon = tag?.querySelector('.fa-bolt')
-      expect(icon).toBeInTheDocument()
-      expect(icon).toHaveAttribute('aria-hidden', 'true')
-    })
-
-    it('should render Privacy First tag with correct icon', () => {
-      render(<Hero />)
-
-      const tag = screen.getByText(/privacy first/i).closest('span')
-      expect(tag).toBeInTheDocument()
-
-      const icon = tag?.querySelector('.fa-lock')
-      expect(icon).toBeInTheDocument()
-      expect(icon).toHaveAttribute('aria-hidden', 'true')
-    })
-
-    it('should render Offline Ready tag with correct icon', () => {
-      render(<Hero />)
-
-      const tag = screen.getByText(/offline ready/i).closest('span')
-      expect(tag).toBeInTheDocument()
-
-      const icon = tag?.querySelector('.fa-wifi-slash')
-      expect(icon).toBeInTheDocument()
-      expect(icon).toHaveAttribute('aria-hidden', 'true')
-    })
-
-    it('should have aria-hidden on tag icons', () => {
-      render(<Hero />)
-
-      const icons = document.querySelectorAll('.fa-bolt, .fa-lock, .fa-wifi-slash')
-      icons.forEach((icon) => {
-        expect(icon).toHaveAttribute('aria-hidden', 'true')
-      })
     })
   })
 
@@ -201,28 +163,40 @@ describe('Hero', () => {
     it('should have proper heading hierarchy', () => {
       render(<Hero />)
 
-      const heading = screen.getByRole('heading', {
-        name: /your thoughts, unchained from complexity/i,
-      })
-
-      expect(heading.tagName).toBe('H1')
+      // There are multiple headings with "thoughts", use getAllByRole
+      const headings = screen.getAllByRole('heading', { name: /thoughts/i })
+      expect(headings.length).toBeGreaterThan(0)
+      expect(headings[0].tagName).toBe('H1')
     })
 
     it('should render subheadline in paragraph tag', () => {
       render(<Hero />)
 
-      const subheadline = screen.getByText(/lightning-fast, distraction-free note-taking/i)
+      const subheadline = screen.getByText(/The minimal workspace for busy professionals/i)
       expect(subheadline.tagName).toBe('P')
     })
 
-    it('should render complete subheadline text', () => {
+    it('should render headline with italic emphasis', () => {
       render(<Hero />)
 
-      const subheadline = screen.getByText(
-        /Lightning-fast, distraction-free note-taking\. No bloat, no friction\. Just you and your ideas, the way it should be\./i
-      )
+      const italicText = screen.getByText('organized.')
+      expect(italicText.tagName).toBe('EM')
+    })
+  })
 
-      expect(subheadline).toBeInTheDocument()
+  describe('App Mockup', () => {
+    it('should render app mockup as decorative (aria-hidden)', () => {
+      const { container } = render(<Hero />)
+
+      const mockup = container.querySelector('[aria-hidden="true"]')
+      expect(mockup).toBeInTheDocument()
+    })
+
+    it('should render mockup productivity stat', () => {
+      render(<Hero />)
+
+      expect(screen.getByText('+120%')).toBeInTheDocument()
+      expect(screen.getByText('PRODUCTIVITY')).toBeInTheDocument()
     })
   })
 
@@ -237,10 +211,10 @@ describe('Hero', () => {
 
       render(<Hero />)
 
-      const downloadButton = screen.getByRole('button', { name: /download now/i })
+      const button = screen.getByRole('button', { name: /start writing for free/i })
 
-      downloadButton.focus()
-      expect(downloadButton).toHaveFocus()
+      button.focus()
+      expect(button).toHaveFocus()
 
       await user.keyboard('{Enter}')
 
@@ -260,11 +234,11 @@ describe('Hero', () => {
 
       render(<Hero />)
 
-      const featuresButton = screen.getByRole('button', { name: /see features/i })
+      const button = screen.getByRole('button', { name: /view the demo/i })
 
-      await user.click(featuresButton)
-      await user.click(featuresButton)
-      await user.click(featuresButton)
+      await user.click(button)
+      await user.click(button)
+      await user.click(button)
 
       expect(scrollIntoViewMock).toHaveBeenCalledTimes(3)
 
@@ -302,34 +276,31 @@ describe('Hero', () => {
     it('should have accessible button labels', () => {
       render(<Hero />)
 
-      expect(screen.getByRole('button', { name: /download now/i })).toHaveAccessibleName()
-      expect(screen.getByRole('button', { name: /see features/i })).toHaveAccessibleName()
+      expect(screen.getByRole('button', { name: /start writing for free/i })).toHaveAccessibleName()
+      expect(screen.getByRole('button', { name: /view the demo/i })).toHaveAccessibleName()
     })
 
     it('should have main heading visible to screen readers', () => {
       render(<Hero />)
 
-      const heading = screen.getByRole('heading', {
-        name: /your thoughts, unchained from complexity/i,
-      })
-
-      expect(heading).toBeVisible()
+      // There are multiple headings with "thoughts", use getAllByRole
+      const headings = screen.getAllByRole('heading', { name: /thoughts/i })
+      expect(headings.length).toBeGreaterThan(0)
+      expect(headings[0]).toBeVisible()
     })
 
     it('should have descriptive text visible to screen readers', () => {
       render(<Hero />)
 
-      const description = screen.getByText(/lightning-fast, distraction-free note-taking/i)
-
+      const description = screen.getByText(/The minimal workspace for busy professionals/i)
       expect(description).toBeVisible()
     })
 
-    it('should hide decorative icons from screen readers', () => {
-      render(<Hero />)
+    it('should hide decorative mockup from screen readers', () => {
+      const { container } = render(<Hero />)
 
-      const decorativeIcons = document.querySelectorAll('[aria-hidden="true"]')
-
-      expect(decorativeIcons.length).toBeGreaterThan(0)
+      const decorativeElements = container.querySelectorAll('[aria-hidden="true"]')
+      expect(decorativeElements.length).toBeGreaterThan(0)
     })
   })
 
@@ -340,22 +311,20 @@ describe('Hero', () => {
       const buttons = screen.getAllByRole('button')
       const buttonTexts = buttons.map((btn) => btn.textContent)
 
-      const downloadIndex = buttonTexts.findIndex((text) => text?.includes('Download Now'))
-      const featuresIndex = buttonTexts.findIndex((text) => text?.includes('See Features'))
+      const startIndex = buttonTexts.findIndex((text) => text?.includes('Start Writing'))
+      const demoIndex = buttonTexts.findIndex((text) => text?.includes('View the Demo'))
 
-      // Download Now should come before See Features
-      expect(downloadIndex).toBeLessThan(featuresIndex)
+      // Start Writing should come before View the Demo
+      expect(startIndex).toBeLessThan(demoIndex)
     })
 
-    it('should render tags in correct order', () => {
-      const { container } = render(<Hero />)
+    it('should render trusted companies', () => {
+      render(<Hero />)
 
-      const tagsContainer = container.querySelector('[class*="tags"]')
-      const tags = tagsContainer?.querySelectorAll('span')
-
-      expect(tags?.[0]?.textContent).toContain('Lightning Fast')
-      expect(tags?.[1]?.textContent).toContain('Privacy First')
-      expect(tags?.[2]?.textContent).toContain('Offline Ready')
+      const companies = ['Acme Corp', 'Global', 'Nebula', 'Vertex', 'Horizon']
+      companies.forEach((company) => {
+        expect(screen.getByText(company)).toBeInTheDocument()
+      })
     })
   })
 })

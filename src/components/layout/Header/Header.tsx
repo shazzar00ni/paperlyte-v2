@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { Button } from '@components/ui/Button'
 import { Icon } from '@components/ui/Icon'
 import { ThemeToggle } from '@components/ui/ThemeToggle'
@@ -13,19 +13,22 @@ export const Header = (): React.ReactElement => {
     setMobileMenuOpen(!mobileMenuOpen)
   }
 
-  const closeMobileMenu = () => {
+  const closeMobileMenu = useCallback(() => {
     setMobileMenuOpen(false)
     // Return focus to menu button when closing
     menuButtonRef.current?.focus()
-  }
+  }, [])
 
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId)
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' })
-      closeMobileMenu()
-    }
-  }
+  const scrollToSection = useCallback(
+    (sectionId: string) => {
+      const element = document.getElementById(sectionId)
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' })
+        closeMobileMenu()
+      }
+    },
+    [closeMobileMenu]
+  )
 
   // Handle Escape key to close menu
   useEffect(() => {
@@ -37,9 +40,9 @@ export const Header = (): React.ReactElement => {
 
     document.addEventListener('keydown', handleEscape)
     return () => document.removeEventListener('keydown', handleEscape)
-  }, [mobileMenuOpen])
+  }, [mobileMenuOpen, closeMobileMenu])
 
-  // Focus trap and arrow key navigation for mobile menu
+  // Focus trap for mobile menu
   useEffect(() => {
     if (!mobileMenuOpen || !menuRef.current) return
 
@@ -50,68 +53,30 @@ export const Header = (): React.ReactElement => {
     const firstFocusable = focusableElements[0]
     const lastFocusable = focusableElements[focusableElements.length - 1]
 
-    const handleKeyboardNavigation = (event: KeyboardEvent) => {
-      const { key, shiftKey } = event
+    const handleTabKey = (event: KeyboardEvent) => {
+      if (event.key !== 'Tab') return
 
-      // Handle Tab key for focus trap
-      if (key === 'Tab') {
-        if (shiftKey) {
-          // Shift + Tab
-          if (document.activeElement === firstFocusable) {
-            event.preventDefault()
-            lastFocusable?.focus()
-          }
-        } else {
-          // Tab
-          if (document.activeElement === lastFocusable) {
-            event.preventDefault()
-            firstFocusable?.focus()
-          }
+      if (event.shiftKey) {
+        // Shift + Tab
+        if (document.activeElement === firstFocusable) {
+          event.preventDefault()
+          lastFocusable?.focus()
         }
-        return
-      }
-
-      // Handle arrow keys, Home, and End for menu navigation
-      if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(key)) {
-        event.preventDefault()
-
-        const currentIndex = Array.from(focusableElements).indexOf(
-          document.activeElement as HTMLElement
-        )
-
-        let targetIndex: number
-
-        switch (key) {
-          case 'ArrowDown':
-            // Move to next item, wrap to first if at end
-            targetIndex = currentIndex < focusableElements.length - 1 ? currentIndex + 1 : 0
-            break
-          case 'ArrowUp':
-            // Move to previous item, wrap to last if at beginning
-            targetIndex = currentIndex > 0 ? currentIndex - 1 : focusableElements.length - 1
-            break
-          case 'Home':
-            // Jump to first item
-            targetIndex = 0
-            break
-          case 'End':
-            // Jump to last item
-            targetIndex = focusableElements.length - 1
-            break
-          default:
-            return
+      } else {
+        // Tab
+        if (document.activeElement === lastFocusable) {
+          event.preventDefault()
+          firstFocusable?.focus()
         }
-
-        focusableElements[targetIndex]?.focus()
       }
     }
 
-    menu.addEventListener('keydown', handleKeyboardNavigation)
+    menu.addEventListener('keydown', handleTabKey)
 
     // Focus first element when menu opens
     firstFocusable?.focus()
 
-    return () => menu.removeEventListener('keydown', handleKeyboardNavigation)
+    return () => menu.removeEventListener('keydown', handleTabKey)
   }, [mobileMenuOpen])
 
   return (
@@ -124,26 +89,33 @@ export const Header = (): React.ReactElement => {
 
         <nav className={styles.nav} aria-label="Main navigation">
           <ul
+            id="main-menu"
             ref={menuRef}
             className={`${styles.navList} ${mobileMenuOpen ? styles.navListOpen : ''}`}
           >
             <li>
-              <button
-                type="button"
-                onClick={() => scrollToSection('features')}
+              <a
+                href="#features"
+                onClick={(e) => {
+                  e.preventDefault()
+                  scrollToSection('features')
+                }}
                 className={styles.navLink}
               >
                 Features
-              </button>
+              </a>
             </li>
             <li>
-              <button
-                type="button"
-                onClick={() => scrollToSection('download')}
+              <a
+                href="#download"
+                onClick={(e) => {
+                  e.preventDefault()
+                  scrollToSection('download')
+                }}
                 className={styles.navLink}
               >
                 Download
-              </button>
+              </a>
             </li>
             <li className={styles.navCta}>
               <Button variant="primary" size="small" onClick={() => scrollToSection('download')}>
@@ -151,21 +123,21 @@ export const Header = (): React.ReactElement => {
               </Button>
             </li>
           </ul>
-
-          <div className={styles.navActions}>
-            <ThemeToggle />
-            <button
-              ref={menuButtonRef}
-              type="button"
-              className={styles.mobileMenuButton}
-              onClick={toggleMobileMenu}
-              aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
-              aria-expanded={mobileMenuOpen}
-            >
-              <Icon name={mobileMenuOpen ? 'fa-xmark' : 'fa-bars'} size="lg" />
-            </button>
-          </div>
         </nav>
+
+        <div className={styles.navActions}>
+          <ThemeToggle />
+          <button
+            ref={menuButtonRef}
+            className={styles.mobileMenuButton}
+            onClick={toggleMobileMenu}
+            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="main-menu"
+          >
+            <Icon name={mobileMenuOpen ? 'fa-xmark' : 'fa-bars'} size="lg" />
+          </button>
+        </div>
       </div>
     </header>
   )

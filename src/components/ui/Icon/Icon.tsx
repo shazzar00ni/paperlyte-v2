@@ -1,7 +1,6 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import type { SizeProp } from '@fortawesome/fontawesome-svg-core'
-import { faCircleQuestion } from '@fortawesome/free-solid-svg-icons'
-import { convertIconName, isBrandIcon, isValidIcon } from '../../../utils/iconLibrary'
+import { useMemo } from 'react'
+import { iconPaths, getIconViewBox } from './icons'
+import './Icon.css'
 
 interface IconProps {
   name: string
@@ -13,7 +12,17 @@ interface IconProps {
   style?: React.CSSProperties
 }
 
-export const Icon: React.FC<IconProps> = ({
+// Static size map - moved outside component to avoid recreation on every render
+const SIZE_MAP = {
+  sm: 16,
+  md: 20,
+  lg: 24,
+  xl: 32,
+  '2x': 40,
+  '3x': 48,
+} as const
+
+export const Icon = ({
   name,
   size = 'md',
   variant = 'solid',
@@ -21,73 +30,60 @@ export const Icon: React.FC<IconProps> = ({
   ariaLabel,
   color,
   style,
-}) => {
-  // Convert old icon name format (fa-bolt) to new format (bolt)
-  const iconName = convertIconName(name)
+}: IconProps): React.ReactElement => {
+  const iconSize = SIZE_MAP[size]
+  const paths = iconPaths[name]
+  const viewBox = getIconViewBox(name)
 
-  // Normalize color: add # prefix if missing and color looks like a hex code
-  const normalizedColor = color
-    ? color.startsWith('#') || color.match(/^(rgb|hsl|var|currentColor)/i)
-      ? color
-      : `#${color}`
-    : undefined
+  // Memoize path array splitting for better performance
+  const pathArray = useMemo(() => {
+    if (!paths) return []
+    return paths.split(' M ')
+  }, [paths])
 
-  // Map our size format to FontAwesome's SizeProp format
-  // Explicit mapping ensures type safety without unsafe casts
-  const sizeMap: Record<NonNullable<IconProps['size']>, SizeProp | undefined> = {
-    sm: 'sm',
-    md: undefined, // Medium is the default size (no size prop needed)
-    lg: 'lg',
-    xl: 'xl',
-    '2x': '2x',
-    '3x': '3x',
-  }
-  const faSize = sizeMap[size]
+  // Fallback to Font Awesome class if icon not found in our set
+  if (!paths) {
+    console.warn(`Icon "${name}" not found in icon set, using Font Awesome fallback`)
+    const variantClass = {
+      solid: 'fa-solid',
+      brands: 'fa-brands',
+      regular: 'fa-regular',
+    }[variant]
 
-  // Validate icon exists in library
-  if (!isValidIcon(iconName)) {
-    // Development-time warning
-    if (import.meta.env.DEV) {
-      console.warn(
-        `Icon "${name}" (converted to "${iconName}") not found in the icon library. ` +
-          `Rendering fallback icon. Please add this icon to src/utils/iconLibrary.ts`
-      )
-    }
-
-    // Render fallback icon (question mark circle)
     return (
-      <FontAwesomeIcon
-        icon={faCircleQuestion}
-        size={faSize}
-        className={className}
-        aria-label={ariaLabel || `Unknown icon: ${name}`}
-        aria-hidden={!ariaLabel}
-        style={{ ...style, ...(normalizedColor ? { color: normalizedColor } : {}) }}
-        {...(ariaLabel && { role: 'img' })}
+      <i
+        className={`${variantClass} ${name} icon-fallback ${className}`}
+        style={{ fontSize: iconSize, ...style }}
+        aria-label={ariaLabel}
+        aria-hidden={ariaLabel ? 'false' : 'true'}
+        {...(ariaLabel ? { role: 'img' } : {})}
       />
     )
   }
 
-  // Determine variant class based on icon type
-  const isBrandIconType = isBrandIcon(iconName)
-  const variantClass = isBrandIconType
-    ? 'fa-brands'
-    : {
-        solid: 'fa-solid',
-        brands: 'fa-brands',
-        regular: 'fa-regular',
-      }[variant]
-
-  // Map size to FontAwesome size class
-  const sizeClass = size === 'md' ? '' : `fa-${size}`
-
   return (
-    <i
-      className={`${variantClass} ${name} ${sizeClass} ${className}${color ? ` icon-color-${color.replace('#', '')}` : ''}`}
+    <svg
+      width={iconSize}
+      height={iconSize}
+      viewBox={viewBox}
+      fill="none"
+      stroke={color || 'currentColor'}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={`icon-svg ${className}`}
+      style={style}
       aria-label={ariaLabel}
-      aria-hidden={!ariaLabel}
-      style={{ ...style, ...(normalizedColor ? { color: normalizedColor } : {}) }}
+      aria-hidden={ariaLabel ? 'false' : 'true'}
       {...(ariaLabel && { role: 'img' })}
-    />
+    >
+      {pathArray.map((pathData, index) => (
+        <path
+          key={index}
+          d={index === 0 ? pathData : `M ${pathData}`}
+          fill={name.includes('circle') || name.includes('shield') ? 'none' : undefined}
+        />
+      ))}
+    </svg>
   )
 }

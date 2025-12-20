@@ -1,4 +1,5 @@
 import { Icon } from '@components/ui/Icon'
+import { LEGAL_CONFIG } from '@/constants/legal'
 import styles from './Footer.module.css'
 
 export const Footer = (): React.ReactElement => {
@@ -7,16 +8,15 @@ export const Footer = (): React.ReactElement => {
   return (
     <footer className={styles.footer}>
       <div className={styles.container}>
-        <div className={styles.grid}>
-          <div className={styles.brand}>
-            <div className={styles.logo}>
-              <Icon name="fa-feather" size="lg" ariaLabel="Paperlyte logo" />
-              <span className={styles.logoText}>Paperlyte.</span>
-            </div>
-            <p className={styles.tagline}>Designed for clarity in a chaotic world.</p>
-            <p className={styles.copyright}>© {currentYear} All rights reserved.</p>
+        <div className={styles.brand}>
+          <div className={styles.logo}>
+            <Icon name="fa-feather" size="lg" ariaLabel="Paperlyte logo" />
+            <span className={styles.logoText}>Paperlyte</span>
           </div>
+          <p className={styles.tagline}>Your thoughts, unchained from complexity</p>
+        </div>
 
+        <div className={styles.links}>
           <div className={styles.linkGroup}>
             <h3 className={styles.linkGroupTitle}>Product</h3>
             <ul className={styles.linkList}>
@@ -26,18 +26,8 @@ export const Footer = (): React.ReactElement => {
                 </a>
               </li>
               <li>
-                <a href="#mobile" className={styles.link}>
-                  Mobile App
-                </a>
-              </li>
-              <li>
                 <a href="#download" className={styles.link}>
-                  Desktop App
-                </a>
-              </li>
-              <li>
-                <a href="#testimonials" className={styles.link}>
-                  Testimonials
+                  Download
                 </a>
               </li>
             </ul>
@@ -47,12 +37,22 @@ export const Footer = (): React.ReactElement => {
             <h3 className={styles.linkGroupTitle}>Legal</h3>
             <ul className={styles.linkList}>
               <li>
-                <a href="#" className={styles.link}>
+                <a
+                  href={LEGAL_CONFIG.documents.privacy}
+                  className={styles.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   Privacy Policy
                 </a>
               </li>
               <li>
-                <a href="#" className={styles.link}>
+                <a
+                  href={LEGAL_CONFIG.documents.terms}
+                  className={styles.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   Terms of Service
                 </a>
               </li>
@@ -98,6 +98,12 @@ export const Footer = (): React.ReactElement => {
               </a>
             </div>
           </div>
+        </div>
+
+        <div className={styles.bottom}>
+          <p className={styles.copyright}>
+            © {currentYear} {LEGAL_CONFIG.company.name}. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>

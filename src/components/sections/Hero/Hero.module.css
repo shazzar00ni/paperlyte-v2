@@ -1,153 +1,93 @@
 .hero {
   min-height: calc(100vh - var(--header-height));
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  background-color: var(--color-background);
+  align-items: center;
+  background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-background) 100%);
   position: relative;
   overflow: hidden;
 }
 
-.container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--spacing-3xl);
-  align-items: center;
-  max-width: var(--max-width);
-  margin: 0 auto;
-  padding: 0 var(--spacing-md);
-  width: 100%;
-}
-
-/* Decorations container */
-.decorations {
+.hero::before {
+  content: '';
   position: absolute;
-  inset: 0;
+  top: 0;
+  right: 0;
+  width: 40%;
+  height: 100%;
+  background: radial-gradient(circle at top right, rgba(124, 58, 237, 0.08) 0%, transparent 70%);
   pointer-events: none;
-  overflow: hidden;
-}
-
-/* Parallax background shapes */
-.shape {
-  position: absolute;
-  border-radius: 50%;
-  background: radial-gradient(circle, var(--color-primary) 0%, transparent 70%);
-  filter: blur(60px);
-}
-
-.shape1 {
-  width: 400px;
-  height: 400px;
-  top: -100px;
-  right: -100px;
-}
-
-.shape2 {
-  width: 300px;
-  height: 300px;
-  bottom: -50px;
-  left: -80px;
-}
-
-.shape3 {
-  width: 200px;
-  height: 200px;
-  top: 40%;
-  left: 60%;
-}
-
-/* Floating icons container */
-.floatingContainer {
-  position: absolute;
-  inset: 0;
-}
-
-/* Floating icon base styles */
-.floatingIcon {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: var(--border-radius-md);
-  background-color: var(--color-background);
-  border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-md);
-  color: var(--color-primary);
-  font-size: var(--font-size-xl);
-}
-
-.floatingIcon1 {
-  top: 15%;
-  left: 10%;
-}
-
-.floatingIcon2 {
-  top: 25%;
-  right: 12%;
-}
-
-.floatingIcon3 {
-  bottom: 30%;
-  left: 8%;
-}
-
-.floatingIcon4 {
-  bottom: 20%;
-  right: 15%;
 }
 
 .content {
   position: relative;
   z-index: 1;
-}
-
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  padding: 0.5rem 1rem;
-  background-color: var(--color-background);
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-full);
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  margin-bottom: var(--spacing-lg);
-}
-
-.badge i {
-  color: var(--color-text-secondary);
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .headline {
-  font-family: var(--font-family-serif);
-  font-size: var(--font-size-7xl);
-  font-weight: var(--font-weight-normal);
+  font-size: var(--font-size-5xl);
+  font-weight: var(--font-weight-bold);
   line-height: var(--line-height-tight);
   color: var(--color-text-primary);
   margin-bottom: var(--spacing-md);
-  letter-spacing: -0.02em;
-}
-
-.headlineItalic {
-  font-style: italic;
-  color: var(--color-text-tertiary);
 }
 
 .subheadline {
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-xl);
   line-height: var(--line-height-relaxed);
   color: var(--color-text-secondary);
   margin-bottom: var(--spacing-xl);
-  max-width: 480px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Shared centering for CTAs */
+:is(.emailWrapper, .secondaryCta) {
+  display: flex;
+  justify-content: center;
+}
+
+.emailWrapper {
+  margin-bottom: var(--spacing-md);
+}
+
+.secondaryCta {
+  margin-bottom: var(--spacing-xl);
 }
 
 .ctas {
   display: flex;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-md);
+  justify-content: center;
   flex-wrap: wrap;
+  margin-bottom: var(--spacing-2xl);
+}
+
+.tags {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-md);
+  background-color: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.tag i {
+  color: var(--color-primary);
 }
 
 /* App Mockup Container */
@@ -155,7 +95,7 @@
   position: relative;
   width: 100%;
   max-width: 700px;
-  margin: 0 auto;
+  margin: var(--spacing-3xl) auto 0;
   /* Fallback for browsers that don't support aspect-ratio */
   min-height: 260px;
   aspect-ratio: 16 / 10;
@@ -212,104 +152,20 @@
   border-radius: 0;
 }
 
-/* Trusted By Section */
-.trusted {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xl);
-  max-width: var(--max-width);
-  margin: var(--spacing-3xl) auto 0;
-  padding: var(--spacing-xl) var(--spacing-md);
-  border-top: 1px solid var(--color-border-light);
-}
-
-.trustedLabel {
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-text-tertiary);
-  letter-spacing: 0.05em;
-  white-space: nowrap;
-}
-
-.trustedLogos {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-2xl);
-  flex-wrap: wrap;
-}
-
-.trustedLogo {
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-text-tertiary);
-  opacity: 0.6;
-}
-
 /* Mobile styles */
-@media (max-width: 1024px) {
-  .container {
-    grid-template-columns: 1fr;
-    gap: var(--spacing-2xl);
-  }
-
-  .content {
-    text-align: center;
-  }
-
-  .badge {
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .headline {
-    font-size: var(--font-size-6xl);
-  }
-
-  .subheadline {
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .ctas {
-    justify-content: center;
-  }
-
-  .mockupContainer {
-    max-width: 500px;
-    margin: 0 auto;
-  }
-
-  .mockupSecondary {
-    width: 45%;
-    bottom: -3%;
-    right: -3%;
-  }
-
-  .trusted {
-    flex-direction: column;
-    text-align: center;
-    gap: var(--spacing-md);
-  }
-
-  .trustedLogos {
-    justify-content: center;
-    gap: var(--spacing-lg);
-  }
-}
-
 @media (max-width: 768px) {
   .hero {
-    min-height: auto;
-    padding-top: var(--spacing-2xl);
-    padding-bottom: var(--spacing-xl);
+    min-height: 0;
+    padding-top: var(--spacing-3xl);
+    padding-bottom: var(--spacing-3xl);
   }
 
   .headline {
-    font-size: var(--font-size-5xl);
+    font-size: var(--font-size-4xl);
   }
 
   .subheadline {
-    font-size: var(--font-size-base);
+    font-size: var(--font-size-lg);
   }
 
   .ctas {
@@ -320,7 +176,38 @@
   .ctas button,
   .ctas a {
     width: 100%;
-    justify-content: center;
+  }
+
+  .mockupContainer {
+    max-width: 500px;
+    margin: var(--spacing-2xl) auto 0;
+  }
+
+  .mockupSecondary {
+    width: 45%;
+    bottom: -3%;
+    right: -3%;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+  .headline {
+    font-size: var(--font-size-3xl);
+    line-height: var(--line-height-tight);
+  }
+
+  .subheadline {
+    font-size: var(--font-size-base);
+  }
+
+  .tags {
+    gap: var(--spacing-xs);
+  }
+
+  .tag {
+    font-size: var(--font-size-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
   }
 
   .mockupContainer {
@@ -336,52 +223,30 @@
     bottom: -2%;
     right: -2%;
   }
+}
 
-  .trustedLogos {
-    gap: var(--spacing-md);
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .hero::before {
+    /* Enhance gradient visibility in dark mode */
+    background: radial-gradient(circle at top right, rgba(124, 58, 237, 0.15) 0%, transparent 70%);
   }
 
-  .trustedLogo {
-    font-size: var(--font-size-base);
-  }
-
-  /* Hide floating icons on mobile for cleaner experience */
-  .floatingContainer {
-    display: none;
-  }
-
-  /* Reduce shape sizes on mobile */
-  .shape1 {
-    width: 200px;
-    height: 200px;
-  }
-
-  .shape2 {
-    width: 150px;
-    height: 150px;
-  }
-
-  .shape3 {
-    width: 100px;
-    height: 100px;
+  .tag {
+    background-color: var(--color-surface);
   }
 }
 
-/*
- * Reduced motion handling:
- * - FloatingElement component early-returns without animation classes when
- *   prefers-reduced-motion is detected (no CSS animations applied)
- * - ParallaxLayer/useParallax hook returns isActive=false, skipping all
- *   requestAnimationFrame calls and applying no JS transforms
- * - See: src/components/ui/FloatingElement/FloatingElement.tsx (lines 86-93)
- * - See: src/hooks/useParallax.ts (lines 115, 118-121, 148-151, 166)
- */
-@media (prefers-reduced-motion: reduce) {
-  .shape {
-    /* Reduce blur intensity for performance with static shapes */
-    filter: blur(40px);
-  }
+[data-theme='dark'] .hero::before {
+  background: radial-gradient(circle at top right, rgba(124, 58, 237, 0.15) 0%, transparent 70%);
+}
 
+[data-theme='dark'] .tag {
+  background-color: var(--color-surface);
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
   .mockupPrimary,
   .mockupSecondary {
     /* Disable hover transforms for users preferring reduced motion */

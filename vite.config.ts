@@ -93,9 +93,7 @@ export default defineConfig({
   // Path resolution configuration
   resolve: {
     alias: {
-      // Base alias for src directory
       '@': path.resolve(__dirname, './src'),
-      // Component-specific aliases for better import paths
       '@components': path.resolve(__dirname, './src/components'),
       '@hooks': path.resolve(__dirname, './src/hooks'),
       '@styles': path.resolve(__dirname, './src/styles'),
@@ -109,18 +107,35 @@ export default defineConfig({
   build: {
     // Split CSS into separate files for better caching
     cssCodeSplit: true,
-    // Use esbuild for faster minification
-    minify: 'esbuild',
-    // Rollup-specific options for advanced bundling
-    rollupOptions: {
-      output: {
-        // Separate React libraries into their own chunk for better caching
-        // This ensures React/ReactDOM don't get re-downloaded when app code changes
-        manualChunks: {
-          'react-vendor': ['react', 'react-dom'],
-        },
+    minify: 'terser',
+    sourcemap: 'hidden',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
       },
     },
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          // Split React and React DOM into separate vendor chunk
+          const reactRegex = /node_modules[\\/](react|react-dom)[\\/]/
+          if (reactRegex.test(id)) {
+            return 'react-vendor'
+          }
+          // Keep all other node_modules in a single vendor chunk
+          if (id.includes('node_modules')) {
+            return 'vendor'
+          }
+        },
+        // Optimize chunk file names
+        chunkFileNames: 'assets/[name]-[hash].js',
+        entryFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash].[ext]',
+      },
+    },
+    // Performance optimizations
+    chunkSizeWarningLimit: 1000, // Intentionally raised to suppress warnings for large vendor chunks. TODO: Monitor bundle size and lower if needed.
   },
 
   // Development server configuration

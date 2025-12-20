@@ -11,6 +11,10 @@ import '@fontsource/inter/latin-700.css'
 import './utils/iconLibrary'
 import './index.css'
 import App from './App.tsx'
+import { updateMetaTags } from './utils/env'
+
+// Initialize environment-aware meta tags
+updateMetaTags()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

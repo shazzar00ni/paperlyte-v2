@@ -24,7 +24,7 @@ describe('Analytics Utility', () => {
     })
 
     it('should return true when gtag is available', () => {
-      (window as Window & { gtag?: () => void }).gtag = vi.fn()
+      ;(window as Window & { gtag?: () => void }).gtag = vi.fn()
       expect(isAnalyticsAvailable()).toBe(true)
     })
   })

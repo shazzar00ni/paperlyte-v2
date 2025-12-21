@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef, type FormEvent } from 'react'
 import { Icon } from '@components/ui/Icon'
 import { Button } from '@components/ui/Button'
-import { isActivationKey, handleArrowNavigation, getFocusableElements } from '@utils/keyboard'
+import { handleArrowNavigation, getFocusableElements } from '@utils/keyboard'
 import styles from './FeedbackWidget.module.css'
 
 type FeedbackType = 'bug' | 'feature'

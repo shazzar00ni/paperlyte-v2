@@ -448,7 +448,7 @@ describe('FeedbackWidget', () => {
       })
     })
 
-    it('has proper group ARIA label for feedback type selector', async () => {
+    it('has proper fieldset with legend for feedback type selector', async () => {
       render(<FeedbackWidget />)
 
       // Open modal
@@ -456,9 +456,13 @@ describe('FeedbackWidget', () => {
       fireEvent.click(openButton)
 
       await waitFor(() => {
-        const typeSelector = document.querySelector('[role="group"][aria-label]')
+        const typeSelector = document.querySelector('fieldset')
         expect(typeSelector).toBeInTheDocument()
-        expect(typeSelector).toHaveAttribute('aria-label', 'Feedback type selection')
+
+        const legend = typeSelector?.querySelector('legend')
+        expect(legend).toBeInTheDocument()
+        expect(legend).toHaveTextContent('Feedback type selection')
+        expect(legend).toHaveClass('sr-only')
       })
     })
   })

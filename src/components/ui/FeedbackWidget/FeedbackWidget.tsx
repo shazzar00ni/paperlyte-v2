@@ -299,7 +299,8 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
               /* Feedback form */
               <form onSubmit={handleSubmit} className={styles.form}>
                 {/* Feedback type selection */}
-                <div className={styles.typeSelector} ref={typeSelectorRef} role="group" aria-label="Feedback type selection">
+                <fieldset className={styles.typeSelector} ref={typeSelectorRef}>
+                  <legend className="sr-only">Feedback type selection</legend>
                   <button
                     type="button"
                     className={`${styles.typeButton} ${feedbackType === 'bug' ? styles.typeButtonActive : ''}`}
@@ -318,7 +319,7 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
                     <Icon name="fa-lightbulb" size="lg" />
                     <span>Request a Feature</span>
                   </button>
-                </div>
+                </fieldset>
 
                 {/* Message textarea */}
                 <div className={styles.formGroup}>

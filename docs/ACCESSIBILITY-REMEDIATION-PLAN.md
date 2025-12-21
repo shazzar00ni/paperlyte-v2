@@ -415,10 +415,10 @@ The following accessibility limitations have been identified and are prioritized
 
 ### Tools and Services
 
-- **axe DevTools Pro**: $XX/month (if needed for enterprise features)
-- **JAWS License**: $XX for testing
-- **Accessibility Audit**: External audit in December 2025 (estimated $X,XXX)
-- **User Testing**: $X,XXX for Q1 2026 user research
+- **axe DevTools Pro**: TBD (if needed for enterprise features)
+- **JAWS License**: TBD for testing infrastructure
+- **Accessibility Audit**: External audit in early January 2026 (budget TBD)
+- **User Testing**: Budget TBD for Q1 2026 user research
 
 ### Training
 

@@ -12,7 +12,7 @@
 Paperlyte is committed to achieving full WCAG 2.1 Level AA conformance across all digital properties by **March 31, 2026**. This remediation plan outlines our systematic approach to identifying, prioritizing, and resolving accessibility barriers that prevent users with disabilities from fully accessing our platform.
 
 **Target Completion**: March 31, 2026  
-**Current Status**: In Progress (Full audit scheduled December 2, 2025)  
+**Current Status**: In Progress (Full audit scheduled for early January 2026)  
 **Budget Allocated**: TBD based on audit findings  
 **Responsible Team**: Accessibility Lead, Development Team, QA Team
 
@@ -24,8 +24,8 @@ Paperlyte is committed to achieving full WCAG 2.1 Level AA conformance across al
 
 As of December 21, 2025:
 - **Target Standard**: WCAG 2.1 Level AA
-- **Current Conformance**: Partial (audit in progress)
-- **Next Audit Date**: December 2, 2025
+- **Current Conformance**: Partial (audit scheduled)
+- **Next Audit Date**: Early January 2026
 
 ### Supported Assistive Technologies
 

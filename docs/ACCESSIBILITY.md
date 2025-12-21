@@ -8,7 +8,7 @@ Paperlyte is committed to ensuring digital accessibility for all users, includin
 
 ## Conformance Status
 
-Our goal is to conform to [WCAG 2.1 AA](https://www.w3.org/WAI/standards-guidelines/wcag/) standards. As of December 2, 2025, a full accessibility audit is scheduled and in progress. Some areas of the site may not yet fully conform. We will update this statement after the audit is complete.
+Our goal is to conform to [WCAG 2.1 AA](https://www.w3.org/WAI/standards-guidelines/wcag/) standards. As of December 21, 2025, a full accessibility audit is scheduled for early January 2026. Some areas of the site may not yet fully conform. We will update this statement after the audit is complete.
 
 ## Supported Assistive Technologies & Testing
 
@@ -51,4 +51,4 @@ For details on our ongoing efforts and planned improvements, see our [Accessibil
 
 ## Statement Updates
 
-This statement was last updated on December 2, 2025. We will review and update it after the completion of our full accessibility audit and as further improvements are made.
+This statement was last updated on December 21, 2025. We will review and update it after the completion of our full accessibility audit and as further improvements are made.

@@ -8,7 +8,7 @@ test.describe('Landing Page', () => {
     await expect(page.locator('h1')).toBeVisible();
 
     // Check CTA button exists
-    const ctaButton = page.getByRole('button', { name: /get started|download/i });
+    const ctaButton = page.getByRole('button', { name: /join waitlist|see features/i });
     await expect(ctaButton).toBeVisible();
 
     // Check page is accessible

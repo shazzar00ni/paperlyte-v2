@@ -13,6 +13,7 @@ import { Testimonials } from '@components/sections/Testimonials'
 import { EmailCapture } from '@components/sections/EmailCapture'
 import { FAQ } from '@components/sections/FAQ'
 import { CTA } from '@components/sections/CTA'
+import { FeedbackWidget } from '@components/ui/FeedbackWidget'
 import { analytics } from '@utils/analytics'
 
 /**
@@ -21,7 +22,7 @@ import { analytics } from '@utils/analytics'
  * @returns The root JSX element rendering the app: an ErrorBoundary wrapping
  * the Header, and a main element containing Hero, Problem, Solution, Features,
  * Mobile, Statistics, Comparison, Testimonials, EmailCapture, FAQ, and CTA sections,
- * then the Footer.
+ * then the Footer and FeedbackWidget.
  */
 function App() {
   // Initialize analytics on mount
@@ -46,6 +47,7 @@ function App() {
         <CTA />
       </main>
       <Footer />
+      <FeedbackWidget />
     </ErrorBoundary>
   )
 }

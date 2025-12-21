@@ -34,6 +34,7 @@ const FAQItemComponent = ({
         <h3>
           <button
             id={questionId}
+            type="button"
             className={styles.question}
             onClick={onToggle}
             aria-expanded={isOpen}

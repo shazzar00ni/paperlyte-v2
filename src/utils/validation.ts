@@ -267,7 +267,7 @@ export function sanitizeInput(input: string): string {
   // - Window: resize, scroll, beforeunload, hashchange, contextmenu
   // - Animation: animationstart, animationend, animationiteration, transitionend
   // - Wheel: wheel
-  const eventHandlerPattern = /\bon(?:click|dblclick|mouse\w+|key\w+|load|unload|beforeunload|focus|blur|change|input|submit|reset|select|error|abort|resize|scroll|contextmenu|hashchange|drag\w*|touch\w+|pointer\w+|wheel|animation\w+|transition\w+|can\w+|play\w*|pause|seeking|seeked|stalled|suspend|time\w+|volume\w+|waiting|duration\w+|emptied|ended|loaded\w+|progress|rate\w+|copy|cut|paste)/gi
+  const eventHandlerPattern = /on(?:click|dblclick|mouse\w+|key\w+|load|unload|beforeunload|focus|blur|change|input|submit|reset|select|error|abort|resize|scroll|contextmenu|hashchange|drag\w*|touch\w+|pointer\w+|wheel|animation\w+|transition\w+|can\w+|play\w*|pause|seeking|seeked|stalled|suspend|time\w+|volume\w+|waiting|duration\w+|emptied|ended|loaded\w+|progress|rate\w+|copy|cut|paste)/gi
   do {
     prevLength = sanitized.length
     sanitized = sanitized.replace(eventHandlerPattern, '')

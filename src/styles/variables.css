@@ -60,6 +60,7 @@
   --border-radius-sm: 0.25rem; /* 4px */
   --border-radius-md: 0.5rem; /* 8px */
   --border-radius-lg: 1rem; /* 16px */
+  --border-radius-full: 9999px; /* Full pill shape */
 
   /* Icon Sizes */
   --icon-size-sm: 3.5rem; /* 56px */

@@ -92,6 +92,7 @@ export const FAQ = (): React.ReactElement => {
         // Clear announcement after it's been read
         announcementTimeoutRef.current = window.setTimeout(() => {
           setAnnouncement('')
+        }, 1000)
       }
 
       return newSet

@@ -42,7 +42,7 @@ We aim to respond to accessibility requests within 5 business days.
 
 ## Accessibility Remediation Plan
 
-For details on our ongoing efforts and planned improvements, see our [Accessibility Remediation Plan](https://paperlyte.com/accessibility-remediation-plan).
+For details on our ongoing efforts and planned improvements, see our [Accessibility Remediation Plan](/docs/ACCESSIBILITY-REMEDIATION-PLAN.md).
 
 ## Target Completion & Responsible Owner
 

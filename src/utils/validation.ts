@@ -256,23 +256,41 @@ export function sanitizeInput(input: string): string {
   // We match specific event handler names to preserve legitimate words like "online", "money", "monitor"
   // This addresses CodeQL's incomplete multi-character sanitization concern
   //
+  // Define specific event handler names (no wildcards to avoid matching legitimate words)
   // Event handler categories covered:
-  // - Mouse: click, dblclick, mousedown, mouseup, mouseover, mousemove, mouseout, mouseenter, mouseleave
-  // - Keyboard: keydown, keyup, keypress
-  // - Form: focus, blur, change, input, submit, reset, select
-  // - Media: load, unload, error, abort, canplay, etc.
-  // - Drag: drag, dragstart, dragend, dragenter, dragleave, dragover, drop
-  // - Touch: touchstart, touchmove, touchend, touchcancel
-  // - Pointer: pointerdown, pointermove, pointerup, pointercancel, etc.
-  // - Window: resize, scroll, beforeunload, hashchange, contextmenu
-  // - Animation: animationstart, animationend, animationiteration, transitionend
-  // - Wheel: wheel
-  const eventHandlerPattern = /on(?:click|dblclick|mouse\w+|key\w+|load|unload|beforeunload|focus|blur|change|input|submit|reset|select|error|abort|resize|scroll|contextmenu|hashchange|drag\w*|touch\w+|pointer\w+|wheel|animation\w+|transition\w+|can\w+|play\w*|pause|seeking|seeked|stalled|suspend|time\w+|volume\w+|waiting|duration\w+|emptied|ended|loaded\w+|progress|rate\w+|copy|cut|paste)/gi
+  // - Mouse events: click, dblclick, mousedown, mouseup, mouseover, mousemove, mouseout, mouseenter, mouseleave
+  // - Keyboard events: keydown, keyup, keypress
+  // - Form events: focus, blur, change, input, submit, reset, select
+  // - Media events: load, unload, error, abort, canplay, canplaythrough, play, playing, pause, seeking, seeked, stalled, suspend, timeupdate, volumechange, waiting, durationchange, emptied, ended, loadeddata, loadedmetadata, progress, ratechange
+  // - Drag events: drag, dragstart, dragend, dragenter, dragleave, dragover, drop
+  // - Touch events: touchstart, touchmove, touchend, touchcancel
+  // - Pointer events: pointerdown, pointermove, pointerup, pointercancel, pointerover, pointerout, pointerenter, pointerleave
+  // - Window events: resize, scroll, beforeunload, hashchange, contextmenu
+  // - Animation events: animationstart, animationend, animationiteration, transitionend
+  // - Other events: wheel, copy, cut, paste
+  const eventHandlers = [
+    'click', 'dblclick',
+    'mousedown', 'mouseup', 'mouseover', 'mousemove', 'mouseout', 'mouseenter', 'mouseleave',
+    'keydown', 'keyup', 'keypress',
+    'focus', 'blur', 'change', 'input', 'submit', 'reset', 'select',
+    'load', 'unload', 'beforeunload', 'error', 'abort',
+    'canplay', 'canplaythrough', 'play', 'playing', 'pause',
+    'seeking', 'seeked', 'stalled', 'suspend', 'timeupdate', 'volumechange',
+    'waiting', 'durationchange', 'emptied', 'ended',
+    'loadeddata', 'loadedmetadata', 'progress', 'ratechange',
+    'drag', 'dragstart', 'dragend', 'dragenter', 'dragleave', 'dragover', 'drop',
+    'touchstart', 'touchmove', 'touchend', 'touchcancel',
+    'pointerdown', 'pointermove', 'pointerup', 'pointercancel',
+    'pointerover', 'pointerout', 'pointerenter', 'pointerleave',
+    'resize', 'scroll', 'contextmenu', 'hashchange',
+    'animationstart', 'animationend', 'animationiteration', 'transitionend',
+    'wheel', 'copy', 'cut', 'paste'
+  ]
+  const eventHandlerPattern = new RegExp(`\\bon(?:${eventHandlers.join('|')})\\b`, 'gi')
   // Single-pass removal of event handler attributes using a global regex
   sanitized = sanitized.replace(eventHandlerPattern, '')
 
   // Encode any special HTML entities that might have been missed
-  sanitized = sanitized.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;')
   sanitized = sanitized.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;')
 
   // Trim any extra whitespace that may have been introduced during sanitization

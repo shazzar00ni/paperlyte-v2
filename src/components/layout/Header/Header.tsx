@@ -116,7 +116,7 @@ export const Header = (): React.ReactElement => {
     menu.addEventListener('keydown', handleArrowKeys)
 
     return () => menu.removeEventListener('keydown', handleArrowKeys)
-  }, [])
+  }, [mobileMenuOpen])
 
   return (
     <header className={styles.header}>

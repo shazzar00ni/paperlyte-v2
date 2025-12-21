@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { Section } from '@components/layout/Section'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { Icon } from '@components/ui/Icon'
@@ -89,28 +89,18 @@ export const FAQ = (): React.ReactElement => {
         }
 
         setAnnouncement(`${item.question} ${isOpening ? 'expanded' : 'collapsed'}`)
-        // Clear announcement after it's been read
+        // Clear announcement after sufficient time for screen readers (3 seconds)
+        // This ensures users with slower reading speeds or busy screen readers can hear the announcement
         announcementTimeoutRef.current = window.setTimeout(() => {
           setAnnouncement('')
-        }, 1000)
+          announcementTimeoutRef.current = null
+        }, 3000)
       }
 
       return newSet
     })
   }
 
-  // Automatically clear announcements after they've been read
-  useEffect(() => {
-    if (!announcement) return
-
-    const timeoutId = window.setTimeout(() => {
-      setAnnouncement('')
-    }, 1000)
-
-    return () => {
-      window.clearTimeout(timeoutId)
-    }
-  }, [announcement])
   // Cleanup timeout on unmount to prevent memory leaks
   useEffect(() => {
     return () => {
@@ -120,46 +110,51 @@ export const FAQ = (): React.ReactElement => {
     }
   }, [])
 
-  // Keyboard navigation for FAQ items
-  useEffect(() => {
-    if (!gridRef.current) return
-
+  // Keyboard navigation handler - memoized to prevent recreating on every render
+  const handleKeyDown = useCallback((event: KeyboardEvent) => {
     const grid = gridRef.current
+    if (!grid) return
 
-    const handleKeyDown = (event: KeyboardEvent) => {
-      // Only handle keyboard navigation when focus is on an FAQ button
-      if (!(event.target instanceof HTMLElement && event.target.tagName === 'BUTTON')) {
-        return
-      }
-
-      const focusableElements = getFocusableElements(grid).filter(
-        (el) => el.classList.contains(styles.question)
-      )
-      if (focusableElements.length === 0) return
-
-      const currentIndex = focusableElements.findIndex((el) => el === document.activeElement)
-      if (currentIndex === -1) return
-
-      // Handle Home/End keys
-      const homeEndIndex = handleHomeEndNavigation(event, focusableElements)
-      if (homeEndIndex !== null) {
-        event.preventDefault()
-        focusableElements[homeEndIndex]?.focus()
-        return
-      }
-
-      // Handle Arrow keys (vertical navigation for FAQ)
-      const newIndex = handleArrowNavigation(event, focusableElements, currentIndex, 'vertical')
-      if (newIndex !== null) {
-        event.preventDefault()
-        focusableElements[newIndex]?.focus()
-      }
+    // Only handle keyboard navigation when focus is on an FAQ button
+    if (!(event.target instanceof HTMLElement && event.target.tagName === 'BUTTON')) {
+      return
     }
+
+    const focusableElements = getFocusableElements(grid).filter(
+      (el) => el.classList.contains(styles.question)
+    )
+    if (focusableElements.length === 0) return
+
+    const currentIndex = focusableElements.findIndex((el) => el === document.activeElement)
+    if (currentIndex === -1) return
+
+    // Handle Home/End keys
+    const homeEndIndex = handleHomeEndNavigation(event, focusableElements)
+    if (homeEndIndex !== null) {
+      event.preventDefault()
+      focusableElements[homeEndIndex]?.focus()
+      return
+    }
+
+    // Handle Arrow keys (vertical navigation for FAQ)
+    const newIndex = handleArrowNavigation(event, focusableElements, currentIndex, 'vertical')
+    if (newIndex !== null) {
+      event.preventDefault()
+      focusableElements[newIndex]?.focus()
+    }
+  }, [])
+
+  // Set up keyboard navigation event listener
+  useEffect(() => {
+    const grid = gridRef.current
+    if (!grid) return
 
     grid.addEventListener('keydown', handleKeyDown)
 
-    return () => grid.removeEventListener('keydown', handleKeyDown)
-  }, [])
+    return () => {
+      grid.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [handleKeyDown])
 
   return (
     <Section id="faq" background="default">

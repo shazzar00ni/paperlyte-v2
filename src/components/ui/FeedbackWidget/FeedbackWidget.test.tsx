@@ -447,5 +447,113 @@ describe('FeedbackWidget', () => {
         expect(label).toHaveAttribute('for', 'feedback-message')
       })
     })
+
+    it('has proper group ARIA label for feedback type selector', async () => {
+      render(<FeedbackWidget />)
+
+      // Open modal
+      const openButton = screen.getByRole('button', { name: /open feedback form/i })
+      fireEvent.click(openButton)
+
+      await waitFor(() => {
+        const typeSelector = document.querySelector('[role="group"][aria-label]')
+        expect(typeSelector).toBeInTheDocument()
+        expect(typeSelector).toHaveAttribute('aria-label', 'Feedback type selection')
+      })
+    })
+  })
+
+  describe('Keyboard Navigation', () => {
+    it('should navigate between feedback type buttons with ArrowRight', async () => {
+      const user = userEvent.setup()
+      render(<FeedbackWidget />)
+
+      // Open modal
+      const openButton = screen.getByRole('button', { name: /open feedback form/i })
+      await user.click(openButton)
+
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+      })
+
+      const bugButton = screen.getByRole('button', { name: /report a bug/i })
+      const featureButton = screen.getByRole('button', { name: /request a feature/i })
+
+      bugButton.focus()
+      expect(bugButton).toHaveFocus()
+
+      await user.keyboard('{ArrowRight}')
+
+      expect(featureButton).toHaveFocus()
+    })
+
+    it('should navigate between feedback type buttons with ArrowLeft', async () => {
+      const user = userEvent.setup()
+      render(<FeedbackWidget />)
+
+      // Open modal
+      const openButton = screen.getByRole('button', { name: /open feedback form/i })
+      await user.click(openButton)
+
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+      })
+
+      const bugButton = screen.getByRole('button', { name: /report a bug/i })
+      const featureButton = screen.getByRole('button', { name: /request a feature/i })
+
+      featureButton.focus()
+      expect(featureButton).toHaveFocus()
+
+      await user.keyboard('{ArrowLeft}')
+
+      expect(bugButton).toHaveFocus()
+    })
+
+    it('should wrap navigation from last to first button with ArrowRight', async () => {
+      const user = userEvent.setup()
+      render(<FeedbackWidget />)
+
+      // Open modal
+      const openButton = screen.getByRole('button', { name: /open feedback form/i })
+      await user.click(openButton)
+
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+      })
+
+      const bugButton = screen.getByRole('button', { name: /report a bug/i })
+      const featureButton = screen.getByRole('button', { name: /request a feature/i })
+
+      featureButton.focus()
+      expect(featureButton).toHaveFocus()
+
+      await user.keyboard('{ArrowRight}')
+
+      expect(bugButton).toHaveFocus()
+    })
+
+    it('should wrap navigation from first to last button with ArrowLeft', async () => {
+      const user = userEvent.setup()
+      render(<FeedbackWidget />)
+
+      // Open modal
+      const openButton = screen.getByRole('button', { name: /open feedback form/i })
+      await user.click(openButton)
+
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+      })
+
+      const bugButton = screen.getByRole('button', { name: /report a bug/i })
+      const featureButton = screen.getByRole('button', { name: /request a feature/i })
+
+      bugButton.focus()
+      expect(bugButton).toHaveFocus()
+
+      await user.keyboard('{ArrowLeft}')
+
+      expect(featureButton).toHaveFocus()
+    })
   })
 })

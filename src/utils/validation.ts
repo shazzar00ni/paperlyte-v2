@@ -253,17 +253,6 @@ export function sanitizeInput(input: string): string {
     iterationCount++
   } while (sanitized !== prevSanitized && iterationCount < maxIterations)
 
-  // Remove any remaining "on" prefixes that could be part of event handlers
-  // This is more aggressive but safer for preventing HTML attribute injection
-  // Repeat until all occurrences are removed (prevents incomplete sanitization)
-  prevSanitized = ''
-  iterationCount = 0
-  do {
-    prevSanitized = sanitized
-    sanitized = sanitized.replace(/\s+on\w+/gi, '')
-    iterationCount++
-  } while (sanitized !== prevSanitized && iterationCount < maxIterations)
-
   // Encode any special HTML entities that might have been missed
   sanitized = sanitized.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;')
 

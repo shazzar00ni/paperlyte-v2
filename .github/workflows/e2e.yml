@@ -58,5 +58,4 @@ jobs:
           name: playwright-artifacts
           path: |
             test-results/
-            playwright-report/
           retention-days: 7

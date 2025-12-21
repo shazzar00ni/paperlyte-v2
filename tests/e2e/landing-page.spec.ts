@@ -48,6 +48,7 @@ test.describe('Landing Page', () => {
 
     // Mobile menu should be accessible
     const mobileMenu = page.getByRole('button', { name: /menu/i });
+    await mobileMenu.waitFor({ state: 'visible' });
     await expect(mobileMenu).toBeVisible();
   });
 

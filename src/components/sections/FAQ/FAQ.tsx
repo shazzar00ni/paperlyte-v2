@@ -91,14 +91,24 @@ export const FAQ = (): React.ReactElement => {
         // Clear announcement after it's been read
         announcementTimeoutRef.current = window.setTimeout(() => {
           setAnnouncement('')
-          announcementTimeoutRef.current = null
-        }, 1000)
       }
 
       return newSet
     })
   }
 
+  // Automatically clear announcements after they've been read
+  useEffect(() => {
+    if (!announcement) return
+
+    const timeoutId = window.setTimeout(() => {
+      setAnnouncement('')
+    }, 1000)
+
+    return () => {
+      window.clearTimeout(timeoutId)
+    }
+  }, [announcement])
   // Cleanup timeout on unmount to prevent memory leaks
   useEffect(() => {
     return () => {

@@ -175,12 +175,40 @@ export function handleArrowNavigation(
   const isHorizontal = orientation === 'horizontal'
   const isVertical = orientation === 'vertical'
 
+  // Normalize direction for RTL in horizontal navigation:
+  // In RTL, ArrowRight should move to the previous element and ArrowLeft to the next.
+  let effectiveDirection = direction
+  if (isHorizontal) {
+    let isRtl = false
+
+    if (typeof document !== 'undefined') {
+      // Prefer explicit dir attribute if present
+      const docElement = document.documentElement
+      const attrDir = (document.dir || (docElement && docElement.getAttribute('dir')) || '').toLowerCase()
+
+      if (attrDir) {
+        isRtl = attrDir === 'rtl'
+      } else if (typeof window !== 'undefined' && docElement && window.getComputedStyle) {
+        const computedDirection = window.getComputedStyle(docElement).direction
+        isRtl = computedDirection === 'rtl'
+      }
+    }
+
+    if (isRtl) {
+      if (direction === 'left') {
+        effectiveDirection = 'right'
+      } else if (direction === 'right') {
+        effectiveDirection = 'left'
+      }
+    }
+  }
+
   let newIndex: number | null = null
 
-  if ((isHorizontal && direction === 'left') || (isVertical && direction === 'up')) {
+  if ((isHorizontal && effectiveDirection === 'left') || (isVertical && effectiveDirection === 'up')) {
     // Move to previous element
     newIndex = currentIndex > 0 ? currentIndex - 1 : elements.length - 1
-  } else if ((isHorizontal && direction === 'right') || (isVertical && direction === 'down')) {
+  } else if ((isHorizontal && effectiveDirection === 'right') || (isVertical && effectiveDirection === 'down')) {
     // Move to next element
     newIndex = currentIndex < elements.length - 1 ? currentIndex + 1 : 0
   }

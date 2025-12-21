@@ -290,7 +290,7 @@ export function sanitizeInput(input: string): string {
   // Single-pass removal of event handler attributes using a global regex
   sanitized = sanitized.replace(eventHandlerPattern, '')
 
-  // Encode any special HTML entities that might have been missed
+  // Encode special HTML entities to prevent XSS
   sanitized = sanitized.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;')
 
   // Trim any extra whitespace that may have been introduced during sanitization

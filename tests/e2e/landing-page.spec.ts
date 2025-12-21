@@ -62,9 +62,25 @@ test.describe('Landing Page', () => {
   test('should have accessible navigation', async ({ page }) => {
     await page.goto('/');
 
-    // Check keyboard navigation
+    // Test complete keyboard navigation flow
+    const interactiveElements = page.locator('a, button, input, select, textarea, [tabindex]:not([tabindex="-1"])');
+    const count = await interactiveElements.count();
+    
+    // Ensure first tab goes to a visible element
     await page.keyboard.press('Tab');
-    const focused = page.locator(':focus');
+    let focused = page.locator(':focus');
+    await expect(focused).toBeVisible();
+    
+    // Verify focus order through navigation
+    for (let i = 1; i < Math.min(count, 5); i++) {
+      await page.keyboard.press('Tab');
+      focused = page.locator(':focus');
+      await expect(focused).toBeVisible();
+    }
+    
+    // Test reverse navigation
+    await page.keyboard.press('Shift+Tab');
+    focused = page.locator(':focus');
     await expect(focused).toBeVisible();
   });
 });

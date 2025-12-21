@@ -268,12 +268,11 @@ export function sanitizeInput(input: string): string {
   // - Animation: animationstart, animationend, animationiteration, transitionend
   // - Wheel: wheel
   const eventHandlerPattern = /on(?:click|dblclick|mouse\w+|key\w+|load|unload|beforeunload|focus|blur|change|input|submit|reset|select|error|abort|resize|scroll|contextmenu|hashchange|drag\w*|touch\w+|pointer\w+|wheel|animation\w+|transition\w+|can\w+|play\w*|pause|seeking|seeked|stalled|suspend|time\w+|volume\w+|waiting|duration\w+|emptied|ended|loaded\w+|progress|rate\w+|copy|cut|paste)/gi
-  do {
-    prevLength = sanitized.length
-    sanitized = sanitized.replace(eventHandlerPattern, '')
-  } while (sanitized.length !== prevLength)
+  // Single-pass removal of event handler attributes using a global regex
+  sanitized = sanitized.replace(eventHandlerPattern, '')
 
   // Encode any special HTML entities that might have been missed
+  sanitized = sanitized.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;')
   sanitized = sanitized.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;')
 
   // Trim any extra whitespace that may have been introduced during sanitization

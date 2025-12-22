@@ -1,3 +1,5 @@
+import type { KeyboardEvent as ReactKeyboardEvent } from 'react'
+
 /**
  * Keyboard navigation utilities for accessibility support
  * Provides helper functions for detecting key presses and managing focus
@@ -6,35 +8,35 @@
 /**
  * Check if the pressed key is Enter or Space (standard activation keys)
  */
-export function isActivationKey(event: KeyboardEvent | React.KeyboardEvent): boolean {
+export function isActivationKey(event: KeyboardEvent | ReactKeyboardEvent): boolean {
   return event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar'
 }
 
 /**
  * Check if the pressed key is Escape
  */
-export function isEscapeKey(event: KeyboardEvent | React.KeyboardEvent): boolean {
+export function isEscapeKey(event: KeyboardEvent | ReactKeyboardEvent): boolean {
   return event.key === 'Escape' || event.key === 'Esc'
 }
 
 /**
  * Check if the pressed key is an arrow key
  */
-export function isArrowKey(event: KeyboardEvent | React.KeyboardEvent): boolean {
+export function isArrowKey(event: KeyboardEvent | ReactKeyboardEvent): boolean {
   return ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)
 }
 
 /**
  * Check if the pressed key is the Home key
  */
-export function isHomeKey(event: KeyboardEvent | React.KeyboardEvent): boolean {
+export function isHomeKey(event: KeyboardEvent | ReactKeyboardEvent): boolean {
   return event.key === 'Home'
 }
 
 /**
  * Check if the pressed key is the End key
  */
-export function isEndKey(event: KeyboardEvent | React.KeyboardEvent): boolean {
+export function isEndKey(event: KeyboardEvent | ReactKeyboardEvent): boolean {
   return event.key === 'End'
 }
 
@@ -43,7 +45,7 @@ export function isEndKey(event: KeyboardEvent | React.KeyboardEvent): boolean {
  * @returns The direction ('up', 'down', 'left', 'right') or null if not an arrow key
  */
 export function getArrowDirection(
-  event: KeyboardEvent | React.KeyboardEvent
+  event: KeyboardEvent | ReactKeyboardEvent
 ): 'up' | 'down' | 'left' | 'right' | null {
   switch (event.key) {
     case 'ArrowUp':
@@ -164,7 +166,7 @@ export function createFocusTrap(container: HTMLElement): () => void {
  * @returns New index to focus, or null if no change
  */
 export function handleArrowNavigation(
-  event: KeyboardEvent | React.KeyboardEvent,
+  event: KeyboardEvent | ReactKeyboardEvent,
   elements: HTMLElement[],
   currentIndex: number,
   orientation: 'horizontal' | 'vertical' = 'horizontal'
@@ -233,7 +235,7 @@ export function findFocusedIndex(elements: HTMLElement[]): number {
  * @returns Index to focus (0 for Home, last for End), or null if not Home/End
  */
 export function handleHomeEndNavigation(
-  event: KeyboardEvent | React.KeyboardEvent,
+  event: KeyboardEvent | ReactKeyboardEvent,
   elements: HTMLElement[]
 ): number | null {
   if (isHomeKey(event)) {

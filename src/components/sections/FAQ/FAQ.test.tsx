@@ -498,6 +498,7 @@ describe('FAQ', () => {
     })
 
     it('should clear announcement after toggling', async () => {
+      vi.useFakeTimers()
       const user = userEvent.setup()
       render(<FAQ />)
 
@@ -509,10 +510,12 @@ describe('FAQ', () => {
       const liveRegion = document.querySelector('[aria-live="polite"]')
       expect(liveRegion).toHaveTextContent(`${item.question} expanded`)
 
-      // Wait for announcement to clear (3 second timeout for screen reader accessibility)
-      await new Promise((resolve) => setTimeout(resolve, 3100))
+      // Advance timers by 3100ms to trigger the announcement clear timeout
+      vi.advanceTimersByTime(3100)
 
       expect(liveRegion).toHaveTextContent('')
+
+      vi.useRealTimers()
     })
   })
 })

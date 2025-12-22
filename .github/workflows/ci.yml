@@ -65,9 +65,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run tests
-        run: npm test -- --run --reporter=verbose
-
       - name: Generate coverage report
         run: npm run test:coverage -- --run
 

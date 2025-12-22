@@ -461,7 +461,7 @@ This release represents a significant milestone for Paperlyte. Special thanks to
 - The React and Vite teams for excellent tooling
 - The open-source community for amazing libraries
 - Early testers and contributors
-- Claude Code for AI-assisted development
+- Anthropic's Claude for AI-assisted development
 
 ---
 

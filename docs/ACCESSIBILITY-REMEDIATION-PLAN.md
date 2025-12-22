@@ -467,7 +467,7 @@ After achieving WCAG 2.1 AA conformance:
 
 - **ADA Compliance (US)**: Website considered "place of public accommodation"
 - **Section 508 (US Government)**: VPAT available for B2G sales
-- **European Accessibility Act (EU)**: Effective June 2025
+- **European Accessibility Act (EU)**: In effect since June 2025
 - **EN 301 549 (EU)**: European accessibility standard
 
 ### Documentation

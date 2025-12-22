@@ -310,7 +310,7 @@ npm run test:coverage # Generate coverage report
 - **@fortawesome/fontawesome-svg-core** ^7.1.0 - Icon library core
 - **@fortawesome/free-solid-svg-icons** ^7.1.0 - Solid icons
 - **@fortawesome/free-brands-svg-icons** ^7.1.0 - Brand icons
-- **@fortawesome/react-fontawesome** ^3.1.1 - React FontAwesome integration
+- **@fortawesome/react-fontawesome** ^3.1.1 (3.1.1 or compatible) - React FontAwesome integration
 
 ### Development Dependencies
 - **vite** ^7.3.0 - Build tool and dev server

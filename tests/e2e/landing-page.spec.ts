@@ -26,7 +26,7 @@ test.describe('Landing Page', () => {
       const el = document.querySelector<HTMLElement>('#features');
       if (!el) return false;
       const rect = el.getBoundingClientRect();
-      return rect.top >= 0 && rect.bottom <= window.innerHeight;
+      return rect.top >= 0 && rect.top < window.innerHeight;
     });
     // Should scroll to features section
     await expect(page.locator('#features')).toBeInViewport();

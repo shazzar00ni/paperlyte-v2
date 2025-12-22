@@ -79,7 +79,7 @@ test.describe('Landing Page', () => {
             lcp,
             cls,
           });
-        }, 1000);
+        }, 2500);
       });
     });
 

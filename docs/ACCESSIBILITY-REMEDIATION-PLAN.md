@@ -105,7 +105,7 @@ The following accessibility limitations have been identified and are prioritized
 
 ## Remediation Roadmap
 
-### Phase 1: Foundation (December 2025 - January 2026)
+### Phase 1: Foundation (Late December 2025 - January 2026)
 
 **Goal**: Complete accessibility audit and establish baseline
 

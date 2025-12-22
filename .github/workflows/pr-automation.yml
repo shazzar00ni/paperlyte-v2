@@ -53,6 +53,6 @@ jobs:
         with:
           script: |
             const pr = context.payload.pull_request;
-            if (!pr.body || pr.body.length < 20) {
+            if (!pr.body || pr.body.trim().length < 50) {
               core.setFailed('PR description is too short. Please provide details about your changes.');
             }

@@ -6,7 +6,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 2 : undefined,
-  reporter: process.env.CI ? 'html' : 'list',
+  reporter: process.env.CI ? [['html'], ['github']] : 'list',
 
   use: {
     baseURL: process.env.BASE_URL || 'http://localhost:4173',

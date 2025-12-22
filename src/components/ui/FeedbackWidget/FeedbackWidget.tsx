@@ -40,7 +40,7 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
   const triggerElementRef = useRef<HTMLElement | null>(null)
   const modalRef = useRef<HTMLDivElement>(null)
   const closeButtonRef = useRef<HTMLButtonElement>(null)
-  const typeSelectorRef = useRef<HTMLDivElement>(null)
+  const typeSelectorRef = useRef<HTMLFieldSetElement>(null)
 
   // Handle modal open
   const handleOpen = useCallback(() => {

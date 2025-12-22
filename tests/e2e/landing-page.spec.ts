@@ -89,14 +89,22 @@ test.describe('Landing Page', () => {
     expect(metrics.cls).toBeLessThan(0.1); // CLS < 0.1 (good threshold)
   });
 
-  test('should work on mobile viewport', async ({ page }) => {
-    await page.setViewportSize({ width: 375, height: 667 });
+  test('should show mobile-specific UI on small screens', async ({ page, isMobile }) => {
+    // Skip on desktop browsers since mobile projects already test mobile viewports
+    test.skip(!isMobile, 'Mobile UI test runs on mobile projects only');
+
     await page.goto('/');
 
-    // Mobile menu should be accessible
+    // Verify mobile menu button is present (desktop has regular nav)
     const mobileMenu = page.getByRole('button', { name: /menu/i });
     await mobileMenu.waitFor({ state: 'visible' });
     await expect(mobileMenu).toBeVisible();
+
+    // Test mobile menu interaction
+    await mobileMenu.click();
+    // Verify menu opens (actual selector depends on implementation)
+    const nav = page.locator('nav[role="navigation"], [aria-label*="navigation"]');
+    await expect(nav).toBeVisible();
   });
 
   test('should have accessible keyboard navigation', async ({ page }) => {

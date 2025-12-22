@@ -1,0 +1,53 @@
+# Component labels
+'component: ui':
+  - 'src/components/ui/**/*'
+
+'component: sections':
+  - 'src/components/sections/**/*'
+
+'component: layout':
+  - 'src/components/layout/**/*'
+
+'component: pages':
+  - 'src/components/pages/**/*'
+
+# Type labels
+'type: feature':
+  - 'src/components/sections/**/*'
+
+'type: bugfix':
+  - any: ['tests/**/*.test.ts', 'tests/**/*.test.tsx', 'src/**/*.test.ts', 'src/**/*.test.tsx']
+
+'documentation':
+  - '**/*.md'
+  - 'docs/**/*'
+
+'dependencies':
+  - 'package.json'
+  - 'package-lock.json'
+
+'ci/cd':
+  - '.github/workflows/**/*'
+
+'config':
+  - '*.config.*'
+  - '.eslintrc.*'
+  - 'tsconfig*.json'
+
+'analytics':
+  - 'src/analytics/**/*'
+
+'hooks':
+  - 'src/hooks/**/*'
+
+'utils':
+  - 'src/utils/**/*'
+
+'tests':
+  - 'tests/**/*'
+  - 'src/**/*.test.ts'
+  - 'src/**/*.test.tsx'
+
+'styles':
+  - 'src/**/*.css'
+  - 'src/styles/**/*'

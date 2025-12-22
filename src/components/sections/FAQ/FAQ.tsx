@@ -25,8 +25,12 @@ const FAQItemComponent = ({
   onToggle,
   delay,
 }: FAQItemProps): React.ReactElement => {
-  const answerId = `answer-${question.replace(/\s+/g, '-').toLowerCase()}`
-  const questionId = `question-${question.replace(/\s+/g, '-').toLowerCase()}`
+  const sanitizedQuestion = question
+    .replace(/[^a-zA-Z0-9\s]/g, '')
+    .replace(/\s+/g, '-')
+    .toLowerCase()
+  const answerId = `answer-${sanitizedQuestion}`
+  const questionId = `question-${sanitizedQuestion}`
 
   return (
     <AnimatedElement animation="slideUp" delay={delay}>

@@ -60,8 +60,9 @@ test.describe('Landing Page', () => {
 
         const clsObserver = new PerformanceObserver((list) => {
           for (const entry of list.getEntries()) {
-            if (!(entry as any).hadRecentInput) {
-              cls += (entry as any).value;
+            const layoutShift = entry as PerformanceEntry & { hadRecentInput?: boolean; value: number };
+            if (!layoutShift.hadRecentInput) {
+              cls += layoutShift.value;
             }
           }
         });

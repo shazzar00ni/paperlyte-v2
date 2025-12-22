@@ -329,7 +329,6 @@ describe('keyboard utilities', () => {
       const cleanup = createFocusTrap(container)
 
       const firstButton = container.querySelector<HTMLElement>('#first')!
-      const thirdButton = container.querySelector<HTMLElement>('#third')!
 
       // Focus first button
       firstButton.focus()

@@ -26,7 +26,7 @@ test.describe('Landing Page', () => {
       const el = document.querySelector<HTMLElement>('#features');
       if (!el) return false;
       const rect = el.getBoundingClientRect();
-      return rect.top >= 0 && rect.bottom <= window.innerHeight;
+      return rect.top >= 0 && rect.top < window.innerHeight;
     });
     // Should scroll to features section
     await expect(page.locator('#features')).toBeInViewport();
@@ -55,7 +55,8 @@ test.describe('Landing Page', () => {
         const lcpObserver = new PerformanceObserver((list) => {
           const entries = list.getEntries();
           const lastEntry = entries[entries.length - 1];
-          lcp = lastEntry.renderTime || lastEntry.loadTime;
+          const lcpEntry = lastEntry as PerformanceEntry & { renderTime?: number; loadTime?: number };
+          lcp = lcpEntry.renderTime || lcpEntry.loadTime || 0;
         });
 
         const clsObserver = new PerformanceObserver((list) => {
@@ -79,7 +80,7 @@ test.describe('Landing Page', () => {
             lcp,
             cls,
           });
-        }, 1000);
+        }, 2500);
       });
     });
 

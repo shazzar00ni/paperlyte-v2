@@ -15,14 +15,12 @@ export const Footer = (): React.ReactElement => {
               <span className={styles.logoText}>Paperlyte.</span>
             </div>
             <p className={styles.tagline}>Your thoughts, unchained.</p>
-            <p className={styles.copyright}>
-              © {currentYear} Paperlyte. All rights reserved.
-            </p>
             <p className={styles.taglineSecondary}>
               Built with <span role="img" aria-label="love">💙</span> for people who think fast.
             </p>
           </div>
 
+        <nav className={styles.links} aria-label="Footer navigation">
           <div className={styles.linkGroup}>
             <h3 className={styles.linkGroupTitle}>Product</h3>
             <ul className={styles.linkList}>
@@ -82,43 +80,57 @@ export const Footer = (): React.ReactElement => {
 
           <div className={styles.linkGroup}>
             <h3 className={styles.linkGroupTitle}>Connect</h3>
-            <div className={styles.socialIcons}>
-              <a
-                href="https://github.com/paperlyte"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.socialLink}
-                aria-label="Follow us on GitHub"
-              >
-                <Icon name="fa-github" variant="brands" size="xl" />
-              </a>
-              <a
-                href="https://x.com/paperlyte"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.socialLink}
-                aria-label="Follow us on X (Twitter)"
-              >
-                <Icon name="fa-x-twitter" variant="brands" size="xl" />
-              </a>
-              <a
-                href="https://instagram.com/paperlytefilms"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.socialLink}
-                aria-label="Follow us on Instagram"
-              >
-                <Icon name="fa-instagram" variant="brands" size="xl" />
-              </a>
-              <a
-                href="mailto:hello@paperlyte.com"
-                className={styles.socialLink}
-                aria-label="Email us"
-              >
-                <Icon name="fa-envelope" size="xl" />
-              </a>
-            </div>
+            <ul className={styles.socialIcons} aria-label="Social media links">
+              <li>
+                <a
+                  href="https://github.com/paperlyte"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.socialLink}
+                  aria-label="Follow us on GitHub"
+                >
+                  <Icon name="fa-github" variant="brands" size="xl" />
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://x.com/paperlyte"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.socialLink}
+                  aria-label="Follow us on X (Twitter)"
+                >
+                  <Icon name="fa-x-twitter" variant="brands" size="xl" />
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://instagram.com/paperlytefilms"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.socialLink}
+                  aria-label="Follow us on Instagram"
+                >
+                  <Icon name="fa-instagram" variant="brands" size="xl" />
+                </a>
+              </li>
+              <li>
+                <a
+                  href="mailto:hello@paperlyte.com"
+                  className={styles.socialLink}
+                  aria-label="Email us"
+                >
+                  <Icon name="fa-envelope" size="xl" />
+                </a>
+              </li>
+            </ul>
           </div>
+        </nav>
+
+        <div className={styles.bottom}>
+          <p className={styles.copyright}>
+            © {currentYear} {LEGAL_CONFIG.company.name}. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>

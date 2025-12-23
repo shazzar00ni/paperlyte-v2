@@ -3,11 +3,23 @@ name: "CodeQL Security Scan"
 on:
   push:
     branches: [main, develop]
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - '.github/workflows/codeql.yml'
   pull_request:
     branches: [main, develop]
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - '.github/workflows/codeql.yml'
   schedule:
     # Run weekly on Monday at 9:00 AM UTC
     - cron: '0 9 * * 1'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   analyze:

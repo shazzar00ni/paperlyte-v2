@@ -307,7 +307,7 @@ The `netlify.toml` file is already configured. Verify settings:
 
 #### 4. Codecov Setup (Optional)
 
-1. Visit https://codecov.io
+1. Visit [Codecov](https://codecov.io)
 2. Sign in with GitHub
 3. Add `paperlyte-v2` repository
 4. Copy upload token

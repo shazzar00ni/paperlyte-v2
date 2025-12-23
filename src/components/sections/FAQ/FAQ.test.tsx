@@ -8,7 +8,7 @@ describe('FAQ', () => {
     it('should render the FAQ section', () => {
       render(<FAQ />)
 
-      expect(screen.getByText('Frequently Asked Questions')).toBeInTheDocument()
+      expect(screen.getByText("Questions? We've got answers.")).toBeInTheDocument()
     })
 
     it('should render all FAQ items from constants', () => {
@@ -26,14 +26,13 @@ describe('FAQ', () => {
       expect(section).toBeInTheDocument()
     })
 
-    it('should render subtitle with contact link', () => {
+    it('should render footer with help links', () => {
       render(<FAQ />)
 
-      expect(screen.getByText(/Everything you need to know about Paperlyte/i)).toBeInTheDocument()
-      expect(screen.getByRole('link', { name: /contact our support team/i })).toBeInTheDocument()
+      expect(screen.getByText(/Still have questions\?/i)).toBeInTheDocument()
     })
 
-    it('should render footer with help links', () => {
+    it('should render help and community links', () => {
       render(<FAQ />)
 
       expect(screen.getByRole('link', { name: /help center/i })).toBeInTheDocument()
@@ -297,13 +296,6 @@ describe('FAQ', () => {
   })
 
   describe('Links', () => {
-    it('should render contact support link with correct href', () => {
-      render(<FAQ />)
-
-      const contactLink = screen.getByRole('link', { name: /contact our support team/i })
-      expect(contactLink).toHaveAttribute('href', '#contact')
-    })
-
     it('should render help center link with correct href', () => {
       render(<FAQ />)
 

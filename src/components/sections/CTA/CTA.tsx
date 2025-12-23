@@ -1,32 +1,95 @@
 import { Section } from '@components/layout/Section'
 import { Button } from '@components/ui/Button'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
-import { scrollToSection } from '@/utils/navigation'
+import { Icon } from '@components/ui/Icon'
+import { DOWNLOAD_URLS, GITHUB_URL } from '@/constants/downloads'
 import styles from './CTA.module.css'
 
-export const CTA = () => {
+export const CTA = (): React.ReactElement => {
   return (
-    <Section id="download" background="default" className={styles.cta}>
-      <div className={styles.container}>
+    <Section id="download" background="primary" className={styles.cta}>
+      <div className={styles.content}>
         <AnimatedElement animation="fadeIn">
           <h2 className={styles.title}>Ready to declutter your mind?</h2>
         </AnimatedElement>
 
-        <AnimatedElement animation="fadeIn" delay={100}>
+        <AnimatedElement animation="fadeIn" delay={150}>
           <p className={styles.subtitle}>
-            Join 20,000+ professionals organizing their life with Paperlyte.
+            Join thousands simplifying their notes. Start free, stay focused.
           </p>
         </AnimatedElement>
 
-        <AnimatedElement animation="fadeIn" delay={200}>
+        <AnimatedElement animation="fadeIn" delay={300}>
           <div className={styles.buttons}>
-            <Button variant="primary" size="large" onClick={() => scrollToSection('hero')}>
-              Get Started for Free
+            <Button
+              variant="secondary"
+              size="large"
+              icon="fa-apple"
+              href={DOWNLOAD_URLS.mac}
+              className={styles.downloadButton}
+            >
+              Download for Mac
             </Button>
-            <Button variant="secondary" size="large" onClick={() => scrollToSection('features')}>
-              Learn More
+            <Button
+              variant="secondary"
+              size="large"
+              icon="fa-windows"
+              href={DOWNLOAD_URLS.windows}
+              className={styles.downloadButton}
+            >
+              Download for Windows
             </Button>
           </div>
+        </AnimatedElement>
+
+        <AnimatedElement animation="fadeIn" delay={450}>
+          <div className={styles.platforms}>
+            <p className={styles.platformText}>
+              Also available for{' '}
+              <a
+                href={DOWNLOAD_URLS.ios}
+                className={styles.platformLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Download for iOS (opens in new tab)"
+              >
+                iOS
+              </a>
+              ,{' '}
+              <a
+                href={DOWNLOAD_URLS.android}
+                className={styles.platformLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Download for Android (opens in new tab)"
+              >
+                Android
+              </a>
+              , and{' '}
+              <a
+                href={DOWNLOAD_URLS.linux}
+                className={styles.platformLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Download for Linux (opens in new tab)"
+              >
+                Linux
+              </a>
+            </p>
+          </div>
+        </AnimatedElement>
+
+        <AnimatedElement animation="fadeIn" delay={600}>
+          <a
+            href={GITHUB_URL}
+            className={styles.badge}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Open source on GitHub (opens in new tab)"
+          >
+            <Icon name="fa-github" size="sm" />
+            <span>Open source on GitHub</span>
+          </a>
         </AnimatedElement>
       </div>
     </Section>

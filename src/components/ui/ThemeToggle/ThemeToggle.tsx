@@ -1,8 +1,9 @@
+import type { ReactElement } from 'react'
 import { useTheme } from '@hooks/useTheme'
 import { Icon } from '@components/ui/Icon'
 import styles from './ThemeToggle.module.css'
 
-export const ThemeToggle = (): React.ReactElement => {
+export const ThemeToggle = (): ReactElement => {
   const { theme, toggleTheme } = useTheme()
 
   return (
@@ -12,7 +13,11 @@ export const ThemeToggle = (): React.ReactElement => {
       aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
       title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
     >
-      {theme === 'light' ? <Icon name="fa-moon" size="md" /> : <Icon name="fa-sun" size="md" />}
+      {theme === 'light' ? (
+        <Icon name="fa-moon" size="md" ariaLabel="" />
+      ) : (
+        <Icon name="fa-sun" size="md" ariaLabel="" />
+      )}
     </button>
   )
 }

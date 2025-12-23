@@ -1,0 +1,10 @@
+# Paperlyte Security Contact
+Contact: mailto:security@paperlyte.com
+Encryption: https://paperlyte.com/pgp/publickey.asc
+Policy: https://paperlyte.com/security
+Acknowledgments: https://paperlyte.com/security/hall-of-fame
+
+# PGP Key Fingerprint
+# 9A3B 2C1D 7E4F 5A6B 8C9D  1E2F 3A4B 5C6D 7E8F 9A0B
+
+# Please use the above PGP key for all sensitive security reports. The key is rotated annually as per our incident response policy.

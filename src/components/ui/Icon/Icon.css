@@ -1,0 +1,11 @@
+/* Icon component styles */
+
+.icon-svg {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.icon-fallback {
+  /* Fallback Font Awesome icons inherit color from parent */
+  color: currentColor;
+}

@@ -42,8 +42,9 @@ jobs:
           fi
 
       - name: Check PR Title Format
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
-          PR_TITLE="${{ github.event.pull_request.title }}"
           echo "PR Title: $PR_TITLE"
 
           # Check if title follows conventional commit format

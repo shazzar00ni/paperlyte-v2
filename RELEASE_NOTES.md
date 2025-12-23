@@ -76,13 +76,13 @@ A comprehensive design system documented in `/docs/DESIGN-SYSTEM.md`:
 ### Visual Identity
 - **Color Palette**: Clean, paper-inspired palette with purple (#7C3AED) accent
 - **Typography**: Dual font system (Inter for UI, Playfair Display for headlines)
-- **Spacing**: Consistent 8px-based spacing system
+- **Spacing**: Rem-based spacing system with 8px conceptual increments (0.25rem to 8rem)
 - **Buttons**: Pill-shaped design (border-radius: 9999px)
 - **Dark Mode**: Full dark mode support with system preference detection
 
 ### Design Tokens
 - CSS custom properties for theming
-- Consistent spacing scale (0.25rem to 8rem)
+- Spacing scale using rem units (0.25rem to 8rem, 0.5rem base increment)
 - Typography scale with responsive sizing
 - Color system with semantic naming
 - Shadow system for depth and elevation

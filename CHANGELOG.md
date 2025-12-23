@@ -86,7 +86,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Purple accent color (#7C3AED) with paper-inspired palette
 - Dual typography system (Inter for UI, Playfair Display for headlines)
 - CSS custom properties for theming
-- Consistent 8px-based spacing system
+- Rem-based spacing system with 8px conceptual increments (0.25rem to 8rem)
 - Responsive breakpoints (480px, 768px, 1024px, 1280px, 1440px)
 - Dark mode support with system preference detection
 - Pill-shaped button design (border-radius: 9999px)

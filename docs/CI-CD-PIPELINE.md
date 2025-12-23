@@ -273,18 +273,6 @@ git push origin main
 
 Add these secrets in repository settings:
 
-```
-CODECOV_TOKEN (optional)
-  - Sign up at https://codecov.io
-  - Add repository
-  - Copy token from settings
-  - Add to GitHub secrets
-
-LHCI_GITHUB_APP_TOKEN (optional)
-  - Enables Lighthouse CI GitHub integration
-  - Create at https://github.com/apps/lighthouse-ci
-  - Install app on repository
-```
 
 #### 2. Branch Protection Rules
 

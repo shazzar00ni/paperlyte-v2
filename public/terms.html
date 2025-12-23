@@ -8,13 +8,25 @@
       name="description"
       content="Paperlyte Terms of Service - Legal agreement for using our service."
     />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Self-hosted fonts for security -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/Inter-Variable.woff2"
+      crossorigin
     />
     <style>
+      /* Self-hosted Inter Variable Font */
+      @font-face {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 100 900;
+        font-display: swap;
+        src: url('/fonts/Inter-Variable.woff2') format('woff2-variations');
+        font-named-instance: 'Regular';
+      }
+
       * {
         box-sizing: border-box;
         margin: 0;

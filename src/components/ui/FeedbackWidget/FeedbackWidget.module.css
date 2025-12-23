@@ -108,14 +108,9 @@
   align-items: center;
   justify-content: center;
   border-radius: var(--border-radius-sm);
-  .textarea {
-    transition: none;
-  }
-
-  .closeButton {
-    transition: none;
-  }
-}
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast);
 }
 
 .closeButton:hover {
@@ -346,6 +341,10 @@
   }
 
   .textarea {
+    transition: none;
+  }
+
+  .closeButton {
     transition: none;
   }
 }

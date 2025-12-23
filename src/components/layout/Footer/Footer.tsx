@@ -30,7 +30,7 @@ export const Footer = (): React.ReactElement => {
                 </a>
               </li>
               <li>
-                <a href="#faq" className={styles.link}>
+                <a href="#pricing" className={styles.link}>
                   Pricing
                 </a>
               </li>
@@ -132,6 +132,7 @@ export const Footer = (): React.ReactElement => {
             © {currentYear} {LEGAL_CONFIG.company.name}. All rights reserved.
           </p>
         </div>
+      </div>
       </div>
     </footer>
   )

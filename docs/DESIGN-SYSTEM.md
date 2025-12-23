@@ -355,7 +355,7 @@ import styles from './Component.module.css'
 
 // Hero headline
 <h1 className={styles.hero}>
-  Your thoughts, <em>unchained</em> from complexity
+  Your thoughts, <em>unchained.</em>
 </h1>
 
 // Section header
@@ -2663,7 +2663,7 @@ The hero section is the most prominent part of the landing page, featuring disti
       </div>
 
       <h1 className="headline">
-        Your thoughts, <em className="headlineItalic">unchained</em> from complexity
+        Your thoughts, <em className="headlineItalic">unchained.</em>
       </h1>
 
       <p className="subheadline">

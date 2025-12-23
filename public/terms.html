@@ -16,6 +16,13 @@
       href="/fonts/Inter-Variable.woff2"
       crossorigin
     />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/PlayfairDisplay-Variable.woff2"
+      crossorigin
+    />
     <style>
       /* Self-hosted Inter Variable Font */
       @font-face {
@@ -25,6 +32,15 @@
         font-display: swap;
         src: url('/fonts/Inter-Variable.woff2') format('woff2-variations');
         font-named-instance: 'Regular';
+      }
+
+      /* Self-hosted Playfair Display Variable Font */
+      @font-face {
+        font-family: 'Playfair Display';
+        font-style: normal;
+        font-weight: 400 900;
+        font-display: swap;
+        src: url('/fonts/PlayfairDisplay-Variable.woff2') format('woff2-variations');
       }
 
       * {
@@ -62,6 +78,7 @@
         border-bottom: 2px solid var(--color-border);
       }
       h1 {
+        font-family: 'Playfair Display', serif;
         font-size: 2.5rem;
         font-weight: 700;
         margin-bottom: 0.5rem;
@@ -72,12 +89,14 @@
         font-size: 0.9rem;
       }
       h2 {
+        font-family: 'Playfair Display', serif;
         font-size: 1.75rem;
         font-weight: 600;
         margin: 2.5rem 0 1rem;
         color: var(--color-text);
       }
       h3 {
+        font-family: 'Playfair Display', serif;
         font-size: 1.25rem;
         font-weight: 600;
         margin: 1.5rem 0 0.75rem;

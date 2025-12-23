@@ -28,6 +28,16 @@ export function Terms() {
         <div className={styles.container}>
           <div className={styles.content}>
             <section className={styles.section}>
+              <p className={styles.notice}>
+                <em>
+                  Note: Paperlyte is currently in development. The following Terms of Service
+                  describe our planned policies and commitments for the full product launch. During
+                  the waitlist phase, these terms apply only where relevant.
+                </em>
+              </p>
+            </section>
+
+            <section className={styles.section}>
               <h2>Agreement to Terms</h2>
               <p>
                 By accessing or using Paperlyte ("the Service"), you agree to be bound by these
@@ -55,9 +65,7 @@ export function Terms() {
               <h2>User Accounts</h2>
 
               <h3>Account Creation</h3>
-              <p>
-                You must create an account to use Paperlyte. You are responsible for:
-              </p>
+              <p>You must create an account to use Paperlyte. You are responsible for:</p>
               <ul>
                 <li>Providing accurate and complete information</li>
                 <li>Maintaining the security of your account credentials</li>
@@ -92,9 +100,7 @@ export function Terms() {
                 </li>
                 <li>Store or share content that infringes on others' intellectual property</li>
                 <li>Upload malware, viruses, or malicious code</li>
-                <li>
-                  Attempt to gain unauthorized access to our systems or other users' accounts
-                </li>
+                <li>Attempt to gain unauthorized access to our systems or other users' accounts</li>
                 <li>Reverse engineer, decompile, or disassemble the Service</li>
                 <li>Resell or redistribute the Service without authorization</li>
                 <li>Use automated scripts to create accounts or abuse the Service</li>
@@ -115,9 +121,7 @@ export function Terms() {
                 <li>Create backups for data recovery purposes</li>
                 <li>Display your content to you across your devices</li>
               </ul>
-              <p>
-                This license ends when you delete your content or close your account.
-              </p>
+              <p>This license ends when you delete your content or close your account.</p>
 
               <h3>Our Content</h3>
               <p>
@@ -148,9 +152,9 @@ export function Terms() {
             <section className={styles.section}>
               <h2>Data & Privacy</h2>
               <p>
-                Your privacy is important to us. Our{' '}
-                <a href="/privacy">Privacy Policy</a> explains how we collect, use, and protect
-                your data. By using Paperlyte, you also agree to our Privacy Policy.
+                Your privacy is important to us. Our <a href="/privacy">Privacy Policy</a> explains
+                how we collect, use, and protect your data. By using Paperlyte, you also agree to
+                our Privacy Policy.
               </p>
 
               <h3>Data Backup & Loss</h3>
@@ -177,9 +181,7 @@ export function Terms() {
                 <li>Experience unexpected outages or technical issues</li>
                 <li>Modify or discontinue features with notice</li>
               </ul>
-              <p>
-                We are not liable for any damages resulting from service interruptions.
-              </p>
+              <p>We are not liable for any damages resulting from service interruptions.</p>
             </section>
 
             <section className={styles.section}>
@@ -262,8 +264,8 @@ export function Terms() {
 
               <h3>Governing Law</h3>
               <p>
-                These Terms are governed by the laws of the State of Delaware, United States, without regard to
-                conflict of law provisions.
+                These Terms are governed by the laws of the State of Delaware, United States,
+                without regard to conflict of law provisions.
               </p>
 
               <h3>Arbitration</h3>

@@ -239,36 +239,6 @@ export function trackPageView(pagePath: string, pageTitle?: string): void {
 }
 
 /**
- * Track scroll depth milestones (25%, 50%, 75%, 100%)
- * Call this function with a scroll position tracker
- *
- * @param depthPercentage - Percentage of page scrolled (0-100)
- *
- * @example
- * ```tsx
- * const handleScroll = () => {
- *   const scrollPercent = (window.scrollY / document.body.scrollHeight) * 100
- *   trackScrollDepth(Math.round(scrollPercent))
- * }
- * ```
- */
-// Keep track of which scroll depth milestones have been tracked
-const trackedScrollMilestones = new Set<number>()
-
-export function trackScrollDepth(depthPercentage: number): void {
-  // Only track milestone percentages
-  const milestones = [25, 50, 75, 100]
-  for (const milestone of milestones) {
-    if (depthPercentage >= milestone && !trackedScrollMilestones.has(milestone)) {
-      trackEvent(AnalyticsEvents.SCROLL_DEPTH, {
-        depth_percentage: milestone,
-      })
-      trackedScrollMilestones.add(milestone)
-    }
-  }
-}
-
-/**
  * Track CTA button clicks with location context
  *
  * @param buttonText - Text content of the button

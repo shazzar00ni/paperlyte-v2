@@ -91,9 +91,9 @@ export function useAnalytics(enableScrollTracking = true) {
   }, [track])
 
   const trackWaitlistError = useCallback(
-    (errorMessage: string, location: string) => {
+    (errorCode: string, location: string) => {
       track(AnalyticsEvents.WAITLIST_ERROR, {
-        error_message: errorMessage,
+        error_code: errorCode,
         form_location: location,
       })
     },

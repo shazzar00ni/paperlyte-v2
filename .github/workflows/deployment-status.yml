@@ -7,6 +7,9 @@ jobs:
   notify-deployment:
     name: Deployment Notification
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
     if: github.event.deployment_status.state != 'pending'
 
     steps:

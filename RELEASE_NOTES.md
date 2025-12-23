@@ -109,7 +109,7 @@ A comprehensive design system documented in `/docs/DESIGN-SYSTEM.md`:
 - **Code Splitting**: Automatic route-based code splitting
 - **Asset Optimization**: Minified JS/CSS, optimized images
 - **Hardware Acceleration**: CSS transforms using GPU
-- **Lazy Loading**: Components and images loaded on demand
+- **Lazy Loading**: Components and images loaded on-demand
 - **Bundle Size Limits**: Enforced via size-limit (150KB JS, 30KB CSS gzipped)
 
 ### Performance Monitoring

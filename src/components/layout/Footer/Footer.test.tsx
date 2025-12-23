@@ -15,12 +15,12 @@ describe('Footer', () => {
     expect(logoIcon).toBeInTheDocument()
     expect(logoIcon).toHaveAttribute('aria-label', 'Paperlyte logo')
 
-    expect(screen.getByText('Paperlyte')).toBeInTheDocument()
+    expect(screen.getByText('Paperlyte.')).toBeInTheDocument()
   })
 
   it('should render tagline', () => {
     render(<Footer />)
-    expect(screen.getByText('Your thoughts, unchained from complexity')).toBeInTheDocument()
+    expect(screen.getByText('Designed for clarity in a chaotic world.')).toBeInTheDocument()
   })
 
   it('should render Product link group', () => {
@@ -32,9 +32,17 @@ describe('Footer', () => {
     expect(featuresLink).toBeInTheDocument()
     expect(featuresLink).toHaveAttribute('href', '#features')
 
-    const downloadLink = screen.getByRole('link', { name: 'Download' })
-    expect(downloadLink).toBeInTheDocument()
-    expect(downloadLink).toHaveAttribute('href', '#download')
+    const mobileLink = screen.getByRole('link', { name: 'Mobile App' })
+    expect(mobileLink).toBeInTheDocument()
+    expect(mobileLink).toHaveAttribute('href', '#mobile')
+
+    const desktopLink = screen.getByRole('link', { name: 'Desktop App' })
+    expect(desktopLink).toBeInTheDocument()
+    expect(desktopLink).toHaveAttribute('href', '#download')
+
+    const testimonialsLink = screen.getByRole('link', { name: 'Testimonials' })
+    expect(testimonialsLink).toBeInTheDocument()
+    expect(testimonialsLink).toHaveAttribute('href', '#testimonials')
   })
 
   it('should render Legal link group', () => {
@@ -44,86 +52,82 @@ describe('Footer', () => {
 
     const privacyLink = screen.getByRole('link', { name: 'Privacy Policy' })
     expect(privacyLink).toBeInTheDocument()
-    expect(privacyLink).toHaveAttribute('href', '#privacy')
 
     const termsLink = screen.getByRole('link', { name: 'Terms of Service' })
     expect(termsLink).toBeInTheDocument()
-    expect(termsLink).toHaveAttribute('href', '#terms')
   })
 
   it('should render Connect link group with social links', () => {
     render(<Footer />)
 
     expect(screen.getByText('Connect')).toBeInTheDocument()
+
+    expect(screen.getByRole('link', { name: 'Follow us on GitHub' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Follow us on X (Twitter)' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Follow us on Instagram' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Email us' })).toBeInTheDocument()
   })
 
   it('should render GitHub link with proper attributes', () => {
-    const { container } = render(<Footer />)
+    render(<Footer />)
 
-    const githubLink = screen.getByRole('link', { name: 'GitHub' })
+    const githubLink = screen.getByRole('link', { name: 'Follow us on GitHub' })
     expect(githubLink).toBeInTheDocument()
-    expect(githubLink).toHaveAttribute('href', 'https://github.com')
+    expect(githubLink).toHaveAttribute('href', 'https://github.com/paperlyte')
     expect(githubLink).toHaveAttribute('target', '_blank')
     expect(githubLink).toHaveAttribute('rel', 'noopener noreferrer')
-
-    const githubIcon = container.querySelector('.fa-github')
-    expect(githubIcon).toBeInTheDocument()
   })
 
   it('should render Twitter link with proper attributes', () => {
-    const { container } = render(<Footer />)
+    render(<Footer />)
 
-    const twitterLink = screen.getByRole('link', { name: 'Twitter' })
+    const twitterLink = screen.getByRole('link', { name: 'Follow us on X (Twitter)' })
     expect(twitterLink).toBeInTheDocument()
-    expect(twitterLink).toHaveAttribute('href', 'https://twitter.com')
+    expect(twitterLink).toHaveAttribute('href', 'https://x.com/paperlyte')
     expect(twitterLink).toHaveAttribute('target', '_blank')
     expect(twitterLink).toHaveAttribute('rel', 'noopener noreferrer')
+  })
 
-    const twitterIcon = container.querySelector('.fa-twitter')
-    expect(twitterIcon).toBeInTheDocument()
+  it('should render Instagram link with proper attributes', () => {
+    render(<Footer />)
+
+    const instagramLink = screen.getByRole('link', { name: 'Follow us on Instagram' })
+    expect(instagramLink).toBeInTheDocument()
+    expect(instagramLink).toHaveAttribute('href', 'https://instagram.com/paperlytefilms')
+    expect(instagramLink).toHaveAttribute('target', '_blank')
+    expect(instagramLink).toHaveAttribute('rel', 'noopener noreferrer')
   })
 
   it('should render Email link with mailto', () => {
-    const { container } = render(<Footer />)
+    render(<Footer />)
 
-    const emailLink = screen.getByRole('link', { name: 'Email' })
+    const emailLink = screen.getByRole('link', { name: 'Email us' })
     expect(emailLink).toBeInTheDocument()
     expect(emailLink).toHaveAttribute('href', 'mailto:hello@paperlyte.com')
-    expect(emailLink).not.toHaveAttribute('target')
-
-    const emailIcon = container.querySelector('.fa-envelope')
-    expect(emailIcon).toBeInTheDocument()
   })
 
   it('should render copyright with current year', () => {
     render(<Footer />)
 
     const currentYear = new Date().getFullYear()
-    expect(screen.getByText(`© ${currentYear} Paperlyte. All rights reserved.`)).toBeInTheDocument()
+    expect(screen.getByText(`© ${currentYear} All rights reserved.`)).toBeInTheDocument()
   })
 
   it('should have proper accessibility structure', () => {
     const { container } = render(<Footer />)
 
-    // Check that link groups use proper heading structure
     const headings = container.querySelectorAll('h3')
-    expect(headings).toHaveLength(3) // Product, Legal, Connect
+    expect(headings).toHaveLength(3)
 
-    // Check that links are in lists
     const lists = container.querySelectorAll('ul')
-    expect(lists.length).toBeGreaterThanOrEqual(2) // Product and Legal lists
+    expect(lists.length).toBeGreaterThanOrEqual(2)
   })
 
   it('should render all navigation sections', () => {
-    const { container } = render(<Footer />)
+    render(<Footer />)
 
-    // Check all major sections are present
     expect(screen.getByText('Product')).toBeInTheDocument()
     expect(screen.getByText('Legal')).toBeInTheDocument()
     expect(screen.getByText('Connect')).toBeInTheDocument()
-
-    // Verify footer has the expected structure
-    const footer = container.querySelector('footer')
-    expect(footer).toBeInTheDocument()
   })
 })

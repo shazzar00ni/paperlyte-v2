@@ -1,4 +1,5 @@
 import { Icon } from '@components/ui/Icon'
+import { LEGAL_CONFIG } from '@/constants/legal'
 import styles from './Footer.module.css'
 
 export const Footer = (): React.ReactElement => {
@@ -15,7 +16,7 @@ export const Footer = (): React.ReactElement => {
           <p className={styles.tagline}>Your thoughts, unchained from complexity</p>
         </div>
 
-        <div className={styles.links}>
+        <nav className={styles.links} aria-label="Footer navigation">
           <div className={styles.linkGroup}>
             <h3 className={styles.linkGroupTitle}>Product</h3>
             <ul className={styles.linkList}>
@@ -36,12 +37,22 @@ export const Footer = (): React.ReactElement => {
             <h3 className={styles.linkGroupTitle}>Legal</h3>
             <ul className={styles.linkList}>
               <li>
-                <a href="#privacy" className={styles.link}>
+                <a
+                  href={LEGAL_CONFIG.documents.privacy}
+                  className={styles.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   Privacy Policy
                 </a>
               </li>
               <li>
-                <a href="#terms" className={styles.link}>
+                <a
+                  href={LEGAL_CONFIG.documents.terms}
+                  className={styles.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   Terms of Service
                 </a>
               </li>
@@ -50,34 +61,57 @@ export const Footer = (): React.ReactElement => {
 
           <div className={styles.linkGroup}>
             <h3 className={styles.linkGroupTitle}>Connect</h3>
-            <div className={styles.socialLinks}>
-              <a
-                href="https://github.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.socialLink}
-                aria-label="GitHub"
-              >
-                <Icon name="fa-github" size="lg" />
-              </a>
-              <a
-                href="https://twitter.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.socialLink}
-                aria-label="Twitter"
-              >
-                <Icon name="fa-twitter" size="lg" />
-              </a>
-              <a href="mailto:hello@paperlyte.com" className={styles.socialLink} aria-label="Email">
-                <Icon name="fa-envelope" size="lg" />
-              </a>
-            </div>
+            <ul className={styles.socialIcons} aria-label="Social media links">
+              <li>
+                <a
+                  href="https://github.com/paperlyte"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.socialLink}
+                  aria-label="Follow us on GitHub"
+                >
+                  <Icon name="fa-github" variant="brands" size="xl" />
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://x.com/paperlyte"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.socialLink}
+                  aria-label="Follow us on X (Twitter)"
+                >
+                  <Icon name="fa-x-twitter" variant="brands" size="xl" />
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://instagram.com/paperlytefilms"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.socialLink}
+                  aria-label="Follow us on Instagram"
+                >
+                  <Icon name="fa-instagram" variant="brands" size="xl" />
+                </a>
+              </li>
+              <li>
+                <a
+                  href="mailto:hello@paperlyte.com"
+                  className={styles.socialLink}
+                  aria-label="Email us"
+                >
+                  <Icon name="fa-envelope" size="xl" />
+                </a>
+              </li>
+            </ul>
           </div>
-        </div>
+        </nav>
 
         <div className={styles.bottom}>
-          <p className={styles.copyright}>© {currentYear} Paperlyte. All rights reserved.</p>
+          <p className={styles.copyright}>
+            © {currentYear} {LEGAL_CONFIG.company.name}. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>

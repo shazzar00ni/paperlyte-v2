@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main, develop]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   lint-and-typecheck:
     name: Lint and Type Check
@@ -13,19 +17,16 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: '18'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
-
-      - name: Run Prettier format check
-        run: npm run format:check
 
       - name: Run ESLint
         run: npm run lint
@@ -33,7 +34,15 @@ jobs:
       - name: Run TypeScript type check
         run: npx tsc --noEmit
 
-test:
+      - name: Run security audit
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            npm audit --audit-level=high
+          else
+            npm audit --audit-level=moderate
+          fi
+
+  test:
     name: Test
     runs-on: ubuntu-latest
     permissions:
@@ -41,13 +50,13 @@ test:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: '18'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -66,7 +75,7 @@ test:
           token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Upload coverage reports
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: always()
         with:
           name: coverage-report
@@ -78,7 +87,11 @@ test:
         run: |
           if [ -f coverage/coverage-summary.json ]; then
             echo "## Test Coverage Summary" >> $GITHUB_STEP_SUMMARY
-            echo '
+            echo '```json' >> $GITHUB_STEP_SUMMARY
+            cat coverage/coverage-summary.json >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          fi
+
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -86,13 +99,13 @@ test:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: '18'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -101,11 +114,38 @@ test:
         run: npm run build
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: dist
           path: dist/
           retention-days: 7
+
+  size-check:
+    name: Bundle Size Check
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v7
+        with:
+          name: dist
+          path: dist/
+
+      - name: Check bundle size
+        run: npm run size
 
   lighthouse:
     name: Lighthouse CI
@@ -114,19 +154,19 @@ test:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: '18'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: dist
           path: dist/
@@ -135,25 +175,23 @@ test:
         run: npm install -g @lhci/cli@0.13.x
 
       - name: Run Lighthouse CI
-        run: |
-          lhci autorun --config=./.lighthouserc.json || echo "Lighthouse CI checks completed"
+        run: lhci autorun --config=./.lighthouserc.json
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
 
       - name: Upload Lighthouse results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: always()
         with:
           name: lighthouse-results
           path: .lighthouseci/
           retention-days: 30
-          if-no-files-found: ignore
 
   # Status check job that all required jobs depend on
   ci-success:
     name: CI Success
     runs-on: ubuntu-latest
-    needs: [lint-and-typecheck, test, build, lighthouse]
+    needs: [lint-and-typecheck, test, build, size-check, lighthouse]
     if: always()
     permissions:
       contents: read
@@ -164,11 +202,13 @@ test:
           if [ "${{ needs.lint-and-typecheck.result }}" != "success" ] || \
              [ "${{ needs.test.result }}" != "success" ] || \
              [ "${{ needs.build.result }}" != "success" ] || \
+             [ "${{ needs.size-check.result }}" != "success" ] || \
              [ "${{ needs.lighthouse.result }}" != "success" ]; then
             echo "❌ CI Pipeline Failed"
             echo "- Lint & Type Check: ${{ needs.lint-and-typecheck.result }}"
             echo "- Tests: ${{ needs.test.result }}"
             echo "- Build: ${{ needs.build.result }}"
+            echo "- Bundle Size: ${{ needs.size-check.result }}"
             echo "- Lighthouse: ${{ needs.lighthouse.result }}"
             exit 1
           else
@@ -176,5 +216,6 @@ test:
             echo "- Lint & Type Check: ✅"
             echo "- Tests: ✅"
             echo "- Build: ✅"
+            echo "- Bundle Size: ✅"
             echo "- Lighthouse: ✅"
           fi

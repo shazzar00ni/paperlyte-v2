@@ -18,85 +18,6 @@
   pointer-events: none;
 }
 
-/* Decorations container */
-.decorations {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-/* Parallax background shapes */
-.shape {
-  position: absolute;
-  border-radius: 50%;
-  background: radial-gradient(circle, var(--color-primary) 0%, transparent 70%);
-  filter: blur(60px);
-}
-
-.shape1 {
-  width: 400px;
-  height: 400px;
-  top: -100px;
-  right: -100px;
-}
-
-.shape2 {
-  width: 300px;
-  height: 300px;
-  bottom: -50px;
-  left: -80px;
-}
-
-.shape3 {
-  width: 200px;
-  height: 200px;
-  top: 40%;
-  left: 60%;
-}
-
-/* Floating icons container */
-.floatingContainer {
-  position: absolute;
-  inset: 0;
-}
-
-/* Floating icon base styles */
-.floatingIcon {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: var(--border-radius-md);
-  background-color: var(--color-background);
-  border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-md);
-  color: var(--color-primary);
-  font-size: var(--font-size-xl);
-}
-
-.floatingIcon1 {
-  top: 15%;
-  left: 10%;
-}
-
-.floatingIcon2 {
-  top: 25%;
-  right: 12%;
-}
-
-.floatingIcon3 {
-  bottom: 30%;
-  left: 8%;
-}
-
-.floatingIcon4 {
-  bottom: 20%;
-  right: 15%;
-}
-
 .content {
   position: relative;
   z-index: 1;
@@ -121,6 +42,20 @@
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
+}
+
+/* Shared centering for CTAs */
+:is(.emailWrapper, .secondaryCta) {
+  display: flex;
+  justify-content: center;
+}
+
+.emailWrapper {
+  margin-bottom: var(--spacing-md);
+}
+
+.secondaryCta {
+  margin-bottom: var(--spacing-xl);
 }
 
 .ctas {
@@ -155,10 +90,72 @@
   color: var(--color-primary);
 }
 
+/* App Mockup Container */
+.mockupContainer {
+  position: relative;
+  width: 100%;
+  max-width: 700px;
+  margin: var(--spacing-3xl) auto 0;
+  /* Fallback for browsers that don't support aspect-ratio */
+  min-height: 260px;
+  aspect-ratio: 16 / 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Add padding to accommodate floating secondary mockup overflow */
+  padding: 0 8% 8% 0;
+}
+
+/* Primary mockup (Notes list) - Main focus */
+.mockupPrimary {
+  position: relative;
+  width: 85%;
+  max-width: 550px;
+  z-index: 2;
+  border-radius: var(--border-radius-xl);
+  overflow: hidden;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(0, 0, 0, 0.05);
+  transition: transform var(--transition-base);
+}
+
+.mockupPrimary:hover {
+  transform: translateY(-4px);
+}
+
+/* Secondary mockup (Note detail) - Floating accent */
+.mockupSecondary {
+  position: absolute;
+  bottom: -5%;
+  right: -5%;
+  width: 50%;
+  max-width: 320px;
+  z-index: 3;
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  box-shadow:
+    0 25px 70px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(0, 0, 0, 0.08);
+  transition: transform var(--transition-base);
+}
+
+.mockupSecondary:hover {
+  transform: translateY(-8px) translateX(4px);
+}
+
+/* Mockup images */
+.mockupImage {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 0;
+}
+
 /* Mobile styles */
 @media (max-width: 768px) {
   .hero {
-    min-height: auto;
+    min-height: 0;
     padding-top: var(--spacing-3xl);
     padding-bottom: var(--spacing-3xl);
   }
@@ -181,40 +178,83 @@
     width: 100%;
   }
 
-  /* Hide floating icons on mobile for cleaner experience */
-  .floatingContainer {
-    display: none;
+  .mockupContainer {
+    max-width: 500px;
+    margin: var(--spacing-2xl) auto 0;
   }
 
-  /* Reduce shape sizes on mobile */
-  .shape1 {
-    width: 200px;
-    height: 200px;
-  }
-
-  .shape2 {
-    width: 150px;
-    height: 150px;
-  }
-
-  .shape3 {
-    width: 100px;
-    height: 100px;
+  .mockupSecondary {
+    width: 45%;
+    bottom: -3%;
+    right: -3%;
   }
 }
 
-/*
- * Reduced motion handling:
- * - FloatingElement component early-returns without animation classes when
- *   prefers-reduced-motion is detected (no CSS animations applied)
- * - ParallaxLayer/useParallax hook returns isActive=false, skipping all
- *   requestAnimationFrame calls and applying no JS transforms
- * - See: src/components/ui/FloatingElement/FloatingElement.tsx (lines 86-93)
- * - See: src/hooks/useParallax.ts (lines 115, 118-121, 148-151, 166)
- */
+/* Extra small screens */
+@media (max-width: 480px) {
+  .headline {
+    font-size: var(--font-size-3xl);
+    line-height: var(--line-height-tight);
+  }
+
+  .subheadline {
+    font-size: var(--font-size-base);
+  }
+
+  .tags {
+    gap: var(--spacing-xs);
+  }
+
+  .tag {
+    font-size: var(--font-size-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+
+  .mockupContainer {
+    aspect-ratio: 4 / 3;
+  }
+
+  .mockupPrimary {
+    width: 90%;
+  }
+
+  .mockupSecondary {
+    width: 55%;
+    bottom: -2%;
+    right: -2%;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .hero::before {
+    /* Enhance gradient visibility in dark mode */
+    background: radial-gradient(circle at top right, rgba(124, 58, 237, 0.15) 0%, transparent 70%);
+  }
+
+  .tag {
+    background-color: var(--color-surface);
+  }
+}
+
+[data-theme='dark'] .hero::before {
+  background: radial-gradient(circle at top right, rgba(124, 58, 237, 0.15) 0%, transparent 70%);
+}
+
+[data-theme='dark'] .tag {
+  background-color: var(--color-surface);
+}
+
+/* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
-  .shape {
-    /* Reduce blur intensity for performance with static shapes */
-    filter: blur(40px);
+  .mockupPrimary,
+  .mockupSecondary {
+    /* Disable hover transforms for users preferring reduced motion */
+    transition: none;
+  }
+
+  .mockupPrimary:hover,
+  .mockupSecondary:hover {
+    transform: none;
   }
 }

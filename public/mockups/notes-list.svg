@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 800" width="1100" height="800">
+  <!-- Background -->
+  <rect width="1100" height="800" fill="#FAFAFA" rx="16"/>
+
+  <!-- Header -->
+  <text x="72" y="100" font-family="Inter, system-ui, sans-serif" font-size="48" font-weight="600" fill="#0A0A0A">Today's Notes</text>
+  <text x="1028" y="100" font-family="Inter, system-ui, sans-serif" font-size="48" font-weight="600" fill="#666">3</text>
+
+  <!-- Note 1: Project Ideas -->
+  <rect x="72" y="170" width="956" height="150" fill="#FFFFFF" rx="12" stroke="#E5E5E5" stroke-width="1"/>
+  <circle cx="126" cy="245" r="12" fill="#5B7FFF"/>
+  <text x="158" y="235" font-family="Inter, system-ui, sans-serif" font-size="24" font-weight="600" fill="#5B7FFF">Project Ideas</text>
+  <text x="158" y="270" font-family="Inter, system-ui, sans-serif" font-size="18" fill="#666">Brainstorming session for the new app...</text>
+
+  <!-- Note 2: Meeting Notes -->
+  <rect x="72" y="350" width="956" height="150" fill="#FFFFFF" rx="12" stroke="#E5E5E5" stroke-width="1"/>
+  <circle cx="126" cy="425" r="12" fill="#10B981"/>
+  <text x="158" y="415" font-family="Inter, system-ui, sans-serif" font-size="24" font-weight="600" fill="#10B981">Meeting Notes</text>
+  <text x="158" y="450" font-family="Inter, system-ui, sans-serif" font-size="18" fill="#666">Key takeaways from client discussion...</text>
+
+  <!-- Note 3: Quick Thoughts -->
+  <rect x="72" y="530" width="956" height="150" fill="#FFFFFF" rx="12" stroke="#E5E5E5" stroke-width="1"/>
+  <circle cx="126" cy="605" r="12" fill="#A855F7"/>
+  <text x="158" y="595" font-family="Inter, system-ui, sans-serif" font-size="24" font-weight="600" fill="#A855F7">Quick Thoughts</text>
+  <text x="158" y="630" font-family="Inter, system-ui, sans-serif" font-size="18" fill="#666">Writing in progress...</text>
+</svg>

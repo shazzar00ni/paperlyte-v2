@@ -1,52 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 
-/**
- * Options for configuring the Intersection Observer behavior
- */
 interface UseIntersectionObserverOptions {
-  /**
-   * Threshold value between 0 and 1 indicating what percentage of the target's visibility
-   * is needed to trigger the callback (default: 0.1)
-   */
   threshold?: number
-  /**
-   * Margin around the root element (default: '0px')
-   * @example '50px 0px' - adds 50px margin to top and bottom
-   */
   rootMargin?: string
-  /**
-   * If true, the element will only trigger visibility once and then stop observing (default: true)
-   */
   triggerOnce?: boolean
 }
 
-/**
- * Custom hook that tracks when an element becomes visible in the viewport using Intersection Observer API
- *
- * @typeParam T - The HTML element type for the ref (defaults to HTMLDivElement)
- * @param options - Configuration options for the Intersection Observer
- * @returns Object containing a ref to attach to the target element and visibility state
- *
- * @example
- * ```tsx
- * const MyComponent = () => {
- *   const { ref, isVisible } = useIntersectionObserver({ threshold: 0.5 });
- *
- *   return (
- *     <div ref={ref}>
- *       {isVisible ? 'I am visible!' : 'Scroll down to see me'}
- *     </div>
- *   );
- * };
- *
- * // With custom element type
- * const HeadingComponent = () => {
- *   const { ref, isVisible } = useIntersectionObserver<HTMLHeadingElement>();
- *
- *   return <h1 ref={ref}>{isVisible ? 'Visible!' : 'Not yet'}</h1>;
- * };
- * ```
- */
 export const useIntersectionObserver = <T extends HTMLElement = HTMLDivElement>(
   options: UseIntersectionObserverOptions = {}
 ) => {

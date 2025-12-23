@@ -151,9 +151,131 @@ We follow responsible disclosure principles:
 
 ### Error Monitoring
 
-Error monitoring is configured but not yet active. To enable Sentry integration:
+Error monitoring is fully configured and ready to activate. To enable Sentry integration:
 
 1. **Install Sentry SDK**:
+   ```bash
+   npm install --save @sentry/react
+   # or
+   yarn add @sentry/react
+   ```
+
+2. **Configure Environment Variables**:
+
+   Add to `.env.production` (never commit this file):
+   ```bash
+   # Required: Your Sentry DSN from sentry.io project settings
+   VITE_SENTRY_DSN=https://your-key@sentry.io/your-project-id
+
+   # Optional: Environment name for tracking (defaults to MODE)
+   VITE_SENTRY_ENVIRONMENT=production
+
+   # Optional: Performance monitoring sample rate (0.0-1.0, default: 0.1)
+   VITE_SENTRY_SAMPLE_RATE=0.1
+
+   # Optional: Session replay for normal sessions (0.0-1.0, default: 0.1)
+   VITE_SENTRY_REPLAYS_SESSION_SAMPLE_RATE=0.1
+
+   # Optional: Session replay for error sessions (0.0-1.0, default: 1.0)
+   VITE_SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE=1.0
+   ```
+
+3. **Initialization** (already implemented in `src/main.tsx`):
+   ```typescript
+   import * as Sentry from '@sentry/react'
+
+   // Initialize Sentry error monitoring in production
+   if (import.meta.env.PROD && import.meta.env.VITE_SENTRY_DSN) {
+     Sentry.init({
+       dsn: import.meta.env.VITE_SENTRY_DSN,
+       environment: import.meta.env.VITE_SENTRY_ENVIRONMENT || import.meta.env.MODE,
+       integrations: [
+         Sentry.browserTracingIntegration(),
+         Sentry.replayIntegration({
+           maskAllText: true,      // Privacy-first: mask all user text
+           blockAllMedia: true,     // Privacy-first: block media from replays
+         }),
+       ],
+       tracesSampleRate: parseFloat(import.meta.env.VITE_SENTRY_SAMPLE_RATE || '0.1'),
+       replaysSessionSampleRate: parseFloat(import.meta.env.VITE_SENTRY_REPLAYS_SESSION_SAMPLE_RATE || '0.1'),
+       replaysOnErrorSampleRate: parseFloat(import.meta.env.VITE_SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE || '1.0'),
+       beforeSend(event) {
+         // Filter sensitive data from URLs
+         if (event.request?.url) {
+           event.request.url = event.request.url.split('?')[0]
+         }
+         return event
+       },
+     })
+   }
+   ```
+
+4. **Usage Examples**:
+
+   **Automatic Error Capture** (via ErrorBoundary):
+   ```typescript
+   // Errors caught by React ErrorBoundary are automatically sent to Sentry
+   // through the monitoring.logError() utility
+   ```
+
+   **Manual Error Capture** (in async handlers):
+   ```typescript
+   import { logError } from './utils/monitoring'
+
+   async function fetchUserData() {
+     try {
+       const response = await fetch('/api/user')
+       return await response.json()
+     } catch (error) {
+       // Automatically sends to Sentry if DSN configured
+       logError(error as Error, {
+         severity: 'high',
+         tags: { operation: 'fetch_user_data' },
+         errorInfo: { endpoint: '/api/user' }
+       }, 'UserDataFetch')
+
+       throw error
+     }
+   }
+   ```
+
+   **With Severity Levels and Context**:
+   ```typescript
+   import { logError } from './utils/monitoring'
+
+   // Low severity
+   logError(error, { severity: 'low' }, 'NonCriticalOperation')
+
+   // Medium severity (default)
+   logError(error, { severity: 'medium', tags: { user_action: 'save_note' } })
+
+   // High severity
+   logError(error, { severity: 'high', errorInfo: { user_id: '123' } }, 'PaymentProcessing')
+
+   // Critical severity
+   logError(error, { severity: 'critical' }, 'SecurityViolation')
+   ```
+
+5. **TypeScript Configuration**:
+
+   No additional TSConfig changes required. Sentry is fully TypeScript-compatible and types are included with the package.
+
+6. **Verification**:
+
+   After deployment with `VITE_SENTRY_DSN` configured:
+   - Errors appear in Sentry dashboard at https://sentry.io
+   - Session replays available for debugging
+   - Performance metrics tracked automatically
+   - Breadcrumbs show user actions leading to errors
+
+**Privacy & Security Features**:
+- Only activates in production builds
+- All session replay text is automatically masked
+- Media content blocked from replay capture
+- Sensitive URL parameters filtered before sending
+- Full control via environment variables
+
+The application is already fully instrumented. Simply add your Sentry DSN to activate monitoring.
 
 ## Known Security Considerations
 

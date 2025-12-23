@@ -32,7 +32,7 @@ if (import.meta.env.PROD && import.meta.env.VITE_SENTRY_DSN) {
     replaysSessionSampleRate: parseFloat(import.meta.env.VITE_SENTRY_REPLAYS_SESSION_SAMPLE_RATE || '0.1'),
     replaysOnErrorSampleRate: parseFloat(import.meta.env.VITE_SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE || '1.0'),
     // Additional configuration
-    beforeSend(event, hint) {
+    beforeSend(event) {
       // Filter out sensitive information
       if (event.request?.url) {
         // Remove query parameters that might contain sensitive data

@@ -28,7 +28,7 @@ The Paperlyte CI/CD pipeline is designed to ensure code quality, performance, an
 
 ### Pipeline Architecture
 
-```
+```text
 ┌─────────────┐
 │  Push/PR    │
 └──────┬──────┘

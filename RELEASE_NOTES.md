@@ -420,7 +420,7 @@ This is the initial release, so there are no breaking changes. Future releases w
 
 ## 📝 Known Issues
 
-None at this time. Please report issues at: https://github.com/shazzar00ni/paperlyte-v2/issues
+None at this time. Please report issues at the [issue tracker](https://github.com/shazzar00ni/paperlyte-v2/issues).
 
 ---
 
@@ -473,9 +473,9 @@ This is the initial release. No migration required.
 
 ## 🔗 Useful Links
 
-- **Repository**: https://github.com/shazzar00ni/paperlyte-v2
+- **Repository**: [shazzar00ni/paperlyte-v2](https://github.com/shazzar00ni/paperlyte-v2)
 - **Documentation**: See `/docs` directory
-- **Issues**: https://github.com/shazzar00ni/paperlyte-v2/issues
+- **Issues**: [Issue tracker](https://github.com/shazzar00ni/paperlyte-v2/issues)
 - **Security**: See `/SECURITY.md`
 - **Contributing**: See `/CONTRIBUTING.md`
 - **License**: MIT (see `/LICENSE`)

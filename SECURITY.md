@@ -154,37 +154,6 @@ We follow responsible disclosure principles:
 Error monitoring is configured but not yet active. To enable Sentry integration:
 
 1. **Install Sentry SDK**:
-   ```bash
-   npm install --save @sentry/react
-   ```
-
-2. **Configure Sentry** in `src/main.tsx`:
-   ```typescript
-   import * as Sentry from "@sentry/react";
-
-   if (import.meta.env.PROD && import.meta.env.VITE_SENTRY_DSN) {
-     Sentry.init({
-       dsn: import.meta.env.VITE_SENTRY_DSN,
-       environment: import.meta.env.MODE,
-       integrations: [
-         new Sentry.BrowserTracing(),
-         new Sentry.Replay(),
-       ],
-       tracesSampleRate: 0.1,
-       replaysSessionSampleRate: 0.1,
-       replaysOnErrorSampleRate: 1.0,
-     });
-   }
-   ```
-
-3. **Add environment variable** to `.env.production`:
-   ```
-   VITE_SENTRY_DSN=your_sentry_dsn_here
-   ```
-
-4. **Enable in monitoring utility** - Uncomment Sentry code in `src/utils/monitoring.ts` (lines 58-70)
-
-The application is already instrumented to send errors to Sentry once configured.
 
 ## Known Security Considerations
 

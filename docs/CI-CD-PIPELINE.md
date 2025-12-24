@@ -74,13 +74,15 @@ Main continuous integration workflow that runs on all pushes and pull requests.
 
 #### Jobs
 
-**Lint and Type Check**
+#### Lint and Type Check
+
 - Runs Prettier format check
 - Executes ESLint
 - Performs TypeScript type checking
 - **Trigger**: On push/PR to main or develop
 
-**Test**
+#### Test
+
 - Runs Vitest test suite (455 tests)
 - Generates coverage reports
 - Uploads coverage to Codecov
@@ -88,7 +90,8 @@ Main continuous integration workflow that runs on all pushes and pull requests.
 - **Coverage Artifacts**: Retained for 30 days
 - **Trigger**: On push/PR to main or develop
 
-**Build**
+#### Build
+
 - Compiles TypeScript
 - Bundles application with Vite
 - Uploads build artifacts
@@ -96,7 +99,8 @@ Main continuous integration workflow that runs on all pushes and pull requests.
 - **Depends On**: Lint & Type Check, Tests
 - **Trigger**: On push/PR to main or develop
 
-**Lighthouse CI**
+#### Lighthouse CI
+
 - Runs Lighthouse audits (3 runs per check)
 - Enforces performance/accessibility thresholds
 - Uploads detailed reports
@@ -113,7 +117,8 @@ Main continuous integration workflow that runs on all pushes and pull requests.
 - **Depends On**: Build
 - **Trigger**: On push/PR to main or develop
 
-**CI Success**
+#### CI Success
+
 - Aggregates all job results
 - Provides single status check for branch protection
 - Displays comprehensive status summary
@@ -126,19 +131,22 @@ Additional quality checks specific to pull requests.
 
 #### Jobs
 
-**PR Metadata**
+#### PR Metadata
+
 - Analyzes PR size (files, lines changed)
 - Warns if PR is too large (>1000 lines)
 - Validates PR title format (conventional commits)
 - **Trigger**: On PR open/update
 
-**Dependency Review**
+#### Dependency Review
+
 - Scans for security vulnerabilities in dependencies
 - Fails on moderate+ severity issues
 - Posts summary comment on PR when issues found
 - **Trigger**: PRs to main branch only
 
-**Bundle Size Check**
+#### Bundle Size Check
+
 - Builds application
 - Analyzes bundle size
 - Lists largest assets
@@ -146,7 +154,8 @@ Additional quality checks specific to pull requests.
 - **Performance Budget**: 200KB per JS bundle
 - **Trigger**: On PR open/update
 
-**Quality Summary**
+#### Quality Summary
+
 - Aggregates all PR quality check results
 - Creates comprehensive quality report
 - **Depends On**: All PR quality jobs
@@ -158,7 +167,8 @@ Monitors Netlify deployment status and provides notifications.
 
 #### Jobs
 
-**Deployment Notification**
+#### Deployment Notification
+
 - Tracks deployment success/failure
 - Posts deployment URL to PR
 - Reports deployment environment
@@ -225,13 +235,15 @@ Netlify deployments can be triggered manually:
 
 Two rollback options are available:
 
-**Option 1: Netlify Dashboard** (Instant)
+#### Option 1: Netlify Dashboard (Instant)
+
 1. Go to Netlify → Deploys
 2. Find previous stable deployment
 3. Click "..." → "Publish deploy"
 4. Previous version goes live immediately
 
-**Option 2: Git Revert**
+#### Option 2: Git Revert
+
 ```bash
 git revert <commit-hash>
 git push origin main
@@ -307,7 +319,7 @@ The `netlify.toml` file is already configured. Verify settings:
 4. Verify:
    - Build command: `npm run build`
    - Publish directory: `dist`
-   - Node version: 18
+   - Node version: 20
 5. Enable Deploy Previews:
    - Go to Site settings → Build & deploy → Deploy contexts
    - Enable "Deploy Preview" for all pull requests
@@ -360,7 +372,7 @@ npm ci
 npm run test -- --run
 
 # Check Node version matches CI
-node --version  # Should be 18.x
+node --version  # Should be 20.x
 ```
 
 #### Lighthouse Scores Failing

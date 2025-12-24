@@ -127,17 +127,22 @@ test.describe('Landing Page', () => {
     const outline = await focused.evaluate((el) => {
       const styles = window.getComputedStyle(el);
       return {
-        outline: styles.outline,
+        outlineStyle: styles.outlineStyle,
         outlineWidth: styles.outlineWidth,
         boxShadow: styles.boxShadow,
       };
     });
 
     // Check that some focus indicator is present
-    const hasFocusIndicator =
-      outline.outline !== 'none' ||
-      parseInt(outline.outlineWidth) > 0 ||
-      outline.boxShadow !== 'none';
+    const hasOutline =
+      outline.outlineStyle !== 'none' &&
+      isFinite(parseFloat(outline.outlineWidth.trim())) &&
+      parseFloat(outline.outlineWidth.trim()) > 0;
+
+    const hasBoxShadow =
+      outline.boxShadow.trim() !== '' && outline.boxShadow.trim() !== 'none';
+
+    const hasFocusIndicator = hasOutline || hasBoxShadow;
 
     expect(hasFocusIndicator).toBeTruthy();
 

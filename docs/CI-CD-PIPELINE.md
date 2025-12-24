@@ -265,8 +265,7 @@ git push origin main
 
 - GitHub repository with admin access
 - Netlify account connected to repository
-- Node.js 18+ locally for testing
-
+- Node.js 20+ locally for testing
 ### Initial Setup
 
 #### 1. GitHub Repository Secrets

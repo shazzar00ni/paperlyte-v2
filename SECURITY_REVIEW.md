@@ -68,7 +68,7 @@ Add the following entries to `.gitignore` immediately:
 .env*.local
 ```
 
-**Status:** ⚠️ UNRESOLVED
+**Status:** ✅ RESOLVED
 
 ---
 

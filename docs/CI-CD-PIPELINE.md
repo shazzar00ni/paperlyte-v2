@@ -270,8 +270,16 @@ git push origin main
 
 #### 1. GitHub Repository Secrets
 
-Add these secrets in repository settings:
+Add these secrets in repository settings (Settings → Secrets and variables → Actions):
 
+| Secret Name | Required | Purpose | Where to Get |
+|------------|----------|---------|--------------|
+| `CODECOV_TOKEN` | Optional | Code coverage reporting | [codecov.io](https://codecov.io) → Repository Settings → Copy token |
+| `LHCI_GITHUB_APP_TOKEN` | Optional | Lighthouse CI GitHub integration | [Lighthouse CI GitHub App](https://github.com/apps/lighthouse-ci) → Install & configure |
+
+**Note:** The CI pipeline will run without these tokens, but some features will be limited:
+- Without `CODECOV_TOKEN`: Coverage reports won't be uploaded to Codecov (still available as artifacts)
+- Without `LHCI_GITHUB_APP_TOKEN`: Lighthouse results won't be commented on PRs (still available as artifacts)
 
 #### 2. Branch Protection Rules
 

@@ -105,14 +105,19 @@ jobs:
           du -sh dist/assets/* | sort -rh | head -10 >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
 
-- name: Performance Budget Check
+      - name: Performance Budget Check
         run: |
           # Check if any JS bundle exceeds 200KB (204800 bytes, performance budget)
           LARGE_FILES=$(find dist/assets -name "*.js" -size +204800c)
 
           if [ -n "$LARGE_FILES" ]; then
             echo "⚠️ **Warning:** Some JS bundles exceed 200KB performance budget:" >> $GITHUB_STEP_SUMMARY
-            echo '
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            echo "$LARGE_FILES" | xargs ls -lh >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          else
+            echo "✅ All JS bundles are within the 200KB performance budget" >> $GITHUB_STEP_SUMMARY
+          fi
 
   quality-summary:
     name: Quality Summary

@@ -62,7 +62,7 @@ The Node version is set to 18.x in `netlify.toml`:
 
 ```toml
 [build]
-  environment = { NODE_VERSION = "18" }
+  environment = { NODE_VERSION = "20" }
 ```
 
 ## Custom Domain Setup

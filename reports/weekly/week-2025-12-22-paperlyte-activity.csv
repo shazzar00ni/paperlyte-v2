@@ -1,0 +1,65 @@
+Type,Title,Last Visited,Host
+Pull Request,fix(workflows): add write permissions to dependency update jobs,2025-12-16T20:24:18Z,github.com
+Pull Request,[WIP] Upgrade @types/node from 24.7.0 to 24.8.1,2025-12-16T20:19:40Z,github.com
+Pull Request,[WIP] WIP addressing feedback on sanitization fix,2025-12-16T20:20:17Z,github.com
+Pull Request,[WIP] Establish automated testing strategy for Paperlyte,2025-12-16T20:18:48Z,github.com
+Pull Request,fix: Apply Prettier formatting to resolve CI failures,2025-12-22T00:10:03Z,github.com
+Pull Request,fix: Add explicit permissions block to E2E workflow,2025-12-22T00:15:37Z,github.com
+Pull Request,Fix unused variable linting error in keyboard navigation tests,2025-12-22T00:47:09Z,github.com
+Issue,Phase 4: Audit Report Compilation and Recommendations,2025-12-21T11:42:39Z,github.com
+Issue,Phase 3: Technical Debt Documentation,2025-12-21T11:38:46Z,github.com
+Issue,Phase 2: Accessibility Compliance Assessment,2025-12-21T11:34:13Z,github.com
+Issue,Phase 1: Performance Audit Execution,2025-12-21T11:28:53Z,github.com
+Pull Request,Add Accessibility Remediation Plan documentation,2025-12-21T12:15:23Z,github.com
+Pull Request,feat: Implement Phase 2 E2E testing with Playwright (#177),2025-12-22T00:18:05Z,github.com
+Pull Request,Improve keyboard navigation and screen reader support,2025-12-22T00:51:06Z,github.com
+Issue,Create an Accessibility Remediation Plan,2025-12-21T12:14:21Z,github.com
+Pull Request,Implement newsletter signup and update color palette to monochrome,2025-12-20T22:20:05Z,github.com
+Issue,Implement Technical Requirements,2025-12-20T22:22:18Z,github.com
+Issue,Implement GitHub Workflow Plan,2025-12-20T22:10:40Z,github.com
+Pull Request,docs: Add comprehensive GitHub workflows plan,2025-12-20T22:06:23Z,github.com
+Pull Request,Comprehensive Design System Documentation Enhancement - v2.1.0,2025-12-21T07:31:29Z,github.com
+Issue,Design System Documentation,2025-12-21T07:31:23Z,github.com
+Issue,Codebase Audit Report,2025-12-20T14:20:56Z,github.com
+Issue,Project Infrastructure Setup,2025-12-20T03:58:28Z,github.com
+Pull Request,Remove out-of-scope legal and analytics infrastructure from accessibility/performance PR,2025-12-20T17:09:29Z,github.com
+Pull Request,Fix URL validation to allow external HTTPS/HTTP links while blocking dangerous protocols,2025-12-20T03:48:28Z,github.com
+Pull Request,Fix security vulnerability in code scanning,2025-12-20T17:05:29Z,github.com
+Pull Request,Add in-app feedback widget for bug reports and feature requests,2025-12-20T03:34:46Z,github.com
+Pull Request,chore(deps): sync @vitest/coverage-v8 with vitest 4.0.16,2025-12-19T07:05:11Z,github.com
+Pull Request,chore(deps-dev): bump jsdom from 27.2.0 to 27.3.0,2025-12-19T05:46:59Z,github.com
+Pull Request,chore(deps-dev): bump prettier from 3.7.2 to 3.7.4,2025-12-19T05:47:29Z,github.com
+Pull Request,chore(deps-dev): bump @vitest/coverage-v8 from 4.0.15 to 4.0.16,2025-12-19T07:00:16Z,github.com
+Pull Request,chore(deps-dev): bump vitest from 4.0.15 to 4.0.16,2025-12-19T07:01:22Z,github.com
+Pull Request,chore(deps-dev): bump @types/node from 24.10.1 to 25.0.3,2025-12-19T07:01:14Z,github.com
+Pull Request,chore(deps): bump the production-dependencies group with 2 updates,2025-12-19T06:58:05Z,github.com
+Commit,Merge pull request #175 from shazzar00ni/copilot/consolidate-design-system-docs,2025-12-21T07:31:21Z,github.com
+Commit,Merge pull request #179 from shazzar00ni/claude/fix-issue-55-59WhZ,2025-12-20T22:20:01Z,github.com
+Commit,Merge pull request #176 from shazzar00ni/claude/plan-github-workflows-6qHYE,2025-12-20T22:06:16Z,github.com
+Commit,chore: Add lastmod to data-deletion sitemap entry and document CSS duplication,2025-12-20T22:04:52Z,github.com
+Commit,Update public/sitemap.xml,2025-12-20T22:04:23Z,github.com
+Commit,Update public/sitemap.xml,2025-12-20T22:03:25Z,github.com
+Commit,Update public/sitemap.xml,2025-12-20T22:03:17Z,github.com
+Commit,Update public/sitemap.xml,2025-12-20T22:03:07Z,github.com
+Commit,Merge branch 'claude/plan-github-workflows-6qHYE' of http://127.0.0.1:44110/git/shazzar00ni/paperlyte-v2 into claude/plan-github-workflows-6qHYE,2025-12-20T21:46:22Z,github.com
+Commit,docs: Complete workflow plan with security and config improvements,2025-12-20T21:45:40Z,github.com
+Commit,Update docs/GITHUB-WORKFLOWS-PLAN.md,2025-12-20T21:43:20Z,github.com
+Commit,Update docs/GITHUB-WORKFLOWS-PLAN.md,2025-12-20T21:42:54Z,github.com
+Commit,Update docs/GITHUB-WORKFLOWS-PLAN.md,2025-12-20T21:42:28Z,github.com
+Commit,Update docs/GITHUB-WORKFLOWS-PLAN.md,2025-12-20T21:42:12Z,github.com
+Commit,docs: Add security best practices and fix workflow issues,2025-12-20T21:41:56Z,github.com
+Commit,Update docs/GITHUB-WORKFLOWS-PLAN.md,2025-12-20T21:41:40Z,github.com
+Commit,Update docs/GITHUB-WORKFLOWS-PLAN.md,2025-12-20T21:40:27Z,github.com
+Commit,Update docs/GITHUB-WORKFLOWS-PLAN.md,2025-12-20T21:40:13Z,github.com
+Commit,style: Fix markdown formatting in workflows plan,2025-12-20T21:40:09Z,github.com
+Commit,Update docs/GITHUB-WORKFLOWS-PLAN.md,2025-12-20T21:40:05Z,github.com
+Commit,Update docs/GITHUB-WORKFLOWS-PLAN.md,2025-12-20T21:39:26Z,github.com
+Commit,fix: Update design system to monochrome palette for EmailCapture component,2025-12-20T18:42:20Z,github.com
+Commit,docs: Add comprehensive GitHub workflows plan,2025-12-20T18:21:11Z,github.com
+Commit,Merge pull request #169 from shazzar00ni/claude/fix-security-vulnerability-52RIJ,2025-12-20T17:05:01Z,github.com
+Commit,chore: Add lastmod to data-deletion sitemap entry for consistency,2025-12-20T17:02:07Z,github.com
+Commit,Clarify WCAG contrast ratio descriptions for consistency,2025-12-20T14:24:29Z,github.com
+Commit,Add missing --border-radius-full variable and correct WCAG contrast ratios,2025-12-20T14:23:19Z,github.com
+Commit,Fix CSS utility comments and component descriptions,2025-12-20T14:19:22Z,github.com
+Commit,Fix component overview anchor links and clarify contrast ratios,2025-12-20T14:17:09Z,github.com
+Commit,Merge branch 'claude/fix-security-vulnerability-52RIJ' of http://127.0.0.1:33741/git/shazzar00ni/paperlyte-v2 into claude/fix-security-vulnerability-52RIJ,2025-12-20T14:16:44Z,github.com

@@ -203,5 +203,6 @@ export function suggestEmailCorrection(email: string): string | null {
   if (!suggestion) return null
 
   const localPart = email.split('@')[0]
+  if (!localPart) return null
   return `${localPart}@${suggestion}`
 }

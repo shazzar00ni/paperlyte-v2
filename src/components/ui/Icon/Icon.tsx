@@ -53,7 +53,7 @@ export const Icon = ({
     return (
       <i
         className={`${variantClass} ${name} icon-fallback ${className}`}
-        style={{ fontSize: iconSize, ...style }}
+        style={{ fontSize: iconSize, color, ...style }}
         aria-label={ariaLabel}
         aria-hidden={ariaLabel ? 'false' : 'true'}
         {...(ariaLabel ? { role: 'img' } : {})}

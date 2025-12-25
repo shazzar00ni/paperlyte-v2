@@ -59,8 +59,8 @@ describe('Testimonials', () => {
 
     const cite = container.querySelector('cite')
     expect(cite).toBeInTheDocument()
-    // Should have any author name (checking for first testimonial)
-    expect(cite?.textContent).toBeTruthy()
+    // Should have a non-empty author name
+    expect(cite?.textContent?.trim().length).toBeGreaterThan(0)
   })
 
   it('should render decorative quote icon', () => {

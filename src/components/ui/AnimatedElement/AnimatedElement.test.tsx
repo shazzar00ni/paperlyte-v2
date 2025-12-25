@@ -21,7 +21,7 @@ describe('AnimatedElement', () => {
     )
 
     const wrapper = container.firstChild as HTMLElement
-    // Check for CSS custom property (CSP-compliant approach)
+    // Check CSS custom property (CSS variable)
     expect(wrapper.style.getPropertyValue('--animation-delay')).toBe('200ms')
   })
 
@@ -33,7 +33,7 @@ describe('AnimatedElement', () => {
     )
 
     const wrapper = container.firstChild as HTMLElement
-    // Check for CSS custom property (CSP-compliant approach)
+    // Check CSS custom property (CSS variable)
     expect(wrapper.style.getPropertyValue('--animation-delay')).toBe('0ms')
   })
 

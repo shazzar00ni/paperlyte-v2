@@ -108,8 +108,9 @@ describe('App Integration', () => {
     const ctaSection = container.querySelector('#download')
     expect(ctaSection).toBeInTheDocument()
 
-    // Verify CTA content is present (checking for section title or button)
-    expect(screen.getAllByRole('button').length).toBeGreaterThan(0)
+    // Verify specific CTA content is present
+    expect(screen.getByText(/Stop fighting your tools/i)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Join the Waitlist/i })).toBeInTheDocument()
   })
 
   it('should render Footer component', () => {
@@ -118,15 +119,17 @@ describe('App Integration', () => {
     const footer = container.querySelector('footer')
     expect(footer).toBeInTheDocument()
 
-    // Verify footer is present with role contentinfo
-    expect(footer).toHaveAttribute('role', 'contentinfo')
+    // Semantic <footer> element provides implicit contentinfo role
+    // Verify it's accessible via the contentinfo role
+    expect(screen.getByRole('contentinfo')).toBeInTheDocument()
   })
 
   it('should render CTA buttons in download section', () => {
     render(<App />)
 
-    expect(screen.getByRole('button', { name: /Get Started for Free/i })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /Learn More/i })).toBeInTheDocument()
+    // Check for actual CTA buttons
+    expect(screen.getByRole('button', { name: /Join the Waitlist/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Watch the Demo Again/i })).toBeInTheDocument()
   })
 
   it('should render feature cards', () => {

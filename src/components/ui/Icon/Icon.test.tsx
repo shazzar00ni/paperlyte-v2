@@ -142,7 +142,7 @@ describe('Icon', () => {
   it('should accept color without # prefix', () => {
     // Test with SVG (known icon)
     const { container, rerender } = render(<Icon name="fa-bolt" color="FF0000" />)
-    let svg = container.querySelector('svg')
+    const svg = container.querySelector('svg')
     expect(svg).toHaveAttribute('stroke', 'FF0000')
 
     // Test with fallback (missing icon)

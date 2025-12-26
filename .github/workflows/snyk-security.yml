@@ -63,7 +63,7 @@ jobs:
         # Runs Snyk Open Source (SCA) analysis and uploads result to Snyk.
       - name: Snyk Open Source monitor
         if: env.SNYK_TOKEN != ''
-        run: snyk monitor --all-projects || true
+        run: snyk monitor --all-projects
         continue-on-error: true
 
         # Runs Snyk Infrastructure as Code (IaC) analysis and uploads result to Snyk.

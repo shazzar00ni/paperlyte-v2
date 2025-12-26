@@ -8,13 +8,17 @@ export const Footer = (): React.ReactElement => {
   return (
     <footer className={styles.footer}>
       <div className={styles.container}>
-        <div className={styles.brand}>
-          <div className={styles.logo}>
-            <Icon name="fa-feather" size="lg" ariaLabel="Paperlyte logo" />
-            <span className={styles.logoText}>Paperlyte</span>
+        <div className={styles.grid}>
+          <div className={styles.brand}>
+            <div className={styles.logo}>
+              <Icon name="fa-feather" size="lg" ariaLabel="Paperlyte logo" />
+              <span className={styles.logoText}>Paperlyte.</span>
+            </div>
+            <p className={styles.tagline}>Your thoughts, unchained.</p>
+            <p className={styles.taglineSecondary}>
+              Built with <span role="img" aria-label="love">💙</span> for people who think fast.
+            </p>
           </div>
-          <p className={styles.tagline}>Your thoughts, unchained from complexity</p>
-        </div>
 
         <nav className={styles.links} aria-label="Footer navigation">
           <div className={styles.linkGroup}>
@@ -26,10 +30,25 @@ export const Footer = (): React.ReactElement => {
                 </a>
               </li>
               <li>
-                <a href="#download" className={styles.link}>
-                  Download
+                <a href="#pricing" className={styles.link}>
+                  Pricing
                 </a>
               </li>
+              {/* TODO: Add Roadmap link when page is available */}
+              {/* TODO: Add Changelog link when page is available */}
+            </ul>
+          </div>
+
+          <div className={styles.linkGroup}>
+            <h3 className={styles.linkGroupTitle}>Company</h3>
+            <ul className={styles.linkList}>
+              <li>
+                <a href="mailto:hello@paperlyte.com" className={styles.link}>
+                  Contact
+                </a>
+              </li>
+              {/* TODO: Add About link when page is available */}
+              {/* TODO: Add Blog link when page is available */}
             </ul>
           </div>
 
@@ -113,6 +132,7 @@ export const Footer = (): React.ReactElement => {
             © {currentYear} {LEGAL_CONFIG.company.name}. All rights reserved.
           </p>
         </div>
+      </div>
       </div>
     </footer>
   )

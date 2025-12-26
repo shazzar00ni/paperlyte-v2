@@ -164,7 +164,7 @@ export const FAQ = (): React.ReactElement => {
     <Section id="faq" background="default">
       <div className={styles.header}>
         <AnimatedElement animation="fadeIn">
-          <h2 className={styles.title}>Questions? We've got answers</h2>
+          <h2 className={styles.title}>Questions? We've got answers.</h2>
         </AnimatedElement>
         <AnimatedElement animation="fadeIn" delay={100}>
           <p className={styles.subtitle}>

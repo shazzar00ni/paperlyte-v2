@@ -280,8 +280,8 @@ git push origin main
 - GitHub repository with admin access
 - Netlify account connected to repository
 - Node.js 20+ locally for testing
-### Initial Setup
 
+### Initial Setup
 #### 1. GitHub Repository Secrets
 
 Add these secrets in repository settings (Settings → Secrets and variables → Actions):

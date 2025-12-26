@@ -370,6 +370,27 @@ npm run preview
 
 **Solution**:
 
+1. **Use lockfile-respecting install**: Run `npm ci` instead of `npm install` to match exact versions from package-lock.json
+2. **Verify Node.js version**: Ensure local Node version matches CI (Node 20.x) - check with `node --version`
+3. **Clear dependency cache**: Remove `node_modules/` and clear npm cache, then reinstall:
+   ```bash
+   rm -rf node_modules
+   npm cache clean --force
+   npm ci
+   ```
+4. **Check environment variables**: Confirm all CI environment variables and secrets are present locally or properly mocked in test setup
+5. **Pin flaky dependencies**: Use `package.json` overrides or resolutions to lock problematic dependency versions
+6. **Match CI test command**: Run tests locally with identical flags used in CI workflow (e.g., `npm run test:coverage -- --run`)
+7. **Reproduce CI environment**: Use Docker to replicate CI container or enable verbose test logging with `npm test -- --reporter=verbose`
+8. **Add diagnostic CI job**: Create a workflow step that prints environment details for easier debugging:
+   ```yaml
+   - name: Print environment
+     run: |
+       node --version
+       npm --version
+       npm list --depth=0
+   ```
+
 #### Lighthouse Scores Failing
 
 **Cause**: Performance regression or accessibility issues

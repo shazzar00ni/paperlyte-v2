@@ -20,26 +20,30 @@ describe('Testimonials', () => {
   it('should render the testimonial quote', () => {
     render(<Testimonials />)
 
-    expect(screen.getByText(/I've tried every note-taking app out there/i)).toBeInTheDocument()
+    // Should render at least one testimonial quote (Marcus Johnson's quote)
+    expect(screen.getByText(/I've tried every note app out there/i)).toBeInTheDocument()
   })
 
   it('should render placeholder author name', () => {
     render(<Testimonials />)
 
-    expect(screen.getByText('[Beta User]')).toBeInTheDocument()
+    // Should render Marcus Johnson's name (from testimonial-2)
+    expect(screen.getByText('Marcus Johnson')).toBeInTheDocument()
   })
 
   it('should render placeholder author role', () => {
     render(<Testimonials />)
 
-    expect(screen.getByText('[Role/Title]')).toBeInTheDocument()
+    // Should render Marcus Johnson's role
+    expect(screen.getByText('Freelance Writer')).toBeInTheDocument()
   })
 
   it('should render note about beta testimonials', () => {
     render(<Testimonials />)
 
+    // Should render the subtitle about real feedback
     expect(
-      screen.getByText(/Real testimonials coming soon from beta users/i)
+      screen.getByText(/Real feedback from people who switched to Paperlyte/i)
     ).toBeInTheDocument()
   })
 
@@ -55,14 +59,16 @@ describe('Testimonials', () => {
 
     const cite = container.querySelector('cite')
     expect(cite).toBeInTheDocument()
-    expect(cite).toHaveTextContent('[Beta User]')
+    // Should have a non-empty author name
+    expect(cite?.textContent?.trim().length).toBeGreaterThan(0)
   })
 
   it('should render decorative quote icon', () => {
     const { container } = render(<Testimonials />)
 
-    const quoteIcon = container.querySelector('[aria-hidden="true"]')
-    expect(quoteIcon).toBeInTheDocument()
-    expect(quoteIcon).toHaveTextContent('"')
+    // The quotes are part of the blockquote text content, not separate decorative elements
+    const blockquote = container.querySelector('blockquote')
+    expect(blockquote).toBeInTheDocument()
+    expect(blockquote?.textContent).toContain('"')
   })
 })

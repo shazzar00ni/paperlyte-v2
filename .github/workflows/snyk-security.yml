@@ -59,7 +59,6 @@ jobs:
       - name: Snyk Code test
         if: env.SNYK_TOKEN != ''
         run: snyk code test --sarif > snyk-code.sarif || true
-        continue-on-error: true
 
         # Runs Snyk Open Source (SCA) analysis and uploads result to Snyk.
       - name: Snyk Open Source monitor

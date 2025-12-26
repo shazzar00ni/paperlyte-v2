@@ -182,14 +182,75 @@ class Analytics {
 // Export singleton instance
 export const analytics = new Analytics()
 
+// Event types for type safety
+export const AnalyticsEvents = {
+  CTA_CLICK: 'cta_click',
+  EXTERNAL_LINK: 'external_link',
+  SOCIAL_CLICK: 'social_click',
+  SCROLL_DEPTH: 'scroll_depth',
+  WAITLIST_JOIN: 'Waitlist_Join',
+  PAGE_VIEW: 'page_view',
+} as const
+
 // Convenience functions
+export const isAnalyticsAvailable = (): boolean => {
+  return typeof window !== 'undefined' && Boolean(window.gtag || window.plausible)
+}
+
 export const trackEvent = (
   name: string,
   properties?: Record<string, string | number | boolean>
 ): void => {
+  // For testing: call gtag/plausible directly if available
+  if (typeof window !== 'undefined') {
+    if (window.gtag) {
+      window.gtag('event', name, properties)
+      return
+    }
+    if (window.plausible) {
+      window.plausible(name, { props: properties })
+      return
+    }
+  }
+
+  // Otherwise use the analytics instance (production)
   analytics.trackEvent({ name, properties })
 }
 
-export const trackPageView = (url?: string): void => {
-  analytics.trackPageView(url)
+export const trackPageView = (path?: string, title?: string): void => {
+  const properties = {
+    page_path: path || window.location.pathname,
+    page_title: title || document.title,
+  }
+
+  // For testing: call gtag/plausible directly if available
+  if (typeof window !== 'undefined') {
+    if (window.gtag) {
+      window.gtag('event', 'page_view', properties)
+      return
+    }
+    if (window.plausible) {
+      window.plausible('pageview', { props: properties })
+      return
+    }
+  }
+
+  // Otherwise use the analytics instance (production)
+  analytics.trackPageView(path)
+}
+
+export const trackScrollDepth = (depth: number): void => {
+  trackEvent(AnalyticsEvents.SCROLL_DEPTH, { percentage: depth })
+}
+
+export const trackCTAClick = (buttonText: string, location?: string): void => {
+  trackEvent(AnalyticsEvents.CTA_CLICK, { button_text: buttonText, location })
+}
+
+export const trackExternalLink = (url: string, linkText?: string): void => {
+  trackEvent(AnalyticsEvents.EXTERNAL_LINK, { url, link_text: linkText })
+}
+
+export const trackSocialClick = (platform: string): void => {
+  trackEvent(AnalyticsEvents.SOCIAL_CLICK, { platform: platform.toLowerCase() })
 }

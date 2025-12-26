@@ -79,7 +79,7 @@ describe('App Integration', () => {
     expect(featuresSection).toBeInTheDocument()
 
     // Verify features content is present
-    expect(screen.getByText('Distraction-free Writing')).toBeInTheDocument()
+    expect(screen.getByText('Beautiful Simplicity')).toBeInTheDocument()
   })
 
   it('should render Mobile section', () => {
@@ -99,7 +99,7 @@ describe('App Integration', () => {
     expect(testimonialsSection).toBeInTheDocument()
 
     // Verify testimonials content is present
-    expect(screen.getByText(/Sarah Jenkins/i)).toBeInTheDocument()
+    expect(screen.getByText(/Sarah Chen/i)).toBeInTheDocument()
   })
 
   it('should render CTA section', () => {
@@ -109,7 +109,7 @@ describe('App Integration', () => {
     expect(ctaSection).toBeInTheDocument()
 
     // Verify CTA content is present
-    expect(screen.getByText('Ready to declutter your mind?')).toBeInTheDocument()
+    expect(screen.getByText('Stop fighting your tools. Start thinking clearly.')).toBeInTheDocument()
   })
 
   it('should render Footer component', () => {
@@ -119,23 +119,23 @@ describe('App Integration', () => {
     expect(footer).toBeInTheDocument()
 
     // Verify footer content is present
-    expect(screen.getByText('Designed for clarity in a chaotic world.')).toBeInTheDocument()
+    expect(screen.getByText('Your thoughts, unchained.')).toBeInTheDocument()
   })
 
   it('should render CTA buttons in download section', () => {
     render(<App />)
 
-    expect(screen.getByRole('button', { name: /Get Started for Free/i })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /Learn More/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Join the Waitlist/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Watch the Demo Again/i })).toBeInTheDocument()
   })
 
   it('should render feature cards', () => {
     render(<App />)
 
     // Check for specific features
-    expect(screen.getByText('Distraction-free Writing')).toBeInTheDocument()
-    expect(screen.getByText('Private by Design')).toBeInTheDocument()
-    expect(screen.getByText('Seamless Workflow')).toBeInTheDocument()
+    expect(screen.getByText('Beautiful Simplicity')).toBeInTheDocument()
+    expect(screen.getByText('Privacy Focused')).toBeInTheDocument()
+    expect(screen.getByText('Universal Access')).toBeInTheDocument()
   })
 
   it('should render social links in footer', () => {

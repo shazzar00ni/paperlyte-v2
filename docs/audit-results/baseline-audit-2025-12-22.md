@@ -2,8 +2,8 @@
 
 **Date:** December 22, 2025
 **Auditor:** Claude Code (Automated Baseline Audit)
-**Repository:** https://github.com/shazzar00ni/paperlyte-v2
-**Production Site:** https://paperlyte.com
+**Repository:** [paperlyte-v2](https://github.com/shazzar00ni/paperlyte-v2)
+**Production Site:** [paperlyte.com](https://paperlyte.com)
 **Branch:** claude/lighthouse-performance-baseline-DvfUB
 
 ## Audit Methodology
@@ -16,7 +16,7 @@ This baseline audit establishes performance and quality benchmarks for the Paper
 4. **Accessibility Review**: Analysis of ACCESSIBILITY.md and ARIA implementation
 5. **Technical Debt Inventory**: Comprehensive catalog of all improvement areas
 
-**Note:** Lighthouse CI automation could not run in this environment due to Chrome installation requirements. Manual Lighthouse audits against https://paperlyte.com are recommended as a follow-up action.
+**Note:** Lighthouse CI automation could not run in this environment due to Chrome installation requirements. Manual Lighthouse audits against [paperlyte.com](https://paperlyte.com) are recommended as a follow-up action.
 
 ## Build Performance Metrics
 
@@ -104,7 +104,7 @@ This baseline audit establishes performance and quality benchmarks for the Paper
 
 **Status:** ⚠️ Unable to verify - Lighthouse CI requires Chrome installation. Manual testing recommended.
 
-**Action Required:** Run manual Lighthouse audits (3+ runs) against https://paperlyte.com using Chrome DevTools and document actual scores in this report.
+**Action Required:** Run manual Lighthouse audits (3+ runs) against [paperlyte.com](https://paperlyte.com) using Chrome DevTools and document actual scores in this report.
 
 ## Technical Debt Inventory
 
@@ -522,7 +522,7 @@ This baseline audit establishes performance and quality benchmarks for the Paper
 1. **Immediate (Week 1):**
    - Resolve legal placeholders in src/constants/legal.ts
    - Add .env to .gitignore
-   - Run manual Lighthouse audits against https://paperlyte.com
+   - Run manual Lighthouse audits against [paperlyte.com](https://paperlyte.com)
 
 2. **Short-term (Week 2-4):**
    - Complete accessibility audit (Task 2)

@@ -189,6 +189,7 @@ export const AnalyticsEvents = {
   SOCIAL_CLICK: 'social_click',
   SCROLL_DEPTH: 'scroll_depth',
   WAITLIST_JOIN: 'Waitlist_Join',
+  WAITLIST_SUBMIT: 'Waitlist_Submit',
   PAGE_VIEW: 'page_view',
 } as const
 

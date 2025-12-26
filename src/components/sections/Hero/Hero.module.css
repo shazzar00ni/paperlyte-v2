@@ -38,10 +38,16 @@
   font-size: var(--font-size-xl);
   line-height: var(--line-height-relaxed);
   color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-md);
+  max-width: 480px;
+}
+
+.microcopy {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-tertiary);
   margin-bottom: var(--spacing-xl);
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
+  font-weight: var(--font-weight-medium);
+  max-width: 480px;
 }
 
 /* Shared centering for CTAs */
@@ -153,6 +159,56 @@
 }
 
 /* Mobile styles */
+@media (max-width: 1024px) {
+  .container {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-2xl);
+  }
+
+  .content {
+    text-align: center;
+  }
+
+  .badge {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .headline {
+    font-size: var(--font-size-6xl);
+  }
+
+  .subheadline {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .microcopy {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .ctas {
+    justify-content: center;
+  }
+
+  .mockup {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .trusted {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--spacing-md);
+  }
+
+  .trustedLogos {
+    justify-content: center;
+    gap: var(--spacing-lg);
+  }
+}
+
 @media (max-width: 768px) {
   .hero {
     min-height: 0;

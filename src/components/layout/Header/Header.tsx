@@ -2,6 +2,11 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { Button } from '@components/ui/Button'
 import { Icon } from '@components/ui/Icon'
 import { ThemeToggle } from '@components/ui/ThemeToggle'
+import {
+  getFocusableElements,
+  handleArrowNavigation,
+  handleHomeEndNavigation,
+} from '@utils/keyboard'
 import styles from './Header.module.css'
 
 export const Header = (): React.ReactElement => {
@@ -77,6 +82,40 @@ export const Header = (): React.ReactElement => {
     firstFocusable?.focus()
 
     return () => menu.removeEventListener('keydown', handleTabKey)
+  }, [mobileMenuOpen])
+
+  // Arrow key navigation for menu items
+  useEffect(() => {
+    if (!menuRef.current) return
+
+    const menu = menuRef.current
+
+    const handleArrowKeys = (event: KeyboardEvent) => {
+      const focusableElements = getFocusableElements(menu)
+      if (focusableElements.length === 0) return
+
+      const currentIndex = focusableElements.findIndex((el) => el === document.activeElement)
+      if (currentIndex === -1) return
+
+      // Handle Home/End keys
+      const homeEndIndex = handleHomeEndNavigation(event, focusableElements)
+      if (homeEndIndex !== null) {
+        event.preventDefault()
+        focusableElements[homeEndIndex]?.focus()
+        return
+      }
+
+      // Handle Arrow keys (horizontal navigation)
+      const newIndex = handleArrowNavigation(event, focusableElements, currentIndex, 'horizontal')
+      if (newIndex !== null) {
+        event.preventDefault()
+        focusableElements[newIndex]?.focus()
+      }
+    }
+
+    menu.addEventListener('keydown', handleArrowKeys)
+
+    return () => menu.removeEventListener('keydown', handleArrowKeys)
   }, [mobileMenuOpen])
 
   return (

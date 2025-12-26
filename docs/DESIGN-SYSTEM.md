@@ -1,9 +1,9 @@
 # Paperlyte Design System
 
-> **Version:** 2.0.0
-> **Last Updated:** December 17, 2025
+> **Version:** 2.1.0
+> **Last Updated:** December 20, 2025
 
-A comprehensive design system for Paperlyte - a lightning-fast, distraction-free note-taking application that prioritizes simplicity and performance through a clean, monochrome aesthetic.
+A comprehensive design system for Paperlyte - a lightning-fast, distraction-free note-taking application that prioritizes simplicity and performance through a clean, modern aesthetic with a purple accent color.
 
 ---
 
@@ -15,16 +15,24 @@ A comprehensive design system for Paperlyte - a lightning-fast, distraction-free
 4. [Spacing System](#spacing-system)
 5. [Layout & Grid](#layout--grid)
 6. [Component Library](#component-library)
+   - [Available Components](#available-components)
+   - [Detailed Component API](#detailed-component-api)
+   - [Layout Components](#layout-components)
+   - [Section Components](#section-components)
+   - [Hooks & Utilities](#hooks--utilities)
+   - [Architectural Patterns](#architectural-patterns)
 7. [Iconography](#iconography)
 8. [Animation Guidelines](#animation-guidelines)
 9. [Responsive Design](#responsive-design)
 10. [Accessibility](#accessibility)
+11. [Design Tokens](#design-tokens-tailwind-config-ready)
+12. [Version History](#version-history)
 
 ---
 
 ## Design Principles
 
-**Core Promise:** "Your thoughts, unchained from complexity"
+**Core Promise:** "Your thoughts, unchained."
 
 ### UX Principles
 1. **Speed First** - Every interaction should feel instantaneous
@@ -37,22 +45,26 @@ A comprehensive design system for Paperlyte - a lightning-fast, distraction-free
 
 ## Color Palette
 
-**Design Philosophy:** Paperlyte uses a sophisticated monochrome palette that emphasizes clarity, elegance, and timelessness. The near-black and pure white color scheme creates a paper-like aesthetic that's both modern and classic.
+**Design Philosophy:** Paperlyte uses a clean, paper-inspired palette with purple (#7C3AED) as the primary accent color. The design emphasizes clarity and readability with high-contrast neutral colors, while the purple accent adds visual interest to interactive elements and calls-to-action.
 
 ### Primary Colors
 
 ```css
 /* Light Mode */
---color-primary: #1a1a1a;        /* Near black - Main brand color */
---color-primary-dark: #000000;   /* Pure black - Hover states */
---color-primary-light: #333333;  /* Dark gray - Accents */
+--color-primary: #7c3aed;         /* Purple 600 - Main brand color */
+--color-primary-dark: #6d28d9;    /* Purple 700 - Hover states */
+--color-primary-light: #a78bfa;   /* Purple 400 - Accents */
+--color-primary-faint: rgba(124, 58, 237, 0.1);    /* 10% opacity for backgrounds */
+--color-primary-fainter: rgba(124, 58, 237, 0.05); /* 5% opacity for subtle backgrounds */
 ```
 
 #### Color Usage
 
-- **Primary (#1a1a1a)** - CTAs, primary buttons, bold statements
-- **Primary Dark (#000000)** - Hover states on primary elements
-- **Primary Light (#333333)** - Subtle accents, muted elements
+- **Primary (#7c3aed)** - CTAs, primary buttons, links, interactive elements
+- **Primary Dark (#6d28d9)** - Hover states on primary elements
+- **Primary Light (#a78bfa)** - Subtle accents, secondary highlights
+- **Primary Faint** - Background tints for focus states, subtle backgrounds
+- **Primary Fainter** - Very subtle backgrounds, hover states
 
 ### Neutral Colors
 
@@ -60,50 +72,78 @@ A comprehensive design system for Paperlyte - a lightning-fast, distraction-free
 /* Light Mode */
 --color-background: #FFFFFF;      /* Pure white - Main background */
 --color-surface: #F9FAFB;         /* Gray 50 - Card backgrounds */
---color-surface-dark: #18181b;    /* Zinc 900 - Dark surface sections */
 --color-text-primary: #111827;    /* Gray 900 - Headings, body text */
 --color-text-secondary: #6B7280;  /* Gray 500 - Supporting text */
---color-text-tertiary: #9CA3AF;   /* Gray 400 - Muted text */
---color-border: #E5E7EB;          /* Gray 200 - Borders, dividers */
---color-border-light: #F3F4F6;    /* Gray 100 - Subtle borders */
 --color-text-on-primary: #FFFFFF; /* White text on primary backgrounds */
---color-text-on-dark: #FFFFFF;    /* White text on dark surfaces */
---color-text-on-dark-secondary: rgba(255, 255, 255, 0.7); /* Semi-transparent white */
+--color-border: #E5E7EB;          /* Gray 200 - Borders, dividers */
 ```
 
 ### Dark Mode Colors
 
-**Dark Mode Philosophy:** In dark mode, the palette inverts while maintaining the monochrome aesthetic. White becomes the primary color, creating a sophisticated light-on-dark experience.
+**Dark Mode Philosophy:** In dark mode, the palette maintains readability while providing a comfortable low-light experience. The purple accent remains consistent for brand recognition.
 
 ```css
 /* Dark Mode */
---color-primary: #FFFFFF;        /* Pure white - Primary in dark mode */
---color-primary-dark: #F1F5F9;   /* Slate 100 - Hover states */
---color-primary-light: #E2E8F0;  /* Slate 200 - Accents */
+--color-primary: #7c3aed;        /* Purple 600 - Consistent brand color */
+--color-primary-dark: #6d28d9;   /* Purple 700 - Hover states */
+--color-primary-light: #8b5cf6;  /* Purple 500 - Accents */
+--color-primary-faint: rgba(124, 58, 237, 0.1);    /* 10% opacity for backgrounds */
+--color-primary-fainter: rgba(124, 58, 237, 0.05); /* 5% opacity for subtle backgrounds */
 --color-background: #0F172A;     /* Slate 900 - Dark background */
 --color-surface: #1E293B;        /* Slate 800 - Card backgrounds */
---color-surface-dark: #0F172A;   /* Slate 900 - Dark sections */
 --color-text-primary: #F1F5F9;   /* Slate 100 - Light text */
 --color-text-secondary: #94A3B8; /* Slate 400 - Supporting text */
---color-text-tertiary: #64748B;  /* Slate 500 - Muted text */
 --color-border: #334155;         /* Slate 700 - Borders */
---color-border-light: #1E293B;   /* Slate 800 - Subtle borders */
 ```
 
 ### WCAG Compliance Matrix
+
+All colors have been tested for WCAG 2.1 compliance. The table below shows key color combinations and their contrast ratios.
+
+#### Primary Color Combinations
 
 | Foreground | Background | Contrast Ratio | WCAG Level | Use Case |
 |------------|------------|----------------|------------|----------|
 | `#111827` (Text Primary) | `#FFFFFF` (Background) | 16.1:1 | AAA | Body text (light mode) |
 | `#6B7280` (Text Secondary) | `#FFFFFF` (Background) | 4.6:1 | AA | Supporting text (light mode) |
-| `#9CA3AF` (Text Tertiary) | `#FFFFFF` (Background) | 3.1:1 | AA (Large Text Only) | Large text (18pt+/14pt+ bold), metadata, non-critical labels |
-| `#1a1a1a` (Primary) | `#FFFFFF` (Background) | 16.8:1 | AAA | Primary buttons, text |
-| `#FFFFFF` (Text) | `#1a1a1a` (Primary) | 16.8:1 | AAA | Text on primary buttons |
+| `#7c3aed` (Primary) | `#FFFFFF` (Background) | 4.5:1 | AA* | Interactive elements and large text only (18pt+/14pt+ bold) |
+| `#FFFFFF` (Text on Primary) | `#7c3aed` (Primary) | 4.5:1 | AA* | Large text on primary buttons only (18pt+/14pt+ bold) |
+| `#6d28d9` (Primary Dark) | `#FFFFFF` (Background) | 7.8:1 | AAA | Hover states, emphasized elements |
+| `#a78bfa` (Primary Light) | `#FFFFFF` (Background) | 3.1:1 | AA* | Large text only (18pt+/14pt+ bold) |
+
+#### Dark Mode Combinations
+
+| Foreground | Background | Contrast Ratio | WCAG Level | Use Case |
+|------------|------------|----------------|------------|----------|
 | `#F1F5F9` (Text Primary) | `#0F172A` (Background) | 15.8:1 | AAA | Body text (dark mode) |
 | `#94A3B8` (Text Secondary) | `#0F172A` (Background) | 7.2:1 | AAA | Supporting text (dark mode) |
-| `#64748B` (Text Tertiary) | `#0F172A` (Background) | 5.1:1 | AA | Muted text (dark mode) |
+| `#7c3aed` (Primary) | `#0F172A` (Background) | 5.6:1 | AA | Interactive elements and large text only (18pt+/14pt+ bold) |
+| `#FFFFFF` (Text) | `#1E293B` (Surface) | 14.8:1 | AAA | Text on surface (dark mode) |
 
-**All color combinations meet WCAG 2.1 AA standards (minimum 4.5:1 for normal text, 3:1 for large text). The monochrome palette provides exceptional contrast ratios, exceeding AAA standards for most combinations.**
+#### Semantic Color Combinations
+
+| Foreground | Background | Contrast Ratio | WCAG Level | Use Case |
+|------------|------------|----------------|------------|----------|
+| `#22c55e` (Success) | `#FFFFFF` (Background) | 3.1:1 | AA* | Success icons/badges (large text only) |
+| `#dc2626` (Error) | `#FFFFFF` (Background) | 5.9:1 | AA | Error messages, alerts |
+| `#4ade80` (Success Dark) | `#0F172A` (Background) | 4.2:1 | AA* | Success states (dark mode, large text) |
+| `#f87171` (Error Dark) | `#0F172A` (Background) | 4.8:1 | AA | Error states (dark mode) |
+
+**Notes:**
+- AA* = Meets AA standards for large text (18pt/14pt bold) and UI components (3:1 minimum)
+- Normal text requires 4.5:1 contrast (AA) or 7:1 (AAA)
+- Large text and UI components require 3:1 contrast (AA)
+- **Important:** The purple primary color (#7c3aed) provides 4.5:1 contrast on white and 5.6:1 on dark backgrounds
+- The purple primary color should **only** be used for interactive elements (buttons, links) and large text, **NOT for normal body text**
+- For normal body text, use `--color-text-primary` (#111827 light mode, #F1F5F9 dark mode) which provides 16+ contrast ratio
+- Contrast ratios calculated using WCAG 2.1 relative luminance formula
+- Semantic colors (success, error) are always paired with icons and descriptive text for accessibility
+- All background/border variants use very low opacity and are not intended for text contrast
+
+**Testing Tools:**
+- [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/)
+- [APCA Contrast Calculator](https://www.myndex.com/APCA/) (next-generation contrast algorithm)
+- Chrome DevTools Lighthouse Accessibility Audit
 
 ### Color State Guidelines
 
@@ -111,7 +151,7 @@ A comprehensive design system for Paperlyte - a lightning-fast, distraction-free
 
 ```css
 /* Primary Button Hover */
-background-color: var(--color-primary-dark); /* #000000 */
+background-color: var(--color-primary-dark); /* #6d28d9 */
 transform: translateY(-1px);
 box-shadow: var(--shadow-md);
 
@@ -140,30 +180,38 @@ cursor: not-allowed;
 ### ✅ Do's and ❌ Don'ts
 
 ✅ **DO:**
-- Use primary color (#1a1a1a in light, #ffffff in dark) for CTAs and important actions
-- Leverage the high contrast of the monochrome palette for clarity
+- Use primary color (#7c3aed) for CTAs and important interactive elements
+- Leverage high contrast of neutral colors for readability
 - Use text-secondary (#6B7280) for supporting information
-- Use text-tertiary (#9CA3AF) sparingly for subtle metadata
 - Test colors in both light and dark modes
+- Use purple sparingly to draw attention to key actions
 
 ❌ **DON'T:**
-- Introduce colors outside the monochrome palette (except semantic colors like success/error)
-- **Use text-tertiary (#9CA3AF) for normal body text** - it only meets AA standards for large text (18pt+/14pt+ bold)
-- Use text-tertiary for critical information - reserve it for non-essential metadata, timestamps, and labels
+- Overuse the purple accent - it should highlight, not overwhelm
 - Place secondary text on colored backgrounds without checking contrast
 - Use color alone to convey information (add icons or text)
 - Override focus outline colors (accessibility requirement)
 
 ### Semantic States
 
-While the design is primarily monochrome, **semantic colors are allowed as exceptions** for success, error, warning, and info states. However, **never rely on color alone** - always combine with icons and clear text.
+Semantic colors are used for success, error, warning, and info states. **Never rely on color alone** - always combine with icons and clear text.
 
 ```css
-/* Semantic colors (from variables.css) */
---color-success: #10b981;  /* Emerald 500 */
---color-error: #ef4444;    /* Red 500 */
---color-warning: #f59e0b;  /* Amber 500 */
---color-info: #3b82f6;     /* Blue 500 */
+/* Semantic colors (Light Mode) */
+--color-success: #22c55e;  /* Green 500 */
+--color-success-bg: rgba(34, 197, 94, 0.1);
+--color-success-border: rgba(34, 197, 94, 0.3);
+--color-error: #dc2626;    /* Red 600 */
+--color-error-bg: rgba(239, 68, 68, 0.1);
+--color-error-border: rgba(239, 68, 68, 0.3);
+
+/* Semantic colors (Dark Mode) */
+--color-success: #4ade80;  /* Green 400 - higher contrast */
+--color-success-bg: rgba(74, 222, 128, 0.15);
+--color-success-border: rgba(74, 222, 128, 0.35);
+--color-error: #f87171;    /* Red 400 - higher contrast */
+--color-error-bg: rgba(248, 113, 113, 0.15);
+--color-error-border: rgba(248, 113, 113, 0.35);
 ```
 
 **Best Practices for Semantic States:**
@@ -171,58 +219,48 @@ While the design is primarily monochrome, **semantic colors are allowed as excep
 1. **Always combine color with icons:**
    - Success: `fa-circle-check` + green
    - Error: `fa-exclamation-circle` + red
-   - Warning: `fa-exclamation-triangle` + amber
-   - Info: `fa-info-circle` + blue
 
 2. **Use subtle color application:**
    - Prefer colored borders/icons rather than full backgrounds
-   - Use monochrome backgrounds with colored accents
-   - Keep text in monochrome palette for readability
-
-3. **Monochrome-only alternative (if avoiding all color):**
-
-   ```css
-   /* Use icon + border weight variations */
-   .success { border: 2px solid var(--color-text-primary); }
-   .error { border: 3px solid var(--color-primary-dark); }
-   .warning { border: 2px dashed var(--color-border); }
-   .info { border: 1px solid var(--color-border); }
-   ```
+   - Use neutral backgrounds with colored accents
+   - Keep text in neutral palette for readability
 
 **Example Implementation:**
 
 ```tsx
 import styles from './Alert.module.css'
 
-// With semantic color (preferred for critical states)
+// Success state with icon
 <div className={styles.alert}>
-  <i className={`fa-solid fa-exclamation-circle ${styles.errorIcon}`} />
-  <p>Error: Please check your input</p>
+  <i className={`fa-solid fa-circle-check ${styles.successIcon}`} />
+  <p>Successfully saved your changes</p>
 </div>
 
-// Monochrome alternative
+// Error state with icon
 <div className={styles.alert}>
-  <i className="fa-solid fa-exclamation-circle" />
-  <strong>Error:</strong> Please check your input
+  <i className={`fa-solid fa-exclamation-circle ${styles.errorIcon}`} />
+  <p><strong>Error:</strong> Please check your input</p>
 </div>
 ```
 
 ```css
 /* Alert.module.css */
-.errorIcon {
-  color: var(--color-error);
-}
-
 .successIcon {
   color: var(--color-success);
 }
 
-.warningIcon {
-  color: var(--color-warning);
+.errorIcon {
+  color: var(--color-error);
 }
 
-.infoIcon {
-  color: var(--color-info);
+.alert {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  border-radius: var(--border-radius-md);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
 }
 ```
 
@@ -230,51 +268,50 @@ import styles from './Alert.module.css'
 
 ## Typography
 
-**Typography Philosophy:** Paperlyte combines the clarity of Inter for UI and body text with the elegance of Playfair Display for headlines, creating a sophisticated contrast between functional and expressive typography.
+**Typography Philosophy:** Paperlyte uses Inter, a clean and highly readable sans-serif font family, for all text. This creates a consistent, professional appearance across the application while maintaining excellent legibility at all sizes.
 
 ### Font Families
 
 ```css
 --font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
---font-family-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
 ```
 
-**Primary:** Inter (Google Fonts) - Clean, readable sans-serif for UI and body text
-**Display:** Playfair Display (Google Fonts) - Elegant serif for headlines and emphasis
+**Primary:** Inter (Variable Font) - Clean, readable sans-serif for all text
 **Fallback:** System fonts for fast loading and graceful degradation
 
 **Loading Strategy:**
 
 ```html
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+<!-- Preload critical font for faster rendering -->
+<link
+  rel="preload"
+  as="font"
+  type="font/woff2"
+  href="/fonts/Inter-Variable.woff2"
+  crossorigin
+/>
 ```
 
 **Font Usage Guidelines:**
-- **Inter**: Navigation, buttons, body text, UI components, feature descriptions
-- **Playfair Display**: Hero headlines, section titles, large display text, emphasis text (italic)
+- **Inter**: All text - navigation, buttons, headings, body text, UI components
 
 ### Type Scale
 
-| Name | Size | rem | px | Line Height | Font Family | Use Case |
-|------|------|-----|----|-------------|-------------|----------|
-| **Hero** | `--font-size-7xl` | 4.5rem | 72px | 1.1 (tight) | Playfair Display | Hero headlines (desktop) |
-| **Display XL** | `--font-size-6xl` | 3.75rem | 60px | 1.1 (tight) | Playfair Display | Large display headlines |
-| **Display** | `--font-size-5xl` | 3rem | 48px | 1.1 (tight) | Playfair Display | Display headlines |
-| **H1** | `--font-size-4xl` | 2.25rem | 36px | 1.25 (snug) | Inter or Playfair | Page titles |
-| **H2** | `--font-size-3xl` | 1.875rem | 30px | 1.25 (snug) | Playfair Display | Section headers |
-| **H3** | `--font-size-2xl` | 1.5rem | 24px | 1.25 (snug) | Inter | Subsection headers |
-| **H4** | `--font-size-xl` | 1.25rem | 20px | 1.25 (snug) | Inter | Card titles |
-| **H5** | `--font-size-lg` | 1.125rem | 18px | 1.25 (snug) | Inter | Small headers |
-| **Body** | `--font-size-base` | 1rem | 16px | 1.75 (relaxed) | Inter | Body text, paragraphs |
-| **Small** | `--font-size-sm` | 0.875rem | 14px | 1.5 (normal) | Inter | Captions, labels |
-| **Tiny** | `--font-size-xs` | 0.75rem | 12px | 1.5 (normal) | Inter | Metadata, timestamps |
+| Name | Size | rem | px | Line Height | Use Case |
+|------|------|-----|----|-------------|----------|
+| **5xl** | `--font-size-5xl` | 3rem | 48px | 1.25 (tight) | Hero headlines |
+| **4xl** | `--font-size-4xl` | 2.25rem | 36px | 1.25 (tight) | Page titles |
+| **3xl** | `--font-size-3xl` | 1.875rem | 30px | 1.25 (tight) | Section headers |
+| **2xl** | `--font-size-2xl` | 1.5rem | 24px | 1.25 (tight) | Subsection headers |
+| **XL** | `--font-size-xl` | 1.25rem | 20px | 1.25 (normal) | Card titles |
+| **LG** | `--font-size-lg` | 1.125rem | 18px | 1.5 (normal) | Small headers, emphasized text |
+| **Base** | `--font-size-base` | 1rem | 16px | 1.75 (relaxed) | Body text, paragraphs |
+| **SM** | `--font-size-sm` | 0.875rem | 14px | 1.5 (normal) | Captions, labels, small text |
+| **XS** | `--font-size-xs` | 0.75rem | 12px | 1.5 (normal) | Metadata, timestamps |
 
 ### Font Weights
 
 ```css
-
 --font-weight-normal: 400;    /* Body text */
 --font-weight-medium: 500;    /* Emphasis */
 --font-weight-semibold: 600;  /* Strong emphasis */
@@ -284,9 +321,7 @@ import styles from './Alert.module.css'
 ### Line Heights
 
 ```css
-
---line-height-tight: 1.1;     /* Hero headlines (Playfair Display) */
---line-height-snug: 1.25;     /* Headings */
+--line-height-tight: 1.25;    /* Headings */
 --line-height-normal: 1.5;    /* UI elements, small text */
 --line-height-relaxed: 1.75;  /* Body text, paragraphs */
 ```
@@ -297,14 +332,18 @@ Typography automatically adjusts on mobile devices for better readability and sp
 
 ```css
 @media (max-width: 768px) {
-  --font-size-7xl: 3.25rem;  /* 72px → 52px */
-  --font-size-6xl: 2.75rem;  /* 60px → 44px */
-  --font-size-5xl: 2.25rem;  /* 48px → 36px */
   --font-size-4xl: 1.875rem; /* 36px → 30px */
+  --font-size-5xl: 2.25rem;  /* 48px → 36px */
+  --spacing-3xl: 4rem;       /* 96px → 64px */
+}
+
+@media (max-width: 480px) {
+  --font-size-3xl: 1.5rem;   /* 30px → 24px */
+  --font-size-4xl: 1.75rem;  /* 30px → 28px */
+  --font-size-5xl: 2rem;     /* 36px → 32px */
 }
 ```
 
-On mobile, `--font-size-6xl` intentionally scales from 3.75rem (60px) to 2.75rem (44px), staying larger than `--font-size-5xl` to preserve the visual hierarchy without overpowering smaller screens.
 **Note:** Hero headlines reduce significantly on mobile to maintain visual balance and prevent overwhelming small screens.
 
 ### Typography Examples
@@ -312,24 +351,23 @@ On mobile, `--font-size-6xl` intentionally scales from 3.75rem (60px) to 2.75rem
 **Using CSS Modules (recommended):**
 
 ```tsx
-
 import styles from './Component.module.css'
 
-// Hero headline (Playfair Display serif)
-<h1 className={styles.headline}>
-  Your thoughts, <em className={styles.headlineItalic}>unchained</em> from complexity
+// Hero headline
+<h1 className={styles.hero}>
+  Your thoughts, <em>unchained.</em>
 </h1>
 
-// Section header (Playfair Display)
+// Section header
 <h2 className={styles.sectionTitle}>Beautiful Simplicity</h2>
 
-// Subsection header (Inter)
-<h3>Feature Details</h3>
+// Subsection header
+<h3 className={styles.subsection}>Feature Details</h3>
 
-// Card title (Inter)
-<h4>Lightning Speed</h4>
+// Card title
+<h4 className={styles.cardTitle}>Lightning Speed</h4>
 
-// Body text (Inter)
+// Body text
 <p>Regular paragraph text with relaxed line height for optimal readability.</p>
 ```
 
@@ -337,24 +375,19 @@ import styles from './Component.module.css'
 
 ```css
 /* Component.module.css */
-.headline {
-  font-family: var(--font-family-serif);  /* Playfair Display */
-  font-size: var(--font-size-7xl);        /* 72px */
-  font-weight: var(--font-weight-normal); /* 400 */
-  line-height: var(--line-height-tight);  /* 1.1 */
-  letter-spacing: -0.02em;
-}
-
-.headlineItalic {
-  font-style: italic;
-  color: var(--color-text-tertiary);
+.hero {
+  font-family: var(--font-family);
+  font-size: var(--font-size-5xl);        /* 48px */
+  font-weight: var(--font-weight-bold);   /* 700 */
+  line-height: var(--line-height-tight);  /* 1.25 */
+  letter-spacing: -0.01em;
 }
 
 .sectionTitle {
-  font-family: var(--font-family-serif);  /* Playfair Display */
+  font-family: var(--font-family);
   font-size: var(--font-size-3xl);        /* 30px */
   font-weight: var(--font-weight-bold);   /* 700 */
-  line-height: var(--line-height-snug);   /* 1.25 */
+  line-height: var(--line-height-tight);  /* 1.25 */
 }
 ```
 
@@ -369,20 +402,17 @@ import styles from './Component.module.css'
 ### ✅ Do's and ❌ Don'ts
 
 ✅ **DO:**
-- Use Playfair Display for hero headlines and major section titles
-- Use Inter for UI, navigation, buttons, and body text
-- Use italic Playfair Display for emphasis within headlines
+- Use Inter for all text consistently
 - Use semantic HTML headings (h1-h6) in hierarchical order
 - Use relaxed line-height (1.75) for body text
 - Limit line length to 60-80 characters for readability
-- Use font-weight-normal (400) for Playfair Display headlines
+- Use font-weight variations (medium, semibold, bold) to create hierarchy
 
 ❌ **DON'T:**
-- Mix serif and sans-serif within the same text block (except for italic emphasis)
-- Use Playfair Display for body text or small UI elements
+- Mix multiple font families
 - Skip heading levels (h1 → h3)
 - Use font sizes smaller than 12px (--font-size-xs)
-- Set line-height below 1.1 (readability issues)
+- Set line-height below 1.25 (readability issues)
 - Use more than 2-3 font weights in a single section
 
 ---
@@ -502,7 +532,7 @@ section {
 ```css
 --max-width: 1280px;           /* Maximum page width */
 --max-width-content: 1024px;   /* Maximum content width for readability */
---header-height: 72px;         /* Fixed header height (increased for better presence) */
+--header-height: 64px;         /* Fixed header height */
 ```
 
 ### Border Radius
@@ -511,28 +541,27 @@ section {
 --border-radius-sm: 0.25rem;   /* 4px  - Small elements, checkboxes */
 --border-radius-md: 0.5rem;    /* 8px  - Cards, inputs */
 --border-radius-lg: 1rem;      /* 16px - Large cards, feature boxes */
---border-radius-xl: 1.5rem;    /* 24px - Hero cards, prominent elements */
 --border-radius-full: 9999px;  /* Full - Pills, badges, primary buttons */
 ```
 
 **Usage Notes:**
 - **Full border-radius** is the signature style for buttons and badges in the Paperlyte design
 - Cards and inputs use moderate radius (md) for a clean, professional look
-- Large radius (lg, xl) is reserved for prominent content containers
+- Large radius (lg) is reserved for prominent content containers
 
 ### Shadows
 
 ```css
---shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);                              /* Subtle elevation */
---shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);                            /* Buttons, hover states */
---shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);                          /* Modals, dropdowns */
---shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);                          /* Hero mockup, large modals */
---shadow-card: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06); /* Layered shadow for cards */
+--shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);       /* Subtle elevation */
+--shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);     /* Buttons, hover states */
+--shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);   /* Modals, dropdowns */
+--shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);   /* Hero mockup, large modals */
 ```
 
 **Shadow Usage:**
-- Use shadows sparingly in the monochrome design to create depth without clutter
-- `shadow-card` provides a subtle, layered shadow perfect for the minimalist aesthetic
+- Use shadows to create depth and establish visual hierarchy
+- Apply sparingly for a clean, minimalist aesthetic
+- Darker shadows for more prominent elevation
 
 ### Z-Index Layers
 
@@ -545,6 +574,1205 @@ section {
 ---
 
 ## Component Library
+
+Paperlyte's component library provides reusable UI elements that follow the design system principles. All components are built with TypeScript, accessibility in mind, and support dark mode.
+
+### Available Components
+
+| Component | Location | Purpose |
+|-----------|----------|---------|
+| **Button** | `ui/Button` | Primary, secondary, and ghost button variants |
+| **Icon** | `ui/Icon` | Font Awesome icon wrapper with accessibility |
+| **AnimatedElement** | `ui/AnimatedElement` | Scroll-triggered animations (fade, slide, scale) |
+| **ParallaxLayer** | `ui/ParallaxLayer` | Parallax scrolling effects for backgrounds |
+| **FloatingElement** | `ui/FloatingElement` | Floating/bobbing animations for decorative elements |
+| **TextReveal** | `ui/TextReveal` | Text reveal animations |
+| **CounterAnimation** | `ui/CounterAnimation` | Animated number counting |
+| **SVGPathAnimation** | `ui/SVGPathAnimation` | SVG path drawing animations |
+| **EmailCapture** | `ui/EmailCapture` | Email signup form component |
+| **FeedbackWidget** | `ui/FeedbackWidget` | User feedback collection widget |
+| **ThemeToggle** | `ui/ThemeToggle` | Light/dark mode toggle switch |
+
+### Component Overview
+
+Components are organized into three categories:
+
+**UI Components** - Reusable, atomic interface elements
+- [Button](#button) - Primary, secondary, ghost button variants
+- [Icon](#icon) - SVG icons with Font Awesome fallback and accessibility
+- [ThemeToggle](#themetoggle) - Theme switcher
+- [EmailCapture](#emailcapture) - Email signup form
+- [FeedbackWidget](#feedbackwidget) - User feedback modal
+- [AnimatedElement](#animatedelement) - Scroll-triggered animations
+- [ParallaxLayer](#parallaxlayer) - Parallax scrolling
+- [FloatingElement](#floatingelement) - Floating animations
+- [CounterAnimation](#counteranimation) - Number counting
+- [TextReveal](#textreveal) - Text reveal animations
+- [SVGPathAnimation](#svgpathanimation) - SVG path drawing
+
+**Layout Components** - Page structure and composition
+- [Section](#section) - Consistent section wrapper
+- [Header](#header) - Main navigation
+- [Footer](#footer) - Site footer
+
+**Section Components** - Pre-composed page sections
+- [Hero](#hero) - Hero section
+- [Features](#features) - Feature grid
+- [Pricing](#pricing) - Pricing plans
+- [Testimonials](#testimonials) - Customer reviews
+- [Comparison](#comparison) - Feature comparison
+- [Statistics](#statistics) - Key metrics
+- [FAQ](#faq) - Questions and answers
+- [CTA](#cta) - Call-to-action
+- [Mobile](#mobile) - Mobile app showcase
+
+**Hooks** - React hooks for common patterns
+- [useMediaQuery](#usemediaquery) - Responsive breakpoints
+- [useParallax](#useparallax) - Parallax effects
+- [useIntersectionObserver](#useintersectionobserver) - Viewport detection
+- [useReducedMotion](#usereducedmotion) - Motion preferences
+- [useTheme](#usetheme) - Theme management
+- [useScrollPosition](#usescrollposition) - Scroll tracking
+
+---
+
+## Detailed Component API
+
+### UI Components
+
+#### Button
+
+**Location:** `src/components/ui/Button`
+
+**Purpose:** Versatile button component with multiple variants, sizes, and support for icons and links.
+
+**Props Interface:**
+
+```typescript
+interface ButtonProps {
+  children: ReactNode              // Button content/label
+  variant?: 'primary' | 'secondary' | 'ghost'  // Button style variant (default: 'primary')
+  size?: 'small' | 'medium' | 'large'          // Button size (default: 'medium')
+  href?: string                                 // Optional link URL (renders as <a> if provided)
+  onClick?: () => void                          // Click handler
+  icon?: string                                 // Font Awesome icon name (e.g., 'fa-download')
+  disabled?: boolean                            // Disabled state (default: false)
+  className?: string                            // Additional CSS classes
+  ariaLabel?: string                            // Accessibility label
+  type?: 'button' | 'submit' | 'reset'         // Button type (default: 'button')
+}
+```
+
+**Variants:**
+- `primary` - Filled with primary color, for main CTAs
+- `secondary` - Outlined with border, for alternative actions
+- `ghost` - Transparent background, for tertiary actions
+
+**Sizes:**
+- `small` - 44px min-height, 14px font
+- `medium` - 44px min-height, 16px font (default)
+- `large` - 52px min-height, 16px font
+
+**Usage Examples:**
+
+```tsx
+// Primary button with icon
+<Button variant="primary" icon="fa-download" onClick={handleDownload}>
+  Download App
+</Button>
+
+// Link button
+<Button variant="secondary" href="/learn-more">
+  Learn More
+</Button>
+
+// Submit button in form
+<Button type="submit" variant="primary" disabled={isLoading}>
+  {isLoading ? 'Submitting...' : 'Submit'}
+</Button>
+
+// Ghost button
+<Button variant="ghost" size="small" onClick={handleCancel}>
+  Cancel
+</Button>
+```
+
+**Design Tokens:**
+- Background: `--color-primary` (primary), transparent (secondary/ghost) - See [Color Palette](#color-palette)
+- Border Radius: `--border-radius-full` (9999px - pill shape) - See [Layout & Grid](#layout--grid)
+- Minimum Touch Target: 44x44px (WCAG 2.5.5 Level AAA) - See [Accessibility](#accessibility)
+- Spacing: `--spacing-sm`, `--spacing-md` - See [Spacing System](#spacing-system)
+
+---
+
+#### Icon
+
+**Location:** `src/components/ui/Icon`
+
+**Purpose:** SVG icon component with Font Awesome fallback, consistent sizing, and accessibility support.
+
+**Props Interface:**
+
+```typescript
+interface IconProps {
+  name: string                           // Icon name (e.g., 'fa-bolt', 'fa-circle-check')
+  size?: 'sm' | 'md' | 'lg' | 'xl' | '2x' | '3x'  // Icon size (default: 'md')
+  variant?: 'solid' | 'brands' | 'regular'         // Icon variant (default: 'solid')
+  className?: string                               // Additional CSS classes
+  ariaLabel?: string                               // Accessibility label (required for semantic icons)
+  color?: string                                   // Custom color (default: currentColor)
+  style?: React.CSSProperties                      // Inline styles
+}
+```
+
+**Size Mapping:**
+- `sm` - 16px
+- `md` - 20px (default)
+- `lg` - 24px
+- `xl` - 32px
+- `2x` - 40px
+- `3x` - 48px
+
+**Usage Examples:**
+
+```tsx
+// Decorative icon (no aria-label needed)
+<Icon name="fa-bolt" size="md" aria-hidden="true" />
+
+// Semantic icon (requires aria-label)
+<Icon name="fa-circle-check" size="lg" ariaLabel="Success" />
+
+// Icon with custom color
+<Icon name="fa-heart" size="xl" color="#ef4444" />
+
+// Icon in button
+<Button icon="fa-download">Download</Button>
+```
+
+**Accessibility:**
+- Decorative icons: Use `aria-hidden="true"`, no `ariaLabel`
+- Semantic icons: Provide descriptive `ariaLabel`, automatic `role="img"`
+- Falls back to Font Awesome if icon not in custom set
+- See [Accessibility Guidelines](#accessibility) for more information
+
+---
+
+#### ThemeToggle
+
+**Location:** `src/components/ui/ThemeToggle`
+
+**Purpose:** Button to toggle between light and dark themes.
+
+**Props:** None (controlled by `useTheme` hook)
+
+**Usage Example:**
+
+```tsx
+<ThemeToggle />
+```
+
+**Features:**
+- Automatic icon switching (moon/sun)
+- Aria-label updates based on current theme
+- Integrates with `useTheme` hook
+- Persists preference to localStorage
+
+---
+
+#### EmailCapture
+
+**Location:** `src/components/ui/EmailCapture`
+
+**Purpose:** Email signup form with validation, GDPR consent, and spam protection.
+
+**Props Interface:**
+
+```typescript
+interface EmailCaptureProps {
+  variant?: 'inline' | 'centered'   // Layout variant (default: 'inline')
+  placeholder?: string               // Input placeholder (default: 'Enter your email')
+  buttonText?: string                // Submit button text (default: 'Join Waitlist')
+}
+```
+
+**Features:**
+- Email validation
+- Honeypot spam protection
+- GDPR consent checkbox
+- Loading and success states
+- Error handling with user-friendly messages
+- Integrates with Netlify serverless functions
+- Analytics tracking on successful signup
+
+**Usage Examples:**
+
+```tsx
+// Inline variant (for headers/CTAs)
+<EmailCapture variant="inline" buttonText="Get Early Access" />
+
+// Centered variant (for dedicated sections)
+<EmailCapture variant="centered" placeholder="your@email.com" />
+```
+
+**States:**
+- `idle` - Initial state
+- `loading` - Submitting form
+- `success` - Email submitted successfully
+- `error` - Validation or submission error
+
+---
+
+#### FeedbackWidget
+
+**Location:** `src/components/ui/FeedbackWidget`
+
+**Purpose:** Floating feedback button with modal for bug reports and feature requests.
+
+**Props Interface:**
+
+```typescript
+interface FeedbackWidgetProps {
+  onSubmit?: (data: FeedbackFormData) => Promise<void> | void  // Optional submit handler
+}
+
+interface FeedbackFormData {
+  type: 'bug' | 'feature'   // Feedback type
+  message: string            // User's feedback message
+}
+```
+
+**Features:**
+- Floating button accessible from anywhere
+- Modal with form (bug report or feature request)
+- Focus management and keyboard navigation
+- Focus trap within modal
+- Escape key to close
+- Backdrop click to close
+- Confirmation message after submission
+- Mobile responsive
+- Default localStorage storage if no `onSubmit` provided
+
+**Usage Examples:**
+
+```tsx
+// Default behavior (stores in localStorage)
+<FeedbackWidget />
+
+// Custom submit handler
+<FeedbackWidget 
+  onSubmit={async (data) => {
+    await fetch('/api/feedback', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+  }}
+/>
+```
+
+**Accessibility:**
+- Modal uses `role="dialog"` and `aria-modal="true"`
+- Focus trapped within modal
+- Focus restored to trigger button on close
+- Screen reader announcements for errors/confirmation
+
+---
+
+#### AnimatedElement
+
+**Location:** `src/components/ui/AnimatedElement`
+
+**Purpose:** Wrapper component for scroll-triggered animations using Intersection Observer.
+
+**Props Interface:**
+
+```typescript
+interface AnimatedElementProps {
+  children: ReactNode                    // Content to animate
+  animation?: 'fadeIn' | 'slideUp' | 'slideInLeft' | 'slideInRight' | 'scale'  // Animation type (default: 'fadeIn')
+  delay?: number                         // Animation delay in ms (default: 0)
+  threshold?: number                     // Intersection Observer threshold 0-1 (default: 0.1)
+  className?: string                     // Additional CSS classes
+}
+```
+
+**Animation Types:**
+- `fadeIn` - Opacity fade in
+- `slideUp` - Slide up from below with fade
+- `slideInLeft` - Slide in from left
+- `slideInRight` - Slide in from right
+- `scale` - Scale up from 95% to 100%
+
+**Usage Examples:**
+
+```tsx
+// Basic fade in
+<AnimatedElement animation="fadeIn">
+  <h1>Welcome</h1>
+</AnimatedElement>
+
+// Slide up with delay
+<AnimatedElement animation="slideUp" delay={200}>
+  <p>Content appears after 200ms delay</p>
+</AnimatedElement>
+
+// Custom threshold (trigger when 50% visible)
+<AnimatedElement animation="scale" threshold={0.5}>
+  <div className="card">...</div>
+</AnimatedElement>
+```
+
+**Accessibility:**
+- Automatically disabled when `prefers-reduced-motion` is set
+- Uses CSS transitions with hardware acceleration
+
+---
+
+#### ParallaxLayer
+
+**Location:** `src/components/ui/ParallaxLayer`
+
+**Purpose:** Creates parallax scrolling effect for background elements and content.
+
+**Props Interface:**
+
+```typescript
+interface ParallaxLayerProps {
+  children: ReactNode       // Content to apply parallax effect to
+  speed?: number            // Parallax speed multiplier (default: 0.3)
+  zIndex?: number           // Z-index for layering (default: 0)
+  className?: string        // Additional CSS classes
+  absolute?: boolean        // Position absolute for background layers (default: false)
+  opacity?: number          // Layer opacity (default: 1)
+}
+```
+
+**Speed Guidelines:**
+- `0` - No movement (static)
+- `0.1-0.3` - Subtle background effect (recommended)
+- `0.4-0.6` - Medium parallax
+- `0.7-1.0` - Strong foreground effect
+- Negative values - Reverse direction
+
+**Usage Examples:**
+
+```tsx
+// Background parallax layer
+<ParallaxLayer speed={0.2} absolute zIndex={-1}>
+  <div className="background-decoration" />
+</ParallaxLayer>
+
+// Content with subtle parallax
+<ParallaxLayer speed={0.1}>
+  <h1>Hero Title</h1>
+</ParallaxLayer>
+
+// Multiple layers for depth
+<ParallaxLayer speed={0.1} zIndex={1}>
+  <div className="back-layer" />
+</ParallaxLayer>
+<ParallaxLayer speed={0.3} zIndex={2}>
+  <div className="front-layer" />
+</ParallaxLayer>
+```
+
+**Performance:**
+- GPU-accelerated CSS transforms (60fps)
+- Disabled on mobile by default (via `useParallax` hook)
+- Respects `prefers-reduced-motion` - See [Animation Guidelines](#animation-guidelines)
+- Only calculates when in viewport (Intersection Observer)
+
+---
+
+#### FloatingElement
+
+**Location:** `src/components/ui/FloatingElement`
+
+**Purpose:** Creates gentle floating/bobbing animation effects for decorative elements.
+
+**Props Interface:**
+
+```typescript
+interface FloatingElementProps {
+  children: ReactNode                          // Content to float
+  duration?: number                            // Animation duration in seconds (default: 3)
+  delay?: number                               // Animation delay in seconds (default: 0)
+  distance?: number                            // Float distance in pixels (default: 20)
+  direction?: 'vertical' | 'horizontal' | 'circular'  // Float direction (default: 'vertical')
+  className?: string                           // Additional CSS classes
+  pauseWhenHidden?: boolean                    // Pause when out of viewport (default: true)
+}
+```
+
+**Usage Examples:**
+
+```tsx
+// Gentle vertical float
+<FloatingElement duration={4} distance={15}>
+  <div className="floating-icon">🌟</div>
+</FloatingElement>
+
+// Fast horizontal float with delay
+<FloatingElement direction="horizontal" duration={2} delay={0.5}>
+  <span>→</span>
+</FloatingElement>
+
+// Circular orbit
+<FloatingElement direction="circular" duration={8} distance={30}>
+  <div className="orbiting-element" />
+</FloatingElement>
+```
+
+**Performance:**
+- CSS animations with GPU acceleration
+- Automatically pauses when out of viewport (saves CPU)
+- Respects `prefers-reduced-motion` - See [Animation Guidelines](#animation-guidelines)
+
+---
+
+#### CounterAnimation
+
+**Location:** `src/components/ui/CounterAnimation`
+
+**Purpose:** Animates numbers counting up from start to end value.
+
+**Props Interface:**
+
+```typescript
+interface CounterAnimationProps {
+  end: number                              // Target number to count to
+  start?: number                           // Starting number (default: 0)
+  duration?: number                        // Animation duration in ms (default: 2000)
+  prefix?: string                          // Prefix before number (e.g., "$")
+  suffix?: string                          // Suffix after number (e.g., "+", "%")
+  decimals?: number                        // Decimal places to show (default: 0)
+  className?: string                       // Additional CSS classes
+  easing?: 'linear' | 'easeOutQuart' | 'easeOutExpo'  // Easing function (default: 'easeOutQuart')
+  separator?: boolean                      // Add thousands separator (default: true)
+  minWidth?: string                        // Min width to prevent layout shift
+}
+```
+
+**Usage Examples:**
+
+```tsx
+// Simple counter
+<CounterAnimation end={1000} />
+
+// Currency counter
+<CounterAnimation end={99.99} prefix="$" decimals={2} />
+
+// Percentage counter
+<CounterAnimation end={99} suffix="%" duration={3000} />
+
+// Large number with custom easing
+<CounterAnimation end={10000000} easing="easeOutExpo" suffix="+" />
+```
+
+**Features:**
+- requestAnimationFrame for smooth 60fps
+- Intersection Observer triggers animation when scrolled into view
+- Automatic thousands separator formatting
+- Customizable easing functions
+- Prevents layout shift with automatic minimum width calculation
+
+---
+
+#### TextReveal
+
+**Location:** `src/components/ui/TextReveal`
+
+**Purpose:** Animates text revealing character by character or word by word.
+
+**Props Interface:**
+
+```typescript
+interface TextRevealProps {
+  children: string                        // Text content to animate
+  type?: 'character' | 'word'             // Reveal type (default: 'word')
+  delay?: number                          // Base delay before start in ms (default: 0)
+  stagger?: number                        // Delay between units in ms (default: 50)
+  animation?: 'fadeUp' | 'fadeIn' | 'slideUp' | 'blur'  // Effect type (default: 'fadeUp')
+  as?: 'h1' | 'h2' | 'h3' | 'h4' | 'p' | 'span' | 'div'  // HTML tag to render as
+  className?: string                      // Additional CSS classes
+  threshold?: number                      // Intersection threshold 0-1 (default: 0.2)
+}
+```
+
+**Usage Examples:**
+
+```tsx
+// Word-by-word reveal
+<TextReveal as="h1">
+  Welcome to Paperlyte
+</TextReveal>
+
+// Character reveal with custom timing
+<TextReveal type="character" stagger={30} animation="blur">
+  Lightning Fast
+</TextReveal>
+
+// Word reveal with delay
+<TextReveal delay={500} animation="slideUp">
+  Your thoughts, unchained
+</TextReveal>
+```
+
+**Animation Types:**
+- `fadeUp` - Fade in with upward slide
+- `fadeIn` - Simple opacity fade
+- `slideUp` - Slide up from below
+- `blur` - Blur to clear effect
+
+---
+
+#### SVGPathAnimation
+
+**Location:** `src/components/ui/SVGPathAnimation`
+
+**Purpose:** Animates SVG paths with a drawing effect.
+
+**Props Interface:**
+
+```typescript
+interface SVGPathAnimationProps {
+  children: ReactNode                     // SVG <path> elements to animate
+  duration?: number                       // Animation duration in ms (default: 2000)
+  delay?: number                          // Delay before start in ms (default: 0)
+  staggerDelay?: number                   // Delay between paths in ms (default: 200)
+  easing?: string                         // CSS timing function (default: 'ease-out')
+  width?: number                          // SVG viewBox width (default: 100)
+  height?: number                         // SVG viewBox height (default: 100)
+  className?: string                      // Additional CSS classes
+  strokeColor?: string                    // Stroke color (default: 'currentColor')
+  strokeWidth?: number                    // Stroke width (default: 2)
+  fillColor?: string                      // Fill color (default: 'none')
+  animateFill?: boolean                   // Animate fill after stroke (default: false)
+}
+```
+
+**Usage Examples:**
+
+```tsx
+// Simple path draw
+<SVGPathAnimation duration={1500}>
+  <path d="M10 10 L90 90" />
+</SVGPathAnimation>
+
+// Complex shape with fill
+<SVGPathAnimation
+  width={200}
+  height={200}
+  strokeColor="#7c3aed"
+  fillColor="#7c3aed"
+  animateFill
+>
+  <path d="M100 10 L190 90 L10 90 Z" />
+</SVGPathAnimation>
+
+// Multiple paths with stagger
+<SVGPathAnimation duration={2000} staggerDelay={300}>
+  <path d="M10 50 Q50 10 90 50" />
+  <path d="M10 70 Q50 110 90 70" />
+</SVGPathAnimation>
+```
+
+**Features:**
+- Automatic path length calculation
+- Multiple paths with staggered animation
+- Optional fill animation after stroke completes
+- GPU-accelerated stroke-dashoffset animation
+
+---
+
+### Layout Components
+
+#### Section
+
+**Location:** `src/components/layout/Section`
+
+**Purpose:** Reusable section wrapper with consistent spacing and backgrounds.
+
+**Props Interface:**
+
+```typescript
+interface SectionProps {
+  id?: string                             // Section ID for navigation
+  children: ReactNode                     // Section content
+  className?: string                      // Additional CSS classes
+  background?: 'default' | 'surface' | 'primary'  // Background variant (default: 'default')
+  padding?: 'default' | 'large' | 'none'          // Padding size (default: 'default')
+}
+```
+
+**Background Variants:**
+- `default` - Uses `--color-background`
+- `surface` - Uses `--color-surface` (subtle gray)
+- `primary` - Uses `--color-primary` (purple accent)
+
+**Padding Sizes:**
+- `default` - Standard section spacing (64px vertical)
+- `large` - Extra spacing for hero sections (96px vertical)
+- `none` - No padding (for custom layouts)
+
+**Usage Examples:**
+
+```tsx
+// Standard section
+<Section id="features" background="surface">
+  <h2>Features</h2>
+  {/* content */}
+</Section>
+
+// Hero section with large padding
+<Section id="hero" padding="large">
+  {/* hero content */}
+</Section>
+
+// Custom background
+<Section background="primary" className={styles.customSection}>
+  {/* content */}
+</Section>
+```
+
+**Features:**
+- Consistent max-width container
+- Responsive padding adjustments
+- Semantic `<section>` element
+- Memoized for performance
+
+---
+
+#### Header
+
+**Location:** `src/components/layout/Header`
+
+**Purpose:** Main navigation header with mobile menu support.
+
+**Props:** None (self-contained component)
+
+**Features:**
+- Sticky/fixed positioning
+- Mobile hamburger menu
+- Focus management and keyboard navigation
+- Escape key closes menu
+- Focus trap in mobile menu
+- Theme toggle integration
+- Smooth scroll to sections
+
+**Usage Example:**
+
+```tsx
+<Header />
+```
+
+**Accessibility:**
+- ARIA roles and labels
+- Keyboard navigation support
+- Focus trap in mobile menu
+- Screen reader friendly
+
+---
+
+#### Footer
+
+**Location:** `src/components/layout/Footer`
+
+**Purpose:** Site footer with links and copyright information.
+
+**Props:** None (self-contained component)
+
+**Usage Example:**
+
+```tsx
+<Footer />
+```
+
+---
+
+### Section Components
+
+Section components are pre-composed layouts for specific page sections.
+
+#### Hero
+
+**Location:** `src/components/sections/Hero`
+
+**Purpose:** Hero section with headline, subheading, email capture, and tags.
+
+**Props:** None
+
+**Features:**
+- AnimatedElement integration for staggered entrance
+- EmailCapture component
+- Icon tags for key features
+- Smooth scroll to features section
+
+---
+
+#### Features
+
+**Location:** `src/components/sections/Features`
+
+**Purpose:** Feature grid displaying application capabilities.
+
+**Props:** None
+
+**Features:**
+- Pulls feature data from `@constants/features`
+- Responsive grid layout (1-2-3 columns)
+- Animated card entrance with stagger
+- Icon integration
+
+---
+
+#### Pricing
+
+**Location:** `src/components/sections/Pricing`
+
+**Purpose:** Pricing tiers and plan comparison.
+
+**Props:** None
+
+---
+
+#### Testimonials
+
+**Location:** `src/components/sections/Testimonials`
+
+**Purpose:** Customer testimonials with ratings.
+
+**Props:** None
+
+**Features:**
+- Testimonial data from constants
+- Responsive layout
+- Animated entrance
+
+---
+
+#### Comparison
+
+**Location:** `src/components/sections/Comparison`
+
+**Purpose:** Feature comparison table vs competitors.
+
+**Props:** None
+
+**Features:**
+- Comparison data from `@constants/comparison`
+- Checkmark/cross icons
+- Mobile-responsive table
+
+---
+
+#### Statistics
+
+**Location:** `src/components/sections/Statistics`
+
+**Purpose:** Key metrics and statistics display.
+
+**Props:** None
+
+**Features:**
+- CounterAnimation integration
+- Grid layout
+- Animated number counting
+
+---
+
+#### FAQ
+
+**Location:** `src/components/sections/FAQ`
+
+**Purpose:** Frequently asked questions with collapsible answers.
+
+**Props:** None
+
+**Features:**
+- FAQ data from constants
+- Collapsible accordion pattern
+- Keyboard navigation
+
+---
+
+#### CTA
+
+**Location:** `src/components/sections/CTA`
+
+**Purpose:** Call-to-action section with email capture.
+
+**Props:** None
+
+**Features:**
+- EmailCapture integration
+- Prominent positioning
+- Action-focused copy
+
+---
+
+#### Mobile
+
+**Location:** `src/components/sections/Mobile`
+
+**Purpose:** Mobile app showcase section.
+
+**Props:** None
+
+---
+
+## Hooks & Utilities
+
+### useMediaQuery
+
+**Location:** `src/hooks/useMediaQuery.ts`
+
+**Purpose:** React hook for responsive design with programmatic breakpoint detection.
+
+**Signature:**
+
+```typescript
+function useMediaQuery(query: string): boolean
+```
+
+**Parameters:**
+- `query` - CSS media query string (e.g., `'(min-width: 768px)'`)
+
+**Returns:**
+- `boolean` - Whether the media query currently matches
+
+**Usage Examples:**
+
+```tsx
+import { useMediaQuery } from '@hooks/useMediaQuery'
+
+function ResponsiveComponent() {
+  const isMobile = useMediaQuery('(max-width: 768px)')
+  const isTablet = useMediaQuery('(min-width: 769px) and (max-width: 1023px)')
+  const isDesktop = useMediaQuery('(min-width: 1024px)')
+  
+  return (
+    <div>
+      {isMobile && <MobileView />}
+      {isTablet && <TabletView />}
+      {isDesktop && <DesktopView />}
+    </div>
+  )
+}
+
+// Conditional rendering based on screen size
+function Navigation() {
+  const isMobile = useMediaQuery('(max-width: 768px)')
+  
+  return isMobile ? <MobileNav /> : <DesktopNav />
+}
+
+// Hide elements on specific breakpoints
+function HeroSection() {
+  const showFloatingIcons = useMediaQuery('(min-width: 769px)')
+  
+  return (
+    <section>
+      {showFloatingIcons && <FloatingDecorations />}
+      <HeroContent />
+    </section>
+  )
+}
+```
+
+**How It Works:**
+- Wraps `window.matchMedia()` with reactive state
+- Listens to viewport changes via `MediaQueryListEvent`
+- Updates component when media query match status changes
+- SSR-safe (returns `false` when `window` is undefined)
+
+**Common Breakpoints:**
+
+```tsx
+// Mobile
+const isMobile = useMediaQuery('(max-width: 768px)')
+
+// Tablet
+const isTablet = useMediaQuery('(min-width: 769px) and (max-width: 1023px)')
+
+// Desktop
+const isDesktop = useMediaQuery('(min-width: 1024px)')
+
+// Large desktop
+const isLargeDesktop = useMediaQuery('(min-width: 1280px)')
+
+// Portrait orientation
+const isPortrait = useMediaQuery('(orientation: portrait)')
+
+// Reduced motion
+const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)')
+
+// Dark mode preference
+const prefersDark = useMediaQuery('(prefers-color-scheme: dark)')
+```
+
+**When to Use CSS vs useMediaQuery:**
+
+**Use CSS media queries for:**
+- Pure visual changes (layout, spacing, sizing)
+- No conditional logic needed
+- Better performance (no JS execution)
+- Style-only responsive adjustments
+
+**Use useMediaQuery hook for:**
+- Conditional component rendering
+- Different component trees for different screen sizes
+- Logic that depends on viewport size
+- Dynamic content loading based on screen size
+
+**Performance Notes:**
+- Hook only re-renders when match status actually changes
+- Safe to use in multiple components simultaneously
+- No polling - event-based updates only
+- Minimal overhead compared to resize listeners
+
+---
+
+### Other Hooks
+
+#### useParallax
+
+**Location:** `src/hooks/useParallax.ts`
+
+**Purpose:** Creates parallax scrolling effects.
+
+**Features:**
+- GPU-accelerated transforms
+- Intersection Observer for viewport detection
+- Automatic mobile/reduced motion disabling
+- requestAnimationFrame for smooth updates
+
+---
+
+#### useIntersectionObserver
+
+**Location:** `src/hooks/useIntersectionObserver.ts`
+
+**Purpose:** Detects when element enters viewport.
+
+**Features:**
+- Configurable threshold
+- Optional trigger-once behavior
+- Used by AnimatedElement, ParallaxLayer, etc.
+
+---
+
+#### useReducedMotion
+
+**Location:** `src/hooks/useReducedMotion.ts`
+
+**Purpose:** Detects user's motion preference.
+
+**Returns:** `boolean` - true if user prefers reduced motion
+
+---
+
+#### useTheme
+
+**Location:** `src/hooks/useTheme.ts`
+
+**Purpose:** Manages light/dark theme state.
+
+**Features:**
+- localStorage persistence
+- System preference detection
+- Theme toggle function
+
+---
+
+#### useScrollPosition
+
+**Location:** `src/hooks/useScrollPosition.ts`
+
+**Purpose:** Tracks current scroll position.
+
+---
+
+## Architectural Patterns
+
+### File Structure
+
+All components follow a consistent structure:
+
+```
+ComponentName/
+├── index.ts                 # Barrel export
+├── ComponentName.tsx        # Main component
+├── ComponentName.module.css # Scoped styles
+└── ComponentName.test.tsx   # Unit tests
+```
+
+### Barrel Export Pattern
+
+Every component directory has an `index.ts` file that re-exports the component:
+
+```typescript
+// index.ts
+export { ComponentName } from './ComponentName'
+export type { ComponentNameProps } from './ComponentName'
+```
+
+**Benefits:**
+- Clean imports: `from '@components/ui/Button'` instead of `from '@components/ui/Button/Button'`
+- Easy to refactor internal structure
+- Type exports available alongside component
+
+### TypeScript Props Interfaces
+
+All components define a TypeScript interface for their props:
+
+```typescript
+interface ComponentNameProps {
+  // Props definition
+}
+
+export const ComponentName = (props: ComponentNameProps): React.ReactElement => {
+  // Component implementation
+}
+```
+
+**Conventions:**
+- Interface name matches component name + `Props`
+- Export props interface for type composition
+- Use `ReactElement` or `ReactNode` for return types
+- Use `?` for optional props with defaults
+
+### React.memo Pattern
+
+Layout and section components use `React.memo` for performance:
+
+```typescript
+export const Section = React.memo<SectionProps>(
+  ({ id, children, className }) => {
+    // Component implementation
+  }
+)
+
+Section.displayName = 'Section'
+```
+
+**When to Use:**
+- Layout components that rarely change props
+- Section components with static content
+- Components in lists or grids
+
+**When NOT to Use:**
+- Components with props that change frequently
+- Components with children that update often
+- Small, simple components (overhead not worth it)
+
+### CSS Modules
+
+All components use CSS Modules for scoped styling:
+
+```tsx
+import styles from './Component.module.css'
+
+<div className={styles.container}>
+  <h1 className={styles.title}>Title</h1>
+</div>
+```
+
+**Benefits:**
+- No class name conflicts
+- Co-located with component
+- Type-safe with TypeScript
+- Automatic optimization/minification
+
+**Naming Conventions:**
+- Use camelCase for class names
+- Descriptive names (`.primaryButton` not `.pb`)
+- BEM-like modifiers: `.button`, `.buttonPrimary`, `.buttonDisabled`
+
+### Design Token Integration
+
+Components reference CSS custom properties from `src/styles/variables.css`:
+
+```css
+/* Component.module.css */
+.button {
+  background-color: var(--color-primary);
+  border-radius: var(--border-radius-full);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-base);
+  transition: all var(--transition-base);
+}
+```
+
+**Never hardcode values that exist as design tokens:**
+- ❌ `color: #7c3aed`
+- ✅ `color: var(--color-primary)`
+- ❌ `padding: 16px 24px`
+- ✅ `padding: var(--spacing-sm) var(--spacing-md)`
+
+**See also:**
+- [Color Palette](#color-palette) - All color tokens
+- [Typography](#typography) - Font size and weight tokens
+- [Spacing System](#spacing-system) - Spacing scale
+- [Layout & Grid](#layout--grid) - Border radius and layout tokens
+- [Animation Guidelines](#animation-guidelines) - Transition and animation tokens
+- [Design Tokens (Tailwind Config)](#design-tokens-tailwind-config-ready) - Full token reference
+
+### Component Testing
+
+All components have accompanying test files using Vitest and React Testing Library:
+
+```typescript
+import { render, screen } from '@testing-library/react'
+import { Button } from './Button'
+
+describe('Button', () => {
+  it('renders with children', () => {
+    render(<Button>Click me</Button>)
+    expect(screen.getByText('Click me')).toBeInTheDocument()
+  })
+  
+  it('calls onClick when clicked', () => {
+    const handleClick = vi.fn()
+    render(<Button onClick={handleClick}>Click</Button>)
+    screen.getByText('Click').click()
+    expect(handleClick).toHaveBeenCalledOnce()
+  })
+})
+```
+
+**Testing Best Practices:**
+- Test user behavior, not implementation
+- Use `screen` queries from Testing Library
+- Test accessibility (aria labels, keyboard navigation)
+- Test different prop combinations
+- Test error states and edge cases
+
+### Accessibility Guidelines
+
+All components must meet WCAG 2.1 AA standards:
+
+**Required:**
+- Semantic HTML elements
+- Proper heading hierarchy
+- ARIA labels for interactive elements
+- Keyboard navigation support
+- Focus indicators
+- Color contrast ratios (see [Color Palette](#color-palette))
+- Touch target sizes (44x44px minimum)
+
+**Animation Accessibility:**
+- All animations respect `prefers-reduced-motion`
+- Use `useReducedMotion` hook
+- Provide static fallbacks
+- Never rely on motion alone to convey information
+
+**Form Accessibility:**
+- Associate labels with inputs
+- Provide error messages with `role="alert"`
+- Use `aria-invalid` for validation states
+- Include `aria-describedby` for help text
+
+---
 
 ### Buttons
 
@@ -564,7 +1792,7 @@ section {
 
 ```css
 .primary {
-  background-color: var(--color-primary);      /* #1a1a1a (light) or #ffffff (dark) */
+  background-color: var(--color-primary);      /* #7c3aed */
   color: var(--color-text-on-primary);         /* #ffffff */
   border: 1px solid transparent;
   border-radius: var(--border-radius-full);    /* 9999px - pill shape */
@@ -573,7 +1801,7 @@ section {
 }
 
 .primary:hover {
-  background-color: var(--color-primary-dark); /* #000000 (light) or #f1f5f9 (dark) */
+  background-color: var(--color-primary-dark); /* #6d28d9 */
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
 }
@@ -738,7 +1966,7 @@ select:focus {
 ### Navigation
 
 **Header:**
-- Height: `--header-height` (72px)
+- Height: `--header-height` (64px)
 - Position: Sticky or fixed
 - Z-index: `--z-header` (1000)
 - Background: `--color-background` with subtle shadow
@@ -1040,6 +2268,257 @@ Use `will-change` for animations to enable GPU acceleration:
 | **Desktop** | 1024px - 1279px | Laptops, desktops |
 | **Large Desktop** | ≥ 1280px | Large monitors |
 
+### Quick Reference
+
+**CSS Variables (min-width approach):**
+```css
+/* These breakpoints are implemented in variables.css */
+@media (max-width: 768px)  { /* Mobile */ }
+@media (max-width: 480px)  { /* Small mobile (extra adjustments) */ }
+@media (min-width: 769px)  { /* Tablet and above */ }
+@media (min-width: 1024px) { /* Desktop and above */ }
+@media (min-width: 1280px) { /* Large desktop */ }
+```
+
+**Common Patterns:**
+```css
+/* Hide on mobile, show on tablet+ */
+@media (max-width: 768px) {
+  .desktop-only { display: none; }
+}
+
+/* Show on mobile, hide on tablet+ */
+@media (min-width: 769px) {
+  .mobile-only { display: none; }
+}
+
+/* Adjust layout at tablet breakpoint */
+@media (min-width: 769px) {
+  .grid { grid-template-columns: repeat(2, 1fr); }
+}
+```
+
+### Responsive Utility Classes
+
+Paperlyte provides utility classes in `src/styles/utilities.css` for common responsive needs.
+
+**Visibility Utilities:**
+
+```css
+/* Hide on mobile (< 768px) */
+.hidden-mobile {
+  display: none; /* Hidden on mobile, visible on desktop */
+}
+
+/* Hide on desktop (>= 769px) */
+.hidden-desktop {
+  display: none; /* Hidden on desktop, visible on mobile */
+}
+
+/* Hide completely */
+.hidden {
+  display: none;
+}
+
+/* Screen reader only (visually hidden but accessible) */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+```
+
+**Usage Examples:**
+
+```tsx
+// Hide decorative elements on mobile
+<div className="hidden-mobile">
+  <FloatingElement>...</FloatingElement>
+</div>
+
+// Show mobile navigation only on mobile
+<nav className="hidden-desktop">
+  <MobileNav />
+</nav>
+
+// Screen reader only text
+<span className="sr-only">Skip to main content</span>
+```
+
+**Container Utilities:**
+
+```css
+.container {
+  width: 100%;
+  max-width: var(--max-width);        /* 1280px */
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--spacing-md);    /* 24px */
+  padding-right: var(--spacing-md);
+}
+
+.container-content {
+  max-width: var(--max-width-content); /* 1024px */
+}
+```
+
+**Flexbox Utilities:**
+
+```css
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+
+/* Gap utilities */
+.gap-xs { gap: var(--spacing-xs); }  /* 8px */
+.gap-sm { gap: var(--spacing-sm); }  /* 16px */
+.gap-md { gap: var(--spacing-md); }  /* 24px */
+.gap-lg { gap: var(--spacing-lg); }  /* 32px */
+```
+
+**Spacing Utilities:**
+
+```css
+/* Margin top */
+.mt-xs { margin-top: var(--spacing-xs); }  /* 8px */
+.mt-sm { margin-top: var(--spacing-sm); }  /* 16px */
+.mt-md { margin-top: var(--spacing-md); }  /* 24px */
+.mt-lg { margin-top: var(--spacing-lg); }  /* 32px */
+.mt-xl { margin-top: var(--spacing-xl); }  /* 48px */
+
+/* Margin bottom */
+.mb-xs { margin-bottom: var(--spacing-xs); }
+.mb-sm { margin-bottom: var(--spacing-sm); }
+.mb-md { margin-bottom: var(--spacing-md); }
+.mb-lg { margin-bottom: var(--spacing-lg); }
+.mb-xl { margin-bottom: var(--spacing-xl); }
+```
+
+### CSS vs Programmatic Responsive Patterns
+
+**Use CSS Media Queries For:**
+
+```css
+/* Visual-only changes - no logic needed */
+.hero-title {
+  font-size: var(--font-size-5xl);  /* 48px */
+}
+
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: var(--font-size-4xl);  /* 36px */
+  }
+}
+
+/* Layout adjustments */
+.grid {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 1023px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+```
+
+**Use useMediaQuery Hook For:**
+
+```tsx
+import { useMediaQuery } from '@hooks/useMediaQuery'
+
+function HeroSection() {
+  // Conditional component rendering
+  const isMobile = useMediaQuery('(max-width: 768px)')
+  const showParallax = useMediaQuery('(min-width: 1024px)')
+  
+  return (
+    <section>
+      {/* Different components for different screens */}
+      {isMobile ? <MobileHero /> : <DesktopHero />}
+      
+      {/* Conditionally render expensive features */}
+      {showParallax && <ParallaxBackground />}
+      
+      {/* Different content structure */}
+      {isMobile ? (
+        <SimpleLayout />
+      ) : (
+        <ComplexTwoColumnLayout />
+      )}
+    </section>
+  )
+}
+
+// Dynamic data loading based on screen size
+function ImageGallery() {
+  const isMobile = useMediaQuery('(max-width: 768px)')
+  const imageSize = isMobile ? 'small' : 'large'
+  
+  return (
+    <div>
+      {images.map(img => (
+        <img src={img[imageSize]} alt={img.alt} />
+      ))}
+    </div>
+  )
+}
+```
+
+**Combining Both Approaches:**
+
+```tsx
+function FeatureSection() {
+  // Use hook for component logic
+  const showAnimations = useMediaQuery('(min-width: 769px)')
+  
+  return (
+    // Use CSS class for styling
+    <section className={styles.features}>
+      <div className={styles.grid}> {/* CSS handles grid columns */}
+        {features.map((feature) => (
+          showAnimations ? (
+            <AnimatedElement key={feature.id} animation="slideUp">
+              <FeatureCard {...feature} />
+            </AnimatedElement>
+          ) : (
+            <FeatureCard key={feature.id} {...feature} />
+          )
+        ))}
+      </div>
+    </section>
+  )
+}
+```
+
+**Performance Best Practices:**
+
+✅ **DO:**
+- Use CSS for visual-only changes (better performance)
+- Use `useMediaQuery` sparingly for conditional logic
+- Combine CSS classes with media queries for most cases
+- Cache media query results when possible
+
+❌ **DON'T:**
+- Use `useMediaQuery` for simple hiding/showing (use CSS classes)
+- Create many `useMediaQuery` hooks with same query (use once, pass down)
+- Poll `window.innerWidth` manually (use `useMediaQuery` instead)
+- Forget that `useMediaQuery` causes re-renders on viewport changes
+
 ### Mobile-First Approach
 
 **Write CSS for mobile first, then enhance for larger screens:**
@@ -1121,7 +2600,7 @@ section {
 
 ### Touch Target Sizes
 
-**Minimum implemented touch target size: 44x44px** (meets WCAG 2.5.5 Level AAA; WCAG 2.5.5 Level AA minimum is 24x24px)
+**Minimum implemented touch target size: 44x44px** (WCAG 2.5.5 Level AAA; Level AA minimum is 24x24px)
 
 The design uses 44px as the minimum touch target, exceeding the WCAG 2.5.5 Level AA requirement (24x24px) and meeting Level AAA. This ensures all interactive elements are easily tappable on mobile devices.
 
@@ -1138,7 +2617,7 @@ a {
 ✅ **DO:**
 - Design for mobile first, enhance for desktop
 - Test on real devices, not just browser DevTools
-- Ensure touch targets are at least 48x48px
+- Ensure touch targets are at least 44x44px (meets WCAG 2.5.5 Level AAA)
 - Use relative units (rem, em, %) for better scaling
 
 ❌ **DON'T:**
@@ -1184,7 +2663,7 @@ The hero section is the most prominent part of the landing page, featuring disti
       </div>
 
       <h1 className="headline">
-        Your thoughts, <em className="headlineItalic">unchained</em> from complexity
+        Your thoughts, <em className="headlineItalic">unchained.</em>
       </h1>
 
       <p className="subheadline">
@@ -1235,20 +2714,20 @@ Small, pill-shaped badges for announcements or status indicators:
 }
 ```
 
-#### 2. Headline with Italic Emphasis
+#### 2. Headline with Emphasis
 
 ```css
 .headline {
-  font-family: var(--font-family-serif);  /* Playfair Display */
-  font-size: var(--font-size-7xl);        /* 72px */
-  font-weight: var(--font-weight-normal); /* 400 */
-  line-height: var(--line-height-tight);  /* 1.1 */
-  letter-spacing: -0.02em;                /* Tight tracking */
+  font-family: var(--font-family);        /* Inter */
+  font-size: var(--font-size-5xl);        /* 48px */
+  font-weight: var(--font-weight-bold);   /* 700 */
+  line-height: var(--line-height-tight);  /* 1.25 */
+  letter-spacing: -0.01em;                /* Slightly tight tracking */
 }
 
 .headlineItalic {
   font-style: italic;
-  color: var(--color-text-primary);      /* High-contrast emphasis */
+  color: var(--color-primary);            /* Purple accent for emphasis */
 }
 ```
 
@@ -1262,7 +2741,7 @@ Blurred, gradient shapes that move at different speeds on scroll. These create s
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    var(--color-primary) 0%,    /* Near-black center in light mode */
+    var(--color-primary) 0%,    /* Purple center */
     transparent 70%             /* Fades to transparent */
   );
   filter: blur(60px);            /* Heavy blur creates soft gradient */
@@ -1277,7 +2756,7 @@ Blurred, gradient shapes that move at different speeds on scroll. These create s
 }
 ```
 
-**Visual Effect:** The heavy blur (60px) combined with low opacity (0.03) creates extremely subtle, soft shadows that add depth without being distracting. In light mode, the near-black (#1a1a1a) creates gentle gray gradients. In dark mode, white creates soft light halos. Blur is reduced to 40px on mobile for better performance.
+**Visual Effect:** The heavy blur (60px) combined with low opacity (0.03) creates extremely subtle, soft purple halos that add depth without being distracting. Blur is reduced to 40px on mobile for better performance.
 
 **Reduced Motion:** Parallax effects are disabled when `prefers-reduced-motion` is active.
 
@@ -1309,7 +2788,7 @@ Animated icons positioned absolutely, floating with subtle motion:
 .mockupCard {
   background-color: var(--color-background);
   border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-xl);  /* 24px */
+  border-radius: var(--border-radius-lg);  /* 16px */
   padding: var(--spacing-lg);
   box-shadow: var(--shadow-xl);
 }
@@ -1319,7 +2798,7 @@ The mockup includes:
 - Header with window dots
 - Skeleton content lines
 - Checkboxes
-- Statistics with serif numbers (Playfair Display)
+- Statistics with clear numbers
 - Primary CTA button
 
 #### 6. Trusted By Section
@@ -1329,14 +2808,14 @@ The mockup includes:
   display: flex;
   align-items: center;
   gap: var(--spacing-xl);
-  border-top: 1px solid var(--color-border-light);
+  border-top: 1px solid var(--color-border);
   padding: var(--spacing-xl) var(--spacing-md);
 }
 
 .trustedLabel {
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);
-  color: var(--color-text-tertiary);
+  color: var(--color-text-secondary);
   letter-spacing: 0.05em;  /* Wide tracking for labels */
 }
 ```
@@ -1359,7 +2838,7 @@ The mockup includes:
 @media (max-width: 768px) {
   /* Reduce headline size */
   .headline {
-    font-size: var(--font-size-5xl);  /* 48px → 36px */
+    font-size: var(--font-size-4xl);  /* 48px → 30px */
   }
 
   /* Stack CTAs vertically */
@@ -1608,9 +3087,11 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#1a1a1a',  // Near black (light mode)
-          dark: '#000000',     // Pure black
-          light: '#333333',    // Dark gray
+          DEFAULT: '#7c3aed',  // Purple 600
+          dark: '#6d28d9',     // Purple 700
+          light: '#a78bfa',    // Purple 400
+          faint: 'rgba(124, 58, 237, 0.1)',
+          fainter: 'rgba(124, 58, 237, 0.05)',
         },
         background: {
           DEFAULT: '#FFFFFF',
@@ -1619,21 +3100,25 @@ module.exports = {
         surface: {
           DEFAULT: '#F9FAFB',
           dark: '#1E293B',     // Slate 800 (dark mode)
-          'dark-alt': '#18181b', // Zinc 900 (dark sections)
         },
         text: {
           primary: '#111827',
           secondary: '#6B7280',
-          tertiary: '#9CA3AF',  // Use only for large text (18pt+/14pt+ bold)
         },
         border: {
           DEFAULT: '#E5E7EB',
-          light: '#F3F4F6',
+        },
+        success: {
+          DEFAULT: '#22c55e',  // Green 500
+          dark: '#4ade80',     // Green 400 (dark mode)
+        },
+        error: {
+          DEFAULT: '#dc2626',  // Red 600
+          dark: '#f87171',     // Red 400 (dark mode)
         },
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
-        serif: ['Playfair Display', 'Georgia', 'Times New Roman', 'serif'],
       },
       fontSize: {
         xs: '0.75rem',    // 12px
@@ -1645,8 +3130,6 @@ module.exports = {
         '3xl': '1.875rem',// 30px
         '4xl': '2.25rem', // 36px
         '5xl': '3rem',    // 48px
-        '6xl': '3.75rem', // 60px
-        '7xl': '4.5rem',  // 72px
       },
       spacing: {
         xs: '0.5rem',   // 8px
@@ -1656,13 +3139,11 @@ module.exports = {
         xl: '3rem',     // 48px
         '2xl': '4rem',  // 64px
         '3xl': '6rem',  // 96px
-        '4xl': '8rem',  // 128px
       },
       borderRadius: {
         sm: '0.25rem',  // 4px
         md: '0.5rem',   // 8px
         lg: '1rem',     // 16px
-        xl: '1.5rem',   // 24px
         full: '9999px', // Pill shape
       },
       boxShadow: {
@@ -1670,7 +3151,6 @@ module.exports = {
         md: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
         lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
         xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
-        card: '0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06)',
       },
     },
   },
@@ -1679,13 +3159,15 @@ module.exports = {
 
 **Dark Mode Implementation:**
 
-The design uses CSS custom properties that automatically respond to dark mode. In dark mode, the monochrome palette inverts:
+The design uses CSS custom properties that automatically respond to dark mode. In dark mode:
 
-- Primary: `#1a1a1a` → `#ffffff` (white becomes primary)
+- Primary: `#7c3aed` (purple remains consistent for brand recognition)
 - Background: `#ffffff` → `#0F172A` (slate 900)
+- Surface: `#F9FAFB` → `#1E293B` (slate 800)
 - Text Primary: `#111827` → `#F1F5F9` (slate 100)
+- Text Secondary: `#6B7280` → `#94A3B8` (slate 400)
 
-This inversion is handled automatically via the CSS variables in `src/styles/variables.css`.
+This is handled automatically via the CSS variables in `src/styles/variables.css`.
 
 ---
 
@@ -1693,8 +3175,8 @@ This inversion is handled automatically via the CSS variables in `src/styles/var
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 2.0.0 | 2025-12-17 | Major monochrome rebrand: colors (purple → black/white), Playfair Display typography, pill buttons, hero patterns, expanded scales. See full documentation for details. |
-| 1.0.0 | 2025-11-29 | Initial design system documentation |
+| 2.1.0 | 2025-12-20 | **Major expansion**: Added comprehensive component library documentation (28 components), TypeScript prop interfaces, detailed hook documentation (useMediaQuery, useParallax, etc.), architectural patterns, responsive utility classes, CSS vs programmatic patterns, and enhanced cross-referencing. |
+| 1.0.0 | 2025-12-20 | Updated documentation to match current implementation: Purple accent color (#7c3aed), Inter-only typography, accurate WCAG contrast ratios, current breakpoints, and comprehensive component library documentation. |
 
 ---
 

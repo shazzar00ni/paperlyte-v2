@@ -131,8 +131,15 @@
   gap: var(--spacing-lg);
 }
 
-/* Type Selector */
+/* Type Selector (fieldset reset for semantic HTML) */
 .typeSelector {
+  /* Reset fieldset defaults to maintain visual layout */
+  border: none;
+  padding: 0;
+  margin: 0;
+  min-width: 0; /* Fix fieldset width in some browsers */
+
+  /* Layout styles */
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--spacing-sm);

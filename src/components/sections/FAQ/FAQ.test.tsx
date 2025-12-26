@@ -8,7 +8,7 @@ describe('FAQ', () => {
     it('should render the FAQ section', () => {
       render(<FAQ />)
 
-      expect(screen.getByText('Frequently Asked Questions')).toBeInTheDocument()
+      expect(screen.getByText("Questions? We've got answers.")).toBeInTheDocument()
     })
 
     it('should render all FAQ items from constants', () => {
@@ -26,14 +26,13 @@ describe('FAQ', () => {
       expect(section).toBeInTheDocument()
     })
 
-    it('should render subtitle with contact link', () => {
+    it('should render footer with help links', () => {
       render(<FAQ />)
 
-      expect(screen.getByText(/Everything you need to know about Paperlyte/i)).toBeInTheDocument()
-      expect(screen.getByRole('link', { name: /contact our support team/i })).toBeInTheDocument()
+      expect(screen.getByText(/Still have questions\?/i)).toBeInTheDocument()
     })
 
-    it('should render footer with help links', () => {
+    it('should render help and community links', () => {
       render(<FAQ />)
 
       expect(screen.getByRole('link', { name: /help center/i })).toBeInTheDocument()
@@ -297,13 +296,6 @@ describe('FAQ', () => {
   })
 
   describe('Links', () => {
-    it('should render contact support link with correct href', () => {
-      render(<FAQ />)
-
-      const contactLink = screen.getByRole('link', { name: /contact our support team/i })
-      expect(contactLink).toHaveAttribute('href', '#contact')
-    })
-
     it('should render help center link with correct href', () => {
       render(<FAQ />)
 
@@ -316,6 +308,206 @@ describe('FAQ', () => {
 
       const forumLink = screen.getByRole('link', { name: /community forum/i })
       expect(forumLink).toHaveAttribute('href', '#community')
+    })
+  })
+
+  describe('Keyboard Navigation', () => {
+    it('should navigate to next item with ArrowDown key', async () => {
+      const user = userEvent.setup()
+      render(<FAQ />)
+
+      const firstButton = screen.getByRole('button', {
+        name: new RegExp(FAQ_ITEMS[0].question, 'i'),
+      })
+      const secondButton = screen.getByRole('button', {
+        name: new RegExp(FAQ_ITEMS[1].question, 'i'),
+      })
+
+      firstButton.focus()
+      expect(firstButton).toHaveFocus()
+
+      await user.keyboard('{ArrowDown}')
+
+      expect(secondButton).toHaveFocus()
+    })
+
+    it('should navigate to previous item with ArrowUp key', async () => {
+      const user = userEvent.setup()
+      render(<FAQ />)
+
+      const firstButton = screen.getByRole('button', {
+        name: new RegExp(FAQ_ITEMS[0].question, 'i'),
+      })
+      const secondButton = screen.getByRole('button', {
+        name: new RegExp(FAQ_ITEMS[1].question, 'i'),
+      })
+
+      secondButton.focus()
+      expect(secondButton).toHaveFocus()
+
+      await user.keyboard('{ArrowUp}')
+
+      expect(firstButton).toHaveFocus()
+    })
+
+    it('should wrap to last item when pressing ArrowUp on first item', async () => {
+      const user = userEvent.setup()
+      render(<FAQ />)
+
+      const firstButton = screen.getByRole('button', {
+        name: new RegExp(FAQ_ITEMS[0].question, 'i'),
+      })
+      const lastButton = screen.getByRole('button', {
+        name: new RegExp(FAQ_ITEMS[FAQ_ITEMS.length - 1].question, 'i'),
+      })
+
+      firstButton.focus()
+      expect(firstButton).toHaveFocus()
+
+      await user.keyboard('{ArrowUp}')
+
+      expect(lastButton).toHaveFocus()
+    })
+
+    it('should wrap to first item when pressing ArrowDown on last item', async () => {
+      const user = userEvent.setup()
+      render(<FAQ />)
+
+      const firstButton = screen.getByRole('button', {
+        name: new RegExp(FAQ_ITEMS[0].question, 'i'),
+      })
+      const lastButton = screen.getByRole('button', {
+        name: new RegExp(FAQ_ITEMS[FAQ_ITEMS.length - 1].question, 'i'),
+      })
+
+      lastButton.focus()
+      expect(lastButton).toHaveFocus()
+
+      await user.keyboard('{ArrowDown}')
+
+      expect(firstButton).toHaveFocus()
+    })
+
+    it('should navigate to first item with Home key', async () => {
+      const user = userEvent.setup()
+      render(<FAQ />)
+
+      const firstButton = screen.getByRole('button', {
+        name: new RegExp(FAQ_ITEMS[0].question, 'i'),
+      })
+      const thirdButton = screen.getByRole('button', {
+        name: new RegExp(FAQ_ITEMS[2].question, 'i'),
+      })
+
+      thirdButton.focus()
+      expect(thirdButton).toHaveFocus()
+
+      await user.keyboard('{Home}')
+
+      expect(firstButton).toHaveFocus()
+    })
+
+    it('should navigate to last item with End key', async () => {
+      const user = userEvent.setup()
+      render(<FAQ />)
+
+      const firstButton = screen.getByRole('button', {
+        name: new RegExp(FAQ_ITEMS[0].question, 'i'),
+      })
+      const lastButton = screen.getByRole('button', {
+        name: new RegExp(FAQ_ITEMS[FAQ_ITEMS.length - 1].question, 'i'),
+      })
+
+      firstButton.focus()
+      expect(firstButton).toHaveFocus()
+
+      await user.keyboard('{End}')
+
+      expect(lastButton).toHaveFocus()
+    })
+
+    it('should navigate through multiple items with arrow keys', async () => {
+      const user = userEvent.setup()
+      render(<FAQ />)
+
+      const buttons = FAQ_ITEMS.slice(0, 3).map((item) =>
+        screen.getByRole('button', { name: new RegExp(item.question, 'i') })
+      )
+
+      buttons[0].focus()
+      expect(buttons[0]).toHaveFocus()
+
+      await user.keyboard('{ArrowDown}')
+      expect(buttons[1]).toHaveFocus()
+
+      await user.keyboard('{ArrowDown}')
+      expect(buttons[2]).toHaveFocus()
+
+      await user.keyboard('{ArrowUp}')
+      expect(buttons[1]).toHaveFocus()
+    })
+  })
+
+  describe('Screen Reader Announcements', () => {
+    it('should announce when item is expanded', async () => {
+      const user = userEvent.setup()
+      render(<FAQ />)
+
+      const item = FAQ_ITEMS[0]
+      const questionButton = screen.getByRole('button', { name: new RegExp(item.question, 'i') })
+
+      await user.click(questionButton)
+
+      // Check for live region with announcement
+      const liveRegion = document.querySelector('[aria-live="polite"]')
+      expect(liveRegion).toBeInTheDocument()
+      expect(liveRegion).toHaveTextContent(`${item.question} expanded`)
+    })
+
+    it('should announce when item is collapsed', async () => {
+      const user = userEvent.setup()
+      render(<FAQ />)
+
+      const item = FAQ_ITEMS[0]
+      const questionButton = screen.getByRole('button', { name: new RegExp(item.question, 'i') })
+
+      // Expand first
+      await user.click(questionButton)
+
+      // Then collapse
+      await user.click(questionButton)
+
+      const liveRegion = document.querySelector('[aria-live="polite"]')
+      expect(liveRegion).toBeInTheDocument()
+      expect(liveRegion).toHaveTextContent(`${item.question} collapsed`)
+    })
+
+    it('should have aria-atomic on live region', () => {
+      render(<FAQ />)
+
+      const liveRegion = document.querySelector('[aria-live="polite"]')
+      expect(liveRegion).toHaveAttribute('aria-atomic', 'true')
+    })
+
+    it('should clear announcement after toggling', async () => {
+      vi.useFakeTimers()
+      const user = userEvent.setup()
+      render(<FAQ />)
+
+      const item = FAQ_ITEMS[0]
+      const questionButton = screen.getByRole('button', { name: new RegExp(item.question, 'i') })
+
+      await user.click(questionButton)
+
+      const liveRegion = document.querySelector('[aria-live="polite"]')
+      expect(liveRegion).toHaveTextContent(`${item.question} expanded`)
+
+      // Advance timers by 3100ms to trigger the announcement clear timeout
+      vi.advanceTimersByTime(3100)
+
+      expect(liveRegion).toHaveTextContent('')
+
+      vi.useRealTimers()
     })
   })
 })

@@ -5,6 +5,7 @@
  * Handles error reporting to analytics and external services.
  */
 
+import * as Sentry from '@sentry/react'
 import { trackEvent } from './analytics'
 
 export interface ErrorContext {
@@ -53,21 +54,35 @@ export function logError(error: Error, context?: ErrorContext, source?: string):
       ...context?.tags,
     })
 
-    // Send to error monitoring service (e.g., Sentry)
-    // Note: Uncomment and configure when error monitoring is set up
-    // if (window.Sentry) {
-    //   window.Sentry.captureException(error, {
-    //     level: severity,
-    //     tags: {
-    //       source: errorSource,
-    //       ...context?.tags,
-    //     },
-    //     extra: {
-    //       componentStack: context?.componentStack,
-    //       ...context?.errorInfo,
-    //     },
-    //   });
-    // }
+    // Send to error monitoring service (Sentry)
+    // Only sends if Sentry is initialized (DSN configured)
+    if (import.meta.env.VITE_SENTRY_DSN) {
+      Sentry.captureException(error, {
+        level: severity === 'critical' ? 'fatal' : severity === 'high' ? 'error' : severity === 'medium' ? 'warning' : 'info',
+        tags: {
+          source: errorSource,
+          ...context?.tags,
+        },
+        extra: {
+          componentStack: context?.componentStack,
+          ...context?.errorInfo,
+        },
+        contexts: {
+          error_context: {
+            severity,
+            source: errorSource,
+          },
+        },
+      })
+
+      // Add breadcrumb for tracking error context
+      Sentry.addBreadcrumb({
+        category: 'error',
+        message: `${errorSource}: ${error.message}`,
+        level: severity === 'critical' ? 'fatal' : severity === 'high' ? 'error' : severity === 'medium' ? 'warning' : 'info',
+        data: context?.tags,
+      })
+    }
 
     // Log to console in production (for server logs if applicable)
     console.error(`[${errorSource}]`, error.message, {

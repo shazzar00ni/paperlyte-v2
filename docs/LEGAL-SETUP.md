@@ -100,7 +100,7 @@ documents: {
 
 ```typescript
 social: {
-  github: 'https://github.com/paperlyte/paperlyte',
+  github: 'https://github.com/shazzar00ni/paperlyte-v2',
   twitter: 'https://twitter.com/paperlyte',
   linkedin: 'https://linkedin.com/company/paperlyte',
    discord: '#', // TODO: Add if applicable

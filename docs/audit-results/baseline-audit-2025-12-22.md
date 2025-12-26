@@ -108,7 +108,7 @@ This baseline audit establishes performance and quality benchmarks for the Paper
 
 ## Technical Debt Inventory
 
-### Critical Issues (13 items) - BLOCKS PRODUCTION
+### Critical Issues (16 items) - BLOCKS PRODUCTION
 
 **Legal Placeholders (src/constants/legal.ts):**
 1. Line 22: `legalName: '[Company Legal Name]'` - TODO: Add legal entity name
@@ -122,7 +122,7 @@ This baseline audit establishes performance and quality benchmarks for the Paper
 9. Line 43: `dmca: '#'` - TODO: Create DMCA policy
 10. Line 44: `accessibility: '#'` - TODO: Create accessibility statement
 11. Line 48: `twitter: '#'` - TODO: Create Twitter/X account
-12. Line 49: `linkedin: '#'` - TODO: Create LinkedIn page
+12. Line 49: `LinkedIn: '#'` - TODO: Create LinkedIn page
 13. Line 50: `discord: '#'` - TODO: Add Discord server link
 
 **Additional Critical:**
@@ -135,7 +135,12 @@ This baseline audit establishes performance and quality benchmarks for the Paper
 - docs/COOKIE-POLICY.md:11: Cookie policy incomplete (Target: 2025-12-15)
 - docs/TERMS-OF-SERVICE.md:294: Legal review required for compliance claims
 
-### High Priority Issues (8 items)
+**Security Critical:**
+16. Missing .env in .gitignore - SECURITY_REVIEW.md CRITICAL-001
+   - Risk: Accidental exposure of environment variables and secrets
+   - Status: UNRESOLVED
+
+### High-Priority Issues (8 items)
 
 **Download URLs (src/constants/downloads.ts):**
 1. Line 14: Windows download - depends on GitHub URL from legal.ts
@@ -206,7 +211,7 @@ This baseline audit establishes performance and quality benchmarks for the Paper
 - vite.config.ts:138: Intentionally raised chunkSizeWarningLimit to 1000 KB
   - Comment: "TODO: Monitor bundle size and lower if needed"
 
-### Medium Priority Issues (2 items)
+### Medium-Priority Issues (2 items)
 
 **Documentation:**
 - SECURITY_REVIEW.md:340: Security testing status marked as "⚠️ TODO (pre-production)"
@@ -294,7 +299,7 @@ This baseline audit establishes performance and quality benchmarks for the Paper
 
 ### 🔴 CRITICAL (Production Blockers)
 
-1. **13 Legal Placeholders** - src/constants/legal.ts
+1. **15 Legal Placeholders** - src/constants/legal.ts
    - Impact: Cannot deploy to production without real company information
    - Risk: Legal compliance, brand credibility
    - Owner: Legal & Compliance Team
@@ -308,25 +313,25 @@ This baseline audit establishes performance and quality benchmarks for the Paper
 
 ### 🟠 HIGH PRIORITY
 
-3. **Analytics Module - 0% Test Coverage** (6 files)
+1. **Analytics Module - 0% Test Coverage** (6 files)
    - Impact: High risk of tracking failures, data loss
    - Risk: Business intelligence gaps, debugging difficulty
    - Owner: Engineering Team
    - ETA: Sprint 1
 
-4. **Download URLs Incomplete** - src/constants/downloads.ts (5 TODOs)
+2. **Download URLs Incomplete** - src/constants/downloads.ts (5 TODOs)
    - Impact: Users cannot download applications
    - Risk: Conversion loss, poor UX
    - Owner: Product Team
    - ETA: Required before launch
 
-5. **Lighthouse CI Cannot Run**
+3. **Lighthouse CI Cannot Run**
    - Impact: No automated performance monitoring
    - Risk: Performance regressions undetected
    - Owner: DevOps Team
    - ETA: Sprint 1
 
-6. **Missing Keyboard Handlers** - Accessibility testing required
+4. **Missing Keyboard Handlers** - Accessibility testing required
    - Impact: Keyboard users cannot navigate site
    - Risk: WCAG 2.1 AA non-compliance, accessibility violations
    - Owner: Frontend Team
@@ -334,58 +339,61 @@ This baseline audit establishes performance and quality benchmarks for the Paper
 
 ### 🟡 MEDIUM PRIORITY
 
-7. **Constants Module - 0% Test Coverage** (8 files)
+1. **Constants Module - 0% Test Coverage** (8 files)
    - Impact: Configuration errors undetected
    - Risk: Runtime failures, incorrect content display
    - Owner: Engineering Team
    - ETA: Sprint 2
 
-8. **Large Components Need Refactoring** (4 components, 178-344 lines)
+2. **Large Components Need Refactoring** (4 components, 178-344 lines)
    - Impact: Maintainability issues, harder to test
    - Risk: Technical debt accumulation, slower development
    - Owner: Frontend Team
    - ETA: Sprint 3
 
-9. **Missing Image Optimization**
+3. **Missing Image Optimization**
    - Impact: Slower page loads, higher bandwidth costs
    - Risk: Poor performance on mobile, higher bounce rate
    - Owner: Frontend Team
    - ETA: Sprint 2
 
-10. **Limited React.memo/lazy Usage**
-    - Impact: Unnecessary re-renders, larger initial bundle
-    - Risk: Performance degradation as app grows
-    - Owner: Frontend Team
-    - ETA: Sprint 3
+4. **Limited React.memo/lazy Usage**
+   - Impact: Unnecessary re-renders, larger initial bundle
+   - Risk: Performance degradation as app grows
+   - Owner: Frontend Team
+   - ETA: Sprint 3
 
 ### 🟢 LOW PRIORITY
 
-11. **Code Quality Improvements**
-    - Memoization opportunities in useParallax.ts
-    - Coverage thresholds in vitest.config.ts
-    - Documentation completeness
+1. **Code Quality Improvements**
+   - Memoization opportunities in useParallax.ts
+   - Coverage thresholds in vitest.config.ts
+   - Documentation completeness
 
-12. **Build Configuration**
-    - Monitor and lower chunkSizeWarningLimit from 1000 KB
+2. **Build Configuration**
+   - Monitor and lower chunkSizeWarningLimit from 1000 KB
 
 ## Recommendations Roadmap
 
 ### Phase 1: Pre-Production Critical Path (Required for Launch)
 
-**Week 1-2: Legal & Security**
-- [ ] Resolve all 13 legal placeholders in src/constants/legal.ts
+#### Week 1-2: Legal & Security
+
+- [ ] Resolve all 15 legal placeholders in src/constants/legal.ts
 - [ ] Add .env patterns to .gitignore
 - [ ] Create cookie policy, DMCA policy, security practices doc
 - [ ] Update Privacy/Terms revision dates
 - [ ] Verify all legal documentation with legal team
 
-**Week 2-3: Download Infrastructure**
+#### Week 2-3: Download Infrastructure
+
 - [ ] Create GitHub releases with actual download links
 - [ ] Publish to App Store (iOS)
 - [ ] Publish to Play Store (Android)
 - [ ] Update src/constants/downloads.ts with real URLs
 
-**Week 3-4: Quality Assurance**
+#### Week 3-4: Quality Assurance
+
 - [ ] Run manual Lighthouse audits (3+ runs) against production build
 - [ ] Document actual Lighthouse scores in this report
 - [ ] Complete accessibility audit (Task 2)
@@ -393,18 +401,21 @@ This baseline audit establishes performance and quality benchmarks for the Paper
 
 ### Phase 2: Quick Wins (Sprint 1)
 
-**Performance Monitoring:**
+#### Performance Monitoring
+
 - [ ] Set up Lighthouse CI in environment with Chrome support
 - [ ] Configure automated performance budgets
 - [ ] Implement performance monitoring dashboard
 
-**Test Coverage:**
+#### Test Coverage
+
 - [ ] Add coverage thresholds to vitest.config.ts
   - Minimum: 70% overall, 80% for critical paths
 - [ ] Write tests for analytics module (6 files)
 - [ ] Write tests for untested utilities (3 files)
 
-**Accessibility Improvements:**
+#### Accessibility Improvements
+
 - [ ] Add keyboard handlers to all interactive components
 - [ ] Verify focus indicators on all elements
 - [ ] Test modal keyboard trap behavior (FeedbackWidget)
@@ -412,23 +423,27 @@ This baseline audit establishes performance and quality benchmarks for the Paper
 
 ### Phase 3: Performance Optimization Roadmap (Sprint 2-3)
 
-**Code Splitting:**
+#### Code Splitting
+
 - [ ] Implement React.lazy() for route-based splitting
 - [ ] Add Suspense boundaries with loading states
 - [ ] Split large components (FeedbackWidget, Terms, Privacy)
 
-**React Performance:**
+#### React Performance
+
 - [ ] Add React.memo to animation components (SVGPathAnimation, CounterAnimation)
 - [ ] Optimize useParallax hook with useMemo/useCallback
 - [ ] Audit and memoize expensive computations
 
-**Image Optimization:**
+#### Image Optimization
+
 - [ ] Implement WebP/AVIF format support
 - [ ] Add responsive images with srcset
 - [ ] Implement lazy loading for below-fold images
 - [ ] Add image optimization to build pipeline
 
-**Bundle Optimization:**
+#### Bundle Optimization
+
 - [ ] Review and tree-shake unused Font Awesome icons
 - [ ] Consider font subsetting for Inter (only required weights/glyphs)
 - [ ] Lower vite.config.ts chunkSizeWarningLimit to 500 KB
@@ -436,26 +451,30 @@ This baseline audit establishes performance and quality benchmarks for the Paper
 
 ### Phase 4: Technical Debt Reduction Strategy (Sprint 4+)
 
-**Component Refactoring:**
+#### Component Refactoring
+
 - [ ] Split FeedbackWidget.tsx (344 lines) into smaller components
 - [ ] Split Terms.tsx (338 lines) into sections
 - [ ] Refactor SVGPathAnimation.tsx (242 lines) for reusability
 - [ ] Extract common patterns from CounterAnimation.tsx (178 lines)
 
-**Test Coverage Expansion:**
+#### Test Coverage Expansion
+
 - [ ] Write tests for constants module (8 files)
 - [ ] Write tests for Privacy.tsx component
 - [ ] Write tests for Terms.tsx component
 - [ ] Write tests for EmailCapture.tsx component
 - [ ] Achieve 85%+ overall coverage
 
-**Security Hardening:**
+#### Security Hardening
+
 - [ ] Complete pre-production security testing (SECURITY_REVIEW.md:340)
 - [ ] Add SRI hashes for Google Fonts (MEDIUM-001)
 - [ ] Conduct penetration testing
 - [ ] Set up Dependabot security alerts
 
-**Accessibility Excellence:**
+#### Accessibility Excellence
+
 - [ ] Conduct screen reader testing (VoiceOver, NVDA, JAWS)
 - [ ] Verify touch target sizes (44x44px minimum)
 - [ ] Review ARIA patterns for correctness
@@ -463,19 +482,22 @@ This baseline audit establishes performance and quality benchmarks for the Paper
 
 ### Phase 5: Monitoring and Maintenance (Ongoing)
 
-**CI/CD Integration:**
+#### CI/CD Integration
+
 - [ ] Add Lighthouse CI to GitHub Actions
 - [ ] Enforce coverage thresholds in CI
 - [ ] Add bundle size checks to PR reviews
 - [ ] Set up performance budgets in CI
 
-**Monitoring:**
+#### Monitoring
+
 - [ ] Implement Real User Monitoring (RUM)
 - [ ] Track Core Web Vitals in production
 - [ ] Set up performance alerting
 - [ ] Monitor bundle size trends
 
-**Periodic Re-audits:**
+#### Periodic Re-audits
+
 - [ ] Monthly Lighthouse audits
 - [ ] Quarterly accessibility audits
 - [ ] Annual security reviews
@@ -489,8 +511,8 @@ This baseline audit establishes performance and quality benchmarks for the Paper
 - Build time: 3.85s
 
 **Technical Debt:** ⚠️ MODERATE
-- Critical issues: 14 (13 legal + 1 security)
-- High priority: 6
+- Critical issues: 16 (15 legal + 1 security)
+- High priority: 4
 - Medium priority: 4
 - Low priority: 2
 

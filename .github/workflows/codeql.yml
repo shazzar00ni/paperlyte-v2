@@ -1,5 +1,11 @@
 name: "CodeQL Security Scan"
 
+# IMPORTANT: This is an advanced CodeQL configuration.
+# To use this workflow, you MUST disable the default CodeQL setup in your repository settings:
+# Go to Settings > Code security and analysis > Code scanning > CodeQL analysis
+# and disable the default setup. Otherwise, you'll get the error:
+# "CodeQL analyses from advanced configurations cannot be processed when the default setup is enabled"
+
 on:
   push:
     branches: [main, develop]

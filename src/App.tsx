@@ -13,9 +13,11 @@ import { EmailCapture } from '@components/sections/EmailCapture'
 import { FAQ } from '@components/sections/FAQ'
 import { CTA } from '@components/sections/CTA'
 import { FeedbackWidget } from '@components/ui/FeedbackWidget'
+import { useAnalytics } from '@hooks/useAnalytics'
 
 /**
  * Root application component that renders the app layout.
+ * Initializes analytics tracking including scroll depth tracking.
  *
  * @returns The root JSX element rendering the app: an ErrorBoundary wrapping
  * the Header, and a main element containing Hero, Problem, Solution, Features,
@@ -23,6 +25,9 @@ import { FeedbackWidget } from '@components/ui/FeedbackWidget'
  * then the Footer and FeedbackWidget.
  */
 function App() {
+  // Initialize analytics with scroll depth tracking
+  useAnalytics()
+
   return (
     <ErrorBoundary>
       <a href="#main" className="skip-link">

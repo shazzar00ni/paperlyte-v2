@@ -245,11 +245,19 @@ export const trackScrollDepth = (depth: number): void => {
 }
 
 export const trackCTAClick = (buttonText: string, location?: string): void => {
-  trackEvent(AnalyticsEvents.CTA_CLICK, { button_text: buttonText, location })
+  const properties: Record<string, string> = { button_text: buttonText }
+  if (location !== undefined) {
+    properties.location = location
+  }
+  trackEvent(AnalyticsEvents.CTA_CLICK, properties)
 }
 
 export const trackExternalLink = (url: string, linkText?: string): void => {
-  trackEvent(AnalyticsEvents.EXTERNAL_LINK, { url, link_text: linkText })
+  const properties: Record<string, string> = { url }
+  if (linkText !== undefined) {
+    properties.link_text = linkText
+  }
+  trackEvent(AnalyticsEvents.EXTERNAL_LINK, properties)
 }
 
 export const trackSocialClick = (platform: string): void => {

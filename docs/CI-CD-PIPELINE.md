@@ -282,6 +282,7 @@ git push origin main
 - Node.js 20+ locally for testing
 
 ### Initial Setup
+
 #### 1. GitHub Repository Secrets
 
 Add these secrets in repository settings (Settings → Secrets and variables → Actions):

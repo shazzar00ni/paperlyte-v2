@@ -247,7 +247,7 @@ export const trackScrollDepth = (depth: number): void => {
 export const trackCTAClick = (buttonText: string, location?: string): void => {
   const properties: Record<string, string> = { button_text: buttonText }
   if (location !== undefined) {
-    properties.location = location
+    properties.button_location = location
   }
   trackEvent(AnalyticsEvents.CTA_CLICK, properties)
 }

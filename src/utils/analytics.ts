@@ -34,6 +34,7 @@
 
 /**
  * Extend Window interface to include gtag for Google Analytics
+ * Note: dataLayer is already declared in lib.dom.d.ts as Window['dataLayer']: unknown[]
  */
 declare global {
   interface Window {
@@ -42,14 +43,57 @@ declare global {
       targetId: string | Date,
       config?: Record<string, unknown>
     ) => void
-    dataLayer: unknown[]
   }
 }
 
 /**
  * Event parameters for analytics tracking
+ * Defines common event parameters with explicit types while allowing custom params via index signature
  */
 export interface AnalyticsEventParams {
+  // Button/CTA parameters
+  button_text?: string
+  button_location?: string
+
+  // Link parameters
+  link_url?: string
+  link_text?: string
+  destination?: string
+
+  // Social/Platform parameters
+  platform?: string
+
+  // Scroll tracking
+  depth_percentage?: number
+
+  // Navigation parameters
+  page_path?: string
+  page_title?: string
+
+  // Form parameters
+  form_location?: string
+
+  // Error tracking
+  error_code?: string | number
+  error_name?: string
+  error_message?: string
+  error_source?: string
+
+  // Engagement parameters
+  question_index?: number
+  category?: string
+  label?: string
+
+  // Performance metrics
+  metric?: string
+  value?: number
+  unit?: string
+
+  // Other parameters
+  subscription_tier?: string
+  message?: string
+
+  // Allow custom parameters while maintaining type safety
   [key: string]: string | number | boolean | undefined
 }
 

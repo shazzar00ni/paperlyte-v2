@@ -29,13 +29,6 @@ const pages = [
     changefreq: 'monthly',
     priority: '0.5',
   },
-  {
-    url: `${DOMAIN}/data-deletion`,
-    // No direct file, so omit lastmod
-    file: null,
-    changefreq: 'monthly',
-    priority: '0.3',
-  },
 ];
 
 /**

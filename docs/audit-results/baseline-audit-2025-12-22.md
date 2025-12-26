@@ -222,8 +222,8 @@ This baseline audit establishes performance and quality benchmarks for the Paper
 
 **Documentation Review (docs/ACCESSIBILITY.md):**
 - Commitment: WCAG 2.1 AA conformance
-- Target completion: March 31, 2026
-- Last updated: December 2, 2025
+- Target completion: March 31, 2026,
+- Last updated: December 2, 2025,
 - Full audit scheduled and in progress
 
 ### Known Strengths

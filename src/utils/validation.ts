@@ -58,7 +58,13 @@ export function validateEmail(email: string): EmailValidationResult {
     return { isValid: false, error: 'Email address is too long' }
   }
 
-  const domain = trimmedEmail.split('@')[1].toLowerCase()
+  // Extract domain safely with defensive checks
+  const atIndex = trimmedEmail.lastIndexOf('@')
+  if (atIndex === -1 || atIndex === trimmedEmail.length - 1) {
+    return { isValid: false, error: 'Please enter a valid email address' }
+  }
+
+  const domain = trimmedEmail.substring(atIndex + 1).toLowerCase()
   if (DISPOSABLE_EMAIL_DOMAINS.includes(domain)) {
     return { isValid: false, error: 'Please use a permanent email address' }
   }
@@ -96,6 +102,35 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
     clearTimeout(timeoutId)
     timeoutId = setTimeout(() => func(...args), delay)
   }
+}
+
+/**
+ * Encode HTML entities for safe display
+ * Preserves text structure by encoding special characters instead of removing them
+ *
+ * @param input - Text to encode
+ * @returns Encoded text with HTML entities, trimmed and limited to 500 characters
+ *
+ * @example
+ * ```tsx
+ * const safe = encodeHtmlEntities('<script>alert("xss")</script>')
+ * // Returns: '&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;'
+ *
+ * const safe2 = encodeHtmlEntities('Tom & Jerry')
+ * // Returns: 'Tom &amp; Jerry'
+ * ```
+ */
+export function encodeHtmlEntities(input: string): string {
+  if (!input) return ''
+
+  return input
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+    .trim()
+    .slice(0, 500)
 }
 
 /**
@@ -171,8 +206,12 @@ export function validateForm(formData: Record<string, unknown>): ValidationResul
     }
   }
 
-  if ('acceptTerms' in formData && !formData.acceptTerms) {
-    errors.acceptTerms = 'You must accept the terms and conditions'
+  if ('acceptTerms' in formData) {
+    if (typeof formData.acceptTerms !== 'boolean') {
+      errors.acceptTerms = 'Accept terms must be a boolean'
+    } else if (!formData.acceptTerms) {
+      errors.acceptTerms = 'You must accept the terms and conditions'
+    }
   }
 
   return {

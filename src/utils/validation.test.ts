@@ -133,11 +133,11 @@ describe('sanitizeInput', () => {
 
   it('should prevent bypass attacks with nested protocols', () => {
     // Test for "jajavascript:vascript:" bypass - removes all "javascript:" instances iteratively
-    expect(sanitizeInput('jajavascript:vascript:alert("xss")')).toBe('alert("xss")')
+    expect(sanitizeInput('jajavascript:vascript:alert("xss")')).toBe('alert(&quot;xss&quot;)')
     // Test for "daddata:ata:" bypass - removes all "data:" instances, leaving harmless "da" prefix
     expect(sanitizeInput('daddata:ata:text/html,malicious')).toBe('datext/html,malicious')
     // Test for "vbvbscript:script:" bypass - removes all "vbscript:" instances iteratively
-    expect(sanitizeInput('vbvbscript:script:msgbox("xss")')).toBe('msgbox("xss")')
+    expect(sanitizeInput('vbvbscript:script:msgbox("xss")')).toBe('msgbox(&quot;xss&quot;)')
     // Test for mixed case nested bypass
     expect(sanitizeInput('jaJAVASCRIPT:vascript:alert(1)')).toBe('alert(1)')
     // Test for multiple layers of nesting (javajavascript:script: -> javascript: -> empty)
@@ -272,7 +272,7 @@ describe('sanitizeInput', () => {
 describe('encodeHtmlEntities', () => {
   it('should encode HTML special characters', () => {
     const result = encodeHtmlEntities('<script>alert("xss")</script>')
-    expect(result).toBe('&lt;script&gt;alert("xss")&lt;/script&gt;')
+    expect(result).toBe('&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;')
   })
 
   it('should preserve text content while encoding', () => {

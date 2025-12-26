@@ -368,15 +368,6 @@ npm run preview
 **Cause**: Dependency version mismatch or environment differences
 
 **Solution**:
-```bash
-# Use exact CI command locally
-npm ci
-npm run test -- --run
-
-# Check Node version matches CI
-node --version  # Should be 20.x
-```
-
 #### Lighthouse Scores Failing
 
 **Cause**: Performance regression or accessibility issues

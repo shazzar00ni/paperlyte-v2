@@ -210,12 +210,14 @@ All thresholds are enforced by Lighthouse CI:
 ### Automatic Deployments
 
 #### Production (main branch)
+
 1. Push to `main` triggers CI pipeline
 2. All quality gates must pass
 3. Netlify automatically deploys to production
 4. Production URL: `paperlyte.app` (when configured)
 
 #### Deploy Previews (PRs)
+
 1. Open/update PR triggers CI pipeline
 2. Netlify creates deploy preview
 3. Preview URL posted as PR comment

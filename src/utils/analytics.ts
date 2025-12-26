@@ -202,46 +202,27 @@ export const trackEvent = (
   name: string,
   properties?: Record<string, string | number | boolean>
 ): void => {
-  // For testing: call gtag/plausible directly if available
-  if (typeof window !== 'undefined') {
-    if (window.gtag) {
-      window.gtag('event', name, properties)
-      return
-    }
-    if (window.plausible) {
-      window.plausible(name, { props: properties })
-      return
-    }
-  }
-
-  // Otherwise use the analytics instance (production)
   analytics.trackEvent({ name, properties })
 }
 
 export const trackPageView = (path?: string, title?: string): void => {
-  const properties: Record<string, string> = {
-    page_path: path || window.location.pathname,
-  }
+  if (path || title) {
+    // If custom path or title provided, track as event with properties
+    const properties: Record<string, string> = {}
 
-  const pageTitle = title !== undefined ? title : document.title
-  if (pageTitle) {
-    properties.page_title = pageTitle
-  }
-
-  // For testing: call gtag/plausible directly if available
-  if (typeof window !== 'undefined') {
-    if (window.gtag) {
-      window.gtag('event', 'page_view', properties)
-      return
+    if (path) {
+      properties.page_path = path
     }
-    if (window.plausible) {
-      window.plausible('pageview', { props: properties })
-      return
-    }
-  }
 
-  // Otherwise use the analytics instance (production)
-  analytics.trackPageView(path)
+    if (title) {
+      properties.page_title = title
+    }
+
+    analytics.trackEvent({ name: AnalyticsEvents.PAGE_VIEW, properties })
+  } else {
+    // Otherwise use the basic page view tracking
+    analytics.trackPageView()
+  }
 }
 
 export const trackScrollDepth = (depth: number): void => {

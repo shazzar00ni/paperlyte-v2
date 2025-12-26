@@ -221,7 +221,7 @@ export const trackEvent = (
 export const trackPageView = (path?: string, title?: string): void => {
   const properties = {
     page_path: path || window.location.pathname,
-    page_title: title || document.title,
+    page_title: title !== undefined ? title : (document.title || undefined),
   }
 
   // For testing: call gtag/plausible directly if available

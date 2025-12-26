@@ -187,7 +187,7 @@ export const AnalyticsEvents = {
   CTA_CLICK: 'cta_click',
   EXTERNAL_LINK: 'external_link',
   SOCIAL_CLICK: 'social_click',
-  SCROLL_DEPTH: 'scroll_depth',
+  SCROLL_DEPTH: 'Scroll_Depth',
   WAITLIST_JOIN: 'Waitlist_Join',
   WAITLIST_SUBMIT: 'Waitlist_Submit',
   PAGE_VIEW: 'page_view',
@@ -226,7 +226,11 @@ export const trackPageView = (path?: string, title?: string): void => {
 }
 
 export const trackScrollDepth = (depth: number): void => {
-  trackEvent(AnalyticsEvents.SCROLL_DEPTH, { percentage: depth })
+  const milestones = [25, 50, 75, 100]
+  if (!milestones.includes(depth)) {
+    return
+  }
+  trackEvent(AnalyticsEvents.SCROLL_DEPTH, { depth_percentage: depth })
 }
 
 export const trackCTAClick = (buttonText: string, location?: string): void => {

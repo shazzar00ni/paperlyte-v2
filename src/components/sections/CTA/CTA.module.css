@@ -39,7 +39,9 @@
 
 .buttons {
   display: flex;
+  flex-direction: column;
   gap: var(--spacing-md);
+  align-items: center;
   justify-content: center;
   flex-wrap: wrap;
   margin-bottom: var(--spacing-xl);
@@ -104,6 +106,38 @@
 
 .badge i {
   font-size: var(--font-size-lg);
+}
+
+.textLink {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-size: var(--font-size-base);
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+}
+
+.textLink:hover {
+  color: var(--color-primary-dark);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .textLink {
+    transition: color 0.2s ease;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .textLink {
+    transition: none;
+  }
+}
+
+.microcopy {
+  margin-top: var(--spacing-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-tertiary);
 }
 
 /* Mobile styles */

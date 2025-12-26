@@ -1,8 +1,8 @@
 import { Section } from '@components/layout/Section'
 import { Button } from '@components/ui/Button'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
-import { Icon } from '@components/ui/Icon'
-import { DOWNLOAD_URLS, GITHUB_URL } from '@/constants/downloads'
+import { scrollToSection } from '@/utils/navigation'
+import { WAITLIST_COUNT, LAUNCH_QUARTER } from '@constants/waitlist'
 import styles from './CTA.module.css'
 
 export const CTA = (): React.ReactElement => {
@@ -10,86 +10,39 @@ export const CTA = (): React.ReactElement => {
     <Section id="download" background="primary" className={styles.cta}>
       <div className={styles.content}>
         <AnimatedElement animation="fadeIn">
-          <h2 className={styles.title}>Ready to declutter your mind?</h2>
+          <h2 className={styles.title}>Stop fighting your tools. Start thinking clearly.</h2>
         </AnimatedElement>
 
         <AnimatedElement animation="fadeIn" delay={150}>
           <p className={styles.subtitle}>
-            Join thousands simplifying their notes. Start free, stay focused.
+            Note-taking shouldn't feel like work. It should feel like breathing—natural,
+            effortless, invisible.
+          </p>
+          <p className={styles.subtitle}>
+            Join the waitlist today and be among the first to experience what note-taking
+            should have been all along.
           </p>
         </AnimatedElement>
 
         <AnimatedElement animation="fadeIn" delay={300}>
           <div className={styles.buttons}>
-            <Button
-              variant="secondary"
-              size="large"
-              icon="fa-apple"
-              href={DOWNLOAD_URLS.mac}
-              className={styles.downloadButton}
-            >
-              Download for Mac
+            <Button variant="primary" size="large" onClick={() => scrollToSection('email-capture')}>
+              Join the Waitlist
             </Button>
-            <Button
-              variant="secondary"
-              size="large"
-              icon="fa-windows"
-              href={DOWNLOAD_URLS.windows}
-              className={styles.downloadButton}
+            <button
+              type="button"
+              className={styles.textLink}
+              onClick={() => scrollToSection('hero')}
             >
-              Download for Windows
-            </Button>
+              Watch the Demo Again
+            </button>
           </div>
         </AnimatedElement>
 
-        <AnimatedElement animation="fadeIn" delay={450}>
-          <div className={styles.platforms}>
-            <p className={styles.platformText}>
-              Also available for{' '}
-              <a
-                href={DOWNLOAD_URLS.ios}
-                className={styles.platformLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Download for iOS (opens in new tab)"
-              >
-                iOS
-              </a>
-              ,{' '}
-              <a
-                href={DOWNLOAD_URLS.android}
-                className={styles.platformLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Download for Android (opens in new tab)"
-              >
-                Android
-              </a>
-              , and{' '}
-              <a
-                href={DOWNLOAD_URLS.linux}
-                className={styles.platformLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Download for Linux (opens in new tab)"
-              >
-                Linux
-              </a>
-            </p>
-          </div>
-        </AnimatedElement>
-
-        <AnimatedElement animation="fadeIn" delay={600}>
-          <a
-            href={GITHUB_URL}
-            className={styles.badge}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Open source on GitHub (opens in new tab)"
-          >
-            <Icon name="fa-github" size="sm" />
-            <span>Open source on GitHub</span>
-          </a>
+        <AnimatedElement animation="fadeIn" delay={300}>
+          <p className={styles.microcopy}>
+            Launching {LAUNCH_QUARTER} · {WAITLIST_COUNT} already waiting · No credit card required
+          </p>
         </AnimatedElement>
       </div>
     </Section>

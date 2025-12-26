@@ -369,6 +369,7 @@ npm run preview
 **Cause**: Dependency version mismatch or environment differences
 
 **Solution**:
+
 #### Lighthouse Scores Failing
 
 **Cause**: Performance regression or accessibility issues
@@ -378,6 +379,7 @@ npm run preview
 2. Open HTML report to see specific issues
 3. Fix issues identified in report
 4. Test locally:
+
    ```bash
    npm run build
    npx lhci autorun --config=./.lighthouserc.json

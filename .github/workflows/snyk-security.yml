@@ -55,10 +55,10 @@ jobs:
         uses: snyk/actions/setup@9adf32b1121593767fc3c057af55b55db032dc04
 
         # Runs Snyk Code (SAST) analysis and uploads result into GitHub.
-        # Use || true to not fail the pipeline
       - name: Snyk Code test
         if: env.SNYK_TOKEN != ''
-        run: snyk code test --sarif > snyk-code.sarif || true
+        run: snyk code test --sarif > snyk-code.sarif
+        continue-on-error: true
 
         # Runs Snyk Open Source (SCA) analysis and uploads result to Snyk.
       - name: Snyk Open Source monitor
@@ -67,10 +67,9 @@ jobs:
         continue-on-error: true
 
         # Runs Snyk Infrastructure as Code (IaC) analysis and uploads result to Snyk.
-        # Use || true to not fail the pipeline.
       - name: Snyk IaC test and report
         if: env.SNYK_TOKEN != ''
-        run: snyk iac test --report || true
+        run: snyk iac test --report
         continue-on-error: true
 
         # Note: Docker/Container scanning is disabled as this project doesn't use Docker

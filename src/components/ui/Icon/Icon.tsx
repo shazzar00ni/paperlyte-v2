@@ -35,6 +35,16 @@ export const Icon = ({
   const paths = iconPaths[name]
   const viewBox = getIconViewBox(name)
 
+  // Normalize color: detect bare hex strings (3 or 6 hex digits) and prepend "#"
+  const normalizedColor = useMemo(() => {
+    if (!color) return undefined
+    // Check if it's a bare hex string (3 or 6 hex digits)
+    if (/^[0-9A-Fa-f]{3}$|^[0-9A-Fa-f]{6}$/.test(color)) {
+      return `#${color}`
+    }
+    return color
+  }, [color])
+
   // Memoize path array splitting for better performance
   const pathArray = useMemo(() => {
     if (!paths) return []
@@ -53,7 +63,7 @@ export const Icon = ({
     return (
       <i
         className={`${variantClass} ${name} icon-fallback ${className}`}
-        style={{ fontSize: iconSize, color, ...style }}
+        style={{ fontSize: iconSize, color: normalizedColor, ...style }}
         aria-label={ariaLabel}
         aria-hidden={ariaLabel ? 'false' : 'true'}
         {...(ariaLabel ? { role: 'img' } : {})}
@@ -67,7 +77,7 @@ export const Icon = ({
       height={iconSize}
       viewBox={viewBox}
       fill="none"
-      stroke={color || 'currentColor'}
+      stroke={normalizedColor || 'currentColor'}
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"

@@ -90,12 +90,18 @@ describe('Icon', () => {
   })
 
   it('should use medium size by default', () => {
-    const { container } = render(<Icon name="fa-bolt" />)
+    // Test SVG default size (md = 20px)
+    const { container, rerender } = render(<Icon name="fa-bolt" />)
     const svg = container.querySelector('svg')
-    const fallback = container.querySelector('i')
+    expect(svg).toBeInTheDocument()
+    expect(svg).toHaveAttribute('width', '20')
+    expect(svg).toHaveAttribute('height', '20')
 
-    // Component should render with default size
-    expect(svg || fallback).toBeInTheDocument()
+    // Test fallback default size
+    rerender(<Icon name="missing-icon" />)
+    const fallback = container.querySelector('i')
+    expect(fallback).toBeInTheDocument()
+    expect(fallback?.style.fontSize).toBe('20px')
   })
 
   it('should be hidden from screen readers by default', () => {
@@ -139,16 +145,30 @@ describe('Icon', () => {
     expect(fallback).toHaveStyle({ color: '#FF0000' })
   })
 
-  it('should accept color without # prefix', () => {
-    // Test with SVG (known icon)
+  it('should normalize bare hex colors by prepending #', () => {
+    // Test with SVG (known icon) - 6 digit hex
     const { container, rerender } = render(<Icon name="fa-bolt" color="FF0000" />)
-    const svg = container.querySelector('svg')
-    expect(svg).toHaveAttribute('stroke', 'FF0000')
+    let svg = container.querySelector('svg')
+    expect(svg).toHaveAttribute('stroke', '#FF0000')
+
+    // Test with 3 digit hex
+    rerender(<Icon name="fa-bolt" color="F00" />)
+    svg = container.querySelector('svg')
+    expect(svg).toHaveAttribute('stroke', '#F00')
 
     // Test with fallback (missing icon)
     rerender(<Icon name="missing-icon" color="FF0000" />)
     const fallback = container.querySelector('i')
-    expect(fallback).toHaveStyle({ color: 'FF0000' })
+    expect(fallback).toHaveStyle({ color: '#FF0000' })
+
+    // Test that valid CSS colors are left untouched
+    rerender(<Icon name="fa-bolt" color="rgb(255, 0, 0)" />)
+    svg = container.querySelector('svg')
+    expect(svg).toHaveAttribute('stroke', 'rgb(255, 0, 0)')
+
+    rerender(<Icon name="fa-bolt" color="currentColor" />)
+    svg = container.querySelector('svg')
+    expect(svg).toHaveAttribute('stroke', 'currentColor')
   })
 
   it('should apply correct variant class for solid', () => {

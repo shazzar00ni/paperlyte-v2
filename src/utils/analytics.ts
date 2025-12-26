@@ -189,10 +189,16 @@ function sanitizeAnalyticsParams(params?: AnalyticsEventParams): AnalyticsEventP
       continue
     }
 
-    // Check if value looks like an email (basic check)
-    if (typeof value === 'string' && value.includes('@') && value.includes('.')) {
-      piiFound = true
-      continue
+    // Check if value looks like an email with stricter pattern matching to reduce false positives
+    // Pattern: local-part@domain.tld where TLD is at least 2 letters
+    // Example: user@example.com, name@domain.co.uk
+    if (typeof value === 'string') {
+      // Email pattern: non-space/non-@ chars + @ + domain with dot + 2+ letter TLD
+      const emailPattern = /[^\s@]+@[^\s@]+\.[a-z]{2,}/i
+      if (emailPattern.test(value)) {
+        piiFound = true
+        continue
+      }
     }
 
     sanitized[key] = value

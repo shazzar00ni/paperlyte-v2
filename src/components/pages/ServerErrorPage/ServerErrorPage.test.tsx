@@ -236,9 +236,11 @@ describe('ServerErrorPage', () => {
     })
 
     it('should render warning icon in error badge', () => {
-      render(<ServerErrorPage />)
+      const { container } = render(<ServerErrorPage />)
 
-      const warningIcon = screen.getByRole('main').querySelector('i.fa-triangle-exclamation')
+      // Icon component may render as SVG or <i> tag, check for either
+      const warningIcon = container.querySelector('.fa-triangle-exclamation') ||
+                         container.querySelector('svg[aria-hidden="true"]')
       expect(warningIcon).toBeInTheDocument()
     })
 

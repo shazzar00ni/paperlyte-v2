@@ -1,37 +1,73 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import {
-  isAnalyticsAvailable,
-  trackEvent,
-  trackPageView,
-  trackScrollDepth,
-  trackCTAClick,
-  trackExternalLink,
-  trackSocialClick,
-  AnalyticsEvents,
-} from './analytics'
+import { analytics, trackEvent, trackPageView } from './analytics'
+
+// Extend Window interface for analytics globals
+declare global {
+  interface Window {
+    gtag?: (...args: unknown[]) => void
+    dataLayer?: unknown[]
+    plausible?: (eventName: string, options?: { props?: Record<string, unknown> }) => void
+  }
+}
 
 describe('Analytics Utility', () => {
   beforeEach(() => {
-    // Clear any existing gtag
-    delete (window as Window & { gtag?: unknown }).gtag
-    delete (window as Window & { dataLayer?: unknown }).dataLayer
+    // Clear analytics globals
+    delete window.gtag
+    delete window.dataLayer
+    delete window.plausible
+
+    // Reset analytics initialized state
+    // @ts-expect-error - accessing private property for testing
+    analytics.initialized = false
+
+    // Mock console methods
+    vi.spyOn(console, 'log').mockImplementation(() => {})
+    vi.spyOn(console, 'warn').mockImplementation(() => {})
   })
 
-  describe('isAnalyticsAvailable', () => {
-    it('should return false when gtag is not available', () => {
-      expect(isAnalyticsAvailable()).toBe(false)
+  describe('Analytics Initialization', () => {
+    it('should not throw error when initializing', () => {
+      expect(() => analytics.init()).not.toThrow()
     })
 
-    it('should return true when gtag is available', () => {
-      ;(window as Window & { gtag?: () => void }).gtag = vi.fn()
-      expect(isAnalyticsAvailable()).toBe(true)
+    it('should only initialize once', () => {
+      const consoleSpy = vi.spyOn(console, 'log')
+
+      analytics.init()
+      const firstCallCount = consoleSpy.mock.calls.length
+
+      analytics.init()
+      const secondCallCount = consoleSpy.mock.calls.length
+
+      // Should not log additional times on second init
+      expect(secondCallCount).toBe(firstCallCount)
     })
   })
 
   describe('trackEvent', () => {
-    it('should call gtag with correct parameters when available', () => {
+    it('should not throw error when analytics is disabled', () => {
+      expect(() => {
+        trackEvent('test_event')
+      }).not.toThrow()
+    })
+
+    it('should not throw error with parameters', () => {
+      expect(() => {
+        trackEvent('test_event', { param1: 'value1', param2: 123 })
+      }).not.toThrow()
+    })
+
+    it('should track event with GA4 when gtag is available', () => {
       const mockGtag = vi.fn()
-      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
+      window.gtag = mockGtag
+
+      // @ts-expect-error - setting private property for testing
+      analytics.config = {
+        provider: 'ga4',
+        siteId: 'G-XXXXXXXXXX',
+        enabled: true,
+      }
 
       trackEvent('test_event', { param1: 'value1', param2: 123 })
 
@@ -41,29 +77,34 @@ describe('Analytics Utility', () => {
       })
     })
 
-    it('should not throw error when gtag is not available', () => {
-      expect(() => {
-        trackEvent('test_event')
-      }).not.toThrow()
-    })
+    it('should track event with Plausible when plausible is available', () => {
+      const mockPlausible = vi.fn()
+      window.plausible = mockPlausible
 
-    it('should handle errors gracefully', () => {
-      const mockGtag = vi.fn(() => {
-        throw new Error('Analytics error')
+      // @ts-expect-error - setting private property for testing
+      analytics.config = {
+        provider: 'plausible',
+        siteId: 'example.com',
+        enabled: true,
+      }
+
+      trackEvent('test_event', { param1: 'value1' })
+
+      expect(mockPlausible).toHaveBeenCalledWith('test_event', {
+        props: { param1: 'value1' },
       })
-      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
-
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-
-      trackEvent('test_event')
-
-      expect(consoleSpy).toHaveBeenCalled()
-      consoleSpy.mockRestore()
     })
 
-    it('should track event without parameters', () => {
+    it('should handle events without parameters', () => {
       const mockGtag = vi.fn()
-      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
+      window.gtag = mockGtag
+
+      // @ts-expect-error - setting private property for testing
+      analytics.config = {
+        provider: 'ga4',
+        siteId: 'G-XXXXXXXXXX',
+        enabled: true,
+      }
 
       trackEvent('simple_event')
 
@@ -72,153 +113,197 @@ describe('Analytics Utility', () => {
   })
 
   describe('trackPageView', () => {
-    it('should track page view with path and title', () => {
-      const mockGtag = vi.fn()
-      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
+    it('should not throw error when analytics is disabled', () => {
+      expect(() => {
+        trackPageView('/test-page')
+      }).not.toThrow()
+    })
 
-      trackPageView('/privacy', 'Privacy Policy')
+    it('should track page view with GA4 when gtag is available', () => {
+      const mockGtag = vi.fn()
+      window.gtag = mockGtag
+
+      // @ts-expect-error - setting private property for testing
+      analytics.config = {
+        provider: 'ga4',
+        siteId: 'G-XXXXXXXXXX',
+        enabled: true,
+      }
+
+      trackPageView('/test-page')
 
       expect(mockGtag).toHaveBeenCalledWith('event', 'page_view', {
-        page_path: '/privacy',
-        page_title: 'Privacy Policy',
+        page_path: '/test-page',
       })
     })
 
-    it('should track page view with only path', () => {
-      const mockGtag = vi.fn()
-      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
+    it('should track page view with Plausible when plausible is available', () => {
+      const mockPlausible = vi.fn()
+      window.plausible = mockPlausible
 
-      trackPageView('/about')
+      // @ts-expect-error - setting private property for testing
+      analytics.config = {
+        provider: 'plausible',
+        siteId: 'example.com',
+        enabled: true,
+      }
+
+      trackPageView()
+
+      expect(mockPlausible).toHaveBeenCalledWith('pageview')
+    })
+
+    it('should use current URL when no URL provided with GA4', () => {
+      const mockGtag = vi.fn()
+      window.gtag = mockGtag
+
+      // @ts-expect-error - setting private property for testing
+      analytics.config = {
+        provider: 'ga4',
+        siteId: 'G-XXXXXXXXXX',
+        enabled: true,
+      }
+
+      trackPageView()
 
       expect(mockGtag).toHaveBeenCalledWith('event', 'page_view', {
-        page_path: '/about',
-        page_title: undefined,
-      })
-    })
-  })
-
-  describe('trackScrollDepth', () => {
-    it('should track milestone percentages', () => {
-      const mockGtag = vi.fn()
-      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
-
-      // Track 25% milestone
-      trackScrollDepth(25)
-      expect(mockGtag).toHaveBeenCalledWith('event', AnalyticsEvents.SCROLL_DEPTH, {
-        depth_percentage: 25,
-      })
-
-      mockGtag.mockClear()
-
-      // Track 50% milestone
-      trackScrollDepth(52)
-      expect(mockGtag).toHaveBeenCalledWith('event', AnalyticsEvents.SCROLL_DEPTH, {
-        depth_percentage: 50,
+        page_path: expect.any(String),
       })
     })
 
-    it('should not track non-milestone percentages', () => {
+    it('should not call gtag when analytics is disabled', () => {
       const mockGtag = vi.fn()
-      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
+      window.gtag = mockGtag
 
-      trackScrollDepth(10)
-      trackScrollDepth(37)
-      trackScrollDepth(88)
+      // @ts-expect-error - setting private property for testing
+      analytics.config = {
+        provider: 'none',
+        enabled: false,
+      }
+
+      trackPageView('/test')
 
       expect(mockGtag).not.toHaveBeenCalled()
     })
+  })
 
-    it('should track all milestone percentages', () => {
-      const mockGtag = vi.fn()
-      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
+  describe('GA4 Integration', () => {
+    it('should initialize GA4 with privacy settings', () => {
+      const appendChildSpy = vi.spyOn(document.head, 'appendChild').mockImplementation(() => null as any)
 
-      const milestones = [25, 50, 75, 100]
+      // @ts-expect-error - setting private property for testing
+      analytics.config = {
+        provider: 'ga4',
+        siteId: 'G-XXXXXXXXXX',
+        enabled: true,
+      }
 
-      milestones.forEach((milestone) => {
-        mockGtag.mockClear()
-        trackScrollDepth(milestone)
-        expect(mockGtag).toHaveBeenCalledWith('event', AnalyticsEvents.SCROLL_DEPTH, {
-          depth_percentage: milestone,
-        })
-      })
+      // @ts-expect-error - calling private method for testing
+      analytics.initGA4()
+
+      expect(appendChildSpy).toHaveBeenCalled()
+      expect(window.dataLayer).toBeDefined()
+      expect(window.gtag).toBeDefined()
+
+      // Verify privacy config was set
+      expect(window.dataLayer).toEqual(
+        expect.arrayContaining([
+          expect.arrayContaining(['config', 'G-XXXXXXXXXX'])
+        ])
+      )
+
+      appendChildSpy.mockRestore()
+    })
+
+    it('should load gtag script with correct source', () => {
+      const appendChildSpy = vi.spyOn(document.head, 'appendChild').mockImplementation(() => null as any)
+
+      // @ts-expect-error - setting private property for testing
+      analytics.config = {
+        provider: 'ga4',
+        siteId: 'G-XXXXXXXXXX',
+        enabled: true,
+      }
+
+      // @ts-expect-error - calling private method for testing
+      analytics.initGA4()
+
+      const scriptElement = appendChildSpy.mock.calls[0][0] as HTMLScriptElement
+      expect(scriptElement.tagName).toBe('SCRIPT')
+      expect(scriptElement.src).toContain('googletagmanager.com/gtag/js')
+      expect(scriptElement.src).toContain('G-XXXXXXXXXX')
+
+      appendChildSpy.mockRestore()
     })
   })
 
-  describe('trackCTAClick', () => {
-    it('should track CTA click with button text and location', () => {
-      const mockGtag = vi.fn()
-      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
+  describe('Plausible Integration', () => {
+    it('should initialize Plausible with correct configuration', () => {
+      const appendChildSpy = vi.spyOn(document.head, 'appendChild').mockImplementation(() => null as any)
 
-      trackCTAClick('Join Waitlist', 'hero')
+      // @ts-expect-error - setting private property for testing
+      analytics.config = {
+        provider: 'plausible',
+        siteId: 'example.com',
+        enabled: true,
+      }
 
-      expect(mockGtag).toHaveBeenCalledWith('event', AnalyticsEvents.CTA_CLICK, {
-        button_text: 'Join Waitlist',
-        button_location: 'hero',
-      })
+      // @ts-expect-error - calling private method for testing
+      analytics.initPlausible()
+
+      expect(appendChildSpy).toHaveBeenCalled()
+      const scriptElement = appendChildSpy.mock.calls[0][0] as HTMLScriptElement
+      expect(scriptElement.tagName).toBe('SCRIPT')
+      expect(scriptElement.src).toContain('plausible.io')
+      expect(scriptElement.dataset.domain).toBe('example.com')
+
+      appendChildSpy.mockRestore()
     })
 
-    it('should track multiple CTA clicks with different parameters', () => {
-      const mockGtag = vi.fn()
-      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
+    it('should warn when Plausible site ID is not configured', () => {
+      const warnSpy = vi.spyOn(console, 'warn')
 
-      trackCTAClick('Sign Up', 'header')
-      trackCTAClick('Learn More', 'features')
+      // @ts-expect-error - setting private property for testing
+      analytics.config = {
+        provider: 'plausible',
+        siteId: undefined,
+        enabled: true,
+      }
 
-      expect(mockGtag).toHaveBeenCalledTimes(2)
-    })
-  })
+      // @ts-expect-error - calling private method for testing
+      analytics.initPlausible()
 
-  describe('trackExternalLink', () => {
-    it('should track external link click', () => {
-      const mockGtag = vi.fn()
-      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
-
-      trackExternalLink('https://example.com', 'Example Link')
-
-      expect(mockGtag).toHaveBeenCalledWith('event', AnalyticsEvents.EXTERNAL_LINK_CLICK, {
-        link_url: 'https://example.com',
-        link_text: 'Example Link',
-      })
-    })
-  })
-
-  describe('trackSocialClick', () => {
-    it('should track social media click with lowercase platform', () => {
-      const mockGtag = vi.fn()
-      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
-
-      trackSocialClick('Twitter')
-
-      expect(mockGtag).toHaveBeenCalledWith('event', AnalyticsEvents.SOCIAL_LINK_CLICK, {
-        platform: 'twitter',
-      })
-    })
-
-    it('should normalize platform name to lowercase', () => {
-      const mockGtag = vi.fn()
-      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
-
-      trackSocialClick('GITHUB')
-
-      expect(mockGtag).toHaveBeenCalledWith('event', AnalyticsEvents.SOCIAL_LINK_CLICK, {
-        platform: 'github',
-      })
+      expect(warnSpy).toHaveBeenCalledWith('Analytics: Plausible site ID not configured')
     })
   })
 
-  describe('AnalyticsEvents', () => {
-    it('should have all required event names', () => {
-      expect(AnalyticsEvents.WAITLIST_JOIN).toBe('Waitlist_Join')
-      expect(AnalyticsEvents.WAITLIST_SUBMIT).toBe('Waitlist_Submit')
-      expect(AnalyticsEvents.WAITLIST_SUCCESS).toBe('Waitlist_Success')
-      expect(AnalyticsEvents.WAITLIST_ERROR).toBe('Waitlist_Error')
-      expect(AnalyticsEvents.CTA_CLICK).toBe('CTA_Click')
-      expect(AnalyticsEvents.SCROLL_DEPTH).toBe('Scroll_Depth')
-      expect(AnalyticsEvents.VIDEO_PLAY).toBe('Video_Play')
-      expect(AnalyticsEvents.NAVIGATION_CLICK).toBe('Navigation_Click')
-      expect(AnalyticsEvents.EXTERNAL_LINK_CLICK).toBe('External_Link_Click')
-      expect(AnalyticsEvents.SOCIAL_LINK_CLICK).toBe('Social_Link_Click')
-      expect(AnalyticsEvents.FAQ_EXPAND).toBe('FAQ_Expand')
+  describe('Error Handling', () => {
+    it('should handle missing gtag gracefully', () => {
+      delete window.gtag
+
+      // @ts-expect-error - setting private property for testing
+      analytics.config = {
+        provider: 'ga4',
+        siteId: 'G-XXXXXXXXXX',
+        enabled: true,
+      }
+
+      expect(() => trackEvent('test')).not.toThrow()
+      expect(() => trackPageView('/test')).not.toThrow()
+    })
+
+    it('should handle missing plausible gracefully', () => {
+      delete window.plausible
+
+      // @ts-expect-error - setting private property for testing
+      analytics.config = {
+        provider: 'plausible',
+        siteId: 'example.com',
+        enabled: true,
+      }
+
+      expect(() => trackEvent('test')).not.toThrow()
+      expect(() => trackPageView()).not.toThrow()
     })
   })
 })

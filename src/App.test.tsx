@@ -49,19 +49,20 @@ describe('App Integration', () => {
   it('should have accessible landmark regions with proper roles', () => {
     render(<App />)
 
-    // Use role queries for accessibility testing
-    const banner = screen.getByRole('banner') // header
+    // Use role queries for accessibility testing - expect multiple banners (hero section may have one too)
+    const banners = screen.getAllByRole('banner')
+    expect(banners.length).toBeGreaterThanOrEqual(1)
+
     const main = screen.getByRole('main')
     const contentinfo = screen.getByRole('contentinfo') // footer
 
-    expect(banner).toBeInTheDocument()
     expect(main).toBeInTheDocument()
     expect(main).toHaveAttribute('id', 'main')
     expect(contentinfo).toBeInTheDocument()
 
-    // Verify navigation is accessible
-    const navigation = screen.getByRole('navigation')
-    expect(navigation).toBeInTheDocument()
+    // Verify navigation is accessible - there may be multiple nav elements
+    const navigations = screen.getAllByRole('navigation')
+    expect(navigations.length).toBeGreaterThanOrEqual(1)
   })
 
   it('should render Hero section', () => {
@@ -110,7 +111,9 @@ describe('App Integration', () => {
 
     // Verify specific CTA content is present
     expect(screen.getByText(/Stop fighting your tools/i)).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /Join the Waitlist/i })).toBeInTheDocument()
+    // There are multiple "Join the Waitlist" buttons on the page
+    const waitlistButtons = screen.getAllByRole('button', { name: /Join the Waitlist/i })
+    expect(waitlistButtons.length).toBeGreaterThan(0)
   })
 
   it('should render Footer component', () => {
@@ -127,8 +130,9 @@ describe('App Integration', () => {
   it('should render CTA buttons in download section', () => {
     render(<App />)
 
-    // Check for actual CTA buttons
-    expect(screen.getByRole('button', { name: /Join the Waitlist/i })).toBeInTheDocument()
+    // Check for actual CTA buttons - there are multiple "Join the Waitlist" buttons on the page
+    const waitlistButtons = screen.getAllByRole('button', { name: /Join the Waitlist/i })
+    expect(waitlistButtons.length).toBeGreaterThan(0)
     expect(screen.getByRole('button', { name: /Watch the Demo Again/i })).toBeInTheDocument()
   })
 
@@ -136,9 +140,11 @@ describe('App Integration', () => {
     render(<App />)
 
     // Check for specific features (using actual feature names)
+    // Some features appear multiple times on the page (e.g., in different sections)
     expect(screen.getByText('Lightning Speed')).toBeInTheDocument()
     expect(screen.getByText('Privacy Focused')).toBeInTheDocument()
-    expect(screen.getByText('Tag-Based Organization')).toBeInTheDocument()
+    const tagBasedOrg = screen.getAllByText('Tag-Based Organization')
+    expect(tagBasedOrg.length).toBeGreaterThan(0)
   })
 
   it('should render social links in footer', () => {

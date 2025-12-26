@@ -39,43 +39,50 @@ jobs:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
       - name: Set up Snyk CLI to check for security issues
         # Snyk can be used to break the build when it detects security issues.
         # In this case we want to upload the SAST issues to GitHub Code Scanning
         uses: snyk/actions/setup@9adf32b1121593767fc3c057af55b55db032dc04
 
-        # For Snyk Open Source you must first set up the development environment for your application's dependencies
-        # For example for Node
-        #- uses: actions/setup-node@v4
-        #  with:
-        #    node-version: 20
-
         # Runs Snyk Code (SAST) analysis and uploads result into GitHub.
-        # Continue on error to not fail the pipeline if vulnerabilities are found
       - name: Snyk Code test
+        if: env.SNYK_TOKEN != ''
+        run: snyk code test --sarif > snyk-code.sarif
         continue-on-error: true
-        run: snyk code test --sarif > snyk-code.sarif || true
 
         # Runs Snyk Open Source (SCA) analysis and uploads result to Snyk.
       - name: Snyk Open Source monitor
+        if: env.SNYK_TOKEN != ''
+        run: snyk monitor --all-projects
         continue-on-error: true
-        run: snyk monitor --all-projects || true
 
         # Runs Snyk Infrastructure as Code (IaC) analysis and uploads result to Snyk.
       - name: Snyk IaC test and report
+        if: env.SNYK_TOKEN != ''
+        run: snyk iac test --report
         continue-on-error: true
-        run: snyk iac test --report || true
 
-        # Skip Docker image build and scan (no Dockerfile in this project)
-      # - name: Build a Docker image
-      #   run: docker build -t your/image-to-test .
-      # - name: Snyk Container monitor
-      #   run: snyk container monitor your/image-to-test --file=Dockerfile
+        # Note: Docker/Container scanning is disabled as this project doesn't use Docker
+        # If you add a Dockerfile in the future, uncomment these steps:
+        # - name: Build a Docker image
+        #   run: docker build -t paperlyte:latest .
+        # - name: Snyk Container monitor
+        #   run: snyk container monitor paperlyte:latest --file=Dockerfile
 
         # Push the Snyk Code results into GitHub Code Scanning tab
       - name: Upload result to GitHub Code Scanning
+        if: env.SNYK_TOKEN != '' && hashFiles('snyk-code.sarif') != ''
         uses: github/codeql-action/upload-sarif@v4
-        # Only upload if SARIF file exists and has content
-        if: always() && hashFiles('snyk-code.sarif') != ''
+        continue-on-error: true
         with:
           sarif_file: snyk-code.sarif

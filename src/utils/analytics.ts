@@ -219,9 +219,13 @@ export const trackEvent = (
 }
 
 export const trackPageView = (path?: string, title?: string): void => {
-  const properties = {
+  const properties: Record<string, string> = {
     page_path: path || window.location.pathname,
-    page_title: title !== undefined ? title : (document.title || undefined),
+  }
+
+  const pageTitle = title !== undefined ? title : document.title
+  if (pageTitle) {
+    properties.page_title = pageTitle
   }
 
   // For testing: call gtag/plausible directly if available

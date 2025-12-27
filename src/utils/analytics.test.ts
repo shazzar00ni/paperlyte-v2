@@ -11,7 +11,14 @@ declare global {
 }
 
 describe('Analytics Utility', () => {
+  // Store original config to restore between tests
+  let originalConfig: { provider: string; enabled: boolean }
+
   beforeEach(() => {
+    // Save original config
+    // @ts-expect-error - accessing private property for testing
+    originalConfig = { ...analytics.config }
+
     // Clear analytics globals
     delete window.gtag
     delete window.dataLayer
@@ -21,9 +28,22 @@ describe('Analytics Utility', () => {
     // @ts-expect-error - accessing private property for testing
     analytics.initialized = false
 
+    // Reset analytics config to defaults
+    // @ts-expect-error - setting private property for testing
+    analytics.config = {
+      provider: 'none',
+      enabled: false,
+    }
+
     // Mock console methods
     vi.spyOn(console, 'log').mockImplementation(() => {})
     vi.spyOn(console, 'warn').mockImplementation(() => {})
+  })
+
+  afterEach(() => {
+    // Restore original config to prevent state leakage
+    // @ts-expect-error - setting private property for testing
+    analytics.config = originalConfig
   })
 
   describe('Analytics Initialization', () => {

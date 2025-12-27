@@ -259,13 +259,13 @@ describe('Header', () => {
       await user.click(menuButton)
 
       const featuresLink = screen.getByRole('link', { name: /features/i })
-      const downloadLink = screen.getByRole('link', { name: /download/i })
       featuresLink.focus()
 
       await user.keyboard('{End}')
 
-      // End key should focus the last nav link (Download)
-      expect(document.activeElement).toBe(downloadLink)
+      // End key should focus the last focusable element (Get Started button)
+      const getStartedButton = screen.getByRole('button', { name: /get started/i })
+      expect(document.activeElement).toBe(getStartedButton)
     })
 
     it('should wrap around to first item when pressing ArrowRight at end', async () => {
@@ -277,15 +277,15 @@ describe('Header', () => {
       await user.click(menuButton)
 
       const featuresLink = screen.getByRole('link', { name: /features/i })
-      const downloadLink = screen.getByRole('link', { name: /download/i })
+      const getStartedButton = screen.getByRole('button', { name: /get started/i })
 
-      // Start at download link (last main nav link)
-      downloadLink.focus()
+      // Start at last element (Get Started button)
+      getStartedButton.focus()
 
-      // ArrowRight should wrap to first
+      // ArrowRight should wrap to first element
       await user.keyboard('{ArrowRight}')
 
-      // Should wrap around to the first nav link (Features)
+      // Should wrap around to the first element (Features link)
       expect(document.activeElement).toBe(featuresLink)
     })
 

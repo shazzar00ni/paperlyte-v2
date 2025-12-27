@@ -103,10 +103,10 @@ describe('navigation utilities', () => {
       expect(isSafeUrl('/path/with://protocol')).toBe(false)
     })
 
-    it('should reject external URLs with different origins', () => {
-      expect(isSafeUrl('http://evil.com')).toBe(false)
-      expect(isSafeUrl('https://evil.com/page')).toBe(false)
-      expect(isSafeUrl('https://malicious.com')).toBe(false)
+    it('should allow external HTTP/HTTPS URLs (for linking to external resources)', () => {
+      expect(isSafeUrl('http://example.com')).toBe(true)
+      expect(isSafeUrl('https://example.com/page')).toBe(true)
+      expect(isSafeUrl('https://github.com')).toBe(true)
     })
 
     it('should reject javascript: protocol URLs', () => {
@@ -201,7 +201,7 @@ describe('navigation utilities', () => {
       })
     })
 
-    it('should block navigation to unsafe URLs', () => {
+    it('should allow navigation to external HTTPS URLs', () => {
       const mockLocation = { href: '', origin: 'http://localhost' } as Location
       Object.defineProperty(window, 'location', {
         value: mockLocation,
@@ -209,15 +209,10 @@ describe('navigation utilities', () => {
         configurable: true,
       })
 
-      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const result = safeNavigate('https://example.com')
+      expect(result).toBe(true)
+      expect(mockLocation.href).toBe('https://example.com')
 
-      const result = safeNavigate('http://evil.com')
-      expect(result).toBe(false)
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
-        'Navigation blocked: URL "http://evil.com" failed security validation'
-      )
-
-      consoleWarnSpy.mockRestore()
       // Restore window.location
       Object.defineProperty(window, 'location', {
         value: originalLocation,

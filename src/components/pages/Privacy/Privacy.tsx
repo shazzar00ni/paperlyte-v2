@@ -30,9 +30,9 @@ export function Privacy() {
             <section className={styles.section}>
               <h2>Our Commitment to Privacy</h2>
               <p>
-                At Paperlyte, we believe your notes are personal. We're committed to protecting your
-                privacy and giving you control over your data. This Privacy Policy explains how we
-                collect, use, and protect your information.
+                At Paperlyte, we believe your notes are personal. We're committed to protecting
+                your privacy and giving you control over your data. This Privacy Policy explains
+                how we collect, use, and protect your information.
               </p>
             </section>
 
@@ -104,8 +104,8 @@ export function Privacy() {
                 </em>
               </p>
               <p>
-                <strong>Planned Local-First Architecture:</strong> Your notes will be stored locally
-                on your device first, giving you offline access and ownership of your data.
+                <strong>Planned Local-First Architecture:</strong> Your notes will be stored
+                locally on your device first, giving you offline access and ownership of your data.
               </p>
               <p>
                 <strong>Planned Encryption:</strong> All data will be encrypted in transit using
@@ -136,12 +136,12 @@ export function Privacy() {
                   Paperlyte (hosting, analytics)
                 </li>
                 <li>
-                  <strong>Legal Requirements:</strong> When required by law or to protect our rights
-                  and users' safety
+                  <strong>Legal Requirements:</strong> When required by law or to protect our
+                  rights and users' safety
                 </li>
                 <li>
-                  <strong>Business Transfers:</strong> In the event of a merger or acquisition (with
-                  advance notice to users)
+                  <strong>Business Transfers:</strong> In the event of a merger or acquisition
+                  (with advance notice to users)
                 </li>
               </ul>
             </section>
@@ -181,8 +181,8 @@ export function Privacy() {
                 Opt-out Browser Add-on.
               </p>
               <p>
-                <strong>When App Launches:</strong> The full application will use minimal cookies to
-                maintain your session and remember your preferences.
+                <strong>When App Launches:</strong> The full application will use minimal cookies
+                to maintain your session and remember your preferences.
               </p>
               <p>
                 You can disable cookies in your browser settings, though some features may not work
@@ -214,9 +214,9 @@ export function Privacy() {
             <section className={styles.section}>
               <h2>Changes to This Policy</h2>
               <p>
-                We may update this Privacy Policy from time to time. We'll notify you of significant
-                changes via email or in-app notification. Continued use of Paperlyte after changes
-                constitutes acceptance of the updated policy.
+                We may update this Privacy Policy from time to time. We'll notify you of
+                significant changes via email or in-app notification. Continued use of Paperlyte
+                after changes constitutes acceptance of the updated policy.
               </p>
             </section>
 
@@ -232,7 +232,11 @@ export function Privacy() {
                 </li>
                 <li>
                   Website:{' '}
-                  <a href="https://paperlyte.app/contact" target="_blank" rel="noopener noreferrer">
+                  <a
+                    href="https://paperlyte.app/contact"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     Contact Form
                   </a>
                 </li>

@@ -28,6 +28,16 @@ export function Terms() {
         <div className={styles.container}>
           <div className={styles.content}>
             <section className={styles.section}>
+              <p className={styles.notice}>
+                <em>
+                  Note: Paperlyte is currently in development. The following Terms of Service
+                  describe our planned policies and commitments for the full product launch. During
+                  the waitlist phase, these terms apply only where relevant.
+                </em>
+              </p>
+            </section>
+
+            <section className={styles.section}>
               <h2>Agreement to Terms</h2>
               <p>
                 By accessing or using Paperlyte ("the Service"), you agree to be bound by these
@@ -324,7 +334,7 @@ export function Terms() {
                 </li>
                 <li>
                   Website:{' '}
-                  <a href="https://paperlyte.app/contact" rel="noopener noreferrer">
+                  <a href="https://paperlyte.app/contact" target="_blank" rel="noopener noreferrer">
                     https://paperlyte.app/contact
                   </a>
                 </li>

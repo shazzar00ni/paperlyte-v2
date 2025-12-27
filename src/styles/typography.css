@@ -25,6 +25,7 @@ h3,
 h4,
 h5,
 h6 {
+  font-family: 'Playfair Display', serif;
   font-weight: var(--font-weight-bold);
   line-height: var(--line-height-tight);
   color: var(--color-text-primary);

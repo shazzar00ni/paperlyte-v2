@@ -39,7 +39,13 @@ export const Hero = (): React.ReactElement => {
         <AnimatedElement animation="fadeIn" delay={450}>
           <div className={styles.trustedBy}>
             <p className={styles.trustedByLabel}>TRUSTED BY TEAMS AT</p>
-            <ul className={styles.companies} role="list">
+            <ul className={styles.companies}>
+              <li className={styles.company}>Acme Corp</li>
+              <li className={styles.company}>Global</li>
+              <li className={styles.company}>Nebula</li>
+              <li className={styles.company}>Vertex</li>
+              <li className={styles.company}>Horizon</li>
+            </ul>
               <li className={styles.company}>Acme Corp</li>
               <li className={styles.company}>Global</li>
               <li className={styles.company}>Nebula</li>

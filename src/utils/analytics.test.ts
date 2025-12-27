@@ -189,7 +189,7 @@ describe('Analytics Utility', () => {
 
   describe('GA4 Integration', () => {
     it('should initialize GA4 with privacy settings', () => {
-      const appendChildSpy = vi.spyOn(document.head, 'appendChild').mockImplementation(() => document.createElement('script'))
+      const appendChildSpy = vi.spyOn(document.head, 'appendChild').mockImplementation(() => null as unknown as Node)
 
       // @ts-expect-error - setting private property for testing
       analytics.config = {
@@ -216,7 +216,7 @@ describe('Analytics Utility', () => {
     })
 
     it('should load gtag script with correct source', () => {
-      const appendChildSpy = vi.spyOn(document.head, 'appendChild').mockImplementation(() => document.createElement('script'))
+      const appendChildSpy = vi.spyOn(document.head, 'appendChild').mockImplementation(() => null as unknown as Node)
 
       // @ts-expect-error - setting private property for testing
       analytics.config = {
@@ -239,7 +239,7 @@ describe('Analytics Utility', () => {
 
   describe('Plausible Integration', () => {
     it('should initialize Plausible with correct configuration', () => {
-      const appendChildSpy = vi.spyOn(document.head, 'appendChild').mockImplementation(() => document.createElement('script'))
+      const appendChildSpy = vi.spyOn(document.head, 'appendChild').mockImplementation(() => null as unknown as Node)
 
       // @ts-expect-error - setting private property for testing
       analytics.config = {

@@ -240,14 +240,14 @@ describe('Header', () => {
       const menuButton = screen.getByRole('button', { name: /open menu/i })
       await user.click(menuButton)
 
+      const featuresLink = screen.getByRole('link', { name: /features/i })
       const downloadLink = screen.getByRole('link', { name: /download/i })
       downloadLink.focus()
 
       await user.keyboard('{Home}')
 
-      // Home key should focus the first focusable element in the menu
-      // Could be features link or Get Started button depending on menu structure
-      expect(document.activeElement).not.toBe(downloadLink)
+      // Home key should focus the first nav link (Features)
+      expect(document.activeElement).toBe(featuresLink)
     })
 
     it('should navigate to last item with End key', async () => {
@@ -259,13 +259,13 @@ describe('Header', () => {
       await user.click(menuButton)
 
       const featuresLink = screen.getByRole('link', { name: /features/i })
+      const downloadLink = screen.getByRole('link', { name: /download/i })
       featuresLink.focus()
 
       await user.keyboard('{End}')
 
-      // End key should focus the last focusable element in the menu
-      // Could be Get Started button or another element depending on menu structure
-      expect(document.activeElement).not.toBe(featuresLink)
+      // End key should focus the last nav link (Download)
+      expect(document.activeElement).toBe(downloadLink)
     })
 
     it('should wrap around to first item when pressing ArrowRight at end', async () => {
@@ -285,9 +285,8 @@ describe('Header', () => {
       // ArrowRight should wrap to first
       await user.keyboard('{ArrowRight}')
 
-      // Should move to the next focusable element or wrap around
-      // The exact behavior depends on menu structure
-      expect(document.activeElement).not.toBe(downloadLink)
+      // Should wrap around to the first nav link (Features)
+      expect(document.activeElement).toBe(featuresLink)
     })
 
     it('should wrap around to last item when pressing ArrowLeft at beginning', async () => {

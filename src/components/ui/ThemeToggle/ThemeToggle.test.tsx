@@ -35,9 +35,10 @@ describe('ThemeToggle', () => {
 
       const { container } = render(<ThemeToggle />)
 
-      // Icon component may render as SVG or <i> tag
-      const icon = container.querySelector('.fa-moon') || container.querySelector('svg')
-      expect(icon).toBeInTheDocument()
+      // Check specifically for moon icon - either as Font Awesome class or SVG with moon aria-label
+      const moonIcon = container.querySelector('.fa-moon') ||
+                      container.querySelector('svg[aria-label="Moon icon"]')
+      expect(moonIcon).toBeInTheDocument()
     })
 
     it('should render sun icon in dark mode', () => {
@@ -48,9 +49,10 @@ describe('ThemeToggle', () => {
 
       const { container } = render(<ThemeToggle />)
 
-      // Icon component may render as SVG or <i> tag
-      const icon = container.querySelector('.fa-sun') || container.querySelector('svg')
-      expect(icon).toBeInTheDocument()
+      // Check specifically for sun icon - either as Font Awesome class or SVG with sun aria-label
+      const sunIcon = container.querySelector('.fa-sun') ||
+                     container.querySelector('svg[aria-label="Sun icon"]')
+      expect(sunIcon).toBeInTheDocument()
     })
   })
 
@@ -172,9 +174,14 @@ describe('ThemeToggle', () => {
 
       const { rerender, container } = render(<ThemeToggle />)
 
-      // Check for moon icon in light mode
-      let icon = container.querySelector('.fa-moon') || container.querySelector('svg')
-      expect(icon).toBeInTheDocument()
+      // Check for moon icon in light mode (sun should not be present)
+      let moonIcon = container.querySelector('.fa-moon') ||
+                    container.querySelector('svg[aria-label="Moon icon"]')
+      expect(moonIcon).toBeInTheDocument()
+
+      let sunIcon = container.querySelector('.fa-sun') ||
+                   container.querySelector('svg[aria-label="Sun icon"]')
+      expect(sunIcon).not.toBeInTheDocument()
 
       vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
         theme: 'dark',
@@ -183,9 +190,14 @@ describe('ThemeToggle', () => {
 
       rerender(<ThemeToggle />)
 
-      // Check for sun icon in dark mode
-      icon = container.querySelector('.fa-sun') || container.querySelector('svg')
-      expect(icon).toBeInTheDocument()
+      // Check for sun icon in dark mode (moon should not be present)
+      sunIcon = container.querySelector('.fa-sun') ||
+               container.querySelector('svg[aria-label="Sun icon"]')
+      expect(sunIcon).toBeInTheDocument()
+
+      moonIcon = container.querySelector('.fa-moon') ||
+                container.querySelector('svg[aria-label="Moon icon"]')
+      expect(moonIcon).not.toBeInTheDocument()
     })
 
     it('should update aria-label when theme changes', () => {

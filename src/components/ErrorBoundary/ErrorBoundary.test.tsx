@@ -88,9 +88,8 @@ describe('ErrorBoundary', () => {
         </ErrorBoundary>
       )
 
-      // The ErrorBoundary uses logError utility which may log differently
-      // Just verify console.error was called
-      expect(console.error).toHaveBeenCalled()
+      // In development, logError forwards the error to console.error (monitoring.ts line 32)
+      expect(console.error).toHaveBeenCalledWith(expect.any(Error))
     })
 
     it('should use custom fallback if provided', () => {

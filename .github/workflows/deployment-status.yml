@@ -1,0 +1,56 @@
+name: Deployment Status
+
+on:
+  deployment_status:
+
+jobs:
+  notify-deployment:
+    name: Deployment Notification
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    if: github.event.deployment_status.state != 'pending'
+
+    steps:
+      - name: Deployment Status Check
+        run: |
+          echo "Deployment Status: ${{ github.event.deployment_status.state }}"
+          echo "Environment: ${{ github.event.deployment_status.environment }}"
+          echo "Target URL: ${{ github.event.deployment_status.target_url }}"
+
+          if [ "${{ github.event.deployment_status.state }}" = "success" ]; then
+            echo "✅ Deployment succeeded!"
+            echo "🌐 Site URL: ${{ github.event.deployment_status.target_url }}"
+          elif [ "${{ github.event.deployment_status.state }}" = "failure" ]; then
+            echo "❌ Deployment failed!"
+            exit 1
+          fi
+
+      - name: Comment on PR (if applicable)
+        if: github.event.deployment_status.state == 'success' && github.event.deployment.payload.pull_request != null
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const prNumber = context.payload.deployment.payload.pull_request?.number;
+            if (!prNumber) {
+              core.info('No PR number found in deployment payload');
+              return;
+            }
+            const targetUrl = context.payload.deployment_status.target_url;
+            const environment = context.payload.deployment_status.environment;
+
+            const comment = `## 🚀 Deployment Successful
+
+            **Environment:** ${environment}
+            **Preview URL:** ${targetUrl}
+
+            Your changes have been deployed and are ready for review!`;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body: comment
+            });

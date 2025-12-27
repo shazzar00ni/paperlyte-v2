@@ -182,14 +182,91 @@ class Analytics {
 // Export singleton instance
 export const analytics = new Analytics()
 
+// Event types for type safety
+export const AnalyticsEvents = {
+  CTA_CLICK: 'cta_click',
+  EXTERNAL_LINK_CLICK: 'external_link',
+  SOCIAL_LINK_CLICK: 'social_click',
+  SCROLL_DEPTH: 'Scroll_Depth',
+  WAITLIST_JOIN: 'Waitlist_Join',
+  WAITLIST_SUBMIT: 'Waitlist_Submit',
+  PAGE_VIEW: 'page_view',
+} as const
+
 // Convenience functions
+export const isAnalyticsAvailable = (): boolean => {
+  return typeof window !== 'undefined' && Boolean(window.gtag || window.plausible)
+}
+
 export const trackEvent = (
   name: string,
   properties?: Record<string, string | number | boolean>
 ): void => {
-  analytics.trackEvent({ name, properties })
+  if (typeof window !== 'undefined' && window.gtag) {
+    try {
+      window.gtag('event', name, properties)
+    } catch (error) {
+      console.error('Analytics error:', error)
+    }
+  } else if (typeof window !== 'undefined' && window.plausible) {
+    try {
+      window.plausible(name, { props: properties })
+    } catch (error) {
+      console.error('Analytics error:', error)
+    }
+  }
 }
 
-export const trackPageView = (url?: string): void => {
-  analytics.trackPageView(url)
+export const trackPageView = (path?: string, title?: string): void => {
+  const properties: Record<string, string> = {}
+
+  if (path) {
+    properties.page_path = path
+  } else if (typeof window !== 'undefined') {
+    properties.page_path = window.location.pathname
+  }
+
+  if (title) {
+    properties.page_title = title
+  }
+
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', 'page_view', properties)
+  } else if (typeof window !== 'undefined' && window.plausible) {
+    window.plausible('pageview', { props: properties })
+  }
+}
+
+export const trackScrollDepth = (depth: number): void => {
+  const milestones = [25, 50, 75, 100]
+
+  // Find nearest milestone
+  const nearest = milestones.reduce((prev, curr) =>
+    Math.abs(curr - depth) < Math.abs(prev - depth) ? curr : prev
+  )
+
+  // Only track if depth is within reasonable range of nearest milestone (within 15%)
+  if (Math.abs(nearest - depth) <= 15) {
+    trackEvent(AnalyticsEvents.SCROLL_DEPTH, { depth_percentage: nearest })
+  }
+}
+
+export const trackCTAClick = (buttonText: string, location?: string): void => {
+  const properties: Record<string, string> = { button_text: buttonText }
+  if (location !== undefined) {
+    properties.button_location = location
+  }
+  trackEvent(AnalyticsEvents.CTA_CLICK, properties)
+}
+
+export const trackExternalLink = (url: string, linkText?: string): void => {
+  const properties: Record<string, string> = { link_url: url }
+  if (linkText !== undefined) {
+    properties.link_text = linkText
+  }
+  trackEvent(AnalyticsEvents.EXTERNAL_LINK_CLICK, properties)
+}
+
+export const trackSocialClick = (platform: string): void => {
+  trackEvent(AnalyticsEvents.SOCIAL_LINK_CLICK, { platform: platform.toLowerCase() })
 }

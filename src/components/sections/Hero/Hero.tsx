@@ -46,12 +46,6 @@ export const Hero = (): React.ReactElement => {
               <li className={styles.company}>Vertex</li>
               <li className={styles.company}>Horizon</li>
             </ul>
-              <li className={styles.company}>Acme Corp</li>
-              <li className={styles.company}>Global</li>
-              <li className={styles.company}>Nebula</li>
-              <li className={styles.company}>Vertex</li>
-              <li className={styles.company}>Horizon</li>
-            </ul>
           </div>
         </AnimatedElement>
       </div>

@@ -91,9 +91,9 @@ class Analytics {
 
     switch (this.config.provider) {
       case 'plausible':
-        // Plausible tracks page views automatically
+        // Track page views with explicit URL for SPA navigation
         if (window.plausible) {
-          window.plausible('pageview')
+          window.plausible('pageview', { props: { page_path: pageUrl } })
         }
         break
       case 'ga4':

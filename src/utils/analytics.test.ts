@@ -200,9 +200,11 @@ describe('Analytics Utility', () => {
       const mockGtag = vi.fn()
       window.gtag = mockGtag
 
+      // Test that even with GA4 provider, if disabled, gtag is not called
       // @ts-expect-error - setting private property for testing
       analytics.config = {
-        provider: 'none',
+        provider: 'ga4',
+        siteId: 'G-TEST',
         enabled: false,
       }
 

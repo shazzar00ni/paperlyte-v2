@@ -150,7 +150,12 @@ describe('Analytics Utility', () => {
 
       trackPageView()
 
-      expect(mockPlausible).toHaveBeenCalledWith('pageview')
+      // Should pass pageview event with page_path in props
+      expect(mockPlausible).toHaveBeenCalledWith('pageview', {
+        props: {
+          page_path: window.location.pathname + window.location.search,
+        },
+      })
     })
 
     it('should use current URL when no URL provided with GA4', () => {

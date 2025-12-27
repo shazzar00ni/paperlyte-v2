@@ -27,6 +27,7 @@
 }
 
 .headline {
+  font-family: 'Playfair Display', serif;
   font-size: var(--font-size-5xl);
   font-weight: var(--font-weight-bold);
   line-height: var(--line-height-tight);

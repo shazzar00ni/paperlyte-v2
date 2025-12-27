@@ -216,7 +216,7 @@ describe('Analytics Utility', () => {
     })
 
     it('should load gtag script with correct source', () => {
-      const appendChildSpy = vi.spyOn(document.head, 'appendChild').mockImplementation(() => null as any)
+      const appendChildSpy = vi.spyOn(document.head, 'appendChild').mockImplementation(() => document.createElement('script'))
 
       // @ts-expect-error - setting private property for testing
       analytics.config = {

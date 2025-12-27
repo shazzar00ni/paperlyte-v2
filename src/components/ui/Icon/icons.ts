@@ -51,8 +51,7 @@ export const iconPaths: Record<string, string> = {
   'fa-x': 'M18 6L6 18 M6 6l12 12',
   'fa-bug':
     'M8 2v4 M16 2v4 M12 14v1 M2 9h4 M18 9h4 M2 15h4 M18 15h4 M8 2.5c.5-.3 1.2-.5 2-.5h4c.8 0 1.5.2 2 .5 M6 8c0-2.2 1.8-4 4-4h4c2.2 0 4 1.8 4 4v8c0 2.2-1.8 4-4 4h-4c-2.2 0-4-1.8-4-4V8z',
-  'fa-lightbulb':
-    'M9 18h6 M10 22h4 M15 8a3 3 0 0 0-6 0c0 2 2 3 2 5v1h2v-1c0-2 2-3 2-5z M12 2v1',
+  'fa-lightbulb': 'M9 18h6 M10 22h4 M15 8a3 3 0 0 0-6 0c0 2 2 3 2 5v1h2v-1c0-2 2-3 2-5z M12 2v1',
   'fa-paper-plane': 'M22 2L11 13 M22 2l-7 20-4-9-9-4 20-7z',
 }
 

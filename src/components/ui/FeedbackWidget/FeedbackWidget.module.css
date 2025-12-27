@@ -14,7 +14,9 @@
   align-items: center;
   justify-content: center;
   box-shadow: var(--shadow-lg);
-  transition: transform var(--transition-base), box-shadow var(--transition-base);
+  transition:
+    transform var(--transition-base),
+    box-shadow var(--transition-base);
   z-index: calc(var(--z-modal) - 100);
 }
 
@@ -106,7 +108,9 @@
   align-items: center;
   justify-content: center;
   border-radius: var(--border-radius-sm);
-  transition: color var(--transition-fast), background-color var(--transition-fast);
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast);
 }
 
 .closeButton:hover {
@@ -344,6 +348,10 @@
   }
 
   .textarea {
+    transition: none;
+  }
+
+  .closeButton {
     transition: none;
   }
 }

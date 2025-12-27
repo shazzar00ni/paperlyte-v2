@@ -99,13 +99,13 @@ export function isSafeUrl(url: string): boolean {
 
     // For absolute URLs, parse and validate the protocol
     const parsedUrl = new URL(trimmedUrl, window.location.origin)
-    
+
     // Allow http: and https: protocols (safe for external links)
     // Allow same-origin URLs with any protocol
     if (parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:') {
       return true
     }
-    
+
     // For other protocols, only allow if same-origin
     const currentOrigin = window.location.origin
     return parsedUrl.origin === currentOrigin

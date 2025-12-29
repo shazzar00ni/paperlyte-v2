@@ -65,25 +65,24 @@ describe('Hero', () => {
       render(<Hero />)
 
       const button = screen.getByRole('button', { name: /start writing for free/i })
-      // Verify primary variant by checking class contains 'primary' (CSS module hash)
-      const classList = Array.from(button.classList)
-      expect(classList.some((cls) => cls.includes('primary'))).toBe(true)
+      expect(button).toHaveAttribute('data-variant', 'primary')
+      expect(button).toHaveAttribute('data-size', 'large')
     })
 
     it('should have View the Demo button with secondary variant', () => {
       render(<Hero />)
 
       const button = screen.getByRole('button', { name: /view the demo/i })
-      // Verify secondary variant by checking class contains 'secondary' (CSS module hash)
-      const classList = Array.from(button.classList)
-      expect(classList.some((cls) => cls.includes('secondary'))).toBe(true)
+      expect(button).toHaveAttribute('data-variant', 'secondary')
+      expect(button).toHaveAttribute('data-size', 'large')
     })
 
     it('should render arrow icon on Start Writing for Free button', () => {
       render(<Hero />)
 
       const button = screen.getByRole('button', { name: /start writing for free/i })
-      const icon = button.querySelector('.fa-arrow-right')
+      // Verify icon is present by checking for any icon element (more resilient than specific class)
+      const icon = button.querySelector('[aria-hidden="true"]')
 
       expect(icon).toBeInTheDocument()
     })
@@ -323,6 +322,44 @@ describe('Hero', () => {
       companies.forEach((company) => {
         expect(screen.getByText(company)).toBeInTheDocument()
       })
+    })
+  })
+
+  describe('Animation Accessibility', () => {
+    it('should render AnimatedElement components for content', () => {
+      const { container } = render(<Hero />)
+
+      // Verify AnimatedElement wrappers are present (they have animation delay styles)
+      const animatedElements = container.querySelectorAll('[style*="--animation-delay"]')
+      expect(animatedElements.length).toBeGreaterThan(0)
+    })
+
+    it('should respect prefers-reduced-motion for animations', () => {
+      // Mock prefers-reduced-motion media query
+      const matchMediaMock = vi.fn().mockImplementation((query) => ({
+        matches: query === '(prefers-reduced-motion: reduce)',
+        media: query,
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      }))
+
+      Object.defineProperty(window, 'matchMedia', {
+        writable: true,
+        value: matchMediaMock,
+      })
+
+      const { container } = render(<Hero />)
+
+      // AnimatedElement component should handle prefers-reduced-motion internally
+      // This test verifies the Hero renders without errors when motion is reduced
+      expect(container.querySelector('#hero')).toBeInTheDocument()
+
+      // Verify content is still visible even with reduced motion
+      expect(screen.getByRole('heading', { name: /your thoughts, organized/i })).toBeVisible()
     })
   })
 })

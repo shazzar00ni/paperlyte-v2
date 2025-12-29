@@ -79,7 +79,8 @@ describe('Button', () => {
     const { container } = render(<Button icon="fa-download">Download</Button>)
 
     // Icon component may render as SVG or <i> tag with Font Awesome classes
-    const icon = container.querySelector('.fa-download') || container.querySelector('svg[aria-hidden="true"]')
+    const icon =
+      container.querySelector('.fa-download') || container.querySelector('svg[aria-hidden="true"]')
     expect(icon).toBeInTheDocument()
     expect(icon).not.toBeNull()
     expect(icon).toHaveAttribute('aria-hidden', 'true')

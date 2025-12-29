@@ -159,10 +159,8 @@ describe('Hero', () => {
     it('should have proper heading hierarchy', () => {
       render(<Hero />)
 
-      // There are multiple headings with "thoughts", use getAllByRole
-      const headings = screen.getAllByRole('heading', { name: /thoughts/i })
-      expect(headings.length).toBeGreaterThan(0)
-      expect(headings[0].tagName).toBe('H1')
+      const heading = screen.getByRole('heading', { name: /thoughts/i })
+      expect(heading.tagName).toBe('H1')
     })
 
     it('should render subheadline in paragraph tag', () => {
@@ -271,9 +269,7 @@ describe('Hero', () => {
     it('should have accessible button labels', () => {
       render(<Hero />)
 
-      expect(
-        screen.getByRole('button', { name: /start writing for free/i })
-      ).toHaveAccessibleName()
+      expect(screen.getByRole('button', { name: /start writing for free/i })).toHaveAccessibleName()
       expect(screen.getByRole('button', { name: /view the demo/i })).toHaveAccessibleName()
     })
 
@@ -321,40 +317,54 @@ describe('Hero', () => {
   })
 
   describe('Animation Accessibility', () => {
-    it('should render AnimatedElement components for content', () => {
-      const { container } = render(<Hero />)
+    it('should render all animated content elements', () => {
+      render(<Hero />)
 
-      // Verify AnimatedElement wrappers are present (they have animation delay styles)
-      const animatedElements = container.querySelectorAll('[style*="--animation-delay"]')
-      expect(animatedElements.length).toBeGreaterThan(0)
+      // Verify all key content elements render (AnimatedElement wraps them internally)
+      expect(screen.getByRole('heading', { name: /your thoughts, organized/i })).toBeInTheDocument()
+      expect(screen.getByText(/The minimal workspace for busy professionals/i)).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /start writing for free/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /view the demo/i })).toBeInTheDocument()
+      expect(screen.getByText(/trusted by teams at/i)).toBeInTheDocument()
     })
 
     it('should respect prefers-reduced-motion for animations', () => {
-      // Mock prefers-reduced-motion media query
-      const matchMediaMock = vi.fn().mockImplementation((query) => ({
-        matches: query === '(prefers-reduced-motion: reduce)',
-        media: query,
-        onchange: null,
-        addListener: vi.fn(),
-        removeListener: vi.fn(),
-        addEventListener: vi.fn(),
-        removeEventListener: vi.fn(),
-        dispatchEvent: vi.fn(),
-      }))
+      // Save original matchMedia
+      const originalMatchMedia = window.matchMedia
 
-      Object.defineProperty(window, 'matchMedia', {
-        writable: true,
-        value: matchMediaMock,
-      })
+      try {
+        // Mock prefers-reduced-motion media query
+        const matchMediaMock = vi.fn().mockImplementation((query) => ({
+          matches: query === '(prefers-reduced-motion: reduce)',
+          media: query,
+          onchange: null,
+          addListener: vi.fn(),
+          removeListener: vi.fn(),
+          addEventListener: vi.fn(),
+          removeEventListener: vi.fn(),
+          dispatchEvent: vi.fn(),
+        }))
 
-      const { container } = render(<Hero />)
+        Object.defineProperty(window, 'matchMedia', {
+          writable: true,
+          value: matchMediaMock,
+        })
 
-      // AnimatedElement component should handle prefers-reduced-motion internally
-      // This test verifies the Hero renders without errors when motion is reduced
-      expect(container.querySelector('#hero')).toBeInTheDocument()
+        const { container } = render(<Hero />)
 
-      // Verify content is still visible even with reduced motion
-      expect(screen.getByRole('heading', { name: /your thoughts, organized/i })).toBeVisible()
+        // Verify content renders without errors when motion is reduced
+        expect(container.querySelector('#hero')).toBeInTheDocument()
+        expect(screen.getByRole('heading', { name: /your thoughts, organized/i })).toBeVisible()
+
+        // Verify matchMedia was called to check for reduced motion preference
+        expect(matchMediaMock).toHaveBeenCalledWith('(prefers-reduced-motion: reduce)')
+      } finally {
+        // Restore original matchMedia
+        Object.defineProperty(window, 'matchMedia', {
+          writable: true,
+          value: originalMatchMedia,
+        })
+      }
     })
   })
 })

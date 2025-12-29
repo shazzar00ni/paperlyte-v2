@@ -233,8 +233,9 @@ describe('ServerErrorPage', () => {
 
       const mainElement = screen.getByRole('main')
       // Icon component may render as SVG or <i> tag, check for either
-      const serverIcon = mainElement.querySelector('.fa-server') ||
-                        mainElement.querySelector('svg[aria-hidden="true"]')
+      const serverIcon =
+        mainElement.querySelector('.fa-server') ||
+        mainElement.querySelector('svg[aria-hidden="true"]')
       expect(serverIcon).toBeInTheDocument()
     })
 
@@ -242,8 +243,9 @@ describe('ServerErrorPage', () => {
       const { container } = render(<ServerErrorPage />)
 
       // Icon component may render as SVG or <i> tag, check for either
-      const warningIcon = container.querySelector('.fa-triangle-exclamation') ||
-                         container.querySelector('svg[aria-hidden="true"]')
+      const warningIcon =
+        container.querySelector('.fa-triangle-exclamation') ||
+        container.querySelector('svg[aria-hidden="true"]')
       expect(warningIcon).toBeInTheDocument()
     })
 
@@ -252,8 +254,9 @@ describe('ServerErrorPage', () => {
 
       const retryButton = screen.getByRole('button', { name: /retry loading the page/i })
       // Icon component may render as SVG or <i> tag, check for either
-      const icon = retryButton.querySelector('.fa-rotate-right') ||
-                  retryButton.querySelector('svg[aria-hidden="true"]')
+      const icon =
+        retryButton.querySelector('.fa-rotate-right') ||
+        retryButton.querySelector('svg[aria-hidden="true"]')
       expect(icon).toBeInTheDocument()
     })
 
@@ -262,8 +265,8 @@ describe('ServerErrorPage', () => {
 
       const homeButton = screen.getByRole('button', { name: /return to homepage/i })
       // Icon component may render as SVG or <i> tag, check for either
-      const icon = homeButton.querySelector('.fa-home') ||
-                  homeButton.querySelector('svg[aria-hidden="true"]')
+      const icon =
+        homeButton.querySelector('.fa-home') || homeButton.querySelector('svg[aria-hidden="true"]')
       expect(icon).toBeInTheDocument()
     })
   })

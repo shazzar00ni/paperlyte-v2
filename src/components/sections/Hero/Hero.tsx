@@ -15,9 +15,7 @@ export const Hero = (): React.ReactElement => {
         </AnimatedElement>
 
         <AnimatedElement animation="fadeIn" delay={100}>
-          <p className={styles.subheadline}>
-            The minimal workspace for busy professionals.
-          </p>
+          <p className={styles.subheadline}>The minimal workspace for busy professionals.</p>
         </AnimatedElement>
 
         <AnimatedElement animation="fadeIn" delay={300}>

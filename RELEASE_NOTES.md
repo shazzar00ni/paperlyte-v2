@@ -56,6 +56,7 @@ A complete, reusable component library with TypeScript support:
 - **ThemeToggle** - Dark/light mode toggle with system preference detection
 
 All components include:
+
 - Full TypeScript support with proper typing
 - Comprehensive unit tests with React Testing Library
 - CSS Modules for scoped styling
@@ -528,6 +529,7 @@ This is the initial release. No migration required.
 ## 💬 Support
 
 For support, please:
+
 1. Check the documentation in `/docs`
 2. Search existing issues
 3. Open a new issue with detailed information

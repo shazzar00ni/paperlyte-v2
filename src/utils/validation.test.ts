@@ -114,10 +114,10 @@ describe('sanitizeInput', () => {
   })
 
   it('should remove data: protocol', () => {
-  expect(sanitizeInput('data:text/html,<script>alert("xss")</script>')).toBe(
-    'text/html,scriptalert(&quot;xss&quot;)/script'
-  )
-  expect(sanitizeInput('DATA:text/plain,test')).toBe('text/plain,test')
+    expect(sanitizeInput('data:text/html,<script>alert("xss")</script>')).toBe(
+      'text/html,scriptalert(&quot;xss&quot;)/script'
+    )
+    expect(sanitizeInput('DATA:text/plain,test')).toBe('text/plain,test')
   })
 
   it('should remove vbscript: protocol', () => {

@@ -202,7 +202,11 @@ export function handleArrowNavigation(
     if (typeof document !== 'undefined') {
       // Prefer explicit dir attribute if present
       const docElement = document.documentElement
-      const attrDir = (document.dir || (docElement && docElement.getAttribute('dir')) || '').toLowerCase()
+      const attrDir = (
+        document.dir ||
+        (docElement && docElement.getAttribute('dir')) ||
+        ''
+      ).toLowerCase()
 
       if (attrDir) {
         isRtl = attrDir === 'rtl'
@@ -223,10 +227,16 @@ export function handleArrowNavigation(
 
   let newIndex: number | null = null
 
-  if ((isHorizontal && effectiveDirection === 'left') || (isVertical && effectiveDirection === 'up')) {
+  if (
+    (isHorizontal && effectiveDirection === 'left') ||
+    (isVertical && effectiveDirection === 'up')
+  ) {
     // Move to previous element
     newIndex = currentIndex > 0 ? currentIndex - 1 : elements.length - 1
-  } else if ((isHorizontal && effectiveDirection === 'right') || (isVertical && effectiveDirection === 'down')) {
+  } else if (
+    (isHorizontal && effectiveDirection === 'right') ||
+    (isVertical && effectiveDirection === 'down')
+  ) {
     // Move to next element
     newIndex = currentIndex < elements.length - 1 ? currentIndex + 1 : 0
   }

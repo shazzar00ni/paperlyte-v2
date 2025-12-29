@@ -13,21 +13,19 @@ describe('CTA', () => {
 
   it('should render main heading', () => {
     render(<CTA />)
-    expect(screen.getByText('Stop fighting your tools. Start thinking clearly.')).toBeInTheDocument()
+    expect(
+      screen.getByText('Stop fighting your tools. Start thinking clearly.')
+    ).toBeInTheDocument()
   })
 
   it('should render subtitle about note-taking', () => {
     render(<CTA />)
-    expect(
-      screen.getByText(/Note-taking shouldn't feel like work/i)
-    ).toBeInTheDocument()
+    expect(screen.getByText(/Note-taking shouldn't feel like work/i)).toBeInTheDocument()
   })
 
   it('should render waitlist message', () => {
     render(<CTA />)
-    expect(
-      screen.getByText(/Join the waitlist today and be among the first/i)
-    ).toBeInTheDocument()
+    expect(screen.getByText(/Join the waitlist today and be among the first/i)).toBeInTheDocument()
   })
 
   it('should render Join the Waitlist button', () => {

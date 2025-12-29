@@ -203,7 +203,9 @@ describe('FeedbackWidget', () => {
       // Check for confirmation
       await waitFor(() => {
         expect(screen.getByText(/thank you!/i)).toBeInTheDocument()
-        expect(screen.getByText(/your feedback has been submitted successfully/i)).toBeInTheDocument()
+        expect(
+          screen.getByText(/your feedback has been submitted successfully/i)
+        ).toBeInTheDocument()
       })
     })
 
@@ -299,9 +301,7 @@ describe('FeedbackWidget', () => {
 
     it('disables submit button when submitting', async () => {
       const user = userEvent.setup()
-      const mockSubmit = vi.fn(
-        () => new Promise((resolve) => setTimeout(resolve, 100))
-      )
+      const mockSubmit = vi.fn(() => new Promise((resolve) => setTimeout(resolve, 100)))
       render(<FeedbackWidget onSubmit={mockSubmit} />)
 
       // Open modal

@@ -10,62 +10,32 @@
       name="description"
       content="Your thoughts, unchained from complexity. The simplest, fastest note-taking app with offline-first sync and tag-based organization."
     />
-    <meta
-      name="keywords"
-      content="__META_KEYWORDS__"
-    />
-    <meta name="author" content="Paperlyte" />
-    <!-- Canonical URL - Injected at build time -->
-    <link rel="canonical" href="__SITE_URL__" />
 
-    <!-- Open Graph Meta Tags -->
+    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <!-- OG URL - Injected at build time -->
-    <meta property="og:url" content="__SITE_URL__/" />
-    <meta
-      property="og:title"
-      content="Paperlyte - Lightning-Fast, Distraction-Free Notes"
-    />
+    <meta property="og:url" content="https://paperlyte.app/" />
+    <meta property="og:title" content="Paperlyte - Lightning-Fast, Distraction-Free Notes" />
     <meta
       property="og:description"
       content="Your thoughts, unchained from complexity. The simplest, fastest note-taking app with offline-first sync and tag-based organization."
     />
-    <!-- OG Image - Injected at build time -->
-    <meta property="og:image" content="__OG_IMAGE_URL__" />
+    <meta property="og:image" content="https://paperlyte.app/og-image.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:site_name" content="Paperlyte" />
     <meta property="og:locale" content="en_US" />
 
-    <!-- Twitter Card Meta Tags -->
+    <!-- Twitter Card Tags -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="__SITE_URL__/" />
-    <meta
-      name="twitter:title"
-      content="Paperlyte - Lightning-Fast, Distraction-Free Notes"
-    />
+    <meta name="twitter:url" content="https://paperlyte.app/" />
+    <meta name="twitter:title" content="Paperlyte - Lightning-Fast, Distraction-Free Notes" />
     <meta
       name="twitter:description"
       content="Your thoughts, unchained from complexity. The simplest, fastest note-taking app with offline-first sync and tag-based organization."
     />
-    <meta name="twitter:image" content="__OG_IMAGE_URL__" />
-    <meta name="twitter:creator" content="@paperlyte" />
-
-    <!-- Additional Meta Tags -->
-    <meta name="robots" content="index, follow" />
-    <meta name="language" content="English" />
-    <meta name="revisit-after" content="7 days" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content="Paperlyte" />
-
-    <!-- Preload critical font for faster rendering -->
-    <link
-      rel="preload"
-      as="font"
-      type="font/woff2"
-      href="/fonts/Inter-Variable.woff2"
-      crossorigin
+    <meta name="twitter:image" content="https://paperlyte.app/twitter-image.jpg" />
+    <meta
+      name="twitter:image:alt"
+      content="Paperlyte app preview showing minimalist notes interface"
     />
 
     <!-- Preload critical above-the-fold image for better LCP -->
@@ -80,7 +50,44 @@
     <link rel="manifest" href="/site.webmanifest" />
 
     <!-- Theme Color -->
-    <meta name="theme-color" content="#7C3AED" />
+    <meta name="theme-color" content="#1a1a1a" />
+
+    <!-- Google Fonts - Load async to avoid blocking render -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap"
+      rel="stylesheet"
+      media="print"
+      onload="this.media = 'all'"
+    />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
+
+    <!-- Font Awesome 7.0.1 - Load async to avoid blocking render -->
+    <link
+      rel="preload"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+      as="style"
+      integrity="sha512-z4PhNX7vuL3xVChQ1m2AB9Yg5AULVxXcg/SpIdNs6c5H0NE8XYXysP+DGNKHfuwvY7kxvUdBeoGlODJ6+SfaPg=="
+      crossorigin="anonymous"
+      onload="
+        this.onload = null;
+        this.rel = 'stylesheet';
+      "
+    />
+    <noscript
+      ><link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        integrity="sha512-z4PhNX7vuL3xVChQ1m2AB9Yg5AULVxXcg/SpIdNs6c5H0NE8XYXysP+DGNKHfuwvY7kxvUdBeoGlODJ6+SfaPg=="
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer"
+    /></noscript>
 
     <!-- Schema.org Structured Data (JSON-LD) -->
     <script type="application/ld+json">

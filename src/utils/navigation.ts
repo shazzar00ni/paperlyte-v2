@@ -99,13 +99,13 @@ export function isSafeUrl(url: string): boolean {
 
     // For absolute URLs, parse and validate the protocol
     const parsedUrl = new URL(trimmedUrl, window.location.origin)
-    
+
     // Allow http: and https: protocols (safe for external links)
     // Allow same-origin URLs with any protocol
     if (parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:') {
       return true
     }
-    
+
     // For other protocols, only allow if same-origin
     const currentOrigin = window.location.origin
     return parsedUrl.origin === currentOrigin
@@ -117,7 +117,15 @@ export function isSafeUrl(url: string): boolean {
 
 /**
  * Safely navigates to a URL by validating it first.
- * Only allows relative URLs and same-origin absolute URLs to prevent open redirect attacks.
+ * Allows relative URLs, HTTP/HTTPS URLs (including external), and blocks dangerous protocols
+ * like javascript:, data:, vbscript:, etc.
+ *
+ * SECURITY NOTE: This function allows external HTTP/HTTPS URLs. For use cases requiring
+ * same-origin navigation only (to prevent open redirects), implement additional domain
+ * validation before calling this function or use a different approach.
+ *
+ * Safe usage: Only call with hardcoded URLs or URLs from trusted sources. Never pass
+ * user-controlled query parameters directly to this function without domain validation.
  *
  * @param url - The URL to navigate to
  * @returns true if navigation was performed, false if URL was rejected or navigation not needed (SSR)

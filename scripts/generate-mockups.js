@@ -49,6 +49,11 @@ const formats = [
  */
 async function generateMockup(sourceName, width, height, format, options) {
   try {
+    // Validate file extension
+    if (!sourceName.toLowerCase().endsWith('.svg')) {
+      throw new Error(`Invalid file type: ${sourceName}. Only SVG files are supported.`)
+    }
+
     const baseName = sourceName.replace('.svg', '')
     const sourcePath = join(mockupsDir, sourceName)
     const outputName = `${baseName}.${format}`

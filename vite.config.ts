@@ -88,6 +88,9 @@ function cspPlugin(): Plugin {
 export default defineConfig({
   // React plugin with Fast Refresh for instant Hot Module Replacement
   // CSP plugin for environment-aware security headers
+  // TODO: Add Codecov Vite plugin when it supports Vite 7
+  // Currently blocked: @codecov/vite-plugin only supports Vite 4.x-6.x (project uses Vite 7.3.0)
+  // When available: codecovVitePlugin({ enableBundleAnalysis: process.env.CODECOV_TOKEN !== undefined, bundleName: "paperlyte-v2", uploadToken: process.env.CODECOV_TOKEN })
   plugins: [react(), cspPlugin()],
 
   // Path resolution configuration

@@ -34,36 +34,37 @@ describe('Hero', () => {
     it('should render the main headline', () => {
       render(<Hero />)
 
-      expect(screen.getByRole('heading', { name: /your thoughts, unchained/i })).toBeInTheDocument()
+      expect(screen.getByRole('heading', { name: /your thoughts, organized/i })).toBeInTheDocument()
     })
 
     it('should render the subheadline', () => {
       render(<Hero />)
 
-      expect(screen.getByText(/The fastest, simplest way to capture ideas/i)).toBeInTheDocument()
+      expect(screen.getByText(/The minimal workspace for busy professionals/i)).toBeInTheDocument()
     })
 
     it('should render CTA buttons', () => {
       render(<Hero />)
 
-      expect(screen.getByRole('button', { name: /join the waitlist/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /start writing for free/i })).toBeInTheDocument()
       expect(screen.getByRole('button', { name: /view the demo/i })).toBeInTheDocument()
     })
 
-    it('should render feature tags', () => {
+    it('should render trusted by section', () => {
       render(<Hero />)
 
-      expect(screen.getByText(/Lightning Fast/i)).toBeInTheDocument()
-      expect(screen.getByText(/Privacy First/i)).toBeInTheDocument()
-      expect(screen.getByText(/Offline Ready/i)).toBeInTheDocument()
+      expect(screen.getByText(/trusted by teams at/i)).toBeInTheDocument()
+      expect(screen.getByText('Acme Corp')).toBeInTheDocument()
+      expect(screen.getByText('Global')).toBeInTheDocument()
+      expect(screen.getByText('Nebula')).toBeInTheDocument()
     })
   })
 
   describe('CTA Buttons', () => {
-    it('should have Join the Waitlist button with primary variant', () => {
+    it('should have Start Writing for Free button with primary variant', () => {
       render(<Hero />)
 
-      const button = screen.getByRole('button', { name: /join the waitlist/i })
+      const button = screen.getByRole('button', { name: /start writing for free/i })
       // Verify primary variant by checking class contains 'primary' (CSS module hash)
       const classList = Array.from(button.classList)
       expect(classList.some((cls) => cls.includes('primary'))).toBe(true)
@@ -78,10 +79,10 @@ describe('Hero', () => {
       expect(classList.some((cls) => cls.includes('secondary'))).toBe(true)
     })
 
-    it('should render arrow icon on Join the Waitlist button', () => {
+    it('should render arrow icon on Start Writing for Free button', () => {
       render(<Hero />)
 
-      const button = screen.getByRole('button', { name: /join the waitlist/i })
+      const button = screen.getByRole('button', { name: /start writing for free/i })
       const icon = button.querySelector('.fa-arrow-right')
 
       expect(icon).toBeInTheDocument()
@@ -89,7 +90,7 @@ describe('Hero', () => {
   })
 
   describe('Scroll Behavior', () => {
-    it('should scroll to download section when Join the Waitlist is clicked', async () => {
+    it('should scroll to download section when Start Writing for Free is clicked', async () => {
       const user = userEvent.setup()
 
       // Create mock download section
@@ -99,7 +100,7 @@ describe('Hero', () => {
 
       render(<Hero />)
 
-      const button = screen.getByRole('button', { name: /join the waitlist/i })
+      const button = screen.getByRole('button', { name: /start writing for free/i })
       await user.click(button)
 
       expect(scrollIntoViewMock).toHaveBeenCalledWith(
@@ -137,7 +138,7 @@ describe('Hero', () => {
       const user = userEvent.setup()
       render(<Hero />)
 
-      const button = screen.getByRole('button', { name: /join the waitlist/i })
+      const button = screen.getByRole('button', { name: /start writing for free/i })
 
       // Should not throw error when section doesn't exist
       await expect(user.click(button)).resolves.not.toThrow()
@@ -147,7 +148,7 @@ describe('Hero', () => {
       const user = userEvent.setup()
       render(<Hero />)
 
-      const button = screen.getByRole('button', { name: /join the waitlist/i })
+      const button = screen.getByRole('button', { name: /start writing for free/i })
       await user.click(button)
 
       // scrollIntoView should not be called if element doesn't exist
@@ -168,33 +169,30 @@ describe('Hero', () => {
     it('should render subheadline in paragraph tag', () => {
       render(<Hero />)
 
-      const subheadline = screen.getByText(/The fastest, simplest way to capture ideas/i)
+      const subheadline = screen.getByText(/The minimal workspace for busy professionals/i)
       expect(subheadline.tagName).toBe('P')
     })
 
-    it('should render microcopy with launch quarter', () => {
+    it('should render trusted by label', () => {
       render(<Hero />)
 
-      expect(screen.getByText(/Be the first to try Paperlyte when we launch/i)).toBeInTheDocument()
+      expect(screen.getByText(/trusted by teams at/i)).toBeInTheDocument()
     })
   })
 
   describe('App Mockup', () => {
-    it('should render mockup images', () => {
+    it('should render productivity stat mockup', () => {
+      render(<Hero />)
+
+      expect(screen.getByText('+120%')).toBeInTheDocument()
+      expect(screen.getByText('PRODUCTIVITY')).toBeInTheDocument()
+    })
+
+    it('should hide mockup from screen readers', () => {
       const { container } = render(<Hero />)
 
-      const mockupImages = container.querySelectorAll('img')
-      expect(mockupImages.length).toBeGreaterThanOrEqual(2)
-
-      // Check for notes list mockup
-      const notesListImg = Array.from(mockupImages).find((img) =>
-        img.alt.includes('notes list')
-      )
-      expect(notesListImg).toBeInTheDocument()
-
-      // Check for note detail mockup
-      const noteDetailImg = Array.from(mockupImages).find((img) => img.alt.includes('note editor'))
-      expect(noteDetailImg).toBeInTheDocument()
+      const mockup = container.querySelector('[aria-hidden="true"]')
+      expect(mockup).toBeInTheDocument()
     })
   })
 
@@ -209,7 +207,7 @@ describe('Hero', () => {
 
       render(<Hero />)
 
-      const button = screen.getByRole('button', { name: /join the waitlist/i })
+      const button = screen.getByRole('button', { name: /start writing for free/i })
 
       button.focus()
       expect(button).toHaveFocus()
@@ -274,32 +272,31 @@ describe('Hero', () => {
     it('should have accessible button labels', () => {
       render(<Hero />)
 
-      expect(screen.getByRole('button', { name: /join the waitlist/i })).toHaveAccessibleName()
+      expect(
+        screen.getByRole('button', { name: /start writing for free/i })
+      ).toHaveAccessibleName()
       expect(screen.getByRole('button', { name: /view the demo/i })).toHaveAccessibleName()
     })
 
     it('should have main heading visible to screen readers', () => {
       render(<Hero />)
 
-      const heading = screen.getByRole('heading', { name: /your thoughts, unchained/i })
+      const heading = screen.getByRole('heading', { name: /your thoughts, organized/i })
       expect(heading).toBeVisible()
     })
 
     it('should have descriptive text visible to screen readers', () => {
       render(<Hero />)
 
-      const description = screen.getByText(/The fastest, simplest way to capture ideas/i)
+      const description = screen.getByText(/The minimal workspace for busy professionals/i)
       expect(description).toBeVisible()
     })
 
-    it('should have accessible mockup images', () => {
+    it('should have aria-hidden on decorative mockup', () => {
       const { container } = render(<Hero />)
 
-      const images = container.querySelectorAll('img')
-      images.forEach((img) => {
-        expect(img).toHaveAttribute('alt')
-        expect(img.getAttribute('alt')).not.toBe('')
-      })
+      const mockup = container.querySelector('[aria-hidden="true"]')
+      expect(mockup).toBeInTheDocument()
     })
   })
 
@@ -310,19 +307,21 @@ describe('Hero', () => {
       const buttons = screen.getAllByRole('button')
       const buttonTexts = buttons.map((btn) => btn.textContent)
 
-      const waitlistIndex = buttonTexts.findIndex((text) => text?.includes('Join the Waitlist'))
+      const startWritingIndex = buttonTexts.findIndex((text) =>
+        text?.includes('Start Writing for Free')
+      )
       const demoIndex = buttonTexts.findIndex((text) => text?.includes('View the Demo'))
 
-      // Join the Waitlist should come before View the Demo
-      expect(waitlistIndex).toBeLessThan(demoIndex)
+      // Start Writing for Free should come before View the Demo
+      expect(startWritingIndex).toBeLessThan(demoIndex)
     })
 
-    it('should render feature tags', () => {
+    it('should render company names in trusted by section', () => {
       render(<Hero />)
 
-      const tags = ['Lightning Fast', 'Privacy First', 'Offline Ready']
-      tags.forEach((tag) => {
-        expect(screen.getByText(tag)).toBeInTheDocument()
+      const companies = ['Acme Corp', 'Global', 'Nebula', 'Vertex', 'Horizon']
+      companies.forEach((company) => {
+        expect(screen.getByText(company)).toBeInTheDocument()
       })
     })
   })

@@ -1,0 +1,64 @@
+Type,Title,Last Visited,Host
+Pull Request,[Snyk] Upgrade react-dom from 18.3.1 to 19.2.1,2025-12-25T06:01:32Z,github.com
+Pull Request,[Snyk] Upgrade react from 18.3.1 to 19.2.1,2025-12-25T05:59:50Z,github.com
+Pull Request,Fix FAQ timer test fake timers compatibility,2025-12-27T10:06:19Z,github.com
+Pull Request,"Update Hero component headline, CTA, and trusted companies section",2025-12-27T22:47:54Z,github.com
+Pull Request,Update test assertions to match current component implementations,2025-12-27T03:46:33Z,github.com
+Pull Request,fix: resolve Dependabot tmp package vulnerability (CVE GHSA-52f5-9888…,2025-12-26T06:32:31Z,github.com
+Pull Request,Fix CI test failures in useTheme hook and App component tests,2025-12-26T06:59:18Z,github.com
+Pull Request,Fix Sync and CodeScan workflow errors,2025-12-26T06:43:58Z,github.com
+Pull Request,chore(deps-dev): bump typescript-eslint from 8.50.0 to 8.50.1 in the development-dependencies group,2025-12-26T03:43:47Z,github.com
+Pull Request,ci: bump github/codeql-action from 3 to 4,2025-12-26T07:03:57Z,github.com
+Pull Request,ci: bump codescan-io/codescan-scanner-action from 1.2 to 2.0,2025-12-26T03:44:54Z,github.com
+Pull Request,ci: bump snyk/actions from 806182742461562b67788a64410098c9d9b96adb to 9adf32b1121593767fc3c057af55b55db032dc04,2025-12-26T03:45:36Z,github.com
+Pull Request,ci: bump actions/cache from 3 to 5,2025-12-26T03:46:11Z,github.com
+Pull Request,ci: bump actions/checkout from 4 to 6,2025-12-26T07:02:41Z,github.com
+Pull Request,Potential fix for code scanning alert no. 2: Workflow does not contain permissions,2025-12-26T03:47:08Z,github.com
+Pull Request,Fix failing tests and workflows,2025-12-26T03:41:13Z,github.com
+Pull Request,[WIP] Establish performance baselines with Lighthouse audits,2025-12-24T14:43:16Z,github.com
+Pull Request,Establish performance baselines with Lighthouse audits,2025-12-27T01:29:48Z,github.com
+Pull Request,Fix security vulnerabilities in paperlyte,2025-12-26T03:42:46Z,github.com
+Pull Request,Clarify v1.0.0 release notes and fix spacing system documentation,2025-12-24T00:12:16Z,github.com
+Pull Request,Implement CI/CD pipeline with quality gates and deployment automation,2025-12-26T22:13:09Z,github.com
+Pull Request,[WIP] Update v1.0.0 release notes and changelog,2025-12-23T17:32:01Z,github.com
+Pull Request,[WIP] Update release notes and changelog based on feedback,2025-12-23T17:31:53Z,github.com
+Pull Request,[WIP] Add Phase 2 E2E testing infrastructure with Playwright,2025-12-24T01:02:33Z,github.com
+Pull Request,[WIP] Implement Phase 2 E2E testing with Playwright,2025-12-24T01:01:55Z,github.com
+Pull Request,chore(deps-dev): bump @netlify/functions from 5.1.1 to 5.1.2,2025-12-23T12:40:44Z,github.com
+Issue,Security Audit Actions,2025-12-26T03:42:42Z,github.com
+Issue,Set up PostHog analytics for the production environment,2025-12-22T07:13:52Z,github.com
+Issue,Fix Playwright Workflow Errors,2025-12-22T07:11:17Z,github.com
+Issue,Image Optimization Opportunities,2025-12-22T06:22:10Z,github.com
+Pull Request,docs: Add comprehensive v1.0.0 release notes and update changelog,2025-12-23T17:37:20Z,github.com
+Issue,Phase 2: Accessibility Compliance Assessment,2025-12-22T06:02:17Z,github.com
+Commit,Merge pull request #219 from shazzar00ni/claude/fix-faq-timer-test-k8Nbs,2025-12-27T10:05:52Z,github.com
+Commit,fix(test): Fix FAQ timer test for fake timers compatibility,2025-12-27T01:30:22Z,github.com
+Commit,Merge pull request #204 from shazzar00ni/claude/lighthouse-performance-baseline-DvfUB,2025-12-27T01:29:44Z,github.com
+Commit,Merge pull request #201 from shazzar00ni/claude/pick-open-issue-01ERohJ2ycGVdVUAAb2Qs5nf,2025-12-26T22:13:02Z,github.com
+Commit,Merge branch 'main' into claude/lighthouse-performance-baseline-DvfUB,2025-12-26T21:20:37Z,github.com
+Commit,"docs: Fix critical issue counts, numbering, and heading hierarchy in baseline audit",2025-12-26T19:57:17Z,github.com
+Commit,Update docs/audit-results/baseline-audit-2025-12-22.md,2025-12-26T19:54:18Z,github.com
+Commit,docs: Convert bare URLs to markdown link syntax in baseline audit,2025-12-26T19:06:02Z,github.com
+Commit,fix(analytics): Update event names and properties to match test expectations,2025-12-26T16:16:02Z,github.com
+Commit,fix(analytics): Add milestone filtering to trackScrollDepth,2025-12-26T16:13:25Z,github.com
+Commit,refactor(analytics): Route all events through Analytics instance,2025-12-26T16:12:29Z,github.com
+Commit,docs(ci): Add comprehensive troubleshooting for CI/local test mismatches,2025-12-26T16:11:26Z,github.com
+Commit,fix(analytics): Fix TypeScript error in trackPageView with optional title,2025-12-26T14:48:18Z,github.com
+Commit,revert: Remove zod dependency (unrelated to CI/CD pipeline),2025-12-26T14:47:39Z,github.com
+Commit,fix(analytics): Use button_location instead of location in trackCTAClick,2025-12-26T08:50:12Z,github.com
+Commit,Update src/utils/analytics.ts,2025-12-26T08:50:13Z,github.com
+Commit,fix(analytics): Fix TypeScript errors with optional parameters,2025-12-26T08:49:29Z,github.com
+Commit,fix(analytics): Add missing WAITLIST_SUBMIT event to AnalyticsEvents,2025-12-26T08:48:42Z,github.com
+Commit,docs(ci): Fix markdown formatting around headings and code blocks,2025-12-26T08:48:11Z,github.com
+Commit,docs(ci): Fix markdown formatting - add blank line between consecutive headings,2025-12-26T08:47:08Z,github.com
+Commit,fix(analytics): Add missing exports and fix test compatibility,2025-12-26T08:22:17Z,github.com
+Commit,Merge branch 'main' into claude/pick-open-issue-01ERohJ2ycGVdVUAAb2Qs5nf,2025-12-26T07:25:50Z,github.com
+Commit,fix(ci): Complete PR quality check workflow improvements,2025-12-26T07:23:30Z,github.com
+Commit,fix(ci): Update PR quality check workflow to use Node.js 20,2025-12-26T07:22:34Z,github.com
+Commit,Update docs/CI-CD-PIPELINE.md,2025-12-26T07:09:13Z,github.com
+Commit,Update docs/CI-CD-PIPELINE.md,2025-12-26T07:09:03Z,github.com
+Commit,Update docs/CI-CD-PIPELINE.md,2025-12-26T07:08:25Z,github.com
+Commit,Merge pull request #208 from shazzar00ni/dependabot/github_actions/actions/checkout-6,2025-12-26T07:02:37Z,github.com
+Commit,Merge pull request #215 from shazzar00ni/claude/fix-ci-failures-cdRJW,2025-12-26T06:59:12Z,github.com
+Commit,Merge main into claude/fix-ci-failures-cdRJW,2025-12-26T06:52:12Z,github.com
+Release,Paperlyte v1.0.0 - Initial Public Release,2025-12-23T22:29:05Z,github.com

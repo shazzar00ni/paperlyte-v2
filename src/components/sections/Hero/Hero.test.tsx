@@ -291,12 +291,7 @@ describe('Hero', () => {
       expect(description).toBeVisible()
     })
 
-    it('should have aria-hidden on decorative mockup', () => {
-      render(<Hero />)
-
-      const mockup = screen.getByTestId('hero-mockup')
-      expect(mockup).toHaveAttribute('aria-hidden', 'true')
-    })
+    // Note: Mockup aria-hidden accessibility is tested in "App Mockup" section (lines 191-196)
   })
 
   describe('Layout', () => {

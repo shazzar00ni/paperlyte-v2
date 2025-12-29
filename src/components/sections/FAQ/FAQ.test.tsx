@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { FAQ } from './FAQ'
 import { FAQ_ITEMS } from '@constants/faq'
@@ -489,23 +489,24 @@ describe('FAQ', () => {
       expect(liveRegion).toHaveAttribute('aria-atomic', 'true')
     })
 
-    it.skip('should clear announcement after toggling', async () => {
-      // TODO: Fix this test - fake timers with userEvent causing timeout issues
-      // This test verifies that screen reader announcements are cleared after 3s
+    it('should clear announcement after toggling', () => {
       vi.useFakeTimers()
-      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
       render(<FAQ />)
 
       const item = FAQ_ITEMS[0]
       const questionButton = screen.getByRole('button', { name: new RegExp(item.question, 'i') })
 
-      await user.click(questionButton)
+      // Use fireEvent instead of userEvent to avoid conflicts with fake timers
+      fireEvent.click(questionButton)
 
       const liveRegion = document.querySelector('[aria-live="polite"]')
       expect(liveRegion).toHaveTextContent(`${item.question} expanded`)
 
       // Advance timers by 3100ms to trigger the announcement clear timeout
-      await vi.advanceTimersByTimeAsync(3100)
+      // Wrap in act() to ensure React state updates are flushed
+      act(() => {
+        vi.advanceTimersByTime(3100)
+      })
 
       expect(liveRegion).toHaveTextContent('')
 

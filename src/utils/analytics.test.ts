@@ -78,13 +78,7 @@ describe('Analytics Utility', () => {
       const mockGtag = vi.fn()
       window.gtag = mockGtag
 
-      // @ts-expect-error - setting private property for testing
-      analytics.config = {
-        provider: 'ga4',
-        siteId: 'G-XXXXXXXXXX',
-        enabled: true,
-      }
-
+      // Standalone trackEvent directly checks window.gtag
       trackEvent('test_event', { param1: 'value1', param2: 123 })
 
       expect(mockGtag).toHaveBeenCalledWith('event', 'test_event', {
@@ -97,13 +91,7 @@ describe('Analytics Utility', () => {
       const mockPlausible = vi.fn()
       window.plausible = mockPlausible
 
-      // @ts-expect-error - setting private property for testing
-      analytics.config = {
-        provider: 'plausible',
-        siteId: 'example.com',
-        enabled: true,
-      }
-
+      // Standalone trackEvent directly checks window.plausible
       trackEvent('test_event', { param1: 'value1' })
 
       expect(mockPlausible).toHaveBeenCalledWith('test_event', {
@@ -115,13 +103,7 @@ describe('Analytics Utility', () => {
       const mockGtag = vi.fn()
       window.gtag = mockGtag
 
-      // @ts-expect-error - setting private property for testing
-      analytics.config = {
-        provider: 'ga4',
-        siteId: 'G-XXXXXXXXXX',
-        enabled: true,
-      }
-
+      // Standalone trackEvent directly checks window.gtag
       trackEvent('simple_event')
 
       expect(mockGtag).toHaveBeenCalledWith('event', 'simple_event', undefined)
@@ -139,13 +121,7 @@ describe('Analytics Utility', () => {
       const mockGtag = vi.fn()
       window.gtag = mockGtag
 
-      // @ts-expect-error - setting private property for testing
-      analytics.config = {
-        provider: 'ga4',
-        siteId: 'G-XXXXXXXXXX',
-        enabled: true,
-      }
-
+      // Standalone trackPageView directly checks window.gtag
       trackPageView('/test-page')
 
       expect(mockGtag).toHaveBeenCalledWith('event', 'page_view', {
@@ -157,13 +133,7 @@ describe('Analytics Utility', () => {
       const mockPlausible = vi.fn()
       window.plausible = mockPlausible
 
-      // @ts-expect-error - setting private property for testing
-      analytics.config = {
-        provider: 'plausible',
-        siteId: 'example.com',
-        enabled: true,
-      }
-
+      // Standalone trackPageView directly checks window.plausible
       trackPageView()
 
       // Should pass pageview event with page_path in props
@@ -178,13 +148,7 @@ describe('Analytics Utility', () => {
       const mockGtag = vi.fn()
       window.gtag = mockGtag
 
-      // @ts-expect-error - setting private property for testing
-      analytics.config = {
-        provider: 'ga4',
-        siteId: 'G-XXXXXXXXXX',
-        enabled: true,
-      }
-
+      // Standalone trackPageView directly checks window.gtag
       trackPageView()
 
       expect(mockGtag).toHaveBeenCalledWith('event', 'page_view', {
@@ -296,13 +260,8 @@ describe('Analytics Utility', () => {
     it('should handle missing gtag gracefully', () => {
       delete window.gtag
 
-      // @ts-expect-error - setting private property for testing
-      analytics.config = {
-        provider: 'ga4',
-        siteId: 'G-XXXXXXXXXX',
-        enabled: true,
-      }
-
+      // Standalone functions check for window.gtag directly
+      // They should not throw when gtag is unavailable
       expect(() => trackEvent('test')).not.toThrow()
       expect(() => trackPageView('/test')).not.toThrow()
     })
@@ -310,13 +269,8 @@ describe('Analytics Utility', () => {
     it('should handle missing plausible gracefully', () => {
       delete window.plausible
 
-      // @ts-expect-error - setting private property for testing
-      analytics.config = {
-        provider: 'plausible',
-        siteId: 'example.com',
-        enabled: true,
-      }
-
+      // Standalone functions check for window.plausible directly
+      // They should not throw when plausible is unavailable
       expect(() => trackEvent('test')).not.toThrow()
       expect(() => trackPageView()).not.toThrow()
     })

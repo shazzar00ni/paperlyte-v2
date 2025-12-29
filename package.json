@@ -20,7 +20,6 @@
     "size": "size-limit"
   },
   "dependencies": {
-    "@fontsource-variable/playfair-display": "^5.2.8",
     "@fontsource/inter": "^5.2.8",
     "@fortawesome/fontawesome-svg-core": "^7.1.0",
     "@fortawesome/free-brands-svg-icons": "^7.1.0",

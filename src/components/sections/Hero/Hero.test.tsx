@@ -81,8 +81,8 @@ describe('Hero', () => {
       render(<Hero />)
 
       const button = screen.getByRole('button', { name: /start writing for free/i })
-      // Verify icon is present by checking for any icon element (more resilient than specific class)
-      const icon = button.querySelector('[aria-hidden="true"]')
+      // Verify specific icon is present using data-icon attribute
+      const icon = button.querySelector('[data-icon="fa-arrow-right"]')
 
       expect(icon).toBeInTheDocument()
     })

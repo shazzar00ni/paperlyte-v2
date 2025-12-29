@@ -3,7 +3,6 @@ import {
   isAnalyticsAvailable,
   trackEvent,
   trackPageView,
-  trackScrollDepth,
   trackCTAClick,
   trackExternalLink,
   trackSocialClick,
@@ -93,53 +92,6 @@ describe('Analytics Utility', () => {
       expect(mockGtag).toHaveBeenCalledWith('event', 'page_view', {
         page_path: '/about',
         page_title: undefined,
-      })
-    })
-  })
-
-  describe('trackScrollDepth', () => {
-    it('should track milestone percentages', () => {
-      const mockGtag = vi.fn()
-      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
-
-      // Track 25% milestone
-      trackScrollDepth(25)
-      expect(mockGtag).toHaveBeenCalledWith('event', AnalyticsEvents.SCROLL_DEPTH, {
-        depth_percentage: 25,
-      })
-
-      mockGtag.mockClear()
-
-      // Track 50% milestone
-      trackScrollDepth(52)
-      expect(mockGtag).toHaveBeenCalledWith('event', AnalyticsEvents.SCROLL_DEPTH, {
-        depth_percentage: 50,
-      })
-    })
-
-    it('should not track non-milestone percentages', () => {
-      const mockGtag = vi.fn()
-      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
-
-      trackScrollDepth(10)
-      trackScrollDepth(37)
-      trackScrollDepth(88)
-
-      expect(mockGtag).not.toHaveBeenCalled()
-    })
-
-    it('should track all milestone percentages', () => {
-      const mockGtag = vi.fn()
-      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
-
-      const milestones = [25, 50, 75, 100]
-
-      milestones.forEach((milestone) => {
-        mockGtag.mockClear()
-        trackScrollDepth(milestone)
-        expect(mockGtag).toHaveBeenCalledWith('event', AnalyticsEvents.SCROLL_DEPTH, {
-          depth_percentage: milestone,
-        })
       })
     })
   })

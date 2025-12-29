@@ -10,12 +10,22 @@
   font-named-instance: 'Regular';
 }
 
+/* Self-hosted Playfair Display Variable Font */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url('/fonts/PlayfairDisplay-Variable.woff2') format('woff2-variations');
+}
+
 h1,
 h2,
 h3,
 h4,
 h5,
 h6 {
+  font-family: 'Playfair Display', serif;
   font-weight: var(--font-weight-bold);
   line-height: var(--line-height-tight);
   color: var(--color-text-primary);

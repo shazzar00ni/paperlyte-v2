@@ -189,10 +189,10 @@ describe('Hero', () => {
     })
 
     it('should hide mockup from screen readers', () => {
-      const { container } = render(<Hero />)
+      render(<Hero />)
 
-      const mockup = container.querySelector('[aria-hidden="true"]')
-      expect(mockup).toBeInTheDocument()
+      const mockup = screen.getByTestId('hero-mockup')
+      expect(mockup).toHaveAttribute('aria-hidden', 'true')
     })
   })
 
@@ -293,10 +293,10 @@ describe('Hero', () => {
     })
 
     it('should have aria-hidden on decorative mockup', () => {
-      const { container } = render(<Hero />)
+      render(<Hero />)
 
-      const mockup = container.querySelector('[aria-hidden="true"]')
-      expect(mockup).toBeInTheDocument()
+      const mockup = screen.getByTestId('hero-mockup')
+      expect(mockup).toHaveAttribute('aria-hidden', 'true')
     })
   })
 

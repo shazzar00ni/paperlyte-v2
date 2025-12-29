@@ -112,5 +112,14 @@ ai:
   # Enable AI-powered insights
   enabled: true
 
+# Bundle analysis (ready for when @codecov/vite-plugin supports Vite 7)
+# Currently blocked: @codecov/vite-plugin only supports Vite 4.x-6.x
+# Project uses: Vite 7.3.0
+# TODO: Enable when plugin compatibility is updated
+# Reference: https://docs.codecov.com/docs/javascript-bundle-analysis
+bundle_analysis:
+  enabled: false
+  # Will be enabled via vite.config.ts once plugin is compatible
+
 # Notification settings
 slack_app: false

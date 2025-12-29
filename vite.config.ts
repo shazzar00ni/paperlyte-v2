@@ -93,7 +93,9 @@ export default defineConfig({
   // Path resolution configuration
   resolve: {
     alias: {
+      // Base alias for src directory
       '@': path.resolve(__dirname, './src'),
+      // Component-specific aliases for better import paths
       '@components': path.resolve(__dirname, './src/components'),
       '@hooks': path.resolve(__dirname, './src/hooks'),
       '@styles': path.resolve(__dirname, './src/styles'),
@@ -107,35 +109,38 @@ export default defineConfig({
   build: {
     // Split CSS into separate files for better caching
     cssCodeSplit: true,
-    minify: 'terser',
-    sourcemap: 'hidden',
-    terserOptions: {
-      compress: {
-        drop_console: true,
-        drop_debugger: true,
-      },
-    },
+    // Use esbuild for faster minification
+    minify: 'esbuild',
+    // Target modern browsers for smaller bundle sizes
+    target: 'es2020',
+    // Enable CSS minification
+    cssMinify: true,
+    // Rollup-specific options for advanced bundling
     rollupOptions: {
       output: {
-        manualChunks: (id) => {
-          // Split React and React DOM into separate vendor chunk
-          const reactRegex = /node_modules[\\/](react|react-dom)[\\/]/
-          if (reactRegex.test(id)) {
+        // Manual chunk splitting for better caching and load performance
+        // Strategy: Only split large vendor libraries that change infrequently
+        manualChunks(id) {
+          // React vendor bundle (~190KB) - changes rarely, good cache hit rate
+          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
             return 'react-vendor'
           }
-          // Keep all other node_modules in a single vendor chunk
-          if (id.includes('node_modules')) {
-            return 'vendor'
+          // Font Awesome is large (~100KB+), split it out
+          if (id.includes('node_modules/@fortawesome')) {
+            return 'fontawesome'
           }
+          // Keep app code together for better tree-shaking and compression
+          // Small chunks (constants, utils, UI components) stay in main bundle
+          // This reduces HTTP requests and improves compression ratio
         },
-        // Optimize chunk file names
+        // Optimize chunk file names for better caching
         chunkFileNames: 'assets/[name]-[hash].js',
         entryFileNames: 'assets/[name]-[hash].js',
         assetFileNames: 'assets/[name]-[hash].[ext]',
       },
     },
-    // Performance optimizations
-    chunkSizeWarningLimit: 1000, // Intentionally raised to suppress warnings for large vendor chunks. TODO: Monitor bundle size and lower if needed.
+    // Keep default warning limit (500kb) to catch performance issues early
+    // If warnings appear, investigate and optimize rather than suppressing
   },
 
   // Development server configuration

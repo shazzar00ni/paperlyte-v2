@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { ErrorBoundary } from '@components/ErrorBoundary'
 import { Header } from '@components/layout/Header'
 import { Footer } from '@components/layout/Footer'
@@ -14,10 +13,11 @@ import { EmailCapture } from '@components/sections/EmailCapture'
 import { FAQ } from '@components/sections/FAQ'
 import { CTA } from '@components/sections/CTA'
 import { FeedbackWidget } from '@components/ui/FeedbackWidget'
-import { analytics } from '@utils/analytics'
+import { useAnalytics } from '@hooks/useAnalytics'
 
 /**
- * Root application component that renders the app layout and initializes analytics on mount.
+ * Root application component that renders the app layout.
+ * Initializes analytics tracking including scroll depth tracking.
  *
  * @returns The root JSX element rendering the app: an ErrorBoundary wrapping
  * the Header, and a main element containing Hero, Problem, Solution, Features,
@@ -25,10 +25,8 @@ import { analytics } from '@utils/analytics'
  * then the Footer and FeedbackWidget.
  */
 function App() {
-  // Initialize analytics on mount
-  useEffect(() => {
-    analytics.init()
-  }, [])
+  // Initialize analytics with scroll depth tracking
+  useAnalytics()
 
   return (
     <ErrorBoundary>

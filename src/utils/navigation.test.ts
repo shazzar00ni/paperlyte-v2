@@ -103,10 +103,10 @@ describe('navigation utilities', () => {
       expect(isSafeUrl('/path/with://protocol')).toBe(false)
     })
 
-    it('should allow external URLs with http/https protocols', () => {
+    it('should allow external HTTP/HTTPS URLs (for linking to external resources)', () => {
       expect(isSafeUrl('http://example.com')).toBe(true)
       expect(isSafeUrl('https://example.com/page')).toBe(true)
-      expect(isSafeUrl('https://external-site.com')).toBe(true)
+      expect(isSafeUrl('https://github.com')).toBe(true)
     })
 
     it('should reject javascript: protocol URLs', () => {
@@ -201,7 +201,7 @@ describe('navigation utilities', () => {
       })
     })
 
-    it('should allow navigation to external http/https URLs', () => {
+    it('should allow navigation to external HTTPS URLs', () => {
       const mockLocation = { href: '', origin: 'http://localhost' } as Location
       Object.defineProperty(window, 'location', {
         value: mockLocation,
@@ -211,7 +211,7 @@ describe('navigation utilities', () => {
 
       const result = safeNavigate('https://example.com')
       expect(result).toBe(true)
-      expect(window.location.href).toBe('https://example.com')
+      expect(mockLocation.href).toBe('https://example.com')
 
       // Restore window.location
       Object.defineProperty(window, 'location', {

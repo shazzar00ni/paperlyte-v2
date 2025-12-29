@@ -1,60 +1,146 @@
+import { useEffect, useCallback } from 'react'
+import {
+  trackEvent,
+  trackCTAClick,
+  trackExternalLink,
+  trackSocialClick,
+  initScrollDepthTracking,
+  AnalyticsEvents,
+  type AnalyticsEventParams,
+} from '@utils/analytics'
+
 /**
- * useAnalytics hook
+ * React hook for analytics tracking with automatic scroll depth tracking
  *
- * React hook for easy analytics integration in components.
- * Provides convenient methods for tracking events, page views, and user interactions.
- *
- * Note: Methods are not memoized since they're thin wrappers around stable singleton methods.
- * The analytics singleton is stable throughout the application lifecycle, so memoization
- * provides no performance benefit.
- */
-
-import { analytics } from '@/analytics'
-import type { AnalyticsEvent } from '@/analytics/types'
-
-/**
- * Analytics hook interface
- */
-interface UseAnalyticsReturn {
-  /** Track a custom event */
-  trackEvent: (event: AnalyticsEvent) => void
-  /** Track a page view */
-  trackPageView: (url?: string) => void
-  /** Track CTA button click */
-  trackCTAClick: (buttonName: string, location: string) => void
-  /** Track download button click */
-  trackDownload: (platform: string, location: string) => void
-  /** Track navigation click */
-  trackNavigation: (target: string, source: string) => void
-  /** Check if analytics is enabled */
-  isEnabled: () => boolean
-}
-
-/**
- * Hook for analytics tracking
+ * @param enableScrollTracking - Whether to enable automatic scroll depth tracking (default: true)
+ * @returns Object with analytics tracking functions
  *
  * @example
  * ```tsx
  * function MyComponent() {
- *   const { trackCTAClick } = useAnalytics()
+ *   const { trackCTA, trackEvent: track } = useAnalytics()
  *
  *   return (
- *     <button onClick={() => trackCTAClick('Get Started', 'hero')}>
- *       Get Started
+ *     <button onClick={() => trackCTA('Join Waitlist', 'hero')}>
+ *       Join Waitlist
  *     </button>
  *   )
  * }
  * ```
  */
-export function useAnalytics(): UseAnalyticsReturn {
+export function useAnalytics(enableScrollTracking = true) {
+  // Initialize scroll depth tracking on mount
+  useEffect(() => {
+    if (!enableScrollTracking) return
+
+    const cleanup = initScrollDepthTracking()
+    return cleanup
+  }, [enableScrollTracking])
+
+  // Memoized tracking functions to prevent unnecessary re-renders
+  const track = useCallback((eventName: string, params?: AnalyticsEventParams) => {
+    trackEvent(eventName, params)
+  }, [])
+
+  const trackCTA = useCallback((buttonText: string, buttonLocation: string) => {
+    trackCTAClick(buttonText, buttonLocation)
+  }, [])
+
+  const trackExternal = useCallback((url: string, linkText: string) => {
+    trackExternalLink(url, linkText)
+  }, [])
+
+  const trackSocial = useCallback((platform: string) => {
+    trackSocialClick(platform)
+  }, [])
+
+  /**
+   * Track waitlist join button clicks
+   * PRIVACY: Does not send PII. Only tracks button location for UX analysis.
+   */
+  const trackWaitlistJoin = useCallback(
+    (location: string) => {
+      track(AnalyticsEvents.WAITLIST_JOIN, {
+        button_location: location,
+      })
+    },
+    [track]
+  )
+
+  /**
+   * Track waitlist form submission
+   * PRIVACY: Does not send email or PII. Only tracks form location for conversion analysis.
+   */
+  const trackWaitlistSubmit = useCallback(
+    (location: string) => {
+      track(AnalyticsEvents.WAITLIST_SUBMIT, {
+        form_location: location,
+      })
+    },
+    [track]
+  )
+
+  /**
+   * Track successful waitlist signup
+   * PRIVACY: Does not send email or PII. Only tracks conversion success.
+   */
+  const trackWaitlistSuccess = useCallback(() => {
+    track(AnalyticsEvents.WAITLIST_SUCCESS, {
+      // No PII - only track that signup was successful
+    })
+  }, [track])
+
+  const trackWaitlistError = useCallback(
+    (errorCode: string, location: string) => {
+      track(AnalyticsEvents.WAITLIST_ERROR, {
+        error_code: errorCode,
+        form_location: location,
+      })
+    },
+    [track]
+  )
+
+  const trackFAQExpand = useCallback(
+    (questionIndex: number) => {
+      track(AnalyticsEvents.FAQ_EXPAND, {
+        question_index: questionIndex,
+      })
+    },
+    [track]
+  )
+
+  const trackNavigation = useCallback(
+    (destination: string, linkText: string) => {
+      track(AnalyticsEvents.NAVIGATION_CLICK, {
+        destination,
+        link_text: linkText,
+      })
+    },
+    [track]
+  )
+
   return {
-    trackEvent: (event: AnalyticsEvent) => analytics.trackEvent(event),
-    trackPageView: (url?: string) => analytics.trackPageView(url),
-    trackCTAClick: (buttonName: string, location: string) =>
-      analytics.trackCTAClick(buttonName, location),
-    trackDownload: (platform: string, location: string) =>
-      analytics.trackDownload(platform, location),
-    trackNavigation: (target: string, source: string) => analytics.trackNavigation(target, source),
-    isEnabled: () => analytics.isEnabled(),
+    // Generic event tracking
+    trackEvent: track,
+
+    // CTA tracking
+    trackCTA,
+
+    // Link tracking
+    trackExternal,
+    trackSocial,
+    trackNavigation,
+
+    // Waitlist tracking
+    trackWaitlistJoin,
+    trackWaitlistSubmit,
+    trackWaitlistSuccess,
+    trackWaitlistError,
+
+    // Content interaction tracking
+    trackFAQExpand,
+
+    // Event constants
+    events: AnalyticsEvents,
   }
 }

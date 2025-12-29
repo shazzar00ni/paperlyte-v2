@@ -194,9 +194,7 @@ describe('Button', () => {
         expect(consoleSpy).toHaveBeenCalledWith(
           expect.stringContaining('Button component: Unsafe URL rejected')
         )
-        expect(consoleSpy).toHaveBeenCalledWith(
-          expect.stringContaining('javascript:alert(1)')
-        )
+        expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('javascript:alert(1)'))
       }
 
       consoleSpy.mockRestore()

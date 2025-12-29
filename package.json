@@ -5,8 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "generate:icons": "node scripts/generate-icons.js",
+    "generate:mockups": "node scripts/generate-mockups.js",
     "generate-icons": "node scripts/generate-icons.js",
-    "prebuild": "npm run generate-icons",
+    "prebuild": "npm run generate:icons && npm run generate:mockups",
     "build": "tsc -b && vite build && node scripts/inject-dates.js",
     "postbuild": "node scripts/generate-sitemap.cjs",
     "lint": "eslint .",

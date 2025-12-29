@@ -1,0 +1,155 @@
+/**
+ * Mockup Image Generation Script
+ *
+ * Generates optimized mockup images in modern formats (PNG, WebP, AVIF) from SVG sources.
+ * - PNG: High-quality baseline format for universal compatibility
+ * - WebP: Modern format with ~25-35% better compression than PNG
+ * - AVIF: Next-gen format with ~40-50% better compression than PNG
+ *
+ * Usage: node scripts/generate-mockups.js
+ *
+ * Requires: npm install --save-dev sharp
+ */
+
+import sharp from 'sharp'
+import { fileURLToPath } from 'url'
+import { dirname, join } from 'path'
+import { existsSync, readdirSync } from 'fs'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+const projectRoot = join(__dirname, '..')
+const mockupsDir = join(projectRoot, 'public', 'mockups')
+
+/**
+ * Mockup configurations
+ * Each entry defines the source SVG and output dimensions
+ */
+const mockups = [
+  { source: 'notes-list.svg', width: 1100, height: 800 },
+  { source: 'note-detail.svg', width: 800, height: 600 },
+]
+
+/**
+ * Output formats with encoding settings
+ */
+const formats = [
+  { ext: 'png', options: {} },
+  { ext: 'webp', options: { quality: 85, effort: 6 } },
+  { ext: 'avif', options: { quality: 75, effort: 6 } },
+]
+
+/**
+ * Generate a mockup image from SVG source in the specified format
+ * @param {string} sourceName - Source SVG filename
+ * @param {number} width - Output width in pixels
+ * @param {number} height - Output height in pixels
+ * @param {string} format - Output format ('png', 'webp', or 'avif')
+ * @param {object} options - Format-specific encoding options
+ */
+async function generateMockup(sourceName, width, height, format, options) {
+  try {
+    const baseName = sourceName.replace('.svg', '')
+    const sourcePath = join(mockupsDir, sourceName)
+    const outputName = `${baseName}.${format}`
+    const outputPath = join(mockupsDir, outputName)
+
+    // Verify source file exists
+    if (!existsSync(sourcePath)) {
+      throw new Error(`Source file not found: ${sourceName}`)
+    }
+
+    const image = sharp(sourcePath, { density: 300 }) // High DPI for crisp rasterization
+      .resize(width, height, {
+        fit: 'contain', // Preserve aspect ratio, add padding if needed
+        background: { r: 255, g: 255, b: 255, alpha: 0 }, // Transparent background
+      })
+
+    // Apply format-specific encoding
+    if (format === 'png') {
+      await image.png(options).toFile(outputPath)
+    } else if (format === 'webp') {
+      await image.webp(options).toFile(outputPath)
+    } else if (format === 'avif') {
+      await image.avif(options).toFile(outputPath)
+    } else {
+      throw new Error(`Unsupported format: ${format}`)
+    }
+
+    console.log(`✅ Generated ${outputName} (${width}x${height})`)
+  } catch (error) {
+    // Safely handle any thrown value (may not be an Error object)
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    const baseName = sourceName.replace('.svg', '')
+    const outputName = `${baseName}.${format}`
+    console.error(`❌ Failed to generate ${outputName}:`, errorMessage)
+
+    // Always throw a normalized Error instance for consistent error handling
+    throw new Error(`Failed to generate ${outputName}: ${errorMessage}`)
+  }
+}
+
+/**
+ * Main execution function
+ */
+async function main() {
+  console.log('🎨 Paperlyte Mockup Generator\n')
+
+  // Check if mockups directory exists
+  if (!existsSync(mockupsDir)) {
+    console.error(`❌ Mockups directory not found: ${mockupsDir}`)
+    console.error('Please ensure public/mockups/ exists')
+    process.exit(1)
+  }
+
+  console.log(`📂 Source: ${mockupsDir}`)
+  console.log(`📂 Output: ${mockupsDir}\n`)
+
+  // Generate all mockup images
+  try {
+    const generatedFiles = []
+
+    for (const mockup of mockups) {
+      const { source, width, height } = mockup
+
+      // Verify source SVG exists
+      const sourcePath = join(mockupsDir, source)
+      if (!existsSync(sourcePath)) {
+        console.warn(`⚠️  Skipping ${source} (file not found)`)
+        continue
+      }
+
+      console.log(`Processing ${source}...`)
+
+      // Generate all formats for this mockup
+      for (const { ext, options } of formats) {
+        await generateMockup(source, width, height, ext, options)
+        const baseName = source.replace('.svg', '')
+        generatedFiles.push(`${baseName}.${ext}`)
+      }
+
+      console.log('') // Empty line between mockups
+    }
+
+    if (generatedFiles.length === 0) {
+      console.warn('⚠️  No mockup files were generated')
+      console.warn('Please ensure SVG source files exist in public/mockups/')
+      process.exit(1)
+    }
+
+    console.log('✨ All mockups generated successfully!')
+    console.log('\nGenerated files:')
+    generatedFiles.forEach((file) => {
+      console.log(`  - ${file}`)
+    })
+  } catch (error) {
+    console.error('\n❌ Mockup generation failed')
+    process.exit(1)
+  }
+}
+
+// Run the script
+main().catch((error) => {
+  console.error('Fatal error:', error)
+  process.exit(1)
+})

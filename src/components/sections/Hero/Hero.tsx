@@ -62,6 +62,8 @@ export const Hero = (): React.ReactElement => {
           {/* Primary mockup - Notes list view */}
           <div className={styles.mockupPrimary}>
             <picture>
+              <source srcSet="/mockups/notes-list.avif" type="image/avif" />
+              <source srcSet="/mockups/notes-list.webp" type="image/webp" />
               <source srcSet="/mockups/notes-list.png" type="image/png" />
               <img
                 src="/mockups/notes-list.svg"
@@ -78,6 +80,8 @@ export const Hero = (): React.ReactElement => {
           {/* Secondary mockup - Note detail view (floating) */}
           <div className={styles.mockupSecondary}>
             <picture>
+              <source srcSet="/mockups/note-detail.avif" type="image/avif" />
+              <source srcSet="/mockups/note-detail.webp" type="image/webp" />
               <source srcSet="/mockups/note-detail.png" type="image/png" />
               <img
                 src="/mockups/note-detail.svg"

@@ -234,6 +234,7 @@ coverage: {
 ```
 
 **Recommendation:**
+
 Add coverage thresholds to prevent regression:
 
 ```typescript
@@ -296,6 +297,7 @@ coverage: {
 - `Comparison.tsx` - Below-the-fold section
 
 **Recommendation:**
+
 ```typescript
 // App.tsx or routes
 const Privacy = lazy(() => import('./components/pages/Privacy'));
@@ -317,6 +319,7 @@ const FeedbackWidget = lazy(() => import('./components/ui/FeedbackWidget'));
 - Section components with heavy content
 
 **Recommendation:**
+
 ```typescript
 export default memo(FloatingElement);
 export default memo(AnimatedElement);
@@ -343,8 +346,10 @@ export default memo(ParallaxLayer);
 3. **Missing lazy loading:** No `loading="lazy"` attributes detected
 
 **Recommendation:**
+
 1. Generate WebP/AVIF versions of all images
 2. Use `<picture>` element for hero images:
+
    ```tsx
    <picture>
      <source srcset="hero.avif" type="image/avif" />
@@ -352,6 +357,7 @@ export default memo(ParallaxLayer);
      <img src="hero.jpg" alt="..." loading="lazy" />
    </picture>
    ```
+
 3. Add responsive images with `srcset` for different screen sizes
 4. Implement lazy loading for below-the-fold images
 
@@ -378,11 +384,14 @@ export default memo(ParallaxLayer);
 3. No performance monitoring for animation frame rates
 
 **Recommendation:**
+
 1. Audit CSS for hardware acceleration:
+
    ```css
    transform: translateZ(0); /* Force GPU acceleration */
    will-change: transform, opacity;
    ```
+
 2. Verify `requestAnimationFrame` usage in custom animations
 3. Add FPS monitoring in development mode
 
@@ -589,6 +598,7 @@ The Paperlyte v2 codebase has **strong fundamentals** with good test coverage fo
 ## Appendix A: Files with TODOs
 
 ### Source Code Files
+
 1. `src/constants/legal.ts` - 13 TODOs
 2. `src/constants/downloads.ts` - 5 TODOs
 3. `src/analytics/index.ts` - 1 TODO
@@ -598,13 +608,15 @@ The Paperlyte v2 codebase has **strong fundamentals** with good test coverage fo
 7. `vite.config.ts` - 1 TODO
 
 ### Documentation Files
-8. `docs/LEGAL-SETUP.md` - 16 TODOs
-9. `docs/PRIVACY-POLICY.md` - 1 TODO
-10. `docs/TERMS-OF-SERVICE.md` - 1 TODO
-11. `docs/COOKIE-POLICY.md` - 1 TODO
-12. `SECURITY_REVIEW.md` - 2 TODOs
+
+1. `docs/LEGAL-SETUP.md` - 16 TODOs
+2. `docs/PRIVACY-POLICY.md` - 1 TODO
+3. `docs/TERMS-OF-SERVICE.md` - 1 TODO
+4. `docs/COOKIE-POLICY.md` - 1 TODO
+5. `SECURITY_REVIEW.md` - 2 TODOs
 
 ### Generated/Report Files
+
 - `docs/AUDIT-REPORT.md` - References to TODOs
 - `docs/audit-results/baseline-audit-2025-12-22.md` - References to TODOs
 
@@ -613,33 +625,37 @@ The Paperlyte v2 codebase has **strong fundamentals** with good test coverage fo
 ## Appendix B: Untested Files
 
 ### React Components
+
 1. `src/components/pages/Privacy/Privacy.tsx`
 2. `src/components/pages/Terms/Terms.tsx`
 3. `src/components/sections/Statistics/Statistics.tsx`
 
 ### Utility Modules
-4. `src/utils/monitoring.ts`
-5. `src/utils/metaTags.ts`
-6. `src/utils/env.ts`
+
+1. `src/utils/monitoring.ts`
+2. `src/utils/metaTags.ts`
+3. `src/utils/env.ts`
 
 ### Analytics Modules
-7. `src/analytics/types.ts`
-8. `src/analytics/index.ts`
-9. `src/analytics/webVitals.ts`
-10. `src/analytics/config.ts`
-11. `src/analytics/providers/plausible.ts`
-12. `src/analytics/scrollDepth.ts`
+
+1. `src/analytics/types.ts`
+2. `src/analytics/index.ts`
+3. `src/analytics/webVitals.ts`
+4. `src/analytics/config.ts`
+5. `src/analytics/providers/plausible.ts`
+6. `src/analytics/scrollDepth.ts`
 
 ### Constants (Low Risk)
-13. `src/constants/waitlist.ts`
-14. `src/constants/faq.ts`
-15. `src/constants/downloads.ts`
-16. `src/constants/config.ts`
-17. `src/constants/legal.ts`
-18. `src/constants/comparison.ts`
-19. `src/constants/pricing.ts`
-20. `src/constants/testimonials.ts`
-21. `src/constants/features.ts`
+
+1. `src/constants/waitlist.ts`
+2. `src/constants/faq.ts`
+3. `src/constants/downloads.ts`
+4. `src/constants/config.ts`
+5. `src/constants/legal.ts`
+6. `src/constants/comparison.ts`
+7. `src/constants/pricing.ts`
+8. `src/constants/testimonials.ts`
+9. `src/constants/features.ts`
 
 ---
 

@@ -124,8 +124,8 @@ export const FAQ = (): React.ReactElement => {
       return
     }
 
-    const focusableElements = getFocusableElements(grid).filter(
-      (el) => el.classList.contains(styles.question)
+    const focusableElements = getFocusableElements(grid).filter((el) =>
+      el.classList.contains(styles.question)
     )
     if (focusableElements.length === 0) return
 

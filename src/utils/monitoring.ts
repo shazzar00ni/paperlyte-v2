@@ -58,7 +58,14 @@ export function logError(error: Error, context?: ErrorContext, source?: string):
     // Only sends if Sentry is initialized (DSN configured)
     if (import.meta.env.VITE_SENTRY_DSN) {
       Sentry.captureException(error, {
-        level: severity === 'critical' ? 'fatal' : severity === 'high' ? 'error' : severity === 'medium' ? 'warning' : 'info',
+        level:
+          severity === 'critical'
+            ? 'fatal'
+            : severity === 'high'
+              ? 'error'
+              : severity === 'medium'
+                ? 'warning'
+                : 'info',
         tags: {
           source: errorSource,
           ...context?.tags,
@@ -79,7 +86,14 @@ export function logError(error: Error, context?: ErrorContext, source?: string):
       Sentry.addBreadcrumb({
         category: 'error',
         message: `${errorSource}: ${error.message}`,
-        level: severity === 'critical' ? 'fatal' : severity === 'high' ? 'error' : severity === 'medium' ? 'warning' : 'info',
+        level:
+          severity === 'critical'
+            ? 'fatal'
+            : severity === 'high'
+              ? 'error'
+              : severity === 'medium'
+                ? 'warning'
+                : 'info',
         data: context?.tags,
       })
     }

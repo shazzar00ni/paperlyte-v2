@@ -14,6 +14,11 @@ import styles from './Privacy.module.css'
 // TODO: Update this date whenever the policy is revised
 const LAST_UPDATED = 'December 13, 2024'
 
+/**
+ * Render the Privacy Policy page displaying sections about data collection, use, security, user rights, and contact information.
+ *
+ * @returns The Privacy Policy page as a JSX element.
+ */
 export function Privacy() {
   return (
     <>

@@ -16,10 +16,12 @@ export interface ErrorContext {
 }
 
 /**
- * Report an Error with optional metadata, routing to console in development or to analytics/error-monitoring in production.
+ * Report an Error and associated metadata to console in development or to analytics and error-monitoring services in production.
+ *
+ * Sends an analytics event for every reported error and, if configured, forwards the error and metadata to the external monitoring service. In development the error and provided context are written to the console; in production the function attempts to report without throwing on failure.
  *
  * @param error - The Error to report
- * @param context - Optional metadata about the error (e.g., `componentStack`, `errorInfo`, `severity`, `tags`)
+ * @param context - Optional metadata such as `componentStack`, `errorInfo`, `severity` (`'low' | 'medium' | 'high' | 'critical'`), and `tags`
  * @param source - Optional label identifying the error's origin (for example, a component or subsystem name)
  */
 export function logError(error: Error, context?: ErrorContext, source?: string): void {

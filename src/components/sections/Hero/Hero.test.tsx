@@ -358,6 +358,15 @@ describe('Hero', () => {
 
         // Verify matchMedia was called to check for reduced motion preference
         expect(matchMediaMock).toHaveBeenCalledWith('(prefers-reduced-motion: reduce)')
+
+        // Verify animations are actually disabled by checking AnimatedElement data attribute
+        const animatedElements = container.querySelectorAll('[data-reduced-motion="true"]')
+        expect(animatedElements.length).toBeGreaterThan(0)
+
+        // All animated elements should have reduced motion enabled
+        animatedElements.forEach((element) => {
+          expect(element).toHaveAttribute('data-reduced-motion', 'true')
+        })
       } finally {
         // Restore original matchMedia
         Object.defineProperty(window, 'matchMedia', {

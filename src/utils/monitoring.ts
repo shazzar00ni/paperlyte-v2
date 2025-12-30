@@ -16,6 +16,20 @@ export interface ErrorContext {
 }
 
 /**
+ * Map severity level to Sentry level
+ * @param severity - Error severity level
+ * @returns Sentry severity level
+ */
+function mapSeverityToLevel(
+  severity: 'low' | 'medium' | 'high' | 'critical'
+): 'fatal' | 'error' | 'warning' | 'info' {
+  if (severity === 'critical') return 'fatal'
+  if (severity === 'high') return 'error'
+  if (severity === 'medium') return 'warning'
+  return 'info'
+}
+
+/**
  * Report an Error with optional metadata, routing to console in development or to analytics/error-monitoring in production.
  *
  * @param error - The Error to report
@@ -58,14 +72,7 @@ export function logError(error: Error, context?: ErrorContext, source?: string):
     // Only sends if Sentry is initialized (DSN configured)
     if (import.meta.env.VITE_SENTRY_DSN) {
       Sentry.captureException(error, {
-        level:
-          severity === 'critical'
-            ? 'fatal'
-            : severity === 'high'
-              ? 'error'
-              : severity === 'medium'
-                ? 'warning'
-                : 'info',
+        level: mapSeverityToLevel(severity),
         tags: {
           source: errorSource,
           ...context?.tags,
@@ -86,14 +93,7 @@ export function logError(error: Error, context?: ErrorContext, source?: string):
       Sentry.addBreadcrumb({
         category: 'error',
         message: `${errorSource}: ${error.message}`,
-        level:
-          severity === 'critical'
-            ? 'fatal'
-            : severity === 'high'
-              ? 'error'
-              : severity === 'medium'
-                ? 'warning'
-                : 'info',
+        level: mapSeverityToLevel(severity),
         data: context?.tags,
       })
     }

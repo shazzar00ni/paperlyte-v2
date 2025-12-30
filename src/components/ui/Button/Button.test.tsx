@@ -78,10 +78,6 @@ describe('Button', () => {
   it('should render with icon', () => {
     const { container } = render(<Button icon="fa-download">Download</Button>)
 
-    // Icon component may render as SVG or <i> tag with Font Awesome classes
-  it('should render with icon', () => {
-    const { container } = render(<Button icon="fa-download">Download</Button>)
-
     // Icon component renders with data-icon attribute on both SVG and Font Awesome fallback
     const icon = container.querySelector('[data-icon="fa-download"]')
     expect(icon).toBeInTheDocument()

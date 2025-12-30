@@ -35,10 +35,8 @@ describe('ThemeToggle', () => {
 
       const { container } = render(<ThemeToggle />)
 
-      // Check specifically for moon icon - either as Font Awesome class or SVG with moon aria-label
-      const moonIcon =
-        container.querySelector('.fa-moon') ||
-        container.querySelector('svg[aria-label="Moon icon"]')
+      // Check for moon icon using data-icon attribute
+      const moonIcon = container.querySelector('[data-icon="fa-moon"]')
       expect(moonIcon).toBeInTheDocument()
     })
 
@@ -50,9 +48,8 @@ describe('ThemeToggle', () => {
 
       const { container } = render(<ThemeToggle />)
 
-      // Check specifically for sun icon - either as Font Awesome class or SVG with sun aria-label
-      const sunIcon =
-        container.querySelector('.fa-sun') || container.querySelector('svg[aria-label="Sun icon"]')
+      // Check for sun icon using data-icon attribute
+      const sunIcon = container.querySelector('[data-icon="fa-sun"]')
       expect(sunIcon).toBeInTheDocument()
     })
   })
@@ -176,13 +173,10 @@ describe('ThemeToggle', () => {
       const { rerender, container } = render(<ThemeToggle />)
 
       // Check for moon icon in light mode (sun should not be present)
-      let moonIcon =
-        container.querySelector('.fa-moon') ||
-        container.querySelector('svg[aria-label="Moon icon"]')
+      let moonIcon = container.querySelector('[data-icon="fa-moon"]')
       expect(moonIcon).toBeInTheDocument()
 
-      let sunIcon =
-        container.querySelector('.fa-sun') || container.querySelector('svg[aria-label="Sun icon"]')
+      let sunIcon = container.querySelector('[data-icon="fa-sun"]')
       expect(sunIcon).not.toBeInTheDocument()
 
       vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
@@ -193,13 +187,10 @@ describe('ThemeToggle', () => {
       rerender(<ThemeToggle />)
 
       // Check for sun icon in dark mode (moon should not be present)
-      sunIcon =
-        container.querySelector('.fa-sun') || container.querySelector('svg[aria-label="Sun icon"]')
+      sunIcon = container.querySelector('[data-icon="fa-sun"]')
       expect(sunIcon).toBeInTheDocument()
 
-      moonIcon =
-        container.querySelector('.fa-moon') ||
-        container.querySelector('svg[aria-label="Moon icon"]')
+      moonIcon = container.querySelector('[data-icon="fa-moon"]')
       expect(moonIcon).not.toBeInTheDocument()
     })
 

@@ -87,7 +87,7 @@ export const Footer = (): React.ReactElement => {
               <ul className={styles.socialIcons} aria-label="Social media links">
                 <li>
                   <a
-                    href="https://github.com/paperlyte"
+                    href={LEGAL_CONFIG.social.github}
                     target="_blank"
                     rel="noopener noreferrer"
                     className={styles.socialLink}

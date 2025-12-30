@@ -23,7 +23,7 @@ const VALUE_PROPS: ValueProp[] = [
     title: 'Your thoughts move fast. So should your app.',
     body: [
       'Every keystroke responds instantly. No stuttering. No waiting. No watching the cursor lag behind your brain.',
-      'We\'ve optimized Paperlyte to respond in 8 milliseconds—faster than you can perceive. Paperlyte disappears into the background and lets you think.',
+      "We've optimized Paperlyte to respond in 8 milliseconds—faster than you can perceive. Paperlyte disappears into the background and lets you think.",
     ],
     proof: '8ms keystroke response | Instant load time | Your ideas: Captured',
   },
@@ -33,10 +33,11 @@ const VALUE_PROPS: ValueProp[] = [
     headline: 'Tag-Based Organization',
     title: 'Forget folders. Organize as you write.',
     body: [
-      'Rigid folder hierarchies are a relic of the 1990s. Your thoughts don\'t fit in neat boxes, so why should your notes?',
+      "Rigid folder hierarchies are a relic of the 1990s. Your thoughts don't fit in neat boxes, so why should your notes?",
       'Type #project, #urgent, or #ideas anywhere in your note. Paperlyte instantly recognizes it. Search by tag. Filter by multiple tags. Let your organization emerge naturally instead of forcing it upfront.',
     ],
-    proof: 'No more "Where did I save that note?" panic. Tags are faster, more flexible, and actually match how your brain works.',
+    proof:
+      'No more "Where did I save that note?" panic. Tags are faster, more flexible, and actually match how your brain works.',
   },
   {
     icon: 'fa-globe',
@@ -45,7 +46,7 @@ const VALUE_PROPS: ValueProp[] = [
     title: 'Plane mode? No problem.',
     body: [
       `Real-time sync across web, Mac, Windows, and Linux at launch. Native iOS & Android apps coming ${LAUNCH_QUARTER}. But unlike cloud-dependent apps, Paperlyte works offline-first.`,
-      'On a plane? Underground subway? Spotty café WiFi? Keep writing. Everything syncs automatically when you\'re back online.',
+      "On a plane? Underground subway? Spotty café WiFi? Keep writing. Everything syncs automatically when you're back online.",
     ],
     proof: `Web, Mac, Windows, Linux available now | Native iOS & Android coming ${LAUNCH_QUARTER} | Offline-first`,
   },

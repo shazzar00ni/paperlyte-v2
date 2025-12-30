@@ -154,6 +154,7 @@ We follow responsible disclosure principles:
 Error monitoring is fully configured and ready to activate. To enable Sentry integration:
 
 1. **Install Sentry SDK**:
+
    ```bash
    npm install --save @sentry/react
    # or
@@ -163,6 +164,7 @@ Error monitoring is fully configured and ready to activate. To enable Sentry int
 2. **Configure Environment Variables**:
 
    Add to `.env.production` (never commit this file):
+
    ```bash
    # Required: Your Sentry DSN from sentry.io project settings
    VITE_SENTRY_DSN=https://your-key@sentry.io/your-project-id
@@ -181,6 +183,7 @@ Error monitoring is fully configured and ready to activate. To enable Sentry int
    ```
 
 3. **Initialization** (already implemented in `src/main.tsx`):
+
    ```typescript
    import * as Sentry from '@sentry/react'
 
@@ -192,13 +195,17 @@ Error monitoring is fully configured and ready to activate. To enable Sentry int
        integrations: [
          Sentry.browserTracingIntegration(),
          Sentry.replayIntegration({
-           maskAllText: true,      // Privacy-first: mask all user text
-           blockAllMedia: true,     // Privacy-first: block media from replays
+           maskAllText: true, // Privacy-first: mask all user text
+           blockAllMedia: true, // Privacy-first: block media from replays
          }),
        ],
        tracesSampleRate: parseFloat(import.meta.env.VITE_SENTRY_SAMPLE_RATE || '0.1'),
-       replaysSessionSampleRate: parseFloat(import.meta.env.VITE_SENTRY_REPLAYS_SESSION_SAMPLE_RATE || '0.1'),
-       replaysOnErrorSampleRate: parseFloat(import.meta.env.VITE_SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE || '1.0'),
+       replaysSessionSampleRate: parseFloat(
+         import.meta.env.VITE_SENTRY_REPLAYS_SESSION_SAMPLE_RATE || '0.1'
+       ),
+       replaysOnErrorSampleRate: parseFloat(
+         import.meta.env.VITE_SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE || '1.0'
+       ),
        beforeSend(event) {
          // Filter sensitive data from URLs
          if (event.request?.url) {
@@ -213,12 +220,14 @@ Error monitoring is fully configured and ready to activate. To enable Sentry int
 4. **Usage Examples**:
 
    **Automatic Error Capture** (via ErrorBoundary):
+
    ```typescript
    // Errors caught by React ErrorBoundary are automatically sent to Sentry
    // through the monitoring.logError() utility
    ```
 
    **Manual Error Capture** (in async handlers):
+
    ```typescript
    import { logError } from './utils/monitoring'
 
@@ -228,11 +237,15 @@ Error monitoring is fully configured and ready to activate. To enable Sentry int
        return await response.json()
      } catch (error) {
        // Automatically sends to Sentry if DSN configured
-       logError(error as Error, {
-         severity: 'high',
-         tags: { operation: 'fetch_user_data' },
-         errorInfo: { endpoint: '/api/user' }
-       }, 'UserDataFetch')
+       logError(
+         error as Error,
+         {
+           severity: 'high',
+           tags: { operation: 'fetch_user_data' },
+           errorInfo: { endpoint: '/api/user' },
+         },
+         'UserDataFetch'
+       )
 
        throw error
      }
@@ -240,6 +253,7 @@ Error monitoring is fully configured and ready to activate. To enable Sentry int
    ```
 
    **With Severity Levels and Context**:
+
    ```typescript
    import { logError } from './utils/monitoring'
 
@@ -269,6 +283,7 @@ Error monitoring is fully configured and ready to activate. To enable Sentry int
    - Breadcrumbs show user actions leading to errors
 
 **Privacy & Security Features**:
+
 - Only activates in production builds
 - All session replay text is automatically masked
 - Media content blocked from replay capture

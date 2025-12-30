@@ -24,22 +24,20 @@ export const FAQ_ITEMS: FAQItem[] = [
     id: 'launch-date',
     category: 'general',
     question: 'When will Paperlyte launch?',
-    answer:
-      `We're targeting ${LAUNCH_QUARTER} for public launch. Waitlist members get early access 2 weeks before everyone else.`,
+    answer: `We're targeting ${LAUNCH_QUARTER} for public launch. Waitlist members get early access 2 weeks before everyone else.`,
   },
   {
     id: 'pricing',
     category: 'pricing',
     question: 'How much will it cost?',
     answer:
-      'Paperlyte will be free for personal use with unlimited notes. We\'ll offer a Plus plan (~$5/month) for advanced features like team collaboration and extended storage. Waitlist members get 50% off for life.',
+      "Paperlyte will be free for personal use with unlimited notes. We'll offer a Plus plan (~$5/month) for advanced features like team collaboration and extended storage. Waitlist members get 50% off for life.",
   },
   {
     id: 'supported-platforms',
     category: 'general',
     question: 'What platforms do you support?',
-    answer:
-      `At launch: Responsive web app (works on all devices). Native iOS & Android apps coming in ${LAUNCH_QUARTER}. Works seamlessly across Mac, Windows, and Linux via web.`,
+    answer: `At launch: Responsive web app (works on all devices). Native iOS & Android apps coming in ${LAUNCH_QUARTER}. Works seamlessly across Mac, Windows, and Linux via web.`,
   },
   {
     id: 'data-privacy',
@@ -59,15 +57,14 @@ export const FAQ_ITEMS: FAQItem[] = [
     id: 'mobile-app',
     category: 'features',
     question: 'Will there be a mobile app?',
-    answer:
-      `Yes! The responsive web app works great on mobile browsers now. Native iOS and Android apps are planned for ${LAUNCH_QUARTER} with offline sync and system integration.`,
+    answer: `Yes! The responsive web app works great on mobile browsers now. Native iOS and Android apps are planned for ${LAUNCH_QUARTER} with offline sync and system integration.`,
   },
   {
     id: 'vs-competitors',
     category: 'general',
     question: 'How is this different from Notion/Obsidian/Evernote?',
     answer:
-      'Speed. We load 7x faster than Notion. Simplicity. We removed features instead of adding them. Privacy. End-to-end encryption is built-in, not an afterthought. We\'re not trying to be an all-in-one workspace—we\'re focused on doing one thing perfectly: capturing your thoughts.',
+      "Speed. We load 7x faster than Notion. Simplicity. We removed features instead of adding them. Privacy. End-to-end encryption is built-in, not an afterthought. We're not trying to be an all-in-one workspace—we're focused on doing one thing perfectly: capturing your thoughts.",
   },
   {
     id: 'free-trial',

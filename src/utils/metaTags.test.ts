@@ -139,14 +139,10 @@ describe('metaTags', () => {
     it('should log environment initialization info', () => {
       initializeMetaTags()
 
-      expect(consoleSpy).toHaveBeenCalledWith(
-        '[Meta Tags] Initialized for development environment'
-      )
+      expect(consoleSpy).toHaveBeenCalledWith('[Meta Tags] Initialized for development environment')
       expect(consoleSpy).toHaveBeenCalledWith('  - Robots: noindex, nofollow')
       expect(consoleSpy).toHaveBeenCalledWith('  - Keywords: removed')
-      expect(consoleSpy).toHaveBeenCalledWith(
-        '  - Canonical URL: unchanged (points to production)'
-      )
+      expect(consoleSpy).toHaveBeenCalledWith('  - Canonical URL: unchanged (points to production)')
       expect(consoleSpy).toHaveBeenCalledWith(
         expect.stringContaining('  - Open Graph URLs: updated to')
       )

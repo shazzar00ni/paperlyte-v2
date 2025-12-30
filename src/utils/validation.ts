@@ -152,10 +152,7 @@ export function sanitizeInput(input: string): string {
 
   while (sanitized !== prevProtocolValue && protocolIterations < MAX_ITERATIONS) {
     prevProtocolValue = sanitized
-    sanitized = sanitized.replace(
-      /(javascript|data|vbscript|file|about)\s*:\/*/gi,
-      ''
-    )
+    sanitized = sanitized.replace(/(javascript|data|vbscript|file|about)\s*:\/*/gi, '')
     protocolIterations++
   }
 
@@ -170,14 +167,10 @@ export function sanitizeInput(input: string): string {
   }
 
   // --- Encode HTML entities ---
-  sanitized = sanitized
-    .replace(/&/g, '&amp;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#x27;')
+  sanitized = sanitized.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;')
 
   return sanitized.trim().slice(0, 500)
 }
-
 
 /**
  * Validate form data

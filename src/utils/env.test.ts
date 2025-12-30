@@ -1,10 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 
 // Mock the module's environment dependencies
-vi.mock('./env', async () => {
-  const actual = await vi.importActual('./env')
-  return actual
-})
+import { getBaseUrl, getSeoKeywords, getOgImage, env, updateMetaTags } from './env'
 
 import { getBaseUrl, getSeoKeywords, getOgImage, env, updateMetaTags } from './env'
 

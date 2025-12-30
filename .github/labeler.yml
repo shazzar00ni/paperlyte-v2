@@ -1,0 +1,73 @@
+# Component labels
+'component: ui':
+  changed-files:
+    - 'src/components/ui/**/*'
+
+'component: sections':
+  changed-files:
+    - 'src/components/sections/**/*'
+
+'component: layout':
+  changed-files:
+    - 'src/components/layout/**/*'
+
+'component: pages':
+  changed-files:
+    - 'src/components/pages/**/*'
+
+# Type labels
+'type: feature':
+  changed-files:
+    - 'src/components/**/*'
+    - 'src/layouts/**/*'
+    - 'src/pages/**/*'
+    - 'src/hooks/**/*'
+    - 'src/utils/**/*'
+    - 'src/features/**/*'
+
+'type: bugfix':
+  changed-files:
+    - any-glob-to-any-file: ['tests/**/*.test.ts', 'tests/**/*.test.tsx', 'src/**/*.test.ts', 'src/**/*.test.tsx']
+
+'documentation':
+  changed-files:
+    - '**/*.md'
+    - 'docs/**/*'
+
+'dependencies':
+  changed-files:
+    - 'package.json'
+    - 'package-lock.json'
+
+'ci/cd':
+  changed-files:
+    - '.github/workflows/**/*'
+
+'config':
+  changed-files:
+    - '*.config.*'
+    - '.eslintrc.*'
+    - 'tsconfig*.json'
+
+'analytics':
+  changed-files:
+    - 'src/analytics/**/*'
+
+'hooks':
+  changed-files:
+    - 'src/hooks/**/*'
+
+'utils':
+  changed-files:
+    - 'src/utils/**/*'
+
+'tests':
+  changed-files:
+    - 'tests/**/*'
+    - 'src/**/*.test.ts'
+    - 'src/**/*.test.tsx'
+
+'styles':
+  changed-files:
+    - 'src/**/*.css'
+    - 'src/styles/**/*'

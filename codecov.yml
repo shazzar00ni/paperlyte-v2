@@ -1,0 +1,125 @@
+# Codecov Configuration
+# Reference: https://docs.codecov.com/docs/codecovyml-reference
+
+# Coverage targets and thresholds
+coverage:
+  # Set precision for coverage percentages
+  precision: 2
+  # Round coverage values
+  round: down
+  # Range for coverage display (red to green)
+  range: "70...100"
+
+  # Overall project status
+  status:
+    project:
+      default:
+        # Coverage must be maintained or improved
+        target: auto
+        # Allow a small drop in coverage
+        threshold: 1%
+        # Informational only - don't fail CI
+        informational: false
+        # Only consider files changed in the PR
+        only_pulls: false
+
+    # Coverage for code changed in PR
+    patch:
+      default:
+        # Require high coverage on new code
+        target: 80%
+        threshold: 5%
+        informational: false
+        only_pulls: true
+
+# Pull request comment configuration
+comment:
+  # Post coverage comments on PRs
+  require_changes: true
+  require_base: false
+  require_head: true
+
+  # Comment layout
+  layout: "reach,diff,flags,tree,footer"
+
+  # Show coverage for changed files
+  behavior: default
+
+  # Hide complexity metrics
+  hide_project_coverage: false
+
+# Files and paths to ignore
+ignore:
+  # Dependencies
+  - "node_modules/**/*"
+
+  # Build outputs
+  - "dist/**/*"
+  - "build/**/*"
+  - ".cache/**/*"
+
+  # Test files
+  - "**/*.test.ts"
+  - "**/*.test.tsx"
+  - "**/*.spec.ts"
+  - "**/*.spec.tsx"
+  - "src/test/**/*"
+  - "tests/**/*"
+
+  # Configuration files
+  - "**/*.config.ts"
+  - "**/*.config.js"
+  - "**/*.config.cjs"
+  - "**/*.config.mjs"
+  - "vite.config.ts"
+  - "vitest.config.ts"
+  - "eslint.config.js"
+  - "playwright.config.ts"
+  - ".lighthouserc.json"
+
+  # Type definitions
+  - "**/*.d.ts"
+  - "src/vite-env.d.ts"
+
+  # Scripts
+  - "scripts/**/*"
+
+  # Mock data
+  - "**/mockData/**/*"
+  - "**/__mocks__/**/*"
+
+  # Documentation
+  - "docs/**/*"
+  - "**/*.md"
+
+  # Netlify functions
+  - "netlify/functions/**/*"
+
+# Flags for different test types
+flags:
+  unittests:
+    # Coverage from unit tests
+    carryforward: true
+    paths:
+      - src/
+
+# GitHub Checks integration
+github_checks:
+  annotations: true
+
+# Codecov AI features
+ai:
+  # Enable AI-powered insights
+  enabled: true
+
+# Bundle analysis (ready for when @codecov/vite-plugin supports Vite 7)
+# Currently blocked: @codecov/vite-plugin only supports Vite 4.x-6.x
+# Project uses: Vite 7.3.0
+# TODO: Enable when plugin compatibility is updated
+# Reference: https://docs.codecov.com/docs/javascript-bundle-analysis
+bundle_analysis:
+  enabled: false
+  # Will be enabled via vite.config.ts once plugin is compatible
+
+# Notification settings
+slack_app: false

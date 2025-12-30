@@ -88,6 +88,9 @@ function cspPlugin(): Plugin {
 export default defineConfig({
   // React plugin with Fast Refresh for instant Hot Module Replacement
   // CSP plugin for environment-aware security headers
+  // TODO: Add Codecov Vite plugin when it supports Vite 7
+  // Currently blocked: @codecov/vite-plugin only supports Vite 4.x-6.x (project uses Vite 7.3.0)
+  // When available: codecovVitePlugin({ enableBundleAnalysis: process.env.CODECOV_TOKEN !== undefined, bundleName: "paperlyte-v2", uploadToken: process.env.CODECOV_TOKEN })
   plugins: [react(), cspPlugin()],
 
   // Path resolution configuration
@@ -118,18 +121,20 @@ export default defineConfig({
     // Rollup-specific options for advanced bundling
     rollupOptions: {
       output: {
-        // Separate React libraries into their own chunk for better caching
-        // This ensures React/ReactDOM don't get re-downloaded when app code changes
+        // Manual chunk splitting for better caching and load performance
+        // Strategy: Only split large vendor libraries that change infrequently
         manualChunks(id) {
-          // Only split out large, shared libraries for better caching.
+          // React vendor bundle (~190KB) - changes rarely, good cache hit rate
           if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
             return 'react-vendor'
           }
-          // Optionally, split out constants if they are large/shared.
-          if (id.includes('/src/constants/')) {
-            return 'constants'
+          // Font Awesome is large (~100KB+), split it out
+          if (id.includes('node_modules/@fortawesome')) {
+            return 'fontawesome'
           }
-          // Do not split UI or section components into separate chunks to avoid too many small chunks.
+          // Keep app code together for better tree-shaking and compression
+          // Small chunks (constants, utils, UI components) stay in main bundle
+          // This reduces HTTP requests and improves compression ratio
         },
         // Optimize chunk file names for better caching
         chunkFileNames: 'assets/[name]-[hash].js',
@@ -137,8 +142,8 @@ export default defineConfig({
         assetFileNames: 'assets/[name]-[hash].[ext]',
       },
     },
-    // Increase chunk size warning limit (default is 500kb)
-    chunkSizeWarningLimit: 1000,
+    // Keep default warning limit (500kb) to catch performance issues early
+    // If warnings appear, investigate and optimize rather than suppressing
   },
 
   // Development server configuration

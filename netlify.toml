@@ -8,8 +8,11 @@
   # Directory with the build output (relative to repo root)
   publish = "dist"
 
+  # Serverless functions directory
+  functions = "netlify/functions"
+
   # Node version to use
-  environment = { NODE_VERSION = "18" }
+  environment = { NODE_VERSION = "20" }
 
 # Production context: all deploys from the main branch
 [context.production]
@@ -48,8 +51,8 @@
     # Referrer policy
     Referrer-Policy = "strict-origin-when-cross-origin"
 
-    # Content Security Policy (adjust as needed)
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self';"
+    # Content Security Policy - all assets self-hosted for security
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self';"
 
 # Cache static assets for 1 year
 [[headers]]
@@ -64,19 +67,6 @@
     Cache-Control = "public, max-age=31536000, immutable"
 
 # Performance optimizations
+# Skip Netlify's build processing since Vite handles bundling and optimization
 [build.processing]
-  skip_processing = false
-
-[build.processing.css]
-  bundle = true
-  minify = true
-
-[build.processing.js]
-  bundle = true
-  minify = true
-
-[build.processing.html]
-  pretty_urls = true
-
-[build.processing.images]
-  compress = true
+  skip_processing = true

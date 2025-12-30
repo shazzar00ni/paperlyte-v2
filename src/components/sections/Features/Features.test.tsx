@@ -3,9 +3,36 @@ import { render, screen } from '@testing-library/react'
 import { Features } from './Features'
 
 const EXPECTED_FEATURES = [
-  { title: 'Distraction-free Writing', description: 'An interface that disappears when you start typing. Just you and your thoughts.' },
-  { title: 'Private by Design', description: 'Local-first architecture with optional end-to-end encrypted sync. Your data is yours.' },
-  { title: 'Seamless Workflow', description: 'Quick capture, markdown support, and keyboard shortcuts for power users.' },
+  {
+    title: 'Lightning Speed',
+    description:
+      'Instant startup and real-time sync. No loading spinners, no waiting. Your thoughts captured at the speed of thinking.',
+  },
+  {
+    title: 'Beautiful Simplicity',
+    description:
+      'Paper-inspired design that feels natural and distraction-free. Just you and your thoughts, the way it should be.',
+  },
+  {
+    title: 'Tag-Based Organization',
+    description:
+      'Smart categorization without rigid folder structures. Organize freely with tags that adapt to how you think.',
+  },
+  {
+    title: 'Universal Access',
+    description:
+      'Seamless experience across all devices. Start on your phone, finish on your laptop. Always in sync.',
+  },
+  {
+    title: 'Offline-First',
+    description:
+      'Full functionality without internet. Your notes work everywhere, sync automatically when online.',
+  },
+  {
+    title: 'Privacy Focused',
+    description:
+      'Your notes are yours alone. End-to-end encryption and local-first storage keep your thoughts private.',
+  },
 ]
 
 describe('Features', () => {

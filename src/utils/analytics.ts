@@ -2,20 +2,28 @@
  * Analytics utility for tracking user interactions and conversions
  * Supports Google Analytics 4 (gtag.js)
  *
+ * PRIVACY-FIRST DESIGN:
+ * - Automatically strips PII (emails, passwords, tokens, etc.) from all events
+ * - Never logs PII in development console
+ * - Compliant with GDPR and privacy regulations
+ *
  * Usage:
  * 1. Add Google Analytics script to index.html
  * 2. Initialize with your GA4 measurement ID
- * 3. Track events throughout your app
+ * 3. Track events throughout your app (do NOT send PII)
  *
  * @example
  * ```tsx
  * import { trackEvent, trackPageView } from '@utils/analytics'
  *
- * // Track a button click
+ * // ✅ CORRECT - Track user actions without PII
  * trackEvent('Waitlist_Join', {
  *   button_location: 'hero',
- *   user_email: 'user@example.com'
+ *   subscription_tier: 'free'
  * })
+ *
+ * // ❌ WRONG - Never send PII to analytics
+ * // trackEvent('Signup', { user_email: 'user@example.com' }) // DON'T DO THIS
  *
  * // Track scroll depth
  * trackEvent('Scroll_Depth', {
@@ -26,6 +34,7 @@
 
 /**
  * Extend Window interface to include gtag for Google Analytics
+ * Note: dataLayer is already declared in lib.dom.d.ts as Window['dataLayer']: unknown[]
  */
 declare global {
   interface Window {
@@ -34,14 +43,57 @@ declare global {
       targetId: string | Date,
       config?: Record<string, unknown>
     ) => void
-    dataLayer?: unknown[]
   }
 }
 
 /**
  * Event parameters for analytics tracking
+ * Defines common event parameters with explicit types while allowing custom params via index signature
  */
 export interface AnalyticsEventParams {
+  // Button/CTA parameters
+  button_text?: string
+  button_location?: string
+
+  // Link parameters
+  link_url?: string
+  link_text?: string
+  destination?: string
+
+  // Social/Platform parameters
+  platform?: string
+
+  // Scroll tracking
+  depth_percentage?: number
+
+  // Navigation parameters
+  page_path?: string
+  page_title?: string
+
+  // Form parameters
+  form_location?: string
+
+  // Error tracking
+  error_code?: string | number
+  error_name?: string
+  error_message?: string
+  error_source?: string
+
+  // Engagement parameters
+  question_index?: number
+  category?: string
+  label?: string
+
+  // Performance metrics
+  metric?: string
+  value?: number
+  unit?: string
+
+  // Other parameters
+  subscription_tier?: string
+  message?: string
+
+  // Allow custom parameters while maintaining type safety
   [key: string]: string | number | boolean | undefined
 }
 
@@ -79,6 +131,90 @@ export const AnalyticsEvents = {
 } as const
 
 /**
+ * List of sensitive keys that should never be sent to analytics
+ * These will be stripped from event parameters automatically
+ */
+const PII_KEYS = [
+  'email',
+  'user_email',
+  'userEmail',
+  'e_mail',
+  'mail',
+  'password',
+  'pwd',
+  'pass',
+  'token',
+  'auth',
+  'authorization',
+  'secret',
+  'api_key',
+  'apiKey',
+  'ssn',
+  'social_security',
+  'credit_card',
+  'creditCard',
+  'card_number',
+  'cvv',
+  'phone',
+  'phoneNumber',
+  'address',
+  'full_name',
+  'fullName',
+  'first_name',
+  'last_name',
+  'ip',
+  'ip_address',
+]
+
+/**
+ * Sanitize event parameters to remove PII
+ * This ensures no sensitive data is accidentally sent to analytics
+ *
+ * @param params - Event parameters to sanitize
+ * @returns Sanitized parameters with PII removed
+ */
+function sanitizeAnalyticsParams(params?: AnalyticsEventParams): AnalyticsEventParams | undefined {
+  if (!params) return params
+
+  const sanitized: AnalyticsEventParams = {}
+  let piiFound = false
+
+  for (const [key, value] of Object.entries(params)) {
+    const lowerKey = key.toLowerCase()
+
+    // Check if this key is a known PII field
+    if (PII_KEYS.some((piiKey) => lowerKey.includes(piiKey.toLowerCase()))) {
+      piiFound = true
+      // Skip this field - don't include it in sanitized params
+      continue
+    }
+
+    // Check if value looks like an email with stricter pattern matching to reduce false positives
+    // Pattern: local-part@domain.tld where TLD is at least 2 letters
+    // Example: user@example.com, name@domain.co.uk
+    if (typeof value === 'string') {
+      // Email pattern: non-space/non-@ chars + @ + domain with dot + 2+ letter TLD
+      const emailPattern = /[^\s@]+@[^\s@]+\.[a-z]{2,}/i
+      if (emailPattern.test(value)) {
+        piiFound = true
+        continue
+      }
+    }
+
+    sanitized[key] = value
+  }
+
+  // Warn developers if PII was found and stripped
+  if (piiFound && import.meta.env.DEV) {
+    console.warn(
+      '[Analytics] PII detected and removed from event parameters. Never send emails, passwords, or other sensitive data to analytics.'
+    )
+  }
+
+  return sanitized
+}
+
+/**
  * Check if Google Analytics is loaded and available
  *
  * @returns True if gtag is available, false otherwise
@@ -90,8 +226,10 @@ export function isAnalyticsAvailable(): boolean {
 /**
  * Track a custom event in Google Analytics
  *
+ * PRIVACY: Automatically strips PII from parameters before sending
+ *
  * @param eventName - Name of the event to track
- * @param eventParams - Optional parameters to send with the event
+ * @param eventParams - Optional parameters to send with the event (PII will be removed)
  *
  * @example
  * ```tsx
@@ -102,16 +240,20 @@ export function isAnalyticsAvailable(): boolean {
  * ```
  */
 export function trackEvent(eventName: string, eventParams?: AnalyticsEventParams): void {
+  // Sanitize parameters to remove any PII
+  const sanitizedParams = sanitizeAnalyticsParams(eventParams)
+
   if (!isAnalyticsAvailable()) {
     // In development, log to console instead of failing silently
+    // Only log sanitized params (never log PII)
     if (import.meta.env.DEV) {
-      console.log('[Analytics]', eventName, eventParams)
+      console.log('[Analytics]', eventName, sanitizedParams)
     }
     return
   }
 
   try {
-    window.gtag!('event', eventName, eventParams)
+    window.gtag!('event', eventName, sanitizedParams)
   } catch (error) {
     console.error('[Analytics] Error tracking event:', error)
   }
@@ -143,36 +285,6 @@ export function trackPageView(pagePath: string, pageTitle?: string): void {
     })
   } catch (error) {
     console.error('[Analytics] Error tracking page view:', error)
-  }
-}
-
-/**
- * Track scroll depth milestones (25%, 50%, 75%, 100%)
- * Call this function with a scroll position tracker
- *
- * @param depthPercentage - Percentage of page scrolled (0-100)
- *
- * @example
- * ```tsx
- * const handleScroll = () => {
- *   const scrollPercent = (window.scrollY / document.body.scrollHeight) * 100
- *   trackScrollDepth(Math.round(scrollPercent))
- * }
- * ```
- */
-// Keep track of which scroll depth milestones have been tracked
-const trackedScrollMilestones = new Set<number>();
-
-export function trackScrollDepth(depthPercentage: number): void {
-  // Only track milestone percentages
-  const milestones = [25, 50, 75, 100];
-  for (const milestone of milestones) {
-    if (depthPercentage >= milestone && !trackedScrollMilestones.has(milestone)) {
-      trackEvent(AnalyticsEvents.SCROLL_DEPTH, {
-        depth_percentage: milestone,
-      });
-      trackedScrollMilestones.add(milestone);
-    }
   }
 }
 

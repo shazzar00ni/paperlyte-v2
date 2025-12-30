@@ -1,327 +1,162 @@
 .hero {
   min-height: calc(100vh - var(--header-height));
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  background-color: var(--color-background);
+  align-items: center;
+  background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-background) 100%);
   position: relative;
   overflow: hidden;
 }
 
-.container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--spacing-3xl);
-  align-items: center;
-  max-width: var(--max-width);
-  margin: 0 auto;
-  padding: 0 var(--spacing-md);
-  width: 100%;
-}
-
-/* Decorations container */
-.decorations {
+.hero::before {
+  content: '';
   position: absolute;
-  inset: 0;
+  top: 0;
+  right: 0;
+  width: 40%;
+  height: 100%;
+  background: radial-gradient(circle at top right, rgba(124, 58, 237, 0.08) 0%, transparent 70%);
   pointer-events: none;
-  overflow: hidden;
-}
-
-/* Parallax background shapes */
-.shape {
-  position: absolute;
-  border-radius: 50%;
-  background: radial-gradient(circle, var(--color-primary) 0%, transparent 70%);
-  filter: blur(60px);
-}
-
-.shape1 {
-  width: 400px;
-  height: 400px;
-  top: -100px;
-  right: -100px;
-}
-
-.shape2 {
-  width: 300px;
-  height: 300px;
-  bottom: -50px;
-  left: -80px;
-}
-
-.shape3 {
-  width: 200px;
-  height: 200px;
-  top: 40%;
-  left: 60%;
-}
-
-/* Floating icons container */
-.floatingContainer {
-  position: absolute;
-  inset: 0;
-}
-
-/* Floating icon base styles */
-.floatingIcon {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: var(--border-radius-md);
-  background-color: var(--color-background);
-  border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-md);
-  color: var(--color-primary);
-  font-size: var(--font-size-xl);
-}
-
-.floatingIcon1 {
-  top: 15%;
-  left: 10%;
-}
-
-.floatingIcon2 {
-  top: 25%;
-  right: 12%;
-}
-
-.floatingIcon3 {
-  bottom: 30%;
-  left: 8%;
-}
-
-.floatingIcon4 {
-  bottom: 20%;
-  right: 15%;
 }
 
 .content {
   position: relative;
   z-index: 1;
-}
-
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  padding: 0.5rem 1rem;
-  background-color: var(--color-background);
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-full);
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  margin-bottom: var(--spacing-lg);
-}
-
-.badge i {
-  color: var(--color-text-secondary);
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .headline {
-  font-family: var(--font-family-serif);
-  font-size: var(--font-size-7xl);
-  font-weight: var(--font-weight-normal);
+  font-family: 'Playfair Display', serif;
+  font-size: var(--font-size-5xl);
+  font-weight: var(--font-weight-bold);
   line-height: var(--line-height-tight);
   color: var(--color-text-primary);
   margin-bottom: var(--spacing-md);
-  letter-spacing: -0.02em;
-}
-
-.headlineItalic {
-  font-style: italic;
-  color: var(--color-text-tertiary);
 }
 
 .subheadline {
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-xl);
   line-height: var(--line-height-relaxed);
   color: var(--color-text-secondary);
-  margin-bottom: var(--spacing-xl);
+  margin-bottom: var(--spacing-md);
   max-width: 480px;
+}
+
+.microcopy {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--spacing-xl);
+  font-weight: var(--font-weight-medium);
+  max-width: 480px;
+}
+
+/* Shared centering for CTAs */
+:is(.emailWrapper, .secondaryCta) {
+  display: flex;
+  justify-content: center;
+}
+
+.emailWrapper {
+  margin-bottom: var(--spacing-md);
+}
+
+.secondaryCta {
+  margin-bottom: var(--spacing-xl);
 }
 
 .ctas {
   display: flex;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-md);
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: var(--spacing-2xl);
+}
+
+.tags {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: center;
   flex-wrap: wrap;
 }
 
-/* App Mockup */
-.mockup {
-  position: relative;
-}
-
-.mockupCard {
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-md);
   background-color: var(--color-background);
   border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-xl);
-  padding: var(--spacing-lg);
-  box-shadow: var(--shadow-xl);
-}
-
-.mockupHeader {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-md);
-}
-
-.mockupDot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background-color: var(--color-border);
-}
-
-.mockupTitle {
-  height: 12px;
-  width: 80px;
-  background-color: var(--color-border-light);
-  border-radius: var(--border-radius-sm);
-}
-
-.mockupContent {
-  margin-bottom: var(--spacing-lg);
-  padding-bottom: var(--spacing-lg);
-  border-bottom: 1px dashed var(--color-border);
-}
-
-.mockupLine {
-  height: 10px;
-  background-color: var(--color-border-light);
-  border-radius: var(--border-radius-sm);
-  margin-bottom: var(--spacing-xs);
-  width: 100%;
-}
-
-.mockupLineLong {
-  width: 90%;
-}
-
-.mockupLineMedium {
-  width: 85%;
-}
-
-.mockupLineShort {
-  width: 70%;
-}
-
-.mockupLineCheckbox {
-  width: 60%;
-}
-
-.mockupLineCheckboxShort {
-  width: 55%;
-}
-
-.mockupSpacer {
-  height: var(--spacing-md);
-}
-
-.mockupCheckbox {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-xs);
-}
-
-.mockupCheck {
-  width: 16px;
-  height: 16px;
-  border: 2px solid var(--color-border);
-  border-radius: var(--border-radius-sm);
-  flex-shrink: 0;
-}
-
-.mockupStats {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: var(--spacing-md);
-}
-
-.mockupStatCard {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.mockupStatIcon {
-  color: var(--color-text-tertiary);
-  margin-bottom: 0.25rem;
-}
-
-.mockupStatLabel {
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-text-tertiary);
-  letter-spacing: 0.05em;
-}
-
-.mockupStatValue {
-  font-family: var(--font-family-serif);
-  font-size: var(--font-size-3xl);
-  font-weight: var(--font-weight-normal);
-  color: var(--color-text-primary);
-  line-height: 1;
-}
-
-.mockupStatDesc {
-  font-size: var(--font-size-xs);
-  color: var(--color-text-tertiary);
-}
-
-.mockupShareBtn {
-  padding: 0.5rem 1.25rem;
-  background-color: var(--color-primary);
-  color: var(--color-text-on-primary);
-  border: none;
-  border-radius: var(--border-radius-md);
+  border-radius: var(--border-radius-lg);
+  color: var(--color-text-secondary);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
-  cursor: pointer;
-  transition: background-color var(--transition-base), color var(--transition-base), transform var(--transition-base);
 }
 
-.mockupShareBtn:hover {
-  background-color: var(--color-primary-dark);
+.tag i {
+  color: var(--color-primary);
 }
 
-/* Trusted By Section */
-.trusted {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xl);
-  max-width: var(--max-width);
+/* App Mockup Container */
+.mockupContainer {
+  position: relative;
+  width: 100%;
+  max-width: 700px;
   margin: var(--spacing-3xl) auto 0;
-  padding: var(--spacing-xl) var(--spacing-md);
-  border-top: 1px solid var(--color-border-light);
-}
-
-.trustedLabel {
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-text-tertiary);
-  letter-spacing: 0.05em;
-  white-space: nowrap;
-}
-
-.trustedLogos {
+  /* Fallback for browsers that don't support aspect-ratio */
+  min-height: 260px;
+  aspect-ratio: 16 / 10;
   display: flex;
   align-items: center;
-  gap: var(--spacing-2xl);
-  flex-wrap: wrap;
+  justify-content: center;
+  /* Add padding to accommodate floating secondary mockup overflow */
+  padding: 0 8% 8% 0;
 }
 
-.trustedLogo {
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-text-tertiary);
-  opacity: 0.6;
+/* Primary mockup (Notes list) - Main focus */
+.mockupPrimary {
+  position: relative;
+  width: 85%;
+  max-width: 550px;
+  z-index: 2;
+  border-radius: var(--border-radius-xl);
+  overflow: hidden;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(0, 0, 0, 0.05);
+  transition: transform var(--transition-base);
+}
+
+.mockupPrimary:hover {
+  transform: translateY(-4px);
+}
+
+/* Secondary mockup (Note detail) - Floating accent */
+.mockupSecondary {
+  position: absolute;
+  bottom: -5%;
+  right: -5%;
+  width: 50%;
+  max-width: 320px;
+  z-index: 3;
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  box-shadow:
+    0 25px 70px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(0, 0, 0, 0.08);
+  transition: transform var(--transition-base);
+}
+
+.mockupSecondary:hover {
+  transform: translateY(-8px) translateX(4px);
+}
+
+/* Mockup images */
+.mockupImage {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 0;
 }
 
 /* Mobile styles */
@@ -349,6 +184,11 @@
     margin-right: auto;
   }
 
+  .microcopy {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
   .ctas {
     justify-content: center;
   }
@@ -372,17 +212,17 @@
 
 @media (max-width: 768px) {
   .hero {
-    min-height: auto;
-    padding-top: var(--spacing-2xl);
-    padding-bottom: var(--spacing-xl);
+    min-height: 0;
+    padding-top: var(--spacing-3xl);
+    padding-bottom: var(--spacing-3xl);
   }
 
   .headline {
-    font-size: var(--font-size-5xl);
+    font-size: var(--font-size-4xl);
   }
 
   .subheadline {
-    font-size: var(--font-size-base);
+    font-size: var(--font-size-lg);
   }
 
   .ctas {
@@ -393,55 +233,85 @@
   .ctas button,
   .ctas a {
     width: 100%;
-    justify-content: center;
   }
 
-  .mockupCard {
-    padding: var(--spacing-md);
+  .mockupContainer {
+    max-width: 500px;
+    margin: var(--spacing-2xl) auto 0;
   }
 
-  .trustedLogos {
-    gap: var(--spacing-md);
-  }
-
-  .trustedLogo {
-    font-size: var(--font-size-base);
-  }
-
-  /* Hide floating icons on mobile for cleaner experience */
-  .floatingContainer {
-    display: none;
-  }
-
-  /* Reduce shape sizes on mobile */
-  .shape1 {
-    width: 200px;
-    height: 200px;
-  }
-
-  .shape2 {
-    width: 150px;
-    height: 150px;
-  }
-
-  .shape3 {
-    width: 100px;
-    height: 100px;
+  .mockupSecondary {
+    width: 45%;
+    bottom: -3%;
+    right: -3%;
   }
 }
 
-/*
- * Reduced motion handling:
- * - FloatingElement component early-returns without animation classes when
- *   prefers-reduced-motion is detected (no CSS animations applied)
- * - ParallaxLayer/useParallax hook returns isActive=false, skipping all
- *   requestAnimationFrame calls and applying no JS transforms
- * - See: src/components/ui/FloatingElement/FloatingElement.tsx (lines 86-93)
- * - See: src/hooks/useParallax.ts (lines 115, 118-121, 148-151, 166)
- */
+/* Extra small screens */
+@media (max-width: 480px) {
+  .headline {
+    font-size: var(--font-size-3xl);
+    line-height: var(--line-height-tight);
+  }
+
+  .subheadline {
+    font-size: var(--font-size-base);
+  }
+
+  .tags {
+    gap: var(--spacing-xs);
+  }
+
+  .tag {
+    font-size: var(--font-size-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+
+  .mockupContainer {
+    aspect-ratio: 4 / 3;
+  }
+
+  .mockupPrimary {
+    width: 90%;
+  }
+
+  .mockupSecondary {
+    width: 55%;
+    bottom: -2%;
+    right: -2%;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .hero::before {
+    /* Enhance gradient visibility in dark mode */
+    background: radial-gradient(circle at top right, rgba(124, 58, 237, 0.15) 0%, transparent 70%);
+  }
+
+  .tag {
+    background-color: var(--color-surface);
+  }
+}
+
+[data-theme='dark'] .hero::before {
+  background: radial-gradient(circle at top right, rgba(124, 58, 237, 0.15) 0%, transparent 70%);
+}
+
+[data-theme='dark'] .tag {
+  background-color: var(--color-surface);
+}
+
+/* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
-  .shape {
-    /* Reduce blur intensity for performance with static shapes */
-    filter: blur(40px);
+  .mockupPrimary,
+  .mockupSecondary {
+    /* Disable hover transforms for users preferring reduced motion */
+    transition: none;
+  }
+
+  .mockupPrimary:hover,
+  .mockupSecondary:hover {
+    transform: none;
   }
 }

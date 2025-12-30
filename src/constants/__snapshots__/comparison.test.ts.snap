@@ -1,0 +1,97 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Comparison Constants > Snapshot Tests > should match COMPARISON_FEATURES snapshot 1`] = `
+[
+  {
+    "evernote": "2-4s",
+    "feature": "Startup Time",
+    "notion": "3-5s",
+    "onenote": "2-3s",
+    "paperlyte": "<1s",
+  },
+  {
+    "evernote": "Paid only",
+    "feature": "Offline Access",
+    "notion": false,
+    "onenote": true,
+    "paperlyte": true,
+  },
+  {
+    "evernote": true,
+    "feature": "Tag-Based Organization",
+    "notion": false,
+    "onenote": false,
+    "paperlyte": true,
+  },
+  {
+    "evernote": false,
+    "feature": "Distraction-Free UI",
+    "notion": false,
+    "onenote": false,
+    "paperlyte": true,
+  },
+  {
+    "evernote": true,
+    "feature": "Real-Time Sync",
+    "notion": true,
+    "onenote": true,
+    "paperlyte": true,
+  },
+  {
+    "evernote": false,
+    "feature": "End-to-End Encryption",
+    "notion": false,
+    "onenote": false,
+    "paperlyte": true,
+  },
+  {
+    "evernote": "Very limited",
+    "feature": "Free Tier Features",
+    "notion": "Limited",
+    "onenote": "Full access",
+    "paperlyte": "Full access",
+  },
+  {
+    "evernote": "Good",
+    "feature": "Mobile Performance",
+    "notion": "Slow",
+    "onenote": "Good",
+    "paperlyte": "Excellent",
+  },
+]
+`;
+
+exports[`Comparison Constants > Snapshot Tests > should match COMPETITORS snapshot 1`] = `
+[
+  {
+    "color": "var(--color-primary)",
+    "id": "paperlyte",
+    "name": "Paperlyte",
+  },
+  {
+    "color": "#000000",
+    "id": "notion",
+    "name": "Notion",
+  },
+  {
+    "color": "#00A82D",
+    "id": "evernote",
+    "name": "Evernote",
+  },
+  {
+    "color": "#7719AA",
+    "id": "onenote",
+    "name": "OneNote",
+  },
+]
+`;
+
+exports[`Comparison Constants > Snapshot Tests > should match Paperlyte advantages snapshot 1`] = `
+[
+  "Offline Access",
+  "Tag-Based Organization",
+  "Distraction-Free UI",
+  "Real-Time Sync",
+  "End-to-End Encryption",
+]
+`;

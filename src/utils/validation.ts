@@ -134,47 +134,71 @@ export function encodeHtmlEntities(input: string): string {
 }
 
 /**
- * Sanitize input to prevent XSS attacks
+ * Maximum iterations for sanitization loops to prevent DoS attacks
+ */
+const MAX_SANITIZATION_ITERATIONS = 100
+
+/**
+ * Helper function to iteratively apply a replacement pattern.
+ * Continues until no more matches or iteration limit is reached.
+ *
+ * @param input - String to sanitize.
+ * @param pattern - Regex pattern to replace (must have 'g' flag for proper iteration).
+ * @param replacement - Replacement string (default: empty string).
+ * @returns Sanitized string.
+ */
+function iterativeReplace(input: string, pattern: RegExp, replacement = ''): string {
+  if (!pattern.global) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      'iterativeReplace was called with a non-global regex. ' +
+      'This may lead to inefficient sanitization or infinite loops. ' +
+      'Ensure your regex has the "g" flag.'
+    )
+  }
+  let sanitized = input
+  let prevValue = ''
+  let iterations = 0
+  while (sanitized !== prevValue && iterations < MAX_SANITIZATION_ITERATIONS) {
+    prevValue = sanitized
+    sanitized = sanitized.replace(pattern, replacement)
+    iterations++
+  }
+  return sanitized
+}
+
+/**
+ * Sanitize input to prevent XSS attacks.
+ * This function is designed to mitigate XSS by iteratively removing dangerous
+ * patterns and encoding HTML entities.
+ *
+ * @param input - The string to sanitize.
+ * @returns A sanitized string, safe for rendering in HTML.
  */
 export function sanitizeInput(input: string): string {
   if (!input) return ''
 
   let sanitized = input.trim()
 
-  // Remove angle brackets early
+  // 1. Remove angle brackets early to neutralize HTML tags.
   sanitized = sanitized.replace(/[<>]/g, '')
 
-  const MAX_ITERATIONS = 10
+  // 2. Iteratively remove dangerous protocols to prevent bypasses like 'jajavascript:vascript:'.
+  sanitized = iterativeReplace(
+    sanitized,
+    /(javascript|data|vbscript|file|about)\s*:\/*/gi
+  )
 
-  // --- Remove dangerous protocols iteratively ---
-  let prevProtocolValue = ''
-  let protocolIterations = 0
+  // 3. Iteratively remove event handlers to prevent bypasses like 'ononclick='.
+  sanitized = iterativeReplace(sanitized, /\bon\w+\s*=/gi)
 
-  while (sanitized !== prevProtocolValue && protocolIterations < MAX_ITERATIONS) {
-    prevProtocolValue = sanitized
-    sanitized = sanitized.replace(
-      /(javascript|data|vbscript|file|about)\s*:\/*/gi,
-      ''
-    )
-    protocolIterations++
-  }
-
-  // --- Remove event handlers iteratively ---
-  let prevEventValue = ''
-  let eventIterations = 0
-
-  while (sanitized !== prevEventValue && eventIterations < MAX_ITERATIONS) {
-    prevEventValue = sanitized
-    sanitized = sanitized.replace(/\bon\w+\s*=/gi, '')
-    eventIterations++
-  }
-
-  // --- Encode HTML entities ---
+  // 4. Encode HTML entities as a final layer of defense.
   sanitized = sanitized
     .replace(/&/g, '&amp;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#x27;')
 
+  // 5. Limit length to prevent potential buffer overflow issues.
   return sanitized.trim().slice(0, 500)
 }
 

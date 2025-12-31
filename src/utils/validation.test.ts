@@ -197,6 +197,37 @@ describe('sanitizeInput', () => {
     expect(result.length).toBeGreaterThan(0)
   })
 
+  it('should prevent incomplete multi-character sanitization bypasses', () => {
+    // Test for overlapping patterns that could bypass single-pass sanitization
+    // 'ononclick=' -> after removing 'onclick=' -> 'on=' (still dangerous without iterative approach)
+    expect(sanitizeInput('ononclick=alert(1)')).toBe('alert(1)')
+    // 'onononclick=' -> multiple nested patterns
+    expect(sanitizeInput('onononclick=alert(1)')).toBe('alert(1)')
+    // 'jajavascript:vascript:' -> after removing 'javascript:' -> 'javascript:' (still dangerous)
+    expect(sanitizeInput('jajavascript:vascript:alert(1)')).toBe('alert(1)')
+  })
+
+  it('should handle complex nested patterns without performance issues', () => {
+    // Test that the function handles complex inputs efficiently
+    // Create a pattern with multiple nested layers that requires several iterations
+    // Pattern: 'on<nested>aclick=' where nested also contains similar patterns
+    let complexInput = 'alert(1)'
+    for (let i = 0; i < 15; i++) {
+      const char = String.fromCharCode(97 + (i % 26)) // a-z
+      complexInput = 'on' + complexInput + char + 'click='
+    }
+    
+    const result = sanitizeInput(complexInput)
+    
+    // Should complete sanitization without hanging
+    expect(result).toBeDefined()
+    // Should not contain any remaining dangerous patterns
+    expect(result).not.toMatch(/on\w+\s*=/)
+    expect(result).not.toMatch(/javascript:/i)
+    // Should respect length limit
+    expect(result.length).toBeLessThanOrEqual(500)
+  })
+
   it('should trim whitespace', () => {
     expect(sanitizeInput('  hello  ')).toBe('hello')
   })

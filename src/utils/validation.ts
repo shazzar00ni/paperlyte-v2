@@ -105,6 +105,34 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
 }
 
 /**
+ * Maximum iterations for sanitization loops to prevent DoS attacks
+ */
+const MAX_SANITIZATION_ITERATIONS = 100
+
+/**
+ * Helper function to iteratively apply a replacement pattern
+ * Continues until no more matches or iteration limit is reached
+ *
+ * @param input - String to sanitize
+ * @param pattern - Regex pattern to replace
+ * @param replacement - Replacement string (default: empty string)
+ * @returns Sanitized string
+ */
+function iterativeReplace(input: string, pattern: RegExp, replacement = ''): string {
+  let sanitized = input
+  let prevValue = ''
+  let iterations = 0
+
+  while (sanitized !== prevValue && iterations < MAX_SANITIZATION_ITERATIONS) {
+    prevValue = sanitized
+    sanitized = sanitized.replace(pattern, replacement)
+    iterations++
+  }
+
+  return sanitized
+}
+
+/**
  * Encode HTML entities for safe display
  * Preserves text structure by encoding special characters instead of removing them
  *
@@ -144,37 +172,22 @@ export function sanitizeInput(input: string): string {
   // Remove angle brackets early
   sanitized = sanitized.replace(/[<>]/g, '')
 
-  const MAX_ITERATIONS = 10
+  // Iteratively remove dangerous protocols to prevent bypasses like 'jajavascript:vascript:'
+  sanitized = iterativeReplace(
+    sanitized,
+    /(javascript|data|vbscript|file|about)\s*:\/*/gi
+  )
 
-  // --- Remove dangerous protocols iteratively ---
-  let prevProtocolValue = ''
-  let protocolIterations = 0
+  // Iteratively remove event handlers to prevent bypasses like 'ononclick='
+  sanitized = iterativeReplace(sanitized, /\bon\w+\s*=/gi)
 
-  while (sanitized !== prevProtocolValue && protocolIterations < MAX_ITERATIONS) {
-    prevProtocolValue = sanitized
-    sanitized = sanitized.replace(
-      /(javascript|data|vbscript|file|about)\s*:\/*/gi,
-      ''
-    )
-    protocolIterations++
-  }
-
-  // --- Remove event handlers iteratively ---
-  let prevEventValue = ''
-  let eventIterations = 0
-
-  while (sanitized !== prevEventValue && eventIterations < MAX_ITERATIONS) {
-    prevEventValue = sanitized
-    sanitized = sanitized.replace(/\bon\w+\s*=/gi, '')
-    eventIterations++
-  }
-
-  // --- Encode HTML entities ---
+  // Encode HTML entities
   sanitized = sanitized
     .replace(/&/g, '&amp;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#x27;')
 
+  // Limit length to prevent buffer overflow
   return sanitized.trim().slice(0, 500)
 }
 

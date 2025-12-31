@@ -188,13 +188,21 @@ describe('sanitizeInput', () => {
     expect(result).not.toContain('onload=')
   })
 
-  it('should handle deeply nested patterns without hanging', () => {
-    // Create a deeply nested pattern (would require many iterations)
-    const deeplyNested = 'ja'.repeat(20) + 'javascript:' + 'va'.repeat(20) + 'script:alert(1)'
-    const result = sanitizeInput(deeplyNested)
-    // Should complete without hanging (max 10 iterations)
+  it('should handle complex nested patterns without performance issues', () => {
+    // Create a deeply nested pattern that requires multiple sanitization passes
+    // Pattern: wrap 'onclick=' repeatedly to create 'onononon...onclick='
+    let complexInput = 'click=alert(1)'
+    for (let i = 0; i < 15; i++) {
+      complexInput = 'on' + complexInput
+    }
+
+    const result = sanitizeInput(complexInput)
+
+    // Should complete sanitization without hanging
     expect(result).toBeDefined()
-    expect(result.length).toBeGreaterThan(0)
+    expect(result).toBe('alert(1)')
+    // Should not contain any remaining dangerous patterns
+    expect(result).not.toMatch(/on\w+\s*=/)
   })
 
   it('should trim whitespace', () => {
@@ -220,12 +228,6 @@ describe('sanitizeInput', () => {
     expect(result).not.toContain('onerror')
   })
 
-  it('should prevent nested event handler bypass attacks', () => {
-    // ononclick= should be fully removed, not leave onclick=
-    expect(sanitizeInput('ononclick=alert(1)')).toBe('alert(1)')
-    expect(sanitizeInput('onononclick=alert(1)')).toBe('alert(1)')
-    expect(sanitizeInput('ononload=bad()')).toBe('bad()')
-  })
 
   it('should prevent nested protocol bypass attacks', () => {
     // javascript:javascript: should be fully removed

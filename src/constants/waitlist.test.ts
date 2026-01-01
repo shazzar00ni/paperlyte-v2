@@ -20,7 +20,7 @@ describe('Waitlist Constants', () => {
 
     it('should contain a number or number with suffix', () => {
       // Should match patterns like "500+", "1000", "1K", etc.
-      expect(WAITLIST_COUNT).toMatch(/^\d+[\+KkMm]?$/)
+      expect(WAITLIST_COUNT).toMatch(/^\d+[+KkMm]?$/)
     })
 
     it('should have the expected value format', () => {

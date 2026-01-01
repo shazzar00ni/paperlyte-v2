@@ -73,16 +73,28 @@ describe('Downloads Constants', () => {
             hasGitHubRef = false
           }
         }
-
-        // As a secondary check (e.g. for non-absolute URLs), allow direct reference to legal config GitHub URL
-        if (!hasGitHubRef && LEGAL_CONFIG.social.github) {
-          hasGitHubRef = url.includes(LEGAL_CONFIG.social.github)
-        }
+    it('should have valid URL format for all entries', () => {
+      Object.entries(DOWNLOAD_URLS).forEach(([platform, url]) => {
+        const isValidUrl = url.startsWith('http://') || url.startsWith('https://')
 
         expect(
-          isValidUrl || hasGitHubRef,
+          isValidUrl,
           `URL for ${platform} should be valid or reference GitHub`
         ).toBe(true)
+        
+        // For GitHub URLs, validate the hostname properly
+        if (url.includes('github.com')) {
+          try {
+            const urlObj = new URL(url)
+            expect(
+              urlObj.hostname === 'github.com' || urlObj.hostname.endsWith('.github.com'),
+              `URL for ${platform} should have github.com as the actual hostname`
+            ).toBe(true)
+          } catch {
+            // If URL parsing fails, check it matches LEGAL_CONFIG reference
+            expect(url).toContain(LEGAL_CONFIG.social.github)
+          }
+        }
       })
     })
 

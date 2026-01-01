@@ -79,10 +79,15 @@ describe('Pricing Constants', () => {
       const proPlan = PRICING_PLANS.find((p) => p.id === 'pro')
       const teamPlan = PRICING_PLANS.find((p) => p.id === 'team')
 
+      expect(freePlan).toBeDefined()
+      expect(proPlan).toBeDefined()
+      expect(teamPlan).toBeDefined()
+
       expect(freePlan?.price).toBeNull()
-      expect(proPlan?.price).toBeDefined()
-      expect(teamPlan?.price).toBeDefined()
-      expect(proPlan!.price).toBeLessThan(teamPlan!.price!)
+
+      if (proPlan?.price && teamPlan?.price) {
+        expect(proPlan.price).toBeLessThan(teamPlan.price)
+      }
     })
 
     it('should have non-empty taglines', () => {

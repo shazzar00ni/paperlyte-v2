@@ -8,6 +8,25 @@
 import * as Sentry from '@sentry/react'
 import { trackEvent } from './analytics'
 
+/**
+ * Map application severity levels to Sentry log levels
+ */
+function severityToLevel(
+  severity: 'low' | 'medium' | 'high' | 'critical'
+): 'info' | 'warning' | 'error' | 'fatal' {
+  switch (severity) {
+    case 'critical':
+      return 'fatal'
+    case 'high':
+      return 'error'
+    case 'medium':
+      return 'warning'
+    case 'low':
+    default:
+      return 'info'
+  }
+}
+
 export interface ErrorContext {
   componentStack?: string
   errorInfo?: Record<string, unknown>
@@ -60,14 +79,7 @@ export function logError(error: Error, context?: ErrorContext, source?: string):
     // Only sends if Sentry is initialized (DSN configured)
     if (import.meta.env.VITE_SENTRY_DSN) {
       Sentry.captureException(error, {
-        level:
-          severity === 'critical'
-            ? 'fatal'
-            : severity === 'high'
-              ? 'error'
-              : severity === 'medium'
-                ? 'warning'
-                : 'info',
+        level: severityToLevel(severity),
         tags: {
           source: errorSource,
           ...context?.tags,
@@ -88,14 +100,7 @@ export function logError(error: Error, context?: ErrorContext, source?: string):
       Sentry.addBreadcrumb({
         category: 'error',
         message: `${errorSource}: ${error.message}`,
-        level:
-          severity === 'critical'
-            ? 'fatal'
-            : severity === 'high'
-              ? 'error'
-              : severity === 'medium'
-                ? 'warning'
-                : 'info',
+        level: severityToLevel(severity),
         data: context?.tags,
       })
     }

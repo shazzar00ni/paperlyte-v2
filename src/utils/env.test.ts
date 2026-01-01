@@ -3,8 +3,6 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 // Mock the module's environment dependencies
 import { getBaseUrl, getSeoKeywords, getOgImage, env, updateMetaTags } from './env'
 
-import { getBaseUrl, getSeoKeywords, getOgImage, env, updateMetaTags } from './env'
-
 describe('env', () => {
   beforeEach(() => {
     // Clear document head before each test

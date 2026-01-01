@@ -15,7 +15,6 @@ import styles from './Privacy.module.css'
 const LAST_UPDATED = 'December 13, 2024'
 
 export function Privacy() {
-export function Privacy() {
   return (
     <>
       <Section className={styles.privacyHero}>

@@ -14,16 +14,6 @@ import styles from './Privacy.module.css'
 // TODO: Update this date whenever the policy is revised
 const LAST_UPDATED = 'December 13, 2024'
 
-/**
- * Render the Privacy Policy page for Paperlyte.
- *
- * Displays static privacy-policy content, including the last-updated date and named sections
- * covering data collection, usage, security and storage, sharing and disclosure, user rights,
- * cookies and tracking, children's privacy, international considerations, policy changes, and
- * contact information.
- *
- * @returns A React element that renders the Privacy Policy page content.
- */
 export function Privacy() {
   return (
     <>

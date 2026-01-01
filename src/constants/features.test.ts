@@ -221,26 +221,39 @@ describe('Features Constants', () => {
     it('should emphasize benefits over technical details', () => {
       const allDescriptions = FEATURES.map((f) => f.description.toLowerCase()).join(' ')
 
-      // Benefit words should be more common than technical jargon
+      // Count occurrences of benefit words vs technical jargon
       const benefitWords = ['your', 'you', 'fast', 'simple', 'easy', 'seamless', 'instant']
-      const benefitCount = benefitWords.filter((word) => allDescriptions.includes(word)).length
+      const techWords = ['api', 'sdk', 'cli', 'endpoint', 'protocol', 'latency', 'throughput', 'integration']
 
-      expect(benefitCount, 'Descriptions should focus on user benefits').toBeGreaterThan(3)
+      const countOccurrences = (text: string, words: string[]): number => {
+        return words.reduce((count, word) => {
+          const regex = new RegExp(`\\b${word}\\b`, 'gi')
+          const matches = text.match(regex)
+          return count + (matches ? matches.length : 0)
+        }, 0)
+      }
+
+      const benefitCount = countOccurrences(allDescriptions, benefitWords)
+      const techCount = countOccurrences(allDescriptions, techWords)
+
+      expect(benefitCount, 'Descriptions should focus on user benefits over technical jargon').toBeGreaterThan(techCount)
     })
 
     it('should use action-oriented language', () => {
       // Check for active verbs and action-oriented phrases
-      const descriptions = FEATURES.map((f) => f.description)
-      const hasActionVerbs = descriptions.some(
-        (desc) =>
-          desc.includes('captured') ||
-          desc.includes('work') ||
-          desc.includes('sync') ||
-          desc.includes('adapt') ||
-          desc.includes('keep')
-      )
+      const actionVerbs = ['captured', 'work', 'sync', 'adapt', 'keep']
 
-      expect(hasActionVerbs).toBe(true)
+      const descriptionsWithActionVerbs = FEATURES.filter((feature) => {
+        const desc = feature.description.toLowerCase()
+        return actionVerbs.some((verb) => desc.includes(verb))
+      })
+
+      const proportion = descriptionsWithActionVerbs.length / FEATURES.length
+
+      expect(
+        proportion,
+        `At least 80% of features should use action-oriented language (found ${Math.round(proportion * 100)}%)`
+      ).toBeGreaterThanOrEqual(0.8)
     })
   })
 

@@ -47,34 +47,6 @@ describe('Downloads Constants', () => {
   describe('DOWNLOAD_URLS Content Validation', () => {
     it('should have valid URL format for all entries', () => {
       Object.entries(DOWNLOAD_URLS).forEach(([platform, url]) => {
-        // Should be either a valid URL or reference the configured GitHub URL
-        const isValidUrl = url.startsWith('http://') || url.startsWith('https://')
-
-        let hasGitHubRef = false
-
-        if (isValidUrl) {
-          try {
-            const parsedUrl = new URL(url)
-            const allowedGithubHostnames = new Set<string>()
-
-            // Include the hostname from LEGAL_CONFIG.social.github if it is a valid URL
-            try {
-              const legalGithubUrl = new URL(LEGAL_CONFIG.social.github)
-              allowedGithubHostnames.add(legalGithubUrl.hostname)
-            } catch {
-              // LEGAL_CONFIG.social.github is not an absolute URL; fall back to "github.com"
-            }
-
-            // Always include the canonical GitHub hostname
-            allowedGithubHostnames.add('github.com')
-
-            hasGitHubRef = allowedGithubHostnames.has(parsedUrl.hostname)
-          } catch {
-            hasGitHubRef = false
-          }
-        }
-    it('should have valid URL format for all entries', () => {
-      Object.entries(DOWNLOAD_URLS).forEach(([platform, url]) => {
         const isValidUrl = url.startsWith('http://') || url.startsWith('https://')
 
         expect(

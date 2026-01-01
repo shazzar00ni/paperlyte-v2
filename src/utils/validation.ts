@@ -134,7 +134,14 @@ export function encodeHtmlEntities(input: string): string {
 }
 
 /**
- * Sanitize input to prevent XSS attacks
+ * Cleanse a user-provided string of common HTML/XSS injection vectors.
+ *
+ * Removes angle brackets, strips dangerous URI protocols (e.g., `javascript:`, `data:`),
+ * removes event-handler attributes (e.g., `onClick=`), encodes `&`, `"` and `'`,
+ * trims whitespace, and truncates the result to 500 characters.
+ *
+ * @param input - The raw input string to sanitize; may be empty or falsy.
+ * @returns The sanitized string, or an empty string if `input` is falsy.
  */
 export function sanitizeInput(input: string): string {
   if (!input) return ''
@@ -152,10 +159,7 @@ export function sanitizeInput(input: string): string {
 
   while (sanitized !== prevProtocolValue && protocolIterations < MAX_ITERATIONS) {
     prevProtocolValue = sanitized
-    sanitized = sanitized.replace(
-      /(javascript|data|vbscript|file|about)\s*:\/*/gi,
-      ''
-    )
+    sanitized = sanitized.replace(/(javascript|data|vbscript|file|about)\s*:\/*/gi, '')
     protocolIterations++
   }
 
@@ -170,14 +174,10 @@ export function sanitizeInput(input: string): string {
   }
 
   // --- Encode HTML entities ---
-  sanitized = sanitized
-    .replace(/&/g, '&amp;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#x27;')
+  sanitized = sanitized.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;')
 
   return sanitized.trim().slice(0, 500)
 }
-
 
 /**
  * Validate form data

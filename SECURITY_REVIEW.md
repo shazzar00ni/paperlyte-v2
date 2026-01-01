@@ -659,6 +659,7 @@ if (!isBrowser) return 'light'
 CodeQL provides comprehensive static analysis for JavaScript/TypeScript code to detect security vulnerabilities before they reach production.
 
 **Features:**
+
 - **Continuous scanning** on all push/PR to main and develop branches
 - **Weekly scheduled scans** every Monday at 9:00 AM UTC
 - **Security-extended query suite** for thorough vulnerability detection
@@ -666,11 +667,13 @@ CodeQL provides comprehensive static analysis for JavaScript/TypeScript code to 
 - **SARIF results upload** to GitHub Security tab for centralized tracking
 
 **Analyzed Paths:**
+
 - `src/**` - All application source code
 - `public/**` - Static assets and HTML files
 - Workflow configuration itself for meta-security
 
 **Integration Points:**
+
 - Results viewable in GitHub Security → Code scanning alerts
 - Automated PR comments on detected issues
 - Complements existing npm audit in CI pipeline
@@ -684,6 +687,7 @@ CodeQL provides comprehensive static analysis for JavaScript/TypeScript code to 
 Production error tracking is fully configured and ready to activate with environment variables.
 
 **Features:**
+
 - **Automatic error capture** with context and breadcrumbs
 - **Performance monitoring** with configurable sample rates
 - **Session replay** for error reproduction (privacy-focused with masking)
@@ -693,6 +697,7 @@ Production error tracking is fully configured and ready to activate with environ
 
 **Configuration:**
 Environment variables in `.env.example`:
+
 - `VITE_SENTRY_DSN` - Project DSN from sentry.io
 - `VITE_SENTRY_ENVIRONMENT` - Environment tracking (development/staging/production)
 - `VITE_SENTRY_SAMPLE_RATE` - Performance monitoring sample rate (default: 0.1)
@@ -700,12 +705,14 @@ Environment variables in `.env.example`:
 - `VITE_SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE` - Replay rate for error sessions (default: 1.0)
 
 **Security Considerations:**
+
 - Only activates in production builds
 - Automatically masks all text in session replays
 - Blocks all media from replay capture
 - Filters sensitive URL parameters before sending
 
 **Activation Steps:**
+
 1. Create Sentry account at sentry.io
 2. Create new React project
 3. Copy DSN to environment variables
@@ -714,11 +721,13 @@ Environment variables in `.env.example`:
 ### Dependency Security
 
 **Automated Updates:** Dependabot configured in `.github/dependabot.yml`
+
 - Weekly npm dependency scans
 - GitHub Actions version updates
 - Grouped minor/patch updates to reduce PR noise
 
 **CI Pipeline Checks:** `npm audit` runs on every CI build
+
 - High severity threshold for main branch
 - Moderate severity threshold for feature branches
 

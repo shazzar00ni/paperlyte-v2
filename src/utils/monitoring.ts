@@ -8,6 +8,25 @@
 import * as Sentry from '@sentry/react'
 import { trackEvent } from './analytics'
 
+/**
+ * Map application severity levels to Sentry log levels
+ */
+function severityToLevel(
+  severity: 'low' | 'medium' | 'high' | 'critical'
+): 'info' | 'warning' | 'error' | 'fatal' {
+  switch (severity) {
+    case 'critical':
+      return 'fatal'
+    case 'high':
+      return 'error'
+    case 'medium':
+      return 'warning'
+    case 'low':
+    default:
+      return 'info'
+  }
+}
+
 export interface ErrorContext {
   componentStack?: string
   errorInfo?: Record<string, unknown>
@@ -16,10 +35,12 @@ export interface ErrorContext {
 }
 
 /**
- * Report an Error with optional metadata, routing to console in development or to analytics/error-monitoring in production.
+ * Report an Error and associated metadata to console in development or to analytics and error-monitoring services in production.
+ *
+ * Sends an analytics event for every reported error and, if configured, forwards the error and metadata to the external monitoring service. In development the error and provided context are written to the console; in production the function attempts to report without throwing on failure.
  *
  * @param error - The Error to report
- * @param context - Optional metadata about the error (e.g., `componentStack`, `errorInfo`, `severity`, `tags`)
+ * @param context - Optional metadata such as `componentStack`, `errorInfo`, `severity` (`'low' | 'medium' | 'high' | 'critical'`), and `tags`
  * @param source - Optional label identifying the error's origin (for example, a component or subsystem name)
  */
 export function logError(error: Error, context?: ErrorContext, source?: string): void {
@@ -58,7 +79,7 @@ export function logError(error: Error, context?: ErrorContext, source?: string):
     // Only sends if Sentry is initialized (DSN configured)
     if (import.meta.env.VITE_SENTRY_DSN) {
       Sentry.captureException(error, {
-        level: severity === 'critical' ? 'fatal' : severity === 'high' ? 'error' : severity === 'medium' ? 'warning' : 'info',
+        level: severityToLevel(severity),
         tags: {
           source: errorSource,
           ...context?.tags,
@@ -79,7 +100,7 @@ export function logError(error: Error, context?: ErrorContext, source?: string):
       Sentry.addBreadcrumb({
         category: 'error',
         message: `${errorSource}: ${error.message}`,
-        level: severity === 'critical' ? 'fatal' : severity === 'high' ? 'error' : severity === 'medium' ? 'warning' : 'info',
+        level: severityToLevel(severity),
         data: context?.tags,
       })
     }

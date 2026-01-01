@@ -15,12 +15,12 @@ export const CTA = (): React.ReactElement => {
 
         <AnimatedElement animation="fadeIn" delay={150}>
           <p className={styles.subtitle}>
-            Note-taking shouldn't feel like work. It should feel like breathing—natural,
-            effortless, invisible.
+            Note-taking shouldn't feel like work. It should feel like breathing—natural, effortless,
+            invisible.
           </p>
           <p className={styles.subtitle}>
-            Join the waitlist today and be among the first to experience what note-taking
-            should have been all along.
+            Join the waitlist today and be among the first to experience what note-taking should
+            have been all along.
           </p>
         </AnimatedElement>
 

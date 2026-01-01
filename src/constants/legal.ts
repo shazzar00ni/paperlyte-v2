@@ -45,8 +45,9 @@ export const LEGAL_CONFIG = {
   },
   social: {
     github: 'https://github.com/shazzar00ni/paperlyte-v2',
-    twitter: '#', // TODO: Create Twitter/X account or update to existing account
+    twitter: 'https://x.com/paperlyte',
     linkedin: '#', // TODO: Create LinkedIn company page or update to existing page
+    instagram: 'https://instagram.com/paperlytefilms',
     discord: '#', // TODO: Add Discord server link
   },
   metadata: {

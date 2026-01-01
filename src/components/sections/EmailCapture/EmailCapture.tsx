@@ -70,7 +70,7 @@ export const EmailCapture = (): React.ReactElement => {
                     variant="secondary"
                     size="medium"
                     icon="fa-brands fa-twitter"
-                    href={`https://twitter.com/intent/tweet?text=${encodeURIComponent("Check out Paperlyte – the note-taking app that gets out of your way. Get early access:")}&url=${encodeURIComponent(origin)}`}
+                    href={`https://twitter.com/intent/tweet?text=${encodeURIComponent('Check out Paperlyte – the note-taking app that gets out of your way. Get early access:')}&url=${encodeURIComponent(origin)}`}
                   >
                     Twitter
                   </Button>
@@ -86,7 +86,7 @@ export const EmailCapture = (): React.ReactElement => {
                     variant="secondary"
                     size="medium"
                     icon="fa-brands fa-linkedin"
-                    href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(origin)}&title=${encodeURIComponent("Check out Paperlyte – the note-taking app that gets out of your way")}`}
+                    href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(origin)}&title=${encodeURIComponent('Check out Paperlyte – the note-taking app that gets out of your way')}`}
                   >
                     LinkedIn
                   </Button>
@@ -143,7 +143,9 @@ export const EmailCapture = (): React.ReactElement => {
                 disabled={isLoading}
               >
                 {isLoading ? 'Joining...' : 'Join the Waitlist'}
-                {!isLoading && <i className="fa-solid fa-arrow-right" style={{ marginLeft: '0.5rem' }} />}
+                {!isLoading && (
+                  <i className="fa-solid fa-arrow-right" style={{ marginLeft: '0.5rem' }} />
+                )}
               </button>
             </div>
             {error && (

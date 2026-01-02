@@ -54,8 +54,8 @@ A comprehensive design system for Paperlyte - a lightning-fast, distraction-free
 --color-primary: #3b82f6;         /* Blue 500 - Main brand color */
 --color-primary-dark: #2563eb;    /* Blue 600 - Hover states */
 --color-primary-light: #93c5fd;   /* Blue 300 - Accents */
---color-primary-faint: rgba(124, 58, 237, 0.1);    /* 10% opacity for backgrounds */
---color-primary-fainter: rgba(124, 58, 237, 0.05); /* 5% opacity for subtle backgrounds */
+--color-primary-faint: rgba(59, 130, 246, 0.1);    /* 10% opacity for backgrounds */
+--color-primary-fainter: rgba(59, 130, 246, 0.05); /* 5% opacity for subtle backgrounds */
 ```
 
 #### Color Usage

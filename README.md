@@ -144,7 +144,6 @@ Generates app icons and favicons from `public/favicon.svg`:
 
 Generated files:
 
-
 #### Mockups (`npm run generate:mockups`)
 
 Generates optimized mockup images from SVG sources in `public/mockups/`:
@@ -154,7 +153,6 @@ Generates optimized mockup images from SVG sources in `public/mockups/`:
 - Preserves aspect ratio and uses transparent backgrounds
 
 Generated files:
-
 
 ### When to Run Generation Scripts
 

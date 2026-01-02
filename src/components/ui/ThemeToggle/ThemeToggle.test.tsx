@@ -240,7 +240,7 @@ describe('ThemeToggle', () => {
       expect(icon).toBeInTheDocument()
     })
 
-    it('should pass size="md" to Icon component', () => {
+    it('should render moon icon in light mode', () => {
       vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
         theme: 'light',
         toggleTheme: mockToggleTheme,

@@ -11,8 +11,8 @@
   transition: all var(--transition-base);
   text-decoration: none;
   white-space: nowrap;
-  min-height: 44px;
-  min-width: 44px;
+  min-height: 48px;
+  min-width: 48px;
 }
 
 .button:disabled,
@@ -71,8 +71,8 @@
 .small {
   padding: 0.5rem 1.25rem;
   font-size: var(--font-size-sm);
-  min-height: 44px;
-  min-width: 44px;
+  min-height: 48px;
+  min-width: 48px;
 }
 
 .medium {

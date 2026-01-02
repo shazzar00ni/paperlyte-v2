@@ -64,6 +64,7 @@
   justify-content: space-between;
   gap: var(--spacing-md);
   padding: var(--spacing-lg);
+  min-height: 48px;
   background: transparent;
   border: none;
   cursor: pointer;

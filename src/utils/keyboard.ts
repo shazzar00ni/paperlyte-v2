@@ -81,16 +81,22 @@ export function getFocusableElements(container: HTMLElement): HTMLElement[] {
   elementsArray.sort((a, b) => {
     const position = a.compareDocumentPosition(b)
 
-    // Handle containment relationships (one node contains the other)
-    if (position & Node.DOCUMENT_POSITION_CONTAINED_BY) {
-      return 1 // b contains a, so b comes first
-    } else if (position & Node.DOCUMENT_POSITION_CONTAINS) {
-      return -1 // a contains b, so a comes first
-    } else if (position & Node.DOCUMENT_POSITION_FOLLOWING) {
+    // Check document order first (preceding/following)
+    // These flags indicate position in document tree traversal order
+    if (position & Node.DOCUMENT_POSITION_FOLLOWING) {
       return -1 // a comes before b in document order
     } else if (position & Node.DOCUMENT_POSITION_PRECEDING) {
       return 1 // b comes before a in document order
     }
+
+    // Handle containment relationships (one node contains the other)
+    // This should rarely occur for sibling focusable elements
+    if (position & Node.DOCUMENT_POSITION_CONTAINED_BY) {
+      return 1 // b contains a, so b comes first
+    } else if (position & Node.DOCUMENT_POSITION_CONTAINS) {
+      return -1 // a contains b, so a comes first
+    }
+
     return 0 // Same node (shouldn't happen in practice)
   })
 

@@ -8,6 +8,8 @@ Lightning-fast, distraction-free note-taking application landing page built with
 
 [![PR Quality Check](https://github.com/shazzar00ni/paperlyte-v2/actions/workflows/pr-quality-check.yml/badge.svg)](https://github.com/shazzar00ni/paperlyte-v2/actions/workflows/pr-quality-check.yml)
 
+[![codecov](https://codecov.io/github/shazzar00ni/paperlyte-v2/graph/badge.svg?token=yQtvXFB0KF)](https://codecov.io/github/shazzar00ni/paperlyte-v2)
+
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![React](https://img.shields.io/badge/React-19.2.0-blue)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-blue)

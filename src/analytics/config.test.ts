@@ -6,9 +6,6 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { getAnalyticsConfig, isAnalyticsEnabled } from './config'
 
 describe('analytics/config', () => {
-  // Save original environment
-  const originalEnv = { ...import.meta.env }
-
   beforeEach(() => {
     // Reset environment before each test
     vi.stubEnv('VITE_ANALYTICS_ENABLED', undefined)

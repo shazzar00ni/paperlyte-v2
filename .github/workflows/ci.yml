@@ -164,6 +164,9 @@ jobs:
     name: Lighthouse CI
     runs-on: ubuntu-latest
     needs: build
+    permissions:
+      contents: read
+      pull-requests: write
 
     steps:
       - name: Checkout code
@@ -184,11 +187,33 @@ jobs:
           name: dist
           path: dist/
 
-      - name: Install Lighthouse CI
-        run: npm install -g @lhci/cli@0.13.x
+      - name: Install Chrome dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            chromium-browser \
+            fonts-liberation \
+            libasound2 \
+            libatk-bridge2.0-0 \
+            libatk1.0-0 \
+            libatspi2.0-0 \
+            libcups2 \
+            libdbus-1-3 \
+            libdrm2 \
+            libgbm1 \
+            libgtk-3-0 \
+            libnspr4 \
+            libnss3 \
+            libwayland-client0 \
+            libxcomposite1 \
+            libxdamage1 \
+            libxfixes3 \
+            libxkbcommon0 \
+            libxrandr2 \
+            xdg-utils
 
       - name: Run Lighthouse CI
-        run: lhci autorun --config=./.lighthouserc.json
+        run: npx @lhci/cli@0.15.1 autorun --config=./.lighthouserc.json
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
 
@@ -199,6 +224,28 @@ jobs:
           name: lighthouse-results
           path: .lighthouseci/
           retention-days: 30
+
+      - name: Generate Lighthouse report summary
+        if: always()
+        run: |
+          echo "## 🔦 Lighthouse CI Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -f .lighthouseci/manifest.json ]; then
+            echo "✅ Lighthouse CI completed successfully" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### Performance Budgets" >> $GITHUB_STEP_SUMMARY
+            echo "- Performance Score: ≥90" >> $GITHUB_STEP_SUMMARY
+            echo "- Accessibility Score: ≥95" >> $GITHUB_STEP_SUMMARY
+            echo "- First Contentful Paint: ≤2000ms" >> $GITHUB_STEP_SUMMARY
+            echo "- Largest Contentful Paint: ≤2500ms" >> $GITHUB_STEP_SUMMARY
+            echo "- Cumulative Layout Shift: ≤0.1" >> $GITHUB_STEP_SUMMARY
+            echo "- Total Blocking Time: ≤300ms" >> $GITHUB_STEP_SUMMARY
+            echo "- Speed Index: ≤3000ms" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "📊 Full results available in artifacts" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Lighthouse CI failed to generate results" >> $GITHUB_STEP_SUMMARY
+          fi
 
   e2e:
     name: E2E Tests

@@ -125,7 +125,7 @@ Paperlyte uses modern image formats (WebP, AVIF) to deliver the best performance
 
 The application uses a **progressive format strategy** that serves the smallest supported format to each browser:
 
-1. **AVIF** - Next-gen format with ~40-50% better compression than PNG (Chrome 90+, Firefox 93+)
+1. **AVIF** - Next-gen format with ~40-50% better compression than PNG (Chrome 85+, Firefox 93+)
 2. **WebP** - Modern format with ~25-35% better compression than PNG (Chrome 23+, Firefox 65+)
 3. **PNG** - Universal fallback for compatibility
 4. **SVG** - Vector fallback for mockup images
@@ -185,7 +185,7 @@ For a typical 100KB PNG mockup:
 
 ### Browser Support
 
-- **AVIF**: Chrome 90+, Firefox 93+, Safari 16+ (2021+)
+- **AVIF**: Chrome 85+, Firefox 93+, Safari 16+ (2021+)
 - **WebP**: Chrome 23+, Firefox 65+, Safari 14+ (2020+)
 - **PNG**: Universal support (fallback)
 

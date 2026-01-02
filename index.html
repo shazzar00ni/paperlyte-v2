@@ -38,8 +38,13 @@
       content="Paperlyte app preview showing minimalist notes interface"
     />
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <!-- Favicons and App Icons -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
 
     <!-- Theme Color -->
     <meta name="theme-color" content="#1a1a1a" />
@@ -80,6 +85,9 @@
         crossorigin="anonymous"
         referrerpolicy="no-referrer"
     /></noscript>
+
+    <!-- Preload critical above-the-fold image for better LCP -->
+    <link rel="preload" as="image" type="image/avif" href="/mockups/notes-list.avif" />
 
     <!-- Schema.org Structured Data (JSON-LD) -->
     <script type="application/ld+json">

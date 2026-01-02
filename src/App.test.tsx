@@ -47,21 +47,27 @@ describe('App Integration', () => {
   })
 
   it('should have accessible landmark regions with proper roles', () => {
-    const { container } = render(<App />)
+    render(<App />)
 
-    // Use container queries for structural elements
-    const header = container.querySelector('header')
+    // Use semantic role queries for accessibility testing
+    // Note: There may be multiple headers on the page, so we get the first (main) banner
+    const banners = screen.getAllByRole('banner')
+    const header = banners[0] // Main page header
     const main = screen.getByRole('main')
-    const footer = container.querySelector('footer')
+    const footer = screen.getByRole('contentinfo')
 
     expect(header).toBeInTheDocument()
     expect(main).toBeInTheDocument()
     expect(main).toHaveAttribute('id', 'main')
     expect(footer).toBeInTheDocument()
 
-    // Verify navigation is accessible (there may be multiple nav elements)
+    // Verify exactly 2 navigation elements exist with proper aria-labels
     const navigation = screen.getAllByRole('navigation')
-    expect(navigation.length).toBeGreaterThan(0)
+    expect(navigation).toHaveLength(2)
+    
+    // Verify the navigation elements have appropriate labels
+    expect(screen.getByRole('navigation', { name: /main navigation/i })).toBeInTheDocument()
+    expect(screen.getByRole('navigation', { name: /footer navigation/i })).toBeInTheDocument()
   })
 
   it('should render Hero section', () => {

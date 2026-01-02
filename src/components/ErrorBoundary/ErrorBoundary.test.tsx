@@ -158,6 +158,7 @@ describe('ErrorBoundary', () => {
         </ErrorBoundary>
       )
 
+      // Button has aria-label with attempt count, so we match the text pattern
       expect(screen.getByRole('button', { name: /try again/i })).toBeInTheDocument()
     })
 
@@ -168,7 +169,7 @@ describe('ErrorBoundary', () => {
         </ErrorBoundary>
       )
 
-      expect(screen.getByRole('button', { name: /reload page/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: 'Reload Page' })).toBeInTheDocument()
     })
 
     it('should reset error state when "Try Again" is clicked', async () => {
@@ -194,7 +195,7 @@ describe('ErrorBoundary', () => {
       // Fix the error condition
       shouldThrow = false
 
-      // Click Try Again
+      // Click Try Again button (has dynamic aria-label with attempt count)
       const tryAgainButton = screen.getByRole('button', { name: /try again/i })
       await user.click(tryAgainButton)
 
@@ -218,7 +219,7 @@ describe('ErrorBoundary', () => {
         </ErrorBoundary>
       )
 
-      const reloadButton = screen.getByRole('button', { name: /reload page/i })
+      const reloadButton = screen.getByRole('button', { name: 'Reload Page' })
       await user.click(reloadButton)
 
       expect(reloadMock).toHaveBeenCalled()
@@ -246,8 +247,9 @@ describe('ErrorBoundary', () => {
 
       // Verify semantic elements are present and accessible
       expect(screen.getByRole('heading', { name: /something went wrong/i })).toBeInTheDocument()
+      // Try Again button has dynamic aria-label with attempt count
       expect(screen.getByRole('button', { name: /try again/i })).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: /reload page/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: 'Reload Page' })).toBeInTheDocument()
     })
 
     it('should have proper button types', () => {
@@ -258,7 +260,7 @@ describe('ErrorBoundary', () => {
       )
 
       const tryAgainButton = screen.getByRole('button', { name: /try again/i })
-      const reloadButton = screen.getByRole('button', { name: /reload page/i })
+      const reloadButton = screen.getByRole('button', { name: 'Reload Page' })
 
       expect(tryAgainButton).toHaveAttribute('type', 'button')
       expect(reloadButton).toHaveAttribute('type', 'button')
@@ -283,7 +285,7 @@ describe('ErrorBoundary', () => {
       )
       expect(screen.getByText(/something went wrong/i)).toBeInTheDocument()
 
-      // Reset
+      // Reset - Try Again button has dynamic aria-label
       const tryAgainButton = screen.getByRole('button', { name: /try again/i })
       await user.click(tryAgainButton)
 

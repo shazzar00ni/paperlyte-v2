@@ -14,7 +14,7 @@
 import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
-import { existsSync, readdirSync } from 'fs'
+import { existsSync } from 'fs'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)

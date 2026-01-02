@@ -174,6 +174,9 @@ describe('analytics/index', () => {
 
       // Simulate script loaded
       const script = document.querySelector('script[data-domain]') as HTMLScriptElement
+      if (!script) {
+        throw new Error('Script element not found - analytics.init() may have failed')
+      }
       script.onload?.(new Event('load'))
     })
 
@@ -220,6 +223,9 @@ describe('analytics/index', () => {
       window.plausible = vi.fn()
 
       const script = document.querySelector('script[data-domain]') as HTMLScriptElement
+      if (!script) {
+        throw new Error('Script element not found - analytics.init() may have failed')
+      }
       script.onload?.(new Event('load'))
     })
 
@@ -273,6 +279,9 @@ describe('analytics/index', () => {
       window.plausible = vi.fn()
 
       const script = document.querySelector('script[data-domain]') as HTMLScriptElement
+      if (!script) {
+        throw new Error('Script element not found - analytics.init() may have failed')
+      }
       script.onload?.(new Event('load'))
     })
 
@@ -324,6 +333,9 @@ describe('analytics/index', () => {
       window.plausible = vi.fn()
 
       const script = document.querySelector('script[data-domain]') as HTMLScriptElement
+      if (!script) {
+        throw new Error('Script element not found - analytics.init() may have failed')
+      }
       script.onload?.(new Event('load'))
     })
 
@@ -345,6 +357,9 @@ describe('analytics/index', () => {
       window.plausible = vi.fn()
 
       const script = document.querySelector('script[data-domain]') as HTMLScriptElement
+      if (!script) {
+        throw new Error('Script element not found - analytics.init() may have failed')
+      }
       script.onload?.(new Event('load'))
     })
 
@@ -366,6 +381,9 @@ describe('analytics/index', () => {
       window.plausible = vi.fn()
 
       const script = document.querySelector('script[data-domain]') as HTMLScriptElement
+      if (!script) {
+        throw new Error('Script element not found - analytics.init() may have failed')
+      }
       script.onload?.(new Event('load'))
     })
 
@@ -396,6 +414,9 @@ describe('analytics/index', () => {
       window.plausible = vi.fn()
 
       const script = document.querySelector('script[data-domain]') as HTMLScriptElement
+      if (!script) {
+        throw new Error('Script element not found - analytics.init() may have failed')
+      }
       script.onload?.(new Event('load'))
 
       expect(analytics.isEnabled()).toBe(true)
@@ -406,6 +427,9 @@ describe('analytics/index', () => {
       window.plausible = vi.fn()
 
       const script = document.querySelector('script[data-domain]') as HTMLScriptElement
+      if (!script) {
+        throw new Error('Script element not found - analytics.init() may have failed')
+      }
       script.onload?.(new Event('load'))
 
       analytics.disable()
@@ -420,6 +444,9 @@ describe('analytics/index', () => {
       window.plausible = vi.fn()
 
       const script = document.querySelector('script[data-domain]') as HTMLScriptElement
+      if (!script) {
+        throw new Error('Script element not found - analytics.init() may have failed')
+      }
       script.onload?.(new Event('load'))
 
       analytics.disable()

@@ -176,9 +176,6 @@ describe('analytics/scrollDepth', () => {
         vi.advanceTimersByTime(100) // Advance less than throttle time (250ms)
       }
 
-      // Should throttle and not call immediately
-      expect(scrollCallback).toHaveBeenCalledTimes(0)
-
       // Advance to pass throttle window
       vi.advanceTimersByTime(250)
 

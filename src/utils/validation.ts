@@ -134,14 +134,14 @@ export function encodeHtmlEntities(input: string): string {
 }
 
 /**
- * Sanitizes a string to reduce cross-site scripting (XSS) risk.
+ * Cleanse a user-provided string of common HTML/XSS injection vectors.
  *
- * The returned value is trimmed, has angle brackets, common dangerous URL protocols
- * (e.g., `javascript:`, `data:`), and inline event handler attributes removed,
- * and encodes the characters `&`, `"` and `'`. The result is truncated to 500 characters.
+ * Removes angle brackets, strips dangerous URI protocols (e.g., `javascript:`, `data:`),
+ * removes event-handler attributes (e.g., `onClick=`), encodes `&`, `"` and `'`,
+ * trims whitespace, and truncates the result to 500 characters.
  *
- * @param input - The string to sanitize
- * @returns The sanitized, trimmed string (empty string for falsy input)
+ * @param input - The raw input string to sanitize; may be empty or falsy.
+ * @returns The sanitized string, or an empty string if `input` is falsy.
  */
 export function sanitizeInput(input: string): string {
   if (!input) return ''

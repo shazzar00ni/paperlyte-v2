@@ -157,15 +157,13 @@ export function createFocusTrap(container: HTMLElement): () => void {
 }
 
 /**
- * Compute the next focus index in a list based on an arrow key event.
+ * Compute the next focusable element index in response to an arrow-key press.
  *
- * Adjusts left/right behavior for right-to-left documents when orientation is 'horizontal'.
- *
- * @param event - The keyboard event that triggered navigation
- * @param elements - Array of focusable elements to navigate
+ * @param event - Keyboard event used to determine arrow direction
+ * @param elements - Ordered list of focusable elements to navigate
  * @param currentIndex - Index of the currently focused element within `elements`
- * @param orientation - Navigation axis; 'horizontal' swaps left/right in RTL, 'vertical' uses up/down (default: 'horizontal')
- * @returns The index of the element that should receive focus next, or `null` if the event is not an arrow key or does not change focus
+ * @param orientation - Navigation axis: `'horizontal'` interprets left/right, `'vertical'` interprets up/down
+ * @returns The index of the element to focus, or `null` if the key is not an arrow or no navigation should occur
  */
 export function handleArrowNavigation(
   event: KeyboardEvent | ReactKeyboardEvent,

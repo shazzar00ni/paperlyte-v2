@@ -3090,8 +3090,8 @@ module.exports = {
           DEFAULT: '#3b82f6',  // Blue 500
           dark: '#2563eb',     // Blue 600
           light: '#93c5fd',    // Blue 300
-          faint: 'rgba(124, 58, 237, 0.1)',
-          fainter: 'rgba(124, 58, 237, 0.05)',
+          faint: 'rgba(59, 130, 246, 0.1)',
+          fainter: 'rgba(59, 130, 246, 0.05)',
         },
         background: {
           DEFAULT: '#FFFFFF',

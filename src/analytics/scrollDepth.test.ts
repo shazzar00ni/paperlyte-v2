@@ -177,7 +177,7 @@ describe('analytics/scrollDepth', () => {
       }
 
       // Should throttle and not call immediately
-      const callCountBeforeThrottle = scrollCallback.mock.calls.length
+      expect(scrollCallback).toHaveBeenCalledTimes(0)
 
       // Advance to pass throttle window
       vi.advanceTimersByTime(250)

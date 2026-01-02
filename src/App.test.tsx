@@ -47,21 +47,21 @@ describe('App Integration', () => {
   })
 
   it('should have accessible landmark regions with proper roles', () => {
-    const { container } = render(<App />)
+    render(<App />)
 
-    // Use container queries for structural elements
-    const header = container.querySelector('header')
+    // Verify all landmark regions are accessible
+    const banners = screen.getAllByRole('banner')
+    expect(banners.length).toBeGreaterThan(0)
+
     const main = screen.getByRole('main')
-    const footer = container.querySelector('footer')
-
-    expect(header).toBeInTheDocument()
     expect(main).toBeInTheDocument()
     expect(main).toHaveAttribute('id', 'main')
-    expect(footer).toBeInTheDocument()
 
-    // Verify navigation is accessible (there may be multiple nav elements)
+    expect(screen.getByRole('contentinfo')).toBeInTheDocument()
+
+    // Verify both navigation regions exist: Header and Footer navigation
     const navigation = screen.getAllByRole('navigation')
-    expect(navigation.length).toBeGreaterThan(0)
+    expect(navigation).toHaveLength(2)
   })
 
   it('should render Hero section', () => {
@@ -115,13 +115,10 @@ describe('App Integration', () => {
   })
 
   it('should render Footer component', () => {
-    const { container } = render(<App />)
-
-    const footer = container.querySelector('footer')
-    expect(footer).toBeInTheDocument()
+    render(<App />)
 
     // Semantic <footer> element provides implicit contentinfo role
-    // Verify it's accessible via the contentinfo role
+    // Verify it's accessible to assistive technologies
     expect(screen.getByRole('contentinfo')).toBeInTheDocument()
   })
 

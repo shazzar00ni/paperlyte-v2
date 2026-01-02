@@ -254,6 +254,9 @@ describe('analytics/providers/plausible', () => {
     })
 
     it('should track page view with debug enabled', () => {
+      // Clear scripts from beforeEach
+      document.head.innerHTML = ''
+
       const debugProvider = new PlausibleProvider()
       const debugConfig = { ...config, debug: true }
       debugProvider.init(debugConfig)
@@ -262,11 +265,14 @@ describe('analytics/providers/plausible', () => {
       const script = document.querySelector('script[data-domain]') as HTMLScriptElement
       script.onload?.(new Event('load'))
 
+      const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
       debugProvider.trackPageView('/test')
 
       expect(window.plausible).toHaveBeenCalledWith('pageview', {
         props: { path: '/test' },
       })
+
+      consoleLogSpy.mockRestore()
     })
   })
 

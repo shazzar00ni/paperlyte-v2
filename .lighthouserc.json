@@ -17,9 +17,6 @@
           "--disable-dev-shm-usage",
           "--disable-software-rasterizer",
           "--disable-extensions"
-        ],
-        "skipAudits": [
-          "is-crawlable"
         ]
       }
     },

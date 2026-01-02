@@ -47,6 +47,64 @@ declare global {
 }
 
 /**
+ * Initialize scroll depth tracking
+ * Sets up a scroll listener that tracks depth milestones
+ *
+ * @returns Cleanup function to remove the scroll listener
+ *
+ * @example
+ * ```tsx
+ * useEffect(() => {
+ *   const cleanup = initScrollDepthTracking()
+ *   return cleanup
+ * }, [])
+ * ```
+ */
+export function initScrollDepthTracking(): () => void {
+  const trackedMilestones = new Set<number>()
+
+  const handleScroll = () => {
+    const windowHeight = window.innerHeight
+    const documentHeight = document.documentElement.scrollHeight
+    const scrollTop = window.scrollY
+    if (documentHeight <= 0) return
+
+    const scrollPercent = ((scrollTop + windowHeight) / documentHeight) * 100
+    const roundedPercent = Math.round(scrollPercent)
+
+    // Track milestones only once
+    const milestones = [25, 50, 75, 100]
+    milestones.forEach((milestone) => {
+      if (roundedPercent >= milestone && !trackedMilestones.has(milestone)) {
+        trackedMilestones.add(milestone)
+        trackEvent(AnalyticsEvents.SCROLL_DEPTH, {
+          depth_percentage: milestone,
+        })
+      }
+    })
+  }
+
+  // Use throttle to avoid excessive event tracking
+  let ticking = false
+  const throttledScroll = () => {
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        handleScroll()
+        ticking = false
+      })
+      ticking = true
+    }
+  }
+
+  window.addEventListener('scroll', throttledScroll, { passive: true })
+
+  // Return cleanup function
+  return () => {
+    window.removeEventListener('scroll', throttledScroll)
+  }
+}
+
+/**
  * Event parameters for analytics tracking
  * Defines common event parameters with explicit types while allowing custom params via index signature
  */
@@ -345,62 +403,4 @@ export function trackSocialClick(platform: string): void {
   trackEvent(AnalyticsEvents.SOCIAL_LINK_CLICK, {
     platform: platform.toLowerCase(),
   })
-}
-
-/**
- * Initialize scroll depth tracking
- * Sets up a scroll listener that tracks depth milestones
- *
- * @returns Cleanup function to remove the scroll listener
- *
- * @example
- * ```tsx
- * useEffect(() => {
- *   const cleanup = initScrollDepthTracking()
- *   return cleanup
- * }, [])
- * ```
- */
-export function initScrollDepthTracking(): () => void {
-  const trackedMilestones = new Set<number>()
-
-  const handleScroll = () => {
-    const windowHeight = window.innerHeight
-    const documentHeight = document.documentElement.scrollHeight
-    const scrollTop = window.scrollY
-    if (documentHeight <= 0) return
-
-    const scrollPercent = ((scrollTop + windowHeight) / documentHeight) * 100
-    const roundedPercent = Math.round(scrollPercent)
-
-    // Track milestones only once
-    const milestones = [25, 50, 75, 100]
-    milestones.forEach((milestone) => {
-      if (roundedPercent >= milestone && !trackedMilestones.has(milestone)) {
-        trackedMilestones.add(milestone)
-        trackEvent(AnalyticsEvents.SCROLL_DEPTH, {
-          depth_percentage: milestone,
-        })
-      }
-    })
-  }
-
-  // Use throttle to avoid excessive event tracking
-  let ticking = false
-  const throttledScroll = () => {
-    if (!ticking) {
-      window.requestAnimationFrame(() => {
-        handleScroll()
-        ticking = false
-      })
-      ticking = true
-    }
-  }
-
-  window.addEventListener('scroll', throttledScroll, { passive: true })
-
-  // Return cleanup function
-  return () => {
-    window.removeEventListener('scroll', throttledScroll)
-  }
 }

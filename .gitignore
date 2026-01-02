@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 coverage
+junit.xml
 
 # Environment variables
 .env
@@ -39,4 +40,3 @@ coverage
 # Deployment platforms
 .netlify
 .vercel
-junit.xml

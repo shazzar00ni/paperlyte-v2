@@ -44,7 +44,7 @@ These generate warnings but don't fail the build:
 - **Bundle Sizes**:
   - Scripts: ≤150KB (gzipped)
   - Stylesheets: ≤30KB (gzipped)
-  - Document: ≤18KB
+  - Document: ≤17.58KB
   - Total: ≤300KB
 
 #### Resource Optimization Warnings

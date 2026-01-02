@@ -39,3 +39,4 @@ coverage
 # Deployment platforms
 .netlify
 .vercel
+junit.xml

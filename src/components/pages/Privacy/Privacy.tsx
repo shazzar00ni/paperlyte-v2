@@ -232,7 +232,12 @@ export function Privacy() {
                 </li>
                 <li>
                   Website:{' '}
-                  <a href="https://paperlyte.app/contact" target="_blank" rel="noopener noreferrer">
+                  <a
+                    href="https://paperlyte.app/contact"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Contact Form (opens in new tab)"
+                  >
                     Contact Form
                   </a>
                 </li>

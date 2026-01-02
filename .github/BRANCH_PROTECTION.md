@@ -44,7 +44,7 @@ All of the following CI checks must pass before a pull request can be merged:
 - **Dismiss Stale Reviews**: Enabled (new commits dismiss previous approvals)
 - **Require Conversation Resolution**: All review comments must be resolved
 - **Force Push**: Disabled
-- **Branch Deletion**: Disabled after merge (GitHub default)
+- **Branch Deletion**: Deletion of the protected `main` branch is disabled (`allow_deletions: false`).
 
 #### Additional Settings
 

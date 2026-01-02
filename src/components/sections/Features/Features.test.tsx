@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { Features } from './Features'
+import { FEATURES } from '@constants/features'
 
 const EXPECTED_FEATURES = [
   {
@@ -57,11 +58,12 @@ describe('Features', () => {
     })
   })
 
-  it('should render feature icons with proper aria labels', () => {
-    render(<Features />)
+  it('should render feature icons', () => {
+    const { container } = render(<Features />)
 
-    EXPECTED_FEATURES.forEach((feature) => {
-      const icon = screen.getByLabelText(`${feature.title} icon`)
+    // Icons are decorative, so check for them using data-icon attribute
+    FEATURES.forEach((feature) => {
+      const icon = container.querySelector(`[data-icon="${feature.icon}"]`)
       expect(icon).toBeInTheDocument()
     })
   })

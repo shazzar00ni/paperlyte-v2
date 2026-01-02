@@ -1,83 +1,83 @@
 # Component labels
 'component: ui':
   - changed-files:
-      - any-glob-to-any-file: 'src/components/ui/**/*'
+    - any-glob-to-any-file: 'src/components/ui/**/*'
 
 'component: sections':
   - changed-files:
-      - any-glob-to-any-file: 'src/components/sections/**/*'
+    - any-glob-to-any-file: 'src/components/sections/**/*'
 
 'component: layout':
   - changed-files:
-      - any-glob-to-any-file: 'src/components/layout/**/*'
+    - any-glob-to-any-file: 'src/components/layout/**/*'
 
 'component: pages':
   - changed-files:
-      - any-glob-to-any-file: 'src/components/pages/**/*'
+    - any-glob-to-any-file: 'src/components/pages/**/*'
 
 # Type labels
 'type: feature':
   - changed-files:
-      - any-glob-to-any-file:
-          - 'src/components/**/*'
-          - 'src/layouts/**/*'
-          - 'src/pages/**/*'
-          - 'src/hooks/**/*'
-          - 'src/utils/**/*'
-          - 'src/features/**/*'
+    - any-glob-to-any-file:
+      - 'src/components/**/*'
+      - 'src/layouts/**/*'
+      - 'src/pages/**/*'
+      - 'src/hooks/**/*'
+      - 'src/utils/**/*'
+      - 'src/features/**/*'
 
 'type: bugfix':
   - changed-files:
-      - any-glob-to-any-file:
-          - 'tests/**/*.test.ts'
-          - 'tests/**/*.test.tsx'
-          - 'src/**/*.test.ts'
-          - 'src/**/*.test.tsx'
+    - any-glob-to-any-file:
+      - 'tests/**/*.test.ts'
+      - 'tests/**/*.test.tsx'
+      - 'src/**/*.test.ts'
+      - 'src/**/*.test.tsx'
 
 'documentation':
   - changed-files:
-      - any-glob-to-any-file:
-          - '**/*.md'
-          - 'docs/**/*'
+    - any-glob-to-any-file:
+      - '**/*.md'
+      - 'docs/**/*'
 
 'dependencies':
   - changed-files:
-      - any-glob-to-any-file:
-          - 'package.json'
-          - 'package-lock.json'
+    - any-glob-to-any-file:
+      - 'package.json'
+      - 'package-lock.json'
 
 'ci/cd':
   - changed-files:
-      - any-glob-to-any-file: '.github/workflows/**/*'
+    - any-glob-to-any-file: '.github/workflows/**/*'
 
 'config':
   - changed-files:
-      - any-glob-to-any-file:
-          - '*.config.*'
-          - '.eslintrc.*'
-          - 'tsconfig*.json'
+    - any-glob-to-any-file:
+      - '*.config.*'
+      - '.eslintrc.*'
+      - 'tsconfig*.json'
 
 'analytics':
   - changed-files:
-      - any-glob-to-any-file: 'src/analytics/**/*'
+    - any-glob-to-any-file: 'src/analytics/**/*'
 
 'hooks':
   - changed-files:
-      - any-glob-to-any-file: 'src/hooks/**/*'
+    - any-glob-to-any-file: 'src/hooks/**/*'
 
 'utils':
   - changed-files:
-      - any-glob-to-any-file: 'src/utils/**/*'
+    - any-glob-to-any-file: 'src/utils/**/*'
 
 'tests':
   - changed-files:
-      - any-glob-to-any-file:
-          - 'tests/**/*'
-          - 'src/**/*.test.ts'
-          - 'src/**/*.test.tsx'
+    - any-glob-to-any-file:
+      - 'tests/**/*'
+      - 'src/**/*.test.ts'
+      - 'src/**/*.test.tsx'
 
 'styles':
   - changed-files:
-      - any-glob-to-any-file:
-          - 'src/**/*.css'
-          - 'src/styles/**/*'
+    - any-glob-to-any-file:
+      - 'src/**/*.css'
+      - 'src/styles/**/*'

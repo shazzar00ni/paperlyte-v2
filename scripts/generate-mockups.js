@@ -71,14 +71,19 @@ async function generateMockup(sourceName, width, height, format, options) {
       })
 
     // Apply format-specific encoding
-    if (format === 'png') {
-      await image.png(options).toFile(outputPath)
-    } else if (format === 'webp') {
-      await image.webp(options).toFile(outputPath)
-    } else if (format === 'avif') {
-      await image.avif(options).toFile(outputPath)
-    } else {
-      throw new Error(`Unsupported format: ${format}`)
+    // Apply format-specific encoding
+    switch (format) {
+      case 'png':
+        await image.png(options).toFile(outputPath)
+        break
+      case 'webp':
+        await image.webp(options).toFile(outputPath)
+        break
+      case 'avif':
+        await image.avif(options).toFile(outputPath)
+        break
+      default:
+        throw new Error(`Unsupported format: ${format}`)
     }
 
     console.log(`✅ Generated ${outputName} (${width}x${height})`)

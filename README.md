@@ -155,15 +155,6 @@ Generates optimized mockup images from SVG sources in `public/mockups/`:
 
 Generated files:
 
-```
-public/mockups/
-├── notes-list.png
-├── notes-list.webp
-├── notes-list.avif
-├── note-detail.png
-├── note-detail.webp
-└── note-detail.avif
-```
 
 ### When to Run Generation Scripts
 

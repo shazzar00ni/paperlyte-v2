@@ -10,35 +10,19 @@ interface ComparisonItem {
 const COMPARISON_DATA: ComparisonItem[] = [
   {
     competitor: 'Notion',
-    issues: [
-      '3-second lag on startup',
-      'Features you\'ll never use',
-      'Database queries for notes',
-    ],
+    issues: ['3-second lag on startup', "Features you'll never use", 'Database queries for notes'],
   },
   {
     competitor: 'Obsidian',
-    issues: [
-      'Complex plugin configuration',
-      'Markdown learning curve',
-      'Graph views you ignore',
-    ],
+    issues: ['Complex plugin configuration', 'Markdown learning curve', 'Graph views you ignore'],
   },
   {
     competitor: 'Evernote',
-    issues: [
-      'Cluttered interface',
-      'Sync that breaks',
-      'Ads in your face',
-    ],
+    issues: ['Cluttered interface', 'Sync that breaks', 'Ads in your face'],
   },
   {
     competitor: 'You',
-    issues: [
-      'Just want to write',
-      'Ideas that are vanishing',
-      'Simplicity that works',
-    ],
+    issues: ['Just want to write', 'Ideas that are vanishing', 'Simplicity that works'],
   },
 ]
 
@@ -52,9 +36,9 @@ export const Problem = (): React.ReactElement => {
 
         <AnimatedElement animation="fadeIn" delay={100}>
           <p className={styles.description}>
-            You just want to capture a thought before it disappears. But instead, you're 
-            waiting for Notion to load. Navigating through nested folders in Obsidian. 
-            Watching Evernote stutter as you type.
+            You just want to capture a thought before it disappears. But instead, you're waiting for
+            Notion to load. Navigating through nested folders in Obsidian. Watching Evernote stutter
+            as you type.
           </p>
           <p className={styles.descriptionEmphasis}>
             Your tools should be invisible. Instead, they're in your way.
@@ -86,8 +70,8 @@ export const Problem = (): React.ReactElement => {
         <AnimatedElement animation="fadeIn" delay={300}>
           <div className={styles.impact}>
             <p className={styles.impactStatement}>
-              You waste <strong>5 minutes every day</strong> fighting with your note-taking app. 
-              That's <strong>30 hours a year</strong>—an entire work week—lost to friction that 
+              You waste <strong>5 minutes every day</strong> fighting with your note-taking app.
+              That's <strong>30 hours a year</strong>—an entire work week—lost to friction that
               shouldn't exist.
             </p>
             <p className={styles.emotionalHook}>You deserve better.</p>

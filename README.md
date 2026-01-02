@@ -139,6 +139,7 @@ Generates app icons and favicons from `public/favicon.svg`:
 - **favicon.ico**: Multi-resolution ICO file for legacy browsers
 
 Generated files:
+
 ```
 public/
 ├── favicon-16x16.png
@@ -162,6 +163,7 @@ Generates optimized mockup images from SVG sources in `public/mockups/`:
 - Preserves aspect ratio and uses transparent backgrounds
 
 Generated files:
+
 ```
 public/mockups/
 ├── notes-list.png
@@ -195,6 +197,7 @@ Expected file size reductions compared to PNG:
 - **AVIF**: 40-50% smaller
 
 For a typical 100KB PNG mockup:
+
 - WebP: ~70KB (30% savings)
 - AVIF: ~55KB (45% savings)
 

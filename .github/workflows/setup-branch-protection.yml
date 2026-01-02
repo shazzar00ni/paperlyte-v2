@@ -1,0 +1,73 @@
+name: Setup Branch Protection
+
+# This workflow can be manually triggered to configure branch protection rules
+# It requires a BRANCH_PROTECTION_TOKEN secret with 'repo' scope
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to protect'
+        required: true
+        default: 'main'
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  configure-protection:
+    name: Configure Branch Protection
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Validate branch exists
+        run: |
+          git fetch origin
+          if git show-ref --verify --quiet refs/remotes/origin/${{ inputs.branch }}; then
+            echo "✓ Branch '${{ inputs.branch }}' exists"
+          else
+            echo "✗ Branch '${{ inputs.branch }}' does not exist"
+            exit 1
+          fi
+
+      - name: Configure branch protection
+        env:
+          GITHUB_TOKEN: ${{ secrets.BRANCH_PROTECTION_TOKEN }}
+          BRANCH: ${{ inputs.branch }}
+        run: |
+          if [ -z "$GITHUB_TOKEN" ]; then
+            echo "❌ Error: BRANCH_PROTECTION_TOKEN secret is not configured"
+            echo ""
+            echo "To set it up:"
+            echo "1. Create a Personal Access Token with 'repo' scope"
+            echo "2. Go to repository Settings > Secrets and variables > Actions"
+            echo "3. Create a new secret named 'BRANCH_PROTECTION_TOKEN'"
+            exit 1
+          fi
+
+          ./.github/scripts/setup-branch-protection.sh
+
+      - name: Verify protection rules
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "## Branch Protection Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Branch protection has been configured for: **${{ inputs.branch }}**" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Required Status Checks" >> $GITHUB_STEP_SUMMARY
+          echo "- Lint and Type Check" >> $GITHUB_STEP_SUMMARY
+          echo "- Build" >> $GITHUB_STEP_SUMMARY
+          echo "- Lighthouse CI" >> $GITHUB_STEP_SUMMARY
+          echo "- CI Success" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Pull Request Requirements" >> $GITHUB_STEP_SUMMARY
+          echo "- At least 1 approval required" >> $GITHUB_STEP_SUMMARY
+          echo "- Dismiss stale reviews on new commits" >> $GITHUB_STEP_SUMMARY
+          echo "- Require conversation resolution" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "View settings: https://github.com/${{ github.repository }}/settings/branches" >> $GITHUB_STEP_SUMMARY

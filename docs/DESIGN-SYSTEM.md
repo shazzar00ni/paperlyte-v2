@@ -87,8 +87,8 @@ A comprehensive design system for Paperlyte - a lightning-fast, distraction-free
 --color-primary: #3b82f6;        /* Blue 500 - Consistent brand color */
 --color-primary-dark: #2563eb;   /* Blue 600 - Hover states */
 --color-primary-light: #60a5fa;  /* Blue 400 - Accents */
---color-primary-faint: rgba(124, 58, 237, 0.1);    /* 10% opacity for backgrounds */
---color-primary-fainter: rgba(124, 58, 237, 0.05); /* 5% opacity for subtle backgrounds */
+--color-primary-faint: rgba(59, 130, 246, 0.1);    /* 10% opacity for backgrounds */
+--color-primary-fainter: rgba(59, 130, 246, 0.05); /* 5% opacity for subtle backgrounds */
 --color-background: #0F172A;     /* Slate 900 - Dark background */
 --color-surface: #1E293B;        /* Slate 800 - Card backgrounds */
 --color-text-primary: #F1F5F9;   /* Slate 100 - Light text */
@@ -1959,7 +1959,7 @@ textarea:focus,
 select:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 ```
 

@@ -79,7 +79,7 @@ A comprehensive design system documented in `/docs/DESIGN-SYSTEM.md`:
 
 ### Visual Identity
 
-- **Color Palette**: Clean, paper-inspired palette with purple (#7C3AED) accent
+- **Color Palette**: Clean, paper-inspired palette with blue (#3B82F6) accent
 - **Typography**: Dual font system (Inter for UI, Playfair Display for headlines)
 - **Spacing**: Consistent spacing system using rem units (0.5rem/8px base increment)
 - **Buttons**: Pill-shaped design (border-radius: 9999px)

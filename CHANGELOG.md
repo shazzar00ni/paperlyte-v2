@@ -91,7 +91,7 @@ _All changes have been released in version 1.0.0. This section will track future
 #### Design System
 
 - Comprehensive design system documentation (3195+ lines)
-- Purple accent color (#7C3AED) with paper-inspired palette
+- Blue accent color (#3B82F6) with paper-inspired palette
 - Dual typography system (Inter for UI, Playfair Display for headlines)
 - CSS custom properties for theming
 - Consistent spacing system using rem units (0.5rem/8px base increment)

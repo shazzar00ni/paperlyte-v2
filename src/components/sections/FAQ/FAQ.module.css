@@ -27,7 +27,7 @@
 }
 
 .link:hover {
-  color: var(--color-primary-dark, #6a1bb3);
+  color: var(--color-primary-dark, #1d4ed8);
   text-decoration: underline;
 }
 

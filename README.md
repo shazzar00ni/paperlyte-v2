@@ -4,6 +4,10 @@
 
 Lightning-fast, distraction-free note-taking application landing page built with React, TypeScript, and Vite.
 
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/shazzar00ni/paperlyte-v2?utm_source=oss&utm_medium=github&utm_campaign=shazzar00ni%2Fpaperlyte-v2&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
+
+[![PR Quality Check](https://github.com/shazzar00ni/paperlyte-v2/actions/workflows/pr-quality-check.yml/badge.svg)](https://github.com/shazzar00ni/paperlyte-v2/actions/workflows/pr-quality-check.yml)
+
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![React](https://img.shields.io/badge/React-19.2.0-blue)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-blue)

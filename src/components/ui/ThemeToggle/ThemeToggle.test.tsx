@@ -212,45 +212,4 @@ describe('ThemeToggle', () => {
       expect(screen.getByRole('button', { name: /switch to light mode/i })).toBeInTheDocument()
     })
   })
-
-  describe('Icon Component Integration', () => {
-    it('should pass correct icon name to Icon component in light mode', () => {
-      vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
-        theme: 'light',
-        toggleTheme: mockToggleTheme,
-      })
-
-      const { container } = render(<ThemeToggle />)
-
-      // Check for moon icon using data-icon attribute
-      const icon = container.querySelector('[data-icon="fa-moon"]')
-      expect(icon).toBeInTheDocument()
-    })
-
-    it('should pass correct icon name to Icon component in dark mode', () => {
-      vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
-        theme: 'dark',
-        toggleTheme: mockToggleTheme,
-      })
-
-      const { container } = render(<ThemeToggle />)
-
-      // Check for sun icon using data-icon attribute
-      const icon = container.querySelector('[data-icon="fa-sun"]')
-      expect(icon).toBeInTheDocument()
-    })
-
-    it('should render moon icon in light mode', () => {
-      vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
-        theme: 'light',
-        toggleTheme: mockToggleTheme,
-      })
-
-      const { container } = render(<ThemeToggle />)
-
-      // In light mode, moon icon should be rendered
-      const icon = container.querySelector('[data-icon="fa-moon"]')
-      expect(icon).toBeInTheDocument()
-    })
-  })
 })

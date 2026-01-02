@@ -25,7 +25,7 @@ describe('Features', () => {
     })
   })
 
-  it('should render feature icons', () => {
+  it('should render decorative feature icons with aria-hidden', () => {
     const { container } = render(<Features />)
 
     // Icons are decorative, so check for them using data-icon attribute

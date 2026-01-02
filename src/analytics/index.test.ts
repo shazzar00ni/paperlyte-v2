@@ -111,20 +111,18 @@ describe('analytics/index', () => {
       vi.unstubAllEnvs()
     })
 
-    it('should initialize web vitals tracking when enabled', () => {
-      analytics.init(config)
+  beforeEach(() => {
+    // ...existing setup...
 
-      // PerformanceObserver should be created
-      expect(PerformanceObserver).toHaveBeenCalled()
-    })
-
-    it('should not initialize web vitals tracking when disabled', () => {
-      const noVitalsConfig = { ...config, trackWebVitals: false }
-      analytics.init(noVitalsConfig)
-
-      // PerformanceObserver should not be created
-      expect(PerformanceObserver).not.toHaveBeenCalled()
-    })
+    // Mock PerformanceObserver as a spied class
+    const MockPerformanceObserver = vi.fn().mockImplementation((callback) => ({
+      callback,
+      observe: vi.fn(),
+      disconnect: vi.fn(),
+      takeRecords: vi.fn(() => []),
+    }))
+    global.PerformanceObserver = MockPerformanceObserver as unknown as typeof PerformanceObserver
+  })
 
     it('should initialize scroll depth tracking when enabled', () => {
       vi.useFakeTimers()

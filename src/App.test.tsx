@@ -49,19 +49,19 @@ describe('App Integration', () => {
   it('should have accessible landmark regions with proper roles', () => {
     render(<App />)
 
-    // Use role queries for accessibility testing
-    const banner = screen.getByRole('banner') // header
-    const main = screen.getByRole('main')
-    const contentinfo = screen.getByRole('contentinfo') // footer
+    // Verify all landmark regions are accessible
+    const banners = screen.getAllByRole('banner')
+    expect(banners.length).toBeGreaterThan(0)
 
-    expect(banner).toBeInTheDocument()
+    const main = screen.getByRole('main')
     expect(main).toBeInTheDocument()
     expect(main).toHaveAttribute('id', 'main')
-    expect(contentinfo).toBeInTheDocument()
 
-    // Verify navigation is accessible
-    const navigation = screen.getByRole('navigation')
-    expect(navigation).toBeInTheDocument()
+    expect(screen.getByRole('contentinfo')).toBeInTheDocument()
+
+    // Verify both navigation regions exist: Header and Footer navigation
+    const navigation = screen.getAllByRole('navigation')
+    expect(navigation).toHaveLength(2)
   })
 
   it('should render Hero section', () => {
@@ -110,25 +110,23 @@ describe('App Integration', () => {
 
     // Verify specific CTA content is present
     expect(screen.getByText(/Stop fighting your tools/i)).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /Join the Waitlist/i })).toBeInTheDocument()
+    // Check that at least one "Join the Waitlist" button exists
+    expect(screen.getAllByRole('button', { name: /Join the Waitlist/i }).length).toBeGreaterThan(0)
   })
 
   it('should render Footer component', () => {
-    const { container } = render(<App />)
-
-    const footer = container.querySelector('footer')
-    expect(footer).toBeInTheDocument()
+    render(<App />)
 
     // Semantic <footer> element provides implicit contentinfo role
-    // Verify it's accessible via the contentinfo role
+    // Verify it's accessible to assistive technologies
     expect(screen.getByRole('contentinfo')).toBeInTheDocument()
   })
 
   it('should render CTA buttons in download section', () => {
     render(<App />)
 
-    // Check for actual CTA buttons
-    expect(screen.getByRole('button', { name: /Join the Waitlist/i })).toBeInTheDocument()
+    // Check for actual CTA buttons (there may be multiple "Join the Waitlist" buttons across sections)
+    expect(screen.getAllByRole('button', { name: /Join the Waitlist/i }).length).toBeGreaterThan(0)
     expect(screen.getByRole('button', { name: /Watch the Demo Again/i })).toBeInTheDocument()
   })
 
@@ -138,7 +136,8 @@ describe('App Integration', () => {
     // Check for specific features (using actual feature names)
     expect(screen.getByText('Lightning Speed')).toBeInTheDocument()
     expect(screen.getByText('Privacy Focused')).toBeInTheDocument()
-    expect(screen.getByText('Tag-Based Organization')).toBeInTheDocument()
+    // Tag-Based Organization may appear multiple times, so use getAllByText
+    expect(screen.getAllByText('Tag-Based Organization').length).toBeGreaterThan(0)
   })
 
   it('should render social links in footer', () => {

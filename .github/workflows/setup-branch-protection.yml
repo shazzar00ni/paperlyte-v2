@@ -49,25 +49,5 @@ jobs:
             exit 1
           fi
 
+          # The script provides comprehensive output including success/failure status
           ./.github/scripts/setup-branch-protection.sh
-
-      - name: Verify protection rules
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "## Branch Protection Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Branch protection has been configured for: **${{ inputs.branch }}**" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Required Status Checks" >> $GITHUB_STEP_SUMMARY
-          echo "- Lint and Type Check" >> $GITHUB_STEP_SUMMARY
-          echo "- Build" >> $GITHUB_STEP_SUMMARY
-          echo "- Lighthouse CI" >> $GITHUB_STEP_SUMMARY
-          echo "- CI Success" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Pull Request Requirements" >> $GITHUB_STEP_SUMMARY
-          echo "- At least 1 approval required" >> $GITHUB_STEP_SUMMARY
-          echo "- Dismiss stale reviews on new commits" >> $GITHUB_STEP_SUMMARY
-          echo "- Require conversation resolution" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "View settings: https://github.com/${{ github.repository }}/settings/branches" >> $GITHUB_STEP_SUMMARY

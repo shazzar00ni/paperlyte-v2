@@ -105,7 +105,7 @@ This method is useful for updating protection rules or setting up protection on 
 
 The branch protection rules integrate with the CI/CD pipeline defined in `.github/workflows/ci.yml`:
 
-```
+```text
 Pull Request Created/Updated
   ↓
 Run CI Pipeline
@@ -131,6 +131,7 @@ Merge allowed ✓
 **Problem**: The branch doesn't exist on the remote repository.
 
 **Solution**:
+
 ```bash
 # Check if branch exists
 git ls-remote --heads origin main
@@ -188,6 +189,7 @@ When adding new CI jobs that should be required:
 3. Re-run the setup script
 
 Example:
+
 ```json
 {
   "context": "New Check Name",

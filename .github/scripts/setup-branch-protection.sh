@@ -111,7 +111,14 @@ else
     echo "HTTP Status Code: $HTTP_CODE"
     echo ""
     echo "Response:"
-    echo "$BODY" | python3 -m json.tool 2>/dev/null || echo "$BODY"
+    # Pretty-print JSON: prefer jq, fall back to python3, then raw output
+    if command -v jq >/dev/null 2>&1; then
+        echo "$BODY" | jq . 2>/dev/null || echo "$BODY"
+    elif command -v python3 >/dev/null 2>&1; then
+        echo "$BODY" | python3 -m json.tool 2>/dev/null || echo "$BODY"
+    else
+        echo "$BODY"
+    fi
     echo ""
 
     if [ "$HTTP_CODE" -eq 404 ]; then

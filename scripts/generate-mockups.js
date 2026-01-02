@@ -118,6 +118,7 @@ async function main() {
   // Generate all mockup images
   try {
     const generatedFiles = []
+    const failedGenerations = []
 
     for (const mockup of mockups) {
       const { source, width, height } = mockup
@@ -133,9 +134,16 @@ async function main() {
 
       // Generate all formats for this mockup
       for (const { ext, options } of formats) {
-        await generateMockup(source, width, height, ext, options)
-        const baseName = source.replace('.svg', '')
-        generatedFiles.push(`${baseName}.${ext}`)
+        try {
+          await generateMockup(source, width, height, ext, options)
+          const baseName = source.replace('.svg', '')
+          generatedFiles.push(`${baseName}.${ext}`)
+        } catch (error) {
+          // Log error but continue to next format
+          const errorMessage = error instanceof Error ? error.message : String(error)
+          console.error(`❌ Failed to generate ${source} -> .${ext}: ${errorMessage}`)
+          failedGenerations.push({ source, format: ext, error: errorMessage })
+        }
       }
 
       console.log('') // Empty line between mockups
@@ -147,11 +155,40 @@ async function main() {
       process.exit(1)
     }
 
-    console.log('✨ All mockups generated successfully!')
-    console.log('\nGenerated files:')
+    // Report results
+    if (failedGenerations.length === 0) {
+      console.log('✨ All mockups generated successfully!')
+    } else {
+      console.log('⚠️  Mockup generation completed with some failures\n')
+      console.log('Failed generations:')
+      failedGenerations.forEach(({ source, format, error }) => {
+        console.log(`  ❌ ${source} -> .${format}: ${error}`)
+      })
+      console.log('')
+    }
+
+    console.log('Generated files:')
     generatedFiles.forEach((file) => {
       console.log(`  - ${file}`)
     })
+
+    // Check if critical formats failed
+    // PNG is considered critical as it's the universal fallback
+    const criticalFailures = failedGenerations.filter((f) => f.format === 'png')
+
+    if (criticalFailures.length > 0) {
+      console.error('\n❌ Critical format (PNG) generation failed!')
+      console.error('PNG is required as the universal fallback format.')
+      console.error('\nFailed PNG generations:')
+      criticalFailures.forEach(({ source, error }) => {
+        console.error(`  - ${source}: ${error}`)
+      })
+      process.exit(1)
+    } else if (failedGenerations.length > 0) {
+      console.log('\n⚠️  Note: Some modern formats failed, but PNG fallbacks are available.')
+      console.log('The site will still work, but some browsers may not get optimized images.')
+      // Exit successfully - graceful degradation
+    }
   } catch (error) {
     console.error('\n❌ Mockup generation failed')
     process.exit(1)

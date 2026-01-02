@@ -222,11 +222,8 @@ describe('ThemeToggle', () => {
 
       const { container } = render(<ThemeToggle />)
 
-      // Icon component may render as SVG or <i> tag
-      const icon =
-        container.querySelector('.fa-moon') ||
-        container.querySelector('i') ||
-        container.querySelector('svg')
+      // Check for moon icon using data-icon attribute
+      const icon = container.querySelector('[data-icon="fa-moon"]')
       expect(icon).toBeInTheDocument()
     })
 
@@ -238,11 +235,8 @@ describe('ThemeToggle', () => {
 
       const { container } = render(<ThemeToggle />)
 
-      // Icon component may render as SVG or <i> tag
-      const icon =
-        container.querySelector('.fa-sun') ||
-        container.querySelector('i') ||
-        container.querySelector('svg')
+      // Check for sun icon using data-icon attribute
+      const icon = container.querySelector('[data-icon="fa-sun"]')
       expect(icon).toBeInTheDocument()
     })
 

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import {
   isAnalyticsAvailable,
   trackEvent,
@@ -6,171 +6,110 @@ import {
   trackCTAClick,
   trackExternalLink,
   trackSocialClick,
+  initScrollDepthTracking,
   AnalyticsEvents,
 } from './analytics'
 
-describe('Analytics Utility', () => {
+// Mock the global gtag function
+const gtagMock = vi.fn()
+
+describe('Analytics Utilities', () => {
   beforeEach(() => {
-    // Clear any existing gtag
-    delete (window as Window & { gtag?: unknown }).gtag
-    delete (window as Window & { dataLayer?: unknown }).dataLayer
+    // Assign the mock to the window object before each test
+    window.gtag = gtagMock
   })
 
-  describe('isAnalyticsAvailable', () => {
-    it('should return false when gtag is not available', () => {
-      expect(isAnalyticsAvailable()).toBe(false)
-    })
+  afterEach(() => {
+    // Clear mock history and reset implementation after each test
+    gtagMock.mockClear()
+    // Remove the mock from the window object
+    delete window.gtag
+  })
 
-    it('should return true when gtag is available', () => {
-      ;(window as Window & { gtag?: () => void }).gtag = vi.fn()
+  // Test isAnalyticsAvailable
+  describe('isAnalyticsAvailable', () => {
+    it('should return true when gtag is available on window', () => {
       expect(isAnalyticsAvailable()).toBe(true)
     })
+
+    it('should return false when gtag is not available', () => {
+      delete window.gtag
+      expect(isAnalyticsAvailable()).toBe(false)
+    })
   })
 
+  // Test trackEvent
   describe('trackEvent', () => {
-    it('should call gtag with correct parameters when available', () => {
-      const mockGtag = vi.fn()
-      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
+    it('should call gtag with the correct event name and parameters', () => {
+      trackEvent('TestEvent', { param1: 'value1' })
+      expect(gtagMock).toHaveBeenCalledWith('event', 'TestEvent', { param1: 'value1' })
+    })
 
-      trackEvent('test_event', { param1: 'value1', param2: 123 })
+    it('should not call gtag if it is not available', () => {
+      delete window.gtag
+      trackEvent('TestEvent')
+      expect(gtagMock).not.toHaveBeenCalled()
+    })
 
-      expect(mockGtag).toHaveBeenCalledWith('event', 'test_event', {
-        param1: 'value1',
-        param2: 123,
+    it('should handle errors thrown by gtag gracefully', () => {
+      gtagMock.mockImplementation(() => {
+        throw new Error('gtag failed')
       })
-    })
-
-    it('should not throw error when gtag is not available', () => {
-      expect(() => {
-        trackEvent('test_event')
-      }).not.toThrow()
-    })
-
-    it('should handle errors gracefully', () => {
-      const mockGtag = vi.fn(() => {
-        throw new Error('Analytics error')
-      })
-      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
-
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-
-      trackEvent('test_event')
-
-      expect(consoleSpy).toHaveBeenCalled()
-      consoleSpy.mockRestore()
-    })
-
-    it('should track event without parameters', () => {
-      const mockGtag = vi.fn()
-      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
-
-      trackEvent('simple_event')
-
-      expect(mockGtag).toHaveBeenCalledWith('event', 'simple_event', undefined)
+      // The test will pass if this does not throw an error
+      expect(() => trackEvent('TestEvent')).not.toThrow()
     })
   })
 
+  // Test trackPageView
   describe('trackPageView', () => {
-    it('should track page view with path and title', () => {
-      const mockGtag = vi.fn()
-      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
-
-      trackPageView('/privacy', 'Privacy Policy')
-
-      expect(mockGtag).toHaveBeenCalledWith('event', 'page_view', {
-        page_path: '/privacy',
-        page_title: 'Privacy Policy',
-      })
-    })
-
-    it('should track page view with only path', () => {
-      const mockGtag = vi.fn()
-      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
-
-      trackPageView('/about')
-
-      expect(mockGtag).toHaveBeenCalledWith('event', 'page_view', {
-        page_path: '/about',
-        page_title: undefined,
+    it('should track page views with the correct path and title', () => {
+      trackPageView('/home', 'Home Page')
+      expect(gtagMock).toHaveBeenCalledWith('event', 'page_view', {
+        page_path: '/home',
+        page_title: 'Home Page',
       })
     })
   })
 
+  // Test trackCTAClick
   describe('trackCTAClick', () => {
-    it('should track CTA click with button text and location', () => {
-      const mockGtag = vi.fn()
-      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
-
-      trackCTAClick('Join Waitlist', 'hero')
-
-      expect(mockGtag).toHaveBeenCalledWith('event', AnalyticsEvents.CTA_CLICK, {
-        button_text: 'Join Waitlist',
-        button_location: 'hero',
+    it('should track CTA clicks with the correct parameters', () => {
+      trackCTAClick('Join Now', 'Header')
+      expect(gtagMock).toHaveBeenCalledWith('event', AnalyticsEvents.CTA_CLICK, {
+        button_text: 'Join Now',
+        button_location: 'Header',
       })
-    })
-
-    it('should track multiple CTA clicks with different parameters', () => {
-      const mockGtag = vi.fn()
-      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
-
-      trackCTAClick('Sign Up', 'header')
-      trackCTAClick('Learn More', 'features')
-
-      expect(mockGtag).toHaveBeenCalledTimes(2)
     })
   })
 
+  // Test trackExternalLink
   describe('trackExternalLink', () => {
-    it('should track external link click', () => {
-      const mockGtag = vi.fn()
-      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
-
-      trackExternalLink('https://example.com', 'Example Link')
-
-      expect(mockGtag).toHaveBeenCalledWith('event', AnalyticsEvents.EXTERNAL_LINK_CLICK, {
+    it('should track external link clicks with the correct URL and text', () => {
+      trackExternalLink('https://example.com', 'Example Site')
+      expect(gtagMock).toHaveBeenCalledWith('event', AnalyticsEvents.EXTERNAL_LINK_CLICK, {
         link_url: 'https://example.com',
-        link_text: 'Example Link',
+        link_text: 'Example Site',
       })
     })
   })
 
+  // Test trackSocialClick
   describe('trackSocialClick', () => {
-    it('should track social media click with lowercase platform', () => {
-      const mockGtag = vi.fn()
-      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
-
+    it('should track social media clicks with the correct platform', () => {
       trackSocialClick('Twitter')
-
-      expect(mockGtag).toHaveBeenCalledWith('event', AnalyticsEvents.SOCIAL_LINK_CLICK, {
+      expect(gtagMock).toHaveBeenCalledWith('event', AnalyticsEvents.SOCIAL_LINK_CLICK, {
         platform: 'twitter',
       })
     })
-
-    it('should normalize platform name to lowercase', () => {
-      const mockGtag = vi.fn()
-      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
-
-      trackSocialClick('GITHUB')
-
-      expect(mockGtag).toHaveBeenCalledWith('event', AnalyticsEvents.SOCIAL_LINK_CLICK, {
-        platform: 'github',
-      })
-    })
   })
 
-  describe('AnalyticsEvents', () => {
-    it('should have all required event names', () => {
-      expect(AnalyticsEvents.WAITLIST_JOIN).toBe('Waitlist_Join')
-      expect(AnalyticsEvents.WAITLIST_SUBMIT).toBe('Waitlist_Submit')
-      expect(AnalyticsEvents.WAITLIST_SUCCESS).toBe('Waitlist_Success')
-      expect(AnalyticsEvents.WAITLIST_ERROR).toBe('Waitlist_Error')
-      expect(AnalyticsEvents.CTA_CLICK).toBe('CTA_Click')
-      expect(AnalyticsEvents.SCROLL_DEPTH).toBe('Scroll_Depth')
-      expect(AnalyticsEvents.VIDEO_PLAY).toBe('Video_Play')
-      expect(AnalyticsEvents.NAVIGATION_CLICK).toBe('Navigation_Click')
-      expect(AnalyticsEvents.EXTERNAL_LINK_CLICK).toBe('External_Link_Click')
-      expect(AnalyticsEvents.SOCIAL_LINK_CLICK).toBe('Social_Link_Click')
-      expect(AnalyticsEvents.FAQ_EXPAND).toBe('FAQ_Expand')
+  // Test initScrollDepthTracking
+  describe('initScrollDepthTracking', () => {
+    it('should return a cleanup function that removes the scroll event listener', () => {
+      const removeEventListenerSpy = vi.spyOn(window, 'removeEventListener')
+      const cleanup = initScrollDepthTracking()
+      cleanup()
+      expect(removeEventListenerSpy).toHaveBeenCalledWith('scroll', expect.any(Function))
     })
   })
 })

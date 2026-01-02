@@ -80,12 +80,18 @@ export function getFocusableElements(container: HTMLElement): HTMLElement[] {
   // elements in selector order rather than document order
   elementsArray.sort((a, b) => {
     const position = a.compareDocumentPosition(b)
-    if (position & Node.DOCUMENT_POSITION_FOLLOWING) {
-      return -1 // a comes before b
+
+    // Handle containment relationships (one node contains the other)
+    if (position & Node.DOCUMENT_POSITION_CONTAINED_BY) {
+      return -1 // a contains b, so a comes first
+    } else if (position & Node.DOCUMENT_POSITION_CONTAINS) {
+      return 1 // b contains a, so b comes first
+    } else if (position & Node.DOCUMENT_POSITION_FOLLOWING) {
+      return -1 // a comes before b in document order
     } else if (position & Node.DOCUMENT_POSITION_PRECEDING) {
-      return 1 // b comes before a
+      return 1 // b comes before a in document order
     }
-    return 0
+    return 0 // Same node (shouldn't happen in practice)
   })
 
   return elementsArray

@@ -248,8 +248,8 @@ describe('ThemeToggle', () => {
 
       const { container } = render(<ThemeToggle />)
 
-      // Icon component applies size - check that an icon is rendered
-      const icon = container.querySelector('i') || container.querySelector('svg')
+      // In light mode, moon icon should be rendered
+      const icon = container.querySelector('[data-icon="fa-moon"]')
       expect(icon).toBeInTheDocument()
     })
   })

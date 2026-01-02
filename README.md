@@ -144,19 +144,6 @@ Generates app icons and favicons from `public/favicon.svg`:
 
 Generated files:
 
-```
-public/
-├── favicon-16x16.png
-├── favicon-32x32.png
-├── apple-touch-icon.png
-├── android-chrome-192x192.png
-├── android-chrome-192x192.webp
-├── android-chrome-192x192.avif
-├── android-chrome-512x512.png
-├── android-chrome-512x512.webp
-├── android-chrome-512x512.avif
-└── favicon.ico
-```
 
 #### Mockups (`npm run generate:mockups`)
 

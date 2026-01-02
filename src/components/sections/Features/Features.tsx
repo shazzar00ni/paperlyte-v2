@@ -27,7 +27,6 @@ export const Features = (): React.ReactElement => {
                   name={feature.icon}
                   size="2x"
                   color="var(--color-primary)"
-                  ariaLabel={`${feature.title} icon`}
                 />
               </div>
               <h3 className={styles.cardTitle}>{feature.title}</h3>

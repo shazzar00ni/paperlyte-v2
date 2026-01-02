@@ -8,7 +8,7 @@ set -e
 # Configuration
 REPO_OWNER="shazzar00ni"
 REPO_NAME="paperlyte-v2"
-BRANCH="main"
+BRANCH="${BRANCH:-main}"
 
 # Color codes for output
 RED='\033[0;31m'

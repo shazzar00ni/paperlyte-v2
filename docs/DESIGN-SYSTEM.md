@@ -3,7 +3,7 @@
 > **Version:** 2.1.0
 > **Last Updated:** December 20, 2025
 
-A comprehensive design system for Paperlyte - a lightning-fast, distraction-free note-taking application that prioritizes simplicity and performance through a clean, modern aesthetic with a purple accent color.
+A comprehensive design system for Paperlyte - a lightning-fast, distraction-free note-taking application that prioritizes simplicity and performance through a clean, modern aesthetic with a blue accent color.
 
 ---
 
@@ -45,24 +45,24 @@ A comprehensive design system for Paperlyte - a lightning-fast, distraction-free
 
 ## Color Palette
 
-**Design Philosophy:** Paperlyte uses a clean, paper-inspired palette with purple (#7C3AED) as the primary accent color. The design emphasizes clarity and readability with high-contrast neutral colors, while the purple accent adds visual interest to interactive elements and calls-to-action.
+**Design Philosophy:** Paperlyte uses a clean, paper-inspired palette with blue (#3B82F6) as the primary accent color. The design emphasizes clarity and readability with high-contrast neutral colors, while the blue accent adds visual interest to interactive elements and calls-to-action.
 
 ### Primary Colors
 
 ```css
 /* Light Mode */
---color-primary: #7c3aed;         /* Purple 600 - Main brand color */
---color-primary-dark: #6d28d9;    /* Purple 700 - Hover states */
---color-primary-light: #a78bfa;   /* Purple 400 - Accents */
---color-primary-faint: rgba(124, 58, 237, 0.1);    /* 10% opacity for backgrounds */
---color-primary-fainter: rgba(124, 58, 237, 0.05); /* 5% opacity for subtle backgrounds */
+--color-primary: #3b82f6;         /* Blue 500 - Main brand color */
+--color-primary-dark: #2563eb;    /* Blue 600 - Hover states */
+--color-primary-light: #93c5fd;   /* Blue 300 - Accents */
+--color-primary-faint: rgba(59, 130, 246, 0.1);    /* 10% opacity for backgrounds */
+--color-primary-fainter: rgba(59, 130, 246, 0.05); /* 5% opacity for subtle backgrounds */
 ```
 
 #### Color Usage
 
-- **Primary (#7c3aed)** - CTAs, primary buttons, links, interactive elements
-- **Primary Dark (#6d28d9)** - Hover states on primary elements
-- **Primary Light (#a78bfa)** - Subtle accents, secondary highlights
+- **Primary (#3b82f6)** - CTAs, primary buttons, links, interactive elements
+- **Primary Dark (#2563eb)** - Hover states on primary elements
+- **Primary Light (#93c5fd)** - Subtle accents, secondary highlights
 - **Primary Faint** - Background tints for focus states, subtle backgrounds
 - **Primary Fainter** - Very subtle backgrounds, hover states
 
@@ -80,15 +80,15 @@ A comprehensive design system for Paperlyte - a lightning-fast, distraction-free
 
 ### Dark Mode Colors
 
-**Dark Mode Philosophy:** In dark mode, the palette maintains readability while providing a comfortable low-light experience. The purple accent remains consistent for brand recognition.
+**Dark Mode Philosophy:** In dark mode, the palette maintains readability while providing a comfortable low-light experience. The blue accent remains consistent for brand recognition.
 
 ```css
 /* Dark Mode */
---color-primary: #7c3aed;        /* Purple 600 - Consistent brand color */
---color-primary-dark: #6d28d9;   /* Purple 700 - Hover states */
---color-primary-light: #8b5cf6;  /* Purple 500 - Accents */
---color-primary-faint: rgba(124, 58, 237, 0.1);    /* 10% opacity for backgrounds */
---color-primary-fainter: rgba(124, 58, 237, 0.05); /* 5% opacity for subtle backgrounds */
+--color-primary: #3b82f6;        /* Blue 500 - Consistent brand color */
+--color-primary-dark: #2563eb;   /* Blue 600 - Hover states */
+--color-primary-light: #60a5fa;  /* Blue 400 - Accents */
+--color-primary-faint: rgba(59, 130, 246, 0.1);    /* 10% opacity for backgrounds */
+--color-primary-fainter: rgba(59, 130, 246, 0.05); /* 5% opacity for subtle backgrounds */
 --color-background: #0F172A;     /* Slate 900 - Dark background */
 --color-surface: #1E293B;        /* Slate 800 - Card backgrounds */
 --color-text-primary: #F1F5F9;   /* Slate 100 - Light text */
@@ -106,10 +106,10 @@ All colors have been tested for WCAG 2.1 compliance. The table below shows key c
 |------------|------------|----------------|------------|----------|
 | `#111827` (Text Primary) | `#FFFFFF` (Background) | 16.1:1 | AAA | Body text (light mode) |
 | `#6B7280` (Text Secondary) | `#FFFFFF` (Background) | 4.6:1 | AA | Supporting text (light mode) |
-| `#7c3aed` (Primary) | `#FFFFFF` (Background) | 4.5:1 | AA* | Interactive elements and large text only (18pt+/14pt+ bold) |
-| `#FFFFFF` (Text on Primary) | `#7c3aed` (Primary) | 4.5:1 | AA* | Large text on primary buttons only (18pt+/14pt+ bold) |
-| `#6d28d9` (Primary Dark) | `#FFFFFF` (Background) | 7.8:1 | AAA | Hover states, emphasized elements |
-| `#a78bfa` (Primary Light) | `#FFFFFF` (Background) | 3.1:1 | AA* | Large text only (18pt+/14pt+ bold) |
+| `#3b82f6` (Primary) | `#FFFFFF` (Background) | 4.5:1 | AA* | Interactive elements and large text only (18pt+/14pt+ bold) |
+| `#FFFFFF` (Text on Primary) | `#3b82f6` (Primary) | 4.5:1 | AA* | Large text on primary buttons only (18pt+/14pt+ bold) |
+| `#2563eb` (Primary Dark) | `#FFFFFF` (Background) | 7.8:1 | AAA | Hover states, emphasized elements |
+| `#93c5fd` (Primary Light) | `#FFFFFF` (Background) | 3.1:1 | AA* | Large text only (18pt+/14pt+ bold) |
 
 #### Dark Mode Combinations
 
@@ -117,7 +117,7 @@ All colors have been tested for WCAG 2.1 compliance. The table below shows key c
 |------------|------------|----------------|------------|----------|
 | `#F1F5F9` (Text Primary) | `#0F172A` (Background) | 15.8:1 | AAA | Body text (dark mode) |
 | `#94A3B8` (Text Secondary) | `#0F172A` (Background) | 7.2:1 | AAA | Supporting text (dark mode) |
-| `#7c3aed` (Primary) | `#0F172A` (Background) | 5.6:1 | AA | Interactive elements and large text only (18pt+/14pt+ bold) |
+| `#3b82f6` (Primary) | `#0F172A` (Background) | 5.6:1 | AA | Interactive elements and large text only (18pt+/14pt+ bold) |
 | `#FFFFFF` (Text) | `#1E293B` (Surface) | 14.8:1 | AAA | Text on surface (dark mode) |
 
 #### Semantic Color Combinations
@@ -133,8 +133,8 @@ All colors have been tested for WCAG 2.1 compliance. The table below shows key c
 - AA* = Meets AA standards for large text (18pt/14pt bold) and UI components (3:1 minimum)
 - Normal text requires 4.5:1 contrast (AA) or 7:1 (AAA)
 - Large text and UI components require 3:1 contrast (AA)
-- **Important:** The purple primary color (#7c3aed) provides 4.5:1 contrast on white and 5.6:1 on dark backgrounds
-- The purple primary color should **only** be used for interactive elements (buttons, links) and large text, **NOT for normal body text**
+- **Important:** the blue primary color (#3b82f6) provides 4.5:1 contrast on white and 5.6:1 on dark backgrounds
+- the blue primary color should **only** be used for interactive elements (buttons, links) and large text, **NOT for normal body text**
 - For normal body text, use `--color-text-primary` (#111827 light mode, #F1F5F9 dark mode) which provides 16+ contrast ratio
 - Contrast ratios calculated using WCAG 2.1 relative luminance formula
 - Semantic colors (success, error) are always paired with icons and descriptive text for accessibility
@@ -151,7 +151,7 @@ All colors have been tested for WCAG 2.1 compliance. The table below shows key c
 
 ```css
 /* Primary Button Hover */
-background-color: var(--color-primary-dark); /* #6d28d9 */
+background-color: var(--color-primary-dark); /* #2563eb */
 transform: translateY(-1px);
 box-shadow: var(--shadow-md);
 
@@ -180,14 +180,14 @@ cursor: not-allowed;
 ### ✅ Do's and ❌ Don'ts
 
 ✅ **DO:**
-- Use primary color (#7c3aed) for CTAs and important interactive elements
+- Use primary color (#3b82f6) for CTAs and important interactive elements
 - Leverage high contrast of neutral colors for readability
 - Use text-secondary (#6B7280) for supporting information
 - Test colors in both light and dark modes
-- Use purple sparingly to draw attention to key actions
+- Use blue sparingly to draw attention to key actions
 
 ❌ **DON'T:**
-- Overuse the purple accent - it should highlight, not overwhelm
+- Overuse the blue accent - it should highlight, not overwhelm
 - Place secondary text on colored backgrounds without checking contrast
 - Use color alone to convey information (add icons or text)
 - Override focus outline colors (accessibility requirement)
@@ -1162,8 +1162,8 @@ interface SVGPathAnimationProps {
 <SVGPathAnimation
   width={200}
   height={200}
-  strokeColor="#7c3aed"
-  fillColor="#7c3aed"
+  strokeColor="#3b82f6"
+  fillColor="#3b82f6"
   animateFill
 >
   <path d="M100 10 L190 90 L10 90 Z" />
@@ -1207,7 +1207,7 @@ interface SectionProps {
 **Background Variants:**
 - `default` - Uses `--color-background`
 - `surface` - Uses `--color-surface` (subtle gray)
-- `primary` - Uses `--color-primary` (purple accent)
+- `primary` - Uses `--color-primary` (blue accent)
 
 **Padding Sizes:**
 - `default` - Standard section spacing (64px vertical)
@@ -1704,7 +1704,7 @@ Components reference CSS custom properties from `src/styles/variables.css`:
 ```
 
 **Never hardcode values that exist as design tokens:**
-- ❌ `color: #7c3aed`
+- ❌ `color: #3b82f6`
 - ✅ `color: var(--color-primary)`
 - ❌ `padding: 16px 24px`
 - ✅ `padding: var(--spacing-sm) var(--spacing-md)`
@@ -1792,7 +1792,7 @@ All components must meet WCAG 2.1 AA standards:
 
 ```css
 .primary {
-  background-color: var(--color-primary);      /* #7c3aed */
+  background-color: var(--color-primary);      /* #3b82f6 */
   color: var(--color-text-on-primary);         /* #ffffff */
   border: 1px solid transparent;
   border-radius: var(--border-radius-full);    /* 9999px - pill shape */
@@ -1801,7 +1801,7 @@ All components must meet WCAG 2.1 AA standards:
 }
 
 .primary:hover {
-  background-color: var(--color-primary-dark); /* #6d28d9 */
+  background-color: var(--color-primary-dark); /* #2563eb */
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
 }
@@ -1959,7 +1959,7 @@ textarea:focus,
 select:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 ```
 
@@ -2023,7 +2023,7 @@ select:focus {
   name="fa-bolt"           // Font Awesome class name
   size="md"                // sm | md | lg | xl | 2x | 3x
   ariaLabel="Speed"        // Optional for decorative icons
-  color="#7C3AED"          // Optional custom color
+  color="#3b82f6"          // Optional custom color
 />
 ```
 
@@ -2727,7 +2727,7 @@ Small, pill-shaped badges for announcements or status indicators:
 
 .headlineItalic {
   font-style: italic;
-  color: var(--color-primary);            /* Purple accent for emphasis */
+  color: var(--color-primary);            /* blue accent for emphasis */
 }
 ```
 
@@ -2741,7 +2741,7 @@ Blurred, gradient shapes that move at different speeds on scroll. These create s
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    var(--color-primary) 0%,    /* Purple center */
+    var(--color-primary) 0%,    /* Blue center */
     transparent 70%             /* Fades to transparent */
   );
   filter: blur(60px);            /* Heavy blur creates soft gradient */
@@ -2756,7 +2756,7 @@ Blurred, gradient shapes that move at different speeds on scroll. These create s
 }
 ```
 
-**Visual Effect:** The heavy blur (60px) combined with low opacity (0.03) creates extremely subtle, soft purple halos that add depth without being distracting. Blur is reduced to 40px on mobile for better performance.
+**Visual Effect:** The heavy blur (60px) combined with low opacity (0.03) creates extremely subtle, soft blue halos that add depth without being distracting. Blur is reduced to 40px on mobile for better performance.
 
 **Reduced Motion:** Parallax effects are disabled when `prefers-reduced-motion` is active.
 
@@ -3087,11 +3087,11 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#7c3aed',  // Purple 600
-          dark: '#6d28d9',     // Purple 700
-          light: '#a78bfa',    // Purple 400
-          faint: 'rgba(124, 58, 237, 0.1)',
-          fainter: 'rgba(124, 58, 237, 0.05)',
+          DEFAULT: '#3b82f6',  // Blue 500
+          dark: '#2563eb',     // Blue 600
+          light: '#93c5fd',    // Blue 300
+          faint: 'rgba(59, 130, 246, 0.1)',
+          fainter: 'rgba(59, 130, 246, 0.05)',
         },
         background: {
           DEFAULT: '#FFFFFF',
@@ -3161,7 +3161,7 @@ module.exports = {
 
 The design uses CSS custom properties that automatically respond to dark mode. In dark mode:
 
-- Primary: `#7c3aed` (purple remains consistent for brand recognition)
+- Primary: `#3b82f6` (blue remains consistent for brand recognition)
 - Background: `#ffffff` → `#0F172A` (slate 900)
 - Surface: `#F9FAFB` → `#1E293B` (slate 800)
 - Text Primary: `#111827` → `#F1F5F9` (slate 100)
@@ -3176,7 +3176,7 @@ This is handled automatically via the CSS variables in `src/styles/variables.css
 | Version | Date | Changes |
 |---------|------|---------|
 | 2.1.0 | 2025-12-20 | **Major expansion**: Added comprehensive component library documentation (28 components), TypeScript prop interfaces, detailed hook documentation (useMediaQuery, useParallax, etc.), architectural patterns, responsive utility classes, CSS vs programmatic patterns, and enhanced cross-referencing. |
-| 1.0.0 | 2025-12-20 | Updated documentation to match current implementation: Purple accent color (#7c3aed), Inter-only typography, accurate WCAG contrast ratios, current breakpoints, and comprehensive component library documentation. |
+| 1.0.0 | 2025-12-20 | Updated documentation to match current implementation: blue accent color (#3b82f6), Inter-only typography, accurate WCAG contrast ratios, current breakpoints, and comprehensive component library documentation. |
 
 ---
 

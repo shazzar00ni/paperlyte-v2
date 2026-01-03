@@ -8,9 +8,11 @@ import type { ScrollDepth } from './types'
 
 describe('analytics/scrollDepth', () => {
   let scrollCallback: ReturnType<typeof vi.fn<[ScrollDepth], void>>
+  let tracker: ScrollDepthTracker | null = null
 
   beforeEach(() => {
     scrollCallback = vi.fn()
+    tracker = null
 
     // Mock document and window properties for scroll calculation
     Object.defineProperty(document.documentElement, 'scrollHeight', {
@@ -39,19 +41,24 @@ describe('analytics/scrollDepth', () => {
   })
 
   afterEach(() => {
+    // Cleanup tracker to prevent event listener pollution
+    if (tracker) {
+      tracker.disable()
+      tracker = null
+    }
     vi.clearAllTimers()
   })
 
   describe('ScrollDepthTracker', () => {
     it('should initialize with empty tracked depths', () => {
-      const tracker = new ScrollDepthTracker(scrollCallback)
+      tracker = new ScrollDepthTracker(scrollCallback)
       expect(tracker.getTrackedDepths()).toEqual([])
       expect(tracker.isComplete()).toBe(false)
     })
 
     it('should track 25% scroll depth', () => {
       vi.useFakeTimers()
-      const tracker = new ScrollDepthTracker(scrollCallback)
+      tracker = new ScrollDepthTracker(scrollCallback)
       tracker.init()
 
       // Simulate scrolling to 25%
@@ -70,7 +77,7 @@ describe('analytics/scrollDepth', () => {
 
     it('should track 50% scroll depth', () => {
       vi.useFakeTimers()
-      const tracker = new ScrollDepthTracker(scrollCallback)
+      tracker = new ScrollDepthTracker(scrollCallback)
       tracker.init()
 
       // Simulate scrolling to 50%
@@ -90,7 +97,7 @@ describe('analytics/scrollDepth', () => {
 
     it('should track 75% scroll depth', () => {
       vi.useFakeTimers()
-      const tracker = new ScrollDepthTracker(scrollCallback)
+      tracker = new ScrollDepthTracker(scrollCallback)
       tracker.init()
 
       // Simulate scrolling to 75%
@@ -111,7 +118,7 @@ describe('analytics/scrollDepth', () => {
 
     it('should track 100% scroll depth', () => {
       vi.useFakeTimers()
-      const tracker = new ScrollDepthTracker(scrollCallback)
+      tracker = new ScrollDepthTracker(scrollCallback)
       tracker.init()
 
       // Simulate scrolling to 100%
@@ -133,7 +140,7 @@ describe('analytics/scrollDepth', () => {
 
     it('should not track the same depth twice', () => {
       vi.useFakeTimers()
-      const tracker = new ScrollDepthTracker(scrollCallback)
+      tracker = new ScrollDepthTracker(scrollCallback)
       tracker.init()
 
       // Simulate scrolling to 50%
@@ -161,7 +168,7 @@ describe('analytics/scrollDepth', () => {
       // Set scroll before creating tracker
       Object.defineProperty(window, 'scrollY', { value: 0, writable: true })
 
-      const tracker = new ScrollDepthTracker(scrollCallback)
+      tracker = new ScrollDepthTracker(scrollCallback)
       tracker.init()
 
       // Wait for initial check to complete
@@ -193,7 +200,7 @@ describe('analytics/scrollDepth', () => {
       // Set initial scroll to 50%
       Object.defineProperty(window, 'scrollY', { value: 250, writable: true })
 
-      const tracker = new ScrollDepthTracker(scrollCallback)
+      tracker = new ScrollDepthTracker(scrollCallback)
       tracker.init()
 
       // Should immediately check and track current position
@@ -206,7 +213,7 @@ describe('analytics/scrollDepth', () => {
 
     it('should auto-disable after all depths are tracked', () => {
       vi.useFakeTimers()
-      const tracker = new ScrollDepthTracker(scrollCallback)
+      tracker = new ScrollDepthTracker(scrollCallback)
       tracker.init()
 
       // Simulate scrolling to 100%
@@ -229,7 +236,7 @@ describe('analytics/scrollDepth', () => {
 
     it('should reset tracked depths', () => {
       vi.useFakeTimers()
-      const tracker = new ScrollDepthTracker(scrollCallback)
+      tracker = new ScrollDepthTracker(scrollCallback)
       tracker.init()
 
       // Track some depths
@@ -256,7 +263,7 @@ describe('analytics/scrollDepth', () => {
 
     it('should re-init after reset', () => {
       vi.useFakeTimers()
-      const tracker = new ScrollDepthTracker(scrollCallback)
+      tracker = new ScrollDepthTracker(scrollCallback)
       tracker.init()
 
       // Track some depths
@@ -282,7 +289,7 @@ describe('analytics/scrollDepth', () => {
 
     it('should cleanup on disable', () => {
       vi.useFakeTimers()
-      const tracker = new ScrollDepthTracker(scrollCallback)
+      tracker = new ScrollDepthTracker(scrollCallback)
       tracker.init()
 
       tracker.disable()
@@ -305,13 +312,13 @@ describe('analytics/scrollDepth', () => {
         value: 500,
       })
 
-      const tracker = new ScrollDepthTracker(scrollCallback)
+      tracker = new ScrollDepthTracker(scrollCallback)
       tracker.init()
 
       window.dispatchEvent(new Event('scroll'))
       vi.advanceTimersByTime(250)
 
-      // Should track 100% immediately since scroll percentage is 0
+      // Should not track any depth when scrollableHeight is 0 (no scrollable area)
       expect(scrollCallback).not.toHaveBeenCalled()
 
       tracker.disable()
@@ -322,7 +329,7 @@ describe('analytics/scrollDepth', () => {
   describe('createScrollTracker', () => {
     it('should create and initialize tracker', () => {
       vi.useFakeTimers()
-      const tracker = createScrollTracker(scrollCallback)
+      tracker = createScrollTracker(scrollCallback)
 
       // Tracker should be initialized
       Object.defineProperty(window, 'scrollY', { value: 250, writable: true })
@@ -336,7 +343,7 @@ describe('analytics/scrollDepth', () => {
     })
 
     it('should return ScrollDepthTracker instance', () => {
-      const tracker = createScrollTracker(scrollCallback)
+      tracker = createScrollTracker(scrollCallback)
       expect(tracker).toBeInstanceOf(ScrollDepthTracker)
       expect(tracker.getTrackedDepths).toBeDefined()
       expect(tracker.isComplete).toBeDefined()

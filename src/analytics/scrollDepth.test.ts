@@ -318,7 +318,8 @@ describe('analytics/scrollDepth', () => {
       window.dispatchEvent(new Event('scroll'))
       vi.advanceTimersByTime(250)
 
-      // Should not track any depth when scrollableHeight is 0 (no scrollable area)
+      // When scrollableHeight is 0, scrollPercentage computes to 0, so no depth
+      // thresholds (25/50/75/100) are reached and callback should not be invoked
       expect(scrollCallback).not.toHaveBeenCalled()
 
       tracker.disable()

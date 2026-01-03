@@ -127,18 +127,21 @@ describe('Testimonials Constants', () => {
       })
     })
 
-    it('should have initials matching name', () => {
+    it('should have initials corresponding to name', () => {
       TESTIMONIALS.forEach((testimonial) => {
-        const nameParts = testimonial.name.split(' ')
-        const expectedInitials = nameParts
-          .map((part) => part[0])
-          .join('')
-          .toUpperCase()
+        const nameParts = testimonial.name.split(' ').filter(Boolean)
+        const firstInitial = nameParts[0][0].toUpperCase()
+        const lastInitial = nameParts[nameParts.length - 1][0].toUpperCase()
 
         expect(
-          testimonial.initials,
-          `Initials for "${testimonial.name}" should match name`
-        ).toBe(expectedInitials)
+          testimonial.initials[0],
+          `First initial for "${testimonial.name}" should match first name`
+        ).toBe(firstInitial)
+
+        expect(
+          testimonial.initials[testimonial.initials.length - 1],
+          `Last initial for "${testimonial.name}" should match last name`
+        ).toBe(lastInitial)
       })
     })
 

@@ -14,14 +14,14 @@ describe('Comparison', () => {
 
   it('should render main heading', () => {
     render(<Comparison />)
-    expect(screen.getByText('See How We Compare')).toBeInTheDocument()
+    expect(screen.getByText('How we stack up')).toBeInTheDocument()
   })
 
   it('should render subtitle', () => {
     render(<Comparison />)
     expect(
       screen.getByText(
-        "We believe in transparency. Here's how Paperlyte stacks up against the competition."
+        "No marketing spin. Here's how Paperlyte compares to the tools you already know."
       )
     ).toBeInTheDocument()
   })

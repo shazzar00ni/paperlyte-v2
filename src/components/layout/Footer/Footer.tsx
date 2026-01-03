@@ -47,7 +47,7 @@ export const Footer = (): React.ReactElement => {
               <h3 className={styles.linkGroupTitle}>Company</h3>
               <ul className={styles.linkList}>
                 <li>
-                  <a href={`mailto:${LEGAL_CONFIG.company.email}`} className={styles.link}>
+                  <a href="mailto:hello@paperlyte.com" className={styles.link}>
                     Contact
                   </a>
                 </li>
@@ -87,7 +87,7 @@ export const Footer = (): React.ReactElement => {
               <ul className={styles.socialIcons} aria-label="Social media links">
                 <li>
                   <a
-                    href={LEGAL_CONFIG.social.github}
+                    href="https://github.com/paperlyte"
                     target="_blank"
                     rel="noopener noreferrer"
                     className={styles.socialLink}
@@ -98,7 +98,7 @@ export const Footer = (): React.ReactElement => {
                 </li>
                 <li>
                   <a
-                    href={LEGAL_CONFIG.social.twitter}
+                    href="https://x.com/paperlyte"
                     target="_blank"
                     rel="noopener noreferrer"
                     className={styles.socialLink}
@@ -109,7 +109,7 @@ export const Footer = (): React.ReactElement => {
                 </li>
                 <li>
                   <a
-                    href={LEGAL_CONFIG.social.instagram}
+                    href="https://instagram.com/paperlytefilms"
                     target="_blank"
                     rel="noopener noreferrer"
                     className={styles.socialLink}
@@ -120,7 +120,7 @@ export const Footer = (): React.ReactElement => {
                 </li>
                 <li>
                   <a
-                    href={`mailto:${LEGAL_CONFIG.company.email}`}
+                    href="mailto:hello@paperlyte.com"
                     className={styles.socialLink}
                     aria-label="Email us"
                   >

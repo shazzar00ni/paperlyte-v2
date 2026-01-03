@@ -34,10 +34,7 @@ describe('Hero', () => {
     it('should render the main headline', () => {
       render(<Hero />)
 
-      // There are multiple headings with "thoughts", use getAllByRole
-      const headings = screen.getAllByRole('heading', { name: /thoughts/i })
-      expect(headings.length).toBeGreaterThan(0)
-      expect(screen.getByText(/organized/i)).toBeInTheDocument()
+      expect(screen.getByRole('heading', { name: /your thoughts, organized/i })).toBeInTheDocument()
     })
 
     it('should render the subheadline', () => {
@@ -56,7 +53,7 @@ describe('Hero', () => {
     it('should render trusted by section', () => {
       render(<Hero />)
 
-      expect(screen.getByText(/TRUSTED BY TEAMS AT/i)).toBeInTheDocument()
+      expect(screen.getByText(/trusted by teams at/i)).toBeInTheDocument()
       expect(screen.getByText('Acme Corp')).toBeInTheDocument()
       expect(screen.getByText('Global')).toBeInTheDocument()
       expect(screen.getByText('Nebula')).toBeInTheDocument()
@@ -68,25 +65,24 @@ describe('Hero', () => {
       render(<Hero />)
 
       const button = screen.getByRole('button', { name: /start writing for free/i })
-      // Verify primary variant by checking class contains 'primary' (CSS module hash)
-      const classList = Array.from(button.classList)
-      expect(classList.some((cls) => cls.includes('primary'))).toBe(true)
+      expect(button).toHaveAttribute('data-variant', 'primary')
+      expect(button).toHaveAttribute('data-size', 'large')
     })
 
     it('should have View the Demo button with secondary variant', () => {
       render(<Hero />)
 
       const button = screen.getByRole('button', { name: /view the demo/i })
-      // Verify secondary variant by checking class contains 'secondary' (CSS module hash)
-      const classList = Array.from(button.classList)
-      expect(classList.some((cls) => cls.includes('secondary'))).toBe(true)
+      expect(button).toHaveAttribute('data-variant', 'secondary')
+      expect(button).toHaveAttribute('data-size', 'large')
     })
 
     it('should render arrow icon on Start Writing for Free button', () => {
       render(<Hero />)
 
       const button = screen.getByRole('button', { name: /start writing for free/i })
-      const icon = button.querySelector('.fa-arrow-right')
+      // Verify specific icon is present using data-icon attribute
+      const icon = button.querySelector('[data-icon="fa-arrow-right"]')
 
       expect(icon).toBeInTheDocument()
     })
@@ -163,10 +159,8 @@ describe('Hero', () => {
     it('should have proper heading hierarchy', () => {
       render(<Hero />)
 
-      // There are multiple headings with "thoughts", use getAllByRole
-      const headings = screen.getAllByRole('heading', { name: /thoughts/i })
-      expect(headings.length).toBeGreaterThan(0)
-      expect(headings[0].tagName).toBe('H1')
+      const heading = screen.getByRole('heading', { name: /thoughts/i })
+      expect(heading.tagName).toBe('H1')
     })
 
     it('should render subheadline in paragraph tag', () => {
@@ -176,27 +170,31 @@ describe('Hero', () => {
       expect(subheadline.tagName).toBe('P')
     })
 
-    it('should render headline with italic emphasis', () => {
+    it('should render trusted by label', () => {
       render(<Hero />)
 
-      const italicText = screen.getByText('organized.')
-      expect(italicText.tagName).toBe('EM')
+      expect(screen.getByText(/trusted by teams at/i)).toBeInTheDocument()
     })
   })
 
   describe('App Mockup', () => {
-    it('should render app mockup as decorative (aria-hidden)', () => {
-      const { container } = render(<Hero />)
-
-      const mockup = container.querySelector('[aria-hidden="true"]')
-      expect(mockup).toBeInTheDocument()
-    })
-
-    it('should render mockup productivity stat', () => {
+    it('should render notes list and detail mockups', () => {
       render(<Hero />)
 
-      expect(screen.getByText('+120%')).toBeInTheDocument()
-      expect(screen.getByText('PRODUCTIVITY')).toBeInTheDocument()
+      // Check for primary mockup (notes list)
+      const notesListImage = screen.getByAltText(/notes list showing/i)
+      expect(notesListImage).toBeInTheDocument()
+
+      // Check for secondary mockup (note detail)
+      const noteDetailImage = screen.getByAltText(/note editor with bullet points/i)
+      expect(noteDetailImage).toBeInTheDocument()
+    })
+
+    it('should hide mockup from screen readers', () => {
+      render(<Hero />)
+
+      const mockup = screen.getByTestId('hero-mockup')
+      expect(mockup).toHaveAttribute('aria-hidden', 'true')
     })
   })
 
@@ -283,10 +281,8 @@ describe('Hero', () => {
     it('should have main heading visible to screen readers', () => {
       render(<Hero />)
 
-      // There are multiple headings with "thoughts", use getAllByRole
-      const headings = screen.getAllByRole('heading', { name: /thoughts/i })
-      expect(headings.length).toBeGreaterThan(0)
-      expect(headings[0]).toBeVisible()
+      const heading = screen.getByRole('heading', { name: /your thoughts, organized/i })
+      expect(heading).toBeVisible()
     })
 
     it('should have descriptive text visible to screen readers', () => {
@@ -296,12 +292,7 @@ describe('Hero', () => {
       expect(description).toBeVisible()
     })
 
-    it('should hide decorative mockup from screen readers', () => {
-      const { container } = render(<Hero />)
-
-      const decorativeElements = container.querySelectorAll('[aria-hidden="true"]')
-      expect(decorativeElements.length).toBeGreaterThan(0)
-    })
+    // Note: Mockup aria-hidden accessibility is tested in "App Mockup" section (lines 191-196)
   })
 
   describe('Layout', () => {
@@ -311,20 +302,83 @@ describe('Hero', () => {
       const buttons = screen.getAllByRole('button')
       const buttonTexts = buttons.map((btn) => btn.textContent)
 
-      const startIndex = buttonTexts.findIndex((text) => text?.includes('Start Writing'))
+      const startWritingIndex = buttonTexts.findIndex((text) =>
+        text?.includes('Start Writing for Free')
+      )
       const demoIndex = buttonTexts.findIndex((text) => text?.includes('View the Demo'))
 
-      // Start Writing should come before View the Demo
-      expect(startIndex).toBeLessThan(demoIndex)
+      // Start Writing for Free should come before View the Demo
+      expect(startWritingIndex).toBeLessThan(demoIndex)
     })
 
-    it('should render trusted companies', () => {
+    it('should render company names in trusted by section', () => {
       render(<Hero />)
 
       const companies = ['Acme Corp', 'Global', 'Nebula', 'Vertex', 'Horizon']
       companies.forEach((company) => {
         expect(screen.getByText(company)).toBeInTheDocument()
       })
+    })
+  })
+
+  describe('Animation Accessibility', () => {
+    it('should render all animated content elements', () => {
+      render(<Hero />)
+
+      // Verify all key content elements render (AnimatedElement wraps them internally)
+      expect(screen.getByRole('heading', { name: /your thoughts, organized/i })).toBeInTheDocument()
+      expect(screen.getByText(/The minimal workspace for busy professionals/i)).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /start writing for free/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /view the demo/i })).toBeInTheDocument()
+      expect(screen.getByText(/trusted by teams at/i)).toBeInTheDocument()
+    })
+
+    it('should respect prefers-reduced-motion for animations', () => {
+      // Save original matchMedia
+      const originalMatchMedia = window.matchMedia
+
+      try {
+        // Mock prefers-reduced-motion media query
+        const matchMediaMock = vi.fn().mockImplementation((query) => ({
+          matches: query === '(prefers-reduced-motion: reduce)',
+          media: query,
+          onchange: null,
+          addListener: vi.fn(),
+          removeListener: vi.fn(),
+          addEventListener: vi.fn(),
+          removeEventListener: vi.fn(),
+          dispatchEvent: vi.fn(),
+        }))
+
+        Object.defineProperty(window, 'matchMedia', {
+          writable: true,
+          value: matchMediaMock,
+        })
+
+        const { container } = render(<Hero />)
+
+        // Verify content renders without errors when motion is reduced
+        expect(container.querySelector('#hero')).toBeInTheDocument()
+        expect(screen.getByRole('heading', { name: /your thoughts, organized/i })).toBeVisible()
+
+        // Verify matchMedia was called to check for reduced motion preference
+        expect(matchMediaMock).toHaveBeenCalledWith('(prefers-reduced-motion: reduce)')
+
+        // Verify animations are actually disabled by checking AnimatedElement data attribute
+        const animatedElements = container.querySelectorAll('[data-reduced-motion="true"]')
+        expect(animatedElements.length).toBeGreaterThan(0)
+
+        // All animated elements should have reduced motion enabled
+        animatedElements.forEach((element) => {
+          expect(element).toHaveAttribute('data-reduced-motion', 'true')
+        })
+      } finally {
+        // Restore original matchMedia
+        Object.defineProperty(window, 'matchMedia', {
+          writable: true,
+          value: originalMatchMedia,
+        })
+      }
     })
   })
 })

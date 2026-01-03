@@ -9,18 +9,18 @@ describe('Footer', () => {
   })
 
   it('should render Paperlyte logo with icon and text', () => {
-    const { container } = render(<Footer />)
+    render(<Footer />)
 
-    const logoIcon = container.querySelector('.fa-feather')
+    // Icon component renders SVG or Font Awesome fallback with aria-label
+    const logoIcon = screen.getByLabelText('Paperlyte logo')
     expect(logoIcon).toBeInTheDocument()
-    expect(logoIcon).toHaveAttribute('aria-label', 'Paperlyte logo')
 
     expect(screen.getByText('Paperlyte.')).toBeInTheDocument()
   })
 
   it('should render tagline', () => {
     render(<Footer />)
-    expect(screen.getByText('Designed for clarity in a chaotic world.')).toBeInTheDocument()
+    expect(screen.getByText('Your thoughts, unchained.')).toBeInTheDocument()
   })
 
   it('should render Product link group', () => {
@@ -32,17 +32,9 @@ describe('Footer', () => {
     expect(featuresLink).toBeInTheDocument()
     expect(featuresLink).toHaveAttribute('href', '#features')
 
-    const mobileLink = screen.getByRole('link', { name: 'Mobile App' })
-    expect(mobileLink).toBeInTheDocument()
-    expect(mobileLink).toHaveAttribute('href', '#mobile')
-
-    const desktopLink = screen.getByRole('link', { name: 'Desktop App' })
-    expect(desktopLink).toBeInTheDocument()
-    expect(desktopLink).toHaveAttribute('href', '#download')
-
-    const testimonialsLink = screen.getByRole('link', { name: 'Testimonials' })
-    expect(testimonialsLink).toBeInTheDocument()
-    expect(testimonialsLink).toHaveAttribute('href', '#testimonials')
+    const pricingLink = screen.getByRole('link', { name: 'Pricing' })
+    expect(pricingLink).toBeInTheDocument()
+    expect(pricingLink).toHaveAttribute('href', '#pricing')
   })
 
   it('should render Legal link group', () => {
@@ -110,14 +102,15 @@ describe('Footer', () => {
     render(<Footer />)
 
     const currentYear = new Date().getFullYear()
-    expect(screen.getByText(`© ${currentYear} All rights reserved.`)).toBeInTheDocument()
+    expect(screen.getByText(`© ${currentYear} Paperlyte. All rights reserved.`)).toBeInTheDocument()
   })
 
   it('should have proper accessibility structure', () => {
     const { container } = render(<Footer />)
 
+    // Footer has 4 sections: Product, Company, Legal, Connect
     const headings = container.querySelectorAll('h3')
-    expect(headings).toHaveLength(3)
+    expect(headings).toHaveLength(4)
 
     const lists = container.querySelectorAll('ul')
     expect(lists.length).toBeGreaterThanOrEqual(2)
@@ -127,6 +120,7 @@ describe('Footer', () => {
     render(<Footer />)
 
     expect(screen.getByText('Product')).toBeInTheDocument()
+    expect(screen.getByText('Company')).toBeInTheDocument()
     expect(screen.getByText('Legal')).toBeInTheDocument()
     expect(screen.getByText('Connect')).toBeInTheDocument()
   })

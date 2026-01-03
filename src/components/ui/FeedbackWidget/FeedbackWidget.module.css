@@ -103,6 +103,8 @@
   border: none;
   cursor: pointer;
   padding: var(--spacing-xs);
+  min-width: 48px;
+  min-height: 48px;
   color: var(--color-text-secondary);
   display: flex;
   align-items: center;
@@ -151,6 +153,7 @@
   align-items: center;
   gap: var(--spacing-xs);
   padding: var(--spacing-md);
+  min-height: 48px;
   border: 2px solid var(--color-border);
   border-radius: var(--border-radius-md);
   background-color: var(--color-background);

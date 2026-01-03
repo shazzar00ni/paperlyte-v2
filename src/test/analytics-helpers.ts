@@ -169,6 +169,11 @@ export function mockScrollAPI() {
     window.dispatchEvent(new Event('scroll'))
   }
 
+  // Store original document properties
+  const originalScrollHeight = Object.getOwnPropertyDescriptor(document.documentElement, 'scrollHeight')
+  const originalScrollTop = Object.getOwnPropertyDescriptor(document.documentElement, 'scrollTop')
+  const originalClientHeight = Object.getOwnPropertyDescriptor(document.documentElement, 'clientHeight')
+
   /**
    * Restore original window properties
    */
@@ -178,6 +183,15 @@ export function mockScrollAPI() {
     }
     if (originalInnerHeight) {
       Object.defineProperty(window, 'innerHeight', originalInnerHeight)
+    }
+    if (originalScrollHeight) {
+      Object.defineProperty(document.documentElement, 'scrollHeight', originalScrollHeight)
+    }
+    if (originalScrollTop) {
+      Object.defineProperty(document.documentElement, 'scrollTop', originalScrollTop)
+    }
+    if (originalClientHeight) {
+      Object.defineProperty(document.documentElement, 'clientHeight', originalClientHeight)
     }
   }
 

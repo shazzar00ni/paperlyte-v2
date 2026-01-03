@@ -163,16 +163,13 @@ export function createAnalyticsConfig(
  * Mock environment variables for testing
  */
 export function mockEnvironment(env: Record<string, string | undefined>) {
-  const cleanup: Array<() => void> = []
-
   Object.entries(env).forEach(([key, value]) => {
     vi.stubEnv(key, value)
-    cleanup.push(() => vi.unstubAllEnvs())
   })
 
   return {
     cleanup: () => {
-      cleanup.forEach((fn) => fn())
+      vi.unstubAllEnvs()
     },
   }
 }

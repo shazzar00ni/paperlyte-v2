@@ -80,7 +80,7 @@ describe('FAQ Constants', () => {
       expect(privacyFaq?.answer).toContain('encryption')
     })
 
-    it('should reference LAUNCH_QUARTER in answers', () => {
+    it('should reference the LAUNCH_QUARTER in answers', () => {
       const itemsWithLaunchQuarter = FAQ_ITEMS.filter((item) =>
         item.answer.includes(LAUNCH_QUARTER)
       )

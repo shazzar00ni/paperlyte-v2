@@ -82,11 +82,13 @@ describe('Downloads Constants', () => {
     })
 
     it('should reference App Store for iOS', () => {
-      expect(DOWNLOAD_URLS.ios).toContain('apps.apple.com')
+      const urlObj = new URL(DOWNLOAD_URLS.ios)
+      expect(urlObj.hostname).toBe('apps.apple.com')
     })
 
     it('should reference Play Store for Android', () => {
-      expect(DOWNLOAD_URLS.android).toContain('play.google.com')
+      const urlObj = new URL(DOWNLOAD_URLS.android)
+      expect(urlObj.hostname).toBe('play.google.com')
     })
 
     it('should use GitHub releases for desktop platforms', () => {
@@ -98,9 +100,10 @@ describe('Downloads Constants', () => {
     it('should use consistent GitHub URL from legal config', () => {
       const githubBase = LEGAL_CONFIG.social.github
 
-      expect(DOWNLOAD_URLS.mac).toContain(githubBase)
-      expect(DOWNLOAD_URLS.windows).toContain(githubBase)
-      expect(DOWNLOAD_URLS.linux).toContain(githubBase)
+      // Validate URLs start with the GitHub base (not just contain it)
+      expect(DOWNLOAD_URLS.mac.startsWith(githubBase)).toBe(true)
+      expect(DOWNLOAD_URLS.windows.startsWith(githubBase)).toBe(true)
+      expect(DOWNLOAD_URLS.linux.startsWith(githubBase)).toBe(true)
     })
   })
 
@@ -118,8 +121,9 @@ describe('Downloads Constants', () => {
       expect(GITHUB_URL).toMatch(/^https?:\/\//)
     })
 
-    it('should contain github.com', () => {
-      expect(GITHUB_URL).toContain('github.com')
+    it('should have github.com as hostname', () => {
+      const urlObj = new URL(GITHUB_URL)
+      expect(urlObj.hostname).toBe('github.com')
     })
   })
 

@@ -86,22 +86,28 @@ describe('Config Constants', () => {
     })
 
     it('should have twitter URL pointing to twitter.com', () => {
-      expect(SOCIAL_LINKS.twitter).toContain('twitter.com')
+      const urlObj = new URL(SOCIAL_LINKS.twitter)
+      expect(urlObj.hostname).toBe('twitter.com')
     })
 
     it('should have github URL pointing to github.com', () => {
-      expect(SOCIAL_LINKS.github).toContain('github.com')
+      const urlObj = new URL(SOCIAL_LINKS.github)
+      expect(urlObj.hostname).toBe('github.com')
     })
 
     it('should have discord URL pointing to discord.gg', () => {
-      expect(SOCIAL_LINKS.discord).toContain('discord.gg')
+      const urlObj = new URL(SOCIAL_LINKS.discord)
+      expect(urlObj.hostname).toBe('discord.gg')
     })
 
     it('should include paperlyte in social URLs', () => {
       Object.entries(SOCIAL_LINKS).forEach(([platform, url]) => {
+        const urlObj = new URL(url)
+        const pathAndParams = urlObj.pathname + urlObj.search
+
         expect(
-          url.toLowerCase().includes('paperlyte'),
-          `${platform} URL should reference paperlyte`
+          pathAndParams.toLowerCase().includes('paperlyte'),
+          `${platform} URL path should reference paperlyte`
         ).toBe(true)
       })
     })

@@ -254,16 +254,12 @@ describe('Analytics Singleton', () => {
 
       // Event tracking delegated to provider
       expect(analytics.isEnabled()).toBe(true)
-    })
-
     it('should add timestamp to events', () => {
       analytics.trackEvent({
         name: 'test_event',
       })
 
-      const afterTimestamp = Date.now()
-
-      // Timestamp should be added (we can't verify exact value, but integration is confirmed)
+      // Integration confirmed - timestamp addition is internal to the provider
       expect(analytics.isEnabled()).toBe(true)
     })
 

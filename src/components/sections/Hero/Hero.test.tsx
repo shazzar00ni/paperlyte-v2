@@ -178,11 +178,16 @@ describe('Hero', () => {
   })
 
   describe('App Mockup', () => {
-    it('should render productivity stat mockup', () => {
+    it('should render notes list and detail mockups', () => {
       render(<Hero />)
 
-      expect(screen.getByText('+120%')).toBeInTheDocument()
-      expect(screen.getByText('PRODUCTIVITY')).toBeInTheDocument()
+      // Check for primary mockup (notes list)
+      const notesListImage = screen.getByAltText(/notes list showing/i)
+      expect(notesListImage).toBeInTheDocument()
+
+      // Check for secondary mockup (note detail)
+      const noteDetailImage = screen.getByAltText(/note editor with bullet points/i)
+      expect(noteDetailImage).toBeInTheDocument()
     })
 
     it('should hide mockup from screen readers', () => {

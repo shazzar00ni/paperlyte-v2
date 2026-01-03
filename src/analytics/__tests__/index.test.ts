@@ -15,16 +15,28 @@ import {
 } from '../../test/analytics-helpers'
 
 // Mock the provider, webVitals, and scrollDepth modules
-vi.mock('../providers/plausible', () => ({
-  PlausibleProvider: vi.fn(() => ({
-    init: vi.fn(),
-    trackPageView: vi.fn(),
-    trackEvent: vi.fn(),
-    trackWebVitals: vi.fn(),
-    isEnabled: vi.fn(() => true),
-    disable: vi.fn(),
-  })),
-}))
+// Create shared mock functions that will be used by all instances
+const mockProviderMethods = {
+  init: vi.fn(),
+  trackPageView: vi.fn(),
+  trackEvent: vi.fn(),
+  trackWebVitals: vi.fn(),
+  isEnabled: vi.fn(() => true),
+  disable: vi.fn(),
+}
+
+vi.mock('../providers/plausible', () => {
+  return {
+    PlausibleProvider: class MockPlausibleProvider {
+      init = mockProviderMethods.init
+      trackPageView = mockProviderMethods.trackPageView
+      trackEvent = mockProviderMethods.trackEvent
+      trackWebVitals = mockProviderMethods.trackWebVitals
+      isEnabled = mockProviderMethods.isEnabled
+      disable = mockProviderMethods.disable
+    },
+  }
+})
 
 vi.mock('../webVitals', () => ({
   initWebVitals: vi.fn((callback) => {
@@ -254,6 +266,8 @@ describe('Analytics Singleton', () => {
 
       // Event tracking delegated to provider
       expect(analytics.isEnabled()).toBe(true)
+    })
+
     it('should add timestamp to events', () => {
       analytics.trackEvent({
         name: 'test_event',
@@ -271,8 +285,13 @@ describe('Analytics Singleton', () => {
         timestamp: customTimestamp,
       })
 
-      // Custom timestamp should be preserved
-      expect(analytics.isEnabled()).toBe(true)
+      // Verify the provider's trackEvent was called with the custom timestamp
+      expect(mockProviderMethods.trackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'test_event',
+          timestamp: customTimestamp,
+        })
+      )
     })
 
     it('should not track when analytics is disabled', () => {

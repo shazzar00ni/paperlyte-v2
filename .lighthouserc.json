@@ -3,34 +3,49 @@
     "collect": {
       "url": ["http://localhost:4173/"],
       "startServerCommand": "npm run preview",
-      "numberOfRuns": 1,
+      "numberOfRuns": 3,
       "settings": {
         "preset": "desktop",
         "throttling": {
           "rttMs": 40,
           "throughputKbps": 10240,
           "cpuSlowdownMultiplier": 1
-        }
+        },
+        "chromeFlags": [
+          "--no-sandbox",
+          "--disable-gpu",
+          "--disable-dev-shm-usage",
+          "--disable-software-rasterizer",
+          "--disable-extensions"
+        ]
       }
     },
     "assert": {
       "assertions": {
-        "categories:performance": ["warn", { "minScore": 0.9 }],
-        "categories:accessibility": ["warn", { "minScore": 0.95 }],
+        "categories:performance": ["error", { "minScore": 0.9 }],
+        "categories:accessibility": ["error", { "minScore": 0.95 }],
         "categories:best-practices": ["warn", { "minScore": 0.9 }],
         "categories:seo": ["warn", { "minScore": 0.9 }],
-        "first-contentful-paint": ["warn", { "maxNumericValue": 2000 }],
-        "largest-contentful-paint": ["warn", { "maxNumericValue": 2500 }],
-        "cumulative-layout-shift": ["warn", { "maxNumericValue": 0.1 }],
-        "total-blocking-time": ["warn", { "maxNumericValue": 300 }],
-        "speed-index": ["warn", { "maxNumericValue": 3000 }],
+        "first-contentful-paint": ["error", { "maxNumericValue": 2000 }],
+        "largest-contentful-paint": ["error", { "maxNumericValue": 2500 }],
+        "cumulative-layout-shift": ["error", { "maxNumericValue": 0.1 }],
+        "total-blocking-time": ["error", { "maxNumericValue": 300 }],
+        "speed-index": ["error", { "maxNumericValue": 3000 }],
+        "interactive": ["error", { "maxNumericValue": 3500 }],
+        "max-potential-fid": ["warn", { "maxNumericValue": 130 }],
         "uses-responsive-images": "warn",
         "offscreen-images": "warn",
         "uses-optimized-images": "warn",
         "modern-image-formats": "warn",
         "uses-text-compression": "warn",
         "unused-css-rules": "warn",
-        "unused-javascript": "warn"
+        "unused-javascript": "warn",
+        "uses-long-cache-ttl": "off",
+        "font-display": "warn",
+        "resource-summary:script:size": ["warn", { "maxNumericValue": 153600 }],
+        "resource-summary:stylesheet:size": ["warn", { "maxNumericValue": 30720 }],
+        "resource-summary:document:size": ["warn", { "maxNumericValue": 18000 }],
+        "resource-summary:total:size": ["warn", { "maxNumericValue": 307200 }]
       }
     },
     "upload": {

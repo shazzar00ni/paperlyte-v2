@@ -143,14 +143,14 @@ describe('Pricing Constants', () => {
       })
     })
 
-    it('should have Pro plan reference Free plan features', () => {
+    it('should have Pro plan features reference Free plan', () => {
       const proPlan = PRICING_PLANS.find((p) => p.id === 'pro')
       const hasReference = proPlan?.features.some((f) => f.includes('Everything in Free'))
 
       expect(hasReference).toBe(true)
     })
 
-    it('should have Team plan reference Pro plan features', () => {
+    it('should have Team plan features reference Pro plan', () => {
       const teamPlan = PRICING_PLANS.find((p) => p.id === 'team')
       const hasReference = teamPlan?.features.some((f) => f.includes('Everything in Pro'))
 

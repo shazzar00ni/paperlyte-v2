@@ -257,8 +257,6 @@ describe('Analytics Singleton', () => {
     })
 
     it('should add timestamp to events', () => {
-      const beforeTimestamp = Date.now()
-
       analytics.trackEvent({
         name: 'test_event',
       })

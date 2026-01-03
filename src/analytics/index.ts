@@ -263,6 +263,40 @@ class Analytics {
   }
 
   /**
+   * Reset analytics to initial state
+   * Unconditionally clears all internal state - useful for testing
+   */
+  reset(): void {
+    const debug = this.config?.debug
+
+    // Disable provider regardless of state
+    if (this.provider) {
+      this.provider.disable()
+      this.provider = null
+    }
+
+    // Disable scroll tracker
+    if (this.scrollTracker) {
+      this.scrollTracker.disable()
+      this.scrollTracker = null
+    }
+
+    // Cleanup web vitals tracking
+    if (this.webVitalsCleanup) {
+      this.webVitalsCleanup()
+      this.webVitalsCleanup = null
+    }
+
+    // Clear all state unconditionally
+    this.initialized = false
+    this.config = null
+
+    if (debug) {
+      console.log('[Analytics] Reset')
+    }
+  }
+
+  /**
    * Get current configuration
    */
   getConfig(): AnalyticsConfig | null {

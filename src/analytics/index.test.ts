@@ -27,10 +27,8 @@ describe('analytics/index', () => {
       respectDNT: false,
     }
 
-    // Reset analytics state
-    if (analytics.isEnabled()) {
-      analytics.disable()
-    }
+    // Reset analytics singleton to clean state
+    analytics.reset()
 
     // Clear document head
     document.head.innerHTML = ''
@@ -51,9 +49,8 @@ describe('analytics/index', () => {
   })
 
   afterEach(() => {
-    if (analytics.isEnabled()) {
-      analytics.disable()
-    }
+    // Unconditionally reset analytics state
+    analytics.reset()
     vi.clearAllTimers()
     vi.restoreAllMocks()
   })

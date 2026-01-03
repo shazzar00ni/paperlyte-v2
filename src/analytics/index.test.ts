@@ -108,19 +108,6 @@ describe('analytics/index', () => {
       vi.unstubAllEnvs()
     })
 
-  beforeEach(() => {
-    // ...existing setup...
-
-    // Mock PerformanceObserver as a spied class
-    const MockPerformanceObserver = vi.fn().mockImplementation((callback) => ({
-      callback,
-      observe: vi.fn(),
-      disconnect: vi.fn(),
-      takeRecords: vi.fn(() => []),
-    }))
-    global.PerformanceObserver = MockPerformanceObserver as unknown as typeof PerformanceObserver
-  })
-
     it('should initialize scroll depth tracking when enabled', () => {
       vi.useFakeTimers()
       const addEventListenerSpy = vi.spyOn(window, 'addEventListener')

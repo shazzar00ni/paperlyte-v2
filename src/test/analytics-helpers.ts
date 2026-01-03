@@ -88,6 +88,9 @@ export function mockScrollAPI(options: {
   // Store original values
   const originalScrollY = window.scrollY
   const originalInnerHeight = window.innerHeight
+  const originalScrollHeight = document.documentElement.scrollHeight
+  const originalClientHeight = document.documentElement.clientHeight
+  const originalScrollTop = document.documentElement.scrollTop
 
   // Mock window.scrollY
   Object.defineProperty(window, 'scrollY', {
@@ -136,6 +139,18 @@ export function mockScrollAPI(options: {
     cleanup: () => {
       Object.defineProperty(window, 'scrollY', { value: originalScrollY, writable: true })
       Object.defineProperty(window, 'innerHeight', { value: originalInnerHeight, writable: true })
+      Object.defineProperty(document.documentElement, 'scrollHeight', {
+        value: originalScrollHeight,
+        writable: true,
+      })
+      Object.defineProperty(document.documentElement, 'clientHeight', {
+        value: originalClientHeight,
+        writable: true,
+      })
+      Object.defineProperty(document.documentElement, 'scrollTop', {
+        value: originalScrollTop,
+        writable: true,
+      })
     },
   }
 }

@@ -50,11 +50,11 @@ describe('Waitlist Constants', () => {
       expect(quarter).toBeLessThanOrEqual(4)
     })
 
-    it('should have a valid year (2024 or later)', () => {
+    it('should have a valid year (2026 or later)', () => {
       const yearMatch = LAUNCH_QUARTER.match(/\d{4}$/)
       expect(yearMatch).toBeTruthy()
       const year = parseInt(yearMatch![0])
-      expect(year).toBeGreaterThanOrEqual(2024)
+      expect(year).toBeGreaterThanOrEqual(2026)
     })
 
     it('should have the expected value', () => {

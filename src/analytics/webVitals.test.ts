@@ -193,8 +193,13 @@ describe('analytics/webVitals', () => {
       vi.useRealTimers()
     })
 
-    it('should report empty vitals when no metrics collected', () => {
+    it('should not report when no metrics collected', () => {
       vi.useFakeTimers()
+
+      // Temporarily remove PerformanceObserver to prevent any metrics from being collected
+      const originalPO = global.PerformanceObserver
+      // @ts-expect-error - Intentionally making PerformanceObserver unavailable
+      delete global.PerformanceObserver
 
       const cleanup = initWebVitals(onReport)
 
@@ -208,10 +213,14 @@ describe('analytics/webVitals', () => {
 
       vi.runAllTimers()
 
-      // Should still call onReport
-      expect(onReport).toHaveBeenCalled()
+      // Should not call onReport when vitals object is empty
+      expect(onReport).not.toHaveBeenCalled()
 
       cleanup()
+
+      // Restore PerformanceObserver
+      global.PerformanceObserver = originalPO
+
       vi.useRealTimers()
     })
 
@@ -227,21 +236,145 @@ describe('analytics/webVitals', () => {
     })
 
     it('should observe correct performance entry types', () => {
+      const observedTypes: string[] = []
+
+      // Mock PerformanceObserver to track what types are observed
+      global.PerformanceObserver = class {
+        callback: PerformanceObserverCallback
+        constructor(callback: PerformanceObserverCallback) {
+          this.callback = callback
+        }
+        observe = vi.fn((options: { type: string; buffered?: boolean }) => {
+          observedTypes.push(options.type)
+        })
+        disconnect = vi.fn()
+        takeRecords = vi.fn(() => [])
+      } as unknown as typeof PerformanceObserver
+
       const cleanup = initWebVitals(onReport)
 
-      // Should initialize without errors
-      expect(cleanup).toBeInstanceOf(Function)
+      // Should observe all Core Web Vitals entry types
+      expect(observedTypes).toContain('largest-contentful-paint') // LCP
+      expect(observedTypes).toContain('first-input') // FID
+      expect(observedTypes).toContain('layout-shift') // CLS
+      expect(observedTypes).toContain('paint') // FCP
+      expect(observedTypes).toContain('event') // INP
 
       cleanup()
     })
   })
 
   describe('metric ratings', () => {
-    it('should rate metrics based on thresholds', () => {
-      // This is tested implicitly through the tracking functions
-      // The getRating function is internal and used by all tracking functions
+    it('should rate LCP as good/needs-improvement/poor based on thresholds', () => {
+      // Mock PerformanceObserver to emit LCP with different values
+      const observerInstances: Array<{
+        callback: PerformanceObserverCallback
+        observe: ReturnType<typeof vi.fn>
+      }> = []
+
+      global.PerformanceObserver = class {
+        callback: PerformanceObserverCallback
+        observe: ReturnType<typeof vi.fn>
+        constructor(callback: PerformanceObserverCallback) {
+          this.callback = callback
+          this.observe = vi.fn()
+          observerInstances.push(this)
+        }
+        disconnect = vi.fn()
+        takeRecords = vi.fn(() => [])
+      } as unknown as typeof PerformanceObserver
+
       const cleanup = initWebVitals(onReport)
-      expect(cleanup).toBeInstanceOf(Function)
+
+      // Find LCP observer (first one, observes 'largest-contentful-paint')
+      const lcpObserver = observerInstances[0]
+
+      // Test good rating (LCP <= 2500ms)
+      onReport.mockClear()
+      lcpObserver.callback(
+        {
+          getEntries: () => [{ renderTime: 2000, loadTime: 2000 }],
+        } as PerformanceObserverEntryList,
+        lcpObserver as PerformanceObserver
+      )
+
+      // Trigger reporting
+      Object.defineProperty(document, 'visibilityState', {
+        writable: true,
+        configurable: true,
+        value: 'hidden',
+      })
+      document.dispatchEvent(new Event('visibilitychange'))
+
+      expect(onReport).toHaveBeenCalledWith(
+        expect.objectContaining({
+          LCP: 2000,
+        })
+      )
+
+      cleanup()
+    })
+
+    it('should rate CLS as good/needs-improvement/poor based on thresholds', () => {
+      // Mock PerformanceObserver to emit CLS with different values
+      const observerInstances: Array<{
+        callback: PerformanceObserverCallback
+        observe: ReturnType<typeof vi.fn>
+      }> = []
+
+      global.PerformanceObserver = class {
+        callback: PerformanceObserverCallback
+        observe: ReturnType<typeof vi.fn>
+        constructor(callback: PerformanceObserverCallback) {
+          this.callback = callback
+          this.observe = vi.fn()
+          observerInstances.push(this)
+        }
+        disconnect = vi.fn()
+        takeRecords = vi.fn(() => [])
+      } as unknown as typeof PerformanceObserver
+
+      const cleanup = initWebVitals(onReport)
+
+      // Find CLS observer (third one, observes 'layout-shift')
+      // Order: LCP, FID, CLS, FCP, INP (but FCP disconnects immediately)
+      const clsObserver = observerInstances.find((obs) => {
+        const observeCall = obs.observe.mock.calls[0]
+        return observeCall && observeCall[0].type === 'layout-shift'
+      })
+
+      if (!clsObserver) {
+        throw new Error('CLS observer not found')
+      }
+
+      // Emit layout shift with good value (CLS <= 0.1)
+      clsObserver.callback(
+        {
+          getEntries: () => [{ hadRecentInput: false, value: 0.05 }],
+        } as PerformanceObserverEntryList,
+        clsObserver as PerformanceObserver
+      )
+
+      // Emit layout shift with needs-improvement value (0.1 < CLS <= 0.25)
+      clsObserver.callback(
+        {
+          getEntries: () => [{ hadRecentInput: false, value: 0.10 }],
+        } as PerformanceObserverEntryList,
+        clsObserver as PerformanceObserver
+      )
+
+      // Finalize to trigger report
+      Object.defineProperty(document, 'visibilityState', {
+        writable: true,
+        configurable: true,
+        value: 'hidden',
+      })
+      document.dispatchEvent(new Event('visibilitychange'))
+
+      // Should report accumulated CLS value (0.05 + 0.10 ≈ 0.15, needs-improvement)
+      const reportedVitals = onReport.mock.calls[0][0]
+      expect(reportedVitals.CLS).toBeCloseTo(0.15, 2)
+
       cleanup()
     })
   })

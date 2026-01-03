@@ -1,0 +1,82 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Features Constants > Snapshot Tests > should match FEATURES snapshot 1`] = `
+[
+  {
+    "description": "Instant startup and real-time sync. No loading spinners, no waiting. Your thoughts captured at the speed of thinking.",
+    "icon": "fa-bolt",
+    "id": "speed",
+    "title": "Lightning Speed",
+  },
+  {
+    "description": "Paper-inspired design that feels natural and distraction-free. Just you and your thoughts, the way it should be.",
+    "icon": "fa-pen-nib",
+    "id": "simplicity",
+    "title": "Beautiful Simplicity",
+  },
+  {
+    "description": "Smart categorization without rigid folder structures. Organize freely with tags that adapt to how you think.",
+    "icon": "fa-tags",
+    "id": "tags",
+    "title": "Tag-Based Organization",
+  },
+  {
+    "description": "Seamless experience across all devices. Start on your phone, finish on your laptop. Always in sync.",
+    "icon": "fa-mobile-screen",
+    "id": "universal",
+    "title": "Universal Access",
+  },
+  {
+    "description": "Full functionality without internet. Your notes work everywhere, sync automatically when online.",
+    "icon": "fa-wifi-slash",
+    "id": "offline",
+    "title": "Offline-First",
+  },
+  {
+    "description": "Your notes are yours alone. End-to-end encryption and local-first storage keep your thoughts private.",
+    "icon": "fa-shield-halved",
+    "id": "privacy",
+    "title": "Privacy Focused",
+  },
+]
+`;
+
+exports[`Features Constants > Snapshot Tests > should match feature IDs and icons snapshot 1`] = `
+[
+  {
+    "icon": "fa-bolt",
+    "id": "speed",
+  },
+  {
+    "icon": "fa-pen-nib",
+    "id": "simplicity",
+  },
+  {
+    "icon": "fa-tags",
+    "id": "tags",
+  },
+  {
+    "icon": "fa-mobile-screen",
+    "id": "universal",
+  },
+  {
+    "icon": "fa-wifi-slash",
+    "id": "offline",
+  },
+  {
+    "icon": "fa-shield-halved",
+    "id": "privacy",
+  },
+]
+`;
+
+exports[`Features Constants > Snapshot Tests > should match feature titles snapshot 1`] = `
+[
+  "Lightning Speed",
+  "Beautiful Simplicity",
+  "Tag-Based Organization",
+  "Universal Access",
+  "Offline-First",
+  "Privacy Focused",
+]
+`;

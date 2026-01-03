@@ -5,7 +5,7 @@
  * environment variable combinations and validates provider type handling.
  */
 
-import { describe, it, expect, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, afterEach } from 'vitest'
 import { getAnalyticsConfig, isAnalyticsEnabled } from '../config'
 import { mockEnv } from '../../test/analytics-helpers'
 

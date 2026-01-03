@@ -8,6 +8,9 @@
   margin-right: auto;
   padding-left: var(--spacing-md);
   padding-right: var(--spacing-md);
+  /* Add safe area padding for notched devices (iOS) */
+  padding-left: max(var(--spacing-md), env(safe-area-inset-left));
+  padding-right: max(var(--spacing-md), env(safe-area-inset-right));
 }
 
 /* Background variants */

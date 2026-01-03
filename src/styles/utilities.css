@@ -141,6 +141,21 @@
   .hidden-mobile {
     display: none;
   }
+
+  /* Full-width on mobile */
+  .full-width-mobile {
+    width: 100%;
+  }
+
+  /* Stack flex items on mobile */
+  .stack-mobile {
+    flex-direction: column;
+  }
+
+  /* Center text on mobile */
+  .text-center-mobile {
+    text-align: center;
+  }
 }
 
 /* Desktop-specific utilities */
@@ -148,4 +163,67 @@
   .hidden-desktop {
     display: none;
   }
+}
+
+/* Touch-friendly interactive elements */
+.touch-target {
+  min-width: 48px;
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Prevent horizontal scroll */
+.no-scroll-x {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Disable smooth scrolling for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Better form inputs for mobile */
+@media (max-width: 768px) {
+  input,
+  textarea,
+  select {
+    font-size: 16px; /* Prevent iOS zoom on focus */
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  /* Full-width form inputs on mobile */
+  input[type='text'],
+  input[type='email'],
+  input[type='password'],
+  input[type='search'],
+  input[type='tel'],
+  input[type='url'],
+  textarea {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+/* Prevent text selection on touch devices for UI elements */
+.no-select {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* Enable GPU acceleration for smooth animations */
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform;
 }

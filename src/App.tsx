@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { ErrorBoundary } from '@components/ErrorBoundary'
 import { Header } from '@components/layout/Header'
 import { Footer } from '@components/layout/Footer'
@@ -14,10 +15,11 @@ import { FAQ } from '@components/sections/FAQ'
 import { CTA } from '@components/sections/CTA'
 import { FeedbackWidget } from '@components/ui/FeedbackWidget'
 import { useAnalytics } from '@hooks/useAnalytics'
+import { initViewportHeightFix } from '@utils/viewport'
 
 /**
  * Root application component that renders the app layout.
- * Initializes analytics tracking including scroll depth tracking.
+ * Initializes analytics tracking and mobile viewport optimizations.
  *
  * @returns The root JSX element rendering the app: an ErrorBoundary wrapping
  * the Header, and a main element containing Hero, Problem, Solution, Features,
@@ -27,6 +29,11 @@ import { useAnalytics } from '@hooks/useAnalytics'
 function App() {
   // Initialize analytics with scroll depth tracking
   useAnalytics()
+
+  // Initialize mobile viewport height fix for iOS Safari
+  useEffect(() => {
+    initViewportHeightFix()
+  }, [])
 
   return (
     <ErrorBoundary>

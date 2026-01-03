@@ -15,6 +15,9 @@ html {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   scroll-behavior: smooth;
+  /* Prevent horizontal scrolling on all devices */
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 /* Respect user's motion preferences from the start */
@@ -31,6 +34,11 @@ body {
   color: var(--color-text-primary);
   background-color: var(--color-background);
   min-height: 100vh;
+  /* Prevent horizontal scrolling on mobile */
+  overflow-x: hidden;
+  /* Better text rendering on mobile */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   /* Theme transitions - respects prefers-reduced-motion via global override below */
   transition:
     background-color var(--transition-base),

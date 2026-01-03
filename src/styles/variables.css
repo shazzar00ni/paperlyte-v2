@@ -25,17 +25,22 @@
   --color-error-bg: rgba(239, 68, 68, 0.1);
   --color-error-border: rgba(239, 68, 68, 0.3);
 
-  /* Typography */
+  /* Typography - Fluid scaling for responsive design */
   --font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-size-xs: 0.75rem; /* 12px */
-  --font-size-sm: 0.875rem; /* 14px */
-  --font-size-base: 1rem; /* 16px */
-  --font-size-lg: 1.125rem; /* 18px */
-  --font-size-xl: 1.25rem; /* 20px */
-  --font-size-2xl: 1.5rem; /* 24px */
-  --font-size-3xl: 1.875rem; /* 30px */
-  --font-size-4xl: 2.25rem; /* 36px */
-  --font-size-5xl: 3rem; /* 48px */
+
+  /* Fluid typography using clamp() - scales between mobile and desktop */
+  /* Format: clamp(min-size-mobile, preferred-size-responsive, max-size-desktop) */
+  --font-size-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem); /* 12px -> 14px */
+  --font-size-sm: clamp(0.875rem, 0.85rem + 0.125vw, 1rem); /* 14px -> 16px */
+  --font-size-base: 1rem; /* 16px - minimum readable size */
+  --font-size-lg: clamp(1rem, 0.95rem + 0.25vw, 1.125rem); /* 16px -> 18px */
+  --font-size-xl: clamp(1.125rem, 1rem + 0.625vw, 1.25rem); /* 18px -> 20px */
+  --font-size-2xl: clamp(1.25rem, 1.1rem + 0.75vw, 1.5rem); /* 20px -> 24px */
+  --font-size-3xl: clamp(1.5rem, 1.2rem + 1.5vw, 1.875rem); /* 24px -> 30px */
+  --font-size-4xl: clamp(1.75rem, 1.4rem + 1.75vw, 2.25rem); /* 28px -> 36px */
+  --font-size-5xl: clamp(2rem, 1.5rem + 2.5vw, 3rem); /* 32px -> 48px */
+  --font-size-6xl: clamp(2.25rem, 1.75rem + 2.5vw, 3.75rem); /* 36px -> 60px */
+
   --font-weight-normal: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
@@ -44,14 +49,22 @@
   --line-height-normal: 1.5;
   --line-height-relaxed: 1.75;
 
-  /* Spacing */
-  --spacing-xs: 0.5rem; /* 8px */
-  --spacing-sm: 1rem; /* 16px */
-  --spacing-md: 1.5rem; /* 24px */
-  --spacing-lg: 2rem; /* 32px */
-  --spacing-xl: 3rem; /* 48px */
-  --spacing-2xl: 4rem; /* 64px */
-  --spacing-3xl: 6rem; /* 96px */
+  /* Spacing - Fluid scaling for responsive design */
+  --spacing-xs: 0.5rem; /* 8px - fixed */
+  --spacing-sm: clamp(0.75rem, 0.5rem + 1.25vw, 1rem); /* 12px -> 16px */
+  --spacing-md: clamp(1rem, 0.75rem + 1.25vw, 1.5rem); /* 16px -> 24px */
+  --spacing-lg: clamp(1.5rem, 1rem + 2.5vw, 2rem); /* 24px -> 32px */
+  --spacing-xl: clamp(2rem, 1.5rem + 2.5vw, 3rem); /* 32px -> 48px */
+  --spacing-2xl: clamp(3rem, 2rem + 5vw, 4rem); /* 48px -> 64px */
+  --spacing-3xl: clamp(3rem, 2rem + 5vw, 6rem); /* 48px -> 96px */
+
+  /* Responsive breakpoints (for reference in media queries) */
+  --breakpoint-xs: 320px; /* Small phones */
+  --breakpoint-sm: 480px; /* Phones */
+  --breakpoint-md: 768px; /* Tablets */
+  --breakpoint-lg: 1024px; /* Small laptops */
+  --breakpoint-xl: 1280px; /* Desktops */
+  --breakpoint-2xl: 1536px; /* Large screens */
 
   /* Layout */
   --max-width: 1280px;
@@ -165,23 +178,39 @@
   }
 }
 
-/* Responsive typography adjustments - Tablet and smaller */
-@media (max-width: 768px) {
+/* iOS Safari specific fixes */
+@supports (-webkit-touch-callout: none) {
   :root {
-    --font-size-4xl: 1.875rem; /* 30px on tablet */
-    --font-size-5xl: 2.25rem; /* 36px on tablet */
-    --spacing-3xl: 4rem; /* Reduce on tablet/mobile */
+    /* Fix for 100vh including address bar on iOS */
+    --vh-fix: calc(var(--vh, 1vh) * 100);
+
+    /* Safe area insets for notched devices */
+    --safe-area-inset-top: env(safe-area-inset-top);
+    --safe-area-inset-right: env(safe-area-inset-right);
+    --safe-area-inset-bottom: env(safe-area-inset-bottom);
+    --safe-area-inset-left: env(safe-area-inset-left);
   }
 }
 
-/* Extra small screens (phones < 480px) */
-@media (max-width: 480px) {
+/* Android Chrome specific optimizations */
+@media screen and (max-width: 768px) {
   :root {
-    --font-size-3xl: 1.5rem; /* 24px on small phones */
-    --font-size-4xl: 1.75rem; /* 28px on small phones */
-    --font-size-5xl: 2rem; /* 32px on small phones */
-    --spacing-md: 1rem; /* 16px padding on small screens */
-    --spacing-2xl: 3rem; /* 48px on small screens */
-    --spacing-3xl: 3rem; /* 48px on small screens */
+    /* Prevent text inflation on Android */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  /* Remove tap highlight color */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Better focus styles for touch devices */
+  button:focus,
+  a:focus,
+  input:focus,
+  textarea:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
   }
 }

@@ -2,12 +2,17 @@
   background-color: var(--color-surface);
   border-top: 1px solid var(--color-border);
   padding: var(--spacing-3xl) 0 var(--spacing-lg);
+  /* Add safe area padding for bottom notch/home indicator on iOS */
+  padding-bottom: max(var(--spacing-lg), env(safe-area-inset-bottom));
 }
 
 .container {
   max-width: var(--max-width);
   margin: 0 auto;
   padding: 0 var(--spacing-md);
+  /* Add safe area padding for notched devices (iOS) */
+  padding-left: max(var(--spacing-md), env(safe-area-inset-left));
+  padding-right: max(var(--spacing-md), env(safe-area-inset-right));
 }
 
 .brand {
@@ -74,6 +79,10 @@
   transition: color var(--transition-base);
   border-radius: var(--border-radius-sm);
   padding: var(--spacing-xs) 0;
+  /* Ensure minimum touch target on mobile */
+  display: inline-block;
+  min-height: 44px;
+  line-height: 44px;
 }
 
 .link:hover,
@@ -98,6 +107,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  /* Ensure minimum touch target size for mobile */
+  min-width: 48px;
+  min-height: 48px;
+  border-radius: var(--border-radius-sm);
 }
 
 .socialLink:hover,

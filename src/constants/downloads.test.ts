@@ -51,21 +51,24 @@ describe('Downloads Constants', () => {
 
         expect(
           isValidUrl,
-          `URL for ${platform} should be valid or reference GitHub`
+          `URL for ${platform} should be valid`
         ).toBe(true)
-        
-        // For GitHub URLs, validate the hostname properly
-        if (url.includes('github.com')) {
-          try {
-            const urlObj = new URL(url)
-            expect(
-              urlObj.hostname === 'github.com' || urlObj.hostname.endsWith('.github.com'),
-              `URL for ${platform} should have github.com as the actual hostname`
-            ).toBe(true)
-          } catch {
-            // If URL parsing fails, check it matches LEGAL_CONFIG reference
-            expect(url).toContain(LEGAL_CONFIG.social.github)
-          }
+
+        // Parse and validate the hostname (not just substring)
+        try {
+          const urlObj = new URL(url)
+
+          // Check if it's a GitHub URL by validating the actual hostname
+          const isGitHub = urlObj.hostname === 'github.com' || urlObj.hostname.endsWith('.github.com')
+          const isAppStore = urlObj.hostname === 'apps.apple.com'
+          const isPlayStore = urlObj.hostname === 'play.google.com'
+
+          expect(
+            isGitHub || isAppStore || isPlayStore,
+            `URL for ${platform} should use a valid hostname (github.com, apps.apple.com, or play.google.com), got ${urlObj.hostname}`
+          ).toBe(true)
+        } catch (error) {
+          throw new Error(`Invalid URL for ${platform}: ${url}`)
         }
       })
     })

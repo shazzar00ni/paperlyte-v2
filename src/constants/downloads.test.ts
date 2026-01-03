@@ -67,7 +67,7 @@ describe('Downloads Constants', () => {
             isGitHub || isAppStore || isPlayStore,
             `URL for ${platform} should use a valid hostname (github.com, apps.apple.com, or play.google.com), got ${urlObj.hostname}`
           ).toBe(true)
-        } catch (error) {
+        } catch {
           throw new Error(`Invalid URL for ${platform}: ${url}`)
         }
       })

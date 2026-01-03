@@ -72,18 +72,15 @@ export function mockPerformanceObserver() {
  * Mock Scroll API
  * Mocks window.scrollY, document.documentElement properties, and window.innerHeight
  */
-export function mockScrollAPI(options: {
-  scrollY?: number
-  scrollHeight?: number
-  clientHeight?: number
-  innerHeight?: number
-} = {}) {
-  const {
-    scrollY = 0,
-    scrollHeight = 1000,
-    clientHeight = 500,
-    innerHeight = 500,
-  } = options
+export function mockScrollAPI(
+  options: {
+    scrollY?: number
+    scrollHeight?: number
+    clientHeight?: number
+    innerHeight?: number
+  } = {}
+) {
+  const { scrollY = 0, scrollHeight = 1000, clientHeight = 500, innerHeight = 500 } = options
 
   // Store original values
   const originalScrollY = window.scrollY
@@ -159,9 +156,7 @@ export function mockScrollAPI(options: {
  * Create test analytics configuration
  * Returns a valid AnalyticsConfig object with sensible defaults
  */
-export function createAnalyticsConfig(
-  overrides: Partial<AnalyticsConfig> = {}
-): AnalyticsConfig {
+export function createAnalyticsConfig(overrides: Partial<AnalyticsConfig> = {}): AnalyticsConfig {
   return {
     provider: 'plausible',
     domain: 'test-domain.com',

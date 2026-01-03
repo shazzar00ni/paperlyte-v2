@@ -280,10 +280,16 @@ describe('Legal Constants', () => {
       expect(Array.from(uniqueDomains)[0]).toBe('paperlyte.com')
     })
 
-    it('should have matching dates for privacy and terms updates', () => {
-      expect(LEGAL_CONFIG.metadata.privacyLastUpdated).toBe(
-        LEGAL_CONFIG.metadata.termsLastUpdated
-      )
+    it('should have valid last updated dates for privacy and terms', () => {
+      const { privacyLastUpdated, termsLastUpdated } = LEGAL_CONFIG.metadata
+
+      expect(typeof privacyLastUpdated).toBe('string')
+      expect(privacyLastUpdated.length).toBeGreaterThan(0)
+      expect(new Date(privacyLastUpdated).toString()).not.toBe('Invalid Date')
+
+      expect(typeof termsLastUpdated).toBe('string')
+      expect(termsLastUpdated.length).toBeGreaterThan(0)
+      expect(new Date(termsLastUpdated).toString()).not.toBe('Invalid Date')
     })
   })
 

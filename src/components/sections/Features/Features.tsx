@@ -23,11 +23,7 @@ export const Features = (): React.ReactElement => {
           <AnimatedElement key={feature.id} animation="slideUp" delay={150 + index * 75}>
             <article className={styles.card}>
               <div className={styles.iconWrapper}>
-                <Icon
-                  name={feature.icon}
-                  size="2x"
-                  color="var(--color-primary)"
-                />
+                <Icon name={feature.icon} size="2x" color="var(--color-primary)" />
               </div>
               <h3 className={styles.cardTitle}>{feature.title}</h3>
               <p className={styles.cardDescription}>{feature.description}</p>

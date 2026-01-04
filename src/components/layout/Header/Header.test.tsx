@@ -56,7 +56,7 @@ describe('Header', () => {
     expect(screen.getByText('Paperlyte')).toBeInTheDocument()
   })
 
-  it('should render navigation links', () => {
+  it('should render navigation links and CTA button', () => {
     render(<Header />)
 
     expect(screen.getByRole('link', { name: /features/i })).toBeInTheDocument()

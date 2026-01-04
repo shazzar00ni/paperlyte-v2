@@ -90,9 +90,10 @@ describe('ErrorBoundary', () => {
 
       // React's error logging format includes the error and component stack
       expect(console.error).toHaveBeenCalled()
-      const errorCalls = (console.error as any).mock.calls
-      const hasErrorLogged = errorCalls.some((call: any) =>
-        call.some((arg: any) => arg instanceof Error && arg.message === 'Test error')
+      const mockConsoleError = vi.mocked(console.error)
+      const errorCalls = mockConsoleError.mock.calls
+      const hasErrorLogged = errorCalls.some((call: unknown[]) =>
+        call.some((arg: unknown) => arg instanceof Error && arg.message === 'Test error')
       )
       expect(hasErrorLogged).toBe(true)
     })

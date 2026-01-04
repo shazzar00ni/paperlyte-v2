@@ -80,6 +80,12 @@ jobs:
           fail_ci_if_error: false
           token: ${{ secrets.CODECOV_TOKEN }}
 
+      - name: Upload test results to Codecov
+        uses: codecov/test-results-action@v1
+        if: always()
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
       - name: Upload coverage reports
         uses: actions/upload-artifact@v6
         if: always()

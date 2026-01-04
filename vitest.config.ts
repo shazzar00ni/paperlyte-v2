@@ -15,6 +15,12 @@ export default defineConfig({
     // Global test utilities
     globals: true,
 
+    // Add JUnit reporter
+    reporters: ['default', 'junit'],
+    outputFile: {
+      junit: 'junit.xml',
+    },
+
     // Coverage configuration
     coverage: {
       provider: 'v8',

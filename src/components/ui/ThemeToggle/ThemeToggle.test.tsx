@@ -33,12 +33,16 @@ describe('ThemeToggle', () => {
         toggleTheme: mockToggleTheme,
       })
 
-      render(<ThemeToggle />)
+      const { container } = render(<ThemeToggle />)
 
-      // Icon component should render as SVG
+      // Icon component should render moon icon SVG
       const button = screen.getByRole('button')
       const svg = button.querySelector('svg.icon-svg')
       expect(svg).toBeInTheDocument()
+
+      // Verify it's the moon icon by checking its unique path data
+      const path = container.querySelector('path')
+      expect(path?.getAttribute('d')).toContain('21 12.79A9 9 0 1 1 11.21 3')
     })
 
     it('should render sun icon in dark mode', () => {
@@ -47,12 +51,16 @@ describe('ThemeToggle', () => {
         toggleTheme: mockToggleTheme,
       })
 
-      render(<ThemeToggle />)
+      const { container } = render(<ThemeToggle />)
 
-      // Icon component should render as SVG
+      // Icon component should render sun icon SVG
       const button = screen.getByRole('button')
       const svg = button.querySelector('svg.icon-svg')
       expect(svg).toBeInTheDocument()
+
+      // Verify it's the sun icon by checking its unique path data
+      const path = container.querySelector('path')
+      expect(path?.getAttribute('d')).toContain('M12 7a5 5 0 1 0 0 10')
     })
   })
 
@@ -167,7 +175,7 @@ describe('ThemeToggle', () => {
 
   describe('Theme Changes', () => {
     it('should update icon when theme changes from light to dark', () => {
-      const { rerender } = render(<ThemeToggle />)
+      const { rerender, container } = render(<ThemeToggle />)
 
       vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
         theme: 'light',
@@ -176,6 +184,9 @@ describe('ThemeToggle', () => {
 
       rerender(<ThemeToggle />)
       expect(screen.getByRole('button').querySelector('svg.icon-svg')).toBeInTheDocument()
+      // Verify moon icon in light mode
+      let path = container.querySelector('path')
+      expect(path?.getAttribute('d')).toContain('21 12.79A9 9 0 1 1 11.21 3')
 
       vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
         theme: 'dark',
@@ -184,6 +195,9 @@ describe('ThemeToggle', () => {
 
       rerender(<ThemeToggle />)
       expect(screen.getByRole('button').querySelector('svg.icon-svg')).toBeInTheDocument()
+      // Verify sun icon in dark mode
+      path = container.querySelector('path')
+      expect(path?.getAttribute('d')).toContain('M12 7a5 5 0 1 0 0 10')
     })
 
     it('should update aria-label when theme changes', () => {

@@ -226,12 +226,15 @@ describe('ThemeToggle', () => {
         toggleTheme: mockToggleTheme,
       })
 
-      render(<ThemeToggle />)
+      const { container } = render(<ThemeToggle />)
 
       const button = screen.getByRole('button')
       const svg = button.querySelector('svg.icon-svg')
-
       expect(svg).toBeInTheDocument()
+
+      // Verify moon icon is passed by checking path data
+      const path = container.querySelector('path')
+      expect(path?.getAttribute('d')).toContain('21 12.79A9 9 0 1 1 11.21 3')
     })
 
     it('should pass correct icon name to Icon component in dark mode', () => {
@@ -240,12 +243,15 @@ describe('ThemeToggle', () => {
         toggleTheme: mockToggleTheme,
       })
 
-      render(<ThemeToggle />)
+      const { container } = render(<ThemeToggle />)
 
       const button = screen.getByRole('button')
       const svg = button.querySelector('svg.icon-svg')
-
       expect(svg).toBeInTheDocument()
+
+      // Verify sun icon is passed by checking path data
+      const path = container.querySelector('path')
+      expect(path?.getAttribute('d')).toContain('M12 7a5 5 0 1 0 0 10')
     })
 
     it('should pass size="md" to Icon component', () => {
@@ -254,13 +260,15 @@ describe('ThemeToggle', () => {
         toggleTheme: mockToggleTheme,
       })
 
-      render(<ThemeToggle />)
+      const { container } = render(<ThemeToggle />)
 
       const button = screen.getByRole('button')
       const svg = button.querySelector('svg.icon-svg')
-
-      // Icon component renders SVG
       expect(svg).toBeInTheDocument()
+
+      // Verify size="md" results in 20px icon (from SIZE_MAP in Icon component)
+      expect(svg?.getAttribute('width')).toBe('20')
+      expect(svg?.getAttribute('height')).toBe('20')
     })
   })
 })

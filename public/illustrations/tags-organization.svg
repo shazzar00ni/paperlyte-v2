@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" fill="none">
+  <!-- Example duotone illustration: Tags for organization -->
+
+  <!-- Background shape (secondary color) -->
+  <rect x="40" y="120" width="320" height="200" rx="16"
+        fill="var(--illustration-secondary, rgba(26, 26, 26, 0.1))"/>
+
+  <!-- Tag 1 (primary color) -->
+  <g>
+    <path d="M100 180L180 180L200 200L180 220L100 220C94.4772 220 90 215.523 90 210L90 190C90 184.477 94.4772 180 100 180Z"
+          fill="var(--illustration-primary, #1a1a1a)"/>
+    <circle cx="105" cy="200" r="4" fill="var(--illustration-secondary, rgba(26, 26, 26, 0.1))"/>
+  </g>
+
+  <!-- Tag 2 (primary color, slightly offset) -->
+  <g opacity="0.8">
+    <path d="M140 220L220 220L240 240L220 260L140 260C134.477 260 130 255.523 130 250L130 230C130 224.477 134.477 220 140 220Z"
+          fill="var(--illustration-primary, #1a1a1a)"/>
+    <circle cx="145" cy="240" r="4" fill="var(--illustration-secondary, rgba(26, 26, 26, 0.1))"/>
+  </g>
+
+  <!-- Tag 3 (secondary color) -->
+  <g opacity="0.6">
+    <path d="M180 260L260 260L280 280L260 300L180 300C174.477 300 170 295.523 170 290L170 270C170 264.477 174.477 260 180 260Z"
+          fill="var(--illustration-secondary, rgba(26, 26, 26, 0.15))"/>
+    <circle cx="185" cy="280" r="4" fill="var(--illustration-primary, #1a1a1a)"/>
+  </g>
+</svg>

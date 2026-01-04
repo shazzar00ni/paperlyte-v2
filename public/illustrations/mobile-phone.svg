@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" fill="none">
+  <!-- Example duotone illustration: Mobile phone with interface -->
+
+  <!-- Background circle (secondary color) -->
+  <circle cx="200" cy="200" r="160" fill="var(--illustration-secondary, rgba(26, 26, 26, 0.08))"/>
+
+  <!-- Phone body (primary color) -->
+  <rect x="140" y="80" width="120" height="240" rx="16"
+        fill="var(--illustration-primary, #1a1a1a)"/>
+
+  <!-- Screen (secondary color) -->
+  <rect x="150" y="100" width="100" height="200" rx="8"
+        fill="var(--illustration-secondary, rgba(26, 26, 26, 0.1))"/>
+
+  <!-- Interface elements on screen (primary color) -->
+  <rect x="165" y="115" width="70" height="8" rx="4"
+        fill="var(--illustration-primary, #1a1a1a)" opacity="0.3"/>
+  <rect x="165" y="135" width="50" height="8" rx="4"
+        fill="var(--illustration-primary, #1a1a1a)" opacity="0.3"/>
+  <rect x="165" y="155" width="60" height="8" rx="4"
+        fill="var(--illustration-primary, #1a1a1a)" opacity="0.3"/>
+
+  <!-- Home button (secondary color) -->
+  <circle cx="200" cy="310" r="6" fill="var(--illustration-secondary, rgba(26, 26, 26, 0.15))"/>
+
+  <!-- Notification badge (primary color) -->
+  <circle cx="245" cy="95" r="10" fill="var(--illustration-primary, #1a1a1a)"/>
+</svg>

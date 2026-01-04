@@ -10,8 +10,22 @@
   padding: var(--spacing-4xl) var(--spacing-md);
 }
 
+.layout {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4rem;
+  align-items: center;
+}
+
 .content {
   max-width: 600px;
+}
+
+.illustration {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .headline {
@@ -63,6 +77,15 @@
 @media (max-width: 768px) {
   .container {
     padding: var(--spacing-3xl) var(--spacing-md);
+  }
+
+  .layout {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .illustration {
+    order: -1; /* Move illustration above text on mobile */
   }
 
   .headline {

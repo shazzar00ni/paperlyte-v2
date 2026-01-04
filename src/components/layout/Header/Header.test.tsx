@@ -236,11 +236,12 @@ describe('Header', () => {
       const menuButton = screen.getByRole('button', { name: /open menu/i })
       await user.click(menuButton)
 
-      const getStartedButton = screen.getByRole('button', { name: /get started/i })
-      getStartedButton.focus()
+      const downloadLink = screen.getByRole('link', { name: 'Download' })
+      downloadLink.focus()
 
       await user.keyboard('{Home}')
 
+      // Home key focuses first focusable element (Features link)
       const featuresLink = screen.getByRole('link', { name: 'Features' })
       expect(document.activeElement).toBe(featuresLink)
     })
@@ -258,12 +259,12 @@ describe('Header', () => {
 
       await user.keyboard('{End}')
 
-      // Last item is the Get Started button in the nav
+      // End key focuses last focusable element (Get Started button)
       const getStartedButton = screen.getByRole('button', { name: /get started/i })
       expect(document.activeElement).toBe(getStartedButton)
     })
 
-    it('should wrap around to first item when pressing ArrowDown at end', async () => {
+    it('should wrap around to first item when pressing ArrowRight at end', async () => {
       const user = userEvent.setup()
       render(<Header />)
 
@@ -271,18 +272,17 @@ describe('Header', () => {
       const menuButton = screen.getByRole('button', { name: /open menu/i })
       await user.click(menuButton)
 
-      // Navigate to last item first
+      const getStartedButton = screen.getByRole('button', { name: /get started/i })
+      getStartedButton.focus()
+
+      // ArrowRight from last item should wrap to first
+      await user.keyboard('{ArrowRight}')
+
       const featuresLink = screen.getByRole('link', { name: 'Features' })
-      featuresLink.focus()
-      await user.keyboard('{End}')
-
-      // Then ArrowDown should wrap to first
-      await user.keyboard('{ArrowDown}')
-
       expect(document.activeElement).toBe(featuresLink)
     })
 
-    it('should wrap around to last item when pressing ArrowUp at beginning', async () => {
+    it('should wrap around to last item when pressing ArrowLeft at beginning', async () => {
       const user = userEvent.setup()
       render(<Header />)
 
@@ -293,7 +293,7 @@ describe('Header', () => {
       const featuresLink = screen.getByRole('link', { name: 'Features' })
       featuresLink.focus()
 
-      await user.keyboard('{ArrowUp}')
+      await user.keyboard('{ArrowLeft}')
 
       // Should wrap to last item (Get Started)
       const getStartedButton = screen.getByRole('button', { name: /get started/i })

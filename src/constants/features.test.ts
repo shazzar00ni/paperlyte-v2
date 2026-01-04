@@ -23,10 +23,9 @@ describe('Features Constants', () => {
         expect(feature, `Feature at index ${index} should have an id`).toHaveProperty('id')
         expect(feature, `Feature at index ${index} should have an icon`).toHaveProperty('icon')
         expect(feature, `Feature at index ${index} should have a title`).toHaveProperty('title')
-        expect(
-          feature,
-          `Feature at index ${index} should have a description`
-        ).toHaveProperty('description')
+        expect(feature, `Feature at index ${index} should have a description`).toHaveProperty(
+          'description'
+        )
       })
     })
 
@@ -79,10 +78,7 @@ describe('Features Constants', () => {
 
     it('should have valid Font Awesome icon format', () => {
       FEATURES.forEach((feature) => {
-        expect(
-          feature.icon,
-          `Icon for "${feature.id}" should start with fa-`
-        ).toMatch(/^fa-/)
+        expect(feature.icon, `Icon for "${feature.id}" should start with fa-`).toMatch(/^fa-/)
       })
     })
 
@@ -223,7 +219,16 @@ describe('Features Constants', () => {
 
       // Count occurrences of benefit words vs technical jargon
       const benefitWords = ['your', 'you', 'fast', 'simple', 'easy', 'seamless', 'instant']
-      const techWords = ['api', 'sdk', 'cli', 'endpoint', 'protocol', 'latency', 'throughput', 'integration']
+      const techWords = [
+        'api',
+        'sdk',
+        'cli',
+        'endpoint',
+        'protocol',
+        'latency',
+        'throughput',
+        'integration',
+      ]
 
       const countOccurrences = (text: string, words: string[]): number => {
         return words.reduce((count, word) => {
@@ -236,7 +241,10 @@ describe('Features Constants', () => {
       const benefitCount = countOccurrences(allDescriptions, benefitWords)
       const techCount = countOccurrences(allDescriptions, techWords)
 
-      expect(benefitCount, 'Descriptions should focus on user benefits over technical jargon').toBeGreaterThan(techCount)
+      expect(
+        benefitCount,
+        'Descriptions should focus on user benefits over technical jargon'
+      ).toBeGreaterThan(techCount)
     })
 
     it('should use action-oriented language', () => {
@@ -260,20 +268,18 @@ describe('Features Constants', () => {
   describe('Data Integrity', () => {
     it('should maintain consistent ID format (lowercase, single word or hyphenated)', () => {
       FEATURES.forEach((feature) => {
-        expect(
-          feature.id,
-          `ID "${feature.id}" should be lowercase without spaces`
-        ).toMatch(/^[a-z]+(-[a-z]+)*$/)
+        expect(feature.id, `ID "${feature.id}" should be lowercase without spaces`).toMatch(
+          /^[a-z]+(-[a-z]+)*$/
+        )
       })
     })
 
     it('should have proper capitalization in titles', () => {
       FEATURES.forEach((feature) => {
         const firstChar = feature.title[0]
-        expect(
-          firstChar,
-          `Title "${feature.title}" should start with uppercase`
-        ).toBe(firstChar.toUpperCase())
+        expect(firstChar, `Title "${feature.title}" should start with uppercase`).toBe(
+          firstChar.toUpperCase()
+        )
       })
     })
 

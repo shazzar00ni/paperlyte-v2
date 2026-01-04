@@ -25,26 +25,21 @@ describe('Comparison Constants', () => {
 
     it('should have all required fields for each feature', () => {
       COMPARISON_FEATURES.forEach((feature, index) => {
-        expect(
-          feature,
-          `Feature at index ${index} should have a feature name`
-        ).toHaveProperty('feature')
-        expect(
-          feature,
-          `Feature at index ${index} should have paperlyte value`
-        ).toHaveProperty('paperlyte')
-        expect(
-          feature,
-          `Feature at index ${index} should have notion value`
-        ).toHaveProperty('notion')
-        expect(
-          feature,
-          `Feature at index ${index} should have evernote value`
-        ).toHaveProperty('evernote')
-        expect(
-          feature,
-          `Feature at index ${index} should have onenote value`
-        ).toHaveProperty('onenote')
+        expect(feature, `Feature at index ${index} should have a feature name`).toHaveProperty(
+          'feature'
+        )
+        expect(feature, `Feature at index ${index} should have paperlyte value`).toHaveProperty(
+          'paperlyte'
+        )
+        expect(feature, `Feature at index ${index} should have notion value`).toHaveProperty(
+          'notion'
+        )
+        expect(feature, `Feature at index ${index} should have evernote value`).toHaveProperty(
+          'evernote'
+        )
+        expect(feature, `Feature at index ${index} should have onenote value`).toHaveProperty(
+          'onenote'
+        )
       })
     })
 
@@ -111,10 +106,7 @@ describe('Comparison Constants', () => {
 
     it('should have non-empty feature names', () => {
       COMPARISON_FEATURES.forEach((feature) => {
-        expect(
-          feature.feature.length,
-          `Feature name should not be empty`
-        ).toBeGreaterThan(0)
+        expect(feature.feature.length, `Feature name should not be empty`).toBeGreaterThan(0)
       })
     })
   })
@@ -130,18 +122,11 @@ describe('Comparison Constants', () => {
 
     it('should have all required fields for each competitor', () => {
       COMPETITORS.forEach((competitor, index) => {
-        expect(
-          competitor,
-          `Competitor at index ${index} should have an id`
-        ).toHaveProperty('id')
-        expect(
-          competitor,
-          `Competitor at index ${index} should have a name`
-        ).toHaveProperty('name')
-        expect(
-          competitor,
-          `Competitor at index ${index} should have a color`
-        ).toHaveProperty('color')
+        expect(competitor, `Competitor at index ${index} should have an id`).toHaveProperty('id')
+        expect(competitor, `Competitor at index ${index} should have a name`).toHaveProperty('name')
+        expect(competitor, `Competitor at index ${index} should have a color`).toHaveProperty(
+          'color'
+        )
       })
     })
 
@@ -185,10 +170,7 @@ describe('Comparison Constants', () => {
 
     it('should have valid color values', () => {
       COMPETITORS.forEach((competitor) => {
-        expect(
-          competitor.color,
-          `Color for "${competitor.name}" should not be empty`
-        ).toBeTruthy()
+        expect(competitor.color, `Color for "${competitor.name}" should not be empty`).toBeTruthy()
         // Check if it's a hex color or CSS variable
         expect(
           competitor.color.match(/^(#[0-9A-F]{6}|var\(.+\))$/i),
@@ -217,10 +199,9 @@ describe('Comparison Constants', () => {
 
     it('should maintain consistent ID format (lowercase)', () => {
       COMPETITORS.forEach((competitor) => {
-        expect(
-          competitor.id,
-          `ID "${competitor.id}" should be lowercase`
-        ).toBe(competitor.id.toLowerCase())
+        expect(competitor.id, `ID "${competitor.id}" should be lowercase`).toBe(
+          competitor.id.toLowerCase()
+        )
       })
     })
   })

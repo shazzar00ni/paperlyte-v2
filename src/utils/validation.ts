@@ -113,19 +113,27 @@ const MAX_SANITIZATION_ITERATIONS = 100
  * Helper function to iteratively apply a replacement pattern
  * Continues until no more matches or iteration limit is reached
  *
+ * Note: This function requires a global RegExp. If the pattern is not global,
+ * it will be normalized by creating a new RegExp with the global flag added.
+ *
  * @param input - String to sanitize
- * @param pattern - Regex pattern to replace
+ * @param pattern - Regex pattern to replace (will be normalized to global if needed)
  * @param replacement - Replacement string (default: empty string)
  * @returns Sanitized string
  */
 function iterativeReplace(input: string, pattern: RegExp, replacement = ''): string {
+  // Ensure pattern has global flag for efficient replacement
+  const globalPattern = pattern.global
+    ? pattern
+    : new RegExp(pattern.source, pattern.flags + 'g')
+
   let sanitized = input
   let prevValue = ''
   let iterations = 0
 
   while (sanitized !== prevValue && iterations < MAX_SANITIZATION_ITERATIONS) {
     prevValue = sanitized
-    sanitized = sanitized.replace(pattern, replacement)
+    sanitized = sanitized.replace(globalPattern, replacement)
     iterations++
   }
 

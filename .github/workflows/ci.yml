@@ -190,7 +190,9 @@ jobs:
           chrome-version: stable
 
       - name: Run Lighthouse CI
+        id: lighthouse
         run: npx @lhci/cli autorun --config=./.lighthouserc.json
+        continue-on-error: true
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
 
@@ -203,17 +205,23 @@ jobs:
           retention-days: 30
 
       - name: Format Lighthouse results
-        if: github.event_name == 'pull_request'
+        if: always() && github.event_name == 'pull_request'
         run: |
           echo "## 🔦 Lighthouse CI Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          if [ -f .lighthouseci/manifest.json ]; then
-            echo "✅ Lighthouse audit completed successfully" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "View detailed results in the uploaded artifacts." >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.lighthouse.outcome }}" == "success" ]; then
+            echo "✅ All performance budgets passed!" >> $GITHUB_STEP_SUMMARY
           else
-            echo "⚠️ Lighthouse results not found" >> $GITHUB_STEP_SUMMARY
+            echo "❌ Performance budgets failed" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Check the detailed Lighthouse reports in the artifacts for specific failures." >> $GITHUB_STEP_SUMMARY
           fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "View detailed results in the \`lighthouse-results\` artifact." >> $GITHUB_STEP_SUMMARY
+
+      - name: Fail job if Lighthouse assertions failed
+        if: steps.lighthouse.outcome != 'success'
+        run: exit 1
 
   e2e:
     name: E2E Tests

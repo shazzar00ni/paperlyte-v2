@@ -260,7 +260,7 @@ describe('ThemeToggle', () => {
         toggleTheme: mockToggleTheme,
       })
 
-      const { container } = render(<ThemeToggle />)
+      render(<ThemeToggle />)
 
       const button = screen.getByRole('button')
       const svg = button.querySelector('svg.icon-svg')

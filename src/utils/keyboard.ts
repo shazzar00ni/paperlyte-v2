@@ -77,9 +77,20 @@ export function getFocusableElements(container: HTMLElement): HTMLElement[] {
   const elements = container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)
   const elementsArray = Array.from(elements)
 
-  // WORKAROUND: JSDOM bug causes querySelectorAll to return elements in wrong order
-  // when selector includes "details > summary". Sort by DOM order to fix.
-  // See: https://github.com/jsdom/jsdom/issues/...
+  // WORKAROUND: JSDOM/NWSAPI bug with compound selectors containing "details > summary"
+  // When the FOCUSABLE_SELECTOR includes "details > summary" as one of the comma-separated
+  // selectors, querySelectorAll returns elements in incorrect order (e.g., button before
+  // earlier anchor elements in DOM). This violates the W3C spec requiring document order.
+  //
+  // Reproduction: DOM with <a>Features</a>, <a>Download</a>, <button>Get Started</button>
+  // Expected order: [a, a, button]
+  // Actual order without sorting: [button, a, a]
+  //
+  // Related issues (though not exact match):
+  // - https://github.com/jquery/jquery/issues/5642 (child combinator issues after NWSAPI 2.2.16)
+  // - https://github.com/dperini/nwsapi/issues/123 (child combinator in :has() pseudo-class)
+  //
+  // Solution: Explicitly sort by document order using compareDocumentPosition
   elementsArray.sort((a, b) => {
     if (a === b) return 0
     const position = a.compareDocumentPosition(b)

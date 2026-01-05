@@ -1,0 +1,43 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Config Constants > Snapshot Tests > should match APP_CONFIG snapshot 1`] = `
+{
+  "description": "A lightning-fast, distraction-free note-taking application",
+  "name": "Paperlyte",
+  "tagline": "Your thoughts, unchained from complexity",
+}
+`;
+
+exports[`Config Constants > Snapshot Tests > should match CONTACT snapshot 1`] = `
+{
+  "salesEmail": "hello@paperlyte.com",
+  "supportEmail": "support@paperlyte.com",
+}
+`;
+
+exports[`Config Constants > Snapshot Tests > should match SOCIAL_LINKS snapshot 1`] = `
+{
+  "discord": "https://discord.gg/paperlyte",
+  "github": "https://github.com/paperlyte",
+  "twitter": "https://twitter.com/paperlyte",
+}
+`;
+
+exports[`Config Constants > Snapshot Tests > should match all config exports snapshot 1`] = `
+{
+  "APP_CONFIG": {
+    "description": "A lightning-fast, distraction-free note-taking application",
+    "name": "Paperlyte",
+    "tagline": "Your thoughts, unchained from complexity",
+  },
+  "CONTACT": {
+    "salesEmail": "hello@paperlyte.com",
+    "supportEmail": "support@paperlyte.com",
+  },
+  "SOCIAL_LINKS": {
+    "discord": "https://discord.gg/paperlyte",
+    "github": "https://github.com/paperlyte",
+    "twitter": "https://twitter.com/paperlyte",
+  },
+}
+`;

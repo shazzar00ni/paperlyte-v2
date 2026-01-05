@@ -5,7 +5,7 @@ This document outlines the image assets that need to be created for the Paperlyt
 ## Current Status
 
 ### ✅ Completed
-- **SVG Favicon**: `/public/favicon.svg` - Created with brand purple (#7c3aed)
+- **SVG Favicon**: `/public/favicon.svg` - Created with brand blue (#3b82f6)
 - **Open Graph Meta Tags**: Added to `index.html`
 - **Twitter Card Meta Tags**: Added to `index.html`
 
@@ -20,7 +20,7 @@ The following image files are referenced in the HTML meta tags but do not yet ex
 - **Dimensions**: 1200 x 630 pixels
 - **Format**: JPG (optimized for web)
 - **Requirements**:
-  - Use brand purple (#7c3aed) as primary color
+  - Use brand blue (#3b82f6) as primary color
   - Include Paperlyte logo/wordmark
   - Tagline: "Your thoughts, unchained from complexity"
   - Clean, modern design matching landing page aesthetic
@@ -55,7 +55,7 @@ While the SVG favicon is now in place, additional PNG formats are recommended fo
 - **File**: `public/apple-touch-icon.png`
   - **Dimensions**: 180 x 180 pixels
   - **Format**: PNG (no transparency - use solid background)
-  - **Background**: White or brand purple (#7c3aed)
+  - **Background**: White or brand blue (#3b82f6)
   - **Source**: Convert from `/public/favicon.svg`
 
 ## 3. Web App Manifest
@@ -81,7 +81,7 @@ Create a web app manifest for PWA support (optional but recommended):
       "type": "image/png"
     }
   ],
-  "theme_color": "#7c3aed",
+  "theme_color": "#3b82f6",
   "background_color": "#ffffff",
   "display": "standalone"
 }
@@ -94,7 +94,7 @@ Create a web app manifest for PWA support (optional but recommended):
 ## Brand Guidelines
 
 ### Colors
-- **Primary Purple**: `#7c3aed`
+- **Primary Blue**: `#3b82f6`
 - **Text Dark**: `#1e293b`
 - **Text Secondary**: `#64748b`
 - **Background**: `#ffffff`

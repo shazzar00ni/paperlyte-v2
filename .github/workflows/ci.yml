@@ -80,6 +80,12 @@ jobs:
           fail_ci_if_error: false
           token: ${{ secrets.CODECOV_TOKEN }}
 
+      - name: Upload test results to Codecov
+        uses: codecov/test-results-action@v1
+        if: always()
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
       - name: Upload coverage reports
         uses: actions/upload-artifact@v6
         if: always()
@@ -184,11 +190,15 @@ jobs:
           name: dist
           path: dist/
 
-      - name: Install Lighthouse CI
-        run: npm install -g @lhci/cli@0.13.x
+      - name: Install Chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: stable
 
       - name: Run Lighthouse CI
-        run: lhci autorun --config=./.lighthouserc.json
+        id: lighthouse
+        run: npx @lhci/cli autorun --config=./.lighthouserc.json
+        continue-on-error: true
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
 
@@ -199,6 +209,25 @@ jobs:
           name: lighthouse-results
           path: .lighthouseci/
           retention-days: 30
+
+      - name: Format Lighthouse results
+        if: always() && github.event_name == 'pull_request'
+        run: |
+          echo "## 🔦 Lighthouse CI Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.lighthouse.outcome }}" == "success" ]; then
+            echo "✅ All performance budgets passed!" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Performance budgets failed" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Check the detailed Lighthouse reports in the artifacts for specific failures." >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "View detailed results in the \`lighthouse-results\` artifact." >> $GITHUB_STEP_SUMMARY
+
+      - name: Fail job if Lighthouse assertions failed
+        if: steps.lighthouse.outcome != 'success'
+        run: exit 1
 
   e2e:
     name: E2E Tests

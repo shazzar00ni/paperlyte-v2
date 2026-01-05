@@ -1,0 +1,61 @@
+Type,Title,Last Visited,Host
+Pull Request,Fix failing tests and add missing SVG icons,2026-01-04T11:57:16Z,github.com
+Pull Request,Update CI to use codecov-action,2026-01-03T18:54:51Z,github.com
+Pull Request,Set up analytics testing infrastructure and helpers,2026-01-03T18:52:51Z,github.com
+Pull Request,docs: Update daily PR review summary,2026-01-03T15:09:21Z,github.com
+Pull Request,feat: Add tests for analytics utilities,2026-01-04T11:58:08Z,github.com
+Pull Request,Implement Mobile optimization,2026-01-03T06:49:13Z,github.com
+Pull Request,Fix - Netlify build configuration issue,2026-01-03T18:50:48Z,github.com
+Pull Request,Create issues from baseline audit results,2026-01-02T19:06:56Z,github.com
+Pull Request,Remove purple from brand colors,2026-01-03T18:54:31Z,github.com
+Pull Request,Improve test assertions: exact text matches and semantic role queries,2026-01-02T18:57:28Z,github.com
+Pull Request,security: Remove Google Fonts CDN to fix SRI issue,2026-01-03T18:56:57Z,github.com
+Pull Request,Fix ErrorBoundary component test failures,2026-01-04T08:45:42Z,github.com
+Pull Request,Implement Codecov Test Analytics,2026-01-03T06:45:30Z,github.com
+Pull Request,Set up Lighthouse CI in GitHub Actions,2026-01-04T07:53:26Z,github.com
+Pull Request,Remove unused variable in analytics config tests,2026-01-04T07:36:48Z,github.com
+Pull Request,Configure GitHub branch protection rules,2026-01-02T19:24:55Z,github.com
+Issue,[P0-CRITICAL] ConvertKit Email Capture Integration,2026-01-02T13:05:22Z,github.com
+Issue,[P0-CRITICAL] Complete Technical Audit & Baseline Metrics,2026-01-02T11:57:46Z,github.com
+Issue,[P0-CRITICAL] Fix Build Configuration Backend Directory Error,2026-01-02T19:07:17Z,github.com
+Issue,[P0-CRITICAL] Mobile Responsive Optimization,2026-01-02T19:06:15Z,github.com
+Pull Request,Add review summary for PR #10,2026-01-02T18:34:56Z,github.com
+Pull Request,Add Comprehensive Test Coverage for Analytics Module (113+ Tests),2026-01-04T07:36:49Z,github.com
+Pull Request,chore(deps-dev): bump qs from 6.14.0 to 6.14.1,2026-01-02T05:21:38Z,github.com
+Pull Request,feat: Create PR Review Summary,2026-01-01T10:07:20Z,github.com
+Pull Request,feat: Create PR Review Summary,2025-12-31T10:06:36Z,github.com
+Pull Request,Add comprehensive tests for constants module (100% coverage),2026-01-03T14:26:27Z,github.com
+Pull Request,Add docstrings to `claude/add-utility-tests-QhsRN`,2025-12-31T05:33:09Z,github.com
+Pull Request,"Add comprehensive tests for utility files (metaTags, monitoring, env)",2026-01-01T12:02:23Z,github.com
+Pull Request,📝 Add docstrings to `claude/keyboard-navigation-handlers-EVLKh`,2025-12-31T11:58:02Z,github.com
+Pull Request,Fix incomplete multi-character sanitization vulnerability in sanitizeInput,2026-01-04T08:43:18Z,github.com
+Commit,Merge pull request #249 from shazzar00ni/claude/setup-lighthouse-ci-kxlJD,2026-01-04T07:53:15Z,github.com
+Commit,Fix Footer tests to match updated component implementation,2026-01-04T07:49:17Z,github.com
+Commit,Fix Lighthouse CI summary to properly detect assertion failures,2026-01-04T07:38:58Z,github.com
+Commit,Update src/components/ErrorBoundary/ErrorBoundary.test.tsx,2026-01-04T07:37:49Z,github.com
+Commit,Update docs/LIGHTHOUSE-CI.md,2026-01-04T07:37:40Z,github.com
+Commit,Merge pull request #241 from shazzar00ni/claude/add-analytics-tests-uFBpl,2026-01-04T07:36:42Z,github.com
+Commit,Merge pull request #252 from shazzar00ni/claude/add-sri-google-fonts-1gQmZ,2026-01-03T18:56:54Z,github.com
+Commit,Merge pull request #254 from shazzar00ni/claude/remove-purple-branding-2BVHp,2026-01-03T18:54:26Z,github.com
+Commit,Merge pull request #237 from shazzar00ni/claude/add-constants-tests-OnNXg,2026-01-03T14:26:19Z,github.com
+Commit,Fix ESLint warning: remove unused error variable in catch block,2026-01-03T14:17:21Z,github.com
+Commit,Fix remaining URL substring sanitization vulnerabilities,2026-01-03T14:15:24Z,github.com
+Commit,Fix failing unit tests and vitest configuration,2026-01-03T14:12:40Z,github.com
+Commit,Fix security issue: replace substring URL validation with hostname check,2026-01-03T14:07:15Z,github.com
+Commit,Update src/constants/faq.test.ts,2026-01-03T14:07:09Z,github.com
+Commit,Update src/constants/waitlist.test.ts,2026-01-03T14:07:02Z,github.com
+Commit,Update src/constants/testimonials.test.ts,2026-01-03T14:06:54Z,github.com
+Commit,Update src/constants/legal.test.ts,2026-01-03T14:06:46Z,github.com
+Commit,Update src/constants/pricing.test.ts,2026-01-03T14:06:38Z,github.com
+Commit,Format analytics-helpers.ts with Prettier,2026-01-03T14:01:56Z,github.com
+Commit,Improve webVitals.test.ts test quality,2026-01-03T13:57:25Z,github.com
+Commit,Improve comment clarity in scrollDepth.test.ts,2026-01-03T13:53:35Z,github.com
+Commit,Address code review feedback,2026-01-03T13:51:56Z,github.com
+Commit,Fix test structure and cleanup issues,2026-01-03T13:49:38Z,github.com
+Commit,Update src/test/analytics-helpers.ts,2026-01-03T13:48:58Z,github.com
+Commit,Update CLAUDE.md,2026-01-03T07:11:20Z,github.com
+Commit,Merge pull request #250 from shazzar00ni/feat/codecov-test-analytics-16466217782967761065,2026-01-03T06:45:23Z,github.com
+Commit,Add reset() method to Analytics class for test isolation,2026-01-03T06:40:15Z,github.com
+Commit,Add shared analytics test helpers,2026-01-03T06:35:59Z,github.com
+Commit,feat: implement Codecov test analytics,2026-01-02T22:32:34Z,github.com
+Commit,Merge pull request #247 from shazzar00ni/claude/github-branch-protection-idoSL,2026-01-02T19:24:51Z,github.com

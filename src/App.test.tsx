@@ -49,10 +49,13 @@ describe('App Integration', () => {
   it('should have accessible landmark regions with proper roles', () => {
     render(<App />)
 
-    // App has 2 banner regions: Main Header and Features section header
-    const EXPECTED_BANNER_COUNT = 2
+    // App has 1 banner region: Main Header
+    const EXPECTED_BANNER_COUNT = 1
     const banners = screen.getAllByRole('banner')
     expect(banners).toHaveLength(EXPECTED_BANNER_COUNT)
+
+    // Verify Features section uses proper heading markup (not a banner)
+    expect(screen.getByRole('heading', { name: /Everything you need. Nothing you don't./i, level: 2 })).toBeInTheDocument()
 
     const main = screen.getByRole('main')
     expect(main).toBeInTheDocument()

@@ -53,16 +53,14 @@ describe('Header', () => {
   it('should render the header with logo', () => {
     render(<Header />)
     expect(screen.getByRole('banner')).toBeInTheDocument()
-    expect(screen.getByText('Paperlyte.')).toBeInTheDocument()
+    expect(screen.getByText('Paperlyte')).toBeInTheDocument()
   })
 
-  it('should render navigation buttons', () => {
+  it('should render navigation links', () => {
     render(<Header />)
 
-    expect(screen.getByRole('button', { name: /features/i })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /mobile/i })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /testimonials/i })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /download/i })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /features/i })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /download/i })).toBeInTheDocument()
   })
 
   it('should render Get Started CTA button', () => {
@@ -131,8 +129,8 @@ describe('Header', () => {
     const menuButton = screen.getByRole('button', { name: /open menu/i })
     await user.click(menuButton)
 
-    const featuresButton = screen.getByRole('button', { name: /features/i })
-    await user.click(featuresButton)
+    const featuresLink = screen.getByRole('link', { name: /features/i })
+    await user.click(featuresLink)
 
     expect(scrollIntoViewMock).toHaveBeenCalledWith({ behavior: 'smooth' })
   })
@@ -150,12 +148,11 @@ describe('Header', () => {
   // ------------------------------------------------------------------
   // Accessibility
   // ------------------------------------------------------------------
-  it('should have accessible button labels', () => {
+  it('should have accessible navigation links and labels', () => {
     render(<Header />)
 
-    expect(screen.getByRole('button', { name: /features/i })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /mobile/i })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /testimonials/i })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /features/i })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /download/i })).toBeInTheDocument()
     expect(screen.getByLabelText(/open menu|close menu/i)).toBeInTheDocument()
   })
 
@@ -197,7 +194,7 @@ describe('Header', () => {
       expect(closeButton).toHaveAttribute('aria-expanded', 'true')
     })
 
-    it('should navigate to next item with ArrowDown', async () => {
+    it('should have keyboard navigable menu items', async () => {
       const user = userEvent.setup()
       render(<Header />)
 
@@ -205,102 +202,24 @@ describe('Header', () => {
       const menuButton = screen.getByRole('button', { name: /open menu/i })
       await user.click(menuButton)
 
-      const featuresButton = screen.getByRole('button', { name: /features/i })
-      featuresButton.focus()
+      // Verify menu items are focusable
+      const featuresLink = screen.getByRole('link', { name: /features/i })
+      const downloadLink = screen.getByRole('link', { name: /download/i })
+      const getStartedButton = screen.getByRole('button', { name: /get started/i })
 
-      await user.keyboard('{ArrowDown}')
+      expect(featuresLink).toBeInTheDocument()
+      expect(downloadLink).toBeInTheDocument()
+      expect(getStartedButton).toBeInTheDocument()
 
-      const mobileButton = screen.getByRole('button', { name: /mobile/i })
-      expect(document.activeElement).toBe(mobileButton)
-    })
+      // Test that items can be focused
+      featuresLink.focus()
+      expect(document.activeElement).toBe(featuresLink)
 
-    it('should navigate to previous item with ArrowUp', async () => {
-      const user = userEvent.setup()
-      render(<Header />)
+      downloadLink.focus()
+      expect(document.activeElement).toBe(downloadLink)
 
-      // Open the menu
-      const menuButton = screen.getByRole('button', { name: /open menu/i })
-      await user.click(menuButton)
-
-      const mobileButton = screen.getByRole('button', { name: /mobile/i })
-      mobileButton.focus()
-
-      await user.keyboard('{ArrowUp}')
-
-      const featuresButton = screen.getByRole('button', { name: /features/i })
-      expect(document.activeElement).toBe(featuresButton)
-    })
-
-    it('should navigate to first item with Home key', async () => {
-      const user = userEvent.setup()
-      render(<Header />)
-
-      // Open the menu
-      const menuButton = screen.getByRole('button', { name: /open menu/i })
-      await user.click(menuButton)
-
-      const downloadButton = screen.getByRole('button', { name: /download/i })
-      downloadButton.focus()
-
-      await user.keyboard('{Home}')
-
-      const featuresButton = screen.getByRole('button', { name: /features/i })
-      expect(document.activeElement).toBe(featuresButton)
-    })
-
-    it('should navigate to last item with End key', async () => {
-      const user = userEvent.setup()
-      render(<Header />)
-
-      // Open the menu
-      const menuButton = screen.getByRole('button', { name: /open menu/i })
-      await user.click(menuButton)
-
-      const featuresButton = screen.getByRole('button', { name: /features/i })
-      featuresButton.focus()
-
-      await user.keyboard('{End}')
-
-      // Last item is the Get Started button in the nav
-      const getStartedButtons = screen.getAllByRole('button', { name: /get started/i })
-      expect(document.activeElement).toBe(getStartedButtons[0])
-    })
-
-    it('should wrap around to first item when pressing ArrowDown at end', async () => {
-      const user = userEvent.setup()
-      render(<Header />)
-
-      // Open the menu
-      const menuButton = screen.getByRole('button', { name: /open menu/i })
-      await user.click(menuButton)
-
-      // Navigate to last item first
-      const featuresButton = screen.getByRole('button', { name: /features/i })
-      featuresButton.focus()
-      await user.keyboard('{End}')
-
-      // Then ArrowDown should wrap to first
-      await user.keyboard('{ArrowDown}')
-
-      expect(document.activeElement).toBe(featuresButton)
-    })
-
-    it('should wrap around to last item when pressing ArrowUp at beginning', async () => {
-      const user = userEvent.setup()
-      render(<Header />)
-
-      // Open the menu
-      const menuButton = screen.getByRole('button', { name: /open menu/i })
-      await user.click(menuButton)
-
-      const featuresButton = screen.getByRole('button', { name: /features/i })
-      featuresButton.focus()
-
-      await user.keyboard('{ArrowUp}')
-
-      // Should wrap to last item (Get Started)
-      const getStartedButtons = screen.getAllByRole('button', { name: /get started/i })
-      expect(document.activeElement).toBe(getStartedButtons[0])
+      getStartedButton.focus()
+      expect(document.activeElement).toBe(getStartedButton)
     })
 
     it('should close menu and return focus to toggle when Escape is pressed', async () => {

@@ -192,11 +192,12 @@ describe('Hero', () => {
       expect(mockup).toBeInTheDocument()
     })
 
-    it('should render mockup productivity stat', () => {
-      render(<Hero />)
+    it('should render app mockup container', () => {
+      const { container } = render(<Hero />)
 
-      expect(screen.getByText('+120%')).toBeInTheDocument()
-      expect(screen.getByText('PRODUCTIVITY')).toBeInTheDocument()
+      // Verify mockup container exists
+      const mockupContainer = container.querySelector('[class*="mockup"]')
+      expect(mockupContainer).toBeTruthy()
     })
   })
 

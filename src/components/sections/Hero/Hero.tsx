@@ -1,6 +1,8 @@
 import { Button } from '@components/ui/Button'
+import { EmailCapture } from '@components/ui/EmailCapture'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { Section } from '@components/layout/Section'
+import { Icon } from '@components/ui/Icon'
 import { scrollToSection } from '@/utils/navigation'
 import styles from './Hero.module.css'
 
@@ -8,47 +10,64 @@ export const Hero = (): React.ReactElement => {
   return (
     <Section id="hero" className={styles.hero} padding="large">
       <div className={styles.content}>
+        {/* Headline - Optimized for conversion */}
         <AnimatedElement animation="fadeIn">
-          <h1 className={styles.headline}>
-            Your thoughts, <em>organized.</em>
+          <h1 id="hero-headline" className={styles.headline}>
+            Your thoughts, <em className={styles.emphasis}>unchained</em>
           </h1>
         </AnimatedElement>
 
+        {/* Subheadline */}
         <AnimatedElement animation="fadeIn" delay={100}>
-          <p className={styles.subheadline}>The minimal workspace for busy professionals.</p>
+          <p className={styles.subheadline}>
+            Lightning-fast note-taking without the bloat. Write, organize with tags, and sync
+            everywhere—offline first, always private.
+          </p>
         </AnimatedElement>
 
+        {/* Email Capture Form */}
+        <AnimatedElement animation="fadeIn" delay={200}>
+          <div className={styles.emailWrapper}>
+            <EmailCapture variant="inline" placeholder="your@email.com" buttonText="Join Waitlist" />
+          </div>
+        </AnimatedElement>
+
+        {/* Secondary CTA */}
         <AnimatedElement animation="fadeIn" delay={300}>
-          <div className={styles.ctas}>
+          <div className={styles.secondaryCta}>
             <Button
-              variant="primary"
+              variant="ghost"
               size="large"
-              icon="fa-arrow-right"
-              onClick={() => scrollToSection('download')}
+              icon="fa-play-circle"
+              onClick={() => scrollToSection('features')}
+              ariaLabel="See how Paperlyte works - scroll to features section"
             >
-              Start Writing for Free
-            </Button>
-            <Button variant="secondary" size="large" onClick={() => scrollToSection('features')}>
-              View the Demo
+              See How It Works
             </Button>
           </div>
         </AnimatedElement>
 
-        <AnimatedElement animation="fadeIn" delay={450}>
-          <div className={styles.trustedBy}>
-            <p className={styles.trustedByLabel}>TRUSTED BY TEAMS AT</p>
-            <ul className={styles.companies}>
-              <li className={styles.company}>Acme Corp</li>
-              <li className={styles.company}>Global</li>
-              <li className={styles.company}>Nebula</li>
-              <li className={styles.company}>Vertex</li>
-              <li className={styles.company}>Horizon</li>
-            </ul>
+        {/* Social Proof / Trust Badges */}
+        <AnimatedElement animation="fadeIn" delay={400}>
+          <div className={styles.trustBadges} role="status" aria-live="polite">
+            <div className={styles.badge}>
+              <Icon name="fa-users" size="sm" />
+              <span className={styles.badgeText}>Join 1,234 early adopters</span>
+            </div>
+            <div className={styles.badge}>
+              <Icon name="fa-star" size="sm" />
+              <span className={styles.badgeText}>Free forever for early users</span>
+            </div>
+            <div className={styles.badge}>
+              <Icon name="fa-shield-check" size="sm" />
+              <span className={styles.badgeText}>No credit card required</span>
+            </div>
           </div>
         </AnimatedElement>
       </div>
 
-      <AnimatedElement animation="fadeIn" delay={400}>
+      {/* Hero Image/Mockup */}
+      <AnimatedElement animation="fadeIn" delay={500}>
         <div className={styles.mockupContainer} aria-hidden="true">
           {/* Primary mockup - Notes list view */}
           <div className={styles.mockupPrimary}>
@@ -63,6 +82,7 @@ export const Hero = (): React.ReactElement => {
                 height={800}
                 loading="eager"
                 decoding="async"
+                fetchPriority="high"
                 className={styles.mockupImage}
               />
             </picture>

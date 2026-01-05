@@ -1,20 +1,43 @@
+/* Hero Section - Conversion-Optimized Design */
+
 .hero {
   min-height: calc(100vh - var(--header-height));
   display: flex;
   align-items: center;
-  background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-background) 100%);
   position: relative;
   overflow: hidden;
+  /* Sky blue to purple gradient background */
+  background: linear-gradient(135deg, #0ea5e9 0%, #d946ef 100%);
 }
 
+/* Decorative background overlay for depth */
 .hero::before {
   content: '';
   position: absolute;
   top: 0;
+  left: 0;
   right: 0;
-  width: 40%;
+  bottom: 0;
+  background: radial-gradient(
+    circle at 20% 50%,
+    rgba(255, 255, 255, 0.15) 0%,
+    transparent 50%
+  );
+  pointer-events: none;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50%;
   height: 100%;
-  background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+  background: radial-gradient(
+    circle at top right,
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent 60%
+  );
   pointer-events: none;
 }
 
@@ -22,79 +45,110 @@
   position: relative;
   z-index: 1;
   text-align: center;
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
 }
 
+/* Headline - Fluid Typography with clamp() */
 .headline {
-  font-family: 'Playfair Display', serif;
-  font-size: var(--font-size-5xl);
-  font-weight: var(--font-weight-bold);
-  line-height: var(--line-height-tight);
-  color: var(--color-text-primary);
-  margin-bottom: var(--spacing-md);
+  /* Fluid scaling: 2.5rem (40px) to 4rem (64px) */
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 800; /* Extra bold for impact */
+  line-height: 1.1;
+  letter-spacing: -0.02em; /* Tighter letter spacing for modern look */
+  color: #ffffff; /* Pure white for maximum contrast on gradient */
+  margin-bottom: 24px;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.15); /* Subtle shadow for readability */
 }
 
+.emphasis {
+  font-style: italic;
+  /* Slightly lighter to create visual hierarchy */
+  font-weight: 700;
+}
+
+/* Subheadline */
 .subheadline {
-  font-size: var(--font-size-xl);
-  line-height: var(--line-height-relaxed);
-  color: var(--color-text-secondary);
-  margin-bottom: var(--spacing-md);
-  max-width: 480px;
+  /* Fluid scaling: 1.125rem (18px) to 1.5rem (24px) */
+  font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 400;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.95); /* 95% opacity white */
+  margin-bottom: 32px;
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
 }
 
-.microcopy {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-tertiary);
-  margin-bottom: var(--spacing-xl);
-  font-weight: var(--font-weight-medium);
-  max-width: 480px;
-}
-
-/* Shared centering for CTAs */
-:is(.emailWrapper, .secondaryCta) {
-  display: flex;
-  justify-content: center;
-}
-
+/* Email Wrapper */
 .emailWrapper {
-  margin-bottom: var(--spacing-md);
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
+/* Secondary CTA */
 .secondaryCta {
-  margin-bottom: var(--spacing-xl);
+  display: flex;
+  justify-content: center;
+  margin-bottom: 40px;
 }
 
-.ctas {
+/* Ghost button styling for hero section */
+.secondaryCta button {
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(10px);
+  font-weight: 500;
+}
+
+.secondaryCta button:hover {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  color: #ffffff !important;
+}
+
+/* Trust Badges */
+.trustBadges {
   display: flex;
-  gap: var(--spacing-md);
+  gap: 24px;
   justify-content: center;
   flex-wrap: wrap;
-  margin-bottom: var(--spacing-2xl);
+  margin-top: 48px;
 }
 
-.tags {
-  display: flex;
-  gap: var(--spacing-md);
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.tag {
+.badge {
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-xs) var(--spacing-md);
-  background-color: var(--color-background);
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-lg);
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 9999px; /* Full pill shape */
+  color: #ffffff;
+  font-size: 0.875rem; /* 14px */
+  font-weight: 500;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all var(--transition-base);
 }
 
-.tag i {
-  color: var(--color-primary);
+.badge:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.badgeText {
+  color: #ffffff;
 }
 
 /* App Mockup Container */
@@ -102,7 +156,7 @@
   position: relative;
   width: 100%;
   max-width: 700px;
-  margin: var(--spacing-3xl) auto 0;
+  margin: 64px auto 0;
   /* Fallback for browsers that don't support aspect-ratio */
   min-height: 260px;
   aspect-ratio: 16 / 10;
@@ -119,11 +173,11 @@
   width: 85%;
   max-width: 550px;
   z-index: 2;
-  border-radius: var(--border-radius-xl);
+  border-radius: 16px;
   overflow: hidden;
   box-shadow:
-    0 20px 60px rgba(0, 0, 0, 0.15),
-    0 0 0 1px rgba(0, 0, 0, 0.05);
+    0 20px 60px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
   transition: transform var(--transition-base);
 }
 
@@ -139,11 +193,11 @@
   width: 50%;
   max-width: 320px;
   z-index: 3;
-  border-radius: var(--border-radius-lg);
+  border-radius: 12px;
   overflow: hidden;
   box-shadow:
-    0 25px 70px rgba(0, 0, 0, 0.2),
-    0 0 0 1px rgba(0, 0, 0, 0.08);
+    0 25px 70px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.15);
   transition: transform var(--transition-base);
 }
 
@@ -159,85 +213,54 @@
   border-radius: 0;
 }
 
-/* Mobile styles */
+/* Tablet and smaller screens */
 @media (max-width: 1024px) {
-  .container {
-    grid-template-columns: 1fr;
-    gap: var(--spacing-2xl);
-  }
-
   .content {
-    text-align: center;
+    max-width: 800px;
   }
 
-  .badge {
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .headline {
-    font-size: var(--font-size-6xl);
-  }
-
-  .subheadline {
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .microcopy {
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .ctas {
-    justify-content: center;
-  }
-
-  .mockup {
-    max-width: 500px;
-    margin: 0 auto;
-  }
-
-  .trusted {
-    flex-direction: column;
-    text-align: center;
-    gap: var(--spacing-md);
-  }
-
-  .trustedLogos {
-    justify-content: center;
-    gap: var(--spacing-lg);
+  .trustBadges {
+    gap: 16px;
   }
 }
 
+/* Mobile styles */
 @media (max-width: 768px) {
   .hero {
     min-height: 0;
-    padding-top: var(--spacing-3xl);
-    padding-bottom: var(--spacing-3xl);
+    padding-top: 48px;
+    padding-bottom: 48px;
   }
 
   .headline {
-    font-size: var(--font-size-4xl);
+    margin-bottom: 20px;
   }
 
   .subheadline {
-    font-size: var(--font-size-lg);
+    margin-bottom: 28px;
   }
 
-  .ctas {
-    flex-direction: column;
-    align-items: stretch;
+  .emailWrapper {
+    margin-bottom: 12px;
   }
 
-  .ctas button,
-  .ctas a {
-    width: 100%;
+  .secondaryCta {
+    margin-bottom: 32px;
+  }
+
+  .trustBadges {
+    margin-top: 36px;
+    gap: 12px;
+  }
+
+  .badge {
+    font-size: 0.8125rem; /* 13px */
+    padding: 6px 14px;
   }
 
   .mockupContainer {
     max-width: 500px;
-    margin: var(--spacing-2xl) auto 0;
+    margin: 48px auto 0;
   }
 
   .mockupSecondary {
@@ -247,28 +270,41 @@
   }
 }
 
-/* Extra small screens */
+/* Extra small screens (phones < 480px) */
 @media (max-width: 480px) {
+  .hero {
+    padding-top: 36px;
+    padding-bottom: 36px;
+  }
+
   .headline {
-    font-size: var(--font-size-3xl);
-    line-height: var(--line-height-tight);
+    margin-bottom: 16px;
   }
 
   .subheadline {
-    font-size: var(--font-size-base);
+    margin-bottom: 24px;
   }
 
-  .tags {
-    gap: var(--spacing-xs);
+  .emailWrapper {
+    max-width: 100%;
   }
 
-  .tag {
-    font-size: var(--font-size-xs);
-    padding: var(--spacing-xs) var(--spacing-sm);
+  .trustBadges {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 28px;
+  }
+
+  .badge {
+    width: 100%;
+    max-width: 280px;
+    justify-content: center;
   }
 
   .mockupContainer {
     aspect-ratio: 4 / 3;
+    margin: 36px auto 0;
   }
 
   .mockupPrimary {
@@ -282,36 +318,65 @@
   }
 }
 
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-  .hero::before {
-    /* Enhance gradient visibility in dark mode */
-    background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+/* iPhone SE and very small screens */
+@media (max-width: 375px) {
+  .trustBadges {
+    margin-top: 24px;
   }
 
-  .tag {
-    background-color: var(--color-surface);
+  .badge {
+    font-size: 0.75rem; /* 12px */
+    padding: 6px 12px;
   }
-}
-
-[data-theme='dark'] .hero::before {
-  background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
-}
-
-[data-theme='dark'] .tag {
-  background-color: var(--color-surface);
 }
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   .mockupPrimary,
-  .mockupSecondary {
+  .mockupSecondary,
+  .badge {
     /* Disable hover transforms for users preferring reduced motion */
     transition: none;
   }
 
   .mockupPrimary:hover,
-  .mockupSecondary:hover {
+  .mockupSecondary:hover,
+  .badge:hover {
     transform: none;
   }
+}
+
+/* Dark mode support - keep gradient but adjust overlay */
+@media (prefers-color-scheme: dark) {
+  .hero::before {
+    background: radial-gradient(
+      circle at 20% 50%,
+      rgba(255, 255, 255, 0.08) 0%,
+      transparent 50%
+    );
+  }
+
+  .hero::after {
+    background: radial-gradient(
+      circle at top right,
+      rgba(255, 255, 255, 0.06) 0%,
+      transparent 60%
+    );
+  }
+}
+
+[data-theme='dark'] .hero::before {
+  background: radial-gradient(
+    circle at 20% 50%,
+    rgba(255, 255, 255, 0.08) 0%,
+    transparent 50%
+  );
+}
+
+[data-theme='dark'] .hero::after {
+  background: radial-gradient(
+    circle at top right,
+    rgba(255, 255, 255, 0.06) 0%,
+    transparent 60%
+  );
 }

@@ -127,15 +127,20 @@ function iterativeReplace(input: string, pattern: RegExp, replacement = ''): str
     ? pattern
     : new RegExp(pattern.source, pattern.flags + 'g')
 
+  // Early exit if pattern doesn't match to avoid unnecessary iteration
+  if (!globalPattern.test(input)) {
+    return input
+  }
+
   let sanitized = input
-  let prevValue = ''
+  let prevValue
   let iterations = 0
 
-  while (sanitized !== prevValue && iterations < MAX_SANITIZATION_ITERATIONS) {
+  do {
     prevValue = sanitized
     sanitized = sanitized.replace(globalPattern, replacement)
     iterations++
-  }
+  } while (sanitized !== prevValue && iterations < MAX_SANITIZATION_ITERATIONS)
 
   return sanitized
 }
@@ -170,7 +175,14 @@ export function encodeHtmlEntities(input: string): string {
 }
 
 /**
- * Sanitize input to prevent XSS attacks
+ * Cleanse a user-provided string of common HTML/XSS injection vectors.
+ *
+ * Removes angle brackets, strips dangerous URI protocols (e.g., `javascript:`, `data:`),
+ * removes event-handler attributes (e.g., `onClick=`), encodes `&`, `"` and `'`,
+ * trims whitespace, and truncates the result to 500 characters.
+ *
+ * @param input - The raw input string to sanitize; may be empty or falsy.
+ * @returns The sanitized string, or an empty string if `input` is falsy.
  */
 export function sanitizeInput(input: string): string {
   if (!input) return ''
@@ -198,7 +210,6 @@ export function sanitizeInput(input: string): string {
   // Limit length to prevent buffer overflow
   return sanitized.trim().slice(0, 500)
 }
-
 
 /**
  * Validate form data

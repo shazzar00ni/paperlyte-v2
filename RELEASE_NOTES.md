@@ -56,6 +56,7 @@ A complete, reusable component library with TypeScript support:
 - **ThemeToggle** - Dark/light mode toggle with system preference detection
 
 All components include:
+
 - Full TypeScript support with proper typing
 - Comprehensive unit tests with React Testing Library
 - CSS Modules for scoped styling
@@ -78,7 +79,7 @@ A comprehensive design system documented in `/docs/DESIGN-SYSTEM.md`:
 
 ### Visual Identity
 
-- **Color Palette**: Clean, paper-inspired palette with purple (#7C3AED) accent
+- **Color Palette**: Clean, paper-inspired palette with blue (#3B82F6) accent
 - **Typography**: Dual font system (Inter for UI, Playfair Display for headlines)
 - **Spacing**: Consistent spacing system using rem units (0.5rem/8px base increment)
 - **Buttons**: Pill-shaped design (border-radius: 9999px)
@@ -528,6 +529,7 @@ This is the initial release. No migration required.
 ## 💬 Support
 
 For support, please:
+
 1. Check the documentation in `/docs`
 2. Search existing issues
 3. Open a new issue with detailed information

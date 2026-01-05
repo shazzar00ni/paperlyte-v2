@@ -105,8 +105,8 @@ export const Header = (): React.ReactElement => {
         return
       }
 
-      // Handle Arrow keys (horizontal navigation)
-      const newIndex = handleArrowNavigation(event, focusableElements, currentIndex, 'horizontal')
+      // Handle Arrow keys (vertical navigation)
+      const newIndex = handleArrowNavigation(event, focusableElements, currentIndex, 'vertical')
       if (newIndex !== null) {
         event.preventDefault()
         focusableElements[newIndex]?.focus()

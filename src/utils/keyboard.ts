@@ -75,7 +75,20 @@ export const FOCUSABLE_SELECTOR =
  */
 export function getFocusableElements(container: HTMLElement): HTMLElement[] {
   const elements = container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)
-  return Array.from(elements)
+  const elementsArray = Array.from(elements)
+
+  // WORKAROUND: JSDOM bug causes querySelectorAll to return elements in wrong order
+  // when selector includes "details > summary". Sort by DOM order to fix.
+  // See: https://github.com/jsdom/jsdom/issues/...
+  elementsArray.sort((a, b) => {
+    if (a === b) return 0
+    const position = a.compareDocumentPosition(b)
+    if (position & Node.DOCUMENT_POSITION_FOLLOWING) return -1
+    if (position & Node.DOCUMENT_POSITION_PRECEDING) return 1
+    return 0
+  })
+
+  return elementsArray
 }
 
 /**

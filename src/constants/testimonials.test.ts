@@ -20,30 +20,22 @@ describe('Testimonials Constants', () => {
 
     it('should have all required fields for each testimonial', () => {
       TESTIMONIALS.forEach((testimonial, index) => {
-        expect(
-          testimonial,
-          `Testimonial at index ${index} should have an id`
-        ).toHaveProperty('id')
-        expect(
-          testimonial,
-          `Testimonial at index ${index} should have a name`
-        ).toHaveProperty('name')
-        expect(
-          testimonial,
-          `Testimonial at index ${index} should have a role`
-        ).toHaveProperty('role')
-        expect(
-          testimonial,
-          `Testimonial at index ${index} should have a quote`
-        ).toHaveProperty('quote')
-        expect(
-          testimonial,
-          `Testimonial at index ${index} should have a rating`
-        ).toHaveProperty('rating')
-        expect(
-          testimonial,
-          `Testimonial at index ${index} should have initials`
-        ).toHaveProperty('initials')
+        expect(testimonial, `Testimonial at index ${index} should have an id`).toHaveProperty('id')
+        expect(testimonial, `Testimonial at index ${index} should have a name`).toHaveProperty(
+          'name'
+        )
+        expect(testimonial, `Testimonial at index ${index} should have a role`).toHaveProperty(
+          'role'
+        )
+        expect(testimonial, `Testimonial at index ${index} should have a quote`).toHaveProperty(
+          'quote'
+        )
+        expect(testimonial, `Testimonial at index ${index} should have a rating`).toHaveProperty(
+          'rating'
+        )
+        expect(testimonial, `Testimonial at index ${index} should have initials`).toHaveProperty(
+          'initials'
+        )
       })
     })
 
@@ -223,9 +215,7 @@ describe('Testimonials Constants', () => {
       const allQuotes = TESTIMONIALS.map((t) => t.quote.toLowerCase()).join(' ')
 
       const keyFeatures = ['fast', 'speed', 'simple', 'sync', 'offline']
-      const mentionedFeatures = keyFeatures.filter((feature) =>
-        allQuotes.includes(feature)
-      )
+      const mentionedFeatures = keyFeatures.filter((feature) => allQuotes.includes(feature))
 
       expect(
         mentionedFeatures.length,
@@ -265,10 +255,9 @@ describe('Testimonials Constants', () => {
   describe('Data Integrity', () => {
     it('should maintain consistent ID format (testimonial-N)', () => {
       TESTIMONIALS.forEach((testimonial) => {
-        expect(
-          testimonial.id,
-          `ID "${testimonial.id}" should follow testimonial-N format`
-        ).toMatch(/^testimonial-\d+$/)
+        expect(testimonial.id, `ID "${testimonial.id}" should follow testimonial-N format`).toMatch(
+          /^testimonial-\d+$/
+        )
       })
     })
 
@@ -298,10 +287,13 @@ describe('Testimonials Constants', () => {
     })
 
     it('should match rating distribution snapshot', () => {
-      const distribution = TESTIMONIALS.reduce((acc, t) => {
-        acc[t.rating] = (acc[t.rating] || 0) + 1
-        return acc
-      }, {} as Record<number, number>)
+      const distribution = TESTIMONIALS.reduce(
+        (acc, t) => {
+          acc[t.rating] = (acc[t.rating] || 0) + 1
+          return acc
+        },
+        {} as Record<number, number>
+      )
 
       expect(distribution).toMatchSnapshot()
     })

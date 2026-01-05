@@ -66,10 +66,7 @@ describe('Pricing Constants', () => {
       const paidPlans = PRICING_PLANS.filter((p) => p.id !== 'free')
 
       paidPlans.forEach((plan) => {
-        expect(
-          typeof plan.price,
-          `Price for "${plan.name}" should be a number`
-        ).toBe('number')
+        expect(typeof plan.price, `Price for "${plan.name}" should be a number`).toBe('number')
         expect(plan.price, `Price for "${plan.name}" should be positive`).toBeGreaterThan(0)
       })
     })
@@ -110,10 +107,9 @@ describe('Pricing Constants', () => {
 
     it('should have features as non-empty arrays', () => {
       PRICING_PLANS.forEach((plan) => {
-        expect(
-          Array.isArray(plan.features),
-          `Features for "${plan.name}" should be an array`
-        ).toBe(true)
+        expect(Array.isArray(plan.features), `Features for "${plan.name}" should be an array`).toBe(
+          true
+        )
         expect(
           plan.features.length,
           `Features for "${plan.name}" should not be empty`
@@ -186,10 +182,7 @@ describe('Pricing Constants', () => {
     it('should have valid Font Awesome icon format', () => {
       PRICING_PLANS.forEach((plan) => {
         if (plan.icon) {
-          expect(
-            plan.icon,
-            `Icon for "${plan.name}" should start with fa-`
-          ).toMatch(/^fa-/)
+          expect(plan.icon, `Icon for "${plan.name}" should start with fa-`).toMatch(/^fa-/)
         }
       })
     })
@@ -239,19 +232,14 @@ describe('Pricing Constants', () => {
       const teamPlan = PRICING_PLANS.find((p) => p.id === 'team')
       const ctaLower = teamPlan?.ctaText.toLowerCase()
 
-      expect(
-        ctaLower?.includes('contact') || ctaLower?.includes('sales')
-      ).toBe(true)
+      expect(ctaLower?.includes('contact') || ctaLower?.includes('sales')).toBe(true)
     })
   })
 
   describe('Data Integrity', () => {
     it('should maintain consistent ID format (lowercase)', () => {
       PRICING_PLANS.forEach((plan) => {
-        expect(
-          plan.id,
-          `ID "${plan.id}" should be lowercase`
-        ).toBe(plan.id.toLowerCase())
+        expect(plan.id, `ID "${plan.id}" should be lowercase`).toBe(plan.id.toLowerCase())
       })
     })
 

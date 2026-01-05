@@ -6,12 +6,7 @@
  */
 
 import { describe, it, expect } from 'vitest'
-import {
-  LEGAL_CONFIG,
-  needsLegalReview,
-  getPlaceholderFields,
-  type CompanyConfig,
-} from './legal'
+import { LEGAL_CONFIG, needsLegalReview, getPlaceholderFields, type CompanyConfig } from './legal'
 
 describe('Legal Constants', () => {
   describe('LEGAL_CONFIG Structure', () => {
@@ -61,10 +56,7 @@ describe('Legal Constants', () => {
       ]
 
       emails.forEach((email) => {
-        expect(
-          emailRegex.test(email),
-          `Email "${email}" should be valid`
-        ).toBe(true)
+        expect(emailRegex.test(email), `Email "${email}" should be valid`).toBe(true)
       })
     })
 
@@ -111,10 +103,7 @@ describe('Legal Constants', () => {
 
     it('should have string values for all fields', () => {
       Object.entries(LEGAL_CONFIG.address).forEach(([field, value]) => {
-        expect(
-          typeof value,
-          `Address field "${field}" should be a string`
-        ).toBe('string')
+        expect(typeof value, `Address field "${field}" should be a string`).toBe('string')
       })
     })
   })
@@ -158,10 +147,7 @@ describe('Legal Constants', () => {
 
     it('should have string values for all social links', () => {
       Object.entries(LEGAL_CONFIG.social).forEach(([platform, url]) => {
-        expect(
-          typeof url,
-          `Social link for "${platform}" should be a string`
-        ).toBe('string')
+        expect(typeof url, `Social link for "${platform}" should be a string`).toBe('string')
       })
     })
   })
@@ -269,8 +255,8 @@ describe('Legal Constants', () => {
 
   describe('Data Consistency', () => {
     it('should have consistent email domains', () => {
-      const emails = Object.values(LEGAL_CONFIG.company).filter((value) =>
-        typeof value === 'string' && value.includes('@')
+      const emails = Object.values(LEGAL_CONFIG.company).filter(
+        (value) => typeof value === 'string' && value.includes('@')
       )
 
       const domains = emails.map((email) => email.split('@')[1])

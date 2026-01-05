@@ -85,9 +85,7 @@ describe('analytics/index', () => {
     it('should throw error for unimplemented providers', () => {
       const fathomConfig = { ...config, provider: 'fathom' as const }
 
-      expect(() => analytics.init(fathomConfig)).toThrow(
-        'Provider "fathom" is not yet implemented'
-      )
+      expect(() => analytics.init(fathomConfig)).toThrow('Provider "fathom" is not yet implemented')
     })
 
     it('should fallback to Plausible for unknown providers', () => {
@@ -460,10 +458,7 @@ describe('analytics/index', () => {
       analytics.disable()
 
       // Should cleanup web vitals event listeners
-      expect(removeEventListenerSpy).toHaveBeenCalledWith(
-        'visibilitychange',
-        expect.any(Function)
-      )
+      expect(removeEventListenerSpy).toHaveBeenCalledWith('visibilitychange', expect.any(Function))
       expect(windowRemoveEventListenerSpy).toHaveBeenCalledWith('pagehide', expect.any(Function))
     })
 

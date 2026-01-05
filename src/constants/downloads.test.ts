@@ -30,10 +30,7 @@ describe('Downloads Constants', () => {
 
     it('should have string values for all URLs', () => {
       Object.entries(DOWNLOAD_URLS).forEach(([platform, url]) => {
-        expect(
-          typeof url,
-          `URL for ${platform} should be a string`
-        ).toBe('string')
+        expect(typeof url, `URL for ${platform} should be a string`).toBe('string')
       })
     })
 
@@ -49,17 +46,15 @@ describe('Downloads Constants', () => {
       Object.entries(DOWNLOAD_URLS).forEach(([platform, url]) => {
         const isValidUrl = url.startsWith('http://') || url.startsWith('https://')
 
-        expect(
-          isValidUrl,
-          `URL for ${platform} should be valid`
-        ).toBe(true)
+        expect(isValidUrl, `URL for ${platform} should be valid`).toBe(true)
 
         // Parse and validate the hostname (not just substring)
         try {
           const urlObj = new URL(url)
 
           // Check if it's a GitHub URL by validating the actual hostname
-          const isGitHub = urlObj.hostname === 'github.com' || urlObj.hostname.endsWith('.github.com')
+          const isGitHub =
+            urlObj.hostname === 'github.com' || urlObj.hostname.endsWith('.github.com')
           const isAppStore = urlObj.hostname === 'apps.apple.com'
           const isPlayStore = urlObj.hostname === 'play.google.com'
 

@@ -48,8 +48,14 @@ describe('FAQ Constants', () => {
 
     it('should have non-empty questions and answers', () => {
       FAQ_ITEMS.forEach((item) => {
-        expect(item.question.length, `Question for item "${item.id}" should not be empty`).toBeGreaterThan(0)
-        expect(item.answer.length, `Answer for item "${item.id}" should not be empty`).toBeGreaterThan(0)
+        expect(
+          item.question.length,
+          `Question for item "${item.id}" should not be empty`
+        ).toBeGreaterThan(0)
+        expect(
+          item.answer.length,
+          `Answer for item "${item.id}" should not be empty`
+        ).toBeGreaterThan(0)
       })
     })
 
@@ -141,10 +147,9 @@ describe('FAQ Constants', () => {
 
     it('should maintain consistent ID format (kebab-case)', () => {
       FAQ_ITEMS.forEach((item) => {
-        expect(
-          item.id,
-          `ID "${item.id}" should be in kebab-case format`
-        ).toMatch(/^[a-z]+(-[a-z]+)*$/)
+        expect(item.id, `ID "${item.id}" should be in kebab-case format`).toMatch(
+          /^[a-z]+(-[a-z]+)*$/
+        )
       })
     })
   })
@@ -155,11 +160,14 @@ describe('FAQ Constants', () => {
     })
 
     it('should match FAQ categories distribution snapshot', () => {
-      const categoryCounts = FAQ_ITEMS.reduce((acc, item) => {
-        const category = item.category || 'uncategorized'
-        acc[category] = (acc[category] || 0) + 1
-        return acc
-      }, {} as Record<string, number>)
+      const categoryCounts = FAQ_ITEMS.reduce(
+        (acc, item) => {
+          const category = item.category || 'uncategorized'
+          acc[category] = (acc[category] || 0) + 1
+          return acc
+        },
+        {} as Record<string, number>
+      )
 
       expect(categoryCounts).toMatchSnapshot()
     })

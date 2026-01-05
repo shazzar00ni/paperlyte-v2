@@ -121,7 +121,7 @@ describe('Footer', () => {
     expect(headings).toHaveLength(4)
 
     const lists = container.querySelectorAll('ul')
-    expect(lists.length).toBeGreaterThanOrEqual(2)
+    expect(lists.length).toBeGreaterThanOrEqual(3)
   })
 
   it('should render all navigation sections', () => {

@@ -24,37 +24,51 @@ const faviconSource = join(publicDir, 'favicon.svg')
 
 /**
  * Icon sizes to generate
- * Each entry defines the output filename and dimensions
+ * Each entry defines the base filename (without extension), dimensions, and formats
+ * Small icons (16x16, 32x32) and apple-touch-icon stay PNG-only for compatibility
+ * Large icons (192x192, 512x512) get modern formats (WebP, AVIF) for better compression
  */
 const iconSizes = [
-  { name: 'favicon-16x16.png', size: 16 },
-  { name: 'favicon-32x32.png', size: 32 },
-  { name: 'apple-touch-icon.png', size: 180 },
-  { name: 'android-chrome-192x192.png', size: 192 },
-  { name: 'android-chrome-512x512.png', size: 512 },
+  { name: 'favicon-16x16', size: 16, formats: ['png'] },
+  { name: 'favicon-32x32', size: 32, formats: ['png'] },
+  { name: 'apple-touch-icon', size: 180, formats: ['png'] },
+  { name: 'android-chrome-192x192', size: 192, formats: ['png', 'webp', 'avif'] },
+  { name: 'android-chrome-512x512', size: 512, formats: ['png', 'webp', 'avif'] },
 ]
 
 /**
- * Generate a PNG icon from SVG source
- * @param {string} outputName - Output filename
+ * Generate an icon from SVG source in the specified format
+ * @param {string} baseName - Base filename (without extension)
  * @param {number} size - Icon size in pixels (width and height)
+ * @param {string} format - Output format ('png', 'webp', or 'avif')
  */
-async function generateIcon(outputName, size) {
+async function generateIcon(baseName, size, format) {
   try {
+    const outputName = `${baseName}.${format}`
     const outputPath = join(publicDir, outputName)
 
-    await sharp(faviconSource, { density: 300 }) // High DPI for crisp rasterization
+    const image = sharp(faviconSource, { density: 300 }) // High DPI for crisp rasterization
       .resize(size, size, {
         fit: 'cover', // Source SVG is square, avoid padding
         background: { r: 0, g: 0, b: 0, alpha: 0 }, // Transparent background
       })
-      .png()
-      .toFile(outputPath)
+
+    // Apply format-specific encoding
+    if (format === 'png') {
+      await image.png().toFile(outputPath)
+    } else if (format === 'webp') {
+      await image.webp({ quality: 85, effort: 6 }).toFile(outputPath)
+    } else if (format === 'avif') {
+      await image.avif({ quality: 75, effort: 6 }).toFile(outputPath)
+    } else {
+      throw new Error(`Unsupported format: ${format}`)
+    }
 
     console.log(`✅ Generated ${outputName} (${size}x${size})`)
   } catch (error) {
     // Safely handle any thrown value (may not be an Error object)
     const errorMessage = error instanceof Error ? error.message : String(error)
+    const outputName = `${baseName}.${format}`
     console.error(`❌ Failed to generate ${outputName}:`, errorMessage)
 
     // Always throw a normalized Error instance for consistent error handling
@@ -105,22 +119,27 @@ async function main() {
   console.log(`📂 Source: ${faviconSource}`)
   console.log(`📂 Output: ${publicDir}\n`)
 
-  // Generate all icon sizes
+  // Generate all icon sizes and formats
   try {
-    // Generate PNG icons first
-    for (const { name, size } of iconSizes) {
-      await generateIcon(name, size)
+    const generatedFiles = []
+
+    // Generate icons in all specified formats
+    for (const { name, size, formats } of iconSizes) {
+      for (const format of formats) {
+        await generateIcon(name, size, format)
+        generatedFiles.push(`${name}.${format}`)
+      }
     }
 
     // Generate favicon.ico from the PNG files
     await generateFaviconIco()
+    generatedFiles.push('favicon.ico')
 
     console.log('\n✨ All icons generated successfully!')
     console.log('\nGenerated files:')
-    iconSizes.forEach(({ name }) => {
-      console.log(`  - ${name}`)
+    generatedFiles.forEach((file) => {
+      console.log(`  - ${file}`)
     })
-    console.log(`  - favicon.ico`)
   } catch (error) {
     console.error('\n❌ Icon generation failed')
     process.exit(1)

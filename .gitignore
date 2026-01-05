@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 coverage
+junit.xml
 
 # Environment variables
 .env

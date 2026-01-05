@@ -1,0 +1,95 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Testimonials Constants > Snapshot Tests > should match TESTIMONIALS snapshot 1`] = `
+[
+  {
+    "company": "TechCorp",
+    "id": "testimonial-1",
+    "initials": "SC",
+    "name": "Sarah Chen",
+    "quote": "Paperlyte transformed how I capture ideas during meetings. No more fumbling with complex tools—just fast, simple note-taking that actually works.",
+    "rating": 5,
+    "role": "Product Manager",
+  },
+  {
+    "id": "testimonial-2",
+    "initials": "MJ",
+    "name": "Marcus Johnson",
+    "quote": "I've tried every note app out there. Paperlyte is the first one that doesn't get in my way. It's like writing on paper, but better.",
+    "rating": 5,
+    "role": "Freelance Writer",
+  },
+  {
+    "company": "MIT",
+    "id": "testimonial-3",
+    "initials": "ER",
+    "name": "Emily Rodriguez",
+    "quote": "The offline-first feature is a lifesaver. I can take notes anywhere—on the subway, in the library—without worrying about connectivity.",
+    "rating": 4,
+    "role": "Graduate Student",
+  },
+  {
+    "company": "Stripe",
+    "id": "testimonial-4",
+    "initials": "DP",
+    "name": "David Park",
+    "quote": "Finally, a note app that respects my time. Instant startup, real-time sync, and tags that make sense. This is what modern note-taking should be.",
+    "rating": 5,
+    "role": "Software Engineer",
+  },
+  {
+    "id": "testimonial-5",
+    "initials": "JT",
+    "name": "Jennifer Taylor",
+    "quote": "The simplicity is revolutionary. No overwhelming features, no clutter—just beautiful, distraction-free writing. Paperlyte gets design right.",
+    "rating": 5,
+    "role": "UX Designer",
+  },
+  {
+    "company": "StartupLab",
+    "id": "testimonial-6",
+    "initials": "AK",
+    "name": "Alex Kumar",
+    "quote": "I switched from Notion and haven't looked back. Paperlyte's speed and tag-based organization match how my brain actually works.",
+    "rating": 4,
+    "role": "Entrepreneur",
+  },
+  {
+    "company": "BrandCo",
+    "id": "testimonial-7",
+    "initials": "LA",
+    "name": "Lisa Anderson",
+    "quote": "Cross-device sync that actually works seamlessly. Start a thought on my phone, finish it on my laptop. No friction, no lost ideas.",
+    "rating": 4,
+    "role": "Marketing Director",
+  },
+  {
+    "id": "testimonial-8",
+    "initials": "TN",
+    "name": "Tom Nguyen",
+    "quote": "As someone who needs to capture thoughts quickly, Paperlyte is indispensable. Lightning fast, always available, and beautifully simple.",
+    "rating": 5,
+    "role": "Journalist",
+  },
+]
+`;
+
+exports[`Testimonials Constants > Snapshot Tests > should match rating distribution snapshot 1`] = `
+{
+  "4": 3,
+  "5": 5,
+}
+`;
+
+exports[`Testimonials Constants > Snapshot Tests > should match roles distribution snapshot 1`] = `
+[
+  "Entrepreneur",
+  "Freelance Writer",
+  "Graduate Student",
+  "Journalist",
+  "Marketing Director",
+  "Product Manager",
+  "Software Engineer",
+  "UX Designer",
+]
+`;

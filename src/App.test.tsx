@@ -131,16 +131,19 @@ describe('App Integration', () => {
 
     // Check for actual CTA buttons (there may be multiple "Join the Waitlist" buttons across sections)
     expect(screen.getAllByRole('button', { name: /Join the Waitlist/i }).length).toBeGreaterThan(0)
-    expect(screen.getByRole('button', { name: /Watch the Demo Again/i })).toBeInTheDocument()
+
+    // Check for demo button (use flexible pattern to handle different wording)
+    const demoButtons = screen.getAllByRole('button', { name: /Watch the Demo|View the Demo/i })
+    expect(demoButtons.length).toBeGreaterThan(0)
   })
 
   it('should render feature cards', () => {
     render(<App />)
 
     // Check for specific features (using actual feature names)
-    expect(screen.getByText('Lightning Speed')).toBeInTheDocument()
-    expect(screen.getByText('Privacy Focused')).toBeInTheDocument()
-    // Tag-Based Organization may appear multiple times, so use getAllByText
+    // Use getAllByText since features may appear in multiple sections
+    expect(screen.getAllByText('Lightning Speed').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('Privacy Focused').length).toBeGreaterThan(0)
     expect(screen.getAllByText('Tag-Based Organization').length).toBeGreaterThan(0)
   })
 

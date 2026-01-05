@@ -88,10 +88,14 @@ describe('ErrorBoundary', () => {
         </ErrorBoundary>
       )
 
-      // The component logs errors using the centralized monitoring utility
-      // React also calls console.error internally, so we verify that errors are being caught
-      expect(screen.getByRole('alert')).toBeInTheDocument()
-      expect(screen.getByText(/something went wrong/i)).toBeInTheDocument()
+      // React's error logging format includes the error and component stack
+      expect(console.error).toHaveBeenCalled()
+      const mockConsoleError = vi.mocked(console.error)
+      const errorCalls = mockConsoleError.mock.calls
+      const hasErrorLogged = errorCalls.some((call: unknown[]) =>
+        call.some((arg: unknown) => arg instanceof Error && arg.message === 'Test error')
+      )
+      expect(hasErrorLogged).toBe(true)
     })
 
     it('should use custom fallback if provided', () => {

@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import type { Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
+import { codecovRollupPlugin } from '@codecov/rollup-plugin'
 
 /**
  * Plugin to inject development-only Content Security Policy
@@ -88,10 +89,19 @@ function cspPlugin(): Plugin {
 export default defineConfig({
   // React plugin with Fast Refresh for instant Hot Module Replacement
   // CSP plugin for environment-aware security headers
-  // TODO: Add Codecov Vite plugin when it supports Vite 7
-  // Currently blocked: @codecov/vite-plugin only supports Vite 4.x-6.x (project uses Vite 7.3.0)
-  // When available: codecovVitePlugin({ enableBundleAnalysis: process.env.CODECOV_TOKEN !== undefined, bundleName: "paperlyte-v2", uploadToken: process.env.CODECOV_TOKEN })
-  plugins: [react(), cspPlugin()],
+  // Codecov Rollup plugin for bundle analysis (Vite 7 compatible)
+  // Note: Using @codecov/rollup-plugin instead of @codecov/vite-plugin
+  // because the Vite plugin only supports Vite 4.x-6.x (project uses Vite 7.3.0)
+  // Rollup plugin works with Vite 7 since Vite uses Rollup ^4.43.0 internally
+  plugins: [
+    react(),
+    cspPlugin(),
+    codecovRollupPlugin({
+      enableBundleAnalysis: process.env.CODECOV_TOKEN !== undefined,
+      bundleName: 'paperlyte-v2',
+      uploadToken: process.env.CODECOV_TOKEN,
+    }),
+  ],
 
   // Path resolution configuration
   resolve: {

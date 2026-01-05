@@ -125,6 +125,8 @@ jobs:
         run: npm ci
 
       - name: Build application
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         run: npm run build
 
       - name: Upload build artifacts

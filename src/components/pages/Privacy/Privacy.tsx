@@ -15,24 +15,25 @@ import styles from './Privacy.module.css'
 // TODO: Update this date whenever the policy is revised
 const LAST_UPDATED = 'December 13, 2024'
 
+/**
+ * Render the Privacy Policy page for Paperlyte.
+ *
+ * On mount, sets the document title to "Privacy Policy | Paperlyte" and updates the
+ * page meta description element (if present) with a brief privacy-focused summary.
+ *
+ * @returns The JSX for the Privacy Policy page, including the hero header with last-updated date and the full policy content sections.
+ */
 export function Privacy() {
-import { Section } from '@components/layout/Section'
-import styles from './Privacy.module.css'
-
-export function Privacy() {
-  return (
-    <>
-      <title>Privacy Policy | Paperlyte</title>
-      <meta 
-        name="description" 
-        content="Learn how Paperlyte protects your privacy with cookie-less analytics, local-first architecture, and transparent data practices." 
-      />
-      <Section className={styles.privacyHero}>
-        {/* rest of component content */}
-      </Section>
-    </>
-  )
-}
+  useEffect(() => {
+    document.title = 'Privacy Policy | Paperlyte'
+    const metaDescription = document.querySelector('meta[name="description"]')
+    if (metaDescription) {
+      metaDescription.setAttribute(
+        'content',
+        'Learn how Paperlyte protects your privacy with cookie-less analytics, local-first architecture, and transparent data practices.'
+      )
+    }
+  }, [])
 
   return (
     <>

@@ -15,6 +15,14 @@ import styles from './Terms.module.css'
 // TODO: Update this date whenever the terms are revised
 const LAST_UPDATED = 'December 13, 2024'
 
+/**
+ * Render the Terms of Service page for Paperlyte.
+ *
+ * Performs page metadata side effects on mount: sets document.title and updates the
+ * meta description if a meta[name="description"] element exists.
+ *
+ * @returns The Terms of Service page as a JSX element
+ */
 export function Terms() {
   useEffect(() => {
     document.title = 'Terms of Service | Paperlyte'

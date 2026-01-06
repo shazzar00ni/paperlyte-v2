@@ -225,5 +225,4 @@ html {
 /* Enable GPU acceleration for smooth animations */
 .gpu-accelerated {
   transform: translateZ(0);
-  will-change: transform;
 }

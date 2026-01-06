@@ -7,7 +7,7 @@
   position: relative;
   overflow: hidden;
   /* Sky blue to purple gradient background */
-  background: linear-gradient(135deg, #0ea5e9 0%, #d946ef 100%);
+  background: linear-gradient(135deg, var(--color-hero-gradient-start) 0%, var(--color-hero-gradient-end) 100%);
 }
 
 /* Decorative background overlay for depth */

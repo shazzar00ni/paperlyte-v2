@@ -336,7 +336,7 @@
   }
 }
 
-/* Very small phones (320px and below) */
+/* Very small phones (320px or below) */
 @media (max-width: 320px) {
   .hero {
     padding-top: var(--spacing-xl);

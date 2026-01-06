@@ -96,6 +96,7 @@ export default defineConfig({
   plugins: [
     react(),
     cspPlugin(),
+    // Only instantiate Codecov plugin when token is present (CI environment)
     ...(process.env.CODECOV_TOKEN
       ? [
           codecovRollupPlugin({

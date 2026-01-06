@@ -189,7 +189,7 @@ POST /.netlify/functions/subscribe
 
 ### Error Responses
 
-**400 - Invalid Email**
+#### 400 - Invalid Email
 
 ```json
 {
@@ -197,7 +197,7 @@ POST /.netlify/functions/subscribe
 }
 ```
 
-**429 - Rate Limited**
+#### 429 - Rate Limited
 
 ```json
 {
@@ -205,7 +205,7 @@ POST /.netlify/functions/subscribe
 }
 ```
 
-**500 - Server Error**
+#### 500 - Server Error
 
 ```json
 {

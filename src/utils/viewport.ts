@@ -26,7 +26,7 @@ export function initViewportHeightFix(): void {
   setViewportHeight()
 
   // Update on resize (debounced)
-  let resizeTimeout: number
+  let resizeTimeout: ReturnType<typeof setTimeout>
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimeout)
     resizeTimeout = window.setTimeout(setViewportHeight, 100)

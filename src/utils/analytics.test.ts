@@ -22,8 +22,6 @@ describe('Analytics Utilities', () => {
   afterEach(() => {
     // Clear mock history and reset implementation after each test
     gtagMock.mockClear()
-    // Remove the mock from the window object
-    delete window.gtag
   })
 
   // Test isAnalyticsAvailable

@@ -11,8 +11,8 @@ describe('Footer', () => {
   it('should render Paperlyte logo with icon and text', () => {
     render(<Footer />)
 
-    // Icon component renders SVG or Font Awesome fallback with aria-label
-    const logoIcon = screen.getByLabelText('Paperlyte logo')
+    // Icon renders as SVG with img role
+    const logoIcon = screen.getByRole('img', { name: 'Paperlyte logo' })
     expect(logoIcon).toBeInTheDocument()
 
     expect(screen.getByText('Paperlyte.')).toBeInTheDocument()
@@ -21,6 +21,9 @@ describe('Footer', () => {
   it('should render tagline', () => {
     render(<Footer />)
     expect(screen.getByText('Your thoughts, unchained.')).toBeInTheDocument()
+    // Text is split by emoji span, so check for partial text
+    expect(screen.getByText('Built with', { exact: false })).toBeInTheDocument()
+    expect(screen.getByText('for people who think fast.', { exact: false })).toBeInTheDocument()
   })
 
   it('should render Product link group', () => {
@@ -35,6 +38,16 @@ describe('Footer', () => {
     const pricingLink = screen.getByRole('link', { name: 'Pricing' })
     expect(pricingLink).toBeInTheDocument()
     expect(pricingLink).toHaveAttribute('href', '#pricing')
+  })
+
+  it('should render Company link group', () => {
+    render(<Footer />)
+
+    expect(screen.getByText('Company')).toBeInTheDocument()
+
+    const contactLinks = screen.getAllByRole('link', { name: 'Contact' })
+    expect(contactLinks.length).toBeGreaterThan(0)
+    expect(contactLinks[0]).toHaveAttribute('href', 'mailto:hello@paperlyte.com')
   })
 
   it('should render Legal link group', () => {
@@ -108,12 +121,11 @@ describe('Footer', () => {
   it('should have proper accessibility structure', () => {
     const { container } = render(<Footer />)
 
-    // Footer has 4 sections: Product, Company, Legal, Connect
     const headings = container.querySelectorAll('h3')
-    expect(headings).toHaveLength(4)
+    expect(headings).toHaveLength(4) // Product, Company, Legal, Connect
 
     const lists = container.querySelectorAll('ul')
-    expect(lists.length).toBeGreaterThanOrEqual(2)
+    expect(lists.length).toBeGreaterThanOrEqual(3)
   })
 
   it('should render all navigation sections', () => {

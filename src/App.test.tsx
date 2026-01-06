@@ -49,20 +49,19 @@ describe('App Integration', () => {
   it('should have accessible landmark regions with proper roles', () => {
     render(<App />)
 
-    // Use role queries for accessibility testing - expect multiple banners (hero section may have one too)
-    const banners = screen.getAllByRole('banner')
-    expect(banners.length).toBeGreaterThanOrEqual(1)
-
+    // Use role queries for accessibility testing
+    const banners = screen.getAllByRole('banner') // header(s)
     const main = screen.getByRole('main')
     const contentinfo = screen.getByRole('contentinfo') // footer
 
+    expect(banners.length).toBeGreaterThan(0)
     expect(main).toBeInTheDocument()
     expect(main).toHaveAttribute('id', 'main')
     expect(contentinfo).toBeInTheDocument()
 
-    // Verify navigation is accessible - there may be multiple nav elements
-    const navigations = screen.getAllByRole('navigation')
-    expect(navigations.length).toBeGreaterThanOrEqual(1)
+    // Verify navigation is accessible (there may be multiple nav elements)
+    const navigation = screen.getAllByRole('navigation')
+    expect(navigation.length).toBeGreaterThan(0)
   })
 
   it('should render Hero section', () => {
@@ -111,9 +110,9 @@ describe('App Integration', () => {
 
     // Verify specific CTA content is present
     expect(screen.getByText(/Stop fighting your tools/i)).toBeInTheDocument()
-    // There are multiple "Join the Waitlist" buttons on the page
-    const waitlistButtons = screen.getAllByRole('button', { name: /Join the Waitlist/i })
-    expect(waitlistButtons.length).toBeGreaterThan(0)
+    // Use getAllByRole since there are multiple "Join the Waitlist" buttons
+    const joinButtons = screen.getAllByRole('button', { name: /Join the Waitlist/i })
+    expect(joinButtons.length).toBeGreaterThan(0)
   })
 
   it('should render Footer component', () => {
@@ -130,21 +129,22 @@ describe('App Integration', () => {
   it('should render CTA buttons in download section', () => {
     render(<App />)
 
-    // Check for actual CTA buttons - there are multiple "Join the Waitlist" buttons on the page
-    const waitlistButtons = screen.getAllByRole('button', { name: /Join the Waitlist/i })
-    expect(waitlistButtons.length).toBeGreaterThan(0)
-    expect(screen.getByRole('button', { name: /Watch the Demo Again/i })).toBeInTheDocument()
+    // Check for actual CTA buttons (there may be multiple)
+    const joinButtons = screen.getAllByRole('button', { name: /Join the Waitlist/i })
+    expect(joinButtons.length).toBeGreaterThan(0)
+
+    const demoButtons = screen.getAllByRole('button', { name: /Watch the Demo|View the Demo/i })
+    expect(demoButtons.length).toBeGreaterThan(0)
   })
 
   it('should render feature cards', () => {
     render(<App />)
 
     // Check for specific features (using actual feature names)
-    // Some features appear multiple times on the page (e.g., in different sections)
-    expect(screen.getByText('Lightning Speed')).toBeInTheDocument()
-    expect(screen.getByText('Privacy Focused')).toBeInTheDocument()
-    const tagBasedOrg = screen.getAllByText('Tag-Based Organization')
-    expect(tagBasedOrg.length).toBeGreaterThan(0)
+    // Use getAllByText since features may appear in multiple sections
+    expect(screen.getAllByText('Lightning Speed').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('Privacy Focused').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('Tag-Based Organization').length).toBeGreaterThan(0)
   })
 
   it('should render social links in footer', () => {

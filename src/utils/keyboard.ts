@@ -65,7 +65,10 @@ export function getArrowDirection(
  * Standard selector for all focusable elements
  */
 export const FOCUSABLE_SELECTOR =
-  'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"]), [contenteditable]:not([contenteditable="false"]), audio[controls], video[controls], details > summary'
+  'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), ' +
+  'textarea:not([disabled]), [tabindex]:not([tabindex="-1"]), ' +
+  '[contenteditable]:not([contenteditable="false"]), audio[controls], ' +
+  'video[controls], details > summary'
 
 /**
  * Get all focusable elements within a container
@@ -190,8 +193,10 @@ export function createFocusTrap(container: HTMLElement): () => void {
  * @param event - Keyboard event used to determine arrow direction
  * @param elements - Ordered list of focusable elements to navigate
  * @param currentIndex - Index of the currently focused element within `elements`
- * @param orientation - Navigation axis: `'horizontal'` interprets left/right, `'vertical'` interprets up/down
- * @returns The index of the element to focus, or `null` if the key is not an arrow or no navigation should occur
+ * @param orientation - Navigation axis: `'horizontal'` interprets left/right,
+ *   `'vertical'` interprets up/down
+ * @returns The index of the element to focus, or `null` if the key is not an arrow
+ *   or no navigation should occur
  */
 export function handleArrowNavigation(
   event: KeyboardEvent | ReactKeyboardEvent,

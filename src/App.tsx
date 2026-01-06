@@ -32,7 +32,8 @@ function App() {
 
   // Initialize mobile viewport height fix for iOS Safari
   useEffect(() => {
-    initViewportHeightFix()
+    const cleanup = initViewportHeightFix()
+    return cleanup
   }, [])
 
   return (

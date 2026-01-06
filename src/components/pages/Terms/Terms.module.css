@@ -6,7 +6,7 @@
 }
 
 .termsContent {
-  padding: 80px var(--spacing-md);
+  padding: var(--spacing-3xl) var(--spacing-md);
 }
 
 .container {

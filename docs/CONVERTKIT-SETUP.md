@@ -186,7 +186,7 @@ The API enforces rate limiting: **3 requests per minute per IP address**
 
 ### Error Responses
 
-**400 - Invalid Email**
+#### 400 - Invalid Email
 
 ```json
 {
@@ -194,7 +194,7 @@ The API enforces rate limiting: **3 requests per minute per IP address**
 }
 ```
 
-**429 - Rate Limited**
+#### 429 - Rate Limited
 
 ```json
 {
@@ -202,7 +202,7 @@ The API enforces rate limiting: **3 requests per minute per IP address**
 }
 ```
 
-**500 - Server Error**
+#### 500 - Server Error
 
 ```json
 {

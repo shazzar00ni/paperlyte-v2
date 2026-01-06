@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { Section } from '@components/layout/Section'
+import { setMetaDescription } from '@/utils/metaTags'
 import styles from './Privacy.module.css'
 
 /**
@@ -26,14 +27,7 @@ const LAST_UPDATED = 'December 13, 2024'
 export function Privacy() {
   useEffect(() => {
     document.title = 'Privacy Policy | Paperlyte'
-    let metaDescription = document.querySelector('meta[name="description"]')
-    if (!metaDescription) {
-      metaDescription = document.createElement('meta')
-      metaDescription.setAttribute('name', 'description')
-      document.head.appendChild(metaDescription)
-    }
-    metaDescription.setAttribute(
-      'content',
+    setMetaDescription(
       'Learn how Paperlyte protects your privacy with cookie-less analytics, local-first architecture, and transparent data practices.'
     )
   }, [])

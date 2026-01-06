@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { Section } from '@components/layout/Section'
+import { setMetaDescription } from '@/utils/metaTags'
 import styles from './Terms.module.css'
 
 /**
@@ -19,22 +20,15 @@ const LAST_UPDATED = 'December 13, 2024'
  * Render the Terms of Service page for Paperlyte.
  *
  * Performs page metadata side effects on mount: sets document.title and updates the
- * meta description if a meta[name="description"] element exists.
+ * meta description using the setMetaDescription utility.
  *
  * @returns The Terms of Service page as a JSX element
  */
 export function Terms() {
   useEffect(() => {
     document.title = 'Terms of Service | Paperlyte'
-    let metaDescription = document.querySelector('meta[name="description"]')
-    if (!metaDescription) {
-      metaDescription = document.createElement('meta')
-      metaDescription.setAttribute('name', 'description')
-      document.head.appendChild(metaDescription)
-    }
-    metaDescription.setAttribute(
-      'content',
-      'Read Paperlyte\'s Terms of Service to understand your rights and responsibilities when using our note-taking application.'
+    setMetaDescription(
+      "Read Paperlyte's Terms of Service to understand your rights and responsibilities when using our note-taking application."
     )
   }, [])
 

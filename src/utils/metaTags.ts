@@ -1,4 +1,23 @@
 /**
+ * Set the meta description for the current page.
+ *
+ * Creates a `<meta name="description">` element if it doesn't exist,
+ * then sets its content attribute to the provided description.
+ * This ensures consistent SEO metadata across all pages.
+ *
+ * @param content - The description content to set
+ */
+export function setMetaDescription(content: string): void {
+  let metaDescription = document.querySelector('meta[name="description"]')
+  if (!metaDescription) {
+    metaDescription = document.createElement('meta')
+    metaDescription.setAttribute('name', 'description')
+    document.head.appendChild(metaDescription)
+  }
+  metaDescription.setAttribute('content', content)
+}
+
+/**
  * Make document meta tags environment-aware for development.
  *
  * In development, sets `meta[name="robots"]` to `"noindex, nofollow"`, removes

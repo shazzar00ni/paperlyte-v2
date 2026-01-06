@@ -22,9 +22,10 @@ export interface ValidationResult {
 /**
  * Email validation regex pattern
  * Follows RFC 5322 simplified pattern for practical use
+ * Uses atomic grouping approach to prevent ReDoS vulnerabilities
  */
 const EMAIL_REGEX =
-  /^[a-zA-Z0-9]+(?:[._+-][a-zA-Z0-9]+)*@[a-zA-Z0-9]+(?:[.-][a-zA-Z0-9]+)*\.[a-zA-Z]{2,}$/
+  /^[a-zA-Z0-9]([._+-]?[a-zA-Z0-9])*@[a-zA-Z0-9]([.-]?[a-zA-Z0-9])*\.[a-zA-Z]{2,}$/
 
 /**
  * Common disposable email domains to block

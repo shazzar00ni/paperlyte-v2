@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Section } from '@components/layout/Section'
 import styles from './Privacy.module.css'
 
@@ -15,6 +16,24 @@ import styles from './Privacy.module.css'
 const LAST_UPDATED = 'December 13, 2024'
 
 export function Privacy() {
+import { Section } from '@components/layout/Section'
+import styles from './Privacy.module.css'
+
+export function Privacy() {
+  return (
+    <>
+      <title>Privacy Policy | Paperlyte</title>
+      <meta 
+        name="description" 
+        content="Learn how Paperlyte protects your privacy with cookie-less analytics, local-first architecture, and transparent data practices." 
+      />
+      <Section className={styles.privacyHero}>
+        {/* rest of component content */}
+      </Section>
+    </>
+  )
+}
+
   return (
     <>
       <Section className={styles.privacyHero}>
@@ -123,6 +142,27 @@ export function Privacy() {
             </section>
 
             <section className={styles.section}>
+              <h2>Third-Party Services</h2>
+              <p>
+                We use carefully selected third-party services to provide and improve Paperlyte:
+              </p>
+              <ul>
+                <li>
+                  <strong>Plausible Analytics:</strong> Privacy-first, cookie-less analytics for
+                  understanding how users interact with our app. No personal data is collected.
+                </li>
+                <li>
+                  <strong>Sentry:</strong> Error monitoring and performance tracking to help us
+                  identify and fix bugs. Error reports may include technical data but never your
+                  note content.
+                </li>
+              </ul>
+              <p>
+                These services are selected for their strong privacy practices and GDPR compliance.
+              </p>
+            </section>
+
+            <section className={styles.section}>
               <h2>Data Sharing & Disclosure</h2>
               <p>
                 <strong>We do not sell your data.</strong> We will never sell your personal
@@ -172,21 +212,22 @@ export function Privacy() {
             </section>
 
             <section className={styles.section}>
-              <h2>Cookies & Tracking</h2>
+              <h2>Analytics & Tracking</h2>
               <p>
-                <strong>Current Landing Page:</strong> We use Google Analytics 4 to understand how
-                visitors interact with our waitlist page. Google Analytics uses cookies and may
-                collect information such as your IP address, browser type, and pages visited. You
-                can opt out of Google Analytics by using browser extensions like Google Analytics
-                Opt-out Browser Add-on.
+                <strong>Cookie-less Analytics:</strong> We use Plausible Analytics, a privacy-first
+                analytics tool that does not use cookies and does not collect personal data. Plausible
+                is GDPR, CCPA, and PECR compliant, and all data is anonymized. We do not use Google
+                Analytics or any tracking services that compromise your privacy.
               </p>
               <p>
-                <strong>When App Launches:</strong> The full application will use minimal cookies to
-                maintain your session and remember your preferences.
+                <strong>What We Track:</strong> Page views, referral sources, and general usage
+                patterns - all in aggregate and anonymous form. We never track individual users
+                or collect personally identifiable information through analytics.
               </p>
               <p>
-                You can disable cookies in your browser settings, though some features may not work
-                properly without them.
+                <strong>Session Management:</strong> The application uses minimal session cookies
+                only to maintain your logged-in state and remember your preferences. These are
+                essential for the app to function properly.
               </p>
             </section>
 

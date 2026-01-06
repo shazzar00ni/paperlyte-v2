@@ -5,21 +5,21 @@
         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 
   <url>
-    <loc>https://paperlyte.app/</loc>
-    <lastmod>2026-01-05</lastmod>
+    <loc>https://paperlyte.com/</loc>
+    <lastmod>2026-01-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
 
   <url>
-    <loc>https://paperlyte.app/privacy</loc>
+    <loc>https://paperlyte.com/privacy</loc>
     <lastmod>2025-12-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
 
   <url>
-    <loc>https://paperlyte.app/terms</loc>
+    <loc>https://paperlyte.com/terms</loc>
     <lastmod>2025-12-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>

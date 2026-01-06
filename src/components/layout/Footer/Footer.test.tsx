@@ -1,28 +1,24 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
 import { Footer } from './Footer'
+
+const renderFooter = () => {
+  return render(
+    <MemoryRouter>
+      <Footer />
+    </MemoryRouter>
+  )
+}
 
 describe('Footer', () => {
   it('should render footer element', () => {
-    const { container } = render(<Footer />)
+    const { container } = renderFooter()
     expect(container.querySelector('footer')).toBeInTheDocument()
   })
 
-  it('should render Paperlyte logo with icon and text', () => {
-    render(<Footer />)
-
-    // Icon component renders SVG, check for aria-label
-    expect(screen.getByLabelText('Paperlyte logo')).toBeInTheDocument()
-    expect(screen.getByText('Paperlyte.')).toBeInTheDocument()
-  })
-
-  it('should render tagline', () => {
-    render(<Footer />)
-    expect(screen.getByText('Your thoughts, unchained.')).toBeInTheDocument()
-  })
-
   it('should render Product link group', () => {
-    render(<Footer />)
+    renderFooter()
 
     expect(screen.getByText('Product')).toBeInTheDocument()
 
@@ -30,35 +26,58 @@ describe('Footer', () => {
     expect(featuresLink).toBeInTheDocument()
     expect(featuresLink).toHaveAttribute('href', '#features')
 
+    const roadmapLink = screen.getByRole('link', { name: 'Roadmap' })
+    expect(roadmapLink).toBeInTheDocument()
+    expect(roadmapLink).toHaveAttribute('href', '#roadmap')
+
     const pricingLink = screen.getByRole('link', { name: 'Pricing' })
     expect(pricingLink).toBeInTheDocument()
     expect(pricingLink).toHaveAttribute('href', '#pricing')
+
+    const changelogLink = screen.getByRole('link', { name: 'Changelog' })
+    expect(changelogLink).toBeInTheDocument()
+    expect(changelogLink).toHaveAttribute('href', '#changelog')
+
+    const githubProductLink = screen.getAllByRole('link', { name: 'GitHub' })[0]
+    expect(githubProductLink).toBeInTheDocument()
   })
 
-  it('should render Company link group', () => {
-    render(<Footer />)
+  it('should render Legal link group', () => {
+    renderFooter()
 
-    expect(screen.getByText('Company')).toBeInTheDocument()
+    expect(screen.getByText('Legal')).toBeInTheDocument()
+
+    const privacyLink = screen.getByRole('link', { name: 'Privacy Policy' })
+    expect(privacyLink).toBeInTheDocument()
+    // React Router Link uses 'to' prop which gets converted to href
+    expect(privacyLink).toHaveAttribute('href', '/privacy')
+
+    const termsLink = screen.getByRole('link', { name: 'Terms of Service' })
+    expect(termsLink).toBeInTheDocument()
+    expect(termsLink).toHaveAttribute('href', '/terms')
 
     const contactLink = screen.getByRole('link', { name: 'Contact' })
     expect(contactLink).toBeInTheDocument()
     expect(contactLink).toHaveAttribute('href', 'mailto:hello@paperlyte.com')
   })
 
-  it('should render Legal link group', () => {
-    render(<Footer />)
+  it('should use React Router Link for internal navigation', () => {
+    renderFooter()
 
-    expect(screen.getByText('Legal')).toBeInTheDocument()
-
+    // Privacy and Terms should use Link component (rendered as <a> with href starting with /)
     const privacyLink = screen.getByRole('link', { name: 'Privacy Policy' })
-    expect(privacyLink).toBeInTheDocument()
+    expect(privacyLink.getAttribute('href')).toBe('/privacy')
 
     const termsLink = screen.getByRole('link', { name: 'Terms of Service' })
-    expect(termsLink).toBeInTheDocument()
+    expect(termsLink.getAttribute('href')).toBe('/terms')
+
+    // Verify they don't have target="_blank" (internal links)
+    expect(privacyLink).not.toHaveAttribute('target')
+    expect(termsLink).not.toHaveAttribute('target')
   })
 
   it('should render Connect link group with social links', () => {
-    render(<Footer />)
+    renderFooter()
 
     expect(screen.getByText('Connect')).toBeInTheDocument()
 
@@ -69,7 +88,7 @@ describe('Footer', () => {
   })
 
   it('should render GitHub link with proper attributes', () => {
-    render(<Footer />)
+    renderFooter()
 
     const githubLink = screen.getByRole('link', { name: 'Follow us on GitHub' })
     expect(githubLink).toBeInTheDocument()
@@ -79,7 +98,7 @@ describe('Footer', () => {
   })
 
   it('should render Twitter link with proper attributes', () => {
-    render(<Footer />)
+    renderFooter()
 
     const twitterLink = screen.getByRole('link', { name: 'Follow us on X (Twitter)' })
     expect(twitterLink).toBeInTheDocument()
@@ -89,7 +108,7 @@ describe('Footer', () => {
   })
 
   it('should render Instagram link with proper attributes', () => {
-    render(<Footer />)
+    renderFooter()
 
     const instagramLink = screen.getByRole('link', { name: 'Follow us on Instagram' })
     expect(instagramLink).toBeInTheDocument()
@@ -99,7 +118,7 @@ describe('Footer', () => {
   })
 
   it('should render Email link with mailto', () => {
-    render(<Footer />)
+    renderFooter()
 
     const emailLink = screen.getByRole('link', { name: 'Email us' })
     expect(emailLink).toBeInTheDocument()
@@ -107,28 +126,27 @@ describe('Footer', () => {
   })
 
   it('should render copyright with current year', () => {
-    render(<Footer />)
+    renderFooter()
 
     const currentYear = new Date().getFullYear()
     expect(screen.getByText(`© ${currentYear} Paperlyte. All rights reserved.`)).toBeInTheDocument()
   })
 
   it('should have proper accessibility structure', () => {
-    const { container } = render(<Footer />)
+    const { container } = renderFooter()
 
-    // Footer has 4 sections: Product, Company, Legal, Connect
+    // Footer has 3 sections: Product, Legal, Connect
     const headings = container.querySelectorAll('h3')
-    expect(headings).toHaveLength(4)
+    expect(headings).toHaveLength(3)
 
     const lists = container.querySelectorAll('ul')
     expect(lists.length).toBeGreaterThanOrEqual(3)
   })
 
   it('should render all navigation sections', () => {
-    render(<Footer />)
+    renderFooter()
 
     expect(screen.getByText('Product')).toBeInTheDocument()
-    expect(screen.getByText('Company')).toBeInTheDocument()
     expect(screen.getByText('Legal')).toBeInTheDocument()
     expect(screen.getByText('Connect')).toBeInTheDocument()
   })

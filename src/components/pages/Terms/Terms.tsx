@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Section } from '@components/layout/Section'
 import styles from './Terms.module.css'
 
@@ -15,6 +16,17 @@ import styles from './Terms.module.css'
 const LAST_UPDATED = 'December 13, 2024'
 
 export function Terms() {
+  useEffect(() => {
+    document.title = 'Terms of Service | Paperlyte'
+    const metaDescription = document.querySelector('meta[name="description"]')
+    if (metaDescription) {
+      metaDescription.setAttribute(
+        'content',
+        'Read Paperlyte\'s Terms of Service to understand your rights and responsibilities when using our note-taking application.'
+      )
+    }
+  }, [])
+
   return (
     <>
       <Section className={styles.termsHero}>

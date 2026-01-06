@@ -1,5 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { BrowserRouter } from 'react-router-dom'
 import * as Sentry from '@sentry/react'
 // Self-hosted Google Fonts (Inter) for better security and performance
 // Using Latin-only subset to reduce bundle size (~800 KB savings)
@@ -52,6 +53,8 @@ updateMetaTags()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </StrictMode>
 )

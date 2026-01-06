@@ -80,16 +80,16 @@
   white-space: nowrap;
   min-height: 48px; /* Mobile-friendly touch target */
   /* Override button to use sky blue for hero section */
-  background-color: #0ea5e9 !important;
-  color: #ffffff !important;
-  border-color: #0ea5e9 !important;
+  background-color: #0ea5e9;
+  color: #ffffff;
+  border-color: #0ea5e9;
   font-weight: 600;
   box-shadow: 0 2px 12px rgba(14, 165, 233, 0.3);
 }
 
 .button:hover {
-  background-color: #0284c7 !important; /* Darker sky blue on hover */
-  border-color: #0284c7 !important;
+  background-color: #0284c7; /* Darker sky blue on hover */
+  border-color: #0284c7;
   box-shadow: 0 4px 16px rgba(14, 165, 233, 0.4);
 }
 

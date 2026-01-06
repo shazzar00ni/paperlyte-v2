@@ -31,6 +31,7 @@ function App() {
   useAnalytics()
 
   // Initialize mobile viewport height fix for iOS Safari
+  // Returns cleanup function to remove event listeners on unmount
   useEffect(() => {
     const cleanup = initViewportHeightFix()
     return cleanup

@@ -20,14 +20,20 @@ export function setViewportHeight(): void {
 /**
  * Initialize viewport height fix
  * Sets initial height and updates on resize/orientation change
- * 
+ *
+ * Note: We intentionally do NOT listen to scroll events despite iOS Safari's
+ * address bar behavior. The scroll listener would fire hundreds of times per
+ * second, causing severe performance issues on mobile devices. The resize event
+ * should fire when the viewport height changes due to the address bar, and this
+ * provides sufficient coverage with much better performance.
+ *
  * Returns a cleanup function that removes all event listeners.
  */
 export function initViewportHeightFix(): () => void {
   // Set initial viewport height
   setViewportHeight()
 
-  // Update on resize (debounced)
+  // Update on resize (debounced to prevent excessive calculations)
   let resizeTimeout: number
 
   const handleResize = () => {
@@ -36,24 +42,17 @@ export function initViewportHeightFix(): () => void {
   }
 
   const handleOrientationChange = () => {
-    // Delay to allow browser to recalculate viewport
+    // Delay to allow browser to recalculate viewport after orientation change
     setTimeout(setViewportHeight, 100)
-  }
-
-  const handleScroll = () => {
-    clearTimeout(resizeTimeout)
-    resizeTimeout = window.setTimeout(setViewportHeight, 100)
   }
 
   window.addEventListener('resize', handleResize)
   window.addEventListener('orientationchange', handleOrientationChange)
-  window.addEventListener('scroll', handleScroll)
 
   // Return cleanup function to remove listeners and clear timeout
   return () => {
     window.removeEventListener('resize', handleResize)
     window.removeEventListener('orientationchange', handleOrientationChange)
-    window.removeEventListener('scroll', handleScroll)
     clearTimeout(resizeTimeout)
   }
 }

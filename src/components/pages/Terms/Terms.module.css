@@ -29,7 +29,11 @@
 }
 
 .content {
-  font-size: 16px;
+.content {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-primary);
+}
   line-height: var(--line-height-relaxed);
   color: var(--color-text-primary);
 }

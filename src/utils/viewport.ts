@@ -20,30 +20,42 @@ export function setViewportHeight(): void {
 /**
  * Initialize viewport height fix
  * Sets initial height and updates on resize/orientation change
+ * 
+ * Returns a cleanup function that removes all event listeners.
  */
-export function initViewportHeightFix(): void {
+export function initViewportHeightFix(): () => void {
   // Set initial viewport height
   setViewportHeight()
 
   // Update on resize (debounced)
-  let resizeTimeout: ReturnType<typeof setTimeout>
-  window.addEventListener('resize', () => {
+  let resizeTimeout: number
+
+  const handleResize = () => {
     clearTimeout(resizeTimeout)
     resizeTimeout = window.setTimeout(setViewportHeight, 100)
-  })
+  }
 
-  // Update on orientation change
-  window.addEventListener('orientationchange', () => {
+  const handleOrientationChange = () => {
     // Delay to allow browser to recalculate viewport
     setTimeout(setViewportHeight, 100)
-  })
+  }
 
-  // Update when iOS Safari address bar shows/hides
-  // This event fires when scrolling causes the address bar to appear/disappear
-  window.addEventListener('scroll', () => {
+  const handleScroll = () => {
     clearTimeout(resizeTimeout)
     resizeTimeout = window.setTimeout(setViewportHeight, 100)
-  })
+  }
+
+  window.addEventListener('resize', handleResize)
+  window.addEventListener('orientationchange', handleOrientationChange)
+  window.addEventListener('scroll', handleScroll)
+
+  // Return cleanup function to remove listeners and clear timeout
+  return () => {
+    window.removeEventListener('resize', handleResize)
+    window.removeEventListener('orientationchange', handleOrientationChange)
+    window.removeEventListener('scroll', handleScroll)
+    clearTimeout(resizeTimeout)
+  }
 }
 
 /**

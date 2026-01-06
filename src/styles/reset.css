@@ -15,8 +15,6 @@ html {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   scroll-behavior: smooth;
-  /* Prevent horizontal scrolling on all devices */
-  overflow-x: hidden;
   max-width: 100%;
 }
 

@@ -26,13 +26,16 @@ const LAST_UPDATED = 'December 13, 2024'
 export function Privacy() {
   useEffect(() => {
     document.title = 'Privacy Policy | Paperlyte'
-    const metaDescription = document.querySelector('meta[name="description"]')
-    if (metaDescription) {
-      metaDescription.setAttribute(
-        'content',
-        'Learn how Paperlyte protects your privacy with cookie-less analytics, local-first architecture, and transparent data practices.'
-      )
+    let metaDescription = document.querySelector('meta[name="description"]')
+    if (!metaDescription) {
+      metaDescription = document.createElement('meta')
+      metaDescription.setAttribute('name', 'description')
+      document.head.appendChild(metaDescription)
     }
+    metaDescription.setAttribute(
+      'content',
+      'Learn how Paperlyte protects your privacy with cookie-less analytics, local-first architecture, and transparent data practices.'
+    )
   }, [])
 
   return (

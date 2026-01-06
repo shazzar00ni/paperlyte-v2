@@ -15,6 +15,15 @@ import styles from './Terms.module.css'
 // TODO: Update this date whenever the terms are revised
 const LAST_UPDATED = 'December 13, 2024'
 
+/**
+ * Render the Terms of Service page for Paperlyte.
+ *
+ * Sets the document title and updates the page meta description on mount, then renders
+ * the full Terms of Service content including sections for account use, subscriptions,
+ * data & privacy, termination, liability, dispute resolution, and contact information.
+ *
+ * @returns The Terms of Service page as a React element
+ */
 export function Terms() {
   useEffect(() => {
     document.title = 'Terms of Service | Paperlyte'

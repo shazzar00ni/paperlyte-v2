@@ -54,46 +54,70 @@ export function useAnalytics(enableScrollTracking = true) {
     trackSocialClick(platform)
   }, [])
 
-  const trackWaitlistJoin = useCallback((location: string, email?: string) => {
-    track(AnalyticsEvents.WAITLIST_JOIN, {
-      button_location: location,
-      user_email: email,
-    })
-  }, [track])
+  /**
+   * Track waitlist join button clicks
+   * PRIVACY: Does not send PII. Only tracks button location for UX analysis.
+   */
+  const trackWaitlistJoin = useCallback(
+    (location: string) => {
+      track(AnalyticsEvents.WAITLIST_JOIN, {
+        button_location: location,
+      })
+    },
+    [track]
+  )
 
-  const trackWaitlistSubmit = useCallback((email: string, location: string) => {
-    track(AnalyticsEvents.WAITLIST_SUBMIT, {
-      user_email: email,
-      form_location: location,
-    })
-  }, [track])
+  /**
+   * Track waitlist form submission
+   * PRIVACY: Does not send email or PII. Only tracks form location for conversion analysis.
+   */
+  const trackWaitlistSubmit = useCallback(
+    (location: string) => {
+      track(AnalyticsEvents.WAITLIST_SUBMIT, {
+        form_location: location,
+      })
+    },
+    [track]
+  )
 
-  const trackWaitlistSuccess = useCallback((email: string) => {
+  /**
+   * Track successful waitlist signup
+   * PRIVACY: Does not send email or PII. Only tracks conversion success.
+   */
+  const trackWaitlistSuccess = useCallback(() => {
     track(AnalyticsEvents.WAITLIST_SUCCESS, {
-      user_email: email,
+      // No PII - only track that signup was successful
     })
   }, [track])
 
-  const trackWaitlistError = useCallback((errorMessage: string, location: string) => {
-    track(AnalyticsEvents.WAITLIST_ERROR, {
-      error_message: errorMessage,
-      form_location: location,
-    })
-  }, [track])
+  const trackWaitlistError = useCallback(
+    (errorCode: string, location: string) => {
+      track(AnalyticsEvents.WAITLIST_ERROR, {
+        error_code: errorCode,
+        form_location: location,
+      })
+    },
+    [track]
+  )
 
-  const trackFAQExpand = useCallback((questionText: string, questionIndex: number) => {
-    track(AnalyticsEvents.FAQ_EXPAND, {
-      question_text: questionText,
-      question_index: questionIndex,
-    })
-  }, [track])
+  const trackFAQExpand = useCallback(
+    (questionIndex: number) => {
+      track(AnalyticsEvents.FAQ_EXPAND, {
+        question_index: questionIndex,
+      })
+    },
+    [track]
+  )
 
-  const trackNavigation = useCallback((destination: string, linkText: string) => {
-    track(AnalyticsEvents.NAVIGATION_CLICK, {
-      destination,
-      link_text: linkText,
-    })
-  }, [track])
+  const trackNavigation = useCallback(
+    (destination: string, linkText: string) => {
+      track(AnalyticsEvents.NAVIGATION_CLICK, {
+        destination,
+        link_text: linkText,
+      })
+    },
+    [track]
+  )
 
   return {
     // Generic event tracking

@@ -22,18 +22,12 @@ export interface ValidationResult {
 /**
  * Email validation regex pattern
  * Follows RFC 5322 simplified pattern for practical use
- *
- * Pattern breakdown:
- * - Local part: alphanumeric, dots, hyphens, underscores, plus signs
- * - @ symbol required
- * - Domain: alphanumeric with dots and hyphens
- * - TLD: 2+ characters
  */
-const EMAIL_REGEX = /^[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+const EMAIL_REGEX =
+  /^[a-zA-Z0-9]+(?:[._+-][a-zA-Z0-9]+)*@[a-zA-Z0-9]+(?:[.-][a-zA-Z0-9]+)*\.[a-zA-Z]{2,}$/
 
 /**
  * Common disposable email domains to block
- * Add more as needed for production use
  */
 const DISPOSABLE_EMAIL_DOMAINS = [
   'tempmail.com',
@@ -48,134 +42,55 @@ const DISPOSABLE_EMAIL_DOMAINS = [
 
 /**
  * Validate email address format
- *
- * @param email - Email address to validate
- * @returns Validation result with error message if invalid
- *
- * @example
- * ```tsx
- * const result = validateEmail('user@example.com')
- * if (!result.isValid) {
- *   console.error(result.error)
- * }
- * ```
  */
 export function validateEmail(email: string): EmailValidationResult {
-  // Check if email is provided
   if (!email || email.trim() === '') {
-    return {
-      isValid: false,
-      error: 'Email address is required',
-    }
+    return { isValid: false, error: 'Email address is required' }
   }
 
-  // Trim whitespace
   const trimmedEmail = email.trim()
 
-  // Check basic format
   if (!EMAIL_REGEX.test(trimmedEmail)) {
-    return {
-      isValid: false,
-      error: 'Please enter a valid email address',
-    }
+    return { isValid: false, error: 'Please enter a valid email address' }
   }
 
-  // Check for consecutive dots (invalid per RFC 5322)
-  if (trimmedEmail.includes('..')) {
-    return {
-      isValid: false,
-      error: 'Email address cannot contain consecutive dots',
-    }
-  }
-
-  // Check length constraints
   if (trimmedEmail.length > 254) {
-    return {
-      isValid: false,
-      error: 'Email address is too long',
-    }
+    return { isValid: false, error: 'Email address is too long' }
   }
 
-  // Extract domain for additional validation
-  const domain = trimmedEmail.split('@')[1].toLowerCase()
+  // Extract domain safely with defensive checks
+  const atIndex = trimmedEmail.lastIndexOf('@')
+  if (atIndex === -1 || atIndex === trimmedEmail.length - 1) {
+    return { isValid: false, error: 'Please enter a valid email address' }
+  }
 
-  // Check for disposable email domains
+  const domain = trimmedEmail.substring(atIndex + 1).toLowerCase()
   if (DISPOSABLE_EMAIL_DOMAINS.includes(domain)) {
-    return {
-      isValid: false,
-      error: 'Please use a permanent email address',
-    }
+    return { isValid: false, error: 'Please use a permanent email address' }
   }
 
-  return {
-    isValid: true,
-  }
+  return { isValid: true }
 }
 
 /**
- * Validate email and return normalized version
- *
- * @param email - Email address to validate and normalize
- * @returns Normalized email or null if invalid
- *
- * @example
- * ```tsx
- * const email = normalizeEmail('  User@Example.COM  ')
- * // Returns: 'user@example.com'
- * ```
+ * Normalize email
  */
 export function normalizeEmail(email: string): string | null {
   const validation = validateEmail(email)
-
-  if (!validation.isValid) {
-    return null
-  }
-
-  // Normalize: trim, lowercase, remove unnecessary characters
-  const trimmed = email.trim().toLowerCase()
-
-  return trimmed
+  if (!validation.isValid) return null
+  return email.trim().toLowerCase()
 }
 
 /**
- * Check if domain has valid MX records (DNS-based validation)
- * Note: This requires a backend service or API to check MX records
- * Frontend cannot directly query DNS for security reasons
- *
- * @param email - Email address to check
- * @returns Promise resolving to validation result
- *
- * @example
- * ```tsx
- * const isValid = await validateEmailDomain('user@example.com')
- * ```
+ * Placeholder for MX record validation
  */
 export async function validateEmailDomain(email: string): Promise<boolean> {
-  // This is a placeholder for backend MX record validation
-  // In production, call your backend API endpoint
-  // Example: const response = await fetch('/api/validate-email-domain', { email })
-
   const validation = validateEmail(email)
-  if (!validation.isValid) {
-    return false
-  }
-
-  // For now, return true if basic validation passes
-  // TODO: Implement backend MX record validation
-  return true
+  return validation.isValid
 }
 
 /**
- * Debounce function for validation to avoid excessive calls
- *
- * @param func - Function to debounce
- * @param delay - Delay in milliseconds
- * @returns Debounced function
- *
- * @example
- * ```tsx
- * const debouncedValidate = debounce(validateEmail, 300)
- * ```
+ * Debounce utility
  */
 export function debounce<T extends (...args: unknown[]) => unknown>(
   func: T,
@@ -218,81 +133,100 @@ function iterativeReplace(input: string, pattern: RegExp, replacement = ''): str
 }
 
 /**
- * Sanitize input to prevent XSS attacks
- * Removes HTML tags and dangerous characters
+ * Encode HTML entities for safe display
+ * Preserves text structure by encoding special characters instead of removing them
  *
- * @param input - User input to sanitize
- * @returns Sanitized string
+ * @param input - Text to encode
+ * @returns Encoded text with HTML entities, trimmed and limited to 500 characters
  *
  * @example
  * ```tsx
- * const clean = sanitizeInput('<script>alert("xss")</script>')
- * // Returns: 'scriptalert("xss")/script'
+ * const safe = encodeHtmlEntities('<script>alert("xss")</script>')
+ * // Returns: '&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;'
+ *
+ * const safe2 = encodeHtmlEntities('Tom & Jerry')
+ * // Returns: 'Tom &amp; Jerry'
  * ```
+ */
+export function encodeHtmlEntities(input: string): string {
+  if (!input) return ''
+
+  return input
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+    .trim()
+    .slice(0, 500)
+}
+
+/**
+ * Cleanse a user-provided string of common HTML/XSS injection vectors.
+ *
+ * Removes angle brackets, strips dangerous URI protocols (e.g., `javascript:`, `data:`),
+ * removes event-handler attributes (e.g., `onClick=`), encodes `&`, `"` and `'`,
+ * trims whitespace, and truncates the result to 500 characters.
+ *
+ * Uses iterative replacement with a high iteration limit (100) to prevent bypass attacks
+ * like 'jajavascript:vascript:' or 'ononclick=' while protecting against DoS.
+ *
+ * @param input - The raw input string to sanitize; may be empty or falsy.
+ * @returns The sanitized string, or an empty string if `input` is falsy.
  */
 export function sanitizeInput(input: string): string {
   if (!input) return ''
 
   let sanitized = input.trim()
 
-  // Remove angle brackets
+  // Remove angle brackets early
   sanitized = sanitized.replace(/[<>]/g, '')
 
-  // Iteratively remove javascript: protocol to prevent bypasses like 'jajavascript:vascript:'
-  sanitized = iterativeReplace(sanitized, /javascript:/gi)
+  // Iteratively remove dangerous protocols to prevent bypasses like 'jajavascript:vascript:'
+  sanitized = iterativeReplace(sanitized, /(javascript|data|vbscript|file|about)\s*:\/*/gi)
 
   // Iteratively remove event handlers to prevent bypasses like 'ononclick='
-  sanitized = iterativeReplace(sanitized, /on\w+\s*=/gi)
+  sanitized = iterativeReplace(sanitized, /\bon\w+\s*=/gi)
 
-  // Limit length to prevent buffer overflow
-  return sanitized.slice(0, 500)
+  // Encode HTML entities
+  sanitized = sanitized.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;')
+
+  return sanitized.trim().slice(0, 500)
 }
 
 /**
- * Validate form data with multiple fields
- *
- * @param formData - Object containing form field values
- * @returns Validation result with field-specific errors
- *
- * @example
- * ```tsx
- * const result = validateForm({
- *   email: 'user@example.com',
- *   name: 'John Doe',
- *   acceptTerms: true
- * })
- *
- * if (!result.isValid) {
- *   console.error(result.errors)
- * }
- * ```
+ * Validate form data
  */
 export function validateForm(formData: Record<string, unknown>): ValidationResult {
   const errors: Record<string, string> = {}
 
-  // Validate email if present
   if ('email' in formData) {
-    const emailValidation = validateEmail(formData.email as string)
-    if (!emailValidation.isValid) {
-      errors.email = emailValidation.error || 'Invalid email'
+    if (typeof formData.email !== 'string') {
+      errors.email = 'Email must be a string'
+    } else {
+      const emailValidation = validateEmail(formData.email)
+      if (!emailValidation.isValid) {
+        errors.email = emailValidation.error || 'Invalid email'
+      }
     }
   }
 
-  // Validate name if present
   if ('name' in formData) {
-    const name = formData.name as string
-    const trimmedName = name?.trim() ?? ''
-    if (trimmedName.length < 2) {
-      errors.name = 'Name must be at least 2 characters'
-    }
-    if (trimmedName.length > 100) {
-      errors.name = 'Name is too long'
+    if (typeof formData.name !== 'string') {
+      errors.name = 'Name must be a string'
+    } else {
+      const trimmedName = formData.name.trim()
+      if (trimmedName.length < 2) errors.name = 'Name must be at least 2 characters'
+      if (trimmedName.length > 100) errors.name = 'Name is too long'
     }
   }
 
-  // Validate terms acceptance if present
-  if ('acceptTerms' in formData && !formData.acceptTerms) {
-    errors.acceptTerms = 'You must accept the terms and conditions'
+  if ('acceptTerms' in formData) {
+    if (typeof formData.acceptTerms !== 'boolean') {
+      errors.acceptTerms = 'Accept terms must be a boolean'
+    } else if (!formData.acceptTerms) {
+      errors.acceptTerms = 'You must accept the terms and conditions'
+    }
   }
 
   return {
@@ -302,16 +236,7 @@ export function validateForm(formData: Record<string, unknown>): ValidationResul
 }
 
 /**
- * Check for common typos in email domains and suggest corrections
- *
- * @param email - Email address to check
- * @returns Suggested correction or null if no typo detected
- *
- * @example
- * ```tsx
- * const suggestion = suggestEmailCorrection('user@gmial.com')
- * // Returns: 'user@gmail.com'
- * ```
+ * Suggest corrections for common email typos
  */
 export function suggestEmailCorrection(email: string): string | null {
   const commonTypos: Record<string, string> = {
@@ -329,10 +254,9 @@ export function suggestEmailCorrection(email: string): string | null {
   if (!domain) return null
 
   const suggestion = commonTypos[domain]
-  if (suggestion) {
-    const localPart = email.split('@')[0]
-    return `${localPart}@${suggestion}`
-  }
+  if (!suggestion) return null
 
-  return null
+  const localPart = email.split('@')[0]
+  if (!localPart) return null
+  return `${localPart}@${suggestion}`
 }

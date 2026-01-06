@@ -1,0 +1,270 @@
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.subtitle {
+  font-size: 1.25rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.benefits {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 3rem 0;
+  text-align: left;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.benefit {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  font-size: 1.125rem;
+  color: var(--color-text-primary);
+  line-height: 1.6;
+}
+
+.benefit span {
+  flex: 1;
+}
+
+.form {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.inputGroup {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.input {
+  flex: 1;
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+  border: 2px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-background-primary);
+  color: var(--color-text-primary);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.input::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.submitButton {
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  background: var(--color-primary);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.submitButton:hover:not(:disabled) {
+  background: var(--color-primary-dark);
+}
+
+.submitButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .input {
+    transition: border-color 0.2s ease;
+  }
+
+  .submitButton {
+    transition:
+      background-color 0.2s ease,
+      transform 0.1s ease;
+  }
+
+  .submitButton:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
+
+  .submitButton:active:not(:disabled) {
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .input,
+  .input:focus,
+  .submitButton,
+  .submitButton:hover:not(:disabled),
+  .submitButton:active:not(:disabled) {
+    transition: none;
+    transform: none;
+  }
+}
+
+.submitButtonLoading {
+  position: relative;
+}
+
+.error {
+  font-size: 0.875rem;
+  color: var(--color-error);
+  margin: 0.5rem 0;
+  font-weight: 500;
+}
+
+.privacy {
+  font-size: 0.875rem;
+  color: var(--color-text-tertiary);
+  margin: 0;
+  font-style: italic;
+}
+
+.successContainer {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.successIcon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.successTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.successText {
+  font-size: 1.25rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 2.5rem;
+  line-height: 1.6;
+}
+
+.nextSteps {
+  background: var(--color-background-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2.5rem;
+  text-align: left;
+}
+
+.nextStepsTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 1rem;
+}
+
+.nextStepsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nextStepsList li {
+  padding-left: 1.5rem;
+  margin-bottom: 0.75rem;
+  position: relative;
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.nextStepsList li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--color-primary);
+  font-weight: bold;
+}
+
+.nextStepsList li:last-child {
+  margin-bottom: 0;
+}
+
+.shareSection {
+  margin-top: 2.5rem;
+}
+
+.shareText {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 1rem;
+}
+
+.socialButtons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .title,
+  .successTitle {
+    font-size: 2rem;
+  }
+
+  .subtitle,
+  .successText {
+    font-size: 1.125rem;
+  }
+
+  .benefits {
+    margin-bottom: 2rem;
+  }
+
+  .benefit {
+    font-size: 1rem;
+  }
+
+  .inputGroup {
+    flex-direction: column;
+  }
+
+  .nextSteps {
+    padding: 1.5rem;
+  }
+
+  .socialButtons {
+    flex-direction: column;
+  }
+
+  .socialButtons button {
+    width: 100%;
+  }
+}

@@ -59,6 +59,7 @@ describe('useTheme', () => {
 
     it('should load theme from localStorage if present', () => {
       localStorageMock.setItem('theme', 'dark')
+      localStorageMock.setItem('theme-user-preference', 'true')
       const { result } = renderHook(() => useTheme())
       expect(result.current.theme).toBe('dark')
     })
@@ -87,6 +88,7 @@ describe('useTheme', () => {
 
     it('should prefer localStorage over system preference', () => {
       localStorageMock.setItem('theme', 'light')
+      localStorageMock.setItem('theme-user-preference', 'true')
       window.matchMedia = vi.fn().mockImplementation((query: string) => ({
         matches: query === '(prefers-color-scheme: dark)',
         media: query,
@@ -130,6 +132,7 @@ describe('useTheme', () => {
 
     it('should set data-theme to light for light theme', async () => {
       localStorageMock.setItem('theme', 'dark')
+      localStorageMock.setItem('theme-user-preference', 'true')
       const { result } = renderHook(() => useTheme())
 
       act(() => {
@@ -155,6 +158,7 @@ describe('useTheme', () => {
 
     it('should toggle from dark to light', () => {
       localStorageMock.setItem('theme', 'dark')
+      localStorageMock.setItem('theme-user-preference', 'true')
       const { result } = renderHook(() => useTheme())
 
       act(() => {
@@ -240,6 +244,7 @@ describe('useTheme', () => {
 
     it('should NOT update theme when system preference changes if user has set preference', () => {
       localStorageMock.setItem('theme', 'light')
+      localStorageMock.setItem('theme-user-preference', 'true')
       let changeHandler: ((e: MediaQueryListEvent) => void) | null = null
 
       window.matchMedia = vi.fn().mockImplementation(() => ({

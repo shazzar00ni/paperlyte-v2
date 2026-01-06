@@ -49,19 +49,25 @@ describe('App Integration', () => {
   it('should have accessible landmark regions with proper roles', () => {
     render(<App />)
 
-    // Use role queries for accessibility testing
-    const banner = screen.getByRole('banner') // header
-    const main = screen.getByRole('main')
-    const contentinfo = screen.getByRole('contentinfo') // footer
+    // App has 1 banner region: Main Header
+    const EXPECTED_BANNER_COUNT = 1
+    const banners = screen.getAllByRole('banner')
+    expect(banners).toHaveLength(EXPECTED_BANNER_COUNT)
 
-    expect(banner).toBeInTheDocument()
+    // Verify Features section uses proper heading markup (not a banner)
+    expect(
+      screen.getByRole('heading', { name: /Everything you need. Nothing you don't./i, level: 2 })
+    ).toBeInTheDocument()
+
+    const main = screen.getByRole('main')
     expect(main).toBeInTheDocument()
     expect(main).toHaveAttribute('id', 'main')
-    expect(contentinfo).toBeInTheDocument()
 
-    // Verify navigation is accessible
-    const navigation = screen.getByRole('navigation')
-    expect(navigation).toBeInTheDocument()
+    expect(screen.getByRole('contentinfo')).toBeInTheDocument()
+
+    // Verify both navigation regions exist: Header and Footer navigation
+    const navigation = screen.getAllByRole('navigation')
+    expect(navigation).toHaveLength(2)
   })
 
   it('should render Hero section', () => {
@@ -79,7 +85,7 @@ describe('App Integration', () => {
     expect(featuresSection).toBeInTheDocument()
 
     // Verify features content is present
-    expect(screen.getByText('Distraction-free Writing')).toBeInTheDocument()
+    expect(screen.getByText('Lightning Speed')).toBeInTheDocument()
   })
 
   it('should render Mobile section', () => {
@@ -99,7 +105,7 @@ describe('App Integration', () => {
     expect(testimonialsSection).toBeInTheDocument()
 
     // Verify testimonials content is present
-    expect(screen.getByText(/Sarah Jenkins/i)).toBeInTheDocument()
+    expect(screen.getByText(/Sarah Chen/i)).toBeInTheDocument()
   })
 
   it('should render CTA section', () => {
@@ -108,40 +114,45 @@ describe('App Integration', () => {
     const ctaSection = container.querySelector('#download')
     expect(ctaSection).toBeInTheDocument()
 
-    // Verify CTA content is present
-    expect(screen.getByText('Ready to declutter your mind?')).toBeInTheDocument()
+    // Verify specific CTA content is present
+    expect(screen.getByText(/Stop fighting your tools/i)).toBeInTheDocument()
+    // Check that at least one "Join the Waitlist" button exists
+    expect(screen.getAllByRole('button', { name: /Join the Waitlist/i }).length).toBeGreaterThan(0)
   })
 
   it('should render Footer component', () => {
-    const { container } = render(<App />)
+    render(<App />)
 
-    const footer = container.querySelector('footer')
-    expect(footer).toBeInTheDocument()
-
-    // Verify footer content is present
-    expect(screen.getByText('Designed for clarity in a chaotic world.')).toBeInTheDocument()
+    // Semantic <footer> element provides implicit contentinfo role
+    // Verify it's accessible to assistive technologies
+    expect(screen.getByRole('contentinfo')).toBeInTheDocument()
   })
 
   it('should render CTA buttons in download section', () => {
     render(<App />)
 
-    expect(screen.getByRole('button', { name: /Get Started for Free/i })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /Learn More/i })).toBeInTheDocument()
+    // Check for actual CTA buttons (there may be multiple "Join the Waitlist" buttons across sections)
+    expect(screen.getAllByRole('button', { name: /Join the Waitlist/i }).length).toBeGreaterThan(0)
+
+    // Check for demo button (use flexible pattern to handle different wording)
+    const demoButtons = screen.getAllByRole('button', { name: /Watch the Demo|View the Demo/i })
+    expect(demoButtons.length).toBeGreaterThan(0)
   })
 
   it('should render feature cards', () => {
     render(<App />)
 
-    // Check for specific features
-    expect(screen.getByText('Distraction-free Writing')).toBeInTheDocument()
-    expect(screen.getByText('Private by Design')).toBeInTheDocument()
-    expect(screen.getByText('Seamless Workflow')).toBeInTheDocument()
+    // Check for specific features (using actual feature names)
+    // Use getAllByText since features may appear in multiple sections
+    expect(screen.getAllByText('Lightning Speed').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('Privacy Focused').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('Tag-Based Organization').length).toBeGreaterThan(0)
   })
 
   it('should render social links in footer', () => {
     render(<App />)
 
-    expect(screen.getByRole('link', { name: 'Twitter' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Email' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Follow us on X (Twitter)' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Email us' })).toBeInTheDocument()
   })
 })

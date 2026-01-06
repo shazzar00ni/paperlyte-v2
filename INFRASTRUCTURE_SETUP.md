@@ -29,7 +29,7 @@ This document provides a complete status update for Issue #14: Development Infra
 - ✅ `netlify.toml` created with:
   - Build command: `npm run build`
   - Publish directory: `dist`
-  - Node version: 18
+  - Node version: 20
   - Production, deploy-preview, and branch-deploy contexts configured
   - SPA routing redirects configured
   - Security headers (X-Frame-Options, CSP, etc.)

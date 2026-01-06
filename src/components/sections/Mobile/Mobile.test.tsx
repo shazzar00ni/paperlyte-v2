@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { render, screen, within } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { Mobile } from './Mobile'
 
 describe('Mobile', () => {
@@ -23,9 +23,7 @@ describe('Mobile', () => {
     it('should render the description paragraph', () => {
       render(<Mobile />)
 
-      expect(
-        screen.getByText(/Our mobile app is designed for speed/i)
-      ).toBeInTheDocument()
+      expect(screen.getByText(/Our mobile app is designed for speed/i)).toBeInTheDocument()
     })
   })
 
@@ -70,27 +68,15 @@ describe('Mobile', () => {
     it('should render content in correct order', () => {
       const { container } = render(<Mobile />)
 
-      const heading = screen.getByRole('heading', { level: 2 })
-      const description = screen.getByText(/Our mobile app is designed for speed/i)
-      const link = screen.getByRole('link', { name: /Explore Mobile Features/i })
-
       // Verify DOM order by checking parent positions
       const content = container.querySelector('[class*="content"]')
       expect(content).toBeInTheDocument()
 
-      const children = Array.from(content?.children || []).map(
-        (child) => child.textContent
-      )
+      const children = Array.from(content?.children || []).map((child) => child.textContent)
 
-      const headingIndex = children.findIndex((text) =>
-        text?.includes('Capture inspiration')
-      )
-      const descIndex = children.findIndex((text) =>
-        text?.includes('Our mobile app')
-      )
-      const linkIndex = children.findIndex((text) =>
-        text?.includes('Explore Mobile')
-      )
+      const headingIndex = children.findIndex((text) => text?.includes('Capture inspiration'))
+      const descIndex = children.findIndex((text) => text?.includes('Our mobile app'))
+      const linkIndex = children.findIndex((text) => text?.includes('Explore Mobile'))
 
       expect(headingIndex).toBeLessThan(descIndex)
       expect(descIndex).toBeLessThan(linkIndex)

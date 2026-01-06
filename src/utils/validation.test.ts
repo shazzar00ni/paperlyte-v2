@@ -1,10 +1,13 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import {
   validateEmail,
   normalizeEmail,
   sanitizeInput,
+  encodeHtmlEntities,
   validateForm,
   suggestEmailCorrection,
+  validateEmailDomain,
+  debounce,
 } from './validation'
 
 describe('validateEmail', () => {
@@ -45,7 +48,19 @@ describe('validateEmail', () => {
   it('should reject emails with consecutive dots', () => {
     const result = validateEmail('user..name@example.com')
     expect(result.isValid).toBe(false)
-    expect(result.error).toContain('consecutive dots')
+    expect(result.error).toContain('valid email')
+  })
+
+  it('should reject emails with dots at the start of local part', () => {
+    const result = validateEmail('.user@example.com')
+    expect(result.isValid).toBe(false)
+    expect(result.error).toContain('valid email')
+  })
+
+  it('should reject emails with dots at the end of local part', () => {
+    const result = validateEmail('user.@example.com')
+    expect(result.isValid).toBe(false)
+    expect(result.error).toContain('valid email')
   })
 
   it('should reject emails that are too long', () => {
@@ -86,18 +101,100 @@ describe('normalizeEmail', () => {
 
 describe('sanitizeInput', () => {
   it('should remove HTML tags', () => {
-    expect(sanitizeInput('<script>alert("xss")</script>')).toBe('scriptalert("xss")/script')
+    // Note: quotes and ampersands are encoded as HTML entities
+    expect(sanitizeInput('<script>alert("xss")</script>')).toBe(
+      'scriptalert(&quot;xss&quot;)/script'
+    )
     expect(sanitizeInput('<div>Hello</div>')).toBe('divHello/div')
   })
 
   it('should remove javascript: protocol', () => {
-    expect(sanitizeInput('javascript:alert("xss")')).toBe('alert("xss")')
-    expect(sanitizeInput('JAVASCRIPT:alert("xss")')).toBe('alert("xss")')
+    expect(sanitizeInput('javascript:alert("xss")')).toBe('alert(&quot;xss&quot;)')
+    expect(sanitizeInput('JAVASCRIPT:alert("xss")')).toBe('alert(&quot;xss&quot;)')
+  })
+
+  it('should remove data: protocol', () => {
+    expect(sanitizeInput('data:text/html,<script>alert("xss")</script>')).toBe(
+      'text/html,scriptalert(&quot;xss&quot;)/script'
+    )
+    expect(sanitizeInput('DATA:text/plain,test')).toBe('text/plain,test')
+  })
+
+  it('should remove vbscript: protocol', () => {
+    expect(sanitizeInput('vbscript:msgbox("xss")')).toBe('msgbox(&quot;xss&quot;)')
+    expect(sanitizeInput('VBSCRIPT:msgbox("xss")')).toBe('msgbox(&quot;xss&quot;)')
+  })
+
+  it('should remove file: and about: protocols', () => {
+    // Note: file:/// removes protocol AND all slashes for safety
+    expect(sanitizeInput('file:///etc/passwd')).toBe('etc/passwd')
+    expect(sanitizeInput('about:blank')).toBe('blank')
+  })
+
+  it('should prevent bypass attacks with nested protocols', () => {
+    // Test for "jajavascript:vascript:" bypass - removes all "javascript:" instances iteratively
+    expect(sanitizeInput('jajavascript:vascript:alert("xss")')).toBe('alert(&quot;xss&quot;)')
+    // Test for "daddata:ata:" bypass - removes all "data:" instances, leaving harmless "da" prefix
+    expect(sanitizeInput('daddata:ata:text/html,malicious')).toBe('datext/html,malicious')
+    // Test for "vbvbscript:script:" bypass - removes all "vbscript:" instances iteratively
+    expect(sanitizeInput('vbvbscript:script:msgbox("xss")')).toBe('msgbox(&quot;xss&quot;)')
+    // Test for mixed case nested bypass
+    expect(sanitizeInput('jaJAVASCRIPT:vascript:alert(1)')).toBe('alert(1)')
+    // Test for multiple layers of nesting (javajavascript:script: -> javascript: -> empty)
+    expect(sanitizeInput('javajavascript:script:alert(1)')).toBe('alert(1)')
+    // Verify the dangerous protocols are completely removed
+    expect(sanitizeInput('daddata:ata:text/html')).not.toContain('data:')
+    expect(sanitizeInput('jajavascript:vascript:alert')).not.toContain('javascript:')
+    expect(sanitizeInput('vbvbscript:script:msgbox')).not.toContain('vbscript:')
   })
 
   it('should remove event handlers', () => {
     expect(sanitizeInput('onclick=alert(1)')).toBe('alert(1)')
     expect(sanitizeInput('onload=malicious()')).toBe('malicious()')
+    expect(sanitizeInput('onerror=bad()')).toBe('bad()')
+  })
+
+  it('should remove event handlers with spaces', () => {
+    expect(sanitizeInput('onclick = alert(1)')).toBe('alert(1)')
+    expect(sanitizeInput('onload  =  malicious()')).toBe('malicious()')
+  })
+
+  it('should encode HTML entities', () => {
+    expect(sanitizeInput('test & check')).toBe('test &amp; check')
+    expect(sanitizeInput('say "hello"')).toBe('say &quot;hello&quot;')
+    expect(sanitizeInput("it's")).toBe('it&#x27;s')
+  })
+
+  it('should handle nested/repeated attack patterns', () => {
+    // Test nested onclick pattern (ononclick= becomes onclick= after first pass)
+    expect(sanitizeInput('ononclick=alert(1)')).toBe('alert(1)')
+    // Test multiple nested patterns
+    expect(sanitizeInput('onononclick=alert(1)')).toBe('alert(1)')
+    // Test nested javascript: protocol
+    expect(sanitizeInput('javascript:javascript:alert(1)')).toBe('alert(1)')
+    // Test mixed nested patterns
+    expect(sanitizeInput('ononmouseover=javascript:javascript:alert(1)')).toBe('alert(1)')
+  })
+
+  it('should prevent bypass attacks with nested event handlers', () => {
+    // Greedy regex matching prevents simple nesting bypasses
+    // "ononclick=" matches as one token, leaving "click=" which is harmless
+    expect(sanitizeInput('ononclick=click=alert(1)')).toBe('click=alert(1)')
+    // Multiple passes still remove all valid event handlers
+    expect(sanitizeInput('onload=onclick=alert(1)')).toBe('alert(1)')
+    // Verify dangerous event handlers are removed
+    const result = sanitizeInput('onclick=onload=test')
+    expect(result).not.toContain('onclick=')
+    expect(result).not.toContain('onload=')
+  })
+
+  it('should handle deeply nested patterns without hanging', () => {
+    // Create a deeply nested pattern (would require many iterations)
+    const deeplyNested = 'ja'.repeat(20) + 'javascript:' + 'va'.repeat(20) + 'script:alert(1)'
+    const result = sanitizeInput(deeplyNested)
+    // Should complete without hanging (max 10 iterations)
+    expect(result).toBeDefined()
+    expect(result.length).toBeGreaterThan(0)
   })
 
   it('should prevent incomplete multi-character sanitization bypasses', () => {
@@ -143,6 +240,90 @@ describe('sanitizeInput', () => {
 
   it('should handle empty input', () => {
     expect(sanitizeInput('')).toBe('')
+  })
+
+  it('should handle complex XSS attempts', () => {
+    const xss = '<img src=x onerror=alert(1)>'
+    const result = sanitizeInput(xss)
+    // Should remove < >, encode quotes, and remove onerror
+    expect(result).not.toContain('<')
+    expect(result).not.toContain('>')
+    expect(result).not.toContain('onerror')
+  })
+
+  it('should prevent nested event handler bypass attacks', () => {
+    // ononclick= should be fully removed, not leave onclick=
+    expect(sanitizeInput('ononclick=alert(1)')).toBe('alert(1)')
+    expect(sanitizeInput('onononclick=alert(1)')).toBe('alert(1)')
+    expect(sanitizeInput('ononload=bad()')).toBe('bad()')
+  })
+
+  it('should prevent nested protocol bypass attacks', () => {
+    // javascript:javascript: should be fully removed
+    expect(sanitizeInput('javascript:javascript:alert(1)')).toBe('alert(1)')
+    expect(sanitizeInput('jajavascript:vascript:alert(1)')).toBe('alert(1)')
+    expect(sanitizeInput('data:data:text/html,test')).toBe('text/html,test')
+  })
+
+  it('should handle deeply nested bypass attempts', () => {
+    // Multiple layers of nesting
+    expect(sanitizeInput('ononononclick=alert(1)')).toBe('alert(1)')
+    expect(sanitizeInput('jajajavascript:vascript:vascript:alert(1)')).toBe('alert(1)')
+  })
+
+  it('should preserve legitimate words beginning with "on"', () => {
+    // Common legitimate words that start with "on"
+    expect(sanitizeInput('information')).toBe('information')
+    expect(sanitizeInput('Online')).toBe('Online')
+    expect(sanitizeInput('ongoing')).toBe('ongoing')
+    expect(sanitizeInput('onboard')).toBe('onboard')
+    expect(sanitizeInput('once')).toBe('once')
+    expect(sanitizeInput('one')).toBe('one')
+    expect(sanitizeInput('only')).toBe('only')
+  })
+
+  it('should preserve phrases containing words with "on"', () => {
+    expect(sanitizeInput('based on research')).toBe('based on research')
+    expect(sanitizeInput('John Online is my name')).toBe('John Online is my name')
+    expect(sanitizeInput('The ongoing discussion')).toBe('The ongoing discussion')
+    expect(sanitizeInput('We are onboarding new users')).toBe('We are onboarding new users')
+    expect(sanitizeInput('This information is important')).toBe('This information is important')
+  })
+
+  it('should still remove event handlers while preserving legitimate text', () => {
+    // Event handlers should be removed
+    expect(sanitizeInput('information onclick=alert(1)')).toBe('information alert(1)')
+    expect(sanitizeInput('Online onerror=bad()')).toBe('Online bad()')
+    expect(sanitizeInput('Click here onclick=hack() for information')).toBe(
+      'Click here hack() for information'
+    )
+  })
+})
+
+describe('encodeHtmlEntities', () => {
+  it('should encode HTML special characters', () => {
+    const result = encodeHtmlEntities('<script>alert("xss")</script>')
+    expect(result).toBe('&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;')
+  })
+
+  it('should preserve text content while encoding', () => {
+    const result = encodeHtmlEntities('Hello <b>World</b>')
+    expect(result).toBe('Hello &lt;b&gt;World&lt;/b&gt;')
+  })
+
+  it('should handle empty input', () => {
+    expect(encodeHtmlEntities('')).toBe('')
+  })
+
+  it('should limit output length', () => {
+    const longInput = 'a'.repeat(600)
+    const result = encodeHtmlEntities(longInput)
+    expect(result.length).toBe(500)
+  })
+
+  it('should encode ampersands', () => {
+    const result = encodeHtmlEntities('Tom & Jerry')
+    expect(result).toBe('Tom &amp; Jerry')
   })
 })
 
@@ -218,6 +399,46 @@ describe('validateForm', () => {
     expect(result.isValid).toBe(false)
     expect(Object.keys(result.errors).length).toBeGreaterThan(1)
   })
+
+  it('should handle non-string email with type guard error', () => {
+    // Intentionally pass wrong type to test runtime type guard
+    const formData = {
+      email: 12345 as unknown as string, // Type cast to bypass TS checking
+      name: 'John Doe',
+      acceptTerms: true,
+    }
+
+    const result = validateForm(formData)
+    expect(result.isValid).toBe(false)
+    expect(result.errors.email).toBe('Email must be a string')
+  })
+
+  it('should handle non-string name with type guard error', () => {
+    // Intentionally pass wrong type to test runtime type guard
+    const formData = {
+      email: 'user@example.com',
+      name: { firstName: 'John', lastName: 'Doe' } as unknown as string, // Type cast to bypass TS checking
+      acceptTerms: true,
+    }
+
+    const result = validateForm(formData)
+    expect(result.isValid).toBe(false)
+    expect(result.errors.name).toBe('Name must be a string')
+  })
+
+  it('should handle multiple type guard violations', () => {
+    const formData = {
+      email: ['test@example.com'] as unknown as string, // Array instead of string
+      name: 123 as unknown as string, // Number instead of string
+      acceptTerms: true,
+    }
+
+    const result = validateForm(formData)
+    expect(result.isValid).toBe(false)
+    expect(result.errors.email).toBe('Email must be a string')
+    expect(result.errors.name).toBe('Name must be a string')
+    expect(Object.keys(result.errors).length).toBe(2)
+  })
 })
 
 describe('suggestEmailCorrection', () => {
@@ -242,5 +463,102 @@ describe('suggestEmailCorrection', () => {
   it('should preserve local part when suggesting correction', () => {
     const suggestion = suggestEmailCorrection('test.user+tag@gmial.com')
     expect(suggestion).toBe('test.user+tag@gmail.com')
+  })
+})
+
+describe('validateEmailDomain', () => {
+  it('should return true for valid email (placeholder implementation)', async () => {
+    const result = await validateEmailDomain('user@example.com')
+    expect(result).toBe(true)
+  })
+
+  it('should return false for invalid email format', async () => {
+    const result = await validateEmailDomain('invalid-email')
+    expect(result).toBe(false)
+  })
+
+  it('should return false for email with consecutive dots', async () => {
+    const result = await validateEmailDomain('user..name@example.com')
+    expect(result).toBe(false)
+  })
+
+  it('should return false for empty email', async () => {
+    const result = await validateEmailDomain('')
+    expect(result).toBe(false)
+  })
+})
+
+describe('debounce', () => {
+  beforeEach(() => {
+    vi.useFakeTimers()
+  })
+
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
+  it('should delay function execution', () => {
+    const mockFn = vi.fn()
+    const debouncedFn = debounce(mockFn, 300)
+
+    debouncedFn('test')
+    expect(mockFn).not.toHaveBeenCalled()
+
+    vi.advanceTimersByTime(300)
+    expect(mockFn).toHaveBeenCalledWith('test')
+    expect(mockFn).toHaveBeenCalledTimes(1)
+  })
+
+  it('should cancel previous execution on rapid calls', () => {
+    const mockFn = vi.fn()
+    const debouncedFn = debounce(mockFn, 300)
+
+    debouncedFn('call1')
+    vi.advanceTimersByTime(100)
+
+    debouncedFn('call2')
+    vi.advanceTimersByTime(100)
+
+    debouncedFn('call3')
+    vi.advanceTimersByTime(300)
+
+    // Should only be called once with the last value
+    expect(mockFn).toHaveBeenCalledTimes(1)
+    expect(mockFn).toHaveBeenCalledWith('call3')
+  })
+
+  it('should execute multiple times if delay elapses between calls', () => {
+    const mockFn = vi.fn()
+    const debouncedFn = debounce(mockFn, 300)
+
+    debouncedFn('call1')
+    vi.advanceTimersByTime(300)
+    expect(mockFn).toHaveBeenCalledWith('call1')
+
+    debouncedFn('call2')
+    vi.advanceTimersByTime(300)
+    expect(mockFn).toHaveBeenCalledWith('call2')
+
+    expect(mockFn).toHaveBeenCalledTimes(2)
+  })
+
+  it('should preserve function arguments', () => {
+    const mockFn = vi.fn()
+    const debouncedFn = debounce(mockFn, 300)
+
+    debouncedFn('arg1', 'arg2', 123)
+    vi.advanceTimersByTime(300)
+
+    expect(mockFn).toHaveBeenCalledWith('arg1', 'arg2', 123)
+  })
+
+  it('should handle zero delay', () => {
+    const mockFn = vi.fn()
+    const debouncedFn = debounce(mockFn, 0)
+
+    debouncedFn('test')
+    vi.advanceTimersByTime(0)
+
+    expect(mockFn).toHaveBeenCalledWith('test')
   })
 })

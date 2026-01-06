@@ -5,15 +5,22 @@ import styles from './Privacy.module.css'
  * Privacy Policy page component
  * Displays Paperlyte's privacy policy and data handling practices
  *
+ * Note: Update LAST_UPDATED constant whenever policy changes are made
+ *
  * @returns Privacy Policy page JSX
  */
+
+// Last update date for the privacy policy
+// TODO: Update this date whenever the policy is revised
+const LAST_UPDATED = 'December 13, 2024'
+
 export function Privacy() {
   return (
     <>
       <Section className={styles.privacyHero}>
         <div className={styles.container}>
           <h1 className={styles.title}>Privacy Policy</h1>
-          <p className={styles.lastUpdated}>Last Updated: December 12, 2025</p>
+          <p className={styles.lastUpdated}>Last Updated: {LAST_UPDATED}</p>
         </div>
       </Section>
 
@@ -23,9 +30,9 @@ export function Privacy() {
             <section className={styles.section}>
               <h2>Our Commitment to Privacy</h2>
               <p>
-                At Paperlyte, we believe your notes are personal. We're committed to protecting
-                your privacy and giving you control over your data. This Privacy Policy explains
-                how we collect, use, and protect your information.
+                At Paperlyte, we believe your notes are personal. We're committed to protecting your
+                privacy and giving you control over your data. This Privacy Policy explains how we
+                collect, use, and protect your information.
               </p>
             </section>
 
@@ -90,20 +97,28 @@ export function Privacy() {
             <section className={styles.section}>
               <h2>Data Security & Storage</h2>
               <p>
-                <strong>Local-First Architecture:</strong> Your notes are stored locally on your
-                device first, giving you offline access and ownership of your data.
+                <em>
+                  Note: Paperlyte is currently in development. The following describes our planned
+                  security architecture. Once the app launches, this policy will be updated to
+                  reflect implemented features.
+                </em>
               </p>
               <p>
-                <strong>Encryption:</strong> All data is encrypted in transit using TLS and at rest
-                using AES-256 encryption.
+                <strong>Planned Local-First Architecture:</strong> Your notes will be stored locally
+                on your device first, giving you offline access and ownership of your data.
               </p>
               <p>
-                <strong>Zero-Knowledge Option:</strong> We offer end-to-end encryption where only
-                you can decrypt your notes.
+                <strong>Planned Encryption:</strong> All data will be encrypted in transit using
+                TLS. For the waitlist landing page, we use HTTPS for secure data transmission.
               </p>
               <p>
-                <strong>Data Retention:</strong> We retain your data as long as your account is
-                active. You can delete your account and all associated data at any time.
+                <strong>Planned Zero-Knowledge Option:</strong> We plan to offer end-to-end
+                encryption where only you can decrypt your notes (roadmap feature).
+              </p>
+              <p>
+                <strong>Data Retention:</strong> For the waitlist, we retain your email address
+                until you unsubscribe or the service launches. Once launched, you will be able to
+                delete your account and all associated data at any time.
               </p>
             </section>
 
@@ -121,12 +136,12 @@ export function Privacy() {
                   Paperlyte (hosting, analytics)
                 </li>
                 <li>
-                  <strong>Legal Requirements:</strong> When required by law or to protect our
-                  rights and users' safety
+                  <strong>Legal Requirements:</strong> When required by law or to protect our rights
+                  and users' safety
                 </li>
                 <li>
-                  <strong>Business Transfers:</strong> In the event of a merger or acquisition
-                  (with advance notice to users)
+                  <strong>Business Transfers:</strong> In the event of a merger or acquisition (with
+                  advance notice to users)
                 </li>
               </ul>
             </section>
@@ -159,10 +174,20 @@ export function Privacy() {
             <section className={styles.section}>
               <h2>Cookies & Tracking</h2>
               <p>
-                We use minimal cookies to maintain your session and remember your preferences. We
-                use privacy-focused analytics (no third-party tracking cookies).
+                <strong>Current Landing Page:</strong> We use Google Analytics 4 to understand how
+                visitors interact with our waitlist page. Google Analytics uses cookies and may
+                collect information such as your IP address, browser type, and pages visited. You
+                can opt out of Google Analytics by using browser extensions like Google Analytics
+                Opt-out Browser Add-on.
               </p>
-              <p>You can disable cookies in your browser settings, though some features may not work properly.</p>
+              <p>
+                <strong>When App Launches:</strong> The full application will use minimal cookies to
+                maintain your session and remember your preferences.
+              </p>
+              <p>
+                You can disable cookies in your browser settings, though some features may not work
+                properly without them.
+              </p>
             </section>
 
             <section className={styles.section}>
@@ -189,9 +214,9 @@ export function Privacy() {
             <section className={styles.section}>
               <h2>Changes to This Policy</h2>
               <p>
-                We may update this Privacy Policy from time to time. We'll notify you of
-                significant changes via email or in-app notification. Continued use of Paperlyte
-                after changes constitutes acceptance of the updated policy.
+                We may update this Privacy Policy from time to time. We'll notify you of significant
+                changes via email or in-app notification. Continued use of Paperlyte after changes
+                constitutes acceptance of the updated policy.
               </p>
             </section>
 
@@ -205,7 +230,17 @@ export function Privacy() {
                 <li>
                   Email: <a href="mailto:privacy@paperlyte.app">privacy@paperlyte.app</a>
                 </li>
-                <li>Website: https://paperlyte.app/contact</li>
+                <li>
+                  Website:{' '}
+                  <a
+                    href="https://paperlyte.app/contact"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Contact Form (opens in new tab)"
+                  >
+                    Contact Form
+                  </a>
+                </li>
               </ul>
             </section>
           </div>

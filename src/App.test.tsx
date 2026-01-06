@@ -49,19 +49,23 @@ describe('App Integration', () => {
   it('should have accessible landmark regions with proper roles', () => {
     render(<App />)
 
-    // Use role queries for accessibility testing
-    const banners = screen.getAllByRole('banner') // header(s)
-    const main = screen.getByRole('main')
-    const contentinfo = screen.getByRole('contentinfo') // footer
+    // App has 1 banner region: Main Header
+    const EXPECTED_BANNER_COUNT = 1
+    const banners = screen.getAllByRole('banner')
+    expect(banners).toHaveLength(EXPECTED_BANNER_COUNT)
 
-    expect(banners.length).toBeGreaterThan(0)
+    // Verify Features section uses proper heading markup (not a banner)
+    expect(screen.getByRole('heading', { name: /Everything you need. Nothing you don't./i, level: 2 })).toBeInTheDocument()
+
+    const main = screen.getByRole('main')
     expect(main).toBeInTheDocument()
     expect(main).toHaveAttribute('id', 'main')
-    expect(contentinfo).toBeInTheDocument()
 
-    // Verify navigation is accessible (there may be multiple nav elements)
+    expect(screen.getByRole('contentinfo')).toBeInTheDocument()
+
+    // Verify both navigation regions exist: Header and Footer navigation
     const navigation = screen.getAllByRole('navigation')
-    expect(navigation.length).toBeGreaterThan(0)
+    expect(navigation).toHaveLength(2)
   })
 
   it('should render Hero section', () => {
@@ -110,29 +114,25 @@ describe('App Integration', () => {
 
     // Verify specific CTA content is present
     expect(screen.getByText(/Stop fighting your tools/i)).toBeInTheDocument()
-    // Use getAllByRole since there are multiple "Join the Waitlist" buttons
-    const joinButtons = screen.getAllByRole('button', { name: /Join the Waitlist/i })
-    expect(joinButtons.length).toBeGreaterThan(0)
+    // Check that at least one "Join the Waitlist" button exists
+    expect(screen.getAllByRole('button', { name: /Join the Waitlist/i }).length).toBeGreaterThan(0)
   })
 
   it('should render Footer component', () => {
-    const { container } = render(<App />)
-
-    const footer = container.querySelector('footer')
-    expect(footer).toBeInTheDocument()
+    render(<App />)
 
     // Semantic <footer> element provides implicit contentinfo role
-    // Verify it's accessible via the contentinfo role
+    // Verify it's accessible to assistive technologies
     expect(screen.getByRole('contentinfo')).toBeInTheDocument()
   })
 
   it('should render CTA buttons in download section', () => {
     render(<App />)
 
-    // Check for actual CTA buttons (there may be multiple)
-    const joinButtons = screen.getAllByRole('button', { name: /Join the Waitlist/i })
-    expect(joinButtons.length).toBeGreaterThan(0)
+    // Check for actual CTA buttons (there may be multiple "Join the Waitlist" buttons across sections)
+    expect(screen.getAllByRole('button', { name: /Join the Waitlist/i }).length).toBeGreaterThan(0)
 
+    // Check for demo button (use flexible pattern to handle different wording)
     const demoButtons = screen.getAllByRole('button', { name: /Watch the Demo|View the Demo/i })
     expect(demoButtons.length).toBeGreaterThan(0)
   })

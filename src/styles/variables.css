@@ -194,7 +194,7 @@
 
 /* Android Chrome specific optimizations */
 @media screen and (max-width: 768px) {
-  :root {
+  body {
     /* Prevent text inflation on Android */
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;

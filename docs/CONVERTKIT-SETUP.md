@@ -165,7 +165,7 @@ The API enforces rate limiting: **3 requests per minute per IP address**
 
 ### Endpoint
 
-```
+```http
 POST /.netlify/functions/subscribe
 ```
 

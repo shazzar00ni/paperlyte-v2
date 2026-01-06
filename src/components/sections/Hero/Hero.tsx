@@ -49,7 +49,7 @@ export const Hero = (): React.ReactElement => {
 
         {/* Social Proof / Trust Badges */}
         <AnimatedElement animation="fadeIn" delay={400}>
-          <div className={styles.trustBadges} role="status" aria-live="polite">
+          <div className={styles.trustBadges}>
             <div className={styles.badge}>
               <Icon name="fa-users" size="sm" />
               <span className={styles.badgeText}>Join 1,234 early adopters</span>

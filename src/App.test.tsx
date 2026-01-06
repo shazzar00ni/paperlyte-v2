@@ -1,10 +1,19 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
 import App from './App'
+
+const renderApp = () => {
+  return render(
+    <MemoryRouter>
+      <App />
+    </MemoryRouter>
+  )
+}
 
 describe('App Integration', () => {
   it('should render with proper semantic structure and section order', () => {
-    const { container } = render(<App />)
+    const { container } = renderApp()
 
     // Verify semantic landmark regions
     const header = container.querySelector('header')
@@ -47,7 +56,7 @@ describe('App Integration', () => {
   })
 
   it('should have accessible landmark regions with proper roles', () => {
-    render(<App />)
+    renderApp()
 
     // App has 1 banner region: Main Header
     const EXPECTED_BANNER_COUNT = 1
@@ -71,7 +80,7 @@ describe('App Integration', () => {
   })
 
   it('should render Hero section', () => {
-    const { container } = render(<App />)
+    const { container } = renderApp()
 
     // Hero section should be present
     const heroSection = container.querySelector('#hero')
@@ -79,7 +88,7 @@ describe('App Integration', () => {
   })
 
   it('should render Features section', () => {
-    const { container } = render(<App />)
+    const { container } = renderApp()
 
     const featuresSection = container.querySelector('#features')
     expect(featuresSection).toBeInTheDocument()
@@ -89,7 +98,7 @@ describe('App Integration', () => {
   })
 
   it('should render Mobile section', () => {
-    const { container } = render(<App />)
+    const { container } = renderApp()
 
     const mobileSection = container.querySelector('#mobile')
     expect(mobileSection).toBeInTheDocument()
@@ -99,7 +108,7 @@ describe('App Integration', () => {
   })
 
   it('should render Testimonials section', () => {
-    const { container } = render(<App />)
+    const { container } = renderApp()
 
     const testimonialsSection = container.querySelector('#testimonials')
     expect(testimonialsSection).toBeInTheDocument()
@@ -109,7 +118,7 @@ describe('App Integration', () => {
   })
 
   it('should render CTA section', () => {
-    const { container } = render(<App />)
+    const { container } = renderApp()
 
     const ctaSection = container.querySelector('#download')
     expect(ctaSection).toBeInTheDocument()
@@ -121,7 +130,7 @@ describe('App Integration', () => {
   })
 
   it('should render Footer component', () => {
-    render(<App />)
+    renderApp()
 
     // Semantic <footer> element provides implicit contentinfo role
     // Verify it's accessible to assistive technologies
@@ -129,7 +138,7 @@ describe('App Integration', () => {
   })
 
   it('should render CTA buttons in download section', () => {
-    render(<App />)
+    renderApp()
 
     // Check for actual CTA buttons (there may be multiple "Join the Waitlist" buttons across sections)
     expect(screen.getAllByRole('button', { name: /Join the Waitlist/i }).length).toBeGreaterThan(0)
@@ -140,7 +149,7 @@ describe('App Integration', () => {
   })
 
   it('should render feature cards', () => {
-    render(<App />)
+    renderApp()
 
     // Check for specific features (using actual feature names)
     // Use getAllByText since features may appear in multiple sections
@@ -150,7 +159,7 @@ describe('App Integration', () => {
   })
 
   it('should render social links in footer', () => {
-    render(<App />)
+    renderApp()
 
     expect(screen.getByRole('link', { name: 'Follow us on X (Twitter)' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Email us' })).toBeInTheDocument()

@@ -62,7 +62,7 @@ describe('Footer', () => {
   })
 
   it('should use React Router Link for internal navigation', () => {
-    const { container } = renderFooter()
+    renderFooter()
 
     // Privacy and Terms should use Link component (rendered as <a> with href starting with /)
     const privacyLink = screen.getByRole('link', { name: 'Privacy Policy' })

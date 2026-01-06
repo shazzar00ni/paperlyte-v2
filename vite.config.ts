@@ -96,11 +96,15 @@ export default defineConfig({
   plugins: [
     react(),
     cspPlugin(),
-    codecovRollupPlugin({
-      enableBundleAnalysis: process.env.CODECOV_TOKEN !== undefined,
-      bundleName: 'paperlyte-v2',
-      ...(process.env.CODECOV_TOKEN ? { uploadToken: process.env.CODECOV_TOKEN } : {}),
-    }),
+    ...(process.env.CODECOV_TOKEN
+      ? [
+          codecovRollupPlugin({
+            enableBundleAnalysis: true,
+            bundleName: 'paperlyte-v2',
+            uploadToken: process.env.CODECOV_TOKEN,
+          }),
+        ]
+      : []),
   ],
 
   // Path resolution configuration

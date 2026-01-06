@@ -1,0 +1,55 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Legal Constants > Snapshot Tests > should match LEGAL_CONFIG snapshot 1`] = `
+{
+  "address": {
+    "city": "[City]",
+    "country": "[Country]",
+    "state": "[State]",
+    "street": "[Street Address]",
+    "zip": "[ZIP]",
+  },
+  "company": {
+    "arbitrationOptOutEmail": "arbitration-opt-out@paperlyte.com",
+    "dpoEmail": "dpo@paperlyte.com",
+    "email": "hello@paperlyte.com",
+    "legalEmail": "legal@paperlyte.com",
+    "legalName": "[Company Legal Name]",
+    "name": "Paperlyte",
+    "privacyEmail": "privacy@paperlyte.com",
+    "securityEmail": "security@paperlyte.com",
+    "supportEmail": "support@paperlyte.com",
+  },
+  "documents": {
+    "accessibility": "#",
+    "cookies": "#",
+    "dmca": "#",
+    "privacy": "/privacy.html",
+    "security": "#",
+    "terms": "/terms.html",
+  },
+  "metadata": {
+    "governingLaw": "[State] law",
+    "jurisdiction": "[State/Country]",
+    "privacyLastUpdated": "2025-11-28",
+    "termsLastUpdated": "2025-11-28",
+    "termsVersion": "1.0",
+  },
+  "social": {
+    "discord": "#",
+    "github": "https://github.com/shazzar00ni/paperlyte-v2",
+    "linkedin": "#",
+    "twitter": "#",
+  },
+}
+`;
+
+exports[`Legal Constants > Snapshot Tests > should match needsLegalReview result snapshot 1`] = `true`;
+
+exports[`Legal Constants > Snapshot Tests > should match placeholder fields snapshot 1`] = `
+[
+  "Company Legal Name",
+  "Physical Address",
+  "Jurisdiction/Governing Law",
+]
+`;

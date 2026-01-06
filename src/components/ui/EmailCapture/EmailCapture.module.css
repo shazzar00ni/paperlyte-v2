@@ -118,6 +118,11 @@
   accent-color: var(--color-primary);
 }
 
+.checkbox:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
 .gdprText {
   font-size: 0.875rem;
   line-height: 1.5;
@@ -128,10 +133,16 @@
   color: var(--color-primary);
   text-decoration: underline;
   transition: opacity 0.2s ease;
+  border-radius: 2px;
 }
 
 .link:hover {
   opacity: 0.8;
+}
+
+.link:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
 /* Success State */

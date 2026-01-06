@@ -1,0 +1,8 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Waitlist Constants > Snapshot Tests > should match waitlist constants snapshot 1`] = `
+{
+  "LAUNCH_QUARTER": "Q2 2026",
+  "WAITLIST_COUNT": "500+",
+}
+`;

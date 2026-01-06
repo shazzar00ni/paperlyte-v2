@@ -68,7 +68,8 @@ jobs:
         run: npm ci
 
       - name: Run tests with coverage
-        run: npm run test:coverage -- --run
+        # Generate coverage even when tests fail to track coverage trends
+        run: npm run test:coverage -- --run --coverage.reportOnFailure
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5

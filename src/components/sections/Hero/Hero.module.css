@@ -1,5 +1,10 @@
 .hero {
-  /* Use iOS-safe viewport height fallback */
+  /* Progressive enhancement for viewport height:
+   * 1. Hardcoded fallback for browsers without custom property support
+   * 2. Standard viewport with CSS variable for header height
+   * 3. iOS-safe viewport height (overrides when --vh is set via JS)
+   */
+  min-height: calc(100vh - 64px);
   min-height: calc(100vh - var(--header-height));
   min-height: calc((var(--vh, 1vh) * 100) - var(--header-height));
   display: flex;

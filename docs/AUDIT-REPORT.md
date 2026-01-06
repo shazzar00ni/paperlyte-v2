@@ -470,7 +470,7 @@ https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css
 
 **Status:** 🟢 **EXCELLENT** - Complete icon coverage for all platforms
 
-### Sitemap & Robots.txt
+### Sitemap & robots.txt
 
 **Sitemap.xml:**
 ```xml
@@ -482,9 +482,9 @@ https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css
 ```
 
 **✅ Fixed:** Sitemap now correctly uses `paperlyte.app` (consistent with index.html)
-**✅ Fixed:** Robots.txt updated to reference `paperlyte.app`
+**✅ Fixed:** robots.txt updated to reference `paperlyte.app`
 
-**Robots.txt:**
+**robots.txt:**
 ```text
 ✅ User-agent: * (allows all crawlers)
 ✅ Allow: / (all content indexable)

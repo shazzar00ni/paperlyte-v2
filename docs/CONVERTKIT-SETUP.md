@@ -261,17 +261,6 @@ The serverless function implements Cross-Origin Resource Sharing (CORS) to preve
 1. Go to Site settings → Environment variables
 2. Add `ALLOWED_ORIGIN` with your domain value
 3. For local development, add to `.env`:
-   ```
-   ALLOWED_ORIGIN=http://localhost:5173
-   ```
-
-**Important Notes:**
-
-- Always use HTTPS in production (HTTP will be blocked by browsers)
-- Do not use wildcards (`*`) for `ALLOWED_ORIGIN` in production (security risk)
-- The function will return a 403 Forbidden if origin doesn't match
-- Browser will show CORS error in console if origin is misconfigured
-
 ---
 
 ## Troubleshooting

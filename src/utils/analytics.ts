@@ -46,6 +46,8 @@ declare global {
   }
 }
 
+const trackedMilestones = new Set<number>()
+
 /**
  * Initialize scroll depth tracking
  * Sets up a scroll listener that tracks depth milestones
@@ -61,7 +63,8 @@ declare global {
  * ```
  */
 export function initScrollDepthTracking(): () => void {
-  const trackedMilestones = new Set<number>()
+  // Reset milestones on initialization to ensure clean state
+  trackedMilestones.clear()
 
   const handleScroll = () => {
     const windowHeight = window.innerHeight
@@ -102,6 +105,15 @@ export function initScrollDepthTracking(): () => void {
   return () => {
     window.removeEventListener('scroll', throttledScroll)
   }
+}
+
+/**
+ * FOR TESTING PURPOSES ONLY
+ * Resets the state of the scroll depth tracking module.
+ * @private
+ */
+export function _resetScrollDepthTracking() {
+  trackedMilestones.clear()
 }
 
 /**
@@ -238,20 +250,29 @@ function sanitizeAnalyticsParams(params?: AnalyticsEventParams): AnalyticsEventP
   let piiFound = false
 
   for (const [key, value] of Object.entries(params)) {
-    const lowerKey = key.toLowerCase()
+    // Normalize keys by converting camelCase and snake_case to space-separated words
+    // This allows for more robust matching of PII terms.
+    // e.g., 'authToken' -> 'auth token', 'user_email' -> 'user email'
+    const keyWords = key
+      .replace(/_/g, ' ')
+      .replace(/([a-z])([A-Z])/g, '$1 $2')
+      .toLowerCase()
 
-    // Check if this key is a known PII field
-    if (PII_KEYS.some((piiKey) => lowerKey.includes(piiKey.toLowerCase()))) {
-      piiFound = true
-      // Skip this field - don't include it in sanitized params
+    // Exception: 'email preference' is a known non-PII key that contains a PII substring.
+    if (keyWords === 'email preference') {
+      sanitized[key] = value
       continue
     }
 
-    // Check if value looks like an email with stricter pattern matching to reduce false positives
-    // Pattern: local-part@domain.tld where TLD is at least 2 letters
-    // Example: user@example.com, name@domain.co.uk
+    // Check if any word in the normalized key is a PII keyword.
+    // The `\b` regex ensures we match whole words only.
+    if (PII_KEYS.some((piiKey) => new RegExp(`\\b${piiKey}\\b`, 'i').test(keyWords))) {
+      piiFound = true
+      continue // Skip this field
+    }
+
+    // Check if the value itself looks like an email address.
     if (typeof value === 'string') {
-      // Email pattern: non-space/non-@ chars + @ + domain with dot + 2+ letter TLD
       const emailPattern = /[^\s@]+@[^\s@]+\.[a-z]{2,}/i
       if (emailPattern.test(value)) {
         piiFound = true
@@ -262,7 +283,7 @@ function sanitizeAnalyticsParams(params?: AnalyticsEventParams): AnalyticsEventP
     sanitized[key] = value
   }
 
-  // Warn developers if PII was found and stripped
+  // In development, warn if PII was detected and stripped.
   if (piiFound && import.meta.env.DEV) {
     console.warn(
       '[Analytics] PII detected and removed from event parameters. Never send emails, passwords, or other sensitive data to analytics.'

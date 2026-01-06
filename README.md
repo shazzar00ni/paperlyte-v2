@@ -28,6 +28,7 @@ Lightning-fast, distraction-free note-taking application landing page built with
   - [Development](#development)
 - [Project Structure](#project-structure)
 - [Performance Targets](#performance-targets)
+- [Analytics](#analytics)
 - [Deployment](#deployment)
 - [Contributing](#contributing)
 - [License](#license)
@@ -252,6 +253,19 @@ These targets align with Paperlyte's "lightning-fast" value proposition:
   - LCP (Largest Contentful Paint): < 2.5s
   - FID (First Input Delay): < 100ms
   - CLS (Cumulative Layout Shift): < 0.1
+
+## Analytics
+
+This project includes a privacy-first analytics module located at [`src/utils/analytics.ts`](./src/utils/analytics.ts).
+
+### Key Features
+
+- **PII Stripping**: Automatically removes personally identifiable information (emails, passwords, tokens, etc.) from all tracked events.
+- **Developer Warnings**: In development mode, the console will warn if any PII is detected and stripped, preventing accidental data leaks.
+- **Google Analytics Integration**: Sends sanitized data to Google Analytics 4.
+- **Comprehensive Test Suite**: Includes a full suite of unit tests to ensure reliability and prevent regressions.
+
+For detailed usage and a complete list of tracked events, please refer to the JSDoc comments within the `analytics.ts` file.
 
 ## Deployment
 

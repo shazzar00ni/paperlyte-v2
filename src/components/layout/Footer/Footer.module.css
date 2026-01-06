@@ -80,9 +80,9 @@
   border-radius: var(--border-radius-sm);
   padding: var(--spacing-xs) 0;
   /* Ensure minimum touch target on mobile */
-  display: inline-block;
+  display: flex;
+  align-items: center;
   min-height: 44px;
-  line-height: 44px;
 }
 
 .link:hover,

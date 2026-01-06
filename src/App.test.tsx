@@ -55,7 +55,9 @@ describe('App Integration', () => {
     expect(banners).toHaveLength(EXPECTED_BANNER_COUNT)
 
     // Verify Features section uses proper heading markup (not a banner)
-    expect(screen.getByRole('heading', { name: /Everything you need. Nothing you don't./i, level: 2 })).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: /Everything you need. Nothing you don't./i, level: 2 })
+    ).toBeInTheDocument()
 
     const main = screen.getByRole('main')
     expect(main).toBeInTheDocument()

@@ -22,14 +22,15 @@ export interface ValidationResult {
 /**
  * Email validation regex pattern
  * Follows RFC 5322 simplified pattern for practical use
- * Prevents ReDoS vulnerabilities by avoiding nested quantifiers
+ * Prevents ReDoS vulnerabilities by eliminating quantifier overlap
  * Pattern breakdown:
- * - Local part: starts with alphanumeric, optionally followed by separator + alphanumeric pairs
- * - Domain: starts with alphanumeric, optionally followed by separator + alphanumeric pairs
+ * - Local part: single alphanumeric + (alphanumeric OR separator+alphanumeric)*
+ * - Domain: single alphanumeric + (alphanumeric OR separator+alphanumeric)*
  * - TLD: at least 2 letters
+ * This eliminates overlapping quantifiers by making choices mutually exclusive
  */
 const EMAIL_REGEX =
-  /^[a-zA-Z0-9]([._+-]?[a-zA-Z0-9])*@[a-zA-Z0-9]([.-]?[a-zA-Z0-9])*\.[a-zA-Z]{2,}$/
+  /^[a-zA-Z0-9](?:[a-zA-Z0-9]|[._+-][a-zA-Z0-9])*@[a-zA-Z0-9](?:[a-zA-Z0-9]|[.-][a-zA-Z0-9])*\.[a-zA-Z]{2,}$/
 
 /**
  * Common disposable email domains to block

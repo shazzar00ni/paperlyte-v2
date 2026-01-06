@@ -35,8 +35,6 @@ body {
   /* Prevent horizontal scrolling on mobile */
   overflow-x: hidden;
   /* Better text rendering on mobile */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   /* Theme transitions - respects prefers-reduced-motion via global override below */
   transition:
     background-color var(--transition-base),

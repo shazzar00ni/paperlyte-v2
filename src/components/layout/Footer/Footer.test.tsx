@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { Footer } from './Footer'
+import { LEGAL_CONFIG } from '@constants/legal'
 
 const renderFooter = () => {
   return render(
@@ -124,7 +125,7 @@ import { LEGAL_CONFIG } from '@/config/legal'
 
     const emailLink = screen.getByRole('link', { name: 'Email us' })
     expect(emailLink).toBeInTheDocument()
-    expect(emailLink).toHaveAttribute('href', 'mailto:hello@paperlyte.com')
+    expect(emailLink).toHaveAttribute('href', `mailto:${LEGAL_CONFIG.company.email}`)
   })
 
   it('should render copyright with current year', () => {

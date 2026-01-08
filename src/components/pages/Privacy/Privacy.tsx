@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { Section } from '@components/layout/Section'
 import styles from './Privacy.module.css'
 
@@ -26,19 +25,13 @@ const LAST_UPDATED = 'December 13, 2024'
  * @returns A JSX element containing the complete Privacy Policy page.
  */
 export function Privacy() {
-  useEffect(() => {
-    document.title = 'Privacy Policy | Paperlyte'
-    const metaDescription = document.querySelector('meta[name="description"]')
-    if (metaDescription) {
-      metaDescription.setAttribute(
-        'content',
-        'Learn how Paperlyte protects your privacy with cookie-less analytics, local-first architecture, and transparent data practices.'
-      )
-    }
-  }, [])
-
   return (
     <>
+      <title>Privacy Policy | Paperlyte</title>
+      <meta
+        name="description"
+        content="Learn how Paperlyte protects your privacy with cookie-less analytics, local-first architecture, and transparent data practices."
+      />
       <Section className={styles.privacyHero}>
         <div className={styles.container}>
           <h1 className={styles.title}>Privacy Policy</h1>

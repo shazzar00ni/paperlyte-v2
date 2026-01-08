@@ -33,6 +33,7 @@
   --color-footer-bg: #1e293b; /* Slate 800 - Dark footer background */
   --color-footer-text-heading: #f1f5f9; /* Slate 100 - Footer headings */
   --color-footer-text: #94a3b8; /* Slate 400 - Footer links and text */
+  --color-footer-border: rgba(255, 255, 255, 0.1); /* Footer section divider */
 
   /* Typography */
   --font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;

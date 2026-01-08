@@ -40,3 +40,4 @@ junit.xml
 # Deployment platforms
 .netlify
 .vercel
+actionlint

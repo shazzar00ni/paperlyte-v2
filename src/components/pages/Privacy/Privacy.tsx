@@ -16,23 +16,16 @@ import styles from './Privacy.module.css'
 const LAST_UPDATED = 'December 13, 2024'
 
 export function Privacy() {
-import { Section } from '@components/layout/Section'
-import styles from './Privacy.module.css'
-
-export function Privacy() {
-  return (
-    <>
-      <title>Privacy Policy | Paperlyte</title>
-      <meta 
-        name="description" 
-        content="Learn how Paperlyte protects your privacy with cookie-less analytics, local-first architecture, and transparent data practices." 
-      />
-      <Section className={styles.privacyHero}>
-        {/* rest of component content */}
-      </Section>
-    </>
-  )
-}
+  useEffect(() => {
+    document.title = 'Privacy Policy | Paperlyte'
+    const metaDescription = document.querySelector('meta[name="description"]')
+    if (metaDescription) {
+      metaDescription.setAttribute(
+        'content',
+        'Learn how Paperlyte protects your privacy with cookie-less analytics, local-first architecture, and transparent data practices.'
+      )
+    }
+  }, [])
 
   return (
     <>

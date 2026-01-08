@@ -29,11 +29,7 @@
 }
 
 .content {
-.content {
   font-size: var(--font-size-base);
-  line-height: var(--line-height-relaxed);
-  color: var(--color-text-primary);
-}
   line-height: var(--line-height-relaxed);
   color: var(--color-text-primary);
 }
@@ -71,7 +67,7 @@
 }
 
 .section a {
-  color: #0ea5e9; /* Sky blue */
+  color: var(--color-link-accent);
   text-decoration: none;
 }
 
@@ -96,7 +92,7 @@
 /* Mobile adjustments */
 @media (max-width: 768px) {
   .termsContent {
-    padding: 48px var(--spacing-sm);
+    padding: var(--spacing-xl) var(--spacing-sm);
   }
 
   .title {

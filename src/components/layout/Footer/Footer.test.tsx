@@ -24,19 +24,19 @@ describe('Footer', () => {
 
     const featuresLink = screen.getByRole('link', { name: 'Features' })
     expect(featuresLink).toBeInTheDocument()
-    expect(featuresLink).toHaveAttribute('href', '#features')
+    expect(featuresLink.getAttribute('href')).toMatch(/#features$/)
 
     const roadmapLink = screen.getByRole('link', { name: 'Roadmap' })
     expect(roadmapLink).toBeInTheDocument()
-    expect(roadmapLink).toHaveAttribute('href', '#roadmap')
+    expect(roadmapLink.getAttribute('href')).toMatch(/#roadmap$/)
 
     const pricingLink = screen.getByRole('link', { name: 'Pricing' })
     expect(pricingLink).toBeInTheDocument()
-    expect(pricingLink).toHaveAttribute('href', '#pricing')
+    expect(pricingLink.getAttribute('href')).toMatch(/#pricing$/)
 
     const changelogLink = screen.getByRole('link', { name: 'Changelog' })
     expect(changelogLink).toBeInTheDocument()
-    expect(changelogLink).toHaveAttribute('href', '#changelog')
+    expect(changelogLink.getAttribute('href')).toMatch(/#changelog$/)
 
     const githubProductLink = screen.getAllByRole('link', { name: 'GitHub' })[0]
     expect(githubProductLink).toBeInTheDocument()

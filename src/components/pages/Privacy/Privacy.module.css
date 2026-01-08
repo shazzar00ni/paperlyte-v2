@@ -6,7 +6,7 @@
 }
 
 .privacyContent {
-  padding: 80px var(--spacing-md);
+  padding: 5rem var(--spacing-md); /* 80px vertical padding for legal pages */
 }
 
 .container {
@@ -29,7 +29,7 @@
 }
 
 .content {
-  font-size: 16px;
+  font-size: var(--font-size-base);
   line-height: 1.6;
   color: var(--color-text-primary);
 }
@@ -67,7 +67,7 @@
 }
 
 .section a {
-  color: #0ea5e9; /* Sky blue */
+  color: var(--color-link-accent);
   text-decoration: none;
 }
 
@@ -92,7 +92,7 @@
 /* Mobile adjustments */
 @media (max-width: 768px) {
   .privacyContent {
-    padding: 48px var(--spacing-sm);
+    padding: var(--spacing-xl) var(--spacing-sm);
   }
 
   .title {

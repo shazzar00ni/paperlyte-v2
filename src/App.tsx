@@ -19,13 +19,12 @@ import { FeedbackWidget } from '@components/ui/FeedbackWidget'
 import { useAnalytics } from '@hooks/useAnalytics'
 
 /**
- * Root application component that renders the app layout.
- * Initializes analytics tracking including scroll depth tracking.
+ * Root application component that renders the overall app layout and initializes analytics.
  *
- * @returns The root JSX element rendering the app: an ErrorBoundary wrapping
- * the Header, and a main element containing Hero, Problem, Solution, Features,
- * Mobile, Statistics, Comparison, Testimonials, EmailCapture, FAQ, and CTA sections,
- * then the Footer and FeedbackWidget.
+ * Initializes analytics tracking, including scroll depth tracking, and provides the global
+ * layout and routing for the application.
+ *
+ * @returns The root JSX element for the application, containing the global layout, routing, and persistent UI (header, footer, feedback widget)
  */
 function App() {
   // Initialize analytics with scroll depth tracking

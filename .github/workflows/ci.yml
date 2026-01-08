@@ -288,7 +288,7 @@ jobs:
           retention-days: 7
 
   add-to-project:
-    name: Add To GitHub projects
+    name: Add To GitHub Projects
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     permissions:
@@ -297,7 +297,7 @@ jobs:
       pull-requests: write
 
     steps:
-      - name: Add To GitHub projects
+      - name: Add To GitHub Projects
         uses: actions/add-to-project@v1.0.2
         with:
           project-url: https://github.com/users/shazzar00ni/projects/1

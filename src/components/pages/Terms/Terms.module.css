@@ -6,7 +6,7 @@
 }
 
 .termsContent {
-  padding: var(--spacing-3xl) var(--spacing-md);
+  padding: var(--spacing-xl) var(--spacing-sm);
 }
 
 .container {
@@ -15,7 +15,7 @@
 }
 
 .title {
-  font-size: var(--font-size-4xl);
+  font-size: var(--font-size-3xl);
   font-weight: var(--font-weight-bold);
   margin-bottom: var(--spacing-sm);
   line-height: var(--line-height-tight);
@@ -39,14 +39,14 @@
 }
 
 .section h2 {
-  font-size: var(--font-size-2xl);
+  font-size: var(--font-size-xl);
   font-weight: var(--font-weight-semibold);
   margin-bottom: var(--spacing-md);
   color: var(--color-text-primary);
 }
 
 .section h3 {
-  font-size: var(--font-size-xl);
+  font-size: var(--font-size-lg);
   font-weight: var(--font-weight-semibold);
   margin-top: var(--spacing-lg);
   margin-bottom: var(--spacing-sm);
@@ -89,21 +89,21 @@
   color: var(--color-text-secondary);
 }
 
-/* Mobile adjustments */
-@media (max-width: 768px) {
+/* Desktop enhancements */
+@media (min-width: 769px) {
   .termsContent {
-    padding: var(--spacing-xl) var(--spacing-sm);
+    padding: var(--spacing-3xl) var(--spacing-md);
   }
 
   .title {
-    font-size: var(--font-size-3xl);
+    font-size: var(--font-size-4xl);
   }
 
   .section h2 {
-    font-size: var(--font-size-xl);
+    font-size: var(--font-size-2xl);
   }
 
   .section h3 {
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-xl);
   }
 }

@@ -57,8 +57,6 @@ describe('Footer', () => {
     expect(termsLink).toBeInTheDocument()
     expect(termsLink).toHaveAttribute('href', '/terms')
 
-import { LEGAL_CONFIG } from '@/config/legal'
-
     const contactLink = screen.getByRole('link', { name: 'Contact' })
     expect(contactLink).toBeInTheDocument()
     expect(contactLink).toHaveAttribute('href', `mailto:${LEGAL_CONFIG.company.email}`)

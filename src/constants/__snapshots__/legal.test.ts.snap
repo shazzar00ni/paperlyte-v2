@@ -24,9 +24,9 @@ exports[`Legal Constants > Snapshot Tests > should match LEGAL_CONFIG snapshot 1
     "accessibility": "#",
     "cookies": "#",
     "dmca": "#",
-    "privacy": "/privacy.html",
+    "privacy": "/privacy",
     "security": "#",
-    "terms": "/terms.html",
+    "terms": "/terms",
   },
   "metadata": {
     "governingLaw": "[State] law",
@@ -38,8 +38,9 @@ exports[`Legal Constants > Snapshot Tests > should match LEGAL_CONFIG snapshot 1
   "social": {
     "discord": "#",
     "github": "https://github.com/shazzar00ni/paperlyte-v2",
+    "instagram": "https://instagram.com/paperlytefilms",
     "linkedin": "#",
-    "twitter": "#",
+    "twitter": "https://x.com/paperlyte",
   },
 }
 `;

@@ -15,6 +15,7 @@ import { FAQ } from '@components/sections/FAQ'
 import { CTA } from '@components/sections/CTA'
 import { Privacy } from '@components/pages/Privacy'
 import { Terms } from '@components/pages/Terms'
+import { NotFoundPage } from '@components/pages/NotFoundPage'
 import { FeedbackWidget } from '@components/ui/FeedbackWidget'
 import { useAnalytics } from '@hooks/useAnalytics'
 
@@ -58,6 +59,7 @@ function App() {
           />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
       <Footer />

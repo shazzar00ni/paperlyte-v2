@@ -50,12 +50,12 @@ export const Footer = (): React.ReactElement => {
             <h3 className={styles.linkGroupTitle}>Legal</h3>
             <ul className={styles.linkList}>
               <li>
-                <Link to="/privacy" className={styles.link}>
+                <Link to={LEGAL_CONFIG.documents.privacy} className={styles.link}>
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link to="/terms" className={styles.link}>
+                <Link to={LEGAL_CONFIG.documents.terms} className={styles.link}>
                   Terms of Service
                 </Link>
               </li>

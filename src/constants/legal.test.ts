@@ -128,8 +128,8 @@ describe('Legal Constants', () => {
     })
 
     it('should have privacy and terms documents available', () => {
-      expect(LEGAL_CONFIG.documents.privacy).toBe('/privacy.html')
-      expect(LEGAL_CONFIG.documents.terms).toBe('/terms.html')
+      expect(LEGAL_CONFIG.documents.privacy).toBe('/privacy')
+      expect(LEGAL_CONFIG.documents.terms).toBe('/terms')
     })
   })
 

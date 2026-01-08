@@ -105,7 +105,7 @@
 /* Desktop enhancements */
 @media (min-width: 769px) {
   .privacyContent {
-    padding: 5rem var(--spacing-md); /* 80px vertical padding for legal pages */
+    padding: var(--spacing-legal) var(--spacing-md);
   }
 
   .title {

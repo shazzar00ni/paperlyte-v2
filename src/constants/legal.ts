@@ -36,8 +36,8 @@ export const LEGAL_CONFIG = {
     country: '[Country]',
   },
   documents: {
-    privacy: '/privacy.html',
-    terms: '/terms.html',
+    privacy: '/privacy',
+    terms: '/terms',
     cookies: '#', // TODO: Create cookie policy
     security: '#', // TODO: Create security practices doc
     dmca: '#', // TODO: Create DMCA policy

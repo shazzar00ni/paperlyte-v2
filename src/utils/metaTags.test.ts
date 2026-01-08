@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { initializeMetaTags } from './metaTags'
+import { initializeMetaTags, setMetaDescription } from './metaTags'
 
 describe('metaTags', () => {
   let consoleSpy: ReturnType<typeof vi.spyOn>
@@ -15,6 +15,86 @@ describe('metaTags', () => {
 
   afterEach(() => {
     consoleSpy.mockRestore()
+  })
+
+  describe('setMetaDescription', () => {
+    it('should create meta description element if it does not exist', () => {
+      setMetaDescription('Test description')
+
+      const metaDescription = document.querySelector('meta[name="description"]')
+      expect(metaDescription).toBeInTheDocument()
+      expect(metaDescription?.getAttribute('content')).toBe('Test description')
+    })
+
+    it('should update existing meta description element', () => {
+      document.head.innerHTML = '<meta name="description" content="Old description" />'
+
+      setMetaDescription('New description')
+
+      const metaDescription = document.querySelector('meta[name="description"]')
+      expect(metaDescription?.getAttribute('content')).toBe('New description')
+    })
+
+    it('should only create one meta description element', () => {
+      setMetaDescription('First description')
+      setMetaDescription('Second description')
+
+      const metaDescriptions = document.querySelectorAll('meta[name="description"]')
+      expect(metaDescriptions.length).toBe(1)
+      expect(metaDescriptions[0].getAttribute('content')).toBe('Second description')
+    })
+
+    it('should handle empty string content', () => {
+      setMetaDescription('')
+
+      const metaDescription = document.querySelector('meta[name="description"]')
+      expect(metaDescription).toBeInTheDocument()
+      expect(metaDescription?.getAttribute('content')).toBe('')
+    })
+
+    it('should handle long description content', () => {
+      const longDescription =
+        'This is a very long description that exceeds typical limits but should still be handled correctly by the function without any issues or errors being thrown.'
+
+      setMetaDescription(longDescription)
+
+      const metaDescription = document.querySelector('meta[name="description"]')
+      expect(metaDescription?.getAttribute('content')).toBe(longDescription)
+    })
+
+    it('should handle special characters in content', () => {
+      const specialContent = 'Description with "quotes", <tags>, & ampersands'
+
+      setMetaDescription(specialContent)
+
+      const metaDescription = document.querySelector('meta[name="description"]')
+      expect(metaDescription?.getAttribute('content')).toBe(specialContent)
+    })
+
+    it('should append meta element to document head', () => {
+      setMetaDescription('Test description')
+
+      const metaDescription = document.querySelector('meta[name="description"]')
+      expect(metaDescription?.parentElement).toBe(document.head)
+    })
+
+    it('should preserve other meta tags when creating new description', () => {
+      document.head.innerHTML = `
+        <meta name="viewport" content="width=device-width" />
+        <meta property="og:title" content="Page Title" />
+      `
+
+      setMetaDescription('Test description')
+
+      const viewport = document.querySelector('meta[name="viewport"]')
+      const ogTitle = document.querySelector('meta[property="og:title"]')
+      const description = document.querySelector('meta[name="description"]')
+
+      expect(viewport).toBeInTheDocument()
+      expect(ogTitle).toBeInTheDocument()
+      expect(description).toBeInTheDocument()
+      expect(document.querySelectorAll('meta').length).toBe(3)
+    })
   })
 
   describe('initializeMetaTags', () => {

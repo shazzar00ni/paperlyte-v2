@@ -69,19 +69,35 @@ All implementation plans must strictly adhere to the following template. Each se
 
 The status of the implementation plan must be clearly defined in the front matter and displayed as a badge in the introduction section using Shields.io badge URLs.
 
-### Status Options and Badge Formatting
+### Deterministic Badge Generation
 
-When formatting badge URLs, use URL encoding (spaces as `%20` or `-`) and exact Shields.io color codes:
+**URL Pattern:** `![Status: {STATUS_TEXT}](https://img.shields.io/badge/status-{STATUS_URL_ENCODED}-{COLOR_CODE})`
 
-| Status | Badge Color | Example Badge URL |
-|--------|-------------|-------------------|
-| `Completed` | `brightgreen` | `![Status: Completed](https://img.shields.io/badge/status-Completed-brightgreen)` |
-| `In progress` | `yellow` | `![Status: In progress](https://img.shields.io/badge/status-In%20progress-yellow)` |
-| `Planned` | `blue` | `![Status: Planned](https://img.shields.io/badge/status-Planned-blue)` |
-| `Deprecated` | `red` | `![Status: Deprecated](https://img.shields.io/badge/status-Deprecated-red)` |
-| `On Hold` | `orange` | `![Status: On Hold](https://img.shields.io/badge/status-On%20Hold-orange)` |
+Where:
 
-**Important:** Replace spaces in status text with `%20` (URL encoding) or hyphens in the badge URL path.
+- `{STATUS_TEXT}` = The human-readable status text (e.g., "In progress")
+- `{STATUS_URL_ENCODED}` = URL-encoded status with spaces as `%20` (e.g., "In%20progress")
+- `{COLOR_CODE}` = Shields.io color name from the mapping below
+
+### Status-to-Color Mapping
+
+Use this exact mapping to generate badges deterministically:
+
+| Status Value (from front matter) | STATUS_TEXT | STATUS_URL_ENCODED | COLOR_CODE | Complete Badge Markdown |
+|-----------------------------------|-------------|--------------------|-----------|-----------------------|
+| `Completed` | `Completed` | `Completed` | `brightgreen` | `![Status: Completed](https://img.shields.io/badge/status-Completed-brightgreen)` |
+| `In progress` | `In progress` | `In%20progress` | `yellow` | `![Status: In progress](https://img.shields.io/badge/status-In%20progress-yellow)` |
+| `Planned` | `Planned` | `Planned` | `blue` | `![Status: Planned](https://img.shields.io/badge/status-Planned-blue)` |
+| `Deprecated` | `Deprecated` | `Deprecated` | `red` | `![Status: Deprecated](https://img.shields.io/badge/status-Deprecated-red)` |
+| `On Hold` | `On Hold` | `On%20Hold` | `orange` | `![Status: On Hold](https://img.shields.io/badge/status-On%20Hold-orange)` |
+
+**Algorithm for AI agents:**
+
+1. Read `status` value from front matter
+2. Look up corresponding `COLOR_CODE` from table above
+3. URL-encode the status text (replace spaces with `%20`)
+4. Construct badge URL: `https://img.shields.io/badge/status-{STATUS_URL_ENCODED}-{COLOR_CODE}`
+5. Generate markdown: `![Status: {STATUS_TEXT}]({badge_url})`
 
 ```md
 ---
@@ -96,9 +112,15 @@ tags: [Optional: List of relevant tags or categories, e.g., `feature`, `upgrade`
 
 # Introduction
 
+<!-- Replace with appropriate badge from Status Badges section based on the status field above -->
+<!-- For status: 'Planned', use: ![Status: Planned](https://img.shields.io/badge/status-Planned-blue) -->
+<!-- For status: 'In progress', use: ![Status: In progress](https://img.shields.io/badge/status-In%20progress-yellow) -->
+<!-- For status: 'Completed', use: ![Status: Completed](https://img.shields.io/badge/status-Completed-brightgreen) -->
+<!-- For status: 'Deprecated', use: ![Status: Deprecated](https://img.shields.io/badge/status-Deprecated-red) -->
+<!-- For status: 'On Hold', use: ![Status: On Hold](https://img.shields.io/badge/status-On%20Hold-orange) -->
 ![Status: Planned](https://img.shields.io/badge/status-Planned-blue)
 
-[A short concise introduction to the plan and the goal it is intended to achieve. Replace the status badge above with the appropriate status from the Status Badges section.]
+[A short concise introduction to the plan and the goal it is intended to achieve.]
 
 ## 1. Requirements & Constraints
 
@@ -174,6 +196,6 @@ tags: [Optional: List of relevant tags or categories, e.g., `feature`, `upgrade`
 
 ## 8. Related Specifications / Further Reading
 
-[Link to related spec 1]
-[Link to relevant external documentation]
+- [Link text for related specification](URL_TO_RELATED_SPEC)
+- [Link text for external documentation](URL_TO_EXTERNAL_DOCS)
 ```

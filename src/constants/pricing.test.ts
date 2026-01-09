@@ -232,7 +232,7 @@ describe('Pricing Constants', () => {
       const teamPlan = PRICING_PLANS.find((p) => p.id === 'team')
       const ctaLower = teamPlan?.ctaText.toLowerCase()
 
-      expect(ctaLower?.includes('contact') || ctaLower?.includes('sales')).toBe(true)
+      expect(ctaLower?.includes('contact') ?? ctaLower?.includes('sales')).toBe(true)
     })
   })
 

@@ -138,12 +138,12 @@ describe('monitoring', () => {
 
     it('should handle errors without context', () => {
       const error = new Error('Test error')
-      expect(() => logError(error)).not.toThrow()
+      expect(() => { logError(error); }).not.toThrow()
     })
 
     it('should handle errors with empty context', () => {
       const error = new Error('Test error')
-      expect(() => logError(error, {}, 'TestComponent')).not.toThrow()
+      expect(() => { logError(error, {}, 'TestComponent'); }).not.toThrow()
     })
   })
 
@@ -168,11 +168,11 @@ describe('monitoring', () => {
     })
 
     it('should handle warnings without context', () => {
-      expect(() => logWarning('Test warning')).not.toThrow()
+      expect(() => { logWarning('Test warning'); }).not.toThrow()
     })
 
     it('should handle warnings with empty context', () => {
-      expect(() => logWarning('Test warning', {})).not.toThrow()
+      expect(() => { logWarning('Test warning', {}); }).not.toThrow()
     })
   })
 
@@ -208,9 +208,9 @@ describe('monitoring', () => {
     })
 
     it('should handle all unit types', () => {
-      expect(() => logPerformance('test1', 100, 'ms')).not.toThrow()
-      expect(() => logPerformance('test2', 1024, 'bytes')).not.toThrow()
-      expect(() => logPerformance('test3', 5, 'count')).not.toThrow()
+      expect(() => { logPerformance('test1', 100, 'ms'); }).not.toThrow()
+      expect(() => { logPerformance('test2', 1024, 'bytes'); }).not.toThrow()
+      expect(() => { logPerformance('test3', 5, 'count'); }).not.toThrow()
     })
 
     it('should handle zero values', () => {

@@ -61,7 +61,7 @@ describe('Icon', () => {
     const svg = container.querySelector('svg')
     const fallback = container.querySelector('i')
 
-    expect(svg || fallback).toBeInTheDocument()
+    expect(svg ?? fallback).toBeInTheDocument()
   })
 
   it('should apply size attributes correctly', () => {
@@ -106,7 +106,7 @@ describe('Icon', () => {
 
   it('should be hidden from screen readers by default', () => {
     const { container } = render(<Icon name="fa-bolt" />)
-    const icon = container.querySelector('svg') || container.querySelector('i')
+    const icon = container.querySelector('svg') ?? container.querySelector('i')
 
     expect(icon).toHaveAttribute('aria-hidden', 'true')
   })
@@ -124,7 +124,7 @@ describe('Icon', () => {
     const { container } = render(<Icon name="fa-bolt" className="custom-icon" />)
     const svg = container.querySelector('svg')
     const fallback = container.querySelector('i')
-    const icon = svg || fallback
+    const icon = svg ?? fallback
 
     expect(icon).toHaveClass('custom-icon')
   })

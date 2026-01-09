@@ -184,7 +184,7 @@ export const FAQ = (): React.ReactElement => {
             question={item.question}
             answer={item.answer}
             isOpen={openItems.has(item.id)}
-            onToggle={() => toggleItem(item.id)}
+            onToggle={() => { toggleItem(item.id); }}
             delay={150 + index * 50}
           />
         ))}

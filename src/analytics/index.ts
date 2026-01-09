@@ -127,7 +127,7 @@ class Analytics {
     if (this.config?.debug) {
       console.log(
         '[Analytics] Page view tracked:',
-        url || (typeof window !== 'undefined' ? window.location.pathname : '/')
+        url ?? (typeof window !== 'undefined' ? window.location.pathname : '/')
       )
     }
   }
@@ -224,7 +224,7 @@ class Analytics {
    * Check if analytics is enabled
    */
   isEnabled(): boolean {
-    return this.initialized && this.provider !== null && this.provider.isEnabled()
+    return this.initialized && this.provider?.isEnabled()
   }
 
   /**

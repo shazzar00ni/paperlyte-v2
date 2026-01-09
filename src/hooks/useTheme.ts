@@ -77,7 +77,7 @@ export const useTheme = () => {
     }
 
     mediaQuery.addEventListener('change', handleChange)
-    return () => mediaQuery.removeEventListener('change', handleChange)
+    return () => { mediaQuery.removeEventListener('change', handleChange); }
   }, [])
 
   const toggleTheme = () => {

@@ -193,7 +193,7 @@ export function handleArrowNavigation(
       const docElement = document.documentElement
       const attrDir = (
         document.dir ||
-        (docElement && docElement.getAttribute('dir')) ||
+        (docElement?.getAttribute('dir')) ||
         ''
       ).toLowerCase()
 

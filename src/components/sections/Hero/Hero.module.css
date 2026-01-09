@@ -7,7 +7,11 @@
   position: relative;
   overflow: hidden;
   /* Sky blue to purple gradient background */
-  background: linear-gradient(135deg, var(--color-hero-gradient-start) 0%, var(--color-hero-gradient-end) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-hero-gradient-start) 0%,
+    var(--color-hero-gradient-end) 100%
+  );
 }
 
 /* Decorative background overlay for depth */
@@ -20,7 +24,7 @@
   bottom: 0;
   background: radial-gradient(
     circle at 20% 50%,
-    rgba(255, 255, 255, 0.15) 0%,
+    var(--color-hero-overlay-light) 0%,
     transparent 50%
   );
   pointer-events: none;
@@ -35,7 +39,7 @@
   height: 100%;
   background: radial-gradient(
     circle at top right,
-    rgba(255, 255, 255, 0.1) 0%,
+    var(--color-hero-overlay-lighter) 0%,
     transparent 60%
   );
   pointer-events: none;
@@ -53,12 +57,12 @@
 .headline {
   /* Fluid scaling: 2.5rem (40px) to 4rem (64px) */
   font-size: clamp(2.5rem, 6vw, 4rem);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: var(--font-family);
   font-weight: 800; /* Extra bold for impact */
   line-height: 1.1;
   letter-spacing: -0.02em; /* Tighter letter spacing for modern look */
-  color: #ffffff; /* Pure white for maximum contrast on gradient */
-  margin-bottom: 24px;
+  color: var(--color-hero-text); /* Pure white for maximum contrast on gradient */
+  margin-bottom: var(--spacing-md);
   text-shadow: 0 2px 12px rgba(0, 0, 0, 0.15); /* Subtle shadow for readability */
 }
 
@@ -72,11 +76,11 @@
 .subheadline {
   /* Fluid scaling: 1.125rem (18px) to 1.5rem (24px) */
   font-size: clamp(1.125rem, 2.5vw, 1.5rem);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  font-weight: 400;
-  line-height: 1.5;
-  color: rgba(255, 255, 255, 0.95); /* 95% opacity white */
-  margin-bottom: 32px;
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+  color: var(--color-hero-text-secondary); /* 95% opacity white */
+  margin-bottom: var(--spacing-lg);
   max-width: 680px;
   margin-left: auto;
   margin-right: auto;
@@ -87,55 +91,79 @@
 .emailWrapper {
   display: flex;
   justify-content: center;
-  margin-bottom: 16px;
+  margin-bottom: var(--spacing-sm);
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
+
+  /* Set CSS custom properties for EmailCapture component in hero context */
+  --email-input-color: var(--color-text-primary);
+  --email-input-bg: var(--color-background);
+  --email-input-border: rgba(255, 255, 255, 0.3);
+  --email-input-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --email-input-focus-border: var(--color-hero-button-primary);
+  --email-input-focus-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15), 0 4px 12px rgba(0, 0, 0, 0.15);
+  --email-input-placeholder: var(--color-text-secondary);
+  --email-button-bg: var(--color-hero-button-primary);
+  --email-button-color: var(--color-background);
+  --email-button-border: var(--color-hero-button-primary);
+  --email-button-shadow: 0 2px 12px rgba(14, 165, 233, 0.3);
+  --email-button-bg-hover: var(--color-hero-button-primary-hover);
+  --email-button-border-hover: var(--color-hero-button-primary-hover);
+  --email-button-shadow-hover: 0 4px 16px rgba(14, 165, 233, 0.4);
+  --email-gdpr-text-color: rgba(255, 255, 255, 0.9);
+  --email-link-color: var(--color-background);
 }
 
 /* Secondary CTA */
 .secondaryCta {
   display: flex;
   justify-content: center;
-  margin-bottom: 40px;
+  margin-bottom: var(--spacing-xl);
 }
 
-/* Ghost button styling for hero section */
+/* Ghost button styling for hero section - using CSS custom properties */
 .secondaryCta button {
-  color: #ffffff !important;
-  border-color: rgba(255, 255, 255, 0.3) !important;
-  background-color: rgba(255, 255, 255, 0.1) !important;
+  --btn-bg: var(--color-hero-overlay-lighter);
+  --btn-color: var(--color-hero-text);
+  --btn-border: rgba(255, 255, 255, 0.3);
+  --btn-bg-hover: var(--color-hero-overlay-light);
+  --btn-border-hover: rgba(255, 255, 255, 0.5);
+
+  background-color: var(--btn-bg);
+  color: var(--btn-color);
+  border-color: var(--btn-border);
   backdrop-filter: blur(10px);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
 }
 
-.secondaryCta button:hover {
-  background-color: rgba(255, 255, 255, 0.2) !important;
-  border-color: rgba(255, 255, 255, 0.5) !important;
-  color: #ffffff !important;
+.secondaryCta button:hover:not(:disabled) {
+  background-color: var(--btn-bg-hover);
+  border-color: var(--btn-border-hover);
+  color: var(--btn-color);
 }
 
 /* Trust Badges */
 .trustBadges {
   display: flex;
-  gap: 24px;
+  gap: var(--spacing-md);
   justify-content: center;
   flex-wrap: wrap;
-  margin-top: 48px;
+  margin-top: var(--spacing-xl);
 }
 
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  background-color: rgba(255, 255, 255, 0.15);
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background-color: var(--color-hero-overlay-light);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 9999px; /* Full pill shape */
-  color: #ffffff;
-  font-size: 0.875rem; /* 14px */
-  font-weight: 500;
+  border-radius: var(--border-radius-full); /* Full pill shape */
+  color: var(--color-hero-text);
+  font-size: var(--font-size-sm); /* 14px */
+  font-weight: var(--font-weight-medium);
   white-space: nowrap;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: all var(--transition-base);
@@ -148,7 +176,7 @@
 }
 
 .badgeText {
-  color: #ffffff;
+  color: var(--color-hero-text);
 }
 
 /* App Mockup Container */
@@ -156,7 +184,7 @@
   position: relative;
   width: 100%;
   max-width: 700px;
-  margin: 64px auto 0;
+  margin: var(--spacing-2xl) auto 0;
   /* Fallback for browsers that don't support aspect-ratio */
   min-height: 260px;
   aspect-ratio: 16 / 10;
@@ -173,7 +201,7 @@
   width: 85%;
   max-width: 550px;
   z-index: 2;
-  border-radius: 16px;
+  border-radius: var(--border-radius-lg);
   overflow: hidden;
   box-shadow:
     0 20px 60px rgba(0, 0, 0, 0.25),
@@ -220,7 +248,7 @@
   }
 
   .trustBadges {
-    gap: 16px;
+    gap: var(--spacing-sm);
   }
 }
 
@@ -228,29 +256,29 @@
 @media (max-width: 768px) {
   .hero {
     min-height: 0;
-    padding-top: 48px;
-    padding-bottom: 48px;
+    padding-top: var(--spacing-xl);
+    padding-bottom: var(--spacing-xl);
   }
 
   .headline {
-    margin-bottom: 20px;
+    margin-bottom: var(--spacing-md);
   }
 
   .subheadline {
-    margin-bottom: 28px;
+    margin-bottom: var(--spacing-lg);
   }
 
   .emailWrapper {
-    margin-bottom: 12px;
+    margin-bottom: var(--spacing-xs);
   }
 
   .secondaryCta {
-    margin-bottom: 32px;
+    margin-bottom: var(--spacing-lg);
   }
 
   .trustBadges {
-    margin-top: 36px;
-    gap: 12px;
+    margin-top: var(--spacing-xl);
+    gap: var(--spacing-xs);
   }
 
   .badge {
@@ -260,7 +288,7 @@
 
   .mockupContainer {
     max-width: 500px;
-    margin: 48px auto 0;
+    margin: var(--spacing-xl) auto 0;
   }
 
   .mockupSecondary {
@@ -273,16 +301,16 @@
 /* Extra small screens (phones < 480px) */
 @media (max-width: 480px) {
   .hero {
-    padding-top: 36px;
-    padding-bottom: 36px;
+    padding-top: var(--spacing-lg);
+    padding-bottom: var(--spacing-lg);
   }
 
   .headline {
-    margin-bottom: 16px;
+    margin-bottom: var(--spacing-sm);
   }
 
   .subheadline {
-    margin-bottom: 24px;
+    margin-bottom: var(--spacing-md);
   }
 
   .emailWrapper {
@@ -293,7 +321,7 @@
     flex-direction: column;
     align-items: center;
     gap: 10px;
-    margin-top: 28px;
+    margin-top: var(--spacing-lg);
   }
 
   .badge {
@@ -304,7 +332,7 @@
 
   .mockupContainer {
     aspect-ratio: 4 / 3;
-    margin: 36px auto 0;
+    margin: var(--spacing-lg) auto 0;
   }
 
   .mockupPrimary {
@@ -321,11 +349,11 @@
 /* iPhone SE and very small screens */
 @media (max-width: 375px) {
   .trustBadges {
-    margin-top: 24px;
+    margin-top: var(--spacing-md);
   }
 
   .badge {
-    font-size: 0.75rem; /* 12px */
+    font-size: var(--font-size-xs); /* 12px */
     padding: 6px 12px;
   }
 }
@@ -349,34 +377,18 @@
 /* Dark mode support - keep gradient but adjust overlay */
 @media (prefers-color-scheme: dark) {
   .hero::before {
-    background: radial-gradient(
-      circle at 20% 50%,
-      rgba(255, 255, 255, 0.08) 0%,
-      transparent 50%
-    );
+    background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
   }
 
   .hero::after {
-    background: radial-gradient(
-      circle at top right,
-      rgba(255, 255, 255, 0.06) 0%,
-      transparent 60%
-    );
+    background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.06) 0%, transparent 60%);
   }
 }
 
 [data-theme='dark'] .hero::before {
-  background: radial-gradient(
-    circle at 20% 50%,
-    rgba(255, 255, 255, 0.08) 0%,
-    transparent 50%
-  );
+  background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
 }
 
 [data-theme='dark'] .hero::after {
-  background: radial-gradient(
-    circle at top right,
-    rgba(255, 255, 255, 0.06) 0%,
-    transparent 60%
-  );
+  background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.06) 0%, transparent 60%);
 }

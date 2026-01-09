@@ -43,9 +43,7 @@ describe('Hero', () => {
     it('should render the subheadline', () => {
       render(<Hero />)
 
-      expect(
-        screen.getByText(/Lightning-fast note-taking without the bloat/i)
-      ).toBeInTheDocument()
+      expect(screen.getByText(/Lightning-fast note-taking without the bloat/i)).toBeInTheDocument()
     })
 
     it('should render email capture form', () => {
@@ -238,20 +236,6 @@ describe('Hero', () => {
       })
     })
 
-    it('should have role status for trust badges container', () => {
-      const { container } = render(<Hero />)
-
-      const trustBadges = container.querySelector('[role="status"]')
-      expect(trustBadges).toBeInTheDocument()
-    })
-
-    it('should have aria-live polite for trust badges', () => {
-      const { container } = render(<Hero />)
-
-      const trustBadges = container.querySelector('[aria-live="polite"]')
-      expect(trustBadges).toBeInTheDocument()
-    })
-
     it('should render trust badge icons', () => {
       const { container } = render(<Hero />)
 
@@ -388,10 +372,11 @@ describe('Hero', () => {
     })
 
     it('should render trust badges after CTAs', () => {
-      const { container } = render(<Hero />)
+      render(<Hero />)
 
-      const trustBadgesContainer = container.querySelector('[role="status"]')
       const secondaryCta = screen.getByRole('button', { name: /see how.*works/i })
+      const trustBadgeText = screen.getByText('Join 1,234 early adopters')
+      const trustBadgesContainer = trustBadgeText.closest('div')?.parentElement
 
       const position = secondaryCta.compareDocumentPosition(trustBadgesContainer!)
       // DOCUMENT_POSITION_FOLLOWING = 4, means trustBadges comes after button

@@ -28,7 +28,11 @@ export const Hero = (): React.ReactElement => {
         {/* Email Capture Form */}
         <AnimatedElement animation="fadeIn" delay={200}>
           <div className={styles.emailWrapper}>
-            <EmailCapture variant="inline" placeholder="your@email.com" buttonText="Join Waitlist" />
+            <EmailCapture
+              variant="inline"
+              placeholder="your@email.com"
+              buttonText="Join Waitlist"
+            />
           </div>
         </AnimatedElement>
 

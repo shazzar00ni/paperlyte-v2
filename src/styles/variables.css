@@ -25,6 +25,15 @@
   --color-error-bg: rgba(239, 68, 68, 0.1);
   --color-error-border: rgba(239, 68, 68, 0.3);
 
+  /* Hero Section Colors */
+  --color-hero-gradient-start: #0ea5e9; /* Sky blue - Gradient start */
+  --color-hero-gradient-end: #d946ef; /* Purple - Gradient end */
+  --color-hero-text: #ffffff; /* White text on gradient */
+  --color-hero-text-secondary: rgba(255, 255, 255, 0.95); /* Semi-transparent white */
+  --color-hero-button-primary: #0ea5e9; /* Sky blue for primary CTA */
+  --color-hero-button-primary-hover: #0284c7; /* Darker sky blue on hover */
+  --color-hero-overlay-light: rgba(255, 255, 255, 0.15); /* Light overlay */
+  --color-hero-overlay-lighter: rgba(255, 255, 255, 0.1); /* Lighter overlay */
   /* Typography */
   --font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-size-xs: 0.75rem; /* 12px */

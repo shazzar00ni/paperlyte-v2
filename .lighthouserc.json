@@ -40,8 +40,7 @@
         "no-document-write": "error",
         "uses-rel-preconnect": "warn",
         "font-display": "warn"
-      },
-      "preset": "lighthouse:recommended"
+      }
     },
     "upload": {
       "target": "temporary-public-storage"

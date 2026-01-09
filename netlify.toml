@@ -45,9 +45,6 @@
     # Prevent MIME type sniffing
     X-Content-Type-Options = "nosniff"
 
-    # Enable XSS filter
-    X-XSS-Protection = "1; mode=block"
-
     # Referrer policy
     Referrer-Policy = "strict-origin-when-cross-origin"
 

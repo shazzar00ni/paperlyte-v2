@@ -30,7 +30,7 @@ describe('ScrollToTop', () => {
     function TestNavigator() {
       const navigate = useNavigate()
       return (
-        <button onClick={() => navigate('/new-page')} data-testid="navigate-btn">
+        <button onClick={() => { navigate('/new-page'); }} data-testid="navigate-btn">
           Navigate
         </button>
       )

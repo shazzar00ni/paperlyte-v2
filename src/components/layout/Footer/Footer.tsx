@@ -14,24 +14,24 @@ export const Footer = (): React.ReactElement => {
             <h3 className={styles.linkGroupTitle}>Product</h3>
             <ul className={styles.linkList}>
               <li>
-                <Link to="/#features" className={styles.link}>
+                <a href="/#features" className={styles.link}>
                   Features
-                </Link>
+                </a>
               </li>
               <li>
-                <Link to="/#roadmap" className={styles.link}>
+                <a href="/#roadmap" className={styles.link}>
                   Roadmap
-                </Link>
+                </a>
               </li>
               <li>
-                <Link to="/#pricing" className={styles.link}>
+                <a href="/#pricing" className={styles.link}>
                   Pricing
-                </Link>
+                </a>
               </li>
               <li>
-                <Link to="/#changelog" className={styles.link}>
+                <a href="/#changelog" className={styles.link}>
                   Changelog
-                </Link>
+                </a>
               </li>
               <li>
                 <a

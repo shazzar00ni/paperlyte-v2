@@ -26,8 +26,8 @@
   --color-error-border: rgba(239, 68, 68, 0.3);
 
   /* Link Accent Colors */
-  --color-link-accent: #0ea5e9; /* Sky blue - Used for legal pages and footer hover states */
-  --color-link-accent-bg: rgba(14, 165, 233, 0.1); /* Sky blue background for focus states */
+  --color-link-accent: #0369a1; /* Sky blue 700 - WCAG AA compliant (7:1 contrast on white) */
+  --color-link-accent-bg: rgba(3, 105, 161, 0.1); /* Sky blue background for focus states */
 
   /* Footer Colors (Always dark themed) */
   --color-footer-bg: #1e293b; /* Slate 800 - Dark footer background */

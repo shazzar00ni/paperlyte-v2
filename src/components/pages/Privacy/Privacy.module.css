@@ -30,7 +30,8 @@
 
 .content {
   font-size: var(--font-size-base);
-  line-height: var(--line-height-normal);
+  line-height: 1.6;
+
   color: var(--color-text-primary);
 }
 

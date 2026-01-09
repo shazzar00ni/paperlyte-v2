@@ -226,7 +226,7 @@ describe('Hero', () => {
       render(<Hero />)
 
       const badges = [
-        'Join 1,234 early adopters',
+        'Join thousands of early adopters',
         'Free forever for early users',
         'No credit card required',
       ]

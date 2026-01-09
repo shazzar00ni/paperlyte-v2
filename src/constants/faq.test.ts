@@ -166,7 +166,7 @@ describe('FAQ Constants', () => {
           acc[category] = (acc[category] || 0) + 1
           return acc
         },
-        {} as Record<string, number>
+        {}
       )
 
       expect(categoryCounts).toMatchSnapshot()

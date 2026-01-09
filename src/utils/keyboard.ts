@@ -100,13 +100,19 @@ export function getFocusableElements(container: HTMLElement): HTMLElement[] {
   // (No existing bug report found as of 2026-01-09, bug confirmed via test-jsdom-selector-bug.test.tsx)
   //
   // Solution: Explicitly sort by document order using compareDocumentPosition
-  elementsArray.sort((a, b) => {
-    if (a === b) return 0
-    const position = a.compareDocumentPosition(b)
-    if (position & Node.DOCUMENT_POSITION_FOLLOWING) return -1
-    if (position & Node.DOCUMENT_POSITION_PRECEDING) return 1
-    return 0
-  })
+  // Only apply this workaround in JSDOM environments (tests) to avoid production overhead
+  const isJSDOM =
+    typeof navigator !== 'undefined' && navigator.userAgent && /jsdom/i.test(navigator.userAgent)
+
+  if (isJSDOM) {
+    elementsArray.sort((a, b) => {
+      if (a === b) return 0
+      const position = a.compareDocumentPosition(b)
+      if (position & Node.DOCUMENT_POSITION_FOLLOWING) return -1
+      if (position & Node.DOCUMENT_POSITION_PRECEDING) return 1
+      return 0
+    })
+  }
 
   return elementsArray
 }

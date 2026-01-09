@@ -3,6 +3,12 @@ import userEvent from '@testing-library/user-event'
 import { ThemeToggle } from './ThemeToggle'
 import * as useThemeModule from '@hooks/useTheme'
 
+// SVG path fragments for icon verification
+const ICON_PATH_FRAGMENTS = {
+  moon: '21 12.79A9 9 0 1 1 11.21 3', // Unique fragment from fa-moon icon
+  sun: 'M12 7a5 5 0 1 0 0 10', // Unique fragment from fa-sun icon
+} as const
+
 describe('ThemeToggle', () => {
   const mockToggleTheme = vi.fn()
 
@@ -42,7 +48,7 @@ describe('ThemeToggle', () => {
 
       // Verify it's the moon icon by checking its unique path data
       const path = container.querySelector('path')
-      expect(path?.getAttribute('d')).toContain('21 12.79A9 9 0 1 1 11.21 3')
+      expect(path?.getAttribute('d')).toContain(ICON_PATH_FRAGMENTS.moon)
     })
 
     it('should render sun icon in dark mode', () => {
@@ -60,7 +66,7 @@ describe('ThemeToggle', () => {
 
       // Verify it's the sun icon by checking its unique path data
       const path = container.querySelector('path')
-      expect(path?.getAttribute('d')).toContain('M12 7a5 5 0 1 0 0 10')
+      expect(path?.getAttribute('d')).toContain(ICON_PATH_FRAGMENTS.sun)
     })
   })
 
@@ -186,7 +192,7 @@ describe('ThemeToggle', () => {
       expect(screen.getByRole('button').querySelector('svg.icon-svg')).toBeInTheDocument()
       // Verify moon icon in light mode
       let path = container.querySelector('path')
-      expect(path?.getAttribute('d')).toContain('21 12.79A9 9 0 1 1 11.21 3')
+      expect(path?.getAttribute('d')).toContain(ICON_PATH_FRAGMENTS.moon)
 
       vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
         theme: 'dark',
@@ -197,7 +203,7 @@ describe('ThemeToggle', () => {
       expect(screen.getByRole('button').querySelector('svg.icon-svg')).toBeInTheDocument()
       // Verify sun icon in dark mode
       path = container.querySelector('path')
-      expect(path?.getAttribute('d')).toContain('M12 7a5 5 0 1 0 0 10')
+      expect(path?.getAttribute('d')).toContain(ICON_PATH_FRAGMENTS.sun)
     })
 
     it('should update aria-label when theme changes', () => {
@@ -234,7 +240,7 @@ describe('ThemeToggle', () => {
 
       // Verify moon icon is passed by checking path data
       const path = container.querySelector('path')
-      expect(path?.getAttribute('d')).toContain('21 12.79A9 9 0 1 1 11.21 3')
+      expect(path?.getAttribute('d')).toContain(ICON_PATH_FRAGMENTS.moon)
     })
 
     it('should pass correct icon name to Icon component in dark mode', () => {
@@ -251,7 +257,7 @@ describe('ThemeToggle', () => {
 
       // Verify sun icon is passed by checking path data
       const path = container.querySelector('path')
-      expect(path?.getAttribute('d')).toContain('M12 7a5 5 0 1 0 0 10')
+      expect(path?.getAttribute('d')).toContain(ICON_PATH_FRAGMENTS.sun)
     })
 
     it('should pass size="md" to Icon component', () => {

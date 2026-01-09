@@ -5,4 +5,4 @@
 ### PR #223: feat: add analytics
 
 - **Status:** Reviewed
-- **Summary:** This pull request was identified as a Dependabot dependency update for `jsdom` from version 27.3.0 to 27.4.0. The title "feat: add analytics" is misleading. No manual review is necessary for this automated dependency bump.
+- **Summary:** This pull request is a Dependabot dependency update for `jsdom` from version 27.3.0 to 27.4.0. The PR title "feat: add analytics" does not reflect the actual change. No manual review is necessary for this automated dependency bump.

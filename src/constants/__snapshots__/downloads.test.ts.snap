@@ -1,0 +1,13 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Downloads Constants > Snapshot Tests > should match DOWNLOAD_URLS snapshot 1`] = `
+{
+  "android": "https://play.google.com/store/apps/details?id=com.paperlyte.app",
+  "ios": "https://apps.apple.com/app/paperlyte",
+  "linux": "https://github.com/shazzar00ni/paperlyte-v2/releases/latest",
+  "mac": "https://github.com/shazzar00ni/paperlyte-v2/releases/latest/download/Paperlyte-macOS.dmg",
+  "windows": "https://github.com/shazzar00ni/paperlyte-v2/releases/latest/download/Paperlyte-Windows.exe",
+}
+`;
+
+exports[`Downloads Constants > Snapshot Tests > should match GITHUB_URL snapshot 1`] = `"https://github.com/shazzar00ni/paperlyte-v2"`;

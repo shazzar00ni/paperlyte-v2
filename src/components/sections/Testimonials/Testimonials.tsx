@@ -167,7 +167,13 @@ export const Testimonials = (): React.ReactElement => {
         <div className={styles.author}>
           <div className={styles.avatar} aria-hidden="true">
             {testimonial.avatar ? (
-              <img src={testimonial.avatar} alt="" loading="lazy" className={styles.avatarImage} />
+              <img
+                src={testimonial.avatar}
+                alt=""
+                loading="lazy"
+                decoding="async"
+                className={styles.avatarImage}
+              />
             ) : (
               <span className={styles.initials}>{testimonial.initials}</span>
             )}

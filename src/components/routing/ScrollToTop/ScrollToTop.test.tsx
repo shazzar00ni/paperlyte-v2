@@ -8,7 +8,9 @@ describe('ScrollToTop', () => {
 
   beforeEach(() => {
     // Mock window.scrollTo
-    scrollToSpy = vi.spyOn(window, 'scrollTo').mockImplementation(() => {})
+    scrollToSpy = vi.spyOn(window, 'scrollTo').mockImplementation(() => {
+      // Mock implementation - intentionally empty
+    })
   })
 
   afterEach(() => {

@@ -166,7 +166,9 @@
   font-weight: var(--font-weight-medium);
   white-space: nowrap;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: all var(--transition-base);
+  transition: background-color var(--transition-base),
+              transform var(--transition-base),
+              box-shadow var(--transition-base);
 }
 
 .badge:hover {

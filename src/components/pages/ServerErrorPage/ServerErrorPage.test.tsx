@@ -238,7 +238,8 @@ describe('ServerErrorPage', () => {
     it('should render warning icon in error badge', () => {
       render(<ServerErrorPage />)
 
-      const warningIcon = screen.getByRole('main').querySelector('i.fa-triangle-exclamation')
+      // fa-triangle-exclamation is in iconPaths, so it renders as SVG
+      const warningIcon = screen.getByRole('main').querySelector('svg.icon-svg')
       expect(warningIcon).toBeInTheDocument()
     })
 

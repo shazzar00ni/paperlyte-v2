@@ -57,13 +57,12 @@ describe('Features', () => {
     })
   })
 
-  it('should render feature icons with proper aria labels', () => {
-    render(<Features />)
+  it('should render feature icons', () => {
+    const { container } = render(<Features />)
 
-    EXPECTED_FEATURES.forEach((feature) => {
-      const icon = screen.getByLabelText(`${feature.title} icon`)
-      expect(icon).toBeInTheDocument()
-    })
+    // Icons are decorative (aria-hidden="true"), so check via DOM
+    const icons = container.querySelectorAll('svg')
+    expect(icons.length).toBeGreaterThanOrEqual(EXPECTED_FEATURES.length)
   })
 
   it('should use semantic article elements for feature cards', () => {

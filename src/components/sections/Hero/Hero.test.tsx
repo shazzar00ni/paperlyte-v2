@@ -192,11 +192,18 @@ describe('Hero', () => {
       expect(mockup).toBeInTheDocument()
     })
 
-    it('should render mockup productivity stat', () => {
-      render(<Hero />)
+    it('should render mockup images with proper sources', () => {
+      const { container } = render(<Hero />)
 
-      expect(screen.getByText('+120%')).toBeInTheDocument()
-      expect(screen.getByText('PRODUCTIVITY')).toBeInTheDocument()
+      // Check primary mockup (notes list)
+      const primaryImg = container.querySelector('img[alt*="notes list"]')
+      expect(primaryImg).toBeInTheDocument()
+      expect(primaryImg).toHaveAttribute('src', '/mockups/notes-list.svg')
+
+      // Check secondary mockup (note detail)
+      const secondaryImg = container.querySelector('img[alt*="note editor"]')
+      expect(secondaryImg).toBeInTheDocument()
+      expect(secondaryImg).toHaveAttribute('src', '/mockups/note-detail.svg')
     })
   })
 

@@ -65,9 +65,23 @@ All implementation plans must strictly adhere to the following template. Each se
 - Tables must include all required columns with specific task details
 - No placeholder text may remain in the final output
 
-## Status
+## Status Badges
 
-The status of the implementation plan must be clearly defined in the front matter and must reflect the current state of the plan. The status can be one of the following (status_color in brackets): `Completed` (`brightgreen` badge), `In progress` (`yellow` badge), `Planned` (`blue` badge), `Deprecated` (`red` badge), or `On Hold` (`orange` badge). It should also be displayed as a badge in the introduction section.
+The status of the implementation plan must be clearly defined in the front matter and displayed as a badge in the introduction section using Shields.io badge URLs.
+
+### Status Options and Badge Formatting
+
+When formatting badge URLs, use URL encoding (spaces as `%20` or `-`) and exact Shields.io color codes:
+
+| Status | Badge Color | Example Badge URL |
+|--------|-------------|-------------------|
+| `Completed` | `brightgreen` | `![Status: Completed](https://img.shields.io/badge/status-Completed-brightgreen)` |
+| `In progress` | `yellow` | `![Status: In progress](https://img.shields.io/badge/status-In%20progress-yellow)` |
+| `Planned` | `blue` | `![Status: Planned](https://img.shields.io/badge/status-Planned-blue)` |
+| `Deprecated` | `red` | `![Status: Deprecated](https://img.shields.io/badge/status-Deprecated-red)` |
+| `On Hold` | `orange` | `![Status: On Hold](https://img.shields.io/badge/status-On%20Hold-orange)` |
+
+**Important:** Replace spaces in status text with `%20` (URL encoding) or hyphens in the badge URL path.
 
 ```md
 ---
@@ -82,9 +96,9 @@ tags: [Optional: List of relevant tags or categories, e.g., `feature`, `upgrade`
 
 # Introduction
 
-![Status: <status>](https://img.shields.io/badge/status-<status>-<COLOR_NAME_FROM_SHIELDS.IO>)
+![Status: Planned](https://img.shields.io/badge/status-Planned-blue)
 
-[A short concise introduction to the plan and the goal it is intended to achieve.]
+[A short concise introduction to the plan and the goal it is intended to achieve. Replace the status badge above with the appropriate status from the Status Badges section.]
 
 ## 1. Requirements & Constraints
 

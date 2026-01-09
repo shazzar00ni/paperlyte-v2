@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import { ErrorBoundary } from '@components/ErrorBoundary'
+import { ScrollToTop } from '@components/routing/ScrollToTop'
 import { Header } from '@components/layout/Header'
 import { Footer } from '@components/layout/Footer'
 import { Hero } from '@components/sections/Hero'
@@ -33,6 +34,7 @@ function App() {
 
   return (
     <ErrorBoundary>
+      <ScrollToTop />
       <a href="#main" className="skip-link">
         Skip to main content
       </a>

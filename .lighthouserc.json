@@ -11,8 +11,7 @@
           "rttMs": 40,
           "throughputKbps": 10240,
           "cpuSlowdownMultiplier": 1
-        },
-        "skipAudits": ["uses-http2"]
+        }
       }
     },
     "assert": {

@@ -104,12 +104,11 @@ test.describe('Landing Page', () => {
 
     // Test mobile menu interaction
     await mobileMenu.click();
-
     // Verify menu opens - check that aria-expanded is true after clicking
     await expect(mobileMenu).toHaveAttribute('aria-expanded', 'true');
 
     // Verify the menu list becomes visible
-    const menuList = page.locator('#main-menu');
+    const menuList = page.getByRole('navigation').locator('#main-menu');
     await expect(menuList).toBeVisible();
   });
 

@@ -116,7 +116,7 @@ export function getFocusableElements(container: HTMLElement): HTMLElement[] {
  */
 export function getFirstFocusableElement(container: HTMLElement): HTMLElement | null {
   const elements = getFocusableElements(container)
-  return elements[0] || null
+  return elements[0] ?? null
 }
 
 /**
@@ -124,7 +124,7 @@ export function getFirstFocusableElement(container: HTMLElement): HTMLElement | 
  */
 export function getLastFocusableElement(container: HTMLElement): HTMLElement | null {
   const elements = getFocusableElements(container)
-  return elements[elements.length - 1] || null
+  return elements[elements.length - 1] ?? null
 }
 
 /**
@@ -225,8 +225,8 @@ export function handleArrowNavigation(
       // Prefer explicit dir attribute if present
       const docElement = document.documentElement
       const attrDir = (
-        document.dir ||
-        (docElement && docElement.getAttribute('dir')) ||
+        document.dir ??
+        (docElement?.getAttribute('dir')) ??
         ''
       ).toLowerCase()
 

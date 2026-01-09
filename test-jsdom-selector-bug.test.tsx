@@ -35,7 +35,8 @@ describe('JSDOM querySelectorAll ordering bug', () => {
       </html>
     `)
 
-    const ul = dom.window.document.querySelector('ul')!
+    const ul = dom.window.document.querySelector('ul')
+    if (!ul) throw new Error('Test setup failed: ul element not found')
 
     // Simple selector - should work correctly
     const simpleSelector = ul.querySelectorAll('button, [href]')
@@ -59,7 +60,8 @@ describe('JSDOM querySelectorAll ordering bug', () => {
       </html>
     `)
 
-    const ul = dom.window.document.querySelector('ul')!
+    const ul = dom.window.document.querySelector('ul')
+    if (!ul) throw new Error('Test setup failed: ul element not found')
 
     // Compound selector with "details > summary" - FAILS in JSDOM
     // Note: No <details> or <summary> elements exist in the DOM!
@@ -96,7 +98,8 @@ describe('JSDOM querySelectorAll ordering bug', () => {
       </html>
     `)
 
-    const ul = dom.window.document.querySelector('ul')!
+    const ul = dom.window.document.querySelector('ul')
+    if (!ul) throw new Error('Test setup failed: ul element not found')
 
     // This selector should match: a, summary, button (in that order)
     const elements = ul.querySelectorAll('button, [href], details > summary')
@@ -126,7 +129,8 @@ describe('JSDOM querySelectorAll ordering bug', () => {
       </html>
     `)
 
-    const ul = dom.window.document.querySelector('ul')!
+    const ul = dom.window.document.querySelector('ul')
+    if (!ul) throw new Error('Test setup failed: ul element not found')
 
     // Test progressively more complex selectors
     const s1 = 'button:not([disabled]), [href]'
@@ -176,7 +180,8 @@ describe('JSDOM querySelectorAll ordering bug', () => {
       </html>
     `)
 
-    const ul = dom.window.document.querySelector('ul')!
+    const ul = dom.window.document.querySelector('ul')
+    if (!ul) throw new Error('Test setup failed: ul element not found')
 
     // This is the actual FOCUSABLE_SELECTOR from keyboard.ts
     const FOCUSABLE_SELECTOR = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"]), [contenteditable]:not([contenteditable="false"]), audio[controls], video[controls], details > summary'

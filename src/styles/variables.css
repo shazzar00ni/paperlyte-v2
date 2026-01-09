@@ -34,6 +34,7 @@
   --color-hero-button-primary-hover: #0284c7; /* Darker sky blue on hover */
   --color-hero-overlay-light: rgba(255, 255, 255, 0.15); /* Light overlay */
   --color-hero-overlay-lighter: rgba(255, 255, 255, 0.1); /* Lighter overlay */
+
   /* Typography */
   --font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-size-xs: 0.75rem; /* 12px */

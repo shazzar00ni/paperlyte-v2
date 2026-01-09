@@ -160,7 +160,7 @@ describe('FAQ Constants', () => {
     })
 
     it('should match FAQ categories distribution snapshot', () => {
-      const categoryCounts = FAQ_ITEMS.reduce(
+      const categoryCounts = FAQ_ITEMS.reduce<Record<string, number>>(
         (acc, item) => {
           const category = item.category || 'uncategorized'
           acc[category] = (acc[category] || 0) + 1

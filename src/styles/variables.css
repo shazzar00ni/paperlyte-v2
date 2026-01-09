@@ -68,6 +68,7 @@
   /* Layout */
   --max-width: 1280px;
   --max-width-content: 1024px;
+  --max-width-legal: 800px; /* Legal pages - Narrower for optimal readability */
   --header-height: 64px;
   --border-radius-sm: 0.25rem; /* 4px */
   --border-radius-md: 0.5rem; /* 8px */

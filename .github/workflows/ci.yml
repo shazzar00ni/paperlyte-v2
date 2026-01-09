@@ -231,8 +231,8 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
 
           if [ -f .lighthouseci/manifest.json ]; then
-            # Find the most recent Lighthouse report JSON file
-            REPORT_FILE=$(find .lighthouseci -name "lhr-*.json" | head -1)
+            # Find the representative run from manifest (the one used for assertions)
+            REPORT_FILE=$(jq -r '.[] | select(.isRepresentativeRun == true) | .jsonPath' .lighthouseci/manifest.json | head -1)
 
             if [ -f "$REPORT_FILE" ]; then
               echo "### 📊 Lighthouse Scores" >> $GITHUB_STEP_SUMMARY

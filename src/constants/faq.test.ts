@@ -147,8 +147,11 @@ describe('FAQ Constants', () => {
 
     it('should maintain consistent ID format (kebab-case)', () => {
       FAQ_ITEMS.forEach((item) => {
+        // ReDoS-safe kebab-case validation using alternation instead of nested quantifiers
+        // Matches: "abc" OR "abc-def" OR "abc-def-ghi" etc.
+        // Original /^[a-z]+(-[a-z]+)*$/ had nested quantifiers causing exponential backtracking
         expect(item.id, `ID "${item.id}" should be in kebab-case format`).toMatch(
-          /^[a-z]+(-[a-z]+)*$/
+          /^[a-z]+$|^[a-z]+(?:-[a-z]+)+$/
         )
       })
     })

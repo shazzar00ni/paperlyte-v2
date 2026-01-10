@@ -244,7 +244,7 @@ describe('ServerErrorPage', () => {
 
       // Icon component may render as SVG or <i> tag, check for either
       const warningIcon =
-        container.querySelector('.fa-triangle-exclamation') ||
+        container.querySelector('.fa-triangle-exclamation') ??
         container.querySelector('svg[aria-hidden="true"]')
       expect(warningIcon).toBeInTheDocument()
     })

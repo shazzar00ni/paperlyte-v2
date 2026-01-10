@@ -231,7 +231,7 @@ export function handleArrowNavigation(
       // Prefer explicit dir attribute if present
       const docElement = document.documentElement
       const attrDir = (
-        document.dir ??
+        document.dir ||
         (docElement.getAttribute('dir')) ??
         ''
       ).toLowerCase()

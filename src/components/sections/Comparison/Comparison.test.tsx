@@ -67,8 +67,8 @@ describe('Comparison', () => {
   it('should render checkmark icons for true boolean values', () => {
     const { container } = render(<Comparison />)
 
-    // Find all checkmarks
-    const checkmarks = container.querySelectorAll('.fa-check')
+    // Find all checkmarks using data-icon attribute
+    const checkmarks = container.querySelectorAll('[data-icon="fa-check"]')
     expect(checkmarks.length).toBeGreaterThan(0)
 
     // Check they have proper accessibility labels
@@ -80,8 +80,8 @@ describe('Comparison', () => {
   it('should render X icons for false boolean values', () => {
     const { container } = render(<Comparison />)
 
-    // Find all X marks
-    const xmarks = container.querySelectorAll('.fa-xmark')
+    // Find all X marks using data-icon attribute
+    const xmarks = container.querySelectorAll('[data-icon="fa-xmark"]')
     expect(xmarks.length).toBeGreaterThan(0)
 
     // Check they have proper accessibility labels

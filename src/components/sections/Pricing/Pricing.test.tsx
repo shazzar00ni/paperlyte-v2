@@ -85,7 +85,7 @@ describe('Pricing', () => {
     const popularBadge = screen.getByLabelText('Most popular')
     expect(popularBadge).toBeInTheDocument()
 
-    const starIcon = container.querySelector('.fa-star')
+    const starIcon = container.querySelector('[data-icon="fa-star"]')
     expect(starIcon).toBeInTheDocument()
     expect(starIcon).toHaveAttribute('aria-label', 'Most popular')
   })
@@ -115,7 +115,7 @@ describe('Pricing', () => {
   it('should render checkmark icons for all features', () => {
     const { container } = render(<Pricing />)
 
-    const checkmarks = container.querySelectorAll('.fa-check')
+    const checkmarks = container.querySelectorAll('[data-icon="fa-check"]')
 
     // Count total features across all plans
     const totalFeatures = PRICING_PLANS.reduce((sum, plan) => sum + plan.features.length, 0)
@@ -145,7 +145,7 @@ describe('Pricing', () => {
       screen.getByText('30-day money-back guarantee • Cancel anytime • No hidden fees')
     ).toBeInTheDocument()
 
-    const shieldIcon = container.querySelector('.fa-shield-check')
+    const shieldIcon = container.querySelector('[data-icon="fa-shield-check"]')
     expect(shieldIcon).toBeInTheDocument()
     expect(shieldIcon).toHaveAttribute('aria-label', 'Guarantee')
   })

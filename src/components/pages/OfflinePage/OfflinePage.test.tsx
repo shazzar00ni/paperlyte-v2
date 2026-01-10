@@ -341,7 +341,7 @@ describe('OfflinePage', () => {
     it('should render wifi icon in illustration', () => {
       render(<OfflinePage />)
 
-      const wifiIcon = screen.getByRole('status').querySelector('i.fa-wifi')
+      const wifiIcon = screen.getByRole('status').querySelector('[data-icon="fa-wifi"]')
       expect(wifiIcon).toBeInTheDocument()
     })
 
@@ -349,7 +349,7 @@ describe('OfflinePage', () => {
       render(<OfflinePage />)
 
       const retryButton = screen.getByRole('button', { name: /check connection and retry/i })
-      const icon = retryButton.querySelector('i.fa-rotate-right')
+      const icon = retryButton.querySelector('[data-icon="fa-rotate-right"]')
       expect(icon).toBeInTheDocument()
     })
 
@@ -370,7 +370,7 @@ describe('OfflinePage', () => {
 
       // Check spinner is shown while checking (without awaiting click to complete)
       await waitFor(() => {
-        const spinnerIcon = retryButton.querySelector('i.fa-spinner')
+        const spinnerIcon = retryButton.querySelector('[data-icon="fa-spinner fa-spin"]')
         expect(spinnerIcon).toBeInTheDocument()
         expect(spinnerIcon).toHaveClass('fa-spin')
       })

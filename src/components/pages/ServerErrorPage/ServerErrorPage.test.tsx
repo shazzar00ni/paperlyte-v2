@@ -266,7 +266,7 @@ describe('ServerErrorPage', () => {
       const homeButton = screen.getByRole('button', { name: /return to homepage/i })
       // Icon component may render as SVG or <i> tag, check for either
       const icon =
-        homeButton.querySelector('.fa-home') || homeButton.querySelector('svg[aria-hidden="true"]')
+        homeButton.querySelector('.fa-home') ?? homeButton.querySelector('svg[aria-hidden="true"]')
       expect(icon).toBeInTheDocument()
     })
   })

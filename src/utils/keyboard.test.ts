@@ -353,7 +353,9 @@ describe('keyboard utilities', () => {
       const cleanup = createFocusTrap(container)
 
       // Verify cleanup doesn't throw
-      expect(() => { cleanup(); }).not.toThrow()
+      expect(() => {
+        cleanup()
+      }).not.toThrow()
     })
   })
 

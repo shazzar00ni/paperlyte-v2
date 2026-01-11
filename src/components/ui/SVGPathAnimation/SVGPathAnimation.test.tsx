@@ -75,7 +75,7 @@ describe('SVGPathAnimation', () => {
     // Path should have dash array and offset styles (once pathLengths are calculated)
     // Initially, before useEffect runs, these might not be set
     // We're testing the structure is correct
-    expect(path.tagName).toBe('path')
+    expect(path?.tagName).toBe('path')
   })
 
   it('should apply staggered delays to multiple paths', () => {
@@ -140,8 +140,8 @@ describe('SVGPathAnimation', () => {
     )
 
     const svg = container.querySelector('svg') as SVGSVGElement
-    const style = svg.style
-    expect(style.getPropertyValue('--draw-duration')).toBe('3000ms')
+    const style = svg?.style
+    expect(style?.getPropertyValue('--draw-duration')).toBe('3000ms')
   })
 
   it('should apply easing CSS variable', () => {
@@ -152,8 +152,8 @@ describe('SVGPathAnimation', () => {
     )
 
     const svg = container.querySelector('svg') as SVGSVGElement
-    const style = svg.style
-    expect(style.getPropertyValue('--draw-easing')).toBe('ease-in-out')
+    const style = svg?.style
+    expect(style?.getPropertyValue('--draw-easing')).toBe('ease-in-out')
   })
 
   it('should apply custom className to container', () => {

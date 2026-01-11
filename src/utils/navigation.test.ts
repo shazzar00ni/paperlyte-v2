@@ -26,7 +26,9 @@ describe('navigation utilities', () => {
     })
 
     it('should not throw error when element does not exist', () => {
-      expect(() => { scrollToSection('non-existent-section'); }).not.toThrow()
+      expect(() => {
+        scrollToSection('non-existent-section')
+      }).not.toThrow()
     })
 
     it('should do nothing when element is null', () => {

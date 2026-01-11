@@ -60,7 +60,9 @@ export const NotFoundPage: FC<NotFoundPageProps> = ({ message, onGoHome }) => {
           </button>
 
           <button
-            onClick={() => { window.history.back(); }}
+            onClick={() => {
+              window.history.back()
+            }}
             className={styles.secondaryButton}
             type="button"
             aria-label="Go to previous page"

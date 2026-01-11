@@ -29,7 +29,9 @@ describe('metaTags', () => {
     })
 
     it('should handle missing robots meta tag gracefully', () => {
-      expect(() => { initializeMetaTags(); }).not.toThrow()
+      expect(() => {
+        initializeMetaTags()
+      }).not.toThrow()
     })
 
     it('should remove keywords meta tag in development', () => {

@@ -121,7 +121,9 @@ describe('OfflinePage', () => {
       // Use a pending promise to check loading state
       let resolveFetch: () => void
       const fetchPromise = new Promise<Response>((resolve) => {
-        resolveFetch = () => { resolve(new Response()); }
+        resolveFetch = () => {
+          resolve(new Response())
+        }
       })
       global.fetch = vi.fn(() => fetchPromise)
 

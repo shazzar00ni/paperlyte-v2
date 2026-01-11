@@ -287,13 +287,10 @@ describe('Testimonials Constants', () => {
     })
 
     it('should match rating distribution snapshot', () => {
-      const distribution = TESTIMONIALS.reduce(
-        (acc, t) => {
-          acc[t.rating] = (acc[t.rating] || 0) + 1
-          return acc
-        },
-        {}
-      )
+      const distribution = TESTIMONIALS.reduce((acc, t) => {
+        acc[t.rating] = (acc[t.rating] || 0) + 1
+        return acc
+      }, {})
 
       expect(distribution).toMatchSnapshot()
     })

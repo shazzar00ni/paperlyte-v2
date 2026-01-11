@@ -299,6 +299,7 @@ jobs:
     steps:
       - name: Add To GitHub Projects
         uses: actions/add-to-project@v1.0.2
+        continue-on-error: true
         with:
           project-url: https://github.com/users/shazzar00ni/projects/1
           github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}

@@ -81,7 +81,7 @@ describe('Button', () => {
     // Icon renders as SVG or fallback <i> element
     const svg = container.querySelector('svg')
     const fallback = container.querySelector('i')
-    const icon = svg || fallback
+    const icon = svg ?? fallback
     expect(icon).toBeInTheDocument()
     expect(icon).toHaveAttribute('aria-hidden', 'true')
   })

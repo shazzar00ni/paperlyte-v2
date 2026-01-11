@@ -191,7 +191,7 @@ describe('Icon', () => {
   })
 
   it('should apply correct variant class for brands', () => {
-    const { container} = render(<Icon name="missing-icon" variant="brands" />)
+    const { container } = render(<Icon name="missing-icon" variant="brands" />)
     // Font Awesome renders SVG or span, not <i> tags
     const fallback = container.querySelector('svg') || container.querySelector('span')
 

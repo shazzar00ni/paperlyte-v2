@@ -224,7 +224,7 @@ class Analytics {
    * Check if analytics is enabled
    */
   isEnabled(): boolean {
-    return this.initialized && this.provider?.isEnabled()
+    return this.initialized && this.provider !== null && this.provider.isEnabled()
   }
 
   /**

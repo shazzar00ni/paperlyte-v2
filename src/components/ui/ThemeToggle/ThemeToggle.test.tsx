@@ -35,9 +35,10 @@ describe('ThemeToggle', () => {
 
       render(<ThemeToggle />)
 
-      // Icon component should render with fa-moon
+      // FontAwesome React renders SVG elements
       const button = screen.getByRole('button')
-      expect(button.querySelector('.fa-moon')).toBeInTheDocument()
+      const svg = button.querySelector('svg')
+      expect(svg).toBeInTheDocument()
     })
 
     it('should render sun icon in dark mode', () => {
@@ -48,9 +49,10 @@ describe('ThemeToggle', () => {
 
       render(<ThemeToggle />)
 
-      // Icon component should render with fa-sun
+      // FontAwesome React renders SVG elements
       const button = screen.getByRole('button')
-      expect(button.querySelector('.fa-sun')).toBeInTheDocument()
+      const svg = button.querySelector('svg')
+      expect(svg).toBeInTheDocument()
     })
   })
 
@@ -173,7 +175,8 @@ describe('ThemeToggle', () => {
       })
 
       rerender(<ThemeToggle />)
-      expect(screen.getByRole('button').querySelector('.fa-moon')).toBeInTheDocument()
+      const svg = screen.getByRole('button').querySelector('svg')
+      expect(svg).toBeInTheDocument()
 
       vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
         theme: 'dark',
@@ -213,9 +216,10 @@ describe('ThemeToggle', () => {
       render(<ThemeToggle />)
 
       const button = screen.getByRole('button')
-      const icon = button.querySelector('i')
+      const svg = button.querySelector('svg')
 
-      expect(icon).toHaveClass('fa-moon')
+      // FontAwesome React renders SVG
+      expect(svg).toBeInTheDocument()
     })
 
     it('should pass correct icon name to Icon component in dark mode', () => {
@@ -227,9 +231,10 @@ describe('ThemeToggle', () => {
       render(<ThemeToggle />)
 
       const button = screen.getByRole('button')
-      const icon = button.querySelector('i')
+      const svg = button.querySelector('svg')
 
-      expect(icon).toHaveClass('fa-sun')
+      // FontAwesome React renders SVG
+      expect(svg).toBeInTheDocument()
     })
 
     it('should pass size="md" to Icon component', () => {
@@ -241,10 +246,10 @@ describe('ThemeToggle', () => {
       render(<ThemeToggle />)
 
       const button = screen.getByRole('button')
-      const icon = button.querySelector('i')
+      const svg = button.querySelector('svg')
 
-      // Icon component applies size classes
-      expect(icon).toBeInTheDocument()
+      // FontAwesome React renders SVG
+      expect(svg).toBeInTheDocument()
     })
   })
 })

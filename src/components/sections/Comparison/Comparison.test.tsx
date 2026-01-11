@@ -67,26 +67,26 @@ describe('Comparison', () => {
   it('should render checkmark icons for true boolean values', () => {
     const { container } = render(<Comparison />)
 
-    // Find all checkmarks
-    const checkmarks = container.querySelectorAll('.fa-check')
+    // Find all checkmarks by aria-label (FontAwesome renders SVG, not CSS classes)
+    const checkmarks = container.querySelectorAll('[aria-label="Supported"]')
     expect(checkmarks.length).toBeGreaterThan(0)
 
-    // Check they have proper accessibility labels
+    // Check they are SVG elements
     checkmarks.forEach((checkmark) => {
-      expect(checkmark).toHaveAttribute('aria-label', 'Supported')
+      expect(checkmark.tagName).toBe('svg')
     })
   })
 
   it('should render X icons for false boolean values', () => {
     const { container } = render(<Comparison />)
 
-    // Find all X marks
-    const xmarks = container.querySelectorAll('.fa-xmark')
+    // Find all X marks by aria-label (FontAwesome renders SVG, not CSS classes)
+    const xmarks = container.querySelectorAll('[aria-label="Not supported"]')
     expect(xmarks.length).toBeGreaterThan(0)
 
-    // Check they have proper accessibility labels
+    // Check they are SVG elements
     xmarks.forEach((xmark) => {
-      expect(xmark).toHaveAttribute('aria-label', 'Not supported')
+      expect(xmark.tagName).toBe('svg')
     })
   })
 

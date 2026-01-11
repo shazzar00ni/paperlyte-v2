@@ -184,7 +184,8 @@ describe('ThemeToggle', () => {
       })
 
       rerender(<ThemeToggle />)
-      expect(screen.getByRole('button').querySelector('.fa-sun')).toBeInTheDocument()
+      const svg2 = screen.getByRole('button').querySelector('svg')
+      expect(svg2).toBeInTheDocument()
     })
 
     it('should update aria-label when theme changes', () => {

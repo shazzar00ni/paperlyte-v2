@@ -66,6 +66,7 @@ export const Icon = ({
         style={{ fontSize: iconSize, color: normalizedColor, ...style }}
         aria-label={ariaLabel}
         aria-hidden={ariaLabel ? 'false' : 'true'}
+        data-testid={`icon-${name}`}
         {...(ariaLabel ? { role: 'img' } : {})}
       />
     )
@@ -85,6 +86,7 @@ export const Icon = ({
       style={style}
       aria-label={ariaLabel}
       aria-hidden={ariaLabel ? 'false' : 'true'}
+      data-testid={`icon-${name}`}
       {...(ariaLabel && { role: 'img' })}
     >
       {pathArray.map((pathData, index) => (

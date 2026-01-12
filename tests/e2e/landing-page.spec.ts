@@ -97,6 +97,8 @@ test.describe('Landing Page', () => {
     // FCP can be flaky in test environments, so only check if available
     if (metrics.fcp !== null) {
       expect(metrics.fcp).toBeLessThan(2000); // FCP < 2s
+    } else {
+      console.warn('[E2E Test] FCP metric unavailable - skipping FCP validation for CI visibility')
     }
     expect(metrics.lcp).toBeGreaterThan(0); // LCP should be captured
     expect(metrics.lcp).toBeLessThan(2500); // LCP < 2.5s (good threshold)

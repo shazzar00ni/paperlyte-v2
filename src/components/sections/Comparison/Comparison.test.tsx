@@ -14,7 +14,7 @@ describe('Comparison', () => {
 
   it('should render main heading', () => {
     render(<Comparison />)
-    expect(screen.getByText('How we stack up')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /How we stack up/i })).toBeInTheDocument()
   })
 
   it('should render subtitle', () => {
@@ -67,8 +67,8 @@ describe('Comparison', () => {
   it('should render checkmark icons for true boolean values', () => {
     const { container } = render(<Comparison />)
 
-    // Find all checkmarks using data-icon attribute
-    const checkmarks = container.querySelectorAll('[data-icon="fa-check"]')
+    // Find all checkmarks using data-icon token match for resilience
+    const checkmarks = container.querySelectorAll('[data-icon~="fa-check"]')
     expect(checkmarks.length).toBeGreaterThan(0)
 
     // Check they have proper accessibility labels
@@ -80,8 +80,8 @@ describe('Comparison', () => {
   it('should render X icons for false boolean values', () => {
     const { container } = render(<Comparison />)
 
-    // Find all X marks using data-icon attribute
-    const xmarks = container.querySelectorAll('[data-icon="fa-xmark"]')
+    // Find all X marks using data-icon token match for resilience
+    const xmarks = container.querySelectorAll('[data-icon~="fa-xmark"]')
     expect(xmarks.length).toBeGreaterThan(0)
 
     // Check they have proper accessibility labels

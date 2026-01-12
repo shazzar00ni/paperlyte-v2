@@ -40,7 +40,7 @@ describe('Mobile', () => {
       render(<Mobile />)
 
       const link = screen.getByRole('link', { name: /Explore Mobile Features/i })
-      const arrowIcon = link.querySelector('[data-icon="fa-arrow-right"]')
+      const arrowIcon = link.querySelector('[data-icon~="fa-arrow-right"]')
 
       expect(arrowIcon).toBeInTheDocument()
       expect(link.contains(arrowIcon)).toBe(true)

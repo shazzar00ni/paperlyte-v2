@@ -63,7 +63,7 @@ export const Icon = ({
     const faClasses = `fa ${variantClass} ${name} icon-fallback ${className}`.trim()
 
     console.warn(`Rendering Font Awesome fallback <i> element for icon "${name}"`)
-    
+
     // Always render <i> element with Font Awesome classes
     return (
       <i

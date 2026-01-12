@@ -139,7 +139,7 @@ describe('OfflinePage', () => {
       })
 
       // Clean up: resolve the fetch to allow the click handler to complete
-let resolveFetch!: () => void
+      resolveFetch!()
       await clickPromise
     })
 

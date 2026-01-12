@@ -192,6 +192,6 @@ tags: [Optional: List of relevant tags or categories, e.g., `feature`, `upgrade`
 
 ## 8. Related Specifications / Further Reading
 
-- [Link text for related specification](URL_TO_RELATED_SPEC)
-- [Link text for external documentation](URL_TO_EXTERNAL_DOCS)
+- [Link text for related specification](<https://example.com/related-spec>)
+- [Link text for external documentation](<https://example.com/external-docs>)
 ```

@@ -68,7 +68,8 @@ jobs:
         run: npm ci
 
       - name: Run tests with coverage
-        run: npm run test:coverage -- --run
+        # Generate coverage even when tests fail to track coverage trends
+        run: npm run test:coverage -- --run --coverage.reportOnFailure
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
@@ -125,6 +126,8 @@ jobs:
         run: npm ci
 
       - name: Build application
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         run: npm run build
 
       - name: Upload build artifacts
@@ -193,7 +196,7 @@ jobs:
           path: dist/
 
       - name: Install Chrome
-        uses: browser-actions/setup-chrome@v1
+        uses: browser-actions/setup-chrome@v2
         with:
           chrome-version: stable
 

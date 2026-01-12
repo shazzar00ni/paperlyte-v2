@@ -48,6 +48,17 @@ import {
   faRocket, // Pricing plans (premium features)
   faUsers, // Pricing plans, Statistics (team/community)
   faServer, // Statistics (infrastructure)
+  faWifi, // Offline page - connection status
+  faRotateRight, // Retry/reload actions
+  faArrowRotateRight, // Retry/reload actions (alternative)
+  faArrowRotateLeft, // Undo/back actions
+  faBook, // Documentation/help
+  faMagnifyingGlass, // Search
+  faPlane, // Offline page - airplane mode
+  faRouter, // Offline page - network issues
+  faArrowRight, // Navigation forward
+  faArrowLeft, // Navigation back
+  faSpinner, // Loading states
 } from '@fortawesome/free-solid-svg-icons'
 
 // Brand icons (from free-brands-svg-icons)
@@ -93,6 +104,17 @@ library.add(
   faRocket,
   faUsers,
   faServer,
+  faWifi,
+  faRotateRight,
+  faArrowRotateRight,
+  faArrowRotateLeft,
+  faBook,
+  faMagnifyingGlass,
+  faPlane,
+  faRouter,
+  faArrowRight,
+  faArrowLeft,
+  faSpinner,
   // Brand icons
   faGithub,
   faTwitter,

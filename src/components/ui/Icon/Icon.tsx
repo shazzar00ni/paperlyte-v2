@@ -1,4 +1,6 @@
 import { useMemo } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { findIconDefinition, IconName, IconPrefix } from '@fortawesome/fontawesome-svg-core'
 import { iconPaths, getIconViewBox } from './icons'
 import './Icon.css'
 
@@ -51,18 +53,40 @@ export const Icon = ({
     return paths.split(' M ')
   }, [paths])
 
-  // Fallback to Font Awesome class if icon not found in our set
+  // Fallback to Font Awesome React component if icon not found in our set
   if (!paths) {
     console.warn(`Icon "${name}" not found in icon set, using Font Awesome fallback`)
-    const variantClass = {
-      solid: 'fa-solid',
-      brands: 'fa-brands',
-      regular: 'fa-regular',
-    }[variant]
+
+    // Convert icon prefix based on variant
+    const prefix: IconPrefix = variant === 'brands' ? 'fab' : variant === 'regular' ? 'far' : 'fas'
+
+    // Remove 'fa-' prefix if present and convert to FontAwesome icon name format
+    const iconName = name.replace(/^fa-/, '') as IconName
+
+    // Try to find the icon definition in the library
+    const iconDefinition = findIconDefinition({ prefix, iconName })
+
+    // If icon not found in library, return a placeholder
+    if (!iconDefinition) {
+      console.warn(`Icon "${name}" not found in Font Awesome library either`)
+      return (
+        <span
+          className={`icon-fallback ${className}`}
+          style={{ fontSize: iconSize, color: normalizedColor, ...style }}
+          aria-label={ariaLabel}
+          aria-hidden={ariaLabel ? 'false' : 'true'}
+          {...(ariaLabel ? { role: 'img' } : {})}
+          title={`Icon "${name}" not found`}
+        >
+          ?
+        </span>
+      )
+    }
 
     return (
-      <i
-        className={`${variantClass} ${name} icon-fallback ${className}`}
+      <FontAwesomeIcon
+        icon={iconDefinition}
+        className={`icon-fallback ${className}`}
         style={{ fontSize: iconSize, color: normalizedColor, ...style }}
         aria-label={ariaLabel}
         aria-hidden={ariaLabel ? 'false' : 'true'}

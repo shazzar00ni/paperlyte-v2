@@ -112,13 +112,11 @@ tags: [Optional: List of relevant tags or categories, e.g., `feature`, `upgrade`
 
 # Introduction
 
-<!-- Replace with appropriate badge from Status Badges section based on the status field above -->
-<!-- For status: 'Planned', use: ![Status: Planned](https://img.shields.io/badge/status-Planned-blue) -->
-<!-- For status: 'In progress', use: ![Status: In progress](https://img.shields.io/badge/status-In%20progress-yellow) -->
-<!-- For status: 'Completed', use: ![Status: Completed](https://img.shields.io/badge/status-Completed-brightgreen) -->
-<!-- For status: 'Deprecated', use: ![Status: Deprecated](https://img.shields.io/badge/status-Deprecated-red) -->
-<!-- For status: 'On Hold', use: ![Status: On Hold](https://img.shields.io/badge/status-On%20Hold-orange) -->
-![Status: Planned](https://img.shields.io/badge/status-Planned-blue)
+{GENERATE_STATUS_BADGE_HERE}
+<!-- AI Agent Instruction: Generate the status badge using the algorithm from the Status Badges section -->
+<!-- 1. Read the 'status' field from front matter above -->
+<!-- 2. Look up the corresponding badge markdown from the Status-to-Color Mapping table -->
+<!-- 3. Replace this placeholder with the complete badge markdown -->
 
 [A short concise introduction to the plan and the goal it is intended to achieve.]
 
@@ -126,16 +124,14 @@ tags: [Optional: List of relevant tags or categories, e.g., `feature`, `upgrade`
 
 [Explicitly list all requirements & constraints that affect the plan and constrain how it is implemented. Use bullet points or tables for clarity.]
 
-- **REQ-001**: Requirement 1
-- **SEC-001**: Security Requirement 1
-- **REQ-001**: Requirement 1
-- **SEC-001**: Security Requirement 1
-- **CON-001**: Constraint 1
-- **GUD-001**: Guideline 1
-- **PAT-001**: Pattern to follow 1
-- **CON-001**: Constraint 1
-- **GUD-001**: Guideline 1
-- **PAT-001**: Pattern to follow 1
+- **REQ-001**: [Describe functional requirement 1]
+- **REQ-002**: [Describe functional requirement 2]
+- **SEC-001**: [Describe security requirement 1]
+- **SEC-002**: [Describe security requirement 2]
+- **CON-001**: [Describe constraint 1]
+- **CON-002**: [Describe constraint 2]
+- **GUD-001**: [Describe guideline 1]
+- **PAT-001**: [Describe pattern to follow 1]
 
 ## 2. Implementation Steps
 

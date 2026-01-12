@@ -197,7 +197,7 @@ describe('Hero', () => {
 
       // Verify mockup container exists
       const mockupContainer = container.querySelector('[class*="mockup"]')
-      expect(mockupContainer).toBeTruthy()
+      expect(mockupContainer).toBeInTheDocument()
     })
   })
 

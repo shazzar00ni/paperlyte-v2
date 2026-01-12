@@ -5,7 +5,7 @@ import { Header } from './Header'
 // ------------------------------------------------------------------
 // Test Helpers
 // ------------------------------------------------------------------
-const MOCK_SECTION_IDS = ['features', 'download', 'mobile', 'testimonials']
+const MOCK_SECTION_IDS = ['features', 'download']
 
 function setupScrollIntoViewMock(): ReturnType<typeof vi.fn> {
   if (!Element.prototype.scrollIntoView) {

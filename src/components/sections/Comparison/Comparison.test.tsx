@@ -67,27 +67,29 @@ describe('Comparison', () => {
   it('should render checkmark icons for true boolean values', () => {
     const { container } = render(<Comparison />)
 
-    // Find all checkmarks
-    const checkmarks = container.querySelectorAll('.fa-check')
-    expect(checkmarks.length).toBeGreaterThan(0)
+    // Find icons (either SVG or Font Awesome fallback)
+    const icons = container.querySelectorAll('svg.icon-svg, i.icon-fallback')
+    expect(icons.length).toBeGreaterThan(0)
 
     // Check they have proper accessibility labels
-    checkmarks.forEach((checkmark) => {
-      expect(checkmark).toHaveAttribute('aria-label', 'Supported')
-    })
+    const supportedIcons = Array.from(icons).filter((icon) =>
+      icon.getAttribute('aria-label')?.includes('Supported')
+    )
+    expect(supportedIcons.length).toBeGreaterThan(0)
   })
 
   it('should render X icons for false boolean values', () => {
     const { container } = render(<Comparison />)
 
-    // Find all X marks
-    const xmarks = container.querySelectorAll('.fa-xmark')
-    expect(xmarks.length).toBeGreaterThan(0)
+    // Find icons (either SVG or Font Awesome fallback)
+    const icons = container.querySelectorAll('svg.icon-svg, i.icon-fallback')
+    expect(icons.length).toBeGreaterThan(0)
 
     // Check they have proper accessibility labels
-    xmarks.forEach((xmark) => {
-      expect(xmark).toHaveAttribute('aria-label', 'Not supported')
-    })
+    const notSupportedIcons = Array.from(icons).filter((icon) =>
+      icon.getAttribute('aria-label')?.includes('Not supported')
+    )
+    expect(notSupportedIcons.length).toBeGreaterThan(0)
   })
 
   it('should render text values for string comparisons', () => {

@@ -193,17 +193,22 @@ describe('Hero', () => {
     })
 
     it('should render mockup images with proper alt text', () => {
-      render(<Hero />)
+      const { container } = render(<Hero />)
 
-      const mockupImages = screen.getAllByRole('img')
-      expect(mockupImages.length).toBeGreaterThan(0)
+      // Mockup images are in aria-hidden container but should still have alt text for SEO/fallback
+      const mockupImages = container.querySelectorAll('img')
+      expect(mockupImages.length).toBeGreaterThanOrEqual(2)
 
       // Check that mockup images have descriptive alt text
-      const notesList = screen.getByAltText(/notes list showing/i)
-      expect(notesList).toBeInTheDocument()
+      const notesListImg = Array.from(mockupImages).find((img) =>
+        img.alt.toLowerCase().includes('notes list')
+      )
+      expect(notesListImg).toBeDefined()
 
-      const noteDetail = screen.getByAltText(/note editor with/i)
-      expect(noteDetail).toBeInTheDocument()
+      const noteDetailImg = Array.from(mockupImages).find((img) =>
+        img.alt.toLowerCase().includes('note editor')
+      )
+      expect(noteDetailImg).toBeDefined()
     })
   })
 

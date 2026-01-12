@@ -62,7 +62,7 @@ export const Icon = ({
     // Build Font Awesome classes
     const faClasses = `fa ${variantClass} ${name} icon-fallback ${className}`.trim()
 
-    console.warn(`Icon "${name}" not found in Font Awesome library either`)
+    console.warn(`Rendering Font Awesome fallback <i> element for icon "${name}"`)
     
     // Always render <i> element with Font Awesome classes
     return (

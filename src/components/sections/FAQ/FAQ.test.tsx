@@ -231,13 +231,16 @@ describe('FAQ', () => {
       })
 
       // When collapsed, should show "Expand answer"
-      let icon = questionButton.querySelector('i')
+      // Icon component renders as svg or span, not <i>
+      let icon = questionButton.querySelector('[aria-label="Expand answer"]')
+      expect(icon).toBeInTheDocument()
       expect(icon).toHaveAttribute('aria-label', 'Expand answer')
 
       await user.click(questionButton)
 
       // When expanded, should show "Collapse answer"
-      icon = questionButton.querySelector('i')
+      icon = questionButton.querySelector('[aria-label="Collapse answer"]')
+      expect(icon).toBeInTheDocument()
       expect(icon).toHaveAttribute('aria-label', 'Collapse answer')
     })
   })

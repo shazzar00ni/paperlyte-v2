@@ -290,6 +290,23 @@ jobs:
             test-results/
           retention-days: 7
 
+  add-to-project:
+    name: Add To GitHub Projects
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+
+    steps:
+      - name: Add To GitHub Projects
+        uses: actions/add-to-project@v1.0.2
+        continue-on-error: true
+        with:
+          project-url: ${{ vars.PROJECT_URL || 'https://github.com/users/shazzar00ni/projects/1' }}
+          github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
+
   # Status check job that all required jobs depend on
   ci-success:
     name: CI Success

@@ -52,6 +52,7 @@ This document provides a complete status update for Issue #14: Development Infra
     - Automatically adds PRs to GitHub Projects board
     - Runs only on pull request events
     - Requires `ADD_TO_PROJECT_PAT` secret
+    - Configurable via `PROJECT_URL` variable (defaults to `https://github.com/users/shazzar00ni/projects/1`)
   - **CI Success Job**:
     - Status aggregation for all checks
 - ✅ Runs on push to `main` and `develop` branches

@@ -293,10 +293,19 @@ Add these secrets in repository settings (Settings → Secrets and variables →
 | `LHCI_GITHUB_APP_TOKEN` | Optional | Lighthouse CI GitHub integration | [Lighthouse CI GitHub App](https://github.com/apps/lighthouse-ci) → Install & configure |
 | `ADD_TO_PROJECT_PAT` | Optional | Automatically add PRs to GitHub Projects | GitHub Settings → Developer settings → Personal access tokens → Generate new token with `repo` and `project` scopes |
 
+#### 1.1. GitHub Repository Variables
+
+Add these variables in repository settings (Settings → Secrets and variables → Actions → Variables tab):
+
+| Variable Name | Required | Purpose | Default Value |
+|--------------|----------|---------|---------------|
+| `PROJECT_URL` | Optional | GitHub Projects board URL for automatic PR addition | `https://github.com/users/shazzar00ni/projects/1` |
+
 **Note:** The CI pipeline will run without these tokens, but some features will be limited:
 - Without `CODECOV_TOKEN`: Coverage reports won't be uploaded to Codecov (still available as artifacts)
 - Without `LHCI_GITHUB_APP_TOKEN`: Lighthouse results won't be commented on PRs (still available as artifacts)
 - Without `ADD_TO_PROJECT_PAT`: PRs won't be automatically added to GitHub Projects board
+- Without `PROJECT_URL`: Uses default project URL (`https://github.com/users/shazzar00ni/projects/1`)
 
 #### 2. Branch Protection Rules
 

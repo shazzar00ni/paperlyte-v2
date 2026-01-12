@@ -301,7 +301,7 @@ jobs:
         uses: actions/add-to-project@v1.0.2
         continue-on-error: true
         with:
-          project-url: https://github.com/users/shazzar00ni/projects/1
+          project-url: ${{ vars.PROJECT_URL || 'https://github.com/users/shazzar00ni/projects/1' }}
           github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
 
   # Status check job that all required jobs depend on

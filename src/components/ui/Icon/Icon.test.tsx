@@ -56,11 +56,11 @@ describe('Icon', () => {
 
   it('should render as SVG element or fallback to Font Awesome', () => {
     const { container } = render(<Icon name="fa-bolt" />)
-    // Component may render as SVG (if icon exists) or as <i> (fallback)
+    // Component may render as SVG (if icon exists) or as span (fallback)
     const svg = container.querySelector('svg')
-    const fallback = container.querySelector('i')
+    const fallback = container.querySelector('span')
 
-    expect(svg || fallback).toBeInTheDocument()
+    expect(svg ?? fallback).toBeInTheDocument()
   })
 
   it('should apply size attributes correctly', () => {
@@ -105,7 +105,7 @@ describe('Icon', () => {
 
   it('should be hidden from screen readers by default', () => {
     const { container } = render(<Icon name="fa-bolt" />)
-    const icon = container.querySelector('svg') || container.querySelector('i')
+    const icon = container.querySelector('svg') ?? container.querySelector('span')
 
     expect(icon).toHaveAttribute('aria-hidden', 'true')
   })
@@ -122,8 +122,8 @@ describe('Icon', () => {
   it('should apply custom className', () => {
     const { container } = render(<Icon name="fa-bolt" className="custom-icon" />)
     const svg = container.querySelector('svg')
-    const fallback = container.querySelector('i')
-    const icon = svg || fallback
+    const fallback = container.querySelector('span')
+    const icon = svg ?? fallback
 
     expect(icon).toHaveClass('custom-icon')
   })
@@ -183,7 +183,7 @@ describe('Icon', () => {
   it('should apply correct variant class for regular', () => {
     const { container } = render(<Icon name="missing-icon" variant="regular" />)
     // Font Awesome renders SVG or span, not <i> tags
-    const fallback = container.querySelector('svg') || container.querySelector('span')
+    const fallback = container.querySelector('svg') ?? container.querySelector('span')
 
     expect(fallback).toBeInTheDocument()
     expect(fallback).toHaveClass('icon-fallback')
@@ -192,7 +192,7 @@ describe('Icon', () => {
   it('should apply correct variant class for brands', () => {
     const { container } = render(<Icon name="missing-icon" variant="brands" />)
     // Font Awesome renders SVG or span, not <i> tags
-    const fallback = container.querySelector('svg') || container.querySelector('span')
+    const fallback = container.querySelector('svg') ?? container.querySelector('span')
 
     expect(fallback).toBeInTheDocument()
     expect(fallback).toHaveClass('icon-fallback')

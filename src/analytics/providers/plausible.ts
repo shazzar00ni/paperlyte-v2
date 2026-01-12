@@ -189,12 +189,15 @@ export class PlausibleProvider implements AnalyticsProvider {
 
     // Convert properties to Plausible format (only string, number, boolean)
     const props = event.properties
-      ? Object.entries(event.properties).reduce((acc, [key, value]) => {
-          if (value !== undefined && value !== null) {
-            acc[key] = value
-          }
-          return acc
-        }, {})
+      ? Object.entries(event.properties).reduce<Record<string, string | number | boolean>>(
+          (acc, [key, value]) => {
+            if (value !== undefined && value !== null) {
+              acc[key] = value as string | number | boolean
+            }
+            return acc
+          },
+          {}
+        )
       : undefined
 
     window.plausible(event.name, props ? { props } : undefined)

@@ -1,7 +1,4 @@
 ---
-tools:
-  eslint:
+engines:
+  eslint-9:
     enabled: true
-    config:
-      configFile: "eslint.config.js"
-    typescript: true

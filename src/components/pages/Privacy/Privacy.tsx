@@ -7,7 +7,7 @@ import styles from './Privacy.module.css'
  *
  * Note: Update LAST_UPDATED constant whenever policy changes are made
  *
- * @returns Privacy Policy page JSX
+ * @returns {JSX.Element} Privacy Policy page JSX
  */
 
 // Last update date for the privacy policy

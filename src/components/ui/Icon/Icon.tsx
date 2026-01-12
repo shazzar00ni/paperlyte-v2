@@ -53,41 +53,24 @@ export const Icon = ({
     return paths.split(' M ')
   }, [paths])
 
-  // Fallback to Font Awesome React component if icon not found in our set
+  // Fallback to Font Awesome <i> element if icon not found in our set
   if (!paths) {
     console.warn(`Icon "${name}" not found in icon set, using Font Awesome fallback`)
 
-    // Convert icon prefix based on variant
-    const prefix: IconPrefix = variant === 'brands' ? 'fab' : variant === 'regular' ? 'far' : 'fas'
+    // Convert variant to Font Awesome class
+    const variantClass =
+      variant === 'brands' ? 'fa-brands' : variant === 'regular' ? 'fa-regular' : 'fa-solid'
 
-    // Remove 'fa-' prefix if present and convert to FontAwesome icon name format
-    const iconName = name.replace(/^fa-/, '') as IconName
+    // Build Font Awesome classes
+    const faClasses = `fa ${variantClass} ${name} icon-fallback ${className}`.trim()
 
-    // Try to find the icon definition in the library
-    const iconDefinition = findIconDefinition({ prefix, iconName })
-
-    // If icon not found in library, return a placeholder
-    if (!iconDefinition) {
-      console.warn(`Icon "${name}" not found in Font Awesome library either`)
-      return (
-        <span
-          className={`icon-fallback ${className}`}
-          style={{ fontSize: iconSize, color: normalizedColor, ...style }}
-          aria-label={ariaLabel}
-          aria-hidden={ariaLabel ? 'false' : 'true'}
-          {...(ariaLabel ? { role: 'img' } : {})}
-          title={`Icon "${name}" not found`}
-        >
-          ?
-        </span>
-      )
-    }
-
+    console.warn(`Icon "${name}" not found in Font Awesome library either`)
+    
+    // Always render <i> element with Font Awesome classes
     return (
-      <FontAwesomeIcon
-        icon={iconDefinition}
-        className={`icon-fallback ${className}`}
-        style={{ fontSize: iconSize, color: normalizedColor, ...style }}
+      <i
+        className={faClasses}
+        style={{ fontSize: `${iconSize}px`, color: normalizedColor, ...style }}
         aria-label={ariaLabel}
         aria-hidden={ariaLabel ? 'false' : 'true'}
         {...(ariaLabel ? { role: 'img' } : {})}
@@ -105,7 +88,7 @@ export const Icon = ({
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
-      className={`icon-svg ${className}`}
+      className={`icon-svg ${name} ${className}`}
       style={style}
       aria-label={ariaLabel}
       aria-hidden={ariaLabel ? 'false' : 'true'}

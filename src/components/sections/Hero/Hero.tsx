@@ -50,6 +50,12 @@ export const Hero = (): React.ReactElement => {
 
       <AnimatedElement animation="fadeIn" delay={400}>
         <div className={styles.mockupContainer} aria-hidden="true">
+          {/* Productivity stat badge */}
+          <div className={styles.statBadge}>
+            <span className={styles.statValue}>+120%</span>
+            <span className={styles.statLabel}>PRODUCTIVITY</span>
+          </div>
+
           {/* Primary mockup - Notes list view */}
           <div className={styles.mockupPrimary}>
             <picture>

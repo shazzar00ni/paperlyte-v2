@@ -159,6 +159,36 @@
   border-radius: 0;
 }
 
+/* Productivity stat badge */
+.statBadge {
+  position: absolute;
+  top: 10%;
+  right: 5%;
+  z-index: 10;
+  background: var(--color-background);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: var(--border-radius-lg);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  text-align: center;
+}
+
+.statValue {
+  display: block;
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.statLabel {
+  display: block;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  margin-top: var(--spacing-xs);
+  letter-spacing: 0.05em;
+}
+
 /* Mobile styles */
 @media (max-width: 1024px) {
   .container {

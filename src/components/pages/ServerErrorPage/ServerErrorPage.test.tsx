@@ -237,12 +237,15 @@ describe('ServerErrorPage', () => {
     })
 
     it('should render warning icon in error badge', () => {
-      render(<ServerErrorPage />)
+      const { container } = render(<ServerErrorPage />)
 
-      const main = screen.getByRole('main')
-      const svgs = main.querySelectorAll('svg')
-      // Should have multiple SVG icons (server + warning)
-      expect(svgs.length).toBeGreaterThanOrEqual(2)
+      // Find the illustration container which has both server and warning icons
+      const illustration = container.querySelector('[aria-hidden="true"]')
+      expect(illustration).toBeInTheDocument()
+
+      // Should have exactly 2 icons in illustration: server icon + warning icon
+      const iconsInIllustration = illustration?.querySelectorAll('svg')
+      expect(iconsInIllustration?.length).toBe(2)
     })
 
     it('should render retry icon in primary button', () => {

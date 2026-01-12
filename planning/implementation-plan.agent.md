@@ -101,8 +101,8 @@ Use this exact mapping to generate badges deterministically:
 
 ```md
 ---
-goal: [Concise Title Describing the Package Implementation Plan's Goal]
 goal: [Plan Goal]
+version: [Semantic version number, e.g., 1.0.0, 1.1.0, 2.0.0]
 date_created: [YYYY-MM-DD]
 last_updated: [Optional: YYYY-MM-DD]
 owner: [Optional: Team/Individual responsible for this spec]

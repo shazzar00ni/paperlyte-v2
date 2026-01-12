@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
-import { Icon } from '@components/ui/Icon'
 import { LEGAL_CONFIG } from '@/constants/legal'
+import { SocialLink } from './SocialLink'
 import styles from './Footer.module.css'
 
 export const Footer = (): React.ReactElement => {
@@ -71,46 +71,33 @@ export const Footer = (): React.ReactElement => {
             <h3 className={styles.linkGroupTitle}>Connect</h3>
             <ul className={styles.socialIcons} aria-label="Social media links">
               <li>
-                <a
+                <SocialLink
                   href={LEGAL_CONFIG.social.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.socialLink}
-                  aria-label="Follow us on GitHub"
-                >
-                  <Icon name="fa-github" variant="brands" size="xl" />
-                </a>
+                  iconName="fa-github"
+                  ariaLabel="Follow us on GitHub"
+                />
               </li>
               <li>
-                <a
+                <SocialLink
                   href={LEGAL_CONFIG.social.twitter}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.socialLink}
-                  aria-label="Follow us on X (Twitter)"
-                >
-                  <Icon name="fa-x-twitter" variant="brands" size="xl" />
-                </a>
+                  iconName="fa-x-twitter"
+                  ariaLabel="Follow us on X (Twitter)"
+                />
               </li>
               <li>
-                <a
+                <SocialLink
                   href={LEGAL_CONFIG.social.instagram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.socialLink}
-                  aria-label="Follow us on Instagram"
-                >
-                  <Icon name="fa-instagram" variant="brands" size="xl" />
-                </a>
+                  iconName="fa-instagram"
+                  ariaLabel="Follow us on Instagram"
+                />
               </li>
               <li>
-                <a
+                <SocialLink
                   href={`mailto:${LEGAL_CONFIG.company.email}`}
-                  className={styles.socialLink}
-                  aria-label="Email us"
-                >
-                  <Icon name="fa-envelope" size="xl" />
-                </a>
+                  iconName="fa-envelope"
+                  ariaLabel="Email us"
+                  variant="solid"
+                />
               </li>
             </ul>
           </div>

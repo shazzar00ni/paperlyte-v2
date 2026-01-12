@@ -72,41 +72,6 @@
   margin: 0;
 }
 
-.socialLink {
-  color: var(--color-footer-text);
-  transition: color var(--transition-base);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.socialLink:hover,
-.socialLink:focus-visible {
-  color: var(--color-link-accent);
-  outline: none;
-}
-
-.socialLink:focus-visible {
-  outline: 2px solid var(--color-link-accent);
-  outline-offset: 4px;
-  border-radius: 4px;
-  background-color: var(--color-link-accent-bg);
-}
-
-/* Only apply transform animations when motion is allowed */
-@media (prefers-reduced-motion: no-preference) {
-  .socialLink {
-    transition:
-      color var(--transition-base),
-      transform var(--transition-base);
-  }
-
-  .socialLink:hover,
-  .socialLink:focus-visible {
-    transform: translateY(-2px);
-  }
-}
-
 .bottom {
   text-align: center;
 }

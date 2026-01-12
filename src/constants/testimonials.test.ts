@@ -290,7 +290,7 @@ describe('Testimonials Constants', () => {
       const distribution = TESTIMONIALS.reduce((acc, t) => {
         acc[t.rating] = (acc[t.rating] || 0) + 1
         return acc
-      }, {})
+      }, {} as Record<number, number>)
 
       expect(distribution).toMatchSnapshot()
     })

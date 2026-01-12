@@ -139,7 +139,7 @@ describe('Icon', () => {
   it('should handle color prop on fallback elements', () => {
     const { container } = render(<Icon name="missing-icon" color="#FF0000" />)
     // Font Awesome fallback renders SVG, or span if icon not found
-    const fallback = container.querySelector('svg') || container.querySelector('span')
+    const fallback = container.querySelector('svg') ?? container.querySelector('span')
 
     // Fallback uses inline style for color
     expect(fallback).toHaveStyle({ color: '#FF0000' })

@@ -20,9 +20,7 @@ describe('Comparison', () => {
   it('should render subtitle', () => {
     render(<Comparison />)
     expect(
-      screen.getByText(
-        "We believe in transparency. Here's how Paperlyte stacks up against the competition."
-      )
+      screen.getByText("No marketing spin. Here's how Paperlyte compares to the tools you already know.")
     ).toBeInTheDocument()
   })
 

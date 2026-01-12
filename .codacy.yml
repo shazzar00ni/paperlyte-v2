@@ -3,5 +3,5 @@ tools:
   eslint:
     enabled: true
     config:
-      configFile: ".eslintrc.js"
+      configFile: "eslint.config.js"
     typescript: true

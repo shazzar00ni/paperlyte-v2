@@ -6,6 +6,8 @@ import styles from './NotFoundPage.module.css'
 interface NotFoundPageProps {
   /**
    * Custom message to display (optional)
+   * Note: Empty strings ("") are treated as a valid custom message and will display blank.
+   * Omit the prop entirely (undefined) to show the default message.
    */
   message?: string
   /**

@@ -5,6 +5,8 @@ import styles from './OfflinePage.module.css'
 interface OfflinePageProps {
   /**
    * Custom message to display (optional)
+   * Note: Empty strings ("") are treated as a valid custom message and will display blank.
+   * Omit the prop entirely (undefined) to show the default message.
    */
   message?: string
   /**

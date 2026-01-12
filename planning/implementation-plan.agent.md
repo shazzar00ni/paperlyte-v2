@@ -101,13 +101,13 @@ Use this exact mapping to generate badges deterministically:
 
 ```md
 ---
-goal: [Plan Goal]
-version: [Semantic version number, e.g., 1.0.0, 1.1.0, 2.0.0]
-date_created: [YYYY-MM-DD]
-last_updated: [Optional: YYYY-MM-DD]
-owner: [Optional: Team/Individual responsible for this spec]
-status: 'Completed'|'In progress'|'Planned'|'Deprecated'|'On Hold'
-tags: [Optional: List of relevant tags or categories, e.g., `feature`, `upgrade`, `chore`, `architecture`, `migration`, `bug` etc]
+goal: "Implementation Plan Title"
+version: "1.0.0"
+date_created: "YYYY-MM-DD"
+last_updated: "YYYY-MM-DD" # Optional field
+owner: "Team or Individual Name" # Optional field
+status: "Planned" # Valid values: 'Completed', 'In progress', 'Planned', 'Deprecated', 'On Hold'
+tags: ["feature", "architecture"] # Optional: e.g., feature, upgrade, chore, architecture, migration, bug
 ---
 
 # Introduction

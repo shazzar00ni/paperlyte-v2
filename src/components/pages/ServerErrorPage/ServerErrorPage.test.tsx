@@ -245,7 +245,6 @@ describe('ServerErrorPage', () => {
     it('should render retry icon in primary button', () => {
       render(<ServerErrorPage />)
 
-      const retryButton = screen.getByRole('button', { name: /retry loading the page/i })
       const icon = screen.getByTestId('icon-fa-rotate-right')
       expect(icon).toBeInTheDocument()
     })
@@ -253,7 +252,6 @@ describe('ServerErrorPage', () => {
     it('should render home icon in secondary button', () => {
       render(<ServerErrorPage />)
 
-      const homeButton = screen.getByRole('button', { name: /return to homepage/i })
       const icon = screen.getByTestId('icon-fa-home')
       expect(icon).toBeInTheDocument()
     })

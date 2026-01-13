@@ -17,16 +17,21 @@ What Happens Next:
 3. We will fulfill your request or explain why we cannot within 30 days
 4. You will receive a confirmation email when your request is complete
 
-If your request is urgent or you have questions, please reply to this email with "URGENT" in the subject line. Replies with "URGENT" will be routed to our privacy team and acknowledged within 4 business hours.
+If your request is urgent or you have questions, please reply to this email and modify the subject line to include the word "URGENT" (e.g., "Re: [URGENT] Privacy Request Received - Ticket #{{TICKET_ID}}"). Urgent replies will be routed to our privacy team and acknowledged within 4 business hours. Alternatively, you may submit an urgent request directly at {{SUPPORT_URGENT_URL}}.
 
 
 Important Information:
 - Keep this reference number for your records: {{TICKET_ID}}
 - All communications regarding this request will reference this number
-- For security purposes, we will only communicate via this email address. If you are unable to use this address, you may request an update by submitting a secure support request at {{SUPPORT_UPDATE_URL}}. To change your contact email, you must either:
-	- Reply from your original email address, or
-	- Submit a government-issued photo ID and information matching your account via the secure form.
-Processing of contact updates may take up to 5 business days and may require additional verification. During this time, your request may be placed on temporary hold until verification is complete.
+- For security purposes, we will only communicate via this email address.
+
+If you need to change your contact email address for this request:
+	1. Visit our secure contact update form: {{SUPPORT_UPDATE_URL}}
+	2. Provide your original email address and the new address you wish to use
+	3. Verify your identity using account information (account creation date, recent activity)
+	4. For data deletion requests only, we may require government-issued photo ID to confirm identity
+
+Note: Processing contact updates takes up to 5 business days and may require additional verification. Your privacy request will be temporarily paused until the contact update is verified. For faster processing, continue using your current email address if possible.
 
 
 Your Rights:

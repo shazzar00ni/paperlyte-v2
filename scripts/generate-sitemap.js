@@ -2,36 +2,36 @@
 // Dynamically generates sitemap.xml with <lastmod> tags using last git commit date for each page.
 // Usage: node scripts/generate-sitemap.js
 
-const fs = require('fs');
-const path = require('path');
-const { execSync } = require('child_process');
+const fs = require("fs");
+const path = require("path");
+const { execSync } = require("child_process");
 
 // Map URLs to their source files for lastmod tracking
 const pages = [
   {
-    url: 'https://paperlyte.com/',
-    file: path.join(__dirname, '../index.html'),
-    changefreq: 'weekly',
-    priority: '1.0',
+    url: "https://paperlyte.com/",
+    file: path.join(__dirname, "../index.html"),
+    changefreq: "weekly",
+    priority: "1.0",
   },
   {
-    url: 'https://paperlyte.com/privacy',
-    file: path.join(__dirname, '../public/privacy.html'),
-    changefreq: 'monthly',
-    priority: '0.5',
+    url: "https://paperlyte.com/privacy",
+    file: path.join(__dirname, "../public/privacy.html"),
+    changefreq: "monthly",
+    priority: "0.5",
   },
   {
-    url: 'https://paperlyte.com/terms',
-    file: path.join(__dirname, '../public/terms.html'),
-    changefreq: 'monthly',
-    priority: '0.5',
+    url: "https://paperlyte.com/terms",
+    file: path.join(__dirname, "../public/terms.html"),
+    changefreq: "monthly",
+    priority: "0.5",
   },
   {
-    url: 'https://paperlyte.com/data-deletion',
+    url: "https://paperlyte.com/data-deletion",
     // No direct file, so omit lastmod
     file: null,
-    changefreq: 'monthly',
-    priority: '0.3',
+    changefreq: "monthly",
+    priority: "0.3",
   },
 ];
 
@@ -49,10 +49,9 @@ function getLastGitCommitDate(filePath) {
     return null;
   }
   try {
-    const date = execSync(
-      `git log -1 --format=%cs -- "${filePath}"`,
-      { encoding: 'utf8' }
-    ).trim();
+    const date = execSync(`git log -1 --format=%cs -- "${filePath}"`, {
+      encoding: "utf8",
+    }).trim();
     // Validate YYYY-MM-DD
     if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
       return date;
@@ -78,10 +77,10 @@ function buildSitemap(pages) {
     '        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"',
     '        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9',
     '        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">',
-    '',
+    "",
   ];
   for (const page of pages) {
-    lines.push('  <url>');
+    lines.push("  <url>");
     lines.push(`    <loc>${page.url}</loc>`);
     if (page.file) {
       const lastmod = getLastGitCommitDate(page.file);
@@ -89,14 +88,15 @@ function buildSitemap(pages) {
     }
     lines.push(`    <changefreq>${page.changefreq}</changefreq>`);
     lines.push(`    <priority>${page.priority}</priority>`);
-    lines.push('  </url>');
-    lines.push('');
+    lines.push("  </url>");
+    lines.push("");
   }
-  lines.push('</urlset>');
-  return lines.join('\n');
+  lines.push("</urlset>");
+  return lines.join("\n");
 }
 
 const sitemap = buildSitemap(pages);
+<<<<<<< Updated upstream
 const outPath = path.join(__dirname, '../public/sitemap.xml');
 
 try {
@@ -106,3 +106,8 @@ try {
   console.error(`✗ Failed to write sitemap: ${error.message}`);
   process.exit(1);
 }
+=======
+const outPath = path.join(__dirname, "../public/sitemap.xml");
+fs.writeFileSync(outPath, sitemap, "utf8");
+console.log(`Sitemap generated at ${outPath}`);
+>>>>>>> Stashed changes

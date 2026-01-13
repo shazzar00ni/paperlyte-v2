@@ -1,70 +1,68 @@
-import { Button } from "@components/ui/Button";
-import { AnimatedElement } from "@components/ui/AnimatedElement";
-import { EmailCapture } from "@components/ui/EmailCapture";
-import { Section } from "@components/layout/Section";
-import { Icon } from "@components/ui/Icon";
+
 import styles from "./Hero.module.css";
 
-export const Hero = (): React.ReactElement => {
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
+export const Hero: React.FC = () => {
   return (
-    <Section id="hero" className={styles.hero} padding="large">
-      <div className={styles.content}>
-        <AnimatedElement animation="fadeIn">
-          <h1 className={styles.headline}>
-            Your thoughts, unchained from complexity
+    <section className={styles.hero}>
+      <div className={styles.container}>
+        <div className={styles.content}>
+          <div className={styles.badge}>
+            <span className={styles.sparkle}>✨</span> Version 2.0 is now live
+          </div>
+          <h1 className={styles.title}>
+            Thoughts,
+            <br />
+            <span className={styles.italic}>organized.</span>
           </h1>
-        </AnimatedElement>
-
-        <AnimatedElement animation="fadeIn" delay={150}>
-          <p className={styles.subheadline}>
-            Lightning-fast, distraction-free note-taking. No bloat, no friction.
-            Just you and your ideas, the way it should be.
+          <p className={styles.description}>
+            The minimal workspace for busy professionals. Capture ideas,
+            structure documents, and focus on what truly matters—without the
+            clutter.
           </p>
-        </AnimatedElement>
-
-        <AnimatedElement animation="fadeIn" delay={300}>
-          <div className={styles.emailWrapper}>
-            <EmailCapture
-              variant="inline"
-              placeholder="your@email.com"
-              buttonText="Join Waitlist"
-            />
+          <div className={styles.actions}>
+            <button className={styles.primaryBtn}>
+              Start Writing for Free <span className={styles.arrow}>→</span>
+            </button>
+            <button className={styles.secondaryBtn}>View the Demo</button>
           </div>
-        </AnimatedElement>
+        </div>
+        <div className={styles.visual}>
+          <div className={styles.card}>
+            <div className={styles.cardHeader}>
+              <div className={styles.dot}></div>
+              <div className={styles.line}></div>
+            </div>
+            <div className={styles.cardBody}>
+              <div className={styles.skeletonBlock}></div>
+              <div className={styles.skeletonLine}></div>
+              <div className={styles.skeletonLine}></div>
+              <div className={styles.skeletonLine}></div>
+              <div className={styles.skeletonLineShort}></div>
 
-        <AnimatedElement animation="fadeIn" delay={375}>
-          <div className={styles.secondaryCta}>
-            <Button
-              variant="ghost"
-              size="medium"
-              onClick={() => scrollToSection("features")}
-            >
-              See Features →
-            </Button>
+              <div className={styles.checkboxGroup}>
+                <div className={styles.checkboxItem}>
+                  <div className={styles.checkbox}></div>
+                  <div className={styles.lineSmall}></div>
+                </div>
+                <div className={styles.checkboxItem}>
+                  <div className={styles.checkbox}></div>
+                  <div className={styles.lineSmall}></div>
+                </div>
+              </div>
+            </div>
+            <div className={styles.cardFooter}>
+              <div className={styles.stat}>
+                <span className={styles.statLabel}>PRODUCTIVITY</span>
+                <span className={styles.statValue}>+120%</span>
+                <span className={styles.statDesc}>
+                  Focus increase reported by users
+                </span>
+              </div>
+              <button className={styles.shareBtn}>Share</button>
+            </div>
           </div>
-        </AnimatedElement>
-
-        <AnimatedElement animation="fadeIn" delay={450}>
-          <div className={styles.tags}>
-            <span className={styles.tag}>
-              <Icon name="fa-bolt" size="sm" /> Lightning Fast
-            </span>
-            <span className={styles.tag}>
-              <Icon name="fa-lock" size="sm" /> Privacy First
-            </span>
-            <span className={styles.tag}>
-              <Icon name="fa-wifi-slash" size="sm" /> Offline Ready
-            </span>
-          </div>
-        </AnimatedElement>
+        </div>
       </div>
-    </Section>
+    </section>
   );
 };

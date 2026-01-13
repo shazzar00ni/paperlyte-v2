@@ -20,13 +20,71 @@ const SIZE_MAP = {
   "3x": 48,
 } as const;
 
-export const Icon = ({
+export const Icon = React.memo(({
   name,
   size = "md",
   className = "",
   ariaLabel,
   color,
-}: IconProps): React.ReactElement => {
+}: IconProps) => {
+  const iconSize = SIZE_MAP[size];
+  const paths = iconPaths[name];
+  const viewBox = getIconViewBox(name);
+
+  // Memoize path array splitting for better performance
+  const pathArray = useMemo(() => {
+    if (!paths) return [];
+    return paths.split(" M ");
+  }, [paths]);
+
+  // Fallback to Font Awesome class if icon not found in our set
+  if (!paths) {
+    console.warn(
+      `Icon "${name}" not found in icon set, using Font Awesome fallback`,
+    );
+
+    return (
+      <span
+        className={`fa-solid ${name} icon-fallback ${className}`}
+        style={{ fontSize: iconSize }}
+        aria-label={ariaLabel}
+        aria-hidden={ariaLabel ? "false" : "true"}
+        {...(ariaLabel ? { role: "img" } : {})}
+      />
+    );
+  }
+
+  return (
+    <svg
+      width={iconSize}
+      height={iconSize}
+      viewBox={viewBox}
+      fill="none"
+      stroke={color || "currentColor"}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={`icon-svg ${className}`}
+      aria-label={ariaLabel}
+      aria-hidden={ariaLabel ? "false" : "true"}
+      {...(ariaLabel && { role: "img" })}
+    >
+      {pathArray.map((pathData, index) => (
+        <path
+          key={index}
+          d={index === 0 ? pathData : `M ${pathData}`}
+          fill={
+            name.includes("circle") || name.includes("shield")
+              ? "none"
+              : undefined
+          }
+        />
+      ))}
+    </svg>
+  );
+});
+
+Icon.displayName = "Icon";
   const iconSize = SIZE_MAP[size];
   const paths = iconPaths[name];
   const viewBox = getIconViewBox(name);

@@ -31,7 +31,7 @@ FILES_TO_PROCESS.forEach((file) => {
     let content = originalContent;
 
     // Replace placeholder with actual build date
-    content = content.replace(/{{BUILD_DATE}}/g, BUILD_DATE);
+    content = content.replace(/\{\{BUILD_DATE\}\}/g, BUILD_DATE);
 
     // Verify that placeholders were actually replaced
     if (originalContent === content) {

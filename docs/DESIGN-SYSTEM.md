@@ -143,8 +143,8 @@ The primary color is **Purple 600** (`#7C3AED`), chosen for its vibrant, modern 
 #### CSS Variable
 
 ```css
---font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-  sans-serif;
+--font-family:
+  "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 ```
 
 #### Tailwind Classes

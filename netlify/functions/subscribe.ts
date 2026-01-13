@@ -85,7 +85,7 @@ function checkRateLimit(ip: string): boolean {
  * @throws If the ConvertKit response is not valid JSON or does not match the expected schema
  */
 async function subscribeToConvertKit(
-  email: string
+  email: string,
 ): Promise<ConvertKitResponse> {
   const apiKey = process.env.CONVERTKIT_API_KEY;
   const formId = process.env.CONVERTKIT_FORM_ID;
@@ -120,9 +120,14 @@ async function subscribeToConvertKit(
         "Content-Type": "application/json",
       },
       body: JSON.stringify(requestBody),
+<<<<<<< Updated upstream
       signal: controller.signal,
     }
   ).finally(() => clearTimeout(timeoutId));
+=======
+    },
+  );
+>>>>>>> Stashed changes
 
   if (!response.ok) {
     // Log error without PII (don't log full error response which may contain email)
@@ -145,7 +150,7 @@ async function subscribeToConvertKit(
   } catch (error) {
     console.error(
       "ConvertKit response validation failed:",
-      error instanceof Error ? error.message : "Unknown error"
+      error instanceof Error ? error.message : "Unknown error",
     );
     throw new Error("Invalid response from email service");
   }
@@ -158,10 +163,23 @@ export const handler: Handler = async (event: HandlerEvent) => {
   // CORS headers - restrict to allowed origin for security
   const allowedOrigin = process.env.ALLOWED_ORIGIN || "https://paperlyte.com";
   const origin = event.headers.origin || event.headers.Origin || "";
+<<<<<<< Updated upstream
   const isAllowedOrigin = origin === allowedOrigin;
 
   const headers = {
     ...(isAllowedOrigin && { "Access-Control-Allow-Origin": allowedOrigin }),
+=======
+  if (origin !== allowedOrigin) {
+    // Origin not allowed, return 403 with no CORS headers
+    return {
+      statusCode: 403,
+      body: JSON.stringify({ error: "Origin not allowed" }),
+    };
+  }
+
+  const headers = {
+    "Access-Control-Allow-Origin": allowedOrigin,
+>>>>>>> Stashed changes
     "Access-Control-Allow-Headers": "Content-Type",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Content-Type": "application/json",
@@ -254,7 +272,7 @@ export const handler: Handler = async (event: HandlerEvent) => {
     // Log error type without PII (don't log error object which may contain email)
     console.error(
       "Subscription error:",
-      error instanceof Error ? error.message : "Unknown error"
+      error instanceof Error ? error.message : "Unknown error",
     );
 
     // Don't expose internal errors to client

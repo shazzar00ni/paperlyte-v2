@@ -126,15 +126,15 @@ Use this checklist to track your progress toward legal compliance and production
 
 #### Search and Replace
 
-- [ ] `[Company Legal Name]` → **\*\*\*\***\_**\*\*\*\***
-- [ ] `[Street Address]` → **\*\*\*\***\_**\*\*\*\***
-- [ ] `[City]` → **\*\*\*\***\_**\*\*\*\***
-- [ ] `[State]` → **\*\*\*\***\_**\*\*\*\***
-- [ ] `[ZIP]` → **\*\*\*\***\_**\*\*\*\***
-- [ ] `[Country]` → **\*\*\*\***\_**\*\*\*\***
-- [ ] `[Cloud provider name]` → **\*\*\*\***\_**\*\*\*\***
-- [ ] `[region]` → **\*\*\*\***\_**\*\*\*\***
-- [ ] `[primary region]` → **\*\*\*\***\_**\*\*\*\***
+- [ ] `[Company Legal Name]` → **\_**
+- [ ] `[Street Address]` → **\_**
+- [ ] `[City]` → **\_**
+- [ ] `[State]` → **\_**
+- [ ] `[ZIP]` → **\_**
+- [ ] `[Country]` → **\_**
+- [ ] `[Cloud provider name]` → **\_**
+- [ ] `[region]` → **\_**
+- [ ] `[primary region]` → **\_**
 
 #### Content Review
 
@@ -166,12 +166,12 @@ Use this checklist to track your progress toward legal compliance and production
 
 #### Search and Replace
 
-- [ ] `[Company Legal Name]` → **\*\*\*\***\_**\*\*\*\***
-- [ ] `[Street Address]` → **\*\*\*\***\_**\*\*\*\***
-- [ ] `[City, State, ZIP]` → **\*\*\*\***\_**\*\*\*\***
-- [ ] `[Country]` → **\*\*\*\***\_**\*\*\*\***
-- [ ] `[State]` → **\*\*\*\***\_**\*\*\*\*** (governing law)
-- [ ] `[State/Country]` → **\*\*\*\***\_**\*\*\*\***
+- [ ] `[Company Legal Name]` → **\_**
+- [ ] `[Street Address]` → **\_**
+- [ ] `[City, State, ZIP]` → **\_**
+- [ ] `[Country]` → **\_**
+- [ ] `[State]` → **\_** (governing law)
+- [ ] `[State/Country]` → **\_**
 
 #### Critical Sections (⚠️ Requires Attorney Review)
 
@@ -223,7 +223,7 @@ Use this checklist to track your progress toward legal compliance and production
 
 ### Email Provider Setup
 
-**Provider**: **\*\*\*\***\_**\*\*\*\***
+**Provider**: **\_**
 
 - [ ] Domain verified with email provider
 - [ ] SPF record configured
@@ -236,7 +236,7 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] SMTP/TLS enforced for all inbound and outbound mail (test with mail-tester.com or similar)
   - [ ] Provider supports and enforces TLS 1.2+ for all connections
   - [ ] Document TLS/SSL configuration and verification steps
-  - [ ] Responsible owner assigned: **\*\*\*\***\_**\*\*\*\***
+  - [ ] Responsible owner assigned: **\_**
 
 ### Auto-Responders
 
@@ -262,7 +262,7 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] Attachment and keyword blocking rules set (e.g., block SSNs, credit card numbers)
   - [ ] Exception workflow documented for legitimate business needs
   - [ ] DLP policy and rules documented
-  - [ ] Responsible owner assigned: **\*\*\*\***\_**\*\*\*\***
+  - [ ] Responsible owner assigned: **\_**
 
 ### Testing
 
@@ -279,7 +279,7 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] Email retention periods defined and documented for each account type
   - [ ] Automated archiving configured per policy
   - [ ] Legal hold process defined and tested (e.g., for litigation or regulatory requirements)
-  - [ ] Policy owner and escalation contact assigned: **\*\*\*\***\_**\*\*\*\***
+  - [ ] Policy owner and escalation contact assigned: **\_**
   - [ ] Verification: Review policy documentation and test archiving/legal hold procedures
 
 ### Email Security & Compliance
@@ -544,15 +544,17 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] Jurisdiction-specific money transmitter license requirements reviewed (e.g., US states, EU, UK, AU, CA, etc.)
   - [ ] Exemptions or registration thresholds analyzed for each region of operation
   - [ ] Documentation of license status or exemption for each relevant jurisdiction
+  - [ ] **Supporting documentation linked**: license copies, exemption letters, or legal opinions confirming compliance status for audit trail
 - [ ] **Attorney confirms compliance with region-specific refund window and consumer protection regulations**
   - [ ] Minimum refund/cancellation periods by jurisdiction (e.g., EU 14-day right of withdrawal, US state laws, UK, AU, etc.)
   - [ ] Local requirements for digital goods/services refunds verified
   - [ ] Policy and user disclosures updated to reflect local rules
+  - [ ] **Supporting documentation linked**: jurisdiction-specific refund policy versions, consumer protection compliance memos
 - [ ] **Attorney confirms all local payment and tax registration requirements are met**
-
   - [ ] Local payment processor registration/notification requirements checked (e.g., India, Brazil, EU, US states)
   - [ ] Local sales tax/VAT/GST registration and remittance obligations confirmed for each region
   - [ ] Documentation of registration numbers and compliance status
+  - [ ] **Supporting documentation linked**: tax registration certificates, payment processor registration confirmations, compliance status reports
 
 - [ ] Payment Processing - PCI DSS compliance (if payments processed)
 - [ ] Payment Processing - Third-party payment processor terms reviewed
@@ -892,8 +894,13 @@ Use this checklist to track your progress toward legal compliance and production
     - [ ] Weekly automated scans for first 90 days
     - [ ] Monthly automated scans thereafter
   - [ ] Blocker policy:
-    - [ ] WCAG AA is a hard blocker for launch unless counsel confirms jurisdiction allows post-launch remediation
-    - [ ] Consult legal counsel for jurisdictional minimums and document any exceptions
+    - [ ] **WCAG AA compliance is a strict requirement for launch** - all critical and high severity issues must be resolved before production deployment
+    - [ ] Exceptions permitted only for genuinely unavoidable legacy constraints (e.g., immovable third-party inaccessible components) and must be:
+      - [ ] Documented in writing with legal counsel approval
+      - [ ] Limited to non-core functionality only
+      - [ ] Accompanied by specific remediation timeline (not to exceed 90 days)
+      - [ ] Disclosed in accessibility statement with alternative access method provided
+    - [ ] Post-launch remediation NOT permitted for core user journeys or primary functionality
   - [ ] Accessibility statement:
     - [ ] Conformance level documented (A, AA, AAA)
     - [ ] Known limitations listed
@@ -986,10 +993,10 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] GPL/AGPL compliance verified
   - [ ] License compatibility checked
 
-**Attorney Name**: **\*\*\*\***\_**\*\*\*\***
-**Contact**: **\*\*\*\***\_**\*\*\*\***
-**Review Date**: **\*\*\*\***\_**\*\*\*\***
-**Approval Date**: **\*\*\*\***\_**\*\*\*\***
+**Attorney Name**: **\_**
+**Contact**: **\_**
+**Review Date**: **\_**
+**Approval Date**: **\_**
 
 **Status**: ⬜ Not Started | 🟡 In Progress | ✅ Complete
 
@@ -1008,9 +1015,9 @@ Use this checklist to track your progress toward legal compliance and production
 
 **URLs**:
 
-- Privacy Policy: **\*\*\*\***\_**\*\*\*\***
-- Terms of Service: **\*\*\*\***\_**\*\*\*\***
-- Other: **\*\*\*\***\_**\*\*\*\***
+- Privacy Policy: **\_**
+- Terms of Service: **\_**
+- Other: **\_**
 
 ### Document Conversion
 
@@ -1143,7 +1150,7 @@ Use this checklist to track your progress toward legal compliance and production
   - [ ] Commitment to accessibility stated
   - [ ] Remediation timeline for outstanding issues
   - [ ] Link from footer to accessibility statement
-- [ ] **Accessibility Statement URL**: **\*\*\*\***\_**\*\*\*\***
+- [ ] **Accessibility Statement URL**: **\_**
 
 #### Ongoing Accessibility Maintenance
 
@@ -1311,6 +1318,16 @@ Before going to production, verify:
 - **Email Provider Support**: **\_**
 - **Hosting Provider Support**: **\_**
 
+### Contact Maintenance
+
+- [ ] **Quarterly Contact Audit Required** (every 3 months)
+  - [ ] Verify all contacts are current and reachable
+  - [ ] Update any changed phone numbers, emails, or personnel
+  - [ ] Test emergency escalation paths
+  - [ ] Document audit completion date: **\_**
+  - [ ] Next audit due: **\_**
+  - **Rationale**: Stale contact information is a common compliance failure point during incidents or regulatory inquiries
+
 ---
 
 ## 📈 Metrics to Track
@@ -1335,6 +1352,56 @@ When setting targets for compliance metrics, consider:
   - A compliance violation is any missed legal/regulatory deadline (e.g., >30 days for GDPR/CCPA), failure to honor opt-outs, unremediated security incident, or unapproved policy deviation. Severity: Minor (late response, quickly remediated), Major (user harm, regulatory notice), Critical (regulatory action, data breach).
 - **4. Tracking & Tools:**
   - Use ticketing systems (e.g., Zendesk, Freshdesk), analytics dashboards, or shared spreadsheets. Review metrics at least monthly; automate reporting where possible. Dashboards should highlight overdue items and trends.
+
+### Accountability & Enforcement
+
+**Roles & Responsibilities:**
+
+- **Metrics Owner**: **\_** (typically Privacy Officer, Legal Lead, or Compliance Manager)
+  - Responsible for monthly metric collection and reporting
+  - Maintains dashboards and tracking systems
+  - Identifies trends and anomalies
+  - Escalates violations per policy below
+
+- **Review Authority**: **\_** (typically Legal Lead or executive stakeholder)
+  - Reviews monthly metric reports
+  - Approves corrective action plans
+  - Escalates to executive team when needed
+
+- **Audit Frequency**:
+  - **Monthly**: Metrics owner reviews all compliance metrics
+  - **Quarterly**: Review authority conducts formal audit of metrics accuracy and completeness
+  - **Annually**: External attorney or auditor reviews metrics and processes (recommended)
+
+**Escalation Procedures:**
+
+When metrics slip or violations occur, follow this escalation path:
+
+1. **Minor Issues** (e.g., approaching deadline, single missed target):
+   - Metrics owner notifies Review authority within 48 hours
+   - Document root cause and corrective action
+   - No executive escalation required
+
+2. **Major Issues** (e.g., pattern of missed targets, regulatory notice):
+   - Immediate notification to Review authority and Legal Lead
+   - Executive briefing within 3 business days
+   - Corrective action plan with timeline
+   - Weekly progress reporting until resolved
+
+3. **Critical Issues** (e.g., regulatory violation, data breach):
+   - Immediate escalation to executive team, attorney, and DPO (if applicable)
+   - Activate incident response plan
+   - Daily status reporting until resolved
+   - Post-incident review required
+
+**Accountability Checkpoints:**
+
+- [ ] Metrics owner assigned and trained: **\_**
+- [ ] Review authority assigned: **\_**
+- [ ] Monthly reporting schedule established (e.g., 5th business day of each month)
+- [ ] Escalation contacts documented in Key Contacts section
+- [ ] First metric audit completed: **\_**
+- [ ] Metrics tracking system URL/location: **\_**
 
 **Privacy Requests**
 

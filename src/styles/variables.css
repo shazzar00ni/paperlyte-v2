@@ -1,190 +1,45 @@
 :root {
-  /* Colors - Paper-inspired palette (Light Mode) */
-  --color-primary: #7c3aed; /* Purple 600 */
-  --color-primary-dark: #6d28d9; /* Purple 700 */
-  --color-primary-light: #a78bfa; /* Purple 400 */
-  --color-primary-faint: rgba(
-    124,
-    58,
-    237,
-    0.1
-  ); /* 10% opacity for backgrounds */
-  --color-primary-fainter: rgba(
-    124,
-    58,
-    237,
-    0.05
-  ); /* 5% opacity for subtle backgrounds */
-  --color-background: #ffffff;
-  --color-surface: #f9fafb; /* Gray 50 */
-  --color-text-primary: #111827; /* Gray 900 */
-  --color-text-secondary: #6b7280; /* Gray 500 */
-  --color-text-on-primary: #ffffff; /* White text on primary background */
-  --color-border: #e5e7eb; /* Gray 200 */
+  /* Colors */
+  --color-black: #000000;
+  --color-white: #ffffff;
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #111827;
 
   /* Semantic Colors */
-  --color-success: #22c55e; /* Green 500 */
-  --color-success-bg: rgba(34, 197, 94, 0.1);
-  --color-success-border: rgba(34, 197, 94, 0.3);
-  --color-error: #dc2626; /* Red 600 */
-  --color-error-bg: rgba(239, 68, 68, 0.1);
-  --color-error-border: rgba(239, 68, 68, 0.3);
+  --color-primary: var(--color-black);
+  --color-primary-hover: var(--color-gray-800);
+  --color-background: var(--color-white);
+  --color-text-primary: var(--color-black);
+  --color-text-secondary: var(--color-gray-600);
+  --color-border: var(--color-gray-200);
 
   /* Typography */
-  --font-family:
-    "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    sans-serif;
-  --font-size-xs: 0.75rem; /* 12px */
-  --font-size-sm: 0.875rem; /* 14px */
-  --font-size-base: 1rem; /* 16px */
-  --font-size-lg: 1.125rem; /* 18px */
-  --font-size-xl: 1.25rem; /* 20px */
-  --font-size-2xl: 1.5rem; /* 24px */
-  --font-size-3xl: 1.875rem; /* 30px */
-  --font-size-4xl: 2.25rem; /* 36px */
-  --font-size-5xl: 3rem; /* 48px */
-  --font-weight-normal: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
-  --line-height-tight: 1.25;
-  --line-height-normal: 1.5;
-  --line-height-relaxed: 1.75;
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-serif: "Playfair Display", Georgia, serif;
 
   /* Spacing */
-  --spacing-xs: 0.5rem; /* 8px */
-  --spacing-sm: 1rem; /* 16px */
-  --spacing-md: 1.5rem; /* 24px */
-  --spacing-lg: 2rem; /* 32px */
-  --spacing-xl: 3rem; /* 48px */
-  --spacing-2xl: 4rem; /* 64px */
-  --spacing-3xl: 6rem; /* 96px */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+  --spacing-3xl: 4rem;
 
-  /* Layout */
-  --max-width: 1280px;
-  --max-width-content: 1024px;
-  --header-height: 64px;
-  --border-radius-sm: 0.25rem; /* 4px */
-  --border-radius-md: 0.5rem; /* 8px */
-  --border-radius-lg: 1rem; /* 16px */
+  /* Border Radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 1rem;
+  --radius-full: 9999px;
 
-  /* Icon Sizes */
-  --icon-size-sm: 3.5rem; /* 56px */
-  --icon-size-base: 4rem; /* 64px */
-
-  /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-
-  /* Transitions (automatically disabled for users with prefers-reduced-motion) */
-  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
-
-  /* Animation duration (0.01ms used instead of 0ms to prevent breaking some animations) */
-  --animation-duration: 250ms;
-  --reduced-motion-duration: 0.01ms;
-
-  /* Z-index layers */
-  --z-header: 1000;
-  --z-modal: 2000;
-  --z-tooltip: 3000;
-
-  /* Theme transition */
-  color-scheme: light;
-}
-
-/* Dark Mode */
-[data-theme="dark"] {
-  /* Colors - Dark Mode palette */
-  --color-primary: #7c3aed; /* Purple 600 - WCAG AA compliant 6.5:1 contrast with white */
-  --color-primary-dark: #6d28d9; /* Purple 700 */
-  --color-primary-light: #8b5cf6; /* Purple 500 */
-  --color-primary-faint: rgba(
-    124,
-    58,
-    237,
-    0.1
-  ); /* 10% opacity for backgrounds */
-  --color-primary-fainter: rgba(
-    124,
-    58,
-    237,
-    0.05
-  ); /* 5% opacity for subtle backgrounds */
-  --color-background: #0f172a; /* Slate 900 */
-  --color-surface: #1e293b; /* Slate 800 */
-  --color-text-primary: #f1f5f9; /* Slate 100 */
-  --color-text-secondary: #94a3b8; /* Slate 400 */
-  --color-border: #334155; /* Slate 700 */
-
-  /* Semantic Colors - Dark Mode */
-  --color-success: #4ade80; /* Green 400 - higher contrast for dark backgrounds */
-  --color-success-bg: rgba(74, 222, 128, 0.15);
-  --color-success-border: rgba(74, 222, 128, 0.35);
-  --color-error: #f87171; /* Red 400 - higher contrast for dark backgrounds */
-  --color-error-bg: rgba(248, 113, 113, 0.15);
-  --color-error-border: rgba(248, 113, 113, 0.35);
-
-  /* Theme transition */
-  color-scheme: dark;
-}
-
-/* System preference detection */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --color-primary: #7c3aed; /* Purple 600 - WCAG AA compliant 6.5:1 contrast */
-    --color-primary-dark: #6d28d9; /* Purple 700 */
-    --color-primary-light: #8b5cf6; /* Purple 500 */
-    --color-primary-faint: rgba(
-      124,
-      58,
-      237,
-      0.1
-    ); /* 10% opacity for backgrounds */
-    --color-primary-fainter: rgba(
-      124,
-      58,
-      237,
-      0.05
-    ); /* 5% opacity for subtle backgrounds */
-    --color-background: #0f172a;
-    --color-surface: #1e293b;
-    --color-text-primary: #f1f5f9;
-    --color-text-secondary: #94a3b8;
-    --color-border: #334155;
-
-    /* Semantic Colors - Dark Mode */
-    --color-success: #4ade80;
-    --color-success-bg: rgba(74, 222, 128, 0.15);
-    --color-success-border: rgba(74, 222, 128, 0.35);
-    --color-error: #f87171;
-    --color-error-bg: rgba(248, 113, 113, 0.15);
-    --color-error-border: rgba(248, 113, 113, 0.35);
-
-    color-scheme: dark;
-  }
-}
-
-/* Responsive typography adjustments - Tablet and smaller */
-@media (max-width: 768px) {
-  :root {
-    --font-size-4xl: 1.875rem; /* 30px on tablet */
-    --font-size-5xl: 2.25rem; /* 36px on tablet */
-    --spacing-3xl: 4rem; /* Reduce on tablet/mobile */
-  }
-}
-
-/* Extra small screens (phones < 480px) */
-@media (max-width: 480px) {
-  :root {
-    --font-size-3xl: 1.5rem; /* 24px on small phones */
-    --font-size-4xl: 1.75rem; /* 28px on small phones */
-    --font-size-5xl: 2rem; /* 32px on small phones */
-    --spacing-md: 1rem; /* 16px padding on small screens */
-    --spacing-2xl: 3rem; /* 48px on small screens */
-    --spacing-3xl: 3rem; /* 48px on small screens */
-  }
+  /* Transitions */
+  --transition-base: all 0.2s ease-in-out;
 }

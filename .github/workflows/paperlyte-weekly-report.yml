@@ -1,0 +1,86 @@
+name: Weekly Report
+
+on:
+  schedule:
+    - cron: "0 0 * * 0"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: read
+  pull-requests: read
+
+jobs:
+  build-report:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install Python deps
+        run: pip install requests pandas
+
+      - name: Generate weekly report
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python <<EOF
+          import requests, pandas as pd, datetime as dt
+          import os
+          # Settings
+          owner = "shazzar00ni"
+          repos = ["paperlyte", "paperlyte-v2"]
+          since = (dt.datetime.utcnow() - dt.timedelta(days=7)).isoformat() + "Z"
+          rows = []
+          def add(type, title, date, host):
+              rows.append([type, title, date, host])
+          for repo in repos:
+              api = f"https://api.github.com/repos/{owner}/{repo}"
+              # Issues & PRs
+              issues = requests.get(
+                  f"{api}/issues?since={since}&state=all",
+                  headers={"Authorization": f"token {os.environ['GH_TOKEN']}"}
+              ).json()
+              for i in issues:
+                  title = i.get("title")
+                  date = i.get("updated_at")
+                  is_pr = "pull_request" in i
+                  add("Pull Request" if is_pr else "Issue", title, date, "github.com")
+              # Commits
+              commits = requests.get(
+                  f"{api}/commits?since={since}",
+                  headers={"Authorization": f"token {os.environ['GH_TOKEN']}"}
+              ).json()
+              for c in commits:
+                  title = c["commit"]["message"].split("\n")[0]
+                  date = c["commit"]["author"]["date"]
+                  add("Commit", title, date, "github.com")
+              # Releases
+              releases = requests.get(
+                  f"{api}/releases",
+                  headers={"Authorization": f"token {os.environ['GH_TOKEN']}"}
+              ).json()
+              for r in releases:
+                  date = r.get("published_at")
+                  if date and date > since:
+                      add("Release", r.get("name") or r.get("tag_name"), date, "github.com")
+          df = pd.DataFrame(rows, columns=["Type","Title","Last Visited","Host"])
+          folder = "reports/weekly"
+          os.makedirs(folder, exist_ok=True)
+          filename = f"{folder}/week-{dt.datetime.utcnow().date()}-paperlyte-activity.csv"
+          df.to_csv(filename, index=False)
+          print("Generated:", filename)
+          EOF
+      - name: Commit report
+        run: |
+          git config user.name "Paperlyte Bot"
+          git config user.email "actions@github.com"
+          git add reports/weekly/*.csv
+          git commit -m "Weekly Paperlyte activity report" || echo "No changes"
+          git push

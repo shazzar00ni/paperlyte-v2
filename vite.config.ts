@@ -46,7 +46,7 @@ export default defineConfig({
       },
     },
     // Performance optimizations
-    chunkSizeWarningLimit: 1000, // Intentionally raised to suppress warnings for large vendor chunks. TODO: Monitor bundle size and lower if needed.
+    chunkSizeWarningLimit: 500, // Use default warning limit to catch large bundle chunks.
   },
   server: {
     port: 3000,

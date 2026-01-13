@@ -1,102 +1,114 @@
-import { Icon } from "@components/ui/Icon";
-import { LEGAL_CONFIG } from "@/constants/legal";
+import React from "react";
 import styles from "./Footer.module.css";
 
-export const Footer = (): React.ReactElement => {
-  const currentYear = new Date().getFullYear();
-
+export const Footer: React.FC = () => {
   return (
     <footer className={styles.footer}>
       <div className={styles.container}>
-        <div className={styles.brand}>
-          <div className={styles.logo}>
-            <Icon name="fa-feather" size="lg" ariaLabel="Paperlyte logo" />
-            <span className={styles.logoText}>Paperlyte</span>
-          </div>
-          <p className={styles.tagline}>
-            Your thoughts, unchained from complexity
-          </p>
-        </div>
-
-        <div className={styles.links}>
-          <div className={styles.linkGroup}>
-            <h3 className={styles.linkGroupTitle}>Product</h3>
-            <ul className={styles.linkList}>
-              <li>
-                <a href="#features" className={styles.link}>
-                  Features
-                </a>
-              </li>
-              <li>
-                <a href="#download" className={styles.link}>
-                  Download
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          <div className={styles.linkGroup}>
-            <h3 className={styles.linkGroupTitle}>Legal</h3>
-            <ul className={styles.linkList}>
-              <li>
-                <a
-                  href={LEGAL_CONFIG.documents.privacy}
-                  className={styles.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Privacy Policy
-                </a>
-              </li>
-              <li>
-                <a
-                  href={LEGAL_CONFIG.documents.terms}
-                  className={styles.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Terms of Service
-                </a>
-              </li>
-            </ul>
+        <div className={styles.top}>
+          <div className={styles.brand}>
+            <div className={styles.logo}>
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle cx="12" cy="12" r="12" fill="black" />
+                <path
+                  d="M15 9L9 15M9 9L15 15"
+                  stroke="white"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+              </svg>
+              <span>Noted.</span>
+            </div>
+            <p className={styles.tagline}>
+              Designed for clarity in a chaotic world.
+            </p>
+            <p className={styles.copyright}>© 2024 All rights reserved.</p>
           </div>
 
-          <div className={styles.linkGroup}>
-            <h3 className={styles.linkGroupTitle}>Connect</h3>
-            <div className={styles.socialLinks}>
-              <a
-                href={LEGAL_CONFIG.social.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.socialLink}
-                aria-label="GitHub"
-              >
-                <Icon name="fa-github" size="lg" />
-              </a>
-              <a
-                href={LEGAL_CONFIG.social.twitter}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.socialLink}
-                aria-label="Twitter"
-              >
-                <Icon name="fa-twitter" size="lg" />
-              </a>
-              <a
-                href={`mailto:${LEGAL_CONFIG.company.email}`}
-                className={styles.socialLink}
-                aria-label="Email"
-              >
-                <Icon name="fa-envelope" size="lg" />
-              </a>
+          <div className={styles.links}>
+            <div className={styles.column}>
+              <h4 className={styles.heading}>Product</h4>
+              <ul>
+                <li>
+                  <a href="#features">Features</a>
+                </li>
+                <li>
+                  <a href="#mobile">Mobile App</a>
+                </li>
+                <li>
+                  <a href="#desktop">Desktop App</a>
+                </li>
+                <li>
+                  <a href="#pricing">Pricing</a>
+                </li>
+              </ul>
+            </div>
+            <div className={styles.column}>
+              <h4 className={styles.heading}>Company</h4>
+              <ul>
+                <li>
+                  <a href="#about">About</a>
+                </li>
+                <li>
+                  <a href="#blog">Blog</a>
+                </li>
+                <li>
+                  <a href="#careers">Careers</a>
+                </li>
+                <li>
+                  <a href="#contact">Contact</a>
+                </li>
+              </ul>
+            </div>
+            <div className={styles.column}>
+              <h4 className={styles.heading}>Connect</h4>
+              <ul>
+                <li>
+                  <a
+                    href="https://twitter.com/shazzar00ni"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Twitter"
+                  >
+                    Twitter
+                  </a>
+                </li>
+                <li>
+                  <a href="#instagram">Instagram</a>
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/shazzar00ni/paperlyte-v2"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="GitHub"
+                  >
+                    GitHub
+                  </a>
+                </li>
+                <li>
+                  <a href="#email">Email</a>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
 
         <div className={styles.bottom}>
-          <p className={styles.copyright}>
-            © {currentYear} {LEGAL_CONFIG.company.name}. All rights reserved.
-          </p>
+          <div className={styles.trustLabel}>TRUSTED BY TEAMS AT</div>
+          <div className={styles.logos}>
+            <span className={styles.companyLogo}>Acme Corp</span>
+            <span className={styles.companyLogo}>Global</span>
+            <span className={styles.companyLogo}>Nebula</span>
+            <span className={styles.companyLogo}>Vertex</span>
+            <span className={styles.companyLogo}>Horizon</span>
+          </div>
         </div>
       </div>
     </footer>

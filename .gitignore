@@ -32,3 +32,6 @@ dist-ssr
 # Deployment platforms
 .netlify
 .vercel
+
+# Lighthouse CI reports (auto-generated artifacts)
+.lighthouseci

@@ -64,7 +64,6 @@ function findPlaceholders(filePath: string): PlaceholderMatch[] {
       const matches = line.matchAll(placeholderRegex);
       for (const match of matches) {
         // Skip markdown links and legitimate brackets
-        const beforeMatch = line.substring(0, match.index);
         const afterMatch = line.substring(match.index + match[0].length);
         const isMarkdownLink = afterMatch.trimStart().startsWith("(");
 
@@ -85,7 +84,7 @@ function findPlaceholders(filePath: string): PlaceholderMatch[] {
   } catch (error) {
     console.error(
       `${colors.red}Error reading file ${filePath}:${colors.reset}`,
-      error
+      error,
     );
   }
 
@@ -128,7 +127,7 @@ function printResults(results: FileCheck[]): void {
   results.forEach((result) => {
     if (!result.exists) {
       console.log(
-        `${colors.red}✗ ${result.path} - File not found!${colors.reset}`
+        `${colors.red}✗ ${result.path} - File not found!${colors.reset}`,
       );
       hasIssues = true;
       return;
@@ -136,18 +135,18 @@ function printResults(results: FileCheck[]): void {
 
     if (result.placeholders.length === 0) {
       console.log(
-        `${colors.green}✓ ${result.path} - No placeholders found${colors.reset}`
+        `${colors.green}✓ ${result.path} - No placeholders found${colors.reset}`,
       );
     } else {
       console.log(
-        `${colors.yellow}⚠ ${result.path} - ${result.placeholders.length} placeholder(s) found${colors.reset}`
+        `${colors.yellow}⚠ ${result.path} - ${result.placeholders.length} placeholder(s) found${colors.reset}`,
       );
       totalPlaceholders += result.placeholders.length;
       hasIssues = true;
 
       result.placeholders.forEach((p) => {
         console.log(
-          `  ${colors.blue}Line ${p.line}:${colors.reset} ${p.placeholder}`
+          `  ${colors.blue}Line ${p.line}:${colors.reset} ${p.placeholder}`,
         );
         console.log(`    ${colors.magenta}${p.content}${colors.reset}`);
       });
@@ -159,16 +158,16 @@ function printResults(results: FileCheck[]): void {
 
   if (!hasIssues) {
     console.log(
-      `\n${colors.green}✓ All checks passed! Ready for production.${colors.reset}\n`
+      `\n${colors.green}✓ All checks passed! Ready for production.${colors.reset}\n`,
     );
     process.exit(0);
   } else {
     console.log(
-      `\n${colors.yellow}⚠ Found ${totalPlaceholders} placeholder(s) that need attention.${colors.reset}`
+      `\n${colors.yellow}⚠ Found ${totalPlaceholders} placeholder(s) that need attention.${colors.reset}`,
     );
     console.log(`\n${colors.cyan}Next steps:${colors.reset}`);
     console.log(
-      `  1. Update src/constants/legal.ts with your company information`
+      `  1. Update src/constants/legal.ts with your company information`,
     );
     console.log(`  2. Replace placeholders in docs/PRIVACY-POLICY.md`);
     console.log(`  3. Replace placeholders in docs/TERMS-OF-SERVICE.md`);
@@ -184,7 +183,7 @@ function printResults(results: FileCheck[]): void {
 
 // Main execution
 console.log(
-  `${colors.cyan}Checking legal documents for placeholders...${colors.reset}\n`
+  `${colors.cyan}Checking legal documents for placeholders...${colors.reset}\n`,
 );
 const results = checkFiles();
 printResults(results);

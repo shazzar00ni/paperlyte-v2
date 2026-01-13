@@ -1,13 +1,8 @@
-/* Typography styles and utilities */
-
-/* Self-hosted Inter Variable Font */
-@font-face {
-  font-family: "Inter";
-  font-style: normal;
-  font-weight: 100 900;
-  font-display: swap;
-  src: url("/fonts/Inter-Variable.woff2") format("woff2-variations");
-  font-named-instance: "Regular";
+body {
+  font-family: var(--font-sans);
+  color: var(--color-text-primary);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
 h1,
@@ -16,85 +11,25 @@ h3,
 h4,
 h5,
 h6 {
-  font-weight: var(--font-weight-bold);
-  line-height: var(--line-height-tight);
+  font-family: var(--font-serif);
+  font-weight: 400;
+  line-height: 1.2;
   color: var(--color-text-primary);
 }
 
 h1 {
-  font-size: var(--font-size-5xl);
-  margin-bottom: var(--spacing-md);
+  font-size: 4rem;
+  letter-spacing: -0.02em;
 }
 
 h2 {
-  font-size: var(--font-size-4xl);
-  margin-bottom: var(--spacing-md);
+  font-size: 2.5rem;
 }
 
 h3 {
-  font-size: var(--font-size-3xl);
-  margin-bottom: var(--spacing-sm);
-}
-
-h4 {
-  font-size: var(--font-size-2xl);
-  margin-bottom: var(--spacing-sm);
-}
-
-h5 {
-  font-size: var(--font-size-xl);
-  margin-bottom: var(--spacing-sm);
-}
-
-h6 {
-  font-size: var(--font-size-lg);
-  margin-bottom: var(--spacing-sm);
+  font-size: 1.75rem;
 }
 
 p {
-  margin-bottom: var(--spacing-md);
-  line-height: var(--line-height-relaxed);
   color: var(--color-text-secondary);
-}
-
-p:last-child {
-  margin-bottom: 0;
-}
-
-strong,
-b {
-  font-weight: var(--font-weight-semibold);
-}
-
-/* Utility classes for text */
-.text-primary {
-  color: var(--color-primary);
-}
-
-.text-center {
-  text-align: center;
-}
-
-.text-left {
-  text-align: left;
-}
-
-.text-right {
-  text-align: right;
-}
-
-.font-normal {
-  font-weight: var(--font-weight-normal);
-}
-
-.font-medium {
-  font-weight: var(--font-weight-medium);
-}
-
-.font-semibold {
-  font-weight: var(--font-weight-semibold);
-}
-
-.font-bold {
-  font-weight: var(--font-weight-bold);
 }

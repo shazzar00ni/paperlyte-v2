@@ -45,13 +45,26 @@ export const Button = ({
   );
 
   if (href) {
+    // When disabled, render as span to prevent all interaction
+    if (disabled) {
+      return (
+        <span
+          className={classNames}
+          aria-label={ariaLabel}
+          aria-disabled="true"
+          role="link"
+        >
+          {content}
+        </span>
+      );
+    }
+
     return (
       <a
-        href={disabled ? undefined : href}
+        href={href}
         className={classNames}
         aria-label={ariaLabel}
-        aria-disabled={disabled ? "true" : "false"}
-        onClick={disabled ? (e) => e.preventDefault() : onClick}
+        onClick={onClick}
         {...(href.startsWith("http") && {
           target: "_blank",
           rel: "noopener noreferrer",

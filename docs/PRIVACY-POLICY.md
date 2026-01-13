@@ -97,9 +97,25 @@ We use your information solely to provide and improve Paperlyte:
 
 ### 3.1 Where We Store Your Data
 
-**Primary Storage**: AWS data centers in us-east-1
-**Encryption**: All data encrypted in transit (TLS 1.3) and at rest (AES-256)
-**Backups**: Encrypted backups stored in geographically distributed locations
+**Primary Storage**: AWS data centers in us-east-1 (United States)
+
+**International Transfers & Legal Mechanisms**:
+
+- For users in the EU/EEA, UK, and other regions with data transfer laws, personal data is transferred to the United States under the protection of Standard Contractual Clauses (SCCs) approved by the European Commission (GDPR Article 46), or UK-approved SCCs/IDTA for UK users. We also rely on AWS’s Data Processing Addendum (DPA), which incorporates EU and UK data transfer safeguards and certifications (ISO 27001, SOC 2, GDPR compliance).
+- We do not rely on an EU adequacy decision for US transfers; SCCs and technical controls provide the required safeguards.
+- Enterprise customers may request EU/UK regional data residency or storage options by contacting legal@paperlyte.com; these options are subject to availability and may require a custom DPA.
+- All data is encrypted in transit (TLS 1.3) and at rest (AES-256). Access by subprocessors is strictly limited and listed at [https://paperlyte.com/subprocessors](https://paperlyte.com/subprocessors).
+- For more details on our legal compliance, technical controls, or to request a copy of our DPA (provided within 7 business days upon request), contact privacy@paperlyte.com.
+  **Encryption**: All data encrypted in transit (TLS 1.3) and at rest (AES-256)
+  **Backups**: Encrypted backups stored in geographically distributed locations
+
+**International Data Storage & GDPR Compliance**:
+
+- For EU/EEA users, storing data in the United States requires appropriate safeguards under GDPR Article 46
+- **Compliance Mechanisms**: We rely on Standard Contractual Clauses (SCCs) approved by the European Commission and AWS's Data Processing Addendum (DPA)
+- **AWS Compliance**: AWS maintains certifications for ISO 27001, SOC 2, and GDPR compliance
+- **Your Rights**: EU/EEA residents retain all rights under GDPR regardless of data storage location (see Section 5.3)
+- **Regional Options**: Enterprise customers may request regional data storage options by contacting legal@paperlyte.com
 
 ### 3.2 Security Measures
 
@@ -239,11 +255,25 @@ Paperlyte is not intended for children under 13 (or 16 in the EU).
 
 ## 8. International Data Transfers
 
-If you're outside [primary region], your data may be transferred internationally:
+As our primary data storage is in the United States (us-east-1), data from users outside the US is transferred internationally.
 
-- **Safeguards**: Standard Contractual Clauses (SCCs) and data transfer agreements
-- **Encryption**: All data encrypted during transfer
-- **Compliance**: We comply with applicable international data transfer laws
+**For EU/EEA Users:**
+
+- **Legal Basis**: Standard Contractual Clauses (SCCs) approved by the European Commission under GDPR Article 46(2)(c)
+- **AWS DPA**: We use AWS as our infrastructure provider, which maintains a comprehensive Data Processing Addendum compliant with GDPR requirements
+- **Adequacy**: While the US does not have an EU adequacy decision, SCCs provide appropriate safeguards for the transfer
+- **Your Control**: You may object to international transfers or request data deletion at any time (see Section 5)
+
+**For UK Users:**
+
+- **Legal Basis**: International Data Transfer Agreement (IDTA) or UK-approved SCCs
+- **UK GDPR**: Transfers comply with UK GDPR requirements following Brexit
+
+**For Other Regions:**
+
+- **Safeguards**: Data transfer agreements and SCCs as required by applicable local laws
+- **Encryption**: All data encrypted during transfer (TLS 1.3)
+- **Compliance**: We comply with applicable international data transfer laws including APPI (Japan), LGPD (Brazil), and PIPEDA (Canada)
 
 ---
 
@@ -290,7 +320,7 @@ For GDPR-related inquiries:
 ## 11. Transparency Report
 
 We believe in transparency. View our annual transparency report at:
-**https://paperlyte.com/transparency** <!-- TODO: Replace with working transparency report URL before release. Current link is broken. -->
+**Transparency Report URL: **\_\*\*\*\* (to be published annually starting Q1 2026)
 
 This report includes:
 
@@ -305,7 +335,7 @@ This report includes:
 - [Terms of Service](./TERMS-OF-SERVICE.md)
 - [Security Practices](./SECURITY.md)
 - [Cookie Policy](./COOKIE-POLICY.md)
-- [Data Processing Agreement](./DPA.md) (for business customers)
+- Data Processing Agreement (for business customers - available upon request at privacy@paperlyte.com)
 
 ---
 

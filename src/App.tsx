@@ -4,7 +4,7 @@ import { Header } from "@components/layout/Header";
 import { Footer } from "@components/layout/Footer";
 import { Hero } from "@components/sections/Hero";
 import { Features } from "@components/sections/Features";
-import { CTA } from "@components/sections/CTA";
+import { Testimonial } from "@components/sections/Testimonial";
 import { analytics } from "@utils/analytics";
 
 /**
@@ -17,7 +17,11 @@ import { analytics } from "@utils/analytics";
 function App() {
   // Initialize analytics on mount
   useEffect(() => {
-    analytics.init();
+    try {
+      analytics.init();
+    } catch (error) {
+      console.error("Failed to initialize analytics:", error);
+    }
   }, []);
 
   return (
@@ -26,7 +30,7 @@ function App() {
       <main id="main">
         <Hero />
         <Features />
-        <CTA />
+        <Testimonial />
       </main>
       <Footer />
     </ErrorBoundary>

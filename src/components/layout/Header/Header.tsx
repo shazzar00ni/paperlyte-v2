@@ -1,132 +1,72 @@
-import { useState, useEffect, useRef, useCallback } from "react";
-import { Button } from "@components/ui/Button";
-import { Icon } from "@components/ui/Icon";
+import React, { useState, useRef, useEffect } from "react";
 import { ThemeToggle } from "@components/ui/ThemeToggle";
+import { Icon } from "@components/ui/Icon";
+import { useFocusTrap } from "../../../hooks/useFocusTrap";
 import styles from "./Header.module.css";
 
-export const Header = (): React.ReactElement => {
+export const Header: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
-  const menuRef = useRef<HTMLUListElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Focus trap for mobile menu
+  useFocusTrap({ containerRef: menuRef, isActive: mobileMenuOpen });
+
+  // Close menu on Escape key
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && mobileMenuOpen) {
+        setMobileMenuOpen(false);
+        menuButtonRef.current?.focus();
+      }
+    };
+
+    if (mobileMenuOpen) {
+      document.addEventListener("keydown", handleKeyDown);
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [mobileMenuOpen]);
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
-  const closeMobileMenu = useCallback(() => {
+  const handleMenuLinkClick = () => {
     setMobileMenuOpen(false);
-    // Return focus to menu button when closing
     menuButtonRef.current?.focus();
-  }, []);
-
-  const scrollToSection = useCallback(
-    (sectionId: string) => {
-      const element = document.getElementById(sectionId);
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
-        closeMobileMenu();
-      }
-    },
-    [closeMobileMenu],
-  );
-
-  // Handle Escape key to close menu
-  useEffect(() => {
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && mobileMenuOpen) {
-        closeMobileMenu();
-      }
-    };
-
-    document.addEventListener("keydown", handleEscape);
-    return () => document.removeEventListener("keydown", handleEscape);
-  }, [mobileMenuOpen, closeMobileMenu]);
-
-  // Focus trap for mobile menu
-  useEffect(() => {
-    if (!mobileMenuOpen || !menuRef.current) return;
-
-    const menu = menuRef.current;
-    const focusableElements = menu.querySelectorAll<HTMLElement>(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
-    );
-    const firstFocusable = focusableElements[0];
-    const lastFocusable = focusableElements[focusableElements.length - 1];
-
-    const handleTabKey = (event: KeyboardEvent) => {
-      if (event.key !== "Tab") return;
-
-      if (event.shiftKey) {
-        // Shift + Tab
-        if (document.activeElement === firstFocusable) {
-          event.preventDefault();
-          lastFocusable?.focus();
-        }
-      } else {
-        // Tab
-        if (document.activeElement === lastFocusable) {
-          event.preventDefault();
-          firstFocusable?.focus();
-        }
-      }
-    };
-
-    menu.addEventListener("keydown", handleTabKey);
-
-    // Focus first element when menu opens
-    firstFocusable?.focus();
-
-    return () => menu.removeEventListener("keydown", handleTabKey);
-  }, [mobileMenuOpen]);
+  };
 
   return (
     <header className={styles.header}>
       <div className={styles.container}>
         <div className={styles.logo}>
-          <Icon name="fa-feather" size="lg" />
-          <span className={styles.logoText}>Paperlyte</span>
-        </div>
-
-        <nav className={styles.nav} aria-label="Main navigation">
-          <ul
-            id="main-menu"
-            ref={menuRef}
-            className={`${styles.navList} ${mobileMenuOpen ? styles.navListOpen : ""}`}
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
           >
-            <li>
-              <a
-                href="#features"
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToSection("features");
-                }}
-                className={styles.navLink}
-              >
-                Features
-              </a>
-            </li>
-            <li>
-              <a
-                href="#download"
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToSection("download");
-                }}
-                className={styles.navLink}
-              >
-                Download
-              </a>
-            </li>
-            <li className={styles.navCta}>
-              <Button
-                variant="primary"
-                size="small"
-                onClick={() => scrollToSection("download")}
-              >
-                Get Started
-              </Button>
-            </li>
-          </ul>
+            <circle cx="12" cy="12" r="12" fill="black" />
+            <path
+              d="M15 9L9 15M9 9L15 15"
+              stroke="white"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+          </svg>
+          <span>Noted.</span>
+        </div>
+        
+        <nav className={styles.nav} id="main-menu">
+          <a href="#features" onClick={handleMenuLinkClick}>Features</a>
+          <a href="#methodology" onClick={handleMenuLinkClick}>Methodology</a>
+          <a href="#pricing" onClick={handleMenuLinkClick}>Pricing</a>
+          <a href="#login" onClick={handleMenuLinkClick}>Log in</a>
+          <button className={styles.cta} onClick={handleMenuLinkClick}>Get Started</button>
         </nav>
 
         <div className={styles.navActions}>
@@ -143,6 +83,30 @@ export const Header = (): React.ReactElement => {
             <Icon name={mobileMenuOpen ? "fa-xmark" : "fa-bars"} size="lg" />
           </button>
         </div>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div 
+            ref={menuRef}
+            className={styles.mobileMenu}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="mobile-menu-title"
+          >
+            <div className={styles.mobileMenuContent}>
+              <h2 id="mobile-menu-title" className={styles.mobileMenuTitle}>
+                Navigation
+              </h2>
+              <nav className={styles.mobileNav}>
+                <a href="#features" onClick={handleMenuLinkClick}>Features</a>
+                <a href="#methodology" onClick={handleMenuLinkClick}>Methodology</a>
+                <a href="#pricing" onClick={handleMenuLinkClick}>Pricing</a>
+                <a href="#login" onClick={handleMenuLinkClick}>Log in</a>
+                <button className={styles.cta} onClick={handleMenuLinkClick}>Get Started</button>
+              </nav>
+            </div>
+          </div>
+        )}
       </div>
     </header>
   );

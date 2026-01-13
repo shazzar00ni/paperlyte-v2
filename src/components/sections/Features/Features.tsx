@@ -1,47 +1,97 @@
-import { Section } from "@components/layout/Section";
-import { AnimatedElement } from "@components/ui/AnimatedElement";
-import { Icon } from "@components/ui/Icon";
-import { FEATURES } from "@constants/features";
+import React from "react";
 import styles from "./Features.module.css";
 
-export const Features = (): React.ReactElement => {
+export const Features: React.FC = () => {
   return (
-    <Section id="features" background="surface">
-      <header className={styles.header}>
-        <AnimatedElement animation="fadeIn">
-          <h2 className={styles.title}>
-            Everything you need. Nothing you don't.
-          </h2>
-        </AnimatedElement>
-        <AnimatedElement animation="fadeIn" delay={100}>
-          <p className={styles.subtitle}>
-            Built for speed, designed for simplicity. Focus on your ideas, not
-            the tool.
-          </p>
-        </AnimatedElement>
-      </header>
-
-      <div className={styles.grid}>
-        {FEATURES.map((feature, index) => (
-          <AnimatedElement
-            key={feature.id}
-            animation="slideUp"
-            delay={150 + index * 75}
-          >
-            <article className={styles.card}>
-              <div className={styles.iconWrapper}>
-                <Icon
-                  name={feature.icon}
-                  size="2x"
-                  color="var(--color-primary)"
+    <section className={styles.features} id="features">
+      <div className={styles.container}>
+        <div className={styles.grid}>
+          <div className={styles.feature}>
+            <div className={styles.iconWrapper}>
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
-              </div>
-              <h3 className={styles.cardTitle}>{feature.title}</h3>
-              <p className={styles.cardDescription}>{feature.description}</p>
-            </article>
-          </AnimatedElement>
-        ))}
+              </svg>
+            </div>
+            <h3 className={styles.title}>Distraction-free Writing</h3>
+            <p className={styles.description}>
+              An interface that disappears when you start typing. Just you and
+              your thoughts.
+            </p>
+          </div>
+          <div className={styles.feature}>
+            <div className={styles.iconWrapper}>
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect
+                  x="3"
+                  y="11"
+                  width="18"
+                  height="11"
+                  rx="2"
+                  ry="2"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M7 11V7a5 5 0 0110 0v4"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+            <h3 className={styles.title}>Private by Design</h3>
+            <p className={styles.description}>
+              Local-first architecture with optional end-to-end encrypted sync.
+              Your data is yours.
+            </p>
+          </div>
+          <div className={styles.feature}>
+            <div className={styles.iconWrapper}>
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+            <h3 className={styles.title}>Seamless Workflow</h3>
+            <p className={styles.description}>
+              Quick capture, markdown support, and keyboard shortcuts for power
+              users.
+            </p>
+          </div>
+        </div>
       </div>
-    </Section>
+    </section>
   );
 };

@@ -13,7 +13,14 @@ Inquiry Details:
 
 Jurisdiction-Specific Guidance
 --------------------------------
-To ensure your data protection rights are handled according to the correct law, please indicate your country or jurisdiction in your request. We will apply the relevant legal framework and response timelines. If you do not specify, we will use our best efforts to determine the applicable law based on your location or account details.
+To ensure your data protection rights are handled according to the correct law, please indicate your country or jurisdiction in your request. We will apply the relevant legal framework and response timelines.
+
+If you do not specify your jurisdiction, we will determine the applicable law using:
+1. Your account registration country
+2. Your most recent login location (IP geolocation)
+3. Billing address or payment information (if available)
+
+We will notify you of the jurisdiction we have applied and provide an opportunity to correct this if needed.
 
 Below are summaries for major jurisdictions. If your country is not listed, please state your country so we can route your request appropriately.
 
@@ -88,7 +95,16 @@ OAIC: https://www.oaic.gov.au/privacy/privacy-complaints
 ------------------------------
 **Other Jurisdictions**
 ------------------------------
-If you are located in a country not listed above, please specify your country or jurisdiction in your request. We will review your request under the applicable local law and inform you of your rights and the relevant supervisory authority.
+If you are located in a country not listed above, please specify your country or jurisdiction in your request.
+
+How we handle requests from other jurisdictions:
+1. Triage: Your request will be assigned to our international compliance team
+2. Review: We will research applicable local data protection laws (e.g., LGPD, PIPL, VCDPA, etc.)
+3. Timeline: Initial review within 5 business days; full response within 30-45 days or as required by local law
+4. Consultation: Complex or unfamiliar jurisdictions may require external legal counsel, which could extend the timeline
+5. Notification: We will inform you of your rights, applicable timeline, and the relevant supervisory authority
+
+If we are unable to determine applicable law, we will apply GDPR standards as a baseline (most protective framework).
 
 --------------------------------
 Common Data Protection Requests (All Jurisdictions):
@@ -99,7 +115,7 @@ Common Data Protection Requests (All Jurisdictions):
 4. **Right to Restrict Processing/Use**: Limit how we use your data
 5. **Right to Data Portability**: Receive your data in a portable format (where applicable)
 6. **Right to Object/Opt Out**: Object to certain types of processing or opt out of sale/sharing (where applicable)
-7. **Supervisory Authority Complaint**: Information about filing complaints
+7. **File a Complaint with Supervisory Authority**: Request information about filing complaints with your data protection regulator
 
 Identity Verification:
 For security purposes, we may need to verify your identity before processing your request. We may ask for:
@@ -109,7 +125,7 @@ For security purposes, we may need to verify your identity before processing you
 - Government-issued ID (for deletion requests)
 
 Privacy Policy:
-For more information about our data protection practices:
+For more information about our data protection practices, please review our Privacy Policy at:
 {{PRIVACY_URL}}
 
 Data Protection Officer Contact:

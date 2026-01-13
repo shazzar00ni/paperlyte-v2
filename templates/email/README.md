@@ -45,19 +45,19 @@ This directory contains email auto-responder templates for various legal and sup
 
 All templates use placeholder variables that should be replaced by your email system:
 
-| Variable              | Description                    | Example                        |
-| --------------------- | ------------------------------ | ------------------------------ |
-| `{{TICKET_ID}}`       | Unique ticket/reference number | `PRIV-2025-001`                |
-| `{{SENDER_NAME}}`     | Name of the sender             | `John Doe`                     |
-| `{{DATE_RECEIVED}}`   | Date/time received             | `November 28, 2025 at 3:45 PM` |
-| `{{REQUEST_TYPE}}`    | Type of request                | `Data Access Request`          |
-| `{{SEVERITY}}`        | Security issue severity        | `Medium`                       |
-| `{{PRIORITY}}`        | Support priority               | `Normal`                       |
-| `{{INQUIRY_TYPE}}`    | DPO inquiry type               | `DSAR`                         |
-| `{{BOUNTY_INFO}}`     | Bug bounty program info        | `We offer rewards...`          |
-| `{{COMPANY_ADDRESS}}` | Physical address               | `123 Main St...`               |
-| `{{DPO_NAME}}`        | DPO name                       | `Jane Smith`                   |
-|                       | Example response time (CCPA)   | `45 days`                      |
+| Variable                 | Description                    | Example                        |
+| ------------------------ | ------------------------------ | ------------------------------ |
+| `{{TICKET_ID}}`          | Unique ticket/reference number | `PRIV-2025-001`                |
+| `{{SENDER_NAME}}`        | Name of the sender             | `John Doe`                     |
+| `{{DATE_RECEIVED}}`      | Date/time received             | `November 28, 2025 at 3:45 PM` |
+| `{{REQUEST_TYPE}}`       | Type of request                | `Data Access Request`          |
+| `{{SEVERITY}}`           | Security issue severity        | `Medium`                       |
+| `{{PRIORITY}}`           | Support priority               | `Normal`                       |
+| `{{INQUIRY_TYPE}}`       | DPO inquiry type               | `DSAR`                         |
+| `{{BOUNTY_INFO}}`        | Bug bounty program info        | `We offer rewards...`          |
+| `{{COMPANY_ADDRESS}}`    | Physical address               | `123 Main St...`               |
+| `{{DPO_NAME}}`           | DPO name                       | `Jane Smith`                   |
+| `{{RESPONSE_TIME_CCPA}}` | Example response time (CCPA)   | `45 days`                      |
 
 ---
 

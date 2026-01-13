@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
       .cookie-preferences-btn {
         background: none;
         border: none;
@@ -20,6 +21,8 @@
         border: 0 !important;
       }
       .policy-note {
+=======
+>>>>>>> Stashed changes
 <!doctype html>
 <html lang="en">
   <head>
@@ -37,6 +40,48 @@
       rel="stylesheet"
     />
     <style>
+      .policy-note {
+        background: #f9f9f9;
+        border: 1px solid #ddd;
+        padding: 1em;
+        margin-bottom: 1.5em;
+        font-size: 0.95em;
+      }
+      .placeholder {
+        color: #888;
+      }
+      .footer-note {
+        font-size: 0.9em;
+        color: #888;
+        margin-top: 0.5em;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+      .cookie-preferences-btn {
+        background: none;
+        border: none;
+        padding: 0;
+        margin: 0;
+        color: inherit;
+        text-decoration: underline;
+        cursor: pointer;
+        font: inherit;
+      }
+      .visually-hidden {
+        position: absolute !important;
+        width: 1px !important;
+        height: 1px !important;
+        padding: 0 !important;
+        margin: -1px !important;
+        overflow: hidden !important;
+        clip: rect(0, 0, 0, 0) !important;
+        white-space: nowrap !important;
+        border: 0 !important;
+      }
       .policy-note {
         background: #f9f9f9;
         border: 1px solid #ddd;
@@ -143,26 +188,6 @@
         font-size: 0.9rem;
       }
     </style>
-  </head>
-  <body>
-    <div class="container">
-      <a href="/" class="back-link">← Back to Paperlyte</a>
-
-      <header>
-        <h1>Privacy Policy</h1>
-        <p class="last-updated">Last Updated: {{BUILD_DATE}}</p>
-      </header>
-
-      <main>
-        <h2>Introduction</h2>
-        <p>
-          Welcome to Paperlyte. We respect your privacy and are committed to
-          protecting your personal data. This privacy policy explains how we
-          collect, use, store, and safeguard your information when you use our
-          note-taking application ("Service").
-        </p>
-
-        <h3>Our Core Privacy Principles:</h3>
         <ul>
           <li>
             <strong>Privacy First:</strong> We collect only what's necessary to
@@ -261,7 +286,6 @@
           </li>
         </ul>
         <p>
-          To manage your cookie preferences,
           <strong>
             <button
               type="button"
@@ -269,7 +293,6 @@
               aria-label="Open cookie preferences dialog"
               class="cookie-preferences-btn"
             >
-              <span class="visually-hidden">Open cookie preferences dialog</span>
               click here
             </button>
           </strong>

@@ -32,7 +32,7 @@ export const AnimatedElement = ({
     if (ref.current) {
       ref.current.style.setProperty("--animation-delay", `${delay}ms`);
     }
-    // ref is a stable object and doesn't need to be in dependencies
+    // Only ref is intentionally excluded from dependencies (it's stable); delay is intentionally included
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [delay]);
 

@@ -23,7 +23,7 @@ Paperlyte is a lightning-fast, distraction-free note-taking application that pro
 - Offline functionality
   **Encryption:**
   - All data is encrypted in transit (TLS 1.3) and at rest (AES-256).
-  - **End-to-end encryption is NOT currently available.** Planned for a future release; see our Privacy Policy for roadmap details.
+  - **End-to-end encryption is NOT currently available.** We are evaluating end-to-end encryption for a future release; however, we make no firm commitment on delivery timeline or scope. See our Privacy Policy for details.
   - Support, admin, and engineering staff may access unencrypted data only for incident response, troubleshooting, or abuse investigation, under strict controls and audit.
 
 ### 1.2 Service Modifications
@@ -169,7 +169,7 @@ Paperlyte and all associated materials (logos, designs, code, features) are owne
 **You may:**
 
 - Use Paperlyte as intended per these Terms
-- Share screenshots for non-commercial reviews or tutorials (with attribution). This is a narrow fair-use exception and does **not** authorize embedding, redistribution, or inclusion of screenshots in commercial products or derivative works (see above restrictions in section 4.2, line 161). Screenshots must be removed or taken down promptly upon request by the rights-holder.
+- Share screenshots for non-commercial reviews or tutorials (with attribution). This is a narrow fair-use exception and does **not** authorize embedding, redistribution, or inclusion of screenshots in commercial products or derivative works (see Section 4.2 restrictions). Upon takedown request from the rights-holder (submitted to legal@paperlyte.com), screenshots must be removed within 5 business days.
 
 ### 4.3 Feedback
 
@@ -289,9 +289,9 @@ Our data practices are detailed in our [Privacy Policy](./PRIVACY-POLICY.md).
 Key points:
 
 - We don't sell your data
-- All data is encrypted in transit and at rest (see above; end-to-end encryption is not yet available)
+- All data is encrypted in transit and at rest (see Section 1.1: Encryption; end-to-end encryption is not yet available)
 - You can export or delete your data anytime
-- **Compliance:** We strive to comply with applicable privacy laws (e.g., GDPR, CCPA), but make no blanket guarantee. See below for details. <!-- TODO: Legal review required before making compliance claims. -->
+- **Compliance:** We comply with applicable privacy laws including GDPR and CCPA. See Sections 7.5-7.7 for specific data subject rights and our compliance commitments.
 
 ### 7.5 Data Subject Rights (GDPR/CCPA)
 
@@ -308,7 +308,8 @@ If you are located in the EU/EEA, UK, California, or other jurisdictions with da
 **How to exercise your rights:**
 
 - Email: privacy@paperlyte.com
-- We will respond within 30 days (standard requests) or 45 days (complex requests, with notification).
+- We will respond within 30 days (standard requests) or up to 90 days (complex requests, with notice and justification per GDPR Article 12(3)).
+- For complex requests requiring an extension, we will notify you within 30 days of receiving your request, explain the reasons for the delay, and provide an expected response date.
 - You may be required to verify your identity before we process your request.
 
 ### 7.6 Data Retention
@@ -645,13 +646,8 @@ PGP: [9A3B 2C1D 7E4F 5A6B 8C9D 1E2F 3A4B 5C6D 7E8F 9A0B](https://paperlyte.com/p
 
 - [Privacy Policy](./PRIVACY-POLICY.md) — Last Updated: November 28, 2025
 - [Acceptable Use Policy](./ACCEPTABLE-USE.md)
-- [Security Practices](./SECURITY.md) — Last Updated: December 2, 2025
-- [Accessibility Statement](./ACCESSIBILITY.md) — As of December 2, 2025 (audit in progress)
-
-<!-- The following documents are not yet published or are incomplete. Remove or update these links before public release: -->
-
-- [Cookie Policy](./COOKIE-POLICY.md) <!-- IN PROGRESS: Not yet a final policy. -->
-- [DMCA Policy](./DMCA.md) <!-- IN PROGRESS: Not yet published. -->
+- [Security Practices](./SECURITY.md) — Last Updated: December 3, 2025
+- [Accessibility Statement](./ACCESSIBILITY.md) — As of December 3, 2025 (audit in progress)
 
 For questions about these policies, contact [legal@paperlyte.com](mailto:legal@paperlyte.com)
 

@@ -14,9 +14,9 @@ export const ThemeToggle = (): ReactElement => {
       title={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
     >
       {theme === "light" ? (
-        <Icon name="fa-moon" size="md" ariaLabel="" />
+        <Icon name="fa-moon" size="md" />
       ) : (
-        <Icon name="fa-sun" size="md" ariaLabel="" />
+        <Icon name="fa-sun" size="md" />
       )}
     </button>
   );

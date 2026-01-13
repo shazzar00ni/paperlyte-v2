@@ -58,6 +58,14 @@ import {
   faArrowRight, // Navigation forward
   faArrowLeft, // Navigation back
   faSpinner, // Loading states
+  faTriangleExclamation, // Error/warning states
+  faCircleExclamation, // Alert/warning
+  faCircleInfo, // Information
+  faClock, // Time/temporal indicators
+  faCommentDots, // Feedback widget
+  faBug, // Bug reports
+  faPaperPlane, // Send/submit actions
+  faHome, // Home/return to main
 } from '@fortawesome/free-solid-svg-icons'
 
 // Brand icons (from free-brands-svg-icons)
@@ -113,6 +121,14 @@ library.add(
   faArrowRight,
   faArrowLeft,
   faSpinner,
+  faTriangleExclamation,
+  faCircleExclamation,
+  faCircleInfo,
+  faClock,
+  faCommentDots,
+  faBug,
+  faPaperPlane,
+  faHome,
   // Brand icons
   faGithub,
   faTwitter,
@@ -133,6 +149,7 @@ export const iconNameMap: Record<string, string> = {
   'fa-shield-halved': 'shield-halved',
   'fa-feather': 'feather',
   'fa-xmark': 'xmark',
+  'fa-x': 'xmark', // Alias for xmark
   'fa-bars': 'bars',
   'fa-envelope': 'envelope',
   'fa-star': 'star',
@@ -156,6 +173,25 @@ export const iconNameMap: Record<string, string> = {
   'fa-rocket': 'rocket',
   'fa-users': 'users',
   'fa-server': 'server',
+  'fa-wifi': 'wifi',
+  'fa-rotate-right': 'rotate-right',
+  'fa-arrow-rotate-right': 'arrow-rotate-right',
+  'fa-arrow-rotate-left': 'arrow-rotate-left',
+  'fa-book': 'book',
+  'fa-magnifying-glass': 'magnifying-glass',
+  'fa-plane': 'plane',
+  'fa-arrow-right': 'arrow-right',
+  'fa-arrow-left': 'arrow-left',
+  'fa-spinner': 'spinner',
+  'fa-triangle-exclamation': 'triangle-exclamation',
+  'fa-circle-exclamation': 'circle-exclamation',
+  'fa-circle-info': 'circle-info',
+  'fa-circle-check': 'circle-check',
+  'fa-clock': 'clock',
+  'fa-comment-dots': 'comment-dots',
+  'fa-bug': 'bug',
+  'fa-paper-plane': 'paper-plane',
+  'fa-home': 'home',
   'fa-github': 'github',
   'fa-twitter': 'twitter',
   'fa-apple': 'apple',

@@ -86,8 +86,8 @@ describe('Hero', () => {
       render(<Hero />)
 
       const button = screen.getByRole('button', { name: /start writing for free/i })
-      // Icon component renders as svg or span, not with fa-* classes
-      const icon = button.querySelector('svg, .icon-fallback')
+      // Icon is decorative (no aria-label passed), should be hidden from screen readers
+      const icon = button.querySelector('[aria-hidden="true"]')
 
       expect(icon).toBeInTheDocument()
     })

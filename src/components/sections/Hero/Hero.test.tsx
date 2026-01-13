@@ -238,4 +238,3 @@ describe('Hero - Layout', () => {
     companies.forEach((company) => expect(screen.getByText(company)).toBeInTheDocument())
   })
 })
-

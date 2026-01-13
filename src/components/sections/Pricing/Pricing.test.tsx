@@ -3,6 +3,11 @@ import { render, screen } from '@testing-library/react'
 import { Pricing } from './Pricing'
 import { PRICING_PLANS } from '@constants/pricing'
 
+// Helper function to escape special regex characters
+function escapeRegExp(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
 describe('Pricing', () => {
   it('should render as a section with correct id', () => {
     const { container } = render(<Pricing />)
@@ -132,7 +137,7 @@ describe('Pricing', () => {
 
     PRICING_PLANS.forEach((plan) => {
       const button = screen.getByRole('button', {
-        name: new RegExp(plan.ctaText),
+        name: new RegExp(escapeRegExp(plan.ctaText)),
       })
       expect(button).toBeInTheDocument()
     })

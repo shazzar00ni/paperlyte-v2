@@ -40,6 +40,19 @@ const formats = [
 ]
 
 /**
+ * Validates that a filename is safe and doesn't contain path traversal patterns.
+ * @param {string} filename - The filename to validate
+ * @returns {boolean} True if the filename is safe
+ */
+function isFilenameSafe(filename) {
+  // Check for path traversal patterns
+  if (filename.includes('..') || filename.includes('/') || filename.includes('\\')) {
+    return false
+  }
+  return true
+}
+
+/**
  * Generate a mockup image from SVG source in the specified format
  * @param {string} sourceName - Source SVG filename
  * @param {number} width - Output width in pixels
@@ -49,6 +62,11 @@ const formats = [
  */
 async function generateMockup(sourceName, width, height, format, options) {
   try {
+    // Validate inputs for path traversal
+    if (!isFilenameSafe(sourceName) || !isFilenameSafe(format)) {
+      throw new Error(`Invalid filename or format: ${sourceName} / ${format}`)
+    }
+
     // Validate file extension
     if (!sourceName.toLowerCase().endsWith('.svg')) {
       throw new Error(`Invalid file type: ${sourceName}. Only SVG files are supported.`)
@@ -92,7 +110,7 @@ async function generateMockup(sourceName, width, height, format, options) {
     const errorMessage = error instanceof Error ? error.message : String(error)
     const baseName = sourceName.replace('.svg', '')
     const outputName = `${baseName}.${format}`
-    console.error(`❌ Failed to generate ${outputName}:`, errorMessage)
+    console.error('❌ Failed to generate mockup:', outputName, errorMessage)
 
     // Always throw a normalized Error instance for consistent error handling
     throw new Error(`Failed to generate ${outputName}: ${errorMessage}`)

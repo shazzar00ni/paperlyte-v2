@@ -27,12 +27,31 @@ const META_KEYWORDS = "note-taking app, distraction-free notes, offline notes, f
 
 const LEGAL_FILES = ["privacy.html", "terms.html"];
 
+/**
+ * Validates that a filename is safe and doesn't contain path traversal patterns.
+ * @param {string} filename - The filename to validate
+ * @returns {boolean} True if the filename is safe
+ */
+function isFilenameSafe(filename) {
+  // Check for path traversal patterns
+  if (filename.includes('..') || filename.includes('/') || filename.includes('\\')) {
+    return false
+  }
+  return true
+}
+
 console.log(`Injecting build values...`);
 console.log(`- Build date: ${BUILD_DATE}`);
 console.log(`- Site URL: ${SITE_URL}`);
 
 // Process legal pages (privacy, terms)
 LEGAL_FILES.forEach((file) => {
+  // Validate filename
+  if (!isFilenameSafe(file)) {
+    console.error(`✗ Invalid filename detected: ${file}`);
+    process.exit(1);
+  }
+
   const filePath = join(DIST_DIR, file);
 
   try {
@@ -50,7 +69,7 @@ LEGAL_FILES.forEach((file) => {
       console.log(`✓ Updated ${file}`);
     }
   } catch (error) {
-    console.error(`✗ Failed to process ${file}:`, error.message);
+    console.error('✗ Failed to process file:', file, error.message);
     process.exit(1);
   }
 });

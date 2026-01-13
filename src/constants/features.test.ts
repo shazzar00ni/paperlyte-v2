@@ -230,9 +230,14 @@ describe('Features Constants', () => {
         'integration',
       ]
 
+      // Helper function to escape special regex characters
+      const escapeRegExp = (str: string): string => {
+        return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      }
+
       const countOccurrences = (text: string, words: string[]): number => {
         return words.reduce((count, word) => {
-          const regex = new RegExp(`\\b${word}\\b`, 'gi')
+          const regex = new RegExp(`\\b${escapeRegExp(word)}\\b`, 'gi')
           const matches = text.match(regex)
           return count + (matches ? matches.length : 0)
         }, 0)

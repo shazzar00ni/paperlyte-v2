@@ -83,12 +83,34 @@ function findPlaceholders(filePath: string): PlaceholderMatch[] {
     });
   } catch (error) {
     console.error(
-      `${colors.red}Error reading file ${filePath}:${colors.reset}`,
+      colors.red + 'Error reading file:' + colors.reset,
+      filePath,
       error
     );
   }
 
   return placeholders;
+}
+
+/**
+ * Validates that a file path is safe and doesn't contain path traversal patterns.
+ *
+ * @param filePath - The file path to validate
+ * @returns True if the path is safe, false otherwise
+ */
+function isPathSafe(filePath: string): boolean {
+  // Check for path traversal patterns
+  if (filePath.includes("..")) {
+    return false;
+  }
+
+  // Normalize and resolve the path
+  const normalizedPath = path.normalize(filePath);
+  const resolvedPath = path.resolve(process.cwd(), normalizedPath);
+  const cwdPath = path.resolve(process.cwd());
+
+  // Ensure the resolved path is within the project directory
+  return resolvedPath.startsWith(cwdPath);
 }
 
 /**
@@ -98,6 +120,12 @@ function findPlaceholders(filePath: string): PlaceholderMatch[] {
  */
 function checkFiles(): FileCheck[] {
   return filesToCheck.map((file) => {
+    // Validate path safety before processing
+    if (!isPathSafe(file)) {
+      console.error(`${colors.red}Error: Invalid file path detected: ${file}${colors.reset}`);
+      process.exit(1);
+    }
+
     const fullPath = path.join(process.cwd(), file);
     const exists = fs.existsSync(fullPath);
 

@@ -3,6 +3,11 @@ import userEvent from '@testing-library/user-event'
 import { FAQ } from './FAQ'
 import { FAQ_ITEMS } from '@constants/faq'
 
+// Helper function to escape special regex characters
+function escapeRegExp(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
 describe('FAQ', () => {
   describe('Rendering', () => {
     it('should render the FAQ section', () => {
@@ -45,7 +50,7 @@ describe('FAQ', () => {
       render(<FAQ />)
 
       FAQ_ITEMS.forEach((item) => {
-        const questionButton = screen.getByRole('button', { name: new RegExp(item.question, 'i') })
+        const questionButton = screen.getByRole('button', { name: new RegExp(escapeRegExp(item.question), 'i') })
         expect(questionButton).toHaveAttribute('aria-expanded', 'false')
       })
     })
@@ -431,7 +436,7 @@ describe('FAQ', () => {
       render(<FAQ />)
 
       const buttons = FAQ_ITEMS.slice(0, 3).map((item) =>
-        screen.getByRole('button', { name: new RegExp(item.question, 'i') })
+        screen.getByRole('button', { name: new RegExp(escapeRegExp(item.question), 'i') })
       )
 
       buttons[0].focus()

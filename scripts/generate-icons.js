@@ -37,6 +37,19 @@ const iconSizes = [
 ]
 
 /**
+ * Validates that a filename is safe and doesn't contain path traversal patterns.
+ * @param {string} filename - The filename to validate
+ * @returns {boolean} True if the filename is safe
+ */
+function isFilenameSafe(filename) {
+  // Check for path traversal patterns
+  if (filename.includes('..') || filename.includes('/') || filename.includes('\\')) {
+    return false
+  }
+  return true
+}
+
+/**
  * Generate an icon from SVG source in the specified format
  * @param {string} baseName - Base filename (without extension)
  * @param {number} size - Icon size in pixels (width and height)
@@ -44,6 +57,11 @@ const iconSizes = [
  */
 async function generateIcon(baseName, size, format) {
   try {
+    // Validate inputs
+    if (!isFilenameSafe(baseName) || !isFilenameSafe(format)) {
+      throw new Error(`Invalid filename or format: ${baseName}.${format}`)
+    }
+
     const outputName = `${baseName}.${format}`
     const outputPath = join(publicDir, outputName)
 
@@ -69,7 +87,7 @@ async function generateIcon(baseName, size, format) {
     // Safely handle any thrown value (may not be an Error object)
     const errorMessage = error instanceof Error ? error.message : String(error)
     const outputName = `${baseName}.${format}`
-    console.error(`❌ Failed to generate ${outputName}:`, errorMessage)
+    console.error('❌ Failed to generate icon:', outputName, errorMessage)
 
     // Always throw a normalized Error instance for consistent error handling
     throw new Error(`Failed to generate ${outputName}: ${errorMessage}`)

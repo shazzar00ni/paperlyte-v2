@@ -3,6 +3,11 @@ import { render, screen } from '@testing-library/react'
 import { Comparison } from './Comparison'
 import { COMPARISON_FEATURES, COMPETITORS } from '@constants/comparison'
 
+// Helper function to escape special regex characters
+function escapeRegExp(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
 describe('Comparison', () => {
   it('should render as a section with correct id', () => {
     const { container } = render(<Comparison />)
@@ -42,7 +47,7 @@ describe('Comparison', () => {
     // Check all competitor headers
     COMPETITORS.forEach((competitor) => {
       const header = screen.getByRole('columnheader', {
-        name: new RegExp(competitor.name),
+        name: new RegExp(escapeRegExp(competitor.name)),
       })
       expect(header).toBeInTheDocument()
     })

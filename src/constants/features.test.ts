@@ -8,6 +8,29 @@
 import { describe, it, expect } from 'vitest'
 import { FEATURES, type Feature } from './features'
 
+/**
+ * Escapes special regex characters in a string to make it safe for use in RegExp constructor
+ * @param str - String to escape
+ * @returns Escaped string safe for regex
+ */
+function escapeRegExp(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+/**
+ * Counts occurrences of words in a text using word boundary matching
+ * @param text - Text to search in
+ * @param words - Array of words to count
+ * @returns Total count of all word occurrences
+ */
+function countOccurrences(text: string, words: string[]): number {
+  return words.reduce((count, word) => {
+    const regex = new RegExp(`\\b${escapeRegExp(word)}\\b`, 'gi')
+    const matches = text.match(regex)
+    return count + (matches ? matches.length : 0)
+  }, 0)
+}
+
 describe('Features Constants', () => {
   describe('FEATURES Structure', () => {
     it('should export FEATURES as an array', () => {
@@ -229,19 +252,6 @@ describe('Features Constants', () => {
         'throughput',
         'integration',
       ]
-
-      // Helper function to escape special regex characters
-      const escapeRegExp = (str: string): string => {
-        return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-      }
-
-      const countOccurrences = (text: string, words: string[]): number => {
-        return words.reduce((count, word) => {
-          const regex = new RegExp(`\\b${escapeRegExp(word)}\\b`, 'gi')
-          const matches = text.match(regex)
-          return count + (matches ? matches.length : 0)
-        }, 0)
-      }
 
       const benefitCount = countOccurrences(allDescriptions, benefitWords)
       const techCount = countOccurrences(allDescriptions, techWords)

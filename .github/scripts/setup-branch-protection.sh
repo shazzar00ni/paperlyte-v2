@@ -87,13 +87,16 @@ echo "  - Dismiss stale reviews on new commits"
 echo "  - Require conversation resolution"
 echo ""
 
+# URL-encode the branch name to handle special characters (/, ?, #, spaces, etc.)
+ENCODED_BRANCH=$(printf %s "$BRANCH" | jq -sRr @uri)
+
 # Apply branch protection
 RESPONSE=$(curl -s -w "\n%{http_code}" \
   -X PUT \
   -H "Accept: application/vnd.github+json" \
   -H "Authorization: Bearer $GITHUB_TOKEN" \
   -H "X-GitHub-Api-Version: 2022-11-28" \
-  "https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/branches/${BRANCH}/protection" \
+  "https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/branches/${ENCODED_BRANCH}/protection" \
   -d "$PROTECTION_CONFIG")
 
 # Extract status code

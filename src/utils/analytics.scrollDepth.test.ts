@@ -3,6 +3,7 @@ import { initScrollDepthTracking, AnalyticsEvents } from './analytics'
 
 describe('Analytics Scroll Depth Tracking', () => {
   let scrollEventListener: (() => void) | null = null
+  let addEventListenerSpy: ReturnType<typeof vi.spyOn>
 
   beforeEach(() => {
     // Clear any existing gtag
@@ -30,7 +31,7 @@ describe('Analytics Scroll Depth Tracking', () => {
 
     // Capture the scroll event listener
     const originalAddEventListener = window.addEventListener
-    vi.spyOn(window, 'addEventListener').mockImplementation(
+    addEventListenerSpy = vi.spyOn(window, 'addEventListener').mockImplementation(
       (
         event: string,
         listener: EventListener | EventListenerObject,
@@ -62,8 +63,6 @@ describe('Analytics Scroll Depth Tracking', () => {
   })
 
   it('should add scroll event listener with passive option', () => {
-    const addEventListenerSpy = vi.spyOn(window, 'addEventListener')
-
     const cleanup = initScrollDepthTracking()
 
     expect(addEventListenerSpy).toHaveBeenCalledWith('scroll', expect.any(Function), {

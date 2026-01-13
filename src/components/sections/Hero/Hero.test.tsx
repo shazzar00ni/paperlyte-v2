@@ -2,24 +2,34 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Hero } from './Hero'
 
+// Test helpers
+const createMockSection = (id: string): HTMLDivElement => {
+  const section = document.createElement('div')
+  section.id = id
+  document.body.appendChild(section)
+  return section
+}
+
+const removeMockSection = (section: HTMLElement): void => {
+  document.body.removeChild(section)
+}
+
+const hasClassContaining = (element: Element, searchText: string): boolean => {
+  return Array.from(element.classList).some((cls) => cls.includes(searchText))
+}
+
 describe('Hero', () => {
   let scrollIntoViewMock: ReturnType<typeof vi.fn>
   let originalScrollIntoView: typeof Element.prototype.scrollIntoView
 
   beforeEach(() => {
-    // Capture original scrollIntoView before replacing it
     originalScrollIntoView = Element.prototype.scrollIntoView
-
-    // Mock scrollIntoView
     scrollIntoViewMock = vi.fn()
     Element.prototype.scrollIntoView = scrollIntoViewMock
   })
 
   afterEach(() => {
-    // Restore original scrollIntoView
     Element.prototype.scrollIntoView = originalScrollIntoView
-
-    // Clear mock call history
     vi.clearAllMocks()
   })
 
@@ -64,277 +74,132 @@ describe('Hero', () => {
   })
 
   describe('CTA Buttons', () => {
-    it('should have Start Writing for Free button with primary variant', () => {
+    it('should render buttons with correct variants and decorative icon', () => {
       render(<Hero />)
 
-      const button = screen.getByRole('button', { name: /start writing for free/i })
-      // Verify primary variant by checking class contains 'primary' (CSS module hash)
-      const classList = Array.from(button.classList)
-      expect(classList.some((cls) => cls.includes('primary'))).toBe(true)
-    })
+      const primaryButton = screen.getByRole('button', { name: /start writing for free/i })
+      expect(hasClassContaining(primaryButton, 'primary')).toBe(true)
+      expect(primaryButton.querySelector('[aria-hidden="true"]')).toBeInTheDocument()
 
-    it('should have View the Demo button with secondary variant', () => {
-      render(<Hero />)
-
-      const button = screen.getByRole('button', { name: /view the demo/i })
-      // Verify secondary variant by checking class contains 'secondary' (CSS module hash)
-      const classList = Array.from(button.classList)
-      expect(classList.some((cls) => cls.includes('secondary'))).toBe(true)
-    })
-
-    it('should render arrow icon on Start Writing for Free button', () => {
-      render(<Hero />)
-
-      const button = screen.getByRole('button', { name: /start writing for free/i })
-      // Icon is decorative (no aria-label passed), should be hidden from screen readers
-      const icon = button.querySelector('[aria-hidden="true"]')
-
-      expect(icon).toBeInTheDocument()
+      const secondaryButton = screen.getByRole('button', { name: /view the demo/i })
+      expect(hasClassContaining(secondaryButton, 'secondary')).toBe(true)
     })
   })
 
   describe('Scroll Behavior', () => {
-    it('should scroll to download section when Start Writing for Free is clicked', async () => {
+    it('should scroll to target sections when CTA buttons are clicked', async () => {
       const user = userEvent.setup()
-
-      // Create mock download section
-      const downloadSection = document.createElement('div')
-      downloadSection.id = 'download'
-      document.body.appendChild(downloadSection)
+      const downloadSection = createMockSection('download')
+      const featuresSection = createMockSection('features')
 
       render(<Hero />)
 
-      const button = screen.getByRole('button', { name: /start writing for free/i })
-      await user.click(button)
+      await user.click(screen.getByRole('button', { name: /start writing for free/i }))
+      expect(scrollIntoViewMock).toHaveBeenCalledWith(expect.objectContaining({ behavior: 'smooth' }))
 
-      expect(scrollIntoViewMock).toHaveBeenCalledWith(
-        expect.objectContaining({
-          behavior: 'smooth',
-        })
-      )
+      scrollIntoViewMock.mockClear()
+      await user.click(screen.getByRole('button', { name: /view the demo/i }))
+      expect(scrollIntoViewMock).toHaveBeenCalledWith({ behavior: 'smooth' })
 
-      // Cleanup
-      document.body.removeChild(downloadSection)
+      removeMockSection(downloadSection)
+      removeMockSection(featuresSection)
     })
 
-    it('should scroll to features section when View the Demo is clicked', async () => {
-      const user = userEvent.setup()
-
-      // Create mock features section
-      const featuresSection = document.createElement('div')
-      featuresSection.id = 'features'
-      document.body.appendChild(featuresSection)
-
-      render(<Hero />)
-
-      const button = screen.getByRole('button', { name: /view the demo/i })
-      await user.click(button)
-
-      expect(scrollIntoViewMock).toHaveBeenCalledWith({
-        behavior: 'smooth',
-      })
-
-      // Cleanup
-      document.body.removeChild(featuresSection)
-    })
-
-    it('should handle missing section gracefully', async () => {
+    it('should handle missing target section gracefully', async () => {
       const user = userEvent.setup()
       render(<Hero />)
 
       const button = screen.getByRole('button', { name: /start writing for free/i })
-
-      // Should not throw error when section doesn't exist
       await expect(user.click(button)).resolves.not.toThrow()
-    })
-
-    it('should not scroll if target element is null', async () => {
-      const user = userEvent.setup()
-      render(<Hero />)
-
-      const button = screen.getByRole('button', { name: /start writing for free/i })
-      await user.click(button)
-
-      // scrollIntoView should not be called if element doesn't exist
       expect(scrollIntoViewMock).not.toHaveBeenCalled()
     })
   })
 
   describe('Content Structure', () => {
-    it('should have proper heading hierarchy', () => {
+    it('should have proper semantic HTML structure', () => {
       render(<Hero />)
 
-      // There are multiple headings with "thoughts", use getAllByRole
       const headings = screen.getAllByRole('heading', { name: /thoughts/i })
-      expect(headings.length).toBeGreaterThan(0)
       expect(headings[0].tagName).toBe('H1')
-    })
-
-    it('should render subheadline in paragraph tag', () => {
-      render(<Hero />)
-
-      const subheadline = screen.getByText(/The minimal workspace for busy professionals/i)
-      expect(subheadline.tagName).toBe('P')
-    })
-
-    it('should render headline with italic emphasis', () => {
-      render(<Hero />)
-
-      const italicText = screen.getByText('organized.')
-      expect(italicText.tagName).toBe('EM')
+      expect(screen.getByText('organized.').tagName).toBe('EM')
+      expect(screen.getByText(/The minimal workspace for busy professionals/i).tagName).toBe('P')
     })
   })
 
   describe('App Mockup', () => {
-    it('should render app mockup as decorative (aria-hidden)', () => {
+    it('should render mockup images with proper accessibility', () => {
       const { container } = render(<Hero />)
 
-      const mockup = container.querySelector('[aria-hidden="true"]')
-      expect(mockup).toBeInTheDocument()
-    })
-
-    it('should render primary mockup image with correct alt text', () => {
-      render(<Hero />)
+      expect(container.querySelector('[aria-hidden="true"]')).toBeInTheDocument()
 
       const primaryImage = screen.getByAltText(/Paperlyte notes list showing Today's Notes/i)
-      expect(primaryImage).toBeInTheDocument()
       expect(primaryImage).toHaveAttribute('src', '/mockups/notes-list.svg')
-    })
-
-    it('should render secondary mockup image with correct alt text', () => {
-      render(<Hero />)
 
       const secondaryImage = screen.getByAltText(/Paperlyte note editor with bullet points/i)
-      expect(secondaryImage).toBeInTheDocument()
       expect(secondaryImage).toHaveAttribute('src', '/mockups/note-detail.svg')
     })
   })
 
   describe('Button Interactions', () => {
-    it('should be keyboard accessible', async () => {
+    it('should support keyboard navigation and multiple clicks', async () => {
       const user = userEvent.setup()
-
-      // Create mock section
-      const section = document.createElement('div')
-      section.id = 'download'
-      document.body.appendChild(section)
+      const section = createMockSection('download')
 
       render(<Hero />)
-
       const button = screen.getByRole('button', { name: /start writing for free/i })
 
       button.focus()
       expect(button).toHaveFocus()
 
       await user.keyboard('{Enter}')
-
-      expect(scrollIntoViewMock).toHaveBeenCalled()
-
-      // Cleanup
-      document.body.removeChild(section)
-    })
-
-    it('should handle multiple clicks', async () => {
-      const user = userEvent.setup()
-
-      // Create mock section
-      const section = document.createElement('div')
-      section.id = 'features'
-      document.body.appendChild(section)
-
-      render(<Hero />)
-
-      const button = screen.getByRole('button', { name: /view the demo/i })
+      expect(scrollIntoViewMock).toHaveBeenCalledTimes(1)
 
       await user.click(button)
       await user.click(button)
-      await user.click(button)
-
       expect(scrollIntoViewMock).toHaveBeenCalledTimes(3)
 
-      // Cleanup
-      document.body.removeChild(section)
+      removeMockSection(section)
     })
   })
 
   describe('Section Props', () => {
-    it('should render Section component with correct id', () => {
+    it('should render Section with correct id and padding', () => {
       const { container } = render(<Hero />)
-
       const section = container.querySelector('#hero')
+
       expect(section).toBeInTheDocument()
-    })
-
-    it('should use large padding variant', () => {
-      const { container } = render(<Hero />)
-
-      const section = container.querySelector('#hero')
-      expect(section).toBeInTheDocument()
-
-      // Verify the Section has the padding-large class applied
-      // (CSS Module class names are hashed, so we check for the class pattern)
-      const classList = Array.from(section?.classList || [])
-      const hasPaddingLargeClass = classList.some((className) =>
-        className.includes('padding-large')
-      )
-
-      expect(hasPaddingLargeClass).toBe(true)
+      expect(hasClassContaining(section!, 'padding-large')).toBe(true)
     })
   })
 
   describe('Accessibility', () => {
-    it('should have accessible button labels', () => {
-      render(<Hero />)
+    it('should meet accessibility requirements', () => {
+      const { container } = render(<Hero />)
 
       expect(screen.getByRole('button', { name: /start writing for free/i })).toHaveAccessibleName()
       expect(screen.getByRole('button', { name: /view the demo/i })).toHaveAccessibleName()
-    })
 
-    it('should have main heading visible to screen readers', () => {
-      render(<Hero />)
-
-      // There are multiple headings with "thoughts", use getAllByRole
       const headings = screen.getAllByRole('heading', { name: /thoughts/i })
-      expect(headings.length).toBeGreaterThan(0)
       expect(headings[0]).toBeVisible()
-    })
+      expect(screen.getByText(/The minimal workspace for busy professionals/i)).toBeVisible()
 
-    it('should have descriptive text visible to screen readers', () => {
-      render(<Hero />)
-
-      const description = screen.getByText(/The minimal workspace for busy professionals/i)
-      expect(description).toBeVisible()
-    })
-
-    it('should hide decorative mockup from screen readers', () => {
-      const { container } = render(<Hero />)
-
-      const decorativeElements = container.querySelectorAll('[aria-hidden="true"]')
-      expect(decorativeElements.length).toBeGreaterThan(0)
+      expect(container.querySelectorAll('[aria-hidden="true"]').length).toBeGreaterThan(0)
     })
   })
 
   describe('Layout', () => {
-    it('should render CTA buttons in correct order', () => {
+    it('should render elements in correct order with all content', () => {
       render(<Hero />)
 
       const buttons = screen.getAllByRole('button')
       const buttonTexts = buttons.map((btn) => btn.textContent)
-
       const startIndex = buttonTexts.findIndex((text) => text?.includes('Start Writing'))
       const demoIndex = buttonTexts.findIndex((text) => text?.includes('View the Demo'))
 
-      // Start Writing should come before View the Demo
       expect(startIndex).toBeLessThan(demoIndex)
-    })
-
-    it('should render trusted companies', () => {
-      render(<Hero />)
 
       const companies = ['Acme Corp', 'Global', 'Nebula', 'Vertex', 'Horizon']
-      companies.forEach((company) => {
-        expect(screen.getByText(company)).toBeInTheDocument()
-      })
+      companies.forEach((company) => expect(screen.getByText(company)).toBeInTheDocument())
     })
   })
 })

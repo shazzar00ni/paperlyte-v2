@@ -9,7 +9,7 @@ import {
   AnalyticsEvents,
 } from './analytics'
 
-describe('Analytics Utility', () => {
+describe('Analytics Utility - Core Functions', () => {
   beforeEach(() => {
     // Clear any existing gtag
     delete (window as Window & { gtag?: unknown }).gtag

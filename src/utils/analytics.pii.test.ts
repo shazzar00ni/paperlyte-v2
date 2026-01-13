@@ -9,7 +9,7 @@ describe('Analytics PII Sanitization', () => {
     delete (window as Window & { gtag?: unknown }).gtag
     delete (window as Window & { dataLayer?: unknown }).dataLayer
 
-    consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(vi.fn())
   })
 
   afterEach(() => {
@@ -226,7 +226,7 @@ describe('Analytics PII Sanitization', () => {
 
     it('should log to console in development when analytics is unavailable', () => {
       vi.stubEnv('DEV', true)
-      const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+      const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(vi.fn())
 
       trackEvent('test_event', { param: 'value' })
 
@@ -241,7 +241,7 @@ describe('Analytics PII Sanitization', () => {
 
     it('should log sanitized params (never PII) in development mode', () => {
       vi.stubEnv('DEV', true)
-      const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+      const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(vi.fn())
 
       trackEvent('test_event', {
         email: 'sensitive@example.com',

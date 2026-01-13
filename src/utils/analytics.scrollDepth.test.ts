@@ -31,7 +31,11 @@ describe('Analytics Scroll Depth Tracking', () => {
     // Capture the scroll event listener
     const originalAddEventListener = window.addEventListener
     vi.spyOn(window, 'addEventListener').mockImplementation(
-      (event: string, listener: EventListener | EventListenerObject, options?: boolean | AddEventListenerOptions) => {
+      (
+        event: string,
+        listener: EventListener | EventListenerObject,
+        options?: boolean | AddEventListenerOptions
+      ) => {
         if (event === 'scroll') {
           scrollEventListener = listener as () => void
         }
@@ -62,7 +66,9 @@ describe('Analytics Scroll Depth Tracking', () => {
 
     const cleanup = initScrollDepthTracking()
 
-    expect(addEventListenerSpy).toHaveBeenCalledWith('scroll', expect.any(Function), { passive: true })
+    expect(addEventListenerSpy).toHaveBeenCalledWith('scroll', expect.any(Function), {
+      passive: true,
+    })
 
     cleanup()
   })

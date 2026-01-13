@@ -403,5 +403,4 @@ describe('analytics/webVitals', () => {
       consoleWarnSpy.mockRestore()
     })
   })
-
 })

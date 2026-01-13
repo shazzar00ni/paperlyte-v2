@@ -1,7 +1,8 @@
 import { useMemo } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { findIconDefinition, IconName, IconPrefix } from '@fortawesome/fontawesome-svg-core'
+import { findIconDefinition, type IconName, type IconPrefix } from '@fortawesome/fontawesome-svg-core'
 import { iconPaths, getIconViewBox } from './icons'
+import { convertIconName, isBrandIcon } from '@utils/iconLibrary'
 import './Icon.css'
 
 interface IconProps {
@@ -57,14 +58,21 @@ export const Icon = ({
   if (!paths) {
     console.warn(`Icon "${name}" not found in icon set, using Font Awesome fallback`)
 
-    // Convert icon prefix based on variant
-    const prefix: IconPrefix = variant === 'brands' ? 'fab' : variant === 'regular' ? 'far' : 'fas'
+    // Convert icon name using the mapping (e.g., 'fa-wifi-slash' -> 'plane-slash')
+    const convertedName = convertIconName(name) as IconName
 
-    // Remove 'fa-' prefix if present and convert to FontAwesome icon name format
-    const iconName = name.replace(/^fa-/, '') as IconName
+    // Determine prefix based on variant or by checking if it's a brand icon
+    let prefix: IconPrefix
+    if (variant === 'brands' || isBrandIcon(convertedName)) {
+      prefix = 'fab'
+    } else if (variant === 'regular') {
+      prefix = 'far'
+    } else {
+      prefix = 'fas'
+    }
 
     // Try to find the icon definition in the library
-    const iconDefinition = findIconDefinition({ prefix, iconName })
+    const iconDefinition = findIconDefinition({ prefix, iconName: convertedName })
 
     // If icon not found in library, return a placeholder
     if (!iconDefinition) {

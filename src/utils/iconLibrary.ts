@@ -71,7 +71,9 @@ import {
 // Brand icons (from free-brands-svg-icons)
 import {
   faGithub, // GitHub social link
-  faTwitter, // Twitter/X social link
+  faTwitter, // Twitter/X social link (legacy)
+  faXTwitter, // X/Twitter social link (current branding)
+  faInstagram, // Instagram social link
   faApple, // Apple platform
   faWindows, // Windows platform
 } from '@fortawesome/free-brands-svg-icons'
@@ -132,6 +134,8 @@ library.add(
   // Brand icons
   faGithub,
   faTwitter,
+  faXTwitter,
+  faInstagram,
   faApple,
   faWindows
 )
@@ -194,6 +198,8 @@ export const iconNameMap: Record<string, string> = {
   'fa-home': 'home',
   'fa-github': 'github',
   'fa-twitter': 'twitter',
+  'fa-x-twitter': 'x-twitter',
+  'fa-instagram': 'instagram',
   'fa-apple': 'apple',
   'fa-windows': 'windows',
 }
@@ -202,7 +208,14 @@ export const iconNameMap: Record<string, string> = {
  * Set of brand icon names (derived from imported brand icons)
  * Used to determine the icon prefix (fab vs fas) dynamically
  */
-export const brandIconNames = new Set<string>(['github', 'twitter', 'apple', 'windows'])
+export const brandIconNames = new Set<string>([
+  'github',
+  'twitter',
+  'x-twitter',
+  'instagram',
+  'apple',
+  'windows',
+])
 
 /**
  * Set of all valid icon names in the library

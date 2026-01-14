@@ -1,0 +1,4 @@
+---
+engines:
+  eslint-9:
+    enabled: true

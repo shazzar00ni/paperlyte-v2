@@ -42,8 +42,13 @@ const iconSizes = [
  * @returns {boolean} True if the filename is safe
  */
 function isFilenameSafe(filename) {
-  // Check for path traversal patterns
-  if (filename.includes('..') || filename.includes('/') || filename.includes('\\')) {
+  // Check for path traversal patterns and null bytes
+  if (
+    filename.includes('..') ||
+    filename.includes('/') ||
+    filename.includes('\\') ||
+    filename.includes('\0')
+  ) {
     return false
   }
 

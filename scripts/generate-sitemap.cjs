@@ -4,7 +4,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
+const { execFileSync } = require('child_process');
 
 // Base domain for sitemap URLs
 const DOMAIN = 'https://paperlyte.com';
@@ -39,8 +39,10 @@ const pages = [
  */
 function getLastGitCommitDate(filePath) {
   try {
-    const date = execSync(
-      `git log -1 --format=%cs -- "${filePath}"`,
+    // Use execFileSync with arguments array to prevent command injection
+    const date = execFileSync(
+      'git',
+      ['log', '-1', '--format=%cs', '--', filePath],
       { encoding: 'utf8' }
     ).trim();
     // Validate YYYY-MM-DD

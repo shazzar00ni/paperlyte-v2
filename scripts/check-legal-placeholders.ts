@@ -99,34 +99,27 @@ function findPlaceholders(filePath: string): PlaceholderMatch[] {
  * @returns True if the path is safe, false otherwise
  */
 function isPathSafe(filePath: string): boolean {
-  // Check for path traversal patterns
-  if (filePath.includes("..")) {
-    return false;
-  }
-
-  // Check for absolute paths
-  if (path.isAbsolute(filePath)) {
-    return false;
-  }
-
-  // Check for URL-encoded traversal patterns
+  // Check for URL-encoded traversal patterns before normalization
   if (filePath.includes("%2e%2e") || filePath.includes("%2e%2e%2f")) {
     return false;
   }
 
-  // Normalize and resolve the path
+  // Normalize and resolve the path first to handle obfuscated traversal attempts
   const normalizedPath = path.normalize(filePath);
+
+  // After normalization, reject absolute paths
   if (path.isAbsolute(normalizedPath)) {
     return false;
   }
+
   // nosemgrep: javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal
-  // Safe: This IS the security validation code. We join the path to verify it stays within cwd.
-  // The path is validated above for traversal patterns before this line executes.
-  const resolvedPath = path.join(process.cwd(), normalizedPath);
+  // Safe: This IS the security validation code. We resolve the path to verify it stays within cwd.
+  const resolvedPath = path.resolve(process.cwd(), normalizedPath);
   const cwdPath = path.resolve(process.cwd());
 
   // Ensure the resolved path is within the project directory
-  return resolvedPath.startsWith(cwdPath);
+  // Use path.sep to prevent false positives (e.g., "/project-other" matching "/project")
+  return resolvedPath === cwdPath || resolvedPath.startsWith(cwdPath + path.sep);
 }
 
 /**

@@ -15,6 +15,7 @@ import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
 import { existsSync } from 'fs'
+import { isFilenameSafe } from './utils/filenameValidation.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -38,30 +39,6 @@ const formats = [
   { ext: 'webp', options: { quality: 85, effort: 6 } },
   { ext: 'avif', options: { quality: 75, effort: 6 } },
 ]
-
-/**
- * Validates that a filename is safe and doesn't contain path traversal patterns.
- * @param {string} filename - The filename to validate
- * @returns {boolean} True if the filename is safe
- */
-function isFilenameSafe(filename) {
-  // Check for path traversal patterns
-  if (filename.includes('..') || filename.includes('/') || filename.includes('\\')) {
-    return false
-  }
-
-  // Check for URL-encoded traversal patterns
-  if (filename.includes('%2e%2e') || filename.includes('%2f') || filename.includes('%5c')) {
-    return false
-  }
-
-  // Check for null bytes (can cause issues on some systems)
-  if (filename.includes('\0') || filename.includes('%00')) {
-    return false
-  }
-
-  return true
-}
 
 /**
  * Generate a mockup image from SVG source in the specified format

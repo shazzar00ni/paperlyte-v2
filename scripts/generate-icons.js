@@ -15,6 +15,7 @@ import pngToIco from 'png-to-ico'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
 import { existsSync, writeFileSync } from 'fs'
+import { isFilenameSafe } from './utils/filenameValidation.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -35,35 +36,6 @@ const iconSizes = [
   { name: 'android-chrome-192x192', size: 192, formats: ['png', 'webp', 'avif'] },
   { name: 'android-chrome-512x512', size: 512, formats: ['png', 'webp', 'avif'] },
 ]
-
-/**
- * Validates that a filename is safe and doesn't contain path traversal patterns.
- * @param {string} filename - The filename to validate
- * @returns {boolean} True if the filename is safe
- */
-function isFilenameSafe(filename) {
-  // Check for path traversal patterns and null bytes
-  if (
-    filename.includes('..') ||
-    filename.includes('/') ||
-    filename.includes('\\') ||
-    filename.includes('\0')
-  ) {
-    return false
-  }
-
-  // Check for URL-encoded traversal patterns
-  if (filename.includes('%2e%2e') || filename.includes('%2f') || filename.includes('%5c')) {
-    return false
-  }
-
-  // Check for null bytes (can cause issues on some systems)
-  if (filename.includes('\0') || filename.includes('%00')) {
-    return false
-  }
-
-  return true
-}
 
 /**
  * Generate an icon from SVG source in the specified format

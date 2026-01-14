@@ -9,6 +9,7 @@
 import { readFileSync, writeFileSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
+import { isFilenameSafe } from "./utils/filenameValidation.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -26,28 +27,6 @@ const OG_IMAGE_URL = "https://paperlyte.app/og-image.jpg";
 const META_KEYWORDS = "note-taking app, distraction-free notes, offline notes, fast note app, tag-based organization, simple notes, privacy-focused notes, cross-platform notes, real-time sync, minimalist note app";
 
 const LEGAL_FILES = ["privacy.html", "terms.html"];
-
-/**
- * Validates that a filename is safe and doesn't contain path traversal patterns.
- * @param {string} filename - The filename to validate
- * @returns {boolean} True if the filename is safe
- */
-function isFilenameSafe(filename) {
-  if (typeof filename !== "string" || filename.length === 0) {
-    return false;
-  }
-  if (filename.includes('..') || filename.includes('/') || filename.includes('\\')) {
-    return false;
-  }
-  if (filename.includes('%2e%2e') || filename.includes('%2f') || filename.includes('%5c')) {
-    return false;
-  }
-  if (filename.includes('\0') || filename.includes('%00')) {
-    return false;
-  }
-  return true;
-}
-}
 
 console.log(`Injecting build values...`);
 console.log(`- Build date: ${BUILD_DATE}`);

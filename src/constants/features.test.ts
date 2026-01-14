@@ -33,8 +33,9 @@ function escapeRegExp(str: string): string {
  */
 function countOccurrences(text: string, words: string[]): number {
   return words.reduce((count, word) => {
-    // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp
-    // Safe: word is escaped via escapeRegExp() before RegExp construction
+function countOccurrences(text: string, words: string[]): number {
+  return words.reduce((count, word) => {
+    // Safe: escapeRegExp sanitizes input, preventing ReDoS (false positive from static analysis)
     const regex = new RegExp(`\\b${escapeRegExp(word)}\\b`, 'gi')
     const matches = text.match(regex)
     return count + (matches ? matches.length : 0)

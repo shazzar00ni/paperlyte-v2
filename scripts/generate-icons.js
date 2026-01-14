@@ -37,6 +37,9 @@ const iconSizes = [
   { name: 'android-chrome-512x512', size: 512, formats: ['png', 'webp', 'avif'] },
 ]
 
+// Valid format extensions for validation
+const VALID_FORMATS = ['png', 'webp', 'avif']
+
 /**
  * Generate an icon from SVG source in the specified format
  * @param {string} baseName - Base filename (without extension)
@@ -45,6 +48,11 @@ const iconSizes = [
  */
 async function generateIcon(baseName, size, format) {
   try {
+    // Validate format parameter to prevent unexpected values
+    if (!VALID_FORMATS.includes(format)) {
+      throw new Error(`Invalid format: ${format}. Must be one of: ${VALID_FORMATS.join(', ')}`)
+    }
+    
     const outputName = `${baseName}.${format}`
     
     // Validate path to prevent directory traversal attacks

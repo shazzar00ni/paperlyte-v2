@@ -32,6 +32,15 @@ fi
 echo -e "${GREEN}Configuring branch protection for ${REPO_OWNER}/${REPO_NAME}:${BRANCH}${NC}"
 echo ""
 
+# Validate branch name format to prevent command injection
+if ! git check-ref-format --branch "$BRANCH" >/dev/null 2>&1; then
+    echo -e "${RED}✗ Invalid branch name format: '${BRANCH}'${NC}"
+    echo "Branch names must follow Git reference naming rules"
+    exit 1
+fi
+echo -e "${GREEN}✓ Branch name validated${NC}"
+echo ""
+
 # Branch protection configuration
 # See: https://docs.github.com/en/rest/branches/branch-protection
 PROTECTION_CONFIG='{

@@ -15,7 +15,7 @@ import { FAQ_ITEMS } from '@constants/faq'
  * @returns Escaped string safe for use in RegExp constructor
  */
 function escapeRegExp(str: string): string {
-  return str.replace(/[.*+?^${}()|\[\\\]\\]/g, '\\$&')
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
 describe('FAQ', () => {

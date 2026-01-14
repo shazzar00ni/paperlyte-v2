@@ -15,7 +15,7 @@ import { COMPARISON_FEATURES, COMPETITORS } from '@constants/comparison'
  * @returns Escaped string safe for use in RegExp constructor
  */
 function escapeRegExp(str: string): string {
-  return str.replace(/[.*+?^${}()|\[\]\\]/g, '\\$&')
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
 describe('Comparison', () => {

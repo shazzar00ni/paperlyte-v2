@@ -116,7 +116,10 @@ function isPathSafe(filePath: string): boolean {
 
   // Normalize and resolve the path
   const normalizedPath = path.normalize(filePath);
-  const resolvedPath = path.resolve(process.cwd(), normalizedPath);
+  if (path.isAbsolute(normalizedPath)) {
+    return false;
+  }
+  const resolvedPath = path.join(process.cwd(), normalizedPath);
   const cwdPath = path.resolve(process.cwd());
 
   // Ensure the resolved path is within the project directory

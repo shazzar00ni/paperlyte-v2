@@ -3,6 +3,8 @@
 
 const fs = require('fs');
 const path = require('path');
+// Note: execSync is used here safely to test the script execution itself,
+// not for constructing git commands with user input
 const { execSync } = require('child_process');
 
 // We'll test the script's behavior to ensure it's secure

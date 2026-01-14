@@ -13,7 +13,7 @@
 import sharp from 'sharp'
 import pngToIco from 'png-to-ico'
 import { fileURLToPath } from 'url'
-import { dirname, join } from 'path'
+import { dirname, join, resolve } from 'path'
 import { existsSync, writeFileSync } from 'fs'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -37,6 +37,22 @@ const iconSizes = [
 ]
 
 /**
+ * Validates that a file path is within a specified base directory
+ * Prevents path traversal attacks by ensuring the resolved path doesn't escape the base directory
+ * @param {string} baseDir - The base directory that the path must be within
+ * @param {string} filePath - The file path to validate
+ * @returns {boolean} True if the path is safe, false if it attempts to escape the base directory
+ */
+function isPathSafe(baseDir, filePath) {
+  const resolvedBase = resolve(baseDir)
+  const resolvedPath = resolve(baseDir, filePath)
+  
+  // Check if the resolved path starts with the base directory
+  // This ensures the path cannot escape outside the base directory
+  return resolvedPath.startsWith(resolvedBase + '/')
+}
+
+/**
  * Generate an icon from SVG source in the specified format
  * @param {string} baseName - Base filename (without extension)
  * @param {number} size - Icon size in pixels (width and height)
@@ -45,6 +61,12 @@ const iconSizes = [
 async function generateIcon(baseName, size, format) {
   try {
     const outputName = `${baseName}.${format}`
+    
+    // Validate path to prevent directory traversal attacks
+    if (!isPathSafe(publicDir, outputName)) {
+      throw new Error(`Invalid output path: ${outputName}. Path traversal detected.`)
+    }
+    
     const outputPath = join(publicDir, outputName)
 
     const image = sharp(faviconSource, { density: 300 }) // High DPI for crisp rasterization

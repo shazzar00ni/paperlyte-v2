@@ -13,7 +13,7 @@
 
 import sharp from 'sharp'
 import { fileURLToPath } from 'url'
-import { dirname, join } from 'path'
+import { dirname, join, resolve } from 'path'
 import { existsSync } from 'fs'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -40,6 +40,22 @@ const formats = [
 ]
 
 /**
+ * Validates that a file path is within a specified base directory
+ * Prevents path traversal attacks by ensuring the resolved path doesn't escape the base directory
+ * @param {string} baseDir - The base directory that the path must be within
+ * @param {string} filePath - The file path to validate
+ * @returns {boolean} True if the path is safe, false if it attempts to escape the base directory
+ */
+function isPathSafe(baseDir, filePath) {
+  const resolvedBase = resolve(baseDir)
+  const resolvedPath = resolve(baseDir, filePath)
+  
+  // Check if the resolved path starts with the base directory
+  // This ensures the path cannot escape outside the base directory
+  return resolvedPath.startsWith(resolvedBase + '/')
+}
+
+/**
  * Generate a mockup image from SVG source in the specified format
  * @param {string} sourceName - Source SVG filename
  * @param {number} width - Output width in pixels
@@ -55,8 +71,19 @@ async function generateMockup(sourceName, width, height, format, options) {
     }
 
     const baseName = sourceName.replace('.svg', '')
+    
+    // Validate paths to prevent directory traversal attacks
+    if (!isPathSafe(mockupsDir, sourceName)) {
+      throw new Error(`Invalid source path: ${sourceName}. Path traversal detected.`)
+    }
+    
     const sourcePath = join(mockupsDir, sourceName)
     const outputName = `${baseName}.${format}`
+    
+    if (!isPathSafe(mockupsDir, outputName)) {
+      throw new Error(`Invalid output path: ${outputName}. Path traversal detected.`)
+    }
+    
     const outputPath = join(mockupsDir, outputName)
 
     // Verify source file exists

@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@master
 
       - name: Run HoundDog.ai scan
-        uses: hounddogai/hounddog-action@v1
+        uses: hounddogai/hounddog-action@<full_commit_sha>
         with:
           output_format: sarif
           output_filename: hounddog.sarif

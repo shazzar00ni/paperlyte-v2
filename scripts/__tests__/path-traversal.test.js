@@ -3,7 +3,7 @@
  * This test ensures that malicious path inputs are properly blocked
  */
 
-import { resolve } from 'path'
+import { resolve, sep } from 'path'
 
 /**
  * Validates that a file path is within a specified base directory
@@ -18,7 +18,8 @@ function isPathSafe(baseDir, filePath) {
   
   // Check if the resolved path starts with the base directory
   // This ensures the path cannot escape outside the base directory
-  return resolvedPath.startsWith(resolvedBase + '/')
+  // Use path.sep for cross-platform compatibility (handles both / and \\ separators)
+  return resolvedPath.startsWith(resolvedBase + sep)
 }
 
 // Test cases

@@ -13,7 +13,7 @@
 import sharp from 'sharp'
 import pngToIco from 'png-to-ico'
 import { fileURLToPath } from 'url'
-import { dirname, join, resolve } from 'path'
+import { dirname, join, resolve, sep } from 'path'
 import { existsSync, writeFileSync } from 'fs'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -49,7 +49,8 @@ function isPathSafe(baseDir, filePath) {
   
   // Check if the resolved path starts with the base directory
   // This ensures the path cannot escape outside the base directory
-  return resolvedPath.startsWith(resolvedBase + '/')
+  // Use path.sep for cross-platform compatibility (handles both / and \\ separators)
+  return resolvedPath.startsWith(resolvedBase + sep)
 }
 
 /**

@@ -28,7 +28,16 @@ jobs:
         env:
           BRANCH: ${{ inputs.branch }}
         run: |
+          # Validate branch name format to prevent command injection
+          if ! git check-ref-format --branch "$BRANCH" >/dev/null 2>&1; then
+            echo "✗ Invalid branch name format: '$BRANCH'"
+            echo "Branch names must follow Git reference naming rules"
+            exit 1
+          fi
+          
           git fetch origin
+          # Use git check-ref-format to safely validate the branch
+          # This prevents command injection by validating the input first
           if git show-ref --verify --quiet "refs/remotes/origin/$BRANCH"; then
             echo "✓ Branch '$BRANCH' exists"
           else

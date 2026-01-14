@@ -1,0 +1,94 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Pricing Constants > Snapshot Tests > should match PRICING_PLANS snapshot 1`] = `
+[
+  {
+    "ctaText": "Get Started Free",
+    "features": [
+      "Unlimited notes",
+      "Tag-based organization",
+      "Offline access",
+      "Real-time sync across devices",
+      "Basic encryption",
+      "Up to 3 devices",
+    ],
+    "icon": "fa-leaf",
+    "id": "free",
+    "name": "Free",
+    "price": null,
+    "tagline": "Perfect for personal use",
+  },
+  {
+    "ctaText": "Start Free Trial",
+    "features": [
+      "Everything in Free",
+      "End-to-end encryption",
+      "Unlimited devices",
+      "Advanced search & filters",
+      "Custom themes",
+      "Priority support",
+      "Export to multiple formats",
+    ],
+    "icon": "fa-rocket",
+    "id": "pro",
+    "isPopular": true,
+    "name": "Pro",
+    "price": 4.99,
+    "tagline": "For power users",
+  },
+  {
+    "ctaText": "Contact Sales",
+    "features": [
+      "Everything in Pro",
+      "Shared notebooks",
+      "Team workspaces",
+      "Collaboration tools",
+      "Admin controls",
+      "Team analytics",
+      "Dedicated support",
+    ],
+    "icon": "fa-users",
+    "id": "team",
+    "name": "Team",
+    "price": 9.99,
+    "tagline": "Built for collaboration",
+  },
+]
+`;
+
+exports[`Pricing Constants > Snapshot Tests > should match feature counts snapshot 1`] = `
+[
+  {
+    "featureCount": 6,
+    "plan": "Free",
+  },
+  {
+    "featureCount": 7,
+    "plan": "Pro",
+  },
+  {
+    "featureCount": 7,
+    "plan": "Team",
+  },
+]
+`;
+
+exports[`Pricing Constants > Snapshot Tests > should match pricing tiers snapshot 1`] = `
+[
+  {
+    "id": "free",
+    "isPopular": undefined,
+    "price": null,
+  },
+  {
+    "id": "pro",
+    "isPopular": true,
+    "price": 4.99,
+  },
+  {
+    "id": "team",
+    "isPopular": undefined,
+    "price": 9.99,
+  },
+]
+`;

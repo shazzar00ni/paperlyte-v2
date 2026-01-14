@@ -1,0 +1,69 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`FAQ Constants > Snapshot Tests > should match FAQ categories distribution snapshot 1`] = `
+{
+  "features": 1,
+  "general": 4,
+  "pricing": 2,
+  "privacy": 2,
+}
+`;
+
+exports[`FAQ Constants > Snapshot Tests > should match FAQ_ITEMS snapshot 1`] = `
+[
+  {
+    "answer": "We're targeting Q2 2026 for public launch. Waitlist members get early access 2 weeks before everyone else.",
+    "category": "general",
+    "id": "launch-date",
+    "question": "When will Paperlyte launch?",
+  },
+  {
+    "answer": "Paperlyte will be free for personal use with unlimited notes. We'll offer a Plus plan (~$5/month) for advanced features like team collaboration and extended storage. Waitlist members get 50% off for life.",
+    "category": "pricing",
+    "id": "pricing",
+    "question": "How much will it cost?",
+  },
+  {
+    "answer": "At launch: Responsive web app (works on all devices). Native iOS & Android apps coming in Q2 2026. Works seamlessly across Mac, Windows, and Linux via web.",
+    "category": "general",
+    "id": "supported-platforms",
+    "question": "What platforms do you support?",
+  },
+  {
+    "answer": "End-to-end encryption before anything leaves your device. We use zero-knowledge architecture—we literally cannot read your notes even if we wanted to. Your data stays yours.",
+    "category": "privacy",
+    "id": "data-privacy",
+    "question": "How is my data protected?",
+  },
+  {
+    "answer": "Absolutely. Export all notes as Markdown anytime. No lock-in, ever. Your data is portable.",
+    "category": "privacy",
+    "id": "data-export",
+    "question": "Can I export my notes?",
+  },
+  {
+    "answer": "Yes! The responsive web app works great on mobile browsers now. Native iOS and Android apps are planned for Q2 2026 with offline sync and system integration.",
+    "category": "features",
+    "id": "mobile-app",
+    "question": "Will there be a mobile app?",
+  },
+  {
+    "answer": "Speed. We load 7x faster than Notion. Simplicity. We removed features instead of adding them. Privacy. End-to-end encryption is built-in, not an afterthought. We're not trying to be an all-in-one workspace—we're focused on doing one thing perfectly: capturing your thoughts.",
+    "category": "general",
+    "id": "vs-competitors",
+    "question": "How is this different from Notion/Obsidian/Evernote?",
+  },
+  {
+    "answer": "The core app will be free forever for personal use. No trial needed—no credit card, no expiration.",
+    "category": "pricing",
+    "id": "free-trial",
+    "question": "Do you have a free trial?",
+  },
+  {
+    "answer": "Email us at hello@paperlyte.com. We read every message and typically respond within 24 hours.",
+    "category": "general",
+    "id": "more-questions",
+    "question": "What if I have more questions?",
+  },
+]
+`;

@@ -5,7 +5,7 @@ import { COMPARISON_FEATURES, COMPETITORS } from '@constants/comparison'
 
 // Helper function to escape special regex characters
 function escapeRegExp(str: string): string {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  return str.replace(/[.*+?^${}()|\[\]\\]/g, '\\$&')
 }
 
 describe('Comparison', () => {

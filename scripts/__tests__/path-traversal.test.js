@@ -11,6 +11,7 @@ const tests = [
   { baseDir: '/tmp/test', filePath: 'favicon.png', expected: true, description: 'Simple filename' },
   { baseDir: '/tmp/test', filePath: 'subdir/favicon.png', expected: true, description: 'File in subdirectory' },
   { baseDir: '/tmp/test', filePath: 'icons/16x16/favicon.png', expected: true, description: 'File in nested subdirectory' },
+  { baseDir: '/tmp/test', filePath: '.', expected: true, description: 'Current directory (edge case)' },
   
   // Malicious paths that should be blocked
   { baseDir: '/tmp/test', filePath: '../favicon.png', expected: false, description: 'Parent directory traversal' },

@@ -29,8 +29,8 @@ export function isPathSafe(baseDir, filePath) {
   const resolvedBase = resolve(baseDir)
   const resolvedPath = resolve(baseDir, filePath)
   
-  // Check if the resolved path starts with the base directory
+  // Check if the resolved path starts with the base directory or equals it
   // This ensures the path cannot escape outside the base directory
   // Use path.sep for cross-platform compatibility (handles both / and \\ separators)
-  return resolvedPath.startsWith(resolvedBase + sep)
+  return resolvedPath === resolvedBase || resolvedPath.startsWith(resolvedBase + sep)
 }

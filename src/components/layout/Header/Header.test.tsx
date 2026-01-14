@@ -241,12 +241,14 @@ describe('Header', () => {
 
       await user.keyboard('{Home}')
 
+      const EXPECTED_FIRST_ELEMENTS = ['Features', 'Get Started']
+
       // Home key focuses first focusable element
       // Note: Due to CSS layout, the Get Started button may be visually positioned differently
       // but should be the first focusable element in the navigation flow
       const firstElement = document.activeElement
       expect(firstElement).toBeTruthy()
-      expect(['Features', 'Get Started'].some(name =>
+      expect(EXPECTED_FIRST_ELEMENTS.some(name =>
         firstElement?.textContent?.includes(name)
       )).toBe(true)
     })

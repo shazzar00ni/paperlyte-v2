@@ -86,3 +86,4 @@ jobs:
         continue-on-error: true
         with:
           sarif_file: snyk-code.sarif
+          category: snyk

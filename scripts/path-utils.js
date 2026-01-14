@@ -27,11 +27,11 @@ import { resolve, sep } from 'path'
  */
 export function isPathSafe(baseDir, filePath) {
   // Validate inputs
-  if (!baseDir || typeof baseDir !== 'string' || baseDir.trim() === '') {
+  if (typeof baseDir !== 'string' || baseDir.trim() === '') {
     throw new Error('baseDir must be a non-empty string')
   }
   
-  if (filePath === null || filePath === undefined || typeof filePath !== 'string') {
+  if (typeof filePath !== 'string') {
     throw new Error('filePath must be a string')
   }
   

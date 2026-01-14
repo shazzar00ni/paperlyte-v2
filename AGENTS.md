@@ -7,6 +7,7 @@
 **Core Promise**: "Your thoughts, unchained."
 
 **This is NOT the full note-taking application** - this is a marketing landing page with:
+
 - Hero section with value proposition
 - Problem/Solution sections
 - Features showcase
@@ -150,6 +151,7 @@ try {
 ### Analytics & Monitoring
 
 **Analytics Tracking** (`src/utils/analytics.ts`):
+
 - Track page views with `trackPageView()`
 - Track user interactions with `trackEvent()`
 - Track scroll depth automatically via `useAnalytics()` hook
@@ -157,11 +159,13 @@ try {
 - All events are automatically sanitized to remove PII
 
 **Monitoring** (`src/utils/monitoring.ts`):
+
 - Log errors with context using `monitoring.logError(error, context)`
 - Add breadcrumbs with `monitoring.addBreadcrumb(message, category)`
 - Integrates with Sentry for production error tracking
 
 **Custom Hooks**:
+
 - `useAnalytics()` - Initialize analytics with page view and scroll depth tracking
 - `useTheme()` - Manage light/dark theme with system preference detection
 - `useParallax()` - Create parallax scroll effects
@@ -171,6 +175,7 @@ try {
 - `useIntersectionObserver()` - Trigger animations on scroll
 
 **Example Usage**:
+
 ```typescript
 import { useAnalytics } from '@hooks/useAnalytics'
 import { trackEvent } from '@utils/analytics'
@@ -179,17 +184,17 @@ import { monitoring } from '@utils/monitoring'
 function EmailCapture() {
   // Initialize analytics
   useAnalytics()
-  
+
   const handleSubmit = async (email: string) => {
     // Add breadcrumb for debugging
     monitoring.addBreadcrumb('Email capture form submitted', 'user_action')
-    
+
     try {
       // Track event (NO PII)
       trackEvent('Waitlist_Join', {
         button_location: 'hero_section',
       })
-      
+
       // Submit form...
     } catch (error) {
       // Log error with context
@@ -199,7 +204,7 @@ function EmailCapture() {
       })
     }
   }
-  
+
   return (/* component JSX */)
 }
 ```
@@ -216,6 +221,7 @@ function EmailCapture() {
 - Follow the monochrome design aesthetic (near-black #1a1a1a and white #ffffff)
 
 **Font System**:
+
 - **UI/Body**: Inter (via @fontsource/inter)
 - **Headlines**: Playfair Display (Google Fonts)
 - Icons: Font Awesome (via @fortawesome packages)
@@ -340,6 +346,7 @@ paperlyte-v2/
 ## Testing Infrastructure
 
 **Unit/Integration Tests (Vitest)**:
+
 - Test framework: Vitest with jsdom environment
 - Test utilities: @testing-library/react, @testing-library/user-event
 - Setup file: `src/test/setup.ts`
@@ -347,11 +354,13 @@ paperlyte-v2/
 - Run with: `npm run test` or `npm run test:coverage`
 
 **E2E Tests (Playwright)**:
+
 - Framework: Playwright
 - Location: `tests/e2e/`
 - Run with: `npm run test:e2e` or `npm run test:e2e:ui`
 
 **Test Patterns**:
+
 ```typescript
 // Component test example
 import { render, screen } from '@testing-library/react'
@@ -379,6 +388,7 @@ describe('useTheme', () => {
 ## Key Patterns
 
 ### Component Structure
+
 ```typescript
 // Standard landing page section component
 import { Section } from '@components/layout/Section'
@@ -387,7 +397,7 @@ import styles from './Features.module.css'
 
 export function Features() {
   const { ref, isVisible } = useIntersectionObserver({ threshold: 0.1 })
-  
+
   return (
     <Section id="features" ref={ref} className={styles.features}>
       <h2 className={isVisible ? styles.fadeIn : ''}>Our Features</h2>
@@ -398,6 +408,7 @@ export function Features() {
 ```
 
 ### Component Analytics
+
 ```typescript
 import { useAnalytics } from '@hooks/useAnalytics'
 import { trackEvent } from '@utils/analytics'
@@ -406,24 +417,25 @@ import { monitoring } from '@utils/monitoring'
 function EmailCapture() {
   // Initialize analytics on mount
   useAnalytics()
-  
+
   const handleSubmit = async (email: string) => {
     // Add debug breadcrumb
     monitoring.addBreadcrumb('Email capture form submitted', 'user_action')
-    
+
     // Track event (never include PII like email addresses)
     trackEvent('Waitlist_Join', {
       form_location: 'hero_section',
     })
-    
+
     // Submit form...
   }
-  
+
   return (/* JSX */)
 }
 ```
 
 ### Custom Hook Usage
+
 ```typescript
 import { useTheme } from '@hooks/useTheme'
 import { useReducedMotion } from '@hooks/useReducedMotion'
@@ -433,9 +445,9 @@ function ParallaxHero() {
   const { theme } = useTheme()
   const prefersReducedMotion = useReducedMotion()
   const { offset } = useParallax({ speed: 0.5 })
-  
+
   return (
-    <div 
+    <div
       style={{
         transform: prefersReducedMotion ? 'none' : `translateY(${offset}px)`,
       }}
@@ -448,30 +460,32 @@ function ParallaxHero() {
 ```
 
 ### Form Validation
+
 ```typescript
 import { validateEmail } from '@utils/validation'
 
 function EmailForm() {
   const [email, setEmail] = useState('')
   const [error, setError] = useState<string | null>(null)
-  
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     const validation = validateEmail(email)
     if (!validation.isValid) {
       setError(validation.error || 'Invalid email')
       return
     }
-    
+
     // Submit valid email...
   }
-  
+
   return (/* JSX */)
 }
 ```
 
 ### Environment Variables
+
 ```typescript
 import { env } from '@utils/env'
 
@@ -498,6 +512,7 @@ const isProd = env.isProduction()
 ## Performance Optimization
 
 **Build Configuration**:
+
 - Vite 7 with esbuild minification
 - Manual chunk splitting for vendor code
 - React vendor bundle (~190KB) - changes rarely
@@ -506,6 +521,7 @@ const isProd = env.isProduction()
 - Target: ES2020 for modern browsers
 
 **Image Optimization**:
+
 - Modern formats: AVIF (40-50% smaller), WebP (25-35% smaller)
 - PNG fallback for compatibility
 - Automatic format selection via `<picture>` element
@@ -515,6 +531,7 @@ const isProd = env.isProduction()
 - Generation scripts: `npm run generate:icons` and `npm run generate:mockups`
 
 **Performance Targets**:
+
 - Page Load: < 2 seconds (initial load)
 - Lighthouse Performance: > 90
 - Lighthouse Accessibility: > 95
@@ -527,6 +544,7 @@ const isProd = env.isProduction()
   - Main CSS bundle: < 30 KB (gzipped)
 
 **Monitoring**:
+
 - Lighthouse CI automated audits (`npm run lighthouse`)
 - Bundle size checks (`npm run size`)
 - Core Web Vitals tracking in analytics
@@ -534,10 +552,12 @@ const isProd = env.isProduction()
 ## Deployment
 
 **Supported Platforms**:
+
 - **Netlify** (primary): Configuration in `netlify.toml`
 - **Vercel** (alternative): Configuration in `vercel.json`
 
 **Netlify Configuration**:
+
 - Build command: `npm run build`
 - Publish directory: `dist`
 - Node version: 20
@@ -546,16 +566,19 @@ const isProd = env.isProduction()
 - SPA routing with redirects
 
 **Vercel Configuration**:
+
 - Security headers (CSP, HSTS, X-Frame-Options, etc.)
 - Production CSP without `unsafe-eval`
 - Automatic HTTPS and CDN
 
 **Build Process**:
+
 1. `prebuild`: Generate icons and mockups
 2. `build`: TypeScript check + Vite build + inject dates
 3. `postbuild`: Generate sitemap
 
 **Environment Variables**:
+
 - `VITE_GA_MEASUREMENT_ID` - Google Analytics 4 ID
 - `VITE_SENTRY_DSN` - Sentry error tracking DSN
 - `VITE_ENVIRONMENT` - Environment name (development, production)
@@ -565,11 +588,13 @@ const isProd = env.isProduction()
 ## Security
 
 **Content Security Policy (CSP)**:
+
 - Development: Relaxed CSP with `unsafe-eval` for HMR (meta tag)
 - Production: Strict CSP via HTTP headers (no `unsafe-eval`)
 - Self-hosted fonts and icons (no external CDNs)
 
 **Security Headers** (Netlify/Vercel):
+
 - `X-Frame-Options: DENY` - Prevent clickjacking
 - `X-Content-Type-Options: nosniff` - Prevent MIME sniffing
 - `Referrer-Policy: strict-origin-when-cross-origin`
@@ -577,6 +602,7 @@ const isProd = env.isProduction()
 - `Strict-Transport-Security` - Force HTTPS (Vercel)
 
 **Privacy**:
+
 - No PII sent to analytics (automatic sanitization)
 - Cookie-less analytics (GA4 without cookies where possible)
 - GDPR-compliant tracking
@@ -669,6 +695,7 @@ All content data is centralized in `src/constants/`:
 - **waitlist.ts** - Waitlist configuration
 
 **Example Usage**:
+
 ```typescript
 import { FEATURES } from '@constants/features'
 import { PRICING_TIERS } from '@constants/pricing'
@@ -691,47 +718,56 @@ function Features() {
 ## Available Utilities
 
 ### Analytics (`@utils/analytics`)
+
 - `trackPageView(page)` - Track page views
 - `trackEvent(eventName, properties)` - Track custom events
 - `initializeAnalytics()` - Initialize GA4
 - Automatic PII sanitization
 
 ### Monitoring (`@utils/monitoring`)
+
 - `monitoring.logError(error, context)` - Log errors with context
 - `monitoring.addBreadcrumb(message, category)` - Add debug breadcrumbs
 - Sentry integration for production
 
 ### Validation (`@utils/validation`)
+
 - `validateEmail(email)` - Email validation with detailed feedback
 - `sanitizeInput(input)` - Input sanitization
 - Returns `{ isValid: boolean, error?: string }`
 
 ### Navigation (`@utils/navigation`)
+
 - `smoothScrollTo(elementId)` - Smooth scroll to element
 - `scrollToTop()` - Scroll to page top
 - `getScrollProgress()` - Get current scroll progress (0-1)
 
 ### Environment (`@utils/env`)
+
 - `env.get(key)` - Get environment variable
 - `env.isDevelopment()` - Check if development
 - `env.isProduction()` - Check if production
 - Type-safe environment variable access
 
 ### Keyboard (`@utils/keyboard`)
+
 - Keyboard shortcut handling
 - Accessibility keyboard navigation helpers
 
 ### Meta Tags (`@utils/metaTags`)
+
 - `updateMetaTags(title, description)` - Update page meta tags
 - SEO optimization helpers
 
 ### Icon Library (`@utils/iconLibrary`)
+
 - Font Awesome library initialization
 - Icon registration and configuration
 
 ## Important Project-Specific Notes
 
 ### This is a Landing Page, NOT the Full App
+
 - This repository contains the **marketing website** for Paperlyte
 - It does NOT contain the actual note-taking application
 - No localStorage, no data persistence, no note editing features
@@ -739,12 +775,14 @@ function Features() {
 - The actual note-taking app will be a separate project
 
 ### Fonts and Icons
+
 - **All assets are self-hosted** (no external CDNs)
 - Fonts: @fontsource/inter package for UI text
 - Icons: @fortawesome packages (not CDN)
 - This is critical for CSP compliance and performance
 
 ### Design Philosophy
+
 - Monochrome aesthetic: near-black (#1a1a1a) and white (#ffffff)
 - Dual typography: Inter for UI, Playfair Display for headlines
 - Pill-shaped buttons (border-radius: 9999px)
@@ -752,6 +790,7 @@ function Features() {
 - Mobile-first responsive design
 
 ### Common Mistakes to Avoid
+
 - ❌ Don't add note-taking features (this is just a landing page)
 - ❌ Don't reference dataService or localStorage (not implemented here)
 - ❌ Don't send PII to analytics (always sanitize)
@@ -766,6 +805,7 @@ function Features() {
 - ✅ Do track events without PII
 
 ### Related Documentation
+
 - **CLAUDE.md** - High-level design philosophy and guidance
 - **README.md** - Project overview and setup instructions
 - **docs/DESIGN-SYSTEM.md** - Comprehensive design system documentation

@@ -34,15 +34,16 @@ echo ""
 
 # Validate branch name format to prevent command injection
 # Check for dangerous shell metacharacters as defense-in-depth
-if echo "$BRANCH" | grep -qE '[$`;|&<>(){}]'; then
+if echo "$BRANCH" | grep -qE '[\$`;|&<>(){}]'; then
     echo -e "${RED}✗ Invalid branch name: contains shell metacharacters${NC}"
-    echo "Branch name: '${BRANCH}'"
+    printf "Branch name: '%s'\n" "$BRANCH"
     exit 1
 fi
 
 # Validate using Git's reference format rules
 if ! git check-ref-format --branch "$BRANCH" >/dev/null 2>&1; then
-    echo -e "${RED}✗ Invalid branch name format: '${BRANCH}'${NC}"
+    echo -e "${RED}✗ Invalid branch name format${NC}"
+    printf "Branch name: '%s'\n" "$BRANCH"
     echo "Branch names must follow Git reference naming rules"
     exit 1
 fi

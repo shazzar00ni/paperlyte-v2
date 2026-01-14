@@ -5,6 +5,10 @@ import { Icon } from './Icon'
 describe('Icon', () => {
   let consoleWarnSpy: ReturnType<typeof vi.spyOn>
 
+  // Helper to get icon element (SVG or fallback span)
+  const getIconElement = (container: HTMLElement) =>
+    container.querySelector('svg') ?? container.querySelector('span')
+
   beforeEach(() => {
     consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
   })
@@ -54,10 +58,7 @@ describe('Icon', () => {
   it('should render as SVG element or fallback to Font Awesome', () => {
     const { container } = render(<Icon name="fa-bolt" />)
     // Component may render as SVG (if icon exists) or as span (fallback)
-    const svg = container.querySelector('svg')
-    const fallback = container.querySelector('span')
-
-    expect(svg ?? fallback).toBeInTheDocument()
+    expect(getIconElement(container)).toBeInTheDocument()
   })
 
   it('should apply size attributes correctly', () => {
@@ -98,7 +99,7 @@ describe('Icon', () => {
 
   it('should be hidden from screen readers by default', () => {
     const { container } = render(<Icon name="fa-bolt" />)
-    const icon = container.querySelector('svg') ?? container.querySelector('span')
+    const icon = getIconElement(container)
 
     expect(icon).toHaveAttribute('aria-hidden', 'true')
   })
@@ -132,7 +133,7 @@ describe('Icon', () => {
   it('should handle color prop on fallback elements', () => {
     const { container } = render(<Icon name="missing-icon" color="#FF0000" />)
     // Font Awesome fallback renders SVG, or span if icon not found
-    const fallback = container.querySelector('svg') ?? container.querySelector('span')
+    const fallback = getIconElement(container)
 
     // Fallback uses inline style for color
     expect(fallback).toHaveStyle({ color: '#FF0000' })
@@ -163,7 +164,7 @@ describe('Icon', () => {
   it('should apply correct variant class for solid', () => {
     const { container } = render(<Icon name="missing-icon" variant="solid" />)
     // Font Awesome renders SVG or span, not <i> tags
-    const fallback = container.querySelector('svg') ?? container.querySelector('span')
+    const fallback = getIconElement(container)
 
     expect(fallback).toBeInTheDocument()
     expect(fallback).toHaveClass('icon-fallback')
@@ -172,7 +173,7 @@ describe('Icon', () => {
   it('should apply correct variant class for regular', () => {
     const { container } = render(<Icon name="missing-icon" variant="regular" />)
     // Font Awesome renders SVG or span, not <i> tags
-    const fallback = container.querySelector('svg') ?? container.querySelector('span')
+    const fallback = getIconElement(container)
 
     expect(fallback).toBeInTheDocument()
     expect(fallback).toHaveClass('icon-fallback')
@@ -181,9 +182,37 @@ describe('Icon', () => {
   it('should apply correct variant class for brands', () => {
     const { container } = render(<Icon name="missing-icon" variant="brands" />)
     // Font Awesome renders SVG or span, not <i> tags
-    const fallback = container.querySelector('svg') ?? container.querySelector('span')
+    const fallback = getIconElement(container)
 
     expect(fallback).toBeInTheDocument()
     expect(fallback).toHaveClass('icon-fallback')
+  })
+
+  it('should use fab prefix for brand icons with explicit variant', () => {
+    const { container } = render(<Icon name="fa-github" variant="brands" />)
+    const svg = container.querySelector('svg')
+
+    expect(svg).toBeInTheDocument()
+    expect(svg).toHaveAttribute('data-prefix', 'fab')
+    expect(svg).toHaveAttribute('data-icon', 'github')
+  })
+
+  it('should auto-detect brand icons without explicit variant', () => {
+    const { container } = render(<Icon name="fa-github" />)
+    const svg = container.querySelector('svg')
+
+    expect(svg).toBeInTheDocument()
+    // Should automatically use fab prefix for known brand icons
+    expect(svg).toHaveAttribute('data-prefix', 'fab')
+    expect(svg).toHaveAttribute('data-icon', 'github')
+  })
+
+  it('should use fas prefix for solid icons', () => {
+    const { container } = render(<Icon name="fa-heart" variant="solid" />)
+    const svg = container.querySelector('svg')
+
+    expect(svg).toBeInTheDocument()
+    expect(svg).toHaveAttribute('data-prefix', 'fas')
+    expect(svg).toHaveAttribute('data-icon', 'heart')
   })
 })

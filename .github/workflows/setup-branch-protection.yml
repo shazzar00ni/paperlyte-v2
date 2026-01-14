@@ -36,8 +36,7 @@ jobs:
           fi
           
           git fetch origin
-          # Use git check-ref-format to safely validate the branch
-          # This prevents command injection by validating the input first
+          # Check if the validated branch exists in the remote repository
           if git show-ref --verify --quiet "refs/remotes/origin/$BRANCH"; then
             echo "✓ Branch '$BRANCH' exists"
           else

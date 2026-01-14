@@ -14,14 +14,14 @@ describe('Comparison', () => {
 
   it('should render main heading', () => {
     render(<Comparison />)
-    expect(screen.getByText('See How We Compare')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /How we stack up/i })).toBeInTheDocument()
   })
 
   it('should render subtitle', () => {
     render(<Comparison />)
     expect(
       screen.getByText(
-        "We believe in transparency. Here's how Paperlyte stacks up against the competition."
+        "No marketing spin. Here's how Paperlyte compares to the tools you already know."
       )
     ).toBeInTheDocument()
   })
@@ -67,8 +67,8 @@ describe('Comparison', () => {
   it('should render checkmark icons for true boolean values', () => {
     const { container } = render(<Comparison />)
 
-    // Find all checkmarks
-    const checkmarks = container.querySelectorAll('.fa-check')
+    // Find all checkmarks using data-icon token match for resilience
+    const checkmarks = container.querySelectorAll('[data-icon~="fa-check"]')
     expect(checkmarks.length).toBeGreaterThan(0)
 
     // Check they have proper accessibility labels
@@ -80,8 +80,8 @@ describe('Comparison', () => {
   it('should render X icons for false boolean values', () => {
     const { container } = render(<Comparison />)
 
-    // Find all X marks
-    const xmarks = container.querySelectorAll('.fa-xmark')
+    // Find all X marks using data-icon token match for resilience
+    const xmarks = container.querySelectorAll('[data-icon~="fa-xmark"]')
     expect(xmarks.length).toBeGreaterThan(0)
 
     // Check they have proper accessibility labels

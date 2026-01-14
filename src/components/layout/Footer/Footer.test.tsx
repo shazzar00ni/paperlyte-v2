@@ -73,7 +73,7 @@ describe('Footer', () => {
 
     const githubLink = screen.getByRole('link', { name: 'Follow us on GitHub' })
     expect(githubLink).toBeInTheDocument()
-    expect(githubLink).toHaveAttribute('href', 'https://github.com/shazzar00ni/paperlyte-v2')
+    expect(githubLink).toHaveAttribute('href', 'https://github.com/paperlyte')
     expect(githubLink).toHaveAttribute('target', '_blank')
     expect(githubLink).toHaveAttribute('rel', 'noopener noreferrer')
   })

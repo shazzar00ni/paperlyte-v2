@@ -14,13 +14,15 @@ describe('Pricing', () => {
 
   it('should render main heading', () => {
     render(<Pricing />)
-    expect(screen.getByText('Simple, Transparent Pricing')).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { level: 2, name: /Simple pricing\. No surprises\./i })
+    ).toBeInTheDocument()
   })
 
   it('should render subtitle', () => {
     render(<Pricing />)
     expect(
-      screen.getByText("Start free, upgrade when you're ready. No credit card required.")
+      screen.getByText('Start free, upgrade whenever. No credit card needed to get started.')
     ).toBeInTheDocument()
   })
 
@@ -85,7 +87,7 @@ describe('Pricing', () => {
     const popularBadge = screen.getByLabelText('Most popular')
     expect(popularBadge).toBeInTheDocument()
 
-    const starIcon = container.querySelector('.fa-star')
+    const starIcon = container.querySelector('[data-icon~="fa-star"]')
     expect(starIcon).toBeInTheDocument()
     expect(starIcon).toHaveAttribute('aria-label', 'Most popular')
   })
@@ -115,7 +117,7 @@ describe('Pricing', () => {
   it('should render checkmark icons for all features', () => {
     const { container } = render(<Pricing />)
 
-    const checkmarks = container.querySelectorAll('.fa-check')
+    const checkmarks = container.querySelectorAll('[data-icon~="fa-check"]')
 
     // Count total features across all plans
     const totalFeatures = PRICING_PLANS.reduce((sum, plan) => sum + plan.features.length, 0)
@@ -145,7 +147,7 @@ describe('Pricing', () => {
       screen.getByText('30-day money-back guarantee • Cancel anytime • No hidden fees')
     ).toBeInTheDocument()
 
-    const shieldIcon = container.querySelector('.fa-shield-check')
+    const shieldIcon = container.querySelector('[data-icon~="fa-shield-check"]')
     expect(shieldIcon).toBeInTheDocument()
     expect(shieldIcon).toHaveAttribute('aria-label', 'Guarantee')
   })
@@ -161,8 +163,11 @@ describe('Pricing', () => {
     render(<Pricing />)
 
     // Main heading should be h2
-    const mainHeading = screen.getByText('Simple, Transparent Pricing')
-    expect(mainHeading.tagName).toBe('H2')
+    const mainHeading = screen.getByRole('heading', {
+      level: 2,
+      name: /Simple pricing\. No surprises\./i,
+    })
+    expect(mainHeading).toBeInTheDocument()
 
     // Plan names should be h3
     PRICING_PLANS.forEach((plan) => {

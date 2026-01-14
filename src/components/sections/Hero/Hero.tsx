@@ -49,7 +49,7 @@ export const Hero = (): React.ReactElement => {
       </div>
 
       <AnimatedElement animation="fadeIn" delay={400}>
-        <div className={styles.mockupContainer} aria-hidden="true">
+        <div className={styles.mockupContainer} aria-hidden="true" data-testid="hero-mockup">
           {/* Primary mockup - Notes list view */}
           <div className={styles.mockupPrimary}>
             <picture>

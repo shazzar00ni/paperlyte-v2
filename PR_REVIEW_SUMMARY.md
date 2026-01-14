@@ -74,13 +74,13 @@ This document summarizes the review of all open pull requests.
 ## PR #113: "Implement GA4 tracking and form validation"
 
 **Status:** Approved
-**Summary:** This PR is in good shape. The author has addressed all of the feedback from other reviewers.
+**Summary:** This PR is in good shape. The author has addressed all the feedback from other reviewers.
 **Suggestions:** None.
 
 ## PR #135: "Fix incomplete multi-character sanitization in input validation"
 
 **Status:** Approved
-**Summary:** This PR is in good shape. The author has addressed all of the feedback from other reviewers.
+**Summary:** This PR is in good shape. The author has addressed all the feedback from other reviewers.
 **Suggestions:** None.
 
 ## PR #171: "Remove out-of-scope legal and analytics infrastructure from accessibility/performance PR"
@@ -91,9 +91,9 @@ This document summarizes the review of all open pull requests.
 
 ## PR #217: "Update test assertions to match current component implementations"
 
-**Status:** Approved
-**Summary:** This PR is in good shape. The author has addressed all of the feedback from other reviewers.
-**Suggestions:** None.
+**Status:** In Progress
+**Summary:** Significant progress has been made, with tests reduced from 79 failing to 16 remaining issues (primarily in Hero.test.tsx). Hero component tests require refactoring to match recent structural changes in the component implementation. Additionally, FAQ timer-related tests need investigation for compatibility with fake-timer mocking strategies.
+**Suggestions:** Continue working on Hero test refactoring and investigate FAQ timer test failures.
 
 ## PR #220: "docs: Add comprehensive technical debt inventory for Phase 3 (Issue #186)"
 
@@ -104,7 +104,7 @@ This document summarizes the review of all open pull requests.
 ## PR #221: "Add WebP and AVIF support to favicon generation"
 
 **Status:** Approved
-**Summary:** This PR is in good shape. The author has addressed all of the feedback from other reviewers.
+**Summary:** This PR is in good shape. The author has addressed all the feedback from other reviewers.
 **Suggestions:** None.
 
 ## PR #222: "docs: Complete Phase 4 Audit Report and update CRITICAL-003 resolution"

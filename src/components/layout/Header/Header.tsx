@@ -94,10 +94,7 @@ export const Header = (): React.ReactElement => {
       const focusableElements = getFocusableElements(menu)
       if (focusableElements.length === 0) return
 
-      const currentIndex = focusableElements.findIndex((el) => el === document.activeElement)
-      if (currentIndex === -1) return
-
-      // Handle Home/End keys
+      // Handle Home/End keys (work regardless of current focus)
       const homeEndIndex = handleHomeEndNavigation(event, focusableElements)
       if (homeEndIndex !== null) {
         event.preventDefault()
@@ -105,7 +102,10 @@ export const Header = (): React.ReactElement => {
         return
       }
 
-      // Handle Arrow keys (horizontal navigation)
+      // Handle Arrow keys (require current element to be in the list)
+      const currentIndex = focusableElements.findIndex((el) => el === document.activeElement)
+      if (currentIndex === -1) return
+
       const newIndex = handleArrowNavigation(event, focusableElements, currentIndex, 'horizontal')
       if (newIndex !== null) {
         event.preventDefault()

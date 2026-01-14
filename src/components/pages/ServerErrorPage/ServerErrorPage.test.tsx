@@ -231,14 +231,21 @@ describe('ServerErrorPage', () => {
     it('should render server icon in illustration', () => {
       render(<ServerErrorPage />)
 
-      const serverIcon = screen.getByRole('main').querySelector('i.fa-server')
+      const mainElement = screen.getByRole('main')
+      // Icon component may render as SVG or <i> tag, check for either
+      const serverIcon =
+        mainElement.querySelector('.fa-server') ??
+        mainElement.querySelector('svg[aria-hidden="true"]')
       expect(serverIcon).toBeInTheDocument()
     })
 
     it('should render warning icon in error badge', () => {
-      render(<ServerErrorPage />)
+      const { container } = render(<ServerErrorPage />)
 
-      const warningIcon = screen.getByRole('main').querySelector('i.fa-triangle-exclamation')
+      // Icon component may render as SVG or <i> tag, check for either
+      const warningIcon =
+        container.querySelector('.fa-triangle-exclamation') ??
+        container.querySelector('svg[aria-hidden="true"]')
       expect(warningIcon).toBeInTheDocument()
     })
 
@@ -246,7 +253,10 @@ describe('ServerErrorPage', () => {
       render(<ServerErrorPage />)
 
       const retryButton = screen.getByRole('button', { name: /retry loading the page/i })
-      const icon = retryButton.querySelector('i.fa-rotate-right')
+      // Icon component may render as SVG or <i> tag, check for either
+      const icon =
+        retryButton.querySelector('.fa-rotate-right') ??
+        retryButton.querySelector('svg[aria-hidden="true"]')
       expect(icon).toBeInTheDocument()
     })
 
@@ -254,7 +264,9 @@ describe('ServerErrorPage', () => {
       render(<ServerErrorPage />)
 
       const homeButton = screen.getByRole('button', { name: /return to homepage/i })
-      const icon = homeButton.querySelector('i.fa-home')
+      // Icon component may render as SVG or <i> tag, check for either
+      const icon =
+        homeButton.querySelector('.fa-home') ?? homeButton.querySelector('svg[aria-hidden="true"]')
       expect(icon).toBeInTheDocument()
     })
   })

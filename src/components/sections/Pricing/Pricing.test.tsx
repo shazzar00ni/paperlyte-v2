@@ -3,7 +3,17 @@ import { render, screen } from '@testing-library/react'
 import { Pricing } from './Pricing'
 import { PRICING_PLANS } from '@constants/pricing'
 
-// Helper function to escape special regex characters
+/**
+ * Helper function to escape special regex characters for safe RegExp construction.
+ * Escapes all regex metacharacters to prevent ReDoS attacks.
+ *
+ * Security Note: All RegExp usage in this file uses this function to sanitize
+ * input before constructing regexes. The input comes from PRICING_PLANS constant
+ * (not user input), making this safe for test purposes.
+ *
+ * @param str - String to escape
+ * @returns Escaped string safe for use in RegExp constructor
+ */
 function escapeRegExp(str: string): string {
   return str.replace(/[.*+?^${}()|\[\\\]\\]/g, '\\$&')
 }
@@ -136,6 +146,8 @@ describe('Pricing', () => {
     render(<Pricing />)
 
     PRICING_PLANS.forEach((plan) => {
+      // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp
+      // Safe: input is escaped via escapeRegExp() and comes from PRICING_PLANS constant, not user input
       const button = screen.getByRole('button', {
         name: new RegExp(escapeRegExp(plan.ctaText)),
       })

@@ -9,22 +9,32 @@ import { describe, it, expect } from 'vitest'
 import { FEATURES, type Feature } from './features'
 
 /**
- * Escapes special regex characters in a string to make it safe for use in RegExp constructor
+ * Escapes special regex characters in a string to make it safe for use in RegExp constructor.
+ * Prevents ReDoS (Regular Expression Denial of Service) attacks by escaping all regex metacharacters.
+ *
+ * Security Note: This function is used to sanitize all dynamic strings before
+ * passing them to the RegExp constructor. All regex patterns in this file use
+ * this escaping function to ensure safety.
+ *
  * @param str - String to escape
- * @returns Escaped string safe for regex
+ * @returns Escaped string safe for regex construction
  */
 function escapeRegExp(str: string): string {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
 /**
- * Counts occurrences of words in a text using word boundary matching
+ * Counts occurrences of words in a text using word boundary matching.
+ * Uses escapeRegExp() to safely construct regex patterns from word list.
+ *
  * @param text - Text to search in
  * @param words - Array of words to count
  * @returns Total count of all word occurrences
  */
 function countOccurrences(text: string, words: string[]): number {
   return words.reduce((count, word) => {
+    // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp
+    // Safe: word is escaped via escapeRegExp() before RegExp construction
     const regex = new RegExp(`\\b${escapeRegExp(word)}\\b`, 'gi')
     const matches = text.match(regex)
     return count + (matches ? matches.length : 0)

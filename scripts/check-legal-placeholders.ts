@@ -119,6 +119,9 @@ function isPathSafe(filePath: string): boolean {
   if (path.isAbsolute(normalizedPath)) {
     return false;
   }
+  // nosemgrep: javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal
+  // Safe: This IS the security validation code. We join the path to verify it stays within cwd.
+  // The path is validated above for traversal patterns before this line executes.
   const resolvedPath = path.join(process.cwd(), normalizedPath);
   const cwdPath = path.resolve(process.cwd());
 

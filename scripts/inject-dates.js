@@ -44,11 +44,15 @@ function isFilenameSafe(filename) {
   }
 
   // Check for null bytes (can cause issues on some systems)
-  if (filename.includes('\0') || filename.includes('%00')) {
-    return false
+  // Basic type and emptiness check
+  if (typeof filename !== "string" || filename.length === 0) {
+    return false;
   }
-
-  return true
+  // Check for path traversal patterns
+  if (filename.includes("..") || filename.includes("/") || filename.includes("\\")) {
+    return false;
+  }
+  return true;
 }
 
 console.log(`Injecting build values...`);

@@ -34,7 +34,7 @@ echo ""
 
 # Validate branch name format to prevent command injection
 # Check for dangerous shell metacharacters as defense-in-depth
-if echo "$BRANCH" | grep -qE '[\$`;|&<>(){}]'; then
+if printf '%s\n' "$BRANCH" | grep -qE '[\$`;|&<>(){}]'; then
     echo -e "${RED}✗ Invalid branch name: contains shell metacharacters${NC}"
     printf "Branch name: '%s'\n" "$BRANCH"
     exit 1

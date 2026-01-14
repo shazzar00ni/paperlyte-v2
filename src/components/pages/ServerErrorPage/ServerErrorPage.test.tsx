@@ -231,22 +231,28 @@ describe('ServerErrorPage', () => {
     it('should render server icon in illustration', () => {
       render(<ServerErrorPage />)
 
-      const serverIcon = screen.getByRole('main').querySelector('i.fa-server')
+      const main = screen.getByRole('main')
+      const serverIcon = main.querySelector('svg')
       expect(serverIcon).toBeInTheDocument()
     })
 
     it('should render warning icon in error badge', () => {
-      render(<ServerErrorPage />)
+      const { container } = render(<ServerErrorPage />)
 
-      const warningIcon = screen.getByRole('main').querySelector('i.fa-triangle-exclamation')
-      expect(warningIcon).toBeInTheDocument()
+      // Find the illustration container which has both server and warning icons
+      const illustration = container.querySelector('[aria-hidden="true"]')
+      expect(illustration).toBeInTheDocument()
+
+      // Should have exactly 2 icons in illustration: server icon + warning icon
+      const iconsInIllustration = illustration?.querySelectorAll('svg')
+      expect(iconsInIllustration?.length).toBe(2)
     })
 
     it('should render retry icon in primary button', () => {
       render(<ServerErrorPage />)
 
       const retryButton = screen.getByRole('button', { name: /retry loading the page/i })
-      const icon = retryButton.querySelector('i.fa-rotate-right')
+      const icon = retryButton.querySelector('svg')
       expect(icon).toBeInTheDocument()
     })
 
@@ -254,7 +260,7 @@ describe('ServerErrorPage', () => {
       render(<ServerErrorPage />)
 
       const homeButton = screen.getByRole('button', { name: /return to homepage/i })
-      const icon = homeButton.querySelector('i.fa-home')
+      const icon = homeButton.querySelector('svg')
       expect(icon).toBeInTheDocument()
     })
   })

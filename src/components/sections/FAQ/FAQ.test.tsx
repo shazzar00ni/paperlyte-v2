@@ -231,13 +231,13 @@ describe('FAQ', () => {
       })
 
       // When collapsed, should show "Expand answer"
-      let icon = questionButton.querySelector('i')
+      let icon = questionButton.querySelector('svg')
       expect(icon).toHaveAttribute('aria-label', 'Expand answer')
 
       await user.click(questionButton)
 
       // When expanded, should show "Collapse answer"
-      icon = questionButton.querySelector('i')
+      icon = questionButton.querySelector('svg')
       expect(icon).toHaveAttribute('aria-label', 'Collapse answer')
     })
   })

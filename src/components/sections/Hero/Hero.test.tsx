@@ -86,7 +86,7 @@ describe('Hero', () => {
       render(<Hero />)
 
       const button = screen.getByRole('button', { name: /start writing for free/i })
-      const icon = button.querySelector('.fa-arrow-right')
+      const icon = button.querySelector('svg')
 
       expect(icon).toBeInTheDocument()
     })
@@ -192,11 +192,23 @@ describe('Hero', () => {
       expect(mockup).toBeInTheDocument()
     })
 
-    it('should render mockup productivity stat', () => {
-      render(<Hero />)
+    it('should render mockup images with proper alt text', () => {
+      const { container } = render(<Hero />)
 
-      expect(screen.getByText('+120%')).toBeInTheDocument()
-      expect(screen.getByText('PRODUCTIVITY')).toBeInTheDocument()
+      // Mockup images are in aria-hidden container but should still have alt text for SEO/fallback
+      const mockupImages = container.querySelectorAll('img')
+      expect(mockupImages.length).toBeGreaterThanOrEqual(2)
+
+      // Check that mockup images have descriptive alt text
+      const notesListImg = Array.from(mockupImages).find((img) =>
+        img.alt.toLowerCase().includes('notes list')
+      )
+      expect(notesListImg).toBeDefined()
+
+      const noteDetailImg = Array.from(mockupImages).find((img) =>
+        img.alt.toLowerCase().includes('note editor')
+      )
+      expect(noteDetailImg).toBeDefined()
     })
   })
 

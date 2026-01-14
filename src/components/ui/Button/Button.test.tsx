@@ -78,9 +78,10 @@ describe('Button', () => {
   it('should render with icon', () => {
     const { container } = render(<Button icon="fa-download">Download</Button>)
 
-    const icon = container.querySelector('.fa-download')
-    expect(icon).toBeInTheDocument()
-    expect(icon).toHaveAttribute('aria-hidden', 'true')
+    // FontAwesome renders SVG, not CSS classes
+    const svg = container.querySelector('svg')
+    expect(svg).toBeInTheDocument()
+    expect(svg).toHaveAttribute('aria-hidden', 'true')
   })
 
   it('should apply custom className', () => {

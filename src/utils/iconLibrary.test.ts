@@ -141,11 +141,15 @@ describe('iconLibrary', () => {
   })
 
   describe('Icon Name Mapping', () => {
-    it('should have unique values in iconNameMap', () => {
+    it('should have mostly unique values with known aliases', () => {
       const values = Object.values(iconNameMap)
       const uniqueValues = new Set(values)
 
-      expect(values.length).toBe(uniqueValues.size)
+      // We have intentional aliases for backward compatibility:
+      // - 'fa-x' -> 'xmark' (alias for 'fa-xmark')
+      // - 'fa-shield-check' -> 'circle-check' (alias for 'fa-circle-check')
+      const knownAliases = 2
+      expect(values.length).toBe(uniqueValues.size + knownAliases)
     })
 
     it('should map all expected feature icons', () => {
@@ -181,7 +185,7 @@ describe('iconLibrary', () => {
   describe('Regression Prevention', () => {
     it('should have at least 31 solid icons registered', () => {
       // Based on current imports - prevents accidental removal
-      // Icon breakdown: 31 solid (non-fallback) + 4 brand + 1 fallback = 36 total
+      // Icon breakdown: 31 solid (non-fallback) + 6 brand + 1 fallback = 38 total
       const solidIcons = Array.from(validIconNames).filter(
         (icon) => !brandIconNames.has(icon) && icon !== 'circle-question'
       )
@@ -189,14 +193,15 @@ describe('iconLibrary', () => {
       expect(solidIcons.length).toBeGreaterThanOrEqual(31)
     })
 
-    it('should have exactly 4 brand icons registered', () => {
-      // Icon breakdown: 31 solid (non-fallback) + 4 brand + 1 fallback = 36 total
-      expect(brandIconNames.size).toBe(4)
+    it('should have exactly 6 brand icons registered', () => {
+      // Icon breakdown: 31 solid (non-fallback) + 6 brand + 1 fallback = 38 total
+      // Brand icons: github, twitter, x-twitter, instagram, apple, windows
+      expect(brandIconNames.size).toBe(6)
     })
 
     it('should maintain icon count in validIconNames', () => {
-      // Icon breakdown: 31 solid (non-fallback) + 4 brand + 1 fallback = 36 total
-      expect(validIconNames.size).toBeGreaterThanOrEqual(36)
+      // Icon breakdown: 31 solid (non-fallback) + 6 brand + 1 fallback = 38 total
+      expect(validIconNames.size).toBeGreaterThanOrEqual(38)
     })
   })
 })

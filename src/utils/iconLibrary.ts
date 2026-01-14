@@ -55,16 +55,25 @@ import {
   faBook, // Documentation/help
   faMagnifyingGlass, // Search
   faPlane, // Offline page - airplane mode
-  faRouter, // Offline page - network issues
   faArrowRight, // Navigation forward
   faArrowLeft, // Navigation back
   faSpinner, // Loading states
+  faTriangleExclamation, // Error/warning states
+  faCircleExclamation, // Alert/warning
+  faCircleInfo, // Information
+  faClock, // Time/temporal indicators
+  faCommentDots, // Feedback widget
+  faBug, // Bug reports
+  faPaperPlane, // Send/submit actions
+  faHome, // Home/return to main
 } from '@fortawesome/free-solid-svg-icons'
 
 // Brand icons (from free-brands-svg-icons)
 import {
   faGithub, // GitHub social link
-  faTwitter, // Twitter/X social link
+  faTwitter, // Twitter/X social link (legacy)
+  faXTwitter, // X/Twitter social link (current branding)
+  faInstagram, // Instagram social link
   faApple, // Apple platform
   faWindows, // Windows platform
 } from '@fortawesome/free-brands-svg-icons'
@@ -111,13 +120,22 @@ library.add(
   faBook,
   faMagnifyingGlass,
   faPlane,
-  faRouter,
   faArrowRight,
   faArrowLeft,
   faSpinner,
+  faTriangleExclamation,
+  faCircleExclamation,
+  faCircleInfo,
+  faClock,
+  faCommentDots,
+  faBug,
+  faPaperPlane,
+  faHome,
   // Brand icons
   faGithub,
   faTwitter,
+  faXTwitter,
+  faInstagram,
   faApple,
   faWindows
 )
@@ -135,6 +153,7 @@ export const iconNameMap: Record<string, string> = {
   'fa-shield-halved': 'shield-halved',
   'fa-feather': 'feather',
   'fa-xmark': 'xmark',
+  'fa-x': 'xmark', // Alias for xmark
   'fa-bars': 'bars',
   'fa-envelope': 'envelope',
   'fa-star': 'star',
@@ -158,8 +177,29 @@ export const iconNameMap: Record<string, string> = {
   'fa-rocket': 'rocket',
   'fa-users': 'users',
   'fa-server': 'server',
+  'fa-wifi': 'wifi',
+  'fa-rotate-right': 'rotate-right',
+  'fa-arrow-rotate-right': 'arrow-rotate-right',
+  'fa-arrow-rotate-left': 'arrow-rotate-left',
+  'fa-book': 'book',
+  'fa-magnifying-glass': 'magnifying-glass',
+  'fa-plane': 'plane',
+  'fa-arrow-right': 'arrow-right',
+  'fa-arrow-left': 'arrow-left',
+  'fa-spinner': 'spinner',
+  'fa-triangle-exclamation': 'triangle-exclamation',
+  'fa-circle-exclamation': 'circle-exclamation',
+  'fa-circle-info': 'circle-info',
+  'fa-circle-check': 'circle-check',
+  'fa-clock': 'clock',
+  'fa-comment-dots': 'comment-dots',
+  'fa-bug': 'bug',
+  'fa-paper-plane': 'paper-plane',
+  'fa-home': 'home',
   'fa-github': 'github',
   'fa-twitter': 'twitter',
+  'fa-x-twitter': 'x-twitter',
+  'fa-instagram': 'instagram',
   'fa-apple': 'apple',
   'fa-windows': 'windows',
 }
@@ -168,7 +208,14 @@ export const iconNameMap: Record<string, string> = {
  * Set of brand icon names (derived from imported brand icons)
  * Used to determine the icon prefix (fab vs fas) dynamically
  */
-export const brandIconNames = new Set<string>(['github', 'twitter', 'apple', 'windows'])
+export const brandIconNames = new Set<string>([
+  'github',
+  'twitter',
+  'x-twitter',
+  'instagram',
+  'apple',
+  'windows',
+])
 
 /**
  * Set of all valid icon names in the library

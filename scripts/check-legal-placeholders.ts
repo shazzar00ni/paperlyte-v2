@@ -104,6 +104,16 @@ function isPathSafe(filePath: string): boolean {
     return false;
   }
 
+  // Check for absolute paths
+  if (path.isAbsolute(filePath)) {
+    return false;
+  }
+
+  // Check for URL-encoded traversal patterns
+  if (filePath.includes("%2e%2e") || filePath.includes("%2e%2e%2f")) {
+    return false;
+  }
+
   // Normalize and resolve the path
   const normalizedPath = path.normalize(filePath);
   const resolvedPath = path.resolve(process.cwd(), normalizedPath);

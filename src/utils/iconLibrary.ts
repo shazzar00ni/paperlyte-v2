@@ -55,7 +55,7 @@ import {
   faBook, // Documentation/help
   faMagnifyingGlass, // Search
   faPlane, // Offline page - airplane mode
-  faRouter, // Offline page - network issues
+  faNetworkWired, // Offline page - network issues
   faArrowRight, // Navigation forward
   faArrowLeft, // Navigation back
   faSpinner, // Loading states
@@ -111,7 +111,7 @@ library.add(
   faBook,
   faMagnifyingGlass,
   faPlane,
-  faRouter,
+  faNetworkWired,
   faArrowRight,
   faArrowLeft,
   faSpinner,

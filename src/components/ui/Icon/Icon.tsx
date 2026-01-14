@@ -56,7 +56,9 @@ export const Icon = ({
 
   // Fallback to Font Awesome React component if icon not found in our set
   if (!paths) {
-    console.warn(`Icon "${name}" not found in icon set, using Font Awesome fallback`)
+    if (import.meta.env.DEV) {
+      console.warn(`Icon "${name}" not found in icon set, using Font Awesome fallback`)
+    }
 
     // Convert icon name using the mapping (e.g., 'fa-wifi-slash' -> 'plane-slash')
     const convertedName = convertIconName(name) as IconName

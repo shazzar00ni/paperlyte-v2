@@ -3,6 +3,21 @@ import userEvent from '@testing-library/user-event'
 import { FAQ } from './FAQ'
 import { FAQ_ITEMS } from '@constants/faq'
 
+/**
+ * Helper function to escape special regex characters for safe RegExp construction.
+ * Escapes all regex metacharacters to prevent ReDoS attacks.
+ *
+ * Security Note: All RegExp usage in this file uses this function to sanitize
+ * input before constructing regexes. The input comes from FAQ_ITEMS constant
+ * (not user input), making this safe for test purposes.
+ *
+ * @param str - String to escape
+ * @returns Escaped string safe for use in RegExp constructor
+ */
+function escapeRegExp(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
 describe('FAQ', () => {
   describe('Rendering', () => {
     it('should render the FAQ section', () => {
@@ -45,7 +60,9 @@ describe('FAQ', () => {
       render(<FAQ />)
 
       FAQ_ITEMS.forEach((item) => {
-        const questionButton = screen.getByRole('button', { name: new RegExp(item.question, 'i') })
+        // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp
+        // Safe: input is escaped via escapeRegExp() and comes from FAQ_ITEMS constant, not user input
+        const questionButton = screen.getByRole('button', { name: new RegExp(escapeRegExp(item.question), 'i') })
         expect(questionButton).toHaveAttribute('aria-expanded', 'false')
       })
     })
@@ -430,8 +447,10 @@ describe('FAQ', () => {
       const user = userEvent.setup()
       render(<FAQ />)
 
+      // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp
+      // Safe: input is escaped via escapeRegExp() and comes from FAQ_ITEMS constant, not user input
       const buttons = FAQ_ITEMS.slice(0, 3).map((item) =>
-        screen.getByRole('button', { name: new RegExp(item.question, 'i') })
+        screen.getByRole('button', { name: new RegExp(escapeRegExp(item.question), 'i') })
       )
 
       buttons[0].focus()

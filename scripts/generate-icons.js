@@ -15,6 +15,7 @@ import pngToIco from 'png-to-ico'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
 import { existsSync, writeFileSync } from 'fs'
+import { isFilenameSafe } from './utils/filenameValidation.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -44,6 +45,11 @@ const iconSizes = [
  */
 async function generateIcon(baseName, size, format) {
   try {
+    // Validate inputs
+    if (!isFilenameSafe(baseName) || !isFilenameSafe(format)) {
+      throw new Error(`Invalid filename or format: ${baseName}.${format}`)
+    }
+
     const outputName = `${baseName}.${format}`
     const outputPath = join(publicDir, outputName)
 
@@ -69,7 +75,7 @@ async function generateIcon(baseName, size, format) {
     // Safely handle any thrown value (may not be an Error object)
     const errorMessage = error instanceof Error ? error.message : String(error)
     const outputName = `${baseName}.${format}`
-    console.error(`❌ Failed to generate ${outputName}:`, errorMessage)
+    console.error('❌ Failed to generate icon:', outputName, errorMessage)
 
     // Always throw a normalized Error instance for consistent error handling
     throw new Error(`Failed to generate ${outputName}: ${errorMessage}`)

@@ -15,6 +15,7 @@ import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
 import { existsSync } from 'fs'
+import { isFilenameSafe } from './utils/filenameValidation.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -49,6 +50,11 @@ const formats = [
  */
 async function generateMockup(sourceName, width, height, format, options) {
   try {
+    // Validate inputs for path traversal
+    if (!isFilenameSafe(sourceName) || !isFilenameSafe(format)) {
+      throw new Error(`Invalid filename or format: ${sourceName} / ${format}`)
+    }
+
     // Validate file extension
     if (!sourceName.toLowerCase().endsWith('.svg')) {
       throw new Error(`Invalid file type: ${sourceName}. Only SVG files are supported.`)
@@ -92,7 +98,7 @@ async function generateMockup(sourceName, width, height, format, options) {
     const errorMessage = error instanceof Error ? error.message : String(error)
     const baseName = sourceName.replace('.svg', '')
     const outputName = `${baseName}.${format}`
-    console.error(`❌ Failed to generate ${outputName}:`, errorMessage)
+    console.error('❌ Failed to generate mockup:', outputName, errorMessage)
 
     // Always throw a normalized Error instance for consistent error handling
     throw new Error(`Failed to generate ${outputName}: ${errorMessage}`)

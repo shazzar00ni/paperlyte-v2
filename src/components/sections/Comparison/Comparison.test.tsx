@@ -3,6 +3,21 @@ import { render, screen } from '@testing-library/react'
 import { Comparison } from './Comparison'
 import { COMPARISON_FEATURES, COMPETITORS } from '@constants/comparison'
 
+/**
+ * Helper function to escape special regex characters for safe RegExp construction.
+ * Escapes all regex metacharacters to prevent ReDoS attacks.
+ *
+ * Security Note: All RegExp usage in this file uses this function to sanitize
+ * input before constructing regexes. The input comes from COMPETITORS constant
+ * (not user input), making this safe for test purposes.
+ *
+ * @param str - String to escape
+ * @returns Escaped string safe for use in RegExp constructor
+ */
+function escapeRegExp(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
 describe('Comparison', () => {
   it('should render as a section with correct id', () => {
     const { container } = render(<Comparison />)
@@ -41,8 +56,10 @@ describe('Comparison', () => {
 
     // Check all competitor headers
     COMPETITORS.forEach((competitor) => {
+      // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp
+      // Safe: input is escaped via escapeRegExp() and comes from COMPETITORS constant, not user input
       const header = screen.getByRole('columnheader', {
-        name: new RegExp(competitor.name),
+        name: new RegExp(escapeRegExp(competitor.name)),
       })
       expect(header).toBeInTheDocument()
     })

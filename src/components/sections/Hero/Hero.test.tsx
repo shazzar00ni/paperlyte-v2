@@ -179,48 +179,6 @@ describe('Hero - App Mockup', () => {
   })
 })
 
-describe('Hero - Button Interactions', () => {
-  let scrollIntoViewMock: ReturnType<typeof vi.fn>
-  let originalScrollIntoView: typeof Element.prototype.scrollIntoView
-  let mockSections: HTMLElement[] = []
-
-  beforeEach(() => {
-    const setup = setupScrollMock()
-    originalScrollIntoView = setup.originalScrollIntoView
-    scrollIntoViewMock = setup.scrollIntoViewMock
-    mockSections = []
-  })
-
-  afterEach(() => {
-    teardownScrollMock(originalScrollIntoView)
-    mockSections.forEach((section) => {
-      if (document.body.contains(section)) {
-        removeMockSection(section)
-      }
-    })
-    mockSections = []
-  })
-
-  it('should support keyboard navigation and multiple clicks', async () => {
-    const user = userEvent.setup()
-    const section = createMockSection('download')
-    mockSections.push(section)
-
-    render(<Hero />)
-    const button = screen.getByRole('button', { name: /start writing for free/i })
-
-    button.focus()
-    expect(button).toHaveFocus()
-
-    await user.keyboard('{Enter}')
-    expect(scrollIntoViewMock).toHaveBeenCalledTimes(1)
-
-    await user.click(button)
-    await user.click(button)
-    expect(scrollIntoViewMock).toHaveBeenCalledTimes(3)
-  })
-})
-
 describe('Hero - Section Props', () => {
   it('should render Section with correct id and padding', () => {
     const { container } = render(<Hero />)

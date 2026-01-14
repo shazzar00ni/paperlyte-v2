@@ -167,6 +167,19 @@ const PII_KEYS = [
 ]
 
 /**
+ * Check if a key is safe to use for dynamic property assignment
+ * Prevents prototype pollution by blocking dangerous property names
+ *
+ * @param key - The property key to validate
+ * @returns True if the key is safe to use, false otherwise
+ */
+function isSafePropertyKey(key: string): boolean {
+  // Block prototype pollution vectors
+  const dangerousKeys = ['__proto__', 'constructor', 'prototype']
+  return !dangerousKeys.includes(key)
+}
+
+/**
  * Sanitize event parameters to remove PII
  * This ensures no sensitive data is accidentally sent to analytics
  *
@@ -180,6 +193,14 @@ function sanitizeAnalyticsParams(params?: AnalyticsEventParams): AnalyticsEventP
   let piiFound = false
 
   for (const [key, value] of Object.entries(params)) {
+    // Validate key is safe before using it for property assignment
+    if (!isSafePropertyKey(key)) {
+      if (import.meta.env.DEV) {
+        console.warn('[Analytics] Blocked potentially unsafe property key:', key)
+      }
+      continue
+    }
+
     const lowerKey = key.toLowerCase()
 
     // Check if this key is a known PII field

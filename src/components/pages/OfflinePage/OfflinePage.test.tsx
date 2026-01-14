@@ -339,10 +339,10 @@ describe('OfflinePage', () => {
 
   describe('Icon Integration', () => {
     it('should render wifi icon in illustration', () => {
-      const { container } = render(<OfflinePage />)
+      render(<OfflinePage />)
 
-      // Query specifically for the illustration container (aria-hidden div)
-      const illustration = container.querySelector('[aria-hidden="true"]')
+      // Query specifically for the illustration container within the status region
+      const illustration = screen.getByRole('status').querySelector('[aria-hidden="true"]')
       expect(illustration).toBeInTheDocument()
       
       // Query for the wifi illustration SVG within the illustration container

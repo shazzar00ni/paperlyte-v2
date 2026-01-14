@@ -197,7 +197,7 @@ export function validateForm(formData: Record<string, unknown>): ValidationResul
     } else {
       const emailValidation = validateEmail(formData.email)
       if (!emailValidation.isValid) {
-        errors.email = emailValidation.error || 'Invalid email'
+        errors.email = emailValidation.error ?? 'Invalid email'
       }
     }
   }

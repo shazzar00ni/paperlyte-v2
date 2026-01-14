@@ -210,27 +210,27 @@ describe('CounterAnimation', () => {
       // Simulate animation frames at different timestamps
       if (rafCallback) {
         act(() => {
-          rafCallback!(0) // Start time: t=0ms, progress=0, value=0
+          rafCallback?.(0) // Start time: t=0ms, progress=0, value=0
         })
         expect(counter.textContent).toBe('0')
 
         act(() => {
-          rafCallback!(250) // t=250ms, progress=0.25, value=25
+          rafCallback?.(250) // t=250ms, progress=0.25, value=25
         })
         expect(counter.textContent).toBe('25')
 
         act(() => {
-          rafCallback!(500) // t=500ms, progress=0.5, value=50
+          rafCallback?.(500) // t=500ms, progress=0.5, value=50
         })
         expect(counter.textContent).toBe('50')
 
         act(() => {
-          rafCallback!(750) // t=750ms, progress=0.75, value=75
+          rafCallback?.(750) // t=750ms, progress=0.75, value=75
         })
         expect(counter.textContent).toBe('75')
 
         act(() => {
-          rafCallback!(1000) // t=1000ms, progress=1, value=100
+          rafCallback?.(1000) // t=1000ms, progress=1, value=100
         })
         expect(counter.textContent).toBe('100')
       }
@@ -327,10 +327,10 @@ describe('CounterAnimation', () => {
       // Simulate halfway through animation (500ms elapsed)
       if (rafCallback) {
         act(() => {
-          rafCallback!(0) // Start time
+          rafCallback?.(0) // Start time
         })
         act(() => {
-          rafCallback!(500) // Halfway point
+          rafCallback?.(500) // Halfway point
         })
       }
 
@@ -355,10 +355,10 @@ describe('CounterAnimation', () => {
       // Simulate halfway through animation (500ms elapsed)
       if (rafCallback) {
         act(() => {
-          rafCallback!(0) // Start time
+          rafCallback?.(0) // Start time
         })
         act(() => {
-          rafCallback!(500) // Halfway point
+          rafCallback?.(500) // Halfway point
         })
       }
 
@@ -386,10 +386,10 @@ describe('CounterAnimation', () => {
       // Simulate halfway through animation (500ms elapsed)
       if (rafCallback) {
         act(() => {
-          rafCallback!(0) // Start time
+          rafCallback?.(0) // Start time
         })
         act(() => {
-          rafCallback!(500) // Halfway point
+          rafCallback?.(500) // Halfway point
         })
       }
 
@@ -443,10 +443,10 @@ describe('CounterAnimation', () => {
       // With 5000ms duration and linear easing
       if (rafCallback) {
         act(() => {
-          rafCallback!(0) // Start time
+          rafCallback?.(0) // Start time
         })
         act(() => {
-          rafCallback!(2500) // Halfway through 5000ms should be at value 50
+          rafCallback?.(2500) // Halfway through 5000ms should be at value 50
         })
       }
 

@@ -22,9 +22,9 @@ describe('App Integration', () => {
     // Verify sections exist and are in correct order
     const sections = main?.querySelectorAll('section')
     expect(sections).toBeDefined()
-    expect(sections!.length).toBeGreaterThanOrEqual(5)
+    expect(sections.length).toBeGreaterThanOrEqual(5)
 
-    const sectionIds = Array.from(sections!).map((section) => section.getAttribute('id'))
+    const sectionIds = Array.from(sections).map((section) => section.getAttribute('id'))
 
     // Check all sections are present
     expect(sectionIds).toContain('hero')

@@ -76,9 +76,10 @@ describe('Button', () => {
   })
 
   it('should render with icon', () => {
-    const { container } = render(<Button icon="fa-download">Download</Button>)
+    render(<Button icon="fa-download">Download</Button>)
 
-    const icon = container.querySelector('.fa-download')
+    // Icon component should render with correct icon name
+    const icon = screen.getByTestId('icon-fa-download')
     expect(icon).toBeInTheDocument()
     expect(icon).toHaveAttribute('aria-hidden', 'true')
   })

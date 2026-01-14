@@ -13,8 +13,9 @@
 
 import sharp from 'sharp'
 import { fileURLToPath } from 'url'
-import { dirname, join, resolve, sep } from 'path'
+import { dirname, join } from 'path'
 import { existsSync } from 'fs'
+import { isPathSafe } from './path-utils.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -38,23 +39,6 @@ const formats = [
   { ext: 'webp', options: { quality: 85, effort: 6 } },
   { ext: 'avif', options: { quality: 75, effort: 6 } },
 ]
-
-/**
- * Validates that a file path is within a specified base directory
- * Prevents path traversal attacks by ensuring the resolved path doesn't escape the base directory
- * @param {string} baseDir - The base directory that the path must be within
- * @param {string} filePath - The file path to validate
- * @returns {boolean} True if the path is safe, false if it attempts to escape the base directory
- */
-function isPathSafe(baseDir, filePath) {
-  const resolvedBase = resolve(baseDir)
-  const resolvedPath = resolve(baseDir, filePath)
-  
-  // Check if the resolved path starts with the base directory
-  // This ensures the path cannot escape outside the base directory
-  // Use path.sep for cross-platform compatibility (handles both / and \\ separators)
-  return resolvedPath.startsWith(resolvedBase + sep)
-}
 
 /**
  * Generate a mockup image from SVG source in the specified format

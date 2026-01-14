@@ -3,24 +3,7 @@
  * This test ensures that malicious path inputs are properly blocked
  */
 
-import { resolve, sep } from 'path'
-
-/**
- * Validates that a file path is within a specified base directory
- * Prevents path traversal attacks by ensuring the resolved path doesn't escape the base directory
- * @param {string} baseDir - The base directory that the path must be within
- * @param {string} filePath - The file path to validate
- * @returns {boolean} True if the path is safe, false if it attempts to escape the base directory
- */
-function isPathSafe(baseDir, filePath) {
-  const resolvedBase = resolve(baseDir)
-  const resolvedPath = resolve(baseDir, filePath)
-  
-  // Check if the resolved path starts with the base directory
-  // This ensures the path cannot escape outside the base directory
-  // Use path.sep for cross-platform compatibility (handles both / and \\ separators)
-  return resolvedPath.startsWith(resolvedBase + sep)
-}
+import { isPathSafe } from '../path-utils.js'
 
 // Test cases
 const tests = [

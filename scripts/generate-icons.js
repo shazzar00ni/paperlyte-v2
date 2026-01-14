@@ -13,8 +13,9 @@
 import sharp from 'sharp'
 import pngToIco from 'png-to-ico'
 import { fileURLToPath } from 'url'
-import { dirname, join, resolve, sep } from 'path'
+import { dirname, join } from 'path'
 import { existsSync, writeFileSync } from 'fs'
+import { isPathSafe } from './path-utils.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -35,23 +36,6 @@ const iconSizes = [
   { name: 'android-chrome-192x192', size: 192, formats: ['png', 'webp', 'avif'] },
   { name: 'android-chrome-512x512', size: 512, formats: ['png', 'webp', 'avif'] },
 ]
-
-/**
- * Validates that a file path is within a specified base directory
- * Prevents path traversal attacks by ensuring the resolved path doesn't escape the base directory
- * @param {string} baseDir - The base directory that the path must be within
- * @param {string} filePath - The file path to validate
- * @returns {boolean} True if the path is safe, false if it attempts to escape the base directory
- */
-function isPathSafe(baseDir, filePath) {
-  const resolvedBase = resolve(baseDir)
-  const resolvedPath = resolve(baseDir, filePath)
-  
-  // Check if the resolved path starts with the base directory
-  // This ensures the path cannot escape outside the base directory
-  // Use path.sep for cross-platform compatibility (handles both / and \\ separators)
-  return resolvedPath.startsWith(resolvedBase + sep)
-}
 
 /**
  * Generate an icon from SVG source in the specified format

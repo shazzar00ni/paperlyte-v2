@@ -8,6 +8,7 @@
  */
 
 import type { AnalyticsConfig, AnalyticsEvent, AnalyticsProvider, CoreWebVitals } from '../types'
+import { isSafePropertyKey } from '../../utils/security'
 
 /**
  * Plausible Analytics provider
@@ -18,12 +19,6 @@ export class PlausibleProvider implements AnalyticsProvider {
   private initialized = false
   private scriptLoaded = false
   private scriptElement: HTMLScriptElement | null = null
-
-  /**
-   * Property names that can be used for prototype pollution attacks
-   * These keys are blocked from dynamic property assignment
-   */
-  private static readonly DANGEROUS_PROPERTY_KEYS = ['__proto__', 'constructor', 'prototype']
 
   /**
    * Initialize Plausible Analytics
@@ -184,17 +179,6 @@ export class PlausibleProvider implements AnalyticsProvider {
   }
 
   /**
-   * Check if a key is safe to use for dynamic property assignment
-   * Prevents prototype pollution by blocking dangerous property names
-   *
-   * @param key - The property key to validate
-   * @returns True if the key is safe to use, false otherwise
-   */
-  private isSafePropertyKey(key: string): boolean {
-    return !PlausibleProvider.DANGEROUS_PROPERTY_KEYS.includes(key)
-  }
-
-  /**
    * Track a custom event
    * Sends event with optional properties to Plausible
    */
@@ -209,7 +193,7 @@ export class PlausibleProvider implements AnalyticsProvider {
       ? Object.entries(event.properties).reduce(
           (acc, [key, value]) => {
             // Validate key is safe before using it for property assignment
-            if (!this.isSafePropertyKey(key)) {
+            if (!isSafePropertyKey(key)) {
               if (this.config?.debug || import.meta.env.DEV) {
                 console.warn('[Analytics] Blocked potentially unsafe property key:', key)
               }

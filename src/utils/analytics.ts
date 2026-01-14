@@ -32,6 +32,8 @@
  * ```
  */
 
+import { isSafePropertyKey } from './security'
+
 /**
  * Extend Window interface to include gtag for Google Analytics
  * Note: dataLayer is already declared in lib.dom.d.ts as Window['dataLayer']: unknown[]
@@ -165,23 +167,6 @@ const PII_KEYS = [
   'ip',
   'ip_address',
 ]
-
-/**
- * Property names that can be used for prototype pollution attacks
- * These keys are blocked from dynamic property assignment
- */
-const DANGEROUS_PROPERTY_KEYS = ['__proto__', 'constructor', 'prototype']
-
-/**
- * Check if a key is safe to use for dynamic property assignment
- * Prevents prototype pollution by blocking dangerous property names
- *
- * @param key - The property key to validate
- * @returns True if the key is safe to use, false otherwise
- */
-function isSafePropertyKey(key: string): boolean {
-  return !DANGEROUS_PROPERTY_KEYS.includes(key)
-}
 
 /**
  * Sanitize event parameters to remove PII

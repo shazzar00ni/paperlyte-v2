@@ -167,6 +167,12 @@ const PII_KEYS = [
 ]
 
 /**
+ * Property names that can be used for prototype pollution attacks
+ * These keys are blocked from dynamic property assignment
+ */
+const DANGEROUS_PROPERTY_KEYS = ['__proto__', 'constructor', 'prototype']
+
+/**
  * Check if a key is safe to use for dynamic property assignment
  * Prevents prototype pollution by blocking dangerous property names
  *
@@ -174,9 +180,7 @@ const PII_KEYS = [
  * @returns True if the key is safe to use, false otherwise
  */
 function isSafePropertyKey(key: string): boolean {
-  // Block prototype pollution vectors
-  const dangerousKeys = ['__proto__', 'constructor', 'prototype']
-  return !dangerousKeys.includes(key)
+  return !DANGEROUS_PROPERTY_KEYS.includes(key)
 }
 
 /**

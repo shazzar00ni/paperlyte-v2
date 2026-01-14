@@ -20,6 +20,12 @@ export class PlausibleProvider implements AnalyticsProvider {
   private scriptElement: HTMLScriptElement | null = null
 
   /**
+   * Property names that can be used for prototype pollution attacks
+   * These keys are blocked from dynamic property assignment
+   */
+  private static readonly DANGEROUS_PROPERTY_KEYS = ['__proto__', 'constructor', 'prototype']
+
+  /**
    * Initialize Plausible Analytics
    * Loads the Plausible script asynchronously and sets up configuration
    */
@@ -185,9 +191,7 @@ export class PlausibleProvider implements AnalyticsProvider {
    * @returns True if the key is safe to use, false otherwise
    */
   private isSafePropertyKey(key: string): boolean {
-    // Block prototype pollution vectors
-    const dangerousKeys = ['__proto__', 'constructor', 'prototype']
-    return !dangerousKeys.includes(key)
+    return !PlausibleProvider.DANGEROUS_PROPERTY_KEYS.includes(key)
   }
 
   /**

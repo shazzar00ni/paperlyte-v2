@@ -27,7 +27,7 @@ import { resolve, sep } from 'path'
  */
 export function isPathSafe(baseDir, filePath) {
   // Validate inputs
-  if (!baseDir || typeof baseDir !== 'string') {
+  if (!baseDir || typeof baseDir !== 'string' || baseDir.trim() === '') {
     throw new Error('baseDir must be a non-empty string')
   }
   

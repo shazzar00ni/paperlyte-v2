@@ -33,26 +33,20 @@ const LEGAL_FILES = ["privacy.html", "terms.html"];
  * @returns {boolean} True if the filename is safe
  */
 function isFilenameSafe(filename) {
-  // Check for path traversal patterns
-  if (filename.includes('..') || filename.includes('/') || filename.includes('\\')) {
-    return false
-  }
-
-  // Check for URL-encoded traversal patterns
-  if (filename.includes('%2e%2e') || filename.includes('%2f') || filename.includes('%5c')) {
-    return false
-  }
-
-  // Check for null bytes (can cause issues on some systems)
-  // Basic type and emptiness check
   if (typeof filename !== "string" || filename.length === 0) {
     return false;
   }
-  // Check for path traversal patterns
-  if (filename.includes("..") || filename.includes("/") || filename.includes("\\")) {
+  if (filename.includes('..') || filename.includes('/') || filename.includes('\\')) {
+    return false;
+  }
+  if (filename.includes('%2e%2e') || filename.includes('%2f') || filename.includes('%5c')) {
+    return false;
+  }
+  if (filename.includes('\0') || filename.includes('%00')) {
     return false;
   }
   return true;
+}
 }
 
 console.log(`Injecting build values...`);

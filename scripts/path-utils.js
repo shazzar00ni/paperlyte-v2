@@ -40,7 +40,14 @@ export function isPathSafe(baseDir, filePath) {
     return false
   }
   
+  // Security Note: The path.resolve() calls below are NOT vulnerable to path traversal.
+  // They are the SECURITY VALIDATION mechanism that prevents path traversal attacks.
+  // These resolve paths to absolute form so we can verify the resolved path stays within baseDir.
+  // nosemgrep: javascript.lang.security.audit.path-traversal.path-join-resolve-traversal
+  // codacy-disable-line path-traversal
   const resolvedBase = resolve(baseDir)
+  // nosemgrep: javascript.lang.security.audit.path-traversal.path-join-resolve-traversal
+  // codacy-disable-line path-traversal
   const resolvedPath = resolve(baseDir, filePath)
   
   // Check if the resolved path starts with the base directory or equals it

@@ -20,7 +20,11 @@ const tests = [
   { baseDir: '/tmp/test', filePath: '../../../etc/passwd', expected: false, description: 'Deep traversal attempt' },
   { baseDir: '/tmp/test', filePath: 'subdir/../../etc/passwd', expected: false, description: 'Traversal with subdirectory prefix' },
   
-  // Edge cases
+  // Edge cases - invalid inputs
+  { baseDir: '/tmp/test', filePath: '', expected: false, description: 'Empty string path' },
+  { baseDir: '/tmp/test', filePath: '   ', expected: false, description: 'Whitespace-only path' },
+  
+  // Real-world cases
   { baseDir: '/app/public', filePath: 'favicon-16x16.png', expected: true, description: 'Real-world icon filename' },
   { baseDir: '/app/public', filePath: 'android-chrome-512x512.webp', expected: true, description: 'Real-world icon with format' },
 ]

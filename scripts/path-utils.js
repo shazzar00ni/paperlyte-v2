@@ -26,6 +26,20 @@ import { resolve, sep } from 'path'
  * isPathSafe('/app/public', '/etc/passwd') // false
  */
 export function isPathSafe(baseDir, filePath) {
+  // Validate inputs
+  if (!baseDir || typeof baseDir !== 'string') {
+    throw new Error('baseDir must be a non-empty string')
+  }
+  
+  if (filePath === null || filePath === undefined || typeof filePath !== 'string') {
+    throw new Error('filePath must be a string')
+  }
+  
+  // Empty string or whitespace-only paths are not allowed
+  if (filePath.trim() === '') {
+    return false
+  }
+  
   const resolvedBase = resolve(baseDir)
   const resolvedPath = resolve(baseDir, filePath)
   

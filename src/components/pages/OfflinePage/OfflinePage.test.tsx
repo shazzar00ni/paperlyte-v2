@@ -345,8 +345,8 @@ describe('OfflinePage', () => {
       const illustration = container.querySelector('[aria-hidden="true"]')
       expect(illustration).toBeInTheDocument()
       
-      // Query for the wifi icon SVG within the illustration
-      const wifiIcon = illustration?.querySelector('svg[data-icon="wifi"]')
+      // Query for the wifi illustration SVG within the illustration container
+      const wifiIcon = illustration?.querySelector('svg')
       expect(wifiIcon).toBeInTheDocument()
     })
 

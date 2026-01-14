@@ -110,13 +110,17 @@ try {
     // Success path
   }
 } catch (error) {
-  logError(error as Error, {
-    severity: 'medium',
-    tags: {
-      feature: 'waitlist',
-      action: 'submit_email',
-    }
-  }, 'EmailCapture')
+  logError(
+    error as Error,
+    {
+      severity: 'medium',
+      tags: {
+        feature: 'waitlist',
+        action: 'submit_email',
+      },
+    },
+    'EmailCapture'
+  )
 }
 ```
 
@@ -205,11 +209,12 @@ paperlyte-v2/
 ## Key Patterns
 
 ### Analytics Tracking
+
 ```typescript
 // Track custom events
 trackEvent('Waitlist_Join', {
   button_location: 'hero',
-  user_tier: 'free'
+  user_tier: 'free',
 })
 
 // Track CTA clicks
@@ -220,6 +225,7 @@ trackExternalLinkClick('Twitter', 'https://twitter.com/paperlyte')
 ```
 
 ### Component with Intersection Observer
+
 ```typescript
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver'
 
@@ -228,7 +234,7 @@ const MyComponent = () => {
     threshold: 0.5,
     triggerOnce: true
   })
-  
+
   return (
     <div ref={ref} className={isIntersecting ? 'visible' : 'hidden'}>
       Content
@@ -238,12 +244,13 @@ const MyComponent = () => {
 ```
 
 ### Theme Toggle
+
 ```typescript
 import { useTheme } from '@/hooks/useTheme'
 
 const MyComponent = () => {
   const { theme, toggleTheme } = useTheme()
-  
+
   return (
     <button onClick={toggleTheme}>
       Current theme: {theme}
@@ -253,12 +260,13 @@ const MyComponent = () => {
 ```
 
 ### Responsive Media Queries
+
 ```typescript
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 
 const MyComponent = () => {
   const isMobile = useMediaQuery('(max-width: 768px)')
-  
+
   return isMobile ? <MobileView /> : <DesktopView />
 }
 ```

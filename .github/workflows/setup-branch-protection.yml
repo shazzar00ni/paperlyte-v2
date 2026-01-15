@@ -29,10 +29,11 @@ jobs:
           BRANCH: ${{ inputs.branch }}
         run: |
           # Validate branch name format to prevent command injection
-          # Reject dangerous shell metacharacters to prevent command injection
-          if printf '%s\n' "$BRANCH" | grep -qE '[\$`;|&<>(){}]'; then
-            echo "✗ Invalid branch name: contains invalid or unsafe characters (for example: $, \`, |, &, <, >, (, ), {, })"
+          # Allow only a safe subset of characters as defense-in-depth
+          if ! printf '%s\n' "$BRANCH" | grep -qE '^[a-zA-Z0-9/_.-]+$'; then
+            echo "✗ Invalid branch name: contains invalid or unsafe characters"
             printf "Branch name: '%s'\n" "$BRANCH"
+            echo "Branch names can only contain: letters, numbers, hyphens, underscores, slashes, and dots"
             exit 1
           fi
           

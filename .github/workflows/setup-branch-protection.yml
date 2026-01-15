@@ -31,7 +31,7 @@ jobs:
           # Validate branch name format to prevent command injection
           # Check for dangerous shell metacharacters as defense-in-depth
           if printf '%s\n' "$BRANCH" | grep -qE '[\$`;|&<>(){}]'; then
-            echo "✗ Invalid branch name: contains shell metacharacters"
+            echo "✗ Invalid branch name: contains invalid or unsafe characters (for example: $, \`, |, &, <, >, (, ), {, })"
             printf "Branch name: '%s'\n" "$BRANCH"
             exit 1
           fi

@@ -272,5 +272,5 @@ export function suggestEmailCorrection(email: string): string | null {
 export function escapeRegExp(str: string): string {
   if (!str) return ''
   // Escape all special regex characters: \ ^ $ * + ? . ( ) [ ] { } |
-  return str.replace(/[\\^$*+?.()\[\]{}|]/g, '\\$&')
+  return str.replace(/[\\^$*+?.()[\]{}|]/g, '\\$&')
 }

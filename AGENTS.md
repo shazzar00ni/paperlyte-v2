@@ -11,12 +11,14 @@
 - Hero section with value proposition
 - Problem/Solution sections
 - Features showcase
-- Pricing information
 - Email capture (waitlist)
 - FAQ section
 - Testimonials
+- Competitor comparison
 - Call-to-action sections
 - Privacy and Terms pages
+
+**Note**: A Pricing component exists in the codebase but is not currently rendered on the landing page.
 
 ## Build/Lint/Test Commands
 
@@ -57,20 +59,18 @@ npx vitest run src/utils/analytics.test.ts
 
 ```bash
 npm run lint             # ESLint with all warnings as errors
-npm run lint:fix         # Auto-fix ESLint issues
 npm run format           # Format all files with Prettier
 npm run format:check     # Check Prettier formatting
-npm run type-check       # TypeScript type checking only
 ```
 
 ### Dependency Management
 
 ```bash
-npm run security-audit   # Audit dependencies for vulnerabilities
 npm run generate:icons   # Generate optimized icon files from SVG
 npm run generate:mockups # Generate optimized mockup images
 npm run size             # Check bundle size with size-limit
 npm run lighthouse       # Run Lighthouse CI performance audit
+npm audit                # Audit dependencies for vulnerabilities (native npm command)
 ```
 
 ## Code Style Guidelines
@@ -107,7 +107,6 @@ import { trackEvent } from '@utils/analytics'
 // @constants/      → src/constants/
 // @utils/          → src/utils/
 // @styles/         → src/styles/
-// @types/          → src/types/
 
 // Relative imports for same-level files
 import { formatDate } from './dateUtils'
@@ -223,7 +222,7 @@ function EmailCapture() {
 **Font System**:
 
 - **UI/Body**: Inter (via @fontsource/inter)
-- **Headlines**: Playfair Display (Google Fonts)
+- **Headlines**: Playfair Display (self-hosted variable font)
 - Icons: Font Awesome (via @fortawesome packages)
 
 ## File Structure
@@ -252,7 +251,7 @@ paperlyte-v2/
 │   │   │   ├── Statistics/   # Usage statistics
 │   │   │   ├── Comparison/   # Competitor comparison
 │   │   │   ├── Testimonials/ # User testimonials
-│   │   │   ├── Pricing/      # Pricing information
+│   │   │   ├── Pricing/      # Pricing information (not currently rendered)
 │   │   │   ├── EmailCapture/ # Email capture form
 │   │   │   ├── FAQ/          # Frequently asked questions
 │   │   │   └── CTA/          # Call-to-action
@@ -338,7 +337,7 @@ paperlyte-v2/
 1. Create detailed plan before editing large files (>300 lines)
 2. Run tests before committing: `npm run test`
 3. Run linting: `npm run lint`
-4. Ensure type checking passes: `npm run type-check`
+4. Type checking is performed automatically during build: `npm run build` (runs `tsc -b`)
 5. Check bundle size: `npm run size`
 6. Test E2E flows: `npm run test:e2e`
 7. Git hooks (via Husky) enforce pre-commit checks automatically
@@ -610,7 +609,7 @@ const isProd = env.isProduction()
 
 ## Landing Page Components
 
-The landing page is composed of the following sections (rendered in App.tsx):
+The landing page is composed of the following sections (rendered in App.tsx in this order):
 
 1. **Header** (`@components/layout/Header`)
    - Sticky navigation
@@ -679,6 +678,8 @@ The landing page is composed of the following sections (rendered in App.tsx):
 14. **FeedbackWidget** (`@components/ui/FeedbackWidget`)
     - Floating feedback button
     - User feedback form
+
+**Note**: A `Pricing` component exists at `@components/sections/Pricing/` but is not currently rendered in App.tsx.
 
 ## Available Constants
 

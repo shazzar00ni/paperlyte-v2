@@ -58,7 +58,7 @@ The tests verify two validation strategies:
 
 ### Script Validation (`.github/scripts/setup-branch-protection.sh`)
 
-1. **Blacklist approach**: Rejects dangerous characters `[\$\`;|&<>(){}[:space:]]`
+1. **Blacklist approach**: Rejects dangerous characters `[\$\`\\;|&<>(){}[:space:]]`
 2. **Git format validation**: Uses `git check-ref-format --branch`
 
 Both approaches provide defense-in-depth protection against command injection vulnerabilities.

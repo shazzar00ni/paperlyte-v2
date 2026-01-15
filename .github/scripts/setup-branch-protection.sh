@@ -33,7 +33,7 @@ echo -e "${GREEN}Configuring branch protection for ${REPO_OWNER}/${REPO_NAME}:${
 echo ""
 
 # Validate branch name format to prevent command injection
-# Check for dangerous shell metacharacters as defense-in-depth
+# Reject dangerous shell metacharacters to prevent command injection
 if printf '%s\n' "$BRANCH" | grep -qE '[\$`\\;|&<>(){}[:space:]]'; then
     echo -e "${RED}✗ Invalid branch name: contains invalid characters. Branch names can only contain letters, numbers, hyphens, underscores, slashes, and dots.${NC}"
     printf "Branch name: '%s'\n" "$BRANCH"

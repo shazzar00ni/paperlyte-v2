@@ -45,7 +45,7 @@ jobs:
           fi
           
           git fetch origin
-          # Check if the validated branch exists in the remote repository
+          # After validation, confirm that the branch exists in the remote repository
           if git show-ref --verify --quiet "refs/remotes/origin/$BRANCH"; then
             echo "✓ Branch '$BRANCH' exists"
           else

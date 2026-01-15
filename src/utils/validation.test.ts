@@ -571,8 +571,8 @@ describe('escapeRegExp', () => {
     expect(regex.test('testXexampleXcom')).toBe(false)
   })
 
-  it('should prevent ReDoS patterns from repeated characters', () => {
-    // This would be dangerous without escaping
+  it('should handle literal strings with repeated characters', () => {
+    // Test that repeated characters are treated as literals
     const str = 'a'.repeat(50) + 'b'
     const escaped = escapeRegExp(str)
     
@@ -642,8 +642,8 @@ describe('escapeRegExp', () => {
     })
   })
 
-  it('should protect against malicious patterns', () => {
-    // Test various patterns that could cause ReDoS
+  it('should escape patterns that would cause ReDoS if unescaped', () => {
+    // Test various patterns that could cause ReDoS if used as regex without escaping
     const dangerousPatterns = [
       '(a+)+b',
       '(a|a)*b',

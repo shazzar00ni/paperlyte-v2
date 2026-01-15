@@ -2,7 +2,6 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { Comparison } from './Comparison'
 import { COMPARISON_FEATURES, COMPETITORS } from '@constants/comparison'
-import { escapeRegExp } from '@/utils/validation'
 
 describe('Comparison', () => {
   it('should render as a section with correct id', () => {
@@ -43,7 +42,7 @@ describe('Comparison', () => {
     // Check all competitor headers
     COMPETITORS.forEach((competitor) => {
       const header = screen.getByRole('columnheader', {
-        name: new RegExp(escapeRegExp(competitor.name)),
+        name: (content) => content.includes(competitor.name),
       })
       expect(header).toBeInTheDocument()
     })

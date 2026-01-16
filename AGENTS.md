@@ -170,12 +170,14 @@ paperlyte/
 ## Key Patterns
 
 ### Data Service Usage
+
 ```typescript
 const notes = await dataService.getNotes()
 const success = await dataService.saveNote(updatedNote)
 ```
 
 ### Component Analytics
+
 ```typescript
 useEffect(() => {
   trackFeatureUsage('note_editor', 'view')
@@ -184,6 +186,7 @@ useEffect(() => {
 ```
 
 ### Keyboard Shortcuts
+
 ```typescript
 useKeyboardShortcut(['cmd+s', 'ctrl+s'], saveNote)
 ```

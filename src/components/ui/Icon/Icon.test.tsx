@@ -115,9 +115,7 @@ describe('Icon', () => {
 
   it('should apply custom className', () => {
     const { container } = render(<Icon name="fa-bolt" className="custom-icon" />)
-    const svg = container.querySelector('svg')
-    const fallback = container.querySelector('span')
-    const icon = svg ?? fallback
+    const icon = getIconElement(container)
 
     expect(icon).toHaveClass('custom-icon')
   })

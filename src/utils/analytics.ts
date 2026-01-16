@@ -391,6 +391,58 @@ export function trackSocialClick(platform: string): void {
 }
 
 /**
+ * Calculate current scroll percentage
+ * @returns Scroll percentage rounded to nearest integer
+ */
+function calculateScrollPercent(): number {
+  const windowHeight = window.innerHeight
+  const documentHeight = document.documentElement.scrollHeight
+  const scrollTop = window.scrollY
+  
+  if (documentHeight <= 0) return 0
+  
+  const scrollPercent = ((scrollTop + windowHeight) / documentHeight) * 100
+  return Math.round(scrollPercent)
+}
+
+/**
+ * Track scroll milestones that haven't been tracked yet
+ * @param currentPercent - Current scroll percentage
+ * @param trackedMilestones - Set of already tracked milestones
+ */
+function trackScrollMilestones(currentPercent: number, trackedMilestones: Set<number>): void {
+  const milestones = [25, 50, 75, 100]
+  
+  milestones.forEach((milestone) => {
+    if (currentPercent >= milestone && !trackedMilestones.has(milestone)) {
+      trackedMilestones.add(milestone)
+      trackEvent(AnalyticsEvents.SCROLL_DEPTH, {
+        depth_percentage: milestone,
+      })
+    }
+  })
+}
+
+/**
+ * Create a throttled scroll handler using requestAnimationFrame
+ * @param callback - Function to call on scroll
+ * @returns Throttled scroll handler
+ */
+function createThrottledScrollHandler(callback: () => void): () => void {
+  let ticking = false
+  
+  return () => {
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        callback()
+        ticking = false
+      })
+      ticking = true
+    }
+  }
+}
+
+/**
  * Initialize scroll depth tracking
  * Sets up a scroll listener that tracks depth milestones
  *
@@ -408,41 +460,13 @@ export function initScrollDepthTracking(): () => void {
   const trackedMilestones = new Set<number>()
 
   const handleScroll = () => {
-    const windowHeight = window.innerHeight
-    const documentHeight = document.documentElement.scrollHeight
-    const scrollTop = window.scrollY
-    if (documentHeight <= 0) return
-
-    const scrollPercent = ((scrollTop + windowHeight) / documentHeight) * 100
-    const roundedPercent = Math.round(scrollPercent)
-
-    // Track milestones only once
-    const milestones = [25, 50, 75, 100]
-    milestones.forEach((milestone) => {
-      if (roundedPercent >= milestone && !trackedMilestones.has(milestone)) {
-        trackedMilestones.add(milestone)
-        trackEvent(AnalyticsEvents.SCROLL_DEPTH, {
-          depth_percentage: milestone,
-        })
-      }
-    })
+    const scrollPercent = calculateScrollPercent()
+    trackScrollMilestones(scrollPercent, trackedMilestones)
   }
 
-  // Use throttle to avoid excessive event tracking
-  let ticking = false
-  const throttledScroll = () => {
-    if (!ticking) {
-      window.requestAnimationFrame(() => {
-        handleScroll()
-        ticking = false
-      })
-      ticking = true
-    }
-  }
-
+  const throttledScroll = createThrottledScrollHandler(handleScroll)
   window.addEventListener('scroll', throttledScroll, { passive: true })
 
-  // Return cleanup function
   return () => {
     window.removeEventListener('scroll', throttledScroll)
   }

@@ -30,18 +30,20 @@ describe('Analytics Scroll Depth Tracking', () => {
 
     // Capture the scroll event listener
     const originalAddEventListener = window.addEventListener
-    addEventListenerSpy = vi.spyOn(window, 'addEventListener').mockImplementation(
-      (
-        event: string,
-        listener: EventListener | EventListenerObject,
-        options?: boolean | AddEventListenerOptions
-      ) => {
-        if (event === 'scroll') {
-          scrollEventListener = listener as () => void
+    addEventListenerSpy = vi
+      .spyOn(window, 'addEventListener')
+      .mockImplementation(
+        (
+          event: string,
+          listener: EventListener | EventListenerObject,
+          options?: boolean | AddEventListenerOptions
+        ) => {
+          if (event === 'scroll') {
+            scrollEventListener = listener as () => void
+          }
+          return originalAddEventListener.call(window, event, listener, options)
         }
-        return originalAddEventListener.call(window, event, listener, options)
-      }
-    )
+      )
 
     // Mock requestAnimationFrame
     vi.spyOn(window, 'requestAnimationFrame').mockImplementation((callback) => {

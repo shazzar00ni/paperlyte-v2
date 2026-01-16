@@ -49,7 +49,7 @@ Cmd + F8 (while VoiceOver is active)
 
 ## VoiceOver Testing Guide (macOS)
 
-### Basic Commands
+### VoiceOver Basic Commands
 
 | Command | Action |
 |---------|--------|
@@ -66,10 +66,10 @@ Cmd + F8 (while VoiceOver is active)
 
 **Note:** VO = Ctrl + Option (by default)
 
-### Step-by-Step Testing Procedure
+### VoiceOver Step-by-Step Testing Procedure
 
 #### 1. Initial Page Load
-```
+```text
 ✓ Expected announcements:
 - "Paperlyte - Lightning-Fast, Distraction-Free Notes"
 - "Document, Main, Navigation region, 3 items"
@@ -88,7 +88,7 @@ Cmd + F8 (while VoiceOver is active)
 4. VO + U to open rotor, check landmarks
 
 #### 2. Skip Navigation Link
-```
+```text
 ✓ Action: Press VO + Space on "Skip to main content" link
 ✓ Expected: Focus jumps to main content, bypassing navigation
 ✓ Announcement: "Main, region"
@@ -101,7 +101,7 @@ Cmd + F8 (while VoiceOver is active)
 4. VO + Right Arrow should announce first content item
 
 #### 3. Header Navigation
-```
+```text
 ✓ Open Rotor: VO + U
 ✓ Select "Landmarks"
 ✓ Expected landmarks:
@@ -122,7 +122,7 @@ Cmd + F8 (while VoiceOver is active)
    - "Open menu, button" (mobile only)
 
 #### 4. Headings Navigation
-```
+```text
 ✓ Command: VO + Cmd + H (repeatedly)
 ✓ Expected heading hierarchy:
   H1: "Your thoughts, organized."
@@ -142,7 +142,7 @@ Cmd + F8 (while VoiceOver is active)
 
 #### 5. Forms Testing
 **Email Capture Form:**
-```
+```text
 ✓ Navigate to form
 ✓ Expected announcements:
   - "Email address, edit text"
@@ -169,7 +169,7 @@ Cmd + F8 (while VoiceOver is active)
 6. Listen for: "Alert, Please agree to receive emails from Paperlyte"
 
 #### 6. FAQ Accordion
-```
+```text
 ✓ Navigate to FAQ section
 ✓ Expected for each question:
   - "Is Paperlyte free?, collapsed, button"
@@ -192,7 +192,7 @@ Cmd + F8 (while VoiceOver is active)
 - This should be announced automatically without navigating
 
 #### 7. Testimonials Carousel
-```
+```text
 ✓ Navigate to carousel
 ✓ Expected announcements:
   - "Testimonials, region"
@@ -213,7 +213,7 @@ Cmd + F8 (while VoiceOver is active)
 8. Test Play/Pause button
 
 #### 8. Comparison Table
-```
+```text
 ✓ Navigate to table
 ✓ Expected announcements:
   - "Table with 4 columns and 8 rows"
@@ -232,7 +232,7 @@ Cmd + F8 (while VoiceOver is active)
 7. Check X-mark announced as "Not supported"
 
 #### 9. Modal Testing (Feedback Widget)
-```
+```text
 ✓ Open feedback widget
 ✓ Expected announcements:
   - "Send Feedback, dialog"
@@ -253,7 +253,7 @@ Cmd + F8 (while VoiceOver is active)
 
 ## NVDA Testing Guide (Windows)
 
-### Basic Commands
+### NVDA Basic Commands
 
 | Command | Action |
 |---------|--------|
@@ -271,10 +271,10 @@ Cmd + F8 (while VoiceOver is active)
 | **Insert + Space** | Browse/Focus mode toggle |
 | **Insert + Q** | Quit NVDA |
 
-### Step-by-Step Testing Procedure
+### NVDA Step-by-Step Testing Procedure
 
 #### 1. Initial Page Load
-```
+```text
 ✓ Start NVDA
 ✓ Load page
 ✓ Press Insert + Down Arrow to read page
@@ -282,7 +282,7 @@ Cmd + F8 (while VoiceOver is active)
 ```
 
 #### 2. Elements List Navigation
-```
+```text
 ✓ Press Insert + F7
 ✓ Select tabs:
   - Headings: Verify heading hierarchy
@@ -301,7 +301,7 @@ Cmd + F8 (while VoiceOver is active)
 7. Arrow through list, press Enter to jump to element
 
 #### 3. Forms Mode Testing
-```
+```text
 ✓ Navigate to form field (Insert + F)
 ✓ Expected: Forms mode automatically activates
 ✓ Announcement: "Forms mode on"
@@ -319,7 +319,7 @@ Cmd + F8 (while VoiceOver is active)
 8. Verify errors announced via aria-live region
 
 #### 4. Table Navigation
-```
+```text
 ✓ Navigate to table (Insert + Ctrl + T)
 ✓ Table navigation commands:
   - Ctrl + Alt + Arrow Keys: Navigate cells
@@ -339,7 +339,7 @@ Cmd + F8 (while VoiceOver is active)
 
 ## JAWS Testing Guide (Windows)
 
-### Basic Commands
+### JAWS Basic Commands
 
 | Command | Action |
 |---------|--------|
@@ -355,7 +355,7 @@ Cmd + F8 (while VoiceOver is active)
 | **Insert + F3** | Elements list |
 | **Insert + Z** | JAWS settings |
 
-### Testing Procedure
+### JAWS Step-by-Step Testing Procedure
 Similar to NVDA with some command differences. Focus on:
 1. Forms mode behavior
 2. Table navigation

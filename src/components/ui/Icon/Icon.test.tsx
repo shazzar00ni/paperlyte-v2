@@ -64,18 +64,18 @@ describe('Icon', () => {
   it('should apply size attributes correctly', () => {
     // Test sm size (16px)
     const { container, rerender } = render(<Icon name="fa-bolt" size="sm" />)
-    let svg = container.querySelector('svg')
-    expect(svg).toHaveStyle({ fontSize: '16px' })
+    let icon = getIconElement(container)
+    expect(icon).toHaveStyle({ fontSize: '16px' })
 
     // Test lg size (24px)
     rerender(<Icon name="fa-bolt" size="lg" />)
-    svg = container.querySelector('svg')
-    expect(svg).toHaveStyle({ fontSize: '24px' })
+    icon = getIconElement(container)
+    expect(icon).toHaveStyle({ fontSize: '24px' })
 
     // Test 2x size (40px)
     rerender(<Icon name="fa-bolt" size="2x" />)
-    svg = container.querySelector('svg')
-    expect(svg).toHaveStyle({ fontSize: '40px' })
+    icon = getIconElement(container)
+    expect(icon).toHaveStyle({ fontSize: '40px' })
 
     // Test fallback size application (span with fontSize style)
     rerender(<Icon name="missing-icon" size="lg" />)
@@ -86,9 +86,9 @@ describe('Icon', () => {
   it('should use medium size by default', () => {
     // Test Font Awesome default size (md = 20px)
     const { container, rerender } = render(<Icon name="fa-bolt" />)
-    const svg = container.querySelector('svg')
-    expect(svg).toBeInTheDocument()
-    expect(svg).toHaveStyle({ fontSize: '20px' })
+    const icon = getIconElement(container)
+    expect(icon).toBeInTheDocument()
+    expect(icon).toHaveStyle({ fontSize: '20px' })
 
     // Test fallback default size (span with fontSize in style)
     rerender(<Icon name="missing-icon" />)
@@ -122,10 +122,10 @@ describe('Icon', () => {
 
   it('should handle color prop on Font Awesome icons', () => {
     const { container } = render(<Icon name="fa-bolt" color="#FF0000" />)
-    const svg = container.querySelector('svg')
+    const icon = getIconElement(container)
 
     // Font Awesome uses inline style for color
-    expect(svg).toHaveStyle({ color: '#FF0000' })
+    expect(icon).toHaveStyle({ color: '#FF0000' })
   })
 
   it('should handle color prop on fallback elements', () => {
@@ -140,13 +140,13 @@ describe('Icon', () => {
   it('should normalize bare hex colors by prepending #', () => {
     // Test with Font Awesome icon - 6 digit hex
     const { container, rerender } = render(<Icon name="fa-bolt" color="FF0000" />)
-    let svg = container.querySelector('svg')
-    expect(svg).toHaveStyle({ color: '#FF0000' })
+    let icon = getIconElement(container)
+    expect(icon).toHaveStyle({ color: '#FF0000' })
 
     // Test with 3 digit hex
     rerender(<Icon name="fa-bolt" color="F00" />)
-    svg = container.querySelector('svg')
-    expect(svg).toHaveStyle({ color: '#F00' })
+    icon = getIconElement(container)
+    expect(icon).toHaveStyle({ color: '#F00' })
 
     // Test with fallback (missing icon) - renders span with ? if not in library
     rerender(<Icon name="missing-icon" color="FF0000" />)
@@ -155,8 +155,8 @@ describe('Icon', () => {
 
     // Test that valid CSS colors are left untouched
     rerender(<Icon name="fa-bolt" color="rgb(255, 0, 0)" />)
-    svg = container.querySelector('svg')
-    expect(svg).toHaveStyle({ color: 'rgb(255, 0, 0)' })
+    icon = getIconElement(container)
+    expect(icon).toHaveStyle({ color: 'rgb(255, 0, 0)' })
   })
 
   it('should apply correct variant class for solid', () => {

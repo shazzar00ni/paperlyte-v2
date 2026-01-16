@@ -7,6 +7,7 @@ import { Header } from './Header'
 // ------------------------------------------------------------------
 const MOCK_SECTION_IDS = ['features', 'download']
 const EXPECTED_FIRST_FOCUSABLE_NAMES = ['Features', 'Get Started']
+const EXPECTED_LAST_FOCUSABLE_NAMES = ['Download', 'Get Started']
 
 function setupScrollIntoViewMock(): ReturnType<typeof vi.fn> {
   if (!Element.prototype.scrollIntoView) {
@@ -269,7 +270,7 @@ describe('Header', () => {
       // Note: Due to CSS layout, the visual order may differ from DOM order
       const lastElement = document.activeElement
       expect(lastElement).toBeTruthy()
-      expect(['Download', 'Get Started'].some(name =>
+      expect(EXPECTED_LAST_FOCUSABLE_NAMES.some(name =>
         lastElement?.textContent?.includes(name)
       )).toBe(true)
     })

@@ -38,7 +38,7 @@ describe('Icon', () => {
     // Should render icon with aria-label (Font Awesome renders as SVG)
     const icon = screen.getByLabelText('Lightning')
     expect(icon).toBeInTheDocument()
-    expect(icon.tagName).toBe('svg')
+    expect(icon.tagName.toLowerCase()).toBe('svg')
 
     // Should have correct accessibility attributes
     expect(icon).toHaveAttribute('aria-label', 'Lightning')
@@ -159,7 +159,7 @@ describe('Icon', () => {
     expect(icon).toHaveStyle({ color: 'rgb(255, 0, 0)' })
   })
 
-  it('should apply correct variant class for solid', () => {
+  it('should apply icon-fallback class when icon not found (solid)', () => {
     const { container } = render(<Icon name="missing-icon" variant="solid" />)
     // Font Awesome renders SVG or span, not <i> tags
     const fallback = getIconElement(container)
@@ -168,7 +168,7 @@ describe('Icon', () => {
     expect(fallback).toHaveClass('icon-fallback')
   })
 
-  it('should apply correct variant class for regular', () => {
+  it('should apply icon-fallback class when icon not found (regular)', () => {
     const { container } = render(<Icon name="missing-icon" variant="regular" />)
     // Font Awesome renders SVG or span, not <i> tags
     const fallback = getIconElement(container)
@@ -177,7 +177,7 @@ describe('Icon', () => {
     expect(fallback).toHaveClass('icon-fallback')
   })
 
-  it('should apply correct variant class for brands', () => {
+  it('should apply icon-fallback class when icon not found (brands)', () => {
     const { container } = render(<Icon name="missing-icon" variant="brands" />)
     // Font Awesome renders SVG or span, not <i> tags
     const fallback = getIconElement(container)

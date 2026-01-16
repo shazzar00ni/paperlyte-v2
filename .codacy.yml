@@ -4,9 +4,8 @@ engines:
     enabled: true
 
 # Exclude specific patterns in test files where they are false positives
-# Test files intentionally use RegExp constructor to validate escapeRegExp function
+# validation-utils.test.ts intentionally uses RegExp constructor to validate escapeRegExp function
 exclude_patterns:
   - identifier: "Security/detect-non-literal-regexp"
     paths:
-      - "**/*.test.ts"
-      - "**/*.test.tsx"
+      - "src/utils/validation-utils.test.ts"

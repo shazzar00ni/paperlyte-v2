@@ -42,7 +42,7 @@ describe('Comparison', () => {
     // Check all competitor headers
     COMPETITORS.forEach((competitor) => {
       const header = screen.getByRole('columnheader', {
-        name: new RegExp(competitor.name),
+        name: (content) => content.includes(competitor.name),
       })
       expect(header).toBeInTheDocument()
     })

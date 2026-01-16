@@ -169,6 +169,59 @@ const PII_KEYS = [
 ]
 
 /**
+ * Email pattern for detecting email-like strings
+ * Pattern: local-part@domain.tld where TLD is at least 2 letters
+ */
+const EMAIL_PATTERN = /[^\s@]+@[^\s@]+\.[a-z]{2,}/i
+
+/**
+ * Check if a key is a PII field
+ * @param key - The key to check
+ * @returns True if the key is a PII field
+ */
+function isPIIKey(key: string): boolean {
+  const lowerKey = key.toLowerCase()
+  return PII_KEYS.some((piiKey) => lowerKey.includes(piiKey.toLowerCase()))
+}
+
+/**
+ * Check if a value looks like an email address
+ * @param value - The value to check
+ * @returns True if the value looks like an email
+ */
+function looksLikeEmail(value: unknown): boolean {
+  return typeof value === 'string' && EMAIL_PATTERN.test(value)
+}
+
+/**
+ * Check if a parameter should be filtered out (is PII or unsafe)
+ * @param key - The parameter key
+ * @param value - The parameter value
+ * @returns Object with shouldFilter flag and isPII flag
+ */
+function shouldFilterParameter(key: string, value: unknown): { shouldFilter: boolean; isPII: boolean } {
+  // Check for unsafe keys first
+  if (!isSafePropertyKey(key)) {
+    if (import.meta.env.DEV) {
+      console.warn('[Analytics] Blocked potentially unsafe property key:', key)
+    }
+    return { shouldFilter: true, isPII: false }
+  }
+
+  // Check if key is PII
+  if (isPIIKey(key)) {
+    return { shouldFilter: true, isPII: true }
+  }
+
+  // Check if value looks like an email
+  if (looksLikeEmail(value)) {
+    return { shouldFilter: true, isPII: true }
+  }
+
+  return { shouldFilter: false, isPII: false }
+}
+
+/**
  * Sanitize event parameters to remove PII
  * This ensures no sensitive data is accidentally sent to analytics
  *
@@ -182,33 +235,13 @@ function sanitizeAnalyticsParams(params?: AnalyticsEventParams): AnalyticsEventP
   let piiFound = false
 
   for (const [key, value] of Object.entries(params)) {
-    // Validate key is safe before using it for property assignment
-    if (!isSafePropertyKey(key)) {
-      if (import.meta.env.DEV) {
-        console.warn('[Analytics] Blocked potentially unsafe property key:', key)
-      }
-      continue
-    }
+    const { shouldFilter, isPII } = shouldFilterParameter(key, value)
 
-    const lowerKey = key.toLowerCase()
-
-    // Check if this key is a known PII field
-    if (PII_KEYS.some((piiKey) => lowerKey.includes(piiKey.toLowerCase()))) {
-      piiFound = true
-      // Skip this field - don't include it in sanitized params
-      continue
-    }
-
-    // Check if value looks like an email with stricter pattern matching to reduce false positives
-    // Pattern: local-part@domain.tld where TLD is at least 2 letters
-    // Example: user@example.com, name@domain.co.uk
-    if (typeof value === 'string') {
-      // Email pattern: non-space/non-@ chars + @ + domain with dot + 2+ letter TLD
-      const emailPattern = /[^\s@]+@[^\s@]+\.[a-z]{2,}/i
-      if (emailPattern.test(value)) {
+    if (shouldFilter) {
+      if (isPII) {
         piiFound = true
-        continue
       }
+      continue
     }
 
     sanitized[key] = value

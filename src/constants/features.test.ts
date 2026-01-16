@@ -7,21 +7,7 @@
 
 import { describe, it, expect } from 'vitest'
 import { FEATURES, type Feature } from './features'
-
-/**
- * Escapes special regex characters in a string to make it safe for use in RegExp constructor.
- * Prevents ReDoS (Regular Expression Denial of Service) attacks by escaping all regex metacharacters.
- *
- * Security Note: This function is used to sanitize all dynamic strings before
- * passing them to the RegExp constructor. All regex patterns in this file use
- * this escaping function to ensure safety.
- *
- * @param str - String to escape
- * @returns Escaped string safe for regex construction
- */
-function escapeRegExp(str: string): string {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-}
+import { escapeRegExp } from '@/utils/test/regexHelpers'
 
 /**
  * Counts occurrences of words in a text using word boundary matching.

@@ -2,21 +2,7 @@ import { render, screen, fireEvent, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { FAQ } from './FAQ'
 import { FAQ_ITEMS } from '@constants/faq'
-
-/**
- * Helper function to escape special regex characters for safe RegExp construction.
- * Escapes all regex metacharacters to prevent ReDoS attacks.
- *
- * Security Note: All RegExp usage in this file uses this function to sanitize
- * input before constructing regexes. The input comes from FAQ_ITEMS constant
- * (not user input), making this safe for test purposes.
- *
- * @param str - String to escape
- * @returns Escaped string safe for use in RegExp constructor
- */
-function escapeRegExp(str: string): string {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-}
+import { escapeRegExp } from '@/utils/test/regexHelpers'
 
 describe('FAQ', () => {
   describe('Rendering', () => {

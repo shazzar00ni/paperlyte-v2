@@ -1,14 +1,13 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { initScrollDepthTracking, AnalyticsEvents } from './analytics'
+import { clearAnalyticsGlobals } from '../test/analytics-test-utils'
 
 describe('Analytics Scroll Depth Tracking', () => {
   let scrollEventListener: (() => void) | null = null
   let addEventListenerSpy: ReturnType<typeof vi.spyOn>
 
   beforeEach(() => {
-    // Clear any existing gtag
-    delete (window as Window & { gtag?: unknown }).gtag
-    delete (window as Window & { dataLayer?: unknown }).dataLayer
+    clearAnalyticsGlobals()
 
     // Mock window dimensions
     Object.defineProperty(window, 'innerHeight', {

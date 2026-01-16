@@ -1,14 +1,12 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { trackEvent } from './analytics'
+import { clearAnalyticsGlobals } from '../test/analytics-test-utils'
 
 describe('Analytics PII Sanitization', () => {
   let consoleWarnSpy: ReturnType<typeof vi.spyOn>
 
   beforeEach(() => {
-    // Clear any existing gtag
-    delete (window as Window & { gtag?: unknown }).gtag
-    delete (window as Window & { dataLayer?: unknown }).dataLayer
-
+    clearAnalyticsGlobals()
     consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(vi.fn())
   })
 

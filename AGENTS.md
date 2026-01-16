@@ -692,7 +692,7 @@ All content data is centralized in `src/constants/`:
 - **testimonials.ts** - User testimonials with ratings
 - **comparison.ts** - Competitor comparison data
 - **legal.ts** - Legal page links and information
-- **downloads.ts** - Download links for different platforms
+- **downloads.ts** - Download links for the full note-taking application (external to this landing page)
 - **waitlist.ts** - Waitlist configuration
 
 **Example Usage**:

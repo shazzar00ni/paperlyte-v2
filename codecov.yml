@@ -102,6 +102,12 @@ flags:
     carryforward: true
     paths:
       - src/
+  
+  shell-tests:
+    # Coverage from shell script tests
+    carryforward: true
+    paths:
+      - .github/scripts/
 
 # GitHub Checks integration
 github_checks:

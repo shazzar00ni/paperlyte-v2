@@ -1,0 +1,104 @@
+.illustration {
+  /* Default duotone colors from CSS variables */
+  --illustration-primary: var(--color-primary);
+  --illustration-secondary: var(--color-primary-faint);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+
+  /* Apply duotone colors to SVG using CSS filters */
+  filter: var(--duotone-filter, none);
+}
+
+/* Size variants */
+.sm {
+  width: 120px;
+  height: 120px;
+}
+
+.md {
+  width: 200px;
+  height: 200px;
+}
+
+.lg {
+  width: 300px;
+  height: 300px;
+}
+
+.xl {
+  width: 400px;
+  height: 400px;
+}
+
+.hero {
+  width: 500px;
+  height: 500px;
+}
+
+/* Responsive sizing */
+@media (max-width: 768px) {
+  .lg {
+    width: 240px;
+    height: 240px;
+  }
+
+  .xl {
+    width: 300px;
+    height: 300px;
+  }
+
+  .hero {
+    width: 350px;
+    height: 350px;
+  }
+}
+
+@media (max-width: 480px) {
+  .md {
+    width: 160px;
+    height: 160px;
+  }
+
+  .lg {
+    width: 200px;
+    height: 200px;
+  }
+
+  .xl {
+    width: 240px;
+    height: 240px;
+  }
+
+  .hero {
+    width: 280px;
+    height: 280px;
+  }
+}
+
+/* Animation support */
+.illustration {
+  transition: transform var(--transition-base);
+}
+
+.illustration:hover {
+  transform: scale(1.02);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .illustration {
+    transition: none;
+  }
+
+  .illustration:hover {
+    transform: none;
+  }
+}

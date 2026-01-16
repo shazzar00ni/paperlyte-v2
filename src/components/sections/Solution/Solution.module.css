@@ -50,6 +50,24 @@
   }
 }
 
+.valuePropContent {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 3rem;
+  align-items: center;
+}
+
+.valueText {
+  flex: 1;
+}
+
+.valueIllustration {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
 .valueHeader {
   display: flex;
   align-items: center;
@@ -144,6 +162,15 @@
 
   .valueProp {
     padding: 2rem 1.5rem;
+  }
+
+  .valuePropContent {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .valueIllustration {
+    order: -1; /* Move illustration above text on mobile */
   }
 
   .valueHeader {

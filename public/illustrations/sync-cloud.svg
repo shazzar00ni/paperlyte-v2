@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" fill="none">
+  <!-- Example duotone illustration: Cloud sync across devices -->
+
+  <!-- Cloud (secondary color) -->
+  <path d="M200 100C160 100 140 130 140 150C110 150 90 170 90 200C90 230 110 250 140 250H260C290 250 310 230 310 200C310 170 290 150 260 150C260 120 240 100 200 100Z"
+        fill="var(--illustration-secondary, rgba(26, 26, 26, 0.1))"/>
+
+  <!-- Laptop (primary color) -->
+  <rect x="80" y="280" width="100" height="60" rx="4"
+        fill="var(--illustration-primary, #1a1a1a)"/>
+  <rect x="70" y="340" width="120" height="8" rx="4"
+        fill="var(--illustration-primary, #1a1a1a)"/>
+
+  <!-- Mobile device (primary color) -->
+  <rect x="220" y="280" width="60" height="90" rx="8"
+        fill="var(--illustration-primary, #1a1a1a)"/>
+  <circle cx="250" cy="360" r="4" fill="var(--illustration-secondary, rgba(26, 26, 26, 0.1))"/>
+
+  <!-- Tablet (secondary color) -->
+  <rect x="300" y="290" width="80" height="70" rx="6"
+        fill="var(--illustration-secondary, rgba(26, 26, 26, 0.15))"/>
+
+  <!-- Sync arrows (primary color) -->
+  <g stroke="var(--illustration-primary, #1a1a1a)" stroke-width="3" fill="none">
+    <path d="M140 270L140 250" marker-end="url(#arrowhead)"/>
+    <path d="M250 270L200 250" marker-end="url(#arrowhead)"/>
+  </g>
+
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
+      <polygon points="0 0, 10 5, 0 10" fill="var(--illustration-primary, #1a1a1a)"/>
+    </marker>
+  </defs>
+</svg>

@@ -52,3 +52,4 @@ jobs:
                 continue-on-error: true
                 with:
                     sarif_file: codescan.sarif
+                    category: codescan

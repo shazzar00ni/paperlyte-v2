@@ -38,8 +38,9 @@ exports[`Legal Constants > Snapshot Tests > should match LEGAL_CONFIG snapshot 1
   "social": {
     "discord": "#",
     "github": "https://github.com/shazzar00ni/paperlyte-v2",
+    "instagram": "https://instagram.com/paperlytefilms",
     "linkedin": "#",
-    "twitter": "#",
+    "twitter": "https://x.com/paperlyte",
   },
 }
 `;

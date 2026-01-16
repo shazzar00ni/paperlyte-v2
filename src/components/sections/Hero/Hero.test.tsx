@@ -86,7 +86,7 @@ describe('Hero', () => {
       render(<Hero />)
 
       const button = screen.getByRole('button', { name: /start writing for free/i })
-      const icon = button.querySelector('.fa-arrow-right')
+      const icon = button.querySelector('svg')
 
       expect(icon).toBeInTheDocument()
     })
@@ -192,11 +192,15 @@ describe('Hero', () => {
       expect(mockup).toBeInTheDocument()
     })
 
-    it('should render mockup productivity stat', () => {
+    it('should render mockup images with proper alt text', () => {
       render(<Hero />)
 
-      expect(screen.getByText('+120%')).toBeInTheDocument()
-      expect(screen.getByText('PRODUCTIVITY')).toBeInTheDocument()
+      // Check for both mockup images
+      const notesListMockup = screen.getByAltText(/Paperlyte notes list/i)
+      const noteDetailMockup = screen.getByAltText(/Paperlyte note editor/i)
+
+      expect(notesListMockup).toBeInTheDocument()
+      expect(noteDetailMockup).toBeInTheDocument()
     })
   })
 

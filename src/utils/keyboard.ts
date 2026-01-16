@@ -75,7 +75,46 @@ export const FOCUSABLE_SELECTOR =
  */
 export function getFocusableElements(container: HTMLElement): HTMLElement[] {
   const elements = container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)
-  return Array.from(elements)
+  const elementsArray = Array.from(elements)
+
+  // WORKAROUND: JSDOM 27.x querySelectorAll bug with compound selectors
+  // Affected: JSDOM 27.3.0 with @asamuzakjp/dom-selector 6.7.6
+  //
+  // BUG: Adding "details > summary" to a long compound selector causes querySelectorAll
+  // to return elements in wrong order, violating W3C spec (elements must be in document order).
+  //
+  // Minimal reproduction (see test-jsdom-selector-bug.test.tsx):
+  //   DOM: <a>Features</a>, <a>Download</a>, <button>Get Started</button>
+  //
+  //   Selector WITHOUT "details > summary":
+  //     'button:not([disabled]), [href], ... , video[controls]'
+  //     Result: [a, a, button] ✓ CORRECT
+  //
+  //   Selector WITH "details > summary":
+  //     'button:not([disabled]), [href], ... , video[controls], details > summary'
+  //     Result: [button, a, a] ✗ WRONG ORDER
+  //
+  // The bug occurs even when NO <details> or <summary> elements exist in the DOM.
+  //
+  // Issue tracker: https://github.com/asamuzaK/domSelector/issues
+  // (No existing bug report found as of 2026-01-09, bug confirmed via test-jsdom-selector-bug.test.tsx)
+  //
+  // Solution: Explicitly sort by document order using compareDocumentPosition
+  // Only apply this workaround in JSDOM environments (tests) to avoid production overhead
+  const isJSDOM =
+    typeof navigator !== 'undefined' && navigator.userAgent && /jsdom/i.test(navigator.userAgent)
+
+  if (isJSDOM) {
+    elementsArray.sort((a, b) => {
+      if (a === b) return 0
+      const position = a.compareDocumentPosition(b)
+      if (position & Node.DOCUMENT_POSITION_FOLLOWING) return -1
+      if (position & Node.DOCUMENT_POSITION_PRECEDING) return 1
+      return 0
+    })
+  }
+
+  return elementsArray
 }
 
 /**
@@ -83,7 +122,7 @@ export function getFocusableElements(container: HTMLElement): HTMLElement[] {
  */
 export function getFirstFocusableElement(container: HTMLElement): HTMLElement | null {
   const elements = getFocusableElements(container)
-  return elements[0] || null
+  return elements[0] ?? null
 }
 
 /**
@@ -91,7 +130,7 @@ export function getFirstFocusableElement(container: HTMLElement): HTMLElement | 
  */
 export function getLastFocusableElement(container: HTMLElement): HTMLElement | null {
   const elements = getFocusableElements(container)
-  return elements[elements.length - 1] || null
+  return elements[elements.length - 1] ?? null
 }
 
 /**
@@ -192,8 +231,8 @@ export function handleArrowNavigation(
       // Prefer explicit dir attribute if present
       const docElement = document.documentElement
       const attrDir = (
-        document.dir ||
-        (docElement && docElement.getAttribute('dir')) ||
+        document.dir ??
+        docElement.getAttribute('dir') ??
         ''
       ).toLowerCase()
 

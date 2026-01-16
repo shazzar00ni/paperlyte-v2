@@ -230,36 +230,44 @@ describe('Header', () => {
 
     it('should navigate to first item with Home key', async () => {
       const user = userEvent.setup()
-      render(<Header />)
+      const { container } = render(<Header />)
 
       // Open the menu
       const menuButton = screen.getByRole('button', { name: /open menu/i })
       await user.click(menuButton)
+
+      // Scope to the navigation menu
+      const menuNav = container.querySelector('[id="main-menu"]')
+      expect(menuNav).toBeInTheDocument()
 
       const downloadLink = screen.getByRole('link', { name: 'Download' })
       downloadLink.focus()
 
       await user.keyboard('{Home}')
 
-      // Home key focuses first focusable element
+      // Home key focuses first focusable element in menu
       const getStartedButton = screen.getByRole('button', { name: /get started/i })
       expect(document.activeElement).toBe(getStartedButton)
     })
 
     it('should navigate to last item with End key', async () => {
       const user = userEvent.setup()
-      render(<Header />)
+      const { container } = render(<Header />)
 
       // Open the menu
       const menuButton = screen.getByRole('button', { name: /open menu/i })
       await user.click(menuButton)
+
+      // Scope to the navigation menu
+      const menuNav = container.querySelector('[id="main-menu"]')
+      expect(menuNav).toBeInTheDocument()
 
       const featuresLink = screen.getByRole('link', { name: 'Features' })
       featuresLink.focus()
 
       await user.keyboard('{End}')
 
-      // End key focuses last focusable element
+      // End key focuses last focusable element in menu
       const downloadLink = screen.getByRole('link', { name: 'Download' })
       expect(document.activeElement).toBe(downloadLink)
     })

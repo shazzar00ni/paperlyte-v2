@@ -76,10 +76,12 @@ describe('Button', () => {
   })
 
   it('should render with icon', () => {
-    const { container } = render(<Button icon="fa-download">Download</Button>)
+    render(<Button icon="fa-download">Download</Button>)
+
+    const button = screen.getByRole('button', { name: /download/i })
 
     // fa-download is in iconPaths, so it renders as SVG
-    const icon = container.querySelector('svg')
+    const icon = button.querySelector('svg.icon-svg')
     expect(icon).toBeInTheDocument()
     expect(icon).toHaveAttribute('aria-hidden', 'true')
   })

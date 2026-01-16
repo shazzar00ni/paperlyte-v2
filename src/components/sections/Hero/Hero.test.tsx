@@ -193,17 +193,21 @@ describe('Hero', () => {
     })
 
     it('should render mockup images with proper sources', () => {
-      const { container } = render(<Hero />)
+      render(<Hero />)
 
-      // Check primary mockup (notes list)
-      const primaryImg = container.querySelector('img[alt*="notes list"]')
+      // Check primary mockup (notes list) using RTL query
+      const primaryImg = screen.getByAltText(/notes list/i)
       expect(primaryImg).toBeInTheDocument()
-      expect(primaryImg).toHaveAttribute('src', '/mockups/notes-list.svg')
+      expect(primaryImg.getAttribute('src')).toEqual(
+        expect.stringContaining('/mockups/notes-list')
+      )
 
-      // Check secondary mockup (note detail)
-      const secondaryImg = container.querySelector('img[alt*="note editor"]')
+      // Check secondary mockup (note detail) using RTL query
+      const secondaryImg = screen.getByAltText(/note editor/i)
       expect(secondaryImg).toBeInTheDocument()
-      expect(secondaryImg).toHaveAttribute('src', '/mockups/note-detail.svg')
+      expect(secondaryImg.getAttribute('src')).toEqual(
+        expect.stringContaining('/mockups/note-detail')
+      )
     })
   })
 

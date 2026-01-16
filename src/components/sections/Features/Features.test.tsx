@@ -58,11 +58,19 @@ describe('Features', () => {
   })
 
   it('should render feature icons', () => {
-    const { container } = render(<Features />)
+    render(<Features />)
 
-    // Icons are decorative (aria-hidden="true"), so check via DOM
-    const icons = container.querySelectorAll('svg')
-    expect(icons.length).toBeGreaterThanOrEqual(EXPECTED_FEATURES.length)
+    // Check each feature card has an SVG icon that is decorative
+    EXPECTED_FEATURES.forEach((feature) => {
+      const titleElement = screen.getByText(feature.title)
+      const featureCard = titleElement.closest('article')
+      expect(featureCard).toBeInTheDocument()
+
+      // Find SVG within this specific feature card
+      const icon = featureCard?.querySelector('svg')
+      expect(icon).toBeInTheDocument()
+      expect(icon).toHaveAttribute('aria-hidden', 'true')
+    })
   })
 
   it('should use semantic article elements for feature cards', () => {

@@ -133,6 +133,7 @@ export const EmailCapture = ({
             className={styles.input}
             disabled={status === 'loading'}
             required
+            autoComplete="email"
             aria-invalid={status === 'error'}
             aria-describedby={status === 'error' ? 'email-error' : undefined}
           />

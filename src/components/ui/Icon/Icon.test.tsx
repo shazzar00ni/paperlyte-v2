@@ -190,29 +190,29 @@ describe('Icon', () => {
 
   it('should use fab prefix for brand icons with explicit variant', () => {
     const { container } = render(<Icon name="fa-github" variant="brands" />)
-    const svg = container.querySelector('svg')
+    const icon = getIconElement(container)
 
-    expect(svg).toBeInTheDocument()
-    expect(svg).toHaveAttribute('data-prefix', 'fab')
-    expect(svg).toHaveAttribute('data-icon', 'github')
+    expect(icon).toBeInTheDocument()
+    expect(icon).toHaveAttribute('data-prefix', 'fab')
+    expect(icon).toHaveAttribute('data-icon', 'github')
   })
 
   it('should auto-detect brand icons without explicit variant', () => {
     const { container } = render(<Icon name="fa-github" />)
-    const svg = container.querySelector('svg')
+    const icon = getIconElement(container)
 
-    expect(svg).toBeInTheDocument()
+    expect(icon).toBeInTheDocument()
     // Should automatically use fab prefix for known brand icons
-    expect(svg).toHaveAttribute('data-prefix', 'fab')
-    expect(svg).toHaveAttribute('data-icon', 'github')
+    expect(icon).toHaveAttribute('data-prefix', 'fab')
+    expect(icon).toHaveAttribute('data-icon', 'github')
   })
 
   it('should use fas prefix for solid icons', () => {
     const { container } = render(<Icon name="fa-heart" variant="solid" />)
-    const svg = container.querySelector('svg')
+    const icon = getIconElement(container)
 
-    expect(svg).toBeInTheDocument()
-    expect(svg).toHaveAttribute('data-prefix', 'fas')
-    expect(svg).toHaveAttribute('data-icon', 'heart')
+    expect(icon).toBeInTheDocument()
+    expect(icon).toHaveAttribute('data-prefix', 'fas')
+    expect(icon).toHaveAttribute('data-icon', 'heart')
   })
 })

@@ -26,7 +26,7 @@
 
 ```bash
 npm run dev              # Start Vite dev server (port 3000)
-npm run build            # TypeScript check + Vite build
+npm run build            # TypeScript check + Vite build + inject dates
 npm run preview          # Preview production build locally
 npm run ci               # Full pipeline: lint, type-check, test, build
 ```

@@ -1,10 +1,20 @@
 .hero {
+  /* Progressive enhancement for viewport height:
+   * 1. Hardcoded fallback for browsers without custom property support
+   * 2. Standard viewport with CSS variable for header height
+   * 3. iOS-safe viewport height (overrides when --vh is set via JS)
+   */
+  min-height: calc(100vh - 64px);
   min-height: calc(100vh - var(--header-height));
+  min-height: calc((var(--vh, 1vh) * 100) - var(--header-height));
   display: flex;
   align-items: center;
   background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-background) 100%);
   position: relative;
   overflow: hidden;
+  /* Add safe area padding for notched devices */
+  padding-left: max(var(--spacing-md), env(safe-area-inset-left));
+  padding-right: max(var(--spacing-md), env(safe-area-inset-right));
 }
 
 .hero::before {
@@ -210,6 +220,7 @@
   }
 }
 
+/* Tablet and below (768px) */
 @media (max-width: 768px) {
   .hero {
     min-height: 0;
@@ -217,27 +228,41 @@
     padding-bottom: var(--spacing-3xl);
   }
 
+  .content {
+    /* Ensure content is centered and has proper spacing */
+    padding: 0 var(--spacing-md);
+  }
+
   .headline {
     font-size: var(--font-size-4xl);
+    /* Better line height for mobile readability */
+    line-height: 1.2;
   }
 
   .subheadline {
     font-size: var(--font-size-lg);
+    /* Ensure good contrast and readability */
+    line-height: 1.6;
   }
 
   .ctas {
     flex-direction: column;
     align-items: stretch;
+    gap: var(--spacing-md);
   }
 
   .ctas button,
   .ctas a {
     width: 100%;
+    /* Ensure touch target size */
+    min-height: 48px;
   }
 
   .mockupContainer {
     max-width: 500px;
     margin: var(--spacing-2xl) auto 0;
+    /* Reduce padding on mobile */
+    padding: 0 4% 4% 0;
   }
 
   .mockupSecondary {
@@ -245,17 +270,49 @@
     bottom: -3%;
     right: -3%;
   }
+
+  /* Optimize tags for mobile */
+  .tags {
+    gap: var(--spacing-sm);
+    justify-content: center;
+  }
+
+  .tag {
+    /* Ensure touch-friendly sizing */
+    padding: var(--spacing-xs) var(--spacing-md);
+    min-height: 32px;
+  }
 }
 
-/* Extra small screens */
+/* Small phones (480px and below) */
 @media (max-width: 480px) {
+  .hero {
+    padding-top: var(--spacing-2xl);
+    padding-bottom: var(--spacing-2xl);
+  }
+
+  .content {
+    padding: 0 var(--spacing-sm);
+  }
+
   .headline {
     font-size: var(--font-size-3xl);
     line-height: var(--line-height-tight);
+    margin-bottom: var(--spacing-sm);
   }
 
   .subheadline {
     font-size: var(--font-size-base);
+    margin-bottom: var(--spacing-md);
+  }
+
+  .microcopy {
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .ctas {
+    gap: var(--spacing-sm);
   }
 
   .tags {
@@ -264,11 +321,13 @@
 
   .tag {
     font-size: var(--font-size-xs);
-    padding: var(--spacing-xs) var(--spacing-sm);
+    padding: 6px var(--spacing-sm);
+    min-height: 28px;
   }
 
   .mockupContainer {
     aspect-ratio: 4 / 3;
+    margin: var(--spacing-xl) auto 0;
   }
 
   .mockupPrimary {
@@ -279,6 +338,37 @@
     width: 55%;
     bottom: -2%;
     right: -2%;
+  }
+}
+
+/* Very small phones (320px or below) */
+@media (max-width: 320px) {
+  .hero {
+    padding-top: var(--spacing-xl);
+    padding-bottom: var(--spacing-xl);
+  }
+
+  .headline {
+    font-size: clamp(1.5rem, 5vw, 1.75rem);
+  }
+
+  .subheadline {
+    font-size: var(--font-size-sm);
+  }
+
+  .ctas button,
+  .ctas a {
+    font-size: var(--font-size-sm);
+    padding: 0.75rem 1rem;
+  }
+
+  .mockupSecondary {
+    /* Hide secondary mockup on very small screens to save space */
+    display: none;
+  }
+
+  .mockupPrimary {
+    width: 95%;
   }
 }
 

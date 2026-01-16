@@ -7,6 +7,8 @@
   border-bottom: 1px solid var(--color-border);
   z-index: var(--z-header);
   transition: box-shadow var(--transition-base);
+  /* Add safe area padding for notched devices (iOS) */
+  padding-top: env(safe-area-inset-top);
 }
 
 .header:hover {
@@ -32,6 +34,9 @@
   align-items: center;
   justify-content: space-between;
   height: var(--header-height);
+  /* Add safe area padding for notched devices (iOS) */
+  padding-left: max(var(--spacing-md), env(safe-area-inset-left));
+  padding-right: max(var(--spacing-md), env(safe-area-inset-right));
 }
 
 .logo {

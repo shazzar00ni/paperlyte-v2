@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { isSafePropertyKey } from './security'
+import { isSafePropertyKey, safePropertyAccess } from './security'
 
 describe('Security Utilities', () => {
   describe('isSafePropertyKey', () => {
@@ -38,6 +38,66 @@ describe('Security Utilities', () => {
       expect(isSafePropertyKey('key-with-dashes')).toBe(true)
       expect(isSafePropertyKey('key_with_underscores')).toBe(true)
       expect(isSafePropertyKey('key.with.dots')).toBe(true)
+    })
+  })
+
+  describe('safePropertyAccess', () => {
+    it('should return property value for safe keys', () => {
+      const obj = { name: 'test', value: 123 }
+      expect(safePropertyAccess(obj, 'name')).toBe('test')
+      expect(safePropertyAccess(obj, 'value')).toBe(123)
+    })
+
+    it('should return undefined for __proto__', () => {
+      const obj: Record<string, unknown> = { name: 'test' }
+      obj['__proto__'] = 'malicious'
+      expect(safePropertyAccess(obj, '__proto__')).toBeUndefined()
+    })
+
+    it('should return undefined for constructor', () => {
+      const obj: Record<string, unknown> = { name: 'test' }
+      obj['constructor'] = 'malicious'
+      expect(safePropertyAccess(obj, 'constructor')).toBeUndefined()
+    })
+
+    it('should return undefined for prototype', () => {
+      const obj: Record<string, unknown> = { name: 'test' }
+      obj['prototype'] = 'malicious'
+      expect(safePropertyAccess(obj, 'prototype')).toBeUndefined()
+    })
+
+    it('should return undefined for non-existent keys', () => {
+      const obj = { name: 'test' }
+      expect(safePropertyAccess(obj, 'nonexistent')).toBeUndefined()
+    })
+
+    it('should only return own properties, not inherited ones', () => {
+      const parent = { inherited: 'value' }
+      const child = Object.create(parent)
+      child.own = 'ownValue'
+
+      expect(safePropertyAccess(child, 'own')).toBe('ownValue')
+      expect(safePropertyAccess(child, 'inherited')).toBeUndefined()
+    })
+
+    it('should handle objects with various value types', () => {
+      const obj = {
+        string: 'text',
+        number: 42,
+        boolean: true,
+        null: null,
+        undefined: undefined,
+        array: [1, 2, 3],
+        object: { nested: 'value' },
+      }
+
+      expect(safePropertyAccess(obj, 'string')).toBe('text')
+      expect(safePropertyAccess(obj, 'number')).toBe(42)
+      expect(safePropertyAccess(obj, 'boolean')).toBe(true)
+      expect(safePropertyAccess(obj, 'null')).toBeNull()
+      expect(safePropertyAccess(obj, 'undefined')).toBeUndefined()
+      expect(safePropertyAccess(obj, 'array')).toEqual([1, 2, 3])
+      expect(safePropertyAccess(obj, 'object')).toEqual({ nested: 'value' })
     })
   })
 })

@@ -25,13 +25,15 @@ if [ -f .lighthouseci/manifest.json ]; then
     BP_STATUS=$([ "$BP_SCORE" -ge 90 ] && echo "✅" || echo "⚠️")
     SEO_STATUS=$([ "$SEO_SCORE" -ge 90 ] && echo "✅" || echo "⚠️")
 
-    echo "| Category | Score | Status | Target |" >> "$GITHUB_STEP_SUMMARY"
-    echo "|----------|-------|--------|--------|" >> "$GITHUB_STEP_SUMMARY"
-    echo "| 🚀 Performance | **${PERF_SCORE}** | ${PERF_STATUS} | ≥90 |" >> "$GITHUB_STEP_SUMMARY"
-    echo "| ♿ Accessibility | **${A11Y_SCORE}** | ${A11Y_STATUS} | ≥95 |" >> "$GITHUB_STEP_SUMMARY"
-    echo "| ✨ Best Practices | **${BP_SCORE}** | ${BP_STATUS} | ≥90 |" >> "$GITHUB_STEP_SUMMARY"
-    echo "| 🔍 SEO | **${SEO_SCORE}** | ${SEO_STATUS} | ≥90 |" >> "$GITHUB_STEP_SUMMARY"
-    echo "" >> "$GITHUB_STEP_SUMMARY"
+    {
+      echo "| Category | Score | Status | Target |"
+      echo "|----------|-------|--------|--------|"
+      echo "| 🚀 Performance | **${PERF_SCORE}** | ${PERF_STATUS} | ≥90 |"
+      echo "| ♿ Accessibility | **${A11Y_SCORE}** | ${A11Y_STATUS} | ≥95 |"
+      echo "| ✨ Best Practices | **${BP_SCORE}** | ${BP_STATUS} | ≥90 |"
+      echo "| 🔍 SEO | **${SEO_SCORE}** | ${SEO_STATUS} | ≥90 |"
+      echo ""
+    } >> "$GITHUB_STEP_SUMMARY"
 
     echo "### ⚡ Core Web Vitals" >> "$GITHUB_STEP_SUMMARY"
     echo "" >> "$GITHUB_STEP_SUMMARY"

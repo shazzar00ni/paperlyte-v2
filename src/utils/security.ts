@@ -46,10 +46,7 @@ export function isSafePropertyKey(key: string): boolean {
  * const badPath = safePropertyAccess(icons, '__proto__') // Returns undefined
  * ```
  */
-export function safePropertyAccess<T>(
-  obj: Record<string, T>,
-  key: string
-): T | undefined {
+export function safePropertyAccess<T>(obj: Record<string, T>, key: string): T | undefined {
   // First check if the key is safe
   if (!isSafePropertyKey(key)) {
     return undefined

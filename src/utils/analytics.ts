@@ -199,7 +199,10 @@ function looksLikeEmail(value: unknown): boolean {
  * @param value - The parameter value
  * @returns Object with shouldFilter flag and isPII flag
  */
-function shouldFilterParameter(key: string, value: unknown): { shouldFilter: boolean; isPII: boolean } {
+function shouldFilterParameter(
+  key: string,
+  value: unknown
+): { shouldFilter: boolean; isPII: boolean } {
   // Check for unsafe keys first
   if (!isSafePropertyKey(key)) {
     if (import.meta.env.DEV) {
@@ -398,9 +401,9 @@ function calculateScrollPercent(): number {
   const windowHeight = window.innerHeight
   const documentHeight = document.documentElement.scrollHeight
   const scrollTop = window.scrollY
-  
+
   if (documentHeight <= 0) return 0
-  
+
   const scrollPercent = ((scrollTop + windowHeight) / documentHeight) * 100
   return Math.round(scrollPercent)
 }
@@ -412,7 +415,7 @@ function calculateScrollPercent(): number {
  */
 function trackScrollMilestones(currentPercent: number, trackedMilestones: Set<number>): void {
   const milestones = [25, 50, 75, 100]
-  
+
   milestones.forEach((milestone) => {
     if (currentPercent >= milestone && !trackedMilestones.has(milestone)) {
       trackedMilestones.add(milestone)
@@ -430,7 +433,7 @@ function trackScrollMilestones(currentPercent: number, trackedMilestones: Set<nu
  */
 function createThrottledScrollHandler(callback: () => void): () => void {
   let ticking = false
-  
+
   return () => {
     if (!ticking) {
       window.requestAnimationFrame(() => {

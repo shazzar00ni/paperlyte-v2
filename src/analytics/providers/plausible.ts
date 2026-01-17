@@ -8,6 +8,7 @@
  */
 
 import type { AnalyticsConfig, AnalyticsEvent, AnalyticsProvider, CoreWebVitals } from '../types'
+import { isSafePropertyKey } from '../../utils/security'
 
 /**
  * Plausible Analytics provider
@@ -191,6 +192,14 @@ export class PlausibleProvider implements AnalyticsProvider {
     const props = event.properties
       ? Object.entries(event.properties).reduce(
           (acc, [key, value]) => {
+            // Validate key is safe before using it for property assignment
+            if (!isSafePropertyKey(key)) {
+              if (this.config?.debug || import.meta.env.DEV) {
+                console.warn('[Analytics] Blocked potentially unsafe property key:', key)
+              }
+              return acc
+            }
+
             if (value !== undefined && value !== null) {
               acc[key] = value
             }

@@ -49,6 +49,7 @@ import {
   faUsers, // Pricing plans, Statistics (team/community)
   faServer, // Statistics (infrastructure)
   faWifi, // Offline page - connection status
+  faSignal, // Offline page - signal strength/router proximity
   faRotateRight, // Retry/reload actions
   faArrowRotateRight, // Retry/reload actions (alternative)
   faArrowRotateLeft, // Undo/back actions
@@ -114,6 +115,7 @@ library.add(
   faUsers,
   faServer,
   faWifi,
+  faSignal,
   faRotateRight,
   faArrowRotateRight,
   faArrowRotateLeft,
@@ -178,6 +180,7 @@ export const iconNameMap: Record<string, string> = {
   'fa-users': 'users',
   'fa-server': 'server',
   'fa-wifi': 'wifi',
+  'fa-signal': 'signal',
   'fa-rotate-right': 'rotate-right',
   'fa-arrow-rotate-right': 'arrow-rotate-right',
   'fa-arrow-rotate-left': 'arrow-rotate-left',

@@ -35,7 +35,9 @@ export const Icon = ({
   style,
 }: IconProps): React.ReactElement => {
   const iconSize = SIZE_MAP[size]
-  const paths = iconPaths[name]
+  // Convert icon name first to ensure consistency with Font Awesome fallback path
+  const convertedName = convertIconName(name)
+  const paths = iconPaths[convertedName]
   const viewBox = getIconViewBox(name)
 
   // Normalize color: detect bare hex strings (3 or 6 hex digits) and prepend "#"
@@ -60,9 +62,6 @@ export const Icon = ({
       console.warn(`Icon "${name}" not found in icon set, using Font Awesome fallback`)
     }
 
-    // Convert icon name using the mapping (e.g., 'fa-wifi-slash' -> 'plane-slash')
-    const convertedName = convertIconName(name) as IconName
-
     // Determine prefix based on variant or by checking if it's a brand icon
     let prefix: IconPrefix
     if (variant === 'brands' || isBrandIcon(convertedName)) {
@@ -74,7 +73,8 @@ export const Icon = ({
     }
 
     // Try to find the icon definition in the library
-    const iconDefinition = findIconDefinition({ prefix, iconName: convertedName })
+    // Note: convertedName is already validated as IconName by convertIconName function
+    const iconDefinition = findIconDefinition({ prefix, iconName: convertedName as IconName })
 
     // If icon not found in library, return a placeholder
     if (!iconDefinition) {

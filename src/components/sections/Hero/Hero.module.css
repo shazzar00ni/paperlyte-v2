@@ -1,20 +1,47 @@
+/* Hero Section - Conversion-Optimized Design */
+
 .hero {
   min-height: calc(100vh - var(--header-height));
   display: flex;
   align-items: center;
-  background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-background) 100%);
   position: relative;
   overflow: hidden;
+  /* Sky blue to purple gradient background */
+  background: linear-gradient(
+    135deg,
+    var(--color-hero-gradient-start) 0%,
+    var(--color-hero-gradient-end) 100%
+  );
 }
 
+/* Decorative background overlay for depth */
 .hero::before {
   content: '';
   position: absolute;
   top: 0;
+  left: 0;
   right: 0;
-  width: 40%;
+  bottom: 0;
+  background: radial-gradient(
+    circle at 20% 50%,
+    var(--color-hero-overlay-light) 0%,
+    transparent 50%
+  );
+  pointer-events: none;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50%;
   height: 100%;
-  background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+  background: radial-gradient(
+    circle at top right,
+    var(--color-hero-overlay-lighter) 0%,
+    transparent 60%
+  );
   pointer-events: none;
 }
 
@@ -22,79 +49,136 @@
   position: relative;
   z-index: 1;
   text-align: center;
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
 }
 
+/* Headline - Fluid Typography with clamp() */
 .headline {
-  font-family: 'Playfair Display', serif;
-  font-size: var(--font-size-5xl);
-  font-weight: var(--font-weight-bold);
-  line-height: var(--line-height-tight);
-  color: var(--color-text-primary);
+  /* Fluid scaling: 2.5rem (40px) to 4rem (64px) */
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-family: var(--font-family);
+  font-weight: 800; /* Extra bold for impact */
+  line-height: 1.1;
+  letter-spacing: -0.02em; /* Tighter letter spacing for modern look */
+  color: var(--color-hero-text); /* Pure white for maximum contrast on gradient */
   margin-bottom: var(--spacing-md);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.15); /* Subtle shadow for readability */
 }
 
+.emphasis {
+  font-style: italic;
+  /* Slightly lighter to create visual hierarchy */
+  font-weight: 700;
+}
+
+/* Subheadline */
 .subheadline {
-  font-size: var(--font-size-xl);
-  line-height: var(--line-height-relaxed);
-  color: var(--color-text-secondary);
-  margin-bottom: var(--spacing-md);
-  max-width: 480px;
+  /* Fluid scaling: 1.125rem (18px) to 1.5rem (24px) */
+  font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+  color: var(--color-hero-text-secondary); /* 95% opacity white */
+  margin-bottom: var(--spacing-lg);
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
 }
 
-.microcopy {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-tertiary);
-  margin-bottom: var(--spacing-xl);
-  font-weight: var(--font-weight-medium);
-  max-width: 480px;
-}
-
-/* Shared centering for CTAs */
-:is(.emailWrapper, .secondaryCta) {
-  display: flex;
-  justify-content: center;
-}
-
+/* Email Wrapper */
 .emailWrapper {
-  margin-bottom: var(--spacing-md);
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--spacing-sm);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+
+  /* Set CSS custom properties for EmailCapture component in hero context */
+  --email-input-color: var(--color-text-primary);
+  --email-input-bg: var(--color-background);
+  --email-input-border: rgba(255, 255, 255, 0.3);
+  --email-input-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --email-input-focus-border: var(--color-hero-button-primary);
+  --email-input-focus-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15), 0 4px 12px rgba(0, 0, 0, 0.15);
+  --email-input-placeholder: var(--color-text-secondary);
+  --email-button-bg: var(--color-hero-button-primary);
+  --email-button-color: var(--color-background);
+  --email-button-border: var(--color-hero-button-primary);
+  --email-button-shadow: 0 2px 12px rgba(14, 165, 233, 0.3);
+  --email-button-bg-hover: var(--color-hero-button-primary-hover);
+  --email-button-border-hover: var(--color-hero-button-primary-hover);
+  --email-button-shadow-hover: 0 4px 16px rgba(14, 165, 233, 0.4);
+  --email-gdpr-text-color: rgba(255, 255, 255, 0.9);
+  --email-link-color: var(--color-background);
 }
 
+/* Secondary CTA */
 .secondaryCta {
+  display: flex;
+  justify-content: center;
   margin-bottom: var(--spacing-xl);
 }
 
-.ctas {
+/* Ghost button styling for hero section - using CSS custom properties */
+.secondaryCta button {
+  --btn-bg: var(--color-hero-overlay-lighter);
+  --btn-color: var(--color-hero-text);
+  --btn-border: rgba(255, 255, 255, 0.3);
+  --btn-bg-hover: var(--color-hero-overlay-light);
+  --btn-border-hover: rgba(255, 255, 255, 0.5);
+
+  background-color: var(--btn-bg);
+  color: var(--btn-color);
+  border-color: var(--btn-border);
+  backdrop-filter: blur(10px);
+  font-weight: var(--font-weight-medium);
+}
+
+.secondaryCta button:hover:not(:disabled) {
+  background-color: var(--btn-bg-hover);
+  border-color: var(--btn-border-hover);
+  color: var(--btn-color);
+}
+
+/* Trust Badges */
+.trustBadges {
   display: flex;
   gap: var(--spacing-md);
   justify-content: center;
   flex-wrap: wrap;
-  margin-bottom: var(--spacing-2xl);
+  margin-top: var(--spacing-xl);
 }
 
-.tags {
-  display: flex;
-  gap: var(--spacing-md);
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.tag {
+.badge {
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-xs);
-  padding: var(--spacing-xs) var(--spacing-md);
-  background-color: var(--color-background);
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-lg);
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background-color: var(--color-hero-overlay-light);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--border-radius-full); /* Full pill shape */
+  color: var(--color-hero-text);
+  font-size: var(--font-size-sm); /* 14px */
   font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: background-color var(--transition-base),
+              transform var(--transition-base),
+              box-shadow var(--transition-base);
 }
 
-.tag i {
-  color: var(--color-primary);
+.badge:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.badgeText {
+  color: var(--color-hero-text);
 }
 
 /* App Mockup Container */
@@ -102,7 +186,7 @@
   position: relative;
   width: 100%;
   max-width: 700px;
-  margin: var(--spacing-3xl) auto 0;
+  margin: var(--spacing-2xl) auto 0;
   /* Fallback for browsers that don't support aspect-ratio */
   min-height: 260px;
   aspect-ratio: 16 / 10;
@@ -119,11 +203,11 @@
   width: 85%;
   max-width: 550px;
   z-index: 2;
-  border-radius: var(--border-radius-xl);
+  border-radius: var(--border-radius-lg);
   overflow: hidden;
   box-shadow:
-    0 20px 60px rgba(0, 0, 0, 0.15),
-    0 0 0 1px rgba(0, 0, 0, 0.05);
+    0 20px 60px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
   transition: transform var(--transition-base);
 }
 
@@ -139,11 +223,11 @@
   width: 50%;
   max-width: 320px;
   z-index: 3;
-  border-radius: var(--border-radius-lg);
+  border-radius: 12px;
   overflow: hidden;
   box-shadow:
-    0 25px 70px rgba(0, 0, 0, 0.2),
-    0 0 0 1px rgba(0, 0, 0, 0.08);
+    0 25px 70px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.15);
   transition: transform var(--transition-base);
 }
 
@@ -159,85 +243,54 @@
   border-radius: 0;
 }
 
-/* Mobile styles */
+/* Tablet and smaller screens */
 @media (max-width: 1024px) {
-  .container {
-    grid-template-columns: 1fr;
-    gap: var(--spacing-2xl);
-  }
-
   .content {
-    text-align: center;
+    max-width: 800px;
   }
 
-  .badge {
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .headline {
-    font-size: var(--font-size-6xl);
-  }
-
-  .subheadline {
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .microcopy {
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .ctas {
-    justify-content: center;
-  }
-
-  .mockup {
-    max-width: 500px;
-    margin: 0 auto;
-  }
-
-  .trusted {
-    flex-direction: column;
-    text-align: center;
-    gap: var(--spacing-md);
-  }
-
-  .trustedLogos {
-    justify-content: center;
-    gap: var(--spacing-lg);
+  .trustBadges {
+    gap: var(--spacing-sm);
   }
 }
 
+/* Mobile styles */
 @media (max-width: 768px) {
   .hero {
     min-height: 0;
-    padding-top: var(--spacing-3xl);
-    padding-bottom: var(--spacing-3xl);
+    padding-top: var(--spacing-xl);
+    padding-bottom: var(--spacing-xl);
   }
 
   .headline {
-    font-size: var(--font-size-4xl);
+    margin-bottom: var(--spacing-md);
   }
 
   .subheadline {
-    font-size: var(--font-size-lg);
+    margin-bottom: var(--spacing-lg);
   }
 
-  .ctas {
-    flex-direction: column;
-    align-items: stretch;
+  .emailWrapper {
+    margin-bottom: var(--spacing-xs);
   }
 
-  .ctas button,
-  .ctas a {
-    width: 100%;
+  .secondaryCta {
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .trustBadges {
+    margin-top: var(--spacing-xl);
+    gap: var(--spacing-xs);
+  }
+
+  .badge {
+    font-size: 0.8125rem; /* 13px */
+    padding: 6px 14px;
   }
 
   .mockupContainer {
     max-width: 500px;
-    margin: var(--spacing-2xl) auto 0;
+    margin: var(--spacing-xl) auto 0;
   }
 
   .mockupSecondary {
@@ -247,28 +300,41 @@
   }
 }
 
-/* Extra small screens */
+/* Extra small screens (phones < 480px) */
 @media (max-width: 480px) {
+  .hero {
+    padding-top: var(--spacing-lg);
+    padding-bottom: var(--spacing-lg);
+  }
+
   .headline {
-    font-size: var(--font-size-3xl);
-    line-height: var(--line-height-tight);
+    margin-bottom: var(--spacing-sm);
   }
 
   .subheadline {
-    font-size: var(--font-size-base);
+    margin-bottom: var(--spacing-md);
   }
 
-  .tags {
-    gap: var(--spacing-xs);
+  .emailWrapper {
+    max-width: 100%;
   }
 
-  .tag {
-    font-size: var(--font-size-xs);
-    padding: var(--spacing-xs) var(--spacing-sm);
+  .trustBadges {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: var(--spacing-lg);
+  }
+
+  .badge {
+    width: 100%;
+    max-width: 280px;
+    justify-content: center;
   }
 
   .mockupContainer {
     aspect-ratio: 4 / 3;
+    margin: var(--spacing-lg) auto 0;
   }
 
   .mockupPrimary {
@@ -282,36 +348,49 @@
   }
 }
 
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-  .hero::before {
-    /* Enhance gradient visibility in dark mode */
-    background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+/* iPhone SE and very small screens */
+@media (max-width: 375px) {
+  .trustBadges {
+    margin-top: var(--spacing-md);
   }
 
-  .tag {
-    background-color: var(--color-surface);
+  .badge {
+    font-size: var(--font-size-xs); /* 12px */
+    padding: 6px 12px;
   }
-}
-
-[data-theme='dark'] .hero::before {
-  background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
-}
-
-[data-theme='dark'] .tag {
-  background-color: var(--color-surface);
 }
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   .mockupPrimary,
-  .mockupSecondary {
+  .mockupSecondary,
+  .badge {
     /* Disable hover transforms for users preferring reduced motion */
     transition: none;
   }
 
   .mockupPrimary:hover,
-  .mockupSecondary:hover {
+  .mockupSecondary:hover,
+  .badge:hover {
     transform: none;
   }
+}
+
+/* Dark mode support - keep gradient but adjust overlay */
+@media (prefers-color-scheme: dark) {
+  .hero::before {
+    background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
+  }
+
+  .hero::after {
+    background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.06) 0%, transparent 60%);
+  }
+}
+
+[data-theme='dark'] .hero::before {
+  background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
+}
+
+[data-theme='dark'] .hero::after {
+  background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.06) 0%, transparent 60%);
 }

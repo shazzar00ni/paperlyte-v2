@@ -41,23 +41,31 @@
   padding: 0.875rem 1rem;
   font-size: 1rem;
   font-family: inherit;
-  color: var(--color-text-primary);
-  background-color: var(--color-background);
-  border: 2px solid var(--color-border);
-  border-radius: 8px;
+  color: var(--email-input-color, var(--color-text-primary));
+  background-color: var(--email-input-bg, var(--color-background));
+  border: 2px solid var(--email-input-border, var(--color-border));
+  border-radius: var(--border-radius-md);
   outline: none;
+  min-height: 48px; /* Mobile-friendly touch target */
   transition:
     border-color 0.2s ease,
-    box-shadow 0.2s ease;
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+  box-shadow: var(--email-input-shadow, var(--shadow-sm));
 }
 
 .input:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px var(--color-primary-faint);
+  border-color: var(--email-input-focus-border, var(--color-primary));
+  box-shadow: var(
+    --email-input-focus-shadow,
+    0 0 0 3px var(--color-primary-faint),
+    var(--shadow-md)
+  );
+  background-color: var(--email-input-bg, var(--color-background));
 }
 
 .input::placeholder {
-  color: var(--color-text-secondary);
+  color: var(--email-input-placeholder, var(--color-text-secondary));
 }
 
 .input:disabled {
@@ -72,6 +80,19 @@
 .button {
   flex-shrink: 0;
   white-space: nowrap;
+  min-height: 48px; /* Mobile-friendly touch target */
+  /* Use CSS custom properties for contextual theming */
+  background-color: var(--email-button-bg, var(--color-primary));
+  color: var(--email-button-color, var(--color-text-on-primary));
+  border-color: var(--email-button-border, var(--color-primary));
+  font-weight: var(--font-weight-semibold);
+  box-shadow: var(--email-button-shadow, var(--shadow-md));
+}
+
+.button:hover:not(:disabled) {
+  background-color: var(--email-button-bg-hover, var(--color-primary-dark));
+  border-color: var(--email-button-border-hover, var(--color-primary-dark));
+  box-shadow: var(--email-button-shadow-hover, var(--shadow-lg));
 }
 
 /* Spinner Animation */
@@ -124,16 +145,17 @@
 }
 
 .gdprText {
-  font-size: 0.875rem;
-  line-height: 1.5;
-  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  color: var(--email-gdpr-text-color, var(--color-text-secondary));
 }
 
 .link {
-  color: var(--color-primary);
+  color: var(--email-link-color, var(--color-primary));
   text-decoration: underline;
   transition: opacity 0.2s ease;
   border-radius: 2px;
+  font-weight: var(--font-weight-medium);
 }
 
 .link:hover {

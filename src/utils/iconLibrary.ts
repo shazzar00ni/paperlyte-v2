@@ -163,7 +163,7 @@ export const iconNameMap: Record<string, string> = {
   'fa-book': 'book',
   'fa-magnifying-glass': 'magnifying-glass',
   'fa-plane': 'plane',
-  'fa-router': 'network-wired',
+  'fa-network-wired': 'network-wired',
   'fa-arrow-right': 'arrow-right',
   'fa-arrow-left': 'arrow-left',
   'fa-spinner': 'spinner',

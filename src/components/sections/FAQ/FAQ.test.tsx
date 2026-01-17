@@ -46,7 +46,7 @@ describe('FAQ', () => {
       render(<FAQ />)
 
       FAQ_ITEMS.forEach((item) => {
-        // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp
+        // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
         // Safe: input is escaped via escapeRegExp() and comes from FAQ_ITEMS constant, not user input
         const questionButton = screen.getByRole('button', { name: new RegExp(escapeRegExp(item.question), 'i') })
         expect(questionButton).toHaveAttribute('aria-expanded', 'false')

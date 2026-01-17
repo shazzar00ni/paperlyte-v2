@@ -42,7 +42,7 @@ describe('Comparison', () => {
 
     // Check all competitor headers
     COMPETITORS.forEach((competitor) => {
-      // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp
+      // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
       // Safe: input is escaped via escapeRegExp() and comes from COMPETITORS constant, not user input
       const header = screen.getByRole('columnheader', {
         name: new RegExp(escapeRegExp(competitor.name)),

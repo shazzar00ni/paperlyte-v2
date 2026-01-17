@@ -37,12 +37,12 @@ if [ -f .lighthouseci/manifest.json ]; then
     echo "" >> "$GITHUB_STEP_SUMMARY"
 
     # Extract Core Web Vitals metrics
-    FCP=$(cat "$REPORT_FILE" | jq -r '.audits["first-contentful-paint"].numericValue | floor')
-    LCP=$(cat "$REPORT_FILE" | jq -r '.audits["largest-contentful-paint"].numericValue | floor')
-    CLS=$(cat "$REPORT_FILE" | jq -r '.audits["cumulative-layout-shift"].numericValue')
-    TBT=$(cat "$REPORT_FILE" | jq -r '.audits["total-blocking-time"].numericValue | floor')
-    SI=$(cat "$REPORT_FILE" | jq -r '.audits["speed-index"].numericValue | floor')
-    TTI=$(cat "$REPORT_FILE" | jq -r '.audits.interactive.numericValue | floor')
+    FCP=$(jq -r '(.audits["first-contentful-paint"].numericValue // 0) | floor' "$REPORT_FILE")
+    LCP=$(jq -r '(.audits["largest-contentful-paint"].numericValue // 0) | floor' "$REPORT_FILE")
+    CLS=$(jq -r '(.audits["cumulative-layout-shift"].numericValue // 0)' "$REPORT_FILE")
+    TBT=$(jq -r '(.audits["total-blocking-time"].numericValue // 0) | floor' "$REPORT_FILE")
+    SI=$(jq -r '(.audits["speed-index"].numericValue // 0) | floor' "$REPORT_FILE")
+    TTI=$(jq -r '(.audits.interactive.numericValue // 0) | floor' "$REPORT_FILE")
 
     # Determine pass/fail for metrics
     FCP_STATUS=$([ "$FCP" -le 2000 ] && echo "✅" || echo "❌")

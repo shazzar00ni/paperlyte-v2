@@ -1,16 +1,16 @@
 #!/bin/bash
 set -e
 
-echo "## 🔦 Lighthouse CI Results" >> $GITHUB_STEP_SUMMARY
-echo "" >> $GITHUB_STEP_SUMMARY
+echo "## 🔦 Lighthouse CI Results" >> "$GITHUB_STEP_SUMMARY"
+echo "" >> "$GITHUB_STEP_SUMMARY"
 
 if [ -f .lighthouseci/manifest.json ]; then
   # Find the representative run from manifest (the one used for assertions)
   REPORT_FILE=$(jq -r '.[] | select(.isRepresentativeRun == true) | .jsonPath' .lighthouseci/manifest.json | head -1)
 
   if [ -f "$REPORT_FILE" ]; then
-    echo "### 📊 Lighthouse Scores" >> $GITHUB_STEP_SUMMARY
-    echo "" >> $GITHUB_STEP_SUMMARY
+    echo "### 📊 Lighthouse Scores" >> "$GITHUB_STEP_SUMMARY"
+    echo "" >> "$GITHUB_STEP_SUMMARY"
 
     # Extract scores using jq (available in GitHub Actions by default)
     # Use // 0 to provide fallback for null/missing scores
@@ -25,16 +25,16 @@ if [ -f .lighthouseci/manifest.json ]; then
     BP_STATUS=$([ "$BP_SCORE" -ge 90 ] && echo "✅" || echo "⚠️")
     SEO_STATUS=$([ "$SEO_SCORE" -ge 90 ] && echo "✅" || echo "⚠️")
 
-    echo "| Category | Score | Status | Target |" >> $GITHUB_STEP_SUMMARY
-    echo "|----------|-------|--------|--------|" >> $GITHUB_STEP_SUMMARY
-    echo "| 🚀 Performance | **${PERF_SCORE}** | ${PERF_STATUS} | ≥90 |" >> $GITHUB_STEP_SUMMARY
-    echo "| ♿ Accessibility | **${A11Y_SCORE}** | ${A11Y_STATUS} | ≥95 |" >> $GITHUB_STEP_SUMMARY
-    echo "| ✨ Best Practices | **${BP_SCORE}** | ${BP_STATUS} | ≥90 |" >> $GITHUB_STEP_SUMMARY
-    echo "| 🔍 SEO | **${SEO_SCORE}** | ${SEO_STATUS} | ≥90 |" >> $GITHUB_STEP_SUMMARY
-    echo "" >> $GITHUB_STEP_SUMMARY
+    echo "| Category | Score | Status | Target |" >> "$GITHUB_STEP_SUMMARY"
+    echo "|----------|-------|--------|--------|" >> "$GITHUB_STEP_SUMMARY"
+    echo "| 🚀 Performance | **${PERF_SCORE}** | ${PERF_STATUS} | ≥90 |" >> "$GITHUB_STEP_SUMMARY"
+    echo "| ♿ Accessibility | **${A11Y_SCORE}** | ${A11Y_STATUS} | ≥95 |" >> "$GITHUB_STEP_SUMMARY"
+    echo "| ✨ Best Practices | **${BP_SCORE}** | ${BP_STATUS} | ≥90 |" >> "$GITHUB_STEP_SUMMARY"
+    echo "| 🔍 SEO | **${SEO_SCORE}** | ${SEO_STATUS} | ≥90 |" >> "$GITHUB_STEP_SUMMARY"
+    echo "" >> "$GITHUB_STEP_SUMMARY"
 
-    echo "### ⚡ Core Web Vitals" >> $GITHUB_STEP_SUMMARY
-    echo "" >> $GITHUB_STEP_SUMMARY
+    echo "### ⚡ Core Web Vitals" >> "$GITHUB_STEP_SUMMARY"
+    echo "" >> "$GITHUB_STEP_SUMMARY"
 
     # Extract Core Web Vitals metrics
     FCP=$(cat "$REPORT_FILE" | jq -r '.audits["first-contentful-paint"].numericValue | floor')
@@ -52,31 +52,31 @@ if [ -f .lighthouseci/manifest.json ]; then
     SI_STATUS=$([ "$SI" -le 3000 ] && echo "✅" || echo "❌")
     TTI_STATUS=$([ "$TTI" -le 3500 ] && echo "✅" || echo "❌")
 
-    echo "| Metric | Value | Status | Budget |" >> $GITHUB_STEP_SUMMARY
-    echo "|--------|-------|--------|--------|" >> $GITHUB_STEP_SUMMARY
-    echo "| First Contentful Paint | ${FCP}ms | ${FCP_STATUS} | ≤2000ms |" >> $GITHUB_STEP_SUMMARY
-    echo "| Largest Contentful Paint | ${LCP}ms | ${LCP_STATUS} | ≤2500ms |" >> $GITHUB_STEP_SUMMARY
-    echo "| Cumulative Layout Shift | ${CLS} | ${CLS_STATUS} | ≤0.1 |" >> $GITHUB_STEP_SUMMARY
-    echo "| Total Blocking Time | ${TBT}ms | ${TBT_STATUS} | ≤300ms |" >> $GITHUB_STEP_SUMMARY
-    echo "| Speed Index | ${SI}ms | ${SI_STATUS} | ≤3000ms |" >> $GITHUB_STEP_SUMMARY
-    echo "| Time to Interactive | ${TTI}ms | ${TTI_STATUS} | ≤3500ms |" >> $GITHUB_STEP_SUMMARY
-    echo "" >> $GITHUB_STEP_SUMMARY
+    echo "| Metric | Value | Status | Budget |" >> "$GITHUB_STEP_SUMMARY"
+    echo "|--------|-------|--------|--------|" >> "$GITHUB_STEP_SUMMARY"
+    echo "| First Contentful Paint | ${FCP}ms | ${FCP_STATUS} | ≤2000ms |" >> "$GITHUB_STEP_SUMMARY"
+    echo "| Largest Contentful Paint | ${LCP}ms | ${LCP_STATUS} | ≤2500ms |" >> "$GITHUB_STEP_SUMMARY"
+    echo "| Cumulative Layout Shift | ${CLS} | ${CLS_STATUS} | ≤0.1 |" >> "$GITHUB_STEP_SUMMARY"
+    echo "| Total Blocking Time | ${TBT}ms | ${TBT_STATUS} | ≤300ms |" >> "$GITHUB_STEP_SUMMARY"
+    echo "| Speed Index | ${SI}ms | ${SI_STATUS} | ≤3000ms |" >> "$GITHUB_STEP_SUMMARY"
+    echo "| Time to Interactive | ${TTI}ms | ${TTI_STATUS} | ≤3500ms |" >> "$GITHUB_STEP_SUMMARY"
+    echo "" >> "$GITHUB_STEP_SUMMARY"
 
     # Overall status - check all critical metrics including CLS
     CLS_PASS=$(awk -v cls="$CLS" 'BEGIN {print (cls <= 0.1) ? 1 : 0}')
     if [ "$PERF_SCORE" -ge 90 ] && [ "$A11Y_SCORE" -ge 95 ] && \
        [ "$FCP" -le 2000 ] && [ "$LCP" -le 2500 ] && \
        [ "$CLS_PASS" -eq 1 ] && [ "$TBT" -le 300 ] && [ "$SI" -le 3000 ]; then
-      echo "### ✅ All critical performance budgets met!" >> $GITHUB_STEP_SUMMARY
+      echo "### ✅ All critical performance budgets met!" >> "$GITHUB_STEP_SUMMARY"
     else
-      echo "### ❌ Some performance budgets were not met" >> $GITHUB_STEP_SUMMARY
+      echo "### ❌ Some performance budgets were not met" >> "$GITHUB_STEP_SUMMARY"
     fi
 
-    echo "" >> $GITHUB_STEP_SUMMARY
-    echo "📊 Full Lighthouse report available in artifacts" >> $GITHUB_STEP_SUMMARY
+    echo "" >> "$GITHUB_STEP_SUMMARY"
+    echo "📊 Full Lighthouse report available in artifacts" >> "$GITHUB_STEP_SUMMARY"
   else
-    echo "⚠️ Lighthouse report file not found" >> $GITHUB_STEP_SUMMARY
+    echo "⚠️ Lighthouse report file not found" >> "$GITHUB_STEP_SUMMARY"
   fi
 else
-  echo "❌ Lighthouse CI failed to generate results" >> $GITHUB_STEP_SUMMARY
+  echo "❌ Lighthouse CI failed to generate results" >> "$GITHUB_STEP_SUMMARY"
 fi

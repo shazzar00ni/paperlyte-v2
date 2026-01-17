@@ -19,9 +19,12 @@ import { resolve, normalize, isAbsolute, sep } from 'path'
  * @returns {boolean} True if the filename is safe, false otherwise
  */
 export function isFilenameSafe(filename) {
+  // Normalize to lowercase for case-insensitive URL-encoded pattern checks
+  const lc = filename.toLowerCase()
+
   // Combined check for all unsafe patterns (reduces cyclomatic complexity)
   const unsafePatterns = ['..', '/', '\\', '%2e%2e', '%2f', '%5c', '\0', '%00']
-  return !unsafePatterns.some((pattern) => filename.includes(pattern))
+  return !unsafePatterns.some((pattern) => lc.includes(pattern))
 }
 
 /**
@@ -47,8 +50,11 @@ export function isFilenameSafe(filename) {
  * ```
  */
 export function isPathSafe(filePath) {
+  // Normalize to lowercase for case-insensitive URL-encoded pattern checks
+  const lc = filePath.toLowerCase()
+
   // Check for URL-encoded traversal patterns before normalization
-  if (filePath.includes('%2e%2e') || filePath.includes('%2e%2e%2f')) {
+  if (lc.includes('%2e%2e') || lc.includes('%2e%2e%2f')) {
     return false
   }
 

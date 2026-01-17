@@ -77,7 +77,6 @@ async function generateMockup(sourceName, width, height, format, options) {
       })
 
     // Apply format-specific encoding
-    // Apply format-specific encoding
     switch (format) {
       case 'png':
         await image.png(options).toFile(outputPath)

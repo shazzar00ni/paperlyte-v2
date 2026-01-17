@@ -107,10 +107,68 @@ jobs:
             echo '```' >> $GITHUB_STEP_SUMMARY
           fi
 
+  shell-tests:
+    name: Shell Script Tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Install kcov for shell coverage
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y kcov
+
+      - name: Run shell script validation tests
+        run: |
+          # Run the test suite
+          ./.github/scripts/test-branch-validation.sh
+
+      - name: Run tests with coverage
+        run: |
+          # Create coverage output directory
+          mkdir -p coverage-shell
+          
+          # Run tests with kcov for coverage tracking
+          kcov \
+            --exclude-pattern=/usr \
+            --include-pattern=.github/scripts/ \
+            coverage-shell \
+            ./.github/scripts/test-branch-validation.sh
+
+      - name: Upload shell coverage to Codecov
+        uses: codecov/codecov-action@v5
+        if: always()
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: ./coverage-shell
+          flags: shell-tests
+          name: shell-coverage
+          fail_ci_if_error: false
+
+      - name: Upload shell coverage reports
+        uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: shell-coverage-report
+          path: coverage-shell/
+          retention-days: 30
+
+      - name: Coverage Summary
+        if: always()
+        run: |
+          echo "## Shell Script Test Coverage Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Shell script tests completed successfully." >> $GITHUB_STEP_SUMMARY
+          echo "Coverage reports uploaded to Codecov with flag: shell-tests" >> $GITHUB_STEP_SUMMARY
+
   build:
     name: Build
     runs-on: ubuntu-latest
-    needs: [lint-and-typecheck, test]
+    needs: [lint-and-typecheck, test, shell-tests]
 
     steps:
       - name: Checkout code
@@ -311,7 +369,7 @@ jobs:
   ci-success:
     name: CI Success
     runs-on: ubuntu-latest
-    needs: [lint-and-typecheck, test, build, size-check, lighthouse, e2e]
+    needs: [lint-and-typecheck, test, shell-tests, build, size-check, lighthouse, e2e]
     if: always()
     permissions:
       contents: read
@@ -321,6 +379,7 @@ jobs:
         run: |
           if [ "${{ needs.lint-and-typecheck.result }}" != "success" ] || \
              [ "${{ needs.test.result }}" != "success" ] || \
+             [ "${{ needs.shell-tests.result }}" != "success" ] || \
              [ "${{ needs.build.result }}" != "success" ] || \
              [ "${{ needs.size-check.result }}" != "success" ] || \
              [ "${{ needs.lighthouse.result }}" != "success" ] || \
@@ -328,6 +387,7 @@ jobs:
             echo "❌ CI Pipeline Failed"
             echo "- Lint & Type Check: ${{ needs.lint-and-typecheck.result }}"
             echo "- Tests: ${{ needs.test.result }}"
+            echo "- Shell Tests: ${{ needs.shell-tests.result }}"
             echo "- Build: ${{ needs.build.result }}"
             echo "- Bundle Size: ${{ needs.size-check.result }}"
             echo "- Lighthouse: ${{ needs.lighthouse.result }}"
@@ -337,6 +397,7 @@ jobs:
             echo "✅ All CI jobs passed successfully!"
             echo "- Lint & Type Check: ✅"
             echo "- Tests: ✅"
+            echo "- Shell Tests: ✅"
             echo "- Build: ✅"
             echo "- Bundle Size: ✅"
             echo "- Lighthouse: ✅"

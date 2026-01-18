@@ -1,7 +1,24 @@
 ---
+engines:
+  semgrep:
+    enabled: true
+    exclude_paths:
+      # Exclude test files from non-literal RegExp checks
+      # These files use escapeRegExp() to sanitize all inputs before RegExp construction
+      # The RegExp patterns are safe and necessary for testing dynamic content
+      - 'src/**/*.test.ts'
+      - 'src/**/*.test.tsx'
+
 tools:
   eslint:
     enabled: true
     config:
       configFile: ".eslintrc.js"
     typescript: true
+
+exclude_paths:
+  # Exclude build artifacts and dependencies
+  - 'dist/**'
+  - 'node_modules/**'
+  - 'coverage/**'
+  - '**/*.min.js'

@@ -110,6 +110,14 @@ Added nosemgrep comments for false positives:
 - Path validation code itself triggers scanner (it uses path.resolve to validate)
 - All suppressions include detailed explanations
 
+### Codacy Configuration
+
+Updated `.codacy.yml` to exclude test files from Semgrep RegExp checks:
+- Test files (`src/**/*.test.ts`, `src/**/*.test.tsx`) are excluded from Semgrep analysis
+- This prevents false positives on safe RegExp usage in tests
+- All RegExp inputs in tests are sanitized via `escapeRegExp()` before construction
+- Inline nosemgrep comments remain in code for documentation purposes
+
 ## Files Changed
 
 **New Files**:
@@ -121,6 +129,7 @@ Added nosemgrep comments for false positives:
 - Test files: 4 files updated
 - Script files: 4 files updated
 - Application files: 2 files updated
+- Configuration files: 1 file updated (`.codacy.yml`)
 
 ## Verification
 

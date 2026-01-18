@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { findIconDefinition, IconName, IconPrefix } from '@fortawesome/fontawesome-svg-core'
+import { findIconDefinition } from '@fortawesome/fontawesome-svg-core'
+import type { IconName, IconPrefix } from '@fortawesome/fontawesome-svg-core'
 import { iconPaths, getIconViewBox } from './icons'
 import './Icon.css'
 

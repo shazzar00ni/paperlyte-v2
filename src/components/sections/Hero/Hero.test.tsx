@@ -185,7 +185,8 @@ describe('Hero - Section Props', () => {
     const section = container.querySelector('#hero')
 
     expect(section).toBeInTheDocument()
-    expect(hasClassContaining(section!, 'padding-large')).toBe(true)
+    expect(section).not.toBeNull()
+    expect(hasClassContaining(section, 'padding-large')).toBe(true)
   })
 })
 

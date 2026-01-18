@@ -16,16 +16,19 @@ describe('Icon', () => {
   it('should render Font Awesome fallback for missing icons', () => {
     const { container } = render(<Icon name="definitely-missing-icon" variant="solid" />)
 
-    // Should render fallback <i> element
-    const fallback = container.querySelector('i')
+    // Should render fallback <span> element with "?" for icons not in library
+    const fallback = container.querySelector('span.icon-fallback')
     expect(fallback).toBeInTheDocument()
-    expect(fallback).toHaveClass('fa-solid')
-    expect(fallback).toHaveClass('definitely-missing-icon')
     expect(fallback).toHaveClass('icon-fallback')
+    expect(fallback).toHaveTextContent('?')
+    expect(fallback).toHaveAttribute('title', 'Icon "definitely-missing-icon" not found')
 
-    // Should log warning
+    // Should log warnings
     expect(consoleWarnSpy).toHaveBeenCalledWith(
       'Icon "definitely-missing-icon" not found in icon set, using Font Awesome fallback'
+    )
+    expect(consoleWarnSpy).toHaveBeenCalledWith(
+      'Icon "definitely-missing-icon" not found in Font Awesome library either'
     )
   })
 
@@ -57,9 +60,9 @@ describe('Icon', () => {
 
   it('should render as SVG element or fallback to Font Awesome', () => {
     const { container } = render(<Icon name="fa-bolt" />)
-    // Component may render as SVG (if icon exists) or as <i> (fallback)
+    // Component may render as SVG (if icon exists) or as <span> (fallback)
     const svg = container.querySelector('svg')
-    const fallback = container.querySelector('i')
+    const fallback = container.querySelector('span.icon-fallback')
 
     expect(svg || fallback).toBeInTheDocument()
   })
@@ -85,7 +88,7 @@ describe('Icon', () => {
 
     // Test fallback size application
     rerender(<Icon name="missing-icon" size="lg" />)
-    const fallback = container.querySelector('i')
+    const fallback = container.querySelector('span.icon-fallback')
     expect(fallback?.style.fontSize).toBe('24px')
   })
 
@@ -99,14 +102,14 @@ describe('Icon', () => {
 
     // Test fallback default size
     rerender(<Icon name="missing-icon" />)
-    const fallback = container.querySelector('i')
+    const fallback = container.querySelector('span.icon-fallback')
     expect(fallback).toBeInTheDocument()
     expect(fallback?.style.fontSize).toBe('20px')
   })
 
   it('should be hidden from screen readers by default', () => {
     const { container } = render(<Icon name="fa-bolt" />)
-    const icon = container.querySelector('svg') || container.querySelector('i')
+    const icon = container.querySelector('svg') || container.querySelector('span.icon-fallback')
 
     expect(icon).toHaveAttribute('aria-hidden', 'true')
   })
@@ -123,7 +126,7 @@ describe('Icon', () => {
   it('should apply custom className', () => {
     const { container } = render(<Icon name="fa-bolt" className="custom-icon" />)
     const svg = container.querySelector('svg')
-    const fallback = container.querySelector('i')
+    const fallback = container.querySelector('span.icon-fallback')
     const icon = svg || fallback
 
     expect(icon).toHaveClass('custom-icon')
@@ -139,7 +142,7 @@ describe('Icon', () => {
 
   it('should handle color prop on fallback elements', () => {
     const { container } = render(<Icon name="missing-icon" color="#FF0000" />)
-    const fallback = container.querySelector('i')
+    const fallback = container.querySelector('span.icon-fallback')
 
     // Fallback uses inline style for color
     expect(fallback).toHaveStyle({ color: '#FF0000' })
@@ -158,7 +161,7 @@ describe('Icon', () => {
 
     // Test with fallback (missing icon)
     rerender(<Icon name="missing-icon" color="FF0000" />)
-    const fallback = container.querySelector('i')
+    const fallback = container.querySelector('span.icon-fallback')
     expect(fallback).toHaveStyle({ color: '#FF0000' })
 
     // Test that valid CSS colors are left untouched
@@ -173,25 +176,28 @@ describe('Icon', () => {
 
   it('should apply correct variant class for solid', () => {
     const { container } = render(<Icon name="missing-icon" variant="solid" />)
-    const fallback = container.querySelector('i')
+    const fallback = container.querySelector('span.icon-fallback')
 
+    // Missing icons render as span placeholder
     expect(fallback).toBeInTheDocument()
-    expect(fallback).toHaveClass('fa-solid')
+    expect(fallback).toHaveClass('icon-fallback')
   })
 
   it('should apply correct variant class for regular', () => {
     const { container } = render(<Icon name="missing-icon" variant="regular" />)
-    const fallback = container.querySelector('i')
+    const fallback = container.querySelector('span.icon-fallback')
 
+    // Missing icons render as span placeholder
     expect(fallback).toBeInTheDocument()
-    expect(fallback).toHaveClass('fa-regular')
+    expect(fallback).toHaveClass('icon-fallback')
   })
 
   it('should apply correct variant class for brands', () => {
     const { container } = render(<Icon name="missing-icon" variant="brands" />)
-    const fallback = container.querySelector('i')
+    const fallback = container.querySelector('span.icon-fallback')
 
+    // Missing icons render as span placeholder
     expect(fallback).toBeInTheDocument()
-    expect(fallback).toHaveClass('fa-brands')
+    expect(fallback).toHaveClass('icon-fallback')
   })
 })

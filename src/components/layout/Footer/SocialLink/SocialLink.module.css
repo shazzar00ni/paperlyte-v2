@@ -1,3 +1,4 @@
+/* Review Stylelint configuration for 'scss_function-disallowed-list' */
 .socialLink {
   color: var(--color-footer-text);
   transition: color var(--transition-base);

@@ -22,10 +22,11 @@ export const Footer = (): React.ReactElement => {
                 <a href="/#roadmap" className={styles.link}>
                   Roadmap
                 </a>
-              </li>
               <li>
-                <a href="/#pricing" className={styles.link}>
+                <Link to="/#pricing" className={styles.link}>
                   Pricing
+                </Link>
+              </li>
               <li>
                 <Link to="/#changelog" className={styles.link}>
                   Changelog

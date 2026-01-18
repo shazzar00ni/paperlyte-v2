@@ -48,7 +48,8 @@ test.describe('Landing Page', () => {
     test.skip(browserName !== 'chromium' || isMobile, 'Performance test runs on chromium desktop only');
 
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    // Wait for a stable UI element instead of networkidle to avoid hangs on long-lived connections
+    await page.waitForSelector('h1', { state: 'visible' });
 
     // Measure Core Web Vitals using Performance Timeline
     const metrics = await page.evaluate(() => {
@@ -65,8 +66,8 @@ test.describe('Landing Page', () => {
         const lcpObserver = new PerformanceObserver((list) => {
           const entries = list.getEntries();
           const lastEntry = entries[entries.length - 1];
-          const lcpEntry = lastEntry as PerformanceEntry & { renderTime?: number; loadTime?: number };
-          lcp = lcpEntry.renderTime || lcpEntry.loadTime || 0;
+          const lcpEntry = lastEntry as PerformanceEntry & { startTime?: number; renderTime?: number; loadTime?: number };
+          lcp = lcpEntry.startTime || lcpEntry.renderTime || lcpEntry.loadTime || 0;
         });
 
         const clsObserver = new PerformanceObserver((list) => {

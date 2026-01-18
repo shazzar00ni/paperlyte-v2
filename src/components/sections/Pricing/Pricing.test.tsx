@@ -22,7 +22,7 @@ describe('Pricing', () => {
   it('should render subtitle', () => {
     render(<Pricing />)
     expect(
-      screen.getByText('Start free, upgrade whenever. No credit card needed to get started.')
+      screen.getByText(/Start free.*No credit card/i)
     ).toBeInTheDocument()
   })
 

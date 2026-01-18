@@ -73,7 +73,7 @@ describe('Hero - CTA Buttons', () => {
   })
 })
 
-describe('Hero - Scroll Tests', () => {
+describe('Hero - Scroll Behavior', () => {
   let scrollIntoViewMock: ReturnType<typeof vi.fn>
   let originalScrollIntoView: typeof Element.prototype.scrollIntoView
   let mockSections: HTMLElement[] = []
@@ -95,52 +95,71 @@ describe('Hero - Scroll Tests', () => {
     mockSections = []
   })
 
-  describe('Hero - Scroll Behavior', () => {
-    it('should scroll to target sections when CTA buttons are clicked', async () => {
-      const user = userEvent.setup()
-      const downloadSection = createMockSection('download')
-      const featuresSection = createMockSection('features')
-      mockSections.push(downloadSection, featuresSection)
+  it('should scroll to target sections when CTA buttons are clicked', async () => {
+    const user = userEvent.setup()
+    const downloadSection = createMockSection('download')
+    const featuresSection = createMockSection('features')
+    mockSections.push(downloadSection, featuresSection)
 
-      render(<Hero />)
+    render(<Hero />)
 
-      await user.click(screen.getByRole('button', { name: /start writing for free/i }))
-      expect(scrollIntoViewMock).toHaveBeenCalledWith(expect.objectContaining({ behavior: 'smooth' }))
+    await user.click(screen.getByRole('button', { name: /start writing for free/i }))
+    expect(scrollIntoViewMock).toHaveBeenCalledWith(expect.objectContaining({ behavior: 'smooth' }))
 
-      scrollIntoViewMock.mockClear()
-      await user.click(screen.getByRole('button', { name: /view the demo/i }))
-      expect(scrollIntoViewMock).toHaveBeenCalledWith(expect.objectContaining({ behavior: 'smooth' }))
-    })
-
-    it('should handle missing target section gracefully', async () => {
-      const user = userEvent.setup()
-      render(<Hero />)
-
-      const button = screen.getByRole('button', { name: /start writing for free/i })
-      await expect(user.click(button)).resolves.not.toThrow()
-      expect(scrollIntoViewMock).not.toHaveBeenCalled()
-    })
+    scrollIntoViewMock.mockClear()
+    await user.click(screen.getByRole('button', { name: /view the demo/i }))
+    expect(scrollIntoViewMock).toHaveBeenCalledWith(expect.objectContaining({ behavior: 'smooth' }))
   })
 
-  describe('Hero - Button Interactions', () => {
-    it('should support keyboard navigation and multiple clicks', async () => {
-      const user = userEvent.setup()
-      const section = createMockSection('download')
-      mockSections.push(section)
+  it('should handle missing target section gracefully', async () => {
+    const user = userEvent.setup()
+    render(<Hero />)
 
-      render(<Hero />)
-      const button = screen.getByRole('button', { name: /start writing for free/i })
+    const button = screen.getByRole('button', { name: /start writing for free/i })
+    await expect(user.click(button)).resolves.not.toThrow()
+    expect(scrollIntoViewMock).not.toHaveBeenCalled()
+  })
+})
 
-      button.focus()
-      expect(button).toHaveFocus()
+describe('Hero - Button Interactions', () => {
+  let scrollIntoViewMock: ReturnType<typeof vi.fn>
+  let originalScrollIntoView: typeof Element.prototype.scrollIntoView
+  let mockSections: HTMLElement[] = []
 
-      await user.keyboard('{Enter}')
-      expect(scrollIntoViewMock).toHaveBeenCalledTimes(1)
+  beforeEach(() => {
+    const setup = setupScrollMock()
+    originalScrollIntoView = setup.originalScrollIntoView
+    scrollIntoViewMock = setup.scrollIntoViewMock
+    mockSections = []
+  })
 
-      await user.click(button)
-      await user.click(button)
-      expect(scrollIntoViewMock).toHaveBeenCalledTimes(3)
+  afterEach(() => {
+    teardownScrollMock(originalScrollIntoView)
+    mockSections.forEach((section) => {
+      if (document.body.contains(section)) {
+        removeMockSection(section)
+      }
     })
+    mockSections = []
+  })
+
+  it('should support keyboard navigation and multiple clicks', async () => {
+    const user = userEvent.setup()
+    const section = createMockSection('download')
+    mockSections.push(section)
+
+    render(<Hero />)
+    const button = screen.getByRole('button', { name: /start writing for free/i })
+
+    button.focus()
+    expect(button).toHaveFocus()
+
+    await user.keyboard('{Enter}')
+    expect(scrollIntoViewMock).toHaveBeenCalledTimes(1)
+
+    await user.click(button)
+    await user.click(button)
+    expect(scrollIntoViewMock).toHaveBeenCalledTimes(3)
   })
 })
 

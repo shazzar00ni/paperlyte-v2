@@ -162,7 +162,8 @@ export const iconNameMap: Record<string, string> = {
   'fa-twitter': 'twitter',
   'fa-apple': 'apple',
   'fa-windows': 'windows',
-  'fa-router': 'route', // Offline page - route/navigation issues
+  'fa-route': 'route', // Offline page - route/navigation issues
+  'fa-router': 'route', // Backward compatibility alias for fa-route
   'fa-wifi': 'wifi', // Offline page - connection status
   'fa-plane': 'plane', // Offline page - airplane mode
   'fa-arrow-rotate-left': 'arrow-rotate-left', // Undo/back actions

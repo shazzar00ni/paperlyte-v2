@@ -19,9 +19,10 @@ export const Footer = (): React.ReactElement => {
                 </a>
               </li>
               <li>
-                <a href="/#roadmap" className={styles.link}>
+                <Link to="/#roadmap" className={styles.link}>
                   Roadmap
-                </a>
+                </Link>
+              </li>
               <li>
                 <Link to="/#pricing" className={styles.link}>
                   Pricing

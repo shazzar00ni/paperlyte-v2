@@ -72,12 +72,32 @@ export const Icon = ({
       console.warn(`Icon "${name}" not found in Font Awesome library either`)
       return (
         <span
-          className={`icon-fallback ${className}`}
-          style={{ fontSize: iconSize, color: normalizedColor, ...style }}
-          aria-label={ariaLabel}
-          aria-hidden={ariaLabel ? 'false' : 'true'}
-          {...(ariaLabel ? { role: 'img' } : {})}
+    const commonIconProps = {
+      className: `icon-fallback ${className}`,
+      style: { fontSize: iconSize, color: normalizedColor, ...style },
+      'aria-label': ariaLabel,
+      'aria-hidden': ariaLabel ? 'false' : 'true',
+      ...(ariaLabel ? { role: 'img' } : {}),
+    };
+
+    if (!iconDefinition) {
+      console.warn(`Icon "${name}" not found in Font Awesome library either`)
+      return (
+        <span
+          {...commonIconProps}
           title={`Icon "${name}" not found`}
+        >
+          ?
+        </span>
+      )
+    }
+
+    return (
+      <FontAwesomeIcon
+        icon={iconDefinition}
+        {...commonIconProps}
+      />
+    )
         >
           ?
         </span>

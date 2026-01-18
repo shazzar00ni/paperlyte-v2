@@ -8,6 +8,12 @@ if [ -f .lighthouseci/manifest.json ]; then
   # Find the representative run from manifest (the one used for assertions)
   REPORT_FILE=$(jq -r '.[] | select(.isRepresentativeRun == true) | .jsonPath' .lighthouseci/manifest.json | head -1)
 
+  # Validate that REPORT_FILE is non-empty and not "null"
+  if [ -z "$REPORT_FILE" ] || [ "$REPORT_FILE" = "null" ]; then
+    echo "❌ No representative run found in Lighthouse manifest" >> "$GITHUB_STEP_SUMMARY"
+    exit 1
+  fi
+
   if [ -f "$REPORT_FILE" ]; then
     echo "### 📊 Lighthouse Scores" >> "$GITHUB_STEP_SUMMARY"
     echo "" >> "$GITHUB_STEP_SUMMARY"
@@ -54,15 +60,17 @@ if [ -f .lighthouseci/manifest.json ]; then
     SI_STATUS=$([ "$SI" -le 3000 ] && echo "✅" || echo "❌")
     TTI_STATUS=$([ "$TTI" -le 3500 ] && echo "✅" || echo "❌")
 
-    echo "| Metric | Value | Status | Budget |" >> "$GITHUB_STEP_SUMMARY"
-    echo "|--------|-------|--------|--------|" >> "$GITHUB_STEP_SUMMARY"
-    echo "| First Contentful Paint | ${FCP}ms | ${FCP_STATUS} | ≤2000ms |" >> "$GITHUB_STEP_SUMMARY"
-    echo "| Largest Contentful Paint | ${LCP}ms | ${LCP_STATUS} | ≤2500ms |" >> "$GITHUB_STEP_SUMMARY"
-    echo "| Cumulative Layout Shift | ${CLS} | ${CLS_STATUS} | ≤0.1 |" >> "$GITHUB_STEP_SUMMARY"
-    echo "| Total Blocking Time | ${TBT}ms | ${TBT_STATUS} | ≤300ms |" >> "$GITHUB_STEP_SUMMARY"
-    echo "| Speed Index | ${SI}ms | ${SI_STATUS} | ≤3000ms |" >> "$GITHUB_STEP_SUMMARY"
-    echo "| Time to Interactive | ${TTI}ms | ${TTI_STATUS} | ≤3500ms |" >> "$GITHUB_STEP_SUMMARY"
-    echo "" >> "$GITHUB_STEP_SUMMARY"
+    {
+      echo "| Metric | Value | Status | Budget |"
+      echo "|--------|-------|--------|--------|"
+      echo "| First Contentful Paint | ${FCP}ms | ${FCP_STATUS} | ≤2000ms |"
+      echo "| Largest Contentful Paint | ${LCP}ms | ${LCP_STATUS} | ≤2500ms |"
+      echo "| Cumulative Layout Shift | ${CLS} | ${CLS_STATUS} | ≤0.1 |"
+      echo "| Total Blocking Time | ${TBT}ms | ${TBT_STATUS} | ≤300ms |"
+      echo "| Speed Index | ${SI}ms | ${SI_STATUS} | ≤3000ms |"
+      echo "| Time to Interactive | ${TTI}ms | ${TTI_STATUS} | ≤3500ms |"
+      echo ""
+    } >> "$GITHUB_STEP_SUMMARY"
 
     # Overall status - check all critical metrics including CLS and TTI
     CLS_PASS=$(awk -v cls="$CLS" 'BEGIN {print (cls <= 0.1) ? 1 : 0}')

@@ -86,7 +86,7 @@ describe('Hero', () => {
       render(<Hero />)
 
       const button = screen.getByRole('button', { name: /start writing for free/i })
-      const icon = button.querySelector('.fa-arrow-right')
+      const icon = button.querySelector('svg[data-icon="fa-arrow-right"]')
 
       expect(icon).toBeInTheDocument()
     })

@@ -132,10 +132,9 @@ describe('Pricing', () => {
     render(<Pricing />)
 
     PRICING_PLANS.forEach((plan) => {
-      // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
       // Safe: input is escaped via escapeRegExp() and comes from PRICING_PLANS constant, not user input
       const button = screen.getByRole('button', {
-        name: new RegExp(escapeRegExp(plan.ctaText)),
+        name: new RegExp(escapeRegExp(plan.ctaText)), // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
       })
       expect(button).toBeInTheDocument()
     })

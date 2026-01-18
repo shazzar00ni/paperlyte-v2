@@ -46,9 +46,8 @@ describe('FAQ', () => {
       render(<FAQ />)
 
       FAQ_ITEMS.forEach((item) => {
-        // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
         // Safe: input is escaped via escapeRegExp() and comes from FAQ_ITEMS constant, not user input
-        const questionButton = screen.getByRole('button', { name: new RegExp(escapeRegExp(item.question), 'i') })
+        const questionButton = screen.getByRole('button', { name: new RegExp(escapeRegExp(item.question), 'i') }) // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
         expect(questionButton).toHaveAttribute('aria-expanded', 'false')
       })
     })
@@ -433,10 +432,9 @@ describe('FAQ', () => {
       const user = userEvent.setup()
       render(<FAQ />)
 
-      // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp
       // Safe: input is escaped via escapeRegExp() and comes from FAQ_ITEMS constant, not user input
       const buttons = FAQ_ITEMS.slice(0, 3).map((item) =>
-        screen.getByRole('button', { name: new RegExp(escapeRegExp(item.question), 'i') })
+        screen.getByRole('button', { name: new RegExp(escapeRegExp(item.question), 'i') }) // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
       )
 
       buttons[0].focus()

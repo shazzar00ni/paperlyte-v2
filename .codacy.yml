@@ -2,3 +2,10 @@
 engines:
   eslint-9:
     enabled: true
+  lizard:
+    enabled: true
+    exclude_paths:
+      - '**/*.test.tsx'
+      - '**/*.test.ts'
+      - '**/*.spec.tsx'
+      - '**/*.spec.ts'

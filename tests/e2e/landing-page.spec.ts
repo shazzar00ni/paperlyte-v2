@@ -7,9 +7,9 @@ test.describe('Landing Page', () => {
     // Check hero heading exists
     await expect(page.locator('h1')).toBeVisible();
 
-    // Check CTA button exists
-    const ctaButton = page.getByRole('button', { name: /join waitlist|see features/i });
-    await expect(ctaButton).toBeVisible();
+    // Check CTA button exists (matches actual Hero component buttons)
+    const ctaButton = page.getByRole('button', { name: /start writing for free|view the demo/i });
+    await expect(ctaButton.first()).toBeVisible();
 
     // Check page is accessible
     await expect(page).toHaveTitle(/Paperlyte/i);
@@ -18,7 +18,8 @@ test.describe('Landing Page', () => {
   test('should navigate to features section on click', async ({ page }) => {
     await page.goto('/');
 
-    const featuresLink = page.getByRole('link', { name: /features/i });
+    // Target specifically the header's features link to avoid strict mode violation
+    const featuresLink = page.locator('header').getByRole('link', { name: /^features$/i });
     await featuresLink.click();
 
     // Wait for smooth scroll animation to complete by ensuring #features is fully in the viewport
@@ -99,14 +100,16 @@ test.describe('Landing Page', () => {
 
     // Verify mobile menu button is present (desktop has regular nav)
     const mobileMenu = page.getByRole('button', { name: /menu/i });
-    await mobileMenu.waitFor({ state: 'visible' });
     await expect(mobileMenu).toBeVisible();
 
     // Test mobile menu interaction
     await mobileMenu.click();
-    // Verify menu opens (actual selector depends on implementation)
-    const nav = page.locator('nav[role="navigation"], [aria-label*="navigation"]');
-    await expect(nav).toBeVisible();
+    // Verify menu opens - check that aria-expanded is true after clicking
+    await expect(mobileMenu).toHaveAttribute('aria-expanded', 'true');
+
+    // Verify the menu list becomes visible
+    const menuList = page.getByRole('navigation').locator('#main-menu');
+    await expect(menuList).toBeVisible();
   });
 
   test('should have accessible keyboard navigation', async ({ page }) => {

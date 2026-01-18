@@ -105,7 +105,7 @@
 /* Desktop enhancements */
 @media (min-width: 769px) {
   .termsContent {
-    padding: var(--spacing-3xl) var(--spacing-md);
+    padding: var(--spacing-legal) var(--spacing-md);
   }
 
   .title {

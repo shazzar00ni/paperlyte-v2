@@ -26,10 +26,11 @@ export const Footer = (): React.ReactElement => {
               <li>
                 <a href="/#pricing" className={styles.link}>
                   Pricing
-                </a>
-              </li>
               <li>
-                <a href="/#changelog" className={styles.link}>
+                <Link to="/#changelog" className={styles.link}>
+                  Changelog
+                </Link>
+              </li>
                   Changelog
                 </a>
               </li>

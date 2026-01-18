@@ -14,10 +14,10 @@ if [ -f .lighthouseci/manifest.json ]; then
 
     # Extract scores using jq (available in GitHub Actions by default)
     # Use // 0 to provide fallback for null/missing scores
-    PERF_SCORE=$(cat "$REPORT_FILE" | jq -r '(.categories.performance.score // 0) * 100 | floor')
-    A11Y_SCORE=$(cat "$REPORT_FILE" | jq -r '(.categories.accessibility.score // 0) * 100 | floor')
-    BP_SCORE=$(cat "$REPORT_FILE" | jq -r '(.categories["best-practices"].score // 0) * 100 | floor')
-    SEO_SCORE=$(cat "$REPORT_FILE" | jq -r '(.categories.seo.score // 0) * 100 | floor')
+    PERF_SCORE=$(jq -r '(.categories.performance.score // 0) * 100 | floor' "$REPORT_FILE")
+    A11Y_SCORE=$(jq -r '(.categories.accessibility.score // 0) * 100 | floor' "$REPORT_FILE")
+    BP_SCORE=$(jq -r '(.categories["best-practices"].score // 0) * 100 | floor' "$REPORT_FILE")
+    SEO_SCORE=$(jq -r '(.categories.seo.score // 0) * 100 | floor' "$REPORT_FILE")
 
     # Determine pass/fail with emoji
     PERF_STATUS=$([ "$PERF_SCORE" -ge 90 ] && echo "✅" || echo "❌")
@@ -64,11 +64,12 @@ if [ -f .lighthouseci/manifest.json ]; then
     echo "| Time to Interactive | ${TTI}ms | ${TTI_STATUS} | ≤3500ms |" >> "$GITHUB_STEP_SUMMARY"
     echo "" >> "$GITHUB_STEP_SUMMARY"
 
-    # Overall status - check all critical metrics including CLS
+    # Overall status - check all critical metrics including CLS and TTI
     CLS_PASS=$(awk -v cls="$CLS" 'BEGIN {print (cls <= 0.1) ? 1 : 0}')
     if [ "$PERF_SCORE" -ge 90 ] && [ "$A11Y_SCORE" -ge 95 ] && \
        [ "$FCP" -le 2000 ] && [ "$LCP" -le 2500 ] && \
-       [ "$CLS_PASS" -eq 1 ] && [ "$TBT" -le 300 ] && [ "$SI" -le 3000 ]; then
+       [ "$CLS_PASS" -eq 1 ] && [ "$TBT" -le 300 ] && [ "$SI" -le 3000 ] && \
+       [ "$TTI" -le 3500 ]; then
       echo "### ✅ All critical performance budgets met!" >> "$GITHUB_STEP_SUMMARY"
     else
       echo "### ❌ Some performance budgets were not met" >> "$GITHUB_STEP_SUMMARY"

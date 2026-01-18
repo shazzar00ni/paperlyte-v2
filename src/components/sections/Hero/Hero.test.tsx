@@ -198,9 +198,7 @@ describe('Hero', () => {
       // Check primary mockup (notes list) using RTL query
       const primaryImg = screen.getByAltText(/notes list/i)
       expect(primaryImg).toBeInTheDocument()
-      expect(primaryImg.getAttribute('src')).toEqual(
-        expect.stringContaining('/mockups/notes-list')
-      )
+      expect(primaryImg.getAttribute('src')).toEqual(expect.stringContaining('/mockups/notes-list'))
 
       // Check secondary mockup (note detail) using RTL query
       const secondaryImg = screen.getByAltText(/note editor/i)

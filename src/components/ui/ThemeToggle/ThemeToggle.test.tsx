@@ -58,21 +58,18 @@ describe('ThemeToggle', () => {
         ariaLabel: /switch to light mode/i,
         title: 'Switch to light mode',
       },
-    ])(
-      'should have correct aria-label and title in $theme mode',
-      ({ theme, ariaLabel, title }) => {
-        vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
-          theme,
-          toggleTheme: mockToggleTheme,
-        })
+    ])('should have correct aria-label and title in $theme mode', ({ theme, ariaLabel, title }) => {
+      vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
+        theme,
+        toggleTheme: mockToggleTheme,
+      })
 
-        render(<ThemeToggle />)
+      render(<ThemeToggle />)
 
-        const button = screen.getByRole('button', { name: ariaLabel })
-        expect(button).toBeInTheDocument()
-        expect(button).toHaveAttribute('title', title)
-      }
-    )
+      const button = screen.getByRole('button', { name: ariaLabel })
+      expect(button).toBeInTheDocument()
+      expect(button).toHaveAttribute('title', title)
+    })
   })
 
   describe('Interaction', () => {
@@ -180,21 +177,24 @@ describe('ThemeToggle', () => {
     it.each([
       { theme: 'light' as const, description: 'light mode', expectedIcon: 'fa-moon' },
       { theme: 'dark' as const, description: 'dark mode', expectedIcon: 'fa-sun' },
-    ])('should render $expectedIcon with correct properties in $description', ({ theme, expectedIcon }) => {
-      vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
-        theme,
-        toggleTheme: mockToggleTheme,
-      })
+    ])(
+      'should render $expectedIcon with correct properties in $description',
+      ({ theme, expectedIcon }) => {
+        vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
+          theme,
+          toggleTheme: mockToggleTheme,
+        })
 
-      render(<ThemeToggle />)
+        render(<ThemeToggle />)
 
-      const button = screen.getByRole('button')
-      const icon = button.querySelector('svg')
+        const button = screen.getByRole('button')
+        const icon = button.querySelector('svg')
 
-      expect(icon).toBeInTheDocument()
-      expect(icon).toHaveClass('icon-svg')
-      expect(icon).toHaveAttribute('data-icon', expectedIcon)
-    })
+        expect(icon).toBeInTheDocument()
+        expect(icon).toHaveClass('icon-svg')
+        expect(icon).toHaveAttribute('data-icon', expectedIcon)
+      }
+    )
 
     it('should pass size="md" to Icon component', () => {
       vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({

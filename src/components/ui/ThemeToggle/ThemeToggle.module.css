@@ -4,7 +4,19 @@
   justify-content: center;
   width: 48px;
   height: 48px;
-  border-radius: var(--border-radius-md);
+.toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 9999px;
+  background-color: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  border: 1px solid transparent;
+}
   background-color: transparent;
   color: var(--color-text-secondary);
   cursor: pointer;

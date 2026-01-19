@@ -59,7 +59,7 @@ describe('FAQ', () => {
       const firstQuestion = FAQ_ITEMS[0].question
       const firstAnswer = FAQ_ITEMS[0].answer
 
-      const questionButton = screen.getByRole('button', { name: new RegExp(firstQuestion, 'i') })
+      const questionButton = screen.getByRole('button', { name: new RegExp(escapeRegExp(firstQuestion), 'i') }) // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
 
       await user.click(questionButton)
 
@@ -72,7 +72,7 @@ describe('FAQ', () => {
       render(<FAQ />)
 
       const firstQuestion = FAQ_ITEMS[0].question
-      const questionButton = screen.getByRole('button', { name: new RegExp(firstQuestion, 'i') })
+      const questionButton = screen.getByRole('button', { name: new RegExp(escapeRegExp(firstQuestion), 'i') }) // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
 
       // Open
       await user.click(questionButton)
@@ -90,8 +90,8 @@ describe('FAQ', () => {
       const firstQuestion = FAQ_ITEMS[0].question
       const secondQuestion = FAQ_ITEMS[1].question
 
-      const firstButton = screen.getByRole('button', { name: new RegExp(firstQuestion, 'i') })
-      const secondButton = screen.getByRole('button', { name: new RegExp(secondQuestion, 'i') })
+      const firstButton = screen.getByRole('button', { name: new RegExp(escapeRegExp(firstQuestion), 'i') }) // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
+      const secondButton = screen.getByRole('button', { name: new RegExp(escapeRegExp(secondQuestion), 'i') }) // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
 
       await user.click(firstButton)
       await user.click(secondButton)
@@ -105,7 +105,7 @@ describe('FAQ', () => {
       render(<FAQ />)
 
       const item = FAQ_ITEMS[0]
-      const questionButton = screen.getByRole('button', { name: new RegExp(item.question, 'i') })
+      const questionButton = screen.getByRole('button', { name: new RegExp(escapeRegExp(item.question), 'i') }) // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
 
       await user.click(questionButton)
 
@@ -117,7 +117,7 @@ describe('FAQ', () => {
       render(<FAQ />)
 
       for (const item of FAQ_ITEMS) {
-        const questionButton = screen.getByRole('button', { name: new RegExp(item.question, 'i') })
+        const questionButton = screen.getByRole('button', { name: new RegExp(escapeRegExp(item.question), 'i') }) // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
 
         await user.click(questionButton)
         expect(questionButton).toHaveAttribute('aria-expanded', 'true')
@@ -135,7 +135,7 @@ describe('FAQ', () => {
       render(<FAQ />)
 
       const questionButton = screen.getByRole('button', {
-        name: new RegExp(FAQ_ITEMS[0].question, 'i'),
+        name: new RegExp(escapeRegExp(FAQ_ITEMS[0].question), 'i'), // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
       })
 
       expect(questionButton).toHaveAttribute('aria-expanded', 'false')
@@ -149,7 +149,7 @@ describe('FAQ', () => {
       render(<FAQ />)
 
       const item = FAQ_ITEMS[0]
-      const questionButton = screen.getByRole('button', { name: new RegExp(item.question, 'i') })
+      const questionButton = screen.getByRole('button', { name: new RegExp(escapeRegExp(item.question), 'i') }) // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
 
       const ariaControls = questionButton.getAttribute('aria-controls')
       expect(ariaControls).toBeTruthy()
@@ -162,7 +162,7 @@ describe('FAQ', () => {
       render(<FAQ />)
 
       const item = FAQ_ITEMS[0]
-      const questionButton = screen.getByRole('button', { name: new RegExp(item.question, 'i') })
+      const questionButton = screen.getByRole('button', { name: new RegExp(escapeRegExp(item.question), 'i') }) // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
       const ariaControls = questionButton.getAttribute('aria-controls')
       expect(ariaControls).toBeTruthy()
       const answerElement = document.getElementById(ariaControls!)
@@ -175,7 +175,7 @@ describe('FAQ', () => {
       render(<FAQ />)
 
       const item = FAQ_ITEMS[0]
-      const questionButton = screen.getByRole('button', { name: new RegExp(item.question, 'i') })
+      const questionButton = screen.getByRole('button', { name: new RegExp(escapeRegExp(item.question), 'i') }) // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
 
       await user.click(questionButton)
 
@@ -191,7 +191,7 @@ describe('FAQ', () => {
       render(<FAQ />)
 
       const questionButton = screen.getByRole('button', {
-        name: new RegExp(FAQ_ITEMS[0].question, 'i'),
+        name: new RegExp(escapeRegExp(FAQ_ITEMS[0].question), 'i'), // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
       })
 
       questionButton.focus()
@@ -211,7 +211,7 @@ describe('FAQ', () => {
       render(<FAQ />)
 
       const firstButton = screen.getByRole('button', {
-        name: new RegExp(FAQ_ITEMS[0].question, 'i'),
+        name: new RegExp(escapeRegExp(FAQ_ITEMS[0].question), 'i'), // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
       })
 
       firstButton.focus()
@@ -229,7 +229,7 @@ describe('FAQ', () => {
       render(<FAQ />)
 
       const questionButton = screen.getByRole('button', {
-        name: new RegExp(FAQ_ITEMS[0].question, 'i'),
+        name: new RegExp(escapeRegExp(FAQ_ITEMS[0].question), 'i'), // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
       })
 
       // When collapsed, should show "Expand answer"
@@ -260,9 +260,9 @@ describe('FAQ', () => {
 
       const [item1, item2, item3] = FAQ_ITEMS
 
-      const button1 = screen.getByRole('button', { name: new RegExp(item1.question, 'i') })
-      const button2 = screen.getByRole('button', { name: new RegExp(item2.question, 'i') })
-      const button3 = screen.getByRole('button', { name: new RegExp(item3.question, 'i') })
+      const button1 = screen.getByRole('button', { name: new RegExp(escapeRegExp(item1.question), 'i') }) // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
+      const button2 = screen.getByRole('button', { name: new RegExp(escapeRegExp(item2.question), 'i') }) // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
+      const button3 = screen.getByRole('button', { name: new RegExp(escapeRegExp(item3.question), 'i') }) // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
 
       // Open first and third
       await user.click(button1)
@@ -285,7 +285,7 @@ describe('FAQ', () => {
       render(<FAQ />)
 
       const questionButton = screen.getByRole('button', {
-        name: new RegExp(FAQ_ITEMS[0].question, 'i'),
+        name: new RegExp(escapeRegExp(FAQ_ITEMS[0].question), 'i'), // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
       })
 
       await user.click(questionButton)
@@ -319,10 +319,10 @@ describe('FAQ', () => {
       render(<FAQ />)
 
       const firstButton = screen.getByRole('button', {
-        name: new RegExp(FAQ_ITEMS[0].question, 'i'),
+        name: new RegExp(escapeRegExp(FAQ_ITEMS[0].question), 'i'), // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
       })
       const secondButton = screen.getByRole('button', {
-        name: new RegExp(FAQ_ITEMS[1].question, 'i'),
+        name: new RegExp(escapeRegExp(FAQ_ITEMS[1].question), 'i'), // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
       })
 
       firstButton.focus()
@@ -338,10 +338,10 @@ describe('FAQ', () => {
       render(<FAQ />)
 
       const firstButton = screen.getByRole('button', {
-        name: new RegExp(FAQ_ITEMS[0].question, 'i'),
+        name: new RegExp(escapeRegExp(FAQ_ITEMS[0].question), 'i'), // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
       })
       const secondButton = screen.getByRole('button', {
-        name: new RegExp(FAQ_ITEMS[1].question, 'i'),
+        name: new RegExp(escapeRegExp(FAQ_ITEMS[1].question), 'i'), // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
       })
 
       secondButton.focus()
@@ -357,10 +357,10 @@ describe('FAQ', () => {
       render(<FAQ />)
 
       const firstButton = screen.getByRole('button', {
-        name: new RegExp(FAQ_ITEMS[0].question, 'i'),
+        name: new RegExp(escapeRegExp(FAQ_ITEMS[0].question), 'i'), // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
       })
       const lastButton = screen.getByRole('button', {
-        name: new RegExp(FAQ_ITEMS[FAQ_ITEMS.length - 1].question, 'i'),
+        name: new RegExp(escapeRegExp(FAQ_ITEMS[FAQ_ITEMS.length - 1].question), 'i'), // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
       })
 
       firstButton.focus()
@@ -376,10 +376,10 @@ describe('FAQ', () => {
       render(<FAQ />)
 
       const firstButton = screen.getByRole('button', {
-        name: new RegExp(FAQ_ITEMS[0].question, 'i'),
+        name: new RegExp(escapeRegExp(FAQ_ITEMS[0].question), 'i'), // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
       })
       const lastButton = screen.getByRole('button', {
-        name: new RegExp(FAQ_ITEMS[FAQ_ITEMS.length - 1].question, 'i'),
+        name: new RegExp(escapeRegExp(FAQ_ITEMS[FAQ_ITEMS.length - 1].question), 'i'), // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
       })
 
       lastButton.focus()
@@ -395,10 +395,10 @@ describe('FAQ', () => {
       render(<FAQ />)
 
       const firstButton = screen.getByRole('button', {
-        name: new RegExp(FAQ_ITEMS[0].question, 'i'),
+        name: new RegExp(escapeRegExp(FAQ_ITEMS[0].question), 'i'), // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
       })
       const thirdButton = screen.getByRole('button', {
-        name: new RegExp(FAQ_ITEMS[2].question, 'i'),
+        name: new RegExp(escapeRegExp(FAQ_ITEMS[2].question), 'i'), // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
       })
 
       thirdButton.focus()
@@ -414,10 +414,10 @@ describe('FAQ', () => {
       render(<FAQ />)
 
       const firstButton = screen.getByRole('button', {
-        name: new RegExp(FAQ_ITEMS[0].question, 'i'),
+        name: new RegExp(escapeRegExp(FAQ_ITEMS[0].question), 'i'), // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
       })
       const lastButton = screen.getByRole('button', {
-        name: new RegExp(FAQ_ITEMS[FAQ_ITEMS.length - 1].question, 'i'),
+        name: new RegExp(escapeRegExp(FAQ_ITEMS[FAQ_ITEMS.length - 1].question), 'i'), // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
       })
 
       firstButton.focus()
@@ -457,7 +457,7 @@ describe('FAQ', () => {
       render(<FAQ />)
 
       const item = FAQ_ITEMS[0]
-      const questionButton = screen.getByRole('button', { name: new RegExp(item.question, 'i') })
+      const questionButton = screen.getByRole('button', { name: new RegExp(escapeRegExp(item.question), 'i') }) // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
 
       await user.click(questionButton)
 
@@ -472,7 +472,7 @@ describe('FAQ', () => {
       render(<FAQ />)
 
       const item = FAQ_ITEMS[0]
-      const questionButton = screen.getByRole('button', { name: new RegExp(item.question, 'i') })
+      const questionButton = screen.getByRole('button', { name: new RegExp(escapeRegExp(item.question), 'i') }) // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
 
       // Expand first
       await user.click(questionButton)
@@ -497,7 +497,7 @@ describe('FAQ', () => {
       render(<FAQ />)
 
       const item = FAQ_ITEMS[0]
-      const questionButton = screen.getByRole('button', { name: new RegExp(item.question, 'i') })
+      const questionButton = screen.getByRole('button', { name: new RegExp(escapeRegExp(item.question), 'i') }) // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
 
       // Use fireEvent instead of userEvent to avoid conflicts with fake timers
       fireEvent.click(questionButton)

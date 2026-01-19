@@ -46,12 +46,13 @@ The Paperlyte landing page is fully keyboard accessible, allowing users to navig
 | **Enter** / **Space** | Activate link (scroll to section) |
 
 **Focus Order:**
-1. Logo (not focusable, decorative)
-2. Features link
-3. Download link
-4. Get Started button
-5. Theme toggle button
-6. Mobile menu button (mobile only)
+1. Features link
+2. Download link
+3. Get Started button
+4. Theme toggle button
+5. Mobile menu button (mobile only)
+
+**Note:** The logo is present but not focusable (decorative element).
 
 #### Mobile Navigation Menu
 **Component:** `Header.tsx`

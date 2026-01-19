@@ -102,7 +102,7 @@ function checkFiles(): FileCheck[] {
   return filesToCheck.map((file) => {
     // Validate path safety before processing
     if (!isPathSafe(file)) {
-      console.error(`${colors.red}Error: Invalid file path detected: ${file}${colors.reset}`);
+      console.error(colors.red + 'Error: Invalid file path detected:' + colors.reset, file);
       process.exit(1);
     }
 

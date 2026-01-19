@@ -115,8 +115,6 @@
   margin-top: 0.25rem;
   width: 20px;
   height: 20px;
-  min-width: 20px;
-  min-height: 20px;
   cursor: pointer;
   flex-shrink: 0;
   accent-color: var(--color-primary);

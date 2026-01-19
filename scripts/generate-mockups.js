@@ -15,7 +15,7 @@ import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
 import { existsSync } from 'fs'
-import { isFilenameSafe } from './utils/filenameValidation.js'
+import { isPathSafe } from './path-utils.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -40,6 +40,9 @@ const formats = [
   { ext: 'avif', options: { quality: 75, effort: 6 } },
 ]
 
+// Valid format extensions for validation
+const VALID_FORMATS = ['png', 'webp', 'avif']
+
 /**
  * Generate a mockup image from SVG source in the specified format
  * @param {string} sourceName - Source SVG filename
@@ -50,9 +53,14 @@ const formats = [
  */
 async function generateMockup(sourceName, width, height, format, options) {
   try {
-    // Validate inputs for path traversal
-    if (!isFilenameSafe(sourceName) || !isFilenameSafe(format)) {
-      throw new Error(`Invalid filename or format: ${sourceName} / ${format}`)
+    // Validate sourceName BEFORE any string manipulation to prevent traversal
+    if (!isPathSafe(mockupsDir, sourceName)) {
+      throw new Error(`Invalid source path: ${sourceName}. Path traversal detected.`)
+    }
+
+    // Validate format parameter to prevent unexpected values
+    if (!VALID_FORMATS.includes(format)) {
+      throw new Error(`Invalid format: ${format}. Must be one of: ${VALID_FORMATS.join(', ')}`)
     }
 
     // Validate file extension
@@ -63,6 +71,12 @@ async function generateMockup(sourceName, width, height, format, options) {
     const baseName = sourceName.replace('.svg', '')
     const sourcePath = join(mockupsDir, sourceName)
     const outputName = `${baseName}.${format}`
+
+    // Defense-in-depth: validate outputName even though it's derived from validated inputs
+    if (!isPathSafe(mockupsDir, outputName)) {
+      throw new Error(`Invalid output path: ${outputName}. Path traversal detected.`)
+    }
+    
     const outputPath = join(mockupsDir, outputName)
 
     // Verify source file exists

@@ -8,13 +8,8 @@ engines:
       # The RegExp patterns are safe and necessary for testing dynamic content
       - 'src/**/*.test.ts'
       - 'src/**/*.test.tsx'
-
-tools:
-  eslint:
+  eslint-9:
     enabled: true
-    config:
-      configFile: ".eslintrc.js"
-    typescript: true
 
 exclude_paths:
   # Exclude build artifacts and dependencies

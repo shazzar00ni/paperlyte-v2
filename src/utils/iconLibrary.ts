@@ -166,6 +166,7 @@ export const iconNameMap: Record<string, string> = {
   'fa-magnifying-glass': 'magnifying-glass',
   'fa-plane': 'plane',
   'fa-network-wired': 'network-wired',
+  'fa-router': 'network-wired', // Using network-wired for router/network issues
   'fa-arrow-right': 'arrow-right',
   'fa-arrow-left': 'arrow-left',
   'fa-spinner': 'spinner',

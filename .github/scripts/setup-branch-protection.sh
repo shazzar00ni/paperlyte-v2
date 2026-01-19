@@ -32,6 +32,24 @@ fi
 echo -e "${GREEN}Configuring branch protection for ${REPO_OWNER}/${REPO_NAME}:${BRANCH}${NC}"
 echo ""
 
+# Validate branch name format to prevent command injection
+# Reject dangerous shell metacharacters to prevent command injection
+if printf '%s\n' "$BRANCH" | grep -qE '[\$`\\;|&<>(){}[:space:]]'; then
+    echo -e "${RED}✗ Invalid branch name: contains invalid characters. Branch names can only contain letters, numbers, hyphens, underscores, slashes, and dots.${NC}"
+    printf "Branch name: '%s'\n" "$BRANCH"
+    exit 1
+fi
+
+# Validate using Git's reference format rules
+if ! git check-ref-format --branch "$BRANCH" >/dev/null 2>&1; then
+    echo -e "${RED}✗ Invalid branch name format${NC}"
+    printf "Branch name: '%s'\n" "$BRANCH"
+    echo "Branch names must follow Git reference naming rules"
+    exit 1
+fi
+echo -e "${GREEN}✓ Branch name validated${NC}"
+echo ""
+
 # Branch protection configuration
 # See: https://docs.github.com/en/rest/branches/branch-protection
 PROTECTION_CONFIG='{

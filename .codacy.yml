@@ -2,3 +2,12 @@
 engines:
   eslint-9:
     enabled: true
+  shellcheck:
+    enabled: true
+    
+exclude_paths:
+  - "node_modules/**"
+  - "dist/**"
+  - "build/**"
+  - "coverage/**"
+  - "coverage-shell/**"

@@ -28,7 +28,25 @@ jobs:
         env:
           BRANCH: ${{ inputs.branch }}
         run: |
+          # Validate branch name format to prevent command injection
+          # Allow only a safe subset of characters as defense-in-depth
+          if ! printf '%s\n' "$BRANCH" | grep -qE '^[a-zA-Z0-9/_.-]+$'; then
+            echo "✗ Invalid branch name: contains invalid or unsafe characters"
+            printf "Branch name: '%s'\n" "$BRANCH"
+            echo "Branch names can only contain: letters, numbers, hyphens, underscores, slashes, and dots"
+            exit 1
+          fi
+          
+          # Validate using Git's reference format rules
+          if ! git check-ref-format --branch "$BRANCH" >/dev/null 2>&1; then
+            echo "✗ Invalid branch name format"
+            printf "Branch name: '%s'\n" "$BRANCH"
+            echo "Branch names must follow Git reference naming rules"
+            exit 1
+          fi
+          
           git fetch origin
+          # After validation, confirm that the branch exists in the remote repository
           if git show-ref --verify --quiet "refs/remotes/origin/$BRANCH"; then
             echo "✓ Branch '$BRANCH' exists"
           else

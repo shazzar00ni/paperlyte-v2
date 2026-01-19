@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 coverage
+test-results
 junit.xml
 
 # Environment variables
@@ -32,10 +33,6 @@ junit.xml
 *.njsproj
 *.sln
 *.sw?
-
-# Environment variables
-.env
-.env
 
 # Deployment platforms
 .netlify

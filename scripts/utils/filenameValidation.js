@@ -54,7 +54,7 @@ export function isPathSafe(filePath) {
   const lc = filePath.toLowerCase()
 
   // Check for URL-encoded traversal patterns before normalization
-  if (lc.includes('%2e%2e') || lc.includes('%2e%2e%2f')) {
+  if (lc.includes('%2e%2e') || lc.includes('%2e%2e%2f') || lc.includes('%2f') || lc.includes('%5c')) {
     return false
   }
 

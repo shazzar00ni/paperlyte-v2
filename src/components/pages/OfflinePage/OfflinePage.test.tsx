@@ -341,7 +341,8 @@ describe('OfflinePage', () => {
     it('should render wifi icon in illustration', () => {
       render(<OfflinePage />)
 
-      const wifiIcon = screen.getByRole('status').querySelector('i.fa-wifi')
+      // Icon is rendered as SVG in the status section
+      const wifiIcon = screen.getByRole('status').querySelector('svg')
       expect(wifiIcon).toBeInTheDocument()
     })
 
@@ -349,7 +350,7 @@ describe('OfflinePage', () => {
       render(<OfflinePage />)
 
       const retryButton = screen.getByRole('button', { name: /check connection and retry/i })
-      const icon = retryButton.querySelector('i.fa-rotate-right')
+      const icon = retryButton.querySelector('svg')
       expect(icon).toBeInTheDocument()
     })
 

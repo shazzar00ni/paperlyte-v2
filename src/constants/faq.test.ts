@@ -147,8 +147,11 @@ describe('FAQ Constants', () => {
 
     it('should maintain consistent ID format (kebab-case)', () => {
       FAQ_ITEMS.forEach((item) => {
+        // ReDoS-safe kebab-case validation using alternation instead of nested quantifiers
+        // Matches: "abc" OR "abc-def" OR "abc-def-ghi" etc.
+        // Original /^[a-z]+(-[a-z]+)*$/ had nested quantifiers causing exponential backtracking
         expect(item.id, `ID "${item.id}" should be in kebab-case format`).toMatch(
-          /^[a-z]+(-[a-z]+)*$/
+          /^[a-z]+$|^[a-z]+(?:-[a-z]+)+$/
         )
       })
     })
@@ -160,13 +163,13 @@ describe('FAQ Constants', () => {
     })
 
     it('should match FAQ categories distribution snapshot', () => {
-      const categoryCounts = FAQ_ITEMS.reduce(
+      const categoryCounts = FAQ_ITEMS.reduce<Record<string, number>>(
         (acc, item) => {
           const category = item.category || 'uncategorized'
           acc[category] = (acc[category] || 0) + 1
           return acc
         },
-        {} as Record<string, number>
+        {}
       )
 
       expect(categoryCounts).toMatchSnapshot()

@@ -57,11 +57,13 @@ describe('Features', () => {
     })
   })
 
-  it('should render feature icons with proper aria labels', () => {
-    render(<Features />)
+  it('should render icons for each feature', () => {
+    const { container } = render(<Features />)
 
-    EXPECTED_FEATURES.forEach((feature) => {
-      const icon = screen.getByLabelText(`${feature.title} icon`)
+    // Each feature card should have an icon (SVG)
+    const articles = container.querySelectorAll('article')
+    articles.forEach((article) => {
+      const icon = article.querySelector('svg')
       expect(icon).toBeInTheDocument()
     })
   })

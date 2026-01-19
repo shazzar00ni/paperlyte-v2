@@ -268,8 +268,11 @@ describe('Features Constants', () => {
   describe('Data Integrity', () => {
     it('should maintain consistent ID format (lowercase, single word or hyphenated)', () => {
       FEATURES.forEach((feature) => {
+        // ReDoS-safe kebab-case validation using alternation instead of nested quantifiers
+        // Matches: "abc" OR "abc-def" OR "abc-def-ghi" etc.
+        // Original /^[a-z]+(-[a-z]+)*$/ had nested quantifiers causing exponential backtracking
         expect(feature.id, `ID "${feature.id}" should be lowercase without spaces`).toMatch(
-          /^[a-z]+(-[a-z]+)*$/
+          /^[a-z]+$|^[a-z]+(?:-[a-z]+)+$/
         )
       })
     })

@@ -56,11 +56,12 @@ describe('Header', () => {
     expect(screen.getByText('Paperlyte')).toBeInTheDocument()
   })
 
-  it('should render navigation links', () => {
+  it('should render navigation links and CTA button', () => {
     render(<Header />)
 
-    expect(screen.getByRole('link', { name: 'Features' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Download' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /features/i })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /download/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /get started/i })).toBeInTheDocument()
   })
 
   it('should render Get Started CTA button', () => {
@@ -129,7 +130,7 @@ describe('Header', () => {
     const menuButton = screen.getByRole('button', { name: /open menu/i })
     await user.click(menuButton)
 
-    const featuresLink = screen.getByRole('link', { name: 'Features' })
+    const featuresLink = screen.getByRole('link', { name: /features/i })
     await user.click(featuresLink)
 
     expect(scrollIntoViewMock).toHaveBeenCalledWith({ behavior: 'smooth' })
@@ -151,8 +152,8 @@ describe('Header', () => {
   it('should have accessible navigation labels', () => {
     render(<Header />)
 
-    expect(screen.getByRole('link', { name: 'Features' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Download' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /features/i })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /download/i })).toBeInTheDocument()
     expect(screen.getByLabelText(/open menu|close menu/i)).toBeInTheDocument()
   })
 
@@ -202,12 +203,12 @@ describe('Header', () => {
       const menuButton = screen.getByRole('button', { name: /open menu/i })
       await user.click(menuButton)
 
-      const featuresLink = screen.getByRole('link', { name: 'Features' })
+      const featuresLink = screen.getByRole('link', { name: /features/i })
       featuresLink.focus()
 
       await user.keyboard('{ArrowRight}')
 
-      const downloadLink = screen.getByRole('link', { name: 'Download' })
+      const downloadLink = screen.getByRole('link', { name: /download/i })
       expect(document.activeElement).toBe(downloadLink)
     })
 
@@ -219,12 +220,12 @@ describe('Header', () => {
       const menuButton = screen.getByRole('button', { name: /open menu/i })
       await user.click(menuButton)
 
-      const downloadLink = screen.getByRole('link', { name: 'Download' })
+      const downloadLink = screen.getByRole('link', { name: /download/i })
       downloadLink.focus()
 
       await user.keyboard('{ArrowLeft}')
 
-      const featuresLink = screen.getByRole('link', { name: 'Features' })
+      const featuresLink = screen.getByRole('link', { name: /features/i })
       expect(document.activeElement).toBe(featuresLink)
     })
 
@@ -236,13 +237,12 @@ describe('Header', () => {
       const menuButton = screen.getByRole('button', { name: /open menu/i })
       await user.click(menuButton)
 
-      const downloadLink = screen.getByRole('link', { name: 'Download' })
-      downloadLink.focus()
+      const getStartedButton = screen.getByRole('button', { name: /get started/i })
+      getStartedButton.focus()
 
       await user.keyboard('{Home}')
 
-      // Home key focuses first focusable element (Features link)
-      const featuresLink = screen.getByRole('link', { name: 'Features' })
+      const featuresLink = screen.getByRole('link', { name: /features/i })
       expect(document.activeElement).toBe(featuresLink)
     })
 
@@ -254,12 +254,12 @@ describe('Header', () => {
       const menuButton = screen.getByRole('button', { name: /open menu/i })
       await user.click(menuButton)
 
-      const featuresLink = screen.getByRole('link', { name: 'Features' })
+      const featuresLink = screen.getByRole('link', { name: /features/i })
       featuresLink.focus()
 
       await user.keyboard('{End}')
 
-      // End key focuses last focusable element (Get Started button)
+      // Last item is the Get Started button in the nav
       const getStartedButton = screen.getByRole('button', { name: /get started/i })
       expect(document.activeElement).toBe(getStartedButton)
     })
@@ -272,13 +272,14 @@ describe('Header', () => {
       const menuButton = screen.getByRole('button', { name: /open menu/i })
       await user.click(menuButton)
 
-      const getStartedButton = screen.getByRole('button', { name: /get started/i })
-      getStartedButton.focus()
+      // Navigate to last item first
+      const featuresLink = screen.getByRole('link', { name: /features/i })
+      featuresLink.focus()
+      await user.keyboard('{End}')
 
       // ArrowRight from last item should wrap to first
       await user.keyboard('{ArrowRight}')
 
-      const featuresLink = screen.getByRole('link', { name: 'Features' })
       expect(document.activeElement).toBe(featuresLink)
     })
 
@@ -290,7 +291,7 @@ describe('Header', () => {
       const menuButton = screen.getByRole('button', { name: /open menu/i })
       await user.click(menuButton)
 
-      const featuresLink = screen.getByRole('link', { name: 'Features' })
+      const featuresLink = screen.getByRole('link', { name: /features/i })
       featuresLink.focus()
 
       await user.keyboard('{ArrowLeft}')

@@ -4,7 +4,7 @@
   justify-content: center;
   width: 48px;
   height: 48px;
-  border-radius: var(--border-radius-md);
+  border-radius: 9999px;
   background-color: transparent;
   color: var(--color-text-secondary);
   cursor: pointer;

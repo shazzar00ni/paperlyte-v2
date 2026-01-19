@@ -68,7 +68,7 @@ Cmd + F8 (while VoiceOver is active)
 
 ### VoiceOver Step-by-Step Testing Procedure
 
-#### 1. Initial Page Load
+#### VoiceOver Test 1: Initial Page Load
 ```text
 ✓ Expected announcements:
 - "Paperlyte - Lightning-Fast, Distraction-Free Notes"
@@ -87,7 +87,7 @@ Cmd + F8 (while VoiceOver is active)
 3. VO + Right Arrow to navigate first few items
 4. VO + U to open rotor, check landmarks
 
-#### 2. Skip Navigation Link
+#### VoiceOver Test 2: Skip Navigation Link
 ```text
 ✓ Action: Press VO + Space on "Skip to main content" link
 ✓ Expected: Focus jumps to main content, bypassing navigation
@@ -100,7 +100,7 @@ Cmd + F8 (while VoiceOver is active)
 3. Verify focus moves to main content
 4. VO + Right Arrow should announce first content item
 
-#### 3. Header Navigation
+#### VoiceOver Test 3: Header Navigation
 ```text
 ✓ Open Rotor: VO + U
 ✓ Select "Landmarks"
@@ -121,7 +121,7 @@ Cmd + F8 (while VoiceOver is active)
    - "Switch to dark mode, button" (or "Switch to light mode")
    - "Open menu, button" (mobile only)
 
-#### 4. Headings Navigation
+#### VoiceOver Test 4: Headings Navigation
 ```text
 ✓ Command: VO + Cmd + H (repeatedly)
 ✓ Expected heading hierarchy:
@@ -140,7 +140,7 @@ Cmd + F8 (while VoiceOver is active)
 3. Verify heading text is descriptive
 4. Check heading count matches visual structure
 
-#### 5. Forms Testing
+#### VoiceOver Test 5: Forms Testing
 **Email Capture Form:**
 ```text
 ✓ Navigate to form
@@ -168,7 +168,7 @@ Cmd + F8 (while VoiceOver is active)
 5. Submit without GDPR consent
 6. Listen for: "Alert, Please agree to receive emails from Paperlyte"
 
-#### 6. FAQ Accordion
+#### VoiceOver Test 6: FAQ Accordion
 ```text
 ✓ Navigate to FAQ section
 ✓ Expected for each question:
@@ -191,7 +191,7 @@ Cmd + F8 (while VoiceOver is active)
 - When expanding/collapsing, listen for: "[Question] expanded" or "[Question] collapsed"
 - This should be announced automatically without navigating
 
-#### 7. Testimonials Carousel
+#### VoiceOver Test 7: Testimonials Carousel
 ```text
 ✓ Navigate to carousel
 ✓ Expected announcements:
@@ -212,7 +212,7 @@ Cmd + F8 (while VoiceOver is active)
 7. Test pagination dots
 8. Test Play/Pause button
 
-#### 8. Comparison Table
+#### VoiceOver Test 8: Comparison Table
 ```text
 ✓ Navigate to table
 ✓ Expected announcements:
@@ -231,7 +231,7 @@ Cmd + F8 (while VoiceOver is active)
 6. Check checkmark announced as "Supported"
 7. Check X-mark announced as "Not supported"
 
-#### 9. Modal Testing (Feedback Widget)
+#### VoiceOver Test 9: Modal Testing (Feedback Widget)
 ```text
 ✓ Open feedback widget
 ✓ Expected announcements:
@@ -273,7 +273,7 @@ Cmd + F8 (while VoiceOver is active)
 
 ### NVDA Step-by-Step Testing Procedure
 
-#### 1. Initial Page Load
+#### NVDA Test 1: Initial Page Load
 ```text
 ✓ Start NVDA
 ✓ Load page
@@ -281,7 +281,7 @@ Cmd + F8 (while VoiceOver is active)
 ✓ Expected: Page title, landmarks, and content announced
 ```
 
-#### 2. Elements List Navigation
+#### NVDA Test 2: Elements List Navigation
 ```text
 ✓ Press Insert + F7
 ✓ Select tabs:
@@ -300,7 +300,7 @@ Cmd + F8 (while VoiceOver is active)
 6. Verify navigation, main, contentinfo landmarks
 7. Arrow through list, press Enter to jump to element
 
-#### 3. Forms Mode Testing
+#### NVDA Test 3: Forms Mode Testing
 ```text
 ✓ Navigate to form field (Insert + F)
 ✓ Expected: Forms mode automatically activates
@@ -318,7 +318,7 @@ Cmd + F8 (while VoiceOver is active)
 7. Submit form, listen for error messages
 8. Verify errors announced via aria-live region
 
-#### 4. Table Navigation
+#### NVDA Test 4: Table Navigation
 ```text
 ✓ Navigate to table (Insert + Ctrl + T)
 ✓ Table navigation commands:

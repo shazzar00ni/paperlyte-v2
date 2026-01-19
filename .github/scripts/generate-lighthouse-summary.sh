@@ -15,6 +15,18 @@ if [ -f .lighthouseci/manifest.json ]; then
   fi
 
   if [ -f "$REPORT_FILE" ]; then
+    # Extract thresholds dynamically from .lighthouserc.json
+    PERF_THRESHOLD=$(jq -r '.ci.assert.assertions["categories:performance"][1].minScore * 100 | floor' .lighthouserc.json)
+    A11Y_THRESHOLD=$(jq -r '.ci.assert.assertions["categories:accessibility"][1].minScore * 100 | floor' .lighthouserc.json)
+    BP_THRESHOLD=$(jq -r '.ci.assert.assertions["categories:best-practices"][1].minScore * 100 | floor' .lighthouserc.json)
+    SEO_THRESHOLD=$(jq -r '.ci.assert.assertions["categories:seo"][1].minScore * 100 | floor' .lighthouserc.json)
+    FCP_THRESHOLD=$(jq -r '.ci.assert.assertions["first-contentful-paint"][1].maxNumericValue' .lighthouserc.json)
+    LCP_THRESHOLD=$(jq -r '.ci.assert.assertions["largest-contentful-paint"][1].maxNumericValue' .lighthouserc.json)
+    CLS_THRESHOLD=$(jq -r '.ci.assert.assertions["cumulative-layout-shift"][1].maxNumericValue' .lighthouserc.json)
+    TBT_THRESHOLD=$(jq -r '.ci.assert.assertions["total-blocking-time"][1].maxNumericValue' .lighthouserc.json)
+    SI_THRESHOLD=$(jq -r '.ci.assert.assertions["speed-index"][1].maxNumericValue' .lighthouserc.json)
+    TTI_THRESHOLD=$(jq -r '.ci.assert.assertions.interactive[1].maxNumericValue' .lighthouserc.json)
+
     echo "### 📊 Lighthouse Scores" >> "$GITHUB_STEP_SUMMARY"
     echo "" >> "$GITHUB_STEP_SUMMARY"
 
@@ -25,19 +37,19 @@ if [ -f .lighthouseci/manifest.json ]; then
     BP_SCORE=$(jq -r '(.categories["best-practices"].score // 0) * 100 | floor' "$REPORT_FILE")
     SEO_SCORE=$(jq -r '(.categories.seo.score // 0) * 100 | floor' "$REPORT_FILE")
 
-    # Determine pass/fail with emoji
-    PERF_STATUS=$([ "$PERF_SCORE" -ge 90 ] && echo "✅" || echo "❌")
-    A11Y_STATUS=$([ "$A11Y_SCORE" -ge 95 ] && echo "✅" || echo "❌")
-    BP_STATUS=$([ "$BP_SCORE" -ge 90 ] && echo "✅" || echo "⚠️")
-    SEO_STATUS=$([ "$SEO_SCORE" -ge 90 ] && echo "✅" || echo "⚠️")
+    # Determine pass/fail with emoji using dynamic thresholds
+    PERF_STATUS=$([ "$PERF_SCORE" -ge "$PERF_THRESHOLD" ] && echo "✅" || echo "❌")
+    A11Y_STATUS=$([ "$A11Y_SCORE" -ge "$A11Y_THRESHOLD" ] && echo "✅" || echo "❌")
+    BP_STATUS=$([ "$BP_SCORE" -ge "$BP_THRESHOLD" ] && echo "✅" || echo "⚠️")
+    SEO_STATUS=$([ "$SEO_SCORE" -ge "$SEO_THRESHOLD" ] && echo "✅" || echo "⚠️")
 
     {
       echo "| Category | Score | Status | Target |"
       echo "|----------|-------|--------|--------|"
-      echo "| 🚀 Performance | **${PERF_SCORE}** | ${PERF_STATUS} | ≥90 |"
-      echo "| ♿ Accessibility | **${A11Y_SCORE}** | ${A11Y_STATUS} | ≥95 |"
-      echo "| ✨ Best Practices | **${BP_SCORE}** | ${BP_STATUS} | ≥90 |"
-      echo "| 🔍 SEO | **${SEO_SCORE}** | ${SEO_STATUS} | ≥90 |"
+      echo "| 🚀 Performance | **${PERF_SCORE}** | ${PERF_STATUS} | ≥${PERF_THRESHOLD} |"
+      echo "| ♿ Accessibility | **${A11Y_SCORE}** | ${A11Y_STATUS} | ≥${A11Y_THRESHOLD} |"
+      echo "| ✨ Best Practices | **${BP_SCORE}** | ${BP_STATUS} | ≥${BP_THRESHOLD} |"
+      echo "| 🔍 SEO | **${SEO_SCORE}** | ${SEO_STATUS} | ≥${SEO_THRESHOLD} |"
       echo ""
     } >> "$GITHUB_STEP_SUMMARY"
 
@@ -52,32 +64,32 @@ if [ -f .lighthouseci/manifest.json ]; then
     SI=$(jq -r '(.audits["speed-index"].numericValue // 0) | floor' "$REPORT_FILE")
     TTI=$(jq -r '(.audits.interactive.numericValue // 0) | floor' "$REPORT_FILE")
 
-    # Determine pass/fail for metrics
-    FCP_STATUS=$([ "$FCP" -le 2000 ] && echo "✅" || echo "❌")
-    LCP_STATUS=$([ "$LCP" -le 2500 ] && echo "✅" || echo "❌")
-    CLS_STATUS=$(awk -v cls="$CLS" 'BEGIN {print (cls <= 0.1) ? "✅" : "❌"}')
-    TBT_STATUS=$([ "$TBT" -le 300 ] && echo "✅" || echo "❌")
-    SI_STATUS=$([ "$SI" -le 3000 ] && echo "✅" || echo "❌")
-    TTI_STATUS=$([ "$TTI" -le 3500 ] && echo "✅" || echo "❌")
+    # Determine pass/fail for metrics using dynamic thresholds
+    FCP_STATUS=$([ "$FCP" -le "$FCP_THRESHOLD" ] && echo "✅" || echo "❌")
+    LCP_STATUS=$([ "$LCP" -le "$LCP_THRESHOLD" ] && echo "✅" || echo "❌")
+    CLS_STATUS=$(awk -v cls="$CLS" -v threshold="$CLS_THRESHOLD" 'BEGIN {print (cls <= threshold) ? "✅" : "❌"}')
+    TBT_STATUS=$([ "$TBT" -le "$TBT_THRESHOLD" ] && echo "✅" || echo "❌")
+    SI_STATUS=$([ "$SI" -le "$SI_THRESHOLD" ] && echo "✅" || echo "❌")
+    TTI_STATUS=$([ "$TTI" -le "$TTI_THRESHOLD" ] && echo "✅" || echo "❌")
 
     {
       echo "| Metric | Value | Status | Budget |"
       echo "|--------|-------|--------|--------|"
-      echo "| First Contentful Paint | ${FCP}ms | ${FCP_STATUS} | ≤2000ms |"
-      echo "| Largest Contentful Paint | ${LCP}ms | ${LCP_STATUS} | ≤2500ms |"
-      echo "| Cumulative Layout Shift | ${CLS} | ${CLS_STATUS} | ≤0.1 |"
-      echo "| Total Blocking Time | ${TBT}ms | ${TBT_STATUS} | ≤300ms |"
-      echo "| Speed Index | ${SI}ms | ${SI_STATUS} | ≤3000ms |"
-      echo "| Time to Interactive | ${TTI}ms | ${TTI_STATUS} | ≤3500ms |"
+      echo "| First Contentful Paint | ${FCP}ms | ${FCP_STATUS} | ≤${FCP_THRESHOLD}ms |"
+      echo "| Largest Contentful Paint | ${LCP}ms | ${LCP_STATUS} | ≤${LCP_THRESHOLD}ms |"
+      echo "| Cumulative Layout Shift | ${CLS} | ${CLS_STATUS} | ≤${CLS_THRESHOLD} |"
+      echo "| Total Blocking Time | ${TBT}ms | ${TBT_STATUS} | ≤${TBT_THRESHOLD}ms |"
+      echo "| Speed Index | ${SI}ms | ${SI_STATUS} | ≤${SI_THRESHOLD}ms |"
+      echo "| Time to Interactive | ${TTI}ms | ${TTI_STATUS} | ≤${TTI_THRESHOLD}ms |"
       echo ""
     } >> "$GITHUB_STEP_SUMMARY"
 
-    # Overall status - check all critical metrics including CLS and TTI
-    CLS_PASS=$(awk -v cls="$CLS" 'BEGIN {print (cls <= 0.1) ? 1 : 0}')
-    if [ "$PERF_SCORE" -ge 90 ] && [ "$A11Y_SCORE" -ge 95 ] && \
-       [ "$FCP" -le 2000 ] && [ "$LCP" -le 2500 ] && \
-       [ "$CLS_PASS" -eq 1 ] && [ "$TBT" -le 300 ] && [ "$SI" -le 3000 ] && \
-       [ "$TTI" -le 3500 ]; then
+    # Overall status - check all critical metrics including CLS and TTI using dynamic thresholds
+    CLS_PASS=$(awk -v cls="$CLS" -v threshold="$CLS_THRESHOLD" 'BEGIN {print (cls <= threshold) ? 1 : 0}')
+    if [ "$PERF_SCORE" -ge "$PERF_THRESHOLD" ] && [ "$A11Y_SCORE" -ge "$A11Y_THRESHOLD" ] && \
+       [ "$FCP" -le "$FCP_THRESHOLD" ] && [ "$LCP" -le "$LCP_THRESHOLD" ] && \
+       [ "$CLS_PASS" -eq 1 ] && [ "$TBT" -le "$TBT_THRESHOLD" ] && [ "$SI" -le "$SI_THRESHOLD" ] && \
+       [ "$TTI" -le "$TTI_THRESHOLD" ]; then
       echo "### ✅ All critical performance budgets met!" >> "$GITHUB_STEP_SUMMARY"
     else
       echo "### ❌ Some performance budgets were not met" >> "$GITHUB_STEP_SUMMARY"

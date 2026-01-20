@@ -110,26 +110,46 @@ Added nosemgrep comments for false positives:
 - Path validation code itself triggers scanner (it uses path.resolve to validate)
 - All suppressions include detailed explanations
 
-### Codacy Configuration
+### Codacy and Semgrep Configuration
 
-Updated `.codacy.yml` to exclude test files from Semgrep RegExp checks:
-- Test files (`src/**/*.test.ts`, `src/**/*.test.tsx`) are excluded from Semgrep analysis
-- This prevents false positives on safe RegExp usage in tests
-- All RegExp inputs in tests are sanitized via `escapeRegExp()` before construction
-- Inline nosemgrep comments remain in code for documentation purposes
+**Multiple layers of suppression for test file false positives:**
+
+1. **`.semgrepignore`**: Global Semgrep ignore file
+   - Excludes all test files from Semgrep analysis
+   - Standard Semgrep configuration mechanism
+   - Pattern: `src/**/*.test.ts` and `src/**/*.test.tsx`
+
+2. **`.codacy.yml`**: Codacy-specific configuration
+   - Excludes test files under both `engines.semgrep.exclude_paths` and top-level `exclude_paths`
+   - Ensures Codacy's Semgrep integration respects exclusions
+   - Provides redundancy if one configuration method fails
+
+3. **Inline nosemgrep comments**: Code-level documentation
+   - Kept in `getQuestionButton()` helper and other strategic locations
+   - Documents why RegExp usage is safe (inputs are escaped)
+   - Provides context for future maintainers
+
+**Why test files are safe:**
+- All RegExp inputs are sanitized via `escapeRegExp()` before construction
+- Test data comes from constants (`FAQ_ITEMS`, `PRICING_PLANS`), not user input
+- RegExp patterns are necessary for flexible test assertions (case-insensitive matching)
+- The `escapeRegExp()` function escapes all regex metacharacters: `.*+?^${}()|[]\`
 
 ## Files Changed
 
 **New Files**:
-- `src/utils/test/regexHelpers.ts`
-- `scripts/utils/filenameValidation.js` (enhanced with `isPathSafe`)
+- `src/utils/test/regexHelpers.ts` - Shared RegExp escaping utility
+- `scripts/utils/filenameValidation.js` - Enhanced path validation with `isPathSafe`
+- `scripts/path-utils.js` - Path safety utilities for build scripts
+- `.semgrepignore` - Semgrep exclusion configuration
+- `public/README.md` - Documentation for generated vs source files
 - `docs/SECURITY-FIXES.md` (this file)
 
 **Modified Files**:
-- Test files: 4 files updated
-- Script files: 4 files updated
-- Application files: 2 files updated
-- Configuration files: 1 file updated (`.codacy.yml`)
+- Test files: 4 files updated (FAQ, Pricing, Comparison, features)
+- Script files: 4 files updated (with path validation)
+- Application files: 2 files updated (Icon component, iconLibrary)
+- Configuration files: 2 files updated (`.codacy.yml`, `.gitignore`)
 
 ## Verification
 

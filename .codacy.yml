@@ -17,3 +17,6 @@ exclude_paths:
   - 'node_modules/**'
   - 'coverage/**'
   - '**/*.min.js'
+  # Also exclude test files at the top level
+  - 'src/**/*.test.ts'
+  - 'src/**/*.test.tsx'

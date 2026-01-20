@@ -1,0 +1,13 @@
+# Semgrep Ignore File
+# Ignore test files from non-literal RegExp checks
+# These files use escapeRegExp() to sanitize all inputs before RegExp construction
+# The RegExp patterns are safe and necessary for testing dynamic content
+
+# Test files
+src/**/*.test.ts
+src/**/*.test.tsx
+
+# Build artifacts
+dist/
+node_modules/
+coverage/

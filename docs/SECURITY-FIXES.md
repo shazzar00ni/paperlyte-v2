@@ -120,9 +120,12 @@ Added nosemgrep comments for false positives:
    - Pattern: `src/**/*.test.ts` and `src/**/*.test.tsx`
 
 2. **`.codacy.yml`**: Codacy-specific configuration
-   - Excludes test files under both `engines.semgrep.exclude_paths` and top-level `exclude_paths`
-   - Ensures Codacy's Semgrep integration respects exclusions
-   - Provides redundancy if one configuration method fails
+   - Excludes test files from **both Semgrep and ESLint engines**
+   - `engines.semgrep.exclude_paths`: Excludes from Semgrep analysis
+   - `engines.eslint-9.exclude_paths`: Excludes from ESLint security rules
+     - Patterns: `ESLint8_security_detect-non-literal-regexp`, `ESLint8_security-node_non-literal-reg-expr`
+   - Top-level `exclude_paths`: Global exclusions for all engines
+   - Provides multiple layers of redundancy across different analysis tools
 
 3. **Inline nosemgrep comments**: Code-level documentation
    - Kept in `getQuestionButton()` helper and other strategic locations

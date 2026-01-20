@@ -10,6 +10,12 @@ engines:
       - 'src/**/*.test.tsx'
   eslint-9:
     enabled: true
+    exclude_paths:
+      # Exclude test files from ESLint security checks
+      # Test files use escapeRegExp() to sanitize RegExp inputs
+      # Patterns: ESLint8_security_detect-non-literal-regexp, ESLint8_security-node_non-literal-reg-expr
+      - 'src/**/*.test.ts'
+      - 'src/**/*.test.tsx'
 
 exclude_paths:
   # Exclude build artifacts and dependencies

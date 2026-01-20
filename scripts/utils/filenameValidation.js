@@ -35,21 +35,36 @@ export function isFilenameSafe(filename) {
  * - Checks for URL-encoded traversal patterns before normalization
  * - Normalizes path to handle obfuscated traversal attempts (e.g., ".//../file")
  * - Rejects absolute paths (must be relative)
- * - Ensures resolved path stays within the current working directory
+ * - Ensures resolved path stays within the specified base directory (or cwd if not specified)
  * - Uses path.sep to prevent false positives (e.g., "/project" vs "/project-other")
  *
  * @param {string} filePath - The file path to validate
+ * @param {string} [baseDir] - Optional base directory to validate against (defaults to process.cwd())
  * @returns {boolean} True if the path is safe, false otherwise
  *
  * @example
  * ```javascript
- * isPathSafe('docs/file.md')         // true - safe relative path
- * isPathSafe('../etc/passwd')        // false - traversal attempt
- * isPathSafe('/etc/passwd')          // false - absolute path
- * isPathSafe('docs/../../etc/passwd') // false - normalized to traversal
+ * isPathSafe('docs/file.md')                    // true - safe relative path (against cwd)
+ * isPathSafe('../etc/passwd')                   // false - traversal attempt
+ * isPathSafe('/etc/passwd')                     // false - absolute path
+ * isPathSafe('docs/../../etc/passwd')           // false - normalized to traversal
+ * isPathSafe('icons/logo.png', '/app/public')   // true - safe within specified base
  * ```
  */
-export function isPathSafe(filePath) {
+export function isPathSafe(filePath, baseDir = process.cwd()) {
+  // Validate inputs
+  if (typeof baseDir !== 'string' || baseDir.trim() === '') {
+    throw new Error('baseDir must be a non-empty string')
+  }
+
+  if (typeof filePath !== 'string') {
+    throw new Error('filePath must be a string')
+  }
+
+  if (filePath.trim() === '') {
+    return false
+  }
+
   // Normalize to lowercase for case-insensitive URL-encoded pattern checks
   const lc = filePath.toLowerCase()
 
@@ -67,11 +82,11 @@ export function isPathSafe(filePath) {
     return false
   }
 
-  // Safe: This IS the security validation code. We resolve the path to verify it stays within cwd.
-  const resolvedPath = resolve(process.cwd(), normalizedPath) // nosemgrep: javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal
-  const cwdPath = resolve(process.cwd())
+  // Safe: This IS the security validation code. We resolve the path to verify it stays within baseDir.
+  const resolvedPath = resolve(baseDir, normalizedPath) // nosemgrep: javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal
+  const resolvedBase = resolve(baseDir)
 
-  // Ensure the resolved path is within the project directory
+  // Ensure the resolved path is within the base directory
   // Use path.sep to prevent false positives (e.g., "/project-other" matching "/project")
-  return resolvedPath === cwdPath || resolvedPath.startsWith(cwdPath + sep)
+  return resolvedPath === resolvedBase || resolvedPath.startsWith(resolvedBase + sep)
 }

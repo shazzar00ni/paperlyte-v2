@@ -85,10 +85,8 @@ describe('Hero', () => {
     it('should render arrow icon on Start Writing for Free button', () => {
       render(<Hero />)
 
-      const button = screen.getByRole('button', { name: /start writing for free/i })
-      // Verify button contains an icon (icon is rendered as a child element)
-      expect(button).toBeInTheDocument()
-      expect(button.querySelector('svg, span')).toBeInTheDocument()
+      const arrowIcon = screen.getByLabelText(/arrow/i)
+      expect(arrowIcon).toBeInTheDocument()
     })
   })
 

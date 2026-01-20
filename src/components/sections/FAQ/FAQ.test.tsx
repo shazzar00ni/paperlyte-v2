@@ -10,7 +10,7 @@ import { escapeRegExp } from '@/utils/test/regexHelpers'
  * @returns The button element for the question
  */
 function getQuestionButton(question: string) {
-  // eslint-disable-next-line security/detect-non-literal-regexp, security-node/non-literal-reg-expr
+  // Safe: question is escaped via escapeRegExp() before RegExp construction
   return screen.getByRole('button', {
     name: new RegExp(escapeRegExp(question), 'i'), // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
   })

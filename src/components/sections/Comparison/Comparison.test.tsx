@@ -43,7 +43,6 @@ describe('Comparison', () => {
     // Check all competitor headers
     COMPETITORS.forEach((competitor) => {
       // Safe: input is escaped via escapeRegExp() and comes from COMPETITORS constant, not user input
-      // eslint-disable-next-line security/detect-non-literal-regexp, security-node/non-literal-reg-expr
       const header = screen.getByRole('columnheader', {
         name: new RegExp(escapeRegExp(competitor.name)), // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
       })

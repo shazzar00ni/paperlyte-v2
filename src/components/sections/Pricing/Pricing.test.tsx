@@ -133,7 +133,6 @@ describe('Pricing', () => {
 
     PRICING_PLANS.forEach((plan) => {
       // Safe: input is escaped via escapeRegExp() and comes from PRICING_PLANS constant, not user input
-      // eslint-disable-next-line security/detect-non-literal-regexp, security-node/non-literal-reg-expr
       const button = screen.getByRole('button', {
         name: new RegExp(escapeRegExp(plan.ctaText)), // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
       })

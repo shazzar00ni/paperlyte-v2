@@ -20,7 +20,6 @@ import { escapeRegExp } from '@/utils/test/regexHelpers'
 function countOccurrences(text: string, words: string[]): number {
   return words.reduce((count, word) => {
     // Safe: word is escaped via escapeRegExp() before RegExp construction
-    // eslint-disable-next-line security/detect-non-literal-regexp, security-node/non-literal-reg-expr
     const regex = new RegExp(`\\b${escapeRegExp(word)}\\b`, 'gi') // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
     const matches = text.match(regex)
     return count + (matches ? matches.length : 0)

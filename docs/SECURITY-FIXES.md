@@ -115,24 +115,30 @@ Added nosemgrep comments for false positives:
 **Targeted inline suppression approach (avoids security blind spots):**
 
 Instead of blanket file exclusions (which would disable ALL security rules for test files),
-we use **surgical inline disable comments** on specific lines that need them:
+we use **surgical inline suppression comments** on specific lines that need them:
 
-1. **Inline ESLint disable comments**: Per-line suppression
-   - `// eslint-disable-next-line security/detect-non-literal-regexp, security-node/non-literal-reg-expr`
-   - Applied only to lines with RegExp constructors
-   - Patterns suppressed: `ESLint8_security_detect-non-literal-regexp`, `ESLint8_security-node_non-literal-reg-expr`
-   - Located in 4 files at specific lines (FAQ helper, Comparison, Pricing, features tests)
-
-2. **Inline nosemgrep comments**: Per-line Semgrep suppression
+1. **Inline nosemgrep comments**: Per-line Semgrep suppression
    - `// nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp`
+   - Applied only to lines with RegExp constructors
+   - Patterns suppressed: `javascript.lang.security.audit.detect-non-literal-regexp`, `javascript_dos_rule-non-literal-regexp`
+   - Located in 4 files at specific lines (FAQ helper, Comparison, Pricing, features tests)
    - Documents why RegExp usage is safe (inputs are escaped)
    - Provides context for future maintainers
-   - Co-located with ESLint disable comments
+
+2. **Safety comments**: Explanatory comments above each RegExp usage
+   - Examples: "Safe: question is escaped via escapeRegExp() before RegExp construction"
+   - Self-documenting code that explains the security context
+   - Makes code review easier
 
 3. **`.codacy.yml`**: Minimal configuration
    - Only excludes build artifacts (dist, node_modules, coverage)
    - NO blanket test file exclusions (avoids disabling other important security checks)
    - Keeps all other security rules active for test files
+
+**Note on ESLint security rules:**
+- The `eslint-plugin-security` and `eslint-plugin-security-node` plugins are not installed in this project
+- ESLint9 (our version) uses different rule IDs than ESLint8: `ESLint9_security_detect-non-literal-regexp`, `ESLint9_security-node_non-literal-reg-expr`
+- Since these plugins aren't configured, we rely on Semgrep for RegExp security scanning instead
 
 **Why this approach is better:**
 - **No security blind spots**: Other security rules still run on test files

@@ -1,8 +1,10 @@
 #!/bin/bash
 set -e
 
-echo "## 🔦 Lighthouse CI Results" >> "$GITHUB_STEP_SUMMARY"
-echo "" >> "$GITHUB_STEP_SUMMARY"
+{
+  echo "## 🔦 Lighthouse CI Results"
+  echo ""
+} >> "$GITHUB_STEP_SUMMARY"
 
 if [ -f .lighthouseci/manifest.json ]; then
   # Find the representative run from manifest (the one used for assertions)
@@ -27,8 +29,10 @@ if [ -f .lighthouseci/manifest.json ]; then
     SI_THRESHOLD=$(jq -r '.ci.assert.assertions["speed-index"][1].maxNumericValue' .lighthouserc.json)
     TTI_THRESHOLD=$(jq -r '.ci.assert.assertions.interactive[1].maxNumericValue' .lighthouserc.json)
 
-    echo "### 📊 Lighthouse Scores" >> "$GITHUB_STEP_SUMMARY"
-    echo "" >> "$GITHUB_STEP_SUMMARY"
+    {
+      echo "### 📊 Lighthouse Scores"
+      echo ""
+    } >> "$GITHUB_STEP_SUMMARY"
 
     # Extract scores using jq (available in GitHub Actions by default)
     # Use // 0 to provide fallback for null/missing scores
@@ -53,8 +57,10 @@ if [ -f .lighthouseci/manifest.json ]; then
       echo ""
     } >> "$GITHUB_STEP_SUMMARY"
 
-    echo "### ⚡ Core Web Vitals" >> "$GITHUB_STEP_SUMMARY"
-    echo "" >> "$GITHUB_STEP_SUMMARY"
+    {
+      echo "### ⚡ Core Web Vitals"
+      echo ""
+    } >> "$GITHUB_STEP_SUMMARY"
 
     # Extract Core Web Vitals metrics
     FCP=$(jq -r '(.audits["first-contentful-paint"].numericValue // 0) | floor' "$REPORT_FILE")
@@ -95,8 +101,10 @@ if [ -f .lighthouseci/manifest.json ]; then
       echo "### ❌ Some performance budgets were not met" >> "$GITHUB_STEP_SUMMARY"
     fi
 
-    echo "" >> "$GITHUB_STEP_SUMMARY"
-    echo "📊 Full Lighthouse report available in artifacts" >> "$GITHUB_STEP_SUMMARY"
+    {
+      echo ""
+      echo "📊 Full Lighthouse report available in artifacts"
+    } >> "$GITHUB_STEP_SUMMARY"
   else
     echo "⚠️ Lighthouse report file not found" >> "$GITHUB_STEP_SUMMARY"
   fi

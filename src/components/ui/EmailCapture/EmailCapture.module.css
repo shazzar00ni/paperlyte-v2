@@ -105,14 +105,16 @@
   align-items: flex-start;
   gap: 0.5rem;
   cursor: pointer;
+  padding: 0.75rem 0;
+  min-height: 48px;
   -webkit-user-select: none;
   user-select: none;
 }
 
 .checkbox {
   margin-top: 0.25rem;
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   cursor: pointer;
   flex-shrink: 0;
   accent-color: var(--color-primary);

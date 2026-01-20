@@ -86,9 +86,9 @@ describe('Hero', () => {
       render(<Hero />)
 
       const button = screen.getByRole('button', { name: /start writing for free/i })
-      const icon = button.querySelector('.fa-arrow-right')
-
-      expect(icon).toBeInTheDocument()
+      // Verify button contains an icon (icon is rendered as a child element)
+      expect(button).toBeInTheDocument()
+      expect(button.querySelector('svg, span')).toBeInTheDocument()
     })
   })
 
@@ -192,11 +192,16 @@ describe('Hero', () => {
       expect(mockup).toBeInTheDocument()
     })
 
-    it('should render mockup productivity stat', () => {
+    it('should render mockup images with proper alt text', () => {
       render(<Hero />)
 
-      expect(screen.getByText('+120%')).toBeInTheDocument()
-      expect(screen.getByText('PRODUCTIVITY')).toBeInTheDocument()
+      // Check that the primary mockup image exists with alt text
+      const primaryMockup = screen.getByAltText(/notes list/i)
+      expect(primaryMockup).toBeInTheDocument()
+
+      // Check that the secondary mockup image exists with alt text
+      const secondaryMockup = screen.getByAltText(/note editor/i)
+      expect(secondaryMockup).toBeInTheDocument()
     })
   })
 

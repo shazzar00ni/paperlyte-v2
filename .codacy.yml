@@ -13,3 +13,19 @@ exclude_paths:
   - 'node_modules/**'
   - 'coverage/**'
   - '**/*.min.js'
+
+# Note: Codacy ESLint8 engine reports 8 false positive issues for non-literal RegExp
+# patterns (ESLint8_security_detect-non-literal-regexp, ESLint8_security-node_non-literal-reg-expr).
+# These are documented false positives:
+# 1. All RegExp inputs are sanitized via escapeRegExp() utility
+# 2. Input sources are constants (FAQ_ITEMS, PRICING_PLANS, COMPETITORS), not user input
+# 3. Semgrep scans these lines and approves them with inline nosemgrep suppressions
+# 4. Every usage has clear safety documentation comments
+#
+# We attempted multiple suppression approaches without success:
+# - Global exclude_patterns: Not recognized by Codacy
+# - Engine-level exclusions: Not supported
+# - Inline codacy-disable-next-line comments: Not working
+# - Blanket test file exclusions: Creates security blind spots (rejected in code review)
+#
+# These warnings should be manually marked as "Won't Fix" or "False Positive" in Codacy UI.

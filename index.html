@@ -49,42 +49,8 @@
     <!-- Theme Color -->
     <meta name="theme-color" content="#1a1a1a" />
 
-    <!-- Google Fonts - Load async to avoid blocking render -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap"
-      rel="stylesheet"
-      media="print"
-      onload="this.media = 'all'"
-    />
-    <noscript>
-      <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap"
-        rel="stylesheet"
-      />
-    </noscript>
-
-    <!-- Font Awesome 7.0.1 - Load async to avoid blocking render -->
-    <link
-      rel="preload"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
-      as="style"
-      integrity="sha512-z4PhNX7vuL3xVChQ1m2AB9Yg5AULVxXcg/SpIdNs6c5H0NE8XYXysP+DGNKHfuwvY7kxvUdBeoGlODJ6+SfaPg=="
-      crossorigin="anonymous"
-      onload="
-        this.onload = null;
-        this.rel = 'stylesheet';
-      "
-    />
-    <noscript
-      ><link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
-        integrity="sha512-z4PhNX7vuL3xVChQ1m2AB9Yg5AULVxXcg/SpIdNs6c5H0NE8XYXysP+DGNKHfuwvY7kxvUdBeoGlODJ6+SfaPg=="
-        crossorigin="anonymous"
-        referrerpolicy="no-referrer"
-    /></noscript>
+    <!-- Font Awesome icons are loaded via @fortawesome/fontawesome-svg-core in JavaScript -->
+    <!-- This approach is CSP-compliant and doesn't require external CDN resources -->
 
     <!-- Preload critical above-the-fold image for better LCP -->
     <link rel="preload" as="image" type="image/avif" href="/mockups/notes-list.avif" />

@@ -8,7 +8,7 @@ coverage:
   # Round coverage values
   round: down
   # Range for coverage display (red to green)
-  range: "70...100"
+  range: "70..100"
 
   # Overall project status
   status:
@@ -112,14 +112,13 @@ ai:
   # Enable AI-powered insights
   enabled: true
 
-# Bundle analysis (ready for when @codecov/vite-plugin supports Vite 7)
-# Currently blocked: @codecov/vite-plugin only supports Vite 4.x-6.x
-# Project uses: Vite 7.3.0
-# TODO: Enable when plugin compatibility is updated
+# Bundle analysis using @codecov/rollup-plugin (Vite 7 compatible)
+# Note: Using Rollup plugin instead of Vite plugin
+# @codecov/vite-plugin only supports Vite 4.x-6.x (project uses Vite 7.3.0)
+# @codecov/rollup-plugin works with Vite 7 since Vite uses Rollup ^4.43.0 internally
 # Reference: https://docs.codecov.com/docs/javascript-bundle-analysis
 bundle_analysis:
-  enabled: false
-  # Will be enabled via vite.config.ts once plugin is compatible
+  enabled: true
 
 # Notification settings
 slack_app: false

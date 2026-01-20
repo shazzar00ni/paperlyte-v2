@@ -1,0 +1,66 @@
+Type,Title,Last Visited,Host
+Pull Request,[Snyk] Upgrade dompurify from 3.3.0 to 3.3.1,2026-01-08T08:20:59Z,github.com
+Pull Request,[Snyk] Upgrade react-router-dom from 7.9.6 to 7.11.0,2026-01-08T08:19:11Z,github.com
+Pull Request,[Snyk] Upgrade react-dom from 18.3.1 to 19.2.3,2026-01-08T08:18:25Z,github.com
+Pull Request,[Snyk] Upgrade react from 18.3.1 to 19.2.3,2026-01-08T08:20:10Z,github.com
+Pull Request,Fix Icon component fallback rendering and missing aria-labels,2026-01-12T00:53:56Z,github.com
+Pull Request,feat: Add daily PR review summary,2026-01-11T11:06:17Z,github.com
+Pull Request,test: update Icon and ThemeToggle tests for FontAwesomeIcon rendering,2026-01-12T01:14:50Z,github.com
+Pull Request,fix: apply code style fixes for linting compliance,2026-01-12T01:02:52Z,github.com
+Pull Request,chore: Update package-lock.json after merge,2026-01-09T15:01:15Z,github.com
+Pull Request,feat: Create daily PR review summary,2026-01-10T01:56:03Z,github.com
+Pull Request,fix: resolve critical security issues in headers and CSP configuration,2026-01-11T07:49:26Z,github.com
+Pull Request,Add implementation plan agent to planning directory,2026-01-12T01:09:00Z,github.com
+Pull Request,Fix shell injection in branch protection workflow,2026-01-11T08:05:08Z,github.com
+Pull Request,Add multi-OS testing to CI workflow for lint and build jobs,2026-01-11T08:13:46Z,github.com
+Pull Request,Add GitHub Projects automation to CI workflow,2026-01-12T00:41:08Z,github.com
+Pull Request,"feat: Add daily PR review summary for January 8th, 2026",2026-01-08T10:08:43Z,github.com
+Issue,Optimization Strategies,2026-01-08T04:55:17Z,github.com
+Issue,"Write introductory content, generation metadata, and summary",2026-01-08T04:55:36Z,github.com
+Issue,Document the blueprint for new development with templates and common pitfalls,2026-01-08T04:56:52Z,github.com
+Issue,"Document cross-cutting system concerns including analytics, monitoring, error handling, accessibility, and configuration management.",2026-01-08T04:56:59Z,github.com
+Issue,"Document the core architectural foundations: component organization, styling system, custom hooks, and utility functions.",2026-01-08T04:54:20Z,github.com
+Issue,"Project_Architecture_Blueprint.md document and
+establishes the foundational technology stack and architectural pattern documentation.",2026-01-08T04:54:38Z,github.com
+Issue,Comprehensive Project Architecture Blueprint,2026-01-07T14:23:52Z,github.com
+Pull Request,docs: Convert bold text to proper markdown headings in CONVERTKIT-SETUP.md,2026-01-06T21:57:52Z,github.com
+Pull Request,Add http language identifier to code fence in CONVERTKIT-SETUP.md,2026-01-06T22:01:28Z,github.com
+Pull Request,Reorder .env.production keys alphabetically,2026-01-06T21:43:52Z,github.com
+Pull Request,Reorder .env.development keys alphabetically to resolve dotenv-linter warning,2026-01-08T04:47:58Z,github.com
+Issue,[P1-HIGH] Performance Optimization Pass,2026-01-06T21:46:53Z,github.com
+Issue,Complete Manual Infrastructure Configuration Tasks,2026-01-06T21:29:09Z,github.com
+Pull Request,Fix labeler.yml format for actions/labeler@v5,2026-01-06T22:04:28Z,github.com
+Pull Request,Fix ReDoS vulnerability in email validation regex,2026-01-06T21:37:50Z,github.com
+Pull Request,feat(ci): enhance Lighthouse CI with stricter budgets and Chrome support,2026-01-09T13:48:29Z,github.com
+Pull Request,📝 Add docstrings to `claude/setup-routing-legal-pages-FITCE`,2026-01-08T11:34:40Z,github.com
+Pull Request,Fix SEO metadata handling and add comprehensive test coverage for Privacy and Terms pages,2026-01-08T11:26:52Z,github.com
+Commit,Merge pull request #305 from shazzar00ni/claude/fix-security-issues-S4LKn,2026-01-11T07:38:47Z,github.com
+Commit,fix: use FontAwesomeIcon React component instead of CSS classes,2026-01-11T07:38:23Z,github.com
+Commit,Merge pull request #273 from shazzar00ni/claude/configure-codecov-bundler-DM3Ql,2026-01-10T01:57:25Z,github.com
+Commit,Merge pull request #280 from shazzar00ni/copilot/sub-pr-273,2026-01-10T01:54:58Z,github.com
+Commit,fix: remove deprecated header and external Font Awesome CDN link,2026-01-09T15:21:30Z,github.com
+Commit,Update index.html,2026-01-09T09:21:35Z,github.com
+Commit,Merge pull request #276 from shazzar00ni/claude/fix-playwright-test-i5LB0,2026-01-09T06:20:20Z,github.com
+Commit,Update tests/e2e/landing-page.spec.ts,2026-01-09T06:18:31Z,github.com
+Commit,fix: resolve critical security issues in headers and CSP configuration,2026-01-08T11:24:13Z,github.com
+Commit,Merge pull request #286 from shazzar00ni:copilot/fix-ui-label-errors,2026-01-06T22:04:09Z,github.com
+Commit,Merge pull request #285 from shazzar00ni/copilot/fix-code-scanning-alerts,2026-01-06T21:37:18Z,github.com
+Commit,fix: update labeler.yml to labeler v5 format,2026-01-06T21:16:07Z,github.com
+Commit,ci: bump actions/github-script from 7 to 8 (#225),2026-01-06T21:12:59Z,github.com
+Commit,Initial plan,2026-01-06T21:12:32Z,github.com
+Commit,ci: bump codelytv/pr-size-labeler from 1.10.1 to 1.10.3 (#226),2026-01-06T21:11:17Z,github.com
+Commit,ci: bump actions/setup-node from 4 to 6 (#228),2026-01-06T21:10:54Z,github.com
+Commit,ci: bump actions/checkout from 4 to 6 (#227),2026-01-06T21:10:29Z,github.com
+Commit,ci: bump actions/checkout from 4 to 6,2026-01-06T21:09:16Z,github.com
+Commit,chore(deps-dev): bump globals from 16.5.0 to 17.0.0 (#269),2026-01-06T21:08:06Z,github.com
+Commit,ci: bump actions/download-artifact from 6 to 7 (#270),2026-01-06T21:07:10Z,github.com
+Commit,Fix ReDoS vulnerability by using non-overlapping alternation pattern,2026-01-06T21:06:14Z,github.com
+Commit,chore(deps-dev): bump typescript-eslint from 8.50.1 to 8.51.0 in the development-dependencies group (#268),2026-01-06T21:06:00Z,github.com
+Commit,Code scanning alert fix complete - verified with build,2026-01-06T20:35:47Z,github.com
+Commit,Use optional quantifiers to prevent ReDoS in email validation,2026-01-06T20:34:13Z,github.com
+Commit,Refine email regex pattern to ensure correctness and security,2026-01-06T20:33:12Z,github.com
+Commit,Fix potential ReDoS vulnerability in email validation regex,2026-01-06T20:29:57Z,github.com
+Commit,Initial exploration - preparing to fix code scanning alerts,2026-01-06T20:28:26Z,github.com
+Commit,Initial plan,2026-01-06T20:24:22Z,github.com
+Commit,Add Codacy security scan workflow,2026-01-06T16:41:13Z,github.com
+Commit,Fix: Generate coverage even when tests fail with --coverage.reportOnFailure,2026-01-06T16:39:11Z,github.com

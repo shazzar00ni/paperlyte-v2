@@ -55,7 +55,21 @@ jobs:
           max-allowed-issues: 2147483647
 
       # Upload the SARIF file generated in the previous step
+      - name: Filter SARIF to max 20 runs (GitHub limit)
+        if: always()
+        run: |
+          if [ -f results.sarif ]; then
+            # GitHub Code Scanning allows max 20 runs per SARIF file
+            # Filter to keep only first 20 runs using jq
+            jq '.runs |= .[:20]' results.sarif > results-filtered.sarif
+            mv results-filtered.sarif results.sarif
+
+            # Log run count for debugging
+            RUN_COUNT=$(jq '.runs | length' results.sarif)
+            echo "SARIF file contains $RUN_COUNT runs (max 20 allowed)"
+          fi
+
       - name: Upload SARIF results file
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@1b1aada464948af03b950897e5eb522f92603cc2
         with:
           sarif_file: results.sarif

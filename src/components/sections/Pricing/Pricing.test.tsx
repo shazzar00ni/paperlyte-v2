@@ -85,9 +85,10 @@ describe('Pricing', () => {
     const popularBadge = screen.getByLabelText('Most popular')
     expect(popularBadge).toBeInTheDocument()
 
-    const starIcon = container.querySelector('.fa-star')
-    expect(starIcon).toBeInTheDocument()
-    expect(starIcon).toHaveAttribute('aria-label', 'Most popular')
+    // Check that an icon exists in the badge
+    const icon = popularBadge.querySelector('svg, .icon-fallback')
+    expect(icon).toBeInTheDocument()
+    expect(icon).toHaveAttribute('aria-label', 'Most popular')
   })
 
   it('should render plan icons', () => {
@@ -95,9 +96,9 @@ describe('Pricing', () => {
 
     PRICING_PLANS.forEach((plan) => {
       if (plan.icon) {
-        const icon = container.querySelector(`.${plan.icon}`)
+        // Find icon by aria-label instead of class name
+        const icon = screen.getByLabelText(`${plan.name} plan icon`)
         expect(icon).toBeInTheDocument()
-        expect(icon).toHaveAttribute('aria-label', `${plan.name} plan icon`)
       }
     })
   })
@@ -113,18 +114,15 @@ describe('Pricing', () => {
   })
 
   it('should render checkmark icons for all features', () => {
-    const { container } = render(<Pricing />)
-
-    const checkmarks = container.querySelectorAll('.fa-check')
+    render(<Pricing />)
 
     // Count total features across all plans
     const totalFeatures = PRICING_PLANS.reduce((sum, plan) => sum + plan.features.length, 0)
 
-    expect(checkmarks.length).toBe(totalFeatures)
+    // Find all checkmarks by aria-label
+    const checkmarks = screen.getAllByLabelText('Included')
 
-    checkmarks.forEach((checkmark) => {
-      expect(checkmark).toHaveAttribute('aria-label', 'Included')
-    })
+    expect(checkmarks.length).toBe(totalFeatures)
   })
 
   it('should render CTA buttons for all plans', () => {
@@ -139,15 +137,14 @@ describe('Pricing', () => {
   })
 
   it('should render guarantee section', () => {
-    const { container } = render(<Pricing />)
+    render(<Pricing />)
 
     expect(
       screen.getByText('30-day money-back guarantee • Cancel anytime • No hidden fees')
     ).toBeInTheDocument()
 
-    const shieldIcon = container.querySelector('.fa-shield-check')
+    const shieldIcon = screen.getByLabelText('Guarantee')
     expect(shieldIcon).toBeInTheDocument()
-    expect(shieldIcon).toHaveAttribute('aria-label', 'Guarantee')
   })
 
   it('should use semantic article elements for pricing cards', () => {

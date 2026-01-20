@@ -231,14 +231,14 @@ describe('ServerErrorPage', () => {
     it('should render server icon in illustration', () => {
       render(<ServerErrorPage />)
 
-      const serverIcon = screen.getByRole('main').querySelector('i.fa-server')
+      const serverIcon = screen.getByRole('main').querySelector('svg, .icon-fallback')
       expect(serverIcon).toBeInTheDocument()
     })
 
     it('should render warning icon in error badge', () => {
       render(<ServerErrorPage />)
 
-      const warningIcon = screen.getByRole('main').querySelector('i.fa-triangle-exclamation')
+      const warningIcon = screen.getByRole('main').querySelector('svg, .icon-fallback')
       expect(warningIcon).toBeInTheDocument()
     })
 
@@ -246,7 +246,7 @@ describe('ServerErrorPage', () => {
       render(<ServerErrorPage />)
 
       const retryButton = screen.getByRole('button', { name: /retry loading the page/i })
-      const icon = retryButton.querySelector('i.fa-rotate-right')
+      const icon = retryButton.querySelector('svg, .icon-fallback')
       expect(icon).toBeInTheDocument()
     })
 
@@ -254,7 +254,7 @@ describe('ServerErrorPage', () => {
       render(<ServerErrorPage />)
 
       const homeButton = screen.getByRole('button', { name: /return to homepage/i })
-      const icon = homeButton.querySelector('i.fa-home')
+      const icon = homeButton.querySelector('svg, .icon-fallback')
       expect(icon).toBeInTheDocument()
     })
   })

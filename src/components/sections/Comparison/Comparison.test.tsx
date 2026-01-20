@@ -44,7 +44,8 @@ describe('Comparison', () => {
     COMPETITORS.forEach((competitor) => {
       // Safe: input is escaped via escapeRegExp() and comes from COMPETITORS constant, not user input
       const header = screen.getByRole('columnheader', {
-        name: new RegExp(escapeRegExp(competitor.name)), // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
+        // codacy-disable-next-line ESLint8_security_detect-non-literal-regexp,ESLint8_security-node_non-literal-reg-expr
+        name: new RegExp(escapeRegExp(competitor.name)), // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
       })
       expect(header).toBeInTheDocument()
     })

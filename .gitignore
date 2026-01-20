@@ -42,10 +42,6 @@ public/favicon.ico
 *.sln
 *.sw?
 
-# Environment variables
-.env
-.env
-
 # Deployment platforms
 .netlify
 .vercel

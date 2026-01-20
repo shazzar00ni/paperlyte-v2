@@ -134,7 +134,6 @@ describe('Pricing', () => {
     PRICING_PLANS.forEach((plan) => {
       // Safe: input is escaped via escapeRegExp() and comes from PRICING_PLANS constant, not user input
       const button = screen.getByRole('button', {
-        // codacy-disable-next-line ESLint8_security_detect-non-literal-regexp,ESLint8_security-node_non-literal-reg-expr
         name: new RegExp(escapeRegExp(plan.ctaText)), // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
       })
       expect(button).toBeInTheDocument()

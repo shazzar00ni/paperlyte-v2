@@ -12,7 +12,6 @@ import { escapeRegExp } from '@/utils/test/regexHelpers'
 function getQuestionButton(question: string) {
   // Safe: question is escaped via escapeRegExp() before RegExp construction
   return screen.getByRole('button', {
-    // codacy-disable-next-line ESLint8_security_detect-non-literal-regexp,ESLint8_security-node_non-literal-reg-expr
     name: new RegExp(escapeRegExp(question), 'i'), // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
   })
 }

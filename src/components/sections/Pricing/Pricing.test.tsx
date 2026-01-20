@@ -113,9 +113,10 @@ describe('Pricing', () => {
   })
 
   it('should render checkmark icons for all features', () => {
-    const { container } = render(<Pricing />)
+    render(<Pricing />)
 
-    const checkmarks = container.querySelectorAll('.fa-check')
+    // Icon component renders SVG with aria-label, not FontAwesome classes
+    const checkmarks = screen.getAllByLabelText('Included')
 
     // Count total features across all plans
     const totalFeatures = PRICING_PLANS.reduce((sum, plan) => sum + plan.features.length, 0)
@@ -123,7 +124,7 @@ describe('Pricing', () => {
     expect(checkmarks.length).toBe(totalFeatures)
 
     checkmarks.forEach((checkmark) => {
-      expect(checkmark).toHaveAttribute('aria-label', 'Included')
+      expect(checkmark).toHaveAttribute('role', 'img')
     })
   })
 
@@ -140,15 +141,16 @@ describe('Pricing', () => {
   })
 
   it('should render guarantee section', () => {
-    const { container } = render(<Pricing />)
+    render(<Pricing />)
 
     expect(
       screen.getByText('30-day money-back guarantee • Cancel anytime • No hidden fees')
     ).toBeInTheDocument()
 
-    const shieldIcon = container.querySelector('.fa-shield-check')
+    // Icon component renders SVG with aria-label, not FontAwesome classes
+    const shieldIcon = screen.getByLabelText('Guarantee')
     expect(shieldIcon).toBeInTheDocument()
-    expect(shieldIcon).toHaveAttribute('aria-label', 'Guarantee')
+    expect(shieldIcon).toHaveAttribute('role', 'img')
   })
 
   it('should use semantic article elements for pricing cards', () => {
@@ -162,7 +164,7 @@ describe('Pricing', () => {
     render(<Pricing />)
 
     // Main heading should be h2
-    const mainHeading = screen.getByText('Simple, Transparent Pricing')
+    const mainHeading = screen.getByText('Simple pricing. No surprises.')
     expect(mainHeading.tagName).toBe('H2')
 
     // Plan names should be h3

@@ -143,7 +143,6 @@ Added nosemgrep comments for false positives:
 **New Files**:
 - `src/utils/test/regexHelpers.ts` - Shared RegExp escaping utility
 - `scripts/utils/filenameValidation.js` - Enhanced path validation with `isPathSafe`
-- `scripts/path-utils.js` - Path safety utilities for build scripts
 - `.semgrepignore` - Semgrep exclusion configuration
 - `public/README.md` - Documentation for generated vs source files
 - `docs/SECURITY-FIXES.md` (this file)

@@ -4,18 +4,8 @@ engines:
     enabled: true
   eslint-9:
     enabled: true
-    exclude_patterns:
-      # Disable ESLint security rules (we use Semgrep for these checks instead)
-      # These patterns are flagged even though inputs are sanitized via escapeRegExp()
-      - ESLint9_security_detect-non-literal-regexp
-      - ESLint9_security-node_non-literal-reg-expr
   eslint-8:
     enabled: true
-    exclude_patterns:
-      # Disable ESLint security rules (we use Semgrep for these checks instead)
-      # These patterns are flagged even though inputs are sanitized via escapeRegExp()
-      - ESLint8_security_detect-non-literal-regexp
-      - ESLint8_security-node_non-literal-reg-expr
 
 exclude_paths:
   # Exclude build artifacts and dependencies
@@ -23,3 +13,11 @@ exclude_paths:
   - 'node_modules/**'
   - 'coverage/**'
   - '**/*.min.js'
+
+exclude_patterns:
+  # Disable ESLint security rules (we use Semgrep for these checks instead)
+  # These patterns are false positives - all RegExp inputs are sanitized via escapeRegExp()
+  - id: ESLint8_security_detect-non-literal-regexp
+  - id: ESLint8_security-node_non-literal-reg-expr
+  - id: ESLint9_security_detect-non-literal-regexp
+  - id: ESLint9_security-node_non-literal-reg-expr

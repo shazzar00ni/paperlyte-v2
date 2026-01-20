@@ -36,7 +36,7 @@ console.log(`- Site URL: ${SITE_URL}`);
 LEGAL_FILES.forEach((file) => {
   // Validate filename
   if (!isFilenameSafe(file)) {
-    console.error(`✗ Invalid filename detected: ${file}`);
+    console.error('✗ Invalid filename detected:', file);
     process.exit(1);
   }
 
@@ -51,10 +51,10 @@ LEGAL_FILES.forEach((file) => {
 
     // Verify that placeholders were actually replaced
     if (originalContent === content) {
-      console.warn(`⚠ Warning: No {{BUILD_DATE}} placeholder found in ${file}`);
+      console.warn('⚠ Warning: No {{BUILD_DATE}} placeholder found in', file);
     } else {
       writeFileSync(filePath, content, "utf8");
-      console.log(`✓ Updated ${file}`);
+      console.log('✓ Updated', file);
     }
   } catch (error) {
     console.error('✗ Failed to process file:', file, error.message);
@@ -82,13 +82,13 @@ try {
 
   const foundPlaceholders = replacements.filter(r => r.found);
   if (foundPlaceholders.length === 0) {
-    console.warn(`⚠ Warning: No meta placeholders found in index.html`);
+    console.warn('⚠ Warning: No meta placeholders found in index.html');
   } else {
     writeFileSync(indexPath, content, "utf8");
-    console.log(`✓ Updated index.html (replaced ${foundPlaceholders.length} placeholder types)`);
+    console.log('✓ Updated index.html (replaced', foundPlaceholders.length, 'placeholder types)');
   }
 } catch (error) {
-  console.error(`✗ Failed to process index.html:`, error.message);
+  console.error('✗ Failed to process index.html:', error.message);
   process.exit(1);
 }
 

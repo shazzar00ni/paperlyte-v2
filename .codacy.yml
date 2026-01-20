@@ -2,20 +2,8 @@
 engines:
   semgrep:
     enabled: true
-    exclude_paths:
-      # Exclude test files from non-literal RegExp checks
-      # These files use escapeRegExp() to sanitize all inputs before RegExp construction
-      # The RegExp patterns are safe and necessary for testing dynamic content
-      - 'src/**/*.test.ts'
-      - 'src/**/*.test.tsx'
   eslint-9:
     enabled: true
-    exclude_paths:
-      # Exclude test files from ESLint security checks
-      # Test files use escapeRegExp() to sanitize RegExp inputs
-      # Patterns: ESLint9_security_detect-non-literal-regexp, ESLint9_security-node_non-literal-reg-expr
-      - 'src/**/*.test.ts'
-      - 'src/**/*.test.tsx'
 
 exclude_paths:
   # Exclude build artifacts and dependencies
@@ -23,6 +11,3 @@ exclude_paths:
   - 'node_modules/**'
   - 'coverage/**'
   - '**/*.min.js'
-  # Also exclude test files at the top level
-  - 'src/**/*.test.ts'
-  - 'src/**/*.test.tsx'

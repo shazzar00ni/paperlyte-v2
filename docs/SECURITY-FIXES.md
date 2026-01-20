@@ -110,45 +110,53 @@ Added nosemgrep comments for false positives:
 - Path validation code itself triggers scanner (it uses path.resolve to validate)
 - All suppressions include detailed explanations
 
-### Codacy and Semgrep Configuration
+### Security Scanner Suppressions Strategy
 
-**Multiple layers of suppression for test file false positives:**
+**Targeted inline suppression approach (avoids security blind spots):**
 
-1. **`.semgrepignore`**: Global Semgrep ignore file
-   - Excludes all test files from Semgrep analysis
-   - Standard Semgrep configuration mechanism
-   - Pattern: `src/**/*.test.ts` and `src/**/*.test.tsx`
+Instead of blanket file exclusions (which would disable ALL security rules for test files),
+we use **surgical inline disable comments** on specific lines that need them:
 
-2. **`.codacy.yml`**: Codacy-specific configuration
-   - Excludes test files from **both Semgrep and ESLint engines**
-   - `engines.semgrep.exclude_paths`: Excludes from Semgrep analysis
-   - `engines.eslint-9.exclude_paths`: Excludes from ESLint security rules
-     - Patterns: `ESLint8_security_detect-non-literal-regexp`, `ESLint8_security-node_non-literal-reg-expr`
-   - Top-level `exclude_paths`: Global exclusions for all engines
-   - Provides multiple layers of redundancy across different analysis tools
+1. **Inline ESLint disable comments**: Per-line suppression
+   - `// eslint-disable-next-line security/detect-non-literal-regexp, security-node/non-literal-reg-expr`
+   - Applied only to lines with RegExp constructors
+   - Patterns suppressed: `ESLint8_security_detect-non-literal-regexp`, `ESLint8_security-node_non-literal-reg-expr`
+   - Located in 4 files at specific lines (FAQ helper, Comparison, Pricing, features tests)
 
-3. **Inline nosemgrep comments**: Code-level documentation
-   - Kept in `getQuestionButton()` helper and other strategic locations
+2. **Inline nosemgrep comments**: Per-line Semgrep suppression
+   - `// nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp`
    - Documents why RegExp usage is safe (inputs are escaped)
    - Provides context for future maintainers
+   - Co-located with ESLint disable comments
 
-**Why test files are safe:**
+3. **`.codacy.yml`**: Minimal configuration
+   - Only excludes build artifacts (dist, node_modules, coverage)
+   - NO blanket test file exclusions (avoids disabling other important security checks)
+   - Keeps all other security rules active for test files
+
+**Why this approach is better:**
+- **No security blind spots**: Other security rules still run on test files
+- **Surgical suppression**: Only the specific RegExp lines are excluded
+- **Self-documenting**: Inline comments explain why each line is safe
+- **Maintainable**: Easy to see which lines have suppressions when reading code
+
+**Why these RegExp patterns are safe:**
 - All RegExp inputs are sanitized via `escapeRegExp()` before construction
 - Test data comes from constants (`FAQ_ITEMS`, `PRICING_PLANS`), not user input
 - RegExp patterns are necessary for flexible test assertions (case-insensitive matching)
-- The `escapeRegExp()` function escapes all regex metacharacters: `.*+?^${}()|[]\`
+- The `escapeRegExp()` function escapes all regex metacharacters
 
 ## Files Changed
 
 **New Files**:
 - `src/utils/test/regexHelpers.ts` - Shared RegExp escaping utility
 - `scripts/utils/filenameValidation.js` - Enhanced path validation with `isPathSafe`
-- `.semgrepignore` - Semgrep exclusion configuration
+- `scripts/path-utils.js` - Path safety utilities for build scripts
 - `public/README.md` - Documentation for generated vs source files
 - `docs/SECURITY-FIXES.md` (this file)
 
 **Modified Files**:
-- Test files: 4 files updated (FAQ, Pricing, Comparison, features)
+- Test files: 4 files updated with inline ESLint disable comments (FAQ, Pricing, Comparison, features)
 - Script files: 4 files updated (with path validation)
 - Application files: 2 files updated (Icon component, iconLibrary)
 - Configuration files: 2 files updated (`.codacy.yml`, `.gitignore`)

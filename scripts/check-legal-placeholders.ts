@@ -84,7 +84,7 @@ function findPlaceholders(filePath: string): PlaceholderMatch[] {
     });
   } catch (error) {
     console.error(
-      colors.red + 'Error reading file:' + colors.reset,
+      `${colors.red}Error reading file:${colors.reset}`,
       filePath,
       error
     );
@@ -102,7 +102,7 @@ function checkFiles(): FileCheck[] {
   return filesToCheck.map((file) => {
     // Validate path safety before processing
     if (!isPathSafe(file)) {
-      console.error(colors.red + 'Error: Invalid file path detected:' + colors.reset, file);
+      console.error(`${colors.red}Error: Invalid file path detected:${colors.reset}`, file);
       process.exit(1);
     }
 

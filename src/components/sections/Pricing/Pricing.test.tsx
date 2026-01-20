@@ -15,13 +15,13 @@ describe('Pricing', () => {
 
   it('should render main heading', () => {
     render(<Pricing />)
-    expect(screen.getByText('Simple, Transparent Pricing')).toBeInTheDocument()
+    expect(screen.getByText('Simple pricing. No surprises.')).toBeInTheDocument()
   })
 
   it('should render subtitle', () => {
     render(<Pricing />)
     expect(
-      screen.getByText("Start free, upgrade when you're ready. No credit card required.")
+      screen.getByText('Start free, upgrade whenever. No credit card needed to get started.')
     ).toBeInTheDocument()
   })
 
@@ -81,24 +81,23 @@ describe('Pricing', () => {
   })
 
   it('should render "Most Popular" badge for Pro plan', () => {
-    const { container } = render(<Pricing />)
+    render(<Pricing />)
 
-    const popularBadge = screen.getByLabelText('Most popular')
-    expect(popularBadge).toBeInTheDocument()
-
-    const starIcon = container.querySelector('.fa-star')
+    // Icon component renders SVG with aria-label, not FontAwesome classes
+    const starIcon = screen.getByLabelText('Most popular')
     expect(starIcon).toBeInTheDocument()
-    expect(starIcon).toHaveAttribute('aria-label', 'Most popular')
+    expect(starIcon).toHaveAttribute('role', 'img')
   })
 
   it('should render plan icons', () => {
-    const { container } = render(<Pricing />)
+    render(<Pricing />)
 
     PRICING_PLANS.forEach((plan) => {
       if (plan.icon) {
-        const icon = container.querySelector(`.${plan.icon}`)
+        // Icon component renders SVG with aria-label, not FontAwesome classes
+        const icon = screen.getByLabelText(`${plan.name} plan icon`)
         expect(icon).toBeInTheDocument()
-        expect(icon).toHaveAttribute('aria-label', `${plan.name} plan icon`)
+        expect(icon).toHaveAttribute('role', 'img')
       }
     })
   })

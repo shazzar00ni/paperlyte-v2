@@ -498,7 +498,7 @@ Similar to NVDA with some command differences. Focus on:
 ## Automated Testing Tools
 
 ### axe DevTools (Browser Extension)
-```
+```text
 1. Install axe DevTools extension (Chrome/Firefox)
 2. Open DevTools (F12)
 3. Navigate to "axe DevTools" tab
@@ -519,7 +519,7 @@ pa11y --runner htmlcs http://localhost:4173
 ```
 
 ### Lighthouse (Chrome DevTools)
-```
+```text
 1. Open Chrome DevTools (F12)
 2. Navigate to "Lighthouse" tab
 3. Select "Accessibility" category

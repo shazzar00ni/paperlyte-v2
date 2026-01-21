@@ -2,6 +2,10 @@
 # Documentation: https://docs.netlify.com/configure-builds/file-based-configuration/
 
 [build]
+  # Base directory - explicitly set to repo root to override any UI settings
+  # This prevents "invalid root directory 'backend'" errors
+  base = "."
+
   # Build command
   command = "npm run build"
 

@@ -354,7 +354,7 @@ describe('OfflinePage', () => {
       expect(icon).toBeInTheDocument()
     })
 
-    it('should show spinner icon when checking connection', async () => {
+    it('should show icon in button when checking connection', async () => {
       const user = userEvent.setup()
 
       // Use a controlled promise for proper cleanup
@@ -371,7 +371,7 @@ describe('OfflinePage', () => {
 
       // Check icon is shown while checking (without awaiting click to complete)
       await waitFor(() => {
-         const icon = retryButton.querySelector('svg') ?? retryButton.querySelector('.icon-fallback')
+        const icon = retryButton.querySelector('svg') ?? retryButton.querySelector('.icon-fallback')
         expect(icon).toBeInTheDocument()
       })
 

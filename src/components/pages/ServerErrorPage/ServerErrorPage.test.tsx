@@ -237,12 +237,15 @@ describe('ServerErrorPage', () => {
     })
 
     it('should render warning icon in error badge', () => {
-      render(<ServerErrorPage />)
+      const { container } = render(<ServerErrorPage />)
 
-      const main = screen.getByRole('main')
-      const icons = main.querySelectorAll('svg, .icon-fallback')
-      // Should have multiple icons (server icon and warning icon)
-      expect(icons.length).toBeGreaterThan(0)
+      // Find the error badge element specifically
+      const errorBadge = container.querySelector('[class*="errorBadge"]')
+      expect(errorBadge).toBeInTheDocument()
+
+      // Assert the warning icon exists within the error badge
+      const warningIcon = errorBadge?.querySelector('svg') ?? errorBadge?.querySelector('.icon-fallback')
+      expect(warningIcon).toBeInTheDocument()
     })
 
     it('should render retry icon in primary button', () => {

@@ -32,5 +32,5 @@ import { isPathSafe as isPathSafeImpl } from './utils/filenameValidation.js'
  * isPathSafe('/app/public', '/etc/passwd') // false
  */
 export function isPathSafe(baseDir, filePath) {
-  return isPathSafeImpl(filePath, baseDir)
+  return isPathSafeImpl(baseDir, filePath)
 }

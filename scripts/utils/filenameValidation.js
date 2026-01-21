@@ -19,6 +19,16 @@ import { resolve, normalize, isAbsolute, sep } from 'path'
  * @returns {boolean} True if the filename is safe, false otherwise
  */
 export function isFilenameSafe(filename) {
+  // Validate input type
+  if (typeof filename !== 'string') {
+    throw new Error('filename must be a string')
+  }
+
+  // Empty string or whitespace-only filenames are not allowed
+  if (filename.trim() === '') {
+    return false
+  }
+
   // Normalize to lowercase for case-insensitive URL-encoded pattern checks
   const lc = filename.toLowerCase()
 
@@ -38,20 +48,27 @@ export function isFilenameSafe(filename) {
  * - Ensures resolved path stays within the specified base directory (or cwd if not specified)
  * - Uses path.sep to prevent false positives (e.g., "/project" vs "/project-other")
  *
- * @param {string} filePath - The file path to validate
- * @param {string} [baseDir] - Optional base directory to validate against (defaults to process.cwd())
+ * @param {string} baseDir - The base directory that the path must be within (or filePath if called with one argument)
+ * @param {string} [filePath] - The file path to validate (optional, if omitted baseDir is treated as filePath)
  * @returns {boolean} True if the path is safe, false otherwise
  *
  * @example
  * ```javascript
- * isPathSafe('docs/file.md')                    // true - safe relative path (against cwd)
- * isPathSafe('../etc/passwd')                   // false - traversal attempt
- * isPathSafe('/etc/passwd')                     // false - absolute path
- * isPathSafe('docs/../../etc/passwd')           // false - normalized to traversal
- * isPathSafe('icons/logo.png', '/app/public')   // true - safe within specified base
+ * isPathSafe('docs/file.md')                       // true - safe relative path (against cwd)
+ * isPathSafe('../etc/passwd')                      // false - traversal attempt
+ * isPathSafe('/etc/passwd')                        // false - absolute path
+ * isPathSafe('docs/../../etc/passwd')              // false - normalized to traversal
+ * isPathSafe('/app/public', 'icons/logo.png')      // true - safe within specified base
  * ```
  */
-export function isPathSafe(filePath, baseDir = process.cwd()) {
+export function isPathSafe(baseDir, filePath) {
+  // Handle overloaded signature: isPathSafe(filePath) or isPathSafe(baseDir, filePath)
+  if (filePath === undefined) {
+    // Called with one argument: isPathSafe(filePath)
+    filePath = baseDir
+    baseDir = process.cwd()
+  }
+
   // Validate inputs
   if (typeof baseDir !== 'string' || baseDir.trim() === '') {
     throw new Error('baseDir must be a non-empty string')

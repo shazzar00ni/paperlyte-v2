@@ -339,10 +339,12 @@ describe('OfflinePage', () => {
 
   describe('Icon Integration', () => {
     it('should render wifi icon in illustration', () => {
-      render(<OfflinePage />)
+      const { container } = render(<OfflinePage />)
 
-      const wifiIcon = screen.getByLabelText('WiFi connection status')
-      expect(wifiIcon).toBeInTheDocument()
+      // Icon is decorative (inside aria-hidden), so we verify it exists via DOM query
+      const illustration = container.querySelector('[aria-hidden="true"]')
+      expect(illustration).toBeInTheDocument()
+      expect(illustration?.querySelector('svg')).toBeInTheDocument()
     })
 
     it('should render retry icon in button', () => {

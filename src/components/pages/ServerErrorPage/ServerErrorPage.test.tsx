@@ -229,17 +229,21 @@ describe('ServerErrorPage', () => {
 
   describe('Icon Integration', () => {
     it('should render server icon in illustration', () => {
-      render(<ServerErrorPage />)
+      const { container } = render(<ServerErrorPage />)
 
-      const serverIcon = screen.getByLabelText('Server error icon')
-      expect(serverIcon).toBeInTheDocument()
+      // Icon is decorative (inside aria-hidden), so we verify it exists via DOM query
+      const illustration = container.querySelector('[aria-hidden="true"]')
+      expect(illustration).toBeInTheDocument()
+      expect(illustration?.querySelector('svg')).toBeInTheDocument()
     })
 
     it('should render warning icon in error badge', () => {
-      render(<ServerErrorPage />)
+      const { container } = render(<ServerErrorPage />)
 
-      const warningIcon = screen.getByLabelText('Warning icon')
-      expect(warningIcon).toBeInTheDocument()
+      // Icon is decorative (inside aria-hidden), so we verify via DOM query
+      const errorBadge = container.querySelector('[class*="errorBadge"]')
+      expect(errorBadge).toBeInTheDocument()
+      expect(errorBadge?.querySelector('svg')).toBeInTheDocument()
     })
 
     it('should render retry icon in primary button', () => {

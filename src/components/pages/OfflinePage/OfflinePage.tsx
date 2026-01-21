@@ -87,7 +87,8 @@ export const OfflinePage: FC<OfflinePageProps> = ({
         {/* Connection status illustration */}
         <div className={styles.illustration} aria-hidden="true">
           <div className={styles.iconWrapper}>
-            <Icon name="fa-wifi" size="3x" ariaLabel="WiFi connection status" />
+            {/* Decorative icon - aria-hidden on parent makes ariaLabel unnecessary */}
+            <Icon name="fa-wifi" size="3x" />
             <div className={styles.disconnectedSlash} />
           </div>
           <div className={styles.statusIndicator}>

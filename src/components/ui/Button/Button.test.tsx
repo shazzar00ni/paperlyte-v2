@@ -76,7 +76,11 @@ describe('Button', () => {
   })
 
   it('should render with icon', () => {
-    render(<Button icon="fa-download" iconAriaLabel="Download icon">Download</Button>)
+    render(
+      <Button icon="fa-download" iconAriaLabel="Download icon">
+        Download
+      </Button>
+    )
 
     const icon = screen.getByLabelText('Download icon')
     expect(icon).toBeInTheDocument()

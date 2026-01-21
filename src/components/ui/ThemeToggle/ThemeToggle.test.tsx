@@ -37,7 +37,7 @@ describe('ThemeToggle', () => {
 
       // Icon component should render (as SVG or fallback element)
       const button = screen.getByRole('button')
-      const icon = button.querySelector('svg') || button.querySelector('.icon-fallback')
+       const icon = button.querySelector('svg') ?? button.querySelector('.icon-fallback')
       expect(icon).toBeInTheDocument()
     })
 

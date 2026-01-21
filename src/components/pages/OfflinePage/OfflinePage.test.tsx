@@ -371,7 +371,7 @@ describe('OfflinePage', () => {
 
       // Check icon is shown while checking (without awaiting click to complete)
       await waitFor(() => {
-        const icon = retryButton.querySelector('svg') || retryButton.querySelector('.icon-fallback')
+         const icon = retryButton.querySelector('svg') ?? retryButton.querySelector('.icon-fallback')
         expect(icon).toBeInTheDocument()
       })
 

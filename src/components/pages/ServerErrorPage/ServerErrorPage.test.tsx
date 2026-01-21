@@ -232,7 +232,7 @@ describe('ServerErrorPage', () => {
       render(<ServerErrorPage />)
 
       const main = screen.getByRole('main')
-       const icon = main.querySelector('svg') ?? main.querySelector('.icon-fallback')
+      const icon = main.querySelector('svg') ?? main.querySelector('.icon-fallback')
       expect(icon).toBeInTheDocument()
     })
 
@@ -244,7 +244,8 @@ describe('ServerErrorPage', () => {
       expect(errorBadge).toBeInTheDocument()
 
       // Assert the warning icon exists within the error badge
-      const warningIcon = errorBadge?.querySelector('svg') ?? errorBadge?.querySelector('.icon-fallback')
+      const warningIcon =
+        errorBadge?.querySelector('svg') ?? errorBadge?.querySelector('.icon-fallback')
       expect(warningIcon).toBeInTheDocument()
     })
 
@@ -252,7 +253,7 @@ describe('ServerErrorPage', () => {
       render(<ServerErrorPage />)
 
       const retryButton = screen.getByRole('button', { name: /retry loading the page/i })
-       const icon = retryButton.querySelector('svg') ?? retryButton.querySelector('.icon-fallback')
+      const icon = retryButton.querySelector('svg') ?? retryButton.querySelector('.icon-fallback')
       expect(icon).toBeInTheDocument()
     })
 
@@ -260,7 +261,7 @@ describe('ServerErrorPage', () => {
       render(<ServerErrorPage />)
 
       const homeButton = screen.getByRole('button', { name: /return to homepage/i })
-       const icon = homeButton.querySelector('svg') ?? homeButton.querySelector('.icon-fallback')
+      const icon = homeButton.querySelector('svg') ?? homeButton.querySelector('.icon-fallback')
       expect(icon).toBeInTheDocument()
     })
   })

@@ -342,7 +342,7 @@ describe('OfflinePage', () => {
       render(<OfflinePage />)
 
       const statusElement = screen.getByRole('status')
-      const icon = statusElement.querySelector('svg') || statusElement.querySelector('.icon-fallback')
+       const icon = statusElement.querySelector('svg') ?? statusElement.querySelector('.icon-fallback')
       expect(icon).toBeInTheDocument()
     })
 

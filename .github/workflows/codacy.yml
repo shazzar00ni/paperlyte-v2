@@ -55,7 +55,7 @@ jobs:
           max-allowed-issues: 2147483647
 
       # Upload the SARIF file generated in the previous step
-      - name: Filter SARIF to max 20 runs (GitHub limit)
+      - name: Filter SARIF to GitHub limits
         if: always()
         run: |
           if [ -f results.sarif ]; then

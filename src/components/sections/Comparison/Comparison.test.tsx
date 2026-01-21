@@ -67,26 +67,34 @@ describe('Comparison', () => {
   it('should render checkmark icons for true boolean values', () => {
     const { container } = render(<Comparison />)
 
-    // Find all checkmarks
-    const checkmarks = container.querySelectorAll('.fa-check')
+    // Find all checkmarks by aria-label (Icon component renders as SVG or FontAwesomeIcon)
+    const checkmarks = container.querySelectorAll('[aria-label="Supported"]')
     expect(checkmarks.length).toBeGreaterThan(0)
 
-    // Check they have proper accessibility labels
+    // Check they are icons (SVG elements or icon fallbacks)
     checkmarks.forEach((checkmark) => {
-      expect(checkmark).toHaveAttribute('aria-label', 'Supported')
+      const isSvgOrIcon =
+        checkmark.tagName === 'svg' ||
+        checkmark.classList.contains('icon-svg') ||
+        checkmark.classList.contains('icon-fallback')
+      expect(isSvgOrIcon).toBe(true)
     })
   })
 
   it('should render X icons for false boolean values', () => {
     const { container } = render(<Comparison />)
 
-    // Find all X marks
-    const xmarks = container.querySelectorAll('.fa-xmark')
+    // Find all X marks by aria-label (Icon component renders as SVG or FontAwesomeIcon)
+    const xmarks = container.querySelectorAll('[aria-label="Not supported"]')
     expect(xmarks.length).toBeGreaterThan(0)
 
-    // Check they have proper accessibility labels
+    // Check they are icons (SVG elements or icon fallbacks)
     xmarks.forEach((xmark) => {
-      expect(xmark).toHaveAttribute('aria-label', 'Not supported')
+      const isSvgOrIcon =
+        xmark.tagName === 'svg' ||
+        xmark.classList.contains('icon-svg') ||
+        xmark.classList.contains('icon-fallback')
+      expect(isSvgOrIcon).toBe(true)
     })
   })
 

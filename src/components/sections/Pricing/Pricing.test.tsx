@@ -80,24 +80,22 @@ describe('Pricing', () => {
   })
 
   it('should render "Most Popular" badge for Pro plan', () => {
-    const { container } = render(<Pricing />)
+    render(<Pricing />)
 
     const popularBadge = screen.getByLabelText('Most popular')
     expect(popularBadge).toBeInTheDocument()
 
-    const starIcon = container.querySelector('.fa-star')
-    expect(starIcon).toBeInTheDocument()
-    expect(starIcon).toHaveAttribute('aria-label', 'Most popular')
+    // Icon component renders with aria-label
+    expect(popularBadge).toHaveAttribute('aria-label', 'Most popular')
   })
 
   it('should render plan icons', () => {
-    const { container } = render(<Pricing />)
+    render(<Pricing />)
 
     PRICING_PLANS.forEach((plan) => {
       if (plan.icon) {
-        const icon = container.querySelector(`.${plan.icon}`)
+        const icon = screen.getByLabelText(`${plan.name} plan icon`)
         expect(icon).toBeInTheDocument()
-        expect(icon).toHaveAttribute('aria-label', `${plan.name} plan icon`)
       }
     })
   })
@@ -115,7 +113,7 @@ describe('Pricing', () => {
   it('should render checkmark icons for all features', () => {
     const { container } = render(<Pricing />)
 
-    const checkmarks = container.querySelectorAll('.fa-check')
+    const checkmarks = container.querySelectorAll('[aria-label="Included"]')
 
     // Count total features across all plans
     const totalFeatures = PRICING_PLANS.reduce((sum, plan) => sum + plan.features.length, 0)
@@ -139,13 +137,13 @@ describe('Pricing', () => {
   })
 
   it('should render guarantee section', () => {
-    const { container } = render(<Pricing />)
+    render(<Pricing />)
 
     expect(
       screen.getByText('30-day money-back guarantee • Cancel anytime • No hidden fees')
     ).toBeInTheDocument()
 
-    const shieldIcon = container.querySelector('.fa-shield-check')
+    const shieldIcon = screen.getByLabelText('Guarantee')
     expect(shieldIcon).toBeInTheDocument()
     expect(shieldIcon).toHaveAttribute('aria-label', 'Guarantee')
   })

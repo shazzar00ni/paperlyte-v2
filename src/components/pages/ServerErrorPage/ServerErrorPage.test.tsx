@@ -231,31 +231,29 @@ describe('ServerErrorPage', () => {
     it('should render server icon in illustration', () => {
       render(<ServerErrorPage />)
 
-      const serverIcon = screen.getByRole('main').querySelector('i.fa-server')
+      const serverIcon = screen.getByLabelText('Server error icon')
       expect(serverIcon).toBeInTheDocument()
     })
 
     it('should render warning icon in error badge', () => {
       render(<ServerErrorPage />)
 
-      const warningIcon = screen.getByRole('main').querySelector('i.fa-triangle-exclamation')
+      const warningIcon = screen.getByLabelText('Warning icon')
       expect(warningIcon).toBeInTheDocument()
     })
 
     it('should render retry icon in primary button', () => {
       render(<ServerErrorPage />)
 
-      const retryButton = screen.getByRole('button', { name: /retry loading the page/i })
-      const icon = retryButton.querySelector('i.fa-rotate-right')
-      expect(icon).toBeInTheDocument()
+      const retryIcon = screen.getByLabelText('Retry icon')
+      expect(retryIcon).toBeInTheDocument()
     })
 
     it('should render home icon in secondary button', () => {
       render(<ServerErrorPage />)
 
-      const homeButton = screen.getByRole('button', { name: /return to homepage/i })
-      const icon = homeButton.querySelector('i.fa-home')
-      expect(icon).toBeInTheDocument()
+      const homeIcon = screen.getByLabelText('Home icon')
+      expect(homeIcon).toBeInTheDocument()
     })
   })
 })

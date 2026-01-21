@@ -35,9 +35,9 @@ describe('ThemeToggle', () => {
 
       render(<ThemeToggle />)
 
-      // Icon component should render with fa-moon
-      const button = screen.getByRole('button')
-      expect(button.querySelector('.fa-moon')).toBeInTheDocument()
+      // Icon component should render with moon icon
+      const moonIcon = screen.getByLabelText('Dark mode icon')
+      expect(moonIcon).toBeInTheDocument()
     })
 
     it('should render sun icon in dark mode', () => {
@@ -48,9 +48,9 @@ describe('ThemeToggle', () => {
 
       render(<ThemeToggle />)
 
-      // Icon component should render with fa-sun
-      const button = screen.getByRole('button')
-      expect(button.querySelector('.fa-sun')).toBeInTheDocument()
+      // Icon component should render with sun icon
+      const sunIcon = screen.getByLabelText('Light mode icon')
+      expect(sunIcon).toBeInTheDocument()
     })
   })
 
@@ -173,7 +173,7 @@ describe('ThemeToggle', () => {
       })
 
       rerender(<ThemeToggle />)
-      expect(screen.getByRole('button').querySelector('.fa-moon')).toBeInTheDocument()
+      expect(screen.getByLabelText('Dark mode icon')).toBeInTheDocument()
 
       vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
         theme: 'dark',
@@ -181,7 +181,7 @@ describe('ThemeToggle', () => {
       })
 
       rerender(<ThemeToggle />)
-      expect(screen.getByRole('button').querySelector('.fa-sun')).toBeInTheDocument()
+      expect(screen.getByLabelText('Light mode icon')).toBeInTheDocument()
     })
 
     it('should update aria-label when theme changes', () => {
@@ -212,10 +212,8 @@ describe('ThemeToggle', () => {
 
       render(<ThemeToggle />)
 
-      const button = screen.getByRole('button')
-      const icon = button.querySelector('i')
-
-      expect(icon).toHaveClass('fa-moon')
+      const icon = screen.getByLabelText('Dark mode icon')
+      expect(icon).toBeInTheDocument()
     })
 
     it('should pass correct icon name to Icon component in dark mode', () => {
@@ -226,10 +224,8 @@ describe('ThemeToggle', () => {
 
       render(<ThemeToggle />)
 
-      const button = screen.getByRole('button')
-      const icon = button.querySelector('i')
-
-      expect(icon).toHaveClass('fa-sun')
+      const icon = screen.getByLabelText('Light mode icon')
+      expect(icon).toBeInTheDocument()
     })
 
     it('should pass size="md" to Icon component', () => {
@@ -240,10 +236,7 @@ describe('ThemeToggle', () => {
 
       render(<ThemeToggle />)
 
-      const button = screen.getByRole('button')
-      const icon = button.querySelector('i')
-
-      // Icon component applies size classes
+      const icon = screen.getByLabelText('Dark mode icon')
       expect(icon).toBeInTheDocument()
     })
   })

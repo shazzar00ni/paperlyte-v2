@@ -84,7 +84,7 @@ export function isPathSafe(filePath, baseDir = process.cwd()) {
 
   // Safe: This IS the security validation code. We resolve the path to verify it stays within baseDir.
   const resolvedPath = resolve(baseDir, normalizedPath) // nosemgrep: javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal
-  const resolvedBase = resolve(baseDir)
+  const resolvedBase = resolve(baseDir) // nosemgrep: javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal
 
   // Ensure the resolved path is within the base directory
   // Use path.sep to prevent false positives (e.g., "/project-other" matching "/project")

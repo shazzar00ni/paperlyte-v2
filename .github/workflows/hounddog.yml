@@ -10,7 +10,7 @@ jobs:
       security-events: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@master
+        uses: actions/checkout@v4
 
       - name: Run HoundDog.ai scan
         uses: hounddogai/hounddog-action@0674d8e8b2b1a1c3e3a985b8c9d1e2f3a4b5c6d7 # Replace with actual commit SHA

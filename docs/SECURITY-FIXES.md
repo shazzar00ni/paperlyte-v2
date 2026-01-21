@@ -162,8 +162,8 @@ we use **surgical inline suppression comments** on specific lines that need them
 - `docs/SECURITY-FIXES.md` (this file)
 
 **Modified Files**:
-- Test files: 4 files updated with inline ESLint disable comments (FAQ, Pricing, Comparison, features)
-- Script files: 4 files updated (with path validation)
+- Test files: 4 files updated with inline nosemgrep annotations (FAQ, Pricing, Comparison, features)
+- Script files: 4 files updated (with path validation and nosemgrep suppressions)
 - Application files: 2 files updated (Icon component, iconLibrary)
 - Configuration files: 2 files updated (`.codacy.yml`, `.gitignore`)
 

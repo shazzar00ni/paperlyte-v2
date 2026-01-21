@@ -63,35 +63,43 @@ const regex = new RegExp(`\\b${escapeRegExp(word)}\\b`, 'gi')
 We exhausted all available Codacy configuration options:
 
 ### 1. Global `exclude_patterns` ❌
+
 ```yaml
 exclude_patterns:
   - id: ESLint8_security_detect-non-literal-regexp
   - id: ESLint8_security-node_non-literal-reg-expr
 ```
+
 **Result**: Not recognized by Codacy
 
 ### 2. Engine-level exclusions ❌
+
 ```yaml
 engines:
   eslint-8:
     exclude_patterns:
       - ESLint8_security_detect-non-literal-regexp
 ```
+
 **Result**: Not supported syntax
 
 ### 3. Inline `codacy-disable-next-line` comments ❌
+
 ```typescript
 // codacy-disable-next-line ESLint8_security_detect-non-literal-regexp
 const regex = new RegExp(escapeRegExp(word), 'gi')
 ```
+
 **Result**: Not recognized by Codacy's ESLint8 engine
 
 ### 4. Blanket test file exclusions ❌ (Rejected)
+
 ```yaml
 exclude_paths:
   - 'src/**/*.test.ts'
   - 'src/**/*.test.tsx'
 ```
+
 **Result**: Would disable ALL ESLint8 rules for test files, creating security blind spots
 
 ## Recommendation

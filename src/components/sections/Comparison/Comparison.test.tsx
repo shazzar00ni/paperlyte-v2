@@ -22,7 +22,7 @@ describe('Comparison', () => {
     render(<Comparison />)
     expect(
       screen.getByText(
-        "We believe in transparency. Here's how Paperlyte stacks up against the competition."
+        "No marketing spin. Here's how Paperlyte compares to the tools you already know."
       )
     ).toBeInTheDocument()
   })
@@ -67,28 +67,28 @@ describe('Comparison', () => {
   })
 
   it('should render checkmark icons for true boolean values', () => {
-    const { container } = render(<Comparison />)
+    render(<Comparison />)
 
-    // Find all checkmarks
-    const checkmarks = container.querySelectorAll('.fa-check')
+    // Icon component renders SVG with aria-label, not FontAwesome classes
+    const checkmarks = screen.getAllByLabelText('Supported')
     expect(checkmarks.length).toBeGreaterThan(0)
 
-    // Check they have proper accessibility labels
+    // Verify they are SVG elements with role="img"
     checkmarks.forEach((checkmark) => {
-      expect(checkmark).toHaveAttribute('aria-label', 'Supported')
+      expect(checkmark).toHaveAttribute('role', 'img')
     })
   })
 
   it('should render X icons for false boolean values', () => {
-    const { container } = render(<Comparison />)
+    render(<Comparison />)
 
-    // Find all X marks
-    const xmarks = container.querySelectorAll('.fa-xmark')
+    // Icon component renders SVG with aria-label, not FontAwesome classes
+    const xmarks = screen.getAllByLabelText('Not supported')
     expect(xmarks.length).toBeGreaterThan(0)
 
-    // Check they have proper accessibility labels
+    // Verify they are SVG elements with role="img"
     xmarks.forEach((xmark) => {
-      expect(xmark).toHaveAttribute('aria-label', 'Not supported')
+      expect(xmark).toHaveAttribute('role', 'img')
     })
   })
 

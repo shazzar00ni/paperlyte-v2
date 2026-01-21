@@ -1,4 +1,20 @@
 ---
+# Codacy Configuration
+# GitHub Code Scanning SARIF limit: max 20 runs per file
+# Explicitly enable only essential analyzers for TypeScript/React
+
 engines:
+  # Core JavaScript/TypeScript linting (primary tool)
   eslint-9:
     enabled: true
+
+# Exclude paths that don't need analysis
+exclude_paths:
+  - 'dist/**'
+  - 'node_modules/**'
+  - 'coverage/**'
+  - '**/*.test.ts'
+  - '**/*.test.tsx'
+  - '**/*.spec.ts'
+  - 'scripts/**'
+  - 'public/**'

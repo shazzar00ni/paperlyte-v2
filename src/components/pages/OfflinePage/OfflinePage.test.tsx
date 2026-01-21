@@ -350,7 +350,7 @@ describe('OfflinePage', () => {
       render(<OfflinePage />)
 
       const retryButton = screen.getByRole('button', { name: /check connection and retry/i })
-      const icon = retryButton.querySelector('svg') || retryButton.querySelector('.icon-fallback')
+       const icon = retryButton.querySelector('svg') ?? retryButton.querySelector('.icon-fallback')
       expect(icon).toBeInTheDocument()
     })
 

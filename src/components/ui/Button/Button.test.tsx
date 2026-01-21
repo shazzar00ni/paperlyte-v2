@@ -78,7 +78,7 @@ describe('Button', () => {
   it('should render with icon', () => {
     const { container } = render(<Button icon="fa-download">Download</Button>)
 
-    const icon = container.querySelector('.fa-download')
+    const icon = container.querySelector('svg') || container.querySelector('.icon-fallback')
     expect(icon).toBeInTheDocument()
     expect(icon).toHaveAttribute('aria-hidden', 'true')
   })

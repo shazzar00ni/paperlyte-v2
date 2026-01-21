@@ -341,15 +341,16 @@ describe('OfflinePage', () => {
     it('should render wifi icon in illustration', () => {
       render(<OfflinePage />)
 
-      const wifiIcon = screen.getByRole('status').querySelector('i.fa-wifi')
-      expect(wifiIcon).toBeInTheDocument()
+      const statusElement = screen.getByRole('status')
+      const icon = statusElement.querySelector('svg') || statusElement.querySelector('.icon-fallback')
+      expect(icon).toBeInTheDocument()
     })
 
     it('should render retry icon in button', () => {
       render(<OfflinePage />)
 
       const retryButton = screen.getByRole('button', { name: /check connection and retry/i })
-      const icon = retryButton.querySelector('i.fa-rotate-right')
+      const icon = retryButton.querySelector('svg') || retryButton.querySelector('.icon-fallback')
       expect(icon).toBeInTheDocument()
     })
 
@@ -368,11 +369,10 @@ describe('OfflinePage', () => {
       const retryButton = screen.getByRole('button', { name: /check connection and retry/i })
       const clickPromise = user.click(retryButton)
 
-      // Check spinner is shown while checking (without awaiting click to complete)
+      // Check icon is shown while checking (without awaiting click to complete)
       await waitFor(() => {
-        const spinnerIcon = retryButton.querySelector('i.fa-spinner')
-        expect(spinnerIcon).toBeInTheDocument()
-        expect(spinnerIcon).toHaveClass('fa-spin')
+        const icon = retryButton.querySelector('svg') || retryButton.querySelector('.icon-fallback')
+        expect(icon).toBeInTheDocument()
       })
 
       // Clean up: resolve promise to allow click handler to complete

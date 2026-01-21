@@ -159,7 +159,9 @@ describe('CounterAnimation', () => {
       mockReducedMotion(true)
       mockIntersectionObserver(true) // Trigger intersection to make element visible
 
-      render(<CounterAnimation end={100} start={0} />)
+      act(() => {
+        render(<CounterAnimation end={100} start={0} />)
+      })
 
       // requestAnimationFrame should not be called when reduced motion is preferred
       // even when element is visible

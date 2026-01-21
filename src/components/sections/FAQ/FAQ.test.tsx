@@ -231,7 +231,7 @@ describe('FAQ', () => {
       })
 
       // When collapsed, should show "Expand answer"
-      let icon = questionButton.querySelector('svg') || questionButton.querySelector('.icon-fallback')
+       let icon = questionButton.querySelector('svg') ?? questionButton.querySelector('.icon-fallback')
       expect(icon).toHaveAttribute('aria-label', 'Expand answer')
 
       await user.click(questionButton)

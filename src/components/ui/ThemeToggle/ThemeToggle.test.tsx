@@ -244,7 +244,7 @@ describe('ThemeToggle', () => {
       render(<ThemeToggle />)
 
       const button = screen.getByRole('button')
-      const icon = button.querySelector('svg') || button.querySelector('.icon-fallback')
+       const icon = button.querySelector('svg') ?? button.querySelector('.icon-fallback')
 
       // Icon component applies size attributes (SVG: width/height, fallback: fontSize)
       expect(icon).toBeInTheDocument()

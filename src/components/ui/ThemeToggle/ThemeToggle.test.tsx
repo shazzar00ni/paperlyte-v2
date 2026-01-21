@@ -176,7 +176,7 @@ describe('ThemeToggle', () => {
 
       rerender(<ThemeToggle />)
       const button = screen.getByRole('button')
-      expect(button.querySelector('svg') || button.querySelector('.icon-fallback')).toBeInTheDocument()
+       expect(button.querySelector('svg') ?? button.querySelector('.icon-fallback')).toBeInTheDocument()
 
       vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
         theme: 'dark',

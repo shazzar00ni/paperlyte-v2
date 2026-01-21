@@ -249,7 +249,7 @@ describe('ServerErrorPage', () => {
       render(<ServerErrorPage />)
 
       const retryButton = screen.getByRole('button', { name: /retry loading the page/i })
-      const icon = retryButton.querySelector('svg') || retryButton.querySelector('.icon-fallback')
+       const icon = retryButton.querySelector('svg') ?? retryButton.querySelector('.icon-fallback')
       expect(icon).toBeInTheDocument()
     })
 

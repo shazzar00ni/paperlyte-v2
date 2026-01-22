@@ -228,7 +228,7 @@ describe('Header', () => {
       expect(document.activeElement).toBe(featuresLink)
     })
 
-    it.skip('should navigate to first item with Home key', async () => {
+    it('should navigate to first item with Home key', async () => {
       const user = userEvent.setup()
       render(<Header />)
 
@@ -246,7 +246,7 @@ describe('Header', () => {
       expect(document.activeElement).toBe(featuresLink)
     })
 
-    it.skip('should navigate to last item with End key', async () => {
+    it('should navigate to last item with End key', async () => {
       const user = userEvent.setup()
       render(<Header />)
 

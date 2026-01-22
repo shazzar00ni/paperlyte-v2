@@ -47,7 +47,7 @@ export const EmailCapture = (): React.ReactElement => {
           <AnimatedElement animation="fadeIn">
             <div className={styles.successContainer}>
               <div className={styles.successIcon}>
-                <Icon name="fa-check-circle" size="xl" color="var(--color-success)" />
+                <Icon name="fa-circle-check" size="xl" color="var(--color-success)" />
               </div>
               <h2 className={styles.successTitle}>✓ You're on the list!</h2>
               <p className={styles.successText}>

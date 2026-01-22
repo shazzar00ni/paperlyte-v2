@@ -60,6 +60,7 @@ import {
   faArrowLeft, // Navigation back
   faSpinner, // Loading states
   faHouse, // Home/landing page
+  faGlobe, // Global/Web
 } from '@fortawesome/free-solid-svg-icons'
 
 // Brand icons (from free-brands-svg-icons)
@@ -117,6 +118,7 @@ library.add(
   faArrowLeft,
   faSpinner,
   faHouse,
+  faGlobe,
   // Brand icons
   faGithub,
   faTwitter,
@@ -140,7 +142,6 @@ export const iconNameMap: Record<string, string> = {
   'fa-bars': 'bars',
   'fa-envelope': 'envelope',
   'fa-star': 'star',
-  'fa-shield-check': 'circle-check', // Using circle-check for guarantee/verification
   'fa-heart': 'heart',
   'fa-download': 'download',
   'fa-moon': 'moon',
@@ -162,6 +163,7 @@ export const iconNameMap: Record<string, string> = {
   'fa-server': 'server',
   'fa-router': 'network-wired', // Using network-wired for router/network issues
   'fa-home': 'house',
+  'fa-globe': 'globe',
   'fa-github': 'github',
   'fa-twitter': 'twitter',
   'fa-apple': 'apple',
@@ -180,6 +182,7 @@ export const brandIconNames = new Set<string>(['github', 'twitter', 'apple', 'wi
  */
 export const validIconNames = new Set<string>([
   ...Object.values(iconNameMap),
+  'circle-check', // Explicitly add circle-check as it's used directly
   'circle-question', // Fallback icon
 ])
 /**

@@ -192,6 +192,12 @@ describe('Hero', () => {
       expect(mockup).toBeInTheDocument()
     })
 
+    it.skip('should render mockup productivity stat', () => {
+      render(<Hero />)
+
+      expect(screen.getByText('+120%')).toBeInTheDocument()
+      expect(screen.getByText('PRODUCTIVITY')).toBeInTheDocument()
+    })
   })
 
   describe('Button Interactions', () => {

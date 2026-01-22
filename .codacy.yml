@@ -1,18 +1,17 @@
 ---
 engines:
-  eslint-9:
-    enabled: true
-  eslint-8:
-    enabled: false
   eslint:
-    enabled: false
+    enabled: true
 
 # Exclude specific patterns in test files where they are false positives
-# validation-utils.test.ts: RegExp constructor is used with pre-escaped strings
-# to validate the escapeRegExp function behavior. These are intentional and safe.
-# validation-sanitization.test.ts: HTML strings are intentionally used to test
-# sanitizeInput and encodeHtmlEntities functions. These are not XSS vulnerabilities.
-exclude_patterns:
+exclude_paths:
+  - "dist/**"
+  - "node_modules/**"
+  - "coverage/**"
+  - "reports/**"
+
+# Ignore specific issues that are false positives
+ignore_issues:
   - identifier: "Security/detect-non-literal-regexp"
     paths:
       - "src/utils/validation-utils.test.ts"

@@ -251,3 +251,26 @@ export function suggestEmailCorrection(email: string): string | null {
   if (!localPart) return null
   return `${localPart}@${suggestion}`
 }
+
+/**
+ * Escapes special regex characters in a string to make it safe for use in RegExp constructor
+ * 
+ * This function prevents ReDoS (Regular Expression Denial of Service) attacks by escaping
+ * all special regex metacharacters, ensuring the string is treated as a literal pattern.
+ * 
+ * @param str - The string to escape
+ * @returns The escaped string safe for use in RegExp constructor
+ * 
+ * @example
+ * ```tsx
+ * const escaped = escapeRegExp('Hello (world)')
+ * // Returns: 'Hello \\(world\\)'
+ * const regex = new RegExp(escaped)
+ * // Creates a regex that matches the literal string "Hello (world)"
+ * ```
+ */
+export function escapeRegExp(str: string): string {
+  if (!str) return ''
+  // Escape all special regex characters: \ ^ $ * + ? . ( ) [ ] { } |
+  return str.replace(/[\\^$*+?.()[\]{}|]/g, '\\$&')
+}

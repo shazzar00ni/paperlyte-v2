@@ -2,6 +2,8 @@
 engines:
   eslint-9:
     enabled: true
+  eslint-8:
+    enabled: false
 
 # Exclude specific patterns in test files where they are false positives
 # validation-utils.test.ts: RegExp constructor is used with pre-escaped strings

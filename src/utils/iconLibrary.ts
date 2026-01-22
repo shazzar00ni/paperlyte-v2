@@ -59,6 +59,7 @@ import {
   faArrowRight, // Navigation forward
   faArrowLeft, // Navigation back
   faSpinner, // Loading states
+  faHouse, // Home/landing page
 } from '@fortawesome/free-solid-svg-icons'
 
 // Brand icons (from free-brands-svg-icons)
@@ -115,6 +116,7 @@ library.add(
   faArrowRight,
   faArrowLeft,
   faSpinner,
+  faHouse,
   // Brand icons
   faGithub,
   faTwitter,
@@ -159,6 +161,7 @@ export const iconNameMap: Record<string, string> = {
   'fa-users': 'users',
   'fa-server': 'server',
   'fa-router': 'network-wired', // Using network-wired for router/network issues
+  'fa-home': 'house',
   'fa-github': 'github',
   'fa-twitter': 'twitter',
   'fa-apple': 'apple',

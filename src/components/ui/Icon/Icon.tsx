@@ -68,7 +68,11 @@ export const Icon = ({
 
     // Convert icon prefix based on variant or brand detection
     const prefix: IconPrefix =
-      variant === 'brands' || isBrandIcon(mappedName) ? 'fab' : variant === 'regular' ? 'far' : 'fas'
+      variant === 'brands' || isBrandIcon(mappedName)
+        ? 'fab'
+        : variant === 'regular'
+          ? 'far'
+          : 'fas'
 
     // Class name for the variant (legacy support for tests)
     const variantClass =

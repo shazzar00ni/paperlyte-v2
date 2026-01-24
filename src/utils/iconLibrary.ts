@@ -59,12 +59,16 @@ import {
   faArrowRight, // Navigation forward
   faArrowLeft, // Navigation back
   faSpinner, // Loading states
+  faHouse, // Home/landing page
+  faGlobe, // Global/Web
 } from '@fortawesome/free-solid-svg-icons'
 
 // Brand icons (from free-brands-svg-icons)
 import {
   faGithub, // GitHub social link
-  faTwitter, // Twitter/X social link
+  faTwitter, // Legacy Twitter link
+  faXTwitter, // Twitter/X social link
+  faInstagram, // Instagram social link
   faApple, // Apple platform
   faWindows, // Windows platform
 } from '@fortawesome/free-brands-svg-icons'
@@ -115,9 +119,13 @@ library.add(
   faArrowRight,
   faArrowLeft,
   faSpinner,
+  faHouse,
+  faGlobe,
   // Brand icons
   faGithub,
   faTwitter,
+  faXTwitter,
+  faInstagram,
   faApple,
   faWindows
 )
@@ -138,7 +146,6 @@ export const iconNameMap: Record<string, string> = {
   'fa-bars': 'bars',
   'fa-envelope': 'envelope',
   'fa-star': 'star',
-  'fa-shield-check': 'circle-check', // Using circle-check for guarantee/verification
   'fa-heart': 'heart',
   'fa-download': 'download',
   'fa-moon': 'moon',
@@ -159,8 +166,12 @@ export const iconNameMap: Record<string, string> = {
   'fa-users': 'users',
   'fa-server': 'server',
   'fa-router': 'network-wired', // Using network-wired for router/network issues
+  'fa-home': 'house',
+  'fa-globe': 'globe',
   'fa-github': 'github',
   'fa-twitter': 'twitter',
+  'fa-x-twitter': 'x-twitter',
+  'fa-instagram': 'instagram',
   'fa-apple': 'apple',
   'fa-windows': 'windows',
 }
@@ -169,7 +180,14 @@ export const iconNameMap: Record<string, string> = {
  * Set of brand icon names (derived from imported brand icons)
  * Used to determine the icon prefix (fab vs fas) dynamically
  */
-export const brandIconNames = new Set<string>(['github', 'twitter', 'apple', 'windows'])
+export const brandIconNames = new Set<string>([
+  'github',
+  'twitter',
+  'x-twitter',
+  'instagram',
+  'apple',
+  'windows',
+])
 
 /**
  * Set of all valid icon names in the library
@@ -177,6 +195,7 @@ export const brandIconNames = new Set<string>(['github', 'twitter', 'apple', 'wi
  */
 export const validIconNames = new Set<string>([
   ...Object.values(iconNameMap),
+  'circle-check', // Explicitly add circle-check as it's used directly
   'circle-question', // Fallback icon
 ])
 /**

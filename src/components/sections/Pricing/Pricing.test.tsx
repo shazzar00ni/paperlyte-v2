@@ -14,13 +14,13 @@ describe('Pricing', () => {
 
   it('should render main heading', () => {
     render(<Pricing />)
-    expect(screen.getByText('Simple, Transparent Pricing')).toBeInTheDocument()
+    expect(screen.getByText('Simple pricing. No surprises.')).toBeInTheDocument()
   })
 
   it('should render subtitle', () => {
     render(<Pricing />)
     expect(
-      screen.getByText("Start free, upgrade when you're ready. No credit card required.")
+      screen.getByText('Start free, upgrade whenever. No credit card needed to get started.')
     ).toBeInTheDocument()
   })
 
@@ -145,7 +145,7 @@ describe('Pricing', () => {
       screen.getByText('30-day money-back guarantee • Cancel anytime • No hidden fees')
     ).toBeInTheDocument()
 
-    const shieldIcon = container.querySelector('.fa-shield-check')
+    const shieldIcon = container.querySelector('[aria-label="Guarantee"]')
     expect(shieldIcon).toBeInTheDocument()
     expect(shieldIcon).toHaveAttribute('aria-label', 'Guarantee')
   })
@@ -161,7 +161,7 @@ describe('Pricing', () => {
     render(<Pricing />)
 
     // Main heading should be h2
-    const mainHeading = screen.getByText('Simple, Transparent Pricing')
+    const mainHeading = screen.getByText('Simple pricing. No surprises.')
     expect(mainHeading.tagName).toBe('H2')
 
     // Plan names should be h3

@@ -213,7 +213,7 @@ describe('ThemeToggle', () => {
       render(<ThemeToggle />)
 
       const button = screen.getByRole('button')
-      const icon = button.querySelector('i')
+      const icon = button.querySelector('.icon-svg, .icon-fallback')
 
       expect(icon).toHaveClass('fa-moon')
     })
@@ -227,7 +227,7 @@ describe('ThemeToggle', () => {
       render(<ThemeToggle />)
 
       const button = screen.getByRole('button')
-      const icon = button.querySelector('i')
+      const icon = button.querySelector('.icon-svg, .icon-fallback')
 
       expect(icon).toHaveClass('fa-sun')
     })
@@ -241,7 +241,7 @@ describe('ThemeToggle', () => {
       render(<ThemeToggle />)
 
       const button = screen.getByRole('button')
-      const icon = button.querySelector('i')
+      const icon = button.querySelector('.icon-svg, .icon-fallback')
 
       // Icon component applies size classes
       expect(icon).toBeInTheDocument()

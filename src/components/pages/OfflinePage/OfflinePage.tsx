@@ -120,7 +120,10 @@ export const OfflinePage: FC<OfflinePageProps> = ({
             disabled={isChecking}
             aria-label="Check connection and retry"
           >
-            <Icon name={isChecking ? 'fa-spinner fa-spin' : 'fa-rotate-right'} />
+            <Icon
+              name={isChecking ? 'fa-spinner' : 'fa-rotate-right'}
+              className={isChecking ? 'fa-spin' : ''}
+            />
             <span>{isChecking ? 'Checking...' : 'Try Again'}</span>
           </button>
 

@@ -57,25 +57,30 @@ import { Illustration } from '@components/ui/Illustration'
 ## Recommended Illustrations for Each Section
 
 ### Hero Section
+
 - **Decorative elements**: Abstract shapes, geometric patterns
 - **Size**: hero (500px)
 - **Suggestions**: Floating elements, abstract backgrounds
 
 ### Solution Section
+
 1. **Zero-Lag Typing**: Lightning bolt, rocket, speedometer
 2. **Tag-Based Organization**: Tags, labels, filing system
 3. **Works Everywhere**: Globe, devices, cloud sync
 
 ### Features Section
+
 - Small icons to complement or replace Font Awesome icons
 - **Size**: sm (120px)
 - Match existing feature themes
 
 ### Mobile Section
+
 - **Illustration**: Person using mobile phone, mobile interface
 - **Size**: lg (300px)
 
 ### Problem Section
+
 - **Illustration**: Frustrated user, complex interface, tangled wires
 - **Size**: md (200px)
 
@@ -86,6 +91,7 @@ Illustrations automatically adapt to light/dark mode:
 - **Dark mode**: Primary = #ffffff (white), Secondary = rgba(255, 255, 255, 0.1)
 
 Custom colors can be passed via props:
+
 ```tsx
 <Illustration
   name="custom"

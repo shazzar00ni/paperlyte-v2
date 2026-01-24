@@ -21,6 +21,7 @@ A reusable `<Illustration>` component located at:
 - Mobile-responsive with proper scaling
 
 **Usage:**
+
 ```tsx
 import { Illustration } from '@components/ui/Illustration'
 
@@ -70,6 +71,7 @@ Streamline illustrations come with two colors. To make them work with our theme 
 3. Replace them with CSS custom properties:
 
 **Before:**
+
 ```xml
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
   <path fill="#000000" d="..."/>
@@ -78,6 +80,7 @@ Streamline illustrations come with two colors. To make them work with our theme 
 ```
 
 **After:**
+
 ```xml
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
   <path fill="var(--illustration-primary, #1a1a1a)" d="..."/>

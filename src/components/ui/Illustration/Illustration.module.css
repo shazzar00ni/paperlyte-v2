@@ -13,9 +13,6 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
-
-  /* Apply duotone colors to SVG using CSS filters */
-  filter: var(--duotone-filter, none);
 }
 
 /* Size variants */

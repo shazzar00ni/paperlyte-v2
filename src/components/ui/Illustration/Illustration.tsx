@@ -1,4 +1,4 @@
-import { CSSProperties } from 'react'
+import type { CSSProperties } from 'react'
 import styles from './Illustration.module.css'
 
 export interface IllustrationProps {

@@ -1,4 +1,15 @@
 ---
+# Coverage configuration for Codacy
+coverage:
+  # Coverage report paths
+  paths:
+    - coverage/lcov.info
+
+  # Coverage thresholds
+  thresholds:
+    overall: 70
+    file: 50
+
 engines:
   eslint-9:
     enabled: true
@@ -15,3 +26,15 @@ exclude_patterns:
   - identifier: "ESLint8_xss_no-mixed-html"
     paths:
       - "src/utils/validation-sanitization.test.ts"
+
+# Exclude paths from code analysis
+exclude_paths:
+  - 'node_modules/**'
+  - 'dist/**'
+  - 'coverage/**'
+  - '**/*.test.ts'
+  - '**/*.test.tsx'
+  - '**/*.spec.ts'
+  - '**/*.spec.tsx'
+  - 'src/test/**'
+  - 'scripts/**'

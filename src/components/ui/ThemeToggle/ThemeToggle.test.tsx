@@ -3,6 +3,26 @@ import userEvent from '@testing-library/user-event'
 import { ThemeToggle } from './ThemeToggle'
 import * as useThemeModule from '@hooks/useTheme'
 
+// Test helper to check icon size for both SVG and fallback elements
+function expectIconSize(icon: Element | null, expectedSize: string): void {
+  expect(icon).toBeInTheDocument()
+
+  if (icon?.tagName === 'svg') {
+    // SVG uses width/height attributes (e.g., '20')
+    expect(icon).toHaveAttribute('width', expectedSize)
+    expect(icon).toHaveAttribute('height', expectedSize)
+  } else if (icon?.tagName === 'SPAN') {
+    // Fallback span uses fontSize style (e.g., '20px')
+    const expectedFontSize = expectedSize.endsWith('px') ? expectedSize : `${expectedSize}px`
+    expect((icon as HTMLElement).style.fontSize).toBe(expectedFontSize)
+  }
+}
+
+// Test helper to get icon from button
+function getIconFromButton(button: HTMLElement): Element | null {
+  return button.querySelector('svg, .icon-fallback')
+}
+
 describe('ThemeToggle', () => {
   const mockToggleTheme = vi.fn()
 
@@ -35,9 +55,8 @@ describe('ThemeToggle', () => {
 
       render(<ThemeToggle />)
 
-      // Icon component should render (as SVG or fallback)
       const button = screen.getByRole('button')
-      const icon = button.querySelector('svg, .icon-fallback')
+      const icon = getIconFromButton(button)
       expect(icon).toBeInTheDocument()
     })
 
@@ -49,9 +68,8 @@ describe('ThemeToggle', () => {
 
       render(<ThemeToggle />)
 
-      // Icon component should render (as SVG or fallback)
       const button = screen.getByRole('button')
-      const icon = button.querySelector('svg, .icon-fallback')
+      const icon = getIconFromButton(button)
       expect(icon).toBeInTheDocument()
     })
   })
@@ -175,8 +193,8 @@ describe('ThemeToggle', () => {
       })
 
       rerender(<ThemeToggle />)
-      const iconLight = screen.getByRole('button').querySelector('svg, .icon-fallback')
-      expect(iconLight).toBeInTheDocument()
+      const button = screen.getByRole('button')
+      expect(getIconFromButton(button)).toBeInTheDocument()
 
       vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
         theme: 'dark',
@@ -184,8 +202,7 @@ describe('ThemeToggle', () => {
       })
 
       rerender(<ThemeToggle />)
-      const iconDark = screen.getByRole('button').querySelector('svg, .icon-fallback')
-      expect(iconDark).toBeInTheDocument()
+      expect(getIconFromButton(button)).toBeInTheDocument()
     })
 
     it('should update aria-label when theme changes', () => {
@@ -217,9 +234,7 @@ describe('ThemeToggle', () => {
       render(<ThemeToggle />)
 
       const button = screen.getByRole('button')
-      const icon = button.querySelector('svg, .icon-fallback')
-
-      // Icon should be rendered (either as SVG or fallback)
+      const icon = getIconFromButton(button)
       expect(icon).toBeInTheDocument()
     })
 
@@ -232,9 +247,7 @@ describe('ThemeToggle', () => {
       render(<ThemeToggle />)
 
       const button = screen.getByRole('button')
-      const icon = button.querySelector('svg, .icon-fallback')
-
-      // Icon should be rendered (either as SVG or fallback)
+      const icon = getIconFromButton(button)
       expect(icon).toBeInTheDocument()
     })
 
@@ -247,19 +260,10 @@ describe('ThemeToggle', () => {
       render(<ThemeToggle />)
 
       const button = screen.getByRole('button')
-      const icon = button.querySelector('svg, .icon-fallback')
+      const icon = getIconFromButton(button)
 
-      // Icon component should render with size (md = 20px)
-      expect(icon).toBeInTheDocument()
-
-      // Assert size based on element type
-      if (icon?.tagName === 'svg') {
-        expect(icon).toHaveAttribute('width', '20')
-        expect(icon).toHaveAttribute('height', '20')
-      } else if (icon?.tagName === 'SPAN') {
-        // Fallback span should have fontSize style
-        expect((icon as HTMLElement).style.fontSize).toBe('20px')
-      }
+      // Assert icon renders with size (md = 20px)
+      expectIconSize(icon, '20')
     })
   })
 })

@@ -123,9 +123,7 @@ const MAX_SANITIZATION_ITERATIONS = 100
  */
 function iterativeReplace(input: string, pattern: RegExp, replacement = ''): string {
   // Ensure pattern has global flag for efficient replacement
-  const globalPattern = pattern.global
-    ? pattern
-    : new RegExp(pattern.source, pattern.flags + 'g')
+  const globalPattern = pattern.global ? pattern : new RegExp(pattern.source, pattern.flags + 'g')
 
   // Early exit if pattern doesn't match to avoid unnecessary iteration
   if (!globalPattern.test(input)) {
@@ -193,22 +191,21 @@ export function sanitizeInput(input: string): string {
   sanitized = sanitized.replace(/[<>]/g, '')
 
   // Iteratively remove dangerous protocols to prevent bypasses like 'jajavascript:vascript:'
+  // Use bounded quantifiers to prevent ReDoS: \s{0,10} instead of \s*, \/{0,10} handles file:///
   sanitized = iterativeReplace(
     sanitized,
-    /(javascript|data|vbscript|file|about)\s*:\/*/gi
+    /(javascript|data|vbscript|file|about)\s{0,10}:\/{0,10}/gi
   )
 
   // Iteratively remove event handlers to prevent bypasses like 'ononclick='
-  sanitized = iterativeReplace(sanitized, /\bon\w+\s*=/gi)
+  // Use bounded quantifier to prevent ReDoS and include optional spaces after =
+  sanitized = iterativeReplace(sanitized, /\bon\w+\s{0,10}=\s{0,10}/gi)
 
   // Encode HTML entities
-  sanitized = sanitized
-    .replace(/&/g, '&amp;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#x27;')
+  sanitized = sanitized.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;')
 
   // Limit length to prevent buffer overflow
-  return sanitized.trim().slice(0, 500)
+  return sanitized.slice(0, 500)
 }
 
 /**

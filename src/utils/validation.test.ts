@@ -198,22 +198,23 @@ describe('sanitizeInput', () => {
   })
 
   it('should handle complex nested patterns without performance issues', () => {
-    // Test that the function handles complex inputs efficiently
-    // Create a pattern with multiple nested layers that requires several iterations
-    // Pattern: 'on<nested>aclick=' where nested also contains similar patterns
-    let complexInput = 'alert(1)'
+    // Test that the function handles complex inputs efficiently with deeply nested patterns
+    // Create actual nested dangerous patterns that require multiple iterations
+    // Start with a base payload and wrap it with nested event handlers
+    let complexInput = 'malicious()'
+
+    // Build deeply nested onclick patterns: ononclick=ononclick=...malicious()
     for (let i = 0; i < 15; i++) {
-      const char = String.fromCharCode(97 + (i % 26)) // a-z
-      complexInput = 'on' + complexInput + char + 'click='
+      complexInput = 'ononclick=' + complexInput
     }
-    
+
     const result = sanitizeInput(complexInput)
-    
-    // Should complete sanitization without hanging
+
+    // Should complete sanitization without hanging (tests DoS protection)
     expect(result).toBeDefined()
-    // Should not contain any remaining dangerous patterns
-    expect(result).not.toMatch(/on\w+\s*=/)
-    expect(result).not.toMatch(/javascript:/i)
+    // Should successfully remove all nested dangerous patterns
+    expect(result).not.toMatch(/on\w+\s{0,10}=/)
+    expect(result).toBe('malicious()')
     // Should respect length limit
     expect(result.length).toBeLessThanOrEqual(500)
   })

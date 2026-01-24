@@ -54,14 +54,26 @@ jobs:
           # This will handover control about PR rejection to the GitHub side
           max-allowed-issues: 2147483647
 
-      # Upload the SARIF file generated in the previous step
-      # NOTE: Temporarily allowing failures due to GitHub's July 2025 breaking change
-      # that rejects SARIF files with multiple runs per category. Codacy CLI generates
-      # multiple runs (one per tool) which is now rejected. Tracking:
+      # Filter SARIF to comply with GitHub's 20-run limit per category
+      # Background: GitHub introduced a breaking change rejecting SARIF files with >20 runs.
+      # Codacy CLI generates multiple runs (one per tool). Tracking issue:
       # https://github.com/codacy/codacy-analysis-cli/issues/541
+      - name: Filter SARIF to GitHub limits
+        if: always()
+        run: |
+          if [ -f results.sarif ]; then
+            # GitHub Code Scanning allows max 20 runs per SARIF file
+            # Filter to keep only first 20 runs using jq
+            jq '.runs |= .[:20]' results.sarif > results-filtered.sarif
+            mv results-filtered.sarif results.sarif
+
+            # Log run count for debugging
+            RUN_COUNT=$(jq '.runs | length' results.sarif)
+            echo "SARIF file contains $RUN_COUNT runs (max 20 allowed)"
+          fi
+
       - name: Upload SARIF results file
         uses: github/codeql-action/upload-sarif@v4.31.10
-        continue-on-error: true
         if: hashFiles('results.sarif') != ''
         with:
           sarif_file: results.sarif

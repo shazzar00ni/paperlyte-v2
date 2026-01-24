@@ -194,7 +194,8 @@ describe('Header', () => {
       expect(closeButton).toHaveAttribute('aria-expanded', 'true')
     })
 
-    it('should have keyboard navigable menu items', async () => {
+
+    it('should navigate to next item with ArrowRight', async () => {
       const user = userEvent.setup()
       render(<Header />)
 
@@ -202,23 +203,99 @@ describe('Header', () => {
       const menuButton = screen.getByRole('button', { name: /open menu/i })
       await user.click(menuButton)
 
-      // Verify menu items are focusable
-      const featuresLink = screen.getByRole('link', { name: /features/i })
+      // Menu auto-focuses first item, navigate from there
+      await user.keyboard('{ArrowRight}')
+
       const downloadLink = screen.getByRole('link', { name: /download/i })
-      const getStartedButton = screen.getByRole('button', { name: /get started/i })
-
-      expect(featuresLink).toBeInTheDocument()
-      expect(downloadLink).toBeInTheDocument()
-      expect(getStartedButton).toBeInTheDocument()
-
-      // Test that items can be focused
-      featuresLink.focus()
-      expect(document.activeElement).toBe(featuresLink)
-
-      downloadLink.focus()
       expect(document.activeElement).toBe(downloadLink)
+    })
 
-      getStartedButton.focus()
+
+    it('should navigate to previous item with ArrowLeft', async () => {
+      const user = userEvent.setup()
+      render(<Header />)
+
+      // Open the menu
+      const menuButton = screen.getByRole('button', { name: /open menu/i })
+      await user.click(menuButton)
+
+      // Menu auto-focuses first item (features), move to second, then back
+      await user.keyboard('{ArrowRight}')
+      await user.keyboard('{ArrowLeft}')
+
+      const featuresLink = screen.getByRole('link', { name: /features/i })
+      expect(document.activeElement).toBe(featuresLink)
+    })
+
+    it('should support Home and End keys for navigation', async () => {
+      const user = userEvent.setup()
+      render(<Header />)
+
+      // Open the menu
+      const menuButton = screen.getByRole('button', { name: /open menu/i })
+      await user.click(menuButton)
+
+      const initialFocus = document.activeElement
+
+      // Press End to go to last item
+      await user.keyboard('{End}')
+      expect(document.activeElement).not.toBe(initialFocus)
+
+      const lastFocus = document.activeElement
+
+      // Press Home to go back to first item
+      await user.keyboard('{Home}')
+      expect(document.activeElement).not.toBe(lastFocus)
+    })
+
+    it('should navigate to last focusable item with End key', async () => {
+      const user = userEvent.setup()
+      render(<Header />)
+
+      // Open the menu
+      const menuButton = screen.getByRole('button', { name: /open menu/i })
+      await user.click(menuButton)
+
+      // Menu auto-focuses first item, press End to go to last
+      await user.keyboard('{End}')
+
+      // Verify we moved away from the first item
+      const featuresLink = screen.getByRole('link', { name: /features/i })
+      expect(document.activeElement).not.toBe(featuresLink)
+    })
+
+    it('should wrap around when navigating past edges', async () => {
+      const user = userEvent.setup()
+      render(<Header />)
+
+      // Open the menu
+      const menuButton = screen.getByRole('button', { name: /open menu/i })
+      await user.click(menuButton)
+
+      const featuresLink = screen.getByRole('link', { name: /features/i })
+
+      // Menu auto-focuses first item, press ArrowLeft to wrap to last
+      await user.keyboard('{ArrowLeft}')
+      expect(document.activeElement).not.toBe(featuresLink)
+
+      // Navigate back to first with ArrowRight (wrap around)
+      await user.keyboard('{ArrowRight}')
+      expect(document.activeElement).toBe(featuresLink)
+    })
+
+    it('should wrap around to last item when pressing ArrowLeft at beginning', async () => {
+      const user = userEvent.setup()
+      render(<Header />)
+
+      // Open the menu
+      const menuButton = screen.getByRole('button', { name: /open menu/i })
+      await user.click(menuButton)
+
+      // Menu auto-focuses first item, press ArrowLeft to wrap to last
+      await user.keyboard('{ArrowLeft}')
+
+      // Should wrap to last item (Get Started)
+      const getStartedButton = screen.getByRole('button', { name: /get started/i })
       expect(document.activeElement).toBe(getStartedButton)
     })
 

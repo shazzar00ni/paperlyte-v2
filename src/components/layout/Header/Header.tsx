@@ -52,9 +52,7 @@ export const Header = (): React.ReactElement => {
     if (!mobileMenuOpen || !menuRef.current) return
 
     const menu = menuRef.current
-    const focusableElements = menu.querySelectorAll<HTMLElement>(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-    )
+    const focusableElements = getFocusableElements(menu)
     const firstFocusable = focusableElements[0]
     const lastFocusable = focusableElements[focusableElements.length - 1]
 

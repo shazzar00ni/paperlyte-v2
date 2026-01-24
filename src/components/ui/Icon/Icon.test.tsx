@@ -102,7 +102,7 @@ describe('Icon', () => {
     rerender(<Icon name="missing-icon" />)
     const fallback = container.querySelector('.icon-fallback') as HTMLElement
     expect(fallback).toBeInTheDocument()
-    expect(fallback?.style.fontSize).toBe('20px')
+    expect(fallback.style.fontSize).toBe('20px')
   })
 
   it('should be hidden from screen readers by default', () => {

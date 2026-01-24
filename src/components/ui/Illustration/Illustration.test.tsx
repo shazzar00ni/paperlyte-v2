@@ -9,8 +9,8 @@ describe('Illustration', () => {
   })
 
   it('renders image with correct src', () => {
-    render(<Illustration name="rocket-launch" ariaLabel="Rocket" />)
-    const img = screen.getByRole('img', { name: 'Rocket' }).querySelector('img')
+    const { container } = render(<Illustration name="rocket-launch" ariaLabel="Rocket" />)
+    const img = container.querySelector('img')
     expect(img).toHaveAttribute('src', '/illustrations/rocket-launch.svg')
   })
 

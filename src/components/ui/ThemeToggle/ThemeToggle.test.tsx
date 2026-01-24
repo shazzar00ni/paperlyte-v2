@@ -14,7 +14,8 @@ function expectIconSize(icon: Element | null, expectedSize: string): void {
   } else if (icon?.tagName === 'SPAN') {
     // Fallback span uses fontSize style (e.g., '20px')
     const expectedFontSize = expectedSize.endsWith('px') ? expectedSize : `${expectedSize}px`
-    expect((icon as HTMLElement).style.fontSize).toBe(expectedFontSize)
+     // codacy-disable-next-line ESLint8_xss_no-mixed-html
+     expect((icon as HTMLElement).style.fontSize).toBe(expectedFontSize)
   }
 }
 

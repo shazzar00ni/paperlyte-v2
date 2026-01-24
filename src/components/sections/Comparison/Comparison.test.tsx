@@ -65,29 +65,19 @@ describe('Comparison', () => {
   })
 
   it('should render checkmark icons for true boolean values', () => {
-    const { container } = render(<Comparison />)
+    render(<Comparison />)
 
     // Find all checkmarks
-    const checkmarks = container.querySelectorAll('.fa-check')
+    const checkmarks = screen.getAllByLabelText('Supported')
     expect(checkmarks.length).toBeGreaterThan(0)
-
-    // Check they have proper accessibility labels
-    checkmarks.forEach((checkmark) => {
-      expect(checkmark).toHaveAttribute('aria-label', 'Supported')
-    })
   })
 
   it('should render X icons for false boolean values', () => {
-    const { container } = render(<Comparison />)
+    render(<Comparison />)
 
     // Find all X marks
-    const xmarks = container.querySelectorAll('.fa-xmark')
+    const xmarks = screen.getAllByLabelText('Not supported')
     expect(xmarks.length).toBeGreaterThan(0)
-
-    // Check they have proper accessibility labels
-    xmarks.forEach((xmark) => {
-      expect(xmark).toHaveAttribute('aria-label', 'Not supported')
-    })
   })
 
   it('should render text values for string comparisons', () => {

@@ -90,6 +90,9 @@ describe('Icon', () => {
     // Fallback renders as span with fontSize style
     if (fallback?.tagName === 'SPAN') {
       expect(fallback.style.fontSize).toBe('24px')
+    } else {
+      // FontAwesomeIcon renders as SVG - size is applied via style prop
+      expect(fallback).toHaveStyle({ fontSize: '24px' })
     }
   })
 

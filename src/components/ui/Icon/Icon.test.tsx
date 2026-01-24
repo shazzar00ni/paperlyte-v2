@@ -86,8 +86,9 @@ describe('Icon', () => {
 
     // Test fallback size application
     rerender(<Icon name="missing-icon" size="lg" />)
-    const fallback = container.querySelector('.icon-fallback') as HTMLElement
-    expect(fallback.style.fontSize).toBe('24px')
+    const fallback = container.querySelector('.icon-fallback')
+    expect(fallback).toBeInTheDocument()
+    expect(fallback).toHaveStyle({ fontSize: '24px' })
   })
 
   it('should use medium size by default', () => {
@@ -100,9 +101,9 @@ describe('Icon', () => {
 
     // Test fallback default size
     rerender(<Icon name="missing-icon" />)
-    const fallback = container.querySelector('.icon-fallback') as HTMLElement
+    const fallback = container.querySelector('.icon-fallback')
     expect(fallback).toBeInTheDocument()
-    expect(fallback.style.fontSize).toBe('20px')
+    expect(fallback).toHaveStyle({ fontSize: '20px' })
   })
 
   it('should be hidden from screen readers by default', () => {
@@ -140,9 +141,10 @@ describe('Icon', () => {
 
   it('should handle color prop on fallback elements', () => {
     const { container } = render(<Icon name="missing-icon" color="#FF0000" />)
-    const fallback = container.querySelector('.icon-fallback') as HTMLElement
+    const fallback = container.querySelector('.icon-fallback')
 
     // Fallback uses inline style for color
+    expect(fallback).toBeInTheDocument()
     expect(fallback).toHaveStyle({ color: '#FF0000' })
   })
 
@@ -159,7 +161,8 @@ describe('Icon', () => {
 
     // Test with fallback (missing icon)
     rerender(<Icon name="missing-icon" color="FF0000" />)
-    const fallback = container.querySelector('.icon-fallback') as HTMLElement
+    const fallback = container.querySelector('.icon-fallback')
+    expect(fallback).toBeInTheDocument()
     expect(fallback).toHaveStyle({ color: '#FF0000' })
 
     // Test that valid CSS colors are left untouched

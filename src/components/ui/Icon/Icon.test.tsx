@@ -2,6 +2,27 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { Icon } from './Icon'
 
+// Test helper to assert icon size for both SVG and fallback elements
+function expectIconSize(icon: Element | null, expectedSize: string): void {
+  expect(icon).toBeInTheDocument()
+
+  if (icon?.tagName === 'svg') {
+    // SVG uses width/height attributes
+    expect(icon).toHaveAttribute('width', expectedSize)
+    expect(icon).toHaveAttribute('height', expectedSize)
+  } else if (icon?.tagName === 'SPAN') {
+    // Span fallback uses fontSize style
+    const expectedFontSize = expectedSize.endsWith('px') ? expectedSize : `${expectedSize}px`
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Safe: accessing CSS property for test assertion, not HTML injection
+    expect((icon as HTMLElement).style.fontSize).toBe(expectedFontSize)
+  } else {
+    // FontAwesomeIcon SVG with fontSize in style
+    expect(icon?.tagName).toBe('svg')
+    const expectedFontSize = expectedSize.endsWith('px') ? expectedSize : `${expectedSize}px`
+    expect(icon).toHaveStyle({ fontSize: expectedFontSize })
+  }
+}
+
 describe('Icon', () => {
   let consoleWarnSpy: ReturnType<typeof vi.spyOn>
 
@@ -68,53 +89,34 @@ describe('Icon', () => {
     // Test sm size (16px)
     const { container, rerender } = render(<Icon name="fa-bolt" size="sm" />)
     let svg = container.querySelector('svg')
-    expect(svg).toHaveAttribute('width', '16')
-    expect(svg).toHaveAttribute('height', '16')
+    expectIconSize(svg, '16')
 
     // Test lg size (24px)
     rerender(<Icon name="fa-bolt" size="lg" />)
     svg = container.querySelector('svg')
-    expect(svg).toHaveAttribute('width', '24')
-    expect(svg).toHaveAttribute('height', '24')
+    expectIconSize(svg, '24')
 
     // Test 2x size (40px)
     rerender(<Icon name="fa-bolt" size="2x" />)
     svg = container.querySelector('svg')
-    expect(svg).toHaveAttribute('width', '40')
-    expect(svg).toHaveAttribute('height', '40')
+    expectIconSize(svg, '40')
 
-    // Test fallback size application (fallback uses fontSize style)
+    // Test fallback size application
     rerender(<Icon name="missing-icon" size="lg" />)
     const fallback = container.querySelector('.icon-fallback')
-    expect(fallback).toBeInTheDocument()
-
-    // Size assertion based on element type
-    if (fallback?.tagName === 'SPAN') {
-      // Span fallback uses inline fontSize style
-      expect(fallback.style.fontSize).toBe('24px')
-    } else {
-      // FontAwesomeIcon renders as SVG with fontSize in style prop
-      expect(fallback?.tagName).toBe('svg')
-      expect(fallback).toHaveStyle({ fontSize: '24px' })
-    }
+    expectIconSize(fallback, '24')
   })
 
   it('should use medium size by default', () => {
     // Test SVG default size (md = 20px)
     const { container, rerender } = render(<Icon name="fa-bolt" />)
     const svg = container.querySelector('svg')
-    expect(svg).toBeInTheDocument()
-    expect(svg).toHaveAttribute('width', '20')
-    expect(svg).toHaveAttribute('height', '20')
+    expectIconSize(svg, '20')
 
     // Test fallback default size
     rerender(<Icon name="missing-icon" />)
     const fallback = container.querySelector('.icon-fallback')
-    expect(fallback).toBeInTheDocument()
-    // Fallback renders as span with fontSize style
-    if (fallback?.tagName === 'SPAN') {
-      expect(fallback.style.fontSize).toBe('20px')
-    }
+    expectIconSize(fallback, '20')
   })
 
   it('should be hidden from screen readers by default', () => {

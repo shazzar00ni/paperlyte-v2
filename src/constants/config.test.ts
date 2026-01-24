@@ -30,15 +30,9 @@ describe('Config Constants', () => {
     it('should have valid email formats', () => {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-      expect(
-        emailRegex.test(CONTACT.supportEmail),
-        'supportEmail should be valid'
-      ).toBe(true)
+      expect(emailRegex.test(CONTACT.supportEmail), 'supportEmail should be valid').toBe(true)
 
-      expect(
-        emailRegex.test(CONTACT.salesEmail),
-        'salesEmail should be valid'
-      ).toBe(true)
+      expect(emailRegex.test(CONTACT.salesEmail), 'salesEmail should be valid').toBe(true)
     })
 
     it('should use paperlyte.com domain', () => {
@@ -207,28 +201,19 @@ describe('Config Constants', () => {
   describe('String Type Validation', () => {
     it('should have all CONTACT values as strings', () => {
       Object.entries(CONTACT).forEach(([key, value]) => {
-        expect(
-          typeof value,
-          `CONTACT.${key} should be a string`
-        ).toBe('string')
+        expect(typeof value, `CONTACT.${key} should be a string`).toBe('string')
       })
     })
 
     it('should have all SOCIAL_LINKS values as strings', () => {
       Object.entries(SOCIAL_LINKS).forEach(([key, value]) => {
-        expect(
-          typeof value,
-          `SOCIAL_LINKS.${key} should be a string`
-        ).toBe('string')
+        expect(typeof value, `SOCIAL_LINKS.${key} should be a string`).toBe('string')
       })
     })
 
     it('should have all APP_CONFIG values as strings', () => {
       Object.entries(APP_CONFIG).forEach(([key, value]) => {
-        expect(
-          typeof value,
-          `APP_CONFIG.${key} should be a string`
-        ).toBe('string')
+        expect(typeof value, `APP_CONFIG.${key} should be a string`).toBe('string')
       })
     })
   })

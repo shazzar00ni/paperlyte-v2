@@ -358,7 +358,7 @@ describe('analytics/webVitals', () => {
       // Emit layout shift with needs-improvement value (0.1 < CLS <= 0.25)
       clsObserver.callback(
         {
-          getEntries: () => [{ hadRecentInput: false, value: 0.10 }],
+          getEntries: () => [{ hadRecentInput: false, value: 0.1 }],
         } as PerformanceObserverEntryList,
         clsObserver as PerformanceObserver
       )

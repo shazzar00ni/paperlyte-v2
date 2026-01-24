@@ -87,7 +87,7 @@ describe('Icon', () => {
     // Test fallback size application
     rerender(<Icon name="missing-icon" size="lg" />)
     const fallback = container.querySelector('.icon-fallback') as HTMLElement
-    expect(fallback?.style.fontSize).toBe('24px')
+    expect(fallback.style.fontSize).toBe('24px')
   })
 
   it('should use medium size by default', () => {

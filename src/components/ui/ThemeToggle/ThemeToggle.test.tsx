@@ -33,7 +33,7 @@ describe('ThemeToggle', () => {
         toggleTheme: mockToggleTheme,
       })
 
-      const { container } = render(<ThemeToggle />)
+      render(<ThemeToggle />)
 
       // Icon is decorative - button's aria-label provides accessible name
       const button = screen.getByRole('button')
@@ -46,7 +46,7 @@ describe('ThemeToggle', () => {
         toggleTheme: mockToggleTheme,
       })
 
-      const { container } = render(<ThemeToggle />)
+      render(<ThemeToggle />)
 
       // Icon is decorative - button's aria-label provides accessible name
       const button = screen.getByRole('button')

@@ -45,6 +45,6 @@ describe('Illustration', () => {
     render(<Illustration name="test" ariaLabel="Descriptive label" />)
     const illustrationDiv = screen.getByRole('img', { name: 'Descriptive label' })
     expect(illustrationDiv).toHaveAttribute('aria-label', 'Descriptive label')
-    expect(illustrationDiv).not.toHaveAttribute('aria-hidden')
+    expect(illustrationDiv.getAttribute('aria-hidden')).toBeNull()
   })
 })

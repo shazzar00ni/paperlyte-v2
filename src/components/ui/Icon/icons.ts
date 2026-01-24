@@ -1,3 +1,5 @@
+import { safePropertyAccess } from '../../../utils/security'
+
 // Lightweight SVG icon paths to replace Font Awesome CDN
 // Only includes icons actually used in the app
 
@@ -64,5 +66,5 @@ export const iconViewBox: Record<string, string> = {
 
 // Returns the viewBox for the given icon, defaulting to "0 0 24 24" for icons not listed above
 export const getIconViewBox = (name: string): string => {
-  return iconViewBox[name] || '0 0 24 24'
+  return safePropertyAccess(iconViewBox, name) ?? '0 0 24 24'
 }

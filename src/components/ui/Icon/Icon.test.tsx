@@ -1,27 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { Icon } from './Icon'
-
-// Test helper to assert icon size for both SVG and fallback elements
-function expectIconSize(icon: Element | null, expectedSize: string): void {
-  expect(icon).toBeInTheDocument()
-
-  if (icon?.tagName === 'svg') {
-    // SVG uses width/height attributes
-    expect(icon).toHaveAttribute('width', expectedSize)
-    expect(icon).toHaveAttribute('height', expectedSize)
-  } else if (icon?.tagName === 'SPAN') {
-    // Span fallback uses fontSize style
-    const expectedFontSize = expectedSize.endsWith('px') ? expectedSize : `${expectedSize}px`
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Safe: accessing CSS property for test assertion, not HTML injection
-    expect((icon as HTMLElement).style.fontSize).toBe(expectedFontSize)
-  } else {
-    // FontAwesomeIcon SVG with fontSize in style
-    expect(icon?.tagName).toBe('svg')
-    const expectedFontSize = expectedSize.endsWith('px') ? expectedSize : `${expectedSize}px`
-    expect(icon).toHaveStyle({ fontSize: expectedFontSize })
-  }
-}
+import { expectIconSize } from '@/test/iconTestHelpers'
 
 describe('Icon', () => {
   let consoleWarnSpy: ReturnType<typeof vi.spyOn>

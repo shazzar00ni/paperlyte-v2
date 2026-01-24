@@ -2,27 +2,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { ThemeToggle } from './ThemeToggle'
 import * as useThemeModule from '@hooks/useTheme'
-
-// Test helper to check icon size for both SVG and fallback elements
-function expectIconSize(icon: Element | null, expectedSize: string): void {
-  expect(icon).toBeInTheDocument()
-
-  if (icon?.tagName === 'svg') {
-    // SVG uses width/height attributes (e.g., '20')
-    expect(icon).toHaveAttribute('width', expectedSize)
-    expect(icon).toHaveAttribute('height', expectedSize)
-  } else if (icon?.tagName === 'SPAN') {
-    // Fallback span uses fontSize style (e.g., '20px')
-    const expectedFontSize = expectedSize.endsWith('px') ? expectedSize : `${expectedSize}px`
-     // codacy-disable-next-line ESLint8_xss_no-mixed-html
-     expect((icon as HTMLElement).style.fontSize).toBe(expectedFontSize)
-  }
-}
-
-// Test helper to get icon from button
-function getIconFromButton(button: HTMLElement): Element | null {
-  return button.querySelector('svg, .icon-fallback')
-}
+import { expectIconSize, getIconFromButton } from '@/test/iconTestHelpers'
 
 describe('ThemeToggle', () => {
   const mockToggleTheme = vi.fn()

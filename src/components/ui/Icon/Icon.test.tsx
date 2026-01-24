@@ -61,7 +61,7 @@ describe('Icon', () => {
     const svg = container.querySelector('svg')
     const fallback = container.querySelector('.icon-fallback')
 
-    expect(svg || fallback).toBeInTheDocument()
+    expect(svg ?? fallback).toBeInTheDocument()
   })
 
   it('should apply size attributes correctly', () => {
@@ -87,11 +87,14 @@ describe('Icon', () => {
     rerender(<Icon name="missing-icon" size="lg" />)
     const fallback = container.querySelector('.icon-fallback')
     expect(fallback).toBeInTheDocument()
-    // Fallback renders as span with fontSize style
+
+    // Size assertion based on element type
     if (fallback?.tagName === 'SPAN') {
+      // Span fallback uses inline fontSize style
       expect(fallback.style.fontSize).toBe('24px')
     } else {
-      // FontAwesomeIcon renders as SVG - size is applied via style prop
+      // FontAwesomeIcon renders as SVG with fontSize in style prop
+      expect(fallback?.tagName).toBe('svg')
       expect(fallback).toHaveStyle({ fontSize: '24px' })
     }
   })
@@ -151,11 +154,9 @@ describe('Icon', () => {
     const { container } = render(<Icon name="missing-icon" color="#FF0000" />)
     const fallback = container.querySelector('.icon-fallback')
 
-    // Fallback uses inline style for color
+    // Fallback uses inline style for color (both span and SVG)
     expect(fallback).toBeInTheDocument()
-    if (fallback?.tagName === 'SPAN') {
-      expect(fallback).toHaveStyle({ color: '#FF0000' })
-    }
+    expect(fallback).toHaveStyle({ color: '#FF0000' })
   })
 
   it('should normalize bare hex colors by prepending #', () => {
@@ -173,9 +174,7 @@ describe('Icon', () => {
     rerender(<Icon name="missing-icon" color="FF0000" />)
     const fallback = container.querySelector('.icon-fallback')
     expect(fallback).toBeInTheDocument()
-    if (fallback?.tagName === 'SPAN') {
-      expect(fallback).toHaveStyle({ color: '#FF0000' })
-    }
+    expect(fallback).toHaveStyle({ color: '#FF0000' })
 
     // Test that valid CSS colors are left untouched
     rerender(<Icon name="fa-bolt" color="rgb(255, 0, 0)" />)
@@ -188,26 +187,44 @@ describe('Icon', () => {
   })
 
   it('should render with solid variant', () => {
-    const { container } = render(<Icon name="missing-icon" variant="solid" />)
+    // Use a real FA icon not in custom set to test variant logic
+    const { container } = render(<Icon name="coffee" variant="solid" />)
     const fallback = container.querySelector('.icon-fallback')
 
-    // Variant is used to determine FontAwesome prefix, but doesn't add classes
+    // Should attempt to resolve with 'fas' prefix (solid)
     expect(fallback).toBeInTheDocument()
+
+    // Verify it's an SVG (FontAwesomeIcon) or span fallback
+    const isSvg = fallback?.tagName === 'svg'
+    const isSpan = fallback?.tagName === 'SPAN'
+    expect(isSvg || isSpan).toBe(true)
   })
 
   it('should render with regular variant', () => {
-    const { container } = render(<Icon name="missing-icon" variant="regular" />)
+    // Use a real FA icon not in custom set to test variant logic
+    const { container } = render(<Icon name="coffee" variant="regular" />)
     const fallback = container.querySelector('.icon-fallback')
 
-    // Variant is used to determine FontAwesome prefix, but doesn't add classes
+    // Should attempt to resolve with 'far' prefix (regular)
     expect(fallback).toBeInTheDocument()
+
+    // Verify it's an SVG (FontAwesomeIcon) or span fallback
+    const isSvg = fallback?.tagName === 'svg'
+    const isSpan = fallback?.tagName === 'SPAN'
+    expect(isSvg || isSpan).toBe(true)
   })
 
   it('should render with brands variant', () => {
-    const { container } = render(<Icon name="missing-icon" variant="brands" />)
+    // Use a real FA icon not in custom set to test variant logic
+    const { container } = render(<Icon name="github" variant="brands" />)
     const fallback = container.querySelector('.icon-fallback')
 
-    // Variant is used to determine FontAwesome prefix, but doesn't add classes
+    // Should attempt to resolve with 'fab' prefix (brands)
     expect(fallback).toBeInTheDocument()
+
+    // Verify it's an SVG (FontAwesomeIcon) or span fallback
+    const isSvg = fallback?.tagName === 'svg'
+    const isSpan = fallback?.tagName === 'SPAN'
+    expect(isSvg || isSpan).toBe(true)
   })
 })

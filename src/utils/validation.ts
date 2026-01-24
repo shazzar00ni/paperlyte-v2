@@ -123,7 +123,30 @@ const MAX_SANITIZATION_ITERATIONS = 100
  */
 function iterativeReplace(input: string, pattern: RegExp, replacement = ''): string {
   // Ensure pattern has global flag for efficient replacement
-  const globalPattern = pattern.global ? pattern : new RegExp(pattern.source, pattern.flags + 'g')
+  // Ensure pattern has global flag for efficient replacement.
+  // The function implicitly requires a global pattern for iterative replacement;
+  // callers must provide a global RegExp.
+  if (!pattern.global) {
+    throw new Error('iterativeReplace requires a global RegExp pattern.')
+  }
+
+  // Early exit if pattern doesn't match to avoid unnecessary iteration
+  if (!pattern.test(input)) {
+    return input
+  }
+
+  let sanitized = input
+  let prevValue
+  let iterations = 0
+
+  do {
+    prevValue = sanitized
+    sanitized = sanitized.replace(pattern, replacement)
+    iterations++
+  } while (sanitized !== prevValue && iterations < MAX_SANITIZATION_ITERATIONS)
+
+  return sanitized
+}
 
   // Early exit if pattern doesn't match to avoid unnecessary iteration
   if (!globalPattern.test(input)) {

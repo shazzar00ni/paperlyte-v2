@@ -154,22 +154,31 @@ export function sanitizeInput(input: string): string {
   const MAX_ITERATIONS = 10
 
   // --- Remove dangerous protocols iteratively ---
+  // ReDoS-safe: Use atomic grouping alternative with possessive quantifiers
+  // Pattern: (protocol) followed by optional whitespace (limited) then : and optional /
   let prevProtocolValue = ''
   let protocolIterations = 0
 
   while (sanitized !== prevProtocolValue && protocolIterations < MAX_ITERATIONS) {
     prevProtocolValue = sanitized
-    sanitized = sanitized.replace(/(javascript|data|vbscript|file|about)\s*:\/*/gi, '')
+    // Use character class with explicit limit to prevent backtracking
+    sanitized = sanitized.replace(
+      /(javascript|data|vbscript|file|about)[ \t]{0,5}:[\\/]{0,3}/gi,
+      ''
+    )
     protocolIterations++
   }
 
   // --- Remove event handlers iteratively ---
+  // ReDoS-safe: Limit \w+ and \s* to prevent catastrophic backtracking
+  // Pattern: word boundary, "on", word chars (limited), optional spaces (limited), then =
   let prevEventValue = ''
   let eventIterations = 0
 
   while (sanitized !== prevEventValue && eventIterations < MAX_ITERATIONS) {
     prevEventValue = sanitized
-    sanitized = sanitized.replace(/\bon\w+\s*=/gi, '')
+    // Limit repeating patterns to prevent exponential backtracking
+    sanitized = sanitized.replace(/\bon[\w]{1,50}[ \t]{0,5}=/gi, '')
     eventIterations++
   }
 

@@ -80,7 +80,7 @@ describe('Pricing', () => {
   })
 
   it('should render "Most Popular" badge for Pro plan', () => {
-    const { container } = render(<Pricing />)
+    render(<Pricing />)
 
     const popularBadge = screen.getByLabelText('Most popular')
     expect(popularBadge).toBeInTheDocument()
@@ -92,7 +92,7 @@ describe('Pricing', () => {
   })
 
   it('should render plan icons', () => {
-    const { container } = render(<Pricing />)
+    render(<Pricing />)
 
     PRICING_PLANS.forEach((plan) => {
       if (plan.icon) {

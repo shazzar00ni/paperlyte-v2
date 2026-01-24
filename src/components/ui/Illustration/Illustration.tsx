@@ -50,7 +50,7 @@ export const Illustration = ({
       style={style}
       role="img"
       aria-label={ariaLabel}
-      aria-hidden={!ariaLabel}
+      {...(!ariaLabel && { 'aria-hidden': 'true' })}
     >
       <img
         src={`/illustrations/${name}.svg`}

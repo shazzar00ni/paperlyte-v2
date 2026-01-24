@@ -251,10 +251,14 @@ describe('ThemeToggle', () => {
 
       // Icon component should render with size (md = 20px)
       expect(icon).toBeInTheDocument()
-      // If it's an SVG, check width/height attributes
+
+      // Assert size based on element type
       if (icon?.tagName === 'svg') {
         expect(icon).toHaveAttribute('width', '20')
         expect(icon).toHaveAttribute('height', '20')
+      } else if (icon?.tagName === 'SPAN') {
+        // Fallback span should have fontSize style
+        expect((icon as HTMLElement).style.fontSize).toBe('20px')
       }
     })
   })

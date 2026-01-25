@@ -148,32 +148,36 @@ describe('iconLibrary', () => {
       expect(values.length).toBe(uniqueValues.size)
     })
 
-    it('should map all expected feature icons', () => {
-      // Core feature icons that must be mapped
-      const requiredMappings = [
-        'fa-bolt', // Lightning Speed
-        'fa-pen-nib', // Beautiful Simplicity
-        'fa-tags', // Tag-Based Organization
-        'fa-mobile-screen', // Universal Access
-        'fa-shield-halved', // Privacy Focused
+    it('should convert all expected feature icons', () => {
+      // Core feature icons that must be convertible
+      const requiredIcons = [
+        { input: 'fa-bolt', expected: 'bolt' }, // Lightning Speed
+        { input: 'fa-pen-nib', expected: 'pen-nib' }, // Beautiful Simplicity
+        { input: 'fa-tags', expected: 'tags' }, // Tag-Based Organization
+        { input: 'fa-mobile-screen', expected: 'mobile-screen' }, // Universal Access
+        { input: 'fa-shield-halved', expected: 'shield-halved' }, // Privacy Focused
       ]
 
-      requiredMappings.forEach((oldName) => {
-        expect(iconNameMap[oldName]).toBeDefined()
+      requiredIcons.forEach(({ input, expected }) => {
+        const converted = convertIconName(input)
+        expect(converted).toBe(expected)
+        expect(validIconNames.has(converted)).toBe(true)
       })
     })
 
-    it('should map all expected UI icons', () => {
-      // UI icons that must be mapped
-      const requiredMappings = [
-        'fa-bars', // Mobile menu
-        'fa-xmark', // Close
-        'fa-moon', // Dark mode
-        'fa-sun', // Light mode
+    it('should convert all expected UI icons', () => {
+      // UI icons that must be convertible
+      const requiredIcons = [
+        { input: 'fa-bars', expected: 'bars' }, // Mobile menu
+        { input: 'fa-xmark', expected: 'xmark' }, // Close
+        { input: 'fa-moon', expected: 'moon' }, // Dark mode
+        { input: 'fa-sun', expected: 'sun' }, // Light mode
       ]
 
-      requiredMappings.forEach((oldName) => {
-        expect(iconNameMap[oldName]).toBeDefined()
+      requiredIcons.forEach(({ input, expected }) => {
+        const converted = convertIconName(input)
+        expect(converted).toBe(expected)
+        expect(validIconNames.has(converted)).toBe(true)
       })
     })
   })

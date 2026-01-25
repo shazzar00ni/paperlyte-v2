@@ -124,53 +124,12 @@ library.add(
 
 /**
  * Icon name mapping for easy reference
- * Maps from old CSS class names (fa-bolt) to new icon names (bolt)
+ * Only includes non-standard mappings where the icon name differs from the fa- prefix pattern.
+ * Standard mappings (e.g., fa-bolt -> bolt) are handled automatically by convertIconName().
  */
 export const iconNameMap: Record<string, string> = {
-  'fa-bolt': 'bolt',
-  'fa-pen-nib': 'pen-nib',
-  'fa-tags': 'tags',
-  'fa-mobile-screen': 'mobile-screen',
   'fa-wifi-slash': 'plane-slash', // Using plane-slash as offline indicator
-  'fa-shield-halved': 'shield-halved',
-  'fa-feather': 'feather',
-  'fa-xmark': 'xmark',
-  'fa-bars': 'bars',
-  'fa-envelope': 'envelope',
-  'fa-star': 'star',
   'fa-shield-check': 'circle-check', // Using circle-check for guarantee/verification
-  'fa-heart': 'heart',
-  'fa-download': 'download',
-  'fa-moon': 'moon',
-  'fa-sun': 'sun',
-  'fa-lock': 'lock',
-  'fa-check': 'check',
-  'fa-chevron-left': 'chevron-left',
-  'fa-chevron-right': 'chevron-right',
-  'fa-chevron-up': 'chevron-up',
-  'fa-chevron-down': 'chevron-down',
-  'fa-pause': 'pause',
-  'fa-play': 'play',
-  'fa-note-sticky': 'note-sticky',
-  'fa-pen': 'pen',
-  'fa-lightbulb': 'lightbulb',
-  'fa-leaf': 'leaf',
-  'fa-rocket': 'rocket',
-  'fa-users': 'users',
-  'fa-server': 'server',
-  'fa-wifi': 'wifi',
-  'fa-rotate-right': 'rotate-right',
-  'fa-book': 'book',
-  'fa-magnifying-glass': 'magnifying-glass',
-  'fa-plane': 'plane',
-  'fa-network-wired': 'network-wired',
-  'fa-arrow-right': 'arrow-right',
-  'fa-arrow-left': 'arrow-left',
-  'fa-spinner': 'spinner',
-  'fa-github': 'github',
-  'fa-twitter': 'twitter',
-  'fa-apple': 'apple',
-  'fa-windows': 'windows',
 }
 
 /**
@@ -182,10 +141,58 @@ export const brandIconNames = new Set<string>(['github', 'twitter', 'apple', 'wi
 /**
  * Set of all valid icon names in the library
  * Used for runtime validation to prevent rendering invalid icons
+ * Includes all imported solid and brand icons
  */
 export const validIconNames = new Set<string>([
-  ...Object.values(iconNameMap),
+  // Solid icons
+  'bolt',
+  'pen-nib',
+  'tags',
+  'mobile-screen',
+  'plane-slash',
+  'shield-halved',
+  'feather',
+  'xmark',
+  'bars',
+  'envelope',
+  'star',
+  'circle-check',
+  'heart',
+  'download',
+  'moon',
+  'sun',
+  'lock',
+  'check',
   'circle-question', // Fallback icon
+  'chevron-left',
+  'chevron-right',
+  'chevron-up',
+  'chevron-down',
+  'pause',
+  'play',
+  'note-sticky',
+  'pen',
+  'lightbulb',
+  'leaf',
+  'rocket',
+  'users',
+  'server',
+  'wifi',
+  'rotate-right',
+  'arrow-rotate-right',
+  'arrow-rotate-left',
+  'book',
+  'magnifying-glass',
+  'plane',
+  'network-wired',
+  'arrow-right',
+  'arrow-left',
+  'spinner',
+  // Brand icons
+  'github',
+  'twitter',
+  'apple',
+  'windows',
 ])
 /**
  * Helper function to convert old icon names to new format

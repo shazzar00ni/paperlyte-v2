@@ -184,7 +184,7 @@ describe('ThemeToggle', () => {
       })
 
       rerender(<ThemeToggle />)
-      const icon2 = screen.getByRole('button').querySelector('svg') || screen.getByRole('button').querySelector('span.icon-fallback')
+      const icon2 = screen.getByRole('button').querySelector('svg') ?? screen.getByRole('button').querySelector('span.icon-fallback')
       expect(icon2).toBeInTheDocument()
     })
 

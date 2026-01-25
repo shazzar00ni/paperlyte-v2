@@ -76,12 +76,14 @@ describe('Button', () => {
   })
 
   it('should render with icon', () => {
-    render(<Button icon="fa-download">Download</Button>)
+    render(
+      <Button icon="fa-download" iconAriaLabel="Download icon">
+        Download
+      </Button>
+    )
 
-    // Icon component should render with correct icon name
-    const icon = screen.getByTestId('icon-fa-download')
+    const icon = screen.getByLabelText('Download icon')
     expect(icon).toBeInTheDocument()
-    expect(icon).toHaveAttribute('aria-hidden', 'true')
   })
 
   it('should apply custom className', () => {

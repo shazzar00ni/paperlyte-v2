@@ -2,13 +2,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: var(--border-radius-md);
+  width: 48px;
+  height: 48px;
+  border-radius: 9999px;
   background-color: transparent;
   color: var(--color-text-secondary);
   cursor: pointer;
-  transition: all var(--transition-base);
+  transition:
+    background-color var(--transition-base),
+    color var(--transition-base),
+    border-color var(--transition-base),
+    transform var(--transition-base);
   border: 1px solid transparent;
 }
 
@@ -26,4 +30,15 @@
 .toggle:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .toggle {
+    transition: none;
+  }
+
+  .toggle:active {
+    transform: none;
+  }
 }

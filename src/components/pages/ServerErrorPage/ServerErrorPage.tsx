@@ -55,6 +55,7 @@ export const ServerErrorPage: FC<ServerErrorPageProps> = ({
         {/* Error illustration */}
         <div className={styles.illustration} aria-hidden="true">
           <div className={styles.iconWrapper}>
+            {/* Decorative icons - aria-hidden on parent makes ariaLabel unnecessary */}
             <Icon name="fa-server" size="3x" />
             <div className={styles.errorBadge}>
               <Icon name="fa-triangle-exclamation" />
@@ -92,7 +93,7 @@ export const ServerErrorPage: FC<ServerErrorPageProps> = ({
             type="button"
             aria-label={BUTTON_LABELS.RETRY}
           >
-            <Icon name="fa-rotate-right" />
+            <Icon name="fa-rotate-right" ariaLabel="Retry icon" />
             <span>Try Again</span>
           </button>
 
@@ -102,7 +103,7 @@ export const ServerErrorPage: FC<ServerErrorPageProps> = ({
             type="button"
             aria-label={BUTTON_LABELS.HOMEPAGE}
           >
-            <Icon name="fa-home" />
+            <Icon name="fa-home" ariaLabel="Home icon" />
             <span>Go to Homepage</span>
           </button>
         </div>

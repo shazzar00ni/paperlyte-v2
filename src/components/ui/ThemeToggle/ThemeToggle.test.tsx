@@ -175,7 +175,7 @@ describe('ThemeToggle', () => {
       })
 
       rerender(<ThemeToggle />)
-      const icon1 = screen.getByRole('button').querySelector('svg') || screen.getByRole('button').querySelector('span.icon-fallback')
+      const icon1 = screen.getByRole('button').querySelector('svg') ?? screen.getByRole('button').querySelector('span.icon-fallback')
       expect(icon1).toBeInTheDocument()
 
       vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({

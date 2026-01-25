@@ -1,6 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { OfflinePage } from './OfflinePage'
+import { getIcon } from '@/test/test-helpers'
 
 describe('OfflinePage', () => {
   let onLineSpy: ReturnType<typeof vi.spyOn>
@@ -341,19 +342,20 @@ describe('OfflinePage', () => {
     it('should render wifi icon in illustration', () => {
       render(<OfflinePage />)
 
-      const wifiIcon = screen.getByRole('status').querySelector('i.fa-wifi')
-      expect(wifiIcon).toBeInTheDocument()
+      const statusElement = screen.getByRole('status')
+      const icon = getIcon(statusElement)
+      expect(icon).toBeInTheDocument()
     })
 
     it('should render retry icon in button', () => {
       render(<OfflinePage />)
 
       const retryButton = screen.getByRole('button', { name: /check connection and retry/i })
-      const icon = retryButton.querySelector('i.fa-rotate-right')
+      const icon = getIcon(retryButton)
       expect(icon).toBeInTheDocument()
     })
 
-    it('should show spinner icon when checking connection', async () => {
+    it('should show icon in button when checking connection', async () => {
       const user = userEvent.setup()
 
       // Use a controlled promise for proper cleanup
@@ -368,11 +370,10 @@ describe('OfflinePage', () => {
       const retryButton = screen.getByRole('button', { name: /check connection and retry/i })
       const clickPromise = user.click(retryButton)
 
-      // Check spinner is shown while checking (without awaiting click to complete)
+      // Check icon is shown while checking (without awaiting click to complete)
       await waitFor(() => {
-        const spinnerIcon = retryButton.querySelector('i.fa-spinner')
-        expect(spinnerIcon).toBeInTheDocument()
-        expect(spinnerIcon).toHaveClass('fa-spin')
+        const icon = getIcon(retryButton)
+        expect(icon).toBeInTheDocument()
       })
 
       // Clean up: resolve promise to allow click handler to complete

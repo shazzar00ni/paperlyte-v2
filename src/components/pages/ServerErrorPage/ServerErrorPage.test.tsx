@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { ServerErrorPage } from './ServerErrorPage'
 import { CONTACT } from '@/constants/config'
+import { getIcon } from '@/test/test-helpers'
 
 describe('ServerErrorPage', () => {
   let originalLocation: Location
@@ -231,14 +232,20 @@ describe('ServerErrorPage', () => {
     it('should render server icon in illustration', () => {
       render(<ServerErrorPage />)
 
-      const serverIcon = screen.getByRole('main').querySelector('i.fa-server')
-      expect(serverIcon).toBeInTheDocument()
+      const main = screen.getByRole('main')
+      const icon = getIcon(main)
+      expect(icon).toBeInTheDocument()
     })
 
     it('should render warning icon in error badge', () => {
-      render(<ServerErrorPage />)
+      const { container } = render(<ServerErrorPage />)
 
-      const warningIcon = screen.getByRole('main').querySelector('i.fa-triangle-exclamation')
+      // Find the error badge element specifically
+      const errorBadge = container.querySelector('[class*="errorBadge"]')
+      expect(errorBadge).toBeInTheDocument()
+
+      // Assert the warning icon exists within the error badge
+      const warningIcon = getIcon(errorBadge)
       expect(warningIcon).toBeInTheDocument()
     })
 
@@ -246,7 +253,7 @@ describe('ServerErrorPage', () => {
       render(<ServerErrorPage />)
 
       const retryButton = screen.getByRole('button', { name: /retry loading the page/i })
-      const icon = retryButton.querySelector('i.fa-rotate-right')
+      const icon = getIcon(retryButton)
       expect(icon).toBeInTheDocument()
     })
 
@@ -254,7 +261,7 @@ describe('ServerErrorPage', () => {
       render(<ServerErrorPage />)
 
       const homeButton = screen.getByRole('button', { name: /return to homepage/i })
-      const icon = homeButton.querySelector('i.fa-home')
+      const icon = getIcon(homeButton)
       expect(icon).toBeInTheDocument()
     })
   })

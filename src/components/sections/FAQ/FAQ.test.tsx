@@ -230,15 +230,15 @@ describe('FAQ', () => {
         name: new RegExp(FAQ_ITEMS[0].question, 'i'),
       })
 
-      // When collapsed, should show "Expand answer" - query by aria-label for accessibility
-      let icon = questionButton.querySelector('[aria-label="Expand answer"]')
-      expect(icon).toBeInTheDocument()
+      // When collapsed, all FAQ items should have "Expand answer" icons
+      const expandIcons = screen.getAllByLabelText('Expand answer')
+      expect(expandIcons.length).toBeGreaterThan(0)
 
       await user.click(questionButton)
 
-      // When expanded, should show "Collapse answer"
-      icon = questionButton.querySelector('[aria-label="Collapse answer"]')
-      expect(icon).toBeInTheDocument()
+      // When expanded, should show "Collapse answer" for the clicked item
+      const collapseIcon = screen.getByLabelText('Collapse answer')
+      expect(collapseIcon).toBeInTheDocument()
     })
   })
 

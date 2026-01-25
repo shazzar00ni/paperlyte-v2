@@ -8,7 +8,7 @@ coverage:
   # Coverage thresholds
   thresholds:
     overall: 70
-    file: 50
+    file: 70
 
 engines:
   eslint-9:
@@ -36,5 +36,5 @@ exclude_paths:
   - '**/*.test.tsx'
   - '**/*.spec.ts'
   - '**/*.spec.tsx'
-  - 'src/test/'
+  - 'src/test/**'
   - 'scripts/**'

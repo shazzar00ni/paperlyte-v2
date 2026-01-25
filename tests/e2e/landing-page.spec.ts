@@ -76,9 +76,11 @@ test.describe('Landing Page', () => {
         // Observe FCP if not yet available
         if (!fcp) {
           const fcpObserver = new PerformanceObserver((list) => {
-            const entries = list.getEntries();
-            if (entries.length > 0) {
-              fcp = entries[0].startTime;
+            const fcpEntry = list
+              .getEntries()
+              .find((entry) => entry.name === 'first-contentful-paint');
+            if (fcpEntry) {
+              fcp = fcpEntry.startTime;
               fcpObserver.disconnect();
             }
           });

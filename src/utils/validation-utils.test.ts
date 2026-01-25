@@ -78,7 +78,7 @@ describe('debounce', () => {
 
 describe('escapeRegExp', () => {
   it('should escape all special regex characters', () => {
-    const specialChars = '\\^$*+?.()|[]{}' 
+    const specialChars = '\\^$*+?.()|[]{}'
     const escaped = escapeRegExp(specialChars)
     expect(escaped).toBe('\\\\\\^\\$\\*\\+\\?\\.\\(\\)\\|\\[\\]\\{\\}')
   })
@@ -96,7 +96,7 @@ describe('escapeRegExp', () => {
     const str = 'Hello (world)'
     const escaped = escapeRegExp(str)
     expect(escaped).toBe('Hello \\(world\\)')
-    
+
     // Verify it works in a RegExp
     const regex = new RegExp(escaped)
     expect(regex.test('Hello (world)')).toBe(true)
@@ -107,7 +107,7 @@ describe('escapeRegExp', () => {
     const str = 'test.example.com'
     const escaped = escapeRegExp(str)
     expect(escaped).toBe('test\\.example\\.com')
-    
+
     // Verify it matches literally
     const regex = new RegExp(escaped)
     expect(regex.test('test.example.com')).toBe(true)
@@ -118,11 +118,11 @@ describe('escapeRegExp', () => {
     // Test that repeated characters are treated as literals
     const str = 'a'.repeat(50) + 'b'
     const escaped = escapeRegExp(str)
-    
+
     // Should still be safe and usable
     const regex = new RegExp(escaped)
     expect(regex.test(str)).toBe(true)
-    
+
     // Should not match similar but different strings
     const almostMatch = 'a'.repeat(49) + 'b'
     expect(regex.test(almostMatch)).toBe(false)
@@ -132,7 +132,7 @@ describe('escapeRegExp', () => {
     const str = 'array[0]'
     const escaped = escapeRegExp(str)
     expect(escaped).toBe('array\\[0\\]')
-    
+
     const regex = new RegExp(escaped)
     expect(regex.test('array[0]')).toBe(true)
   })
@@ -141,7 +141,7 @@ describe('escapeRegExp', () => {
     const str = 'object{key}'
     const escaped = escapeRegExp(str)
     expect(escaped).toBe('object\\{key\\}')
-    
+
     const regex = new RegExp(escaped)
     expect(regex.test('object{key}')).toBe(true)
   })
@@ -150,7 +150,7 @@ describe('escapeRegExp', () => {
     const str = 'option1|option2'
     const escaped = escapeRegExp(str)
     expect(escaped).toBe('option1\\|option2')
-    
+
     const regex = new RegExp(escaped)
     expect(regex.test('option1|option2')).toBe(true)
     expect(regex.test('option1')).toBe(false)
@@ -160,7 +160,7 @@ describe('escapeRegExp', () => {
     const str = 'C++ and C*'
     const escaped = escapeRegExp(str)
     expect(escaped).toBe('C\\+\\+ and C\\*')
-    
+
     const regex = new RegExp(escaped)
     expect(regex.test('C++ and C*')).toBe(true)
   })
@@ -169,7 +169,7 @@ describe('escapeRegExp', () => {
     const str = 'Is this working?'
     const escaped = escapeRegExp(str)
     expect(escaped).toBe('Is this working\\?')
-    
+
     const regex = new RegExp(escaped)
     expect(regex.test('Is this working?')).toBe(true)
   })
@@ -177,8 +177,8 @@ describe('escapeRegExp', () => {
   it('should handle competitor names from COMPETITORS constant', () => {
     // Test with actual competitor names
     const competitors = ['Paperlyte', 'Notion', 'Evernote', 'OneNote']
-    
-    competitors.forEach(name => {
+
+    competitors.forEach((name) => {
       const escaped = escapeRegExp(name)
       const regex = new RegExp(escaped)
       expect(regex.test(name)).toBe(true)
@@ -187,19 +187,13 @@ describe('escapeRegExp', () => {
 
   it('should escape patterns that would cause ReDoS if unescaped', () => {
     // Test various patterns that could cause ReDoS if used as regex without escaping
-    const dangerousPatterns = [
-      '(a+)+b',
-      '(a|a)*b',
-      '(a|ab)*c',
-      'a{50}b',
-      '.*.*.*.*.*.*x',
-    ]
+    const dangerousPatterns = ['(a+)+b', '(a|a)*b', '(a|ab)*c', 'a{50}b', '.*.*.*.*.*.*x']
 
-    dangerousPatterns.forEach(pattern => {
+    dangerousPatterns.forEach((pattern) => {
       const escaped = escapeRegExp(pattern)
       // Should escape the pattern and make it safe
       expect(escaped).toContain('\\')
-      
+
       // Should match the literal string
       const regex = new RegExp(escaped)
       expect(regex.test(pattern)).toBe(true)

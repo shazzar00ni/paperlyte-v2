@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { Icon } from './Icon'
+import { getIcon } from '@/test/test-helpers'
 
 describe('Icon', () => {
   let consoleWarnSpy: ReturnType<typeof vi.spyOn>
@@ -106,7 +107,7 @@ describe('Icon', () => {
 
   it('should be hidden from screen readers by default', () => {
     const { container } = render(<Icon name="fa-bolt" />)
-    const icon = container.querySelector('svg') ?? container.querySelector('.icon-fallback')
+    const icon = getIcon(container)
 
     expect(icon).toHaveAttribute('aria-hidden', 'true')
   })

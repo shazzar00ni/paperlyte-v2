@@ -1,6 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { OfflinePage } from './OfflinePage'
+import { getIcon } from '@/test/test-helpers'
 
 describe('OfflinePage', () => {
   let onLineSpy: ReturnType<typeof vi.spyOn>
@@ -342,8 +343,7 @@ describe('OfflinePage', () => {
       render(<OfflinePage />)
 
       const statusElement = screen.getByRole('status')
-      const icon =
-        statusElement.querySelector('svg') ?? statusElement.querySelector('.icon-fallback')
+      const icon = getIcon(statusElement)
       expect(icon).toBeInTheDocument()
     })
 
@@ -351,7 +351,7 @@ describe('OfflinePage', () => {
       render(<OfflinePage />)
 
       const retryButton = screen.getByRole('button', { name: /check connection and retry/i })
-      const icon = retryButton.querySelector('svg') ?? retryButton.querySelector('.icon-fallback')
+      const icon = getIcon(retryButton)
       expect(icon).toBeInTheDocument()
     })
 
@@ -372,7 +372,7 @@ describe('OfflinePage', () => {
 
       // Check icon is shown while checking (without awaiting click to complete)
       await waitFor(() => {
-        const icon = retryButton.querySelector('svg') ?? retryButton.querySelector('.icon-fallback')
+        const icon = getIcon(retryButton)
         expect(icon).toBeInTheDocument()
       })
 

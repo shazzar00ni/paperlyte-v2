@@ -2,6 +2,7 @@ import { render, screen, fireEvent, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { FAQ } from './FAQ'
 import { FAQ_ITEMS } from '@constants/faq'
+import { getIcon } from '@/test/test-helpers'
 
 describe('FAQ', () => {
   describe('Rendering', () => {
@@ -231,14 +232,13 @@ describe('FAQ', () => {
       })
 
       // When collapsed, should show "Expand answer"
-      let icon =
-        questionButton.querySelector('svg') ?? questionButton.querySelector('.icon-fallback')
+      let icon = getIcon(questionButton)
       expect(icon).toHaveAttribute('aria-label', 'Expand answer')
 
       await user.click(questionButton)
 
       // When expanded, should show "Collapse answer"
-      icon = questionButton.querySelector('svg') ?? questionButton.querySelector('.icon-fallback')
+      icon = getIcon(questionButton)
       expect(icon).toHaveAttribute('aria-label', 'Collapse answer')
     })
   })

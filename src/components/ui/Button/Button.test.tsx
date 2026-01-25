@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Button } from './Button'
+import { getIcon } from '@/test/test-helpers'
 
 describe('Button', () => {
   it('should render with children', () => {
@@ -78,7 +79,7 @@ describe('Button', () => {
   it('should render with icon', () => {
     const { container } = render(<Button icon="fa-download">Download</Button>)
 
-    const icon = container.querySelector('svg') ?? container.querySelector('.icon-fallback')
+    const icon = getIcon(container)
     expect(icon).toBeInTheDocument()
     expect(icon).toHaveAttribute('aria-hidden', 'true')
   })

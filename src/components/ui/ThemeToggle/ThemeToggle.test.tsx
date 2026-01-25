@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { ThemeToggle } from './ThemeToggle'
 import * as useThemeModule from '@hooks/useTheme'
+import { getIcon } from '@/test/test-helpers'
 
 describe('ThemeToggle', () => {
   const mockToggleTheme = vi.fn()
@@ -37,7 +38,7 @@ describe('ThemeToggle', () => {
 
       // Icon component should render (as SVG or fallback element)
       const button = screen.getByRole('button')
-      const icon = button.querySelector('svg') ?? button.querySelector('.icon-fallback')
+      const icon = getIcon(button)
       expect(icon).toBeInTheDocument()
     })
 
@@ -51,7 +52,7 @@ describe('ThemeToggle', () => {
 
       // Icon component should render (as SVG or fallback element)
       const button = screen.getByRole('button')
-      const icon = button.querySelector('svg') ?? button.querySelector('.icon-fallback')
+      const icon = getIcon(button)
       expect(icon).toBeInTheDocument()
     })
   })
@@ -176,9 +177,7 @@ describe('ThemeToggle', () => {
 
       rerender(<ThemeToggle />)
       const button = screen.getByRole('button')
-      expect(
-        button.querySelector('svg') ?? button.querySelector('.icon-fallback')
-      ).toBeInTheDocument()
+      expect(getIcon(button)).toBeInTheDocument()
 
       vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
         theme: 'dark',
@@ -186,9 +185,7 @@ describe('ThemeToggle', () => {
       })
 
       rerender(<ThemeToggle />)
-      expect(
-        button.querySelector('svg') ?? button.querySelector('.icon-fallback')
-      ).toBeInTheDocument()
+      expect(getIcon(button)).toBeInTheDocument()
     })
 
     it('should update aria-label when theme changes', () => {
@@ -220,7 +217,7 @@ describe('ThemeToggle', () => {
       render(<ThemeToggle />)
 
       const button = screen.getByRole('button')
-      const icon = button.querySelector('svg') ?? button.querySelector('.icon-fallback')
+      const icon = getIcon(button)
 
       expect(icon).toBeInTheDocument()
     })
@@ -234,7 +231,7 @@ describe('ThemeToggle', () => {
       render(<ThemeToggle />)
 
       const button = screen.getByRole('button')
-      const icon = button.querySelector('svg') ?? button.querySelector('.icon-fallback')
+      const icon = getIcon(button)
 
       expect(icon).toBeInTheDocument()
     })
@@ -248,7 +245,7 @@ describe('ThemeToggle', () => {
       render(<ThemeToggle />)
 
       const button = screen.getByRole('button')
-      const icon = button.querySelector('svg') ?? button.querySelector('.icon-fallback')
+      const icon = getIcon(button)
 
       // Icon component applies size attributes (SVG: width/height, fallback: fontSize)
       expect(icon).toBeInTheDocument()

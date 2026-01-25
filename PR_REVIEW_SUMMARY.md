@@ -1,37 +1,31 @@
-# PR Review Summary - 2024-07-30
+# PR Review Summary - 2024-07-26
 
-This file contains a summary of pull requests I have reviewed.
+## PR #279: feat: Implement React Router and legal pages with dark footer
 
-## 2026-01-18
+- **Summary:** This PR introduces `react-router-dom` to the project, adding routing capabilities and new legal pages (Privacy Policy and Terms of Service). It also includes a `ScrollToTop` component to improve navigation UX. The footer has been updated to a dark theme.
+- **Feedback:**
+    - **Positive:**
+        - The addition of routing is a great step forward for the application.
+        - The `ScrollToTop` component is a nice touch for user experience.
+        - The new legal pages are well-structured and a necessary addition.
+    - **Suggestions:**
+        - The Content Security Policy (CSP) in `vercel.json` has been updated to allow `'unsafe-inline'` for styles and scripts. This is a potential security risk. It would be great to explore alternatives to this, such as using hashes or nonces.
+- **Conclusion:** Overall, this is a solid PR that adds important functionality. The changes are well-implemented, but the CSP update should be revisited.
 
-### PR #259: Fix: update social link for twitter
+## PR #284: feat(ci): enhance Lighthouse CI with stricter budgets and Chrome support
 
-- **Summary:** The PR description claims to update a Twitter social link, but the diff is empty and the commits are unrelated to the title.
-- **Recommendation:** Close the PR.
-- **Action:** Left a comment on the PR recommending closure.
+- **Summary:** This PR integrates Lighthouse CI into the development workflow, adding performance budgets and running checks on Chrome. The icon tests have also been updated to be more robust.
+- **Feedback:**
+    - **Positive:**
+        - Integrating Lighthouse CI is a fantastic move for proactive performance monitoring.
+        - The stricter performance budgets will help maintain a high-quality user experience.
+        - The icon test improvements are a good example of improving test reliability.
+- **Conclusion:** This is an excellent PR that strengthens the project's CI pipeline and test suite. No major concerns.
 
----
+## PR #304: Add implementation plan agent to planning directory
 
-## PR #260: refactor: add shared test helpers for analytics
-
-- **Status:** Approved
-- **Summary:** This PR adds a new file `src/test/analytics-helpers.ts` which contains a collection of well-documented test helpers for analytics testing. This is a good addition for improving the test suite.
-- **Feedback:** No issues found. The code is clean and the helpers are useful. I will leave a comment on the PR and approve it.
-
-## PR #262: fix: Fix intermittent Lighthouse CI failures
-
-- **Status:** Approved with comments
-- **Summary:** This PR addresses two separate issues. First, it corrects the port in `.lighthouserc.json` from 3000 to 4173, which should resolve the Lighthouse CI failures. Second, it introduces a well-documented workaround for a `querySelectorAll` bug in JSDOM, complete with a new test file to demonstrate the issue.
-- **Feedback:** Both changes are valuable and well-implemented. However, they address unrelated concerns and should have been submitted in separate pull requests for better separation of concerns. I will approve the PR but leave a comment advising the author to split up unrelated changes in the future.
-
-## PR #263: feat: add illustration component and enhance Solution section
-
-- **Status:** Approved
-- **Summary:** This PR introduces a new, well-implemented `Illustration` component and integrates it into the `Solution` section, enhancing the visual presentation. The component is well-tested and includes CSS modules for styling.
-- **Feedback:** This is a solid feature addition with no issues found. The code is clean, and the new component is a great improvement.
-
-## PR #265: ci: update vitest config for codecov
-
-- **Status:** Approved with comments
-- **Summary:** This PR is titled "ci: update vitest config for codecov," but it actually contains a number of valuable improvements to mobile responsiveness. The changes include fluid typography, new utility classes, and a new `viewport` utility to address the 100vh issue in iOS Safari.
-- **Feedback:** The code changes are a significant improvement for mobile users and are well-implemented. However, the PR title is completely unrelated to the content. This is a recurring issue with this author's PRs, and I will leave a comment strongly advising them to use descriptive and accurate titles in the future.
+- **Summary:** This PR adds a new agent, `implementation-plan-agent`, to the `/planning` directory, along with its configuration and documentation.
+- **Feedback:**
+    - **Positive:**
+        - The new agent is well-documented and follows the existing structure.
+- **Conclusion:** A straightforward and well-executed addition to the project.

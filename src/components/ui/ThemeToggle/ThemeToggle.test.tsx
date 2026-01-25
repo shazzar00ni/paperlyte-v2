@@ -129,10 +129,8 @@ describe('ThemeToggle', () => {
 
   describe('Theme Changes', () => {
     it('should update icon when theme changes from light to dark', () => {
-      const { rerender } = render(<ThemeToggle />)
-
       mockTheme('light')
-      rerender(<ThemeToggle />)
+      const { rerender } = render(<ThemeToggle />)
       const iconLight = getIcon(getToggleButton())
       expect(iconLight).toBeInTheDocument()
 

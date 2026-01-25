@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { Comparison } from './Comparison'
 import { COMPARISON_FEATURES, COMPETITORS } from '@constants/comparison'
-import { escapeRegExp } from '@/utils/test/regexHelpers'
+// (This line should be removed - the import is no longer needed)
 
 describe('Comparison', () => {
   it('should render as a section with correct id', () => {

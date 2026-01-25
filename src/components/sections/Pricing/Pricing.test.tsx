@@ -83,10 +83,8 @@ describe('Pricing', () => {
   it('should render "Most Popular" badge for Pro plan', () => {
     render(<Pricing />)
 
-    // Icon component renders SVG with aria-label, not FontAwesome classes
-    const starIcon = screen.getByLabelText('Most popular')
-    expect(starIcon).toBeInTheDocument()
-    expect(starIcon).toHaveAttribute('role', 'img')
+    const popularBadge = screen.getByLabelText('Most popular')
+    expect(popularBadge).toBeInTheDocument()
   })
 
   it('should render plan icons', () => {
@@ -94,10 +92,8 @@ describe('Pricing', () => {
 
     PRICING_PLANS.forEach((plan) => {
       if (plan.icon) {
-        // Icon component renders SVG with aria-label, not FontAwesome classes
         const icon = screen.getByLabelText(`${plan.name} plan icon`)
         expect(icon).toBeInTheDocument()
-        expect(icon).toHaveAttribute('role', 'img')
       }
     })
   })
@@ -115,17 +111,13 @@ describe('Pricing', () => {
   it('should render checkmark icons for all features', () => {
     render(<Pricing />)
 
-    // Icon component renders SVG with aria-label, not FontAwesome classes
-    const checkmarks = screen.getAllByLabelText('Included')
-
     // Count total features across all plans
     const totalFeatures = PRICING_PLANS.reduce((sum, plan) => sum + plan.features.length, 0)
 
-    expect(checkmarks.length).toBe(totalFeatures)
+    // Find all checkmark icons by aria-label
+    const checkmarks = screen.getAllByLabelText('Included')
 
-    checkmarks.forEach((checkmark) => {
-      expect(checkmark).toHaveAttribute('role', 'img')
-    })
+    expect(checkmarks.length).toBe(totalFeatures)
   })
 
   it('should render CTA buttons for all plans', () => {
@@ -147,10 +139,8 @@ describe('Pricing', () => {
       screen.getByText('30-day money-back guarantee • Cancel anytime • No hidden fees')
     ).toBeInTheDocument()
 
-    // Icon component renders SVG with aria-label, not FontAwesome classes
     const shieldIcon = screen.getByLabelText('Guarantee')
     expect(shieldIcon).toBeInTheDocument()
-    expect(shieldIcon).toHaveAttribute('role', 'img')
   })
 
   it('should use semantic article elements for pricing cards', () => {

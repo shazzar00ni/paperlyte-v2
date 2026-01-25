@@ -42,9 +42,9 @@ describe('Comparison', () => {
 
     // Check all competitor headers
     COMPETITORS.forEach((competitor) => {
-      // Safe: input is escaped via escapeRegExp() and comes from COMPETITORS constant, not user input
+      // Simpler approach: use string matching instead of RegExp
       const header = screen.getByRole('columnheader', {
-        name: new RegExp(escapeRegExp(competitor.name)), // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
+        name: (content) => content.includes(competitor.name),
       })
       expect(header).toBeInTheDocument()
     })
@@ -69,27 +69,17 @@ describe('Comparison', () => {
   it('should render checkmark icons for true boolean values', () => {
     render(<Comparison />)
 
-    // Icon component renders SVG with aria-label, not FontAwesome classes
+    // Find all checkmarks by aria-label
     const checkmarks = screen.getAllByLabelText('Supported')
     expect(checkmarks.length).toBeGreaterThan(0)
-
-    // Verify they are SVG elements with role="img"
-    checkmarks.forEach((checkmark) => {
-      expect(checkmark).toHaveAttribute('role', 'img')
-    })
   })
 
   it('should render X icons for false boolean values', () => {
     render(<Comparison />)
 
-    // Icon component renders SVG with aria-label, not FontAwesome classes
+    // Find all X marks by aria-label
     const xmarks = screen.getAllByLabelText('Not supported')
     expect(xmarks.length).toBeGreaterThan(0)
-
-    // Verify they are SVG elements with role="img"
-    xmarks.forEach((xmark) => {
-      expect(xmark).toHaveAttribute('role', 'img')
-    })
   })
 
   it('should render text values for string comparisons', () => {

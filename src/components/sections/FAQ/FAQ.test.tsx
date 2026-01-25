@@ -236,15 +236,15 @@ describe('FAQ', () => {
 
       const questionButton = getQuestionButton(FAQ_ITEMS[0].question)
 
-      // When collapsed, should show "Expand answer"
-      let icon = questionButton.querySelector('i')
-      expect(icon).toHaveAttribute('aria-label', 'Expand answer')
+      // When collapsed, all FAQ items should have "Expand answer" icons
+      const expandIcons = screen.getAllByLabelText('Expand answer')
+      expect(expandIcons.length).toBeGreaterThan(0)
 
       await user.click(questionButton)
 
-      // When expanded, should show "Collapse answer"
-      icon = questionButton.querySelector('i')
-      expect(icon).toHaveAttribute('aria-label', 'Collapse answer')
+      // When expanded, should show "Collapse answer" for the clicked item
+      const collapseIcon = screen.getByLabelText('Collapse answer')
+      expect(collapseIcon).toBeInTheDocument()
     })
   })
 

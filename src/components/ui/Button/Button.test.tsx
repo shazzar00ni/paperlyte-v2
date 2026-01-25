@@ -76,11 +76,14 @@ describe('Button', () => {
   })
 
   it('should render with icon', () => {
-    const { container } = render(<Button icon="fa-download">Download</Button>)
+    render(
+      <Button icon="fa-download" iconAriaLabel="Download icon">
+        Download
+      </Button>
+    )
 
-    const icon = container.querySelector('.fa-download')
+    const icon = screen.getByLabelText('Download icon')
     expect(icon).toBeInTheDocument()
-    expect(icon).toHaveAttribute('aria-hidden', 'true')
   })
 
   it('should apply custom className', () => {

@@ -411,9 +411,7 @@ describe('FAQ', () => {
       render(<FAQ />)
 
       // Safe: input is escaped via escapeRegExp() and comes from FAQ_ITEMS constant, not user input
-      const buttons = FAQ_ITEMS.slice(0, 3).map((item) =>
-        getQuestionButton(item.question)
-      )
+      const buttons = FAQ_ITEMS.slice(0, 3).map((item) => getQuestionButton(item.question))
 
       buttons[0].focus()
       expect(buttons[0]).toHaveFocus()

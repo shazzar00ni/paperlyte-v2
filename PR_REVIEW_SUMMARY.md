@@ -46,7 +46,7 @@ This file contains a summary of pull requests I have reviewed.
 
 **Status:** Approved with comments
 
-#### Summary:
+#### Summary for PR #356:
 
 This PR addresses a Codacy configuration issue to ensure ESLint runs correctly in the CI pipeline. The core changes in `.codacy.yml` and the addition of `.eslintrc.cjs` are correct and effectively resolve the issue.
 

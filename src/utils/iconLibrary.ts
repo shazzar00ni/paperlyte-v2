@@ -56,7 +56,6 @@ import {
   faMagnifyingGlass, // Search
   faPlane, // Offline page - airplane mode
   faRoute, // Offline page - route/navigation issues
-  faNetworkWired, // Offline page - network issues
   faArrowRight, // Navigation forward
   faArrowLeft, // Navigation back
   faSpinner, // Loading states
@@ -113,7 +112,6 @@ library.add(
   faMagnifyingGlass,
   faPlane,
   faRoute,
-  faNetworkWired,
   faArrowRight,
   faArrowLeft,
   faSpinner,
@@ -160,7 +158,6 @@ export const iconNameMap: Record<string, string> = {
   'fa-rocket': 'rocket',
   'fa-users': 'users',
   'fa-server': 'server',
-  'fa-router': 'network-wired', // Using network-wired for router/network issues
   'fa-github': 'github',
   'fa-twitter': 'twitter',
   'fa-apple': 'apple',

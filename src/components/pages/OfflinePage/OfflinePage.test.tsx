@@ -342,8 +342,9 @@ describe('OfflinePage', () => {
     it('should render wifi icon in illustration', () => {
       render(<OfflinePage />)
 
-      const statusElement = screen.getByRole('status')
-      const icon = getIcon(statusElement)
+      const illustration = screen.getByRole('status').querySelector('[aria-hidden="true"]')
+      expect(illustration).toBeInTheDocument()
+      const icon = getIcon(illustration)
       expect(icon).toBeInTheDocument()
     })
 

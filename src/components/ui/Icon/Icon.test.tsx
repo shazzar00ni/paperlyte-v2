@@ -172,27 +172,24 @@ describe('Icon', () => {
     expect(svg).toHaveAttribute('stroke', 'currentColor')
   })
 
-  it('should apply correct variant class for solid', () => {
+  it('should render fallback for solid variant', () => {
     const { container } = render(<Icon name="missing-icon" variant="solid" />)
     const fallback = container.querySelector('.icon-fallback')
 
-    // Fallback renders as span or SVG with icon-fallback class
     expect(fallback).toBeInTheDocument()
   })
 
-  it('should apply correct variant class for regular', () => {
+  it('should render fallback for regular variant', () => {
     const { container } = render(<Icon name="missing-icon" variant="regular" />)
     const fallback = container.querySelector('.icon-fallback')
 
-    // Fallback renders as span or SVG with icon-fallback class
     expect(fallback).toBeInTheDocument()
   })
 
-  it('should apply correct variant class for brands', () => {
+  it('should render fallback for brands variant', () => {
     const { container } = render(<Icon name="missing-icon" variant="brands" />)
     const fallback = container.querySelector('.icon-fallback')
 
-    // Fallback renders as span or SVG with icon-fallback class
     expect(fallback).toBeInTheDocument()
   })
 })

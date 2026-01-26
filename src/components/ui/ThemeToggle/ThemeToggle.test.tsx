@@ -227,10 +227,9 @@ describe('ThemeToggle', () => {
       })
     })
 
-    it('should render icon with size applied', () => {
+    it('should render icon in button', () => {
       testIconRenderingInTheme('light', (button) => {
         const icon = getIcon(button)
-        // Icon component applies size attributes (SVG: width/height, fallback: fontSize)
         expect(icon).toBeInTheDocument()
       })
     })

@@ -62,7 +62,7 @@ This PR addresses a Codacy configuration issue to ensure ESLint runs correctly i
 
 **Status:** Changes requested
 
-#### Summary:
+#### Summary for PR #319:
 
 This PR aims to fix a deployment error in the `Privacy.tsx` component. However, it also includes significant changes to `package-lock.json` and `public/sitemap.xml` that are unrelated to the component fix.
 

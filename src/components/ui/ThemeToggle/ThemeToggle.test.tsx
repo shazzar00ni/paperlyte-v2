@@ -36,6 +36,7 @@ describe('ThemeToggle', () => {
 
       render(<ThemeToggle />)
 
+      // Icon is decorative - button's aria-label provides accessible name
       const button = screen.getByRole('button')
       const icon = getIconFromButton(button)
       expect(icon).toBeInTheDocument()
@@ -49,6 +50,7 @@ describe('ThemeToggle', () => {
 
       render(<ThemeToggle />)
 
+      // Icon is decorative - button's aria-label provides accessible name
       const button = screen.getByRole('button')
       const icon = getIconFromButton(button)
       expect(icon).toBeInTheDocument()
@@ -166,14 +168,13 @@ describe('ThemeToggle', () => {
 
   describe('Theme Changes', () => {
     it('should update icon when theme changes from light to dark', () => {
-      const { rerender } = render(<ThemeToggle />)
-
+      // Mock before initial render
       vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
         theme: 'light',
         toggleTheme: mockToggleTheme,
       })
 
-      rerender(<ThemeToggle />)
+      const { rerender } = render(<ThemeToggle />)
       const button = screen.getByRole('button')
       expect(getIconFromButton(button)).toBeInTheDocument()
 
@@ -205,46 +206,5 @@ describe('ThemeToggle', () => {
     })
   })
 
-  describe('Icon Component Integration', () => {
-    it('should render icon in light mode', () => {
-      vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
-        theme: 'light',
-        toggleTheme: mockToggleTheme,
-      })
-
-      render(<ThemeToggle />)
-
-      const button = screen.getByRole('button')
-      const icon = getIconFromButton(button)
-      expect(icon).toBeInTheDocument()
-    })
-
-    it('should render icon in dark mode', () => {
-      vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
-        theme: 'dark',
-        toggleTheme: mockToggleTheme,
-      })
-
-      render(<ThemeToggle />)
-
-      const button = screen.getByRole('button')
-      const icon = getIconFromButton(button)
-      expect(icon).toBeInTheDocument()
-    })
-
-    it('should render icon with correct size', () => {
-      vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
-        theme: 'light',
-        toggleTheme: mockToggleTheme,
-      })
-
-      render(<ThemeToggle />)
-
-      const button = screen.getByRole('button')
-      const icon = getIconFromButton(button)
-
-      // Assert icon renders with size (md = 20px)
-      expectIconSize(icon, '20')
-    })
-  })
+  // Icon Component Integration tests removed - redundant with Rendering tests above
 })

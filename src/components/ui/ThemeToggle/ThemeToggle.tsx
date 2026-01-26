@@ -13,6 +13,7 @@ export const ThemeToggle = (): ReactElement => {
       aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
       title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
     >
+      {/* Icon is decorative - button's aria-label provides accessible name */}
       {theme === 'light' ? <Icon name="fa-moon" size="md" /> : <Icon name="fa-sun" size="md" />}
     </button>
   )

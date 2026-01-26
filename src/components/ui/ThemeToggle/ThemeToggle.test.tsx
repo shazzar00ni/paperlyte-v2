@@ -37,7 +37,7 @@ describe('ThemeToggle', () => {
 
       // Icon component should render (as SVG or span fallback)
       const button = screen.getByRole('button')
-      const icon = button.querySelector('svg') || button.querySelector('span.icon-fallback')
+      const icon = button.querySelector('svg') ?? button.querySelector('span.icon-fallback')
       expect(icon).toBeInTheDocument()
     })
 
@@ -175,7 +175,7 @@ describe('ThemeToggle', () => {
       })
 
       rerender(<ThemeToggle />)
-      const icon1 = screen.getByRole('button').querySelector('svg') || screen.getByRole('button').querySelector('span.icon-fallback')
+      const icon1 = screen.getByRole('button').querySelector('svg') ?? screen.getByRole('button').querySelector('span.icon-fallback')
       expect(icon1).toBeInTheDocument()
 
       vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
@@ -184,7 +184,7 @@ describe('ThemeToggle', () => {
       })
 
       rerender(<ThemeToggle />)
-      const icon2 = screen.getByRole('button').querySelector('svg') || screen.getByRole('button').querySelector('span.icon-fallback')
+      const icon2 = screen.getByRole('button').querySelector('svg') ?? screen.getByRole('button').querySelector('span.icon-fallback')
       expect(icon2).toBeInTheDocument()
     })
 

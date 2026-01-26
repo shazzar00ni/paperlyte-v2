@@ -109,7 +109,7 @@ describe('Icon', () => {
 
   it('should be hidden from screen readers by default', () => {
     const { container } = render(<Icon name="fa-bolt" />)
-    const icon = container.querySelector('svg') || container.querySelector('span.icon-fallback')
+    const icon = container.querySelector('svg') ?? container.querySelector('span.icon-fallback')
 
     expect(icon).toHaveAttribute('aria-hidden', 'true')
   })

@@ -81,7 +81,7 @@ describe('Button', () => {
     // Icon renders via FontAwesomeIcon component (SVG) or as span fallback
     const svg = container.querySelector('svg')
     const fallback = container.querySelector('span.icon-fallback')
-    const icon = svg || fallback
+    const icon = svg ?? fallback
 
     expect(icon).toBeInTheDocument()
     expect(icon).toHaveAttribute('aria-hidden', 'true')

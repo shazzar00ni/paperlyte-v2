@@ -232,8 +232,9 @@ describe('ServerErrorPage', () => {
     it('should render server icon in illustration', () => {
       render(<ServerErrorPage />)
 
-      const main = screen.getByRole('main')
-      const icon = getIcon(main)
+      const illustration = screen.getByRole('main').querySelector('[aria-hidden="true"]')
+      expect(illustration).toBeInTheDocument()
+      const icon = getIcon(illustration)
       expect(icon).toBeInTheDocument()
     })
 

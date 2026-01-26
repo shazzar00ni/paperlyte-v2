@@ -7,6 +7,25 @@ import { getIcon } from '@/test/test-helpers'
 describe('ThemeToggle', () => {
   const mockToggleTheme = vi.fn()
 
+  /**
+   * Helper function to test icon rendering in a specific theme
+   * Reduces duplication in theme-based rendering tests
+   */
+  const testIconRenderingInTheme = (
+    theme: 'light' | 'dark',
+    expectation: (button: HTMLElement) => void
+  ) => {
+    vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
+      theme,
+      toggleTheme: mockToggleTheme,
+    })
+
+    render(<ThemeToggle />)
+
+    const button = screen.getByRole('button')
+    expectation(button)
+  }
+
   beforeEach(() => {
     vi.clearAllMocks()
   })
@@ -29,31 +48,17 @@ describe('ThemeToggle', () => {
     })
 
     it('should render moon icon in light mode', () => {
-      vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
-        theme: 'light',
-        toggleTheme: mockToggleTheme,
+      testIconRenderingInTheme('light', (button) => {
+        const icon = getIcon(button)
+        expect(icon).toBeInTheDocument()
       })
-
-      render(<ThemeToggle />)
-
-      // Icon component should render (as SVG or fallback element)
-      const button = screen.getByRole('button')
-      const icon = getIcon(button)
-      expect(icon).toBeInTheDocument()
     })
 
     it('should render sun icon in dark mode', () => {
-      vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
-        theme: 'dark',
-        toggleTheme: mockToggleTheme,
+      testIconRenderingInTheme('dark', (button) => {
+        const icon = getIcon(button)
+        expect(icon).toBeInTheDocument()
       })
-
-      render(<ThemeToggle />)
-
-      // Icon component should render (as SVG or fallback element)
-      const button = screen.getByRole('button')
-      const icon = getIcon(button)
-      expect(icon).toBeInTheDocument()
     })
   })
 
@@ -209,46 +214,25 @@ describe('ThemeToggle', () => {
 
   describe('Icon Component Integration', () => {
     it('should render icon in light mode', () => {
-      vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
-        theme: 'light',
-        toggleTheme: mockToggleTheme,
+      testIconRenderingInTheme('light', (button) => {
+        const icon = getIcon(button)
+        expect(icon).toBeInTheDocument()
       })
-
-      render(<ThemeToggle />)
-
-      const button = screen.getByRole('button')
-      const icon = getIcon(button)
-
-      expect(icon).toBeInTheDocument()
     })
 
     it('should render icon in dark mode', () => {
-      vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
-        theme: 'dark',
-        toggleTheme: mockToggleTheme,
+      testIconRenderingInTheme('dark', (button) => {
+        const icon = getIcon(button)
+        expect(icon).toBeInTheDocument()
       })
-
-      render(<ThemeToggle />)
-
-      const button = screen.getByRole('button')
-      const icon = getIcon(button)
-
-      expect(icon).toBeInTheDocument()
     })
 
     it('should render icon with size applied', () => {
-      vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
-        theme: 'light',
-        toggleTheme: mockToggleTheme,
+      testIconRenderingInTheme('light', (button) => {
+        const icon = getIcon(button)
+        // Icon component applies size attributes (SVG: width/height, fallback: fontSize)
+        expect(icon).toBeInTheDocument()
       })
-
-      render(<ThemeToggle />)
-
-      const button = screen.getByRole('button')
-      const icon = getIcon(button)
-
-      // Icon component applies size attributes (SVG: width/height, fallback: fontSize)
-      expect(icon).toBeInTheDocument()
     })
   })
 })

@@ -72,7 +72,7 @@ export const Icon = ({
       className: `icon-fallback ${className}`,
       style: { fontSize: iconSize, color: normalizedColor, ...style },
       'aria-label': ariaLabel,
-      'aria-hidden': ariaLabel ? 'false' : 'true',
+      'aria-hidden': ariaLabel ? ('false' as const) : ('true' as const),
       ...(ariaLabel ? { role: 'img' } : {}),
     }
 

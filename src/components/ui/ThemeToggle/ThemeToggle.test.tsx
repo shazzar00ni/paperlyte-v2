@@ -167,18 +167,16 @@ describe('ThemeToggle', () => {
 
   describe('Theme Changes', () => {
     it('should update icon when theme changes from light to dark', () => {
-      const { rerender } = render(<ThemeToggle />)
-
-      vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
+      const mockUseTheme = vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
         theme: 'light',
         toggleTheme: mockToggleTheme,
       })
 
-      rerender(<ThemeToggle />)
+      const { rerender } = render(<ThemeToggle />)
       const svg = screen.getByRole('button').querySelector('svg')
       expect(svg).toBeInTheDocument()
 
-      vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
+      mockUseTheme.mockReturnValue({
         theme: 'dark',
         toggleTheme: mockToggleTheme,
       })

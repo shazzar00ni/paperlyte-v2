@@ -10,12 +10,11 @@ export const iconPaths: Record<string, string> = {
 }
 
 // Icon viewBox configurations (most use 0 0 24 24, but some may differ)
-export const iconViewBox: Record<string, string> = {
-  'fa-apple': '0 0 24 24',
-  'fa-windows': '0 0 23 24',
-}
+// Note: Currently empty as all icons use Font Awesome which manages its own viewBox
+// Add custom icon viewBox entries here if custom icons are added to iconPaths above
+export const iconViewBox: Record<string, string> = {}
 
-// Returns the viewBox for the given icon, defaulting to "0 0 24 24" for icons not listed above
+// Returns the viewBox for the given icon, defaulting to "0 0 24 24" for custom icons
 export const getIconViewBox = (name: string): string => {
   return safePropertyAccess(iconViewBox, name) ?? '0 0 24 24'
 }

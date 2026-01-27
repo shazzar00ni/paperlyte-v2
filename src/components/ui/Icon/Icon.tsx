@@ -130,7 +130,7 @@ export const Icon = ({
         <path
           key={index}
           d={index === 0 ? pathData : `M ${pathData}`}
-          fill={name.includes('circle') || name.includes('shield') ? 'none' : undefined}
+          fill={convertedName.includes('circle') || convertedName.includes('shield') ? 'none' : undefined}
         />
       ))}
     </svg>

@@ -84,7 +84,7 @@ describe('Pricing', () => {
 
     const popularBadge = screen.getByLabelText('Most popular')
     expect(popularBadge).toBeInTheDocument()
-    expect(popularBadge.tagName).toBe('svg')
+    expect(popularBadge.tagName.toLowerCase()).toBe('svg')
     expect(screen.getByText('Most Popular')).toBeInTheDocument()
   })
 
@@ -95,7 +95,7 @@ describe('Pricing', () => {
       if (plan.icon) {
         const icon = screen.getByLabelText(`${plan.name} plan icon`)
         expect(icon).toBeInTheDocument()
-        expect(icon.tagName).toBe('svg')
+        expect(icon.tagName.toLowerCase()).toBe('svg')
       }
     })
   })
@@ -121,7 +121,7 @@ describe('Pricing', () => {
     expect(checkmarks.length).toBe(totalFeatures)
 
     checkmarks.forEach((checkmark) => {
-      expect(checkmark.tagName).toBe('svg')
+      expect(checkmark.tagName.toLowerCase()).toBe('svg')
     })
   })
 
@@ -145,7 +145,7 @@ describe('Pricing', () => {
 
     const shieldIcon = screen.getByLabelText('Guarantee')
     expect(shieldIcon).toBeInTheDocument()
-    expect(shieldIcon.tagName).toBe('svg')
+    expect(shieldIcon.tagName.toLowerCase()).toBe('svg')
   })
 
   it('should use semantic article elements for pricing cards', () => {

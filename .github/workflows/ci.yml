@@ -16,7 +16,11 @@ concurrency:
 jobs:
   lint-and-typecheck:
     name: Lint and Type Check
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
       - name: Checkout code
@@ -29,7 +33,11 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --ignore-scripts
+
+      - name: Check code formatting
+        run: npm run format:check
+        if: matrix.os == 'ubuntu-latest'
 
       - name: Run ESLint
         run: npm run lint
@@ -37,10 +45,8 @@ jobs:
       - name: Run TypeScript type check
         run: npx tsc --noEmit
 
-      - name: Check code formatting
-        run: npm run format:check
-
       - name: Run security audit
+        if: matrix.os == 'ubuntu-latest'
         run: |
           if [ "${{ github.ref }}" == "refs/heads/main" ]; then
             npm audit --audit-level=high
@@ -109,8 +115,12 @@ jobs:
 
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     needs: [lint-and-typecheck, test]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
       - name: Checkout code
@@ -123,7 +133,7 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --ignore-scripts
 
       - name: Build application
         env:
@@ -132,6 +142,7 @@ jobs:
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v6
+        if: matrix.os == 'ubuntu-latest'
         with:
           name: dist
           path: dist/

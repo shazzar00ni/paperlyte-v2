@@ -33,10 +33,7 @@ junit.xml
 *.sln
 *.sw?
 
-# Environment variables
-.env
-.env
-
 # Deployment platforms
 .netlify
 .vercel
+actionlint

@@ -22,7 +22,9 @@ describe('iconLibrary', () => {
    */
   const assertIconConversion = (
     icons: Array<{ input: string; expected: string }>,
-    description: string
+   const assertIconConversion = (
+     icons: Array<{ input: string; expected: string }>
+   ) => {
   ) => {
     icons.forEach(({ input, expected }) => {
       const converted = convertIconName(input)

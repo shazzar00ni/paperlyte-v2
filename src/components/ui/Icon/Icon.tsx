@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { findIconDefinition } from '@fortawesome/fontawesome-svg-core'
 import type { IconName, IconPrefix } from '@fortawesome/fontawesome-svg-core'
 import { iconPaths, getIconViewBox } from './icons'
+import { safePropertyAccess } from '../../../utils/security'
 import './Icon.css'
 
 interface IconProps {
@@ -35,7 +36,7 @@ export const Icon = ({
   style,
 }: IconProps): React.ReactElement => {
   const iconSize = SIZE_MAP[size]
-  const paths = iconPaths[name]
+  const paths = safePropertyAccess(iconPaths, name)
   const viewBox = getIconViewBox(name)
 
   // Normalize color: detect bare hex strings (3 or 6 hex digits) and prepend "#"

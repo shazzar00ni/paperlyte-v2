@@ -64,7 +64,7 @@ describe('Icon', () => {
     const svg = container.querySelector('svg')
     const fallback = container.querySelector('span.icon-fallback')
 
-    expect(svg || fallback).toBeInTheDocument()
+    expect(svg ?? fallback).toBeInTheDocument()
   })
 
   it('should apply size attributes correctly', () => {
@@ -127,7 +127,7 @@ describe('Icon', () => {
     const { container } = render(<Icon name="fa-bolt" className="custom-icon" />)
     const svg = container.querySelector('svg')
     const fallback = container.querySelector('span.icon-fallback')
-    const icon = svg || fallback
+    const icon = svg ?? fallback
 
     expect(icon).toHaveClass('custom-icon')
   })

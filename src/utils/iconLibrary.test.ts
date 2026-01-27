@@ -25,7 +25,12 @@ describe('iconLibrary', () => {
    const assertIconConversion = (
      icons: Array<{ input: string; expected: string }>
    ) => {
-  ) => {
+     icons.forEach(({ input, expected }) => {
+       const converted = convertIconName(input)
+       expect(converted).toBe(expected)
+       expect(validIconNames.has(converted)).toBe(true)
+     })
+   }
     icons.forEach(({ input, expected }) => {
       const converted = convertIconName(input)
       expect(converted).toBe(expected)

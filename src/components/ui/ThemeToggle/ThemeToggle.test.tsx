@@ -51,7 +51,7 @@ describe('ThemeToggle', () => {
 
       // Icon component should render (as SVG or span fallback)
       const button = screen.getByRole('button')
-      const icon = button.querySelector('svg') || button.querySelector('span.icon-fallback')
+       const icon = button.querySelector('svg') ?? button.querySelector('span.icon-fallback')
       expect(icon).toBeInTheDocument()
     })
   })
@@ -232,7 +232,7 @@ describe('ThemeToggle', () => {
       render(<ThemeToggle />)
 
       const button = screen.getByRole('button')
-      const icon = button.querySelector('svg') || button.querySelector('span.icon-fallback')
+       const icon = button.querySelector('svg') ?? button.querySelector('span.icon-fallback')
 
       // Icon renders (sun for dark mode)
       expect(icon).toBeInTheDocument()

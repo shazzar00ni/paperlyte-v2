@@ -1,3 +1,5 @@
+import { safePropertyAccess } from '../../../utils/security'
+
 // Lightweight SVG icon paths for truly custom icons
 // All standard Font Awesome icons should be imported via iconLibrary.ts
 
@@ -15,5 +17,5 @@ export const iconViewBox: Record<string, string> = {
 
 // Returns the viewBox for the given icon, defaulting to "0 0 24 24" for icons not listed above
 export const getIconViewBox = (name: string): string => {
-  return iconViewBox[name] || '0 0 24 24'
+  return safePropertyAccess(iconViewBox, name) ?? '0 0 24 24'
 }

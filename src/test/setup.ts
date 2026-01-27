@@ -4,6 +4,9 @@ import * as matchers from '@testing-library/jest-dom/matchers'
 // Import icon library to initialize Font Awesome icons for tests
 import '@utils/iconLibrary'
 
+// Import FontAwesome icon library for tests
+import '@utils/iconLibrary'
+
 // Extend Vitest's expect with jest-dom matchers
 expect.extend(matchers)
 

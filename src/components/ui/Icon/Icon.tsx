@@ -58,10 +58,12 @@ export const Icon = ({
   }, [color])
 
   // Memoize path array splitting for better performance
+  // Get the paths value directly in the memo to avoid React Compiler warning
   const pathArray = useMemo(() => {
-    if (!paths) return []
-    return paths.split(' M ')
-  }, [paths])
+    const iconPaths_ = safePropertyAccess(iconPaths, convertedName)
+    if (!iconPaths_) return []
+    return iconPaths_.split(' M ')
+  }, [convertedName])
 
   // Fallback to Font Awesome React component if icon not found in our set
   if (!paths) {

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" fill="none">
+  <!-- Example duotone illustration: Lightning bolt for speed -->
+
+  <!-- Background circle (secondary color) -->
+  <circle cx="200" cy="200" r="180" fill="var(--illustration-secondary, rgba(26, 26, 26, 0.1))"/>
+
+  <!-- Lightning bolt (primary color) -->
+  <path d="M220 80L140 220H200L180 320L280 180H220L220 80Z"
+        fill="var(--illustration-primary, #1a1a1a)"/>
+
+  <!-- Speed lines (secondary color) -->
+  <path d="M100 140L80 150M90 170L70 180M100 200L80 210"
+        stroke="var(--illustration-secondary, rgba(26, 26, 26, 0.1))"
+        stroke-width="8"
+        stroke-linecap="round"/>
+
+  <!-- Speed lines right (secondary color) -->
+  <path d="M320 220L340 230M330 250L350 260M320 280L340 290"
+        stroke="var(--illustration-secondary, rgba(26, 26, 26, 0.1))"
+        stroke-width="8"
+        stroke-linecap="round"/>
+</svg>

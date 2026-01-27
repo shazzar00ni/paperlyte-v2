@@ -103,7 +103,9 @@ describe('useScrollPosition', () => {
     })
 
     // Trigger scroll event
-    scrollCallbacks.forEach((cb) => cb(new Event('scroll')))
+    scrollCallbacks.forEach((cb) => {
+      cb(new Event('scroll'))
+    })
 
     await waitFor(() => {
       expect(result.current.scrollY).toBe(500)
@@ -114,7 +116,9 @@ describe('useScrollPosition', () => {
     renderHook(() => useScrollPosition())
 
     // Trigger scroll event
-    scrollCallbacks.forEach((cb) => cb(new Event('scroll')))
+    scrollCallbacks.forEach((cb) => {
+      cb(new Event('scroll'))
+    })
 
     expect(window.requestAnimationFrame).toHaveBeenCalled()
   })
@@ -130,9 +134,15 @@ describe('useScrollPosition', () => {
     renderHook(() => useScrollPosition())
 
     // Trigger multiple scroll events rapidly
-    scrollCallbacks.forEach((cb) => cb(new Event('scroll')))
-    scrollCallbacks.forEach((cb) => cb(new Event('scroll')))
-    scrollCallbacks.forEach((cb) => cb(new Event('scroll')))
+    scrollCallbacks.forEach((cb) => {
+      cb(new Event('scroll'))
+    })
+    scrollCallbacks.forEach((cb) => {
+      cb(new Event('scroll'))
+    })
+    scrollCallbacks.forEach((cb) => {
+      cb(new Event('scroll'))
+    })
 
     // RAF should only be called once due to throttling
     expect(window.requestAnimationFrame).toHaveBeenCalledTimes(1)
@@ -149,7 +159,9 @@ describe('useScrollPosition', () => {
       value: maxScroll,
     })
 
-    scrollCallbacks.forEach((cb) => cb(new Event('scroll')))
+    scrollCallbacks.forEach((cb) => {
+      cb(new Event('scroll'))
+    })
 
     await waitFor(() => {
       expect(result.current.scrollProgress).toBe(1)
@@ -167,7 +179,9 @@ describe('useScrollPosition', () => {
       value: beyondMax,
     })
 
-    scrollCallbacks.forEach((cb) => cb(new Event('scroll')))
+    scrollCallbacks.forEach((cb) => {
+      cb(new Event('scroll'))
+    })
 
     await waitFor(() => {
       expect(result.current.scrollProgress).toBe(1)
@@ -211,7 +225,9 @@ describe('useScrollPosition', () => {
     const { unmount } = renderHook(() => useScrollPosition())
 
     // Trigger a scroll to create a pending animation frame
-    scrollCallbacks.forEach((cb) => cb(new Event('scroll')))
+    scrollCallbacks.forEach((cb) => {
+      cb(new Event('scroll'))
+    })
 
     // At this point, pendingCallback should be set, but not executed
     expect(typeof pendingCallback).toBe('function')
@@ -243,7 +259,9 @@ describe('useScrollPosition', () => {
       value: 300,
     })
 
-    scrollCallbacks.forEach((cb) => cb(new Event('scroll')))
+    scrollCallbacks.forEach((cb) => {
+      cb(new Event('scroll'))
+    })
 
     await waitFor(() => {
       expect(result.current.scrollX).toBe(300)
@@ -273,7 +291,9 @@ describe('useScrollPosition', () => {
       value: 616, // ~50% progress
     })
 
-    scrollCallbacks.forEach((cb) => cb(new Event('scroll')))
+    scrollCallbacks.forEach((cb) => {
+      cb(new Event('scroll'))
+    })
 
     await waitFor(() => {
       expect(result.current.scrollX).toBe(200)
@@ -292,7 +312,9 @@ describe('useScrollPosition', () => {
       value: -10,
     })
 
-    scrollCallbacks.forEach((cb) => cb(new Event('scroll')))
+    scrollCallbacks.forEach((cb) => {
+      cb(new Event('scroll'))
+    })
 
     await waitFor(() => {
       // Negative scroll values should be clamped to 0

@@ -5,6 +5,8 @@ import styles from './OfflinePage.module.css'
 interface OfflinePageProps {
   /**
    * Custom message to display (optional)
+   * Note: Empty strings ("") are treated as a valid custom message and will display blank.
+   * Omit the prop entirely (undefined) to show the default message.
    */
   message?: string
   /**
@@ -56,7 +58,9 @@ export const OfflinePage: FC<OfflinePageProps> = ({
 
     // Create abort controller with timeout to prevent hanging
     const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 5000) // 5 second timeout
+    const timeoutId = setTimeout(() => {
+      controller.abort()
+    }, 5000) // 5 second timeout
 
     try {
       // Use a reliable external endpoint to check for real internet connectivity
@@ -108,8 +112,8 @@ export const OfflinePage: FC<OfflinePageProps> = ({
         <p className={styles.message}>
           {isOnline
             ? 'Your internet connection has been restored. You can now continue using Paperlyte.'
-            : message ||
-              "It looks like you've lost your internet connection. Don't worry, Paperlyte is designed to work offline."}
+            : (message ??
+              "It looks like you've lost your internet connection. Don't worry, Paperlyte is designed to work offline.")}
         </p>
 
         {/* Action buttons */}
@@ -130,7 +134,9 @@ export const OfflinePage: FC<OfflinePageProps> = ({
 
           {isOnline && (
             <button
-              onClick={() => window.location.reload()}
+              onClick={() => {
+                window.location.reload()
+              }}
               className={styles.secondaryButton}
               type="button"
               aria-label="Reload the page"

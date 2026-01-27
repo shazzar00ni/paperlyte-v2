@@ -80,6 +80,7 @@ export const Icon = ({
           style={{ fontSize: iconSize, color: normalizedColor, ...style }}
           aria-label={ariaLabel}
           aria-hidden={ariaLabel ? 'false' : 'true'}
+          data-testid={`icon-${name}`}
           {...(ariaLabel ? { role: 'img' } : {})}
           title={`Icon "${name}" not found`}
         >
@@ -95,6 +96,7 @@ export const Icon = ({
         style={{ fontSize: iconSize, color: normalizedColor, ...style }}
         aria-label={ariaLabel}
         aria-hidden={ariaLabel ? 'false' : 'true'}
+        data-testid={`icon-${name}`}
         {...(ariaLabel ? { role: 'img' } : {})}
       />
     )
@@ -106,7 +108,7 @@ export const Icon = ({
       height={iconSize}
       viewBox={viewBox}
       fill="none"
-      stroke={normalizedColor || 'currentColor'}
+      stroke={normalizedColor ?? 'currentColor'}
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -114,6 +116,7 @@ export const Icon = ({
       style={style}
       aria-label={ariaLabel}
       aria-hidden={ariaLabel ? 'false' : 'true'}
+      data-testid={`icon-${name}`}
       {...(ariaLabel && { role: 'img' })}
     >
       {pathArray.map((pathData, index) => (

@@ -6,6 +6,8 @@ import styles from './NotFoundPage.module.css'
 interface NotFoundPageProps {
   /**
    * Custom message to display (optional)
+   * Note: Empty strings ("") are treated as a valid custom message and will display blank.
+   * Omit the prop entirely (undefined) to show the default message.
    */
   message?: string
   /**
@@ -43,7 +45,7 @@ export const NotFoundPage: FC<NotFoundPageProps> = ({ message, onGoHome }) => {
         </h1>
 
         <p className={styles.message}>
-          {message ||
+          {message ??
             "The page you're looking for doesn't exist or may have been moved. Let's get you back on track."}
         </p>
 
@@ -60,7 +62,9 @@ export const NotFoundPage: FC<NotFoundPageProps> = ({ message, onGoHome }) => {
           </button>
 
           <button
-            onClick={() => window.history.back()}
+            onClick={() => {
+              window.history.back()
+            }}
             className={styles.secondaryButton}
             type="button"
             aria-label="Go to previous page"

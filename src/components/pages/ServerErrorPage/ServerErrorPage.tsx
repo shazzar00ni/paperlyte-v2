@@ -8,6 +8,8 @@ import styles from './ServerErrorPage.module.css'
 interface ServerErrorPageProps {
   /**
    * Custom error message to display (optional)
+   * Note: Empty strings ("") are treated as a valid custom message and will display blank.
+   * Omit the prop entirely (undefined) to show the default message.
    */
   message?: string
   /**
@@ -68,7 +70,7 @@ export const ServerErrorPage: FC<ServerErrorPageProps> = ({
         </h1>
 
         <p className={styles.message}>
-          {message ||
+          {message ??
             "We're sorry, but something unexpected happened on our end. This isn't your fault, and we're working to fix it."}
         </p>
 

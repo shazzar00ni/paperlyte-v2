@@ -163,7 +163,7 @@ describe('Features Constants', () => {
   describe('Feature Descriptions Quality', () => {
     it('should have speed feature mention performance metrics', () => {
       const speedFeature = FEATURES.find((f) => f.id === 'speed')
-      const description = speedFeature?.description.toLowerCase() || ''
+      const description = speedFeature?.description.toLowerCase() ?? ''
 
       const hasPerformanceKeywords =
         description.includes('instant') ||
@@ -176,7 +176,7 @@ describe('Features Constants', () => {
 
     it('should have offline feature mention connectivity', () => {
       const offlineFeature = FEATURES.find((f) => f.id === 'offline')
-      const description = offlineFeature?.description.toLowerCase() || ''
+      const description = offlineFeature?.description.toLowerCase() ?? ''
 
       const hasConnectivityKeywords =
         description.includes('offline') ||
@@ -188,7 +188,7 @@ describe('Features Constants', () => {
 
     it('should have privacy feature mention security', () => {
       const privacyFeature = FEATURES.find((f) => f.id === 'privacy')
-      const description = privacyFeature?.description.toLowerCase() || ''
+      const description = privacyFeature?.description.toLowerCase() ?? ''
 
       const hasSecurityKeywords =
         description.includes('encrypt') ||
@@ -201,7 +201,7 @@ describe('Features Constants', () => {
 
     it('should have universal feature mention devices or platforms', () => {
       const universalFeature = FEATURES.find((f) => f.id === 'universal')
-      const description = universalFeature?.description.toLowerCase() || ''
+      const description = universalFeature?.description.toLowerCase() ?? ''
 
       const hasDeviceKeywords =
         description.includes('device') ||

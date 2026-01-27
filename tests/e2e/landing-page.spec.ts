@@ -7,9 +7,9 @@ test.describe('Landing Page', () => {
     // Check hero heading exists
     await expect(page.locator('h1')).toBeVisible();
 
-    // Check CTA button exists (matches actual Hero component buttons)
-    const ctaButton = page.getByRole('button', { name: /start writing for free|view the demo/i });
-    await expect(ctaButton.first()).toBeVisible();
+    // Check primary CTA button exists
+    const ctaButton = page.getByRole('button', { name: /start writing for free/i });
+    await expect(ctaButton).toBeVisible();
 
     // Check page is accessible
     await expect(page).toHaveTitle(/Paperlyte/i);
@@ -18,8 +18,8 @@ test.describe('Landing Page', () => {
   test('should navigate to features section on click', async ({ page }) => {
     await page.goto('/');
 
-    // Target specifically the header's features link to avoid strict mode violation
-    const featuresLink = page.locator('header').getByRole('link', { name: /^features$/i });
+    // Target specifically the header navigation's features link
+    const featuresLink = page.getByRole('navigation', { name: /main navigation/i }).getByRole('link', { name: /^features$/i });
     await featuresLink.click();
 
     // Wait for smooth scroll animation to complete by ensuring #features is fully in the viewport
@@ -41,17 +41,21 @@ test.describe('Landing Page', () => {
     await page.goto('/');
     await page.waitForLoadState('load');
 
-    // Measure Core Web Vitals using Performance Timeline
+    // Measure Core Web Vitals using Performance Timeline and PerformanceObserver
     const metrics = await page.evaluate(() => {
-      const paintEntries = performance.getEntriesByType('paint');
-      const fcpEntry = paintEntries.find(
-        (entry) => entry.name === 'first-contentful-paint'
-      );
-
-      // Get LCP using PerformanceObserver
       return new Promise((resolve) => {
+        let fcp = 0;
         let lcp = 0;
         let cls = 0;
+
+        // Check if FCP already exists in paint entries
+        const paintEntries = performance.getEntriesByType('paint');
+        const fcpEntry = paintEntries.find(
+          (entry) => entry.name === 'first-contentful-paint'
+        );
+        if (fcpEntry) {
+          fcp = fcpEntry.startTime;
+        }
 
         const lcpObserver = new PerformanceObserver((list) => {
           const entries = list.getEntries();
@@ -69,15 +73,29 @@ test.describe('Landing Page', () => {
           }
         });
 
+        // Observe FCP if not yet available
+        if (!fcp) {
+          const fcpObserver = new PerformanceObserver((list) => {
+            const fcpEntry = list
+              .getEntries()
+              .find((entry) => entry.name === 'first-contentful-paint');
+            if (fcpEntry) {
+              fcp = fcpEntry.startTime;
+              fcpObserver.disconnect();
+            }
+          });
+          fcpObserver.observe({ type: 'paint', buffered: true });
+        }
+
         lcpObserver.observe({ type: 'largest-contentful-paint', buffered: true });
         clsObserver.observe({ type: 'layout-shift', buffered: true });
 
-        // Wait a bit for metrics to be collected
+        // Wait for metrics to be collected
         setTimeout(() => {
           lcpObserver.disconnect();
           clsObserver.disconnect();
           resolve({
-            fcp: fcpEntry ? fcpEntry.startTime : null,
+            fcp,
             lcp,
             cls,
           });
@@ -86,8 +104,9 @@ test.describe('Landing Page', () => {
     });
 
     // Validate Core Web Vitals thresholds
-    expect(metrics.fcp).not.toBeNull();
+    expect(metrics.fcp).toBeGreaterThan(0); // FCP should be recorded
     expect(metrics.fcp).toBeLessThan(2000); // FCP < 2s
+    expect(metrics.lcp).toBeGreaterThan(0); // LCP should be recorded
     expect(metrics.lcp).toBeLessThan(2500); // LCP < 2.5s (good threshold)
     expect(metrics.cls).toBeLessThan(0.1); // CLS < 0.1 (good threshold)
   });

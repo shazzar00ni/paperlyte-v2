@@ -114,11 +114,11 @@ export class PlausibleProvider implements AnalyticsProvider {
       return
     }
 
-    const scriptUrl = this.config?.scriptUrl || 'https://plausible.io/js/script.js'
+    const scriptUrl = this.config?.scriptUrl ?? 'https://plausible.io/js/script.js'
 
     // Validate script URL to prevent injection attacks
     if (!this.isValidScriptUrl(scriptUrl)) {
-      if (this.config?.debug || import.meta.env.DEV) {
+      if (this.config?.debug ?? import.meta.env.DEV) {
         console.error(
           '[Analytics] Invalid or unsafe script URL. Must be HTTPS and point to a .js file:',
           scriptUrl
@@ -131,7 +131,7 @@ export class PlausibleProvider implements AnalyticsProvider {
 
     script.async = true
     script.src = scriptUrl
-    script.setAttribute('data-domain', this.config?.domain || '')
+    script.setAttribute('data-domain', this.config?.domain ?? '')
 
     // Add optional tracking features
     if (this.config?.trackPageviews === false) {
@@ -167,7 +167,7 @@ export class PlausibleProvider implements AnalyticsProvider {
       return
     }
 
-    const pageUrl = url || window.location.pathname
+    const pageUrl = url ?? window.location.pathname
 
     window.plausible('pageview', {
       props: { path: pageUrl },
@@ -190,7 +190,7 @@ export class PlausibleProvider implements AnalyticsProvider {
 
     // Convert properties to Plausible format (only string, number, boolean)
     const props = event.properties
-      ? Object.entries(event.properties).reduce(
+      ? Object.entries(event.properties).reduce<Record<string, string | number | boolean>>(
           (acc, [key, value]) => {
             // Validate key is safe before using it for property assignment
             if (!isSafePropertyKey(key)) {
@@ -201,11 +201,11 @@ export class PlausibleProvider implements AnalyticsProvider {
             }
 
             if (value !== undefined && value !== null) {
-              acc[key] = value
+              acc[key] = value as string | number | boolean
             }
             return acc
           },
-          {} as Record<string, string | number | boolean>
+          {}
         )
       : undefined
 
@@ -299,8 +299,8 @@ export class PlausibleProvider implements AnalyticsProvider {
     }
 
     const dnt =
-      navigator.doNotTrack ||
-      (window as Window & { doNotTrack?: string }).doNotTrack ||
+      navigator.doNotTrack ??
+      (window as Window & { doNotTrack?: string }).doNotTrack ??
       (navigator as Navigator & { msDoNotTrack?: string }).msDoNotTrack
 
     return dnt === '1' || dnt === 'yes'

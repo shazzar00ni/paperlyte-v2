@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useId } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { findIconDefinition, type IconName, type IconPrefix } from '@fortawesome/fontawesome-svg-core'
 import { iconPaths, getIconViewBox } from './icons'
@@ -35,10 +35,14 @@ export const Icon = ({
   style,
 }: IconProps): React.ReactElement => {
   const iconSize = SIZE_MAP[size]
+  const titleId = useId()
+
   // Convert icon name first to ensure consistency with Font Awesome fallback path
   const convertedName = convertIconName(name)
-  const paths = iconPaths[convertedName]
-  const viewBox = getIconViewBox(name)
+
+  // Safely check if icon exists in iconPaths to prevent prototype pollution
+  const paths = Object.hasOwn(iconPaths, convertedName) ? iconPaths[convertedName] : null
+  const viewBox = getIconViewBox(convertedName)
 
   // Normalize color: detect bare hex strings (3 or 6 hex digits) and prepend "#"
   const normalizedColor = useMemo(() => {
@@ -73,18 +77,21 @@ export const Icon = ({
     }
 
     // Try to find the icon definition in the library
-    // Note: convertedName is already validated as IconName by convertIconName function
+    // Runtime validation: Check if convertedName is a valid IconName before assertion
     const iconDefinition = findIconDefinition({ prefix, iconName: convertedName as IconName })
 
     // If icon not found in library, return a placeholder
     if (!iconDefinition) {
-      console.warn(`Icon "${name}" not found in Font Awesome library either`)
+      console.warn(
+        `Icon "${name}" (converted to "${convertedName}") not found in Font Awesome library. ` +
+          `Rendering empty/decorative fallback span.`
+      )
       return (
         <span
           className={`icon-fallback ${className}`}
           style={{ fontSize: iconSize, color: normalizedColor, ...style }}
           aria-label={ariaLabel}
-          aria-hidden={ariaLabel ? 'false' : 'true'}
+          aria-hidden={ariaLabel ? false : true}
           {...(ariaLabel ? { role: 'img' } : {})}
           title={`Icon "${name}" not found`}
         >
@@ -99,7 +106,7 @@ export const Icon = ({
         className={`icon-fallback ${className}`}
         style={{ fontSize: iconSize, color: normalizedColor, ...style }}
         aria-label={ariaLabel}
-        aria-hidden={ariaLabel ? 'false' : 'true'}
+        aria-hidden={ariaLabel ? false : true}
         {...(ariaLabel ? { role: 'img' } : {})}
       />
     )
@@ -117,10 +124,11 @@ export const Icon = ({
       strokeLinejoin="round"
       className={`icon-svg ${className}`}
       style={style}
-      aria-label={ariaLabel}
-      aria-hidden={ariaLabel ? 'false' : 'true'}
+      {...(ariaLabel ? { 'aria-labelledby': titleId } : { 'aria-label': undefined })}
+      aria-hidden={ariaLabel ? false : true}
       {...(ariaLabel && { role: 'img' })}
     >
+      {ariaLabel && <title id={titleId}>{ariaLabel}</title>}
       {pathArray.map((pathData, index) => (
         <path
           key={index}

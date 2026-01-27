@@ -76,15 +76,14 @@ describe('Button', () => {
   })
 
   it('should render with icon', () => {
-    const { container } = render(<Button icon="fa-download">Download</Button>)
+    render(
+      <Button icon="fa-download" iconAriaLabel="Download icon">
+        Download
+      </Button>
+    )
 
-    // Icon renders via FontAwesomeIcon component (SVG) or as span fallback
-    const svg = container.querySelector('svg')
-    const fallback = container.querySelector('span.icon-fallback')
-    const icon = svg ?? fallback
-
+    const icon = screen.getByLabelText('Download icon')
     expect(icon).toBeInTheDocument()
-    expect(icon).toHaveAttribute('aria-hidden', 'true')
   })
 
   it('should apply custom className', () => {

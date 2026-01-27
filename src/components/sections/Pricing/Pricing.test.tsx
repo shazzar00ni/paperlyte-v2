@@ -14,13 +14,13 @@ describe('Pricing', () => {
 
   it('should render main heading', () => {
     render(<Pricing />)
-    expect(screen.getByText('Simple, Transparent Pricing')).toBeInTheDocument()
+    expect(screen.getByText('Simple pricing. No surprises.')).toBeInTheDocument()
   })
 
   it('should render subtitle', () => {
     render(<Pricing />)
     expect(
-      screen.getByText("Start free, upgrade when you're ready. No credit card required.")
+      screen.getByText('Start free, upgrade whenever. No credit card needed to get started.')
     ).toBeInTheDocument()
   })
 
@@ -80,24 +80,19 @@ describe('Pricing', () => {
   })
 
   it('should render "Most Popular" badge for Pro plan', () => {
-    const { container } = render(<Pricing />)
+    render(<Pricing />)
 
     const popularBadge = screen.getByLabelText('Most popular')
     expect(popularBadge).toBeInTheDocument()
-
-    const starIcon = container.querySelector('.fa-star')
-    expect(starIcon).toBeInTheDocument()
-    expect(starIcon).toHaveAttribute('aria-label', 'Most popular')
   })
 
   it('should render plan icons', () => {
-    const { container } = render(<Pricing />)
+    render(<Pricing />)
 
     PRICING_PLANS.forEach((plan) => {
       if (plan.icon) {
-        const icon = container.querySelector(`.${plan.icon}`)
+        const icon = screen.getByLabelText(`${plan.name} plan icon`)
         expect(icon).toBeInTheDocument()
-        expect(icon).toHaveAttribute('aria-label', `${plan.name} plan icon`)
       }
     })
   })
@@ -113,18 +108,15 @@ describe('Pricing', () => {
   })
 
   it('should render checkmark icons for all features', () => {
-    const { container } = render(<Pricing />)
-
-    const checkmarks = container.querySelectorAll('.fa-check')
+    render(<Pricing />)
 
     // Count total features across all plans
     const totalFeatures = PRICING_PLANS.reduce((sum, plan) => sum + plan.features.length, 0)
 
-    expect(checkmarks.length).toBe(totalFeatures)
+    // Find all checkmark icons by aria-label
+    const checkmarks = screen.getAllByLabelText('Included')
 
-    checkmarks.forEach((checkmark) => {
-      expect(checkmark).toHaveAttribute('aria-label', 'Included')
-    })
+    expect(checkmarks.length).toBe(totalFeatures)
   })
 
   it('should render CTA buttons for all plans', () => {
@@ -139,15 +131,14 @@ describe('Pricing', () => {
   })
 
   it('should render guarantee section', () => {
-    const { container } = render(<Pricing />)
+    render(<Pricing />)
 
     expect(
       screen.getByText('30-day money-back guarantee • Cancel anytime • No hidden fees')
     ).toBeInTheDocument()
 
-    const shieldIcon = container.querySelector('.fa-shield-check')
+    const shieldIcon = screen.getByLabelText('Guarantee')
     expect(shieldIcon).toBeInTheDocument()
-    expect(shieldIcon).toHaveAttribute('aria-label', 'Guarantee')
   })
 
   it('should use semantic article elements for pricing cards', () => {
@@ -161,7 +152,7 @@ describe('Pricing', () => {
     render(<Pricing />)
 
     // Main heading should be h2
-    const mainHeading = screen.getByText('Simple, Transparent Pricing')
+    const mainHeading = screen.getByText('Simple pricing. No surprises.')
     expect(mainHeading.tagName).toBe('H2')
 
     // Plan names should be h3

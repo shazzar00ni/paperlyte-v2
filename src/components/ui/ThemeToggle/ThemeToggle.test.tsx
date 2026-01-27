@@ -35,10 +35,9 @@ describe('ThemeToggle', () => {
 
       render(<ThemeToggle />)
 
-      // Icon component should render (as SVG or span fallback)
+      // Icon is decorative - button's aria-label provides accessible name
       const button = screen.getByRole('button')
-      const icon = button.querySelector('svg') ?? button.querySelector('span.icon-fallback')
-      expect(icon).toBeInTheDocument()
+      expect(button.querySelector('svg')).toBeInTheDocument()
     })
 
     it('should render sun icon in dark mode', () => {
@@ -49,7 +48,7 @@ describe('ThemeToggle', () => {
 
       render(<ThemeToggle />)
 
-      // Icon component should render (as SVG or span fallback)
+      // Icon is decorative - button's aria-label provides accessible name
       const button = screen.getByRole('button')
       const icon = button.querySelector('svg') ?? button.querySelector('span.icon-fallback')
       expect(icon).toBeInTheDocument()
@@ -167,14 +166,13 @@ describe('ThemeToggle', () => {
 
   describe('Theme Changes', () => {
     it('should update icon when theme changes from light to dark', () => {
-      const { rerender } = render(<ThemeToggle />)
-
+      // Mock before initial render
       vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
         theme: 'light',
         toggleTheme: mockToggleTheme,
       })
 
-      rerender(<ThemeToggle />)
+      const { rerender } = render(<ThemeToggle />)
       const icon1 =
         screen.getByRole('button').querySelector('svg') ??
         screen.getByRole('button').querySelector('span.icon-fallback')

@@ -151,32 +151,5 @@ describe('ThemeToggle', () => {
     })
   })
 
-  describe('Icon Component Integration', () => {
-    it('should render an icon in light mode', () => {
-      renderThemeToggle('light')
-
-      const button = getToggleButton()
-      const icon = getIcon(button)
-
-      expect(icon).toBeInTheDocument()
-    })
-
-    it('should render an icon in dark mode', () => {
-      renderThemeToggle('dark')
-
-      const button = getToggleButton()
-      const icon = getIcon(button)
-
-      expect(icon).toBeInTheDocument()
-    })
-
-    it('should render an icon with size prop', () => {
-      renderThemeToggle('light')
-
-      const button = getToggleButton()
-      const icon = getIcon(button)
-
-      expect(icon).toBeInTheDocument()
-    })
-  })
+  // Icon Component Integration tests removed - redundant with Rendering tests above
 })

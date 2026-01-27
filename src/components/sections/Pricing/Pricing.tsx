@@ -24,7 +24,7 @@ export const Pricing = (): React.ReactElement => {
           <AnimatedElement key={plan.id} animation="slideUp" delay={150 + index * 100}>
             <article className={`${styles.card} ${plan.isPopular ? styles.popularCard : ''}`}>
               {plan.isPopular && (
-                <div className={styles.popularBadge}>
+                <div className={styles.popularBadge} data-testid="most-popular-badge">
                   <Icon name="fa-star" size="sm" ariaLabel="Most popular" />
                   <span>Most Popular</span>
                 </div>

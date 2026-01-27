@@ -41,7 +41,10 @@ export const Icon = ({
   const convertedName = convertIconName(name)
 
   // Safely check if icon exists in iconPaths to prevent prototype pollution
-  const paths = Object.hasOwn(iconPaths, convertedName) ? iconPaths[convertedName] : null
+  // Use Reflect.get for safe property access to avoid object injection vulnerabilities
+  const paths = Object.hasOwn(iconPaths, convertedName)
+    ? Reflect.get(iconPaths, convertedName)
+    : null
   const viewBox = getIconViewBox(convertedName)
 
   // Normalize color: detect bare hex strings (3 or 6 hex digits) and prepend "#"

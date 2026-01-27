@@ -142,6 +142,13 @@ export const brandIconNames = new Set<string>(['github', 'twitter', 'apple', 'wi
  * Set of all valid icon names in the library
  * Used for runtime validation to prevent rendering invalid icons
  * Includes all imported solid and brand icons
+ *
+ * ⚠️ IMPORTANT: When adding new icons, you must:
+ * 1. Import the icon from @fortawesome/free-solid-svg-icons or free-brands-svg-icons
+ * 2. Add it to library.add()
+ * 3. Add the converted name (without 'fa-' prefix) to this set
+ *
+ * The test suite will catch synchronization issues if you forget step 3.
  */
 export const validIconNames = new Set<string>([
   // Solid icons

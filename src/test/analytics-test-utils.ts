@@ -40,10 +40,11 @@ export function setupConsoleSpy() {
  * Use this for tests that need console mocking
  */
 export function setupAnalyticsTest() {
-  const spies = setupConsoleSpy()
+  let spies: ReturnType<typeof setupConsoleSpy>
 
   beforeEach(() => {
     clearAnalyticsGlobals()
+    spies = setupConsoleSpy()
   })
 
   afterEach(() => {

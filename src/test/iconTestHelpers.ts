@@ -21,7 +21,6 @@ export function expectIconSize(icon: Element | null, expectedSize: string): void
     // Span fallback uses fontSize style
     const expectedFontSize = expectedSize.endsWith('px') ? expectedSize : `${expectedSize}px`
     // codacy-disable-next-line ESLint8_xss_no-mixed-html
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Safe: accessing CSS property for test assertion, not HTML injection
     expect((icon as HTMLElement).style.fontSize).toBe(expectedFontSize)
   } else {
     // FontAwesomeIcon SVG with fontSize in style

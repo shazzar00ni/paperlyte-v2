@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { ThemeToggle } from './ThemeToggle'
 import * as useThemeModule from '@hooks/useTheme'
-import { expectIconSize, getIconFromButton } from '@/test/iconTestHelpers'
+import { getIconFromButton } from '@/test/iconTestHelpers'
 
 describe('ThemeToggle', () => {
   const mockToggleTheme = vi.fn()

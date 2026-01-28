@@ -16,7 +16,14 @@ if (!fs.existsSync(sarifPath)) {
   process.exit(1)
 }
 
-const sarif = JSON.parse(fs.readFileSync(sarifPath, 'utf8'))
+let sarif
+try {
+  sarif = JSON.parse(fs.readFileSync(sarifPath, 'utf8'))
+} catch (error) {
+  console.error(`Failed to parse SARIF file: ${sarifPath}`)
+  console.error(`Error: ${error.message}`)
+  process.exit(1)
+}
 
 if (sarif.runs && sarif.runs.length > 1) {
   // Merge all runs into the first run

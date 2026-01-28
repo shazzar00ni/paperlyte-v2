@@ -13,20 +13,21 @@
 export function expectIconSize(icon: Element | null, expectedSize: string): void {
   expect(icon).toBeInTheDocument()
 
-  if (icon?.tagName === 'svg') {
-    // SVG uses width/height attributes
+  if (icon?.tagName === 'svg' && icon.hasAttribute('width')) {
+    // Custom SVG icons use width/height attributes
     expect(icon).toHaveAttribute('width', expectedSize)
     expect(icon).toHaveAttribute('height', expectedSize)
+  } else if (icon?.tagName === 'svg') {
+    // FontAwesomeIcon SVG with fontSize in style
+    const expectedFontSize = expectedSize.endsWith('px') ? expectedSize : `${expectedSize}px`
+    expect(icon).toHaveStyle({ fontSize: expectedFontSize })
   } else if (icon?.tagName === 'SPAN') {
     // Span fallback uses fontSize style
     const expectedFontSize = expectedSize.endsWith('px') ? expectedSize : `${expectedSize}px`
-    // codacy-disable-next-line ESLint8_xss_no-mixed-html
     expect((icon as HTMLElement).style.fontSize).toBe(expectedFontSize)
   } else {
-    // FontAwesomeIcon SVG with fontSize in style
-    expect(icon?.tagName).toBe('svg')
-    const expectedFontSize = expectedSize.endsWith('px') ? expectedSize : `${expectedSize}px`
-    expect(icon).toHaveStyle({ fontSize: expectedFontSize })
+    // Unexpected element type - fail with descriptive message
+    expect(icon?.tagName).toMatch(/svg|SPAN/i)
   }
 }
 

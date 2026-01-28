@@ -13,6 +13,13 @@ coverage:
 engines:
   eslint-9:
     enabled: true
+  lizard:
+    enabled: true
+    exclude_paths:
+      - '**/*.test.tsx'
+      - '**/*.test.ts'
+      - '**/*.spec.tsx'
+      - '**/*.spec.ts'
 
 # Exclude specific patterns in test files where they are false positives
 # validation-utils.test.ts: RegExp constructor is used with pre-escaped strings

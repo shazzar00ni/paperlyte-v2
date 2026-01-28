@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { Icon } from './Icon'
+import { expectIconSize } from '@/test/iconTestHelpers'
 
 describe('Icon', () => {
   let consoleWarnSpy: ReturnType<typeof vi.spyOn>
@@ -71,40 +72,34 @@ describe('Icon', () => {
     // Test sm size (16px)
     const { container, rerender } = render(<Icon name="fa-bolt" size="sm" />)
     let svg = container.querySelector('svg')
-    expect(svg).toHaveAttribute('width', '16')
-    expect(svg).toHaveAttribute('height', '16')
+    expectIconSize(svg, '16')
 
     // Test lg size (24px)
     rerender(<Icon name="fa-bolt" size="lg" />)
     svg = container.querySelector('svg')
-    expect(svg).toHaveAttribute('width', '24')
-    expect(svg).toHaveAttribute('height', '24')
+    expectIconSize(svg, '24')
 
     // Test 2x size (40px)
     rerender(<Icon name="fa-bolt" size="2x" />)
     svg = container.querySelector('svg')
-    expect(svg).toHaveAttribute('width', '40')
-    expect(svg).toHaveAttribute('height', '40')
+    expectIconSize(svg, '40')
 
     // Test fallback size application
     rerender(<Icon name="missing-icon" size="lg" />)
     const fallback = container.querySelector('span.icon-fallback')
-    expect(fallback?.style.fontSize).toBe('24px')
+    expectIconSize(fallback, '24')
   })
 
   it('should use medium size by default', () => {
     // Test SVG default size (md = 20px)
     const { container, rerender } = render(<Icon name="fa-bolt" />)
     const svg = container.querySelector('svg')
-    expect(svg).toBeInTheDocument()
-    expect(svg).toHaveAttribute('width', '20')
-    expect(svg).toHaveAttribute('height', '20')
+    expectIconSize(svg, '20')
 
     // Test fallback default size
     rerender(<Icon name="missing-icon" />)
     const fallback = container.querySelector('span.icon-fallback')
-    expect(fallback).toBeInTheDocument()
-    expect(fallback?.style.fontSize).toBe('20px')
+    expectIconSize(fallback, '20')
   })
 
   it('should be hidden from screen readers by default', () => {
@@ -144,7 +139,8 @@ describe('Icon', () => {
     const { container } = render(<Icon name="missing-icon" color="#FF0000" />)
     const fallback = container.querySelector('span.icon-fallback')
 
-    // Fallback uses inline style for color
+    // Fallback uses inline style for color (both span and SVG)
+    expect(fallback).toBeInTheDocument()
     expect(fallback).toHaveStyle({ color: '#FF0000' })
   })
 

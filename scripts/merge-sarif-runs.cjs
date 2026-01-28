@@ -5,9 +5,9 @@
  * (one per config object). GitHub Code Scanning has a limit of 20
  * runs per SARIF file. This script merges all runs into a single run.
  *
- * Usage: node scripts/merge-sarif-runs.js <sarif-file>
+ * Usage: node scripts/merge-sarif-runs.cjs <sarif-file>
  */
-import fs from 'fs'
+const fs = require('fs')
 
 const sarifPath = process.argv[2] || 'eslint-results.sarif'
 

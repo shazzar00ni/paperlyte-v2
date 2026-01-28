@@ -57,7 +57,7 @@ jobs:
         # ESLint 9 flat config creates multiple runs (one per config object)
         # GitHub Code Scanning has a limit of 20 runs per SARIF file
         # This step merges all runs into a single run to stay under the limit
-        run: node scripts/merge-sarif-runs.js eslint-results.sarif
+        run: node scripts/merge-sarif-runs.cjs eslint-results.sarif
 
       - name: Upload analysis results to GitHub
         uses: github/codeql-action/upload-sarif@b20883b0cd1f46c72ae0ba6d1090936928f9fa30 # v4.32.0

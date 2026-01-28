@@ -3,6 +3,8 @@ import userEvent from '@testing-library/user-event'
 import { ThemeToggle } from './ThemeToggle'
 import * as useThemeModule from '@hooks/useTheme'
 import { getIconFromButton } from '@/test/iconTestHelpers'
+import * as IconModule from '@components/ui/Icon/Icon'
+import type { IconProps } from '@components/ui/Icon/Icon'
 
 describe('ThemeToggle', () => {
   const mockToggleTheme = vi.fn()
@@ -206,5 +208,46 @@ describe('ThemeToggle', () => {
     })
   })
 
-  // Icon Component Integration tests removed - redundant with Rendering tests above
+  describe('Icon Component Integration', () => {
+    beforeEach(() => {
+      // Mock the Icon component to render with test data attributes
+      vi.spyOn(IconModule, 'Icon').mockImplementation(({ name, size }: IconProps) => (
+        <span data-testid="mock-icon" data-name={name} data-size={size} />
+      ))
+    })
+
+    afterEach(() => {
+      vi.restoreAllMocks()
+    })
+
+    it.each([
+      { theme: 'light', expectedIcon: 'fa-moon' },
+      { theme: 'dark', expectedIcon: 'fa-sun' },
+    ] as const)(
+      'should pass correct icon name ($expectedIcon) in $theme mode',
+      ({ theme, expectedIcon }) => {
+        vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
+          theme,
+          toggleTheme: mockToggleTheme,
+        })
+
+        render(<ThemeToggle />)
+
+        const mockIcon = screen.getByTestId('mock-icon')
+        expect(mockIcon).toHaveAttribute('data-name', expectedIcon)
+      }
+    )
+
+    it('should pass size="md" to Icon component', () => {
+      vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
+        theme: 'light',
+        toggleTheme: mockToggleTheme,
+      })
+
+      render(<ThemeToggle />)
+
+      const mockIcon = screen.getByTestId('mock-icon')
+      expect(mockIcon).toHaveAttribute('data-size', 'md')
+    })
+  })
 })

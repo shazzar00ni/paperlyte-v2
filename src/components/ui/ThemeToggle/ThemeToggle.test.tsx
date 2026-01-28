@@ -170,6 +170,11 @@ describe('ThemeToggle', () => {
 
   describe('Theme Changes', () => {
     it('should update icon when theme changes from light to dark', () => {
+      // Mock the Icon component to render with data attributes we can verify
+      vi.spyOn(IconModule, 'Icon').mockImplementation(({ name, size }: IconProps) => (
+        <span data-testid="theme-icon" data-name={name} data-size={size} />
+      ))
+
       // Mock before initial render
       vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
         theme: 'light',
@@ -177,8 +182,10 @@ describe('ThemeToggle', () => {
       })
 
       const { rerender } = render(<ThemeToggle />)
-      const button = screen.getByRole('button')
-      expect(getIconFromButton(button)).toBeInTheDocument()
+
+      // Verify moon icon is rendered in light mode
+      let icon = screen.getByTestId('theme-icon')
+      expect(icon).toHaveAttribute('data-name', 'fa-moon')
 
       vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
         theme: 'dark',
@@ -186,7 +193,12 @@ describe('ThemeToggle', () => {
       })
 
       rerender(<ThemeToggle />)
-      expect(getIconFromButton(button)).toBeInTheDocument()
+
+      // Verify sun icon is rendered in dark mode
+      icon = screen.getByTestId('theme-icon')
+      expect(icon).toHaveAttribute('data-name', 'fa-sun')
+
+      vi.restoreAllMocks()
     })
 
     it('should update aria-label when theme changes', () => {

@@ -49,19 +49,13 @@ describe('iconLibrary', () => {
 
     it('should not have brand icons overlap with solid icons', () => {
       // Brand and solid icons should be mutually exclusive
-      const solidIcons = Array.from(validIconNames).filter((icon) => !brandIconNames.has(icon))
-
-      // Check that no brand icon appears in the solid icon set
       const brandArray = Array.from(brandIconNames)
-      brandArray.forEach((brandIcon) => {
-        expect(
-          solidIcons.includes(brandIcon),
-          `Brand icon "${brandIcon}" should not appear in solid icons set`
-        ).toBe(false)
-      })
+      const validArray = Array.from(validIconNames)
 
-      // Verify intersection is empty
-      const intersection = brandArray.filter((icon) => solidIcons.includes(icon))
+      // Verify intersection is empty (brand icons should only appear once in validIconNames)
+      const intersection = brandArray.filter(
+        (icon) => validArray.filter((v) => v === icon).length > 1
+      )
       expect(intersection.length).toBe(0)
     })
   })
@@ -148,32 +142,17 @@ describe('iconLibrary', () => {
       expect(values.length).toBe(uniqueValues.size)
     })
 
-    it('should map all expected feature icons', () => {
-      // Core feature icons that must be mapped
-      const requiredMappings = [
-        'fa-bolt', // Lightning Speed
-        'fa-pen-nib', // Beautiful Simplicity
-        'fa-tags', // Tag-Based Organization
-        'fa-mobile-screen', // Universal Access
-        'fa-shield-halved', // Privacy Focused
-      ]
+    it('should map all expected icons', () => {
+      // Core feature icons and UI icons that must be mapped
+      const requiredMappings = {
+        feature: ['fa-bolt', 'fa-pen-nib', 'fa-tags', 'fa-mobile-screen', 'fa-shield-halved'],
+        ui: ['fa-bars', 'fa-xmark', 'fa-moon', 'fa-sun'],
+      }
 
-      requiredMappings.forEach((oldName) => {
-        expect(iconNameMap[oldName]).toBeDefined()
-      })
-    })
-
-    it('should map all expected UI icons', () => {
-      // UI icons that must be mapped
-      const requiredMappings = [
-        'fa-bars', // Mobile menu
-        'fa-xmark', // Close
-        'fa-moon', // Dark mode
-        'fa-sun', // Light mode
-      ]
-
-      requiredMappings.forEach((oldName) => {
-        expect(iconNameMap[oldName]).toBeDefined()
+      // Verify all required icons are mapped
+      const allRequired = [...requiredMappings.feature, ...requiredMappings.ui]
+      allRequired.forEach((oldName) => {
+        expect(iconNameMap[oldName], `Icon "${oldName}" should be mapped`).toBeDefined()
       })
     })
   })

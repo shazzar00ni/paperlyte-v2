@@ -25,7 +25,12 @@ try {
   process.exit(1)
 }
 
-if (sarif.runs && sarif.runs.length > 1) {
+// Ensure runs is an array to avoid TypeError
+if (!Array.isArray(sarif.runs)) {
+  sarif.runs = []
+}
+
+if (sarif.runs.length > 1) {
   // Merge all runs into the first run
   const mergedRun = sarif.runs[0]
 

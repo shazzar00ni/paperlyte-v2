@@ -31,14 +31,6 @@ describe('iconLibrary', () => {
        expect(validIconNames.has(converted)).toBe(true)
      })
    }
-    icons.forEach(({ input, expected }) => {
-      const converted = convertIconName(input)
-      expect(converted).toBe(expected)
-      expect(validIconNames.has(converted)).toBe(true)
-    })
-  }
-
-  describe('Icon Registry Consistency', () => {
     it('should have all mapped icons registered in validIconNames', () => {
       // Every value in iconNameMap should exist in validIconNames
       // This prevents mapping to non-existent icons

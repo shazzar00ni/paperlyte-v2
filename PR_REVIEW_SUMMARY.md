@@ -77,6 +77,7 @@ This PR aims to fix a deployment error in the `Privacy.tsx` component. However, 
 This will allow us to safely merge the bug fix while the dependency changes can be more thoroughly tested and reviewed.
 
 ---
+
 ## 2026-01-26
 
 ## PR #275: "Implement P0-CRITICAL hero section conversion optimization (#274)"

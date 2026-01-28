@@ -53,6 +53,47 @@ jobs:
             --max-warnings 0
         continue-on-error: true
 
+      - name: Merge SARIF runs
+        # ESLint 9 flat config creates multiple runs (one per config object)
+        # GitHub Code Scanning has a limit of 20 runs per SARIF file
+        # This step merges all runs into a single run to stay under the limit
+        run: |
+          node -e "
+          const fs = require('fs');
+          const sarif = JSON.parse(fs.readFileSync('eslint-results.sarif', 'utf8'));
+
+          if (sarif.runs && sarif.runs.length > 1) {
+            // Merge all runs into the first run
+            const mergedRun = sarif.runs[0];
+
+            // Collect all results from all runs
+            const allResults = [];
+            for (const run of sarif.runs) {
+              if (run.results) {
+                allResults.push(...run.results);
+              }
+            }
+
+            // Deduplicate results based on location and ruleId
+            const seen = new Set();
+            mergedRun.results = allResults.filter(result => {
+              const key = JSON.stringify({
+                ruleId: result.ruleId,
+                locations: result.locations
+              });
+              if (seen.has(key)) return false;
+              seen.add(key);
+              return true;
+            });
+
+            // Keep only the merged run
+            sarif.runs = [mergedRun];
+          }
+
+          fs.writeFileSync('eslint-results.sarif', JSON.stringify(sarif, null, 2));
+          console.log('SARIF runs merged: now contains', sarif.runs.length, 'run(s)');
+          "
+
       - name: Upload analysis results to GitHub
         uses: github/codeql-action/upload-sarif@b20883b0cd1f46c72ae0ba6d1090936928f9fa30 # v4.32.0
         if: always() && hashFiles('eslint-results.sarif') != ''

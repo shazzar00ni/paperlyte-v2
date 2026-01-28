@@ -58,11 +58,17 @@ describe('Features', () => {
   })
 
   it('should render feature icons with proper aria labels', () => {
-    render(<Features />)
+    const { container } = render(<Features />)
 
-    EXPECTED_FEATURES.forEach((feature) => {
-      const icon = screen.getByLabelText(`${feature.title} icon`)
+    // Each feature card should have an icon (SVG element)
+    const articles = container.querySelectorAll('article')
+    expect(articles.length).toBe(EXPECTED_FEATURES.length)
+
+    articles.forEach((article) => {
+      const icon = article.querySelector('svg')
       expect(icon).toBeInTheDocument()
+      // Icons are decorative (accompanied by text), so they should be aria-hidden
+      expect(icon).toHaveAttribute('aria-hidden', 'true')
     })
   })
 

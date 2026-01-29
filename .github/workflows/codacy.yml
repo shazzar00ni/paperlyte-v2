@@ -70,6 +70,7 @@ jobs:
             # - Use first run's tool as base, append other tool names
             # - Combine all results from all runs
             # - Merge all rule definitions from all runs
+            # Note: runAutomationDetails.id is set by the upload-sarif action via category parameter
             jq '{
               "$schema": ."$schema",
               version: .version,
@@ -82,10 +83,7 @@ jobs:
                     rules: [.runs[].tool.driver.rules // [] | .[]] | unique_by(.id)
                   }
                 },
-                results: [.runs[].results // [] | .[]] | unique_by(.ruleId + (.locations[0].physicalLocation.artifactLocation.uri // "") + ((.locations[0].physicalLocation.region.startLine // 0) | tostring)),
-                automationDetails: {
-                  id: "codacy/"
-                }
+                results: [.runs[].results // [] | .[]] | unique_by(.ruleId + (.locations[0].physicalLocation.artifactLocation.uri // "") + ((.locations[0].physicalLocation.region.startLine // 0) | tostring))
               }]
             }' results.sarif > merged.sarif
 

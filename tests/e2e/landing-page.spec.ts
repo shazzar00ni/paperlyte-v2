@@ -33,7 +33,7 @@ test.describe('Landing Page', () => {
 
   // Only run performance test on chromium desktop to avoid flakiness
   // Lighthouse CI already provides comprehensive Core Web Vitals monitoring
-  test('should pass Core Web Vitals', async ({ page, browserName }) => {
+  test('should pass Core Web Vitals', async ({ page }) => {
     test.skip(true, 'Skipping flaky Core Web Vitals test');
 
     await page.goto('/');

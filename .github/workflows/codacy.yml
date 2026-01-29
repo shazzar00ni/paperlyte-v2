@@ -54,68 +54,56 @@ jobs:
           # This will handover control about PR rejection to the GitHub side
           max-allowed-issues: 2147483647
 
-      # Split SARIF file into separate files per run to comply with GitHub's July 2025
+      # Merge multiple SARIF runs into a single run to comply with GitHub's July 2025
       # requirement that each upload must have a single run per category.
       # See: https://github.blog/changelog/2025-07-21-code-scanning-will-stop-combining-multiple-sarif-runs-uploaded-in-the-same-sarif-file/
-      - name: Split SARIF runs into separate files
-        id: split-sarif
+      - name: Merge SARIF runs into single run
         if: hashFiles('results.sarif') != ''
         run: |
           RUN_COUNT=$(jq '.runs | length' results.sarif)
           echo "Found $RUN_COUNT runs in SARIF file"
-          echo "run_count=$RUN_COUNT" >> $GITHUB_OUTPUT
 
-          for i in $(seq 0 $((RUN_COUNT - 1))); do
-            TOOL_NAME=$(jq -r ".runs[$i].tool.driver.name // \"tool-$i\"" results.sarif | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd '[:alnum:]-')
-            echo "Extracting run $i: $TOOL_NAME"
+          if [ "$RUN_COUNT" -gt 1 ]; then
+            echo "Merging $RUN_COUNT runs into a single run..."
 
-            # Create a new SARIF file with only this run
-            jq --argjson idx "$i" '{
+            # Merge all runs into a single run:
+            # - Use first run's tool as base, append other tool names
+            # - Combine all results from all runs
+            # - Merge all rule definitions from all runs
+            jq '{
               "$schema": ."$schema",
               version: .version,
-              runs: [.runs[$idx]]
-            }' results.sarif > "codacy-${TOOL_NAME}.sarif"
-          done
+              runs: [{
+                tool: {
+                  driver: {
+                    name: "Codacy",
+                    informationUri: "https://www.codacy.com",
+                    version: "1.0.0",
+                    rules: [.runs[].tool.driver.rules // [] | .[]] | unique_by(.id)
+                  }
+                },
+                results: [.runs[].results // [] | .[]] | unique_by(.ruleId + (.locations[0].physicalLocation.artifactLocation.uri // "") + ((.locations[0].physicalLocation.region.startLine // 0) | tostring)),
+                automationDetails: {
+                  id: "codacy/"
+                }
+              }]
+            }' results.sarif > merged.sarif
 
-          echo "Created SARIF files:"
-          ls -la codacy-*.sarif 2>/dev/null || echo "No split files created"
+            mv merged.sarif results.sarif
+            echo "Merged SARIF file created"
+          else
+            echo "Single run detected, no merging needed"
+          fi
 
-      # Upload each split SARIF file with a unique category using the official action
-      - name: Upload split SARIF files
-        if: hashFiles('results.sarif') != '' && steps.split-sarif.outputs.run_count != '0'
-        uses: actions/github-script@v7
+          echo "Final SARIF structure:"
+          jq '.runs | length' results.sarif
+          jq '.runs[0].results | length' results.sarif
+
+      # Upload the SARIF file (now with single run) using official action
+      - name: Upload SARIF results file
+        uses: github/codeql-action/upload-sarif@v3
+        if: hashFiles('results.sarif') != ''
         continue-on-error: true
         with:
-          script: |
-            const fs = require('fs');
-            const zlib = require('zlib');
-            const path = require('path');
-
-            // Find all split SARIF files
-            const files = fs.readdirSync('.').filter(f => f.startsWith('codacy-') && f.endsWith('.sarif'));
-            console.log(`Found ${files.length} SARIF files to upload:`, files);
-
-            for (const file of files) {
-              const category = path.basename(file, '.sarif');
-              console.log(`Uploading ${file} with category: ${category}`);
-
-              try {
-                const sarifContent = fs.readFileSync(file, 'utf8');
-                const gzipped = zlib.gzipSync(Buffer.from(sarifContent, 'utf8'));
-                const base64Sarif = gzipped.toString('base64');
-
-                await github.rest.codeScanning.uploadSarif({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  commit_sha: context.sha,
-                  ref: context.ref,
-                  sarif: base64Sarif,
-                  tool_name: category
-                });
-
-                console.log(`Successfully uploaded ${file}`);
-              } catch (error) {
-                console.log(`Warning: Failed to upload ${file}: ${error.message}`);
-                // Continue with other files even if one fails
-              }
-            }
+          sarif_file: results.sarif
+          category: codacy

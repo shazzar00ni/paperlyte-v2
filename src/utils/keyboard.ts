@@ -72,10 +72,22 @@ export const FOCUSABLE_SELECTOR =
 
 /**
  * Get all focusable elements within a container
+ * Elements are sorted by document order to ensure consistent navigation
  */
 export function getFocusableElements(container: HTMLElement): HTMLElement[] {
   const elements = container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)
-  return Array.from(elements)
+  // Sort by document order using compareDocumentPosition
+  // This ensures consistent ordering across different browser implementations
+  return Array.from(elements).sort((a, b) => {
+    const position = a.compareDocumentPosition(b)
+    if (position & Node.DOCUMENT_POSITION_FOLLOWING) {
+      return -1
+    }
+    if (position & Node.DOCUMENT_POSITION_PRECEDING) {
+      return 1
+    }
+    return 0
+  })
 }
 
 /**

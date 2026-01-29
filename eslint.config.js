@@ -20,7 +20,7 @@ import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
   // Global ignores
-  globalIgnores(['dist', 'coverage', 'reports']),
+  globalIgnores(['dist', 'coverage', 'reports', '.eslintrc*']),
   {
     // Apply to all TypeScript and TSX files
     files: ['**/*.{ts,tsx}'],

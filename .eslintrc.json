@@ -11,7 +11,7 @@
     "plugin:react-hooks/recommended",
     "prettier"
   ],
-  "ignorePatterns": ["dist", "node_modules", "coverage", ".eslintrc.json", "eslint.config.js"],
+  "ignorePatterns": ["dist", "node_modules", "coverage", ".eslintrc*", "eslint.config.js"],
   "parser": "@typescript-eslint/parser",
   "plugins": ["react-refresh"],
   "rules": {

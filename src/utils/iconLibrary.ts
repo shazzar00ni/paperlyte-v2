@@ -69,6 +69,8 @@ import {
   faTwitter, // Legacy Twitter link
   faXTwitter, // Twitter/X social link
   faInstagram, // Instagram social link
+  faFacebookF, // Facebook social link
+  faLinkedinIn, // LinkedIn social link
   faApple, // Apple platform
   faWindows, // Windows platform
 } from '@fortawesome/free-brands-svg-icons'
@@ -126,6 +128,8 @@ library.add(
   faTwitter,
   faXTwitter,
   faInstagram,
+  faFacebookF,
+  faLinkedinIn,
   faApple,
   faWindows
 )
@@ -172,6 +176,8 @@ export const iconNameMap: Record<string, string> = {
   'fa-twitter': 'twitter',
   'fa-x-twitter': 'x-twitter',
   'fa-instagram': 'instagram',
+  'fa-facebook-f': 'facebook-f',
+  'fa-linkedin-in': 'linkedin-in',
   'fa-apple': 'apple',
   'fa-windows': 'windows',
 }
@@ -185,6 +191,8 @@ export const brandIconNames = new Set<string>([
   'twitter',
   'x-twitter',
   'instagram',
+  'facebook-f',
+  'linkedin-in',
   'apple',
   'windows',
 ])

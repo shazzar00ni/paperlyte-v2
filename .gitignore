@@ -13,6 +13,7 @@ dist-ssr
 *.local
 coverage
 junit.xml
+public/sitemap.xml
 test-results/
 playwright-report/
 

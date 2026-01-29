@@ -2,6 +2,9 @@
 engines:
   eslint:
     enabled: true
+    configuration_file: ".eslintrc.json"
+  eslint-9:
+    enabled: true
 
 # Exclude specific patterns in test files where they are false positives
 exclude_paths:

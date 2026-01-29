@@ -20,7 +20,7 @@ describe('Pricing', () => {
   it('should render subtitle', () => {
     render(<Pricing />)
     expect(
-      screen.getByText('Start free, upgrade whenever. No credit card needed to get started.')
+      screen.getByText("Start free, upgrade whenever. No credit card needed to get started.")
     ).toBeInTheDocument()
   })
 
@@ -145,7 +145,7 @@ describe('Pricing', () => {
       screen.getByText('30-day money-back guarantee • Cancel anytime • No hidden fees')
     ).toBeInTheDocument()
 
-    const shieldIcon = container.querySelector('[aria-label="Guarantee"]')
+    const shieldIcon = container.querySelector('.fa-circle-check')
     expect(shieldIcon).toBeInTheDocument()
     expect(shieldIcon).toHaveAttribute('aria-label', 'Guarantee')
   })

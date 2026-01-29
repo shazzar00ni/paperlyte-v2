@@ -239,10 +239,10 @@ describe('ServerErrorPage', () => {
     })
 
     it('should render warning icon in error badge', () => {
-      const { container } = render(<ServerErrorPage />)
+      render(<ServerErrorPage />)
 
-      // Find the error badge element specifically
-      const errorBadge = container.querySelector('[class*="errorBadge"]')
+      // Find the error badge element using data-testid
+      const errorBadge = screen.getByTestId('error-badge')
       expect(errorBadge).toBeInTheDocument()
 
       // Assert the warning icon exists within the error badge

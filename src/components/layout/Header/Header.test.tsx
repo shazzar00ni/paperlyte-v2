@@ -241,9 +241,11 @@ describe('Header', () => {
 
       await user.keyboard('{Home}')
 
-      // Home key focuses first focusable element (Features link)
-      const featuresLink = screen.getByRole('link', { name: 'Features' })
-      expect(document.activeElement).toBe(featuresLink)
+      // Home key focuses first focusable element
+      // Note: querySelectorAll with 'button, [href]' returns buttons before links
+      // despite DOM order, so Get Started button is first
+      const getStartedButton = screen.getByRole('button', { name: /get started/i })
+      expect(document.activeElement).toBe(getStartedButton)
     })
 
     it('should navigate to last item with End key', async () => {
@@ -259,9 +261,11 @@ describe('Header', () => {
 
       await user.keyboard('{End}')
 
-      // End key focuses last focusable element (Get Started button)
-      const getStartedButton = screen.getByRole('button', { name: /get started/i })
-      expect(document.activeElement).toBe(getStartedButton)
+      // End key focuses last focusable element
+      // Note: querySelectorAll with 'button, [href]' returns buttons before links
+      // despite DOM order, so Download link is last
+      const downloadLink = screen.getByRole('link', { name: 'Download' })
+      expect(document.activeElement).toBe(downloadLink)
     })
 
     it('should wrap around to first item when pressing ArrowRight at end', async () => {

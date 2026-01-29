@@ -20,17 +20,15 @@ describe('iconLibrary', () => {
    * Helper function to verify icon conversion and validity
    * Reduces duplication in test cases
    */
-  const assertIconConversion = (
-    icons: Array<{ input: string; expected: string }>,
-   const assertIconConversion = (
-     icons: Array<{ input: string; expected: string }>
-   ) => {
-     icons.forEach(({ input, expected }) => {
-       const converted = convertIconName(input)
-       expect(converted).toBe(expected)
-       expect(validIconNames.has(converted)).toBe(true)
-     })
-   }
+  const assertIconConversion = (icons: Array<{ input: string; expected: string }>) => {
+    icons.forEach(({ input, expected }) => {
+      const converted = convertIconName(input)
+      expect(converted).toBe(expected)
+      expect(validIconNames.has(converted)).toBe(true)
+    })
+  }
+
+  describe('Icon Registry Consistency', () => {
     it('should have all mapped icons registered in validIconNames', () => {
       // Every value in iconNameMap should exist in validIconNames
       // This prevents mapping to non-existent icons
@@ -163,7 +161,7 @@ describe('iconLibrary', () => {
     })
 
     it('should convert all expected feature icons', () => {
-      // Core feature icons that must be convertible
+      // Test that convertIconName correctly strips 'fa-' prefix and validates presence in validIconNames
       const featureIcons = [
         { input: 'fa-bolt', expected: 'bolt' }, // Lightning Speed
         { input: 'fa-pen-nib', expected: 'pen-nib' }, // Beautiful Simplicity
@@ -172,11 +170,11 @@ describe('iconLibrary', () => {
         { input: 'fa-shield-halved', expected: 'shield-halved' }, // Privacy Focused
       ]
 
-      assertIconConversion(featureIcons, 'feature icons')
+      assertIconConversion(featureIcons)
     })
 
     it('should convert all expected UI icons', () => {
-      // UI icons that must be convertible
+      // Test that convertIconName correctly strips 'fa-' prefix and validates presence in validIconNames
       const uiIcons = [
         { input: 'fa-bars', expected: 'bars' }, // Mobile menu
         { input: 'fa-xmark', expected: 'xmark' }, // Close
@@ -184,7 +182,7 @@ describe('iconLibrary', () => {
         { input: 'fa-sun', expected: 'sun' }, // Light mode
       ]
 
-      assertIconConversion(uiIcons, 'UI icons')
+      assertIconConversion(uiIcons)
     })
   })
 

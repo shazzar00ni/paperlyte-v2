@@ -68,7 +68,8 @@ jobs:
         run: npm ci
 
       - name: Run tests with coverage
-        run: npm run test:coverage -- --run
+        # Generate coverage even when tests fail to track coverage trends
+        run: npm run test:coverage -- --run --coverage.reportOnFailure
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
@@ -125,6 +126,8 @@ jobs:
         run: npm ci
 
       - name: Build application
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         run: npm run build
 
       - name: Upload build artifacts
@@ -153,7 +156,7 @@ jobs:
         run: npm ci
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: dist
           path: dist/
@@ -187,13 +190,13 @@ jobs:
         run: npm ci
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: dist
           path: dist/
 
       - name: Install Chrome
-        uses: browser-actions/setup-chrome@v1
+        uses: browser-actions/setup-chrome@v2
         with:
           chrome-version: stable
 
@@ -252,7 +255,7 @@ jobs:
         run: npm ci
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: dist
           path: dist/
@@ -286,6 +289,23 @@ jobs:
           path: |
             test-results/
           retention-days: 7
+
+  add-to-project:
+    name: Add To GitHub Projects
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+
+    steps:
+      - name: Add To GitHub Projects
+        uses: actions/add-to-project@v1.0.2
+        continue-on-error: true
+        with:
+          project-url: ${{ vars.PROJECT_URL || 'https://github.com/users/shazzar00ni/projects/1' }}
+          github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
 
   # Status check job that all required jobs depend on
   ci-success:

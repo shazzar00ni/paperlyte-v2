@@ -81,7 +81,7 @@ describe('ErrorBoundary', () => {
       ).toBeInTheDocument()
     })
 
-    it('should call console.error with error details', () => {
+    it('should log error using monitoring utility', () => {
       render(
         <ErrorBoundary>
           <ThrowError shouldThrow={true} />
@@ -162,7 +162,8 @@ describe('ErrorBoundary', () => {
         </ErrorBoundary>
       )
 
-      expect(screen.getByRole('button', { name: /try again/i })).toBeInTheDocument()
+      // Button has aria-label with retry count, but text is "Try Again"
+      expect(screen.getByText('Try Again')).toBeInTheDocument()
     })
 
     it('should render "Reload Page" button', () => {
@@ -172,7 +173,7 @@ describe('ErrorBoundary', () => {
         </ErrorBoundary>
       )
 
-      expect(screen.getByRole('button', { name: /reload page/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: 'Reload Page' })).toBeInTheDocument()
     })
 
     it('should reset error state when "Try Again" is clicked', async () => {
@@ -199,7 +200,7 @@ describe('ErrorBoundary', () => {
       shouldThrow = false
 
       // Click Try Again
-      const tryAgainButton = screen.getByRole('button', { name: /try again/i })
+      const tryAgainButton = screen.getByText('Try Again')
       await user.click(tryAgainButton)
 
       // Should show recovered component
@@ -222,7 +223,7 @@ describe('ErrorBoundary', () => {
         </ErrorBoundary>
       )
 
-      const reloadButton = screen.getByRole('button', { name: /reload page/i })
+      const reloadButton = screen.getByRole('button', { name: 'Reload Page' })
       await user.click(reloadButton)
 
       expect(reloadMock).toHaveBeenCalled()
@@ -250,8 +251,8 @@ describe('ErrorBoundary', () => {
 
       // Verify semantic elements are present and accessible
       expect(screen.getByRole('heading', { name: /something went wrong/i })).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: /try again/i })).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: /reload page/i })).toBeInTheDocument()
+      expect(screen.getByText('Try Again')).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: 'Reload Page' })).toBeInTheDocument()
     })
 
     it('should have proper button types', () => {
@@ -261,8 +262,8 @@ describe('ErrorBoundary', () => {
         </ErrorBoundary>
       )
 
-      const tryAgainButton = screen.getByRole('button', { name: /try again/i })
-      const reloadButton = screen.getByRole('button', { name: /reload page/i })
+      const tryAgainButton = screen.getByText('Try Again')
+      const reloadButton = screen.getByRole('button', { name: 'Reload Page' })
 
       expect(tryAgainButton).toHaveAttribute('type', 'button')
       expect(reloadButton).toHaveAttribute('type', 'button')
@@ -288,7 +289,7 @@ describe('ErrorBoundary', () => {
       expect(screen.getByText(/something went wrong/i)).toBeInTheDocument()
 
       // Reset
-      const tryAgainButton = screen.getByRole('button', { name: /try again/i })
+      const tryAgainButton = screen.getByText('Try Again')
       await user.click(tryAgainButton)
 
       // Another error

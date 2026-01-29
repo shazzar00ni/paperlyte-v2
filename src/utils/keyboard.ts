@@ -71,11 +71,25 @@ export const FOCUSABLE_SELECTOR =
   'video[controls], details > summary'
 
 /**
- * Get all focusable elements within a container
+ * Get all focusable elements within a container, sorted by document order
  */
 export function getFocusableElements(container: HTMLElement): HTMLElement[] {
   const elements = container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)
-  return Array.from(elements)
+  const elementsArray = Array.from(elements)
+
+  // Sort by document position to ensure correct order
+  // This handles edge cases where querySelectorAll might not return elements in DOM order
+  elementsArray.sort((a, b) => {
+    const position = a.compareDocumentPosition(b)
+    if (position & Node.DOCUMENT_POSITION_FOLLOWING) {
+      return -1 // a comes before b
+    } else if (position & Node.DOCUMENT_POSITION_PRECEDING) {
+      return 1 // b comes before a
+    }
+    return 0
+  })
+
+  return elementsArray
 }
 
 /**

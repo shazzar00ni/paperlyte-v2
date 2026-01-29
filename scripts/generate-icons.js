@@ -15,6 +15,7 @@ import pngToIco from 'png-to-ico'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
 import { existsSync, writeFileSync } from 'fs'
+import { isPathSafe } from './path-utils.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -36,6 +37,9 @@ const iconSizes = [
   { name: 'android-chrome-512x512', size: 512, formats: ['png', 'webp', 'avif'] },
 ]
 
+// Valid format extensions for validation
+const VALID_FORMATS = ['png', 'webp', 'avif']
+
 /**
  * Generate an icon from SVG source in the specified format
  * @param {string} baseName - Base filename (without extension)
@@ -44,7 +48,18 @@ const iconSizes = [
  */
 async function generateIcon(baseName, size, format) {
   try {
+    // Validate format parameter to prevent unexpected values
+    if (!VALID_FORMATS.includes(format)) {
+      throw new Error(`Invalid format: ${format}. Must be one of: ${VALID_FORMATS.join(', ')}`)
+    }
+
     const outputName = `${baseName}.${format}`
+
+    // Validate path to prevent directory traversal attacks
+    if (!isPathSafe(publicDir, outputName)) {
+      throw new Error(`Invalid output path: ${outputName}. Path traversal detected.`)
+    }
+    
     const outputPath = join(publicDir, outputName)
 
     const image = sharp(faviconSource, { density: 300 }) // High DPI for crisp rasterization
@@ -69,7 +84,7 @@ async function generateIcon(baseName, size, format) {
     // Safely handle any thrown value (may not be an Error object)
     const errorMessage = error instanceof Error ? error.message : String(error)
     const outputName = `${baseName}.${format}`
-    console.error(`❌ Failed to generate ${outputName}:`, errorMessage)
+    console.error('❌ Failed to generate icon:', outputName, errorMessage)
 
     // Always throw a normalized Error instance for consistent error handling
     throw new Error(`Failed to generate ${outputName}: ${errorMessage}`)

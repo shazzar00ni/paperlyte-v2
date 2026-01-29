@@ -41,8 +41,9 @@ describe('Comparison', () => {
 
     // Check all competitor headers
     COMPETITORS.forEach((competitor) => {
+      // Simpler approach: use string matching instead of RegExp
       const header = screen.getByRole('columnheader', {
-        name: new RegExp(competitor.name),
+        name: (content) => content.includes(competitor.name),
       })
       expect(header).toBeInTheDocument()
     })
@@ -65,31 +66,19 @@ describe('Comparison', () => {
   })
 
   it('should render checkmark icons for true boolean values', () => {
-    const { container } = render(<Comparison />)
+    render(<Comparison />)
 
-    // Find icons (either SVG or Font Awesome fallback)
-    const icons = container.querySelectorAll('svg.icon-svg, i.icon-fallback')
-    expect(icons.length).toBeGreaterThan(0)
-
-    // Check they have proper accessibility labels
-    const supportedIcons = Array.from(icons).filter((icon) =>
-      icon.getAttribute('aria-label')?.includes('Supported')
-    )
-    expect(supportedIcons.length).toBeGreaterThan(0)
+    // Find all checkmarks by aria-label
+    const checkmarks = screen.getAllByLabelText('Supported')
+    expect(checkmarks.length).toBeGreaterThan(0)
   })
 
   it('should render X icons for false boolean values', () => {
-    const { container } = render(<Comparison />)
+    render(<Comparison />)
 
-    // Find icons (either SVG or Font Awesome fallback)
-    const icons = container.querySelectorAll('svg.icon-svg, i.icon-fallback')
-    expect(icons.length).toBeGreaterThan(0)
-
-    // Check they have proper accessibility labels
-    const notSupportedIcons = Array.from(icons).filter((icon) =>
-      icon.getAttribute('aria-label')?.includes('Not supported')
-    )
-    expect(notSupportedIcons.length).toBeGreaterThan(0)
+    // Find all X marks by aria-label
+    const xmarks = screen.getAllByLabelText('Not supported')
+    expect(xmarks.length).toBeGreaterThan(0)
   })
 
   it('should render text values for string comparisons', () => {

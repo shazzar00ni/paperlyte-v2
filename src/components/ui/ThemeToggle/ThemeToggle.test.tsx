@@ -14,7 +14,7 @@ describe('ThemeToggle', () => {
   const testIconRenderingInTheme = (
     theme: 'light' | 'dark',
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    expectation: (button: HTMLElement) => void
+    expectation: (_button: HTMLElement) => void
   ) => {
     vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
       theme,

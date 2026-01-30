@@ -2,6 +2,28 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-01-29
+
+### PR #356: Fix Codacy ESLint Configuration Issue
+
+- **Summary:** This PR is titled "Fix Codacy ESLint Configuration Issue," but it bundles a number of unrelated changes, including new icons, accessibility improvements, and E2E test stabilization. The ESLint changes are a workaround for Codacy's lack of support for the modern flat config format.
+- **Recommendation:** The author should split this PR into smaller, focused PRs.
+- **Action:** No comments on the PR, as there are no existing threads to reply to.
+
+### PR #319: Fix Deployment Error in Privacy.tsx
+
+- **Summary:** This PR is titled "Fix Deployment Error in Privacy.tsx," but the diff shows widespread, unrelated changes to `package-lock.json` and `sitemap.xml`. The actual fix is a minor JSDoc update in `Privacy.tsx`.
+- **Recommendation:** The author should split this PR into smaller, focused PRs, separating the `package-lock.json` and `sitemap.xml` changes from the `Privacy.tsx` fix.
+- **Action:** No comments on the PR, as there are no existing threads to reply to.
+
+### PR #271: feat: Add daily PR review summary
+
+- **Summary:** This PR is titled "feat: Add daily PR review summary," but it overwrites the existing `PR_REVIEW_SUMMARY.md` file with an older version.
+- **Recommendation:** The author should amend their PR to append the new summary to the existing file rather than overwriting it.
+- **Action:** No comments on the PR, as there are no existing threads to reply to.
+
+---
+
 ## 2026-01-18
 
 ### PR #259: Fix: update social link for twitter

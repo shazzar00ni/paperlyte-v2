@@ -148,24 +148,6 @@ function iterativeReplace(input: string, pattern: RegExp, replacement = ''): str
   return sanitized
 }
 
-  // Early exit if pattern doesn't match to avoid unnecessary iteration
-  if (!globalPattern.test(input)) {
-    return input
-  }
-
-  let sanitized = input
-  let prevValue
-  let iterations = 0
-
-  do {
-    prevValue = sanitized
-    sanitized = sanitized.replace(globalPattern, replacement)
-    iterations++
-  } while (sanitized !== prevValue && iterations < MAX_SANITIZATION_ITERATIONS)
-
-  return sanitized
-}
-
 /**
  * Encode HTML entities for safe display
  * Preserves text structure by encoding special characters instead of removing them

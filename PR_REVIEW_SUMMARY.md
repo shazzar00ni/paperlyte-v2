@@ -2,6 +2,52 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-01-31
+
+### PR #381: Fix SARIF upload to comply with GitHub's July 2025 requirements
+
+- **Status:** Approved
+- **Summary:** This PR correctly addresses the upcoming breaking change in GitHub Code Scanning by merging multiple SARIF runs into a single run using `jq`. This ensures continued CI/CD reliability.
+- **Feedback:** Solid implementation. It's recommended to merge this soon as it affects security reporting.
+
+### PR #379: Add legacy ESLint configuration for backward compatibility
+
+- **Status:** Approved with comments
+- **Summary:** This PR adds a legacy `.eslintrc.cjs` and a Node script for merging SARIF runs.
+- **Feedback:** There is significant overlap with PR #381 regarding SARIF merging. It's suggested to coordinate these two PRs to avoid redundant or conflicting CI changes. The legacy config itself is a good addition for compatibility.
+
+### PR #355: Fix icon query selector issues in tests
+
+- **Status:** Approved
+- **Summary:** Improves test resilience by using more generic selectors for icons (`svg, .icon-fallback`). This reduces flakiness when the internal rendering of the `Icon` component changes.
+- **Feedback:** Good improvement. Noted some date reverts in `sitemap.xml` that might be accidental; please verify if those were intended.
+
+### PR #353: fix(tests): update component tests after Icon refactor
+
+- **Status:** Approved with suggestions
+- **Summary:** Extensive updates to tests following an Icon component refactor. It also adds `continue-on-error` to SARIF uploads as a temporary fix.
+- **Feedback:** While `continue-on-error` prevents CI failure, it's a stopgap. PR #381 provides a more permanent fix by merging SARIF runs. Combining the test improvements here with the SARIF fix in #381 would be ideal.
+
+### PR #332: Fix command injection vulnerability in branch protection workflow
+
+- **Status:** Approved
+- **Summary:** Critical security fix that prevents command injection by validating branch names in the protection workflow. Includes a very thorough test suite and CI integration for shell script coverage.
+- **Feedback:** Exceptional work. The addition of comprehensive tests and coverage tracking for shell scripts sets a high standard for security-critical parts of the codebase.
+
+### PR #331: Fix command injection vulnerability in sitemap generation
+
+- **Status:** Approved with comments
+- **Summary:** Fixes a security vulnerability in sitemap generation and adds path traversal protection utilities. It also includes a major update to `AGENTS.md` to reflect the current state of the landing page project.
+- **Feedback:** The security fixes are essential. The documentation updates are very helpful for clarifying the project's scope.
+
+### PR #329: feat: Complete WCAG 2.1 AA accessibility audit with comprehensive documentation
+
+- **Status:** Approved
+- **Summary:** Provides extensive documentation on accessibility compliance, keyboard navigation, and screen reader testing. Includes a minor but important fix for email input autocomplete.
+- **Feedback:** This is a fantastic resource for the team and ensures the project maintains high accessibility standards.
+
+---
+
 ## 2026-01-18
 
 ### PR #259: Fix: update social link for twitter

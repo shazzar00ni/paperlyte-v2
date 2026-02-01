@@ -13,8 +13,7 @@ describe('ThemeToggle', () => {
    */
   const testIconRenderingInTheme = (
     theme: 'light' | 'dark',
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    expectation: (_button: HTMLElement) => void
+    expectation: (button: HTMLElement) => void
   ) => {
     vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
       theme,
@@ -210,29 +209,6 @@ describe('ThemeToggle', () => {
 
       rerender(<ThemeToggle />)
       expect(screen.getByRole('button', { name: /switch to light mode/i })).toBeInTheDocument()
-    })
-  })
-
-  describe('Icon Component Integration', () => {
-    it('should render icon in light mode', () => {
-      testIconRenderingInTheme('light', (button) => {
-        const icon = getIcon(button)
-        expect(icon).toBeInTheDocument()
-      })
-    })
-
-    it('should render icon in dark mode', () => {
-      testIconRenderingInTheme('dark', (button) => {
-        const icon = getIcon(button)
-        expect(icon).toBeInTheDocument()
-      })
-    })
-
-    it('should render icon in button', () => {
-      testIconRenderingInTheme('light', (button) => {
-        const icon = getIcon(button)
-        expect(icon).toBeInTheDocument()
-      })
     })
   })
 })

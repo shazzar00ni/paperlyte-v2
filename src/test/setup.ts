@@ -3,6 +3,9 @@ import { cleanup } from '@testing-library/react'
 import * as matchers from '@testing-library/jest-dom/matchers'
 import '../utils/iconLibrary'
 
+// Import FontAwesome icon library for tests
+import '@utils/iconLibrary'
+
 // Extend Vitest's expect with jest-dom matchers
 expect.extend(matchers)
 

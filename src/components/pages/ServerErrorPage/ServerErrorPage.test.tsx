@@ -229,33 +229,35 @@ describe('ServerErrorPage', () => {
 
   describe('Icon Integration', () => {
     it('should render server icon in illustration', () => {
-      render(<ServerErrorPage />)
+      const { container } = render(<ServerErrorPage />)
 
-      const serverIcon = screen.getByRole('main').querySelector('.fa-server')
-      expect(serverIcon).toBeInTheDocument()
+      // Icon is decorative (inside aria-hidden), so we verify it exists via DOM query
+      const illustration = container.querySelector('[aria-hidden="true"]')
+      expect(illustration).toBeInTheDocument()
+      expect(illustration?.querySelector('svg')).toBeInTheDocument()
     })
 
     it('should render warning icon in error badge', () => {
-      render(<ServerErrorPage />)
+      const { container } = render(<ServerErrorPage />)
 
-      const warningIcon = screen.getByRole('main').querySelector('.fa-triangle-exclamation')
-      expect(warningIcon).toBeInTheDocument()
+      // Icon is decorative (inside aria-hidden), so we verify via DOM query
+      const errorBadge = container.querySelector('[class*="errorBadge"]')
+      expect(errorBadge).toBeInTheDocument()
+      expect(errorBadge?.querySelector('svg')).toBeInTheDocument()
     })
 
     it('should render retry icon in primary button', () => {
       render(<ServerErrorPage />)
 
-      const retryButton = screen.getByRole('button', { name: /retry loading the page/i })
-      const icon = retryButton.querySelector('.fa-rotate-right')
-      expect(icon).toBeInTheDocument()
+      const retryIcon = screen.getByLabelText('Retry icon')
+      expect(retryIcon).toBeInTheDocument()
     })
 
     it('should render home icon in secondary button', () => {
       render(<ServerErrorPage />)
 
-      const homeButton = screen.getByRole('button', { name: /return to homepage/i })
-      const icon = homeButton.querySelector('.fa-home')
-      expect(icon).toBeInTheDocument()
+      const homeIcon = screen.getByLabelText('Home icon')
+      expect(homeIcon).toBeInTheDocument()
     })
   })
 })

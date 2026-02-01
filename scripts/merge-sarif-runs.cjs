@@ -37,7 +37,7 @@ if (sarif.runs.length > 1) {
   // Collect all results from all runs
   const allResults = []
   for (const run of sarif.runs) {
-    if (run.results) {
+    if (Array.isArray(run.results)) {
       allResults.push(...run.results)
     }
   }

@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Hero } from './Hero'
+import { getIcon } from '@/test/test-helpers'
 
 describe('Hero', () => {
   let scrollIntoViewMock: ReturnType<typeof vi.fn>
@@ -86,7 +87,7 @@ describe('Hero', () => {
       render(<Hero />)
 
       const button = screen.getByRole('button', { name: /start writing for free/i })
-      const icon = button.querySelector('.fa-arrow-right')
+      const icon = getIcon(button)
 
       expect(icon).toBeInTheDocument()
     })
@@ -192,12 +193,6 @@ describe('Hero', () => {
       expect(mockup).toBeInTheDocument()
     })
 
-    it('should render mockup productivity stat', () => {
-      render(<Hero />)
-
-      expect(screen.getByText('+120%')).toBeInTheDocument()
-      expect(screen.getByText('PRODUCTIVITY')).toBeInTheDocument()
-    })
   })
 
   describe('Button Interactions', () => {

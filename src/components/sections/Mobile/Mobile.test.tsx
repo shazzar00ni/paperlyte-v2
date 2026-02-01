@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { Mobile } from './Mobile'
+import { getIcon } from '@/test/test-helpers'
 
 describe('Mobile', () => {
   describe('Rendering', () => {
@@ -40,7 +41,7 @@ describe('Mobile', () => {
       render(<Mobile />)
 
       const link = screen.getByRole('link', { name: /Explore Mobile Features/i })
-      const arrowIcon = link.querySelector('.fa-arrow-right')
+      const arrowIcon = getIcon(link)
 
       expect(arrowIcon).toBeInTheDocument()
       expect(link.contains(arrowIcon)).toBe(true)

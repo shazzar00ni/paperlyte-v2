@@ -14,7 +14,7 @@ describe('ThemeToggle', () => {
   const testIconRenderingInTheme = (
     theme: 'light' | 'dark',
     expectation: (button: HTMLElement) => void
-  ) => {
+  ): void => {
     vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
       theme,
       toggleTheme: mockToggleTheme,
@@ -190,7 +190,8 @@ describe('ThemeToggle', () => {
       })
 
       rerender(<ThemeToggle />)
-      expect(getIcon(button)).toBeInTheDocument()
+      const updatedButton = screen.getByRole('button')
+      expect(getIcon(updatedButton)).toBeInTheDocument()
     })
 
     it('should update aria-label when theme changes', () => {

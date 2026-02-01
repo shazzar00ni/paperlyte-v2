@@ -11,16 +11,16 @@
  * Requires: npm install --save-dev sharp
  */
 
-import sharp from 'sharp'
-import { fileURLToPath } from 'url'
-import { dirname, join } from 'path'
-import { existsSync } from 'fs'
-import { isPathSafe } from './path-utils.js'
+import sharp from 'sharp';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+import { existsSync } from 'fs';
+import { isPathSafe } from './path-utils.js';
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-const projectRoot = join(__dirname, '..')
-const mockupsDir = join(projectRoot, 'public', 'mockups')
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const projectRoot = join(__dirname, '..');
+const mockupsDir = join(projectRoot, 'public', 'mockups');
 
 /**
  * Mockup configurations
@@ -29,7 +29,7 @@ const mockupsDir = join(projectRoot, 'public', 'mockups')
 const mockups = [
   { source: 'notes-list.svg', width: 1100, height: 800 },
   { source: 'note-detail.svg', width: 800, height: 600 },
-]
+];
 
 /**
  * Output formats with encoding settings
@@ -38,10 +38,10 @@ const formats = [
   { ext: 'png', options: {} },
   { ext: 'webp', options: { quality: 85, effort: 6 } },
   { ext: 'avif', options: { quality: 75, effort: 6 } },
-]
+];
 
 // Valid format extensions for validation
-const VALID_FORMATS = ['png', 'webp', 'avif']
+const VALID_FORMATS = ['png', 'webp', 'avif'];
 
 /**
  * Generate a mockup image from SVG source in the specified format

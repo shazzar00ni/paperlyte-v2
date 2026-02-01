@@ -5,7 +5,7 @@
  * These utilities implement defense-in-depth security checks.
  */
 
-import { resolve, normalize, isAbsolute, sep } from 'path'
+import { resolve, normalize, isAbsolute, sep } from 'path';
 
 /**
  * Validates that a filename is safe and doesn't contain path traversal patterns.
@@ -21,20 +21,20 @@ import { resolve, normalize, isAbsolute, sep } from 'path'
 export function isFilenameSafe(filename) {
   // Validate input type
   if (typeof filename !== 'string') {
-    throw new Error('filename must be a string')
+    throw new Error('filename must be a string');
   }
 
   // Empty string or whitespace-only filenames are not allowed
   if (filename.trim() === '') {
-    return false
+    return false;
   }
 
   // Normalize to lowercase for case-insensitive URL-encoded pattern checks
-  const lc = filename.toLowerCase()
+  const lc = filename.toLowerCase();
 
   // Combined check for all unsafe patterns (reduces cyclomatic complexity)
-  const unsafePatterns = ['..', '/', '\\', '%2e%2e', '%2f', '%5c', '\0', '%00']
-  return !unsafePatterns.some((pattern) => lc.includes(pattern))
+  const unsafePatterns = ['..', '/', '\\', '%2e%2e', '%2f', '%5c', '\0', '%00'];
+  return !unsafePatterns.some((pattern) => lc.includes(pattern));
 }
 
 /**
@@ -49,10 +49,10 @@ export function isFilenameSafe(filename) {
 function normalizePathSafeArgs(baseDir, filePath) {
   if (filePath === undefined) {
     // Called with one argument: isPathSafe(filePath)
-    return { baseDir: process.cwd(), filePath: baseDir }
+    return { baseDir: process.cwd(), filePath: baseDir };
   }
   // Called with two arguments: isPathSafe(baseDir, filePath)
-  return { baseDir, filePath }
+  return { baseDir, filePath };
 }
 
 /**
@@ -67,18 +67,18 @@ function normalizePathSafeArgs(baseDir, filePath) {
  */
 function validatePathInputs(baseDir, filePath) {
   if (typeof baseDir !== 'string' || baseDir.trim() === '') {
-    throw new Error('baseDir must be a non-empty string')
+    throw new Error('baseDir must be a non-empty string');
   }
 
   if (typeof filePath !== 'string') {
-    throw new Error('filePath must be a string')
+    throw new Error('filePath must be a string');
   }
 
   if (filePath.trim() === '') {
-    return false
+    return false;
   }
 
-  return true
+  return true;
 }
 
 /**
@@ -89,9 +89,9 @@ function validatePathInputs(baseDir, filePath) {
  * @private
  */
 function hasUrlEncodedTraversal(filePath) {
-  const lc = filePath.toLowerCase()
-  const urlEncodedPatterns = ['%2e%2e', '%2e%2e%2f', '%2f', '%5c']
-  return urlEncodedPatterns.some((pattern) => lc.includes(pattern))
+  const lc = filePath.toLowerCase();
+  const urlEncodedPatterns = ['%2e%2e', '%2e%2e%2f', '%2f', '%5c'];
+  return urlEncodedPatterns.some((pattern) => lc.includes(pattern));
 }
 
 /**
@@ -104,7 +104,7 @@ function hasUrlEncodedTraversal(filePath) {
  */
 function isWithinBaseDir(resolvedPath, resolvedBase) {
   // Use path.sep to prevent false positives (e.g., "/project-other" matching "/project")
-  return resolvedPath === resolvedBase || resolvedPath.startsWith(resolvedBase + sep)
+  return resolvedPath === resolvedBase || resolvedPath.startsWith(resolvedBase + sep);
 }
 
 /**
@@ -133,33 +133,33 @@ function isWithinBaseDir(resolvedPath, resolvedBase) {
  */
 export function isPathSafe(baseDir, filePath) {
   // Handle overloaded signature: isPathSafe(filePath) or isPathSafe(baseDir, filePath)
-  const args = normalizePathSafeArgs(baseDir, filePath)
-  baseDir = args.baseDir
-  filePath = args.filePath
+  const args = normalizePathSafeArgs(baseDir, filePath);
+  baseDir = args.baseDir;
+  filePath = args.filePath;
 
   // Validate inputs (returns false for empty paths, throws for invalid types)
-  const inputsValid = validatePathInputs(baseDir, filePath)
+  const inputsValid = validatePathInputs(baseDir, filePath);
   if (!inputsValid) {
-    return false
+    return false;
   }
 
   // Check for URL-encoded traversal patterns before normalization
   if (hasUrlEncodedTraversal(filePath)) {
-    return false
+    return false;
   }
 
   // Normalize and resolve the path to handle obfuscated traversal attempts
-  const normalizedPath = normalize(filePath)
+  const normalizedPath = normalize(filePath);
 
   // After normalization, reject absolute paths
   if (isAbsolute(normalizedPath)) {
-    return false
+    return false;
   }
 
   // Safe: This IS the security validation code. We resolve the path to verify it stays within baseDir.
-  const resolvedPath = resolve(baseDir, normalizedPath) // nosemgrep: javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal
-  const resolvedBase = resolve(baseDir) // nosemgrep: javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal
+  const resolvedPath = resolve(baseDir, normalizedPath); // nosemgrep: javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal
+  const resolvedBase = resolve(baseDir); // nosemgrep: javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal
 
   // Ensure the resolved path is within the base directory
-  return isWithinBaseDir(resolvedPath, resolvedBase)
+  return isWithinBaseDir(resolvedPath, resolvedBase);
 }

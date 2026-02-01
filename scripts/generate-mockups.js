@@ -91,6 +91,7 @@ async function generateMockup(sourceName, width, height, format, options) {
       })
 
     // Apply format-specific encoding
+    // Apply format-specific encoding
     switch (format) {
       case 'png':
         await image.png(options).toFile(outputPath)
@@ -111,7 +112,7 @@ async function generateMockup(sourceName, width, height, format, options) {
     const errorMessage = error instanceof Error ? error.message : String(error)
     const baseName = sourceName.replace('.svg', '')
     const outputName = `${baseName}.${format}`
-    console.error('❌ Failed to generate mockup:', outputName, errorMessage)
+    console.error(`❌ Failed to generate ${outputName}:`, errorMessage)
 
     // Always throw a normalized Error instance for consistent error handling
     throw new Error(`Failed to generate ${outputName}: ${errorMessage}`)

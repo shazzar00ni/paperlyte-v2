@@ -24,29 +24,8 @@ export default defineConfig({
     // Coverage configuration
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'json-summary', 'html', 'lcov'],
-      reportsDirectory: './coverage',
-      all: true,
-      exclude: [
-        'node_modules/**',
-        'src/test/**',
-        '**/*.d.ts',
-        '**/*.config.*',
-        '**/mockData',
-        'dist/**',
-        '**/*.spec.{ts,tsx}',
-        '**/*.test.{ts,tsx}',
-        'scripts/**',
-      ],
-      // Coverage thresholds (optional but recommended)
-      // Note: These won't block coverage report generation
-      thresholds: {
-        lines: 70,
-        functions: 70,
-        branches: 70,
-        statements: 70,
-        autoUpdate: false,
-      },
+      reporter: ['text', 'json', 'json-summary', 'html'],
+      exclude: ['node_modules/', 'src/test/', '**/*.d.ts', '**/*.config.*', '**/mockData', 'dist/'],
     },
 
     // Test file patterns

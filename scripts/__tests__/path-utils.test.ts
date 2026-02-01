@@ -73,10 +73,9 @@ describe('Path Traversal Protection', () => {
       expect(() => isPathSafe('/tmp/test', null as any)).toThrow('filePath must be a string')
     })
 
-    it('should support single-argument call with filePath only', () => {
-      // Single argument is treated as filePath with baseDir defaulting to cwd
-      // This should not throw - it's a valid overload
-      expect(() => isPathSafe('valid-file.txt')).not.toThrow()
+    it('should throw error for undefined filePath', () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect(() => isPathSafe('/tmp/test', undefined as any)).toThrow('filePath must be a string')
     })
   })
 })

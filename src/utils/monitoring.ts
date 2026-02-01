@@ -106,7 +106,7 @@ export function logError(error: Error, context?: ErrorContext, source?: string):
     }
 
     // Log to console in production (for server logs if applicable)
-    console.error('[Error]', errorSource, error.message, {
+    console.error(`[${errorSource}]`, error.message, {
       severity,
       tags: context?.tags,
     })
@@ -170,7 +170,7 @@ export function logEvent(
   properties?: Record<string, string | number | boolean>
 ): void {
   if (import.meta.env.DEV) {
-    console.log('[Event]', eventName, properties)
+    console.log(`[Event] ${eventName}`, properties)
   }
 
   trackEvent(eventName, properties)

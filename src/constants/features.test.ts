@@ -7,24 +7,6 @@
 
 import { describe, it, expect } from 'vitest'
 import { FEATURES, type Feature } from './features'
-import { escapeRegExp } from '@/utils/test/regexHelpers'
-
-/**
- * Counts occurrences of words in a text using word boundary matching.
- * Uses escapeRegExp() to safely construct regex patterns from word list.
- *
- * @param text - Text to search in
- * @param words - Array of words to count
- * @returns Total count of all word occurrences
- */
-function countOccurrences(text: string, words: string[]): number {
-  return words.reduce((count, word) => {
-    // Safe: word is escaped via escapeRegExp() before RegExp construction
-    const regex = new RegExp(`\\b${escapeRegExp(word)}\\b`, 'gi') // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
-    const matches = text.match(regex)
-    return count + (matches ? matches.length : 0)
-  }, 0)
-}
 
 describe('Features Constants', () => {
   describe('FEATURES Structure', () => {
@@ -247,6 +229,14 @@ describe('Features Constants', () => {
         'throughput',
         'integration',
       ]
+
+      const countOccurrences = (text: string, words: string[]): number => {
+        return words.reduce((count, word) => {
+          const regex = new RegExp(`\\b${word}\\b`, 'gi')
+          const matches = text.match(regex)
+          return count + (matches ? matches.length : 0)
+        }, 0)
+      }
 
       const benefitCount = countOccurrences(allDescriptions, benefitWords)
       const techCount = countOccurrences(allDescriptions, techWords)

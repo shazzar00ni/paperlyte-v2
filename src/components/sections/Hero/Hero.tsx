@@ -24,7 +24,6 @@ export const Hero = (): React.ReactElement => {
               variant="primary"
               size="large"
               icon="fa-arrow-right"
-              iconAriaLabel="Arrow icon"
               onClick={() => scrollToSection('download')}
             >
               Start Writing for Free

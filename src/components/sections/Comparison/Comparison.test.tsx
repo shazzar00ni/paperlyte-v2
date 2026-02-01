@@ -41,7 +41,6 @@ describe('Comparison', () => {
 
     // Check all competitor headers
     COMPETITORS.forEach((competitor) => {
-      // Simpler approach: use string matching instead of RegExp
       const header = screen.getByRole('columnheader', {
         name: (content) => content.includes(competitor.name),
       })
@@ -66,19 +65,29 @@ describe('Comparison', () => {
   })
 
   it('should render checkmark icons for true boolean values', () => {
-    render(<Comparison />)
+    const { container } = render(<Comparison />)
 
-    // Find all checkmarks by aria-label
-    const checkmarks = screen.getAllByLabelText('Supported')
+    // Find all checkmarks
+    const checkmarks = container.querySelectorAll('.fa-check')
     expect(checkmarks.length).toBeGreaterThan(0)
+
+    // Check they have proper accessibility labels
+    checkmarks.forEach((checkmark) => {
+      expect(checkmark).toHaveAttribute('aria-label', 'Supported')
+    })
   })
 
   it('should render X icons for false boolean values', () => {
-    render(<Comparison />)
+    const { container } = render(<Comparison />)
 
-    // Find all X marks by aria-label
-    const xmarks = screen.getAllByLabelText('Not supported')
+    // Find all X marks
+    const xmarks = container.querySelectorAll('.fa-xmark')
     expect(xmarks.length).toBeGreaterThan(0)
+
+    // Check they have proper accessibility labels
+    xmarks.forEach((xmark) => {
+      expect(xmark).toHaveAttribute('aria-label', 'Not supported')
+    })
   })
 
   it('should render text values for string comparisons', () => {

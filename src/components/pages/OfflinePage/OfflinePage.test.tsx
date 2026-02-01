@@ -339,19 +339,18 @@ describe('OfflinePage', () => {
 
   describe('Icon Integration', () => {
     it('should render wifi icon in illustration', () => {
-      const { container } = render(<OfflinePage />)
+      render(<OfflinePage />)
 
-      // Icon is decorative (inside aria-hidden), so we verify it exists via DOM query
-      const illustration = container.querySelector('[aria-hidden="true"]')
-      expect(illustration).toBeInTheDocument()
-      expect(illustration?.querySelector('svg')).toBeInTheDocument()
+      const wifiIcon = screen.getByRole('status').querySelector('.fa-wifi')
+      expect(wifiIcon).toBeInTheDocument()
     })
 
     it('should render retry icon in button', () => {
       render(<OfflinePage />)
 
-      const retryIcon = screen.getByLabelText('Retry icon')
-      expect(retryIcon).toBeInTheDocument()
+      const retryButton = screen.getByRole('button', { name: /check connection and retry/i })
+      const icon = retryButton.querySelector('.fa-rotate-right')
+      expect(icon).toBeInTheDocument()
     })
 
     it('should show spinner icon when checking connection', async () => {
@@ -371,8 +370,9 @@ describe('OfflinePage', () => {
 
       // Check spinner is shown while checking (without awaiting click to complete)
       await waitFor(() => {
-        const spinnerIcon = screen.getByLabelText('Checking connection')
+        const spinnerIcon = retryButton.querySelector('.fa-spinner')
         expect(spinnerIcon).toBeInTheDocument()
+        expect(spinnerIcon).toHaveClass('fa-spin')
       })
 
       // Clean up: resolve promise to allow click handler to complete

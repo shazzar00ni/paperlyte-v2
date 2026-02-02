@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { Pricing } from './Pricing'
 import { PRICING_PLANS } from '@constants/pricing'
+import { escapeRegExp } from '@/utils/test/regexHelpers'
 
 describe('Pricing', () => {
   it('should render as a section with correct id', () => {
@@ -123,8 +124,9 @@ describe('Pricing', () => {
     render(<Pricing />)
 
     PRICING_PLANS.forEach((plan) => {
+      // Safe: input is escaped via escapeRegExp() and comes from PRICING_PLANS constant, not user input
       const button = screen.getByRole('button', {
-        name: new RegExp(plan.ctaText),
+        name: new RegExp(escapeRegExp(plan.ctaText)), // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
       })
       expect(button).toBeInTheDocument()
     })

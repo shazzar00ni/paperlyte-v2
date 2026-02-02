@@ -1,9 +1,9 @@
-import { Section } from '@components/layout/Section'
-import { AnimatedElement } from '@components/ui/AnimatedElement'
-import { Button } from '@components/ui/Button'
-import { Icon } from '@components/ui/Icon'
-import { PRICING_PLANS } from '@constants/pricing'
-import styles from './Pricing.module.css'
+import { Section } from '@components/layout/Section';
+import { AnimatedElement } from '@components/ui/AnimatedElement';
+import { Button } from '@components/ui/Button';
+import { Icon } from '@components/ui/Icon';
+import { PRICING_PLANS } from '@constants/pricing';
+import styles from './Pricing.module.css';
 
 export const Pricing = (): React.ReactElement => {
   return (
@@ -92,5 +92,5 @@ export const Pricing = (): React.ReactElement => {
         </div>
       </AnimatedElement>
     </Section>
-  )
-}
+  );
+};

@@ -32,7 +32,7 @@
  * ```
  */
 
-import { isSafePropertyKey } from './security'
+import { isSafePropertyKey } from './security';
 
 /**
  * Extend Window interface to include gtag for Google Analytics
@@ -44,7 +44,7 @@ declare global {
       command: 'config' | 'event' | 'js' | 'set',
       targetId: string | Date,
       config?: Record<string, unknown>
-    ) => void
+    ) => void;
   }
 }
 
@@ -54,49 +54,49 @@ declare global {
  */
 export interface AnalyticsEventParams {
   // Button/CTA parameters
-  button_text?: string
-  button_location?: string
+  button_text?: string;
+  button_location?: string;
 
   // Link parameters
-  link_url?: string
-  link_text?: string
-  destination?: string
+  link_url?: string;
+  link_text?: string;
+  destination?: string;
 
   // Social/Platform parameters
-  platform?: string
+  platform?: string;
 
   // Scroll tracking
-  depth_percentage?: number
+  depth_percentage?: number;
 
   // Navigation parameters
-  page_path?: string
-  page_title?: string
+  page_path?: string;
+  page_title?: string;
 
   // Form parameters
-  form_location?: string
+  form_location?: string;
 
   // Error tracking
-  error_code?: string | number
-  error_name?: string
-  error_message?: string
-  error_source?: string
+  error_code?: string | number;
+  error_name?: string;
+  error_message?: string;
+  error_source?: string;
 
   // Engagement parameters
-  question_index?: number
-  category?: string
-  label?: string
+  question_index?: number;
+  category?: string;
+  label?: string;
 
   // Performance metrics
-  metric?: string
-  value?: number
-  unit?: string
+  metric?: string;
+  value?: number;
+  unit?: string;
 
   // Other parameters
-  subscription_tier?: string
-  message?: string
+  subscription_tier?: string;
+  message?: string;
 
   // Allow custom parameters while maintaining type safety
-  [key: string]: string | number | boolean | undefined
+  [key: string]: string | number | boolean | undefined;
 }
 
 /**
@@ -130,7 +130,7 @@ export const AnalyticsEvents = {
   FORM_START: 'Form_Start',
   FORM_FIELD_BLUR: 'Form_Field_Blur',
   FORM_ERROR: 'Form_Error',
-} as const
+} as const;
 
 /**
  * List of sensitive keys that should never be sent to analytics
@@ -166,13 +166,13 @@ const PII_KEYS = [
   'last_name',
   'ip',
   'ip_address',
-]
+];
 
 /**
  * Email pattern for detecting email-like strings
  * Pattern: local-part@domain.tld where TLD is at least 2 letters
  */
-const EMAIL_PATTERN = /[^\s@]+@[^\s@]+\.[a-z]{2,}/i
+const EMAIL_PATTERN = /[^\s@]+@[^\s@]+\.[a-z]{2,}/i;
 
 /**
  * Check if a key is a PII field
@@ -180,8 +180,8 @@ const EMAIL_PATTERN = /[^\s@]+@[^\s@]+\.[a-z]{2,}/i
  * @returns True if the key is a PII field
  */
 function isPIIKey(key: string): boolean {
-  const lowerKey = key.toLowerCase()
-  return PII_KEYS.some((piiKey) => lowerKey.includes(piiKey.toLowerCase()))
+  const lowerKey = key.toLowerCase();
+  return PII_KEYS.some((piiKey) => lowerKey.includes(piiKey.toLowerCase()));
 }
 
 /**
@@ -190,7 +190,7 @@ function isPIIKey(key: string): boolean {
  * @returns True if the value looks like an email
  */
 function looksLikeEmail(value: unknown): boolean {
-  return typeof value === 'string' && EMAIL_PATTERN.test(value)
+  return typeof value === 'string' && EMAIL_PATTERN.test(value);
 }
 
 /**
@@ -206,22 +206,22 @@ function shouldFilterParameter(
   // Check for unsafe keys first
   if (!isSafePropertyKey(key)) {
     if (import.meta.env.DEV) {
-      console.warn('[Analytics] Blocked potentially unsafe property key:', key)
+      console.warn('[Analytics] Blocked potentially unsafe property key:', key);
     }
-    return { shouldFilter: true, isPII: false }
+    return { shouldFilter: true, isPII: false };
   }
 
   // Check if key is PII
   if (isPIIKey(key)) {
-    return { shouldFilter: true, isPII: true }
+    return { shouldFilter: true, isPII: true };
   }
 
   // Check if value looks like an email
   if (looksLikeEmail(value)) {
-    return { shouldFilter: true, isPII: true }
+    return { shouldFilter: true, isPII: true };
   }
 
-  return { shouldFilter: false, isPII: false }
+  return { shouldFilter: false, isPII: false };
 }
 
 /**
@@ -232,32 +232,32 @@ function shouldFilterParameter(
  * @returns Sanitized parameters with PII removed
  */
 function sanitizeAnalyticsParams(params?: AnalyticsEventParams): AnalyticsEventParams | undefined {
-  if (!params) return params
+  if (!params) return params;
 
-  const sanitized: AnalyticsEventParams = {}
-  let piiFound = false
+  const sanitized: AnalyticsEventParams = {};
+  let piiFound = false;
 
   for (const [key, value] of Object.entries(params)) {
-    const { shouldFilter, isPII } = shouldFilterParameter(key, value)
+    const { shouldFilter, isPII } = shouldFilterParameter(key, value);
 
     if (shouldFilter) {
       if (isPII) {
-        piiFound = true
+        piiFound = true;
       }
-      continue
+      continue;
     }
 
-    sanitized[key] = value
+    sanitized[key] = value;
   }
 
   // Warn developers if PII was found and stripped
   if (piiFound && import.meta.env.DEV) {
     console.warn(
       '[Analytics] PII detected and removed from event parameters. Never send emails, passwords, or other sensitive data to analytics.'
-    )
+    );
   }
 
-  return sanitized
+  return sanitized;
 }
 
 /**
@@ -266,7 +266,7 @@ function sanitizeAnalyticsParams(params?: AnalyticsEventParams): AnalyticsEventP
  * @returns True if gtag is available, false otherwise
  */
 export function isAnalyticsAvailable(): boolean {
-  return typeof window !== 'undefined' && typeof window.gtag === 'function'
+  return typeof window !== 'undefined' && typeof window.gtag === 'function';
 }
 
 /**
@@ -287,21 +287,21 @@ export function isAnalyticsAvailable(): boolean {
  */
 export function trackEvent(eventName: string, eventParams?: AnalyticsEventParams): void {
   // Sanitize parameters to remove any PII
-  const sanitizedParams = sanitizeAnalyticsParams(eventParams)
+  const sanitizedParams = sanitizeAnalyticsParams(eventParams);
 
   if (!isAnalyticsAvailable()) {
     // In development, log to console instead of failing silently
     // Only log sanitized params (never log PII)
     if (import.meta.env.DEV) {
-      console.log('[Analytics]', eventName, sanitizedParams)
+      console.log('[Analytics]', eventName, sanitizedParams);
     }
-    return
+    return;
   }
 
   try {
-    window.gtag!('event', eventName, sanitizedParams)
+    window.gtag!('event', eventName, sanitizedParams);
   } catch (error) {
-    console.error('[Analytics] Error tracking event:', error)
+    console.error('[Analytics] Error tracking event:', error);
   }
 }
 
@@ -319,18 +319,18 @@ export function trackEvent(eventName: string, eventParams?: AnalyticsEventParams
 export function trackPageView(pagePath: string, pageTitle?: string): void {
   if (!isAnalyticsAvailable()) {
     if (import.meta.env.DEV) {
-      console.log('[Analytics] Page View:', pagePath, pageTitle)
+      console.log('[Analytics] Page View:', pagePath, pageTitle);
     }
-    return
+    return;
   }
 
   try {
     window.gtag!('event', 'page_view', {
       page_path: pagePath,
       page_title: pageTitle,
-    })
+    });
   } catch (error) {
-    console.error('[Analytics] Error tracking page view:', error)
+    console.error('[Analytics] Error tracking page view:', error);
   }
 }
 
@@ -351,7 +351,7 @@ export function trackCTAClick(buttonText: string, buttonLocation: string): void 
   trackEvent(AnalyticsEvents.CTA_CLICK, {
     button_text: buttonText,
     button_location: buttonLocation,
-  })
+  });
 }
 
 /**
@@ -374,7 +374,7 @@ export function trackExternalLink(url: string, linkText: string): void {
   trackEvent(AnalyticsEvents.EXTERNAL_LINK_CLICK, {
     link_url: url,
     link_text: linkText,
-  })
+  });
 }
 
 /**
@@ -390,7 +390,7 @@ export function trackExternalLink(url: string, linkText: string): void {
 export function trackSocialClick(platform: string): void {
   trackEvent(AnalyticsEvents.SOCIAL_LINK_CLICK, {
     platform: platform.toLowerCase(),
-  })
+  });
 }
 
 /**
@@ -398,14 +398,14 @@ export function trackSocialClick(platform: string): void {
  * @returns Scroll percentage rounded to nearest integer
  */
 function calculateScrollPercent(): number {
-  const windowHeight = window.innerHeight
-  const documentHeight = document.documentElement.scrollHeight
-  const scrollTop = window.scrollY
+  const windowHeight = window.innerHeight;
+  const documentHeight = document.documentElement.scrollHeight;
+  const scrollTop = window.scrollY;
 
-  if (documentHeight <= 0) return 0
+  if (documentHeight <= 0) return 0;
 
-  const scrollPercent = ((scrollTop + windowHeight) / documentHeight) * 100
-  return Math.round(scrollPercent)
+  const scrollPercent = ((scrollTop + windowHeight) / documentHeight) * 100;
+  return Math.round(scrollPercent);
 }
 
 /**
@@ -414,16 +414,16 @@ function calculateScrollPercent(): number {
  * @param trackedMilestones - Set of already tracked milestones
  */
 function trackScrollMilestones(currentPercent: number, trackedMilestones: Set<number>): void {
-  const milestones = [25, 50, 75, 100]
+  const milestones = [25, 50, 75, 100];
 
   milestones.forEach((milestone) => {
     if (currentPercent >= milestone && !trackedMilestones.has(milestone)) {
-      trackedMilestones.add(milestone)
+      trackedMilestones.add(milestone);
       trackEvent(AnalyticsEvents.SCROLL_DEPTH, {
         depth_percentage: milestone,
-      })
+      });
     }
-  })
+  });
 }
 
 /**
@@ -432,17 +432,17 @@ function trackScrollMilestones(currentPercent: number, trackedMilestones: Set<nu
  * @returns Throttled scroll handler
  */
 function createThrottledScrollHandler(callback: () => void): () => void {
-  let ticking = false
+  let ticking = false;
 
   return () => {
     if (!ticking) {
       window.requestAnimationFrame(() => {
-        callback()
-        ticking = false
-      })
-      ticking = true
+        callback();
+        ticking = false;
+      });
+      ticking = true;
     }
-  }
+  };
 }
 
 /**
@@ -460,17 +460,17 @@ function createThrottledScrollHandler(callback: () => void): () => void {
  * ```
  */
 export function initScrollDepthTracking(): () => void {
-  const trackedMilestones = new Set<number>()
+  const trackedMilestones = new Set<number>();
 
   const handleScroll = () => {
-    const scrollPercent = calculateScrollPercent()
-    trackScrollMilestones(scrollPercent, trackedMilestones)
-  }
+    const scrollPercent = calculateScrollPercent();
+    trackScrollMilestones(scrollPercent, trackedMilestones);
+  };
 
-  const throttledScroll = createThrottledScrollHandler(handleScroll)
-  window.addEventListener('scroll', throttledScroll, { passive: true })
+  const throttledScroll = createThrottledScrollHandler(handleScroll);
+  window.addEventListener('scroll', throttledScroll, { passive: true });
 
   return () => {
-    window.removeEventListener('scroll', throttledScroll)
-  }
+    window.removeEventListener('scroll', throttledScroll);
+  };
 }

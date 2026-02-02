@@ -1,12 +1,12 @@
-import React, { type ReactNode } from 'react'
-import styles from './Section.module.css'
+import React, { type ReactNode } from 'react';
+import styles from './Section.module.css';
 
 interface SectionProps {
-  id?: string
-  children: ReactNode
-  className?: string
-  background?: 'default' | 'surface' | 'primary'
-  padding?: 'default' | 'large' | 'none'
+  id?: string;
+  children: ReactNode;
+  className?: string;
+  background?: 'default' | 'surface' | 'primary';
+  padding?: 'default' | 'large' | 'none';
 }
 
 export const Section = React.memo<SectionProps>(
@@ -18,14 +18,14 @@ export const Section = React.memo<SectionProps>(
       className,
     ]
       .filter(Boolean)
-      .join(' ')
+      .join(' ');
 
     return (
       <section id={id} className={classNames}>
         <div className={styles.container}>{children}</div>
       </section>
-    )
+    );
   }
-)
+);
 
-Section.displayName = 'Section'
+Section.displayName = 'Section';

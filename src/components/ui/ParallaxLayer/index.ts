@@ -1,1 +1,1 @@
-export { ParallaxLayer } from './ParallaxLayer'
+export { ParallaxLayer } from './ParallaxLayer';

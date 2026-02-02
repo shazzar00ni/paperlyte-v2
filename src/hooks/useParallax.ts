@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState, useCallback, useMemo } from 'react'
-import { useReducedMotion } from './useReducedMotion'
-import { useMediaQuery } from './useMediaQuery'
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
+import { useReducedMotion } from './useReducedMotion';
+import { useMediaQuery } from './useMediaQuery';
 
 /**
  * Options for configuring the parallax effect
@@ -13,22 +13,22 @@ interface UseParallaxOptions {
    * - 0 = no parallax, 1 = moves with scroll
    * @default 0.5
    */
-  speed?: number
+  speed?: number;
   /**
    * Direction of the parallax movement
    * @default 'vertical'
    */
-  direction?: 'vertical' | 'horizontal'
+  direction?: 'vertical' | 'horizontal';
   /**
    * Whether to disable the effect on mobile devices for performance
    * @default true
    */
-  disableOnMobile?: boolean
+  disableOnMobile?: boolean;
   /**
    * Breakpoint below which to consider "mobile" (in pixels)
    * @default 768
    */
-  mobileBreakpoint?: number
+  mobileBreakpoint?: number;
 }
 
 /**
@@ -62,129 +62,129 @@ export const useParallax = (options: UseParallaxOptions = {}) => {
     direction = 'vertical',
     disableOnMobile = true,
     mobileBreakpoint = 768,
-  } = options
+  } = options;
 
-  const ref = useRef<HTMLDivElement>(null)
-  const [rawOffset, setRawOffset] = useState(0)
-  const [isInView, setIsInView] = useState(false)
-  const prefersReducedMotion = useReducedMotion()
-  const isMobile = useMediaQuery(`(max-width: ${mobileBreakpoint - 1}px)`)
+  const ref = useRef<HTMLDivElement>(null);
+  const [rawOffset, setRawOffset] = useState(0);
+  const [isInView, setIsInView] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
+  const isMobile = useMediaQuery(`(max-width: ${mobileBreakpoint - 1}px)`);
 
-  const rafId = useRef<number | null>(null)
-  const ticking = useRef(false)
-  const elementTop = useRef(0)
-  const elementHeight = useRef(0)
+  const rafId = useRef<number | null>(null);
+  const ticking = useRef(false);
+  const elementTop = useRef(0);
+  const elementHeight = useRef(0);
 
   // Store functions in refs to avoid effect dependency churn
-  const updateDimensionsRef = useRef<() => void>(() => {})
-  const calculateOffsetRef = useRef<() => void>(() => {})
+  const updateDimensionsRef = useRef<() => void>(() => {});
+  const calculateOffsetRef = useRef<() => void>(() => {});
 
   // Pre-calculate element dimensions to prevent layout shifts
   const updateDimensions = useCallback(() => {
     if (ref.current) {
-      const rect = ref.current.getBoundingClientRect()
-      elementTop.current = rect.top + window.scrollY
-      elementHeight.current = rect.height
+      const rect = ref.current.getBoundingClientRect();
+      elementTop.current = rect.top + window.scrollY;
+      elementHeight.current = rect.height;
     }
-  }, [])
+  }, []);
 
   // Calculate parallax offset
   const calculateOffset = useCallback(() => {
-    if (!ref.current || !isInView) return
+    if (!ref.current || !isInView) return;
 
-    const scrollY = window.scrollY
-    const windowHeight = window.innerHeight
+    const scrollY = window.scrollY;
+    const windowHeight = window.innerHeight;
 
     // Read ref values safely
-    const elemHeight = elementHeight.current
-    const elemTop = elementTop.current
+    const elemHeight = elementHeight.current;
+    const elemTop = elementTop.current;
 
     // Calculate how far the element center is from viewport center
-    const elementCenter = elemTop + elemHeight / 2
-    const viewportCenter = scrollY + windowHeight / 2
-    const distanceFromCenter = elementCenter - viewportCenter
+    const elementCenter = elemTop + elemHeight / 2;
+    const viewportCenter = scrollY + windowHeight / 2;
+    const distanceFromCenter = elementCenter - viewportCenter;
 
     // Apply parallax speed multiplier
-    const parallaxOffset = distanceFromCenter * speed
+    const parallaxOffset = distanceFromCenter * speed;
 
     // Compute a reasonable max offset to prevent elements moving completely off-screen
     // Based on the element being able to move at most half the combined height
-    const maxOffset = (windowHeight + elemHeight) / 2
+    const maxOffset = (windowHeight + elemHeight) / 2;
 
     // Clamp the offset to the safe range
-    const clampedOffset = Math.max(-maxOffset, Math.min(maxOffset, parallaxOffset))
+    const clampedOffset = Math.max(-maxOffset, Math.min(maxOffset, parallaxOffset));
 
-    setRawOffset(clampedOffset)
-    ticking.current = false
-  }, [isInView, speed])
+    setRawOffset(clampedOffset);
+    ticking.current = false;
+  }, [isInView, speed]);
 
   // Keep refs in sync with latest callbacks via effect
   useEffect(() => {
-    updateDimensionsRef.current = updateDimensions
-    calculateOffsetRef.current = calculateOffset
-  })
+    updateDimensionsRef.current = updateDimensions;
+    calculateOffsetRef.current = calculateOffset;
+  });
 
   // Handle scroll with requestAnimationFrame
   const handleScroll = useCallback(() => {
     if (!ticking.current && isInView) {
-      rafId.current = requestAnimationFrame(() => calculateOffsetRef.current())
-      ticking.current = true
+      rafId.current = requestAnimationFrame(() => calculateOffsetRef.current());
+      ticking.current = true;
     }
-  }, [isInView])
+  }, [isInView]);
 
   // Determine if effect should be active
-  const isActive = !prefersReducedMotion && !(disableOnMobile && isMobile)
+  const isActive = !prefersReducedMotion && !(disableOnMobile && isMobile);
 
   // Set up Intersection Observer for viewport detection
   useEffect(() => {
     if (!isActive) {
-      return
+      return;
     }
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setIsInView(entry.isIntersecting)
+        setIsInView(entry.isIntersecting);
         if (entry.isIntersecting) {
           // Call via refs to avoid stale closures without adding to effect deps
-          updateDimensionsRef.current()
-          calculateOffsetRef.current()
+          updateDimensionsRef.current();
+          calculateOffsetRef.current();
         }
       },
       { rootMargin: '50px' }
-    )
+    );
 
-    const currentRef = ref.current
+    const currentRef = ref.current;
     if (currentRef) {
-      observer.observe(currentRef)
+      observer.observe(currentRef);
     }
 
     return () => {
-      observer.disconnect()
-    }
-  }, [isActive])
+      observer.disconnect();
+    };
+  }, [isActive]);
 
   // Add scroll listener when in view
   useEffect(() => {
     if (!isActive || !isInView) {
-      return
+      return;
     }
 
-    const handleResize = () => updateDimensionsRef.current()
+    const handleResize = () => updateDimensionsRef.current();
 
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    window.addEventListener('resize', handleResize, { passive: true })
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleResize, { passive: true });
 
     return () => {
-      window.removeEventListener('scroll', handleScroll)
-      window.removeEventListener('resize', handleResize)
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleResize);
       if (rafId.current !== null) {
-        cancelAnimationFrame(rafId.current)
+        cancelAnimationFrame(rafId.current);
       }
-    }
-  }, [handleScroll, isInView, isActive])
+    };
+  }, [handleScroll, isInView, isActive]);
 
   // Compute final offset - 0 when inactive, raw value otherwise
-  const offset = isActive ? rawOffset : 0
+  const offset = isActive ? rawOffset : 0;
 
   // Generate transform based on direction
   const transform = useMemo(
@@ -193,7 +193,7 @@ export const useParallax = (options: UseParallaxOptions = {}) => {
         ? `translate3d(0, ${offset}px, 0)`
         : `translate3d(${offset}px, 0, 0)`,
     [direction, offset]
-  )
+  );
 
   return {
     ref,
@@ -201,5 +201,5 @@ export const useParallax = (options: UseParallaxOptions = {}) => {
     transform,
     isActive,
     isInView,
-  }
-}
+  };
+};

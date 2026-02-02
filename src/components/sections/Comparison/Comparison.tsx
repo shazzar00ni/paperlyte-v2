@@ -1,8 +1,8 @@
-import { Section } from '@components/layout/Section'
-import { AnimatedElement } from '@components/ui/AnimatedElement'
-import { Icon } from '@components/ui/Icon'
-import { COMPARISON_FEATURES, COMPETITORS } from '@constants/comparison'
-import styles from './Comparison.module.css'
+import { Section } from '@components/layout/Section';
+import { AnimatedElement } from '@components/ui/AnimatedElement';
+import { Icon } from '@components/ui/Icon';
+import { COMPARISON_FEATURES, COMPETITORS } from '@constants/comparison';
+import styles from './Comparison.module.css';
 
 /**
  * Renders a checkmark, X, or text value for a comparison cell
@@ -15,10 +15,10 @@ const ComparisonCell = ({ value }: { value: boolean | string }): React.ReactElem
         color={value ? 'var(--color-success)' : 'var(--color-error)'}
         ariaLabel={value ? 'Supported' : 'Not supported'}
       />
-    )
+    );
   }
-  return <span className={styles.textValue}>{value}</span>
-}
+  return <span className={styles.textValue}>{value}</span>;
+};
 
 export const Comparison = (): React.ReactElement => {
   return (
@@ -96,5 +96,5 @@ export const Comparison = (): React.ReactElement => {
         </p>
       </AnimatedElement>
     </Section>
-  )
-}
+  );
+};

@@ -1,42 +1,42 @@
-import { useMemo } from 'react'
-import { useIntersectionObserver } from '@hooks/useIntersectionObserver'
-import { useReducedMotion } from '@hooks/useReducedMotion'
-import styles from './TextReveal.module.css'
+import { useMemo } from 'react';
+import { useIntersectionObserver } from '@hooks/useIntersectionObserver';
+import { useReducedMotion } from '@hooks/useReducedMotion';
+import styles from './TextReveal.module.css';
 
 /**
  * Props for the TextReveal component
  */
 interface TextRevealProps {
   /** Text content to animate */
-  children: string
+  children: string;
   /**
    * Animation type
    * - 'character': Reveals each character individually
    * - 'word': Reveals each word individually
    * @default 'word'
    */
-  type?: 'character' | 'word'
+  type?: 'character' | 'word';
   /**
    * Base delay before animation starts in milliseconds
    * @default 0
    */
-  delay?: number
+  delay?: number;
   /**
    * Stagger delay between each unit (character or word) in milliseconds
    * @default 50
    */
-  stagger?: number
+  stagger?: number;
   /**
    * Animation effect to use
    * @default 'fadeUp'
    */
-  animation?: 'fadeUp' | 'fadeIn' | 'slideUp' | 'blur'
+  animation?: 'fadeUp' | 'fadeIn' | 'slideUp' | 'blur';
   /** HTML tag to render as */
-  as?: 'h1' | 'h2' | 'h3' | 'h4' | 'p' | 'span' | 'div'
+  as?: 'h1' | 'h2' | 'h3' | 'h4' | 'p' | 'span' | 'div';
   /** Additional CSS class names */
-  className?: string
+  className?: string;
   /** Intersection Observer threshold (0-1, default: 0.2) */
-  threshold?: number
+  threshold?: number;
 }
 
 /**
@@ -45,13 +45,13 @@ interface TextRevealProps {
  */
 const getDelayClass = (index: number, stagger: number, baseDelay: number): string => {
   // Compute delay and ensure it's never negative
-  const delay = Math.max(0, baseDelay + index * stagger)
+  const delay = Math.max(0, baseDelay + index * stagger);
   // Round to nearest 50ms for predefined CSS classes
-  const rounded = Math.round(delay / 50) * 50
+  const rounded = Math.round(delay / 50) * 50;
   // Cap at 2000ms
-  const capped = Math.min(rounded, 2000)
-  return styles[`delay${capped}`] || ''
-}
+  const capped = Math.min(rounded, 2000);
+  return styles[`delay${capped}`] || '';
+};
 
 /**
  * Component that animates text revealing character by character or word by word
@@ -89,22 +89,22 @@ export const TextReveal = ({
   threshold = 0.2,
 }: TextRevealProps): React.ReactElement => {
   // Use HTMLElement generic to support all possible Component element types
-  const { ref, isVisible } = useIntersectionObserver<HTMLElement>({ threshold })
-  const prefersReducedMotion = useReducedMotion()
+  const { ref, isVisible } = useIntersectionObserver<HTMLElement>({ threshold });
+  const prefersReducedMotion = useReducedMotion();
 
   // Split text into units (characters or words)
   const units = useMemo(() => {
     if (type === 'character') {
-      return children.split('')
+      return children.split('');
     }
     // Split by spaces but preserve them for proper word spacing
-    return children.split(/(\s+)/)
-  }, [children, type])
+    return children.split(/(\s+)/);
+  }, [children, type]);
 
   // Cast ref for compatibility with dynamic element types
   // Safe because all allowed Component types (h1-h4, p, span, div) extend HTMLElement
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const elementRef = ref as React.RefObject<any>
+  const elementRef = ref as React.RefObject<any>;
 
   // If user prefers reduced motion, render plain text
   if (prefersReducedMotion) {
@@ -112,11 +112,11 @@ export const TextReveal = ({
       <Component ref={elementRef} className={className}>
         {children}
       </Component>
-    )
+    );
   }
 
-  const animationClass = styles[animation] || styles.fadeUp
-  const containerClasses = [styles.container, className].filter(Boolean).join(' ')
+  const animationClass = styles[animation] || styles.fadeUp;
+  const containerClasses = [styles.container, className].filter(Boolean).join(' ');
 
   return (
     <Component ref={elementRef} className={containerClasses} aria-label={children}>
@@ -127,10 +127,10 @@ export const TextReveal = ({
             <span key={`space-${index}`} className={styles.space}>
               {unit}
             </span>
-          )
+          );
         }
 
-        const delayClass = getDelayClass(index, stagger, delay)
+        const delayClass = getDelayClass(index, stagger, delay);
         const unitClasses = [
           styles.unit,
           animationClass,
@@ -138,14 +138,14 @@ export const TextReveal = ({
           isVisible ? styles.visible : '',
         ]
           .filter(Boolean)
-          .join(' ')
+          .join(' ');
 
         return (
           <span key={`unit-${index}`} className={unitClasses} aria-hidden="true">
             {unit}
           </span>
-        )
+        );
       })}
     </Component>
-  )
-}
+  );
+};

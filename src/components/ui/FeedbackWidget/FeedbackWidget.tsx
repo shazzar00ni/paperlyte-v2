@@ -1,18 +1,18 @@
-import { useState, useEffect, useCallback, useRef, type FormEvent } from 'react'
-import { Icon } from '@components/ui/Icon'
-import { Button } from '@components/ui/Button'
-import { handleArrowNavigation, getFocusableElements } from '@utils/keyboard'
-import styles from './FeedbackWidget.module.css'
+import { useState, useEffect, useCallback, useRef, type FormEvent } from 'react';
+import { Icon } from '@components/ui/Icon';
+import { Button } from '@components/ui/Button';
+import { handleArrowNavigation, getFocusableElements } from '@utils/keyboard';
+import styles from './FeedbackWidget.module.css';
 
-type FeedbackType = 'bug' | 'feature'
+type FeedbackType = 'bug' | 'feature';
 
 interface FeedbackFormData {
-  type: FeedbackType
-  message: string
+  type: FeedbackType;
+  message: string;
 }
 
 interface FeedbackWidgetProps {
-  onSubmit?: (data: FeedbackFormData) => Promise<void> | void
+  onSubmit?: (data: FeedbackFormData) => Promise<void> | void;
 }
 
 /**
@@ -30,223 +30,223 @@ interface FeedbackWidgetProps {
  * @param onSubmit - Optional callback for handling feedback submission
  */
 export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactElement => {
-  const [isOpen, setIsOpen] = useState(false)
-  const [feedbackType, setFeedbackType] = useState<FeedbackType>('bug')
-  const [message, setMessage] = useState('')
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [showConfirmation, setShowConfirmation] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const closeTimeoutRef = useRef<number | null>(null)
-  const triggerElementRef = useRef<HTMLElement | null>(null)
-  const modalRef = useRef<HTMLDivElement>(null)
-  const closeButtonRef = useRef<HTMLButtonElement>(null)
-  const typeSelectorRef = useRef<HTMLFieldSetElement>(null)
+  const [isOpen, setIsOpen] = useState(false);
+  const [feedbackType, setFeedbackType] = useState<FeedbackType>('bug');
+  const [message, setMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const closeTimeoutRef = useRef<number | null>(null);
+  const triggerElementRef = useRef<HTMLElement | null>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const typeSelectorRef = useRef<HTMLFieldSetElement>(null);
 
   // Handle modal open
   const handleOpen = useCallback(() => {
     // Store the element that triggered the modal for focus restoration
-    triggerElementRef.current = document.activeElement as HTMLElement
-    setIsOpen(true)
-    setError(null)
-    setShowConfirmation(false)
-  }, [])
+    triggerElementRef.current = document.activeElement as HTMLElement;
+    setIsOpen(true);
+    setError(null);
+    setShowConfirmation(false);
+  }, []);
 
   // Handle modal close
   const handleClose = useCallback(() => {
     // Clear any pending timeout to prevent memory leaks
     if (closeTimeoutRef.current !== null) {
-      clearTimeout(closeTimeoutRef.current)
-      closeTimeoutRef.current = null
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
     }
-    setIsOpen(false)
-    setMessage('')
-    setFeedbackType('bug')
-    setError(null)
-    setShowConfirmation(false)
+    setIsOpen(false);
+    setMessage('');
+    setFeedbackType('bug');
+    setError(null);
+    setShowConfirmation(false);
 
     // Restore focus to the element that triggered the modal
     if (triggerElementRef.current) {
-      triggerElementRef.current.focus()
+      triggerElementRef.current.focus();
     }
-  }, [])
+  }, []);
 
   // Handle form submission
   const handleSubmit = useCallback(
     async (e: FormEvent<HTMLFormElement>) => {
-      e.preventDefault()
+      e.preventDefault();
 
       // Validate message
       if (!message.trim()) {
-        setError('Please enter a message')
-        return
+        setError('Please enter a message');
+        return;
       }
 
-      setIsSubmitting(true)
-      setError(null)
+      setIsSubmitting(true);
+      setError(null);
 
       try {
         const feedbackData: FeedbackFormData = {
           type: feedbackType,
           message: message.trim(),
-        }
+        };
 
         // Call custom submit handler if provided
         if (onSubmit) {
-          await onSubmit(feedbackData)
+          await onSubmit(feedbackData);
         } else {
           // Default behavior: store in localStorage and log
-          const timestamp = new Date().toISOString()
+          const timestamp = new Date().toISOString();
           const feedbackEntry = {
             ...feedbackData,
             timestamp,
-          }
+          };
 
           // Get existing feedback from localStorage
-          const existingFeedback = localStorage.getItem('paperlyte_feedback')
-          let feedbackArray: unknown = []
+          const existingFeedback = localStorage.getItem('paperlyte_feedback');
+          let feedbackArray: unknown = [];
 
           if (existingFeedback) {
             try {
-              feedbackArray = JSON.parse(existingFeedback)
+              feedbackArray = JSON.parse(existingFeedback);
             } catch (parseError) {
-              console.error('Failed to parse stored feedback from localStorage', parseError)
-              feedbackArray = []
+              console.error('Failed to parse stored feedback from localStorage', parseError);
+              feedbackArray = [];
             }
           }
 
           if (!Array.isArray(feedbackArray)) {
-            feedbackArray = []
+            feedbackArray = [];
           }
 
-          ;(feedbackArray as unknown[]).push(feedbackEntry)
+          (feedbackArray as unknown[]).push(feedbackEntry);
           // Store updated feedback
           try {
-            localStorage.setItem('paperlyte_feedback', JSON.stringify(feedbackArray))
+            localStorage.setItem('paperlyte_feedback', JSON.stringify(feedbackArray));
           } catch (storageError) {
             // Provide a clearer message for storage-related issues
-            console.error('LocalStorage error:', storageError)
+            console.error('LocalStorage error:', storageError);
             throw new Error(
               `Unable to save feedback locally. Your browser storage may be full or disabled. ${
                 storageError instanceof Error ? storageError.message : String(storageError)
               }`
-            )
+            );
           }
-          console.log('Feedback submitted:', feedbackEntry)
+          console.log('Feedback submitted:', feedbackEntry);
         }
 
         // Show confirmation
-        setShowConfirmation(true)
-        setMessage('')
+        setShowConfirmation(true);
+        setMessage('');
 
         // Close modal after 2 seconds (store timeout ID for cleanup)
         closeTimeoutRef.current = window.setTimeout(() => {
-          handleClose()
-        }, 2000)
+          handleClose();
+        }, 2000);
       } catch (err) {
-        setError('Failed to submit feedback. Please try again.')
-        console.error('Feedback submission error:', err)
+        setError('Failed to submit feedback. Please try again.');
+        console.error('Feedback submission error:', err);
       } finally {
-        setIsSubmitting(false)
+        setIsSubmitting(false);
       }
     },
     [feedbackType, message, onSubmit, handleClose]
-  )
+  );
 
   // Cleanup timeout on unmount
   useEffect(() => {
     return () => {
       if (closeTimeoutRef.current !== null) {
-        clearTimeout(closeTimeoutRef.current)
+        clearTimeout(closeTimeoutRef.current);
       }
-    }
-  }, [])
+    };
+  }, []);
 
   // Focus management - move focus to close button when modal opens
   useEffect(() => {
     if (isOpen && closeButtonRef.current) {
-      closeButtonRef.current.focus()
+      closeButtonRef.current.focus();
     }
-  }, [isOpen])
+  }, [isOpen]);
 
   // Arrow key navigation for type selector buttons
   useEffect(() => {
-    if (!isOpen || !typeSelectorRef.current) return
+    if (!isOpen || !typeSelectorRef.current) return;
 
-    const typeSelector = typeSelectorRef.current
+    const typeSelector = typeSelectorRef.current;
 
     const handleArrowKeys = (event: KeyboardEvent) => {
-      const focusableElements = getFocusableElements(typeSelector)
-      if (focusableElements.length === 0) return
+      const focusableElements = getFocusableElements(typeSelector);
+      if (focusableElements.length === 0) return;
 
-      const currentIndex = focusableElements.findIndex((el) => el === document.activeElement)
-      if (currentIndex === -1) return
+      const currentIndex = focusableElements.findIndex((el) => el === document.activeElement);
+      if (currentIndex === -1) return;
 
       // Handle Arrow keys (horizontal navigation between bug/feature buttons)
-      const newIndex = handleArrowNavigation(event, focusableElements, currentIndex, 'horizontal')
+      const newIndex = handleArrowNavigation(event, focusableElements, currentIndex, 'horizontal');
       if (newIndex !== null) {
-        event.preventDefault()
-        focusableElements[newIndex]?.focus()
+        event.preventDefault();
+        focusableElements[newIndex]?.focus();
       }
-    }
+    };
 
-    typeSelector.addEventListener('keydown', handleArrowKeys)
+    typeSelector.addEventListener('keydown', handleArrowKeys);
 
-    return () => typeSelector.removeEventListener('keydown', handleArrowKeys)
-  }, [isOpen])
+    return () => typeSelector.removeEventListener('keydown', handleArrowKeys);
+  }, [isOpen]);
 
   // Focus trap - prevent tabbing out of modal
   useEffect(() => {
-    if (!isOpen || !modalRef.current) return
+    if (!isOpen || !modalRef.current) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
       // Handle Escape key
       if (e.key === 'Escape') {
-        handleClose()
-        return
+        handleClose();
+        return;
       }
 
       // Handle Tab key for focus trapping
       if (e.key === 'Tab') {
-        const modal = modalRef.current
-        if (!modal) return
+        const modal = modalRef.current;
+        if (!modal) return;
 
         const focusableElements = modal.querySelectorAll<HTMLElement>(
           'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-        )
-        const firstElement = focusableElements[0]
-        const lastElement = focusableElements[focusableElements.length - 1]
+        );
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
 
         if (e.shiftKey && document.activeElement === firstElement) {
           // Shift+Tab on first element - go to last element
-          e.preventDefault()
-          lastElement.focus()
+          e.preventDefault();
+          lastElement.focus();
         } else if (!e.shiftKey && document.activeElement === lastElement) {
           // Tab on last element - go to first element
-          e.preventDefault()
-          firstElement.focus()
+          e.preventDefault();
+          firstElement.focus();
         }
       }
-    }
+    };
 
-    document.addEventListener('keydown', handleKeyDown)
+    document.addEventListener('keydown', handleKeyDown);
     // Prevent body scroll when modal is open
-    document.body.style.overflow = 'hidden'
+    document.body.style.overflow = 'hidden';
 
     return () => {
-      document.removeEventListener('keydown', handleKeyDown)
-      document.body.style.overflow = ''
-    }
-  }, [isOpen, handleClose])
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+    };
+  }, [isOpen, handleClose]);
 
   // Handle backdrop click to close modal
   const handleBackdropClick = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
       if (e.target === e.currentTarget) {
-        handleClose()
+        handleClose();
       }
     },
     [handleClose]
-  )
+  );
 
   return (
     <>
@@ -369,5 +369,5 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
         </div>
       )}
     </>
-  )
-}
+  );
+};

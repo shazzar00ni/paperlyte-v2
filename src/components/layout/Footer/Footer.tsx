@@ -1,9 +1,9 @@
-import { Icon } from '@components/ui/Icon'
-import { LEGAL_CONFIG } from '@/constants/legal'
-import styles from './Footer.module.css'
+import { Icon } from '@components/ui/Icon';
+import { LEGAL_CONFIG } from '@/constants/legal';
+import styles from './Footer.module.css';
 
 export const Footer = (): React.ReactElement => {
-  const currentYear = new Date().getFullYear()
+  const currentYear = new Date().getFullYear();
 
   return (
     <footer className={styles.footer}>
@@ -139,5 +139,5 @@ export const Footer = (): React.ReactElement => {
         </div>
       </div>
     </footer>
-  )
-}
+  );
+};

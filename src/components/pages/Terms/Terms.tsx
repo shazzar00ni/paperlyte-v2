@@ -1,5 +1,5 @@
-import { Section } from '@components/layout/Section'
-import styles from './Terms.module.css'
+import { Section } from '@components/layout/Section';
+import styles from './Terms.module.css';
 
 /**
  * Terms of Service page component
@@ -12,7 +12,7 @@ import styles from './Terms.module.css'
 
 // Last update date for the terms of service
 // TODO: Update this date whenever the terms are revised
-const LAST_UPDATED = 'December 13, 2024'
+const LAST_UPDATED = 'December 13, 2024';
 
 export function Terms() {
   return (
@@ -344,5 +344,5 @@ export function Terms() {
         </div>
       </Section>
     </>
-  )
+  );
 }

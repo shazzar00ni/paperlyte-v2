@@ -1,21 +1,21 @@
-import { useState, useRef, useEffect, useCallback } from 'react'
-import { Section } from '@components/layout/Section'
-import { AnimatedElement } from '@components/ui/AnimatedElement'
-import { Icon } from '@components/ui/Icon'
-import { FAQ_ITEMS } from '@constants/faq'
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { Section } from '@components/layout/Section';
+import { AnimatedElement } from '@components/ui/AnimatedElement';
+import { Icon } from '@components/ui/Icon';
+import { FAQ_ITEMS } from '@constants/faq';
 import {
   getFocusableElements,
   handleArrowNavigation,
   handleHomeEndNavigation,
-} from '@utils/keyboard'
-import styles from './FAQ.module.css'
+} from '@utils/keyboard';
+import styles from './FAQ.module.css';
 
 interface FAQItemProps {
-  question: string
-  answer: string
-  isOpen: boolean
-  onToggle: () => void
-  delay: number
+  question: string;
+  answer: string;
+  isOpen: boolean;
+  onToggle: () => void;
+  delay: number;
 }
 
 const FAQItemComponent = ({
@@ -28,9 +28,9 @@ const FAQItemComponent = ({
   const sanitizedQuestion = question
     .replace(/[^a-zA-Z0-9\s]/g, '')
     .replace(/\s+/g, '-')
-    .toLowerCase()
-  const answerId = `answer-${sanitizedQuestion}`
-  const questionId = `question-${sanitizedQuestion}`
+    .toLowerCase();
+  const answerId = `answer-${sanitizedQuestion}`;
+  const questionId = `question-${sanitizedQuestion}`;
 
   return (
     <AnimatedElement animation="slideUp" delay={delay}>
@@ -64,101 +64,101 @@ const FAQItemComponent = ({
         </div>
       </article>
     </AnimatedElement>
-  )
-}
+  );
+};
 
 export const FAQ = (): React.ReactElement => {
-  const [openItems, setOpenItems] = useState<Set<string>>(new Set())
-  const [announcement, setAnnouncement] = useState('')
-  const gridRef = useRef<HTMLDivElement>(null)
-  const announcementTimeoutRef = useRef<number | null>(null)
+  const [openItems, setOpenItems] = useState<Set<string>>(new Set());
+  const [announcement, setAnnouncement] = useState('');
+  const gridRef = useRef<HTMLDivElement>(null);
+  const announcementTimeoutRef = useRef<number | null>(null);
 
   const toggleItem = (id: string) => {
     setOpenItems((prev) => {
-      const newSet = new Set(prev)
-      const isOpening = !newSet.has(id)
+      const newSet = new Set(prev);
+      const isOpening = !newSet.has(id);
 
       if (newSet.has(id)) {
-        newSet.delete(id)
+        newSet.delete(id);
       } else {
-        newSet.add(id)
+        newSet.add(id);
       }
 
       // Announce the change for screen readers
-      const item = FAQ_ITEMS.find((item) => item.id === id)
+      const item = FAQ_ITEMS.find((item) => item.id === id);
       if (item) {
         // Clear any pending timeout to prevent memory leaks
         if (announcementTimeoutRef.current !== null) {
-          clearTimeout(announcementTimeoutRef.current)
+          clearTimeout(announcementTimeoutRef.current);
         }
 
-        setAnnouncement(`${item.question} ${isOpening ? 'expanded' : 'collapsed'}`)
+        setAnnouncement(`${item.question} ${isOpening ? 'expanded' : 'collapsed'}`);
         // Clear announcement after sufficient time for screen readers (3 seconds)
         // This ensures users with slower reading speeds or busy screen readers can hear the announcement
         announcementTimeoutRef.current = window.setTimeout(() => {
-          setAnnouncement('')
-          announcementTimeoutRef.current = null
-        }, 3000)
+          setAnnouncement('');
+          announcementTimeoutRef.current = null;
+        }, 3000);
       }
 
-      return newSet
-    })
-  }
+      return newSet;
+    });
+  };
 
   // Cleanup timeout on unmount to prevent memory leaks
   useEffect(() => {
     return () => {
       if (announcementTimeoutRef.current !== null) {
-        clearTimeout(announcementTimeoutRef.current)
+        clearTimeout(announcementTimeoutRef.current);
       }
-    }
-  }, [])
+    };
+  }, []);
 
   // Keyboard navigation handler - memoized to prevent recreating on every render
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
-    const grid = gridRef.current
-    if (!grid) return
+    const grid = gridRef.current;
+    if (!grid) return;
 
     // Only handle keyboard navigation when focus is on an FAQ button
     if (!(event.target instanceof HTMLElement && event.target.tagName === 'BUTTON')) {
-      return
+      return;
     }
 
     const focusableElements = getFocusableElements(grid).filter((el) =>
       el.classList.contains(styles.question)
-    )
-    if (focusableElements.length === 0) return
+    );
+    if (focusableElements.length === 0) return;
 
-    const currentIndex = focusableElements.findIndex((el) => el === document.activeElement)
-    if (currentIndex === -1) return
+    const currentIndex = focusableElements.findIndex((el) => el === document.activeElement);
+    if (currentIndex === -1) return;
 
     // Handle Home/End keys
-    const homeEndIndex = handleHomeEndNavigation(event, focusableElements)
+    const homeEndIndex = handleHomeEndNavigation(event, focusableElements);
     if (homeEndIndex !== null) {
-      event.preventDefault()
-      focusableElements[homeEndIndex]?.focus()
-      return
+      event.preventDefault();
+      focusableElements[homeEndIndex]?.focus();
+      return;
     }
 
     // Handle Arrow keys (vertical navigation for FAQ)
-    const newIndex = handleArrowNavigation(event, focusableElements, currentIndex, 'vertical')
+    const newIndex = handleArrowNavigation(event, focusableElements, currentIndex, 'vertical');
     if (newIndex !== null) {
-      event.preventDefault()
-      focusableElements[newIndex]?.focus()
+      event.preventDefault();
+      focusableElements[newIndex]?.focus();
     }
-  }, [])
+  }, []);
 
   // Set up keyboard navigation event listener
   useEffect(() => {
-    const grid = gridRef.current
-    if (!grid) return
+    const grid = gridRef.current;
+    if (!grid) return;
 
-    grid.addEventListener('keydown', handleKeyDown)
+    grid.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      grid.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [handleKeyDown])
+      grid.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [handleKeyDown]);
 
   return (
     <Section id="faq" background="default">
@@ -211,5 +211,5 @@ export const FAQ = (): React.ReactElement => {
         {announcement}
       </div>
     </Section>
-  )
-}
+  );
+};

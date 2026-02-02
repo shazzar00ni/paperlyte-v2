@@ -11,23 +11,23 @@
  * - FontAwesomeIcon SVG: checks fontSize in style prop
  */
 export function expectIconSize(icon: Element | null, expectedSize: string): void {
-  expect(icon).toBeInTheDocument()
+  expect(icon).toBeInTheDocument();
 
   if (icon?.tagName === 'svg' && icon.hasAttribute('width')) {
     // Custom SVG icons use width/height attributes
-    expect(icon).toHaveAttribute('width', expectedSize)
-    expect(icon).toHaveAttribute('height', expectedSize)
+    expect(icon).toHaveAttribute('width', expectedSize);
+    expect(icon).toHaveAttribute('height', expectedSize);
   } else if (icon?.tagName === 'svg') {
     // FontAwesomeIcon SVG with fontSize in style
-    const expectedFontSize = expectedSize.endsWith('px') ? expectedSize : `${expectedSize}px`
-    expect(icon).toHaveStyle({ fontSize: expectedFontSize })
+    const expectedFontSize = expectedSize.endsWith('px') ? expectedSize : `${expectedSize}px`;
+    expect(icon).toHaveStyle({ fontSize: expectedFontSize });
   } else if (icon?.tagName === 'SPAN') {
     // Span fallback uses fontSize style
-    const expectedFontSize = expectedSize.endsWith('px') ? expectedSize : `${expectedSize}px`
-    expect((icon as HTMLElement).style.fontSize).toBe(expectedFontSize)
+    const expectedFontSize = expectedSize.endsWith('px') ? expectedSize : `${expectedSize}px`;
+    expect((icon as HTMLElement).style.fontSize).toBe(expectedFontSize);
   } else {
     // Unexpected element type - fail with descriptive message
-    expect(icon?.tagName).toMatch(/svg|SPAN/i)
+    expect(icon?.tagName).toMatch(/svg|SPAN/i);
   }
 }
 
@@ -36,7 +36,7 @@ export function expectIconSize(icon: Element | null, expectedSize: string): void
  * Handles both SVG and fallback (.icon-fallback) elements
  */
 export function getIconElement(container: HTMLElement): Element | null {
-  return container.querySelector('svg, .icon-fallback')
+  return container.querySelector('svg, .icon-fallback');
 }
 
 /**
@@ -44,5 +44,5 @@ export function getIconElement(container: HTMLElement): Element | null {
  * Convenience wrapper for the common pattern of getting icons from buttons
  */
 export function getIconFromButton(button: HTMLElement): Element | null {
-  return getIconElement(button)
+  return getIconElement(button);
 }

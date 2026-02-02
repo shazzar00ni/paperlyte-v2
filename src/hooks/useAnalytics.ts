@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react'
+import { useEffect, useCallback } from 'react';
 import {
   trackEvent,
   trackCTAClick,
@@ -7,7 +7,7 @@ import {
   initScrollDepthTracking,
   AnalyticsEvents,
   type AnalyticsEventParams,
-} from '@utils/analytics'
+} from '@utils/analytics';
 
 /**
  * React hook for analytics tracking with automatic scroll depth tracking
@@ -31,28 +31,28 @@ import {
 export function useAnalytics(enableScrollTracking = true) {
   // Initialize scroll depth tracking on mount
   useEffect(() => {
-    if (!enableScrollTracking) return
+    if (!enableScrollTracking) return;
 
-    const cleanup = initScrollDepthTracking()
-    return cleanup
-  }, [enableScrollTracking])
+    const cleanup = initScrollDepthTracking();
+    return cleanup;
+  }, [enableScrollTracking]);
 
   // Memoized tracking functions to prevent unnecessary re-renders
   const track = useCallback((eventName: string, params?: AnalyticsEventParams) => {
-    trackEvent(eventName, params)
-  }, [])
+    trackEvent(eventName, params);
+  }, []);
 
   const trackCTA = useCallback((buttonText: string, buttonLocation: string) => {
-    trackCTAClick(buttonText, buttonLocation)
-  }, [])
+    trackCTAClick(buttonText, buttonLocation);
+  }, []);
 
   const trackExternal = useCallback((url: string, linkText: string) => {
-    trackExternalLink(url, linkText)
-  }, [])
+    trackExternalLink(url, linkText);
+  }, []);
 
   const trackSocial = useCallback((platform: string) => {
-    trackSocialClick(platform)
-  }, [])
+    trackSocialClick(platform);
+  }, []);
 
   /**
    * Track waitlist join button clicks
@@ -62,10 +62,10 @@ export function useAnalytics(enableScrollTracking = true) {
     (location: string) => {
       track(AnalyticsEvents.WAITLIST_JOIN, {
         button_location: location,
-      })
+      });
     },
     [track]
-  )
+  );
 
   /**
    * Track waitlist form submission
@@ -75,10 +75,10 @@ export function useAnalytics(enableScrollTracking = true) {
     (location: string) => {
       track(AnalyticsEvents.WAITLIST_SUBMIT, {
         form_location: location,
-      })
+      });
     },
     [track]
-  )
+  );
 
   /**
    * Track successful waitlist signup
@@ -87,37 +87,37 @@ export function useAnalytics(enableScrollTracking = true) {
   const trackWaitlistSuccess = useCallback(() => {
     track(AnalyticsEvents.WAITLIST_SUCCESS, {
       // No PII - only track that signup was successful
-    })
-  }, [track])
+    });
+  }, [track]);
 
   const trackWaitlistError = useCallback(
     (errorCode: string, location: string) => {
       track(AnalyticsEvents.WAITLIST_ERROR, {
         error_code: errorCode,
         form_location: location,
-      })
+      });
     },
     [track]
-  )
+  );
 
   const trackFAQExpand = useCallback(
     (questionIndex: number) => {
       track(AnalyticsEvents.FAQ_EXPAND, {
         question_index: questionIndex,
-      })
+      });
     },
     [track]
-  )
+  );
 
   const trackNavigation = useCallback(
     (destination: string, linkText: string) => {
       track(AnalyticsEvents.NAVIGATION_CLICK, {
         destination,
         link_text: linkText,
-      })
+      });
     },
     [track]
-  )
+  );
 
   return {
     // Generic event tracking
@@ -142,5 +142,5 @@ export function useAnalytics(enableScrollTracking = true) {
 
     // Event constants
     events: AnalyticsEvents,
-  }
+  };
 }

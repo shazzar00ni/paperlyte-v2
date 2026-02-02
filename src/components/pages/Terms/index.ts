@@ -1,1 +1,1 @@
-export { Terms } from './Terms'
+export { Terms } from './Terms';

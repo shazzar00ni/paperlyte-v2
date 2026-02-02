@@ -95,10 +95,10 @@ npm audit                # Audit dependencies for vulnerabilities (native npm co
 
 ```typescript
 // Absolute imports using path aliases
-import { useState } from 'react'
-import { Button } from '@components/ui/Button'
-import { useAnalytics } from '@hooks/useAnalytics'
-import { trackEvent } from '@utils/analytics'
+import { useState } from 'react';
+import { Button } from '@components/ui/Button';
+import { useAnalytics } from '@hooks/useAnalytics';
+import { trackEvent } from '@utils/analytics';
 
 // Available path aliases:
 // @/               → src/
@@ -109,8 +109,8 @@ import { trackEvent } from '@utils/analytics'
 // @styles/         → src/styles/
 
 // Relative imports for same-level files
-import { formatDate } from './dateUtils'
-import styles from './Component.module.css'
+import { formatDate } from './dateUtils';
+import styles from './Component.module.css';
 
 // Import ordering: React → External → Internal (@ aliases) → Relative
 ```
@@ -128,7 +128,7 @@ import styles from './Component.module.css'
 
 ```typescript
 try {
-  const result = await submitWaitlistForm(email)
+  const result = await submitWaitlistForm(email);
   if (result) {
     // Success path
   }
@@ -136,7 +136,7 @@ try {
   monitoring.logError(error as Error, {
     feature: 'waitlist',
     action: 'submit_form',
-  })
+  });
   // Show user-friendly error message
 }
 ```
@@ -486,13 +486,13 @@ function EmailForm() {
 ### Environment Variables
 
 ```typescript
-import { env } from '@utils/env'
+import { env } from '@utils/env';
 
 // Access environment variables safely
-const analyticsId = env.get('VITE_GA_MEASUREMENT_ID')
-const sentryDsn = env.get('VITE_SENTRY_DSN')
-const isDev = env.isDevelopment()
-const isProd = env.isProduction()
+const analyticsId = env.get('VITE_GA_MEASUREMENT_ID');
+const sentryDsn = env.get('VITE_SENTRY_DSN');
+const isDev = env.isDevelopment();
+const isProd = env.isProduction();
 ```
 
 ## Accessibility

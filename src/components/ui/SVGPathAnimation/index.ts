@@ -1,1 +1,1 @@
-export { SVGPathAnimation } from './SVGPathAnimation'
+export { SVGPathAnimation } from './SVGPathAnimation';

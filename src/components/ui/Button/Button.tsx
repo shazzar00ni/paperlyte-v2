@@ -1,20 +1,20 @@
-import { type ReactNode } from 'react'
-import { Icon } from '@components/ui/Icon'
-import { isSafeUrl } from '@utils/navigation'
-import styles from './Button.module.css'
+import { type ReactNode } from 'react';
+import { Icon } from '@components/ui/Icon';
+import { isSafeUrl } from '@utils/navigation';
+import styles from './Button.module.css';
 
 interface ButtonProps {
-  children: ReactNode
-  variant?: 'primary' | 'secondary' | 'ghost'
-  size?: 'small' | 'medium' | 'large'
-  href?: string
-  onClick?: () => void
-  icon?: string
-  iconAriaLabel?: string
-  disabled?: boolean
-  className?: string
-  ariaLabel?: string
-  type?: 'button' | 'submit' | 'reset'
+  children: ReactNode;
+  variant?: 'primary' | 'secondary' | 'ghost';
+  size?: 'small' | 'medium' | 'large';
+  href?: string;
+  onClick?: () => void;
+  icon?: string;
+  iconAriaLabel?: string;
+  disabled?: boolean;
+  className?: string;
+  ariaLabel?: string;
+  type?: 'button' | 'submit' | 'reset';
 }
 
 export const Button = ({
@@ -38,16 +38,16 @@ export const Button = ({
     className,
   ]
     .filter(Boolean)
-    .join(' ')
+    .join(' ');
 
   const content = (
     <>
       {icon && <Icon name={icon} size="sm" className={styles.icon} ariaLabel={iconAriaLabel} />}
       {children}
     </>
-  )
+  );
 
-  const isBrowser = typeof window !== 'undefined'
+  const isBrowser = typeof window !== 'undefined';
 
   if (href) {
     // Validate URL for security - prevent javascript:, data:, and other dangerous protocols.
@@ -59,7 +59,7 @@ export const Button = ({
           `Button component: Unsafe URL rejected: "${href}". ` +
             'Only http://, https://, and relative URLs are allowed. ' +
             'Dangerous protocols like javascript:, data:, vbscript: are blocked for security.'
-        )
+        );
       }
       // Render as disabled button instead of unsafe link
       return (
@@ -72,7 +72,7 @@ export const Button = ({
         >
           {content}
         </button>
-      )
+      );
     }
 
     return (
@@ -89,7 +89,7 @@ export const Button = ({
       >
         {content}
       </a>
-    )
+    );
   }
 
   return (
@@ -102,5 +102,5 @@ export const Button = ({
     >
       {content}
     </button>
-  )
-}
+  );
+};

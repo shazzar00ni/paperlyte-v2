@@ -39,10 +39,7 @@ const pages = [
  */
 function getLastGitCommitDate(filePath) {
   try {
-    const date = execSync(
-      `git log -1 --format=%cs -- "${filePath}"`,
-      { encoding: 'utf8' }
-    ).trim();
+    const date = execSync(`git log -1 --format=%cs -- "${filePath}"`, { encoding: 'utf8' }).trim();
     // Validate YYYY-MM-DD
     if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
       return date;

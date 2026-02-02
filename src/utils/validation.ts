@@ -7,16 +7,16 @@
  * Email validation result
  */
 export interface EmailValidationResult {
-  isValid: boolean
-  error?: string
+  isValid: boolean;
+  error?: string;
 }
 
 /**
  * Form field validation result
  */
 export interface ValidationResult {
-  isValid: boolean
-  errors: Record<string, string>
+  isValid: boolean;
+  errors: Record<string, string>;
 }
 
 /**
@@ -30,7 +30,7 @@ export interface ValidationResult {
  * This eliminates overlapping quantifiers by making choices mutually exclusive
  */
 const EMAIL_REGEX =
-  /^[a-zA-Z0-9](?:[a-zA-Z0-9]|[._+-][a-zA-Z0-9])*@[a-zA-Z0-9](?:[a-zA-Z0-9]|[.-][a-zA-Z0-9])*\.[a-zA-Z]{2,}$/
+  /^[a-zA-Z0-9](?:[a-zA-Z0-9]|[._+-][a-zA-Z0-9])*@[a-zA-Z0-9](?:[a-zA-Z0-9]|[.-][a-zA-Z0-9])*\.[a-zA-Z]{2,}$/;
 
 /**
  * Common disposable email domains to block
@@ -44,55 +44,55 @@ const DISPOSABLE_EMAIL_DOMAINS = [
   'temp-mail.org',
   'fakeinbox.com',
   'yopmail.com',
-]
+];
 
 /**
  * Validate email address format
  */
 export function validateEmail(email: string): EmailValidationResult {
   if (!email || email.trim() === '') {
-    return { isValid: false, error: 'Email address is required' }
+    return { isValid: false, error: 'Email address is required' };
   }
 
-  const trimmedEmail = email.trim()
+  const trimmedEmail = email.trim();
 
   if (!EMAIL_REGEX.test(trimmedEmail)) {
-    return { isValid: false, error: 'Please enter a valid email address' }
+    return { isValid: false, error: 'Please enter a valid email address' };
   }
 
   if (trimmedEmail.length > 254) {
-    return { isValid: false, error: 'Email address is too long' }
+    return { isValid: false, error: 'Email address is too long' };
   }
 
   // Extract domain safely with defensive checks
-  const atIndex = trimmedEmail.lastIndexOf('@')
+  const atIndex = trimmedEmail.lastIndexOf('@');
   if (atIndex === -1 || atIndex === trimmedEmail.length - 1) {
-    return { isValid: false, error: 'Please enter a valid email address' }
+    return { isValid: false, error: 'Please enter a valid email address' };
   }
 
-  const domain = trimmedEmail.substring(atIndex + 1).toLowerCase()
+  const domain = trimmedEmail.substring(atIndex + 1).toLowerCase();
   if (DISPOSABLE_EMAIL_DOMAINS.includes(domain)) {
-    return { isValid: false, error: 'Please use a permanent email address' }
+    return { isValid: false, error: 'Please use a permanent email address' };
   }
 
-  return { isValid: true }
+  return { isValid: true };
 }
 
 /**
  * Normalize email
  */
 export function normalizeEmail(email: string): string | null {
-  const validation = validateEmail(email)
-  if (!validation.isValid) return null
-  return email.trim().toLowerCase()
+  const validation = validateEmail(email);
+  if (!validation.isValid) return null;
+  return email.trim().toLowerCase();
 }
 
 /**
  * Placeholder for MX record validation
  */
 export async function validateEmailDomain(email: string): Promise<boolean> {
-  const validation = validateEmail(email)
-  return validation.isValid
+  const validation = validateEmail(email);
+  return validation.isValid;
 }
 
 /**
@@ -102,12 +102,12 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
   func: T,
   delay: number
 ): (...args: Parameters<T>) => void {
-  let timeoutId: ReturnType<typeof setTimeout>
+  let timeoutId: ReturnType<typeof setTimeout>;
 
   return (...args: Parameters<T>) => {
-    clearTimeout(timeoutId)
-    timeoutId = setTimeout(() => func(...args), delay)
-  }
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => func(...args), delay);
+  };
 }
 
 /**
@@ -127,7 +127,7 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
  * ```
  */
 export function encodeHtmlEntities(input: string): string {
-  if (!input) return ''
+  if (!input) return '';
 
   return input
     .replace(/&/g, '&amp;')
@@ -136,7 +136,7 @@ export function encodeHtmlEntities(input: string): string {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#x27;')
     .trim()
-    .slice(0, 500)
+    .slice(0, 500);
 }
 
 /**
@@ -150,80 +150,80 @@ export function encodeHtmlEntities(input: string): string {
  * @returns The sanitized string, or an empty string if `input` is falsy.
  */
 export function sanitizeInput(input: string): string {
-  if (!input) return ''
+  if (!input) return '';
 
-  let sanitized = input.trim()
+  let sanitized = input.trim();
 
   // Remove angle brackets early
-  sanitized = sanitized.replace(/[<>]/g, '')
+  sanitized = sanitized.replace(/[<>]/g, '');
 
-  const MAX_ITERATIONS = 10
+  const MAX_ITERATIONS = 10;
 
   // --- Remove dangerous protocols iteratively ---
-  let prevProtocolValue = ''
-  let protocolIterations = 0
+  let prevProtocolValue = '';
+  let protocolIterations = 0;
 
   while (sanitized !== prevProtocolValue && protocolIterations < MAX_ITERATIONS) {
-    prevProtocolValue = sanitized
-    sanitized = sanitized.replace(/(javascript|data|vbscript|file|about)\s*:\/*/gi, '')
-    protocolIterations++
+    prevProtocolValue = sanitized;
+    sanitized = sanitized.replace(/(javascript|data|vbscript|file|about)\s*:\/*/gi, '');
+    protocolIterations++;
   }
 
   // --- Remove event handlers iteratively ---
-  let prevEventValue = ''
-  let eventIterations = 0
+  let prevEventValue = '';
+  let eventIterations = 0;
 
   while (sanitized !== prevEventValue && eventIterations < MAX_ITERATIONS) {
-    prevEventValue = sanitized
-    sanitized = sanitized.replace(/\bon\w+\s*=/gi, '')
-    eventIterations++
+    prevEventValue = sanitized;
+    sanitized = sanitized.replace(/\bon\w+\s*=/gi, '');
+    eventIterations++;
   }
 
   // --- Encode HTML entities ---
-  sanitized = sanitized.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;')
+  sanitized = sanitized.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;');
 
-  return sanitized.trim().slice(0, 500)
+  return sanitized.trim().slice(0, 500);
 }
 
 /**
  * Validate form data
  */
 export function validateForm(formData: Record<string, unknown>): ValidationResult {
-  const errors: Record<string, string> = {}
+  const errors: Record<string, string> = {};
 
   if ('email' in formData) {
     if (typeof formData.email !== 'string') {
-      errors.email = 'Email must be a string'
+      errors.email = 'Email must be a string';
     } else {
-      const emailValidation = validateEmail(formData.email)
+      const emailValidation = validateEmail(formData.email);
       if (!emailValidation.isValid) {
-        errors.email = emailValidation.error || 'Invalid email'
+        errors.email = emailValidation.error || 'Invalid email';
       }
     }
   }
 
   if ('name' in formData) {
     if (typeof formData.name !== 'string') {
-      errors.name = 'Name must be a string'
+      errors.name = 'Name must be a string';
     } else {
-      const trimmedName = formData.name.trim()
-      if (trimmedName.length < 2) errors.name = 'Name must be at least 2 characters'
-      if (trimmedName.length > 100) errors.name = 'Name is too long'
+      const trimmedName = formData.name.trim();
+      if (trimmedName.length < 2) errors.name = 'Name must be at least 2 characters';
+      if (trimmedName.length > 100) errors.name = 'Name is too long';
     }
   }
 
   if ('acceptTerms' in formData) {
     if (typeof formData.acceptTerms !== 'boolean') {
-      errors.acceptTerms = 'Accept terms must be a boolean'
+      errors.acceptTerms = 'Accept terms must be a boolean';
     } else if (!formData.acceptTerms) {
-      errors.acceptTerms = 'You must accept the terms and conditions'
+      errors.acceptTerms = 'You must accept the terms and conditions';
     }
   }
 
   return {
     isValid: Object.keys(errors).length === 0,
     errors,
-  }
+  };
 }
 
 /**
@@ -239,17 +239,17 @@ export function suggestEmailCorrection(email: string): string | null {
     'hotmial.com': 'hotmail.com',
     'outlok.com': 'outlook.com',
     'outloook.com': 'outlook.com',
-  }
+  };
 
-  const domain = email.split('@')[1]?.toLowerCase()
-  if (!domain) return null
+  const domain = email.split('@')[1]?.toLowerCase();
+  if (!domain) return null;
 
-  const suggestion = commonTypos[domain]
-  if (!suggestion) return null
+  const suggestion = commonTypos[domain];
+  if (!suggestion) return null;
 
-  const localPart = email.split('@')[0]
-  if (!localPart) return null
-  return `${localPart}@${suggestion}`
+  const localPart = email.split('@')[0];
+  if (!localPart) return null;
+  return `${localPart}@${suggestion}`;
 }
 
 /**
@@ -270,7 +270,7 @@ export function suggestEmailCorrection(email: string): string | null {
  * ```
  */
 export function escapeRegExp(str: string): string {
-  if (!str) return ''
+  if (!str) return '';
   // Escape all special regex characters: \ ^ $ * + ? . ( ) [ ] { } |
-  return str.replace(/[\\^$*+?.()[\]{}|]/g, '\\$&')
+  return str.replace(/[\\^$*+?.()[\]{}|]/g, '\\$&');
 }

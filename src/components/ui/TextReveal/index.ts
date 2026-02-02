@@ -1,1 +1,1 @@
-export { TextReveal } from './TextReveal'
+export { TextReveal } from './TextReveal';

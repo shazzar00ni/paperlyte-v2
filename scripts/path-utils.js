@@ -8,7 +8,7 @@
  * filenameValidation utility to avoid code duplication.
  */
 
-import { isPathSafe as isPathSafeImpl } from './utils/filenameValidation.js'
+import { isPathSafe as isPathSafeImpl } from './utils/filenameValidation.js';
 
 /**
  * Validates that a file path is within a specified base directory
@@ -32,5 +32,5 @@ import { isPathSafe as isPathSafeImpl } from './utils/filenameValidation.js'
  * isPathSafe('/app/public', '/etc/passwd') // false
  */
 export function isPathSafe(baseDir, filePath) {
-  return isPathSafeImpl(baseDir, filePath)
+  return isPathSafeImpl(baseDir, filePath);
 }

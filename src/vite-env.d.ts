@@ -6,24 +6,24 @@
  */
 interface ImportMetaEnv {
   /** Development mode flag */
-  readonly DEV: boolean
+  readonly DEV: boolean;
   /** Production mode flag */
-  readonly PROD: boolean
+  readonly PROD: boolean;
   /** Server-side rendering mode flag */
-  readonly SSR: boolean
+  readonly SSR: boolean;
 
   /** Enable/disable analytics */
-  readonly VITE_ANALYTICS_ENABLED?: string
+  readonly VITE_ANALYTICS_ENABLED?: string;
   /** Analytics provider (plausible, fathom, umami, simple) */
-  readonly VITE_ANALYTICS_PROVIDER?: string
+  readonly VITE_ANALYTICS_PROVIDER?: string;
   /** Domain/site ID for analytics service */
-  readonly VITE_ANALYTICS_DOMAIN?: string
+  readonly VITE_ANALYTICS_DOMAIN?: string;
   /** Custom script URL for analytics provider */
-  readonly VITE_ANALYTICS_SCRIPT_URL?: string
+  readonly VITE_ANALYTICS_SCRIPT_URL?: string;
   /** Enable debug mode for analytics */
-  readonly VITE_ANALYTICS_DEBUG?: string
+  readonly VITE_ANALYTICS_DEBUG?: string;
 }
 
 interface ImportMeta {
-  readonly env: ImportMetaEnv
+  readonly env: ImportMetaEnv;
 }

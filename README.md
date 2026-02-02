@@ -239,8 +239,8 @@ The project uses path aliases for cleaner imports:
 Example:
 
 ```typescript
-import { Button } from '@components/ui/Button'
-import { useTheme } from '@hooks/useTheme'
+import { Button } from '@components/ui/Button';
+import { useTheme } from '@hooks/useTheme';
 ```
 
 ## Performance Targets

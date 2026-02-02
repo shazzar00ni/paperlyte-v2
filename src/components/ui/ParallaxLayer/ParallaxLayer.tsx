@@ -1,13 +1,13 @@
-import { type ReactNode } from 'react'
-import { useParallax } from '@hooks/useParallax'
-import styles from './ParallaxLayer.module.css'
+import { type ReactNode } from 'react';
+import { useParallax } from '@hooks/useParallax';
+import styles from './ParallaxLayer.module.css';
 
 /**
  * Props for the ParallaxLayer component
  */
 interface ParallaxLayerProps {
   /** Content to be rendered with parallax effect */
-  children: ReactNode
+  children: ReactNode;
   /**
    * Speed multiplier for the parallax effect
    * - 0 = no movement (static)
@@ -17,24 +17,24 @@ interface ParallaxLayerProps {
    * - Negative values = reverse direction
    * @default 0.3
    */
-  speed?: number
+  speed?: number;
   /**
    * Z-index layer for depth stacking
    * @default 0
    */
-  zIndex?: number
+  zIndex?: number;
   /** Additional CSS class names */
-  className?: string
+  className?: string;
   /**
    * Whether this is an absolute positioned layer (for background effects)
    * @default false
    */
-  absolute?: boolean
+  absolute?: boolean;
   /**
    * CSS opacity for the layer
    * @default 1
    */
-  opacity?: number
+  opacity?: number;
 }
 
 /**
@@ -65,11 +65,11 @@ export const ParallaxLayer = ({
   absolute = false,
   opacity = 1,
 }: ParallaxLayerProps): React.ReactElement => {
-  const { ref, transform, isActive } = useParallax({ speed })
+  const { ref, transform, isActive } = useParallax({ speed });
 
   const layerClasses = [styles.layer, absolute ? styles.absolute : '', className]
     .filter(Boolean)
-    .join(' ')
+    .join(' ');
 
   return (
     <div
@@ -84,5 +84,5 @@ export const ParallaxLayer = ({
     >
       {children}
     </div>
-  )
-}
+  );
+};

@@ -1,8 +1,8 @@
-import { Section } from '@components/layout/Section'
-import { AnimatedElement } from '@components/ui/AnimatedElement'
-import { Icon } from '@components/ui/Icon'
-import { FEATURES } from '@constants/features'
-import styles from './Features.module.css'
+import { Section } from '@components/layout/Section';
+import { AnimatedElement } from '@components/ui/AnimatedElement';
+import { Icon } from '@components/ui/Icon';
+import { FEATURES } from '@constants/features';
+import styles from './Features.module.css';
 
 export const Features = (): React.ReactElement => {
   return (
@@ -37,5 +37,5 @@ export const Features = (): React.ReactElement => {
         ))}
       </div>
     </Section>
-  )
-}
+  );
+};

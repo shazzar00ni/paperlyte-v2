@@ -1,44 +1,44 @@
-import { useState } from 'react'
-import type { FormEvent } from 'react'
-import { Section } from '@components/layout/Section'
-import { AnimatedElement } from '@components/ui/AnimatedElement'
-import { Button } from '@components/ui/Button'
-import { Icon } from '@components/ui/Icon'
-import { WAITLIST_COUNT, LAUNCH_QUARTER } from '@constants/waitlist'
-import styles from './EmailCapture.module.css'
+import { useState } from 'react';
+import type { FormEvent } from 'react';
+import { Section } from '@components/layout/Section';
+import { AnimatedElement } from '@components/ui/AnimatedElement';
+import { Button } from '@components/ui/Button';
+import { Icon } from '@components/ui/Icon';
+import { WAITLIST_COUNT, LAUNCH_QUARTER } from '@constants/waitlist';
+import styles from './EmailCapture.module.css';
 
 const BENEFITS = [
   'Get early access before public launch',
   'Influence features and design decisions',
   'Lock in founder pricing (save 50% for life)',
   'Receive exclusive productivity tips and updates',
-]
+];
 
 export const EmailCapture = (): React.ReactElement => {
-  const [email, setEmail] = useState('')
-  const [isSubmitted, setIsSubmitted] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [email, setEmail] = useState('');
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Safe origin for SSR compatibility
-  const origin = typeof window !== 'undefined' ? window.location.origin : ''
+  const origin = typeof window !== 'undefined' ? window.location.origin : '';
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setError(null)
+    e.preventDefault();
+    setIsLoading(true);
+    setError(null);
 
     try {
       // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      setIsLoading(false)
-      setIsSubmitted(true)
+      setIsLoading(false);
+      setIsSubmitted(true);
     } catch {
-      setIsLoading(false)
-      setError('Failed to join waitlist. Please try again.')
+      setIsLoading(false);
+      setError('Failed to join waitlist. Please try again.');
     }
-  }
+  };
 
   if (isSubmitted) {
     return (
@@ -96,7 +96,7 @@ export const EmailCapture = (): React.ReactElement => {
           </AnimatedElement>
         </div>
       </Section>
-    )
+    );
   }
 
   return (
@@ -160,5 +160,5 @@ export const EmailCapture = (): React.ReactElement => {
         </AnimatedElement>
       </div>
     </Section>
-  )
-}
+  );
+};

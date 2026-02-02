@@ -1,27 +1,27 @@
-import { type FC } from 'react'
-import { Icon } from '@/components/ui/Icon'
-import { CONTACT } from '@/constants/config'
-import { safeNavigate } from '@/utils/navigation'
-import { BUTTON_LABELS } from './constants'
-import styles from './ServerErrorPage.module.css'
+import { type FC } from 'react';
+import { Icon } from '@/components/ui/Icon';
+import { CONTACT } from '@/constants/config';
+import { safeNavigate } from '@/utils/navigation';
+import { BUTTON_LABELS } from './constants';
+import styles from './ServerErrorPage.module.css';
 
 interface ServerErrorPageProps {
   /**
    * Custom error message to display (optional)
    */
-  message?: string
+  message?: string;
   /**
    * Custom error details (optional, shown in development only)
    */
-  errorDetails?: string
+  errorDetails?: string;
   /**
    * Callback for retry button (optional)
    */
-  onRetry?: () => void
+  onRetry?: () => void;
   /**
    * Show contact support link (default: true)
    */
-  showSupport?: boolean
+  showSupport?: boolean;
 }
 
 export const ServerErrorPage: FC<ServerErrorPageProps> = ({
@@ -32,20 +32,20 @@ export const ServerErrorPage: FC<ServerErrorPageProps> = ({
 }) => {
   const handleRetry = (): void => {
     if (onRetry) {
-      onRetry()
+      onRetry();
     } else {
       // Default behavior: full page reload to clear error state
       // Note: window.location.reload() is intentional for error recovery.
       // In an SPA with routing, consider passing a custom onRetry callback.
-      window.location.reload()
+      window.location.reload();
     }
-  }
+  };
 
   const handleGoHome = (): void => {
     // Full page navigation to homepage using safe navigation
     // This validates the URL to prevent open redirect vulnerabilities
-    safeNavigate('/')
-  }
+    safeNavigate('/');
+  };
 
   return (
     <main className={styles.container} aria-labelledby="error-title">
@@ -134,5 +134,5 @@ export const ServerErrorPage: FC<ServerErrorPageProps> = ({
         </div>
       </div>
     </main>
-  )
-}
+  );
+};

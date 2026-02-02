@@ -5,15 +5,15 @@
  */
 
 export interface CompanyConfig {
-  name: string
-  legalName: string
-  email: string
-  supportEmail: string
-  privacyEmail: string
-  legalEmail: string
-  securityEmail: string
-  dpoEmail: string
-  arbitrationOptOutEmail: string
+  name: string;
+  legalName: string;
+  email: string;
+  supportEmail: string;
+  privacyEmail: string;
+  legalEmail: string;
+  securityEmail: string;
+  dpoEmail: string;
+  arbitrationOptOutEmail: string;
 }
 
 export const LEGAL_CONFIG = {
@@ -57,7 +57,7 @@ export const LEGAL_CONFIG = {
     jurisdiction: '[State/Country]', // TODO: Add jurisdiction
     governingLaw: '[State] law', // TODO: Add governing law
   },
-} as const
+} as const;
 
 /**
  * Helper function to check if legal documents need updating
@@ -66,26 +66,26 @@ export const needsLegalReview = (): boolean => {
   const hasPlaceholders =
     LEGAL_CONFIG.company.legalName.includes('[') ||
     LEGAL_CONFIG.address.street.includes('[') ||
-    LEGAL_CONFIG.metadata.jurisdiction.includes('[')
+    LEGAL_CONFIG.metadata.jurisdiction.includes('[');
 
-  return hasPlaceholders
-}
+  return hasPlaceholders;
+};
 
 /**
  * Get all placeholder fields that need to be filled
  */
 export const getPlaceholderFields = (): string[] => {
-  const placeholders: string[] = []
+  const placeholders: string[] = [];
 
   if (LEGAL_CONFIG.company.legalName.includes('[')) {
-    placeholders.push('Company Legal Name')
+    placeholders.push('Company Legal Name');
   }
   if (LEGAL_CONFIG.address.street.includes('[')) {
-    placeholders.push('Physical Address')
+    placeholders.push('Physical Address');
   }
   if (LEGAL_CONFIG.metadata.jurisdiction.includes('[')) {
-    placeholders.push('Jurisdiction/Governing Law')
+    placeholders.push('Jurisdiction/Governing Law');
   }
 
-  return placeholders
-}
+  return placeholders;
+};

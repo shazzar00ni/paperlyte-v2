@@ -7,10 +7,10 @@ import {
   useEffect,
   useRef,
   useState,
-} from 'react'
-import { useIntersectionObserver } from '@hooks/useIntersectionObserver'
-import { useReducedMotion } from '@hooks/useReducedMotion'
-import styles from './SVGPathAnimation.module.css'
+} from 'react';
+import { useIntersectionObserver } from '@hooks/useIntersectionObserver';
+import { useReducedMotion } from '@hooks/useReducedMotion';
+import styles from './SVGPathAnimation.module.css';
 
 /**
  * Props for the SVGPathAnimation component
@@ -21,60 +21,60 @@ interface SVGPathAnimationProps {
    * The component will automatically measure and animate each path's length.
    * Note: Nested structures (e.g., `<g>` with inner paths) are not supported.
    */
-  children: ReactNode
+  children: ReactNode;
   /**
    * Animation duration in milliseconds
    * @default 2000
    */
-  duration?: number
+  duration?: number;
   /**
    * Delay before animation starts in milliseconds
    * @default 0
    */
-  delay?: number
+  delay?: number;
   /**
    * Incremental delay applied to each subsequent path (in milliseconds).
    * The first path has no delay, the second has staggerDelay, the third has 2×staggerDelay, etc.
    * @default 200
    */
-  staggerDelay?: number
+  staggerDelay?: number;
   /**
    * CSS timing function for the animation
    * @default 'ease-out'
    */
-  easing?: string
+  easing?: string;
   /**
    * Width of the SVG viewBox
    * @default 100
    */
-  width?: number
+  width?: number;
   /**
    * Height of the SVG viewBox
    * @default 100
    */
-  height?: number
+  height?: number;
   /** Additional CSS class names */
-  className?: string
+  className?: string;
   /**
    * Stroke color for the paths
    * @default 'currentColor'
    */
-  strokeColor?: string
+  strokeColor?: string;
   /**
    * Stroke width for the paths
    * @default 2
    */
-  strokeWidth?: number
+  strokeWidth?: number;
   /**
    * Fill color for the paths (applies after draw completes)
    * @default 'none'
    */
-  fillColor?: string
+  fillColor?: string;
   /**
    * Whether to animate fill after stroke completes
    * @default false
    */
-  animateFill?: boolean
+  animateFill?: boolean;
 }
 
 /**
@@ -123,65 +123,65 @@ export const SVGPathAnimation = ({
   fillColor = 'none',
   animateFill = false,
 }: SVGPathAnimationProps): ReactElement => {
-  const { ref, isVisible } = useIntersectionObserver({ threshold: 0.3 })
-  const prefersReducedMotion = useReducedMotion()
-  const svgRef = useRef<SVGSVGElement>(null)
-  const [pathLengths, setPathLengths] = useState<number[]>([])
-  const [isAnimating, setIsAnimating] = useState(false)
-  const [isComplete, setIsComplete] = useState(false)
+  const { ref, isVisible } = useIntersectionObserver({ threshold: 0.3 });
+  const prefersReducedMotion = useReducedMotion();
+  const svgRef = useRef<SVGSVGElement>(null);
+  const [pathLengths, setPathLengths] = useState<number[]>([]);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [isComplete, setIsComplete] = useState(false);
 
   // Calculate path lengths after mount
   useEffect(() => {
     if (svgRef.current) {
-      const paths = svgRef.current.querySelectorAll('path')
+      const paths = svgRef.current.querySelectorAll('path');
       const lengths = Array.from(paths).map((path) => {
         try {
-          return path.getTotalLength()
+          return path.getTotalLength();
         } catch {
           // Fallback for paths that can't calculate length
-          return 1000
+          return 1000;
         }
-      })
-      setPathLengths(lengths)
+      });
+      setPathLengths(lengths);
     }
-  }, [children])
+  }, [children]);
 
   // Start animation when visible
   useEffect(() => {
     if (prefersReducedMotion) {
       // No timers; SVG is rendered directly in its final state via showFinalState
-      return
+      return;
     }
 
-    let delayTimer: ReturnType<typeof setTimeout> | null = null
-    let animationTimer: ReturnType<typeof setTimeout> | null = null
+    let delayTimer: ReturnType<typeof setTimeout> | null = null;
+    let animationTimer: ReturnType<typeof setTimeout> | null = null;
 
     if (isVisible && pathLengths.length > 0 && !isAnimating && !isComplete) {
       delayTimer = setTimeout(() => {
-        setIsAnimating(true)
+        setIsAnimating(true);
         // Mark as complete after animation finishes
         animationTimer = setTimeout(() => {
-          setIsAnimating(false)
-          setIsComplete(true)
-        }, duration)
-      }, delay)
+          setIsAnimating(false);
+          setIsComplete(true);
+        }, duration);
+      }, delay);
     }
 
     return () => {
       if (delayTimer !== null) {
-        clearTimeout(delayTimer)
+        clearTimeout(delayTimer);
       }
       if (animationTimer !== null) {
-        clearTimeout(animationTimer)
+        clearTimeout(animationTimer);
       }
-    }
-  }, [isVisible, pathLengths, delay, duration, isAnimating, isComplete, prefersReducedMotion])
+    };
+  }, [isVisible, pathLengths, delay, duration, isAnimating, isComplete, prefersReducedMotion]);
 
   // If user prefers reduced motion, show completed state immediately
-  const showFinalState = prefersReducedMotion || isComplete
+  const showFinalState = prefersReducedMotion || isComplete;
   const containerClasses = [styles.container, isAnimating ? styles.animating : '', className]
     .filter(Boolean)
-    .join(' ')
+    .join(' ');
 
   return (
     <div ref={ref} className={containerClasses}>
@@ -207,14 +207,14 @@ export const SVGPathAnimation = ({
         >
           {/* Clone children and apply animation styles to paths */}
           {Children.map(children, (child, index) => {
-            if (!isValidElement(child)) return child
+            if (!isValidElement(child)) return child;
 
-            const pathLength = pathLengths[index]
+            const pathLength = pathLengths[index];
             if (pathLength === undefined || pathLength === null) {
-              return child
+              return child;
             }
 
-            const pathDelay = staggerDelay * index
+            const pathDelay = staggerDelay * index;
 
             return (
               <g
@@ -233,10 +233,10 @@ export const SVGPathAnimation = ({
               >
                 {child}
               </g>
-            )
+            );
           })}
         </g>
       </svg>
     </div>
-  )
-}
+  );
+};

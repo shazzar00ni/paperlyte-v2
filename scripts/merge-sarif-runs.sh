@@ -51,27 +51,64 @@ TEMP_FILE=$(mktemp)
 trap 'rm -f "$TEMP_FILE"' EXIT
 
 # --- Merge all runs into a single run ---
-# Merge strategy:
-# - Combine tool with merged rules from all runs (deduplicated by rule ID)
-# - Combine all results from all runs (deduplicated by location)
-# - Preserve additional SARIF properties (artifacts, invocations, etc.)
 #
-# Results deduplication key: ruleId + file URI + startLine + startColumn + endLine
-# This uniquely identifies a finding by what rule triggered it and its exact location.
-# Defensive null handling ensures results without locations still produce stable keys.
+# SARIF Structure Overview:
+#   A SARIF file contains: { "$schema", "version", "runs": [...] }
+#   Each run contains: { "tool", "results", "artifacts", "invocations", ... }
+#   GitHub requires exactly ONE run per category for code scanning.
+#
+# Merge Strategy:
+#   1. RULES: Collect all rules from all runs, deduplicate by rule ID
+#   2. RESULTS: Collect all findings from all runs, deduplicate by location
+#   3. ARTIFACTS: Combine all file references from all runs
+#   4. INVOCATIONS: Combine all tool execution records
+#   5. METADATA: Take first non-null value for scalar properties
+#
 
-if ! jq '{
+if ! jq '
+# =============================================================================
+# SARIF MERGE TRANSFORMATION
+# =============================================================================
+{
+  # Preserve top-level SARIF metadata
   "$schema": ."$schema",
   version: .version,
+
+  # Create single merged run from all input runs
   runs: [{
+
+    # -------------------------------------------------------------------------
+    # TOOL SECTION
+    # Defines the analysis tool and its rules
+    # -------------------------------------------------------------------------
     tool: {
       driver: {
+        # Use unified tool name since we are merging multiple Codacy tools
         name: "Codacy",
         informationUri: "https://www.codacy.com",
         version: "1.0.0",
+
+        # RULES: Flatten all rules from all runs into single array
+        # - .runs[].tool.driver.rules: Get rules array from each run
+        # - // []: Default to empty array if rules is null
+        # - | .[]: Flatten nested arrays into single stream
+        # - unique_by(.id): Remove duplicates, keeping first occurrence of each rule ID
         rules: [.runs[].tool.driver.rules // [] | .[]] | unique_by(.id)
       }
     },
+
+    # -------------------------------------------------------------------------
+    # RESULTS SECTION
+    # Contains all findings/alerts from the analysis
+    # -------------------------------------------------------------------------
+    # RESULTS: Flatten all results and deduplicate by unique location key
+    # Deduplication key = ruleId + fileURI + startLine + startColumn + endLine
+    #
+    # Defensive null handling at each level:
+    # - .locations // []: Default to empty array if no locations
+    # - [0] // {}: Default to empty object if array is empty
+    # - .physicalLocation // {}: Default if no physical location
+    # - .region.* // 0: Default line/column numbers to 0
     results: [.runs[].results // [] | .[]] | unique_by(
       (.ruleId // "") +
       (((.locations // [])[0] // {}).physicalLocation // {}).artifactLocation.uri // "") +
@@ -79,13 +116,34 @@ if ! jq '{
       ((((.locations // [])[0] // {}).physicalLocation // {}).region.startColumn // 0 | tostring) +
       ((((.locations // [])[0] // {}).physicalLocation // {}).region.endLine // 0 | tostring)
     ),
+
+    # -------------------------------------------------------------------------
+    # ADDITIONAL SARIF PROPERTIES
+    # Preserved to maintain full SARIF compliance
+    # -------------------------------------------------------------------------
+
+    # originalUriBaseIds: Maps logical names to physical paths (e.g., %SRCROOT%)
+    # Merge strategy: Combine all mappings, later values override earlier ones
     originalUriBaseIds: (reduce (.runs[].originalUriBaseIds // {}) as $m ({}; . * $m)),
+
+    # artifacts: List of files analyzed
+    # Merge strategy: Combine all artifact lists (may contain duplicates)
     artifacts: [.runs[].artifacts // [] | .[]],
+
+    # invocations: Records of tool executions (timing, exit codes, etc.)
+    # Merge strategy: Keep all invocation records from all runs
     invocations: [.runs[].invocations // [] | .[]],
+
+    # columnKind: Specifies if columns are 1-based or UTF-16 code units
+    # Merge strategy: Use first non-null value (should be consistent across runs)
     columnKind: (first(.runs[].columnKind // empty)),
+
+    # conversion: Info about SARIF format conversion if applicable
+    # Merge strategy: Use first non-null value
     conversion: (first(.runs[].conversion // empty))
   }]
-}' "$INPUT_FILE" > "$TEMP_FILE"; then
+}
+' "$INPUT_FILE" > "$TEMP_FILE"; then
   echo "Error: jq merge operation failed"
   exit 1
 fi

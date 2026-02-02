@@ -34,6 +34,11 @@ if (sarif.runs.length > 1) {
   // Merge all runs into the first run
   const mergedRun = sarif.runs[0]
 
+  // Ensure mergedRun.results is initialized as an array
+  if (!Array.isArray(mergedRun.results)) {
+    mergedRun.results = []
+  }
+
   // Collect all results from all runs
   const allResults = []
   for (const run of sarif.runs) {

@@ -156,8 +156,8 @@ async function subscribeToConvertKit(
  */
 export const handler: Handler = async (event: HandlerEvent) => {
   // CORS headers - restrict to allowed origin for security
-  const allowedOrigin = process.env.ALLOWED_ORIGIN || "https://paperlyte.com";
-  const origin = event.headers.origin || event.headers.Origin || "";
+  const allowedOrigin = process.env.ALLOWED_ORIGIN ?? "https://paperlyte.com";
+  const origin = event.headers.origin ?? event.headers.Origin ?? "";
   const isAllowedOrigin = origin === allowedOrigin;
 
   const headers = {
@@ -188,8 +188,8 @@ export const handler: Handler = async (event: HandlerEvent) => {
   try {
     // Get IP address for rate limiting
     const ip =
-      event.headers["x-forwarded-for"]?.split(",")[0] ||
-      event.headers["client-ip"] ||
+      event.headers["x-forwarded-for"]?.split(",")[0] ??
+      event.headers["client-ip"] ??
       "unknown";
 
     // Check rate limit
@@ -206,7 +206,7 @@ export const handler: Handler = async (event: HandlerEvent) => {
     // Parse request body
     let body: SubscribeRequest;
     try {
-      body = JSON.parse(event.body || "{}");
+      body = JSON.parse(event.body ?? "{}");
     } catch {
       return {
         statusCode: 400,

@@ -31,8 +31,8 @@
     "@fortawesome/free-solid-svg-icons": "^7.1.0",
     "@fortawesome/react-fontawesome": "^3.1.1",
     "@sentry/react": "^10.38.0",
-    "react": "^19.2.3",
-    "react-dom": "^19.2.3"
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
   },
   "devDependencies": {
     "@codecov/rollup-plugin": "^1.9.1",
@@ -45,7 +45,7 @@
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
     "@types/node": "^25.2.0",
-    "@types/react": "^19.2.9",
+    "@types/react": "^19.2.10",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.2",
     "@vitest/coverage-v8": "^4.0.18",

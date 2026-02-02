@@ -67,6 +67,57 @@ describe('Analytics Utility - Core Functions', () => {
 
       expect(mockGtag).toHaveBeenCalledWith('event', 'simple_event', undefined)
     })
+
+    it('should block prototype pollution via __proto__ property', () => {
+      const mockGtag = vi.fn()
+      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
+
+      const maliciousParams = {
+        safe_param: 'safe_value',
+        __proto__: { polluted: 'bad' },
+      } as Record<string, unknown>
+
+      trackEvent('test_event', maliciousParams)
+
+      // Should only include safe_param, not __proto__
+      expect(mockGtag).toHaveBeenCalledWith('event', 'test_event', {
+        safe_param: 'safe_value',
+      })
+    })
+
+    it('should block prototype pollution via constructor property', () => {
+      const mockGtag = vi.fn()
+      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
+
+      const maliciousParams = {
+        safe_param: 'safe_value',
+        constructor: { polluted: 'bad' },
+      } as Record<string, unknown>
+
+      trackEvent('test_event', maliciousParams)
+
+      // Should only include safe_param, not constructor
+      expect(mockGtag).toHaveBeenCalledWith('event', 'test_event', {
+        safe_param: 'safe_value',
+      })
+    })
+
+    it('should block prototype pollution via prototype property', () => {
+      const mockGtag = vi.fn()
+      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
+
+      const maliciousParams = {
+        safe_param: 'safe_value',
+        prototype: { polluted: 'bad' },
+      } as Record<string, unknown>
+
+      trackEvent('test_event', maliciousParams)
+
+      // Should only include safe_param, not prototype
+      expect(mockGtag).toHaveBeenCalledWith('event', 'test_event', {
+        safe_param: 'safe_value',
+      })
+    })
   })
 
   describe('trackPageView', () => {

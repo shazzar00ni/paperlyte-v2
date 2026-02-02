@@ -2,6 +2,19 @@ import { render, screen, fireEvent, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { FAQ } from './FAQ'
 import { FAQ_ITEMS } from '@constants/faq'
+import { escapeRegExp } from '@/utils/test/regexHelpers'
+
+/**
+ * Helper function to get a question button by its question text
+ * @param question - The question text to search for
+ * @returns The button element for the question
+ */
+function getQuestionButton(question: string) {
+  // Safe: question is escaped via escapeRegExp() before RegExp construction
+  return screen.getByRole('button', {
+    name: new RegExp(escapeRegExp(question), 'i'), // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
+  })
+}
 
 describe('FAQ', () => {
   describe('Rendering', () => {
@@ -45,7 +58,8 @@ describe('FAQ', () => {
       render(<FAQ />)
 
       FAQ_ITEMS.forEach((item) => {
-        const questionButton = screen.getByRole('button', { name: new RegExp(item.question, 'i') })
+        // Safe: input is escaped via escapeRegExp() and comes from FAQ_ITEMS constant, not user input
+        const questionButton = getQuestionButton(item.question)
         expect(questionButton).toHaveAttribute('aria-expanded', 'false')
       })
     })
@@ -57,7 +71,7 @@ describe('FAQ', () => {
       const firstQuestion = FAQ_ITEMS[0].question
       const firstAnswer = FAQ_ITEMS[0].answer
 
-      const questionButton = screen.getByRole('button', { name: new RegExp(firstQuestion, 'i') })
+      const questionButton = getQuestionButton(firstQuestion)
 
       await user.click(questionButton)
 
@@ -70,7 +84,7 @@ describe('FAQ', () => {
       render(<FAQ />)
 
       const firstQuestion = FAQ_ITEMS[0].question
-      const questionButton = screen.getByRole('button', { name: new RegExp(firstQuestion, 'i') })
+      const questionButton = getQuestionButton(firstQuestion)
 
       // Open
       await user.click(questionButton)
@@ -88,8 +102,8 @@ describe('FAQ', () => {
       const firstQuestion = FAQ_ITEMS[0].question
       const secondQuestion = FAQ_ITEMS[1].question
 
-      const firstButton = screen.getByRole('button', { name: new RegExp(firstQuestion, 'i') })
-      const secondButton = screen.getByRole('button', { name: new RegExp(secondQuestion, 'i') })
+      const firstButton = getQuestionButton(firstQuestion)
+      const secondButton = getQuestionButton(secondQuestion)
 
       await user.click(firstButton)
       await user.click(secondButton)
@@ -103,7 +117,7 @@ describe('FAQ', () => {
       render(<FAQ />)
 
       const item = FAQ_ITEMS[0]
-      const questionButton = screen.getByRole('button', { name: new RegExp(item.question, 'i') })
+      const questionButton = getQuestionButton(item.question)
 
       await user.click(questionButton)
 
@@ -115,7 +129,7 @@ describe('FAQ', () => {
       render(<FAQ />)
 
       for (const item of FAQ_ITEMS) {
-        const questionButton = screen.getByRole('button', { name: new RegExp(item.question, 'i') })
+        const questionButton = getQuestionButton(item.question)
 
         await user.click(questionButton)
         expect(questionButton).toHaveAttribute('aria-expanded', 'true')
@@ -132,9 +146,7 @@ describe('FAQ', () => {
       const user = userEvent.setup()
       render(<FAQ />)
 
-      const questionButton = screen.getByRole('button', {
-        name: new RegExp(FAQ_ITEMS[0].question, 'i'),
-      })
+      const questionButton = getQuestionButton(FAQ_ITEMS[0].question)
 
       expect(questionButton).toHaveAttribute('aria-expanded', 'false')
 
@@ -147,7 +159,7 @@ describe('FAQ', () => {
       render(<FAQ />)
 
       const item = FAQ_ITEMS[0]
-      const questionButton = screen.getByRole('button', { name: new RegExp(item.question, 'i') })
+      const questionButton = getQuestionButton(item.question)
 
       const ariaControls = questionButton.getAttribute('aria-controls')
       expect(ariaControls).toBeTruthy()
@@ -160,7 +172,7 @@ describe('FAQ', () => {
       render(<FAQ />)
 
       const item = FAQ_ITEMS[0]
-      const questionButton = screen.getByRole('button', { name: new RegExp(item.question, 'i') })
+      const questionButton = getQuestionButton(item.question)
       const ariaControls = questionButton.getAttribute('aria-controls')
       expect(ariaControls).toBeTruthy()
       const answerElement = document.getElementById(ariaControls!)
@@ -173,7 +185,7 @@ describe('FAQ', () => {
       render(<FAQ />)
 
       const item = FAQ_ITEMS[0]
-      const questionButton = screen.getByRole('button', { name: new RegExp(item.question, 'i') })
+      const questionButton = getQuestionButton(item.question)
 
       await user.click(questionButton)
 
@@ -188,9 +200,7 @@ describe('FAQ', () => {
       const user = userEvent.setup()
       render(<FAQ />)
 
-      const questionButton = screen.getByRole('button', {
-        name: new RegExp(FAQ_ITEMS[0].question, 'i'),
-      })
+      const questionButton = getQuestionButton(FAQ_ITEMS[0].question)
 
       questionButton.focus()
       expect(questionButton).toHaveFocus()
@@ -208,9 +218,7 @@ describe('FAQ', () => {
       const user = userEvent.setup()
       render(<FAQ />)
 
-      const firstButton = screen.getByRole('button', {
-        name: new RegExp(FAQ_ITEMS[0].question, 'i'),
-      })
+      const firstButton = getQuestionButton(FAQ_ITEMS[0].question)
 
       firstButton.focus()
 
@@ -226,9 +234,7 @@ describe('FAQ', () => {
       const user = userEvent.setup()
       render(<FAQ />)
 
-      const questionButton = screen.getByRole('button', {
-        name: new RegExp(FAQ_ITEMS[0].question, 'i'),
-      })
+      const questionButton = getQuestionButton(FAQ_ITEMS[0].question)
 
       // When collapsed, all FAQ items should have "Expand answer" icons
       const expandIcons = screen.getAllByLabelText('Expand answer')
@@ -258,9 +264,9 @@ describe('FAQ', () => {
 
       const [item1, item2, item3] = FAQ_ITEMS
 
-      const button1 = screen.getByRole('button', { name: new RegExp(item1.question, 'i') })
-      const button2 = screen.getByRole('button', { name: new RegExp(item2.question, 'i') })
-      const button3 = screen.getByRole('button', { name: new RegExp(item3.question, 'i') })
+      const button1 = getQuestionButton(item1.question)
+      const button2 = getQuestionButton(item2.question)
+      const button3 = getQuestionButton(item3.question)
 
       // Open first and third
       await user.click(button1)
@@ -282,9 +288,7 @@ describe('FAQ', () => {
       const user = userEvent.setup()
       render(<FAQ />)
 
-      const questionButton = screen.getByRole('button', {
-        name: new RegExp(FAQ_ITEMS[0].question, 'i'),
-      })
+      const questionButton = getQuestionButton(FAQ_ITEMS[0].question)
 
       await user.click(questionButton)
       await user.click(questionButton)
@@ -316,12 +320,8 @@ describe('FAQ', () => {
       const user = userEvent.setup()
       render(<FAQ />)
 
-      const firstButton = screen.getByRole('button', {
-        name: new RegExp(FAQ_ITEMS[0].question, 'i'),
-      })
-      const secondButton = screen.getByRole('button', {
-        name: new RegExp(FAQ_ITEMS[1].question, 'i'),
-      })
+      const firstButton = getQuestionButton(FAQ_ITEMS[0].question)
+      const secondButton = getQuestionButton(FAQ_ITEMS[1].question)
 
       firstButton.focus()
       expect(firstButton).toHaveFocus()
@@ -335,12 +335,8 @@ describe('FAQ', () => {
       const user = userEvent.setup()
       render(<FAQ />)
 
-      const firstButton = screen.getByRole('button', {
-        name: new RegExp(FAQ_ITEMS[0].question, 'i'),
-      })
-      const secondButton = screen.getByRole('button', {
-        name: new RegExp(FAQ_ITEMS[1].question, 'i'),
-      })
+      const firstButton = getQuestionButton(FAQ_ITEMS[0].question)
+      const secondButton = getQuestionButton(FAQ_ITEMS[1].question)
 
       secondButton.focus()
       expect(secondButton).toHaveFocus()
@@ -354,12 +350,8 @@ describe('FAQ', () => {
       const user = userEvent.setup()
       render(<FAQ />)
 
-      const firstButton = screen.getByRole('button', {
-        name: new RegExp(FAQ_ITEMS[0].question, 'i'),
-      })
-      const lastButton = screen.getByRole('button', {
-        name: new RegExp(FAQ_ITEMS[FAQ_ITEMS.length - 1].question, 'i'),
-      })
+      const firstButton = getQuestionButton(FAQ_ITEMS[0].question)
+      const lastButton = getQuestionButton(FAQ_ITEMS[FAQ_ITEMS.length - 1].question)
 
       firstButton.focus()
       expect(firstButton).toHaveFocus()
@@ -373,12 +365,8 @@ describe('FAQ', () => {
       const user = userEvent.setup()
       render(<FAQ />)
 
-      const firstButton = screen.getByRole('button', {
-        name: new RegExp(FAQ_ITEMS[0].question, 'i'),
-      })
-      const lastButton = screen.getByRole('button', {
-        name: new RegExp(FAQ_ITEMS[FAQ_ITEMS.length - 1].question, 'i'),
-      })
+      const firstButton = getQuestionButton(FAQ_ITEMS[0].question)
+      const lastButton = getQuestionButton(FAQ_ITEMS[FAQ_ITEMS.length - 1].question)
 
       lastButton.focus()
       expect(lastButton).toHaveFocus()
@@ -392,12 +380,8 @@ describe('FAQ', () => {
       const user = userEvent.setup()
       render(<FAQ />)
 
-      const firstButton = screen.getByRole('button', {
-        name: new RegExp(FAQ_ITEMS[0].question, 'i'),
-      })
-      const thirdButton = screen.getByRole('button', {
-        name: new RegExp(FAQ_ITEMS[2].question, 'i'),
-      })
+      const firstButton = getQuestionButton(FAQ_ITEMS[0].question)
+      const thirdButton = getQuestionButton(FAQ_ITEMS[2].question)
 
       thirdButton.focus()
       expect(thirdButton).toHaveFocus()
@@ -411,12 +395,8 @@ describe('FAQ', () => {
       const user = userEvent.setup()
       render(<FAQ />)
 
-      const firstButton = screen.getByRole('button', {
-        name: new RegExp(FAQ_ITEMS[0].question, 'i'),
-      })
-      const lastButton = screen.getByRole('button', {
-        name: new RegExp(FAQ_ITEMS[FAQ_ITEMS.length - 1].question, 'i'),
-      })
+      const firstButton = getQuestionButton(FAQ_ITEMS[0].question)
+      const lastButton = getQuestionButton(FAQ_ITEMS[FAQ_ITEMS.length - 1].question)
 
       firstButton.focus()
       expect(firstButton).toHaveFocus()
@@ -430,9 +410,8 @@ describe('FAQ', () => {
       const user = userEvent.setup()
       render(<FAQ />)
 
-      const buttons = FAQ_ITEMS.slice(0, 3).map((item) =>
-        screen.getByRole('button', { name: new RegExp(item.question, 'i') })
-      )
+      // Safe: input is escaped via escapeRegExp() and comes from FAQ_ITEMS constant, not user input
+      const buttons = FAQ_ITEMS.slice(0, 3).map((item) => getQuestionButton(item.question))
 
       buttons[0].focus()
       expect(buttons[0]).toHaveFocus()
@@ -454,7 +433,7 @@ describe('FAQ', () => {
       render(<FAQ />)
 
       const item = FAQ_ITEMS[0]
-      const questionButton = screen.getByRole('button', { name: new RegExp(item.question, 'i') })
+      const questionButton = getQuestionButton(item.question)
 
       await user.click(questionButton)
 
@@ -469,7 +448,7 @@ describe('FAQ', () => {
       render(<FAQ />)
 
       const item = FAQ_ITEMS[0]
-      const questionButton = screen.getByRole('button', { name: new RegExp(item.question, 'i') })
+      const questionButton = getQuestionButton(item.question)
 
       // Expand first
       await user.click(questionButton)
@@ -494,7 +473,7 @@ describe('FAQ', () => {
       render(<FAQ />)
 
       const item = FAQ_ITEMS[0]
-      const questionButton = screen.getByRole('button', { name: new RegExp(item.question, 'i') })
+      const questionButton = getQuestionButton(item.question)
 
       // Use fireEvent instead of userEvent to avoid conflicts with fake timers
       fireEvent.click(questionButton)

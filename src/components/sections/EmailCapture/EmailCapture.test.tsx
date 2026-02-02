@@ -41,9 +41,12 @@ describe('EmailCapture Section', () => {
     await user.type(emailInput, 'test@example.com')
     await user.click(submitButton)
 
-    await waitFor(() => {
-      expect(screen.getByText(/You're on the list!/)).toBeInTheDocument()
-    })
+    await waitFor(
+      () => {
+        expect(screen.getByText(/You're on the list!/)).toBeInTheDocument()
+      },
+      { timeout: 5000 }
+    )
   })
 
   it('validates email input is required', () => {

@@ -86,7 +86,7 @@ export const Pricing = (): React.ReactElement => {
       <AnimatedElement animation="fadeIn" delay={500}>
         <div className={styles.footer}>
           <p className={styles.guarantee}>
-            <Icon name="fa-shield-check" color="var(--color-success)" ariaLabel="Guarantee" />
+            <Icon name="fa-circle-check" color="var(--color-success)" ariaLabel="Guarantee" />
             <span>30-day money-back guarantee • Cancel anytime • No hidden fees</span>
           </p>
         </div>

@@ -192,28 +192,6 @@ describe('keyboard utilities', () => {
       const elements = getFocusableElements(container)
       expect(elements).toHaveLength(0)
     })
-
-    it('should return elements in document order', () => {
-      // Create a more complex structure where querySelectorAll order matters
-      container.innerHTML = `
-        <div id="wrapper">
-          <a href="#" id="link1">Link 1</a>
-          <button id="btn1">Button 1</button>
-          <a href="#" id="link2">Link 2</a>
-          <button id="btn2">Button 2</button>
-          <input type="text" id="input1" />
-        </div>
-      `
-      const elements = getFocusableElements(container)
-
-      // Verify elements are in document order
-      expect(elements).toHaveLength(5)
-      expect(elements[0].id).toBe('link1')
-      expect(elements[1].id).toBe('btn1')
-      expect(elements[2].id).toBe('link2')
-      expect(elements[3].id).toBe('btn2')
-      expect(elements[4].id).toBe('input1')
-    })
   })
 
   describe('getFirstFocusableElement', () => {

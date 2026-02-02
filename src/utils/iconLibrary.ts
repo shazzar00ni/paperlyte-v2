@@ -59,12 +59,18 @@ import {
   faArrowRight, // Navigation forward
   faArrowLeft, // Navigation back
   faSpinner, // Loading states
+  faHouse, // Home/landing page
+  faGlobe, // Global/Web
 } from '@fortawesome/free-solid-svg-icons'
 
 // Brand icons (from free-brands-svg-icons)
 import {
   faGithub, // GitHub social link
-  faTwitter, // Twitter/X social link
+  faTwitter, // Legacy Twitter link
+  faXTwitter, // Twitter/X social link
+  faInstagram, // Instagram social link
+  faFacebookF, // Facebook social link
+  faLinkedinIn, // LinkedIn social link
   faApple, // Apple platform
   faWindows, // Windows platform
 } from '@fortawesome/free-brands-svg-icons'
@@ -115,9 +121,15 @@ library.add(
   faArrowRight,
   faArrowLeft,
   faSpinner,
+  faHouse,
+  faGlobe,
   // Brand icons
   faGithub,
   faTwitter,
+  faXTwitter,
+  faInstagram,
+  faFacebookF,
+  faLinkedinIn,
   faApple,
   faWindows
 )
@@ -138,7 +150,6 @@ export const iconNameMap: Record<string, string> = {
   'fa-bars': 'bars',
   'fa-envelope': 'envelope',
   'fa-star': 'star',
-  'fa-shield-check': 'circle-check', // Using circle-check for guarantee/verification
   'fa-heart': 'heart',
   'fa-download': 'download',
   'fa-moon': 'moon',
@@ -158,19 +169,15 @@ export const iconNameMap: Record<string, string> = {
   'fa-rocket': 'rocket',
   'fa-users': 'users',
   'fa-server': 'server',
-  'fa-wifi': 'wifi',
-  'fa-rotate-right': 'rotate-right',
-  'fa-arrow-rotate-right': 'arrow-rotate-right',
-  'fa-arrow-rotate-left': 'arrow-rotate-left',
-  'fa-book': 'book',
-  'fa-magnifying-glass': 'magnifying-glass',
-  'fa-plane': 'plane',
-  'fa-network-wired': 'network-wired',
-  'fa-arrow-right': 'arrow-right',
-  'fa-arrow-left': 'arrow-left',
-  'fa-spinner': 'spinner',
+  'fa-router': 'network-wired', // Using network-wired for router/network issues
+  'fa-home': 'house',
+  'fa-globe': 'globe',
   'fa-github': 'github',
   'fa-twitter': 'twitter',
+  'fa-x-twitter': 'x-twitter',
+  'fa-instagram': 'instagram',
+  'fa-facebook-f': 'facebook-f',
+  'fa-linkedin-in': 'linkedin-in',
   'fa-apple': 'apple',
   'fa-windows': 'windows',
 }
@@ -179,7 +186,16 @@ export const iconNameMap: Record<string, string> = {
  * Set of brand icon names (derived from imported brand icons)
  * Used to determine the icon prefix (fab vs fas) dynamically
  */
-export const brandIconNames = new Set<string>(['github', 'twitter', 'apple', 'windows'])
+export const brandIconNames = new Set<string>([
+  'github',
+  'twitter',
+  'x-twitter',
+  'instagram',
+  'facebook-f',
+  'linkedin-in',
+  'apple',
+  'windows',
+])
 
 /**
  * Set of all valid icon names in the library
@@ -187,6 +203,7 @@ export const brandIconNames = new Set<string>(['github', 'twitter', 'apple', 'wi
  */
 export const validIconNames = new Set<string>([
   ...Object.values(iconNameMap),
+  'circle-check', // Explicitly add circle-check as it's used directly
   'circle-question', // Fallback icon
 ])
 /**

@@ -10,7 +10,6 @@ interface ButtonProps {
   href?: string
   onClick?: () => void
   icon?: string
-  iconAriaLabel?: string
   disabled?: boolean
   className?: string
   ariaLabel?: string
@@ -24,7 +23,6 @@ export const Button = ({
   href,
   onClick,
   icon,
-  iconAriaLabel,
   disabled = false,
   className = '',
   ariaLabel,
@@ -42,7 +40,7 @@ export const Button = ({
 
   const content = (
     <>
-      {icon && <Icon name={icon} size="sm" className={styles.icon} ariaLabel={iconAriaLabel} />}
+      {icon && <Icon name={icon} size="sm" className={styles.icon} />}
       {children}
     </>
   )

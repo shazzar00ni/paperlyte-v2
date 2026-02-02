@@ -93,7 +93,7 @@ export const Solution = (): React.ReactElement => {
                 </div>
 
                 <div className={styles.valueProof}>
-                  <Icon name="fa-check-circle" size="sm" color="var(--color-primary)" />
+                  <Icon name="fa-circle-check" size="sm" color="var(--color-primary)" />
                   <span>{prop.proof}</span>
                 </div>
               </article>

@@ -87,7 +87,6 @@ export const OfflinePage: FC<OfflinePageProps> = ({
         {/* Connection status illustration */}
         <div className={styles.illustration} aria-hidden="true">
           <div className={styles.iconWrapper}>
-            {/* Decorative icon - aria-hidden on parent makes ariaLabel unnecessary */}
             <Icon name="fa-wifi" size="3x" />
             <div className={styles.disconnectedSlash} />
           </div>
@@ -122,8 +121,8 @@ export const OfflinePage: FC<OfflinePageProps> = ({
             aria-label="Check connection and retry"
           >
             <Icon
-              name={isChecking ? 'fa-spinner fa-spin' : 'fa-rotate-right'}
-              ariaLabel={isChecking ? 'Checking connection' : 'Retry icon'}
+              name={isChecking ? 'fa-spinner' : 'fa-rotate-right'}
+              className={isChecking ? 'fa-spin' : ''}
             />
             <span>{isChecking ? 'Checking...' : 'Try Again'}</span>
           </button>

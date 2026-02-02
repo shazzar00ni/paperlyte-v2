@@ -52,7 +52,9 @@ export const Header = (): React.ReactElement => {
     if (!mobileMenuOpen || !menuRef.current) return
 
     const menu = menuRef.current
-    const focusableElements = getFocusableElements(menu)
+    const focusableElements = menu.querySelectorAll<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    )
     const firstFocusable = focusableElements[0]
     const lastFocusable = focusableElements[focusableElements.length - 1]
 
@@ -92,17 +94,16 @@ export const Header = (): React.ReactElement => {
       const focusableElements = getFocusableElements(menu)
       if (focusableElements.length === 0) return
 
-      // Handle Home/End keys first (these work regardless of current focus position)
+      const currentIndex = focusableElements.findIndex((el) => el === document.activeElement)
+      if (currentIndex === -1) return
+
+      // Handle Home/End keys
       const homeEndIndex = handleHomeEndNavigation(event, focusableElements)
       if (homeEndIndex !== null) {
         event.preventDefault()
         focusableElements[homeEndIndex]?.focus()
         return
       }
-
-      // For arrow keys, we need to know the current index
-      const currentIndex = focusableElements.findIndex((el) => el === document.activeElement)
-      if (currentIndex === -1) return
 
       // Handle Arrow keys (horizontal navigation)
       const newIndex = handleArrowNavigation(event, focusableElements, currentIndex, 'horizontal')

@@ -378,7 +378,12 @@ describe('Hero', () => {
       const trustBadgeText = screen.getByText('Join thousands of early adopters')
       const trustBadgesContainer = trustBadgeText.closest('div')?.parentElement
 
-      const position = secondaryCta.compareDocumentPosition(trustBadgesContainer!)
+      if (trustBadgesContainer) {
+        const position = secondaryCta.compareDocumentPosition(trustBadgesContainer)
+        expect(position).toBe(4)
+      } else {
+        throw new Error('Trust badges container not found'); // Or handle this case appropriately
+      }
       // DOCUMENT_POSITION_FOLLOWING = 4, means trustBadges comes after button
       expect(position).toBe(4)
     })

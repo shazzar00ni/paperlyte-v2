@@ -42,13 +42,33 @@ if (sarif.runs.length > 1) {
     }
   }
 
+  // Build a deterministic key for a single location
+  function getLocationKey(location) {
+    if (!location || typeof location !== 'object') return ''
+
+    const physicalLocation = location.physicalLocation || {}
+    const artifactLocation = physicalLocation.artifactLocation || {}
+    const region = physicalLocation.region || {}
+
+    const uri = typeof artifactLocation.uri === 'string' ? artifactLocation.uri : ''
+    const startLine = Number.isFinite(region.startLine) ? region.startLine : ''
+    const startColumn = Number.isFinite(region.startColumn) ? region.startColumn : ''
+
+    return `${uri}:${startLine}:${startColumn}`
+  }
+
+  // Build a deterministic key for a result, based on ruleId and locations
+  function buildResultKey(result) {
+    const ruleId = typeof result.ruleId === 'string' ? result.ruleId : ''
+    const locations = Array.isArray(result.locations) ? result.locations : []
+    const locationKeys = locations.map(getLocationKey).join('|')
+    return `${ruleId}::${locationKeys}`
+  }
+
   // Deduplicate results based on location and ruleId
   const seen = new Set()
   mergedRun.results = allResults.filter((result) => {
-    const key = JSON.stringify({
-      ruleId: result.ruleId,
-      locations: result.locations,
-    })
+    const key = buildResultKey(result)
     if (seen.has(key)) return false
     seen.add(key)
     return true

@@ -49,14 +49,16 @@ describe('iconLibrary', () => {
 
     it('should not have brand icons overlap with solid icons', () => {
       // Brand and solid icons should be mutually exclusive
-      const brandArray = Array.from(brandIconNames)
-      const validArray = Array.from(validIconNames)
-
-      // Verify intersection is empty (brand icons should only appear once in validIconNames)
-      const intersection = brandArray.filter(
-        (icon) => validArray.filter((v) => v === icon).length > 1
+      // Create the solid icons set (validIconNames - brandIconNames)
+      const solidIconNames = new Set(
+        Array.from(validIconNames).filter((icon) => !brandIconNames.has(icon))
       )
-      expect(intersection.length).toBe(0)
+
+      // Check intersection between brand icons and solid icons
+      const intersection = Array.from(brandIconNames).filter((icon) => solidIconNames.has(icon))
+
+      // Assert the intersection is empty
+      expect(intersection).toEqual([])
     })
   })
 

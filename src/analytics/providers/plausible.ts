@@ -118,7 +118,7 @@ export class PlausibleProvider implements AnalyticsProvider {
 
     // Validate script URL to prevent injection attacks
     if (!this.isValidScriptUrl(scriptUrl)) {
-      if (this.config?.debug ?? import.meta.env.DEV) {
+      if (this.config?.debug || import.meta.env.DEV) {
         console.error(
           '[Analytics] Invalid or unsafe script URL. Must be HTTPS and point to a .js file:',
           scriptUrl
@@ -189,6 +189,7 @@ export class PlausibleProvider implements AnalyticsProvider {
     }
 
     // Convert properties to Plausible format (only string, number, boolean)
+    // Use Object.create(null) to prevent prototype pollution attacks
     const props = event.properties
       ? Object.entries(event.properties).reduce<Record<string, string | number | boolean>>(
           (acc, [key, value]) => {
@@ -200,12 +201,31 @@ export class PlausibleProvider implements AnalyticsProvider {
               return acc
             }
 
+            // Additional validation: ensure key is a string and not empty
+            if (typeof key !== 'string' || key.length === 0) {
+              return acc
+            }
+
+            // Validate value type before assignment
             if (value !== undefined && value !== null) {
-              acc[key] = value as string | number | boolean
+              const valueType = typeof value
+              if (
+                valueType === 'string' ||
+                valueType === 'number' ||
+                valueType === 'boolean'
+              ) {
+                // Use Object.defineProperty for safer property assignment
+                Object.defineProperty(acc, key, {
+                  value: value,
+                  writable: false,
+                  enumerable: true,
+                  configurable: false,
+                })
+              }
             }
             return acc
           },
-          {}
+          Object.create(null)
         )
       : undefined
 

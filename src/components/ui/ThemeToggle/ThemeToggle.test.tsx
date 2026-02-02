@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { ThemeToggle } from './ThemeToggle'
 import * as useThemeModule from '@hooks/useTheme'
@@ -13,7 +13,7 @@ describe('ThemeToggle', () => {
    */
   const testIconRenderingInTheme = (
     theme: 'light' | 'dark',
-    expectation: (_button: HTMLElement) => void
+    expectation: (button: HTMLElement) => void
   ): void => {
     vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
       theme,
@@ -48,15 +48,15 @@ describe('ThemeToggle', () => {
     })
 
     it('should render moon icon in light mode', () => {
-      testIconRenderingInTheme('light', () => {
-        const moonIcon = screen.getByLabelText('moon')
+      testIconRenderingInTheme('light', (button) => {
+        const moonIcon = within(button).getByLabelText('moon')
         expect(moonIcon).toBeInTheDocument()
       })
     })
 
     it('should render sun icon in dark mode', () => {
-      testIconRenderingInTheme('dark', () => {
-        const sunIcon = screen.getByLabelText('sun')
+      testIconRenderingInTheme('dark', (button) => {
+        const sunIcon = within(button).getByLabelText('sun')
         expect(sunIcon).toBeInTheDocument()
       })
     })

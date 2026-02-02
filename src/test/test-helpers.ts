@@ -22,6 +22,7 @@ export function getIcon(container: Element | null): Element | null {
 
 /**
  * Renders a component with a specific theme applied to the document root
+ * Automatically restores the previous theme on cleanup to prevent test leakage
  * @param ui - The component to render
  * @param theme - The theme to apply ('light' or 'dark')
  * @returns The render result from @testing-library/react
@@ -34,10 +35,24 @@ export function renderWithTheme(
   ui: ReactElement,
   theme: 'light' | 'dark' = 'light'
 ): RenderResult {
+  // Capture previous theme to restore on cleanup
+  const previousTheme = document.documentElement.getAttribute('data-theme')
+
   // Set theme on document root
   document.documentElement.setAttribute('data-theme', theme)
 
   const result = render(ui)
+
+  // Wrap unmount to restore previous theme
+  const originalUnmount = result.unmount
+  result.unmount = () => {
+    originalUnmount()
+    if (previousTheme !== null) {
+      document.documentElement.setAttribute('data-theme', previousTheme)
+    } else {
+      document.documentElement.removeAttribute('data-theme')
+    }
+  }
 
   return result
 }

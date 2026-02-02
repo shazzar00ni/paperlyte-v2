@@ -2,6 +2,9 @@
  * Test helper utilities for common DOM queries and assertions
  */
 
+import { render, type RenderResult } from '@testing-library/react'
+import type { ReactElement } from 'react'
+
 /**
  * Gets an icon element (SVG or fallback) from a container
  * @param container - The parent element to search within
@@ -15,4 +18,26 @@
 export function getIcon(container: Element | null): Element | null {
   if (!container) return null
   return container.querySelector('svg') ?? container.querySelector('.icon-fallback')
+}
+
+/**
+ * Renders a component with a specific theme applied to the document root
+ * @param ui - The component to render
+ * @param theme - The theme to apply ('light' or 'dark')
+ * @returns The render result from @testing-library/react
+ *
+ * @example
+ * renderWithTheme(<MyComponent />, 'dark')
+ * expect(screen.getByText('Hello')).toBeInTheDocument()
+ */
+export function renderWithTheme(
+  ui: ReactElement,
+  theme: 'light' | 'dark' = 'light'
+): RenderResult {
+  // Set theme on document root
+  document.documentElement.setAttribute('data-theme', theme)
+
+  const result = render(ui)
+
+  return result
 }

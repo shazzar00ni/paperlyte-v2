@@ -48,16 +48,16 @@ describe('ThemeToggle', () => {
     })
 
     it('should render moon icon in light mode', () => {
-      testIconRenderingInTheme('light', (button) => {
-        const icon = getIcon(button)
-        expect(icon).toBeInTheDocument()
+      testIconRenderingInTheme('light', () => {
+        const moonIcon = screen.getByLabelText('moon')
+        expect(moonIcon).toBeInTheDocument()
       })
     })
 
     it('should render sun icon in dark mode', () => {
-      testIconRenderingInTheme('dark', (button) => {
-        const icon = getIcon(button)
-        expect(icon).toBeInTheDocument()
+      testIconRenderingInTheme('dark', () => {
+        const sunIcon = screen.getByLabelText('sun')
+        expect(sunIcon).toBeInTheDocument()
       })
     })
   })

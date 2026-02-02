@@ -9,6 +9,14 @@ import type { IconProps } from '@components/ui/Icon/Icon'
 describe('ThemeToggle', () => {
   const mockToggleTheme = vi.fn()
 
+  // Helper to mock useTheme hook
+  const mockUseTheme = (theme: 'light' | 'dark') => {
+    vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
+      theme,
+      toggleTheme: mockToggleTheme,
+    })
+  }
+
   beforeEach(() => {
     vi.clearAllMocks()
   })
@@ -19,10 +27,7 @@ describe('ThemeToggle', () => {
 
   describe('Rendering', () => {
     it('should render a button', () => {
-      vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
-        theme: 'light',
-        toggleTheme: mockToggleTheme,
-      })
+      mockUseTheme('light')
 
       render(<ThemeToggle />)
 
@@ -31,10 +36,7 @@ describe('ThemeToggle', () => {
     })
 
     it('should render moon icon in light mode', () => {
-      vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
-        theme: 'light',
-        toggleTheme: mockToggleTheme,
-      })
+      mockUseTheme('light')
 
       render(<ThemeToggle />)
 
@@ -45,10 +47,7 @@ describe('ThemeToggle', () => {
     })
 
     it('should render sun icon in dark mode', () => {
-      vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
-        theme: 'dark',
-        toggleTheme: mockToggleTheme,
-      })
+      mockUseTheme('dark')
 
       render(<ThemeToggle />)
 
@@ -61,10 +60,7 @@ describe('ThemeToggle', () => {
 
   describe('Accessibility', () => {
     it('should have correct aria-label in light mode', () => {
-      vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
-        theme: 'light',
-        toggleTheme: mockToggleTheme,
-      })
+      mockUseTheme('light')
 
       render(<ThemeToggle />)
 
@@ -73,10 +69,7 @@ describe('ThemeToggle', () => {
     })
 
     it('should have correct aria-label in dark mode', () => {
-      vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
-        theme: 'dark',
-        toggleTheme: mockToggleTheme,
-      })
+      mockUseTheme('dark')
 
       render(<ThemeToggle />)
 
@@ -85,10 +78,7 @@ describe('ThemeToggle', () => {
     })
 
     it('should have title attribute in light mode', () => {
-      vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
-        theme: 'light',
-        toggleTheme: mockToggleTheme,
-      })
+      mockUseTheme('light')
 
       render(<ThemeToggle />)
 
@@ -97,10 +87,7 @@ describe('ThemeToggle', () => {
     })
 
     it('should have title attribute in dark mode', () => {
-      vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
-        theme: 'dark',
-        toggleTheme: mockToggleTheme,
-      })
+      mockUseTheme('dark')
 
       render(<ThemeToggle />)
 
@@ -113,10 +100,7 @@ describe('ThemeToggle', () => {
     it('should call toggleTheme when clicked', async () => {
       const user = userEvent.setup()
 
-      vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
-        theme: 'light',
-        toggleTheme: mockToggleTheme,
-      })
+      mockUseTheme('light')
 
       render(<ThemeToggle />)
 
@@ -129,10 +113,7 @@ describe('ThemeToggle', () => {
     it('should call toggleTheme on each click', async () => {
       const user = userEvent.setup()
 
-      vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
-        theme: 'light',
-        toggleTheme: mockToggleTheme,
-      })
+      mockUseTheme('light')
 
       render(<ThemeToggle />)
 
@@ -148,10 +129,7 @@ describe('ThemeToggle', () => {
     it('should be keyboard accessible', async () => {
       const user = userEvent.setup()
 
-      vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
-        theme: 'light',
-        toggleTheme: mockToggleTheme,
-      })
+      mockUseTheme('light')
 
       render(<ThemeToggle />)
 
@@ -169,51 +147,13 @@ describe('ThemeToggle', () => {
   })
 
   describe('Theme Changes', () => {
-    it('should update icon when theme changes from light to dark', () => {
-      // Mock the Icon component to render with data attributes we can verify
-      vi.spyOn(IconModule, 'Icon').mockImplementation(({ name, size }: IconProps) => (
-        <span data-testid="theme-icon" data-name={name} data-size={size} />
-      ))
-
-      // Mock before initial render
-      vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
-        theme: 'light',
-        toggleTheme: mockToggleTheme,
-      })
-
-      const { rerender } = render(<ThemeToggle />)
-
-      // Verify moon icon is rendered in light mode
-      let icon = screen.getByTestId('theme-icon')
-      expect(icon).toHaveAttribute('data-name', 'fa-moon')
-
-      vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
-        theme: 'dark',
-        toggleTheme: mockToggleTheme,
-      })
-
-      rerender(<ThemeToggle />)
-
-      // Verify sun icon is rendered in dark mode
-      icon = screen.getByTestId('theme-icon')
-      expect(icon).toHaveAttribute('data-name', 'fa-sun')
-
-      vi.restoreAllMocks()
-    })
-
     it('should update aria-label when theme changes', () => {
-      vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
-        theme: 'light',
-        toggleTheme: mockToggleTheme,
-      })
+      mockUseTheme('light')
 
       const { rerender } = render(<ThemeToggle />)
       expect(screen.getByRole('button', { name: /switch to dark mode/i })).toBeInTheDocument()
 
-      vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
-        theme: 'dark',
-        toggleTheme: mockToggleTheme,
-      })
+      mockUseTheme('dark')
 
       rerender(<ThemeToggle />)
       expect(screen.getByRole('button', { name: /switch to light mode/i })).toBeInTheDocument()
@@ -238,10 +178,7 @@ describe('ThemeToggle', () => {
     ] as const)(
       'should pass correct icon name ($expectedIcon) in $theme mode',
       ({ theme, expectedIcon }) => {
-        vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
-          theme,
-          toggleTheme: mockToggleTheme,
-        })
+        mockUseTheme(theme)
 
         render(<ThemeToggle />)
 
@@ -251,10 +188,7 @@ describe('ThemeToggle', () => {
     )
 
     it('should pass size="md" to Icon component', () => {
-      vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
-        theme: 'light',
-        toggleTheme: mockToggleTheme,
-      })
+      mockUseTheme('light')
 
       render(<ThemeToggle />)
 

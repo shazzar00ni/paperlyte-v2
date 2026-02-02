@@ -8,12 +8,11 @@ import {
   trackSocialClick,
   AnalyticsEvents,
 } from './analytics'
+import { clearAnalyticsGlobals } from '../test/analytics-test-utils'
 
-describe('Analytics Utility', () => {
+describe('Analytics Utility - Core Functions', () => {
   beforeEach(() => {
-    // Clear any existing gtag
-    delete (window as Window & { gtag?: unknown }).gtag
-    delete (window as Window & { dataLayer?: unknown }).dataLayer
+    clearAnalyticsGlobals()
   })
 
   describe('isAnalyticsAvailable', () => {

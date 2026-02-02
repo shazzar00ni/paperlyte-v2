@@ -241,7 +241,7 @@ describe('Header', () => {
 
       await user.keyboard('{Home}')
 
-      // Home key focuses first focusable element (Features link)
+      // Home key focuses first focusable element (Features link in DOM order)
       const featuresLink = screen.getByRole('link', { name: 'Features' })
       expect(document.activeElement).toBe(featuresLink)
     })
@@ -259,7 +259,7 @@ describe('Header', () => {
 
       await user.keyboard('{End}')
 
-      // End key focuses last focusable element (Get Started button)
+      // End key focuses last focusable element (Get Started button in DOM order)
       const getStartedButton = screen.getByRole('button', { name: /get started/i })
       expect(document.activeElement).toBe(getStartedButton)
     })

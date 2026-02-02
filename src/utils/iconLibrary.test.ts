@@ -16,6 +16,18 @@ import {
 } from './iconLibrary'
 
 describe('iconLibrary', () => {
+  /**
+   * Helper function to verify icon conversion and validity
+   * Reduces duplication in test cases
+   */
+  const assertIconConversion = (icons: Array<{ input: string; expected: string }>) => {
+    icons.forEach(({ input, expected }) => {
+      const converted = convertIconName(input)
+      expect(converted).toBe(expected)
+      expect(validIconNames.has(converted)).toBe(true)
+    })
+  }
+
   describe('Icon Registry Consistency', () => {
     it('should have all mapped icons registered in validIconNames', () => {
       // Every value in iconNameMap should exist in validIconNames
@@ -160,33 +172,29 @@ describe('iconLibrary', () => {
       expect(uniqueValues.size).toBeLessThanOrEqual(values.length)
     })
 
-    it('should map all expected feature icons', () => {
-      // Core feature icons that must be mapped
-      const requiredMappings = [
-        'fa-bolt', // Lightning Speed
-        'fa-pen-nib', // Beautiful Simplicity
-        'fa-tags', // Tag-Based Organization
-        'fa-mobile-screen', // Universal Access
-        'fa-shield-halved', // Privacy Focused
+    it('should convert all expected feature icons', () => {
+      // Test that convertIconName correctly strips 'fa-' prefix and validates presence in validIconNames
+      const featureIcons = [
+        { input: 'fa-bolt', expected: 'bolt' }, // Lightning Speed
+        { input: 'fa-pen-nib', expected: 'pen-nib' }, // Beautiful Simplicity
+        { input: 'fa-tags', expected: 'tags' }, // Tag-Based Organization
+        { input: 'fa-mobile-screen', expected: 'mobile-screen' }, // Universal Access
+        { input: 'fa-shield-halved', expected: 'shield-halved' }, // Privacy Focused
       ]
 
-      requiredMappings.forEach((oldName) => {
-        expect(iconNameMap[oldName]).toBeDefined()
-      })
+      assertIconConversion(featureIcons)
     })
 
-    it('should map all expected UI icons', () => {
-      // UI icons that must be mapped
-      const requiredMappings = [
-        'fa-bars', // Mobile menu
-        'fa-xmark', // Close
-        'fa-moon', // Dark mode
-        'fa-sun', // Light mode
+    it('should convert all expected UI icons', () => {
+      // Test that convertIconName correctly strips 'fa-' prefix and validates presence in validIconNames
+      const uiIcons = [
+        { input: 'fa-bars', expected: 'bars' }, // Mobile menu
+        { input: 'fa-xmark', expected: 'xmark' }, // Close
+        { input: 'fa-moon', expected: 'moon' }, // Dark mode
+        { input: 'fa-sun', expected: 'sun' }, // Light mode
       ]
 
-      requiredMappings.forEach((oldName) => {
-        expect(iconNameMap[oldName]).toBeDefined()
-      })
+      assertIconConversion(uiIcons)
     })
   })
 

@@ -2,6 +2,7 @@
  * Font Awesome Icon Library
  *
  * This file centralizes all Font Awesome icon imports for the application.
+ *
  * Only icons that are actually used are imported, enabling tree-shaking.
  * Note: While CSS for unused icons is eliminated, the SVG icon data increases the JavaScript bundle size.
  * This approach enables better tree-shaking for unused icons and removes the need for separate CSS icon files.
@@ -57,21 +58,10 @@ import {
   faPlane, // Offline page - airplane mode
   faRoute, // Offline page - route/navigation issues
   faArrowRight, // Navigation forward
-  faArrowLeft, // Navigation back
-  faSpinner, // Loading states
 } from '@fortawesome/free-solid-svg-icons'
-
-// Brand icons (from free-brands-svg-icons)
-import {
-  faGithub, // GitHub social link
-  faTwitter, // Twitter/X social link
-  faApple, // Apple platform
-  faWindows, // Windows platform
-} from '@fortawesome/free-brands-svg-icons'
 
 // Add all icons to the library
 library.add(
-  // Solid icons
   faBolt,
   faPenNib,
   faTags,
@@ -90,7 +80,7 @@ library.add(
   faSun,
   faLock,
   faCheck,
-  faCircleQuestion, // Fallback icon (not exposed via iconNameMap)
+  faCircleQuestion,
   faChevronLeft,
   faChevronRight,
   faChevronUp,
@@ -112,38 +102,30 @@ library.add(
   faMagnifyingGlass,
   faPlane,
   faRoute,
-  faArrowRight,
-  faArrowLeft,
-  faSpinner,
-  // Brand icons
-  faGithub,
-  faTwitter,
-  faApple,
-  faWindows
+  faArrowRight
 )
 
-/**
- * Icon name mapping for easy reference
- * Maps from old CSS class names (fa-bolt) to new icon names (bolt)
- */
+// Mapping from Font Awesome class names to icon names used in the Icon component
 export const iconNameMap: Record<string, string> = {
   'fa-bolt': 'bolt',
   'fa-pen-nib': 'pen-nib',
   'fa-tags': 'tags',
   'fa-mobile-screen': 'mobile-screen',
-  'fa-wifi-slash': 'plane-slash', // Using plane-slash as offline indicator.
+  'fa-plane-slash': 'plane-slash',
   'fa-shield-halved': 'shield-halved',
   'fa-feather': 'feather',
   'fa-xmark': 'xmark',
   'fa-bars': 'bars',
   'fa-envelope': 'envelope',
   'fa-star': 'star',
+  'fa-circle-check': 'circle-check',
   'fa-heart': 'heart',
   'fa-download': 'download',
   'fa-moon': 'moon',
   'fa-sun': 'sun',
   'fa-lock': 'lock',
   'fa-check': 'check',
+  'fa-circle-question': 'circle-question',
   'fa-chevron-left': 'chevron-left',
   'fa-chevron-right': 'chevron-right',
   'fa-chevron-up': 'chevron-up',
@@ -157,63 +139,13 @@ export const iconNameMap: Record<string, string> = {
   'fa-rocket': 'rocket',
   'fa-users': 'users',
   'fa-server': 'server',
-  'fa-github': 'github',
-  'fa-twitter': 'twitter',
-  'fa-apple': 'apple',
-  'fa-windows': 'windows',
-  'fa-route': 'route', // Offline page - route/navigation issues.
-  'fa-wifi': 'wifi', // Offline page - connection status.
-  'fa-plane': 'plane', // Offline page - airplane mode.
-  'fa-arrow-rotate-left': 'arrow-rotate-left', // Undo/back actions.
-  'fa-arrow-rotate-right': 'arrow-rotate-right', // Retry/reload actions (alternative).
-  'fa-rotate-right': 'rotate-right', // Retry/reload actions.
-  'fa-book': 'book', // Documentation/help.
-  'fa-magnifying-glass': 'magnifying-glass', // Search.
-  'fa-arrow-right': 'arrow-right', // Navigation forward.
-  'fa-arrow-left': 'arrow-left', // Navigation back.
-  'fa-spinner': 'spinner', // Loading states.
-  'fa-circle-check': 'circle-check', // Checkmark/success indicator.
-}
-
-/**
- * Set of brand icon names (derived from imported brand icons)
- * Used to determine the icon prefix (fab vs fas) dynamically
- */
-export const brandIconNames = new Set<string>(['github', 'twitter', 'apple', 'windows'])
-
-/**
- * Set of all valid icon names in the library
- * Used for runtime validation to prevent rendering invalid icons
- */
-export const validIconNames = new Set<string>([
-  ...Object.values(iconNameMap),
-  'circle-question', // Fallback icon
-])
-/**
- * Helper function to convert old icon names to new format
- * @param oldName - The old Font Awesome class name (e.g., 'fa-bolt')
- * @returns The new icon name (e.g., 'bolt')
- */
-export const convertIconName = (oldName: string): string => {
-  // Returns mapped name if found, otherwise strips 'fa-' prefix.
-  // Note: Unmapped icons will fail isValidIcon() and render a fallback.
-  return iconNameMap[oldName] || oldName.replace(/^fa-/, '')
-}
-
-/**
- * Check if an icon name is a brand icon
- * @param iconName - The converted icon name (e.g., 'github')
- * @returns true if the icon is a brand icon, false otherwise
- */
-export const isBrandIcon = (iconName: string): boolean => {
-  return brandIconNames.has(iconName)
-}
-
-/**
- * Check if an icon name exists in the library
- * @param iconName - The converted icon name (e.g., 'bolt')
- * @returns true if the icon exists in the library, false otherwise
- */
-export const isValidIcon = (iconName: string): boolean => {
-  return validIconNames.has(iconName)
+  'fa-wifi': 'wifi',
+  'fa-rotate-right': 'rotate-right',
+  'fa-arrow-rotate-right': 'arrow-rotate-right',
+  'fa-arrow-rotate-left': 'arrow-rotate-left',
+  'fa-book': 'book',
+  'fa-magnifying-glass': 'magnifying-glass',
+  'fa-plane': 'plane',
+  'fa-route': 'route',
+  'fa-arrow-right': 'arrow-right',
 }

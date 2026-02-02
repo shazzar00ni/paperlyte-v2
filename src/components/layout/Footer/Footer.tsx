@@ -44,17 +44,6 @@ export const Footer = (): React.ReactElement => {
                 </a>
               </li>
             </ul>
-              <li>
-                <a
-                  href={LEGAL_CONFIG.social.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.link}
-                >
-                  GitHub
-                </a>
-              </li>
-            </ul>
           </div>
 
           <div className={styles.linkGroup}>

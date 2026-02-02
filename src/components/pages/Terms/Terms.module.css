@@ -75,12 +75,6 @@
   text-decoration: underline;
 }
 
-.section a:focus {
-  text-decoration: underline;
-  outline: 2px solid var(--color-link-accent);
-  outline-offset: 2px;
-}
-
 .section a:focus-visible {
   text-decoration: underline;
   outline: 2px solid var(--color-link-accent);

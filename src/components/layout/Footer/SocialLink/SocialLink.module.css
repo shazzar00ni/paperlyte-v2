@@ -1,6 +1,5 @@
 .socialLink {
   color: var(--color-footer-text);
-  transition: color var(--transition-base);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -19,7 +18,7 @@
   background-color: var(--color-link-accent-bg);
 }
 
-/* Only apply transform animations when motion is allowed */
+/* Apply transitions only when motion is allowed */
 @media (prefers-reduced-motion: no-preference) {
   .socialLink {
     transition:
@@ -30,5 +29,15 @@
   .socialLink:hover,
   .socialLink:focus-visible {
     transform: translateY(-2px);
+  }
+}
+
+/* Explicitly disable animations for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .socialLink,
+  .socialLink:hover,
+  .socialLink:focus-visible {
+    transition: none;
+    transform: none;
   }
 }

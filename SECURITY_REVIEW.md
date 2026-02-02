@@ -246,8 +246,8 @@ The application stores user theme preference in localStorage without encryption.
 **Code:**
 
 ```typescript
-localStorage.setItem('theme', theme)
-const stored = localStorage.getItem('theme')
+localStorage.setItem('theme', theme);
+const stored = localStorage.getItem('theme');
 ```
 
 **Impact:**
@@ -373,15 +373,15 @@ npm audit
   href.startsWith('http') && {
     target: '_blank',
     rel: 'noopener noreferrer',
-  }
+  };
 }
 ```
 
 **File:** `src/components/layout/Footer/Footer.tsx:58-59`
 
 ```typescript
-target = '_blank'
-rel = 'noopener noreferrer'
+target = '_blank';
+rel = 'noopener noreferrer';
 ```
 
 - All external links include `rel="noopener noreferrer"`
@@ -425,8 +425,8 @@ rel = 'noopener noreferrer'
 
 ```typescript
 const isValidTheme = (value: string | null): value is Theme => {
-  return value === 'light' || value === 'dark'
-}
+  return value === 'light' || value === 'dark';
+};
 ```
 
 - localStorage values validated before use
@@ -438,8 +438,8 @@ const isValidTheme = (value: string | null): value is Theme => {
 **File:** `src/hooks/useTheme.ts:5,14,32,50`
 
 ```typescript
-const isBrowser = typeof window !== 'undefined'
-if (!isBrowser) return 'light'
+const isBrowser = typeof window !== 'undefined';
+if (!isBrowser) return 'light';
 ```
 
 - Prevents server-side rendering errors

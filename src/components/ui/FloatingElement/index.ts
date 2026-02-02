@@ -1,1 +1,1 @@
-export { FloatingElement } from './FloatingElement'
+export { FloatingElement } from './FloatingElement';

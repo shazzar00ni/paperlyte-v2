@@ -1,1 +1,1 @@
-export { Mobile } from './Mobile'
+export { Mobile } from './Mobile';

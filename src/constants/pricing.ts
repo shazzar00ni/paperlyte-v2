@@ -3,21 +3,21 @@
  */
 export interface PricingPlan {
   /** Unique identifier */
-  id: string
+  id: string;
   /** Plan name */
-  name: string
+  name: string;
   /** Price per month (null for free) */
-  price: number | null
+  price: number | null;
   /** Short tagline */
-  tagline: string
+  tagline: string;
   /** List of included features */
-  features: string[]
+  features: string[];
   /** Whether this is the recommended/popular plan */
-  isPopular?: boolean
+  isPopular?: boolean;
   /** Call-to-action button text */
-  ctaText: string
+  ctaText: string;
   /** Optional icon for the plan */
-  icon?: string
+  icon?: string;
 }
 
 /**
@@ -77,4 +77,4 @@ export const PRICING_PLANS: PricingPlan[] = [
     ],
     ctaText: 'Contact Sales',
   },
-]
+];

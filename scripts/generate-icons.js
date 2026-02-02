@@ -10,18 +10,18 @@
  * Requires: npm install --save-dev sharp png-to-ico
  */
 
-import sharp from 'sharp'
-import pngToIco from 'png-to-ico'
-import { fileURLToPath } from 'url'
-import { dirname, join } from 'path'
-import { existsSync, writeFileSync } from 'fs'
-import { isPathSafe } from './path-utils.js'
+import sharp from 'sharp';
+import pngToIco from 'png-to-ico';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+import { existsSync, writeFileSync } from 'fs';
+import { isPathSafe } from './path-utils.js';
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-const projectRoot = join(__dirname, '..')
-const publicDir = join(projectRoot, 'public')
-const faviconSource = join(publicDir, 'favicon.svg')
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const projectRoot = join(__dirname, '..');
+const publicDir = join(projectRoot, 'public');
+const faviconSource = join(publicDir, 'favicon.svg');
 
 /**
  * Icon sizes to generate
@@ -35,10 +35,10 @@ const iconSizes = [
   { name: 'apple-touch-icon', size: 180, formats: ['png'] },
   { name: 'android-chrome-192x192', size: 192, formats: ['png', 'webp', 'avif'] },
   { name: 'android-chrome-512x512', size: 512, formats: ['png', 'webp', 'avif'] },
-]
+];
 
 // Valid format extensions for validation
-const VALID_FORMATS = ['png', 'webp', 'avif']
+const VALID_FORMATS = ['png', 'webp', 'avif'];
 
 /**
  * Generate an icon from SVG source in the specified format
@@ -50,44 +50,44 @@ async function generateIcon(baseName, size, format) {
   try {
     // Validate format parameter to prevent unexpected values
     if (!VALID_FORMATS.includes(format)) {
-      throw new Error(`Invalid format: ${format}. Must be one of: ${VALID_FORMATS.join(', ')}`)
+      throw new Error(`Invalid format: ${format}. Must be one of: ${VALID_FORMATS.join(', ')}`);
     }
 
-    const outputName = `${baseName}.${format}`
+    const outputName = `${baseName}.${format}`;
 
     // Validate path to prevent directory traversal attacks
     if (!isPathSafe(publicDir, outputName)) {
-      throw new Error(`Invalid output path: ${outputName}. Path traversal detected.`)
+      throw new Error(`Invalid output path: ${outputName}. Path traversal detected.`);
     }
-    
-    const outputPath = join(publicDir, outputName)
+
+    const outputPath = join(publicDir, outputName);
 
     const image = sharp(faviconSource, { density: 300 }) // High DPI for crisp rasterization
       .resize(size, size, {
         fit: 'cover', // Source SVG is square, avoid padding
         background: { r: 0, g: 0, b: 0, alpha: 0 }, // Transparent background
-      })
+      });
 
     // Apply format-specific encoding
     if (format === 'png') {
-      await image.png().toFile(outputPath)
+      await image.png().toFile(outputPath);
     } else if (format === 'webp') {
-      await image.webp({ quality: 85, effort: 6 }).toFile(outputPath)
+      await image.webp({ quality: 85, effort: 6 }).toFile(outputPath);
     } else if (format === 'avif') {
-      await image.avif({ quality: 75, effort: 6 }).toFile(outputPath)
+      await image.avif({ quality: 75, effort: 6 }).toFile(outputPath);
     } else {
-      throw new Error(`Unsupported format: ${format}`)
+      throw new Error(`Unsupported format: ${format}`);
     }
 
-    console.log(`✅ Generated ${outputName} (${size}x${size})`)
+    console.log(`✅ Generated ${outputName} (${size}x${size})`);
   } catch (error) {
     // Safely handle any thrown value (may not be an Error object)
-    const errorMessage = error instanceof Error ? error.message : String(error)
-    const outputName = `${baseName}.${format}`
-    console.error('❌ Failed to generate icon:', outputName, errorMessage)
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const outputName = `${baseName}.${format}`;
+    console.error('❌ Failed to generate icon:', outputName, errorMessage);
 
     // Always throw a normalized Error instance for consistent error handling
-    throw new Error(`Failed to generate ${outputName}: ${errorMessage}`)
+    throw new Error(`Failed to generate ${outputName}: ${errorMessage}`);
   }
 }
 
@@ -97,24 +97,24 @@ async function generateIcon(baseName, size, format) {
  */
 async function generateFaviconIco() {
   try {
-    const favicon16Path = join(publicDir, 'favicon-16x16.png')
-    const favicon32Path = join(publicDir, 'favicon-32x32.png')
-    const icoOutputPath = join(publicDir, 'favicon.ico')
+    const favicon16Path = join(publicDir, 'favicon-16x16.png');
+    const favicon32Path = join(publicDir, 'favicon-32x32.png');
+    const icoOutputPath = join(publicDir, 'favicon.ico');
 
     // Verify source PNG files exist
     if (!existsSync(favicon16Path) || !existsSync(favicon32Path)) {
-      throw new Error('Required PNG files (16x16 and 32x32) not found')
+      throw new Error('Required PNG files (16x16 and 32x32) not found');
     }
 
     // Generate ICO file with multiple resolutions
-    const icoBuffer = await pngToIco([favicon16Path, favicon32Path])
-    writeFileSync(icoOutputPath, icoBuffer)
+    const icoBuffer = await pngToIco([favicon16Path, favicon32Path]);
+    writeFileSync(icoOutputPath, icoBuffer);
 
-    console.log(`✅ Generated favicon.ico (16x16, 32x32)`)
+    console.log(`✅ Generated favicon.ico (16x16, 32x32)`);
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error)
-    console.error(`❌ Failed to generate favicon.ico:`, errorMessage)
-    throw new Error(`Failed to generate favicon.ico: ${errorMessage}`)
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error(`❌ Failed to generate favicon.ico:`, errorMessage);
+    throw new Error(`Failed to generate favicon.ico: ${errorMessage}`);
   }
 }
 
@@ -122,47 +122,47 @@ async function generateFaviconIco() {
  * Main execution function
  */
 async function main() {
-  console.log('🎨 Paperlyte Icon Generator\n')
+  console.log('🎨 Paperlyte Icon Generator\n');
 
   // Check if source SVG exists
   if (!existsSync(faviconSource)) {
-    console.error(`❌ Source SVG not found: ${faviconSource}`)
-    console.error('Please ensure public/favicon.svg exists')
-    process.exit(1)
+    console.error(`❌ Source SVG not found: ${faviconSource}`);
+    console.error('Please ensure public/favicon.svg exists');
+    process.exit(1);
   }
 
-  console.log(`📂 Source: ${faviconSource}`)
-  console.log(`📂 Output: ${publicDir}\n`)
+  console.log(`📂 Source: ${faviconSource}`);
+  console.log(`📂 Output: ${publicDir}\n`);
 
   // Generate all icon sizes and formats
   try {
-    const generatedFiles = []
+    const generatedFiles = [];
 
     // Generate icons in all specified formats
     for (const { name, size, formats } of iconSizes) {
       for (const format of formats) {
-        await generateIcon(name, size, format)
-        generatedFiles.push(`${name}.${format}`)
+        await generateIcon(name, size, format);
+        generatedFiles.push(`${name}.${format}`);
       }
     }
 
     // Generate favicon.ico from the PNG files
-    await generateFaviconIco()
-    generatedFiles.push('favicon.ico')
+    await generateFaviconIco();
+    generatedFiles.push('favicon.ico');
 
-    console.log('\n✨ All icons generated successfully!')
-    console.log('\nGenerated files:')
+    console.log('\n✨ All icons generated successfully!');
+    console.log('\nGenerated files:');
     generatedFiles.forEach((file) => {
-      console.log(`  - ${file}`)
-    })
+      console.log(`  - ${file}`);
+    });
   } catch (error) {
-    console.error('\n❌ Icon generation failed')
-    process.exit(1)
+    console.error('\n❌ Icon generation failed');
+    process.exit(1);
   }
 }
 
 // Run the script
 main().catch((error) => {
-  console.error('Fatal error:', error)
-  process.exit(1)
-})
+  console.error('Fatal error:', error);
+  process.exit(1);
+});

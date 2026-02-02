@@ -1,15 +1,15 @@
-import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import { ServerErrorPage } from './ServerErrorPage'
-import { CONTACT } from '@/constants/config'
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { ServerErrorPage } from './ServerErrorPage';
+import { CONTACT } from '@/constants/config';
 
 describe('ServerErrorPage', () => {
-  let originalLocation: Location
+  let originalLocation: Location;
 
   beforeEach(() => {
     // Save original globals
-    originalLocation = window.location
-  })
+    originalLocation = window.location;
+  });
 
   afterEach(() => {
     // Restore original globals
@@ -17,247 +17,247 @@ describe('ServerErrorPage', () => {
       configurable: true,
       writable: true,
       value: originalLocation,
-    })
+    });
     // Restore environment stubs
-    vi.unstubAllEnvs()
-  })
+    vi.unstubAllEnvs();
+  });
 
   describe('Rendering', () => {
     it('should render the 500 error page', () => {
-      render(<ServerErrorPage />)
+      render(<ServerErrorPage />);
 
-      expect(screen.getByRole('main')).toBeInTheDocument()
-      expect(screen.getByText(/Oops! Something went wrong/i)).toBeInTheDocument()
-    })
+      expect(screen.getByRole('main')).toBeInTheDocument();
+      expect(screen.getByText(/Oops! Something went wrong/i)).toBeInTheDocument();
+    });
 
     it('should display default error message', () => {
-      render(<ServerErrorPage />)
+      render(<ServerErrorPage />);
 
       expect(
         screen.getByText(/We're sorry, but something unexpected happened on our end/i)
-      ).toBeInTheDocument()
-    })
+      ).toBeInTheDocument();
+    });
 
     it('should display custom message when provided', () => {
-      const customMessage = 'Custom server error message'
-      render(<ServerErrorPage message={customMessage} />)
+      const customMessage = 'Custom server error message';
+      render(<ServerErrorPage message={customMessage} />);
 
-      expect(screen.getByText(customMessage)).toBeInTheDocument()
-    })
+      expect(screen.getByText(customMessage)).toBeInTheDocument();
+    });
 
     it('should render the error illustration with icon', () => {
-      render(<ServerErrorPage />)
+      render(<ServerErrorPage />);
 
-      const illustration = screen.getByRole('main').querySelector('[aria-hidden="true"]')
-      expect(illustration).toBeInTheDocument()
-    })
+      const illustration = screen.getByRole('main').querySelector('[aria-hidden="true"]');
+      expect(illustration).toBeInTheDocument();
+    });
 
     it('should display error code 500', () => {
-      render(<ServerErrorPage />)
+      render(<ServerErrorPage />);
 
-      expect(screen.getByText('500')).toBeInTheDocument()
-    })
-  })
+      expect(screen.getByText('500')).toBeInTheDocument();
+    });
+  });
 
   describe('Error Details', () => {
     it('should show error details in development mode', () => {
-      vi.stubEnv('DEV', true)
+      vi.stubEnv('DEV', true);
 
-      const errorDetails = 'Error: Test error\n  at Component.render'
-      render(<ServerErrorPage errorDetails={errorDetails} />)
+      const errorDetails = 'Error: Test error\n  at Component.render';
+      render(<ServerErrorPage errorDetails={errorDetails} />);
 
-      expect(screen.getByText(/Error details \(development only\)/i)).toBeInTheDocument()
-    })
+      expect(screen.getByText(/Error details \(development only\)/i)).toBeInTheDocument();
+    });
 
     it('should display error stack trace in development mode', () => {
-      vi.stubEnv('DEV', true)
+      vi.stubEnv('DEV', true);
 
-      const errorDetails = 'Error: Test error\n  at Component.render'
-      render(<ServerErrorPage errorDetails={errorDetails} />)
+      const errorDetails = 'Error: Test error\n  at Component.render';
+      render(<ServerErrorPage errorDetails={errorDetails} />);
 
-      const errorText = screen.getByText(/Error: Test error/)
-      expect(errorText).toBeInTheDocument()
-    })
+      const errorText = screen.getByText(/Error: Test error/);
+      expect(errorText).toBeInTheDocument();
+    });
 
     it('should hide error details in production mode', () => {
-      vi.stubEnv('DEV', false)
+      vi.stubEnv('DEV', false);
 
-      const errorDetails = 'Error: Test error\n  at Component.render'
-      render(<ServerErrorPage errorDetails={errorDetails} />)
+      const errorDetails = 'Error: Test error\n  at Component.render';
+      render(<ServerErrorPage errorDetails={errorDetails} />);
 
-      expect(screen.queryByText(/Error details \(development only\)/i)).not.toBeInTheDocument()
-    })
+      expect(screen.queryByText(/Error details \(development only\)/i)).not.toBeInTheDocument();
+    });
 
     it('should not render error details section when no error provided', () => {
-      vi.stubEnv('DEV', true)
+      vi.stubEnv('DEV', true);
 
-      render(<ServerErrorPage />)
+      render(<ServerErrorPage />);
 
-      expect(screen.queryByText(/Error details \(development only\)/i)).not.toBeInTheDocument()
-    })
-  })
+      expect(screen.queryByText(/Error details \(development only\)/i)).not.toBeInTheDocument();
+    });
+  });
 
   describe('Action Buttons', () => {
     it('should render "Try Again" button', () => {
-      render(<ServerErrorPage />)
+      render(<ServerErrorPage />);
 
-      expect(screen.getByRole('button', { name: /retry loading the page/i })).toBeInTheDocument()
-    })
+      expect(screen.getByRole('button', { name: /retry loading the page/i })).toBeInTheDocument();
+    });
 
     it('should render "Go to Homepage" button', () => {
-      render(<ServerErrorPage />)
+      render(<ServerErrorPage />);
 
-      expect(screen.getByRole('button', { name: /return to homepage/i })).toBeInTheDocument()
-    })
+      expect(screen.getByRole('button', { name: /return to homepage/i })).toBeInTheDocument();
+    });
 
     it('should call onRetry callback when provided', async () => {
-      const user = userEvent.setup()
-      const onRetry = vi.fn()
+      const user = userEvent.setup();
+      const onRetry = vi.fn();
 
-      render(<ServerErrorPage onRetry={onRetry} />)
+      render(<ServerErrorPage onRetry={onRetry} />);
 
-      const retryButton = screen.getByRole('button', { name: /retry loading the page/i })
-      await user.click(retryButton)
+      const retryButton = screen.getByRole('button', { name: /retry loading the page/i });
+      await user.click(retryButton);
 
-      expect(onRetry).toHaveBeenCalledTimes(1)
-    })
+      expect(onRetry).toHaveBeenCalledTimes(1);
+    });
 
     it('should reload page when retry clicked without callback', async () => {
-      const user = userEvent.setup()
-      const reloadSpy = vi.fn()
+      const user = userEvent.setup();
+      const reloadSpy = vi.fn();
 
       Object.defineProperty(window, 'location', {
         configurable: true,
         writable: true,
         value: { ...originalLocation, reload: reloadSpy },
-      })
+      });
 
-      render(<ServerErrorPage />)
+      render(<ServerErrorPage />);
 
-      const retryButton = screen.getByRole('button', { name: /retry loading the page/i })
-      await user.click(retryButton)
+      const retryButton = screen.getByRole('button', { name: /retry loading the page/i });
+      await user.click(retryButton);
 
-      expect(reloadSpy).toHaveBeenCalledTimes(1)
-    })
+      expect(reloadSpy).toHaveBeenCalledTimes(1);
+    });
 
     it('should navigate to homepage when "Go to Homepage" is clicked', async () => {
-      const user = userEvent.setup()
+      const user = userEvent.setup();
 
       Object.defineProperty(window, 'location', {
         configurable: true,
         writable: true,
         value: { ...originalLocation, href: '' },
-      })
+      });
 
-      render(<ServerErrorPage />)
+      render(<ServerErrorPage />);
 
-      const homeButton = screen.getByRole('button', { name: /return to homepage/i })
-      await user.click(homeButton)
+      const homeButton = screen.getByRole('button', { name: /return to homepage/i });
+      await user.click(homeButton);
 
-      expect(window.location.href).toBe('/')
-    })
-  })
+      expect(window.location.href).toBe('/');
+    });
+  });
 
   describe('Support Information', () => {
     it('should display support information by default', () => {
-      render(<ServerErrorPage />)
+      render(<ServerErrorPage />);
 
-      expect(screen.getByText(/contact our support team/i)).toBeInTheDocument()
-    })
+      expect(screen.getByText(/contact our support team/i)).toBeInTheDocument();
+    });
 
     it('should hide support information when showSupport is false', () => {
-      render(<ServerErrorPage showSupport={false} />)
+      render(<ServerErrorPage showSupport={false} />);
 
-      expect(screen.queryByText(/contact our support team/i)).not.toBeInTheDocument()
-    })
+      expect(screen.queryByText(/contact our support team/i)).not.toBeInTheDocument();
+    });
 
     it('should render support email link', () => {
-      render(<ServerErrorPage />)
+      render(<ServerErrorPage />);
 
-      const supportLink = screen.getByRole('link', { name: /contact our support team/i })
-      expect(supportLink).toHaveAttribute('href', `mailto:${CONTACT.supportEmail}`)
-    })
+      const supportLink = screen.getByRole('link', { name: /contact our support team/i });
+      expect(supportLink).toHaveAttribute('href', `mailto:${CONTACT.supportEmail}`);
+    });
 
     it('should display status notification', () => {
-      render(<ServerErrorPage />)
+      render(<ServerErrorPage />);
 
       expect(
         screen.getByText(/Our team has been notified and is working to resolve this issue/i)
-      ).toBeInTheDocument()
-    })
-  })
+      ).toBeInTheDocument();
+    });
+  });
 
   describe('Accessibility', () => {
     it('should have role="main" on container', () => {
-      render(<ServerErrorPage />)
+      render(<ServerErrorPage />);
 
-      const main = screen.getByRole('main')
-      expect(main).toHaveAttribute('aria-labelledby', 'error-title')
-    })
+      const main = screen.getByRole('main');
+      expect(main).toHaveAttribute('aria-labelledby', 'error-title');
+    });
 
     it('should have accessible heading', () => {
-      render(<ServerErrorPage />)
+      render(<ServerErrorPage />);
 
-      const heading = screen.getByRole('heading', { level: 1 })
-      expect(heading).toHaveAttribute('id', 'error-title')
-    })
+      const heading = screen.getByRole('heading', { level: 1 });
+      expect(heading).toHaveAttribute('id', 'error-title');
+    });
 
     it('should have aria-hidden on decorative illustration', () => {
-      render(<ServerErrorPage />)
+      render(<ServerErrorPage />);
 
-      const illustration = screen.getByRole('main').querySelector('[aria-hidden="true"]')
-      expect(illustration).toBeInTheDocument()
-    })
+      const illustration = screen.getByRole('main').querySelector('[aria-hidden="true"]');
+      expect(illustration).toBeInTheDocument();
+    });
 
     it('should have proper button types', () => {
-      render(<ServerErrorPage />)
+      render(<ServerErrorPage />);
 
-      const retryButton = screen.getByRole('button', { name: /retry loading the page/i })
-      const homeButton = screen.getByRole('button', { name: /return to homepage/i })
+      const retryButton = screen.getByRole('button', { name: /retry loading the page/i });
+      const homeButton = screen.getByRole('button', { name: /return to homepage/i });
 
-      expect(retryButton).toHaveAttribute('type', 'button')
-      expect(homeButton).toHaveAttribute('type', 'button')
-    })
+      expect(retryButton).toHaveAttribute('type', 'button');
+      expect(homeButton).toHaveAttribute('type', 'button');
+    });
 
     it('should have aria-labels on action buttons', () => {
-      render(<ServerErrorPage />)
+      render(<ServerErrorPage />);
 
-      expect(screen.getByLabelText(/retry loading the page/i)).toBeInTheDocument()
-      expect(screen.getByLabelText(/return to homepage/i)).toBeInTheDocument()
-    })
-  })
+      expect(screen.getByLabelText(/retry loading the page/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/return to homepage/i)).toBeInTheDocument();
+    });
+  });
 
   describe('Icon Integration', () => {
     it('should render server icon in illustration', () => {
-      const { container } = render(<ServerErrorPage />)
+      const { container } = render(<ServerErrorPage />);
 
       // Icon is decorative (inside aria-hidden), so we verify it exists via DOM query
-      const illustration = container.querySelector('[aria-hidden="true"]')
-      expect(illustration).toBeInTheDocument()
-      expect(illustration?.querySelector('svg')).toBeInTheDocument()
-    })
+      const illustration = container.querySelector('[aria-hidden="true"]');
+      expect(illustration).toBeInTheDocument();
+      expect(illustration?.querySelector('svg')).toBeInTheDocument();
+    });
 
     it('should render warning icon in error badge', () => {
-      const { container } = render(<ServerErrorPage />)
+      const { container } = render(<ServerErrorPage />);
 
       // Icon is decorative (inside aria-hidden), so we verify via DOM query
-      const errorBadge = container.querySelector('[class*="errorBadge"]')
-      expect(errorBadge).toBeInTheDocument()
-      expect(errorBadge?.querySelector('svg')).toBeInTheDocument()
-    })
+      const errorBadge = container.querySelector('[class*="errorBadge"]');
+      expect(errorBadge).toBeInTheDocument();
+      expect(errorBadge?.querySelector('svg')).toBeInTheDocument();
+    });
 
     it('should render retry icon in primary button', () => {
-      render(<ServerErrorPage />)
+      render(<ServerErrorPage />);
 
-      const retryIcon = screen.getByLabelText('Retry icon')
-      expect(retryIcon).toBeInTheDocument()
-    })
+      const retryIcon = screen.getByLabelText('Retry icon');
+      expect(retryIcon).toBeInTheDocument();
+    });
 
     it('should render home icon in secondary button', () => {
-      render(<ServerErrorPage />)
+      render(<ServerErrorPage />);
 
-      const homeIcon = screen.getByLabelText('Home icon')
-      expect(homeIcon).toBeInTheDocument()
-    })
-  })
-})
+      const homeIcon = screen.getByLabelText('Home icon');
+      expect(homeIcon).toBeInTheDocument();
+    });
+  });
+});

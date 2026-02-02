@@ -1,110 +1,110 @@
-import { describe, it, expect } from 'vitest'
-import { render, screen } from '@testing-library/react'
-import { Comparison } from './Comparison'
-import { COMPARISON_FEATURES, COMPETITORS } from '@constants/comparison'
+import { describe, it, expect } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import { Comparison } from './Comparison';
+import { COMPARISON_FEATURES, COMPETITORS } from '@constants/comparison';
 
 describe('Comparison', () => {
   it('should render as a section with correct id', () => {
-    const { container } = render(<Comparison />)
+    const { container } = render(<Comparison />);
 
-    const section = container.querySelector('section')
-    expect(section).toBeInTheDocument()
-    expect(section).toHaveAttribute('id', 'comparison')
-  })
+    const section = container.querySelector('section');
+    expect(section).toBeInTheDocument();
+    expect(section).toHaveAttribute('id', 'comparison');
+  });
 
   it('should render main heading', () => {
-    render(<Comparison />)
-    expect(screen.getByText('How we stack up')).toBeInTheDocument()
-  })
+    render(<Comparison />);
+    expect(screen.getByText('How we stack up')).toBeInTheDocument();
+  });
 
   it('should render subtitle', () => {
-    render(<Comparison />)
+    render(<Comparison />);
     expect(
       screen.getByText(
         "No marketing spin. Here's how Paperlyte compares to the tools you already know."
       )
-    ).toBeInTheDocument()
-  })
+    ).toBeInTheDocument();
+  });
 
   it('should render comparison table', () => {
-    render(<Comparison />)
+    render(<Comparison />);
 
-    const table = screen.getByRole('table')
-    expect(table).toBeInTheDocument()
-  })
+    const table = screen.getByRole('table');
+    expect(table).toBeInTheDocument();
+  });
 
   it('should render table headers for all competitors', () => {
-    render(<Comparison />)
+    render(<Comparison />);
 
     // Check Feature column header
-    expect(screen.getByRole('columnheader', { name: 'Feature' })).toBeInTheDocument()
+    expect(screen.getByRole('columnheader', { name: 'Feature' })).toBeInTheDocument();
 
     // Check all competitor headers
     COMPETITORS.forEach((competitor) => {
       // Simpler approach: use string matching instead of RegExp
       const header = screen.getByRole('columnheader', {
         name: (content) => content.includes(competitor.name),
-      })
-      expect(header).toBeInTheDocument()
-    })
-  })
+      });
+      expect(header).toBeInTheDocument();
+    });
+  });
 
   it('should render "You" badge for Paperlyte column', () => {
-    render(<Comparison />)
+    render(<Comparison />);
 
-    const paperlyteBadge = screen.getByLabelText('Our product')
-    expect(paperlyteBadge).toBeInTheDocument()
-    expect(paperlyteBadge).toHaveTextContent('You')
-  })
+    const paperlyteBadge = screen.getByLabelText('Our product');
+    expect(paperlyteBadge).toBeInTheDocument();
+    expect(paperlyteBadge).toHaveTextContent('You');
+  });
 
   it('should render all comparison features', () => {
-    render(<Comparison />)
+    render(<Comparison />);
 
     COMPARISON_FEATURES.forEach((feature) => {
-      expect(screen.getByRole('rowheader', { name: feature.feature })).toBeInTheDocument()
-    })
-  })
+      expect(screen.getByRole('rowheader', { name: feature.feature })).toBeInTheDocument();
+    });
+  });
 
   it('should render checkmark icons for true boolean values', () => {
-    render(<Comparison />)
+    render(<Comparison />);
 
     // Find all checkmarks by aria-label
-    const checkmarks = screen.getAllByLabelText('Supported')
-    expect(checkmarks.length).toBeGreaterThan(0)
-  })
+    const checkmarks = screen.getAllByLabelText('Supported');
+    expect(checkmarks.length).toBeGreaterThan(0);
+  });
 
   it('should render X icons for false boolean values', () => {
-    render(<Comparison />)
+    render(<Comparison />);
 
     // Find all X marks by aria-label
-    const xmarks = screen.getAllByLabelText('Not supported')
-    expect(xmarks.length).toBeGreaterThan(0)
-  })
+    const xmarks = screen.getAllByLabelText('Not supported');
+    expect(xmarks.length).toBeGreaterThan(0);
+  });
 
   it('should render text values for string comparisons', () => {
-    render(<Comparison />)
+    render(<Comparison />);
 
     // Check for specific string values from the comparison data
-    const startupTimes = screen.getAllByText(/\b<1s\b|\b\d+-\d+s\b/i) // Matches "<1s", "3-5s", etc.
-    expect(startupTimes.length).toBeGreaterThan(0)
+    const startupTimes = screen.getAllByText(/\b<1s\b|\b\d+-\d+s\b/i); // Matches "<1s", "3-5s", etc.
+    expect(startupTimes.length).toBeGreaterThan(0);
 
-    expect(screen.getByText('Paid only')).toBeInTheDocument() // Evernote offline access
+    expect(screen.getByText('Paid only')).toBeInTheDocument(); // Evernote offline access
 
-    const fullAccess = screen.getAllByText('Full access') // Appears in multiple rows
-    expect(fullAccess.length).toBeGreaterThan(0)
-  })
+    const fullAccess = screen.getAllByText('Full access'); // Appears in multiple rows
+    expect(fullAccess.length).toBeGreaterThan(0);
+  });
 
   it('should render disclaimer with current date', () => {
-    vi.useFakeTimers()
-    const fixedDate = new Date('2025-01-15T00:00:00Z')
-    vi.setSystemTime(fixedDate)
+    vi.useFakeTimers();
+    const fixedDate = new Date('2025-01-15T00:00:00Z');
+    vi.setSystemTime(fixedDate);
 
-    render(<Comparison />)
+    render(<Comparison />);
 
     const currentDate = fixedDate.toLocaleDateString('en-US', {
       month: 'long',
       year: 'numeric',
-    })
+    });
 
     expect(
       screen.getByText(
@@ -112,89 +112,89 @@ describe('Comparison', () => {
           `Comparison data accurate as of ${currentDate}\\.\\s*Competitor features may vary by plan and region\\.`
         )
       )
-    ).toBeInTheDocument()
+    ).toBeInTheDocument();
 
-    vi.useRealTimers()
-  })
+    vi.useRealTimers();
+  });
 
   it('should have proper table structure with thead and tbody', () => {
-    const { container } = render(<Comparison />)
+    const { container } = render(<Comparison />);
 
-    const table = container.querySelector('table')
-    expect(table?.querySelector('thead')).toBeInTheDocument()
-    expect(table?.querySelector('tbody')).toBeInTheDocument()
-  })
+    const table = container.querySelector('table');
+    expect(table?.querySelector('thead')).toBeInTheDocument();
+    expect(table?.querySelector('tbody')).toBeInTheDocument();
+  });
 
   it('should render correct number of rows', () => {
-    const { container } = render(<Comparison />)
+    const { container } = render(<Comparison />);
 
-    const tbody = container.querySelector('tbody')
-    const rows = tbody?.querySelectorAll('tr')
+    const tbody = container.querySelector('tbody');
+    const rows = tbody?.querySelectorAll('tr');
 
     // Should have one row per comparison feature
-    expect(rows).toHaveLength(COMPARISON_FEATURES.length)
-  })
+    expect(rows).toHaveLength(COMPARISON_FEATURES.length);
+  });
 
   it('should render correct number of columns', () => {
-    const { container } = render(<Comparison />)
+    const { container } = render(<Comparison />);
 
-    const headerRow = container.querySelector('thead tr')
-    const headers = headerRow?.querySelectorAll('th')
+    const headerRow = container.querySelector('thead tr');
+    const headers = headerRow?.querySelectorAll('th');
 
     // Should have 1 feature column + 4 competitor columns
-    expect(headers).toHaveLength(5)
-  })
+    expect(headers).toHaveLength(5);
+  });
 
   it('should use proper scope attributes for accessibility', () => {
-    const { container } = render(<Comparison />)
+    const { container } = render(<Comparison />);
 
     // Column headers should have scope="col"
-    const columnHeaders = container.querySelectorAll('thead th')
+    const columnHeaders = container.querySelectorAll('thead th');
     columnHeaders.forEach((header) => {
-      expect(header).toHaveAttribute('scope', 'col')
-    })
+      expect(header).toHaveAttribute('scope', 'col');
+    });
 
     // Row headers (feature names) should have scope="row"
-    const rowHeaders = container.querySelectorAll('tbody th')
+    const rowHeaders = container.querySelectorAll('tbody th');
     rowHeaders.forEach((header) => {
-      expect(header).toHaveAttribute('scope', 'row')
-    })
-  })
+      expect(header).toHaveAttribute('scope', 'row');
+    });
+  });
 
   it('should highlight Paperlyte column with special styling', () => {
-    render(<Comparison />)
+    render(<Comparison />);
 
     // Find Paperlyte header
     const paperlyteTh = screen.getByRole('columnheader', {
       name: /Paperlyte/i,
-    })
+    });
 
     // Should have color styling (inline style)
-    expect(paperlyteTh).toHaveStyle({ color: 'var(--color-primary)' })
-    expect(paperlyteTh).toHaveStyle({ fontWeight: '700' })
-  })
+    expect(paperlyteTh).toHaveStyle({ color: 'var(--color-primary)' });
+    expect(paperlyteTh).toHaveStyle({ fontWeight: '700' });
+  });
 
   it('should render specific comparison feature: Startup Time', () => {
-    render(<Comparison />)
+    render(<Comparison />);
 
-    expect(screen.getByRole('rowheader', { name: 'Startup Time' })).toBeInTheDocument()
-    expect(screen.getByText('<1s')).toBeInTheDocument() // Paperlyte
-    expect(screen.getByText('3-5s')).toBeInTheDocument() // Notion
-  })
+    expect(screen.getByRole('rowheader', { name: 'Startup Time' })).toBeInTheDocument();
+    expect(screen.getByText('<1s')).toBeInTheDocument(); // Paperlyte
+    expect(screen.getByText('3-5s')).toBeInTheDocument(); // Notion
+  });
 
   it('should render specific comparison feature: Offline Access', () => {
-    render(<Comparison />)
+    render(<Comparison />);
 
-    expect(screen.getByRole('rowheader', { name: 'Offline Access' })).toBeInTheDocument()
+    expect(screen.getByRole('rowheader', { name: 'Offline Access' })).toBeInTheDocument();
 
     // Should have checkmarks for true values
-    const offlineRow = screen.getByRole('rowheader', { name: 'Offline Access' }).closest('tr')
-    expect(offlineRow).toBeInTheDocument()
-  })
+    const offlineRow = screen.getByRole('rowheader', { name: 'Offline Access' }).closest('tr');
+    expect(offlineRow).toBeInTheDocument();
+  });
 
   it('should render specific comparison feature: End-to-End Encryption', () => {
-    render(<Comparison />)
+    render(<Comparison />);
 
-    expect(screen.getByRole('rowheader', { name: 'End-to-End Encryption' })).toBeInTheDocument()
-  })
-})
+    expect(screen.getByRole('rowheader', { name: 'End-to-End Encryption' })).toBeInTheDocument();
+  });
+});

@@ -5,4 +5,4 @@
 export const BUTTON_LABELS = {
   RETRY: 'Retry loading the page',
   HOMEPAGE: 'Return to homepage',
-} as const
+} as const;

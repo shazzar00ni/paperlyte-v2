@@ -1,41 +1,41 @@
-import { type ReactNode, useRef } from 'react'
-import { useReducedMotion } from '@hooks/useReducedMotion'
-import { useIntersectionObserver } from '@hooks/useIntersectionObserver'
-import styles from './FloatingElement.module.css'
+import { type ReactNode, useRef } from 'react';
+import { useReducedMotion } from '@hooks/useReducedMotion';
+import { useIntersectionObserver } from '@hooks/useIntersectionObserver';
+import styles from './FloatingElement.module.css';
 
 /**
  * Props for the FloatingElement component
  */
 interface FloatingElementProps {
   /** Content to float */
-  children: ReactNode
+  children: ReactNode;
   /**
    * Animation duration in seconds
    * @default 3
    */
-  duration?: number
+  duration?: number;
   /**
    * Delay before animation starts in seconds
    * @default 0
    */
-  delay?: number
+  delay?: number;
   /**
    * Floating distance in pixels (amplitude of the float)
    * @default 20
    */
-  distance?: number
+  distance?: number;
   /**
    * Direction of the float animation
    * @default 'vertical'
    */
-  direction?: 'vertical' | 'horizontal' | 'circular'
+  direction?: 'vertical' | 'horizontal' | 'circular';
   /** Additional CSS class names */
-  className?: string
+  className?: string;
   /**
    * Whether to pause animation when out of viewport
    * @default true
    */
-  pauseWhenHidden?: boolean
+  pauseWhenHidden?: boolean;
 }
 
 /**
@@ -72,16 +72,16 @@ export const FloatingElement = ({
   className = '',
   pauseWhenHidden = true,
 }: FloatingElementProps): React.ReactElement => {
-  const prefersReducedMotion = useReducedMotion()
+  const prefersReducedMotion = useReducedMotion();
   const { ref, isVisible } = useIntersectionObserver({
     threshold: 0,
     triggerOnce: false,
-  })
+  });
 
-  const containerRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null);
 
   // Derive isPaused from isVisible - no effect needed, just compute during render
-  const isPaused = pauseWhenHidden && !isVisible
+  const isPaused = pauseWhenHidden && !isVisible;
 
   // If user prefers reduced motion, don't animate
   if (prefersReducedMotion) {
@@ -89,7 +89,7 @@ export const FloatingElement = ({
       <div ref={ref} className={className}>
         {children}
       </div>
-    )
+    );
   }
 
   const animationClass =
@@ -97,11 +97,11 @@ export const FloatingElement = ({
       ? styles.floatVertical
       : direction === 'horizontal'
         ? styles.floatHorizontal
-        : styles.floatCircular
+        : styles.floatCircular;
 
   const elementClasses = [styles.floating, animationClass, isPaused ? styles.paused : '', className]
     .filter(Boolean)
-    .join(' ')
+    .join(' ');
 
   return (
     <div ref={ref}>
@@ -117,5 +117,5 @@ export const FloatingElement = ({
         {children}
       </div>
     </div>
-  )
-}
+  );
+};

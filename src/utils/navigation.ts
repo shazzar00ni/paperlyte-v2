@@ -7,12 +7,12 @@
 export function scrollToSection(sectionId: string): void {
   // SSR guard - document is not available during server-side rendering
   if (typeof document === 'undefined') {
-    return
+    return;
   }
 
-  const element = document.getElementById(sectionId)
+  const element = document.getElementById(sectionId);
   if (element) {
-    element.scrollIntoView({ behavior: 'smooth' })
+    element.scrollIntoView({ behavior: 'smooth' });
   }
 }
 
@@ -27,55 +27,55 @@ export function scrollToSection(sectionId: string): void {
 export function isSafeUrl(url: string): boolean {
   // SSR guard
   if (typeof window === 'undefined') {
-    return false
+    return false;
   }
 
   try {
     // Empty or null URLs are not safe
     if (!url || url.trim() === '') {
-      return false
+      return false;
     }
 
-    const trimmedUrl = url.trim()
+    const trimmedUrl = url.trim();
 
     // Reject URLs containing ASCII control characters (null bytes, etc.)
     // eslint-disable-next-line no-control-regex
     if (/[\x00-\x1F\x7F]/.test(trimmedUrl)) {
-      return false
+      return false;
     }
     // Block protocol-relative URLs (//example.com)
     if (trimmedUrl.startsWith('//')) {
-      return false
+      return false;
     }
 
     // Block javascript:, data:, vbscript:, and other dangerous protocols
     // Check both before and after removing whitespace to catch variations like 'javascript :alert(1)'
-    const dangerousProtocolPattern = /^(javascript|data|vbscript|file|about):/i
-    const urlWithoutWhitespace = trimmedUrl.replace(/\s/g, '')
+    const dangerousProtocolPattern = /^(javascript|data|vbscript|file|about):/i;
+    const urlWithoutWhitespace = trimmedUrl.replace(/\s/g, '');
     if (
       dangerousProtocolPattern.test(trimmedUrl) ||
       dangerousProtocolPattern.test(urlWithoutWhitespace)
     ) {
-      return false
+      return false;
     }
 
     // Block URL-encoded variations of dangerous protocols
     // Check if the URL contains % encoding before a colon (could be trying to hide a dangerous protocol)
     // Match patterns like "java%73cript:" or "%6A%61%76%61script:"
     // Only check the protocol part (before the first colon)
-    const colonIndex = trimmedUrl.indexOf(':')
+    const colonIndex = trimmedUrl.indexOf(':');
     const hasEncodedProtocol =
-      colonIndex > 0 && /%[0-9a-f]{2}/i.test(trimmedUrl.substring(0, colonIndex))
+      colonIndex > 0 && /%[0-9a-f]{2}/i.test(trimmedUrl.substring(0, colonIndex));
     if (hasEncodedProtocol) {
       // Try to decode and check if it's a dangerous protocol
       try {
-        const decoded = decodeURIComponent(trimmedUrl)
+        const decoded = decodeURIComponent(trimmedUrl);
         if (dangerousProtocolPattern.test(decoded)) {
-          return false
+          return false;
         }
       } catch {
         // If decoding fails, reject it as suspicious
-        return false
+        return false;
       }
     }
 
@@ -83,35 +83,35 @@ export function isSafeUrl(url: string): boolean {
     if (trimmedUrl.startsWith('/') && !trimmedUrl.startsWith('//')) {
       // Additional safety: ensure no protocol injection
       if (trimmedUrl.includes('://')) {
-        return false
+        return false;
       }
-      return true
+      return true;
     }
 
     // Allow ./ and ../ relative URLs
     if (trimmedUrl.startsWith('./') || trimmedUrl.startsWith('../')) {
       // Additional safety: ensure no protocol injection
       if (trimmedUrl.includes('://')) {
-        return false
+        return false;
       }
-      return true
+      return true;
     }
 
     // For absolute URLs, parse and validate the protocol
-    const parsedUrl = new URL(trimmedUrl, window.location.origin)
+    const parsedUrl = new URL(trimmedUrl, window.location.origin);
 
     // Allow http: and https: protocols (safe for external links)
     // Allow same-origin URLs with any protocol
     if (parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:') {
-      return true
+      return true;
     }
 
     // For other protocols, only allow if same-origin
-    const currentOrigin = window.location.origin
-    return parsedUrl.origin === currentOrigin
+    const currentOrigin = window.location.origin;
+    return parsedUrl.origin === currentOrigin;
   } catch {
     // If URL parsing fails, it's not safe
-    return false
+    return false;
   }
 }
 
@@ -134,14 +134,14 @@ export function safeNavigate(url: string): boolean {
   // SSR guard - return false as navigation is not applicable in server-side context
   // This indicates 'navigation not performed' rather than 'navigation failed'
   if (typeof window === 'undefined') {
-    return false
+    return false;
   }
 
   if (!isSafeUrl(url)) {
-    console.warn(`Navigation blocked: URL "${url}" failed security validation`)
-    return false
+    console.warn(`Navigation blocked: URL "${url}" failed security validation`);
+    return false;
   }
 
-  window.location.href = url
-  return true
+  window.location.href = url;
+  return true;
 }

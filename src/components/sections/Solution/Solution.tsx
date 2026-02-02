@@ -1,18 +1,18 @@
-import { Section } from '@components/layout/Section'
-import { AnimatedElement } from '@components/ui/AnimatedElement'
-import { Button } from '@components/ui/Button'
-import { Icon } from '@components/ui/Icon'
-import { scrollToSection } from '@/utils/navigation'
-import { WAITLIST_COUNT, LAUNCH_QUARTER } from '@constants/waitlist'
-import styles from './Solution.module.css'
+import { Section } from '@components/layout/Section';
+import { AnimatedElement } from '@components/ui/AnimatedElement';
+import { Button } from '@components/ui/Button';
+import { Icon } from '@components/ui/Icon';
+import { scrollToSection } from '@/utils/navigation';
+import { WAITLIST_COUNT, LAUNCH_QUARTER } from '@constants/waitlist';
+import styles from './Solution.module.css';
 
 interface ValueProp {
-  icon: string
-  emoji: string
-  headline: string
-  title: string
-  body: string[]
-  proof: string
+  icon: string;
+  emoji: string;
+  headline: string;
+  title: string;
+  body: string[];
+  proof: string;
 }
 
 const VALUE_PROPS: ValueProp[] = [
@@ -50,7 +50,7 @@ const VALUE_PROPS: ValueProp[] = [
     ],
     proof: `Web, Mac, Windows, Linux available now | Native iOS & Android coming ${LAUNCH_QUARTER} | Offline-first`,
   },
-]
+];
 
 export const Solution = (): React.ReactElement => {
   return (
@@ -118,5 +118,5 @@ export const Solution = (): React.ReactElement => {
         </AnimatedElement>
       </div>
     </Section>
-  )
-}
+  );
+};

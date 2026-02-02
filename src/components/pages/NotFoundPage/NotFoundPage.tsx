@@ -1,29 +1,29 @@
-import { type FC } from 'react'
-import { Icon } from '@/components/ui/Icon'
-import { safeNavigate } from '@/utils/navigation'
-import styles from './NotFoundPage.module.css'
+import { type FC } from 'react';
+import { Icon } from '@/components/ui/Icon';
+import { safeNavigate } from '@/utils/navigation';
+import styles from './NotFoundPage.module.css';
 
 interface NotFoundPageProps {
   /**
    * Custom message to display (optional)
    */
-  message?: string
+  message?: string;
   /**
    * Custom callback for the home button (optional)
    * Defaults to navigating to '/' (homepage)
    */
-  onGoHome?: () => void
+  onGoHome?: () => void;
 }
 
 export const NotFoundPage: FC<NotFoundPageProps> = ({ message, onGoHome }) => {
   const handleGoHome = (): void => {
     if (onGoHome) {
-      onGoHome()
+      onGoHome();
     } else {
       // Default behavior: navigate to homepage using safe navigation
-      safeNavigate('/')
+      safeNavigate('/');
     }
-  }
+  };
 
   return (
     <main className={styles.container} aria-labelledby="not-found-title">
@@ -90,5 +90,5 @@ export const NotFoundPage: FC<NotFoundPageProps> = ({ message, onGoHome }) => {
         </div>
       </div>
     </main>
-  )
-}
+  );
+};

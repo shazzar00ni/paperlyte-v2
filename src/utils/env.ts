@@ -5,11 +5,11 @@
  */
 
 interface EnvConfig {
-  baseUrl: string
-  seoKeywords: string
-  ogImage: string
-  isDevelopment: boolean
-  isProduction: boolean
+  baseUrl: string;
+  seoKeywords: string;
+  ogImage: string;
+  isDevelopment: boolean;
+  isProduction: boolean;
 }
 
 /**
@@ -17,8 +17,8 @@ interface EnvConfig {
  * Falls back to window.location.origin if not set
  */
 export const getBaseUrl = (): string => {
-  return import.meta.env.VITE_BASE_URL || window.location.origin
-}
+  return import.meta.env.VITE_BASE_URL || window.location.origin;
+};
 
 /**
  * Get SEO keywords for meta tags
@@ -27,25 +27,25 @@ export const getSeoKeywords = (): string => {
   return (
     import.meta.env.VITE_SEO_KEYWORDS ||
     'note-taking app, simple notes, fast notes, offline notes, tag-based organization, distraction-free writing, minimalist notes'
-  )
-}
+  );
+};
 
 /**
  * Get Open Graph image URL
  * Returns absolute URL for production, relative for development
  */
 export const getOgImage = (): string => {
-  const ogImage = import.meta.env.VITE_OG_IMAGE || '/og-image.png'
-  const baseUrl = getBaseUrl()
+  const ogImage = import.meta.env.VITE_OG_IMAGE || '/og-image.png';
+  const baseUrl = getBaseUrl();
 
   // If image is already absolute URL, return as-is
   if (ogImage.startsWith('http://') || ogImage.startsWith('https://')) {
-    return ogImage
+    return ogImage;
   }
 
   // Otherwise, prepend base URL for absolute path
-  return `${baseUrl}${ogImage}`
-}
+  return `${baseUrl}${ogImage}`;
+};
 
 /**
  * Complete environment configuration
@@ -56,7 +56,7 @@ export const env: EnvConfig = {
   ogImage: getOgImage(),
   isDevelopment: import.meta.env.DEV,
   isProduction: import.meta.env.PROD,
-}
+};
 
 /**
  * Update meta tags dynamically based on environment
@@ -64,27 +64,27 @@ export const env: EnvConfig = {
  */
 export const updateMetaTags = (): void => {
   // Update canonical URL
-  const canonical = document.querySelector('link[rel="canonical"]')
+  const canonical = document.querySelector('link[rel="canonical"]');
   if (canonical) {
-    canonical.setAttribute('href', env.baseUrl + '/')
+    canonical.setAttribute('href', env.baseUrl + '/');
   }
 
   // Update keywords
-  const keywords = document.querySelector('meta[name="keywords"]')
+  const keywords = document.querySelector('meta[name="keywords"]');
   if (keywords) {
-    keywords.setAttribute('content', env.seoKeywords)
+    keywords.setAttribute('content', env.seoKeywords);
   }
 
   // Update Open Graph URL
-  const ogUrl = document.querySelector('meta[property="og:url"]')
+  const ogUrl = document.querySelector('meta[property="og:url"]');
   if (ogUrl) {
-    ogUrl.setAttribute('content', env.baseUrl + '/')
+    ogUrl.setAttribute('content', env.baseUrl + '/');
   }
 
   // Update Open Graph image
-  const ogImage = document.querySelector('meta[property="og:image"]')
+  const ogImage = document.querySelector('meta[property="og:image"]');
   if (ogImage) {
-    ogImage.setAttribute('content', env.ogImage)
+    ogImage.setAttribute('content', env.ogImage);
   }
 
   // Log environment info in development
@@ -93,6 +93,6 @@ export const updateMetaTags = (): void => {
       baseUrl: env.baseUrl,
       ogImage: env.ogImage,
       mode: import.meta.env.MODE,
-    })
+    });
   }
-}
+};

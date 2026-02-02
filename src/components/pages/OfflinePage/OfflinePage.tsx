@@ -1,20 +1,20 @@
-import { type FC, useState, useEffect, useCallback } from 'react'
-import { Icon } from '@/components/ui/Icon'
-import styles from './OfflinePage.module.css'
+import { type FC, useState, useEffect, useCallback } from 'react';
+import { Icon } from '@/components/ui/Icon';
+import styles from './OfflinePage.module.css';
 
 interface OfflinePageProps {
   /**
    * Custom message to display (optional)
    */
-  message?: string
+  message?: string;
   /**
    * Show cached content availability info (optional)
    */
-  showCachedInfo?: boolean
+  showCachedInfo?: boolean;
   /**
    * Callback when connection is restored (optional)
    */
-  onConnectionRestored?: () => void
+  onConnectionRestored?: () => void;
 }
 
 export const OfflinePage: FC<OfflinePageProps> = ({
@@ -24,39 +24,39 @@ export const OfflinePage: FC<OfflinePageProps> = ({
 }) => {
   const [isOnline, setIsOnline] = useState(
     typeof navigator !== 'undefined' ? navigator.onLine : true
-  )
-  const [isChecking, setIsChecking] = useState(false)
+  );
+  const [isChecking, setIsChecking] = useState(false);
 
   // Memoize handlers to ensure stable references and proper cleanup
   const handleOnline = useCallback((): void => {
-    setIsOnline(true)
+    setIsOnline(true);
     if (onConnectionRestored) {
-      onConnectionRestored()
+      onConnectionRestored();
     }
-  }, [onConnectionRestored])
+  }, [onConnectionRestored]);
 
   const handleOffline = useCallback((): void => {
-    setIsOnline(false)
-  }, [])
+    setIsOnline(false);
+  }, []);
 
   useEffect(() => {
     // Add event listeners
-    window.addEventListener('online', handleOnline)
-    window.addEventListener('offline', handleOffline)
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
 
     // Cleanup function - guaranteed to run on unmount
     return () => {
-      window.removeEventListener('online', handleOnline)
-      window.removeEventListener('offline', handleOffline)
-    }
-  }, [handleOnline, handleOffline])
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, [handleOnline, handleOffline]);
 
   const handleRetry = async (): Promise<void> => {
-    setIsChecking(true)
+    setIsChecking(true);
 
     // Create abort controller with timeout to prevent hanging
-    const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 5000) // 5 second timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
 
     try {
       // Use a reliable external endpoint to check for real internet connectivity
@@ -64,22 +64,22 @@ export const OfflinePage: FC<OfflinePageProps> = ({
         method: 'HEAD',
         cache: 'no-cache',
         signal: controller.signal,
-      })
+      });
 
-      clearTimeout(timeoutId)
+      clearTimeout(timeoutId);
 
       // Only reload if we got a successful response
       if (response.ok || response.status === 204) {
-        window.location.reload()
+        window.location.reload();
       }
     } catch {
       // Connection still not available (or timeout/abort)
-      clearTimeout(timeoutId)
+      clearTimeout(timeoutId);
     } finally {
       // Always reset checking state
-      setIsChecking(false)
+      setIsChecking(false);
     }
-  }
+  };
 
   return (
     <div className={styles.container} role="status" aria-labelledby="offline-title">
@@ -191,5 +191,5 @@ export const OfflinePage: FC<OfflinePageProps> = ({
         )}
       </div>
     </div>
-  )
-}
+  );
+};

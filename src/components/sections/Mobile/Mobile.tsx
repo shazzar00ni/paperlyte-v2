@@ -1,7 +1,7 @@
-import { Section } from '@components/layout/Section'
-import { AnimatedElement } from '@components/ui/AnimatedElement'
-import { Icon } from '@components/ui/Icon'
-import styles from './Mobile.module.css'
+import { Section } from '@components/layout/Section';
+import { AnimatedElement } from '@components/ui/AnimatedElement';
+import { Icon } from '@components/ui/Icon';
+import styles from './Mobile.module.css';
 
 export const Mobile = (): React.ReactElement => {
   return (
@@ -32,5 +32,5 @@ export const Mobile = (): React.ReactElement => {
         </div>
       </div>
     </Section>
-  )
-}
+  );
+};

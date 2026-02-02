@@ -1,4 +1,4 @@
-import { safePropertyAccess } from '../../../utils/security'
+import { safePropertyAccess } from '../../../utils/security';
 
 // Lightweight SVG icon paths to replace Font Awesome CDN
 // Only includes icons actually used in the app
@@ -55,15 +55,15 @@ export const iconPaths: Record<string, string> = {
     'M8 2v4 M16 2v4 M12 14v1 M2 9h4 M18 9h4 M2 15h4 M18 15h4 M8 2.5c.5-.3 1.2-.5 2-.5h4c.8 0 1.5.2 2 .5 M6 8c0-2.2 1.8-4 4-4h4c2.2 0 4 1.8 4 4v8c0 2.2-1.8 4-4 4h-4c-2.2 0-4-1.8-4-4V8z',
   'fa-lightbulb': 'M9 18h6 M10 22h4 M15 8a3 3 0 0 0-6 0c0 2 2 3 2 5v1h2v-1c0-2 2-3 2-5z M12 2v1',
   'fa-paper-plane': 'M22 2L11 13 M22 2l-7 20-4-9-9-4 20-7z',
-}
+};
 
 // Icon viewBox configurations (most use 0 0 24 24, but some may differ)
 export const iconViewBox: Record<string, string> = {
   'fa-apple': '0 0 24 24',
   'fa-windows': '0 0 23 24',
-}
+};
 
 // Returns the viewBox for the given icon, defaulting to "0 0 24 24" for icons not listed above
 export const getIconViewBox = (name: string): string => {
-  return safePropertyAccess(iconViewBox, name) ?? '0 0 24 24'
-}
+  return safePropertyAccess(iconViewBox, name) ?? '0 0 24 24';
+};

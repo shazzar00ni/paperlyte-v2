@@ -1,17 +1,17 @@
-import { LAUNCH_QUARTER } from './waitlist'
+import { LAUNCH_QUARTER } from './waitlist';
 
 /**
  * Represents a frequently asked question
  */
 export interface FAQItem {
   /** Unique identifier */
-  id: string
+  id: string;
   /** The question */
-  question: string
+  question: string;
   /** The answer (supports basic HTML) */
-  answer: string
+  answer: string;
   /** Optional category for grouping */
-  category?: 'general' | 'pricing' | 'privacy' | 'features'
+  category?: 'general' | 'pricing' | 'privacy' | 'features';
 }
 
 /**
@@ -80,4 +80,4 @@ export const FAQ_ITEMS: FAQItem[] = [
     answer:
       'Email us at hello@paperlyte.com. We read every message and typically respond within 24 hours.',
   },
-]
+];

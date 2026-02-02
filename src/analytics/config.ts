@@ -5,7 +5,7 @@
  * a centralized configuration object for the analytics module.
  */
 
-import type { AnalyticsConfig } from './types'
+import type { AnalyticsConfig } from './types';
 
 /**
  * Get analytics configuration from environment variables
@@ -20,47 +20,47 @@ import type { AnalyticsConfig } from './types'
  * - VITE_ANALYTICS_DEBUG: Enable debug mode (default: false)
  */
 export function getAnalyticsConfig(): AnalyticsConfig | null {
-  const domain = import.meta.env.VITE_ANALYTICS_DOMAIN
+  const domain = import.meta.env.VITE_ANALYTICS_DOMAIN;
 
   // If no domain is provided, analytics cannot be enabled
   if (!domain) {
-    return null
+    return null;
   }
 
   // Determine if analytics is enabled based on environment
   // Default behavior: enabled in production, disabled in development
-  let enabled: boolean
-  const enabledEnv = import.meta.env.VITE_ANALYTICS_ENABLED
+  let enabled: boolean;
+  const enabledEnv = import.meta.env.VITE_ANALYTICS_ENABLED;
 
   if (enabledEnv === 'true') {
     // Explicitly enabled
-    enabled = true
+    enabled = true;
   } else if (enabledEnv === 'false') {
     // Explicitly disabled
-    enabled = false
+    enabled = false;
   } else {
     // Not set - use default based on environment
     // Enable in production, disable in development
-    enabled = import.meta.env.PROD
+    enabled = import.meta.env.PROD;
   }
 
   // Analytics is disabled if not enabled
   if (!enabled) {
-    return null
+    return null;
   }
 
   // Validate and set analytics provider
-  const validProviders = ['plausible', 'fathom', 'umami', 'simple', 'custom'] as const
-  const rawProvider = import.meta.env.VITE_ANALYTICS_PROVIDER || 'plausible'
+  const validProviders = ['plausible', 'fathom', 'umami', 'simple', 'custom'] as const;
+  const rawProvider = import.meta.env.VITE_ANALYTICS_PROVIDER || 'plausible';
   const provider: AnalyticsConfig['provider'] = validProviders.includes(
     rawProvider as (typeof validProviders)[number]
   )
     ? (rawProvider as AnalyticsConfig['provider'])
-    : 'plausible'
-  const scriptUrl = import.meta.env.VITE_ANALYTICS_SCRIPT_URL
+    : 'plausible';
+  const scriptUrl = import.meta.env.VITE_ANALYTICS_SCRIPT_URL;
   const debug =
     import.meta.env.VITE_ANALYTICS_DEBUG === 'true' ||
-    (import.meta.env.DEV && import.meta.env.VITE_ANALYTICS_DEBUG !== 'false')
+    (import.meta.env.DEV && import.meta.env.VITE_ANALYTICS_DEBUG !== 'false');
 
   return {
     provider,
@@ -71,12 +71,12 @@ export function getAnalyticsConfig(): AnalyticsConfig | null {
     trackWebVitals: true,
     trackScrollDepth: true,
     respectDNT: true,
-  }
+  };
 }
 
 /**
  * Check if analytics is enabled based on environment configuration
  */
 export function isAnalyticsEnabled(): boolean {
-  return getAnalyticsConfig() !== null
+  return getAnalyticsConfig() !== null;
 }

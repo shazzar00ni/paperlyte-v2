@@ -1,1 +1,1 @@
-export { Solution } from './Solution'
+export { Solution } from './Solution';

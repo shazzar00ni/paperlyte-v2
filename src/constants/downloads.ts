@@ -1,4 +1,4 @@
-import { LEGAL_CONFIG } from './legal'
+import { LEGAL_CONFIG } from './legal';
 
 /**
  * Download URLs for Paperlyte across different platforms
@@ -21,7 +21,7 @@ export const DOWNLOAD_URLS = {
   android: 'https://play.google.com/store/apps/details?id=com.paperlyte.app',
   // TODO: Update GitHub URL in legal.ts first - currently resolves to "#/releases/..."
   linux: `${LEGAL_CONFIG.social.github}/releases/latest`,
-} as const
+} as const;
 
 // Re-export GitHub URL from legal config for consistency
-export const GITHUB_URL = LEGAL_CONFIG.social.github
+export const GITHUB_URL = LEGAL_CONFIG.social.github;

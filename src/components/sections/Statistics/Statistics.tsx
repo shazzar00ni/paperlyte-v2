@@ -1,26 +1,26 @@
-import React from 'react'
-import { Section } from '@components/layout/Section'
-import { AnimatedElement } from '@components/ui/AnimatedElement'
-import { CounterAnimation } from '@components/ui/CounterAnimation'
-import { SVGPathAnimation } from '@components/ui/SVGPathAnimation'
-import styles from './Statistics.module.css'
+import React from 'react';
+import { Section } from '@components/layout/Section';
+import { AnimatedElement } from '@components/ui/AnimatedElement';
+import { CounterAnimation } from '@components/ui/CounterAnimation';
+import { SVGPathAnimation } from '@components/ui/SVGPathAnimation';
+import styles from './Statistics.module.css';
 
 /**
  * Represents a single statistic item for the counter animations
  */
 interface StatisticItem {
   /** The numeric value to count up to */
-  value: number
+  value: number;
   /** Display label shown below the counter */
-  label: string
+  label: string;
   /** Font Awesome icon class (e.g., 'fa-users') */
-  icon: string
+  icon: string;
   /** Text displayed after the number (e.g., '+', '%', 'M+') */
-  suffix?: string
+  suffix?: string;
   /** Text displayed before the number (e.g., '$') */
-  prefix?: string
+  prefix?: string;
   /** Number of decimal places to display */
-  decimals?: number
+  decimals?: number;
 }
 
 /**
@@ -53,7 +53,7 @@ const statistics: StatisticItem[] = [
     label: 'User Rating',
     icon: 'fa-star',
   },
-]
+];
 
 /**
  * Statistics section displaying animated counters showcasing product metrics
@@ -113,5 +113,5 @@ export const Statistics = (): React.ReactElement => {
         </div>
       </div>
     </Section>
-  )
-}
+  );
+};

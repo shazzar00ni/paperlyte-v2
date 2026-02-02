@@ -6,30 +6,30 @@
  * to prevent excessive event firing.
  */
 
-import type { ScrollDepth } from './types'
+import type { ScrollDepth } from './types';
 
 /**
  * Callback function for scroll depth events
  */
-type ScrollCallback = (depth: ScrollDepth) => void
+type ScrollCallback = (depth: ScrollDepth) => void;
 
 /**
  * Scroll depth tracker
  * Monitors scroll position and reports milestones
  */
 export class ScrollDepthTracker {
-  private callback: ScrollCallback
-  private trackedDepths: Set<ScrollDepth> = new Set()
-  private throttleTimeout: ReturnType<typeof setTimeout> | null = null
-  private isEnabled = false
+  private callback: ScrollCallback;
+  private trackedDepths: Set<ScrollDepth> = new Set();
+  private throttleTimeout: ReturnType<typeof setTimeout> | null = null;
+  private isEnabled = false;
 
   /**
    * Scroll depth milestones to track (in percentages)
    */
-  private readonly depths: ScrollDepth[] = [25, 50, 75, 100]
+  private readonly depths: ScrollDepth[] = [25, 50, 75, 100];
 
   constructor(callback: ScrollCallback) {
-    this.callback = callback
+    this.callback = callback;
   }
 
   /**
@@ -38,14 +38,14 @@ export class ScrollDepthTracker {
    */
   init(): void {
     if (this.isEnabled || typeof window === 'undefined') {
-      return
+      return;
     }
 
-    this.isEnabled = true
-    window.addEventListener('scroll', this.handleScroll, { passive: true })
+    this.isEnabled = true;
+    window.addEventListener('scroll', this.handleScroll, { passive: true });
 
     // Check initial scroll position (in case user refreshes mid-page)
-    this.checkScrollDepth()
+    this.checkScrollDepth();
   }
 
   /**
@@ -54,39 +54,39 @@ export class ScrollDepthTracker {
    */
   private handleScroll = (): void => {
     if (this.throttleTimeout !== null) {
-      return
+      return;
     }
 
     this.throttleTimeout = setTimeout(() => {
-      this.checkScrollDepth()
-      this.throttleTimeout = null
-    }, 250) // Throttle to max 4 checks per second
-  }
+      this.checkScrollDepth();
+      this.throttleTimeout = null;
+    }, 250); // Throttle to max 4 checks per second
+  };
 
   /**
    * Calculate current scroll depth and check for milestones
    */
   private checkScrollDepth(): void {
-    const scrollHeight = document.documentElement.scrollHeight
-    const clientHeight = document.documentElement.clientHeight
-    const scrollTop = window.scrollY || document.documentElement.scrollTop
+    const scrollHeight = document.documentElement.scrollHeight;
+    const clientHeight = document.documentElement.clientHeight;
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
 
     // Calculate scroll percentage
-    const scrollableHeight = scrollHeight - clientHeight
-    const scrollPercentage = scrollableHeight > 0 ? (scrollTop / scrollableHeight) * 100 : 0
+    const scrollableHeight = scrollHeight - clientHeight;
+    const scrollPercentage = scrollableHeight > 0 ? (scrollTop / scrollableHeight) * 100 : 0;
 
     // Check each milestone
     for (const depth of this.depths) {
       // If we've reached this depth and haven't tracked it yet
       if (scrollPercentage >= depth && !this.trackedDepths.has(depth)) {
-        this.trackedDepths.add(depth)
-        this.callback(depth)
+        this.trackedDepths.add(depth);
+        this.callback(depth);
       }
     }
 
     // If all depths are tracked, we can stop listening
     if (this.trackedDepths.size === this.depths.length) {
-      this.disable()
+      this.disable();
     }
   }
 
@@ -96,15 +96,15 @@ export class ScrollDepthTracker {
    */
   disable(): void {
     if (!this.isEnabled) {
-      return
+      return;
     }
 
-    this.isEnabled = false
-    window.removeEventListener('scroll', this.handleScroll)
+    this.isEnabled = false;
+    window.removeEventListener('scroll', this.handleScroll);
 
     if (this.throttleTimeout !== null) {
-      clearTimeout(this.throttleTimeout)
-      this.throttleTimeout = null
+      clearTimeout(this.throttleTimeout);
+      this.throttleTimeout = null;
     }
   }
 
@@ -113,9 +113,9 @@ export class ScrollDepthTracker {
    * Useful for single-page applications when navigating between pages
    */
   reset(): void {
-    this.trackedDepths.clear()
+    this.trackedDepths.clear();
     if (!this.isEnabled) {
-      this.init()
+      this.init();
     }
   }
 
@@ -124,14 +124,14 @@ export class ScrollDepthTracker {
    * Returns array of scroll depths that have been tracked
    */
   getTrackedDepths(): ScrollDepth[] {
-    return Array.from(this.trackedDepths).sort((a, b) => a - b)
+    return Array.from(this.trackedDepths).sort((a, b) => a - b);
   }
 
   /**
    * Check if tracking is complete
    */
   isComplete(): boolean {
-    return this.trackedDepths.size === this.depths.length
+    return this.trackedDepths.size === this.depths.length;
   }
 }
 
@@ -142,7 +142,7 @@ export class ScrollDepthTracker {
  * @returns ScrollDepthTracker instance
  */
 export function createScrollTracker(callback: ScrollCallback): ScrollDepthTracker {
-  const tracker = new ScrollDepthTracker(callback)
-  tracker.init()
-  return tracker
+  const tracker = new ScrollDepthTracker(callback);
+  tracker.init();
+  return tracker;
 }

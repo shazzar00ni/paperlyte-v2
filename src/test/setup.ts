@@ -1,17 +1,17 @@
-import { expect, afterEach } from 'vitest'
-import { cleanup } from '@testing-library/react'
-import * as matchers from '@testing-library/jest-dom/matchers'
+import { expect, afterEach } from 'vitest';
+import { cleanup } from '@testing-library/react';
+import * as matchers from '@testing-library/jest-dom/matchers';
 
 // Import FontAwesome icon library for tests
-import '@utils/iconLibrary'
+import '@utils/iconLibrary';
 
 // Extend Vitest's expect with jest-dom matchers
-expect.extend(matchers)
+expect.extend(matchers);
 
 // Cleanup after each test
 afterEach(() => {
-  cleanup()
-})
+  cleanup();
+});
 
 // Mock IntersectionObserver (not available in jsdom)
 global.IntersectionObserver = class IntersectionObserver {
@@ -19,10 +19,10 @@ global.IntersectionObserver = class IntersectionObserver {
   disconnect() {}
   observe() {}
   takeRecords(): IntersectionObserverEntry[] {
-    return []
+    return [];
   }
   unobserve() {}
-} as unknown as typeof global.IntersectionObserver
+} as unknown as typeof global.IntersectionObserver;
 
 // Mock matchMedia (not available in jsdom)
 Object.defineProperty(window, 'matchMedia', {
@@ -37,4 +37,4 @@ Object.defineProperty(window, 'matchMedia', {
     removeEventListener: () => {},
     dispatchEvent: () => true,
   }),
-})
+});

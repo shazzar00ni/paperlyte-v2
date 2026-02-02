@@ -1,4 +1,4 @@
-import type { KeyboardEvent as ReactKeyboardEvent } from 'react'
+import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
 
 /**
  * Keyboard navigation utilities for accessibility support
@@ -9,35 +9,35 @@ import type { KeyboardEvent as ReactKeyboardEvent } from 'react'
  * Check if the pressed key is Enter or Space (standard activation keys)
  */
 export function isActivationKey(event: KeyboardEvent | ReactKeyboardEvent): boolean {
-  return event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar'
+  return event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar';
 }
 
 /**
  * Check if the pressed key is Escape
  */
 export function isEscapeKey(event: KeyboardEvent | ReactKeyboardEvent): boolean {
-  return event.key === 'Escape' || event.key === 'Esc'
+  return event.key === 'Escape' || event.key === 'Esc';
 }
 
 /**
  * Check if the pressed key is an arrow key
  */
 export function isArrowKey(event: KeyboardEvent | ReactKeyboardEvent): boolean {
-  return ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)
+  return ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key);
 }
 
 /**
  * Check if the pressed key is the Home key
  */
 export function isHomeKey(event: KeyboardEvent | ReactKeyboardEvent): boolean {
-  return event.key === 'Home'
+  return event.key === 'Home';
 }
 
 /**
  * Check if the pressed key is the End key
  */
 export function isEndKey(event: KeyboardEvent | ReactKeyboardEvent): boolean {
-  return event.key === 'End'
+  return event.key === 'End';
 }
 
 /**
@@ -49,15 +49,15 @@ export function getArrowDirection(
 ): 'up' | 'down' | 'left' | 'right' | null {
   switch (event.key) {
     case 'ArrowUp':
-      return 'up'
+      return 'up';
     case 'ArrowDown':
-      return 'down'
+      return 'down';
     case 'ArrowLeft':
-      return 'left'
+      return 'left';
     case 'ArrowRight':
-      return 'right'
+      return 'right';
     default:
-      return null
+      return null;
   }
 }
 
@@ -68,44 +68,44 @@ export const FOCUSABLE_SELECTOR =
   'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), ' +
   'textarea:not([disabled]), [tabindex]:not([tabindex="-1"]), ' +
   '[contenteditable]:not([contenteditable="false"]), audio[controls], ' +
-  'video[controls], details > summary'
+  'video[controls], details > summary';
 
 /**
  * Get all focusable elements within a container, sorted by document order
  */
 export function getFocusableElements(container: HTMLElement): HTMLElement[] {
-  const elements = container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)
-  const elementsArray = Array.from(elements)
+  const elements = container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
+  const elementsArray = Array.from(elements);
 
   // Sort by document position to ensure correct order
   // This handles edge cases where querySelectorAll might not return elements in DOM order
   elementsArray.sort((a, b) => {
-    const position = a.compareDocumentPosition(b)
+    const position = a.compareDocumentPosition(b);
     if (position & Node.DOCUMENT_POSITION_FOLLOWING) {
-      return -1 // a comes before b
+      return -1; // a comes before b
     } else if (position & Node.DOCUMENT_POSITION_PRECEDING) {
-      return 1 // b comes before a
+      return 1; // b comes before a
     }
-    return 0
-  })
+    return 0;
+  });
 
-  return elementsArray
+  return elementsArray;
 }
 
 /**
  * Get the first focusable element within a container
  */
 export function getFirstFocusableElement(container: HTMLElement): HTMLElement | null {
-  const elements = getFocusableElements(container)
-  return elements[0] || null
+  const elements = getFocusableElements(container);
+  return elements[0] || null;
 }
 
 /**
  * Get the last focusable element within a container
  */
 export function getLastFocusableElement(container: HTMLElement): HTMLElement | null {
-  const elements = getFocusableElements(container)
-  return elements[elements.length - 1] || null
+  const elements = getFocusableElements(container);
+  return elements[elements.length - 1] || null;
 }
 
 /**
@@ -113,12 +113,12 @@ export function getLastFocusableElement(container: HTMLElement): HTMLElement | n
  * @returns true if an element was focused, false otherwise
  */
 export function focusFirstElement(container: HTMLElement): boolean {
-  const firstElement = getFirstFocusableElement(container)
+  const firstElement = getFirstFocusableElement(container);
   if (firstElement) {
-    firstElement.focus()
-    return true
+    firstElement.focus();
+    return true;
   }
-  return false
+  return false;
 }
 
 /**
@@ -126,12 +126,12 @@ export function focusFirstElement(container: HTMLElement): boolean {
  * @returns true if an element was focused, false otherwise
  */
 export function focusLastElement(container: HTMLElement): boolean {
-  const lastElement = getLastFocusableElement(container)
+  const lastElement = getLastFocusableElement(container);
   if (lastElement) {
-    lastElement.focus()
-    return true
+    lastElement.focus();
+    return true;
   }
-  return false
+  return false;
 }
 
 /**
@@ -142,35 +142,35 @@ export function focusLastElement(container: HTMLElement): boolean {
  */
 export function createFocusTrap(container: HTMLElement): () => void {
   const handleKeyDown = (event: KeyboardEvent) => {
-    if (event.key !== 'Tab') return
+    if (event.key !== 'Tab') return;
 
-    const focusableElements = getFocusableElements(container)
-    if (focusableElements.length === 0) return
+    const focusableElements = getFocusableElements(container);
+    if (focusableElements.length === 0) return;
 
-    const firstElement = focusableElements[0]
-    const lastElement = focusableElements[focusableElements.length - 1]
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
 
     if (event.shiftKey) {
       // Shift + Tab: going backwards
       if (document.activeElement === firstElement) {
-        event.preventDefault()
-        lastElement.focus()
+        event.preventDefault();
+        lastElement.focus();
       }
     } else {
       // Tab: going forwards
       if (document.activeElement === lastElement) {
-        event.preventDefault()
-        firstElement.focus()
+        event.preventDefault();
+        firstElement.focus();
       }
     }
-  }
+  };
 
-  container.addEventListener('keydown', handleKeyDown)
+  container.addEventListener('keydown', handleKeyDown);
 
   // Return cleanup function
   return () => {
-    container.removeEventListener('keydown', handleKeyDown)
-  }
+    container.removeEventListener('keydown', handleKeyDown);
+  };
 }
 
 /**
@@ -190,61 +190,61 @@ export function handleArrowNavigation(
   currentIndex: number,
   orientation: 'horizontal' | 'vertical' = 'horizontal'
 ): number | null {
-  const direction = getArrowDirection(event)
-  if (!direction) return null
+  const direction = getArrowDirection(event);
+  if (!direction) return null;
 
-  const isHorizontal = orientation === 'horizontal'
-  const isVertical = orientation === 'vertical'
+  const isHorizontal = orientation === 'horizontal';
+  const isVertical = orientation === 'vertical';
 
   // Normalize direction for RTL in horizontal navigation:
   // In RTL, ArrowRight should move to the previous element and ArrowLeft to the next.
-  let effectiveDirection = direction
+  let effectiveDirection = direction;
   if (isHorizontal) {
-    let isRtl = false
+    let isRtl = false;
 
     if (typeof document !== 'undefined') {
       // Prefer explicit dir attribute if present
-      const docElement = document.documentElement
+      const docElement = document.documentElement;
       const attrDir = (
         document.dir ||
         (docElement && docElement.getAttribute('dir')) ||
         ''
-      ).toLowerCase()
+      ).toLowerCase();
 
       if (attrDir) {
-        isRtl = attrDir === 'rtl'
+        isRtl = attrDir === 'rtl';
       } else if (typeof window !== 'undefined' && docElement && window.getComputedStyle) {
-        const computedDirection = window.getComputedStyle(docElement).direction
-        isRtl = computedDirection === 'rtl'
+        const computedDirection = window.getComputedStyle(docElement).direction;
+        isRtl = computedDirection === 'rtl';
       }
     }
 
     if (isRtl) {
       if (direction === 'left') {
-        effectiveDirection = 'right'
+        effectiveDirection = 'right';
       } else if (direction === 'right') {
-        effectiveDirection = 'left'
+        effectiveDirection = 'left';
       }
     }
   }
 
-  let newIndex: number | null = null
+  let newIndex: number | null = null;
 
   if (
     (isHorizontal && effectiveDirection === 'left') ||
     (isVertical && effectiveDirection === 'up')
   ) {
     // Move to previous element
-    newIndex = currentIndex > 0 ? currentIndex - 1 : elements.length - 1
+    newIndex = currentIndex > 0 ? currentIndex - 1 : elements.length - 1;
   } else if (
     (isHorizontal && effectiveDirection === 'right') ||
     (isVertical && effectiveDirection === 'down')
   ) {
     // Move to next element
-    newIndex = currentIndex < elements.length - 1 ? currentIndex + 1 : 0
+    newIndex = currentIndex < elements.length - 1 ? currentIndex + 1 : 0;
   }
 
-  return newIndex
+  return newIndex;
 }
 
 /**
@@ -253,8 +253,8 @@ export function handleArrowNavigation(
  * @returns Index of focused element, or -1 if not found
  */
 export function findFocusedIndex(elements: HTMLElement[]): number {
-  const activeElement = document.activeElement
-  return elements.findIndex((el) => el === activeElement)
+  const activeElement = document.activeElement;
+  return elements.findIndex((el) => el === activeElement);
 }
 
 /**
@@ -268,9 +268,9 @@ export function handleHomeEndNavigation(
   elements: HTMLElement[]
 ): number | null {
   if (isHomeKey(event)) {
-    return 0
+    return 0;
   } else if (isEndKey(event)) {
-    return elements.length - 1
+    return elements.length - 1;
   }
-  return null
+  return null;
 }

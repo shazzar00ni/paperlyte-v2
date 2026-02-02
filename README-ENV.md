@@ -43,13 +43,13 @@ Open Graph image for social media previews.
 ## Usage in Code
 
 ```typescript
-import { env } from './utils/env'
+import { env } from './utils/env';
 
-console.log(env.baseUrl) // http://localhost:5173 or https://paperlyte.com
-console.log(env.seoKeywords) // SEO keywords string
-console.log(env.ogImage) // Full OG image URL
-console.log(env.isDevelopment) // true/false
-console.log(env.isProduction) // true/false
+console.log(env.baseUrl); // http://localhost:5173 or https://paperlyte.com
+console.log(env.seoKeywords); // SEO keywords string
+console.log(env.ogImage); // Full OG image URL
+console.log(env.isDevelopment); // true/false
+console.log(env.isProduction); // true/false
 ```
 
 ## Local Development
@@ -95,12 +95,12 @@ document.querySelector('meta[property="og:image"]').content
 
 ```javascript
 // Check if meta tags are updated correctly (defensive: won't throw if missing)
-const canonical = document.querySelector('link[rel="canonical"]')
-console.log('Canonical:', canonical ? canonical.href : 'Not found')
-const ogUrl = document.querySelector('meta[property="og:url"]')
-console.log('OG URL:', ogUrl ? ogUrl.content : 'Not found')
-const ogImage = document.querySelector('meta[property="og:image"]')
-console.log('OG Image:', ogImage ? ogImage.content : 'Not found')
+const canonical = document.querySelector('link[rel="canonical"]');
+console.log('Canonical:', canonical ? canonical.href : 'Not found');
+const ogUrl = document.querySelector('meta[property="og:url"]');
+console.log('OG URL:', ogUrl ? ogUrl.content : 'Not found');
+const ogImage = document.querySelector('meta[property="og:image"]');
+console.log('OG Image:', ogImage ? ogImage.content : 'Not found');
 ```
 
 ## Important Notes

@@ -12,7 +12,7 @@
  * 3. Use it in components via the Icon component with the icon name (without 'fa-' prefix)
  */
 
-import { library } from '@fortawesome/fontawesome-svg-core'
+import { library } from '@fortawesome/fontawesome-svg-core';
 
 // Solid icons (from free-solid-svg-icons)
 import {
@@ -59,7 +59,7 @@ import {
   faArrowRight, // Navigation forward
   faArrowLeft, // Navigation back
   faSpinner, // Loading states
-} from '@fortawesome/free-solid-svg-icons'
+} from '@fortawesome/free-solid-svg-icons';
 
 // Brand icons (from free-brands-svg-icons)
 import {
@@ -67,7 +67,7 @@ import {
   faTwitter, // Twitter/X social link
   faApple, // Apple platform
   faWindows, // Windows platform
-} from '@fortawesome/free-brands-svg-icons'
+} from '@fortawesome/free-brands-svg-icons';
 
 // Add all icons to the library
 library.add(
@@ -120,7 +120,7 @@ library.add(
   faTwitter,
   faApple,
   faWindows
-)
+);
 
 /**
  * Icon name mapping for easy reference
@@ -173,13 +173,13 @@ export const iconNameMap: Record<string, string> = {
   'fa-arrow-left': 'arrow-left', // Navigation back.
   'fa-spinner': 'spinner', // Loading states.
   'fa-circle-check': 'circle-check', // Checkmark/success indicator.
-}
+};
 
 /**
  * Set of brand icon names (derived from imported brand icons)
  * Used to determine the icon prefix (fab vs fas) dynamically
  */
-export const brandIconNames = new Set<string>(['github', 'twitter', 'apple', 'windows'])
+export const brandIconNames = new Set<string>(['github', 'twitter', 'apple', 'windows']);
 
 /**
  * Set of all valid icon names in the library
@@ -188,7 +188,7 @@ export const brandIconNames = new Set<string>(['github', 'twitter', 'apple', 'wi
 export const validIconNames = new Set<string>([
   ...Object.values(iconNameMap),
   'circle-question', // Fallback icon
-])
+]);
 /**
  * Helper function to convert old icon names to new format
  * @param oldName - The old Font Awesome class name (e.g., 'fa-bolt')
@@ -197,8 +197,8 @@ export const validIconNames = new Set<string>([
 export const convertIconName = (oldName: string): string => {
   // Returns mapped name if found, otherwise strips 'fa-' prefix.
   // Note: Unmapped icons will fail isValidIcon() and render a fallback.
-  return iconNameMap[oldName] || oldName.replace(/^fa-/, '')
-}
+  return iconNameMap[oldName] || oldName.replace(/^fa-/, '');
+};
 
 /**
  * Check if an icon name is a brand icon
@@ -206,8 +206,8 @@ export const convertIconName = (oldName: string): string => {
  * @returns true if the icon is a brand icon, false otherwise
  */
 export const isBrandIcon = (iconName: string): boolean => {
-  return brandIconNames.has(iconName)
-}
+  return brandIconNames.has(iconName);
+};
 
 /**
  * Check if an icon name exists in the library
@@ -215,5 +215,5 @@ export const isBrandIcon = (iconName: string): boolean => {
  * @returns true if the icon exists in the library, false otherwise
  */
 export const isValidIcon = (iconName: string): boolean => {
-  return validIconNames.has(iconName)
-}
+  return validIconNames.has(iconName);
+};

@@ -3,13 +3,13 @@
  */
 export interface Feature {
   /** Unique identifier for the feature */
-  id: string
+  id: string;
   /** Font Awesome icon class (e.g., 'fa-bolt') */
-  icon: string
+  icon: string;
   /** Feature title/heading */
-  title: string
+  title: string;
   /** Detailed description of the feature */
-  description: string
+  description: string;
 }
 
 /**
@@ -61,4 +61,4 @@ export const FEATURES: Feature[] = [
     description:
       'Your notes are yours alone. End-to-end encryption and local-first storage keep your thoughts private.',
   },
-]
+];

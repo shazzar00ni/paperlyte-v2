@@ -126,7 +126,7 @@ Example:
  */
 export const useIntersectionObserver = (options = {}) => {
   // Implementation
-}
+};
 ````
 
 ### CSS/Styling

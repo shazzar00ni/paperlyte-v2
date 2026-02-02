@@ -1,1 +1,1 @@
-export { OfflinePage } from './OfflinePage'
+export { OfflinePage } from './OfflinePage';

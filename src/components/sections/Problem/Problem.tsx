@@ -1,10 +1,10 @@
-import { Section } from '@components/layout/Section'
-import { AnimatedElement } from '@components/ui/AnimatedElement'
-import styles from './Problem.module.css'
+import { Section } from '@components/layout/Section';
+import { AnimatedElement } from '@components/ui/AnimatedElement';
+import styles from './Problem.module.css';
 
 interface ComparisonItem {
-  competitor: string
-  issues: string[]
+  competitor: string;
+  issues: string[];
 }
 
 const COMPARISON_DATA: ComparisonItem[] = [
@@ -24,7 +24,7 @@ const COMPARISON_DATA: ComparisonItem[] = [
     competitor: 'You',
     issues: ['Just want to write', 'Ideas that are vanishing', 'Simplicity that works'],
   },
-]
+];
 
 export const Problem = (): React.ReactElement => {
   return (
@@ -79,5 +79,5 @@ export const Problem = (): React.ReactElement => {
         </AnimatedElement>
       </div>
     </Section>
-  )
-}
+  );
+};

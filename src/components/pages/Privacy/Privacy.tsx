@@ -1,5 +1,5 @@
-import { Section } from '@components/layout/Section'
-import styles from './Privacy.module.css'
+import { Section } from '@components/layout/Section';
+import styles from './Privacy.module.css';
 
 /**
  * Privacy Policy page component
@@ -12,7 +12,7 @@ import styles from './Privacy.module.css'
 
 // Last update date for the privacy policy
 // TODO: Update this date whenever the policy is revised
-const LAST_UPDATED = 'December 13, 2024'
+const LAST_UPDATED = 'December 13, 2024';
 
 export function Privacy() {
   return (
@@ -247,5 +247,5 @@ export function Privacy() {
         </div>
       </Section>
     </>
-  )
+  );
 }

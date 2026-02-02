@@ -1,11 +1,11 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
-import { Section } from '@components/layout/Section'
-import { AnimatedElement } from '@components/ui/AnimatedElement'
-import { Icon } from '@components/ui/Icon'
-import { useReducedMotion } from '@hooks/useReducedMotion'
-import { TESTIMONIALS } from '@constants/testimonials'
-import type { Testimonial } from '@constants/testimonials'
-import styles from './Testimonials.module.css'
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { Section } from '@components/layout/Section';
+import { AnimatedElement } from '@components/ui/AnimatedElement';
+import { Icon } from '@components/ui/Icon';
+import { useReducedMotion } from '@hooks/useReducedMotion';
+import { TESTIMONIALS } from '@constants/testimonials';
+import type { Testimonial } from '@constants/testimonials';
+import styles from './Testimonials.module.css';
 
 /**
  * Testimonials section with accessible carousel slider
@@ -20,42 +20,42 @@ import styles from './Testimonials.module.css'
  * - Respects prefers-reduced-motion
  */
 export const Testimonials = (): React.ReactElement => {
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [isPlaying, setIsPlaying] = useState(true)
-  const [touchStart, setTouchStart] = useState(0)
-  const [touchEnd, setTouchEnd] = useState(0)
-  const carouselRef = useRef<HTMLDivElement>(null)
-  const prefersReducedMotion = useReducedMotion()
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const prefersReducedMotion = useReducedMotion();
 
   // Auto-rotation interval (5 seconds)
-  const AUTO_ROTATE_INTERVAL = 5000
+  const AUTO_ROTATE_INTERVAL = 5000;
   // Minimum swipe distance (in px) to trigger slide change
-  const MIN_SWIPE_DISTANCE = 50
+  const MIN_SWIPE_DISTANCE = 50;
 
   // Calculate how many testimonials to show per view based on screen size
   // This will be handled via CSS, but we track it for navigation
-  const totalSlides = TESTIMONIALS.length
+  const totalSlides = TESTIMONIALS.length;
 
   /**
    * Navigate to next slide
    */
   const goToNext = useCallback(() => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % totalSlides)
-  }, [totalSlides])
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % totalSlides);
+  }, [totalSlides]);
 
   /**
    * Navigate to previous slide
    */
   const goToPrevious = useCallback(() => {
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + totalSlides) % totalSlides)
-  }, [totalSlides])
+    setCurrentIndex((prevIndex) => (prevIndex - 1 + totalSlides) % totalSlides);
+  }, [totalSlides]);
 
   /**
    * Navigate to specific slide
    */
   const goToSlide = useCallback((index: number) => {
-    setCurrentIndex(index)
-  }, [])
+    setCurrentIndex(index);
+  }, []);
 
   /**
    * Handle keyboard navigation
@@ -63,79 +63,79 @@ export const Testimonials = (): React.ReactElement => {
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
       if (event.key === 'ArrowLeft') {
-        event.preventDefault()
-        goToPrevious()
+        event.preventDefault();
+        goToPrevious();
       } else if (event.key === 'ArrowRight') {
-        event.preventDefault()
-        goToNext()
+        event.preventDefault();
+        goToNext();
       }
     },
     [goToNext, goToPrevious]
-  )
+  );
 
   /**
    * Handle touch start
    */
   const handleTouchStart = (e: React.TouchEvent) => {
-    setTouchStart(e.targetTouches[0].clientX)
-  }
+    setTouchStart(e.targetTouches[0].clientX);
+  };
 
   /**
    * Handle touch move
    */
   const handleTouchMove = (e: React.TouchEvent) => {
-    setTouchEnd(e.targetTouches[0].clientX)
-  }
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
 
   /**
    * Handle touch end - detect swipe direction
    */
   const handleTouchEnd = () => {
-    const start = touchStart
-    const end = touchEnd
+    const start = touchStart;
+    const end = touchEnd;
 
     // Reset touch state first
-    setTouchStart(0)
-    setTouchEnd(0)
+    setTouchStart(0);
+    setTouchEnd(0);
 
-    if (!start || !end) return
+    if (!start || !end) return;
 
-    const distance = start - end
-    const isLeftSwipe = distance > MIN_SWIPE_DISTANCE
-    const isRightSwipe = distance < -MIN_SWIPE_DISTANCE
+    const distance = start - end;
+    const isLeftSwipe = distance > MIN_SWIPE_DISTANCE;
+    const isRightSwipe = distance < -MIN_SWIPE_DISTANCE;
 
     if (isLeftSwipe) {
-      goToNext()
+      goToNext();
     } else if (isRightSwipe) {
-      goToPrevious()
+      goToPrevious();
     }
-  }
+  };
 
   /**
    * Auto-rotation effect
    */
   useEffect(() => {
-    if (!isPlaying || prefersReducedMotion) return
+    if (!isPlaying || prefersReducedMotion) return;
 
     const interval = setInterval(() => {
-      goToNext()
-    }, AUTO_ROTATE_INTERVAL)
+      goToNext();
+    }, AUTO_ROTATE_INTERVAL);
 
-    return () => clearInterval(interval)
-  }, [isPlaying, goToNext, prefersReducedMotion])
+    return () => clearInterval(interval);
+  }, [isPlaying, goToNext, prefersReducedMotion]);
 
   /**
    * Keyboard navigation effect
    */
   useEffect(() => {
-    const carousel = carouselRef.current
-    if (!carousel) return
+    const carousel = carouselRef.current;
+    if (!carousel) return;
 
-    carousel.addEventListener('keydown', handleKeyDown as EventListener)
+    carousel.addEventListener('keydown', handleKeyDown as EventListener);
     return () => {
-      carousel.removeEventListener('keydown', handleKeyDown as EventListener)
-    }
-  }, [handleKeyDown])
+      carousel.removeEventListener('keydown', handleKeyDown as EventListener);
+    };
+  }, [handleKeyDown]);
 
   /**
    * Render star rating
@@ -153,8 +153,8 @@ export const Testimonials = (): React.ReactElement => {
           />
         ))}
       </div>
-    )
-  }
+    );
+  };
 
   /**
    * Render testimonial card
@@ -187,8 +187,8 @@ export const Testimonials = (): React.ReactElement => {
           </div>
         </div>
       </article>
-    )
-  }
+    );
+  };
 
   return (
     <Section id="testimonials" background="surface">
@@ -275,5 +275,5 @@ export const Testimonials = (): React.ReactElement => {
         Showing testimonial {currentIndex + 1} of {totalSlides}
       </div>
     </Section>
-  )
-}
+  );
+};

@@ -21,20 +21,20 @@
  * - Simple Analytics
  */
 
-import type { AnalyticsConfig, AnalyticsEvent, AnalyticsProvider } from './types'
-import { PlausibleProvider } from './providers/plausible'
-import { initWebVitals } from './webVitals'
-import { createScrollTracker } from './scrollDepth'
+import type { AnalyticsConfig, AnalyticsEvent, AnalyticsProvider } from './types';
+import { PlausibleProvider } from './providers/plausible';
+import { initWebVitals } from './webVitals';
+import { createScrollTracker } from './scrollDepth';
 
 /**
  * Analytics singleton instance
  */
 class Analytics {
-  private provider: AnalyticsProvider | null = null
-  private config: AnalyticsConfig | null = null
-  private initialized = false
-  private scrollTracker: { disable: () => void } | null = null
-  private webVitalsCleanup: (() => void) | null = null
+  private provider: AnalyticsProvider | null = null;
+  private config: AnalyticsConfig | null = null;
+  private initialized = false;
+  private scrollTracker: { disable: () => void } | null = null;
+  private webVitalsCleanup: (() => void) | null = null;
 
   /**
    * Initialize analytics with configuration
@@ -43,23 +43,23 @@ class Analytics {
    */
   init(config: AnalyticsConfig): void {
     if (this.initialized) {
-      console.warn('[Analytics] Already initialized')
-      return
+      console.warn('[Analytics] Already initialized');
+      return;
     }
 
-    this.config = config
+    this.config = config;
 
     // Create provider based on configuration
-    this.provider = this.createProvider(config.provider)
+    this.provider = this.createProvider(config.provider);
 
     // Initialize provider
-    this.provider.init(config)
+    this.provider.init(config);
 
     // Initialize Core Web Vitals tracking if enabled
     if (config.trackWebVitals !== false) {
       this.webVitalsCleanup = initWebVitals((vitals) => {
-        this.trackWebVitals(vitals)
-      })
+        this.trackWebVitals(vitals);
+      });
     }
 
     // Initialize scroll depth tracking if enabled
@@ -68,14 +68,14 @@ class Analytics {
         this.trackEvent({
           name: 'scroll_depth',
           properties: { depth },
-        })
-      })
+        });
+      });
     }
 
-    this.initialized = true
+    this.initialized = true;
 
     if (config.debug) {
-      console.log('[Analytics] Initialized with config:', config)
+      console.log('[Analytics] Initialized with config:', config);
     }
   }
 
@@ -86,7 +86,7 @@ class Analytics {
   private createProvider(provider: AnalyticsConfig['provider']): AnalyticsProvider {
     switch (provider) {
       case 'plausible':
-        return new PlausibleProvider()
+        return new PlausibleProvider();
       case 'fathom':
       case 'umami':
       case 'simple':
@@ -99,16 +99,16 @@ class Analytics {
           `[Analytics] Provider "${provider}" is not yet implemented. ` +
             `Please use "plausible" for now. ` +
             `Track implementation progress at: https://github.com/shazzar00ni/paperlyte-v2/issues`
-        )
+        );
       default:
         // Fallback to Plausible for any other value (with warning in dev)
         if (import.meta.env.DEV) {
           console.warn(
             `[Analytics] Unknown provider "${provider}", falling back to Plausible. ` +
               `Supported providers: plausible`
-          )
+          );
         }
-        return new PlausibleProvider()
+        return new PlausibleProvider();
     }
   }
 
@@ -119,16 +119,16 @@ class Analytics {
    */
   trackPageView(url?: string): void {
     if (!this.isEnabled()) {
-      return
+      return;
     }
 
-    this.provider?.trackPageView(url)
+    this.provider?.trackPageView(url);
 
     if (this.config?.debug) {
       console.log(
         '[Analytics] Page view tracked:',
         url || (typeof window !== 'undefined' ? window.location.pathname : '/')
-      )
+      );
     }
   }
 
@@ -139,19 +139,19 @@ class Analytics {
    */
   trackEvent(event: AnalyticsEvent): void {
     if (!this.isEnabled()) {
-      return
+      return;
     }
 
     // Ensure timestamp is set (defaults to Date.now() if not provided)
     const eventWithTimestamp: AnalyticsEvent = {
       ...event,
       timestamp: event.timestamp ?? Date.now(),
-    }
+    };
 
-    this.provider?.trackEvent(eventWithTimestamp)
+    this.provider?.trackEvent(eventWithTimestamp);
 
     if (this.config?.debug) {
-      console.log('[Analytics] Event tracked:', eventWithTimestamp)
+      console.log('[Analytics] Event tracked:', eventWithTimestamp);
     }
   }
 
@@ -162,13 +162,13 @@ class Analytics {
    */
   trackWebVitals(vitals: Parameters<AnalyticsProvider['trackWebVitals']>[0]): void {
     if (!this.isEnabled()) {
-      return
+      return;
     }
 
-    this.provider?.trackWebVitals(vitals)
+    this.provider?.trackWebVitals(vitals);
 
     if (this.config?.debug) {
-      console.log('[Analytics] Web Vitals tracked:', vitals)
+      console.log('[Analytics] Web Vitals tracked:', vitals);
     }
   }
 
@@ -185,7 +185,7 @@ class Analytics {
         button: buttonName,
         location,
       },
-    })
+    });
   }
 
   /**
@@ -201,7 +201,7 @@ class Analytics {
         platform,
         location,
       },
-    })
+    });
   }
 
   /**
@@ -217,14 +217,14 @@ class Analytics {
         target,
         source,
       },
-    })
+    });
   }
 
   /**
    * Check if analytics is enabled
    */
   isEnabled(): boolean {
-    return this.initialized && this.provider !== null && this.provider.isEnabled()
+    return this.initialized && this.provider !== null && this.provider.isEnabled();
   }
 
   /**
@@ -232,33 +232,33 @@ class Analytics {
    */
   disable(): void {
     if (!this.initialized) {
-      return
+      return;
     }
 
-    const debug = this.config?.debug
+    const debug = this.config?.debug;
 
     // Disable provider
-    this.provider?.disable()
+    this.provider?.disable();
 
     // Disable scroll tracker
     if (this.scrollTracker) {
-      this.scrollTracker.disable()
-      this.scrollTracker = null
+      this.scrollTracker.disable();
+      this.scrollTracker = null;
     }
 
     // Cleanup web vitals tracking
     if (this.webVitalsCleanup) {
-      this.webVitalsCleanup()
-      this.webVitalsCleanup = null
+      this.webVitalsCleanup();
+      this.webVitalsCleanup = null;
     }
 
     // Reset state
-    this.initialized = false
-    this.config = null
-    this.provider = null
+    this.initialized = false;
+    this.config = null;
+    this.provider = null;
 
     if (debug) {
-      console.log('[Analytics] Disabled')
+      console.log('[Analytics] Disabled');
     }
   }
 
@@ -267,32 +267,32 @@ class Analytics {
    * Unconditionally clears all internal state - useful for testing
    */
   reset(): void {
-    const debug = this.config?.debug
+    const debug = this.config?.debug;
 
     // Disable provider regardless of state
     if (this.provider) {
-      this.provider.disable()
-      this.provider = null
+      this.provider.disable();
+      this.provider = null;
     }
 
     // Disable scroll tracker
     if (this.scrollTracker) {
-      this.scrollTracker.disable()
-      this.scrollTracker = null
+      this.scrollTracker.disable();
+      this.scrollTracker = null;
     }
 
     // Cleanup web vitals tracking
     if (this.webVitalsCleanup) {
-      this.webVitalsCleanup()
-      this.webVitalsCleanup = null
+      this.webVitalsCleanup();
+      this.webVitalsCleanup = null;
     }
 
     // Clear all state unconditionally
-    this.initialized = false
-    this.config = null
+    this.initialized = false;
+    this.config = null;
 
     if (debug) {
-      console.log('[Analytics] Reset')
+      console.log('[Analytics] Reset');
     }
   }
 
@@ -300,16 +300,16 @@ class Analytics {
    * Get current configuration
    */
   getConfig(): AnalyticsConfig | null {
-    return this.config
+    return this.config;
   }
 }
 
 /**
  * Export singleton instance
  */
-export const analytics = new Analytics()
+export const analytics = new Analytics();
 
 /**
  * Export types for external use
  */
-export type { AnalyticsConfig, AnalyticsEvent, AnalyticsProvider } from './types'
+export type { AnalyticsConfig, AnalyticsEvent, AnalyticsProvider } from './types';

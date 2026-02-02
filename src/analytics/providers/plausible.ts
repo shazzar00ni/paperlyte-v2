@@ -7,18 +7,18 @@
  * @see https://plausible.io/docs
  */
 
-import type { AnalyticsConfig, AnalyticsEvent, AnalyticsProvider, CoreWebVitals } from '../types'
-import { isSafePropertyKey } from '../../utils/security'
+import type { AnalyticsConfig, AnalyticsEvent, AnalyticsProvider, CoreWebVitals } from '../types';
+import { isSafePropertyKey } from '../../utils/security';
 
 /**
  * Plausible Analytics provider
  * Implements privacy-first, cookie-less analytics tracking
  */
 export class PlausibleProvider implements AnalyticsProvider {
-  private config: AnalyticsConfig | null = null
-  private initialized = false
-  private scriptLoaded = false
-  private scriptElement: HTMLScriptElement | null = null
+  private config: AnalyticsConfig | null = null;
+  private initialized = false;
+  private scriptLoaded = false;
+  private scriptElement: HTMLScriptElement | null = null;
 
   /**
    * Initialize Plausible Analytics
@@ -27,27 +27,27 @@ export class PlausibleProvider implements AnalyticsProvider {
   init(config: AnalyticsConfig): void {
     if (this.initialized) {
       if (config.debug) {
-        console.log('[Analytics] Plausible already initialized')
+        console.log('[Analytics] Plausible already initialized');
       }
-      return
+      return;
     }
 
     // Check if user has Do Not Track enabled
     if (config.respectDNT !== false && this.isDNTEnabled()) {
       if (config.debug) {
-        console.log('[Analytics] Do Not Track is enabled, analytics disabled')
+        console.log('[Analytics] Do Not Track is enabled, analytics disabled');
       }
-      return
+      return;
     }
 
-    this.config = config
-    this.initialized = true
+    this.config = config;
+    this.initialized = true;
 
     // Load Plausible script asynchronously
-    this.loadScript()
+    this.loadScript();
 
     if (config.debug) {
-      console.log('[Analytics] Plausible initialized', config)
+      console.log('[Analytics] Plausible initialized', config);
     }
   }
 
@@ -60,14 +60,14 @@ export class PlausibleProvider implements AnalyticsProvider {
    */
   private isValidScriptUrl(url: string): boolean {
     try {
-      const parsedUrl = new URL(url)
+      const parsedUrl = new URL(url);
 
       // Only allow HTTPS for security
       if (parsedUrl.protocol !== 'https:') {
         if (this.config?.debug) {
-          console.warn('[Analytics] Script URL must use HTTPS protocol:', url)
+          console.warn('[Analytics] Script URL must use HTTPS protocol:', url);
         }
-        return false
+        return false;
       }
 
       // Whitelist known analytics providers or allow any HTTPS domain
@@ -78,29 +78,29 @@ export class PlausibleProvider implements AnalyticsProvider {
         'fathom.com',
         'umami.is',
         'simpleanalytics.com',
-      ]
+      ];
 
       const isKnownProvider = knownProviders.some((provider) =>
         parsedUrl.hostname.endsWith(provider)
-      )
-      const hasValidPath = parsedUrl.pathname.endsWith('.js')
+      );
+      const hasValidPath = parsedUrl.pathname.endsWith('.js');
 
       if (!hasValidPath) {
         if (this.config?.debug) {
-          console.warn('[Analytics] Script URL must point to a .js file:', url)
+          console.warn('[Analytics] Script URL must point to a .js file:', url);
         }
-        return false
+        return false;
       }
 
       // Allow known providers or any HTTPS URL pointing to a .js file
       // (for self-hosted instances)
-      return isKnownProvider || parsedUrl.protocol === 'https:'
+      return isKnownProvider || parsedUrl.protocol === 'https:';
     } catch (error) {
       // Invalid URL format
       if (this.config?.debug) {
-        console.warn('[Analytics] Invalid script URL format:', url, error)
+        console.warn('[Analytics] Invalid script URL format:', url, error);
       }
-      return false
+      return false;
     }
   }
 
@@ -111,10 +111,10 @@ export class PlausibleProvider implements AnalyticsProvider {
   private loadScript(): void {
     // Guard against SSR/Node.js environments
     if (this.scriptLoaded || typeof window === 'undefined' || typeof document === 'undefined') {
-      return
+      return;
     }
 
-    const scriptUrl = this.config?.scriptUrl || 'https://plausible.io/js/script.js'
+    const scriptUrl = this.config?.scriptUrl || 'https://plausible.io/js/script.js';
 
     // Validate script URL to prevent injection attacks
     if (!this.isValidScriptUrl(scriptUrl)) {
@@ -122,39 +122,39 @@ export class PlausibleProvider implements AnalyticsProvider {
         console.error(
           '[Analytics] Invalid or unsafe script URL. Must be HTTPS and point to a .js file:',
           scriptUrl
-        )
+        );
       }
-      return
+      return;
     }
 
-    const script = document.createElement('script')
+    const script = document.createElement('script');
 
-    script.async = true
-    script.src = scriptUrl
-    script.setAttribute('data-domain', this.config?.domain || '')
+    script.async = true;
+    script.src = scriptUrl;
+    script.setAttribute('data-domain', this.config?.domain || '');
 
     // Add optional tracking features
     if (this.config?.trackPageviews === false) {
-      script.setAttribute('data-auto-pageviews', 'false')
+      script.setAttribute('data-auto-pageviews', 'false');
     }
 
     script.onerror = () => {
       if (this.config?.debug) {
-        console.warn('[Analytics] Failed to load Plausible script')
+        console.warn('[Analytics] Failed to load Plausible script');
       }
-      this.scriptLoaded = false
-    }
+      this.scriptLoaded = false;
+    };
 
     script.onload = () => {
-      this.scriptLoaded = true
+      this.scriptLoaded = true;
       if (this.config?.debug) {
-        console.log('[Analytics] Plausible script loaded successfully')
+        console.log('[Analytics] Plausible script loaded successfully');
       }
-    }
+    };
 
     // Store reference to the script element for cleanup
-    this.scriptElement = script
-    document.head.appendChild(script)
+    this.scriptElement = script;
+    document.head.appendChild(script);
   }
 
   /**
@@ -164,17 +164,17 @@ export class PlausibleProvider implements AnalyticsProvider {
   trackPageView(url?: string): void {
     // Guard against SSR/Node.js environments
     if (!this.isEnabled() || typeof window === 'undefined' || !window.plausible) {
-      return
+      return;
     }
 
-    const pageUrl = url || window.location.pathname
+    const pageUrl = url || window.location.pathname;
 
     window.plausible('pageview', {
       props: { path: pageUrl },
-    })
+    });
 
     if (this.config?.debug) {
-      console.log('[Analytics] Page view tracked:', pageUrl)
+      console.log('[Analytics] Page view tracked:', pageUrl);
     }
   }
 
@@ -185,7 +185,7 @@ export class PlausibleProvider implements AnalyticsProvider {
   trackEvent(event: AnalyticsEvent): void {
     // Guard against SSR/Node.js environments
     if (!this.isEnabled() || typeof window === 'undefined' || !window.plausible) {
-      return
+      return;
     }
 
     // Convert properties to Plausible format (only string, number, boolean)
@@ -195,24 +195,24 @@ export class PlausibleProvider implements AnalyticsProvider {
             // Validate key is safe before using it for property assignment
             if (!isSafePropertyKey(key)) {
               if (this.config?.debug || import.meta.env.DEV) {
-                console.warn('[Analytics] Blocked potentially unsafe property key:', key)
+                console.warn('[Analytics] Blocked potentially unsafe property key:', key);
               }
-              return acc
+              return acc;
             }
 
             if (value !== undefined && value !== null) {
-              acc[key] = value
+              acc[key] = value;
             }
-            return acc
+            return acc;
           },
           {} as Record<string, string | number | boolean>
         )
-      : undefined
+      : undefined;
 
-    window.plausible(event.name, props ? { props } : undefined)
+    window.plausible(event.name, props ? { props } : undefined);
 
     if (this.config?.debug) {
-      console.log('[Analytics] Event tracked:', event.name, props)
+      console.log('[Analytics] Event tracked:', event.name, props);
     }
   }
 
@@ -222,7 +222,7 @@ export class PlausibleProvider implements AnalyticsProvider {
    */
   trackWebVitals(vitals: CoreWebVitals): void {
     if (!this.isEnabled()) {
-      return
+      return;
     }
 
     // Track each metric separately for better analysis
@@ -230,7 +230,7 @@ export class PlausibleProvider implements AnalyticsProvider {
       if (value !== undefined) {
         // Preserve sub-integer precision for CLS (typically < 1)
         // Round to milliseconds for time-based metrics
-        const formattedValue = metric === 'CLS' ? Number(value.toFixed(3)) : Math.round(value)
+        const formattedValue = metric === 'CLS' ? Number(value.toFixed(3)) : Math.round(value);
 
         this.trackEvent({
           name: 'web_vitals',
@@ -238,12 +238,12 @@ export class PlausibleProvider implements AnalyticsProvider {
             metric,
             value: formattedValue,
           },
-        })
+        });
       }
-    })
+    });
 
     if (this.config?.debug) {
-      console.log('[Analytics] Core Web Vitals tracked:', vitals)
+      console.log('[Analytics] Core Web Vitals tracked:', vitals);
     }
   }
 
@@ -256,7 +256,7 @@ export class PlausibleProvider implements AnalyticsProvider {
       this.scriptLoaded &&
       typeof window !== 'undefined' &&
       typeof window.plausible === 'function'
-    )
+    );
   }
 
   /**
@@ -264,28 +264,28 @@ export class PlausibleProvider implements AnalyticsProvider {
    * Removes the Plausible script and resets state
    */
   disable(): void {
-    const debug = this.config?.debug
+    const debug = this.config?.debug;
 
-    this.initialized = false
-    this.scriptLoaded = false
-    this.config = null
+    this.initialized = false;
+    this.scriptLoaded = false;
+    this.config = null;
 
     // Guard against SSR/Node.js environments and remove only the script we created
     if (typeof document !== 'undefined' && this.scriptElement) {
       // Remove the exact script element we created (not a broad selector)
       if (this.scriptElement.parentNode) {
-        this.scriptElement.parentNode.removeChild(this.scriptElement)
+        this.scriptElement.parentNode.removeChild(this.scriptElement);
       }
-      this.scriptElement = null
+      this.scriptElement = null;
     }
 
     // Clean up window global
     if (typeof window !== 'undefined' && window.plausible) {
-      delete window.plausible
+      delete window.plausible;
     }
 
     if (debug) {
-      console.log('[Analytics] Plausible disabled')
+      console.log('[Analytics] Plausible disabled');
     }
   }
 
@@ -295,14 +295,14 @@ export class PlausibleProvider implements AnalyticsProvider {
   private isDNTEnabled(): boolean {
     // Guard against SSR/Node.js environments
     if (typeof window === 'undefined' || typeof navigator === 'undefined') {
-      return false
+      return false;
     }
 
     const dnt =
       navigator.doNotTrack ||
       (window as Window & { doNotTrack?: string }).doNotTrack ||
-      (navigator as Navigator & { msDoNotTrack?: string }).msDoNotTrack
+      (navigator as Navigator & { msDoNotTrack?: string }).msDoNotTrack;
 
-    return dnt === '1' || dnt === 'yes'
+    return dnt === '1' || dnt === 'yes';
   }
 }

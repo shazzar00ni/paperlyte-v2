@@ -1,1 +1,1 @@
-export { CounterAnimation } from './CounterAnimation'
+export { CounterAnimation } from './CounterAnimation';

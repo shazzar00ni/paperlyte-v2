@@ -185,7 +185,7 @@ Error monitoring is fully configured and ready to activate. To enable Sentry int
 3. **Initialization** (already implemented in `src/main.tsx`):
 
    ```typescript
-   import * as Sentry from '@sentry/react'
+   import * as Sentry from '@sentry/react';
 
    // Initialize Sentry error monitoring in production
    if (import.meta.env.PROD && import.meta.env.VITE_SENTRY_DSN) {
@@ -209,11 +209,11 @@ Error monitoring is fully configured and ready to activate. To enable Sentry int
        beforeSend(event) {
          // Filter sensitive data from URLs
          if (event.request?.url) {
-           event.request.url = event.request.url.split('?')[0]
+           event.request.url = event.request.url.split('?')[0];
          }
-         return event
+         return event;
        },
-     })
+     });
    }
    ```
 
@@ -229,12 +229,12 @@ Error monitoring is fully configured and ready to activate. To enable Sentry int
    **Manual Error Capture** (in async handlers):
 
    ```typescript
-   import { logError } from './utils/monitoring'
+   import { logError } from './utils/monitoring';
 
    async function fetchUserData() {
      try {
-       const response = await fetch('/api/user')
-       return await response.json()
+       const response = await fetch('/api/user');
+       return await response.json();
      } catch (error) {
        // Automatically sends to Sentry if DSN configured
        logError(
@@ -245,9 +245,9 @@ Error monitoring is fully configured and ready to activate. To enable Sentry int
            errorInfo: { endpoint: '/api/user' },
          },
          'UserDataFetch'
-       )
+       );
 
-       throw error
+       throw error;
      }
    }
    ```
@@ -255,19 +255,19 @@ Error monitoring is fully configured and ready to activate. To enable Sentry int
    **With Severity Levels and Context**:
 
    ```typescript
-   import { logError } from './utils/monitoring'
+   import { logError } from './utils/monitoring';
 
    // Low severity
-   logError(error, { severity: 'low' }, 'NonCriticalOperation')
+   logError(error, { severity: 'low' }, 'NonCriticalOperation');
 
    // Medium severity (default)
-   logError(error, { severity: 'medium', tags: { user_action: 'save_note' } })
+   logError(error, { severity: 'medium', tags: { user_action: 'save_note' } });
 
    // High severity
-   logError(error, { severity: 'high', errorInfo: { user_id: '123' } }, 'PaymentProcessing')
+   logError(error, { severity: 'high', errorInfo: { user_id: '123' } }, 'PaymentProcessing');
 
    // Critical severity
-   logError(error, { severity: 'critical' }, 'SecurityViolation')
+   logError(error, { severity: 'critical' }, 'SecurityViolation');
    ```
 
 5. **TypeScript Configuration**:

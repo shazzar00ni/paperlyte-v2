@@ -3,21 +3,21 @@
  */
 export interface Testimonial {
   /** Unique identifier for the testimonial */
-  id: string
+  id: string;
   /** Name of the user */
-  name: string
+  name: string;
   /** User's role or title */
-  role: string
+  role: string;
   /** Company or organization (optional) */
-  company?: string
+  company?: string;
   /** Testimonial quote */
-  quote: string
+  quote: string;
   /** Star rating (1-5) */
-  rating: 1 | 2 | 3 | 4 | 5
+  rating: 1 | 2 | 3 | 4 | 5;
   /** URL to user's avatar image (optional) */
-  avatar?: string
+  avatar?: string;
   /** Initials for fallback avatar */
-  initials: string
+  initials: string;
 }
 
 /**
@@ -104,4 +104,4 @@ export const TESTIMONIALS: Testimonial[] = [
     rating: 5,
     initials: 'TN',
   },
-]
+];

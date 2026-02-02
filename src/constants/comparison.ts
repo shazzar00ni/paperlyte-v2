@@ -3,15 +3,15 @@
  */
 export interface ComparisonFeature {
   /** Feature name/label */
-  feature: string
+  feature: string;
   /** Whether Paperlyte supports this feature */
-  paperlyte: boolean | string
+  paperlyte: boolean | string;
   /** Whether Notion supports this feature */
-  notion: boolean | string
+  notion: boolean | string;
   /** Whether Evernote supports this feature */
-  evernote: boolean | string
+  evernote: boolean | string;
   /** Whether OneNote supports this feature */
-  onenote: boolean | string
+  onenote: boolean | string;
 }
 
 /**
@@ -76,18 +76,18 @@ export const COMPARISON_FEATURES: ComparisonFeature[] = [
     evernote: 'Good',
     onenote: 'Good',
   },
-]
+];
 
 /**
  * Competitor information for the comparison table header
  */
 export interface Competitor {
   /** Unique identifier */
-  id: string
+  id: string;
   /** Display name */
-  name: string
+  name: string;
   /** CSS color variable for branding */
-  color: string
+  color: string;
 }
 
 export const COMPETITORS: Competitor[] = [
@@ -95,4 +95,4 @@ export const COMPETITORS: Competitor[] = [
   { id: 'notion', name: 'Notion', color: '#000000' },
   { id: 'evernote', name: 'Evernote', color: '#00A82D' },
   { id: 'onenote', name: 'OneNote', color: '#7719AA' },
-]
+];

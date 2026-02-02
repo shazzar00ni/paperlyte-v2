@@ -97,7 +97,6 @@ describe('Pricing', () => {
 
     PRICING_PLANS.forEach((plan) => {
       if (plan.icon) {
-        // Find icon by aria-label instead of class name
         const icon = screen.getByLabelText(`${plan.name} plan icon`)
         expect(icon).toBeInTheDocument()
       }

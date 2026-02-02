@@ -10,18 +10,18 @@
  * Requires: npm install --save-dev sharp png-to-ico
  */
 
-import sharp from 'sharp';
-import pngToIco from 'png-to-ico';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-import { existsSync, writeFileSync } from 'fs';
-import { isPathSafe } from './path-utils.js';
+import sharp from 'sharp'
+import pngToIco from 'png-to-ico'
+import { fileURLToPath } from 'url'
+import { dirname, join } from 'path'
+import { existsSync, writeFileSync } from 'fs'
+import { isPathSafe } from './path-utils.js'
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const projectRoot = join(__dirname, '..');
-const publicDir = join(projectRoot, 'public');
-const faviconSource = join(publicDir, 'favicon.svg');
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+const projectRoot = join(__dirname, '..')
+const publicDir = join(projectRoot, 'public')
+const faviconSource = join(publicDir, 'favicon.svg')
 
 /**
  * Icon sizes to generate
@@ -35,10 +35,10 @@ const iconSizes = [
   { name: 'apple-touch-icon', size: 180, formats: ['png'] },
   { name: 'android-chrome-192x192', size: 192, formats: ['png', 'webp', 'avif'] },
   { name: 'android-chrome-512x512', size: 512, formats: ['png', 'webp', 'avif'] },
-];
+]
 
 // Valid format extensions for validation
-const VALID_FORMATS = ['png', 'webp', 'avif'];
+const VALID_FORMATS = ['png', 'webp', 'avif']
 
 /**
  * Generate an icon from SVG source in the specified format
@@ -59,7 +59,7 @@ async function generateIcon(baseName, size, format) {
     if (!isPathSafe(publicDir, outputName)) {
       throw new Error(`Invalid output path: ${outputName}. Path traversal detected.`)
     }
-    
+
     const outputPath = join(publicDir, outputName)
 
     const image = sharp(faviconSource, { density: 300 }) // High DPI for crisp rasterization

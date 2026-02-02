@@ -111,7 +111,7 @@ if ! jq '
     # - .region.* // 0: Default line/column numbers to 0
     results: [.runs[].results // [] | .[]] | unique_by(
       (.ruleId // "") +
-      (((.locations // [])[0] // {}).physicalLocation // {}).artifactLocation.uri // "") +
+      (((.locations // [])[0] // {}).physicalLocation // {}).artifactLocation.uri // "" +
       ((((.locations // [])[0] // {}).physicalLocation // {}).region.startLine // 0 | tostring) +
       ((((.locations // [])[0] // {}).physicalLocation // {}).region.startColumn // 0 | tostring) +
       ((((.locations // [])[0] // {}).physicalLocation // {}).region.endLine // 0 | tostring)
@@ -136,11 +136,11 @@ if ! jq '
 
     # columnKind: Specifies if columns are 1-based or UTF-16 code units
     # Merge strategy: Use first non-null value (should be consistent across runs)
-    columnKind: (first(.runs[].columnKind // empty)),
+    columnKind: ([.runs[].columnKind | select(. != null)] | .[0]),
 
     # conversion: Info about SARIF format conversion if applicable
     # Merge strategy: Use first non-null value
-    conversion: (first(.runs[].conversion // empty))
+    conversion: ([.runs[].conversion | select(. != null)] | .[0])
   }]
 }
 ' "$INPUT_FILE" > "$TEMP_FILE"; then

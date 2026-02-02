@@ -81,15 +81,21 @@ describe('Pricing', () => {
   })
 
   it('should render "Most Popular" badge for Pro plan', () => {
-    render(<Pricing />)
+    const themes = ['light', 'dark'] as const
 
-    const popularBadge = screen.getByTestId('most-popular-badge')
-    expect(popularBadge).toBeInTheDocument()
+    themes.forEach((theme) => {
+      document.documentElement.setAttribute('data-theme', theme)
+      const { unmount } = render(<Pricing />)
 
-    // Check that the badge contains the star icon with correct aria-label
-    const icon = popularBadge.querySelector('svg, .icon-fallback')
-    expect(icon).toBeInTheDocument()
-    expect(icon).toHaveAttribute('aria-label', 'Most popular')
+      const popularBadge = screen.getByTestId('most-popular-badge')
+      expect(popularBadge).toBeInTheDocument()
+
+      const icon = popularBadge.querySelector('svg, .icon-fallback')
+      expect(icon).toBeInTheDocument()
+      expect(icon).toHaveAttribute('aria-label', 'Most popular')
+
+      unmount()
+    })
   })
 
   it('should render plan icons', () => {

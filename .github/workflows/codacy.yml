@@ -60,6 +60,8 @@ jobs:
       - name: Merge SARIF runs into single run
         if: hashFiles('results.sarif') != ''
         run: |
+          set -e
+
           RUN_COUNT=$(jq '.runs | length' results.sarif)
           echo "Found $RUN_COUNT runs in SARIF file"
 
@@ -71,7 +73,7 @@ jobs:
             # - Combine all results from all runs
             # - Merge all rule definitions from all runs
             # Note: runAutomationDetails.id is set by the upload-sarif action via category parameter
-            jq '{
+            if jq '{
               "$schema": ."$schema",
               version: .version,
               runs: [{
@@ -85,10 +87,21 @@ jobs:
                 },
                 results: [.runs[].results // [] | .[]] | unique_by(.ruleId + (.locations[0].physicalLocation.artifactLocation.uri // "") + ((.locations[0].physicalLocation.region.startLine // 0) | tostring) + ((.locations[0].physicalLocation.region.startColumn // 0) | tostring) + ((.locations[0].physicalLocation.region.endLine // 0) | tostring))
               }]
-            }' results.sarif > merged.sarif
-
-            mv merged.sarif results.sarif
-            echo "Merged SARIF file created"
+            }' results.sarif > merged.sarif; then
+              # Validate merged file is valid JSON before replacing original
+              if jq empty merged.sarif 2>/dev/null; then
+                mv merged.sarif results.sarif
+                echo "Merged SARIF file created successfully"
+              else
+                echo "Error: Merged SARIF file is invalid JSON, keeping original"
+                rm -f merged.sarif
+                exit 1
+              fi
+            else
+              echo "Error: jq merge operation failed"
+              rm -f merged.sarif
+              exit 1
+            fi
           else
             echo "Single run detected, no merging needed"
           fi

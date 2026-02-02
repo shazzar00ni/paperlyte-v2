@@ -43,6 +43,7 @@ describe('Mobile', () => {
       const arrowIcon = link.querySelector('svg, .icon-fallback')
 
       expect(arrowIcon).toBeInTheDocument()
+      expect(arrowIcon).toHaveAttribute('aria-hidden', 'true')
     })
   })
 

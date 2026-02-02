@@ -90,9 +90,8 @@ describe('Pricing', () => {
       const popularBadge = screen.getByTestId('most-popular-badge')
       expect(popularBadge).toBeInTheDocument()
 
-      const icon = popularBadge.querySelector('svg, .icon-fallback')
+      const icon = screen.getByRole('img', { name: 'Most popular' })
       expect(icon).toBeInTheDocument()
-      expect(icon).toHaveAttribute('aria-label', 'Most popular')
 
       unmount()
     })

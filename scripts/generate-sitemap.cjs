@@ -50,7 +50,8 @@ function getLastGitCommitDate(filePath) {
       return date;
     }
     return null;
-  } catch {
+  } catch (error) {
+    // Return null if git command fails (e.g., file not in repo, git not available)
     return null;
   }
 }

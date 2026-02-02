@@ -95,7 +95,7 @@ jobs:
 
           echo "Final SARIF structure:"
           jq '.runs | length' results.sarif
-          jq '.runs[0].results | length' results.sarif
+          jq '.runs[0].results // [] | length' results.sarif
 
       # Upload the SARIF file (now with single run) using official action
       - name: Upload SARIF results file

@@ -65,7 +65,7 @@ describe('Hero', () => {
     it('should render trust badges', () => {
       render(<Hero />)
 
-      expect(screen.getByText(/Join 1,234 early adopters/i)).toBeInTheDocument()
+      expect(screen.getByText(/Join thousands of early adopters/i)).toBeInTheDocument()
       expect(screen.getByText(/Free forever for early users/i)).toBeInTheDocument()
       expect(screen.getByText(/No credit card required/i)).toBeInTheDocument()
     })
@@ -375,7 +375,7 @@ describe('Hero', () => {
       render(<Hero />)
 
       const secondaryCta = screen.getByRole('button', { name: /see how.*works/i })
-      const trustBadgeText = screen.getByText('Join 1,234 early adopters')
+      const trustBadgeText = screen.getByText('Join thousands of early adopters')
       const trustBadgesContainer = trustBadgeText.closest('div')?.parentElement
 
       const position = secondaryCta.compareDocumentPosition(trustBadgesContainer!)

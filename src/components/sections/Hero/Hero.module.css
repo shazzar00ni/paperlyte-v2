@@ -376,21 +376,42 @@
   }
 }
 
-/* Dark mode support - keep gradient but adjust overlay */
+/* Dark mode support - muted gradient for comfortable viewing */
 @media (prefers-color-scheme: dark) {
+  .hero {
+    /* Use darker, muted gradient colors in dark mode */
+    background: linear-gradient(
+      135deg,
+      var(--color-hero-gradient-start) 0%,
+      var(--color-hero-gradient-end) 100%
+    );
+  }
+
   .hero::before {
-    background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
+    background: radial-gradient(
+      circle at 20% 50%,
+      rgba(255, 255, 255, 0.05) 0%,
+      transparent 50%
+    );
   }
 
   .hero::after {
-    background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.06) 0%, transparent 60%);
+    background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.03) 0%, transparent 60%);
   }
 }
 
+[data-theme='dark'] .hero {
+  background: linear-gradient(
+    135deg,
+    var(--color-hero-gradient-start) 0%,
+    var(--color-hero-gradient-end) 100%
+  );
+}
+
 [data-theme='dark'] .hero::before {
-  background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
+  background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
 }
 
 [data-theme='dark'] .hero::after {
-  background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.06) 0%, transparent 60%);
+  background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.03) 0%, transparent 60%);
 }

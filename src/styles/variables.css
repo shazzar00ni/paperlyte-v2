@@ -128,6 +128,12 @@
   --color-error-bg: rgba(248, 113, 113, 0.15);
   --color-error-border: rgba(248, 113, 113, 0.35);
 
+  /* Hero Section Colors - Dark Mode (muted/darker gradients) */
+  --color-hero-gradient-start: #1e3a8a; /* Deep blue - Darker gradient start */
+  --color-hero-gradient-end: #581c87; /* Dark purple - Darker gradient end */
+  --color-hero-button-primary: #3b82f6; /* Lighter blue for better visibility in dark mode */
+  --color-hero-button-primary-hover: #2563eb; /* Slightly darker blue on hover */
+
   /* Theme transition */
   color-scheme: dark;
 }
@@ -170,6 +176,12 @@
     --color-error: #f87171;
     --color-error-bg: rgba(248, 113, 113, 0.15);
     --color-error-border: rgba(248, 113, 113, 0.35);
+
+    /* Hero Section Colors - Dark Mode (muted/darker gradients) */
+    --color-hero-gradient-start: #1e3a8a; /* Deep blue - Darker gradient start */
+    --color-hero-gradient-end: #581c87; /* Dark purple - Darker gradient end */
+    --color-hero-button-primary: #3b82f6; /* Lighter blue for better visibility in dark mode */
+    --color-hero-button-primary-hover: #2563eb; /* Slightly darker blue on hover */
 
     color-scheme: dark;
   }

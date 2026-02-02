@@ -1,0 +1,19 @@
+---
+engines:
+  duplication:
+    enabled: true
+    exclude_paths:
+      - '**/*.test.ts'
+      - '**/*.test.tsx'
+  eslint:
+    enabled: true
+  stylelint:
+    enabled: true
+
+exclude_paths:
+  - 'dist/**'
+  - 'node_modules/**'
+  - 'coverage/**'
+  - '**/*.config.js'
+  - '**/*.config.ts'
+  - 'scripts/**'

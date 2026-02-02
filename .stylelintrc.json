@@ -1,0 +1,17 @@
+{
+  "rules": {
+    "comment-empty-line-before": [
+      "always",
+      {
+        "except": ["first-nested"],
+        "ignore": ["stylelint-commands"]
+      }
+    ],
+    "declaration-colon-newline-after": "always-multi-line",
+    "value-list-comma-newline-after": "always-multi-line",
+    "indentation": 2,
+    "scss/function-disallowed-list": null,
+    "function-disallowed-list": null
+  },
+  "ignoreFiles": ["dist/**", "node_modules/**", "coverage/**"]
+}

@@ -73,6 +73,10 @@ jobs:
             # - Combine all results from all runs (deduplicated)
             # - Preserve additional SARIF properties (artifacts, invocations, etc.)
             # Note: runAutomationDetails.id is set by the upload-sarif action via category parameter
+            #
+            # Results deduplication key: ruleId + file URI + startLine + startColumn + endLine
+            # This uniquely identifies a finding by what rule triggered it and its exact location.
+            # Defensive null handling ensures results without locations still produce stable keys.
             if jq '{
               "$schema": ."$schema",
               version: .version,

@@ -119,6 +119,3 @@ ai:
 # Reference: https://docs.codecov.com/docs/javascript-bundle-analysis
 bundle_analysis:
   enabled: true
-
-# Notification settings
-slack_app: false

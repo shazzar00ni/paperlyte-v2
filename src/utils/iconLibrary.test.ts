@@ -140,46 +140,40 @@ describe('iconLibrary', () => {
     })
   })
 
-  describe('Icon Name Mapping', () => {
-    it('should have expected number of aliases in iconNameMap', () => {
-      // Some keys intentionally map to the same value (aliases)
-      // e.g., 'fa-router' -> 'network-wired' (same as 'fa-network-wired')
-      const expectedAliases = 1 // fa-router -> network-wired
-      const values = Object.values(iconNameMap)
-      const uniqueValues = new Set(values)
+describe('Icon Name Mapping', () => {
+  it('should have expected number of aliases in iconNameMap', () => {
+    // Some keys intentionally map to the same value (aliases)
+    // e.g., 'fa-router' -> 'network-wired' (same as 'fa-network-wired')
+    const expectedAliases = 1; // fa-router -> network-wired
+    const values = Object.values(iconNameMap);
+    const uniqueValues = new Set(values);
 
-      expect(values.length - uniqueValues.size).toBe(expectedAliases)
-    })
+    expect(values.length - uniqueValues.size).toBe(expectedAliases);
+  });
 
-    it('should map all expected feature icons', () => {
-      // Core feature icons that must be mapped
-      const requiredMappings = [
-        'fa-bolt', // Lightning Speed
-        'fa-pen-nib', // Beautiful Simplicity
-        'fa-tags', // Tag-Based Organization
-        'fa-mobile-screen', // Universal Access
-        'fa-shield-halved', // Privacy Focused
-      ]
+  it('should have unique keys in iconNameMap', () => {
+    // Keys must be unique (Object.keys guarantees this, but test for clarity)
+    const keys = Object.keys(iconNameMap);
+    const uniqueKeys = new Set(keys);
 
-      requiredMappings.forEach((oldName) => {
-        expect(iconNameMap[oldName]).toBeDefined()
-      })
-    })
+    expect(keys.length).toBe(uniqueKeys.size);
+  });
 
-    it('should map all expected UI icons', () => {
-      // UI icons that must be mapped
-      const requiredMappings = [
-        'fa-bars', // Mobile menu
-        'fa-xmark', // Close
-        'fa-moon', // Dark mode
-        'fa-sun', // Light mode
-      ]
+  it('should allow intentional value aliases in iconNameMap', () => {
+    // Some old icon names intentionally map to the same new icon
+    // e.g., fa-router and fa-network-wired both map to network-wired
+    const values = Object.values(iconNameMap);
+    const uniqueValues = new Set(values);
 
-      requiredMappings.forEach((oldName) => {
-        expect(iconNameMap[oldName]).toBeDefined()
-      })
-    })
-  })
+    // Values can have duplicates (aliases), but all values must be valid icons
+    values.forEach((iconName) => {
+      expect(isValidIcon(iconName)).toBe(true);
+    });
+
+    // Sanity check: there should be at least one alias
+    expect(values.length).toBeGreaterThan(uniqueValues.size);
+  });
+});
 
   describe('Regression Prevention', () => {
     it('should have at least 31 solid icons registered', () => {

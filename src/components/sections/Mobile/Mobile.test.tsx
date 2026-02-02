@@ -43,7 +43,6 @@ describe('Mobile', () => {
       const arrowIcon = link.querySelector('svg, .icon-fallback')
 
       expect(arrowIcon).toBeInTheDocument()
-      expect(link.contains(arrowIcon)).toBe(true)
     })
   })
 

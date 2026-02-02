@@ -27,6 +27,33 @@ const SIZE_MAP = {
   '3x': 48,
 } as const
 
+/**
+ * Icon component that renders both custom SVG icons and Font Awesome icons
+ * Falls back to FontAwesome if the icon is not found in custom iconPaths
+ * Implements security measures to prevent prototype pollution attacks
+ *
+ * @param props - Icon component props
+ * @param props.name - The icon name (e.g., 'fa-github', 'bolt', 'check')
+ * @param props.size - The icon size (default: 'md')
+ * @param props.variant - The icon variant for Font Awesome (default: 'solid')
+ * @param props.className - Additional CSS classes
+ * @param props.ariaLabel - Accessibility label (omit for decorative icons)
+ * @param props.color - Icon color (supports hex, CSS vars, or named colors)
+ * @param props.style - Additional inline styles
+ * @returns A rendered icon element (SVG or FontAwesomeIcon)
+ *
+ * @example
+ * ```tsx
+ * // Decorative icon (aria-hidden)
+ * <Icon name="bolt" size="lg" />
+ *
+ * // Meaningful icon with label
+ * <Icon name="fa-github" ariaLabel="View on GitHub" variant="brands" />
+ *
+ * // Custom styled icon
+ * <Icon name="check" color="#00ff00" size="2x" />
+ * ```
+ */
 export const Icon = ({
   name,
   size = 'md',

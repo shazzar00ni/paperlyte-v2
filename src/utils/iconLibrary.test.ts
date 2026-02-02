@@ -142,8 +142,24 @@ describe('iconLibrary', () => {
 
   describe('Icon Name Mapping', () => {
     it('should have unique values in iconNameMap', () => {
-      const values = Object.values(iconNameMap)
+      // Create a fresh copy of values to avoid any module state issues
+      const entries = Object.entries(iconNameMap)
+      const values = entries.map(([, v]) => v)
       const uniqueValues = new Set(values)
+
+      // If there are duplicates, find and report them for debugging
+      if (values.length !== uniqueValues.size) {
+        const valueToKeys = new Map<string, string[]>()
+        entries.forEach(([key, value]) => {
+          const keys = valueToKeys.get(value) || []
+          keys.push(key)
+          valueToKeys.set(value, keys)
+        })
+        const duplicates = Array.from(valueToKeys.entries())
+          .filter(([, keys]) => keys.length > 1)
+          .map(([value, keys]) => `"${value}" (mapped from: ${keys.join(', ')})`)
+        throw new Error(`Duplicate values found in iconNameMap:\n${duplicates.join('\n')}`)
+      }
 
       expect(values.length).toBe(uniqueValues.size)
     })

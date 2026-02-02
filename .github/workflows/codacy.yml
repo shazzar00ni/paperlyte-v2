@@ -69,9 +69,9 @@ jobs:
             echo "Merging $RUN_COUNT runs into a single run..."
 
             # Merge all runs into a single run:
-            # - Use first run's tool as base, append other tool names
-            # - Combine all results from all runs
-            # - Merge all rule definitions from all runs
+            # - Combine tool with merged rules from all runs
+            # - Combine all results from all runs (deduplicated)
+            # - Preserve additional SARIF properties (artifacts, invocations, etc.)
             # Note: runAutomationDetails.id is set by the upload-sarif action via category parameter
             if jq '{
               "$schema": ."$schema",
@@ -85,7 +85,12 @@ jobs:
                     rules: [.runs[].tool.driver.rules // [] | .[]] | unique_by(.id)
                   }
                 },
-                results: [.runs[].results // [] | .[]] | unique_by(.ruleId + (.locations[0].physicalLocation.artifactLocation.uri // "") + ((.locations[0].physicalLocation.region.startLine // 0) | tostring) + ((.locations[0].physicalLocation.region.startColumn // 0) | tostring) + ((.locations[0].physicalLocation.region.endLine // 0) | tostring))
+                results: [.runs[].results // [] | .[]] | unique_by(.ruleId + (.locations[0].physicalLocation.artifactLocation.uri // "") + ((.locations[0].physicalLocation.region.startLine // 0) | tostring) + ((.locations[0].physicalLocation.region.startColumn // 0) | tostring) + ((.locations[0].physicalLocation.region.endLine // 0) | tostring)),
+                originalUriBaseIds: (reduce (.runs[].originalUriBaseIds // {}) as $m ({}; . * $m)),
+                artifacts: [.runs[].artifacts // [] | .[]],
+                invocations: [.runs[].invocations // [] | .[]],
+                columnKind: (first(.runs[].columnKind // empty)),
+                conversion: (first(.runs[].conversion // empty))
               }]
             }' results.sarif > merged.sarif; then
               # Validate merged file is valid JSON before replacing original

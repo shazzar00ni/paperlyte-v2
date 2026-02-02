@@ -120,7 +120,6 @@ describe('Pricing', () => {
     // Count total features across all plans
     const totalFeatures = PRICING_PLANS.reduce((sum, plan) => sum + plan.features.length, 0)
 
-    // Find all checkmarks by aria-label
     const checkmarks = screen.getAllByLabelText('Included')
 
     expect(checkmarks.length).toBe(totalFeatures)

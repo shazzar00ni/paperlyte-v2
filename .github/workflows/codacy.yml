@@ -85,7 +85,13 @@ jobs:
                     rules: [.runs[].tool.driver.rules // [] | .[]] | unique_by(.id)
                   }
                 },
-                results: [.runs[].results // [] | .[]] | unique_by(.ruleId + (.locations[0].physicalLocation.artifactLocation.uri // "") + ((.locations[0].physicalLocation.region.startLine // 0) | tostring) + ((.locations[0].physicalLocation.region.startColumn // 0) | tostring) + ((.locations[0].physicalLocation.region.endLine // 0) | tostring)),
+                results: [.runs[].results // [] | .[]] | unique_by(
+                  (.ruleId // "") +
+                  (((.locations // [])[0] // {}).physicalLocation // {}).artifactLocation.uri // "") +
+                  ((((.locations // [])[0] // {}).physicalLocation // {}).region.startLine // 0 | tostring) +
+                  ((((.locations // [])[0] // {}).physicalLocation // {}).region.startColumn // 0 | tostring) +
+                  ((((.locations // [])[0] // {}).physicalLocation // {}).region.endLine // 0 | tostring)
+                ),
                 originalUriBaseIds: (reduce (.runs[].originalUriBaseIds // {}) as $m ({}; . * $m)),
                 artifacts: [.runs[].artifacts // [] | .[]],
                 invocations: [.runs[].invocations // [] | .[]],

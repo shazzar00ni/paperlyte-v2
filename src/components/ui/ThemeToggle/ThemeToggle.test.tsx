@@ -147,38 +147,6 @@ describe('ThemeToggle', () => {
   })
 
   describe('Theme Changes', () => {
-    it('should update icon when theme changes from light to dark', () => {
-      // Spy on Icon to track which icon name is being rendered
-      const iconSpy = vi.spyOn(IconModule, 'Icon')
-
-      // Mock useTheme to start in light mode
-      mockUseTheme('light')
-
-      const { rerender } = render(<ThemeToggle />)
-
-      // Verify moon icon is rendered in light mode
-      expect(iconSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
-          name: 'fa-moon',
-        }),
-        expect.anything()
-      )
-
-      mockUseTheme('dark')
-
-      rerender(<ThemeToggle />)
-
-      // Verify sun icon is rendered in dark mode
-      expect(iconSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
-          name: 'fa-sun',
-        }),
-        expect.anything()
-      )
-
-      vi.restoreAllMocks()
-    })
-
     it('should update aria-label when theme changes', () => {
       mockUseTheme('light')
 

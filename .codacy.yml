@@ -2,7 +2,6 @@
 engines:
   eslint:
     enabled: true
-    configuration_file: ".eslintrc.json"
   eslint-9:
     enabled: true
 

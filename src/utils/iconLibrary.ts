@@ -138,7 +138,6 @@ export const iconNameMap: Record<string, string> = {
   'fa-bars': 'bars',
   'fa-envelope': 'envelope',
   'fa-star': 'star',
-  'fa-shield-check': 'circle-check', // Using circle-check for guarantee/verification.
   'fa-heart': 'heart',
   'fa-download': 'download',
   'fa-moon': 'moon',

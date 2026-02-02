@@ -6,6 +6,7 @@
   align-items: center;
   position: relative;
   overflow: hidden;
+
   /* Sky blue to purple gradient background */
   background: linear-gradient(
     135deg,
@@ -22,11 +23,12 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(
-    circle at 20% 50%,
-    var(--color-hero-overlay-light) 0%,
-    transparent 50%
-  );
+  background:
+    radial-gradient(
+      circle at 20% 50%,
+      var(--color-hero-overlay-light) 0%,
+      transparent 50%
+    );
   pointer-events: none;
 }
 
@@ -37,11 +39,12 @@
   right: 0;
   width: 50%;
   height: 100%;
-  background: radial-gradient(
-    circle at top right,
-    var(--color-hero-overlay-lighter) 0%,
-    transparent 60%
-  );
+  background:
+    radial-gradient(
+      circle at top right,
+      var(--color-hero-overlay-lighter) 0%,
+      transparent 60%
+    );
   pointer-events: none;
 }
 
@@ -166,9 +169,10 @@
   font-weight: var(--font-weight-medium);
   white-space: nowrap;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: background-color var(--transition-base),
-              transform var(--transition-base),
-              box-shadow var(--transition-base);
+  transition:
+    background-color var(--transition-base),
+    transform var(--transition-base),
+    box-shadow var(--transition-base);
 }
 
 .badge:hover {
@@ -388,11 +392,12 @@
   }
 
   .hero::before {
-    background: radial-gradient(
-      circle at 20% 50%,
-      rgba(255, 255, 255, 0.05) 0%,
-      transparent 50%
-    );
+    background:
+      radial-gradient(
+        circle at 20% 50%,
+        rgba(255, 255, 255, 0.05) 0%,
+        transparent 50%
+      );
   }
 
   .hero::after {

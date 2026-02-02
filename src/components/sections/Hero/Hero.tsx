@@ -56,7 +56,7 @@ export const Hero = (): React.ReactElement => {
           <div className={styles.trustBadges}>
             <div className={styles.badge}>
               <Icon name="fa-users" size="sm" />
-              <span className={styles.badgeText}>Join 1,234 early adopters</span>
+              <span className={styles.badgeText}>Join thousands of early adopters</span>
             </div>
             <div className={styles.badge}>
               <Icon name="fa-star" size="sm" />

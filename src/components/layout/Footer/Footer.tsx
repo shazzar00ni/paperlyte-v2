@@ -14,7 +14,6 @@ export const Footer = (): React.ReactElement => {
             <h3 className={styles.linkGroupTitle}>Product</h3>
             <ul className={styles.linkList}>
               <li>
-              <li>
                 <Link to="/#features" className={styles.link}>
                   Features
                 </Link>
@@ -34,9 +33,17 @@ export const Footer = (): React.ReactElement => {
                   Changelog
                 </Link>
               </li>
-                  Changelog
+              <li>
+                <a
+                  href={LEGAL_CONFIG.social.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.link}
+                >
+                  GitHub
                 </a>
               </li>
+            </ul>
               <li>
                 <a
                   href={LEGAL_CONFIG.social.github}

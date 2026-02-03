@@ -63,7 +63,12 @@ jobs:
                     if [ "${{ steps.codescan-analysis.outcome }}" == "success" ]; then
                         echo "✅ **CodeScan:** Analysis completed successfully" >> $GITHUB_STEP_SUMMARY
                     elif [ "${{ steps.codescan-analysis.outcome }}" == "failure" ]; then
-                        echo "⚠️ **CodeScan:** Issues detected during analysis" >> $GITHUB_STEP_SUMMARY
+                        echo "⚠️ **CodeScan:** Analysis failed (check authentication/configuration)" >> $GITHUB_STEP_SUMMARY
+                        echo "" >> $GITHUB_STEP_SUMMARY
+                        echo "Ensure the following secrets are configured:" >> $GITHUB_STEP_SUMMARY
+                        echo "- \`CODESCAN_AUTH_TOKEN\`" >> $GITHUB_STEP_SUMMARY
+                        echo "- \`CODESCAN_ORGANIZATION_KEY\`" >> $GITHUB_STEP_SUMMARY
+                        echo "- \`CODESCAN_PROJECT_KEY\`" >> $GITHUB_STEP_SUMMARY
                     else
                         echo "⏭️ **CodeScan:** Analysis skipped (missing configuration)" >> $GITHUB_STEP_SUMMARY
                     fi

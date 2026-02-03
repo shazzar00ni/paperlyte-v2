@@ -10,10 +10,10 @@ This file contains a summary of pull requests I have reviewed.
 - **Summary:** Fixes syntax errors (unbalanced parentheses) in the `jq` filter used in `scripts/merge-sarif-runs.sh`. Also improves the robustness of property extraction for `columnKind` and `conversion` by avoiding the `first(empty)` pitfall.
 - **Feedback:** A syntax error was found in the initial PR submission (unbalanced parentheses in the `unique_by` filter). This has been corrected in the current branch to restore CI functionality.
 
-### Baseline Fix: Undici Dependency Conflict
+### Baseline Fix: Undici Dependency & Security
 
-- **Summary:** Fixed a critical baseline issue where an outdated `undici` override in `package.json` was incompatible with `jsdom` v28.0.0, causing all Vitest tests to fail with `MODULE_NOT_FOUND`.
-- **Action:** Removed the incompatible `undici` override, allowing the correct version to be installed.
+- **Summary:** Fixed a critical baseline issue where an outdated `undici` override was incompatible with `jsdom` v28.0.0 and contained moderate security vulnerabilities.
+- **Action:** Updated `undici` override to `^7.20.0` in `package.json`. This satisfies the requirements for `jsdom` (fixing `MODULE_NOT_FOUND` errors) and resolves security audit failures for nested dependencies.
 
 ### PR #387: Fix Home/End key navigation tests in Header component
 

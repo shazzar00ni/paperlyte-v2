@@ -27,7 +27,7 @@ This file contains a summary of pull requests I have reviewed.
 - **Summary:** Adds detailed diagnostic information to `iconLibrary.test.ts` to help debug duplicate icon values in CI.
 - **Feedback:** Note that the PR title is outdated as the sorting fix was already merged to `main`, but the improved test diagnostics are valuable.
 
-### PR `#107`: Implement critical accessibility fixes, legal documents, and performance optimizations
+### PR #107: Implement critical accessibility fixes, legal documents, and performance optimizations
 
 - **Status:** Needs Cleanup / Close
 - **Summary:** A massive, monolithic PR (118 files) that has been open for several months. Many of its core changes appear to have been merged via other PRs. It also includes many Lighthouse report artifacts.

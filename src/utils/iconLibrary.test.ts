@@ -141,27 +141,37 @@ describe('iconLibrary', () => {
   })
 
   describe('Icon Name Mapping', () => {
-    it('should have unique values in iconNameMap', () => {
-      // Use entries so we can access keys when reporting any duplicate values
-      const entries = Object.entries(iconNameMap)
-      const values = entries.map(([, v]) => v)
-      const uniqueValues = new Set(values)
-
-      // If there are duplicates, find and report them for debugging
-      if (values.length !== uniqueValues.size) {
-        const valueToKeys = new Map<string, string[]>()
-        entries.forEach(([key, value]) => {
-          const keys = valueToKeys.get(value) || []
-          keys.push(key)
-          valueToKeys.set(value, keys)
-        })
-        const duplicates = Array.from(valueToKeys.entries())
-          .filter(([, keys]) => keys.length > 1)
-          .map(([value, keys]) => `"${value}" (mapped from: ${keys.join(', ')})`)
-        throw new Error(`Duplicate values found in iconNameMap:\n${duplicates.join('\n')}`)
+    it('should have unique values in iconNameMap (except known aliases)', () => {
+      // Known intentional aliases where multiple keys map to the same icon
+      const knownAliases: Record<string, string[]> = {
+        'network-wired': ['fa-network-wired', 'fa-router'], // fa-router uses network-wired icon
       }
 
-      expect(values.length).toBe(uniqueValues.size)
+      // Create a fresh copy of values to avoid any module state issues
+      const entries: [string, string][] = Object.entries(iconNameMap)
+      const valueToKeys = new Map<string, string[]>()
+      entries.forEach(([key, value]: [string, string]) => {
+        const keys = valueToKeys.get(value) || []
+        keys.push(key)
+        valueToKeys.set(value, keys)
+      })
+
+      // Find unexpected duplicates (not in knownAliases)
+      const unexpectedDuplicates = Array.from(valueToKeys.entries())
+        .filter(([value, keys]: [string, string[]]) => {
+          if (keys.length <= 1) return false
+          const allowedKeys = knownAliases[value]
+          if (!allowedKeys) return true // Not a known alias, so it's unexpected
+          // Check if the actual keys match the allowed keys
+          return !keys.every((k: string) => allowedKeys.includes(k))
+        })
+        .map(([value, keys]: [string, string[]]) => `"${value}" (mapped from: ${keys.join(', ')})`)
+
+      if (unexpectedDuplicates.length > 0) {
+        throw new Error(`Unexpected duplicate values found in iconNameMap:\n${unexpectedDuplicates.join('\n')}`)
+      }
+
+      expect(unexpectedDuplicates.length).toBe(0)
     })
 
     it('should map all expected feature icons', () => {

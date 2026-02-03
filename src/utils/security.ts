@@ -54,6 +54,8 @@ export function safePropertyAccess<T>(obj: Record<string, T>, key: string): T | 
 
   // Use hasOwnProperty to verify this is the object's own property, not inherited
   if (Object.prototype.hasOwnProperty.call(obj, key)) {
+    // Safe to access: key is validated by isSafePropertyKey() and property ownership is verified
+    // eslint-disable-next-line security/detect-object-injection
     return obj[key]
   }
 

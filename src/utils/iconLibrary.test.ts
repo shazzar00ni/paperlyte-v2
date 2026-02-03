@@ -142,12 +142,11 @@ describe('iconLibrary', () => {
 
   describe('Icon Name Mapping', () => {
     it('should have all unique values in iconNameMap', () => {
-      // All keys should map to unique values (no aliases)
-      const expectedAliases = 0
+      // Each key must map to a distinct value (no duplicate mappings allowed)
       const values = Object.values(iconNameMap)
       const uniqueValues = new Set(values)
 
-      expect(values.length - uniqueValues.size).toBe(expectedAliases)
+      expect(values.length).toBe(uniqueValues.size)
     })
 
     it('should have unique keys in iconNameMap', () => {

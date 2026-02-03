@@ -17,8 +17,6 @@ engines:
     enabled: true
   eslint-8:
     enabled: true
-  shellcheck:
-    enabled: true
   lizard:
     enabled: true
     exclude_paths:
@@ -47,9 +45,7 @@ exclude_patterns:
 exclude_paths:
   - 'node_modules/**'
   - 'dist/**'
-  - 'build/**'
   - 'coverage/**'
-  - 'coverage-shell/**'
   - '**/*.test.ts'
   - '**/*.test.tsx'
   - '**/*.spec.ts'
@@ -74,4 +70,3 @@ exclude_paths:
 # - Now using test file exclusions (exclude_paths) which works
 #
 # Any warnings in non-test files should be manually marked as "Won't Fix" or "False Positive" in Codacy UI.
-

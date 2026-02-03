@@ -142,7 +142,7 @@ describe('iconLibrary', () => {
 
   describe('Icon Name Mapping', () => {
     it('should have unique values in iconNameMap', () => {
-      // Create a fresh copy of values to avoid any module state issues
+      // Use entries so we can access keys when reporting any duplicate values
       const entries = Object.entries(iconNameMap)
       const values = entries.map(([, v]) => v)
       const uniqueValues = new Set(values)

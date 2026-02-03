@@ -2,6 +2,58 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-02-03
+
+### PR #399: fix(ci): fix SARIF merge script jq syntax errors causing run limit rejection
+
+- **Status:** Approved
+- **Summary:** Fixes syntax errors (unbalanced parentheses) in the `jq` filter used in `scripts/merge-sarif-runs.sh`. Also improves the robustness of property extraction for `columnKind` and `conversion` by avoiding the `first(empty)` pitfall.
+- **Feedback:** Good catch on the syntax error. The more robust `jq` selection logic is a solid improvement.
+
+### PR #387: Fix Home/End key navigation tests in Header component
+
+- **Status:** Approved
+- **Summary:** Modifies `Header.test.tsx` to handle `jsdom`'s lack of support for `Home` and `End` key simulation. Instead of simulating the keypress, it verifies the DOM order of focusable elements and manually sets focus.
+- **Feedback:** A sensible approach to environment-specific testing limitations. Since the core navigation logic is covered in `keyboard.test.ts`, this maintains sufficient coverage.
+
+### PR #384: Sort focusable elements by document order for consistent navigation
+
+- **Status:** Approved
+- **Summary:** Adds detailed diagnostic information to `iconLibrary.test.ts` to help debug duplicate icon values in CI.
+- **Feedback:** Note that the PR title is outdated as the sorting fix was already merged to `main`, but the improved test diagnostics are valuable.
+
+### PR #107: Implement critical accessibility fixes, legal documents, and performance optimizations
+
+- **Status:** Needs Cleanup / Close
+- **Summary:** A massive, monolithic PR (118 files) that has been open for several months. Many of its core changes appear to have been merged via other PRs. It also includes many Lighthouse report artifacts.
+- **Feedback:** Recommend closing this PR. Any remaining unique changes should be extracted into smaller, focused PRs to facilitate easier review and merge.
+
+### PR #279: feat: Implement React Router and legal pages with dark footer
+
+- **Status:** Changes Requested
+- **Summary:** Introduces `react-router-dom` and creates dedicated pages for Privacy and Terms.
+- **Feedback:** The routing logic is not yet integrated into `App.tsx`, which currently renders everything on a single page. Routing should be fully implemented or the PR should be explicitly marked as a "Work in Progress" toward that goal.
+
+### PR #275: Implement P0-CRITICAL hero section conversion optimization (#274)
+
+- **Status:** Under Review (Previously Rejected)
+- **Summary:** Re-evaluated this PR after previous rejection for critical security issues. Recent commits have removed the most dangerous changes (like the CSP weakening).
+- **Feedback:** While improved, the PR title remains misleading as the recent focus is on Codacy warning fixes. A fresh, accurately titled PR with only the safe changes is recommended.
+
+### PR #321: Add tests for analytics utilities
+
+- **Status:** Approved
+- **Summary:** Adds a comprehensive test suite for analytics utilities in `src/utils/analytics.test.ts`.
+- **Feedback:** Great improvement to test coverage.
+
+### PR #309, #308, #284
+
+- **Status:** Approved
+- **Summary:** These PRs provide various improvements including FontAwesome test updates (#309), linting fixes (#308), and Lighthouse CI budget enhancements (#284).
+- **Feedback:** All are solid maintenance improvements.
+
+---
+
 ## 2026-01-31
 
 ### PR #381: Fix SARIF upload to comply with GitHub's July 2025 requirements

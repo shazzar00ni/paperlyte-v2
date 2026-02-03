@@ -136,11 +136,12 @@ if ! jq '
 
     # columnKind: Specifies if columns are 1-based or UTF-16 code units
     # Merge strategy: Use first non-null value (should be consistent across runs)
-    columnKind: (first(.runs[].columnKind // empty)),
+    # Note: Use array subscript [0] with // null fallback to avoid 'empty' propagating
+    columnKind: ([.runs[].columnKind | select(. != null)][0] // null),
 
     # conversion: Info about SARIF format conversion if applicable
     # Merge strategy: Use first non-null value
-    conversion: (first(.runs[].conversion // empty))
+    conversion: ([.runs[].conversion | select(. != null)][0] // null)
   }]
 }
 ' "$INPUT_FILE" > "$TEMP_FILE"; then

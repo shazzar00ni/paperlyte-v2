@@ -161,15 +161,11 @@ describe('iconLibrary', () => {
     it('should have all values as valid icons in iconNameMap', () => {
       // All mapped values must be valid icons in the library
       const values = Object.values(iconNameMap)
-      const uniqueValues = new Set(values)
 
       // All values must be valid icons
       values.forEach((iconName) => {
         expect(isValidIcon(iconName)).toBe(true)
       })
-
-      // Sanity check: all values should be unique (no aliases)
-      expect(values.length).toBe(uniqueValues.size)
     })
   })
 

@@ -111,7 +111,7 @@ if ! jq '
     # - .region.* // 0: Default line/column numbers to 0
     results: [.runs[].results // [] | .[]] | unique_by(
       (.ruleId // "") +
-      (((.locations // [])[0] // {}).physicalLocation // {}).artifactLocation.uri // "") +
+      ((((.locations // [])[0] // {}).physicalLocation // {}).artifactLocation.uri // "") +
       ((((.locations // [])[0] // {}).physicalLocation // {}).region.startLine // 0 | tostring) +
       ((((.locations // [])[0] // {}).physicalLocation // {}).region.startColumn // 0 | tostring) +
       ((((.locations // [])[0] // {}).physicalLocation // {}).region.endLine // 0 | tostring)

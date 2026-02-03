@@ -2,7 +2,7 @@ import { render, screen, fireEvent, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { FAQ } from './FAQ'
 import { FAQ_ITEMS } from '@constants/faq'
-import { escapeRegExp } from '@/utils/test/regexHelpers'
+import { escapeRegExp } from '@/utils/validation'
 
 /**
  * Helper function to get a question button by its question text

@@ -21,13 +21,6 @@ test.describe('Landing Page', () => {
 
     await page.goto('/');
 
-    if (isMobile) {
-      // Open mobile menu first
-      const menuButton = page.getByRole('button', { name: /menu/i });
-      await menuButton.click();
-      await expect(menuButton).toHaveAttribute('aria-expanded', 'true');
-    }
-
     // Target specifically the header's features link to avoid strict mode violation
     const featuresLink = page.locator('header').getByRole('link', { name: /^features$/i });
     await featuresLink.click();

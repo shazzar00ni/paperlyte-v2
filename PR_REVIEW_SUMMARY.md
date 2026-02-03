@@ -27,7 +27,7 @@ This file contains a summary of pull requests I have reviewed.
 - **Summary:** The PR description mentions sorting focusable elements and `getFocusableElements()`, but the actual code changes only add detailed diagnostic information to `iconLibrary.test.ts` to help debug duplicate icon values in CI. The file changes include improved error reporting that identifies which specific icon names have duplicate values and includes known aliases to reduce false positives.
 - **Feedback:** There is a significant mismatch between the PR title/description (which discusses focusable element sorting) and the actual code changes (which only modify iconLibrary.test.ts). This suggests the PR may have been repurposed or the description was not updated after the changes were modified. The icon library test diagnostics themselves are valuable for troubleshooting CI failures. Recommend updating the PR description to accurately reflect the actual changes.
 
-### PR `#107`: Implement critical accessibility fixes, legal documents, and performance optimizations
+### PR #107: Implement critical accessibility fixes, legal documents, and performance optimizations
 
 - **Status:** Needs Cleanup / Close
 - **Summary:** A massive, monolithic PR (118 files) that has been open for several months. Many of its core changes appear to have been merged via other PRs. It also includes many Lighthouse report artifacts.

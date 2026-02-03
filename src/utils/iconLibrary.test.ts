@@ -140,41 +140,38 @@ describe('iconLibrary', () => {
     })
   })
 
-describe('Icon Name Mapping', () => {
-  it('should have expected number of aliases in iconNameMap', () => {
-    // Some keys intentionally map to the same value (aliases)
-    // e.g., 'fa-router' -> 'network-wired' (same as 'fa-network-wired')
-    const expectedAliases = 1 // fa-router -> network-wired
-    const values = Object.values(iconNameMap)
-    const uniqueValues = new Set(values)
+  describe('Icon Name Mapping', () => {
+    it('should have all unique values in iconNameMap', () => {
+      // All keys should map to unique values (no aliases)
+      const expectedAliases = 0
+      const values = Object.values(iconNameMap)
+      const uniqueValues = new Set(values)
 
-    expect(values.length - uniqueValues.size).toBe(expectedAliases)
+      expect(values.length - uniqueValues.size).toBe(expectedAliases)
+    })
+
+    it('should have unique keys in iconNameMap', () => {
+      // Keys must be unique (Object.keys guarantees this, but test for clarity)
+      const keys = Object.keys(iconNameMap)
+      const uniqueKeys = new Set(keys)
+
+      expect(keys.length).toBe(uniqueKeys.size)
+    })
+
+    it('should have all values as valid icons in iconNameMap', () => {
+      // All mapped values must be valid icons in the library
+      const values = Object.values(iconNameMap)
+      const uniqueValues = new Set(values)
+
+      // All values must be valid icons
+      values.forEach((iconName) => {
+        expect(isValidIcon(iconName)).toBe(true)
+      })
+
+      // Sanity check: all values should be unique (no aliases)
+      expect(values.length).toBe(uniqueValues.size)
+    })
   })
-  });
-
-  it('should have unique keys in iconNameMap', () => {
-    // Keys must be unique (Object.keys guarantees this, but test for clarity)
-    const keys = Object.keys(iconNameMap);
-    const uniqueKeys = new Set(keys);
-
-    expect(keys.length).toBe(uniqueKeys.size);
-  });
-
-  it('should allow intentional value aliases in iconNameMap', () => {
-    // Some old icon names intentionally map to the same new icon
-    // e.g., fa-router and fa-network-wired both map to network-wired
-    const values = Object.values(iconNameMap);
-    const uniqueValues = new Set(values);
-
-    // Values can have duplicates (aliases), but all values must be valid icons
-    values.forEach((iconName) => {
-      expect(isValidIcon(iconName)).toBe(true);
-    });
-
-    // Sanity check: there should be at least one alias
-    expect(values.length).toBeGreaterThan(uniqueValues.size);
-  });
-});
 
   describe('Regression Prevention', () => {
     it('should have at least 31 solid icons registered', () => {

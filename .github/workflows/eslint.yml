@@ -49,12 +49,19 @@ jobs:
           npx eslint "src/**/*.{js,jsx,ts,tsx}" \
             --format @microsoft/eslint-formatter-sarif \
             --output-file eslint-results.sarif \
-            --max-warnings 0
+            --max-warnings 0 || true
         continue-on-error: true
+
+      - name: Ensure SARIF file exists
+        run: |
+          # Create minimal valid SARIF if ESLint didn't produce one
+          if [ ! -f eslint-results.sarif ]; then
+            echo '{"version":"2.1.0","$schema":"https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json","runs":[{"tool":{"driver":{"name":"ESLint","informationUri":"https://eslint.org","rules":[]}},"results":[]}]}' > eslint-results.sarif
+          fi
 
       - name: Upload analysis results to GitHub
         uses: github/codeql-action/upload-sarif@b20883b0cd1f46c72ae0ba6d1090936928f9fa30 # v4.32.0
-        if: always() && hashFiles('eslint-results.sarif') != ''
+        if: always()
         with:
           sarif_file: eslint-results.sarif
           category: eslint

@@ -21,11 +21,11 @@ This file contains a summary of pull requests I have reviewed.
 - **Summary:** Modifies `Header.test.tsx` to handle `jsdom`'s lack of support for `Home` and `End` key simulation. Instead of simulating the keypress, it verifies the DOM order of focusable elements and manually sets focus.
 - **Feedback:** A sensible approach to environment-specific testing limitations. Since the core navigation logic is covered in `keyboard.test.ts`, this maintains sufficient coverage.
 
-### PR #384: Sort focusable elements by document order for consistent navigation
+### PR #384: Add diagnostic information to iconLibrary tests
 
 - **Status:** Approved
-- **Summary:** Adds detailed diagnostic information to `iconLibrary.test.ts` to help debug duplicate icon values in CI.
-- **Feedback:** Note that the PR title is outdated as the sorting fix was already merged to `main`, but the improved test diagnostics are valuable.
+- **Summary:** Adds detailed diagnostic information to `iconLibrary.test.ts` to help debug duplicate icon values in CI. The test now identifies which specific icon names have duplicate values and includes known aliases to reduce false positives.
+- **Feedback:** The improved test diagnostics are valuable for troubleshooting CI failures. Note: The PR title in GitHub still references "Sort focusable elements" which appears to be from a previous version - the actual changes are about icon library test improvements.
 
 ### PR #107: Implement critical accessibility fixes, legal documents, and performance optimizations
 

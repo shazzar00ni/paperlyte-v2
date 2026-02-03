@@ -53,9 +53,12 @@ jobs:
         continue-on-error: true
 
       - name: Ensure SARIF file exists
+        # Creates a minimal valid SARIF file if ESLint didn't produce one.
+        # This can happen if ESLint fails before generating output.
+        # Note: SARIF JSON is kept as a single line to avoid YAML parsing
+        # issues in GitHub Actions (heredoc within multiline strings causes
+        # syntax errors during workflow parsing).
         run: |
-          # Create minimal valid SARIF if ESLint didn't produce one
-          # This can happen if ESLint fails before generating output
           if [ ! -f eslint-results.sarif ]; then
             echo '{"version":"2.1.0","$schema":"https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json","runs":[{"tool":{"driver":{"name":"ESLint","informationUri":"https://eslint.org","rules":[]}},"results":[]}]}' > eslint-results.sarif
           fi

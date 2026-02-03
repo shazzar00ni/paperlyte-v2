@@ -144,11 +144,12 @@ describe('Icon Name Mapping', () => {
   it('should have expected number of aliases in iconNameMap', () => {
     // Some keys intentionally map to the same value (aliases)
     // e.g., 'fa-router' -> 'network-wired' (same as 'fa-network-wired')
-    const expectedAliases = 1; // fa-router -> network-wired
-    const values = Object.values(iconNameMap);
-    const uniqueValues = new Set(values);
+    const expectedAliases = 1 // fa-router -> network-wired
+    const values = Object.values(iconNameMap)
+    const uniqueValues = new Set(values)
 
-    expect(values.length - uniqueValues.size).toBe(expectedAliases);
+    expect(values.length - uniqueValues.size).toBe(expectedAliases)
+  })
   });
 
   it('should have unique keys in iconNameMap', () => {

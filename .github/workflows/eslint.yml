@@ -57,24 +57,7 @@ jobs:
           # Create minimal valid SARIF if ESLint didn't produce one
           # This can happen if ESLint fails before generating output
           if [ ! -f eslint-results.sarif ]; then
-            cat > eslint-results.sarif << 'EOF'
-          {
-            "version": "2.1.0",
-            "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
-            "runs": [
-              {
-                "tool": {
-                  "driver": {
-                    "name": "ESLint",
-                    "informationUri": "https://eslint.org",
-                    "rules": []
-                  }
-                },
-                "results": []
-              }
-            ]
-          }
-          EOF
+            echo '{"version":"2.1.0","$schema":"https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json","runs":[{"tool":{"driver":{"name":"ESLint","informationUri":"https://eslint.org","rules":[]}},"results":[]}]}' > eslint-results.sarif
           fi
 
       - name: Upload analysis results to GitHub

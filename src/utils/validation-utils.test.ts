@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { debounce, escapeRegExp } from './validation'
+import { debounce } from './validation'
+import { escapeRegExp } from './test/regexHelpers'
 
 describe('debounce', () => {
   beforeEach(() => {

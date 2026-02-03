@@ -54,6 +54,8 @@ export function safePropertyAccess<T>(obj: Record<string, T>, key: string): T | 
 
   // Use hasOwnProperty to verify this is the object's own property, not inherited
   if (Object.prototype.hasOwnProperty.call(obj, key)) {
+    // codacy-disable-next-line Generic Object Injection Sink
+    // False positive: key is validated by isSafePropertyKey before access
     return obj[key]
   }
 

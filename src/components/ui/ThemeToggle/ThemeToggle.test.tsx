@@ -13,7 +13,10 @@ describe('ThemeToggle', () => {
    */
   const testIconRenderingInTheme = (
     theme: 'light' | 'dark',
-    expectation: (button) => void
+   const testIconRenderingInTheme = (
+     theme: 'light' | 'dark',
+     expectation: (element) => void
+   ): void => {
   ): void => {
     vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
       theme,

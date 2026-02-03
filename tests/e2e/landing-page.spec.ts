@@ -48,7 +48,7 @@ test.describe('Landing Page', () => {
 
     // Measure Core Web Vitals using Performance Timeline
     const metrics = await page.evaluate(() => {
-      return new Promise((resolve) => {
+      return new Promise<{ fcp: number | null; lcp: number; cls: number }>((resolve) => {
         let fcp: number | null = null;
         let lcp = 0;
         let cls = 0;

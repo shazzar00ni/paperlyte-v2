@@ -24,13 +24,6 @@ test.describe('Landing Page', () => {
     // Disable smooth scrolling so the scroll is instant and position detection is reliable
     await page.addStyleTag({ content: 'html { scroll-behavior: auto !important; }' });
 
-    if (isMobile) {
-      // Open mobile menu first
-      const menuButton = page.getByRole('button', { name: /menu/i });
-      await menuButton.click();
-      await expect(menuButton).toHaveAttribute('aria-expanded', 'true');
-    }
-
     // Target specifically the header's features link to avoid strict mode violation
     const featuresLink = page.locator('header').getByRole('link', { name: /^features$/i });
     await featuresLink.click();

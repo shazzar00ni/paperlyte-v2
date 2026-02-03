@@ -40,6 +40,7 @@ jobs:
 
       # Execute Codacy Analysis CLI and generate a SARIF output with the security issues identified during the analysis
       - name: Run Codacy Analysis CLI
+        id: codacy-run
         uses: codacy/codacy-analysis-cli-action@562ee3e92b8e92df8b67e0a5ff8aa8e261919c08
         with:
           # Check https://github.com/codacy/codacy-analysis-cli#project-token to get your project token from your Codacy repository
@@ -69,3 +70,23 @@ jobs:
         with:
           sarif_file: results.sarif
           category: codacy
+
+      - name: Codacy Security Summary
+        if: always()
+        run: |
+          echo "## 🔒 Codacy Security Scan" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ steps.codacy-run.outcome }}" == "success" ]; then
+            echo "✅ **Codacy Analysis:** Completed successfully" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ **Codacy Analysis:** Issues detected" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ -f "results.sarif" ]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "📄 SARIF results uploaded to GitHub Code Scanning." >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📊 View detailed security findings in the **Security** tab." >> $GITHUB_STEP_SUMMARY

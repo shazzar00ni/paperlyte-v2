@@ -141,16 +141,6 @@ describe('iconLibrary', () => {
   })
 
   describe('Icon Name Mapping', () => {
-    it('should have mostly unique values in iconNameMap (allowing intentional aliases)', () => {
-      const values = Object.values(iconNameMap)
-      const uniqueValues = new Set(values)
-
-      // Allow a small number of intentional aliases (e.g., fa-router -> network-wired)
-      // The difference between total and unique should be minimal
-      const aliasCount = values.length - uniqueValues.size
-      expect(aliasCount).toBeLessThanOrEqual(2)
-    })
-
     it('should have unique keys in iconNameMap', () => {
       // Keys must be unique (Object.keys guarantees this, but test for clarity)
       const keys = Object.keys(iconNameMap)
@@ -159,13 +149,48 @@ describe('iconLibrary', () => {
       expect(keys.length).toBe(uniqueKeys.size)
     })
 
-    it('should have all values as valid icons in iconNameMap', () => {
-      // All mapped values must be valid icons in the library
+    it('should allow intentional value aliases in iconNameMap', () => {
+      // Some old icon names intentionally map to the same new icon
+      // e.g., fa-router and fa-network-wired both map to network-wired
       const values = Object.values(iconNameMap)
+      const uniqueValues = new Set(values)
 
-      // All values must be valid icons
-      values.forEach((iconName) => {
-        expect(isValidIcon(iconName)).toBe(true)
+      // Values can have duplicates (aliases), but all values must still be valid icons
+      values.forEach((value) => {
+        expect(isValidIcon(value)).toBe(true)
+      })
+
+      // The number of aliases (duplicate values) should be small
+      const aliasCount = values.length - uniqueValues.size
+      expect(aliasCount).toBeLessThanOrEqual(2)
+    })
+
+    it('should map all expected feature icons', () => {
+      // Core feature icons that must be mapped
+      const requiredMappings = [
+        'fa-bolt', // Lightning Speed
+        'fa-pen-nib', // Beautiful Simplicity
+        'fa-tags', // Tag-Based Organization
+        'fa-mobile-screen', // Universal Access
+        'fa-shield-halved', // Privacy Focused
+      ]
+
+      requiredMappings.forEach((oldName) => {
+        expect(iconNameMap[oldName]).toBeDefined()
+      })
+    })
+
+    it('should map all expected UI icons', () => {
+      // UI icons that must be mapped
+      const requiredMappings = [
+        'fa-github',
+        'fa-twitter',
+        'fa-apple',
+        'fa-windows',
+      ]
+
+      requiredMappings.forEach((oldName) => {
+        expect(iconNameMap[oldName]).toBeDefined()
       })
     })
   })

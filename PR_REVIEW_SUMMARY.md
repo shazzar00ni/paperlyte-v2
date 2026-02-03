@@ -21,11 +21,11 @@ This file contains a summary of pull requests I have reviewed.
 - **Summary:** Modifies `Header.test.tsx` to handle `jsdom`'s lack of support for `Home` and `End` key simulation. Instead of simulating the keypress, it verifies the DOM order of focusable elements and manually sets focus.
 - **Feedback:** A sensible approach to environment-specific testing limitations. Since the core navigation logic is covered in `keyboard.test.ts`, this maintains sufficient coverage.
 
-### PR #384: Add diagnostic information to iconLibrary tests
+### PR #384: Sort focusable elements by document order for consistent navigation
 
-- **Status:** Approved
-- **Summary:** Adds detailed diagnostic information to `iconLibrary.test.ts` to help debug duplicate icon values in CI. The test now identifies which specific icon names have duplicate values and includes known aliases to reduce false positives.
-- **Feedback:** The improved test diagnostics are valuable for troubleshooting CI failures. Note: The PR title in GitHub still references "Sort focusable elements" which appears to be from a previous version - the actual changes are about icon library test improvements.
+- **Status:** Approved (with notes)
+- **Summary:** The PR description mentions sorting focusable elements and `getFocusableElements()`, but the actual code changes only add detailed diagnostic information to `iconLibrary.test.ts` to help debug duplicate icon values in CI. The file changes include improved error reporting that identifies which specific icon names have duplicate values and includes known aliases to reduce false positives.
+- **Feedback:** There is a significant mismatch between the PR title/description (which discusses focusable element sorting) and the actual code changes (which only modify iconLibrary.test.ts). This suggests the PR may have been repurposed or the description was not updated after the changes were modified. The icon library test diagnostics themselves are valuable for troubleshooting CI failures. Recommend updating the PR description to accurately reflect the actual changes.
 
 ### PR #107: Implement critical accessibility fixes, legal documents, and performance optimizations
 

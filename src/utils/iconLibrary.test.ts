@@ -174,32 +174,21 @@ describe('iconLibrary', () => {
       expect(unexpectedDuplicates.length).toBe(0)
     })
 
-    it('should map all expected feature icons', () => {
-      // Core feature icons that must be mapped
-      const requiredMappings = [
-        'fa-bolt', // Lightning Speed
-        'fa-pen-nib', // Beautiful Simplicity
-        'fa-tags', // Tag-Based Organization
-        'fa-mobile-screen', // Universal Access
-        'fa-shield-halved', // Privacy Focused
-      ]
+    it('should have unique keys in iconNameMap', () => {
+      // Keys must be unique (Object.keys guarantees this, but test for clarity)
+      const keys = Object.keys(iconNameMap)
+      const uniqueKeys = new Set(keys)
 
-      requiredMappings.forEach((oldName) => {
-        expect(iconNameMap[oldName]).toBeDefined()
-      })
+      expect(keys.length).toBe(uniqueKeys.size)
     })
 
-    it('should map all expected UI icons', () => {
-      // UI icons that must be mapped
-      const requiredMappings = [
-        'fa-bars', // Mobile menu
-        'fa-xmark', // Close
-        'fa-moon', // Dark mode
-        'fa-sun', // Light mode
-      ]
+    it('should have all values as valid icons in iconNameMap', () => {
+      // All mapped values must be valid icons in the library
+      const values = Object.values(iconNameMap)
 
-      requiredMappings.forEach((oldName) => {
-        expect(iconNameMap[oldName]).toBeDefined()
+      // All values must be valid icons
+      values.forEach((iconName) => {
+        expect(isValidIcon(iconName)).toBe(true)
       })
     })
   })

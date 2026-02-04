@@ -168,7 +168,9 @@ describe('iconLibrary', () => {
         .map(([value, keys]: [string, string[]]) => `"${value}" (mapped from: ${keys.join(', ')})`)
 
       if (unexpectedDuplicates.length > 0) {
-        throw new Error(`Unexpected duplicate values found in iconNameMap:\n${unexpectedDuplicates.join('\n')}`)
+        throw new Error(
+          `Unexpected duplicate values found in iconNameMap:\n${unexpectedDuplicates.join('\n')}`
+        )
       }
 
       expect(unexpectedDuplicates.length).toBe(0)

@@ -70,6 +70,8 @@ jobs:
             # Log run count for debugging
             RUN_COUNT=$(jq '.runs | length' results.sarif)
             echo "SARIF file contains $RUN_COUNT runs (max 20 allowed)"
+          else
+            echo "results.sarif not found; skipping SARIF filtering"
           fi
 
       - name: Upload SARIF results file

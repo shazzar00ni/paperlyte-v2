@@ -58,5 +58,11 @@ if (sarif.runs.length > 1) {
   sarif.runs = [mergedRun]
 }
 
-fs.writeFileSync(sarifPath, JSON.stringify(sarif, null, 2))
-console.log(`SARIF runs merged: now contains ${sarif.runs.length} run(s)`)
+try {
+  fs.writeFileSync(sarifPath, JSON.stringify(sarif, null, 2))
+  console.log(`SARIF runs merged: now contains ${sarif.runs.length} run(s)`)
+} catch (error) {
+  console.error(`Failed to write SARIF file: ${sarifPath}`)
+  console.error(`Error: ${error.message}`)
+  process.exit(1)
+}

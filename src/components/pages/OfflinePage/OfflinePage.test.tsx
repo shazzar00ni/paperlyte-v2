@@ -373,7 +373,8 @@ describe('OfflinePage', () => {
       // Check spinner is shown while checking (without awaiting click to complete)
       await waitFor(() => {
         const spinnerIcon =
-          retryButton.querySelector('svg[data-icon="fa-spinner"]') ||
+          retryButton.querySelector('svg[data-icon="fa-spinner"]') ??
+          retryButton.querySelector('.icon-fallback')
           retryButton.querySelector('.icon-fallback')
         expect(spinnerIcon).toBeInTheDocument()
       })

@@ -345,6 +345,7 @@ describe('OfflinePage', () => {
         screen.getByRole('status').querySelector('svg') ??
         screen.getByRole('status').querySelector('.icon-fallback')
       expect(wifiIcon).toBeInTheDocument()
+    })
 
     it('should render retry icon in button', () => {
       render(<OfflinePage />)
@@ -373,7 +374,6 @@ describe('OfflinePage', () => {
       await waitFor(() => {
         const spinnerIcon =
           retryButton.querySelector('svg[data-icon="fa-spinner"]') ??
-          retryButton.querySelector('.icon-fallback')
           retryButton.querySelector('.icon-fallback')
         expect(spinnerIcon).toBeInTheDocument()
       })

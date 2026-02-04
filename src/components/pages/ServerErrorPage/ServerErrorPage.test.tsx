@@ -257,7 +257,7 @@ describe('ServerErrorPage', () => {
       render(<ServerErrorPage />)
 
       const homeButton = screen.getByRole('button', { name: /return to homepage/i })
-      const icon = homeButton.querySelector('svg') || homeButton.querySelector('.icon-fallback')
+       const icon = homeButton.querySelector('svg') ?? homeButton.querySelector('.icon-fallback')
       expect(icon).toBeInTheDocument()
     })
   })

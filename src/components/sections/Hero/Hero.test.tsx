@@ -272,7 +272,7 @@ describe('Hero', () => {
 
       // Verify the Section has the padding-large class applied
       // (CSS Module class names are hashed, so we check for the class pattern)
-      const classList = Array.from(section?.classList || [])
+      const classList = Array.from(section?.classList ?? [])
       const hasPaddingLargeClass = classList.some((className) =>
         className.includes('padding-large')
       )

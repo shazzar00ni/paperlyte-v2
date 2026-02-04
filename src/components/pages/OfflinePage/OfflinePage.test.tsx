@@ -344,9 +344,7 @@ describe('OfflinePage', () => {
       const wifiIcon =
         screen.getByRole('status').querySelector('svg') ??
         screen.getByRole('status').querySelector('.icon-fallback')
-        screen.getByRole('status').querySelector('.icon-fallback')
       expect(wifiIcon).toBeInTheDocument()
-    })
 
     it('should render retry icon in button', () => {
       render(<OfflinePage />)

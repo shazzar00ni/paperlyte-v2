@@ -342,7 +342,8 @@ describe('OfflinePage', () => {
       render(<OfflinePage />)
 
       const wifiIcon =
-        screen.getByRole('status').querySelector('svg') ||
+        screen.getByRole('status').querySelector('svg') ??
+        screen.getByRole('status').querySelector('.icon-fallback')
         screen.getByRole('status').querySelector('.icon-fallback')
       expect(wifiIcon).toBeInTheDocument()
     })

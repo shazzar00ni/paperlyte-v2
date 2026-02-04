@@ -54,14 +54,15 @@ jobs:
           # This will handover control about PR rejection to the GitHub side
           max-allowed-issues: 2147483647
 
+      # Merge SARIF runs to comply with GitHub's run limit (max 20 per file)
+      # Codacy CLI generates multiple runs (one per tool) which needs to be merged
+      - name: Merge SARIF runs
+        if: hashFiles('results.sarif') != ''
+        run: node scripts/merge-sarif-runs.cjs results.sarif
+
       # Upload the SARIF file generated in the previous step
-      # NOTE: Temporarily allowing failures due to GitHub's July 2025 breaking change
-      # that rejects SARIF files with multiple runs per category. Codacy CLI generates
-      # multiple runs (one per tool) which is now rejected. Tracking:
-      # https://github.com/codacy/codacy-analysis-cli/issues/541
       - name: Upload SARIF results file
         uses: github/codeql-action/upload-sarif@v4.31.11
-        continue-on-error: true
         if: hashFiles('results.sarif') != ''
         with:
           sarif_file: results.sarif

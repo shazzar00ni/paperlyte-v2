@@ -1,4 +1,4 @@
-# PR Review Summary - 2024-07-30
+# PR Review Summary
 
 This file contains a summary of pull requests I have reviewed.
 

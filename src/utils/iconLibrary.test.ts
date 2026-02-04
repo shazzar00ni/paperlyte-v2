@@ -167,7 +167,6 @@ describe('iconLibrary', () => {
         })
         .map(([value, keys]: [string, string[]]) => `"${value}" (mapped from: ${keys.join(', ')})`)
 
-      // Use expect with detailed error message for better test reporting
       const errorMessage =
         unexpectedDuplicates.length > 0
           ? `Unexpected duplicate values found in iconNameMap:\n${unexpectedDuplicates.join('\n')}`

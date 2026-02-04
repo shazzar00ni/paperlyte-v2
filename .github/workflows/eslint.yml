@@ -43,6 +43,7 @@ jobs:
         run: npm install --no-save @microsoft/eslint-formatter-sarif@3.1.0
 
       - name: Run ESLint
+        id: eslint-run
         env:
           SARIF_ESLINT_IGNORE_SUPPRESSED: "true"
         run: |
@@ -53,8 +54,28 @@ jobs:
         continue-on-error: true
 
       - name: Upload analysis results to GitHub
-        uses: github/codeql-action/upload-sarif@v4.31.11
+        uses: github/codeql-action/upload-sarif@b20883b0cd1f46c72ae0ba6d1090936928f9fa30 # v4.32.0
+        if: always() && hashFiles('eslint-results.sarif') != ''
         with:
           sarif_file: eslint-results.sarif
           category: eslint
           wait-for-processing: true
+
+      - name: ESLint Summary
+        if: always()
+        run: |
+          echo "## 🔍 ESLint Security Scan" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ steps.eslint-run.outcome }}" == "success" ]; then
+            echo "✅ **ESLint:** No issues found" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ **ESLint:** Issues detected" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Check the **Security** tab for detailed findings." >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ -f "eslint-results.sarif" ]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "📄 SARIF results uploaded to GitHub Code Scanning." >> $GITHUB_STEP_SUMMARY
+          fi

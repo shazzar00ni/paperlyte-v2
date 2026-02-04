@@ -32,20 +32,54 @@ jobs:
         run: npm ci
 
       - name: Run ESLint
+        id: eslint
         run: npm run lint
 
       - name: Run TypeScript type check
+        id: typecheck
         run: npx tsc --noEmit
 
       - name: Check code formatting
+        id: format
         run: npm run format:check
 
       - name: Run security audit
+        id: audit
         run: |
           if [ "${{ github.ref }}" == "refs/heads/main" ]; then
             npm audit --audit-level=high
           else
             npm audit --audit-level=moderate
+          fi
+
+      - name: Generate Lint Summary
+        if: always()
+        run: |
+          echo "## 🔍 Lint & Type Check Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ steps.eslint.outcome }}" == "success" ]; then
+            echo "✅ **ESLint:** Passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **ESLint:** Failed" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ "${{ steps.typecheck.outcome }}" == "success" ]; then
+            echo "✅ **TypeScript:** No type errors" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **TypeScript:** Type errors found" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ "${{ steps.format.outcome }}" == "success" ]; then
+            echo "✅ **Prettier:** Code is formatted" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **Prettier:** Formatting issues found" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ "${{ steps.audit.outcome }}" == "success" ]; then
+            echo "✅ **Security Audit:** No vulnerabilities" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ **Security Audit:** Vulnerabilities found" >> $GITHUB_STEP_SUMMARY
           fi
 
   test:
@@ -126,6 +160,7 @@ jobs:
         run: npm ci
 
       - name: Build application
+        id: build-step
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         run: npm run build
@@ -136,6 +171,31 @@ jobs:
           name: dist
           path: dist/
           retention-days: 7
+
+      - name: Build Summary
+        if: always()
+        run: |
+          echo "## 🏗️ Build Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ steps.build-step.outcome }}" == "success" ]; then
+            echo "✅ **Build:** Successful" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### Build Output" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            ls -lh dist/ 2>/dev/null || echo "dist/ directory not found"
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            
+            if [ -d "dist/assets" ]; then
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo "### Assets" >> $GITHUB_STEP_SUMMARY
+              echo '```' >> $GITHUB_STEP_SUMMARY
+              ls -lh dist/assets/ | head -15
+              echo '```' >> $GITHUB_STEP_SUMMARY
+            fi
+          else
+            echo "❌ **Build:** Failed" >> $GITHUB_STEP_SUMMARY
+          fi
 
   size-check:
     name: Bundle Size Check
@@ -162,6 +222,7 @@ jobs:
           path: dist/
 
       - name: Check bundle size
+        id: size-limit
         run: npm run size
 
       - name: Compare bundle sizes
@@ -170,6 +231,25 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           skip_step: install
+
+      - name: Bundle Size Summary
+        if: always()
+        run: |
+          echo "## 📦 Bundle Size Check" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ steps.size-limit.outcome }}" == "success" ]; then
+            echo "✅ **Size Limit:** All bundles within budget" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ **Size Limit:** Some bundles exceed budget" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Bundle Analysis" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          # Show largest JS files
+          find dist -name "*.js" -type f -exec ls -lh {} \; 2>/dev/null | sort -k5 -rh | head -5 || echo "No JS files found"
+          echo '```' >> $GITHUB_STEP_SUMMARY
 
   lighthouse:
     name: Lighthouse CI
@@ -269,6 +349,7 @@ jobs:
           npx wait-on http://127.0.0.1:4173
 
       - name: Run Playwright tests
+        id: playwright
         env:
           BASE_URL: http://127.0.0.1:4173
         run: npx playwright test
@@ -289,6 +370,21 @@ jobs:
           path: |
             test-results/
           retention-days: 7
+
+      - name: E2E Test Summary
+        if: always()
+        run: |
+          echo "## 🎭 E2E Test Results (Playwright)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ steps.playwright.outcome }}" == "success" ]; then
+            echo "✅ **E2E Tests:** All tests passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **E2E Tests:** Some tests failed" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📊 View detailed test report in the \`playwright-report\` artifact." >> $GITHUB_STEP_SUMMARY
 
   add-to-project:
     name: Add To GitHub Projects
@@ -341,4 +437,43 @@ jobs:
             echo "- Bundle Size: ✅"
             echo "- Lighthouse: ✅"
             echo "- E2E Tests: ✅"
+          fi
+
+      - name: CI Pipeline Summary
+        if: always()
+        run: |
+          echo "## 🚀 CI/CD Pipeline Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
+          
+          # Function to convert result to emoji
+          get_status() {
+            case "$1" in
+              success) echo "✅ Passed" ;;
+              failure) echo "❌ Failed" ;;
+              cancelled) echo "⏹️ Cancelled" ;;
+              skipped) echo "⏭️ Skipped" ;;
+              *) echo "❓ Unknown" ;;
+            esac
+          }
+          
+          echo "| Lint & Type Check | $(get_status ${{ needs.lint-and-typecheck.result }}) |" >> $GITHUB_STEP_SUMMARY
+          echo "| Unit Tests | $(get_status ${{ needs.test.result }}) |" >> $GITHUB_STEP_SUMMARY
+          echo "| Build | $(get_status ${{ needs.build.result }}) |" >> $GITHUB_STEP_SUMMARY
+          echo "| Bundle Size | $(get_status ${{ needs.size-check.result }}) |" >> $GITHUB_STEP_SUMMARY
+          echo "| Lighthouse CI | $(get_status ${{ needs.lighthouse.result }}) |" >> $GITHUB_STEP_SUMMARY
+          echo "| E2E Tests | $(get_status ${{ needs.e2e.result }}) |" >> $GITHUB_STEP_SUMMARY
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ needs.lint-and-typecheck.result }}" == "success" ] && \
+             [ "${{ needs.test.result }}" == "success" ] && \
+             [ "${{ needs.build.result }}" == "success" ] && \
+             [ "${{ needs.size-check.result }}" == "success" ] && \
+             [ "${{ needs.lighthouse.result }}" == "success" ] && \
+             [ "${{ needs.e2e.result }}" == "success" ]; then
+            echo "### ✅ All checks passed! Ready to merge." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "### ❌ Some checks failed. Please review the issues above." >> $GITHUB_STEP_SUMMARY
           fi

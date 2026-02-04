@@ -234,7 +234,6 @@ describe('ServerErrorPage', () => {
       const serverIcon =
         screen.getByRole('main').querySelector('svg') ??
         screen.getByRole('main').querySelector('.icon-fallback')
-        screen.getByRole('main').querySelector('.icon-fallback')
       expect(serverIcon).toBeInTheDocument()
     })
 

@@ -16,7 +16,6 @@
 
 set -e
 
-# --- Argument parsing ---
 INPUT_FILE="${1:-}"
 OUTPUT_FILE="${2:-$INPUT_FILE}"
 
@@ -31,13 +30,11 @@ if [ ! -f "$INPUT_FILE" ]; then
   exit 1
 fi
 
-# --- Check run count ---
 RUN_COUNT=$(jq '.runs | length' "$INPUT_FILE")
 echo "Found $RUN_COUNT runs in SARIF file"
 
 if [ "$RUN_COUNT" -le 1 ]; then
   echo "Single run detected, no merging needed"
-  # Copy to output if different from input
   if [ "$INPUT_FILE" != "$OUTPUT_FILE" ]; then
     cp "$INPUT_FILE" "$OUTPUT_FILE"
   fi
@@ -46,69 +43,26 @@ fi
 
 echo "Merging $RUN_COUNT runs into a single run..."
 
-# --- Create temporary file for merge output ---
 TEMP_FILE=$(mktemp)
 trap 'rm -f "$TEMP_FILE"' EXIT
 
-# --- Merge all runs into a single run ---
-#
-# SARIF Structure Overview:
-#   A SARIF file contains: { "$schema", "version", "runs": [...] }
-#   Each run contains: { "tool", "results", "artifacts", "invocations", ... }
-#   GitHub requires exactly ONE run per category for code scanning.
-#
-# Merge Strategy:
-#   1. RULES: Collect all rules from all runs, deduplicate by rule ID
-#   2. RESULTS: Collect all findings from all runs, deduplicate by location
-#   3. ARTIFACTS: Combine all file references from all runs
-#   4. INVOCATIONS: Combine all tool execution records
-#   5. METADATA: Take first non-null value for scalar properties
-#
+# Write jq filter to a temporary file to avoid shell quoting issues
+JQ_FILTER=$(mktemp)
+trap 'rm -f "$TEMP_FILE" "$JQ_FILTER"' EXIT
 
-if ! jq '
-# =============================================================================
-# SARIF MERGE TRANSFORMATION
-# =============================================================================
+cat > "$JQ_FILTER" << 'JQEOF'
 {
-  # Preserve top-level SARIF metadata
   "$schema": ."$schema",
   version: .version,
-
-  # Create single merged run from all input runs
   runs: [{
-
-    # -------------------------------------------------------------------------
-    # TOOL SECTION
-    # Defines the analysis tool and its rules
-    # -------------------------------------------------------------------------
     tool: {
       driver: {
-        # Use unified tool name since we are merging multiple Codacy tools
         name: "Codacy",
         informationUri: "https://www.codacy.com",
         version: "1.0.0",
-
-        # RULES: Flatten all rules from all runs into single array
-        # - .runs[].tool.driver.rules: Get rules array from each run
-        # - // []: Default to empty array if rules is null
-        # - | .[]: Flatten nested arrays into single stream
-        # - unique_by(.id): Remove duplicates, keeping first occurrence of each rule ID
         rules: [.runs[].tool.driver.rules // [] | .[]] | unique_by(.id)
       }
     },
-
-    # -------------------------------------------------------------------------
-    # RESULTS SECTION
-    # Contains all findings/alerts from the analysis
-    # -------------------------------------------------------------------------
-    # RESULTS: Flatten all results and deduplicate by unique location key
-    # Deduplication key = ruleId + fileURI + startLine + startColumn + endLine
-    #
-    # Defensive null handling at each level:
-    # - .locations // []: Default to empty array if no locations
-    # - [0] // {}: Default to empty object if array is empty
-    # - .physicalLocation // {}: Default if no physical location
-    # - .region.* // 0: Default line/column numbers to 0
     results: [.runs[].results // [] | .[]] | unique_by(
       (.ruleId // "") +
       ((((.locations // [])[0] // {}).physicalLocation // {}).artifactLocation.uri // "") +
@@ -116,52 +70,29 @@ if ! jq '
       ((((.locations // [])[0] // {}).physicalLocation // {}).region.startColumn // 0 | tostring) +
       ((((.locations // [])[0] // {}).physicalLocation // {}).region.endLine // 0 | tostring)
     ),
-
-    # -------------------------------------------------------------------------
-    # ADDITIONAL SARIF PROPERTIES
-    # Preserved to maintain full SARIF compliance
-    # -------------------------------------------------------------------------
-
-    # originalUriBaseIds: Maps logical names to physical paths (e.g., %SRCROOT%)
-    # Merge strategy: Combine all mappings, later values override earlier ones
     originalUriBaseIds: (reduce (.runs[].originalUriBaseIds // {}) as $m ({}; . * $m)),
-
-    # artifacts: List of files analyzed
-    # Merge strategy: Combine all artifact lists (may contain duplicates)
     artifacts: [.runs[].artifacts // [] | .[]],
-
-    # invocations: Records of tool executions (timing, exit codes, etc.)
-    # Merge strategy: Keep all invocation records from all runs
     invocations: [.runs[].invocations // [] | .[]],
-
-    # columnKind: Specifies if columns are 1-based or UTF-16 code units
-    # Merge strategy: Use first non-null value (should be consistent across runs)
-    # Note: Use array subscript [0] with // null fallback to avoid 'empty' propagating
     columnKind: ([.runs[].columnKind | select(. != null)][0] // null),
-
-    # conversion: Info about SARIF format conversion if applicable
-    # Merge strategy: Use first non-null value
     conversion: ([.runs[].conversion | select(. != null)][0] // null)
   }]
 }
-' "$INPUT_FILE" > "$TEMP_FILE"; then
+JQEOF
+
+if ! jq -f "$JQ_FILTER" "$INPUT_FILE" > "$TEMP_FILE"; then
   echo "Error: jq merge operation failed"
   exit 1
 fi
 
-# --- Validate merged file is valid JSON ---
 if ! jq empty "$TEMP_FILE" 2>/dev/null; then
   echo "Error: Merged SARIF file is invalid JSON"
   exit 1
 fi
 
-# --- Move merged file to output ---
 mv "$TEMP_FILE" "$OUTPUT_FILE"
-trap - EXIT  # Clear trap since we moved the file
+trap 'rm -f "$JQ_FILTER"' EXIT
 
 echo "Merged SARIF file created successfully: $OUTPUT_FILE"
-
-# --- Report final structure ---
 echo "Final SARIF structure:"
 echo "  Runs: $(jq '.runs | length' "$OUTPUT_FILE")"
 echo "  Results: $(jq '.runs[0].results // [] | length' "$OUTPUT_FILE")"

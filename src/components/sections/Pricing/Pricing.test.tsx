@@ -81,10 +81,20 @@ describe('Pricing', () => {
   })
 
   it('should render "Most Popular" badge for Pro plan', () => {
-    render(<Pricing />)
+    const themes = ['light', 'dark'] as const
 
-    const popularBadge = screen.getByLabelText('Most popular')
-    expect(popularBadge).toBeInTheDocument()
+    themes.forEach((theme) => {
+      document.documentElement.setAttribute('data-theme', theme)
+      const { unmount } = render(<Pricing />)
+
+      const popularBadge = screen.getByTestId('most-popular-badge')
+      expect(popularBadge).toBeInTheDocument()
+
+      const icon = screen.getByRole('img', { name: 'Most popular' })
+      expect(icon).toBeInTheDocument()
+
+      unmount()
+    })
   })
 
   it('should render plan icons', () => {
@@ -114,7 +124,6 @@ describe('Pricing', () => {
     // Count total features across all plans
     const totalFeatures = PRICING_PLANS.reduce((sum, plan) => sum + plan.features.length, 0)
 
-    // Find all checkmark icons by aria-label
     const checkmarks = screen.getAllByLabelText('Included')
 
     expect(checkmarks.length).toBe(totalFeatures)

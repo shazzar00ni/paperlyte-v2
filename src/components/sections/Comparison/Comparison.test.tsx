@@ -68,7 +68,6 @@ describe('Comparison', () => {
   it('should render checkmark icons for true boolean values', () => {
     render(<Comparison />)
 
-    // Find all checkmarks by aria-label
     const checkmarks = screen.getAllByLabelText('Supported')
     expect(checkmarks.length).toBeGreaterThan(0)
   })
@@ -76,7 +75,6 @@ describe('Comparison', () => {
   it('should render X icons for false boolean values', () => {
     render(<Comparison />)
 
-    // Find all X marks by aria-label
     const xmarks = screen.getAllByLabelText('Not supported')
     expect(xmarks.length).toBeGreaterThan(0)
   })

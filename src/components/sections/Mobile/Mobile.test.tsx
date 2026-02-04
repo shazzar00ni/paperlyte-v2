@@ -40,10 +40,10 @@ describe('Mobile', () => {
       render(<Mobile />)
 
       const link = screen.getByRole('link', { name: /Explore Mobile Features/i })
-      const arrowIcon = link.querySelector('.fa-arrow-right')
+      const arrowIcon = link.querySelector('svg, .icon-fallback')
 
       expect(arrowIcon).toBeInTheDocument()
-      expect(link.contains(arrowIcon)).toBe(true)
+      expect(arrowIcon).toHaveAttribute('aria-hidden', 'true')
     })
   })
 

@@ -1,6 +1,63 @@
-# PR Review Summary - 2024-07-30
+# PR Review Summary
 
 This file contains a summary of pull requests I have reviewed.
+
+## 2026-02-03
+
+### PR #399: fix(ci): fix SARIF merge script jq syntax errors causing run limit rejection
+
+- **Status:** Approved (with corrections)
+- **Summary:** Fixes syntax errors (unbalanced parentheses) in the `jq` filter used in `scripts/merge-sarif-runs.sh`. Also improves the robustness of property extraction for `columnKind` and `conversion` by avoiding the `first(empty)` pitfall.
+- **Feedback:** A syntax error was found in the initial PR submission (unbalanced parentheses in the `unique_by` filter). This has been corrected in the current branch to restore CI functionality.
+
+### Baseline Fix: Undici Dependency & Security
+
+- **Summary:** Fixed a critical baseline issue where an outdated `undici` override was incompatible with `jsdom` v28.0.0 and contained moderate security vulnerabilities.
+- **Action:** Updated `undici` override to `^7.20.0` in `package.json`. This satisfies the requirements for `jsdom` (fixing `MODULE_NOT_FOUND` errors) and resolves security audit failures for nested dependencies.
+
+### PR #387: Fix Home/End key navigation tests in Header component
+
+- **Status:** Approved
+- **Summary:** Modifies `Header.test.tsx` to handle `jsdom`'s lack of support for `Home` and `End` key simulation. Instead of simulating the keypress, it verifies the DOM order of focusable elements and manually sets focus.
+- **Feedback:** A sensible approach to environment-specific testing limitations. Since the core navigation logic is covered in `keyboard.test.ts`, this maintains sufficient coverage.
+
+### PR #384: Sort focusable elements by document order for consistent navigation
+
+- **Status:** Approved (with notes)
+- **Summary:** The PR description mentions sorting focusable elements and `getFocusableElements()`, but the actual code changes only add detailed diagnostic information to `iconLibrary.test.ts` to help debug duplicate icon values in CI. The file changes include improved error reporting that identifies which specific icon names have duplicate values and includes known aliases to reduce false positives.
+- **Feedback:** There is a significant mismatch between the PR title/description (which discusses focusable element sorting) and the actual code changes (which only modify iconLibrary.test.ts). This suggests the PR may have been repurposed or the description was not updated after the changes were modified. The icon library test diagnostics themselves are valuable for troubleshooting CI failures. Recommend updating the PR description to accurately reflect the actual changes.
+
+### PR #107: Implement critical accessibility fixes, legal documents, and performance optimizations
+
+- **Status:** Needs Cleanup / Close
+- **Summary:** A massive, monolithic PR (118 files) that has been open for several months. Many of its core changes appear to have been merged via other PRs. It also includes many Lighthouse report artifacts.
+- **Feedback:** Recommend closing this PR. Any remaining unique changes should be extracted into smaller, focused PRs to facilitate review and merge.
+
+### PR #279: feat: Implement React Router and legal pages with dark footer
+
+- **Status:** Changes Requested
+- **Summary:** Introduces `react-router-dom` and creates dedicated pages for Privacy and Terms.
+- **Feedback:** The routing logic is not yet integrated into `App.tsx`, which currently renders everything on a single page. Routing should be fully implemented or the PR should be explicitly marked as a "Work in Progress" toward that goal.
+
+### PR #275: Implement P0-CRITICAL hero section conversion optimization (#274)
+
+- **Status:** Under Review (Previously Rejected)
+- **Summary:** Re-evaluated this PR after previous rejection for critical security issues. Recent commits have removed the most dangerous changes (like the CSP weakening).
+- **Feedback:** While improved, the PR title remains misleading as the recent focus is on Codacy warning fixes. A fresh, accurately titled PR with only the safe changes is recommended.
+
+### PR #321: Add tests for analytics utilities
+
+- **Status:** Approved
+- **Summary:** Adds a comprehensive test suite for analytics utilities in `src/utils/analytics.test.ts`.
+- **Feedback:** Great improvement to test coverage.
+
+### PR #309, #308, #284
+
+- **Status:** Approved
+- **Summary:** These PRs provide various improvements including FontAwesome test updates (#309), linting fixes (#308), and Lighthouse CI budget enhancements (#284).
+- **Feedback:** All are solid maintenance improvements.
+
+---
 
 ## 2026-01-31
 

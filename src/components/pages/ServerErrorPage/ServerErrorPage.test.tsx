@@ -2,7 +2,6 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { ServerErrorPage } from './ServerErrorPage'
 import { CONTACT } from '@/constants/config'
-import { getIcon } from '@/test/test-helpers'
 
 describe('ServerErrorPage', () => {
   let originalLocation: Location
@@ -230,40 +229,35 @@ describe('ServerErrorPage', () => {
 
   describe('Icon Integration', () => {
     it('should render server icon in illustration', () => {
-      render(<ServerErrorPage />)
+      const { container } = render(<ServerErrorPage />)
 
-      const illustration = screen.getByRole('main').querySelector('[aria-hidden="true"]')
+      // Icon is decorative (inside aria-hidden), so we verify it exists via DOM query
+      const illustration = container.querySelector('[aria-hidden="true"]')
       expect(illustration).toBeInTheDocument()
-      const icon = getIcon(illustration)
-      expect(icon).toBeInTheDocument()
+      expect(illustration?.querySelector('svg')).toBeInTheDocument()
     })
 
     it('should render warning icon in error badge', () => {
-      render(<ServerErrorPage />)
+      const { container } = render(<ServerErrorPage />)
 
-      // Find the error badge element using data-testid
-      const errorBadge = screen.getByTestId('error-badge')
+      // Icon is decorative (inside aria-hidden), so we verify via DOM query
+      const errorBadge = container.querySelector('[class*="errorBadge"]')
       expect(errorBadge).toBeInTheDocument()
-
-      // Assert the warning icon exists within the error badge
-      const warningIcon = getIcon(errorBadge)
-      expect(warningIcon).toBeInTheDocument()
+      expect(errorBadge?.querySelector('svg')).toBeInTheDocument()
     })
 
     it('should render retry icon in primary button', () => {
       render(<ServerErrorPage />)
 
-      const retryButton = screen.getByRole('button', { name: /retry loading the page/i })
-      const icon = getIcon(retryButton)
-      expect(icon).toBeInTheDocument()
+      const retryIcon = screen.getByLabelText('Retry icon')
+      expect(retryIcon).toBeInTheDocument()
     })
 
     it('should render home icon in secondary button', () => {
       render(<ServerErrorPage />)
 
-      const homeButton = screen.getByRole('button', { name: /return to homepage/i })
-      const icon = getIcon(homeButton)
-      expect(icon).toBeInTheDocument()
+      const homeIcon = screen.getByLabelText('Home icon')
+      expect(homeIcon).toBeInTheDocument()
     })
   })
 })

@@ -57,12 +57,12 @@ async function generateMockup(sourceName, width, height, format, options) {
     if (!isPathSafe(mockupsDir, sourceName)) {
       throw new Error(`Invalid source path: ${sourceName}. Path traversal detected.`)
     }
-    
+
     // Validate format parameter to prevent unexpected values
     if (!VALID_FORMATS.includes(format)) {
       throw new Error(`Invalid format: ${format}. Must be one of: ${VALID_FORMATS.join(', ')}`)
     }
-    
+
     // Validate file extension
     if (!sourceName.toLowerCase().endsWith('.svg')) {
       throw new Error(`Invalid file type: ${sourceName}. Only SVG files are supported.`)
@@ -71,12 +71,12 @@ async function generateMockup(sourceName, width, height, format, options) {
     const baseName = sourceName.replace('.svg', '')
     const sourcePath = join(mockupsDir, sourceName)
     const outputName = `${baseName}.${format}`
-    
+
     // Defense-in-depth: validate outputName even though it's derived from validated inputs
     if (!isPathSafe(mockupsDir, outputName)) {
       throw new Error(`Invalid output path: ${outputName}. Path traversal detected.`)
     }
-    
+
     const outputPath = join(mockupsDir, outputName)
 
     // Verify source file exists
@@ -90,7 +90,6 @@ async function generateMockup(sourceName, width, height, format, options) {
         background: { r: 255, g: 255, b: 255, alpha: 0 }, // Transparent background
       })
 
-    // Apply format-specific encoding
     // Apply format-specific encoding
     switch (format) {
       case 'png':
@@ -112,7 +111,7 @@ async function generateMockup(sourceName, width, height, format, options) {
     const errorMessage = error instanceof Error ? error.message : String(error)
     const baseName = sourceName.replace('.svg', '')
     const outputName = `${baseName}.${format}`
-    console.error(`❌ Failed to generate ${outputName}:`, errorMessage)
+    console.error('❌ Failed to generate mockup:', outputName, errorMessage)
 
     // Always throw a normalized Error instance for consistent error handling
     throw new Error(`Failed to generate ${outputName}: ${errorMessage}`)

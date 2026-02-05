@@ -359,6 +359,23 @@ describe('Analytics Utility', () => {
       addEventListenerSpy.mockRestore()
       removeEventListenerSpy.mockRestore()
       rafSpy.mockRestore()
+
+      // Reset mocked scroll-related properties to avoid test pollution
+      Object.defineProperty(document.documentElement, 'scrollHeight', {
+        value: 0,
+        configurable: true,
+        writable: true,
+      })
+      Object.defineProperty(window, 'innerHeight', {
+        value: 0,
+        configurable: true,
+        writable: true,
+      })
+      Object.defineProperty(window, 'scrollY', {
+        value: 0,
+        configurable: true,
+        writable: true,
+      })
     })
 
     it('should set up scroll event listener', () => {

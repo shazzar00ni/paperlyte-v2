@@ -22,12 +22,12 @@ if [ -f .lighthouseci/manifest.json ]; then
     A11Y_THRESHOLD=$(jq -r '(.ci.assert.assertions["categories:accessibility"][1].minScore // 0.95) * 100 | floor' .lighthouserc.json)
     BP_THRESHOLD=$(jq -r '(.ci.assert.assertions["categories:best-practices"][1].minScore // 0.9) * 100 | floor' .lighthouserc.json)
     SEO_THRESHOLD=$(jq -r '(.ci.assert.assertions["categories:seo"][1].minScore // 0.9) * 100 | floor' .lighthouserc.json)
-    FCP_THRESHOLD=$(jq -r '.ci.assert.assertions["first-contentful-paint"][1].maxNumericValue // 2000' .lighthouserc.json)
-    LCP_THRESHOLD=$(jq -r '.ci.assert.assertions["largest-contentful-paint"][1].maxNumericValue // 2500' .lighthouserc.json)
+    FCP_THRESHOLD=$(jq -r '(.ci.assert.assertions["first-contentful-paint"][1].maxNumericValue // 2000) | floor' .lighthouserc.json)
+    LCP_THRESHOLD=$(jq -r '(.ci.assert.assertions["largest-contentful-paint"][1].maxNumericValue // 2500) | floor' .lighthouserc.json)
     CLS_THRESHOLD=$(jq -r '.ci.assert.assertions["cumulative-layout-shift"][1].maxNumericValue // 0.1' .lighthouserc.json)
-    TBT_THRESHOLD=$(jq -r '.ci.assert.assertions["total-blocking-time"][1].maxNumericValue // 300' .lighthouserc.json)
-    SI_THRESHOLD=$(jq -r '.ci.assert.assertions["speed-index"][1].maxNumericValue // 3000' .lighthouserc.json)
-    TTI_THRESHOLD=$(jq -r '.ci.assert.assertions.interactive[1].maxNumericValue // 3500' .lighthouserc.json)
+    TBT_THRESHOLD=$(jq -r '(.ci.assert.assertions["total-blocking-time"][1].maxNumericValue // 300) | floor' .lighthouserc.json)
+    SI_THRESHOLD=$(jq -r '(.ci.assert.assertions["speed-index"][1].maxNumericValue // 3000) | floor' .lighthouserc.json)
+    TTI_THRESHOLD=$(jq -r '(.ci.assert.assertions.interactive[1].maxNumericValue // 3500) | floor' .lighthouserc.json)
 
     {
       echo "### 📊 Lighthouse Scores"

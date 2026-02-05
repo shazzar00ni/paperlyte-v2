@@ -37,7 +37,7 @@ interface CounterAnimationProps {
 }
 
 /** Type for easing functions */
-type EasingFunction = (t: number) => number
+type EasingFunction = (num: number) => number
 
 /** Default easing function name */
 const DEFAULT_EASING_NAME = 'easeOutQuart'

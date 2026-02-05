@@ -54,7 +54,7 @@ function cspPlugin(): Plugin {
       // - All fonts and icons are self-hosted (no external CDN dependencies)
       // - Fonts: @fontsource/inter, Icons: @fortawesome/fontawesome-free
       // - Vercel Analytics domains added for Web Analytics support
-      const devCSP = `default-src 'self'; script-src 'self' 'unsafe-eval' https://vercel.live; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' ws: wss: https://vercel.live https://vitals.vercel-insights.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self';`
+      const devCSP = `default-src 'self'; script-src 'self' 'unsafe-eval' https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' ws: wss: https://vitals.vercel-insights.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self';`
 
       // Inject CSP meta tag before closing </head> tag (dev only)
       const cspMetaTag = `    <!-- Content Security Policy (development only) -->

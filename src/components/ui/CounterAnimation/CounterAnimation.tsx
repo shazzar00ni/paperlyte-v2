@@ -76,7 +76,9 @@ function getEasingFunction(easingName: string): (t: number) => number {
     return easingFunctions[DEFAULT_EASING]
   }
 
-  // Additional safety: verify the property exists and is an own property
+  // Defense-in-depth: verify the property exists as an own property.
+  // While VALID_EASING_NAMES should match easingFunctions keys, this provides
+  // extra protection against future code changes or edge cases.
   if (!Object.prototype.hasOwnProperty.call(easingFunctions, easingName)) {
     return easingFunctions[DEFAULT_EASING]
   }

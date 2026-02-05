@@ -119,11 +119,20 @@ export function isSafeUrl(url: string): boolean {
  * List of allowed external domains for navigation.
  * Only domains in this allowlist can be navigated to when using safeNavigate.
  * This prevents open redirect attacks by blocking navigation to arbitrary external sites.
+ *
+ * CONFIGURATION: Add trusted external domains here when the application needs to
+ * navigate to specific external sites. This list is intentionally empty by default
+ * to enforce a "deny by default" security posture.
+ *
+ * @example
+ * const ALLOWED_EXTERNAL_DOMAINS: ReadonlySet<string> = new Set([
+ *   'github.com',
+ *   'twitter.com',
+ *   'support.paperlyte.app',
+ * ])
  */
 const ALLOWED_EXTERNAL_DOMAINS: ReadonlySet<string> = new Set([
-  // Add trusted external domains here, e.g.:
-  // 'github.com',
-  // 'twitter.com',
+  // Add trusted external domains here as needed
 ])
 
 /**

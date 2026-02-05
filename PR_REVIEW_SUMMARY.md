@@ -153,7 +153,7 @@ Today's review focused on a large backlog of open pull requests, including new d
 
 ### Stale & Older PRs
 
-- **PR #107 & #171**: Massive monolithic PR (118 files) is stale. Recommend closing and splitting into focused PRs.
+- **PRs #107 and #171**: Massive monolithic PRs (118 files in total) are stale. Recommend closing both and splitting the changes into focused PRs.
 - **PR #217, #233, #255, #256, #260, #262, #263, #265**: Mostly superseded or stale agent-authored PRs. Recommend a general cleanup of these branches.
 
 ---

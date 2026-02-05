@@ -43,14 +43,13 @@ type EasingFunction = (t: number) => number
 const DEFAULT_EASING_NAME = 'easeOutQuart'
 
 /** Linear easing - constant rate of change */
-const linearEasing: EasingFunction = (progress) => progress
+const linearEasing: EasingFunction = (t) => t
 
 /** Ease out quart - decelerating to zero velocity */
-const easeOutQuartEasing: EasingFunction = (progress) => 1 - Math.pow(1 - progress, 4)
+const easeOutQuartEasing: EasingFunction = (t) => 1 - Math.pow(1 - t, 4)
 
 /** Ease out expo - exponential deceleration */
-const easeOutExpoEasing: EasingFunction = (progress) =>
-  progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress)
+const easeOutExpoEasing: EasingFunction = (t) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t))
 
 /**
  * Map of easing functions for smooth animations.
@@ -78,7 +77,7 @@ function getEasingFunction(easingName: string): EasingFunction {
 
   console.warn(`Invalid easing function "${easingName}", falling back to "${DEFAULT_EASING_NAME}"`)
   // Non-null assertion is safe here because DEFAULT_EASING_NAME is a known key
-  return easingFunctionsMap.get(DEFAULT_EASING_NAME)!;
+  return easingFunctionsMap.get(DEFAULT_EASING_NAME)!
 }
 
 /**

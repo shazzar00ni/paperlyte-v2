@@ -340,6 +340,12 @@ describe('navigation utilities', () => {
       expect(isAllowedDestination('ftp://external.com')).toBe(false)
     })
 
+    it('should reject empty and whitespace-only URLs', () => {
+      expect(isAllowedDestination('')).toBe(false)
+      expect(isAllowedDestination('   ')).toBe(false)
+      expect(isAllowedDestination('\t\n')).toBe(false)
+    })
+
     it('should handle malformed URLs safely by rejecting them', () => {
       // Malformed URLs should be rejected (not allowed)
       const result = isAllowedDestination('://invalid')

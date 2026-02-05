@@ -80,7 +80,7 @@ function getEasingFunction(easingName: string): EasingFunction {
     `Invalid easing function "${easingName}", falling back to "${DEFAULT_EASING_NAME}"`
   )
   // Non-null assertion is safe here because DEFAULT_EASING_NAME is a known key
-  return easingFunctionsMap.get(DEFAULT_EASING_NAME)!
+  return easingFunctionsMap.get(DEFAULT_EASING_NAME) ?? linearEasing
 }
 
 /**

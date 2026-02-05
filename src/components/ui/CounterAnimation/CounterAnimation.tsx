@@ -37,7 +37,7 @@ interface CounterAnimationProps {
 }
 
 /** Type for easing functions */
-type EasingFunction = (progress: number) => number
+type EasingFunction = (progress: number) => number // eslint-disable-line @typescript-eslint/no-unused-vars
 
 /** Default easing function name */
 const DEFAULT_EASING_NAME = 'easeOutQuart'

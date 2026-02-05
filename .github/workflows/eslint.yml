@@ -53,6 +53,7 @@ jobs:
         continue-on-error: true
 
       - name: Ensure SARIF file exists
+        if: always()
         # Creates a minimal valid SARIF file if ESLint didn't produce one.
         # This can happen if ESLint fails before generating output.
         run: |

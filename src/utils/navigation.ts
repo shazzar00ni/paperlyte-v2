@@ -136,32 +136,21 @@ const ALLOWED_EXTERNAL_DOMAINS: ReadonlySet<string> = new Set([
 ])
 
 /**
- * Checks if a URL is a safe relative path (starts with / but not // and no protocol injection)
+ * Checks if a URL is a safe relative path (no protocol injection).
+ * Accepts paths starting with /, ./, or ../ but rejects protocol-relative URLs (//)
+ * and paths containing :// which could be protocol injection attempts.
  */
-function isSafeRelativePath(trimmedUrl: string): boolean {
-  return trimmedUrl.startsWith('/') && !trimmedUrl.startsWith('//') && !trimmedUrl.includes('://')
-}
-
-/**
- * Checks if a URL is a safe dot-relative path (./ or ../ without protocol injection)
- */
-function isSafeDotRelativePath(trimmedUrl: string): boolean {
-  return (
-    (trimmedUrl.startsWith('./') || trimmedUrl.startsWith('../')) && !trimmedUrl.includes('://')
-  )
-}
-
-/**
- * Checks if a parsed URL is allowed based on origin and protocol
- */
-function isAllowedParsedUrl(parsedUrl: URL, currentOrigin: string): boolean {
-  // Same-origin URLs are always allowed
-  if (parsedUrl.origin === currentOrigin) {
+function isSafeRelativeUrl(trimmedUrl: string): boolean {
+  // Must not contain protocol injection
+  if (trimmedUrl.includes('://')) {
+    return false
+  }
+  // Accept single-slash relative paths (but not protocol-relative //)
+  if (trimmedUrl.startsWith('/') && !trimmedUrl.startsWith('//')) {
     return true
   }
-  // External URLs must use http/https and be on the allowlist
-  const hasAllowedProtocol = parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:'
-  return hasAllowedProtocol && ALLOWED_EXTERNAL_DOMAINS.has(parsedUrl.hostname)
+  // Accept dot-relative paths
+  return trimmedUrl.startsWith('./') || trimmedUrl.startsWith('../')
 }
 
 /**
@@ -185,14 +174,23 @@ export function isAllowedDestination(url: string): boolean {
       return false
     }
 
-    // Check relative URLs first (they're same-origin by definition)
-    if (isSafeRelativePath(trimmedUrl) || isSafeDotRelativePath(trimmedUrl)) {
+    // Relative URLs are same-origin by definition
+    if (isSafeRelativeUrl(trimmedUrl)) {
       return true
     }
 
     // Parse and validate absolute URLs
     const parsedUrl = new URL(trimmedUrl, window.location.origin)
-    return isAllowedParsedUrl(parsedUrl, window.location.origin)
+    const currentOrigin = window.location.origin
+
+    // Same-origin URLs are always allowed
+    if (parsedUrl.origin === currentOrigin) {
+      return true
+    }
+
+    // External URLs must use http/https and be on the allowlist
+    const hasAllowedProtocol = parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:'
+    return hasAllowedProtocol && ALLOWED_EXTERNAL_DOMAINS.has(parsedUrl.hostname)
   } catch {
     // If URL parsing fails, don't allow it
     return false

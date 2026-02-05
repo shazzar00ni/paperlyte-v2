@@ -56,18 +56,21 @@ jobs:
 
         # Runs Snyk Code (SAST) analysis and uploads result into GitHub.
       - name: Snyk Code test
+        id: snyk-code
         if: env.SNYK_TOKEN != ''
         run: snyk code test --sarif > snyk-code.sarif
         continue-on-error: true
 
         # Runs Snyk Open Source (SCA) analysis and uploads result to Snyk.
       - name: Snyk Open Source monitor
+        id: snyk-oss
         if: env.SNYK_TOKEN != ''
         run: snyk monitor --all-projects
         continue-on-error: true
 
         # Runs Snyk Infrastructure as Code (IaC) analysis and uploads result to Snyk.
       - name: Snyk IaC test and report
+        id: snyk-iac
         if: env.SNYK_TOKEN != ''
         run: snyk iac test --report
         continue-on-error: true
@@ -87,3 +90,43 @@ jobs:
         with:
           sarif_file: snyk-code.sarif
           category: snyk
+
+      - name: Snyk Security Summary
+        if: always()
+        run: |
+          echo "## 🛡️ Snyk Security Scan" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -z "${{ secrets.SNYK_TOKEN }}" ]; then
+            echo "⚠️ **Snyk Token:** Not configured - scans skipped" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Scan Type | Status |" >> $GITHUB_STEP_SUMMARY
+            echo "|-----------|--------|" >> $GITHUB_STEP_SUMMARY
+            
+            if [ "${{ steps.snyk-code.outcome }}" == "success" ]; then
+              echo "| Code (SAST) | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
+            elif [ "${{ steps.snyk-code.outcome }}" == "failure" ]; then
+              echo "| Code (SAST) | ⚠️ Issues Found |" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "| Code (SAST) | ⏭️ Skipped |" >> $GITHUB_STEP_SUMMARY
+            fi
+            
+            if [ "${{ steps.snyk-oss.outcome }}" == "success" ]; then
+              echo "| Open Source (SCA) | ✅ Monitored |" >> $GITHUB_STEP_SUMMARY
+            elif [ "${{ steps.snyk-oss.outcome }}" == "failure" ]; then
+              echo "| Open Source (SCA) | ⚠️ Issues Found |" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "| Open Source (SCA) | ⏭️ Skipped |" >> $GITHUB_STEP_SUMMARY
+            fi
+            
+            if [ "${{ steps.snyk-iac.outcome }}" == "success" ]; then
+              echo "| Infrastructure as Code | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
+            elif [ "${{ steps.snyk-iac.outcome }}" == "failure" ]; then
+              echo "| Infrastructure as Code | ⚠️ Issues Found |" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "| Infrastructure as Code | ⏭️ Skipped |" >> $GITHUB_STEP_SUMMARY
+            fi
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📊 View detailed findings in the **Security** tab." >> $GITHUB_STEP_SUMMARY

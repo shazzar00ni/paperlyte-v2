@@ -182,12 +182,7 @@ describe('iconLibrary', () => {
 
     it('should map all expected UI icons', () => {
       // UI icons that must be mapped
-      const requiredMappings = [
-        'fa-github',
-        'fa-twitter',
-        'fa-apple',
-        'fa-windows',
-      ]
+      const requiredMappings = ['fa-github', 'fa-twitter', 'fa-apple', 'fa-windows']
 
       requiredMappings.forEach((oldName) => {
         expect(iconNameMap[oldName]).toBeDefined()

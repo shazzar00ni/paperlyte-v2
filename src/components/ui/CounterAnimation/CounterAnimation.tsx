@@ -36,54 +36,51 @@ interface CounterAnimationProps {
   minWidth?: string
 }
 
-/**
- * Easing functions for smooth animations
- */
-const easingFunctions: Readonly<Record<string, (t: number) => number>> = {
-  linear: (t: number) => t,
-  easeOutQuart: (t: number) => 1 - Math.pow(1 - t, 4),
-  easeOutExpo: (t: number) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t)),
-}
+/** Type for easing functions */
+type EasingFunction = (progress: number) => number
+
+/** Default easing function name */
+const DEFAULT_EASING_NAME = 'easeOutQuart'
+
+/** Linear easing - constant rate of change */
+const linearEasing: EasingFunction = (progress) => progress
+
+/** Ease out quart - decelerating to zero velocity */
+const easeOutQuartEasing: EasingFunction = (progress) => 1 - Math.pow(1 - progress, 4)
+
+/** Ease out expo - exponential deceleration */
+const easeOutExpoEasing: EasingFunction = (progress) =>
+  progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress)
 
 /**
- * Valid easing function names - used for runtime validation
+ * Map of easing functions for smooth animations.
+ * Using a Map instead of an object prevents prototype pollution attacks
+ * and eliminates generic object injection sink vulnerabilities.
  */
-const VALID_EASING_NAMES: ReadonlySet<string> = new Set([
-  'linear',
-  'easeOutQuart',
-  'easeOutExpo',
+const easingFunctionsMap: ReadonlyMap<string, EasingFunction> = new Map([
+  ['linear', linearEasing],
+  ['easeOutQuart', easeOutQuartEasing],
+  ['easeOutExpo', easeOutExpoEasing],
 ])
 
 /**
- * Default easing function used when an invalid easing is requested
- */
-const DEFAULT_EASING = 'easeOutQuart'
-
-/**
- * Safely retrieves an easing function by name, preventing prototype pollution
- * and arbitrary property access attacks.
+ * Safely retrieves an easing function by name.
+ * Uses a Map for O(1) lookup without prototype chain risks.
  *
  * @param easingName - The name of the easing function to retrieve
  * @returns The easing function, or the default easing if the name is invalid
  */
-function getEasingFunction(easingName: string): (t: number) => number {
-  // Runtime validation: only allow known easing function names
-  // This prevents command injection via arbitrary property access
-  if (!VALID_EASING_NAMES.has(easingName)) {
-    console.warn(
-      `Invalid easing function "${easingName}", falling back to "${DEFAULT_EASING}"`
-    )
-    return easingFunctions[DEFAULT_EASING]
+function getEasingFunction(easingName: string): EasingFunction {
+  const easingFn = easingFunctionsMap.get(easingName)
+  if (easingFn) {
+    return easingFn
   }
 
-  // Defense-in-depth: verify the property exists as an own property.
-  // While VALID_EASING_NAMES should match easingFunctions keys, this provides
-  // extra protection against future code changes or edge cases.
-  if (!Object.prototype.hasOwnProperty.call(easingFunctions, easingName)) {
-    return easingFunctions[DEFAULT_EASING]
-  }
-
-  return easingFunctions[easingName]
+  console.warn(
+    `Invalid easing function "${easingName}", falling back to "${DEFAULT_EASING_NAME}"`
+  )
+  // Non-null assertion is safe here because DEFAULT_EASING_NAME is a known key
+  return easingFunctionsMap.get(DEFAULT_EASING_NAME)!
 }
 
 /**

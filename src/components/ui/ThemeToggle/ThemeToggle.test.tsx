@@ -141,7 +141,7 @@ describe('ThemeToggle', () => {
       })
 
       rerender(<ThemeToggle />)
-      const lightIcon = screen.getByRole('button').querySelector('svg')
+       const lightIcon = screen.getByRole('button').querySelector('svg[data-icon="fa-moon"]')
       expect(lightIcon).toHaveAttribute('data-icon', 'fa-moon')
 
       vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({

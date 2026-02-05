@@ -1,6 +1,62 @@
 # Codecov Configuration
 # Reference: https://docs.codecov.com/docs/codecovyml-reference
 
+# Component Management
+# Reference: https://docs.codecov.com/docs/components
+# Allows tracking coverage separately for different parts of the codebase
+component_management:
+  individual_components:
+    # UI Components - Reusable UI elements (Button, Icon, AnimatedElement, etc.)
+    - component_id: "ui-components"
+      paths:
+        - "src/components/ui/**"
+
+    # Layout Components - Page structure (Header, Footer, Section)
+    - component_id: "layout"
+      paths:
+        - "src/components/layout/**"
+
+    # Landing Page Sections - Individual page sections (Hero, Features, FAQ, etc.)
+    - component_id: "sections"
+      paths:
+        - "src/components/sections/**"
+
+    # Page Components - Full page components (Privacy, Terms, NotFound, etc.)
+    - component_id: "pages"
+      paths:
+        - "src/components/pages/**"
+
+    # Error Boundary - Error handling component
+    - component_id: "error-boundary"
+      paths:
+        - "src/components/ErrorBoundary/**"
+
+    # Custom Hooks - React hooks (useTheme, useAnalytics, etc.)
+    - component_id: "hooks"
+      paths:
+        - "src/hooks/**"
+
+    # Utilities - Helper functions (validation, navigation, monitoring, etc.)
+    - component_id: "utils"
+      paths:
+        - "src/utils/**"
+
+    # Analytics - Analytics tracking (GA4, scroll depth, web vitals)
+    - component_id: "analytics"
+      paths:
+        - "src/analytics/**"
+
+    # Constants - Configuration and data constants
+    - component_id: "constants"
+      paths:
+        - "src/constants/**"
+
+    # Core App - Main application entry points
+    - component_id: "core"
+      paths:
+        - "src/App.tsx"
+        - "src/main.tsx"
+
 # Coverage targets and thresholds
 coverage:
   # Set precision for coverage percentages
@@ -39,8 +95,8 @@ comment:
   require_base: false
   require_head: true
 
-  # Comment layout
-  layout: "reach,diff,flags,tree,footer"
+  # Comment layout - includes components for component-level coverage breakdown
+  layout: "reach,diff,flags,components,tree,footer"
 
   # Show coverage for changed files
   behavior: default

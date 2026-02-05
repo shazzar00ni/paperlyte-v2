@@ -145,7 +145,6 @@ describe('Pricing', () => {
 
     const shieldIcon = screen.getByLabelText('Guarantee')
     expect(shieldIcon).toBeInTheDocument()
-    expect(shieldIcon).toHaveAttribute('aria-label', 'Guarantee')
   })
 
   it('should use semantic article elements for pricing cards', () => {

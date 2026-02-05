@@ -39,7 +39,7 @@ describe('ThemeToggle', () => {
       render(<ThemeToggle />)
 
       const button = screen.getByRole('button')
-      const icon = button.querySelector('svg')
+       const icon = button.querySelector('svg[data-icon="' + expectedIcon + '"]')
 
       expect(icon).toBeInTheDocument()
       expect(icon).toHaveAttribute('data-icon', expectedIcon)

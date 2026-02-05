@@ -215,18 +215,17 @@ describe('keyboard utilities', () => {
       expect(elements[4].id).toBe('input1')
     })
 
-    it('should handle elements at same document position gracefully', () => {
-      // Test edge case: comparing an element with itself should return 0
-      // This exercises the default return 0 branch in the sort comparison
+    it('should handle single element gracefully', () => {
+      // Note: Line 89 (return 0 in sort comparator) is practically uncoverable because
+      // Array.sort never compares an element with itself, and compareDocumentPosition
+      // always returns FOLLOWING or PRECEDING for distinct connected DOM nodes.
+      // This test validates basic functionality with a single-element array.
       container.innerHTML = '<button id="single">Single</button>'
       const elements = getFocusableElements(container)
 
       // Should have exactly one element
       expect(elements).toHaveLength(1)
       expect(elements[0].id).toBe('single')
-
-      // The sort function handles this case where position comparison returns 0
-      // (when comparing an element with itself or elements at exact same position)
     })
 
     it('should sort correctly when compareDocumentPosition returns DOCUMENT_POSITION_PRECEDING', () => {
@@ -637,6 +636,7 @@ describe('keyboard utilities', () => {
         // Reset direction after each RTL test
         document.documentElement.removeAttribute('dir')
         document.dir = ''
+        document.documentElement.style.direction = ''
       })
 
       it('should reverse ArrowRight to previous element in RTL mode using dir attribute', () => {
@@ -684,9 +684,6 @@ describe('keyboard utilities', () => {
 
         // Should detect RTL from computed style and reverse direction
         expect(newIndex).toBe(0)
-
-        // Cleanup
-        document.documentElement.style.direction = ''
       })
 
       it('should not affect vertical navigation in RTL mode', () => {

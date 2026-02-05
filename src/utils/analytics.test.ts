@@ -328,11 +328,7 @@ describe('Analytics Utility', () => {
 
       trackPageView('/about', 'About Page')
 
-      expect(consoleSpy).toHaveBeenCalledWith(
-        '[Analytics] Page View:',
-        '/about',
-        'About Page'
-      )
+      expect(consoleSpy).toHaveBeenCalledWith('[Analytics] Page View:', '/about', 'About Page')
       consoleSpy.mockRestore()
     })
   })
@@ -381,11 +377,9 @@ describe('Analytics Utility', () => {
     it('should set up scroll event listener', () => {
       const cleanup = initScrollDepthTracking()
 
-      expect(addEventListenerSpy).toHaveBeenCalledWith(
-        'scroll',
-        expect.any(Function),
-        { passive: true }
-      )
+      expect(addEventListenerSpy).toHaveBeenCalledWith('scroll', expect.any(Function), {
+        passive: true,
+      })
 
       cleanup()
     })
@@ -394,10 +388,7 @@ describe('Analytics Utility', () => {
       const cleanup = initScrollDepthTracking()
       cleanup()
 
-      expect(removeEventListenerSpy).toHaveBeenCalledWith(
-        'scroll',
-        expect.any(Function)
-      )
+      expect(removeEventListenerSpy).toHaveBeenCalledWith('scroll', expect.any(Function))
     })
 
     it('should track scroll milestones when scrolling', () => {

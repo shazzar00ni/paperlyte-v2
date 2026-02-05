@@ -46,11 +46,15 @@ jobs:
                     login: ${{ secrets.CODESCAN_AUTH_TOKEN }}
                     organization: ${{ secrets.CODESCAN_ORGANIZATION_KEY }}
                     projectKey: ${{ secrets.CODESCAN_PROJECT_KEY }}
+            # Upload the SARIF file generated in the previous step
+            # NOTE: Temporarily allowing failures due to GitHub's July 2025 breaking change
+            # that rejects SARIF files with multiple runs per category. CodeScan may generate
+            # multiple runs which is now rejected by the updated CodeQL action.
+            # See: https://github.blog/changelog/2025-07-21-code-scanning-will-stop-combining-multiple-sarif-runs-uploaded-in-the-same-sarif-file/
             -   name: Upload SARIF file
                 uses: github/codeql-action/upload-sarif@b20883b0cd1f46c72ae0ba6d1090936928f9fa30 # v4.32.0
-                # Only upload if SARIF file exists
-                if: always() && hashFiles('codescan.sarif') != ''
                 continue-on-error: true
+                if: always() && hashFiles('codescan.sarif') != ''
                 with:
                     sarif_file: codescan.sarif
                     category: codescan

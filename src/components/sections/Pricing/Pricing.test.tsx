@@ -1,12 +1,12 @@
 import { describe, it, expect } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { screen } from '@testing-library/react'
+import { renderWithTheme } from '@/test/test-helpers'
 import { Pricing } from './Pricing'
 import { PRICING_PLANS } from '@constants/pricing'
-import { escapeRegExp } from '@/utils/test/regexHelpers'
 
-describe('Pricing', () => {
+describe.each<'light' | 'dark'>(['light', 'dark'])('Pricing in %s theme', (theme) => {
   it('should render as a section with correct id', () => {
-    const { container } = render(<Pricing />)
+    const { container } = renderWithTheme(<Pricing />, theme)
 
     const section = container.querySelector('section')
     expect(section).toBeInTheDocument()
@@ -14,26 +14,26 @@ describe('Pricing', () => {
   })
 
   it('should render main heading', () => {
-    render(<Pricing />)
+    renderWithTheme(<Pricing />, theme)
     expect(screen.getByText('Simple pricing. No surprises.')).toBeInTheDocument()
   })
 
   it('should render subtitle', () => {
-    render(<Pricing />)
+    renderWithTheme(<Pricing />, theme)
     expect(
       screen.getByText('Start free, upgrade whenever. No credit card needed to get started.')
     ).toBeInTheDocument()
   })
 
   it('should render all pricing plan cards', () => {
-    const { container } = render(<Pricing />)
+    const { container } = renderWithTheme(<Pricing />, theme)
 
     const articles = container.querySelectorAll('article')
     expect(articles).toHaveLength(PRICING_PLANS.length) // Should be 3: Free, Pro, Team
   })
 
   it('should render plan names', () => {
-    render(<Pricing />)
+    renderWithTheme(<Pricing />, theme)
 
     PRICING_PLANS.forEach((plan) => {
       const planHeadings = screen.getAllByText(plan.name)
@@ -45,7 +45,7 @@ describe('Pricing', () => {
   })
 
   it('should render plan taglines', () => {
-    render(<Pricing />)
+    renderWithTheme(<Pricing />, theme)
 
     PRICING_PLANS.forEach((plan) => {
       expect(screen.getByText(plan.tagline)).toBeInTheDocument()
@@ -53,7 +53,7 @@ describe('Pricing', () => {
   })
 
   it('should render Free plan with "Free" text', () => {
-    render(<Pricing />)
+    renderWithTheme(<Pricing />, theme)
 
     const freeTexts = screen.getAllByText('Free')
     expect(freeTexts.length).toBeGreaterThan(0)
@@ -62,7 +62,7 @@ describe('Pricing', () => {
   })
 
   it('should render Pro plan with price', () => {
-    render(<Pricing />)
+    renderWithTheme(<Pricing />, theme)
 
     expect(screen.getByText('Pro')).toBeInTheDocument()
     expect(screen.getByText('For power users')).toBeInTheDocument()
@@ -72,7 +72,7 @@ describe('Pricing', () => {
   })
 
   it('should render Team plan with price', () => {
-    render(<Pricing />)
+    renderWithTheme(<Pricing />, theme)
 
     expect(screen.getByText('Team')).toBeInTheDocument()
     expect(screen.getByText('Built for collaboration')).toBeInTheDocument()
@@ -81,14 +81,17 @@ describe('Pricing', () => {
   })
 
   it('should render "Most Popular" badge for Pro plan', () => {
-    render(<Pricing />)
+    renderWithTheme(<Pricing />, theme)
 
-    const popularBadge = screen.getByLabelText('Most popular')
-    expect(popularBadge).toBeInTheDocument()
+    const popularIcon = screen.getByLabelText('Most popular')
+    expect(popularIcon).toBeInTheDocument()
+
+    const badgeText = screen.getByText('Most Popular')
+    expect(badgeText).toBeInTheDocument()
   })
 
   it('should render plan icons', () => {
-    render(<Pricing />)
+    renderWithTheme(<Pricing />, theme)
 
     PRICING_PLANS.forEach((plan) => {
       if (plan.icon) {
@@ -100,7 +103,7 @@ describe('Pricing', () => {
 
   describe.each(PRICING_PLANS)('$name plan features', (plan) => {
     it(`should render all features for ${plan.name} plan`, () => {
-      render(<Pricing />)
+      renderWithTheme(<Pricing />, theme)
 
       plan.features.forEach((feature) => {
         expect(screen.getByText(feature)).toBeInTheDocument()
@@ -109,49 +112,47 @@ describe('Pricing', () => {
   })
 
   it('should render checkmark icons for all features', () => {
-    render(<Pricing />)
+    renderWithTheme(<Pricing />, theme)
+
+    const checkmarks = screen.getAllByLabelText('Included')
 
     // Count total features across all plans
     const totalFeatures = PRICING_PLANS.reduce((sum, plan) => sum + plan.features.length, 0)
-
-    // Find all checkmark icons by aria-label
-    const checkmarks = screen.getAllByLabelText('Included')
 
     expect(checkmarks.length).toBe(totalFeatures)
   })
 
   it('should render CTA buttons for all plans', () => {
-    render(<Pricing />)
+    renderWithTheme(<Pricing />, theme)
 
     PRICING_PLANS.forEach((plan) => {
-      // Safe: input is escaped via escapeRegExp() and comes from PRICING_PLANS constant, not user input
       const button = screen.getByRole('button', {
-        name: new RegExp(escapeRegExp(plan.ctaText)), // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
+        name: new RegExp(plan.ctaText),
       })
       expect(button).toBeInTheDocument()
     })
   })
 
   it('should render guarantee section', () => {
-    render(<Pricing />)
+    renderWithTheme(<Pricing />, theme)
 
     expect(
       screen.getByText('30-day money-back guarantee • Cancel anytime • No hidden fees')
     ).toBeInTheDocument()
 
-    const shieldIcon = screen.getByLabelText('Guarantee')
-    expect(shieldIcon).toBeInTheDocument()
+    const guaranteeIcon = screen.getByLabelText('Guarantee')
+    expect(guaranteeIcon).toBeInTheDocument()
   })
 
   it('should use semantic article elements for pricing cards', () => {
-    const { container } = render(<Pricing />)
+    const { container } = renderWithTheme(<Pricing />, theme)
 
     const articles = container.querySelectorAll('article')
     expect(articles).toHaveLength(PRICING_PLANS.length)
   })
 
   it('should have proper heading hierarchy', () => {
-    render(<Pricing />)
+    renderWithTheme(<Pricing />, theme)
 
     // Main heading should be h2
     const mainHeading = screen.getByText('Simple pricing. No surprises.')
@@ -167,7 +168,7 @@ describe('Pricing', () => {
   })
 
   it('should have aria-label for CTA buttons', () => {
-    render(<Pricing />)
+    renderWithTheme(<Pricing />, theme)
 
     PRICING_PLANS.forEach((plan) => {
       const button = screen.getByRole('button', {
@@ -178,7 +179,7 @@ describe('Pricing', () => {
   })
 
   it('should render currency symbol for paid plans', () => {
-    render(<Pricing />)
+    renderWithTheme(<Pricing />, theme)
 
     const dollarSigns = screen.getAllByText('$')
     // Should have 2 dollar signs (Pro and Team plans)
@@ -186,7 +187,7 @@ describe('Pricing', () => {
   })
 
   it('should render features in list format', () => {
-    const { container } = render(<Pricing />)
+    const { container } = renderWithTheme(<Pricing />, theme)
 
     const featureLists = container.querySelectorAll('ul')
     // Should have one list per plan

@@ -83,6 +83,10 @@ jobs:
         #   run: snyk container monitor paperlyte:latest --file=Dockerfile
 
         # Push the Snyk Code results into GitHub Code Scanning tab
+        # NOTE: Temporarily allowing failures due to GitHub's July 2025 breaking change
+        # that rejects SARIF files with multiple runs per category. Some SARIF generators
+        # may produce multiple runs which is now rejected by the updated CodeQL action.
+        # See: https://github.blog/changelog/2025-07-21-code-scanning-will-stop-combining-multiple-sarif-runs-uploaded-in-the-same-sarif-file/
       - name: Upload result to GitHub Code Scanning
         if: env.SNYK_TOKEN != '' && hashFiles('snyk-code.sarif') != ''
         uses: github/codeql-action/upload-sarif@b20883b0cd1f46c72ae0ba6d1090936928f9fa30 # v4.32.0

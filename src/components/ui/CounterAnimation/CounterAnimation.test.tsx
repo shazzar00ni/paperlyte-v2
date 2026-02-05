@@ -452,6 +452,75 @@ describe('CounterAnimation', () => {
 
       expect(counter.textContent).toBe('50')
     })
+
+    it('should safely handle invalid easing values by falling back to default', () => {
+      mockReducedMotion(false)
+      mockIntersectionObserver(true)
+
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+      let rafCallback: FrameRequestCallback | null = null
+      vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+        rafCallback = cb
+        return 1
+      })
+
+      // Using type assertion to simulate runtime bypass of TypeScript type checking
+      // This tests the runtime safety mechanism against command injection
+      render(
+        <CounterAnimation
+          end={100}
+          start={0}
+          duration={1000}
+          easing={'__proto__' as 'linear'}
+        />
+      )
+
+      // Should warn about invalid easing
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Invalid easing function')
+      )
+
+      const counter = screen.getByLabelText('100')
+
+      // Animation should still work with fallback easing (easeOutQuart)
+      if (rafCallback) {
+        act(() => {
+          rafCallback!(0)
+        })
+        act(() => {
+          rafCallback!(500) // Halfway through
+        })
+      }
+
+      // With easeOutQuart at 50%: 1 - (1-0.5)^4 = 0.9375 * 100 = 94
+      expect(counter.textContent).toBe('94')
+
+      consoleWarnSpy.mockRestore()
+    })
+
+    it('should safely handle constructor property access attempts', () => {
+      mockReducedMotion(false)
+      mockIntersectionObserver(true)
+
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+      // Using type assertion to simulate runtime bypass - testing prototype pollution prevention
+      render(
+        <CounterAnimation
+          end={100}
+          start={0}
+          easing={'constructor' as 'linear'}
+        />
+      )
+
+      // Should warn about invalid easing
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Invalid easing function')
+      )
+
+      consoleWarnSpy.mockRestore()
+    })
   })
 
   describe('Accessibility', () => {

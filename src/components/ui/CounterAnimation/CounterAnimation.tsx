@@ -39,10 +39,49 @@ interface CounterAnimationProps {
 /**
  * Easing functions for smooth animations
  */
-const easingFunctions = {
+const easingFunctions: Readonly<Record<string, (t: number) => number>> = {
   linear: (t: number) => t,
   easeOutQuart: (t: number) => 1 - Math.pow(1 - t, 4),
   easeOutExpo: (t: number) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t)),
+}
+
+/**
+ * Valid easing function names - used for runtime validation
+ */
+const VALID_EASING_NAMES: ReadonlySet<string> = new Set([
+  'linear',
+  'easeOutQuart',
+  'easeOutExpo',
+])
+
+/**
+ * Default easing function used when an invalid easing is requested
+ */
+const DEFAULT_EASING = 'easeOutQuart'
+
+/**
+ * Safely retrieves an easing function by name, preventing prototype pollution
+ * and arbitrary property access attacks.
+ *
+ * @param easingName - The name of the easing function to retrieve
+ * @returns The easing function, or the default easing if the name is invalid
+ */
+function getEasingFunction(easingName: string): (t: number) => number {
+  // Runtime validation: only allow known easing function names
+  // This prevents command injection via arbitrary property access
+  if (!VALID_EASING_NAMES.has(easingName)) {
+    console.warn(
+      `Invalid easing function "${easingName}", falling back to "${DEFAULT_EASING}"`
+    )
+    return easingFunctions[DEFAULT_EASING]
+  }
+
+  // Additional safety: verify the property exists and is an own property
+  if (!Object.prototype.hasOwnProperty.call(easingFunctions, easingName)) {
+    return easingFunctions[DEFAULT_EASING]
+  }
+
+  return easingFunctions[easingName]
 }
 
 /**
@@ -116,7 +155,8 @@ export const CounterAnimation = ({
       const animDuration = safeDuration
       const animEnd = end
       const animStart = start
-      const animEasing = easing
+      // Safely retrieve easing function with runtime validation
+      const easingFn = getEasingFunction(easing)
 
       const animate = (timestamp: number) => {
         if (startTime.current === null) {
@@ -125,7 +165,7 @@ export const CounterAnimation = ({
 
         const elapsed = timestamp - startTime.current
         const progress = Math.min(elapsed / animDuration, 1)
-        const easedProgress = easingFunctions[animEasing](progress)
+        const easedProgress = easingFn(progress)
         const currentValue = animStart + (animEnd - animStart) * easedProgress
 
         setAnimatedValue(currentValue)

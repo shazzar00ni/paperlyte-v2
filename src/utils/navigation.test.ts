@@ -329,8 +329,9 @@ describe('navigation utilities', () => {
     })
 
     it('should handle relative paths containing :// as same-origin', () => {
-      // These are relative paths that happen to contain ://
-      // When parsed, they become same-origin paths, which is safe
+      // These are relative paths that happen to contain ://.
+      // isAllowedDestination alone treats them as same-origin, but in practice
+      // safeNavigate first applies isSafeUrl, which blocks any URL containing ://.
       expect(isAllowedDestination('/path://injection')).toBe(true)
       expect(isAllowedDestination('./path://injection')).toBe(true)
     })

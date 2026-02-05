@@ -328,11 +328,11 @@ describe('navigation utilities', () => {
       expect(isAllowedDestination('//example.com/page')).toBe(false)
     })
 
-    it('should handle relative paths containing :// as same-origin', () => {
-      // These are relative paths that happen to contain ://
-      // When parsed, they become same-origin paths, which is safe
-      expect(isAllowedDestination('/path://injection')).toBe(true)
-      expect(isAllowedDestination('./path://injection')).toBe(true)
+    it('should reject relative paths containing :// for consistency with isSafeUrl', () => {
+      // For security consistency, relative paths containing :// are rejected
+      // This matches the behavior of isSafeUrl() which blocks these as potential protocol injection
+      expect(isAllowedDestination('/path://injection')).toBe(false)
+      expect(isAllowedDestination('./path://injection')).toBe(false)
     })
 
     it('should block non-http/https protocols for external URLs', () => {
@@ -343,6 +343,11 @@ describe('navigation utilities', () => {
       // Malformed URLs should be rejected (not allowed)
       const result = isAllowedDestination('://invalid')
       expect(typeof result).toBe('boolean')
+    })
+
+    it('should reject empty or whitespace-only URLs', () => {
+      expect(isAllowedDestination('')).toBe(false)
+      expect(isAllowedDestination('   ')).toBe(false)
     })
   })
 })

@@ -136,6 +136,44 @@ const ALLOWED_EXTERNAL_DOMAINS: ReadonlySet<string> = new Set([
 ])
 
 /**
+ * Checks if a URL is a safe relative URL (starts with / but not //).
+ * For consistency with isSafeUrl(), rejects URLs containing "://" in the path.
+ *
+ * @param url - The trimmed URL to check
+ * @returns true if it's a safe slash-relative URL
+ */
+function isSlashRelativeUrl(url: string): boolean {
+  return url.startsWith('/') && !url.startsWith('//') && !url.includes('://')
+}
+
+/**
+ * Checks if a URL is a safe dot-relative URL (./ or ../).
+ * For consistency with isSafeUrl(), rejects URLs containing "://" in the path.
+ *
+ * @param url - The trimmed URL to check
+ * @returns true if it's a safe dot-relative URL
+ */
+function isDotRelativeUrl(url: string): boolean {
+  return (url.startsWith('./') || url.startsWith('../')) && !url.includes('://')
+}
+
+/**
+ * Checks if an external URL's hostname is in the allowed domains list.
+ * Only allows http/https protocols for external URLs.
+ *
+ * @param parsedUrl - The parsed URL object
+ * @returns true if the external URL is allowed
+ */
+function isAllowedExternalUrl(parsedUrl: URL): boolean {
+  // Only allow http/https protocols for external URLs
+  if (parsedUrl.protocol !== 'http:' && parsedUrl.protocol !== 'https:') {
+    return false
+  }
+  // Check if the hostname is in the allowlist
+  return ALLOWED_EXTERNAL_DOMAINS.has(parsedUrl.hostname)
+}
+
+/**
  * Checks if a URL is same-origin or on the allowed external domains list.
  * This provides protection against open redirect attacks.
  *
@@ -155,21 +193,19 @@ export function isAllowedDestination(url: string): boolean {
     if (!trimmedUrl) {
       return false
     }
-    // Relative URLs are always allowed (they're same-origin by definition)
-    if (
-      trimmedUrl.startsWith('/') &&
-      !trimmedUrl.startsWith('//') &&
-      !trimmedUrl.includes('://')
-    ) {
+
+    // Check for safe relative URLs (slash-relative or dot-relative)
+    if (isSlashRelativeUrl(trimmedUrl) || isDotRelativeUrl(trimmedUrl)) {
       return true
     }
 
-    // ./ and ../ relative URLs are same-origin
+    // For consistency with isSafeUrl(), reject any URL that looks like a relative path
+    // but contains "://" - this catches attempts like "/path://injection"
     if (
-      (trimmedUrl.startsWith('./') || trimmedUrl.startsWith('../')) &&
-      !trimmedUrl.includes('://')
+      (trimmedUrl.startsWith('/') || trimmedUrl.startsWith('./') || trimmedUrl.startsWith('../')) &&
+      trimmedUrl.includes('://')
     ) {
-      return true
+      return false
     }
 
     // Parse the URL to check domain
@@ -182,13 +218,7 @@ export function isAllowedDestination(url: string): boolean {
     }
 
     // For external URLs, check against the allowlist
-    // Only allow http/https protocols for external URLs
-    if (parsedUrl.protocol !== 'http:' && parsedUrl.protocol !== 'https:') {
-      return false
-    }
-
-    // Check if the hostname is in the allowlist
-    return ALLOWED_EXTERNAL_DOMAINS.has(parsedUrl.hostname)
+    return isAllowedExternalUrl(parsedUrl)
   } catch {
     // If URL parsing fails, don't allow it
     return false

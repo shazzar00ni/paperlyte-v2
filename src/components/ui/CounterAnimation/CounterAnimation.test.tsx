@@ -468,12 +468,7 @@ describe('CounterAnimation', () => {
       // Using type assertion to simulate runtime bypass of TypeScript type checking
       // This tests the runtime safety mechanism against command injection
       render(
-        <CounterAnimation
-          end={100}
-          start={0}
-          duration={1000}
-          easing={'__proto__' as 'linear'}
-        />
+        <CounterAnimation end={100} start={0} duration={1000} easing={'__proto__' as 'linear'} />
       )
 
       // Should warn about invalid easing
@@ -506,13 +501,7 @@ describe('CounterAnimation', () => {
       const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
 
       // Using type assertion to simulate runtime bypass - testing prototype pollution prevention
-      render(
-        <CounterAnimation
-          end={100}
-          start={0}
-          easing={'constructor' as 'linear'}
-        />
-      )
+      render(<CounterAnimation end={100} start={0} easing={'constructor' as 'linear'} />)
 
       // Should warn about invalid easing
       expect(consoleWarnSpy).toHaveBeenCalledWith(

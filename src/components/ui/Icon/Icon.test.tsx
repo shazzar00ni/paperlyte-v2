@@ -50,15 +50,18 @@ describe('Icon', () => {
 
     // Should not log warning for known icons
     expect(consoleWarnSpy).not.toHaveBeenCalled()
+  it('should render SVG for known icons', () => {
+    const { container } = render(<Icon name="fa-bolt" />)
+    const svg = container.querySelector('svg')
+    expect(svg).toBeInTheDocument()
+    expect(container.querySelector('.icon-fallback')).not.toBeInTheDocument()
   })
 
-  it('should render as SVG element or fallback to Font Awesome', () => {
-    const { container } = render(<Icon name="fa-bolt" />)
-    // Component may render as SVG (if icon exists) or as fallback element
-    const svg = container.querySelector('svg')
+  it('should render fallback for unknown icons', () => {
+    const { container } = render(<Icon name="unknown-icon" />)
     const fallback = container.querySelector('.icon-fallback')
-
-    expect(svg ?? fallback).toBeInTheDocument()
+    expect(fallback).toBeInTheDocument()
+    expect(container.querySelector('svg.icon-svg')).not.toBeInTheDocument()
   })
 
   it('should apply size attributes correctly', () => {

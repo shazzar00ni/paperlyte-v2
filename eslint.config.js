@@ -8,6 +8,9 @@
  * - React Refresh rules for HMR compatibility
  * - Prettier integration for code formatting
  *
+ * Note: A legacy .eslintrc.json file is also provided for backward compatibility
+ * with tools that don't support the flat config format (e.g., Codacy's legacy ESLint).
+ *
  * @see https://eslint.org/docs/latest/use/configure/configuration-files
  */
 import js from '@eslint/js'

@@ -151,6 +151,10 @@ export function isAllowedDestination(url: string): boolean {
   try {
     const trimmedUrl = url.trim()
 
+    // Disallow empty or whitespace-only URLs
+    if (!trimmedUrl) {
+      return false
+    }
     // Relative URLs are always allowed (they're same-origin by definition)
     if (
       trimmedUrl.startsWith('/') &&

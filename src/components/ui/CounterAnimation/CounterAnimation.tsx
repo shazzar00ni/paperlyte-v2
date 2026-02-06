@@ -36,13 +36,49 @@ interface CounterAnimationProps {
   minWidth?: string
 }
 
+/** Type for easing functions */
+type EasingFunction = (progress: number) => number
+
+/** Default easing function name */
+const DEFAULT_EASING_NAME = 'easeOutQuart'
+
+/** Linear easing - constant rate of change */
+const linearEasing: EasingFunction = (progress) => progress
+
+/** Ease out quart - decelerating to zero velocity */
+const easeOutQuartEasing: EasingFunction = (progress) => 1 - Math.pow(1 - progress, 4)
+
+/** Ease out expo - exponential deceleration */
+const easeOutExpoEasing: EasingFunction = (progress) =>
+  progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress)
+
 /**
- * Easing functions for smooth animations
+ * Map of easing functions for smooth animations.
+ * Using a Map instead of an object prevents prototype pollution attacks
+ * and eliminates generic object injection sink vulnerabilities.
  */
-const easingFunctions = {
-  linear: (t: number) => t,
-  easeOutQuart: (t: number) => 1 - Math.pow(1 - t, 4),
-  easeOutExpo: (t: number) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t)),
+const easingFunctionsMap: ReadonlyMap<string, EasingFunction> = new Map([
+  ['linear', linearEasing],
+  ['easeOutQuart', easeOutQuartEasing],
+  ['easeOutExpo', easeOutExpoEasing],
+])
+
+/**
+ * Safely retrieves an easing function by name.
+ * Uses a Map for O(1) lookup without prototype chain risks.
+ *
+ * @param easingName - The name of the easing function to retrieve
+ * @returns The easing function, or the default easing if the name is invalid
+ */
+function getEasingFunction(easingName: string): EasingFunction {
+  const easingFn = easingFunctionsMap.get(easingName)
+  if (easingFn) {
+    return easingFn
+  }
+
+  console.warn(`Invalid easing function "${easingName}", falling back to "${DEFAULT_EASING_NAME}"`)
+  // Non-null assertion is safe here because DEFAULT_EASING_NAME is a known key
+  return easingFunctionsMap.get(DEFAULT_EASING_NAME) ?? linearEasing
 }
 
 /**
@@ -116,7 +152,8 @@ export const CounterAnimation = ({
       const animDuration = safeDuration
       const animEnd = end
       const animStart = start
-      const animEasing = easing
+      // Safely retrieve easing function with runtime validation
+      const easingFn = getEasingFunction(easing)
 
       const animate = (timestamp: number) => {
         if (startTime.current === null) {
@@ -125,7 +162,7 @@ export const CounterAnimation = ({
 
         const elapsed = timestamp - startTime.current
         const progress = Math.min(elapsed / animDuration, 1)
-        const easedProgress = easingFunctions[animEasing](progress)
+        const easedProgress = easingFn(progress)
         const currentValue = animStart + (animEnd - animStart) * easedProgress
 
         setAnimatedValue(currentValue)

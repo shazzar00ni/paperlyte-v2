@@ -6,19 +6,29 @@ on:
   pull_request_review_comment:
     types: [created]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: claude-${{ github.event.issue.number || github.event.pull_request.number }}
+  cancel-in-progress: true
+
 jobs:
   claude:
     runs-on: ubuntu-latest
+    if: |
+      contains(github.event.comment.body, '@claude') &&
+      github.event.sender.type != 'Bot'
     permissions:
       contents: write
       issues: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 1
 
       - name: Run Claude Code
-        uses: anthropics/claude-code-action@v1
+        uses: anthropics/claude-code-action@8e40182662c1cf440360a4f5f903cf4459fdd21b # v1.0.9
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}

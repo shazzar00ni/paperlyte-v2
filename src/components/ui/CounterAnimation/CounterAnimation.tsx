@@ -37,6 +37,7 @@ interface CounterAnimationProps {
 }
 
 /** Type for easing functions */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type EasingFunction = (t: number) => number
 
 /** Default easing function name */

@@ -188,6 +188,51 @@ function isRelativePathWithProtocolInjection(url: string): boolean {
 }
 
 /**
+ * Checks if a parsed URL is same-origin or an allowed external URL.
+ *
+ * @param parsedUrl - The parsed URL object
+ * @param currentOrigin - The current window origin
+ * @returns true if same-origin or allowed external, false otherwise
+ */
+function isSameOriginOrAllowedExternal(parsedUrl: URL, currentOrigin: string): boolean {
+  // Same-origin URLs are always allowed
+  if (parsedUrl.origin === currentOrigin) {
+    return true
+  }
+  // For external URLs, check against the allowlist
+  return isAllowedExternalUrl(parsedUrl)
+}
+
+/**
+ * Validates and checks a trimmed URL for allowed destination.
+ * This helper handles the core validation logic without SSR guards or try-catch.
+ *
+ * @param trimmedUrl - The trimmed URL string
+ * @returns true if the URL is allowed, false otherwise
+ */
+function validateUrlDestination(trimmedUrl: string): boolean {
+  // Disallow empty or whitespace-only URLs
+  if (!trimmedUrl) {
+    return false
+  }
+
+  // Check for safe relative URLs (slash-relative or dot-relative)
+  if (isSlashRelativeUrl(trimmedUrl) || isDotRelativeUrl(trimmedUrl)) {
+    return true
+  }
+
+  // For consistency with isSafeUrl(), reject any URL that looks like a relative path
+  // but contains "://" - this catches attempts like "/path://injection"
+  if (isRelativePathWithProtocolInjection(trimmedUrl)) {
+    return false
+  }
+
+  // Parse the URL to check domain
+  const parsedUrl = new URL(trimmedUrl, window.location.origin)
+  return isSameOriginOrAllowedExternal(parsedUrl, window.location.origin)
+}
+
+/**
  * Checks if a URL is same-origin or on the allowed external domains list.
  * This provides protection against open redirect attacks.
  *
@@ -201,35 +246,7 @@ export function isAllowedDestination(url: string): boolean {
   }
 
   try {
-    const trimmedUrl = url.trim()
-
-    // Disallow empty or whitespace-only URLs
-    if (!trimmedUrl) {
-      return false
-    }
-
-    // Check for safe relative URLs (slash-relative or dot-relative)
-    if (isSlashRelativeUrl(trimmedUrl) || isDotRelativeUrl(trimmedUrl)) {
-      return true
-    }
-
-    // For consistency with isSafeUrl(), reject any URL that looks like a relative path
-    // but contains "://" - this catches attempts like "/path://injection"
-    if (isRelativePathWithProtocolInjection(trimmedUrl)) {
-      return false
-    }
-
-    // Parse the URL to check domain
-    const parsedUrl = new URL(trimmedUrl, window.location.origin)
-    const currentOrigin = window.location.origin
-
-    // Same-origin URLs are always allowed
-    if (parsedUrl.origin === currentOrigin) {
-      return true
-    }
-
-    // For external URLs, check against the allowlist
-    return isAllowedExternalUrl(parsedUrl)
+    return validateUrlDestination(url.trim())
   } catch {
     // If URL parsing fails, don't allow it
     return false

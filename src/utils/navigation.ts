@@ -174,6 +174,20 @@ function isAllowedExternalUrl(parsedUrl: URL): boolean {
 }
 
 /**
+ * Checks if a URL looks like a relative path but contains "://" which could
+ * indicate a protocol injection attempt (e.g., "/path://injection").
+ * For consistency with isSafeUrl(), such URLs should be rejected.
+ *
+ * @param url - The trimmed URL to check
+ * @returns true if the URL is a relative path with protocol injection attempt
+ */
+function isRelativePathWithProtocolInjection(url: string): boolean {
+  return (
+    (url.startsWith('/') || url.startsWith('./') || url.startsWith('../')) && url.includes('://')
+  )
+}
+
+/**
  * Checks if a URL is same-origin or on the allowed external domains list.
  * This provides protection against open redirect attacks.
  *
@@ -201,10 +215,7 @@ export function isAllowedDestination(url: string): boolean {
 
     // For consistency with isSafeUrl(), reject any URL that looks like a relative path
     // but contains "://" - this catches attempts like "/path://injection"
-    if (
-      (trimmedUrl.startsWith('/') || trimmedUrl.startsWith('./') || trimmedUrl.startsWith('../')) &&
-      trimmedUrl.includes('://')
-    ) {
+    if (isRelativePathWithProtocolInjection(trimmedUrl)) {
       return false
     }
 

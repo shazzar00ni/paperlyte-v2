@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { scrollToSection, isSafeUrl, safeNavigate } from './navigation'
+import { scrollToSection, isSafeUrl, safeNavigate, safeNavigateExternal } from './navigation'
 
 describe('navigation utilities', () => {
   describe('scrollToSection', () => {
@@ -103,10 +103,16 @@ describe('navigation utilities', () => {
       expect(isSafeUrl('/path/with://protocol')).toBe(false)
     })
 
-    it('should allow external HTTP/HTTPS URLs (for linking to external resources)', () => {
-      expect(isSafeUrl('http://example.com')).toBe(true)
-      expect(isSafeUrl('https://example.com/page')).toBe(true)
-      expect(isSafeUrl('https://github.com')).toBe(true)
+    it('should reject external HTTP/HTTPS URLs by default (prevents open redirect)', () => {
+      expect(isSafeUrl('http://example.com')).toBe(false)
+      expect(isSafeUrl('https://example.com/page')).toBe(false)
+      expect(isSafeUrl('https://github.com')).toBe(false)
+    })
+
+    it('should allow external HTTP/HTTPS URLs when allowExternal is true', () => {
+      expect(isSafeUrl('http://example.com', true)).toBe(true)
+      expect(isSafeUrl('https://example.com/page', true)).toBe(true)
+      expect(isSafeUrl('https://github.com', true)).toBe(true)
     })
 
     it('should reject javascript: protocol URLs', () => {
@@ -201,7 +207,7 @@ describe('navigation utilities', () => {
       })
     })
 
-    it('should allow navigation to external HTTPS URLs', () => {
+    it('should block navigation to external HTTPS URLs (prevents open redirect)', () => {
       const mockLocation = { href: '', origin: 'http://localhost' } as Location
       Object.defineProperty(window, 'location', {
         value: mockLocation,
@@ -209,10 +215,13 @@ describe('navigation utilities', () => {
         configurable: true,
       })
 
-      const result = safeNavigate('https://example.com')
-      expect(result).toBe(true)
-      expect(mockLocation.href).toBe('https://example.com')
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
 
+      const result = safeNavigate('https://example.com')
+      expect(result).toBe(false)
+      expect(consoleWarnSpy).toHaveBeenCalled()
+
+      consoleWarnSpy.mockRestore()
       // Restore window.location
       Object.defineProperty(window, 'location', {
         value: originalLocation,
@@ -283,6 +292,134 @@ describe('navigation utilities', () => {
         writable: true,
         configurable: true,
       })
+    })
+  })
+
+  describe('safeNavigateExternal', () => {
+    let originalLocation: Location
+
+    beforeEach(() => {
+      vi.clearAllMocks()
+      originalLocation = window.location
+    })
+
+    it('should allow navigation to external HTTPS URLs', () => {
+      const mockLocation = { href: '', origin: 'http://localhost' } as Location
+      Object.defineProperty(window, 'location', {
+        value: mockLocation,
+        writable: true,
+        configurable: true,
+      })
+
+      const result = safeNavigateExternal('https://example.com')
+      expect(result).toBe(true)
+      expect(mockLocation.href).toBe('https://example.com')
+
+      // Restore window.location
+      Object.defineProperty(window, 'location', {
+        value: originalLocation,
+        writable: true,
+        configurable: true,
+      })
+    })
+
+    it('should allow navigation to external HTTP URLs', () => {
+      const mockLocation = { href: '', origin: 'http://localhost' } as Location
+      Object.defineProperty(window, 'location', {
+        value: mockLocation,
+        writable: true,
+        configurable: true,
+      })
+
+      const result = safeNavigateExternal('http://example.com/page')
+      expect(result).toBe(true)
+      expect(mockLocation.href).toBe('http://example.com/page')
+
+      // Restore window.location
+      Object.defineProperty(window, 'location', {
+        value: originalLocation,
+        writable: true,
+        configurable: true,
+      })
+    })
+
+    it('should block navigation to javascript: URLs', () => {
+      const mockLocation = { href: '', origin: 'http://localhost' } as Location
+      Object.defineProperty(window, 'location', {
+        value: mockLocation,
+        writable: true,
+        configurable: true,
+      })
+
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+      const result = safeNavigateExternal('javascript:alert(1)')
+      expect(result).toBe(false)
+      expect(consoleWarnSpy).toHaveBeenCalled()
+
+      consoleWarnSpy.mockRestore()
+      // Restore window.location
+      Object.defineProperty(window, 'location', {
+        value: originalLocation,
+        writable: true,
+        configurable: true,
+      })
+    })
+
+    it('should block navigation to data: URLs', () => {
+      const mockLocation = { href: '', origin: 'http://localhost' } as Location
+      Object.defineProperty(window, 'location', {
+        value: mockLocation,
+        writable: true,
+        configurable: true,
+      })
+
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+      const result = safeNavigateExternal('data:text/html,<script>alert(1)</script>')
+      expect(result).toBe(false)
+
+      consoleWarnSpy.mockRestore()
+      // Restore window.location
+      Object.defineProperty(window, 'location', {
+        value: originalLocation,
+        writable: true,
+        configurable: true,
+      })
+    })
+
+    it('should block navigation to protocol-relative URLs', () => {
+      const mockLocation = { href: '', origin: 'http://localhost' } as Location
+      Object.defineProperty(window, 'location', {
+        value: mockLocation,
+        writable: true,
+        configurable: true,
+      })
+
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+      const result = safeNavigateExternal('//evil.com')
+      expect(result).toBe(false)
+
+      consoleWarnSpy.mockRestore()
+      // Restore window.location
+      Object.defineProperty(window, 'location', {
+        value: originalLocation,
+        writable: true,
+        configurable: true,
+      })
+    })
+
+    it('should return false in SSR environment', () => {
+      const originalWindow = global.window
+      // @ts-expect-error - Testing SSR environment
+      delete global.window
+
+      const result = safeNavigateExternal('https://example.com')
+      expect(result).toBe(false)
+
+      // Restore window
+      global.window = originalWindow
     })
   })
 })

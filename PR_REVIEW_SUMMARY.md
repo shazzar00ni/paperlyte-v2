@@ -53,9 +53,22 @@ This file contains a summary of pull requests I have reviewed.
 - **Summary:** See the earlier PR #319 entry in this file for full context; this entry logs the current status as of 2026-02-07.
 - **Feedback:** No change to the prior recommendations; the PR still needs to be split to isolate the `Privacy.tsx` fix from the large `package-lock.json` and sitemap updates.
 
+### PR #275: Implement P0-CRITICAL hero section conversion optimization (#274)
+
+- **Status:** Under Review (unchanged)
+- **Summary:** See the 2026-02-03 section below for full context; this entry logs the current status as of 2026-02-07.
+- **Feedback:** No change to the prior recommendations; a fresh, accurately titled PR with only the safe changes is recommended.
+
+### PR #279: feat: Implement React Router and legal pages with dark footer
+
+- **Status:** Changes Requested (unchanged)
+- **Summary:** See the 2026-02-03 section below for full context; this entry logs the current status as of 2026-02-07.
+- **Feedback:** No change to the prior recommendations; routing should be fully implemented or the PR should be explicitly marked as "Work in Progress."
+
 ### PR #107: Implement critical accessibility fixes, legal documents, and performance optimizations
 
-- See detailed notes in the 2026-02-03 section below for the full review of PR #107. Assessment unchanged as of 2026-02-07: still recommending closure and extraction of any remaining unique changes into smaller PRs.
+- **Status:** Needs Cleanup / Close (unchanged)
+- **Summary:** See detailed notes in the 2026-02-03 section below for the full review of PR #107. Assessment unchanged as of 2026-02-07: still recommending closure and extraction of any remaining unique changes into smaller PRs.
 
 ---
 ## 2026-02-03

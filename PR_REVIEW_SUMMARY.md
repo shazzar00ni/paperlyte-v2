@@ -52,11 +52,23 @@ This file contains a summary of pull requests I have reviewed.
 - **Summary:** Aims to fix a deployment error but includes massive `package-lock.json` changes and sitemap updates.
 - **Feedback:** Still needs to be split. The `package-lock.json` changes are causing widespread test failures in CI, as confirmed by recent Codecov reports. Isolate the `Privacy.tsx` fix.
 
+### PR #275: Implement P0-CRITICAL hero section conversion optimization (#274)
+
+- **Status:** Under Review (Previously Rejected)
+- **Summary:** Re-evaluated this PR after previous rejection for critical security issues. Recent commits have removed the most dangerous changes (like the CSP weakening).
+- **Feedback:** While improved, the PR title remains misleading as the recent focus is on Codacy warning fixes. A fresh, accurately titled PR with only the safe changes is recommended.
+
+### PR #279: feat: Implement React Router and legal pages with dark footer
+
+- **Status:** Changes Requested
+- **Summary:** Introduces `react-router-dom` and creates dedicated pages for Privacy and Terms.
+- **Feedback:** The routing logic is not yet integrated into `App.tsx`, which currently renders everything on a single page. Routing should be fully implemented or the PR should be explicitly marked as a "Work in Progress" toward that goal.
+
 ### PR #107: Implement critical accessibility fixes, legal documents, and performance optimizations
 
-- **Status:** Needs Cleanup / Close
-- **Summary:** Massive 118-file PR that has been open for months. Many changes are now redundant.
-- **Feedback:** Recommendation remains to close this and extract any remaining unique changes into smaller PRs.
+- **Status:** Needs Cleanup / Close (unchanged)
+- **Summary:** See the 2026-02-03 section below for full review context.
+- **Feedback:** Assessment unchanged as of 2026-02-07: still recommending closure and extraction of any remaining unique changes into smaller PRs.
 
 ---
 

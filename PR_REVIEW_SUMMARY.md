@@ -49,9 +49,9 @@ This file contains a summary of pull requests I have reviewed.
 
 ### PR #319: Fix Deployment Error in Privacy.tsx
 
-- **Status:** Changes Requested
-- **Summary:** Aims to fix a deployment error but includes massive `package-lock.json` changes and sitemap updates.
-- **Feedback:** Still needs to be split. The `package-lock.json` changes are causing widespread test failures in CI, as confirmed by recent Codecov reports. Isolate the `Privacy.tsx` fix.
+- **Status:** Changes Requested (unchanged)
+- **Summary:** See the earlier PR #319 entry in this file for full context; this entry logs the current status as of 2026-02-07.
+- **Feedback:** No change to the prior recommendations; the PR still needs to be split to isolate the `Privacy.tsx` fix from the large `package-lock.json` and sitemap updates.
 
 ### PR #107: Implement critical accessibility fixes, legal documents, and performance optimizations
 

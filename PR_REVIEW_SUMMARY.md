@@ -30,7 +30,8 @@ This file contains a summary of pull requests I have reviewed.
 
 ### PR #424: Fix open redirect and command injection vulnerabilities
 
-- **Status:** Under Review / Approved (Partial)
+- **Status:** Under Review
+- **Decision:** Approved (Partial)
 - **Summary:** Implements an allowlist for `safeNavigate` and fixes a prototype pollution vulnerability in `CounterAnimation`.
 - **Feedback:** The prototype pollution fix in `CounterAnimation` (using a `Map` for easing functions) is excellent. However, there is significant overlap with PR #428 regarding `safeNavigate`. Recommend using the `safeNavigateExternal` approach from #428 for better flexibility.
 

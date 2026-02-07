@@ -163,6 +163,16 @@ This file contains a summary of pull requests I have reviewed.
 
 ---
 
+## 2026-01-26
+
+## PR #275: "Implement P0-CRITICAL hero section conversion optimization (#274)"
+
+**Status:** Rejected - Critical Issues Found
+**Summary:** This PR introduces severe and critical regressions that make the application significantly less safe. It includes a path traversal vulnerability, a prototype pollution vulnerability, a weakened Content Security Policy (CSP), and the removal of important security headers. Additionally, it contains suspicious downgrades of dependencies and GitHub Actions. The test suite is also failing with 27 failed tests.
+**Suggestions:** This PR should be closed immediately. The author needs to address the critical security vulnerabilities and the failing tests in a new PR.
+
+---
+
 ## 2026-01-18
 
 ### PR #259: Fix: update social link for twitter
@@ -236,13 +246,3 @@ This PR aims to fix a deployment error in the `Privacy.tsx` component. However, 
   2. A separate PR for the `package-lock.json` and `sitemap.xml` changes.
 
 This will allow us to safely merge the bug fix while the dependency changes can be more thoroughly tested and reviewed.
-
----
-
-## 2026-01-26
-
-## PR #275: "Implement P0-CRITICAL hero section conversion optimization (#274)"
-
-**Status:** Rejected - Critical Issues Found
-**Summary:** This PR introduces severe and critical regressions that make the application significantly less safe. It includes a path traversal vulnerability, a prototype pollution vulnerability, a weakened Content Security Policy (CSP), and the removal of important security headers. Additionally, it contains suspicious downgrades of dependencies and GitHub Actions. The test suite is also failing with 27 failed tests.
-**Suggestions:** This PR should be closed immediately. The author needs to address the critical security vulnerabilities and the failing tests in a new PR.

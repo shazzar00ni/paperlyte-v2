@@ -378,6 +378,8 @@ describe('navigation utilities', () => {
 
       const result = safeNavigateExternal('data:text/html,<script>alert(1)</script>')
       expect(result).toBe(false)
+      expect(consoleWarnSpy).toHaveBeenCalled()
+      expect(mockLocation.href).toBe('')
 
       consoleWarnSpy.mockRestore()
       // Restore window.location
@@ -400,6 +402,8 @@ describe('navigation utilities', () => {
 
       const result = safeNavigateExternal('//evil.com')
       expect(result).toBe(false)
+      expect(consoleWarnSpy).toHaveBeenCalled()
+      expect(mockLocation.href).toBe('')
 
       consoleWarnSpy.mockRestore()
       // Restore window.location

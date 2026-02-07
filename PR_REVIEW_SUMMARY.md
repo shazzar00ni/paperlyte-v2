@@ -58,6 +58,18 @@ This file contains a summary of pull requests I have reviewed.
 - **Summary:** Massive 118-file PR that has been open for months. Many changes are now redundant.
 - **Feedback:** Recommendation remains to close this and extract any remaining unique changes into smaller PRs.
 
+### PR #275: Implement P0-CRITICAL hero section conversion optimization (#274)
+
+- **Status:** Under Review (unchanged)
+- **Summary:** See the 2026-02-03 section below for full context; this entry logs the current status as of 2026-02-07.
+- **Feedback:** No change to the prior assessment. While security issues have been addressed, the PR title remains misleading. A fresh, accurately titled PR with only the safe changes is still recommended.
+
+### PR #279: feat: Implement React Router and legal pages with dark footer
+
+- **Status:** Changes Requested (unchanged)
+- **Summary:** See the 2026-02-03 section below for full context; this entry logs the current status as of 2026-02-07.
+- **Feedback:** No change to the prior recommendations. The routing logic still needs to be integrated into `App.tsx` or the PR should be explicitly marked as "Work in Progress".
+
 ---
 
 ## 2026-02-03

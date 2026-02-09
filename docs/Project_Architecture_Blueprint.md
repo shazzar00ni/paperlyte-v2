@@ -1459,7 +1459,7 @@ global.matchMedia = vi.fn().mockImplementation((query) => ({
 # For the exact configuration (including the current versions of
 # actions/checkout, actions/setup-node, and the complete job matrix),
 # refer directly to the workflow file:
-#   https://github.com/<OWNER>/<REPO>/blob/main/.github/workflows/ci.yml
+#   https://github.com/shazzar00ni/paperlyte-v2/blob/main/.github/workflows/ci.yml
 ```
 
 ### Environment Configuration

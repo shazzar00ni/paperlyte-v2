@@ -739,7 +739,7 @@ The application communicates with the following external services:
 
 ┌─────────────┐         ┌─────────────────────────────────────────────────┐
 │   Browser   │ ──────▶ │              Netlify Functions                  │
-│   Client    │ POST    │  /api/subscribe (email subscription)            │
+│   Client    │ POST    │  /.netlify/functions/subscribe (email subscription) │
 └─────────────┘         └─────────────────────────────────────────────────┘
       │
       │ gtag()

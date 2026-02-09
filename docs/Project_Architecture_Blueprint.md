@@ -805,8 +805,9 @@ export function trackEvent(
 - Sentry initialization failures don't affect core functionality
 
 **Timeout Handling:**
-- API calls use AbortController for timeouts
-- Default timeout: 10 seconds for external API calls
+- Netlify email subscription function uses `AbortController` with a 10-second timeout for external API calls
+- `OfflinePage` connectivity check uses `AbortController` with a 5-second timeout to detect offline state
+- Client-side `EmailCapture` fetch currently relies on browser defaults (no explicit `AbortController` timeout)
 
 **Offline Support:**
 - OfflinePage component displays when offline

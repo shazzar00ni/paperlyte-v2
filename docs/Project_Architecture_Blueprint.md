@@ -771,12 +771,16 @@ Development (via Vite plugin):
 "script-src 'self' 'unsafe-eval'"
 ```
 
-Production (via vercel.json/netlify.toml):
-```json
-{
-  "Content-Security-Policy": "default-src 'self'; script-src 'self' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'"
-}
+Production (via vercel.json/netlify.toml - identical policies):
 ```
+Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';
+```
+
+This strict CSP policy:
+- Restricts all resources to same-origin (`'self'`)
+- Allows inline data URIs for images only
+- Blocks framing (`frame-ancestors 'none'`)
+- Restricts form submissions and base URI to same-origin
 
 **XSS Prevention:**
 - Input sanitization via `sanitizeInput()`
@@ -1424,24 +1428,26 @@ global.matchMedia = vi.fn().mockImplementation((query) => ({
 
 ```json
 {
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
-  ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Frame-Options", "value": "DENY" },
         { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Permissions-Policy", "value": "geolocation=(), microphone=(), camera=()" },
+        { "key": "Strict-Transport-Security", "value": "max-age=31536000; includeSubDomains; preload" },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'"
+          "value": "default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';"
         }
       ]
     }
   ]
 }
 ```
+
+**Note:** Both Netlify and Vercel configurations use identical security headers, including the same strict CSP policy. See the actual config files for the complete, up-to-date configuration.
 
 ### CI/CD Pipeline (GitHub Actions)
 

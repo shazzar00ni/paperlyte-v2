@@ -651,13 +651,31 @@ export function validateEmail(email: string): ValidationResult {
 }
 ```
 
-**Input Sanitization (`utils/security.ts`):**
+**Input Sanitization (`src/utils/validation.ts`):**
 ```typescript
-export function sanitizeInput(input: string): string {
-  return input
-    .replace(/javascript:/gi, '')
-    .replace(/on\w+=/gi, '')
-    .replace(/[<>]/g, (char) => char === '<' ? '&lt;' : '&gt;');
+const MAX_INPUT_LENGTH = 2048;
+
+export function sanitizeInput(raw: string): string {
+  if (!raw) {
+    return '';
+  }
+
+  // Enforce maximum length to avoid excessively large inputs
+  const input = raw.slice(0, MAX_INPUT_LENGTH);
+
+  // Strip dangerous URL protocols from the beginning of the string
+  const withoutProtocol = input.replace(
+    /^(?:\s*(?:javascript|data|vbscript):)/gi,
+    ''
+  );
+
+  // Encode HTML entities to prevent HTML/JS injection
+  return withoutProtocol
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 ```
 

@@ -1378,38 +1378,20 @@ global.matchMedia = vi.fn().mockImplementation((query) => ({
 ### CI/CD Pipeline (GitHub Actions)
 
 ```yaml
-# .github/workflows/ci.yml
-name: CI
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-jobs:
-  lint-and-test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-      - run: npm ci
-      - run: npm run lint
-      - run: npm run build
-      - run: npm run test -- --coverage
-      - run: npm run test:e2e
-
-  lighthouse:
-    runs-on: ubuntu-latest
-    needs: lint-and-test
-    steps:
-      - uses: actions/checkout@v4
-      - run: npm ci
-      - run: npm run build
-      - run: npx @lhci/cli autorun
+# Continuous Integration (CI) configuration
+#
+# The full, up-to-date CI workflow is defined in:
+#   .github/workflows/ci.yml
+#
+# It includes:
+#   - Separate jobs for linting, type checking, formatting, and dependency audit
+#   - Dedicated jobs for running tests, building the project, and tracking bundle size
+#   - A Lighthouse job for performance and accessibility checks
+#
+# For the exact configuration (including the current versions of
+# actions/checkout, actions/setup-node, and the complete job matrix),
+# refer directly to the workflow file:
+#   https://github.com/<OWNER>/<REPO>/blob/main/.github/workflows/ci.yml
 ```
 
 ### Environment Configuration

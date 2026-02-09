@@ -127,22 +127,22 @@ if ! jq '
     originalUriBaseIds: (reduce (.runs[].originalUriBaseIds // {}) as $m ({}; . * $m)),
 
     # artifacts: List of files analyzed
-    # Merge strategy: Combine all artifact lists (may contain duplicates)
-    artifacts: [.runs[].artifacts // [] | .[]],
+    # Merge strategy: Combine all artifact lists and deduplicate by URI
+    # Note: Artifacts without URIs are grouped together; this is acceptable as
+    # SARIF artifacts without location.uri are typically redundant metadata
+    artifacts: [.runs[].artifacts // [] | .[]] | unique_by(.location.uri // ""),
 
     # invocations: Records of tool executions (timing, exit codes, etc.)
     # Merge strategy: Keep all invocation records from all runs
-    invocations: [.runs[].invocations // [] | .[]],
-
-    # columnKind: Specifies if columns are 1-based or UTF-16 code units
-    # Merge strategy: Use first non-null value (should be consistent across runs)
-    # Note: Use array subscript [0] with // null fallback to avoid 'empty' propagating
-    columnKind: ([.runs[].columnKind | select(. != null)][0] // null),
-
-    # conversion: Info about SARIF format conversion if applicable
-    # Merge strategy: Use first non-null value
-    conversion: ([.runs[].conversion | select(. != null)][0] // null)
-  }]
+    invocations: [.runs[].invocations // [] | .[]]
+  }
+  # Add columnKind only if a valid value exists (SARIF requires valid enum string, not null)
+  + (([.runs[].columnKind | select(. != null and . != "")][0]) as $ck |
+     if $ck then { columnKind: $ck } else {} end)
+  # Add conversion only if a valid object exists (SARIF requires object type, not null)
+  + (([.runs[].conversion | select(. != null and type == "object")][0]) as $cv |
+     if $cv then { conversion: $cv } else {} end)
+  ]
 }
 ' "$INPUT_FILE" > "$TEMP_FILE"; then
   echo "Error: jq merge operation failed"

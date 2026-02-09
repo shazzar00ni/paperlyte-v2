@@ -151,7 +151,7 @@ The following technologies were identified through analysis of `package.json`, c
 | Technology | Purpose | Detection Source |
 |------------|---------|------------------|
 | Sentry | Error monitoring | `@sentry/react` package |
-| Google Analytics | Event tracking | `src/analytics/` module |
+| Privacy-first analytics providers (e.g., Plausible) | Event/pageview tracking | `src/analytics/` provider system (configured via analytics-related env vars in `.env.example`) |
 | Lighthouse CI | Performance monitoring | `.lighthouserc.json` |
 | Codecov | Coverage reporting | `codecov.yml` |
 

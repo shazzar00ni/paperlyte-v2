@@ -63,15 +63,13 @@ describe('Comparison', () => {
   })
 
   it('should render checkmark icons for true boolean values', () => {
-    const { container } = render(<Comparison />)
-
     // Find all checkmarks by aria-label (FontAwesome renders SVG, not CSS classes)
     const checkmarks = container.querySelectorAll('[aria-label="Supported"]')
     expect(checkmarks.length).toBeGreaterThan(0)
 
     // Check they are SVG elements
     checkmarks.forEach((checkmark) => {
-      expect(checkmark.tagName).toBe('svg')
+      expect(checkmark.tagName.toLowerCase()).toBe('svg')
     })
   })
 

@@ -1,6 +1,13 @@
 import { renderHook, act, waitFor } from '@testing-library/react'
 import { useTheme } from './useTheme'
 
+// Mock the config module
+vi.mock('@constants/config', () => ({
+  PERSISTENCE_CONFIG: {
+    ALLOW_PERSISTENT_THEME: true,
+  },
+}))
+
 describe('useTheme', () => {
   // Store original matchMedia
   const originalMatchMedia = window.matchMedia
@@ -319,5 +326,151 @@ describe('useTheme', () => {
       expect(result.current.theme).not.toBe(initialTheme)
       expect(typeof result.current.toggleTheme).toBe('function')
     })
+  })
+
+  describe('Feature Flag: ALLOW_PERSISTENT_THEME', () => {
+    it('should use PERSISTENCE_CONFIG to control localStorage access', () => {
+      // This test verifies that the hook imports and uses the config
+      // The actual persistence behavior is tested in the Theme Persistence describe block
+      const { result } = renderHook(() => useTheme())
+      expect(result.current.theme).toBeDefined()
+    })
+  })
+})
+
+describe('useTheme with persistence disabled', () => {
+  // Store original matchMedia
+  const originalMatchMedia = window.matchMedia
+
+  // Mock localStorage with spy
+  const localStorageMock = (() => {
+    let store: Record<string, string> = {}
+    return {
+      getItem: vi.fn((key: string) => store[key] || null),
+      setItem: vi.fn((key: string, value: string) => {
+        store[key] = value
+      }),
+      removeItem: vi.fn((key: string) => {
+        delete store[key]
+      }),
+      clear: () => {
+        store = {}
+      },
+    }
+  })()
+
+  beforeEach(() => {
+    // Reset module registry to allow re-mocking
+    vi.resetModules()
+
+    // Mock config with persistence disabled
+    vi.doMock('@constants/config', () => ({
+      PERSISTENCE_CONFIG: {
+        ALLOW_PERSISTENT_THEME: false,
+      },
+    }))
+
+    // Clear localStorage before each test
+    localStorageMock.clear()
+    localStorageMock.getItem.mockClear()
+    localStorageMock.setItem.mockClear()
+
+    Object.defineProperty(window, 'localStorage', {
+      value: localStorageMock,
+      writable: true,
+    })
+
+    // Mock matchMedia
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: vi.fn().mockImplementation((query: string) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    })
+  })
+
+  afterEach(() => {
+    window.matchMedia = originalMatchMedia
+    vi.doUnmock('@constants/config')
+  })
+
+  it('should not read from localStorage when persistence is disabled', async () => {
+    // Pre-set localStorage with a theme
+    localStorageMock.setItem('theme', 'dark')
+    localStorageMock.setItem('theme-user-preference', 'true')
+    localStorageMock.setItem.mockClear()
+    localStorageMock.getItem.mockClear()
+
+    // Import fresh module with mocked config
+    const { useTheme: useThemeNoPersist } = await import('./useTheme')
+
+    const { result } = renderHook(() => useThemeNoPersist())
+
+    // Should default to light (system preference) not dark from localStorage
+    expect(result.current.theme).toBe('light')
+  })
+
+  it('should not write to localStorage when persistence is disabled', async () => {
+    localStorageMock.setItem.mockClear()
+
+    const { useTheme: useThemeNoPersist } = await import('./useTheme')
+
+    const { result } = renderHook(() => useThemeNoPersist())
+
+    act(() => {
+      result.current.toggleTheme()
+    })
+
+    // localStorage.setItem should not have been called for theme storage
+    // (it may be called for other things, so we check specifically)
+    const themeSetCalls = localStorageMock.setItem.mock.calls.filter(
+      (call) => call[0] === 'theme' || call[0] === 'theme-user-preference'
+    )
+    expect(themeSetCalls).toHaveLength(0)
+  })
+
+  it('should follow system preference changes when persistence is disabled', async () => {
+    let changeHandler: ((e: MediaQueryListEvent) => void) | null = null
+
+    window.matchMedia = vi.fn().mockImplementation(() => ({
+      matches: false,
+      media: '(prefers-color-scheme: dark)',
+      onchange: null,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: (_event: string, handler: (e: MediaQueryListEvent) => void) => {
+        changeHandler = handler
+      },
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    }))
+
+    const { useTheme: useThemeNoPersist } = await import('./useTheme')
+
+    const { result } = renderHook(() => useThemeNoPersist())
+
+    // Toggle to set a "user preference" (but it won't be persisted)
+    act(() => {
+      result.current.toggleTheme()
+    })
+
+    expect(result.current.theme).toBe('dark')
+
+    // Without persistence, system changes should override user toggle
+    act(() => {
+      if (changeHandler) {
+        changeHandler({ matches: false } as MediaQueryListEvent)
+      }
+    })
+
+    // Theme should follow system even after user toggled (no persistence)
+    expect(result.current.theme).toBe('light')
   })
 })

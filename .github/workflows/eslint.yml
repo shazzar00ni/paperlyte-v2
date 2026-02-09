@@ -53,17 +53,42 @@ jobs:
             --max-warnings 0
         continue-on-error: true
 
-      # Upload ESLint results to GitHub Code Scanning
-      # NOTE: Adding continue-on-error as a safeguard for GitHub's July 2025 breaking change
-      # that rejects SARIF files with multiple runs per category. ESLint should generate
-      # single runs, but this prevents CI failures if the format changes.
-      # See: https://github.blog/changelog/2025-07-21-code-scanning-will-stop-combining-multiple-sarif-runs-uploaded-in-the-same-sarif-file/
-      - name: Upload analysis results to GitHub
-        uses: github/codeql-action/upload-sarif@b20883b0cd1f46c72ae0ba6d1090936928f9fa30 # v4.32.0
-        continue-on-error: true
-        if: always() && hashFiles('eslint-results.sarif') != ''
-        with:
-          sarif_file: eslint-results.sarif
+# Upload ESLint results to GitHub Code Scanning
+# NOTE: Adding continue-on-error as a safeguard for GitHub's July 2025 breaking change
+# that rejects SARIF files with multiple runs per category. ESLint should generate
+# single runs, but this prevents CI failures if the format changes.
+# See: https://github.blog/changelog/2025-07-21-code-scanning-will-stop-combining-multiple-sarif-runs-uploaded-in-the-same-sarif-file/
+
+- name: Ensure SARIF file exists
+  if: always()
+  # Creates a minimal valid SARIF file if ESLint didn't produce one.
+  # This can happen if ESLint fails before generating output.
+  run: |
+    if [ ! -f eslint-results.sarif ]; then
+      cat > eslint-results.sarif << 'EOF'
+      {
+        "version": "2.1.0",
+        "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+        "runs": [
+          {
+            "tool": {
+              "driver": {
+                "name": "ESLint"
+              }
+            },
+            "results": []
+          }
+        ]
+      }
+      EOF
+    fi
+
+- name: Upload analysis results to GitHub
+  uses: github/codeql-action/upload-sarif@b20883b0cd1f46c72ae0ba6d1090936928f9fa30 # v4.32.0
+  continue-on-error: true
+  if: always() && hashFiles('eslint-results.sarif') != ''
+  with:
+    sarif_file: eslint-results.sarif
           category: eslint
           wait-for-processing: true
 

@@ -40,6 +40,10 @@ exclude_patterns:
   - identifier: "ESLint8_xss_no-mixed-html"
     paths:
       - "src/utils/validation-sanitization.test.ts"
+  # Disable SCSS-specific stylelint rule for CSS files (this project uses CSS, not SCSS)
+  - identifier: "scss_function-disallowed-list"
+    paths:
+      - "**/*.css"
 
 # Exclude paths from code analysis
 exclude_paths:

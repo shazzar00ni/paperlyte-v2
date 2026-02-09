@@ -768,10 +768,10 @@ The application communicates with the following external services:
 ```typescript
 // EmailCapture component
 const handleSubmit = async (email: string) => {
-  const response = await fetch('/api/subscribe', {
+  const response = await fetch('/.netlify/functions/subscribe', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email: sanitizeInput(email) }),
+    body: JSON.stringify({ email }),
   });
 
   if (!response.ok) {

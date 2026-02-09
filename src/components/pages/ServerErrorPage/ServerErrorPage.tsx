@@ -55,7 +55,7 @@ export const ServerErrorPage: FC<ServerErrorPageProps> = ({
           <div className={styles.iconWrapper}>
             {/* Decorative icons - aria-hidden on parent makes ariaLabel unnecessary */}
             <Icon name="fa-server" size="3x" />
-            <div className={styles.errorBadge}>
+            <div className={styles.errorBadge} data-testid="error-badge">
               <Icon name="fa-triangle-exclamation" />
             </div>
           </div>

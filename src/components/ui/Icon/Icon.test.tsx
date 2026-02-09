@@ -1,12 +1,25 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { Icon } from './Icon'
+import { findIconDefinition } from '@fortawesome/fontawesome-svg-core'
+
+// Mock findIconDefinition to test variant prefix behavior
+vi.mock('@fortawesome/fontawesome-svg-core', async () => {
+  const actual = await vi.importActual('@fortawesome/fontawesome-svg-core')
+  return {
+    ...actual,
+    findIconDefinition: vi.fn(),
+  }
+})
 
 describe('Icon', () => {
   let consoleWarnSpy: ReturnType<typeof vi.spyOn>
+  const mockFindIconDefinition = vi.mocked(findIconDefinition)
 
   beforeEach(() => {
     consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    mockFindIconDefinition.mockClear()
+    mockFindIconDefinition.mockReturnValue(null) // Return null to trigger fallback
   })
 
   afterEach(() => {
@@ -171,30 +184,51 @@ describe('Icon', () => {
     expect(svg).toHaveAttribute('stroke', 'currentColor')
   })
 
-  it('should apply correct variant class for solid', () => {
+  it('should use fas prefix for solid variant', () => {
     const { container } = render(<Icon name="missing-icon" variant="solid" />)
     const fallback = container.querySelector('.icon-fallback')
 
     expect(fallback).toBeInTheDocument()
-    // FontAwesomeIcon may render with different classes or as span placeholder
     expect(consoleWarnSpy).toHaveBeenCalled()
+
+    // Verify findIconDefinition was called with 'fas' prefix for solid variant
+    expect(mockFindIconDefinition).toHaveBeenCalledWith(
+      expect.objectContaining({
+        prefix: 'fas',
+        iconName: 'missing-icon',
+      })
+    )
   })
 
-  it('should apply correct variant class for regular', () => {
+  it('should use far prefix for regular variant', () => {
     const { container } = render(<Icon name="missing-icon" variant="regular" />)
     const fallback = container.querySelector('.icon-fallback')
 
     expect(fallback).toBeInTheDocument()
-    // FontAwesomeIcon may render with different classes or as span placeholder
     expect(consoleWarnSpy).toHaveBeenCalled()
+
+    // Verify findIconDefinition was called with 'far' prefix for regular variant
+    expect(mockFindIconDefinition).toHaveBeenCalledWith(
+      expect.objectContaining({
+        prefix: 'far',
+        iconName: 'missing-icon',
+      })
+    )
   })
 
-  it('should apply correct variant class for brands', () => {
+  it('should use fab prefix for brands variant', () => {
     const { container } = render(<Icon name="missing-icon" variant="brands" />)
     const fallback = container.querySelector('.icon-fallback')
 
     expect(fallback).toBeInTheDocument()
-    // FontAwesomeIcon may render with different classes or as span placeholder
     expect(consoleWarnSpy).toHaveBeenCalled()
+
+    // Verify findIconDefinition was called with 'fab' prefix for brands variant
+    expect(mockFindIconDefinition).toHaveBeenCalledWith(
+      expect.objectContaining({
+        prefix: 'fab',
+        iconName: 'missing-icon',
+      })
+    )
   })
 })

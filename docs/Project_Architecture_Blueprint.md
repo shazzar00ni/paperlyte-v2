@@ -540,23 +540,64 @@ const handleSubmit = async (e: FormEvent) => {
 };
 ```
 
-**Pattern 3: Persisted State**
+**Pattern 3: Persisted State (Documented Exception)**
 
-Theme preference is persisted to localStorage:
+Theme preference persistence is controlled by a feature flag in `src/constants/config.ts`.
+This is an **explicit, documented exception** to the privacy-first approach because:
+- Theme contains no personally identifiable information
+- It significantly improves UX across visits
+- It respects system preference as fallback when disabled
+- Users can clear it by clearing browser storage
 
 ```typescript
-// useTheme.ts
+// src/constants/config.ts
+export const PERSISTENCE_CONFIG = {
+  /**
+   * Allow theme preference to be persisted to localStorage.
+   * When true: User's explicit theme choice is saved and restored.
+   * When false: Theme falls back to system preference on each visit.
+   */
+  ALLOW_PERSISTENT_THEME: true,
+} as const
+
+// src/hooks/useTheme.ts
+const persistenceEnabled = PERSISTENCE_CONFIG.ALLOW_PERSISTENT_THEME;
+
 const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-  const stored = localStorage.getItem('theme');
-  if (stored) return stored as 'light' | 'dark';
+  if (!isBrowser) return 'light';
+
+  // Only check localStorage if persistence is enabled
+  if (persistenceEnabled) {
+    const stored = localStorage.getItem('theme');
+    const hasUserPref = localStorage.getItem('theme-user-preference') === 'true';
+    if (stored && isValidTheme(stored) && hasUserPref) {
+      return stored;
+    }
+  }
+
+  // Fall back to system preference
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 });
 
 useEffect(() => {
-  localStorage.setItem('theme', theme);
   document.documentElement.setAttribute('data-theme', theme);
-}, [theme]);
+  // Only persist if feature flag is enabled
+  if (persistenceEnabled) {
+    localStorage.setItem('theme', theme);
+  }
+}, [theme, persistenceEnabled]);
 ```
+
+**Allowed Persistence Exceptions:**
+
+| Data | Config Flag | Justification |
+|------|-------------|---------------|
+| Theme preference | `ALLOW_PERSISTENT_THEME` | Non-PII, significant UX improvement |
+
+Any future localStorage usage must be:
+1. Added to `PERSISTENCE_CONFIG` with a descriptive flag
+2. Documented here with justification
+3. Guarded by the feature flag in implementation
 
 ### Entity Relationships
 

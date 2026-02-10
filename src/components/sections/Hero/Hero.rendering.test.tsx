@@ -50,7 +50,7 @@ describe('Hero - Rendering', () => {
 
   describe('CTA Buttons', () => {
     it('should have See How It Works button with ghost variant', () => {
-      const { container } = render(<Hero />)
+      render(<Hero />)
 
       const button = screen.getByRole('button', { name: /see how.*works/i })
       // Ghost variant applies CSS classes, not data attributes

@@ -31,7 +31,7 @@ _All changes have been released in version 1.0.0. This section will track future
 
 ### Security
 
-- N/A
+- Overrode `axios` to version `1.13.5` to resolve a high-severity Denial of Service (DoS) vulnerability (GHSA-43fc-jf86-j433).
 
 ## [1.0.0] - 2025-12-22
 

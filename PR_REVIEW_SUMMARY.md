@@ -7,35 +7,27 @@ This file contains a summary of pull requests I have reviewed.
 ### PR #427: Configure Claude Code GitHub Action
 
 - **Status:** Approved
-- **Summary:** Adds a GitHub Actions workflow for Claude Code integration.
-- **Feedback:** The author (Copilot) has successfully addressed the permissions issues and clarified the necessity of `contents: write` for the action's functionality. The implementation now follows project security standards.
+- **Notes (2026-02-08):** See detailed review under **2026-02-06 → PR #427**. Latest status remains **Approved**; no additional feedback beyond that entry.
 
 ### PR #275: Implement P0-CRITICAL hero section conversion optimization (#274)
 
 - **Status:** Under Review (Changes Requested)
-- **Summary:** Major UI and test suite updates for the Hero section.
-- **Feedback:** The PR has been significantly improved and reduced to 11 files. Security vulnerabilities previously identified have been removed. However, the "P0-CRITICAL" title remains misleading. I recommend renaming the PR to accurately reflect its content (UI optimization and test coverage) and ensuring it is fully rebased with the latest security headers in `main`.
+- **Notes (2026-02-08):** See detailed review under **2026-02-06 → PR #275**. Status is still **Under Review (Changes Requested)** as of this date.
 
 ### PR #279: feat: Implement React Router and legal pages with dark footer
 
 - **Status:** Changes Requested
-- **Summary:** Introduces `react-router-dom` and creates dedicated pages for Privacy and Terms.
-- **Feedback:** While routing is now integrated into `App.tsx`, several issues remain:
-  1. **CSP Regression:** The `vercel.json` changes add `'unsafe-inline'` and remove the Vercel Analytics domain from `script-src`, which will break analytics.
-  2. **Domain Inconsistency:** `sitemap.xml` was updated to `.com`, but `package.json` and other configs still point to `.app`.
-  3. **Sync Required:** The PR needs a rebase to incorporate recent CSP and analytics changes from `main`.
+- **Notes (2026-02-08):** See detailed review under **2026-02-06 → PR #279**. Status remains **Changes Requested**; prior concerns documented there continue to apply.
 
 ### PR #319: Fix Deployment Error in Privacy.tsx
 
 - **Status:** Changes Requested
-- **Summary:** Fixes a bug in `Privacy.tsx` but includes unrelated changes to `package-lock.json` and `sitemap.xml`.
-- **Feedback:** The request to split this PR remains unaddressed. The `package-lock.json` changes (adding `"peer": true`) and the sitemap domain change to `.com` are problematic and should be removed to isolate the bug fix.
+- **Notes (2026-02-08):** See detailed review under **2026-02-06 → PR #319**. Status is still **Changes Requested** with no new blocking issues recorded here.
 
 ### PR #311: Fix Icon component fallback rendering and missing aria-labels
 
 - **Status:** Changes Requested
-- **Summary:** Refactors the `Icon` component fallback to use `<i>` tags and adds accessibility labels.
-- **Feedback:** Reverting from the `FontAwesomeIcon` React component to raw `<i>` tags for fallbacks might break rendering in our self-hosted environment. Recommend maintaining the React component for consistent icon loading.
+- **Notes (2026-02-08):** See detailed review under **2026-02-06 → PR #311**. Status remains **Changes Requested**; refer to the earlier entry for the full accessibility and rendering discussion.
 
 ### PR #428, #424, #422, #419, #406
 

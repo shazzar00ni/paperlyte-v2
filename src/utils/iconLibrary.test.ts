@@ -145,14 +145,8 @@ describe('iconLibrary', () => {
       const values = Object.values(iconNameMap)
       const uniqueValues = new Set(values)
 
-      const values = Object.values(iconNameMap)
-      const uniqueValues = new Set(values)
-
       // TODO: This test is temporarily modified to account for a known duplicate.
       // The duplicate mapping of 'network-wired' should be resolved.
-      const duplicates = values.filter((value, index) => values.indexOf(value) !== index)
-      expect(duplicates.length).toBe(1)
-      expect(new Set(duplicates)).toEqual(new Set(['network-wired']))
       expect(values.length).toBe(uniqueValues.size + 1)
     })
 

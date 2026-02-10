@@ -44,4 +44,4 @@ public/favicon.ico
 
 # Deployment platforms
 .netlify
-.vercel
+.verceltest-results/

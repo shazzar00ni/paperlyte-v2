@@ -21,6 +21,8 @@ test.describe('Landing Page', () => {
     if (isMobile) {
       // On mobile, the navigation is behind a hamburger menu
       await page.getByRole('button', { name: /menu/i }).click();
+      // Wait for the menu to be visible before interacting with its items
+      await expect(page.locator('#main-menu')).toBeVisible();
     }
 
     // Target specifically the header's features link to avoid strict mode violation

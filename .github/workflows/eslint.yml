@@ -53,9 +53,35 @@ jobs:
             --max-warnings 0
         continue-on-error: true
 
+      - name: Ensure SARIF file exists
+        if: always()
+        # Creates a minimal valid SARIF file if ESLint didn't produce one.
+        # This can happen if ESLint fails before generating output.
+        run: |
+          if [ ! -f eslint-results.sarif ]; then
+            cat > eslint-results.sarif << 'EOF'
+            {
+              "version": "2.1.0",
+              "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+              "runs": [
+                {
+                  "tool": {
+                    "driver": {
+                      "name": "ESLint",
+                      "informationUri": "https://eslint.org",
+                      "rules": []
+                    }
+                  },
+                  "results": []
+                }
+              ]
+            }
+          EOF
+          fi
+
       - name: Upload analysis results to GitHub
-        uses: github/codeql-action/upload-sarif@b20883b0cd1f46c72ae0ba6d1090936928f9fa30 # v4.32.0
-        if: always() && hashFiles('eslint-results.sarif') != ''
+        uses: github/codeql-action/upload-sarif@45cbd0c69e560cd9e7cd7f8c32362050c9b7ded2 # v4.32.2
+        if: always()
         with:
           sarif_file: eslint-results.sarif
           category: eslint

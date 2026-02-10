@@ -59,7 +59,7 @@ async function generateIcon(baseName, size, format) {
     if (!isPathSafe(publicDir, outputName)) {
       throw new Error(`Invalid output path: ${outputName}. Path traversal detected.`)
     }
-    
+
     const outputPath = join(publicDir, outputName)
 
     const image = sharp(faviconSource, { density: 300 }) // High DPI for crisp rasterization

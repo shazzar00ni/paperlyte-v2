@@ -55,7 +55,7 @@ This file contains a summary of pull requests I have reviewed.
 
 ### PR #275: Implement P0-CRITICAL hero section conversion optimization (#274)
 
-- **Status:** Under Review (unchanged)
+- **Status:** Under Review (Previously Rejected, unchanged)
 - **Summary:** See the 2026-02-03 section below for full context; this entry logs the current status as of 2026-02-07.
 - **Feedback:** No change to the prior recommendations; a fresh, accurately titled PR with only the safe changes is recommended.
 

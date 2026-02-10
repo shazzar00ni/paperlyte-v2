@@ -52,7 +52,7 @@ This file contains a summary of pull requests I have reviewed.
 - **Summary:** Aims to fix a deployment error but includes massive `package-lock.json` changes and sitemap updates.
 - **Feedback:** Still needs to be split. The `package-lock.json` changes are causing widespread test failures in CI, as confirmed by recent Codecov reports. Isolate the `Privacy.tsx` fix.
 
-### PR #275: Implement P0-CRITICAL hero section conversion optimization (#274)
+### PR #275: Implement P0-CRITICAL hero section conversion optimization (#274) (Update)
 
 - **Status:** Under Review (Previously Rejected)
 - **Summary:** Re-evaluated this PR after previous rejection for critical security issues. Recent commits have removed the most dangerous changes (like the CSP weakening).

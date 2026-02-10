@@ -105,7 +105,7 @@ Today's review focused on a large backlog of open pull requests, including new d
 - **Summary:** Both PRs aim to improve duplicate icon detection in tests. #413 is a newer iteration with better Vitest integration.
 - **Feedback:** Recommend merging #413 and closing #384.
 
-#### PR #321: Add tests for analytics utilities
+#### PR #321 (2026-02-04): Add tests for analytics utilities
 
 - **Status:** Approved with comments
 - **Summary:** Adds extensive tests for PII and web vitals.

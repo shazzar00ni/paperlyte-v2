@@ -45,7 +45,7 @@ if [ -f .lighthouseci/manifest.json ]; then
     PERF_STATUS=$([ "$PERF_SCORE" -ge "$PERF_THRESHOLD" ] && echo "✅" || echo "❌")
     A11Y_STATUS=$([ "$A11Y_SCORE" -ge "$A11Y_THRESHOLD" ] && echo "✅" || echo "❌")
     BP_STATUS=$([ "$BP_SCORE" -ge "$BP_THRESHOLD" ] && echo "✅" || echo "⚠️")
-    SEO_STATUS=$([ "$SEO_SCORE" -ge "$SEO_THRESHOLD" ] && echo "✅" || echo "⚠️")
+     SEO_STATUS=$([ "$SEO_SCORE" -ge "$SEO_THRESHOLD" ] && echo "✅" || echo "⚠️")
 
     {
       echo "| Category | Score | Status | Target |"

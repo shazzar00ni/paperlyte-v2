@@ -10,6 +10,26 @@ const isValidTheme = (value: string | null): value is Theme => {
   return value === 'light' || value === 'dark'
 }
 
+/**
+ * Hook for managing application theme (light/dark mode)
+ * Supports system preference detection, manual toggle, and localStorage persistence
+ * Automatically syncs with system dark mode preference unless user manually overrides
+ *
+ * @returns Object containing current theme and toggle function
+ * @returns theme - Current theme value ('light' | 'dark')
+ * @returns toggleTheme - Function to toggle between light and dark themes
+ *
+ * @example
+ * ```tsx
+ * const { theme, toggleTheme } = useTheme()
+ *
+ * return (
+ *   <button onClick={toggleTheme}>
+ *     Current theme: {theme}
+ *   </button>
+ * )
+ * ```
+ */
 export const useTheme = () => {
   // Get initial user preference flag from localStorage (only during init, not reactive)
   const getInitialUserPreference = (): boolean => {

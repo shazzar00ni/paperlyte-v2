@@ -11,6 +11,32 @@ interface AnimatedElementProps {
   className?: string
 }
 
+/**
+ * Animated wrapper component that triggers entrance animations when element becomes visible
+ * Uses Intersection Observer API for performance-optimized scroll-triggered animations
+ * Respects user's prefers-reduced-motion preference for accessibility
+ *
+ * @param props - AnimatedElement component props
+ * @param props.children - Content to animate
+ * @param props.animation - Animation type to apply (default: 'fadeIn')
+ * @param props.delay - Animation delay in milliseconds (default: 0)
+ * @param props.threshold - Intersection Observer threshold 0-1 (default: 0.1)
+ * @param props.className - Additional CSS classes
+ * @returns A div wrapper with scroll-triggered animation
+ *
+ * @example
+ * ```tsx
+ * // Basic fade-in animation
+ * <AnimatedElement animation="fadeIn">
+ *   <h1>Hello World</h1>
+ * </AnimatedElement>
+ *
+ * // Staggered animations with delay
+ * <AnimatedElement animation="slideUp" delay={200}>
+ *   <p>This appears 200ms after visibility</p>
+ * </AnimatedElement>
+ * ```
+ */
 export const AnimatedElement = ({
   children,
   animation = 'fadeIn',

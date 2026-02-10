@@ -140,7 +140,6 @@ describe('ThemeToggle', () => {
         toggleTheme: mockToggleTheme,
       })
 
-      rerender(<ThemeToggle />)
        const lightIcon = screen.getByRole('button').querySelector('svg[data-icon="fa-moon"]')
       expect(lightIcon).toHaveAttribute('data-icon', 'fa-moon')
 
@@ -150,7 +149,9 @@ describe('ThemeToggle', () => {
       })
 
       rerender(<ThemeToggle />)
-       // const darkIcon = screen.getByRole('button').querySelector('svg[data-icon="fa-sun"]')
+       const darkIcon = screen.getByRole('button').querySelector('svg[data-icon="fa-sun"]')
+      expect(darkIcon).toBeInTheDocument()
+      expect(darkIcon).toHaveAttribute('data-icon', 'fa-sun')
     })
 
     it('should update aria-label when theme changes', () => {

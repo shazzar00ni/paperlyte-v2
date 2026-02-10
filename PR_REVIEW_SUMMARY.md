@@ -115,7 +115,7 @@ This file contains a summary of pull requests I have reviewed.
 - **Summary:** Enforces semicolons via Prettier across the entire codebase (186 files).
 - **Feedback:** While consistent styling is good, merging a 186-file formatting change while many other PRs are open will cause widespread merge conflicts. Recommend postponing until current feature PRs are merged.
 
-### PR #388: Remove invalid slack_app key from codecov.yml
+### PR #388: Remove invalid `slack_app` key from `codecov.yml`
 
 - **Status:** Approved
 - **Summary:** Removes a deprecated/invalid configuration key from `codecov.yml`.

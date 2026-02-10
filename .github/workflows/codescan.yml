@@ -38,7 +38,6 @@ jobs:
                     key: ${{ runner.os }}-sonar
                     restore-keys: ${{ runner.os }}-sonar
             -   name: Run Analysis
-                id: codescan-analysis
                 uses: codescan-io/codescan-scanner-action@955d3d1b4a9e374064189719484005ce8e08a749
                 # Continue even if CodeScan fails (e.g., missing secrets in forks)
                 continue-on-error: true
@@ -47,36 +46,10 @@ jobs:
                     organization: ${{ secrets.CODESCAN_ORGANIZATION_KEY }}
                     projectKey: ${{ secrets.CODESCAN_PROJECT_KEY }}
             -   name: Upload SARIF file
-                uses: github/codeql-action/upload-sarif@45cbd0c69e560cd9e7cd7f8c32362050c9b7ded2 # v4.32.2
+                uses: github/codeql-action/upload-sarif@v4.31.11
                 # Only upload if SARIF file exists
                 if: always() && hashFiles('codescan.sarif') != ''
                 continue-on-error: true
                 with:
                     sarif_file: codescan.sarif
                     category: codescan
-            -   name: CodeScan Summary
-                if: always()
-                run: |
-                    echo "## 🔬 CodeScan Analysis" >> $GITHUB_STEP_SUMMARY
-                    echo "" >> $GITHUB_STEP_SUMMARY
-                    
-                    if [ "${{ steps.codescan-analysis.outcome }}" == "success" ]; then
-                        echo "✅ **CodeScan:** Analysis completed successfully" >> $GITHUB_STEP_SUMMARY
-                    elif [ "${{ steps.codescan-analysis.outcome }}" == "failure" ]; then
-                        echo "⚠️ **CodeScan:** Analysis failed (check authentication/configuration)" >> $GITHUB_STEP_SUMMARY
-                        echo "" >> $GITHUB_STEP_SUMMARY
-                        echo "Ensure the following secrets are configured:" >> $GITHUB_STEP_SUMMARY
-                        echo "- \`CODESCAN_AUTH_TOKEN\`" >> $GITHUB_STEP_SUMMARY
-                        echo "- \`CODESCAN_ORGANIZATION_KEY\`" >> $GITHUB_STEP_SUMMARY
-                        echo "- \`CODESCAN_PROJECT_KEY\`" >> $GITHUB_STEP_SUMMARY
-                    else
-                        echo "⏭️ **CodeScan:** Analysis skipped (missing configuration)" >> $GITHUB_STEP_SUMMARY
-                    fi
-                    
-                    if [ -f "codescan.sarif" ]; then
-                        echo "" >> $GITHUB_STEP_SUMMARY
-                        echo "📄 SARIF results uploaded to GitHub Code Scanning." >> $GITHUB_STEP_SUMMARY
-                    fi
-                    
-                    echo "" >> $GITHUB_STEP_SUMMARY
-                    echo "📊 View detailed findings in the **Security** tab." >> $GITHUB_STEP_SUMMARY

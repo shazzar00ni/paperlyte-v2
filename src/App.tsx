@@ -1,4 +1,3 @@
-import { Analytics } from '@vercel/analytics/react'
 import { ErrorBoundary } from '@components/ErrorBoundary'
 import { Header } from '@components/layout/Header'
 import { Footer } from '@components/layout/Footer'
@@ -50,7 +49,6 @@ function App() {
       </main>
       <Footer />
       <FeedbackWidget />
-      <Analytics />
     </ErrorBoundary>
   )
 }

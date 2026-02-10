@@ -17,13 +17,6 @@ engines:
     enabled: true
   eslint-8:
     enabled: true
-  lizard:
-    enabled: true
-    exclude_paths:
-      - '**/*.test.tsx'
-      - '**/*.test.ts'
-      - '**/*.spec.tsx'
-      - '**/*.spec.ts'
 
 # Exclude specific patterns in test files where they are false positives
 # validation-utils.test.ts: RegExp constructor is used with pre-escaped strings
@@ -40,10 +33,6 @@ exclude_patterns:
   - identifier: "ESLint8_xss_no-mixed-html"
     paths:
       - "src/utils/validation-sanitization.test.ts"
-  # Disable SCSS-specific stylelint rule for CSS files (this project uses CSS, not SCSS)
-  - identifier: "scss_function-disallowed-list"
-    paths:
-      - "**/*.css"
 
 # Exclude paths from code analysis
 exclude_paths:

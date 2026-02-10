@@ -40,7 +40,6 @@ jobs:
 
       # Execute Codacy Analysis CLI and generate a SARIF output with the security issues identified during the analysis
       - name: Run Codacy Analysis CLI
-        id: codacy-run
         uses: codacy/codacy-analysis-cli-action@562ee3e92b8e92df8b67e0a5ff8aa8e261919c08
         with:
           # Check https://github.com/codacy/codacy-analysis-cli#project-token to get your project token from your Codacy repository
@@ -55,38 +54,15 @@ jobs:
           # This will handover control about PR rejection to the GitHub side
           max-allowed-issues: 2147483647
 
-      # Merge multiple SARIF runs into a single run to comply with GitHub's July 2025
-      # requirement that each upload must have a single run per category.
-      # See: https://github.blog/changelog/2025-07-21-code-scanning-will-stop-combining-multiple-sarif-runs-uploaded-in-the-same-sarif-file/
-      - name: Merge SARIF runs into single run
-        if: hashFiles('results.sarif') != ''
-        run: ./scripts/merge-sarif-runs.sh results.sarif
-
-      # Upload the SARIF file (now with single run) using official action
+      # Upload the SARIF file generated in the previous step
+      # NOTE: Temporarily allowing failures due to GitHub's July 2025 breaking change
+      # that rejects SARIF files with multiple runs per category. Codacy CLI generates
+      # multiple runs (one per tool) which is now rejected. Tracking:
+      # https://github.com/codacy/codacy-analysis-cli/issues/541
       - name: Upload SARIF results file
-        uses: github/codeql-action/upload-sarif@45cbd0c69e560cd9e7cd7f8c32362050c9b7ded2 # v4.32.2
-        if: hashFiles('results.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v4.31.11
         continue-on-error: true
+        if: hashFiles('results.sarif') != ''
         with:
           sarif_file: results.sarif
           category: codacy
-
-      - name: Codacy Security Summary
-        if: always()
-        run: |
-          echo "## 🔒 Codacy Security Scan" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          
-          if [ "${{ steps.codacy-run.outcome }}" == "success" ]; then
-            echo "✅ **Codacy Analysis:** Completed successfully" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "⚠️ **Codacy Analysis:** Issues detected" >> $GITHUB_STEP_SUMMARY
-          fi
-          
-          if [ -f "results.sarif" ]; then
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "📄 SARIF results uploaded to GitHub Code Scanning." >> $GITHUB_STEP_SUMMARY
-          fi
-          
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "📊 View detailed security findings in the **Security** tab." >> $GITHUB_STEP_SUMMARY

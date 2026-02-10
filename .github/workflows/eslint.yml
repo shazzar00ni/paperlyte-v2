@@ -43,7 +43,6 @@ jobs:
         run: npm install --no-save @microsoft/eslint-formatter-sarif@3.1.0
 
       - name: Run ESLint
-        id: eslint-run
         env:
           SARIF_ESLINT_IGNORE_SUPPRESSED: "true"
         run: |
@@ -53,55 +52,9 @@ jobs:
             --max-warnings 0
         continue-on-error: true
 
-      - name: Ensure SARIF file exists
-        if: always()
-        # Creates a minimal valid SARIF file if ESLint didn't produce one.
-        # This can happen if ESLint fails before generating output.
-        run: |
-          if [ ! -f eslint-results.sarif ]; then
-            cat > eslint-results.sarif << 'EOF'
-            {
-              "version": "2.1.0",
-              "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
-              "runs": [
-                {
-                  "tool": {
-                    "driver": {
-                      "name": "ESLint",
-                      "informationUri": "https://eslint.org",
-                      "rules": []
-                    }
-                  },
-                  "results": []
-                }
-              ]
-            }
-          EOF
-          fi
-
       - name: Upload analysis results to GitHub
-        uses: github/codeql-action/upload-sarif@45cbd0c69e560cd9e7cd7f8c32362050c9b7ded2 # v4.32.2
-        if: always()
+        uses: github/codeql-action/upload-sarif@v4.31.11
         with:
           sarif_file: eslint-results.sarif
           category: eslint
           wait-for-processing: true
-
-      - name: ESLint Summary
-        if: always()
-        run: |
-          echo "## 🔍 ESLint Security Scan" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          
-          if [ "${{ steps.eslint-run.outcome }}" == "success" ]; then
-            echo "✅ **ESLint:** No issues found" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "⚠️ **ESLint:** Issues detected" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "Check the **Security** tab for detailed findings." >> $GITHUB_STEP_SUMMARY
-          fi
-          
-          if [ -f "eslint-results.sarif" ]; then
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "📄 SARIF results uploaded to GitHub Code Scanning." >> $GITHUB_STEP_SUMMARY
-          fi

@@ -55,7 +55,7 @@ import {
   faBook, // Documentation/help
   faMagnifyingGlass, // Search
   faPlane, // Offline page - airplane mode
-  faRoute, // Offline page - route/navigation issues
+  faNetworkWired, // Offline page - network issues
   faArrowRight, // Navigation forward
   faArrowLeft, // Navigation back
   faSpinner, // Loading states
@@ -111,7 +111,7 @@ library.add(
   faBook,
   faMagnifyingGlass,
   faPlane,
-  faRoute,
+  faNetworkWired,
   faArrowRight,
   faArrowLeft,
   faSpinner,
@@ -131,13 +131,14 @@ export const iconNameMap: Record<string, string> = {
   'fa-pen-nib': 'pen-nib',
   'fa-tags': 'tags',
   'fa-mobile-screen': 'mobile-screen',
-  'fa-wifi-slash': 'plane-slash', // Using plane-slash as offline indicator.
+  'fa-wifi-slash': 'plane-slash', // Using plane-slash as offline indicator
   'fa-shield-halved': 'shield-halved',
   'fa-feather': 'feather',
   'fa-xmark': 'xmark',
   'fa-bars': 'bars',
   'fa-envelope': 'envelope',
   'fa-star': 'star',
+  'fa-shield-check': 'circle-check', // Using circle-check for guarantee/verification
   'fa-heart': 'heart',
   'fa-download': 'download',
   'fa-moon': 'moon',
@@ -157,22 +158,21 @@ export const iconNameMap: Record<string, string> = {
   'fa-rocket': 'rocket',
   'fa-users': 'users',
   'fa-server': 'server',
+  'fa-wifi': 'wifi',
+  'fa-rotate-right': 'rotate-right',
+  'fa-arrow-rotate-right': 'arrow-rotate-right',
+  'fa-arrow-rotate-left': 'arrow-rotate-left',
+  'fa-book': 'book',
+  'fa-magnifying-glass': 'magnifying-glass',
+  'fa-plane': 'plane',
+  'fa-network-wired': 'network-wired',
+  'fa-arrow-right': 'arrow-right',
+  'fa-arrow-left': 'arrow-left',
+  'fa-spinner': 'spinner',
   'fa-github': 'github',
   'fa-twitter': 'twitter',
   'fa-apple': 'apple',
   'fa-windows': 'windows',
-  'fa-route': 'route', // Offline page - route/navigation issues.
-  'fa-wifi': 'wifi', // Offline page - connection status.
-  'fa-plane': 'plane', // Offline page - airplane mode.
-  'fa-arrow-rotate-left': 'arrow-rotate-left', // Undo/back actions.
-  'fa-arrow-rotate-right': 'arrow-rotate-right', // Retry/reload actions (alternative).
-  'fa-rotate-right': 'rotate-right', // Retry/reload actions.
-  'fa-book': 'book', // Documentation/help.
-  'fa-magnifying-glass': 'magnifying-glass', // Search.
-  'fa-arrow-right': 'arrow-right', // Navigation forward.
-  'fa-arrow-left': 'arrow-left', // Navigation back.
-  'fa-spinner': 'spinner', // Loading states.
-  'fa-circle-check': 'circle-check', // Checkmark/success indicator.
 }
 
 /**

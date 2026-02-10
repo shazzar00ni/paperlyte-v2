@@ -31,21 +31,32 @@ This file contains a summary of pull requests I have reviewed.
   2. **Domain Inconsistency:** `sitemap.xml` was updated to `.com`, but `package.json` and other configs still point to `.app`.
   3. **Sync Required:** The PR needs a rebase to incorporate recent CSP and analytics changes from `main`.
 
-### PR #319, #311: Component Fixes and Accessibility
+### PR #319: Fix Deployment Error in Privacy.tsx
 
 - **Status:** Changes Requested
-- **Summary:** Bug fixes for Privacy.tsx and Icon component refactoring.
-- **Feedback:** Both PRs still contain unrelated changes (sitemap, package-lock) or problematic refactors (Icon component fallback to raw `<i>` tags). Recommendations to split and clean up these PRs remain active.
+- **Summary:** Fixes a bug in Privacy.tsx but includes unrelated changes to package-lock.json and sitemap.xml.
+- **Feedback:** The request to split this PR remains unaddressed. The package-lock.json changes (adding "peer": true) and the sitemap domain change to .com are problematic and should be removed to isolate the bug fix.
+
+### PR #311: Fix Icon component fallback rendering and missing aria-labels
+
+- **Status:** Changes Requested
+- **Summary:** Refactors the Icon component fallback to use <i> tags and adds accessibility labels.
+- **Feedback:** Reverting from the FontAwesomeIcon React component to raw <i> tags for fallbacks might break rendering in our self-hosted environment. Recommend maintaining the React component for consistent icon loading.
 
 ### Redundant Summary PRs
 
 - **Summary:** Identified a large number of open PRs that only update `PR_REVIEW_SUMMARY.md` or are duplicates/attempts to fix the summary file.
-- **Action:** Recommend closing all redundant summary PRs (#436, #435, #434, #433, #432, #431, #430, #420, #417, #396, #385, #383, #380, #363, #349, #341, #271, #259, #242, #239, #238) in favor of a single daily summary.
+- **Action:** Recommend closing all 21 redundant summary PRs (#436, #435, #434, #433, #432, #431, #430, #420, #417, #396, #385, #383, #380, #363, #349, #341, #271, #259, #242, #239, #238) in favor of a single daily summary.
 
-### PR #107, #389
+### PR #107: Implement critical accessibility fixes, legal documents, and performance optimizations
 
-- **Status:** Postponed / Close
-- **Feedback:** Recommendations remain unchanged: Close #107 (massive monolithic PR) and postpone #389 (repository-wide formatting) to avoid merge conflicts with active feature PRs.
+- **Status:** Close
+- **Feedback:** This is a massive monolithic PR (118 files) that has been open for months. Many of its core changes appear to have been merged via other PRs. Recommend closing this and extracting remaining unique changes into smaller, focused PRs.
+
+### PR #389: Standardize code style with semicolons across codebase
+
+- **Status:** Postponed
+- **Feedback:** Postpone repository-wide formatting changes until current feature PRs are merged to avoid widespread merge conflicts.
 
 ---
 

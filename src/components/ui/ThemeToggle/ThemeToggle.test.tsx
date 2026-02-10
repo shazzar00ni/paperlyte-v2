@@ -30,7 +30,7 @@ describe('ThemeToggle', () => {
     it.each([
       { theme: 'light' as const, description: 'light mode', expectedIcon: 'fa-moon' },
       { theme: 'dark' as const, description: 'dark mode', expectedIcon: 'fa-sun' },
-    ])('should render $expectedIcon in $description', ({ theme, expectedIcon }) => {
+    ])('should render $expectedIcon in $description', ({ theme, expectedIcon }: { theme: 'light' | 'dark'; expectedIcon: 'fa-moon' | 'fa-sun' }): void => {
       vi.spyOn(useThemeModule, 'useTheme').mockReturnValue({
         theme,
         toggleTheme: mockToggleTheme,

@@ -24,7 +24,7 @@ This file contains a summary of pull requests I have reviewed.
 - **Status:** Changes Requested
 - **Notes (2026-02-08):** See detailed review under **2026-02-06 → PR #319**. Status is still **Changes Requested** with no new blocking issues recorded here.
 
-### PR #311: Fix Icon component fallback rendering and missing aria-labels
+### PR #311: Fix Icon component fallback rendering (Update 2026-02-08)
 
 - **Status:** Changes Requested
 - **Notes (2026-02-08):** See detailed review under **2026-02-06 → PR #311**. Status remains **Changes Requested**; refer to the earlier entry for the full accessibility and rendering discussion.

@@ -30,7 +30,8 @@ This file contains a summary of pull requests I have reviewed.
 
 ### PR #424: Fix open redirect and command injection vulnerabilities
 
-- **Status:** Under Review / Approved (Partial)
+- **Status:** Under Review
+- **Decision:** Approved (Partial)
 - **Summary:** Implements an allowlist for `safeNavigate` and fixes a prototype pollution vulnerability in `CounterAnimation`.
 - **Feedback:** The prototype pollution fix in `CounterAnimation` (using a `Map` for easing functions) is excellent. However, there is significant overlap with PR #428 regarding `safeNavigate`. Recommend using the `safeNavigateExternal` approach from #428 for better flexibility.
 
@@ -48,9 +49,9 @@ This file contains a summary of pull requests I have reviewed.
 
 ### PR #319: Fix Deployment Error in Privacy.tsx
 
-- **Status:** Changes Requested
-- **Summary:** Aims to fix a deployment error but includes massive `package-lock.json` changes and sitemap updates.
-- **Feedback:** Still needs to be split. The `package-lock.json` changes are causing widespread test failures in CI, as confirmed by recent Codecov reports. Isolate the `Privacy.tsx` fix.
+- **Status:** Changes Requested (unchanged)
+- **Summary:** See the earlier PR #319 entry in this file for full context; this entry logs the current status as of 2026-02-07.
+- **Feedback:** No change to the prior recommendations; the PR still needs to be split to isolate the `Privacy.tsx` fix from the large `package-lock.json` and sitemap updates.
 
 ### PR #275: Implement P0-CRITICAL hero section conversion optimization (#274) (Update)
 
@@ -66,12 +67,9 @@ This file contains a summary of pull requests I have reviewed.
 
 ### PR #107: Implement critical accessibility fixes, legal documents, and performance optimizations
 
-- **Status:** Needs Cleanup / Close (unchanged)
-- **Summary:** See the 2026-02-03 section below for full review context.
-- **Feedback:** Assessment unchanged as of 2026-02-07: still recommending closure and extraction of any remaining unique changes into smaller PRs.
+- See detailed notes in the 2026-02-03 section below for the full review of PR #107. Assessment unchanged as of 2026-02-07: still recommending closure and extraction of any remaining unique changes into smaller PRs.
 
 ---
-
 ## 2026-02-03
 
 ### PR #399: fix(ci): fix SARIF merge script jq syntax errors causing run limit rejection

@@ -18,16 +18,23 @@ if [ -f .lighthouseci/manifest.json ]; then
 
   if [ -f "$REPORT_FILE" ]; then
     # Extract thresholds dynamically from .lighthouserc.json with fallback defaults
-    PERF_THRESHOLD=$(jq -r '(.ci.assert.assertions["categories:performance"][1].minScore // 0.9) * 100 | floor' .lighthouserc.json)
-    A11Y_THRESHOLD=$(jq -r '(.ci.assert.assertions["categories:accessibility"][1].minScore // 0.95) * 100 | floor' .lighthouserc.json)
-    BP_THRESHOLD=$(jq -r '(.ci.assert.assertions["categories:best-practices"][1].minScore // 0.9) * 100 | floor' .lighthouserc.json)
-    SEO_THRESHOLD=$(jq -r '(.ci.assert.assertions["categories:seo"][1].minScore // 0.9) * 100 | floor' .lighthouserc.json)
-    FCP_THRESHOLD=$(jq -r '(.ci.assert.assertions["first-contentful-paint"][1].maxNumericValue // 2000) | floor' .lighthouserc.json)
-    LCP_THRESHOLD=$(jq -r '(.ci.assert.assertions["largest-contentful-paint"][1].maxNumericValue // 2500) | floor' .lighthouserc.json)
-    CLS_THRESHOLD=$(jq -r '.ci.assert.assertions["cumulative-layout-shift"][1].maxNumericValue // 0.1' .lighthouserc.json)
-    TBT_THRESHOLD=$(jq -r '(.ci.assert.assertions["total-blocking-time"][1].maxNumericValue // 300) | floor' .lighthouserc.json)
-    SI_THRESHOLD=$(jq -r '(.ci.assert.assertions["speed-index"][1].maxNumericValue // 3000) | floor' .lighthouserc.json)
-    TTI_THRESHOLD=$(jq -r '(.ci.assert.assertions.interactive[1].maxNumericValue // 3500) | floor' .lighthouserc.json)
+    if [ ! -f .lighthouserc.json ]; then
+      echo "⚠️ .lighthouserc.json not found, using default thresholds" >> "$GITHUB_STEP_SUMMARY"
+      PERF_THRESHOLD=90; A11Y_THRESHOLD=95; BP_THRESHOLD=90; SEO_THRESHOLD=90
+      FCP_THRESHOLD=2000; LCP_THRESHOLD=2500; CLS_THRESHOLD=0.1
+      TBT_THRESHOLD=300; SI_THRESHOLD=3000; TTI_THRESHOLD=3500
+    else
+      PERF_THRESHOLD=$(jq -r '(.ci.assert.assertions["categories:performance"][1].minScore // 0.9) * 100 | floor' .lighthouserc.json)
+      A11Y_THRESHOLD=$(jq -r '(.ci.assert.assertions["categories:accessibility"][1].minScore // 0.95) * 100 | floor' .lighthouserc.json)
+      BP_THRESHOLD=$(jq -r '(.ci.assert.assertions["categories:best-practices"][1].minScore // 0.9) * 100 | floor' .lighthouserc.json)
+      SEO_THRESHOLD=$(jq -r '(.ci.assert.assertions["categories:seo"][1].minScore // 0.9) * 100 | floor' .lighthouserc.json)
+      FCP_THRESHOLD=$(jq -r '(.ci.assert.assertions["first-contentful-paint"][1].maxNumericValue // 2000) | floor' .lighthouserc.json)
+      LCP_THRESHOLD=$(jq -r '(.ci.assert.assertions["largest-contentful-paint"][1].maxNumericValue // 2500) | floor' .lighthouserc.json)
+      CLS_THRESHOLD=$(jq -r '.ci.assert.assertions["cumulative-layout-shift"][1].maxNumericValue // 0.1' .lighthouserc.json)
+      TBT_THRESHOLD=$(jq -r '(.ci.assert.assertions["total-blocking-time"][1].maxNumericValue // 300) | floor' .lighthouserc.json)
+      SI_THRESHOLD=$(jq -r '(.ci.assert.assertions["speed-index"][1].maxNumericValue // 3000) | floor' .lighthouserc.json)
+      TTI_THRESHOLD=$(jq -r '(.ci.assert.assertions.interactive[1].maxNumericValue // 3500) | floor' .lighthouserc.json)
+    fi
 
     {
       echo "### 📊 Lighthouse Scores"

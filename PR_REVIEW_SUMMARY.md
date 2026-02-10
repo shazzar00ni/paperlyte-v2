@@ -29,12 +29,32 @@ This file contains a summary of pull requests I have reviewed.
 - **Status:** Changes Requested
 - **Notes (2026-02-08):** See detailed review under **2026-02-06 → PR #311**. Status remains **Changes Requested**; refer to the earlier entry for the full accessibility and rendering discussion.
 
-### PR #428, #424, #422, #419, #406
+### Additional PRs
 
-- **Status:** Reviewed/Approved
-- **Summary:** These PRs cover critical security fixes (#428, #424), dependency updates (#422), and analytics integration (#419).
-- **Feedback:** All are solid improvements. Note the overlap between #428 and #424; #428's approach to `safeNavigate` is preferred for its flexibility.
+- **PR #428**
+  - **Status:** Reviewed/Approved
+  - **Summary:** Critical security fix related to `safeNavigate`.
+  - **Feedback:** Solid improvement; this approach to `safeNavigate` is preferred for its flexibility over #424.
 
+- **PR #424**
+  - **Status:** Reviewed/Approved
+  - **Summary:** Critical security fix overlapping with #428.
+  - **Feedback:** Improvement is solid but superseded by #428's `safeNavigate` implementation.
+
+- **PR #422**
+  - **Status:** Reviewed/Approved
+  - **Summary:** Dependency updates.
+  - **Feedback:** Changes look good and keep dependencies current without introducing regressions.
+
+- **PR #419**
+  - **Status:** Reviewed/Approved
+  - **Summary:** Analytics integration.
+  - **Feedback:** Implementation is sound and aligns with existing CSP and privacy requirements.
+
+- **PR #406**
+  - **Status:** Reviewed/Approved
+  - **Summary:** Miscellaneous improvements.
+  - **Feedback:** Changes are straightforward and low risk.
 ### Redundant Summary PRs
 
 - **Summary:** Identified several redundant PRs that only update `PR_REVIEW_SUMMARY.md` or are duplicates/attempts to fix the summary file.

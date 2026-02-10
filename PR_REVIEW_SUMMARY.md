@@ -58,7 +58,7 @@ This file contains a summary of pull requests I have reviewed.
 - **Summary:** Re-evaluated this PR after previous rejection for critical security issues. Recent commits have removed the most dangerous changes (like the CSP weakening).
 - **Feedback:** While improved, the PR title remains misleading as the recent focus is on Codacy warning fixes. A fresh, accurately titled PR with only the safe changes is recommended.
 
-### PR #279: feat: Implement React Router and legal pages with dark footer
+### PR #279: feat: Implement React Router and legal pages with dark footer (Update)
 
 - **Status:** Changes Requested
 - **Summary:** Introduces `react-router-dom` and creates dedicated pages for Privacy and Terms.

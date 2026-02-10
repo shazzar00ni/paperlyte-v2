@@ -191,6 +191,9 @@ export function handleArrowNavigation(
     if (typeof document !== 'undefined') {
       // Prefer explicit dir attribute if present
       const docElement = document.documentElement
+      // Note: Using || instead of ?? is intentional here.
+      // document.dir returns "" (empty string) when unset, and we want to fall back to getAttribute in that case.
+      // Using ?? would NOT trigger the fallback for empty strings (only null/undefined).
       const attrDir = (document.dir || docElement.getAttribute('dir') || '').toLowerCase()
 
       if (attrDir) {

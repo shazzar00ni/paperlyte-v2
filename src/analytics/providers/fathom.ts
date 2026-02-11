@@ -162,7 +162,7 @@ export class FathomProvider implements AnalyticsProvider {
       return
     }
 
-    const pageUrl = url || window.location.pathname
+    const pageUrl = url ?? window.location.pathname
 
     window.fathom.trackPageview({ url: pageUrl })
 

@@ -288,8 +288,8 @@ export class FathomProvider implements AnalyticsProvider {
     }
 
     const dnt =
-      navigator.doNotTrack ||
-      (window as Window & { doNotTrack?: string }).doNotTrack ||
+      navigator.doNotTrack ??
+      (window as Window & { doNotTrack?: string }).doNotTrack ??
       (navigator as Navigator & { msDoNotTrack?: string }).msDoNotTrack
 
     return dnt === '1' || dnt === 'yes'

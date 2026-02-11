@@ -8,7 +8,7 @@
  */
 
 import type { AnalyticsConfig, AnalyticsEvent, AnalyticsProvider, CoreWebVitals } from '../types'
-import { isSafePropertyKey } from '../../utils/security'
+import { isSafePropertyKey } from '@utils/security'
 
 /**
  * Fathom Analytics global interface

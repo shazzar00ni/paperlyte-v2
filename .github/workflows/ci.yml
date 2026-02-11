@@ -116,11 +116,10 @@ jobs:
           fail_ci_if_error: false
 
       - name: Upload test results to Codecov
-        uses: codecov/codecov-action@v5
-        if: always()
+        uses: codecov/test-results-action@v1
+        if: ${{ !cancelled() }}
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          report_type: test_results
           files: ./junit.xml
 
       - name: Upload coverage reports

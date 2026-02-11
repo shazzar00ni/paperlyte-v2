@@ -167,7 +167,7 @@ export class PlausibleProvider implements AnalyticsProvider {
       return
     }
 
-    const pageUrl = url ?? window.location.pathname
+    const pageUrl = url || window.location.pathname
 
     window.plausible('pageview', {
       props: { path: pageUrl },

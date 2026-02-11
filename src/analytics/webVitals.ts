@@ -59,7 +59,7 @@ function trackLCP(callback: ReportCallback): void {
       }
 
       if (lastEntry) {
-        const value = lastEntry.renderTime || lastEntry.loadTime || 0
+        const value = lastEntry.renderTime ?? lastEntry.loadTime ?? 0
         callback({
           name: 'LCP',
           value,
@@ -146,7 +146,7 @@ function trackCLS(callback: ReportCallback): MetricTracker {
         }
 
         if (!layoutShiftEntry.hadRecentInput) {
-          clsValue += layoutShiftEntry.value || 0
+          clsValue += layoutShiftEntry.value ?? 0
           entries.push(entry)
         }
       }

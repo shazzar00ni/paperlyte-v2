@@ -17,7 +17,7 @@ interface EnvConfig {
  * Falls back to window.location.origin if not set
  */
 export const getBaseUrl = (): string => {
-  return import.meta.env.VITE_BASE_URL || window.location.origin
+  return import.meta.env.VITE_BASE_URL ?? window.location.origin
 }
 
 /**
@@ -25,7 +25,7 @@ export const getBaseUrl = (): string => {
  */
 export const getSeoKeywords = (): string => {
   return (
-    import.meta.env.VITE_SEO_KEYWORDS ||
+    import.meta.env.VITE_SEO_KEYWORDS ??
     'note-taking app, simple notes, fast notes, offline notes, tag-based organization, distraction-free writing, minimalist notes'
   )
 }
@@ -35,7 +35,7 @@ export const getSeoKeywords = (): string => {
  * Returns absolute URL for production, relative for development
  */
 export const getOgImage = (): string => {
-  const ogImage = import.meta.env.VITE_OG_IMAGE || '/og-image.png'
+  const ogImage = import.meta.env.VITE_OG_IMAGE ?? '/og-image.png'
   const baseUrl = getBaseUrl()
 
   // If image is already absolute URL, return as-is

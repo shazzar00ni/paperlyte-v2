@@ -103,15 +103,45 @@ export class FathomProvider implements AnalyticsProvider {
         return false
       }
 
-      // Allow known providers or any HTTPS URL pointing to a .js file
-      // (for self-hosted instances)
-      return isKnownProvider || parsedUrl.protocol === 'https:'
+      // Allow any HTTPS URL pointing to a .js file (for self-hosted instances)
+      return true
     } catch (error) {
       if (this.config?.debug) {
         console.warn('[Analytics] Invalid script URL format:', url, error)
       }
       return false
     }
+  }
+
+  /**
+   * Create and configure the script element for Fathom
+   */
+  private createScriptElement(scriptUrl: string): HTMLScriptElement {
+    const script = document.createElement('script')
+
+    script.async = true
+    script.src = scriptUrl
+    script.setAttribute('data-site', this.config?.domain || '')
+
+    if (this.config?.trackPageviews === false) {
+      script.setAttribute('data-auto', 'false')
+    }
+
+    script.onerror = () => {
+      this.scriptLoaded = false
+      if (this.config?.debug) {
+        console.warn('[Analytics] Failed to load Fathom script')
+      }
+    }
+
+    script.onload = () => {
+      this.scriptLoaded = true
+      if (this.config?.debug) {
+        console.log('[Analytics] Fathom script loaded successfully')
+      }
+    }
+
+    return script
   }
 
   /**
@@ -137,35 +167,8 @@ export class FathomProvider implements AnalyticsProvider {
       return
     }
 
-    const script = document.createElement('script')
-
-    script.async = true
-    script.src = scriptUrl
-    // Fathom uses data-site for the site ID
-    script.setAttribute('data-site', this.config?.domain || '')
-
-    // Disable auto-tracking if trackPageviews is false
-    if (this.config?.trackPageviews === false) {
-      script.setAttribute('data-auto', 'false')
-    }
-
-    script.onerror = () => {
-      if (this.config?.debug) {
-        console.warn('[Analytics] Failed to load Fathom script')
-      }
-      this.scriptLoaded = false
-    }
-
-    script.onload = () => {
-      this.scriptLoaded = true
-      if (this.config?.debug) {
-        console.log('[Analytics] Fathom script loaded successfully')
-      }
-    }
-
-    // Store reference to the script element for cleanup
-    this.scriptElement = script
-    document.head.appendChild(script)
+    this.scriptElement = this.createScriptElement(scriptUrl)
+    document.head.appendChild(this.scriptElement)
   }
 
   /**

@@ -105,7 +105,7 @@ class Analytics {
         if (import.meta.env.DEV) {
           console.warn(
             `[Analytics] Unknown provider "${provider}", falling back to Plausible. ` +
-              `Supported providers: plausible`
+              `Supported providers: plausible, fathom`
           )
         }
         return new PlausibleProvider()

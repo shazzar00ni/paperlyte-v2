@@ -80,6 +80,20 @@ export class FathomProvider implements AnalyticsProvider {
         return false
       }
 
+      // Whitelist known analytics providers or allow any HTTPS domain
+      // This prevents obviously malicious URLs while allowing self-hosted instances
+      const knownProviders = [
+        'usefathom.com',
+        'cdn.usefathom.com',
+        'plausible.io',
+        'analytics.google.com',
+        'umami.is',
+        'simpleanalytics.com',
+      ]
+
+      const isKnownProvider = knownProviders.some((provider) =>
+        parsedUrl.hostname.endsWith(provider)
+      )
       const hasValidPath = parsedUrl.pathname.endsWith('.js')
 
       if (!hasValidPath) {
@@ -89,7 +103,9 @@ export class FathomProvider implements AnalyticsProvider {
         return false
       }
 
-      return true
+      // Allow known providers or any HTTPS URL pointing to a .js file
+      // (for self-hosted instances)
+      return isKnownProvider || parsedUrl.protocol === 'https:'
     } catch (error) {
       if (this.config?.debug) {
         console.warn('[Analytics] Invalid script URL format:', url, error)

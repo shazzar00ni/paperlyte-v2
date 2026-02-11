@@ -1,16 +1,18 @@
-# Paperlyte Development Roadmap - MVP to Launch
+# Paperlyte — Remaining Tasks
 
-## Phase 0: Setup & Foundation (Day 1 Morning)
-- [x] Create GitHub repository with proper structure
-- [x] Set up Next.js project with TypeScript
+> Auto-generated from `ROADMAP.md` review on 2026-02-11.
+> Lists every uncompleted task, grouped by phase.
+
+---
+
+## Phase 0: Setup & Foundation
+
 - [ ] Configure Tailwind CSS for minimal, clean design
-- [x] Set up development environment
-- [x] Create basic project structure (components, pages, lib, utils)
-- [x] Initialize Vercel deployment pipeline
+  > *Currently using CSS Modules. Decide whether to migrate to Tailwind or mark this as intentionally skipped.*
 
-> **Note:** Project uses React + Vite + TypeScript instead of Next.js, and CSS Modules instead of Tailwind CSS. The spirit of the setup tasks is fulfilled with different technology choices. Vercel and Netlify deployment pipelines are both configured.
+---
 
-## Phase 1: Core Editor & Basic Functionality (Day 1-2)
+## Phase 1: Core Editor & Basic Functionality
 
 ### Lightning-Fast Editor
 - [ ] Create main editor component
@@ -41,7 +43,9 @@
 - [ ] Responsive design for mobile/tablet
 - [ ] Loading states and smooth transitions
 
-## Phase 2: Search & Organization (Day 3)
+---
+
+## Phase 2: Search & Organization
 
 ### Tagging System
 - [ ] Implement inline tag creation (#tagname)
@@ -71,7 +75,9 @@
   - [ ] Export notes to Markdown files
   - [ ] Import Markdown files
 
-## Phase 3: User Authentication & Cloud Sync (Day 4-5)
+---
+
+## Phase 3: User Authentication & Cloud Sync
 
 ### Authentication System
 - [ ] Set up authentication provider (Supabase Auth)
@@ -103,7 +109,9 @@
   - [ ] Free tier: 2 device limit
   - [ ] Plus tier: unlimited devices
 
-## Phase 4: Paperlyte+ Premium Features (Day 6-7)
+---
+
+## Phase 4: Paperlyte+ Premium Features
 
 ### Premium Feature Gate
 - [ ] Implement subscription system
@@ -126,16 +134,13 @@
   - [ ] Tag exclusion filters
   - [ ] Saved search queries
 
-### Theme System
-- [x] Create theme engine
-  - [x] CSS variables for theming
-  - [x] Light/dark mode toggle
-  - [ ] Custom color palettes
-  - [ ] Theme persistence across devices
+### Theme System (partially complete)
+- [ ] Custom color palettes
+- [ ] Theme persistence across devices
 
-> **Note:** Theme engine is implemented with CSS variables, light/dark mode toggle via `useTheme` hook, system preference detection, and localStorage persistence. Custom palettes and cross-device persistence remain.
+---
 
-## Phase 5: Polish & Performance (Day 8-9)
+## Phase 5: Polish & Performance
 
 ### Performance Optimization
 - [ ] Editor performance
@@ -148,10 +153,7 @@
   - [ ] Search result caching
 - [ ] Bundle optimization
   - [ ] Code splitting
-  - [x] Asset optimization
   - [ ] Service worker for caching
-
-> **Note:** Asset optimization is done — Font Awesome tree-shaking (~150-180 KB savings), Inter font Latin-only subset (~800 KB savings), self-hosted fonts, image optimization (AVIF/WebP/PNG fallbacks). Bundle size limits enforced (JS: 150 KB gzip, CSS: 30 KB gzip).
 
 ### UX Polish
 - [ ] Keyboard shortcuts
@@ -160,18 +162,13 @@
   - [ ] Markdown shortcuts
 - [ ] Smooth animations and transitions
   - [ ] Note switching animations
-  - [x] Loading state animations
-  - [x] Hover effects and feedback
 - [ ] Error handling and user feedback
   - [ ] Connection status indicator
   - [ ] Sync status feedback
   - [ ] Error messages and retry logic
 
-> **Note:** Landing page has comprehensive animations (AnimatedElement, CounterAnimation, TextReveal, FloatingElement, ParallaxLayer) and hover/feedback effects. App-level keyboard shortcuts and error handling remain for when the editor is built.
-
 ### Mobile Experience
 - [ ] Mobile-specific optimizations
-  - [x] Touch-friendly interface
   - [ ] Mobile keyboard handling
   - [ ] Swipe gestures for navigation
 - [ ] Progressive Web App features
@@ -179,9 +176,9 @@
   - [ ] App manifest for installation
   - [ ] Push notifications for sync
 
-> **Note:** Landing page is fully responsive with touch-friendly interactions (testimonial carousel supports swipe gestures, mobile hamburger menu). App-level mobile optimizations and PWA features remain.
+---
 
-## Phase 6: Testing & Quality Assurance (Day 10)
+## Phase 6: Testing & Quality Assurance
 
 ### Comprehensive Testing
 - [ ] Unit tests for core functions
@@ -192,12 +189,8 @@
   - [ ] Authentication flow
   - [ ] Note creation and editing
   - [ ] Multi-device sync
-- [x] End-to-end testing
+- [ ] End-to-end testing
   - [ ] Complete user journeys
-  - [x] Cross-browser compatibility
-  - [x] Mobile device testing
-
-> **Note:** Testing infrastructure is comprehensive — 62 unit/component test files (Vitest), Playwright E2E tests for landing page (Chromium, Firefox, WebKit), coverage tracking (v8 provider, 70% targets). The specific test areas for editor, search, sync, and auth will be needed once those features are built.
 
 ### Security Review
 - [ ] Encryption implementation audit
@@ -206,38 +199,22 @@
 - [ ] Penetration testing
 - [ ] Privacy policy creation
 
-> **Note:** Security headers are configured (CSP, HSTS, X-Frame-Options, Referrer-Policy, Permissions-Policy) on both Netlify and Vercel. PII protection in analytics is implemented. Full security review items remain for when auth/encryption features are built.
-
 ### Performance Testing
 - [ ] Load testing with large datasets
 - [ ] Sync performance under load
 - [ ] Mobile performance optimization
-- [x] Accessibility testing (WCAG compliance)
 
-> **Note:** Accessibility is comprehensive — WCAG 2.1 AA compliant with skip-to-content links, full ARIA labels, keyboard navigation (Arrow keys, Tab, Home/End, focus traps), screen reader announcements, `prefers-reduced-motion` support, semantic HTML. Lighthouse CI is configured with >95 accessibility target.
+---
 
-## Phase 7: Launch Preparation (Day 11-12)
+## Phase 7: Launch Preparation
 
 ### Marketing Website
-- [x] Landing page design and copy
-  - [x] Hero section: "Your thoughts, unchained"
-  - [x] Feature highlights with screenshots
-  - [x] Pricing table (Free vs Plus)
 - [ ] About page and privacy policy
 - [ ] Support documentation
 - [ ] Blog setup for content marketing
 
-> **Note:** Landing page is fully built with 13 sections: Header, Hero, Problem, Solution, Features, Mobile, Statistics, Testimonials, Email Capture/Waitlist, Comparison Table, FAQ, CTA, and Footer. Includes animated mockups, testimonial carousel, waitlist form, and pricing data. About page, support docs, and blog remain.
-
 ### Analytics & Monitoring
-- [x] Set up analytics (PostHog/Mixpanel)
-  - [x] User journey tracking
-  - [x] Feature usage metrics
-  - [x] Performance monitoring
-- [x] Error logging and monitoring
 - [ ] Customer support system setup
-
-> **Note:** Privacy-first analytics with automatic PII removal, scroll depth tracking, CTA click tracking, external link tracking. Sentry integration for error monitoring with session replay. Vercel Analytics for web vitals. Customer support system remains.
 
 ### Launch Assets
 - [ ] Create demo videos and screenshots
@@ -245,15 +222,14 @@
 - [ ] Social media assets
 - [ ] Product Hunt submission materials
 
-## Phase 8: Post-Launch Iterations (Week 2+)
+---
+
+## Phase 8: Post-Launch Iterations
 
 ### User Feedback Integration
-- [x] In-app feedback system
 - [ ] User interview scheduling
 - [ ] Feature request tracking
 - [ ] Support ticket system
-
-> **Note:** FeedbackWidget component is implemented — floating feedback button, modal dialog for bug reports and feature requests, localStorage storage, full keyboard navigation and accessibility.
 
 ### Quick Wins & Bug Fixes
 - [ ] Monitor crash reports and fix critical bugs
@@ -266,6 +242,8 @@
 - [ ] Collaboration features (sharing notes)
 - [ ] API for third-party integrations
 - [ ] Advanced export options (PDF, HTML)
+
+---
 
 ## Success Criteria for MVP
 
@@ -290,50 +268,55 @@
 - [ ] 80%+ user retention after 7 days
 - [ ] Technical infrastructure scaling smoothly
 
-## Daily Focus Questions
-1. Is the editor experience delightfully fast today?
-2. What friction did users report yesterday?
-3. Are we maintaining the "light as thought" promise?
-4. What can we remove to make it even simpler?
+---
+
+## Technical Debt (Remaining)
+- [ ] Add comprehensive logging system
+- [ ] Create automated backup system
+- [ ] Optimize database queries
+- [ ] Add rate limiting and abuse prevention
+- [ ] Implement proper caching strategies
+- [ ] Add comprehensive monitoring dashboards
+- [ ] Add feature flag system
+- [ ] Implement A/B testing framework
+
+---
 
 ## Feature Backlog (Post-MVP)
-- Collaborative editing and note sharing
-- Advanced formatting (tables, code blocks, embeds)
-- Note templates and snippets
-- Calendar integration for time-based notes
-- Browser extension for quick capture
-- API for third-party integrations
-- Advanced export formats (PDF, DOCX, HTML)
-- Note linking and backlinking
-- Full-text search with regex support
-- Bulk operations (tag management, bulk delete)
-- Note encryption with custom passwords
-- Team workspaces and permissions
-- Version history and note recovery
-- AI-powered features (summarization, suggestions)
+- [ ] Collaborative editing and note sharing
+- [ ] Advanced formatting (tables, code blocks, embeds)
+- [ ] Note templates and snippets
+- [ ] Calendar integration for time-based notes
+- [ ] Browser extension for quick capture
+- [ ] API for third-party integrations
+- [ ] Advanced export formats (PDF, DOCX, HTML)
+- [ ] Note linking and backlinking
+- [ ] Full-text search with regex support
+- [ ] Bulk operations (tag management, bulk delete)
+- [ ] Note encryption with custom passwords
+- [ ] Team workspaces and permissions
+- [ ] Version history and note recovery
+- [ ] AI-powered features (summarization, suggestions)
 
-## Technical Debt to Address Later
-- [x] Implement proper error boundaries
-- Add comprehensive logging system
-- Create automated backup system
-- Optimize database queries
-- Add rate limiting and abuse prevention
-- Implement proper caching strategies
-- Add comprehensive monitoring dashboards
-- [x] Create automated testing pipeline
-- Add feature flag system
-- Implement A/B testing framework
+---
 
-> **Note:** Error boundaries are implemented (ErrorBoundary component with custom error page). Automated testing pipeline exists via GitHub Actions CI workflows (ci.yml, pr-quality-check.yml, eslint.yml).
+## Summary
 
-## Core Principles to Maintain
-- **Speed First**: Every feature must maintain sub-100ms response time
-- **Simplicity Always**: If it adds complexity, it needs extraordinary justification
-- **Privacy by Design**: User data is encrypted and never readable by us
-- **Mobile-First**: Every feature works perfectly on mobile
-- **Offline-Ready**: Core functionality works without internet
+| Phase | Total Tasks | Remaining | Status |
+|-------|-----------|-----------|--------|
+| Phase 0: Setup & Foundation | 6 | 1 | ~83% done |
+| Phase 1: Core Editor | 18 | 18 | Not started |
+| Phase 2: Search & Organization | 16 | 16 | Not started |
+| Phase 3: Auth & Cloud Sync | 18 | 18 | Not started |
+| Phase 4: Premium Features | 16 | 14 | ~12% done |
+| Phase 5: Polish & Performance | 20 | 14 | ~30% done |
+| Phase 6: Testing & QA | 16 | 12 | ~25% done |
+| Phase 7: Launch Preparation | 12 | 7 | ~42% done |
+| Phase 8: Post-Launch | 11 | 10 | ~9% done |
+| Success Criteria | 15 | 15 | Not started |
+| Technical Debt | 10 | 8 | ~20% done |
+| **Total** | **158** | **133** | **~16% done** |
 
-## Remember
-**Ship a note-taking app so fast and simple that users forget they're using an app at all.**
+### Key Takeaway
 
-Every feature should make writing faster, not slower. Every UI element should disappear when not needed. Every user should feel like their thoughts are flowing directly onto the digital page.
+The **landing page and infrastructure are production-ready** (13 sections, 32 components, 62 test files, CI/CD pipelines, analytics, error monitoring). The entire **core application** — editor, note management, search, tags, authentication, cloud sync, encryption, and premium features — **has not been started**. Phase 1 (Core Editor) is the critical next step.

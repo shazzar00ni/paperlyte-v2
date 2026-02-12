@@ -71,7 +71,7 @@ npm run generate:mockups
 - **Build Tool**: Vite ^7.3.1 with @vitejs/plugin-react
 - **Unit Testing**: Vitest ^4.0.15 with React Testing Library ^16.3.2 (jsdom environment)
 - **E2E Testing**: Playwright ^1.58.2 (Chromium, Firefox, WebKit, Pixel 5, iPhone 12)
-74 | - **Linting**: ESLint ^9.0.0 with TypeScript ESLint, React Hooks, React Refresh, and Prettier integration
+- **Linting**: ESLint ^9.0.0 with TypeScript ESLint, React Hooks, React Refresh, and Prettier integration
 - **Formatting**: Prettier ^3.8.1
 - **Icons**: Font Awesome (tree-shaken, ^7.1.0)
 - **Fonts**: Inter (self-hosted via @fontsource, Latin subset), Playfair Display (self-hosted in public/fonts/)

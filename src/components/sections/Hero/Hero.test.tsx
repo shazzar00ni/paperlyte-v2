@@ -380,7 +380,7 @@ describe('Hero', () => {
 
       expect(trustBadgesContainer).toBeInTheDocument()
 
-      const position = secondaryCta.compareDocumentPosition(trustBadgesContainer!)
+      const position = secondaryCta.compareDocumentPosition(trustBadgesContainer as HTMLElement)
       // DOCUMENT_POSITION_FOLLOWING = 4, means trustBadges comes after button
       expect(position).toBe(4)
     })

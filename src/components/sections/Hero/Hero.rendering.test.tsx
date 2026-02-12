@@ -58,7 +58,7 @@ describe('Hero - Rendering', () => {
     })
 
     it('should render play icon on See How It Works button', () => {
-      const { container } = render(<Hero />)
+      render(<Hero />)
 
       const button = screen.getByRole('button', { name: /see how.*works/i })
       const icon = button.querySelector('.fa-play-circle')

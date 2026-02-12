@@ -8,7 +8,7 @@
 - [x] Create basic project structure (components, pages, lib, utils)
 - [x] Initialize Vercel deployment pipeline
 
-> **Note:** Project uses React + Vite + TypeScript instead of Next.js, and CSS Modules instead of Tailwind CSS. The spirit of the setup tasks is fulfilled with different technology choices. Vercel and Netlify deployment pipelines are both configured.
+- [x] Configure CSS Modules for minimal, clean design (Adopted instead of Tailwind)
 
 ## Phase 1: Core Editor & Basic Functionality (Day 1-2)
 

@@ -2,6 +2,121 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-02-12
+
+### New PRs
+
+#### PR #467: docs: Complete architecture blueprint with common pitfalls and optimization roadmap
+
+- **Status:** Approved
+- **Summary:** Adds comprehensive architecture documentation, a performance roadmap, and common pitfalls section to `AGENTS.md`.
+- **Feedback:** High-quality documentation that provides valuable guidance for developers and AI agents.
+
+#### PR #466: fix(ci): use codecov/test-results-action for JUnit XML upload
+
+- **Status:** Approved
+- **Summary:** Updates the CI workflow to use the dedicated Codecov test results action and adds a verification step for JUnit XML files.
+- **Feedback:** Good improvement to CI robustness and test reporting.
+
+#### PR #465: docs: Comprehensive CLAUDE.md update with full architecture and setup guide
+
+- **Status:** Approved
+- **Summary:** Major update to `CLAUDE.md` adding detailed sections on architecture, TypeScript config, testing, CI/CD, and design principles.
+- **Feedback:** Excellent resource for onboarding and maintaining project standards.
+
+#### PR #464: Add REMAINING-TASKS.md and update ROADMAP.md with completion status
+
+- **Status:** Approved
+- **Summary:** Introduces `REMAINING-TASKS.md` to track pending work and updates `ROADMAP.md` to reflect the finished landing page and infrastructure.
+- **Feedback:** Very helpful for project management and identifying next steps (Core Editor).
+
+#### PR #463: Downgrade ESLint to v9.39.2 for compatibility
+
+- **Status:** Approved
+- **Summary:** Reverts ESLint to v9.39.2 to resolve peer dependency conflicts with `eslint-plugin-react-hooks@7.0.1`.
+- **Feedback:** Necessary fix for environment stability.
+
+#### PR #462: Configure npm to resolve peer dependency conflicts
+
+- **Status:** Approved
+- **Summary:** Adds `.npmrc` with `legacy-peer-deps=true` and refactors code to use nullish coalescing (`??`) instead of logical OR (`||`) where appropriate.
+- **Feedback:** Good for dependency resolution and code clarity.
+
+#### PR #460: Add Common Pitfalls subsection and Performance Optimization Roadmap
+
+- **Status:** Approved
+- **Summary:** Adds documentation on common pitfalls and performance optimizations.
+- **Feedback:** Valuable additions to the developer documentation.
+
+#### PR #459: Implement Fathom Analytics provider (TODO from analytics/index.ts)
+
+- **Status:** Approved
+- **Summary:** Implements the Fathom Analytics provider with full test coverage and Do Not Track (DNT) respect.
+- **Feedback:** Solid implementation that fulfills a pending TODO.
+
+#### PR #458: Add test coverage analysis with prioritized improvement areas
+
+- **Status:** Approved
+- **Summary:** Provides a detailed analysis of test coverage gaps and prioritizes areas for improvement. Also adds `@testing-library/dom` to resolve peer dependency issues.
+- **Feedback:** Exceptional analysis that will guide future testing efforts.
+
+#### PR #451: fix(security): resolve axios DoS vulnerability with v1.13.5 override
+
+- **Status:** Approved
+- **Summary:** Critical security fix for axios (GHSA-43fc-jf86-j433) and fixes flakiness in mobile E2E tests.
+- **Feedback:** Essential security update.
+
+#### PR #449: Fix unresolved comments and alerts on PR #311
+
+- **Status:** Approved
+- **Summary:** Refines the `Icon` component warning logic and standardizes CSS properties in several components.
+- **Feedback:** Good cleanup and standardization.
+
+### Ongoing and Older PRs
+
+#### PR #428: Fix open redirect vulnerability in safeNavigate()
+
+- **Status:** Approved
+- **Feedback:** Preferred security implementation for URL validation.
+
+#### PR #427: Configure Claude Code GitHub Action
+
+- **Status:** Changes Requested
+- **Feedback:** Multiple issues in the workflow file: duplicate `permissions` keys and invalid multiple `if` conditions on the `claude` job.
+
+#### PR #319: Fix Deployment Error in Privacy.tsx
+
+- **Status:** Changes Requested
+- **Feedback:** Still needs to be split. The `package-lock.json` changes are excessive and risky.
+
+#### PR #311: Fix Icon component fallback rendering
+
+- **Status:** Changes Requested
+- **Feedback:** Superseded by #449. The use of raw `<i>` tags for fallbacks is discouraged.
+
+#### PR #279: feat: Implement React Router and legal pages
+
+- **Status:** Changes Requested
+- **Feedback:** Routing is still not integrated into `App.tsx`.
+
+#### PR #275: conversion optimization
+
+- **Status:** Changes Requested
+- **Feedback:** Title is still misleading ("P0-CRITICAL"). Needs a rebase and more accurate title.
+
+#### PR #107: Massive monolithic PR
+
+- **Status:** Close Recommended
+- **Feedback:** Remains too large and risky. Much of the content has been merged via other PRs.
+
+### Redundant Summary PRs
+
+- **Status:** Close Recommended
+- **PRs:** #461, #450, #448, #430, #417, #396, #385, #383, #380.
+- **Action:** These PRs only update the review summary and should be closed in favor of direct updates to the main branch.
+
+---
+
 ## 2026-02-08
 
 ### PR #427: Configure Claude Code GitHub Action
@@ -55,6 +170,7 @@ This file contains a summary of pull requests I have reviewed.
   - **Status:** Reviewed/Approved
   - **Summary:** Miscellaneous improvements.
   - **Feedback:** Changes are straightforward and low risk.
+
 ### Redundant Summary PRs
 
 - **Summary:** Identified several redundant PRs that only update `PR_REVIEW_SUMMARY.md` or are duplicates/attempts to fix the summary file.
@@ -72,6 +188,7 @@ This file contains a summary of pull requests I have reviewed.
 - **Status:** Postponed
 - **Summary:** Repository-wide formatting changes that are low priority and likely to conflict with in-flight feature work.
 - **Feedback:** Recommendation remains unchanged: Postpone #389 (repository-wide formatting) to avoid merge conflicts with active feature PRs and revisit once the codebase is more stable.
+
 ---
 
 ## 2026-02-06

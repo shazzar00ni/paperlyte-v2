@@ -2,7 +2,7 @@
 
 ## Phase 0: Setup & Foundation (Day 1 Morning)
 - [x] Create GitHub repository with proper structure
-- [x] Set up Next.js project with TypeScript
+- [x] Set up React + Vite project with TypeScript
 - [ ] Configure Tailwind CSS for minimal, clean design
 - [x] Set up development environment
 - [x] Create basic project structure (components, pages, lib, utils)

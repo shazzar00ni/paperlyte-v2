@@ -8,7 +8,7 @@ describe('Hero - Interactions', () => {
 
   beforeEach(() => {
     // Capture original scrollIntoView before replacing it
-    originalScrollIntoView = Element.prototype.scrollIntoView as any
+    originalScrollIntoView = Element.prototype.scrollIntoView
 
     // Mock scrollIntoView
     scrollIntoViewMock = vi.fn()

@@ -16,7 +16,7 @@ import type { AnalyticsConfig, AnalyticsEvent, AnalyticsProvider, CoreWebVitals 
 declare global {
   interface Window {
     fathom?: {
-      trackPageview: (opts?: { url?: string; referrer?: string }) => void
+      trackPageview: (_opts?: { url?: string; referrer?: string }) => void
       trackEvent: (name: string, opts?: { _value?: number }) => void
     }
   }

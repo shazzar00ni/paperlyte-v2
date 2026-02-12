@@ -107,7 +107,7 @@ jobs:
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
-        if: always()
+        if: ${{ !cancelled() }}
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage/coverage-final.json
@@ -116,26 +116,30 @@ jobs:
           fail_ci_if_error: false
 
       - name: Verify JUnit XML exists
+        id: junit-check
         if: ${{ !cancelled() }}
         run: |
-          if [ -f junit.xml ]; then
-            echo "✅ junit.xml found ($(wc -c < junit.xml) bytes)"
+          JUNIT_FILE=$(find . -maxdepth 3 -name '*junit*.xml' -print -quit 2>/dev/null)
+          if [ -n "$JUNIT_FILE" ]; then
+            echo "junit_path=$JUNIT_FILE" >> "$GITHUB_OUTPUT"
+            echo "✅ JUnit XML found: $JUNIT_FILE ($(wc -c < "$JUNIT_FILE") bytes)"
           else
-            echo "⚠️ junit.xml not found in $(pwd)"
-            echo "Files matching *junit*.xml:"
-            find . -maxdepth 3 -name '*junit*.xml' 2>/dev/null || echo "  (none)"
+            echo "❌ No JUnit XML files found in $(pwd)"
+            find . -maxdepth 3 -name '*.xml' -print 2>/dev/null | head -20 || true
+            exit 1
           fi
 
       - name: Upload test results to Codecov
-        if: ${{ !cancelled() }}
-        uses: codecov/test-results-action@eb4a24899da92404b9e2f470a9203a98c767f474 # v1.0.4
+        if: ${{ !cancelled() && steps.junit-check.outputs.junit_path != '' }}
+        uses: codecov/test-results-action@0fa95f0e1eeaafde2c782583b36b28ad0d8c77d3 # v1.2.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          files: ${{ steps.junit-check.outputs.junit_path }}
           verbose: true
 
       - name: Upload coverage reports
         uses: actions/upload-artifact@v6
-        if: always()
+        if: ${{ !cancelled() }}
         with:
           name: coverage-report
           path: coverage/

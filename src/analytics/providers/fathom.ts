@@ -8,7 +8,6 @@
  */
 
 import type { AnalyticsConfig, AnalyticsEvent, AnalyticsProvider, CoreWebVitals } from '../types'
-import { isSafePropertyKey } from '@utils/security'
 
 /**
  * Fathom Analytics global interface
@@ -80,19 +79,17 @@ export class FathomProvider implements AnalyticsProvider {
         return false
       }
 
-      // Whitelist known analytics providers or allow any HTTPS domain
-      // This prevents obviously malicious URLs while allowing self-hosted instances
-      const knownProviders = [
-        'usefathom.com',
-        'cdn.usefathom.com',
-        'plausible.io',
-        'analytics.google.com',
-        'umami.is',
-        'simpleanalytics.com',
-      ]
+      const hasValidPath = parsedUrl.pathname.endsWith('.js')
 
-       // Enforce whitelist and valid extension
-       return isKnownProvider && hasValidPath;
+      if (!hasValidPath) {
+        if (this.config?.debug) {
+          console.warn('[Analytics] Script URL must point to a .js file:', url)
+        }
+        return false
+      }
+
+      // Allow any HTTPS URL pointing to a .js file (for self-hosted instances)
+      return true
     } catch (error) {
       if (this.config?.debug) {
         console.warn('[Analytics] Invalid script URL format:', url, error)
@@ -188,27 +185,14 @@ export class FathomProvider implements AnalyticsProvider {
       return
     }
 
-    // Extract a numeric value from properties if available
     // Fathom events only support a name + optional _value (number in cents)
-    let value: number | undefined
-    if (event.properties) {
-      for (const [key, v] of Object.entries(event.properties)) {
-        if (!isSafePropertyKey(key)) {
-          if (this.config?.debug || import.meta.env.DEV) {
-            console.warn('[Analytics] Blocked potentially unsafe property key:', key)
-          }
-          continue
-        }
-        if (key === 'value' && typeof v === 'number') {
-          value = v
-        }
-      }
-    }
+    const value = event.properties?.value
+    const opts = typeof value === 'number' ? { _value: value } : undefined
 
-    window.fathom.trackEvent(event.name, value !== undefined ? { _value: value } : undefined)
+    window.fathom.trackEvent(event.name, opts)
 
     if (this.config?.debug) {
-      console.log('[Analytics] Event tracked:', event.name, value !== undefined ? { _value: value } : undefined)
+      console.log('[Analytics] Event tracked:', event.name, opts)
     }
   }
 
@@ -252,8 +236,7 @@ export class FathomProvider implements AnalyticsProvider {
       this.scriptLoaded &&
       typeof window !== 'undefined' &&
       typeof window.fathom === 'object' &&
-       typeof window.fathom === 'object' &&
-       window.fathom
+      window.fathom !== null
     )
   }
 

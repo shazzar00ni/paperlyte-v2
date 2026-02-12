@@ -68,7 +68,7 @@ npm run generate:mockups
 
 - **React**: ^19.2.4 (with React DOM ^19.2.4)
 - **TypeScript**: ~5.9.3 with strict mode enabled
-- **Build Tool**: Vite ^7.3.1 with @vitejs/plugin-react
+- **Build Tool**: Vite ^7.3.1 with @vitejs/plugin-react ^5.1.2
 - **Unit Testing**: Vitest ^4.0.15 with React Testing Library ^16.3.2 (jsdom environment)
 - **E2E Testing**: Playwright ^1.58.2 (Chromium, Firefox, WebKit, Pixel 5, iPhone 12)
 - **Linting**: ESLint ^10.0.0 with TypeScript ESLint, React Hooks, React Refresh, and Prettier integration

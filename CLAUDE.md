@@ -158,7 +158,7 @@ src/
 │   ├── typography.css          # Font faces, heading styles
 │   └── utilities.css           # Utility classes
 ├── utils/                      # Utility functions
-161 | │   ├── analytics.ts            # Plausible tracking with event sanitization (13 event types)
+│   ├── analytics.ts            # Plausible tracking with event sanitization (13 event types)
 │   ├── env.ts                  # Environment configuration and meta tag updates
 │   ├── validation.ts           # Form validation (email, required fields)
 │   ├── security.ts             # URL validation, safe keys

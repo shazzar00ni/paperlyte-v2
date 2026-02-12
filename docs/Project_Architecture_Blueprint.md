@@ -2085,11 +2085,11 @@ When evaluating whether a new feature or dependency meets performance standards,
 
 ### Key References
 
-- **Lighthouse CI configuration:** `docs/LIGHTHOUSE-CI.md`
-- **Competitive performance benchmarks:** `docs/MARKETING-PLAN.md` (Performance Benchmarking Methodology section)
-- **CI/CD pipeline details:** `docs/GITHUB-WORKFLOWS-PLAN.md`
-- **Animation performance guidelines:** `docs/DESIGN-SYSTEM.md` (Animation Guidelines section)
-- **Performance audit findings:** `docs/AUDIT-REPORT.md`
+- **Lighthouse CI configuration:** `LIGHTHOUSE-CI.md` 
+- **Competitive performance benchmarks:** `MARKETING-PLAN.md` (Performance Benchmarking Methodology section) 
+- **CI/CD pipeline details:** `GITHUB-WORKFLOWS-PLAN.md` 
+- **Animation performance guidelines:** `DESIGN-SYSTEM.md` (Animation Guidelines section) 
+- **Performance audit findings:** `AUDIT-REPORT.md` 
 
 ---
 

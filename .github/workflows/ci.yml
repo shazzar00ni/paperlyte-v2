@@ -119,7 +119,7 @@ jobs:
         id: junit-check
         if: ${{ !cancelled() }}
         run: |
-          JUNIT_FILE=$(find . -maxdepth 3 -name '*junit*.xml' -print -quit 2>/dev/null)
+          JUNIT_FILE=$(find . -maxdepth 3 -name '*junit*.xml' -not -path '*/node_modules/*' -print -quit 2>/dev/null)
           if [ -n "$JUNIT_FILE" ]; then
             echo "junit_path=$JUNIT_FILE" >> "$GITHUB_OUTPUT"
             echo "✅ JUnit XML found: $JUNIT_FILE ($(wc -c < "$JUNIT_FILE") bytes)"

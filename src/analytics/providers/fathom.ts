@@ -91,20 +91,8 @@ export class FathomProvider implements AnalyticsProvider {
         'simpleanalytics.com',
       ]
 
-      const isKnownProvider = knownProviders.some((provider) =>
-        parsedUrl.hostname.endsWith(provider)
-      )
-      const hasValidPath = parsedUrl.pathname.endsWith('.js')
-
-      if (!hasValidPath) {
-        if (this.config?.debug) {
-          console.warn('[Analytics] Script URL must point to a .js file:', url)
-        }
-        return false
-      }
-
-      // Allow any HTTPS URL pointing to a .js file (for self-hosted instances)
-      return true
+       // Enforce whitelist and valid extension
+       return isKnownProvider && hasValidPath;
     } catch (error) {
       if (this.config?.debug) {
         console.warn('[Analytics] Invalid script URL format:', url, error)

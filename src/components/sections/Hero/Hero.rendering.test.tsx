@@ -197,10 +197,10 @@ describe('Hero - Rendering', () => {
       const { container } = render(<Hero />)
 
       const section = container.querySelector('#hero')
-      // Section component applies padding through CSS classes
       expect(section).toBeInTheDocument()
+      const classList = Array.from(section?.classList || [])
+      expect(classList.some(cls => cls.includes('padding-large'))).toBe(true)
     })
-  })
 
   describe('Layout', () => {
     it('should render email capture before secondary CTA', () => {

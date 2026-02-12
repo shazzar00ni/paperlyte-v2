@@ -103,14 +103,12 @@ src/
 │   │   ├── Header/             # Sticky navigation header with theme toggle
 │   │   ├── Footer/             # Footer with links and branding
 │   │   └── Section/            # Section wrapper with consistent spacing
-│   ├── pages/                  # Note: Privacy/Terms exist as both React components and
-│   │   │                       # static HTML (public/privacy.html, public/terms.html)
-│   │   │                       # for direct-URL access without JS
+│   ├── pages/
 │   │   ├── NotFoundPage/       # 404 error page
 │   │   ├── OfflinePage/        # Offline fallback page
 │   │   ├── ServerErrorPage/    # 5xx error page
-│   │   ├── Privacy/            # Privacy policy (React component)
-│   │   └── Terms/              # Terms of service (React component)
+│   │   ├── Privacy/            # Privacy policy (React component, not yet routed)
+│   │   └── Terms/              # Terms of service (React component, not yet routed)
 │   ├── sections/               # Landing page sections (rendered in order in App.tsx)
 │   │   ├── Hero/               # Hero with CTA buttons and product mockups
 │   │   ├── Problem/            # Customer pain points
@@ -181,8 +179,8 @@ public/
 ├── favicon.svg                 # Favicon
 ├── robots.txt                  # Search engine crawl rules
 ├── site.webmanifest            # PWA manifest
-├── privacy.html                # Static privacy page (no-JS fallback for direct URL access)
-└── terms.html                  # Static terms page (no-JS fallback for direct URL access)
+├── privacy.html                # Static privacy page (actively served at /privacy)
+└── terms.html                  # Static terms page (actively served at /terms)
 
 docs/                           # Project documentation
 ├── DESIGN-SYSTEM.md            # Complete design system reference

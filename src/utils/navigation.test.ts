@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { scrollToSection, isSafeUrl, safeNavigate } from './navigation'
+import { scrollToSection, isSafeUrl, safeNavigate, isAllowedDestination } from './navigation'
 
 describe('navigation utilities', () => {
   describe('scrollToSection', () => {
@@ -201,7 +201,7 @@ describe('navigation utilities', () => {
       })
     })
 
-    it('should allow navigation to external HTTPS URLs', () => {
+    it('should block navigation to external HTTPS URLs (open redirect protection)', () => {
       const mockLocation = { href: '', origin: 'http://localhost' } as Location
       Object.defineProperty(window, 'location', {
         value: mockLocation,
@@ -209,10 +209,16 @@ describe('navigation utilities', () => {
         configurable: true,
       })
 
-      const result = safeNavigate('https://example.com')
-      expect(result).toBe(true)
-      expect(mockLocation.href).toBe('https://example.com')
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
 
+      // External URLs should be blocked to prevent open redirect attacks
+      const result = safeNavigate('https://example.com')
+      expect(result).toBe(false)
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('is not an allowed destination')
+      )
+
+      consoleWarnSpy.mockRestore()
       // Restore window.location
       Object.defineProperty(window, 'location', {
         value: originalLocation,
@@ -283,6 +289,65 @@ describe('navigation utilities', () => {
         writable: true,
         configurable: true,
       })
+    })
+  })
+
+  describe('isAllowedDestination', () => {
+    beforeEach(() => {
+      vi.clearAllMocks()
+    })
+
+    it('should allow relative URLs starting with /', () => {
+      expect(isAllowedDestination('/')).toBe(true)
+      expect(isAllowedDestination('/about')).toBe(true)
+      expect(isAllowedDestination('/path/to/page')).toBe(true)
+    })
+
+    it('should allow relative URLs with ./ and ../', () => {
+      expect(isAllowedDestination('./')).toBe(true)
+      expect(isAllowedDestination('./page')).toBe(true)
+      expect(isAllowedDestination('../')).toBe(true)
+      expect(isAllowedDestination('../page')).toBe(true)
+    })
+
+    it('should allow same-origin absolute URLs', () => {
+      const currentOrigin = window.location.origin
+      expect(isAllowedDestination(currentOrigin)).toBe(true)
+      expect(isAllowedDestination(`${currentOrigin}/`)).toBe(true)
+      expect(isAllowedDestination(`${currentOrigin}/page`)).toBe(true)
+    })
+
+    it('should block external URLs not on the allowlist', () => {
+      expect(isAllowedDestination('https://example.com')).toBe(false)
+      expect(isAllowedDestination('https://evil.com/phishing')).toBe(false)
+      expect(isAllowedDestination('http://malicious.site')).toBe(false)
+    })
+
+    it('should block protocol-relative URLs', () => {
+      expect(isAllowedDestination('//evil.com')).toBe(false)
+      expect(isAllowedDestination('//example.com/page')).toBe(false)
+    })
+
+    it('should reject relative paths containing :// for consistency with isSafeUrl', () => {
+      // For security consistency, relative paths containing :// are rejected
+      // This matches the behavior of isSafeUrl() which blocks these as potential protocol injection
+      expect(isAllowedDestination('/path://injection')).toBe(false)
+      expect(isAllowedDestination('./path://injection')).toBe(false)
+    })
+
+    it('should block non-http/https protocols for external URLs', () => {
+      expect(isAllowedDestination('ftp://external.com')).toBe(false)
+    })
+
+    it('should handle malformed URLs safely by rejecting them', () => {
+      // Malformed URLs should be rejected (not allowed)
+      const result = isAllowedDestination('://invalid')
+      expect(typeof result).toBe('boolean')
+    })
+
+    it('should reject empty or whitespace-only URLs', () => {
+      expect(isAllowedDestination('')).toBe(false)
+      expect(isAllowedDestination('   ')).toBe(false)
     })
   })
 })

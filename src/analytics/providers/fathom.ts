@@ -142,7 +142,7 @@ export class FathomProvider implements AnalyticsProvider {
       return
     }
 
-    const scriptUrl = this.config?.scriptUrl || 'https://cdn.usefathom.com/script.js'
+    const scriptUrl = this.config?.scriptUrl ?? 'https://cdn.usefathom.com/script.js'
 
     // Validate script URL to prevent injection attacks
     if (!this.isValidScriptUrl(scriptUrl)) {

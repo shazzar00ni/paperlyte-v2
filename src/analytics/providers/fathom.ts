@@ -106,7 +106,7 @@ export class FathomProvider implements AnalyticsProvider {
 
     script.async = true
     script.src = scriptUrl
-    script.setAttribute('data-site', this.config?.domain || '')
+    script.setAttribute('data-site', this.config?.domain ?? '')
 
     if (this.config?.trackPageviews === false) {
       script.setAttribute('data-auto', 'false')

@@ -17,7 +17,7 @@ declare global {
   interface Window {
     fathom?: {
       trackPageview: (_opts?: { url?: string; referrer?: string }) => void
-      trackEvent: (name: string, opts?: { _value?: number }) => void
+      trackEvent: (_name: string, _opts?: { _value?: number }) => void
     }
   }
 }

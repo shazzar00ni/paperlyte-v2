@@ -3,12 +3,10 @@
 ## Phase 0: Setup & Foundation (Day 1 Morning)
 - [x] Create GitHub repository with proper structure
 - [x] Set up React + Vite project with TypeScript
-- [ ] Configure Tailwind CSS for minimal, clean design
+- [x] Set up CSS Modules for minimal, clean design
 - [x] Set up development environment
 - [x] Create basic project structure (components, pages, lib, utils)
-- [x] Initialize Vercel deployment pipeline
-
-- [x] Configure CSS Modules for minimal, clean design (Adopted instead of Tailwind)
+- [x] Initialize deployment pipelines (Vercel + Netlify)
 
 ## Phase 1: Core Editor & Basic Functionality (Day 1-2)
 
@@ -263,9 +261,6 @@
 
 ### Feature Expansion
 - [ ] Import tools for other note apps
-- [ ] Collaboration features (sharing notes)
-- [ ] API for third-party integrations
-- [ ] Advanced export options (PDF, HTML)
 
 ## Success Criteria for MVP
 

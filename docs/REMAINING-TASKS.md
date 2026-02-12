@@ -1,6 +1,6 @@
 # Paperlyte — Remaining Tasks
 
-> Auto-generated from `ROADMAP.md` review on 2026-02-11.
+> Auto-generated from `ROADMAP.md` review on 2025-02-11.
 > Lists every uncompleted task, grouped by phase.
 
 ---

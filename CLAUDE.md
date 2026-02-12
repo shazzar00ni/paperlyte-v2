@@ -71,12 +71,12 @@ npm run generate:mockups
 - **Build Tool**: Vite ^7.3.1 with @vitejs/plugin-react
 - **Unit Testing**: Vitest ^4.0.15 with React Testing Library ^16.3.2 (jsdom environment)
 - **E2E Testing**: Playwright ^1.58.2 (Chromium, Firefox, WebKit, Pixel 5, iPhone 12)
-- **Linting**: ESLint ^9.0.0 with TypeScript ESLint, React Hooks, React Refresh, and Prettier integration
+- **Linting**: ESLint ^10.0.0 with TypeScript ESLint, React Hooks, React Refresh, and Prettier integration
 - **Formatting**: Prettier ^3.8.1
 - **Icons**: Font Awesome (tree-shaken, ^7.1.0)
 - **Fonts**: Inter (self-hosted via @fontsource, Latin subset), Playfair Display (self-hosted in public/fonts/)
 - **Error Monitoring**: Sentry ^10.38.0 (production only)
-- **Analytics**: Vercel Analytics ^1.6.1 + custom privacy-first analytics (Plausible provider)
+- **Analytics**: Vercel Analytics ^1.6.1 (production), event tracking utility with PII sanitization (`src/utils/analytics.ts`), and a Plausible-based privacy-first module (`src/analytics/` — infrastructure ready, not yet integrated into app)
 - **Deployment**: Vercel (primary) and Netlify (secondary), with serverless functions on Netlify
 
 ## Project Structure
@@ -87,12 +87,12 @@ src/
 ├── App.tsx                     # Root component: layout, section composition, analytics init
 ├── App.css                     # App-level styles
 ├── index.css                   # Global style imports (variables, reset, typography, utilities)
-├── global.d.ts                 # Window interface extensions (plausible)
+├── global.d.ts                 # Window interface extensions (gtag, plausible)
 ├── vite-env.d.ts               # Vite environment types
-├── analytics/                  # Privacy-first analytics module
+├── analytics/                  # Plausible-based analytics module (not yet wired into app)
 │   ├── index.ts                # Analytics singleton (init, trackEvent, trackPageView)
 │   ├── types.ts                # Analytics interfaces and event types
-│   ├── config.ts               # Analytics configuration management
+│   ├── config.ts               # Analytics configuration from env vars
 │   ├── webVitals.ts            # Core Web Vitals tracking (LCP, FID, CLS)
 │   ├── scrollDepth.ts          # Scroll depth milestones (25%, 50%, 75%, 100%)
 │   └── providers/
@@ -103,12 +103,14 @@ src/
 │   │   ├── Header/             # Sticky navigation header with theme toggle
 │   │   ├── Footer/             # Footer with links and branding
 │   │   └── Section/            # Section wrapper with consistent spacing
-│   ├── pages/
+│   ├── pages/                  # Note: Privacy/Terms exist as both React components and
+│   │   │                       # static HTML (public/privacy.html, public/terms.html)
+│   │   │                       # for direct-URL access without JS
 │   │   ├── NotFoundPage/       # 404 error page
 │   │   ├── OfflinePage/        # Offline fallback page
 │   │   ├── ServerErrorPage/    # 5xx error page
-│   │   ├── Privacy/            # Privacy policy page
-│   │   └── Terms/              # Terms of service page
+│   │   ├── Privacy/            # Privacy policy (React component)
+│   │   └── Terms/              # Terms of service (React component)
 │   ├── sections/               # Landing page sections (rendered in order in App.tsx)
 │   │   ├── Hero/               # Hero with CTA buttons and product mockups
 │   │   ├── Problem/            # Customer pain points
@@ -158,7 +160,7 @@ src/
 │   ├── typography.css          # Font faces, heading styles
 │   └── utilities.css           # Utility classes
 ├── utils/                      # Utility functions
-│   ├── analytics.ts            # Plausible tracking with event sanitization (13 event types)
+│   ├── analytics.ts            # Event tracking with PII sanitization (uses gtag when available)
 │   ├── env.ts                  # Environment configuration and meta tag updates
 │   ├── validation.ts           # Form validation (email, required fields)
 │   ├── security.ts             # URL validation, safe keys
@@ -179,8 +181,8 @@ public/
 ├── favicon.svg                 # Favicon
 ├── robots.txt                  # Search engine crawl rules
 ├── site.webmanifest            # PWA manifest
-├── privacy.html                # Static privacy page
-└── terms.html                  # Static terms page
+├── privacy.html                # Static privacy page (no-JS fallback for direct URL access)
+└── terms.html                  # Static terms page (no-JS fallback for direct URL access)
 
 docs/                           # Project documentation
 ├── DESIGN-SYSTEM.md            # Complete design system reference
@@ -231,7 +233,10 @@ App
 - **Static data**: Constants files in `src/constants/` — no API calls
 - **Component state**: React `useState()` for local state
 - **Theme**: `useTheme()` hook with localStorage persistence and `[data-theme]` attribute
-- **Analytics**: Singleton pattern (`src/analytics/index.ts`), initialized via `useAnalytics()` hook
+- **Analytics** (dual stack):
+  - **Active**: `useAnalytics()` hook → `src/utils/analytics.ts` (event tracking with PII sanitization, uses `window.gtag` when available). This is what `App.tsx` currently uses.
+  - **Planned**: `src/analytics/` module (Plausible-based singleton with Web Vitals and scroll depth tracking). Infrastructure is built but not yet imported by any app component.
+  - **Production**: `<Analytics />` from `@vercel/analytics` rendered in `App.tsx`
 - **Error monitoring**: Sentry initialized in `main.tsx` (production only)
 
 ### Path Aliases

@@ -143,7 +143,7 @@ export class FathomProvider implements AnalyticsProvider {
 
     // Validate script URL to prevent injection attacks
     if (!this.isValidScriptUrl(scriptUrl)) {
-      if (this.config?.debug || import.meta.env.DEV) {
+      if (this.config?.debug ?? import.meta.env.DEV) {
         console.error(
           '[Analytics] Invalid or unsafe script URL. Must be HTTPS and point to a .js file:',
           scriptUrl

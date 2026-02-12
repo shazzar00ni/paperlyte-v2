@@ -115,12 +115,23 @@ jobs:
           name: codecov-umbrella
           fail_ci_if_error: false
 
-      - name: Upload test results to Codecov
-        uses: codecov/test-results-action@v1
+      - name: Verify JUnit XML exists
         if: ${{ !cancelled() }}
+        run: |
+          if [ -f junit.xml ]; then
+            echo "✅ junit.xml found ($(wc -c < junit.xml) bytes)"
+          else
+            echo "⚠️ junit.xml not found in $(pwd)"
+            echo "Files matching *junit*.xml:"
+            find . -maxdepth 3 -name '*junit*.xml' 2>/dev/null || echo "  (none)"
+          fi
+
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./junit.xml
+          verbose: true
 
       - name: Upload coverage reports
         uses: actions/upload-artifact@v6

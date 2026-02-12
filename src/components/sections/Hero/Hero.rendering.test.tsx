@@ -219,11 +219,8 @@ describe('Hero - Rendering', () => {
 
       const secondaryCta = screen.getByRole('button', { name: /see how.*works/i })
       const trustBadgeText = screen.getByText('Join thousands of early adopters')
-      const trustBadgesContainer = trustBadgeText.closest('div')?.parentElement
-
-      expect(trustBadgesContainer).toBeInTheDocument()
-
-      const position = secondaryCta.compareDocumentPosition(trustBadgesContainer!)
+      // Compare directly against the text element to avoid fragile DOM traversal
+      const position = secondaryCta.compareDocumentPosition(trustBadgeText)
       // DOCUMENT_POSITION_FOLLOWING = 4, means trustBadges comes after button
       expect(position).toBe(4)
     })

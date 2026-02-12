@@ -126,9 +126,7 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
             // Provide a clearer message for storage-related issues
             console.error('LocalStorage error:', storageError)
             throw new Error(
-              `Unable to save feedback locally. Your browser storage may be full or disabled. ${
-                storageError instanceof Error ? storageError.message : String(storageError)
-              }`,
+              'Unable to save feedback locally. Your browser storage may be full or disabled.',
               { cause: storageError }
             )
           }

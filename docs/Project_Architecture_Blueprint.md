@@ -2047,7 +2047,7 @@ Priority: Instrument real-user performance data to complement synthetic testing.
 
 - **Real User Monitoring (RUM)** — Integrate privacy-first performance telemetry (cookie-less, GDPR-compliant) to capture field data for FCP, LCP, CLS, FID/INP, and TTFB
 - **Performance budgets dashboard** — Build or integrate a dashboard that tracks bundle sizes, Lighthouse scores, and Core Web Vitals over time to detect gradual regressions
-- **Network-condition profiling** — Extend CI to run Lighthouse audits under simulated 4G and 3G conditions (referencing competitive benchmarks from `docs/MARKETING-PLAN.md`)
+- **Network-condition profiling** — Extend CI to run Lighthouse audits under simulated 4G and 3G conditions (referencing competitive benchmarks from `./MARKETING-PLAN.md`)
 - **Component-level profiling** — Use React DevTools Profiler and custom timing hooks to identify render bottlenecks in specific components
 - **Third-party script audit** — Catalog all external scripts (analytics, fonts, integrations) and measure their impact on load time; establish a third-party performance budget
 

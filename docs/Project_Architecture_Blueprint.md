@@ -2034,7 +2034,7 @@ This section defines the strategy and phased plan for maintaining and improving 
 
 Priority: Establish performance guardrails and prevent regressions.
 
-- **Lighthouse CI integration** — Automated performance and accessibility scoring on every PR via GitHub Actions (see `./LIGHTHOUSE-CI.md` for configuration)
+- **Lighthouse CI integration** — Automated performance and accessibility scoring on every PR via GitHub Actions (see [LIGHTHOUSE-CI.md](./LIGHTHOUSE-CI.md) for configuration)
 - **Bundle size checks** — JavaScript (150KB) and CSS (30KB) budgets enforced in CI; PRs that exceed budgets are blocked
 - **Core Web Vitals monitoring** — FCP, LCP, and CLS thresholds validated on each deployment
 - **CSS-first animations** — All animations use GPU-accelerated CSS transforms and opacity; JavaScript animation is used only when CSS is insufficient
@@ -2047,7 +2047,7 @@ Priority: Instrument real-user performance data to complement synthetic testing.
 
 - **Real User Monitoring (RUM)** — Integrate privacy-first performance telemetry (cookie-less, GDPR-compliant) to capture field data for FCP, LCP, CLS, FID/INP, and TTFB
 - **Performance budgets dashboard** — Build or integrate a dashboard that tracks bundle sizes, Lighthouse scores, and Core Web Vitals over time to detect gradual regressions
-- **Network-condition profiling** — Extend CI to run Lighthouse audits under simulated 4G and 3G conditions (referencing competitive benchmarks from `./MARKETING-PLAN.md`)
+- **Network-condition profiling** — Extend CI to run Lighthouse audits under simulated 4G and 3G conditions (referencing competitive benchmarks from [MARKETING-PLAN.md](./MARKETING-PLAN.md))
 - **Component-level profiling** — Use React DevTools Profiler and custom timing hooks to identify render bottlenecks in specific components
 - **Third-party script audit** — Catalog all external scripts (analytics, fonts, integrations) and measure their impact on load time; establish a third-party performance budget
 
@@ -2066,7 +2066,7 @@ Priority: Achieve best-in-class performance as the application scales.
 
 Priority: Sustain performance gains and adapt to new standards.
 
-- **Quarterly performance audits** — Conduct manual performance reviews using WebPageTest, Chrome DevTools, and competitive benchmarking against Notion, Evernote, and OneNote (baseline data in `docs/MARKETING-PLAN.md`)
+- **Quarterly performance audits** — Conduct manual performance reviews using WebPageTest, Chrome DevTools, and competitive benchmarking against Notion, Evernote, and OneNote (baseline data in [MARKETING-PLAN.md](./MARKETING-PLAN.md))
 - **Interaction to Next Paint (INP) optimization** — Monitor and optimize INP as it becomes a Core Web Vital; minimize main-thread blocking during user interactions
 - **Bundle analysis automation** — Run `vite-bundle-visualizer` or equivalent on each release to track bundle composition and catch unexpected growth
 - **Dependency review** — Evaluate dependencies quarterly for lighter alternatives; prefer native browser APIs over polyfills as browser support improves
@@ -2085,11 +2085,11 @@ When evaluating whether a new feature or dependency meets performance standards,
 
 ### Key References
 
-- **Lighthouse CI configuration:** `LIGHTHOUSE-CI.md` 
-- **Competitive performance benchmarks:** `MARKETING-PLAN.md` (Performance Benchmarking Methodology section) 
-- **CI/CD pipeline details:** `GITHUB-WORKFLOWS-PLAN.md` 
-- **Animation performance guidelines:** `DESIGN-SYSTEM.md` (Animation Guidelines section) 
-- **Performance audit findings:** `AUDIT-REPORT.md` 
+- **Lighthouse CI configuration:** [LIGHTHOUSE-CI.md](./LIGHTHOUSE-CI.md)
+- **Competitive performance benchmarks:** [MARKETING-PLAN.md](./MARKETING-PLAN.md) (Performance Benchmarking Methodology section)
+- **CI/CD pipeline details:** [GITHUB-WORKFLOWS-PLAN.md](./GITHUB-WORKFLOWS-PLAN.md)
+- **Animation performance guidelines:** [DESIGN-SYSTEM.md](./DESIGN-SYSTEM.md) (Animation Guidelines section)
+- **Performance audit findings:** [AUDIT-REPORT.md](./AUDIT-REPORT.md)
 
 ---
 

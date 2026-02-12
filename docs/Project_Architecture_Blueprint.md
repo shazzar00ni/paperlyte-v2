@@ -1989,7 +1989,7 @@ Avoid these frequently encountered mistakes when working in this codebase:
 
 - **Hardcoding design tokens** - Never use raw color hex values, pixel spacing, or font names directly. Always reference CSS custom properties from `src/styles/variables.css` (e.g., `var(--color-primary)`, `var(--spacing-md)`).
 - **Desktop-first media queries** - This project is mobile-first. Write base styles for mobile, then use `min-width` breakpoints to layer on desktop enhancements. Using `max-width` queries inverts this and leads to override cascades.
-- **Neglecting `prefers-reduced-motion`** - Every animation must be wrapped in a `prefers-reduced-motion` check. Omitting this fails accessibility requirements and breaks CI (Lighthouse accessibility score must exceed 95).
+- **Neglecting `prefers-reduced-motion`** - Every animation must be wrapped in a `prefers-reduced-motion` check. Omitting this fails accessibility requirements and breaks CI (Lighthouse accessibility score must be at least 95).
 - **Overly specific selectors** - Avoid deep nesting or `!important`. CSS Modules scope styles automatically — trust the module system instead of fighting specificity wars.
 
 #### Performance

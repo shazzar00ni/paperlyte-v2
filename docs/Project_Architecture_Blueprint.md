@@ -2034,7 +2034,7 @@ This section defines the strategy and phased plan for maintaining and improving 
 
 Priority: Establish performance guardrails and prevent regressions.
 
-- **Lighthouse CI integration** — Automated performance and accessibility scoring on every PR via GitHub Actions (see `docs/LIGHTHOUSE-CI.md` for configuration)
+- **Lighthouse CI integration** — Automated performance and accessibility scoring on every PR via GitHub Actions (see `./LIGHTHOUSE-CI.md` for configuration)
 - **Bundle size checks** — JavaScript (150KB) and CSS (30KB) budgets enforced in CI; PRs that exceed budgets are blocked
 - **Core Web Vitals monitoring** — FCP, LCP, and CLS thresholds validated on each deployment
 - **CSS-first animations** — All animations use GPU-accelerated CSS transforms and opacity; JavaScript animation is used only when CSS is insufficient

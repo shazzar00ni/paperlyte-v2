@@ -87,7 +87,7 @@ src/
 ├── App.tsx                     # Root component: layout, section composition, analytics init
 ├── App.css                     # App-level styles
 ├── index.css                   # Global style imports (variables, reset, typography, utilities)
-90 | ├── global.d.ts                 # Window interface extensions (plausible)
+├── global.d.ts                 # Window interface extensions (plausible)
 ├── vite-env.d.ts               # Vite environment types
 ├── analytics/                  # Privacy-first analytics module
 │   ├── index.ts                # Analytics singleton (init, trackEvent, trackPageView)

@@ -75,6 +75,10 @@ jobs:
         run: snyk iac test --report
         continue-on-error: true
 
+      - name: Merge SARIF runs into single run
+        if: env.SNYK_TOKEN != '' && hashFiles('snyk-code.sarif') != ''
+        run: ./scripts/merge-sarif-runs.sh snyk-code.sarif
+
         # Note: Docker/Container scanning is disabled as this project doesn't use Docker
         # If you add a Dockerfile in the future, uncomment these steps:
         # - name: Build a Docker image

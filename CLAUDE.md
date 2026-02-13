@@ -334,7 +334,7 @@ Key variables:
 - `VITE_ANALYTICS_ENABLED` / `VITE_ANALYTICS_PROVIDER` / `VITE_ANALYTICS_DOMAIN` — Analytics config
 - `VITE_SENTRY_DSN` / `VITE_SENTRY_ENVIRONMENT` / `VITE_SENTRY_SAMPLE_RATE` — Error monitoring
 - `VITE_SEO_KEYWORDS` / `VITE_OG_IMAGE` — SEO configuration
-- `CODECOV_TOKEN` — CI-only, for test coverage and test results reporting
+- `CODECOV_TOKEN` / `CODACY_PROJECT_TOKEN` — CI-only, for test coverage and test results reporting
 
 ## Design System
 

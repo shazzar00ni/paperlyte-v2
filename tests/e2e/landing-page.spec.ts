@@ -22,22 +22,19 @@ test.describe('Landing Page', () => {
       // Open mobile menu first
       const menuButton = page.getByRole('button', { name: /menu/i });
       await menuButton.click();
+      // Ensure menu is expanded and visible before clicking links
       await expect(menuButton).toHaveAttribute('aria-expanded', 'true');
+      // Wait for menu to be visible and animation to complete
+      await expect(page.locator('#main-menu')).toBeVisible();
     }
 
-    // Target specifically the header's features link to avoid strict mode violation
+    // Target specifically the header's features link
     const featuresLink = page.locator('header').getByRole('link', { name: /^features$/i });
     await featuresLink.click();
 
-    // Wait for smooth scroll animation to complete by ensuring #features is fully in the viewport
-    await page.waitForFunction(() => {
-      const el = document.querySelector<HTMLElement>('#features');
-      if (!el) return false;
-      const rect = el.getBoundingClientRect();
-      return rect.top >= 0 && rect.top < window.innerHeight;
-    });
     // Should scroll to features section
-    await expect(page.locator('#features')).toBeInViewport();
+    // Using a generous timeout for smooth scroll animation
+    await expect(page.locator('#features')).toBeInViewport({ timeout: 10000 });
   });
 
   // Only run performance test on chromium desktop to avoid flakiness

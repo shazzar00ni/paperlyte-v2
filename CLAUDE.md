@@ -4,81 +4,337 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Paperlyte** is a lightning-fast, distraction-free note-taking application that prioritizes simplicity over feature bloat. The landing page aims to communicate this value proposition to frustrated note-takers who are overwhelmed by complex tools like Notion, Evernote, and OneNote.
+**Paperlyte** is a lightning-fast, distraction-free note-taking application that prioritizes simplicity over feature bloat. This repository contains the **landing page** — a React single-page application that communicates the product's value proposition and captures waitlist signups.
 
 **Core Promise**: "Your thoughts, unchained."
 
 **Key Differentiators**:
 
-- Zero-Lag Typing: Sub-10ms keystroke response so typing feels instant, even in large docs
+- Zero-Lag Typing: Sub-10ms keystroke response
 - Tag-Based Organization: Inline #tags instead of rigid folder hierarchies
 - Cross-Platform Sync: Mac, Windows, Linux, iOS, Android, web
 - Distraction-Free Writing: Interface that disappears when you start typing
 - Private by Design: Local-first architecture with optional end-to-end encrypted sync
 - Offline-First: Core writing and organization work fully offline, sync when connected
 
-This is a React application built with TypeScript and Vite, currently in early development stages.
-
 ## Development Commands
 
 ```bash
-# Start development server with HMR
+# Start development server (port 3000, auto-opens browser)
 npm run dev
 
-# Build for production (runs TypeScript compiler + Vite build)
+# Build for production (TypeScript check + Vite build + inject dates + generate sitemap)
 npm run build
 
-# Lint all files
+# Preview production build (port 4173)
+npm run preview
+
+# Lint all files with ESLint
 npm run lint
 
-# Preview production build
-npm run preview
+# Format code with Prettier
+npm run format
+
+# Check formatting without writing
+npm run format:check
+
+# Run unit tests (Vitest, watch mode)
+npm run test
+
+# Run unit tests with UI
+npm run test:ui
+
+# Run unit tests with coverage report
+npm run test:coverage
+
+# Run E2E tests (Playwright, requires build first)
+npm run test:e2e
+
+# Run E2E tests with interactive UI
+npm run test:e2e:ui
+
+# Run Lighthouse CI (builds first, then audits)
+npm run lighthouse
+
+# Check bundle size limits
+npm run size
+
+# Generate icons and mockups (runs automatically via prebuild)
+npm run generate:icons
+npm run generate:mockups
 ```
 
 ## Tech Stack
 
-- **React**: 19.2.0 (with React DOM 19.2.0)
+- **React**: ^19.2.4 (with React DOM ^19.2.4)
 - **TypeScript**: ~5.9.3 with strict mode enabled
-- **Build Tool**: Vite 7.2.4 with @vitejs/plugin-react
-- **Linting**: ESLint 9.39.1 with TypeScript ESLint, React Hooks, and React Refresh plugins
+- **Build Tool**: Vite ^7.3.1 with @vitejs/plugin-react ^5.1.2
+- **Unit Testing**: Vitest ^4.0.15 with React Testing Library ^16.3.2 (jsdom environment)
+- **E2E Testing**: Playwright ^1.58.2 (Chromium, Firefox, WebKit, Pixel 5, iPhone 12)
+- **Linting**: ESLint ^10.0.0 with TypeScript ESLint, React Hooks, React Refresh, and Prettier integration
+- **Formatting**: Prettier ^3.8.1
+- **Icons**: Font Awesome (tree-shaken, ^7.1.0)
+- **Fonts**: Inter (self-hosted via @fontsource, Latin subset), Playfair Display (self-hosted in public/fonts/)
+- **Error Monitoring**: Sentry ^10.38.0 (production only)
+- **Analytics**: Vercel Analytics ^1.6.1 (production), event tracking utility with PII sanitization (`src/utils/analytics.ts`), and a Plausible-based privacy-first module (`src/analytics/` — infrastructure ready, not yet integrated into app)
+- **Deployment**: Vercel (primary) and Netlify (secondary), with serverless functions on Netlify
 
 ## Project Structure
 
 ```
 src/
-├── main.tsx          # Application entry point (renders App in StrictMode)
-├── App.tsx           # Main App component
-├── App.css           # App-specific styles
-├── index.css         # Global styles
-└── assets/           # Static assets (images, etc.)
+├── main.tsx                    # Entry point: Sentry init, font imports, meta tags, React root
+├── App.tsx                     # Root component: layout, section composition, analytics init
+├── App.css                     # App-level styles
+├── index.css                   # Global style imports (variables, reset, typography, utilities)
+├── global.d.ts                 # Window interface extensions (gtag, plausible)
+├── vite-env.d.ts               # Vite environment types
+├── analytics/                  # Plausible-based analytics module (not yet wired into app)
+│   ├── index.ts                # Analytics singleton (init, trackEvent, trackPageView)
+│   ├── types.ts                # Analytics interfaces and event types
+│   ├── config.ts               # Analytics configuration from env vars
+│   ├── webVitals.ts            # Core Web Vitals tracking (LCP, FID, CLS)
+│   ├── scrollDepth.ts          # Scroll depth milestones (25%, 50%, 75%, 100%)
+│   └── providers/
+│       └── plausible.ts        # Plausible Analytics provider
+├── components/
+│   ├── ErrorBoundary/          # React error boundary with fallback UI
+│   ├── layout/
+│   │   ├── Header/             # Sticky navigation header with theme toggle
+│   │   ├── Footer/             # Footer with links and branding
+│   │   └── Section/            # Section wrapper with consistent spacing
+│   ├── pages/
+│   │   ├── NotFoundPage/       # 404 error page
+│   │   ├── OfflinePage/        # Offline fallback page
+│   │   ├── ServerErrorPage/    # 5xx error page
+│   │   ├── Privacy/            # Privacy policy (React component, not yet routed)
+│   │   └── Terms/              # Terms of service (React component, not yet routed)
+│   ├── sections/               # Landing page sections (rendered in order in App.tsx)
+│   │   ├── Hero/               # Hero with CTA buttons and product mockups
+│   │   ├── Problem/            # Customer pain points
+│   │   ├── Solution/           # Product value proposition
+│   │   ├── Features/           # Feature grid with icons and descriptions
+│   │   ├── Mobile/             # Mobile-specific features
+│   │   ├── Statistics/         # Metrics with counter animations
+│   │   ├── Comparison/         # Feature comparison vs competitors
+│   │   ├── Testimonials/       # Customer testimonials
+│   │   ├── EmailCapture/       # Waitlist email capture
+│   │   ├── FAQ/                # Accordion FAQ
+│   │   ├── CTA/                # Final call-to-action
+│   │   └── Pricing/            # Pricing plans
+│   └── ui/                     # Reusable UI components
+│       ├── Button/             # Multi-variant button (primary, secondary, ghost)
+│       ├── Icon/               # Font Awesome icon wrapper with a11y
+│       ├── AnimatedElement/    # Intersection-based fade-in animations
+│       ├── TextReveal/         # Staggered text reveal on scroll
+│       ├── CounterAnimation/   # Animated number counter
+│       ├── ParallaxLayer/      # Parallax scroll effect
+│       ├── SVGPathAnimation/   # SVG path stroke animation
+│       ├── FloatingElement/    # Floating animated elements
+│       ├── ThemeToggle/        # Dark/light mode toggle
+│       ├── FeedbackWidget/     # Feedback/survey widget
+│       └── EmailCapture/       # Email form component
+├── constants/                  # Static data (features, pricing, FAQ, testimonials, etc.)
+│   ├── config.ts               # App metadata, contact info, social links
+│   ├── features.ts             # Feature list data
+│   ├── comparison.ts           # Comparison table data
+│   ├── pricing.ts              # Pricing plans
+│   ├── faq.ts                  # FAQ content
+│   ├── testimonials.ts         # Customer testimonials
+│   ├── downloads.ts            # Download links by platform
+│   ├── waitlist.ts             # Waitlist configuration
+│   └── legal.ts                # Legal text templates
+├── hooks/                      # Custom React hooks
+│   ├── useTheme.ts             # Theme state with localStorage persistence
+│   ├── useIntersectionObserver.ts # Intersection Observer for scroll animations
+│   ├── useScrollPosition.ts    # Track scroll position
+│   ├── useParallax.ts          # Parallax effect
+│   ├── useMediaQuery.ts        # Responsive media query
+│   ├── useReducedMotion.ts     # Respect prefers-reduced-motion
+│   └── useAnalytics.ts         # Analytics initialization on mount
+├── styles/                     # Global styles (CSS custom properties)
+│   ├── variables.css           # Design tokens: colors, spacing, typography, animation, z-index
+│   ├── reset.css               # CSS reset/normalize
+│   ├── typography.css          # Font faces, heading styles
+│   └── utilities.css           # Utility classes
+├── utils/                      # Utility functions
+│   ├── analytics.ts            # Event tracking with PII sanitization (uses gtag when available)
+│   ├── env.ts                  # Environment configuration and meta tag updates
+│   ├── validation.ts           # Form validation (email, required fields)
+│   ├── security.ts             # URL validation, safe keys
+│   ├── navigation.ts           # Scroll-to-section utilities
+│   ├── metaTags.ts             # Dynamic meta tag management
+│   ├── iconLibrary.ts          # Font Awesome tree-shaken icon setup
+│   ├── keyboard.ts             # Keyboard event utilities
+│   └── monitoring.ts           # Error monitoring / Sentry integration
+├── test/                       # Test setup
+│   ├── setup.ts                # Vitest setup: IntersectionObserver + matchMedia mocks
+│   ├── analytics-helpers.ts    # Analytics testing utilities
+│   └── iconTestHelpers.ts      # Icon component test helpers
+└── assets/                     # Static assets
+
+public/
+├── fonts/                      # Self-hosted fonts (Inter, Playfair Display)
+├── mockups/                    # Product mockup images (SVG, PNG, WebP, AVIF)
+├── favicon.svg                 # Favicon
+├── robots.txt                  # Search engine crawl rules
+├── site.webmanifest            # PWA manifest
+├── privacy.html                # Static privacy page (actively served at /privacy)
+└── terms.html                  # Static terms page (actively served at /terms)
+
+docs/                           # Project documentation
+├── DESIGN-SYSTEM.md            # Complete design system reference
+├── ACCESSIBILITY.md            # WCAG compliance standards
+├── SECURITY.md                 # Security implementation details
+├── TECHNICAL-DEBT.md           # Known technical debt
+├── Project_Architecture_Blueprint.md # Architecture overview
+└── [15+ additional docs]       # Legal, audit, setup guides
+
+tests/
+└── e2e/
+    └── landing-page.spec.ts    # Playwright E2E tests
+
+netlify/
+└── functions/
+    └── subscribe.ts            # Serverless email subscription function
+
+scripts/                        # Build and utility scripts
+├── generate-icons.js           # Generate icon assets
+├── generate-mockups.js         # Generate product mockups
+├── inject-dates.js             # Inject build dates into output
+├── generate-sitemap.cjs        # Post-build sitemap generation
+└── check-legal-placeholders.ts # Validate legal content
 ```
+
+## Architecture
+
+### Page Structure
+
+The app is a static landing page (no client-side routing). Navigation uses scroll-to-section with hash anchors (#hero, #features, etc.).
+
+```
+App
+├── ErrorBoundary
+├── Skip link (a11y)
+├── Header (sticky nav + ThemeToggle)
+├── main
+│   ├── Hero → Problem → Solution → Features → Mobile
+│   ├── Statistics → Comparison → Testimonials
+│   └── EmailCapture → FAQ → CTA
+├── Footer
+├── FeedbackWidget
+└── Vercel Analytics
+```
+
+### Data Flow
+
+- **Static data**: Constants files in `src/constants/` — no API calls
+- **Component state**: React `useState()` for local state
+- **Theme**: `useTheme()` hook with localStorage persistence and `[data-theme]` attribute
+- **Analytics** (dual stack):
+  - **Active**: `useAnalytics()` hook → `src/utils/analytics.ts` (event tracking with PII sanitization, uses `window.gtag` when available). This is what `App.tsx` currently uses.
+  - **Planned**: `src/analytics/` module (Plausible-based singleton with Web Vitals and scroll depth tracking). Infrastructure is built but not yet imported by any app component.
+  - **Production**: `<Analytics />` from `@vercel/analytics` rendered in `App.tsx`
+- **Error monitoring**: Sentry initialized in `main.tsx` (production only)
+
+### Path Aliases
+
+Configured in both `tsconfig.app.json` and `vite.config.ts`:
+
+```
+@/*           → src/*
+@components/* → src/components/*
+@hooks/*      → src/hooks/*
+@styles/*     → src/styles/*
+@types/*      → src/types/*
+@constants/*  → src/constants/*
+@utils/*      → src/utils/*
+```
+
+### CSS Architecture
+
+- **CSS Modules**: Each component has a `[Component].module.css` file (scoped styles)
+- **CSS Custom Properties**: Design tokens defined in `src/styles/variables.css`
+- **Theme support**: Dark mode via `[data-theme='dark']` selector and `@media (prefers-color-scheme: dark)`
+- **Responsive**: Mobile-first design, fluid typography with `clamp()`, tablet breakpoint at 768px
+- **Animations**: CSS transitions with cubic-bezier easing; all animations respect `prefers-reduced-motion: reduce`
+
+### Build Pipeline
+
+```
+prebuild:  generate:icons + generate:mockups
+build:     tsc -b → vite build → inject-dates.js
+postbuild: generate-sitemap.cjs
+```
+
+Production builds split into chunks: `react-vendor` (React/ReactDOM), `fontawesome` (icons), and main app bundle. Bundle size limits enforced: 150 KB JS / 30 KB CSS (gzipped).
 
 ## TypeScript Configuration
 
-The project uses TypeScript's project references with two configs:
+Project references with two configs:
 
-- `tsconfig.app.json`: Application code (src/) with strict mode, ES2022 target, and bundler module resolution
+- `tsconfig.app.json`: Application code (src/) — strict mode, ES2022 target, bundler module resolution, `noEmit: true`
 - `tsconfig.node.json`: Build tooling configuration
 
-Key compiler settings:
+Key strict settings: `strict: true`, `noUnusedLocals`, `noUnusedParameters`, `noFallthroughCasesInSwitch`, `forceConsistentCasingInFileNames`
 
-- Strict mode enabled with additional unused variable/parameter checks
-- JSX mode: `react-jsx` (automatic runtime)
-- Module resolution: `bundler` (Vite-specific)
-- `noEmit: true` (Vite handles transpilation)
+## Testing
+
+### Unit Tests (Vitest)
+
+- **62 test files** co-located with source files (`*.test.ts` / `*.test.tsx`)
+- **Environment**: jsdom with IntersectionObserver and matchMedia mocks in `src/test/setup.ts`
+- **Coverage thresholds**: 70% minimum for lines, functions, branches, and statements
+- **Run**: `npm test` (watch mode) or `npm run test:coverage` (with report)
+
+### E2E Tests (Playwright)
+
+- **Location**: `tests/e2e/landing-page.spec.ts`
+- **Browsers**: Chromium, Firefox, WebKit + Pixel 5 + iPhone 12 mobile viewports
+- **Base URL**: `http://localhost:4173` (production preview server)
+- **Run**: `npm run test:e2e` (auto-starts preview server locally)
 
 ## ESLint Configuration
 
-ESLint is configured with the flat config format (eslint.config.js) including:
+Flat config format (`eslint.config.js`) with:
 
-- Base JavaScript/TypeScript recommended rules
+- JavaScript recommended rules (`@eslint/js`)
+- TypeScript ESLint recommended rules
 - React Hooks rules (enforces hooks best practices)
 - React Refresh rules (ensures HMR compatibility)
+- Prettier integration (disables conflicting rules via `eslint-config-prettier`)
 - Ignores `dist/` directory
 
-## Entry Point
+## CI/CD
 
-The application mounts at `<div id="root">` in index.html and renders the App component wrapped in React StrictMode.
+### GitHub Workflows (`.github/workflows/`)
+
+| Workflow | Trigger | Purpose |
+|---|---|---|
+| `ci.yml` | Push/PR | Main pipeline: lint, test, build, coverage |
+| `pr-quality-check.yml` | PR | Type checking and test gates |
+| `eslint.yml` | PR | ESLint linting |
+| `snyk-security.yml` | Schedule/PR | Snyk vulnerability scanning |
+| `codacy.yml` | Push/PR | Codacy code quality |
+| `codescan.yml` | Push/PR | CodeQL security scanning |
+
+### Deployment
+
+- **Vercel** (primary): Config in `vercel.json` — CSP headers, security headers, redirects
+- **Netlify** (secondary): Config in `netlify.toml` — build config, security headers, caching, serverless functions
+- **Lighthouse CI**: Config in `.lighthouserc.json` — performance threshold enforcement
+
+## Environment Variables
+
+All client-side env vars use the `VITE_` prefix. See `.env.example` for full list.
+
+Key variables:
+
+- `VITE_BASE_URL` — Application base URL
+- `VITE_ANALYTICS_ENABLED` / `VITE_ANALYTICS_PROVIDER` / `VITE_ANALYTICS_DOMAIN` — Analytics config
+- `VITE_SENTRY_DSN` / `VITE_SENTRY_ENVIRONMENT` / `VITE_SENTRY_SAMPLE_RATE` — Error monitoring
+- `VITE_SEO_KEYWORDS` / `VITE_OG_IMAGE` — SEO configuration
+- `CODECOV_TOKEN` / `CODACY_PROJECT_TOKEN` — CI-only, for test coverage and test results reporting
 
 ## Design System
 
@@ -86,108 +342,45 @@ The application mounts at `<div id="root">` in index.html and renders the App co
 
 ### Visual Identity
 
-- **Color Palette**: Sophisticated monochrome aesthetic with near-black (#1a1a1a) and pure white (#ffffff)
-- **Typography**: Dual font system - Inter (sans-serif) for UI/body text, Playfair Display (serif) for headlines
-- **Buttons**: Pill-shaped (border-radius: 9999px) for a modern, friendly appearance
-- **Iconography**: Font Awesome icons with consistent sizing and spacing
-- **Animation**: Subtle, performance-optimized, respectful of motion preferences (`prefers-reduced-motion`)
+- **Color Palette**: Sophisticated monochrome — near-black (#1a1a1a) and pure white (#ffffff), inverted in dark mode
+- **Typography**: Dual font system — Inter (sans-serif) for UI/body, Playfair Display (serif) for headlines
+- **Buttons**: Pill-shaped (border-radius: 9999px)
+- **Iconography**: Font Awesome icons, tree-shaken (only used icons imported in `utils/iconLibrary.ts`)
+- **Animation**: Subtle, hardware-accelerated CSS transforms, respects `prefers-reduced-motion`
 
 ### Frontend Aesthetics
 
-You tend to converge toward generic, "on distribution" outputs. In frontend design, this creates what users call the "AI slop" aesthetic. Avoid this: make creative, distinctive frontends that surprise and delight.
+Avoid generic "AI slop" aesthetics. Make creative, distinctive choices:
 
-Focus on:
+- **Typography**: Beautiful, unique fonts — avoid generic choices (Arial, Roboto, system fonts)
+- **Color**: Cohesive aesthetic with CSS variables. Dominant colors with sharp accents over timid palettes
+- **Motion**: High-impact orchestrated reveals over scattered micro-interactions. CSS-only preferred
+- **Backgrounds**: Atmosphere and depth with gradients and patterns, not solid colors
 
-- Typography: Choose fonts that are beautiful, unique, and interesting.
-- Avoid generic fonts like Arial and Inter; opt instead for distinctive choices that elevate the frontend's aesthetics.
-- Color & Theme: Commit to a cohesive aesthetic.
-- Use CSS variables for consistency.
-- Dominant colors with sharp accents outperform timid, evenly-distributed palettes.
-- Draw from IDE themes and cultural aesthetics for inspiration.
-
-Motion:
-Use animations for effects and micro-interactions. Prioritize CSS-only solutions for HTML. Use Motion library for React when available. Focus on high-impact moments: one well-orchestrated page load with staggered reveals (animation-delay) creates more delight than scattered micro-interactions.
-
-Backgrounds:
-Create atmosphere and depth rather than defaulting to solid colors. Layer CSS gradients, use geometric patterns, or add contextual effects that match the overall aesthetic.
-
-Avoid the following generic AI-generated aesthetics:
-
-- Overused font families (Inter, Roboto, Arial, system fonts)
-- Clichéd color schemes (particularly purple gradients on white backgrounds)
-- Predictable layouts and component patterns
-- Cookie-cutter design that lacks context-specific character
-
-Interpret creatively and make unexpected choices that feel genuinely designed for the context. Vary between light and dark themes, different fonts, different aesthetics. You still tend to converge on common choices (Space Grotesk, for example) across generations. Avoid this: it is critical that you think outside the box!
-
-### Key Design Features
-
-- **Monochrome Palette**: Black/white design inverts in dark mode (white becomes primary)
-- **Serif Headlines**: Large Playfair Display headlines with italic emphasis
-- **Pill Buttons**: All buttons use full border-radius for signature look
-- **Hero Parallax**: Subtle background shapes with blur effects
-- **Floating Elements**: Animated icons and decorative elements (hidden on mobile)
+Avoid: overused font families, clichéd purple gradients, predictable layouts, cookie-cutter patterns. Think outside the box with each generation.
 
 ### UX Principles
 
-1. **Speed First**: Every interaction should feel instantaneous
+1. **Speed First**: Every interaction feels instantaneous
 2. **Clarity Over Cleverness**: Clear communication over creative copy
-3. **Mobile Excellence**: Mobile experience must be as good as desktop (60%+ mobile traffic expected)
-4. **Accessibility**: Usable by everyone, regardless of ability
-5. **Progressive Enhancement**: Core content must be accessible without JavaScript
+3. **Mobile Excellence**: Mobile as good as desktop (60%+ mobile traffic expected)
+4. **Accessibility**: WCAG 2.1 AA compliance, keyboard navigation, screen reader support
+5. **Progressive Enhancement**: Core content accessible without JavaScript
 
 ## Performance & Quality Targets
 
-These targets are critical to the product's "lightning-fast" value proposition:
-
 - **Page Load Speed**: <2 seconds initial load
 - **Lighthouse Performance**: >90 score
-- **Lighthouse Accessibility**: >95 score (WCAG 2.1 AA compliance)
-- **Core Web Vitals**: Must pass all metrics
-- **Bounce Rate**: Target <45% for organic traffic
-- **Engagement Time**: Average session >2 minutes
-
-## Development Phases
-
-### Phase 1: MVP Landing Page (Current)
-
-Essential sections to implement first:
-
-- Hero section with clear value proposition and upcoming launch messaging
-- Feature grid (6 core features with performance metrics and icons)
-- Call-to-action section with "Join the Waitlist" buttons
-- Sticky navigation header
-- Footer with social/legal links
-
-Technical requirements:
-
-- Intersection Observer for scroll animations
-- Hardware-accelerated CSS transforms
-- Semantic HTML structure
-- Keyboard-navigation support
-- Screen reader friendly markup
-
-### Phase 2: Conversion Optimization (Post-Launch)
-
-High-priority additions:
-
-- Newsletter signup form (email capture)
-- Testimonial slider
-- Feature comparison table (vs. competitors)
-- Pricing teaser section
-- FAQ section
-
-### Phase 3: Advanced Features (Growth Stage)
-
-- Privacy-first analytics (cookie-less, GDPR-compliant)
-- Dark mode toggle with system preference detection
-- Advanced scroll animations and parallax effects
-- Social sharing functionality
+- **Lighthouse Accessibility**: >95 score
+- **Core Web Vitals**: Must pass all metrics (tracked via `src/analytics/webVitals.ts`)
+- **Bundle Size**: JS <150 KB gzipped, CSS <30 KB gzipped (enforced via size-limit)
 
 ## Important Constraints
 
-- **No Feature Bloat**: Paperlyte's core value is simplicity - avoid over-engineering
+- **No Feature Bloat**: Paperlyte's core value is simplicity — avoid over-engineering
 - **Mobile-First**: Design and develop for mobile first, then enhance for desktop
-- **Accessibility Required**: Not optional - every feature must be accessible
+- **Accessibility Required**: Not optional — every feature must be accessible
 - **Performance Budget**: If a feature slows the page, it doesn't ship
 - **Reduced Motion**: Always respect `prefers-reduced-motion` for animations
+- **Privacy-First**: Cookie-less analytics, PII sanitization, local-first data storage
+- **Self-Hosted Assets**: Fonts and icons are self-hosted for security and performance (no external CDN calls)

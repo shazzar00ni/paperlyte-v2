@@ -79,6 +79,10 @@ jobs:
           EOF
           fi
 
+      - name: Merge SARIF runs into single run
+        if: always() && hashFiles('eslint-results.sarif') != ''
+        run: ./scripts/merge-sarif-runs.sh eslint-results.sarif
+
       - name: Upload analysis results to GitHub
         uses: github/codeql-action/upload-sarif@45cbd0c69e560cd9e7cd7f8c32362050c9b7ded2 # v4.32.2
         if: always()

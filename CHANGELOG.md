@@ -32,6 +32,7 @@ _All changes have been released in version 1.0.0. This section will track future
 ### Security
 
 - Overrode `axios` to version `1.13.5` to resolve a high-severity Denial of Service (DoS) vulnerability (GHSA-43fc-jf86-j433).
+- Overrode `undici` to version `^7.20.0` to address security vulnerabilities and ensure compatibility with JSDOM v28, resolving internal handler errors in test environments.
 
 ## [1.0.0] - 2025-12-22
 

@@ -24,12 +24,13 @@ test.describe('Landing Page', () => {
       await menuButton.click();
       // Ensure menu is expanded and visible before clicking links
       await expect(menuButton).toHaveAttribute('aria-expanded', 'true');
-      await page.waitForTimeout(500); // Wait for menu animation
+      // Wait for menu to be visible and animation to complete
+      await expect(page.locator('#main-menu')).toBeVisible();
     }
 
     // Target specifically the header's features link
     const featuresLink = page.locator('header').getByRole('link', { name: /^features$/i });
-    await featuresLink.click({ force: isMobile }); // Force click on mobile as menu might overlap
+    await featuresLink.click();
 
     // Should scroll to features section
     // Using a generous timeout for smooth scroll animation

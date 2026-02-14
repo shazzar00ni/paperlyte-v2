@@ -116,16 +116,95 @@ export function isSafeUrl(url: string): boolean {
 }
 
 /**
+ * List of allowed external domains for navigation.
+ * Only domains in this allowlist can be navigated to when using safeNavigate.
+ * This prevents open redirect attacks by blocking navigation to arbitrary external sites.
+ *
+ * CONFIGURATION: Add trusted external domains here when the application needs to
+ * navigate to specific external sites. This list is intentionally empty by default
+ * to enforce a "deny by default" security posture.
+ *
+ * @example
+ * const ALLOWED_EXTERNAL_DOMAINS: ReadonlySet<string> = new Set([
+ *   'github.com',
+ *   'twitter.com',
+ *   'support.paperlyte.app',
+ * ])
+ */
+const ALLOWED_EXTERNAL_DOMAINS: ReadonlySet<string> = new Set([
+  // Add trusted external domains here as needed
+])
+
+/**
+ * Checks if a URL is a safe relative path (no protocol injection).
+ * Accepts paths starting with /, ./, or ../ but rejects protocol-relative URLs (//)
+ * and paths containing :// which could be protocol injection attempts.
+ */
+function isSafeRelativeUrl(trimmedUrl: string): boolean {
+  // Must not contain protocol injection
+  if (trimmedUrl.includes('://')) {
+    return false
+  }
+  // Accept single-slash relative paths (but not protocol-relative //)
+  if (trimmedUrl.startsWith('/') && !trimmedUrl.startsWith('//')) {
+    return true
+  }
+  // Accept dot-relative paths
+  return trimmedUrl.startsWith('./') || trimmedUrl.startsWith('../')
+}
+
+/**
+ * Checks if a URL is same-origin or on the allowed external domains list.
+ * This provides protection against open redirect attacks.
+ *
+ * @param url - The URL to validate
+ * @returns true if the URL is same-origin or on the allowlist, false otherwise
+ */
+export function isAllowedDestination(url: string): boolean {
+  // SSR guard
+  if (typeof window === 'undefined') {
+    return false
+  }
+
+  try {
+    const trimmedUrl = url.trim()
+
+    // Disallow empty or whitespace-only URLs
+    if (!trimmedUrl) {
+      return false
+    }
+
+    // Relative URLs are same-origin by definition
+    if (isSafeRelativeUrl(trimmedUrl)) {
+      return true
+    }
+
+    // Parse and validate absolute URLs
+    const parsedUrl = new URL(trimmedUrl, window.location.origin)
+    const currentOrigin = window.location.origin
+
+    // Same-origin URLs are always allowed
+    if (parsedUrl.origin === currentOrigin) {
+      return true
+    }
+
+    // External URLs must use http/https and be on the allowlist
+    const hasAllowedProtocol = parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:'
+    return hasAllowedProtocol && ALLOWED_EXTERNAL_DOMAINS.has(parsedUrl.hostname)
+  } catch {
+    // If URL parsing fails, don't allow it
+    return false
+  }
+}
+
+/**
  * Safely navigates to a URL by validating it first.
- * Allows relative URLs, HTTP/HTTPS URLs (including external), and blocks dangerous protocols
- * like javascript:, data:, vbscript:, etc.
+ * Only allows relative URLs and same-origin URLs to prevent open redirect attacks.
+ * External URLs are blocked unless they are on the ALLOWED_EXTERNAL_DOMAINS allowlist.
  *
- * SECURITY NOTE: This function allows external HTTP/HTTPS URLs. For use cases requiring
- * same-origin navigation only (to prevent open redirects), implement additional domain
- * validation before calling this function or use a different approach.
- *
- * Safe usage: Only call with hardcoded URLs or URLs from trusted sources. Never pass
- * user-controlled query parameters directly to this function without domain validation.
+ * SECURITY: This function is designed to prevent open redirect vulnerabilities.
+ * It blocks navigation to external domains that are not explicitly allowlisted.
+ * Use this function when the URL might contain user-controlled input.
  *
  * @param url - The URL to navigate to
  * @returns true if navigation was performed, false if URL was rejected or navigation not needed (SSR)
@@ -137,8 +216,15 @@ export function safeNavigate(url: string): boolean {
     return false
   }
 
+  // First, check basic URL safety (blocks javascript:, data:, etc.)
   if (!isSafeUrl(url)) {
     console.warn(`Navigation blocked: URL "${url}" failed security validation`)
+    return false
+  }
+
+  // Then, check if destination is allowed (same-origin or allowlisted)
+  if (!isAllowedDestination(url)) {
+    console.warn(`Navigation blocked: URL "${url}" is not an allowed destination`)
     return false
   }
 

@@ -2,6 +2,92 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-02-14
+
+### PR #469: Consolidate SARIF runs to meet GitHub upload limits
+
+- **Status:** Approved
+- **Summary:** Consolidates multiple SARIF runs into a single run to comply with GitHub's 20-run limit per file. Also synchronizes ESLint and @eslint/js versions to 9.39.2 across the repository to resolve compatibility issues.
+- **Feedback:** This is a high-priority fix that ensures security reporting remains functional in CI. The synchronization of ESLint versions is also critical for local development consistency.
+
+### PR #467: docs: Complete architecture blueprint with common pitfalls and optimization roadmap
+
+- **Status:** Approved
+- **Summary:** Significantly expands `ARCHITECTURE_BLUEPRINT.md` with a detailed "Common Pitfalls" section and a multi-phase "Performance Optimization Roadmap".
+- **Feedback:** Excellent documentation work. The concrete implementation examples for `React.lazy`, PWA, and Web Vitals provide clear guidance for future development.
+
+### PR #466: fix(ci): use codecov/test-results-action for JUnit XML upload
+
+- **Status:** Approved
+- **Summary:** Switches to the specialized `codecov/test-results-action` for uploading JUnit XML results. Adds a verification step to ensure the XML file exists before upload to prevent CI noise.
+- **Feedback:** Good improvement to CI reliability and reporting accuracy.
+
+### PR #465: docs: Comprehensive CLAUDE.md update with full architecture and setup guide
+
+- **Status:** Approved
+- **Summary:** Massive update to `CLAUDE.md`, consolidating architecture, setup, testing, and styling guidelines into a single source of truth.
+- **Feedback:** Extremely valuable for developer onboarding and maintaining project standards.
+
+### PR #464: Add REMAINING-TASKS.md and update ROADMAP.md with completion status
+
+- **Status:** Approved
+- **Summary:** Adds a dedicated file for tracking remaining tasks and updates the main roadmap to reflect the completion of the landing page and infrastructure phases.
+- **Feedback:** Crucial for project management transparency, highlighting that the core application development is the next major focus.
+
+### PR #462: Configure npm to resolve peer dependency conflicts
+
+- **Status:** Approved
+- **Summary:** Adds an `.npmrc` file with `legacy-peer-deps=true` to stabilize dependency resolution. Also performs a repository-wide refactor replacing `||` with `??` (nullish coalescing) for safer fallback logic.
+- **Feedback:** Stabilizing `npm install` is a major quality-of-life improvement. The refactor to `??` is a sound defensive programming practice.
+
+### PR #459: Implement Fathom Analytics provider
+
+- **Status:** Approved
+- **Summary:** Implements the Fathom Analytics provider in the analytics utility suite. Includes robust script loading with security validation and respect for "Do Not Track" browser settings.
+- **Feedback:** High-quality implementation with comprehensive test coverage. The security-conscious approach to script loading is commendable.
+
+### PR #458: Add test coverage analysis with prioritized improvement areas
+
+- **Status:** Approved
+- **Summary:** Adds a detailed `TEST-COVERAGE-SUMMARY.md` documenting current coverage and gaps. Fixes the missing `@testing-library/dom` dependency.
+- **Feedback:** Identifying specific testing gaps (like the `EmailCapture` component) provides a clear path for improving overall code quality.
+
+### PR #449: Fix unresolved comments and alerts on PR #311
+
+- **Status:** Approved
+- **Summary:** Addresses feedback on the `Icon` component by unifying warning logic and ensuring the React component is used for fallbacks. Also improves `Hero` section styling and adds a productivity stat badge.
+- **Feedback:** Correctly resolves previous accessibility and rendering concerns while providing additional UI polish.
+
+### PR #427: Configure Claude Code GitHub Action
+
+- **Status:** Changes Requested
+- **Summary:** Adds a GitHub Actions workflow for Claude Code integration.
+- **Feedback:** The workflow file still contains duplicate `permissions` keys and invalid multiple `if` conditions on the same job. These must be consolidated for the workflow to be valid.
+
+### Previously Approved (Still Open)
+
+- **PR #428:** Fix open redirect vulnerability in `safeNavigate()`. (Status: Approved)
+- **PR #424:** Fix open redirect and command injection vulnerabilities. (Status: Approved)
+- **PR #422:** Update type definitions to latest versions. (Status: Approved)
+- **PR #419:** Set up Vercel Web Analytics integration. (Status: Approved)
+- **PR #425:** Add legacy ESLint config for Codacy compatibility. (Status: Approved)
+- **PR #388:** Remove invalid `slack_app` key from `codecov.yml`. (Status: Approved)
+
+### Redundant Pull Requests
+
+- **Recommendation:** Close the following PRs as they are either redundant with more comprehensive fixes or are duplicate daily summary PRs.
+- **Redundant Fixes:**
+  - **PR #463:** Redundant with #469 (ESLint downgrade).
+  - **PR #451:** Redundant with #469 (axios/ESLint fix).
+  - **PR #460:** Redundant with #467 (Documentation roadmap).
+- **Redundant Summaries:**
+  - **PR #470, #468, #461, #450, #448, #430, #417, #396, #385**.
+- **Monolithic / Style PRs:**
+  - **PR #107:** Close recommended (massive monolithic PR, mostly stale).
+  - **PR #389:** Postpone recommended (large formatting change, causes conflicts).
+
+---
+
 ## 2026-02-08
 
 ### PR #427: Configure Claude Code GitHub Action
@@ -55,6 +141,7 @@ This file contains a summary of pull requests I have reviewed.
   - **Status:** Reviewed/Approved
   - **Summary:** Miscellaneous improvements.
   - **Feedback:** Changes are straightforward and low risk.
+
 ### Redundant Summary PRs
 
 - **Summary:** Identified several redundant PRs that only update `PR_REVIEW_SUMMARY.md` or are duplicates/attempts to fix the summary file.
@@ -72,6 +159,7 @@ This file contains a summary of pull requests I have reviewed.
 - **Status:** Postponed
 - **Summary:** Repository-wide formatting changes that are low priority and likely to conflict with in-flight feature work.
 - **Feedback:** Recommendation remains unchanged: Postpone #389 (repository-wide formatting) to avoid merge conflicts with active feature PRs and revisit once the codebase is more stable.
+
 ---
 
 ## 2026-02-06

@@ -15,6 +15,7 @@ This file contains a summary of pull requests I have reviewed.
 - **Recommendation:** Merge this PR or #469 immediately to unbreak the `main` branch and restore CI stability for all future PRs.
 
 ---
+
 ### PR #469: Consolidate SARIF runs to meet GitHub upload limits
 
 - **Status:** Approved

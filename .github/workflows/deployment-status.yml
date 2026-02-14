@@ -27,24 +27,6 @@ jobs:
             exit 1
           fi
 
-      - name: Deployment Summary
-        if: always()
-        run: |
-          echo "## 🚀 Deployment Status" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
-          echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
-          echo "| Environment | ${{ github.event.deployment_status.environment }} |" >> $GITHUB_STEP_SUMMARY
-          
-          if [ "${{ github.event.deployment_status.state }}" = "success" ]; then
-            echo "| Status | ✅ Success |" >> $GITHUB_STEP_SUMMARY
-            echo "| Preview URL | [${{ github.event.deployment_status.target_url }}](${{ github.event.deployment_status.target_url }}) |" >> $GITHUB_STEP_SUMMARY
-          elif [ "${{ github.event.deployment_status.state }}" = "failure" ]; then
-            echo "| Status | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "| Status | ${{ github.event.deployment_status.state }} |" >> $GITHUB_STEP_SUMMARY
-          fi
-
       - name: Comment on PR (if applicable)
         if: github.event.deployment_status.state == 'success' && github.event.deployment.payload.pull_request != null
         uses: actions/github-script@v8

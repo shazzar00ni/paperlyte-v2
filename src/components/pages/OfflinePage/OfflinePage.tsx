@@ -179,7 +179,7 @@ export const OfflinePage: FC<OfflinePageProps> = ({
                 <span>Make sure airplane mode is turned off</span>
               </li>
               <li>
-                <Icon name="fa-route" size="sm" />
+                <Icon name="fa-router" size="sm" />
                 <span>Try moving closer to your router</span>
               </li>
               <li>

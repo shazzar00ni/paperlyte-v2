@@ -24,13 +24,11 @@ describe('Icon', () => {
     expect(fallback).toHaveTextContent('?')
     expect(fallback).toHaveAttribute('title', 'Icon "definitely-missing-icon" not found')
 
-    // Should log warnings
+    // Should log unified warning
     expect(consoleWarnSpy).toHaveBeenCalledWith(
-      'Icon "definitely-missing-icon" not found in icon set, using Font Awesome fallback'
+      'Icon "definitely-missing-icon" not found in custom set or Font Awesome library'
     )
-    expect(consoleWarnSpy).toHaveBeenCalledWith(
-      'Icon "definitely-missing-icon" not found in Font Awesome library either'
-    )
+    expect(consoleWarnSpy).toHaveBeenCalledTimes(1)
   })
 
   it('should render SVG for known icons', () => {

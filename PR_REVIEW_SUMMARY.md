@@ -4,6 +4,17 @@ This file contains a summary of pull requests I have reviewed.
 
 ## 2026-02-14
 
+### Note on CI Failures (2026-02-14)
+
+- **CI Status:** Currently resolving dependency conflicts.
+- **Root Cause:** The `main` branch is currently broken due to a conflict between ESLint 10 and `eslint-plugin-react-hooks@7.0.1`. This causes comparison-based CI jobs (like `Bundle Size Check`) to fail when they try to install the base branch.
+- **Resolution in this PR:**
+  - Pinned ESLint to `9.39.2` in `package.json`.
+  - Added `.npmrc` with `legacy-peer-deps=true`.
+  - Added global npm configuration steps in GitHub Actions to allow installation of the broken base branch.
+- **Recommendation:** Merge this PR or #469 immediately to unbreak the `main` branch and restore CI stability for all future PRs.
+
+---
 ### PR #469: Consolidate SARIF runs to meet GitHub upload limits
 
 - **Status:** Approved

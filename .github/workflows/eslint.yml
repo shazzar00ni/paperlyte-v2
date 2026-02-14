@@ -53,6 +53,7 @@ jobs:
             --max-warnings 0
         continue-on-error: true
 
+      # Ensure we always have a valid SARIF file, even if ESLint failed early
       - name: Ensure SARIF file exists
         if: always()
         # Creates a minimal valid SARIF file if ESLint didn't produce one.
@@ -77,6 +78,19 @@ jobs:
               ]
             }
           EOF
+          fi
+
+      # If ESLint produced multiple runs, merge them into a single run
+      - name: Merge SARIF runs
+        if: always()
+        # ESLint 9 flat config creates multiple runs (one per config object)
+        # GitHub Code Scanning has a limit of 20 runs per SARIF file
+        # This step merges all runs into a single run to stay under the limit
+        run: |
+          if [ -s eslint-results.sarif ]; then
+            node scripts/merge-sarif-runs.cjs eslint-results.sarif
+          else
+            echo "No SARIF file found or file is empty, skipping merge"
           fi
 
       - name: Upload analysis results to GitHub

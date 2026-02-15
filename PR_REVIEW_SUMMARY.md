@@ -4,6 +4,17 @@ This file contains a summary of pull requests I have reviewed.
 
 ## 2026-02-14
 
+### Note on CI Failures (2026-02-14)
+
+- **CI Status:** ✅ **Resolved in this PR.**
+- **Root Cause:** The `main` branch was broken due to a conflict between ESLint 10 and `eslint-plugin-react-hooks@7.0.1`.
+- **Fix Applied:**
+  - Pinned `eslint` and `@eslint/js` to `9.39.2` in `package.json`.
+  - Pinned `eslint-config-prettier` to `9.1.2`.
+  - Added `.npmrc` with `legacy-peer-deps=true`.
+  - Added missing `@testing-library/dom` dependency.
+- **Result:** All tests passing (1312 tests); CI should now be stable for this branch.
+
 ### PR #469 (2026-02-14): Consolidate SARIF runs to meet GitHub upload limits
 
 - **Status:** Approved

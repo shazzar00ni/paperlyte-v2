@@ -13,7 +13,9 @@ This file contains a summary of pull requests I have reviewed.
   - Pinned `eslint-config-prettier` to `9.1.2`.
   - Added `.npmrc` with `legacy-peer-deps=true`.
   - Added missing `@testing-library/dom` dependency.
-- **Result:** All tests passing (1312 tests); CI should now be stable for this branch.
+  - Added `axios` and `qs` overrides to resolve high-severity security vulnerabilities.
+  - Fixed fragile E2E test navigation and updated `ci.yml` with global npm configuration.
+- **Result:** All unit tests (1312) passing; CI stability restored.
 
 ### PR #469 (2026-02-14): Consolidate SARIF runs to meet GitHub upload limits
 

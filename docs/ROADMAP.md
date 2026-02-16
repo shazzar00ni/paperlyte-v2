@@ -1,6 +1,6 @@
 # Paperlyte Development Roadmap - MVP to Launch
 
-## Phase 0: Setup & Foundation (Day 1 Morning)
+## Phase 0: Setup & Foundation (Half Day)
 - [x] Create GitHub repository with proper structure
 - [x] Set up React + Vite project with TypeScript
 - [x] Set up CSS Modules for minimal, clean design
@@ -8,7 +8,7 @@
 - [x] Create basic project structure (components, pages, lib, utils)
 - [x] Initialize deployment pipelines (Vercel + Netlify)
 
-## Phase 1: Core Editor & Basic Functionality (Day 1-2)
+## Phase 1: Core Editor & Basic Functionality (2 Days)
 
 ### Lightning-Fast Editor
 - [ ] Create main editor component
@@ -39,7 +39,7 @@
 - [ ] Responsive design for mobile/tablet
 - [ ] Loading states and smooth transitions
 
-## Phase 2: Search & Organization (Day 3)
+## Phase 2: Search & Organization (1 Day)
 
 ### Tagging System
 - [ ] Implement inline tag creation (#tagname)
@@ -69,7 +69,7 @@
   - [ ] Export notes to Markdown files
   - [ ] Import Markdown files
 
-## Phase 3: User Authentication & Cloud Sync (Day 4-5)
+## Phase 3: User Authentication & Cloud Sync (2 Days)
 
 ### Authentication System
 - [ ] Set up authentication provider (Supabase Auth)
@@ -101,7 +101,7 @@
   - [ ] Free tier: 2 device limit
   - [ ] Plus tier: unlimited devices
 
-## Phase 4: Paperlyte+ Premium Features (Day 6-7)
+## Phase 4: Paperlyte+ Premium Features (2 Days)
 
 ### Premium Feature Gate
 - [ ] Implement subscription system
@@ -133,7 +133,7 @@
 
 > **Note:** Theme engine is implemented with CSS variables, light/dark mode toggle via `useTheme` hook, system preference detection, and localStorage persistence. Custom palettes and cross-device persistence remain.
 
-## Phase 5: Polish & Performance (Day 8-9)
+## Phase 5: Polish & Performance (2 Days)
 
 ### Performance Optimization
 - [ ] Editor performance
@@ -179,7 +179,7 @@
 
 > **Note:** Landing page is fully responsive with touch-friendly interactions (testimonial carousel supports swipe gestures, mobile hamburger menu). App-level mobile optimizations and PWA features remain.
 
-## Phase 6: Testing & Quality Assurance (Day 10)
+## Phase 6: Testing & Quality Assurance (1 Day)
 
 ### Comprehensive Testing
 - [ ] Unit tests for core functions
@@ -214,7 +214,7 @@
 
 > **Note:** Accessibility is comprehensive — WCAG 2.1 AA compliant with skip-to-content links, full ARIA labels, keyboard navigation (Arrow keys, Tab, Home/End, focus traps), screen reader announcements, `prefers-reduced-motion` support, semantic HTML. Lighthouse CI is configured with >95 accessibility target.
 
-## Phase 7: Launch Preparation (Day 11-12)
+## Phase 7: Launch Preparation (2 Days)
 
 ### Marketing Website
 - [x] Landing page design and copy
@@ -243,7 +243,7 @@
 - [ ] Social media assets
 - [ ] Product Hunt submission materials
 
-## Phase 8: Post-Launch Iterations (Week 2+)
+## Phase 8: Post-Launch Iterations (Ongoing)
 
 ### User Feedback Integration
 - [x] In-app feedback system

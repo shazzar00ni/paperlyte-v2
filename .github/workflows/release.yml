@@ -9,6 +9,9 @@ on:
 permissions:
   contents: write
 
+env:
+  NPM_CONFIG_LEGACY_PEER_DEPS: "true"
+
 jobs:
   release:
     name: Create Release
@@ -27,7 +30,7 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Build release artifacts
         run: npm run build

@@ -81,10 +81,10 @@ This file contains a summary of pull requests I have reviewed.
 
 - **Redundant Summary PRs:** Recommend closing #471, #470, #468, #461, #450, #448, #430, #417, #396 in favor of this cumulative summary.
 - **Redundant Feature PRs:**
-  - **PR #463** (ESLint downgrade) is redundant with #469.
-  - **PR #451** (axios DoS fix) is redundant with #469 (though E2E improvements could be cherry-picked).
-  - **PR #462** (npm peer deps) is redundant with #469.
-  - **PR #460** (Pitfalls/Roadmap) is redundant with #467.
+  - **PR `#463`** (ESLint downgrade) is redundant with `#469`.
+  - **PR `#451`** (axios DoS fix) is also redundant with `#469`, though E2E improvements could be cherry-picked.
+  - Similarly, **PR `#462`** (npm peer deps) duplicates work in `#469`.
+  - **PR `#460`** (Pitfalls/Roadmap) is redundant with `#467`.
 - **Stale PRs:**
   - **PR #107:** Close recommended (massive, monolithic, likely stale).
   - **PR #389:** Postpone recommended (large formatting change, causes merge conflicts).

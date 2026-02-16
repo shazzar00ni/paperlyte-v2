@@ -110,7 +110,7 @@ export class PlausibleProvider implements AnalyticsProvider {
       return
     }
 
-    const scriptUrl = this.config?.scriptUrl ?? 'https://plausible.io/js/script.js'
+    const scriptUrl = this.config?.scriptUrl || 'https://plausible.io/js/script.js'
 
     // Validate script URL to prevent injection attacks
     if (!this.isValidScriptUrl(scriptUrl)) {

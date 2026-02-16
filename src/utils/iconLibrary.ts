@@ -197,7 +197,10 @@ export const validIconNames = new Set<string>([
 export const convertIconName = (oldName: string): string => {
   // Returns mapped name if found, otherwise strips 'fa-' prefix.
   // Note: Unmapped icons will fail isValidIcon() and render a fallback.
-  return iconNameMap[oldName] ?? oldName.replace(/^fa-/, '')
+  if (Object.hasOwn(iconNameMap, oldName)) {
+    return iconNameMap[oldName]
+  }
+  return oldName.replace(/^fa-/, '')
 }
 
 /**

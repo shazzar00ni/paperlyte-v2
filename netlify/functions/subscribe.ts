@@ -158,11 +158,10 @@ async function subscribeToConvertKit(
       "ConvertKit response validation failed:",
       sanitizedCause.message
     );
-    /* eslint-disable preserve-caught-error -- intentionally sanitizing cause to strip subscriber PII */
+    // Intentionally sanitizing cause to strip subscriber PII
     throw new Error("Invalid response from email service", {
       cause: sanitizedCause,
     });
-    /* eslint-enable preserve-caught-error */
   }
 }
 

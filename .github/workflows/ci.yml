@@ -115,26 +115,12 @@ jobs:
           name: codecov-umbrella
           fail_ci_if_error: false
 
-      - name: Verify JUnit XML exists
-        id: junit-check
-        if: ${{ !cancelled() }}
-        run: |
-          JUNIT_FILE=$(find . -maxdepth 3 -name '*junit*.xml' -not -path '*/node_modules/*' -print -quit 2>/dev/null)
-          if [ -n "$JUNIT_FILE" ]; then
-            echo "junit_path=$JUNIT_FILE" >> "$GITHUB_OUTPUT"
-            echo "✅ JUnit XML found: $JUNIT_FILE ($(wc -c < "$JUNIT_FILE") bytes)"
-          else
-            echo "❌ No JUnit XML files found in $(pwd)"
-            find . -maxdepth 3 -name '*.xml' -print 2>/dev/null | head -20 || true
-            echo "Skipping JUnit upload as no files were found."
-          fi
-
       - name: Upload test results to Codecov
-        if: ${{ !cancelled() && steps.junit-check.outputs.junit_path != '' }}
+        if: ${{ !cancelled() }}
         uses: codecov/test-results-action@0fa95f0e1eeaafde2c782583b36b28ad0d8c77d3 # v1.2.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: ${{ steps.junit-check.outputs.junit_path }}
+          files: "**/junit.xml"
           verbose: true
 
       - name: Upload coverage reports

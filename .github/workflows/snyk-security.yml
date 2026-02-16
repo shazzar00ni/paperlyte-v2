@@ -47,7 +47,7 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Set up Snyk CLI to check for security issues
         # Snyk can be used to break the build when it detects security issues.
@@ -76,7 +76,7 @@ jobs:
         continue-on-error: true
 
       - name: Merge SARIF runs into single run
-        if: env.SNYK_TOKEN != '' && hashFiles('snyk-code.sarif') != ''
+        if: always() && env.SNYK_TOKEN != '' && hashFiles('snyk-code.sarif') != ''
         run: ./scripts/merge-sarif-runs.sh snyk-code.sarif
 
         # Note: Docker/Container scanning is disabled as this project doesn't use Docker

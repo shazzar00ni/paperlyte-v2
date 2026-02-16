@@ -337,8 +337,8 @@ npm run test:coverage # Generate coverage report
 
 ### Production Dependencies
 
-- **react** ^19.2.3 - UI framework
-- **react-dom** ^19.2.3 - React DOM renderer
+- **react** ^19.2.4 - UI framework
+- **react-dom** ^19.2.4 - React DOM renderer
 - **@fontsource/inter** ^5.2.8 - Inter font files
 - **@fortawesome/fontawesome-svg-core** ^7.1.0 - Icon library core
 - **@fortawesome/free-solid-svg-icons** ^7.1.0 - Solid icons
@@ -350,10 +350,12 @@ npm run test:coverage # Generate coverage report
 - **vite** ^7.3.0 - Build tool and dev server
 - **typescript** ~5.9.3 - Type safety
 - **vitest** ^4.0.15 - Test runner
-- **@testing-library/react** ^16.3.1 - Component testing
+- **@testing-library/react** ^16.3.2 - Component testing
 - **@lhci/cli** ^0.15.1 - Lighthouse CI
 - **eslint** ^9.39.2 - Linting
-- **prettier** ^3.7.4 - Code formatting
+- **@eslint/js** ^9.39.2 - ESLint core rules
+- **eslint-config-prettier** ^9.1.2 - ESLint Prettier config
+- **prettier** ^3.8.1 - Code formatting
 - **postcss** ^8.5.6 - CSS processing
 - **autoprefixer** ^10.4.22 - CSS vendor prefixes
 - **sharp** ^0.34.5 - Image optimization

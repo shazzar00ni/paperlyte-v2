@@ -15,7 +15,7 @@ _All changes have been released in version 1.0.0. This section will track future
 
 ### Changed
 
-- N/A
+- Pinned `eslint` and `@eslint/js` to version `9.39.2` to resolve peer dependency conflicts with `eslint-plugin-react-hooks@7.0.1` and ensure CI stability.
 
 ### Deprecated
 
@@ -31,7 +31,9 @@ _All changes have been released in version 1.0.0. This section will track future
 
 ### Security
 
-- N/A
+- Overrode `axios` to version `1.13.5` to resolve a high-severity Denial of Service (DoS) vulnerability (GHSA-43fc-jf86-j433).
+- Overrode `undici` to version `^7.20.0` to address security vulnerabilities and ensure compatibility with JSDOM v28, resolving internal handler errors in test environments.
+- Integrated Codacy coverage reporting in CI to ensure security-critical changes are adequately tested.
 
 ## [1.0.0] - 2025-12-22
 

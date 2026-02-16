@@ -1,0 +1,568 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main"
+  - generic [ref=e3]:
+    - link "Skip to main content" [ref=e4] [cursor=pointer]:
+      - /url: "#main"
+    - banner [ref=e5]:
+      - generic [ref=e6]:
+        - generic [ref=e7] [cursor=pointer]:
+          - img [ref=e8]
+          - generic [ref=e10]: Paperlyte
+        - navigation "Main navigation" [ref=e11]:
+          - list [ref=e12]:
+            - listitem [ref=e13]:
+              - link "Features" [ref=e14] [cursor=pointer]:
+                - /url: "#features"
+            - listitem [ref=e15]:
+              - link "Download" [ref=e16] [cursor=pointer]:
+                - /url: "#download"
+            - listitem [ref=e17]:
+              - button "Get Started" [ref=e18] [cursor=pointer]
+        - button "Switch to dark mode" [ref=e20] [cursor=pointer]:
+          - img [ref=e21]
+    - main [ref=e23]:
+      - generic [ref=e25]:
+        - generic [ref=e26]:
+          - heading "Your thoughts, organized." [level=1] [ref=e28]:
+            - text: Your thoughts,
+            - emphasis [ref=e29]: organized.
+          - paragraph [ref=e31]: The minimal workspace for busy professionals.
+          - generic [ref=e33]:
+            - button "Arrow icon Start Writing for Free" [ref=e34] [cursor=pointer]:
+              - img "Arrow icon" [ref=e35]
+              - text: Start Writing for Free
+            - button "View the Demo" [ref=e37] [cursor=pointer]
+          - generic [ref=e39]:
+            - paragraph [ref=e40]: TRUSTED BY TEAMS AT
+            - list [ref=e41]:
+              - listitem [ref=e42]: Acme Corp
+              - listitem [ref=e43]: Global
+              - listitem [ref=e44]: Nebula
+              - listitem [ref=e45]: Vertex
+              - listitem [ref=e46]: Horizon
+        - generic [ref=e48]:
+          - img [ref=e51]
+          - img [ref=e54]
+      - generic [ref=e57]:
+        - heading "Why note-taking apps suck right now" [level=2] [ref=e59]
+        - generic [ref=e60]:
+          - paragraph [ref=e61]: You just want to capture a thought before it disappears. But instead, you're waiting for Notion to load. Navigating through nested folders in Obsidian. Watching Evernote stutter as you type.
+          - paragraph [ref=e62]: Your tools should be invisible. Instead, they're in your way.
+        - generic [ref=e64]:
+          - generic [ref=e65]:
+            - heading "Notion" [level=3] [ref=e66]
+            - list [ref=e67]:
+              - listitem [ref=e68]: • 3-second lag on startup
+              - listitem [ref=e69]: • Features you'll never use
+              - listitem [ref=e70]: • Database queries for notes
+          - generic [ref=e71]:
+            - heading "Obsidian" [level=3] [ref=e72]
+            - list [ref=e73]:
+              - listitem [ref=e74]: • Complex plugin configuration
+              - listitem [ref=e75]: • Markdown learning curve
+              - listitem [ref=e76]: • Graph views you ignore
+          - generic [ref=e77]:
+            - heading "Evernote" [level=3] [ref=e78]
+            - list [ref=e79]:
+              - listitem [ref=e80]: • Cluttered interface
+              - listitem [ref=e81]: • Sync that breaks
+              - listitem [ref=e82]: • Ads in your face
+          - generic [ref=e83]:
+            - heading "You" [level=3] [ref=e84]
+            - list [ref=e85]:
+              - listitem [ref=e86]: • Just want to write
+              - listitem [ref=e87]: • Ideas that are vanishing
+              - listitem [ref=e88]: • Simplicity that works
+        - generic [ref=e90]:
+          - paragraph [ref=e91]:
+            - text: You waste
+            - strong [ref=e92]: 5 minutes every day
+            - text: fighting with your note-taking app. That's
+            - strong [ref=e93]: 30 hours a year
+            - text: —an entire work week—lost to friction that shouldn't exist.
+          - paragraph [ref=e94]: You deserve better.
+      - generic [ref=e97]:
+        - heading "Three promises. Zero compromises." [level=2] [ref=e99]
+        - paragraph [ref=e101]: Paperlyte is built on three core principles that make note-taking feel effortless again.
+        - generic [ref=e102]:
+          - article [ref=e104]:
+            - generic [ref=e105]:
+              - img [ref=e107]
+              - heading "Zero-Lag Typing" [level=3] [ref=e109]:
+                - generic [ref=e110]: ⚡
+                - text: Zero-Lag Typing
+            - heading "Your thoughts move fast. So should your app." [level=4] [ref=e111]
+            - generic [ref=e112]:
+              - paragraph [ref=e113]: Every keystroke responds instantly. No stuttering. No waiting. No watching the cursor lag behind your brain.
+              - paragraph [ref=e114]: We've optimized Paperlyte to respond in 8 milliseconds—faster than you can perceive. Paperlyte disappears into the background and lets you think.
+            - generic [ref=e115]:
+              - img [ref=e116]
+              - generic [ref=e118]: "8ms keystroke response | Instant load time | Your ideas: Captured"
+          - article [ref=e120]:
+            - generic [ref=e121]:
+              - img [ref=e123]
+              - heading "Tag-Based Organization" [level=3] [ref=e125]:
+                - generic [ref=e126]: 🏷️
+                - text: Tag-Based Organization
+            - heading "Forget folders. Organize as you write." [level=4] [ref=e127]
+            - generic [ref=e128]:
+              - paragraph [ref=e129]: Rigid folder hierarchies are a relic of the 1990s. Your thoughts don't fit in neat boxes, so why should your notes?
+              - paragraph [ref=e130]: "Type #project, #urgent, or #ideas anywhere in your note. Paperlyte instantly recognizes it. Search by tag. Filter by multiple tags. Let your organization emerge naturally instead of forcing it upfront."
+            - generic [ref=e131]:
+              - img [ref=e132]
+              - generic [ref=e134]: No more "Where did I save that note?" panic. Tags are faster, more flexible, and actually match how your brain works.
+          - article [ref=e136]:
+            - generic [ref=e137]:
+              - generic [ref=e139]: "?"
+              - heading "Works Everywhere, Always" [level=3] [ref=e140]:
+                - generic [ref=e141]: 📱
+                - text: Works Everywhere, Always
+            - heading "Plane mode? No problem." [level=4] [ref=e142]
+            - generic [ref=e143]:
+              - paragraph [ref=e144]: Real-time sync across web, Mac, Windows, and Linux at launch. Native iOS & Android apps coming Q2 2026. But unlike cloud-dependent apps, Paperlyte works offline-first.
+              - paragraph [ref=e145]: On a plane? Underground subway? Spotty café WiFi? Keep writing. Everything syncs automatically when you're back online.
+            - generic [ref=e146]:
+              - img [ref=e147]
+              - generic [ref=e149]: Web, Mac, Windows, Linux available now | Native iOS & Android coming Q2 2026 | Offline-first
+        - generic [ref=e151]:
+          - button "Join the Waitlist" [ref=e152] [cursor=pointer]:
+            - img [ref=e153]
+            - text: Join the Waitlist
+          - paragraph [ref=e155]: 500+ people already ahead of you. Don't miss early access.
+      - generic [ref=e157]:
+        - generic [ref=e158]:
+          - heading "Everything you need. Nothing you don't." [level=2] [ref=e160]
+          - paragraph [ref=e162]: Built for speed, designed for simplicity. Focus on your ideas, not the tool.
+        - generic [ref=e163]:
+          - article [ref=e165]:
+            - img "Lightning Speed icon" [ref=e167]
+            - heading "Lightning Speed" [level=3] [ref=e169]
+            - paragraph [ref=e170]: Instant startup and real-time sync. No loading spinners, no waiting. Your thoughts captured at the speed of thinking.
+          - article [ref=e172]:
+            - img "Beautiful Simplicity icon" [ref=e174]
+            - heading "Beautiful Simplicity" [level=3] [ref=e176]
+            - paragraph [ref=e177]: Paper-inspired design that feels natural and distraction-free. Just you and your thoughts, the way it should be.
+          - article [ref=e179]:
+            - img "Tag-Based Organization icon" [ref=e181]
+            - heading "Tag-Based Organization" [level=3] [ref=e183]
+            - paragraph [ref=e184]: Smart categorization without rigid folder structures. Organize freely with tags that adapt to how you think.
+          - article [ref=e186]:
+            - img "Universal Access icon" [ref=e188]
+            - heading "Universal Access" [level=3] [ref=e190]
+            - paragraph [ref=e191]: Seamless experience across all devices. Start on your phone, finish on your laptop. Always in sync.
+          - article [ref=e193]:
+            - img "Offline-First icon" [ref=e195]
+            - heading "Offline-First" [level=3] [ref=e197]
+            - paragraph [ref=e198]: Full functionality without internet. Your notes work everywhere, sync automatically when online.
+          - article [ref=e200]:
+            - img "Privacy Focused icon" [ref=e202]
+            - heading "Privacy Focused" [level=3] [ref=e204]
+            - paragraph [ref=e205]: Your notes are yours alone. End-to-end encryption and local-first storage keep your thoughts private.
+      - generic [ref=e209]:
+        - heading "Capture inspiration, wherever you are." [level=2] [ref=e211]:
+          - text: Capture inspiration,
+          - text: wherever you are.
+        - paragraph [ref=e213]: Our mobile app is designed for speed. Open, type, close. Everything syncs to your desktop instantly so you never lose a fleeting thought.
+        - link "Explore Mobile Features" [ref=e215] [cursor=pointer]:
+          - /url: "#mobile"
+          - text: Explore Mobile Features
+          - img [ref=e216]
+      - generic [ref=e220]:
+        - generic [ref=e222]:
+          - heading "Join thousands who've simplified their notes" [level=2] [ref=e223]
+          - paragraph [ref=e224]: Real people, real productivity gains, real peace of mind.
+        - generic [ref=e225]:
+          - generic [ref=e227]:
+            - img [ref=e229]
+            - status "50,000+" [ref=e234]:
+              - generic [ref=e235]: 0+
+            - generic [ref=e236]: Active Users
+          - generic [ref=e238]:
+            - img [ref=e240]
+            - status "10M+" [ref=e245]:
+              - generic [ref=e246]: 0M+
+            - generic [ref=e247]: Notes Created
+          - generic [ref=e249]:
+            - img [ref=e251]
+            - status "99.9%" [ref=e256]:
+              - generic [ref=e257]: 0.0%
+            - generic [ref=e258]: Uptime
+          - generic [ref=e260]:
+            - img [ref=e262]
+            - status "4.9/5" [ref=e267]:
+              - generic [ref=e268]: 0.0/5
+            - generic [ref=e269]: User Rating
+      - generic [ref=e271]:
+        - generic [ref=e272]:
+          - heading "How we stack up" [level=2] [ref=e274]
+          - paragraph [ref=e276]: No marketing spin. Here's how Paperlyte compares to the tools you already know.
+        - table [ref=e279]:
+          - rowgroup [ref=e280]:
+            - row "Feature Paperlyte Our product Notion Evernote OneNote" [ref=e281]:
+              - columnheader "Feature" [ref=e282]
+              - columnheader "Paperlyte Our product" [ref=e283]:
+                - text: Paperlyte
+                - generic "Our product" [ref=e284]: You
+              - columnheader "Notion" [ref=e285]
+              - columnheader "Evernote" [ref=e286]
+              - columnheader "OneNote" [ref=e287]
+          - rowgroup [ref=e288]:
+            - row "Startup Time <1s 3-5s 2-4s 2-3s" [ref=e289]:
+              - rowheader "Startup Time" [ref=e290]
+              - cell "<1s" [ref=e291]
+              - cell "3-5s" [ref=e292]
+              - cell "2-4s" [ref=e293]
+              - cell "2-3s" [ref=e294]
+            - row "Offline Access Supported Not supported Paid only Supported" [ref=e295]:
+              - rowheader "Offline Access" [ref=e296]
+              - cell "Supported" [ref=e297]:
+                - img "Supported" [ref=e298]
+              - cell "Not supported" [ref=e300]:
+                - img "Not supported" [ref=e301]
+              - cell "Paid only" [ref=e303]
+              - cell "Supported" [ref=e304]:
+                - img "Supported" [ref=e305]
+            - row "Tag-Based Organization Supported Not supported Supported Not supported" [ref=e307]:
+              - rowheader "Tag-Based Organization" [ref=e308]
+              - cell "Supported" [ref=e309]:
+                - img "Supported" [ref=e310]
+              - cell "Not supported" [ref=e312]:
+                - img "Not supported" [ref=e313]
+              - cell "Supported" [ref=e315]:
+                - img "Supported" [ref=e316]
+              - cell "Not supported" [ref=e318]:
+                - img "Not supported" [ref=e319]
+            - row "Distraction-Free UI Supported Not supported Not supported Not supported" [ref=e321]:
+              - rowheader "Distraction-Free UI" [ref=e322]
+              - cell "Supported" [ref=e323]:
+                - img "Supported" [ref=e324]
+              - cell "Not supported" [ref=e326]:
+                - img "Not supported" [ref=e327]
+              - cell "Not supported" [ref=e329]:
+                - img "Not supported" [ref=e330]
+              - cell "Not supported" [ref=e332]:
+                - img "Not supported" [ref=e333]
+            - row "Real-Time Sync Supported Supported Supported Supported" [ref=e335]:
+              - rowheader "Real-Time Sync" [ref=e336]
+              - cell "Supported" [ref=e337]:
+                - img "Supported" [ref=e338]
+              - cell "Supported" [ref=e340]:
+                - img "Supported" [ref=e341]
+              - cell "Supported" [ref=e343]:
+                - img "Supported" [ref=e344]
+              - cell "Supported" [ref=e346]:
+                - img "Supported" [ref=e347]
+            - row "End-to-End Encryption Supported Not supported Not supported Not supported" [ref=e349]:
+              - rowheader "End-to-End Encryption" [ref=e350]
+              - cell "Supported" [ref=e351]:
+                - img "Supported" [ref=e352]
+              - cell "Not supported" [ref=e354]:
+                - img "Not supported" [ref=e355]
+              - cell "Not supported" [ref=e357]:
+                - img "Not supported" [ref=e358]
+              - cell "Not supported" [ref=e360]:
+                - img "Not supported" [ref=e361]
+            - row "Free Tier Features Full access Limited Very limited Full access" [ref=e363]:
+              - rowheader "Free Tier Features" [ref=e364]
+              - cell "Full access" [ref=e365]
+              - cell "Limited" [ref=e366]
+              - cell "Very limited" [ref=e367]
+              - cell "Full access" [ref=e368]
+            - row "Mobile Performance Excellent Slow Good Good" [ref=e369]:
+              - rowheader "Mobile Performance" [ref=e370]
+              - cell "Excellent" [ref=e371]
+              - cell "Slow" [ref=e372]
+              - cell "Good" [ref=e373]
+              - cell "Good" [ref=e374]
+        - paragraph [ref=e376]: Comparison data accurate as of February 2026. Competitor features may vary by plan and region.
+      - generic [ref=e378]:
+        - generic [ref=e380]:
+          - heading "What people are saying" [level=2] [ref=e381]
+          - paragraph [ref=e382]: Real feedback from people who switched to Paperlyte.
+        - region "Testimonials" [ref=e383]:
+          - generic [ref=e386]:
+            - article [ref=e387]:
+              - img "5 out of 5 stars" [ref=e388]:
+                - img [ref=e389]
+                - img [ref=e391]
+                - img [ref=e393]
+                - img [ref=e395]
+                - img [ref=e397]
+              - blockquote [ref=e399]: "\"Paperlyte transformed how I capture ideas during meetings. No more fumbling with complex tools—just fast, simple note-taking that actually works.\""
+              - generic [ref=e400]:
+                - generic [ref=e401]: SC
+                - generic [ref=e402]:
+                  - text: Sarah Chen
+                  - paragraph [ref=e403]: Product Manager • TechCorp
+            - article [ref=e404]:
+              - img "5 out of 5 stars" [ref=e405]:
+                - img [ref=e406]
+                - img [ref=e408]
+                - img [ref=e410]
+                - img [ref=e412]
+                - img [ref=e414]
+              - blockquote [ref=e416]: "\"I've tried every note app out there. Paperlyte is the first one that doesn't get in my way. It's like writing on paper, but better.\""
+              - generic [ref=e417]:
+                - generic [ref=e418]: MJ
+                - generic [ref=e419]:
+                  - text: Marcus Johnson
+                  - paragraph [ref=e420]: Freelance Writer
+            - article [ref=e421]:
+              - img "4 out of 5 stars" [ref=e422]:
+                - img [ref=e423]
+                - img [ref=e425]
+                - img [ref=e427]
+                - img [ref=e429]
+                - img [ref=e431]
+              - blockquote [ref=e433]: "\"The offline-first feature is a lifesaver. I can take notes anywhere—on the subway, in the library—without worrying about connectivity.\""
+              - generic [ref=e434]:
+                - generic [ref=e435]: ER
+                - generic [ref=e436]:
+                  - text: Emily Rodriguez
+                  - paragraph [ref=e437]: Graduate Student • MIT
+            - article [ref=e438]:
+              - img "5 out of 5 stars" [ref=e439]:
+                - img [ref=e440]
+                - img [ref=e442]
+                - img [ref=e444]
+                - img [ref=e446]
+                - img [ref=e448]
+              - blockquote [ref=e450]: "\"Finally, a note app that respects my time. Instant startup, real-time sync, and tags that make sense. This is what modern note-taking should be.\""
+              - generic [ref=e451]:
+                - generic [ref=e452]: DP
+                - generic [ref=e453]:
+                  - text: David Park
+                  - paragraph [ref=e454]: Software Engineer • Stripe
+            - article [ref=e455]:
+              - img "5 out of 5 stars" [ref=e456]:
+                - img [ref=e457]
+                - img [ref=e459]
+                - img [ref=e461]
+                - img [ref=e463]
+                - img [ref=e465]
+              - blockquote [ref=e467]: "\"The simplicity is revolutionary. No overwhelming features, no clutter—just beautiful, distraction-free writing. Paperlyte gets design right.\""
+              - generic [ref=e468]:
+                - generic [ref=e469]: JT
+                - generic [ref=e470]:
+                  - text: Jennifer Taylor
+                  - paragraph [ref=e471]: UX Designer
+            - article [ref=e472]:
+              - img "4 out of 5 stars" [ref=e473]:
+                - img [ref=e474]
+                - img [ref=e476]
+                - img [ref=e478]
+                - img [ref=e480]
+                - img [ref=e482]
+              - blockquote [ref=e484]: "\"I switched from Notion and haven't looked back. Paperlyte's speed and tag-based organization match how my brain actually works.\""
+              - generic [ref=e485]:
+                - generic [ref=e486]: AK
+                - generic [ref=e487]:
+                  - text: Alex Kumar
+                  - paragraph [ref=e488]: Entrepreneur • StartupLab
+            - article [ref=e489]:
+              - img "4 out of 5 stars" [ref=e490]:
+                - img [ref=e491]
+                - img [ref=e493]
+                - img [ref=e495]
+                - img [ref=e497]
+                - img [ref=e499]
+              - blockquote [ref=e501]: "\"Cross-device sync that actually works seamlessly. Start a thought on my phone, finish it on my laptop. No friction, no lost ideas.\""
+              - generic [ref=e502]:
+                - generic [ref=e503]: LA
+                - generic [ref=e504]:
+                  - text: Lisa Anderson
+                  - paragraph [ref=e505]: Marketing Director • BrandCo
+            - article [ref=e506]:
+              - img "5 out of 5 stars" [ref=e507]:
+                - img [ref=e508]
+                - img [ref=e510]
+                - img [ref=e512]
+                - img [ref=e514]
+                - img [ref=e516]
+              - blockquote [ref=e518]: "\"As someone who needs to capture thoughts quickly, Paperlyte is indispensable. Lightning fast, always available, and beautifully simple.\""
+              - generic [ref=e519]:
+                - generic [ref=e520]: TN
+                - generic [ref=e521]:
+                  - text: Tom Nguyen
+                  - paragraph [ref=e522]: Journalist
+          - button "Previous testimonial" [ref=e523] [cursor=pointer]:
+            - img [ref=e524]
+          - button "Next testimonial" [ref=e526] [cursor=pointer]:
+            - img [ref=e527]
+          - tablist "Testimonial slides" [ref=e529]:
+            - tab "Go to testimonial 1" [selected]
+            - tab "Go to testimonial 2"
+            - tab "Go to testimonial 3"
+            - tab "Go to testimonial 4"
+            - tab "Go to testimonial 5"
+            - tab "Go to testimonial 6"
+            - tab "Go to testimonial 7"
+            - tab "Go to testimonial 8"
+          - button "Pause auto-rotation" [ref=e530] [cursor=pointer]:
+            - img [ref=e531]
+        - generic [ref=e533]: Showing testimonial 1 of 8
+      - generic [ref=e536]:
+        - heading "Join 500+ people on the waitlist" [level=2] [ref=e538]
+        - paragraph [ref=e540]: "We're launching in Q2 2026. Join the waitlist now to:"
+        - list [ref=e542]:
+          - listitem [ref=e543]:
+            - img [ref=e544]
+            - generic [ref=e546]: Get early access before public launch
+          - listitem [ref=e547]:
+            - img [ref=e548]
+            - generic [ref=e550]: Influence features and design decisions
+          - listitem [ref=e551]:
+            - img [ref=e552]
+            - generic [ref=e554]: Lock in founder pricing (save 50% for life)
+          - listitem [ref=e555]:
+            - img [ref=e556]
+            - generic [ref=e558]: Receive exclusive productivity tips and updates
+        - generic [ref=e560]:
+          - generic [ref=e561]:
+            - textbox "Email address" [ref=e562]:
+              - /placeholder: your@email.com
+            - button "Join the Waitlist" [ref=e563] [cursor=pointer]: Join the Waitlist
+          - paragraph [ref=e564]: We respect your privacy. Unsubscribe anytime. No spam, ever.
+      - generic [ref=e566]:
+        - generic [ref=e567]:
+          - heading "Questions? We've got answers." [level=2] [ref=e569]
+          - paragraph [ref=e571]:
+            - text: Everything you need to know. Can't find what you're looking for?
+            - link "Contact us" [ref=e572] [cursor=pointer]:
+              - /url: "#contact"
+            - text: .
+        - generic [ref=e573]:
+          - article [ref=e575]:
+            - heading "When will Paperlyte launch? Expand answer" [level=3] [ref=e576]:
+              - button "When will Paperlyte launch? Expand answer" [ref=e577] [cursor=pointer]:
+                - generic [ref=e578]: When will Paperlyte launch?
+                - img "Expand answer" [ref=e579]
+            - paragraph [ref=e581]: We're targeting Q2 2026 for public launch. Waitlist members get early access 2 weeks before everyone else.
+          - article [ref=e583]:
+            - heading "How much will it cost? Expand answer" [level=3] [ref=e584]:
+              - button "How much will it cost? Expand answer" [ref=e585] [cursor=pointer]:
+                - generic [ref=e586]: How much will it cost?
+                - img "Expand answer" [ref=e587]
+            - paragraph [ref=e589]: Paperlyte will be free for personal use with unlimited notes. We'll offer a Plus plan (~$5/month) for advanced features like team collaboration and extended storage. Waitlist members get 50% off for life.
+          - article [ref=e591]:
+            - heading "What platforms do you support? Expand answer" [level=3] [ref=e592]:
+              - button "What platforms do you support? Expand answer" [ref=e593] [cursor=pointer]:
+                - generic [ref=e594]: What platforms do you support?
+                - img "Expand answer" [ref=e595]
+            - paragraph [ref=e597]: "At launch: Responsive web app (works on all devices). Native iOS & Android apps coming in Q2 2026. Works seamlessly across Mac, Windows, and Linux via web."
+          - article [ref=e599]:
+            - heading "How is my data protected? Expand answer" [level=3] [ref=e600]:
+              - button "How is my data protected? Expand answer" [ref=e601] [cursor=pointer]:
+                - generic [ref=e602]: How is my data protected?
+                - img "Expand answer" [ref=e603]
+            - paragraph [ref=e605]: End-to-end encryption before anything leaves your device. We use zero-knowledge architecture—we literally cannot read your notes even if we wanted to. Your data stays yours.
+          - article [ref=e607]:
+            - heading "Can I export my notes? Expand answer" [level=3] [ref=e608]:
+              - button "Can I export my notes? Expand answer" [ref=e609] [cursor=pointer]:
+                - generic [ref=e610]: Can I export my notes?
+                - img "Expand answer" [ref=e611]
+            - paragraph [ref=e613]: Absolutely. Export all notes as Markdown anytime. No lock-in, ever. Your data is portable.
+          - article [ref=e615]:
+            - heading "Will there be a mobile app? Expand answer" [level=3] [ref=e616]:
+              - button "Will there be a mobile app? Expand answer" [ref=e617] [cursor=pointer]:
+                - generic [ref=e618]: Will there be a mobile app?
+                - img "Expand answer" [ref=e619]
+            - paragraph [ref=e621]: Yes! The responsive web app works great on mobile browsers now. Native iOS and Android apps are planned for Q2 2026 with offline sync and system integration.
+          - article [ref=e623]:
+            - heading "How is this different from Notion/Obsidian/Evernote? Expand answer" [level=3] [ref=e624]:
+              - button "How is this different from Notion/Obsidian/Evernote? Expand answer" [ref=e625] [cursor=pointer]:
+                - generic [ref=e626]: How is this different from Notion/Obsidian/Evernote?
+                - img "Expand answer" [ref=e627]
+            - paragraph [ref=e629]: "Speed. We load 7x faster than Notion. Simplicity. We removed features instead of adding them. Privacy. End-to-end encryption is built-in, not an afterthought. We're not trying to be an all-in-one workspace—we're focused on doing one thing perfectly: capturing your thoughts."
+          - article [ref=e631]:
+            - heading "Do you have a free trial? Expand answer" [level=3] [ref=e632]:
+              - button "Do you have a free trial? Expand answer" [ref=e633] [cursor=pointer]:
+                - generic [ref=e634]: Do you have a free trial?
+                - img "Expand answer" [ref=e635]
+            - paragraph [ref=e637]: The core app will be free forever for personal use. No trial needed—no credit card, no expiration.
+          - article [ref=e639]:
+            - heading "What if I have more questions? Expand answer" [level=3] [ref=e640]:
+              - button "What if I have more questions? Expand answer" [ref=e641] [cursor=pointer]:
+                - generic [ref=e642]: What if I have more questions?
+                - img "Expand answer" [ref=e643]
+            - paragraph [ref=e645]: Email us at hello@paperlyte.com. We read every message and typically respond within 24 hours.
+        - paragraph [ref=e648]:
+          - text: Still have questions? Check out our
+          - link "Help Center" [ref=e649] [cursor=pointer]:
+            - /url: "#help"
+          - text: or
+          - link "Community Forum" [ref=e650] [cursor=pointer]:
+            - /url: "#community"
+          - text: .
+      - generic [ref=e654]:
+        - heading "Stop fighting your tools. Start thinking clearly." [level=2] [ref=e656]
+        - generic [ref=e657]:
+          - paragraph [ref=e658]: Note-taking shouldn't feel like work. It should feel like breathing—natural, effortless, invisible.
+          - paragraph [ref=e659]: Join the waitlist today and be among the first to experience what note-taking should have been all along.
+        - generic [ref=e661]:
+          - button "Join the Waitlist" [ref=e662] [cursor=pointer]
+          - button "Watch the Demo Again" [ref=e663] [cursor=pointer]
+        - paragraph [ref=e665]: Launching Q2 2026 · 500+ already waiting · No credit card required
+    - contentinfo [ref=e666]:
+      - generic [ref=e668]:
+        - generic [ref=e669]:
+          - generic [ref=e670]:
+            - img "Paperlyte logo" [ref=e671]
+            - generic [ref=e673]: Paperlyte.
+          - paragraph [ref=e674]: Your thoughts, unchained.
+          - paragraph [ref=e675]:
+            - text: Built with
+            - img "love" [ref=e676]: 💙
+            - text: for people who think fast.
+        - navigation "Footer navigation" [ref=e677]:
+          - generic [ref=e678]:
+            - heading "Product" [level=3] [ref=e679]
+            - list [ref=e680]:
+              - listitem [ref=e681]:
+                - link "Features" [ref=e682] [cursor=pointer]:
+                  - /url: "#features"
+              - listitem [ref=e683]:
+                - link "Pricing" [ref=e684] [cursor=pointer]:
+                  - /url: "#pricing"
+          - generic [ref=e685]:
+            - heading "Company" [level=3] [ref=e686]
+            - list [ref=e687]:
+              - listitem [ref=e688]:
+                - link "Contact" [ref=e689] [cursor=pointer]:
+                  - /url: mailto:hello@paperlyte.com
+          - generic [ref=e690]:
+            - heading "Legal" [level=3] [ref=e691]
+            - list [ref=e692]:
+              - listitem [ref=e693]:
+                - link "Privacy Policy" [ref=e694] [cursor=pointer]:
+                  - /url: /privacy.html
+              - listitem [ref=e695]:
+                - link "Terms of Service" [ref=e696] [cursor=pointer]:
+                  - /url: /terms.html
+          - generic [ref=e697]:
+            - heading "Connect" [level=3] [ref=e698]
+            - list "Social media links" [ref=e699]:
+              - listitem [ref=e700]:
+                - link "Follow us on GitHub" [ref=e701] [cursor=pointer]:
+                  - /url: https://github.com/shazzar00ni/paperlyte-v2
+                  - img [ref=e702]
+              - listitem [ref=e704]:
+                - link "Follow us on X (Twitter)" [ref=e705] [cursor=pointer]:
+                  - /url: https://x.com/paperlyte
+                  - generic [ref=e706]: "?"
+              - listitem [ref=e707]:
+                - link "Follow us on Instagram" [ref=e708] [cursor=pointer]:
+                  - /url: https://instagram.com/paperlytefilms
+                  - generic [ref=e709]: "?"
+              - listitem [ref=e710]:
+                - link "Email us" [ref=e711] [cursor=pointer]:
+                  - /url: mailto:hello@paperlyte.com
+                  - img [ref=e712]
+        - paragraph [ref=e715]: © 2026 Paperlyte. All rights reserved.
+    - button "Open feedback form" [ref=e716] [cursor=pointer]:
+      - img "Feedback" [ref=e717]
+```

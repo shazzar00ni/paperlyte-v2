@@ -326,15 +326,21 @@ Flat config format (`eslint.config.js`) with:
 
 ## Environment Variables
 
-All client-side env vars use the `VITE_` prefix. See `.env.example` for full list.
+### Client-Side (`VITE_` prefix)
 
-Key variables:
+All client-side env vars use the `VITE_` prefix and are embedded into the browser bundle by Vite. Add these to your local `.env` file (see `.env.example` for the full list).
 
 - `VITE_BASE_URL` — Application base URL
 - `VITE_ANALYTICS_ENABLED` / `VITE_ANALYTICS_PROVIDER` / `VITE_ANALYTICS_DOMAIN` — Analytics config
 - `VITE_SENTRY_DSN` / `VITE_SENTRY_ENVIRONMENT` / `VITE_SENTRY_SAMPLE_RATE` — Error monitoring
 - `VITE_SEO_KEYWORDS` / `VITE_OG_IMAGE` — SEO configuration
-- `CODECOV_TOKEN` / `CODACY_PROJECT_TOKEN` — CI-only, for test coverage and test results reporting
+
+### CI-Only Secrets (GitHub Actions)
+
+These are configured as repository secrets in GitHub Actions. They are **not** client-side variables and should **never** be added to `.env` files.
+
+- `CODECOV_TOKEN` — Codecov bundle analysis upload
+- `CODACY_PROJECT_TOKEN` — Codacy code quality reporting
 
 ## Design System
 

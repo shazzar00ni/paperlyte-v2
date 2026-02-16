@@ -237,7 +237,6 @@ export class FathomProvider implements AnalyticsProvider {
       typeof window !== 'undefined' &&
       typeof window.fathom === 'object' &&
       typeof window.fathom === 'object'
-    )
   }
 
   /**

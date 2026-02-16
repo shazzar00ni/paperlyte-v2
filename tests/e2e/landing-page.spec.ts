@@ -25,7 +25,28 @@ test.describe('Landing Page', () => {
       // Ensure menu is expanded and visible before clicking links
       await expect(menuButton).toHaveAttribute('aria-expanded', 'true');
       // Wait for menu to be visible and animation to complete
-      await expect(page.locator('#main-menu')).toBeVisible();
+      const mainMenu = page.locator('#main-menu');
+      await expect(mainMenu).toBeVisible();
+      // Ensure it's not animating by waiting for it to be stable
+      await mainMenu.evaluate(async (el) => {
+        const isStable = () => {
+          const rect = el.getBoundingClientRect();
+          return new Promise((resolve) => {
+            requestAnimationFrame(() => {
+              const rect2 = el.getBoundingClientRect();
+              resolve(rect.top === rect2.top && rect.left === rect2.left && rect.width === rect2.width && rect.height === rect2.height);
+            });
+          });
+        };
+        for (let i = 0; i < 20; i++) {
+          if (await isStable()) {
+            // Check again after a short delay to be sure
+            await new Promise(r => setTimeout(r, 50));
+            if (await isStable()) break;
+          }
+          await new Promise(r => setTimeout(r, 50));
+        }
+      });
     }
 
     // Target specifically the header's features link
@@ -115,6 +136,25 @@ test.describe('Landing Page', () => {
     // Verify the menu list becomes visible
     const menuList = page.getByRole('navigation').locator('#main-menu');
     await expect(menuList).toBeVisible();
+    // Ensure it's not animating
+    await menuList.evaluate(async (el) => {
+      const isStable = () => {
+        const rect = el.getBoundingClientRect();
+        return new Promise((resolve) => {
+          requestAnimationFrame(() => {
+            const rect2 = el.getBoundingClientRect();
+            resolve(rect.top === rect2.top && rect.left === rect2.left && rect.width === rect2.width && rect.height === rect2.height);
+          });
+        });
+      };
+      for (let i = 0; i < 20; i++) {
+        if (await isStable()) {
+          await new Promise(r => setTimeout(r, 50));
+          if (await isStable()) break;
+        }
+        await new Promise(r => setTimeout(r, 50));
+      }
+    });
   });
 
   test('should have accessible keyboard navigation', async ({ page }) => {

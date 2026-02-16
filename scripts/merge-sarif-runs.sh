@@ -162,7 +162,7 @@ echo "Merged SARIF file created successfully: $OUTPUT_FILE"
 
 # --- Report final structure ---
 echo "Final SARIF structure:"
-echo "  Tool: $(jq -r '.runs[0].tool.driver.name' "$OUTPUT_FILE")"
+echo "  Tool: $(jq -r '.runs[0].tool.driver.name // "unknown"' "$OUTPUT_FILE")"
 echo "  Runs: $(jq '.runs | length' "$OUTPUT_FILE")"
 echo "  Results: $(jq '.runs[0].results // [] | length' "$OUTPUT_FILE")"
 echo "  Rules: $(jq '.runs[0].tool.driver.rules // [] | length' "$OUTPUT_FILE")"

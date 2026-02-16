@@ -43,7 +43,7 @@ export const NotFoundPage: FC<NotFoundPageProps> = ({ message, onGoHome }) => {
         </h1>
 
         <p className={styles.message}>
-          {message ??
+          {message ||
             "The page you're looking for doesn't exist or may have been moved. Let's get you back on track."}
         </p>
 

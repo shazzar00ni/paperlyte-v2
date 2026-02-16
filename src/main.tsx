@@ -27,13 +27,13 @@ if (import.meta.env.PROD && import.meta.env.VITE_SENTRY_DSN) {
       }),
     ],
     // Performance monitoring
-    tracesSampleRate: parseFloat(import.meta.env.VITE_SENTRY_SAMPLE_RATE ?? '0.1'),
+    tracesSampleRate: parseFloat(import.meta.env.VITE_SENTRY_SAMPLE_RATE || '0.1'),
     // Session replay
     replaysSessionSampleRate: parseFloat(
-      import.meta.env.VITE_SENTRY_REPLAYS_SESSION_SAMPLE_RATE ?? '0.1'
+      import.meta.env.VITE_SENTRY_REPLAYS_SESSION_SAMPLE_RATE || '0.1'
     ),
     replaysOnErrorSampleRate: parseFloat(
-      import.meta.env.VITE_SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE ?? '1.0'
+      import.meta.env.VITE_SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE || '1.0'
     ),
     // Additional configuration
     beforeSend(event) {

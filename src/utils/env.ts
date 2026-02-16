@@ -17,7 +17,7 @@ interface EnvConfig {
  * Falls back to window.location.origin if not set
  */
 export const getBaseUrl = (): string => {
-  return import.meta.env.VITE_BASE_URL ?? window.location.origin
+  return import.meta.env.VITE_BASE_URL?.trim() || window.location.origin
 }
 
 /**

@@ -68,7 +68,7 @@ export const EmailCapture = ({
       const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.error ?? 'Subscription failed')
+        throw new Error(data.error || 'Subscription failed')
       }
 
       setStatus('success')

@@ -108,7 +108,7 @@ export const OfflinePage: FC<OfflinePageProps> = ({
         <p className={styles.message}>
           {isOnline
             ? 'Your internet connection has been restored. You can now continue using Paperlyte.'
-            : message ??
+            : message ||
               "It looks like you've lost your internet connection. Don't worry, Paperlyte is designed to work offline."}
         </p>
 

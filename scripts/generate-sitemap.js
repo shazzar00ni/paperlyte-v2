@@ -49,7 +49,9 @@ function getLastGitCommitDate(filePath) {
     return null;
   }
   try {
-    const date = execSync(`git log -1 --format=%cs -- "${filePath}"`, {
+    const date = execSync(`git log -1 --format=%cs -- "${filePath.replace(/"/g, '\"')}"`, {
+      encoding: "utf8",
+    }).trim();
       encoding: "utf8",
     }).trim();
     // Validate YYYY-MM-DD

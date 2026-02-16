@@ -110,6 +110,16 @@ export class PlausibleProvider implements AnalyticsProvider {
       return
     }
 
+    const domain = this.config?.domain?.trim()
+    if (!domain) {
+      if (this.config?.debug || import.meta.env.DEV) {
+        console.warn(
+          '[Analytics] Plausible domain is empty or not configured. Script injection skipped.'
+        )
+      }
+      return
+    }
+
     const scriptUrl = this.config?.scriptUrl || 'https://plausible.io/js/script.js'
 
     // Validate script URL to prevent injection attacks
@@ -127,7 +137,7 @@ export class PlausibleProvider implements AnalyticsProvider {
 
     script.async = true
     script.src = scriptUrl
-    script.setAttribute('data-domain', this.config?.domain ?? '')
+    script.setAttribute('data-domain', domain)
 
     // Add optional tracking features
     if (this.config?.trackPageviews === false) {

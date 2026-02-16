@@ -81,10 +81,10 @@ This file contains a summary of pull requests I have reviewed.
 
 - **Redundant Summary PRs:** Recommend closing #471, #470, #468, #461, #450, #448, #430, #417, #396 in favor of this cumulative summary.
 - **Redundant Feature PRs:**
-  - **PR `#463`** (ESLint downgrade) is redundant with `#469`.
-  - **PR `#451`** (axios DoS fix) is also redundant with `#469`, though E2E improvements could be cherry-picked.
-  - Similarly, **PR `#462`** (npm peer deps) duplicates work in `#469`.
-  - **PR `#460`** (Pitfalls/Roadmap) is redundant with `#467`.
+  - **PR #463** (ESLint downgrade) is redundant with #469.
+  - **PR #451** (axios DoS fix) is redundant with #469 (though E2E improvements could be cherry-picked).
+  - **PR #462** (npm peer deps) is redundant with #469.
+  - **PR #460** (Pitfalls/Roadmap) is redundant with #467.
 - **Stale PRs:**
   - **PR #107:** Close recommended (massive, monolithic, likely stale).
   - **PR #389:** Postpone recommended (large formatting change, causes merge conflicts).
@@ -95,8 +95,8 @@ This file contains a summary of pull requests I have reviewed.
 
 ### PR #427: Configure Claude Code GitHub Action
 
-- **Status:** Approved
-- **Notes (2026-02-08):** See detailed review under **2026-02-06 → PR #427**. Latest status remains **Approved**; no additional feedback beyond that entry.
+- **Status:** Changes Requested
+- **Notes (2026-02-08):** Previous approval was recorded prematurely; the YAML syntax issues (duplicate `permissions` and `if` keys) remain unresolved. See authoritative feedback under **2026-02-06 → PR #427**.
 
 ### PR #275: Implement P0-CRITICAL hero section conversion optimization (#274)
 

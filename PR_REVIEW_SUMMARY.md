@@ -89,17 +89,15 @@ This file contains a summary of pull requests I have reviewed.
 
 - **Recommendation:** Close the following PRs as they are either redundant with more comprehensive fixes or are duplicate daily summary PRs.
 - **Redundant Fixes:**
-  - **PR `#463`:** Redundant with `#469` (ESLint downgrade).
-  - **PR `#451`:** Redundant with `#469` (axios/ESLint fix).
-  - **PR `#460`:** Redundant with `#467` (Documentation roadmap).
+  - **PR #463:** Redundant with #469 (ESLint downgrade).
+  - **PR #451:** Redundant with #469 (axios/ESLint fix).
+  - **PR #460:** Redundant with #467 (Documentation roadmap).
 - **Redundant Summaries:**
-  - **PR `#470`:** Daily summary (date TBD)
-  - **PR `#468`:** Daily summary (date TBD)
-  - **PR `#461`, `#450`, `#448`:** Daily summaries
-  - **PR `#430`, `#417`, `#396`, `#385`:** Daily summaries
+  - **PR #470, #468, #461, #450, #448, #430, #417, #396, #385**.
 - **Monolithic / Style PRs:**
-  - **PR `#107`:** Close recommended (massive monolithic PR, mostly stale).
-  - **PR `#389`:** Postpone recommended (large formatting change, causes conflicts).
+  - **PR #107:** Close recommended (massive monolithic PR, mostly stale).
+  - **PR #389:** Postpone recommended (large formatting change, causes conflicts).
+
 ---
 
 ## 2026-02-08

@@ -282,7 +282,7 @@ Key strict settings: `strict: true`, `noUnusedLocals`, `noUnusedParameters`, `no
 
 ### Unit Tests (Vitest)
 
-- **62 test files** co-located with source files (`*.test.ts` / `*.test.tsx`)
+- **Test files** co-located with source files (`*.test.ts` / `*.test.tsx`)
 - **Environment**: jsdom with IntersectionObserver and matchMedia mocks in `src/test/setup.ts`
 - **Coverage thresholds**: 70% minimum for lines, functions, branches, and statements
 - **Run**: `npm test` (watch mode) or `npm run test:coverage` (with report)

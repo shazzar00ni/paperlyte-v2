@@ -69,7 +69,7 @@ export class ScrollDepthTracker {
   private checkScrollDepth(): void {
     const scrollHeight = document.documentElement.scrollHeight
     const clientHeight = document.documentElement.clientHeight
-    const scrollTop = window.scrollY ?? document.documentElement.scrollTop
+    const scrollTop = window.scrollY || document.documentElement.scrollTop
 
     // Calculate scroll percentage
     const scrollableHeight = scrollHeight - clientHeight

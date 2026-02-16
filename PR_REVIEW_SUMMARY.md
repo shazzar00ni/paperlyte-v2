@@ -48,8 +48,8 @@ This file contains a summary of pull requests I have reviewed.
 
 ### Redundant Summary PRs
 
-- **Summary:** PRs #451, #450, and #448 all include updates to `PR_REVIEW_SUMMARY.md`. Recommend merging #451 as it is the most comprehensive and closing the others.
-- **Summary:** Identified several other redundant PRs that only update the summary or are duplicates (e.g., #445, #441, #440, #436, #435, #434, #433, #432, #431, #385, #383).
+- **Summary:** PRs `#451`, `#450`, and `#448` all include updates to `PR_REVIEW_SUMMARY.md`. Recommend merging `#451` as it is the most comprehensive and closing the others.
+- **Summary:** Identified several other redundant PRs that only update the summary or are duplicates (e.g., `#445`, `#441`, `#440`, `#436`, `#435`, `#434`, `#433`, `#432`, `#431`, `#385`, `#383`). Note: PRs `#435-`#383 previously identified in 2026-02-08 review and still pending closure.
 
 ---
 

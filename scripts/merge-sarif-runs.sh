@@ -82,19 +82,18 @@ if ! jq '
     # Defines the analysis tool and its rules
     # -------------------------------------------------------------------------
     tool: {
-      driver: {
-        # Use unified tool name since we are merging multiple Codacy tools
-        name: "Codacy",
-        informationUri: "https://www.codacy.com",
-        version: "1.0.0",
-
+      # Use tool driver from first run as baseline, then merge rules
+      driver: (((.runs | map(select(.tool.driver != null).tool.driver) | .[0]) // {name: "Unified Tool"}) + {
         # RULES: Flatten all rules from all runs into single array
         # - .runs[].tool.driver.rules: Get rules array from each run
         # - // []: Default to empty array if rules is null
         # - | .[]: Flatten nested arrays into single stream
         # - unique_by(.id): Remove duplicates, keeping first occurrence of each rule ID
         rules: [.runs[].tool.driver.rules // [] | .[]] | unique_by(.id)
-      }
+      }),
+
+      # EXTENSIONS: Combine all tool extensions and deduplicate by name/id
+      extensions: ([.runs[].tool.extensions // [] | .[]] | unique_by(.name // .id))
     },
 
     # -------------------------------------------------------------------------
@@ -111,10 +110,10 @@ if ! jq '
     # - .region.* // 0: Default line/column numbers to 0
     results: [.runs[].results // [] | .[]] | unique_by(
       (.ruleId // "") +
-      ((((.locations // [])[0] // {}).physicalLocation // {}).artifactLocation.uri // "") +
-      ((((.locations // [])[0] // {}).physicalLocation // {}).region.startLine // 0 | tostring) +
-      ((((.locations // [])[0] // {}).physicalLocation // {}).region.startColumn // 0 | tostring) +
-      ((((.locations // [])[0] // {}).physicalLocation // {}).region.endLine // 0 | tostring)
+      (((((.locations // [])[0] // {}).physicalLocation // {}).artifactLocation // {}).uri // "") +
+      (((((.locations // [])[0] // {}).physicalLocation // {}).region // {}).startLine // 0 | tostring) +
+      (((((.locations // [])[0] // {}).physicalLocation // {}).region // {}).startColumn // 0 | tostring) +
+      (((((.locations // [])[0] // {}).physicalLocation // {}).region // {}).endLine // 0 | tostring)
     ),
 
     # -------------------------------------------------------------------------
@@ -163,5 +162,7 @@ echo "Merged SARIF file created successfully: $OUTPUT_FILE"
 
 # --- Report final structure ---
 echo "Final SARIF structure:"
+echo "  Tool: $(jq -r '.runs[0].tool.driver.name // "Unified Tool"' "$OUTPUT_FILE")"
 echo "  Runs: $(jq '.runs | length' "$OUTPUT_FILE")"
 echo "  Results: $(jq '.runs[0].results // [] | length' "$OUTPUT_FILE")"
+echo "  Rules: $(jq '.runs[0].tool.driver.rules // [] | length' "$OUTPUT_FILE")"

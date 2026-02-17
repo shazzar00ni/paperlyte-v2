@@ -16,15 +16,27 @@ export function scrollToSection(sectionId: string): void {
   }
 }
 
+interface SafeUrlOptions {
+  /**
+   * When true, allows external HTTP/HTTPS URLs (e.g., https://example.com).
+   * When false (default), only same-origin and relative URLs are permitted.
+   * Use allowExternal: true only for rendering <a> tags, never for window.location assignments.
+   */
+  allowExternal?: boolean
+}
+
 /**
  * Validates if a URL is safe for navigation (prevents XSS and injection attacks).
- * Allows relative URLs, same-origin URLs, and legitimate external HTTPS/HTTP URLs.
- * Blocks dangerous protocols like javascript:, data:, vbscript:, etc.
+ * By default, only allows relative URLs and same-origin URLs to prevent open redirects.
+ * Pass { allowExternal: true } to also allow external HTTP/HTTPS URLs (for <a> tags).
+ * Always blocks dangerous protocols like javascript:, data:, vbscript:, etc.
  *
  * @param url - The URL to validate
+ * @param options - Validation options
  * @returns true if the URL is safe for navigation, false otherwise
  */
-export function isSafeUrl(url: string): boolean {
+export function isSafeUrl(url: string, options: SafeUrlOptions = {}): boolean {
+  const { allowExternal = false } = options
   // SSR guard
   if (typeof window === 'undefined') {
     return false
@@ -100,15 +112,17 @@ export function isSafeUrl(url: string): boolean {
     // For absolute URLs, parse and validate the protocol
     const parsedUrl = new URL(trimmedUrl, window.location.origin)
 
-    // Allow http: and https: protocols (safe for external links)
-    // Allow same-origin URLs with any protocol
+    const currentOrigin = window.location.origin
+    const isSameOrigin = parsedUrl.origin === currentOrigin
+
+    // Allow http: and https: protocols
     if (parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:') {
-      return true
+      // When allowExternal is false, only permit same-origin URLs to prevent open redirects
+      return allowExternal || isSameOrigin
     }
 
     // For other protocols, only allow if same-origin
-    const currentOrigin = window.location.origin
-    return parsedUrl.origin === currentOrigin
+    return isSameOrigin
   } catch {
     // If URL parsing fails, it's not safe
     return false
@@ -117,17 +131,13 @@ export function isSafeUrl(url: string): boolean {
 
 /**
  * Safely navigates to a URL by validating it first.
- * Allows relative URLs, HTTP/HTTPS URLs (including external), and blocks dangerous protocols
- * like javascript:, data:, vbscript:, etc.
+ * Only allows relative URLs and same-origin HTTP/HTTPS URLs to prevent open redirects.
+ * Blocks dangerous protocols like javascript:, data:, vbscript:, etc.
  *
- * SECURITY NOTE: This function allows external HTTP/HTTPS URLs. For use cases requiring
- * same-origin navigation only (to prevent open redirects), implement additional domain
- * validation before calling this function or use a different approach.
+ * SECURITY: This function restricts navigation to same-origin URLs only. External URLs
+ * are rejected to prevent open redirect attacks via user-controlled input.
  *
- * Safe usage: Only call with hardcoded URLs or URLs from trusted sources. Never pass
- * user-controlled query parameters directly to this function without domain validation.
- *
- * @param url - The URL to navigate to
+ * @param url - The URL to navigate to (must be relative or same-origin)
  * @returns true if navigation was performed, false if URL was rejected or navigation not needed (SSR)
  */
 export function safeNavigate(url: string): boolean {

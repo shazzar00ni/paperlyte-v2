@@ -103,10 +103,22 @@ describe('navigation utilities', () => {
       expect(isSafeUrl('/path/with://protocol')).toBe(false)
     })
 
-    it('should allow external HTTP/HTTPS URLs (for linking to external resources)', () => {
-      expect(isSafeUrl('http://example.com')).toBe(true)
-      expect(isSafeUrl('https://example.com/page')).toBe(true)
-      expect(isSafeUrl('https://github.com')).toBe(true)
+    it('should reject external HTTP/HTTPS URLs by default (prevents open redirects)', () => {
+      expect(isSafeUrl('http://example.com')).toBe(false)
+      expect(isSafeUrl('https://example.com/page')).toBe(false)
+      expect(isSafeUrl('https://github.com')).toBe(false)
+    })
+
+    it('should allow external HTTP/HTTPS URLs when allowExternal is true', () => {
+      expect(isSafeUrl('http://example.com', { allowExternal: true })).toBe(true)
+      expect(isSafeUrl('https://example.com/page', { allowExternal: true })).toBe(true)
+      expect(isSafeUrl('https://github.com', { allowExternal: true })).toBe(true)
+    })
+
+    it('should still block dangerous protocols even with allowExternal: true', () => {
+      expect(isSafeUrl('javascript:alert(1)', { allowExternal: true })).toBe(false)
+      expect(isSafeUrl('data:text/html,<script>alert(1)</script>', { allowExternal: true })).toBe(false)
+      expect(isSafeUrl('vbscript:alert(1)', { allowExternal: true })).toBe(false)
     })
 
     it('should reject javascript: protocol URLs', () => {
@@ -201,7 +213,7 @@ describe('navigation utilities', () => {
       })
     })
 
-    it('should allow navigation to external HTTPS URLs', () => {
+    it('should block navigation to external HTTPS URLs (prevents open redirect)', () => {
       const mockLocation = { href: '', origin: 'http://localhost' } as Location
       Object.defineProperty(window, 'location', {
         value: mockLocation,
@@ -209,10 +221,14 @@ describe('navigation utilities', () => {
         configurable: true,
       })
 
-      const result = safeNavigate('https://example.com')
-      expect(result).toBe(true)
-      expect(mockLocation.href).toBe('https://example.com')
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
 
+      const result = safeNavigate('https://example.com')
+      expect(result).toBe(false)
+      expect(mockLocation.href).toBe('')
+      expect(consoleWarnSpy).toHaveBeenCalled()
+
+      consoleWarnSpy.mockRestore()
       // Restore window.location
       Object.defineProperty(window, 'location', {
         value: originalLocation,

@@ -34,7 +34,7 @@ jobs:
 
       # Example: Deploy to Netlify
       - name: Deploy to Netlify
-        uses: nwtgck/actions-netlify@v3
+        uses: nwtgck/actions-netlify@4cbaf4c08f1a7bfa537d6113472ef4424e4eb654 # v3
         with:
           publish-dir: './dist'
           production-deploy: true

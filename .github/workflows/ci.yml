@@ -106,7 +106,7 @@ jobs:
         run: npm run test:coverage -- --run --coverage.reportOnFailure
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5
         if: always()
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -116,7 +116,7 @@ jobs:
           fail_ci_if_error: false
 
       - name: Upload test results to Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5
         if: always()
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

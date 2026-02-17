@@ -189,6 +189,10 @@ export const validIconNames = new Set<string>([
   ...Object.values(iconNameMap),
   'circle-question', // Fallback icon
 ])
+
+/** Map-based lookup for icon name conversion (avoids bracket-notation injection sink) */
+const iconNameLookup = new Map<string, string>(Object.entries(iconNameMap))
+
 /**
  * Helper function to convert old icon names to new format
  * @param oldName - The old Font Awesome class name (e.g., 'fa-bolt')
@@ -197,10 +201,7 @@ export const validIconNames = new Set<string>([
 export const convertIconName = (oldName: string): string => {
   // Returns mapped name if found, otherwise strips 'fa-' prefix.
   // Note: Unmapped icons will fail isValidIcon() and render a fallback.
-  if (Object.hasOwn(iconNameMap, oldName)) {
-    return iconNameMap[oldName]
-  }
-  return oldName.replace(/^fa-/, '')
+  return iconNameLookup.get(oldName) ?? oldName.replace(/^fa-/, '')
 }
 
 /**

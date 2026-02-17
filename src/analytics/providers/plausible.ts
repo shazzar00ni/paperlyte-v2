@@ -110,7 +110,7 @@ export class PlausibleProvider implements AnalyticsProvider {
       return
     }
 
-    const domain = this.config?.domain?.trim()
+    const domain = this.config?.domain.trim()
     if (!domain) {
       if (this.config?.debug || import.meta.env.DEV) {
         console.warn(

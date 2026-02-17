@@ -2,6 +2,105 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-02-22
+
+### Summary Overview
+
+- **Total Open PRs:** 395+
+- **Reviewed Today:** 30+ (including #485, #486, #487, #472, #475-483, and follow-ups)
+- **Status:** Daily review in progress; focusing on latest and high-priority PRs.
+- **High Priority:** #469, #451, #485, #487
+
+### New Reviews & Updates
+
+#### PR #485: downgrade eslint and @eslint/js from v10 to v9
+
+- **Status:** Approved
+- **Summary:** Correctly addresses peer dependency conflicts between ESLint 10 and plugins like `eslint-plugin-react-hooks` and `typescript-eslint`.
+- **Feedback:** Essential for CI stability.
+
+#### PR #486 & PR #428: Safe Navigation & Open Redirect Protection
+
+- **Status:** Approved (#428 preferred)
+- **Summary:** Both PRs implement `isSafeUrl` hardening. #428 is more comprehensive as it introduces `safeNavigateExternal` and updates CSP for Vercel Analytics.
+- **Feedback:** Recommend merging #428 and closing #486 as redundant, or merging the refined `isSafeUrl` from #486 into the #428 branch.
+
+#### PR #487: Pin codecov/codecov-action to full commit SHA
+
+- **Status:** Approved
+- **Summary:** Security hardening for the CI pipeline by pinning third-party actions to immutable SHAs.
+- **Feedback:** Aligns with repository security standards.
+
+#### PR #472: Bump qs from 6.14.1 to 6.14.2
+
+- **Status:** Approved
+- **Summary:** Security update fixing a prototype pollution vulnerability (GHSA-w7fw-mjwx-w883).
+
+#### PR #427: Configure Claude Code GitHub Action
+
+- **Status:** Changes Requested (Follow-up)
+- **Feedback:** The `claude.yml` workflow still contains duplicate `permissions` and `if` keys, which are invalid YAML syntax and will prevent execution.
+
+### Automated Dependency Updates
+
+- **PRs:** #475, #476, #477, #478, #479, #480, #481, #482, #483.
+- **Status:** Approved
+- **Summary:** Routine updates for development dependencies (TypeScript, ESLint, Vite, Font Awesome) and GitHub Actions (release-changelog-builder, codeql-action). Verified as low-risk maintenance updates.
+
+### Redundant Summary PRs (Recommended for Closure)
+
+- **PRs:** #429, #430, #431, #432, #433, #434, #435, #436, #445, #448, #450, #461, #468, #470, #471, #473, #484.
+- **Action:** Close these in favor of the current summary.
+
+---
+
+## 2026-02-16 (Summarized from PR #484)
+
+### High Priority & Critical PRs
+
+#### PR #469: fix(ci): consolidate SARIF runs, fix vulnerabilities, and optimize dependency handling
+
+- **Status:** Approved
+- **Summary:** Critical PR that resolves high-severity vulnerabilities in `axios` (DoS) and `qs` (Prototype Pollution), synchronizes ESLint to ^9.39.2, and fixes the SARIF run limit issue.
+
+#### PR #451: fix: pin github actions to SHAs and resolve security alerts
+
+- **Status:** Approved
+- **Summary:** Enhances CI security by pinning all third-party GitHub Actions to 40-character commit SHAs.
+
+#### PR #467: docs: Complete architecture blueprint with common pitfalls and optimization roadmap
+
+- **Status:** Approved
+- **Summary:** Significantly expands `docs/ARCHITECTURE_BLUEPRINT.md` with a performance optimization roadmap and a "Common Pitfalls" section.
+
+#### PR #466: refactor(ci): simplify JUnit XML upload in test job
+
+- **Status:** Approved
+- **Summary:** Improves CI reliability by adding a conditional check for the existence of JUnit XML reports before upload.
+
+### PRs Requiring Changes (2026-02-16)
+
+#### PR #279: feat: Implement React Router and legal pages with dark footer
+
+- **Status:** Changes Requested
+- **Summary:** Introduces `react-router-dom` and creates dedicated pages for Privacy and Terms.
+- **Feedback:** **Regression Found:** The PR removes the `<Analytics />` component and associated CSP settings.
+
+#### PR #311: Fix Icon component fallback rendering
+
+- **Status:** Changes Requested
+- **Summary:** Refactors icon fallback to use raw `<i>` tags.
+- **Feedback:** Replaces the robust `FontAwesomeIcon` React component with raw HTML tags, which may fail to render.
+
+### Rejection & Closure Recommendations (2026-02-16)
+
+#### PR #275 & PR #319
+
+- **Status:** REJECT / CLOSE RECOMMENDED
+- **Summary:** These PRs contain massive regressions, including the deletion of core documentation and critical security vulnerabilities.
+
+---
+
 ## 2026-02-08
 
 ### PR #427: Configure Claude Code GitHub Action
@@ -55,6 +154,7 @@ This file contains a summary of pull requests I have reviewed.
   - **Status:** Reviewed/Approved
   - **Summary:** Miscellaneous improvements.
   - **Feedback:** Changes are straightforward and low risk.
+
 ### Redundant Summary PRs
 
 - **Summary:** Identified several redundant PRs that only update `PR_REVIEW_SUMMARY.md` or are duplicates/attempts to fix the summary file.
@@ -72,6 +172,7 @@ This file contains a summary of pull requests I have reviewed.
 - **Status:** Postponed
 - **Summary:** Repository-wide formatting changes that are low priority and likely to conflict with in-flight feature work.
 - **Feedback:** Recommendation remains unchanged: Postpone #389 (repository-wide formatting) to avoid merge conflicts with active feature PRs and revisit once the codebase is more stable.
+
 ---
 
 ## 2026-02-06

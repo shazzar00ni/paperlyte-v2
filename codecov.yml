@@ -74,10 +74,14 @@ coverage:
         target: auto
         # Allow a small drop in coverage
         threshold: 1%
-        # Informational only - don't fail CI
         informational: false
-        # Only consider files changed in the PR
         only_pulls: false
+
+      # Hard floor matching the documented 70% minimum (CLAUDE.md, vitest.config.ts)
+      minimum:
+        target: 70%
+        threshold: 0%
+        informational: false
 
     # Coverage for code changed in PR
     patch:

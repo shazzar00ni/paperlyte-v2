@@ -309,14 +309,14 @@ Flat config format (`eslint.config.js`) with:
 
 ### GitHub Workflows (`.github/workflows/`)
 
-| Workflow | Trigger | Purpose |
-|---|---|---|
-| `ci.yml` | Push/PR | Main pipeline: lint, test, build, coverage |
-| `pr-quality-check.yml` | PR | Type checking and test gates |
-| `eslint.yml` | PR | ESLint linting |
-| `snyk-security.yml` | Schedule/PR | Snyk vulnerability scanning |
-| `codacy.yml` | Push/PR | Codacy code quality |
-| `codescan.yml` | Push/PR | CodeQL security scanning |
+| Workflow               | Trigger     | Purpose                                    |
+| ---------------------- | ----------- | ------------------------------------------ |
+| `ci.yml`               | Push/PR     | Main pipeline: lint, test, build, coverage |
+| `pr-quality-check.yml` | PR          | Type checking and test gates               |
+| `eslint.yml`           | PR          | ESLint linting                             |
+| `snyk-security.yml`    | Schedule/PR | Snyk vulnerability scanning                |
+| `codacy.yml`           | Push/PR     | Codacy code quality                        |
+| `codescan.yml`         | Push/PR     | CodeQL security scanning                   |
 
 ### Deployment
 

@@ -105,6 +105,47 @@ jobs:
         # Generate coverage even when tests fail to track coverage trends
         run: npm run test:coverage -- --run --coverage.reportOnFailure
 
+      - name: Enforce coverage thresholds
+        if: always()
+        run: |
+          if [ ! -f coverage/coverage-summary.json ]; then
+            echo "::error::Coverage summary not found. Tests may have failed before generating coverage."
+            exit 1
+          fi
+
+          THRESHOLD=70
+
+          LINES=$(jq '.total.lines.pct' coverage/coverage-summary.json)
+          FUNCTIONS=$(jq '.total.functions.pct' coverage/coverage-summary.json)
+          BRANCHES=$(jq '.total.branches.pct' coverage/coverage-summary.json)
+          STATEMENTS=$(jq '.total.statements.pct' coverage/coverage-summary.json)
+
+          echo "## Test Coverage Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Coverage | Threshold | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|----------|-----------|--------|" >> $GITHUB_STEP_SUMMARY
+
+          FAILED=0
+          for METRIC in LINES FUNCTIONS BRANCHES STATEMENTS; do
+            VALUE=${!METRIC}
+            NAME=$(echo "$METRIC" | tr '[:upper:]' '[:lower:]')
+            if [ "$(echo "$VALUE < $THRESHOLD" | bc -l)" -eq 1 ]; then
+              echo "| $NAME | ${VALUE}% | ${THRESHOLD}% | :x: Below threshold |" >> $GITHUB_STEP_SUMMARY
+              FAILED=1
+            else
+              echo "| $NAME | ${VALUE}% | ${THRESHOLD}% | :white_check_mark: Pass |" >> $GITHUB_STEP_SUMMARY
+            fi
+          done
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "$FAILED" -eq 1 ]; then
+            echo ":x: **Coverage is below the documented 70% minimum.** See \`vitest.config.ts\` thresholds and \`CLAUDE.md\`." >> $GITHUB_STEP_SUMMARY
+            echo "::error::Coverage thresholds not met. All metrics must be >= ${THRESHOLD}%."
+            exit 1
+          else
+            echo ":white_check_mark: **All coverage thresholds met.**" >> $GITHUB_STEP_SUMMARY
+          fi
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         if: always()
@@ -113,7 +154,7 @@ jobs:
           files: ./coverage/coverage-final.json
           flags: unittests
           name: codecov-umbrella
-          fail_ci_if_error: false
+          fail_ci_if_error: true
 
       - name: Upload test results to Codecov
         uses: codecov/codecov-action@v5
@@ -126,7 +167,6 @@ jobs:
       - name: Upload coverage to Codacy
         uses: codacy/codacy-coverage-reporter-action@89d6c85cfafaec52c72b6c5e8b2878d33104c699 # v1.3.0
         if: always()
-        continue-on-error: true
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           coverage-reports: ./coverage/lcov.info
@@ -138,16 +178,6 @@ jobs:
           name: coverage-report
           path: coverage/
           retention-days: 30
-
-      - name: Coverage Summary
-        if: always()
-        run: |
-          if [ -f coverage/coverage-summary.json ]; then
-            echo "## Test Coverage Summary" >> $GITHUB_STEP_SUMMARY
-            echo '```json' >> $GITHUB_STEP_SUMMARY
-            cat coverage/coverage-summary.json >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
-          fi
 
   build:
     name: Build

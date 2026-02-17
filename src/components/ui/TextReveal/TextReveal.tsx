@@ -115,13 +115,13 @@ export const TextReveal = ({
     )
   }
 
-  const validAnimations: Record<string, string | undefined> = {
-    fadeUp: styles.fadeUp,
-    fadeIn: styles.fadeIn,
-    slideUp: styles.slideUp,
-    blur: styles.blur,
-  }
-  const animationClass = validAnimations[animation] ?? styles.fadeUp
+  const validAnimations = new Map<string, string | undefined>([
+    ['fadeUp', styles.fadeUp],
+    ['fadeIn', styles.fadeIn],
+    ['slideUp', styles.slideUp],
+    ['blur', styles.blur],
+  ])
+  const animationClass = validAnimations.get(animation) ?? styles.fadeUp
   const containerClasses = [styles.container, className].filter(Boolean).join(' ')
 
   return (

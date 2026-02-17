@@ -18,6 +18,9 @@
 
 name: Snyk Security
 
+env:
+  NPM_CONFIG_LEGACY_PEER_DEPS: "true"
+
 on:
   push:
     branches: ["main" ]
@@ -47,7 +50,7 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Set up Snyk CLI to check for security issues
         # Snyk can be used to break the build when it detects security issues.

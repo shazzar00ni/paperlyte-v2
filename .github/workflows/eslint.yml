@@ -9,6 +9,9 @@
 
 name: ESLint
 
+env:
+  NPM_CONFIG_LEGACY_PEER_DEPS: "true"
+
 on:
   push:
     branches: [ "main" ]
@@ -37,10 +40,10 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Install SARIF formatter
-        run: npm install --no-save @microsoft/eslint-formatter-sarif@3.1.0
+        run: npm install --legacy-peer-deps --no-save @microsoft/eslint-formatter-sarif@3.1.0
 
       - name: Run ESLint
         id: eslint-run

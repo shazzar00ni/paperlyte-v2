@@ -1,0 +1,61 @@
+Type,Title,Last Visited,Host
+Pull Request,Update Daily PR Review Summary - 2026-02-14,2026-02-15T10:59:14Z,github.com
+Pull Request,chore(deps-dev): bump qs from 6.14.1 to 6.14.2,2026-02-14T13:06:13Z,github.com
+Pull Request,Daily PR Review Summary - 2026-02-14,2026-02-14T16:35:29Z,github.com
+Pull Request,Add daily PR review summary for 2026-02-13,2026-02-13T13:36:07Z,github.com
+Pull Request,Consolidate SARIF runs to meet GitHub upload limits,2026-02-13T07:37:44Z,github.com
+Pull Request,Daily PR Review Summary - 2026-02-12,2026-02-13T14:36:03Z,github.com
+Pull Request,docs: Complete architecture blueprint with common pitfalls and optimization roadmap,2026-02-12T05:43:11Z,github.com
+Pull Request,fix(ci): use codecov/test-results-action for JUnit XML upload,2026-02-12T17:31:30Z,github.com
+Pull Request,docs: Comprehensive CLAUDE.md update with full architecture and setup guide,2026-02-13T01:11:05Z,github.com
+Pull Request,Add REMAINING-TASKS.md and update ROADMAP.md with completion status,2026-02-12T17:26:35Z,github.com
+Pull Request,Downgrade ESLint to v9.39.2 for compatibility,2026-02-12T09:03:28Z,github.com
+Pull Request,Configure npm to resolve peer dependency conflicts,2026-02-12T03:12:00Z,github.com
+Pull Request,Daily PR Review Summary - 2026-02-11,2026-02-11T10:57:23Z,github.com
+Pull Request,Add Common Pitfalls subsection and Performance Optimization Roadmap,2026-02-12T17:20:03Z,github.com
+Pull Request,Implement Fathom Analytics provider (TODO from analytics/index.ts),2026-02-12T17:22:49Z,github.com
+Pull Request,Add test coverage analysis with prioritized improvement areas,2026-02-12T17:17:02Z,github.com
+Issue,TODO: Finalize legal documentation pages (Terms and Privacy components),2026-02-11T14:51:20Z,github.com
+Issue,TODO: Update Footer component links in src/components/layout/Footer/Footer.tsx,2026-02-11T14:52:40Z,github.com
+Issue,TODO: Implement analytics tracking in src/analytics/index.ts,2026-02-11T14:55:15Z,github.com
+Issue,TODO: Update download links and platform support in src/constants/downloads.ts,2026-02-11T14:58:02Z,github.com
+Issue,TODO: Address technical debt items documented in docs/TECHNICAL-DEBT.md,2026-02-11T14:56:53Z,github.com
+Issue,TODO: Complete legal configuration placeholders in docs/LEGAL-SETUP.md,2026-02-11T14:53:56Z,github.com
+Pull Request,fix(security): resolve axios DoS vulnerability with v1.13.5 override,2026-02-13T11:16:57Z,github.com
+Pull Request,Daily PR Review Summary - 2026-02-01,2026-02-11T00:34:14Z,github.com
+Pull Request,Fix unresolved comments and alerts on PR #311,2026-02-10T18:21:21Z,github.com
+Pull Request,Update Daily PR Review Summary - 2026-02-10,2026-02-11T00:34:27Z,github.com
+Pull Request,[WIP] Fix component tests after Icon refactor,2026-02-10T06:45:52Z,github.com
+Pull Request,[WIP] Add legacy ESLint configuration for backward compatibility,2026-02-10T06:50:18Z,github.com
+Pull Request,Daily PR Review Summary - 2026-02-09,2026-02-10T18:42:08Z,github.com
+Pull Request,ci: bump github/codeql-action from 4.32.0 to 4.32.2,2026-02-10T09:49:54Z,github.com
+Commit,Create deploy.yml,2026-02-12T06:09:56Z,github.com
+Commit,Create release.yml,2026-02-12T05:59:57Z,github.com
+Commit,Create ROADMAP.md,2026-02-11T10:45:23Z,github.com
+Commit,Merge pull request #406 from shazzar00ni/copilot/sub-pr-400-again,2026-02-10T18:54:12Z,github.com
+Commit,Merge pull request #420 from shazzar00ni/jules/pr-review-summary-20260205-14956065385880756216,2026-02-10T18:51:48Z,github.com
+Commit,Merge branch 'main' into jules/pr-review-summary-20260205-14956065385880756216,2026-02-10T18:51:31Z,github.com
+Commit,Update PR_REVIEW_SUMMARY.md,2026-02-10T18:49:26Z,github.com
+Commit,Merge pull request #436 from shazzar00ni/daily-pr-review-summary-2026-02-08-4785299271730500259,2026-02-10T18:47:21Z,github.com
+Commit,Update PR_REVIEW_SUMMARY.md,2026-02-10T18:46:56Z,github.com
+Commit,Merge branch 'main' into daily-pr-review-summary-2026-02-08-4785299271730500259,2026-02-10T18:44:53Z,github.com
+Commit,Update PR_REVIEW_SUMMARY.md,2026-02-10T18:44:05Z,github.com
+Commit,Update PR_REVIEW_SUMMARY.md,2026-02-10T18:43:54Z,github.com
+Commit,Update PR_REVIEW_SUMMARY.md,2026-02-10T18:43:42Z,github.com
+Commit,Merge pull request #431 from shazzar00ni/copilot/sub-pr-429,2026-02-10T17:58:30Z,github.com
+Commit,Merge pull request #440 from shazzar00ni/dependabot/npm_and_yarn/eslint/js-10.0.1,2026-02-10T17:47:18Z,github.com
+Commit,Merge pull request #441 from shazzar00ni/dependabot/npm_and_yarn/eslint-10.0.0,2026-02-10T17:46:41Z,github.com
+Commit,chore(deps-dev): bump eslint from 9.39.2 to 10.0.0,2026-02-10T09:52:50Z,github.com
+Commit,Merge pull request #442 from shazzar00ni/dependabot/npm_and_yarn/jsdom-28.0.0,2026-02-10T09:51:17Z,github.com
+Commit,chore(deps-dev): bump @eslint/js from 9.39.2 to 10.0.1,2026-02-10T09:50:46Z,github.com
+Commit,Merge pull request #443 from shazzar00ni/dependabot/npm_and_yarn/fortawesome/react-fontawesome-3.2.0,2026-02-10T09:50:13Z,github.com
+Commit,Merge pull request #444 from shazzar00ni/dependabot/github_actions/github/codeql-action-4.32.2,2026-02-10T09:49:51Z,github.com
+Commit,Merge pull request #438 from shazzar00ni/dependabot/npm_and_yarn/development-dependencies-664f589749,2026-02-10T09:49:23Z,github.com
+Commit,Merge branch 'main' into dependabot/npm_and_yarn/development-dependencies-664f589749,2026-02-10T09:49:16Z,github.com
+Commit,Merge pull request #439 from shazzar00ni/dependabot/npm_and_yarn/playwright/test-1.58.2,2026-02-10T09:48:52Z,github.com
+Commit,Merge pull request #445 from shazzar00ni/daily-pr-review-summary-2026-02-09-14823275582180140059,2026-02-10T09:47:59Z,github.com
+Commit,Merge pull request #437 from shazzar00ni/claude/complete-issue-293-STJFG,2026-02-09T13:34:39Z,github.com
+Commit,docs: Fix CSP policy examples to match actual configuration,2026-02-09T13:33:02Z,github.com
+Commit,docs: Fix CI workflow link placeholder in architecture blueprint,2026-02-09T13:31:53Z,github.com
+Commit,feat: Add ALLOW_PERSISTENT_THEME feature flag for theme localStorage,2026-02-09T13:30:28Z,github.com
+Commit,Update docs/Project_Architecture_Blueprint.md,2026-02-09T13:29:27Z,github.com

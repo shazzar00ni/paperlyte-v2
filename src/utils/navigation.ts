@@ -25,6 +25,56 @@ interface SafeUrlOptions {
   allowExternal?: boolean
 }
 
+const DANGEROUS_PROTOCOL_PATTERN = /^(javascript|data|vbscript|file|about):/i
+
+// eslint-disable-next-line no-control-regex
+const CONTROL_CHAR_PATTERN = /[\x00-\x1F\x7F]/
+
+const ENCODED_CHAR_PATTERN = /%[0-9a-f]{2}/i
+
+/** Returns true if the URL uses a dangerous protocol (javascript:, data:, etc.) */
+function hasDangerousProtocol(trimmedUrl: string): boolean {
+  const urlWithoutWhitespace = trimmedUrl.replace(/\s/g, '')
+  return (
+    DANGEROUS_PROTOCOL_PATTERN.test(trimmedUrl) ||
+    DANGEROUS_PROTOCOL_PATTERN.test(urlWithoutWhitespace)
+  )
+}
+
+/** Returns true if the URL hides a dangerous protocol behind percent-encoding */
+function hasEncodedDangerousProtocol(trimmedUrl: string): boolean {
+  const colonIndex = trimmedUrl.indexOf(':')
+  const hasEncoding =
+    colonIndex > 0 && ENCODED_CHAR_PATTERN.test(trimmedUrl.substring(0, colonIndex))
+  if (!hasEncoding) {
+    return false
+  }
+  try {
+    return DANGEROUS_PROTOCOL_PATTERN.test(decodeURIComponent(trimmedUrl))
+  } catch {
+    // If decoding fails, treat as suspicious
+    return true
+  }
+}
+
+/** Returns true if the URL looks like a relative path (/, ./, ../) */
+function isRelativePath(trimmedUrl: string): boolean {
+  const isSlashRelative = trimmedUrl.startsWith('/') && !trimmedUrl.startsWith('//')
+  const isDotRelative = trimmedUrl.startsWith('./') || trimmedUrl.startsWith('../')
+  return isSlashRelative || isDotRelative
+}
+
+/** Validates an absolute URL's protocol and origin against the current page */
+function isAllowedAbsoluteUrl(trimmedUrl: string, allowExternal: boolean): boolean {
+  const parsedUrl = new URL(trimmedUrl, window.location.origin)
+  const isSameOrigin = parsedUrl.origin === window.location.origin
+  const isHttpProtocol = parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:'
+  if (isHttpProtocol) {
+    return allowExternal || isSameOrigin
+  }
+  return isSameOrigin
+}
+
 /**
  * Validates if a URL is safe for navigation (prevents XSS and injection attacks).
  * By default, only allows relative URLs and same-origin URLs to prevent open redirects.
@@ -37,94 +87,33 @@ interface SafeUrlOptions {
  */
 export function isSafeUrl(url: string, options: SafeUrlOptions = {}): boolean {
   const { allowExternal = false } = options
-  // SSR guard
+
   if (typeof window === 'undefined') {
     return false
   }
 
   try {
-    // Empty or null URLs are not safe
     if (!url || url.trim() === '') {
       return false
     }
 
     const trimmedUrl = url.trim()
 
-    // Reject URLs containing ASCII control characters (null bytes, etc.)
-    // eslint-disable-next-line no-control-regex
-    if (/[\x00-\x1F\x7F]/.test(trimmedUrl)) {
-      return false
-    }
-    // Block protocol-relative URLs (//example.com)
-    if (trimmedUrl.startsWith('//')) {
+    if (CONTROL_CHAR_PATTERN.test(trimmedUrl) || trimmedUrl.startsWith('//')) {
       return false
     }
 
-    // Block javascript:, data:, vbscript:, and other dangerous protocols
-    // Check both before and after removing whitespace to catch variations like 'javascript :alert(1)'
-    const dangerousProtocolPattern = /^(javascript|data|vbscript|file|about):/i
-    const urlWithoutWhitespace = trimmedUrl.replace(/\s/g, '')
-    if (
-      dangerousProtocolPattern.test(trimmedUrl) ||
-      dangerousProtocolPattern.test(urlWithoutWhitespace)
-    ) {
+    if (hasDangerousProtocol(trimmedUrl) || hasEncodedDangerousProtocol(trimmedUrl)) {
       return false
     }
 
-    // Block URL-encoded variations of dangerous protocols
-    // Check if the URL contains % encoding before a colon (could be trying to hide a dangerous protocol)
-    // Match patterns like "java%73cript:" or "%6A%61%76%61script:"
-    // Only check the protocol part (before the first colon)
-    const colonIndex = trimmedUrl.indexOf(':')
-    const hasEncodedProtocol =
-      colonIndex > 0 && /%[0-9a-f]{2}/i.test(trimmedUrl.substring(0, colonIndex))
-    if (hasEncodedProtocol) {
-      // Try to decode and check if it's a dangerous protocol
-      try {
-        const decoded = decodeURIComponent(trimmedUrl)
-        if (dangerousProtocolPattern.test(decoded)) {
-          return false
-        }
-      } catch {
-        // If decoding fails, reject it as suspicious
-        return false
-      }
+    if (isRelativePath(trimmedUrl)) {
+      // Reject relative paths containing :// (protocol injection attempt)
+      return !trimmedUrl.includes('://')
     }
 
-    // Allow single slash relative URLs (but check they don't contain ://)
-    if (trimmedUrl.startsWith('/') && !trimmedUrl.startsWith('//')) {
-      // Additional safety: ensure no protocol injection
-      if (trimmedUrl.includes('://')) {
-        return false
-      }
-      return true
-    }
-
-    // Allow ./ and ../ relative URLs
-    if (trimmedUrl.startsWith('./') || trimmedUrl.startsWith('../')) {
-      // Additional safety: ensure no protocol injection
-      if (trimmedUrl.includes('://')) {
-        return false
-      }
-      return true
-    }
-
-    // For absolute URLs, parse and validate the protocol
-    const parsedUrl = new URL(trimmedUrl, window.location.origin)
-
-    const currentOrigin = window.location.origin
-    const isSameOrigin = parsedUrl.origin === currentOrigin
-
-    // Allow http: and https: protocols
-    if (parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:') {
-      // When allowExternal is false, only permit same-origin URLs to prevent open redirects
-      return allowExternal || isSameOrigin
-    }
-
-    // For other protocols, only allow if same-origin
-    return isSameOrigin
+    return isAllowedAbsoluteUrl(trimmedUrl, allowExternal)
   } catch {
-    // If URL parsing fails, it's not safe
     return false
   }
 }

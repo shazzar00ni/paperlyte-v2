@@ -16,7 +16,7 @@ export function scrollToSection(sectionId: string): void {
   }
 }
 
-interface SafeUrlOptions {
+export interface SafeUrlOptions {
   /**
    * When true, allows external HTTP/HTTPS URLs (e.g., https://example.com).
    * When false (default), only same-origin and relative URLs are permitted.

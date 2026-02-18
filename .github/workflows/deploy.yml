@@ -2,6 +2,7 @@
 name: Deploy
 permissions:
   contents: read
+  deployments: write
 
 on:
   push:

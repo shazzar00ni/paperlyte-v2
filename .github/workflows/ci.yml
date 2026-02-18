@@ -45,12 +45,7 @@ jobs:
 
       - name: Run security audit
         id: audit
-        run: |
-          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            npm audit --audit-level=high
-          else
-            npm audit --audit-level=moderate
-          fi
+        run: npm audit --audit-level=high
 
       - name: Generate Lint Summary
         if: always()

@@ -1,0 +1,104 @@
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background: var(--color-background);
+  padding: var(--spacing-lg);
+}
+
+.emptyInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 360px;
+}
+
+.icon {
+  color: var(--color-border);
+  margin-bottom: var(--spacing-lg);
+}
+
+.title {
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: var(--font-size-2xl);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 var(--spacing-xs);
+  line-height: var(--line-height-tight);
+}
+
+.description {
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--spacing-lg);
+  line-height: var(--line-height-relaxed);
+}
+
+.createBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  border: none;
+  border-radius: var(--border-radius-full);
+  background: var(--color-primary);
+  color: var(--color-text-on-primary);
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition:
+    opacity var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.createBtn:hover {
+  opacity: 0.85;
+}
+
+.createBtn:active {
+  transform: scale(0.97);
+}
+
+.shortcuts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-xl);
+}
+
+.shortcut {
+  font-family: var(--font-family);
+  font-size: 0.6875rem;
+  color: var(--color-text-tertiary);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.shortcut kbd {
+  display: inline-block;
+  padding: 1px 5px;
+  border: 1px solid var(--color-border);
+  border-radius: 3px;
+  background: var(--color-surface);
+  font-family: var(--font-family);
+  font-size: 0.625rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .shortcuts {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .createBtn {
+    transition: none;
+  }
+}

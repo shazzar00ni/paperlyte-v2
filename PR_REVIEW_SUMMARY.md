@@ -9,7 +9,7 @@ This file contains a summary of pull requests I have reviewed.
 - **PR #469 / #488: Security & CI Consolidation**
   - **Status:** Approved (Recommended for immediate merge)
   - **Summary:** These PRs resolve high-severity vulnerabilities in `axios` (v1.13.5) and `qs` (v6.14.2) via package overrides. They also synchronize ESLint to v9.39.2 to resolve peer dependency conflicts that have been breaking the CI pipeline.
-  - **Feedback:** PR #488 is the most comprehensive and up-to-date version of these fixes. It is critical to merge this to restore security and CI stability.
+  - **Feedback:** PR #488 is the most comprehensive and up-to-date version of these fixes. It is critical to merge this to restore security and CI stability. Note: This PR also includes an `.npmrc` fix for `legacy-peer-deps` to stabilize third-party CI actions.
 
 - **PR #491: Implement Core Application Features (Editor)**
   - **Status:** Under Review (Major Feature)

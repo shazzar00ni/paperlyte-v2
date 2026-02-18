@@ -112,7 +112,7 @@ export class PlausibleProvider implements AnalyticsProvider {
 
     const domain = this.config?.domain?.trim()
     if (!domain) {
-      if (this.config?.debug || import.meta.env.DEV) {
+      if (this.config?.debug ?? import.meta.env.DEV) {
         console.warn(
           '[Analytics] Plausible domain is empty or not configured. Script injection skipped.'
         )
@@ -120,11 +120,11 @@ export class PlausibleProvider implements AnalyticsProvider {
       return
     }
 
-    const scriptUrl = this.config?.scriptUrl || 'https://plausible.io/js/script.js'
+    const scriptUrl = this.config?.scriptUrl ?? 'https://plausible.io/js/script.js'
 
     // Validate script URL to prevent injection attacks
     if (!this.isValidScriptUrl(scriptUrl)) {
-      if (this.config?.debug || import.meta.env.DEV) {
+      if (this.config?.debug ?? import.meta.env.DEV) {
         console.error(
           '[Analytics] Invalid or unsafe script URL. Must be HTTPS and point to a .js file:',
           scriptUrl
@@ -173,7 +173,7 @@ export class PlausibleProvider implements AnalyticsProvider {
       return
     }
 
-    const pageUrl = url || window.location.pathname
+    const pageUrl = url ?? window.location.pathname
 
     window.plausible('pageview', {
       props: { path: pageUrl },
@@ -196,7 +196,7 @@ export class PlausibleProvider implements AnalyticsProvider {
           (acc, [key, value]) => {
             // Validate key is safe before using it for property assignment
             if (!isSafePropertyKey(key)) {
-              if (this.config?.debug || import.meta.env.DEV) {
+              if (this.config?.debug ?? import.meta.env.DEV) {
                 console.warn('[Analytics] Blocked potentially unsafe property key:', key)
               }
               return acc

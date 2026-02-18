@@ -3,6 +3,8 @@ name: Deploy
 permissions:
   contents: read
   deployments: write
+  statuses: write
+  deployments: write
 
 on:
   push:

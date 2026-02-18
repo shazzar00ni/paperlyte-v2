@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { Analytics } from '@vercel/analytics/react'
 import { ErrorBoundary } from '@components/ErrorBoundary'
 import { Header } from '@components/layout/Header'
@@ -15,22 +16,13 @@ import { FAQ } from '@components/sections/FAQ'
 import { CTA } from '@components/sections/CTA'
 import { FeedbackWidget } from '@components/ui/FeedbackWidget'
 import { useAnalytics } from '@hooks/useAnalytics'
+import { EditorApp } from '@/editor/EditorApp'
 
-/**
- * Root application component that renders the app layout.
- * Initializes analytics tracking including scroll depth tracking.
- *
- * @returns The root JSX element rendering the app: an ErrorBoundary wrapping
- * the Header, and a main element containing Hero, Problem, Solution, Features,
- * Mobile, Statistics, Comparison, Testimonials, EmailCapture, FAQ, and CTA sections,
- * then the Footer and FeedbackWidget.
- */
-function App() {
-  // Initialize analytics with scroll depth tracking
+function LandingPage() {
   useAnalytics()
 
   return (
-    <ErrorBoundary>
+    <>
       <a href="#main" className="skip-link">
         Skip to main content
       </a>
@@ -50,6 +42,26 @@ function App() {
       </main>
       <Footer />
       <FeedbackWidget />
+    </>
+  )
+}
+
+function App() {
+  const [route, setRoute] = useState(() =>
+    window.location.hash === '#/app' ? 'editor' : 'landing'
+  )
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      setRoute(window.location.hash === '#/app' ? 'editor' : 'landing')
+    }
+    window.addEventListener('hashchange', handleHashChange)
+    return () => window.removeEventListener('hashchange', handleHashChange)
+  }, [])
+
+  return (
+    <ErrorBoundary>
+      {route === 'editor' ? <EditorApp /> : <LandingPage />}
       <Analytics />
     </ErrorBoundary>
   )

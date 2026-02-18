@@ -3,6 +3,9 @@ name: CI/CD Pipeline
 permissions:
   contents: read
 
+env:
+  npm_config_legacy_peer_deps: true
+
 on:
   push:
     branches: [main, develop]
@@ -29,7 +32,7 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Run ESLint
         id: eslint
@@ -99,7 +102,7 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Run tests with coverage
         # Generate coverage even when tests fail to track coverage trends
@@ -157,7 +160,7 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Build application
         id: build-step
@@ -213,7 +216,7 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Download build artifacts
         uses: actions/download-artifact@v7
@@ -267,7 +270,7 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Download build artifacts
         uses: actions/download-artifact@v7
@@ -332,7 +335,7 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Download build artifacts
         uses: actions/download-artifact@v7

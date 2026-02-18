@@ -227,7 +227,7 @@ jobs:
 
       - name: Compare bundle sizes
         if: github.event_name == 'pull_request'
-        uses: andresz1/size-limit-action@v1
+        uses: andresz1/size-limit-action@e7493a72a44b113341c0cf6186ab49c17c4b65c1 # v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           skip_step: install
@@ -276,7 +276,7 @@ jobs:
           path: dist/
 
       - name: Install Chrome
-        uses: browser-actions/setup-chrome@v2
+        uses: browser-actions/setup-chrome@b94431e051d1c52dcbe9a7092a4f10f827795416 # v2
         with:
           chrome-version: stable
 

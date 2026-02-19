@@ -66,7 +66,7 @@ function validateBasicUrl(url: string): string | null {
     return null
   }
   const trimmedUrl = url.trim()
-  if (CONTROL_CHAR_PATTERN.test(trimmedUrl) || trimmedUrl.startsWith('//')) {
+  if (CONTROL_CHAR_PATTERN.test(trimmedUrl) || /^[\\/][\\/]/.test(trimmedUrl)) {
     return null
   }
   return trimmedUrl

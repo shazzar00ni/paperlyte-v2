@@ -57,11 +57,29 @@ function hasEncodedDangerousProtocol(trimmedUrl: string): boolean {
   }
 }
 
-/** Returns true if the URL looks like a relative path (/, ./, ../) */
-function isRelativePath(trimmedUrl: string): boolean {
-  const isSlashRelative = trimmedUrl.startsWith('/') && !trimmedUrl.startsWith('//')
-  const isDotRelative = trimmedUrl.startsWith('./') || trimmedUrl.startsWith('../')
-  return isSlashRelative || isDotRelative
+/**
+ * Performs basic validation: rejects empty, control-char, and protocol-relative URLs.
+ * Returns the trimmed URL if valid, or null if the URL should be rejected.
+ */
+function validateBasicUrl(url: string): string | null {
+  if (!url || url.trim() === '') {
+    return null
+  }
+  const trimmedUrl = url.trim()
+  if (CONTROL_CHAR_PATTERN.test(trimmedUrl) || trimmedUrl.startsWith('//')) {
+    return null
+  }
+  return trimmedUrl
+}
+
+/** Returns true if the URL is a relative path starting with / (not //) */
+function isRelativeSlashUrl(trimmedUrl: string): boolean {
+  return trimmedUrl.startsWith('/') && !trimmedUrl.startsWith('//')
+}
+
+/** Returns true if the URL is a dot-relative path (./ or ../) */
+function isDotRelativeUrl(trimmedUrl: string): boolean {
+  return trimmedUrl.startsWith('./') || trimmedUrl.startsWith('../')
 }
 
 /** Validates an absolute URL's protocol and origin against the current page */
@@ -93,13 +111,8 @@ export function isSafeUrl(url: string, options: SafeUrlOptions = {}): boolean {
   }
 
   try {
-    if (!url || url.trim() === '') {
-      return false
-    }
-
-    const trimmedUrl = url.trim()
-
-    if (CONTROL_CHAR_PATTERN.test(trimmedUrl) || trimmedUrl.startsWith('//')) {
+    const trimmedUrl = validateBasicUrl(url)
+    if (!trimmedUrl) {
       return false
     }
 
@@ -107,9 +120,15 @@ export function isSafeUrl(url: string, options: SafeUrlOptions = {}): boolean {
       return false
     }
 
-    if (isRelativePath(trimmedUrl)) {
-      // Reject relative paths containing :// (protocol injection attempt)
+    if (isRelativeSlashUrl(trimmedUrl) || isDotRelativeUrl(trimmedUrl)) {
       return !trimmedUrl.includes('://')
+    }
+
+    // Only attempt absolute URL parsing for strings with a valid scheme (e.g., http://)
+    // A valid scheme starts with a letter and is followed by ://
+    // Bare strings like "not a url at all" or malformed "://invalid" are rejected
+    if (!/^[a-z][a-z0-9+\-.]*:\/\//i.test(trimmedUrl)) {
+      return false
     }
 
     return isAllowedAbsoluteUrl(trimmedUrl, allowExternal)

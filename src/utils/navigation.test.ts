@@ -172,17 +172,10 @@ describe('navigation utilities', () => {
       expect(isSafeUrl(`${currentOrigin}/page`)).toBe(true)
     })
 
-    it('should handle malformed or ambiguous URLs safely', () => {
-      // These will be parsed as relative URLs by the browser
-      // The function validates them as same-origin relative paths
-      const result1 = isSafeUrl('not a url at all')
-      const result2 = isSafeUrl('http://')
-      const result3 = isSafeUrl('://invalid')
-
-      // These should all be handled safely (either allowed as relative or rejected)
-      expect(typeof result1).toBe('boolean')
-      expect(typeof result2).toBe('boolean')
-      expect(typeof result3).toBe('boolean')
+    it('should reject malformed or ambiguous URLs', () => {
+      expect(isSafeUrl('not a url at all')).toBe(false)
+      expect(isSafeUrl('http://')).toBe(false)
+      expect(isSafeUrl('://invalid')).toBe(false)
     })
   })
 
@@ -192,6 +185,14 @@ describe('navigation utilities', () => {
     beforeEach(() => {
       vi.clearAllMocks()
       originalLocation = window.location
+    })
+
+    afterEach(() => {
+      Object.defineProperty(window, 'location', {
+        value: originalLocation,
+        writable: true,
+        configurable: true,
+      })
     })
 
     it('should navigate to safe relative URLs', () => {
@@ -205,12 +206,19 @@ describe('navigation utilities', () => {
       const result = safeNavigate('/')
       expect(result).toBe(true)
       expect(window.location.href).toBe('/')
-      // Restore window.location
+    })
+
+    it('should allow same-origin absolute URLs', () => {
+      const mockLocation = { href: '', origin: 'http://localhost' } as Location
       Object.defineProperty(window, 'location', {
-        value: originalLocation,
+        value: mockLocation,
         writable: true,
         configurable: true,
       })
+
+      const result = safeNavigate('http://localhost/dashboard')
+      expect(result).toBe(true)
+      expect(mockLocation.href).toBe('http://localhost/dashboard')
     })
 
     it('should block navigation to external HTTPS URLs (prevents open redirect)', () => {
@@ -229,12 +237,6 @@ describe('navigation utilities', () => {
       expect(consoleWarnSpy).toHaveBeenCalled()
 
       consoleWarnSpy.mockRestore()
-      // Restore window.location
-      Object.defineProperty(window, 'location', {
-        value: originalLocation,
-        writable: true,
-        configurable: true,
-      })
     })
 
     it('should block navigation to javascript: URLs', () => {
@@ -252,12 +254,6 @@ describe('navigation utilities', () => {
       expect(consoleWarnSpy).toHaveBeenCalled()
 
       consoleWarnSpy.mockRestore()
-      // Restore window.location
-      Object.defineProperty(window, 'location', {
-        value: originalLocation,
-        writable: true,
-        configurable: true,
-      })
     })
 
     it('should return true for successful navigation', () => {
@@ -270,13 +266,6 @@ describe('navigation utilities', () => {
 
       const result = safeNavigate('/about')
       expect(result).toBe(true)
-
-      // Restore window.location
-      Object.defineProperty(window, 'location', {
-        value: originalLocation,
-        writable: true,
-        configurable: true,
-      })
     })
 
     it('should return false for blocked navigation', () => {
@@ -293,12 +282,6 @@ describe('navigation utilities', () => {
       expect(result).toBe(false)
 
       consoleWarnSpy.mockRestore()
-      // Restore window.location
-      Object.defineProperty(window, 'location', {
-        value: originalLocation,
-        writable: true,
-        configurable: true,
-      })
     })
   })
 })

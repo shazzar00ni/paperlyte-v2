@@ -4,6 +4,8 @@
  *
  * @param sectionId - The ID of the section to scroll to (without the # prefix)
  */
+import { logError } from '@utils/monitoring'
+
 export function scrollToSection(sectionId: string): void {
   // SSR guard - document is not available during server-side rendering
   if (typeof document === 'undefined') {
@@ -82,30 +84,15 @@ function validateBasicUrl(url: string): string | null {
   return trimmedUrl
 }
 
-/** Returns true if the URL is a relative path starting with / (not //) */
-function isRelativeSlashUrl(trimmedUrl: string): boolean {
-  return trimmedUrl.startsWith('/') && !trimmedUrl.startsWith('//')
-}
-
-/** Returns true if the URL is a dot-relative path (./ or ../) */
-function isDotRelativeUrl(trimmedUrl: string): boolean {
-  return trimmedUrl.startsWith('./') || trimmedUrl.startsWith('../')
-}
-
-/** Returns true if the URL is any kind of relative path (/, ./, ../) */
-function isRelativeUrl(trimmedUrl: string): boolean {
-  return isRelativeSlashUrl(trimmedUrl) || isDotRelativeUrl(trimmedUrl)
-}
-
 /** Validates an absolute URL's protocol and origin against the current page */
 function isAllowedAbsoluteUrl(trimmedUrl: string, allowExternal: boolean): boolean {
   const parsedUrl = new URL(trimmedUrl, window.location.origin)
-  const isSameOrigin = parsedUrl.origin === window.location.origin
   const isHttpProtocol = parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:'
-  if (isHttpProtocol) {
-    return allowExternal || isSameOrigin
+  if (!isHttpProtocol) {
+    return false
   }
-  return isSameOrigin
+  const isSameOrigin = parsedUrl.origin === window.location.origin
+  return allowExternal || isSameOrigin
 }
 
 /**
@@ -135,15 +122,17 @@ export function isSafeUrl(url: string, options: SafeUrlOptions = {}): boolean {
       return false
     }
 
-    if (isRelativeUrl(trimmedUrl)) {
-      return !trimmedUrl.includes('://')
+    // Absolute URL with a recognized scheme (e.g., http://, https://)
+    if (VALID_SCHEME_PATTERN.test(trimmedUrl)) {
+      return isAllowedAbsoluteUrl(trimmedUrl, allowExternal)
     }
 
-    if (!VALID_SCHEME_PATTERN.test(trimmedUrl)) {
-      return false
-    }
-
-    return isAllowedAbsoluteUrl(trimmedUrl, allowExternal)
+    // No recognized scheme — treat as a relative path (/, ./, ../, or naked).
+    // Use the URL constructor with the current origin as base to resolve it,
+    // then verify it stays same-origin with an allowed protocol.
+    const parsed = new URL(trimmedUrl, window.location.origin)
+    const isHttpProtocol = parsed.protocol === 'http:' || parsed.protocol === 'https:'
+    return isHttpProtocol && parsed.origin === window.location.origin
   } catch {
     return false
   }
@@ -168,7 +157,11 @@ export function safeNavigate(url: string): boolean {
   }
 
   if (!isSafeUrl(url)) {
-    console.warn(`Navigation blocked: URL "${url}" failed security validation`)
+    logError(
+      new Error('Navigation blocked: URL failed security validation'),
+      { severity: 'medium', errorInfo: { reason: 'unsafe_url', urlPresent: true } },
+      'navigation'
+    )
     return false
   }
 

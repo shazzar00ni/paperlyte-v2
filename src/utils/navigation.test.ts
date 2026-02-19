@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { scrollToSection, isSafeUrl, safeNavigate } from './navigation'
+import * as monitoring from './monitoring'
 
 describe('navigation utilities', () => {
   describe('scrollToSection', () => {
@@ -97,10 +98,27 @@ describe('navigation utilities', () => {
       expect(isSafeUrl('   ')).toBe(false)
     })
 
-    it('should reject protocol-relative URLs and URLs with protocol injection', () => {
+    it('should reject protocol-relative URLs', () => {
       expect(isSafeUrl('//evil.com')).toBe(false)
       expect(isSafeUrl('//evil.com/path')).toBe(false)
-      expect(isSafeUrl('/path/with://protocol')).toBe(false)
+    })
+
+    it('should allow paths containing :// when they resolve to same-origin', () => {
+      // The URL constructor correctly resolves these as same-origin relative paths,
+      // so the conservative :// substring guard is no longer needed.
+      expect(isSafeUrl('/path/with://protocol')).toBe(true)
+    })
+
+    it('should allow naked relative paths (no leading / or dots)', () => {
+      expect(isSafeUrl('about')).toBe(true)
+      expect(isSafeUrl('features')).toBe(true)
+      expect(isSafeUrl('page/subpage')).toBe(true)
+      expect(isSafeUrl('docs/guide')).toBe(true)
+    })
+
+    it('should allow hash-only and query-only URLs', () => {
+      expect(isSafeUrl('#section')).toBe(true)
+      expect(isSafeUrl('?param=value')).toBe(true)
     })
 
     it('should reject external HTTP/HTTPS URLs by default (prevents open redirects)', () => {
@@ -172,10 +190,16 @@ describe('navigation utilities', () => {
       expect(isSafeUrl(`${currentOrigin}/page`)).toBe(true)
     })
 
-    it('should reject malformed or ambiguous URLs', () => {
-      expect(isSafeUrl('not a url at all')).toBe(false)
+    it('should reject truly malformed URLs', () => {
+      // http:// has a valid scheme but no host — URL constructor throws
       expect(isSafeUrl('http://')).toBe(false)
-      expect(isSafeUrl('://invalid')).toBe(false)
+    })
+
+    it('should allow ambiguous strings that resolve safely as same-origin paths', () => {
+      // The URL constructor resolves these as same-origin relative paths,
+      // which is safe even if the input looks unusual.
+      expect(isSafeUrl('not a url at all')).toBe(true)
+      expect(isSafeUrl('://invalid')).toBe(true)
     })
   })
 
@@ -196,7 +220,7 @@ describe('navigation utilities', () => {
     })
 
     it('should navigate to safe relative URLs', () => {
-      const mockLocation = { href: '' } as Location
+      const mockLocation = { href: '', origin: 'http://localhost' } as Location
       Object.defineProperty(window, 'location', {
         value: mockLocation,
         writable: true,
@@ -229,14 +253,14 @@ describe('navigation utilities', () => {
         configurable: true,
       })
 
-      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const logErrorSpy = vi.spyOn(monitoring, 'logError').mockImplementation(() => {})
 
       const result = safeNavigate('https://example.com')
       expect(result).toBe(false)
       expect(mockLocation.href).toBe('')
-      expect(consoleWarnSpy).toHaveBeenCalled()
+      expect(logErrorSpy).toHaveBeenCalled()
 
-      consoleWarnSpy.mockRestore()
+      logErrorSpy.mockRestore()
     })
 
     it('should block navigation to javascript: URLs', () => {
@@ -247,17 +271,17 @@ describe('navigation utilities', () => {
         configurable: true,
       })
 
-      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const logErrorSpy = vi.spyOn(monitoring, 'logError').mockImplementation(() => {})
 
       const result = safeNavigate('javascript:alert(1)')
       expect(result).toBe(false)
-      expect(consoleWarnSpy).toHaveBeenCalled()
+      expect(logErrorSpy).toHaveBeenCalled()
 
-      consoleWarnSpy.mockRestore()
+      logErrorSpy.mockRestore()
     })
 
     it('should return true for successful navigation', () => {
-      const mockLocation = { href: '' } as Location
+      const mockLocation = { href: '', origin: 'http://localhost' } as Location
       Object.defineProperty(window, 'location', {
         value: mockLocation,
         writable: true,
@@ -276,12 +300,12 @@ describe('navigation utilities', () => {
         configurable: true,
       })
 
-      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const logErrorSpy = vi.spyOn(monitoring, 'logError').mockImplementation(() => {})
 
       const result = safeNavigate('//evil.com')
       expect(result).toBe(false)
 
-      consoleWarnSpy.mockRestore()
+      logErrorSpy.mockRestore()
     })
   })
 })

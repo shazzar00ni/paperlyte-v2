@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react'
+import { type ReactNode, type ReactElement } from 'react'
 import { Icon } from '@components/ui/Icon'
 import { isSafeUrl } from '@utils/navigation'
 import styles from './Button.module.css'
@@ -29,7 +29,7 @@ export const Button = ({
   className = '',
   ariaLabel,
   type = 'button',
-}: ButtonProps): React.ReactElement => {
+}: ButtonProps): ReactElement => {
   const classNames = [
     styles.button,
     styles[variant],

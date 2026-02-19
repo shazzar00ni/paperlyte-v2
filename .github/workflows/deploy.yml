@@ -1,6 +1,9 @@
 # .github/workflows/deploy.yml
 name: Deploy
 
+env:
+  npm_config_legacy_peer_deps: true
+
 on:
   push:
     branches: [main]  # Production

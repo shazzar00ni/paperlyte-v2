@@ -25,20 +25,25 @@ export interface SafeUrlOptions {
   allowExternal?: boolean
 }
 
-const DANGEROUS_PROTOCOL_PATTERN = /^(javascript|data|vbscript|file|about):/i
+const DANGEROUS_PROTOCOLS = new Set(['javascript', 'data', 'vbscript', 'file', 'about'])
 
 // eslint-disable-next-line no-control-regex
 const CONTROL_CHAR_PATTERN = /[\x00-\x1F\x7F]/
 
 const ENCODED_CHAR_PATTERN = /%[0-9a-f]{2}/i
 
+const VALID_SCHEME_PATTERN = /^[a-z][a-z0-9+\-.]*:\/\//i
+
+/** Extracts the protocol name (lowercase) before the first colon, or empty string */
+function extractProtocol(url: string): string {
+  const colonIndex = url.indexOf(':')
+  return colonIndex > 0 ? url.substring(0, colonIndex).toLowerCase() : ''
+}
+
 /** Returns true if the URL uses a dangerous protocol (javascript:, data:, etc.) */
 function hasDangerousProtocol(trimmedUrl: string): boolean {
-  const urlWithoutWhitespace = trimmedUrl.replace(/\s/g, '')
-  return (
-    DANGEROUS_PROTOCOL_PATTERN.test(trimmedUrl) ||
-    DANGEROUS_PROTOCOL_PATTERN.test(urlWithoutWhitespace)
-  )
+  const normalized = trimmedUrl.replace(/\s/g, '')
+  return DANGEROUS_PROTOCOLS.has(extractProtocol(normalized))
 }
 
 /** Returns true if the URL hides a dangerous protocol behind percent-encoding */
@@ -50,11 +55,16 @@ function hasEncodedDangerousProtocol(trimmedUrl: string): boolean {
     return false
   }
   try {
-    return DANGEROUS_PROTOCOL_PATTERN.test(decodeURIComponent(trimmedUrl))
+    return DANGEROUS_PROTOCOLS.has(extractProtocol(decodeURIComponent(trimmedUrl)))
   } catch {
     // If decoding fails, treat as suspicious
     return true
   }
+}
+
+/** Returns true if any form of dangerous protocol is detected (plain or encoded) */
+function isAnyDangerousProtocol(trimmedUrl: string): boolean {
+  return hasDangerousProtocol(trimmedUrl) || hasEncodedDangerousProtocol(trimmedUrl)
 }
 
 /**
@@ -80,6 +90,11 @@ function isRelativeSlashUrl(trimmedUrl: string): boolean {
 /** Returns true if the URL is a dot-relative path (./ or ../) */
 function isDotRelativeUrl(trimmedUrl: string): boolean {
   return trimmedUrl.startsWith('./') || trimmedUrl.startsWith('../')
+}
+
+/** Returns true if the URL is any kind of relative path (/, ./, ../) */
+function isRelativeUrl(trimmedUrl: string): boolean {
+  return isRelativeSlashUrl(trimmedUrl) || isDotRelativeUrl(trimmedUrl)
 }
 
 /** Validates an absolute URL's protocol and origin against the current page */
@@ -116,18 +131,15 @@ export function isSafeUrl(url: string, options: SafeUrlOptions = {}): boolean {
       return false
     }
 
-    if (hasDangerousProtocol(trimmedUrl) || hasEncodedDangerousProtocol(trimmedUrl)) {
+    if (isAnyDangerousProtocol(trimmedUrl)) {
       return false
     }
 
-    if (isRelativeSlashUrl(trimmedUrl) || isDotRelativeUrl(trimmedUrl)) {
+    if (isRelativeUrl(trimmedUrl)) {
       return !trimmedUrl.includes('://')
     }
 
-    // Only attempt absolute URL parsing for strings with a valid scheme (e.g., http://)
-    // A valid scheme starts with a letter and is followed by ://
-    // Bare strings like "not a url at all" or malformed "://invalid" are rejected
-    if (!/^[a-z][a-z0-9+\-.]*:\/\//i.test(trimmedUrl)) {
+    if (!VALID_SCHEME_PATTERN.test(trimmedUrl)) {
       return false
     }
 

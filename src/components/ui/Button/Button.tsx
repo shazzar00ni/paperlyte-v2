@@ -81,7 +81,7 @@ export const Button = ({
         className={classNames}
         aria-label={ariaLabel}
         aria-disabled={disabled ? 'true' : 'false'}
-        onClick={disabled ? (e) => e.preventDefault() : onClick}
+        onClick={disabled ? (e) => { e.preventDefault(); } : onClick}
         {...((href.startsWith('http://') || href.startsWith('https://')) && {
           target: '_blank',
           rel: 'noopener noreferrer',

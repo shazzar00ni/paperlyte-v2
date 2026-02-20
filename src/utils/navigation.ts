@@ -165,6 +165,10 @@ export function safeNavigate(url: string): boolean {
     return false
   }
 
-  window.location.href = url
-  return true
+  try {
+    window.location.href = url
+    return true
+  } catch {
+    return false
+  }
 }

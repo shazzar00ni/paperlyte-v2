@@ -258,7 +258,11 @@ describe('navigation utilities', () => {
       const result = safeNavigate('https://example.com')
       expect(result).toBe(false)
       expect(mockLocation.href).toBe('')
-      expect(logErrorSpy).toHaveBeenCalled()
+      expect(logErrorSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ message: 'Navigation blocked: URL failed security validation' }),
+        { severity: 'medium', errorInfo: { reason: 'unsafe_url', urlPresent: true } },
+        'navigation'
+      )
 
       logErrorSpy.mockRestore()
     })

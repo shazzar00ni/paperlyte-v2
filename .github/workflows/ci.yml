@@ -106,8 +106,8 @@ jobs:
         run: npm run test:coverage -- --run --coverage.reportOnFailure
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5
-        if: always()
+        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
+        if: ${{ !cancelled() }}
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage/coverage-final.json
@@ -116,16 +116,16 @@ jobs:
           fail_ci_if_error: false
 
       - name: Upload test results to Codecov
-        uses: codecov/codecov-action@v5
-        if: always()
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@0fa95f0e1eeaafde2c782583b36b28ad0d8c77d3 # v1.2.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          report_type: test_results
-          files: ./junit.xml
+          files: "**/junit.xml"
+          verbose: true
 
       - name: Upload coverage reports
         uses: actions/upload-artifact@v6
-        if: always()
+        if: ${{ !cancelled() }}
         with:
           name: coverage-report
           path: coverage/

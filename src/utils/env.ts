@@ -87,12 +87,4 @@ export const updateMetaTags = (): void => {
     ogImage.setAttribute('content', env.ogImage)
   }
 
-  // Log environment info in development
-  if (env.isDevelopment) {
-    console.log('🌍 Environment:', {
-      baseUrl: env.baseUrl,
-      ogImage: env.ogImage,
-      mode: import.meta.env.MODE,
-    })
-  }
 }

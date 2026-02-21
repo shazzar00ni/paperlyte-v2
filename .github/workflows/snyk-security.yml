@@ -18,11 +18,14 @@
 
 name: Snyk Security
 
+env:
+  npm_config_legacy_peer_deps: true
+
 on:
   push:
-    branches: ["main" ]
+    branches: ['main']
   pull_request:
-    branches: ["main"]
+    branches: ['main']
 
 permissions:
   contents: read
@@ -44,7 +47,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 20
-          cache: "npm"
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
@@ -96,7 +99,7 @@ jobs:
         run: |
           echo "## 🛡️ Snyk Security Scan" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           if [ -z "${{ secrets.SNYK_TOKEN }}" ]; then
             echo "⚠️ **Snyk Token:** Not configured - scans skipped" >> $GITHUB_STEP_SUMMARY
           else
@@ -127,6 +130,6 @@ jobs:
               echo "| Infrastructure as Code | ⏭️ Skipped |" >> $GITHUB_STEP_SUMMARY
             fi
           fi
-          
+
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "📊 View detailed findings in the **Security** tab." >> $GITHUB_STEP_SUMMARY

@@ -12,9 +12,9 @@ This file contains a summary of pull requests I have reviewed.
   - **Feedback:** This is a critical update that addresses high-severity security issues and stabilizes the CI environment. Highly recommended for immediate merge.
 
 - **PR #486 (fix: open redirect vulnerability in safeNavigate())**
-  - **Status:** Approved
+  - **Status:** Superseded (Close Recommended)
   - **Summary:** Fixes an open redirect vulnerability by restricting `safeNavigate()` to same-origin URLs by default.
-  - **Feedback:** Exceptional work. The implementation of `isSafeUrl` is very robust, handling many edge cases including encoded protocols.
+  - **Feedback:** Exceptional implementation of `isSafeUrl`, however, this PR is superseded by PR #428 which provides a more comprehensive set of utilities (`safeNavigateExternal`, etc.) and aligns better with the project's architecture.
 
 - **PR #489 (fix: replace hardcoded credentials with env variables in analytics test)**
   - **Status:** Approved

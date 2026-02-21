@@ -124,7 +124,7 @@ jobs:
           files: ./junit.xml
 
       - name: Upload coverage reports
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v4.4.1
         if: always()
         with:
           name: coverage-report

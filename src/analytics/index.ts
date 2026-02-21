@@ -49,6 +49,10 @@ class Analytics {
 
     this.config = config
 
+    if (config.debug) {
+      console.log('[Analytics] Initialized with config:', config)
+    }
+
     // Create provider based on configuration
     this.provider = this.createProvider(config.provider)
 
@@ -73,7 +77,6 @@ class Analytics {
     }
 
     this.initialized = true
-
   }
 
   /**
@@ -120,7 +123,6 @@ class Analytics {
     }
 
     this.provider?.trackPageView(url)
-
   }
 
   /**
@@ -140,7 +142,6 @@ class Analytics {
     }
 
     this.provider?.trackEvent(eventWithTimestamp)
-
   }
 
   /**
@@ -153,8 +154,11 @@ class Analytics {
       return
     }
 
-    this.provider?.trackWebVitals(vitals)
+    if (this.config?.debug) {
+      console.log('[Analytics] Web Vitals tracked:', vitals)
+    }
 
+    this.provider?.trackWebVitals(vitals)
   }
 
   /**
@@ -220,6 +224,10 @@ class Analytics {
       return
     }
 
+    if (this.config?.debug) {
+      console.log('[Analytics] Disabled')
+    }
+
     // Disable provider
     this.provider?.disable()
 
@@ -239,7 +247,6 @@ class Analytics {
     this.initialized = false
     this.config = null
     this.provider = null
-
   }
 
   /**
@@ -268,7 +275,6 @@ class Analytics {
     // Clear all state unconditionally
     this.initialized = false
     this.config = null
-
   }
 
   /**

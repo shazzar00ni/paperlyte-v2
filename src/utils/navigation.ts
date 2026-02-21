@@ -166,8 +166,11 @@ export function safeNavigate(url: string): boolean {
   }
 
   try {
-    window.location.href = url
+  try {
+    // SECURITY: URL has been validated as same-origin and safe via isSafeUrl()
+    window.location.assign(url)
     return true
+  } catch {
   } catch {
     return false
   }

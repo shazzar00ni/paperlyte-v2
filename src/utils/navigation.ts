@@ -138,6 +138,9 @@ export function safeNavigate(url: string): boolean {
   }
 
   if (!isSafeUrl(url)) {
+    if (import.meta.env.DEV) {
+      console.warn(`Navigation blocked: URL "${url}" failed security validation`)
+    }
     return false
   }
 

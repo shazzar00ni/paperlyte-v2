@@ -2,6 +2,83 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-02-21
+
+### Security & High Priority
+
+- **PR #488 (fix(ci): resolve security vulnerabilities and fix CI comparison failures)**
+  - **Status:** Approved
+  - **Summary:** Comprehensive fix for axios DoS vulnerability and ESLint synchronization issues.
+  - **Feedback:** This is a critical update that addresses high-severity security issues and stabilizes the CI environment. Highly recommended for immediate merge.
+
+- **PR #486 (fix: open redirect vulnerability in safeNavigate())**
+  - **Status:** Approved
+  - **Summary:** Fixes an open redirect vulnerability by restricting `safeNavigate()` to same-origin URLs by default.
+  - **Feedback:** Exceptional work. The implementation of `isSafeUrl` is very robust, handling many edge cases including encoded protocols.
+
+- **PR #489 (fix: replace hardcoded credentials with env variables in analytics test)**
+  - **Status:** Approved
+  - **Summary:** Replaces hardcoded credentials in `src/utils/analytics.test.ts` with environment variables.
+  - **Feedback:** Correctly addresses a security concern introduced in previous iterations.
+
+### Maintenance & Improvements
+
+- **PR #503 (fix: downgrade eslint and @eslint/js from v10 to v9 for plugin compatibility)**
+  - **Status:** Approved
+  - **Summary:** Downgrades ESLint to v9 to maintain compatibility with legacy plugins.
+  - **Feedback:** Necessary for ecosystem compatibility and CI stability.
+
+- **PR #500 (Add Codacy badge)**
+  - **Status:** Approved
+  - **Summary:** Adds the Codacy status badge to README.md.
+
+- **PR #499 (chore(deps-dev): bump the development-dependencies group)**
+  - **Status:** Approved
+  - **Summary:** Routine updates for dev dependencies.
+
+- **PR #498 (Remove development console.log statements)**
+  - **Status:** Approved
+  - **Summary:** Cleanup of leftover debug logs.
+
+- **PR #487 (Fix eslint peer dependency conflict and align version comments)**
+  - **Status:** Approved
+  - **Summary:** Resolves peer dependency conflicts in `package.json`.
+
+- **PR #485 (fix(ci): align eslint.yml triggers with ci.yml and fix audit failures)**
+  - **Status:** Approved
+  - **Summary:** Ensures consistent CI behavior across workflows.
+
+### Regressions & Issues
+
+- **PR #502 (Add dev-only guard to safeNavigate console.warn)**
+  - **Status:** Changes Requested
+  - **Feedback:** Re-introduces hardcoded credentials in `src/utils/analytics.test.ts` (reverting PR #489) and includes significant unrelated UI changes (e.g., removing the productivity badge from the Hero section).
+
+- **PR #492 (fix: add missing @testing-library/dom peer dependency and remove .npmrc)**
+  - **Status:** Changes Requested
+  - **Feedback:** Removing `.npmrc` is risky as it contains `legacy-peer-deps=true`, which is essential for this project's complex dependency resolution.
+
+- **PR #490 (Update .github/workflows/deploy.yml)**
+  - **Status:** Changes Requested
+  - **Feedback:** Previous reports indicated potential duplicate YAML keys. While recent checks didn't show them, the PR continues to carry unrelated UI changes and regressions found in #502.
+
+- **PR #427 (Configure Claude Code GitHub Action)**
+  - **Status:** Changes Requested
+  - **Feedback:** Still contains duplicate `permissions` keys and multiple `if` conditions on the same job, which will cause workflow failures.
+
+### Redundant Summary PRs
+
+- **Summary:** Identified several redundant PRs that only update this summary file or are superseded by better implementations.
+- **PRs to Close:**
+  - **Summary Updates:** #484, #493, #494, #496, #435, #434, #433, #432, #431.
+  - **Superseded Security:** #486 (superseded by #428's more comprehensive API), #424 (superseded by #428).
+  - **Monolithic/Obsolete:** #107 (massive monolithic PR, risky to merge).
+- **Action:** Recommend closing these to reduce PR noise and prevent merge conflicts with higher priority security and stability PRs.
+
+### Global Note on Recent PRs
+
+Multiple recent PRs (including #484, #490, #492, #493, #502) appear to share a common ancestor branch that contains undocumented UI changes (removing badges, changing copy) and security regressions. **Do not merge any PR that modifies `src/components/sections/Hero/Hero.tsx` or `src/utils/analytics.test.ts` without careful verification against `main`.**
+
 ## 2026-02-08
 
 ### PR #427: Configure Claude Code GitHub Action
@@ -55,6 +132,7 @@ This file contains a summary of pull requests I have reviewed.
   - **Status:** Reviewed/Approved
   - **Summary:** Miscellaneous improvements.
   - **Feedback:** Changes are straightforward and low risk.
+
 ### Redundant Summary PRs
 
 - **Summary:** Identified several redundant PRs that only update `PR_REVIEW_SUMMARY.md` or are duplicates/attempts to fix the summary file.
@@ -72,6 +150,7 @@ This file contains a summary of pull requests I have reviewed.
 - **Status:** Postponed
 - **Summary:** Repository-wide formatting changes that are low priority and likely to conflict with in-flight feature work.
 - **Feedback:** Recommendation remains unchanged: Postpone #389 (repository-wide formatting) to avoid merge conflicts with active feature PRs and revisit once the codebase is more stable.
+
 ---
 
 ## 2026-02-06

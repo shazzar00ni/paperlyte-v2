@@ -231,12 +231,13 @@ export class FathomProvider implements AnalyticsProvider {
    * Check if analytics is enabled
    */
   isEnabled(): boolean {
+  isEnabled(): boolean {
     return (
       this.initialized &&
       this.scriptLoaded &&
       typeof window !== 'undefined' &&
-      typeof window.fathom === 'object' &&
       typeof window.fathom === 'object'
+    );
   }
 
   /**

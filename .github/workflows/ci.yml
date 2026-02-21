@@ -3,6 +3,9 @@ name: CI/CD Pipeline
 permissions:
   contents: read
 
+env:
+  npm_config_legacy_peer_deps: true
+
 on:
   push:
     branches: [main, develop]
@@ -25,8 +28,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: "20"
-          cache: "npm"
+          node-version: '20'
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
@@ -57,25 +60,25 @@ jobs:
         run: |
           echo "## 🔍 Lint & Type Check Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           if [ "${{ steps.eslint.outcome }}" == "success" ]; then
             echo "✅ **ESLint:** Passed" >> $GITHUB_STEP_SUMMARY
           else
             echo "❌ **ESLint:** Failed" >> $GITHUB_STEP_SUMMARY
           fi
-          
+
           if [ "${{ steps.typecheck.outcome }}" == "success" ]; then
             echo "✅ **TypeScript:** No type errors" >> $GITHUB_STEP_SUMMARY
           else
             echo "❌ **TypeScript:** Type errors found" >> $GITHUB_STEP_SUMMARY
           fi
-          
+
           if [ "${{ steps.format.outcome }}" == "success" ]; then
             echo "✅ **Prettier:** Code is formatted" >> $GITHUB_STEP_SUMMARY
           else
             echo "❌ **Prettier:** Formatting issues found" >> $GITHUB_STEP_SUMMARY
           fi
-          
+
           if [ "${{ steps.audit.outcome }}" == "success" ]; then
             echo "✅ **Security Audit:** No vulnerabilities" >> $GITHUB_STEP_SUMMARY
           else
@@ -95,8 +98,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: "20"
-          cache: "npm"
+          node-version: '20'
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
@@ -153,8 +156,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: "20"
-          cache: "npm"
+          node-version: '20'
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
@@ -177,7 +180,7 @@ jobs:
         run: |
           echo "## 🏗️ Build Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           if [ "${{ steps.build-step.outcome }}" == "success" ]; then
             echo "✅ **Build:** Successful" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
@@ -209,8 +212,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: "20"
-          cache: "npm"
+          node-version: '20'
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
@@ -237,13 +240,13 @@ jobs:
         run: |
           echo "## 📦 Bundle Size Check" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           if [ "${{ steps.size-limit.outcome }}" == "success" ]; then
             echo "✅ **Size Limit:** All bundles within budget" >> $GITHUB_STEP_SUMMARY
           else
             echo "⚠️ **Size Limit:** Some bundles exceed budget" >> $GITHUB_STEP_SUMMARY
           fi
-          
+
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Bundle Analysis" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
@@ -263,8 +266,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: "20"
-          cache: "npm"
+          node-version: '20'
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
@@ -328,8 +331,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: "20"
-          cache: "npm"
+          node-version: '20'
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
@@ -376,13 +379,13 @@ jobs:
         run: |
           echo "## 🎭 E2E Test Results (Playwright)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           if [ "${{ steps.playwright.outcome }}" == "success" ]; then
             echo "✅ **E2E Tests:** All tests passed" >> $GITHUB_STEP_SUMMARY
           else
             echo "❌ **E2E Tests:** Some tests failed" >> $GITHUB_STEP_SUMMARY
           fi
-          
+
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "📊 View detailed test report in the \`playwright-report\` artifact." >> $GITHUB_STEP_SUMMARY
 
@@ -446,7 +449,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
           echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
-          
+
           # Function to convert result to emoji
           get_status() {
             case "$1" in
@@ -457,16 +460,16 @@ jobs:
               *) echo "❓ Unknown" ;;
             esac
           }
-          
+
           echo "| Lint & Type Check | $(get_status ${{ needs.lint-and-typecheck.result }}) |" >> $GITHUB_STEP_SUMMARY
           echo "| Unit Tests | $(get_status ${{ needs.test.result }}) |" >> $GITHUB_STEP_SUMMARY
           echo "| Build | $(get_status ${{ needs.build.result }}) |" >> $GITHUB_STEP_SUMMARY
           echo "| Bundle Size | $(get_status ${{ needs.size-check.result }}) |" >> $GITHUB_STEP_SUMMARY
           echo "| Lighthouse CI | $(get_status ${{ needs.lighthouse.result }}) |" >> $GITHUB_STEP_SUMMARY
           echo "| E2E Tests | $(get_status ${{ needs.e2e.result }}) |" >> $GITHUB_STEP_SUMMARY
-          
+
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           if [ "${{ needs.lint-and-typecheck.result }}" == "success" ] && \
              [ "${{ needs.test.result }}" == "success" ] && \
              [ "${{ needs.build.result }}" == "success" ] && \

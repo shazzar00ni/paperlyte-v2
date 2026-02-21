@@ -25,11 +25,11 @@ export const Comparison = (): React.ReactElement => {
     <Section id="comparison" background="default">
       <div className={styles.header}>
         <AnimatedElement animation="fadeIn">
-          <h2 className={styles.title}>See How We Compare</h2>
+          <h2 className={styles.title}>How we stack up</h2>
         </AnimatedElement>
         <AnimatedElement animation="fadeIn" delay={100}>
           <p className={styles.subtitle}>
-            We believe in transparency. Here's how Paperlyte stacks up against the competition.
+            No marketing spin. Here's how Paperlyte compares to the tools you already know.
           </p>
         </AnimatedElement>
       </div>

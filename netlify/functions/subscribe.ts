@@ -160,7 +160,6 @@ async function subscribeToConvertKit(
     );
     // Intentionally sanitizing cause to strip subscriber PII
     throw new Error("Invalid response from email service", {
-      // eslint-disable-next-line preserve-caught-error -- cause is sanitized to remove PII from ZodError
       cause: sanitizedCause,
     });
   }

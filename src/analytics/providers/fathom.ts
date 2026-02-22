@@ -1,33 +1,46 @@
 /**
- * Plausible Analytics provider implementation
+ * Fathom Analytics provider implementation
  *
- * Privacy-first, cookie-less analytics that's GDPR compliant out of the box.
- * Lightweight script (<1KB) with async loading for minimal performance impact.
+ * Privacy-first, cookie-free analytics that's GDPR, CCPA and ePrivacy compliant.
+ * Lightweight script with async loading for minimal performance impact.
  *
- * @see https://plausible.io/docs
+ * Implementation uses dynamic script injection — no npm package required,
+ * keeping the production bundle free of analytics library overhead.
+ *
+ * @see https://usefathom.com/docs
  */
 
 import type { AnalyticsConfig, AnalyticsEvent, AnalyticsProvider, CoreWebVitals } from '../types'
-import { isSafePropertyKey } from '../../utils/security'
+
+// Extend Window with Fathom's global API
+// Type declarations only — no runtime dependency on any npm package
+declare global {
+  interface Window {
+    fathom?: {
+      trackPageview: (opts?: { url?: string; referrer?: string }) => void
+      trackGoal: (code: string, cents: number) => void
+    }
+  }
+}
 
 /**
- * Plausible Analytics provider
- * Implements privacy-first, cookie-less analytics tracking
+ * Fathom Analytics provider
+ * Implements privacy-first, cookie-free analytics tracking
  */
-export class PlausibleProvider implements AnalyticsProvider {
+export class FathomProvider implements AnalyticsProvider {
   private config: AnalyticsConfig | null = null
   private initialized = false
   private scriptLoaded = false
   private scriptElement: HTMLScriptElement | null = null
 
   /**
-   * Initialize Plausible Analytics
-   * Loads the Plausible script asynchronously and sets up configuration
+   * Initialize Fathom Analytics
+   * Loads the Fathom script asynchronously and sets up configuration
    */
   init(config: AnalyticsConfig): void {
     if (this.initialized) {
       if (config.debug) {
-        console.log('[Analytics] Plausible already initialized')
+        console.log('[Analytics] Fathom already initialized')
       }
       return
     }
@@ -43,17 +56,17 @@ export class PlausibleProvider implements AnalyticsProvider {
     this.config = config
     this.initialized = true
 
-    // Load Plausible script asynchronously
+    // Load Fathom script asynchronously
     this.loadScript()
 
     if (config.debug) {
-      console.log('[Analytics] Plausible initialized', config)
+      console.log('[Analytics] Fathom initialized', config)
     }
   }
 
   /**
    * Validate script URL to prevent script injection attacks
-   * Only allows HTTPS URLs from known analytics providers or valid domains
+   * Only allows HTTPS URLs pointing to JavaScript files
    *
    * @param url - The URL to validate
    * @returns true if URL is valid and safe, false otherwise
@@ -70,17 +83,15 @@ export class PlausibleProvider implements AnalyticsProvider {
         return false
       }
 
-      const hasValidPath = parsedUrl.pathname.endsWith('.js')
-
-      if (!hasValidPath) {
+      // Script must point to a JavaScript file
+      if (!parsedUrl.pathname.endsWith('.js')) {
         if (this.config?.debug) {
           console.warn('[Analytics] Script URL must point to a .js file:', url)
         }
         return false
       }
 
-      // Protocol is already verified to be HTTPS and path ends with .js above,
-      // so any self-hosted or known-provider URL is valid at this point
+      // Protocol is HTTPS and path ends with .js — URL is valid
       return true
     } catch (error) {
       // Invalid URL format
@@ -92,7 +103,7 @@ export class PlausibleProvider implements AnalyticsProvider {
   }
 
   /**
-   * Load Plausible analytics script
+   * Load Fathom analytics script
    * Uses async loading to prevent blocking page render
    */
   private loadScript(): void {
@@ -101,7 +112,7 @@ export class PlausibleProvider implements AnalyticsProvider {
       return
     }
 
-    const scriptUrl = this.config?.scriptUrl || 'https://plausible.io/js/script.js'
+    const scriptUrl = this.config?.scriptUrl || 'https://cdn.usefathom.com/script.js'
 
     // Validate script URL to prevent injection attacks
     if (!this.isValidScriptUrl(scriptUrl)) {
@@ -118,16 +129,14 @@ export class PlausibleProvider implements AnalyticsProvider {
 
     script.async = true
     script.src = scriptUrl
-    script.setAttribute('data-domain', this.config?.domain || '')
-
-    // Add optional tracking features
-    if (this.config?.trackPageviews === false) {
-      script.setAttribute('data-auto-pageviews', 'false')
-    }
+    // Fathom uses data-site for the site ID (unlike Plausible's data-domain)
+    script.setAttribute('data-site', this.config?.domain || '')
+    // Honour browser-level DNT signal at the script level as well
+    script.setAttribute('data-honor-dnt', 'true')
 
     script.onerror = () => {
       if (this.config?.debug) {
-        console.warn('[Analytics] Failed to load Plausible script')
+        console.warn('[Analytics] Failed to load Fathom script')
       }
       this.scriptLoaded = false
     }
@@ -135,7 +144,7 @@ export class PlausibleProvider implements AnalyticsProvider {
     script.onload = () => {
       this.scriptLoaded = true
       if (this.config?.debug) {
-        console.log('[Analytics] Plausible script loaded successfully')
+        console.log('[Analytics] Fathom script loaded successfully')
       }
     }
 
@@ -146,19 +155,17 @@ export class PlausibleProvider implements AnalyticsProvider {
 
   /**
    * Track a page view
-   * Plausible automatically tracks pageviews, but this can be used for SPAs
+   * Useful for SPA navigation where the URL changes without a full page reload
    */
   trackPageView(url?: string): void {
     // Guard against SSR/Node.js environments
-    if (!this.isEnabled() || typeof window === 'undefined' || !window.plausible) {
+    if (!this.isEnabled() || typeof window === 'undefined' || !window.fathom) {
       return
     }
 
     const pageUrl = url || window.location.pathname
 
-    window.plausible('pageview', {
-      props: { path: pageUrl },
-    })
+    window.fathom.trackPageview({ url: pageUrl })
 
     if (this.config?.debug) {
       console.log('[Analytics] Page view tracked:', pageUrl)
@@ -166,46 +173,31 @@ export class PlausibleProvider implements AnalyticsProvider {
   }
 
   /**
-   * Track a custom event
-   * Sends event with optional properties to Plausible
+   * Track a custom event as a Fathom goal
+   * Fathom maps events to goals using a short code and optional value in cents
    */
   trackEvent(event: AnalyticsEvent): void {
     // Guard against SSR/Node.js environments
-    if (!this.isEnabled() || typeof window === 'undefined' || !window.plausible) {
+    if (!this.isEnabled() || typeof window === 'undefined' || !window.fathom) {
       return
     }
 
-    // Convert properties to Plausible format (only string, number, boolean)
-    const props = event.properties
-      ? Object.entries(event.properties).reduce(
-          (acc, [key, value]) => {
-            // Validate key is safe before using it for property assignment
-            if (!isSafePropertyKey(key)) {
-              if (this.config?.debug || import.meta.env.DEV) {
-                console.warn('[Analytics] Blocked potentially unsafe property key:', key)
-              }
-              return acc
-            }
+    // Fathom goals use a numeric value in cents; default to 0
+    const value =
+      typeof event.properties?.value === 'number'
+        ? Math.round(event.properties.value * 100)
+        : 0
 
-            if (value !== undefined && value !== null) {
-              acc[key] = value
-            }
-            return acc
-          },
-          {} as Record<string, string | number | boolean>
-        )
-      : undefined
-
-    window.plausible(event.name, props ? { props } : undefined)
+    window.fathom.trackGoal(event.name, value)
 
     if (this.config?.debug) {
-      console.log('[Analytics] Event tracked:', event.name, props)
+      console.log('[Analytics] Event tracked:', event.name, { value })
     }
   }
 
   /**
-   * Track Core Web Vitals
-   * Sends performance metrics as custom events
+   * Track Core Web Vitals as Fathom goals
+   * Sends each metric as a separate goal with its value
    */
   trackWebVitals(vitals: CoreWebVitals): void {
     if (!this.isEnabled()) {
@@ -242,13 +234,14 @@ export class PlausibleProvider implements AnalyticsProvider {
       this.initialized &&
       this.scriptLoaded &&
       typeof window !== 'undefined' &&
-      typeof window.plausible === 'function'
+      typeof window.fathom === 'object' &&
+      window.fathom !== null
     )
   }
 
   /**
    * Disable analytics tracking
-   * Removes the Plausible script and resets state
+   * Removes the Fathom script and resets state
    */
   disable(): void {
     const debug = this.config?.debug
@@ -259,7 +252,6 @@ export class PlausibleProvider implements AnalyticsProvider {
 
     // Guard against SSR/Node.js environments and remove only the script we created
     if (typeof document !== 'undefined' && this.scriptElement) {
-      // Remove the exact script element we created (not a broad selector)
       if (this.scriptElement.parentNode) {
         this.scriptElement.parentNode.removeChild(this.scriptElement)
       }
@@ -267,12 +259,12 @@ export class PlausibleProvider implements AnalyticsProvider {
     }
 
     // Clean up window global
-    if (typeof window !== 'undefined' && window.plausible) {
-      delete window.plausible
+    if (typeof window !== 'undefined' && window.fathom) {
+      delete window.fathom
     }
 
     if (debug) {
-      console.log('[Analytics] Plausible disabled')
+      console.log('[Analytics] Fathom disabled')
     }
   }
 

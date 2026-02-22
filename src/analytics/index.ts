@@ -23,6 +23,7 @@
 
 import type { AnalyticsConfig, AnalyticsEvent, AnalyticsProvider } from './types'
 import { PlausibleProvider } from './providers/plausible'
+import { FathomProvider } from './providers/fathom'
 import { initWebVitals } from './webVitals'
 import { createScrollTracker } from './scrollDepth'
 
@@ -88,16 +89,17 @@ class Analytics {
       case 'plausible':
         return new PlausibleProvider()
       case 'fathom':
+        return new FathomProvider()
       case 'umami':
       case 'simple':
       case 'custom':
         // TODO: Implement additional analytics providers
         // Track progress at: https://github.com/shazzar00ni/paperlyte-v2/issues/[ISSUE_NUMBER]
-        // Required providers: Fathom, Umami, Simple Analytics, Custom
+        // Required providers: Umami, Simple Analytics, Custom
         // See src/analytics/README.md for implementation requirements
         throw new Error(
           `[Analytics] Provider "${provider}" is not yet implemented. ` +
-            `Please use "plausible" for now. ` +
+            `Please use "plausible" or "fathom" for now. ` +
             `Track implementation progress at: https://github.com/shazzar00ni/paperlyte-v2/issues`
         )
       default:

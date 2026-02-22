@@ -1,5 +1,8 @@
 name: Deployment Status
 
+env:
+  npm_config_legacy_peer_deps: true
+
 on:
   deployment_status:
 

@@ -1,5 +1,8 @@
 name: Weekly Paperlyte Activity Report
 
+env:
+  npm_config_legacy_peer_deps: true
+
 on:
   schedule:
     - cron: "0 0 * * MON"   # every Monday at 00:00 UTC

@@ -150,7 +150,7 @@ async function subscribeToConvertKit(
         ? new Error(
             `Schema validation failed: ${error.issues.map((i) => `${i.path.join(".")}: ${i.code}`).join(", ")}`
           )
-        : new Error("Unknown validation error");
+        : new Error("Response validation failed");
 
     console.error(
       "ConvertKit response validation failed:",

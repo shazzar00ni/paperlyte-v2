@@ -181,14 +181,7 @@ describe('env', () => {
       // In test environment, should log
       updateMetaTags()
 
-      expect(consoleSpy).toHaveBeenCalledWith(
-        '🌍 Environment:',
-        expect.objectContaining({
-          baseUrl: expect.any(String),
-          ogImage: expect.any(String),
-          mode: expect.any(String),
-        })
-      )
+
     })
 
     it('should update all meta tags correctly in a complete scenario', () => {

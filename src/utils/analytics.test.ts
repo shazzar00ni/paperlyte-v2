@@ -328,7 +328,7 @@ describe('Analytics Utility', () => {
 
       trackPageView('/about', 'About Page')
 
-       // expect(consoleSpy).toHaveBeenCalledWith('[Analytics] Page View:', '/about', 'About Page')
+      // expect(consoleSpy).toHaveBeenCalledWith('[Analytics] Page View:', '/about', 'About Page')
       consoleSpy.mockRestore()
     })
   })

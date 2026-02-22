@@ -60,7 +60,7 @@ describe('monitoring', () => {
 
       logError(error, context, 'TestComponent')
 
-       // expect(consoleSpy.log).toHaveBeenCalledWith('Component Stack:', context.componentStack)
+      // expect(consoleSpy.log).toHaveBeenCalledWith('Component Stack:', context.componentStack)
     })
 
     it('should log error with additional info', () => {
@@ -71,7 +71,7 @@ describe('monitoring', () => {
 
       logError(error, context, 'TestComponent')
 
-       // expect(consoleSpy.log).toHaveBeenCalledWith('Additional Info:', context.errorInfo)
+      // expect(consoleSpy.log).toHaveBeenCalledWith('Additional Info:', context.errorInfo)
     })
 
     it('should log error with tags', () => {
@@ -82,7 +82,7 @@ describe('monitoring', () => {
 
       logError(error, context, 'TestComponent')
 
-       // expect(consoleSpy.log).toHaveBeenCalledWith('Tags:', context.tags)
+      // expect(consoleSpy.log).toHaveBeenCalledWith('Tags:', context.tags)
     })
 
     it('should use "medium" severity by default', () => {
@@ -180,25 +180,25 @@ describe('monitoring', () => {
     it('should log performance metric to console', () => {
       logPerformance('render_time', 150)
 
-       // expect(consoleSpy.log).toHaveBeenCalledWith('[Performance] render_time: 150ms')
+      // expect(consoleSpy.log).toHaveBeenCalledWith('[Performance] render_time: 150ms')
     })
 
     it('should log performance metric with custom unit', () => {
       logPerformance('bundle_size', 1024, 'bytes')
 
-       // expect(consoleSpy.log).toHaveBeenCalledWith('[Performance] bundle_size: 1024bytes')
+      // expect(consoleSpy.log).toHaveBeenCalledWith('[Performance] bundle_size: 1024bytes')
     })
 
     it('should default to "ms" unit', () => {
       logPerformance('query_time', 50)
 
-       // expect(consoleSpy.log).toHaveBeenCalledWith('[Performance] query_time: 50ms')
+      // expect(consoleSpy.log).toHaveBeenCalledWith('[Performance] query_time: 50ms')
     })
 
     it('should support "count" unit', () => {
       logPerformance('api_calls', 5, 'count')
 
-       // expect(consoleSpy.log).toHaveBeenCalledWith('[Performance] api_calls: 5count')
+      // expect(consoleSpy.log).toHaveBeenCalledWith('[Performance] api_calls: 5count')
     })
 
     it('should not call trackEvent in development', () => {
@@ -215,12 +215,12 @@ describe('monitoring', () => {
 
     it('should handle zero values', () => {
       logPerformance('zero_metric', 0)
-       // expect(consoleSpy.log).toHaveBeenCalledWith('[Performance] zero_metric: 0ms')
+      // expect(consoleSpy.log).toHaveBeenCalledWith('[Performance] zero_metric: 0ms')
     })
 
     it('should handle negative values', () => {
       logPerformance('negative_metric', -1)
-       // expect(consoleSpy.log).toHaveBeenCalledWith('[Performance] negative_metric: -1ms')
+      // expect(consoleSpy.log).toHaveBeenCalledWith('[Performance] negative_metric: -1ms')
     })
   })
 
@@ -228,14 +228,14 @@ describe('monitoring', () => {
     it('should log event to console', () => {
       logEvent('button_click')
 
-       // expect(consoleSpy.log).toHaveBeenCalledWith('[Event]', 'button_click', undefined)
+      // expect(consoleSpy.log).toHaveBeenCalledWith('[Event]', 'button_click', undefined)
     })
 
     it('should log event with properties', () => {
       const properties = { location: 'header', text: 'Sign Up' }
       logEvent('button_click', properties)
 
-       // expect(consoleSpy.log).toHaveBeenCalledWith('[Event]', 'button_click', properties)
+      // expect(consoleSpy.log).toHaveBeenCalledWith('[Event]', 'button_click', properties)
     })
 
     it('should track event in analytics even in development', () => {

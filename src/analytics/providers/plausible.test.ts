@@ -76,7 +76,6 @@ describe('analytics/providers/plausible', () => {
 
       provider.init(debugConfig)
 
-
       expect(provider.isEnabled()).toBe(false)
 
       consoleLogSpy.mockRestore()

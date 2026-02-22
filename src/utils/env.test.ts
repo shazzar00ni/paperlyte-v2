@@ -180,8 +180,6 @@ describe('env', () => {
     it('should log environment info in development', () => {
       // In test environment, should log
       updateMetaTags()
-
-
     })
 
     it('should update all meta tags correctly in a complete scenario', () => {

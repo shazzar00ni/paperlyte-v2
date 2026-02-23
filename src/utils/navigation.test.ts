@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { scrollToSection, isSafeUrl, safeNavigate } from './navigation'
+import * as monitoring from './monitoring'
 
 describe('navigation utilities', () => {
   describe('scrollToSection', () => {
@@ -97,16 +98,45 @@ describe('navigation utilities', () => {
       expect(isSafeUrl('   ')).toBe(false)
     })
 
-    it('should reject protocol-relative URLs and URLs with protocol injection', () => {
+    it('should reject protocol-relative URLs', () => {
       expect(isSafeUrl('//evil.com')).toBe(false)
       expect(isSafeUrl('//evil.com/path')).toBe(false)
-      expect(isSafeUrl('/path/with://protocol')).toBe(false)
     })
 
-    it('should allow external HTTP/HTTPS URLs (for linking to external resources)', () => {
-      expect(isSafeUrl('http://example.com')).toBe(true)
-      expect(isSafeUrl('https://example.com/page')).toBe(true)
-      expect(isSafeUrl('https://github.com')).toBe(true)
+    it('should allow paths containing :// when they resolve to same-origin', () => {
+      // The URL constructor correctly resolves these as same-origin relative paths,
+      // so the conservative :// substring guard is no longer needed.
+      expect(isSafeUrl('/path/with://protocol')).toBe(true)
+    })
+
+    it('should allow naked relative paths (no leading / or dots)', () => {
+      expect(isSafeUrl('about')).toBe(true)
+      expect(isSafeUrl('features')).toBe(true)
+      expect(isSafeUrl('page/subpage')).toBe(true)
+      expect(isSafeUrl('docs/guide')).toBe(true)
+    })
+
+    it('should allow hash-only and query-only URLs', () => {
+      expect(isSafeUrl('#section')).toBe(true)
+      expect(isSafeUrl('?param=value')).toBe(true)
+    })
+
+    it('should reject external HTTP/HTTPS URLs by default (prevents open redirects)', () => {
+      expect(isSafeUrl('http://example.com')).toBe(false)
+      expect(isSafeUrl('https://example.com/page')).toBe(false)
+      expect(isSafeUrl('https://github.com')).toBe(false)
+    })
+
+    it('should allow external HTTP/HTTPS URLs when allowExternal is true', () => {
+      expect(isSafeUrl('http://example.com', { allowExternal: true })).toBe(true)
+      expect(isSafeUrl('https://example.com/page', { allowExternal: true })).toBe(true)
+      expect(isSafeUrl('https://github.com', { allowExternal: true })).toBe(true)
+    })
+
+    it('should still block dangerous protocols even with allowExternal: true', () => {
+      expect(isSafeUrl('javascript:alert(1)', { allowExternal: true })).toBe(false)
+      expect(isSafeUrl('data:text/html,<script>alert(1)</script>', { allowExternal: true })).toBe(false)
+      expect(isSafeUrl('vbscript:alert(1)', { allowExternal: true })).toBe(false)
     })
 
     it('should reject javascript: protocol URLs', () => {
@@ -160,17 +190,30 @@ describe('navigation utilities', () => {
       expect(isSafeUrl(`${currentOrigin}/page`)).toBe(true)
     })
 
-    it('should handle malformed or ambiguous URLs safely', () => {
-      // These will be parsed as relative URLs by the browser
-      // The function validates them as same-origin relative paths
-      const result1 = isSafeUrl('not a url at all')
-      const result2 = isSafeUrl('http://')
-      const result3 = isSafeUrl('://invalid')
+    it('should reject truly malformed URLs', () => {
+      // http:// has a valid scheme but no host — URL constructor throws
+      expect(isSafeUrl('http://')).toBe(false)
+    })
 
-      // These should all be handled safely (either allowed as relative or rejected)
-      expect(typeof result1).toBe('boolean')
-      expect(typeof result2).toBe('boolean')
-      expect(typeof result3).toBe('boolean')
+    it('should allow ambiguous strings that resolve safely as same-origin paths', () => {
+      // The URL constructor resolves these as same-origin relative paths,
+      // which is safe even if the input looks unusual.
+      expect(isSafeUrl('not a url at all')).toBe(true)
+      expect(isSafeUrl('://invalid')).toBe(true)
+    })
+
+    it('should reject URLs with leading backslashes that browsers normalize to protocol-relative paths', () => {
+      expect(isSafeUrl('\\/example.com')).toBe(false)
+      expect(isSafeUrl('\\\\example.com')).toBe(false)
+      expect(isSafeUrl('\\/evil.com/steal')).toBe(false)
+    })
+
+    it('should reject URLs containing control characters before decoding', () => {
+      expect(isSafeUrl('http://example.com/\x00')).toBe(false)
+      expect(isSafeUrl('/path\x01with\x02control')).toBe(false)
+      expect(isSafeUrl('/page\x0Dtest')).toBe(false)
+      expect(isSafeUrl('/page\x0Atest')).toBe(false)
+      expect(isSafeUrl('\x7F/delete-char')).toBe(false)
     })
   })
 
@@ -182,8 +225,16 @@ describe('navigation utilities', () => {
       originalLocation = window.location
     })
 
+    afterEach(() => {
+      Object.defineProperty(window, 'location', {
+        value: originalLocation,
+        writable: true,
+        configurable: true,
+      })
+    })
+
     it('should navigate to safe relative URLs', () => {
-      const mockLocation = { href: '' } as Location
+      const mockLocation = { href: '', origin: 'http://localhost' } as Location
       Object.defineProperty(window, 'location', {
         value: mockLocation,
         writable: true,
@@ -193,15 +244,9 @@ describe('navigation utilities', () => {
       const result = safeNavigate('/')
       expect(result).toBe(true)
       expect(window.location.href).toBe('/')
-      // Restore window.location
-      Object.defineProperty(window, 'location', {
-        value: originalLocation,
-        writable: true,
-        configurable: true,
-      })
     })
 
-    it('should allow navigation to external HTTPS URLs', () => {
+    it('should allow same-origin absolute URLs', () => {
       const mockLocation = { href: '', origin: 'http://localhost' } as Location
       Object.defineProperty(window, 'location', {
         value: mockLocation,
@@ -209,16 +254,31 @@ describe('navigation utilities', () => {
         configurable: true,
       })
 
-      const result = safeNavigate('https://example.com')
+      const result = safeNavigate('http://localhost/dashboard')
       expect(result).toBe(true)
-      expect(mockLocation.href).toBe('https://example.com')
+      expect(mockLocation.href).toBe('http://localhost/dashboard')
+    })
 
-      // Restore window.location
+    it('should block navigation to external HTTPS URLs (prevents open redirect)', () => {
+      const mockLocation = { href: '', origin: 'http://localhost' } as Location
       Object.defineProperty(window, 'location', {
-        value: originalLocation,
+        value: mockLocation,
         writable: true,
         configurable: true,
       })
+
+      const logErrorSpy = vi.spyOn(monitoring, 'logError').mockImplementation(() => {})
+
+      const result = safeNavigate('https://example.com')
+      expect(result).toBe(false)
+      expect(mockLocation.href).toBe('')
+      expect(logErrorSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ message: 'Navigation blocked: URL failed security validation' }),
+        { severity: 'medium', errorInfo: { reason: 'unsafe_url', urlPresent: true } },
+        'navigation'
+      )
+
+      logErrorSpy.mockRestore()
     })
 
     it('should block navigation to javascript: URLs', () => {
@@ -229,23 +289,17 @@ describe('navigation utilities', () => {
         configurable: true,
       })
 
-      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const logErrorSpy = vi.spyOn(monitoring, 'logError').mockImplementation(() => {})
 
       const result = safeNavigate('javascript:alert(1)')
       expect(result).toBe(false)
-      expect(consoleWarnSpy).toHaveBeenCalled()
+      expect(logErrorSpy).toHaveBeenCalled()
 
-      consoleWarnSpy.mockRestore()
-      // Restore window.location
-      Object.defineProperty(window, 'location', {
-        value: originalLocation,
-        writable: true,
-        configurable: true,
-      })
+      logErrorSpy.mockRestore()
     })
 
     it('should return true for successful navigation', () => {
-      const mockLocation = { href: '' } as Location
+      const mockLocation = { href: '', origin: 'http://localhost' } as Location
       Object.defineProperty(window, 'location', {
         value: mockLocation,
         writable: true,
@@ -254,13 +308,6 @@ describe('navigation utilities', () => {
 
       const result = safeNavigate('/about')
       expect(result).toBe(true)
-
-      // Restore window.location
-      Object.defineProperty(window, 'location', {
-        value: originalLocation,
-        writable: true,
-        configurable: true,
-      })
     })
 
     it('should return false for blocked navigation', () => {
@@ -271,18 +318,42 @@ describe('navigation utilities', () => {
         configurable: true,
       })
 
-      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const logErrorSpy = vi.spyOn(monitoring, 'logError').mockImplementation(() => {})
 
       const result = safeNavigate('//evil.com')
       expect(result).toBe(false)
 
-      consoleWarnSpy.mockRestore()
-      // Restore window.location
+      logErrorSpy.mockRestore()
+    })
+
+    it('should log unsafe_url reason to monitoring for all blocked URL types', () => {
+      const mockLocation = { href: '', origin: 'http://localhost' } as Location
       Object.defineProperty(window, 'location', {
-        value: originalLocation,
+        value: mockLocation,
         writable: true,
         configurable: true,
       })
+
+      const logErrorSpy = vi.spyOn(monitoring, 'logError').mockImplementation(() => {})
+
+      const blockedUrls = [
+        'javascript:alert(1)',
+        'data:text/html,<h1>xss</h1>',
+        '//evil.com',
+        'https://external.com',
+      ]
+
+      for (const url of blockedUrls) {
+        logErrorSpy.mockClear()
+        safeNavigate(url)
+        expect(logErrorSpy).toHaveBeenCalledWith(
+          expect.objectContaining({ message: 'Navigation blocked: URL failed security validation' }),
+          expect.objectContaining({ errorInfo: { reason: 'unsafe_url', urlPresent: true } }),
+          'navigation'
+        )
+      }
+
+      logErrorSpy.mockRestore()
     })
   })
 })

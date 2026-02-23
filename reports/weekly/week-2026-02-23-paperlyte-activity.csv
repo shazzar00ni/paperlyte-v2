@@ -1,0 +1,59 @@
+Type,Title,Last Visited,Host
+Pull Request,Daily PR Review Summary - 2026-02-22,2026-02-22T11:03:46Z,github.com
+Pull Request,Daily PR Review Summary - 2026-02-21,2026-02-21T11:08:53Z,github.com
+Pull Request,fix: downgrade eslint and @eslint/js from v10 to v9 for plugin compatibility,2026-02-22T08:56:22Z,github.com
+Pull Request,Remove console.warn from safeNavigate to avoid production log clutter,2026-02-21T06:05:38Z,github.com
+Issue,## [Codecov](https://app.codecov.io/gh/shazzar00ni/paperlyte-v2/pull/428?dropdown=coverage&src=pr&el=h1&utm_medium=referral&utm_source=github&utm_content=comment&utm_campaign=pr+comments&utm_term=Shannon+Lockett) Report,2026-02-21T04:32:48Z,github.com
+Pull Request,Add a Codacy badge to README.md,2026-02-20T20:45:58Z,github.com
+Pull Request,chore(deps-dev): bump the development-dependencies group across 1 directory with 5 updates,2026-02-20T20:08:51Z,github.com
+Pull Request,Remove development console.log statements,2026-02-20T19:29:27Z,github.com
+Pull Request,"[WIP] Prepend daily PR review report for February 20, 2026",2026-02-20T16:39:50Z,github.com
+Pull Request,Prepend Daily PR Review Report for 2026-02-20,2026-02-20T16:38:54Z,github.com
+Issue,Features Grid Implementation,2026-02-20T13:28:09Z,github.com
+Pull Request,Daily PR Review Summary - 2026-02-19,2026-02-19T15:10:47Z,github.com
+Pull Request,Daily PR Review Summary - 2026-02-22,2026-02-18T16:54:50Z,github.com
+Pull Request,fix: add .npmrc with legacy-peer-deps to fix Vercel deployment,2026-02-21T05:48:02Z,github.com
+Pull Request,feat: implement Phase 1 core editor with note management,2026-02-18T05:34:27Z,github.com
+Pull Request,Potential fix for code scanning alert no. 5671: Workflow does not contain permissions,2026-02-20T19:42:41Z,github.com
+Pull Request,fix: replace hardcoded credentials with env variables in analytics test,2026-02-18T16:32:48Z,github.com
+Pull Request,Update PR Review Summary - 2026-02-22,2026-02-18T06:06:42Z,github.com
+Pull Request,Pin third-party GitHub Actions to full commit SHAs,2026-02-21T05:49:14Z,github.com
+Pull Request,Fix open redirect vulnerability in safeNavigate() (#2305),2026-02-21T06:53:57Z,github.com
+Pull Request,fix: downgrade eslint and @eslint/js from v10 to v9 to resolve peer dependency conflicts,2026-02-21T05:43:27Z,github.com
+Pull Request,Daily PR Review Summary - 2026-02-16,2026-02-16T11:20:50Z,github.com
+Pull Request,ci: bump github/codeql-action from 4.32.2 to 4.32.3,2026-02-18T06:03:02Z,github.com
+Pull Request,ci: bump mikepenz/release-changelog-builder-action from 5 to 6,2026-02-18T06:14:04Z,github.com
+Pull Request,chore(deps): bump @fortawesome/fontawesome-svg-core from 7.1.0 to 7.2.0,2026-02-18T06:10:04Z,github.com
+Pull Request,chore(deps): bump @sentry/react from 10.38.0 to 10.39.0,2026-02-18T06:10:39Z,github.com
+Pull Request,chore(deps): bump @fortawesome/free-brands-svg-icons from 7.1.0 to 7.2.0,2026-02-18T06:12:12Z,github.com
+Pull Request,chore(deps): bump @fortawesome/free-solid-svg-icons from 7.1.0 to 7.2.0,2026-02-20T20:05:33Z,github.com
+Pull Request,chore(deps-dev): bump wait-on from 9.0.3 to 9.0.4,2026-02-20T20:06:10Z,github.com
+Pull Request,chore(deps-dev): bump jsdom from 28.0.0 to 28.1.0,2026-02-20T20:06:58Z,github.com
+Commit,Create review.md,2026-02-21T06:52:37Z,github.com
+Commit,Merge pull request #449 from shazzar00ni/jules/fix-pr-311-refined-16590193177492626176,2026-02-20T20:10:05Z,github.com
+Commit,Merge pull request #476 from shazzar00ni/dependabot/npm_and_yarn/jsdom-28.1.0,2026-02-20T20:06:56Z,github.com
+Commit,Merge pull request #477 from shazzar00ni/dependabot/npm_and_yarn/wait-on-9.0.4,2026-02-20T20:06:08Z,github.com
+Commit,Merge pull request #478 from shazzar00ni/dependabot/npm_and_yarn/fortawesome/free-solid-svg-icons-7.2.0,2026-02-20T20:05:18Z,github.com
+Commit,Merge branch 'main' into dependabot/npm_and_yarn/fortawesome/free-solid-svg-icons-7.2.0,2026-02-20T20:05:14Z,github.com
+Commit,Merge pull request #498 from shazzar00ni/claude/remove-console-logs-z4goD,2026-02-20T19:29:24Z,github.com
+Commit,Remove development console.log statements,2026-02-20T17:44:43Z,github.com
+Commit,Create gitVersionControl.md,2026-02-20T17:37:45Z,github.com
+Commit,chore(deps): bump @fortawesome/free-solid-svg-icons from 7.1.0 to 7.2.0,2026-02-18T06:12:03Z,github.com
+Commit,Merge pull request #479 from shazzar00ni/dependabot/npm_and_yarn/fortawesome/free-brands-svg-icons-7.2.0,2026-02-18T06:11:09Z,github.com
+Commit,chore(deps): bump @fortawesome/free-brands-svg-icons from 7.1.0 to 7.2.0,2026-02-18T06:10:59Z,github.com
+Commit,Merge pull request #480 from shazzar00ni/dependabot/npm_and_yarn/sentry/react-10.39.0,2026-02-18T06:10:38Z,github.com
+Commit,Merge pull request #481 from shazzar00ni/dependabot/npm_and_yarn/fortawesome/fontawesome-svg-core-7.2.0,2026-02-18T06:10:02Z,github.com
+Commit,Merge pull request #482 from shazzar00ni/dependabot/github_actions/mikepenz/release-changelog-builder-action-6,2026-02-18T06:09:32Z,github.com
+Commit,Merge branch 'main' into dependabot/github_actions/mikepenz/release-changelog-builder-action-6,2026-02-18T06:08:57Z,github.com
+Commit,Merge pull request #472 from shazzar00ni/dependabot/npm_and_yarn/qs-6.14.2,2026-02-18T06:03:55Z,github.com
+Commit,Merge branch 'main' into dependabot/npm_and_yarn/qs-6.14.2,2026-02-18T06:03:46Z,github.com
+Commit,Merge pull request #483 from shazzar00ni/dependabot/github_actions/github/codeql-action-4.32.3,2026-02-18T06:02:32Z,github.com
+Commit,Merge pull request #489 from shazzar00ni/fix/snyk-hardcoded-passwords,2026-02-17T16:42:17Z,github.com
+Commit,fix: replace hardcoded credentials with env variables in analytics test,2026-02-17T16:38:34Z,github.com
+Commit,ci: bump github/codeql-action from 4.32.2 to 4.32.3,2026-02-16T09:43:34Z,github.com
+Commit,ci: bump mikepenz/release-changelog-builder-action from 5 to 6,2026-02-16T09:43:13Z,github.com
+Commit,chore(deps): bump @fortawesome/fontawesome-svg-core from 7.1.0 to 7.2.0,2026-02-16T09:41:34Z,github.com
+Commit,chore(deps): bump @sentry/react from 10.38.0 to 10.39.0,2026-02-16T09:41:29Z,github.com
+Commit,chore(deps-dev): bump wait-on from 9.0.3 to 9.0.4,2026-02-16T09:40:52Z,github.com
+Commit,chore(deps-dev): bump jsdom from 28.0.0 to 28.1.0,2026-02-16T09:40:45Z,github.com
+Commit,Weekly Paperlyte activity report,2026-02-16T00:18:36Z,github.com

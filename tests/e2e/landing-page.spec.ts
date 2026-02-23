@@ -22,22 +22,40 @@ test.describe('Landing Page', () => {
       // Open mobile menu first
       const menuButton = page.getByRole('button', { name: /menu/i });
       await menuButton.click();
+      // Ensure menu is expanded and visible before clicking links
       await expect(menuButton).toHaveAttribute('aria-expanded', 'true');
+      // Wait for menu to be visible and animation to complete
+      const mainMenu = page.locator('#main-menu');
+      await expect(mainMenu).toBeVisible();
+      // Ensure it's not animating by waiting for it to be stable
+      await mainMenu.evaluate(async (el) => {
+        const isStable = () => {
+          const rect = el.getBoundingClientRect();
+          return new Promise((resolve) => {
+            requestAnimationFrame(() => {
+              const rect2 = el.getBoundingClientRect();
+              resolve(rect.top === rect2.top && rect.left === rect2.left && rect.width === rect2.width && rect.height === rect2.height);
+            });
+          });
+        };
+        for (let i = 0; i < 20; i++) {
+          if (await isStable()) {
+            // Check again after a short delay to be sure
+            await new Promise(r => setTimeout(r, 50));
+            if (await isStable()) break;
+          }
+          await new Promise(r => setTimeout(r, 50));
+        }
+      });
     }
 
-    // Target specifically the header's features link to avoid strict mode violation
+    // Target specifically the header's features link
     const featuresLink = page.locator('header').getByRole('link', { name: /^features$/i });
     await featuresLink.click();
 
-    // Wait for smooth scroll animation to complete by ensuring #features is fully in the viewport
-    await page.waitForFunction(() => {
-      const el = document.querySelector<HTMLElement>('#features');
-      if (!el) return false;
-      const rect = el.getBoundingClientRect();
-      return rect.top >= 0 && rect.top < window.innerHeight;
-    });
     // Should scroll to features section
-    await expect(page.locator('#features')).toBeInViewport();
+    // Using a generous timeout for smooth scroll animation
+    await expect(page.locator('#features')).toBeInViewport({ timeout: 10000 });
   });
 
   // Only run performance test on chromium desktop to avoid flakiness
@@ -118,6 +136,25 @@ test.describe('Landing Page', () => {
     // Verify the menu list becomes visible
     const menuList = page.getByRole('navigation').locator('#main-menu');
     await expect(menuList).toBeVisible();
+    // Ensure it's not animating
+    await menuList.evaluate(async (el) => {
+      const isStable = () => {
+        const rect = el.getBoundingClientRect();
+        return new Promise((resolve) => {
+          requestAnimationFrame(() => {
+            const rect2 = el.getBoundingClientRect();
+            resolve(rect.top === rect2.top && rect.left === rect2.left && rect.width === rect2.width && rect.height === rect2.height);
+          });
+        });
+      };
+      for (let i = 0; i < 20; i++) {
+        if (await isStable()) {
+          await new Promise(r => setTimeout(r, 50));
+          if (await isStable()) break;
+        }
+        await new Promise(r => setTimeout(r, 50));
+      }
+    });
   });
 
   test('should have accessible keyboard navigation', async ({ page }) => {

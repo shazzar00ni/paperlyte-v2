@@ -8,6 +8,9 @@
 # read our documentation at https://github.com/codescan-io/codescan-scanner-action
 name: CodeScan
 
+env:
+  npm_config_legacy_peer_deps: true
+
 on:
   push:
     branches: [ "main" ]

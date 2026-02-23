@@ -75,9 +75,6 @@ class Analytics {
 
     this.initialized = true
 
-    if (config.debug) {
-      console.log('[Analytics] Initialized with config:', config)
-    }
   }
 
   /**
@@ -126,12 +123,6 @@ class Analytics {
 
     this.provider?.trackPageView(url)
 
-    if (this.config?.debug) {
-      console.log(
-        '[Analytics] Page view tracked:',
-        url || (typeof window !== 'undefined' ? window.location.pathname : '/')
-      )
-    }
   }
 
   /**
@@ -152,9 +143,6 @@ class Analytics {
 
     this.provider?.trackEvent(eventWithTimestamp)
 
-    if (this.config?.debug) {
-      console.log('[Analytics] Event tracked:', eventWithTimestamp)
-    }
   }
 
   /**
@@ -169,9 +157,6 @@ class Analytics {
 
     this.provider?.trackWebVitals(vitals)
 
-    if (this.config?.debug) {
-      console.log('[Analytics] Web Vitals tracked:', vitals)
-    }
   }
 
   /**
@@ -237,8 +222,6 @@ class Analytics {
       return
     }
 
-    const debug = this.config?.debug
-
     // Disable provider
     this.provider?.disable()
 
@@ -259,9 +242,6 @@ class Analytics {
     this.config = null
     this.provider = null
 
-    if (debug) {
-      console.log('[Analytics] Disabled')
-    }
   }
 
   /**
@@ -269,8 +249,6 @@ class Analytics {
    * Unconditionally clears all internal state - useful for testing
    */
   reset(): void {
-    const debug = this.config?.debug
-
     // Disable provider regardless of state
     if (this.provider) {
       this.provider.disable()
@@ -293,9 +271,6 @@ class Analytics {
     this.initialized = false
     this.config = null
 
-    if (debug) {
-      console.log('[Analytics] Reset')
-    }
   }
 
   /**

@@ -26,17 +26,11 @@ export class PlausibleProvider implements AnalyticsProvider {
    */
   init(config: AnalyticsConfig): void {
     if (this.initialized) {
-      if (config.debug) {
-        console.log('[Analytics] Plausible already initialized')
-      }
       return
     }
 
     // Check if user has Do Not Track enabled
     if (config.respectDNT !== false && this.isDNTEnabled()) {
-      if (config.debug) {
-        console.log('[Analytics] Do Not Track is enabled, analytics disabled')
-      }
       return
     }
 
@@ -46,9 +40,6 @@ export class PlausibleProvider implements AnalyticsProvider {
     // Load Plausible script asynchronously
     this.loadScript()
 
-    if (config.debug) {
-      console.log('[Analytics] Plausible initialized', config)
-    }
   }
 
   /**
@@ -134,9 +125,6 @@ export class PlausibleProvider implements AnalyticsProvider {
 
     script.onload = () => {
       this.scriptLoaded = true
-      if (this.config?.debug) {
-        console.log('[Analytics] Plausible script loaded successfully')
-      }
     }
 
     // Store reference to the script element for cleanup
@@ -160,9 +148,6 @@ export class PlausibleProvider implements AnalyticsProvider {
       props: { path: pageUrl },
     })
 
-    if (this.config?.debug) {
-      console.log('[Analytics] Page view tracked:', pageUrl)
-    }
   }
 
   /**
@@ -198,9 +183,6 @@ export class PlausibleProvider implements AnalyticsProvider {
 
     window.plausible(event.name, props ? { props } : undefined)
 
-    if (this.config?.debug) {
-      console.log('[Analytics] Event tracked:', event.name, props)
-    }
   }
 
   /**
@@ -229,9 +211,6 @@ export class PlausibleProvider implements AnalyticsProvider {
       }
     })
 
-    if (this.config?.debug) {
-      console.log('[Analytics] Core Web Vitals tracked:', vitals)
-    }
   }
 
   /**
@@ -251,8 +230,6 @@ export class PlausibleProvider implements AnalyticsProvider {
    * Removes the Plausible script and resets state
    */
   disable(): void {
-    const debug = this.config?.debug
-
     this.initialized = false
     this.scriptLoaded = false
     this.config = null
@@ -271,9 +248,6 @@ export class PlausibleProvider implements AnalyticsProvider {
       delete window.plausible
     }
 
-    if (debug) {
-      console.log('[Analytics] Plausible disabled')
-    }
   }
 
   /**

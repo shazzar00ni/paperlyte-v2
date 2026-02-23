@@ -46,13 +46,4 @@ export default defineConfig([
       globals: globals.browser,
     },
   },
-  {
-    // Netlify functions intentionally sanitize caught errors to strip
-    // subscriber PII before attaching as cause, so the original error
-    // object cannot be preserved directly.
-    files: ['netlify/**/*.ts'],
-    rules: {
-       // 'preserve-caught-error': 'off',
-    },
-  },
 ])

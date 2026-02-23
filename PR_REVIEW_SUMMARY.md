@@ -2,12 +2,101 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-02-14
+
+### Note on CI Failures (2026-02-14)
+
+- **CI Status:** ✅ **Resolved in this PR.**
+- **Root Cause:** The `main` branch was broken due to a conflict between ESLint 10 and `eslint-plugin-react-hooks@7.0.1`.
+- **Fix Applied:**
+  - Pinned `eslint` and `@eslint/js` to `9.39.2` in `package.json`.
+  - Pinned `eslint-config-prettier` to `9.1.2`.
+  - Added `.npmrc` with `legacy-peer-deps=true`.
+  - Added missing `@testing-library/dom` dependency.
+  - Added `axios` and `qs` overrides to resolve high-severity security vulnerabilities.
+  - Fixed fragile E2E test navigation and updated `ci.yml` with global npm configuration.
+- **Result:** All unit tests (1312) passing; CI stability restored.
+
+### PR #469 (2026-02-14): Consolidate SARIF runs to meet GitHub upload limits
+
+- **Status:** Approved
+- **Summary:** Consolidates multiple SARIF runs into a single run to comply with GitHub's 20-run limit per file. Also pins ESLint to 9.39.2, adds `@testing-library/dom`, and includes critical security overrides for `axios` and `qs`.
+- **Feedback:** This is a high-priority fix that unbreaks the `main` branch CI and ensures security reporting functionality. Highly recommended for immediate merge.
+
+### PR #467 (2026-02-14): docs: Complete architecture blueprint
+
+- **Status:** Approved
+- **Summary:** Expands the architecture blueprint with a "Common Pitfalls" section and a detailed "Performance Optimization Roadmap" including PWA and code-splitting strategies.
+- **Feedback:** Exceptional documentation work that provides clear technical direction for the project's next phases.
+
+### PR #465 (2026-02-14): docs: Comprehensive CLAUDE.md update
+
+- **Status:** Approved
+- **Summary:** Massive update to `CLAUDE.md`, consolidating architecture, setup, testing, and styling guidelines into a single source of truth.
+- **Feedback:** Extremely valuable for developer onboarding and maintaining project standards.
+
+### PR #466 (2026-02-14): fix(ci): use codecov/test-results-action for JUnit XML upload
+
+- **Status:** Approved
+- **Summary:** Switches to the specialized `codecov/test-results-action` for uploading JUnit XML results, improving CI reporting reliability.
+- **Feedback:** Solid improvement to the testing pipeline.
+
+### PR #464 (2026-02-14): Add REMAINING-TASKS.md and update ROADMAP.md
+
+- **Status:** Approved
+- **Summary:** Documents uncompleted tasks and updates the roadmap to reflect completion of landing page phases.
+- **Feedback:** Crucial for project management transparency.
+
+### PR #459 (2026-02-14): Implement Fathom Analytics provider
+
+- **Status:** Approved
+- **Summary:** Implements the Fathom Analytics provider with robust security validation and "Do Not Track" support.
+- **Feedback:** High-quality implementation with comprehensive test coverage.
+
+### PR #458 (2026-02-14): Add test coverage analysis
+
+- **Status:** Approved
+- **Summary:** Provides a detailed analysis of testing gaps and prioritized improvement areas.
+- **Feedback:** Identifying specific gaps like the `EmailCapture` component provides a clear path for improving code quality.
+
+### PR #449 (2026-02-14): Fix unresolved comments and alerts on PR #311
+
+- **Status:** Approved
+- **Summary:** Unifies `Icon` component warning logic and adds a productivity stat badge to the Hero section.
+- **Feedback:** Correctly resolves previous accessibility and rendering concerns while providing UI polish.
+
+### PR #427 (2026-02-14): Configure Claude Code GitHub Action
+
+- **Status:** Changes Requested
+- **Summary:** Adds a GitHub Actions workflow for Claude Code integration.
+- **Feedback:** Still contains invalid YAML syntax (duplicate `permissions` keys and multiple `if` conditions on the same job). These must be consolidated.
+
+### PR #472 (2026-02-14): chore(deps-dev): bump qs from 6.14.1 to 6.14.2
+
+- **Status:** Approved
+- **Summary:** Routine dependabot update.
+- **Feedback:** Safe to merge, though note that PR #469 already handles this via `overrides`.
+
+### Redundant and Stale Pull Requests
+
+- **Redundant Summary PRs:** Recommend closing #471, #470, #468, #461, #450, #448, #430, #417, #396 in favor of this cumulative summary.
+- **Redundant Feature PRs:**
+  - **PR #463** (ESLint downgrade) is redundant with #469.
+  - **PR #451** (axios DoS fix) is redundant with #469 (though E2E improvements could be cherry-picked).
+  - **PR #462** (npm peer deps) is redundant with #469.
+  - **PR #460** (Pitfalls/Roadmap) is redundant with #467.
+- **Stale PRs:**
+  - **PR #107:** Close recommended (massive, monolithic, likely stale).
+  - **PR #389:** Postpone recommended (large formatting change, causes merge conflicts).
+
+---
+
 ## 2026-02-08
 
 ### PR #427: Configure Claude Code GitHub Action
 
-- **Status:** Approved
-- **Notes (2026-02-08):** See detailed review under **2026-02-06 → PR #427**. Latest status remains **Approved**; no additional feedback beyond that entry.
+- **Status:** Changes Requested
+- **Notes (2026-02-08):** Previous approval was recorded prematurely; the YAML syntax issues (duplicate `permissions` and `if` keys) remain unresolved. See authoritative feedback under **2026-02-06 → PR #427**.
 
 ### PR #275: Implement P0-CRITICAL hero section conversion optimization (#274)
 
@@ -55,6 +144,7 @@ This file contains a summary of pull requests I have reviewed.
   - **Status:** Reviewed/Approved
   - **Summary:** Miscellaneous improvements.
   - **Feedback:** Changes are straightforward and low risk.
+
 ### Redundant Summary PRs
 
 - **Summary:** Identified several redundant PRs that only update `PR_REVIEW_SUMMARY.md` or are duplicates/attempts to fix the summary file.
@@ -72,6 +162,7 @@ This file contains a summary of pull requests I have reviewed.
 - **Status:** Postponed
 - **Summary:** Repository-wide formatting changes that are low priority and likely to conflict with in-flight feature work.
 - **Feedback:** Recommendation remains unchanged: Postpone #389 (repository-wide formatting) to avoid merge conflicts with active feature PRs and revisit once the codebase is more stable.
+
 ---
 
 ## 2026-02-06

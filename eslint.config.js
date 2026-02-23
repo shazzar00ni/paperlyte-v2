@@ -52,7 +52,7 @@ export default defineConfig([
     // object cannot be preserved directly.
     files: ['netlify/**/*.ts'],
     rules: {
-      'preserve-caught-error': 'off',
+       // 'preserve-caught-error': 'off',
     },
   },
 ])

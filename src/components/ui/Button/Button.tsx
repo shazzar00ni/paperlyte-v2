@@ -66,10 +66,10 @@ function renderLink({
       aria-label={ariaLabel}
       aria-disabled={disabled ? 'true' : 'false'}
       onClick={disabled ? (e) => e.preventDefault() : onClick}
-      {...(EXTERNAL_URL_PATTERN.test(href) && {
-        target: '_blank',
-        rel: 'noopener noreferrer',
-      })}
+       {...(EXTERNAL_URL_PATTERN.test(href) && (isBrowser ? !href.startsWith(window.location.origin) : true) && {
+         target: '_blank',
+         rel: 'noopener noreferrer',
+       })}
     >
       {content}
     </a>

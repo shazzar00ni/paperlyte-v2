@@ -28,33 +28,33 @@ jobs:
           actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
         runs-on: ubuntu-latest
         steps:
-            -   name: Checkout repository
-                uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
-            -   name: Cache files
-                uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5
+            - name: Checkout repository
+                uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+            - name: Cache files
+                uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306  # v5.0.3
                 with:
                     path: |
                         ~/.sonar
                     key: ${{ runner.os }}-sonar
                     restore-keys: ${{ runner.os }}-sonar
-            -   name: Run Analysis
+            - name: Run Analysis
                 id: codescan-analysis
-                uses: codescan-io/codescan-scanner-action@955d3d1b4a9e374064189719484005ce8e08a749
+                uses: codescan-io/codescan-scanner-action@955d3d1b4a9e374064189719484005ce8e08a749  # 2.0
                 # Continue even if CodeScan fails (e.g., missing secrets in forks)
                 continue-on-error: true
                 with:
                     login: ${{ secrets.CODESCAN_AUTH_TOKEN }}
                     organization: ${{ secrets.CODESCAN_ORGANIZATION_KEY }}
                     projectKey: ${{ secrets.CODESCAN_PROJECT_KEY }}
-            -   name: Upload SARIF file
-                uses: github/codeql-action/upload-sarif@9e907b5e64f6b83e7804b09294d44122997950d6 # v4.32.3
+            - name: Upload SARIF file
+                uses: github/codeql-action/upload-sarif@9e907b5e64f6b83e7804b09294d44122997950d6  # v4.32.3
                 # Only upload if SARIF file exists
                 if: always() && hashFiles('codescan.sarif') != ''
                 continue-on-error: true
                 with:
                     sarif_file: codescan.sarif
                     category: codescan
-            -   name: CodeScan Summary
+            - name: CodeScan Summary
                 if: always()
                 run: |
                     echo "## 🔬 CodeScan Analysis" >> $GITHUB_STEP_SUMMARY

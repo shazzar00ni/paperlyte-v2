@@ -84,11 +84,15 @@ function validateBasicUrl(url: string): string | null {
   return trimmedUrl
 }
 
+/** Returns true if the URL object uses http: or https: */
+function isWebProtocol(parsedUrl: URL): boolean {
+  return parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:'
+}
+
 /** Validates an absolute URL's protocol and origin against the current page */
 function isAllowedAbsoluteUrl(trimmedUrl: string, allowExternal: boolean): boolean {
   const parsedUrl = new URL(trimmedUrl, window.location.origin)
-  const isHttpProtocol = parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:'
-  if (!isHttpProtocol) {
+  if (!isWebProtocol(parsedUrl)) {
     return false
   }
   const isSameOrigin = parsedUrl.origin === window.location.origin
@@ -131,8 +135,7 @@ export function isSafeUrl(url: string, options: SafeUrlOptions = {}): boolean {
     // Use the URL constructor with the current origin as base to resolve it,
     // then verify it stays same-origin with an allowed protocol.
     const parsed = new URL(trimmedUrl, window.location.origin)
-    const isHttpProtocol = parsed.protocol === 'http:' || parsed.protocol === 'https:'
-    return isHttpProtocol && parsed.origin === window.location.origin
+    return isWebProtocol(parsed) && parsed.origin === window.location.origin
   } catch {
     return false
   }

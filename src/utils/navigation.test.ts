@@ -201,6 +201,20 @@ describe('navigation utilities', () => {
       expect(isSafeUrl('not a url at all')).toBe(true)
       expect(isSafeUrl('://invalid')).toBe(true)
     })
+
+    it('should reject URLs with leading backslashes that browsers normalize to protocol-relative paths', () => {
+      expect(isSafeUrl('\\/example.com')).toBe(false)
+      expect(isSafeUrl('\\\\example.com')).toBe(false)
+      expect(isSafeUrl('\\/evil.com/steal')).toBe(false)
+    })
+
+    it('should reject URLs containing control characters before decoding', () => {
+      expect(isSafeUrl('http://example.com/\x00')).toBe(false)
+      expect(isSafeUrl('/path\x01with\x02control')).toBe(false)
+      expect(isSafeUrl('/page\x0Dtest')).toBe(false)
+      expect(isSafeUrl('/page\x0Atest')).toBe(false)
+      expect(isSafeUrl('\x7F/delete-char')).toBe(false)
+    })
   })
 
   describe('safeNavigate', () => {
@@ -308,6 +322,36 @@ describe('navigation utilities', () => {
 
       const result = safeNavigate('//evil.com')
       expect(result).toBe(false)
+
+      logErrorSpy.mockRestore()
+    })
+
+    it('should log unsafe_url reason to monitoring for all blocked URL types', () => {
+      const mockLocation = { href: '', origin: 'http://localhost' } as Location
+      Object.defineProperty(window, 'location', {
+        value: mockLocation,
+        writable: true,
+        configurable: true,
+      })
+
+      const logErrorSpy = vi.spyOn(monitoring, 'logError').mockImplementation(() => {})
+
+      const blockedUrls = [
+        'javascript:alert(1)',
+        'data:text/html,<h1>xss</h1>',
+        '//evil.com',
+        'https://external.com',
+      ]
+
+      for (const url of blockedUrls) {
+        logErrorSpy.mockClear()
+        safeNavigate(url)
+        expect(logErrorSpy).toHaveBeenCalledWith(
+          expect.objectContaining({ message: 'Navigation blocked: URL failed security validation' }),
+          expect.objectContaining({ errorInfo: { reason: 'unsafe_url', urlPresent: true } }),
+          'navigation'
+        )
+      }
 
       logErrorSpy.mockRestore()
     })

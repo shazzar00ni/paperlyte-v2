@@ -186,6 +186,28 @@ describe('Button', () => {
       expect(link).toHaveAttribute('href', '../parent')
     })
 
+    it('should not add target=_blank for same-origin absolute URLs', () => {
+      const origin = window.location.origin
+      render(<Button href={`${origin}/about`}>Same Origin</Button>)
+
+      const link = screen.getByRole('link')
+      expect(link).toHaveAttribute('href', `${origin}/about`)
+      expect(link).not.toHaveAttribute('target')
+      expect(link).not.toHaveAttribute('rel')
+    })
+
+    it('should add target=_blank and rel=noopener noreferrer only for external links', () => {
+      const { rerender } = render(<Button href="https://external.com">External</Button>)
+      const externalLink = screen.getByRole('link')
+      expect(externalLink).toHaveAttribute('target', '_blank')
+      expect(externalLink).toHaveAttribute('rel', 'noopener noreferrer')
+
+      rerender(<Button href="/internal-page">Internal</Button>)
+      const internalLink = screen.getByRole('link')
+      expect(internalLink).not.toHaveAttribute('target')
+      expect(internalLink).not.toHaveAttribute('rel')
+    })
+
     it('should warn in development mode for unsafe URLs', () => {
       const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
 

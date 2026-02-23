@@ -185,7 +185,7 @@ export class FathomProvider implements AnalyticsProvider {
     // Fathom goals use a numeric value in cents; default to 0
     const value =
       typeof event.properties?.value === 'number'
-        ? Math.round(event.properties.value * 100)
+        ? Math.round(Number((event.properties.value * 100).toPrecision(12)))
         : 0
 
     window.fathom.trackGoal(event.name, value)

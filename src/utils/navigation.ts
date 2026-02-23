@@ -27,7 +27,7 @@ export interface SafeUrlOptions {
   allowExternal?: boolean
 }
 
-const DANGEROUS_PROTOCOLS = new Set(['javascript', 'data', 'vbscript', 'file', 'about'])
+ const DANGEROUS_PROTOCOLS = new Set(['javascript', 'data', 'vbscript', 'file', 'about', 'blob'])
 
 // eslint-disable-next-line no-control-regex
 const CONTROL_CHAR_PATTERN = /[\x00-\x1F\x7F]/

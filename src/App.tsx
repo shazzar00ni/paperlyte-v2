@@ -9,6 +9,7 @@ import { Features } from '@components/sections/Features'
 import { Mobile } from '@components/sections/Mobile'
 import { Statistics } from '@components/sections/Statistics'
 import { Comparison } from '@components/sections/Comparison'
+import { Pricing } from '@components/sections/Pricing'
 import { Testimonials } from '@components/sections/Testimonials'
 import { EmailCapture } from '@components/sections/EmailCapture'
 import { FAQ } from '@components/sections/FAQ'
@@ -43,6 +44,7 @@ function App() {
         <Mobile />
         <Statistics />
         <Comparison />
+        <Pricing />
         <Testimonials />
         <EmailCapture />
         <FAQ />

@@ -13,6 +13,9 @@
 
 name: Codacy Security Scan
 
+env:
+  npm_config_legacy_peer_deps: true
+
 on:
   push:
     branches: [ "main" ]

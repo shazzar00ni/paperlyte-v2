@@ -86,6 +86,8 @@ export interface AnalyticsConfig {
   trackScrollDepth?: boolean
   /** Respect Do Not Track browser setting (default: true) */
   respectDNT?: boolean
+  /** Allow loading analytics scripts from non-whitelisted hosts (default: false) */
+  allowCustomScriptUrl?: boolean
 }
 
 /**

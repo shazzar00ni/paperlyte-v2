@@ -7,49 +7,16 @@
  * @see https://plausible.io/docs
  */
 
-import type { AnalyticsConfig, AnalyticsEvent, AnalyticsProvider, CoreWebVitals } from '../types'
+import type { AnalyticsEvent, CoreWebVitals } from '../types'
 import { isSafePropertyKey } from '../../utils/security'
+import { BaseAnalyticsProvider } from './base'
 
 /**
  * Plausible Analytics provider
  * Implements privacy-first, cookie-less analytics tracking
  */
-export class PlausibleProvider implements AnalyticsProvider {
-  private config: AnalyticsConfig | null = null
-  private initialized = false
-  private scriptLoaded = false
-  private scriptElement: HTMLScriptElement | null = null
-
-  /**
-   * Initialize Plausible Analytics
-   * Loads the Plausible script asynchronously and sets up configuration
-   */
-  init(config: AnalyticsConfig): void {
-    if (this.initialized) {
-      if (config.debug) {
-        console.log('[Analytics] Plausible already initialized')
-      }
-      return
-    }
-
-    // Check if user has Do Not Track enabled
-    if (config.respectDNT !== false && this.isDNTEnabled()) {
-      if (config.debug) {
-        console.log('[Analytics] Do Not Track is enabled, analytics disabled')
-      }
-      return
-    }
-
-    this.config = config
-    this.initialized = true
-
-    // Load Plausible script asynchronously
-    this.loadScript()
-
-    if (config.debug) {
-      console.log('[Analytics] Plausible initialized', config)
-    }
-  }
+export class PlausibleProvider extends BaseAnalyticsProvider {
+  protected readonly providerName = 'Plausible'
 
   /**
    * Validate script URL to prevent script injection attacks
@@ -108,7 +75,7 @@ export class PlausibleProvider implements AnalyticsProvider {
    * Load Plausible analytics script
    * Uses async loading to prevent blocking page render
    */
-  private loadScript(): void {
+  protected loadScript(): void {
     // Guard against SSR/Node.js environments
     if (this.scriptLoaded || typeof window === 'undefined' || typeof document === 'undefined') {
       return
@@ -259,50 +226,9 @@ export class PlausibleProvider implements AnalyticsProvider {
     )
   }
 
-  /**
-   * Disable analytics tracking
-   * Removes the Plausible script and resets state
-   */
-  disable(): void {
-    const debug = this.config?.debug
-
-    this.initialized = false
-    this.scriptLoaded = false
-    this.config = null
-
-    // Guard against SSR/Node.js environments and remove only the script we created
-    if (typeof document !== 'undefined' && this.scriptElement) {
-      // Remove the exact script element we created (not a broad selector)
-      if (this.scriptElement.parentNode) {
-        this.scriptElement.parentNode.removeChild(this.scriptElement)
-      }
-      this.scriptElement = null
-    }
-
-    // Clean up window global
+  protected cleanupWindowGlobal(): void {
     if (typeof window !== 'undefined' && window.plausible) {
       delete window.plausible
     }
-
-    if (debug) {
-      console.log('[Analytics] Plausible disabled')
-    }
-  }
-
-  /**
-   * Check if Do Not Track is enabled in browser
-   */
-  private isDNTEnabled(): boolean {
-    // Guard against SSR/Node.js environments
-    if (typeof window === 'undefined' || typeof navigator === 'undefined') {
-      return false
-    }
-
-    const dnt =
-      navigator.doNotTrack ||
-      (window as Window & { doNotTrack?: string }).doNotTrack ||
-      (navigator as Navigator & { msDoNotTrack?: string }).msDoNotTrack
-
-    return dnt === '1' || dnt === 'yes'
   }
 }

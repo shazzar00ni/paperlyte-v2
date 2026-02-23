@@ -7,7 +7,8 @@
  * @see https://usefathom.com/docs
  */
 
-import type { AnalyticsConfig, AnalyticsEvent, AnalyticsProvider, CoreWebVitals } from '../types'
+import type { AnalyticsEvent, CoreWebVitals } from '../types'
+import { BaseAnalyticsProvider } from './base'
 
 /**
  * Fathom Analytics global interface
@@ -26,46 +27,12 @@ declare global {
  * Fathom Analytics provider
  * Implements privacy-focused, GDPR-compliant analytics tracking
  */
-export class FathomProvider implements AnalyticsProvider {
-  private config: AnalyticsConfig | null = null
-  private initialized = false
-  private scriptLoaded = false
-  private scriptElement: HTMLScriptElement | null = null
-
-  /**
-   * Initialize Fathom Analytics
-   * Loads the Fathom script asynchronously and sets up configuration
-   */
-  init(config: AnalyticsConfig): void {
-    if (this.initialized) {
-      if (config.debug) {
-        console.log('[Analytics] Fathom already initialized')
-      }
-      return
-    }
-
-    // Check if user has Do Not Track enabled
-    if (config.respectDNT !== false && this.isDNTEnabled()) {
-      if (config.debug) {
-        console.log('[Analytics] Do Not Track is enabled, analytics disabled')
-      }
-      return
-    }
-
-    this.config = config
-    this.initialized = true
-
-    // Load Fathom script asynchronously
-    this.loadScript()
-
-    if (config.debug) {
-      console.log('[Analytics] Fathom initialized', config)
-    }
-  }
+export class FathomProvider extends BaseAnalyticsProvider {
+  protected readonly providerName = 'Fathom'
 
   /**
    * Validate script URL to prevent script injection attacks
-   * Only allows HTTPS URLs from known analytics providers or valid domains
+   * Only allows HTTPS URLs from known analytics providers with valid extensions
    */
   private isValidScriptUrl(url: string): boolean {
     try {
@@ -79,17 +46,45 @@ export class FathomProvider implements AnalyticsProvider {
         return false
       }
 
-      const hasValidPath = parsedUrl.pathname.endsWith('.js')
+      const hasValidPath =
+        typeof parsedUrl.pathname === 'string' &&
+        (parsedUrl.pathname.endsWith('.js') || parsedUrl.pathname.endsWith('.mjs'))
 
       if (!hasValidPath) {
         if (this.config?.debug) {
-          console.warn('[Analytics] Script URL must point to a .js file:', url)
+          console.warn('[Analytics] Script URL must point to a .js or .mjs file:', url)
         }
         return false
       }
 
-      // Allow any HTTPS URL pointing to a .js file (for self-hosted instances)
-      return true
+      const knownProviders = [
+        'usefathom.com',
+        'cdn.usefathom.com',
+        'plausible.io',
+        'analytics.google.com',
+        'umami.is',
+        'simpleanalytics.com',
+      ]
+
+      const isKnownProvider = knownProviders.includes(parsedUrl.hostname)
+
+      if (isKnownProvider) {
+        return true
+      }
+
+      // Allow non-whitelisted hosts only when explicitly opted in via config
+      if (this.config?.allowCustomScriptUrl === true) {
+        return true
+      }
+
+      if (this.config?.debug) {
+        console.warn(
+          '[Analytics] Script host is not in the knownProviders whitelist:',
+          parsedUrl.hostname,
+          '— set allowCustomScriptUrl: true in config to allow self-hosted scripts'
+        )
+      }
+      return false
     } catch (error) {
       if (this.config?.debug) {
         console.warn('[Analytics] Invalid script URL format:', url, error)
@@ -130,25 +125,37 @@ export class FathomProvider implements AnalyticsProvider {
   }
 
   /**
+   * Resolve and validate the analytics script URL.
+   * Returns the URL string if valid, or undefined if validation fails.
+   */
+  private getValidatedScriptUrl(): string | undefined {
+    const scriptUrl = this.config?.scriptUrl ?? 'https://cdn.usefathom.com/script.js'
+
+    if (this.isValidScriptUrl(scriptUrl)) {
+      return scriptUrl
+    }
+
+    if (this.config?.debug || import.meta.env.DEV) {
+      console.error(
+        '[Analytics] Invalid or unsafe script URL. Must be HTTPS and point to a .js file:',
+        scriptUrl
+      )
+    }
+    return undefined
+  }
+
+  /**
    * Load Fathom analytics script
    * Uses async loading to prevent blocking page render
    */
-  private loadScript(): void {
+  protected loadScript(): void {
     // Guard against SSR/Node.js environments
     if (this.scriptLoaded || typeof window === 'undefined' || typeof document === 'undefined') {
       return
     }
 
-    const scriptUrl = this.config?.scriptUrl ?? 'https://cdn.usefathom.com/script.js'
-
-    // Validate script URL to prevent injection attacks
-    if (!this.isValidScriptUrl(scriptUrl)) {
-      if (this.config?.debug ?? import.meta.env.DEV) {
-        console.error(
-          '[Analytics] Invalid or unsafe script URL. Must be HTTPS and point to a .js file:',
-          scriptUrl
-        )
-      }
+    const scriptUrl = this.getValidatedScriptUrl()
+    if (!scriptUrl) {
       return
     }
 
@@ -231,58 +238,17 @@ export class FathomProvider implements AnalyticsProvider {
    * Check if analytics is enabled
    */
   isEnabled(): boolean {
-  isEnabled(): boolean {
     return (
       this.initialized &&
       this.scriptLoaded &&
       typeof window !== 'undefined' &&
-      typeof window.fathom === 'object'
-    );
+      Boolean(window.fathom)
+    )
   }
 
-  /**
-   * Disable analytics tracking
-   * Removes the Fathom script and resets state
-   */
-  disable(): void {
-    const debug = this.config?.debug
-
-    this.initialized = false
-    this.scriptLoaded = false
-    this.config = null
-
-    // Guard against SSR/Node.js environments and remove only the script we created
-    if (typeof document !== 'undefined' && this.scriptElement) {
-      if (this.scriptElement.parentNode) {
-        this.scriptElement.parentNode.removeChild(this.scriptElement)
-      }
-      this.scriptElement = null
-    }
-
-    // Clean up window global
+  protected cleanupWindowGlobal(): void {
     if (typeof window !== 'undefined' && window.fathom) {
       delete window.fathom
     }
-
-    if (debug) {
-      console.log('[Analytics] Fathom disabled')
-    }
-  }
-
-  /**
-   * Check if Do Not Track is enabled in browser
-   */
-  private isDNTEnabled(): boolean {
-    // Guard against SSR/Node.js environments
-    if (typeof window === 'undefined' || typeof navigator === 'undefined') {
-      return false
-    }
-
-    const dnt =
-      navigator.doNotTrack ??
-      (window as Window & { doNotTrack?: string }).doNotTrack ??
-      (navigator as Navigator & { msDoNotTrack?: string }).msDoNotTrack
-
-    return dnt === '1' || dnt === 'yes'
   }
 }

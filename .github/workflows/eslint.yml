@@ -9,6 +9,9 @@
 
 name: ESLint
 
+env:
+  npm_config_legacy_peer_deps: true
+
 on:
   push:
     branches: [ "main" ]

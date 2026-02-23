@@ -3,6 +3,9 @@ name: CI/CD Pipeline
 permissions:
   contents: read
 
+env:
+  npm_config_legacy_peer_deps: true
+
 on:
   push:
     branches: [main, develop]

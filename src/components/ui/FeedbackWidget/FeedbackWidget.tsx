@@ -130,7 +130,6 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
               { cause: storageError }
             )
           }
-          console.log('Feedback submitted:', feedbackEntry)
         }
 
         // Show confirmation

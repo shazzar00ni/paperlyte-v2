@@ -29,7 +29,8 @@ This document serves as a comprehensive architectural reference for the Paperlyt
 15. [Code Examples](#code-examples)
 16. [Architectural Decision Records](#architectural-decision-records)
 17. [Governance & Development Blueprint](#governance--development-blueprint)
-18. [Quick Reference](#quick-reference)
+18. [Performance Optimization Roadmap](#performance-optimization-roadmap)
+19. [Quick Reference](#quick-reference)
 
 ---
 
@@ -1971,6 +1972,124 @@ When adding new features:
 - **Major version bump** - For breaking changes to component APIs
 - **Migration guide** - Required for any breaking change
 - **Deprecation period** - Minimum 1 minor version before removal
+
+### Common Pitfalls
+
+Avoid these frequently encountered mistakes when working in this codebase:
+
+#### TypeScript & React
+
+- **Using `any` to silence type errors** - Resist the temptation. Use `unknown` with type guards or narrow types explicitly. The `any` type defeats the purpose of strict mode and hides real bugs.
+- **Forgetting to clean up side effects** - Every `useEffect` that subscribes to events, sets timers, or creates observers must return a cleanup function. Leaked subscriptions cause memory issues and stale state.
+- **Mutating state directly** - Never mutate state objects or arrays in place. Always create new references (`[...arr]`, `{ ...obj }`) so React detects the change and re-renders.
+- **Prop drilling instead of composition** - Before passing props through three or more component layers, consider component composition (children/render props) or extracting a shared hook. This project deliberately avoids global state libraries, so composition is the primary tool.
+- **Ignoring the dependency array in hooks** - Missing dependencies in `useEffect`, `useMemo`, or `useCallback` causes stale closures. ESLint's `react-hooks/exhaustive-deps` rule is enforced — do not suppress it.
+
+#### CSS & Styling
+
+- **Hardcoding design tokens** - Never use raw color hex values, pixel spacing, or font names directly. Always reference CSS custom properties from `src/styles/variables.css` (e.g., `var(--color-primary)`, `var(--spacing-md)`).
+- **Desktop-first media queries** - This project is mobile-first. Write base styles for mobile, then use `min-width` breakpoints to layer on desktop enhancements. Using `max-width` queries inverts this and leads to override cascades.
+- **Neglecting `prefers-reduced-motion`** - Every animation must be wrapped in a `prefers-reduced-motion` check. Omitting this fails accessibility requirements and breaks CI (Lighthouse accessibility score must be at least 95).
+- **Overly specific selectors** - Avoid deep nesting or `!important`. CSS Modules scope styles automatically — trust the module system instead of fighting specificity wars.
+
+#### Performance
+
+- **Heavy JavaScript animations** - Prefer CSS animations and transitions over JavaScript-driven animation loops. Use `transform` and `opacity` for GPU-accelerated properties. JavaScript animation is acceptable only when CSS cannot achieve the effect.
+- **Unthrottled scroll/resize handlers** - Always debounce or throttle window event listeners. Better yet, use `IntersectionObserver` (via `useIntersectionObserver`) instead of scroll listeners wherever possible.
+- **Large unoptimized images** - All images should be appropriately sized, compressed, and served in modern formats (WebP/AVIF). Missing this blows the performance budget and degrades Core Web Vitals.
+- **Importing entire libraries** - Use tree-shakeable imports. For example, import individual Font Awesome icons rather than the full icon set.
+
+#### Testing & CI
+
+- **Testing implementation details** - Test what the user sees and does, not internal state or method calls. Reach for `screen.getByRole`, `getByText`, and `userEvent` rather than inspecting component internals.
+- **Skipping accessibility assertions** - Every component test should include at least basic a11y checks. Use `axe` or `jest-axe` assertions where applicable.
+- **Committing with failing CI** - All automated checks (lint, type check, tests, Lighthouse, bundle size) must pass before merge. Do not bypass pre-commit hooks or push `--no-verify`.
+
+#### Project Structure
+
+- **Placing files in the wrong directory** - Components go in `src/components/` (subdivided by `layout/`, `sections/`, `pages/`, `ui/`), hooks in `src/hooks/`, constants in `src/constants/`, utilities in `src/utils/`. Misplaced files create import confusion and break the layer dependency rules.
+- **Forgetting to export from index files** - New components and hooks should be exported from their directory's index file so other modules can use clean import paths.
+- **Skipping documentation updates** - When adding features or changing architecture, update the relevant documentation (this blueprint, DESIGN-SYSTEM.md, or CLAUDE.md). Stale docs are worse than no docs.
+
+---
+
+## Performance Optimization Roadmap
+
+This section defines the strategy and phased plan for maintaining and improving performance across the Paperlyte application. Performance is a core differentiator — every optimization directly supports the "lightning-fast" brand promise.
+
+### Current Performance Baseline
+
+| Metric | Target | Current | Status |
+|--------|--------|---------|--------|
+| Lighthouse Performance Score | ≥ 90 | Enforced in CI | Gate |
+| Lighthouse Accessibility Score | ≥ 95 | Enforced in CI | Gate |
+| First Contentful Paint (FCP) | ≤ 2000ms | Enforced in CI | Gate |
+| Largest Contentful Paint (LCP) | ≤ 2500ms | Enforced in CI | Gate |
+| Cumulative Layout Shift (CLS) | ≤ 0.1 | Enforced in CI | Gate |
+| JavaScript Bundle Size | ≤ 150KB | Checked in CI | Gate |
+| CSS Bundle Size | ≤ 30KB | Checked in CI | Gate |
+| Initial Page Load | < 2 seconds | Target | Monitoring |
+
+### Phase 1: Foundation (Current)
+
+Priority: Establish performance guardrails and prevent regressions.
+
+- **Lighthouse CI integration** — Automated performance and accessibility scoring on every PR via GitHub Actions (see [LIGHTHOUSE-CI.md](./LIGHTHOUSE-CI.md) for configuration)
+- **Bundle size checks** — JavaScript (150KB) and CSS (30KB) budgets enforced in CI; PRs that exceed budgets are blocked
+- **Core Web Vitals monitoring** — FCP, LCP, and CLS thresholds validated on each deployment
+- **CSS-first animations** — All animations use GPU-accelerated CSS transforms and opacity; JavaScript animation is used only when CSS is insufficient
+- **Image optimization** — Static assets compressed and served in modern formats (WebP/AVIF with fallbacks)
+- **Tree-shaking enforcement** — Named imports for all third-party libraries to enable dead code elimination
+
+### Phase 2: Measurement & Analysis (Next)
+
+Priority: Instrument real-user performance data to complement synthetic testing.
+
+- **Real User Monitoring (RUM)** — Integrate privacy-first performance telemetry (cookie-less, GDPR-compliant) to capture field data for FCP, LCP, CLS, FID/INP, and TTFB
+- **Performance budgets dashboard** — Build or integrate a dashboard that tracks bundle sizes, Lighthouse scores, and Core Web Vitals over time to detect gradual regressions
+- **Network-condition profiling** — Extend CI to run Lighthouse audits under simulated 4G and 3G conditions (referencing competitive benchmarks from [MARKETING-PLAN.md](./MARKETING-PLAN.md))
+- **Component-level profiling** — Use React DevTools Profiler and custom timing hooks to identify render bottlenecks in specific components
+- **Third-party script audit** — Catalog all external scripts (analytics, fonts, integrations) and measure their impact on load time; establish a third-party performance budget
+
+### Phase 3: Advanced Optimizations (Growth)
+
+Priority: Achieve best-in-class performance as the application scales.
+
+- **Code splitting & lazy loading** — Implement route-based and component-based code splitting via `React.lazy` and `Suspense`; below-the-fold sections should load on demand
+- **Resource hints** — Add `<link rel="preconnect">` for critical origins and `<link rel="preload">` for above-the-fold fonts and hero images
+- **Font loading strategy** — Implement `font-display: swap` with subset fonts for initial render; load full character sets asynchronously
+- **Service worker caching** — Introduce a service worker for offline-first support with asset precaching and runtime cache strategies (cache-first for static assets, network-first for API calls)
+- **Edge delivery** — Serve static assets from CDN edge locations; evaluate edge-rendered or ISR strategies if server-rendered pages are added
+- **Image CDN integration** — Serve images via an image CDN with automatic format negotiation, responsive sizing (`srcset`), and lazy loading via `loading="lazy"` and `IntersectionObserver`
+
+### Phase 4: Continuous Improvement (Ongoing)
+
+Priority: Sustain performance gains and adapt to new standards.
+
+- **Quarterly performance audits** — Conduct manual performance reviews using WebPageTest, Chrome DevTools, and competitive benchmarking against Notion, Evernote, and OneNote (baseline data in [MARKETING-PLAN.md](./MARKETING-PLAN.md))
+- **Interaction to Next Paint (INP) optimization** — Monitor and optimize INP as it becomes a Core Web Vital; minimize main-thread blocking during user interactions
+- **Bundle analysis automation** — Run `vite-bundle-visualizer` or equivalent on each release to track bundle composition and catch unexpected growth
+- **Dependency review** — Evaluate dependencies quarterly for lighter alternatives; prefer native browser APIs over polyfills as browser support improves
+- **Prefetching strategy** — Implement intelligent prefetching for likely next-page navigations based on user behavior patterns
+- **Rendering pattern evaluation** — As the application grows, evaluate whether streaming SSR, partial hydration, or islands architecture would benefit specific pages
+
+### Performance Decision Framework
+
+When evaluating whether a new feature or dependency meets performance standards, apply these criteria in order:
+
+1. **Does it exceed the bundle budget?** — If adding the feature pushes JS beyond 150KB or CSS beyond 30KB, it must be code-split or the budget must be renegotiated with documented justification
+2. **Does it regress Core Web Vitals?** — Run Lighthouse before and after. Any regression in FCP, LCP, or CLS beyond measurement noise requires mitigation before merge
+3. **Does it affect perceived performance?** — Even if metrics pass, does the feature introduce visible jank, layout shifts, or delayed interactivity? Test on throttled 4G with a mid-range device
+4. **Is there a lighter alternative?** — Before adding a library, check if the same result is achievable with native browser APIs or existing utilities in `src/utils/`
+5. **Is it measurable?** — Every performance-related change should be verifiable through CI metrics or RUM data. If you can't measure the impact, you can't manage it
+
+### Key References
+
+- **Lighthouse CI configuration:** [LIGHTHOUSE-CI.md](./LIGHTHOUSE-CI.md)
+- **Competitive performance benchmarks:** [MARKETING-PLAN.md](./MARKETING-PLAN.md) (Performance Benchmarking Methodology section)
+- **CI/CD pipeline details:** [GITHUB-WORKFLOWS-PLAN.md](./GITHUB-WORKFLOWS-PLAN.md)
+- **Animation performance guidelines:** [DESIGN-SYSTEM.md](./DESIGN-SYSTEM.md) (Animation Guidelines section)
+- **Performance audit findings:** [AUDIT-REPORT.md](./AUDIT-REPORT.md)
 
 ---
 

@@ -1,10 +1,16 @@
 # .github/workflows/deploy.yml
 name: Deploy
 
+permissions:
+  contents: read
+
+env:
+  npm_config_legacy_peer_deps: true
+
 on:
   push:
-    branches: [main]  # Production
-  workflow_dispatch:  # Manual trigger
+    branches: [main] # Production
+  workflow_dispatch: # Manual trigger
 
 jobs:
   deploy-production:
@@ -21,8 +27,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: "20"
-          cache: "npm"
+          node-version: '20'
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
@@ -39,7 +45,7 @@ jobs:
           publish-dir: './dist'
           production-deploy: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          deploy-message: "Deploy from GitHub Actions"
+          deploy-message: 'Deploy from GitHub Actions'
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}

@@ -1,5 +1,8 @@
 name: PR Quality Check
 
+env:
+  NPM_CONFIG_LEGACY_PEER_DEPS: "true"
+
 permissions:
   contents: read
 
@@ -87,7 +90,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Build and analyze bundle
         run: |

@@ -1,5 +1,8 @@
 name: PR Automation
 
+env:
+  npm_config_legacy_peer_deps: true
+
 on:
   pull_request:
     types: [opened, synchronize, reopened, edited]

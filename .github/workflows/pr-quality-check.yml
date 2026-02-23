@@ -1,5 +1,8 @@
 name: PR Quality Check
 
+env:
+  npm_config_legacy_peer_deps: true
+
 permissions:
   contents: read
 

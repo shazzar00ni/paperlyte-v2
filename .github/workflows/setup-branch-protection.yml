@@ -1,5 +1,8 @@
 name: Setup Branch Protection
 
+env:
+  npm_config_legacy_peer_deps: true
+
 # This workflow can be manually triggered to configure branch protection rules
 # It requires a BRANCH_PROTECTION_TOKEN secret with 'repo' scope
 

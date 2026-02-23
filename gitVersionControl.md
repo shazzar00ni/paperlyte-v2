@@ -1,6 +1,7 @@
 # Paperlyte Git & Version Control Guidelines
 
 ## Purpose & Scope
+
 This document defines Git workflows, branching strategies, commit conventions, and version control best practices for the Paperlyte project.
 
 ---
@@ -23,6 +24,7 @@ main (production)
 #### Main Branches
 
 **`main`**
+
 - Production-ready code
 - Always deployable
 - Protected (requires PR + approval)
@@ -30,6 +32,7 @@ main (production)
 - Direct commits forbidden
 
 **`develop`**
+
 - Integration branch
 - Latest development changes
 - Automatically deployed to staging
@@ -38,6 +41,7 @@ main (production)
 #### Supporting Branches
 
 **`feature/*`**
+
 - New features and enhancements
 - Branch from: `develop`
 - Merge to: `develop`
@@ -45,6 +49,7 @@ main (production)
 - Delete after merge
 
 **`bugfix/*`**
+
 - Bug fixes for develop
 - Branch from: `develop`
 - Merge to: `develop`
@@ -52,6 +57,7 @@ main (production)
 - Delete after merge
 
 **`hotfix/*`**
+
 - Critical production fixes
 - Branch from: `main`
 - Merge to: `main` AND `develop`
@@ -59,6 +65,7 @@ main (production)
 - Delete after merge
 
 **`release/*`**
+
 - Release preparation
 - Branch from: `develop`
 - Merge to: `main` AND `develop`
@@ -70,6 +77,7 @@ main (production)
 ## Branch Naming Conventions
 
 ### Format
+
 ```
 <type>/<ticket>-<description>
 
@@ -81,6 +89,7 @@ release/v1.2.0
 ```
 
 ### Rules
+
 - Use lowercase
 - Separate words with hyphens
 - Keep descriptions concise (< 50 chars)
@@ -90,6 +99,7 @@ release/v1.2.0
 ### Examples
 
 **Good:**
+
 ```
 feature/document-sharing
 feature/DOC-123-real-time-collaboration
@@ -98,6 +108,7 @@ hotfix/PERF-789-memory-leak
 ```
 
 **Bad:**
+
 ```
 feature/my-feature          # Not descriptive
 Feature/Document-Sharing    # Inconsistent case
@@ -135,6 +146,7 @@ feature/implement-the-new-document-sharing-feature-that-allows-users  # Too long
 ### Scope (Optional)
 
 Component or area of change:
+
 - `auth` - Authentication
 - `api` - API changes
 - `ui` - User interface
@@ -166,6 +178,7 @@ Component or area of change:
 ### Examples
 
 **Simple commit:**
+
 ```
 feat(auth): add two-factor authentication
 
@@ -176,6 +189,7 @@ Closes #234
 ```
 
 **Bug fix:**
+
 ```
 fix(api): resolve token expiry issue
 
@@ -189,6 +203,7 @@ Fixes #567
 ```
 
 **Breaking change:**
+
 ```
 feat(api)!: update authentication endpoints
 
@@ -208,6 +223,7 @@ Closes #890
 ```
 
 **Multiple changes:**
+
 ```
 refactor(services): extract validation logic
 
@@ -226,6 +242,7 @@ different services and improves test coverage.
 ### Do's ✅
 
 **Make atomic commits:**
+
 ```bash
 # ✅ Good: Each commit is a logical unit
 git commit -m "feat(auth): add password strength validation"
@@ -234,6 +251,7 @@ git commit -m "test(auth): add tests for password features"
 ```
 
 **Write descriptive messages:**
+
 ```bash
 # ✅ Good: Clear what and why
 feat(api): add pagination to document list endpoint
@@ -246,6 +264,7 @@ Closes #456
 ```
 
 **Commit often:**
+
 ```bash
 # ✅ Good: Small, frequent commits
 git commit -m "feat(ui): add document card component"
@@ -256,6 +275,7 @@ git commit -m "feat(ui): add error handling to document card"
 ### Don'ts ❌
 
 **Avoid vague messages:**
+
 ```bash
 # ❌ Bad: What changed? Why?
 git commit -m "fix stuff"
@@ -264,12 +284,14 @@ git commit -m "WIP"
 ```
 
 **Avoid huge commits:**
+
 ```bash
 # ❌ Bad: Too many changes in one commit
 git commit -m "add entire authentication system with tests and docs"
 ```
 
 **Avoid mixing concerns:**
+
 ```bash
 # ❌ Bad: Unrelated changes in one commit
 git commit -m "add document sharing, fix login bug, update README"
@@ -282,6 +304,7 @@ git commit -m "add document sharing, fix login bug, update README"
 ### Creating a PR
 
 1. **Update branch:**
+
 ```bash
 git checkout develop
 git pull origin develop
@@ -290,6 +313,7 @@ git merge develop  # or git rebase develop
 ```
 
 2. **Clean up commits (if needed):**
+
 ```bash
 # Interactive rebase to squash/reword commits
 git rebase -i develop
@@ -299,12 +323,14 @@ git merge --squash feature/my-feature
 ```
 
 3. **Push and create PR:**
+
 ```bash
 git push origin feature/my-feature
 # Create PR on GitHub
 ```
 
 ### PR Title Format
+
 ```
 [TYPE] Brief description
 
@@ -317,16 +343,19 @@ refactor: Extract validation logic to service layer
 ### Merging Strategies
 
 **Squash and Merge (Preferred):**
+
 - All commits squashed into one
 - Clean history on main/develop
 - Use for most feature branches
 
 **Merge Commit:**
+
 - Preserves all commits
 - Shows branch history
 - Use for releases
 
 **Rebase and Merge:**
+
 - Linear history
 - Individual commits preserved
 - Use for small, clean branches
@@ -414,16 +443,19 @@ git rebase -i develop
 ### Format: `MAJOR.MINOR.PATCH`
 
 **MAJOR** (v2.0.0)
+
 - Incompatible API changes
 - Breaking changes
 - Major feature overhauls
 
 **MINOR** (v1.1.0)
+
 - New features
 - Backward-compatible functionality
 - Enhancements
 
 **PATCH** (v1.0.1)
+
 - Bug fixes
 - Security patches
 - Backward-compatible fixes
@@ -616,19 +648,19 @@ git config --global pull.rebase false
     st = status -sb
     lg = log --oneline --graph --all --decorate
     last = log -1 HEAD --stat
-    
+
     # Branching
     co = checkout
     br = branch
     branches = branch -a
-    
+
     # Committing
     cm = commit -m
     amend = commit --amend --no-edit
-    
+
     # Staging
     unstage = restore --staged
-    
+
     # Clean up
     cleanup = "!git branch --merged | grep -v '\\*\\|main\\|develop' | xargs -n 1 git branch -d"
 ```
@@ -696,6 +728,7 @@ temp/
 ### GitHub Branch Protection Rules
 
 **For `main` branch:**
+
 - ✅ Require pull request reviews (2 approvals)
 - ✅ Require status checks to pass
   - CI tests
@@ -707,6 +740,7 @@ temp/
 - ✅ Restrict pushes (no direct commits)
 
 **For `develop` branch:**
+
 - ✅ Require pull request reviews (1 approval)
 - ✅ Require status checks to pass
 - ✅ Require branches to be up to date
@@ -774,6 +808,7 @@ git checkout -b recovered-branch <commit-hash>
 ## Best Practices
 
 ### Do's ✅
+
 - Commit early and often
 - Write clear commit messages
 - Keep commits atomic
@@ -786,6 +821,7 @@ git checkout -b recovered-branch <commit-hash>
 - Communicate with team
 
 ### Don'ts ❌
+
 - Don't commit secrets or credentials
 - Don't force push to shared branches
 - Don't commit generated files

@@ -37,10 +37,10 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Install SARIF formatter
-        run: npm install --no-save @microsoft/eslint-formatter-sarif@3.1.0
+        run: npm install --legacy-peer-deps --no-save @microsoft/eslint-formatter-sarif@3.1.0
 
       - name: Run ESLint
         id: eslint-run
@@ -78,6 +78,10 @@ jobs:
             }
           EOF
           fi
+
+      - name: Merge SARIF runs into single run
+        if: always() && hashFiles('eslint-results.sarif') != ''
+        run: ./scripts/merge-sarif-runs.sh eslint-results.sarif
 
       - name: Upload analysis results to GitHub
         uses: github/codeql-action/upload-sarif@9e907b5e64f6b83e7804b09294d44122997950d6 # v4.32.3

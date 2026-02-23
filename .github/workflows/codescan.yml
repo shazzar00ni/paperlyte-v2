@@ -46,6 +46,9 @@ jobs:
                     login: ${{ secrets.CODESCAN_AUTH_TOKEN }}
                     organization: ${{ secrets.CODESCAN_ORGANIZATION_KEY }}
                     projectKey: ${{ secrets.CODESCAN_PROJECT_KEY }}
+            -   name: Merge SARIF runs into single run
+                if: always() && hashFiles('codescan.sarif') != ''
+                run: ./scripts/merge-sarif-runs.sh codescan.sarif
             -   name: Upload SARIF file
                 uses: github/codeql-action/upload-sarif@9e907b5e64f6b83e7804b09294d44122997950d6 # v4.32.3
                 # Only upload if SARIF file exists

@@ -72,44 +72,24 @@ export class PlausibleProvider extends BaseAnalyticsProvider {
   }
 
   /**
-   * Load Plausible analytics script
-   * Uses async loading to prevent blocking page render
+   * Create and configure the script element for Plausible
    */
-  protected loadScript(): void {
-    // Guard against SSR/Node.js environments
-    if (this.scriptLoaded || typeof window === 'undefined' || typeof document === 'undefined') {
-      return
-    }
-
-    const scriptUrl = this.config?.scriptUrl || 'https://plausible.io/js/script.js'
-
-    // Validate script URL to prevent injection attacks
-    if (!this.isValidScriptUrl(scriptUrl)) {
-      if (this.config?.debug || import.meta.env.DEV) {
-        console.error(
-          '[Analytics] Invalid or unsafe script URL. Must be HTTPS and point to a .js file:',
-          scriptUrl
-        )
-      }
-      return
-    }
-
+  private createScriptElement(scriptUrl: string): HTMLScriptElement {
     const script = document.createElement('script')
 
     script.async = true
     script.src = scriptUrl
-    script.setAttribute('data-domain', this.config?.domain || '')
+    script.setAttribute('data-domain', this.config?.domain ?? '')
 
-    // Add optional tracking features
     if (this.config?.trackPageviews === false) {
       script.setAttribute('data-auto-pageviews', 'false')
     }
 
     script.onerror = () => {
+      this.scriptLoaded = false
       if (this.config?.debug) {
         console.warn('[Analytics] Failed to load Plausible script')
       }
-      this.scriptLoaded = false
     }
 
     script.onload = () => {
@@ -119,9 +99,46 @@ export class PlausibleProvider extends BaseAnalyticsProvider {
       }
     }
 
-    // Store reference to the script element for cleanup
-    this.scriptElement = script
-    document.head.appendChild(script)
+    return script
+  }
+
+  /**
+   * Resolve and validate the analytics script URL.
+   * Returns the URL string if valid, or undefined if validation fails.
+   */
+  private getValidatedScriptUrl(): string | undefined {
+    const scriptUrl = this.config?.scriptUrl ?? 'https://plausible.io/js/script.js'
+
+    if (this.isValidScriptUrl(scriptUrl)) {
+      return scriptUrl
+    }
+
+    if (this.config?.debug ?? import.meta.env.DEV) {
+      console.error(
+        '[Analytics] Invalid or unsafe script URL. Must be HTTPS and point to a .js file:',
+        scriptUrl
+      )
+    }
+    return undefined
+  }
+
+  /**
+   * Load Plausible analytics script
+   * Uses async loading to prevent blocking page render
+   */
+  protected loadScript(): void {
+    // Guard against SSR/Node.js environments
+    if (this.scriptLoaded || typeof window === 'undefined' || typeof document === 'undefined') {
+      return
+    }
+
+    const scriptUrl = this.getValidatedScriptUrl()
+    if (!scriptUrl) {
+      return
+    }
+
+    this.scriptElement = this.createScriptElement(scriptUrl)
+    document.head.appendChild(this.scriptElement)
   }
 
   /**

@@ -17,8 +17,8 @@ import { BaseAnalyticsProvider } from './base'
 declare global {
   interface Window {
     fathom?: {
-      trackPageview: (_opts?: { url?: string; referrer?: string }) => void
-      trackEvent: (_name: string, _opts?: { _value?: number }) => void
+      trackPageview: (opts?: { url?: string; referrer?: string }) => void
+      trackEvent: (name: string, opts?: { _value?: number }) => void
     }
   }
 }
@@ -30,67 +30,59 @@ declare global {
 export class FathomProvider extends BaseAnalyticsProvider {
   protected readonly providerName = 'Fathom'
 
+  private static readonly KNOWN_PROVIDERS = new Set([
+    'usefathom.com',
+    'cdn.usefathom.com',
+    'plausible.io',
+    'analytics.google.com',
+    'umami.is',
+    'simpleanalytics.com',
+  ])
+
+  /** Log a validation warning when debug mode is active */
+  private debugWarn(message: string, ...args: unknown[]): void {
+    if (this.config?.debug) {
+      console.warn(message, ...args)
+    }
+  }
+
   /**
-   * Validate script URL to prevent script injection attacks
-   * Only allows HTTPS URLs from known analytics providers with valid extensions
+   * Validate script URL to prevent script injection attacks.
+   * Only allows HTTPS URLs from knownProviders with valid extensions,
+   * unless allowCustomScriptUrl is set on the config.
    */
   private isValidScriptUrl(url: string): boolean {
+    let parsedUrl: URL
     try {
-      const parsedUrl = new URL(url)
-
-      // Only allow HTTPS for security
-      if (parsedUrl.protocol !== 'https:') {
-        if (this.config?.debug) {
-          console.warn('[Analytics] Script URL must use HTTPS protocol:', url)
-        }
-        return false
-      }
-
-      const hasValidPath =
-        typeof parsedUrl.pathname === 'string' &&
-        (parsedUrl.pathname.endsWith('.js') || parsedUrl.pathname.endsWith('.mjs'))
-
-      if (!hasValidPath) {
-        if (this.config?.debug) {
-          console.warn('[Analytics] Script URL must point to a .js or .mjs file:', url)
-        }
-        return false
-      }
-
-      const knownProviders = [
-        'usefathom.com',
-        'cdn.usefathom.com',
-        'plausible.io',
-        'analytics.google.com',
-        'umami.is',
-        'simpleanalytics.com',
-      ]
-
-      const isKnownProvider = knownProviders.includes(parsedUrl.hostname)
-
-      if (isKnownProvider) {
-        return true
-      }
-
-      // Allow non-whitelisted hosts only when explicitly opted in via config
-      if (this.config?.allowCustomScriptUrl === true) {
-        return true
-      }
-
-      if (this.config?.debug) {
-        console.warn(
-          '[Analytics] Script host is not in the knownProviders whitelist:',
-          parsedUrl.hostname,
-          '— set allowCustomScriptUrl: true in config to allow self-hosted scripts'
-        )
-      }
-      return false
-    } catch (error) {
-      if (this.config?.debug) {
-        console.warn('[Analytics] Invalid script URL format:', url, error)
-      }
+      parsedUrl = new URL(url)
+    } catch {
+      this.debugWarn('[Analytics] Invalid script URL format:', url)
       return false
     }
+
+    if (parsedUrl.protocol !== 'https:') {
+      this.debugWarn('[Analytics] Script URL must use HTTPS protocol:', url)
+      return false
+    }
+
+    const { pathname, hostname } = parsedUrl
+    const hasValidPath = pathname.endsWith('.js') || pathname.endsWith('.mjs')
+
+    if (!hasValidPath) {
+      this.debugWarn('[Analytics] Script URL must point to a .js or .mjs file:', url)
+      return false
+    }
+
+    if (FathomProvider.KNOWN_PROVIDERS.has(hostname) || this.config?.allowCustomScriptUrl === true) {
+      return true
+    }
+
+    this.debugWarn(
+      '[Analytics] Script host is not in the knownProviders whitelist:',
+      hostname,
+      '— set allowCustomScriptUrl: true in config to allow self-hosted scripts'
+    )
+    return false
   }
 
   /**
@@ -135,7 +127,7 @@ export class FathomProvider extends BaseAnalyticsProvider {
       return scriptUrl
     }
 
-    if (this.config?.debug || import.meta.env.DEV) {
+    if (this.config?.debug ?? import.meta.env.DEV) {
       console.error(
         '[Analytics] Invalid or unsafe script URL. Must be HTTPS and point to a .js file:',
         scriptUrl

@@ -22,9 +22,9 @@ export abstract class BaseAnalyticsProvider implements AnalyticsProvider {
   /** Remove the provider-specific window global (e.g. window.fathom) */
   protected abstract cleanupWindowGlobal(): void
 
-  abstract trackPageView(url?: string): void
-  abstract trackEvent(event: AnalyticsEvent): void
-  abstract trackWebVitals(vitals: CoreWebVitals): void
+  abstract trackPageView(_url?: string): void
+  abstract trackEvent(_event: AnalyticsEvent): void
+  abstract trackWebVitals(_vitals: CoreWebVitals): void
   abstract isEnabled(): boolean
 
   init(config: AnalyticsConfig): void {

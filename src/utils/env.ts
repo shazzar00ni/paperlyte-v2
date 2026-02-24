@@ -86,5 +86,4 @@ export const updateMetaTags = (): void => {
   if (ogImage) {
     ogImage.setAttribute('content', env.ogImage)
   }
-
 }

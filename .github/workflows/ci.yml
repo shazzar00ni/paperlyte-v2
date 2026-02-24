@@ -102,8 +102,10 @@ jobs:
         run: npm ci
 
       - name: Run tests with coverage
-        # Generate coverage even when tests fail to track coverage trends
-        run: npm run test:coverage -- --run --coverage.reportOnFailure
+        # reportOnFailure is set in vitest.config.ts so the coverage report
+        # is always generated; thresholds (70%) are enforced and will fail CI
+        # if coverage drops below the required levels.
+        run: npm run test:coverage -- --run
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
@@ -131,14 +133,20 @@ jobs:
           path: coverage/
           retention-days: 30
 
-      - name: Coverage Summary
+      - name: Check coverage requirements
         if: always()
         run: |
+          echo "## 📊 Coverage Requirements Check" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Required thresholds:** lines ≥70%, functions ≥70%, branches ≥70%, statements ≥70%" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
           if [ -f coverage/coverage-summary.json ]; then
-            echo "## Test Coverage Summary" >> $GITHUB_STEP_SUMMARY
+            echo "### Coverage Results" >> $GITHUB_STEP_SUMMARY
             echo '```json' >> $GITHUB_STEP_SUMMARY
             cat coverage/coverage-summary.json >> $GITHUB_STEP_SUMMARY
             echo '```' >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ No coverage report found. Tests may have failed before coverage was generated." >> $GITHUB_STEP_SUMMARY
           fi
 
   build:

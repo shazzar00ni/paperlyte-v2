@@ -132,7 +132,7 @@ export const EmailCapture = (): React.ReactElement => {
                 name="email"
                 placeholder="your@email.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => { setEmail(e.target.value); }}
                 required
                 className={styles.input}
                 aria-label="Email address"

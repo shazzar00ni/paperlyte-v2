@@ -85,7 +85,7 @@ describe('analytics/index', () => {
     it('should throw error for unimplemented providers', () => {
       const fathomConfig = { ...config, provider: 'fathom' as const }
 
-      expect(() => analytics.init(fathomConfig)).toThrow('Provider "fathom" is not yet implemented')
+      expect(() => { analytics.init(fathomConfig); }).toThrow('Provider "fathom" is not yet implemented')
     })
 
     it('should fallback to Plausible for unknown providers', () => {
@@ -470,7 +470,7 @@ describe('analytics/index', () => {
     })
 
     it('should handle disable when not initialized', () => {
-      expect(() => analytics.disable()).not.toThrow()
+      expect(() => { analytics.disable(); }).not.toThrow()
     })
 
     it('should log debug message when debug is enabled', () => {

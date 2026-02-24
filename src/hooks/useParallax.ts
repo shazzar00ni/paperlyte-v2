@@ -127,7 +127,7 @@ export const useParallax = (options: UseParallaxOptions = {}) => {
   // Handle scroll with requestAnimationFrame
   const handleScroll = useCallback(() => {
     if (!ticking.current && isInView) {
-      rafId.current = requestAnimationFrame(() => calculateOffsetRef.current())
+      rafId.current = requestAnimationFrame(() => { calculateOffsetRef.current(); })
       ticking.current = true
     }
   }, [isInView])
@@ -169,7 +169,7 @@ export const useParallax = (options: UseParallaxOptions = {}) => {
       return
     }
 
-    const handleResize = () => updateDimensionsRef.current()
+    const handleResize = () => { updateDimensionsRef.current(); }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
     window.addEventListener('resize', handleResize, { passive: true })

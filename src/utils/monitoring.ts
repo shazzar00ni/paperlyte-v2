@@ -44,8 +44,8 @@ export interface ErrorContext {
  * @param source - Optional label identifying the error's origin (for example, a component or subsystem name)
  */
 export function logError(error: Error, context?: ErrorContext, source?: string): void {
-  const severity = context?.severity || 'medium'
-  const errorSource = source || 'unknown'
+  const severity = context?.severity ?? 'medium'
+  const errorSource = source ?? 'unknown'
 
   // Always log to console in development
   if (import.meta.env.DEV) {

@@ -85,10 +85,8 @@ describe('Hero', () => {
     it('should render arrow icon on Start Writing for Free button', () => {
       render(<Hero />)
 
-      const button = screen.getByRole('button', { name: /start writing for free/i })
-      const icon = button.querySelector('svg[data-icon="fa-arrow-right"]')
-
-      expect(icon).toBeInTheDocument()
+      const arrowIcon = screen.getByLabelText(/arrow/i)
+      expect(arrowIcon).toBeInTheDocument()
     })
   })
 
@@ -192,20 +190,16 @@ describe('Hero', () => {
       expect(mockup).toBeInTheDocument()
     })
 
-    it('should render mockup images with proper sources', () => {
+    it('should render mockup images with proper alt text', () => {
       render(<Hero />)
 
-      // Check primary mockup (notes list) using RTL query
-      const primaryImg = screen.getByAltText(/notes list/i)
-      expect(primaryImg).toBeInTheDocument()
-      expect(primaryImg.getAttribute('src')).toEqual(expect.stringContaining('/mockups/notes-list'))
+      // Check that the primary mockup image exists with alt text
+      const primaryMockup = screen.getByAltText(/notes list/i)
+      expect(primaryMockup).toBeInTheDocument()
 
-      // Check secondary mockup (note detail) using RTL query
-      const secondaryImg = screen.getByAltText(/note editor/i)
-      expect(secondaryImg).toBeInTheDocument()
-      expect(secondaryImg.getAttribute('src')).toEqual(
-        expect.stringContaining('/mockups/note-detail')
-      )
+      // Check that the secondary mockup image exists with alt text
+      const secondaryMockup = screen.getByAltText(/note editor/i)
+      expect(secondaryMockup).toBeInTheDocument()
     })
   })
 

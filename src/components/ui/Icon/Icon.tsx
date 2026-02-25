@@ -1,10 +1,7 @@
 import { useMemo } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  findIconDefinition,
-  type IconName,
-  type IconPrefix,
-} from '@fortawesome/fontawesome-svg-core'
+import { findIconDefinition } from '@fortawesome/fontawesome-svg-core'
+import type { IconName, IconPrefix } from '@fortawesome/fontawesome-svg-core'
 import { iconPaths, getIconViewBox } from './icons'
 import { safePropertyAccess } from '../../../utils/security'
 import './Icon.css'
@@ -60,8 +57,6 @@ export const Icon = ({
 
   // Fallback to Font Awesome React component if icon not found in our set
   if (!paths) {
-    console.warn(`Icon "${name}" not found in icon set, using Font Awesome fallback`)
-
     // Convert icon prefix based on variant
     const prefix: IconPrefix = variant === 'brands' ? 'fab' : variant === 'regular' ? 'far' : 'fas'
 
@@ -71,33 +66,25 @@ export const Icon = ({
     // Try to find the icon definition in the library
     const iconDefinition = findIconDefinition({ prefix, iconName })
 
-    // If icon not found in library, return a placeholder
-    if (!iconDefinition) {
-      console.warn(`Icon "${name}" not found in Font Awesome library either`)
+    const commonIconProps = {
+      className: `icon-fallback ${className}`,
+      style: { fontSize: iconSize, color: normalizedColor, ...style },
+      'aria-label': ariaLabel,
+      'aria-hidden': ariaLabel ? ('false' as const) : ('true' as const),
+      ...(ariaLabel ? { role: 'img' } : {}),
+    }
+
+    if (iconDefinition) {
+      console.warn(`Icon "${name}" not found in custom icon set, using Font Awesome fallback`)
+      return <FontAwesomeIcon icon={iconDefinition} {...commonIconProps} />
+    } else {
+      console.warn(`Icon "${name}" not found in custom set or Font Awesome library`)
       return (
-        <span
-          className={`icon-fallback ${className}`}
-          style={{ fontSize: iconSize, color: normalizedColor, ...style }}
-          aria-label={ariaLabel}
-          aria-hidden={ariaLabel ? 'false' : 'true'}
-          {...(ariaLabel ? { role: 'img' } : {})}
-          title={`Icon "${name}" not found`}
-        >
+        <span {...commonIconProps} title={`Icon "${name}" not found`}>
           ?
         </span>
       )
     }
-
-    return (
-      <FontAwesomeIcon
-        icon={iconDefinition}
-        className={`icon-fallback ${className}`}
-        style={{ fontSize: iconSize, color: normalizedColor, ...style }}
-        aria-label={ariaLabel}
-        aria-hidden={ariaLabel ? 'false' : 'true'}
-        {...(ariaLabel ? { role: 'img' } : {})}
-      />
-    )
   }
 
   return (
@@ -106,7 +93,7 @@ export const Icon = ({
       height={iconSize}
       viewBox={viewBox}
       fill="none"
-      stroke={normalizedColor || 'currentColor'}
+      stroke={normalizedColor ?? 'currentColor'}
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"

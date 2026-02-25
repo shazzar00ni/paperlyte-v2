@@ -47,9 +47,10 @@ jobs:
         id: audit
         run: npm audit --omit=dev --audit-level=moderate
 
-      - name: Run security audit (dev dependencies)
-        id: audit-dev
-        continue-on-error: true
+       - name: Run security audit (dev dependencies)
+         id: audit-dev
+         if: always()
+         continue-on-error: true
         run: |
           # Dev-dependency audit is informational; known minimatch < 10.2.1
           # issue in eslint 9.x cannot be fixed until eslint-plugin-react-hooks

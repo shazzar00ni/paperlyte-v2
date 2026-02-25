@@ -18,6 +18,13 @@ interface FAQItemProps {
   delay: number
 }
 
+/**
+ * Individual FAQ item component with accordion functionality
+ * Supports keyboard navigation and animated expand/collapse
+ *
+ * @param props - FAQ item props
+ * @returns An animated accordion item for FAQ
+ */
 const FAQItemComponent = ({
   question,
   answer,

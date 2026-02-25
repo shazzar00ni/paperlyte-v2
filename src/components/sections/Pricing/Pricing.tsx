@@ -5,6 +5,19 @@ import { Icon } from '@components/ui/Icon'
 import { PRICING_PLANS } from '@constants/pricing'
 import styles from './Pricing.module.css'
 
+/**
+ * Pricing section component that displays available pricing plans
+ * Shows plan cards with features, pricing, and call-to-action buttons
+ * Highlights the most popular plan with a badge
+ * Includes money-back guarantee badge at the bottom
+ *
+ * @returns A pricing section with plan cards and guarantee information
+ *
+ * @example
+ * ```tsx
+ * <Pricing />
+ * ```
+ */
 export const Pricing = (): React.ReactElement => {
   return (
     <Section id="pricing" background="surface">

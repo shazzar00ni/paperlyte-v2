@@ -45,7 +45,12 @@ jobs:
 
       - name: Run security audit (production)
         id: audit
-        run: npm audit --omit=dev --audit-level=moderate
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            npm audit --omit=dev --audit-level=high
+          else
+            npm audit --omit=dev --audit-level=moderate
+          fi
 
        - name: Run security audit (dev dependencies)
          id: audit-dev

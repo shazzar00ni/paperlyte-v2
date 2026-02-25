@@ -324,33 +324,6 @@ describe('Button', () => {
 - ❌ Skip tests for new features
 - ❌ Use `any` type in TypeScript
 
-## Peer Dependency Workaround (`.npmrc`)
-
-The project includes an `.npmrc` file with `legacy-peer-deps=true`. This is a **temporary workaround** required because **eslint@10.0.0** was adopted before all ESLint ecosystem plugins declared v10 peer support.
-
-### Conflicts Resolved
-
-| Installed Package | Requires ESLint | Installed ESLint |
-|---|---|---|
-| `eslint-plugin-react-hooks@7.0.1` | `^3.0.0 \|\| ^4.0.0 \|\| ^5.0.0 \|\| ^6.0.0 \|\| ^7.0.0 \|\| ^8.0.0-0 \|\| ^9.0.0` | `10.0.0` |
-| `typescript-eslint@8.54.0` | `^8.57.0 \|\| ^9.0.0` | `10.0.0` |
-
-Without `legacy-peer-deps=true`, `npm install` fails with `ERESOLVE` because both plugins have not yet published versions that list `eslint@10` as a valid peer dependency.
-
-### Current Status
-
-Despite the peer dependency mismatch, linting works correctly at runtime — eslint 10 is backwards-compatible with these plugins in practice. Build, lint, type-check, and test all pass.
-
-### Remediation Plan
-
-Remove `.npmrc` once both plugins ship eslint 10 support:
-
-1. **eslint-plugin-react-hooks**: Track [react-hooks plugin releases](https://github.com/facebook/react/releases) for a version that adds `eslint@10` to its peerDependencies
-2. **typescript-eslint**: Track [typescript-eslint releases](https://github.com/typescript-eslint/typescript-eslint/releases) for a version that adds `eslint@10` to its peerDependencies
-3. When both are available, update them (`npm update eslint-plugin-react-hooks typescript-eslint`), remove `legacy-peer-deps=true` from `.npmrc`, delete the `.npmrc` if no other settings remain, and verify `npm install` succeeds cleanly
-
-**Alternative**: Downgrade to `eslint@9.x` to eliminate the workaround immediately, at the cost of losing eslint 10 features.
-
 ## Questions?
 
 If you have questions:

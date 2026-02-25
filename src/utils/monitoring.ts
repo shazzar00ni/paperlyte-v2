@@ -51,15 +51,6 @@ export function logError(error: Error, context?: ErrorContext, source?: string):
   if (import.meta.env.DEV) {
     console.group(`[${severity.toUpperCase()}] Error from ${errorSource}`)
     console.error(error)
-    if (context?.componentStack) {
-      console.log('Component Stack:', context.componentStack)
-    }
-    if (context?.errorInfo) {
-      console.log('Additional Info:', context.errorInfo)
-    }
-    if (context?.tags) {
-      console.log('Tags:', context.tags)
-    }
     console.groupEnd()
     return
   }
@@ -106,7 +97,7 @@ export function logError(error: Error, context?: ErrorContext, source?: string):
     }
 
     // Log to console in production (for server logs if applicable)
-    console.error(`[${errorSource}]`, error.message, {
+    console.error('[Error]', errorSource, error.message, {
       severity,
       tags: context?.tags,
     })
@@ -148,7 +139,6 @@ export function logPerformance(
   unit: 'ms' | 'bytes' | 'count' = 'ms'
 ): void {
   if (import.meta.env.DEV) {
-    console.log(`[Performance] ${metric}: ${value}${unit}`)
     return
   }
 
@@ -169,9 +159,5 @@ export function logEvent(
   eventName: string,
   properties?: Record<string, string | number | boolean>
 ): void {
-  if (import.meta.env.DEV) {
-    console.log(`[Event] ${eventName}`, properties)
-  }
-
   trackEvent(eventName, properties)
 }

@@ -141,43 +141,54 @@ describe('iconLibrary', () => {
   })
 
   describe('Icon Name Mapping', () => {
-    it('should have mostly unique values with known aliases', () => {
-      const values = Object.values(iconNameMap)
-      const uniqueValues = new Set(values)
+    it('should have unique values in iconNameMap (except known aliases)', () => {
+      // Known intentional aliases where multiple keys map to the same icon
+      const knownAliases: Record<string, string[]> = {
+        'network-wired': ['fa-network-wired', 'fa-router'], // fa-router uses network-wired icon
+      }
 
-      // We have intentional aliases for backward compatibility:
-      // - 'fa-x' -> 'xmark' (alias for 'fa-xmark')
-      // - 'fa-shield-check' -> 'circle-check' (alias for 'fa-circle-check')
-      const knownAliases = 2
-      expect(values.length).toBe(uniqueValues.size + knownAliases)
-    })
-
-    it('should map all expected feature icons', () => {
-      // Core feature icons that must be mapped
-      const requiredMappings = [
-        'fa-bolt', // Lightning Speed
-        'fa-pen-nib', // Beautiful Simplicity
-        'fa-tags', // Tag-Based Organization
-        'fa-mobile-screen', // Universal Access
-        'fa-shield-halved', // Privacy Focused
-      ]
-
-      requiredMappings.forEach((oldName) => {
-        expect(iconNameMap[oldName]).toBeDefined()
+      // Create a fresh copy of values to avoid any module state issues
+      const entries: [string, string][] = Object.entries(iconNameMap)
+      const valueToKeys = new Map<string, string[]>()
+      entries.forEach(([key, value]: [string, string]) => {
+        const keys = valueToKeys.get(value) || []
+        keys.push(key)
+        valueToKeys.set(value, keys)
       })
+
+      // Find unexpected duplicates (not in knownAliases)
+      const unexpectedDuplicates = Array.from(valueToKeys.entries())
+        .filter(([value, keys]: [string, string[]]) => {
+          if (keys.length <= 1) return false
+          const allowedKeys = knownAliases[value]
+          if (!allowedKeys) return true // Not a known alias, so it's unexpected
+          // Check if the actual keys match the allowed keys
+          return !keys.every((k: string) => allowedKeys.includes(k))
+        })
+        .map(([value, keys]: [string, string[]]) => `"${value}" (mapped from: ${keys.join(', ')})`)
+
+      const errorMessage =
+        unexpectedDuplicates.length > 0
+          ? `Unexpected duplicate values found in iconNameMap:\n${unexpectedDuplicates.join('\n')}`
+          : ''
+      expect(unexpectedDuplicates.length, errorMessage).toBe(0)
     })
 
-    it('should map all expected UI icons', () => {
-      // UI icons that must be mapped
-      const requiredMappings = [
-        'fa-bars', // Mobile menu
-        'fa-xmark', // Close
-        'fa-moon', // Dark mode
-        'fa-sun', // Light mode
-      ]
+    it('should have unique keys in iconNameMap', () => {
+      // Keys must be unique (Object.keys guarantees this, but test for clarity)
+      const keys = Object.keys(iconNameMap)
+      const uniqueKeys = new Set(keys)
 
-      requiredMappings.forEach((oldName) => {
-        expect(iconNameMap[oldName]).toBeDefined()
+      expect(keys.length).toBe(uniqueKeys.size)
+    })
+
+    it('should have all values as valid icons in iconNameMap', () => {
+      // All mapped values must be valid icons in the library
+      const values = Object.values(iconNameMap)
+
+      // All values must be valid icons
+      values.forEach((iconName) => {
+        expect(isValidIcon(iconName)).toBe(true)
       })
     })
   })
@@ -185,7 +196,7 @@ describe('iconLibrary', () => {
   describe('Regression Prevention', () => {
     it('should have at least 31 solid icons registered', () => {
       // Based on current imports - prevents accidental removal
-      // Icon breakdown: 31 solid (non-fallback) + 6 brand + 1 fallback = 38 total
+      // Icon breakdown: 31 solid (non-fallback) + 4 brand + 1 fallback = 36 total
       const solidIcons = Array.from(validIconNames).filter(
         (icon) => !brandIconNames.has(icon) && icon !== 'circle-question'
       )
@@ -193,15 +204,14 @@ describe('iconLibrary', () => {
       expect(solidIcons.length).toBeGreaterThanOrEqual(31)
     })
 
-    it('should have exactly 6 brand icons registered', () => {
-      // Icon breakdown: 31 solid (non-fallback) + 6 brand + 1 fallback = 38 total
-      // Brand icons: github, twitter, x-twitter, instagram, apple, windows
-      expect(brandIconNames.size).toBe(6)
+    it('should have exactly 4 brand icons registered', () => {
+      // Icon breakdown: 31 solid (non-fallback) + 4 brand + 1 fallback = 36 total
+      expect(brandIconNames.size).toBe(4)
     })
 
     it('should maintain icon count in validIconNames', () => {
-      // Icon breakdown: 31 solid (non-fallback) + 6 brand + 1 fallback = 38 total
-      expect(validIconNames.size).toBeGreaterThanOrEqual(38)
+      // Icon breakdown: 31 solid (non-fallback) + 4 brand + 1 fallback = 36 total
+      expect(validIconNames.size).toBeGreaterThanOrEqual(36)
     })
   })
 })

@@ -39,6 +39,7 @@ describe('Comparison', () => {
 
     // Check all competitor headers
     COMPETITORS.forEach((competitor) => {
+      // Simpler approach: use string matching instead of RegExp
       const header = screen.getByRole('columnheader', {
         name: new RegExp(competitor.name),
       })

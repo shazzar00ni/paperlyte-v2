@@ -1,5 +1,8 @@
 name: PR Quality Check
 
+env:
+  npm_config_legacy_peer_deps: true
+
 permissions:
   contents: read
 
@@ -10,15 +13,24 @@ on:
 jobs:
   pr-metadata:
     name: PR Metadata Check
+
+env:
+  npm_config_legacy_peer_deps: true
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
+
+env:
+  npm_config_legacy_peer_deps: true
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
       - name: PR Size Check
+
+env:
+  npm_config_legacy_peer_deps: true
         run: |
           # Count changed files and lines
           CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | wc -l)
@@ -42,6 +54,9 @@ jobs:
           fi
 
       - name: Check PR Title Format
+
+env:
+  npm_config_legacy_peer_deps: true
         env:
           PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
@@ -57,6 +72,9 @@ jobs:
 
   dependency-review:
     name: Dependency Review
+
+env:
+  npm_config_legacy_peer_deps: true
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -65,31 +83,52 @@ jobs:
 
     steps:
       - name: Checkout code
+
+env:
+  npm_config_legacy_peer_deps: true
         uses: actions/checkout@v6
 
       - name: Dependency Review
+
+env:
+  npm_config_legacy_peer_deps: true
         uses: actions/dependency-review-action@v4
         with:
           fail-on-severity: moderate
           comment-summary-in-pr: on-failure
   bundle-size-check:
     name: Bundle Size Check
+
+env:
+  npm_config_legacy_peer_deps: true
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
+
+env:
+  npm_config_legacy_peer_deps: true
         uses: actions/checkout@v6
 
       - name: Setup Node.js
+
+env:
+  npm_config_legacy_peer_deps: true
         uses: actions/setup-node@v6
         with:
           node-version: '20'
           cache: 'npm'
 
       - name: Install dependencies
+
+env:
+  npm_config_legacy_peer_deps: true
         run: npm ci
 
       - name: Build and analyze bundle
+
+env:
+  npm_config_legacy_peer_deps: true
         run: |
           npm run build
 
@@ -106,6 +145,9 @@ jobs:
           echo '```' >> $GITHUB_STEP_SUMMARY
 
       - name: Performance Budget Check
+
+env:
+  npm_config_legacy_peer_deps: true
         run: |
           # Check if any JS bundle exceeds 200KB (204800 bytes, performance budget)
           LARGE_FILES=$(find dist/assets -name "*.js" -size +204800c)
@@ -121,12 +163,18 @@ jobs:
 
   quality-summary:
     name: Quality Summary
+
+env:
+  npm_config_legacy_peer_deps: true
     runs-on: ubuntu-latest
     needs: [pr-metadata, dependency-review, bundle-size-check]
     if: always()
 
     steps:
       - name: Generate Quality Report
+
+env:
+  npm_config_legacy_peer_deps: true
         run: |
           echo "## 🎯 PR Quality Report" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY

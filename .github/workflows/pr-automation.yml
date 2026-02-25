@@ -1,5 +1,8 @@
 name: PR Automation
 
+env:
+  npm_config_legacy_peer_deps: true
+
 on:
   pull_request:
     types: [opened, synchronize, reopened, edited]
@@ -10,6 +13,9 @@ permissions:
 jobs:
   label:
     name: Auto-label PR
+
+env:
+  npm_config_legacy_peer_deps: true
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -17,15 +23,24 @@ jobs:
 
     steps:
       - name: Checkout code
+
+env:
+  npm_config_legacy_peer_deps: true
         uses: actions/checkout@v6
 
       - name: Label based on changed files
+
+env:
+  npm_config_legacy_peer_deps: true
         uses: actions/labeler@v6
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           configuration-path: .github/labeler.yml
 
       - name: Label PR size
+
+env:
+  npm_config_legacy_peer_deps: true
         uses: codelytv/pr-size-labeler@4ec67706cd878fbc1c8db0a5dcd28b6bb412e85a # v1.10.3
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -42,6 +57,9 @@ jobs:
 
   check-description:
     name: Check PR Description
+
+env:
+  npm_config_legacy_peer_deps: true
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -49,6 +67,9 @@ jobs:
 
     steps:
       - name: Validate PR has description
+
+env:
+  npm_config_legacy_peer_deps: true
         uses: actions/github-script@v8
         with:
           script: |

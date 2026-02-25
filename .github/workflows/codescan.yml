@@ -8,6 +8,9 @@
 # read our documentation at https://github.com/codescan-io/codescan-scanner-action
 name: CodeScan
 
+env:
+  npm_config_legacy_peer_deps: true
+
 on:
   push:
     branches: [ "main" ]
@@ -29,8 +32,14 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             -   name: Checkout repository
+
+env:
+  npm_config_legacy_peer_deps: true
                 uses: actions/checkout@v6
             -   name: Cache files
+
+env:
+  npm_config_legacy_peer_deps: true
                 uses: actions/cache@v5
                 with:
                     path: |
@@ -38,6 +47,9 @@ jobs:
                     key: ${{ runner.os }}-sonar
                     restore-keys: ${{ runner.os }}-sonar
             -   name: Run Analysis
+
+env:
+  npm_config_legacy_peer_deps: true
                 id: codescan-analysis
                 uses: codescan-io/codescan-scanner-action@955d3d1b4a9e374064189719484005ce8e08a749
                 # Continue even if CodeScan fails (e.g., missing secrets in forks)
@@ -47,6 +59,9 @@ jobs:
                     organization: ${{ secrets.CODESCAN_ORGANIZATION_KEY }}
                     projectKey: ${{ secrets.CODESCAN_PROJECT_KEY }}
             -   name: Upload SARIF file
+
+env:
+  npm_config_legacy_peer_deps: true
                 uses: github/codeql-action/upload-sarif@89a39a4e59826350b863aa6b6252a07ad50cf83e # v4.32.4
                 # Only upload if SARIF file exists
                 if: always() && hashFiles('codescan.sarif') != ''
@@ -55,6 +70,9 @@ jobs:
                     sarif_file: codescan.sarif
                     category: codescan
             -   name: CodeScan Summary
+
+env:
+  npm_config_legacy_peer_deps: true
                 if: always()
                 run: |
                     echo "## 🔬 CodeScan Analysis" >> $GITHUB_STEP_SUMMARY

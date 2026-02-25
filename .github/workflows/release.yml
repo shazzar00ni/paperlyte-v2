@@ -1,6 +1,9 @@
 # .github/workflows/release.yml
 name: Release
 
+env:
+  npm_config_legacy_peer_deps: true
+
 on:
   push:
     tags:
@@ -12,33 +15,54 @@ permissions:
 jobs:
   release:
     name: Create Release
+
+env:
+  npm_config_legacy_peer_deps: true
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
+
+env:
+  npm_config_legacy_peer_deps: true
         uses: actions/checkout@v6
         with:
           fetch-depth: 0  # Full history for changelog
 
       - name: Setup Node.js
+
+env:
+  npm_config_legacy_peer_deps: true
         uses: actions/setup-node@v6
         with:
           node-version: "20"
           cache: "npm"
 
       - name: Install dependencies
+
+env:
+  npm_config_legacy_peer_deps: true
         run: npm ci
 
       - name: Build release artifacts
+
+env:
+  npm_config_legacy_peer_deps: true
         run: npm run build
 
       - name: Create release archive
+
+env:
+  npm_config_legacy_peer_deps: true
         run: |
           cd dist
           tar -czf ../paperlyte-${{ github.ref_name }}.tar.gz .
           cd ..
 
       - name: Generate changelog
+
+env:
+  npm_config_legacy_peer_deps: true
         id: changelog
         uses: mikepenz/release-changelog-builder-action@v6
         with:
@@ -47,6 +71,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create GitHub Release
+
+env:
+  npm_config_legacy_peer_deps: true
         uses: softprops/action-gh-release@v2
         with:
           body: ${{ steps.changelog.outputs.changelog }}

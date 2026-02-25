@@ -1,5 +1,8 @@
 name: "Copilot Setup Steps"
 
+env:
+  npm_config_legacy_peer_deps: true
+
 # Automatically run the setup steps when they are changed to allow for easy validation,
 # and allow manual testing through the repository's "Actions" tab
 on:
@@ -23,16 +26,28 @@ jobs:
 
     steps:
       - name: Checkout code
+
+env:
+  npm_config_legacy_peer_deps: true
         uses: actions/checkout@v6
 
       - name: Setup Node.js
+
+env:
+  npm_config_legacy_peer_deps: true
         uses: actions/setup-node@v6
         with:
           node-version: "20"
           cache: "npm"
 
       - name: Install dependencies
+
+env:
+  npm_config_legacy_peer_deps: true
         run: npm ci
 
       - name: Install Playwright browsers
+
+env:
+  npm_config_legacy_peer_deps: true
         run: npx playwright install --with-deps

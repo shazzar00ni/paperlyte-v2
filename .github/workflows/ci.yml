@@ -52,14 +52,14 @@ jobs:
             npm audit --omit=dev --audit-level=moderate
           fi
 
-       - name: Run security audit (dev dependencies)
-         id: audit-dev
-         if: always()
-         continue-on-error: true
+      - name: Run security audit (all deps, high severity)
+        id: audit-dev
+        if: always()
+        continue-on-error: true
         run: |
-          # Dev-dependency audit is informational; known minimatch < 10.2.1
-          # issue in eslint 9.x cannot be fixed until eslint-plugin-react-hooks
-          # supports eslint 10. Tracked upstream.
+          # Full dependency tree audit (prod + dev) at high severity.
+          # Known minimatch < 10.2.1 issue in eslint 9.x cannot be fixed
+          # until eslint-plugin-react-hooks supports eslint 10.
           npm audit --audit-level=high
 
       - name: Generate Lint Summary
@@ -89,7 +89,7 @@ jobs:
           if [ "${{ steps.audit.outcome }}" == "success" ]; then
             echo "✅ **Security Audit (prod):** No vulnerabilities" >> $GITHUB_STEP_SUMMARY
           else
-            echo "⚠️ **Security Audit (prod):** Vulnerabilities found" >> $GITHUB_STEP_SUMMARY
+            echo "❌ **Security Audit (prod):** Vulnerabilities found" >> $GITHUB_STEP_SUMMARY
           fi
 
           if [ "${{ steps.audit-dev.outcome }}" == "success" ]; then

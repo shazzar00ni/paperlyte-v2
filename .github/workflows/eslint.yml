@@ -11,9 +11,9 @@ name: ESLint
 
 on:
   push:
-    branches: [ "main", "develop" ]
+    branches: [main, develop]
   pull_request:
-    branches: [ "main", "develop" ]
+    branches: [main, develop]
   schedule:
     - cron: '21 15 * * 2'
 

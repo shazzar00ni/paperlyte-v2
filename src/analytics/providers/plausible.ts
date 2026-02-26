@@ -26,11 +26,17 @@ export class PlausibleProvider implements AnalyticsProvider {
    */
   init(config: AnalyticsConfig): void {
     if (this.initialized) {
+      if (config.debug) {
+        console.log('[Analytics] Plausible already initialized')
+      }
       return
     }
 
     // Check if user has Do Not Track enabled
     if (config.respectDNT !== false && this.isDNTEnabled()) {
+      if (config.debug) {
+        console.log('[Analytics] Do Not Track is enabled, analytics disabled')
+      }
       return
     }
 
@@ -39,7 +45,6 @@ export class PlausibleProvider implements AnalyticsProvider {
 
     // Load Plausible script asynchronously
     this.loadScript()
-
   }
 
   /**
@@ -137,6 +142,9 @@ export class PlausibleProvider implements AnalyticsProvider {
     }
 
     script.onload = () => {
+      if (this.config?.debug) {
+        console.log('[Analytics] Plausible script loaded successfully')
+      }
       this.scriptLoaded = true
     }
 
@@ -157,10 +165,13 @@ export class PlausibleProvider implements AnalyticsProvider {
 
     const pageUrl = url || window.location.pathname
 
+    if (this.config?.debug) {
+      console.log('[Analytics] Plausible page view tracked:', pageUrl)
+    }
+
     window.plausible('pageview', {
       props: { path: pageUrl },
     })
-
   }
 
   /**
@@ -195,7 +206,6 @@ export class PlausibleProvider implements AnalyticsProvider {
       : undefined
 
     window.plausible(event.name, props ? { props } : undefined)
-
   }
 
   /**
@@ -223,7 +233,6 @@ export class PlausibleProvider implements AnalyticsProvider {
         })
       }
     })
-
   }
 
   /**
@@ -243,6 +252,10 @@ export class PlausibleProvider implements AnalyticsProvider {
    * Removes the Plausible script and resets state
    */
   disable(): void {
+    if (this.config?.debug) {
+      console.log('[Analytics] Plausible disabled')
+    }
+
     this.initialized = false
     this.scriptLoaded = false
     this.config = null
@@ -260,7 +273,6 @@ export class PlausibleProvider implements AnalyticsProvider {
     if (typeof window !== 'undefined' && window.plausible) {
       delete window.plausible
     }
-
   }
 
   /**

@@ -56,7 +56,7 @@ jobs:
         id: audit-dev
         if: always()
         continue-on-error: true
-        run: |
+          run: |
           # Full dependency tree audit (prod + dev) at high severity.
           # Known minimatch < 10.2.1 issue in eslint 9.x cannot be fixed
           # until eslint-plugin-react-hooks supports eslint 10.

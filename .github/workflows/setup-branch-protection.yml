@@ -1,5 +1,8 @@
 name: Setup Branch Protection
 
+env:
+  npm_config_legacy_peer_deps: true
+
 # This workflow can be manually triggered to configure branch protection rules
 # It requires a BRANCH_PROTECTION_TOKEN secret with 'repo' scope
 
@@ -18,13 +21,22 @@ permissions:
 jobs:
   configure-protection:
     name: Configure Branch Protection
+
+env:
+  npm_config_legacy_peer_deps: true
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
+
+env:
+  npm_config_legacy_peer_deps: true
         uses: actions/checkout@v6
 
       - name: Validate branch exists
+
+env:
+  npm_config_legacy_peer_deps: true
         env:
           BRANCH: ${{ inputs.branch }}
         run: |
@@ -37,6 +49,9 @@ jobs:
           fi
 
       - name: Configure branch protection
+
+env:
+  npm_config_legacy_peer_deps: true
         env:
           GITHUB_TOKEN: ${{ secrets.BRANCH_PROTECTION_TOKEN }}
           BRANCH: ${{ inputs.branch }}

@@ -1,5 +1,8 @@
 name: Weekly Paperlyte Activity Report
 
+env:
+  npm_config_legacy_peer_deps: true
+
 on:
   schedule:
     - cron: "0 0 * * MON"   # every Monday at 00:00 UTC
@@ -14,17 +17,29 @@ jobs:
 
     steps:
       - name: Checkout repo
+
+env:
+  npm_config_legacy_peer_deps: true
         uses: actions/checkout@v6
 
       - name: Set up Python
+
+env:
+  npm_config_legacy_peer_deps: true
         uses: actions/setup-python@v6
         with:
           python-version: "3.x"
 
       - name: Install Python deps
+
+env:
+  npm_config_legacy_peer_deps: true
         run: pip install requests pandas
 
       - name: Generate weekly report
+
+env:
+  npm_config_legacy_peer_deps: true
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -90,6 +105,9 @@ jobs:
           EOF
 
       - name: Commit report
+
+env:
+  npm_config_legacy_peer_deps: true
         run: |
           git config user.name "Paperlyte Bot"
           git config user.email "actions@github.com"

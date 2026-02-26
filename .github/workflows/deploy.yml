@@ -1,6 +1,9 @@
 # .github/workflows/deploy.yml
 name: Deploy
 
+env:
+  npm_config_legacy_peer_deps: true
+
 on:
   push:
     branches: [main]  # Production
@@ -9,31 +12,52 @@ on:
 jobs:
   deploy-production:
     name: Deploy to Production
+
+env:
+  npm_config_legacy_peer_deps: true
     runs-on: ubuntu-latest
     environment:
       name: production
+
+env:
+  npm_config_legacy_peer_deps: true
       url: https://paperlyte.com
 
     steps:
       - name: Checkout code
+
+env:
+  npm_config_legacy_peer_deps: true
         uses: actions/checkout@v6
 
       - name: Setup Node.js
+
+env:
+  npm_config_legacy_peer_deps: true
         uses: actions/setup-node@v6
         with:
           node-version: "20"
           cache: "npm"
 
       - name: Install dependencies
+
+env:
+  npm_config_legacy_peer_deps: true
         run: npm ci
 
       - name: Build for production
+
+env:
+  npm_config_legacy_peer_deps: true
         run: npm run build
         env:
           NODE_ENV: production
 
       # Example: Deploy to Netlify
       - name: Deploy to Netlify
+
+env:
+  npm_config_legacy_peer_deps: true
         uses: nwtgck/actions-netlify@v3
         with:
           publish-dir: './dist'
@@ -46,6 +70,9 @@ jobs:
 
       # Alternative: Deploy to Vercel
       # - name: Deploy to Vercel
+
+env:
+  npm_config_legacy_peer_deps: true
       #   uses: amondnet/vercel-action@v25
       #   with:
       #     vercel-token: ${{ secrets.VERCEL_TOKEN }}

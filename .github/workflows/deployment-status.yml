@@ -1,11 +1,17 @@
 name: Deployment Status
 
+env:
+  npm_config_legacy_peer_deps: true
+
 on:
   deployment_status:
 
 jobs:
   notify-deployment:
     name: Deployment Notification
+
+env:
+  npm_config_legacy_peer_deps: true
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -14,6 +20,9 @@ jobs:
 
     steps:
       - name: Deployment Status Check
+
+env:
+  npm_config_legacy_peer_deps: true
         run: |
           echo "Deployment Status: ${{ github.event.deployment_status.state }}"
           echo "Environment: ${{ github.event.deployment_status.environment }}"
@@ -28,6 +37,9 @@ jobs:
           fi
 
       - name: Deployment Summary
+
+env:
+  npm_config_legacy_peer_deps: true
         if: always()
         run: |
           echo "## 🚀 Deployment Status" >> $GITHUB_STEP_SUMMARY
@@ -46,6 +58,9 @@ jobs:
           fi
 
       - name: Comment on PR (if applicable)
+
+env:
+  npm_config_legacy_peer_deps: true
         if: github.event.deployment_status.state == 'success' && github.event.deployment.payload.pull_request != null
         uses: actions/github-script@v8
         with:

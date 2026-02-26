@@ -73,7 +73,6 @@ class Analytics {
     }
 
     this.initialized = true
-
   }
 
   /**
@@ -120,7 +119,6 @@ class Analytics {
     }
 
     this.provider?.trackPageView(url)
-
   }
 
   /**
@@ -140,7 +138,6 @@ class Analytics {
     }
 
     this.provider?.trackEvent(eventWithTimestamp)
-
   }
 
   /**
@@ -154,7 +151,6 @@ class Analytics {
     }
 
     this.provider?.trackWebVitals(vitals)
-
   }
 
   /**
@@ -239,7 +235,6 @@ class Analytics {
     this.initialized = false
     this.config = null
     this.provider = null
-
   }
 
   /**
@@ -268,7 +263,6 @@ class Analytics {
     // Clear all state unconditionally
     this.initialized = false
     this.config = null
-
   }
 
   /**

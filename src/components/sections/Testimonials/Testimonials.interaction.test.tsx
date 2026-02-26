@@ -184,7 +184,7 @@ describe('Testimonials Interaction Tests', () => {
     })
 
     it('toggles auto-rotation with play/pause button', () => {
-      const { container } = render(<Testimonials />)
+      render(<Testimonials />)
 
       // Find and click the pause button using fireEvent (compatible with fake timers)
       const pauseButton = screen.getByRole('button', { name: /Pause auto-rotation/i })

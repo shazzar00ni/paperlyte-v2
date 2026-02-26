@@ -18,6 +18,9 @@ on:
   schedule:
     - cron: '21 15 * * 2'
 
+env:
+  npm_config_legacy_peer_deps: true
+
 jobs:
   eslint:
     name: Run eslint scanning

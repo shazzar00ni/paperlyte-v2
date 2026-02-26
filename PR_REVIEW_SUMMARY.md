@@ -4,6 +4,15 @@ This file contains a summary of pull requests I have reviewed.
 
 ## 2026-02-26
 
+### Baseline CI Fix
+
+- **Summary:** Resolved systemic `ERESOLVE` dependency conflicts affecting all CI pipelines.
+- **Actions:**
+  - Downgraded ESLint to v9.39.2 to maintain compatibility with `eslint-plugin-react-hooks@7.0.1`.
+  - Added `.npmrc` with `legacy-peer-deps=true`.
+  - Updated all GitHub Action workflows with `npm_config_legacy_peer_deps: true`.
+  - Restored missing console logs and updated test assertions to resolve pre-existing unit test regressions.
+
 ### Security & High Priority
 
 #### PR #488: Resolve axios/qs vulnerabilities and sync dependencies

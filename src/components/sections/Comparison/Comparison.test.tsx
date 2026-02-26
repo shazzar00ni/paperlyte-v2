@@ -20,9 +20,7 @@ describe('Comparison', () => {
   it('should render subtitle', () => {
     render(<Comparison />)
     expect(
-      screen.getByText(
-        "No marketing spin. Here's how Paperlyte compares to the tools you already know."
-      )
+      screen.getByText("No marketing spin. Here's how Paperlyte compares to the tools you already know.")
     ).toBeInTheDocument()
   })
 
@@ -43,7 +41,7 @@ describe('Comparison', () => {
     COMPETITORS.forEach((competitor) => {
       // Simpler approach: use string matching instead of RegExp
       const header = screen.getByRole('columnheader', {
-        name: (content) => content.includes(competitor.name),
+        name: new RegExp(competitor.name),
       })
       expect(header).toBeInTheDocument()
     })
@@ -66,19 +64,27 @@ describe('Comparison', () => {
   })
 
   it('should render checkmark icons for true boolean values', () => {
-    render(<Comparison />)
-
-    // Find all checkmarks by aria-label
-    const checkmarks = screen.getAllByLabelText('Supported')
+    // Find all checkmarks by aria-label (FontAwesome renders SVG, not CSS classes)
+    const checkmarks = container.querySelectorAll('[aria-label="Supported"]')
     expect(checkmarks.length).toBeGreaterThan(0)
+
+    // Check they are SVG elements
+    checkmarks.forEach((checkmark) => {
+      expect(checkmark.tagName.toLowerCase()).toBe('svg')
+    })
   })
 
   it('should render X icons for false boolean values', () => {
-    render(<Comparison />)
+    const { container } = render(<Comparison />)
 
-    // Find all X marks by aria-label
-    const xmarks = screen.getAllByLabelText('Not supported')
+    // Find all X marks by aria-label (FontAwesome renders SVG, not CSS classes)
+    const xmarks = container.querySelectorAll('[aria-label="Not supported"]')
     expect(xmarks.length).toBeGreaterThan(0)
+
+    // Check they are SVG elements
+    xmarks.forEach((xmark) => {
+      expect(xmark.tagName).toBe('svg')
+    })
   })
 
   it('should render text values for string comparisons', () => {

@@ -143,11 +143,23 @@ async function subscribeToConvertKit(
   try {
     return ConvertKitResponseSchema.parse(data);
   } catch (error) {
+    // Sanitize ZodError before attaching as cause — strip `received` values
+    // which could contain subscriber PII from the API response
+    const sanitizedCause =
+      error instanceof z.ZodError
+        ? new Error(
+            `Schema validation failed: ${error.issues.map((i) => `${i.path.join(".")}: ${i.code}`).join(", ")}`
+          )
+        : new Error("Response validation failed");
+
     console.error(
       "ConvertKit response validation failed:",
-      error instanceof Error ? error.message : "Unknown error"
+      sanitizedCause.message
     );
-    throw new Error("Invalid response from email service");
+    // Intentionally NOT preserving the raw ZodError as `cause` because its
+    // `received` fields may contain subscriber PII (email, name) from the API response.
+    /* eslint-disable-next-line preserve-caught-error */
+    throw new Error("Invalid response from email service", { cause: sanitizedCause });
   }
 }
 

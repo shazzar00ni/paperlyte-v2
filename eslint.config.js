@@ -19,8 +19,8 @@ import prettierConfig from 'eslint-config-prettier'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  // Ignore build output directory
-  globalIgnores(['dist']),
+  // Ignore build output and coverage directories
+  globalIgnores(['dist', 'coverage']),
   {
     // Apply to all TypeScript and TSX files
     files: ['**/*.{ts,tsx}'],

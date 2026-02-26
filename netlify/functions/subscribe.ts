@@ -156,10 +156,10 @@ async function subscribeToConvertKit(
       "ConvertKit response validation failed:",
       sanitizedCause.message
     );
-    // Intentionally sanitizing cause to strip subscriber PII
-    throw new Error("Invalid response from email service", {
-      cause: sanitizedCause,
-    });
+    // Intentionally NOT preserving the raw ZodError as `cause` because its
+    // `received` fields may contain subscriber PII (email, name) from the API response.
+    /* eslint-disable-next-line preserve-caught-error */
+    throw new Error("Invalid response from email service", { cause: sanitizedCause });
   }
 }
 

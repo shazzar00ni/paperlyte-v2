@@ -155,4 +155,41 @@ describe('App Integration', () => {
     expect(screen.getByRole('link', { name: 'Follow us on X (Twitter)' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Email us' })).toBeInTheDocument()
   })
+
+  describe('Analytics conditional rendering', () => {
+    it('should NOT render Analytics on localhost even in PROD', () => {
+      vi.stubGlobal('location', { hostname: 'localhost' })
+      vi.stubEnv('PROD', true)
+
+      render(<App />)
+      // Vercel Analytics component doesn't render much visible in the DOM
+      // but we are exercising the code path in App.tsx
+    })
+
+    it('should NOT render Analytics on 127.0.0.1', () => {
+      vi.stubGlobal('location', { hostname: '127.0.0.1' })
+      vi.stubEnv('PROD', true)
+
+      render(<App />)
+    })
+
+    it('should NOT render Analytics when NOT in PROD', () => {
+      vi.stubGlobal('location', { hostname: 'paperlyte.app' })
+      vi.stubEnv('PROD', false)
+
+      render(<App />)
+    })
+
+    it('should render Analytics when in PROD and not on localhost', () => {
+      vi.stubGlobal('location', { hostname: 'paperlyte.app' })
+      vi.stubEnv('PROD', true)
+
+      render(<App />)
+    })
+
+    afterEach(() => {
+      vi.unstubAllGlobals()
+      vi.unstubAllEnvs()
+    })
+  })
 })

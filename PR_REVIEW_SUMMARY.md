@@ -2,6 +2,42 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-02-27
+
+### Security & High Priority
+
+- **PR #469 / #488 (Axios & qs Security Fixes)**
+  - **Status:** High Priority / Needs Rebase
+  - **Notes:** These PRs resolve high-severity vulnerabilities in `axios` (1.13.5) and `qs` (6.14.2). PR #488 is the most comprehensive version but currently contains systemic regressions (deletion of documentation) and requires a clean rebase onto `main`.
+
+- **PR #428: Fix open redirect vulnerability in safeNavigate()**
+  - **Status:** Approved
+  - **Notes:** This is the preferred solution for safe navigation and open redirect protection, providing better coverage than PR #486.
+
+### Regressions & Cleanup (Changes Requested)
+
+- **Branch: `claude/fix-coverage-requirements-QtFtS`**
+  - **Status:** Changes Requested
+  - **Feedback:** This branch incorrectly attempts to upgrade ESLint and `@eslint/js` to v10, which violates the project's pinned standard (v9) required for compatibility with `eslint-plugin-react-hooks`. It also removes numerous diagnostic `console.log` statements used by unit tests.
+
+- **Branch: `claude/implement-todo-item-cDEVt`**
+  - **Status:** Changes Requested
+  - **Feedback:** Contains systemic deletions of `ROADMAP.md` and CI scripts (`generate-lighthouse-summary.sh`). It also removes diagnostic logs from analytics and monitoring utilities, which will break existing unit test assertions.
+
+- **Branch: `copilot/sub-pr-503` & `copilot/sub-pr-460`**
+  - **Status:** Changes Requested
+  - **Feedback:** Severe regressions detected. These branches delete `.npmrc` (disabling `legacy-peer-deps` required for CI stability), documentation (`gitVersionControl.md`, `review.md`, `ROADMAP.md`), and multiple weekly activity reports.
+
+- **Branch: `claude/fix-security-issues-S4LKn` & `claude/fix-peer-dependency-conflicts-Wj2iC`**
+  - **Status:** Changes Requested
+  - **Feedback:** These branches delete `.npmrc` and critical CI scripts. They also remove `console.log` statements in `DEV` blocks that are required for the project's monitoring and test suite.
+
+### Redundant Summary PRs
+
+- **Action:** Recommend closing #504 and similar PRs that only update `PR_REVIEW_SUMMARY.md` in isolation, to avoid unnecessary CI noise and potential merge conflicts.
+
+---
+
 ## 2026-02-08
 
 ### PR #427: Configure Claude Code GitHub Action

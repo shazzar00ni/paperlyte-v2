@@ -26,11 +26,17 @@ export class PlausibleProvider implements AnalyticsProvider {
    */
   init(config: AnalyticsConfig): void {
     if (this.initialized) {
+      if (config.debug || this.config?.debug) {
+        console.log('[Analytics] Plausible already initialized')
+      }
       return
     }
 
     // Check if user has Do Not Track enabled
     if (config.respectDNT !== false && this.isDNTEnabled()) {
+      if (config.debug) {
+        console.log('[Analytics] Do Not Track is enabled, analytics disabled')
+      }
       return
     }
 
@@ -137,6 +143,9 @@ export class PlausibleProvider implements AnalyticsProvider {
 
     script.onload = () => {
       this.scriptLoaded = true
+      if (this.config?.debug) {
+        console.log('[Analytics] Plausible script loaded successfully')
+      }
     }
 
     // Store reference to the script element for cleanup
@@ -239,6 +248,7 @@ export class PlausibleProvider implements AnalyticsProvider {
    * Removes the Plausible script and resets state
    */
   disable(): void {
+    const debugEnabled = this.config?.debug
     this.initialized = false
     this.scriptLoaded = false
     this.config = null
@@ -255,6 +265,10 @@ export class PlausibleProvider implements AnalyticsProvider {
     // Clean up window global
     if (typeof window !== 'undefined' && window.plausible) {
       delete window.plausible
+    }
+
+    if (debugEnabled) {
+      console.log('[Analytics] Plausible disabled')
     }
   }
 

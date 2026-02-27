@@ -52,5 +52,12 @@ export function initializeMetaTags(): void {
     if (twitterImage) {
       twitterImage.setAttribute('content', currentUrl + '/og-image.png')
     }
+
+    console.log('[Meta Tags] Initialized for development environment')
+    console.log('  - Robots: noindex, nofollow')
+    console.log('  - Keywords: removed')
+    console.log('  - Canonical URL: unchanged (points to production)')
+    console.log(`  - Open Graph URLs: updated to ${currentUrl}`)
+    console.log(`  - Twitter Card URLs: updated to ${currentUrl}`)
   }
 }

@@ -258,6 +258,9 @@ jobs:
     name: Lighthouse CI
     runs-on: ubuntu-latest
     needs: build
+    permissions:
+      contents: read
+      pull-requests: write
 
     steps:
       - name: Checkout code
@@ -285,7 +288,7 @@ jobs:
 
       - name: Run Lighthouse CI
         id: lighthouse
-        run: npx @lhci/cli autorun --config=./.lighthouserc.json
+        run: npx @lhci/cli@0.15.1 autorun --config=./.lighthouserc.json
         continue-on-error: true
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
@@ -298,20 +301,9 @@ jobs:
           path: .lighthouseci/
           retention-days: 30
 
-      - name: Format Lighthouse results
-        if: always() && github.event_name == 'pull_request'
-        run: |
-          echo "## 🔦 Lighthouse CI Results" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          if [ "${{ steps.lighthouse.outcome }}" == "success" ]; then
-            echo "✅ All performance budgets passed!" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "❌ Performance budgets failed" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "Check the detailed Lighthouse reports in the artifacts for specific failures." >> $GITHUB_STEP_SUMMARY
-          fi
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "View detailed results in the \`lighthouse-results\` artifact." >> $GITHUB_STEP_SUMMARY
+      - name: Generate Lighthouse report summary
+        if: always()
+        run: bash .github/scripts/generate-lighthouse-summary.sh
 
       - name: Fail job if Lighthouse assertions failed
         if: steps.lighthouse.outcome != 'success'

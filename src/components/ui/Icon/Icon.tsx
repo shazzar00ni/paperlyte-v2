@@ -75,10 +75,14 @@ export const Icon = ({
     }
 
     if (iconDefinition) {
-      console.warn(`Icon "${name}" not found in custom icon set, using Font Awesome fallback`)
+      if (import.meta.env.DEV) {
+        console.warn(`Icon "${name}" not found in custom icon set, using Font Awesome fallback`)
+      }
       return <FontAwesomeIcon icon={iconDefinition} {...commonIconProps} />
     } else {
-      console.warn(`Icon "${name}" not found in custom set or Font Awesome library`)
+      if (import.meta.env.DEV) {
+        console.warn(`Icon "${name}" not found in custom set or Font Awesome library`)
+      }
       return (
         <span {...commonIconProps} title={`Icon "${name}" not found`}>
           ?

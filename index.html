@@ -52,8 +52,11 @@
     <!-- Font Awesome icons are loaded via @fortawesome/fontawesome-svg-core in JavaScript -->
     <!-- This approach is CSP-compliant and doesn't require external CDN resources -->
 
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://paperlyte.app/" />
+
     <!-- Preload critical above-the-fold image for better LCP -->
-    <link rel="preload" as="image" type="image/avif" href="/mockups/notes-list.avif" />
+    <link rel="preload" as="image" type="image/avif" href="/mockups/notes-list.avif" fetchpriority="high" />
 
     <!-- Schema.org Structured Data (JSON-LD) -->
     <script type="application/ld+json">
@@ -90,9 +93,6 @@
     </script>
   </head>
   <body>
-    <!-- Skip to main content (accessibility) -->
-    <a href="#main" class="skip-link">Skip to main content</a>
-
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

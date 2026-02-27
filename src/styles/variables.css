@@ -16,6 +16,9 @@
   --color-text-on-dark-secondary: rgba(255, 255, 255, 0.7); /* Semi-transparent white */
   --color-border: #e5e7eb; /* Gray 200 - Borders, dividers */
   --color-border-light: #f3f4f6; /* Gray 100 - Subtle borders */
+  --color-white: #ffffff; /* Pure white - alias for explicit white usage */
+  --color-background-primary: #ffffff; /* Alias for --color-background */
+  --color-background-secondary: #f9fafb; /* Alias for --color-surface */
 
   /* Semantic Colors */
   --color-success: #22c55e; /* Green 500 */
@@ -36,11 +39,14 @@
   --font-size-3xl: clamp(1.5rem, 1.1786rem + 1.6071vw, 1.875rem); /* 24px to 30px */
   --font-size-4xl: clamp(1.75rem, 1.2143rem + 2.6786vw, 2.25rem); /* 28px to 36px */
   --font-size-5xl: clamp(2rem, 1.2857rem + 3.5714vw, 3rem); /* 32px to 48px */
+  --font-size-6xl: clamp(2.5rem, 1.6071rem + 4.4643vw, 3.75rem); /* 40px to 60px */
+  --font-family-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
   --font-weight-normal: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
   --line-height-tight: 1.25;
+  --line-height-snug: 1.375;
   --line-height-normal: 1.5;
   --line-height-relaxed: 1.75;
 
@@ -52,6 +58,7 @@
   --spacing-xl: 3rem; /* 48px */
   --spacing-2xl: 4rem; /* 64px */
   --spacing-3xl: 6rem; /* 96px */
+  --spacing-4xl: 8rem; /* 128px */
 
   /* Layout */
   --max-width: 1280px;
@@ -60,6 +67,7 @@
   --border-radius-sm: 0.25rem; /* 4px */
   --border-radius-md: 0.5rem; /* 8px */
   --border-radius-lg: 1rem; /* 16px */
+  --border-radius-xl: 1.5rem; /* 24px */
   --border-radius-full: 9999px; /* Full pill shape */
 
   /* Icon Sizes */

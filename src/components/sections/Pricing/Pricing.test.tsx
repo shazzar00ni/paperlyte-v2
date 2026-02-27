@@ -15,13 +15,13 @@ describe('Pricing', () => {
 
   it('should render main heading', () => {
     render(<Pricing />)
-    expect(screen.getByText('Simple pricing. No surprises.')).toBeInTheDocument()
+    expect(screen.getByText('Simple, Transparent Pricing')).toBeInTheDocument()
   })
 
   it('should render subtitle', () => {
     render(<Pricing />)
     expect(
-      screen.getByText('Start free, upgrade whenever. No credit card needed to get started.')
+      screen.getByText("Start free, upgrade when you're ready. No credit card required.")
     ).toBeInTheDocument()
   })
 
@@ -154,7 +154,7 @@ describe('Pricing', () => {
     render(<Pricing />)
 
     // Main heading should be h2
-    const mainHeading = screen.getByText('Simple pricing. No surprises.')
+    const mainHeading = screen.getByText('Simple, Transparent Pricing')
     expect(mainHeading.tagName).toBe('H2')
 
     // Plan names should be h3

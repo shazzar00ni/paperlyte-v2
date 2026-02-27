@@ -11,6 +11,7 @@ coverage:
     file: 70
 
 engines:
+  # --- Enabled engines (4 total, well under the 20-run SARIF limit) ---
   semgrep:
     enabled: true
   eslint-9:
@@ -24,6 +25,33 @@ engines:
       - '**/*.test.ts'
       - '**/*.spec.tsx'
       - '**/*.spec.ts'
+  # --- Disabled engines: prevent auto-detection from pushing run count over 20 ---
+  # CSS/JS linters not needed alongside ESLint
+  csslint:
+    enabled: false
+  stylelint:
+    enabled: false
+  jshint:
+    enabled: false
+  # Deprecated TypeScript linter
+  tslint:
+    enabled: false
+  # Security scanners – semgrep covers this project's security needs
+  trivy:
+    enabled: false
+  checkov:
+    enabled: false
+  # Infrastructure / container tools not applicable to this web project
+  hadolint:
+    enabled: false
+  shellcheck:
+    enabled: false
+  # Docs linter not required
+  markdownlint:
+    enabled: false
+  # Duplication detector (runs separately but adds a run to the SARIF)
+  pmd-legacy:
+    enabled: false
 
 # Exclude specific patterns in test files where they are false positives
 # validation-utils.test.ts: RegExp constructor is used with pre-escaped strings

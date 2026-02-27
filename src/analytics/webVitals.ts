@@ -59,7 +59,10 @@ function trackLCP(callback: ReportCallback): void {
       }
 
       if (lastEntry) {
-        const value = (lastEntry.renderTime ?? lastEntry.loadTime) || 0
+        const value =
+          lastEntry.renderTime && lastEntry.renderTime > 0
+            ? lastEntry.renderTime
+            : (lastEntry.loadTime ?? 0)
         callback({
           name: 'LCP',
           value,

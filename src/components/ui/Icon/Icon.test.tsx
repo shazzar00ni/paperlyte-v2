@@ -228,4 +228,64 @@ describe('Icon', () => {
       })
     )
   })
+
+  it('should render fa-arrow-right as a custom SVG with correct path', () => {
+    const { container } = render(<Icon name="fa-arrow-right" />)
+
+    // fa-arrow-right is in iconPaths; must render as custom SVG, not a fallback
+    const svg = container.querySelector('svg[data-icon="fa-arrow-right"]')
+    expect(svg).toBeInTheDocument()
+    expect(svg).toHaveClass('icon-svg')
+
+    // Path 'M5 12h14 M12 5l7 7-7 7' doesn't split on ' M ' (no space before M12)
+    // So it renders as a single path element
+    const paths = svg!.querySelectorAll('path')
+    expect(paths).toHaveLength(1)
+    expect(paths[0]).toHaveAttribute('d', 'M5 12h14 M12 5l7 7-7 7')
+
+    // Custom path icons never reach Font Awesome
+    expect(mockFindIconDefinition).not.toHaveBeenCalled()
+    expect(consoleWarnSpy).not.toHaveBeenCalled()
+  })
+
+  it('should render fa-apple as a custom SVG, not via Font Awesome', () => {
+    const { container } = render(<Icon name="fa-apple" variant="brands" />)
+
+    // fa-apple is in iconPaths; variant prop must not trigger a Font Awesome lookup
+    const svg = container.querySelector('svg[data-icon="fa-apple"]')
+    expect(svg).toBeInTheDocument()
+    expect(svg).toHaveClass('icon-svg')
+
+    // Two path segments (the path contains ' M ' as separator)
+    const paths = svg!.querySelectorAll('path')
+    expect(paths.length).toBeGreaterThanOrEqual(1)
+
+    expect(mockFindIconDefinition).not.toHaveBeenCalled()
+    expect(consoleWarnSpy).not.toHaveBeenCalled()
+  })
+
+  it('should render fa-windows as a custom SVG, not via Font Awesome', () => {
+    const { container } = render(<Icon name="fa-windows" variant="brands" />)
+
+    // fa-windows is in iconPaths; variant prop must not trigger a Font Awesome lookup
+    const svg = container.querySelector('svg[data-icon="fa-windows"]')
+    expect(svg).toBeInTheDocument()
+    expect(svg).toHaveClass('icon-svg')
+    expect(svg).toHaveAttribute('viewBox', '0 0 23 24')
+
+    expect(mockFindIconDefinition).not.toHaveBeenCalled()
+    expect(consoleWarnSpy).not.toHaveBeenCalled()
+  })
+
+  it('should call findIconDefinition with fab prefix for an unknown brand icon', () => {
+    // A brand icon not in iconPaths falls through to Font Awesome with prefix "fab"
+    render(<Icon name="fa-linux" variant="brands" />)
+
+    expect(mockFindIconDefinition).toHaveBeenCalledWith(
+      expect.objectContaining({
+        prefix: 'fab',
+        iconName: 'linux',
+      })
+    )
+  })
 })

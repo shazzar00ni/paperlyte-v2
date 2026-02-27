@@ -52,6 +52,5 @@ export function initializeMetaTags(): void {
     if (twitterImage) {
       twitterImage.setAttribute('content', currentUrl + '/og-image.png')
     }
-
   }
 }

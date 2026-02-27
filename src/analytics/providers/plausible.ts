@@ -39,7 +39,6 @@ export class PlausibleProvider implements AnalyticsProvider {
 
     // Load Plausible script asynchronously
     this.loadScript()
-
   }
 
   /**
@@ -160,7 +159,6 @@ export class PlausibleProvider implements AnalyticsProvider {
     window.plausible('pageview', {
       props: { path: pageUrl },
     })
-
   }
 
   /**
@@ -195,7 +193,6 @@ export class PlausibleProvider implements AnalyticsProvider {
       : undefined
 
     window.plausible(event.name, props ? { props } : undefined)
-
   }
 
   /**
@@ -223,7 +220,6 @@ export class PlausibleProvider implements AnalyticsProvider {
         })
       }
     })
-
   }
 
   /**
@@ -260,7 +256,6 @@ export class PlausibleProvider implements AnalyticsProvider {
     if (typeof window !== 'undefined' && window.plausible) {
       delete window.plausible
     }
-
   }
 
   /**

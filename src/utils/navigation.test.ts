@@ -442,5 +442,20 @@ describe('navigation utilities', () => {
       expect(safeNavigate('//evil.com')).toBe(false)
       warnSpy.mockRestore()
     })
+
+    // --- SSR ---
+
+    it('should return false during server-side rendering when window is undefined', () => {
+      const originalWindow = globalThis.window
+      // @ts-expect-error -- simulate SSR by removing window
+      delete globalThis.window
+
+      try {
+        expect(safeNavigate('/dashboard')).toBe(false)
+        expect(safeNavigate('https://example.com')).toBe(false)
+      } finally {
+        globalThis.window = originalWindow
+      }
+    })
   })
 })

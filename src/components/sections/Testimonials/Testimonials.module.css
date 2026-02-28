@@ -158,6 +158,13 @@
   box-shadow: var(--shadow-lg);
 }
 
+.navButton:focus-visible,
+.dot:focus-visible,
+.playPauseButton:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
 .navPrev {
   left: -8px;
 }

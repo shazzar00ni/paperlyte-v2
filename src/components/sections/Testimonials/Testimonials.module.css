@@ -259,7 +259,11 @@
 }
 
 /* Reduced motion */
-@media (prefers-reduced-motion: reduce) {
+`@media` (prefers-reduced-motion: reduce) {
+  .track {
+    transition: none;
+  }
+
   .navButton,
   .dot,
   .playPauseButton {

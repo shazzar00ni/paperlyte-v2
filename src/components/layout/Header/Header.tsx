@@ -63,13 +63,13 @@ export const Header = (): React.ReactElement => {
         // Shift + Tab
         if (document.activeElement === firstFocusable) {
           event.preventDefault()
-          lastFocusable.focus()
+          lastFocusable?.focus()
         }
       } else {
         // Tab
         if (document.activeElement === lastFocusable) {
           event.preventDefault()
-          firstFocusable.focus()
+          firstFocusable?.focus()
         }
       }
     }

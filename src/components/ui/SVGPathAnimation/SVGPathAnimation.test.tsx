@@ -70,7 +70,7 @@ describe('SVGPathAnimation', () => {
     )
 
     const path = container.querySelector('path[data-testid="test-path"]') as SVGPathElement
-    expect(path).toBeDefined()
+    expect(path).not.toBeNull()
 
     // Path should have dash array and offset styles (once pathLengths are calculated)
     // Initially, before useEffect runs, these might not be set
@@ -140,6 +140,7 @@ describe('SVGPathAnimation', () => {
     )
 
     const svg = container.querySelector('svg') as SVGSVGElement
+    expect(svg).not.toBeNull()
     const style = svg.style
     expect(style.getPropertyValue('--draw-duration')).toBe('3000ms')
   })
@@ -152,6 +153,7 @@ describe('SVGPathAnimation', () => {
     )
 
     const svg = container.querySelector('svg') as SVGSVGElement
+    expect(svg).not.toBeNull()
     const style = svg.style
     expect(style.getPropertyValue('--draw-easing')).toBe('ease-in-out')
   })

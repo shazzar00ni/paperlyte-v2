@@ -45,7 +45,7 @@ describe('Waitlist Constants', () => {
     it('should have a valid quarter number (1-4)', () => {
       const quarterMatch = LAUNCH_QUARTER.match(/^Q([1-4])/)
       expect(quarterMatch).toBeTruthy()
-      const quarter = parseInt(quarterMatch?.[1])
+      const quarter = parseInt(quarterMatch?.[1] ?? '')
       expect(quarter).toBeGreaterThanOrEqual(1)
       expect(quarter).toBeLessThanOrEqual(4)
     })
@@ -53,7 +53,7 @@ describe('Waitlist Constants', () => {
     it('should have a valid year (2026 or later)', () => {
       const yearMatch = LAUNCH_QUARTER.match(/\d{4}$/)
       expect(yearMatch).toBeTruthy()
-      const year = parseInt(yearMatch?.[0])
+      const year = parseInt(yearMatch?.[0] ?? '')
       expect(year).toBeGreaterThanOrEqual(2026)
     })
 

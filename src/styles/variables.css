@@ -40,7 +40,7 @@
   --font-size-4xl: clamp(1.75rem, 1.2143rem + 2.6786vw, 2.25rem); /* 28px to 36px */
   --font-size-5xl: clamp(2rem, 1.2857rem + 3.5714vw, 3rem); /* 32px to 48px */
   --font-size-6xl: clamp(2.5rem, 1.6071rem + 4.4643vw, 3.75rem); /* 40px to 60px */
-  --font-family-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-family-serif: 'Playfair Display', georgia, 'Times New Roman', serif;
   --font-weight-normal: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
@@ -117,6 +117,9 @@
   --color-text-on-dark-secondary: rgba(255, 255, 255, 0.7); /* Semi-transparent white */
   --color-border: #334155; /* Slate 700 - Borders */
   --color-border-light: #1e293b; /* Slate 800 - Subtle borders */
+  --color-white: #f1f5f9; /* Slate 100 - near-white for dark mode */
+  --color-background-primary: #0f172a; /* Dark background alias */
+  --color-background-secondary: #1e293b; /* Dark surface alias */
 
   /* Semantic Colors - Dark Mode */
   --color-success: #4ade80; /* Green 400 - higher contrast for dark backgrounds */
@@ -160,6 +163,9 @@
     --color-text-on-dark-secondary: rgba(255, 255, 255, 0.7); /* Semi-transparent white */
     --color-border: #334155; /* Slate 700 - Borders */
     --color-border-light: #1e293b; /* Slate 800 - Subtle borders */
+    --color-white: #f1f5f9; /* Slate 100 - near-white for dark mode */
+    --color-background-primary: #0f172a; /* Dark background alias */
+    --color-background-secondary: #1e293b; /* Dark surface alias */
 
     /* Semantic Colors - Dark Mode */
     --color-success: #4ade80;

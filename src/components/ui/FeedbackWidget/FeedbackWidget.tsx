@@ -341,7 +341,7 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
                     id="feedback-message"
                     className={styles.textarea}
                     value={message}
-                    onChange={(e) => { setMessage(e.target.value); }}
+                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => { setMessage(e.target.value); }}
                     placeholder={
                       feedbackType === 'bug'
                         ? 'Please provide details about the bug...'

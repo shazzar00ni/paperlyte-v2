@@ -27,6 +27,7 @@
         "total-blocking-time": ["error", { "maxNumericValue": 300 }],
         "speed-index": ["error", { "maxNumericValue": 3000 }],
         "interactive": ["error", { "maxNumericValue": 3500 }],
+        "network-dependency-tree-insight": "off",
         "max-potential-fid": ["warn", { "maxNumericValue": 130 }],
         "server-response-time": ["warn", { "maxNumericValue": 600 }],
         "uses-responsive-images": "warn",

@@ -2,6 +2,41 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-02-28
+
+### Systemic Regression Alert: Widespread File Deletions
+
+- **Status:** Critical / Changes Requested
+- **Summary:** A widespread regression has been identified across multiple active development branches where critical project files are being accidentally deleted. This includes `.npmrc`, `gitVersionControl.md`, `review.md`, and several weekly activity reports.
+- **Affected Branches:** `fix-security-issues-S4LKn`, `core-editor-phase-1-PI3Yp`, `fix-lighthouse-failure-b5S6v`, `implement-todo-item-cDEVt`, `sub-pr-503`, `sub-pr-460`, `fix-peer-dependency-conflicts-Wj2iC`.
+- **Feedback:** Authors must rebase their branches against `main` and restore these deleted files immediately. The deletion of `.npmrc` is particularly concerning as it breaks the `legacy-peer-deps` configuration required for CI stability.
+
+### PR #502: Remove console.warn from safeNavigate (Merged)
+
+- **Status:** Merged
+- **Summary:** This PR removes `console.warn` calls from `safeNavigate` to reduce log noise in production environments.
+- **Feedback:** Successfully merged. This aligns with the goal of keeping production logs clean while maintaining the security benefits of `safeNavigate`.
+
+### PR: [Branch fix-codacy-fingerprints-P9FYE]
+
+- **Status:** Approved
+- **Summary:** Improves SARIF handling by stripping `partialFingerprints`. This allows GitHub Code Scanning to calculate its own consistent fingerprints, eliminating "inconsistent fingerprint" warnings.
+- **Feedback:** Clean implementation. This is a solid CI improvement that does not contain the file deletion regression.
+
+### PR: [Branch fix-codacy-sarif-limits-Rmdck]
+
+- **Status:** Approved
+- **Summary:** Configures Codacy to stay within GitHub's 20-run limit by disabling unnecessary/redundant analysis engines and ensuring the merge script only runs when needed.
+- **Feedback:** Essential for CI reliability. This PR is also clean of the file deletion regression.
+
+### PR: [Branch fix-lighthouse-failure-b5S6v]
+
+- **Status:** Changes Requested
+- **Summary:** Attempted fix for Lighthouse CI failures, including significant updates to `Testimonials.module.css` and `index.html`.
+- **Feedback:** While the performance improvements are welcome, this branch contains the systemic file deletion regression (deleting `.npmrc`, `review.md`, etc.). Please restore these files before merging.
+
+---
+
 ## 2026-02-08
 
 ### PR #427: Configure Claude Code GitHub Action

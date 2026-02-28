@@ -294,7 +294,7 @@ export function trackEvent(eventName: string, eventParams?: AnalyticsEventParams
   }
 
   try {
-    window.gtag!('event', eventName, sanitizedParams)
+    window.gtag?.('event', eventName, sanitizedParams)
   } catch (error) {
     console.error('[Analytics] Error tracking event:', error)
   }
@@ -320,7 +320,7 @@ export function trackPageView(pagePath: string, pageTitle?: string): void {
   }
 
   try {
-    window.gtag!('event', 'page_view', {
+    window.gtag?.('event', 'page_view', {
       page_path: pagePath,
       page_title: pageTitle,
     })

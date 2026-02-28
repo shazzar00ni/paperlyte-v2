@@ -44,7 +44,7 @@ export const Header = (): React.ReactElement => {
     }
 
     document.addEventListener('keydown', handleEscape)
-    return () => document.removeEventListener('keydown', handleEscape)
+    return () => { document.removeEventListener('keydown', handleEscape); }
   }, [mobileMenuOpen, closeMobileMenu])
 
   // Focus trap for mobile menu
@@ -79,7 +79,7 @@ export const Header = (): React.ReactElement => {
     // Focus first element when menu opens
     firstFocusable?.focus()
 
-    return () => menu.removeEventListener('keydown', handleTabKey)
+    return () => { menu.removeEventListener('keydown', handleTabKey); }
   }, [mobileMenuOpen])
 
   // Arrow key navigation for menu items
@@ -114,7 +114,7 @@ export const Header = (): React.ReactElement => {
 
     menu.addEventListener('keydown', handleArrowKeys)
 
-    return () => menu.removeEventListener('keydown', handleArrowKeys)
+    return () => { menu.removeEventListener('keydown', handleArrowKeys); }
   }, [mobileMenuOpen])
 
   return (
@@ -156,7 +156,7 @@ export const Header = (): React.ReactElement => {
               </a>
             </li>
             <li className={styles.navCta}>
-              <Button variant="primary" size="small" onClick={() => scrollToSection('download')}>
+              <Button variant="primary" size="small" onClick={() => { scrollToSection('download'); }}>
                 Get Started
               </Button>
             </li>

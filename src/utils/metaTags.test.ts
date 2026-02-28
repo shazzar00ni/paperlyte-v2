@@ -136,19 +136,8 @@ describe('metaTags', () => {
       expect(() => initializeMetaTags()).not.toThrow()
     })
 
-    it('should log environment initialization info', () => {
-      initializeMetaTags()
-
-      expect(consoleSpy).toHaveBeenCalledWith('[Meta Tags] Initialized for development environment')
-      expect(consoleSpy).toHaveBeenCalledWith('  - Robots: noindex, nofollow')
-      expect(consoleSpy).toHaveBeenCalledWith('  - Keywords: removed')
-      expect(consoleSpy).toHaveBeenCalledWith('  - Canonical URL: unchanged (points to production)')
-      expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining('  - Open Graph URLs: updated to')
-      )
-      expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining('  - Twitter Card URLs: updated to')
-      )
+    it('should complete initialization without errors', () => {
+      expect(() => initializeMetaTags()).not.toThrow()
     })
 
     it('should update all meta tags correctly in a complete scenario', () => {

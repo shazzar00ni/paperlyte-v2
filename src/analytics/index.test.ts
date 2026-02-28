@@ -134,18 +134,11 @@ describe('analytics/index', () => {
       vi.useRealTimers()
     })
 
-    it('should log initialization when debug is enabled', () => {
-      const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
-
+    it('should initialize successfully when debug is enabled', () => {
       const debugConfig = { ...config, debug: true }
       analytics.init(debugConfig)
 
-      expect(consoleLogSpy).toHaveBeenCalledWith(
-        '[Analytics] Initialized with config:',
-        debugConfig
-      )
-
-      consoleLogSpy.mockRestore()
+      expect(analytics.getConfig()).toEqual(debugConfig)
     })
   })
 
@@ -179,10 +172,9 @@ describe('analytics/index', () => {
       expect(window.plausible).toBeUndefined()
     })
 
-    it('should log debug message when debug is enabled', () => {
+    it('should track page view when debug is enabled', () => {
       analytics.disable()
 
-      const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
       const debugConfig = { ...config, debug: true }
 
       analytics.init(debugConfig)
@@ -193,9 +185,9 @@ describe('analytics/index', () => {
 
       analytics.trackPageView('/test')
 
-      expect(consoleLogSpy).toHaveBeenCalledWith('[Analytics] Page view tracked:', '/test')
-
-      consoleLogSpy.mockRestore()
+      expect(window.plausible).toHaveBeenCalledWith('pageview', {
+        props: { path: '/test' },
+      })
     })
   })
 
@@ -288,10 +280,9 @@ describe('analytics/index', () => {
       expect(window.plausible).toBeUndefined()
     })
 
-    it('should log debug message when debug is enabled', () => {
+    it('should track web vitals when debug is enabled', () => {
       analytics.disable()
 
-      const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
       const debugConfig = { ...config, debug: true }
 
       analytics.init(debugConfig)
@@ -303,9 +294,9 @@ describe('analytics/index', () => {
       const vitals = { LCP: 2500 }
       analytics.trackWebVitals(vitals)
 
-      expect(consoleLogSpy).toHaveBeenCalledWith('[Analytics] Web Vitals tracked:', vitals)
-
-      consoleLogSpy.mockRestore()
+      expect(window.plausible).toHaveBeenCalledWith('web_vitals', {
+        props: { metric: 'LCP', value: 2500 },
+      })
     })
   })
 
@@ -473,16 +464,13 @@ describe('analytics/index', () => {
       expect(() => analytics.disable()).not.toThrow()
     })
 
-    it('should log debug message when debug is enabled', () => {
-      const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
-
+    it('should reset config when debug is enabled', () => {
       const debugConfig = { ...config, debug: true }
       analytics.init(debugConfig)
       analytics.disable()
 
-      expect(consoleLogSpy).toHaveBeenCalledWith('[Analytics] Disabled')
-
-      consoleLogSpy.mockRestore()
+      expect(analytics.getConfig()).toBeNull()
+      expect(analytics.isEnabled()).toBe(false)
     })
   })
 

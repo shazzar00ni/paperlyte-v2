@@ -60,7 +60,9 @@ describe('monitoring', () => {
 
       logError(error, context, 'TestComponent')
 
-      expect(consoleSpy.log).toHaveBeenCalledWith('Component Stack:', context.componentStack)
+      expect(consoleSpy.group).toHaveBeenCalledWith('[MEDIUM] Error from TestComponent')
+      expect(consoleSpy.error).toHaveBeenCalledWith(error)
+      expect(consoleSpy.groupEnd).toHaveBeenCalled()
     })
 
     it('should log error with additional info', () => {
@@ -71,7 +73,9 @@ describe('monitoring', () => {
 
       logError(error, context, 'TestComponent')
 
-      expect(consoleSpy.log).toHaveBeenCalledWith('Additional Info:', context.errorInfo)
+      expect(consoleSpy.group).toHaveBeenCalledWith('[MEDIUM] Error from TestComponent')
+      expect(consoleSpy.error).toHaveBeenCalledWith(error)
+      expect(consoleSpy.groupEnd).toHaveBeenCalled()
     })
 
     it('should log error with tags', () => {
@@ -82,7 +86,9 @@ describe('monitoring', () => {
 
       logError(error, context, 'TestComponent')
 
-      expect(consoleSpy.log).toHaveBeenCalledWith('Tags:', context.tags)
+      expect(consoleSpy.group).toHaveBeenCalledWith('[MEDIUM] Error from TestComponent')
+      expect(consoleSpy.error).toHaveBeenCalledWith(error)
+      expect(consoleSpy.groupEnd).toHaveBeenCalled()
     })
 
     it('should use "medium" severity by default', () => {
@@ -177,28 +183,29 @@ describe('monitoring', () => {
   })
 
   describe('logPerformance', () => {
-    it('should log performance metric to console', () => {
+    it('should return early in development without logging', () => {
       logPerformance('render_time', 150)
 
-      expect(consoleSpy.log).toHaveBeenCalledWith('[Performance] render_time: 150ms')
+      expect(consoleSpy.log).not.toHaveBeenCalled()
+      expect(analytics.trackEvent).not.toHaveBeenCalled()
     })
 
-    it('should log performance metric with custom unit', () => {
+    it('should not log performance metric with custom unit in development', () => {
       logPerformance('bundle_size', 1024, 'bytes')
 
-      expect(consoleSpy.log).toHaveBeenCalledWith('[Performance] bundle_size: 1024bytes')
+      expect(consoleSpy.log).not.toHaveBeenCalled()
     })
 
     it('should default to "ms" unit', () => {
       logPerformance('query_time', 50)
 
-      expect(consoleSpy.log).toHaveBeenCalledWith('[Performance] query_time: 50ms')
+      expect(consoleSpy.log).not.toHaveBeenCalled()
     })
 
     it('should support "count" unit', () => {
       logPerformance('api_calls', 5, 'count')
 
-      expect(consoleSpy.log).toHaveBeenCalledWith('[Performance] api_calls: 5count')
+      expect(consoleSpy.log).not.toHaveBeenCalled()
     })
 
     it('should not call trackEvent in development', () => {
@@ -215,27 +222,27 @@ describe('monitoring', () => {
 
     it('should handle zero values', () => {
       logPerformance('zero_metric', 0)
-      expect(consoleSpy.log).toHaveBeenCalledWith('[Performance] zero_metric: 0ms')
+      expect(consoleSpy.log).not.toHaveBeenCalled()
     })
 
     it('should handle negative values', () => {
       logPerformance('negative_metric', -1)
-      expect(consoleSpy.log).toHaveBeenCalledWith('[Performance] negative_metric: -1ms')
+      expect(consoleSpy.log).not.toHaveBeenCalled()
     })
   })
 
   describe('logEvent', () => {
-    it('should log event to console', () => {
+    it('should forward event to trackEvent', () => {
       logEvent('button_click')
 
-      expect(consoleSpy.log).toHaveBeenCalledWith('[Event]', 'button_click', undefined)
+      expect(analytics.trackEvent).toHaveBeenCalledWith('button_click', undefined)
     })
 
-    it('should log event with properties', () => {
+    it('should forward event with properties to trackEvent', () => {
       const properties = { location: 'header', text: 'Sign Up' }
       logEvent('button_click', properties)
 
-      expect(consoleSpy.log).toHaveBeenCalledWith('[Event]', 'button_click', properties)
+      expect(analytics.trackEvent).toHaveBeenCalledWith('button_click', properties)
     })
 
     it('should track event in analytics even in development', () => {

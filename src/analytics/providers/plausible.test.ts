@@ -55,14 +55,14 @@ describe('analytics/providers/plausible', () => {
     })
 
     it('should not initialize twice', () => {
-      const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
-
       const debugConfig = { ...config, debug: true }
       provider.init(debugConfig)
+
+      // Second init should be a no-op (only one script added)
       provider.init(debugConfig)
 
-      expect(consoleLogSpy).toHaveBeenCalledWith('[Analytics] Plausible already initialized')
-      consoleLogSpy.mockRestore()
+      const scripts = document.querySelectorAll('script[data-domain]')
+      expect(scripts).toHaveLength(1)
     })
 
     it('should not initialize when Do Not Track is enabled', () => {
@@ -71,17 +71,14 @@ describe('analytics/providers/plausible', () => {
         value: '1',
       })
 
-      const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
       const debugConfig = { ...config, debug: true }
 
       provider.init(debugConfig)
 
-      expect(consoleLogSpy).toHaveBeenCalledWith(
-        '[Analytics] Do Not Track is enabled, analytics disabled'
-      )
       expect(provider.isEnabled()).toBe(false)
-
-      consoleLogSpy.mockRestore()
+      // No script should be added when DNT is enabled
+      const script = document.querySelector('script[data-domain]')
+      expect(script).toBeNull()
     })
 
     it('should respect DNT setting when respectDNT is true', () => {
@@ -181,7 +178,6 @@ describe('analytics/providers/plausible', () => {
     })
 
     it('should handle script load success', () => {
-      const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
       const debugConfig = { ...config, debug: true }
 
       provider.init(debugConfig)
@@ -194,10 +190,7 @@ describe('analytics/providers/plausible', () => {
       // Trigger onload
       script.onload?.(new Event('load'))
 
-      expect(consoleLogSpy).toHaveBeenCalledWith('[Analytics] Plausible script loaded successfully')
       expect(provider.isEnabled()).toBe(true)
-
-      consoleLogSpy.mockRestore()
     })
 
     it('should handle script load error', () => {
@@ -578,18 +571,14 @@ describe('analytics/providers/plausible', () => {
       expect(window.plausible).toBeUndefined()
     })
 
-    it('should log debug message when debug is enabled', () => {
-      const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
-
+    it('should fully disable when debug is enabled', () => {
       const debugProvider = new PlausibleProvider()
       const debugConfig = { ...config, debug: true }
       debugProvider.init(debugConfig)
 
       debugProvider.disable()
 
-      expect(consoleLogSpy).toHaveBeenCalledWith('[Analytics] Plausible disabled')
-
-      consoleLogSpy.mockRestore()
+      expect(debugProvider.isEnabled()).toBe(false)
     })
   })
 

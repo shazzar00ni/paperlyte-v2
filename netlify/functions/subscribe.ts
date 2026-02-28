@@ -140,27 +140,15 @@ async function subscribeToConvertKit(
   }
 
   // Validate response structure using Zod schema
-  try {
-    return ConvertKitResponseSchema.parse(data);
-  } catch (error) {
-    // Sanitize ZodError before attaching as cause — strip `received` values
-    // which could contain subscriber PII from the API response
-    const sanitizedCause =
-      error instanceof z.ZodError
-        ? new Error(
-            `Schema validation failed: ${error.issues.map((i) => `${i.path.join(".")}: ${i.code}`).join(", ")}`
-          )
-        : new Error("Response validation failed");
-
-    console.error(
-      "ConvertKit response validation failed:",
-      sanitizedCause.message
-    );
-    // Intentionally NOT preserving the raw ZodError as `cause` because its
-    // `received` fields may contain subscriber PII (email, name) from the API response.
-    /* eslint-disable-next-line preserve-caught-error */
-    throw new Error("Invalid response from email service", { cause: sanitizedCause });
+  // Use safeParse to avoid catch-and-rethrow — the raw ZodError's `received`
+  // fields may contain subscriber PII (email, name) from the API response.
+  const result = ConvertKitResponseSchema.safeParse(data);
+  if (!result.success) {
+    const detail = `Schema validation failed: ${result.error.issues.map((i) => `${i.path.join(".")}: ${i.code}`).join(", ")}`;
+    console.error("ConvertKit response validation failed:", detail);
+    throw new Error(`Invalid response from email service: ${detail}`);
   }
+  return result.data;
 }
 
 /**

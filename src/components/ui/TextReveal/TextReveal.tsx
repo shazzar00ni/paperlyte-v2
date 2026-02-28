@@ -50,7 +50,7 @@ const getDelayClass = (index: number, stagger: number, baseDelay: number): strin
   const rounded = Math.round(delay / 50) * 50
   // Cap at 2000ms
   const capped = Math.min(rounded, 2000)
-  return styles[`delay${capped}`] || ''
+  return styles[`delay${capped}`] ?? ''
 }
 
 /**
@@ -115,7 +115,13 @@ export const TextReveal = ({
     )
   }
 
-  const animationClass = styles[animation] || styles.fadeUp
+  const validAnimations = new Map<string, string | undefined>([
+    ['fadeUp', styles.fadeUp],
+    ['fadeIn', styles.fadeIn],
+    ['slideUp', styles.slideUp],
+    ['blur', styles.blur],
+  ])
+  const animationClass = validAnimations.get(animation) ?? styles.fadeUp
   const containerClasses = [styles.container, className].filter(Boolean).join(' ')
 
   return (

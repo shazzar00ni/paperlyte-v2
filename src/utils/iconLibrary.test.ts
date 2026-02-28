@@ -191,6 +191,23 @@ describe('iconLibrary', () => {
         expect(isValidIcon(iconName)).toBe(true)
       })
     })
+
+    it('should map all expected feature icons to correct values', () => {
+      // Core feature icons with exact expected mappings
+      expect(iconNameMap['fa-bolt']).toBe('bolt')
+      expect(iconNameMap['fa-pen-nib']).toBe('pen-nib')
+      expect(iconNameMap['fa-tags']).toBe('tags')
+      expect(iconNameMap['fa-mobile-screen']).toBe('mobile-screen')
+      expect(iconNameMap['fa-shield-halved']).toBe('shield-halved')
+    })
+
+    it('should map all expected UI icons to correct values', () => {
+      // Brand/UI icons with exact expected mappings
+      expect(iconNameMap['fa-github']).toBe('github')
+      expect(iconNameMap['fa-twitter']).toBe('twitter')
+      expect(iconNameMap['fa-apple']).toBe('apple')
+      expect(iconNameMap['fa-windows']).toBe('windows')
+    })
   })
 
   describe('Regression Prevention', () => {

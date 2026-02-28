@@ -99,6 +99,7 @@ export const Icon = ({
       strokeLinejoin="round"
       className={`icon-svg ${className}`}
       style={style}
+      data-icon={name}
       aria-label={ariaLabel}
       aria-hidden={ariaLabel ? 'false' : 'true'}
       {...(ariaLabel && { role: 'img' })}

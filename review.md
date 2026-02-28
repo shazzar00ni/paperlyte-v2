@@ -13,6 +13,7 @@ The file should give a PR reviewer the essential context that won't be visible i
 - **Out of scope**: Anything reviewers should explicitly ignore or not enforce.
 
 Rules for the output:
+
 - Output only the Markdown content, no preamble or explanation.
 - Be concise. Every line should earn its place — no filler.
 - Use short sections with bullet points. Avoid long prose.

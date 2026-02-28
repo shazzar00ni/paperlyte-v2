@@ -6,21 +6,16 @@
       "numberOfRuns": 3,
       "settings": {
         "preset": "desktop",
+        "chromeFlags": "--no-sandbox --disable-dev-shm-usage --headless=new",
         "throttling": {
           "rttMs": 40,
           "throughputKbps": 10240,
           "cpuSlowdownMultiplier": 1
-        },
-        "chromeFlags": [
-          "--no-sandbox",
-          "--disable-gpu",
-          "--disable-dev-shm-usage",
-          "--disable-software-rasterizer",
-          "--disable-extensions"
-        ]
+        }
       }
     },
     "assert": {
+      "preset": "lighthouse:recommended",
       "assertions": {
         "categories:performance": ["error", { "minScore": 0.9 }],
         "categories:accessibility": ["error", { "minScore": 0.95 }],
@@ -33,6 +28,7 @@
         "speed-index": ["error", { "maxNumericValue": 3000 }],
         "interactive": ["error", { "maxNumericValue": 3500 }],
         "max-potential-fid": ["warn", { "maxNumericValue": 130 }],
+        "server-response-time": ["warn", { "maxNumericValue": 600 }],
         "uses-responsive-images": "warn",
         "offscreen-images": "warn",
         "uses-optimized-images": "warn",
@@ -40,6 +36,10 @@
         "uses-text-compression": "warn",
         "unused-css-rules": "warn",
         "unused-javascript": "warn",
+        "efficient-animated-content": "warn",
+        "uses-passive-event-listeners": "warn",
+        "no-document-write": "error",
+        "uses-rel-preconnect": "warn",
         "uses-long-cache-ttl": "off",
         "font-display": "warn",
         "resource-summary:script:size": ["warn", { "maxNumericValue": 153600 }],

@@ -63,6 +63,14 @@ export const env: EnvConfig = {
  * Call this in your main.tsx or App.tsx
  */
 export const updateMetaTags = (): void => {
+  if (import.meta.env.DEV) {
+    console.log('🌍 Environment:', {
+      baseUrl: env.baseUrl,
+      ogImage: env.ogImage,
+      mode: 'development',
+    })
+  }
+
   // Update canonical URL
   const canonical = document.querySelector('link[rel="canonical"]')
   if (canonical) {

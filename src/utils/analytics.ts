@@ -290,11 +290,6 @@ export function trackEvent(eventName: string, eventParams?: AnalyticsEventParams
   const sanitizedParams = sanitizeAnalyticsParams(eventParams)
 
   if (!isAnalyticsAvailable()) {
-    // In development, log to console instead of failing silently
-    // Only log sanitized params (never log PII)
-    if (import.meta.env.DEV) {
-      console.log('[Analytics]', eventName, sanitizedParams)
-    }
     return
   }
 
@@ -318,9 +313,6 @@ export function trackEvent(eventName: string, eventParams?: AnalyticsEventParams
  */
 export function trackPageView(pagePath: string, pageTitle?: string): void {
   if (!isAnalyticsAvailable()) {
-    if (import.meta.env.DEV) {
-      console.log('[Analytics] Page View:', pagePath, pageTitle)
-    }
     return
   }
 

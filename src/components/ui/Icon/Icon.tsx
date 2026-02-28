@@ -57,8 +57,6 @@ export const Icon = ({
 
   // Fallback to Font Awesome React component if icon not found in our set
   if (!paths) {
-    console.warn(`Icon "${name}" not found in icon set, using Font Awesome fallback`)
-
     // Convert icon prefix based on variant
     const prefix: IconPrefix = variant === 'brands' ? 'fab' : variant === 'regular' ? 'far' : 'fas'
 
@@ -76,17 +74,17 @@ export const Icon = ({
       ...(ariaLabel ? { role: 'img' } : {}),
     }
 
-    // If icon not found in library, return a placeholder
-    if (!iconDefinition) {
-      console.warn(`Icon "${name}" not found in Font Awesome library either`)
+    if (iconDefinition) {
+      console.warn(`Icon "${name}" not found in custom icon set, using Font Awesome fallback`)
+      return <FontAwesomeIcon icon={iconDefinition} {...commonIconProps} />
+    } else {
+      console.warn(`Icon "${name}" not found in custom set or Font Awesome library`)
       return (
         <span {...commonIconProps} title={`Icon "${name}" not found`}>
           ?
         </span>
       )
     }
-
-    return <FontAwesomeIcon icon={iconDefinition} {...commonIconProps} />
   }
 
   return (

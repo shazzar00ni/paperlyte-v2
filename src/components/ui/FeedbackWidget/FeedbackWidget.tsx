@@ -131,7 +131,6 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
               }`
             )
           }
-          console.log('Feedback submitted:', feedbackEntry)
         }
 
         // Show confirmation

@@ -29,6 +29,13 @@ function App() {
   // Initialize analytics with scroll depth tracking
   useAnalytics()
 
+  // Only render Vercel Analytics if not on localhost/127.0.0.1
+  // This prevents Lighthouse CI failures due to analytics script errors on local server
+  const shouldShowAnalytics =
+    typeof window !== 'undefined' &&
+    window.location.hostname !== 'localhost' &&
+    window.location.hostname !== '127.0.0.1'
+
   return (
     <ErrorBoundary>
       <a href="#main" className="skip-link">
@@ -50,7 +57,7 @@ function App() {
       </main>
       <Footer />
       <FeedbackWidget />
-      <Analytics />
+      {shouldShowAnalytics && <Analytics />}
     </ErrorBoundary>
   )
 }

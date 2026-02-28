@@ -50,7 +50,10 @@ function App() {
       </main>
       <Footer />
       <FeedbackWidget />
-      <Analytics />
+      {/* Vercel Analytics - only enabled in production environments */}
+      {import.meta.env.PROD &&
+        !window.location.hostname.includes('localhost') &&
+        !window.location.hostname.includes('127.0.0.1') && <Analytics />}
     </ErrorBoundary>
   )
 }

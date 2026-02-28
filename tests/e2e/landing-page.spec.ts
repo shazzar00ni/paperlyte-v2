@@ -29,13 +29,16 @@ test.describe('Landing Page', () => {
     const featuresLink = page.locator('header').getByRole('link', { name: /^features$/i });
     await featuresLink.click();
 
-    // Wait for smooth scroll animation to complete by ensuring #features is fully in the viewport
+    // Wait for smooth scroll animation to complete by ensuring #features is in the viewport.
+    // We use a broader range to account for sticky headers and mobile Safari subpixel offsets.
     await page.waitForFunction(() => {
       const el = document.querySelector<HTMLElement>('#features');
       if (!el) return false;
       const rect = el.getBoundingClientRect();
-      return rect.top >= 0 && rect.top < window.innerHeight;
-    });
+      // Section is considered "active" if its top is near the top of the viewport
+      // allowing for some offset (e.g., sticky header height of ~80px)
+      return rect.top >= -50 && rect.top <= 150;
+    }, { timeout: 15000 });
     // Should scroll to features section
     await expect(page.locator('#features')).toBeInViewport();
   });

@@ -204,9 +204,9 @@ describe('iconLibrary', () => {
       expect(solidIcons.length).toBeGreaterThanOrEqual(31)
     })
 
-    it('should have exactly 4 brand icons registered', () => {
-      // Icon breakdown: 31 solid (non-fallback) + 4 brand + 1 fallback = 36 total
-      expect(brandIconNames.size).toBe(4)
+    it('should have exactly 6 brand icons registered', () => {
+      // Icon breakdown: 31 solid (non-fallback) + 6 brand + 1 fallback = 38 total in validIconNames
+      expect(brandIconNames.size).toBe(6)
     })
 
     it('should maintain icon count in validIconNames', () => {

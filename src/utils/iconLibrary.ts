@@ -54,6 +54,7 @@ import {
   faArrowRotateLeft, // Undo/back actions
   faBook, // Documentation/help
   faMagnifyingGlass, // Search
+  faGlobe, // Global sync/access (Solution section)
   faPlane, // Offline page - airplane mode
   faRoute, // Offline page - route/navigation issues
   faArrowRight, // Navigation forward
@@ -65,6 +66,8 @@ import {
 import {
   faGithub, // GitHub social link
   faTwitter, // Twitter/X social link
+  faXTwitter, // X (formerly Twitter) social link
+  faInstagram, // Instagram social link
   faApple, // Apple platform
   faWindows, // Windows platform
 } from '@fortawesome/free-brands-svg-icons'
@@ -110,6 +113,7 @@ library.add(
   faArrowRotateLeft,
   faBook,
   faMagnifyingGlass,
+  faGlobe,
   faPlane,
   faRoute,
   faArrowRight,
@@ -118,6 +122,8 @@ library.add(
   // Brand icons
   faGithub,
   faTwitter,
+  faXTwitter,
+  faInstagram,
   faApple,
   faWindows
 )
@@ -159,6 +165,8 @@ export const iconNameMap: Record<string, string> = {
   'fa-server': 'server',
   'fa-github': 'github',
   'fa-twitter': 'twitter',
+  'fa-x-twitter': 'x-twitter',
+  'fa-instagram': 'instagram',
   'fa-apple': 'apple',
   'fa-windows': 'windows',
   'fa-route': 'route', // Offline page - route/navigation issues.
@@ -169,6 +177,7 @@ export const iconNameMap: Record<string, string> = {
   'fa-rotate-right': 'rotate-right', // Retry/reload actions.
   'fa-book': 'book', // Documentation/help.
   'fa-magnifying-glass': 'magnifying-glass', // Search.
+  'fa-globe': 'globe', // Global sync/access.
   'fa-arrow-right': 'arrow-right', // Navigation forward.
   'fa-arrow-left': 'arrow-left', // Navigation back.
   'fa-spinner': 'spinner', // Loading states.
@@ -179,7 +188,14 @@ export const iconNameMap: Record<string, string> = {
  * Set of brand icon names (derived from imported brand icons)
  * Used to determine the icon prefix (fab vs fas) dynamically
  */
-export const brandIconNames = new Set<string>(['github', 'twitter', 'apple', 'windows'])
+export const brandIconNames = new Set<string>([
+  'github',
+  'twitter',
+  'x-twitter',
+  'instagram',
+  'apple',
+  'windows',
+])
 
 /**
  * Set of all valid icon names in the library

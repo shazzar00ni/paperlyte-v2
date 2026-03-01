@@ -2,12 +2,25 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { Icon } from './Icon'
 import { expectIconSize } from '@/test/iconTestHelpers'
+import { findIconDefinition } from '@fortawesome/fontawesome-svg-core'
+
+// Mock findIconDefinition to test variant prefix behavior
+vi.mock('@fortawesome/fontawesome-svg-core', async () => {
+  const actual = await vi.importActual('@fortawesome/fontawesome-svg-core')
+  return {
+    ...actual,
+    findIconDefinition: vi.fn(),
+  }
+})
 
 describe('Icon', () => {
   let consoleWarnSpy: ReturnType<typeof vi.spyOn>
+  const mockFindIconDefinition = vi.mocked(findIconDefinition)
 
   beforeEach(() => {
     consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    mockFindIconDefinition.mockClear()
+    mockFindIconDefinition.mockReturnValue(null) // Return null to trigger fallback
   })
 
   afterEach(() => {
@@ -24,13 +37,11 @@ describe('Icon', () => {
     expect(fallback).toHaveTextContent('?')
     expect(fallback).toHaveAttribute('title', 'Icon "definitely-missing-icon" not found')
 
-    // Should log warnings
+    // Should log unified warning
     expect(consoleWarnSpy).toHaveBeenCalledWith(
-      'Icon "definitely-missing-icon" not found in icon set, using Font Awesome fallback'
+      'Icon "definitely-missing-icon" not found in custom set or Font Awesome library'
     )
-    expect(consoleWarnSpy).toHaveBeenCalledWith(
-      'Icon "definitely-missing-icon" not found in Font Awesome library either'
-    )
+    expect(consoleWarnSpy).toHaveBeenCalledTimes(1)
   })
 
   it('should render SVG for known icons', () => {
@@ -170,30 +181,111 @@ describe('Icon', () => {
     expect(svg).toHaveAttribute('stroke', 'currentColor')
   })
 
-  it('should apply correct variant class for solid', () => {
-    const { container } = render(<Icon name="missing-icon" variant="solid" />)
+  it('should use fas prefix for solid variant', () => {
+    const { container } = render(<Icon name="test-icon" variant="solid" />)
     const fallback = container.querySelector('span.icon-fallback')
 
-    // Missing icons render as span placeholder
     expect(fallback).toBeInTheDocument()
     expect(fallback).toHaveClass('icon-fallback')
+
+    // Verify findIconDefinition was called with 'fas' prefix for solid variant
+    expect(mockFindIconDefinition).toHaveBeenCalledWith(
+      expect.objectContaining({
+        prefix: 'fas',
+        iconName: 'test-icon',
+      })
+    )
   })
 
-  it('should apply correct variant class for regular', () => {
-    const { container } = render(<Icon name="missing-icon" variant="regular" />)
+  it('should use far prefix for regular variant', () => {
+    const { container } = render(<Icon name="test-icon" variant="regular" />)
     const fallback = container.querySelector('span.icon-fallback')
 
-    // Missing icons render as span placeholder
     expect(fallback).toBeInTheDocument()
     expect(fallback).toHaveClass('icon-fallback')
+
+    // Verify findIconDefinition was called with 'far' prefix for regular variant
+    expect(mockFindIconDefinition).toHaveBeenCalledWith(
+      expect.objectContaining({
+        prefix: 'far',
+        iconName: 'test-icon',
+      })
+    )
   })
 
-  it('should apply correct variant class for brands', () => {
-    const { container } = render(<Icon name="missing-icon" variant="brands" />)
+  it('should use fab prefix for brands variant', () => {
+    const { container } = render(<Icon name="test-icon" variant="brands" />)
     const fallback = container.querySelector('span.icon-fallback')
 
-    // Missing icons render as span placeholder
     expect(fallback).toBeInTheDocument()
     expect(fallback).toHaveClass('icon-fallback')
+
+    // Verify findIconDefinition was called with 'fab' prefix for brands variant
+    expect(mockFindIconDefinition).toHaveBeenCalledWith(
+      expect.objectContaining({
+        prefix: 'fab',
+        iconName: 'test-icon',
+      })
+    )
+  })
+
+  it('should render fa-arrow-right as a custom SVG with correct path', () => {
+    const { container } = render(<Icon name="fa-arrow-right" />)
+
+    // fa-arrow-right is in iconPaths; must render as custom SVG, not a fallback
+    const svg = container.querySelector('svg[data-icon="fa-arrow-right"]')
+    expect(svg).toBeInTheDocument()
+    expect(svg).toHaveClass('icon-svg')
+
+    // Path 'M5 12h14 M12 5l7 7-7 7' doesn't split on ' M ' (no space before M12)
+    // So it renders as a single path element
+    const paths = svg!.querySelectorAll('path')
+    expect(paths).toHaveLength(1)
+    expect(paths[0]).toHaveAttribute('d', 'M5 12h14 M12 5l7 7-7 7')
+
+    // Custom path icons never reach Font Awesome
+    expect(mockFindIconDefinition).not.toHaveBeenCalled()
+    expect(consoleWarnSpy).not.toHaveBeenCalled()
+  })
+
+  it('should render fa-apple as a custom SVG, not via Font Awesome', () => {
+    const { container } = render(<Icon name="fa-apple" variant="brands" />)
+
+    // fa-apple is in iconPaths; variant prop must not trigger a Font Awesome lookup
+    const svg = container.querySelector('svg[data-icon="fa-apple"]')
+    expect(svg).toBeInTheDocument()
+    expect(svg).toHaveClass('icon-svg')
+
+    // Two path segments (the path contains ' M ' as separator)
+    const paths = svg!.querySelectorAll('path')
+    expect(paths.length).toBeGreaterThanOrEqual(1)
+
+    expect(mockFindIconDefinition).not.toHaveBeenCalled()
+    expect(consoleWarnSpy).not.toHaveBeenCalled()
+  })
+
+  it('should render fa-windows as a custom SVG, not via Font Awesome', () => {
+    const { container } = render(<Icon name="fa-windows" variant="brands" />)
+
+    // fa-windows is in iconPaths; variant prop must not trigger a Font Awesome lookup
+    const svg = container.querySelector('svg[data-icon="fa-windows"]')
+    expect(svg).toBeInTheDocument()
+    expect(svg).toHaveClass('icon-svg')
+    expect(svg).toHaveAttribute('viewBox', '0 0 23 24')
+
+    expect(mockFindIconDefinition).not.toHaveBeenCalled()
+    expect(consoleWarnSpy).not.toHaveBeenCalled()
+  })
+
+  it('should call findIconDefinition with fab prefix for an unknown brand icon', () => {
+    // A brand icon not in iconPaths falls through to Font Awesome with prefix "fab"
+    render(<Icon name="fa-linux" variant="brands" />)
+
+    expect(mockFindIconDefinition).toHaveBeenCalledWith(
+      expect.objectContaining({
+        prefix: 'fab',
+        iconName: 'linux',
+      })
+    )
   })
 })

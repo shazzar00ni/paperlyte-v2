@@ -379,6 +379,122 @@ describe('analytics/webVitals', () => {
     })
   })
 
+  describe('INP tracking', () => {
+    it('should track INP from event observer callbacks and finalize with max for few interactions', () => {
+      vi.useFakeTimers()
+
+      const observerInstances: Array<{
+        callback: PerformanceObserverCallback
+        observe: ReturnType<typeof vi.fn>
+      }> = []
+
+      global.PerformanceObserver = class {
+        callback: PerformanceObserverCallback
+        observe: ReturnType<typeof vi.fn>
+        constructor(callback: PerformanceObserverCallback) {
+          this.callback = callback
+          this.observe = vi.fn()
+          observerInstances.push(this)
+        }
+        disconnect = vi.fn()
+        takeRecords = vi.fn(() => [])
+      } as unknown as typeof PerformanceObserver
+
+      const cleanup = initWebVitals(onReport)
+
+      // Find the INP observer (observes 'event' type)
+      const inpObserver = observerInstances.find((obs) => {
+        const observeCall = obs.observe.mock.calls[0]
+        return observeCall && observeCall[0].type === 'event'
+      })
+
+      expect(inpObserver).toBeDefined()
+
+      // Emit a few event entries (<=10 interactions uses Math.max)
+      inpObserver!.callback(
+        {
+          getEntries: () => [
+            { processingStart: 10, processingEnd: 60, startTime: 5 },
+            { processingStart: 20, processingEnd: 120, startTime: 10 },
+          ],
+        } as PerformanceObserverEntryList,
+        inpObserver as unknown as PerformanceObserver
+      )
+
+      // Trigger reporting via timeout
+      vi.advanceTimersByTime(10000)
+
+      expect(onReport).toHaveBeenCalledWith(
+        expect.objectContaining({
+          INP: expect.any(Number),
+        })
+      )
+
+      // INP should be the max duration: max(60 - 5, 120 - 10) = max(55, 110) = 110
+      const reportedVitals = onReport.mock.calls[0][0]
+      expect(reportedVitals.INP).toBe(110)
+
+      cleanup()
+      vi.useRealTimers()
+    })
+
+    it('should use 98th percentile for many interactions (>10)', () => {
+      vi.useFakeTimers()
+
+      const observerInstances: Array<{
+        callback: PerformanceObserverCallback
+        observe: ReturnType<typeof vi.fn>
+      }> = []
+
+      global.PerformanceObserver = class {
+        callback: PerformanceObserverCallback
+        observe: ReturnType<typeof vi.fn>
+        constructor(callback: PerformanceObserverCallback) {
+          this.callback = callback
+          this.observe = vi.fn()
+          observerInstances.push(this)
+        }
+        disconnect = vi.fn()
+        takeRecords = vi.fn(() => [])
+      } as unknown as typeof PerformanceObserver
+
+      const cleanup = initWebVitals(onReport)
+
+      const inpObserver = observerInstances.find((obs) => {
+        const observeCall = obs.observe.mock.calls[0]
+        return observeCall && observeCall[0].type === 'event'
+      })
+
+      expect(inpObserver).toBeDefined()
+
+      // Emit >10 event entries to trigger 98th percentile path
+      const entries = Array.from({ length: 20 }, (_, i) => ({
+        processingStart: 10,
+        processingEnd: 10 + (i + 1) * 10,
+        startTime: 0,
+      }))
+
+      inpObserver!.callback(
+        {
+          getEntries: () => entries,
+        } as PerformanceObserverEntryList,
+        inpObserver as unknown as PerformanceObserver
+      )
+
+      // Trigger reporting
+      vi.advanceTimersByTime(10000)
+
+      expect(onReport).toHaveBeenCalledWith(
+        expect.objectContaining({
+          INP: expect.any(Number),
+        })
+      )
+
+      cleanup()
+      vi.useRealTimers()
+    })
+  })
+
   describe('error handling', () => {
     it('should handle errors in PerformanceObserver gracefully', () => {
       // Mock PerformanceObserver to throw

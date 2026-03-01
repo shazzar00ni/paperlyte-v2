@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { EmailCapture } from './EmailCapture'
@@ -54,45 +54,22 @@ describe('EmailCapture Section', () => {
 
   it('displays error message when submission fails', async () => {
     const user = userEvent.setup()
+    const mockSubmit = vi.fn().mockRejectedValue(new Error('Network error'))
 
-    // Make the simulated API promise reject by throwing inside setTimeout
-    // when called with the 1000ms delay used by the component.
-    // Use a flag to only throw once, avoiding interference with waitFor.
-    const origSetTimeout = globalThis.setTimeout
-    let shouldThrow = false
+    render(<EmailCapture onSubmit={mockSubmit} />)
 
-    globalThis.setTimeout = ((fn: TimerHandler, ms?: number, ...args: unknown[]) => {
-      if (ms === 1000 && shouldThrow) {
-        shouldThrow = false
-        throw new Error('Simulated API failure')
-      }
-      return origSetTimeout(fn as (...a: unknown[]) => void, ms, ...args)
-    }) as typeof setTimeout
+    const emailInput = screen.getByPlaceholderText('your@email.com')
+    const submitButton = screen.getByRole('button', { name: /Join the Waitlist/i })
 
-    try {
-      render(<EmailCapture />)
+    await user.type(emailInput, 'test@example.com')
+    await user.click(submitButton)
 
-      const emailInput = screen.getByPlaceholderText('your@email.com')
-      const submitButton = screen.getByRole('button', { name: /Join the Waitlist/i })
+    await waitFor(() => {
+      expect(screen.getByText(/Failed to join waitlist/)).toBeInTheDocument()
+      expect(screen.getByRole('alert')).toBeInTheDocument()
+    })
 
-      await user.type(emailInput, 'test@example.com')
-
-      // Enable the throw right before submitting
-      shouldThrow = true
-      await user.click(submitButton)
-
-      // Restore before waitFor to avoid interference
-      globalThis.setTimeout = origSetTimeout
-
-      await waitFor(() => {
-        expect(screen.getByText(/Failed to join waitlist/)).toBeInTheDocument()
-        expect(screen.getByRole('alert')).toBeInTheDocument()
-      })
-
-      // Submit button should be re-enabled after error
-      expect(screen.getByRole('button', { name: /Join the Waitlist/i })).not.toBeDisabled()
-    } finally {
-      globalThis.setTimeout = origSetTimeout
-    }
+    // Submit button should be re-enabled after error
+    expect(screen.getByRole('button', { name: /Join the Waitlist/i })).not.toBeDisabled()
   })
 })

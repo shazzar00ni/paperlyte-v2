@@ -484,9 +484,12 @@ describe('analytics/webVitals', () => {
       // Trigger reporting
       vi.advanceTimersByTime(10000)
 
+      // Durations are [20, 30, 40, ..., 210] (20 entries)
+      // 98th percentile index: Math.ceil(0.98 * 20) - 1 = 19
+      // sortedInteractions[19] = 210
       expect(onReport).toHaveBeenCalledWith(
         expect.objectContaining({
-          INP: expect.any(Number),
+          INP: 210,
         })
       )
 

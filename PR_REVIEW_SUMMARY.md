@@ -2,6 +2,49 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-03-02
+
+### Ready for Merge
+
+#### PR: origin/claude/add-doc-sections-1EhnP
+- **Status:** Approved
+- **Summary:** Adds a "Common Pitfalls" section and a "Performance Optimization Roadmap" to `Project_Architecture_Blueprint.md`. Also includes testability improvements for `EmailCapture`.
+- **Feedback:** High-quality documentation that aligns with project standards. No regressions found.
+
+#### PR: origin/claude/implement-todo-item-cDEVt
+- **Status:** Approved
+- **Summary:** Refactors code to use nullish coalescing (`??`) instead of logical OR (`||`) for safer default values. Implements Map-based lookups in `TextReveal` and `iconLibrary` to prevent prototype pollution.
+- **Feedback:** Excellent security-focused refactoring. Correctly addresses technical debt and improves robustness.
+
+#### PR: origin/claude/fix-code-style-cWDI4
+- **Status:** Approved
+- **Summary:** Widespread linting fixes and modernization across dozens of components and utilities.
+- **Feedback:** Clean and consistent application of project coding standards. Restores code quality without introducing functional regressions.
+
+#### PR: origin/claude/fix-lighthouse-failure-b5S6v
+- **Status:** Approved
+- **Summary:** Implements a full-featured carousel for `Testimonials`, adds CSS variables for layout consistency, and improves `Icon` component diagnostic logging.
+- **Feedback:** Solid UI enhancement that maintains accessibility. The use of CSS variables for spacing and border-radius is a good architectural improvement.
+
+### Blocked by Systemic Regressions
+
+#### PR: origin/claude/eslint-10-upgrade-issue-Bg8XP
+- **Status:** Changes Requested / Blocked
+- **Summary:** Attempts to upgrade ESLint to v10.
+- **Feedback:** **Critical Issue:** This branch contains the systemic deletion of `.npmrc`, `gitVersionControl.md`, and `review.md`. Furthermore, it violates the project standard of pinning ESLint to v9 (required for plugin compatibility).
+
+#### PR: origin/claude/fix-security-issues-S4LKn
+- **Status:** Changes Requested / Blocked
+- **Summary:** Proposes various security fixes.
+- **Feedback:** **Critical Issue:** Like other blocked PRs, this branch accidentally deletes `.npmrc`, `gitVersionControl.md`, and `review.md`. These files must be restored before merge.
+
+#### PR: origin/copilot/sub-pr-503
+- **Status:** Changes Requested / Blocked
+- **Summary:** Major CI and component update.
+- **Feedback:** **Critical Issue:** This PR contains widespread regressions, including the deletion of core documentation/config files and the reversion of previously merged security and accessibility fixes (e.g., in `navigation.ts` and `Icon.tsx`). Recommending a full reset and careful re-implementation.
+
+---
+
 ## 2026-02-08
 
 ### PR #427: Configure Claude Code GitHub Action

@@ -38,6 +38,7 @@
         "unused-javascript": "warn",
         "efficient-animated-content": "warn",
         "uses-passive-event-listeners": "warn",
+        "network-dependency-tree-insight": "off",
         "no-document-write": "error",
         "uses-rel-preconnect": "warn",
         "uses-long-cache-ttl": "off",

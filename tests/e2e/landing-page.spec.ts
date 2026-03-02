@@ -30,11 +30,26 @@ test.describe('Landing Page', () => {
     await featuresLink.click();
 
     // Wait for smooth scroll animation to complete by ensuring #features is fully in the viewport
+    // and its position has stabilized
     await page.waitForFunction(() => {
       const el = document.querySelector<HTMLElement>('#features');
       if (!el) return false;
-      const rect = el.getBoundingClientRect();
-      return rect.top >= 0 && rect.top < window.innerHeight;
+
+      return new Promise((resolve) => {
+        const checkPosition = () => {
+          const rect1 = el.getBoundingClientRect();
+          requestAnimationFrame(() => {
+            const rect2 = el.getBoundingClientRect();
+            // If the element hasn't moved significantly between frames, it's stabilized
+            if (Math.abs(rect1.top - rect2.top) < 1) {
+              resolve(rect1.top >= 0 && rect1.top < window.innerHeight);
+            } else {
+              requestAnimationFrame(checkPosition);
+            }
+          });
+        };
+        checkPosition();
+      });
     });
     // Should scroll to features section
     await expect(page.locator('#features')).toBeInViewport();

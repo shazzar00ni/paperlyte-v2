@@ -2,11 +2,11 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { z } from 'zod'
 
 /**
- * Tests for the subscribe Netlify function.
+ * Tests for validation and PII behavior related to the subscribe Netlify function.
  *
  * Since subscribe.ts uses Netlify Functions types and has module-scoped state
- * (rateLimitStore), we test the validation logic and PII exclusion behavior
- * by importing and testing the handler directly.
+ * (rateLimitStore), these tests replicate the validation schema and PII exclusion
+ * behavior locally, rather than importing and executing the Netlify handler itself.
  */
 
 // Mock environment variables

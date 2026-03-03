@@ -29,8 +29,8 @@
 }
 
 .carouselWrapper:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 4px;
+  outline: 0.125rem solid var(--color-primary);
+  outline-offset: 0.25rem;
   border-radius: var(--border-radius-md);
 }
 
@@ -161,8 +161,8 @@
 }
 
 .navButton:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--color-primary);
+  outline-offset: 0.125rem;
   background: var(--color-surface);
   box-shadow: var(--shadow-lg);
 }
@@ -188,29 +188,44 @@
 }
 
 .dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: var(--border-radius-full);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.dot::before {
+  content: '';
+  display: block;
   width: 0.5rem;
   height: 0.5rem;
   border-radius: var(--border-radius-full);
   background: var(--color-border);
-  border: none;
-  cursor: pointer;
-  padding: 0;
   transition:
     background-color var(--transition-fast),
     transform var(--transition-fast);
 }
 
-.dot:hover {
+.dot:hover::before {
   background: var(--color-text-secondary);
 }
 
 .dot:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--color-primary);
+  outline-offset: 0.125rem;
+}
+
+.dot:focus-visible::before {
   background: var(--color-text-secondary);
 }
 
-.dotActive {
+.dotActive::before {
   background: var(--color-primary);
   transform: scale(1.3);
 }
@@ -242,8 +257,8 @@
 }
 
 .playPauseButton:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--color-primary);
+  outline-offset: 0.125rem;
   color: var(--color-text-primary);
   border-color: var(--color-text-secondary);
 }
@@ -293,7 +308,7 @@
   }
 
   .navButton,
-  .dot,
+  .dot::before,
   .playPauseButton {
     transition: none;
   }

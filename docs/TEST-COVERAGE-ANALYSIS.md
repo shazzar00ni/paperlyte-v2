@@ -21,12 +21,12 @@ These source files have the weakest unit-test coverage:
 
 | File | Stmts | Branches | Functions | Lines |
 |------|-------|----------|-----------|-------|
-| `components/sections/CTA/CTA.tsx` | 50% | 100% | 33% | 50% |
-| `components/sections/Testimonials/Testimonials.tsx` | 52% | 47% | 42% | 56% |
-| `hooks/useAnalytics.ts` | 58% | 67% | 17% | 60% |
-| `utils/monitoring.ts` | 72% | 65% | 80% | 72% |
-| `analytics/webVitals.ts` | 77% | 59% | 77% | 78% |
-| `components/ui/FeedbackWidget/FeedbackWidget.tsx` | 82% | 72% | 95% | 83% |
+| `src/components/sections/CTA/CTA.tsx` | 50% | 100% | 33% | 50% |
+| `src/components/sections/Testimonials/Testimonials.tsx` | 52% | 47% | 42% | 56% |
+| `src/hooks/useAnalytics.ts` | 58% | 67% | 17% | 60% |
+| `src/utils/monitoring.ts` | 72% | 65% | 80% | 72% |
+| `src/analytics/webVitals.ts` | 77% | 59% | 77% | 78% |
+| `src/components/ui/FeedbackWidget/FeedbackWidget.tsx` | 82% | 72% | 95% | 83% |
 
 ### Recommendations
 

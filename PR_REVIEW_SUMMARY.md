@@ -2,6 +2,39 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-03-03
+
+### Ready for Merge
+
+- **Branch:** `origin/claude/analyze-test-coverage-9JQZb`
+  - **Status:** Approved
+  - **Summary:** Adds automated accessibility audits using axe-core and comprehensive Playwright E2E tests for the waitlist signup flow.
+  - **Feedback:** Excellent addition to the test suite. No regressions found.
+- **Branch:** `origin/claude/fix-workflow-e2e-tests-xHhZw`
+  - **Status:** Approved
+  - **Summary:** Improves Lighthouse CI stability by starting a preview server within the workflow and fixes Playwright navigation tests by disabling smooth scrolling during tests.
+  - **Feedback:** Solid infrastructure improvement.
+- **Branch:** `origin/claude/eslint-10-upgrade-issue-Bg8XP`
+  - **Status:** Approved
+  - **Summary:** Excludes lock files from Codacy analysis and tunes Lighthouse CI audits (disabling HTTP/2 and HSTS checks for local preview).
+  - **Feedback:** Necessary configuration tuning to reduce CI noise.
+- **Branch:** `origin/claude/fix-codacy-fingerprints-ZexWA`
+  - **Status:** Approved
+  - **Summary:** Refines the `merge-sarif-runs.sh` script to strip legacy MD5 partialFingerprints.
+  - **Feedback:** Correctly addresses Codacy fingerprint warnings. Supersedes `origin/claude/fix-codacy-fingerprints-P9FYE`.
+
+### Blocked by Systemic Regressions
+
+- **Summary:** The following branches contain accidental deletions of core files (`.npmrc`, `docs/ROADMAP.md`, `gitVersionControl.md`, `review.md`) and must be rebased or fixed before merge.
+- **Branches:**
+  - `origin/claude/fix-junit-xml-upload-LVU8M` (Deletes `.npmrc`, `review.md`)
+  - `origin/claude/fix-peer-dependency-conflicts-Wj2iC` (Deletes `.npmrc`, reverts critical security fixes in `navigation.ts`)
+  - `origin/claude/implement-todo-item-2H9LP` (Deletes `.npmrc`, `ROADMAP.md`, `review.md`)
+  - `origin/fix/axios-security-vulnerability-v1.13.5-5405739559523723967` (Comprehensive security PR but contains systemic deletions)
+  - `origin/copilot/sub-pr-503` (Deletes `.npmrc`, `ROADMAP.md`, etc.)
+
+---
+
 ## 2026-02-08
 
 ### PR #427: Configure Claude Code GitHub Action

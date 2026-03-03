@@ -146,7 +146,9 @@ async function subscribeToConvertKit(
   if (!result.success) {
     const detail = `Schema validation failed: ${result.error.issues.map((i) => `${i.path.join(".")}: ${i.code}`).join(", ")}`;
     console.error("ConvertKit response validation failed:", detail);
-    throw new Error(`Invalid response from email service: ${detail}`);
+    throw new Error(`Invalid response from email service: ${detail}`, {
+      cause: new Error(detail),
+    });
   }
   return result.data;
 }

@@ -117,7 +117,8 @@
   --color-text-on-dark-secondary: rgba(255, 255, 255, 0.7); /* Semi-transparent white */
   --color-border: #334155; /* Slate 700 - Borders */
   --color-border-light: #1e293b; /* Slate 800 - Subtle borders */
-  --color-white: #f1f5f9; /* Slate 100 - near-white for dark mode */
+  --color-white: #ffffff; /* Pure white - consistent across themes */
+  --color-offwhite: #f1f5f9; /* Slate 100 - near-white for dark mode */
   --color-background-primary: #0f172a; /* Dark background alias */
   --color-background-secondary: #1e293b; /* Dark surface alias */
 

@@ -6,7 +6,6 @@
     "lib": ["ES2022"],
     "module": "ESNext",
     "types": ["node"],
-    "jsx": null,
     "paths": {}
   },
   "include": ["netlify/functions/**/*.ts"]

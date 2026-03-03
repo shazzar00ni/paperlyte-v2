@@ -58,8 +58,9 @@ jobs:
         continue-on-error: true
           run: |
           # Full dependency tree audit (prod + dev) at high severity.
-          # Known minimatch < 10.2.1 issue in eslint 9.x cannot be fixed
-          # until eslint-plugin-react-hooks supports eslint 10.
+          # This may report issues in dev tooling dependencies
+          # (for example, ESLint 9.x's transitive minimatch 3.x dependency),
+          # which are tracked separately and do not block CI.
           npm audit --audit-level=high
 
       - name: Generate Lint Summary

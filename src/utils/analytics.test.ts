@@ -323,12 +323,12 @@ describe('Analytics Utility', () => {
       consoleSpy.mockRestore()
     })
 
-    it('should silently return when gtag is not available', () => {
+    it('should log page view in DEV mode when gtag is not available', () => {
       const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
 
       trackPageView('/about', 'About Page')
 
-      expect(consoleSpy).not.toHaveBeenCalled()
+      expect(consoleSpy).toHaveBeenCalledWith('[Analytics] Page View:', '/about', 'About Page')
       consoleSpy.mockRestore()
     })
   })

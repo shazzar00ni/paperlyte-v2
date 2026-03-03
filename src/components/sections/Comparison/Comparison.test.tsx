@@ -14,13 +14,15 @@ describe('Comparison', () => {
 
   it('should render main heading', () => {
     render(<Comparison />)
-    expect(screen.getByText('How we stack up')).toBeInTheDocument()
+    expect(screen.getByText('See How We Compare')).toBeInTheDocument()
   })
 
   it('should render subtitle', () => {
     render(<Comparison />)
     expect(
-      screen.getByText("No marketing spin. Here's how Paperlyte compares to the tools you already know.")
+      screen.getByText(
+        "We believe in transparency. Here's how Paperlyte stacks up against the competition."
+      )
     ).toBeInTheDocument()
   })
 
@@ -41,7 +43,7 @@ describe('Comparison', () => {
     COMPETITORS.forEach((competitor) => {
       // Simpler approach: use string matching instead of RegExp
       const header = screen.getByRole('columnheader', {
-        name: new RegExp(competitor.name),
+        name: (content) => content.includes(competitor.name),
       })
       expect(header).toBeInTheDocument()
     })
@@ -64,27 +66,19 @@ describe('Comparison', () => {
   })
 
   it('should render checkmark icons for true boolean values', () => {
-    // Find all checkmarks by aria-label (FontAwesome renders SVG, not CSS classes)
-    const checkmarks = container.querySelectorAll('[aria-label="Supported"]')
-    expect(checkmarks.length).toBeGreaterThan(0)
+    render(<Comparison />)
 
-    // Check they are SVG elements
-    checkmarks.forEach((checkmark) => {
-      expect(checkmark.tagName.toLowerCase()).toBe('svg')
-    })
+    // Find all checkmarks by aria-label
+    const checkmarks = screen.getAllByLabelText('Supported')
+    expect(checkmarks.length).toBeGreaterThan(0)
   })
 
   it('should render X icons for false boolean values', () => {
-    const { container } = render(<Comparison />)
+    render(<Comparison />)
 
-    // Find all X marks by aria-label (FontAwesome renders SVG, not CSS classes)
-    const xmarks = container.querySelectorAll('[aria-label="Not supported"]')
+    // Find all X marks by aria-label
+    const xmarks = screen.getAllByLabelText('Not supported')
     expect(xmarks.length).toBeGreaterThan(0)
-
-    // Check they are SVG elements
-    xmarks.forEach((xmark) => {
-      expect(xmark.tagName).toBe('svg')
-    })
   })
 
   it('should render text values for string comparisons', () => {

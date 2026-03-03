@@ -148,8 +148,9 @@ export const Icon = ({
       strokeLinejoin="round"
       className={`icon-svg ${className}`}
       style={style}
-       aria-labelledby={ariaLabel ? titleId : undefined}
-      aria-hidden={ariaLabel ? false : true}
+      data-icon={name}
+      aria-labelledby={ariaLabel ? titleId : undefined}
+      aria-hidden={ariaLabel ? ('false' as const) : ('true' as const)}
       {...(ariaLabel && { role: 'img' })}
     >
       {ariaLabel && <title id={titleId}>{ariaLabel}</title>}

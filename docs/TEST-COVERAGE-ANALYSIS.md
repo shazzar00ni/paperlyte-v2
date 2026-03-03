@@ -101,17 +101,18 @@ Many component tests focus exclusively on **render verification** (checking that
 
 ## 4. E2E Test Coverage Gaps
 
-The single E2E file (`tests/e2e/landing-page.spec.ts`) contains 5 tests covering:
-- Hero section loads
-- Features navigation scroll
-- Core Web Vitals (chromium-only, skipped in CI)
-- Mobile menu UI
-- Keyboard navigation flow
+The E2E suite currently consists of:
+- `tests/e2e/landing-page.spec.ts`, which covers:
+  - Hero section loads
+  - Features navigation scroll
+  - Core Web Vitals (chromium-only, skipped in CI)
+  - Mobile menu UI
+  - Keyboard navigation flow
+- `tests/e2e/waitlist-signup.spec.ts`, which covers the email waitlist signup journey (form fill, submit, success state)
 
 ### Missing E2E scenarios
 
 **Critical user journeys not covered:**
-- **Email waitlist signup flow**: Fill form, submit, verify success message (the primary conversion funnel)
 - **FAQ accordion**: Expand/collapse questions
 - **Testimonial carousel**: Navigate between testimonials
 - **Theme toggle**: Switch light/dark mode, verify persistence

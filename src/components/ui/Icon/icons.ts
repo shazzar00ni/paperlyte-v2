@@ -42,6 +42,7 @@ export const iconPaths: Record<string, string> = {
 
   // Buttons (via Button component icon prop)
   'fa-download': 'M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4 M7 10l5 5 5-5 M12 15V3',
+  'fa-arrow-right': 'M5 12h14 M12 5l7 7-7 7',
   'fa-apple':
     'M12 20.94c1.5 0 2.75 1.06 4.5 2.03V21c0-.5-.5-1-.5-1s-1.5-.5-4-.5-4 .5-4 .5-.5.5-.5 1v2c1.75-1 3-2.03 4.5-2.03z M12 12a6.5 6.5 0 0 1-6.5-6.5A6.5 6.5 0 0 1 12 0a6.5 6.5 0 0 1 6.5 6.5A6.5 6.5 0 0 1 12 12z',
   'fa-windows':

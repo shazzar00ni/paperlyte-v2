@@ -147,7 +147,7 @@ async function subscribeToConvertKit(
       "ConvertKit response validation failed:",
       error instanceof Error ? error.message : "Unknown error"
     );
-    throw new Error("Invalid response from email service");
+    throw new Error("Invalid response from email service", { cause: error });
   }
 }
 

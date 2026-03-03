@@ -93,9 +93,7 @@ describe('EmailCapture UI Component', () => {
       const submitButton = screen.getByRole('button', { name: /Join Waitlist/i })
       await user.click(submitButton)
 
-      expect(
-        screen.getByText('Please agree to receive emails from Paperlyte')
-      ).toBeInTheDocument()
+      expect(screen.getByText('Please agree to receive emails from Paperlyte')).toBeInTheDocument()
     })
 
     it('accepts valid email addresses', async () => {

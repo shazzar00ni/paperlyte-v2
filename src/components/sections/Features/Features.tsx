@@ -4,6 +4,18 @@ import { Icon } from '@components/ui/Icon'
 import { FEATURES } from '@constants/features'
 import styles from './Features.module.css'
 
+/**
+ * Features section component that displays the core features of Paperlyte
+ * Renders a grid of feature cards with icons, titles, and descriptions
+ * Uses AnimatedElement for staggered entrance animations
+ *
+ * @returns A section element containing animated feature cards
+ *
+ * @example
+ * ```tsx
+ * <Features />
+ * ```
+ */
 export const Features = (): React.ReactElement => {
   return (
     <Section id="features" background="surface">
@@ -27,7 +39,6 @@ export const Features = (): React.ReactElement => {
                   name={feature.icon}
                   size="2x"
                   color="var(--color-primary)"
-                  ariaLabel={`${feature.title} icon`}
                 />
               </div>
               <h3 className={styles.cardTitle}>{feature.title}</h3>

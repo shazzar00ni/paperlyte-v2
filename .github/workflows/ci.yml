@@ -282,9 +282,15 @@ jobs:
           path: dist/
 
       - name: Install Chrome
+        id: setup-chrome
         uses: browser-actions/setup-chrome@b94431e051d1c52dcbe9a7092a4f10f827795416 # v2.1.0
         with:
           chrome-version: stable
+
+      - name: Start preview server
+        run: |
+          npm run preview -- --host 0.0.0.0 --port 4173 &
+          npx wait-on http://127.0.0.1:4173 --timeout 30000
 
       - name: Run Lighthouse CI
         id: lighthouse
@@ -292,6 +298,7 @@ jobs:
         continue-on-error: true
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+          CHROME_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
 
       - name: Upload Lighthouse results
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
@@ -392,6 +399,7 @@ jobs:
 
     steps:
       - name: Add To GitHub Projects
+        if: ${{ secrets.ADD_TO_PROJECT_PAT != '' }}
         uses: actions/add-to-project@244f685bbc3b7adfa8466e08b698b5577571133e # v1.0.2
         continue-on-error: true
         with:

@@ -85,6 +85,8 @@ describe('Pricing', () => {
 
     const popularBadge = screen.getByLabelText('Most popular')
     expect(popularBadge).toBeInTheDocument()
+    expect(popularBadge.tagName.toLowerCase()).toBe('svg')
+    expect(screen.getByText('Most Popular')).toBeInTheDocument()
   })
 
   it('should render plan icons', () => {
@@ -94,6 +96,7 @@ describe('Pricing', () => {
       if (plan.icon) {
         const icon = screen.getByLabelText(`${plan.name} plan icon`)
         expect(icon).toBeInTheDocument()
+        expect(icon.tagName.toLowerCase()).toBe('svg')
       }
     })
   })
@@ -111,13 +114,16 @@ describe('Pricing', () => {
   it('should render checkmark icons for all features', () => {
     render(<Pricing />)
 
+    const checkmarks = screen.getAllByLabelText('Included')
+
     // Count total features across all plans
     const totalFeatures = PRICING_PLANS.reduce((sum, plan) => sum + plan.features.length, 0)
 
-    // Find all checkmark icons by aria-label
-    const checkmarks = screen.getAllByLabelText('Included')
-
     expect(checkmarks.length).toBe(totalFeatures)
+
+    checkmarks.forEach((checkmark) => {
+      expect(checkmark.tagName.toLowerCase()).toBe('svg')
+    })
   })
 
   it('should render CTA buttons for all plans', () => {
@@ -141,6 +147,7 @@ describe('Pricing', () => {
 
     const shieldIcon = screen.getByLabelText('Guarantee')
     expect(shieldIcon).toBeInTheDocument()
+    expect(shieldIcon.tagName.toLowerCase()).toBe('svg')
   })
 
   it('should use semantic article elements for pricing cards', () => {

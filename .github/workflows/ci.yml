@@ -294,7 +294,9 @@ jobs:
 
       - name: Run Lighthouse CI
         id: lighthouse
-        run: npx @lhci/cli@0.15.1 autorun --config=./.lighthouserc.json
+        # Server is already running (started above), so override startServerCommand to
+        # prevent LHCI from launching a second instance on the same port.
+        run: npx @lhci/cli@0.15.1 autorun --config=./.lighthouserc.json --collect.startServerCommand=""
         continue-on-error: true
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
@@ -391,7 +393,7 @@ jobs:
   add-to-project:
     name: Add To GitHub Projects
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' && secrets.ADD_TO_PROJECT_PAT != ''
     permissions:
       contents: read
       issues: write
@@ -399,7 +401,6 @@ jobs:
 
     steps:
       - name: Add To GitHub Projects
-        if: ${{ secrets.ADD_TO_PROJECT_PAT != '' }}
         uses: actions/add-to-project@244f685bbc3b7adfa8466e08b698b5577571133e # v1.0.2
         continue-on-error: true
         with:

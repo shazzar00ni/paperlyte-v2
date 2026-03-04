@@ -140,15 +140,17 @@ async function subscribeToConvertKit(
   }
 
   // Validate response structure using Zod schema
-  try {
-    return ConvertKitResponseSchema.parse(data);
-  } catch (error) {
-    console.error(
-      "ConvertKit response validation failed:",
-      error instanceof Error ? error.message : "Unknown error"
-    );
-    throw new Error("Invalid response from email service", { cause: error });
+  // Use safeParse to avoid catch-and-rethrow — the raw ZodError's `received`
+  // fields may contain subscriber PII (email, name) from the API response.
+  const result = ConvertKitResponseSchema.safeParse(data);
+  if (!result.success) {
+    const detail = `Schema validation failed: ${result.error.issues.map((i) => `${i.path.join(".")}: ${i.code}`).join(", ")}`;
+    console.error("ConvertKit response validation failed:", detail);
+    throw new Error(`Invalid response from email service: ${detail}`, {
+      cause: new Error(detail),
+    });
   }
+  return result.data;
 }
 
 /**

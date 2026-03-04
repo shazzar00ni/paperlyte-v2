@@ -1,0 +1,65 @@
+name: Update PR #539 Description (one-shot)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  update-pr-description:
+    name: Update PR #539 Description
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Update PR description
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const body = `## Summary
+
+- Exclude lock files (\`package-lock.json\`, \`yarn.lock\`, \`pnpm-lock.yaml\`) from Codacy's Lizard engine NLOC analysis, which was reporting noise on machine-generated files
+- Fix Lighthouse CI failures caused by \`lighthouse:recommended\` preset assertions that can never pass against a local HTTP/1.1 Vite preview server
+
+## Changes
+
+### \`.codacy.yml\` — exclude lock files from Codacy/Lizard
+
+Lock files are machine-generated and have no meaningful lines-of-code metric. Lizard was flagging them for high NLOC, producing noise in Codacy reports. This change excludes them from:
+- The Lizard engine file list
+- The \`Lizard_file-nloc-medium\` and \`Lizard_file-nloc-high\` pattern overrides
+- The global \`exclude_paths\` list
+
+### \`.lighthouserc.json\` — fix Lighthouse CI assertion failures
+
+The \`lighthouse:recommended\` preset sets several assertions to \`error\` that test server/deployment concerns which cannot pass against a local Vite preview server (HTTP/1.1, no security headers):
+
+| Assertion | Change | Reason |
+|---|---|---|
+| \`uses-http2\` | \`error\` → \`off\` | Vite preview is HTTP/1.1; Vercel CDN provides HTTP/2 in production |
+| \`has-hsts\` | \`error\` → \`off\` | Requires HTTPS; only applicable in production |
+| \`redirects-http\` | \`error\` → \`off\` | HTTP→HTTPS redirect requires a live HTTPS deployment |
+| \`modern-http-insight\` | \`error\` → \`off\` | HTTP/2 insight; same constraint as \`uses-http2\` |
+| \`valid-source-maps\` | \`error\` → \`off\` | Production builds intentionally omit source maps |
+| \`csp-xss\` | \`error\` → \`warn\` | CSP is deployed via \`vercel.json\` headers in production |
+| \`clickjacking-mitigation\` | \`error\` → \`warn\` | \`X-Frame-Options: DENY\` set in \`vercel.json\` in production |
+| \`origin-isolation\` | \`error\` → \`warn\` | COOP/COEP not configured (performance cost too high for a landing page) |
+| \`bf-cache\` | \`error\` → \`warn\` | Can be flaky in CI environments |
+| \`third-party-cookies\` | \`error\` → \`warn\` | Vercel Analytics — acceptable for this use case |
+
+## Test plan
+
+- [ ] CI Lighthouse job passes (no more \`error\`-level assertion failures from local-only constraints)
+- [ ] Codacy no longer reports NLOC noise on lock files
+- [ ] All other CI jobs remain green`;
+
+            await github.rest.pulls.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: 539,
+              body: body,
+            });
+
+            core.info('PR #539 description updated successfully.');

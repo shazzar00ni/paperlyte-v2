@@ -64,6 +64,9 @@ describe('EmailCapture Section', () => {
     await user.type(emailInput, 'test@example.com')
     await user.click(submitButton)
 
+    expect(mockSubmit).toHaveBeenCalledTimes(1)
+    expect(mockSubmit).toHaveBeenCalledWith('test@example.com')
+
     await waitFor(() => {
       expect(screen.getByText(/Failed to join waitlist/)).toBeInTheDocument()
       expect(screen.getByRole('alert')).toBeInTheDocument()

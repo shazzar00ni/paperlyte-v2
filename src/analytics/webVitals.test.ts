@@ -6,22 +6,47 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { initWebVitals } from './webVitals'
 import type { CoreWebVitals } from './types'
 
+/**
+ * Creates a mock PerformanceObserver that tracks instantiated observers.
+ * Returns the observerInstances array and installs the mock on global.
+ * Call teardown() to restore the original global.PerformanceObserver.
+ */
+function createMockPerformanceObserver() {
+  const original = global.PerformanceObserver
+  const observerInstances: Array<{
+    callback: PerformanceObserverCallback
+    observe: ReturnType<typeof vi.fn>
+    disconnect: ReturnType<typeof vi.fn>
+  }> = []
+
+  global.PerformanceObserver = class {
+    callback: PerformanceObserverCallback
+    observe: ReturnType<typeof vi.fn>
+    constructor(callback: PerformanceObserverCallback) {
+      this.callback = callback
+      this.observe = vi.fn()
+      observerInstances.push(this as (typeof observerInstances)[number])
+    }
+    disconnect = vi.fn()
+    takeRecords = vi.fn(() => [])
+  } as unknown as typeof PerformanceObserver
+
+  return {
+    observerInstances,
+    teardown: () => {
+      global.PerformanceObserver = original
+    },
+  }
+}
+
 describe('analytics/webVitals', () => {
   let onReport: ReturnType<typeof vi.fn<[CoreWebVitals], void>>
 
   beforeEach(() => {
     onReport = vi.fn()
 
-    // Mock PerformanceObserver as a class
-    global.PerformanceObserver = class {
-      callback: PerformanceObserverCallback
-      constructor(callback: PerformanceObserverCallback) {
-        this.callback = callback
-      }
-      observe = vi.fn()
-      disconnect = vi.fn()
-      takeRecords = vi.fn(() => [])
-    } as unknown as typeof PerformanceObserver
+    // Install a basic PerformanceObserver mock (no instance tracking needed for most tests)
+    createMockPerformanceObserver()
 
     // Mock performance API
     Object.defineProperty(window, 'performance', {
@@ -266,23 +291,7 @@ describe('analytics/webVitals', () => {
 
   describe('metric ratings', () => {
     it('should rate LCP as good/needs-improvement/poor based on thresholds', () => {
-      // Mock PerformanceObserver to emit LCP with different values
-      const observerInstances: Array<{
-        callback: PerformanceObserverCallback
-        observe: ReturnType<typeof vi.fn>
-      }> = []
-
-      global.PerformanceObserver = class {
-        callback: PerformanceObserverCallback
-        observe: ReturnType<typeof vi.fn>
-        constructor(callback: PerformanceObserverCallback) {
-          this.callback = callback
-          this.observe = vi.fn()
-          observerInstances.push(this)
-        }
-        disconnect = vi.fn()
-        takeRecords = vi.fn(() => [])
-      } as unknown as typeof PerformanceObserver
+      const { observerInstances } = createMockPerformanceObserver()
 
       const cleanup = initWebVitals(onReport)
 
@@ -316,23 +325,7 @@ describe('analytics/webVitals', () => {
     })
 
     it('should rate CLS as good/needs-improvement/poor based on thresholds', () => {
-      // Mock PerformanceObserver to emit CLS with different values
-      const observerInstances: Array<{
-        callback: PerformanceObserverCallback
-        observe: ReturnType<typeof vi.fn>
-      }> = []
-
-      global.PerformanceObserver = class {
-        callback: PerformanceObserverCallback
-        observe: ReturnType<typeof vi.fn>
-        constructor(callback: PerformanceObserverCallback) {
-          this.callback = callback
-          this.observe = vi.fn()
-          observerInstances.push(this)
-        }
-        disconnect = vi.fn()
-        takeRecords = vi.fn(() => [])
-      } as unknown as typeof PerformanceObserver
+      const { observerInstances } = createMockPerformanceObserver()
 
       const cleanup = initWebVitals(onReport)
 
@@ -383,22 +376,7 @@ describe('analytics/webVitals', () => {
     it('should track INP from event observer callbacks and finalize with max for few interactions', () => {
       vi.useFakeTimers()
 
-      const observerInstances: Array<{
-        callback: PerformanceObserverCallback
-        observe: ReturnType<typeof vi.fn>
-      }> = []
-
-      global.PerformanceObserver = class {
-        callback: PerformanceObserverCallback
-        observe: ReturnType<typeof vi.fn>
-        constructor(callback: PerformanceObserverCallback) {
-          this.callback = callback
-          this.observe = vi.fn()
-          observerInstances.push(this)
-        }
-        disconnect = vi.fn()
-        takeRecords = vi.fn(() => [])
-      } as unknown as typeof PerformanceObserver
+      const { observerInstances } = createMockPerformanceObserver()
 
       const cleanup = initWebVitals(onReport)
 
@@ -441,22 +419,7 @@ describe('analytics/webVitals', () => {
     it('should use 98th percentile for many interactions (>10)', () => {
       vi.useFakeTimers()
 
-      const observerInstances: Array<{
-        callback: PerformanceObserverCallback
-        observe: ReturnType<typeof vi.fn>
-      }> = []
-
-      global.PerformanceObserver = class {
-        callback: PerformanceObserverCallback
-        observe: ReturnType<typeof vi.fn>
-        constructor(callback: PerformanceObserverCallback) {
-          this.callback = callback
-          this.observe = vi.fn()
-          observerInstances.push(this)
-        }
-        disconnect = vi.fn()
-        takeRecords = vi.fn(() => [])
-      } as unknown as typeof PerformanceObserver
+      const { observerInstances } = createMockPerformanceObserver()
 
       const cleanup = initWebVitals(onReport)
 

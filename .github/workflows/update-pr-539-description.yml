@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - 'claude/eslint-10-upgrade-issue-Bg8XP'
-    paths:
-      - '.github/workflows/update-pr-539-description.yml'
 
 permissions:
   contents: write

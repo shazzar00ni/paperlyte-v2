@@ -23,9 +23,6 @@ describe('Web Vitals Tracking', () => {
     onReportCallback = vi.fn()
 
     // Mock performance API
-    if (!global.performance) {
-      global.performance = {} as Performance
-    }
     global.performance.getEntriesByType = vi.fn(() => [])
 
     vi.useFakeTimers()

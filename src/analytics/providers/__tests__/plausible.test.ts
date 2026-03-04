@@ -75,7 +75,7 @@ describe('Plausible Provider', () => {
       provider.init(config)
 
       const script = document.querySelector('script[data-domain]') as HTMLScriptElement
-      expect(script?.async).toBe(true)
+      expect(script.async).toBe(true)
     })
 
     it('should not initialize twice', () => {
@@ -547,7 +547,7 @@ describe('Plausible Provider', () => {
       expect(script).toBeTruthy()
 
       // Simulate script load
-      script?.dispatchEvent(new Event('load'))
+      script.dispatchEvent(new Event('load'))
 
       // Provider should be ready (scriptLoaded = true)
       // We can't directly test this without exposing private state
@@ -565,7 +565,7 @@ describe('Plausible Provider', () => {
       const script = document.querySelector('script[data-domain]') as HTMLScriptElement
 
       // Simulate script error
-      script?.dispatchEvent(new Event('error'))
+      script.dispatchEvent(new Event('error'))
 
       // Provider should handle the error gracefully
       expect(provider.isEnabled()).toBe(false)

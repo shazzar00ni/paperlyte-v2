@@ -125,7 +125,9 @@ describe('Analytics Singleton', () => {
         domain: 'test.example.com',
       })
 
-      expect(() => analytics.init(config)).toThrow(/not yet implemented/)
+      expect(() => {
+        analytics.init(config)
+      }).toThrow(/not yet implemented/)
     })
 
     it('should fallback to Plausible for unknown providers', () => {
@@ -181,7 +183,7 @@ describe('Analytics Singleton', () => {
       analytics.init(config)
 
       // Get the callback
-      const callback = (global as { webVitalsCallback?: (vitals: unknown) => void })
+      const callback = (global as { webVitalsCallback?: (_: unknown) => void })
         .webVitalsCallback
 
       expect(callback).toBeDefined()
@@ -236,7 +238,7 @@ describe('Analytics Singleton', () => {
       analytics.init(config)
 
       // Get the callback
-      const callback = (global as { scrollDepthCallback?: (depth: number) => void })
+      const callback = (global as { scrollDepthCallback?: (_: number) => void })
         .scrollDepthCallback
 
       expect(callback).toBeDefined()
@@ -453,7 +455,9 @@ describe('Analytics Singleton', () => {
     })
 
     it('should handle disable when not initialized', () => {
-      expect(() => analytics.disable()).not.toThrow()
+      expect(() => {
+        analytics.disable()
+      }).not.toThrow()
       expect(analytics.isEnabled()).toBe(false)
     })
   })

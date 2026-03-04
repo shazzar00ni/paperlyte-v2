@@ -2,6 +2,56 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-03-04
+
+### Ready for Merge
+
+- **PR: `origin/claude/fix-workflow-e2e-tests-xHhZw`**
+  - **Status:** Approved
+  - **Summary:** Fixes CI stability and E2E scroll detection issues.
+  - **Verification:** Verified that the unit test suite passes (1350/1350 tests).
+  - **Feedback:** Highly recommended for immediate merge to stabilize CI.
+
+- **PR: `origin/claude/fix-code-style-cWDI4`**
+  - **Status:** Approved
+  - **Summary:** Fixes Icon lookup logic to handle Font Awesome prefixes correctly and standardizes code style.
+  - **Verification:** Confirmed the fix in `src/components/ui/Icon/Icon.tsx` correctly addresses the fallback issue. This PR specifically resolves 4 test failures currently present on `main` related to Icon rendering in `ServerErrorPage`, `Features`, and `Mobile` sections.
+  - **Feedback:** Critical maintenance PR; recommended for immediate merge to restore test suite health.
+
+- **PR: `origin/claude/analyze-test-coverage-9JQZb`**
+  - **Status:** Approved
+  - **Summary:** Significant improvement to test coverage, including axe-core accessibility tests and Playwright E2E signup flows.
+  - **Feedback:** Excellent addition to the safety net. Minor regression found (removal of JSDoc in `Hero.tsx`), but the value of the tests outweighs this.
+
+### Blocked by Systemic Regressions
+
+- **PR: `origin/claude/implement-todo-item-2H9LP` (Fathom Analytics)**
+  - **Status:** Changes Requested
+  - **Summary:** Implementation of Fathom Analytics provider.
+  - **Regressions:** Identified systemic and severe regressions:
+    - Accidental deletion of core documentation: `docs/ROADMAP.md`, `gitVersionControl.md`, `review.md`.
+    - Deletion of `.npmrc` (crucial for peer dependency stability).
+    - Removal of critical security logic in `src/utils/navigation.ts` (reverting `hasDangerousProtocol` and `isRelativeUrl` helpers).
+    - Deletion of the productivity stat badge in the Hero section.
+  - **Action:** DO NOT MERGE until these regressions are reverted.
+
+- **PR: `origin/copilot/sub-pr-503`**
+  - **Status:** Changes Requested
+  - **Summary:** ESLint 9 pinning.
+  - **Regressions:** Mirrors the same systemic regressions as the Fathom PR (deletions of docs, `.npmrc`, and security reverts).
+  - **Action:** Close in favor of a clean fix or address regressions.
+
+- **PR: `origin/claude/fix-coverage-requirements-QtFtS`**
+  - **Status:** Changes Requested
+  - **Summary:** Coverage requirement adjustments.
+  - **Regressions:** Incorrectly attempts to upgrade ESLint to v10 (pinned to v9) and removes diagnostic `console.log` statements required by existing unit tests.
+
+### Redundant Summary PRs
+
+- **Action:** Recommend closing all PRs that only update `PR_REVIEW_SUMMARY.md` (#435, #434, #433, #432, #431, #385, #383) to reduce noise.
+
+---
+
 ## 2026-02-08
 
 ### PR #427: Configure Claude Code GitHub Action

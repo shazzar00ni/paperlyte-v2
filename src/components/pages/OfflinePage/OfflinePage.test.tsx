@@ -137,7 +137,8 @@ describe('OfflinePage', () => {
       })
 
       // Clean up: resolve the fetch to allow the click handler to complete
-      resolveFetch?.()
+      expect(resolveFetch).toBeDefined()
+      resolveFetch!()
       await clickPromise
     })
 

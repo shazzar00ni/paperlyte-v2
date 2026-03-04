@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { describe, it, expect, vi } from 'vitest'
+import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { EmailCapture } from './EmailCapture'
 import { WAITLIST_COUNT } from '@/constants/waitlist'
@@ -50,5 +50,28 @@ describe('EmailCapture Section', () => {
     render(<EmailCapture />)
     const emailInput = screen.getByPlaceholderText('your@email.com') as HTMLInputElement
     expect(emailInput.required).toBe(true)
+  })
+
+  it('shows error message when API call fails', async () => {
+    render(<EmailCapture />)
+
+    const emailInput = screen.getByPlaceholderText('your@email.com')
+    fireEvent.change(emailInput, { target: { value: 'test@example.com' } })
+
+    // Mock setTimeout to throw AFTER user input is set, so it only affects the API call
+    const originalSetTimeout = globalThis.setTimeout
+    vi.spyOn(globalThis, 'setTimeout').mockImplementationOnce(() => {
+      throw new Error('Network error')
+    })
+
+    const form = emailInput.closest('form')!
+    fireEvent.submit(form)
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toHaveTextContent('Failed to join waitlist. Please try again.')
+    })
+
+    globalThis.setTimeout = originalSetTimeout
+    vi.restoreAllMocks()
   })
 })

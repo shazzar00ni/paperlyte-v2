@@ -377,6 +377,66 @@ describe('analytics/webVitals', () => {
 
       cleanup()
     })
+
+    it('should handle layout shift entries with value of 0 using nullish coalescing', () => {
+      const observerInstances: Array<{
+        callback: PerformanceObserverCallback
+        observe: ReturnType<typeof vi.fn>
+      }> = []
+
+      global.PerformanceObserver = class {
+        callback: PerformanceObserverCallback
+        observe: ReturnType<typeof vi.fn>
+        constructor(callback: PerformanceObserverCallback) {
+          this.callback = callback
+          this.observe = vi.fn()
+          observerInstances.push(this)
+        }
+        disconnect = vi.fn()
+        takeRecords = vi.fn(() => [])
+      } as unknown as typeof PerformanceObserver
+
+      const cleanup = initWebVitals(onReport)
+
+      const clsObserver = observerInstances.find((obs) => {
+        const observeCall = obs.observe.mock.calls[0]
+        return observeCall && observeCall[0].type === 'layout-shift'
+      })
+
+      if (!clsObserver) {
+        throw new Error('CLS observer not found')
+      }
+
+      // Emit layout shift with value 0 (would be dropped by || but preserved by ??)
+      clsObserver.callback(
+        {
+          getEntries: () => [{ hadRecentInput: false, value: 0 }],
+        } as PerformanceObserverEntryList,
+        clsObserver as PerformanceObserver
+      )
+
+      // Emit another shift with a real value
+      clsObserver.callback(
+        {
+          getEntries: () => [{ hadRecentInput: false, value: 0.05 }],
+        } as PerformanceObserverEntryList,
+        clsObserver as PerformanceObserver
+      )
+
+      // Finalize
+      Object.defineProperty(document, 'visibilityState', {
+        writable: true,
+        configurable: true,
+        value: 'hidden',
+      })
+      document.dispatchEvent(new Event('visibilitychange'))
+
+      // CLS should be 0 + 0.05 = 0.05 (value: 0 preserved, not replaced)
+      const reportedVitals = onReport.mock.calls[0][0]
+      expect(reportedVitals.CLS).toBeCloseTo(0.05, 2)
+
+      cleanup()
+    })
   })
 
   describe('error handling', () => {

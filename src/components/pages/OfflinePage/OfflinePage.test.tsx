@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { OfflinePage } from './OfflinePage'
 
@@ -395,6 +395,29 @@ describe('OfflinePage', () => {
 
       expect(removeEventListenerSpy).toHaveBeenCalledWith('online', expect.any(Function))
       expect(removeEventListenerSpy).toHaveBeenCalledWith('offline', expect.any(Function))
+    })
+  })
+
+  describe('Retry Timeout', () => {
+    it('should abort fetch after 5 second timeout', async () => {
+      vi.useFakeTimers()
+
+      const abortSpy = vi.spyOn(AbortController.prototype, 'abort')
+
+      // Mock fetch to never resolve (simulates a hanging request)
+      global.fetch = vi.fn(() => new Promise(() => {}))
+
+      render(<OfflinePage />)
+
+      const retryButton = screen.getByRole('button', { name: /check connection and retry/i })
+      fireEvent.click(retryButton)
+
+      // Advance past the 5 second timeout
+      vi.advanceTimersByTime(5000)
+
+      expect(abortSpy).toHaveBeenCalled()
+
+      vi.useRealTimers()
     })
   })
 })

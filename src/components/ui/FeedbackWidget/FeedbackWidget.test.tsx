@@ -559,5 +559,27 @@ describe('FeedbackWidget', () => {
 
       expect(featureButton).toHaveFocus()
     })
+
+    it('should clean up keyboard event listener on unmount', async () => {
+      const user = userEvent.setup()
+      const { unmount } = render(<FeedbackWidget />)
+
+      // Open modal so the keyboard navigation effect runs
+      const openButton = screen.getByRole('button', { name: /open feedback form/i })
+      await user.click(openButton)
+
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+      })
+
+      const typeSelector = document.querySelector('fieldset')
+      expect(typeSelector).toBeInTheDocument()
+
+      const removeEventListenerSpy = vi.spyOn(typeSelector!, 'removeEventListener')
+
+      unmount()
+
+      expect(removeEventListenerSpy).toHaveBeenCalledWith('keydown', expect.any(Function))
+    })
   })
 })

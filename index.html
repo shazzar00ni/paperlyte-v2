@@ -55,6 +55,10 @@
     <!-- Canonical URL -->
     <link rel="canonical" href="https://paperlyte.app/" />
 
+    <!-- Preload critical fonts to break CSS→font dependency chain -->
+    <link rel="preload" href="/fonts/Inter-Variable.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/PlayfairDisplay-Variable.woff2" as="font" type="font/woff2" crossorigin />
+
     <!-- Preload critical above-the-fold image for better LCP -->
     <link rel="preload" as="image" type="image/avif" href="/mockups/notes-list.avif" fetchpriority="high" />
 

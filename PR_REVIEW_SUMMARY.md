@@ -32,7 +32,7 @@ This file contains a summary of pull requests I have reviewed.
 
 - **Status:** Changes Requested (updated from Approved on 2026-02-08)
 - **Summary:** Adds a GitHub Actions workflow for Claude Code integration.
-- **Feedback:** The workflow still contains duplicate `permissions` keys and multiple `if` conditions on the same job, which is invalid YAML (only the last one will be evaluated). These must be consolidated.
+- **Feedback:** The workflow still contains duplicate `permissions` keys and multiple `if` conditions on the same job, which is invalid YAML (only the last one will be evaluated). These must be consolidated. Note: This PR was previously recorded as Approved on 2026-02-08, but subsequent commits reintroduced these workflow issues, so the status has been updated back to Changes Requested.
 
 ### PR #279: feat: Implement React Router and legal pages with dark footer
 

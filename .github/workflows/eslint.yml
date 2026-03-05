@@ -6,16 +6,19 @@
 # found in ECMAScript/JavaScript code.
 # More details at https://github.com/eslint/eslint
 # and https://eslint.org
+#
+# Security note: This workflow intentionally uses the 'pull_request' event
+# (not 'pull_request_target') so it runs with minimal permissions and can
+# safely check out untrusted PR code.  SARIF upload to GHAS is handled by the
+# companion 'ESLint Upload' workflow (eslint-upload.yml) which runs via
+# 'workflow_run' in the privileged base-branch context without touching PR code.
 
 name: ESLint
 
 on:
   push:
     branches: [ "main" ]
-  pull_request_target:
-    # pull_request_target runs in the base-branch context so it does not require
-    # manual approval for PRs from bots or outside contributors, ensuring GHAS
-    # always receives a SARIF upload for every PR targeting main.
+  pull_request:
     branches: [ "main" ]
   schedule:
     - cron: '21 15 * * 2'
@@ -26,18 +29,12 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      security-events: write
-      actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
+      # security-events: write is intentionally absent here.
+      # SARIF upload happens in the companion eslint-upload.yml workflow so
+      # that untrusted PR code never runs in a privileged context.
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
-        with:
-          # For pull_request_target events the default ref is the base branch (main).
-          # Explicitly check out the PR head so ESLint scans the incoming changes.
-          # For push/schedule events github.event.pull_request.head.sha is empty,
-          # causing checkout to fall back to the default ref automatically.
-          ref: ${{ github.event.pull_request.head.sha }}
-          persist-credentials: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -88,13 +85,16 @@ jobs:
           EOF
           fi
 
-      - name: Upload analysis results to GitHub
-        uses: github/codeql-action/upload-sarif@89a39a4e59826350b863aa6b6252a07ad50cf83e # v4.32.4
+      - name: Upload SARIF as workflow artifact
+        # The SARIF file is uploaded as a workflow artifact so the companion
+        # eslint-upload.yml workflow can pick it up and push it to GHAS without
+        # running any PR code in a privileged context.
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         if: always()
         with:
-          sarif_file: eslint-results.sarif
-          category: eslint
-          wait-for-processing: true
+          name: eslint-sarif
+          path: eslint-results.sarif
+          retention-days: 7
 
       - name: ESLint Summary
         if: always()
@@ -112,5 +112,5 @@ jobs:
           
           if [ -f "eslint-results.sarif" ]; then
             echo "" >> $GITHUB_STEP_SUMMARY
-            echo "📄 SARIF results uploaded to GitHub Code Scanning." >> $GITHUB_STEP_SUMMARY
+            echo "📄 SARIF artifact uploaded for GHAS ingestion by eslint-upload.yml." >> $GITHUB_STEP_SUMMARY
           fi

@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { findIconDefinition } from '@fortawesome/fontawesome-svg-core'
 import type { IconName, IconPrefix } from '@fortawesome/fontawesome-svg-core'
 import { iconPaths, getIconViewBox } from './icons'
-import { safePropertyAccess } from '../../../utils/security'
+import { safePropertyAccess, isSafePropertyKey } from '../../../utils/security'
 import './Icon.css'
 
 interface IconProps {
@@ -63,10 +63,22 @@ export const Icon = ({
     const prefix: IconPrefix = variant === 'brands' ? 'fab' : variant === 'regular' ? 'far' : 'fas'
 
     // Remove 'fa-' prefix if present and convert to FontAwesome icon name format
-    const iconName = name.replace(/^fa-/, '') as IconName
+    const iconName = name.replace(/^fa-/, '')
+
+    // Security: Check if iconName is a safe property key before accessing the library
+    if (!isSafePropertyKey(iconName)) {
+      console.warn(`Icon "${name}" contains potentially unsafe characters`)
+      return (
+        <span className={`icon-fallback ${className}`} title={`Invalid icon name`}>
+          ?
+        </span>
+      )
+    }
+
+    const castIconName = iconName as IconName
 
     // Try to find the icon definition in the library
-    const iconDefinition = findIconDefinition({ prefix, iconName })
+    const iconDefinition = findIconDefinition({ prefix, iconName: castIconName })
 
     const commonIconProps = {
       className: `icon-fallback ${className}`,

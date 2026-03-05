@@ -32,18 +32,20 @@ This file contains a summary of pull requests I have reviewed.
 
 - **Status:** Changes Requested (updated from Approved on 2026-02-08)
 - **Summary:** Adds a GitHub Actions workflow for Claude Code integration.
-- **Feedback:** The workflow still contains duplicate `permissions` keys and multiple `if` conditions on the same job, which is invalid YAML (only the last one will be evaluated). These must be consolidated. Note: This PR was previously recorded as Approved on 2026-02-08, but subsequent commits reintroduced these workflow issues, so the status has been updated back to Changes Requested.
+- **Feedback:** The workflow still contains duplicate `permissions` keys and multiple `if` conditions on the same job, which is invalid YAML (only the last one will be evaluated). These must be consolidated.
 
 ### PR #279: feat: Implement React Router and legal pages with dark footer
 
 - **Status:** Changes Requested
-- **Notes (2026-02-13):** See detailed review under **2026-02-08** section for full summary and feedback; no material changes since that review.
-
+- **Summary:** Introduces client-side routing and legal pages.
+- **Feedback:** Critical security regression found in `vercel.json`: the Content Security Policy has been weakened by adding `'unsafe-inline'` to `script-src` and `style-src`. Additionally, Vercel Analytics domains were removed from the CSP. These must be restored to maintain security and analytics functionality.
 
 ### PR #275: Implement P0-CRITICAL hero section conversion optimization
 
 - **Status:** Under Review
-- **Notes (2026-02-13):** See detailed review under **2026-02-06** section for full summary and feedback; no material changes since that review.
+- **Summary:** Updates the hero section headline and optimizes various components for conversion.
+- **Feedback:** While the security-critical regressions from previous versions have been removed, the PR title remains misleading as much of the content is now focused on linting and minor component updates. Recommend a fresh, accurately titled PR or a complete rebase.
+
 ### Documentation & CI Improvements
 
 A series of updates aimed at enhancing project maintainability and developer experience were reviewed and Approved:

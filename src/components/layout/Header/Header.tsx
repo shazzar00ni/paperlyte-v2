@@ -9,6 +9,23 @@ import {
 } from '@utils/keyboard'
 import styles from './Header.module.css'
 
+/**
+ * Main navigation header component with responsive mobile menu
+ * Features smooth scrolling to sections, keyboard navigation, focus trap, and theme toggle
+ * Implements ARIA best practices for accessible navigation and menu behavior
+ *
+ * @returns Header element with navigation, logo, and theme toggle
+ *
+ * @example
+ * ```tsx
+ * // In your App or layout component
+ * <Header />
+ * <main>
+ *   <section id="features">Features</section>
+ *   <section id="pricing">Pricing</section>
+ * </main>
+ * ```
+ */
 export const Header = (): React.ReactElement => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const menuButtonRef = useRef<HTMLButtonElement>(null)

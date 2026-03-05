@@ -23,4 +23,4 @@
  * // Creates regex that matches literal string "What is $100?" instead of treating $ as special
  * ```
  */
-export { escapeRegExp } from '@/utils/validation'
+export { escapeRegExp } from '@utils/validation'

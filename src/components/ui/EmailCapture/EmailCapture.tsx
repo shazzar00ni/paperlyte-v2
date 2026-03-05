@@ -54,7 +54,7 @@ export const EmailCapture = ({
     const { isValid, error: validationError } = validateEmail(email)
     if (!isValid) {
       setStatus('error')
-      setErrorMessage(validationError || 'Please enter a valid email address')
+      setErrorMessage(validationError ?? 'Please enter a valid email address')
       return
     }
 

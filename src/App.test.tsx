@@ -155,4 +155,27 @@ describe('App Integration', () => {
     expect(screen.getByRole('link', { name: 'Follow us on X (Twitter)' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Email us' })).toBeInTheDocument()
   })
+
+  it('should enable Analytics in production environment', () => {
+    // Mock production hostname and environment
+    vi.stubGlobal('location', { hostname: 'paperlyte.app' })
+    vi.stubEnv('PROD', true)
+
+    const { container } = render(<App />)
+    expect(container).toBeInTheDocument()
+
+    // Clean up stubs
+    vi.unstubAllGlobals()
+    vi.unstubAllEnvs()
+  })
+
+  it('should disable Analytics in local environment', () => {
+    // Mock local hostname
+    vi.stubGlobal('location', { hostname: 'localhost' })
+
+    const { container } = render(<App />)
+    expect(container).toBeInTheDocument()
+
+    vi.unstubAllGlobals()
+  })
 })

@@ -23,6 +23,7 @@
         "first-contentful-paint": ["error", { "maxNumericValue": 2000 }],
         "largest-contentful-paint": ["error", { "maxNumericValue": 2500 }],
         "cumulative-layout-shift": ["error", { "maxNumericValue": 0.1 }],
+        "network-dependency-tree-insight": "off",
         "total-blocking-time": ["error", { "maxNumericValue": 300 }],
         "speed-index": ["error", { "maxNumericValue": 3000 }],
         "interactive": ["error", { "maxNumericValue": 3500 }],

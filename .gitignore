@@ -45,3 +45,5 @@ public/favicon.ico
 # Deployment platforms
 .netlify
 .vercel
+
+.lighthouseci/

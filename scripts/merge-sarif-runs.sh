@@ -101,20 +101,25 @@ if ! jq '
     # Contains all findings/alerts from the analysis
     # -------------------------------------------------------------------------
     # RESULTS: Flatten all results and deduplicate by unique location key
-    # Deduplication key = ruleId + fileURI + startLine + startColumn + endLine
+    # Deduplication key = [ruleId, fileURI, startLine, startColumn, endLine]
+    #
+    # Using an array key avoids string-concatenation collisions where different
+    # field combinations could produce the same joined string (e.g. ruleId="ab",
+    # uri="c1" vs ruleId="abc", uri="1"). Arrays are compared element-by-element
+    # by jq, so each field remains distinct.
     #
     # Defensive null handling at each level:
     # - .locations // []: Default to empty array if no locations
     # - [0] // {}: Default to empty object if array is empty
     # - .physicalLocation // {}: Default if no physical location
     # - .region.* // 0: Default line/column numbers to 0
-    results: [.runs[].results // [] | .[]] | unique_by(
-      (.ruleId // "") +
-      (((((.locations // [])[0] // {}).physicalLocation // {}).artifactLocation // {}).uri // "") +
-      (((((.locations // [])[0] // {}).physicalLocation // {}).region // {}).startLine // 0 | tostring) +
-      (((((.locations // [])[0] // {}).physicalLocation // {}).region // {}).startColumn // 0 | tostring) +
-      (((((.locations // [])[0] // {}).physicalLocation // {}).region // {}).endLine // 0 | tostring)
-    ),
+    results: [.runs[].results // [] | .[]] | unique_by([
+      (.ruleId // ""),
+      (((((.locations // [])[0] // {}).physicalLocation // {}).artifactLocation // {}).uri // ""),
+      (((((.locations // [])[0] // {}).physicalLocation // {}).region // {}).startLine // 0),
+      (((((.locations // [])[0] // {}).physicalLocation // {}).region // {}).startColumn // 0),
+      (((((.locations // [])[0] // {}).physicalLocation // {}).region // {}).endLine // 0)
+    ]),
 
     # -------------------------------------------------------------------------
     # ADDITIONAL SARIF PROPERTIES

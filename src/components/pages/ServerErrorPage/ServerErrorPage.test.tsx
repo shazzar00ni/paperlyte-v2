@@ -229,39 +229,35 @@ describe('ServerErrorPage', () => {
 
   describe('Icon Integration', () => {
     it('should render server icon in illustration', () => {
-      render(<ServerErrorPage />)
+      const { container } = render(<ServerErrorPage />)
 
-      const main = screen.getByRole('main')
-      const serverIcon = main.querySelector('svg')
-      expect(serverIcon).toBeInTheDocument()
+      // Icon is decorative (inside aria-hidden), so we verify it exists via DOM query
+      const illustration = container.querySelector('[aria-hidden="true"]')
+      expect(illustration).toBeInTheDocument()
+      expect(illustration?.querySelector('svg')).toBeInTheDocument()
     })
 
     it('should render warning icon in error badge', () => {
       const { container } = render(<ServerErrorPage />)
 
-      // Find the illustration container which has both server and warning icons
-      const illustration = container.querySelector('[aria-hidden="true"]')
-      expect(illustration).toBeInTheDocument()
-
-      // Should have exactly 2 icons in illustration: server icon + warning icon
-      const iconsInIllustration = illustration?.querySelectorAll('svg')
-      expect(iconsInIllustration?.length).toBe(2)
+      // Icon is decorative (inside aria-hidden), so we verify via DOM query
+      const errorBadge = container.querySelector('[class*="errorBadge"]')
+      expect(errorBadge).toBeInTheDocument()
+      expect(errorBadge?.querySelector('svg')).toBeInTheDocument()
     })
 
     it('should render retry icon in primary button', () => {
       render(<ServerErrorPage />)
 
-      const retryButton = screen.getByRole('button', { name: /retry loading the page/i })
-      const icon = retryButton.querySelector('svg')
-      expect(icon).toBeInTheDocument()
+      const retryIcon = screen.getByLabelText('Retry icon')
+      expect(retryIcon).toBeInTheDocument()
     })
 
     it('should render home icon in secondary button', () => {
       render(<ServerErrorPage />)
 
-      const homeButton = screen.getByRole('button', { name: /return to homepage/i })
-      const icon = homeButton.querySelector('svg')
-      expect(icon).toBeInTheDocument()
+      const homeIcon = screen.getByLabelText('Home icon')
+      expect(homeIcon).toBeInTheDocument()
     })
   })
 })

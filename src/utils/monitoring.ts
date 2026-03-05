@@ -172,5 +172,6 @@ export function logEvent(
   if (import.meta.env.DEV) {
     console.log('[Event]', eventName, properties)
   }
+
   trackEvent(eventName, properties)
 }

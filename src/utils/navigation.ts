@@ -17,72 +17,34 @@ export function scrollToSection(sectionId: string): void {
 }
 
 /**
- * Pattern matching dangerous protocols (javascript:, data:, vbscript:, file:, about:).
+ * Internal helper to check for dangerous protocols in a URL string.
+ * @private
  */
-const DANGEROUS_PROTOCOL_PATTERN = /^(javascript|data|vbscript|file|about):/i
+function isDangerousProtocol(url: string): boolean {
+  const dangerousProtocolPattern = /^(javascript|data|vbscript|file|about):/i
+  const urlWithoutWhitespace = url.replace(/\s/g, '')
 
-/**
- * Checks whether a URL string contains a dangerous protocol, accounting for
- * whitespace obfuscation and percent-encoding.
- */
-export function hasDangerousProtocol(url: string): boolean {
-  // Direct check
-  if (DANGEROUS_PROTOCOL_PATTERN.test(url)) {
+  if (dangerousProtocolPattern.test(url) || dangerousProtocolPattern.test(urlWithoutWhitespace)) {
     return true
   }
 
-  // Check after stripping whitespace (catches "javascript :alert(1)")
-  if (DANGEROUS_PROTOCOL_PATTERN.test(url.replace(/\s/g, ''))) {
-    return true
-  }
-
-  // Check for percent-encoded protocol before the first colon
+  // Check for URL-encoded variations of dangerous protocols
   const colonIndex = url.indexOf(':')
-  if (colonIndex > 0 && /%[0-9a-f]{2}/i.test(url.substring(0, colonIndex))) {
+  const hasEncodedProtocol =
+    colonIndex > 0 && /%[0-9a-f]{2}/i.test(url.substring(0, colonIndex))
+
+  if (hasEncodedProtocol) {
     try {
-      if (DANGEROUS_PROTOCOL_PATTERN.test(decodeURIComponent(url))) {
+      const decoded = decodeURIComponent(url)
+      if (dangerousProtocolPattern.test(decoded)) {
         return true
       }
     } catch {
-      // Malformed encoding is suspicious — treat as dangerous
-      return true
+      return true // Reject if decoding fails
     }
   }
 
   return false
-}
-
-/**
- * Checks whether a URL is a safe relative path (/, ./, or ../ prefixed)
- * without embedded protocol injection.
- */
-export function isRelativeUrl(url: string): boolean {
-  const isSlashRelative = url.startsWith('/') && !url.startsWith('//')
-  const isDotRelative = url.startsWith('./') || url.startsWith('../')
-
-  if (!isSlashRelative && !isDotRelative) {
-    return false
-  }
-
-  // Block protocol injection hidden inside relative paths
-  return !url.includes('://')
-}
-
-/**
- * Checks whether a parsed absolute URL uses an allowed protocol or is same-origin.
- */
-export function isAllowedAbsoluteUrl(url: string): boolean {
-  try {
-    const parsedUrl = new URL(url, window.location.origin)
-
-    if (parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:') {
-      return true
-    }
-
-    return parsedUrl.origin === window.location.origin
-  } catch {
-    return false
-  }
 }
 
 /**
@@ -94,42 +56,44 @@ export function isAllowedAbsoluteUrl(url: string): boolean {
  * @returns true if the URL is safe for navigation, false otherwise
  */
 export function isSafeUrl(url: string): boolean {
-  // SSR guard
-  if (typeof window === 'undefined') {
-    return false
-  }
-
-  if (!url || url.trim() === '') {
+  if (typeof window === 'undefined' || !url || url.trim() === '') {
     return false
   }
 
   const trimmedUrl = url.trim()
 
-  // Reject ASCII control characters (null bytes, etc.)
+  // Reject URLs containing ASCII control characters
   // eslint-disable-next-line no-control-regex
-  if (/[\x00-\x1F\x7F]/.test(trimmedUrl)) {
+  if (/[\x00-\x1F\x7F]/.test(trimmedUrl) || trimmedUrl.startsWith('//')) {
     return false
   }
 
-  // Block protocol-relative URLs (//example.com)
-  if (trimmedUrl.startsWith('//')) {
+  if (isDangerousProtocol(trimmedUrl)) {
     return false
   }
 
-  if (hasDangerousProtocol(trimmedUrl)) {
+  // Handle relative URLs
+  const isRelative =
+    (trimmedUrl.startsWith('/') && !trimmedUrl.startsWith('//')) ||
+    trimmedUrl.startsWith('./') ||
+    trimmedUrl.startsWith('../')
+
+  if (isRelative) {
+    return !trimmedUrl.includes('://')
+  }
+
+  try {
+    const parsedUrl = new URL(trimmedUrl, window.location.origin)
+    const isStandardProtocol = parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:'
+
+    if (isStandardProtocol) {
+      return true
+    }
+
+    return parsedUrl.origin === window.location.origin
+  } catch {
     return false
   }
-
-  if (isRelativeUrl(trimmedUrl)) {
-    return true
-  }
-
-  // Reject slash-prefixed paths that failed isRelativeUrl due to :// injection
-  if (trimmedUrl.startsWith('/')) {
-    return false
-  }
-
-  return isAllowedAbsoluteUrl(trimmedUrl)
 }
 
 /**
@@ -155,9 +119,7 @@ export function safeNavigate(url: string): boolean {
   }
 
   if (!isSafeUrl(url)) {
-    if (import.meta.env.DEV) {
-      console.warn(`Navigation blocked: URL "${url}" failed security validation`)
-    }
+    console.warn(`Navigation blocked: URL "${url}" failed security validation`)
     return false
   }
 

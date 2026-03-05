@@ -34,7 +34,9 @@ export const useReducedMotion = (): boolean => {
     }
 
     mediaQuery.addEventListener('change', handleReducedMotionChange)
-    return () => mediaQuery.removeEventListener('change', handleReducedMotionChange)
+    return () => {
+      mediaQuery.removeEventListener('change', handleReducedMotionChange)
+    }
   }, [])
 
   return prefersReducedMotion

@@ -37,15 +37,6 @@ interface CounterAnimationProps {
 }
 
 /**
- * Easing functions for smooth animations
- */
-const easingFunctions = {
-  linear: (t: number) => t,
-  easeOutQuart: (t: number) => 1 - Math.pow(1 - t, 4),
-  easeOutExpo: (t: number) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t)),
-}
-
-/**
  * Format number with thousands separator
  */
 const formatNumber = (num: number, decimals: number, separator: boolean): string => {
@@ -125,7 +116,19 @@ export const CounterAnimation = ({
 
         const elapsed = timestamp - startTime.current
         const progress = Math.min(elapsed / capturedDuration, 1)
-        const easedProgress = easingFunctions[capturedEasingType](progress)
+
+        let easedProgress: number
+        switch (capturedEasingType) {
+          case 'easeOutQuart':
+            easedProgress = 1 - Math.pow(1 - progress, 4)
+            break
+          case 'easeOutExpo':
+            easedProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress)
+            break
+          default:
+            easedProgress = progress
+        }
+
         const currentValue = capturedStartValue + (capturedEndValue - capturedStartValue) * easedProgress
 
         setAnimatedValue(currentValue)

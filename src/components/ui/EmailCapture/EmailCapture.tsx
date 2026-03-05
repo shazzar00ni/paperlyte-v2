@@ -16,26 +16,6 @@ const validateEmail = (email: string): boolean => {
   return emailRegex.test(email)
 }
 
-/**
- * Email capture form component for collecting waitlist signups
- * Features email validation, GDPR consent, spam protection, and Netlify function integration
- * Displays success/error states and tracks signup events via analytics
- *
- * @param props - Component props
- * @param props.variant - Form layout variant: 'inline' (default) or 'centered'
- * @param props.placeholder - Email input placeholder text (default: 'Enter your email')
- * @param props.buttonText - Submit button text (default: 'Join Waitlist')
- * @returns Email capture form element
- *
- * @example
- * ```tsx
- * // Inline variant (hero/CTA sections)
- * <EmailCapture variant="inline" buttonText="Get Early Access" />
- *
- * // Centered variant (dedicated signup page)
- * <EmailCapture variant="centered" placeholder="your@email.com" />
- * ```
- */
 export const EmailCapture = ({
   variant = 'inline',
   placeholder = 'Enter your email',

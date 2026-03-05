@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback, useRef, type FormEvent } from 'react'
 import { Icon } from '@components/ui/Icon'
 import { Button } from '@components/ui/Button'
 import { handleArrowNavigation, getFocusableElements } from '@utils/keyboard'
-import { logError } from '@utils/monitoring'
 import styles from './FeedbackWidget.module.css'
 
 type FeedbackType = 'bug' | 'feature'
@@ -124,16 +123,8 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
           try {
             localStorage.setItem('paperlyte_feedback', JSON.stringify(feedbackArray))
           } catch (storageError) {
-            // Log via centralized monitoring before throwing
-            logError(
-              storageError instanceof Error ? storageError : new Error(String(storageError)),
-              {
-                severity: 'medium',
-                tags: { module: 'FeedbackWidget', action: 'saveFeedback' },
-                errorInfo: { note: 'local storage failure' },
-              },
-              'FeedbackWidget'
-            )
+            // Provide a clearer message for storage-related issues
+            console.error('LocalStorage error:', storageError)
             throw new Error(
               `Unable to save feedback locally. Your browser storage may be full or disabled. ${
                 storageError instanceof Error ? storageError.message : String(storageError)
@@ -141,6 +132,7 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
               { cause: storageError }
             )
           }
+          console.log('Feedback submitted:', feedbackEntry)
         }
 
         // Show confirmation

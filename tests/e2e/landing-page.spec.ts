@@ -18,9 +18,6 @@ test.describe('Landing Page', () => {
   test('should navigate to features section on click', async ({ page, isMobile }) => {
     await page.goto('/');
 
-    // Disable smooth scrolling so the scroll is instant and position detection is reliable
-    await page.addStyleTag({ content: 'html { scroll-behavior: auto !important; }' });
-
     if (isMobile) {
       // Open mobile menu first
       const menuButton = page.getByRole('button', { name: /menu/i });
@@ -32,14 +29,12 @@ test.describe('Landing Page', () => {
     const featuresLink = page.locator('header').getByRole('link', { name: /^features$/i });
     await featuresLink.click();
 
-    // Wait until any part of #features is visible in the viewport.
-    // A broad check (top < innerHeight && bottom > 0) handles sticky headers and
-    // varying section heights across all browsers including Mobile Safari.
+    // Wait for smooth scroll animation to complete by ensuring #features is fully in the viewport
     await page.waitForFunction(() => {
       const el = document.querySelector<HTMLElement>('#features');
       if (!el) return false;
       const rect = el.getBoundingClientRect();
-      return rect.top < window.innerHeight && rect.bottom > 0;
+      return rect.top >= 0 && rect.top < window.innerHeight;
     });
     // Should scroll to features section
     await expect(page.locator('#features')).toBeInViewport();

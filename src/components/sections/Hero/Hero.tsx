@@ -4,18 +4,6 @@ import { Section } from '@components/layout/Section'
 import { scrollToSection } from '@/utils/navigation'
 import styles from './Hero.module.css'
 
-/**
- * Hero section component - the main landing section of the application
- * Features animated headline, subheadline, CTA buttons, and trusted by logos
- * Uses AnimatedElement for staggered entrance animations
- *
- * @returns A hero section with animated content and call-to-action buttons
- *
- * @example
- * ```tsx
- * <Hero />
- * ```
- */
 export const Hero = (): React.ReactElement => {
   return (
     <Section id="hero" className={styles.hero} padding="large">
@@ -63,12 +51,6 @@ export const Hero = (): React.ReactElement => {
 
       <AnimatedElement animation="fadeIn" delay={400}>
         <div className={styles.mockupContainer} aria-hidden="true">
-          {/* Productivity stat badge */}
-          <div className={styles.statBadge}>
-            <span className={styles.statValue}>+120%</span>
-            <span className={styles.statLabel}>PRODUCTIVITY</span>
-          </div>
-
           {/* Primary mockup - Notes list view */}
           <div className={styles.mockupPrimary}>
             <picture>

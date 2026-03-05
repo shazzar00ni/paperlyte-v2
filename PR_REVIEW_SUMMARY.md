@@ -36,7 +36,7 @@ This file contains a summary of pull requests I have reviewed.
 
 ### Redundant PRs
 
-- **Action:** Recommend closing #429-#436, #445, #448, #450, #461, #468, #470, #471, #473, #484, #493, #494, #496, and #504. Most of these are redundant summary updates or contain regressions that have been addressed elsewhere.
+- **Action:** Recommend closing PRs `#429` through `#436`, `#445`, `#448`, `#450`, `#461`, `#468`, `#470`, `#471`, `#473`, `#484`, `#493`, `#494`, `#496`, and `#504`. Most of these are redundant summary updates or contain regressions that have been addressed elsewhere.
 
 ### Baseline Fix: Lighthouse CI Stability
 

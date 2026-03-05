@@ -27,7 +27,7 @@ const MIN_SWIPE_DISTANCE = 50
 export const Testimonials = (): React.ReactElement => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(true)
-  const touchRef = useRef({ start: 0, end: 0 })
+  const touchRef = useRef<{ start: number | null; end: number | null }>({ start: null, end: null })
   const carouselRef = useRef<HTMLDivElement>(null)
   const prefersReducedMotion = useReducedMotion()
 
@@ -91,10 +91,10 @@ export const Testimonials = (): React.ReactElement => {
    */
   const handleTouchEnd = useCallback(() => {
     const { start, end } = touchRef.current
-    touchRef.current.start = 0
-    touchRef.current.end = 0
+    touchRef.current.start = null
+    touchRef.current.end = null
 
-    if (!start || !end) return
+    if (start == null || end == null) return
 
     const distance = start - end
     const isLeftSwipe = distance > MIN_SWIPE_DISTANCE

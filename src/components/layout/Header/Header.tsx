@@ -9,6 +9,48 @@ import {
 } from '@utils/keyboard'
 import styles from './Header.module.css'
 
+/** Focus the element at a given index using find() to avoid direct property injection */
+function focusAtIndex(elements: HTMLElement[], index: number): void {
+  const target = elements.find((_, i) => i === index)
+  target?.focus()
+}
+
+/** Enforce a Tab-key focus trap within the provided focusable element list */
+function handleTabFocusTrap(event: KeyboardEvent, elements: HTMLElement[]): void {
+  const first = elements[0]
+  const last = elements[elements.length - 1]
+  if (event.shiftKey) {
+    if (document.activeElement === first) {
+      event.preventDefault()
+      last?.focus()
+    }
+  } else {
+    if (document.activeElement === last) {
+      event.preventDefault()
+      first?.focus()
+    }
+  }
+}
+
+/** Handle Home / End / Arrow key navigation within the provided focusable element list */
+function handleMenuNavigation(event: KeyboardEvent, elements: HTMLElement[]): void {
+  const homeEndIndex = handleHomeEndNavigation(event, elements)
+  if (homeEndIndex !== null) {
+    event.preventDefault()
+    focusAtIndex(elements, homeEndIndex)
+    return
+  }
+
+  const currentIndex = elements.findIndex((el) => el === document.activeElement)
+  if (currentIndex === -1) return
+
+  const newIndex = handleArrowNavigation(event, elements, currentIndex, 'horizontal')
+  if (newIndex !== null) {
+    event.preventDefault()
+    focusAtIndex(elements, newIndex)
+  }
+}
+
 /**
  * Main navigation header component with responsive mobile menu
  * Features smooth scrolling to sections, keyboard navigation, focus trap, and theme toggle
@@ -70,48 +112,18 @@ export const Header = (): React.ReactElement => {
     if (!mobileMenuOpen || !menuRef.current) return
 
     const menu = menuRef.current
+    // Compute once here; reused inside handleKeyDown to avoid repeated DOM queries
     const focusableElements = getFocusableElements(menu)
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      const elements = getFocusableElements(menu)
-      if (elements.length === 0) return
+      if (focusableElements.length === 0) return
 
-      // Focus trap: cycle focus on Tab / Shift+Tab
       if (event.key === 'Tab') {
-        const firstFocusable = elements[0]
-        const lastFocusable = elements[elements.length - 1]
-
-        if (event.shiftKey) {
-          if (document.activeElement === firstFocusable) {
-            event.preventDefault()
-            lastFocusable?.focus()
-          }
-        } else {
-          if (document.activeElement === lastFocusable) {
-            event.preventDefault()
-            firstFocusable?.focus()
-          }
-        }
+        handleTabFocusTrap(event, focusableElements)
         return
       }
 
-      // Handle Home/End keys first (these work regardless of current focus position)
-      const homeEndIndex = handleHomeEndNavigation(event, elements)
-      if (homeEndIndex !== null) {
-        event.preventDefault()
-        elements[homeEndIndex]?.focus()
-        return
-      }
-
-      // Handle Arrow keys (horizontal navigation)
-      const currentIndex = elements.findIndex((el) => el === document.activeElement)
-      if (currentIndex === -1) return
-
-      const newIndex = handleArrowNavigation(event, elements, currentIndex, 'horizontal')
-      if (newIndex !== null) {
-        event.preventDefault()
-        elements[newIndex]?.focus()
-      }
+      handleMenuNavigation(event, focusableElements)
     }
 
     menu.addEventListener('keydown', handleKeyDown)
@@ -119,7 +131,9 @@ export const Header = (): React.ReactElement => {
     // Focus first element when menu opens
     focusableElements[0]?.focus()
 
-    return () => menu.removeEventListener('keydown', handleKeyDown)
+    return () => {
+      menu.removeEventListener('keydown', handleKeyDown)
+    }
   }, [mobileMenuOpen])
 
   return (

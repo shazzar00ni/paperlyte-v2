@@ -15,8 +15,17 @@ interface FAQItemProps {
   question: string
   answer: string
   isOpen: boolean
-  onToggle: (id: string) => void
+  onToggle: (itemId: string) => void
   delay: number
+}
+
+/**
+ * Builds the screen-reader announcement message for a toggled FAQ item.
+ * Extracted as a module-level helper to keep component complexity below the limit.
+ */
+function buildAnnouncementMessage(id: string, isOpening: boolean): string | null {
+  const item = FAQ_ITEMS.find((faqItem) => faqItem.id === id)
+  return item ? `${item.question} ${isOpening ? 'expanded' : 'collapsed'}` : null
 }
 
 /**
@@ -46,7 +55,7 @@ const FAQItemComponent = memo(
     const answerId = `answer-${sanitizedQuestion}`
     const questionId = `question-${sanitizedQuestion}`
 
-    const handleToggle = useCallback(() => onToggle(id), [id, onToggle])
+    const handleToggle = useCallback(() => { onToggle(id) }, [id, onToggle])
 
     return (
       <AnimatedElement animation="slideUp" delay={delay}>
@@ -97,21 +106,20 @@ export const FAQ = (): React.ReactElement => {
       const newSet = new Set(prev)
       const isOpening = !newSet.has(id)
 
-      if (newSet.has(id)) {
-        newSet.delete(id)
-      } else {
+      if (isOpening) {
         newSet.add(id)
+      } else {
+        newSet.delete(id)
       }
 
-      // Announce the change for screen readers
-      const item = FAQ_ITEMS.find((item) => item.id === id)
-      if (item) {
+      const message = buildAnnouncementMessage(id, isOpening)
+      if (message !== null) {
         // Clear any pending timeout to prevent memory leaks
         if (announcementTimeoutRef.current !== null) {
           clearTimeout(announcementTimeoutRef.current)
         }
 
-        setAnnouncement(`${item.question} ${isOpening ? 'expanded' : 'collapsed'}`)
+        setAnnouncement(message)
         // Clear announcement after sufficient time for screen readers (3 seconds)
         // This ensures users with slower reading speeds or busy screen readers can hear the announcement
         announcementTimeoutRef.current = window.setTimeout(() => {

@@ -2,18 +2,13 @@ import { useState, type FormEvent } from 'react'
 import { Button } from '@components/ui/Button'
 import { Icon } from '@components/ui/Icon'
 import { trackEvent } from '@utils/analytics'
+import { validateEmail } from '@utils/validation'
 import styles from './EmailCapture.module.css'
 
 interface EmailCaptureProps {
   variant?: 'inline' | 'centered'
   placeholder?: string
   buttonText?: string
-}
-
-// Pure validation function - moved outside component to avoid recreation on every render
-const validateEmail = (email: string): boolean => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  return emailRegex.test(email)
 }
 
 /**
@@ -56,15 +51,10 @@ export const EmailCapture = ({
     }
 
     // Validation
-    if (!email.trim()) {
+    const { isValid, error: validationError } = validateEmail(email)
+    if (!isValid) {
       setStatus('error')
-      setErrorMessage('Please enter your email address')
-      return
-    }
-
-    if (!validateEmail(email)) {
-      setStatus('error')
-      setErrorMessage('Please enter a valid email address')
+      setErrorMessage(validationError || 'Please enter a valid email address')
       return
     }
 

@@ -11,7 +11,7 @@ This file contains a summary of pull requests I have reviewed.
 - **Fix Applied:**
   - Pinned `eslint` and `@eslint/js` to `9.39.2` in `package.json`.
   - Pinned `eslint-config-prettier` to `9.1.2`.
-  - Added `.npmrc` with `legacy-peer-deps=true`.
+   - Configured `legacy-peer-deps=true` in `.github/workflows/ci.yml`.
   - Added missing `@testing-library/dom` dependency.
   - Added `axios` and `qs` overrides to resolve high-severity security vulnerabilities.
   - Fixed fragile E2E test navigation and updated `ci.yml` with global npm configuration.

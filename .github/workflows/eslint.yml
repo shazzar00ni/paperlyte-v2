@@ -12,8 +12,10 @@ name: ESLint
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    # The branches below must be a subset of the branches above
+  pull_request_target:
+    # pull_request_target runs in the base-branch context so it does not require
+    # manual approval for PRs from bots or outside contributors, ensuring GHAS
+    # always receives a SARIF upload for every PR targeting main.
     branches: [ "main" ]
   schedule:
     - cron: '21 15 * * 2'
@@ -29,6 +31,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
+        with:
+          # For pull_request_target events the default ref is the base branch (main).
+          # Explicitly check out the PR head so ESLint scans the incoming changes.
+          # For push/schedule events github.event.pull_request.head.sha is empty,
+          # causing checkout to fall back to the default ref automatically.
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v6

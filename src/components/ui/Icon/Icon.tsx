@@ -1,4 +1,4 @@
-import { useMemo, useId } from 'react'
+import { memo, useMemo, useId } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { findIconDefinition } from '@fortawesome/fontawesome-svg-core'
 import type { IconName, IconPrefix } from '@fortawesome/fontawesome-svg-core'
@@ -54,7 +54,7 @@ const SIZE_MAP = {
  * <Icon name="check" color="#00ff00" size="2x" />
  * ```
  */
-export const Icon = ({
+export const Icon = memo(({
   name,
   size = 'md',
   variant = 'solid',
@@ -163,4 +163,6 @@ export const Icon = ({
       ))}
     </svg>
   )
-}
+})
+
+Icon.displayName = 'Icon'

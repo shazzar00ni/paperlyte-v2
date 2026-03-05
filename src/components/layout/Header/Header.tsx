@@ -64,74 +64,62 @@ export const Header = (): React.ReactElement => {
     return () => document.removeEventListener('keydown', handleEscape)
   }, [mobileMenuOpen, closeMobileMenu])
 
-  // Focus trap for mobile menu
+  // Focus trap and arrow key navigation for mobile menu – single handler to reduce
+  // the number of event listeners registered and re-registered on menu toggle.
   useEffect(() => {
     if (!mobileMenuOpen || !menuRef.current) return
 
     const menu = menuRef.current
     const focusableElements = getFocusableElements(menu)
-    const firstFocusable = focusableElements[0]
-    const lastFocusable = focusableElements[focusableElements.length - 1]
 
-    const handleTabKey = (event: KeyboardEvent) => {
-      if (event.key !== 'Tab') return
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const elements = getFocusableElements(menu)
+      if (elements.length === 0) return
 
-      if (event.shiftKey) {
-        // Shift + Tab
-        if (document.activeElement === firstFocusable) {
-          event.preventDefault()
-          lastFocusable?.focus()
+      // Focus trap: cycle focus on Tab / Shift+Tab
+      if (event.key === 'Tab') {
+        const firstFocusable = elements[0]
+        const lastFocusable = elements[elements.length - 1]
+
+        if (event.shiftKey) {
+          if (document.activeElement === firstFocusable) {
+            event.preventDefault()
+            lastFocusable?.focus()
+          }
+        } else {
+          if (document.activeElement === lastFocusable) {
+            event.preventDefault()
+            firstFocusable?.focus()
+          }
         }
-      } else {
-        // Tab
-        if (document.activeElement === lastFocusable) {
-          event.preventDefault()
-          firstFocusable?.focus()
-        }
-      }
-    }
-
-    menu.addEventListener('keydown', handleTabKey)
-
-    // Focus first element when menu opens
-    firstFocusable?.focus()
-
-    return () => menu.removeEventListener('keydown', handleTabKey)
-  }, [mobileMenuOpen])
-
-  // Arrow key navigation for menu items
-  useEffect(() => {
-    if (!menuRef.current) return
-
-    const menu = menuRef.current
-
-    const handleArrowKeys = (event: KeyboardEvent) => {
-      const focusableElements = getFocusableElements(menu)
-      if (focusableElements.length === 0) return
-
-      // Handle Home/End keys first (these work regardless of current focus position)
-      const homeEndIndex = handleHomeEndNavigation(event, focusableElements)
-      if (homeEndIndex !== null) {
-        event.preventDefault()
-        focusableElements[homeEndIndex]?.focus()
         return
       }
 
-      // For arrow keys, we need to know the current index
-      const currentIndex = focusableElements.findIndex((el) => el === document.activeElement)
-      if (currentIndex === -1) return
+      // Handle Home/End keys first (these work regardless of current focus position)
+      const homeEndIndex = handleHomeEndNavigation(event, elements)
+      if (homeEndIndex !== null) {
+        event.preventDefault()
+        elements[homeEndIndex]?.focus()
+        return
+      }
 
       // Handle Arrow keys (horizontal navigation)
-      const newIndex = handleArrowNavigation(event, focusableElements, currentIndex, 'horizontal')
+      const currentIndex = elements.findIndex((el) => el === document.activeElement)
+      if (currentIndex === -1) return
+
+      const newIndex = handleArrowNavigation(event, elements, currentIndex, 'horizontal')
       if (newIndex !== null) {
         event.preventDefault()
-        focusableElements[newIndex]?.focus()
+        elements[newIndex]?.focus()
       }
     }
 
-    menu.addEventListener('keydown', handleArrowKeys)
+    menu.addEventListener('keydown', handleKeyDown)
 
-    return () => menu.removeEventListener('keydown', handleArrowKeys)
+    // Focus first element when menu opens
+    focusableElements[0]?.focus()
+
+    return () => menu.removeEventListener('keydown', handleKeyDown)
   }, [mobileMenuOpen])
 
   return (

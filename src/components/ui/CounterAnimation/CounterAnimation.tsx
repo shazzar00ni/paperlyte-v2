@@ -113,10 +113,10 @@ export const CounterAnimation = ({
       startTime.current = null
 
       // Capture current props values at animation start time
-      const animDuration = safeDuration
-      const animEnd = end
-      const animStart = start
-      const animEasing = easing
+      const capturedDuration = safeDuration
+      const capturedEndValue = end
+      const capturedStartValue = start
+      const capturedEasingType = easing
 
       const animate = (timestamp: number) => {
         if (startTime.current === null) {
@@ -124,9 +124,9 @@ export const CounterAnimation = ({
         }
 
         const elapsed = timestamp - startTime.current
-        const progress = Math.min(elapsed / animDuration, 1)
-        const easedProgress = easingFunctions[animEasing](progress)
-        const currentValue = animStart + (animEnd - animStart) * easedProgress
+        const progress = Math.min(elapsed / capturedDuration, 1)
+        const easedProgress = easingFunctions[capturedEasingType](progress)
+        const currentValue = capturedStartValue + (capturedEndValue - capturedStartValue) * easedProgress
 
         setAnimatedValue(currentValue)
 

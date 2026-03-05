@@ -93,7 +93,7 @@ export const TextReveal = ({
   const prefersReducedMotion = useReducedMotion()
 
   // Split text into units (characters or words)
-  const units = useMemo(() => {
+  const textUnits = useMemo(() => {
     if (type === 'character') {
       return children.split('')
     }
@@ -120,7 +120,7 @@ export const TextReveal = ({
 
   return (
     <Component ref={elementRef} className={containerClasses} aria-label={children}>
-      {units.map((unit, index) => {
+      {textUnits.map((unit, index) => {
         // Handle whitespace units
         if (/^\s+$/.test(unit)) {
           return (

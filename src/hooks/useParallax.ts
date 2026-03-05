@@ -65,13 +65,13 @@ export const useParallax = (options: UseParallaxOptions = {}) => {
   } = options
 
   const ref = useRef<HTMLDivElement>(null)
-  const [rawOffset, setRawOffset] = useState(0)
+  const [rawParallaxOffset, setRawParallaxOffset] = useState(0)
   const [isInView, setIsInView] = useState(false)
   const prefersReducedMotion = useReducedMotion()
   const isMobile = useMediaQuery(`(max-width: ${mobileBreakpoint - 1}px)`)
 
   const rafId = useRef<number | null>(null)
-  const ticking = useRef(false)
+  const isAnimationFrameScheduled = useRef(false)
   const elementTop = useRef(0)
   const elementHeight = useRef(0)
 
@@ -96,11 +96,11 @@ export const useParallax = (options: UseParallaxOptions = {}) => {
     const windowHeight = window.innerHeight
 
     // Read ref values safely
-    const elemHeight = elementHeight.current
-    const elemTop = elementTop.current
+    const elementHeightSnapshot = elementHeight.current
+    const elementTopSnapshot = elementTop.current
 
     // Calculate how far the element center is from viewport center
-    const elementCenter = elemTop + elemHeight / 2
+    const elementCenter = elementTopSnapshot + elementHeightSnapshot / 2
     const viewportCenter = scrollY + windowHeight / 2
     const distanceFromCenter = elementCenter - viewportCenter
 
@@ -109,13 +109,13 @@ export const useParallax = (options: UseParallaxOptions = {}) => {
 
     // Compute a reasonable max offset to prevent elements moving completely off-screen
     // Based on the element being able to move at most half the combined height
-    const maxOffset = (windowHeight + elemHeight) / 2
+    const maxOffset = (windowHeight + elementHeightSnapshot) / 2
 
     // Clamp the offset to the safe range
     const clampedOffset = Math.max(-maxOffset, Math.min(maxOffset, parallaxOffset))
 
-    setRawOffset(clampedOffset)
-    ticking.current = false
+    setRawParallaxOffset(clampedOffset)
+    isAnimationFrameScheduled.current = false
   }, [isInView, speed])
 
   // Keep refs in sync with latest callbacks via effect
@@ -126,9 +126,9 @@ export const useParallax = (options: UseParallaxOptions = {}) => {
 
   // Handle scroll with requestAnimationFrame
   const handleScroll = useCallback(() => {
-    if (!ticking.current && isInView) {
+    if (!isAnimationFrameScheduled.current && isInView) {
       rafId.current = requestAnimationFrame(() => calculateOffsetRef.current())
-      ticking.current = true
+      isAnimationFrameScheduled.current = true
     }
   }, [isInView])
 
@@ -184,7 +184,7 @@ export const useParallax = (options: UseParallaxOptions = {}) => {
   }, [handleScroll, isInView, isActive])
 
   // Compute final offset - 0 when inactive, raw value otherwise
-  const offset = isActive ? rawOffset : 0
+  const offset = isActive ? rawParallaxOffset : 0
 
   // Generate transform based on direction
   const transform = useMemo(

@@ -47,17 +47,17 @@ export const useScrollPosition = () => {
   const [scrollPosition, setScrollPosition] = useState(getScrollPosition)
 
   const rafId = useRef<number | null>(null)
-  const ticking = useRef(false)
+  const isAnimationFrameScheduled = useRef(false)
 
   const updateScrollPosition = useCallback(() => {
     setScrollPosition(getScrollPosition())
-    ticking.current = false
+    isAnimationFrameScheduled.current = false
   }, [])
 
   const handleScroll = useCallback(() => {
-    if (!ticking.current) {
+    if (!isAnimationFrameScheduled.current) {
       rafId.current = requestAnimationFrame(updateScrollPosition)
-      ticking.current = true
+      isAnimationFrameScheduled.current = true
     }
   }, [updateScrollPosition])
 

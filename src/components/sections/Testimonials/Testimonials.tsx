@@ -91,16 +91,16 @@ export const Testimonials = (): React.ReactElement => {
    * Handle touch end - detect swipe direction
    */
   const handleTouchEnd = () => {
-    const start = touchStart
-    const end = touchEnd
+    const swipeStartX = touchStart
+    const swipeEndX = touchEnd
 
     // Reset touch state first
     setTouchStart(0)
     setTouchEnd(0)
 
-    if (!start || !end) return
+    if (!swipeStartX || !swipeEndX) return
 
-    const distance = start - end
+    const distance = swipeStartX - swipeEndX
     const isLeftSwipe = distance > MIN_SWIPE_DISTANCE
     const isRightSwipe = distance < -MIN_SWIPE_DISTANCE
 

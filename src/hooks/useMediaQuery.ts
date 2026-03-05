@@ -34,12 +34,12 @@ export const useMediaQuery = (query: string): boolean => {
 
     const mediaQuery = window.matchMedia(query)
 
-    const listener = (event: MediaQueryListEvent) => {
+    const handleMediaQueryChange = (event: MediaQueryListEvent) => {
       setMatches(event.matches)
     }
 
-    mediaQuery.addEventListener('change', listener)
-    return () => mediaQuery.removeEventListener('change', listener)
+    mediaQuery.addEventListener('change', handleMediaQueryChange)
+    return () => mediaQuery.removeEventListener('change', handleMediaQueryChange)
   }, [query])
 
   return matches

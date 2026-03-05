@@ -11,7 +11,7 @@ This file contains a summary of pull requests I have reviewed.
 - **Fix Applied:**
   - Pinned `eslint` and `@eslint/js` to `9.39.2` in `package.json`.
   - Pinned `eslint-config-prettier` to `9.1.2`.
-   - Configured `legacy-peer-deps=true` in `.github/workflows/ci.yml`.
+  - Removed `legacy-peer-deps=true` from `.npmrc` after verifying clean `npm install`.
   - Added missing `@testing-library/dom` dependency.
   - Added `axios` and `qs` overrides to resolve high-severity security vulnerabilities.
   - Fixed fragile E2E test navigation and updated `ci.yml` with global npm configuration.
@@ -79,15 +79,29 @@ This file contains a summary of pull requests I have reviewed.
 
 ### Redundant and Stale Pull Requests
 
-- **Redundant Summary PRs:** Recommend closing #471, #470, #468, #461, #450, #448, #430, #417, #396 in favor of this cumulative summary.
-- **Redundant Feature PRs:**
-  - **PR #463** (ESLint downgrade) is redundant with #469.
-  - **PR #451** (axios DoS fix) is redundant with #469 (though E2E improvements could be cherry-picked).
-  - **PR #462** (npm peer deps) is redundant with #469.
-  - **PR #460** (Pitfalls/Roadmap) is redundant with #467.
-- **Stale PRs:**
-  - **PR #107:** Close recommended (massive, monolithic, likely stale).
-  - **PR #389:** Postpone recommended (large formatting change, causes merge conflicts).
+**Redundant Summary PRs:**
+
+- **PRs:** #471, #470, #468, #461, #450, #448, #430, #417, #396
+- **Owner:** `@shazzar00ni` (Lead Engineer)
+- **Status:** Pending Closure — Close by 2026-02-16
+- **Tracking:** See [Maintenance Issue #475](https://github.com/shazzar00ni/paperlyte-v2/issues/475)
+- **Instruction:** These are duplicate daily summaries. Confirm this cumulative summary is merged to `main` before closing.
+
+**Redundant Feature PRs:**
+
+- **PRs:** #463, #451, #462, #460
+- **Owner:** `@dev-team` / `QA Role`
+- **Status:** Review for Cherry-picking — Complete by 2026-02-18
+- **Tracking:** See [Consolidation Issue #476](https://github.com/shazzar00ni/paperlyte-v2/issues/476)
+- **Instruction:** Most logic is superseded by #469 and #467. Specifically, cherry-pick E2E improvements from #451 before closing.
+
+**Stale / High-Risk PRs:**
+
+- **PRs:** #107, #389
+- **Owner:** `@architect`
+- **Status:** Postponed / Close Recommended — Decision by 2026-02-20
+- **Tracking:** See [Technical Debt Issue #477](https://github.com/shazzar00ni/paperlyte-v2/issues/477)
+- **Instruction:** #107 is monolithic and stale; #389 causes widespread conflicts. Move valid logic to fresh, focused PRs.
 
 ---
 

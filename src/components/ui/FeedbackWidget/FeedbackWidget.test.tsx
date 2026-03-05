@@ -572,11 +572,8 @@ describe('FeedbackWidget', () => {
         expect(screen.getByRole('dialog')).toBeInTheDocument()
       })
 
-      const typeSelector = document.querySelector('fieldset')
-      expect(typeSelector).toBeInTheDocument()
-
-      const removeEventListenerSpy = vi.spyOn(typeSelector!, 'removeEventListener')
-
+      const typeSelector = screen.getByRole('group', { name: /feedback type selection/i })
+      const removeEventListenerSpy = vi.spyOn(typeSelector, 'removeEventListener')
       unmount()
 
       expect(removeEventListenerSpy).toHaveBeenCalledWith('keydown', expect.any(Function))

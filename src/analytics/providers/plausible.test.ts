@@ -133,10 +133,10 @@ describe('analytics/providers/plausible', () => {
 
     it('should reject non-HTTPS script URLs', () => {
       const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-      vi.stubEnv('DEV', true)
 
       const insecureConfig = {
         ...config,
+        debug: true,
         scriptUrl: 'http://insecure.com/script.js',
       }
 
@@ -147,7 +147,6 @@ describe('analytics/providers/plausible', () => {
       expect(consoleErrorSpy).toHaveBeenCalled()
 
       consoleErrorSpy.mockRestore()
-      vi.unstubAllEnvs()
     })
 
     it('should reject script URLs without .js extension', () => {

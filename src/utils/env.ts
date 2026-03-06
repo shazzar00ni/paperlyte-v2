@@ -17,7 +17,7 @@ interface EnvConfig {
  * Falls back to window.location.origin if not set
  */
 export const getBaseUrl = (): string => {
-  return import.meta.env.VITE_BASE_URL || window.location.origin
+  return import.meta.env.VITE_BASE_URL?.trim() || window.location.origin
 }
 
 /**
@@ -35,7 +35,7 @@ export const getSeoKeywords = (): string => {
  * Returns absolute URL for production, relative for development
  */
 export const getOgImage = (): string => {
-  const ogImage = import.meta.env.VITE_OG_IMAGE || '/og-image.png'
+  const ogImage = import.meta.env.VITE_OG_IMAGE?.trim() || '/og-image.png'
   const baseUrl = getBaseUrl()
 
   // If image is already absolute URL, return as-is

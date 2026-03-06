@@ -6,11 +6,8 @@ import { Button } from '@components/ui/Button'
 import { Icon } from '@components/ui/Icon'
 import { WAITLIST_COUNT, LAUNCH_QUARTER } from '@constants/waitlist'
 import { trackEvent } from '@utils/analytics'
+import { validateEmail } from '@utils/validation'
 import styles from './EmailCapture.module.css'
-
-function validateEmail(email: string): boolean {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-}
 
 const BENEFITS = [
   'Get early access before public launch',
@@ -31,8 +28,9 @@ export const EmailCapture = (): React.ReactElement => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    if (!validateEmail(email)) {
-      setError('Please enter a valid email address.')
+    const emailResult = validateEmail(email)
+    if (!emailResult.isValid) {
+      setError(emailResult.error ?? 'Please enter a valid email address.')
       return
     }
 

@@ -41,7 +41,9 @@ describe('Icon', () => {
       expect(consoleWarnSpy).toHaveBeenCalledTimes(2)
     })
 
-    it('should render FontAwesome SVG for known FA icons not in custom set', () => {
+    it.each(['light', 'dark'] as const)('should render FontAwesome SVG for known FA icons not in custom set (theme: %s)', (theme) => {
+      document.documentElement.setAttribute('data-theme', theme)
+
       // fa-heart is registered in iconLibrary.ts but NOT in custom iconPaths
       const { container } = render(<Icon name="fa-heart" />)
 
@@ -49,9 +51,13 @@ describe('Icon', () => {
       expect(svg).toBeInTheDocument()
       // FontAwesome renders its own SVG without width/height attributes
       expect(svg).not.toHaveAttribute('width')
+
+      document.documentElement.removeAttribute('data-theme')
     })
 
-    it('should only warn once for icons found in Font Awesome library', () => {
+    it.each(['light', 'dark'] as const)('should only warn once for icons found in Font Awesome library (theme: %s)', (theme) => {
+      document.documentElement.setAttribute('data-theme', theme)
+
       render(<Icon name="fa-heart" />)
 
       // Only first warning fires (not in custom icon set), icon IS found in FA
@@ -59,6 +65,8 @@ describe('Icon', () => {
       expect(consoleWarnSpy).toHaveBeenCalledWith(
         'Icon "fa-heart" not found in icon set, using Font Awesome fallback'
       )
+
+      document.documentElement.removeAttribute('data-theme')
     })
   })
 

@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from 'vitest'
-import { render, screen, waitFor, fireEvent } from '@testing-library/react'
+import { describe, it, expect } from 'vitest'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { EmailCapture } from './EmailCapture'
 import { WAITLIST_COUNT } from '@/constants/waitlist'
@@ -53,25 +53,28 @@ describe('EmailCapture Section', () => {
   })
 
   it('shows error message when API call fails', async () => {
+    const user = userEvent.setup()
     render(<EmailCapture />)
 
     const emailInput = screen.getByPlaceholderText('your@email.com')
-    fireEvent.change(emailInput, { target: { value: 'test@example.com' } })
+    await user.type(emailInput, 'test@example.com')
 
-    // Mock setTimeout to throw AFTER user input is set, so it only affects the API call
+    // Directly replace setTimeout (not via vi.spyOn, which re-throws outside
+    // the Promise executor) to make the simulated API call reject.
     const originalSetTimeout = globalThis.setTimeout
-    vi.spyOn(globalThis, 'setTimeout').mockImplementationOnce(() => {
-      throw new Error('Network error')
-    })
+    globalThis.setTimeout = ((cb: TimerHandler, ms?: number, ...args: unknown[]) => {
+      if (ms === 1000) {
+        globalThis.setTimeout = originalSetTimeout
+        throw new Error('Network error')
+      }
+      return originalSetTimeout(cb, ms, ...args)
+    }) as typeof setTimeout
 
-    const form = emailInput.closest('form')!
-    fireEvent.submit(form)
+    const submitButton = screen.getByRole('button', { name: /Join the Waitlist/i })
+    submitButton.click()
 
     await waitFor(() => {
       expect(screen.getByRole('alert')).toHaveTextContent('Failed to join waitlist. Please try again.')
     })
-
-    globalThis.setTimeout = originalSetTimeout
-    vi.restoreAllMocks()
   })
 })

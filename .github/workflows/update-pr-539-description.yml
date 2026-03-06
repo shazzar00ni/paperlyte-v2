@@ -1,9 +1,10 @@
 name: Update PR #539 Description (one-shot)
 
 on:
-  push:
+  pull_request:
+    types: [opened, synchronize, reopened]
     branches:
-      - 'claude/eslint-10-upgrade-issue-Bg8XP'
+      - main
 
 permissions:
   contents: write
@@ -13,10 +14,12 @@ jobs:
   update-pr-description:
     name: Update PR description then self-delete
     runs-on: ubuntu-latest
+    # Only run while this file exists (self-guards after deletion)
+    if: github.head_ref == 'claude/eslint-10-upgrade-issue-Bg8XP'
 
     steps:
       - name: Update PR #539 description and self-delete via API
-        uses: actions/github-script@v7
+        uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |

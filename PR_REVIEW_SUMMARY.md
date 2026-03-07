@@ -2,6 +2,57 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-03-07
+
+### Ready for Merge
+
+- **origin/claude/fix-code-style-cWDI4**
+  - **Summary:** Fixes 4 unit test failures in `ServerErrorPage`, `Features`, and `Mobile` by aligning icon names and hoisting `TextReveal` constants.
+  - **Status:** Approved. Verified that `npm test` passes for the affected files.
+- **origin/claude/implement-todo-item-cDEVt**
+  - **Summary:** Quality improvements to Plausible analytics provider and environment variable handling.
+  - **Status:** Approved.
+- **origin/copilot/improve-variable-function-naming**
+  - **Summary:** Refactor for better naming in `OfflinePage.test.tsx` and `Features.test.tsx`.
+  - **Status:** Approved.
+- **origin/copilot/refactor-duplicated-code**
+  - **Summary:** Deduplicates logic in `OfflinePage.test.tsx`.
+  - **Status:** Approved.
+- **origin/claude/fix-todo-comment-HiJa4**
+  - **Summary:** Addresses minor TODO in `App.tsx`.
+  - **Status:** Approved.
+- **origin/claude/fix-debug-logging-tests-G10GL**
+  - **Summary:** Fixes test assertions for debug logging.
+  - **Status:** Approved.
+- **origin/claude/analyze-pr-deleted-files-QBlYv**
+  - **Summary:** Documentation of accidentally deleted files across branches.
+  - **Status:** Approved.
+
+### Systemic Regressions
+
+- **origin/claude/tree-shake-font-awesome-cK85j**
+  - **Status:** Changes Requested.
+  - **Feedback:** Contains systemic deletions of `.npmrc` and `.github/scripts/generate-lighthouse-summary.sh`. Must restore these files before merging.
+- **origin/fix/sarif-run-limits-10682914094722837168**
+  - **Status:** Changes Requested.
+  - **Feedback:** Systemic deletions of `.npmrc`, `gitVersionControl.md`, and `review.md`. Must restore before merging.
+
+### Rejected / Blocked
+
+- **origin/copilot/fix-issue-525**
+  - **Status:** Rejected.
+  - **Feedback:** Attempts to upgrade ESLint to v10, which violates the project standard pinning to v9 for plugin compatibility.
+- **origin/dependabot/npm_and_yarn/eslint/js-10.0.1**
+  - **Status:** Rejected.
+  - **Feedback:** Upgrades `@eslint/js` to v10, which is incompatible with current project configurations.
+
+### Maintenance
+
+- **origin/dependabot/npm_and_yarn/autoprefixer-10.4.27**
+  - **Status:** Approved. Routine dependency update.
+
+---
+
 ## 2026-03-05
 
 ### Analysis: Accidental File Deletions in Open Branches (Jules Daily PR Reviews)
@@ -9,23 +60,23 @@ This file contains a summary of pull requests I have reviewed.
 - **Status:** Critical — Action Required
 - **Summary:** Analysis of Jules' daily PR reviews (2026-03-01, 2026-03-04, and 2026-03-05) confirms that a large number of open branches have **accidentally deleted** the following critical files from the repository:
 
-  | File | Severity | Notes |
-  |------|----------|-------|
-  | `.npmrc` | 🔴 Critical | Controls `legacy-peer-deps=true`; its removal breaks dependency resolution for all peer dependencies |
-  | `docs/ROADMAP.md` | 🟠 High | Core project roadmap documentation |
-  | `gitVersionControl.md` | 🟠 High | Core Git workflow documentation |
-  | `review.md` | 🟡 Medium | AI PR reviewer instruction file |
+  | File                   | Severity    | Notes                                                                                                |
+  | ---------------------- | ----------- | ---------------------------------------------------------------------------------------------------- |
+  | `.npmrc`               | 🔴 Critical | Controls `legacy-peer-deps=true`; its removal breaks dependency resolution for all peer dependencies |
+  | `docs/ROADMAP.md`      | 🟠 High     | Core project roadmap documentation                                                                   |
+  | `gitVersionControl.md` | 🟠 High     | Core Git workflow documentation                                                                      |
+  | `review.md`            | 🟡 Medium   | AI PR reviewer instruction file                                                                      |
 
 - **Affected Branches (confirmed across multiple reviews):**
 
-  | Branch / PR | `.npmrc` | `docs/ROADMAP.md` | `gitVersionControl.md` | `review.md` | `src/utils/navigation.ts` reverted |
-  |-------------|:--------:|:-----------------:|:---------------------:|:-----------:|:------------------------:|
-  | `origin/claude/implement-todo-item-2H9LP` | ✗ | ✗ | ✗ | ✗ | ✗ |
-  | `origin/claude/core-editor-phase-1-PI3Yp` | ✗ | ✗ | ✗ | ✗ | ✗ |
-  | `origin/copilot/sub-pr-503` | ✗ | — | ✗ | ✗ | ✗ |
-  | `origin/copilot/sub-pr-469-again` | ✗ | — | ✗ | ✗ | ✗ |
-  | `origin/claude/fix-peer-dependency-conflicts-Wj2iC` | ✗ | — | — | — | ✗ |
-  | PR #469, #488, #491, #502, #506 | ✗ | ✗ | ✗ | ✗ | — |
+  | Branch / PR                                         | `.npmrc` | `docs/ROADMAP.md` | `gitVersionControl.md` | `review.md` | `src/utils/navigation.ts` reverted |
+  | --------------------------------------------------- | :------: | :---------------: | :--------------------: | :---------: | :--------------------------------: |
+  | `origin/claude/implement-todo-item-2H9LP`           |    ✗     |         ✗         |           ✗            |      ✗      |                 ✗                  |
+  | `origin/claude/core-editor-phase-1-PI3Yp`           |    ✗     |         ✗         |           ✗            |      ✗      |                 ✗                  |
+  | `origin/copilot/sub-pr-503`                         |    ✗     |         —         |           ✗            |      ✗      |                 ✗                  |
+  | `origin/copilot/sub-pr-469-again`                   |    ✗     |         —         |           ✗            |      ✗      |                 ✗                  |
+  | `origin/claude/fix-peer-dependency-conflicts-Wj2iC` |    ✗     |         —         |           —            |      —      |                 ✗                  |
+  | PR #469, #488, #491, #502, #506                     |    ✗     |         ✗         |           ✗            |      ✗      |                 —                  |
 
   _✗ = accidentally deleted/reverted; — = not affected_
 

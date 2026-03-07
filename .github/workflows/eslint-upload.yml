@@ -49,10 +49,14 @@ jobs:
         # Fall back to refs/heads/{branch} for push/schedule events and for any
         # pull_request run where the pull_requests array is empty (e.g. cross-repo forks
         # that don't populate that field in workflow_run contexts).
+        #
+        # Security: workflow_run context values are passed via env: variables rather than
+        # direct ${{ }} interpolation to prevent code injection (CodeQL CWE-116/CWE-78).
+        env:
+          EVENT: ${{ github.event.workflow_run.event }}
+          PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
+          BRANCH: ${{ github.event.workflow_run.head_branch }}
         run: |
-          EVENT="${{ github.event.workflow_run.event }}"
-          PR_NUMBER="${{ github.event.workflow_run.pull_requests[0].number }}"
-          BRANCH="${{ github.event.workflow_run.head_branch }}"
           if [[ "$EVENT" == "pull_request" && -n "$PR_NUMBER" ]]; then
             echo "ref=refs/pull/${PR_NUMBER}/head" >> "$GITHUB_OUTPUT"
           else
@@ -72,10 +76,16 @@ jobs:
 
       - name: ESLint Upload Summary
         if: always()
+        # Security: workflow_run context values are passed via env: variables rather than
+        # direct ${{ }} interpolation to prevent code injection (CodeQL CWE-116/CWE-78).
+        env:
+          WF_EVENT: ${{ github.event.workflow_run.event }}
+          WF_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          WF_URL: ${{ github.event.workflow_run.html_url }}
         run: |
           echo "## 🔍 ESLint SARIF Upload" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Triggered by: **${{ github.event.workflow_run.event }}** on \`${{ github.event.workflow_run.head_branch }}\`" >> $GITHUB_STEP_SUMMARY
-          echo "Triggering run: ${{ github.event.workflow_run.html_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "Triggered by: **${WF_EVENT}** on \`${WF_BRANCH}\`" >> $GITHUB_STEP_SUMMARY
+          echo "Triggering run: ${WF_URL}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "📄 SARIF results uploaded to GitHub Code Scanning." >> $GITHUB_STEP_SUMMARY

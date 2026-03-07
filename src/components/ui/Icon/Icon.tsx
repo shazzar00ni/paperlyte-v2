@@ -122,10 +122,9 @@ export const Icon = ({
 
     // If icon not found in library, return a placeholder
     if (!iconDefinition) {
-      console.warn(
-        `Icon "${name}" (converted to "${convertedName}") not found in Font Awesome library. ` +
-          `Rendering empty/decorative fallback span.`
-      )
+      if (import.meta.env.DEV) {
+        console.warn(`Icon "${name}" not found in custom set or Font Awesome library`)
+      }
       return (
         <span {...commonIconProps} title={`Icon "${name}" not found`}>
           ?
@@ -133,6 +132,9 @@ export const Icon = ({
       )
     }
 
+    if (import.meta.env.DEV) {
+      console.warn(`Icon "${name}" not found in custom icon set, using Font Awesome fallback`)
+    }
     return <FontAwesomeIcon icon={iconDefinition} {...commonIconProps} />
   }
 

@@ -212,23 +212,23 @@ export function sanitizeInput(input: string): string {
   const MAX_ITERATIONS = 10
 
   // --- Remove dangerous protocols iteratively ---
-  let previousProtocolSanitizedValue = ''
-  let protocolRemovalPassCount = 0
+  let prevProtocolValue = ''
+  let protocolIterations = 0
 
-  while (sanitized !== previousProtocolSanitizedValue && protocolRemovalPassCount < MAX_ITERATIONS) {
-    previousProtocolSanitizedValue = sanitized
+  while (sanitized !== prevProtocolValue && protocolIterations < MAX_ITERATIONS) {
+    prevProtocolValue = sanitized
     sanitized = sanitized.replace(/(javascript|data|vbscript|file|about)\s*:\/*/gi, '')
-    protocolRemovalPassCount++
+    protocolIterations++
   }
 
   // --- Remove event handlers iteratively ---
-  let previousEventHandlerSanitizedValue = ''
-  let eventHandlerRemovalPassCount = 0
+  let prevEventValue = ''
+  let eventIterations = 0
 
-  while (sanitized !== previousEventHandlerSanitizedValue && eventHandlerRemovalPassCount < MAX_ITERATIONS) {
-    previousEventHandlerSanitizedValue = sanitized
+  while (sanitized !== prevEventValue && eventIterations < MAX_ITERATIONS) {
+    prevEventValue = sanitized
     sanitized = sanitized.replace(/\bon\w+\s*=/gi, '')
-    eventHandlerRemovalPassCount++
+    eventIterations++
   }
 
   // --- Encode HTML entities ---

@@ -118,6 +118,7 @@ export const Icon = ({
       'aria-label': ariaLabel,
       'aria-hidden': ariaLabel ? ('false' as const) : ('true' as const),
       ...(ariaLabel ? { role: 'img' } : {}),
+      'data-icon': name,
     }
 
     // If icon not found in library, return a placeholder
@@ -158,7 +159,11 @@ export const Icon = ({
         <path
           key={index}
           d={index === 0 ? pathData : `M ${pathData}`}
-          fill={convertedName.includes('circle') || convertedName.includes('shield') ? 'none' : undefined}
+          fill={
+            convertedName.includes('circle') || convertedName.includes('shield')
+              ? 'none'
+              : undefined
+          }
         />
       ))}
     </svg>

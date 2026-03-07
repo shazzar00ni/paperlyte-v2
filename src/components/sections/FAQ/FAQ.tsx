@@ -32,12 +32,12 @@ const FAQItemComponent = ({
   onToggle,
   delay,
 }: FAQItemProps): React.ReactElement => {
-  const questionSlug = question
+  const sanitizedQuestion = question
     .replace(/[^a-zA-Z0-9\s]/g, '')
     .replace(/\s+/g, '-')
     .toLowerCase()
-  const answerId = `answer-${questionSlug}`
-  const questionId = `question-${questionSlug}`
+  const answerId = `answer-${sanitizedQuestion}`
+  const questionId = `question-${sanitizedQuestion}`
 
   return (
     <AnimatedElement animation="slideUp" delay={delay}>
@@ -82,13 +82,13 @@ export const FAQ = (): React.ReactElement => {
 
   const toggleItem = (id: string) => {
     setOpenItems((prev) => {
-      const updatedOpenItems = new Set(prev)
-      const isOpening = !updatedOpenItems.has(id)
+      const newSet = new Set(prev)
+      const isOpening = !newSet.has(id)
 
-      if (updatedOpenItems.has(id)) {
-        updatedOpenItems.delete(id)
+      if (newSet.has(id)) {
+        newSet.delete(id)
       } else {
-        updatedOpenItems.add(id)
+        newSet.add(id)
       }
 
       // Announce the change for screen readers
@@ -108,7 +108,7 @@ export const FAQ = (): React.ReactElement => {
         }, 3000)
       }
 
-      return updatedOpenItems
+      return newSet
     })
   }
 

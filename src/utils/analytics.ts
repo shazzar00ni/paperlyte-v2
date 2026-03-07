@@ -427,15 +427,15 @@ function trackScrollMilestones(currentPercent: number, trackedMilestones: Set<nu
  * @returns Throttled scroll handler
  */
 function createThrottledScrollHandler(callback: () => void): () => void {
-  let isAnimationFrameScheduled = false
+  let ticking = false
 
   return () => {
-    if (!isAnimationFrameScheduled) {
+    if (!ticking) {
       window.requestAnimationFrame(() => {
         callback()
-        isAnimationFrameScheduled = false
+        ticking = false
       })
-      isAnimationFrameScheduled = true
+      ticking = true
     }
   }
 }

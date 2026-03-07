@@ -47,9 +47,9 @@ export const useTheme = () => {
       const hasUserPreference = getInitialUserPreference()
 
       // Check localStorage for saved theme
-      const storedTheme = localStorage.getItem(THEME_STORAGE_KEY)
-      if (storedTheme && isValidTheme(storedTheme) && hasUserPreference) {
-        return storedTheme
+      const stored = localStorage.getItem(THEME_STORAGE_KEY)
+      if (stored && isValidTheme(stored) && hasUserPreference) {
+        return stored
       }
     }
 

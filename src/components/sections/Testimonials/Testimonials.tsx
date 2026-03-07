@@ -22,8 +22,8 @@ import styles from './Testimonials.module.css'
 export const Testimonials = (): React.ReactElement => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(true)
-  const [touchStart, setTouchStart] = useState<number | null>(null)
-  const [touchEnd, setTouchEnd] = useState<number | null>(null)
+  const [touchStart, setTouchStart] = useState(0)
+  const [touchEnd, setTouchEnd] = useState(0)
   const carouselRef = useRef<HTMLDivElement>(null)
   const prefersReducedMotion = useReducedMotion()
 
@@ -91,16 +91,16 @@ export const Testimonials = (): React.ReactElement => {
    * Handle touch end - detect swipe direction
    */
   const handleTouchEnd = () => {
-    const swipeStartX = touchStart
-    const swipeEndX = touchEnd
+    const start = touchStart
+    const end = touchEnd
 
     // Reset touch state first
-    setTouchStart(null)
-    setTouchEnd(null)
+    setTouchStart(0)
+    setTouchEnd(0)
 
-    if (swipeStartX == null || swipeEndX == null) return
+    if (!start || !end) return
 
-    const distance = swipeStartX - swipeEndX
+    const distance = start - end
     const isLeftSwipe = distance > MIN_SWIPE_DISTANCE
     const isRightSwipe = distance < -MIN_SWIPE_DISTANCE
 

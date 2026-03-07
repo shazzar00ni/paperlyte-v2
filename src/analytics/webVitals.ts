@@ -133,7 +133,7 @@ function trackCLS(callback: ReportCallback): MetricTracker {
   }
 
   try {
-    let cumulativeLayoutShiftScore = 0
+    let clsValue = 0
     const entries: PerformanceEntry[] = []
     let observer: PerformanceObserver | null = null
 
@@ -146,7 +146,7 @@ function trackCLS(callback: ReportCallback): MetricTracker {
         }
 
         if (!layoutShiftEntry.hadRecentInput) {
-          cumulativeLayoutShiftScore += layoutShiftEntry.value || 0
+          clsValue += layoutShiftEntry.value || 0
           entries.push(entry)
         }
       }
@@ -158,8 +158,8 @@ function trackCLS(callback: ReportCallback): MetricTracker {
     const finalize = () => {
       callback({
         name: 'CLS',
-        value: cumulativeLayoutShiftScore,
-        rating: getRating('CLS', cumulativeLayoutShiftScore),
+        value: clsValue,
+        rating: getRating('CLS', clsValue),
         entries,
       })
     }

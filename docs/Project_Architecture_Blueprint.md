@@ -30,6 +30,7 @@ This document serves as a comprehensive architectural reference for the Paperlyt
 16. [Architectural Decision Records](#architectural-decision-records)
 17. [Governance & Development Blueprint](#governance--development-blueprint)
 18. [Quick Reference](#quick-reference)
+19. [Performance Optimization Roadmap](#performance-optimization-roadmap)
 
 ---
 
@@ -1972,6 +1973,249 @@ When adding new features:
 - **Migration guide** - Required for any breaking change
 - **Deprecation period** - Minimum 1 minor version before removal
 
+### Common Pitfalls
+
+This section documents frequently encountered mistakes and anti-patterns to help developers avoid common issues.
+
+#### Hook Cleanup Issues
+
+**Problem:** Forgetting cleanup functions in `useEffect` leads to memory leaks and performance degradation.
+
+**❌ Wrong:**
+```typescript
+// Memory leak - event listener never removed
+useEffect(() => {
+  window.addEventListener('resize', handleResize);
+}, []);
+```
+
+**✅ Correct:**
+```typescript
+useEffect(() => {
+  window.addEventListener('resize', handleResize);
+  return () => window.removeEventListener('resize', handleResize);
+}, []);
+```
+
+**Common scenarios requiring cleanup:**
+- Event listeners (resize, scroll, click outside component)
+- Timers (`setTimeout`, `setInterval`)
+- Subscriptions (IntersectionObserver, ResizeObserver)
+- Animation frames (`requestAnimationFrame`)
+- WebSocket connections
+
+**Reference:** See Section 12 "Testing Architecture" for testing cleanup behavior.
+
+#### Accessibility Mistakes
+
+**Problem:** Missing accessibility considerations make the app unusable for keyboard and screen reader users.
+
+**❌ Wrong:**
+```typescript
+// Non-interactive div without keyboard support
+<div onClick={handleClick}>Click me</div>
+
+// Animation without reduced motion check
+<div className={styles.animated}>...</div>
+```
+
+**✅ Correct:**
+```typescript
+// Proper button with semantic HTML
+<button onClick={handleClick} aria-label="Descriptive action">
+  Click me
+</button>
+
+// Animation respects user preferences
+import { useReducedMotion } from '../hooks/useReducedMotion';
+
+function AnimatedComponent() {
+  const prefersReducedMotion = useReducedMotion();
+
+  return (
+    <div className={prefersReducedMotion ? styles.static : styles.animated}>
+      ...
+    </div>
+  );
+}
+```
+
+**Critical accessibility checks:**
+- ✅ Use semantic HTML (`<button>`, `<nav>`, `<main>`, `<header>`)
+- ✅ Provide ARIA labels for icon-only buttons
+- ✅ Ensure keyboard navigation works (Tab, Enter, Escape)
+- ✅ Respect `prefers-reduced-motion` for animations
+- ✅ Maintain WCAG 2.1 AA color contrast ratios (4.5:1 text, 3:1 UI)
+- ✅ Include focus visible styles for keyboard navigation
+
+**Reference:** See Section 8 "Cross-Cutting Concerns" for accessibility architecture patterns.
+
+#### TypeScript Anti-Patterns
+
+**Problem:** Improper TypeScript usage defeats the purpose of type safety.
+
+**❌ Wrong:**
+```typescript
+// Using 'any' defeats type safety
+function processData(data: any) {
+  return data.map((item: any) => item.value);
+}
+
+// Missing return type annotation
+function calculateTotal(items) {
+  return items.reduce((sum, item) => sum + item.price, 0);
+}
+
+// Ignoring strict mode warnings with @ts-ignore
+// @ts-ignore
+const result = someUnsafeOperation();
+```
+
+**✅ Correct:**
+```typescript
+// Proper typing with interfaces
+interface DataItem {
+  value: string;
+  id: number;
+}
+
+function processData(data: DataItem[]): string[] {
+  return data.map((item) => item.value);
+}
+
+// Explicit return types for public functions
+interface Item {
+  price: number;
+}
+
+function calculateTotal(items: Item[]): number {
+  return items.reduce((sum, item) => sum + item.price, 0);
+}
+
+// Use 'unknown' and type guards instead of 'any'
+function handleApiResponse(response: unknown): DataItem[] {
+  if (!Array.isArray(response)) {
+    throw new Error('Expected array');
+  }
+  return response as DataItem[];
+}
+```
+
+**TypeScript best practices:**
+- ✅ Enable strict mode (already configured in `tsconfig.json`)
+- ✅ Use `unknown` instead of `any` when type is truly unknown
+- ✅ Define explicit return types for public functions
+- ✅ Create interfaces for object shapes
+- ✅ Use type guards to narrow types safely
+- ✅ Avoid `@ts-ignore` - fix the underlying type issue instead
+
+#### SSR Safety Issues
+
+**Problem:** Accessing browser APIs during server-side rendering causes errors.
+
+**❌ Wrong:**
+```typescript
+// Crashes during SSR - window is undefined
+const theme = window.matchMedia('(prefers-color-scheme: dark)').matches
+  ? 'dark'
+  : 'light';
+
+// localStorage not available in SSR
+const savedValue = localStorage.getItem('key');
+```
+
+**✅ Correct:**
+```typescript
+// Guard against SSR with typeof check
+const theme =
+  typeof window !== 'undefined' &&
+  window.matchMedia('(prefers-color-scheme: dark)').matches
+    ? 'dark'
+    : 'light';
+
+// Use useEffect for browser-only code
+function useLocalStorage(key: string) {
+  const [value, setValue] = useState<string | null>(null);
+
+  useEffect(() => {
+    // This only runs in the browser
+    setValue(localStorage.getItem(key));
+  }, [key]);
+
+  return value;
+}
+```
+
+**SSR-safe patterns:**
+- ✅ Check `typeof window !== 'undefined'` before accessing browser APIs
+- ✅ Use `useEffect` for browser-only initialization
+- ✅ Provide sensible defaults for SSR render
+- ✅ Test components with SSR simulation in test environment
+
+**Note:** While Paperlyte is a pure SPA (not SSR), these patterns ensure compatibility with future SSR adoption or static site generation.
+
+#### Performance Pitfalls
+
+**Problem:** Unnecessary re-renders and expensive computations degrade performance.
+
+**❌ Wrong:**
+```typescript
+// Component re-renders on every parent render
+function ExpensiveChild({ data }) {
+  const processed = expensiveOperation(data);
+  return <div>{processed}</div>;
+}
+
+// New object/array on every render triggers child re-renders
+function Parent() {
+  return <Child config={{ theme: 'dark' }} items={[1, 2, 3]} />;
+}
+
+// Inline anonymous function recreated on every render
+<button onClick={() => handleClick(item.id)}>Click</button>
+```
+
+**✅ Correct:**
+```typescript
+// Memoize expensive computations
+import { useMemo, memo, useCallback } from 'react';
+
+const ExpensiveChild = memo(function ExpensiveChild({ data }) {
+  const processed = useMemo(
+    () => expensiveOperation(data),
+    [data]
+  );
+  return <div>{processed}</div>;
+});
+
+// Stable object references
+function Parent() {
+  const config = useMemo(() => ({ theme: 'dark' }), []);
+  const items = useMemo(() => [1, 2, 3], []);
+  return <Child config={config} items={items} />;
+}
+
+// Memoize callbacks passed to children
+function Parent() {
+  const handleClick = useCallback((id: number) => {
+    // handle click
+  }, []);
+
+  return <button onClick={() => handleClick(item.id)}>Click</button>;
+}
+```
+
+**Performance guidelines:**
+- ✅ Use `React.memo` for components that render often with same props
+- ✅ Use `useMemo` for expensive computations
+- ✅ Use `useCallback` for functions passed to memoized children
+- ⚠️ Don't over-optimize - measure before memoizing
+- ✅ Use React DevTools Profiler to identify actual bottlenecks
+- ✅ Implement code splitting for below-the-fold components (see Section 19)
+- ✅ Lazy load heavy components with `React.lazy()` and `Suspense`
+
+**Reference:** See Section 19 "Performance Optimization Roadmap" for comprehensive optimization strategies.
+
 ---
 
 ## Quick Reference
@@ -2032,11 +2276,389 @@ When adding new features:
 
 ---
 
+## Performance Optimization Roadmap
+
+This section documents strategic performance optimizations to maintain Paperlyte's "lightning-fast" value proposition. Performance is a core architectural principle (see Section 1), and this roadmap provides a phased approach to optimization.
+
+### Current Performance Baseline
+
+**Target Metrics** (from CLAUDE.md):
+- **Page Load Speed:** <2 seconds initial load
+- **Lighthouse Performance:** >90 score
+- **Lighthouse Accessibility:** >95 score
+- **Core Web Vitals:** Must pass all metrics
+
+**Current Implementation:**
+- ✅ Vite build tool with HMR for fast development
+- ✅ TypeScript strict mode for type safety and optimization
+- ✅ CSS Modules for scoped, tree-shakeable styles
+- ✅ Minimal dependencies (no heavy frameworks)
+- ✅ Privacy-first analytics (cookie-less, no tracking bloat)
+
+### Quick Wins (High Impact, Low Effort)
+
+These optimizations can be implemented immediately with minimal risk:
+
+#### 1. Image Lazy Loading
+
+**Strategy:** Add `loading="lazy"` and `decoding="async"` to all below-the-fold images.
+
+**Implementation:**
+```typescript
+// Hero component (above fold) - no lazy loading
+<img src={heroImage} alt="Hero" decoding="async" />
+
+// Testimonials, Features (below fold) - lazy load
+<img
+  src={testimonialAvatar}
+  alt="Customer name"
+  loading="lazy"
+  decoding="async"
+/>
+```
+
+**Files to update:**
+- `src/components/sections/Testimonials/Testimonials.tsx`
+- `src/components/sections/Features/Features.tsx`
+- Any component rendering images below the fold
+
+**Expected Impact:** 200-500ms faster LCP (Largest Contentful Paint)
+
+#### 2. Critical Resource Preloading
+
+**Strategy:** Preload critical fonts and assets that block rendering.
+
+**Implementation in `index.html`:**
+```html
+<head>
+  <!-- DNS prefetch for external services -->
+  <link rel="dns-prefetch" href="https://plausible.io" />
+  <link rel="preconnect" href="https://[sentry-domain]" crossorigin />
+
+  <!-- Preload critical font weights -->
+  <link
+    rel="preload"
+    href="/fonts/inter-v12-latin-regular.woff2"
+    as="font"
+    type="font/woff2"
+    crossorigin
+  />
+  <link
+    rel="preload"
+    href="/fonts/playfair-display-v30-latin-700.woff2"
+    as="font"
+    type="font/woff2"
+    crossorigin
+  />
+</head>
+```
+
+**Expected Impact:** 100-200ms faster FCP (First Contentful Paint)
+
+#### 3. Cache Header Optimization
+
+**Strategy:** Configure aggressive caching for immutable assets, no-cache for HTML.
+
+**Implementation in `netlify.toml`:**
+```toml
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, no-cache, must-revalidate"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+```
+
+**Files to update:**
+- `netlify.toml` (add/verify headers)
+
+**Expected Impact:** Instant loads for repeat visitors
+
+#### 4. Compression Configuration
+
+**Strategy:** Verify Gzip/Brotli compression is enabled on Netlify.
+
+**Note:** Netlify enables Brotli compression by default for text assets. Verify in deployment settings.
+
+**Expected Impact:** 60-80% reduction in transfer size for text assets
+
+### Advanced Optimizations (Moderate Effort, High Impact)
+
+These require more implementation effort but provide significant performance gains:
+
+#### 1. Code Splitting for Below-the-Fold Components
+
+**Strategy:** Use `React.lazy()` and `Suspense` to split below-the-fold sections into separate bundles.
+
+**Implementation:**
+```typescript
+// src/App.tsx
+import { lazy, Suspense } from 'react';
+
+// Above-the-fold - static imports (immediate load)
+import Header from './components/layout/Header';
+import Hero from './components/sections/Hero';
+import Problem from './components/sections/Problem';
+import Solution from './components/sections/Solution';
+import Features from './components/sections/Features';
+
+// Below-the-fold - dynamic imports (lazy load)
+const Testimonials = lazy(() => import('./components/sections/Testimonials'));
+const EmailCapture = lazy(() => import('./components/sections/EmailCapture'));
+const FAQ = lazy(() => import('./components/sections/FAQ'));
+const FeedbackWidget = lazy(() => import('./components/ui/FeedbackWidget'));
+
+// Loading fallback component
+const LoadingFallback = () => (
+  <div style={{ minHeight: '200px' }} aria-live="polite" aria-busy="true">
+    Loading...
+  </div>
+);
+
+function App() {
+  return (
+    <>
+      <Header />
+      <Hero />
+      <Problem />
+      <Solution />
+      <Features />
+
+      {/* Lazy-loaded below-the-fold sections */}
+      <Suspense fallback={<LoadingFallback />}>
+        <Testimonials />
+        <EmailCapture />
+        <FAQ />
+      </Suspense>
+
+      {/* Feedback widget in separate boundary (interaction-triggered) */}
+      <Suspense fallback={null}>
+        <FeedbackWidget />
+      </Suspense>
+    </>
+  );
+}
+```
+
+**Expected Impact:** 30-40% reduction in initial bundle size, faster TTI (Time to Interactive)
+
+**Reference:** See Section 10 "Technology-Specific Patterns (React)" for component composition patterns.
+
+#### 2. Dynamic Imports for Heavy Utilities
+
+**Strategy:** Lazy-load heavy utilities that aren't needed immediately.
+
+**Example:**
+```typescript
+// Instead of top-level import
+// import { heavyValidation } from './utils/validation';
+
+// Lazy-load when needed
+async function handleFormSubmit(data: FormData) {
+  const { heavyValidation } = await import('./utils/validation');
+  const result = heavyValidation(data);
+  // ...
+}
+```
+
+**Candidates for dynamic imports:**
+- Email validation with disposable domain checks
+- Complex form validation
+- PDF generation utilities (if added)
+
+**Expected Impact:** 10-20KB reduction in initial bundle
+
+#### 3. Resource Hints (DNS-Prefetch, Preconnect)
+
+**Strategy:** Optimize connection setup for external domains.
+
+**Implementation:**
+```html
+<!-- DNS lookup in parallel with page load -->
+<link rel="dns-prefetch" href="https://plausible.io" />
+
+<!-- Establish early connection for critical external resources -->
+<link rel="preconnect" href="https://[sentry-ingest-domain]" crossorigin />
+```
+
+**Expected Impact:** 100-300ms faster for external resource loading
+
+### Progressive Web App (PWA) Capabilities
+
+**Strategy:** Add service worker for offline caching and improved repeat-visit performance.
+
+**Implementation with vite-plugin-pwa:**
+
+1. **Install dependency:**
+   ```bash
+   npm install -D vite-plugin-pwa
+   ```
+
+2. **Configure in `vite.config.ts`:**
+   ```typescript
+   import { VitePWA } from 'vite-plugin-pwa';
+
+   export default defineConfig({
+     plugins: [
+       react(),
+       VitePWA({
+         registerType: 'autoUpdate',
+         manifest: {
+           name: 'Paperlyte',
+           short_name: 'Paperlyte',
+           description: 'Lightning-fast, distraction-free note-taking',
+           theme_color: '#1a1a1a',
+           background_color: '#ffffff',
+           display: 'standalone',
+           icons: [
+             {
+               src: '/icon-192.png',
+               sizes: '192x192',
+               type: 'image/png'
+             },
+             {
+               src: '/icon-512.png',
+               sizes: '512x512',
+               type: 'image/png'
+             }
+           ]
+         },
+         workbox: {
+           // CacheFirst for static assets
+           runtimeCaching: [
+             {
+               urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+               handler: 'CacheFirst',
+               options: {
+                 cacheName: 'google-fonts-cache',
+                 expiration: {
+                   maxEntries: 10,
+                   maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
+                 },
+                 cacheableResponse: {
+                   statuses: [0, 200]
+                 }
+               }
+             },
+             {
+               urlPattern: /\.(?:js|css|woff2)$/,
+               handler: 'CacheFirst',
+               options: {
+                 cacheName: 'static-resources',
+                 expiration: {
+                   maxEntries: 60,
+                   maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
+                 }
+               }
+             },
+             {
+               urlPattern: /\.(?:png|jpg|jpeg|svg|gif)$/,
+               handler: 'CacheFirst',
+               options: {
+                 cacheName: 'images',
+                 expiration: {
+                   maxEntries: 60,
+                   maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
+                 }
+               }
+             }
+           ],
+           // Exclude API endpoints from caching
+           navigateFallbackDenylist: [/^\/api/]
+         }
+       })
+     ]
+   });
+   ```
+
+3. **Update `netlify.toml` to prevent service worker caching:**
+   ```toml
+   [[headers]]
+     for = "/sw.js"
+     [headers.values]
+       Cache-Control = "public, no-cache, must-revalidate"
+   ```
+
+**Expected Impact:** Near-instant loads for repeat visitors, offline capability
+
+**Reference:** See Section 13 "Deployment Architecture" for CDN and caching strategies.
+
+### Performance Monitoring
+
+**Current Monitoring** (from Section 8 "Cross-Cutting Concerns"):
+- ✅ Plausible Analytics for page views
+- ✅ Sentry for error monitoring
+- ✅ Lighthouse CI in GitHub Actions (see `docs/CI-CD-PIPELINE.md`)
+
+**Core Web Vitals Tracking:**
+- **LCP (Largest Contentful Paint):** Target <2.5s
+- **FID (First Input Delay):** Target <100ms
+- **CLS (Cumulative Layout Shift):** Target <0.1
+
+**Implementation in `src/utils/monitoring.ts`:**
+```typescript
+export function reportWebVitals(onPerfEntry?: (metric: any) => void) {
+  if (onPerfEntry && onPerfEntry instanceof Function) {
+    import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
+      getCLS(onPerfEntry);
+      getFID(onPerfEntry);
+      getFCP(onPerfEntry);
+      getLCP(onPerfEntry);
+      getTTFB(onPerfEntry);
+    });
+  }
+}
+```
+
+**Send metrics to analytics:**
+```typescript
+reportWebVitals((metric) => {
+  trackEvent('web_vitals', {
+    name: metric.name,
+    value: Math.round(metric.value),
+    rating: metric.rating
+  });
+});
+```
+
+### Optimization Decision Framework
+
+When considering a new optimization:
+
+1. **Measure First:** Use Chrome DevTools Performance tab or Lighthouse to identify actual bottlenecks
+2. **Impact vs. Effort:** Prioritize high-impact, low-effort optimizations (see Quick Wins)
+3. **Maintain Simplicity:** Don't sacrifice code clarity for marginal gains (<50ms improvement)
+4. **Test on Real Devices:** Performance varies significantly across devices and networks
+5. **Monitor Regressions:** Run Lighthouse CI on every PR to catch performance degradation
+
+**Anti-Patterns to Avoid:**
+- ❌ Premature optimization without measurement
+- ❌ Over-memoizing components (adds complexity, minimal benefit)
+- ❌ Excessive bundle splitting (increases HTTP requests)
+- ❌ Optimizing for synthetic benchmarks over real-world usage
+
+**Reference:** See "Common Pitfalls - Performance Pitfalls" subsection in Section 17 for performance anti-patterns.
+
+---
+
 ## Document Metadata
 
 **Generated:** 2026-01-16
-**Last Updated:** 2026-02-05
-**Version:** 2.0
+**Last Updated:** 2026-02-11
+**Version:** 2.1
 
 ### Update Recommendations
 

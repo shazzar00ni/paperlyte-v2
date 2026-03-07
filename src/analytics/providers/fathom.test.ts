@@ -337,7 +337,12 @@ describe('analytics/providers/fathom', () => {
       provider.trackWebVitals(vitals)
 
       expect(window.fathom!.trackGoal).toHaveBeenCalledTimes(6)
-      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals', 0)
+      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals', 250000)
+      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals', 10000)
+      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals', 10)
+      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals', 80000)
+      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals', 180000)
+      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals', 20000)
     })
 
     it('should round time-based metrics to milliseconds', () => {
@@ -504,6 +509,12 @@ describe('analytics/providers/fathom', () => {
     it('should allow tracking when DNT is not set', () => {
       Object.defineProperty(navigator, 'doNotTrack', {
         writable: true,
+        value: null,
+      })
+      // Reset window.doNotTrack in case a prior test set it
+      Object.defineProperty(window, 'doNotTrack', {
+        writable: true,
+        configurable: true,
         value: null,
       })
 

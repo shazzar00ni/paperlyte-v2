@@ -18,8 +18,8 @@ This file contains a summary of pull requests I have reviewed.
 
 - **Affected Branches (confirmed across multiple reviews):**
 
-  | Branch / PR | `.npmrc` | `ROADMAP.md` | `gitVersionControl.md` | `review.md` | `navigation.ts` reverted |
-  |-------------|:--------:|:------------:|:---------------------:|:-----------:|:------------------------:|
+  | Branch / PR | `.npmrc` | `docs/ROADMAP.md` | `gitVersionControl.md` | `review.md` | `src/utils/navigation.ts` reverted |
+  |-------------|:--------:|:-----------------:|:---------------------:|:-----------:|:------------------------:|
   | `origin/claude/implement-todo-item-2H9LP` | ✗ | ✗ | ✗ | ✗ | ✗ |
   | `origin/claude/core-editor-phase-1-PI3Yp` | ✗ | ✗ | ✗ | ✗ | ✗ |
   | `origin/copilot/sub-pr-503` | ✗ | — | ✗ | ✗ | ✗ |

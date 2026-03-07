@@ -14,7 +14,11 @@ const BENEFITS = [
   'Receive exclusive productivity tips and updates',
 ]
 
-export const EmailCapture = (): React.ReactElement => {
+interface EmailCaptureProps {
+  onSubmit?: (email: string) => Promise<void>
+}
+
+export const EmailCapture = ({ onSubmit }: EmailCaptureProps = {}): React.ReactElement => {
   const [email, setEmail] = useState('')
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -29,8 +33,12 @@ export const EmailCapture = (): React.ReactElement => {
     setError(null)
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      if (onSubmit) {
+        await onSubmit(email)
+      } else {
+        // Simulate API call
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+      }
 
       setIsLoading(false)
       setIsSubmitted(true)

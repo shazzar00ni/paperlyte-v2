@@ -131,6 +131,35 @@ describe('FeedbackWidget', () => {
       })
     })
 
+    it('switches back to bug report type after selecting feature', async () => {
+      render(<FeedbackWidget />)
+
+      // Open modal
+      const openButton = screen.getByRole('button', { name: /open feedback form/i })
+      fireEvent.click(openButton)
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /request a feature/i })).toBeInTheDocument()
+      })
+
+      // Switch to feature
+      const featureButton = screen.getByRole('button', { name: /request a feature/i })
+      fireEvent.click(featureButton)
+
+      await waitFor(() => {
+        expect(featureButton).toHaveAttribute('aria-pressed', 'true')
+      })
+
+      // Switch back to bug
+      const bugButton = screen.getByRole('button', { name: /report a bug/i })
+      fireEvent.click(bugButton)
+
+      await waitFor(() => {
+        expect(bugButton).toHaveAttribute('aria-pressed', 'true')
+        expect(featureButton).toHaveAttribute('aria-pressed', 'false')
+      })
+    })
+
     it('switches to feature request type when clicked', async () => {
       render(<FeedbackWidget />)
 
@@ -414,6 +443,151 @@ describe('FeedbackWidget', () => {
       } finally {
         vi.useRealTimers()
       }
+    })
+  })
+
+  describe('LocalStorage Edge Cases', () => {
+    it('handles corrupted localStorage data gracefully', async () => {
+      const user = userEvent.setup()
+
+      // Store corrupted (non-JSON) data
+      localStorage.setItem('paperlyte_feedback', 'not-valid-json{{{')
+
+      render(<FeedbackWidget />)
+
+      // Open modal
+      await user.click(screen.getByRole('button', { name: /open feedback form/i }))
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+      })
+
+      // Enter feedback and submit
+      await user.type(screen.getByRole('textbox'), 'Test after corruption')
+      await user.click(screen.getByRole('button', { name: /send feedback/i }))
+
+      await waitFor(() => {
+        expect(screen.getByText(/thank you!/i)).toBeInTheDocument()
+      })
+
+      // Should have recovered and stored new feedback in a fresh array
+      const stored = JSON.parse(localStorage.getItem('paperlyte_feedback')!)
+      expect(stored).toHaveLength(1)
+      expect(stored[0].message).toBe('Test after corruption')
+    })
+
+    it('handles non-array localStorage data gracefully', async () => {
+      const user = userEvent.setup()
+
+      // Store valid JSON but not an array
+      localStorage.setItem('paperlyte_feedback', JSON.stringify({ not: 'an array' }))
+
+      render(<FeedbackWidget />)
+
+      await user.click(screen.getByRole('button', { name: /open feedback form/i }))
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+      })
+
+      await user.type(screen.getByRole('textbox'), 'Test non-array recovery')
+      await user.click(screen.getByRole('button', { name: /send feedback/i }))
+
+      await waitFor(() => {
+        expect(screen.getByText(/thank you!/i)).toBeInTheDocument()
+      })
+
+      const stored = JSON.parse(localStorage.getItem('paperlyte_feedback')!)
+      expect(stored).toHaveLength(1)
+      expect(stored[0].message).toBe('Test non-array recovery')
+    })
+
+    it('shows error when localStorage quota is exceeded', async () => {
+      const user = userEvent.setup()
+
+      // Mock localStorage.setItem to throw a quota exceeded error
+      const setItemSpy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation((key) => {
+        if (key === 'paperlyte_feedback') {
+          throw new DOMException('QuotaExceededError', 'QuotaExceededError')
+        }
+      })
+
+      render(<FeedbackWidget />)
+
+      await user.click(screen.getByRole('button', { name: /open feedback form/i }))
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+      })
+
+      await user.type(screen.getByRole('textbox'), 'Test quota exceeded')
+      await user.click(screen.getByRole('button', { name: /send feedback/i }))
+
+      await waitFor(() => {
+        expect(screen.getByText(/failed to submit feedback/i)).toBeInTheDocument()
+      })
+
+      setItemSpy.mockRestore()
+    })
+  })
+
+  describe('Focus Trap', () => {
+    it('traps focus with Tab key on last element', async () => {
+      render(<FeedbackWidget />)
+
+      // Open modal
+      fireEvent.click(screen.getByRole('button', { name: /open feedback form/i }))
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+      })
+
+      // Type text to enable the submit button (disabled when empty)
+      fireEvent.change(screen.getByRole('textbox'), { target: { value: 'test' } })
+
+      // Get the modal content and find focusable elements (same selector as the component)
+      const modal = screen.getByRole('dialog').querySelector('[class*="modalContent"]')
+      expect(modal).toBeInTheDocument()
+
+      const focusableElements = modal!.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+      const lastElement = focusableElements[focusableElements.length - 1]
+      const firstElement = focusableElements[0]
+
+      // Focus the last element (submit button, now enabled)
+      lastElement.focus()
+      expect(lastElement).toHaveFocus()
+
+      // Fire Tab keydown - the focus trap handler wraps to first element
+      fireEvent.keyDown(document, { key: 'Tab' })
+      expect(firstElement).toHaveFocus()
+    })
+
+    it('traps focus with Shift+Tab on first element', async () => {
+      render(<FeedbackWidget />)
+
+      // Open modal
+      fireEvent.click(screen.getByRole('button', { name: /open feedback form/i }))
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+      })
+
+      // Type text to enable the submit button (disabled when empty)
+      fireEvent.change(screen.getByRole('textbox'), { target: { value: 'test' } })
+
+      const modal = screen.getByRole('dialog').querySelector('[class*="modalContent"]')
+      expect(modal).toBeInTheDocument()
+
+      const focusableElements = modal!.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+      const firstElement = focusableElements[0]
+      const lastElement = focusableElements[focusableElements.length - 1]
+
+      // Focus the first element (close button)
+      firstElement.focus()
+      expect(firstElement).toHaveFocus()
+
+      // Fire Shift+Tab keydown - the focus trap handler wraps to last element
+      fireEvent.keyDown(document, { key: 'Tab', shiftKey: true })
+      expect(lastElement).toHaveFocus()
     })
   })
 

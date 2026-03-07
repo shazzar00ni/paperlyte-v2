@@ -11,9 +11,9 @@ This file contains a summary of pull requests I have reviewed.
 
   | File | Severity | Notes |
   |------|----------|-------|
-  | `.npmrc` | 🔴 Critical | Controls `legacy-peer-deps=true`; its removal breaks dependency resolution for all peer deps |
+  | `.npmrc` | 🔴 Critical | Controls `legacy-peer-deps=true`; its removal breaks dependency resolution for all peer dependencies |
   | `docs/ROADMAP.md` | 🟠 High | Core project roadmap documentation |
-  | `gitVersionControl.md` | 🟠 High | Core git workflow documentation |
+  | `gitVersionControl.md` | 🟠 High | Core Git workflow documentation |
   | `review.md` | 🟡 Medium | AI PR reviewer instruction file |
 
 - **Affected Branches (confirmed across multiple reviews):**

@@ -55,17 +55,21 @@ jobs:
           # This will handover control about PR rejection to the GitHub side
           max-allowed-issues: 2147483647
 
-      # Merge multiple SARIF runs into a single run to comply with GitHub's July 2025
-      # requirement that each upload must have a single run per category.
+      # Merge multiple SARIF runs into a single run to stay within GitHub Code Scanning's
+      # 20-run limit per SARIF upload. Codacy generates one run per tool (23 tools = 23 runs).
+      # We must merge before uploading, and only upload when merge succeeds.
       # See: https://github.blog/changelog/2025-07-21-code-scanning-will-stop-combining-multiple-sarif-runs-uploaded-in-the-same-sarif-file/
       - name: Merge SARIF runs into single run
-        if: hashFiles('results.sarif') != ''
-        run: ./scripts/merge-sarif-runs.sh results.sarif
+        id: merge-sarif
+        if: steps.codacy-run.conclusion == 'success'
+        run: bash ./scripts/merge-sarif-runs.sh results.sarif
 
-      # Upload the SARIF file (now with single run) using official action
+      # Upload the SARIF file only after successful merge.
+      # Using step outcome instead of hashFiles() ensures we never upload the
+      # raw 23-run file when the merge step fails or is skipped.
       - name: Upload SARIF results file
         uses: github/codeql-action/upload-sarif@89a39a4e59826350b863aa6b6252a07ad50cf83e # v4.32.4
-        if: hashFiles('results.sarif') != ''
+        if: steps.merge-sarif.conclusion == 'success'
         continue-on-error: true
         with:
           sarif_file: results.sarif

@@ -219,9 +219,7 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
         const modal = modalRef.current
         if (!modal) return
 
-        const focusableElements = modal.querySelectorAll<HTMLElement>(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-        )
+        const focusableElements = getFocusableElements(modal)
         const firstElement = focusableElements[0]
         const lastElement = focusableElements[focusableElements.length - 1]
 

@@ -22,8 +22,8 @@ import styles from './Testimonials.module.css'
 export const Testimonials = (): React.ReactElement => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(true)
-  const [touchStart, setTouchStart] = useState(0)
-  const [touchEnd, setTouchEnd] = useState(0)
+  const [touchStart, setTouchStart] = useState<number | null>(null)
+  const [touchEnd, setTouchEnd] = useState<number | null>(null)
   const carouselRef = useRef<HTMLDivElement>(null)
   const prefersReducedMotion = useReducedMotion()
 
@@ -95,10 +95,10 @@ export const Testimonials = (): React.ReactElement => {
     const swipeEndX = touchEnd
 
     // Reset touch state first
-    setTouchStart(0)
-    setTouchEnd(0)
+    setTouchStart(null)
+    setTouchEnd(null)
 
-    if (!swipeStartX || !swipeEndX) return
+    if (swipeStartX == null || swipeEndX == null) return
 
     const distance = swipeStartX - swipeEndX
     const isLeftSwipe = distance > MIN_SWIPE_DISTANCE

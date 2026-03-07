@@ -129,7 +129,8 @@ export const CounterAnimation = ({
             easedProgress = progress
         }
 
-        const currentValue = capturedStartValue + (capturedEndValue - capturedStartValue) * easedProgress
+        const currentValue =
+          capturedStartValue + (capturedEndValue - capturedStartValue) * easedProgress
 
         setAnimatedValue(currentValue)
 

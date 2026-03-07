@@ -37,10 +37,15 @@ echo "Found $RUN_COUNT runs in SARIF file"
 
 if [ "$RUN_COUNT" -le 1 ]; then
   echo "Single run detected, no merging needed"
-  # Copy to output if different from input
-  if [ "$INPUT_FILE" != "$OUTPUT_FILE" ]; then
-    cp "$INPUT_FILE" "$OUTPUT_FILE"
+  # Strip partialFingerprints even for single-run files so that
+  # github/codeql-action/upload-sarif can calculate its own consistent
+  # fingerprints from source-file line hashes without conflicting with
+  # pre-embedded values from the analysis tool.
+  if ! jq 'del(.runs[].results[].partialFingerprints)' "$INPUT_FILE" > "${OUTPUT_FILE}.tmp"; then
+    echo "Error: jq fingerprint-strip failed for single run"
+    exit 1
   fi
+  mv "${OUTPUT_FILE}.tmp" "$OUTPUT_FILE"
   exit 0
 fi
 
@@ -109,13 +114,21 @@ if ! jq '
     # - [0] // {}: Default to empty object if array is empty
     # - .physicalLocation // {}: Default if no physical location
     # - .region.* // 0: Default line/column numbers to 0
+    #
+    # partialFingerprints are stripped from each result after deduplication.
+    # The Codacy CLI embeds its own partialFingerprints using an algorithm that
+    # differs from the one used by github/codeql-action/upload-sarif. When both
+    # fingerprint values exist for the same result, upload-sarif logs a warning:
+    #   Calculated fingerprint X but found existing inconsistent fingerprint Y
+    # Removing Codacy fingerprints lets upload-sarif calculate its own consistent
+    # values from the source-file line hashes, eliminating those warnings.
     results: [.runs[].results // [] | .[]] | unique_by(
       (.ruleId // "") +
       ((((.locations // [])[0] // {}).physicalLocation // {}).artifactLocation.uri // "") +
       ((((.locations // [])[0] // {}).physicalLocation // {}).region.startLine // 0 | tostring) +
       ((((.locations // [])[0] // {}).physicalLocation // {}).region.startColumn // 0 | tostring) +
       ((((.locations // [])[0] // {}).physicalLocation // {}).region.endLine // 0 | tostring)
-    ),
+    ) | map(del(.partialFingerprints)),
 
     # -------------------------------------------------------------------------
     # ADDITIONAL SARIF PROPERTIES

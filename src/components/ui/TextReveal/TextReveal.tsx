@@ -115,13 +115,18 @@ export const TextReveal = ({
     )
   }
 
-  const validAnimations = new Map<string, string | undefined>([
-    ['fadeUp', styles.fadeUp],
-    ['fadeIn', styles.fadeIn],
-    ['slideUp', styles.slideUp],
-    ['blur', styles.blur],
-  ])
-  const animationClass = validAnimations.get(animation) ?? styles.fadeUp
+const VALID_ANIMATIONS = new Map<string, string | undefined>([
+  ['fadeUp', styles.fadeUp],
+  ['fadeIn', styles.fadeIn],
+  ['slideUp', styles.slideUp],
+  ['blur', styles.blur],
+])
+
+export const TextReveal = ({
+  ...
+}: TextRevealProps): React.ReactElement => {
+  ...
+  const animationClass = VALID_ANIMATIONS.get(animation) ?? styles.fadeUp
   const containerClasses = [styles.container, className].filter(Boolean).join(' ')
 
   return (

@@ -29,7 +29,7 @@ describe('metaTags', () => {
     })
 
     it('should handle missing robots meta tag gracefully', () => {
-      expect(() => initializeMetaTags()).not.toThrow()
+      expect(() => { initializeMetaTags(); }).not.toThrow()
     })
 
     it('should remove keywords meta tag in development', () => {
@@ -42,7 +42,7 @@ describe('metaTags', () => {
     })
 
     it('should handle missing keywords meta tag gracefully', () => {
-      expect(() => initializeMetaTags()).not.toThrow()
+      expect(() => { initializeMetaTags(); }).not.toThrow()
     })
 
     it('should add [DEV] prefix to title in development', () => {
@@ -64,14 +64,14 @@ describe('metaTags', () => {
     })
 
     it('should handle missing title element gracefully', () => {
-      expect(() => initializeMetaTags()).not.toThrow()
+      expect(() => { initializeMetaTags(); }).not.toThrow()
     })
 
     it('should handle title with null textContent', () => {
       const title = document.createElement('title')
       document.head.appendChild(title)
 
-      expect(() => initializeMetaTags()).not.toThrow()
+      expect(() => { initializeMetaTags(); }).not.toThrow()
     })
 
     it('should update og:url to current origin', () => {
@@ -98,11 +98,11 @@ describe('metaTags', () => {
     })
 
     it('should handle missing og:url gracefully', () => {
-      expect(() => initializeMetaTags()).not.toThrow()
+      expect(() => { initializeMetaTags(); }).not.toThrow()
     })
 
     it('should handle missing og:image gracefully', () => {
-      expect(() => initializeMetaTags()).not.toThrow()
+      expect(() => { initializeMetaTags(); }).not.toThrow()
     })
 
     it('should update twitter:url to current origin', () => {
@@ -129,11 +129,11 @@ describe('metaTags', () => {
     })
 
     it('should handle missing twitter:url gracefully', () => {
-      expect(() => initializeMetaTags()).not.toThrow()
+      expect(() => { initializeMetaTags(); }).not.toThrow()
     })
 
     it('should handle missing twitter:image gracefully', () => {
-      expect(() => initializeMetaTags()).not.toThrow()
+      expect(() => { initializeMetaTags(); }).not.toThrow()
     })
 
     it('should log environment initialization info', () => {
@@ -200,7 +200,7 @@ describe('metaTags', () => {
         <meta name="robots" content="index, follow" />
       `
 
-      expect(() => initializeMetaTags()).not.toThrow()
+      expect(() => { initializeMetaTags(); }).not.toThrow()
 
       // Verify existing tags are updated
       const title = document.querySelector('title')
@@ -212,7 +212,7 @@ describe('metaTags', () => {
 
     it('should handle empty document head gracefully', () => {
       document.head.innerHTML = ''
-      expect(() => initializeMetaTags()).not.toThrow()
+      expect(() => { initializeMetaTags(); }).not.toThrow()
     })
 
     it('should preserve title text when adding [DEV] prefix', () => {

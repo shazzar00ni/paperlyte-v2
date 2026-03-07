@@ -41,25 +41,32 @@ describe('Icon', () => {
       expect(consoleWarnSpy).toHaveBeenCalledTimes(2)
     })
 
-    it('should render FontAwesome SVG for known FA icons', () => {
-      // fa-bolt is registered in iconLibrary.ts — renders via FontAwesome fallback
-      const { container } = render(<Icon name="fa-bolt" />)
+    it.each(['light', 'dark'] as const)('should render FontAwesome SVG for known FA icons not in custom set (theme: %s)', (theme) => {
+      document.documentElement.setAttribute('data-theme', theme)
 
-      // All icons fall back to Font Awesome since iconPaths is empty
+      // fa-heart is registered in iconLibrary.ts but NOT in custom iconPaths
+      const { container } = render(<Icon name="fa-heart" />)
+
       const svg = container.querySelector('svg')
       expect(svg).toBeInTheDocument()
       // FontAwesome renders its own SVG without width/height attributes
       expect(svg).not.toHaveAttribute('width')
+
+      document.documentElement.removeAttribute('data-theme')
     })
 
-    it('should only warn once for icons found in Font Awesome library', () => {
-      render(<Icon name="fa-bolt" />)
+    it.each(['light', 'dark'] as const)('should only warn once for icons found in Font Awesome library (theme: %s)', (theme) => {
+      document.documentElement.setAttribute('data-theme', theme)
+
+      render(<Icon name="fa-heart" />)
 
       // Only first warning fires (not in custom icon set), icon IS found in FA
       expect(consoleWarnSpy).toHaveBeenCalledTimes(1)
       expect(consoleWarnSpy).toHaveBeenCalledWith(
-        'Icon "fa-bolt" not found in icon set, using Font Awesome fallback'
+        'Icon "fa-heart" not found in icon set, using Font Awesome fallback'
       )
+
+      document.documentElement.removeAttribute('data-theme')
     })
   })
 
@@ -99,16 +106,12 @@ describe('Icon', () => {
 
   describe('Brand icon prefix detection', () => {
     it('should automatically assign fab prefix for known brand icons via isBrandIcon()', () => {
-      // fa-github is a brand icon detected by isBrandIcon() — no explicit variant needed
+      // fa-github is a brand icon — renders via custom iconPaths (no fallback needed)
       const { container } = render(<Icon name="fa-github" />)
       const svg = container.querySelector('svg')
-      // Brand icons render via FontAwesome with the fab prefix
       expect(svg).toBeInTheDocument()
-      // Should warn only once (found in FA library)
-      expect(consoleWarnSpy).toHaveBeenCalledTimes(1)
-      expect(consoleWarnSpy).not.toHaveBeenCalledWith(
-        expect.stringContaining('not found in Font Awesome library')
-      )
+      // No warnings since fa-github is in the custom icon set
+      expect(consoleWarnSpy).not.toHaveBeenCalled()
     })
 
     it('should assign fab prefix when variant="brands" is explicitly set', () => {

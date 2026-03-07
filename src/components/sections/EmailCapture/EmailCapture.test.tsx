@@ -51,4 +51,30 @@ describe('EmailCapture Section', () => {
     const emailInput = screen.getByPlaceholderText('your@email.com') as HTMLInputElement
     expect(emailInput.required).toBe(true)
   })
+
+  it('shows error message when API call fails', async () => {
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    const emailInput = screen.getByPlaceholderText('your@email.com')
+    await user.type(emailInput, 'test@example.com')
+
+    // Directly replace setTimeout (not via vi.spyOn, which re-throws outside
+    // the Promise executor) to make the simulated API call reject.
+    const originalSetTimeout = globalThis.setTimeout
+    globalThis.setTimeout = ((cb: TimerHandler, ms?: number, ...args: unknown[]) => {
+      if (ms === 1000) {
+        globalThis.setTimeout = originalSetTimeout
+        throw new Error('Network error')
+      }
+      return originalSetTimeout(cb, ms, ...args)
+    }) as typeof setTimeout
+
+    const submitButton = screen.getByRole('button', { name: /Join the Waitlist/i })
+    submitButton.click()
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toHaveTextContent('Failed to join waitlist. Please try again.')
+    })
+  })
 })

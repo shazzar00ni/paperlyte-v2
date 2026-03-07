@@ -132,7 +132,7 @@ export const EmailCapture = ({
           type="text"
           name="website"
           value={honeypot}
-          onChange={(e) => setHoneypot(e.target.value)}
+          onChange={(e) => { setHoneypot(e.target.value); }}
           tabIndex={-1}
           autoComplete="off"
           className={styles.honeypot}
@@ -148,7 +148,7 @@ export const EmailCapture = ({
             id="email"
             name="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => { setEmail(e.target.value); }}
             placeholder={placeholder}
             className={styles.input}
             disabled={status === 'loading'}
@@ -180,7 +180,7 @@ export const EmailCapture = ({
               type="checkbox"
               id="gdpr-consent"
               checked={gdprConsent}
-              onChange={(e) => setGdprConsent(e.target.checked)}
+              onChange={(e) => { setGdprConsent(e.target.checked); }}
               className={styles.checkbox}
               disabled={status === 'loading'}
               required

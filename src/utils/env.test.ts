@@ -128,7 +128,7 @@ describe('env', () => {
     })
 
     it('should handle missing canonical link gracefully', () => {
-      expect(() => updateMetaTags()).not.toThrow()
+      expect(() => { updateMetaTags(); }).not.toThrow()
     })
 
     it('should update keywords meta content when present', () => {

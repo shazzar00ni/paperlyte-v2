@@ -5,6 +5,8 @@ import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { Button } from '@components/ui/Button'
 import { Icon } from '@components/ui/Icon'
 import { WAITLIST_COUNT, LAUNCH_QUARTER } from '@constants/waitlist'
+import { trackEvent } from '@utils/analytics'
+import { validateEmail } from '@utils/validation'
 import styles from './EmailCapture.module.css'
 
 const BENEFITS = [
@@ -25,6 +27,13 @@ export const EmailCapture = (): React.ReactElement => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+
+    const emailResult = validateEmail(email)
+    if (!emailResult.isValid) {
+      setError(emailResult.error ?? 'Please enter a valid email address.')
+      return
+    }
+
     setIsLoading(true)
     setError(null)
 
@@ -34,6 +43,7 @@ export const EmailCapture = (): React.ReactElement => {
 
       setIsLoading(false)
       setIsSubmitted(true)
+      trackEvent('waitlist_signup')
     } catch {
       setIsLoading(false)
       setError('Failed to join waitlist. Please try again.')
@@ -132,7 +142,7 @@ export const EmailCapture = (): React.ReactElement => {
                 name="email"
                 placeholder="your@email.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => { setEmail(e.target.value); }}
                 required
                 className={styles.input}
                 aria-label="Email address"

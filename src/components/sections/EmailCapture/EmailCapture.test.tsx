@@ -62,19 +62,25 @@ describe('EmailCapture Section', () => {
     // Directly replace setTimeout (not via vi.spyOn, which re-throws outside
     // the Promise executor) to make the simulated API call reject.
     const originalSetTimeout = globalThis.setTimeout
-    globalThis.setTimeout = ((cb: TimerHandler, ms?: number, ...args: unknown[]) => {
-      if (ms === 1000) {
-        globalThis.setTimeout = originalSetTimeout
-        throw new Error('Network error')
-      }
-      return originalSetTimeout(cb, ms, ...args)
-    }) as typeof setTimeout
+    try {
+      globalThis.setTimeout = ((cb: TimerHandler, ms?: number, ...args: unknown[]) => {
+        if (ms === 1000) {
+          globalThis.setTimeout = originalSetTimeout
+          throw new Error('Network error')
+        }
+        return originalSetTimeout(cb, ms, ...args)
+      }) as typeof setTimeout
 
-    const submitButton = screen.getByRole('button', { name: /Join the Waitlist/i })
-    submitButton.click()
+      // Use direct DOM click instead of user.click() because user-event's
+      // internals call setTimeout, which would hit our patched version.
+      const submitButton = screen.getByRole('button', { name: /Join the Waitlist/i })
+      submitButton.click()
 
-    await waitFor(() => {
-      expect(screen.getByRole('alert')).toHaveTextContent('Failed to join waitlist. Please try again.')
-    })
+      await waitFor(() => {
+        expect(screen.getByRole('alert')).toHaveTextContent('Failed to join waitlist. Please try again.')
+      })
+    } finally {
+      globalThis.setTimeout = originalSetTimeout
+    }
   })
 })

@@ -6,6 +6,7 @@ import { Button } from '@components/ui/Button'
 import { Icon } from '@components/ui/Icon'
 import { WAITLIST_COUNT, LAUNCH_QUARTER } from '@constants/waitlist'
 import { trackEvent } from '@utils/analytics'
+import { logError } from '@utils/monitoring'
 import { validateEmail } from '@utils/validation'
 import styles from './EmailCapture.module.css'
 
@@ -44,7 +45,9 @@ export const EmailCapture = (): React.ReactElement => {
       setIsLoading(false)
       setIsSubmitted(true)
       trackEvent('waitlist_signup')
-    } catch {
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error(String(err))
+      logError(error, { errorInfo: { context: 'waitlist-submit' } })
       setIsLoading(false)
       setError('Failed to join waitlist. Please try again.')
     }

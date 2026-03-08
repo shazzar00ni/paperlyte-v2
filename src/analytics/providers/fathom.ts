@@ -78,10 +78,39 @@ export class FathomProvider extends BaseScriptProvider {
         ? Math.round(Number((event.properties.value * 100).toPrecision(12)))
         : 0
 
-    window.fathom.trackGoal(event.name, value)
+    // Resolve a Fathom goal code:
+    // 1) Explicit override via event.properties.goalCode
+    // 2) Mapping from config (goalMappings/goalCodes) by event.name
+    // 3) Treat event.name as a goal code only if it matches a goal-like format
+    const config: any = this.config || {}
+    const goalMappings =
+      (config.goalMappings || config.goalCodes || {}) as Record<string, string>
+
+    let goalCode: string | undefined
+
+    if (typeof event.properties?.goalCode === 'string') {
+      goalCode = event.properties.goalCode
+    } else if (event.name && goalMappings[event.name]) {
+      goalCode = goalMappings[event.name]
+    } else if (typeof event.name === 'string' && /^[A-Z0-9]{4,10}$/.test(event.name)) {
+      // Fallback: allow a goal-code-like event.name (e.g. "ABC123")
+      goalCode = event.name
+    }
+
+    if (!goalCode) {
+      if (this.config?.debug) {
+        console.warn(
+          '[Analytics] Fathom goal not tracked: missing/invalid goal code for event',
+          event.name
+        )
+      }
+      return
+    }
+
+    window.fathom.trackGoal(goalCode, value)
 
     if (this.config?.debug) {
-      console.log('[Analytics] Event tracked:', event.name, { value })
+      console.log('[Analytics] Event tracked:', event.name, { goalCode, value })
     }
   }
 

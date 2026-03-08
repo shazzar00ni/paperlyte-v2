@@ -10,7 +10,7 @@ import styles from './Terms.module.css'
  * @returns Terms of Service page JSX
  */
 
-// Last update date for the terms of service - update this whenever the terms are revised
+// Last updated date for the terms of service - update this whenever the terms are revised
 const LAST_UPDATED = 'March 7, 2026'
 
 export function Terms() {

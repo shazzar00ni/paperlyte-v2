@@ -10,6 +10,7 @@ import styles from './Privacy.module.css'
  * @returns Privacy Policy page JSX
  */
 
+// Last updated date for the privacy policy
 const LAST_UPDATED = 'March 7, 2026'
 
 export function Privacy() {

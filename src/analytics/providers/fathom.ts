@@ -131,9 +131,12 @@ export class FathomProvider extends BaseScriptProvider {
         // Round to milliseconds for time-based metrics
         const formattedValue = metric === 'CLS' ? Number(value.toFixed(3)) : Math.round(value)
 
+        // Use a distinct goal code per metric so Fathom can segment them
+        const goalName = `web_vitals_${metric.toLowerCase()}`
         this.trackEvent({
-          name: `web_vitals_${metric}`,
+          name: 'web_vitals',
           properties: {
+            goalCode: goalName,
             value: formattedValue,
           },
         })

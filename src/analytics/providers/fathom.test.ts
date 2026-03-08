@@ -264,44 +264,45 @@ describe('analytics/providers/fathom', () => {
     it('should track event with default value of 0', () => {
       const event: AnalyticsEvent = {
         name: 'cta_click',
+        properties: { goalCode: 'CTACLICK' },
       }
 
       provider.trackEvent(event)
 
-      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('cta_click', 0)
+      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('CTACLICK', 0)
     })
 
     it('should convert numeric value to cents', () => {
       const event: AnalyticsEvent = {
         name: 'purchase',
-        properties: { value: 9.99 },
+        properties: { goalCode: 'PURCHASE', value: 9.99 },
       }
 
       provider.trackEvent(event)
 
-      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('purchase', 999)
+      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('PURCHASE', 999)
     })
 
     it('should round value to nearest cent', () => {
       const event: AnalyticsEvent = {
         name: 'purchase',
-        properties: { value: 9.995 },
+        properties: { goalCode: 'PURCHASE', value: 9.995 },
       }
 
       provider.trackEvent(event)
 
-      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('purchase', 1000)
+      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('PURCHASE', 1000)
     })
 
     it('should default to 0 when value property is not a number', () => {
       const event: AnalyticsEvent = {
         name: 'cta_click',
-        properties: { button: 'Join Waitlist' },
+        properties: { goalCode: 'CTACLICK', button: 'Join Waitlist' },
       }
 
       provider.trackEvent(event)
 
-      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('cta_click', 0)
+      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('CTACLICK', 0)
     })
 
     it('should not track when provider is not enabled', () => {
@@ -337,12 +338,12 @@ describe('analytics/providers/fathom', () => {
       provider.trackWebVitals(vitals)
 
       expect(window.fathom!.trackGoal).toHaveBeenCalledTimes(6)
-      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals_LCP', 250000)
-      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals_FID', 10000)
-      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals_CLS', 10)
-      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals_TTFB', 80000)
-      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals_FCP', 180000)
-      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals_INP', 20000)
+      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals_lcp', 250000)
+      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals_fid', 10000)
+      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals_cls', 10)
+      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals_ttfb', 80000)
+      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals_fcp', 180000)
+      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals_inp', 20000)
     })
 
     it('should round time-based metrics to milliseconds', () => {
@@ -354,7 +355,7 @@ describe('analytics/providers/fathom', () => {
 
       // 2501 value in cents = 250100, but trackGoal receives the formatted value via trackEvent
       // which uses properties.value (2501), converted to cents = 250100
-      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals_LCP', 250100)
+      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals_lcp', 250100)
     })
 
     it('should preserve precision for CLS metric', () => {
@@ -365,7 +366,7 @@ describe('analytics/providers/fathom', () => {
       provider.trackWebVitals(vitals)
 
       // 0.123 value in cents = 12
-      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals_CLS', 12)
+      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals_cls', 12)
     })
 
     it('should skip undefined metrics', () => {

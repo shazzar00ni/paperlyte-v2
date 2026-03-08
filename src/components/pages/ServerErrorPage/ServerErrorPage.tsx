@@ -68,7 +68,7 @@ export const ServerErrorPage: FC<ServerErrorPageProps> = ({
         </h1>
 
         <p className={styles.message}>
-          {message ||
+          {message ??
             "We're sorry, but something unexpected happened on our end. This isn't your fault, and we're working to fix it."}
         </p>
 

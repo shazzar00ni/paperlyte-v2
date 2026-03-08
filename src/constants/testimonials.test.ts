@@ -170,7 +170,7 @@ describe('Testimonials Constants', () => {
     })
 
     it('should calculate average rating above 4', () => {
-      const totalRating = TESTIMONIALS.reduce((sum, t) => sum + t.rating, 0)
+      const totalRating = TESTIMONIALS.reduce((sum: number, t: Testimonial): number => sum + t.rating, 0)
       const averageRating = totalRating / TESTIMONIALS.length
 
       expect(averageRating).toBeGreaterThanOrEqual(4)
@@ -287,9 +287,9 @@ describe('Testimonials Constants', () => {
     })
 
     it('should match rating distribution snapshot', () => {
-      const distribution = TESTIMONIALS.reduce(
-        (acc, t) => {
-          acc[t.rating] = (acc[t.rating] || 0) + 1
+      const distribution = TESTIMONIALS.reduce<Record<number, number>>(
+        (acc: Record<number, number>, t: Testimonial): Record<number, number> => {
+          acc[t.rating] = (acc[t.rating] ?? 0) + 1
           return acc
         },
         {} as Record<number, number>

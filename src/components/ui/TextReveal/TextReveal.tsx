@@ -53,6 +53,14 @@ const getDelayClass = (index: number, stagger: number, baseDelay: number): strin
   return styles[`delay${capped}`] || ''
 }
 
+/** Animation name to CSS module class mapping, hoisted to avoid per-render allocation */
+const ANIMATION_CLASSES: ReadonlyMap<string, string> = new Map([
+  ['fadeUp', styles.fadeUp],
+  ['fadeIn', styles.fadeIn],
+  ['slideUp', styles.slideUp],
+  ['blur', styles.blur],
+])
+
 /**
  * Component that animates text revealing character by character or word by word
  *
@@ -115,7 +123,7 @@ export const TextReveal = ({
     )
   }
 
-  const animationClass = styles[animation] || styles.fadeUp
+  const animationClass = ANIMATION_CLASSES.get(animation) ?? styles.fadeUp
   const containerClasses = [styles.container, className].filter(Boolean).join(' ')
 
   return (

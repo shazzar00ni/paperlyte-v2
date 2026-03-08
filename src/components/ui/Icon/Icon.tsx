@@ -70,9 +70,10 @@ export const Icon = ({
   const convertedName = convertIconName(name)
 
   // Safely check if icon exists in iconPaths to prevent prototype pollution
-  // Use safePropertyAccess for safe property access to avoid object injection vulnerabilities
-  const paths = safePropertyAccess(iconPaths, convertedName)
-  const viewBox = getIconViewBox(convertedName)
+  // Try original name first (iconPaths uses 'fa-' prefixed keys), then converted name
+  const paths = safePropertyAccess(iconPaths, name) ?? safePropertyAccess(iconPaths, convertedName)
+  const iconPathKey = safePropertyAccess(iconPaths, name) ? name : convertedName
+  const viewBox = getIconViewBox(iconPathKey)
 
   // Normalize color: detect bare hex strings (3 or 6 hex digits) and prepend "#"
   const normalizedColor = useMemo(() => {
@@ -87,10 +88,10 @@ export const Icon = ({
   // Memoize path array splitting for better performance
   // Get the paths value directly in the memo to avoid React Compiler warning
   const pathArray = useMemo(() => {
-    const iconPaths_ = safePropertyAccess(iconPaths, convertedName)
+    const iconPaths_ = safePropertyAccess(iconPaths, name) ?? safePropertyAccess(iconPaths, convertedName)
     if (!iconPaths_) return []
     return iconPaths_.split(' M ')
-  }, [convertedName])
+  }, [name, convertedName])
 
   // Fallback to Font Awesome React component if icon not found in our set
   if (!paths) {

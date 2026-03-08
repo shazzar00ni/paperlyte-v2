@@ -163,6 +163,7 @@ describe('analytics/providers/plausible', () => {
 
       const script = document.querySelector('script[data-domain]')
       expect(script).toBeNull()
+      expect(consoleErrorSpy).toHaveBeenCalled()
 
       consoleErrorSpy.mockRestore()
       vi.unstubAllEnvs()

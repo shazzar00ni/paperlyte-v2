@@ -64,7 +64,7 @@ export class PlausibleProvider extends BaseScriptProvider {
           (acc, [key, value]) => {
             // Validate key is safe before using it for property assignment
             if (!isSafePropertyKey(key)) {
-              if (this.config?.debug || import.meta.env.DEV) {
+              if (Boolean(this.config?.debug) || import.meta.env.DEV) {
                 console.warn('[Analytics] Blocked potentially unsafe property key:', key)
               }
               return acc

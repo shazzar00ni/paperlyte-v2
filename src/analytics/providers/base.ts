@@ -90,8 +90,8 @@ export abstract class BaseScriptProvider implements AnalyticsProvider {
     }
 
     const dnt =
-      navigator.doNotTrack ||
-      (window as Window & { doNotTrack?: string }).doNotTrack ||
+      navigator.doNotTrack ??
+      (window as Window & { doNotTrack?: string }).doNotTrack ??
       (navigator as Navigator & { msDoNotTrack?: string }).msDoNotTrack
 
     return dnt === '1' || dnt === 'yes'
@@ -140,7 +140,7 @@ export abstract class BaseScriptProvider implements AnalyticsProvider {
     const scriptUrl = this.config?.scriptUrl ?? this.defaultScriptUrl
 
     if (!this.isValidScriptUrl(scriptUrl)) {
-      if (this.config?.debug || import.meta.env.DEV) {
+      if (Boolean(this.config?.debug) || import.meta.env.DEV) {
         console.error(
           '[Analytics] Invalid or unsafe script URL. Must be HTTPS and point to a .js file:',
           scriptUrl

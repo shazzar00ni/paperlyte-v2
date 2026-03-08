@@ -35,8 +35,10 @@ export class FathomProvider extends BaseScriptProvider {
   protected configureScript(script: HTMLScriptElement): void {
     // Fathom uses data-site for the site ID (unlike Plausible's data-domain)
     script.setAttribute('data-site', this.config?.domain ?? '')
-    // Honour browser-level DNT signal at the script level as well
-    script.setAttribute('data-honor-dnt', 'true')
+    // Honour browser-level DNT signal at the script level as well, unless explicitly disabled
+    if (this.config?.respectDNT !== false) {
+      script.setAttribute('data-honor-dnt', 'true')
+    }
   }
 
   protected cleanupWindowGlobal(): void {

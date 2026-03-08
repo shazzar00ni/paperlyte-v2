@@ -20,7 +20,7 @@ export class PlausibleProvider extends BaseScriptProvider {
   protected readonly defaultScriptUrl = 'https://plausible.io/js/script.js'
 
   protected configureScript(script: HTMLScriptElement): void {
-    script.setAttribute('data-domain', this.config?.domain || '')
+    script.setAttribute('data-domain', this.config?.domain ?? '')
 
     if (this.config?.trackPageviews === false) {
       script.setAttribute('data-auto-pageviews', 'false')
@@ -28,7 +28,7 @@ export class PlausibleProvider extends BaseScriptProvider {
   }
 
   protected cleanupWindowGlobal(): void {
-    if (typeof window !== 'undefined' && window.plausible) {
+    if (window.plausible) {
       delete window.plausible
     }
   }
@@ -38,11 +38,11 @@ export class PlausibleProvider extends BaseScriptProvider {
    * Plausible automatically tracks pageviews, but this can be used for SPAs
    */
   trackPageView(url?: string): void {
-    if (!this.isEnabled() || typeof window === 'undefined' || !window.plausible) {
+    if (!this.isEnabled() || !window.plausible) {
       return
     }
 
-    const pageUrl = url || window.location.pathname
+    const pageUrl = url ?? window.location.pathname
 
     window.plausible('pageview', {
       props: { path: pageUrl },
@@ -54,7 +54,7 @@ export class PlausibleProvider extends BaseScriptProvider {
    * Sends event with optional properties to Plausible
    */
   trackEvent(event: AnalyticsEvent): void {
-    if (!this.isEnabled() || typeof window === 'undefined' || !window.plausible) {
+    if (!this.isEnabled() || !window.plausible) {
       return
     }
 

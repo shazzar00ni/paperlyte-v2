@@ -34,13 +34,13 @@ export class FathomProvider extends BaseScriptProvider {
 
   protected configureScript(script: HTMLScriptElement): void {
     // Fathom uses data-site for the site ID (unlike Plausible's data-domain)
-    script.setAttribute('data-site', this.config?.domain || '')
+    script.setAttribute('data-site', this.config?.domain ?? '')
     // Honour browser-level DNT signal at the script level as well
     script.setAttribute('data-honor-dnt', 'true')
   }
 
   protected cleanupWindowGlobal(): void {
-    if (typeof window !== 'undefined' && window.fathom) {
+    if (window.fathom) {
       delete window.fathom
     }
   }
@@ -50,11 +50,11 @@ export class FathomProvider extends BaseScriptProvider {
    * Useful for SPA navigation where the URL changes without a full page reload
    */
   trackPageView(url?: string): void {
-    if (!this.isEnabled() || typeof window === 'undefined' || !window.fathom) {
+    if (!this.isEnabled() || !window.fathom) {
       return
     }
 
-    const pageUrl = url || window.location.pathname
+    const pageUrl = url ?? window.location.pathname
 
     window.fathom.trackPageview({ url: pageUrl })
 
@@ -68,7 +68,7 @@ export class FathomProvider extends BaseScriptProvider {
    * Fathom maps events to goals using a short code and optional value in cents
    */
   trackEvent(event: AnalyticsEvent): void {
-    if (!this.isEnabled() || typeof window === 'undefined' || !window.fathom) {
+    if (!this.isEnabled() || !window.fathom) {
       return
     }
 
@@ -101,9 +101,8 @@ export class FathomProvider extends BaseScriptProvider {
         const formattedValue = metric === 'CLS' ? Number(value.toFixed(3)) : Math.round(value)
 
         this.trackEvent({
-          name: 'web_vitals',
+          name: `web_vitals_${metric}`,
           properties: {
-            metric,
             value: formattedValue,
           },
         })

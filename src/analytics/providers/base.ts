@@ -133,11 +133,11 @@ export abstract class BaseScriptProvider implements AnalyticsProvider {
    * Calls configureScript() so each subclass can set provider-specific attributes.
    */
   protected loadScript(): void {
-    if (this.scriptLoaded || typeof window === 'undefined' || typeof document === 'undefined') {
+    if (this.scriptLoaded || typeof document === 'undefined') {
       return
     }
 
-    const scriptUrl = this.config?.scriptUrl || this.defaultScriptUrl
+    const scriptUrl = this.config?.scriptUrl ?? this.defaultScriptUrl
 
     if (!this.isValidScriptUrl(scriptUrl)) {
       if (this.config?.debug || import.meta.env.DEV) {
@@ -154,7 +154,13 @@ export abstract class BaseScriptProvider implements AnalyticsProvider {
     script.src = scriptUrl
 
     this.configureScript(script)
+    this.attachScriptCallbacks(script)
 
+    this.scriptElement = script
+    document.head.appendChild(script)
+  }
+
+  private attachScriptCallbacks(script: HTMLScriptElement): void {
     script.onerror = () => {
       if (this.config?.debug) {
         console.warn(`[Analytics] Failed to load ${this.providerName} script`)
@@ -168,9 +174,6 @@ export abstract class BaseScriptProvider implements AnalyticsProvider {
         console.log(`[Analytics] ${this.providerName} script loaded successfully`)
       }
     }
-
-    this.scriptElement = script
-    document.head.appendChild(script)
   }
 
   /**

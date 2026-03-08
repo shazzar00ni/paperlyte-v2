@@ -337,12 +337,12 @@ describe('analytics/providers/fathom', () => {
       provider.trackWebVitals(vitals)
 
       expect(window.fathom!.trackGoal).toHaveBeenCalledTimes(6)
-      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals', 250000)
-      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals', 10000)
-      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals', 10)
-      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals', 80000)
-      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals', 180000)
-      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals', 20000)
+      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals_LCP', 250000)
+      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals_FID', 10000)
+      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals_CLS', 10)
+      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals_TTFB', 80000)
+      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals_FCP', 180000)
+      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals_INP', 20000)
     })
 
     it('should round time-based metrics to milliseconds', () => {
@@ -354,7 +354,7 @@ describe('analytics/providers/fathom', () => {
 
       // 2501 value in cents = 250100, but trackGoal receives the formatted value via trackEvent
       // which uses properties.value (2501), converted to cents = 250100
-      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals', 250100)
+      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals_LCP', 250100)
     })
 
     it('should preserve precision for CLS metric', () => {
@@ -365,7 +365,7 @@ describe('analytics/providers/fathom', () => {
       provider.trackWebVitals(vitals)
 
       // 0.123 value in cents = 12
-      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals', 12)
+      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals_CLS', 12)
     })
 
     it('should skip undefined metrics', () => {

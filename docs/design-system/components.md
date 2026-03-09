@@ -212,10 +212,12 @@ Animates text entrance character-by-character or word-by-word. Designed for hero
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `children` | `string` | required | Text to animate (plain string only) |
+| `as` | `'h1' \| 'h2' \| 'h3' \| 'h4' \| 'p' \| 'span' \| 'div'` | `'span'` | HTML tag to render as |
 | `type` | `'character' \| 'word'` | `'word'` | Animation unit |
+| `animation` | `'fadeUp' \| 'fadeIn' \| 'slideUp' \| 'blur'` | `'fadeUp'` | Entrance animation style |
 | `delay` | `number` | `0` | Base delay in ms before animation starts |
 | `stagger` | `number` | `50` | Delay in ms between each unit |
-| `animation` | `string` | — | Animation effect name |
+| `threshold` | `number` | `0.2` | IntersectionObserver threshold (0–1) |
 | `className` | `string` | — | Additional CSS classes |
 
 #### Usage

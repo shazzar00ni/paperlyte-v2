@@ -51,18 +51,29 @@ jobs:
         env:
           SARIF_ESLINT_IGNORE_SUPPRESSED: "true"
         run: |
+          set +e
           npx eslint "src/**/*.{js,jsx,ts,tsx}" \
             --format @microsoft/eslint-formatter-sarif \
             --output-file eslint-results.sarif \
             --max-warnings 0
-        continue-on-error: true
+          ESLINT_EXIT_CODE=$?
+          echo "exit_code=${ESLINT_EXIT_CODE}" >> "$GITHUB_OUTPUT"
 
       - name: Ensure SARIF file exists
         if: always()
-        # Creates a minimal valid SARIF file if ESLint didn't produce one.
-        # This can happen if ESLint fails before generating output.
+        # Exit code semantics:
+        #   0  – no findings; synthesize a minimal SARIF if ESLint didn't write one.
+        #   1  – lint findings present; ESLint should have written real output, do nothing.
+        #   >1 – ESLint crashed / misconfigured; re-exit with that code to fail the job
+        #        rather than uploading a misleading zero-result SARIF.
+        env:
+          ESLINT_EXIT_CODE: ${{ steps.eslint-run.outputs.exit_code }}
         run: |
-          if [ ! -f eslint-results.sarif ]; then
+          if [ "${ESLINT_EXIT_CODE}" -gt 1 ]; then
+            echo "ESLint exited with code ${ESLINT_EXIT_CODE} (configuration or runtime error)."
+            exit "${ESLINT_EXIT_CODE}"
+          fi
+          if [ "${ESLINT_EXIT_CODE}" -eq 0 ] && [ ! -f eslint-results.sarif ]; then
             cat > eslint-results.sarif << 'EOF'
             {
               "version": "2.1.0",

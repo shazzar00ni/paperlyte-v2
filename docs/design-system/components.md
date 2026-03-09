@@ -1,11 +1,12 @@
 # Component Specifications
 
-All components live under `src/components/`. Each component directory contains:
+All components live under `src/components/`. A typical component directory contains:
 - `ComponentName.tsx` — implementation
 - `ComponentName.module.css` — scoped styles
 - `ComponentName.test.tsx` — unit tests
 - `index.ts` — named export
 
+Note: Most components follow this structure and use CSS Modules for styling. Some components (for example, `Icon`) instead use a plain `ComponentName.css` file where appropriate.
 Import via path alias: `import { Button } from '@components/ui/Button'`
 
 ---

@@ -69,7 +69,7 @@ The foundational interactive element. Renders as a `<button>` or `<a>` depending
 | Default | `--color-primary` background |
 | Hover | `--color-primary-dark`, `translateY(-1px)`, `--shadow-md` |
 | Active | `translateY(0)` |
-| Focus | `outline: 2px solid --color-primary`, `outline-offset: 3px` |
+| Focus | `outline: 2px solid --color-primary`, `outline-offset: 2px` |
 | Disabled | `opacity: 0.50`, `cursor: not-allowed`, `pointer-events: none` |
 
 #### Security

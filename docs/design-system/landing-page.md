@@ -232,7 +232,7 @@ Use short, active sentences. No paragraph blocks — this is a visual scan secti
 
 **File:** `src/components/sections/Statistics/Statistics.tsx`
 **Section ID:** `statistics`
-**Background:** `dark`
+**Background:** `surface`
 
 ### Purpose
 
@@ -242,21 +242,25 @@ Build credibility with specific, memorable numbers. Animated counters create a m
 
 4-column stat grid on desktop → 2×2 on tablet → 1-column on mobile.
 
+### Section Header
+
+| Element | Content |
+|---|---|
+| H2 | "Join thousands who've simplified their notes" |
+| Subheading | "Real people, real productivity gains, real peace of mind." |
+
 ### Stats
 
-| Stat | Suffix | Label |
-|---|---|---|
-| 10 | ms | Keystroke Response |
-| 99.9 | % | Uptime |
-| 300 | ms | App Start Time |
-| 127 | k+ | Notes Synced Daily |
+| Value | Suffix | Decimals | Icon | Label |
+|---|---|---|---|---|
+| 50000 | `+` | 0 | `fa-users` | Active Users |
+| 10 | `M+` | 0 | `fa-note-sticky` | Notes Created |
+| 99.9 | `%` | 1 | `fa-server` | Uptime |
+| 4.9 | `/5` | 1 | `fa-star` | User Rating |
 
-All use `CounterAnimation` with `easing: 'easeOutQuart'`, `duration: 1800ms`.
+All use `CounterAnimation` with `easing: 'easeOutQuart'`, `duration: 2000ms`.
 
-Numbers in Playfair Display `4xl`, bold, `--color-text-on-dark`.
-Labels in Inter `sm`, `--color-text-on-dark-secondary`.
-
-Dark background inverts the palette — ensure sufficient contrast (all text-on-dark ratios pass WCAG AAA, see [tokens.md](./tokens.md)).
+Each stat card also renders a `SVGPathAnimation` circle behind a Font Awesome icon (`duration: 1500ms`, staggered `delay: 200 + index × 150ms`). The circle trace and icon act as a decorative visual anchor above the number.
 
 ---
 

@@ -15,17 +15,27 @@ Two container widths are defined:
 | `.container` + `--max-width` | `1280px` | Outer page container — all sections |
 | `.container-content` + `--max-width-content` | `1024px` | Text-heavy sections (CTA, FAQ, Problem) |
 
-Apply both to constrain a section's prose width:
+`.container` centers itself and provides horizontal padding. `.container-content` only sets `max-width` — it has **no** `margin: auto` of its own, so it inherits the left-alignment of its parent. To center prose within a section, apply both classes to the same element, or add explicit centering to the inner element:
+
 ```html
+<!-- Option A: apply both classes to one element -->
+<div class="container container-content">
+  <h2>…</h2>
+  <p>…</p>
+</div>
+
+<!-- Option B: nest and add centering explicitly -->
 <div class="container">
-  <div class="container-content">
+  <div class="container-content" style="margin-inline: auto;">
     <h2>…</h2>
     <p>…</p>
   </div>
 </div>
 ```
 
-The `.container` class provides horizontal padding (`var(--spacing-md)` on each side) and auto-centers the content via `margin: 0 auto`.
+Option A is preferred for simple text sections. Use Option B when the outer container already wraps grid or flex children where only the text block needs narrowing.
+
+The `.container` class provides horizontal padding (`var(--spacing-md)` on each side) and auto-centers via `margin-left: auto; margin-right: auto`.
 
 ### Standard Feature Grid (3-column)
 

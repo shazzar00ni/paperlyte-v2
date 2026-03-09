@@ -22,13 +22,13 @@ A single well-choreographed page-load sequence (staggered hero reveal) creates m
 
 | Token | Value | Suitable for |
 |---|---|---|
-| `--transition-fast` | `150ms ease-out` | Colour swaps, opacity fades, icon changes |
-| `--transition-base` | `250ms ease-out` | Button hover, card lift, nav link underline |
-| `--transition-slow` | `350ms ease-out` | Panel slide-in, layout shifts |
+| `--transition-fast` | `150ms cubic-bezier(0.4, 0, 0.2, 1)` | Colour swaps, opacity fades, icon changes |
+| `--transition-base` | `250ms cubic-bezier(0.4, 0, 0.2, 1)` | Button hover, card lift, nav link underline |
+| `--transition-slow` | `350ms cubic-bezier(0.4, 0, 0.2, 1)` | Panel slide-in, layout shifts |
 | `--animation-duration` | `250ms` | Default CSS animation duration |
 | `--reduced-motion-duration` | `0.01ms` | Applied globally under `prefers-reduced-motion: reduce` |
 
-Easing curve for all tokens: `cubic-bezier(0.4, 0, 0.2, 1)` — a material-design-influenced ease-in-out that feels snappy on entry and smooth on exit.
+All three transition tokens share the same easing curve: `cubic-bezier(0.4, 0, 0.2, 1)` — a standard ease-in-out that feels snappy on entry and smooth on exit. This is not the same as CSS `ease-out`; the curve is explicitly set on every token rather than relying on a named keyword.
 
 ---
 

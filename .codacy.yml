@@ -41,11 +41,12 @@ engines:
     enabled: false
   checkov:
     enabled: false
-  # Infrastructure / container tools not applicable to this web project
+  # Container/IaC tools not applicable to this web project
   hadolint:
     enabled: false
+  # Shell scripts exist (.github/scripts/, scripts/, public/mockups/)
   shellcheck:
-    enabled: false
+    enabled: true
   # Docs linter not required
   markdownlint:
     enabled: false
@@ -68,10 +69,6 @@ exclude_patterns:
   - identifier: "ESLint8_xss_no-mixed-html"
     paths:
       - "src/utils/validation-sanitization.test.ts"
-  # Disable SCSS-specific stylelint rule for CSS files (this project uses CSS, not SCSS)
-  - identifier: "scss_function-disallowed-list"
-    paths:
-      - "**/*.css"
 
 # Exclude paths from code analysis
 exclude_paths:

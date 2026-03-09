@@ -232,7 +232,7 @@ Use short, active sentences. No paragraph blocks — this is a visual scan secti
 
 **File:** `src/components/sections/Statistics/Statistics.tsx`
 **Section ID:** `statistics`
-**Background:** `surface`
+**Background:** `dark` (inverted, uses `--color-surface-dark`)
 
 ### Purpose
 

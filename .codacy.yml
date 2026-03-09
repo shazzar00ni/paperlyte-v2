@@ -11,12 +11,11 @@ coverage:
     file: 70
 
 engines:
-  # --- Enabled engines (4 total, well under the 20-run SARIF limit) ---
+  # --- Enabled engines (well under the 20-run SARIF limit) ---
   semgrep:
     enabled: true
+  # eslint-9 only: project uses ESLint 9 flat config (eslint.config.js); no .eslintrc present
   eslint-9:
-    enabled: true
-  eslint-8:
     enabled: true
   lizard:
     enabled: true

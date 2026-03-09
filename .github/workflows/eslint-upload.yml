@@ -1,0 +1,91 @@
+# Companion workflow to eslint.yml.
+#
+# This workflow uploads ESLint SARIF results to GitHub Advanced Security (GHAS)
+# using the privileged 'workflow_run' context.  By separating the GHAS upload
+# step from the ESLint scan step we avoid the "checkout of untrusted code in a
+# privileged context" security vulnerability (CodeQL CWE-829).
+#
+# Flow:
+#   1. eslint.yml runs on 'pull_request' (minimal permissions, checks out PR code safely).
+#   2. eslint.yml uploads the SARIF file as a workflow artifact.
+#   3. This workflow triggers on completion of eslint.yml, downloads the artifact,
+#      and uploads the SARIF to GHAS with the security-events:write permission.
+#      It never checks out any code from the triggering PR.
+
+name: ESLint Upload
+
+on:
+  workflow_run:
+    workflows: ["ESLint"]
+    types: [completed]
+
+permissions:
+  contents: read
+
+jobs:
+  upload:
+    name: Upload ESLint SARIF to GHAS
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+      actions: read # required to download workflow run artifacts
+
+    steps:
+      - name: Download SARIF artifact
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        id: download
+        with:
+          name: eslint-sarif
+          path: sarif-results
+          # Download from the run that triggered this workflow, not the current run.
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Compute upload ref
+        id: refs
+        # For pull_request events with an associated PR, use refs/pull/{number}/head
+        # so GHAS can compare the PR scan against the main baseline.
+        # Fall back to refs/heads/{branch} for push/schedule events and for any
+        # pull_request run where the pull_requests array is empty (e.g. cross-repo forks
+        # that don't populate that field in workflow_run contexts).
+        #
+        # Security: workflow_run context values are passed via env: variables rather than
+        # direct ${{ }} interpolation to prevent code injection (CodeQL CWE-116/CWE-78).
+        env:
+          EVENT: ${{ github.event.workflow_run.event }}
+          PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
+          BRANCH: ${{ github.event.workflow_run.head_branch }}
+        run: |
+          if [[ "$EVENT" == "pull_request" && -n "$PR_NUMBER" ]]; then
+            echo "ref=refs/pull/${PR_NUMBER}/head" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=refs/heads/${BRANCH}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Upload SARIF to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@89a39a4e59826350b863aa6b6252a07ad50cf83e # v4.32.4
+        with:
+          sarif_file: sarif-results/eslint-results.sarif
+          category: eslint
+          wait-for-processing: true
+          # Associate the scan with the correct ref/sha so GHAS can compare
+          # PR results against the main baseline scan.
+          ref: ${{ steps.refs.outputs.ref }}
+          sha: ${{ github.event.workflow_run.head_sha }}
+
+      - name: ESLint Upload Summary
+        if: always()
+        # Security: workflow_run context values are passed via env: variables rather than
+        # direct ${{ }} interpolation to prevent code injection (CodeQL CWE-116/CWE-78).
+        env:
+          WF_EVENT: ${{ github.event.workflow_run.event }}
+          WF_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          WF_URL: ${{ github.event.workflow_run.html_url }}
+        run: |
+          echo "## 🔍 ESLint SARIF Upload" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Triggered by: **${WF_EVENT}** on \`${WF_BRANCH}\`" >> $GITHUB_STEP_SUMMARY
+          echo "Triggering run: ${WF_URL}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📄 SARIF results uploaded to GitHub Code Scanning." >> $GITHUB_STEP_SUMMARY

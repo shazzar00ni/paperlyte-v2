@@ -89,7 +89,7 @@ This deliberate constraint:
 Default       --color-primary
 Hover         --color-primary-dark  +  translateY(-1px)  +  box-shadow
 Active        --color-primary-dark  +  translateY(0)
-Focus         outline: 2px solid --color-primary  offset: 2px
+Focus         outline: 2px solid --color-primary  outline-offset: 2px
 Disabled      opacity: 0.50  +  cursor: not-allowed
 ```
 

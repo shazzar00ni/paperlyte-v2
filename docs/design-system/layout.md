@@ -113,9 +113,9 @@ Every page section follows a consistent vertical rhythm:
 |---|---|---|
 | `default` | `--color-background` (#fff) | Standard text colours |
 | `surface` | `--color-surface` (#f9fafb) | Standard text colours |
-| `dark` | `--color-surface-dark` (#18181b) | `--color-text-on-dark` (white) |
+| `primary` | `--color-surface-dark` (#18181b) | `--color-text-on-dark` (white) — used for dark, high-contrast sections like Mobile |
 
-Alternate section backgrounds (default → surface → dark → default…) to create visual rhythm without adding colour.
+Alternate section backgrounds (default → surface → primary → default…) to create visual rhythm without adding colour. Use the `primary` variant when you want a dark `--color-surface-dark` section with `--color-text-on-dark` contrast, as in the Mobile section.
 
 ---
 

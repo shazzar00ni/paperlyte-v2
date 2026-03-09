@@ -242,9 +242,9 @@ CSS keyframe float animation for decorative elements (icons, shapes). Pauses whe
 | `duration` | `number` | `3` | Animation duration in seconds |
 | `delay` | `number` | `0` | Delay before animation starts in seconds |
 | `distance` | `number` | `20` | Float amplitude in pixels |
-| `direction` | `'vertical' \| 'horizontal' \| 'diagonal'` | `'vertical'` | Float direction |
+| `direction` | `'vertical' \| 'horizontal' \| 'circular'` | `'vertical'` | Float direction |
 | `className` | `string` | — | Additional CSS classes |
-
+| `pauseWhenHidden` | `boolean` | `true` | Pause animation when out of viewport |
 ---
 
 ### ParallaxLayer

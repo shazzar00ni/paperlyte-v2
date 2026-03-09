@@ -413,16 +413,8 @@ Centered form, max-width 480px. Email input + submit button inline on desktop, s
 
 ### Component
 
-Uses the `<EmailCapture>` primitive with `variant="centered"`.
-
-```tsx
-<EmailCapture
-  variant="centered"
-  placeholder="you@example.com"
-  buttonText="Claim Your Spot"
-/>
-```
-
+The Email Capture section renders its own centered email capture form within `src/components/sections/EmailCapture/EmailCapture.tsx`, rather than using the shared `ui/EmailCapture` primitive.
+The implementation should follow the layout described above (max-width 480px, email input and submit button inline on desktop and stacked on mobile) and wire the form submission into the launch notification flow.
 ### Supporting Copy
 
 - Headline: "Be first. Be ready."

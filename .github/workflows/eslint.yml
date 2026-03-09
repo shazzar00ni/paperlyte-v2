@@ -6,12 +6,6 @@
 # found in ECMAScript/JavaScript code.
 # More details at https://github.com/eslint/eslint
 # and https://eslint.org
-#
-# Security note: This workflow intentionally uses the 'pull_request' event
-# (not 'pull_request_target') so it runs with minimal permissions and can
-# safely check out untrusted PR code.  SARIF upload to GHAS is handled by the
-# companion 'ESLint Upload' workflow (eslint-upload.yml) which runs via
-# 'workflow_run' in the privileged base-branch context without touching PR code.
 
 name: ESLint
 
@@ -23,21 +17,24 @@ on:
   schedule:
     - cron: '21 15 * * 2'
 
+# Using 'pull_request' (not 'pull_request_target') means this workflow runs in
+# a restricted context where untrusted fork code has no access to secrets.
+# Adding security-events:write here is safe: it only allows writing to the
+# Security tab and does not elevate code execution privileges.
+permissions:
+  contents: read
+  security-events: write
+
 jobs:
   eslint:
     name: Run eslint scanning
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      # security-events: write is intentionally absent here.
-      # SARIF upload happens in the companion eslint-upload.yml workflow so
-      # that untrusted PR code never runs in a privileged context.
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v4
         with:
           node-version: "20"
           cache: "npm"
@@ -85,32 +82,24 @@ jobs:
           EOF
           fi
 
-      - name: Upload SARIF as workflow artifact
-        # The SARIF file is uploaded as a workflow artifact so the companion
-        # eslint-upload.yml workflow can pick it up and push it to GHAS without
-        # running any PR code in a privileged context.
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+      - name: Upload analysis results to GitHub
+        uses: github/codeql-action/upload-sarif@v3
         if: always()
         with:
-          name: eslint-sarif
-          path: eslint-results.sarif
-          retention-days: 7
+          sarif_file: eslint-results.sarif
+          category: eslint
+          wait-for-processing: true
 
       - name: ESLint Summary
         if: always()
         run: |
           echo "## 🔍 ESLint Security Scan" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           if [ "${{ steps.eslint-run.outcome }}" == "success" ]; then
             echo "✅ **ESLint:** No issues found" >> $GITHUB_STEP_SUMMARY
           else
             echo "⚠️ **ESLint:** Issues detected" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "Check the **Security** tab for detailed findings." >> $GITHUB_STEP_SUMMARY
-          fi
-          
-          if [ -f "eslint-results.sarif" ]; then
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "📄 SARIF artifact uploaded for GHAS ingestion by eslint-upload.yml." >> $GITHUB_STEP_SUMMARY
           fi

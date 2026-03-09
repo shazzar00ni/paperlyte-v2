@@ -68,6 +68,7 @@ jobs:
       # Using step outcome instead of hashFiles() ensures we never upload the
       # raw 23-run file when the merge step fails or is skipped.
       - name: Upload SARIF results file
+        id: upload-sarif
         uses: github/codeql-action/upload-sarif@b1bff81932f5cdfc8695c7752dcee935dcd061c8  # v4.33.0
         if: steps.merge-sarif.conclusion == 'success'
         continue-on-error: true
@@ -87,9 +88,15 @@ jobs:
             echo "⚠️ **Codacy Analysis:** Issues detected" >> $GITHUB_STEP_SUMMARY
           fi
           
-          if [ -f "results.sarif" ]; then
+          if [ "${{ steps.upload-sarif.conclusion }}" == "success" ]; then
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "📄 SARIF results uploaded to GitHub Code Scanning." >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ steps.upload-sarif.conclusion }}" == "failure" ]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "⚠️ **SARIF upload failed.** Check the upload step logs for details." >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ steps.merge-sarif.conclusion }}" != "success" ]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "⚠️ **SARIF upload skipped** – merge step did not succeed." >> $GITHUB_STEP_SUMMARY
           fi
           
           echo "" >> $GITHUB_STEP_SUMMARY

@@ -69,11 +69,13 @@ jobs:
         env:
           ESLINT_EXIT_CODE: ${{ steps.eslint-run.outputs.exit_code }}
         run: |
-          if [ "${ESLINT_EXIT_CODE}" -gt 1 ]; then
+          # Default to 0 when the eslint-run step was skipped and produced no output.
+          ESLINT_EXIT_CODE="${ESLINT_EXIT_CODE:-0}"
+          if [ -n "${ESLINT_EXIT_CODE}" ] && [ "${ESLINT_EXIT_CODE}" -gt 1 ]; then
             echo "ESLint exited with code ${ESLINT_EXIT_CODE} (configuration or runtime error)."
             exit "${ESLINT_EXIT_CODE}"
           fi
-          if [ "${ESLINT_EXIT_CODE}" -eq 0 ] && [ ! -f eslint-results.sarif ]; then
+          if [ -n "${ESLINT_EXIT_CODE}" ] && [ "${ESLINT_EXIT_CODE}" -eq 0 ] && [ ! -f eslint-results.sarif ]; then
             cat > eslint-results.sarif << 'EOF'
             {
               "version": "2.1.0",
@@ -97,6 +99,8 @@ jobs:
       - name: Upload analysis results to GitHub
         uses: github/codeql-action/upload-sarif@89a39a4e59826350b863aa6b6252a07ad50cf83e # v4.32.4
         if: always()
+        # Forked PRs run with reduced permissions and cannot write to the Security tab;
+        # swallow the error there but let it fail loudly on main pushes and scheduled runs.
         continue-on-error: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true }}
         with:
           sarif_file: eslint-results.sarif
@@ -109,7 +113,7 @@ jobs:
           echo "## 🔍 ESLint Security Scan" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          if [ "${{ steps.eslint-run.outcome }}" == "success" ]; then
+          if [ "${{ steps.eslint-run.outputs.exit_code }}" == "0" ]; then
             echo "✅ **ESLint:** No issues found" >> $GITHUB_STEP_SUMMARY
           else
             echo "⚠️ **ESLint:** Issues detected" >> $GITHUB_STEP_SUMMARY

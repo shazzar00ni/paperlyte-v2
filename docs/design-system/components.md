@@ -82,19 +82,51 @@ External `href` values containing `javascript:`, `data:`, or `vbscript:` protoco
 
 **File:** `src/components/ui/Icon/Icon.tsx`
 
-Renders Font Awesome icons with a custom path fallback. Supports solid, regular, and brand icon variants.
+Renders Font Awesome icons with a custom SVG path fallback. Supports solid, regular, and brand icon variants. Only icons explicitly registered in `src/utils/iconLibrary.ts` are available — unrecognised names render the `circle-question` placeholder.
 
 #### Props
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `name` | `string` | required | Icon name (e.g. `'lightning'`, `'tag'`, `'github'`) |
+| `name` | `string` | required | Icon name — see **Naming conventions** below |
 | `size` | `'sm' \| 'md' \| 'lg' \| 'xl' \| '2x' \| '3x'` | `'md'` | Pixel dimensions |
-| `variant` | `'solid' \| 'brands' \| 'regular'` | `'solid'` | Icon style variant |
+| `variant` | `'solid' \| 'brands' \| 'regular'` | `'solid'` | Icon style; brand icons are also auto-detected, see below |
 | `className` | `string` | — | Additional CSS classes |
 | `ariaLabel` | `string` | — | Accessible label; sets `role="img"` when provided, `aria-hidden="true"` otherwise |
 | `color` | `string` | — | CSS color override |
 | `style` | `CSSProperties` | — | Inline style override |
+
+#### Naming Conventions
+
+The `name` prop accepts two forms — both resolve to the same icon:
+
+| Form | Example | Notes |
+|---|---|---|
+| Bare kebab-case name | `bolt` | Preferred |
+| `fa-`-prefixed class name | `fa-bolt` | Supported for compatibility; `fa-` is stripped internally |
+
+The component passes `name` through `convertIconName()` in `src/utils/iconLibrary.ts`, which maps `fa-` class names to bare names. **Names that are not in the library render the `circle-question` fallback** — check `validIconNames` in `iconLibrary.ts` before using a new name.
+
+**Brand icons** (`github`, `twitter`, `apple`, `windows`) are auto-detected via `isBrandIcon()` — passing `variant="brands"` is optional for these but recommended for clarity.
+
+#### Registered Icon Names (solid unless noted)
+
+```
+bolt          pen-nib       tags          mobile-screen  plane-slash
+shield-halved feather       xmark         bars           envelope
+star          heart         download      moon           sun
+lock          check         circle-check  chevron-left   chevron-right
+chevron-up    chevron-down  pause         play           note-sticky
+pen           lightbulb     leaf          rocket         users
+server        wifi          rotate-right  arrow-rotate-right
+arrow-rotate-left book      magnifying-glass  plane      route
+arrow-right   arrow-left    spinner
+
+── brands ──
+github  twitter  apple  windows
+```
+
+To add a new icon, import it from `@fortawesome/free-solid-svg-icons` (or brands), add it to `library.add()`, and add an entry to `iconNameMap` — all in `src/utils/iconLibrary.ts`.
 
 #### Size Map
 
@@ -117,13 +149,16 @@ Renders Font Awesome icons with a custom path fallback. Supports solid, regular,
 
 ```tsx
 // Decorative icon in a button
-<Icon name="lightning" size="sm" />
+<Icon name="bolt" size="sm" />
 
 // Semantic icon
 <Icon name="check" size="md" ariaLabel="Feature included" />
 
-// Brand icon
+// Brand icon (variant auto-detected, but explicit is clearer)
 <Icon name="github" size="lg" variant="brands" />
+
+// fa- prefix also works (stripped internally)
+<Icon name="fa-tags" size="md" />
 ```
 
 ---

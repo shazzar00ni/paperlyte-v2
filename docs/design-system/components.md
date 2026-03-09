@@ -384,13 +384,13 @@ Reusable section wrapper that applies consistent vertical padding and optional b
 |---|---|---|---|
 | `children` | `ReactNode` | required | Section content |
 | `id` | `string` | — | HTML `id` for anchor navigation |
-| `background` | `'default' \| 'surface' \| 'dark'` | `'default'` | Background variant |
+| `background` | `'default' \| 'surface' \| 'primary'` | `'default'` | Background variant |
 | `className` | `string` | — | Additional CSS classes |
 
 Background values:
 - `default` → `--color-background`
 - `surface` → `--color-surface`
-- `dark` → `--color-surface-dark` (inverted, white text)
+- `primary` → primary brand background (inverted, white text; implemented via `.bg-primary`)
 
 ---
 

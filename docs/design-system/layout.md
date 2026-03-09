@@ -99,7 +99,7 @@ Used by the Solution and Mobile sections:
 
 Every page section follows a consistent vertical rhythm:
 
-```
+```text
 ┌─────────────────────────────────────────────────┐
 │  Section padding top:  --spacing-3xl  (96px)    │
 │                                                 │
@@ -131,7 +131,7 @@ Alternate section backgrounds (default → surface → primary → default…) t
 
 ## Header Layout
 
-```
+```text
 ┌─────────────────────────────────────────────────┐
 │  height: 64px  (--header-height)                │
 │  position: sticky  top: 0  z-index: 1000        │
@@ -149,7 +149,7 @@ Alternate section backgrounds (default → surface → primary → default…) t
 ## Footer Layout
 
 Desktop (3-column):
-```
+```text
 ┌──────────────┬──────────────┬──────────────┐
 │ Brand column │ Product links│ Legal links  │
 │ Logo         │ Features     │ Privacy      │

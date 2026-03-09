@@ -6,7 +6,7 @@ The Paperlyte landing page is a single scrolling page (`/`) composed of stacked 
 
 ## Page Structure
 
-```
+```text
 ┌─────────────────────────────────┐
 │  Header (sticky)                │
 ├─────────────────────────────────┤
@@ -28,7 +28,7 @@ The Paperlyte landing page is a single scrolling page (`/`) composed of stacked 
 ```
 
 Background alternation:
-```
+```text
 Hero          → default (white)
 Features      → surface (off-white)
 Problem       → default
@@ -59,7 +59,7 @@ First impression. Communicates value proposition in under 5 seconds. Drives user
 
 Two-column on desktop (text left, mockup right). Single-column stack on mobile.
 
-```
+```text
 Desktop:
 ┌──────────────────┬──────────────────┐
 │ Eyebrow label    │                  │
@@ -191,7 +191,7 @@ Present the problem as a short narrative:
 Centered text block, max-width `--max-width-content`. No grid. One or two paragraphs + a pain-point list.
 
 Pain point list style:
-```
+```text
 ✗  Notes buried under nested folders
 ✗  Loading screens before you can type
 ✗  Features you pay for but never use

@@ -85,7 +85,7 @@ This deliberate constraint:
 
 ### Color State Guidelines
 
-```
+```text
 Default       --color-primary
 Hover         --color-primary-dark  +  translateY(-1px)  +  box-shadow
 Active        --color-primary-dark  +  translateY(0)

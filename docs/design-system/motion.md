@@ -172,7 +172,7 @@ Key constraints:
 
 Parallax scrolling is implemented via JavaScript scroll listeners (not CSS `perspective`) for cross-browser reliability. The `ParallaxLayer` component uses `requestAnimationFrame` internally.
 
-```
+```text
 speed: 0     → no movement (static background)
 speed: 0.15  → very subtle drift (background shapes)
 speed: 0.3   → moderate (mid-ground elements)

@@ -111,7 +111,7 @@ The component passes `name` through `convertIconName()` in `src/utils/iconLibrar
 
 #### Registered Icon Names (solid unless noted)
 
-```
+```text
 bolt          pen-nib       tags          mobile-screen  plane-slash
 shield-halved feather       xmark         bars           envelope
 star          heart         download      moon           sun

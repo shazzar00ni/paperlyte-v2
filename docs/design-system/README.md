@@ -59,7 +59,7 @@ Core content renders and is readable without JavaScript. Animations and interact
 
 ### Color Roles (Light Mode)
 
-```
+```text
 Background  #ffffff   Pure white canvas
 Surface     #f9fafb   Card / panel lift
 Primary     #1a1a1a   All interactive elements
@@ -70,7 +70,7 @@ Border      #e5e7eb   Dividers, outlines
 
 ### Color Roles (Dark Mode)
 
-```
+```text
 Background  #0f172a   Deep slate
 Surface     #1e293b   Card lift
 Primary     #ffffff   All interactive elements
@@ -81,7 +81,7 @@ Border      #334155   Dividers, outlines
 
 ### Type Scale (abbreviated)
 
-```
+```text
 5xl   clamp(2rem → 3rem)    Hero headline
 4xl   clamp(1.75rem → 2.25rem)  Section headline
 3xl   clamp(1.5rem → 1.875rem)  Sub-section headline
@@ -91,7 +91,7 @@ sm    0.875rem (14px)       Captions, labels
 
 ### Spacing Scale
 
-```
+```text
 xs   0.5rem   (8px)
 sm   1rem     (16px)
 md   1.5rem   (24px)
@@ -105,7 +105,7 @@ xl   3rem     (48px)
 
 ## File Locations
 
-```
+```text
 src/
 ├── styles/
 │   ├── variables.css     ← All CSS custom properties (tokens)

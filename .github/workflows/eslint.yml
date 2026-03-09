@@ -83,7 +83,7 @@ jobs:
           fi
 
       - name: Upload analysis results to GitHub
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@1b1aada830fa9cce8900d4145c2a4e3c19f8c0e1
         if: always()
         with:
           sarif_file: eslint-results.sarif

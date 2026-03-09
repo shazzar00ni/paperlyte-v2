@@ -131,17 +131,17 @@ Crossfade between sun and moon icons using `opacity` transitions. The icon at re
 
 ## Hero Reveal Sequence
 
-The landing page hero orchestrates a staggered entrance on page load:
+The landing page hero uses a simple, staggered `fadeIn` sequence on initial render:
 
-| Element | Animation | Delay |
+| Element | Animation | Delay (staggered from hero mount) |
 |---|---|---|
 | Eyebrow label | `fadeIn` | 0ms |
-| H1 headline words | `slideUp` per word | 100ms, 175ms, 250ms… |
-| Subheading | `fadeIn` | 400ms |
-| CTA buttons | `slideUp` | 550ms |
-| Floating icon cluster | `fadeIn` | 700ms |
+| H1 headline | `fadeIn` | 100ms |
+| Subheading | `fadeIn` | 200ms |
+| CTA buttons | `fadeIn` | 300ms |
+| Floating icon cluster | `fadeIn` | 400ms |
 
-All delays are relative to `DOMContentLoaded`. When `prefers-reduced-motion: reduce` is active, all elements appear at their final state immediately with no delay.
+Delays are implemented via the shared `AnimatedElement` component and are relative to the hero component mounting (not strictly to `DOMContentLoaded`). When `prefers-reduced-motion: reduce` is active, all elements appear at their final state immediately with no delay.
 
 ---
 

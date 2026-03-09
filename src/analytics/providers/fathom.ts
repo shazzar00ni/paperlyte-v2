@@ -10,7 +10,7 @@
  * @see https://usefathom.com/docs
  */
 
-import type { AnalyticsEvent, CoreWebVitals } from '../types'
+import type { AnalyticsConfig, AnalyticsEvent, CoreWebVitals } from '../types'
 import { BaseScriptProvider } from './base'
 
 // Extend Window with Fathom's global API
@@ -18,10 +18,16 @@ import { BaseScriptProvider } from './base'
 declare global {
   interface Window {
     fathom?: {
-      trackPageview: (opts?: { url?: string; referrer?: string }) => void
-      trackGoal: (code: string, cents: number) => void
+      trackPageview: (_opts?: { url?: string; referrer?: string }) => void
+      trackGoal: (_code: string, _cents: number) => void
     }
   }
+}
+
+/** AnalyticsConfig extended with Fathom-specific goal-code mappings */
+type FathomConfig = AnalyticsConfig & {
+  goalMappings?: Record<string, string>
+  goalCodes?: Record<string, string>
 }
 
 /**
@@ -66,6 +72,35 @@ export class FathomProvider extends BaseScriptProvider {
   }
 
   /**
+   * Resolve a Fathom goal code from an event.
+   * Priority: explicit goalCode property → config mapping → goal-code-shaped event name
+   */
+  private resolveGoalCode(event: AnalyticsEvent): string | undefined {
+    const cfg = this.config as FathomConfig | null
+    const mappings: Record<string, string> = cfg?.goalMappings ?? cfg?.goalCodes ?? {}
+
+    if (typeof event.properties?.goalCode === 'string') {
+      return event.properties.goalCode
+    }
+    if (event.name && mappings[event.name]) {
+      return mappings[event.name]
+    }
+    if (typeof event.name === 'string' && /^[A-Z0-9]{4,10}$/.test(event.name)) {
+      // Fallback: allow a goal-code-like event.name (e.g. "ABC123")
+      return event.name
+    }
+    return undefined
+  }
+
+  /**
+   * Convert a decimal currency value to integer cents for Fathom.
+   */
+  private convertToCents(value: unknown): number {
+    if (typeof value !== 'number') return 0
+    return Math.round(Number((value * 100).toPrecision(12)))
+  }
+
+  /**
    * Track a custom event as a Fathom goal
    * Fathom maps events to goals using a short code and optional value in cents
    */
@@ -74,31 +109,7 @@ export class FathomProvider extends BaseScriptProvider {
       return
     }
 
-    // Fathom goals use a numeric value in cents; default to 0
-    const value =
-      typeof event.properties?.value === 'number'
-        ? Math.round(Number((event.properties.value * 100).toPrecision(12)))
-        : 0
-
-    // Resolve a Fathom goal code:
-    // 1) Explicit override via event.properties.goalCode
-    // 2) Mapping from config (goalMappings/goalCodes) by event.name
-    // 3) Treat event.name as a goal code only if it matches a goal-like format
-    const config: any = this.config || {}
-    const goalMappings =
-      (config.goalMappings || config.goalCodes || {}) as Record<string, string>
-
-    let goalCode: string | undefined
-
-    if (typeof event.properties?.goalCode === 'string') {
-      goalCode = event.properties.goalCode
-    } else if (event.name && goalMappings[event.name]) {
-      goalCode = goalMappings[event.name]
-    } else if (typeof event.name === 'string' && /^[A-Z0-9]{4,10}$/.test(event.name)) {
-      // Fallback: allow a goal-code-like event.name (e.g. "ABC123")
-      goalCode = event.name
-    }
-
+    const goalCode = this.resolveGoalCode(event)
     if (!goalCode) {
       if (this.config?.debug) {
         console.warn(
@@ -109,6 +120,7 @@ export class FathomProvider extends BaseScriptProvider {
       return
     }
 
+    const value = this.convertToCents(event.properties?.value)
     window.fathom.trackGoal(goalCode, value)
 
     if (this.config?.debug) {

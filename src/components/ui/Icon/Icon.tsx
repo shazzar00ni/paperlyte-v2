@@ -69,10 +69,10 @@ export const Icon = ({
   // Convert icon name first to ensure consistency with Font Awesome fallback path
   const convertedName = convertIconName(name)
 
-  // Safely check if icon exists in iconPaths to prevent prototype pollution
-  // Use safePropertyAccess for safe property access to avoid object injection vulnerabilities
-  const paths = safePropertyAccess(iconPaths, convertedName)
-  const viewBox = getIconViewBox(convertedName)
+  // iconPaths keys use the original fa-prefixed name (e.g. 'fa-bolt').
+  // convertedName is only used for the Font Awesome library lookup below.
+  const paths = safePropertyAccess(iconPaths, name)
+  const viewBox = getIconViewBox(name)
 
   // Normalize color: detect bare hex strings (3 or 6 hex digits) and prepend "#"
   const normalizedColor = useMemo(() => {
@@ -87,10 +87,10 @@ export const Icon = ({
   // Memoize path array splitting for better performance
   // Get the paths value directly in the memo to avoid React Compiler warning
   const pathArray = useMemo(() => {
-    const iconPaths_ = safePropertyAccess(iconPaths, convertedName)
+    const iconPaths_ = safePropertyAccess(iconPaths, name)
     if (!iconPaths_) return []
     return iconPaths_.split(' M ')
-  }, [convertedName])
+  }, [name])
 
   // Fallback to Font Awesome React component if icon not found in our set
   if (!paths) {

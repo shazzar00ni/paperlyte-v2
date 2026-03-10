@@ -75,6 +75,9 @@ class Analytics {
 
     this.initialized = true
 
+    if (config.debug) {
+      console.log('[Analytics] Initialized with config:', config)
+    }
   }
 
   /**
@@ -123,6 +126,9 @@ class Analytics {
 
     this.provider?.trackPageView(url)
 
+    if (this.config?.debug) {
+      console.log('[Analytics] Page view tracked:', url)
+    }
   }
 
   /**
@@ -142,7 +148,6 @@ class Analytics {
     }
 
     this.provider?.trackEvent(eventWithTimestamp)
-
   }
 
   /**
@@ -157,6 +162,9 @@ class Analytics {
 
     this.provider?.trackWebVitals(vitals)
 
+    if (this.config?.debug) {
+      console.log('[Analytics] Web Vitals tracked:', vitals)
+    }
   }
 
   /**
@@ -222,6 +230,10 @@ class Analytics {
       return
     }
 
+    if (this.config?.debug) {
+      console.log('[Analytics] Disabled')
+    }
+
     // Disable provider
     this.provider?.disable()
 
@@ -241,7 +253,6 @@ class Analytics {
     this.initialized = false
     this.config = null
     this.provider = null
-
   }
 
   /**
@@ -270,7 +281,6 @@ class Analytics {
     // Clear all state unconditionally
     this.initialized = false
     this.config = null
-
   }
 
   /**

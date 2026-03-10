@@ -337,25 +337,3 @@ export function mockEnv(env: Record<string, unknown>): () => void {
   }
 }
 
-/**
- * Wait for a condition to be true
- *
- * @param condition - Function that returns true when condition is met
- * @param timeout - Maximum time to wait in ms (default: 1000)
- * @returns Promise that resolves when condition is met or rejects on timeout
- */
-export function waitFor(condition: () => boolean, timeout = 1000): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const startTime = Date.now()
-    const checkCondition = () => {
-      if (condition()) {
-        resolve()
-      } else if (Date.now() - startTime > timeout) {
-        reject(new Error('Timeout waiting for condition'))
-      } else {
-        setTimeout(checkCondition, 10)
-      }
-    }
-    checkCondition()
-  })
-}

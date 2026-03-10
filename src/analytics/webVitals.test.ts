@@ -315,6 +315,51 @@ describe('analytics/webVitals', () => {
       cleanup()
     })
 
+    it('should use loadTime as LCP fallback when renderTime is 0', () => {
+      const observerInstances: Array<{
+        callback: PerformanceObserverCallback
+        observe: ReturnType<typeof vi.fn>
+      }> = []
+
+      global.PerformanceObserver = class {
+        callback: PerformanceObserverCallback
+        observe: ReturnType<typeof vi.fn>
+        constructor(callback: PerformanceObserverCallback) {
+          this.callback = callback
+          this.observe = vi.fn()
+          observerInstances.push(this)
+        }
+        disconnect = vi.fn()
+        takeRecords = vi.fn(() => [])
+      } as unknown as typeof PerformanceObserver
+
+      const cleanup = initWebVitals(onReport)
+      const lcpObserver = observerInstances[0]
+
+      onReport.mockClear()
+      lcpObserver.callback(
+        {
+          getEntries: () => [{ renderTime: 0, loadTime: 1500 }],
+        } as PerformanceObserverEntryList,
+        lcpObserver as PerformanceObserver
+      )
+
+      Object.defineProperty(document, 'visibilityState', {
+        writable: true,
+        configurable: true,
+        value: 'hidden',
+      })
+      document.dispatchEvent(new Event('visibilitychange'))
+
+      expect(onReport).toHaveBeenCalledWith(
+        expect.objectContaining({
+          LCP: 1500,
+        })
+      )
+
+      cleanup()
+    })
+
     it('should rate CLS as good/needs-improvement/poor based on thresholds', () => {
       // Mock PerformanceObserver to emit CLS with different values
       const observerInstances: Array<{

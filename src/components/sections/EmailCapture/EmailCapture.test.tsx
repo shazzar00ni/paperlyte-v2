@@ -52,6 +52,21 @@ describe('EmailCapture Section', () => {
     expect(emailInput.required).toBe(true)
   })
 
+  it('shows validation error for invalid email', async () => {
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    const emailInput = screen.getByPlaceholderText('your@email.com')
+    const submitButton = screen.getByRole('button', { name: /Join the Waitlist/i })
+
+    await user.type(emailInput, 'test@tempmail.com')
+    await user.click(submitButton)
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toBeInTheDocument()
+    })
+  })
+
   it('shows error message when API call fails', async () => {
     const user = userEvent.setup()
     render(<EmailCapture />)

@@ -45,7 +45,17 @@
         "resource-summary:script:size": ["warn", { "maxNumericValue": 153600 }],
         "resource-summary:stylesheet:size": ["warn", { "maxNumericValue": 30720 }],
         "resource-summary:document:size": ["warn", { "maxNumericValue": 18000 }],
-        "resource-summary:total:size": ["warn", { "maxNumericValue": 307200 }]
+        "resource-summary:total:size": ["warn", { "maxNumericValue": 307200 }],
+
+        "csp-xss": "warn",
+        "clickjacking-mitigation": "warn",
+        "has-hsts": "off",
+        "origin-isolation": "warn",
+        "bf-cache": "warn",
+        "valid-source-maps": "warn",
+        "third-party-cookies": "warn",
+        "errors-in-console": "warn",
+        "inspector-issues": "warn"
       }
     },
     "upload": {

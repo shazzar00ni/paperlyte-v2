@@ -123,6 +123,7 @@ jobs:
           files: "**/junit.xml"
           report_type: test_results
           verbose: true
+          fail_ci_if_error: false
 
       - name: Upload coverage reports
         if: ${{ !cancelled() }}

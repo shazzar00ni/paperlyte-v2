@@ -62,12 +62,6 @@ exclude_patterns:
   - identifier: "Security/detect-non-literal-regexp"
     paths:
       - "src/utils/validation-utils.test.ts"
-  - identifier: "ESLint8_security_detect-non-literal-regexp"
-    paths:
-      - "src/utils/validation-utils.test.ts"
-  - identifier: "ESLint8_xss_no-mixed-html"
-    paths:
-      - "src/utils/validation-sanitization.test.ts"
 
 # Exclude paths from code analysis
 exclude_paths:
@@ -82,19 +76,6 @@ exclude_paths:
   - 'scripts/**'
   - '**/*.min.js'
 
-# Note: Codacy ESLint8 engine reports some false positive issues for non-literal RegExp
-# patterns (ESLint8_security_detect-non-literal-regexp, ESLint8_security-node_non-literal-reg-expr).
-# Most are now excluded via test file exclusions above.
-# For any remaining false positives in component tests:
-# 1. All RegExp inputs are sanitized via escapeRegExp() utility
-# 2. Input sources are constants (FAQ_ITEMS, PRICING_PLANS, COMPETITORS), not user input
-# 3. Semgrep scans these lines and approves them with inline nosemgrep suppressions
-# 4. Every usage has clear safety documentation comments
-#
-# We attempted multiple suppression approaches:
-# - Global exclude_patterns: Not recognized by Codacy
-# - Engine-level exclusions: Not supported
-# - Inline codacy-disable-next-line comments: Not working
-# - Now using test file exclusions (exclude_paths) which works
-#
-# Any warnings in non-test files should be manually marked as "Won't Fix" or "False Positive" in Codacy UI.
+# Note: semgrep may report false positives for non-literal RegExp patterns in tests.
+# All RegExp inputs are sanitized via escapeRegExp(); input sources are constants, not user input.
+# Remaining false positives in non-test files can be marked "Won't Fix" in the Codacy UI.

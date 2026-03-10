@@ -74,8 +74,8 @@ describe('Plausible Provider', () => {
 
       provider.init(config)
 
-      const script = document.querySelector('script[data-domain]') as HTMLScriptElement
-      expect(script.async).toBe(true)
+      const scriptElement = document.querySelector('script[data-domain]') as HTMLScriptElement
+      expect(scriptElement.async).toBe(true)
     })
 
     it('should not initialize twice', () => {

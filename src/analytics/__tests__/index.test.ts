@@ -183,7 +183,7 @@ describe('Analytics Singleton', () => {
       analytics.init(config)
 
       // Get the callback
-      const callback = (global as { webVitalsCallback?: (_: unknown) => void })
+      const callback = (global as { webVitalsCallback?: (metric: unknown) => void })
         .webVitalsCallback
 
       expect(callback).toBeDefined()
@@ -238,7 +238,7 @@ describe('Analytics Singleton', () => {
       analytics.init(config)
 
       // Get the callback
-      const callback = (global as { scrollDepthCallback?: (_: number) => void })
+      const callback = (global as { scrollDepthCallback?: (depth: number) => void })
         .scrollDepthCallback
 
       expect(callback).toBeDefined()

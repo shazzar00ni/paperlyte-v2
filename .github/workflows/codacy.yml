@@ -87,10 +87,10 @@ jobs:
             echo "⚠️ **Codacy Analysis:** Issues detected" >> $GITHUB_STEP_SUMMARY
           fi
           
-          if [ "${{ steps.upload-sarif.conclusion }}" == "success" ]; then
+          if [ "${{ steps.upload-sarif.outcome }}" == "success" ]; then
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "📄 SARIF results uploaded to GitHub Code Scanning." >> $GITHUB_STEP_SUMMARY
-          elif [ "${{ steps.upload-sarif.conclusion }}" == "failure" ]; then
+          elif [ "${{ steps.upload-sarif.outcome }}" == "failure" ]; then
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "⚠️ **SARIF upload failed.** Check the upload step logs for details." >> $GITHUB_STEP_SUMMARY
           elif [ "${{ steps.merge-sarif.conclusion }}" != "success" ]; then

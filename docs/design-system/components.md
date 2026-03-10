@@ -1,6 +1,7 @@
 # Component Specifications
 
 All components live under `src/components/`. A typical component directory contains:
+
 - `ComponentName.tsx` — implementation
 - `ComponentName.module.css` — scoped styles
 - `ComponentName.test.tsx` — unit tests
@@ -38,6 +39,7 @@ The foundational interactive element. Renders as a `<button>` or `<a>` depending
 #### Variants
 
 **Primary** — Full black background, white text. Used for all primary CTAs.
+
 ```tsx
 <Button variant="primary">Join the Waitlist</Button>
 ```
@@ -220,7 +222,7 @@ Animates text entrance character-by-character or word-by-word. Designed for hero
 | `threshold` | `number` | `0.2` | IntersectionObserver threshold (0–1) |
 | `className` | `string` | — | Additional CSS classes |
 
-#### Usage
+#### TextReveal Usage
 
 ```tsx
 <TextReveal type="word" delay={200} stagger={80}>
@@ -332,7 +334,7 @@ Waitlist signup form with client-side validation, GDPR consent, and Netlify Func
 2. GDPR checkbox must be checked before submission
 3. Honeypot field rejects bot submissions silently
 
-#### States
+#### EmailCapture States
 
 | State | UI |
 |---|---|
@@ -425,6 +427,7 @@ Reusable section wrapper that applies consistent vertical padding and optional b
 | `className` | `string` | — | Additional CSS classes |
 
 Background values:
+
 - `default` → `--color-background`
 - `surface` → `--color-surface`
 - `primary` → primary brand background (inverted, white text; implemented via `.bg-primary`)

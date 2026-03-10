@@ -182,6 +182,7 @@ Create empathy and tension. Name the pain that competitors cause. Set up the Sol
 ### Content Strategy
 
 Present the problem as a short narrative:
+
 1. Acknowledge that users tried alternatives (Notion, Evernote, OneNote)
 2. Name the specific failure modes: bloat, complexity, slow startup, folder hell
 3. End with the unmet promise: *you just want to write*

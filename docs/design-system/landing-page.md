@@ -93,6 +93,7 @@ Mobile:
 ### Mockup
 
 The hero mockup is a `<picture>` element with AVIF → WebP → PNG → SVG fallback:
+
 - `/mockups/notes-list.avif` (preferred)
 - `/mockups/notes-list.webp`
 - `/mockups/notes-list.png`
@@ -113,6 +114,7 @@ A floating stat badge overlays the mockup: "+120% PRODUCTIVITY" — styled as a 
 ### Decorative Elements
 
 Floating icon cluster (hidden on mobile ≤ 768px):
+
 - `FloatingElement` wrapping a lightning bolt icon, duration 3s
 - `FloatingElement` wrapping a tag icon, duration 3.5s, delay 0.5s
 
@@ -220,6 +222,7 @@ Two-column split: text left, illustrative UI right (or vice-versa on alternating
 ### Content
 
 Pair each Problem pain point with a Solution:
+
 - Fast startup → "Opens in under 300ms"
 - Folder hell → "One search. Everything surfaces."
 - Feature bloat → "No settings you don't need"
@@ -416,6 +419,7 @@ Centered form, max-width 480px. Email input + submit button inline on desktop, s
 
 The Email Capture section renders its own centered email capture form within `src/components/sections/EmailCapture/EmailCapture.tsx`, rather than using the shared `ui/EmailCapture` primitive.
 The implementation should follow the layout described above (max-width 480px, email input and submit button inline on desktop and stacked on mobile) and wire the form submission into the launch notification flow.
+
 ### Supporting Copy
 
 - Headline: "Be first. Be ready."

@@ -169,12 +169,14 @@ Mobile: All columns stack vertically with `var(--spacing-xl)` gap.
 Defined in `src/styles/utilities.css`:
 
 ### Container
+
 ```css
 .container          /* max-width: 1280px, centered, horizontal padding */
 .container-content  /* max-width: 1024px */
 ```
 
 ### Flexbox
+
 ```css
 .flex               /* display: flex */
 .flex-col           /* flex-direction: column */
@@ -187,6 +189,7 @@ Defined in `src/styles/utilities.css`:
 ```
 
 ### Visibility / Accessibility
+
 ```css
 .sr-only            /* visually hidden, screen-reader accessible */
 .skip-link          /* skip-to-content link, visible on focus */

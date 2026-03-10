@@ -11,6 +11,7 @@ All tokens live in `src/styles/variables.css` as CSS custom properties on `:root
 Paperlyte uses a **strict monochrome palette**. There is no brand accent color — contrast and weight carry all visual hierarchy. In dark mode the palette inverts: white becomes the primary interactive color and deep slate becomes the canvas.
 
 This deliberate constraint:
+
 - Keeps focus on the writing surface (the product itself)
 - Ages better than trend-dependent accent colors
 - Achieves maximum contrast ratios with minimal token count

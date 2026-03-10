@@ -5,15 +5,19 @@
 ## Principles
 
 ### 1. Motion Serves Meaning
+
 Every animation must communicate something: state change, hierarchy, direction of travel, or delight on first impression. Decorative animations that do not convey meaning should be minimal or absent.
 
 ### 2. Performance Over Flourish
+
 All animations run exclusively on `transform` and `opacity` — the two CSS properties that can be composited on the GPU without triggering layout or paint. Any animation touching `width`, `height`, `top`, `left`, or `margin` is prohibited.
 
 ### 3. One Orchestrated Moment
+
 A single well-choreographed page-load sequence (staggered hero reveal) creates more delight than scattered micro-interactions. Concentrate animation energy at high-impact moments.
 
 ### 4. Respect Reduced Motion
+
 `prefers-reduced-motion: reduce` is a user preference that must be honoured. All animated components check `useReducedMotion()` before applying any transition. When reduced motion is active, elements appear instantly at their final state.
 
 ---
@@ -162,6 +166,7 @@ Decorative icons around the hero use a CSS keyframe loop to create a gentle floa
 ```
 
 Key constraints:
+
 - `will-change: transform` — hints compositor to promote element to its own layer
 - `animation-play-state: paused` when element leaves viewport (via IntersectionObserver)
 - Hidden at ≤ 768px (`display: none`) — not relevant on mobile and adds unnecessary paint cost

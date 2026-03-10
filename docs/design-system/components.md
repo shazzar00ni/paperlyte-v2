@@ -390,12 +390,14 @@ interface FeedbackFormData {
 **File:** `src/components/layout/Header/`
 
 Sticky navigation with:
+
 - Logo mark + wordmark
 - Navigation links
 - `ThemeToggle`
 - "Join Waitlist" CTA button
 
 Behaviour:
+
 - Sticks at top with `position: sticky; top: 0; z-index: var(--z-header)`
 - Adds a translucency/backdrop-filter blur on scroll
 - Collapses to a hamburger menu on mobile (≤ 768px)
@@ -406,6 +408,7 @@ Behaviour:
 **File:** `src/components/layout/Footer/`
 
 Three-column layout on desktop, stacked on mobile:
+
 - Column 1: Logo + tagline + social links (GitHub, Twitter)
 - Column 2: Product links (Features, Pricing, Roadmap)
 - Column 3: Legal links (Privacy Policy, Terms of Service, Cookie Policy)

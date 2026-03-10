@@ -24,18 +24,23 @@ The Paperlyte Design System is the single source of truth for visual design, int
 ## Design Principles
 
 ### 1. Speed First
+
 Every visual decision must reinforce the product's core promise of instant response. Avoid heavyweight effects (large blur radii, full-page overlays, font-swap jank) that contradict the brand.
 
 ### 2. Clarity Over Cleverness
+
 Copy and UI communicate directly. Metaphor and ornamentation serve clarity — not the other way around.
 
 ### 3. Mobile Excellence
+
 60%+ of organic traffic arrives on mobile. Mobile layouts are designed first; desktop is an enhancement.
 
 ### 4. Accessibility is Non-Negotiable
+
 WCAG 2.1 AA is the floor, not the ceiling. Every component ships with keyboard navigation, focus styles, and screen reader support built in.
 
 ### 5. Progressive Enhancement
+
 Core content renders and is readable without JavaScript. Animations and interactivity layer on top.
 
 ---

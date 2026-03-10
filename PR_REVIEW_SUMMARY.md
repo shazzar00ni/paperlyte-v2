@@ -9,23 +9,23 @@ This file contains a summary of pull requests I have reviewed.
 - **Status:** Critical — Action Required
 - **Summary:** Analysis of Jules' daily PR reviews (2026-03-01, 2026-03-04, and 2026-03-05) confirms that a large number of open branches have **accidentally deleted** the following critical files from the repository:
 
-  | File | Severity | Notes |
-  |------|----------|-------|
-  | `.npmrc` | 🔴 Critical | Controls `legacy-peer-deps=true`; its removal breaks dependency resolution for all peer dependencies |
-  | `docs/ROADMAP.md` | 🟠 High | Core project roadmap documentation |
-  | `gitVersionControl.md` | 🟠 High | Core Git workflow documentation |
-  | `review.md` | 🟡 Medium | AI PR reviewer instruction file |
+  | File                   | Severity    | Notes                                                                                                |
+  | ---------------------- | ----------- | ---------------------------------------------------------------------------------------------------- |
+  | `.npmrc`               | 🔴 Critical | Controls `legacy-peer-deps=true`; its removal breaks dependency resolution for all peer dependencies |
+  | `docs/ROADMAP.md`      | 🟠 High     | Core project roadmap documentation                                                                   |
+  | `gitVersionControl.md` | 🟠 High     | Core Git workflow documentation                                                                      |
+  | `review.md`            | 🟡 Medium   | AI PR reviewer instruction file                                                                      |
 
 - **Affected Branches (confirmed across multiple reviews):**
 
-  | Branch / PR | `.npmrc` | `docs/ROADMAP.md` | `gitVersionControl.md` | `review.md` | `src/utils/navigation.ts` reverted |
-  |-------------|:--------:|:-----------------:|:---------------------:|:-----------:|:------------------------:|
-  | `origin/claude/implement-todo-item-2H9LP` | ✗ | ✗ | ✗ | ✗ | ✗ |
-  | `origin/claude/core-editor-phase-1-PI3Yp` | ✗ | ✗ | ✗ | ✗ | ✗ |
-  | `origin/copilot/sub-pr-503` | ✗ | — | ✗ | ✗ | ✗ |
-  | `origin/copilot/sub-pr-469-again` | ✗ | — | ✗ | ✗ | ✗ |
-  | `origin/claude/fix-peer-dependency-conflicts-Wj2iC` | ✗ | — | — | — | ✗ |
-  | PR #469, #488, #491, #502, #506 | ✗ | ✗ | ✗ | ✗ | — |
+  | Branch / PR                                         | `.npmrc` | `docs/ROADMAP.md` | `gitVersionControl.md` | `review.md` | `src/utils/navigation.ts` reverted |
+  | --------------------------------------------------- | :------: | :---------------: | :--------------------: | :---------: | :--------------------------------: |
+  | `origin/claude/implement-todo-item-2H9LP`           |    ✗     |         ✗         |           ✗            |      ✗      |                 ✗                  |
+  | `origin/claude/core-editor-phase-1-PI3Yp`           |    ✗     |         ✗         |           ✗            |      ✗      |                 ✗                  |
+  | `origin/copilot/sub-pr-503`                         |    ✗     |         —         |           ✗            |      ✗      |                 ✗                  |
+  | `origin/copilot/sub-pr-469-again`                   |    ✗     |         —         |           ✗            |      ✗      |                 ✗                  |
+  | `origin/claude/fix-peer-dependency-conflicts-Wj2iC` |    ✗     |         —         |           —            |      —      |                 ✗                  |
+  | PR #469, #488, #491, #502, #506                     |    ✗     |         ✗         |           ✗            |      ✗      |                 —                  |
 
   _✗ = accidentally deleted/reverted; — = not affected_
 

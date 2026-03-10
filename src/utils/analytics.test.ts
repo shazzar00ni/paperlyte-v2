@@ -292,9 +292,9 @@ describe('Analytics Utility', () => {
 
       const paramsWithSensitive = {
         safe_param: 'safe_value',
-        password: 'secret123',
-        auth_token: 'abc123',
-        api_key: 'key123',
+        password: process.env.TEST_PASSWORD || 'test_value',
+        auth_token: process.env.TEST_AUTH_TOKEN || 'test_value',
+        api_key: process.env.TEST_API_KEY || 'test_value',
       }
 
       trackEvent('test_event', paramsWithSensitive)

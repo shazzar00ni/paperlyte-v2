@@ -146,9 +146,9 @@ Use this checklist before every release and after any changes to interactive com
 
 | # | Test | Expected Result | Pass/Fail |
 |---|------|----------------|-----------|
-| I1 | Tab to table area | Focus enters table | |
-| I2 | Screen reader reads table | Caption announced first, then headers, then cell data | |
-| I3 | Navigate cells with Tab | Logical left-to-right, top-to-bottom | |
+| I1 | Move to the table with a screen reader | Caption is announced first, then headers and cell relationships | |
+| I2 | Navigate the table with screen reader table commands | Column and row headers are announced with cell data | |
+| I3 | Tab through the page past the table | Focus only lands on interactive elements inside/around the table, if any | |
 
 ---
 

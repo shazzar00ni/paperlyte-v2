@@ -22,10 +22,10 @@ The codebase demonstrates an unusually strong accessibility foundation for a pre
 
 | Priority | Count | Examples |
 |----------|-------|---------|
-| **P0 Critical** | 4 | Tertiary contrast fail, missing table caption, EmailCapture missing `aria-describedby`, secondary text borderline contrast fail |
-| **P1 High** | 6 | Heading hierarchy gaps, Testimonials carousel landmark nesting, FeedbackWidget focus placement, missing `aria-invalid` on FeedbackWidget textarea |
-| **P2 Medium** | 5 | Skip link color-contrast, Footer h3s with no h2 parent, CTA plain `<button>` missing accessible styling, static live-region in Testimonials |
-| **Technical Debt** | 4 | No Lighthouse CI baseline score, no axe CI integration, no screen-reader test log, FeedbackWidget confirmation h3 heading skip |
+| **P0 Critical** | 4 | `--color-text-tertiary` contrast fail, `--color-text-secondary` borderline contrast fail, Comparison table missing `<caption>`, section EmailCapture error not linked via `aria-describedby` |
+| **P1 High** | 6 | FAQ `role="region"` aria-hidden anti-pattern, ErrorBoundary heading hierarchy, `role="dialog"` misplaced on backdrop in FeedbackWidget, dark mode tertiary contrast fail, FeedbackWidget textarea missing `aria-invalid`/`aria-describedby`, Testimonials live region always active |
+| **P2 Medium** | 5 | Success color (#22c55e) non-text contrast fail, Footer `<h3>` headings skip level, Testimonials tab/tabpanel pattern incomplete, FeedbackWidget textarea `:focus` not `:focus-visible`, mobile menu arrow-key enhancement (not a conformance blocker) |
+| **Technical Debt** | 4 | No Lighthouse CI baseline score, no axe CI integration, no screen reader test logs, FeedbackWidget confirmation `<h3>` heading skip in modal context |
 
 ---
 
@@ -69,8 +69,8 @@ The accessibility score is estimated below 95 because automated rules would flag
 
 | Audit | Result | Notes |
 |-------|--------|-------|
-| Skip link present | ✅ PASS | `<a href="#main" class="skip-link">` in App.tsx:34 |
-| Skip link destination `id="main"` | ✅ PASS | `<main id="main">` in App.tsx:38 |
+| Skip link present | ✅ PASS | `<a href="#main" class="skip-link" onClick={...}>` in `App.tsx:34`; `onClick` calls `document.getElementById('main')?.focus()` |
+| Skip link destination `id="main"` | ✅ PASS | `<main id="main" tabIndex={-1}>` in `App.tsx:38`; `tabIndex={-1}` makes the element programmatically focusable |
 | All sections have unique `id` | ✅ PASS | Verified across all `<Section>` calls |
 | Heading hierarchy | ⚠️ PARTIAL | See Task 3 |
 | Focus order matches DOM order | ✅ PASS | Static DOM analysis confirms logical order |
@@ -108,7 +108,7 @@ The accessibility score is estimated below 95 because automated rules would flag
 | Test | Result | Detail |
 |------|--------|--------|
 | Skip link activates on Tab | ✅ PASS | `.skip-link:focus` moves element into view (utilities.css:43) |
-| Skip link moves focus to `#main` | ✅ PASS | `href="#main"` matches `<main id="main">` |
+| Skip link moves focus to `#main` | ✅ PASS | `App.tsx` — skip link `onClick` calls `document.getElementById('main')?.focus()`; `<main id="main" tabIndex={-1}>` is programmatically focusable |
 | Tab order follows visual DOM order | ✅ PASS | Static analysis confirms; no `tabindex > 0` in page |
 | All interactive elements reachable | ✅ PASS | No `display:none` on interactive elements without ARIA |
 | Buttons respond to Enter | ✅ PASS | Native `<button>` elements throughout |
@@ -333,11 +333,11 @@ Testing at 375px viewport width:
 | EmailCapture (section) submit button | `styles.submitButton` — no explicit min-height | Unknown | ⚠️ CHECK |
 | ThemeToggle button | `ThemeToggle.module.css` | Unknown | ⚠️ CHECK |
 
-**Finding TT-001 (P1):** `Button` component `size="small"` has no explicit `min-height` or `min-width` constraint documented in CSS. If rendered at less than 44×44px, it fails WCAG 2.5.5. Requires DevTools measurement at 375px.
+**Finding TT-001 (Best Practice — WCAG 2.5.5 AAA):** `Button` component `size="small"` has no explicit `min-height` or `min-width` constraint documented in CSS. If rendered at less than 44×44px, it falls short of the 2.5.5 target-size best practice. Requires DevTools measurement at 375px. Not an AA conformance blocker — see §3.4.
 
-**Finding TT-002 (P1):** Testimonials navigation dots and arrow buttons lack explicit `min-height`/`min-width` declarations in `Testimonials.module.css`. These need DevTools verification at 375px viewport.
+**Finding TT-002 (Best Practice — WCAG 2.5.5 AAA):** Testimonials navigation dots and arrow buttons lack explicit `min-height`/`min-width` declarations in `Testimonials.module.css`. These need DevTools verification at 375px viewport. Not an AA conformance blocker — see §3.4.
 
-**Finding TT-003 (P2):** `EmailCapture.tsx` (section component, `EmailCapture.tsx:158`) submit button is a raw `<button>` styled via `styles.submitButton` with no verified minimum touch target. Requires DevTools measurement.
+**Finding TT-003 (Best Practice — WCAG 2.5.5 AAA):** `EmailCapture.tsx` (section component, `EmailCapture.tsx:158`) submit button is a raw `<button>` styled via `styles.submitButton` with no verified minimum touch target. Requires DevTools measurement. Not an AA conformance blocker — see §3.4.
 
 ### 3.5 Color Contrast — Full Audit (WCAG 1.4.3)
 
@@ -432,7 +432,7 @@ Testing at 375px viewport width:
 | **P2-002** | 2.4.6 | AA | Footer `<h3>` link-group headings skip from no `<h2>` parent (footer has no preceding `<h2>`) | `Footer.tsx:29,47,60,79` | Navigate footer with screen reader |
 | **P2-003** | 4.1.2 | A | Testimonials tab pattern incomplete — `role="tab"` dots not linked to `role="tabpanel"` carousel slides | `Testimonials.tsx:248–258` | axe tabpanel rule |
 | **P2-004** | 2.4.7 | AA | FeedbackWidget textarea uses `:focus` not `:focus-visible` for border styling — inconsistent focus treatment | `FeedbackWidget.module.css:217` | Tab to textarea with keyboard |
-| **P2-005** | 2.1.1 | A | Header mobile menu arrow navigation bound to Left/Right keys only; mobile vertical layout expects Up/Down | `Header.tsx:125` | Open mobile menu → press ArrowUp/ArrowDown |
+| **P2-005** | — | Enhancement | `Header.tsx` uses plain navigation semantics (`<nav>` → `<ul>` → `<a>`); arrow-key traversal is not required by WCAG 2.1.1 for this pattern and the matrix correctly records 2.1.1 as ✅ PASS. Implementing Up/Down arrow navigation with `role="menu"` / `role="menuitem"` is an optional ARIA Authoring Practices Guide enhancement, not a conformance requirement. Optionally implement ARIA menu semantics or document the plain-navigation pattern as the intended design. | `Header.tsx:125` | Evaluate whether ARIA menu semantics are desired; not a WCAG 2.1 AA blocker |
 
 #### Technical Debt (Non-blocking but Recommended)
 
@@ -498,8 +498,8 @@ Testing at 375px viewport width:
 
 **Overall WCAG 2.1 AA Conformance Rate (estimated):**
 - **Pass:** 35/43 applicable AA criteria (81.4%)
-- **Fail:** 3 criteria (7.0%)
-- **Partial/Needs Verification:** 5 criteria (11.6%)
+- **Fail:** 3 criteria (7.0%) — 1.4.3 Contrast Minimum, 1.4.11 Non-text Contrast, 3.3.1 Error Identification
+- **Partial/Needs Verification:** 5 criteria (11.6%) — 1.3.1 Info and Relationships, 2.4.6 Headings and Labels, 3.3.3 Error Suggestion, 4.1.2 Name Role Value, 4.1.3 Status Messages
 
 *WCAG 2.5.5 (Target Size) is Level AAA and is excluded from the AA conformance calculation. See §3.4 for best-practice touch-target findings.*
 
@@ -558,9 +558,8 @@ Testing at 375px viewport width:
 6. Fix FAQ `aria-hidden` on `role="region"` — P1-001
 7. Fix ErrorBoundary heading hierarchy — P1-002
 8. Gate Testimonials live region to user-triggered events only — P1-006
-9. Verify/fix touch targets for small buttons and Testimonials controls — P1-007
-10. Fix Testimonials tab/tabpanel pattern — P2-003
-11. Darken `--color-success` for light-mode icon-only usage — P2-001
+9. Fix Testimonials tab/tabpanel pattern — P2-003
+10. Darken `--color-success` for light-mode icon-only usage — P2-001
 
 **Pre-audit (March 25–31, 2026):**
 12. Run Lighthouse CI with Chrome (use `npx lhci autorun`) — verify ≥95 score

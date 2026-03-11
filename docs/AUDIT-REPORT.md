@@ -22,7 +22,7 @@ The codebase demonstrates an unusually strong accessibility foundation for a pre
 
 | Priority | Count | Examples |
 |----------|-------|---------|
-| **P0 Critical** | 4 | Tertiary contrast fail, missing table caption, EmailCapture missing `aria-describedby`, Comparison heading starts at h2 with no page h1 parent |
+| **P0 Critical** | 4 | Tertiary contrast fail, missing table caption, EmailCapture missing `aria-describedby`, secondary text borderline contrast fail |
 | **P1 High** | 7 | Heading hierarchy gaps, Testimonials carousel landmark nesting, FeedbackWidget focus placement, missing `aria-invalid` on FeedbackWidget textarea |
 | **P2 Medium** | 6 | Skip link color-contrast, Footer h3s with no h2 parent, CTA plain `<button>` missing accessible styling, static live-region in Testimonials |
 | **Technical Debt** | 5 | No Lighthouse CI baseline score, no axe CI integration, no screen-reader test log, touch target on EmailCapture submit unknown, GDPR checkbox touch target not verified |
@@ -46,8 +46,7 @@ The accessibility score is estimated below 95 because automated rules would flag
 
 1. **Color-contrast failure** — `--color-text-tertiary` (#9ca3af on #ffffff = 2.85:1 ratio, failing 4.5:1 AA normal text threshold)
 2. **Missing table caption** — `Comparison` table lacks `<caption>` element
-3. **Heading order** — multiple sections start their heading hierarchy at `<h2>` without a page-level context providing `<h1>` (Lighthouse/axe flag this)
-4. **`aria-live` duplicate announcement** — Testimonials `<div aria-live="polite">` always shows current slide text even without user action, potentially causing excessive announcements scored against WCAG 4.1.3
+3. **`aria-live` duplicate announcement** — Testimonials `<div aria-live="polite">` always shows current slide text even without user action, potentially causing excessive announcements scored against WCAG 4.1.3
 
 ### 1.2 Failed Audits by Accessibility Category
 
@@ -86,7 +85,7 @@ The accessibility score is estimated below 95 because automated rules would flag
 | EmailCapture (section) — label for email | ✅ PASS | `aria-label="Email address"` on input (EmailCapture.tsx:156) |
 | EmailCapture (section) — `aria-describedby` for error | 🔴 FAIL | Error `<p role="alert">` at line 170 has no `id`; input missing `aria-describedby` |
 | FeedbackWidget textarea — label | ✅ PASS | `<label for="feedback-message">` (FeedbackWidget.tsx:335) |
-| FeedbackWidget textarea — `aria-required` | ⚠️ MISSING | `required` attribute present but `aria-required` absent |
+| FeedbackWidget textarea — `aria-required` | ✅ PASS | Native `required` attribute on `<textarea>` is sufficient; `aria-required` is redundant for native form controls |
 | FeedbackWidget textarea — `aria-invalid` on error | 🔴 FAIL | Error state set, but textarea does not set `aria-invalid="true"` |
 | FeedbackWidget textarea — `aria-describedby` | 🔴 FAIL | Error `<div role="alert">` lacks `id`; textarea missing `aria-describedby` |
 | GDPR checkbox label | ✅ PASS | Properly wrapped `<label for="gdpr-consent">` |
@@ -220,7 +219,7 @@ The accessibility score is estimated below 95 because automated rules would flag
 
 #### Landmark Structure
 
-```
+```html
 <body>
   <a href="#main" class="skip-link">Skip to main content</a>  ✅
   <header>                                                       ✅

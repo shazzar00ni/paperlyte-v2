@@ -89,7 +89,7 @@ Use this checklist before every release and after any changes to interactive com
 
 | # | Test | Expected Result | Pass/Fail |
 |---|------|----------------|-----------|
-| E1 | Tab to email input | Focus visible; `aria-label="Email address"` | |
+| E1 | Tab to email input | Focus visible; input has an accessible name (e.g., via associated `<label>` or `aria-label`) | |
 | E2 | Tab to submit button | Focus visible | |
 | E3 | Enter invalid email, Tab to button, Enter | Validation error shown; `aria-invalid="true"` on input; error text announced | |
 | E4 | Tab to GDPR checkbox | Focus visible on checkbox | |
@@ -148,7 +148,7 @@ Use this checklist before every release and after any changes to interactive com
 |---|------|----------------|-----------|
 | I1 | Move to the table with a screen reader | Caption is announced first, then headers and cell relationships | |
 | I2 | Navigate the table with screen reader table commands | Column and row headers are announced with cell data | |
-| I3 | Tab through the page past the table | Focus only lands on interactive elements inside/around the table, if any | |
+| I3 | Tab through the page past the table | Focus only lands on interactive elements inside/around the table, if any; Tab does not traverse non-interactive cells (this is correct for a semantic HTML `<table>`, not a `role="grid"` widget) | |
 
 ---
 

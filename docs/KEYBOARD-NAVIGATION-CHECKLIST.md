@@ -28,7 +28,7 @@ Use this checklist before every release and after any changes to interactive com
 | A4 | Tab to any `<a>` link | Focus outline is visible (2px solid dark outline) | |
 | A5 | Tab to any `<button>` | Focus outline is visible | |
 | A6 | Tab to any `<input>` | Focus outline is visible | |
-| A7 | Shift+Tab from first interactive element | Focus does not leave the page | |
+| A7 | Shift+Tab from first interactive element | Focus moves back to browser UI/address bar; page does not trap focus | |
 | A8 | Shift+Tab anywhere | Focus moves in reverse order | |
 
 ---

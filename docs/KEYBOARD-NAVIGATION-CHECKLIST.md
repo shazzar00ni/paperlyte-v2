@@ -28,7 +28,7 @@ Use this checklist before every release and after any changes to interactive com
 | A4 | Tab to any `<a>` link | Focus outline is visible (2px solid dark outline) | |
 | A5 | Tab to any `<button>` | Focus outline is visible | |
 | A6 | Tab to any `<input>` | Focus outline is visible | |
-| A7 | Shift+Tab from first interactive element | Focus moves back to browser UI/address bar; page does not trap focus | |
+| A7 | Shift+Tab from first interactive element | Focus moves to previous focusable element, or to browser UI (address bar/tab strip) if already at the start of the document — the page cannot and should not prevent this | |
 | A8 | Shift+Tab anywhere | Focus moves in reverse order | |
 
 ---
@@ -146,9 +146,9 @@ Use this checklist before every release and after any changes to interactive com
 
 | # | Test | Expected Result | Pass/Fail |
 |---|------|----------------|-----------|
-| I1 | Move to the table with a screen reader | Caption is announced first, then headers and cell relationships | |
-| I2 | Navigate the table with screen reader table commands | Column and row headers are announced with cell data | |
-| I3 | Tab through the page past the table | Focus only lands on interactive elements inside/around the table, if any; Tab does not traverse non-interactive cells (this is correct for a semantic HTML `<table>`, not a `role="grid"` widget) | |
+| I1 | Tab past the table area | Tab skips non-interactive cells and moves only to any focusable descendants (e.g., links inside cells); the table itself receives no focus stop — this is correct for a semantic `<table>` | |
+| I2 | Navigate with screen reader table commands (VoiceOver: Control+Option+Arrow; NVDA: Table Layer T/Shift+T, Arrow keys) | Caption announced before entering table; each cell announces its row and column headers; `scope="col"` / `scope="row"` associations are correctly reported | |
+| I3 | Verify caption and header relationships | Screen reader reads the table caption ("Feature comparison: Paperlyte vs. competitors") before the first cell; column headers (Paperlyte, Notion, Evernote, OneNote) and row headers (feature names) are announced with each cell | |
 
 ---
 

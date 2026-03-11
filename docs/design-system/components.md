@@ -386,6 +386,9 @@ interface FeedbackFormData {
 ## Layout Components (`layout/`)
 
 ### Header
+## Layout Components (`layout/`)
+
+### Header
 
 **File:** `src/components/layout/Header/`
 
@@ -456,7 +459,6 @@ Section components are page-level compositions. They consume primitives and layo
 | `Mobile` | Mobile app preview section |
 
 For section-specific layout and copy guidelines, see [`landing-page.md`](./landing-page.md).
-
 ---
 
 ## Shared Hooks

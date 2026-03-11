@@ -94,7 +94,7 @@ Use this checklist before every release and after any changes to interactive com
 | E3 | Enter invalid email, Tab to button, Enter | Validation error shown; `aria-invalid="true"` on input; error text announced | |
 | E4 | Tab to GDPR checkbox | Focus visible on checkbox | |
 | E5 | Press Space on checkbox | Checkbox toggles; `checked` state updates | |
-| E6 | Submit valid email without GDPR consent | Error shown: "Please agree to receive emails" | |
+| E6 | Submit valid email without GDPR consent | Error shown: "Please agree to receive emails from Paperlyte" | |
 | E7 | Submit valid email with consent | Loading state; then success message with `role="alert"` | |
 
 ---

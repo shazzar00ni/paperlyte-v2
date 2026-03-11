@@ -56,9 +56,9 @@ All entrance animations are powered by `IntersectionObserver` via the `AnimatedE
 | Name | Transform | Use |
 |---|---|---|
 | `fadeIn` | `opacity: 0 → 1` | Default; safe for any content |
-| `slideUp` | `translateY(24px) → 0` + fade | Feature cards, testimonials |
-| `slideInLeft` | `translateX(-24px) → 0` + fade | Left-side content in split layouts |
-| `slideInRight` | `translateX(24px) → 0` + fade | Right-side content in split layouts |
+| `slideUp` | `translateY(30px) → 0` + fade | Feature cards, testimonials |
+| `slideInLeft` | `translateX(-30px) → 0` + fade | Left-side content in split layouts |
+| `slideInRight` | `translateX(30px) → 0` + fade | Right-side content in split layouts |
 | `scale` | `scale(0.95) → 1` + fade | Modals, cards, highlight elements |
 
 ### Stagger Pattern

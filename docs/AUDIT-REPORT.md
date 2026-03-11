@@ -498,8 +498,8 @@ Testing at 375px viewport width:
 
 **Overall WCAG 2.1 AA Conformance Rate (estimated):**
 - **Pass:** 35/43 applicable AA criteria (81.4%)
-- **Fail:** 4 criteria (9.3%)
-- **Partial/Needs Verification:** 4 criteria (9.3%)
+- **Fail:** 3 criteria (7.0%)
+- **Partial/Needs Verification:** 5 criteria (11.6%)
 
 *WCAG 2.5.5 (Target Size) is Level AAA and is excluded from the AA conformance calculation. See §3.4 for best-practice touch-target findings.*
 

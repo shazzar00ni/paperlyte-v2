@@ -313,8 +313,9 @@ All `<ul>` and `<ol>` elements verified to contain only `<li>` children. No impr
 
 **Note:** `reset.css` uses `0.01ms` instead of `0ms` to prevent breaking some JS-polling animations that check `animation-duration` — this is correct behavior.
 
-### 3.4 Touch Target Sizes (WCAG 2.5.5 — 44×44px minimum)
+### 3.4 Touch Target Sizes — Best Practice (WCAG 2.5.5 Target Size, Level AAA — 44×44px minimum)
 
+This check is treated as a best-practice recommendation only; WCAG 2.5.5 is Level AAA in WCAG 2.1 and is not required for WCAG 2.1 Level AA conformance.
 Testing at 375px viewport width:
 
 | Element | Component | Declared Size | Status |

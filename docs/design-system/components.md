@@ -109,7 +109,7 @@ The `name` prop accepts two forms — both resolve to the same icon:
 
 The component passes `name` through `convertIconName()` in `src/utils/iconLibrary.ts`, which maps `fa-` class names to bare names. **Names that are not in the library render the `circle-question` fallback** — check `validIconNames` in `iconLibrary.ts` before using a new name.
 
-**Brand icons** (`github`, `twitter`, `apple`, `windows`) are auto-detected via `isBrandIcon()` — passing `variant="brands"` is optional for these but recommended for clarity.
+**Brand icons** (`GitHub`, `twitter`, `apple`, `windows`) are auto-detected via `isBrandIcon()` — passing `variant="brands"` is optional for these but recommended for clarity.
 
 #### Registered Icon Names (solid unless noted)
 

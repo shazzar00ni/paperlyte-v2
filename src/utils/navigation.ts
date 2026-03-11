@@ -46,6 +46,49 @@ function hasDangerousProtocol(url: string): boolean {
 }
 
 /**
+ * Validates basic URL requirements (non-empty, no control chars, no protocol-relative).
+ * @param url - The URL to validate
+ * @returns true if basic validation passes, false otherwise
+ */
+function passesBasicValidation(url: string): boolean {
+  if (!url || url.trim() === '') {
+    return false
+  }
+
+  const trimmedUrl = url.trim()
+
+  // Reject URLs containing ASCII control characters (null bytes, etc.)
+  // eslint-disable-next-line no-control-regex
+  if (/[\x00-\x1F\x7F]/.test(trimmedUrl)) {
+    return false
+  }
+
+  // Block protocol-relative URLs (//example.com)
+  if (trimmedUrl.startsWith('//')) {
+    return false
+  }
+
+  return true
+}
+
+/**
+ * Checks if an absolute URL is allowed based on origin and external permission.
+ * @param parsedUrl - The parsed URL object
+ * @param currentOrigin - The current window origin
+ * @param allowExternal - Whether external URLs are permitted
+ * @returns true if the URL is allowed, false otherwise
+ */
+function isAllowedAbsoluteUrl(parsedUrl: URL, currentOrigin: string, allowExternal: boolean): boolean {
+  // Always allow same-origin URLs
+  if (parsedUrl.origin === currentOrigin) {
+    return true
+  }
+
+  // Only allow external HTTP/HTTPS URLs if explicitly permitted
+  return allowExternal && (parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:')
+}
+
+/**
  * Checks if a URL is a safe relative URL.
  * @param url - The URL to check
  * @returns 'safe' if valid, 'unsafe' if invalid, 'not-relative' if not a relative URL
@@ -83,23 +126,12 @@ export function isSafeUrl(url: string, allowExternal: boolean = false): boolean 
   }
 
   try {
-    // Empty or null URLs are not safe
-    if (!url || url.trim() === '') {
+    // Perform basic validation checks
+    if (!passesBasicValidation(url)) {
       return false
     }
 
     const trimmedUrl = url.trim()
-
-    // Reject URLs containing ASCII control characters (null bytes, etc.)
-    // eslint-disable-next-line no-control-regex
-    if (/[\x00-\x1F\x7F]/.test(trimmedUrl)) {
-      return false
-    }
-
-    // Block protocol-relative URLs (//example.com)
-    if (trimmedUrl.startsWith('//')) {
-      return false
-    }
 
     // Block dangerous protocols
     if (hasDangerousProtocol(trimmedUrl)) {
@@ -115,22 +147,9 @@ export function isSafeUrl(url: string, allowExternal: boolean = false): boolean 
       return false
     }
 
-    // For absolute URLs, parse and validate the protocol
+    // For absolute URLs, parse and validate the protocol and origin
     const parsedUrl = new URL(trimmedUrl, window.location.origin)
-    const currentOrigin = window.location.origin
-
-    // Always allow same-origin URLs
-    if (parsedUrl.origin === currentOrigin) {
-      return true
-    }
-
-    // Only allow external HTTP/HTTPS URLs if explicitly permitted
-    if (allowExternal && (parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:')) {
-      return true
-    }
-
-    // Reject everything else (external URLs when not allowed, or non-HTTP(S) protocols)
-    return false
+    return isAllowedAbsoluteUrl(parsedUrl, window.location.origin, allowExternal)
   } catch {
     // If URL parsing fails, it's not safe
     return false

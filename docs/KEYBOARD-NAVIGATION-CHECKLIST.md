@@ -57,8 +57,8 @@ Use this checklist before every release and after any changes to interactive com
 |---|------|----------------|-----------|
 | C1 | Tab to hamburger menu button | Focus visible; `aria-expanded="false"` | |
 | C2 | Press Enter or Space | Menu opens; `aria-expanded="true"`; focus moves inside menu | |
-| C3 | Tab through menu items | Focus cycles through all nav links and close button | |
-| C4 | Shift+Tab to wrap | Focus wraps from first to last item | |
+| C3 | Tab through menu items | Focus cycles through all nav links and the "Get Started" button within the menu `<ul>` (hamburger/close button is not part of this loop) | |
+| C4 | Shift+Tab to wrap | Focus wraps between the first and last menu items inside the menu `<ul>` | |
 | C5 | Press Escape | Menu closes; focus returns to hamburger button; `aria-expanded="false"` | |
 | C6 | Press Enter on a nav link | Page scrolls to section; menu closes | |
 | C7 | Click outside menu (backdrop) | N/A — no backdrop close; verify Tab still works after menu closes | |

@@ -23,9 +23,9 @@ The codebase demonstrates an unusually strong accessibility foundation for a pre
 | Priority | Count | Examples |
 |----------|-------|---------|
 | **P0 Critical** | 4 | Tertiary contrast fail, missing table caption, EmailCapture missing `aria-describedby`, secondary text borderline contrast fail |
-| **P1 High** | 7 | Heading hierarchy gaps, Testimonials carousel landmark nesting, FeedbackWidget focus placement, missing `aria-invalid` on FeedbackWidget textarea |
-| **P2 Medium** | 6 | Skip link color-contrast, Footer h3s with no h2 parent, CTA plain `<button>` missing accessible styling, static live-region in Testimonials |
-| **Technical Debt** | 5 | No Lighthouse CI baseline score, no axe CI integration, no screen-reader test log, touch target on EmailCapture submit unknown, GDPR checkbox touch target not verified |
+| **P1 High** | 6 | Heading hierarchy gaps, Testimonials carousel landmark nesting, FeedbackWidget focus placement, missing `aria-invalid` on FeedbackWidget textarea |
+| **P2 Medium** | 5 | Skip link color-contrast, Footer h3s with no h2 parent, CTA plain `<button>` missing accessible styling, static live-region in Testimonials |
+| **Technical Debt** | 4 | No Lighthouse CI baseline score, no axe CI integration, no screen-reader test log, FeedbackWidget confirmation h3 heading skip |
 
 ---
 
@@ -423,7 +423,6 @@ Testing at 375px viewport width:
 | **P1-004** | 1.4.3 | AA | `--color-text-tertiary` (#64748b) fails 4.5:1 contrast in dark mode on `#0f172a` | Dark mode, all tertiary text | Enable dark mode → DevTools contrast check |
 | **P1-005** | 4.1.2 | A | FeedbackWidget textarea missing `aria-invalid="true"` and `aria-describedby` linking to error message | `FeedbackWidget.tsx:340–353` | Submit empty form → screen reader does not announce field-level error |
 | **P1-006** | 3.3.1 | A | Testimonials carousel `aria-live` region always active — announces slide during auto-rotation without user interaction | `Testimonials.tsx:274` | Enable auto-rotation with reduced motion off → screen reader announces every 5s |
-| **P1-007** | 2.5.5 | AA | `Button` `size="small"` and Testimonials nav dots/arrows have no verified minimum 44×44px touch target | `Button.module.css`, `Testimonials.module.css` | Set viewport 375px → measure with DevTools |
 
 #### P2 — Medium Priority
 
@@ -434,7 +433,6 @@ Testing at 375px viewport width:
 | **P2-003** | 4.1.2 | A | Testimonials tab pattern incomplete — `role="tab"` dots not linked to `role="tabpanel"` carousel slides | `Testimonials.tsx:248–258` | axe tabpanel rule |
 | **P2-004** | 2.4.7 | AA | FeedbackWidget textarea uses `:focus` not `:focus-visible` for border styling — inconsistent focus treatment | `FeedbackWidget.module.css:217` | Tab to textarea with keyboard |
 | **P2-005** | 2.1.1 | A | Header mobile menu arrow navigation bound to Left/Right keys only; mobile vertical layout expects Up/Down | `Header.tsx:125` | Open mobile menu → press ArrowUp/ArrowDown |
-| **P2-006** | 3.3.2 | A | `EmailCapture.tsx` section submit button is a raw `<button>` without verified touch target size | `EmailCapture.tsx:158` | 375px viewport → DevTools measure button |
 
 #### Technical Debt (Non-blocking but Recommended)
 
@@ -443,8 +441,7 @@ Testing at 375px viewport width:
 | **TD-001** | No Lighthouse CI baseline score — impossible to track accessibility score regression | Cannot verify ≥95 threshold |
 | **TD-002** | No axe CI integration — automated violations not caught in CI/CD | Regressions undetected |
 | **TD-003** | No screen reader test logs (VoiceOver, NVDA, JAWS) — manual testing incomplete | Unknown real-world behavior |
-| **TD-004** | `ErrorBoundary.tsx:137` — "Reload Page" button has no `aria-label` beyond visible text | Minor — visible text is descriptive |
-| **TD-005** | `FeedbackWidget` `showConfirmation` state shows an `<h3>` with no preceding `<h2>` in modal context | Minor heading skip in modal |
+| **TD-004** | `FeedbackWidget` `showConfirmation` state shows an `<h3>` with no preceding `<h2>` in modal context | Minor heading skip in modal |
 
 ### 4.2 WCAG 2.1 AA Compliance Matrix
 
@@ -484,7 +481,7 @@ Testing at 375px viewport width:
 | 2.5.2 Pointer Cancellation | A | ✅ PASS | Click events, not mousedown |
 | 2.5.3 Label in Name | A | ✅ PASS | Visible labels match accessible names |
 | 2.5.4 Motion Actuation | A | ✅ PASS | No device-motion interactions |
-| 2.5.5 Target Size | AA | ⚠️ PARTIAL | Small buttons and carousel dots need verification |
+| 2.5.5 Target Size | AAA | ℹ️ BEST PRACTICE | Level AAA in WCAG 2.1; excluded from AA conformance rate — see §3.4 |
 | 3.1.1 Language of Page | A | ✅ PASS | `lang="en"` on `<html>` |
 | 3.1.2 Language of Parts | AA | ✅ PASS | No foreign language content |
 | 3.2.1 On Focus | A | ✅ PASS | No unexpected context changes on focus |
@@ -500,9 +497,11 @@ Testing at 375px viewport width:
 | 4.1.3 Status Messages | AA | ⚠️ PARTIAL | Testimonials live region over-announces |
 
 **Overall WCAG 2.1 AA Conformance Rate (estimated):**
-- **Pass:** 35/44 applicable criteria (79.5%)
-- **Fail:** 4 criteria (9.1%)
-- **Partial/Needs Verification:** 5 criteria (11.4%)
+- **Pass:** 35/43 applicable AA criteria (81.4%)
+- **Fail:** 4 criteria (9.3%)
+- **Partial/Needs Verification:** 4 criteria (9.3%)
+
+*WCAG 2.5.5 (Target Size) is Level AAA and is excluded from the AA conformance calculation. See §3.4 for best-practice touch-target findings.*
 
 ### 4.3 Remediation Recommendations by Finding
 
@@ -516,7 +515,6 @@ Testing at 375px viewport width:
 | P1-003 Dialog role placement | Move `role="dialog" aria-modal aria-labelledby` from backdrop `<div>` to `<div ref={modalRef}>` (inner content) | Small | P1 |
 | P1-005 FeedbackWidget textarea ARIA | Add `aria-invalid={!!error}` to textarea; add `id="feedback-error"` to error div; add `aria-describedby="feedback-error"` to textarea | Small | P1 |
 | P1-006 Live region auto-announce | Gate live region update behind a user-interaction flag — only set live region text when user navigates, not on auto-rotation | Small | P1 |
-| P1-007 Touch targets | Add `min-height: 44px; min-width: 44px` to Button `small` variant; add explicit `width/height: 44px` to Testimonials dots and arrows | Small | P1 |
 | P2-001 Success color | Darken success icon color or add a text label alongside icon-only usage; in dark mode, `#4ade80` passes | Small | P2 |
 | P2-003 Testimonials tabpanel | Add `role="tabpanel"` and `aria-labelledby` to each slide `<article>`, or switch dots from `role="tab"` to `role="button"` with `aria-current` | Medium | P2 |
 | P2-005 Mobile menu arrow keys | Add `'vertical'` arrow navigation mode when menu is open in mobile breakpoint, or document the current behavior as acceptable | Small | P2 |

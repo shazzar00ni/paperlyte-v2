@@ -61,7 +61,7 @@ Use this checklist before every release and after any changes to interactive com
 | C4 | Shift+Tab to wrap | Focus wraps between the first and last menu items inside the menu `<ul>` | |
 | C5 | Press Escape | Menu closes; focus returns to hamburger button; `aria-expanded="false"` | |
 | C6 | Press Enter on a nav link | Page scrolls to section; menu closes | |
-| C7 | Click outside menu (backdrop) | N/A — no backdrop close; verify Tab still works after menu closes | |
+| C7 | Press Escape while focused anywhere inside the menu | Menu closes; focus returns to hamburger button; `aria-expanded="false"` | |
 
 ---
 

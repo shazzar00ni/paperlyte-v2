@@ -85,7 +85,6 @@ The accessibility score is estimated below 95 because automated rules would flag
 | EmailCapture (section) — label for email | ✅ PASS | `aria-label="Email address"` on input (EmailCapture.tsx:156) |
 | EmailCapture (section) — `aria-describedby` for error | 🔴 FAIL | Error `<p role="alert">` at line 170 has no `id`; input missing `aria-describedby` |
 | FeedbackWidget textarea — label | ✅ PASS | `<label for="feedback-message">` (FeedbackWidget.tsx:335) |
-| FeedbackWidget textarea — `aria-required` | ✅ PASS | Native `required` attribute on `<textarea>` is sufficient; `aria-required` is redundant for native form controls |
 | FeedbackWidget textarea — `aria-invalid` on error | 🔴 FAIL | Error state set, but textarea does not set `aria-invalid="true"` |
 | FeedbackWidget textarea — `aria-describedby` | 🔴 FAIL | Error `<div role="alert">` lacks `id`; textarea missing `aria-describedby` |
 | GDPR checkbox label | ✅ PASS | Properly wrapped `<label for="gdpr-consent">` |

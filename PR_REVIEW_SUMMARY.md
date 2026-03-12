@@ -2,6 +2,182 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-03-05
+
+### Analysis: Accidental File Deletions in Open Branches (Jules Daily PR Reviews)
+
+- **Status:** Critical — Action Required
+- **Summary:** Analysis of Jules' daily PR reviews (2026-03-01, 2026-03-04, and 2026-03-05) confirms that a large number of open branches have **accidentally deleted** the following critical files from the repository:
+
+  | File                   | Severity    | Notes                                                                                                |
+  | ---------------------- | ----------- | ---------------------------------------------------------------------------------------------------- |
+  | `.npmrc`               | 🔴 Critical | Controls `legacy-peer-deps=true`; its removal breaks dependency resolution for all peer dependencies |
+  | `docs/ROADMAP.md`      | 🟠 High     | Core project roadmap documentation                                                                   |
+  | `gitVersionControl.md` | 🟠 High     | Core Git workflow documentation                                                                      |
+  | `review.md`            | 🟡 Medium   | AI PR reviewer instruction file                                                                      |
+
+- **Affected Branches (confirmed across multiple reviews):**
+
+  | Branch / PR                                         | `.npmrc` | `docs/ROADMAP.md` | `gitVersionControl.md` | `review.md` | `src/utils/navigation.ts` reverted |
+  | --------------------------------------------------- | :------: | :---------------: | :--------------------: | :---------: | :--------------------------------: |
+  | `origin/claude/implement-todo-item-2H9LP`           |    ✗     |         ✗         |           ✗            |      ✗      |                 ✗                  |
+  | `origin/claude/core-editor-phase-1-PI3Yp`           |    ✗     |         ✗         |           ✗            |      ✗      |                 ✗                  |
+  | `origin/copilot/sub-pr-503`                         |    ✗     |         —         |           ✗            |      ✗      |                 ✗                  |
+  | `origin/copilot/sub-pr-469-again`                   |    ✗     |         —         |           ✗            |      ✗      |                 ✗                  |
+  | `origin/claude/fix-peer-dependency-conflicts-Wj2iC` |    ✗     |         —         |           —            |      —      |                 ✗                  |
+  | PR #469, #488, #491, #502, #506                     |    ✗     |         ✗         |           ✗            |      ✗      |                 —                  |
+
+  _✗ = accidentally deleted/reverted; — = not affected_
+
+- **Root Cause:** Likely caused by a destructive rebase or a base branch that had these files removed; propagated across many branches that branched off from it.
+- **Action Required:** All affected branches must restore the four files listed above (and the `hasDangerousProtocol`/`isRelativeUrl` helpers in `src/utils/navigation.ts`) before they can be merged. The files all exist and are intact on `main`.
+
+---
+
+## 2026-02-08
+
+### PR #427: Configure Claude Code GitHub Action
+
+- **Status:** Approved
+- **Notes (2026-02-08):** See detailed review under **2026-02-06 → PR #427**. Latest status remains **Approved**; no additional feedback beyond that entry.
+
+### PR #275: Implement P0-CRITICAL hero section conversion optimization (#274)
+
+- **Status:** Under Review (Changes Requested)
+- **Notes (2026-02-08):** See detailed review under **2026-02-06 → PR #275**. Status is still **Under Review (Changes Requested)** as of this date.
+
+### PR #279: feat: Implement React Router and legal pages with dark footer
+
+- **Status:** Changes Requested
+- **Notes (2026-02-08):** See detailed review under **2026-02-06 → PR #279**. Status remains **Changes Requested**; prior concerns documented there continue to apply.
+
+### PR #319: Fix Deployment Error in Privacy.tsx
+
+- **Status:** Changes Requested
+- **Notes (2026-02-08):** See detailed review under **2026-02-06 → PR #319**. Status is still **Changes Requested** with no new blocking issues recorded here.
+
+### PR #311: Fix Icon component fallback rendering (Update 2026-02-08)
+
+- **Status:** Changes Requested
+- **Notes (2026-02-08):** See detailed review under **2026-02-06 → PR #311**. Status remains **Changes Requested**; refer to the earlier entry for the full accessibility and rendering discussion.
+
+### Additional PRs
+
+- **PR #428**
+  - **Status:** Reviewed/Approved
+  - **Summary:** Critical security fix related to `safeNavigate`.
+  - **Feedback:** Solid improvement; this approach to `safeNavigate` is preferred for its flexibility over #424.
+
+- **PR #424**
+  - **Status:** Reviewed/Approved
+  - **Summary:** Critical security fix overlapping with #428.
+  - **Feedback:** Improvement is solid but superseded by #428's `safeNavigate` implementation.
+
+- **PR #422**
+  - **Status:** Reviewed/Approved
+  - **Summary:** Dependency updates.
+  - **Feedback:** Changes look good and keep dependencies current without introducing regressions.
+
+- **PR #419**
+  - **Status:** Reviewed/Approved
+  - **Summary:** Analytics integration.
+  - **Feedback:** Implementation is sound and aligns with existing CSP and privacy requirements.
+
+- **PR #406**
+  - **Status:** Reviewed/Approved
+  - **Summary:** Miscellaneous improvements.
+  - **Feedback:** Changes are straightforward and low risk.
+
+### Redundant Summary PRs
+
+- **Summary:** Identified several redundant PRs that only update `PR_REVIEW_SUMMARY.md` or are duplicates/attempts to fix the summary file.
+- **PRs:** #435, #434, #433, #432, #431, #385, #383.
+- **Action:** Recommend closing these in favor of a single daily summary.
+
+### PR #107
+
+- **Status:** Close Recommended
+- **Summary:** Large monolithic changes that are difficult to review and risky to merge as-is.
+- **Feedback:** Recommendation remains unchanged: Close #107 (massive monolithic PR) to avoid merge conflicts with active feature PRs and to encourage smaller, focused PRs.
+
+### PR #389
+
+- **Status:** Postponed
+- **Summary:** Repository-wide formatting changes that are low priority and likely to conflict with in-flight feature work.
+- **Feedback:** Recommendation remains unchanged: Postpone #389 (repository-wide formatting) to avoid merge conflicts with active feature PRs and revisit once the codebase is more stable.
+
+---
+
+## 2026-02-06
+
+### PR #428: Fix open redirect vulnerability in safeNavigate() (Alert #2305)
+
+- **Status:** Approved
+- **Summary:** Fixes an open redirect vulnerability by restricting `safeNavigate()` to same-origin URLs by default. It introduces `safeNavigateExternal()` for intentional external navigation and adds a parameter to `isSafeUrl()` to control external URL allowance.
+- **Feedback:** Solid security improvement. The separation of internal and external navigation is a good pattern.
+
+### PR #427: Configure Claude Code GitHub Action
+
+- **Status:** Changes Requested
+- **Summary:** Adds a GitHub Actions workflow for Claude Code integration.
+- **Feedback:** The workflow file has several issues: duplicate `permissions` keys and invalid multiple `if` conditions on the same job (only the last one will be evaluated). Recommend combining `if` conditions into a single expression; the `actions/checkout@v6` usage is consistent with this repository’s conventions.
+
+### PR #424: Fix open redirect and command injection vulnerabilities
+
+- **Status:** Approved
+- **Summary:** Addresses multiple security issues, including open redirect in `navigation.ts` (using an allowlist approach) and a potential object injection in `CounterAnimation.tsx` by using a `Map` instead of an object for easing functions.
+- **Feedback:** This is a comprehensive security PR. The `Map` implementation in `CounterAnimation` effectively prevents prototype pollution. Note that this overlaps with PR #428; this version is more robust but more complex.
+
+### PR #425: Add legacy ESLint config for Codacy compatibility
+
+- **Status:** Approved
+- **Summary:** Adds a legacy `.eslintrc.json` to support Codacy's older ESLint engine.
+- **Feedback:** Helpful for maintaining CI compatibility with legacy tools.
+
+### PR #422: Update type definitions to latest versions
+
+- **Status:** Approved
+- **Summary:** Minor updates to `@types/node` and `@types/react`.
+- **Feedback:** Routine maintenance, looks safe.
+
+### PR #419: Set up Vercel Web Analytics integration
+
+- **Status:** Approved
+- **Summary:** Integrates `@vercel/analytics` and configures necessary CSP headers.
+- **Feedback:** Implementation follows best practices. Verified that CSP headers in both `vercel.json` and `vite.config.ts` are correctly updated to allow Vercel's analytics domains.
+
+### PR #406: Correct PR #384 documentation entry in review summary
+
+- **Status:** Approved
+- **Summary:** Fixes an inaccurate description of PR #384 in this file.
+- **Feedback:** Good for documentation accuracy.
+
+### PR #389: Standardize code style with semicolons across codebase
+
+- **Status:** Postponed
+- **Summary:** Enforces semicolons via Prettier across the entire codebase (186 files).
+- **Feedback:** While consistent styling is good, merging a 186-file formatting change while many other PRs are open will cause widespread merge conflicts. Recommend postponing until current feature PRs are merged.
+
+### PR #388: Remove invalid `slack_app` key from `codecov.yml`
+
+- **Status:** Approved
+- **Summary:** Removes a deprecated/invalid configuration key from `codecov.yml`.
+- **Feedback:** Clean maintenance fix.
+
+### PR #311: Fix Icon component fallback rendering and missing aria-labels
+
+- **Status:** Changes Requested
+- **Summary:** Refactors the `Icon` component fallback to use `<i>` tags and adds accessibility labels.
+- **Feedback:** Switching from the `FontAwesomeIcon` React component to raw `<i>` tags for fallbacks might break rendering if the Font Awesome CSS isn't globally loaded, which it typically isn't in this project's self-hosted setup. Recommend sticking with the React component for consistency.
+
+### PR #319: Fix Deployment Error in Privacy.tsx
+
+- **Status:** Changes Requested (Follow-up)
+- **Summary:** Fixes a bug in `Privacy.tsx` but includes unrelated changes to `package-lock.json` and `sitemap.xml`.
+- **Feedback:** Previous request to split the PR remains unaddressed. The `package-lock.json` changes add `"peer": true` to many packages, which has caused issues in the past.
+
+---
+
 ## 2026-02-03
 
 ### PR #399: fix(ci): fix SARIF merge script jq syntax errors causing run limit rejection
@@ -21,11 +197,11 @@ This file contains a summary of pull requests I have reviewed.
 - **Summary:** Modifies `Header.test.tsx` to handle `jsdom`'s lack of support for `Home` and `End` key simulation. Instead of simulating the keypress, it verifies the DOM order of focusable elements and manually sets focus.
 - **Feedback:** A sensible approach to environment-specific testing limitations. Since the core navigation logic is covered in `keyboard.test.ts`, this maintains sufficient coverage.
 
-### PR #384: Sort focusable elements by document order for consistent navigation
+### PR #384: Improve icon library test reporting with duplicate key detection
 
-- **Status:** Approved (with notes)
-- **Summary:** The PR description mentions sorting focusable elements and `getFocusableElements()`, but the actual code changes only add detailed diagnostic information to `iconLibrary.test.ts` to help debug duplicate icon values in CI. The file changes include improved error reporting that identifies which specific icon names have duplicate values and includes known aliases to reduce false positives.
-- **Feedback:** There is a significant mismatch between the PR title/description (which discusses focusable element sorting) and the actual code changes (which only modify iconLibrary.test.ts). This suggests the PR may have been repurposed or the description was not updated after the changes were modified. The icon library test diagnostics themselves are valuable for troubleshooting CI failures. Recommend updating the PR description to accurately reflect the actual changes.
+- **Status:** Approved
+- **Summary:** Adds detailed diagnostic information to `iconLibrary.test.ts` to help debug duplicate icon values in CI. Includes duplicate detection logic and improved error reporting for duplicate icon names.
+- **Feedback:** Good improvement to test diagnostics. The duplicate key detection will help catch issues earlier in development.
 
 ### PR #107: Implement critical accessibility fixes, legal documents, and performance optimizations
 

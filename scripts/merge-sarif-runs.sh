@@ -41,11 +41,14 @@ if [ "$RUN_COUNT" -le 1 ]; then
   # github/codeql-action/upload-sarif can calculate its own consistent
   # fingerprints from source-file line hashes without conflicting with
   # pre-embedded values from the analysis tool.
-  if ! jq 'del(.runs[].results[]?.partialFingerprints)' "$INPUT_FILE" > "${OUTPUT_FILE}.tmp"; then
+  SINGLE_RUN_TEMP=$(mktemp)
+  trap 'rm -f "$SINGLE_RUN_TEMP"' EXIT
+  if ! jq 'del(.runs[].results[]?.partialFingerprints)' "$INPUT_FILE" > "$SINGLE_RUN_TEMP"; then
     echo "Error: jq fingerprint-strip failed for single run"
     exit 1
   fi
-  mv "${OUTPUT_FILE}.tmp" "$OUTPUT_FILE"
+  mv "$SINGLE_RUN_TEMP" "$OUTPUT_FILE"
+  trap - EXIT
   exit 0
 fi
 

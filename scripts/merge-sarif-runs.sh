@@ -37,10 +37,18 @@ echo "Found $RUN_COUNT runs in SARIF file"
 
 if [ "$RUN_COUNT" -le 1 ]; then
   echo "Single run detected, no merging needed"
-  # Copy to output if different from input
-  if [ "$INPUT_FILE" != "$OUTPUT_FILE" ]; then
-    cp "$INPUT_FILE" "$OUTPUT_FILE"
+  # Strip partialFingerprints even for single-run files so that
+  # github/codeql-action/upload-sarif can calculate its own consistent
+  # fingerprints from source-file line hashes without conflicting with
+  # pre-embedded values from the analysis tool.
+  SINGLE_RUN_TEMP=$(mktemp)
+  trap 'rm -f "$SINGLE_RUN_TEMP"' EXIT
+  if ! jq 'del(.runs[].results[]?.partialFingerprints)' "$INPUT_FILE" > "$SINGLE_RUN_TEMP"; then
+    echo "Error: jq fingerprint-strip failed for single run"
+    exit 1
   fi
+  mv "$SINGLE_RUN_TEMP" "$OUTPUT_FILE"
+  trap - EXIT
   exit 0
 fi
 
@@ -116,6 +124,9 @@ if ! jq '
     # format (e.g. "9d8c1cf6a28255f9:1"). Keeping stale MD5 values alongside
     # new-format ones triggers "inconsistent fingerprint" warnings; removing
     # them lets Codacy recalculate clean fingerprints on the next analysis.
+    # The subsequent map(del(.partialFingerprints)) then removes all remaining
+    # fingerprints so github/codeql-action/upload-sarif can calculate its own
+    # consistent values from source-file line hashes without conflicts.
     results: [
       .runs[].results // [] | .[] |
       if .partialFingerprints then
@@ -131,7 +142,7 @@ if ! jq '
       ((((.locations // [])[0] // {}).physicalLocation // {}).region.startLine // 0 | tostring) +
       ((((.locations // [])[0] // {}).physicalLocation // {}).region.startColumn // 0 | tostring) +
       ((((.locations // [])[0] // {}).physicalLocation // {}).region.endLine // 0 | tostring)
-    ),
+    ) | map(del(.partialFingerprints)),
 
     # -------------------------------------------------------------------------
     # ADDITIONAL SARIF PROPERTIES

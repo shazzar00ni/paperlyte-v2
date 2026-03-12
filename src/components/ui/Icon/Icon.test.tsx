@@ -87,9 +87,7 @@ describe('Icon', () => {
     })
 
     it('should expose ? fallback span to screen readers when ariaLabel is provided', () => {
-      const { container } = render(
-        <Icon name="definitely-missing-icon" ariaLabel="Missing icon" />
-      )
+      const { container } = render(<Icon name="definitely-missing-icon" ariaLabel="Missing icon" />)
       const fallback = container.querySelector('span.icon-fallback')
       expect(fallback).toHaveAttribute('aria-hidden', 'false')
       expect(fallback).toHaveAttribute('aria-label', 'Missing icon')
@@ -146,9 +144,7 @@ describe('Icon', () => {
     })
 
     it('should pass rgb() values through unchanged', () => {
-      const { container } = render(
-        <Icon name="definitely-missing-icon" color="rgb(255, 0, 0)" />
-      )
+      const { container } = render(<Icon name="definitely-missing-icon" color="rgb(255, 0, 0)" />)
       const fallback = container.querySelector('span.icon-fallback')
       expect(fallback).toHaveStyle({ color: 'rgb(255, 0, 0)' })
     })

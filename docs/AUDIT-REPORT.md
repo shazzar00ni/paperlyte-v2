@@ -23,8 +23,8 @@ The codebase demonstrates an unusually strong accessibility foundation for a pre
 | Priority | Count | Examples |
 |----------|-------|---------|
 | **P0 Critical** | 4 | `--color-text-tertiary` contrast fail, `--color-text-secondary` borderline contrast fail, Comparison table missing `<caption>`, section EmailCapture error not linked via `aria-describedby` |
-| **P1 High** | 6 | FAQ `role="region"` aria-hidden anti-pattern, ErrorBoundary heading hierarchy, `role="dialog"` misplaced on backdrop in FeedbackWidget, dark mode tertiary contrast fail, FeedbackWidget textarea missing `aria-invalid`/`aria-describedby`, Testimonials live region always active |
-| **P2 Medium** | 5 | Success color (#22c55e) non-text contrast fail, Footer `<h3>` headings skip level, Testimonials tab/tabpanel pattern incomplete, FeedbackWidget textarea `:focus` not `:focus-visible`, mobile menu arrow-key enhancement (not a conformance blocker) |
+| **P1 High** | 7 | FAQ `role="region"` aria-hidden anti-pattern, ErrorBoundary heading hierarchy, `role="dialog"` misplaced on backdrop in FeedbackWidget, dark mode tertiary contrast fail, FeedbackWidget textarea missing `aria-invalid`/`aria-describedby`, Testimonials live region always active (AR-003), ErrorBoundary `role="alert"` wraps interactive buttons (AR-004) |
+| **P2 Medium** | 6 | Success color (#22c55e) non-text contrast fail, Footer `<h3>` headings skip level, Testimonials tab/tabpanel pattern incomplete, FeedbackWidget textarea `:focus` not `:focus-visible`, mobile menu arrow-key enhancement (not a conformance blocker), `reset.css` `:focus:not(:focus-visible)` lacks polyfill for older browsers (KB-005) |
 | **Technical Debt** | 4 | No Lighthouse CI baseline score, no axe CI integration, no screen reader test logs, FeedbackWidget confirmation `<h3>` heading skip in modal context |
 
 ---
@@ -210,9 +210,9 @@ The accessibility score is estimated below 95 because automated rules would flag
 
 **Finding AR-002 (P2):** Testimonials carousel uses `role="tablist"` for navigation dots with `role="tab"` on each dot. However, `role="tablist"` semantically implies tab panel association — the carousel slides should have `role="tabpanel"` or the dots should use `role="group"` with `aria-label` instead. Currently the slides are `<article>` elements with no `role="tabpanel"` or `aria-labelledby` linking to the corresponding tab.
 
-**Finding AR-003 (P2):** In `Testimonials.tsx`, the `<div className={styles.srOnly} aria-live="polite">` (line 274) continuously announces the current slide index ("Showing testimonial 1 of 5") on every render, including during auto-rotation. This violates the intent of WCAG 4.1.3 — the announcement should only fire when the user interacts, not during automatic rotation.
+**Finding AR-003 (P1 — consolidated as P1-006):** In `Testimonials.tsx`, the `<div className={styles.srOnly} aria-live="polite">` (line 274) continuously announces the current slide index ("Showing testimonial 1 of 5") on every render, including during auto-rotation. This violates the intent of WCAG 4.1.3 — the announcement should only fire when the user interacts, not during automatic rotation. Severity upgraded to P1 in the consolidated table because the unconditional auto-rotation announcement is a regression risk for screen-reader users.
 
-**Finding AR-004 (P1):** `ErrorBoundary.tsx:105` — the error fallback container has `role="alert"` on the outer wrapper div, but the retry/reload button is inside the alert region. Buttons inside `role="alert"` elements are an anti-pattern because `role="alert"` implies the content is purely informational. Interactive elements should be outside the alert region.
+**Finding AR-004 (P1 — consolidated as P1-007):** `ErrorBoundary.tsx:105` — the error fallback container has `role="alert"` on the outer wrapper div, but the retry/reload button (`Try Again`) and the reload button (`Reload Page`) are inside the alert region. Buttons inside `role="alert"` elements are an anti-pattern because `role="alert"` implies the content is purely informational; interactive elements must be outside the alert region to avoid confusing assistive technology.
 
 ### 3.2 Semantic HTML (WCAG 1.3.1, 2.4.1)
 
@@ -396,7 +396,7 @@ Testing at 375px viewport width:
 | CC-005 | 1.4.3 AA | `--color-text-tertiary` (#9ca3af) | Normal text on surface | 2.78:1 | 4.5:1 |
 | CC-006 | 1.4.11 AA | `--color-success` (#22c55e) | UI icon/border on white | 1.77:1 | 3:1 |
 
-**Note on CC-001 and CC-002:** The design system comment (`variables.css:13`) notes tertiary is for "large text only" — if exclusively used for 18pt+ or 14pt+ bold text, the threshold drops to 3:1 and the failures may not apply. This must be verified by checking every usage of these tokens at render size.
+**Note on CC-001 and CC-002 — Remediation Applied:** Multiple components (Testimonials, Hero microcopy, EmailCapture, Comparison disclaimer, CTA microcopy) used `--color-text-tertiary` on normal/small body text despite the original design-system comment marking it "large text only". The token has been updated in `variables.css`: light-mode value changed from `#9ca3af` (2.85:1) to `#767676` (4.54:1 on `#ffffff`) and dark-mode value changed from `#64748b` (3.41:1) to `#8a9db5` (~5.9:1 on `#0f172a`). Both values meet the 4.5:1 AA threshold for normal text. The "large text only" comment has been removed. Contrast ratios for rendered text sizes should be verified in browser DevTools after deployment.
 
 ---
 
@@ -422,7 +422,8 @@ Testing at 375px viewport width:
 | **P1-003** | 4.1.2 | A | `role="dialog"` on backdrop overlay, not on visible modal content div — dialog semantic misplaced | `FeedbackWidget.tsx:273–281` | Open FeedbackWidget → ARIA inspector shows dialog on backdrop |
 | **P1-004** | 1.4.3 | AA | `--color-text-tertiary` (#64748b) fails 4.5:1 contrast in dark mode on `#0f172a` | Dark mode, all tertiary text | Enable dark mode → DevTools contrast check |
 | **P1-005** | 4.1.2 | A | FeedbackWidget textarea missing `aria-invalid="true"` and `aria-describedby` linking to error message | `FeedbackWidget.tsx:340–353` | Submit empty form → screen reader does not announce field-level error |
-| **P1-006** | 3.3.1 | A | Testimonials carousel `aria-live` region always active — announces slide during auto-rotation without user interaction | `Testimonials.tsx:274` | Enable auto-rotation with reduced motion off → screen reader announces every 5s |
+| **P1-006** | 3.3.1 | A | Testimonials carousel `aria-live` region always active — announces slide during auto-rotation without user interaction | `Testimonials.tsx:274` (`styles.srOnly` live region) | Enable auto-rotation with reduced motion off → screen reader announces every 5s (Finding AR-003 — upgraded P2→P1) |
+| **P1-007** | 4.1.2 | A | `ErrorBoundary.tsx:105` — `role="alert"` on the outer error container wraps interactive buttons (Try Again, Reload Page); buttons inside `role="alert"` are an anti-pattern — alert implies informational content only | `ErrorBoundary.tsx:105–144` | Trigger JS error → inspect ARIA tree; `Try Again` and `Reload Page` buttons appear inside `role="alert"` region (Finding AR-004) |
 
 #### P2 — Medium Priority
 
@@ -433,6 +434,7 @@ Testing at 375px viewport width:
 | **P2-003** | 4.1.2 | A | Testimonials tab pattern incomplete — `role="tab"` dots not linked to `role="tabpanel"` carousel slides | `Testimonials.tsx:248–258` | axe tabpanel rule |
 | **P2-004** | 2.4.7 | AA | FeedbackWidget textarea uses `:focus` not `:focus-visible` for border styling — inconsistent focus treatment | `FeedbackWidget.module.css:217` | Tab to textarea with keyboard |
 | **P2-005** | — | Enhancement | `Header.tsx` uses plain navigation semantics (`<nav>` → `<ul>` → `<a>`); arrow-key traversal is not required by WCAG 2.1.1 for this pattern and the matrix correctly records 2.1.1 as ✅ PASS. Implementing Up/Down arrow navigation with `role="menu"` / `role="menuitem"` is an optional ARIA Authoring Practices Guide enhancement, not a conformance requirement. Optionally implement ARIA menu semantics or document the plain-navigation pattern as the intended design. | `Header.tsx:125` | Evaluate whether ARIA menu semantics are desired; not a WCAG 2.1 AA blocker |
+| **P2-006** | — | Best Practice | `reset.css:100` removes the default outline on `:focus:not(:focus-visible)` globally — correct accessibility practice for modern browsers, but older browsers that lack `:focus-visible` support will lose all focus indicators entirely. No polyfill is currently applied. | `reset.css:100` | Test in browsers lacking `:focus-visible` support; verify focus indicators remain visible or add a polyfill (Finding KB-005) |
 
 #### Technical Debt (Non-blocking but Recommended)
 
@@ -566,7 +568,7 @@ Testing at 375px viewport width:
 12. Run Lighthouse CI with Chrome (use `npx lhci autorun`) — verify ≥95 score
 13. Run axe DevTools in browser on all pages and interactive states
 14. Conduct VoiceOver/NVDA/JAWS manual testing sessions
-15. Measure touch targets at 375px in DevTools for all flagged elements
+15. Verify touch targets at 375px in DevTools for flagged elements — TT-001 (`Button size="small"`), TT-002 (Testimonials nav dots/arrows), TT-003 (`EmailCapture` submit button) — Best Practice, WCAG 2.5.5 AAA only; not AA blockers
 16. Document findings in `docs/audit-results/` with date stamp
 
 ---
@@ -617,4 +619,4 @@ npx lhci autorun         # uses .lighthouserc.json config
 **Report Generated:** March 11, 2026
 **Auditor:** Claude Code (Automated Static-Code Accessibility Audit)
 **Next Audit:** Post-remediation verification — target March 28, 2026
-**Contact:** accessibility@paperlyte.com
+**Contact:** [accessibility@paperlyte.com](mailto:accessibility@paperlyte.com)

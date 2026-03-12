@@ -10,7 +10,7 @@
   --color-surface-dark: #18181b; /* Zinc 900 - Dark surface sections */
   --color-text-primary: #111827; /* Gray 900 - Headings, body text */
   --color-text-secondary: #6b7280; /* Gray 500 - Supporting text */
-  --color-text-tertiary: #9ca3af; /* Gray 400 - Muted text (large text only) */
+  --color-text-tertiary: #767676; /* Gray 600 - Muted text, meets 4.5:1 on #ffffff */
   --color-text-on-primary: #ffffff; /* White text on primary backgrounds */
   --color-text-on-dark: #ffffff; /* White text on dark surfaces */
   --color-text-on-dark-secondary: rgba(255, 255, 255, 0.7); /* Semi-transparent white */
@@ -103,7 +103,7 @@
   --color-surface-dark: #0f172a; /* Slate 900 - Dark sections */
   --color-text-primary: #f1f5f9; /* Slate 100 - Light text */
   --color-text-secondary: #94a3b8; /* Slate 400 - Supporting text */
-  --color-text-tertiary: #64748b; /* Slate 500 - Muted text */
+  --color-text-tertiary: #8a9db5; /* Slate 400/500 mix — Muted text, ≥4.5:1 on #0f172a */
   --color-text-on-primary: #000000; /* Black text on white primary (dark mode) */
   --color-text-on-dark: #ffffff; /* White text on dark surfaces */
   --color-text-on-dark-secondary: rgba(255, 255, 255, 0.7); /* Semi-transparent white */
@@ -146,7 +146,7 @@
     --color-surface-dark: #0f172a; /* Slate 900 - Dark sections */
     --color-text-primary: #f1f5f9; /* Slate 100 - Light text */
     --color-text-secondary: #94a3b8; /* Slate 400 - Supporting text */
-    --color-text-tertiary: #64748b; /* Slate 500 - Muted text */
+    --color-text-tertiary: #8a9db5; /* Slate 400/500 mix — Muted text, ≥4.5:1 on #0f172a */
     --color-text-on-primary: #000000; /* Black text on white primary (dark mode) */
     --color-text-on-dark: #ffffff; /* White text on dark surfaces */
     --color-text-on-dark-secondary: rgba(255, 255, 255, 0.7); /* Semi-transparent white */

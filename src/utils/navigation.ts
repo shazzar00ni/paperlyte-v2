@@ -63,9 +63,24 @@ function passesBasicValidation(url: string): boolean {
     return false
   }
 
-  // Block protocol-relative URLs (//example.com)
+  // Block protocol-relative URLs (//example.com) and backslash bypasses (\\example.com, /\example.com)
+  // Some browsers treat backslashes as forward slashes, which can bypass validation
   if (trimmedUrl.startsWith('//') || trimmedUrl.startsWith('\\\\') || trimmedUrl.startsWith('/\\')) {
     return false
+  }
+
+  // Block encoded backslash bypasses (e.g., /%5C%5Cexample.com or /%5Cexample.com)
+  // Decode and check if it starts with protocol-relative or backslash patterns
+  if (trimmedUrl.includes('%5C') || trimmedUrl.includes('%5c')) {
+    try {
+      const decoded = decodeURIComponent(trimmedUrl)
+      if (decoded.startsWith('//') || decoded.startsWith('\\\\') || decoded.startsWith('/\\')) {
+        return false
+      }
+    } catch {
+      // If decoding fails, reject as suspicious
+      return false
+    }
   }
 
   return true

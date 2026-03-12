@@ -103,6 +103,26 @@ describe('navigation utilities', () => {
       expect(isSafeUrl('/path/with://protocol')).toBe(false)
     })
 
+    it('should reject backslash-based protocol-relative URLs', () => {
+      // Browsers like Chrome and Safari treat backslashes as forward slashes
+      expect(isSafeUrl('\\\\example.com')).toBe(false)
+      expect(isSafeUrl('\\\\evil.com/path')).toBe(false)
+    })
+
+    it('should reject mixed slash combinations', () => {
+      // Mixed slash combinations can bypass naive validation
+      expect(isSafeUrl('/\\example.com')).toBe(false)
+      expect(isSafeUrl('/\\evil.com/path')).toBe(false)
+    })
+
+    it('should reject encoded backslash bypasses', () => {
+      // URL-encoded backslashes can bypass validation if not properly decoded
+      expect(isSafeUrl('/%5C%5Cexample.com')).toBe(false)
+      expect(isSafeUrl('/%5C%5Cevil.com/path')).toBe(false)
+      expect(isSafeUrl('/%5c%5cexample.com')).toBe(false) // lowercase encoding
+      expect(isSafeUrl('/%5Cexample.com')).toBe(false)
+    })
+
     it('should reject external HTTP/HTTPS URLs by default (prevents open redirect)', () => {
       expect(isSafeUrl('http://example.com')).toBe(false)
       expect(isSafeUrl('https://example.com/page')).toBe(false)

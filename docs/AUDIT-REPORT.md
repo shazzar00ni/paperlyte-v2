@@ -557,6 +557,7 @@ Testing at 375px viewport width:
 3. Link section EmailCapture error to input via `aria-describedby` — P0-004
 4. Move `role="dialog"` to inner modal content div in FeedbackWidget — P1-003
 5. Add `aria-invalid`/`aria-describedby` to FeedbackWidget textarea — P1-005
+
 **Near-term (March 18–24, 2026):**
 6. Fix FAQ `aria-hidden` on `role="region"` — P1-001
 7. Fix ErrorBoundary heading hierarchy — P1-002

@@ -1,0 +1,61 @@
+Type,Title,Last Visited,Host
+Pull Request,Fix Home/End key navigation tests in Header component,2026-02-01T14:44:08Z,github.com
+Pull Request,PR Review Summary for 2026-01-31,2026-01-31T10:37:06Z,github.com
+Pull Request,PR Review Summary for 2026-01-29,2026-01-30T10:46:33Z,github.com
+Pull Request,Sort focusable elements by document order for consistent navigation,2026-01-30T06:16:54Z,github.com
+Pull Request,PR Review Summary for 2026-01-29,2026-01-29T10:46:40Z,github.com
+Pull Request,[WIP] Fix missing semicolons across the codebase,2026-01-29T04:55:59Z,github.com
+Pull Request,Fix SARIF upload to comply with GitHub's July 2025 requirements,2026-02-01T14:45:14Z,github.com
+Pull Request,Update PR Review Summary,2026-01-28T10:33:21Z,github.com
+Pull Request,Add legacy ESLint configuration for backward compatibility,2026-02-01T15:17:23Z,github.com
+Pull Request,"Update PR Review Summary for January 26th, 2026",2026-01-27T20:24:45Z,github.com
+Pull Request,"PR Review Summary - July 29th, 2024",2026-01-26T16:24:01Z,github.com
+Pull Request,ci: bump github/codeql-action from 4.31.10 to 4.31.11,2026-01-26T16:22:50Z,github.com
+Pull Request,chore(deps-dev): bump globals from 17.0.0 to 17.1.0,2026-01-26T16:23:31Z,github.com
+Pull Request,chore(deps-dev): bump @vitest/coverage-v8 from 4.0.16 to 4.0.18,2026-01-26T16:24:12Z,github.com
+Pull Request,chore(deps-dev): bump @testing-library/react from 16.3.1 to 16.3.2,2026-01-26T16:24:51Z,github.com
+Pull Request,chore(deps-dev): bump vitest from 4.0.16 to 4.0.18,2026-01-26T16:25:58Z,github.com
+Pull Request,chore(deps): bump @sentry/react from 10.32.1 to 10.36.0,2026-01-26T16:25:18Z,github.com
+Pull Request,chore(deps-dev): bump the development-dependencies group across 1 directory with 4 updates,2026-01-26T16:27:23Z,github.com
+Pull Request,chore(deps-dev): bump prettier from 3.8.0 to 3.8.1,2026-01-26T16:33:29Z,github.com
+Pull Request,chore(deps-dev): bump @playwright/test from 1.57.0 to 1.58.0,2026-01-26T16:31:55Z,github.com
+Pull Request,"PR Review Summary - July 26th, 2024",2026-01-29T12:48:29Z,github.com
+Pull Request,Fix icon-related test failures in Pricing and Comparison components,2026-01-27T20:23:20Z,github.com
+Issue,New tests for the `Pricing` and `Comparison` components,2026-01-27T20:23:20Z,github.com
+Pull Request,Fix Codacy ESLint Configuration Issue,2026-02-01T23:38:43Z,github.com
+Pull Request,Fix icon query selector issues in tests,2026-01-29T04:44:19Z,github.com
+Pull Request,Fix keyboard navigation in Header tests,2026-01-28T14:07:18Z,github.com
+Pull Request,fix(tests): update component tests after Icon refactor,2026-02-01T23:48:04Z,github.com
+Pull Request,[WIP] Update vitest from 4.0.16 to 4.0.17,2026-01-26T10:03:39Z,github.com
+Pull Request,"PR Review Summary - January 20th, 2026",2026-01-29T12:57:14Z,github.com
+Pull Request,chore(deps-dev): bump vitest from 4.0.16 to 4.0.17,2026-01-26T10:03:40Z,github.com
+Commit,Merge pull request #277 from shazzar00ni/claude/fix-test-coverage-UG2IV,2026-01-30T09:38:11Z,github.com
+Commit,Merge main into claude/fix-test-coverage-UG2IV and fix icon mapping,2026-01-29T04:47:34Z,github.com
+Commit,Merge pull request #322 from shazzar00ni/claude/fix-security-findings-eL63N,2026-01-28T14:12:12Z,github.com
+Commit,Merge pull request #354 from shazzar00ni/claude/fix-header-keyboard-nav-Pz3bf,2026-01-28T14:07:15Z,github.com
+Commit,test: improve test coverage and quality,2026-01-28T14:00:53Z,github.com
+Commit,Update src/test/iconTestHelpers.ts,2026-01-28T13:57:40Z,github.com
+Commit,Merge branch 'main' into claude/fix-header-keyboard-nav-Pz3bf,2026-01-28T07:39:49Z,github.com
+Commit,fix: remove unused imports and eslint directive after merge,2026-01-28T06:52:26Z,github.com
+Commit,Merge pull request #378 from shazzar00ni/jules/pr-review-summary-update-17394501759905008869,2026-01-27T20:24:43Z,github.com
+Commit,Merge pull request #365 from shazzar00ni/claude/fix-issue-364-tkCap,2026-01-27T20:23:18Z,github.com
+Commit,Merge branch 'main' into claude/fix-issue-364-tkCap,2026-01-27T15:13:26Z,github.com
+Commit,docs: update PR review summary with analysis of PR #275,2026-01-27T10:32:22Z,github.com
+Commit,Merge pull request #304 from shazzar00ni/claude/add-implementation-plan-agent-Dajr1,2026-01-27T07:03:01Z,github.com
+Commit,refactor: improve Icon Component Integration tests with proper mocking and reduce duplication,2026-01-27T07:00:19Z,github.com
+Commit,style: fix Prettier formatting in PR_REVIEW_SUMMARY.md,2026-01-27T06:38:15Z,github.com
+Commit,Merge remote changes and resolve conflicts in ThemeToggle.test.tsx,2026-01-27T06:34:54Z,github.com
+Commit,style: fix Prettier formatting in ThemeToggle.test.tsx,2026-01-27T06:31:24Z,github.com
+Commit,Update src/components/ui/Icon/Icon.tsx,2026-01-27T06:22:33Z,github.com
+Commit,Merge branch 'main' into claude/add-implementation-plan-agent-Dajr1,2026-01-27T02:19:10Z,github.com
+Commit,refactor: use nullish coalescing operator consistently in test files,2026-01-27T02:09:48Z,github.com
+Commit,Merge branch 'claude/add-implementation-plan-agent-Dajr1' of http://127.0.0.1:41682/git/shazzar00ni/paperlyte-v2 into claude/add-implementation-plan-agent-Dajr1,2026-01-27T02:04:19Z,github.com
+Commit,fix: use nullish coalescing operator for stroke color fallback,2026-01-27T02:04:00Z,github.com
+Commit,Update src/components/ui/ThemeToggle/ThemeToggle.test.tsx,2026-01-27T02:03:47Z,github.com
+Commit,Update src/components/ui/ThemeToggle/ThemeToggle.test.tsx,2026-01-27T02:02:41Z,github.com
+Commit,Fix Prettier formatting in FAQ.test.tsx,2026-01-26T23:39:45Z,github.com
+Commit,Update src/components/sections/Comparison/Comparison.test.tsx,2026-01-26T23:36:42Z,github.com
+Commit,chore: fix PR_REVIEW_SUMMARY.md formatting,2026-01-26T16:35:24Z,github.com
+Commit,Merge branch 'main' into claude/fix-header-keyboard-nav-Pz3bf,2026-01-26T16:34:02Z,github.com
+Commit,Merge pull request #370 from shazzar00ni/dependabot/npm_and_yarn/development-dependencies-18a3f8cf01,2026-01-26T16:26:17Z,github.com
+Commit,Merge pull request #371 from shazzar00ni/dependabot/npm_and_yarn/sentry/react-10.36.0,2026-01-26T16:25:16Z,github.com

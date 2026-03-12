@@ -345,6 +345,63 @@ describe('analytics/providers/plausible', () => {
 
       expect(window.plausible).toBeUndefined()
     })
+
+    it('should block prototype pollution via __proto__ property', () => {
+      const event: AnalyticsEvent = {
+        name: 'test_event',
+        properties: {
+          safe_param: 'safe_value',
+          __proto__: { polluted: 'bad' },
+        } as Record<string, unknown>,
+      }
+
+      provider.trackEvent(event)
+
+      // Should only include safe_param, not __proto__
+      expect(window.plausible).toHaveBeenCalledWith('test_event', {
+        props: {
+          safe_param: 'safe_value',
+        },
+      })
+    })
+
+    it('should block prototype pollution via constructor property', () => {
+      const event: AnalyticsEvent = {
+        name: 'test_event',
+        properties: {
+          safe_param: 'safe_value',
+          constructor: { polluted: 'bad' },
+        } as Record<string, unknown>,
+      }
+
+      provider.trackEvent(event)
+
+      // Should only include safe_param, not constructor
+      expect(window.plausible).toHaveBeenCalledWith('test_event', {
+        props: {
+          safe_param: 'safe_value',
+        },
+      })
+    })
+
+    it('should block prototype pollution via prototype property', () => {
+      const event: AnalyticsEvent = {
+        name: 'test_event',
+        properties: {
+          safe_param: 'safe_value',
+          prototype: { polluted: 'bad' },
+        } as Record<string, unknown>,
+      }
+
+      provider.trackEvent(event)
+
+      // Should only include safe_param, not prototype
+      expect(window.plausible).toHaveBeenCalledWith('test_event', {
+        props: {
+          safe_param: 'safe_value',
+        },
+      })
+    })
   })
 
   describe('trackWebVitals', () => {

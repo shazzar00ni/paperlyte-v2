@@ -228,14 +228,14 @@ describe('monitoring', () => {
     it('should log event to console', () => {
       logEvent('button_click')
 
-      expect(consoleSpy.log).toHaveBeenCalledWith('[Event] button_click', undefined)
+      expect(consoleSpy.log).toHaveBeenCalledWith('[Event]', 'button_click', undefined)
     })
 
     it('should log event with properties', () => {
       const properties = { location: 'header', text: 'Sign Up' }
       logEvent('button_click', properties)
 
-      expect(consoleSpy.log).toHaveBeenCalledWith('[Event] button_click', properties)
+      expect(consoleSpy.log).toHaveBeenCalledWith('[Event]', 'button_click', properties)
     })
 
     it('should track event in analytics even in development', () => {

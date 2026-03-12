@@ -1,0 +1,61 @@
+Type,Title,Last Visited,Host
+Pull Request,Add comprehensive design system documentation in docs/design-system/,2026-03-08T14:33:04Z,github.com
+Pull Request,Daily PR Review Summary - 2026-03-08,2026-03-08T10:42:55Z,github.com
+Pull Request,fix: update stale LAST_UPDATED dates and resolve TODO comments,2026-03-08T05:52:07Z,github.com
+Pull Request,Update PR Review Summary - 2026-03-07,2026-03-07T10:31:06Z,github.com
+Pull Request,Daily PR Review Summary - 2026-03-06,2026-03-07T01:00:50Z,github.com
+Pull Request,fix: add missing debug/dev console logging to fix 22 failing tests,2026-03-07T00:33:07Z,github.com
+Pull Request,chore: upgrade ESLint to v10,2026-03-06T06:38:51Z,github.com
+Pull Request,docs: Confirm accidentally deleted files identified in Jules daily PR reviews,2026-03-07T01:04:38Z,github.com
+Pull Request,Fix invalid secrets context in CI workflow and resolve Codacy static analysis warnings,2026-03-07T01:24:35Z,github.com
+Pull Request,perf: eliminate unnecessary re-renders and allocations across core components,2026-03-05T20:43:58Z,github.com
+Pull Request,"Fix GHAS ""1 configuration not found"" warning for eslint.yml",2026-03-08T05:52:13Z,github.com
+Pull Request,"Daily PR Review Summary - March 5, 2026",2026-03-05T10:41:51Z,github.com
+Pull Request,fix(sarif): use array key in unique_by to prevent result deduplication collisions,2026-03-05T20:24:22Z,github.com
+Pull Request,Remove --legacy-peer-deps from CI workflows after resolving ESLint v9 compatibility,2026-03-05T21:39:31Z,github.com
+Pull Request,PR Review Summary - 2026-03-04,2026-03-04T10:34:05Z,github.com
+Pull Request,Fix e2e test flakiness and improve Lighthouse CI setup,2026-03-04T05:01:21Z,github.com
+Pull Request,Daily PR Review Summary - 2026-03-03,2026-03-03T10:49:35Z,github.com
+Pull Request,chore: exclude lock files from Codacy analysis and adjust Lighthouse CI assertions,2026-03-07T00:17:42Z,github.com
+Pull Request,Filter legacy MD5 fingerprints from Codacy SARIF results,2026-03-04T20:44:10Z,github.com
+Pull Request,Daily PR Review Summary - 2026-03-02,2026-03-02T11:09:00Z,github.com
+Pull Request,ci: bump andresz1/size-limit-action from 1.6.1 to 1.8.0,2026-03-06T06:40:28Z,github.com
+Pull Request,ci: bump actions/upload-artifact from 6.0.0 to 7.0.0,2026-03-04T05:06:34Z,github.com
+Pull Request,ci: bump browser-actions/setup-chrome from 2.1.0 to 2.1.1,2026-03-04T09:07:41Z,github.com
+Pull Request,ci: bump actions/download-artifact from 7.0.0 to 8.0.0,2026-03-06T06:41:05Z,github.com
+Pull Request,ci: bump mikepenz/release-changelog-builder-action from 6.1.0 to 6.1.1,2026-03-02T09:58:34Z,github.com
+Pull Request,chore(deps-dev): bump autoprefixer from 10.4.24 to 10.4.27,2026-03-08T05:52:36Z,github.com
+Pull Request,chore(deps-dev): bump eslint from 9.39.2 to 10.0.2,2026-03-07T00:24:56Z,github.com
+Pull Request,chore(deps-dev): bump @eslint/js from 9.39.2 to 10.0.1,2026-03-07T00:27:04Z,github.com
+Pull Request,chore(deps-dev): bump globals from 17.3.0 to 17.4.0,2026-03-07T00:23:01Z,github.com
+Pull Request,chore(deps): bump @sentry/react from 10.39.0 to 10.40.0,2026-03-04T09:20:48Z,github.com
+Commit,Merge pull request #546 from shazzar00ni/copilot/refactor-duplicated-code,2026-03-08T05:52:10Z,github.com
+Commit,Merge branch 'main' into copilot/refactor-duplicated-code,2026-03-08T05:51:03Z,github.com
+Commit,Merge pull request #554 from shazzar00ni/claude/fix-todo-comment-HiJa4,2026-03-08T05:50:13Z,github.com
+Commit,fix: clean up inline comments and fix catch block,2026-03-08T05:48:23Z,github.com
+Commit,Update src/components/pages/Terms/Terms.tsx,2026-03-08T05:46:43Z,github.com
+Commit,Update src/components/pages/Privacy/Privacy.tsx,2026-03-08T05:46:36Z,github.com
+Commit,Merge branch 'main' into claude/fix-todo-comment-HiJa4,2026-03-08T02:04:31Z,github.com
+Commit,fix(ci): prevent code injection in eslint-upload.yml by using env: variables,2026-03-07T01:07:09Z,github.com
+Commit,Merge pull request #549 from shazzar00ni/copilot/analyse-daily-pr-reviews,2026-03-07T01:04:36Z,github.com
+Commit,Merge branch 'main' into copilot/analyse-daily-pr-reviews,2026-03-07T01:04:07Z,github.com
+Commit,Merge branch 'main' into copilot/refactor-duplicated-code,2026-03-07T01:00:15Z,github.com
+Commit,Update PR_REVIEW_SUMMARY.md,2026-03-07T00:54:14Z,github.com
+Commit,Update PR_REVIEW_SUMMARY.md,2026-03-07T00:54:03Z,github.com
+Commit,fix: update stale LAST_UPDATED dates and resolve TODO comments,2026-03-07T00:50:11Z,github.com
+Commit,Merge pull request #530 from shazzar00ni/dependabot/npm_and_yarn/eslint-10.0.2,2026-03-07T00:24:54Z,github.com
+Commit,Merge branch 'main' into dependabot/npm_and_yarn/eslint-10.0.2,2026-03-07T00:23:43Z,github.com
+Commit,Merge pull request #528 from shazzar00ni/dependabot/npm_and_yarn/globals-17.4.0,2026-03-07T00:22:59Z,github.com
+Commit,chore(deps-dev): bump globals from 17.3.0 to 17.4.0,2026-03-06T06:42:56Z,github.com
+Commit,chore(deps-dev): bump eslint from 9.39.2 to 10.0.2,2026-03-06T06:42:49Z,github.com
+Commit,Merge pull request #526 from shazzar00ni/dependabot/npm_and_yarn/development-dependencies-68183eccca,2026-03-06T06:41:42Z,github.com
+Commit,Merge pull request #533 from shazzar00ni/dependabot/github_actions/actions/download-artifact-8.0.0,2026-03-06T06:41:03Z,github.com
+Commit,Merge pull request #536 from shazzar00ni/dependabot/github_actions/andresz1/size-limit-action-1.8.0,2026-03-06T06:40:26Z,github.com
+Commit,Merge branch 'main' into dependabot/github_actions/andresz1/size-limit-action-1.8.0,2026-03-06T06:39:38Z,github.com
+Commit,Fix critical CodeQL alert: split ESLint scan/upload into two-workflow pattern,2026-03-05T22:03:32Z,github.com
+Commit,Update src/components/ui/EmailCapture/EmailCapture.tsx,2026-03-05T21:49:56Z,github.com
+Commit,Update src/utils/test/regexHelpers.ts,2026-03-05T21:49:36Z,github.com
+Commit,"Fix GHAS ""configuration not found"": switch eslint.yml to pull_request_target",2026-03-05T20:57:56Z,github.com
+Commit,"Refactor: eliminate duplicated code across hooks, utils and components",2026-03-05T20:07:19Z,github.com
+Commit,docs: document confirmed accidental file deletions from Jules daily PR reviews,2026-03-05T20:04:50Z,github.com
+Commit,Initial plan,2026-03-05T20:00:50Z,github.com

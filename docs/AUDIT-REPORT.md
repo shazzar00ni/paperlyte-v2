@@ -497,6 +497,7 @@ Testing at 375px viewport width:
 | 4.1.3 Status Messages | AA | ⚠️ PARTIAL | Testimonials live region over-announces |
 
 **Overall WCAG 2.1 AA Conformance Rate (estimated):**
+
 - **Pass:** 35/43 applicable AA criteria (81.4%)
 - **Fail:** 3 criteria (7.0%) — 1.4.3 Contrast Minimum, 1.4.11 Non-text Contrast, 3.3.1 Error Identification
 - **Partial/Needs Verification:** 5 criteria (11.6%) — 1.3.1 Info and Relationships, 2.4.6 Headings and Labels, 3.3.3 Error Suggestion, 4.1.2 Name Role Value, 4.1.3 Status Messages

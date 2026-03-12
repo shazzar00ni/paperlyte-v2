@@ -234,8 +234,8 @@ describe('ServerErrorPage', () => {
       const mainElement = screen.getByRole('main')
       // Icon component may render as SVG or <i> tag, check for either
       const serverIcon =
-        mainElement.querySelector('.fa-server') ??
-        mainElement.querySelector('svg[aria-hidden="true"]')
+       const mainElement = screen.getByRole('main')
+       const serverIcon = mainElement.querySelector('[data-icon="fa-server"]')
       expect(serverIcon).toBeInTheDocument()
     })
 

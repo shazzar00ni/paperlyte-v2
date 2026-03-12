@@ -39,7 +39,7 @@ jobs:
                   restore-keys: ${{ runner.os }}-sonar
             - name: Run Analysis
               id: codescan-analysis
-              uses: codescan-io/codescan-scanner-action@v2
+              uses: codescan-io/codescan-scanner-action@955d3d1b4a9e374064189719484005ce8e08a749  # 2.0
               # Continue even if CodeScan fails (e.g., missing secrets in forks)
               continue-on-error: true
               with:

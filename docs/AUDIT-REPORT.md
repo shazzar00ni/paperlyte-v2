@@ -549,12 +549,12 @@ Testing at 375px viewport width:
 ### 4.6 Next Steps for March 31, 2026 Conformance Target
 
 **Immediate (this sprint — March 11–17, 2026):**
+
 1. Fix `--color-text-secondary` and `--color-text-tertiary` in `variables.css` (both light and dark modes) — P0-001/002
 2. Add `<caption>` to Comparison table — P0-003
 3. Link section EmailCapture error to input via `aria-describedby` — P0-004
 4. Move `role="dialog"` to inner modal content div in FeedbackWidget — P1-003
 5. Add `aria-invalid`/`aria-describedby` to FeedbackWidget textarea — P1-005
-
 **Near-term (March 18–24, 2026):**
 6. Fix FAQ `aria-hidden` on `role="region"` — P1-001
 7. Fix ErrorBoundary heading hierarchy — P1-002

@@ -15,6 +15,24 @@ interface ErrorBoundaryState {
   retryCount: number
 }
 
+/**
+ * React Error Boundary component that catches JavaScript errors in child components
+ * Displays fallback UI when errors occur and logs errors to monitoring system
+ * Includes retry mechanism with configurable max retries to prevent infinite loops
+ *
+ * @example
+ * ```tsx
+ * // Wrap your app or specific components
+ * <ErrorBoundary maxRetries={3}>
+ *   <App />
+ * </ErrorBoundary>
+ *
+ * // With custom fallback
+ * <ErrorBoundary fallback={<CustomErrorPage />}>
+ *   <RiskyComponent />
+ * </ErrorBoundary>
+ * ```
+ */
 export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props)

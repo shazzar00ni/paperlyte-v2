@@ -66,7 +66,7 @@ const statistics: StatisticItem[] = [
  */
 export const Statistics = (): React.ReactElement => {
   return (
-    <Section id="statistics" className={styles.statistics} background="surface">
+    <Section id="statistics" className={styles.statistics} background="primary">
       <div className={styles.container}>
         <AnimatedElement animation="fadeIn">
           <div className={styles.header}>

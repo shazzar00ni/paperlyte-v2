@@ -24,6 +24,9 @@ engines:
       - '**/*.test.ts'
       - '**/*.spec.tsx'
       - '**/*.spec.ts'
+      - 'package-lock.json'
+      - 'yarn.lock'
+      - 'pnpm-lock.yaml'
 
 # Exclude specific patterns in test files where they are false positives
 # validation-utils.test.ts: RegExp constructor is used with pre-escaped strings
@@ -44,6 +47,17 @@ exclude_patterns:
   - identifier: "scss_function-disallowed-list"
     paths:
       - "**/*.css"
+  # Lizard NLOC patterns are meaningless on machine-generated lock files
+  - identifier: "Lizard_file-nloc-medium"
+    paths:
+      - "package-lock.json"
+      - "yarn.lock"
+      - "pnpm-lock.yaml"
+  - identifier: "Lizard_file-nloc-high"
+    paths:
+      - "package-lock.json"
+      - "yarn.lock"
+      - "pnpm-lock.yaml"
 
 # Exclude paths from code analysis
 exclude_paths:
@@ -57,6 +71,9 @@ exclude_paths:
   - 'src/test/**'
   - 'scripts/**'
   - '**/*.min.js'
+  - 'package-lock.json'
+  - 'yarn.lock'
+  - 'pnpm-lock.yaml'
 
 # Note: Codacy ESLint8 engine reports some false positive issues for non-literal RegExp
 # patterns (ESLint8_security_detect-non-literal-regexp, ESLint8_security-node_non-literal-reg-expr).

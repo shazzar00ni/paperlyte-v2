@@ -45,11 +45,13 @@ The foundational interactive element. Renders as a `<button>` or `<a>` depending
 ```
 
 **Secondary** — Transparent with border. Used for secondary actions alongside a primary button.
+
 ```tsx
 <Button variant="secondary" icon="arrow-right">See Features</Button>
 ```
 
 **Ghost** — No border, no background. Used in navigation and low-emphasis contexts.
+
 ```tsx
 <Button variant="ghost">Learn More</Button>
 ```
@@ -373,6 +375,7 @@ Floating feedback button that opens a modal with a form for bug reports and feat
 | `onSubmit` | `(data: FeedbackFormData) => Promise<void> \| void` | — | Custom submit handler |
 
 `FeedbackFormData`:
+
 ```ts
 type FeedbackType = 'bug' | 'feature'
 interface FeedbackFormData {
@@ -383,9 +386,6 @@ interface FeedbackFormData {
 
 ---
 
-## Layout Components (`layout/`)
-
-### Header
 ## Layout Components (`layout/`)
 
 ### Header
@@ -459,6 +459,7 @@ Section components are page-level compositions. They consume primitives and layo
 | `Mobile` | Mobile app preview section |
 
 For section-specific layout and copy guidelines, see [`landing-page.md`](./landing-page.md).
+
 ---
 
 ## Shared Hooks

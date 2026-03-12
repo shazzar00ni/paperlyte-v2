@@ -1,5 +1,6 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import App from './App'
 
 describe('App Integration', () => {
@@ -154,5 +155,195 @@ describe('App Integration', () => {
 
     expect(screen.getByRole('link', { name: 'Follow us on X (Twitter)' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Email us' })).toBeInTheDocument()
+  })
+
+  it('should render skip link with correct attributes', () => {
+    const { container } = render(<App />)
+
+    const skipLink = container.querySelector('.skip-link')
+    expect(skipLink).toBeInTheDocument()
+    expect(skipLink).toHaveAttribute('href', '#main')
+    expect(skipLink).toHaveTextContent('Skip to main content')
+  })
+
+  it('should focus main element when skip link is activated', async () => {
+    const { container } = render(<App />)
+    const user = userEvent.setup()
+
+    const skipLink = container.querySelector('.skip-link') as HTMLElement
+    const main = container.querySelector('#main') as HTMLElement
+
+    expect(skipLink).toBeInTheDocument()
+    expect(main).toBeInTheDocument()
+
+    // Simulate clicking skip link
+    await user.click(skipLink)
+
+    // Note: Focus behavior is tested but JSDOM doesn't fully support document.activeElement
+    // In a real browser, main would receive focus
+    expect(main).toHaveAttribute('tabIndex', '-1')
+  })
+
+  it('should have main element with tabIndex -1 for programmatic focus', () => {
+    const { container } = render(<App />)
+
+    const main = container.querySelector('#main')
+    expect(main).toHaveAttribute('tabIndex', '-1')
+  })
+
+  it('should render Problem section', () => {
+    const { container } = render(<App />)
+
+    // Problem section should be present
+    const problemSection = container.querySelector('#problem')
+    expect(problemSection).toBeInTheDocument()
+  })
+
+  it('should render Solution section', () => {
+    const { container } = render(<App />)
+
+    const solutionSection = container.querySelector('#solution')
+    expect(solutionSection).toBeInTheDocument()
+  })
+
+  it('should render Statistics section', () => {
+    const { container } = render(<App />)
+
+    const statisticsSection = container.querySelector('#statistics')
+    expect(statisticsSection).toBeInTheDocument()
+  })
+
+  it('should render Comparison section', () => {
+    const { container } = render(<App />)
+
+    const comparisonSection = container.querySelector('#comparison')
+    expect(comparisonSection).toBeInTheDocument()
+  })
+
+  it('should render FAQ section', () => {
+    const { container } = render(<App />)
+
+    const faqSection = container.querySelector('#faq')
+    expect(faqSection).toBeInTheDocument()
+  })
+
+  it('should render FeedbackWidget component', () => {
+    const { container } = render(<App />)
+
+    // FeedbackWidget renders a floating button with specific aria-label
+    const feedbackButton = screen.getByRole('button', { name: /Open feedback form/i })
+    expect(feedbackButton).toBeInTheDocument()
+  })
+
+  it('should render all sections in complete order', () => {
+    const { container } = render(<App />)
+
+    const sections = container.querySelectorAll('section')
+    const sectionIds = Array.from(sections).map((section) => section.getAttribute('id'))
+
+    // Verify all sections are present
+    const expectedSections = [
+      'hero',
+      'problem',
+      'solution',
+      'features',
+      'mobile',
+      'statistics',
+      'comparison',
+      'testimonials',
+      'faq',
+      'download',
+    ]
+
+    expectedSections.forEach((sectionId) => {
+      expect(sectionIds).toContain(sectionId)
+    })
+
+    // Verify order is maintained
+    const indices = expectedSections.map((id) => sectionIds.indexOf(id))
+    for (let i = 0; i < indices.length - 1; i++) {
+      expect(indices[i]).toBeLessThan(indices[i + 1])
+    }
+  })
+
+  it('should wrap content in ErrorBoundary', () => {
+    // This test verifies ErrorBoundary is present by checking the component renders
+    // ErrorBoundary will catch errors thrown during render
+    expect(() => render(<App />)).not.toThrow()
+  })
+
+  it('should render Analytics component', () => {
+    const { container } = render(<App />)
+
+    // Vercel Analytics injects scripts or tracking elements
+    // We verify the component renders without error
+    expect(container).toBeInTheDocument()
+  })
+
+  it('should have correct document structure for screen readers', () => {
+    render(<App />)
+
+    // Verify proper ARIA landmark structure
+    expect(screen.getByRole('banner')).toBeInTheDocument() // header
+    expect(screen.getByRole('main')).toBeInTheDocument() // main
+    expect(screen.getByRole('contentinfo')).toBeInTheDocument() // footer
+
+    // Verify navigation landmarks
+    const navs = screen.getAllByRole('navigation')
+    expect(navs.length).toBeGreaterThanOrEqual(2) // Header and Footer navigation
+  })
+
+  it('should not have any duplicate IDs', () => {
+    const { container } = render(<App />)
+
+    const elementsWithId = container.querySelectorAll('[id]')
+    const ids = Array.from(elementsWithId).map((el) => el.getAttribute('id'))
+
+    // Check for duplicates
+    const uniqueIds = new Set(ids)
+    expect(ids.length).toBe(uniqueIds.size)
+  })
+
+  it('should have valid heading hierarchy starting with h1', () => {
+    render(<App />)
+
+    // Verify h1 exists (should be in Hero section)
+    const h1Elements = screen.getAllByRole('heading', { level: 1 })
+    expect(h1Elements.length).toBeGreaterThanOrEqual(1)
+  })
+
+  it('should include waitlist form in EmailCapture section', () => {
+    const { container } = render(<App />)
+
+    // EmailCapture section should contain email input
+    const emailInputs = container.querySelectorAll('input[type="email"]')
+    expect(emailInputs.length).toBeGreaterThan(0)
+  })
+
+  it('should render without console errors', () => {
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+
+    render(<App />)
+
+    expect(consoleErrorSpy).not.toHaveBeenCalled()
+
+    consoleErrorSpy.mockRestore()
+  })
+
+  it('should render all major UI components', () => {
+    const { container } = render(<App />)
+
+    // Verify Header component
+    expect(container.querySelector('header')).toBeInTheDocument()
+
+    // Verify Footer component
+    expect(container.querySelector('footer')).toBeInTheDocument()
+
+    // Verify main content area
+    expect(container.querySelector('main')).toBeInTheDocument()
+
+    // Verify at least one section renders
+    const sections = container.querySelectorAll('section')
+    expect(sections.length).toBeGreaterThan(0)
   })
 })

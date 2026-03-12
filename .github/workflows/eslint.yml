@@ -13,25 +13,29 @@ on:
   push:
     branches: [ "main" ]
   pull_request:
-    # The branches below must be a subset of the branches above
     branches: [ "main" ]
   schedule:
     - cron: '21 15 * * 2'
+
+# Using 'pull_request' (not 'pull_request_target') means this workflow runs in
+# a restricted context where untrusted fork code has no access to secrets.
+# Adding security-events:write here is safe: it only allows writing to the
+# Security tab and does not elevate code execution privileges.
+permissions:
+  contents: read
+  security-events: write
+  actions: read # required for github/codeql-action/upload-sarif on private repositories
 
 jobs:
   eslint:
     name: Run eslint scanning
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      security-events: write
-      actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: "20"
           cache: "npm"
@@ -47,18 +51,31 @@ jobs:
         env:
           SARIF_ESLINT_IGNORE_SUPPRESSED: "true"
         run: |
+          set +e
           npx eslint "src/**/*.{js,jsx,ts,tsx}" \
             --format @microsoft/eslint-formatter-sarif \
             --output-file eslint-results.sarif \
             --max-warnings 0
-        continue-on-error: true
+          ESLINT_EXIT_CODE=$?
+          echo "exit_code=${ESLINT_EXIT_CODE}" >> "$GITHUB_OUTPUT"
 
       - name: Ensure SARIF file exists
         if: always()
-        # Creates a minimal valid SARIF file if ESLint didn't produce one.
-        # This can happen if ESLint fails before generating output.
+        # Exit code semantics:
+        #   0  – no findings; synthesize a minimal SARIF if ESLint didn't write one.
+        #   1  – lint findings present; ESLint should have written real output, do nothing.
+        #   >1 – ESLint crashed / misconfigured; re-exit with that code to fail the job
+        #        rather than uploading a misleading zero-result SARIF.
+        env:
+          ESLINT_EXIT_CODE: ${{ steps.eslint-run.outputs.exit_code }}
         run: |
-          if [ ! -f eslint-results.sarif ]; then
+          # Default to 0 when the eslint-run step was skipped and produced no output.
+          ESLINT_EXIT_CODE="${ESLINT_EXIT_CODE:-0}"
+          if [ -n "${ESLINT_EXIT_CODE}" ] && [ "${ESLINT_EXIT_CODE}" -gt 1 ]; then
+            echo "ESLint exited with code ${ESLINT_EXIT_CODE} (configuration or runtime error)."
+            exit "${ESLINT_EXIT_CODE}"
+          fi
+          if [ -n "${ESLINT_EXIT_CODE}" ] && [ "${ESLINT_EXIT_CODE}" -eq 0 ] && [ ! -f eslint-results.sarif ]; then
             cat > eslint-results.sarif << 'EOF'
             {
               "version": "2.1.0",
@@ -80,8 +97,11 @@ jobs:
           fi
 
       - name: Upload analysis results to GitHub
-        uses: github/codeql-action/upload-sarif@89a39a4e59826350b863aa6b6252a07ad50cf83e # v4.32.4
+        uses: github/codeql-action/upload-sarif@0d579ffd059c29b07949a3cce3983f0780820c98 # v4.32.6
         if: always()
+        # Forked PRs run with reduced permissions and cannot write to the Security tab;
+        # swallow the error there but let it fail loudly on main pushes and scheduled runs.
+        continue-on-error: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true }}
         with:
           sarif_file: eslint-results.sarif
           category: eslint
@@ -92,16 +112,11 @@ jobs:
         run: |
           echo "## 🔍 ESLint Security Scan" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
-          if [ "${{ steps.eslint-run.outcome }}" == "success" ]; then
+
+          if [ "${{ steps.eslint-run.outputs.exit_code }}" == "0" ]; then
             echo "✅ **ESLint:** No issues found" >> $GITHUB_STEP_SUMMARY
           else
             echo "⚠️ **ESLint:** Issues detected" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "Check the **Security** tab for detailed findings." >> $GITHUB_STEP_SUMMARY
-          fi
-          
-          if [ -f "eslint-results.sarif" ]; then
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "📄 SARIF results uploaded to GitHub Code Scanning." >> $GITHUB_STEP_SUMMARY
           fi

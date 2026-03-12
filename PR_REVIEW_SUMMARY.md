@@ -2,6 +2,35 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-03-12
+
+### Ready for Merge (High Quality)
+
+| Branch | Summary | Notes |
+|--------|---------|-------|
+| `origin/claude/update-codecov-action-1HLHH` | Upgrades Codecov to v5.5.2 and improves SARIF merge logic. | Clean, passes lint/test. Integrates test results into Codecov. |
+| `origin/claude/fix-codacy-fingerprints-P9FYE` | Strips all `partialFingerprints` from SARIF files. | Prevents "inconsistent fingerprint" warnings in GitHub. Fixes `netlify.toml`. |
+| `origin/claude/remove-hardcoded-password-ubUUE` | Removes `process.env.TEST_PASSWORD` from tests. | Good security hygiene. Prevents potential secret leakage in test logs. |
+| `origin/copilot/improve-variable-function-naming` | **CRITICAL**: Fixes 4 baseline Icon test failures. | Verified clean of regressions. Resolves long-standing failures on `main`. |
+| `origin/claude/accessibility-audit-baseline-USu5N` | Baseline accessibility improvements. | Verified clean of regressions. |
+| `origin/claude/fix-eslint-workflow-xWVbe` | Fixes for ESLint GitHub Actions workflow. | Verified clean of regressions. |
+
+### Blocked by Systemic Regressions
+
+The following branches exhibit systemic regressions (accidental deletion of `.npmrc`, `docs/ROADMAP.md`, `gitVersionControl.md`, `review.md`) and MUST be fixed before merge.
+
+| Branch | Missing Files | navigation.ts Reverted |
+|--------|:-------------:|:----------------------:|
+| `origin/claude/fix-failing-tests-J1VZ6` | ✗ | ✗ |
+| `origin/copilot/fix-security-error-url` | ✗ | ✗ |
+
+### Maintenance & Security Fixes
+
+- **ESLint Version Mismatch Fixed on `main`**: Pinned `eslint` to `9.39.2` in `package.json` to resolve compatibility issues with `@eslint/js` and core plugins (e.g., `eslint-plugin-react-hooks`). This restores the project standard and fixes `npm run lint` failures.
+- **Baseline Test Status**: 1349/1353 tests passing. The 4 remaining failures (ServerErrorPage, Features, Mobile) are pre-existing Icon lookup issues correctly addressed in `origin/copilot/improve-variable-function-naming`.
+
+---
+
 ## 2026-03-05
 
 ### Analysis: Accidental File Deletions in Open Branches (Jules Daily PR Reviews)

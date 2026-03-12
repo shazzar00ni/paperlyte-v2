@@ -30,6 +30,8 @@ import styles from './Header.module.css'
  * </main>
  * ```
  */
+type SectionId = 'features' | 'download'
+
 export const Header = (): React.ReactElement => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const menuButtonRef = useRef<HTMLButtonElement>(null)
@@ -46,7 +48,7 @@ export const Header = (): React.ReactElement => {
   }, [mobileMenuOpen])
 
   const scrollToSection = useCallback(
-    (sectionId: string): void => {
+    (sectionId: SectionId): void => {
       scrollToSectionUtil(sectionId)
       closeMobileMenu()
     },

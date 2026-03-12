@@ -228,7 +228,7 @@ describe('App Integration', () => {
   })
 
   it('should render FeedbackWidget component', () => {
-    const { container } = render(<App />)
+    render(<App />)
 
     // FeedbackWidget renders a floating button with specific aria-label
     const feedbackButton = screen.getByRole('button', { name: /Open feedback form/i })

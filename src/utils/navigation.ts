@@ -64,7 +64,7 @@ function passesBasicValidation(url: string): boolean {
   }
 
   // Block protocol-relative URLs (//example.com)
-  if (trimmedUrl.startsWith('//')) {
+  if (trimmedUrl.startsWith('//') || trimmedUrl.startsWith('\\\\') || trimmedUrl.startsWith('/\\')) {
     return false
   }
 

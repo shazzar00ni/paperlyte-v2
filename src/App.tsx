@@ -17,13 +17,11 @@ import { FeedbackWidget } from '@components/ui/FeedbackWidget'
 import { useAnalytics } from '@hooks/useAnalytics'
 
 /**
- * Root application component that renders the app layout.
- * Initializes analytics tracking including scroll depth tracking.
+ * Application root component that composes the page layout and sections.
  *
- * @returns The root JSX element rendering the app: an ErrorBoundary wrapping
- * the Header, and a main element containing Hero, Problem, Solution, Features,
- * Mobile, Statistics, Comparison, Testimonials, EmailCapture, FAQ, and CTA sections,
- * then the Footer and FeedbackWidget.
+ * Invokes analytics initialization (including scroll depth tracking) as a side effect.
+ *
+ * @returns The root JSX element rendering the application inside an ErrorBoundary.
  */
 function App() {
   // Initialize analytics with scroll depth tracking
@@ -31,11 +29,15 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <a href="#main" className="skip-link">
+      <a
+        href="#main"
+        className="skip-link"
+        onClick={() => { (document.getElementById('main') as HTMLElement | null)?.focus() }}
+      >
         Skip to main content
       </a>
       <Header />
-      <main id="main">
+      <main id="main" tabIndex={-1}>
         <Hero />
         <Problem />
         <Solution />

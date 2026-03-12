@@ -7,6 +7,11 @@ import { TESTIMONIALS } from '@constants/testimonials'
 import type { Testimonial } from '@constants/testimonials'
 import styles from './Testimonials.module.css'
 
+// Auto-rotation interval (5 seconds)
+const AUTO_ROTATE_INTERVAL = 5000
+// Minimum swipe distance (in px) to trigger slide change
+const MIN_SWIPE_DISTANCE = 50
+
 /**
  * Testimonials section with accessible carousel slider
  *
@@ -22,15 +27,9 @@ import styles from './Testimonials.module.css'
 export const Testimonials = (): React.ReactElement => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(true)
-  const [touchStart, setTouchStart] = useState(0)
-  const [touchEnd, setTouchEnd] = useState(0)
+  const touchRef = useRef<{ start: number | null; end: number | null }>({ start: null, end: null })
   const carouselRef = useRef<HTMLDivElement>(null)
   const prefersReducedMotion = useReducedMotion()
-
-  // Auto-rotation interval (5 seconds)
-  const AUTO_ROTATE_INTERVAL = 5000
-  // Minimum swipe distance (in px) to trigger slide change
-  const MIN_SWIPE_DISTANCE = 50
 
   // Calculate how many testimonials to show per view based on screen size
   // This will be handled via CSS, but we track it for navigation
@@ -76,29 +75,26 @@ export const Testimonials = (): React.ReactElement => {
   /**
    * Handle touch start
    */
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setTouchStart(e.targetTouches[0].clientX)
-  }
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    touchRef.current.start = e.targetTouches[0].clientX
+  }, [])
 
   /**
    * Handle touch move
    */
-  const handleTouchMove = (e: React.TouchEvent) => {
-    setTouchEnd(e.targetTouches[0].clientX)
-  }
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    touchRef.current.end = e.targetTouches[0].clientX
+  }, [])
 
   /**
    * Handle touch end - detect swipe direction
    */
-  const handleTouchEnd = () => {
-    const start = touchStart
-    const end = touchEnd
+  const handleTouchEnd = useCallback(() => {
+    const { start, end } = touchRef.current
+    touchRef.current.start = null
+    touchRef.current.end = null
 
-    // Reset touch state first
-    setTouchStart(0)
-    setTouchEnd(0)
-
-    if (!start || !end) return
+    if (start == null || end == null) return
 
     const distance = start - end
     const isLeftSwipe = distance > MIN_SWIPE_DISTANCE
@@ -109,7 +105,7 @@ export const Testimonials = (): React.ReactElement => {
     } else if (isRightSwipe) {
       goToPrevious()
     }
-  }
+  }, [goToNext, goToPrevious])
 
   /**
    * Auto-rotation effect
@@ -149,7 +145,7 @@ export const Testimonials = (): React.ReactElement => {
             name="fa-star"
             size="sm"
             color={index < rating ? 'var(--color-primary)' : 'var(--color-text-tertiary)'}
-            style={index < rating ? {} : { opacity: 0.3 }}
+            style={index < rating ? undefined : { opacity: 0.3 }}
           />
         ))}
       </div>

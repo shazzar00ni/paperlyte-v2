@@ -251,6 +251,7 @@ describe('App Integration', () => {
       'comparison',
       'testimonials',
       'faq',
+      'email-capture',
       'download',
     ]
 

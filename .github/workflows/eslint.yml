@@ -64,19 +64,18 @@ jobs:
         # Exit code semantics:
         #   0  – no findings; synthesize a minimal SARIF if ESLint didn't write one.
         #   1  – lint findings present; ESLint should have written real output, do nothing.
-        #   >1 – ESLint crashed / misconfigured; re-exit with that code to fail the job
-        #        rather than uploading a misleading zero-result SARIF.
+        #   >1 – ESLint crashed / misconfigured; synthesize a minimal SARIF so the upload
+        #        step always has a file, then re-exit with that code to fail the job.
         env:
           ESLINT_EXIT_CODE: ${{ steps.eslint-run.outputs.exit_code }}
         run: |
           # Default to 0 when the eslint-run step was skipped and produced no output.
           ESLINT_EXIT_CODE="${ESLINT_EXIT_CODE:-0}"
-          if [ -n "${ESLINT_EXIT_CODE}" ] && [ "${ESLINT_EXIT_CODE}" -gt 1 ]; then
-            echo "ESLint exited with code ${ESLINT_EXIT_CODE} (configuration or runtime error)."
-            exit "${ESLINT_EXIT_CODE}"
-          fi
-          if [ -n "${ESLINT_EXIT_CODE}" ] && [ "${ESLINT_EXIT_CODE}" -eq 0 ] && [ ! -f eslint-results.sarif ]; then
-            cat > eslint-results.sarif << 'EOF'
+          # Always synthesize a minimal SARIF if none was written, regardless of exit code.
+          # This ensures the upload step always has a file, which is required for GitHub
+          # Advanced Security to track alert baselines across PRs and main.
+          if [ ! -f eslint-results.sarif ]; then
+            cat > eslint-results.sarif <<'EOF'
             {
               "version": "2.1.0",
               "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
@@ -93,7 +92,11 @@ jobs:
                 }
               ]
             }
-          EOF
+            EOF
+          fi
+          if [ "${ESLINT_EXIT_CODE}" -gt 1 ]; then
+            echo "ESLint exited with code ${ESLINT_EXIT_CODE} (configuration or runtime error)."
+            exit "${ESLINT_EXIT_CODE}"
           fi
 
       - name: Upload analysis results to GitHub

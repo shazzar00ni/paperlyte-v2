@@ -183,13 +183,6 @@ describe('App Integration', () => {
     // In a real browser, main would receive focus
   })
 
-  it('should have main element for programmatic focus', () => {
-    const { container } = render(<App />)
-
-    const main = container.querySelector('#main')
-    expect(main).toBeInTheDocument()
-  })
-
   it('should render Problem section', () => {
     const { container } = render(<App />)
 

@@ -27,24 +27,29 @@ describe('App Integration', () => {
 
     const sectionIds = Array.from(sections!).map((section) => section.getAttribute('id'))
 
-    // Check all sections are present
-    expect(sectionIds).toContain('hero')
-    expect(sectionIds).toContain('features')
-    expect(sectionIds).toContain('mobile')
-    expect(sectionIds).toContain('testimonials')
-    expect(sectionIds).toContain('download')
+    // Check all sections are present and in correct order
+    const expectedSections = [
+      'hero',
+      'problem',
+      'solution',
+      'features',
+      'mobile',
+      'statistics',
+      'comparison',
+      'testimonials',
+      'email-capture',
+      'faq',
+      'download',
+    ]
 
-    // Verify correct order
-    const heroIndex = sectionIds.indexOf('hero')
-    const featuresIndex = sectionIds.indexOf('features')
-    const mobileIndex = sectionIds.indexOf('mobile')
-    const testimonialsIndex = sectionIds.indexOf('testimonials')
-    const downloadIndex = sectionIds.indexOf('download')
+    expectedSections.forEach((sectionId) => {
+      expect(sectionIds).toContain(sectionId)
+    })
 
-    expect(heroIndex).toBeLessThan(featuresIndex)
-    expect(featuresIndex).toBeLessThan(mobileIndex)
-    expect(mobileIndex).toBeLessThan(testimonialsIndex)
-    expect(testimonialsIndex).toBeLessThan(downloadIndex)
+    const indices = expectedSections.map((id) => sectionIds.indexOf(id))
+    for (let i = 0; i < indices.length - 1; i++) {
+      expect(indices[i]).toBeLessThan(indices[i + 1])
+    }
   })
 
   it('should have accessible landmark regions with proper roles', () => {
@@ -232,38 +237,6 @@ describe('App Integration', () => {
     // FeedbackWidget renders a floating button with specific aria-label
     const feedbackButton = screen.getByRole('button', { name: /Open feedback form/i })
     expect(feedbackButton).toBeInTheDocument()
-  })
-
-  it('should render all sections in complete order', () => {
-    const { container } = render(<App />)
-
-    const sections = container.querySelectorAll('section')
-    const sectionIds = Array.from(sections).map((section) => section.getAttribute('id'))
-
-    // Verify all sections are present
-    const expectedSections = [
-      'hero',
-      'problem',
-      'solution',
-      'features',
-      'mobile',
-      'statistics',
-      'comparison',
-      'testimonials',
-      'faq',
-      'email-capture',
-      'download',
-    ]
-
-    expectedSections.forEach((sectionId) => {
-      expect(sectionIds).toContain(sectionId)
-    })
-
-    // Verify order is maintained
-    const indices = expectedSections.map((id) => sectionIds.indexOf(id))
-    for (let i = 0; i < indices.length - 1; i++) {
-      expect(indices[i]).toBeLessThan(indices[i + 1])
-    }
   })
 
   it('should not have any duplicate IDs', () => {

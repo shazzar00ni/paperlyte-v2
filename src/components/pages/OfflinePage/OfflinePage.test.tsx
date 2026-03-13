@@ -228,6 +228,25 @@ describe('OfflinePage', () => {
 
       expect(screen.queryByRole('button', { name: /reload the page/i })).not.toBeInTheDocument()
     })
+
+    it('should reload page when reload button is clicked while online', async () => {
+      const user = userEvent.setup()
+      const reloadSpy = vi.fn()
+
+      onLineSpy.mockReturnValue(true)
+      Object.defineProperty(window, 'location', {
+        configurable: true,
+        writable: true,
+        value: { reload: reloadSpy },
+      })
+
+      render(<OfflinePage />)
+
+      const reloadButton = screen.getByRole('button', { name: /reload the page/i })
+      await user.click(reloadButton)
+
+      expect(reloadSpy).toHaveBeenCalledTimes(1)
+    })
   })
 
   describe('Offline Features', () => {

@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { EmailCapture } from './EmailCapture'
@@ -50,5 +50,29 @@ describe('EmailCapture Section', () => {
     render(<EmailCapture />)
     const emailInput = screen.getByPlaceholderText('your@email.com') as HTMLInputElement
     expect(emailInput.required).toBe(true)
+  })
+
+  it('displays error message when submission fails', async () => {
+    const user = userEvent.setup()
+    const mockSubmit = vi.fn().mockRejectedValue(new Error('Network error'))
+
+    render(<EmailCapture onSubmit={mockSubmit} />)
+
+    const emailInput = screen.getByPlaceholderText('your@email.com')
+    const submitButton = screen.getByRole('button', { name: /Join the Waitlist/i })
+
+    await user.type(emailInput, 'test@example.com')
+    await user.click(submitButton)
+
+    expect(mockSubmit).toHaveBeenCalledTimes(1)
+    expect(mockSubmit).toHaveBeenCalledWith('test@example.com')
+
+    await waitFor(() => {
+      expect(screen.getByText(/Failed to join waitlist/)).toBeInTheDocument()
+      expect(screen.getByRole('alert')).toBeInTheDocument()
+    })
+
+    // Submit button should be re-enabled after error
+    expect(screen.getByRole('button', { name: /Join the Waitlist/i })).not.toBeDisabled()
   })
 })

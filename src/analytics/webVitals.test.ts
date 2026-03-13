@@ -6,22 +6,47 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { initWebVitals } from './webVitals'
 import type { CoreWebVitals } from './types'
 
+/**
+ * Creates a mock PerformanceObserver that tracks instantiated observers.
+ * Returns the observerInstances array and installs the mock on global.
+ * Call teardown() to restore the original global.PerformanceObserver.
+ */
+function createMockPerformanceObserver() {
+  const original = global.PerformanceObserver
+  const observerInstances: Array<{
+    callback: PerformanceObserverCallback
+    observe: ReturnType<typeof vi.fn>
+    disconnect: ReturnType<typeof vi.fn>
+  }> = []
+
+  global.PerformanceObserver = class {
+    callback: PerformanceObserverCallback
+    observe: ReturnType<typeof vi.fn>
+    constructor(callback: PerformanceObserverCallback) {
+      this.callback = callback
+      this.observe = vi.fn()
+      observerInstances.push(this as (typeof observerInstances)[number])
+    }
+    disconnect = vi.fn()
+    takeRecords = vi.fn(() => [])
+  } as unknown as typeof PerformanceObserver
+
+  return {
+    observerInstances,
+    teardown: () => {
+      global.PerformanceObserver = original
+    },
+  }
+}
+
 describe('analytics/webVitals', () => {
   let onReport: ReturnType<typeof vi.fn<[CoreWebVitals], void>>
 
   beforeEach(() => {
     onReport = vi.fn()
 
-    // Mock PerformanceObserver as a class
-    global.PerformanceObserver = class {
-      callback: PerformanceObserverCallback
-      constructor(callback: PerformanceObserverCallback) {
-        this.callback = callback
-      }
-      observe = vi.fn()
-      disconnect = vi.fn()
-      takeRecords = vi.fn(() => [])
-    } as unknown as typeof PerformanceObserver
+    // Install a basic PerformanceObserver mock (no instance tracking needed for most tests)
+    createMockPerformanceObserver()
 
     // Mock performance API
     Object.defineProperty(window, 'performance', {
@@ -266,23 +291,7 @@ describe('analytics/webVitals', () => {
 
   describe('metric ratings', () => {
     it('should rate LCP as good/needs-improvement/poor based on thresholds', () => {
-      // Mock PerformanceObserver to emit LCP with different values
-      const observerInstances: Array<{
-        callback: PerformanceObserverCallback
-        observe: ReturnType<typeof vi.fn>
-      }> = []
-
-      global.PerformanceObserver = class {
-        callback: PerformanceObserverCallback
-        observe: ReturnType<typeof vi.fn>
-        constructor(callback: PerformanceObserverCallback) {
-          this.callback = callback
-          this.observe = vi.fn()
-          observerInstances.push(this)
-        }
-        disconnect = vi.fn()
-        takeRecords = vi.fn(() => [])
-      } as unknown as typeof PerformanceObserver
+      const { observerInstances } = createMockPerformanceObserver()
 
       const cleanup = initWebVitals(onReport)
 
@@ -316,23 +325,7 @@ describe('analytics/webVitals', () => {
     })
 
     it('should rate CLS as good/needs-improvement/poor based on thresholds', () => {
-      // Mock PerformanceObserver to emit CLS with different values
-      const observerInstances: Array<{
-        callback: PerformanceObserverCallback
-        observe: ReturnType<typeof vi.fn>
-      }> = []
-
-      global.PerformanceObserver = class {
-        callback: PerformanceObserverCallback
-        observe: ReturnType<typeof vi.fn>
-        constructor(callback: PerformanceObserverCallback) {
-          this.callback = callback
-          this.observe = vi.fn()
-          observerInstances.push(this)
-        }
-        disconnect = vi.fn()
-        takeRecords = vi.fn(() => [])
-      } as unknown as typeof PerformanceObserver
+      const { observerInstances } = createMockPerformanceObserver()
 
       const cleanup = initWebVitals(onReport)
 
@@ -376,6 +369,95 @@ describe('analytics/webVitals', () => {
       expect(reportedVitals.CLS).toBeCloseTo(0.15, 2)
 
       cleanup()
+    })
+  })
+
+  describe('INP tracking', () => {
+    it('should track INP from event observer callbacks and finalize with max for few interactions', () => {
+      vi.useFakeTimers()
+
+      const { observerInstances } = createMockPerformanceObserver()
+
+      const cleanup = initWebVitals(onReport)
+
+      // Find the INP observer (observes 'event' type)
+      const inpObserver = observerInstances.find((obs) => {
+        const observeCall = obs.observe.mock.calls[0]
+        return observeCall && observeCall[0].type === 'event'
+      })
+
+      expect(inpObserver).toBeDefined()
+
+      // Emit a few event entries (<=10 interactions uses Math.max)
+      inpObserver!.callback(
+        {
+          getEntries: () => [
+            { processingStart: 10, processingEnd: 60, startTime: 5 },
+            { processingStart: 20, processingEnd: 120, startTime: 10 },
+          ],
+        } as PerformanceObserverEntryList,
+        inpObserver as unknown as PerformanceObserver
+      )
+
+      // Trigger reporting via timeout
+      vi.advanceTimersByTime(10000)
+
+      expect(onReport).toHaveBeenCalledWith(
+        expect.objectContaining({
+          INP: expect.any(Number),
+        })
+      )
+
+      // INP should be the max duration: max(60 - 5, 120 - 10) = max(55, 110) = 110
+      const reportedVitals = onReport.mock.calls[0][0]
+      expect(reportedVitals.INP).toBe(110)
+
+      cleanup()
+      vi.useRealTimers()
+    })
+
+    it('should use 98th percentile for many interactions (>10)', () => {
+      vi.useFakeTimers()
+
+      const { observerInstances } = createMockPerformanceObserver()
+
+      const cleanup = initWebVitals(onReport)
+
+      const inpObserver = observerInstances.find((obs) => {
+        const observeCall = obs.observe.mock.calls[0]
+        return observeCall && observeCall[0].type === 'event'
+      })
+
+      expect(inpObserver).toBeDefined()
+
+      // Emit >10 event entries to trigger 98th percentile path
+      const entries = Array.from({ length: 20 }, (_, i) => ({
+        processingStart: 10,
+        processingEnd: 10 + (i + 1) * 10,
+        startTime: 0,
+      }))
+
+      inpObserver!.callback(
+        {
+          getEntries: () => entries,
+        } as PerformanceObserverEntryList,
+        inpObserver as unknown as PerformanceObserver
+      )
+
+      // Trigger reporting
+      vi.advanceTimersByTime(10000)
+
+      // Durations are [20, 30, 40, ..., 210] (20 entries)
+      // 98th percentile index: Math.ceil(0.98 * 20) - 1 = 19
+      // sortedInteractions[19] = 210
+      expect(onReport).toHaveBeenCalledWith(
+        expect.objectContaining({
+          INP: 210,
+        })
+      )
+
+      cleanup()
+      vi.useRealTimers()
     })
   })
 

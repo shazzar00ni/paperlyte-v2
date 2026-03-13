@@ -363,7 +363,7 @@ describe('OfflinePage', () => {
       // Query specifically for the illustration container within the status region
       const illustration = screen.getByRole('status').querySelector('[aria-hidden="true"]')
       expect(illustration).toBeInTheDocument()
-      
+
       // Query for the wifi illustration SVG within the illustration container
       const wifiIcon = illustration?.querySelector('svg')
       expect(wifiIcon).toBeInTheDocument()

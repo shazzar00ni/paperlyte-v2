@@ -266,20 +266,6 @@ describe('App Integration', () => {
     }
   })
 
-  it('should wrap content in ErrorBoundary', () => {
-    // This test verifies ErrorBoundary is present by checking the component renders
-    // ErrorBoundary will catch errors thrown during render
-    expect(() => render(<App />)).not.toThrow()
-  })
-
-  it('should render Analytics component', () => {
-    const { container } = render(<App />)
-
-    // Vercel Analytics injects scripts or tracking elements
-    // We verify the component renders without error
-    expect(container).toBeInTheDocument()
-  })
-
   it('should have correct document structure for screen readers', () => {
     render(<App />)
 

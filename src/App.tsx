@@ -31,11 +31,15 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <a href="#main" className="skip-link">
+      <a
+        href="#main"
+        className="skip-link"
+        onClick={() => { (document.getElementById('main') as HTMLElement | null)?.focus() }}
+      >
         Skip to main content
       </a>
       <Header />
-      <main id="main">
+      <main id="main" tabIndex={-1}>
         <Hero />
         <Problem />
         <Solution />

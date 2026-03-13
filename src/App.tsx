@@ -1,3 +1,4 @@
+import { useRef, useCallback } from 'react'
 import { Analytics } from '@vercel/analytics/react'
 import { ErrorBoundary } from '@components/ErrorBoundary'
 import { Header } from '@components/layout/Header'
@@ -24,20 +25,26 @@ import { useAnalytics } from '@hooks/useAnalytics'
  * @returns The root JSX element rendering the application inside an ErrorBoundary.
  */
 function App() {
+  const mainRef = useRef<HTMLElement>(null)
+
   // Initialize analytics with scroll depth tracking
   useAnalytics()
+
+  const handleSkipToMain = useCallback(() => {
+    mainRef.current?.focus()
+  }, [])
 
   return (
     <ErrorBoundary>
       <a
         href="#main"
         className="skip-link"
-        onClick={() => { (document.getElementById('main') as HTMLElement | null)?.focus() }}
+        onClick={handleSkipToMain}
       >
         Skip to main content
       </a>
       <Header />
-      <main id="main" tabIndex={-1}>
+      <main id="main" tabIndex={-1} ref={mainRef}>
         <Hero />
         <Problem />
         <Solution />

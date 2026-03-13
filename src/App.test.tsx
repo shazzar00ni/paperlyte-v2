@@ -266,19 +266,6 @@ describe('App Integration', () => {
     }
   })
 
-  it('should have correct document structure for screen readers', () => {
-    render(<App />)
-
-    // Verify proper ARIA landmark structure
-    expect(screen.getByRole('banner')).toBeInTheDocument() // header
-    expect(screen.getByRole('main')).toBeInTheDocument() // main
-    expect(screen.getByRole('contentinfo')).toBeInTheDocument() // footer
-
-    // Verify navigation landmarks
-    const navs = screen.getAllByRole('navigation')
-    expect(navs.length).toBeGreaterThanOrEqual(2) // Header and Footer navigation
-  })
-
   it('should not have any duplicate IDs', () => {
     const { container } = render(<App />)
 

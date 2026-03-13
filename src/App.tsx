@@ -1,5 +1,8 @@
 import { Analytics } from '@vercel/analytics/react'
 import { ErrorBoundary } from '@components/ErrorBoundary'
+
+// Build-time flag: true only on actual Vercel deployments (VERCEL=1 is set by Vercel CI)
+declare const __IS_VERCEL_DEPLOYMENT__: boolean
 import { Header } from '@components/layout/Header'
 import { Footer } from '@components/layout/Footer'
 import { Hero } from '@components/sections/Hero'
@@ -50,7 +53,7 @@ function App() {
       </main>
       <Footer />
       <FeedbackWidget />
-      <Analytics />
+      {__IS_VERCEL_DEPLOYMENT__ && <Analytics />}
     </ErrorBoundary>
   )
 }

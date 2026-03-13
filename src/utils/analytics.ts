@@ -313,6 +313,9 @@ export function trackEvent(eventName: string, eventParams?: AnalyticsEventParams
  */
 export function trackPageView(pagePath: string, pageTitle?: string): void {
   if (!isAnalyticsAvailable()) {
+    if (import.meta.env.DEV) {
+      console.log('[Analytics] Page View:', pagePath, pageTitle)
+    }
     return
   }
 

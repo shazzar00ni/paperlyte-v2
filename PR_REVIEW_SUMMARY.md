@@ -2,6 +2,48 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-03-13
+
+### Systemic Regression Audit (Daily Summary)
+
+- **Status:** 🔴 Critical — Widespread Action Required
+- **Summary:** A repository-wide audit of 127 open branches confirms that **over 80%** exhibit systemic regressions. These branches are unsuitable for merge until fixed.
+- **Regressions Found:**
+  - **Missing Critical Files:** `.npmrc` (breaks peer deps), `docs/ROADMAP.md`, `gitVersionControl.md`, and `review.md`.
+  - **Reverted Security Fixes:** Removal of `hasDangerousProtocol` and `isRelativeUrl` helpers from `src/utils/navigation.ts`.
+- **Recommendation:** Automated or manual restoration of these files is required for most open PRs.
+
+### Ready for Merge (High Quality)
+
+| Branch                                        | Status   | Summary                                                                                               |
+| --------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------- |
+| `copilot/improve-variable-function-naming`    | Approved | **Critical Fix:** Resolves 4 baseline unit test failures in `ServerErrorPage`, `Features`, and `Mobile`. |
+| `claude/update-codecov-action-1HLHH`          | Approved | Upgrades Codecov action to v5; improves CI stability and reporting.                                   |
+| `claude/fix-codacy-warnings-QTZ9S`            | Approved | Addresses miscellaneous Codacy warnings and improves code quality.                                    |
+| `claude/accessibility-audit-baseline-USu5N`   | Approved | Implements keyboard navigation checklist and updates audit report.                                    |
+
+### Under Review / High Quality (Pending Minor Checks)
+
+- **`claude/fix-open-redirect-TX551`**
+  - **Summary:** Significant security hardening for `navigation.ts`. Implements strict same-origin checks for `safeNavigate` and introduces `allowExternal` option for `isSafeUrl`.
+  - **Status:** Highly Recommended. Improves upon PR #428.
+- **`claude/fix-eslint-docker-error-zPw7G`**
+  - **Summary:** Resolves GitHub Code Scanning "too many runs" error by merging SARIF runs using a Node script.
+  - **Status:** Approved. Essential for maintaining security visibility.
+- **`claude/fix-eslint-workflow-xWVbe`**
+  - **Summary:** Ensures SARIF files are always synthesized even on failure, preventing "missing file" errors in the upload step.
+  - **Status:** Approved. Improves CI robustness.
+- **`claude/implement-todo-item-cDEVt`**
+  - **Summary:** Clean implementation of Fathom Analytics provider with full test coverage.
+  - **Status:** Approved. Follows project standards perfectly.
+
+### Changes Requested (Regressions)
+
+- **Affected Branches:** `alert-autofix-5671`, `claude/accessibility-audit-wcag-wOLML`, `claude/add-analytics-tests-L5KyM`, `claude/core-editor-phase-1-PI3Yp`, `claude/implement-todo-item-2H9LP`, `copilot/sub-pr-503`, and ~90 others.
+- **Reason:** Missing `.npmrc`, documentation files, or reverted security helpers in `navigation.ts`.
+
+---
+
 ## 2026-03-05
 
 ### Analysis: Accidental File Deletions in Open Branches (Jules Daily PR Reviews)

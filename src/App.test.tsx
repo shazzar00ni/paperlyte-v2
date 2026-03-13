@@ -1,6 +1,10 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import App from './App'
+
+vi.mock('@vercel/analytics/react', () => ({
+  Analytics: () => <div data-testid="vercel-analytics" />,
+}))
 
 describe('App Integration', () => {
   it('should render with proper semantic structure and section order', () => {
@@ -161,8 +165,8 @@ describe('App Integration', () => {
     vi.stubGlobal('location', { hostname: 'paperlyte.app' })
     vi.stubEnv('PROD', true)
 
-    const { container } = render(<App />)
-    expect(container).toBeInTheDocument()
+    render(<App />)
+    expect(screen.getByTestId('vercel-analytics')).toBeInTheDocument()
 
     // Clean up stubs
     vi.unstubAllGlobals()
@@ -173,8 +177,8 @@ describe('App Integration', () => {
     // Mock local hostname
     vi.stubGlobal('location', { hostname: 'localhost' })
 
-    const { container } = render(<App />)
-    expect(container).toBeInTheDocument()
+    render(<App />)
+    expect(screen.queryByTestId('vercel-analytics')).not.toBeInTheDocument()
 
     vi.unstubAllGlobals()
   })

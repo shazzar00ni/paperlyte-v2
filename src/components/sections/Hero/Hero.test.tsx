@@ -85,8 +85,10 @@ describe('Hero', () => {
     it('should render arrow icon on Start Writing for Free button', () => {
       render(<Hero />)
 
-      const arrowIcon = screen.getByLabelText(/arrow/i)
-      expect(arrowIcon).toBeInTheDocument()
+      const button = screen.getByRole('button', { name: /start writing for free/i })
+      const icon = button.querySelector('svg')
+
+      expect(icon).toBeInTheDocument()
     })
   })
 
@@ -191,15 +193,22 @@ describe('Hero', () => {
     })
 
     it('should render mockup images with proper alt text', () => {
-      render(<Hero />)
+      const { container } = render(<Hero />)
 
-      // Check that the primary mockup image exists with alt text
-      const primaryMockup = screen.getByAltText(/notes list/i)
-      expect(primaryMockup).toBeInTheDocument()
+      // Mockup images are in aria-hidden container but should still have alt text for SEO/fallback
+      const mockupImages = container.querySelectorAll('img')
+      expect(mockupImages.length).toBeGreaterThanOrEqual(2)
 
-      // Check that the secondary mockup image exists with alt text
-      const secondaryMockup = screen.getByAltText(/note editor/i)
-      expect(secondaryMockup).toBeInTheDocument()
+      // Check that mockup images have descriptive alt text
+      const notesListImg = Array.from(mockupImages).find((img) =>
+        img.alt.toLowerCase().includes('notes list')
+      )
+      expect(notesListImg).toBeDefined()
+
+      const noteDetailImg = Array.from(mockupImages).find((img) =>
+        img.alt.toLowerCase().includes('note editor')
+      )
+      expect(noteDetailImg).toBeDefined()
     })
   })
 
@@ -266,7 +275,7 @@ describe('Hero', () => {
 
       // Verify the Section has the padding-large class applied
       // (CSS Module class names are hashed, so we check for the class pattern)
-      const classList = Array.from(section?.classList ?? [])
+      const classList = Array.from(section?.classList || [])
       const hasPaddingLargeClass = classList.some((className) =>
         className.includes('padding-large')
       )

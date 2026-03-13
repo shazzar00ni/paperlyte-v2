@@ -170,8 +170,7 @@ export function logEvent(
   properties?: Record<string, string | number | boolean>
 ): void {
   if (import.meta.env.DEV) {
-    const safeProperties = properties ? Object.keys(properties) : undefined
-    console.log('[Event]', eventName, { propertyKeys: safeProperties })
+    console.log('[Event]', eventName, properties)
   }
   trackEvent(eventName, properties)
 }

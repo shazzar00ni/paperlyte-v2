@@ -127,6 +127,10 @@ class Analytics {
     }
 
     this.provider?.trackPageView(url)
+
+    if (this.config?.debug) {
+      console.log('[Analytics] Page view tracked:', url)
+    }
   }
 
   /**
@@ -163,6 +167,10 @@ class Analytics {
     }
 
     this.provider?.trackWebVitals(vitals)
+
+    if (this.config?.debug) {
+      console.log('[Analytics] Web Vitals tracked:', vitals)
+    }
   }
 
   /**

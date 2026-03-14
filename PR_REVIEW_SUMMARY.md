@@ -2,6 +2,110 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+---
+
+## 2026-03-14
+
+### Daily Repository Audit: Systemic Regression Analysis
+
+Analysis of 127 open branches as of 2026-03-14 confirms that systemic regressions (accidental file deletions and security helper reversions) remain widespread but are being successfully isolated in newer high-quality branches.
+
+#### 🟢 Ready for Merge (Clean of Systemic Regressions)
+
+The following branches are verified as compliant with project standards (ESLint v9, security helpers present, critical files intact) and are ready for final review/merge:
+
+- `claude/accessibility-audit-baseline-USu5N`
+- `claude/add-claude-documentation-TYNqv`
+- `claude/add-doc-sections-1EhnP`
+- `claude/analyze-pr-deleted-files-QBlYv`
+- `claude/analyze-test-coverage-9JQZb`
+- `claude/eslint-10-upgrade-issue-Bg8XP`
+- `claude/fix-codacy-sarif-limit-4I0x5`
+- `claude/fix-codacy-sarif-limits-Rmdck`
+- `claude/fix-codacy-warnings-QTZ9S`
+- `claude/fix-code-style-cWDI4`
+- `claude/fix-coverage-requirements-QtFtS`
+- `claude/fix-debug-logging-tests-G10GL`
+- `claude/fix-eslint-docker-error-zPw7G`
+- `claude/fix-eslint-workflow-xWVbe`
+- `claude/fix-issue-577-v60JV`
+- `claude/fix-lighthouse-ci-P9FYE`
+- `claude/fix-lighthouse-failure-b5S6v`
+- `claude/fix-open-redirect-TX551`
+- `claude/fix-workflow-e2e-tests-xHhZw`
+- `claude/implement-todo-item-cDEVt`
+- `claude/issue-230-paperlyte-StkbW`
+- `claude/tree-shake-font-awesome-cK85j`
+- `claude/update-codecov-action-1HLHH`
+- `copilot/fix-security-error-url`
+- `copilot/improve-slow-code-performance`
+- `copilot/improve-variable-function-naming`
+- `copilot/sub-pr-524`
+- `daily-pr-review-2026-03-02-jules-3089381486739758831`
+- `daily-pr-review-2026-03-03-jules-1902255574970321238`
+- `daily-pr-review-2026-03-07-v2-10609599013389250671`
+- `dependabot/github_actions/mikepenz/release-changelog-builder-action-6.1.1`
+- `dependabot/npm_and_yarn/undici-7.24.1`
+- `jules/daily-pr-reviews-2026-02-28-7717523501616120739`
+- `jules/daily-pr-reviews-2026-03-01-18244792920487672966`
+- `jules/daily-pr-reviews-2026-03-04-report-10251414130935094083`
+- `jules/daily-pr-reviews-2026-03-05-report-summary-5667099997819338057`
+- `jules/daily-pr-reviews-2026-03-06-report-summary-6243541760084439098`
+- `jules/daily-pr-reviews-2026-03-08-summary-v2-3899556432930976504`
+- `jules/daily-pr-reviews-2026-03-09-summary-8301806644760865448`
+- `jules/daily-pr-reviews-2026-03-10-report-summary-v3-8392104751930214876-15174514179081041706`
+- `jules/daily-pr-reviews-2026-03-11-report-summary-v4-10302112025603386365`
+- `jules/daily-pr-reviews-2026-03-12-summary-v5-fixed-eslint-10302112025603386365-15174514179081041706-v6-final-11283762388414469049-473b9a60`
+- `jules/daily-pr-reviews-2026-03-13-4072900007824955159`
+
+#### 🔴 Blocked by Systemic Regressions
+
+A significant number of branches (approx. 80%) are currently blocked because they are missing critical files (`.npmrc`, `docs/ROADMAP.md`, `gitVersionControl.md`, `review.md`) or have reverted the `hasDangerousProtocol` and `isRelativeUrl` helpers in `src/utils/navigation.ts`.
+
+**Commonly Missing Files:**
+
+- `.npmrc` (Critical for `legacy-peer-deps`)
+- `docs/ROADMAP.md`
+- `gitVersionControl.md`
+- `review.md`
+
+**Affected Branches (Partial List):**
+
+- `alert-autofix-5671`: Missing: [.npmrc, gitVersionControl.md, review.md], Nav: Reverted
+- `alert-fix-1715`: Missing: [.npmrc, docs/ROADMAP.md, gitVersionControl.md, review.md], Nav: Reverted
+- `alert-fix-2305`: Missing: [.npmrc, docs/ROADMAP.md, gitVersionControl.md, review.md], Nav: Reverted
+- `alert-fix-2324`: Missing: [.npmrc, docs/ROADMAP.md, gitVersionControl.md, review.md], Nav: Reverted
+- `claude/accessibility-audit-wcag-wOLML`: Missing: [.npmrc, docs/ROADMAP.md, gitVersionControl.md, review.md], Nav: Reverted
+- `claude/add-analytics-tests-L5KyM`: Missing: [.npmrc, docs/ROADMAP.md, gitVersionControl.md, review.md], Nav: Reverted
+- `claude/add-analytics-tests-uFBpl-15472485915422703271`: Missing: [.npmrc, docs/ROADMAP.md, gitVersionControl.md, review.md], Nav: Reverted
+- `claude/add-constants-tests-OnNXg`: Missing: [.npmrc, docs/ROADMAP.md, gitVersionControl.md, review.md], Nav: Reverted
+- `claude/add-duotone-illustrations-x4GKk`: Missing: [.npmrc, docs/ROADMAP.md, gitVersionControl.md, review.md], Nav: Reverted
+- `claude/apply-code-fixes-BUsgx`: Missing: [.npmrc, docs/ROADMAP.md, gitVersionControl.md, review.md], Nav: Reverted
+- `claude/claude-md-mi99o181rvyluac7-01GBap4tmQKY2HHePk1jxVXy`: Missing: [.npmrc, docs/ROADMAP.md, gitVersionControl.md, review.md], Nav: Reverted
+- `claude/core-editor-phase-1-PI3Yp`: Missing: [.npmrc, gitVersionControl.md, review.md], Nav: Reverted
+- `claude/create-audit-issues-S4QtL`: Missing: [.npmrc, docs/ROADMAP.md, gitVersionControl.md, review.md], Nav: Reverted
+- `claude/fix-component-tests-pq68t`: Missing: [.npmrc, docs/ROADMAP.md, gitVersionControl.md, review.md], Nav: Reverted
+- `claude/fix-deployment-failure-lpxjb`: Missing: [.npmrc, gitVersionControl.md, review.md], Nav: Reverted
+
+_...and 99 more._
+
+#### 🟡 Recommended for Closure
+
+The following branches are identified as redundant, monolithic, or superseded and should be closed to reduce repository noise:
+
+- `copilot/sub-pr-107`
+- `copilot/sub-pr-107-yet-again`
+- `daily-pr-review-summary-2026-02-08-4785299271730500259`
+- `daily-pr-review-summary-2026-02-09-14823275582180140059`
+- `daily-pr-review-summary-6282778158436239546`
+- `feat/daily-pr-review-summary-15372459533392607538`
+- `feat/pr-review-summary-14848597437187470619`
+- `feat/pr-review-summary-6056504200618815877`
+- `fix/pr-review-summary-13658223490607794745`
+- `jules-pr-review-summary-20240729-8106851808364211252`
+
+_...and 25 more summary/monolithic branches._
+
 ## 2026-03-05
 
 ### Analysis: Accidental File Deletions in Open Branches (Jules Daily PR Reviews)

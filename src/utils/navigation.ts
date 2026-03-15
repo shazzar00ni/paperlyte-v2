@@ -22,6 +22,8 @@ export function scrollToSection(sectionId: string): void {
  * @returns true if the URL contains a dangerous protocol, false otherwise
  */
 function hasDangerousProtocol(url: string): boolean {
+  // NOSONAR: This regex pattern is used to DETECT and BLOCK dangerous protocols like javascript:
+  // It is NOT executing any code - it's a security validation function that prevents XSS attacks
   const dangerousProtocolPattern = /^(javascript|data|vbscript|file|about):/i
   const urlWithoutWhitespace = url.replace(/\s/g, '')
   

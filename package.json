@@ -88,6 +88,8 @@
   "overrides": {
     "tmp": "^0.2.5",
     "undici": "^7.20.0",
-    "yauzl": "^3.2.1"
+    "extract-zip": {
+      "yauzl": "^3.2.1"
+    }
   }
 }

@@ -54,7 +54,7 @@ describe('EmailCapture Section', () => {
 
   it('displays error message when submission fails', async () => {
     const user = userEvent.setup()
-    const mockSubmit = vi.fn().mockRejectedValue(new Error('Network error'))
+    const mockSubmit = vi.fn().mockRejectedValue(new Error('Server error'))
 
     render(<EmailCapture onSubmit={mockSubmit} />)
 

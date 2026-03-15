@@ -16,7 +16,21 @@ const BENEFITS = [
 ]
 
 interface EmailCaptureProps {
-  onSubmit?: (email: string) => Promise<void>
+  onSubmit?: (_email: string) => Promise<void>
+}
+
+function getSubmitErrorMessage(err: unknown): string {
+  const error = err instanceof Error ? err : new Error(String(err))
+  logError(error, { tags: { context: 'waitlist-submit' } })
+
+  const msg = error.message.toLowerCase()
+  if (error.name === 'TypeError' || msg.includes('network') || msg.includes('fetch')) {
+    return 'Network error. Please check your connection and try again.'
+  }
+  if (msg.includes('invalid') || msg.includes('validation')) {
+    return 'Invalid email address. Please check and try again.'
+  }
+  return 'Failed to join waitlist. Please try again.'
 }
 
 export const EmailCapture = ({ onSubmit }: EmailCaptureProps = {}): React.ReactElement => {
@@ -44,25 +58,8 @@ export const EmailCapture = ({ onSubmit }: EmailCaptureProps = {}): React.ReactE
       setIsLoading(false)
       setIsSubmitted(true)
     } catch (err) {
-      const error = err instanceof Error ? err : new Error(String(err))
-      logError(error, { tags: { context: 'waitlist-submit' } })
-
-      let message = 'Failed to join waitlist. Please try again.'
-      if (
-        error.name === 'TypeError' ||
-        error.message.toLowerCase().includes('network') ||
-        error.message.toLowerCase().includes('fetch')
-      ) {
-        message = 'Network error. Please check your connection and try again.'
-      } else if (
-        error.message.toLowerCase().includes('invalid') ||
-        error.message.toLowerCase().includes('validation')
-      ) {
-        message = 'Invalid email address. Please check and try again.'
-      }
-
       setIsLoading(false)
-      setError(message)
+      setError(getSubmitErrorMessage(err))
     }
   }
 

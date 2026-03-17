@@ -300,8 +300,10 @@ The application is already fully instrumented. Simply add your Sentry DSN to act
 `extract-zip@2.0.1` to version `^3.2.1`:
 
 ```json
-"overrides": {
-  "extract-zip": { "yauzl": "^3.2.1" }
+{
+  "overrides": {
+    "extract-zip": { "yauzl": "^3.2.1" }
+  }
 }
 ```
 

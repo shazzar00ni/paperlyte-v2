@@ -1,8 +1,17 @@
+import { memo, useMemo } from 'react'
 import { Section } from '@components/layout/Section'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { Icon } from '@components/ui/Icon'
 import { COMPARISON_FEATURES, COMPETITORS } from '@constants/comparison'
 import styles from './Comparison.module.css'
+
+// Precomputed styles for competitor header cells – avoids recreating objects on every render
+const COMPETITOR_HEADER_STYLES = new Map(
+  COMPETITORS.map((c) => [
+    c.id,
+    c.id === 'paperlyte' ? { color: c.color, fontWeight: 700 } : undefined,
+  ])
+)
 
 /**
  * Renders a checkmark, X, or text value for a comparison cell
@@ -10,7 +19,7 @@ import styles from './Comparison.module.css'
  * @param props.value - Boolean for check/x or string for text value
  * @returns Icon or text element
  */
-const ComparisonCell = ({ value }: { value: boolean | string }): React.ReactElement => {
+const ComparisonCell = memo(({ value }: { value: boolean | string }): React.ReactElement => {
   if (typeof value === 'boolean') {
     return (
       <Icon
@@ -21,7 +30,9 @@ const ComparisonCell = ({ value }: { value: boolean | string }): React.ReactElem
     )
   }
   return <span className={styles.textValue}>{value}</span>
-}
+})
+
+ComparisonCell.displayName = 'ComparisonCell'
 
 /**
  * Comparison section component that shows feature comparison table
@@ -36,6 +47,12 @@ const ComparisonCell = ({ value }: { value: boolean | string }): React.ReactElem
  * ```
  */
 export const Comparison = (): React.ReactElement => {
+  // Compute once on mount; only changes if the component is remounted in a new month
+  const comparisonDate = useMemo(
+    () => new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+    []
+  )
+
   return (
     <Section id="comparison" background="default">
       <div className={styles.header}>
@@ -62,11 +79,7 @@ export const Comparison = (): React.ReactElement => {
                     key={competitor.id}
                     className={styles.competitorHeader}
                     scope="col"
-                    style={
-                      competitor.id === 'paperlyte'
-                        ? { color: competitor.color, fontWeight: 700 }
-                        : undefined
-                    }
+                    style={COMPETITOR_HEADER_STYLES.get(competitor.id)}
                   >
                     {competitor.name}
                     {competitor.id === 'paperlyte' && (
@@ -105,9 +118,8 @@ export const Comparison = (): React.ReactElement => {
 
       <AnimatedElement animation="fadeIn" delay={300}>
         <p className={styles.disclaimer}>
-          Comparison data accurate as of{' '}
-          {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}. Competitor
-          features may vary by plan and region.
+          Comparison data accurate as of {comparisonDate}. Competitor features may vary by plan and
+          region.
         </p>
       </AnimatedElement>
     </Section>

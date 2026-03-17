@@ -1,77 +1,22 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { Section } from '@components/layout/Section'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
-import { Icon } from '@components/ui/Icon'
 import { FAQ_ITEMS } from '@constants/faq'
 import {
   getFocusableElements,
   handleArrowNavigation,
   handleHomeEndNavigation,
 } from '@utils/keyboard'
+import { FAQItemComponent } from './FAQItem'
 import styles from './FAQ.module.css'
 
-interface FAQItemProps {
-  question: string
-  answer: string
-  isOpen: boolean
-  onToggle: () => void
-  delay: number
-}
-
 /**
- * Individual FAQ item component with accordion functionality
- * Supports keyboard navigation and animated expand/collapse
- *
- * @param props - FAQ item props
- * @returns An animated accordion item for FAQ
+ * Builds the screen-reader announcement message for a toggled FAQ item.
+ * Extracted as a module-level helper to keep component complexity below the limit.
  */
-const FAQItemComponent = ({
-  question,
-  answer,
-  isOpen,
-  onToggle,
-  delay,
-}: FAQItemProps): React.ReactElement => {
-  const sanitizedQuestion = question
-    .replace(/[^a-zA-Z0-9\s]/g, '')
-    .replace(/\s+/g, '-')
-    .toLowerCase()
-  const answerId = `answer-${sanitizedQuestion}`
-  const questionId = `question-${sanitizedQuestion}`
-
-  return (
-    <AnimatedElement animation="slideUp" delay={delay}>
-      <article className={styles.item}>
-        <h3>
-          <button
-            id={questionId}
-            type="button"
-            className={styles.question}
-            onClick={onToggle}
-            aria-expanded={isOpen}
-            aria-controls={answerId}
-          >
-            <span className={styles.questionText}>{question}</span>
-            <Icon
-              name={isOpen ? 'fa-chevron-up' : 'fa-chevron-down'}
-              size="sm"
-              color="var(--color-primary)"
-              ariaLabel={isOpen ? 'Collapse answer' : 'Expand answer'}
-            />
-          </button>
-        </h3>
-        <div
-          id={answerId}
-          role="region"
-          aria-labelledby={questionId}
-          className={`${styles.answer} ${isOpen ? styles.answerOpen : ''}`}
-          aria-hidden={!isOpen}
-        >
-          <p className={styles.answerText}>{answer}</p>
-        </div>
-      </article>
-    </AnimatedElement>
-  )
+function buildAnnouncementMessage(id: string, isOpening: boolean): string | null {
+  const item = FAQ_ITEMS.find((faqItem) => faqItem.id === id)
+  return item ? `${item.question} ${isOpening ? 'expanded' : 'collapsed'}` : null
 }
 
 export const FAQ = (): React.ReactElement => {
@@ -80,26 +25,25 @@ export const FAQ = (): React.ReactElement => {
   const gridRef = useRef<HTMLDivElement>(null)
   const announcementTimeoutRef = useRef<number | null>(null)
 
-  const toggleItem = (id: string) => {
+  const toggleItem = useCallback((id: string) => {
     setOpenItems((prev) => {
       const newSet = new Set(prev)
       const isOpening = !newSet.has(id)
 
-      if (newSet.has(id)) {
-        newSet.delete(id)
-      } else {
+      if (isOpening) {
         newSet.add(id)
+      } else {
+        newSet.delete(id)
       }
 
-      // Announce the change for screen readers
-      const item = FAQ_ITEMS.find((item) => item.id === id)
-      if (item) {
+      const message = buildAnnouncementMessage(id, isOpening)
+      if (message !== null) {
         // Clear any pending timeout to prevent memory leaks
         if (announcementTimeoutRef.current !== null) {
           clearTimeout(announcementTimeoutRef.current)
         }
 
-        setAnnouncement(`${item.question} ${isOpening ? 'expanded' : 'collapsed'}`)
+        setAnnouncement(message)
         // Clear announcement after sufficient time for screen readers (3 seconds)
         // This ensures users with slower reading speeds or busy screen readers can hear the announcement
         announcementTimeoutRef.current = window.setTimeout(() => {
@@ -110,7 +54,7 @@ export const FAQ = (): React.ReactElement => {
 
       return newSet
     })
-  }
+  }, [])
 
   // Cleanup timeout on unmount to prevent memory leaks
   useEffect(() => {
@@ -188,10 +132,11 @@ export const FAQ = (): React.ReactElement => {
         {FAQ_ITEMS.map((item, index) => (
           <FAQItemComponent
             key={item.id}
+            id={item.id}
             question={item.question}
             answer={item.answer}
             isOpen={openItems.has(item.id)}
-            onToggle={() => toggleItem(item.id)}
+            onToggle={toggleItem}
             delay={150 + index * 50}
           />
         ))}

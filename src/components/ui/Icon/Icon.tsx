@@ -118,6 +118,7 @@ export const Icon = ({
       'aria-label': ariaLabel,
       'aria-hidden': ariaLabel ? ('false' as const) : ('true' as const),
       ...(ariaLabel ? { role: 'img' } : {}),
+      'data-icon': name,
     }
 
     // If icon not found in library, return a placeholder

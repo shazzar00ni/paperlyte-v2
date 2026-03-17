@@ -201,4 +201,34 @@ describe('Icon', () => {
       expect(icon).toHaveClass('custom-class')
     })
   })
+
+  describe('data-icon attribute', () => {
+    it('should set data-icon on FontAwesome SVG fallback', () => {
+      const { container } = render(<Icon name="fa-bolt" />)
+
+      const svg = container.querySelector('svg')
+      expect(svg).toHaveAttribute('data-icon', 'fa-bolt')
+    })
+
+    it('should set data-icon on missing-icon span fallback', () => {
+      const { container } = render(<Icon name="definitely-missing-icon" />)
+
+      const fallback = container.querySelector('span.icon-fallback')
+      expect(fallback).toHaveAttribute('data-icon', 'definitely-missing-icon')
+    })
+
+    it('should preserve original icon name (with fa- prefix) in data-icon attribute', () => {
+      const { container } = render(<Icon name="fa-arrow-right" />)
+
+      const svg = container.querySelector('svg')
+      expect(svg).toHaveAttribute('data-icon', 'fa-arrow-right')
+    })
+
+    it('should set data-icon on brand icon SVG fallback', () => {
+      const { container } = render(<Icon name="fa-github" />)
+
+      const svg = container.querySelector('svg')
+      expect(svg).toHaveAttribute('data-icon', 'fa-github')
+    })
+  })
 })

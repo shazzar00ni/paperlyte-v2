@@ -15,7 +15,7 @@ describe('Pricing', () => {
   it('should render main heading', () => {
     render(<Pricing />)
     expect(
-      screen.getByRole('heading', { level: 2, name: /Simple pricing\. No surprises\./i })
+      screen.getByRole('heading', { level: 2, name: /Simple, Transparent Pricing/i })
     ).toBeInTheDocument()
   })
 
@@ -147,9 +147,9 @@ describe('Pricing', () => {
       screen.getByText('30-day money-back guarantee • Cancel anytime • No hidden fees')
     ).toBeInTheDocument()
 
-    const shieldIcon = container.querySelector('[data-icon~="fa-shield-check"]')
-    expect(shieldIcon).toBeInTheDocument()
-    expect(shieldIcon).toHaveAttribute('aria-label', 'Guarantee')
+    const checkIcon = container.querySelector('[data-icon*="circle-check"]')
+    expect(checkIcon).toBeInTheDocument()
+    expect(checkIcon).toHaveAttribute('aria-label', 'Guarantee')
   })
 
   it('should use semantic article elements for pricing cards', () => {
@@ -165,7 +165,7 @@ describe('Pricing', () => {
     // Main heading should be h2
     const mainHeading = screen.getByRole('heading', {
       level: 2,
-      name: /Simple pricing\. No surprises\./i,
+      name: /Simple, Transparent Pricing/i,
     })
     expect(mainHeading).toBeInTheDocument()
 

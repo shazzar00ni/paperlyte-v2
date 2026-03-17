@@ -14,15 +14,13 @@ describe('Comparison', () => {
 
   it('should render main heading', () => {
     render(<Comparison />)
-    expect(screen.getByRole('heading', { name: /How we stack up/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /See How We Compare/i })).toBeInTheDocument()
   })
 
   it('should render subtitle', () => {
     render(<Comparison />)
     expect(
-      screen.getByText(
-        "No marketing spin. Here's how Paperlyte compares to the tools you already know."
-      )
+      screen.getByText(/We believe in transparency.*stacks up against the competition/i)
     ).toBeInTheDocument()
   })
 

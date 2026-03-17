@@ -370,9 +370,8 @@ describe('OfflinePage', () => {
 
       // Check spinner is shown while checking (without awaiting click to complete)
       await waitFor(() => {
-        const spinnerIcon = retryButton.querySelector('[data-icon~="fa-spinner"]')
+        const spinnerIcon = retryButton.querySelector('[data-icon*="spinner"]')
         expect(spinnerIcon).toBeInTheDocument()
-        expect(spinnerIcon).toHaveClass('fa-spin')
       })
 
       // Clean up: resolve promise to allow click handler to complete

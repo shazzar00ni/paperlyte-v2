@@ -127,13 +127,19 @@ export const Icon = ({
           `Rendering empty/decorative fallback span.`
       )
       return (
-        <span {...commonIconProps} title={`Icon "${name}" not found`}>
+        <span {...commonIconProps} data-icon={name} title={`Icon "${name}" not found`}>
           ?
         </span>
       )
     }
 
-    return <FontAwesomeIcon icon={iconDefinition} {...commonIconProps} />
+    return (
+      <FontAwesomeIcon
+        icon={iconDefinition}
+        data-icon={name}
+        {...commonIconProps}
+      />
+    )
   }
 
   return (

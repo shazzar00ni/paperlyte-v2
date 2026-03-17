@@ -233,9 +233,7 @@ describe('ServerErrorPage', () => {
 
       const mainElement = screen.getByRole('main')
       // Icon component may render as SVG or <i> tag, check for either
-      const serverIcon =
-       const mainElement = screen.getByRole('main')
-       const serverIcon = mainElement.querySelector('[data-icon="fa-server"]')
+      const serverIcon = mainElement.querySelector('[data-icon="fa-server"]')
       expect(serverIcon).toBeInTheDocument()
     })
 
@@ -243,8 +241,7 @@ describe('ServerErrorPage', () => {
       const { container } = render(<ServerErrorPage />)
 
       // Icon component may render as SVG or <i> tag, check for either
-       const { container } = render(<ServerErrorPage />)
-       const warningIcon = container.querySelector('[data-icon="fa-triangle-exclamation"]')
+      const warningIcon = container.querySelector('[data-icon="fa-triangle-exclamation"]')
       expect(warningIcon).toBeInTheDocument()
     })
 
@@ -253,7 +250,6 @@ describe('ServerErrorPage', () => {
 
       const retryButton = screen.getByRole('button', { name: /retry loading the page/i })
       // Icon component may render as SVG or <i> tag, check for either
-       const retryButton = screen.getByRole('button', { name: /retry loading the page/i })
        const icon = retryButton.querySelector('[data-icon="fa-rotate-right"]')
       expect(icon).toBeInTheDocument()
     })
@@ -263,8 +259,8 @@ describe('ServerErrorPage', () => {
 
       const homeButton = screen.getByRole('button', { name: /return to homepage/i })
       // Icon component may render as SVG or <i> tag, check for either
-       const homeButton = screen.getByRole('button', { name: /return to homepage/i })
-       const icon = homeButton.querySelector('[data-icon="fa-home"]')
+      const icon = homeButton.querySelector('[data-icon="fa-home"]')
+      expect(icon).toBeInTheDocument()
     })
   })
 })

@@ -127,8 +127,8 @@ export default defineConfig({
   build: {
     // Split CSS into separate files for better caching
     cssCodeSplit: true,
-    // Use esbuild for faster minification
-    minify: 'esbuild',
+    // Use oxc for minification (Vite 8 native Rust-based minifier, no extra install needed)
+    minify: 'oxc',
     // Target modern browsers for smaller bundle sizes
     target: 'es2020',
     // Enable CSS minification

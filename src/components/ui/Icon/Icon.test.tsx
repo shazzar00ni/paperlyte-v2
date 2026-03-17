@@ -42,24 +42,20 @@ describe('Icon', () => {
     })
 
     it('should render FontAwesome SVG for known FA icons', () => {
-      // fa-bolt is registered in iconLibrary.ts — renders via FontAwesome fallback
+      // fa-bolt is in iconPaths — renders as custom svg.icon-svg with width/height
       const { container } = render(<Icon name="fa-bolt" />)
 
-      // All icons fall back to Font Awesome since iconPaths is empty
-      const svg = container.querySelector('svg')
+      const svg = container.querySelector('svg.icon-svg')
       expect(svg).toBeInTheDocument()
-      // FontAwesome renders its own SVG without width/height attributes
-      expect(svg).not.toHaveAttribute('width')
+      // Custom SVG icons include explicit width/height attributes
+      expect(svg).toHaveAttribute('width')
     })
 
-    it('should only warn once for icons found in Font Awesome library', () => {
+    it('should not warn for icons found in the custom icon set', () => {
       render(<Icon name="fa-bolt" />)
 
-      // Only first warning fires (not in custom icon set), icon IS found in FA
-      expect(consoleWarnSpy).toHaveBeenCalledTimes(1)
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
-        'Icon "fa-bolt" not found in icon set, using Font Awesome fallback'
-      )
+      // fa-bolt is in iconPaths — no fallback warning should fire
+      expect(consoleWarnSpy).not.toHaveBeenCalled()
     })
   })
 
@@ -97,16 +93,12 @@ describe('Icon', () => {
 
   describe('Brand icon prefix detection', () => {
     it('should automatically assign fab prefix for known brand icons via isBrandIcon()', () => {
-      // fa-github is a brand icon detected by isBrandIcon() — no explicit variant needed
+      // fa-github is in iconPaths — renders as custom svg.icon-svg directly
       const { container } = render(<Icon name="fa-github" />)
-      const svg = container.querySelector('svg')
-      // Brand icons render via FontAwesome with the fab prefix
+      const svg = container.querySelector('svg.icon-svg')
       expect(svg).toBeInTheDocument()
-      // Should warn only once (found in FA library)
-      expect(consoleWarnSpy).toHaveBeenCalledTimes(1)
-      expect(consoleWarnSpy).not.toHaveBeenCalledWith(
-        expect.stringContaining('not found in Font Awesome library')
-      )
+      // No fallback warning since the icon is in the custom icon set
+      expect(consoleWarnSpy).not.toHaveBeenCalled()
     })
 
     it('should assign fab prefix when variant="brands" is explicitly set', () => {

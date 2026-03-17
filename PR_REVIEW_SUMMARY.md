@@ -2,6 +2,59 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-03-10
+
+### Analysis: Systemic Regressions in Open Branches (March 10, 2026 Review)
+
+- **Status:** Critical — Action Required
+- **Summary:** Repository-wide analysis of 155 unmerged branches identified that over 85% of them are blocked by severe **systemic regressions**, many of which are cascading from a common corrupted base.
+
+#### Critical Regressions Identified
+
+| Regression Category | Impact | Specific Issue |
+|---------------------|--------|----------------|
+| **Missing Files** | 🔴 Critical | Deletion of `.npmrc` (breaks peer deps), `docs/ROADMAP.md`, `gitVersionControl.md`, and `review.md`. |
+| **Security Reversions** | 🔴 Critical | Removal of `hasDangerousProtocol` and `isRelativeUrl` helpers in `src/utils/navigation.ts`. |
+| **Tooling Violations** | 🟠 High | Upgrading `eslint` to v10+ (violating project standard v9, causing plugin breakage). |
+| **Code Documentation** | 🟡 Medium | Mass deletion of JSDoc and architectural comments (e.g., in `Header.tsx`). |
+| **CI Dependencies** | 🟡 Medium | Downgrading GitHub Actions (e.g., `download-artifact@v3` or `v7` instead of `v8`). |
+
+#### Branch Health Categorization
+
+- **Ready for Merge (High Quality):**
+  - `origin/copilot/improve-variable-function-naming` (Critical: Resolves 4 baseline Icon test failures on `main`)
+  - `origin/claude/add-doc-sections-1EhnP`
+  - `origin/claude/analyze-pr-deleted-files-QBlYv`
+  - `origin/claude/analyze-test-coverage-9JQZb`
+  - `origin/claude/fix-lighthouse-failure-b5S6v`
+  - `origin/claude/implement-todo-item-cDEVt`
+  - `origin/copilot/improve-slow-code-performance`
+  - `origin/claude/fix-workflow-e2e-tests-xHhZw` (Note: Inherits some JSDoc deletions but fixes E2E flakiness)
+  - `origin/claude/fix-coverage-requirements-QtFtS` (Verified compliant with v9 standard)
+  - `origin/dependabot/github_actions/mikepenz/release-changelog-builder-action-6.1.1`
+
+- **Blocked by Systemic Regressions (Needs Restoration):**
+  - `origin/claude/fix-codacy-fingerprints-P9FYE` (JSDoc deletions)
+  - `origin/claude/fix-code-style-cWDI4` (ESLint 10 violation)
+  - `origin/claude/tree-shake-font-awesome-cK85j` (Missing .npmrc, ESLint 10)
+  - `origin/claude/implement-todo-item-2H9LP` (Missing files, ESLint 10, Nav regression)
+  - `origin/claude/core-editor-phase-1-PI3Yp` (Missing files, ESLint 10, Nav regression)
+  - _[~130 additional branches suffering from similar regressions]_
+
+- **Redundant / Obsolete:**
+  - `origin/daily-pr-review-summary-*` branches (Should be merged into a single daily summary).
+  - PR #107 (Monolithic, obsolete).
+  - PR #389 (Global formatting, high risk of conflicts).
+
+### Action Plan for Affected Branches
+All branches marked as "Blocked" must:
+1. Re-merge `main` to restore `.npmrc`, `ROADMAP.md`, and navigation helpers.
+2. Revert `eslint` and `@eslint/js` to version `9.39.2` in `package.json`.
+3. Restore deleted JSDoc and architectural comments in core components.
+4. Verify that `npm run ci` passes without security audit failures.
+
+---
+
 ## 2026-03-05
 
 ### Analysis: Accidental File Deletions in Open Branches (Jules Daily PR Reviews)

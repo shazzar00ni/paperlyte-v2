@@ -1,10 +1,10 @@
 # SonarCloud analysis workflow.
 # Prerequisites – configure these in your repository before enabling:
 #   1. Create a project on https://sonarcloud.io and note the Project Key and Organization.
-#   2. Add a SONAR_TOKEN secret (Settings > Secrets > Actions).
+#   2. Add a SONAR_TOKEN secret (Settings > Secrets and variables > Actions > Secrets).
 #   3. Add SONAR_PROJECT_KEY and SONAR_ORGANIZATION repository variables
-#      (Settings > Secrets > Actions > Variables) with the values from step 1.
-# The job is automatically skipped when SONAR_TOKEN is not configured.
+#      (Settings > Secrets and variables > Actions > Variables) with the values from step 1.
+# The job is automatically skipped when any required secret/variable is not configured.
 
 name: SonarCloud analysis
 
@@ -22,9 +22,9 @@ permissions:
 jobs:
   Analysis:
     runs-on: ubuntu-latest
-    # Skip the job entirely when the required secret is not configured so the
+    # Skip the job entirely when any required secret/variable is not configured so the
     # workflow does not fail on forks or repositories that have not set up SonarCloud.
-    if: secrets.SONAR_TOKEN != ''
+    if: secrets.SONAR_TOKEN != '' && vars.SONAR_PROJECT_KEY != '' && vars.SONAR_ORGANIZATION != ''
 
     steps:
       - name: Checkout code
@@ -34,7 +34,7 @@ jobs:
           fetch-depth: 0
 
       - name: Analyze with SonarCloud
-        uses: SonarSource/sonarcloud-github-action@4006f663ecaf1f8093e8e4abb9227f6041f52216
+        uses: SonarSource/sonarcloud-github-action@4006f663ecaf1f8093e8e4abb9227f6041f52216 # v2.2.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:

@@ -100,6 +100,8 @@ export const Button = ({
           disabled={true}
           aria-label={ariaLabel}
           aria-disabled="true"
+          data-variant={variant}
+          data-size={size}
         >
           {content}
         </button>
@@ -113,6 +115,8 @@ export const Button = ({
         aria-label={ariaLabel}
         aria-disabled={disabled ? 'true' : 'false'}
         onClick={disabled ? (e) => e.preventDefault() : onClick}
+        data-variant={variant}
+        data-size={size}
         {...(href.startsWith('http') && {
           target: '_blank',
           rel: 'noopener noreferrer',
@@ -130,6 +134,8 @@ export const Button = ({
       onClick={onClick}
       disabled={disabled}
       aria-label={ariaLabel}
+      data-variant={variant}
+      data-size={size}
     >
       {content}
     </button>

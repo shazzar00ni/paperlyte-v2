@@ -25,17 +25,17 @@
   --color-error-bg: rgba(239, 68, 68, 0.1);
   --color-error-border: rgba(239, 68, 68, 0.3);
 
-  /* Typography */
+  /* Typography - Fluid sizing using clamp() for responsive design */
   --font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-size-xs: 0.75rem; /* 12px */
   --font-size-sm: 0.875rem; /* 14px */
-  --font-size-base: 1rem; /* 16px */
-  --font-size-lg: 1.125rem; /* 18px */
-  --font-size-xl: 1.25rem; /* 20px */
-  --font-size-2xl: 1.5rem; /* 24px */
-  --font-size-3xl: 1.875rem; /* 30px */
-  --font-size-4xl: 2.25rem; /* 36px */
-  --font-size-5xl: 3rem; /* 48px */
+  --font-size-base: 1rem; /* 16px - minimum to prevent iOS zoom */
+  --font-size-lg: clamp(1rem, 0.9286rem + 0.3571vw, 1.125rem); /* 16px to 18px */
+  --font-size-xl: clamp(1.125rem, 1.0179rem + 0.5357vw, 1.25rem); /* 18px to 20px */
+  --font-size-2xl: clamp(1.25rem, 1.0714rem + 0.8929vw, 1.5rem); /* 20px to 24px */
+  --font-size-3xl: clamp(1.5rem, 1.1786rem + 1.6071vw, 1.875rem); /* 24px to 30px */
+  --font-size-4xl: clamp(1.75rem, 1.2143rem + 2.6786vw, 2.25rem); /* 28px to 36px */
+  --font-size-5xl: clamp(2rem, 1.2857rem + 3.5714vw, 3rem); /* 32px to 48px */
   --font-weight-normal: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
@@ -165,11 +165,9 @@
   }
 }
 
-/* Responsive typography adjustments - Tablet and smaller */
+/* Responsive spacing adjustments - Tablet and smaller */
 @media (max-width: 768px) {
   :root {
-    --font-size-4xl: 1.875rem; /* 30px on tablet */
-    --font-size-5xl: 2.25rem; /* 36px on tablet */
     --spacing-3xl: 4rem; /* Reduce on tablet/mobile */
   }
 }
@@ -177,9 +175,6 @@
 /* Extra small screens (phones < 480px) */
 @media (max-width: 480px) {
   :root {
-    --font-size-3xl: 1.5rem; /* 24px on small phones */
-    --font-size-4xl: 1.75rem; /* 28px on small phones */
-    --font-size-5xl: 2rem; /* 32px on small phones */
     --spacing-md: 1rem; /* 16px padding on small screens */
     --spacing-2xl: 3rem; /* 48px on small screens */
     --spacing-3xl: 3rem; /* 48px on small screens */

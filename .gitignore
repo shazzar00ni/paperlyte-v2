@@ -27,6 +27,15 @@ playwright/.cache/
 .env.production.local
 .env*.local
 
+# Generated files (created during build)
+public/sitemap.xml
+public/favicon-*.png
+public/apple-touch-icon.png
+public/android-chrome-*.png
+public/android-chrome-*.webp
+public/android-chrome-*.avif
+public/favicon.ico
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -37,10 +46,6 @@ playwright/.cache/
 *.njsproj
 *.sln
 *.sw?
-
-# Environment variables
-.env
-.env
 
 # Deployment platforms
 .netlify

@@ -11,6 +11,7 @@
 
 import * as fs from "fs";
 import * as path from "path";
+import { isPathSafe } from "./utils/filenameValidation.js";
 
 // Colors for terminal output
 const colors = {
@@ -83,7 +84,8 @@ function findPlaceholders(filePath: string): PlaceholderMatch[] {
     });
   } catch (error) {
     console.error(
-      `${colors.red}Error reading file ${filePath}:${colors.reset}`,
+      `${colors.red}Error reading file:${colors.reset}`,
+      filePath,
       error
     );
   }
@@ -98,6 +100,12 @@ function findPlaceholders(filePath: string): PlaceholderMatch[] {
  */
 function checkFiles(): FileCheck[] {
   return filesToCheck.map((file) => {
+    // Validate path safety before processing
+    if (!isPathSafe(file)) {
+      console.error(`${colors.red}Error: Invalid file path detected:${colors.reset}`, file);
+      process.exit(1);
+    }
+
     const fullPath = path.join(process.cwd(), file);
     const exists = fs.existsSync(fullPath);
 

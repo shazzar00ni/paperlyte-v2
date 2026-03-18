@@ -40,9 +40,15 @@ permissions:
 
 jobs:
   Analysis:
+    if: secrets.SONAR_TOKEN != ''
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Analyze with SonarCloud
 
         # You can pin the exact commit or the version.

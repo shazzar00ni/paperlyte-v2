@@ -92,7 +92,7 @@ export default defineConfig({
   // Codecov Rollup plugin for bundle analysis (Vite 8 compatible)
   // Note: Using @codecov/rollup-plugin instead of @codecov/vite-plugin
   // because the Vite plugin only supports Vite 4.x-6.x
-  // Rollup plugin works with Vite 8 since Vite uses Rolldown internally
+  // Rollup plugins work with Vite because Vite exposes a Rollup-compatible plugin API
   plugins: [
     react(),
     cspPlugin(),

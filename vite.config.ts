@@ -89,10 +89,10 @@ function cspPlugin(): Plugin {
 export default defineConfig({
   // React plugin with Fast Refresh for instant Hot Module Replacement
   // CSP plugin for environment-aware security headers
-  // Codecov Rollup plugin for bundle analysis (Vite 7 compatible)
+  // Codecov Rollup plugin for bundle analysis (Vite 8 compatible)
   // Note: Using @codecov/rollup-plugin instead of @codecov/vite-plugin
-  // because the Vite plugin only supports Vite 4.x-6.x (project uses Vite 7.3.0)
-  // Rollup plugin works with Vite 7 since Vite uses Rollup ^4.43.0 internally
+  // because the Vite plugin only supports Vite 4.x-6.x
+  // Rollup plugins work with Vite because Vite exposes a Rollup-compatible plugin API
   plugins: [
     react(),
     cspPlugin(),
@@ -127,8 +127,8 @@ export default defineConfig({
   build: {
     // Split CSS into separate files for better caching
     cssCodeSplit: true,
-    // Use esbuild for faster minification
-    minify: 'esbuild',
+    // Use oxc for faster minification (Vite 8 default; esbuild no longer bundled with Vite)
+    minify: 'oxc',
     // Target modern browsers for smaller bundle sizes
     target: 'es2020',
     // Enable CSS minification

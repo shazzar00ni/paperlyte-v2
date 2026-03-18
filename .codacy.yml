@@ -57,6 +57,13 @@ exclude_paths:
   - 'src/test/**'
   - 'scripts/**'
   - '**/*.min.js'
+  # Exclude sonarcloud.yml from secrets scanning: the pinned action SHA
+  # (4006f663ecaf1f8093e8e4abb9227f6041f52216) is a 40-char hex commit SHA, not
+  # a SonarQube API key. Codacy's pattern for SonarQube keys (also 40-char hex)
+  # fires a false positive on this line. Inline # pragma: allowlist secret is
+  # not respected by Codacy's own secrets engine; exclude_paths is the reliable
+  # suppression method for this project.
+  - '.github/workflows/sonarcloud.yml'
 
 # Note: Codacy ESLint8 engine reports some false positive issues for non-literal RegExp
 # patterns (ESLint8_security_detect-non-literal-regexp, ESLint8_security-node_non-literal-reg-expr).

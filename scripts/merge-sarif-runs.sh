@@ -145,7 +145,7 @@ if ! jq '
       ((((.locations // [])[0] // {}).physicalLocation // {}).region.startLine // 0 | tostring) +
       ((((.locations // [])[0] // {}).physicalLocation // {}).region.startColumn // 0 | tostring) +
       ((((.locations // [])[0] // {}).physicalLocation // {}).region.endLine // 0 | tostring)
-    ),
+    ) | map(del(.partialFingerprints)),
 
     # -------------------------------------------------------------------------
     # ADDITIONAL SARIF PROPERTIES

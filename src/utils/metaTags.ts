@@ -13,6 +13,13 @@ export function initializeMetaTags(): void {
 
   // In development, prevent search engine indexing and update social sharing URLs
   if (!isProd) {
+    console.log('[Meta Tags] Initialized for development environment')
+    console.log('  - Robots: noindex, nofollow')
+    console.log('  - Keywords: removed')
+    console.log('  - Canonical URL: unchanged (points to production)')
+    console.log(`  - Open Graph URLs: updated to ${currentUrl}`)
+    console.log(`  - Twitter Card URLs: updated to ${currentUrl}`)
+
     // Prevent indexing in development
     const robotsMeta = document.querySelector('meta[name="robots"]')
     if (robotsMeta) {

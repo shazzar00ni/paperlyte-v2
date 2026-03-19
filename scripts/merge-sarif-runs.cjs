@@ -7,7 +7,7 @@
  *
  * Usage: node scripts/merge-sarif-runs.cjs <sarif-file>
  */
-const fs = require('fs')
+const fs = require('node:fs')
 
 const sarifPath = process.argv[2] || 'eslint-results.sarif'
 

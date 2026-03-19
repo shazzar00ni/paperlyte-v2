@@ -401,7 +401,7 @@ describe('analytics/webVitals', () => {
       expect(inpObserver10).toBeDefined()
 
       // Feed 10 entries with durations [10, 20, ..., 100]
-      inpObserver10!.callback(
+      inpObserver10?.callback(
         { getEntries: () => [10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map(makeEntry) } as PerformanceObserverEntryList,
         inpObserver10 as PerformanceObserver
       )
@@ -431,7 +431,7 @@ describe('analytics/webVitals', () => {
       expect(inpObserver11).toBeDefined()
 
       // Feed 11 entries with durations [10, 20, ..., 110]
-      inpObserver11!.callback(
+      inpObserver11?.callback(
         {
           getEntries: () => [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110].map(makeEntry),
         } as PerformanceObserverEntryList,
@@ -493,7 +493,7 @@ describe('analytics/webVitals', () => {
         { startTime: 0, processingStart: 50, processingEnd: 0 }, // falsy processingEnd (zero)
       ]
 
-      inpObserver!.callback(
+      inpObserver?.callback(
         { getEntries: () => invalidEntries } as PerformanceObserverEntryList,
         inpObserver as PerformanceObserver
       )

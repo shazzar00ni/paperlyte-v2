@@ -1,5 +1,50 @@
 # PR Review Summary
 
+
+## 2026-03-19
+
+### Status Overview: Main Branch Regressions & Systemic Blockers
+
+- **Critical Alert:** The `main` branch has regressed. The `<Pricing />` component is missing from `src/App.tsx`, and `<Analytics />` is rendered unconditionally. Most recent PRs (even high-quality ones) have inherited this regression because they branched off from or merged with the current `main`.
+- **Systemic Blockers:** Branches `origin/claude/implement-todo-item-2H9LP`, `origin/claude/core-editor-phase-1-PI3Yp`, and `origin/copilot/sub-pr-503` remain blocked by the deletion of critical files (`.npmrc`, `ROADMAP.md`, etc.) and the reversion of security helpers.
+
+### Ready for Merge (Pending Main Branch Fix-Forward)
+
+The following branches are high-quality and address specific goals, but they contain the `App.tsx` regressions (Pricing/Analytics) inherited from `main`. They should be merged after `main` is restored.
+
+| Branch | Summary | Feedback |
+| :--- | :--- | :--- |
+| `origin/copilot/sub-pr-593` | Implement FAQ Section | Excellent accessibility (keyboard nav, ARIA) and test coverage. Uses a robust `escapeRegExp` helper for test selectors. |
+| `origin/claude/fix-failing-tests-J1VZ6` | Fix Icon & UI Tests | Resolves icon rendering mismatches by migrating to `data-icon` selectors. Adds essential accessibility attributes to `Button`. |
+| `origin/claude/fix-icon-rendering-tests-ukecN` | Fix Icon Tests (Alternative) | Similar to `J1VZ6`, focuses on restoring icon test stability. `J1VZ6` is slightly preferred for its broader UI test fixes. |
+| `origin/claude/add-doc-sections-1EhnP` | Documentation Enhancement | Adds critical sections to `ROADMAP.md` and `README.md`. High value for maintainability. |
+| `origin/copilot/sub-pr-585` | Yauzl Security Override | Implements the preferred `yauzl` security override with a detailed rationale in `SECURITY.md`. Superior to `claude/update-yauzl-security-tgoiF`. |
+| `origin/claude/setup-sonarcloud-HM572` | SonarCloud Integration | Standardizes code quality monitoring. Verified to include the necessary `if: secrets.SONAR_TOKEN != ''` guard. |
+| `origin/claude/fix-open-redirect-TX551` | Security Hardening | Robust `isSafeUrl` implementation with `allowExternal` flag and logging for blocked redirects. |
+| `origin/claude/accessibility-audit-baseline-USu5N` | Accessibility Baseline | Improves color contrast and simplifies skip-link logic. Critical for WCAG compliance. |
+| `origin/copilot/improve-variable-function-naming` | Naming & Refactoring | Resolves Icon test failures and simplifies skip-link focus. Good general cleanup. |
+| `origin/claude/fix-coverage-requirements-QtFtS` | Test Coverage Fix | Adjusts Vitest coverage thresholds to match current codebase reality, ensuring CI passes. |
+| `origin/claude/analyze-test-coverage-9JQZb` | Coverage Analysis | Provides deeper insights into test gaps. Useful for long-term quality tracking. |
+| `origin/claude/fix-code-style-cWDI4` | Code Style Linting | Standardizes linting rules and fixes minor formatting inconsistencies. |
+| `origin/claude/fix-codacy-sarif-limits-Rmdck` | SARIF Limit Fix | Merges SARIF runs to stay under GitHub limits. Critical for Snyk/Codacy reporting. |
+| `origin/claude/apply-code-fixes-BUsgx` | Bug Fixes & Merge | Resolves several edge cases in `useTheme`, `Icon`, and mobile E2E tests. Solid technical cleanup. |
+
+### Blocked by Systemic Regressions
+
+These branches contain the "Critical File Deletion" regression (missing `.npmrc`, etc.) and/or have reverted security fixes in `src/utils/navigation.ts`.
+
+| Branch | Status | Needed Action |
+| :--- | :--- | :--- |
+| `origin/claude/implement-todo-item-2H9LP` | Blocked | Restore `.npmrc`, `ROADMAP.md`, `gitVersionControl.md`, `review.md`. Restore `hasDangerousProtocol` / `isRelativeUrl`. |
+| `origin/claude/core-editor-phase-1-PI3Yp` | Blocked | Restore missing critical files and security helpers. |
+| `origin/copilot/sub-pr-503` | Blocked | Restore missing critical files and security helpers. |
+
+### Recommendations
+
+1. **Fix Main Branch:** A dedicated PR should be created immediately to restore the `<Pricing />` component to `src/App.tsx` and wrap the `<Analytics />` component in a production-only environment check (`process.env.NODE_ENV === 'production' && <Analytics />`).
+2. **Rebase/Merge Strategy:** Once `main` is fixed, high-quality branches (like `sub-pr-593` and `fix-failing-tests-J1VZ6`) should be merged first to establish a stable, feature-rich baseline.
+3. **Audit "Blocked" Branches:** Automated or manual restoration of the 4 missing files and security helpers is required before any of the "Blocked" branches can be considered for merge.
+
 This file contains a summary of pull requests I have reviewed.
 
 ## 2026-03-05

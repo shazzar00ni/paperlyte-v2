@@ -110,7 +110,7 @@ export class PlausibleProvider implements AnalyticsProvider {
       return
     }
 
-    const scriptUrl = this.config?.scriptUrl || 'https://plausible.io/js/script.js'
+    const scriptUrl = this.config?.scriptUrl ?? 'https://plausible.io/js/script.js'
 
     // Validate script URL to prevent injection attacks
     if (!this.isValidScriptUrl(scriptUrl)) {
@@ -127,7 +127,7 @@ export class PlausibleProvider implements AnalyticsProvider {
 
     script.async = true
     script.src = scriptUrl
-    script.setAttribute('data-domain', this.config?.domain || '')
+    script.setAttribute('data-domain', this.config?.domain ?? '')
 
     // Add optional tracking features
     if (this.config?.trackPageviews === false) {
@@ -163,7 +163,7 @@ export class PlausibleProvider implements AnalyticsProvider {
       return
     }
 
-    const pageUrl = url || window.location.pathname
+    const pageUrl = url ?? window.location.pathname
 
     window.plausible('pageview', {
       props: { path: pageUrl },
@@ -181,8 +181,9 @@ export class PlausibleProvider implements AnalyticsProvider {
     }
 
     // Convert properties to Plausible format (only string, number, boolean)
+    // Use Object.create(null) to prevent prototype pollution attacks
     const props = event.properties
-      ? Object.entries(event.properties).reduce(
+      ? Object.entries(event.properties).reduce<Record<string, string | number | boolean>>(
           (acc, [key, value]) => {
             // Validate key is safe before using it for property assignment
             if (!isSafePropertyKey(key)) {
@@ -192,12 +193,31 @@ export class PlausibleProvider implements AnalyticsProvider {
               return acc
             }
 
+            // Additional validation: ensure key is a string and not empty
+            if (typeof key !== 'string' || key.length === 0) {
+              return acc
+            }
+
+            // Validate value type before assignment
             if (value !== undefined && value !== null) {
-              acc[key] = value
+              const valueType = typeof value
+              if (
+                valueType === 'string' ||
+                valueType === 'number' ||
+                valueType === 'boolean'
+              ) {
+                // Use Object.defineProperty for safer property assignment
+                Object.defineProperty(acc, key, {
+                  value: value,
+                  writable: false,
+                  enumerable: true,
+                  configurable: false,
+                })
+              }
             }
             return acc
           },
-          {} as Record<string, string | number | boolean>
+          Object.create(null)
         )
       : undefined
 
@@ -281,8 +301,8 @@ export class PlausibleProvider implements AnalyticsProvider {
     }
 
     const dnt =
-      navigator.doNotTrack ||
-      (window as Window & { doNotTrack?: string }).doNotTrack ||
+      navigator.doNotTrack ??
+      (window as Window & { doNotTrack?: string }).doNotTrack ??
       (navigator as Navigator & { msDoNotTrack?: string }).msDoNotTrack
 
     return dnt === '1' || dnt === 'yes'

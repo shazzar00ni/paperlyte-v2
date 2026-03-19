@@ -208,11 +208,10 @@ export function handleArrowNavigation(
     if (typeof document !== 'undefined') {
       // Prefer explicit dir attribute if present
       const docElement = document.documentElement
-      const attrDir = (
-        document.dir ||
-        (docElement && docElement.getAttribute('dir')) ||
-        ''
-      ).toLowerCase()
+      // Note: Using || for document.dir is intentional here.
+      // document.dir returns "" (empty string) when unset, so || is needed to fall through.
+      // getAttribute returns null when absent, so ?? is the correct fallback there.
+      const attrDir = (document.dir || (docElement.getAttribute('dir') ?? '')).toLowerCase()
 
       if (attrDir) {
         isRtl = attrDir === 'rtl'

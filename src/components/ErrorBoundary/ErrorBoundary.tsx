@@ -61,7 +61,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     logError(
       error,
       {
-        componentStack: errorInfo.componentStack || undefined,
+        componentStack: errorInfo.componentStack ?? undefined,
         errorInfo: errorInfo as Record<string, unknown>,
         severity: 'high',
         tags: {
@@ -135,7 +135,9 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                 </button>
               )}
               <button
-                onClick={() => window.location.reload()}
+                onClick={() => {
+                  window.location.reload()
+                }}
                 className={styles.reloadButton}
                 type="button"
               >

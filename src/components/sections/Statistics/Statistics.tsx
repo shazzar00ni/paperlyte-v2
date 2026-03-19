@@ -100,7 +100,7 @@ export const Statistics = (): React.ReactElement => {
                     end={stat.value}
                     prefix={stat.prefix}
                     suffix={stat.suffix}
-                    decimals={stat.decimals || 0}
+                    decimals={stat.decimals ?? 0}
                     duration={2000}
                     easing="easeOutQuart"
                   />

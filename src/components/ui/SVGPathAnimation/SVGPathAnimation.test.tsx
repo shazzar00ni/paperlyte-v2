@@ -70,12 +70,12 @@ describe('SVGPathAnimation', () => {
     )
 
     const path = container.querySelector('path[data-testid="test-path"]') as SVGPathElement
-    expect(path).toBeDefined()
+    expect(path).not.toBeNull()
 
     // Path should have dash array and offset styles (once pathLengths are calculated)
     // Initially, before useEffect runs, these might not be set
     // We're testing the structure is correct
-    expect(path?.tagName).toBe('path')
+    expect(path.tagName).toBe('path')
   })
 
   it('should apply staggered delays to multiple paths', () => {

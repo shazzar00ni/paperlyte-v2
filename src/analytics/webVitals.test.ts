@@ -33,10 +33,26 @@ function createMockPerformanceObserver() {
 
   return {
     observerInstances,
+    findByType(type: string) {
+      return observerInstances.find((obs) => {
+        const call = obs.observe.mock.calls[0]
+        return call && call[0].type === type
+      })
+    },
     teardown: () => {
       global.PerformanceObserver = original
     },
   }
+}
+
+/** Simulates document becoming hidden and dispatches the visibilitychange event. */
+function triggerVisibilityHidden() {
+  Object.defineProperty(document, 'visibilityState', {
+    writable: true,
+    configurable: true,
+    value: 'hidden',
+  })
+  document.dispatchEvent(new Event('visibilitychange'))
 }
 
 describe('analytics/webVitals', () => {
@@ -179,20 +195,9 @@ describe('analytics/webVitals', () => {
 
       const cleanup = initWebVitals(onReport)
 
-      // Trigger visibility change
-      Object.defineProperty(document, 'visibilityState', {
-        writable: true,
-        configurable: true,
-        value: 'hidden',
-      })
-
-      const event = new Event('visibilitychange')
-      document.dispatchEvent(event)
-
-      // Flush any pending timers
+      triggerVisibilityHidden()
       vi.runAllTimers()
 
-      // Should report vitals
       expect(onReport).toHaveBeenCalled()
 
       cleanup()
@@ -228,13 +233,7 @@ describe('analytics/webVitals', () => {
 
       const cleanup = initWebVitals(onReport)
 
-      // Trigger reporting without collecting any metrics
-      Object.defineProperty(document, 'visibilityState', {
-        writable: true,
-        configurable: true,
-        value: 'hidden',
-      })
-      document.dispatchEvent(new Event('visibilitychange'))
+      triggerVisibilityHidden()
 
       vi.runAllTimers()
 
@@ -307,13 +306,7 @@ describe('analytics/webVitals', () => {
         lcpObserver as PerformanceObserver
       )
 
-      // Trigger reporting
-      Object.defineProperty(document, 'visibilityState', {
-        writable: true,
-        configurable: true,
-        value: 'hidden',
-      })
-      document.dispatchEvent(new Event('visibilitychange'))
+      triggerVisibilityHidden()
 
       expect(onReport).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -325,17 +318,11 @@ describe('analytics/webVitals', () => {
     })
 
     it('should rate CLS as good/needs-improvement/poor based on thresholds', () => {
-      const { observerInstances } = createMockPerformanceObserver()
+      const mock = createMockPerformanceObserver()
 
       const cleanup = initWebVitals(onReport)
 
-      // Find CLS observer (third one, observes 'layout-shift')
-      // Order: LCP, FID, CLS, FCP, INP (but FCP disconnects immediately)
-      const clsObserver = observerInstances.find((obs) => {
-        const observeCall = obs.observe.mock.calls[0]
-        return observeCall && observeCall[0].type === 'layout-shift'
-      })
-
+      const clsObserver = mock.findByType('layout-shift')
       if (!clsObserver) {
         throw new Error('CLS observer not found')
       }
@@ -356,13 +343,7 @@ describe('analytics/webVitals', () => {
         clsObserver as PerformanceObserver
       )
 
-      // Finalize to trigger report
-      Object.defineProperty(document, 'visibilityState', {
-        writable: true,
-        configurable: true,
-        value: 'hidden',
-      })
-      document.dispatchEvent(new Event('visibilitychange'))
+      triggerVisibilityHidden()
 
       // Should report accumulated CLS value (0.05 + 0.10 ≈ 0.15, needs-improvement)
       const reportedVitals = onReport.mock.calls[0][0]
@@ -376,15 +357,9 @@ describe('analytics/webVitals', () => {
     it('should track INP from event observer callbacks and finalize with max for few interactions', () => {
       vi.useFakeTimers()
 
-      const { observerInstances } = createMockPerformanceObserver()
-
+      const mock = createMockPerformanceObserver()
       const cleanup = initWebVitals(onReport)
-
-      // Find the INP observer (observes 'event' type)
-      const inpObserver = observerInstances.find((obs) => {
-        const observeCall = obs.observe.mock.calls[0]
-        return observeCall && observeCall[0].type === 'event'
-      })
+      const inpObserver = mock.findByType('event')
 
       expect(inpObserver).toBeDefined()
 
@@ -419,14 +394,9 @@ describe('analytics/webVitals', () => {
     it('should use 98th percentile for many interactions (>10)', () => {
       vi.useFakeTimers()
 
-      const { observerInstances } = createMockPerformanceObserver()
-
+      const mock = createMockPerformanceObserver()
       const cleanup = initWebVitals(onReport)
-
-      const inpObserver = observerInstances.find((obs) => {
-        const observeCall = obs.observe.mock.calls[0]
-        return observeCall && observeCall[0].type === 'event'
-      })
+      const inpObserver = mock.findByType('event')
 
       expect(inpObserver).toBeDefined()
 

@@ -2,12 +2,37 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { FeedbackWidget } from './FeedbackWidget'
+import type { ComponentProps } from 'react'
+
+/** Renders the widget, opens the modal with fireEvent, and waits for the dialog. */
+async function openModal(props?: ComponentProps<typeof FeedbackWidget>) {
+  render(<FeedbackWidget {...props} />)
+  fireEvent.click(screen.getByRole('button', { name: /open feedback form/i }))
+  await waitFor(() => {
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+  })
+}
+
+/** Renders the widget, opens the modal with userEvent, and returns the user instance. */
+async function openModalWithUser(props?: ComponentProps<typeof FeedbackWidget>) {
+  const user = userEvent.setup()
+  render(<FeedbackWidget {...props} />)
+  await user.click(screen.getByRole('button', { name: /open feedback form/i }))
+  await waitFor(() => {
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+  })
+  return user
+}
+
+/** Types a message and clicks the submit button. */
+async function typeAndSubmit(user: ReturnType<typeof userEvent.setup>, message: string) {
+  await user.type(screen.getByRole('textbox'), message)
+  await user.click(screen.getByRole('button', { name: /send feedback/i }))
+}
 
 describe('FeedbackWidget', () => {
   beforeEach(() => {
-    // Clear localStorage before each test
     localStorage.clear()
-    // Mock console methods
     vi.spyOn(console, 'log').mockImplementation(() => {})
     vi.spyOn(console, 'error').mockImplementation(() => {})
   })
@@ -19,77 +44,35 @@ describe('FeedbackWidget', () => {
   describe('Floating Button', () => {
     it('renders floating feedback button', () => {
       render(<FeedbackWidget />)
-      const button = screen.getByRole('button', { name: /open feedback form/i })
-      expect(button).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /open feedback form/i })).toBeInTheDocument()
     })
 
     it('opens modal when floating button is clicked', async () => {
-      render(<FeedbackWidget />)
-      const button = screen.getByRole('button', { name: /open feedback form/i })
-      fireEvent.click(button)
-
-      await waitFor(() => {
-        expect(screen.getByRole('dialog')).toBeInTheDocument()
-        expect(screen.getByRole('heading', { name: 'Send Feedback' })).toBeInTheDocument()
-      })
+      await openModal()
+      expect(screen.getByRole('heading', { name: 'Send Feedback' })).toBeInTheDocument()
     })
   })
 
   describe('Modal Functionality', () => {
     it('closes modal when close button is clicked', async () => {
-      render(<FeedbackWidget />)
-
-      // Open modal
-      const openButton = screen.getByRole('button', { name: /open feedback form/i })
-      fireEvent.click(openButton)
-
-      await waitFor(() => {
-        expect(screen.getByRole('dialog')).toBeInTheDocument()
-      })
-
-      // Close modal
-      const closeButton = screen.getByRole('button', { name: /close feedback form/i })
-      fireEvent.click(closeButton)
-
+      await openModal()
+      fireEvent.click(screen.getByRole('button', { name: /close feedback form/i }))
       await waitFor(() => {
         expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
       })
     })
 
     it('closes modal when Escape key is pressed', async () => {
-      render(<FeedbackWidget />)
-
-      // Open modal
-      const openButton = screen.getByRole('button', { name: /open feedback form/i })
-      fireEvent.click(openButton)
-
-      await waitFor(() => {
-        expect(screen.getByRole('dialog')).toBeInTheDocument()
-      })
-
-      // Press Escape
+      await openModal()
       fireEvent.keyDown(document, { key: 'Escape' })
-
       await waitFor(() => {
         expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
       })
     })
 
     it('closes modal when backdrop is clicked', async () => {
-      render(<FeedbackWidget />)
-
-      // Open modal
-      const openButton = screen.getByRole('button', { name: /open feedback form/i })
-      fireEvent.click(openButton)
-
-      await waitFor(() => {
-        expect(screen.getByRole('dialog')).toBeInTheDocument()
-      })
-
-      // Click backdrop
-      const backdrop = screen.getByRole('dialog')
-      fireEvent.click(backdrop)
-
+      await openModal()
+      fireEvent.click(screen.getByRole('dialog'))
       await waitFor(() => {
         expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
       })
@@ -99,18 +82,12 @@ describe('FeedbackWidget', () => {
       render(<FeedbackWidget />)
       expect(document.body.style.overflow).toBe('')
 
-      // Open modal
-      const openButton = screen.getByRole('button', { name: /open feedback form/i })
-      fireEvent.click(openButton)
-
+      fireEvent.click(screen.getByRole('button', { name: /open feedback form/i }))
       await waitFor(() => {
         expect(document.body.style.overflow).toBe('hidden')
       })
 
-      // Close modal
-      const closeButton = screen.getByRole('button', { name: /close feedback form/i })
-      fireEvent.click(closeButton)
-
+      fireEvent.click(screen.getByRole('button', { name: /close feedback form/i }))
       await waitFor(() => {
         expect(document.body.style.overflow).toBe('')
       })
@@ -119,41 +96,24 @@ describe('FeedbackWidget', () => {
 
   describe('Feedback Type Selection', () => {
     it('defaults to bug report type', async () => {
-      render(<FeedbackWidget />)
-
-      // Open modal
-      const openButton = screen.getByRole('button', { name: /open feedback form/i })
-      fireEvent.click(openButton)
-
-      await waitFor(() => {
-        const bugButton = screen.getByRole('button', { name: /report a bug/i })
-        expect(bugButton).toHaveAttribute('aria-pressed', 'true')
-      })
+      await openModal()
+      expect(screen.getByRole('button', { name: /report a bug/i })).toHaveAttribute(
+        'aria-pressed',
+        'true'
+      )
     })
 
     it('switches back to bug report type after selecting feature', async () => {
-      render(<FeedbackWidget />)
+      await openModal()
 
-      // Open modal
-      const openButton = screen.getByRole('button', { name: /open feedback form/i })
-      fireEvent.click(openButton)
-
-      await waitFor(() => {
-        expect(screen.getByRole('button', { name: /request a feature/i })).toBeInTheDocument()
-      })
-
-      // Switch to feature
       const featureButton = screen.getByRole('button', { name: /request a feature/i })
       fireEvent.click(featureButton)
-
       await waitFor(() => {
         expect(featureButton).toHaveAttribute('aria-pressed', 'true')
       })
 
-      // Switch back to bug
       const bugButton = screen.getByRole('button', { name: /report a bug/i })
       fireEvent.click(bugButton)
-
       await waitFor(() => {
         expect(bugButton).toHaveAttribute('aria-pressed', 'true')
         expect(featureButton).toHaveAttribute('aria-pressed', 'false')
@@ -161,15 +121,7 @@ describe('FeedbackWidget', () => {
     })
 
     it('switches to feature request type when clicked', async () => {
-      render(<FeedbackWidget />)
-
-      // Open modal
-      const openButton = screen.getByRole('button', { name: /open feedback form/i })
-      fireEvent.click(openButton)
-
-      await waitFor(() => {
-        expect(screen.getByRole('button', { name: /request a feature/i })).toBeInTheDocument()
-      })
+      await openModal()
 
       const featureButton = screen.getByRole('button', { name: /request a feature/i })
       fireEvent.click(featureButton)
@@ -183,22 +135,11 @@ describe('FeedbackWidget', () => {
 
   describe('Form Submission', () => {
     it('shows error when trying to submit empty message', async () => {
-      const user = userEvent.setup()
-      render(<FeedbackWidget />)
+      const user = await openModalWithUser()
 
-      // Open modal
-      const openButton = screen.getByRole('button', { name: /open feedback form/i })
-      await user.click(openButton)
-
-      await waitFor(() => {
-        expect(screen.getByRole('dialog')).toBeInTheDocument()
-      })
-
-      // Type only whitespace
       const textarea = screen.getByRole('textbox')
       await user.type(textarea, '   ')
 
-      // Try to submit the form directly (tests defensive validation logic)
       const form = textarea.closest('form')
       if (!form) throw new Error('Form not found in test')
       fireEvent.submit(form)
@@ -210,26 +151,9 @@ describe('FeedbackWidget', () => {
     })
 
     it('submits feedback and shows confirmation', async () => {
-      const user = userEvent.setup()
-      render(<FeedbackWidget />)
+      const user = await openModalWithUser()
+      await typeAndSubmit(user, 'This is a test bug report')
 
-      // Open modal
-      const openButton = screen.getByRole('button', { name: /open feedback form/i })
-      await user.click(openButton)
-
-      await waitFor(() => {
-        expect(screen.getByRole('dialog')).toBeInTheDocument()
-      })
-
-      // Enter feedback message
-      const textarea = screen.getByRole('textbox')
-      await user.type(textarea, 'This is a test bug report')
-
-      // Submit form
-      const submitButton = screen.getByRole('button', { name: /send feedback/i })
-      await user.click(submitButton)
-
-      // Check for confirmation
       await waitFor(() => {
         expect(screen.getByText(/thank you!/i)).toBeInTheDocument()
         expect(
@@ -239,26 +163,9 @@ describe('FeedbackWidget', () => {
     })
 
     it('stores feedback in localStorage by default', async () => {
-      const user = userEvent.setup()
-      render(<FeedbackWidget />)
+      const user = await openModalWithUser()
+      await typeAndSubmit(user, 'Test feedback message')
 
-      // Open modal
-      const openButton = screen.getByRole('button', { name: /open feedback form/i })
-      await user.click(openButton)
-
-      await waitFor(() => {
-        expect(screen.getByRole('dialog')).toBeInTheDocument()
-      })
-
-      // Enter feedback message
-      const textarea = screen.getByRole('textbox')
-      await user.type(textarea, 'Test feedback message')
-
-      // Submit form
-      const submitButton = screen.getByRole('button', { name: /send feedback/i })
-      await user.click(submitButton)
-
-      // Check localStorage
       await waitFor(() => {
         const storedFeedback = localStorage.getItem('paperlyte_feedback')
         expect(storedFeedback).toBeTruthy()
@@ -274,25 +181,9 @@ describe('FeedbackWidget', () => {
     })
 
     it('calls custom onSubmit handler when provided', async () => {
-      const user = userEvent.setup()
       const mockSubmit = vi.fn().mockResolvedValue(undefined)
-      render(<FeedbackWidget onSubmit={mockSubmit} />)
-
-      // Open modal
-      const openButton = screen.getByRole('button', { name: /open feedback form/i })
-      await user.click(openButton)
-
-      await waitFor(() => {
-        expect(screen.getByRole('dialog')).toBeInTheDocument()
-      })
-
-      // Enter feedback message
-      const textarea = screen.getByRole('textbox')
-      await user.type(textarea, 'Custom handler test')
-
-      // Submit form
-      const submitButton = screen.getByRole('button', { name: /send feedback/i })
-      await user.click(submitButton)
+      const user = await openModalWithUser({ onSubmit: mockSubmit })
+      await typeAndSubmit(user, 'Custom handler test')
 
       await waitFor(() => {
         expect(mockSubmit).toHaveBeenCalledWith({
@@ -303,25 +194,9 @@ describe('FeedbackWidget', () => {
     })
 
     it('handles submission errors gracefully', async () => {
-      const user = userEvent.setup()
       const mockSubmit = vi.fn().mockRejectedValue(new Error('Network error'))
-      render(<FeedbackWidget onSubmit={mockSubmit} />)
-
-      // Open modal
-      const openButton = screen.getByRole('button', { name: /open feedback form/i })
-      await user.click(openButton)
-
-      await waitFor(() => {
-        expect(screen.getByRole('dialog')).toBeInTheDocument()
-      })
-
-      // Enter feedback message
-      const textarea = screen.getByRole('textbox')
-      await user.type(textarea, 'Test error handling')
-
-      // Submit form
-      const submitButton = screen.getByRole('button', { name: /send feedback/i })
-      await user.click(submitButton)
+      const user = await openModalWithUser({ onSubmit: mockSubmit })
+      await typeAndSubmit(user, 'Test error handling')
 
       await waitFor(() => {
         expect(screen.getByText(/failed to submit feedback/i)).toBeInTheDocument()
@@ -329,31 +204,16 @@ describe('FeedbackWidget', () => {
     })
 
     it('disables submit button when submitting', async () => {
-      const user = userEvent.setup()
       const mockSubmit = vi.fn(() => new Promise((resolve) => setTimeout(resolve, 100)))
-      render(<FeedbackWidget onSubmit={mockSubmit} />)
+      const user = await openModalWithUser({ onSubmit: mockSubmit })
 
-      // Open modal
-      const openButton = screen.getByRole('button', { name: /open feedback form/i })
-      await user.click(openButton)
-
-      await waitFor(() => {
-        expect(screen.getByRole('dialog')).toBeInTheDocument()
-      })
-
-      // Enter feedback message
-      const textarea = screen.getByRole('textbox')
-      await user.type(textarea, 'Test submit button')
-
-      // Submit form
+      await user.type(screen.getByRole('textbox'), 'Test submit button')
       const submitButton = screen.getByRole('button', { name: /send feedback/i })
       await user.click(submitButton)
 
-      // Button should be disabled during submission
       expect(submitButton).toBeDisabled()
       expect(screen.getByText(/sending.../i)).toBeInTheDocument()
 
-      // Wait for submission to complete
       await waitFor(() => {
         expect(screen.getByText(/thank you!/i)).toBeInTheDocument()
       })
@@ -364,37 +224,22 @@ describe('FeedbackWidget', () => {
 
       try {
         render(<FeedbackWidget />)
-
-        // Open modal
-        const openButton = screen.getByRole('button', { name: /open feedback form/i })
-        fireEvent.click(openButton)
-
+        fireEvent.click(screen.getByRole('button', { name: /open feedback form/i }))
         await vi.waitFor(() => {
           expect(screen.getByRole('dialog')).toBeInTheDocument()
         })
 
-        // Enter feedback message
-        const textarea = screen.getByRole('textbox')
-        fireEvent.change(textarea, { target: { value: 'Test auto-close' } })
+        fireEvent.change(screen.getByRole('textbox'), { target: { value: 'Test auto-close' } })
+        fireEvent.click(screen.getByRole('button', { name: /send feedback/i }))
 
-        // Submit form by clicking submit button
-        const submitButton = screen.getByRole('button', { name: /send feedback/i })
-        fireEvent.click(submitButton)
-
-        // Confirmation should be shown
         await vi.waitFor(() => {
           expect(screen.getByText(/thank you!/i)).toBeInTheDocument()
         })
-
-        // Modal should still be open
         expect(screen.getByRole('dialog')).toBeInTheDocument()
 
-        // Fast-forward time by 2 seconds
         act(() => {
           vi.advanceTimersByTime(2000)
         })
-
-        // Modal should now be closed
         expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
       } finally {
         vi.useRealTimers()
@@ -406,39 +251,26 @@ describe('FeedbackWidget', () => {
 
       try {
         render(<FeedbackWidget />)
-
-        // Open modal
-        const openButton = screen.getByRole('button', { name: /open feedback form/i })
-        fireEvent.click(openButton)
-
+        fireEvent.click(screen.getByRole('button', { name: /open feedback form/i }))
         await vi.waitFor(() => {
           expect(screen.getByRole('dialog')).toBeInTheDocument()
         })
 
-        // Enter feedback message and submit
-        const textarea = screen.getByRole('textbox')
-        fireEvent.change(textarea, { target: { value: 'Test timeout cleanup' } })
-        const submitButton = screen.getByRole('button', { name: /send feedback/i })
-        fireEvent.click(submitButton)
+        fireEvent.change(screen.getByRole('textbox'), {
+          target: { value: 'Test timeout cleanup' },
+        })
+        fireEvent.click(screen.getByRole('button', { name: /send feedback/i }))
 
-        // Wait for confirmation
         await vi.waitFor(() => {
           expect(screen.getByText(/thank you!/i)).toBeInTheDocument()
         })
 
-        // Manually close the modal before the 2-second auto-close
-        const closeButton = screen.getByRole('button', { name: /close feedback form/i })
-        fireEvent.click(closeButton)
-
-        // Modal should be closed immediately
+        fireEvent.click(screen.getByRole('button', { name: /close feedback form/i }))
         expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
 
-        // Fast-forward past the original timeout
         act(() => {
           vi.advanceTimersByTime(2000)
         })
-
-        // Modal should remain closed (timeout was cleaned up)
         expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
       } finally {
         vi.useRealTimers()
@@ -448,48 +280,23 @@ describe('FeedbackWidget', () => {
 
   describe('LocalStorage Edge Cases', () => {
     it('handles corrupted localStorage data gracefully', async () => {
-      const user = userEvent.setup()
-
-      // Store corrupted (non-JSON) data
       localStorage.setItem('paperlyte_feedback', 'not-valid-json{{{')
-
-      render(<FeedbackWidget />)
-
-      // Open modal
-      await user.click(screen.getByRole('button', { name: /open feedback form/i }))
-      await waitFor(() => {
-        expect(screen.getByRole('dialog')).toBeInTheDocument()
-      })
-
-      // Enter feedback and submit
-      await user.type(screen.getByRole('textbox'), 'Test after corruption')
-      await user.click(screen.getByRole('button', { name: /send feedback/i }))
+      const user = await openModalWithUser()
+      await typeAndSubmit(user, 'Test after corruption')
 
       await waitFor(() => {
         expect(screen.getByText(/thank you!/i)).toBeInTheDocument()
       })
 
-      // Should have recovered and stored new feedback in a fresh array
       const stored = JSON.parse(localStorage.getItem('paperlyte_feedback')!)
       expect(stored).toHaveLength(1)
       expect(stored[0].message).toBe('Test after corruption')
     })
 
     it('handles non-array localStorage data gracefully', async () => {
-      const user = userEvent.setup()
-
-      // Store valid JSON but not an array
       localStorage.setItem('paperlyte_feedback', JSON.stringify({ not: 'an array' }))
-
-      render(<FeedbackWidget />)
-
-      await user.click(screen.getByRole('button', { name: /open feedback form/i }))
-      await waitFor(() => {
-        expect(screen.getByRole('dialog')).toBeInTheDocument()
-      })
-
-      await user.type(screen.getByRole('textbox'), 'Test non-array recovery')
-      await user.click(screen.getByRole('button', { name: /send feedback/i }))
+      const user = await openModalWithUser()
+      await typeAndSubmit(user, 'Test non-array recovery')
 
       await waitFor(() => {
         expect(screen.getByText(/thank you!/i)).toBeInTheDocument()
@@ -501,24 +308,14 @@ describe('FeedbackWidget', () => {
     })
 
     it('shows error when localStorage quota is exceeded', async () => {
-      const user = userEvent.setup()
-
-      // Mock localStorage.setItem to throw a quota exceeded error
       const setItemSpy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation((key) => {
         if (key === 'paperlyte_feedback') {
           throw new DOMException('QuotaExceededError', 'QuotaExceededError')
         }
       })
 
-      render(<FeedbackWidget />)
-
-      await user.click(screen.getByRole('button', { name: /open feedback form/i }))
-      await waitFor(() => {
-        expect(screen.getByRole('dialog')).toBeInTheDocument()
-      })
-
-      await user.type(screen.getByRole('textbox'), 'Test quota exceeded')
-      await user.click(screen.getByRole('button', { name: /send feedback/i }))
+      const user = await openModalWithUser()
+      await typeAndSubmit(user, 'Test quota exceeded')
 
       await waitFor(() => {
         expect(screen.getByText(/failed to submit feedback/i)).toBeInTheDocument()
@@ -529,208 +326,104 @@ describe('FeedbackWidget', () => {
   })
 
   describe('Focus Trap', () => {
-    it('traps focus with Tab key on last element', async () => {
-      render(<FeedbackWidget />)
-
-      // Open modal
-      fireEvent.click(screen.getByRole('button', { name: /open feedback form/i }))
-      await waitFor(() => {
-        expect(screen.getByRole('dialog')).toBeInTheDocument()
-      })
-
-      // Type text to enable the submit button (disabled when empty)
+    /** Opens modal and returns the first and last focusable elements within it. */
+    async function getFocusTrapElements() {
+      await openModal()
       fireEvent.change(screen.getByRole('textbox'), { target: { value: 'test' } })
 
-      // Get the modal content and find focusable elements (same selector as the component)
       const modal = screen.getByRole('dialog').querySelector('[class*="modalContent"]')
       expect(modal).toBeInTheDocument()
 
-      const focusableElements = modal!.querySelectorAll<HTMLElement>(
+      const focusable = modal!.querySelectorAll<HTMLElement>(
         'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
       )
-      const lastElement = focusableElements[focusableElements.length - 1]
-      const firstElement = focusableElements[0]
+      return { first: focusable[0], last: focusable[focusable.length - 1] }
+    }
 
-      // Focus the last element (submit button, now enabled)
-      lastElement.focus()
-      expect(lastElement).toHaveFocus()
+    it('traps focus with Tab key on last element', async () => {
+      const { first, last } = await getFocusTrapElements()
+      last.focus()
+      expect(last).toHaveFocus()
 
-      // Fire Tab keydown - the focus trap handler wraps to first element
       fireEvent.keyDown(document, { key: 'Tab' })
-      expect(firstElement).toHaveFocus()
+      expect(first).toHaveFocus()
     })
 
     it('traps focus with Shift+Tab on first element', async () => {
-      render(<FeedbackWidget />)
+      const { first, last } = await getFocusTrapElements()
+      first.focus()
+      expect(first).toHaveFocus()
 
-      // Open modal
-      fireEvent.click(screen.getByRole('button', { name: /open feedback form/i }))
-      await waitFor(() => {
-        expect(screen.getByRole('dialog')).toBeInTheDocument()
-      })
-
-      // Type text to enable the submit button (disabled when empty)
-      fireEvent.change(screen.getByRole('textbox'), { target: { value: 'test' } })
-
-      const modal = screen.getByRole('dialog').querySelector('[class*="modalContent"]')
-      expect(modal).toBeInTheDocument()
-
-      const focusableElements = modal!.querySelectorAll<HTMLElement>(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-      )
-      const firstElement = focusableElements[0]
-      const lastElement = focusableElements[focusableElements.length - 1]
-
-      // Focus the first element (close button)
-      firstElement.focus()
-      expect(firstElement).toHaveFocus()
-
-      // Fire Shift+Tab keydown - the focus trap handler wraps to last element
       fireEvent.keyDown(document, { key: 'Tab', shiftKey: true })
-      expect(lastElement).toHaveFocus()
+      expect(last).toHaveFocus()
     })
   })
 
   describe('Accessibility', () => {
     it('has proper ARIA attributes', async () => {
-      render(<FeedbackWidget />)
-
-      // Open modal
-      const openButton = screen.getByRole('button', { name: /open feedback form/i })
-      fireEvent.click(openButton)
-
-      await waitFor(() => {
-        const dialog = screen.getByRole('dialog')
-        expect(dialog).toHaveAttribute('aria-modal', 'true')
-        expect(dialog).toHaveAttribute('aria-labelledby', 'feedback-modal-title')
-      })
+      await openModal()
+      const dialog = screen.getByRole('dialog')
+      expect(dialog).toHaveAttribute('aria-modal', 'true')
+      expect(dialog).toHaveAttribute('aria-labelledby', 'feedback-modal-title')
     })
 
     it('has accessible form labels', async () => {
-      render(<FeedbackWidget />)
+      await openModal()
+      const textarea = screen.getByRole('textbox')
+      expect(textarea).toHaveAttribute('id', 'feedback-message')
 
-      // Open modal
-      const openButton = screen.getByRole('button', { name: /open feedback form/i })
-      fireEvent.click(openButton)
-
-      await waitFor(() => {
-        const textarea = screen.getByRole('textbox')
-        expect(textarea).toHaveAttribute('id', 'feedback-message')
-
-        const label = screen.getByText(/describe the issue you encountered/i)
-        expect(label).toHaveAttribute('for', 'feedback-message')
-      })
+      const label = screen.getByText(/describe the issue you encountered/i)
+      expect(label).toHaveAttribute('for', 'feedback-message')
     })
 
     it('has proper fieldset with legend for feedback type selector', async () => {
-      render(<FeedbackWidget />)
+      await openModal()
+      const typeSelector = document.querySelector('fieldset')
+      expect(typeSelector).toBeInTheDocument()
 
-      // Open modal
-      const openButton = screen.getByRole('button', { name: /open feedback form/i })
-      fireEvent.click(openButton)
-
-      await waitFor(() => {
-        const typeSelector = document.querySelector('fieldset')
-        expect(typeSelector).toBeInTheDocument()
-
-        const legend = typeSelector?.querySelector('legend')
-        expect(legend).toBeInTheDocument()
-        expect(legend).toHaveTextContent('Feedback type selection')
-        expect(legend).toHaveClass('sr-only')
-      })
+      const legend = typeSelector?.querySelector('legend')
+      expect(legend).toBeInTheDocument()
+      expect(legend).toHaveTextContent('Feedback type selection')
+      expect(legend).toHaveClass('sr-only')
     })
   })
 
   describe('Keyboard Navigation', () => {
+    /** Opens modal and returns the bug/feature type buttons and user instance. */
+    async function getTypeButtons() {
+      const user = await openModalWithUser()
+      return {
+        user,
+        bugButton: screen.getByRole('button', { name: /report a bug/i }),
+        featureButton: screen.getByRole('button', { name: /request a feature/i }),
+      }
+    }
+
     it('should navigate between feedback type buttons with ArrowRight', async () => {
-      const user = userEvent.setup()
-      render(<FeedbackWidget />)
-
-      // Open modal
-      const openButton = screen.getByRole('button', { name: /open feedback form/i })
-      await user.click(openButton)
-
-      await waitFor(() => {
-        expect(screen.getByRole('dialog')).toBeInTheDocument()
-      })
-
-      const bugButton = screen.getByRole('button', { name: /report a bug/i })
-      const featureButton = screen.getByRole('button', { name: /request a feature/i })
-
+      const { user, bugButton, featureButton } = await getTypeButtons()
       bugButton.focus()
-      expect(bugButton).toHaveFocus()
-
       await user.keyboard('{ArrowRight}')
-
       expect(featureButton).toHaveFocus()
     })
 
     it('should navigate between feedback type buttons with ArrowLeft', async () => {
-      const user = userEvent.setup()
-      render(<FeedbackWidget />)
-
-      // Open modal
-      const openButton = screen.getByRole('button', { name: /open feedback form/i })
-      await user.click(openButton)
-
-      await waitFor(() => {
-        expect(screen.getByRole('dialog')).toBeInTheDocument()
-      })
-
-      const bugButton = screen.getByRole('button', { name: /report a bug/i })
-      const featureButton = screen.getByRole('button', { name: /request a feature/i })
-
+      const { user, bugButton, featureButton } = await getTypeButtons()
       featureButton.focus()
-      expect(featureButton).toHaveFocus()
-
       await user.keyboard('{ArrowLeft}')
-
       expect(bugButton).toHaveFocus()
     })
 
     it('should wrap navigation from last to first button with ArrowRight', async () => {
-      const user = userEvent.setup()
-      render(<FeedbackWidget />)
-
-      // Open modal
-      const openButton = screen.getByRole('button', { name: /open feedback form/i })
-      await user.click(openButton)
-
-      await waitFor(() => {
-        expect(screen.getByRole('dialog')).toBeInTheDocument()
-      })
-
-      const bugButton = screen.getByRole('button', { name: /report a bug/i })
-      const featureButton = screen.getByRole('button', { name: /request a feature/i })
-
+      const { user, bugButton, featureButton } = await getTypeButtons()
       featureButton.focus()
-      expect(featureButton).toHaveFocus()
-
       await user.keyboard('{ArrowRight}')
-
       expect(bugButton).toHaveFocus()
     })
 
     it('should wrap navigation from first to last button with ArrowLeft', async () => {
-      const user = userEvent.setup()
-      render(<FeedbackWidget />)
-
-      // Open modal
-      const openButton = screen.getByRole('button', { name: /open feedback form/i })
-      await user.click(openButton)
-
-      await waitFor(() => {
-        expect(screen.getByRole('dialog')).toBeInTheDocument()
-      })
-
-      const bugButton = screen.getByRole('button', { name: /report a bug/i })
-      const featureButton = screen.getByRole('button', { name: /request a feature/i })
-
+      const { user, bugButton, featureButton } = await getTypeButtons()
       bugButton.focus()
-      expect(bugButton).toHaveFocus()
-
       await user.keyboard('{ArrowLeft}')
-
       expect(featureButton).toHaveFocus()
     })
   })

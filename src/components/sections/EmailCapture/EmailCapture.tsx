@@ -15,7 +15,25 @@ const BENEFITS = [
   'Receive exclusive productivity tips and updates',
 ]
 
-export const EmailCapture = (): React.ReactElement => {
+interface EmailCaptureProps {
+  onSubmit?: (_email: string) => Promise<void>
+}
+
+function getSubmitErrorMessage(err: unknown): string {
+  const error = err instanceof Error ? err : new Error(String(err))
+  logError(error, { tags: { context: 'waitlist-submit' } })
+
+  const msg = error.message.toLowerCase()
+  if (error.name === 'TypeError' || msg.includes('network') || msg.includes('fetch')) {
+    return 'Network error. Please check your connection and try again.'
+  }
+  if (msg.includes('invalid') || msg.includes('validation')) {
+    return 'Invalid email address. Please check and try again.'
+  }
+  return 'Failed to join waitlist. Please try again.'
+}
+
+export const EmailCapture = ({ onSubmit }: EmailCaptureProps = {}): React.ReactElement => {
   const [email, setEmail] = useState('')
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -30,31 +48,18 @@ export const EmailCapture = (): React.ReactElement => {
     setError(null)
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      if (onSubmit) {
+        await onSubmit(email)
+      } else {
+        // Simulate API call
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+      }
 
       setIsLoading(false)
       setIsSubmitted(true)
     } catch (err) {
-      const error = err instanceof Error ? err : new Error(String(err))
-      logError(error, { tags: { context: 'waitlist-submit' } })
-
-      let message = 'Failed to join waitlist. Please try again.'
-      if (
-        error.name === 'TypeError' ||
-        error.message.toLowerCase().includes('network') ||
-        error.message.toLowerCase().includes('fetch')
-      ) {
-        message = 'Network error. Please check your connection and try again.'
-      } else if (
-        error.message.toLowerCase().includes('invalid') ||
-        error.message.toLowerCase().includes('validation')
-      ) {
-        message = 'Invalid email address. Please check and try again.'
-      }
-
       setIsLoading(false)
-      setError(message)
+      setError(getSubmitErrorMessage(err))
     }
   }
 

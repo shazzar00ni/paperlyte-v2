@@ -113,6 +113,35 @@ describe('Icon', () => {
       const fallback = container.querySelector('span.icon-fallback')
       expect(fallback).not.toBeInTheDocument()
     })
+
+    it('should use fab prefix via isBrandIcon() when brand icon falls through to FA fallback', async () => {
+      // Mock iconPaths to omit all custom icons, forcing the FA fallback path
+      vi.resetModules()
+      vi.doMock('./icons', () => ({
+        iconPaths: {},
+        getIconViewBox: () => '0 0 24 24',
+        strokeOnlyIcons: new Set(),
+      }))
+
+      const { Icon: FallbackIcon } = await import('./Icon')
+      const { container } = render(<FallbackIcon name="fa-github" />)
+
+      // isBrandIcon('github') → true → fab prefix → found in FA library → SVG, not ? placeholder
+      expect(container.querySelector('span.icon-fallback')).not.toBeInTheDocument()
+      const svg = container.querySelector('svg')
+      expect(svg).toBeInTheDocument()
+      // One warning (not in icon set) but NOT the "not found in FA library" warning
+      expect(consoleWarnSpy).toHaveBeenCalledTimes(1)
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        'Icon "fa-github" not found in icon set, using Font Awesome fallback'
+      )
+      expect(consoleWarnSpy).not.toHaveBeenCalledWith(
+        expect.stringContaining('not found in Font Awesome library')
+      )
+
+      vi.doUnmock('./icons')
+      vi.resetModules()
+    })
   })
 
   describe('Color normalization', () => {
@@ -188,7 +217,7 @@ describe('Icon', () => {
       expect(fallback).toHaveClass('custom-class')
     })
 
-    it('should apply custom className to FontAwesome SVG', () => {
+    it('should apply custom className to custom SVG icon (fa-bolt)', () => {
       const { container } = render(<Icon name="fa-bolt" className="custom-class" />)
       const icon = container.querySelector('svg') ?? container.querySelector('span.icon-fallback')
       expect(icon).toHaveClass('custom-class')

@@ -383,10 +383,10 @@ describe('analytics/webVitals', () => {
   describe('trackINP', () => {
     it('should use Math.max for ≤10 interactions and 98th percentile for >10 at the boundary', () => {
       // Helper: creates a valid event entry; duration = processingEnd - startTime
-      const makeEntry = (processingEnd: number) => ({
+      const makeEntry = (duration: number) => ({
         startTime: 0,
-        processingStart: 50,
-        processingEnd,
+        processingStart: 0,
+        processingEnd: duration,
       })
 
       // --- ≤10 interactions: Math.max path (exactly 10) ---

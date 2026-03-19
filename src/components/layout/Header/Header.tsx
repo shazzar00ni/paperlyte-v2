@@ -26,6 +26,8 @@ import styles from './Header.module.css'
  * </main>
  * ```
  */
+type SectionId = 'features' | 'download'
+
 export const Header = (): React.ReactElement => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const menuButtonRef = useRef<HTMLButtonElement>(null)
@@ -42,7 +44,7 @@ export const Header = (): React.ReactElement => {
   }, [])
 
   const scrollToSection = useCallback(
-    (sectionId: string) => {
+    (sectionId: SectionId) => {
       const element = document.getElementById(sectionId)
       if (element) {
         element.scrollIntoView({ behavior: 'smooth' })

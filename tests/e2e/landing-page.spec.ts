@@ -35,7 +35,7 @@ test.describe('Landing Page', () => {
       const el = document.querySelector<HTMLElement>('#features')
       if (!el) return false
       const rect = el.getBoundingClientRect()
-      return rect.top < window.innerHeight && rect.bottom > 0
+      return rect.top < globalThis.innerHeight && rect.bottom > 0
     })
     // Should scroll to features section
     await expect(page.locator('#features')).toBeInViewport()
@@ -150,7 +150,7 @@ test.describe('Landing Page', () => {
 
     // Verify focus indicator is visible on first element
     const outline = await focused.evaluate((el) => {
-      const styles = window.getComputedStyle(el)
+      const styles = globalThis.getComputedStyle(el)
       return {
         outlineStyle: styles.outlineStyle,
         outlineWidth: styles.outlineWidth,

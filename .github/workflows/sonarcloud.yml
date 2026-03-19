@@ -57,8 +57,10 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}   # Generate a token on Sonarcloud.io, add it to the secrets of this repo with the name SONAR_TOKEN (Settings > Secrets > Actions > add new repository secret)
         with:
           # Additional arguments for the SonarScanner CLI
-          args: >
-            -Dsonar.projectKey=shazzar00ni_paperlyte-v2
-            -Dsonar.organization=shazzar00ni
+          with:
+            # Additional arguments for the SonarScanner CLI
+            args: ""
+            # When you need the analysis to take place in a directory other than the one from which it was launched, default is .
+            projectBaseDir: .
           # When you need the analysis to take place in a directory other than the one from which it was launched, default is .
           projectBaseDir: .

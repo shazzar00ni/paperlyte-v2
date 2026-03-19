@@ -161,8 +161,8 @@ test.describe('Landing Page', () => {
     // Check that some focus indicator is present
     const hasOutline =
       outline.outlineStyle !== 'none' &&
-      isFinite(parseFloat(outline.outlineWidth.trim())) &&
-      parseFloat(outline.outlineWidth.trim()) > 0
+      Number.isFinite(Number.parseFloat(outline.outlineWidth.trim())) &&
+      Number.parseFloat(outline.outlineWidth.trim()) > 0
 
     const hasBoxShadow = outline.boxShadow.trim() !== '' && outline.boxShadow.trim() !== 'none'
 

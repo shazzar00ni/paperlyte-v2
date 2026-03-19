@@ -438,6 +438,11 @@ describe('analytics/webVitals', () => {
         inpObserver11 as PerformanceObserver
       )
 
+      Object.defineProperty(document, 'visibilityState', {
+        writable: true,
+        configurable: true,
+        value: 'hidden',
+      })
       document.dispatchEvent(new Event('visibilitychange'))
 
       // 98th percentile of sorted [10..110] (11 items):

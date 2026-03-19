@@ -47,7 +47,21 @@ const DISPOSABLE_EMAIL_DOMAINS = [
 ]
 
 /**
- * Validate email address format
+ * Validates an email address against RFC 5322 simplified pattern
+ * Checks for format, length limits, and blocks disposable email domains
+ *
+ * @param email - The email address to validate
+ * @returns Validation result with isValid boolean and optional error message
+ *
+ * @example
+ * ```tsx
+ * const result = validateEmail('user@example.com')
+ * if (result.isValid) {
+ *   // Email is valid
+ * } else {
+ *   console.error(result.error)
+ * }
+ * ```
  */
 export function validateEmail(email: string): EmailValidationResult {
   if (!email || email.trim() === '') {
@@ -79,7 +93,17 @@ export function validateEmail(email: string): EmailValidationResult {
 }
 
 /**
- * Normalize email
+ * Normalizes an email address by trimming whitespace and converting to lowercase
+ * Returns null if the email is invalid
+ *
+ * @param email - The email address to normalize
+ * @returns Normalized email address or null if invalid
+ *
+ * @example
+ * ```tsx
+ * const normalized = normalizeEmail('  User@Example.COM  ')
+ * // Returns: 'user@example.com'
+ * ```
  */
 export function normalizeEmail(email: string): string | null {
   const validation = validateEmail(email)
@@ -88,7 +112,19 @@ export function normalizeEmail(email: string): string | null {
 }
 
 /**
- * Placeholder for MX record validation
+ * Validates the domain of an email address
+ * Currently uses basic format validation; can be extended with MX record checks
+ *
+ * @param email - The email address to validate
+ * @returns Promise resolving to true if domain is valid, false otherwise
+ *
+ * @example
+ * ```tsx
+ * const isValid = await validateEmailDomain('user@example.com')
+ * if (isValid) {
+ *   // Domain is valid
+ * }
+ * ```
  */
 export async function validateEmailDomain(email: string): Promise<boolean> {
   const validation = validateEmail(email)
@@ -96,7 +132,23 @@ export async function validateEmailDomain(email: string): Promise<boolean> {
 }
 
 /**
- * Debounce utility
+ * Creates a debounced function that delays invoking the provided function
+ * until after the specified delay has elapsed since the last invocation
+ *
+ * @param func - The function to debounce
+ * @param delay - The delay in milliseconds
+ * @returns Debounced version of the function
+ *
+ * @example
+ * ```tsx
+ * const handleSearch = debounce((query: string) => {
+ *   console.log('Searching for:', query)
+ * }, 300)
+ *
+ * // Will only execute once after 300ms of no calls
+ * handleSearch('hello')
+ * handleSearch('hello world') // Previous call cancelled
+ * ```
  */
 export function debounce<T extends (...args: unknown[]) => unknown>(
   func: T,
@@ -186,7 +238,23 @@ export function sanitizeInput(input: string): string {
 }
 
 /**
- * Validate form data
+ * Validates form data including email, name, and terms acceptance
+ * Checks type safety and field-specific validation rules
+ *
+ * @param formData - Object containing form field values
+ * @returns Validation result with isValid boolean and errors object
+ *
+ * @example
+ * ```tsx
+ * const result = validateForm({
+ *   email: 'user@example.com',
+ *   name: 'John Doe',
+ *   acceptTerms: true
+ * })
+ * if (!result.isValid) {
+ *   console.error(result.errors)
+ * }
+ * ```
  */
 export function validateForm(formData: Record<string, unknown>): ValidationResult {
   const errors: Record<string, string> = {}
@@ -227,7 +295,20 @@ export function validateForm(formData: Record<string, unknown>): ValidationResul
 }
 
 /**
- * Suggest corrections for common email typos
+ * Suggests corrections for common email domain typos
+ * Helps users fix mistakes like gmial.com → gmail.com
+ *
+ * @param email - The email address to check for typos
+ * @returns Corrected email address or null if no correction is suggested
+ *
+ * @example
+ * ```tsx
+ * const suggestion = suggestEmailCorrection('user@gmial.com')
+ * // Returns: 'user@gmail.com'
+ *
+ * const noSuggestion = suggestEmailCorrection('user@gmail.com')
+ * // Returns: null (already correct)
+ * ```
  */
 export function suggestEmailCorrection(email: string): string | null {
   const commonTypos: Record<string, string> = {

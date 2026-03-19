@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { Pricing } from './Pricing'
 import { PRICING_PLANS } from '@constants/pricing'
+import { escapeRegExp } from '@/utils/test/regexHelpers'
 
 describe('Pricing', () => {
   it('should render as a section with correct id', () => {
@@ -14,13 +15,13 @@ describe('Pricing', () => {
 
   it('should render main heading', () => {
     render(<Pricing />)
-    expect(screen.getByText('Simple pricing. No surprises.')).toBeInTheDocument()
+    expect(screen.getByText('Simple, Transparent Pricing')).toBeInTheDocument()
   })
 
   it('should render subtitle', () => {
     render(<Pricing />)
     expect(
-      screen.getByText('Start free, upgrade whenever. No credit card needed to get started.')
+      screen.getByText("Start free, upgrade when you're ready. No credit card required.")
     ).toBeInTheDocument()
   })
 
@@ -84,6 +85,8 @@ describe('Pricing', () => {
 
     const popularBadge = screen.getByLabelText('Most popular')
     expect(popularBadge).toBeInTheDocument()
+    expect(popularBadge.tagName.toLowerCase()).toBe('svg')
+    expect(screen.getByText('Most Popular')).toBeInTheDocument()
   })
 
   it('should render plan icons', () => {
@@ -93,6 +96,7 @@ describe('Pricing', () => {
       if (plan.icon) {
         const icon = screen.getByLabelText(`${plan.name} plan icon`)
         expect(icon).toBeInTheDocument()
+        expect(icon.tagName.toLowerCase()).toBe('svg')
       }
     })
   })
@@ -110,21 +114,25 @@ describe('Pricing', () => {
   it('should render checkmark icons for all features', () => {
     render(<Pricing />)
 
+    const checkmarks = screen.getAllByLabelText('Included')
+
     // Count total features across all plans
     const totalFeatures = PRICING_PLANS.reduce((sum, plan) => sum + plan.features.length, 0)
 
-    // Find all checkmark icons by aria-label
-    const checkmarks = screen.getAllByLabelText('Included')
-
     expect(checkmarks.length).toBe(totalFeatures)
+
+    checkmarks.forEach((checkmark) => {
+      expect(checkmark.tagName.toLowerCase()).toBe('svg')
+    })
   })
 
   it('should render CTA buttons for all plans', () => {
     render(<Pricing />)
 
     PRICING_PLANS.forEach((plan) => {
+      // Safe: input is escaped via escapeRegExp() and comes from PRICING_PLANS constant, not user input
       const button = screen.getByRole('button', {
-        name: new RegExp(plan.ctaText),
+        name: new RegExp(escapeRegExp(plan.ctaText)), // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
       })
       expect(button).toBeInTheDocument()
     })
@@ -139,6 +147,7 @@ describe('Pricing', () => {
 
     const shieldIcon = screen.getByLabelText('Guarantee')
     expect(shieldIcon).toBeInTheDocument()
+    expect(shieldIcon.tagName.toLowerCase()).toBe('svg')
   })
 
   it('should use semantic article elements for pricing cards', () => {
@@ -152,7 +161,7 @@ describe('Pricing', () => {
     render(<Pricing />)
 
     // Main heading should be h2
-    const mainHeading = screen.getByText('Simple pricing. No surprises.')
+    const mainHeading = screen.getByText('Simple, Transparent Pricing')
     expect(mainHeading.tagName).toBe('H2')
 
     // Plan names should be h3

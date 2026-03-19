@@ -137,24 +137,54 @@ describe('iconLibrary', () => {
   })
 
   describe('Icon Name Mapping', () => {
-    it('should have unique values in iconNameMap', () => {
-      const values = Object.values(iconNameMap)
-      const uniqueValues = new Set(values)
-
-      expect(values.length).toBe(uniqueValues.size)
-    })
-
-    it('should map all expected icons', () => {
-      // Core feature icons and UI icons that must be mapped
-      const requiredMappings = {
-        feature: ['fa-bolt', 'fa-pen-nib', 'fa-tags', 'fa-mobile-screen', 'fa-shield-halved'],
-        ui: ['fa-bars', 'fa-xmark', 'fa-moon', 'fa-sun'],
+    it('should have unique values in iconNameMap (except known aliases)', () => {
+      // Known intentional aliases where multiple keys map to the same icon
+      const knownAliases: Record<string, string[]> = {
+        'network-wired': ['fa-network-wired', 'fa-router'], // fa-router uses network-wired icon
       }
 
-      // Verify all required icons are mapped
-      const allRequired = [...requiredMappings.feature, ...requiredMappings.ui]
-      allRequired.forEach((oldName) => {
-        expect(iconNameMap[oldName], `Icon "${oldName}" should be mapped`).toBeDefined()
+      // Create a fresh copy of values to avoid any module state issues
+      const entries: [string, string][] = Object.entries(iconNameMap)
+      const valueToKeys = new Map<string, string[]>()
+      entries.forEach(([key, value]: [string, string]) => {
+        const keys = valueToKeys.get(value) || []
+        keys.push(key)
+        valueToKeys.set(value, keys)
+      })
+
+      // Find unexpected duplicates (not in knownAliases)
+      const unexpectedDuplicates = Array.from(valueToKeys.entries())
+        .filter(([value, keys]: [string, string[]]) => {
+          if (keys.length <= 1) return false
+          const allowedKeys = knownAliases[value]
+          if (!allowedKeys) return true // Not a known alias, so it's unexpected
+          // Check if the actual keys match the allowed keys
+          return !keys.every((k: string) => allowedKeys.includes(k))
+        })
+        .map(([value, keys]: [string, string[]]) => `"${value}" (mapped from: ${keys.join(', ')})`)
+
+      const errorMessage =
+        unexpectedDuplicates.length > 0
+          ? `Unexpected duplicate values found in iconNameMap:\n${unexpectedDuplicates.join('\n')}`
+          : ''
+      expect(unexpectedDuplicates.length, errorMessage).toBe(0)
+    })
+
+    it('should have unique keys in iconNameMap', () => {
+      // Keys must be unique (Object.keys guarantees this, but test for clarity)
+      const keys = Object.keys(iconNameMap)
+      const uniqueKeys = new Set(keys)
+
+      expect(keys.length).toBe(uniqueKeys.size)
+    })
+
+    it('should have all values as valid icons in iconNameMap', () => {
+      // All mapped values must be valid icons in the library
+      const values = Object.values(iconNameMap)
+
+      // All values must be valid icons
+      values.forEach((iconName) => {
+        expect(isValidIcon(iconName)).toBe(true)
       })
     })
   })

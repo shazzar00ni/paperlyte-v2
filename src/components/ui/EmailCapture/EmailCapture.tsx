@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { Button } from '@components/ui/Button'
 import { Icon } from '@components/ui/Icon'
 import { trackEvent } from '@utils/analytics'
+import { validateEmail } from '@utils/validation'
 import styles from './EmailCapture.module.css'
 
 interface EmailCaptureProps {
@@ -10,12 +11,26 @@ interface EmailCaptureProps {
   buttonText?: string
 }
 
-// Pure validation function - moved outside component to avoid recreation on every render
-const validateEmail = (email: string): boolean => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  return emailRegex.test(email)
-}
-
+/**
+ * Email capture form component for collecting waitlist signups
+ * Features email validation, GDPR consent, spam protection, and Netlify function integration
+ * Displays success/error states and tracks signup events via analytics
+ *
+ * @param props - Component props
+ * @param props.variant - Form layout variant: 'inline' (default) or 'centered'
+ * @param props.placeholder - Email input placeholder text (default: 'Enter your email')
+ * @param props.buttonText - Submit button text (default: 'Join Waitlist')
+ * @returns Email capture form element
+ *
+ * @example
+ * ```tsx
+ * // Inline variant (hero/CTA sections)
+ * <EmailCapture variant="inline" buttonText="Get Early Access" />
+ *
+ * // Centered variant (dedicated signup page)
+ * <EmailCapture variant="centered" placeholder="your@email.com" />
+ * ```
+ */
 export const EmailCapture = ({
   variant = 'inline',
   placeholder = 'Enter your email',
@@ -36,15 +51,10 @@ export const EmailCapture = ({
     }
 
     // Validation
-    if (!email.trim()) {
+    const { isValid, error: validationError } = validateEmail(email)
+    if (!isValid) {
       setStatus('error')
-      setErrorMessage('Please enter your email address')
-      return
-    }
-
-    if (!validateEmail(email)) {
-      setStatus('error')
-      setErrorMessage('Please enter a valid email address')
+      setErrorMessage(validationError ?? 'Please enter a valid email address')
       return
     }
 

@@ -385,7 +385,7 @@ describe('analytics/webVitals', () => {
       // Helper: creates a valid event entry; duration = processingEnd - startTime
       const makeEntry = (duration: number) => ({
         startTime: 0,
-        processingStart: 0,
+        processingStart: 1,
         processingEnd: duration,
       })
 

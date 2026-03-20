@@ -5,6 +5,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { initWebVitals } from './webVitals'
 import type { CoreWebVitals } from './types'
+import { mockPerformanceObserver } from '../test/analytics-helpers'
 
 describe('analytics/webVitals', () => {
   let onReport: ReturnType<typeof vi.fn<[CoreWebVitals], void>>
@@ -376,6 +377,141 @@ describe('analytics/webVitals', () => {
       expect(reportedVitals.CLS).toBeCloseTo(0.15, 2)
 
       cleanup()
+    })
+  })
+
+  describe('trackINP', () => {
+    it('should use Math.max for ≤10 interactions and 98th percentile for >10 at the boundary', () => {
+      // Helper: creates a valid event entry; duration = processingEnd - startTime
+      const makeEntry = (duration: number) => ({
+        startTime: 0,
+        processingStart: 0,
+        processingEnd: duration,
+      })
+
+      // --- ≤10 interactions: Math.max path (exactly 10) ---
+      const po10 = mockPerformanceObserver()
+      onReport.mockClear()
+      const cleanup10 = initWebVitals(onReport)
+
+      const inpObserver10 = po10.instances.find((obs) => {
+        const call = obs.observe.mock.calls[0]
+        return call?.[0].type === 'event'
+      })
+      expect(inpObserver10).toBeDefined()
+
+      // Feed 10 entries with durations [10, 20, ..., 100]
+      inpObserver10?.callback(
+        { getEntries: () => [10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map(makeEntry) } as PerformanceObserverEntryList,
+        inpObserver10 as PerformanceObserver
+      )
+
+      Object.defineProperty(document, 'visibilityState', {
+        writable: true,
+        configurable: true,
+        value: 'hidden',
+      })
+      document.dispatchEvent(new Event('visibilitychange'))
+
+      // Math.max([10..100]) = 100
+      expect(onReport).toHaveBeenCalledWith(expect.objectContaining({ INP: 100 }))
+
+      cleanup10()
+      po10.cleanup()
+
+      // --- >10 interactions: 98th-percentile path (exactly 11) ---
+      const po11 = mockPerformanceObserver()
+      onReport.mockClear()
+      const cleanup11 = initWebVitals(onReport)
+
+      const inpObserver11 = po11.instances.find((obs) => {
+        const call = obs.observe.mock.calls[0]
+        return call?.[0].type === 'event'
+      })
+      expect(inpObserver11).toBeDefined()
+
+      // Feed 11 entries with durations [10, 20, ..., 110]
+      inpObserver11?.callback(
+        {
+          getEntries: () => [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110].map(makeEntry),
+        } as PerformanceObserverEntryList,
+        inpObserver11 as PerformanceObserver
+      )
+
+      Object.defineProperty(document, 'visibilityState', {
+        writable: true,
+        configurable: true,
+        value: 'hidden',
+      })
+      document.dispatchEvent(new Event('visibilitychange'))
+
+      // 98th percentile of sorted [10..110] (11 items):
+      //   index = Math.max(0, Math.ceil(0.98 * 11) - 1) = Math.max(0, 11 - 1) = 10
+      //   value = sortedInteractions[10] = 110
+      expect(onReport).toHaveBeenCalledWith(expect.objectContaining({ INP: 110 }))
+
+      cleanup11()
+      po11.cleanup()
+    })
+
+    it('should not report INP when no interactions occurred', () => {
+      const { cleanup: cleanupPO } = mockPerformanceObserver()
+      const cleanup = initWebVitals(onReport)
+
+      // Trigger finalization without feeding any entries to the INP observer
+      Object.defineProperty(document, 'visibilityState', {
+        writable: true,
+        configurable: true,
+        value: 'hidden',
+      })
+      document.dispatchEvent(new Event('visibilitychange'))
+
+      // onReport may still be called (e.g., CLS=0 is always finalised), but INP must be absent
+      expect(onReport).toHaveBeenCalled()
+      const reportedVitals = onReport.mock.calls[0][0]
+      expect(reportedVitals).not.toHaveProperty('INP')
+
+      cleanup()
+      cleanupPO()
+    })
+
+    it('should filter out entries with missing or invalid processingStart/processingEnd', () => {
+      const { instances, cleanup: cleanupPO } = mockPerformanceObserver()
+      const cleanup = initWebVitals(onReport)
+
+      const inpObserver = instances.find((obs) => {
+        const call = obs.observe.mock.calls[0]
+        return call?.[0].type === 'event'
+      })
+      expect(inpObserver).toBeDefined()
+
+      // All four entries are invalid and must be excluded from INP calculation
+      const invalidEntries = [
+        { startTime: 0, processingStart: undefined, processingEnd: 100 }, // missing processingStart
+        { startTime: 0, processingStart: 50, processingEnd: undefined }, // missing processingEnd
+        { startTime: 0, processingStart: 0, processingEnd: undefined }, // zero processingStart, missing processingEnd
+        { startTime: 0, processingStart: 50, processingEnd: 0 }, // falsy processingEnd (zero)
+      ]
+
+      inpObserver?.callback(
+        { getEntries: () => invalidEntries } as PerformanceObserverEntryList,
+        inpObserver as PerformanceObserver
+      )
+
+      Object.defineProperty(document, 'visibilityState', {
+        writable: true,
+        configurable: true,
+        value: 'hidden',
+      })
+      document.dispatchEvent(new Event('visibilitychange'))
+
+      // No valid interactions were recorded, so INP must not appear in the report
+      expect(onReport).toHaveBeenCalled()
+      const reportedVitals = onReport.mock.calls[0][0]
+      expect(reportedVitals).not.toHaveProperty('INP')
+
+      cleanup()
+      cleanupPO()
     })
   })
 

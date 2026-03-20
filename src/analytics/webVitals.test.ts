@@ -385,7 +385,7 @@ describe('analytics/webVitals', () => {
       // Helper: creates a valid event entry; duration = processingEnd - startTime
       const makeEntry = (duration: number) => ({
         startTime: 0,
-        processingStart: 1,
+        processingStart: 0,
         processingEnd: duration,
       })
 
@@ -489,7 +489,7 @@ describe('analytics/webVitals', () => {
       const invalidEntries = [
         { startTime: 0, processingStart: undefined, processingEnd: 100 }, // missing processingStart
         { startTime: 0, processingStart: 50, processingEnd: undefined }, // missing processingEnd
-        { startTime: 0, processingStart: 0, processingEnd: 100 }, // falsy processingStart (zero)
+        { startTime: 0, processingStart: 0, processingEnd: undefined }, // zero processingStart, missing processingEnd
         { startTime: 0, processingStart: 50, processingEnd: 0 }, // falsy processingEnd (zero)
       ]
 

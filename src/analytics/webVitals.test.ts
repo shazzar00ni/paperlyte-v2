@@ -396,7 +396,7 @@ describe('analytics/webVitals', () => {
 
       const inpObserver10 = po10.instances.find((obs) => {
         const call = obs.observe.mock.calls[0]
-        return call && call[0].type === 'event'
+        return call?.[0].type === 'event'
       })
       expect(inpObserver10).toBeDefined()
 
@@ -426,7 +426,7 @@ describe('analytics/webVitals', () => {
 
       const inpObserver11 = po11.instances.find((obs) => {
         const call = obs.observe.mock.calls[0]
-        return call && call[0].type === 'event'
+        return call?.[0].type === 'event'
       })
       expect(inpObserver11).toBeDefined()
 
@@ -481,7 +481,7 @@ describe('analytics/webVitals', () => {
 
       const inpObserver = instances.find((obs) => {
         const call = obs.observe.mock.calls[0]
-        return call && call[0].type === 'event'
+        return call?.[0].type === 'event'
       })
       expect(inpObserver).toBeDefined()
 

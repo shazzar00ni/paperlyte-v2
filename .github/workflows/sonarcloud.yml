@@ -41,10 +41,16 @@ permissions:
 jobs:
   Analysis:
     runs-on: ubuntu-latest
+    if: github.event.pull_request.head.repo.full_name == github.repository || github.event_name == 'push'
 
     steps:
-      - name: Analyze with SonarCloud
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
 
+      - name: Analyze with SonarCloud
+        if: secrets.SONAR_TOKEN != ''
         # You can pin the exact commit or the version.
         # uses: SonarSource/sonarcloud-github-action@v2.2.0
         uses: SonarSource/sonarcloud-github-action@4006f663ecaf1f8093e8e4abb9227f6041f52216

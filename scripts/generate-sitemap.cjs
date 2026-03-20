@@ -38,22 +38,18 @@ const pages = [
  * @returns {string|null} The commit date in `YYYY-MM-DD` format if available and valid, `null` otherwise.
  */
 function getLastGitCommitDate(filePath) {
-  try {
-    const result = spawnSync(
-      'git',
-      ['log', '-1', '--format=%cs', '--', filePath],
-      { encoding: 'utf8', env: { PATH: '/usr/bin:/bin:/usr/local/bin' } }
-    );
-    if (result.status !== 0 || result.error) return null;
-    const date = result.stdout.trim();
-    // Validate YYYY-MM-DD
-    if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-      return date;
-    }
-    return null;
-  } catch {
-    return null;
+  const result = spawnSync(
+    'git',
+    ['log', '-1', '--format=%cs', '--', filePath],
+    { encoding: 'utf8', env: { PATH: '/usr/bin:/bin:/usr/local/bin' } }
+  );
+  if (result.status !== 0 || result.error) return null;
+  const date = result.stdout.trim();
+  // Validate YYYY-MM-DD
+  if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    return date;
   }
+  return null;
 }
 
 /**

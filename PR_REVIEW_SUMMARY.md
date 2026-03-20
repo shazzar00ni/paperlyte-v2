@@ -2,6 +2,74 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-03-20
+
+### Status Overview: Main Branch Regressions
+
+- **Status:** **CRITICAL** (Main branch is currently regressed)
+- **Regressions Found:**
+  - `<Pricing />` component is missing from `src/App.tsx`, causing broken links and test failures.
+  - `<Analytics />` from `@vercel/analytics` is rendered unconditionally in `App.tsx`, which triggers Lighthouse CI console error failures in development/CI environments.
+- **Note to Reviewers:** Branches that address these regressions (by re-adding `Pricing` and conditionalizing `Analytics`) should be prioritized for merge.
+
+### Branch Review: `origin/copilot/sub-pr-585`
+
+- **Status:** **Ready for Merge**
+- **Summary:** Implements a critical security override for `yauzl` (^3.2.1) to patch an upstream vulnerability in `extract-zip`.
+- **Feedback:**
+  - The implementation of the scoped override in `package.json` is correct and follows security best practices.
+  - Includes an excellent rationale in `SECURITY.md` explaining why the major-version bump is safe for this specific dependency chain.
+  - Highly recommended for immediate merge to improve repository security posture.
+
+### Branch Review: `origin/copilot/sub-pr-593`
+
+- **Status:** **Ready for Merge**
+- **Summary:** Adds a new FAQ section with a focus on high-quality accessibility and keyboard interactions.
+- **Feedback:**
+  - The `FAQ` component is well-structured and uses CSS modules for styling.
+  - Keyboard navigation is robust, supporting Arrow keys for vertical traversal and Home/End keys for quick jump-to-extremes.
+  - The use of `aria-live="polite"` for state announcements ("expanded"/"collapsed") is a great touch for screen reader users.
+  - No regressions noted.
+
+### Branch Review: `origin/claude/apply-code-fixes-BUsgx`
+
+- **Status:** **Ready for Merge**
+- **Summary:** Implements widespread accessibility fixes and hook simplifications.
+- **Feedback:**
+  - `Icon.tsx` now correctly handles `aria-label` and `aria-hidden` attributes, improving screen reader support.
+  - `useTheme.ts` has been improved with better persistence logic and system preference tracking.
+  - `useReducedMotion.ts` was simplified to leverage the existing `useMediaQuery` hook, reducing code duplication.
+  - Verified that these changes resolve several baseline test failures related to icon rendering.
+
+### Branch Review: `origin/claude/fix-open-redirect-TX551`
+
+- **Status:** **Ready for Merge**
+- **Summary:** Hardens the `safeNavigate` and `isSafeUrl` utilities to prevent open redirect vulnerabilities.
+- **Feedback:**
+  - `isSafeUrl` now defaults to same-origin validation unless `allowExternal: true` is explicitly passed.
+  - This is a critical security improvement that aligns with the "Security by Default" principle.
+  - The separation of concerns between internal navigation and external link validation is well-implemented.
+
+### Branch Review: `origin/claude/add-git-dates-sitemap-wGlvo`
+
+- **Status:** **Ready for Merge**
+- **Summary:** Automates `<lastmod>` updates in the sitemap using Git commit history.
+- **Feedback:**
+  - `scripts/generate-sitemap.cjs` correctly uses `git log` to extract the last modification date for each source file.
+  - `scripts/inject-dates.js` handles build-time placeholder replacement for legal pages.
+  - This removes the need for manual sitemap updates and ensures metadata accuracy.
+
+### Branch Review: `origin/claude/update-nodejs-actions-6vRnT`
+
+- **Status:** **Ready for Merge**
+- **Summary:** Upgrades CI/CD environment to Node.js 20 and hardens security by pinning GitHub Actions to full SHAs.
+- **Feedback:**
+  - All workflows in `.github/workflows/` have been updated consistently.
+  - Pinning actions to commit SHAs prevents supply chain attacks and ensures build reproducibility.
+  - Migration to Node.js 20 keeps the pipeline aligned with current LTS standards.
+
+---
+
 ## 2026-03-05
 
 ### Analysis: Accidental File Deletions in Open Branches (Jules Daily PR Reviews)

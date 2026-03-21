@@ -9,6 +9,7 @@ import { Solution } from '@components/sections/Solution'
 import { Features } from '@components/sections/Features'
 import { Mobile } from '@components/sections/Mobile'
 import { Statistics } from '@components/sections/Statistics'
+import { Pricing } from '@components/sections/Pricing'
 import { Comparison } from '@components/sections/Comparison'
 import { Testimonials } from '@components/sections/Testimonials'
 import { EmailCapture } from '@components/sections/EmailCapture'
@@ -51,6 +52,7 @@ function App() {
         <Features />
         <Mobile />
         <Statistics />
+        <Pricing />
         <Comparison />
         <Testimonials />
         <EmailCapture />
@@ -59,7 +61,10 @@ function App() {
       </main>
       <Footer />
       <FeedbackWidget />
-      <Analytics />
+      {typeof window !== 'undefined' &&
+        !['localhost', '127.0.0.1'].includes(window.location.hostname) && (
+          <Analytics />
+        )}
     </ErrorBoundary>
   )
 }

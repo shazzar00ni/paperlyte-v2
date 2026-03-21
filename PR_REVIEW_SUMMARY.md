@@ -6,11 +6,13 @@ This file contains a summary of pull requests I have reviewed.
 
 ### Status Overview: Main Branch Regressions
 
-- **Status:** **CRITICAL** (Main branch is currently regressed)
-- **Regressions Found:**
-  - `<Pricing />` component is missing from `src/App.tsx`, causing broken links and test failures.
-  - `<Analytics />` from `@vercel/analytics` is rendered unconditionally in `App.tsx`, which triggers Lighthouse CI console error failures in development/CI environments.
-- **Note to Reviewers:** These regressions were likely introduced during a recent merge and must be fixed-forward or reverted to restore CI stability.
+- **Status:** **FIXED** (Regressions addressed in this branch)
+- **Fixes Applied:**
+  - Re-added the `<Pricing />` component to `src/App.tsx`.
+  - Conditionalized the `<Analytics />` component to render only in non-development environments, resolving Lighthouse CI console error failures.
+  - Added explicit `esbuild` dependency to `package.json` to fix Vite 8 build failures.
+  - Hardened SonarCloud workflow with project-specific keys and a token check.
+  - Removed `exit 1` from deployment notifications to prevent notification failures from breaking the overall CI status.
 
 ### Branch Review: `origin/copilot/sub-pr-620`
 

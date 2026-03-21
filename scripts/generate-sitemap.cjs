@@ -4,7 +4,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
+const { spawnSync } = require('child_process');
 
 // Base domain for sitemap URLs
 const DOMAIN = 'https://paperlyte.com';
@@ -38,19 +38,20 @@ const pages = [
  * @returns {string|null} The commit date in `YYYY-MM-DD` format if available and valid, `null` otherwise.
  */
 function getLastGitCommitDate(filePath) {
-  try {
-    const date = execSync(
-      `git log -1 --format=%cs -- "${filePath}"`,
-      { encoding: 'utf8' }
-    ).trim();
-    // Validate YYYY-MM-DD
-    if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-      return date;
-    }
-    return null;
-  } catch {
-    return null;
+  const result = spawnSync(
+    'git',
+    ['log', '-1', '--format=%cs', '--', filePath],
+    // Only use fixed, non-writable system directories to prevent PATH-hijacking (S4036),
+    // while inheriting the rest of the environment so git behaves normally.
+    { encoding: 'utf8', env: { ...process.env, PATH: '/usr/bin:/bin' } }
+  );
+  if (result.status !== 0 || result.error) return null;
+  const date = result.stdout.trim();
+  // Validate YYYY-MM-DD
+  if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    return date;
   }
+  return null;
 }
 
 /**

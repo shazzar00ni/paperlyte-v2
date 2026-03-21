@@ -62,7 +62,7 @@ describe('Features', () => {
 
     // Icons are decorative (adjacent to text), so they should be aria-hidden
     // Just verify they render
-    const icons = container.querySelectorAll('svg.icon-svg, i.icon-fallback')
+    const icons = container.querySelectorAll('svg[data-icon], .icon-fallback')
     expect(icons.length).toBeGreaterThanOrEqual(EXPECTED_FEATURES.length)
   })
 

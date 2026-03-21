@@ -34,6 +34,11 @@ import {
   faSun, // Light mode toggle
   faLock, // Security/privacy indicator
   faCheck, // Checkmark/success
+  faTriangleExclamation, // Error/warning indicator
+  faHome, // Navigation home
+  faCircleInfo, // Information indicator
+  faClock, // Time/status indicator
+  faCode, // Code/details indicator
   faCircleQuestion, // Fallback icon for missing/invalid icons
   faChevronLeft, // Testimonials carousel navigation
   faChevronRight, // Testimonials carousel navigation
@@ -90,6 +95,11 @@ library.add(
   faSun,
   faLock,
   faCheck,
+  faTriangleExclamation,
+  faHome,
+  faCircleInfo,
+  faClock,
+  faCode,
   faCircleQuestion, // Fallback icon (not exposed via iconNameMap)
   faChevronLeft,
   faChevronRight,
@@ -144,6 +154,11 @@ export const iconNameMap: Record<string, string> = {
   'fa-sun': 'sun',
   'fa-lock': 'lock',
   'fa-check': 'check',
+  'fa-triangle-exclamation': 'triangle-exclamation',
+  'fa-home': 'home',
+  'fa-circle-info': 'circle-info',
+  'fa-clock': 'clock',
+  'fa-code': 'code',
   'fa-chevron-left': 'chevron-left',
   'fa-chevron-right': 'chevron-right',
   'fa-chevron-up': 'chevron-up',

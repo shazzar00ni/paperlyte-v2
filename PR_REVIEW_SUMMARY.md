@@ -2,6 +2,88 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-03-21
+
+### Status Overview: Main Branch Regressions
+
+- **Status:** **FIXED** (Regressions addressed in this branch)
+- **Fixes Applied:**
+  - Re-added the `<Pricing />` component to `src/App.tsx`.
+  - Conditionalized the `<Analytics />` component to render only in non-development environments, resolving Lighthouse CI console error failures.
+  - Added explicit `esbuild` dependency to `package.json` to fix Vite 8 build failures.
+  - Hardened SonarCloud workflow with project-specific keys and a token check.
+  - Removed `exit 1` from deployment notifications to prevent notification failures from breaking the overall CI status.
+
+### Branch Review: `origin/copilot/sub-pr-620`
+
+- **Status:** **Ready for Merge**
+- **Summary:** Security hardening for `scripts/generate-sitemap.cjs` by replacing `execSync` with `spawnSync` and sanitizing `PATH`.
+- **Feedback:**
+  - This is a proactive security improvement (addressing S4036/Command Injection risks).
+  - The implementation correctly restricts `PATH` to system binaries, preventing environment-based hijack attacks.
+  - No systemic regressions found.
+
+### Branch Review: `origin/claude/setup-sonarcloud-HM572`
+
+- **Status:** **Ready for Merge**
+- **Summary:** Configures SonarCloud analysis for the repository.
+- **Feedback:**
+  - Adds a robust `sonar-project.properties` file with appropriate exclusions and coverage reporting paths.
+  - Updates `.github/workflows/sonarcloud.yml` to support full-depth checkouts, which is required for accurate analysis.
+  - Ensures analysis triggers on both `main` and `master` branches.
+
+### Branch Review: `origin/claude/fix-job-timeout-MJJDQ`
+
+- **Status:** **Ready for Merge**
+- **Summary:** Adds a 30-minute timeout to the Codacy Security Scan job.
+- **Feedback:**
+  - A necessary stability fix to prevent hanging CI runs from consuming excessive runner minutes.
+  - No side effects noted.
+
+### Branch Review: `origin/claude/fix-issue-577-v60JV`
+
+- **Status:** **Ready for Merge**
+- **Summary:** Resolves a logic error in `src/analytics/webVitals.ts` regarding INP (Interaction to Next Paint) tracking.
+- **Feedback:**
+  - Fixed an issue where `processingStart` could be `0` (a valid value) and be incorrectly treated as falsy.
+  - Includes comprehensive unit tests in `src/analytics/webVitals.test.ts`.
+
+### Branch Review: `origin/claude/fix-esbuild-dependency-FzL7Q`
+
+- **Status:** **Ready for Merge**
+- **Summary:** Adds `esbuild` as an explicit `devDependency` in `package.json`.
+- **Feedback:**
+  - Critical for Vite 8 compatibility in CI environments where `esbuild` might not be pre-installed.
+  - Follows best practices for explicit dependency management.
+
+### Branch Review: `origin/claude/fix-codacy-warnings-QTZ9S`
+
+- **Status:** **Ready for Merge**
+- **Summary:** Addresses high-severity security warnings in Netlify functions.
+- **Feedback:**
+  - Adds input validation (regex check) for `formId` in `netlify/functions/subscribe.ts` to prevent path traversal.
+  - Correctly sanitizes IP address extraction from headers.
+  - Improves error handling in the `ErrorBoundary` component.
+
+### Branch Review: `origin/claude/add-claude-documentation-QxLA4`
+
+- **Status:** **Ready for Merge**
+- **Summary:** Comprehensive updates to `CLAUDE.md` to reflect the current state of the project.
+- **Feedback:**
+  - Adds detailed sections on architectural patterns, testing strategies, and common development tasks.
+  - This is a high-value documentation update that significantly lowers the barrier for new contributors.
+
+### Previously Verified Branches (Still Ready for Merge)
+
+- `origin/copilot/sub-pr-585` (Security: `yauzl` override)
+- `origin/copilot/sub-pr-593` (Accessibility: Keyboard-accessible FAQ)
+- `origin/claude/apply-code-fixes-BUsgx` (Accessibility: Icon & Theme fixes)
+- `origin/claude/fix-open-redirect-TX551` (Security: `safeNavigate` hardening)
+- `origin/claude/add-git-dates-sitemap-wGlvo` (Metadata: Automated sitemap dates)
+- `origin/claude/update-nodejs-actions-6vRnT` (CI/CD: Node 20 & SHA pinning)
+
+---
+
 ## 2026-03-05
 
 ### Analysis: Accidental File Deletions in Open Branches (Jules Daily PR Reviews)

@@ -117,6 +117,7 @@ export const Icon = ({
       style: { fontSize: iconSize, color: normalizedColor, ...style },
       'aria-label': ariaLabel,
       'aria-hidden': ariaLabel ? ('false' as const) : ('true' as const),
+      'data-icon': name,
       ...(ariaLabel ? { role: 'img' } : {}),
     }
 

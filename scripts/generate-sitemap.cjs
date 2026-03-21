@@ -41,7 +41,9 @@ function getLastGitCommitDate(filePath) {
   const result = spawnSync(
     'git',
     ['log', '-1', '--format=%cs', '--', filePath],
-    { encoding: 'utf8', env: { PATH: '/usr/bin:/bin:/usr/local/bin' } }
+    // Only use fixed, non-writable system directories to prevent PATH-hijacking (S4036),
+    // while inheriting the rest of the environment so git behaves normally.
+    { encoding: 'utf8', env: { ...process.env, PATH: '/usr/bin:/bin' } }
   );
   if (result.status !== 0 || result.error) return null;
   const date = result.stdout.trim();

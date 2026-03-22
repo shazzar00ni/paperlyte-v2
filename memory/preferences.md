@@ -3,9 +3,9 @@
 This file tracks coding style, design, and workflow preferences for this project.
 
 ## Format
-- **Category**: Area this preference applies to (code style, design, workflow, etc.)
-- **Preference**: The specific preference
-- **Context**: Why this preference exists
+- Use top-level headings (e.g., **Design**, **Code**, **Workflow**) as the category.
+- Under each heading, add concise bullet points describing individual preferences.
+- Include brief context or rationale inline in the bullet when it improves clarity.
 
 ---
 

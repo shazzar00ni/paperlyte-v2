@@ -10,7 +10,7 @@ This file tracks coding style, design, and workflow preferences for this project
 ---
 
 ## Design
-- Avoid generic AI aesthetics (Inter/Roboto fonts, purple gradients, predictable layouts)
+- Avoid generic AI aesthetics (overused purple gradients, sci-fi glows, overly predictable layouts)
 - Use distinctive typography choices
 - Commit to cohesive, themed color palettes with dominant colors and sharp accents
 - Animate high-impact moments (page load staggered reveals) over scattered micro-interactions

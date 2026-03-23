@@ -63,7 +63,7 @@ Marketing/landing page for the Paperlyte note-taking app. React 19 + TypeScript 
 - ESLint warnings are treated as errors (`--max-warnings 0`)
 - Bundle size limits enforced: main JS < 150 KB gzipped, main CSS < 30 KB gzipped — run `npm run size`
 - No external CDNs for fonts/icons (CSP compliance requirement)
-- Husky pre-commit hooks run automatically; do not use `--no-verify`
+- Local Git pre-commit hooks (if configured) run automatically; do not use `--no-verify`
 
 ## Common Pitfalls
 

@@ -9,8 +9,7 @@ This file tracks information about the user's goals, context, and working style.
 ---
 
 ## Project Context
-- Project: Paperlyte — a lightning-fast, distraction-free note-taking app
-- Stage: MVP landing page development
-- Stack: React 19, TypeScript, Vite
+- **Category**: Context
+- **Notes**: Paperlyte — a lightning-fast, distraction-free note-taking app; MVP landing page stage; React 19, TypeScript, Vite stack
 
 <!-- Add user-specific notes below -->

@@ -1,9 +1,11 @@
 # PR Reviewer Guide — Paperlyte Landing Page
 
 ## Purpose
+
 Marketing/landing page for the Paperlyte note-taking app. React 19 + TypeScript + Vite SPA — no actual note-taking functionality, purely conversion-focused.
 
 ## Architecture
+
 - Component-based React SPA with CSS Modules
 - Section-per-file layout: each landing page section is an isolated component
 - Data-driven: all content (features, testimonials, FAQ, etc.) lives in `src/constants/`
@@ -26,6 +28,7 @@ Marketing/landing page for the Paperlyte note-taking app. React 19 + TypeScript 
 | `tests/e2e/` | Playwright E2E tests |
 
 ## Stack
+
 - **React 19** with functional components and hooks only (no class components)
 - **TypeScript** strict mode — no `any`, use `unknown` or specific types
 - **Vite 8** — `bundler` module resolution, path aliases required
@@ -36,12 +39,14 @@ Marketing/landing page for the Paperlyte note-taking app. React 19 + TypeScript 
 - **Sentry** for error monitoring; **GA4** for analytics
 
 ## Testing
+
 - Unit tests: co-located with components (`Component.test.tsx`); run `npm run test`
 - E2E tests: `tests/e2e/`; run `npm run test:e2e`
 - Coverage: `npm run test:coverage`
 - PRs should maintain existing coverage; new components/hooks warrant new tests
 
 ## Code Style & Conventions
+
 - **Path aliases required**: `@components/`, `@hooks/`, `@utils/`, `@constants/`, `@styles/`, `@/`
 - **Import order**: React → external → `@` aliases → relative
 - **Naming**: PascalCase components/interfaces, camelCase vars/functions, SCREAMING_SNAKE_CASE constants
@@ -51,6 +56,7 @@ Marketing/landing page for the Paperlyte note-taking app. React 19 + TypeScript 
 - **Analytics**: `trackEvent()` for interactions — **never include PII**
 
 ## PR-Specific Rules
+
 - **Branch from `master`**; target PRs at `master`
 - Run `npm run ci` (lint + type-check + test + build) before requesting review
 - TypeScript errors = PR blocked; no `// @ts-ignore` without documented justification
@@ -60,6 +66,7 @@ Marketing/landing page for the Paperlyte note-taking app. React 19 + TypeScript 
 - Husky pre-commit hooks run automatically; do not use `--no-verify`
 
 ## Common Pitfalls
+
 - **Adding note-taking features** — this is a marketing page only; no localStorage, no data persistence
 - **Sending PII to analytics** — emails, names, etc. must never appear in `trackEvent()` calls
 - **Missing `prefers-reduced-motion` check** — all animations must use `useReducedMotion()` hook or CSS media query
@@ -70,6 +77,7 @@ Marketing/landing page for the Paperlyte note-taking app. React 19 + TypeScript 
 - **`src/analytics/` vs `src/utils/analytics.ts`** — different concerns; don't conflate them
 
 ## Out of Scope
+
 - The actual Paperlyte note-taking application (separate repo)
 - `dependabot` bump PRs — approve if CI passes, no functional review needed
 - `docs/` content changes (non-code) — light review only unless they affect security or legal

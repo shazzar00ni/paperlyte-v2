@@ -52,7 +52,7 @@ Marketing/landing page for the Paperlyte note-taking app. React 19 + TypeScript 
 - **Naming**: PascalCase components/interfaces, camelCase vars/functions, SCREAMING_SNAKE_CASE constants
 - **Component props interfaces**: suffix with `Props` (e.g. `ButtonProps`)
 - **CSS**: Prefer CSS Modules for styling; inline styles are acceptable for dynamic values only (e.g. transforms, CSS variables). No Tailwind or external CSS frameworks.
-- **Error handling**: async ops always in try/catch; use `monitoring.logError()` for errors
+- **Error handling**: async ops always in try/catch; use `logError` from `@utils/monitoring` for errors
 - **Analytics**: `trackEvent()` for interactions — **never include PII**
 
 ## PR-Specific Rules

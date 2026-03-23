@@ -36,7 +36,7 @@ Marketing/landing page for the Paperlyte note-taking app. React 19 + TypeScript 
 - **Vitest** + jsdom for unit/integration tests; **Playwright** for E2E
 - **Font Awesome** via `@fortawesome` npm packages (never CDN)
 - **Inter** via `@fontsource/inter`; **Playfair Display** self-hosted
-- **Sentry** for error monitoring; **GA4** for analytics
+- **Sentry** for error monitoring; **Vercel Analytics** (via `@vercel/analytics/react`) + provider-based module in `src/analytics/`; **GA4** as an optional analytics provider
 
 ## Testing
 

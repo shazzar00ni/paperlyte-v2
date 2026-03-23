@@ -29,7 +29,7 @@ Marketing/landing page for the Paperlyte note-taking app. React 19 + TypeScript 
 
 ## Stack
 
-- **React 19** with functional components and hooks only (no class components)
+- **React 19** with primarily functional components and hooks; `ErrorBoundary` is a class component
 - **TypeScript** strict mode — no `any`, use `unknown` or specific types
 - **Vite 8** — `bundler` module resolution, path aliases required
 - **CSS Modules** — component styles; global variables in `src/styles/variables.css`

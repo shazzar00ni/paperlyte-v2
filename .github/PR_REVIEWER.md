@@ -57,7 +57,7 @@ Marketing/landing page for the Paperlyte note-taking app. React 19 + TypeScript 
 
 ## PR-Specific Rules
 
-- **Branch from `master`**; target PRs at `master`
+- **Branch from `main`**; target PRs at `main`
 - Run `npm run ci` (lint + type-check + test + build) before requesting review
 - TypeScript errors = PR blocked; no `// @ts-ignore` without documented justification
 - ESLint warnings are treated as errors (`--max-warnings 0`)

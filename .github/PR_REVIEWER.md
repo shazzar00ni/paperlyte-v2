@@ -47,7 +47,7 @@ Marketing/landing page for the Paperlyte note-taking app. React 19 + TypeScript 
 
 ## Code Style & Conventions
 
-- **Path aliases required**: `@components/`, `@hooks/`, `@utils/`, `@constants/`, `@styles/`, `@/`
+- **Path aliases required**: `@components/`, `@hooks/`, `@utils/`, `@constants/`, `@styles/`, `@types/`, `@/`
 - **Import order**: React → external → `@` aliases → relative
 - **Naming**: PascalCase components/interfaces, camelCase vars/functions, SCREAMING_SNAKE_CASE constants
 - **Component props interfaces**: suffix with `Props` (e.g. `ButtonProps`)

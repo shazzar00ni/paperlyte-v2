@@ -32,18 +32,59 @@ const pages = [
 ];
 
 /**
+ * Resolve the absolute path to the git executable by checking known safe
+ * directories, or return null if none is found.
+ *
+ * @returns {string|null}
+ */
+function resolveGitExecutable() {
+  const candidates = [
+    '/usr/bin/git',
+    '/bin/git',
+    '/usr/local/bin/git',
+    '/opt/homebrew/bin/git',
+  ];
+  for (const candidate of candidates) {
+    try {
+      fs.accessSync(candidate, fs.constants.X_OK);
+      return candidate;
+    } catch {
+      // not found or not executable at this path
+    }
+  }
+  return null;
+}
+
+/**
  * Retrieve the last Git commit date for a file as `YYYY-MM-DD`.
  *
  * @param {string} filePath - Path to the file to inspect.
  * @returns {string|null} The commit date in `YYYY-MM-DD` format if available and valid, `null` otherwise.
  */
 function getLastGitCommitDate(filePath) {
+  const gitExe = resolveGitExecutable();
+
+  let executable;
+  let spawnEnv;
+
+  if (gitExe) {
+    // Use the absolute path; restrict PATH to only the directory that contains it.
+    executable = gitExe;
+    spawnEnv = { PATH: path.dirname(gitExe) };
+  } else {
+    // git not found in known safe locations — fall back to PATH-based lookup but warn.
+    console.warn(
+      'Warning: git executable not found in known safe directories. ' +
+      'Falling back to process PATH for git lookup; <lastmod> may be missing if git is unavailable.'
+    );
+    executable = 'git';
+    spawnEnv = { PATH: process.env.PATH };
+  }
+
   const result = spawnSync(
-    'git',
+    executable,
     ['log', '-1', '--format=%cs', '--', filePath],
-    // Only use fixed, non-writable system directories to prevent PATH-hijacking (S4036),
-    // while inheriting the rest of the environment so git behaves normally.
-    { encoding: 'utf8', env: { ...process.env, PATH: '/usr/bin:/bin' } }
+    { encoding: 'utf8', env: spawnEnv }
   );
   if (result.status !== 0 || result.error) return null;
   const date = result.stdout.trim();

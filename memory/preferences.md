@@ -12,7 +12,7 @@ This file tracks coding style, design, and workflow preferences for this project
 
 ## Design
 
-- Use Inter for UI/body typography (`src/**/*.{tsx,css}`); Playfair Display (serif) for headlines
+- Use Inter (sans-serif) for UI/body text and Playfair Display (serif) for headlines (`src/**/*.css`); Inter is loaded via `@fontsource/inter`
 - Follow monochrome design aesthetic with near-black (`#1a1a1a`) and white (`#ffffff`) as primary palette (`src/**/*.css`)
 - Avoid clichéd decorative choices (purple gradients, sci-fi glows, overly predictable layouts) that conflict with the monochrome identity
 - Within the monochrome palette, use dominant near-black/white with sharp accent contrasts; avoid evenly-distributed timid palettes

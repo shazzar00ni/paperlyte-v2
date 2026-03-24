@@ -100,78 +100,79 @@ export const Icon = ({
   // Manual useMemo is omitted here; the React Compiler handles memoization automatically.
   const pathArray = paths ? paths.split(' M ') : []
 
-  // Fallback to Font Awesome React component if icon not found in our set
-  if (!paths) {
-    if (import.meta.env.DEV) {
-      console.warn(`Icon "${name}" not found in icon set, using Font Awesome fallback`)
-    }
+  // Render custom SVG if icon found in our set
+  if (paths) {
+    const svgClassName = ['icon-svg', modifierClasses, className].filter(Boolean).join(' ')
 
-    // Determine prefix based on variant or by checking if it's a brand icon
-    let prefix: IconPrefix
-    if (variant === 'brands' || isBrandIcon(convertedName)) {
-      prefix = 'fab'
-    } else if (variant === 'regular') {
-      prefix = 'far'
-    } else {
-      prefix = 'fas'
-    }
-
-    // Try to find the icon definition in the library
-    // Runtime validation: Check if convertedName is a valid IconName before assertion
-    const iconDefinition = findIconDefinition({ prefix, iconName: convertedName as IconName })
-
-    const fallbackClassName = ['icon-fallback', modifierClasses, className].filter(Boolean).join(' ')
-    const commonIconProps = {
-      className: fallbackClassName,
-      style: { fontSize: iconSize, color: normalizedColor, ...style },
-      'aria-label': ariaLabel,
-      'aria-hidden': ariaLabel ? ('false' as const) : ('true' as const),
-      ...(ariaLabel ? { role: 'img' } : {}),
-    }
-
-    // If icon not found in library, return a placeholder
-    if (!iconDefinition) {
-      console.warn(
-        `Icon "${name}" (converted to "${convertedName}") not found in Font Awesome library. ` +
-          `Rendering empty/decorative fallback span.`
-      )
-      return (
-        <span {...commonIconProps} title={`Icon "${name}" not found`}>
-          ?
-        </span>
-      )
-    }
-
-    return <FontAwesomeIcon icon={iconDefinition} {...commonIconProps} />
+    return (
+      <svg
+        width={iconSize}
+        height={iconSize}
+        viewBox={viewBox}
+        fill="none"
+        stroke={normalizedColor ?? 'currentColor'}
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className={svgClassName}
+        style={style}
+        data-icon={baseName}
+        aria-labelledby={ariaLabel ? titleId : undefined}
+        aria-hidden={ariaLabel ? ('false' as const) : ('true' as const)}
+        {...(ariaLabel && { role: 'img' })}
+      >
+        {ariaLabel && <title id={titleId}>{ariaLabel}</title>}
+        {pathArray.map((pathData, index) => (
+          <path
+            key={index}
+            d={index === 0 ? pathData : `M ${pathData}`}
+            fill={strokeOnlyIcons.has(resolvedKey) ? 'none' : undefined}
+          />
+        ))}
+      </svg>
+    )
   }
 
-  const svgClassName = ['icon-svg', modifierClasses, className].filter(Boolean).join(' ')
+  // Fallback to Font Awesome React component if icon not found in our set
+  if (import.meta.env.DEV) {
+    console.warn(`Icon "${name}" not found in icon set, using Font Awesome fallback`)
+  }
 
-  return (
-    <svg
-      width={iconSize}
-      height={iconSize}
-      viewBox={viewBox}
-      fill="none"
-      stroke={normalizedColor ?? 'currentColor'}
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={svgClassName}
-      style={style}
-      data-icon={baseName}
-      aria-labelledby={ariaLabel ? titleId : undefined}
-      aria-hidden={ariaLabel ? ('false' as const) : ('true' as const)}
-      {...(ariaLabel && { role: 'img' })}
-    >
-      {ariaLabel && <title id={titleId}>{ariaLabel}</title>}
-      {pathArray.map((pathData, index) => (
-        <path
-          key={index}
-          d={index === 0 ? pathData : `M ${pathData}`}
-          fill={strokeOnlyIcons.has(resolvedKey) ? 'none' : undefined}
-        />
-      ))}
-    </svg>
-  )
+  // Determine prefix based on variant or by checking if it's a brand icon
+  let prefix: IconPrefix
+  if (variant === 'brands' || isBrandIcon(convertedName)) {
+    prefix = 'fab'
+  } else if (variant === 'regular') {
+    prefix = 'far'
+  } else {
+    prefix = 'fas'
+  }
+
+  // Try to find the icon definition in the library
+  // Runtime validation: Check if convertedName is a valid IconName before assertion
+  const iconDefinition = findIconDefinition({ prefix, iconName: convertedName as IconName })
+
+  const fallbackClassName = ['icon-fallback', modifierClasses, className].filter(Boolean).join(' ')
+  const commonIconProps = {
+    className: fallbackClassName,
+    style: { fontSize: iconSize, color: normalizedColor, ...style },
+    'aria-label': ariaLabel,
+    'aria-hidden': ariaLabel ? ('false' as const) : ('true' as const),
+    ...(ariaLabel ? { role: 'img' } : {}),
+  }
+
+  // If icon not found in library, return a placeholder
+  if (!iconDefinition) {
+    console.warn(
+      `Icon "${name}" (converted to "${convertedName}") not found in Font Awesome library. ` +
+        `Rendering empty/decorative fallback span.`
+    )
+    return (
+      <span {...commonIconProps} title={`Icon "${name}" not found`}>
+        ?
+      </span>
+    )
+  }
+
+  return <FontAwesomeIcon icon={iconDefinition} {...commonIconProps} />
 }

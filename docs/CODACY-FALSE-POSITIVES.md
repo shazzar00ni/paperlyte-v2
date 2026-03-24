@@ -9,7 +9,7 @@ Codacy's ESLint8 engine reports **8 false positive security warnings** for non-l
 **Pattern**: `ESLint8_security_detect-non-literal-regexp` and `ESLint8_security-node_non-literal-reg-expr`
 
 **Locations**:
- 1. `src/constants/features.test.ts:23` - `countOccurrences` function
+1. `src/constants/features.test.ts:23` - `countOccurrences` function
 2. `src/components/sections/FAQ/FAQ.test.tsx:15` - `getQuestionButton` helper
 3. `src/components/sections/Comparison/Comparison.test.tsx:47` - Competitor name matching
 4. `src/components/sections/Pricing/Pricing.test.tsx:137` - Plan CTA text matching
@@ -34,7 +34,7 @@ This prevents ReDoS (Regular Expression Denial of Service) attacks by ensuring n
 ### 2. Input Sources Are Constants, Not User Input
 
 All values passed to RegExp constructors come from application constants:
- - `FAQ_ITEMS` - Hardcoded FAQ questions
+- `FAQ_ITEMS` - Hardcoded FAQ questions
 - `PRICING_PLANS` - Hardcoded pricing plan data
 - `COMPETITORS` - Hardcoded competitor names
 - Test data - Static strings defined in test files

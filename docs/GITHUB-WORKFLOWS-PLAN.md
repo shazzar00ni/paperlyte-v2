@@ -15,7 +15,7 @@ This document provides a comprehensive plan for GitHub workflows in the Paperlyt
 ### ✅ Existing Workflows
 
 #### 1. **CI/CD Pipeline** (`.github/workflows/ci.yml`)
- - **Triggers**: Push/PR to `main` and `develop` branches
+- **Triggers**: Push/PR to `main` and `develop` branches
 - **Jobs**:
   - ✅ Lint and Type Check (ESLint + TypeScript)
   - ✅ Security Audit (npm audit with different levels for main vs branches)
@@ -36,7 +36,7 @@ This document provides a comprehensive plan for GitHub workflows in the Paperlyt
   - ⚠️ No PR-specific features (size comparisons, preview comments)
 
 #### 2. **Weekly Activity Report** (`.github/workflows/paperlyte-weekly-report.yml`)
- - **Triggers**: Weekly schedule (Monday 00:00 UTC) + manual dispatch
+- **Triggers**: Weekly schedule (Monday 00:00 UTC) + manual dispatch
 - **Purpose**: Generates CSV reports of GitHub activity across repositories
 - **Status**: ✅ Working as designed
 - **Note**: Low priority for core development workflows
@@ -88,7 +88,7 @@ test:
 ```
 
 **Configuration Needed**:
- - Sign up for Codecov (free for open source)
+- Sign up for Codecov (free for open source)
 - Add `CODECOV_TOKEN` secret to repository
 - Update `ci-success` job to depend on `test`
 
@@ -332,14 +332,14 @@ test.describe('Landing Page', () => {
 ```
 
 **Configuration Needed**:
- - Add Playwright to `package.json` devDependencies
+- Add Playwright to `package.json` devDependencies
 - Create `playwright.config.ts` configuration
 - Write initial E2E tests for critical user flows
 - Update CI to trigger on deployment success
 - Integrate with Netlify/Vercel deployment events
 
 **Benefits**:
- - Tests against actual deployed preview URLs
+- Tests against actual deployed preview URLs
 - Catches issues in production-like environment
 - Visual regression testing capability
 - Cross-browser compatibility verification
@@ -428,7 +428,7 @@ deploy-staging:
 ```
 
 **Secrets Required** (based on provider):
- - Netlify: `NETLIFY_AUTH_TOKEN`, `NETLIFY_SITE_ID`
+- Netlify: `NETLIFY_AUTH_TOKEN`, `NETLIFY_SITE_ID`
 - Vercel: `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`
 - AWS S3/CloudFront: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`
 
@@ -652,12 +652,12 @@ updates:
 ```
 
 **Configuration Required**:
- - **Update reviewer**: Change `"shazzar00ni"` to the actual GitHub username of the project maintainer
+- **Update reviewer**: Change `"shazzar00ni"` to the actual GitHub username of the project maintainer
 - This is configured in Phase 4 of the implementation checklist
 - Multiple reviewers can be added as an array
 
 **Benefits**:
- - Automatic PRs for dependency updates
+- Automatic PRs for dependency updates
 - Security vulnerability patches
 - Grouped updates reduce PR noise
 - Auto-merge minor updates with GitHub Auto-merge
@@ -945,7 +945,7 @@ jobs:
 ## 📋 Implementation Checklist
 
 ### Phase 1: Critical Fixes (Week 1)
- - [ ] Add test execution to CI workflow
+- [ ] Add test execution to CI workflow
 - [ ] Add code formatting check to CI
 - [ ] Fix artifact version mismatch in CI (change download-artifact@v7 to @v6)
 - [ ] Configure coverage thresholds in vitest.config.ts (>80% requirement)
@@ -953,7 +953,7 @@ jobs:
 - [ ] Update `ci-success` job dependencies
 
 ### Phase 2: Deployment & E2E Testing (Week 2)
- - [ ] Choose hosting provider (Netlify/Vercel/AWS)
+- [ ] Choose hosting provider (Netlify/Vercel/AWS)
 - [ ] Create deployment workflow for production
 - [ ] Set up staging environment
 - [ ] Configure deployment secrets
@@ -967,13 +967,13 @@ jobs:
 - [ ] Validate PR comment integration works
 
 ### Phase 3: PR Automation (Week 3)
- - [ ] Set up preview deployments
+- [ ] Set up preview deployments
 - [ ] Configure PR auto-labeling
 - [ ] Add bundle size comparison comments
 - [ ] Test PR workflow end-to-end
 
 ### Phase 4: Security & Maintenance (Week 4)
- - [ ] Enable Dependabot with proper reviewer configuration
+- [ ] Enable Dependabot with proper reviewer configuration
 - [ ] Update Dependabot reviewer from "shazzar00ni" to actual maintainer
 - [ ] Set up CodeQL scanning
 - [ ] Configure stale issue management
@@ -981,7 +981,7 @@ jobs:
 - [ ] Set up PR auto-labeling for changelog automation
 
 ### Phase 5: Polish (Ongoing)
- - [ ] Add performance monitoring
+- [ ] Add performance monitoring
 - [ ] Create changelog automation
 - [ ] Document workflow usage for team
 - [ ] Set up workflow failure notifications
@@ -991,7 +991,7 @@ jobs:
 ## 🔧 Configuration Files Needed
 
 ### Required Files
- 1. `.github/dependabot.yml` - Dependency updates
+1. `.github/dependabot.yml` - Dependency updates
 2. `.github/labeler.yml` - Auto-labeling rules
 3. `.github/changelog-config.json` - Release notes generation
 4. `playwright.config.ts` - Playwright E2E test configuration
@@ -1001,7 +1001,7 @@ jobs:
 8. `.github/workflows/preview.yml` - PR preview deployments
 
 ### Secrets to Configure
- - `CODECOV_TOKEN` - Code coverage reporting
+- `CODECOV_TOKEN` - Code coverage reporting
 - `NETLIFY_AUTH_TOKEN` + `NETLIFY_SITE_ID` - Deployment (if using Netlify)
 - `VERCEL_TOKEN` + org/project IDs - Deployment (if using Vercel)
 - `GITHUB_TOKEN` - Auto-provided, no action needed
@@ -1011,21 +1011,21 @@ jobs:
 ## 📊 Success Metrics
 
 ### Build Health
- - ✅ All unit tests passing in CI
+- ✅ All unit tests passing in CI
 - ✅ All E2E tests passing on preview deployments
 - ✅ 100% type safety (no TypeScript errors)
 - ✅ Zero high/critical security vulnerabilities
 - ✅ Code coverage >80%
 
 ### Performance
- - ✅ Lighthouse Performance >90
+- ✅ Lighthouse Performance >90
 - ✅ Lighthouse Accessibility >95
 - ✅ Bundle size <150KB (JS), <30KB (CSS)
 - ✅ First Contentful Paint <2s
 - ✅ Largest Contentful Paint <2.5s
 
 ### Developer Experience
- - ✅ CI runs complete in <5 minutes
+- ✅ CI runs complete in <5 minutes
 - ✅ PRs get preview deployments within 2 minutes
 - ✅ Automated dependency updates
 - ✅ Clear PR feedback (size, tests, coverage)
@@ -1035,7 +1035,7 @@ jobs:
 ## 🚨 Critical Warnings
 
 ### DO NOT:
- 1. ❌ Skip test execution in CI (currently happening!)
+1. ❌ Skip test execution in CI (currently happening!)
 2. ❌ Disable security checks to make CI pass
 3. ❌ Lower Lighthouse thresholds without team discussion
 4. ❌ Auto-merge Dependabot PRs without review for major updates

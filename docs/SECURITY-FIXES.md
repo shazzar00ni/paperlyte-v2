@@ -5,7 +5,7 @@ This document summarizes the security improvements made to address Semgrep and C
 ## Overview
 
 All 18 security findings have been addressed with comprehensive defense-in-depth measures:
- - ✅ 5 non-literal RegExp issues (Medium severity)
+- ✅ 5 non-literal RegExp issues (Medium severity)
 - ✅ 6 path traversal issues (Medium severity)
 - ✅ 7 unsafe format string issues (Low severity)
 
@@ -16,13 +16,13 @@ All 18 security findings have been addressed with comprehensive defense-in-depth
 **Problem**: Dynamic strings used in RegExp constructor without sanitization (ReDoS risk)
 
 **Solution**:
- - Created shared utility: `src/utils/test/regexHelpers.ts`
+- Created shared utility: `src/utils/test/regexHelpers.ts`
 - Implements `escapeRegExp()` function that escapes all regex metacharacters
 - Updated all test files to use shared helper
 - Added nosemgrep suppressions with security justifications
 
 **Files Updated**:
- - `src/utils/test/regexHelpers.ts` (new shared utility)
+- `src/utils/test/regexHelpers.ts` (new shared utility)
 - `src/constants/features.test.ts`
 - `src/components/sections/FAQ/FAQ.test.tsx`
 - `src/components/sections/Comparison/Comparison.test.tsx`
@@ -33,13 +33,13 @@ All 18 security findings have been addressed with comprehensive defense-in-depth
 **Problem**: User-controlled paths could escape project directory
 
 **Solution**:
- - Created shared utility: `scripts/utils/filenameValidation.js`
+- Created shared utility: `scripts/utils/filenameValidation.js`
 - Implements two validation functions:
   - `isFilenameSafe()`: Validates individual filenames
   - `isPathSafe()`: Validates full file paths with comprehensive checks
 
 **Security Measures**:
- - Checks for `..`, `/`, `\` patterns
+- Checks for `..`, `/`, `\` patterns
 - Detects URL-encoded patterns (`%2e%2e`, `%2f`, `%5c`)
 - Blocks null bytes (`\0`, `%00`)
 - Normalizes paths before validation
@@ -47,7 +47,7 @@ All 18 security findings have been addressed with comprehensive defense-in-depth
 - Uses `path.sep` to prevent false positives
 
 **Files Updated**:
- - `scripts/utils/filenameValidation.js` (new shared utility)
+- `scripts/utils/filenameValidation.js` (new shared utility)
 - `scripts/check-legal-placeholders.ts`
 - `scripts/generate-icons.js`
 - `scripts/generate-mockups.js`
@@ -58,33 +58,33 @@ All 18 security findings have been addressed with comprehensive defense-in-depth
 **Problem**: Template literals with dynamic content in console statements
 
 **Solution**:
- - Refactored console.error and console.log to use separate arguments
+- Refactored console.error and console.log to use separate arguments
 - Prevents format string confusion
 
 **Files Updated**:
- - `src/utils/monitoring.ts`
+- `src/utils/monitoring.ts`
 
 ### 4. Build Fix
 
 **Problem**: `faRouter` icon doesn't exist in Font Awesome library
 
 **Solution**:
- - Replaced with `faNetworkWired` which exists and serves the same purpose
+- Replaced with `faNetworkWired` which exists and serves the same purpose
 
 **Files Updated**:
- - `src/utils/iconLibrary.ts`
+- `src/utils/iconLibrary.ts`
 
 ## Code Quality Improvements
 
 ### Eliminated Code Duplication
 
 **Before**:
- - `escapeRegExp` duplicated in 4 test files
+- `escapeRegExp` duplicated in 4 test files
 - `isFilenameSafe` duplicated in 3 script files
 - `isPathSafe` only in 1 file
 
 **After**:
- - All utilities consolidated into shared modules
+- All utilities consolidated into shared modules
 - Single source of truth for security functions
 - Comprehensive JSDoc documentation
 
@@ -98,7 +98,7 @@ All 18 security findings have been addressed with comprehensive defense-in-depth
 ## Testing
 
 All security-related tests pass:
- - `src/constants/features.test.ts`: ✅ 36/36 tests passing
+- `src/constants/features.test.ts`: ✅ 36/36 tests passing
 - `src/components/sections/FAQ/FAQ.test.tsx`: ✅ escapeRegExp tests passing
 - `src/components/sections/Comparison/Comparison.test.tsx`: ✅ escapeRegExp tests passing
 - `src/components/sections/Pricing/Pricing.test.tsx`: ✅ escapeRegExp tests passing
@@ -106,7 +106,7 @@ All security-related tests pass:
 ## Security Scanner Suppressions
 
 Added nosemgrep comments for false positives:
- - RegExp usage is safe because inputs are escaped via `escapeRegExp()`
+- RegExp usage is safe because inputs are escaped via `escapeRegExp()`
 - Path validation code itself triggers scanner (it uses path.resolve to validate)
 - All suppressions include detailed explanations
 
@@ -136,18 +136,18 @@ we use **surgical inline suppression comments** on specific lines that need them
    - Keeps all other security rules active for test files
 
 **Note on ESLint security rules:**
- - The `eslint-plugin-security` and `eslint-plugin-security-node` plugins are not installed in this project
+- The `eslint-plugin-security` and `eslint-plugin-security-node` plugins are not installed in this project
 - ESLint9 (our version) uses different rule IDs than ESLint8: `ESLint9_security_detect-non-literal-regexp`, `ESLint9_security-node_non-literal-reg-expr`
 - Since these plugins aren't configured, we rely on Semgrep for RegExp security scanning instead
 
 **Why this approach is better:**
- - **No security blind spots**: Other security rules still run on test files
+- **No security blind spots**: Other security rules still run on test files
 - **Surgical suppression**: Only the specific RegExp lines are excluded
 - **Self-documenting**: Inline comments explain why each line is safe
 - **Maintainable**: Easy to see which lines have suppressions when reading code
 
 **Why these RegExp patterns are safe:**
- - All RegExp inputs are sanitized via `escapeRegExp()` before construction
+- All RegExp inputs are sanitized via `escapeRegExp()` before construction
 - Test data comes from constants (`FAQ_ITEMS`, `PRICING_PLANS`), not user input
 - RegExp patterns are necessary for flexible test assertions (case-insensitive matching)
 - The `escapeRegExp()` function escapes all regex metacharacters
@@ -155,14 +155,14 @@ we use **surgical inline suppression comments** on specific lines that need them
 ## Files Changed
 
 **New Files**:
- - `src/utils/test/regexHelpers.ts` - Shared RegExp escaping utility
+- `src/utils/test/regexHelpers.ts` - Shared RegExp escaping utility
 - `scripts/utils/filenameValidation.js` - Enhanced path validation with `isPathSafe`
 - `scripts/path-utils.js` - Path safety utilities for build scripts
 - `public/README.md` - Documentation for generated vs source files
 - `docs/SECURITY-FIXES.md` (this file)
 
 **Modified Files**:
- - Test files: 4 files updated with inline nosemgrep annotations (FAQ, Pricing, Comparison, features)
+- Test files: 4 files updated with inline nosemgrep annotations (FAQ, Pricing, Comparison, features)
 - Script files: 4 files updated (with path validation and nosemgrep suppressions)
 - Application files: 2 files updated (Icon component, iconLibrary)
 - Configuration files: 2 files updated (`.codacy.yml`, `.gitignore`)

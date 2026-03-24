@@ -180,14 +180,14 @@ cursor: not-allowed;
 ### ✅ Do's and ❌ Don'ts
 
 ✅ **DO:**
- - Use primary color (#3b82f6) for CTAs and important interactive elements
+- Use primary color (#3b82f6) for CTAs and important interactive elements
 - Leverage high contrast of neutral colors for readability
 - Use text-secondary (#6B7280) for supporting information
 - Test colors in both light and dark modes
 - Use blue sparingly to draw attention to key actions
 
 ❌ **DON'T:**
- - Overuse the blue accent - it should highlight, not overwhelm
+- Overuse the blue accent - it should highlight, not overwhelm
 - Place secondary text on colored backgrounds without checking contrast
 - Use color alone to convey information (add icons or text)
 - Override focus outline colors (accessibility requirement)

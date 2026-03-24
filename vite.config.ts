@@ -127,7 +127,7 @@ export default defineConfig({
   build: {
     // Split CSS into separate files for better caching
     cssCodeSplit: true,
-    // Use oxc for faster minification (Vite 8+ default, replaces esbuild)
+    // Use oxc for minification (esbuild is an optional peer dep in Vite 8 and not installed)
     minify: 'oxc',
     // Target modern browsers for smaller bundle sizes
     target: 'es2020',

@@ -12,15 +12,17 @@ This file tracks coding style, design, and workflow preferences for this project
 
 ## Design
 
-- Avoid generic AI aesthetics (Inter/Roboto fonts, purple gradients, predictable layouts)
-- Use distinctive typography choices
-- Commit to cohesive, themed color palettes with dominant colors and sharp accents
+- Use Inter for UI/body typography (`src/**/*.{tsx,css}`); Playfair Display (serif) for headlines
+- Follow monochrome design aesthetic with near-black (`#1a1a1a`) and white (`#ffffff`) as primary palette (`src/**/*.css`)
+- Avoid clichéd decorative choices (purple gradients, sci-fi glows, overly predictable layouts) that conflict with the monochrome identity
+- Within the monochrome palette, use dominant near-black/white with sharp accent contrasts; avoid evenly-distributed timid palettes
 - Animate high-impact moments (page load staggered reveals) over scattered micro-interactions
 
 ## Code
 
-- Mobile-first development
+- Design and develop for mobile-first, then enhance for desktop (`src/**/*.{tsx,css}`)
 - No feature bloat — simplicity is the core value
 - Accessibility required (WCAG 2.1 AA)
 - Performance budget is strict: <2s load, >90 Lighthouse performance score
+
 <!-- Add additional preferences below -->

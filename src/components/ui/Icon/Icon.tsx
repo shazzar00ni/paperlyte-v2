@@ -95,12 +95,10 @@ export const Icon = ({
     return color
   }, [color])
 
-  // Memoize path array splitting for better performance
-  const pathArray = useMemo(() => {
-    const p = safePropertyAccess(iconPaths, resolvedKey)
-    if (!p) return []
-    return p.split(' M ')
-  }, [resolvedKey])
+  // Split the path string on " M " to get individual sub-paths.
+  // paths is already computed above — no need for a separate safePropertyAccess call.
+  // Manual useMemo is omitted here; the React Compiler handles memoization automatically.
+  const pathArray = paths ? paths.split(' M ') : []
 
   // Fallback to Font Awesome React component if icon not found in our set
   if (!paths) {

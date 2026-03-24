@@ -23,14 +23,14 @@ Paperlyte is committed to achieving full WCAG 2.1 Level AA conformance across al
 ### Conformance Level
 
 As of December 21, 2025:
-- **Target Standard**: WCAG 2.1 Level AA
+ - **Target Standard**: WCAG 2.1 Level AA
 - **Current Conformance**: Partial (audit scheduled)
 - **Next Audit Date**: Early January 2026
 
 ### Supported Assistive Technologies
 
 We actively test and support:
-- **Screen Readers**: VoiceOver (macOS/iOS), NVDA (Windows), JAWS (Windows)
+ - **Screen Readers**: VoiceOver (macOS/iOS), NVDA (Windows), JAWS (Windows)
 - **Keyboard Navigation**: Full keyboard-only navigation support
 - **Browser Zoom**: Up to 200% zoom without loss of functionality
 - **Display Modes**: High contrast mode, dark mode, reduced motion
@@ -115,7 +115,7 @@ The following accessibility limitations have been identified and are prioritized
 - **Week 5-8**: Address all P0 (Critical) issues
 
 **Deliverables**:
-- Complete audit report
+ - Complete audit report
 - Prioritized issue backlog
 - Updated accessibility statement
 - P0 issues resolved
@@ -135,7 +135,7 @@ The following accessibility limitations have been identified and are prioritized
   - Keyboard navigation verification
 
 **Deliverables**:
-- All P1 issues resolved
+ - All P1 issues resolved
 - Cross-browser test results documented
 - Screen reader test results documented
 
@@ -153,7 +153,7 @@ The following accessibility limitations have been identified and are prioritized
   - Create accessibility checklist for new features
 
 **Deliverables**:
-- WCAG 2.1 AA conformance achieved
+ - WCAG 2.1 AA conformance achieved
 - Final audit report
 - Accessibility documentation complete
 - Team training complete
@@ -170,7 +170,7 @@ The following accessibility limitations have been identified and are prioritized
 **Target Date**: January 15, 2026
 
 **Tasks**:
-- [ ] Audit all interactive elements for proper ARIA labels
+ - [ ] Audit all interactive elements for proper ARIA labels
 - [ ] Add `aria-label` or `aria-labelledby` to buttons without visible text
 - [ ] Ensure all form inputs have associated labels
 - [ ] Add `aria-describedby` for supplementary information
@@ -178,7 +178,7 @@ The following accessibility limitations have been identified and are prioritized
 - [ ] Validate with screen readers (NVDA, VoiceOver, JAWS)
 
 **Success Criteria**:
-- All interactive elements have accessible names
+ - All interactive elements have accessible names
 - Screen readers can identify all controls
 - Form fields clearly describe their purpose
 
@@ -192,7 +192,7 @@ The following accessibility limitations have been identified and are prioritized
 **Target Date**: January 31, 2026
 
 **Tasks**:
-- [ ] Test all functionality with keyboard only (no mouse)
+ - [ ] Test all functionality with keyboard only (no mouse)
 - [ ] Ensure logical tab order throughout the application
 - [ ] Implement skip links for main content
 - [ ] Remove keyboard traps from modal dialogs
@@ -200,7 +200,7 @@ The following accessibility limitations have been identified and are prioritized
 - [ ] Test with keyboard-only users
 
 **Success Criteria**:
-- All functionality accessible via keyboard
+ - All functionality accessible via keyboard
 - Tab order is logical and intuitive
 - No keyboard traps exist
 - Skip links allow quick navigation to main content
@@ -215,7 +215,7 @@ The following accessibility limitations have been identified and are prioritized
 **Target Date**: February 15, 2026
 
 **Tasks**:
-- [ ] Audit all text/background color combinations
+ - [ ] Audit all text/background color combinations
 - [ ] Ensure minimum 4.5:1 contrast ratio for normal text
 - [ ] Ensure minimum 3:1 contrast ratio for large text (18pt+)
 - [ ] Test with color contrast analyzers (WebAIM, TPGi)
@@ -223,7 +223,7 @@ The following accessibility limitations have been identified and are prioritized
 - [ ] Document all approved color combinations
 
 **Success Criteria**:
-- All text meets WCAG AA contrast requirements
+ - All text meets WCAG AA contrast requirements
 - Design system updated with accessible color palette
 - Color contrast matrix documented in DESIGN-SYSTEM.md
 
@@ -239,7 +239,7 @@ The following accessibility limitations have been identified and are prioritized
 **Target Date**: February 28, 2026
 
 **Tasks**:
-- [ ] Audit all images, icons, and graphics
+ - [ ] Audit all images, icons, and graphics
 - [ ] Add descriptive alt text for informative images
 - [ ] Use `alt=""` or `aria-hidden="true"` for decorative images
 - [ ] Ensure icon-only buttons have `aria-label`
@@ -247,7 +247,7 @@ The following accessibility limitations have been identified and are prioritized
 - [ ] Create alt text writing guidelines
 
 **Success Criteria**:
-- All informative images have descriptive alt text
+ - All informative images have descriptive alt text
 - Decorative images properly hidden from screen readers
 - Icon-only controls have accessible names
 - Alt text guidelines documented
@@ -262,7 +262,7 @@ The following accessibility limitations have been identified and are prioritized
 **Target Date**: February 28, 2026
 
 **Tasks**:
-- [ ] Ensure all form fields have associated labels
+ - [ ] Ensure all form fields have associated labels
 - [ ] Implement clear error messages with suggestions
 - [ ] Add `aria-required` for required fields
 - [ ] Use `aria-invalid` for fields with errors
@@ -271,7 +271,7 @@ The following accessibility limitations have been identified and are prioritized
 - [ ] Test with screen readers
 
 **Success Criteria**:
-- All form fields have clear labels
+ - All form fields have clear labels
 - Error messages are descriptive and helpful
 - Required fields clearly marked
 - Validation state communicated to assistive technologies

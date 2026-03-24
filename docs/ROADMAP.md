@@ -1,7 +1,7 @@
 # Paperlyte Development Roadmap - MVP to Launch
 
 ## Phase 0: Setup & Foundation (Day 1 Morning)
-- [ ] Create GitHub repository with proper structure
+ - [ ] Create GitHub repository with proper structure
 - [ ] Set up Next.js project with TypeScript
 - [ ] Configure Tailwind CSS for minimal, clean design
 - [ ] Set up development environment
@@ -11,7 +11,7 @@
 ## Phase 1: Core Editor & Basic Functionality (Day 1-2)
 
 ### Lightning-Fast Editor
-- [ ] Create main editor component
+ - [ ] Create main editor component
   - [ ] Implement textarea/contenteditable with auto-resize
   - [ ] Auto-save functionality (debounced, every 500ms)
   - [ ] First line becomes title logic
@@ -22,7 +22,7 @@
   - [ ] Auto-sync when connection restored
 
 ### Basic Note Management
-- [ ] Notes list component (left sidebar)
+ - [ ] Notes list component (left sidebar)
   - [ ] Display all notes sorted by last modified
   - [ ] Click to switch between notes
   - [ ] Show note titles and preview
@@ -32,7 +32,7 @@
 - [ ] Delete note functionality with confirmation
 
 ### Minimal UI Implementation
-- [ ] Clean, distraction-free layout
+ - [ ] Clean, distraction-free layout
   - [ ] Left sidebar for notes list
   - [ ] Main editor panel
   - [ ] Minimal header with search
@@ -42,7 +42,7 @@
 ## Phase 2: Search & Organization (Day 3)
 
 ### Tagging System
-- [ ] Implement inline tag creation (#tagname)
+ - [ ] Implement inline tag creation (#tagname)
   - [ ] Parse tags from note content
   - [ ] Store tags in note metadata
   - [ ] Visual highlighting of tags in editor
@@ -52,7 +52,7 @@
   - [ ] Tag filtering in notes list
 
 ### Search Engine
-- [ ] Implement instant search functionality
+ - [ ] Implement instant search functionality
   - [ ] Search bar in header
   - [ ] Real-time search as user types
   - [ ] Search through titles, content, and tags
@@ -63,7 +63,7 @@
   - [ ] Search history
 
 ### Data Persistence
-- [ ] Implement robust local storage
+ - [ ] Implement robust local storage
   - [ ] Handle large notes efficiently
   - [ ] Data migration between versions
   - [ ] Export notes to Markdown files
@@ -72,7 +72,7 @@
 ## Phase 3: User Authentication & Cloud Sync (Day 4-5)
 
 ### Authentication System
-- [ ] Set up authentication provider (Supabase Auth)
+ - [ ] Set up authentication provider (Supabase Auth)
   - [ ] Google OAuth integration
   - [ ] Apple Sign-In integration
   - [ ] Email/password authentication
@@ -82,7 +82,7 @@
   - [ ] Welcome note with tutorial
 
 ### Cloud Sync Implementation
-- [ ] Set up Supabase backend
+ - [ ] Set up Supabase backend
   - [ ] Database schema for users and notes
   - [ ] Real-time subscriptions for sync
   - [ ] Conflict resolution for simultaneous edits
@@ -92,7 +92,7 @@
   - [ ] Secure key storage
 
 ### Multi-device Sync
-- [ ] Sync engine implementation
+ - [ ] Sync engine implementation
   - [ ] Detect changes and sync automatically
   - [ ] Handle offline changes
   - [ ] Batch sync for performance
@@ -104,7 +104,7 @@
 ## Phase 4: Paperlyte+ Premium Features (Day 6-7)
 
 ### Premium Feature Gate
-- [ ] Implement subscription system
+ - [ ] Implement subscription system
   - [ ] Stripe integration for payments
   - [ ] Subscription status tracking
   - [ ] Free tier limitations
@@ -115,7 +115,7 @@
   - [ ] Early access feature flags
 
 ### Advanced Search Filters
-- [ ] Date range filtering
+ - [ ] Date range filtering
   - [ ] Created date filter
   - [ ] Modified date filter
   - [ ] Date picker component
@@ -125,7 +125,7 @@
   - [ ] Saved search queries
 
 ### Theme System
-- [ ] Create theme engine
+ - [ ] Create theme engine
   - [ ] CSS variables for theming
   - [ ] Light/dark mode toggle
   - [ ] Custom color palettes
@@ -134,7 +134,7 @@
 ## Phase 5: Polish & Performance (Day 8-9)
 
 ### Performance Optimization
-- [ ] Editor performance
+ - [ ] Editor performance
   - [ ] Virtual scrolling for large notes
   - [ ] Optimized re-rendering
   - [ ] Lazy loading for notes list
@@ -148,7 +148,7 @@
   - [ ] Service worker for caching
 
 ### UX Polish
-- [ ] Keyboard shortcuts
+ - [ ] Keyboard shortcuts
   - [ ] Cmd+N for new note
   - [ ] Cmd+K for search
   - [ ] Markdown shortcuts
@@ -162,7 +162,7 @@
   - [ ] Error messages and retry logic
 
 ### Mobile Experience
-- [ ] Mobile-specific optimizations
+ - [ ] Mobile-specific optimizations
   - [ ] Touch-friendly interface
   - [ ] Mobile keyboard handling
   - [ ] Swipe gestures for navigation
@@ -174,7 +174,7 @@
 ## Phase 6: Testing & Quality Assurance (Day 10)
 
 ### Comprehensive Testing
-- [ ] Unit tests for core functions
+ - [ ] Unit tests for core functions
   - [ ] Editor functionality
   - [ ] Search algorithms
   - [ ] Sync logic
@@ -188,14 +188,14 @@
   - [ ] Mobile device testing
 
 ### Security Review
-- [ ] Encryption implementation audit
+ - [ ] Encryption implementation audit
 - [ ] Authentication security review
 - [ ] Data handling compliance (GDPR)
 - [ ] Penetration testing
 - [ ] Privacy policy creation
 
 ### Performance Testing
-- [ ] Load testing with large datasets
+ - [ ] Load testing with large datasets
 - [ ] Sync performance under load
 - [ ] Mobile performance optimization
 - [ ] Accessibility testing (WCAG compliance)
@@ -203,7 +203,7 @@
 ## Phase 7: Launch Preparation (Day 11-12)
 
 ### Marketing Website
-- [ ] Landing page design and copy
+ - [ ] Landing page design and copy
   - [ ] Hero section: "Your thoughts, unchained"
   - [ ] Feature highlights with screenshots
   - [ ] Pricing table (Free vs Plus)
@@ -212,7 +212,7 @@
 - [ ] Blog setup for content marketing
 
 ### Analytics & Monitoring
-- [ ] Set up analytics (PostHog/Mixpanel)
+ - [ ] Set up analytics (PostHog/Mixpanel)
   - [ ] User journey tracking
   - [ ] Feature usage metrics
   - [ ] Performance monitoring
@@ -220,7 +220,7 @@
 - [ ] Customer support system setup
 
 ### Launch Assets
-- [ ] Create demo videos and screenshots
+ - [ ] Create demo videos and screenshots
 - [ ] Prepare press kit
 - [ ] Social media assets
 - [ ] Product Hunt submission materials
@@ -228,19 +228,19 @@
 ## Phase 8: Post-Launch Iterations (Week 2+)
 
 ### User Feedback Integration
-- [ ] In-app feedback system
+ - [ ] In-app feedback system
 - [ ] User interview scheduling
 - [ ] Feature request tracking
 - [ ] Support ticket system
 
 ### Quick Wins & Bug Fixes
-- [ ] Monitor crash reports and fix critical bugs
+ - [ ] Monitor crash reports and fix critical bugs
 - [ ] Performance improvements based on real usage
 - [ ] Mobile experience refinements
 - [ ] Search accuracy improvements
 
 ### Feature Expansion
-- [ ] Import tools for other note apps
+ - [ ] Import tools for other note apps
 - [ ] Collaboration features (sharing notes)
 - [ ] API for third-party integrations
 - [ ] Advanced export options (PDF, HTML)

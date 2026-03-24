@@ -26,8 +26,8 @@ Complete the remaining manual infrastructure configuration tasks that require Gi
 
 **Required settings:**
  - [ ] Require a pull request before merging
-- [ ] Require approvals: **1**
-- [ ] Dismiss stale pull request approvals when new commits are pushed
+ - [ ] Require approvals: **1**
+ - [ ] Dismiss stale pull request approvals when new commits are pushed
 - [ ] Require status checks to pass before merging
   - Required status checks:
     - [ ] `lint-and-typecheck`
@@ -46,7 +46,7 @@ Complete the remaining manual infrastructure configuration tasks that require Gi
 
 **Steps:**
  - [ ] Log in to [Netlify](https://app.netlify.com/)
-- [ ] Click **Add new site** → **Import an existing project**
+ - [ ] Click **Add new site** → **Import an existing project**
 - [ ] Choose **GitHub** as Git provider
 - [ ] Authorize Netlify to access GitHub account (if needed)
 - [ ] Select the `paperlyte-v2` repository
@@ -66,7 +66,7 @@ Complete the remaining manual infrastructure configuration tasks that require Gi
 
 **Steps:**
  - [ ] Click **Add custom domain**
-- [ ] Enter domain: `paperlyte.app`
+ - [ ] Enter domain: `paperlyte.app`
 - [ ] Choose DNS configuration method:
   - **Option A (Recommended):** Use Netlify DNS
     - [ ] Add Netlify nameservers to domain registrar
@@ -95,7 +95,7 @@ CNAME   www     [your-site].netlify.app
 
 **Verify settings:**
  - [ ] Production branch: `main`
-- [ ] Branch deploys: **All branches** or **Let me add individual branches**
+ - [ ] Branch deploys: **All branches** or **Let me add individual branches**
 - [ ] Deploy previews: **Any pull request against your production branch/branch deploy branches**
 - [ ] Deploy notifications enabled for:
   - [ ] Deploy started

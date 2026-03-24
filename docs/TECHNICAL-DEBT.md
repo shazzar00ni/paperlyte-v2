@@ -12,7 +12,7 @@
 This document catalogs technical debt across the Paperlyte v2 codebase, including code quality issues, test coverage gaps, performance optimization opportunities, and security considerations. The inventory is organized by severity to help prioritize remediation efforts.
 
 **Key Metrics:**
-- **Total TODO/FIXME Comments:** 56+ across 12 files
+ - **Total TODO/FIXME Comments:** 56+ across 12 files
 - **Critical TODOs:** 13 (legal constants - blocking production)
 - **Untested Modules:** 15 files (0% coverage)
 - **Untested Components:** 4 React components
@@ -50,7 +50,7 @@ This document catalogs technical debt across the Paperlyte v2 codebase, includin
 **Impact:** Cannot launch product without completing legal information. Legal liability risk.
 
 **Recommendation:**
-1. Legal team to provide company registration details
+ 1. Legal team to provide company registration details
 2. Create missing policy documents (cookie, security, DMCA, accessibility)
 3. Set up social media accounts
 4. Legal review of jurisdiction and governing law
@@ -69,7 +69,7 @@ This document catalogs technical debt across the Paperlyte v2 codebase, includin
 **Impact:** Download links are broken or point to placeholder URLs.
 
 **Recommendation:**
-1. Update GitHub repository URL in `legal.ts` first
+ 1. Update GitHub repository URL in `legal.ts` first
 2. Publish apps to App Store and Play Store
 3. Update download constants with actual URLs
 
@@ -147,12 +147,12 @@ This document catalogs technical debt across the Paperlyte v2 codebase, includin
 **Note:** EmailCapture.test.tsx exists but may have incomplete coverage.
 
 **Impact:**
-- No automated verification of legal page rendering
+ - No automated verification of legal page rendering
 - Regression risk when updating privacy/terms content
 - Statistics component untested for accessibility and responsiveness
 
 **Recommendation:**
-1. Add smoke tests for Privacy and Terms (verify rendering, links)
+ 1. Add smoke tests for Privacy and Terms (verify rendering, links)
 2. Test Statistics component data formatting and animations
 3. Verify EmailCapture form validation and submission
 
@@ -167,13 +167,13 @@ This document catalogs technical debt across the Paperlyte v2 codebase, includin
 | `env.ts` | `src/utils/` | 0% | LOW |
 
 **Tested Utilities:** ✅
-- `analytics.ts` - Has tests
+ - `analytics.ts` - Has tests
 - `keyboard.ts` - Has tests
 - `navigation.ts` - Has tests
 - `iconLibrary.ts` - Has tests
 
 **Recommendation:**
-1. Add tests for `monitoring.ts` (error tracking critical)
+ 1. Add tests for `monitoring.ts` (error tracking critical)
 2. `metaTags.ts` and `env.ts` are low risk but should have basic smoke tests
 
 ### 2.3 Untested Constants
@@ -181,7 +181,7 @@ This document catalogs technical debt across the Paperlyte v2 codebase, includin
 **Severity:** 🟢 **LOW** - Constants are typically low-risk but should have validation
 
 All constant files lack tests (0% coverage):
-- `src/constants/waitlist.ts`
+ - `src/constants/waitlist.ts`
 - `src/constants/faq.ts`
 - `src/constants/downloads.ts`
 - `src/constants/config.ts`
@@ -192,7 +192,7 @@ All constant files lack tests (0% coverage):
 - `src/constants/features.ts`
 
 **Recommendation:**
-1. Add schema validation tests for legal.ts (critical data)
+ 1. Add schema validation tests for legal.ts (critical data)
 2. Validate download URLs format
 3. Other constants: Low priority for testing (data files)
 
@@ -201,7 +201,7 @@ All constant files lack tests (0% coverage):
 **Severity:** 🟡 **MEDIUM** - Analytics are business-critical
 
 All analytics modules have 0% coverage (6 files):
-- `src/analytics/types.ts`
+ - `src/analytics/types.ts`
 - `src/analytics/index.ts`
 - `src/analytics/webVitals.ts`
 - `src/analytics/config.ts`
@@ -209,12 +209,12 @@ All analytics modules have 0% coverage (6 files):
 - `src/analytics/scrollDepth.ts`
 
 **Impact:**
-- No verification that analytics events fire correctly
+ - No verification that analytics events fire correctly
 - Cannot verify Web Vitals tracking accuracy
 - Scroll depth tracking untested
 
 **Recommendation:**
-1. High priority: Test analytics event firing and tracking
+ 1. High priority: Test analytics event firing and tracking
 2. Mock analytics providers in tests
 3. Verify Web Vitals collection
 
@@ -263,16 +263,16 @@ coverage: {
 | `Terms.tsx` | 338 | Legal content inline | Extract to markdown/CMS |
 
 **Additional Large Components:**
-- `Testimonials.tsx` - 273 lines (acceptable for feature component)
+ - `Testimonials.tsx` - 273 lines (acceptable for feature component)
 - `Privacy.tsx` - 246 lines (acceptable for legal page)
 
 **Impact:**
-- Larger bundle size
+ - Larger bundle size
 - Harder to maintain
 - Slower hot module replacement during development
 
 **Recommendation:**
-1. **FeedbackWidget.tsx:** Split into:
+ 1. **FeedbackWidget.tsx:** Split into:
    - `FeedbackButton.tsx` (trigger)
    - `FeedbackForm.tsx` (modal content)
    - `FeedbackSuccess.tsx` (confirmation state)
@@ -313,7 +313,7 @@ const FeedbackWidget = lazy(() => import('./components/ui/FeedbackWidget'));
 **Current Status:** Only 1 component uses memo (`Section.tsx`)
 
 **Components that should use memo:**
-- All animation components (prevent unnecessary re-renders)
+ - All animation components (prevent unnecessary re-renders)
 - `Icon.tsx` (rendered frequently)
 - `Button.tsx` (if created as reusable component)
 - Section components with heavy content
@@ -327,7 +327,7 @@ export default memo(ParallaxLayer);
 ```
 
 **Expected Impact:**
-- Reduce re-renders during scroll
+ - Reduce re-renders during scroll
 - Smoother animations
 - Better scroll performance
 
@@ -336,7 +336,7 @@ export default memo(ParallaxLayer);
 **Severity:** 🟡 **MEDIUM** - Affects page load speed
 
 #### Issues Found:
-1. **No WebP/AVIF formats:** All images are PNG
+ 1. **No WebP/AVIF formats:** All images are PNG
    - `android-chrome-192x192.png` (5.2 KB)
    - `android-chrome-512x512.png` (28 KB)
    - `apple-touch-icon.png` (5.0 KB)
@@ -362,7 +362,7 @@ export default memo(ParallaxLayer);
 4. Implement lazy loading for below-the-fold images
 
 **Expected Impact:**
-- 30-50% reduction in image payload
+ - 30-50% reduction in image payload
 - Faster LCP (Largest Contentful Paint)
 - Better mobile performance
 
@@ -371,7 +371,7 @@ export default memo(ParallaxLayer);
 **Severity:** 🟢 **LOW** - Proactive optimization
 
 **Current Animation Components:**
-- `FloatingElement.tsx`
+ - `FloatingElement.tsx`
 - `AnimatedElement.tsx`
 - `ParallaxLayer.tsx`
 - `SVGPathAnimation.tsx`
@@ -379,7 +379,7 @@ export default memo(ParallaxLayer);
 - `CounterAnimation.tsx`
 
 **Missing Optimizations:**
-1. No explicit `will-change` CSS hints (check CSS modules)
+ 1. No explicit `will-change` CSS hints (check CSS modules)
 2. May not use `requestAnimationFrame` for all animations
 3. No performance monitoring for animation frame rates
 
@@ -398,13 +398,13 @@ export default memo(ParallaxLayer);
 ### 3.5 Bundle Size Monitoring
 
 **Current Status:**
-- `vite.config.ts` has `chunkSizeWarningLimit: 1000` (intentionally raised)
+ - `vite.config.ts` has `chunkSizeWarningLimit: 1000` (intentionally raised)
 - `package.json` includes `size-limit` with 150 KB JS limit
 
 **Issue:** Warning limit raised to suppress warnings without optimization
 
 **Recommendation:**
-1. Run bundle analyzer: `npx vite-bundle-visualizer`
+ 1. Run bundle analyzer: `npx vite-bundle-visualizer`
 2. Identify largest dependencies
 3. Consider replacing heavy libraries
 4. Lower `chunkSizeWarningLimit` to 600 KB after optimization
@@ -428,11 +428,11 @@ export default memo(ParallaxLayer);
 - **Security Headers:** Configured in Netlify deployment
 
 **Missing:**
-- No automated security scanning in CI/CD
+ - No automated security scanning in CI/CD
 - No Software Composition Analysis (SCA) tool
 
 **Recommendation:**
-1. Add `npm audit` to CI/CD pipeline
+ 1. Add `npm audit` to CI/CD pipeline
 2. Consider GitHub Advanced Security (if available)
 3. Add OWASP dependency check to pre-commit hooks
 
@@ -448,16 +448,16 @@ imported from /home/user/paperlyte-v2/scripts/generate-icons.js
 ```
 
 **Root Cause:**
-- `sharp` is in `devDependencies` but may not be installed
+ - `sharp` is in `devDependencies` but may not be installed
 - Or `generate-icons.js` script has incorrect import
 
 **Impact:**
-- Build process fails
+ - Build process fails
 - Cannot generate icons
 - Blocks deployment
 
 **Recommendation:**
-1. Verify `sharp` installation: `npm install`
+ 1. Verify `sharp` installation: `npm install`
 2. Check if `sharp` needs to be in `dependencies` instead of `devDependencies`
 3. Review `scripts/generate-icons.js` for correct import syntax
 4. Add build validation to CI/CD
@@ -467,11 +467,11 @@ imported from /home/user/paperlyte-v2/scripts/generate-icons.js
 **Severity:** 🟡 **MEDIUM**
 
 From `SECURITY_REVIEW.md`:
-- Line 340: "Status: ⚠️ TODO (pre-production)" - Security testing not completed
+ - Line 340: "Status: ⚠️ TODO (pre-production)" - Security testing not completed
 - Line 596: "Status: ⚠️ TODO" - Additional security validation needed
 
 **Recommendation:**
-1. Complete pre-production security testing checklist
+ 1. Complete pre-production security testing checklist
 2. Run penetration testing before launch
 3. Review Content Security Policy (CSP) headers
 4. Verify HTTPS enforcement and HSTS configuration
@@ -553,7 +553,7 @@ From `SECURITY_REVIEW.md`:
 ### 6.2 Recommended Tracking
 
 Add these metrics to project dashboard:
-1. **TODO Count by Severity** (tracked in CI)
+ 1. **TODO Count by Severity** (tracked in CI)
 2. **Test Coverage %** (enforce in CI with thresholds)
 3. **Bundle Size** (monitor with size-limit)
 4. **Lighthouse Performance Score** (target: >90)
@@ -570,7 +570,7 @@ The Paperlyte v2 codebase has **strong fundamentals** with good test coverage fo
 ### 7.2 Immediate Action Items
 
 **This Week:**
-1. ✅ Complete legal constants (business team)
+ 1. ✅ Complete legal constants (business team)
 2. ✅ Fix sharp build dependency (DevOps)
 3. ✅ Create missing legal documents (legal team)
 
@@ -587,7 +587,7 @@ The Paperlyte v2 codebase has **strong fundamentals** with good test coverage fo
 ### 7.3 Long-Term Technical Health
 
 **Recommended Practices:**
-1. **Pre-commit hooks:** Block commits with new TODOs marked as CRITICAL
+ 1. **Pre-commit hooks:** Block commits with new TODOs marked as CRITICAL
 2. **CI/CD gates:** Fail builds if coverage drops below threshold
 3. **Monthly debt review:** Dedicate sprint capacity to debt reduction
 4. **Performance budget:** Monitor bundle size and Lighthouse scores

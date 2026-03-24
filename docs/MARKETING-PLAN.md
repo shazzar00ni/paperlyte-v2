@@ -14,7 +14,7 @@ Paperlyte is positioned to capture market share from frustrated note-takers over
 **Primary Goal**: Acquire 10,000 active users within the first 6 months post-launch.
 
 **Secondary Goals**:
-- Build email list of 5,000+ subscribers pre-launch
+ - Build email list of 5,000+ subscribers pre-launch
 - Achieve 40%+ conversion rate from landing page to app download
 - Generate organic word-of-mouth through exceptional user experience
 - Establish Paperlyte as the go-to alternative for simplicity-seekers
@@ -77,13 +77,13 @@ This one-page summary provides the essential marketing metrics and targets. Refe
 ### Target Market Size
 
 **Total Addressable Market (TAM)**: 500M+ note-taking app users globally
-- Notion: ~100M users
-- Evernote: ~225M users
-- OneNote: ~250M+ users
-- Apple Notes, Google Keep, Simplenote: ~500M+ combined
+ - Notion: ~100M users
+ - Evernote: ~225M users
+ - OneNote: ~250M+ users
+ - Apple Notes, Google Keep, Simplenote: ~500M+ combined
 
 **Serviceable Addressable Market (SAM)**: 50M users actively seeking simpler alternatives
-- Users frustrated with complexity (25-30% of power users)
+ - Users frustrated with complexity (25-30% of power users)
 - Privacy-conscious users avoiding big tech (15-20% growth YoY)
 - Minimalist lifestyle adopters (rapidly growing demographic)
 
@@ -106,12 +106,12 @@ This one-page summary provides the essential marketing metrics and targets. Refe
    - Weaknesses: Complex pricing, overwhelming security focus
 
 **Indirect Competitors**:
-- Notion, Obsidian, Roam Research (too complex)
+ - Notion, Obsidian, Roam Research (too complex)
 - Apple Notes, Google Keep (too basic, privacy concerns)
 - Evernote (legacy product, slow, expensive)
 
 **Our Competitive Advantages**:
-1. **Speed**: Sub-2-second load times vs. 5-15 seconds for Notion/Evernote
+ 1. **Speed**: Sub-2-second load times vs. 5-15 seconds for Notion/Evernote
 2. **Simplicity**: Tag-based vs. complex hierarchies or databases
 3. **Cross-platform**: True universal access vs. ecosystem lock-in
 4. **Offline-first**: Full functionality without internet (rare among modern apps)
@@ -124,30 +124,30 @@ To validate our speed claims and maintain competitive differentiation, we implem
 **Test Protocol**:
 
 **Test Devices**:
-- Mobile: iPhone 14 (iOS 17), Samsung Galaxy S23 (Android 14), iPhone SE 2020 (budget tier)
+ - Mobile: iPhone 14 (iOS 17), Samsung Galaxy S23 (Android 14), iPhone SE 2020 (budget tier)
 - Desktop: MacBook Pro M2 (macOS), Dell XPS 15 (Windows 11), ThinkPad T14 (Ubuntu 22.04)
 - Tablet: iPad Air (iPadOS 17), Samsung Galaxy Tab S8
 
 **Browsers & Apps**:
-- Web: Chrome (latest), Safari (latest), Firefox (latest), Edge (latest)
+ - Web: Chrome (latest), Safari (latest), Firefox (latest), Edge (latest)
 - Native: iOS app, Android app, macOS app, Windows app
 
 **Network Profiles**:
-- WiFi: 100 Mbps broadband (home/office)
+ - WiFi: 100 Mbps broadband (home/office)
 - 5G: 150-300 Mbps (urban coverage)
 - 4G/LTE: 20-50 Mbps (suburban)
 - 3G: 3-8 Mbps (degraded/rural)
 - Offline: Full offline mode (no network)
 
 **Test Scenarios**:
-- **Cold Start**: App launch from completely closed state, cleared cache
+ - **Cold Start**: App launch from completely closed state, cleared cache
 - **Warm Start**: App resume from background, cache present
 - **First Note Creation**: Time from launch to first character typed in new note
 - **Search Performance**: Search across 100, 500, 1000 notes
 - **Sync Time**: Initial sync of 100 notes across devices
 
 **Measurement Tools**:
-- Web: Chrome DevTools Performance Panel, Lighthouse CI
+ - Web: Chrome DevTools Performance Panel, Lighthouse CI
 - Mobile: Xcode Instruments (iOS), Android Studio Profiler
 - Metrics: Time to Interactive (TTI), First Contentful Paint (FCP), Total Blocking Time (TBT)
 
@@ -167,19 +167,19 @@ To validate our speed claims and maintain competitive differentiation, we implem
 
 > **Note:** The above performance data reflects measurements as of Q4 2025. These numbers may become outdated as competitors release new versions or as Paperlyte evolves. Please refer to the [Update Cadence](#update-cadence) section below for details on rebenchmarking frequency and ensure you verify when these numbers were last validated before making marketing claims.
 **Acceptance Criteria**:
-- **Target**: Paperlyte maintains <2s cold start on WiFi, <3s on 4G
+ - **Target**: Paperlyte maintains <2s cold start on WiFi, <3s on 4G
 - **Competitive Gap**: Paperlyte is minimum 2x faster than Notion/Evernote/OneNote
 - **Regression Threshold**: Any release that degrades performance by >15% requires optimization before ship
 - **P95 Performance**: 95th percentile must be within 30% of median (consistent experience)
 
 **Update Cadence**:
-- **Quarterly Rebenchmarks**: Full test suite run Q1, Q2, Q3, Q4 of each year
+ - **Quarterly Rebenchmarks**: Full test suite run Q1, Q2, Q3, Q4 of each year
 - **Competitor Major Release**: Re-test within 2 weeks of major competitor version release
 - **Our Major Release**: Full benchmark before and after each major Paperlyte release
 - **Continuous Monitoring**: Lighthouse CI on every production deployment (web)
 
 **Reporting & Accountability**:
-- Benchmark results published in internal quarterly performance reports
+ - Benchmark results published in internal quarterly performance reports
 - Marketing can only cite numbers validated within last 90 days
 - Significant competitor improvements trigger marketing messaging review
 - Performance regression blocks marketing campaign launches until resolved
@@ -192,18 +192,18 @@ To validate our speed claims and maintain competitive differentiation, we implem
 
 #### 1. The Overwhelmed Power User
 **Demographics**:
-- Age: 28-45
+ - Age: 28-45
 - Occupation: Knowledge workers, developers, writers, researchers
 - Tech-savvy, early adopter mindset
 
 **Pain Points**:
-- Spends more time organizing notes than writing them
+ - Spends more time organizing notes than writing them
 - Frustrated by slow, bloated apps with features they never use
 - Suffers from "tool fatigue" after trying 10+ note apps
 - Wants simplicity but won't sacrifice quality or speed
 
 **Motivations**:
-- Reduce cognitive load and decision fatigue
+ - Reduce cognitive load and decision fatigue
 - Get thoughts captured instantly without friction
 - Focus on content, not organization systems
 
@@ -213,18 +213,18 @@ To validate our speed claims and maintain competitive differentiation, we implem
 
 #### 2. The Privacy-Conscious Professional
 **Demographics**:
-- Age: 30-50
+ - Age: 30-50
 - Occupation: Security professionals, journalists, lawyers, healthcare workers
 - Values data sovereignty and privacy
 
 **Pain Points**:
-- Concerned about data mining and surveillance capitalism
+ - Concerned about data mining and surveillance capitalism
 - Distrusts big tech platforms (Google, Microsoft)
 - Needs offline access for sensitive information
 - Frustrated by complex E2EE implementations
 
 **Motivations**:
-- Control over personal data
+ - Control over personal data
 - Secure, encrypted note storage
 - No vendor lock-in or data harvesting
 - Simple privacy without complexity
@@ -235,18 +235,18 @@ To validate our speed claims and maintain competitive differentiation, we implem
 
 #### 3. The Minimalist Creator
 **Demographics**:
-- Age: 22-38
+ - Age: 22-38
 - Occupation: Writers, designers, content creators, students
 - Embraces minimalist lifestyle and tools
 
 **Pain Points**:
-- Distracted by cluttered interfaces and notification overload
+ - Distracted by cluttered interfaces and notification overload
 - Seeks distraction-free writing environment
 - Wants beautiful, calming design that inspires creativity
 - Tired of subscription fatigue from multiple tools
 
 **Motivations**:
-- Create more, organize less
+ - Create more, organize less
 - Beautiful, inspirational workspace
 - Single tool that does one thing exceptionally well
 - Alignment with minimalist values
@@ -257,18 +257,18 @@ To validate our speed claims and maintain competitive differentiation, we implem
 
 #### 4. The Mobile-First User
 **Demographics**:
-- Age: 18-35
+ - Age: 18-35
 - Occupation: Students, young professionals, mobile workers
 - Primary computing device is smartphone
 
 **Pain Points**:
-- Desktop-first apps have terrible mobile experiences
+ - Desktop-first apps have terrible mobile experiences
 - Note-taking apps drain battery or require constant internet
 - Slow sync causes lost notes or conflicts
 - Keyboard-heavy apps don't work well on mobile
 
 **Motivations**:
-- Capture thoughts instantly from anywhere
+ - Capture thoughts instantly from anywhere
 - Seamless mobile-to-desktop workflow
 - Fast, responsive mobile experience
 - Offline capability for subway/airplane use
@@ -280,12 +280,12 @@ To validate our speed claims and maintain competitive differentiation, we implem
 ### Secondary Personas
 
 #### 5. The Digital Immigrant
-- Age: 45-65, transitioning from paper notes
+ - Age: 45-65, transitioning from paper notes
 - Values familiarity and simplicity
 - Needs gentle onboarding and excellent support
 
 #### 6. The ADHD/Neurodivergent User
-- Needs low-friction capture tools
+ - Needs low-friction capture tools
 - Benefits from tagging over hierarchical organization
 - Requires distraction-free interface
 
@@ -299,7 +299,7 @@ To validate our speed claims and maintain competitive differentiation, we implem
 *"Your thoughts, unchained."*
 
 **Supporting Messages**:
-- Zero-lag typing—sub-10ms response so typing feels instant
+ - Zero-lag typing—sub-10ms response so typing feels instant
 - Tag-based organization without rigid folder hierarchies
 - Cross-platform sync that works offline-first
 - Distraction-free interface that disappears when you type
@@ -309,13 +309,13 @@ To validate our speed claims and maintain competitive differentiation, we implem
 ### Brand Voice & Tone
 
 **Voice Attributes**:
-- **Clear over clever**: Direct communication, avoid jargon and marketing speak
+ - **Clear over clever**: Direct communication, avoid jargon and marketing speak
 - **Confident but humble**: We're great at simplicity, not claiming to be everything to everyone
 - **Helpful, not preachy**: Guide users, don't lecture them about productivity
 - **Human, not corporate**: Warm, approachable, conversational
 
 **Tone Examples**:
-- ✅ "Finally, a note app that gets out of your way"
+ - ✅ "Finally, a note app that gets out of your way"
 - ❌ "Revolutionary paradigm-shifting note-taking solution"
 - ✅ "We built Paperlyte because we were tired of apps that felt like homework"
 - ❌ "Leverage our innovative platform to maximize your productivity ROI"
@@ -323,7 +323,7 @@ To validate our speed claims and maintain competitive differentiation, we implem
 ### Brand Personality
 
 **If Paperlyte were a person**:
-- The thoughtful friend who helps you declutter
+ - The thoughtful friend who helps you declutter
 - Calm, focused, present
 - Appreciates craftsmanship and attention to detail
 - Values your time and attention
@@ -336,7 +336,7 @@ To validate our speed claims and maintain competitive differentiation, we implem
 ### Phase 1: Pre-Launch (Months -3 to 0)
 
 **Objectives**:
-- Build awareness in target communities
+ - Build awareness in target communities
 - Collect 5,000+ email signups
 - Generate early buzz and anticipation
 - Gather feedback to refine messaging
@@ -344,14 +344,14 @@ To validate our speed claims and maintain competitive differentiation, we implem
 **Tactics**:
 
 #### 1. Landing Page & Email Capture
-- **Hero Section**: Clear value prop with visual demo (speed comparison)
+ - **Hero Section**: Clear value prop with visual demo (speed comparison)
 - **Feature Highlights**: 6 core differentiators with icons
 - **Social Proof**: Early beta tester testimonials
 - **CTA**: "Get Early Access" email signup form
 - **Bonus**: Offer lifetime discount for early subscribers
 
 **Email Sequence for Signups**:
-- Email 1 (Immediate): Welcome + confirm subscription
+ - Email 1 (Immediate): Welcome + confirm subscription
 - Email 2 (Day 3): "Why we built Paperlyte" (founder story)
 - Email 3 (Day 7): Feature spotlight—Speed
 - Email 4 (Day 14): Feature spotlight—Simplicity & design
@@ -360,7 +360,7 @@ To validate our speed claims and maintain competitive differentiation, we implem
 
 #### 2. Content Marketing
 **Blog Posts** (2x/month):
-- "Why every note-taking app became a project management tool"
+ - "Why every note-taking app became a project management tool"
 - "The hidden cost of feature bloat"
 - "How we built Paperlyte 10x faster than Notion"
 - "Paper-inspired design: Why analog thinking improves digital tools"
@@ -370,14 +370,14 @@ To validate our speed claims and maintain competitive differentiation, we implem
 
 #### 3. Community Engagement
 **Target Communities**:
-- Product Hunt: Prepare ship page, rally supporters
+ - Product Hunt: Prepare ship page, rally supporters
 - Hacker News: Share technical blog posts (avoid overt promotion)
 - Reddit: Participate in r/productivity, r/simpleliving, r/minimalism (10:1 ratio—10 helpful comments per 1 self-promotion)
 - Twitter/X: Tech influencer outreach, productivity community engagement
 - Indie Hackers: Share building journey, metrics, learnings
 
 **Influencer Outreach** (Micro-influencers):
-- Productivity YouTubers (50K-500K subscribers)
+ - Productivity YouTubers (50K-500K subscribers)
 - Minimalist lifestyle creators
 - Privacy advocates
 - Tech reviewers

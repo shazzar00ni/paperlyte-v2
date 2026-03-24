@@ -5,7 +5,7 @@ This document outlines the image assets that need to be created for the Paperlyt
 ## Current Status
 
 ### ✅ Completed
-- **SVG Favicon**: `/public/favicon.svg` - Created with brand blue (#3b82f6)
+ - **SVG Favicon**: `/public/favicon.svg` - Created with brand blue (#3b82f6)
 - **Open Graph Meta Tags**: Added to `index.html`
 - **Twitter Card Meta Tags**: Added to `index.html`
 
@@ -16,7 +16,7 @@ The following image files are referenced in the HTML meta tags but do not yet ex
 ## 1. Social Media Preview Images
 
 ### Open Graph Image (Facebook, LinkedIn, etc.)
-- **File**: `public/og-image.jpg`
+ - **File**: `public/og-image.jpg`
 - **Dimensions**: 1200 x 630 pixels
 - **Format**: JPG (optimized for web)
 - **Requirements**:
@@ -28,7 +28,7 @@ The following image files are referenced in the HTML meta tags but do not yet ex
   - High contrast for readability on social media feeds
 
 ### Twitter Card Image
-- **File**: `public/twitter-image.jpg`
+ - **File**: `public/twitter-image.jpg`
 - **Dimensions**: 1200 x 675 pixels (16:9 aspect ratio)
 - **Format**: JPG (optimized for web)
 - **Requirements**:
@@ -41,7 +41,7 @@ The following image files are referenced in the HTML meta tags but do not yet ex
 While the SVG favicon is now in place, additional PNG formats are recommended for broader compatibility:
 
 ### Standard Favicons
-- **File**: `public/favicon-32x32.png`
+ - **File**: `public/favicon-32x32.png`
   - **Dimensions**: 32 x 32 pixels
   - **Format**: PNG with transparency
   - **Source**: Convert from `/public/favicon.svg`
@@ -52,7 +52,7 @@ While the SVG favicon is now in place, additional PNG formats are recommended fo
   - **Source**: Convert from `/public/favicon.svg`
 
 ### Apple Touch Icon
-- **File**: `public/apple-touch-icon.png`
+ - **File**: `public/apple-touch-icon.png`
   - **Dimensions**: 180 x 180 pixels
   - **Format**: PNG (no transparency - use solid background)
   - **Background**: White or brand blue (#3b82f6)
@@ -63,7 +63,7 @@ While the SVG favicon is now in place, additional PNG formats are recommended fo
 Create a web app manifest for PWA support (optional but recommended):
 
 - **File**: `public/site.webmanifest`
-- **Content**:
+ - **Content**:
 ```json
 {
   "name": "Paperlyte",
@@ -88,23 +88,23 @@ Create a web app manifest for PWA support (optional but recommended):
 ```
 
 ### PWA Icons (if implementing manifest)
-- `public/favicon-192x192.png` (192 x 192 pixels)
+ - `public/favicon-192x192.png` (192 x 192 pixels)
 - `public/favicon-512x512.png` (512 x 512 pixels)
 
 ## Brand Guidelines
 
 ### Colors
-- **Primary Blue**: `#3b82f6`
+ - **Primary Blue**: `#3b82f6`
 - **Text Dark**: `#1e293b`
 - **Text Secondary**: `#64748b`
 - **Background**: `#ffffff`
 
 ### Typography
-- **Font Family**: Inter (already loaded via @fontsource/inter)
+ - **Font Family**: Inter (already loaded via @fontsource/inter)
 - **Weights**: 400 (regular), 500 (medium), 600 (semi-bold), 700 (bold)
 
 ### Visual Style
-- Paper-inspired design
+ - Paper-inspired design
 - Clean, minimal aesthetic
 - Lightning bolt icon for speed emphasis
 - Focus on simplicity over complexity
@@ -112,7 +112,7 @@ Create a web app manifest for PWA support (optional but recommended):
 ## Tools for Image Creation
 
 ### Design Tools (recommended):
-- **Figma** - Professional design tool (free tier available)
+ - **Figma** - Professional design tool (free tier available)
 - **Canva** - Quick mockups and social media images
 - **Adobe Illustrator** - For vector graphics
 
@@ -151,7 +151,7 @@ Once all image assets are created:
 ## Priority
 
 According to the audit report:
-- **Social media images**: 🔴 **HIGH PRIORITY** (2-3 hours effort)
+ - **Social media images**: 🔴 **HIGH PRIORITY** (2-3 hours effort)
 - **Favicon PNGs**: 🟡 **MEDIUM PRIORITY** (1 hour effort)
 - **PWA manifest**: 🟢 **LOW PRIORITY** (optional enhancement)
 

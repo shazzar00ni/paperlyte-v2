@@ -158,22 +158,22 @@ The following technologies were identified through analysis of `package.json`, c
 ### Architectural Pattern Recognition
 
 **Pattern: Component-Based Architecture**
-- Evidence: All UI elements are React functional components
+ - Evidence: All UI elements are React functional components
 - Location: `src/components/` directory structure
 - Characteristics: Props interfaces, composition over inheritance
 
 **Pattern: Hooks-Based State Management**
-- Evidence: No Redux, Zustand, or Context API for global state
+ - Evidence: No Redux, Zustand, or Context API for global state
 - Location: `src/hooks/` directory with 7 custom hooks
 - Characteristics: Local component state, custom hooks for shared logic
 
 **Pattern: CSS Modules with Design Tokens**
-- Evidence: `*.module.css` files paired with components
+ - Evidence: `*.module.css` files paired with components
 - Location: Component directories, `src/styles/variables.css`
 - Characteristics: Scoped styles, CSS custom properties, no CSS-in-JS
 
 **Pattern: Privacy-First Analytics**
-- Evidence: PII filtering functions, DNT header checking
+ - Evidence: PII filtering functions, DNT header checking
 - Location: `src/utils/analytics.ts`, `src/analytics/`
 - Characteristics: Data sanitization, cookie-less tracking
 
@@ -297,7 +297,7 @@ Header/
 ```
 
 **Interaction Patterns:**
-- Header uses `useTheme()` for dark mode toggle
+ - Header uses `useTheme()` for dark mode toggle
 - Header uses `useScrollPosition()` for sticky behavior
 - Header uses `useMediaQuery()` for responsive menu
 
@@ -385,7 +385,7 @@ Features/
 **Purpose:** Global error catching and recovery.
 
 **Features:**
-- Catches render errors in child component tree
+ - Catches render errors in child component tree
 - Retry logic (max 3 retries before page reload)
 - Development-only error details display
 - Sentry integration for production error reporting
@@ -544,7 +544,7 @@ const handleSubmit = async (e: FormEvent) => {
 
 Theme preference persistence is controlled by a feature flag in `src/constants/config.ts`.
 This is an **explicit, documented exception** to the privacy-first approach because:
-- Theme contains no personally identifiable information
+ - Theme contains no personally identifiable information
 - It significantly improves UX across visits
 - It respects system preference as fallback when disabled
 - Users can clear it by clearing browser storage
@@ -595,7 +595,7 @@ useEffect(() => {
 | Theme preference | `ALLOW_PERSISTENT_THEME` | Non-PII, significant UX improvement |
 
 Any future localStorage usage must be:
-1. Added to `PERSISTENCE_CONFIG` with a descriptive flag
+ 1. Added to `PERSISTENCE_CONFIG` with a descriptive flag
 2. Documented here with justification
 3. Guarded by the feature flag in implementation
 
@@ -635,7 +635,7 @@ Any future localStorage usage must be:
 ```
 
 **Features:**
-- Catches JavaScript errors in child component tree
+ - Catches JavaScript errors in child component tree
 - Displays user-friendly error message
 - Retry button with max 3 attempts
 - Auto page reload after max retries
@@ -654,12 +654,12 @@ try {
 ### 2. Logging & Monitoring
 
 **Development:**
-- Console logging for analytics events
+ - Console logging for analytics events
 - React DevTools integration
 - Vite HMR error overlay
 
 **Production:**
-- Sentry error monitoring (`@sentry/react`)
+ - Sentry error monitoring (`@sentry/react`)
 - Core Web Vitals tracking
 - Custom error boundaries with reporting
 
@@ -777,13 +777,13 @@ Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'
 ```
 
 This strict CSP policy:
-- Restricts all resources to same-origin (`'self'`)
+ - Restricts all resources to same-origin (`'self'`)
 - Allows inline data URIs for images only
 - Blocks framing (`frame-ancestors 'none'`)
 - Restricts form submissions and base URI to same-origin
 
 **XSS Prevention:**
-- Input sanitization via `sanitizeInput()`
+ - Input sanitization via `sanitizeInput()`
 - React's automatic escaping of JSX
 - CSP headers blocking inline scripts
 
@@ -872,17 +872,17 @@ export function trackEvent(
 ### Resilience Strategies
 
 **Graceful Degradation:**
-- Analytics failures are caught and logged, not thrown
+ - Analytics failures are caught and logged, not thrown
 - Missing gtag doesn't break the application
 - Sentry initialization failures don't affect core functionality
 
 **Timeout Handling:**
-- Netlify email subscription function uses `AbortController` with a 10-second timeout for external API calls
+ - Netlify email subscription function uses `AbortController` with a 10-second timeout for external API calls
 - `OfflinePage` connectivity check uses `AbortController` with a 5-second timeout to detect offline state
 - Client-side `EmailCapture` fetch currently relies on browser defaults (no explicit `AbortController` timeout)
 
 **Offline Support:**
-- OfflinePage component displays when offline
+ - OfflinePage component displays when offline
 - Service worker can cache static assets (future enhancement)
 
 ---
@@ -1144,7 +1144,7 @@ export function utilityName(input: string): string {
 ```
 
 **Pure Functions:**
-- No side effects
+ - No side effects
 - No React dependencies
 - Easily testable
 - Can be used in any context
@@ -1226,7 +1226,7 @@ export function utilityName(input: string): string {
 **Location:** Colocated with source files (`*.test.ts`, `*.test.tsx`)
 
 **Coverage Targets:**
-- Lines: 70%
+ - Lines: 70%
 - Functions: 70%
 - Branches: 70%
 - Statements: 70%
@@ -1815,7 +1815,7 @@ function EmailForm() {
 **Decision:** Use React 19 with functional components and hooks.
 
 **Consequences:**
-- ✅ Modern React features (automatic batching, concurrent rendering)
+ - ✅ Modern React features (automatic batching, concurrent rendering)
 - ✅ Familiar ecosystem for most frontend developers
 - ✅ Excellent TypeScript support
 - ✅ Large community and ecosystem
@@ -1830,7 +1830,7 @@ function EmailForm() {
 **Decision:** Use CSS Modules with CSS custom properties (design tokens).
 
 **Consequences:**
-- ✅ Zero runtime overhead (styles compiled at build time)
+ - ✅ Zero runtime overhead (styles compiled at build time)
 - ✅ Scoped styles prevent naming conflicts
 - ✅ Design tokens enable theming
 - ✅ Standard CSS knowledge is sufficient
@@ -1845,7 +1845,7 @@ function EmailForm() {
 **Decision:** Use React hooks and local component state only. No Redux, Zustand, or Context API for global state.
 
 **Consequences:**
-- ✅ Smaller bundle size
+ - ✅ Smaller bundle size
 - ✅ Simpler mental model
 - ✅ Sufficient for landing page needs
 - ⚠️ May need to revisit if app grows significantly
@@ -1859,7 +1859,7 @@ function EmailForm() {
 **Decision:** Implement cookie-less analytics with automatic PII filtering.
 
 **Consequences:**
-- ✅ GDPR/CCPA compliant by default
+ - ✅ GDPR/CCPA compliant by default
 - ✅ No cookie consent banner needed
 - ✅ User trust and transparency
 - ⚠️ Less detailed user tracking (no cross-session identification)
@@ -1873,7 +1873,7 @@ function EmailForm() {
 **Decision:** Use Netlify as primary host with Vercel as secondary.
 
 **Consequences:**
-- ✅ Redundancy if one platform has issues
+ - ✅ Redundancy if one platform has issues
 - ✅ Free tier sufficient for traffic levels
 - ✅ Built-in CI/CD, previews, and serverless functions
 - ⚠️ Configuration maintained in two places
@@ -1887,7 +1887,7 @@ function EmailForm() {
 **Decision:** Use Vitest for unit/integration tests, Playwright for E2E.
 
 **Consequences:**
-- ✅ Fast test execution (Vitest is Vite-native)
+ - ✅ Fast test execution (Vitest is Vite-native)
 - ✅ Cross-browser E2E testing
 - ✅ Good TypeScript support
 - ✅ Compatible with Testing Library patterns
@@ -1933,12 +1933,12 @@ Before merging any PR:
 ### Automated Checks
 
 **Pre-commit:**
-- ESLint
+ - ESLint
 - Prettier
 - TypeScript type check
 
 **CI Pipeline:**
-- Lint
+ - Lint
 - Type check
 - Unit tests
 - Build

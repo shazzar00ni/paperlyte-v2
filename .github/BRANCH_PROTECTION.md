@@ -146,7 +146,7 @@ git push -u origin main
 **Problem**: Insufficient permissions or invalid token.
 
 **Solutions**:
-- Ensure your token has `repo` scope
+ - Ensure your token has `repo` scope
 - Check if your token has expired
 - Verify you have admin access to the repository
 - Generate a new token if needed
@@ -156,7 +156,7 @@ git push -u origin main
 **Problem**: CI workflow hasn't run yet, so GitHub doesn't know about the checks.
 
 **Solution**:
-1. Create and merge at least one PR to generate the checks
+ 1. Create and merge at least one PR to generate the checks
 2. Or manually trigger the CI workflow
 3. Then reapply branch protection
 
@@ -165,7 +165,7 @@ git push -u origin main
 **Problem**: Branch protection might not be properly configured.
 
 **Solution**:
-1. Verify protection rules at Settings > Branches
+ 1. Verify protection rules at Settings > Branches
 2. Ensure "Require a pull request before merging" is enabled
 3. Check "Require approvals" is set to at least 1
 

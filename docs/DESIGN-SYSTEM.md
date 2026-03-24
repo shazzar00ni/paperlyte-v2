@@ -35,7 +35,7 @@ A comprehensive design system for Paperlyte - a lightning-fast, distraction-free
 **Core Promise:** "Your thoughts, unchained."
 
 ### UX Principles
-1. **Speed First** - Every interaction should feel instantaneous
+ 1. **Speed First** - Every interaction should feel instantaneous
 2. **Clarity Over Cleverness** - Clear communication over creative copy
 3. **Mobile Excellence** - Mobile experience must be as good as desktop
 4. **Accessibility** - Usable by everyone, regardless of ability
@@ -130,7 +130,7 @@ All colors have been tested for WCAG 2.1 compliance. The table below shows key c
 | `#f87171` (Error Dark) | `#0F172A` (Background) | 4.8:1 | AA | Error states (dark mode) |
 
 **Notes:**
-- AA* = Meets AA standards for large text (18pt/14pt bold) and UI components (3:1 minimum)
+ - AA* = Meets AA standards for large text (18pt/14pt bold) and UI components (3:1 minimum)
 - Normal text requires 4.5:1 contrast (AA) or 7:1 (AAA)
 - Large text and UI components require 3:1 contrast (AA)
 - **Important:** the blue primary color (#3b82f6) provides 4.5:1 contrast on white and 5.6:1 on dark backgrounds
@@ -141,7 +141,7 @@ All colors have been tested for WCAG 2.1 compliance. The table below shows key c
 - All background/border variants use very low opacity and are not intended for text contrast
 
 **Testing Tools:**
-- [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/)
+ - [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/)
 - [APCA Contrast Calculator](https://www.myndex.com/APCA/) (next-generation contrast algorithm)
 - Chrome DevTools Lighthouse Accessibility Audit
 
@@ -180,14 +180,14 @@ cursor: not-allowed;
 ### ✅ Do's and ❌ Don'ts
 
 ✅ **DO:**
-- Use primary color (#3b82f6) for CTAs and important interactive elements
+ - Use primary color (#3b82f6) for CTAs and important interactive elements
 - Leverage high contrast of neutral colors for readability
 - Use text-secondary (#6B7280) for supporting information
 - Test colors in both light and dark modes
 - Use blue sparingly to draw attention to key actions
 
 ❌ **DON'T:**
-- Overuse the blue accent - it should highlight, not overwhelm
+ - Overuse the blue accent - it should highlight, not overwhelm
 - Place secondary text on colored backgrounds without checking contrast
 - Use color alone to convey information (add icons or text)
 - Override focus outline colors (accessibility requirement)
@@ -293,7 +293,7 @@ import styles from './Alert.module.css'
 ```
 
 **Font Usage Guidelines:**
-- **Inter**: All text - navigation, buttons, headings, body text, UI components
+ - **Inter**: All text - navigation, buttons, headings, body text, UI components
 
 ### Type Scale
 
@@ -402,14 +402,14 @@ import styles from './Component.module.css'
 ### ✅ Do's and ❌ Don'ts
 
 ✅ **DO:**
-- Use Inter for all text consistently
+ - Use Inter for all text consistently
 - Use semantic HTML headings (h1-h6) in hierarchical order
 - Use relaxed line-height (1.75) for body text
 - Limit line length to 60-80 characters for readability
 - Use font-weight variations (medium, semibold, bold) to create hierarchy
 
 ❌ **DON'T:**
-- Mix multiple font families
+ - Mix multiple font families
 - Skip heading levels (h1 → h3)
 - Use font sizes smaller than 12px (--font-size-xs)
 - Set line-height below 1.25 (readability issues)
@@ -494,13 +494,13 @@ section {
 ### ✅ Do's and ❌ Don'ts
 
 ✅ **DO:**
-- Use spacing tokens (never hardcode pixel values)
+ - Use spacing tokens (never hardcode pixel values)
 - Maintain consistent 8px grid alignment
 - Use larger spacing (lg, xl, 2xl) to create visual hierarchy
 - Reduce spacing on mobile for efficient screen usage
 
 ❌ **DON'T:**
-- Use spacing values outside the defined scale (e.g., 13px, 27px)
+ - Use spacing values outside the defined scale (e.g., 13px, 27px)
 - Use same spacing value for different hierarchical levels
 - Forget to adjust spacing for mobile breakpoints
 
@@ -545,7 +545,7 @@ section {
 ```
 
 **Usage Notes:**
-- **Full border-radius** is the signature style for buttons and badges in the Paperlyte design
+ - **Full border-radius** is the signature style for buttons and badges in the Paperlyte design
 - Cards and inputs use moderate radius (md) for a clean, professional look
 - Large radius (lg) is reserved for prominent content containers
 
@@ -559,7 +559,7 @@ section {
 ```
 
 **Shadow Usage:**
-- Use shadows to create depth and establish visual hierarchy
+ - Use shadows to create depth and establish visual hierarchy
 - Apply sparingly for a clean, minimalist aesthetic
 - Darker shadows for more prominent elevation
 
@@ -598,7 +598,7 @@ Paperlyte's component library provides reusable UI elements that follow the desi
 Components are organized into three categories:
 
 **UI Components** - Reusable, atomic interface elements
-- [Button](#button) - Primary, secondary, ghost button variants
+ - [Button](#button) - Primary, secondary, ghost button variants
 - [Icon](#icon) - SVG icons with Font Awesome fallback and accessibility
 - [ThemeToggle](#themetoggle) - Theme switcher
 - [EmailCapture](#emailcapture) - Email signup form
@@ -611,12 +611,12 @@ Components are organized into three categories:
 - [SVGPathAnimation](#svgpathanimation) - SVG path drawing
 
 **Layout Components** - Page structure and composition
-- [Section](#section) - Consistent section wrapper
+ - [Section](#section) - Consistent section wrapper
 - [Header](#header) - Main navigation
 - [Footer](#footer) - Site footer
 
 **Section Components** - Pre-composed page sections
-- [Hero](#hero) - Hero section
+ - [Hero](#hero) - Hero section
 - [Features](#features) - Feature grid
 - [Pricing](#pricing) - Pricing plans
 - [Testimonials](#testimonials) - Customer reviews
@@ -627,7 +627,7 @@ Components are organized into three categories:
 - [Mobile](#mobile) - Mobile app showcase
 
 **Hooks** - React hooks for common patterns
-- [useMediaQuery](#usemediaquery) - Responsive breakpoints
+ - [useMediaQuery](#usemediaquery) - Responsive breakpoints
 - [useParallax](#useparallax) - Parallax effects
 - [useIntersectionObserver](#useintersectionobserver) - Viewport detection
 - [useReducedMotion](#usereducedmotion) - Motion preferences
@@ -664,12 +664,12 @@ interface ButtonProps {
 ```
 
 **Variants:**
-- `primary` - Filled with primary color, for main CTAs
+ - `primary` - Filled with primary color, for main CTAs
 - `secondary` - Outlined with border, for alternative actions
 - `ghost` - Transparent background, for tertiary actions
 
 **Sizes:**
-- `small` - 44px min-height, 14px font
+ - `small` - 44px min-height, 14px font
 - `medium` - 44px min-height, 16px font (default)
 - `large` - 52px min-height, 16px font
 
@@ -698,7 +698,7 @@ interface ButtonProps {
 ```
 
 **Design Tokens:**
-- Background: `--color-primary` (primary), transparent (secondary/ghost) - See [Color Palette](#color-palette)
+ - Background: `--color-primary` (primary), transparent (secondary/ghost) - See [Color Palette](#color-palette)
 - Border Radius: `--border-radius-full` (9999px - pill shape) - See [Layout & Grid](#layout--grid)
 - Minimum Touch Target: 44x44px (WCAG 2.5.5 Level AAA) - See [Accessibility](#accessibility)
 - Spacing: `--spacing-sm`, `--spacing-md` - See [Spacing System](#spacing-system)
@@ -726,7 +726,7 @@ interface IconProps {
 ```
 
 **Size Mapping:**
-- `sm` - 16px
+ - `sm` - 16px
 - `md` - 20px (default)
 - `lg` - 24px
 - `xl` - 32px
@@ -750,7 +750,7 @@ interface IconProps {
 ```
 
 **Accessibility:**
-- Decorative icons: Use `aria-hidden="true"`, no `ariaLabel`
+ - Decorative icons: Use `aria-hidden="true"`, no `ariaLabel`
 - Semantic icons: Provide descriptive `ariaLabel`, automatic `role="img"`
 - Falls back to Font Awesome if icon not in custom set
 - See [Accessibility Guidelines](#accessibility) for more information
@@ -772,7 +772,7 @@ interface IconProps {
 ```
 
 **Features:**
-- Automatic icon switching (moon/sun)
+ - Automatic icon switching (moon/sun)
 - Aria-label updates based on current theme
 - Integrates with `useTheme` hook
 - Persists preference to localStorage
@@ -796,7 +796,7 @@ interface EmailCaptureProps {
 ```
 
 **Features:**
-- Email validation
+ - Email validation
 - Honeypot spam protection
 - GDPR consent checkbox
 - Loading and success states
@@ -815,7 +815,7 @@ interface EmailCaptureProps {
 ```
 
 **States:**
-- `idle` - Initial state
+ - `idle` - Initial state
 - `loading` - Submitting form
 - `success` - Email submitted successfully
 - `error` - Validation or submission error
@@ -842,7 +842,7 @@ interface FeedbackFormData {
 ```
 
 **Features:**
-- Floating button accessible from anywhere
+ - Floating button accessible from anywhere
 - Modal with form (bug report or feature request)
 - Focus management and keyboard navigation
 - Focus trap within modal
@@ -870,7 +870,7 @@ interface FeedbackFormData {
 ```
 
 **Accessibility:**
-- Modal uses `role="dialog"` and `aria-modal="true"`
+ - Modal uses `role="dialog"` and `aria-modal="true"`
 - Focus trapped within modal
 - Focus restored to trigger button on close
 - Screen reader announcements for errors/confirmation
@@ -896,7 +896,7 @@ interface AnimatedElementProps {
 ```
 
 **Animation Types:**
-- `fadeIn` - Opacity fade in
+ - `fadeIn` - Opacity fade in
 - `slideUp` - Slide up from below with fade
 - `slideInLeft` - Slide in from left
 - `slideInRight` - Slide in from right
@@ -922,7 +922,7 @@ interface AnimatedElementProps {
 ```
 
 **Accessibility:**
-- Automatically disabled when `prefers-reduced-motion` is set
+ - Automatically disabled when `prefers-reduced-motion` is set
 - Uses CSS transitions with hardware acceleration
 
 ---
@@ -947,7 +947,7 @@ interface ParallaxLayerProps {
 ```
 
 **Speed Guidelines:**
-- `0` - No movement (static)
+ - `0` - No movement (static)
 - `0.1-0.3` - Subtle background effect (recommended)
 - `0.4-0.6` - Medium parallax
 - `0.7-1.0` - Strong foreground effect
@@ -976,7 +976,7 @@ interface ParallaxLayerProps {
 ```
 
 **Performance:**
-- GPU-accelerated CSS transforms (60fps)
+ - GPU-accelerated CSS transforms (60fps)
 - Disabled on mobile by default (via `useParallax` hook)
 - Respects `prefers-reduced-motion` - See [Animation Guidelines](#animation-guidelines)
 - Only calculates when in viewport (Intersection Observer)
@@ -1023,7 +1023,7 @@ interface FloatingElementProps {
 ```
 
 **Performance:**
-- CSS animations with GPU acceleration
+ - CSS animations with GPU acceleration
 - Automatically pauses when out of viewport (saves CPU)
 - Respects `prefers-reduced-motion` - See [Animation Guidelines](#animation-guidelines)
 
@@ -1069,7 +1069,7 @@ interface CounterAnimationProps {
 ```
 
 **Features:**
-- requestAnimationFrame for smooth 60fps
+ - requestAnimationFrame for smooth 60fps
 - Intersection Observer triggers animation when scrolled into view
 - Automatic thousands separator formatting
 - Customizable easing functions
@@ -1118,7 +1118,7 @@ interface TextRevealProps {
 ```
 
 **Animation Types:**
-- `fadeUp` - Fade in with upward slide
+ - `fadeUp` - Fade in with upward slide
 - `fadeIn` - Simple opacity fade
 - `slideUp` - Slide up from below
 - `blur` - Blur to clear effect
@@ -1177,7 +1177,7 @@ interface SVGPathAnimationProps {
 ```
 
 **Features:**
-- Automatic path length calculation
+ - Automatic path length calculation
 - Multiple paths with staggered animation
 - Optional fill animation after stroke completes
 - GPU-accelerated stroke-dashoffset animation
@@ -1205,12 +1205,12 @@ interface SectionProps {
 ```
 
 **Background Variants:**
-- `default` - Uses `--color-background`
+ - `default` - Uses `--color-background`
 - `surface` - Uses `--color-surface` (subtle gray)
 - `primary` - Uses `--color-primary` (blue accent)
 
 **Padding Sizes:**
-- `default` - Standard section spacing (64px vertical)
+ - `default` - Standard section spacing (64px vertical)
 - `large` - Extra spacing for hero sections (96px vertical)
 - `none` - No padding (for custom layouts)
 
@@ -1235,7 +1235,7 @@ interface SectionProps {
 ```
 
 **Features:**
-- Consistent max-width container
+ - Consistent max-width container
 - Responsive padding adjustments
 - Semantic `<section>` element
 - Memoized for performance
@@ -1251,7 +1251,7 @@ interface SectionProps {
 **Props:** None (self-contained component)
 
 **Features:**
-- Sticky/fixed positioning
+ - Sticky/fixed positioning
 - Mobile hamburger menu
 - Focus management and keyboard navigation
 - Escape key closes menu
@@ -1266,7 +1266,7 @@ interface SectionProps {
 ```
 
 **Accessibility:**
-- ARIA roles and labels
+ - ARIA roles and labels
 - Keyboard navigation support
 - Focus trap in mobile menu
 - Screen reader friendly
@@ -1302,7 +1302,7 @@ Section components are pre-composed layouts for specific page sections.
 **Props:** None
 
 **Features:**
-- AnimatedElement integration for staggered entrance
+ - AnimatedElement integration for staggered entrance
 - EmailCapture component
 - Icon tags for key features
 - Smooth scroll to features section
@@ -1318,7 +1318,7 @@ Section components are pre-composed layouts for specific page sections.
 **Props:** None
 
 **Features:**
-- Pulls feature data from `@constants/features`
+ - Pulls feature data from `@constants/features`
 - Responsive grid layout (1-2-3 columns)
 - Animated card entrance with stagger
 - Icon integration
@@ -1344,7 +1344,7 @@ Section components are pre-composed layouts for specific page sections.
 **Props:** None
 
 **Features:**
-- Testimonial data from constants
+ - Testimonial data from constants
 - Responsive layout
 - Animated entrance
 
@@ -1359,7 +1359,7 @@ Section components are pre-composed layouts for specific page sections.
 **Props:** None
 
 **Features:**
-- Comparison data from `@constants/comparison`
+ - Comparison data from `@constants/comparison`
 - Checkmark/cross icons
 - Mobile-responsive table
 
@@ -1374,7 +1374,7 @@ Section components are pre-composed layouts for specific page sections.
 **Props:** None
 
 **Features:**
-- CounterAnimation integration
+ - CounterAnimation integration
 - Grid layout
 - Animated number counting
 
@@ -1389,7 +1389,7 @@ Section components are pre-composed layouts for specific page sections.
 **Props:** None
 
 **Features:**
-- FAQ data from constants
+ - FAQ data from constants
 - Collapsible accordion pattern
 - Keyboard navigation
 
@@ -1404,7 +1404,7 @@ Section components are pre-composed layouts for specific page sections.
 **Props:** None
 
 **Features:**
-- EmailCapture integration
+ - EmailCapture integration
 - Prominent positioning
 - Action-focused copy
 

@@ -302,7 +302,7 @@ Add these variables in repository settings (Settings â†’ Secrets and variables â
 | `PROJECT_URL` | Optional | GitHub Projects board URL for automatic PR addition | `https://github.com/users/shazzar00ni/projects/1` |
 
 **Note:** The CI pipeline will run without these tokens, but some features will be limited:
-- Without `CODECOV_TOKEN`: Coverage reports won't be uploaded to Codecov (still available as artifacts)
+ - Without `CODECOV_TOKEN`: Coverage reports won't be uploaded to Codecov (still available as artifacts)
 - Without `LHCI_GITHUB_APP_TOKEN`: Lighthouse results won't be commented on PRs (still available as artifacts)
 - Without `ADD_TO_PROJECT_PAT`: PRs won't be automatically added to GitHub Projects board
 - Without `PROJECT_URL`: Uses default project URL (`https://github.com/users/shazzar00ni/projects/1`)
@@ -407,7 +407,7 @@ npm run preview
 **Cause**: Performance regression or accessibility issues
 
 **Solution**:
-1. Download Lighthouse artifacts from GitHub Actions
+ 1. Download Lighthouse artifacts from GitHub Actions
 2. Open HTML report to see specific issues
 3. Fix issues identified in report
 4. Test locally:
@@ -422,7 +422,7 @@ npm run preview
 **Cause**: Build step failed or artifact retention expired
 
 **Solution**:
-1. Check build logs for errors
+ 1. Check build logs for errors
 2. Verify `dist/` directory exists after build
 3. Artifacts are retained for 7 days only
 
@@ -431,7 +431,7 @@ npm run preview
 **Cause**: Missing or invalid token, or coverage files not generated
 
 **Solution**:
-1. Verify `CODECOV_TOKEN` secret is set
+ 1. Verify `CODECOV_TOKEN` secret is set
 2. Check coverage files exist in `coverage/` directory
 3. CI continues even if Codecov upload fails (`fail_ci_if_error: false`)
 
@@ -440,7 +440,7 @@ npm run preview
 **Cause**: Netlify integration issues or PR from fork
 
 **Solution**:
-1. Verify Netlify GitHub integration is active
+ 1. Verify Netlify GitHub integration is active
 2. Check "Deploy Previews" setting is enabled in Netlify
 3. PRs from forks won't trigger deploy previews (security)
 

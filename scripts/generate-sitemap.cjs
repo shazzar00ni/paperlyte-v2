@@ -72,13 +72,12 @@ function getLastGitCommitDate(filePath) {
     executable = gitExe;
     spawnEnv = { PATH: path.dirname(gitExe) };
   } else {
-    // git not found in known safe locations — fall back to PATH-based lookup but warn.
+    // git not found in known safe locations — fail closed to avoid PATH-based lookup.
     console.warn(
       'Warning: git executable not found in known safe directories. ' +
-      'Falling back to process PATH for git lookup; <lastmod> may be missing if git is unavailable.'
+      'Skipping git lookup to avoid PATH-based command resolution; <lastmod> will be omitted.'
     );
-    executable = 'git';
-    spawnEnv = { PATH: process.env.PATH };
+    return null;
   }
 
   const result = spawnSync(

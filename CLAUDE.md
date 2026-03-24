@@ -12,6 +12,7 @@ At the **start of every session**, read these files to restore context:
 - `memory/user.md` — user goals, context, and working style
 
 At the **end of every session**, update any of the above files with new information learned during the session (new decisions made, preferences expressed, user context gathered, etc.). Keep entries concise and dated where relevant.
+Never store secrets or sensitive personal data (API keys, tokens, passwords, emails, phone numbers, or private identifiers). Redact or omit sensitive details.
 
 ## Project Overview
 

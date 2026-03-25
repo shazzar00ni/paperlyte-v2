@@ -111,7 +111,7 @@
 .textLink {
   background: none;
   border: none;
-  color: var(--color-primary);
+  color: var(--color-text-on-primary);
   font-size: var(--font-size-base);
   text-decoration: underline;
   cursor: pointer;
@@ -119,7 +119,7 @@
 }
 
 .textLink:hover {
-  color: var(--color-primary-dark);
+  color: rgba(255, 255, 255, 0.8);
 }
 
 @media (prefers-reduced-motion: no-preference) {

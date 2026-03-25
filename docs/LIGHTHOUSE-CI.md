@@ -23,16 +23,16 @@ The main configuration file that defines:
 
 These metrics will **fail the build** if not met:
 
-| Metric | Target | Rationale |
-|--------|--------|-----------|
-| Performance Score | ≥90 | Core value proposition |
-| Accessibility Score | ≥95 | WCAG 2.1 AA compliance |
-| First Contentful Paint (FCP) | ≤2000ms | User perception of speed |
-| Largest Contentful Paint (LCP) | ≤2500ms | Core Web Vital |
-| Cumulative Layout Shift (CLS) | ≤0.1 | Core Web Vital |
-| Total Blocking Time (TBT) | ≤300ms | Interactivity measure |
-| Speed Index | ≤3000ms | Visual completeness |
-| Time to Interactive (TTI) | ≤3500ms | Full interactivity |
+| Metric                         | Target  | Rationale                |
+| ------------------------------ | ------- | ------------------------ |
+| Performance Score              | ≥90     | Core value proposition   |
+| Accessibility Score            | ≥95     | WCAG 2.1 AA compliance   |
+| First Contentful Paint (FCP)   | ≤2000ms | User perception of speed |
+| Largest Contentful Paint (LCP) | ≤2500ms | Core Web Vital           |
+| Cumulative Layout Shift (CLS)  | ≤0.1    | Core Web Vital           |
+| Total Blocking Time (TBT)      | ≤300ms  | Interactivity measure    |
+| Speed Index                    | ≤3000ms | Visual completeness      |
+| Time to Interactive (TTI)      | ≤3500ms | Full interactivity       |
 
 #### Warning Metrics
 

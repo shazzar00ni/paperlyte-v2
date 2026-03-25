@@ -24,13 +24,13 @@ A single well-choreographed page-load sequence (staggered hero reveal) creates m
 
 ## Timing Tokens
 
-| Token | Value | Suitable for |
-|---|---|---|
-| `--transition-fast` | `150ms cubic-bezier(0.4, 0, 0.2, 1)` | Colour swaps, opacity fades, icon changes |
-| `--transition-base` | `250ms cubic-bezier(0.4, 0, 0.2, 1)` | Button hover, card lift, nav link underline |
-| `--transition-slow` | `350ms cubic-bezier(0.4, 0, 0.2, 1)` | Panel slide-in, layout shifts |
-| `--animation-duration` | `250ms` | Default CSS animation duration |
-| `--reduced-motion-duration` | `0.01ms` | Applied globally under `prefers-reduced-motion: reduce` |
+| Token                       | Value                                | Suitable for                                            |
+| --------------------------- | ------------------------------------ | ------------------------------------------------------- |
+| `--transition-fast`         | `150ms cubic-bezier(0.4, 0, 0.2, 1)` | Colour swaps, opacity fades, icon changes               |
+| `--transition-base`         | `250ms cubic-bezier(0.4, 0, 0.2, 1)` | Button hover, card lift, nav link underline             |
+| `--transition-slow`         | `350ms cubic-bezier(0.4, 0, 0.2, 1)` | Panel slide-in, layout shifts                           |
+| `--animation-duration`      | `250ms`                              | Default CSS animation duration                          |
+| `--reduced-motion-duration` | `0.01ms`                             | Applied globally under `prefers-reduced-motion: reduce` |
 
 All three transition tokens share the same easing curve: `cubic-bezier(0.4, 0, 0.2, 1)` — a standard ease-in-out that feels snappy on entry and smooth on exit. This is not the same as CSS `ease-out`; the curve is explicitly set on every token rather than relying on a named keyword.
 
@@ -38,12 +38,12 @@ All three transition tokens share the same easing curve: `cubic-bezier(0.4, 0, 0
 
 ## Easing Reference
 
-| Curve | CSS | When |
-|---|---|---|
-| Ease-out (decelerate) | `cubic-bezier(0, 0, 0.2, 1)` | Elements entering the screen |
-| Ease-in (accelerate) | `cubic-bezier(0.4, 0, 1, 1)` | Elements leaving the screen |
-| Standard (ease-in-out) | `cubic-bezier(0.4, 0, 0.2, 1)` | Interactive state transitions |
-| Spring-like | `cubic-bezier(0.34, 1.56, 0.64, 1)` | Delightful button presses, badge pops |
+| Curve                  | CSS                                 | When                                  |
+| ---------------------- | ----------------------------------- | ------------------------------------- |
+| Ease-out (decelerate)  | `cubic-bezier(0, 0, 0.2, 1)`        | Elements entering the screen          |
+| Ease-in (accelerate)   | `cubic-bezier(0.4, 0, 1, 1)`        | Elements leaving the screen           |
+| Standard (ease-in-out) | `cubic-bezier(0.4, 0, 0.2, 1)`      | Interactive state transitions         |
+| Spring-like            | `cubic-bezier(0.34, 1.56, 0.64, 1)` | Delightful button presses, badge pops |
 
 ---
 
@@ -53,24 +53,26 @@ All entrance animations are powered by `IntersectionObserver` via the `AnimatedE
 
 ### Available Animations
 
-| Name | Transform | Use |
-|---|---|---|
-| `fadeIn` | `opacity: 0 → 1` | Default; safe for any content |
-| `slideUp` | `translateY(30px) → 0` + fade | Feature cards, testimonials |
-| `slideInLeft` | `translateX(-30px) → 0` + fade | Left-side content in split layouts |
-| `slideInRight` | `translateX(30px) → 0` + fade | Right-side content in split layouts |
-| `scale` | `scale(0.95) → 1` + fade | Modals, cards, highlight elements |
+| Name           | Transform                      | Use                                 |
+| -------------- | ------------------------------ | ----------------------------------- |
+| `fadeIn`       | `opacity: 0 → 1`               | Default; safe for any content       |
+| `slideUp`      | `translateY(30px) → 0` + fade  | Feature cards, testimonials         |
+| `slideInLeft`  | `translateX(-30px) → 0` + fade | Left-side content in split layouts  |
+| `slideInRight` | `translateX(30px) → 0` + fade  | Right-side content in split layouts |
+| `scale`        | `scale(0.95) → 1` + fade       | Modals, cards, highlight elements   |
 
 ### Stagger Pattern
 
 For grids and lists, stagger `delay` by 80–120ms per item:
 
 ```tsx
-{features.map((feature, i) => (
-  <AnimatedElement animation="slideUp" delay={i * 100} key={feature.id}>
-    <FeatureCard {...feature} />
-  </AnimatedElement>
-))}
+{
+  features.map((feature, i) => (
+    <AnimatedElement animation="slideUp" delay={i * 100} key={feature.id}>
+      <FeatureCard {...feature} />
+    </AnimatedElement>
+  ))
+}
 ```
 
 **Max stagger:** Keep total stagger delay under 600ms (6 items × 100ms). Beyond this, later items feel abandoned.
@@ -122,7 +124,7 @@ The `translateY(-1px)` lift is intentionally subtle — 1px feels responsive wit
 }
 
 .navLink:hover::after,
-.navLink[aria-current="page"]::after {
+.navLink[aria-current='page']::after {
   transform: scaleX(1);
 }
 ```
@@ -137,13 +139,13 @@ Crossfade between sun and moon icons using `opacity` transitions. The icon at re
 
 The landing page hero uses a simple, staggered `fadeIn` sequence on initial render:
 
-| Element | Animation | Delay (staggered from hero mount) |
-|---|---|---|
-| Eyebrow label | `fadeIn` | 0ms |
-| H1 headline | `fadeIn` | 100ms |
-| Subheading | `fadeIn` | 200ms |
-| CTA buttons | `fadeIn` | 300ms |
-| Floating icon cluster | `fadeIn` | 400ms |
+| Element               | Animation | Delay (staggered from hero mount) |
+| --------------------- | --------- | --------------------------------- |
+| Eyebrow label         | `fadeIn`  | 0ms                               |
+| H1 headline           | `fadeIn`  | 100ms                             |
+| Subheading            | `fadeIn`  | 200ms                             |
+| CTA buttons           | `fadeIn`  | 300ms                             |
+| Floating icon cluster | `fadeIn`  | 400ms                             |
 
 Delays are implemented via the shared `AnimatedElement` component and are relative to the hero component mounting (not strictly to `DOMContentLoaded`). When `prefers-reduced-motion: reduce` is active, all elements appear at their final state immediately with no delay.
 
@@ -155,8 +157,13 @@ Decorative icons around the hero use a CSS keyframe loop to create a gentle floa
 
 ```css
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50%       { transform: translateY(-20px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
 }
 
 .floatingIcon {
@@ -195,11 +202,11 @@ Parallax is automatically disabled when `prefers-reduced-motion: reduce` is acti
 
 The `CounterAnimation` component animates numeric values using `requestAnimationFrame`. Three easing options:
 
-| Easing | Curve | Feel |
-|---|---|---|
-| `linear` | Constant rate | Mechanical, data-table-like |
-| `easeOutQuart` | Fast start, slow finish | Natural, recommended |
-| `easeOutExpo` | Very fast start, long tail | Energetic, for small numbers |
+| Easing         | Curve                      | Feel                         |
+| -------------- | -------------------------- | ---------------------------- |
+| `linear`       | Constant rate              | Mechanical, data-table-like  |
+| `easeOutQuart` | Fast start, slow finish    | Natural, recommended         |
+| `easeOutExpo`  | Very fast start, long tail | Energetic, for small numbers |
 
 Default duration: 2000ms. Reduce to 1200ms for numbers below 100; increase to 2500ms for large numbers (>10,000) to give the viewer time to register the count.
 
@@ -217,7 +224,9 @@ SVG illustrations use stroke-dashoffset animation to draw paths in sequence:
 }
 
 @keyframes drawPath {
-  to { stroke-dashoffset: 0; }
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 ```
 
@@ -234,7 +243,10 @@ Word-by-word or character-by-character text entrance:
 - Stagger: 50ms default (80ms for character mode to avoid flickering)
 
 ```css
-.wordWrapper { overflow: hidden; display: inline-block; }
+.wordWrapper {
+  overflow: hidden;
+  display: inline-block;
+}
 .word {
   display: inline-block;
   transform: translateY(100%);
@@ -244,7 +256,10 @@ Word-by-word or character-by-character text entrance:
 }
 
 @keyframes revealWord {
-  to { transform: translateY(0); opacity: 1; }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 ```
 

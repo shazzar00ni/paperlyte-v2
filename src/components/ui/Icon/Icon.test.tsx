@@ -123,24 +123,26 @@ describe('Icon', () => {
         strokeOnlyIcons: new Set(),
       }))
 
-      const { Icon: FallbackIcon } = await import('./Icon')
-      const { container } = render(<FallbackIcon name="fa-github" />)
+      try {
+        const { Icon: FallbackIcon } = await import('./Icon')
+        const { container } = render(<FallbackIcon name="fa-github" />)
 
-      // isBrandIcon('github') → true → fab prefix → found in FA library → SVG, not ? placeholder
-      expect(container.querySelector('span.icon-fallback')).not.toBeInTheDocument()
-      const svg = container.querySelector('svg')
-      expect(svg).toBeInTheDocument()
-      // One warning (not in icon set) but NOT the "not found in FA library" warning
-      expect(consoleWarnSpy).toHaveBeenCalledTimes(1)
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
-        'Icon "fa-github" not found in icon set, using Font Awesome fallback'
-      )
-      expect(consoleWarnSpy).not.toHaveBeenCalledWith(
-        expect.stringContaining('not found in Font Awesome library')
-      )
-
-      vi.doUnmock('./icons')
-      vi.resetModules()
+        // isBrandIcon('github') → true → fab prefix → found in FA library → SVG, not ? placeholder
+        expect(container.querySelector('span.icon-fallback')).not.toBeInTheDocument()
+        const svg = container.querySelector('svg')
+        expect(svg).toBeInTheDocument()
+        // One warning (not in icon set) but NOT the "not found in FA library" warning
+        expect(consoleWarnSpy).toHaveBeenCalledTimes(1)
+        expect(consoleWarnSpy).toHaveBeenCalledWith(
+          'Icon "fa-github" not found in icon set, using Font Awesome fallback'
+        )
+        expect(consoleWarnSpy).not.toHaveBeenCalledWith(
+          expect.stringContaining('not found in Font Awesome library')
+        )
+      } finally {
+        vi.doUnmock('./icons')
+        vi.resetModules()
+      }
     })
   })
 

@@ -1,6 +1,7 @@
-// Legacy ESLint configuration for compatibility with tools that do not yet
-// support the ESLint 9+ flat config format (e.g. Codacy's codacy-eslint-legacy).
-// The authoritative config for local development is eslint.config.js.
+// Legacy ESLint configuration used by Codacy's codacy-eslint-legacy engine
+// and other tools that do not yet support the ESLint 9+ flat config format.
+// The authoritative ESLint config for local development and flat-config–aware
+// tools/engines is eslint.config.js.
 'use strict'
 
 module.exports = {

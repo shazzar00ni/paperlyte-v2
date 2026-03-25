@@ -260,31 +260,31 @@ export function validateForm(formData: Record<string, unknown>): ValidationResul
   const errors: Record<string, string> = {}
 
   if ('email' in formData) {
-    if (typeof formData.email !== 'string') {
-      errors.email = 'Email must be a string'
+    if (typeof formData['email'] !== 'string') {
+      errors['email'] = 'Email must be a string'
     } else {
-      const emailValidation = validateEmail(formData.email)
+      const emailValidation = validateEmail(formData['email'])
       if (!emailValidation.isValid) {
-        errors.email = emailValidation.error || 'Invalid email'
+        errors['email'] = emailValidation.error || 'Invalid email'
       }
     }
   }
 
   if ('name' in formData) {
-    if (typeof formData.name !== 'string') {
-      errors.name = 'Name must be a string'
+    if (typeof formData['name'] !== 'string') {
+      errors['name'] = 'Name must be a string'
     } else {
-      const trimmedName = formData.name.trim()
-      if (trimmedName.length < 2) errors.name = 'Name must be at least 2 characters'
-      if (trimmedName.length > 100) errors.name = 'Name is too long'
+      const trimmedName = formData['name'].trim()
+      if (trimmedName.length < 2) errors['name'] = 'Name must be at least 2 characters'
+      if (trimmedName.length > 100) errors['name'] = 'Name is too long'
     }
   }
 
   if ('acceptTerms' in formData) {
-    if (typeof formData.acceptTerms !== 'boolean') {
-      errors.acceptTerms = 'Accept terms must be a boolean'
-    } else if (!formData.acceptTerms) {
-      errors.acceptTerms = 'You must accept the terms and conditions'
+    if (typeof formData['acceptTerms'] !== 'boolean') {
+      errors['acceptTerms'] = 'Accept terms must be a boolean'
+    } else if (!formData['acceptTerms']) {
+      errors['acceptTerms'] = 'You must accept the terms and conditions'
     }
   }
 

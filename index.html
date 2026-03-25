@@ -55,6 +55,10 @@
     <!-- Preload critical above-the-fold image for better LCP -->
     <link rel="preload" as="image" type="image/avif" href="/mockups/notes-list.avif" />
 
+    <!-- Theme initialization - loaded synchronously to prevent flash of wrong theme.
+         Must run before React hydrates so the correct data-theme is applied immediately. -->
+    <script src="/theme-init.js"></script>
+
     <!-- Schema.org Structured Data (JSON-LD) -->
     <script type="application/ld+json">
       {

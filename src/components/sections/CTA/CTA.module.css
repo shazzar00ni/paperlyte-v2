@@ -47,18 +47,6 @@
   margin-bottom: var(--spacing-xl);
 }
 
-.downloadButton {
-  background-color: white !important;
-  color: var(--color-primary) !important;
-  border-color: white !important;
-}
-
-.downloadButton:hover {
-  background-color: rgba(255, 255, 255, 0.9) !important;
-  transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-}
-
 .platforms {
   margin-bottom: var(--spacing-lg);
 }

@@ -2,7 +2,7 @@
 
 **Version**: 1.0  
 **Last Updated**: December 21, 2025  
-**Owner**: Jane Doe, Accessibility Lead (<accessibility@paperlyte.com>)
+**Owner**: Jane Doe, Accessibility Lead (<accessibility@paperlyte.com>)  
 **Status**: Active
 
 ---

@@ -14,7 +14,7 @@
 
 This report consolidates findings from a comprehensive static-code accessibility audit of the Paperlyte landing page, covering automated scan simulation, keyboard accessibility analysis, ARIA and semantic HTML review, animation and touch-target testing, and color contrast evaluation. Because Lighthouse CI requires a Chrome runtime not available in this environment, scores are derived from thorough source-code inspection and cross-referenced against the `.lighthouserc.json` configuration thresholds.
 
-**Overall Accessibility Status: 🟡 PARTIAL CONFORMANCE**
+### Overall Accessibility Status: 🟡 PARTIAL CONFORMANCE
 
 The codebase demonstrates an unusually strong accessibility foundation for a pre-audit product: comprehensive ARIA labelling, proper focus-trap implementations, `prefers-reduced-motion` support throughout, and robust keyboard handlers in every interactive component. However, several concrete violations prevent full WCAG 2.1 AA conformance and must be resolved before the March 31, 2026 deadline.
 

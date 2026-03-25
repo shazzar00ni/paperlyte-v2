@@ -125,8 +125,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [pr-metadata, dependency-review, bundle-size-check]
     if: always()
-    permissions:
-      contents: read
+    permissions: {}
 
     steps:
       - name: Generate Quality Report

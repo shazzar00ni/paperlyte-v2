@@ -83,12 +83,30 @@ jobs:
           ORG="${{ github.repository_owner }}"
           REPO="${{ github.event.repository.name }}"
           COMMIT_UUID="${{ github.sha }}"
-          echo "Uploading merged SARIF ($(jq '.runs | length' results.sarif) run(s)) to Codacy..."
-          HTTP_STATUS=$(curl -s -o /tmp/codacy_upload_response.txt -w "%{http_code}" -X POST \
+          RUN_COUNT="unknown"
+          if command -v jq >/dev/null 2>&1; then
+            if ! RUN_COUNT=$(jq '.runs | length' results.sarif 2>/dev/null); then
+              RUN_COUNT="unknown"
+            fi
+          fi
+          echo "Uploading merged SARIF (${RUN_COUNT} run(s)) to Codacy..."
+          HTTP_STATUS=""
+          CURL_EXIT=0
+          HTTP_STATUS=$(curl -sS -o /tmp/codacy_upload_response.txt -w "%{http_code}" -X POST \
             "https://api.codacy.com/api/v3/analysis/organizations/gh/$ORG/repositories/$REPO/upload" \
             -H "api-token: $CODACY_PROJECT_TOKEN" \
             -F "commitUuid=$COMMIT_UUID" \
-            -F "results=@results.sarif;type=application/json")
+            -F "results=@results.sarif;type=application/json") || CURL_EXIT=$?
+          if [ "$CURL_EXIT" -ne 0 ]; then
+            echo "Error: curl failed while uploading SARIF to Codacy (exit code $CURL_EXIT)."
+            if [ -n "$HTTP_STATUS" ]; then
+              echo "Codacy upload HTTP status (if any): $HTTP_STATUS"
+            fi
+            echo "Codacy upload response (if any):"
+            cat /tmp/codacy_upload_response.txt 2>/dev/null || true
+            # Do not cause the workflow to fail; step is already marked continue-on-error: true
+            exit 0
+          fi
           echo "Codacy upload HTTP status: $HTTP_STATUS"
           cat /tmp/codacy_upload_response.txt || true
           if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ]; then

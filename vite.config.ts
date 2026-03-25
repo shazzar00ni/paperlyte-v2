@@ -147,7 +147,8 @@ export default defineConfig({
         // Strategy: Only split large vendor libraries that change infrequently
         manualChunks(id) {
           // React vendor bundle (~190KB) - changes rarely, good cache hit rate
-          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
+          // Use precise path matching to avoid capturing @sentry/react or react-router
+          if (/node_modules\/(react|react-dom)\//.test(id)) {
             return 'react-vendor'
           }
           // Font Awesome is large (~100KB+), split it out

@@ -20,22 +20,22 @@ describe('Testimonials', () => {
   it('should render the testimonial quote', () => {
     render(<Testimonials />)
 
-    // Should render at least one testimonial quote (Marcus Johnson's quote)
-    expect(screen.getByText(/I've tried every note app out there/i)).toBeInTheDocument()
+    // Should render the first testimonial quote (Sarah Chen's, index 0)
+    expect(screen.getByText(/Paperlyte transformed how I capture ideas/i)).toBeInTheDocument()
   })
 
   it('should render placeholder author name', () => {
     render(<Testimonials />)
 
-    // Should render Marcus Johnson's name (from testimonial-2)
-    expect(screen.getByText('Marcus Johnson')).toBeInTheDocument()
+    // Should render Sarah Chen's name (testimonial-1, index 0)
+    expect(screen.getByText('Sarah Chen')).toBeInTheDocument()
   })
 
   it('should render placeholder author role', () => {
     render(<Testimonials />)
 
-    // Should render Marcus Johnson's role
-    expect(screen.getByText('Freelance Writer')).toBeInTheDocument()
+    // Should render Sarah Chen's role (displayed as "Product Manager • TechCorp")
+    expect(screen.getByText(/Product Manager/)).toBeInTheDocument()
   })
 
   it('should render note about beta testimonials', () => {

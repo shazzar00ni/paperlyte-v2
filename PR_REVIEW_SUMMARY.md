@@ -25,7 +25,7 @@ The following branches have been reviewed and are verified to be free from syste
   - **Summary:** Fixes SonarCloud job failures when the `SONAR_TOKEN` secret is missing.
 - **`origin/claude/setup-sonarcloud-HM572`**
   - **Status:** Approved
-  - **Summary:** Centralizes SonarCloud configuration in `sonar-project.properties`.
+  - **Summary:** Centralizes SonarCloud configuration in `sonar-project.properties`. This branch (now merged into this PR) also fixes a critical CI failure by providing the mandatory `sonar.projectKey` and `sonar.organization` values and adding a missing `checkout` step to the workflow.
 
 ### Blocked by Systemic Regressions
 

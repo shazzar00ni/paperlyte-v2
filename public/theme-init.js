@@ -17,10 +17,7 @@
   let theme
   if (hasUserPref && (stored === 'light' || stored === 'dark')) {
     theme = stored
-  } else if (
-    globalThis.matchMedia &&
-    globalThis.matchMedia('(prefers-color-scheme: dark)').matches
-  ) {
+  } else if (globalThis.matchMedia?.('(prefers-color-scheme: dark)').matches) {
     theme = 'dark'
   } else {
     theme = 'light'

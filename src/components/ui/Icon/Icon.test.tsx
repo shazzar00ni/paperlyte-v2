@@ -41,25 +41,21 @@ describe('Icon', () => {
       expect(consoleWarnSpy).toHaveBeenCalledTimes(2)
     })
 
-    it('should render FontAwesome SVG for known FA icons', () => {
-      // fa-bolt is registered in iconLibrary.ts — renders via FontAwesome fallback
+    it('should render custom SVG for known icons in iconPaths', () => {
+      // fa-bolt is defined in iconPaths — renders via custom SVG path
       const { container } = render(<Icon name="fa-bolt" />)
 
-      // All icons fall back to Font Awesome since iconPaths is empty
-      const svg = container.querySelector('svg')
+      const svg = container.querySelector('svg.icon-svg')
       expect(svg).toBeInTheDocument()
-      // FontAwesome renders its own SVG without width/height attributes
-      expect(svg).not.toHaveAttribute('width')
+      // Custom SVG renders with explicit width/height attributes
+      expect(svg).toHaveAttribute('width')
     })
 
-    it('should only warn once for icons found in Font Awesome library', () => {
+    it('should not warn for icons found in custom iconPaths', () => {
       render(<Icon name="fa-bolt" />)
 
-      // Only first warning fires (not in custom icon set), icon IS found in FA
-      expect(consoleWarnSpy).toHaveBeenCalledTimes(1)
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
-        'Icon "fa-bolt" not found in icon set, using Font Awesome fallback'
-      )
+      // No warnings: fa-bolt is found in iconPaths, no fallback needed
+      expect(consoleWarnSpy).toHaveBeenCalledTimes(0)
     })
   })
 
@@ -87,9 +83,7 @@ describe('Icon', () => {
     })
 
     it('should expose ? fallback span to screen readers when ariaLabel is provided', () => {
-      const { container } = render(
-        <Icon name="definitely-missing-icon" ariaLabel="Missing icon" />
-      )
+      const { container } = render(<Icon name="definitely-missing-icon" ariaLabel="Missing icon" />)
       const fallback = container.querySelector('span.icon-fallback')
       expect(fallback).toHaveAttribute('aria-hidden', 'false')
       expect(fallback).toHaveAttribute('aria-label', 'Missing icon')
@@ -98,17 +92,14 @@ describe('Icon', () => {
   })
 
   describe('Brand icon prefix detection', () => {
-    it('should automatically assign fab prefix for known brand icons via isBrandIcon()', () => {
-      // fa-github is a brand icon detected by isBrandIcon() — no explicit variant needed
+    it('should automatically render custom SVG for known brand icons in iconPaths', () => {
+      // fa-github is defined in iconPaths — renders via custom SVG path
       const { container } = render(<Icon name="fa-github" />)
-      const svg = container.querySelector('svg')
-      // Brand icons render via FontAwesome with the fab prefix
+      const svg = container.querySelector('svg.icon-svg')
+      // Brand icons in iconPaths render as custom SVG without any warning
       expect(svg).toBeInTheDocument()
-      // Should warn only once (found in FA library)
-      expect(consoleWarnSpy).toHaveBeenCalledTimes(1)
-      expect(consoleWarnSpy).not.toHaveBeenCalledWith(
-        expect.stringContaining('not found in Font Awesome library')
-      )
+      // No warnings: fa-github is found in iconPaths
+      expect(consoleWarnSpy).toHaveBeenCalledTimes(0)
     })
 
     it('should assign fab prefix when variant="brands" is explicitly set', () => {
@@ -121,6 +112,37 @@ describe('Icon', () => {
       const { container } = render(<Icon name="fa-github" />)
       const fallback = container.querySelector('span.icon-fallback')
       expect(fallback).not.toBeInTheDocument()
+    })
+
+    it('should use fab prefix via isBrandIcon() when brand icon falls through to FA fallback', async () => {
+      // Mock iconPaths to omit all custom icons, forcing the FA fallback path
+      vi.resetModules()
+      vi.doMock('./icons', () => ({
+        iconPaths: {},
+        getIconViewBox: () => '0 0 24 24',
+        strokeOnlyIcons: new Set(),
+      }))
+
+      try {
+        const { Icon: FallbackIcon } = await import('./Icon')
+        const { container } = render(<FallbackIcon name="fa-github" />)
+
+        // isBrandIcon('github') → true → fab prefix → found in FA library → SVG, not ? placeholder
+        expect(container.querySelector('span.icon-fallback')).not.toBeInTheDocument()
+        const svg = container.querySelector('svg')
+        expect(svg).toBeInTheDocument()
+        // One warning (not in icon set) but NOT the "not found in FA library" warning
+        expect(consoleWarnSpy).toHaveBeenCalledTimes(1)
+        expect(consoleWarnSpy).toHaveBeenCalledWith(
+          'Icon "fa-github" not found in icon set, using Font Awesome fallback'
+        )
+        expect(consoleWarnSpy).not.toHaveBeenCalledWith(
+          expect.stringContaining('not found in Font Awesome library')
+        )
+      } finally {
+        vi.doUnmock('./icons')
+        vi.resetModules()
+      }
     })
   })
 
@@ -146,9 +168,7 @@ describe('Icon', () => {
     })
 
     it('should pass rgb() values through unchanged', () => {
-      const { container } = render(
-        <Icon name="definitely-missing-icon" color="rgb(255, 0, 0)" />
-      )
+      const { container } = render(<Icon name="definitely-missing-icon" color="rgb(255, 0, 0)" />)
       const fallback = container.querySelector('span.icon-fallback')
       expect(fallback).toHaveStyle({ color: 'rgb(255, 0, 0)' })
     })
@@ -199,7 +219,7 @@ describe('Icon', () => {
       expect(fallback).toHaveClass('custom-class')
     })
 
-    it('should apply custom className to FontAwesome SVG', () => {
+    it('should apply custom className to custom SVG icon (fa-bolt)', () => {
       const { container } = render(<Icon name="fa-bolt" className="custom-class" />)
       const icon = container.querySelector('svg') ?? container.querySelector('span.icon-fallback')
       expect(icon).toHaveClass('custom-class')

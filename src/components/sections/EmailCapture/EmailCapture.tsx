@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
+import { logError } from '@utils/monitoring'
 import { Section } from '@components/layout/Section'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { Button } from '@components/ui/Button'
@@ -34,9 +35,26 @@ export const EmailCapture = (): React.ReactElement => {
 
       setIsLoading(false)
       setIsSubmitted(true)
-    } catch {
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error(String(err))
+      logError(error, { tags: { context: 'waitlist-submit' } })
+
+      let message = 'Failed to join waitlist. Please try again.'
+      if (
+        error.name === 'TypeError' ||
+        error.message.toLowerCase().includes('network') ||
+        error.message.toLowerCase().includes('fetch')
+      ) {
+        message = 'Network error. Please check your connection and try again.'
+      } else if (
+        error.message.toLowerCase().includes('invalid') ||
+        error.message.toLowerCase().includes('validation')
+      ) {
+        message = 'Invalid email address. Please check and try again.'
+      }
+
       setIsLoading(false)
-      setError('Failed to join waitlist. Please try again.')
+      setError(message)
     }
   }
 
@@ -132,7 +150,9 @@ export const EmailCapture = (): React.ReactElement => {
                 name="email"
                 placeholder="your@email.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value)
+                }}
                 required
                 className={styles.input}
                 aria-label="Email address"

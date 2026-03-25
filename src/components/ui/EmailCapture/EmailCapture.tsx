@@ -2,18 +2,13 @@ import { useState, type FormEvent } from 'react'
 import { Button } from '@components/ui/Button'
 import { Icon } from '@components/ui/Icon'
 import { trackEvent } from '@utils/analytics'
+import { validateEmail } from '@utils/validation'
 import styles from './EmailCapture.module.css'
 
 interface EmailCaptureProps {
   variant?: 'inline' | 'centered'
   placeholder?: string
   buttonText?: string
-}
-
-// Pure validation function - moved outside component to avoid recreation on every render
-const validateEmail = (email: string): boolean => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  return emailRegex.test(email)
 }
 
 /**
@@ -56,15 +51,10 @@ export const EmailCapture = ({
     }
 
     // Validation
-    if (!email.trim()) {
+    const { isValid, error: validationError } = validateEmail(email)
+    if (!isValid) {
       setStatus('error')
-      setErrorMessage('Please enter your email address')
-      return
-    }
-
-    if (!validateEmail(email)) {
-      setStatus('error')
-      setErrorMessage('Please enter a valid email address')
+      setErrorMessage(validationError ?? 'Please enter a valid email address')
       return
     }
 
@@ -132,7 +122,9 @@ export const EmailCapture = ({
           type="text"
           name="website"
           value={honeypot}
-          onChange={(e) => setHoneypot(e.target.value)}
+          onChange={(e) => {
+            setHoneypot(e.target.value)
+          }}
           tabIndex={-1}
           autoComplete="off"
           className={styles.honeypot}
@@ -148,7 +140,9 @@ export const EmailCapture = ({
             id="email"
             name="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value)
+            }}
             placeholder={placeholder}
             className={styles.input}
             disabled={status === 'loading'}
@@ -180,7 +174,9 @@ export const EmailCapture = ({
               type="checkbox"
               id="gdpr-consent"
               checked={gdprConsent}
-              onChange={(e) => setGdprConsent(e.target.checked)}
+              onChange={(e) => {
+                setGdprConsent(e.target.checked)
+              }}
               className={styles.checkbox}
               disabled={status === 'loading'}
               required

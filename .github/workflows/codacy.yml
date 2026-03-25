@@ -80,16 +80,16 @@ jobs:
             echo "CODACY_PROJECT_TOKEN not set, skipping Codacy upload"
             exit 0
           fi
+          RUN_COUNT=$(jq '.runs | length' results.sarif)
+          echo "SARIF run count before upload: $RUN_COUNT"
+          if [ "$RUN_COUNT" -ne 1 ]; then
+            echo "Error: expected exactly 1 run after merging, got $RUN_COUNT. Skipping Codacy upload to avoid rejection."
+            exit 1
+          fi
           ORG="${{ github.repository_owner }}"
           REPO="${{ github.event.repository.name }}"
           COMMIT_UUID="${{ github.sha }}"
-          RUN_COUNT="unknown"
-          if command -v jq >/dev/null 2>&1; then
-            if ! RUN_COUNT=$(jq '.runs | length' results.sarif 2>/dev/null); then
-              RUN_COUNT="unknown"
-            fi
-          fi
-          echo "Uploading merged SARIF (${RUN_COUNT} run(s)) to Codacy..."
+          echo "Uploading merged SARIF to Codacy..."
           HTTP_STATUS=""
           CURL_EXIT=0
           HTTP_STATUS=$(curl -sS -o /tmp/codacy_upload_response.txt -w "%{http_code}" -X POST \

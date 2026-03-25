@@ -323,6 +323,37 @@ known consumer.
 **Revisit when**: `extract-zip` releases a version with `yauzl: ^3.x` in its
 `dependencies`, at which point this override can be removed.
 
+---
+
+### `flatted` (`^3.4.2`)
+
+`package.json` contains a global npm override that forces `flatted` to `^3.4.2`:
+
+```json
+{
+  "overrides": {
+    "flatted": "^3.4.2"
+  }
+}
+```
+
+**Advisory**: GHSA-rf6f-7fwh-wjgh — high-severity prototype pollution in
+`flatted` ≤ 3.4.1. Maliciously crafted input can pollute `Object.prototype`,
+potentially enabling privilege escalation or unexpected property injection.
+
+**Affected transitive chain**: `eslint → file-entry-cache → flat-cache → flatted`
+
+**Chosen version**: `^3.4.2` is the first release that patches the vulnerability.
+The fix is a non-breaking patch to internal serialisation logic; no API surface
+changes affect consumers.
+
+**Review date**: 2026-03-19
+**Owner**: Claude (Anthropic automated security pass)
+
+**Revisit when**: `flat-cache` (or `eslint` directly) declares a native
+dependency on `flatted ^3.4.2` or later, at which point this global override
+can be removed.
+
 ## Known Security Considerations
 
 ### Current Limitations

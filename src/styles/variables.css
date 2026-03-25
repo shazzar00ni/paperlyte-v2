@@ -132,8 +132,8 @@
   --color-error-border: rgba(248, 113, 113, 0.35);
 
   /* Semantic color aliases - Dark Mode */
-  --color-background-primary: #0f172a; /* Alias for --color-background in dark mode */
-  --color-background-secondary: #1e293b; /* Alias for --color-surface in dark mode */
+  --color-background-primary: var(--color-background); /* Alias for --color-background in dark mode */
+  --color-background-secondary: var(--color-surface); /* Alias for --color-surface in dark mode */
 
   /* Theme transition */
   color-scheme: dark;

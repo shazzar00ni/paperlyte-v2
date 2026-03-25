@@ -41,21 +41,21 @@ describe('Icon', () => {
       expect(consoleWarnSpy).toHaveBeenCalledTimes(2)
     })
 
-    it('should render FontAwesome SVG for known FA icons', () => {
-      // fa-bolt is in iconPaths — renders as custom svg.icon-svg with width/height
+    it('should render custom SVG for known icons in iconPaths', () => {
+      // fa-bolt is defined in iconPaths — renders via custom SVG path
       const { container } = render(<Icon name="fa-bolt" />)
 
       const svg = container.querySelector('svg.icon-svg')
       expect(svg).toBeInTheDocument()
-      // Custom SVG icons include explicit width/height attributes
+      // Custom SVG renders with explicit width/height attributes
       expect(svg).toHaveAttribute('width')
     })
 
-    it('should not warn for icons found in the custom icon set', () => {
+    it('should not warn for icons found in custom iconPaths', () => {
       render(<Icon name="fa-bolt" />)
 
-      // fa-bolt is in iconPaths — no fallback warning should fire
-      expect(consoleWarnSpy).not.toHaveBeenCalled()
+      // No warnings: fa-bolt is found in iconPaths, no fallback needed
+      expect(consoleWarnSpy).toHaveBeenCalledTimes(0)
     })
   })
 
@@ -92,13 +92,14 @@ describe('Icon', () => {
   })
 
   describe('Brand icon prefix detection', () => {
-    it('should automatically assign fab prefix for known brand icons via isBrandIcon()', () => {
-      // fa-github is in iconPaths — renders as custom svg.icon-svg directly
+    it('should automatically render custom SVG for known brand icons in iconPaths', () => {
+      // fa-github is defined in iconPaths — renders via custom SVG path
       const { container } = render(<Icon name="fa-github" />)
       const svg = container.querySelector('svg.icon-svg')
+      // Brand icons in iconPaths render as custom SVG without any warning
       expect(svg).toBeInTheDocument()
-      // No fallback warning since the icon is in the custom icon set
-      expect(consoleWarnSpy).not.toHaveBeenCalled()
+      // No warnings: fa-github is found in iconPaths
+      expect(consoleWarnSpy).toHaveBeenCalledTimes(0)
     })
 
     it('should assign fab prefix when variant="brands" is explicitly set', () => {
@@ -111,6 +112,37 @@ describe('Icon', () => {
       const { container } = render(<Icon name="fa-github" />)
       const fallback = container.querySelector('span.icon-fallback')
       expect(fallback).not.toBeInTheDocument()
+    })
+
+    it('should use fab prefix via isBrandIcon() when brand icon falls through to FA fallback', async () => {
+      // Mock iconPaths to omit all custom icons, forcing the FA fallback path
+      vi.resetModules()
+      vi.doMock('./icons', () => ({
+        iconPaths: {},
+        getIconViewBox: () => '0 0 24 24',
+        strokeOnlyIcons: new Set(),
+      }))
+
+      try {
+        const { Icon: FallbackIcon } = await import('./Icon')
+        const { container } = render(<FallbackIcon name="fa-github" />)
+
+        // isBrandIcon('github') → true → fab prefix → found in FA library → SVG, not ? placeholder
+        expect(container.querySelector('span.icon-fallback')).not.toBeInTheDocument()
+        const svg = container.querySelector('svg')
+        expect(svg).toBeInTheDocument()
+        // One warning (not in icon set) but NOT the "not found in FA library" warning
+        expect(consoleWarnSpy).toHaveBeenCalledTimes(1)
+        expect(consoleWarnSpy).toHaveBeenCalledWith(
+          'Icon "fa-github" not found in icon set, using Font Awesome fallback'
+        )
+        expect(consoleWarnSpy).not.toHaveBeenCalledWith(
+          expect.stringContaining('not found in Font Awesome library')
+        )
+      } finally {
+        vi.doUnmock('./icons')
+        vi.resetModules()
+      }
     })
   })
 
@@ -187,7 +219,7 @@ describe('Icon', () => {
       expect(fallback).toHaveClass('custom-class')
     })
 
-    it('should apply custom className to FontAwesome SVG', () => {
+    it('should apply custom className to custom SVG icon (fa-bolt)', () => {
       const { container } = render(<Icon name="fa-bolt" className="custom-class" />)
       const icon = container.querySelector('svg') ?? container.querySelector('span.icon-fallback')
       expect(icon).toHaveClass('custom-class')

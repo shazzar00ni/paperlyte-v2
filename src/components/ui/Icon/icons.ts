@@ -1,4 +1,4 @@
-import { safePropertyAccess } from '../../../utils/security'
+import { safePropertyAccess } from '@utils/security'
 
 // Lightweight SVG icon paths to replace Font Awesome CDN
 // Only includes icons actually used in the app
@@ -31,6 +31,9 @@ export const iconPaths: Record<string, string> = {
   'mobile-screen':
     'M17 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z M12 18h.01',
   'shield-halved': 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z M12 2v20',
+
+  // Navigation
+  'fa-home': 'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z M9 22V12h6v10',
 
   // UI States
   'triangle-exclamation':
@@ -69,3 +72,15 @@ export const iconViewBox: Record<string, string> = {
 export const getIconViewBox = (name: string): string => {
   return safePropertyAccess(iconViewBox, name) ?? '0 0 24 24'
 }
+
+/**
+ * Icons that use closed shapes requiring fill="none" on path elements
+ * so that the stroke renders correctly without the fill obscuring it.
+ * Add icon names here when the path data describes a closed filled shape
+ * that should appear as an outline only.
+ */
+export const strokeOnlyIcons = new Set<string>([
+  'circle-check',
+  'circle-exclamation',
+  'shield-halved',
+])

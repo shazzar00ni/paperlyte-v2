@@ -71,25 +71,34 @@ export class FathomProvider extends BaseScriptProvider {
     }
   }
 
+  /** Return an explicit goal code set on the event properties, or undefined. */
+  private getExplicitGoalCode(event: AnalyticsEvent): string | undefined {
+    const code = event.properties?.goalCode
+    return typeof code === 'string' ? code : undefined
+  }
+
+  /** Look up the event name in the provider's goal-code mapping config. */
+  private getMappedGoalCode(event: AnalyticsEvent): string | undefined {
+    const cfg = this.config as FathomConfig | null
+    const mappings: Record<string, string> = cfg?.goalMappings ?? cfg?.goalCodes ?? {}
+    return event.name ? mappings[event.name] : undefined
+  }
+
+  /** Return the event name itself if it already looks like a Fathom goal code. */
+  private isGoalCodeLikeName(name: string | undefined): name is string {
+    return typeof name === 'string' && /^[A-Z0-9]{4,10}$/.test(name)
+  }
+
   /**
    * Resolve a Fathom goal code from an event.
    * Priority: explicit goalCode property → config mapping → goal-code-shaped event name
    */
   private resolveGoalCode(event: AnalyticsEvent): string | undefined {
-    const cfg = this.config as FathomConfig | null
-    const mappings: Record<string, string> = cfg?.goalMappings ?? cfg?.goalCodes ?? {}
-
-    if (typeof event.properties?.goalCode === 'string') {
-      return event.properties.goalCode
-    }
-    if (event.name && mappings[event.name]) {
-      return mappings[event.name]
-    }
-    if (typeof event.name === 'string' && /^[A-Z0-9]{4,10}$/.test(event.name)) {
-      // Fallback: allow a goal-code-like event.name (e.g. "ABC123")
-      return event.name
-    }
-    return undefined
+    return (
+      this.getExplicitGoalCode(event) ??
+      this.getMappedGoalCode(event) ??
+      (this.isGoalCodeLikeName(event.name) ? event.name : undefined)
+    )
   }
 
   /**

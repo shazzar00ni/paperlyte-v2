@@ -78,7 +78,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     // Prevent infinite retry loops
     if (this.state.retryCount >= maxRetries) {
       // Too many retries - force page reload
-      window.location.reload()
+      globalThis.location.reload()
       return
     }
 
@@ -135,7 +135,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                 </button>
               )}
               <button
-                onClick={() => window.location.reload()}
+                onClick={() => globalThis.location.reload()}
                 className={styles.reloadButton}
                 type="button"
               >

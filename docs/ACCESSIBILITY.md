@@ -38,7 +38,7 @@ If you experience difficulty accessing any part of the Paperlyte platform, or wi
 
 - Email: [accessibility@paperlyte.com](mailto:accessibility@paperlyte.com)
 - Alternate: [legal@paperlyte.com](mailto:legal@paperlyte.com)
-We aim to respond to accessibility requests within 5 business days.
+  We aim to respond to accessibility requests within 5 business days.
 
 ## Accessibility Remediation Plan
 

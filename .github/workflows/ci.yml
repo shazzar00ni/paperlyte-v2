@@ -116,11 +116,13 @@ jobs:
 
       - name: Upload test results to Codecov
         if: ${{ !cancelled() }}
-        uses: codecov/test-results-action@0fa95f0e1eeaafde2c782583b36b28ad0d8c77d3 # v1.2.1
+        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: "**/junit.xml"
+          report_type: test_results
           verbose: true
+          fail_ci_if_error: false
 
       - name: Upload coverage reports
         if: ${{ !cancelled() }}
@@ -314,7 +316,7 @@ jobs:
         run: bash .github/scripts/generate-lighthouse-summary.sh
 
       - name: Fail job if Lighthouse assertions failed
-        if: steps.lighthouse.outcome != 'success'
+        if: steps.lighthouse.outcome == 'failure'
         run: exit 1
 
   e2e:
@@ -400,7 +402,6 @@ jobs:
 
     steps:
       - name: Add To GitHub Projects
-        if: ${{ secrets.ADD_TO_PROJECT_PAT != '' }}
         uses: actions/add-to-project@244f685bbc3b7adfa8466e08b698b5577571133e # v1.0.2
         continue-on-error: true
         with:

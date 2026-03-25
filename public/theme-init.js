@@ -11,26 +11,20 @@
  * - Fall back to light theme.
  */
 ;(function () {
-  try {
-    var stored = localStorage.getItem('theme')
-    var hasUserPref = localStorage.getItem('theme-user-preference') === 'true'
-    var theme
+  const stored = localStorage.getItem('theme')
+  const hasUserPref = localStorage.getItem('theme-user-preference') === 'true'
 
-    if (hasUserPref && (stored === 'light' || stored === 'dark')) {
-      theme = stored
-    } else if (
-      window.matchMedia &&
-      window.matchMedia('(prefers-color-scheme: dark)').matches
-    ) {
-      theme = 'dark'
-    } else {
-      theme = 'light'
-    }
-
-    document.documentElement.setAttribute('data-theme', theme)
-  } catch (_e) {
-    // localStorage may be unavailable (private browsing, security restrictions).
-    // Fall back to light theme silently.
-    document.documentElement.setAttribute('data-theme', 'light')
+  let theme
+  if (hasUserPref && (stored === 'light' || stored === 'dark')) {
+    theme = stored
+  } else if (
+    globalThis.matchMedia &&
+    globalThis.matchMedia('(prefers-color-scheme: dark)').matches
+  ) {
+    theme = 'dark'
+  } else {
+    theme = 'light'
   }
+
+  document.documentElement.dataset['theme'] = theme
 })()

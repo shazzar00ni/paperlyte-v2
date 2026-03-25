@@ -58,10 +58,10 @@ const AnimatedElementComponent = ({
   // when animations are disabled
   useEffect(() => {
     if (ref.current) {
-      if (!prefersReducedMotion) {
-        ref.current.style.setProperty('--animation-delay', `${delay}ms`)
-      } else {
+      if (prefersReducedMotion) {
         ref.current.style.removeProperty('--animation-delay')
+      } else {
+        ref.current.style.setProperty('--animation-delay', `${delay}ms`)
       }
     }
     // ref is a stable object and doesn't need to be in dependencies

@@ -23,17 +23,19 @@ Paperlyte is committed to achieving full WCAG 2.1 Level AA conformance across al
 ### Conformance Level
 
 As of December 21, 2025:
- - **Target Standard**: WCAG 2.1 Level AA
- - **Current Conformance**: Partial (audit scheduled)
- - **Next Audit Date**: Early January 2026
+
+- **Target Standard**: WCAG 2.1 Level AA
+- **Current Conformance**: Partial (audit scheduled)
+- **Next Audit Date**: Early January 2026
 
 ### Supported Assistive Technologies
 
 We actively test and support:
- - **Screen Readers**: VoiceOver (macOS/iOS), NVDA (Windows), JAWS (Windows)
- - **Keyboard Navigation**: Full keyboard-only navigation support
- - **Browser Zoom**: Up to 200% zoom without loss of functionality
- - **Display Modes**: High contrast mode, dark mode, reduced motion
+
+- **Screen Readers**: VoiceOver (macOS/iOS), NVDA (Windows), JAWS (Windows)
+- **Keyboard Navigation**: Full keyboard-only navigation support
+- **Browser Zoom**: Up to 200% zoom without loss of functionality
+- **Display Modes**: High contrast mode, dark mode, reduced motion
 
 ### Testing Tools Used
 
@@ -115,10 +117,11 @@ The following accessibility limitations have been identified and are prioritized
 - **Week 5-8**: Address all P0 (Critical) issues
 
 **Deliverables**:
- - Complete audit report
- - Prioritized issue backlog
- - Updated accessibility statement
- - P0 issues resolved
+
+- Complete audit report
+- Prioritized issue backlog
+- Updated accessibility statement
+- P0 issues resolved
 
 ### Phase 2: Core Improvements (February 2026)
 
@@ -135,9 +138,10 @@ The following accessibility limitations have been identified and are prioritized
   - Keyboard navigation verification
 
 **Deliverables**:
- - All P1 issues resolved
- - Cross-browser test results documented
- - Screen reader test results documented
+
+- All P1 issues resolved
+- Cross-browser test results documented
+- Screen reader test results documented
 
 ### Phase 3: Polish & Optimization (March 2026)
 
@@ -153,10 +157,11 @@ The following accessibility limitations have been identified and are prioritized
   - Create accessibility checklist for new features
 
 **Deliverables**:
- - WCAG 2.1 AA conformance achieved
- - Final audit report
- - Accessibility documentation complete
- - Team training complete
+
+- WCAG 2.1 AA conformance achieved
+- Final audit report
+- Accessibility documentation complete
+- Team training complete
 
 ---
 
@@ -170,17 +175,19 @@ The following accessibility limitations have been identified and are prioritized
 **Target Date**: January 15, 2026
 
 **Tasks**:
- - [ ] Audit all interactive elements for proper ARIA labels
- - [ ] Add `aria-label` or `aria-labelledby` to buttons without visible text
+
+- [ ] Audit all interactive elements for proper ARIA labels
+- [ ] Add `aria-label` or `aria-labelledby` to buttons without visible text
 - [ ] Ensure all form inputs have associated labels
 - [ ] Add `aria-describedby` for supplementary information
 - [ ] Implement proper landmark roles (header, main, nav, footer)
 - [ ] Validate with screen readers (NVDA, VoiceOver, JAWS)
 
 **Success Criteria**:
- - All interactive elements have accessible names
- - Screen readers can identify all controls
- - Form fields clearly describe their purpose
+
+- All interactive elements have accessible names
+- Screen readers can identify all controls
+- Form fields clearly describe their purpose
 
 ---
 
@@ -192,18 +199,20 @@ The following accessibility limitations have been identified and are prioritized
 **Target Date**: January 31, 2026
 
 **Tasks**:
- - [ ] Test all functionality with keyboard only (no mouse)
- - [ ] Ensure logical tab order throughout the application
+
+- [ ] Test all functionality with keyboard only (no mouse)
+- [ ] Ensure logical tab order throughout the application
 - [ ] Implement skip links for main content
 - [ ] Remove keyboard traps from modal dialogs
 - [ ] Add keyboard shortcuts for common actions (document in help)
 - [ ] Test with keyboard-only users
 
 **Success Criteria**:
- - All functionality accessible via keyboard
- - Tab order is logical and intuitive
- - No keyboard traps exist
- - Skip links allow quick navigation to main content
+
+- All functionality accessible via keyboard
+- Tab order is logical and intuitive
+- No keyboard traps exist
+- Skip links allow quick navigation to main content
 
 ---
 
@@ -215,16 +224,18 @@ The following accessibility limitations have been identified and are prioritized
 **Target Date**: February 15, 2026
 
 **Tasks**:
- - [ ] Audit all text/background color combinations
- - [ ] Ensure minimum 4.5:1 contrast ratio for normal text
+
+- [ ] Audit all text/background color combinations
+- [ ] Ensure minimum 4.5:1 contrast ratio for normal text
 - [ ] Ensure minimum 3:1 contrast ratio for large text (18pt+)
 - [ ] Test with color contrast analyzers (WebAIM, TPGi)
 - [ ] Update design system with compliant colors
 - [ ] Document all approved color combinations
 
 **Success Criteria**:
- - All text meets WCAG AA contrast requirements
- - Design system updated with accessible color palette
+
+- All text meets WCAG AA contrast requirements
+- Design system updated with accessible color palette
 - Color contrast matrix documented in DESIGN-SYSTEM.md
 
 **Reference**: See `/docs/DESIGN-SYSTEM.md` for current WCAG compliance matrix
@@ -239,16 +250,18 @@ The following accessibility limitations have been identified and are prioritized
 **Target Date**: February 28, 2026
 
 **Tasks**:
- - [ ] Audit all images, icons, and graphics
- - [ ] Add descriptive alt text for informative images
+
+- [ ] Audit all images, icons, and graphics
+- [ ] Add descriptive alt text for informative images
 - [ ] Use `alt=""` or `aria-hidden="true"` for decorative images
 - [ ] Ensure icon-only buttons have `aria-label`
 - [ ] Review SVG accessibility (title and desc elements)
 - [ ] Create alt text writing guidelines
 
 **Success Criteria**:
- - All informative images have descriptive alt text
- - Decorative images properly hidden from screen readers
+
+- All informative images have descriptive alt text
+- Decorative images properly hidden from screen readers
 - Icon-only controls have accessible names
 - Alt text guidelines documented
 
@@ -262,8 +275,9 @@ The following accessibility limitations have been identified and are prioritized
 **Target Date**: February 28, 2026
 
 **Tasks**:
- - [ ] Ensure all form fields have associated labels
- - [ ] Implement clear error messages with suggestions
+
+- [ ] Ensure all form fields have associated labels
+- [ ] Implement clear error messages with suggestions
 - [ ] Add `aria-required` for required fields
 - [ ] Use `aria-invalid` for fields with errors
 - [ ] Connect error messages with `aria-describedby`
@@ -271,8 +285,9 @@ The following accessibility limitations have been identified and are prioritized
 - [ ] Test with screen readers
 
 **Success Criteria**:
- - All form fields have clear labels
- - Error messages are descriptive and helpful
+
+- All form fields have clear labels
+- Error messages are descriptive and helpful
 - Required fields clearly marked
 - Validation state communicated to assistive technologies
 
@@ -286,7 +301,8 @@ The following accessibility limitations have been identified and are prioritized
 **Target Date**: March 15, 2026
 
 **Tasks**:
- - [ ] Design visible focus indicators for all interactive elements
+
+- [ ] Design visible focus indicators for all interactive elements
 - [ ] Ensure focus indicators have sufficient contrast (minimum 3:1)
 - [ ] Implement focus indicators in CSS
 - [ ] Test visibility in different color modes
@@ -294,7 +310,8 @@ The following accessibility limitations have been identified and are prioritized
 - [ ] Document focus indicator patterns in design system
 
 **Success Criteria**:
- - All interactive elements have visible focus indicators
+
+- All interactive elements have visible focus indicators
 - Focus indicators meet contrast requirements
 - Keyboard users can always see where focus is
 
@@ -308,7 +325,8 @@ The following accessibility limitations have been identified and are prioritized
 **Target Date**: March 31, 2026
 
 **Tasks**:
- - [ ] Identify all third-party widgets and embeds
+
+- [ ] Identify all third-party widgets and embeds
 - [ ] Test each widget for accessibility
 - [ ] Contact vendors for accessibility documentation
 - [ ] Replace inaccessible widgets with accessible alternatives
@@ -316,7 +334,8 @@ The following accessibility limitations have been identified and are prioritized
 - [ ] Document widget accessibility status
 
 **Success Criteria**:
- - All critical widgets are accessible
+
+- All critical widgets are accessible
 - Inaccessible widgets have accessible alternatives
 - Widget accessibility documented
 
@@ -330,7 +349,8 @@ The following accessibility limitations have been identified and are prioritized
 **Target Date**: March 31, 2026
 
 **Tasks**:
- - [ ] Audit all PDF and downloadable documents
+
+- [ ] Audit all PDF and downloadable documents
 - [ ] Add proper tagging to PDFs
 - [ ] Ensure reading order is logical
 - [ ] Add alt text to images in documents
@@ -339,7 +359,8 @@ The following accessibility limitations have been identified and are prioritized
 - [ ] Provide alternative formats (HTML) where possible
 
 **Success Criteria**:
- - All PDFs are properly tagged
+
+- All PDFs are properly tagged
 - Documents have logical reading order
 - Alternative formats available for critical documents
 
@@ -350,7 +371,8 @@ The following accessibility limitations have been identified and are prioritized
 ### Automated Testing
 
 **Tools**:
- - **axe DevTools**: Run on every page/component
+
+- **axe DevTools**: Run on every page/component
 - **Lighthouse**: Monthly audits (target score >95)
 - **WAVE**: Ad-hoc testing during development
 - **ESLint jsx-a11y**: Enforced in CI/CD pipeline
@@ -360,23 +382,27 @@ The following accessibility limitations have been identified and are prioritized
 ### Manual Testing
 
 **Screen Reader Testing**:
- - **VoiceOver** (macOS/iOS): Weekly during active development
+
+- **VoiceOver** (macOS/iOS): Weekly during active development
 - **NVDA** (Windows): Weekly during active development
 - **JAWS** (Windows): Monthly comprehensive testing
 
 **Keyboard Navigation Testing**:
- - Complete keyboard-only walkthrough before each release
+
+- Complete keyboard-only walkthrough before each release
 - Test all interactive elements, forms, and navigation
 
 **Visual Testing**:
- - High contrast mode testing
+
+- High contrast mode testing
 - 200% browser zoom testing
 - Dark mode accessibility testing
 
 ### User Testing
 
 **Target**: Q1 2026
- - Recruit users with disabilities for feedback
+
+- Recruit users with disabilities for feedback
 - Conduct usability testing sessions
 - Incorporate feedback into remediation plan
 
@@ -386,14 +412,14 @@ The following accessibility limitations have been identified and are prioritized
 
 ### Quantitative Metrics
 
-| Metric | Current | Target (March 31, 2026) |
-|--------|---------|-------------------------|
-| Lighthouse Accessibility Score | TBD | >95 |
-| WCAG 2.1 AA Conformance | Partial | 100% |
-| Critical (P0) Issues | TBD | 0 |
-| High Priority (P1) Issues | TBD | 0 |
-| Medium Priority (P2) Issues | TBD | <5 |
-| Automated axe Violations | TBD | 0 |
+| Metric                         | Current | Target (March 31, 2026) |
+| ------------------------------ | ------- | ----------------------- |
+| Lighthouse Accessibility Score | TBD     | >95                     |
+| WCAG 2.1 AA Conformance        | Partial | 100%                    |
+| Critical (P0) Issues           | TBD     | 0                       |
+| High Priority (P1) Issues      | TBD     | 0                       |
+| Medium Priority (P2) Issues    | TBD     | <5                      |
+| Automated axe Violations       | TBD     | 0                       |
 
 ### Qualitative Metrics
 
@@ -490,9 +516,9 @@ For questions about this remediation plan or to report accessibility issues:
 
 ## Document History
 
-| Version | Date | Changes | Author |
-|---------|------|---------|--------|
-| 1.0 | December 21, 2025 | Initial remediation plan created | Accessibility Team |
+| Version | Date              | Changes                          | Author             |
+| ------- | ----------------- | -------------------------------- | ------------------ |
+| 1.0     | December 21, 2025 | Initial remediation plan created | Accessibility Team |
 
 ---
 

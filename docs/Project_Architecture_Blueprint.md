@@ -119,61 +119,65 @@ The following technologies were identified through analysis of `package.json`, c
 
 #### Core Framework & Runtime
 
-| Technology | Version | Purpose | Detection Source |
-|------------|---------|---------|------------------|
-| React | 19.2.x | UI library | `package.json` dependencies |
-| React DOM | 19.2.x | DOM rendering | `package.json` dependencies |
-| TypeScript | ~5.9.3 | Type safety | `package.json`, `tsconfig.*.json` |
-| Vite | 7.x | Build tool & dev server | `vite.config.ts`, `package.json` |
+| Technology | Version | Purpose                 | Detection Source                  |
+| ---------- | ------- | ----------------------- | --------------------------------- |
+| React      | 19.2.x  | UI library              | `package.json` dependencies       |
+| React DOM  | 19.2.x  | DOM rendering           | `package.json` dependencies       |
+| TypeScript | ~5.9.3  | Type safety             | `package.json`, `tsconfig.*.json` |
+| Vite       | 7.x     | Build tool & dev server | `vite.config.ts`, `package.json`  |
 
 #### Styling & Design
 
-| Technology | Purpose | Detection Source |
-|------------|---------|------------------|
-| CSS Modules | Scoped component styles | `*.module.css` files |
-| CSS Custom Properties | Design tokens | `src/styles/variables.css` |
-| PostCSS + Autoprefixer | CSS processing | `postcss.config.js` |
-| Font Awesome | Icon system | `@fortawesome/*` packages |
-| Inter (Fontsource) | Typography | `@fontsource/inter` package |
+| Technology             | Purpose                 | Detection Source            |
+| ---------------------- | ----------------------- | --------------------------- |
+| CSS Modules            | Scoped component styles | `*.module.css` files        |
+| CSS Custom Properties  | Design tokens           | `src/styles/variables.css`  |
+| PostCSS + Autoprefixer | CSS processing          | `postcss.config.js`         |
+| Font Awesome           | Icon system             | `@fortawesome/*` packages   |
+| Inter (Fontsource)     | Typography              | `@fontsource/inter` package |
 
 #### Testing & Quality
 
-| Technology | Purpose | Detection Source |
-|------------|---------|------------------|
-| Vitest | Unit/integration testing | `vitest.config.ts` |
-| Playwright | E2E testing | `playwright.config.ts` |
-| Testing Library | Component testing | `@testing-library/*` packages |
-| ESLint | Code linting | `eslint.config.js` |
-| Prettier | Code formatting | `.prettierrc.json` |
+| Technology      | Purpose                  | Detection Source              |
+| --------------- | ------------------------ | ----------------------------- |
+| Vitest          | Unit/integration testing | `vitest.config.ts`            |
+| Playwright      | E2E testing              | `playwright.config.ts`        |
+| Testing Library | Component testing        | `@testing-library/*` packages |
+| ESLint          | Code linting             | `eslint.config.js`            |
+| Prettier        | Code formatting          | `.prettierrc.json`            |
 
 #### Monitoring & Analytics
 
-| Technology | Purpose | Detection Source |
-|------------|---------|------------------|
-| Sentry | Error monitoring | `@sentry/react` package |
+| Technology                                          | Purpose                 | Detection Source                                                                               |
+| --------------------------------------------------- | ----------------------- | ---------------------------------------------------------------------------------------------- |
+| Sentry                                              | Error monitoring        | `@sentry/react` package                                                                        |
 | Privacy-first analytics providers (e.g., Plausible) | Event/pageview tracking | `src/analytics/` provider system (configured via analytics-related env vars in `.env.example`) |
-| Lighthouse CI | Performance monitoring | `.lighthouserc.json` |
-| Codecov | Coverage reporting | `codecov.yml` |
+| Lighthouse CI                                       | Performance monitoring  | `.lighthouserc.json`                                                                           |
+| Codecov                                             | Coverage reporting      | `codecov.yml`                                                                                  |
 
 ### Architectural Pattern Recognition
 
 **Pattern: Component-Based Architecture**
- - Evidence: All UI elements are React functional components
+
+- Evidence: All UI elements are React functional components
 - Location: `src/components/` directory structure
 - Characteristics: Props interfaces, composition over inheritance
 
 **Pattern: Hooks-Based State Management**
- - Evidence: No Redux, Zustand, or Context API for global state
+
+- Evidence: No Redux, Zustand, or Context API for global state
 - Location: `src/hooks/` directory with 7 custom hooks
 - Characteristics: Local component state, custom hooks for shared logic
 
 **Pattern: CSS Modules with Design Tokens**
- - Evidence: `*.module.css` files paired with components
+
+- Evidence: `*.module.css` files paired with components
 - Location: Component directories, `src/styles/variables.css`
 - Characteristics: Scoped styles, CSS custom properties, no CSS-in-JS
 
 **Pattern: Privacy-First Analytics**
- - Evidence: PII filtering functions, DNT header checking
+
+- Evidence: PII filtering functions, DNT header checking
 - Location: `src/utils/analytics.ts`, `src/analytics/`
 - Characteristics: Data sanitization, cookie-less tracking
 
@@ -182,7 +186,6 @@ The following technologies were identified through analysis of `package.json`, c
 ## Architecture Visualization
 
 ### High-Level System Architecture
-
 
 ### Component Tree Structure
 
@@ -281,13 +284,14 @@ The following technologies were identified through analysis of `package.json`, c
 
 **Purpose:** Provide consistent page structure and navigation.
 
-| Component | Responsibility | Key Features |
-|-----------|---------------|--------------|
-| `Header` | Site navigation, branding | Sticky positioning, theme toggle, mobile menu |
-| `Footer` | Site footer, links | Social links, legal links, copyright |
-| `Section` | Reusable section wrapper | Background variants, padding options |
+| Component | Responsibility            | Key Features                                  |
+| --------- | ------------------------- | --------------------------------------------- |
+| `Header`  | Site navigation, branding | Sticky positioning, theme toggle, mobile menu |
+| `Footer`  | Site footer, links        | Social links, legal links, copyright          |
+| `Section` | Reusable section wrapper  | Background variants, padding options          |
 
 **Internal Structure (Header):**
+
 ```
 Header/
 ├── Header.tsx          # Component logic, state management
@@ -297,7 +301,8 @@ Header/
 ```
 
 **Interaction Patterns:**
- - Header uses `useTheme()` for dark mode toggle
+
+- Header uses `useTheme()` for dark mode toggle
 - Header uses `useScrollPosition()` for sticky behavior
 - Header uses `useMediaQuery()` for responsive menu
 
@@ -305,22 +310,23 @@ Header/
 
 **Purpose:** Implement landing page content sections.
 
-| Component | Responsibility | Data Source |
-|-----------|---------------|-------------|
-| `Hero` | Primary value proposition | Hardcoded content |
-| `Features` | Feature showcase grid | `constants/features.ts` |
-| `Pricing` | Pricing tier display | `constants/pricing.ts` |
-| `Testimonials` | Customer testimonials | `constants/testimonials.ts` |
-| `FAQ` | Expandable FAQ items | `constants/faq.ts` |
-| `Comparison` | Competitor comparison | `constants/comparison.ts` |
-| `EmailCapture` | Newsletter signup | Form state, API call |
-| `CTA` | Final call-to-action | Hardcoded content |
-| `Problem` | Problem statement | Hardcoded content |
-| `Solution` | Solution pitch | Hardcoded content |
-| `Statistics` | Metrics display | Hardcoded content |
-| `Mobile` | Mobile-specific content | Hardcoded content |
+| Component      | Responsibility            | Data Source                 |
+| -------------- | ------------------------- | --------------------------- |
+| `Hero`         | Primary value proposition | Hardcoded content           |
+| `Features`     | Feature showcase grid     | `constants/features.ts`     |
+| `Pricing`      | Pricing tier display      | `constants/pricing.ts`      |
+| `Testimonials` | Customer testimonials     | `constants/testimonials.ts` |
+| `FAQ`          | Expandable FAQ items      | `constants/faq.ts`          |
+| `Comparison`   | Competitor comparison     | `constants/comparison.ts`   |
+| `EmailCapture` | Newsletter signup         | Form state, API call        |
+| `CTA`          | Final call-to-action      | Hardcoded content           |
+| `Problem`      | Problem statement         | Hardcoded content           |
+| `Solution`     | Solution pitch            | Hardcoded content           |
+| `Statistics`   | Metrics display           | Hardcoded content           |
+| `Mobile`       | Mobile-specific content   | Hardcoded content           |
 
 **Internal Structure (Features):**
+
 ```
 Features/
 ├── Features.tsx          # Maps FEATURES constant to cards
@@ -333,18 +339,19 @@ Features/
 
 **Purpose:** Reusable, atomic UI elements.
 
-| Component | Responsibility | Variants/Props |
-|-----------|---------------|----------------|
-| `Button` | Interactive buttons | primary, secondary, ghost; sm, md, lg |
-| `Icon` | Font Awesome wrapper | icon name, size, color |
-| `AnimatedElement` | Scroll animations | fadeIn, slideUp, slideInLeft, slideInRight, scale |
-| `ParallaxLayer` | Parallax effects | speed, disableOnMobile |
-| `FloatingElement` | Float animations | duration, delay |
-| `TextReveal` | Text reveal animation | delay, duration |
-| `ThemeToggle` | Dark mode switch | Uses useTheme() |
-| `FeedbackWidget` | Feedback collection | Expandable form |
+| Component         | Responsibility        | Variants/Props                                    |
+| ----------------- | --------------------- | ------------------------------------------------- |
+| `Button`          | Interactive buttons   | primary, secondary, ghost; sm, md, lg             |
+| `Icon`            | Font Awesome wrapper  | icon name, size, color                            |
+| `AnimatedElement` | Scroll animations     | fadeIn, slideUp, slideInLeft, slideInRight, scale |
+| `ParallaxLayer`   | Parallax effects      | speed, disableOnMobile                            |
+| `FloatingElement` | Float animations      | duration, delay                                   |
+| `TextReveal`      | Text reveal animation | delay, duration                                   |
+| `ThemeToggle`     | Dark mode switch      | Uses useTheme()                                   |
+| `FeedbackWidget`  | Feedback collection   | Expandable form                                   |
 
 **Component Composition Example:**
+
 ```tsx
 <AnimatedElement animation="fadeIn" delay={200}>
   <Button variant="primary" size="lg">
@@ -358,34 +365,35 @@ Features/
 
 **Purpose:** Full-page views for routes.
 
-| Component | Route | Purpose |
-|-----------|-------|---------|
-| `Privacy` | /privacy | Privacy policy |
-| `Terms` | /terms | Terms of service |
-| `NotFoundPage` | /404 | 404 error page |
-| `OfflinePage` | N/A | Offline fallback |
-| `ServerErrorPage` | /500 | Server error page |
+| Component         | Route    | Purpose           |
+| ----------------- | -------- | ----------------- |
+| `Privacy`         | /privacy | Privacy policy    |
+| `Terms`           | /terms   | Terms of service  |
+| `NotFoundPage`    | /404     | 404 error page    |
+| `OfflinePage`     | N/A      | Offline fallback  |
+| `ServerErrorPage` | /500     | Server error page |
 
 ### 5. Custom Hooks (`src/hooks/`)
 
 **Purpose:** Encapsulate reusable logic and cross-cutting concerns.
 
-| Hook | Purpose | Returns |
-|------|---------|---------|
-| `useTheme()` | Theme management | `{ theme, toggleTheme }` |
-| `useAnalytics()` | Analytics initialization | Tracking functions |
-| `useIntersectionObserver()` | Scroll visibility | `{ ref, isVisible }` |
-| `useParallax()` | Parallax calculation | `{ ref, offset, transform }` |
-| `useMediaQuery()` | Responsive detection | `boolean` |
-| `useReducedMotion()` | Motion preference | `boolean` |
-| `useScrollPosition()` | Scroll tracking | `{ x, y }` |
+| Hook                        | Purpose                  | Returns                      |
+| --------------------------- | ------------------------ | ---------------------------- |
+| `useTheme()`                | Theme management         | `{ theme, toggleTheme }`     |
+| `useAnalytics()`            | Analytics initialization | Tracking functions           |
+| `useIntersectionObserver()` | Scroll visibility        | `{ ref, isVisible }`         |
+| `useParallax()`             | Parallax calculation     | `{ ref, offset, transform }` |
+| `useMediaQuery()`           | Responsive detection     | `boolean`                    |
+| `useReducedMotion()`        | Motion preference        | `boolean`                    |
+| `useScrollPosition()`       | Scroll tracking          | `{ x, y }`                   |
 
 ### 6. Error Boundary (`src/components/ErrorBoundary/`)
 
 **Purpose:** Global error catching and recovery.
 
 **Features:**
- - Catches render errors in child component tree
+
+- Catches render errors in child component tree
 - Retry logic (max 3 retries before page reload)
 - Development-only error details display
 - Sentry integration for production error reporting
@@ -442,14 +450,14 @@ Features/
 
 ### Dependency Matrix
 
-| Module | Can Import From | Cannot Import From |
-|--------|-----------------|-------------------|
-| `components/` | hooks/, utils/, constants/, styles/ | - |
-| `hooks/` | utils/, constants/ | components/ |
-| `utils/` | constants/ | components/, hooks/ |
-| `constants/` | - | components/, hooks/, utils/ |
-| `styles/` | - | components/, hooks/, utils/, constants/ |
-| `analytics/` | utils/, constants/ | components/, hooks/ |
+| Module        | Can Import From                     | Cannot Import From                      |
+| ------------- | ----------------------------------- | --------------------------------------- |
+| `components/` | hooks/, utils/, constants/, styles/ | -                                       |
+| `hooks/`      | utils/, constants/                  | components/                             |
+| `utils/`      | constants/                          | components/, hooks/                     |
+| `constants/`  | -                                   | components/, hooks/, utils/             |
+| `styles/`     | -                                   | components/, hooks/, utils/, constants/ |
+| `analytics/`  | utils/, constants/                  | components/, hooks/                     |
 
 ---
 
@@ -463,10 +471,10 @@ The application uses TypeScript interfaces to define data structures. All domain
 
 ```typescript
 interface Feature {
-  icon: IconProp;           // Font Awesome icon identifier
-  title: string;            // Feature name
-  description: string;      // Feature description
-  metric?: string;          // Optional performance metric
+  icon: IconProp // Font Awesome icon identifier
+  title: string // Feature name
+  description: string // Feature description
+  metric?: string // Optional performance metric
 }
 ```
 
@@ -474,12 +482,12 @@ interface Feature {
 
 ```typescript
 interface PricingPlan {
-  name: string;             // Plan name (Free, Pro, Team)
-  price: number | string;   // Monthly price
-  period: string;           // Billing period
-  features: string[];       // Included features list
-  highlighted?: boolean;    // Featured plan flag
-  cta: string;              // Call-to-action text
+  name: string // Plan name (Free, Pro, Team)
+  price: number | string // Monthly price
+  period: string // Billing period
+  features: string[] // Included features list
+  highlighted?: boolean // Featured plan flag
+  cta: string // Call-to-action text
 }
 ```
 
@@ -487,11 +495,11 @@ interface PricingPlan {
 
 ```typescript
 interface Testimonial {
-  quote: string;            // Testimonial text
-  author: string;           // Author name
-  role: string;             // Author title/role
-  company?: string;         // Optional company name
-  avatar?: string;          // Optional avatar URL
+  quote: string // Testimonial text
+  author: string // Author name
+  role: string // Author title/role
+  company?: string // Optional company name
+  avatar?: string // Optional avatar URL
 }
 ```
 
@@ -499,8 +507,8 @@ interface Testimonial {
 
 ```typescript
 interface FAQItem {
-  question: string;         // FAQ question
-  answer: string;           // FAQ answer (may contain HTML)
+  question: string // FAQ question
+  answer: string // FAQ answer (may contain HTML)
 }
 ```
 
@@ -529,22 +537,23 @@ Form data uses local component state:
 
 ```typescript
 // EmailCapture.tsx
-const [email, setEmail] = useState('');
-const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+const [email, setEmail] = useState('')
+const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
 
 const handleSubmit = async (e: FormEvent) => {
-  e.preventDefault();
-  const validation = validateEmail(email);
-  if (!validation.isValid) return;
+  e.preventDefault()
+  const validation = validateEmail(email)
+  if (!validation.isValid) return
   // Submit to API...
-};
+}
 ```
 
 **Pattern 3: Persisted State (Documented Exception)**
 
 Theme preference persistence is controlled by a feature flag in `src/constants/config.ts`.
 This is an **explicit, documented exception** to the privacy-first approach because:
- - Theme contains no personally identifiable information
+
+- Theme contains no personally identifiable information
 - It significantly improves UX across visits
 - It respects system preference as fallback when disabled
 - Users can clear it by clearing browser storage
@@ -561,41 +570,42 @@ export const PERSISTENCE_CONFIG = {
 } as const
 
 // src/hooks/useTheme.ts
-const persistenceEnabled = PERSISTENCE_CONFIG.ALLOW_PERSISTENT_THEME;
+const persistenceEnabled = PERSISTENCE_CONFIG.ALLOW_PERSISTENT_THEME
 
 const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-  if (!isBrowser) return 'light';
+  if (!isBrowser) return 'light'
 
   // Only check localStorage if persistence is enabled
   if (persistenceEnabled) {
-    const stored = localStorage.getItem('theme');
-    const hasUserPref = localStorage.getItem('theme-user-preference') === 'true';
+    const stored = localStorage.getItem('theme')
+    const hasUserPref = localStorage.getItem('theme-user-preference') === 'true'
     if (stored && isValidTheme(stored) && hasUserPref) {
-      return stored;
+      return stored
     }
   }
 
   // Fall back to system preference
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-});
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+})
 
 useEffect(() => {
-  document.documentElement.setAttribute('data-theme', theme);
+  document.documentElement.setAttribute('data-theme', theme)
   // Only persist if feature flag is enabled
   if (persistenceEnabled) {
-    localStorage.setItem('theme', theme);
+    localStorage.setItem('theme', theme)
   }
-}, [theme, persistenceEnabled]);
+}, [theme, persistenceEnabled])
 ```
 
 **Allowed Persistence Exceptions:**
 
-| Data | Config Flag | Justification |
-|------|-------------|---------------|
+| Data             | Config Flag              | Justification                       |
+| ---------------- | ------------------------ | ----------------------------------- |
 | Theme preference | `ALLOW_PERSISTENT_THEME` | Non-PII, significant UX improvement |
 
 Any future localStorage usage must be:
- 1. Added to `PERSISTENCE_CONFIG` with a descriptive flag
+
+1. Added to `PERSISTENCE_CONFIG` with a descriptive flag
 2. Documented here with justification
 3. Guarded by the feature flag in implementation
 
@@ -627,6 +637,7 @@ Any future localStorage usage must be:
 **Strategy:** Layered error handling with graceful degradation.
 
 **Component Level (ErrorBoundary):**
+
 ```typescript
 // Wraps entire app, catches render errors
 <ErrorBoundary>
@@ -635,56 +646,59 @@ Any future localStorage usage must be:
 ```
 
 **Features:**
- - Catches JavaScript errors in child component tree
+
+- Catches JavaScript errors in child component tree
 - Displays user-friendly error message
 - Retry button with max 3 attempts
 - Auto page reload after max retries
 - Sentry reporting in production
 
 **Utility Level:**
+
 ```typescript
 // Try-catch for analytics
 try {
-  window.gtag('event', eventName, params);
+  window.gtag('event', eventName, params)
 } catch (error) {
-  console.error('Analytics error:', error);
+  console.error('Analytics error:', error)
 }
 ```
 
 ### 2. Logging & Monitoring
 
 **Development:**
- - Console logging for analytics events
+
+- Console logging for analytics events
 - React DevTools integration
 - Vite HMR error overlay
 
 **Production:**
- - Sentry error monitoring (`@sentry/react`)
+
+- Sentry error monitoring (`@sentry/react`)
 - Core Web Vitals tracking
 - Custom error boundaries with reporting
 
 **Configuration:**
+
 ```typescript
 // src/main.tsx
-import * as Sentry from '@sentry/react';
+import * as Sentry from '@sentry/react'
 
 Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN,
   environment: import.meta.env.VITE_SENTRY_ENVIRONMENT ?? import.meta.env.MODE,
   enabled: import.meta.env.PROD,
-  integrations: [
-    Sentry.browserTracingIntegration(),
-    Sentry.replayIntegration(),
-  ],
+  integrations: [Sentry.browserTracingIntegration(), Sentry.replayIntegration()],
   tracesSampleRate: 1.0,
   replaysSessionSampleRate: 0.1,
   replaysOnErrorSampleRate: 1.0,
-});
+})
 ```
 
 ### 3. Validation
 
 **Email Validation (`utils/validation.ts`):**
+
 ```typescript
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const DISPOSABLE_DOMAINS = ['tempmail.com', 'throwaway.com', ...];
@@ -702,22 +716,20 @@ export function validateEmail(email: string): ValidationResult {
 ```
 
 **Input Sanitization (`src/utils/validation.ts`):**
+
 ```typescript
-const MAX_INPUT_LENGTH = 2048;
+const MAX_INPUT_LENGTH = 2048
 
 export function sanitizeInput(raw: string): string {
   if (!raw) {
-    return '';
+    return ''
   }
 
   // Enforce maximum length to avoid excessively large inputs
-  const input = raw.slice(0, MAX_INPUT_LENGTH);
+  const input = raw.slice(0, MAX_INPUT_LENGTH)
 
   // Strip dangerous URL protocols from the beginning of the string
-  const withoutProtocol = input.replace(
-    /^(?:\s*(?:javascript|data|vbscript):)/gi,
-    ''
-  );
+  const withoutProtocol = input.replace(/^(?:\s*(?:javascript|data|vbscript):)/gi, '')
 
   // Encode HTML entities to prevent HTML/JS injection
   return withoutProtocol
@@ -725,7 +737,7 @@ export function sanitizeInput(raw: string): string {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
+    .replace(/'/g, '&#39;')
 }
 ```
 
@@ -739,13 +751,14 @@ The landing page does not require authentication. Future app authentication will
 
 **Environment Variables:**
 
-| Variable | Purpose | Required |
-|----------|---------|----------|
+| Variable          | Purpose                | Required        |
+| ----------------- | ---------------------- | --------------- |
 | `VITE_SENTRY_DSN` | Sentry error reporting | Production only |
-| `VITE_GA_ID` | Google Analytics ID | Production only |
-| `VITE_BASE_URL` | Application base URL | Yes |
+| `VITE_GA_ID`      | Google Analytics ID    | Production only |
+| `VITE_BASE_URL`   | Application base URL   | Yes             |
 
 **File Structure:**
+
 ```
 .env.example        # Template with all variables
 .env.development    # Development defaults
@@ -753,12 +766,13 @@ The landing page does not require authentication. Future app authentication will
 ```
 
 **Access Pattern:**
+
 ```typescript
 const config = {
   sentryDsn: import.meta.env.VITE_SENTRY_DSN,
   gaId: import.meta.env.VITE_GA_ID,
   baseUrl: import.meta.env.VITE_BASE_URL || 'https://paperlyte.com',
-};
+}
 ```
 
 ### 6. Security
@@ -766,33 +780,38 @@ const config = {
 **Content Security Policy (CSP):**
 
 Development (via Vite plugin):
+
 ```typescript
 // Allows unsafe-eval for HMR
 "script-src 'self' 'unsafe-eval'"
 ```
 
 Production (via vercel.json/netlify.toml - identical policies):
+
 ```
 Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';
 ```
 
 This strict CSP policy:
- - Restricts all resources to same-origin (`'self'`)
+
+- Restricts all resources to same-origin (`'self'`)
 - Allows inline data URIs for images only
 - Blocks framing (`frame-ancestors 'none'`)
 - Restricts form submissions and base URI to same-origin
 
 **XSS Prevention:**
- - Input sanitization via `sanitizeInput()`
+
+- Input sanitization via `sanitizeInput()`
 - React's automatic escaping of JSX
 - CSP headers blocking inline scripts
 
 **Prototype Pollution Protection:**
+
 ```typescript
 // utils/analytics.ts
 function isSafePropertyKey(key: string): boolean {
-  const UNSAFE_KEYS = ['__proto__', 'constructor', 'prototype'];
-  return !UNSAFE_KEYS.includes(key);
+  const UNSAFE_KEYS = ['__proto__', 'constructor', 'prototype']
+  return !UNSAFE_KEYS.includes(key)
 }
 ```
 
@@ -844,45 +863,45 @@ const handleSubmit = async (email: string) => {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email }),
-  });
+  })
 
   if (!response.ok) {
-    throw new Error('Subscription failed');
+    throw new Error('Subscription failed')
   }
 
-  return response.json();
-};
+  return response.json()
+}
 ```
 
 **Analytics Event Tracking:**
 
 ```typescript
 // utils/analytics.ts
-export function trackEvent(
-  eventName: string,
-  params?: Record<string, unknown>
-): void {
-  if (typeof window === 'undefined' || !window.gtag) return;
+export function trackEvent(eventName: string, params?: Record<string, unknown>): void {
+  if (typeof window === 'undefined' || !window.gtag) return
 
-  const sanitizedParams = sanitizeAnalyticsParams(params);
-  window.gtag('event', eventName, sanitizedParams);
+  const sanitizedParams = sanitizeAnalyticsParams(params)
+  window.gtag('event', eventName, sanitizedParams)
 }
 ```
 
 ### Resilience Strategies
 
 **Graceful Degradation:**
- - Analytics failures are caught and logged, not thrown
+
+- Analytics failures are caught and logged, not thrown
 - Missing gtag doesn't break the application
 - Sentry initialization failures don't affect core functionality
 
 **Timeout Handling:**
- - Netlify email subscription function uses `AbortController` with a 10-second timeout for external API calls
+
+- Netlify email subscription function uses `AbortController` with a 10-second timeout for external API calls
 - `OfflinePage` connectivity check uses `AbortController` with a 5-second timeout to detect offline state
 - Client-side `EmailCapture` fetch currently relies on browser defaults (no explicit `AbortController` timeout)
 
 **Offline Support:**
- - OfflinePage component displays when offline
+
+- OfflinePage component displays when offline
 - Service worker can cache static assets (future enhancement)
 
 ---
@@ -926,9 +945,9 @@ Related components work together:
 Simple useState for component-specific state:
 
 ```typescript
-const [isOpen, setIsOpen] = useState(false);
-const [email, setEmail] = useState('');
-const [status, setStatus] = useState<Status>('idle');
+const [isOpen, setIsOpen] = useState(false)
+const [email, setEmail] = useState('')
+const [status, setStatus] = useState<Status>('idle')
 ```
 
 **Pattern: Custom Hooks for Shared State**
@@ -937,10 +956,10 @@ Complex or shared logic extracted to hooks:
 
 ```typescript
 // useTheme provides theme state and toggle
-const { theme, toggleTheme } = useTheme();
+const { theme, toggleTheme } = useTheme()
 
 // useIntersectionObserver provides visibility tracking
-const { ref, isVisible } = useIntersectionObserver({ threshold: 0.1 });
+const { ref, isVisible } = useIntersectionObserver({ threshold: 0.1 })
 ```
 
 **Pattern: No Global State Library**
@@ -954,15 +973,15 @@ The landing page doesn't require Redux, Zustand, or Context for global state. Th
 ```typescript
 // Sync theme to DOM attribute
 useEffect(() => {
-  document.documentElement.setAttribute('data-theme', theme);
-}, [theme]);
+  document.documentElement.setAttribute('data-theme', theme)
+}, [theme])
 
 // Setup intersection observer
 useEffect(() => {
-  const observer = new IntersectionObserver(callback, options);
-  if (ref.current) observer.observe(ref.current);
-  return () => observer.disconnect();
-}, []);
+  const observer = new IntersectionObserver(callback, options)
+  if (ref.current) observer.observe(ref.current)
+  return () => observer.disconnect()
+}, [])
 ```
 
 **Pattern: Cleanup Functions**
@@ -971,11 +990,11 @@ All effects with subscriptions include cleanup:
 
 ```typescript
 useEffect(() => {
-  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-  const handler = (e: MediaQueryListEvent) => setTheme(e.matches ? 'dark' : 'light');
-  mediaQuery.addEventListener('change', handler);
-  return () => mediaQuery.removeEventListener('change', handler);
-}, []);
+  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+  const handler = (e: MediaQueryListEvent) => setTheme(e.matches ? 'dark' : 'light')
+  mediaQuery.addEventListener('change', handler)
+  return () => mediaQuery.removeEventListener('change', handler)
+}, [])
 ```
 
 ### Rendering Optimization
@@ -1019,8 +1038,14 @@ Prefer CSS animations over JavaScript for performance:
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 ```
 
@@ -1032,15 +1057,15 @@ Data is fetched on user action, not on mount:
 
 ```typescript
 const handleSubmit = async () => {
-  setStatus('loading');
+  setStatus('loading')
   try {
-    await fetch('/api/subscribe', { method: 'POST', body });
-    setStatus('success');
-    trackWaitlistSuccess();
+    await fetch('/api/subscribe', { method: 'POST', body })
+    setStatus('success')
+    trackWaitlistSuccess()
   } catch {
-    setStatus('error');
+    setStatus('error')
   }
-};
+}
 ```
 
 The landing page doesn't use React Query, SWR, or similar libraries—simple fetch is sufficient for the limited API interactions.
@@ -1052,6 +1077,7 @@ The landing page doesn't use React Query, SWR, or similar libraries—simple fet
 ### Component Implementation Pattern
 
 **File Structure:**
+
 ```
 ComponentName/
 ├── ComponentName.tsx        # Component implementation
@@ -1061,6 +1087,7 @@ ComponentName/
 ```
 
 **Component Template:**
+
 ```typescript
 // ComponentName.tsx
 import styles from './ComponentName.module.css';
@@ -1085,50 +1112,53 @@ export function ComponentName({
 ```
 
 **Index Export:**
+
 ```typescript
 // index.ts
-export { ComponentName } from './ComponentName';
-export type { ComponentNameProps } from './ComponentName';
+export { ComponentName } from './ComponentName'
+export type { ComponentNameProps } from './ComponentName'
 ```
 
 ### Hook Implementation Pattern
 
 **Template:**
+
 ```typescript
 // useHookName.ts
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react'
 
 interface UseHookNameOptions {
-  option1?: boolean;
-  option2?: number;
+  option1?: boolean
+  option2?: number
 }
 
 interface UseHookNameReturn {
-  value: string;
-  setValue: (value: string) => void;
-  isLoading: boolean;
+  value: string
+  setValue: (value: string) => void
+  isLoading: boolean
 }
 
 export function useHookName(options: UseHookNameOptions = {}): UseHookNameReturn {
-  const { option1 = true, option2 = 100 } = options;
+  const { option1 = true, option2 = 100 } = options
 
-  const [value, setValue] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [value, setValue] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     // Side effect logic
     return () => {
       // Cleanup
-    };
-  }, [option1, option2]);
+    }
+  }, [option1, option2])
 
-  return { value, setValue, isLoading };
+  return { value, setValue, isLoading }
 }
 ```
 
 ### Utility Function Pattern
 
 **Template:**
+
 ```typescript
 // utilityName.ts
 
@@ -1139,12 +1169,13 @@ export function useHookName(options: UseHookNameOptions = {}): UseHookNameReturn
  */
 export function utilityName(input: string): string {
   // Implementation
-  return result;
+  return result
 }
 ```
 
 **Pure Functions:**
- - No side effects
+
+- No side effects
 - No React dependencies
 - Easily testable
 - Can be used in any context
@@ -1152,33 +1183,47 @@ export function utilityName(input: string): string {
 ### CSS Module Pattern
 
 **Naming Conventions:**
+
 ```css
 /* ComponentName.module.css */
 
 /* Root element */
-.root { }
+.root {
+}
 
 /* Variants */
-.primary { }
-.secondary { }
+.primary {
+}
+.secondary {
+}
 
 /* Sizes */
-.small { }
-.medium { }
-.large { }
+.small {
+}
+.medium {
+}
+.large {
+}
 
 /* States */
-.isActive { }
-.isDisabled { }
-.isLoading { }
+.isActive {
+}
+.isDisabled {
+}
+.isLoading {
+}
 
 /* Child elements */
-.header { }
-.content { }
-.footer { }
+.header {
+}
+.content {
+}
+.footer {
+}
 ```
 
 **Design Token Usage:**
+
 ```css
 .button {
   padding: var(--spacing-sm) var(--spacing-md);
@@ -1226,45 +1271,48 @@ export function utilityName(input: string): string {
 **Location:** Colocated with source files (`*.test.ts`, `*.test.tsx`)
 
 **Coverage Targets:**
- - Lines: 70%
+
+- Lines: 70%
 - Functions: 70%
 - Branches: 70%
 - Statements: 70%
 
 **Example - Utility Test:**
+
 ```typescript
 // validation.test.ts
 describe('validateEmail', () => {
   it('accepts valid email', () => {
-    expect(validateEmail('user@example.com').isValid).toBe(true);
-  });
+    expect(validateEmail('user@example.com').isValid).toBe(true)
+  })
 
   it('rejects invalid format', () => {
-    expect(validateEmail('invalid').isValid).toBe(false);
-  });
+    expect(validateEmail('invalid').isValid).toBe(false)
+  })
 
   it('rejects disposable domains', () => {
-    expect(validateEmail('user@tempmail.com').isValid).toBe(false);
-  });
-});
+    expect(validateEmail('user@tempmail.com').isValid).toBe(false)
+  })
+})
 ```
 
 **Example - Hook Test:**
+
 ```typescript
 // useTheme.test.ts
 describe('useTheme', () => {
   it('returns current theme', () => {
-    const { result } = renderHook(() => useTheme());
-    expect(['light', 'dark']).toContain(result.current.theme);
-  });
+    const { result } = renderHook(() => useTheme())
+    expect(['light', 'dark']).toContain(result.current.theme)
+  })
 
   it('toggles theme', () => {
-    const { result } = renderHook(() => useTheme());
-    const initial = result.current.theme;
-    act(() => result.current.toggleTheme());
-    expect(result.current.theme).not.toBe(initial);
-  });
-});
+    const { result } = renderHook(() => useTheme())
+    const initial = result.current.theme
+    act(() => result.current.toggleTheme())
+    expect(result.current.theme).not.toBe(initial)
+  })
+})
 ```
 
 ### Component Tests (Testing Library)
@@ -1272,6 +1320,7 @@ describe('useTheme', () => {
 **Location:** Colocated with components (`*.test.tsx`)
 
 **Example:**
+
 ```typescript
 // Button.test.tsx
 describe('Button', () => {
@@ -1299,6 +1348,7 @@ describe('Button', () => {
 **Location:** `tests/e2e/`
 
 **Configuration:**
+
 ```typescript
 // playwright.config.ts
 export default defineConfig({
@@ -1312,43 +1362,45 @@ export default defineConfig({
     { name: 'webkit', use: { ...devices['Desktop Safari'] } },
     { name: 'mobile', use: { ...devices['Pixel 5'] } },
   ],
-});
+})
 ```
 
 **Example:**
+
 ```typescript
 // landing-page.spec.ts
 test('homepage loads and displays hero', async ({ page }) => {
-  await page.goto('/');
-  await expect(page.locator('h1')).toContainText('Paperlyte');
-  await expect(page.getByRole('link', { name: /join.*waitlist/i })).toBeVisible();
-});
+  await page.goto('/')
+  await expect(page.locator('h1')).toContainText('Paperlyte')
+  await expect(page.getByRole('link', { name: /join.*waitlist/i })).toBeVisible()
+})
 
 test('email signup works', async ({ page }) => {
-  await page.goto('/');
-  await page.fill('input[type="email"]', 'test@example.com');
-  await page.click('button[type="submit"]');
-  await expect(page.locator('.success')).toBeVisible();
-});
+  await page.goto('/')
+  await page.fill('input[type="email"]', 'test@example.com')
+  await page.click('button[type="submit"]')
+  await expect(page.locator('.success')).toBeVisible()
+})
 ```
 
 ### Test Utilities
 
 **Setup File (`src/test/setup.ts`):**
+
 ```typescript
-import '@testing-library/jest-dom';
-import { cleanup } from '@testing-library/react';
-import { afterEach, vi } from 'vitest';
+import '@testing-library/jest-dom'
+import { cleanup } from '@testing-library/react'
+import { afterEach, vi } from 'vitest'
 
 // Cleanup after each test
-afterEach(() => cleanup());
+afterEach(() => cleanup())
 
 // Mock IntersectionObserver
 global.IntersectionObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
   disconnect: vi.fn(),
-}));
+}))
 
 // Mock matchMedia
 global.matchMedia = vi.fn().mockImplementation((query) => ({
@@ -1356,7 +1408,7 @@ global.matchMedia = vi.fn().mockImplementation((query) => ({
   media: query,
   addEventListener: vi.fn(),
   removeEventListener: vi.fn(),
-}));
+}))
 ```
 
 ---
@@ -1436,7 +1488,10 @@ global.matchMedia = vi.fn().mockImplementation((query) => ({
         { "key": "X-Frame-Options", "value": "DENY" },
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
         { "key": "Permissions-Policy", "value": "geolocation=(), microphone=(), camera=()" },
-        { "key": "Strict-Transport-Security", "value": "max-age=31536000; includeSubDomains; preload" },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=31536000; includeSubDomains; preload"
+        },
         {
           "key": "Content-Security-Policy",
           "value": "default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';"
@@ -1470,11 +1525,11 @@ global.matchMedia = vi.fn().mockImplementation((query) => ({
 
 ### Environment Configuration
 
-| Environment | Purpose | Variables |
-|-------------|---------|-----------|
-| Development | Local development | `.env.development` |
-| Preview | PR previews | Set in Netlify/Vercel |
-| Production | Live site | `.env.production` (secrets in platform) |
+| Environment | Purpose           | Variables                               |
+| ----------- | ----------------- | --------------------------------------- |
+| Development | Local development | `.env.development`                      |
+| Preview     | PR previews       | Set in Netlify/Vercel                   |
+| Production  | Live site         | `.env.production` (secrets in platform) |
 
 ---
 
@@ -1485,6 +1540,7 @@ global.matchMedia = vi.fn().mockImplementation((query) => ({
 **Steps:**
 
 1. **Create component directory:**
+
    ```
    src/components/sections/NewSection/
    ├── NewSection.tsx
@@ -1494,6 +1550,7 @@ global.matchMedia = vi.fn().mockImplementation((query) => ({
    ```
 
 2. **Implement component:**
+
    ```typescript
    // NewSection.tsx
    import { AnimatedElement } from '@components/ui/AnimatedElement';
@@ -1512,6 +1569,7 @@ global.matchMedia = vi.fn().mockImplementation((query) => ({
    ```
 
 3. **Add to App.tsx:**
+
    ```typescript
    import { NewSection } from '@components/sections/NewSection';
 
@@ -1534,6 +1592,7 @@ global.matchMedia = vi.fn().mockImplementation((query) => ({
 **Steps:**
 
 1. **Create hook file:**
+
    ```typescript
    // src/hooks/useNewHook.ts
    export function useNewHook(options?: Options): Return {
@@ -1542,6 +1601,7 @@ global.matchMedia = vi.fn().mockImplementation((query) => ({
    ```
 
 2. **Add types:**
+
    ```typescript
    interface Options {
      // ...
@@ -1557,10 +1617,10 @@ global.matchMedia = vi.fn().mockImplementation((query) => ({
    // src/hooks/useNewHook.test.ts
    describe('useNewHook', () => {
      it('returns expected value', () => {
-       const { result } = renderHook(() => useNewHook());
-       expect(result.current.value).toBeDefined();
-     });
-   });
+       const { result } = renderHook(() => useNewHook())
+       expect(result.current.value).toBeDefined()
+     })
+   })
    ```
 
 ### Adding a New External Integration
@@ -1568,29 +1628,32 @@ global.matchMedia = vi.fn().mockImplementation((query) => ({
 **Steps:**
 
 1. **Add environment variable:**
+
    ```
    # .env.example
    VITE_NEW_SERVICE_KEY=your-key-here
    ```
 
 2. **Create utility module:**
+
    ```typescript
    // src/utils/newService.ts
-   const API_KEY = import.meta.env.VITE_NEW_SERVICE_KEY;
+   const API_KEY = import.meta.env.VITE_NEW_SERVICE_KEY
 
    export function initNewService() {
      if (!API_KEY) {
-       console.warn('New service not configured');
-       return;
+       console.warn('New service not configured')
+       return
      }
      // Initialize
    }
    ```
 
 3. **Add to app initialization:**
+
    ```typescript
    // src/main.tsx or appropriate hook
-   initNewService();
+   initNewService()
    ```
 
 4. **Document in this blueprint.**
@@ -1613,8 +1676,8 @@ When deprecating functionality:
  * @deprecated Use `newFunction` instead. Will be removed in v2.0.
  */
 export function oldFunction() {
-  console.warn('oldFunction is deprecated. Use newFunction instead.');
-  return newFunction();
+  console.warn('oldFunction is deprecated. Use newFunction instead.')
+  return newFunction()
 }
 ```
 
@@ -1701,22 +1764,22 @@ button.card:focus-visible {
 
 ```typescript
 // src/hooks/useDebounce.ts
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react'
 
 export function useDebounce<T>(value: T, delay: number): T {
-  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+  const [debouncedValue, setDebouncedValue] = useState<T>(value)
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
+      setDebouncedValue(value)
+    }, delay)
 
     return () => {
-      clearTimeout(timer);
-    };
-  }, [value, delay]);
+      clearTimeout(timer)
+    }
+  }, [value, delay])
 
-  return debouncedValue;
+  return debouncedValue
 }
 ```
 
@@ -1815,7 +1878,8 @@ function EmailForm() {
 **Decision:** Use React 19 with functional components and hooks.
 
 **Consequences:**
- - ✅ Modern React features (automatic batching, concurrent rendering)
+
+- ✅ Modern React features (automatic batching, concurrent rendering)
 - ✅ Familiar ecosystem for most frontend developers
 - ✅ Excellent TypeScript support
 - ✅ Large community and ecosystem
@@ -1830,7 +1894,8 @@ function EmailForm() {
 **Decision:** Use CSS Modules with CSS custom properties (design tokens).
 
 **Consequences:**
- - ✅ Zero runtime overhead (styles compiled at build time)
+
+- ✅ Zero runtime overhead (styles compiled at build time)
 - ✅ Scoped styles prevent naming conflicts
 - ✅ Design tokens enable theming
 - ✅ Standard CSS knowledge is sufficient
@@ -1845,7 +1910,8 @@ function EmailForm() {
 **Decision:** Use React hooks and local component state only. No Redux, Zustand, or Context API for global state.
 
 **Consequences:**
- - ✅ Smaller bundle size
+
+- ✅ Smaller bundle size
 - ✅ Simpler mental model
 - ✅ Sufficient for landing page needs
 - ⚠️ May need to revisit if app grows significantly
@@ -1859,7 +1925,8 @@ function EmailForm() {
 **Decision:** Implement cookie-less analytics with automatic PII filtering.
 
 **Consequences:**
- - ✅ GDPR/CCPA compliant by default
+
+- ✅ GDPR/CCPA compliant by default
 - ✅ No cookie consent banner needed
 - ✅ User trust and transparency
 - ⚠️ Less detailed user tracking (no cross-session identification)
@@ -1873,7 +1940,8 @@ function EmailForm() {
 **Decision:** Use Netlify as primary host with Vercel as secondary.
 
 **Consequences:**
- - ✅ Redundancy if one platform has issues
+
+- ✅ Redundancy if one platform has issues
 - ✅ Free tier sufficient for traffic levels
 - ✅ Built-in CI/CD, previews, and serverless functions
 - ⚠️ Configuration maintained in two places
@@ -1887,7 +1955,8 @@ function EmailForm() {
 **Decision:** Use Vitest for unit/integration tests, Playwright for E2E.
 
 **Consequences:**
- - ✅ Fast test execution (Vitest is Vite-native)
+
+- ✅ Fast test execution (Vitest is Vite-native)
 - ✅ Cross-browser E2E testing
 - ✅ Good TypeScript support
 - ✅ Compatible with Testing Library patterns
@@ -1933,12 +2002,14 @@ Before merging any PR:
 ### Automated Checks
 
 **Pre-commit:**
- - ESLint
+
+- ESLint
 - Prettier
 - TypeScript type check
 
 **CI Pipeline:**
- - Lint
+
+- Lint
 - Type check
 - Unit tests
 - Build
@@ -2020,15 +2091,15 @@ When adding new features:
 
 ### NPM Scripts
 
-| Script | Purpose |
-|--------|---------|
-| `npm run dev` | Start development server |
-| `npm run build` | Build for production |
-| `npm run preview` | Preview production build |
-| `npm run lint` | Run ESLint |
-| `npm run test` | Run unit tests |
-| `npm run test:coverage` | Run tests with coverage |
-| `npm run test:e2e` | Run E2E tests |
+| Script                  | Purpose                  |
+| ----------------------- | ------------------------ |
+| `npm run dev`           | Start development server |
+| `npm run build`         | Build for production     |
+| `npm run preview`       | Preview production build |
+| `npm run lint`          | Run ESLint               |
+| `npm run test`          | Run unit tests           |
+| `npm run test:coverage` | Run tests with coverage  |
+| `npm run test:e2e`      | Run E2E tests            |
 
 ---
 

@@ -18,6 +18,7 @@ This directory contains self-hosted font files for security and performance.
 4. Place it in this directory as `PlayfairDisplay-Variable.woff2`
 
 Alternatively, use this direct download:
+
 ```bash
 # Download Playfair Display Variable font
 curl -o public/fonts/PlayfairDisplay-Variable.woff2 \
@@ -27,7 +28,8 @@ curl -o public/fonts/PlayfairDisplay-Variable.woff2 \
 ## Font Face Declarations
 
 Font face declarations are defined in:
- - Main app: `src/styles/typography.css`
+
+- Main app: `src/styles/typography.css`
 - Privacy page: `public/privacy.html`
 - Terms page: `public/terms.html`
 

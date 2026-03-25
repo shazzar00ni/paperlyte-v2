@@ -10,14 +10,14 @@ The Paperlyte Design System is the single source of truth for visual design, int
 
 ## Contents
 
-| Document | Description |
-|---|---|
-| [`tokens.md`](./tokens.md) | All design tokens: colors, spacing, radii, shadows, z-index, transitions |
-| [`typography.md`](./typography.md) | Font families, scale, weights, line-heights, and text utility classes |
-| [`components.md`](./components.md) | Component API reference: Button, Icon, EmailCapture, ThemeToggle, and more |
-| [`layout.md`](./layout.md) | Grid system, breakpoints, container widths, Section primitives |
-| [`motion.md`](./motion.md) | Animation principles, easing curves, timing, scroll-triggered reveals |
-| [`landing-page.md`](./landing-page.md) | Section-by-section spec for the marketing landing page |
+| Document                               | Description                                                                |
+| -------------------------------------- | -------------------------------------------------------------------------- |
+| [`tokens.md`](./tokens.md)             | All design tokens: colors, spacing, radii, shadows, z-index, transitions   |
+| [`typography.md`](./typography.md)     | Font families, scale, weights, line-heights, and text utility classes      |
+| [`components.md`](./components.md)     | Component API reference: Button, Icon, EmailCapture, ThemeToggle, and more |
+| [`layout.md`](./layout.md)             | Grid system, breakpoints, container widths, Section primitives             |
+| [`motion.md`](./motion.md)             | Animation principles, easing curves, timing, scroll-triggered reveals      |
+| [`landing-page.md`](./landing-page.md) | Section-by-section spec for the marketing landing page                     |
 
 ---
 
@@ -47,16 +47,16 @@ Core content renders and is readable without JavaScript. Animations and interact
 
 ## Brand Snapshot
 
-| Attribute | Value |
-|---|---|
-| Brand name | Paperlyte |
-| Tagline | "Your thoughts, unchained." |
-| Aesthetic | Monochrome minimalism — paper meets dark mode |
-| Accent strategy | No accent color; contrast is the accent |
-| Primary typeface | Playfair Display (headlines) |
-| Secondary typeface | Inter (UI / body) |
-| Button shape | Full pill (`border-radius: 9999px`) |
-| Dark mode | Inverted monochrome (white becomes primary) |
+| Attribute          | Value                                         |
+| ------------------ | --------------------------------------------- |
+| Brand name         | Paperlyte                                     |
+| Tagline            | "Your thoughts, unchained."                   |
+| Aesthetic          | Monochrome minimalism — paper meets dark mode |
+| Accent strategy    | No accent color; contrast is the accent       |
+| Primary typeface   | Playfair Display (headlines)                  |
+| Secondary typeface | Inter (UI / body)                             |
+| Button shape       | Full pill (`border-radius: 9999px`)           |
+| Dark mode          | Inverted monochrome (white becomes primary)   |
 
 ---
 

@@ -28,6 +28,7 @@ The Paperlyte landing page is a single scrolling page (`/`) composed of stacked 
 ```
 
 Background alternation:
+
 ```text
 Hero          → default (white)
 Features      → surface (off-white)
@@ -81,14 +82,14 @@ Mobile:
 
 ### Content Spec
 
-| Element | Content | Typography |
-|---|---|---|
-| H1 | "Your thoughts, *organized.*" | Playfair Display 5xl, bold, italic on emphasis |
-| Subheading | "The minimal workspace for busy professionals." | Inter base, `--color-text-secondary` |
-| CTA (primary) | "Start Writing for Free" | Button large primary + arrow-right icon |
-| CTA (secondary) | "View the Demo" | Button large secondary |
-| Trusted by label | "TRUSTED BY TEAMS AT" | Inter xs, semibold, uppercase, letter-spacing |
-| Company list | Acme Corp, Global, Nebula, Vertex, Horizon | Inter sm, `--color-text-secondary` |
+| Element          | Content                                         | Typography                                     |
+| ---------------- | ----------------------------------------------- | ---------------------------------------------- |
+| H1               | "Your thoughts, _organized._"                   | Playfair Display 5xl, bold, italic on emphasis |
+| Subheading       | "The minimal workspace for busy professionals." | Inter base, `--color-text-secondary`           |
+| CTA (primary)    | "Start Writing for Free"                        | Button large primary + arrow-right icon        |
+| CTA (secondary)  | "View the Demo"                                 | Button large secondary                         |
+| Trusted by label | "TRUSTED BY TEAMS AT"                           | Inter xs, semibold, uppercase, letter-spacing  |
+| Company list     | Acme Corp, Global, Nebula, Vertex, Horizon      | Inter sm, `--color-text-secondary`             |
 
 ### Mockup
 
@@ -103,13 +104,13 @@ A floating stat badge overlays the mockup: "+120% PRODUCTIVITY" — styled as a 
 
 ### Animation Sequence
 
-| Element | Animation | Delay |
-|---|---|---|
-| H1 | `fadeIn` | 0ms |
-| Subheading | `fadeIn` | 100ms |
-| CTA buttons | `fadeIn` | 300ms |
-| Trusted by | `fadeIn` | 450ms |
-| Mockup | `fadeIn` | 400ms |
+| Element     | Animation | Delay |
+| ----------- | --------- | ----- |
+| H1          | `fadeIn`  | 0ms   |
+| Subheading  | `fadeIn`  | 100ms |
+| CTA buttons | `fadeIn`  | 300ms |
+| Trusted by  | `fadeIn`  | 450ms |
+| Mockup      | `fadeIn`  | 400ms |
 
 ### Decorative Elements
 
@@ -138,18 +139,18 @@ Quickly communicate the 6 core features with performance metrics. Reduce cogniti
 
 Feature data lives in `src/constants/features.ts`. Each card contains:
 
-| Element | Spec |
-|---|---|
-| Icon | `Icon` component, size `2x`, `color: var(--color-primary)` |
-| Icon wrapper | `64px` circle, `--color-primary-faint` background |
-| Title (h3) | Inter semibold, `--font-size-xl` |
-| Description | Inter normal, `--font-size-base`, `--color-text-secondary`, `line-height-relaxed` |
+| Element      | Spec                                                                              |
+| ------------ | --------------------------------------------------------------------------------- |
+| Icon         | `Icon` component, size `2x`, `color: var(--color-primary)`                        |
+| Icon wrapper | `64px` circle, `--color-primary-faint` background                                 |
+| Title (h3)   | Inter semibold, `--font-size-xl`                                                  |
+| Description  | Inter normal, `--font-size-base`, `--color-text-secondary`, `line-height-relaxed` |
 
 ### Section Header
 
-| Element | Content |
-|---|---|
-| H2 | "Everything you need. Nothing you don't." |
+| Element    | Content                                                                        |
+| ---------- | ------------------------------------------------------------------------------ |
+| H2         | "Everything you need. Nothing you don't."                                      |
 | Subheading | "Built for speed, designed for simplicity. Focus on your ideas, not the tool." |
 
 Both are centered, max-width `--max-width-content`.
@@ -160,14 +161,14 @@ Cards stagger with `slideUp`, `delay = 150 + (index × 75)ms`.
 
 ### Core Features (6)
 
-| # | Icon | Title | Key metric |
-|---|---|---|---|
-| 1 | bolt / lightning | Zero-Lag Typing | Sub-10ms keystroke response |
-| 2 | tag | Tag-Based Organization | Inline `#tags`, no folders |
-| 3 | sync / rotate | Cross-Platform Sync | Mac, Windows, Linux, iOS, Android, web |
-| 4 | eye-slash | Distraction-Free Writing | Interface disappears while typing |
-| 5 | shield / lock | Private by Design | Local-first + optional E2E encrypted sync |
-| 6 | wifi-slash | Offline-First | Full functionality without internet |
+| #   | Icon             | Title                    | Key metric                                |
+| --- | ---------------- | ------------------------ | ----------------------------------------- |
+| 1   | bolt / lightning | Zero-Lag Typing          | Sub-10ms keystroke response               |
+| 2   | tag              | Tag-Based Organization   | Inline `#tags`, no folders                |
+| 3   | sync / rotate    | Cross-Platform Sync      | Mac, Windows, Linux, iOS, Android, web    |
+| 4   | eye-slash        | Distraction-Free Writing | Interface disappears while typing         |
+| 5   | shield / lock    | Private by Design        | Local-first + optional E2E encrypted sync |
+| 6   | wifi-slash       | Offline-First            | Full functionality without internet       |
 
 ---
 
@@ -187,13 +188,14 @@ Present the problem as a short narrative:
 
 1. Acknowledge that users tried alternatives (Notion, Evernote, OneNote)
 2. Name the specific failure modes: bloat, complexity, slow startup, folder hell
-3. End with the unmet promise: *you just want to write*
+3. End with the unmet promise: _you just want to write_
 
 ### Layout
 
 Centered text block, max-width `--max-width-content`. No grid. One or two paragraphs + a pain-point list.
 
 Pain point list style:
+
 ```text
 ✗  Notes buried under nested folders
 ✗  Loading screens before you can type
@@ -248,19 +250,19 @@ Build credibility with specific, memorable numbers. Animated counters create a m
 
 ### Section Header
 
-| Element | Content |
-|---|---|
-| H2 | "Join thousands who've simplified their notes" |
+| Element    | Content                                                     |
+| ---------- | ----------------------------------------------------------- |
+| H2         | "Join thousands who've simplified their notes"              |
 | Subheading | "Real people, real productivity gains, real peace of mind." |
 
 ### Stats
 
-| Value | Suffix | Decimals | Icon | Label |
-|---|---|---|---|---|
-| 50000 | `+` | 0 | `fa-users` | Active Users |
-| 10 | `M+` | 0 | `fa-note-sticky` | Notes Created |
-| 99.9 | `%` | 1 | `fa-server` | Uptime |
-| 4.9 | `/5` | 1 | `fa-star` | User Rating |
+| Value | Suffix | Decimals | Icon             | Label         |
+| ----- | ------ | -------- | ---------------- | ------------- |
+| 50000 | `+`    | 0        | `fa-users`       | Active Users  |
+| 10    | `M+`   | 0        | `fa-note-sticky` | Notes Created |
+| 99.9  | `%`    | 1        | `fa-server`      | Uptime        |
+| 4.9   | `/5`   | 1        | `fa-star`        | User Rating   |
 
 All use `CounterAnimation` with `easing: 'easeOutQuart'`, `duration: 2000ms`.
 
@@ -284,13 +286,13 @@ Horizontal scrolling card list or auto-advancing carousel. 3 visible on desktop,
 
 ### Card Spec
 
-| Element | Spec |
-|---|---|
-| Quote | Playfair Display italic, `font-size-xl`, `--color-text-primary` |
-| Avatar | 48×48px circle image |
-| Name | Inter semibold, `font-size-base` |
-| Role / Company | Inter normal, `font-size-sm`, `--color-text-secondary` |
-| Quote marks | Decorative `"` in Playfair Display, `font-size-5xl`, `--color-border` |
+| Element        | Spec                                                                  |
+| -------------- | --------------------------------------------------------------------- |
+| Quote          | Playfair Display italic, `font-size-xl`, `--color-text-primary`       |
+| Avatar         | 48×48px circle image                                                  |
+| Name           | Inter semibold, `font-size-base`                                      |
+| Role / Company | Inter normal, `font-size-sm`, `--color-text-secondary`                |
+| Quote marks    | Decorative `"` in Playfair Display, `font-size-5xl`, `--color-border` |
 
 ---
 
@@ -310,14 +312,14 @@ Scrollable table on mobile (`overflow-x: auto`). Fixed on desktop.
 
 ### Table Structure
 
-| Feature | Paperlyte | Notion | Evernote | OneNote |
-|---|---|---|---|---|
-| Startup time | < 300ms | 2–5s | 3–6s | 2–4s |
-| Offline-first | ✓ | Partial | Partial | ✓ |
-| Local storage | ✓ | ✗ | ✗ | ✓ |
-| E2E encryption | ✓ | ✗ | ✗ | ✗ |
-| Keystroke lag | < 10ms | 50–200ms | 30–100ms | 20–80ms |
-| Free tier | ✓ | ✓ (limited) | ✓ (limited) | ✓ |
+| Feature        | Paperlyte | Notion      | Evernote    | OneNote |
+| -------------- | --------- | ----------- | ----------- | ------- |
+| Startup time   | < 300ms   | 2–5s        | 3–6s        | 2–4s    |
+| Offline-first  | ✓         | Partial     | Partial     | ✓       |
+| Local storage  | ✓         | ✗           | ✗           | ✓       |
+| E2E encryption | ✓         | ✗           | ✗           | ✗       |
+| Keystroke lag  | < 10ms    | 50–200ms    | 30–100ms    | 20–80ms |
+| Free tier      | ✓         | ✓ (limited) | ✓ (limited) | ✓       |
 
 Paperlyte column uses `--color-primary` header background with `--color-text-on-primary` text to draw the eye.
 
@@ -361,10 +363,10 @@ Set expectations. Convert price-sensitive visitors before they leave. Present th
 
 ### Tiers
 
-| Tier | Price | Key features |
-|---|---|---|
-| Free | $0 | Unlimited local notes, 2 devices, basic tags |
-| Pro | $8/mo | Unlimited devices, E2E sync, version history |
+| Tier | Price       | Key features                                        |
+| ---- | ----------- | --------------------------------------------------- |
+| Free | $0          | Unlimited local notes, 2 devices, basic tags        |
+| Pro  | $8/mo       | Unlimited devices, E2E sync, version history        |
 | Team | $15/seat/mo | Shared workspaces, admin controls, priority support |
 
 **Pro** tier card gets `--color-primary` border and a "Most Popular" badge to guide selection.
@@ -389,13 +391,13 @@ Final push before email capture. Address the last remaining objection (it's too 
 
 ### Content
 
-| Element | Content |
-|---|---|
-| H2 | "Stop fighting your tools. Start thinking clearly." |
-| Body | "Note-taking shouldn't feel like work. It should feel like breathing—natural, effortless, invisible." |
-| Primary CTA | "Join the Waitlist" → scrolls to `#email-capture` |
-| Text link | "Watch the Demo Again" → scrolls to `#hero` |
-| Social proof | "{n} people already on the waitlist · Launching {quarter}" |
+| Element      | Content                                                                                               |
+| ------------ | ----------------------------------------------------------------------------------------------------- |
+| H2           | "Stop fighting your tools. Start thinking clearly."                                                   |
+| Body         | "Note-taking shouldn't feel like work. It should feel like breathing—natural, effortless, invisible." |
+| Primary CTA  | "Join the Waitlist" → scrolls to `#email-capture`                                                     |
+| Text link    | "Watch the Demo Again" → scrolls to `#hero`                                                           |
+| Social proof | "{n} people already on the waitlist · Launching {quarter}"                                            |
 
 Social proof count is sourced from `WAITLIST_COUNT` and `LAUNCH_QUARTER` constants in `src/constants/waitlist.ts`.
 
@@ -464,20 +466,20 @@ Accordion list, max-width `--max-width-content`, centered.
 
 ## Navigation Anchors
 
-| Anchor | Section |
-|---|---|
-| `#hero` | Hero |
-| `#features` | Features |
-| `#problem` | Problem |
-| `#solution` | Solution |
-| `#statistics` | Statistics |
-| `#testimonials` | Testimonials |
-| `#comparison` | Comparison |
-| `#mobile` | Mobile |
-| `#pricing` | Pricing |
-| `#download` | CTA |
+| Anchor           | Section       |
+| ---------------- | ------------- |
+| `#hero`          | Hero          |
+| `#features`      | Features      |
+| `#problem`       | Problem       |
+| `#solution`      | Solution      |
+| `#statistics`    | Statistics    |
+| `#testimonials`  | Testimonials  |
+| `#comparison`    | Comparison    |
+| `#mobile`        | Mobile        |
+| `#pricing`       | Pricing       |
+| `#download`      | CTA           |
 | `#email-capture` | Email Capture |
-| `#faq` | FAQ |
+| `#faq`           | FAQ           |
 
 All anchors require `scroll-margin-top: var(--header-height)` (64px) on their container.
 
@@ -487,8 +489,10 @@ All anchors require `scroll-margin-top: var(--header-height)` (64px) on their co
 
 ```html
 <title>Paperlyte — Lightning-fast, distraction-free note-taking</title>
-<meta name="description"
-  content="Your thoughts, unchained. Paperlyte is the minimal note-taking app with sub-10ms response, offline-first sync, and no distractions." />
+<meta
+  name="description"
+  content="Your thoughts, unchained. Paperlyte is the minimal note-taking app with sub-10ms response, offline-first sync, and no distractions."
+/>
 <meta property="og:title" content="Paperlyte — Your thoughts, unchained" />
 <meta property="og:description" content="Lightning-fast, distraction-free note-taking." />
 <meta property="og:type" content="website" />
@@ -499,15 +503,15 @@ All anchors require `scroll-margin-top: var(--header-height)` (64px) on their co
 
 ## Performance Targets
 
-| Metric | Target |
-|---|---|
-| Lighthouse Performance | ≥ 90 |
-| Lighthouse Accessibility | ≥ 95 |
-| First Contentful Paint | < 1.5s |
-| Largest Contentful Paint | < 2.5s |
-| Cumulative Layout Shift | < 0.1 |
-| Total Blocking Time | < 200ms |
-| Page weight | < 300KB (JS), < 100KB (CSS) |
+| Metric                   | Target                      |
+| ------------------------ | --------------------------- |
+| Lighthouse Performance   | ≥ 90                        |
+| Lighthouse Accessibility | ≥ 95                        |
+| First Contentful Paint   | < 1.5s                      |
+| Largest Contentful Paint | < 2.5s                      |
+| Cumulative Layout Shift  | < 0.1                       |
+| Total Blocking Time      | < 200ms                     |
+| Page weight              | < 300KB (JS), < 100KB (CSS) |
 
 ### Critical Optimisations
 

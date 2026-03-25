@@ -9,6 +9,7 @@ Codacy's ESLint8 engine reports **8 false positive security warnings** for non-l
 **Pattern**: `ESLint8_security_detect-non-literal-regexp` and `ESLint8_security-node_non-literal-reg-expr`
 
 **Locations**:
+
 1. `src/constants/features.test.ts:23` - `countOccurrences` function
 2. `src/components/sections/FAQ/FAQ.test.tsx:15` - `getQuestionButton` helper
 3. `src/components/sections/Comparison/Comparison.test.tsx:47` - Competitor name matching
@@ -34,6 +35,7 @@ This prevents ReDoS (Regular Expression Denial of Service) attacks by ensuring n
 ### 2. Input Sources Are Constants, Not User Input
 
 All values passed to RegExp constructors come from application constants:
+
 - `FAQ_ITEMS` - Hardcoded FAQ questions
 - `PRICING_PLANS` - Hardcoded pricing plan data
 - `COMPETITORS` - Hardcoded competitor names
@@ -44,6 +46,7 @@ None of these values come from user input, external APIs, or untrusted sources.
 ### 3. Verified by Semgrep
 
 Each line has a `nosemgrep` inline comment that Semgrep respects:
+
 ```typescript
 const regex = new RegExp(escapeRegExp(word), 'gi') // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
 ```
@@ -53,6 +56,7 @@ Semgrep successfully validates these patterns and does not flag them as security
 ### 4. Self-Documenting Code
 
 Every usage includes a clear comment explaining the safety:
+
 ```typescript
 // Safe: word is escaped via escapeRegExp() before RegExp construction
 const regex = new RegExp(`\\b${escapeRegExp(word)}\\b`, 'gi')

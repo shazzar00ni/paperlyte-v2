@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event'
 import App from './App'
 
 describe('App Integration', () => {
-  it('should render with proper semantic structure and section order', () => {
+  it('should const { container } = render with proper semantic structure and section order', () => {
     const { container } = render(<App />)
 
     // Verify semantic landmark regions
@@ -76,7 +76,7 @@ describe('App Integration', () => {
     expect(navigation).toHaveLength(2)
   })
 
-  it('should render Hero section', () => {
+  it('should const { container } = render Hero section', () => {
     const { container } = render(<App />)
 
     // Hero section should be present
@@ -84,7 +84,7 @@ describe('App Integration', () => {
     expect(heroSection).toBeInTheDocument()
   })
 
-  it('should render Features section', () => {
+  it('should const { container } = render Features section', () => {
     const { container } = render(<App />)
 
     const featuresSection = container.querySelector('#features')
@@ -94,7 +94,7 @@ describe('App Integration', () => {
     expect(screen.getByText('Lightning Speed')).toBeInTheDocument()
   })
 
-  it('should render Mobile section', () => {
+  it('should const { container } = render Mobile section', () => {
     const { container } = render(<App />)
 
     const mobileSection = container.querySelector('#mobile')
@@ -104,7 +104,7 @@ describe('App Integration', () => {
     expect(screen.getByText(/Capture inspiration/i)).toBeInTheDocument()
   })
 
-  it('should render Testimonials section', () => {
+  it('should const { container } = render Testimonials section', () => {
     const { container } = render(<App />)
 
     const testimonialsSection = container.querySelector('#testimonials')
@@ -114,7 +114,7 @@ describe('App Integration', () => {
     expect(screen.getByText(/Sarah Chen/i)).toBeInTheDocument()
   })
 
-  it('should render CTA section', () => {
+  it('should const { container } = render CTA section', () => {
     const { container } = render(<App />)
 
     const ctaSection = container.querySelector('#download')
@@ -162,7 +162,7 @@ describe('App Integration', () => {
     expect(screen.getByRole('link', { name: 'Email us' })).toBeInTheDocument()
   })
 
-  it('should render skip link with correct attributes', () => {
+  it('should const { container } = render skip link with correct attributes', () => {
     const { container } = render(<App />)
 
     const skipLink = container.querySelector('.skip-link')
@@ -172,7 +172,7 @@ describe('App Integration', () => {
   })
 
   it('should focus main element when skip link is activated', async () => {
-    const { container } = render(<App />)
+    render(<App />)
     const user = userEvent.setup()
 
     const skipLink = container.querySelector('.skip-link') as HTMLElement
@@ -188,7 +188,7 @@ describe('App Integration', () => {
     // In a real browser, main would receive focus
   })
 
-  it('should render Problem section', () => {
+  it('should const { container } = render Problem section', () => {
     const { container } = render(<App />)
 
     // Problem section should be present
@@ -196,28 +196,28 @@ describe('App Integration', () => {
     expect(problemSection).toBeInTheDocument()
   })
 
-  it('should render Solution section', () => {
+  it('should const { container } = render Solution section', () => {
     const { container } = render(<App />)
 
     const solutionSection = container.querySelector('#solution')
     expect(solutionSection).toBeInTheDocument()
   })
 
-  it('should render Statistics section', () => {
+  it('should const { container } = render Statistics section', () => {
     const { container } = render(<App />)
 
     const statisticsSection = container.querySelector('#statistics')
     expect(statisticsSection).toBeInTheDocument()
   })
 
-  it('should render Comparison section', () => {
+  it('should const { container } = render Comparison section', () => {
     const { container } = render(<App />)
 
     const comparisonSection = container.querySelector('#comparison')
     expect(comparisonSection).toBeInTheDocument()
   })
 
-  it('should render FAQ section', () => {
+  it('should const { container } = render FAQ section', () => {
     const { container } = render(<App />)
 
     const faqSection = container.querySelector('#faq')

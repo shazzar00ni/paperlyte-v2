@@ -46,7 +46,7 @@ function extractJobBlock(content: string, jobId: string): string {
   for (let i = startIdx + 1; i < lines.length; i++) {
     const line = lines[i]
     // A sibling key is indented by exactly 2 spaces (e.g. "  next-job:")
-    if (/^  \S/.test(line)) break
+    if (/^ {2}\S/.test(line)) break
     jobLines.push(line)
   }
   return jobLines.join('\n')
@@ -59,7 +59,7 @@ function extractJobBlock(content: string, jobId: string): string {
 function jobHasContentsReadPermission(jobBlock: string): boolean {
   // Look for `    permissions:` (4-space indent) then `      contents: read` (6-space indent)
   const permissionsPattern = /^\s{4}permissions:/m
-  const contentsPattern = /^\s+contents:\s+read/m
+  const contentsPattern = /^\s{1,50}contents:\s{1,50}read/m
   return permissionsPattern.test(jobBlock) && contentsPattern.test(jobBlock)
 }
 
@@ -78,20 +78,24 @@ describe('ci.yml – permission structure', () => {
     expect(content.length).toBeGreaterThan(0)
   })
 
-  it('should NOT have a workflow-level permissions block (permissions must be job-scoped)', () => {
-    expect(hasWorkflowLevelPermissions(content)).toBe(false)
+  it('should have a workflow-level "contents: read" permissions block', () => {
+    expect(hasWorkflowLevelPermissions(content)).toBe(true)
+    // Verify the workflow-level block grants contents: read
+    expect(content).toMatch(/^permissions:\s*\n\s+contents:\s+read/m)
   })
 
-  it('lint-and-typecheck job should have "contents: read" permission', () => {
+  it('lint-and-typecheck job inherits "contents: read" from the workflow-level permissions', () => {
     const block = extractJobBlock(content, 'lint-and-typecheck')
     expect(block).not.toBe('')
-    expect(jobHasContentsReadPermission(block)).toBe(true)
+    // This job relies on the workflow-level contents: read (no separate job-level block needed)
+    expect(hasWorkflowLevelPermissions(content)).toBe(true)
   })
 
-  it('build job should have "contents: read" permission', () => {
+  it('build job inherits "contents: read" from the workflow-level permissions', () => {
     const block = extractJobBlock(content, 'build')
     expect(block).not.toBe('')
-    expect(jobHasContentsReadPermission(block)).toBe(true)
+    // This job relies on the workflow-level contents: read (no separate job-level block needed)
+    expect(hasWorkflowLevelPermissions(content)).toBe(true)
   })
 
   it('test job should have "contents: read" permission', () => {
@@ -130,17 +134,10 @@ describe('ci.yml – permission structure', () => {
   })
 
   it('each job that has a permissions block should include at least "contents: read"', () => {
-    // Regression guard: no job should accidentally drop its permissions.
-    const jobsWithExpectedPermissions = [
-      'lint-and-typecheck',
-      'test',
-      'build',
-      'size-check',
-      'lighthouse',
-      'e2e',
-      'ci-success',
-    ]
-    for (const jobId of jobsWithExpectedPermissions) {
+    // Regression guard: jobs with explicit permissions blocks must keep contents: read.
+    // lint-and-typecheck and build rely on the workflow-level block instead.
+    const jobsWithExplicitPermissions = ['test', 'size-check', 'lighthouse', 'e2e', 'ci-success']
+    for (const jobId of jobsWithExplicitPermissions) {
       const block = extractJobBlock(content, jobId)
       expect(
         jobHasContentsReadPermission(block),
@@ -179,20 +176,24 @@ describe('pr-quality-check.yml – permission structure', () => {
     expect(content.length).toBeGreaterThan(0)
   })
 
-  it('should NOT have a workflow-level permissions block (permissions must be job-scoped)', () => {
-    expect(hasWorkflowLevelPermissions(content)).toBe(false)
+  it('should have a workflow-level "contents: read" permissions block', () => {
+    expect(hasWorkflowLevelPermissions(content)).toBe(true)
+    // Verify the workflow-level block grants contents: read
+    expect(content).toMatch(/^permissions:\s*\n\s+contents:\s+read/m)
   })
 
-  it('pr-metadata job should have "contents: read" permission', () => {
+  it('pr-metadata job inherits "contents: read" from the workflow-level permissions', () => {
     const block = extractJobBlock(content, 'pr-metadata')
     expect(block).not.toBe('')
-    expect(jobHasContentsReadPermission(block)).toBe(true)
+    // This job relies on the workflow-level contents: read (no separate job-level block needed)
+    expect(hasWorkflowLevelPermissions(content)).toBe(true)
   })
 
-  it('bundle-size-check job should have "contents: read" permission', () => {
+  it('bundle-size-check job inherits "contents: read" from the workflow-level permissions', () => {
     const block = extractJobBlock(content, 'bundle-size-check')
     expect(block).not.toBe('')
-    expect(jobHasContentsReadPermission(block)).toBe(true)
+    // This job relies on the workflow-level contents: read (no separate job-level block needed)
+    expect(hasWorkflowLevelPermissions(content)).toBe(true)
   })
 
   it('dependency-review job should retain its existing permissions', () => {
@@ -212,7 +213,7 @@ describe('pr-quality-check.yml – permission structure', () => {
 
   it('should only trigger on pull_request events', () => {
     expect(content).toMatch(/^on:\s*\n\s+pull_request:/m)
-    expect(content).not.toMatch(/^  push:/m)
+    expect(content).not.toMatch(/^ {2}push:/m)
   })
 
   it('should trigger on opened, synchronize, and reopened event types', () => {
@@ -224,17 +225,16 @@ describe('pr-quality-check.yml – permission structure', () => {
     expect(block).toMatch(/needs:\s*\[pr-metadata,\s*dependency-review,\s*bundle-size-check\]/)
   })
 
-  it('no job should accidentally omit all permissions (regression guard)', () => {
-    // For this workflow, at least the jobs touched by this PR must have explicit permissions
-    const jobsRequiringPermissions = ['pr-metadata', 'bundle-size-check', 'dependency-review']
-    for (const jobId of jobsRequiringPermissions) {
-      const block = extractJobBlock(content, jobId)
-      const hasPermissionsBlock = /^\s{4}permissions:/m.test(block)
-      expect(
-        hasPermissionsBlock,
-        `Job "${jobId}" is missing an explicit permissions block`,
-      ).toBe(true)
-    }
+  it('only dependency-review job has an explicit permissions block (regression guard)', () => {
+    // dependency-review needs additional pull-requests: write permission beyond the workflow default.
+    // pr-metadata, bundle-size-check, and quality-summary rely on the workflow-level permissions.
+    // Validate that dependency-review still carries its own explicit block.
+    const block = extractJobBlock(content, 'dependency-review')
+    const hasPermissionsBlock = /^\s{4}permissions:/m.test(block)
+    expect(
+      hasPermissionsBlock,
+      'dependency-review job is missing an explicit permissions block',
+    ).toBe(true)
   })
 })
 

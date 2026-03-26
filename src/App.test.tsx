@@ -269,6 +269,30 @@ describe('App Integration', () => {
     consoleErrorSpy.mockRestore()
   })
 
+  it('should not render Analytics component in test environment', () => {
+    const { container } = render(<App />)
+    // The Analytics component from @vercel/analytics/react usually renders a script or nothing in test
+    // With our new condition, it should definitely not be present in the DOM
+    expect(container.querySelector('script[src*="insights"]')).not.toBeInTheDocument()
+  })
+
+  it('should apply correct theme attributes to root element', () => {
+    // This test ensures useTheme and our environment configuration work together
+    const { container } = render(<App />)
+    // Check if the root element has been tagged with a theme
+    // We check document.documentElement because useTheme uses it
+    const theme = document.documentElement.getAttribute('data-theme')
+    expect(['light', 'dark']).toContain(theme)
+  })
+
+  it('should have correct environment flags in test', () => {
+    const isProd = import.meta.env.PROD
+    const isDev = import.meta.env.DEV
+    // In Vitest, usually DEV is true and PROD is false
+    expect(isDev).toBe(true)
+    expect(isProd).toBe(false)
+  })
+
   it('should render all major UI components', () => {
     const { container } = render(<App />)
 

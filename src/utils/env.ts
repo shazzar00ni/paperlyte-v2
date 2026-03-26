@@ -95,3 +95,26 @@ export const updateMetaTags = (): void => {
     ogImage.setAttribute('content', env.ogImage)
   }
 }
+
+/**
+ * Check if analytics should be enabled based on environment and hostname
+ * Prevents tracking on localhost and in development/test environments
+ *
+ * @returns {boolean} True if analytics should be enabled
+ */
+export const shouldShowAnalytics = (): boolean => {
+  // SSR guard
+  if (typeof window === 'undefined') {
+    return false
+  }
+
+  const isProd = import.meta.env.PROD
+  const hostname = window.location.hostname
+  const isLocal =
+    hostname === 'localhost' ||
+    hostname === '127.0.0.1' ||
+    hostname === '0.0.0.0' ||
+    hostname.includes('local')
+
+  return isProd && !isLocal
+}

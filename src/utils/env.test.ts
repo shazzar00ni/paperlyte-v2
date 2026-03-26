@@ -117,8 +117,8 @@ describe('env', () => {
 
     beforeEach(() => {
       // Mock window.location
-      // @ts-ignore
-      delete window.location
+      // @ts-expect-error - deleting location to mock it
+      delete (window as unknown as { location: unknown }).location
       window.location = { ...originalLocation, hostname: 'paperlyte.app' }
     })
 
@@ -134,10 +134,6 @@ describe('env', () => {
     it('should return false on localhost even if production flag is set', () => {
       // Mock hostname to localhost
       window.location.hostname = 'localhost'
-
-      // We can't easily change import.meta.env.PROD at runtime in tests
-      // but since it's already false in test, the function will return false.
-      // If we wanted to test the hostname logic specifically, we'd need to mock the entire module
       expect(shouldShowAnalytics()).toBe(false)
     })
 

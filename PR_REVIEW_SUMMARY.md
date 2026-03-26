@@ -157,7 +157,7 @@ The following branches remain blocked due to the accidental deletion of critical
 - **Status:** Changes Requested
 - **Notes (2026-02-08):** See detailed review under **2026-02-06 → PR #279**. Status remains **Changes Requested**; prior concerns documented there continue to apply.
 
-### PR #319 Fix Deployment Error in Privacy.tsx
+### PR #319: Fix Deployment Error in Privacy.tsx
 
 - **Status:** Changes Requested
 - **Notes (2026-02-08):** See detailed review under **2026-02-06 → PR #319**. Status is still **Changes Requested** with no new blocking issues recorded here.
@@ -276,7 +276,7 @@ The following branches remain blocked due to the accidental deletion of critical
 - **Summary:** Refactors the `Icon` component fallback to use `<i>` tags and adds accessibility labels.
 - **Feedback:** Switching from the `FontAwesomeIcon` React component to raw `<i>` tags for fallbacks might break rendering if the Font Awesome CSS isn't globally loaded, which it typically isn't in this project's self-hosted setup. Recommend sticking with the React component for consistency.
 
-### PR #319 Fix Deployment Error in Privacy.tsx
+### PR #319: Fix Deployment Error in Privacy.tsx
 
 - **Status:** Changes Requested (Follow-up)
 - **Summary:** Fixes a bug in `Privacy.tsx` but includes unrelated changes to `package-lock.json` and `sitemap.xml`.
@@ -372,6 +372,12 @@ The following branches remain blocked due to the accidental deletion of critical
 - **Status:** Approved
 - **Summary:** Critical security fix that prevents command injection by validating branch names in the protection workflow. Includes a very thorough test suite and CI integration for shell script coverage.
 - **Feedback:** Exceptional work. The addition of comprehensive tests and coverage tracking for shell scripts sets a high standard for security-critical parts of the codebase.
+
+### PR #331: Fix command injection vulnerability in sitemap generation
+
+- **Status:** Approved with comments
+- **Summary:** Fixes a security vulnerability in sitemap generation and adds path traversal protection utilities. It also includes a major update to `AGENTS.md` to reflect the current state of the landing page project.
+- **Feedback:** The security fixes are essential. The documentation updates are very helpful for clarifying the project's scope.
 
 ### PR #331: Fix command injection vulnerability in sitemap generation
 

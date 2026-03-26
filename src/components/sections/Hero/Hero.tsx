@@ -81,6 +81,7 @@ export const Hero = (): React.ReactElement => {
                 width={1100}
                 height={800}
                 loading="eager"
+                fetchPriority="high"
                 decoding="async"
                 className={styles.mockupImage}
               />

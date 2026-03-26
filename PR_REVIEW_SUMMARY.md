@@ -2,6 +2,112 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-03-26
+
+### Ready for Merge / High Quality (Clean)
+
+The following recent branches have been reviewed and are verified to be free from systemic regressions (critical files present, security helpers intact) and align with project standards.
+
+- **`origin/claude/fix-bash-conditionals-Zlz46`**
+  - **Status:** Approved
+  - **Summary:** Resolves Lighthouse CI failures by fixing Bash conditional syntax in `generate-lighthouse-summary.sh`. Highly recommended for CI stability.
+- **`origin/claude/fix-lighthouse-failure-b5S6v`**
+  - **Status:** Approved
+  - **Summary:** Implements a custom SVG icon system while sliming the Font Awesome bundle. Includes security hardening with `safePropertyAccess` to prevent prototype pollution.
+- **`origin/claude/fix-ci-workflow-permissions-emVdO`**
+  - **Status:** Approved
+  - **Summary:** Hardens CI workflows by adding top-level `permissions: {}` to enforce a least-privilege default. This is a critical security best practice.
+- **`origin/claude/fix-codacy-issues-bp3bR`**
+  - **Status:** Approved
+  - **Summary:** Fixes color contrast failures that were causing Lighthouse accessibility scores to dip below the 0.95 threshold.
+- **`origin/claude/mvp-landing-page-6csSA`**
+  - **Status:** Approved
+  - **Summary:** SEO improvements including canonical URLs, font preloads, and theme color fixes in the manifest.
+- **`origin/claude/fix-workflow-permissions-dnoLR`**
+  - **Status:** Approved
+  - **Summary:** Further refines workflow permissions across multiple GitHub Action files for better security.
+- **`origin/claude/fix-issue-577-v60JV`**
+  - **Status:** Approved
+  - **Summary:** Addresses Interaction to Next Paint (INP) tracking issues by refining performance entry collection logic.
+- **`origin/claude/add-eslint-config-ZCKYQ`**
+  - **Status:** Approved
+  - **Summary:** Consolidates ESLint configuration for better maintainability.
+
+### Under Review
+
+- **`origin/coderabbitai/utg/7c8d2b6`**
+  - **Status:** Under Review
+  - **Summary:** AI-generated unit tests. Requires manual verification to ensure test logic correctly reflects intended behavior and doesn't just codify existing bugs.
+- **`origin/claude/eslint-v9-to-v10-upgrade-EYLU6`**
+  - **Status:** Under Review
+  - **Summary:** Upgrades ESLint to v10. Note: This branch also lowers the Lighthouse performance threshold to 0.85 for CI stability. This change should be carefully weighed against performance goals.
+
+### Blocked by Systemic Regressions
+
+Over 100 branches remain in a **Blocked** state due to systemic regressions introduced earlier in the year (accidental deletion of `.npmrc`, `docs/ROADMAP.md`, `gitVersionControl.md`, `review.md`, or reversion of security helpers in `src/utils/navigation.ts`).
+
+**Key Blocked Branches (Recent):**
+
+- `origin/claude/setup-analytics-test-helpers-PwW8u` (2026-03-10)
+- `origin/fix/sarif-run-limits-10682914094722837168` (2026-03-06)
+- `origin/claude/implement-todo-item-2H9LP` (2026-02-24)
+- `origin/copilot/sub-pr-503` (2026-02-23)
+- `origin/claude/core-editor-phase-1-PI3Yp` (2026-02-18)
+
+**Action Required:** These branches must be rebased onto `main` and the deleted/reverted files must be restored before they can be considered for merging.
+
+---
+
+## 2026-03-25
+
+### Ready for Merge
+
+The following branches have been reviewed and are verified to be free from systemic regressions (critical files present, security helpers intact) and align with project standards.
+
+- **`origin/claude/fix-codacy-sarif-limit-4I0x5`**
+  - **Status:** Approved
+  - **Summary:** Successfully implements SARIF merging to bypass GitHub's 20-run limit and adds a robust manual upload step for Codacy.
+- **`origin/claude/accessibility-audit-baseline-USu5N`**
+  - **Status:** Approved
+  - **Summary:** Improves color contrast for accessibility and refactors the `Icon` component for better performance and maintainability.
+- **`origin/dependabot/npm_and_yarn/development-dependencies-d2a3d1254d`**
+  - **Status:** Approved
+  - **Summary:** Routine updates to development dependencies, including ESLint 10.1.0 and TypeScript-ESLint 8.57.2.
+- **`origin/claude/add-doc-sections-1EhnP`**
+  - **Status:** Approved
+  - **Summary:** Pins ESLint to v9 and reduces test duplication while adding documentation sections.
+- **`origin/copilot/sub-pr-593`**
+  - **Status:** Approved
+  - **Summary:** Fixes SonarCloud job failures when the `SONAR_TOKEN` secret is missing.
+- **`origin/claude/setup-sonarcloud-HM572`**
+  - **Status:** Approved
+  - **Summary:** Centralizes SonarCloud configuration in `sonar-project.properties`. This branch (now merged into this PR) also fixes a critical CI failure by providing the mandatory `sonar.projectKey` and `sonar.organization` values and adding a missing `checkout` step to the workflow.
+
+### Blocked by Systemic Regressions
+
+The following branches remain blocked due to the accidental deletion of critical files (`.npmrc`, `docs/ROADMAP.md`, `gitVersionControl.md`, `review.md`) or the reversion of security helpers in `src/utils/navigation.ts`.
+
+- `origin/claude/implement-todo-item-2H9LP`
+- `origin/claude/core-editor-phase-1-PI3Yp`
+- `origin/copilot/sub-pr-503`
+- `origin/copilot/sub-pr-469-again`
+- `origin/claude/fix-peer-dependency-conflicts-Wj2iC`
+- `origin/fix/sarif-run-limits-10682914094722837168`
+- `origin/jules/pr-review-summary-16192473754370522877`
+- `origin/pr-review-summary-2026-02-13-5587410840879607829`
+- `origin/pr-review-summary-20260222-13964675344526938033`
+
+### Needs Review/Action
+
+- **`origin/claude/fix-failing-tests-J1VZ6`**
+  - **Status:** Needs Verification
+  - **Summary:** Resolves icon rendering test failures by migrating to `data-icon` attribute selectors. Should be verified against the latest `main`.
+- **`origin/claude/fix-open-redirect-TX551`**
+  - **Status:** Needs Verification
+  - **Summary:** Critical security fix. Separates internal and external navigation in `safeNavigate`. Overlaps with #428; this version is more comprehensive but requires validation against recent navigation utility changes.
+
+---
+
 ## 2026-03-05
 
 ### Analysis: Accidental File Deletions in Open Branches (Jules Daily PR Reviews)
@@ -51,7 +157,7 @@ This file contains a summary of pull requests I have reviewed.
 - **Status:** Changes Requested
 - **Notes (2026-02-08):** See detailed review under **2026-02-06 → PR #279**. Status remains **Changes Requested**; prior concerns documented there continue to apply.
 
-### PR #319: Fix Deployment Error in Privacy.tsx
+### PR #319 Fix Deployment Error in Privacy.tsx
 
 - **Status:** Changes Requested
 - **Notes (2026-02-08):** See detailed review under **2026-02-06 → PR #319**. Status is still **Changes Requested** with no new blocking issues recorded here.
@@ -170,7 +276,7 @@ This file contains a summary of pull requests I have reviewed.
 - **Summary:** Refactors the `Icon` component fallback to use `<i>` tags and adds accessibility labels.
 - **Feedback:** Switching from the `FontAwesomeIcon` React component to raw `<i>` tags for fallbacks might break rendering if the Font Awesome CSS isn't globally loaded, which it typically isn't in this project's self-hosted setup. Recommend sticking with the React component for consistency.
 
-### PR #319: Fix Deployment Error in Privacy.tsx
+### PR #319 Fix Deployment Error in Privacy.tsx
 
 - **Status:** Changes Requested (Follow-up)
 - **Summary:** Fixes a bug in `Privacy.tsx` but includes unrelated changes to `package-lock.json` and `sitemap.xml`.
@@ -319,33 +425,33 @@ This file contains a summary of pull requests I have reviewed.
 
 ## 2024-07-29
 
-### PR #356: Fix Codacy ESLint Configuration Issue
+### PR #356 Fix Codacy ESLint Configuration Issue
 
 **Branch:** `fix-codacy-eslint-issue-v2-12644842812267622963`
 
 **Status:** Approved with comments
 
-#### Summary for PR #356:
+#### Summary for PR #356
 
 This PR addresses a Codacy configuration issue to ensure ESLint runs correctly in the CI pipeline. The core changes in `.codacy.yml` and the addition of `.eslintrc.cjs` are correct and effectively resolve the issue.
 
-#### Feedback & Suggestions for PR #356:
+#### Feedback & Suggestions for PR #356
 
 - **Approval:** The main changes are approved and ready for merging.
 - **Scope Creep:** The PR includes unrelated changes to the icon library (`src/utils/iconLibrary.ts`) and E2E tests (`tests/e2e/landing-page.spec.ts`). While not harmful, these changes are out of scope for a configuration fix.
 - **Recommendation:** I've recommended that the contributor move the icon and test-related changes to a separate PR to maintain a clean and focused commit history. This will make it easier to track changes and revert them if necessary.
 
-### PR #319: Fix Deployment Error in Privacy.tsx
+### PR #319 Fix Deployment Error in Privacy.tsx
 
 **Branch:** `fix/deployment-error-privacy-tsx-8314844507989551467`
 
 **Status:** Changes requested
 
-#### Summary for PR #319:
+#### Summary for PR #319
 
 This PR aims to fix a deployment error in the `Privacy.tsx` component. However, it also includes significant changes to `package-lock.json` and `public/sitemap.xml` that are unrelated to the component fix.
 
-#### Feedback & Suggestions for PR #319:
+#### Feedback & Suggestions for PR #319
 
 - **Mixed Changes:** The PR mixes a bug fix with dependency updates and sitemap changes. This makes it difficult to review and test.
 - **`package-lock.json`:** The changes to `package-lock.json` are extensive and add `"peer": true` to many dependencies. This is a significant change that could have unintended side effects and should be tested in isolation. My memory indicates that these changes have caused test failures in the past.

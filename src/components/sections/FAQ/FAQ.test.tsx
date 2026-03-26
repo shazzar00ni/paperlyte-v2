@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, act } from '@testing-library/react'
+import { render, screen, within, fireEvent, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { FAQ } from './FAQ'
 import { FAQ_ITEMS } from '@constants/faq'
@@ -237,14 +237,12 @@ describe('FAQ', () => {
       const questionButton = getQuestionButton(FAQ_ITEMS[0].question)
 
       // When collapsed, should show "Expand answer"
-      let icon = questionButton.querySelector('svg')
-      expect(icon).toHaveAttribute('aria-label', 'Expand answer')
+      expect(within(questionButton).getByRole('img', { name: 'Expand answer' })).toBeInTheDocument()
 
       await user.click(questionButton)
 
       // When expanded, should show "Collapse answer"
-      icon = questionButton.querySelector('svg')
-      expect(icon).toHaveAttribute('aria-label', 'Collapse answer')
+      expect(within(questionButton).getByRole('img', { name: 'Collapse answer' })).toBeInTheDocument()
     })
   })
 

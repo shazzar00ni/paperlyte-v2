@@ -1,125 +1,32 @@
 /**
  * Font Awesome Icon Library
  *
- * This file centralizes all Font Awesome icon imports for the application.
- * Only icons that are actually used are imported, enabling tree-shaking.
- * Note: While CSS for unused icons is eliminated, the SVG icon data increases the JavaScript bundle size.
- * This approach enables better tree-shaking for unused icons and removes the need for separate CSS icon files.
+ * Most icons are now served as lightweight inline SVGs via src/components/ui/Icon/icons.ts,
+ * which avoids the Font Awesome runtime entirely for those icons.
  *
- * To add a new icon:
- * 1. Import it from '@fortawesome/free-solid-svg-icons' or '@fortawesome/free-brands-svg-icons'
- * 2. Add it to the library.add() call
- * 3. Use it in components via the Icon component with the icon name (without 'fa-' prefix)
+ * Only icons that require the FA filled/solid rendering style (and are not in the custom
+ * inline SVG set) are registered here. Keeping this list minimal reduces the fontawesome
+ * JS chunk by ~80%.
+ *
+ * Icons in the custom set (icons.ts) do NOT need to be registered here.
  */
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 
-// Solid icons (from free-solid-svg-icons)
+// Solid icons that are NOT in the custom SVG set and need FA rendering
 import {
-  faBolt, // Lightning Speed feature
-  faPenNib, // Beautiful Simplicity feature
-  faTags, // Tag-Based Organization feature
-  faMobileScreen, // Universal Access feature
-  faPlaneSlash, // Offline-First feature (airplane mode/offline indicator)
-  faShieldHalved, // Privacy Focused feature
-  faFeather, // Logo/brand icon
-  faXmark, // Close/exit (mobile menu)
-  faBars, // Menu (mobile menu open)
-  faEnvelope, // Contact/email
-  faStar, // Most popular/featured
-  faCircleCheck, // Guarantee/security check
+  faStar, // Testimonial star ratings (filled solid style required)
   faHeart, // Used in tests
-  faDownload, // Download CTA
-  faMoon, // Dark mode toggle
-  faSun, // Light mode toggle
-  faLock, // Security/privacy indicator
-  faCheck, // Checkmark/success
-  faCircleQuestion, // Fallback icon for missing/invalid icons
-  faChevronLeft, // Testimonials carousel navigation
-  faChevronRight, // Testimonials carousel navigation
-  faChevronUp, // FAQ accordion
-  faChevronDown, // FAQ accordion
-  faPause, // Testimonials autoplay control
-  faPlay, // Testimonials autoplay control
-  faNoteSticky, // Hero section features, Statistics
-  faPen, // Hero section features
-  faLightbulb, // Hero section features
-  faLeaf, // Pricing plans (eco-friendly)
-  faRocket, // Pricing plans (premium features)
-  faUsers, // Pricing plans, Statistics (team/community)
-  faServer, // Statistics (infrastructure)
-  faWifi, // Offline page - connection status
-  faRotateRight, // Retry/reload actions
-  faArrowRotateRight, // Retry/reload actions (alternative)
-  faArrowRotateLeft, // Undo/back actions
-  faBook, // Documentation/help
-  faMagnifyingGlass, // Search
-  faPlane, // Offline page - airplane mode
-  faRoute, // Offline page - route/navigation issues
-  faArrowRight, // Navigation forward
-  faArrowLeft, // Navigation back
-  faSpinner, // Loading states
+  faLeaf, // Pricing plans - eco-friendly tier
+  faRocket, // Pricing plans - premium tier
 } from '@fortawesome/free-solid-svg-icons'
 
-// Brand icons (from free-brands-svg-icons)
-import {
-  faGithub, // GitHub social link
-  faTwitter, // Twitter/X social link
-  faApple, // Apple platform
-  faWindows, // Windows platform
-} from '@fortawesome/free-brands-svg-icons'
-
-// Add all icons to the library
+// Register only the icons that still use the FA fallback path
 library.add(
-  // Solid icons
-  faBolt,
-  faPenNib,
-  faTags,
-  faMobileScreen,
-  faPlaneSlash,
-  faShieldHalved,
-  faFeather,
-  faXmark,
-  faBars,
-  faEnvelope,
   faStar,
-  faCircleCheck,
   faHeart,
-  faDownload,
-  faMoon,
-  faSun,
-  faLock,
-  faCheck,
-  faCircleQuestion, // Fallback icon (not exposed via iconNameMap)
-  faChevronLeft,
-  faChevronRight,
-  faChevronUp,
-  faChevronDown,
-  faPause,
-  faPlay,
-  faNoteSticky,
-  faPen,
-  faLightbulb,
   faLeaf,
-  faRocket,
-  faUsers,
-  faServer,
-  faWifi,
-  faRotateRight,
-  faArrowRotateRight,
-  faArrowRotateLeft,
-  faBook,
-  faMagnifyingGlass,
-  faPlane,
-  faRoute,
-  faArrowRight,
-  faArrowLeft,
-  faSpinner,
-  // Brand icons
-  faGithub,
-  faTwitter,
-  faApple,
-  faWindows
+  faRocket
 )
 
 /**

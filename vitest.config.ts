@@ -5,6 +5,10 @@ import path from 'path'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  define: {
+    // Mirrors the vite.config.ts define; tests never run on Vercel
+    __IS_VERCEL_DEPLOYMENT__: JSON.stringify(false),
+  },
   test: {
     // Use jsdom for browser-like environment
     environment: 'jsdom',

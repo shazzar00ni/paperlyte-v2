@@ -1,11 +1,5 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
-# This workflow helps you trigger a SonarCloud analysis of your code and populates
-# GitHub Code Scanning alerts with the vulnerabilities found.
-# Free for open source project.
+# This workflow helps you trigger a SonarCloud analysis of your code.
+# Free for open source projects.
 
 name: SonarCloud analysis
 
@@ -18,7 +12,7 @@ on:
 
 permissions:
   contents: read
-  pull-requests: read # allows SonarCloud to decorate PRs with analysis results
+  pull-requests: read
 
 jobs:
   Analysis:
@@ -29,12 +23,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
+          fetch-depth: 0
 
       - name: Analyze with SonarCloud
         uses: SonarSource/sonarcloud-github-action@4006f663ecaf1f8093e8e4abb9227f6041f52216
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
-          # Arguments are read from sonar-project.properties
           projectBaseDir: .

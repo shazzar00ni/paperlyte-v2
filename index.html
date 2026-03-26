@@ -49,6 +49,22 @@
     <!-- Theme Color -->
     <meta name="theme-color" content="#1a1a1a" />
 
+    <!-- Preload critical fonts to reduce request chains -->
+    <link
+      rel="preload"
+      href="/fonts/Inter-Variable.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/PlayfairDisplay-Variable.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
     <!-- Font Awesome icons are loaded via @fortawesome/fontawesome-svg-core in JavaScript -->
     <!-- This approach is CSP-compliant and doesn't require external CDN resources -->
 

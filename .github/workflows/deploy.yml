@@ -15,7 +15,6 @@ jobs:
     permissions:
       contents: read
       deployments: write
-      pull-requests: write
     environment:
       name: production
       url: https://paperlyte.com

@@ -1,5 +1,7 @@
 name: CI/CD Pipeline
 
+permissions: {}
+
 on:
   push:
     branches: [main, develop]

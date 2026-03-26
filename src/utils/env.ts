@@ -100,15 +100,15 @@ export const updateMetaTags = (): void => {
  * Check if analytics should be enabled based on environment and hostname
  * Prevents tracking on localhost and in development/test environments
  *
+ * @param {boolean} isProd - Override for production check (internal use only)
  * @returns {boolean} True if analytics should be enabled
  */
-export const shouldShowAnalytics = (): boolean => {
+export const shouldShowAnalytics = (isProd = import.meta.env.PROD): boolean => {
   // SSR guard
   if (typeof window === 'undefined') {
     return false
   }
 
-  const isProd = import.meta.env.PROD
   const hostname = window.location.hostname
   const isLocal =
     hostname === 'localhost' ||

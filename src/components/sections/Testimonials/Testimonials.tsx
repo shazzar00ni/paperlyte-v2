@@ -212,8 +212,17 @@ export const Testimonials = (): React.ReactElement => {
       >
         <AnimatedElement animation="slideUp" delay={100}>
           <div className={styles.carousel}>
-            <div key={currentIndex} className={styles.track}>
-              {renderTestimonial(TESTIMONIALS[currentIndex])}
+            const totalSlides = TESTIMONIALS.length
+            if (totalSlides === 0) {
+              return null
+            }
+            const activeTestimonial = TESTIMONIALS[currentIndex]
+
+            <div className={styles.carousel}>
+              <div key={currentIndex} className={styles.track}>
+                {activeTestimonial ? renderTestimonial(activeTestimonial) : null}
+              </div>
+            </div>
             </div>
           </div>
         </AnimatedElement>

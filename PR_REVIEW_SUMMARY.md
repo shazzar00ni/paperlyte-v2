@@ -87,7 +87,7 @@ This file contains a summary of pull requests I have reviewed.
 - `origin/claude/accessibility-audit-baseline-USu5N`
 - `origin/claude/analyze-test-coverage-9JQZb`
 - `origin/claude/fix-codacy-sarif-limit-4I0x5`
-- `origin/main` (SonarCloud configuration fix)
+- `origin/main` (SonarCloud configuration and security audit fix)
 
 ---
 

@@ -1,1 +1,1 @@
-alert-fix-2324,NO,NO,NO,NO,NO
+alert-fix-2324

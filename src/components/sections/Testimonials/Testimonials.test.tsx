@@ -17,25 +17,34 @@ describe('Testimonials', () => {
     expect(screen.getByText('What people are saying')).toBeInTheDocument()
   })
 
-  it('should render the testimonial quote', () => {
+  it.each(['light', 'dark'])('should render the testimonial quote in %s theme', (theme) => {
+    document.documentElement.setAttribute('data-theme', theme)
     render(<Testimonials />)
 
     // Should render the first testimonial quote (Sarah Chen's, index 0)
     expect(screen.getByText(/Paperlyte transformed how I capture ideas/i)).toBeInTheDocument()
+
+    document.documentElement.removeAttribute('data-theme')
   })
 
-  it('should render placeholder author name', () => {
+  it.each(['light', 'dark'])('should render placeholder author name in %s theme', (theme) => {
+    document.documentElement.setAttribute('data-theme', theme)
     render(<Testimonials />)
 
     // Should render Sarah Chen's name (testimonial-1, index 0)
     expect(screen.getByText('Sarah Chen')).toBeInTheDocument()
+
+    document.documentElement.removeAttribute('data-theme')
   })
 
-  it('should render placeholder author role', () => {
+  it.each(['light', 'dark'])('should render placeholder author role in %s theme', (theme) => {
+    document.documentElement.setAttribute('data-theme', theme)
     render(<Testimonials />)
 
     // Should render Sarah Chen's role (displayed as "Product Manager • TechCorp")
     expect(screen.getByText(/Product Manager/)).toBeInTheDocument()
+
+    document.documentElement.removeAttribute('data-theme')
   })
 
   it('should render note about beta testimonials', () => {

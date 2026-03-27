@@ -1,8 +1,5 @@
 import { useRef, useCallback } from 'react'
 import { Analytics } from '@vercel/analytics/react'
-
-// Build-time flag: true only on actual Vercel deployments (VERCEL=1 is set by Vercel CI)
-declare const __IS_VERCEL_DEPLOYMENT__: boolean
 import { ErrorBoundary } from '@components/ErrorBoundary'
 import { Header } from '@components/layout/Header'
 import { Footer } from '@components/layout/Footer'
@@ -19,6 +16,12 @@ import { FAQ } from '@components/sections/FAQ'
 import { CTA } from '@components/sections/CTA'
 import { FeedbackWidget } from '@components/ui/FeedbackWidget'
 import { useAnalytics } from '@hooks/useAnalytics'
+
+// Build-time flag: true only on actual Vercel deployments (VERCEL=1 is set by Vercel CI).
+// The typeof guard prevents ReferenceError in test environments that don't provide the define.
+declare const __IS_VERCEL_DEPLOYMENT__: boolean
+const isVercel =
+  typeof __IS_VERCEL_DEPLOYMENT__ !== 'undefined' && __IS_VERCEL_DEPLOYMENT__
 
 /**
  * Application root component that composes the page layout and sections.
@@ -58,7 +61,7 @@ function App() {
       </main>
       <Footer />
       <FeedbackWidget />
-      {__IS_VERCEL_DEPLOYMENT__ && <Analytics />}
+      {isVercel && <Analytics />}
     </ErrorBoundary>
   )
 }

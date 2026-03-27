@@ -60,27 +60,50 @@
     <link rel="preload" as="image" type="image/avif" href="/mockups/notes-list.avif" />
 
     <!-- Theme initialization - loaded synchronously to prevent flash of wrong theme.
-         Must run before React hydrates so the correct data-theme is applied immediately. -->
+         Must run before React hydrates so the correct data-theme is applied immediately.
+         Mirrors the logic in src/hooks/useTheme.ts. -->
     <script>
       (function () {
-        try {
-          var storageKey = 'paperlyte-theme';
-          var root = document.documentElement;
-          var storedTheme = localStorage.getItem(storageKey);
-          var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-          var theme;
-          if (storedTheme === 'light' || storedTheme === 'dark') {
-            theme = storedTheme;
-          } else {
-            theme = prefersDark ? 'dark' : 'light';
+        // Determine whether persistent theme storage is enabled.
+        // Reads ALLOW_PERSISTENT_THEME from a window global (highest priority)
+        // or the <meta name="allow-persistent-theme"> tag below, mirroring
+        // PERSISTENCE_CONFIG.ALLOW_PERSISTENT_THEME in src/constants/config.ts.
+        let allowPersistent = true
+        if ('ALLOW_PERSISTENT_THEME' in globalThis) {
+          allowPersistent = !!globalThis.ALLOW_PERSISTENT_THEME
+        } else {
+          const meta = document.querySelector('meta[name="allow-persistent-theme"]')
+          if (meta) {
+            const content = meta.getAttribute('content')
+            allowPersistent = (content ?? 'true') !== 'false'
           }
-
-          root.setAttribute('data-theme', theme);
-        } catch (e) {
-          // Fail silently to avoid blocking initial render if something goes wrong
         }
-      })();
+
+        // Compute system preference first so it is available as a fallback in
+        // both the normal flow and error recovery below.
+        const systemTheme = globalThis.matchMedia?.('(prefers-color-scheme: dark)').matches
+          ? 'dark'
+          : 'light'
+
+        let theme = systemTheme
+
+        if (allowPersistent) {
+          try {
+            // Storage keys must match THEME_STORAGE_KEY / USER_PREFERENCE_KEY
+            // in src/hooks/useTheme.ts.
+            const stored = localStorage.getItem('theme')
+            const hasUserPref = localStorage.getItem('theme-user-preference') === 'true'
+            if (hasUserPref && (stored === 'light' || stored === 'dark')) {
+              theme = stored
+            }
+          } catch {
+            // localStorage unavailable (private browsing, strict security
+            // settings). systemTheme already covers the fallback.
+          }
+        }
+
+        document.documentElement.dataset['theme'] = theme
+      })()
     </script>
     <!-- Schema.org Structured Data (JSON-LD) -->
     <script type="application/ld+json">

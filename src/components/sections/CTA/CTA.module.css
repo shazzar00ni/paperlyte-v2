@@ -142,10 +142,6 @@
     flex-direction: column;
     align-items: stretch;
   }
-
-  .downloadButton {
-    width: 100%;
-  }
 }
 
 /* Extra small screens */

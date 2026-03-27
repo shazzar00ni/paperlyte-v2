@@ -83,9 +83,19 @@ describe('analytics/index', () => {
     })
 
     it('should throw error for unimplemented providers', () => {
+      const umamiConfig = { ...config, provider: 'umami' as const }
+
+      expect(() => analytics.init(umamiConfig)).toThrow('Provider "umami" is not yet implemented')
+    })
+
+    it('should initialize with fathom provider', () => {
       const fathomConfig = { ...config, provider: 'fathom' as const }
 
-      expect(() => analytics.init(fathomConfig)).toThrow('Provider "fathom" is not yet implemented')
+      expect(() => analytics.init(fathomConfig)).not.toThrow()
+
+      const script = document.querySelector('script[data-site]') as HTMLScriptElement
+      expect(script).toBeTruthy()
+      expect(script.src).toContain('usefathom.com')
     })
 
     it('should fallback to Plausible for unknown providers', () => {

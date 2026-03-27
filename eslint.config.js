@@ -39,6 +39,21 @@ export default defineConfig([
       prettierConfig,
     ],
 
+    rules: {
+      // Allow intentionally-unused variables/parameters when prefixed with _
+      // This is the TypeScript convention for "acknowledged but unused" identifiers,
+      // and also suppresses false-positive warnings on interface/type parameter names
+      // in declare global blocks (e.g. Window augmentations for third-party APIs).
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          varsIgnorePattern: '^_',
+          argsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+        },
+      ],
+    },
+
     languageOptions: {
       // Use ES2020 features
       ecmaVersion: 2020,

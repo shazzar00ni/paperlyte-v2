@@ -124,6 +124,7 @@
 
 /* Primary mockup (Notes list) - Main focus */
 .mockupPrimary {
+  aspect-ratio: 11 / 8;
   position: relative;
   width: 85%;
   max-width: 550px;
@@ -142,6 +143,7 @@
 
 /* Secondary mockup (Note detail) - Floating accent */
 .mockupSecondary {
+  aspect-ratio: 4 / 3;
   position: absolute;
   bottom: -5%;
   right: -5%;

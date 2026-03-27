@@ -2,7 +2,7 @@
  * Icon Library Tests
  *
  * These tests ensure the icon registry remains consistent and prevents drift
- * between multiple sources of truth (imports, library.add, iconNameMap, brandIconNames, validIconNames).
+ * between iconNameMap, brandIconNames, and validIconNames.
  */
 
 import { describe, it, expect } from 'vitest'
@@ -31,8 +31,10 @@ describe('iconLibrary', () => {
     })
 
     it('should have all brand icons from iconNameMap in brandIconNames', () => {
-      // Known brand icons from the mapping
-      const expectedBrandIcons = ['github', 'twitter', 'apple', 'windows']
+      const expectedBrandIcons = [
+        'github', 'twitter', 'x-twitter', 'instagram',
+        'facebook', 'linkedin', 'apple', 'windows',
+      ]
 
       expectedBrandIcons.forEach((iconName) => {
         expect(
@@ -42,9 +44,8 @@ describe('iconLibrary', () => {
       })
     })
 
-    it('should have fallback icon in validIconNames', () => {
-      // The fallback icon (circle-question) must always be valid
-      expect(validIconNames.has('circle-question')).toBe(true)
+    it('should have circle-check in validIconNames', () => {
+      expect(validIconNames.has('circle-check')).toBe(true)
     })
 
     it('should not have brand icons overlap with solid icons', () => {
@@ -118,10 +119,6 @@ describe('iconLibrary', () => {
       })
     })
 
-    it('should return true for fallback icon', () => {
-      expect(isValidIcon('circle-question')).toBe(true)
-    })
-
     it('should return false for unmapped/unregistered icons', () => {
       expect(isValidIcon('unknown-icon')).toBe(false)
       expect(isValidIcon('fa-unknown')).toBe(false)
@@ -130,22 +127,21 @@ describe('iconLibrary', () => {
 
     it('should validate known solid icons', () => {
       expect(isValidIcon('bolt')).toBe(true)
-      expect(isValidIcon('heart')).toBe(true)
       expect(isValidIcon('download')).toBe(true)
+      expect(isValidIcon('arrow-right')).toBe(true)
     })
 
     it('should validate known brand icons', () => {
       expect(isValidIcon('github')).toBe(true)
       expect(isValidIcon('twitter')).toBe(true)
+      expect(isValidIcon('instagram')).toBe(true)
     })
   })
 
   describe('Icon Name Mapping', () => {
     it('should have unique values in iconNameMap (except known aliases)', () => {
       // Known intentional aliases where multiple keys map to the same icon
-      const knownAliases: Record<string, string[]> = {
-        'network-wired': ['fa-network-wired', 'fa-router'], // fa-router uses network-wired icon
-      }
+      const knownAliases: Record<string, string[]> = {}
 
       // Create a fresh copy of values to avoid any module state issues
       const entries: [string, string][] = Object.entries(iconNameMap)
@@ -194,24 +190,18 @@ describe('iconLibrary', () => {
   })
 
   describe('Regression Prevention', () => {
-    it('should have at least 31 solid icons registered', () => {
-      // Based on current imports - prevents accidental removal
-      // Icon breakdown: 31 solid (non-fallback) + 4 brand + 1 fallback = 36 total
-      const solidIcons = Array.from(validIconNames).filter(
-        (icon) => !brandIconNames.has(icon) && icon !== 'circle-question'
-      )
-
-      expect(solidIcons.length).toBeGreaterThanOrEqual(31)
+    it('should have at least 40 solid icons registered', () => {
+      const solidIcons = Array.from(validIconNames).filter((icon) => !brandIconNames.has(icon))
+      expect(solidIcons.length).toBeGreaterThanOrEqual(40)
     })
 
-    it('should have exactly 4 brand icons registered', () => {
-      // Icon breakdown: 31 solid (non-fallback) + 4 brand + 1 fallback = 36 total
-      expect(brandIconNames.size).toBe(4)
+    it('should have exactly 8 brand icons registered', () => {
+      // github, twitter, x-twitter, instagram, facebook, linkedin, apple, windows
+      expect(brandIconNames.size).toBe(8)
     })
 
     it('should maintain icon count in validIconNames', () => {
-      // Icon breakdown: 31 solid (non-fallback) + 4 brand + 1 fallback = 36 total
-      expect(validIconNames.size).toBeGreaterThanOrEqual(36)
+      expect(validIconNames.size).toBeGreaterThanOrEqual(46)
     })
   })
 })

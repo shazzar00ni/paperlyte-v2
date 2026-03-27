@@ -88,7 +88,7 @@
   ],
   "overrides": {
     "brace-expansion": "^5.0.5",
-    "chrome-launcher": "^0.13.4",
+    "path-to-regexp": "^0.1.13",
     "tmp": "^0.2.5",
     "undici": "^7.20.0",
     "flatted": "^3.4.2",

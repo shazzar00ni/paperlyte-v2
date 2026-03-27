@@ -57,8 +57,27 @@
 
     <!-- Theme initialization - loaded synchronously to prevent flash of wrong theme.
          Must run before React hydrates so the correct data-theme is applied immediately. -->
-    <script src="/theme-init.js"></script>
+    <script>
+      (function () {
+        try {
+          var storageKey = 'paperlyte-theme';
+          var root = document.documentElement;
+          var storedTheme = localStorage.getItem(storageKey);
+          var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 
+          var theme;
+          if (storedTheme === 'light' || storedTheme === 'dark') {
+            theme = storedTheme;
+          } else {
+            theme = prefersDark ? 'dark' : 'light';
+          }
+
+          root.setAttribute('data-theme', theme);
+        } catch (e) {
+          // Fail silently to avoid blocking initial render if something goes wrong
+        }
+      })();
+    </script>
     <!-- Schema.org Structured Data (JSON-LD) -->
     <script type="application/ld+json">
       {

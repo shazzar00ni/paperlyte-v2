@@ -63,6 +63,25 @@ function jobHasContentsReadPermission(jobBlock: string): boolean {
   return permissionsPattern.test(jobBlock) && contentsPattern.test(jobBlock)
 }
 
+/**
+ * Asserts that a workflow file is non-empty and has a workflow-level
+ * `permissions: contents: read` block.
+ */
+function assertWorkflowLevelContentsRead(content: string): void {
+  expect(content.length).toBeGreaterThan(0)
+  expect(hasWorkflowLevelPermissions(content)).toBe(true)
+  expect(content).toMatch(/^permissions:[ \t]*\n[ \t]+contents:[ \t]+read/m)
+}
+
+/**
+ * Asserts that a job exists in the given workflow and returns its YAML block.
+ */
+function assertJobExists(content: string, jobId: string, workflowFileName: string): string {
+  const block = extractJobBlock(content, jobId)
+  expect(block, `Expected job "${jobId}" to be defined in ${workflowFileName}`).not.toBe('')
+  return block
+}
+
 // ---------------------------------------------------------------------------
 // ci.yml
 // ---------------------------------------------------------------------------
@@ -74,45 +93,21 @@ describe('ci.yml – permission structure', () => {
     content = readWorkflow('ci.yml')
   })
 
-  it('should exist and be non-empty', () => {
-    expect(content.length).toBeGreaterThan(0)
+  it('should exist and have a workflow-level "contents: read" permissions block', () => {
+    assertWorkflowLevelContentsRead(content)
   })
 
-  it('should have a workflow-level "contents: read" permissions block', () => {
-    expect(hasWorkflowLevelPermissions(content)).toBe(true)
-    // Verify the workflow-level block grants contents: read
-    expect(content).toMatch(/^permissions:[ \t]*\n[ \t]+contents:[ \t]+read/m)
-  })
+  it.each(['lint-and-typecheck', 'build'])(
+    '%s job inherits "contents: read" from the workflow-level permissions',
+    (jobId) => {
+      assertJobExists(content, jobId, 'ci.yml')
+      // These jobs rely on the workflow-level contents: read (no separate job-level block needed)
+      expect(hasWorkflowLevelPermissions(content)).toBe(true)
+    },
+  )
 
-  it('lint-and-typecheck job inherits "contents: read" from the workflow-level permissions', () => {
-    const block = extractJobBlock(content, 'lint-and-typecheck')
-    expect(block).not.toBe('')
-    // This job relies on the workflow-level contents: read (no separate job-level block needed)
-    expect(hasWorkflowLevelPermissions(content)).toBe(true)
-  })
-
-  it('build job inherits "contents: read" from the workflow-level permissions', () => {
-    const block = extractJobBlock(content, 'build')
-    expect(block).not.toBe('')
-    // This job relies on the workflow-level contents: read (no separate job-level block needed)
-    expect(hasWorkflowLevelPermissions(content)).toBe(true)
-  })
-
-  it('test job should have "contents: read" permission', () => {
-    const block = extractJobBlock(content, 'test')
-    expect(block).not.toBe('')
-    expect(jobHasContentsReadPermission(block)).toBe(true)
-  })
-
-  it('e2e job should have "contents: read" permission', () => {
-    const block = extractJobBlock(content, 'e2e')
-    expect(block).not.toBe('')
-    expect(jobHasContentsReadPermission(block)).toBe(true)
-  })
-
-  it('ci-success job should have "contents: read" permission', () => {
-    const block = extractJobBlock(content, 'ci-success')
-    expect(block).not.toBe('')
+  it.each(['test', 'e2e', 'ci-success'])('%s job should have "contents: read" permission', (jobId) => {
+    const block = assertJobExists(content, jobId, 'ci.yml')
     expect(jobHasContentsReadPermission(block)).toBe(true)
   })
 
@@ -128,8 +123,7 @@ describe('ci.yml – permission structure', () => {
       'ci-success',
     ]
     for (const jobId of expectedJobs) {
-      const block = extractJobBlock(content, jobId)
-      expect(block, `Expected job "${jobId}" to be defined in ci.yml`).not.toBe('')
+      assertJobExists(content, jobId, 'ci.yml')
     }
   })
 
@@ -138,7 +132,7 @@ describe('ci.yml – permission structure', () => {
     // lint-and-typecheck and build rely on the workflow-level block instead.
     const jobsWithExplicitPermissions = ['test', 'size-check', 'lighthouse', 'e2e', 'ci-success']
     for (const jobId of jobsWithExplicitPermissions) {
-      const block = extractJobBlock(content, jobId)
+      const block = assertJobExists(content, jobId, 'ci.yml')
       expect(
         jobHasContentsReadPermission(block),
         `Job "${jobId}" is missing "contents: read" permission`,
@@ -172,33 +166,21 @@ describe('pr-quality-check.yml – permission structure', () => {
     content = readWorkflow('pr-quality-check.yml')
   })
 
-  it('should exist and be non-empty', () => {
-    expect(content.length).toBeGreaterThan(0)
+  it('should exist and have a workflow-level "contents: read" permissions block', () => {
+    assertWorkflowLevelContentsRead(content)
   })
 
-  it('should have a workflow-level "contents: read" permissions block', () => {
-    expect(hasWorkflowLevelPermissions(content)).toBe(true)
-    // Verify the workflow-level block grants contents: read
-    expect(content).toMatch(/^permissions:[ \t]*\n[ \t]+contents:[ \t]+read/m)
-  })
-
-  it('pr-metadata job inherits "contents: read" from the workflow-level permissions', () => {
-    const block = extractJobBlock(content, 'pr-metadata')
-    expect(block).not.toBe('')
-    // This job relies on the workflow-level contents: read (no separate job-level block needed)
-    expect(hasWorkflowLevelPermissions(content)).toBe(true)
-  })
-
-  it('bundle-size-check job inherits "contents: read" from the workflow-level permissions', () => {
-    const block = extractJobBlock(content, 'bundle-size-check')
-    expect(block).not.toBe('')
-    // This job relies on the workflow-level contents: read (no separate job-level block needed)
-    expect(hasWorkflowLevelPermissions(content)).toBe(true)
-  })
+  it.each(['pr-metadata', 'bundle-size-check'])(
+    '%s job inherits "contents: read" from the workflow-level permissions',
+    (jobId) => {
+      assertJobExists(content, jobId, 'pr-quality-check.yml')
+      // These jobs rely on the workflow-level contents: read (no separate job-level block needed)
+      expect(hasWorkflowLevelPermissions(content)).toBe(true)
+    },
+  )
 
   it('dependency-review job should retain its existing permissions', () => {
-    const block = extractJobBlock(content, 'dependency-review')
-    expect(block).not.toBe('')
+    const block = assertJobExists(content, 'dependency-review', 'pr-quality-check.yml')
     // dependency-review already had job-level permissions before this PR
     expect(jobHasContentsReadPermission(block)).toBe(true)
   })
@@ -206,8 +188,7 @@ describe('pr-quality-check.yml – permission structure', () => {
   it('should define all expected jobs', () => {
     const expectedJobs = ['pr-metadata', 'dependency-review', 'bundle-size-check', 'quality-summary']
     for (const jobId of expectedJobs) {
-      const block = extractJobBlock(content, jobId)
-      expect(block, `Expected job "${jobId}" to be defined in pr-quality-check.yml`).not.toBe('')
+      assertJobExists(content, jobId, 'pr-quality-check.yml')
     }
   })
 
@@ -229,7 +210,7 @@ describe('pr-quality-check.yml – permission structure', () => {
     // dependency-review needs additional pull-requests: write permission beyond the workflow default.
     // pr-metadata, bundle-size-check, and quality-summary rely on the workflow-level permissions.
     // Validate that dependency-review still carries its own explicit block.
-    const block = extractJobBlock(content, 'dependency-review')
+    const block = assertJobExists(content, 'dependency-review', 'pr-quality-check.yml')
     const hasPermissionsBlock = /^\s{4}permissions:/m.test(block)
     expect(
       hasPermissionsBlock,
@@ -257,10 +238,12 @@ describe('package-lock.json – picomatch dependency update', () => {
   }
 
   let lockfile: PackageLock
+  let entry: PackageLockEntry
 
   beforeAll(() => {
     const raw = readFileSync(resolve(projectRoot, 'package-lock.json'), 'utf-8')
     lockfile = JSON.parse(raw) as PackageLock
+    entry = lockfile.packages['node_modules/picomatch']
   })
 
   it('should have picomatch listed in packages', () => {
@@ -268,35 +251,29 @@ describe('package-lock.json – picomatch dependency update', () => {
   })
 
   it('picomatch should be updated to version 4.0.4', () => {
-    const entry = lockfile.packages['node_modules/picomatch']
     expect(entry.version).toBe('4.0.4')
   })
 
   it('picomatch should NOT be the vulnerable version 4.0.3', () => {
-    const entry = lockfile.packages['node_modules/picomatch']
     expect(entry.version).not.toBe('4.0.3')
   })
 
   it('picomatch resolved URL should point to version 4.0.4', () => {
-    const entry = lockfile.packages['node_modules/picomatch']
     expect(entry.resolved).toContain('picomatch-4.0.4.tgz')
     expect(entry.resolved).not.toContain('picomatch-4.0.3.tgz')
   })
 
   it('picomatch integrity hash should match the 4.0.4 release', () => {
-    const entry = lockfile.packages['node_modules/picomatch']
     expect(entry.integrity).toBe(
       'sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A==',
     )
   })
 
   it('picomatch should remain a devDependency', () => {
-    const entry = lockfile.packages['node_modules/picomatch']
     expect(entry.dev).toBe(true)
   })
 
   it('picomatch should retain its MIT license', () => {
-    const entry = lockfile.packages['node_modules/picomatch']
     expect(entry.license).toBe('MIT')
   })
 

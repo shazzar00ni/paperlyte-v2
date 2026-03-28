@@ -74,17 +74,17 @@ export const Hero = (): React.ReactElement => {
             <picture>
               <source
                 srcSet="/mockups/notes-list-400w.avif 400w, /mockups/notes-list-800w.avif 800w, /mockups/notes-list.avif 1200w"
-                sizes="(max-width: 480px) 400px, (max-width: 960px) 800px, 1200px"
+                sizes="(max-width: 480px) 400px, (max-width: 768px) 800px, 1200px"
                 type="image/avif"
               />
               <source
                 srcSet="/mockups/notes-list-400w.webp 400w, /mockups/notes-list-800w.webp 800w, /mockups/notes-list.webp 1200w"
-                sizes="(max-width: 480px) 400px, (max-width: 960px) 800px, 1200px"
+                sizes="(max-width: 480px) 400px, (max-width: 768px) 800px, 1200px"
                 type="image/webp"
               />
               <source
                 srcSet="/mockups/notes-list-400w.png 400w, /mockups/notes-list-800w.png 800w, /mockups/notes-list.png 1200w"
-                sizes="(max-width: 480px) 400px, (max-width: 960px) 800px, 1200px"
+                sizes="(max-width: 480px) 400px, (max-width: 768px) 800px, 1200px"
                 type="image/png"
               />
               <img

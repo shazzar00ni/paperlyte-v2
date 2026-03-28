@@ -89,6 +89,20 @@ describe('Hero', () => {
       })
     })
 
+    it('should show validation error when email is invalid', async () => {
+      const user = userEvent.setup()
+      render(<Hero />)
+
+      const emailInput = screen.getByPlaceholderText('your@email.com')
+      await user.type(emailInput, 'notanemail')
+      await user.click(screen.getByRole('button', { name: /join the waitlist/i }))
+
+      // validateEmail returns isValid:false → setError is called and fetch is never reached
+      const alert = await screen.findByRole('alert')
+      expect(alert).toBeInTheDocument()
+      expect(vi.mocked(fetch)).not.toHaveBeenCalled()
+    })
+
     it('should show error message when submission fails', async () => {
       vi.stubGlobal(
         'fetch',

@@ -41,6 +41,7 @@ permissions:
 jobs:
   Analysis:
     runs-on: ubuntu-latest
+    if: secrets.SONAR_TOKEN != ''
 
     steps:
       - name: Analyze with SonarCloud

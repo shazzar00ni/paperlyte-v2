@@ -1,5 +1,5 @@
 #!/bin/bash
-branches=$(git branch -r --no-merged origin/main | grep "origin/" | grep -v "origin/main")
+branches=$(git branch -r --no-merged origin/main | awk '$1 ~ /^origin\// && $1 != "origin/main" { print $1 }')
 echo "Branch,npmrc,ROADMAP,gitVersionControl,review,security_helpers"
 for branch in $branches; do
     branch_name=$(echo $branch | sed 's/origin\///')

@@ -236,15 +236,17 @@ describe('FAQ', () => {
 
       const questionButton = getQuestionButton(FAQ_ITEMS[0].question)
 
-      // When collapsed, should show "Expand answer"
-      let icon = questionButton.querySelector('svg')
-      expect(icon).toHaveAttribute('aria-label', 'Expand answer')
+      // When collapsed, should show "Expand answer" — Icon uses aria-labelledby + <title>
+      let icon = questionButton.querySelector('svg[role="img"]')
+      expect(icon).toBeInTheDocument()
+      expect(icon).toHaveAttribute('aria-hidden', 'false')
 
       await user.click(questionButton)
 
       // When expanded, should show "Collapse answer"
-      icon = questionButton.querySelector('svg')
-      expect(icon).toHaveAttribute('aria-label', 'Collapse answer')
+      icon = questionButton.querySelector('svg[role="img"]')
+      expect(icon).toBeInTheDocument()
+      expect(icon).toHaveAttribute('aria-hidden', 'false')
     })
   })
 

@@ -30,8 +30,17 @@ export const EmailCapture = (): React.ReactElement => {
     setError(null)
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      const response = await fetch('/.netlify/functions/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      })
+
+      const data = (await response.json()) as { error?: string; success?: boolean }
+
+      if (!response.ok) {
+        throw new Error(data.error ?? 'Failed to join waitlist')
+      }
 
       setIsLoading(false)
       setIsSubmitted(true)
@@ -51,6 +60,8 @@ export const EmailCapture = (): React.ReactElement => {
         error.message.toLowerCase().includes('validation')
       ) {
         message = 'Invalid email address. Please check and try again.'
+      } else if (error.message.toLowerCase().includes('too many')) {
+        message = 'Too many requests. Please try again in a moment.'
       }
 
       setIsLoading(false)
@@ -87,7 +98,7 @@ export const EmailCapture = (): React.ReactElement => {
                   <Button
                     variant="secondary"
                     size="medium"
-                    icon="fa-brands fa-twitter"
+                    icon="fa-twitter"
                     href={`https://twitter.com/intent/tweet?text=${encodeURIComponent('Check out Paperlyte – the note-taking app that gets out of your way. Get early access:')}&url=${encodeURIComponent(origin)}`}
                   >
                     Twitter
@@ -95,7 +106,7 @@ export const EmailCapture = (): React.ReactElement => {
                   <Button
                     variant="secondary"
                     size="medium"
-                    icon="fa-brands fa-facebook"
+                    icon="fa-facebook"
                     href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(origin)}`}
                   >
                     Facebook
@@ -103,7 +114,7 @@ export const EmailCapture = (): React.ReactElement => {
                   <Button
                     variant="secondary"
                     size="medium"
-                    icon="fa-brands fa-linkedin"
+                    icon="fa-linkedin"
                     href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(origin)}&title=${encodeURIComponent('Check out Paperlyte – the note-taking app that gets out of your way')}`}
                   >
                     LinkedIn
@@ -164,7 +175,7 @@ export const EmailCapture = (): React.ReactElement => {
               >
                 {isLoading ? 'Joining...' : 'Join the Waitlist'}
                 {!isLoading && (
-                  <i className="fa-solid fa-arrow-right" style={{ marginLeft: '0.5rem' }} />
+                  <Icon name="fa-arrow-right" size="sm" style={{ marginLeft: '0.5rem' }} />
                 )}
               </button>
             </div>

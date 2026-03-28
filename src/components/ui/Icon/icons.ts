@@ -59,6 +59,57 @@ export const iconPaths: Record<string, string> = {
     'M8 2v4 M16 2v4 M12 14v1 M2 9h4 M18 9h4 M2 15h4 M18 15h4 M8 2.5c.5-.3 1.2-.5 2-.5h4c.8 0 1.5.2 2 .5 M6 8c0-2.2 1.8-4 4-4h4c2.2 0 4 1.8 4 4v8c0 2.2-1.8 4-4 4h-4c-2.2 0-4-1.8-4-4V8z',
   'fa-lightbulb': 'M9 18h6 M10 22h4 M15 8a3 3 0 0 0-6 0c0 2 2 3 2 5v1h2v-1c0-2 2-3 2-5z M12 2v1',
   'fa-paper-plane': 'M22 2L11 13 M22 2l-7 20-4-9-9-4 20-7z',
+
+  // Additional icons for self-hosted rendering (replaces Font Awesome packages)
+  'fa-check': 'M20 6L9 17l-5-5',
+  'fa-check-circle': 'M22 11.08V12a10 10 0 1 1-5.93-9.14 M22 4L12 14.01l-3-3',
+  'fa-users':
+    'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2 M23 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75 M9 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8z',
+  'fa-note-sticky':
+    'M16 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11l5-5V5a2 2 0 0 0-2-2z M16 3v8h6',
+  'fa-server':
+    'M2 3h20v6H2z M2 15h20v6H2z M6 6h.01 M6 18h.01',
+  'fa-star': 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z',
+  'fa-facebook':
+    'M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z',
+  'fa-linkedin':
+    'M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z M2 9h4v12H2z M4 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4z',
+  'fa-x-twitter': 'M4 4l16 16 M20 4L4 20',
+  'fa-instagram':
+    'M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5z M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M17.5 6.5h.01',
+  'fa-rotate-right':
+    'M21 2v6h-6 M21 13a9 9 0 1 1-3-7.7L21 8',
+
+  // Navigation icons
+  'fa-chevron-up': 'M18 15l-6-6-6 6',
+  'fa-chevron-down': 'M6 9l6 6 6-6',
+  'fa-chevron-left': 'M15 18l-6-6 6-6',
+  'fa-chevron-right': 'M9 18l6-6-6-6',
+  'fa-arrow-left': 'M19 12H5 M12 19l-7-7 7-7',
+  'fa-arrow-rotate-left': 'M3 2v6h6 M3 13a9 9 0 1 0 3-7.7L3 8',
+  'fa-arrow-rotate-right': 'M21 2v6h-6 M21 13a9 9 0 1 1-3-7.7L21 8',
+  'fa-magnifying-glass': 'M21 21l-4.35-4.35 M11 3a8 8 0 1 0 0 16 8 8 0 0 0 0-16z',
+  'fa-house':
+    'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z M9 22V12h6v10',
+
+  // Status / content icons
+  'fa-wifi':
+    'M5 12.55a11 11 0 0 1 14.08 0 M1.42 9a16 16 0 0 1 21.16 0 M8.53 16.11a6 6 0 0 1 6.95 0 M12 20h.01',
+  'fa-pen': 'M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7 M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z',
+  'fa-book': 'M4 19.5A2.5 2.5 0 0 1 6.5 17H20 M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z',
+  'fa-plane':
+    'M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z',
+  'fa-route':
+    'M3 11l19-9-9 19-2-8-8-2z',
+  'fa-code': 'M16 18l6-6-6-6 M8 6l-6 6 6 6',
+  'fa-circle-info': 'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z M12 16v-4 M12 8h.01',
+  'fa-clock': 'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z M12 6v6l4 2',
+  'fa-file-circle-question':
+    'M14 3v4a1 1 0 0 0 1 1h4 M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z M9.1 17a3 3 0 1 1 3 3',
+  'fa-leaf':
+    'M2 22c6.67-6.67 14.67-10 22-22-4 0-8.67 1.33-12 4-3.33 2.67-5.33 6.67-4 10L2 22z M5 19l3-3',
+  'fa-rocket':
+    'M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0 M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5',
 }
 
 // Icon viewBox configurations (most use 0 0 24 24, but some may differ)
@@ -82,4 +133,6 @@ export const strokeOnlyIcons = new Set<string>([
   'fa-circle-check',
   'fa-circle-exclamation',
   'fa-shield-halved',
+  'fa-check-circle',
+  'fa-instagram',
 ])

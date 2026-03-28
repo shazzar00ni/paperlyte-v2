@@ -134,6 +134,7 @@
     0 20px 60px rgba(0, 0, 0, 0.15),
     0 0 0 1px rgba(0, 0, 0, 0.05);
   transition: transform var(--transition-base);
+  aspect-ratio: 1.375;
 }
 
 .mockupPrimary:hover {
@@ -154,6 +155,7 @@
     0 25px 70px rgba(0, 0, 0, 0.2),
     0 0 0 1px rgba(0, 0, 0, 0.08);
   transition: transform var(--transition-base);
+  aspect-ratio: 1.333;
 }
 
 .mockupSecondary:hover {

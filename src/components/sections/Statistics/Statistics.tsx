@@ -3,6 +3,7 @@ import { Section } from '@components/layout/Section'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { CounterAnimation } from '@components/ui/CounterAnimation'
 import { SVGPathAnimation } from '@components/ui/SVGPathAnimation'
+import { Icon } from '@components/ui/Icon'
 import styles from './Statistics.module.css'
 
 /**
@@ -92,7 +93,7 @@ export const Statistics = (): React.ReactElement => {
                   >
                     <path d="M 24 4 A 20 20 0 1 1 23.99 4" fill="none" />
                   </SVGPathAnimation>
-                  <i className={`fa-solid ${stat.icon}`} aria-hidden="true" />
+                  <Icon name={stat.icon} size="lg" aria-hidden="true" />
                 </div>
 
                 <div className={styles.value}>

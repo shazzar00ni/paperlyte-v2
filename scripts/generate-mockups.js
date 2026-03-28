@@ -24,11 +24,11 @@ const mockupsDir = join(projectRoot, 'public', 'mockups')
 
 /**
  * Mockup configurations
- * Each entry defines the source SVG and output dimensions
+ * Each entry defines the source SVG, output dimensions, and responsive width variants
  */
 const mockups = [
-  { source: 'notes-list.svg', width: 1100, height: 800 },
-  { source: 'note-detail.svg', width: 800, height: 600 },
+  { source: 'notes-list.svg', width: 1100, height: 800, widths: [400, 800, 1100] },
+  { source: 'note-detail.svg', width: 800, height: 600, widths: [400, 800] },
 ]
 
 /**
@@ -50,8 +50,9 @@ const VALID_FORMATS = ['png', 'webp', 'avif']
  * @param {number} height - Output height in pixels
  * @param {string} format - Output format ('png', 'webp', or 'avif')
  * @param {object} options - Format-specific encoding options
+ * @param {number|null} [outputWidth] - Width suffix for responsive variants (e.g. 400 → 'notes-list-400w.avif')
  */
-async function generateMockup(sourceName, width, height, format, options) {
+async function generateMockup(sourceName, width, height, format, options, outputWidth = null) {
   try {
     // Validate sourceName BEFORE any string manipulation to prevent traversal
     if (!isPathSafe(mockupsDir, sourceName)) {
@@ -70,7 +71,8 @@ async function generateMockup(sourceName, width, height, format, options) {
 
     const baseName = sourceName.replace('.svg', '')
     const sourcePath = join(mockupsDir, sourceName)
-    const outputName = `${baseName}.${format}`
+    const widthSuffix = outputWidth !== null ? `-${outputWidth}w` : ''
+    const outputName = `${baseName}${widthSuffix}.${format}`
 
     // Defense-in-depth: validate outputName even though it's derived from validated inputs
     if (!isPathSafe(mockupsDir, outputName)) {
@@ -110,7 +112,8 @@ async function generateMockup(sourceName, width, height, format, options) {
     // Safely handle any thrown value (may not be an Error object)
     const errorMessage = error instanceof Error ? error.message : String(error)
     const baseName = sourceName.replace('.svg', '')
-    const outputName = `${baseName}.${format}`
+    const widthSuffix = outputWidth !== null ? `-${outputWidth}w` : ''
+    const outputName = `${baseName}${widthSuffix}.${format}`
     console.error('❌ Failed to generate mockup:', outputName, errorMessage)
 
     // Always throw a normalized Error instance for consistent error handling
@@ -140,7 +143,7 @@ async function main() {
     const failedGenerations = []
 
     for (const mockup of mockups) {
-      const { source, width, height } = mockup
+      const { source, width, height, widths } = mockup
 
       // Verify source SVG exists
       const sourcePath = join(mockupsDir, source)
@@ -151,17 +154,26 @@ async function main() {
 
       console.log(`Processing ${source}...`)
 
-      // Generate all formats for this mockup
-      for (const { ext, options } of formats) {
-        try {
-          await generateMockup(source, width, height, ext, options)
-          const baseName = source.replace('.svg', '')
-          generatedFiles.push(`${baseName}.${ext}`)
-        } catch (error) {
-          // Log error but continue to next format
-          const errorMessage = error instanceof Error ? error.message : String(error)
-          console.error(`❌ Failed to generate ${source} -> .${ext}: ${errorMessage}`)
-          failedGenerations.push({ source, format: ext, error: errorMessage })
+      // Generate all formats for each responsive width variant
+      for (const variantWidth of widths) {
+        // Scale height proportionally for non-full-size variants
+        const scale = variantWidth / width
+        const variantHeight = Math.round(height * scale)
+        // Use null suffix for the largest (original) size, width suffix for smaller variants
+        const outputWidth = variantWidth === width ? null : variantWidth
+
+        for (const { ext, options } of formats) {
+          try {
+            await generateMockup(source, variantWidth, variantHeight, ext, options, outputWidth)
+            const baseName = source.replace('.svg', '')
+            const widthSuffix = outputWidth !== null ? `-${outputWidth}w` : ''
+            generatedFiles.push(`${baseName}${widthSuffix}.${ext}`)
+          } catch (error) {
+            // Log error but continue to next format
+            const errorMessage = error instanceof Error ? error.message : String(error)
+            console.error(`❌ Failed to generate ${source} (${variantWidth}w) -> .${ext}: ${errorMessage}`)
+            failedGenerations.push({ source, format: ext, error: errorMessage })
+          }
         }
       }
 

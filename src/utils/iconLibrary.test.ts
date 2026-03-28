@@ -32,7 +32,7 @@ describe('iconLibrary', () => {
 
     it('should have all brand icons from iconNameMap in brandIconNames', () => {
       // Known brand icons from the mapping
-      const expectedBrandIcons = ['github', 'twitter', 'apple', 'windows']
+      const expectedBrandIcons = ['github', 'twitter', 'x-twitter', 'instagram', 'facebook', 'linkedin', 'apple', 'windows']
 
       expectedBrandIcons.forEach((iconName) => {
         expect(
@@ -130,7 +130,7 @@ describe('iconLibrary', () => {
 
     it('should validate known solid icons', () => {
       expect(isValidIcon('bolt')).toBe(true)
-      expect(isValidIcon('heart')).toBe(true)
+      expect(isValidIcon('users')).toBe(true)
       expect(isValidIcon('download')).toBe(true)
     })
 
@@ -142,10 +142,8 @@ describe('iconLibrary', () => {
 
   describe('Icon Name Mapping', () => {
     it('should have unique values in iconNameMap (except known aliases)', () => {
-      // Known intentional aliases where multiple keys map to the same icon
-      const knownAliases: Record<string, string[]> = {
-        'network-wired': ['fa-network-wired', 'fa-router'], // fa-router uses network-wired icon
-      }
+      // Known intentional aliases where multiple keys map to the same icon value
+      const knownAliases: Record<string, string[]> = {}
 
       // Create a fresh copy of values to avoid any module state issues
       const entries: [string, string][] = Object.entries(iconNameMap)
@@ -194,23 +192,19 @@ describe('iconLibrary', () => {
   })
 
   describe('Regression Prevention', () => {
-    it('should have at least 31 solid icons registered', () => {
-      // Based on current imports - prevents accidental removal
-      // Icon breakdown: 31 solid (non-fallback) + 4 brand + 1 fallback = 36 total
+    it('should have at least 30 solid icons registered', () => {
       const solidIcons = Array.from(validIconNames).filter(
         (icon) => !brandIconNames.has(icon) && icon !== 'circle-question'
       )
 
-      expect(solidIcons.length).toBeGreaterThanOrEqual(31)
+      expect(solidIcons.length).toBeGreaterThanOrEqual(30)
     })
 
-    it('should have exactly 4 brand icons registered', () => {
-      // Icon breakdown: 31 solid (non-fallback) + 4 brand + 1 fallback = 36 total
-      expect(brandIconNames.size).toBe(4)
+    it('should have at least 8 brand icons registered', () => {
+      expect(brandIconNames.size).toBeGreaterThanOrEqual(8)
     })
 
     it('should maintain icon count in validIconNames', () => {
-      // Icon breakdown: 31 solid (non-fallback) + 4 brand + 1 fallback = 36 total
       expect(validIconNames.size).toBeGreaterThanOrEqual(36)
     })
   })

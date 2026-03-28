@@ -5,9 +5,7 @@ import { Terms } from './Terms'
 describe('Terms', () => {
   it('should render the page title', () => {
     render(<Terms />)
-    expect(
-      screen.getByRole('heading', { level: 1, name: 'Terms of Service' })
-    ).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'Terms of Service' })).toBeInTheDocument()
   })
 
   it('should render the last updated date', () => {

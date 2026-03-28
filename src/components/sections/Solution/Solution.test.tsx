@@ -57,9 +57,7 @@ describe('Solution Section', () => {
 
   it('renders value proposition titles', () => {
     render(<Solution />)
-    expect(
-      screen.getByText('Your thoughts move fast. So should your app.')
-    ).toBeInTheDocument()
+    expect(screen.getByText('Your thoughts move fast. So should your app.')).toBeInTheDocument()
     expect(screen.getByText('Forget folders. Organize as you write.')).toBeInTheDocument()
     expect(screen.getByText('Plane mode? No problem.')).toBeInTheDocument()
   })

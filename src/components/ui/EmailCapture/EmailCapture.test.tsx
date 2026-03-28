@@ -128,7 +128,10 @@ describe('EmailCapture UI Component', () => {
       const user = userEvent.setup()
       // Mock fetch to delay resolution
       global.fetch = vi.fn(
-        () => new Promise((resolve) => setTimeout(() => resolve(new Response(JSON.stringify({}))), 2000))
+        () =>
+          new Promise((resolve) =>
+            setTimeout(() => resolve(new Response(JSON.stringify({}))), 2000)
+          )
       ) as typeof fetch
 
       render(<EmailCapture />)
@@ -170,9 +173,7 @@ describe('EmailCapture UI Component', () => {
     it('should show error for failed API response', async () => {
       const user = userEvent.setup()
       global.fetch = vi.fn(() =>
-        Promise.resolve(
-          new Response(JSON.stringify({ error: 'Server error' }), { status: 500 })
-        )
+        Promise.resolve(new Response(JSON.stringify({ error: 'Server error' }), { status: 500 }))
       ) as typeof fetch
 
       render(<EmailCapture />)

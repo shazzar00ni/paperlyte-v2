@@ -23,6 +23,9 @@ coverage
 # Lighthouse
 .lighthouseci
 
+# Generated files
+PR_REVIEW_SUMMARY.md
+
 # Other
 package-lock.json
 *.min.js

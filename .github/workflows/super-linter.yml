@@ -22,6 +22,6 @@ jobs:
           fetch-depth: 0
 
       - name: Super-Linter
-        uses: super-linter/super-linter@v8.5.0
+        uses: super-linter/super-linter@61abc07d755095a68f4987d1c2c3d1d64408f1f9 # v8.5.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

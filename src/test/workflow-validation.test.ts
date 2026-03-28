@@ -81,7 +81,7 @@ describe('ci.yml – permission structure', () => {
   it('should have a workflow-level "contents: read" permissions block', () => {
     expect(hasWorkflowLevelPermissions(content)).toBe(true)
     // Verify the workflow-level block grants contents: read
-    expect(content).toMatch(/^permissions:\s*\n\s+contents:\s+read/m)
+    expect(content).toMatch(/^permissions:[ \t]*\n[ \t]+contents:[ \t]+read/m)
   })
 
   it('lint-and-typecheck job inherits "contents: read" from the workflow-level permissions', () => {
@@ -179,7 +179,7 @@ describe('pr-quality-check.yml – permission structure', () => {
   it('should have a workflow-level "contents: read" permissions block', () => {
     expect(hasWorkflowLevelPermissions(content)).toBe(true)
     // Verify the workflow-level block grants contents: read
-    expect(content).toMatch(/^permissions:\s*\n\s+contents:\s+read/m)
+    expect(content).toMatch(/^permissions:[ \t]*\n[ \t]+contents:[ \t]+read/m)
   })
 
   it('pr-metadata job inherits "contents: read" from the workflow-level permissions', () => {
@@ -212,7 +212,7 @@ describe('pr-quality-check.yml – permission structure', () => {
   })
 
   it('should only trigger on pull_request events', () => {
-    expect(content).toMatch(/^on:\s*\n\s+pull_request:/m)
+    expect(content).toMatch(/^on:[ \t]*\n[ \t]+pull_request:/m)
     expect(content).not.toMatch(/^ {2}push:/m)
   })
 

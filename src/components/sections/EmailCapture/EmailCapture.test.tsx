@@ -1,8 +1,13 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { EmailCapture } from './EmailCapture'
 import { WAITLIST_COUNT } from '@/constants/waitlist'
+
+// Mock monitoring
+vi.mock('@utils/monitoring', () => ({
+  logError: vi.fn(),
+}))
 
 describe('EmailCapture Section', () => {
   it('renders the section title', () => {
@@ -50,5 +55,65 @@ describe('EmailCapture Section', () => {
     render(<EmailCapture />)
     const emailInput = screen.getByPlaceholderText('your@email.com') as HTMLInputElement
     expect(emailInput.required).toBe(true)
+  })
+
+  it('shows loading state during submission', async () => {
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    const emailInput = screen.getByPlaceholderText('your@email.com')
+    const submitButton = screen.getByRole('button', { name: /Join the Waitlist/i })
+
+    await user.type(emailInput, 'test@example.com')
+    await user.click(submitButton)
+
+    // Should show loading text
+    expect(screen.getByText('Joining...')).toBeInTheDocument()
+    expect(submitButton).toBeDisabled()
+  })
+
+  it('renders success state with social sharing buttons', async () => {
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    const emailInput = screen.getByPlaceholderText('your@email.com')
+    const submitButton = screen.getByRole('button', { name: /Join the Waitlist/i })
+
+    await user.type(emailInput, 'test@example.com')
+    await user.click(submitButton)
+
+    await waitFor(() => {
+      expect(screen.getByText(/You're on the list!/)).toBeInTheDocument()
+    })
+
+    // Should show social sharing buttons
+    expect(screen.getByText('Twitter')).toBeInTheDocument()
+    expect(screen.getByText('Facebook')).toBeInTheDocument()
+    expect(screen.getByText('LinkedIn')).toBeInTheDocument()
+  })
+
+  it('renders success state with next steps', async () => {
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    const emailInput = screen.getByPlaceholderText('your@email.com')
+    const submitButton = screen.getByRole('button', { name: /Join the Waitlist/i })
+
+    await user.type(emailInput, 'test@example.com')
+    await user.click(submitButton)
+
+    await waitFor(() => {
+      expect(screen.getByText(/What happens next:/)).toBeInTheDocument()
+    })
+
+    expect(screen.getByText(/email you product updates/)).toBeInTheDocument()
+    expect(screen.getByText(/early access 2 weeks before/)).toBeInTheDocument()
+    expect(screen.getByText(/ask for your feedback/)).toBeInTheDocument()
+  })
+
+  it('renders section with correct id', () => {
+    const { container } = render(<EmailCapture />)
+    const section = container.querySelector('section')
+    expect(section).toHaveAttribute('id', 'email-capture')
   })
 })

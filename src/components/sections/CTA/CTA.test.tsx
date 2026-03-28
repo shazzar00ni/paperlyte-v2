@@ -1,6 +1,13 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { CTA } from './CTA'
+import * as navigation from '@/utils/navigation'
+
+// Mock navigation utility
+vi.mock('@/utils/navigation', () => ({
+  scrollToSection: vi.fn(),
+}))
 
 describe('CTA', () => {
   it('should render as a section with correct id', () => {
@@ -71,5 +78,25 @@ describe('CTA', () => {
     const { container } = render(<CTA />)
     expect(container).toBeDefined()
     expect(container.querySelector('section')).toBeInTheDocument()
+  })
+
+  it('should scroll to email-capture section when Join the Waitlist is clicked', async () => {
+    const user = userEvent.setup()
+    render(<CTA />)
+
+    const button = screen.getByRole('button', { name: /Join the Waitlist/i })
+    await user.click(button)
+
+    expect(navigation.scrollToSection).toHaveBeenCalledWith('email-capture')
+  })
+
+  it('should scroll to hero section when Watch the Demo Again is clicked', async () => {
+    const user = userEvent.setup()
+    render(<CTA />)
+
+    const button = screen.getByRole('button', { name: /Watch the Demo Again/i })
+    await user.click(button)
+
+    expect(navigation.scrollToSection).toHaveBeenCalledWith('hero')
   })
 })

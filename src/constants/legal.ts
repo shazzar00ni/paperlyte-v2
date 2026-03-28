@@ -46,16 +46,14 @@ export const LEGAL_CONFIG = {
   social: {
     github: 'https://github.com/shazzar00ni/paperlyte-v2',
     twitter: 'https://x.com/paperlyte',
-    linkedin: '#', // TODO: Create LinkedIn company page or update to existing page
     instagram: 'https://instagram.com/paperlytefilms',
-    discord: '#', // TODO: Add Discord server link
   },
   metadata: {
     privacyLastUpdated: '2025-11-28',
     termsLastUpdated: '2025-11-28',
     termsVersion: '1.0',
-    jurisdiction: '[State/Country]', // TODO: Add jurisdiction
-    governingLaw: '[State] law', // TODO: Add governing law
+    jurisdiction: 'Delaware',
+    governingLaw: 'Delaware law',
   },
 } as const
 

@@ -92,7 +92,7 @@ class Analytics {
       case 'simple':
       case 'custom':
         // TODO: Implement additional analytics providers
-        // Track progress at: https://github.com/shazzar00ni/paperlyte-v2/issues/[ISSUE_NUMBER]
+        // Track progress at: https://github.com/shazzar00ni/paperlyte-v2/issues/455
         // Required providers: Fathom, Umami, Simple Analytics, Custom
         // See src/analytics/README.md for implementation requirements
         throw new Error(

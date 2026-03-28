@@ -29,17 +29,15 @@ exports[`Legal Constants > Snapshot Tests > should match LEGAL_CONFIG snapshot 1
     "terms": "/terms.html",
   },
   "metadata": {
-    "governingLaw": "[State] law",
-    "jurisdiction": "[State/Country]",
+    "governingLaw": "Delaware law",
+    "jurisdiction": "Delaware",
     "privacyLastUpdated": "2025-11-28",
     "termsLastUpdated": "2025-11-28",
     "termsVersion": "1.0",
   },
   "social": {
-    "discord": "#",
     "github": "https://github.com/shazzar00ni/paperlyte-v2",
     "instagram": "https://instagram.com/paperlytefilms",
-    "linkedin": "#",
     "twitter": "https://x.com/paperlyte",
   },
 }
@@ -51,6 +49,5 @@ exports[`Legal Constants > Snapshot Tests > should match placeholder fields snap
 [
   "Company Legal Name",
   "Physical Address",
-  "Jurisdiction/Governing Law",
 ]
 `;

@@ -50,9 +50,9 @@ const VALID_FORMATS = ['png', 'webp', 'avif']
  * @param {number} height - Output height in pixels
  * @param {string} format - Output format ('png', 'webp', or 'avif')
  * @param {object} options - Format-specific encoding options
- * @param {number|null} [outputWidth] - Width suffix for responsive variants (e.g. 400 → 'notes-list-400w.avif')
+ * @param {number|null} [responsiveWidth] - Width suffix for responsive variants (e.g. 400 → 'notes-list-400w.avif')
  */
-async function generateMockup(sourceName, width, height, format, options, outputWidth = null) {
+async function generateMockup(sourceName, width, height, format, options, responsiveWidth = null) {
   try {
     // Validate sourceName BEFORE any string manipulation to prevent traversal
     if (!isPathSafe(mockupsDir, sourceName)) {
@@ -71,7 +71,7 @@ async function generateMockup(sourceName, width, height, format, options, output
 
     const baseName = sourceName.replace('.svg', '')
     const sourcePath = join(mockupsDir, sourceName)
-    const widthSuffix = outputWidth !== null ? `-${outputWidth}w` : ''
+    const widthSuffix = responsiveWidth !== null ? `-${responsiveWidth}w` : ''
     const outputName = `${baseName}${widthSuffix}.${format}`
 
     // Defense-in-depth: validate outputName even though it's derived from validated inputs
@@ -112,7 +112,7 @@ async function generateMockup(sourceName, width, height, format, options, output
     // Safely handle any thrown value (may not be an Error object)
     const errorMessage = error instanceof Error ? error.message : String(error)
     const baseName = sourceName.replace('.svg', '')
-    const widthSuffix = outputWidth !== null ? `-${outputWidth}w` : ''
+    const widthSuffix = responsiveWidth !== null ? `-${responsiveWidth}w` : ''
     const outputName = `${baseName}${widthSuffix}.${format}`
     console.error('❌ Failed to generate mockup:', outputName, errorMessage)
 
@@ -160,13 +160,13 @@ async function main() {
         const scale = variantWidth / width
         const variantHeight = Math.round(height * scale)
         // Use null suffix for the largest (original) size, width suffix for smaller variants
-        const outputWidth = variantWidth === width ? null : variantWidth
+        const responsiveWidth = variantWidth === width ? null : variantWidth
 
         for (const { ext, options } of formats) {
           try {
-            await generateMockup(source, variantWidth, variantHeight, ext, options, outputWidth)
+            await generateMockup(source, variantWidth, variantHeight, ext, options, responsiveWidth)
             const baseName = source.replace('.svg', '')
-            const widthSuffix = outputWidth !== null ? `-${outputWidth}w` : ''
+            const widthSuffix = responsiveWidth !== null ? `-${responsiveWidth}w` : ''
             generatedFiles.push(`${baseName}${widthSuffix}.${ext}`)
           } catch (error) {
             // Log error but continue to next format

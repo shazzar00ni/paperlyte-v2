@@ -135,9 +135,14 @@ export default defineConfig({
     },
   },
 
+  // Strip debugger statements in production builds; preserve console.warn/error for diagnostics
+  esbuild: {
+    drop: ['debugger'],
+    pure: ['console.log', 'console.debug', 'console.info'],
+  },
+
   // Production build configuration
   build: {
-    // Split CSS into separate files for better caching
     cssCodeSplit: true,
     // Use esbuild for minification (explicit devDependency, supported by Vite 7)
     minify: 'esbuild',
@@ -145,10 +150,6 @@ export default defineConfig({
     target: 'es2020',
     // Enable CSS minification
     cssMinify: true,
-    // esbuild-specific options: strip console/debugger statements in production
-    esbuildOptions: {
-      drop: ['console', 'debugger'],
-    },
     // Rollup-specific options for advanced bundling
     rollupOptions: {
       treeshake: true,

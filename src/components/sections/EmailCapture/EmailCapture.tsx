@@ -5,7 +5,7 @@ import { Section } from '@components/layout/Section'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { Button } from '@components/ui/Button'
 import { Icon } from '@components/ui/Icon'
-import { WAITLIST_COUNT, LAUNCH_QUARTER } from '@constants/waitlist'
+import { WAITLIST_COUNT, LAUNCH_QUARTER, WAITLIST_API_ENDPOINT } from '@constants/waitlist'
 import styles from './EmailCapture.module.css'
 
 const BENEFITS = [
@@ -30,7 +30,7 @@ export const EmailCapture = (): React.ReactElement => {
     setError(null)
 
     try {
-      const response = await fetch('/.netlify/functions/subscribe', {
+      const response = await fetch(WAITLIST_API_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),

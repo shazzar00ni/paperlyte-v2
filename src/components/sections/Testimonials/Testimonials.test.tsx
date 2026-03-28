@@ -268,5 +268,85 @@ describe('Testimonials', () => {
         expect(screen.getByText(testimonialWithInitials.initials)).toBeInTheDocument()
       }
     })
+
+    it('should render company name when provided', () => {
+      render(<Testimonials />)
+
+      const testimonialWithCompany = TESTIMONIALS.find((t) => t.company)
+      if (testimonialWithCompany) {
+        expect(screen.getByText(new RegExp(testimonialWithCompany.company!))).toBeInTheDocument()
+      }
+    })
+  })
+
+  describe('touch/swipe gestures', () => {
+    it('should navigate to next slide on left swipe', () => {
+      render(<Testimonials />)
+
+      const carousel = screen.getByRole('region', { name: /Testimonials/i })
+
+      // Simulate a left swipe (start > end by more than MIN_SWIPE_DISTANCE)
+      fireEvent.touchStart(carousel, {
+        targetTouches: [{ clientX: 300 }],
+      })
+      fireEvent.touchMove(carousel, {
+        targetTouches: [{ clientX: 100 }],
+      })
+      fireEvent.touchEnd(carousel)
+
+      expect(screen.getByText(/Showing testimonial 2 of/)).toBeInTheDocument()
+    })
+
+    it('should navigate to previous slide on right swipe', () => {
+      render(<Testimonials />)
+
+      const carousel = screen.getByRole('region', { name: /Testimonials/i })
+
+      // Simulate a right swipe (end > start by more than MIN_SWIPE_DISTANCE)
+      fireEvent.touchStart(carousel, {
+        targetTouches: [{ clientX: 100 }],
+      })
+      fireEvent.touchMove(carousel, {
+        targetTouches: [{ clientX: 300 }],
+      })
+      fireEvent.touchEnd(carousel)
+
+      expect(
+        screen.getByText(`Showing testimonial ${TESTIMONIALS.length} of ${TESTIMONIALS.length}`)
+      ).toBeInTheDocument()
+    })
+
+    it('should not navigate on small swipe distance', () => {
+      render(<Testimonials />)
+
+      const carousel = screen.getByRole('region', { name: /Testimonials/i })
+
+      // Simulate a small swipe (less than MIN_SWIPE_DISTANCE of 50px)
+      fireEvent.touchStart(carousel, {
+        targetTouches: [{ clientX: 200 }],
+      })
+      fireEvent.touchMove(carousel, {
+        targetTouches: [{ clientX: 180 }],
+      })
+      fireEvent.touchEnd(carousel)
+
+      // Should stay on first testimonial
+      expect(screen.getByText(/Showing testimonial 1 of/)).toBeInTheDocument()
+    })
+
+    it('should handle touch end without touch move', () => {
+      render(<Testimonials />)
+
+      const carousel = screen.getByRole('region', { name: /Testimonials/i })
+
+      // Only touch start and end, no move
+      fireEvent.touchStart(carousel, {
+        targetTouches: [{ clientX: 200 }],
+      })
+      fireEvent.touchEnd(carousel)
+
+      // Should stay on first testimonial
+      expect(screen.getByText(/Showing testimonial 1 of/)).toBeInTheDocument()
+    })
   })
 })

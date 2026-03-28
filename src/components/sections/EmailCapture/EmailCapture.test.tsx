@@ -116,4 +116,15 @@ describe('EmailCapture Section', () => {
     const section = container.querySelector('section')
     expect(section).toHaveAttribute('id', 'email-capture')
   })
+
+  it('has accessible email input', () => {
+    render(<EmailCapture />)
+    const emailInput = screen.getByPlaceholderText('your@email.com')
+    expect(emailInput).toHaveAttribute('aria-label', 'Email address')
+  })
+
+  it('renders launch quarter in subtitle', () => {
+    render(<EmailCapture />)
+    expect(screen.getByText(/We're launching in Q2 2026/)).toBeInTheDocument()
+  })
 })

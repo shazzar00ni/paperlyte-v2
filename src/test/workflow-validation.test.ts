@@ -25,7 +25,7 @@ function readWorkflow(filename: string): string {
  * i.e. a line that starts with `permissions:` at column 0 (no indentation).
  */
 function hasWorkflowLevelPermissions(content: string): boolean {
-  return content.split('\n').some((line) => /^permissions:/.test(line))
+  return content.split('\n').some((line) => line.startsWith('permissions:'))
 }
 
 /**
@@ -36,8 +36,7 @@ function hasWorkflowLevelPermissions(content: string): boolean {
 function extractJobBlock(content: string, jobId: string): string {
   const lines = content.split('\n')
   // Job keys live under `jobs:` so they are indented by 2 spaces.
-  const jobStartPattern = new RegExp(`^  ${jobId}:`)
-  const startIdx = lines.findIndex((line) => jobStartPattern.test(line))
+  const startIdx = lines.findIndex((line) => line.startsWith(`  ${jobId}:`))
   if (startIdx === -1) return ''
 
   // Collect lines until we hit a sibling job (another 2-space-indented key)
@@ -46,7 +45,7 @@ function extractJobBlock(content: string, jobId: string): string {
   for (let i = startIdx + 1; i < lines.length; i++) {
     const line = lines[i]
     // A sibling key is indented by exactly 2 spaces (e.g. "  next-job:")
-    if (/^ {2}\S/.test(line)) break
+    if (line.startsWith('  ') && line.length > 2 && line[2] !== ' ' && line[2] !== '\t') break
     jobLines.push(line)
   }
   return jobLines.join('\n')

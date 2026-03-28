@@ -90,7 +90,7 @@ export const brandIconNames = new Set<string>([
 /**
  * Set of all valid icon names in the library
  */
-export const validIconNames = new Set<string>([...Object.values(iconNameMap)])
+export const validIconNames = new Set<string>(Object.values(iconNameMap))
 
 /**
  * Convert an fa-* prefixed icon name to its bare identifier.

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { EmailCapture } from './EmailCapture'
@@ -124,14 +124,26 @@ describe('EmailCapture UI Component', () => {
   })
 
   describe('form submission', () => {
+    let originalFetch: typeof globalThis.fetch
+
+    beforeEach(() => {
+      originalFetch = globalThis.fetch
+    })
+
+    afterEach(() => {
+      globalThis.fetch = originalFetch
+      vi.restoreAllMocks()
+    })
+
     it('should show loading state during submission', async () => {
       const user = userEvent.setup()
-      // Mock fetch to delay resolution
+      // Use a deferred promise so no real timer is scheduled
+      let resolveRequest!: (value: Response) => void
       globalThis.fetch = vi.fn(
         () =>
-          new Promise((resolve) =>
-            setTimeout(() => resolve(new Response(JSON.stringify({}))), 2000)
-          )
+          new Promise<Response>((resolve) => {
+            resolveRequest = resolve
+          })
       ) as typeof fetch
 
       render(<EmailCapture />)
@@ -147,6 +159,9 @@ describe('EmailCapture UI Component', () => {
       await waitFor(() => {
         expect(screen.getByText('Joining...')).toBeInTheDocument()
       })
+
+      // Resolve the deferred request to avoid a dangling promise after cleanup
+      resolveRequest(new Response(JSON.stringify({})))
     })
 
     it('should show success state after successful submission', async () => {

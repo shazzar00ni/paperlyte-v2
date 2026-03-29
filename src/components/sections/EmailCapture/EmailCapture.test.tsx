@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { EmailCapture } from './EmailCapture'
-import { WAITLIST_COUNT } from '@/constants/waitlist'
+import { WAITLIST_COUNT, LAUNCH_QUARTER } from '@/constants/waitlist'
 
 // Mock monitoring
 vi.mock('@utils/monitoring', () => ({
@@ -67,9 +67,14 @@ describe('EmailCapture Section', () => {
     await user.type(emailInput, 'test@example.com')
     await user.click(submitButton)
 
-    // Should show loading text
+    // Should show loading text immediately after click
     expect(screen.getByText('Joining...')).toBeInTheDocument()
     expect(submitButton).toBeDisabled()
+
+    // Wait for the 1 s timer to flush before cleanup to prevent state updates after unmount
+    await waitFor(() => expect(screen.queryByText('Joining...')).not.toBeInTheDocument(), {
+      timeout: 2000,
+    })
   })
 
   it('renders success state with social sharing buttons', async () => {
@@ -125,6 +130,6 @@ describe('EmailCapture Section', () => {
 
   it('renders launch quarter in subtitle', () => {
     render(<EmailCapture />)
-    expect(screen.getByText(/We're launching in Q2 2026/)).toBeInTheDocument()
+    expect(screen.getByText(new RegExp(`We're launching in ${LAUNCH_QUARTER}`))).toBeInTheDocument()
   })
 })

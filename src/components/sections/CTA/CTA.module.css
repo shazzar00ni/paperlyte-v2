@@ -119,18 +119,12 @@
 }
 
 .textLink:hover {
-  color: rgba(255, 255, 255, 0.8);
+  opacity: 0.7;
 }
 
 @media (prefers-reduced-motion: no-preference) {
   .textLink {
-    transition: color 0.2s ease;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .textLink {
-    transition: none;
+    transition: opacity 0.2s ease;
   }
 }
 

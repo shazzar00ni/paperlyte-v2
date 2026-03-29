@@ -164,7 +164,7 @@ export const EmailCapture = (): React.ReactElement => {
               >
                 {isLoading ? 'Joining...' : 'Join the Waitlist'}
                 {!isLoading && (
-                  <i className="fa-solid fa-arrow-right" style={{ marginLeft: '0.5rem' }} />
+                  <Icon name="fa-arrow-right" size="sm" style={{ marginLeft: '0.5rem' }} />
                 )}
               </button>
             </div>

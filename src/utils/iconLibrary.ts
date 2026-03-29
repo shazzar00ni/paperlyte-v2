@@ -1,3 +1,5 @@
+import { iconPaths } from '@components/ui/Icon/icons'
+
 /**
  * Icon Name Utilities
  *
@@ -25,7 +27,6 @@ export const iconNameMap: Record<string, string> = {
   'fa-envelope': 'envelope',
   'fa-star': 'star',
   'fa-circle-check': 'circle-check',
-  'fa-heart': 'heart',
   'fa-download': 'download',
   'fa-moon': 'moon',
   'fa-sun': 'sun',
@@ -88,9 +89,13 @@ export const brandIconNames = new Set<string>([
 ])
 
 /**
- * Set of all valid icon names in the library
+ * Set of all valid icon names — derived from icons that have actual SVG path
+ * data in the bundled registry, so isValidIcon never returns true for an icon
+ * that would silently render as a "?" placeholder.
  */
-export const validIconNames = new Set<string>(Object.values(iconNameMap))
+export const validIconNames = new Set<string>(
+  Object.keys(iconPaths).map((k) => k.replace(/^fa-/, ''))
+)
 
 /**
  * Convert an fa-* prefixed icon name to its bare identifier.

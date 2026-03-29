@@ -51,7 +51,14 @@ const SIZE_MAP = {
  * <Icon name="fa-circle-check" color="#00ff00" size="2x" />
  * ```
  */
-export const Icon = ({ name, size = 'md', className = '', ariaLabel, color, style }: IconProps): React.ReactElement => {
+export const Icon = ({
+  name,
+  size = 'md',
+  className = '',
+  ariaLabel,
+  color,
+  style,
+}: IconProps): React.ReactElement => {
   const iconSize = SIZE_MAP[size]
   const titleId = useId()
 

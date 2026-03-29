@@ -185,7 +185,7 @@ If you provide feedback, suggestions, or ideas:
 
 ### 5.1 Pricing
 
-Current pricing is available at: **https://paperlyte.com/pricing**
+Current pricing is available at: **<https://paperlyte.com/pricing>**
 
 - Prices are in US Dollars (USD)
 - Prices may vary by region due to taxes and regulations
@@ -307,7 +307,7 @@ If you are located in the EU/EEA, UK, California, or other jurisdictions with da
 
 **How to exercise your rights:**
 
-- Email: privacy@paperlyte.com
+- Email: <privacy@paperlyte.com>
 - We will respond within 30 days (standard requests) or 45 days (complex requests, with notification).
 - You may be required to verify your identity before we process your request.
 
@@ -326,7 +326,7 @@ Retention periods may be adjusted to comply with legal requirements or to protec
 
 ### 7.7 Data Processing Agreement (DPA)
 
-If you require a Data Processing Agreement for business or regulatory reasons, we will provide one upon request. Please contact legal@paperlyte.com or see our [Data Processing Agreement](./DPA.md) if available.
+If you require a Data Processing Agreement for business or regulatory reasons, we will provide one upon request. Please contact <legal@paperlyte.com> or see our [Data Processing Agreement](./DPA.md) if available.
 
 ### 7.2 Data Ownership
 
@@ -523,7 +523,7 @@ We may update these Terms to:
 
 ### 15.1 Informal Resolution
 
-Before filing a claim, contact us at: **legal@paperlyte.com**
+Before filing a claim, contact us at: **<legal@paperlyte.com>**
 
 We'll attempt to resolve disputes informally within 60 days.
 
@@ -552,7 +552,7 @@ We'll attempt to resolve disputes informally within 60 days.
 - No class arbitrations or class actions
 - No consolidation with other disputes
 
-**Opt-Out:** You can opt out of arbitration within 30 days of account creation by emailing: **arbitration-opt-out@paperlyte.com**
+**Opt-Out:** You can opt out of arbitration within 30 days of account creation by emailing: **<arbitration-opt-out@paperlyte.com>**
 
 ### 15.4 Exceptions to Arbitration
 
@@ -618,16 +618,16 @@ English version controls in case of conflicts with translations.
 
 ### General Inquiries
 
-**Email:** support@paperlyte.com
-**Website:** https://paperlyte.com
+**Email:** <support@paperlyte.com>
+**Website:** <https://paperlyte.com>
 
 ### Legal & Compliance
 
-**Email:** legal@paperlyte.com
+**Email:** <legal@paperlyte.com>
 
 ### Security Issues
 
-**Email:** security@paperlyte.com
+**Email:** <security@paperlyte.com>
 PGP: [9A3B 2C1D 7E4F 5A6B 8C9D 1E2F 3A4B 5C6D 7E8F 9A0B](https://paperlyte.com/pgp/publickey.asc) (use for sensitive reports)
 
 ### Physical Address

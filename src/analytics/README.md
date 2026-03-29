@@ -314,7 +314,7 @@ A: Plausible is recommended for its lightweight script, privacy features, and ea
 A: Yes, Plausible and Umami both support self-hosting.
 
 **Q: How do I view analytics data?**
-A: Log into your analytics provider's dashboard (e.g., https://plausible.io).
+A: Log into your analytics provider's dashboard (e.g., <https://plausible.io>).
 
 ## Resources
 

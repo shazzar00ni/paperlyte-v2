@@ -1677,7 +1677,7 @@ const prefersDark = useMediaQuery('(prefers-color-scheme: dark)')
 
 All components follow a consistent structure:
 
-```
+```text
 ComponentName/
 ├── index.ts                 # Barrel export
 ├── ComponentName.tsx        # Main component
@@ -3358,12 +3358,12 @@ This is handled automatically via the CSS variables in `src/styles/variables.css
 
 ## Resources
 
-- **Tailwind CSS:** https://tailwindcss.com/docs/customizing-colors
-- **Inter Font:** https://fonts.google.com/specimen/Inter
-- **Font Awesome:** https://fontawesome.com/search?o=r&m=free&s=solid
-- **WCAG 2.1 Guidelines:** https://www.w3.org/WAI/WCAG21/quickref/
-- **Material Design (Reference):** https://material.io/design/typography/
-- **WebAIM Contrast Checker:** https://webaim.org/resources/contrastchecker/
+- **Tailwind CSS:** <https://tailwindcss.com/docs/customizing-colors>
+- **Inter Font:** <https://fonts.google.com/specimen/Inter>
+- **Font Awesome:** <https://fontawesome.com/search?o=r&m=free&s=solid>
+- **WCAG 2.1 Guidelines:** <https://www.w3.org/WAI/WCAG21/quickref/>
+- **Material Design (Reference):** <https://material.io/design/typography/>
+- **WebAIM Contrast Checker:** <https://webaim.org/resources/contrastchecker/>
 
 ---
 

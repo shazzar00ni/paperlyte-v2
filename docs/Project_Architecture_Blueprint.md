@@ -1578,6 +1578,7 @@ global.matchMedia = vi.fn().mockImplementation((query) => ({
    ```
 
 4. **Add tests:**
+
    ```typescript
    describe('NewSection', () => {
      it('renders heading', () => {
@@ -1613,6 +1614,7 @@ global.matchMedia = vi.fn().mockImplementation((query) => ({
    ```
 
 3. **Create tests:**
+
    ```typescript
    // src/hooks/useNewHook.test.ts
    describe('useNewHook', () => {

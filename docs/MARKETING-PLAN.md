@@ -24,7 +24,7 @@ Paperlyte is positioned to capture market share from frustrated note-takers over
 
 ## Quick Reference: Marketing Plan at a Glance
 
-**For Stakeholders & Quick Review**
+### For Stakeholders & Quick Review
 
 This one-page summary provides the essential marketing metrics and targets. Refer to detailed sections below for complete strategy, tactics, and rationale.
 

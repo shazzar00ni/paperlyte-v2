@@ -88,7 +88,7 @@ git clone https://github.com/yourusername/paperlyte-v2.git
 cd paperlyte-v2
 ```
 
-2. Install dependencies:
+1. Install dependencies:
 
 ```bash
 npm install
@@ -195,7 +195,7 @@ All browsers receive optimized images - newer browsers get smaller files, older 
 
 ## Project Structure
 
-```
+```text
 paperlyte-v2/
 ├── public/               # Static assets
 ├── src/

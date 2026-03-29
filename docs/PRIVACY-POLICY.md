@@ -93,7 +93,7 @@ We use your information solely to provide and improve Paperlyte:
 >
 > **Do not store highly sensitive data in Paperlyte until these features are released (Q2 2026) or are listed as available in our [release notes](https://paperlyte.com/release-notes).**
 >
-> To request verification of current security status or updates, contact support@paperlyte.com.
+> To request verification of current security status or updates, contact <support@paperlyte.com>.
 
 ### 3.1 Where We Store Your Data
 
@@ -196,7 +196,7 @@ We will notify you of legal requests unless prohibited by law.
 
 ### 5.4 How to Exercise Your Rights
 
-Email us at: **privacy@paperlyte.com**
+Email us at: **<privacy@paperlyte.com>**
 
 We'll respond within:
 
@@ -269,14 +269,14 @@ We may update this privacy policy to reflect:
 
 ### Privacy Questions or Concerns
 
-**Email:** privacy@paperlyte.com
-**Support:** support@paperlyte.com
-**Website:** https://paperlyte.com/privacy
+**Email:** <privacy@paperlyte.com>
+**Support:** <support@paperlyte.com>
+**Website:** <https://paperlyte.com/privacy>
 
 ### Data Protection Officer
 
 For GDPR-related inquiries:
-**Email:** dpo@paperlyte.com
+**Email:** <dpo@paperlyte.com>
 
 ### Physical Address
 
@@ -290,7 +290,7 @@ For GDPR-related inquiries:
 ## 11. Transparency Report
 
 We believe in transparency. View our annual transparency report at:
-**https://paperlyte.com/transparency** <!-- TODO: Replace with working transparency report URL before release. Current link is broken. -->
+**<https://paperlyte.com/transparency>** <!-- TODO: Replace with working transparency report URL before release. Current link is broken. -->
 
 This report includes:
 

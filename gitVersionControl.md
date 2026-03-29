@@ -312,7 +312,7 @@ git checkout feature/my-feature
 git merge develop  # or git rebase develop
 ```
 
-2. **Clean up commits (if needed):**
+1. **Clean up commits (if needed):**
 
 ```bash
 # Interactive rebase to squash/reword commits
@@ -322,7 +322,7 @@ git rebase -i develop
 git merge --squash feature/my-feature
 ```
 
-3. **Push and create PR:**
+1. **Push and create PR:**
 
 ```bash
 git push origin feature/my-feature

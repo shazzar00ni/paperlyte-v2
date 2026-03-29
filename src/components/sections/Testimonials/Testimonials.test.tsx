@@ -138,7 +138,7 @@ describe('Testimonials', () => {
       const nextButton = screen.getByRole('button', { name: /Next testimonial/i })
 
       // Click next for each testimonial
-      for (let i = 0; i < TESTIMONIALS.length; i++) {
+      for (const _t of TESTIMONIALS) {
         await user.click(nextButton)
       }
 
@@ -273,8 +273,8 @@ describe('Testimonials', () => {
       render(<Testimonials />)
 
       const testimonialWithCompany = TESTIMONIALS.find((t) => t.company)
-      if (testimonialWithCompany) {
-        expect(screen.getByText(new RegExp(testimonialWithCompany.company!))).toBeInTheDocument()
+      if (testimonialWithCompany?.company) {
+        expect(screen.getByText(new RegExp(testimonialWithCompany.company))).toBeInTheDocument()
       }
     })
   })

@@ -11,7 +11,7 @@ vi.mock('@utils/analytics', () => ({
 // Mock validation
 vi.mock('@utils/validation', () => ({
   validateEmail: vi.fn((email: string) => {
-    if (!email || !email.includes('@')) {
+    if (!email?.includes('@')) {
       return { isValid: false, error: 'Please enter a valid email address' }
     }
     return { isValid: true }
@@ -127,7 +127,7 @@ describe('EmailCapture UI Component', () => {
     it('should show loading state during submission', async () => {
       const user = userEvent.setup()
       // Mock fetch to delay resolution
-      global.fetch = vi.fn(
+      globalThis.fetch = vi.fn(
         () =>
           new Promise((resolve) =>
             setTimeout(() => resolve(new Response(JSON.stringify({}))), 2000)
@@ -151,7 +151,7 @@ describe('EmailCapture UI Component', () => {
 
     it('should show success state after successful submission', async () => {
       const user = userEvent.setup()
-      global.fetch = vi.fn(() =>
+      globalThis.fetch = vi.fn(() =>
         Promise.resolve(new Response(JSON.stringify({ success: true }), { status: 200 }))
       ) as typeof fetch
 
@@ -172,7 +172,7 @@ describe('EmailCapture UI Component', () => {
 
     it('should show error for failed API response', async () => {
       const user = userEvent.setup()
-      global.fetch = vi.fn(() =>
+      globalThis.fetch = vi.fn(() =>
         Promise.resolve(new Response(JSON.stringify({ error: 'Server error' }), { status: 500 }))
       ) as typeof fetch
 
@@ -194,7 +194,7 @@ describe('EmailCapture UI Component', () => {
     it('should show error for network failure', async () => {
       const user = userEvent.setup()
       vi.spyOn(console, 'error').mockImplementation(() => {})
-      global.fetch = vi.fn(() => Promise.reject(new Error('Network error'))) as typeof fetch
+      globalThis.fetch = vi.fn(() => Promise.reject(new Error('Network error'))) as typeof fetch
 
       render(<EmailCapture />)
 

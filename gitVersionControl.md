@@ -322,7 +322,7 @@ git rebase -i develop
 git merge --squash feature/my-feature
 ```
 
-1. **Push and create PR:**
+2. **Push and create PR:**
 
 ```bash
 git push origin feature/my-feature

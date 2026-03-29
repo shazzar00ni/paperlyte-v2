@@ -20,8 +20,7 @@ import { useAnalytics } from '@hooks/useAnalytics'
 // Build-time flag: true only on actual Vercel deployments (VERCEL=1 is set by Vercel CI).
 // The typeof guard prevents ReferenceError in test environments that don't provide the define.
 declare const __IS_VERCEL_DEPLOYMENT__: boolean
-const isVercel =
-  typeof __IS_VERCEL_DEPLOYMENT__ !== 'undefined' && __IS_VERCEL_DEPLOYMENT__
+const isVercel = __IS_VERCEL_DEPLOYMENT__ !== undefined && __IS_VERCEL_DEPLOYMENT__
 
 /**
  * Application root component that composes the page layout and sections.

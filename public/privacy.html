@@ -642,8 +642,8 @@
       const cookieBtn = document.getElementById('cookie-preferences-btn')
       if (cookieBtn) {
         cookieBtn.addEventListener('click', function () {
-          if (window.cookieConsent && typeof window.cookieConsent.open === 'function') {
-            window.cookieConsent.open()
+          if (globalThis.cookieConsent && typeof globalThis.cookieConsent.open === 'function') {
+            globalThis.cookieConsent.open()
           }
         })
       }

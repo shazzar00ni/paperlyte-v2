@@ -27,7 +27,7 @@ const SIZE_MAP = {
   '3x': 48,
 } as const
 
-function getIconPrefix(variant: string, convertedName: string): IconPrefix {
+function getIconPrefix(variant: IconProps['variant'], convertedName: string): IconPrefix {
   if (variant === 'brands' || isBrandIcon(convertedName)) return 'fab'
   if (variant === 'regular') return 'far'
   return 'fas'

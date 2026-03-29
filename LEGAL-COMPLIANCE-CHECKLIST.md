@@ -31,7 +31,7 @@ This checklist tracks legal compliance and production readiness for Paperlyte.
 
 Replace all placeholders with actual values before launch. If you see `**_**`, it means the information is required and must be updated.
 
-# Legal Compliance Checklist
+## Legal Compliance Checklist
 
 **Last Updated**: November 28, 2025
 **Status**: 🟡 In Progress
@@ -50,30 +50,20 @@ Use this checklist to track your progress toward legal compliance and production
 
 **Estimated Completion**: **\_** weeks
 
-<details>
-<summary><strong>Timeline Guidance</strong></summary>
+### Timeline Guidance
 
-<ul>
-  <li><strong>Typical Range:</strong> <br>
-    <ul>
-      <li>4–8 weeks for straightforward SaaS legal compliance with an experienced team and no major legal complications.</li>
-      <li>8–12+ weeks if external counsel, complex international requirements, or significant document customization are needed.</li>
-    </ul>
-  </li>
-  <li><strong>Factors Affecting Duration:</strong>
-    <ul>
-      <li>Team size and availability</li>
-      <li>Complexity of product and data flows</li>
-      <li>Attorney or external counsel response times</li>
-      <li>Number of required legal documents and reviews</li>
-      <li>Regulatory scope (e.g., GDPR, CCPA, international)</li>
-      <li>Internal review and approval cycles</li>
-    </ul>
-  </li>
-</ul>
-<em>Choose an estimate that reflects your specific situation and update as needed.</em>
+- **Typical Range:**
+  - 4–8 weeks for straightforward SaaS legal compliance with an experienced team and no major legal complications.
+  - 8–12+ weeks if external counsel, complex international requirements, or significant document customization are needed.
+- **Factors Affecting Duration:**
+  - Team size and availability
+  - Complexity of product and data flows
+  - Attorney or external counsel response times
+  - Number of required legal documents and reviews
+  - Regulatory scope (e.g., GDPR, CCPA, international)
+  - Internal review and approval cycles
 
-</details>
+*Choose an estimate that reflects your specific situation and update as needed.*
 
 ---
 
@@ -446,7 +436,7 @@ Use this checklist to track your progress toward legal compliance and production
     - [ ] (Optional) LGPD Addendum signed (if serving Brazilian users)
     - [ ] (Optional) PIPEDA Clauses/Addendum signed (if serving Canadian users)
     - [ ] (Optional) Other jurisdiction-specific data processing addendums signed (e.g., Swiss FADP, APPI for Japan, etc.)
-    - _Note: Complete these as required for each regulated market. Mark each as completed when the relevant agreement is prepared and signed._
+    - *Note: Complete these as required for each regulated market. Mark each as completed when the relevant agreement is prepared and signed.*
   - [ ] Subprocessor list provided by vendor
   - [ ] Data breach notification terms defined (24-72 hours)
   - [ ] Data deletion upon termination guaranteed
@@ -1019,7 +1009,7 @@ Use this checklist to track your progress toward legal compliance and production
 - [ ] Apply styling/branding
 - [ ] Ensure mobile responsive
 - [ ] Test accessibility (WCAG AA)
-- [ ] Add proper <title> tags
+- [ ] Add proper `<title>` tags
 - [ ] Add meta descriptions
 - [ ] Add Open Graph tags
 
@@ -1241,7 +1231,7 @@ Use this checklist to track your progress toward legal compliance and production
     - [ ] Applicable regulation(s): **\_**
     - [ ] Risk level (Low/Medium/High): **\_**
     - [ ] Assessment date (YYYY-MM-DD): **\_**
-    - _Example:_
+    - *Example:*
       - [ ] Jurisdiction name: Singapore
       - [ ] Applicable regulation(s): Personal Data Protection Act (PDPA)
       - [ ] Risk level (Low/Medium/High): Medium
@@ -1289,7 +1279,7 @@ Before going to production, verify:
 - [ ] ✅ Team trained on compliance procedures
 - [ ] ✅ Logging and tracking systems in place
 
-**🚫 DO NOT LAUNCH WITHOUT COMPLETING THIS CHECKLIST**
+### 🚫 DO NOT LAUNCH WITHOUT COMPLETING THIS CHECKLIST
 
 ---
 
@@ -1336,7 +1326,7 @@ When setting targets for compliance metrics, consider:
 - **4. Tracking & Tools:**
   - Use ticketing systems (e.g., Zendesk, Freshdesk), analytics dashboards, or shared spreadsheets. Review metrics at least monthly; automate reporting where possible. Dashboards should highlight overdue items and trends.
 
-**Privacy Requests**
+#### Privacy Requests
 
 - Privacy requests received: **\_**/month
   - **Target Setting Guidance**:
@@ -1345,7 +1335,7 @@ When setting targets for compliance metrics, consider:
     - Mature (100K+ users): 20-100+ requests/month
   - **Baseline**: Track for 3 months before setting improvement targets
 
-**Response Time**
+#### Response Time
 
 - Average response time: **\_** days (legal maximum: 30 days GDPR/CCPA)
   - **Target Setting Guidance**:
@@ -1354,7 +1344,7 @@ When setting targets for compliance metrics, consider:
     - Acceptable: 15-30 days (legal compliance)
     - **Never exceed 30 days** (regulatory violation)
 
-**Security Reports**
+#### Security Reports
 
 - Security reports received: **\_**/month
   - **Target Setting Guidance**:
@@ -1363,7 +1353,7 @@ When setting targets for compliance metrics, consider:
     - Growth stage: 2-10 reports/month
     - Consider implementing bug bounty when receiving <5/month organically
 
-**Support Tickets**
+#### Support Tickets
 
 - Support Ticket Metrics:
   1. **First Response Time**: Average time from ticket creation to first agent reply (target: <24 hours)
@@ -1376,7 +1366,7 @@ When setting targets for compliance metrics, consider:
   - Set and review targets for each metric based on team capacity and historical data
   - Monitor trends and adjust processes to improve response, resolution, and satisfaction rates
 
-**Compliance Violations**
+#### Compliance Violations
 
 - Compliance violations: **\_** (target: 0, always)
   - **Target**: Maintain zero violations every month
@@ -1401,7 +1391,7 @@ When setting targets for compliance metrics, consider:
 
 ### Email Response Metrics
 
-**Privacy Email Response Time**
+#### Privacy Email Response Time
 
 - privacy@ response time: **\_** days (target: <30)
   - **Legal requirement**: 30 days maximum (GDPR/CCPA)
@@ -1412,7 +1402,7 @@ When setting targets for compliance metrics, consider:
   - **Complex request guidance**: Route and escalate complex cases to privacy/legal leads, document all steps, and justify any extended timeline. Always resolve within 30 days.
   - **Recommended target**: 7–14 days average for most requests
 
-**Security Email Response Time**
+#### Security Email Response Time
 
 - security@ response time: **\_** hours (target: <24)
   - **Critical vulnerabilities**: <4 hours
@@ -1421,7 +1411,7 @@ When setting targets for compliance metrics, consider:
   - **Low severity**: <168 hours (7 days)
   - **Recommended target**: 24 hours average acknowledgment
 
-**Support Email Response Time**
+#### Support Email Response Time
 
 - support@ response time: **\_** hours (target: 24-48)
   - **First response (acknowledgment)**: <24 hours
@@ -1444,7 +1434,7 @@ When setting targets for compliance metrics, consider:
 - Refund rate: **\_**% (target: varies by industry, typically 5-10%)
 - Subscription cancellation rate: **\_**% (target: <5% monthly churn)
 
-**Email Deliverability Metrics**
+#### Email Deliverability Metrics
 
 - Email bounce rate: **\_**% (target: <2%)
   - Hard bounces: <0.5%
@@ -1461,7 +1451,7 @@ When setting targets for compliance metrics, consider:
 - Accessibility-related support tickets: **\_**/month
 - Remediation time for accessibility bugs: **\_** days (target: <14 days)
 
-**Data Breach/Security Metrics**
+#### Data Breach/Security Metrics
 
 - Security incidents: **\_** (target: 0)
 - Mean time to detect (MTTD): **\_** hours (target: <24 hours)
@@ -1515,4 +1505,4 @@ When setting targets for compliance metrics, consider:
 
 ---
 
-_Last Updated: November 28, 2025_
+Last Updated: November 28, 2025

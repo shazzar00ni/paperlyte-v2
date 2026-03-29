@@ -185,7 +185,7 @@ To validate our speed claims and maintain competitive differentiation, we implem
 - **Regression Threshold**: Any release that degrades performance by >15% requires optimization before ship
 - **P95 Performance**: 95th percentile must be within 30% of median (consistent experience)
 
-**Update Cadence**:
+### Update Cadence
 
 - **Quarterly Rebenchmarks**: Full test suite run Q1, Q2, Q3, Q4 of each year
 - **Competitor Major Release**: Re-test within 2 weeks of major competitor version release

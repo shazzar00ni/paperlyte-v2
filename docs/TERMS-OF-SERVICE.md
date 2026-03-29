@@ -661,7 +661,7 @@ For questions about these policies, contact [legal@paperlyte.com](mailto:legal@p
 
 | Version | Date         | Summary of Changes                                                                                                                                | Reference/Link                                   |
 | ------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| 1.0     | Nov 28, 2025 | Initial public release. Includes: <br>- GDPR/CCPA rights & retention <br>- Encryption clarified <br>- Screenshot/IP rules <br>- Policy versioning | [See details](./CHANGELOG.md#10---2025-11-28)    |
+| 1.0     | Nov 28, 2025 | Initial public release. Includes: GDPR/CCPA rights & retention, Encryption clarified, Screenshot/IP rules, Policy versioning                      | [See details](./CHANGELOG.md#10---2025-11-28)    |
 | 1.1     | (Planned)    | End-to-end encryption, Cookie/DMCA policy finalization, accessibility audit, legal review                                                         | [Planned](./CHANGELOG.md#plannedfuture-versions) |
 | —       | —            | For full changelog and future updates, see:                                                                                                       | [CHANGELOG.md](./CHANGELOG.md)                   |
 

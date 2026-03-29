@@ -157,25 +157,25 @@ The following technologies were identified through analysis of `package.json`, c
 
 ### Architectural Pattern Recognition
 
-**Pattern: Component-Based Architecture**
+#### Pattern: Component-Based Architecture
 
 - Evidence: All UI elements are React functional components
 - Location: `src/components/` directory structure
 - Characteristics: Props interfaces, composition over inheritance
 
-**Pattern: Hooks-Based State Management**
+#### Pattern: Hooks-Based State Management
 
 - Evidence: No Redux, Zustand, or Context API for global state
 - Location: `src/hooks/` directory with 7 custom hooks
 - Characteristics: Local component state, custom hooks for shared logic
 
-**Pattern: CSS Modules with Design Tokens**
+#### Pattern: CSS Modules with Design Tokens
 
 - Evidence: `*.module.css` files paired with components
 - Location: Component directories, `src/styles/variables.css`
 - Characteristics: Scoped styles, CSS custom properties, no CSS-in-JS
 
-**Pattern: Privacy-First Analytics**
+#### Pattern: Privacy-First Analytics
 
 - Evidence: PII filtering functions, DNT header checking
 - Location: `src/utils/analytics.ts`, `src/analytics/`
@@ -189,7 +189,7 @@ The following technologies were identified through analysis of `package.json`, c
 
 ### Component Tree Structure
 
-```
+```text
 <App>
 ├── <ErrorBoundary>
 │   ├── <a href="#main"> (Skip link - accessibility)
@@ -238,7 +238,7 @@ The following technologies were identified through analysis of `package.json`, c
 
 ### Data Flow Diagram
 
-```
+```text
 ┌──────────────────────────────────────────────────────────────────────┐
 │                         DATA FLOW PATTERNS                            │
 └──────────────────────────────────────────────────────────────────────┘
@@ -292,7 +292,7 @@ The following technologies were identified through analysis of `package.json`, c
 
 **Internal Structure (Header):**
 
-```
+```text
 Header/
 ├── Header.tsx          # Component logic, state management
 ├── Header.module.css   # Scoped styles
@@ -327,7 +327,7 @@ Header/
 
 **Internal Structure (Features):**
 
-```
+```text
 Features/
 ├── Features.tsx          # Maps FEATURES constant to cards
 ├── Features.module.css   # Grid layout, card styles
@@ -404,7 +404,7 @@ Features/
 
 ### Layer Architecture
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                          PRESENTATION LAYER                              │
 │  Components (layout/, sections/, pages/, ui/)                           │
@@ -514,7 +514,7 @@ interface FAQItem {
 
 ### Data Access Patterns
 
-**Pattern 1: Static Constants**
+#### Pattern 1: Static Constants
 
 Most data is static and imported directly from constants:
 
@@ -531,7 +531,7 @@ export const Features = () => (
 );
 ```
 
-**Pattern 2: Form State**
+#### Pattern 2: Form State
 
 Form data uses local component state:
 
@@ -548,7 +548,7 @@ const handleSubmit = async (e: FormEvent) => {
 }
 ```
 
-**Pattern 3: Persisted State (Documented Exception)**
+#### Pattern 3: Persisted State (Documented Exception)
 
 Theme preference persistence is controlled by a feature flag in `src/constants/config.ts`.
 This is an **explicit, documented exception** to the privacy-first approach because:
@@ -611,7 +611,7 @@ Any future localStorage usage must be:
 
 ### Entity Relationships
 
-```
+```text
 ┌─────────────────┐
 │     App         │
 └────────┬────────┘
@@ -759,7 +759,7 @@ The landing page does not require authentication. Future app authentication will
 
 **File Structure:**
 
-```
+```text
 .env.example        # Template with all variables
 .env.development    # Development defaults
 .env.production     # Production values (not committed)
@@ -788,7 +788,7 @@ Development (via Vite plugin):
 
 Production (via vercel.json/netlify.toml - identical policies):
 
-```
+```text
 Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';
 ```
 
@@ -823,7 +823,7 @@ function isSafePropertyKey(key: string): boolean {
 
 The application communicates with the following external services:
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                        SERVICE COMMUNICATION MAP                         │
 └─────────────────────────────────────────────────────────────────────────┘
@@ -910,7 +910,7 @@ export function trackEvent(eventName: string, params?: Record<string, unknown>):
 
 ### Component Composition
 
-**Pattern: Wrapper Components**
+#### Pattern: Wrapper Components
 
 Components wrap children to add behavior:
 
@@ -926,7 +926,7 @@ Components wrap children to add behavior:
 </Section>
 ```
 
-**Pattern: Compound Components**
+#### Pattern: Compound Components
 
 Related components work together:
 
@@ -940,7 +940,7 @@ Related components work together:
 
 ### State Management
 
-**Pattern: Local Component State**
+#### Pattern: Local Component State
 
 Simple useState for component-specific state:
 
@@ -950,7 +950,7 @@ const [email, setEmail] = useState('')
 const [status, setStatus] = useState<Status>('idle')
 ```
 
-**Pattern: Custom Hooks for Shared State**
+#### Pattern: Custom Hooks for Shared State
 
 Complex or shared logic extracted to hooks:
 
@@ -962,13 +962,13 @@ const { theme, toggleTheme } = useTheme()
 const { ref, isVisible } = useIntersectionObserver({ threshold: 0.1 })
 ```
 
-**Pattern: No Global State Library**
+#### Pattern: No Global State Library
 
 The landing page doesn't require Redux, Zustand, or Context for global state. This keeps the bundle small and complexity low.
 
 ### Side Effects
 
-**Pattern: useEffect for DOM Sync**
+#### Pattern: useEffect for DOM Sync
 
 ```typescript
 // Sync theme to DOM attribute
@@ -984,7 +984,7 @@ useEffect(() => {
 }, [])
 ```
 
-**Pattern: Cleanup Functions**
+#### Pattern: Cleanup Functions
 
 All effects with subscriptions include cleanup:
 
@@ -999,7 +999,7 @@ useEffect(() => {
 
 ### Rendering Optimization
 
-**Pattern: Conditional Animation**
+#### Pattern: Conditional Animation
 
 Respect user preferences for reduced motion:
 
@@ -1013,7 +1013,7 @@ return (
 );
 ```
 
-**Pattern: Intersection Observer for Lazy Animations**
+#### Pattern: Intersection Observer for Lazy Animations
 
 Only animate when visible:
 
@@ -1027,7 +1027,7 @@ return (
 );
 ```
 
-**Pattern: CSS-Only Animations**
+#### Pattern: CSS-Only Animations
 
 Prefer CSS animations over JavaScript for performance:
 
@@ -1051,7 +1051,7 @@ Prefer CSS animations over JavaScript for performance:
 
 ### Data Fetching
 
-**Pattern: Event-Driven Fetching**
+#### Pattern: Event-Driven Fetching
 
 Data is fetched on user action, not on mount:
 
@@ -1078,7 +1078,7 @@ The landing page doesn't use React Query, SWR, or similar libraries—simple fet
 
 **File Structure:**
 
-```
+```text
 ComponentName/
 ├── ComponentName.tsx        # Component implementation
 ├── ComponentName.module.css # Scoped styles
@@ -1245,7 +1245,7 @@ export function utilityName(input: string): string {
 
 ### Test Strategy Overview
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                           TESTING PYRAMID                                │
 └─────────────────────────────────────────────────────────────────────────┘
@@ -1417,7 +1417,7 @@ global.matchMedia = vi.fn().mockImplementation((query) => ({
 
 ### Deployment Topology
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                         DEPLOYMENT TOPOLOGY                              │
 └─────────────────────────────────────────────────────────────────────────┘
@@ -1541,7 +1541,7 @@ global.matchMedia = vi.fn().mockImplementation((query) => ({
 
 1. **Create component directory:**
 
-   ```
+   ```text
    src/components/sections/NewSection/
    ├── NewSection.tsx
    ├── NewSection.module.css
@@ -1631,7 +1631,7 @@ global.matchMedia = vi.fn().mockImplementation((query) => ({
 
 1. **Add environment variable:**
 
-   ```
+   ```bash
    # .env.example
    VITE_NEW_SERVICE_KEY=your-key-here
    ```

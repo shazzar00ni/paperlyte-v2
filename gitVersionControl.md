@@ -10,7 +10,7 @@ This document defines Git workflows, branching strategies, commit conventions, a
 
 ### Branch Strategy (GitFlow)
 
-```
+```text
 main (production)
   └── release/* (release candidates)
       └── develop (integration)
@@ -78,7 +78,7 @@ main (production)
 
 ### Format
 
-```
+```text
 <type>/<ticket>-<description>
 
 Examples:
@@ -100,7 +100,7 @@ release/v1.2.0
 
 **Good:**
 
-```
+```text
 feature/document-sharing
 feature/DOC-123-real-time-collaboration
 bugfix/AUTH-456-session-timeout
@@ -109,7 +109,7 @@ hotfix/PERF-789-memory-leak
 
 **Bad:**
 
-```
+```text
 feature/my-feature          # Not descriptive
 Feature/Document-Sharing    # Inconsistent case
 feature/a                   # Too short
@@ -122,7 +122,7 @@ feature/implement-the-new-document-sharing-feature-that-allows-users  # Too long
 
 ### Format (Conventional Commits)
 
-```
+```text
 <type>(<scope>): <subject>
 
 <body>
@@ -179,7 +179,7 @@ Component or area of change:
 
 **Simple commit:**
 
-```
+```text
 feat(auth): add two-factor authentication
 
 Implements TOTP-based 2FA using speakeasy library.
@@ -190,7 +190,7 @@ Closes #234
 
 **Bug fix:**
 
-```
+```text
 fix(api): resolve token expiry issue
 
 JWT tokens were expiring after 1 hour instead of 7 days
@@ -204,7 +204,7 @@ Fixes #567
 
 **Breaking change:**
 
-```
+```text
 feat(api)!: update authentication endpoints
 
 BREAKING CHANGE: The /api/auth/login endpoint now requires
@@ -224,7 +224,7 @@ Closes #890
 
 **Multiple changes:**
 
-```
+```text
 refactor(services): extract validation logic
 
 - Move email validation to separate utility
@@ -331,7 +331,7 @@ git push origin feature/my-feature
 
 ### PR Title Format
 
-```
+```text
 [TYPE] Brief description
 
 Examples:
@@ -462,7 +462,7 @@ git rebase -i develop
 
 ### Pre-release Versions
 
-```
+```text
 v1.2.0-alpha.1    # Alpha release
 v1.2.0-beta.2     # Beta release
 v1.2.0-rc.1       # Release candidate

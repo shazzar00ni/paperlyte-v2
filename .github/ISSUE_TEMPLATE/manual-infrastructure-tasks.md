@@ -1,9 +1,10 @@
 ---
 name: Manual Infrastructure Configuration Tasks
-about: Complete the remaining manual infrastructure setup tasks from Issue #14
-title: 'Complete Manual Infrastructure Configuration Tasks'
-labels: infrastructure, deployment, documentation
+about: Complete the remaining manual infrastructure setup tasks from Issue
+title: Complete Manual Infrastructure Configuration Tasks
+labels: documentation
 assignees: ''
+
 ---
 
 ## 🎯 Objective

@@ -1357,11 +1357,11 @@ When setting targets for compliance metrics, consider:
 
 - Support Ticket Metrics:
   1. **First Response Time**: Average time from ticket creation to first agent reply (target: <24 hours)
-  - Measured by ticketing system timestamps; aim for 90%+ of tickets to receive a first response within 24 hours.
-  1. **Time to Resolution**: Average time from ticket creation to final ticket close (target: 24–72 hours depending on complexity)
-  - Track separately for simple, moderate, and complex issues; set realistic targets by category.
-  1. **Customer Satisfaction Score (CSAT)**: Average score from post-resolution customer surveys (target: 85%+ positive)
-  - Measured via 1–5 star or thumbs up/down survey after ticket closure; calculate as % positive responses.
+     - Measured by ticketing system timestamps; aim for 90%+ of tickets to receive a first response within 24 hours.
+  2. **Time to Resolution**: Average time from ticket creation to final ticket close (target: 24–72 hours depending on complexity)
+     - Track separately for simple, moderate, and complex issues; set realistic targets by category.
+  3. **Customer Satisfaction Score (CSAT)**: Average score from post-resolution customer surveys (target: 85%+ positive)
+     - Measured via 1–5 star or thumbs up/down survey after ticket closure; calculate as % positive responses.
   - **Target Setting Guidance**:
   - Set and review targets for each metric based on team capacity and historical data
   - Monitor trends and adjust processes to improve response, resolution, and satisfaction rates

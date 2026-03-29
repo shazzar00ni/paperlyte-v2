@@ -1,5 +1,4 @@
-# Review Instructions
-
+# Generating PR Reviewer Instructions
 Analyze this repository and generate a concise AI PR reviewer instruction file in Markdown.
 
 The file should give a PR reviewer the essential context that won't be visible in a diff. Cover:

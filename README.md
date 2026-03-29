@@ -88,7 +88,7 @@ git clone https://github.com/yourusername/paperlyte-v2.git
 cd paperlyte-v2
 ```
 
-1. Install dependencies:
+2. Install dependencies:
 
 ```bash
 npm install

@@ -190,16 +190,39 @@ export default async function waf(
               try {
                 await reader.cancel();
               } catch {
-                // Ignore cancellation errors; we're already rejecting.
-              }
+  //
+  // To avoid unnecessary latency and memory usage, only perform this
+  // streaming check when the declared Content-Length is missing/invalid or
+  // close to the maximum allowed size.
+  const shouldAuthoritativelyCheckBodySize =
+    request.body !== null &&
+    request.method !== "GET" &&
+    request.method !== "HEAD" &&
+    (!Number.isFinite(contentLength) ||
+      contentLength >= MAX_BODY_BYTES * 0.9);
+
+  if (shouldAuthoritativelyCheckBodySize) {
+    try {
+      const clone = request.clone();
+      const body = clone.body;
+      if (body !== null) {
+        const reader = body.getReader();
+        let actualSize = 0;
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) {
+            break;
+          }
+          if (value) {
+            actualSize += value.byteLength;
+            if (actualSize > MAX_BODY_BYTES) {
               return payloadTooLarge();
             }
           }
         }
-      } catch {
-        // Any error while reading the body is treated as a bad request.
-        return badRequest();
       }
+    } catch {
+      return badRequest();
     }
   }
 

@@ -70,11 +70,11 @@
 
     # Content Security Policy
     # External origins allowed:
-    #   https://plausible.io         Plausible Analytics script + beacon (VITE_ANALYTICS_PROVIDER=plausible)
-    #   https://*.ingest.sentry.io   Sentry error telemetry (VITE_SENTRY_DSN)
-    # Note: Vercel Analytics domains (va.vercel-scripts.com, vitals.vercel-insights.com)
-    # are intentionally absent — those scripts only load on Vercel deployments.
-    Content-Security-Policy = "default-src 'self'; script-src 'self' https://plausible.io; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://plausible.io https://*.ingest.sentry.io; worker-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests;"
+    #   https://plausible.io              Plausible Analytics script + beacon (VITE_ANALYTICS_PROVIDER=plausible)
+    #   https://va.vercel-scripts.com     @vercel/analytics script (rendered unconditionally in App.tsx)
+    #   https://vitals.vercel-insights.com  @vercel/analytics beacon endpoint
+    #   https://*.ingest.sentry.io        Sentry error telemetry (VITE_SENTRY_DSN)
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://plausible.io https://va.vercel-scripts.com; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://plausible.io https://vitals.vercel-insights.com https://*.ingest.sentry.io; worker-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests;"
 
     # Prevent this site from being embedded by other origins (cross-origin)
     Cross-Origin-Opener-Policy = "same-origin"

@@ -161,8 +161,17 @@ export default async function waf(
   // 3. Decode and inspect path + query string for attack signatures
   let target: string;
   try {
-    // Decode percent-encoding to catch double-encoded traversal attempts
-    target = decodeURIComponent(url.pathname + url.search);
+    // Decode percent-encoding (up to 2 times) to catch double-encoded traversal attempts
+    const raw = url.pathname + url.search;
+    let decoded = raw;
+    for (let i = 0; i < 2; i++) {
+      const next = decodeURIComponent(decoded);
+      if (next === decoded) {
+        break;
+      }
+      decoded = next;
+    }
+    target = decoded;
   } catch {
     // Malformed percent-encoding is itself suspicious
     return badRequest();

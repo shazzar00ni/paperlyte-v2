@@ -1,0 +1,143 @@
+/**
+ * Netlify Edge Function: markdown-response
+ *
+ * Serves Markdown instead of HTML when AI agents request it via the
+ * `Accept: text/markdown` header. Reduces token usage by ~80% compared
+ * to raw HTML.
+ *
+ * ─── TESTING ──────────────────────────────────────────────────────────────
+ *
+ * Test the Markdown response with curl:
+ *   curl -H "Accept: text/markdown" https://your-site.netlify.app/
+ *   curl -H "Accept: text/markdown" https://your-site.netlify.app/privacy
+ *   curl -H "Accept: text/markdown" https://your-site.netlify.app/terms
+ *
+ * Test locally with Netlify Dev:
+ *   1. Install the Netlify CLI: npm install -g netlify-cli
+ *   2. Run: netlify dev
+ *   3. curl -H "Accept: text/markdown" http://localhost:8888/
+ *
+ * ─── ADDING / REMOVING PATHS ──────────────────────────────────────────────
+ *
+ * Paths are registered in netlify.toml via [[edge_functions]] blocks.
+ * To add a new path, append a new block:
+ *
+ *   [[edge_functions]]
+ *     path = "/blog/my-new-post"
+ *     function = "markdown-response"
+ *
+ * To remove a path, delete its corresponding [[edge_functions]] block.
+ * To cover all paths at once, set:  path = "/*"
+ * (but exclude API/asset paths by adding more specific non-edge-function rules
+ * or by checking the pathname inside this function, as done below.)
+ *
+ * ─── NOTES ────────────────────────────────────────────────────────────────
+ *
+ * • This site is a React SPA; the static HTML shell is minimal. The edge
+ *   function faithfully converts whatever HTML the origin returns, so
+ *   SSR or pre-rendered pages will produce richer Markdown output.
+ * • Turndown is imported via the `npm:` specifier supported by the Netlify
+ *   Edge Runtime (Deno-based). No npm install needed.
+ */
+
+import TurndownService from "npm:turndown@7";
+import type { Context } from "https://edge.netlify.com";
+
+// Paths that should never be converted even if accidentally matched.
+const EXCLUDED_PREFIXES = [
+  "/.evn",
+  "/.env",
+  "/assets/",
+  "/api/",
+  "/.netlify/",
+  "/favicon",
+  "/robots.txt",
+  "/sitemap",
+  "/manifest",
+];
+
+export default async function handler(
+  request: Request,
+  context: Context,
+): Promise<Response> {
+  // ── 1. Gate on Accept header ────────────────────────────────────────────
+  const accept = request.headers.get("Accept") ?? "";
+  if (!accept.includes("text/markdown")) {
+    return context.next();
+  }
+
+  // ── 2. Skip excluded paths ──────────────────────────────────────────────
+  const { pathname } = new URL(request.url);
+  if (EXCLUDED_PREFIXES.some((prefix) => pathname.startsWith(prefix))) {
+    return context.next();
+  }
+
+  try {
+    // ── 3. Fetch HTML from origin ─────────────────────────────────────────
+    const response = await context.next();
+    const contentType = response.headers.get("Content-Type") ?? "";
+
+    if (!contentType.includes("text/html")) {
+      return response;
+    }
+
+    const html = await response.text();
+
+    // ── 4. Strip non-content elements ─────────────────────────────────────
+    // Remove script tags (and inline content)
+    let cleaned = html.replace(
+      /<script\b[^>]*>[\s\S]*?<\/script>/gi,
+      "",
+    );
+    // Remove style tags (and inline content)
+    cleaned = cleaned.replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, "");
+    // Remove <link rel="stylesheet"> and other link tags
+    cleaned = cleaned.replace(/<link\b[^>]*>/gi, "");
+    // Remove HTML comments
+    cleaned = cleaned.replace(/<!--[\s\S]*?-->/g, "");
+    // Remove structural chrome: nav, header, footer, aside, noscript
+    cleaned = cleaned.replace(
+      /<(nav|header|footer|aside|noscript)\b[^>]*>[\s\S]*?<\/\1>/gi,
+      "",
+    );
+    // Remove common sidebar / cookie-banner class patterns (best-effort)
+    cleaned = cleaned.replace(
+      /<[^>]+\b(?:class|id)="[^"]*(?:sidebar|cookie|banner|ad-|advertisement)[^"]*"[^>]*>[\s\S]*?<\/[a-z]+>/gi,
+      "",
+    );
+
+    // ── 5. HTML → Markdown via Turndown ───────────────────────────────────
+    const td = new TurndownService({
+      headingStyle: "atx",
+      bulletListMarker: "-",
+      codeBlockStyle: "fenced",
+      hr: "---",
+    });
+
+    // Keep <main> and <article> but don't emit their tags
+    td.keep([]);
+    // Remove any leftover elements we don't want in the output
+    td.remove(["svg", "canvas", "picture", "figure", "template"]);
+
+    const markdown = td.turndown(cleaned).trim();
+
+    // ── 6. Compute estimated token count (chars / 4) ──────────────────────
+    const tokenEstimate = String(Math.ceil(markdown.length / 4));
+
+    return new Response(markdown, {
+      status: 200,
+      headers: {
+        "Content-Type": "text/markdown; charset=utf-8",
+        "X-Markdown-Tokens": tokenEstimate,
+        "Content-Signal": "ai-train=yes, search=yes, ai-input=yes",
+        // Prevent this stripped response from being cached as HTML
+        "Cache-Control": "no-store",
+        // Vary so CDN caches both representations separately
+        Vary: "Accept",
+      },
+    });
+  } catch {
+    // ── 7. Fallback: return original HTML unchanged ───────────────────────
+    return context.next();
+  }
+}

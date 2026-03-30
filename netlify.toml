@@ -15,6 +15,9 @@
   # Serverless functions directory
   functions = "netlify/functions"
 
+  # Edge functions directory
+  edge_functions = "netlify/edge-functions"
+
   # Node version to use
   environment = { NODE_VERSION = "20" }
 
@@ -77,3 +80,34 @@
 # Skip Netlify's build processing since Vite handles bundling and optimization
 [build.processing]
   skip_processing = true
+
+# ─── Edge Functions: Markdown-for-AI ──────────────────────────────────────────
+#
+# The `markdown-response` edge function intercepts requests that carry
+# `Accept: text/markdown` and returns a token-efficient Markdown version of
+# each page instead of the full HTML.  Only content pages are listed here;
+# API endpoints, assets, and excluded paths (e.g. /.evn) are not included.
+#
+# To add a new path:  copy one [[edge_functions]] block and change `path`.
+# To remove a path:   delete its [[edge_functions]] block.
+# To test locally:    netlify dev  →  curl -H "Accept: text/markdown" http://localhost:8888/
+#
+# Homepage (main landing page — all sections: hero, features, CTA, etc.)
+[[edge_functions]]
+  path = "/"
+  function = "markdown-response"
+
+# Privacy policy page
+[[edge_functions]]
+  path = "/privacy"
+  function = "markdown-response"
+
+# Terms of service page
+[[edge_functions]]
+  path = "/terms"
+  function = "markdown-response"
+
+# 404 page (useful for crawlers resolving unknown paths)
+[[edge_functions]]
+  path = "/404"
+  function = "markdown-response"

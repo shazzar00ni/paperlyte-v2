@@ -246,7 +246,7 @@ export default async function waf(
   // Check both the raw (encoded) form and the fully-decoded form so patterns
   // written against encoded sequences (e.g. /\.\.%2f/i) still fire alongside
   // patterns written against decoded sequences (e.g. /\.\.[/\\]/).
-  const checkTargets = decoded !== raw ? [raw, decoded] : [raw];
+  const checkTargets = decoded === raw ? [raw] : [raw, decoded];
   for (const t of checkTargets) {
     for (const pattern of ATTACK_SIGNATURES) {
       if (pattern.test(t)) {

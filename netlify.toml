@@ -82,8 +82,8 @@
     # Prevent other origins from loading this site's resources
     Cross-Origin-Resource-Policy = "same-origin"
 
-    # Prevent cross-origin data leaks in embedded iframes (requires CORP above)
-    Cross-Origin-Embedder-Policy = "require-corp"
+    # Cross-Origin-Embedder-Policy disabled to avoid blocking third-party analytics
+    Cross-Origin-Embedder-Policy = "unsafe-none"
 
     # Block Adobe/Silverlight cross-domain policy files
     X-Permitted-Cross-Domain-Policies = "none"

@@ -12,6 +12,8 @@ concurrency:
   group: production-deploy
   cancel-in-progress: false  # Never cancel an in-flight deploy — finish or fail cleanly
 
+permissions:
+  contents: read
 jobs:
   # ---------------------------------------------------------------------------
   # Pre-deploy security gate

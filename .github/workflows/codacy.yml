@@ -39,7 +39,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
 
-      # Execute Codacy Analysis CLI and generate a SARIF output with the security issues identified during the analysis
+      # Execute Codacy Analysis CLI and generate a SARIF output with the security issues identified during the analysis.
+      # upload: "false" prevents the action from auto-uploading the raw SARIF to Codacy at this point.
+      # Codacy rejects uploads containing more than 20 runs; the raw output typically contains one run per
+      # tool (23+). We merge all runs into one below and upload the merged file instead.
       - name: Run Codacy Analysis CLI
         id: codacy-run
         uses: codacy/codacy-analysis-cli-action@562ee3e92b8e92df8b67e0a5ff8aa8e261919c08  # v4.4.7
@@ -54,6 +57,9 @@ jobs:
           # Force 0 exit code to allow SARIF file generation
           # This will handover control about PR rejection to the GitHub side
           max-allowed-issues: 2147483647
+          # Disable auto-upload: the raw SARIF contains >20 runs and Codacy rejects it.
+          # The merged single-run file is uploaded in the step below instead.
+          upload: "false"
 
       # Merge multiple SARIF runs into a single run to stay within GitHub Code Scanning's
       # 20-run limit per SARIF upload. Codacy generates one run per tool (23 tools = 23 runs).
@@ -63,6 +69,53 @@ jobs:
         id: merge-sarif
         if: steps.codacy-run.conclusion == 'success'
         run: bash ./scripts/merge-sarif-runs.sh results.sarif
+
+      # Upload the merged single-run SARIF to Codacy.
+      # This replaces the auto-upload that was disabled above, ensuring Codacy receives results
+      # while staying within its 20-run-per-upload limit.
+      - name: Upload merged SARIF to Codacy
+        if: steps.merge-sarif.conclusion == 'success'
+        continue-on-error: true
+        env:
+          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
+        run: |
+          if [ -z "$CODACY_PROJECT_TOKEN" ]; then
+            echo "CODACY_PROJECT_TOKEN not set, skipping Codacy upload"
+            exit 0
+          fi
+          RUN_COUNT=$(jq '.runs | length' results.sarif)
+          echo "SARIF run count before upload: $RUN_COUNT"
+          if [ "$RUN_COUNT" -ne 1 ]; then
+            echo "Error: expected exactly 1 run after merging, got $RUN_COUNT. Skipping Codacy upload to avoid rejection."
+            exit 1
+          fi
+          ORG="${{ github.repository_owner }}"
+          REPO="${{ github.event.repository.name }}"
+          COMMIT_UUID="${{ github.sha }}"
+          echo "Uploading merged SARIF to Codacy..."
+          HTTP_STATUS=""
+          CURL_EXIT=0
+          HTTP_STATUS=$(curl -sS -o /tmp/codacy_upload_response.txt -w "%{http_code}" -X POST \
+            "https://api.codacy.com/api/v3/analysis/organizations/gh/$ORG/repositories/$REPO/upload" \
+            -H "api-token: $CODACY_PROJECT_TOKEN" \
+            -F "commitUuid=$COMMIT_UUID" \
+            -F "results=@results.sarif;type=application/json") || CURL_EXIT=$?
+          if [ "$CURL_EXIT" -ne 0 ]; then
+            echo "Error: curl failed while uploading SARIF to Codacy (exit code $CURL_EXIT)."
+            if [ -n "$HTTP_STATUS" ]; then
+              echo "Codacy upload HTTP status (if any): $HTTP_STATUS"
+            fi
+            echo "Codacy upload response (if any):"
+            cat /tmp/codacy_upload_response.txt 2>/dev/null || true
+            exit 0
+          fi
+          echo "Codacy upload HTTP status: $HTTP_STATUS"
+          cat /tmp/codacy_upload_response.txt || true
+          if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ]; then
+            echo "Codacy upload succeeded."
+          else
+            echo "Warning: Codacy upload returned HTTP $HTTP_STATUS"
+          fi
 
       # Upload the SARIF file only after successful merge.
       # Using step outcome instead of hashFiles() ensures we never upload the

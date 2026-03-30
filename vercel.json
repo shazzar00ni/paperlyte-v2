@@ -68,7 +68,7 @@
   ],
   "rewrites": [
     {
-      "source": "/((?!api($|/.*)|assets/.*|fonts/.*).*)",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ]

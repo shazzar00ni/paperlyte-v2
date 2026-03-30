@@ -85,7 +85,7 @@ const MAX_BODY_BYTES = 512 * 1024;
 const FUNCTION_ALLOWED_METHODS = new Set(["GET", "POST", "OPTIONS", "HEAD"]);
 
 // ---------------------------------------------------------------------------
-// Helpers
+// Response helpers
 // ---------------------------------------------------------------------------
 
 /** Returns a 403 Forbidden response with no body. */
@@ -117,24 +117,136 @@ function methodNotAllowed(allowed: string[]): Response {
 }
 
 // ---------------------------------------------------------------------------
+// WAF checks — each returns a blocking Response or null to continue
+// ---------------------------------------------------------------------------
+
+/**
+ * Returns `forbidden()` if the user-agent string matches a known scanner or
+ * automated attack tool, otherwise returns `null`.
+ *
+ * @param ua - Value of the `User-Agent` request header.
+ */
+function checkUserAgent(ua: string): Response | null {
+  for (const pattern of BLOCKED_USER_AGENTS) {
+    if (pattern.test(ua)) return forbidden();
+  }
+  return null;
+}
+
+/**
+ * Checks the request body size against `MAX_BODY_BYTES`.
+ *
+ * Uses the `Content-Length` header as a fast-path early rejection. For
+ * requests that carry a body the actual bytes are also measured via a cloned
+ * request so that chunked or header-less payloads cannot bypass the limit.
+ *
+ * @param request - The incoming HTTP request.
+ * @returns `payloadTooLarge()` if either size check fails, `badRequest()` if
+ *   the body cannot be read, or `null` if the size is within the limit.
+ */
+async function checkBodySize(request: Request): Promise<Response | null> {
+  const contentLength = Number(request.headers.get("content-length") ?? "0");
+  if (contentLength > MAX_BODY_BYTES) return payloadTooLarge();
+
+  const hasBody = request.body !== null
+    && request.method !== "GET"
+    && request.method !== "HEAD";
+
+  if (!hasBody) return null;
+
+  try {
+    const buffer = await request.clone().arrayBuffer();
+    if (buffer.byteLength > MAX_BODY_BYTES) return payloadTooLarge();
+  } catch {
+    return badRequest();
+  }
+
+  return null;
+}
+
+/**
+ * Iteratively percent-decodes `raw` up to three passes until the string
+ * stabilises, catching multi-encoded payloads such as:
+ * `%252e%252e%252f` → `%2e%2e%2f` → `../`
+ *
+ * @param raw - Raw URL path and query string.
+ * @returns The fully-decoded string.
+ * @throws {URIError} If `raw` contains malformed percent-encoding.
+ */
+function decodeIteratively(raw: string): string {
+  let decoded = raw;
+  for (let i = 0; i < 3; i++) {
+    const next = decodeURIComponent(decoded);
+    if (next === decoded) break; // stable — no further encoding layers
+    decoded = next;
+  }
+  return decoded;
+}
+
+/**
+ * Checks the request URL against all attack signatures.
+ *
+ * Both the raw (encoded) form and the fully-decoded form are tested so
+ * patterns for encoded sequences (e.g. `/\.\.%2f/i`) fire alongside
+ * patterns for decoded sequences (e.g. `/\.\.[/\\]/`).
+ *
+ * The query string's `+` characters are normalised to spaces before matching
+ * because `application/x-www-form-urlencoded` uses `+` to encode spaces, but
+ * `decodeURIComponent` does not convert them. Without this step, payloads like
+ * `union+select` would bypass whitespace-sensitive signatures.
+ *
+ * @param url - Parsed URL of the request.
+ * @returns `forbidden()` on a signature match, `badRequest()` on malformed
+ *   encoding, or `null` to continue.
+ */
+function checkUrlSignatures(url: URL): Response | null {
+  // Translate + to space in the query portion only (path + is literal, not a space).
+  const raw = url.pathname + url.search.replace(/\+/g, " ");
+  let decoded: string;
+  try {
+    decoded = decodeIteratively(raw);
+  } catch {
+    return badRequest();
+  }
+
+  const targets = decoded !== raw ? [raw, decoded] : [raw];
+  for (const t of targets) {
+    for (const pattern of ATTACK_SIGNATURES) {
+      if (pattern.test(t)) return forbidden();
+    }
+  }
+  return null;
+}
+
+/**
+ * Checks that requests targeting Netlify serverless function endpoints use an
+ * allowed HTTP method.
+ *
+ * @param pathname - URL pathname of the request.
+ * @param method   - HTTP method of the request.
+ * @returns `methodNotAllowed()` if the method is disallowed on a function
+ *   endpoint, or `null` to continue.
+ */
+function checkFunctionMethod(pathname: string, method: string): Response | null {
+  const isFunctionEndpoint = pathname.startsWith("/.netlify/functions/");
+  const isMethodAllowed = FUNCTION_ALLOWED_METHODS.has(method);
+  if (isFunctionEndpoint && !isMethodAllowed) {
+    return methodNotAllowed([...FUNCTION_ALLOWED_METHODS]);
+  }
+  return null;
+}
+
+// ---------------------------------------------------------------------------
 // WAF handler
 // ---------------------------------------------------------------------------
 
 /**
  * Netlify Edge Function WAF handler.
  *
- * Inspects every inbound request before it reaches the origin and blocks:
- * - Known vulnerability-scanner user agents
- * - Oversized request bodies — fast-path via `Content-Length` header, then
- *   authoritative check by reading actual body bytes via a cloned request
- * - Path traversal, sensitive-file exposure, CMS probing, SQL injection,
- *   XSS, and SSRF attack signatures — tested against both the raw URL and
- *   the fully-decoded URL (up to 3 decode passes) to catch multi-encoded
- *   payloads such as %252e%252e%252f → %2e%2e%2f → ../
- * - Disallowed HTTP methods on serverless function endpoints
- *
- * Clean requests are forwarded to the origin via `context.next()` and the
- * response is augmented with an `X-Request-ID` header for audit correlation.
+ * Runs each check in sequence; the first non-null result short-circuits
+ * and returns the blocking response to the client. Clean requests are
+ * forwarded to the origin via `context.next()` and the response is
+ * augmented with an `X-Request-ID` header for audit correlation.
  *
  * @param request - The incoming HTTP request.
  * @param context - Netlify edge-function context providing `next()`.
@@ -145,124 +257,19 @@ export default async function waf(
   context: Context,
 ): Promise<Response> {
   const url = new URL(request.url);
-  const ua = request.headers.get("user-agent") ?? "";
-  const contentLength = Number(
-    request.headers.get("content-length") ?? "0",
-  );
 
-  // 1. Block known vulnerability scanner / attack-tool user agents
-  for (const pattern of BLOCKED_USER_AGENTS) {
-    if (pattern.test(ua)) {
-      return forbidden();
-    }
-  }
+  const uaBlock = checkUserAgent(request.headers.get("user-agent") ?? "");
+  if (uaBlock) return uaBlock;
 
-  // 2. Fast-path rejection based on the declared Content-Length header.
-  // The header can be spoofed or absent (chunked transfer encoding), so this
-  // is a quick check only; the authoritative measurement follows below.
-  if (contentLength > MAX_BODY_BYTES) {
-    return payloadTooLarge();
-  }
+  const bodySizeBlock = await checkBodySize(request);
+  if (bodySizeBlock) return bodySizeBlock;
 
-  // 2a. Authoritative body-size check: measure actual bytes received for
-  // requests that carry a body. Clone the request so the original body
-  // stream remains available for the origin handler.
-  if (request.body !== null && request.method !== "GET" && request.method !== "HEAD") {
-    const cloned = request.clone();
-    const body = cloned.body;
-    if (body === null) {
-      // No body to inspect; continue processing.
-    } else {
-      const reader = body.getReader();
-      let total = 0;
-      try {
-        // Read the cloned body stream incrementally and enforce the limit
-        // while streaming, to avoid buffering arbitrarily large payloads.
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) {
-            break;
-          }
-          if (value) {
-            total += value.byteLength;
-            if (total > MAX_BODY_BYTES) {
-              // Stop reading further data and reject the request.
-              try {
-                await reader.cancel();
-              } catch {
-  //
-  // To avoid unnecessary latency and memory usage, only perform this
-  // streaming check when the declared Content-Length is missing/invalid or
-  // close to the maximum allowed size.
-  const shouldAuthoritativelyCheckBodySize =
-    request.body !== null &&
-    request.method !== "GET" &&
-    request.method !== "HEAD" &&
-    (!Number.isFinite(contentLength) ||
-      contentLength >= MAX_BODY_BYTES * 0.9);
+  const signatureBlock = checkUrlSignatures(url);
+  if (signatureBlock) return signatureBlock;
 
-  if (shouldAuthoritativelyCheckBodySize) {
-    try {
-      const clone = request.clone();
-      const body = clone.body;
-      if (body !== null) {
-        const reader = body.getReader();
-        let actualSize = 0;
-        while (true) {
-          const { value, done } = await reader.read();
-          if (done) {
-            break;
-          }
-          if (value) {
-            actualSize += value.byteLength;
-            if (actualSize > MAX_BODY_BYTES) {
-              return payloadTooLarge();
-            }
-          }
-        }
-      }
-    } catch {
-      return badRequest();
-    }
-  }
+  const methodBlock = checkFunctionMethod(url.pathname, request.method);
+  if (methodBlock) return methodBlock;
 
-  // 3. Decode and inspect path + query string for attack signatures.
-  // Iteratively decode percent-encoding (up to 3 passes) until the string
-  // stabilises, catching multi-encoded payloads such as:
-  //   %252e%252e%252f  →  %2e%2e%2f  →  ../
-  const raw = url.pathname + url.search;
-  let decoded = raw;
-  try {
-    for (let i = 0; i < 3; i++) {
-      const next = decodeURIComponent(decoded);
-      if (next === decoded) break; // stable — no further encoding layers
-      decoded = next;
-    }
-  } catch {
-    // Malformed percent-encoding is itself suspicious
-    return badRequest();
-  }
-
-  // Check both the raw (encoded) form and the fully-decoded form so patterns
-  // written against encoded sequences (e.g. /\.\.%2f/i) still fire alongside
-  // patterns written against decoded sequences (e.g. /\.\.[/\\]/).
-  const checkTargets = decoded === raw ? [raw] : [raw, decoded];
-  for (const t of checkTargets) {
-    for (const pattern of ATTACK_SIGNATURES) {
-      if (pattern.test(t)) {
-        return forbidden();
-      }
-    }
-  }
-
-  // 4. Restrict HTTP methods on serverless function endpoints
-  if (url.pathname.startsWith("/.netlify/functions/")) {
-    if (!FUNCTION_ALLOWED_METHODS.has(request.method)) {
-      return methodNotAllowed([...FUNCTION_ALLOWED_METHODS]);
-    }
-  }
-
-  // 5. Pass clean request to origin; attach a request ID for audit correlation
   const requestId = crypto.randomUUID();
   const response = await context.next();
 

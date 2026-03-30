@@ -18,27 +18,30 @@ A comprehensive audit confirms that **100% of unmerged branches** are currently 
 1.  **Orphan Branches (Critical):** 99 branches (including previously "Ready" branches like `origin/claude/configure-deployment-waf-ZbYzQ`, `origin/claude/audit-ux-copy-7zVaN`, etc.) are **orphan branches**. They have no shared history (merge base) with `main`. Merging these would be catastrophic as they would overwrite the entire project.
 2.  **Missing Critical Files & Reverted Security Helpers:** 111 branches have accidentally deleted `.npmrc`, `docs/ROADMAP.md`, `gitVersionControl.md`, or `review.md`, and have reverted critical security helpers (`hasDangerousProtocol`, `isRelativeUrl`) in `src/utils/navigation.ts`. These are ALSO orphan branches in most cases.
 
-| Regression Type                      | Count | Severity    |
-| ------------------------------------ | ----- | ----------- |
-| Orphan Branches (No shared history)  | 210   | 🔴 Critical |
-| Missing `.npmrc`                     | 95    | 🔴 Critical |
-| Missing `gitVersionControl.md`       | 104   | 🟠 High     |
-| Missing `review.md`                  | 104   | 🟠 High     |
-| Reverted Security Helpers            | 102+  | 🔴 Critical |
+| Regression Type                     | Count | Severity    |
+| ----------------------------------- | ----- | ----------- |
+| Orphan Branches (No shared history) | 210   | 🔴 Critical |
+| Missing `.npmrc`                    | 95    | 🔴 Critical |
+| Missing `gitVersionControl.md`      | 104   | 🟠 High     |
+| Missing `review.md`                 | 104   | 🟠 High     |
+| Reverted Security Helpers           | 102+  | 🔴 Critical |
 
 ### Reviewed Branches (Sample)
 
 #### `origin/claude/configure-deployment-waf-ZbYzQ`
+
 - **Status:** 🔴 Blocked (Orphan Branch)
 - **Summary:** Implements Vercel/Netlify WAF and edge functions for security.
 - **Feedback:** While the security features are valuable, this is an **orphan branch** with no merge base with `main`. Merging it as-is would be catastrophic. It must be recreated using a fresh branch from `main` and the changes applied selectively.
 
 #### `origin/claude/audit-ux-copy-7zVaN`
+
 - **Status:** 🔴 Blocked (Orphan Branch)
 - **Summary:** UX copy improvements across 18 files.
 - **Feedback:** This is also an **orphan branch**. The copy improvements look good, but they must be ported to a branch that actually shares history with the current project.
 
 #### `origin/claude/netlify-markdown-edge-function-cdyQy`
+
 - **Status:** 🔴 Blocked (Orphan Branch)
 - **Summary:** Adds a Netlify edge function for rendering Markdown responses.
 - **Feedback:** Another **orphan branch**. Same recommendation: recreate from `main`.

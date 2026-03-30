@@ -42,20 +42,42 @@ jobs:
         run: npm audit --audit-level=high
 
       - name: Verify WAF edge function compiles
-        # Confirm the edge-function TypeScript parses without errors.
+        # Confirm the edge-function TypeScript parses without syntax errors.
         # Uses tsc in --noEmit mode targeting the edge-functions directory.
+        # We ignore only the expected Deno URL import resolution error; any
+        # other diagnostics will fail the security gate.
         run: |
-          npx tsc \
+          set -euo pipefail
+
+          TS_LOG="$(mktemp)"
+
+          # Run TypeScript check against the WAF edge function.
+          if npx tsc \
             --noEmit \
             --target ES2022 \
             --module ES2022 \
             --moduleResolution bundler \
             --strict \
             --skipLibCheck \
-            netlify/edge-functions/waf.ts || true
-          # `|| true` because the Deno URL import won't resolve in a Node
-          # environment — the goal is to catch syntax errors, not type errors.
+            netlify/edge-functions/waf.ts 2> "$TS_LOG"
+          then
+            echo "WAF edge function TypeScript check passed."
+            exit 0
+          fi
 
+          # Filter out the known benign Deno URL import resolution error.
+          # Example message: "Cannot find module 'https://...' or its corresponding type declarations."
+          FILTERED_LOG="${TS_LOG}.filtered"
+          grep -v "Cannot find module 'https://" "$TS_LOG" > "$FILTERED_LOG" || true
+
+          if [ -s "$FILTERED_LOG" ]; then
+            echo "Unexpected TypeScript errors detected in WAF edge function:"
+            cat "$FILTERED_LOG"
+            exit 1
+          fi
+
+          echo "Only expected Deno URL import resolution error(s) detected; treating TypeScript check as passed."
+          exit 0
       - name: Security gate summary
         if: always()
         run: |

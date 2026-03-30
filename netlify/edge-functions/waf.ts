@@ -168,15 +168,38 @@ export default async function waf(
   // requests that carry a body. Clone the request so the original body
   // stream remains available for the origin handler.
   if (request.body !== null && request.method !== "GET" && request.method !== "HEAD") {
-    let actualSize: number;
-    try {
-      const buffer = await request.clone().arrayBuffer();
-      actualSize = buffer.byteLength;
-    } catch {
-      return badRequest();
-    }
-    if (actualSize > MAX_BODY_BYTES) {
-      return payloadTooLarge();
+    const cloned = request.clone();
+    const body = cloned.body;
+    if (body === null) {
+      // No body to inspect; continue processing.
+    } else {
+      const reader = body.getReader();
+      let total = 0;
+      try {
+        // Read the cloned body stream incrementally and enforce the limit
+        // while streaming, to avoid buffering arbitrarily large payloads.
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) {
+            break;
+          }
+          if (value) {
+            total += value.byteLength;
+            if (total > MAX_BODY_BYTES) {
+              // Stop reading further data and reject the request.
+              try {
+                await reader.cancel();
+              } catch {
+                // Ignore cancellation errors; we're already rejecting.
+              }
+              return payloadTooLarge();
+            }
+          }
+        }
+      } catch {
+        // Any error while reading the body is treated as a bad request.
+        return badRequest();
+      }
     }
   }
 

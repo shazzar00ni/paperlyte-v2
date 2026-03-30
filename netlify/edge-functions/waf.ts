@@ -60,7 +60,8 @@ const ATTACK_SIGNATURES: RegExp[] = [
   // File type probing (this site has no server-side scripts)
   /\.(php|asp|aspx|jsp|cgi|cfm|pl|py|rb|sh)(?:\?|$)/i,
   // SQL injection probes (split into individual patterns to keep complexity low)
-  /union\s+(?:all\s+)?select/i,
+  /union\s+all\s+select/i,
+  /union\s+select/i,
   /select\s+\S{1,128}\s+from/i,
   /insert\s+into/i,
   /drop\s+(?:table|database)/i,

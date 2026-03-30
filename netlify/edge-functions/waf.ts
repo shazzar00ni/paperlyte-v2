@@ -39,8 +39,8 @@ const BLOCKED_USER_AGENTS: RegExp[] = [
 const ATTACK_SIGNATURES: RegExp[] = [
   // Path traversal
   /\.\.[/\\]/,
-  /\.\.%2[Ff]/i,
-  /\.\.%5[Cc]/i,
+  /\.\.%2f/i,
+  /\.\.%5c/i,
   /\.\.%c0%af/i,
   /\.\.%c1%9c/i,
   // Sensitive file exposure
@@ -59,8 +59,14 @@ const ATTACK_SIGNATURES: RegExp[] = [
   /\/administrator\//i,
   // File type probing (this site has no server-side scripts)
   /\.(php|asp|aspx|jsp|cgi|cfm|pl|py|rb|sh)(?:\?|$)/i,
-  // SQL injection probes
-  /(?:union\s+(?:all\s+)?select|select\s+.+\s+from|insert\s+into|drop\s+(?:table|database)|alter\s+table|exec(?:ute)?\s*\(|xp_cmdshell)/i,
+  // SQL injection probes (split into individual patterns to keep complexity low)
+  /union\s+(?:all\s+)?select/i,
+  /select\s+\S+\s+from/i,
+  /insert\s+into/i,
+  /drop\s+(?:table|database)/i,
+  /alter\s+table/i,
+  /exec(?:ute)?\s*\(/i,
+  /xp_cmdshell/i,
   // XSS probes in URL
   /<script[\s>]/i,
   /javascript\s*:/i,

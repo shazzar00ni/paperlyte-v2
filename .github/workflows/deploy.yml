@@ -73,7 +73,7 @@ jobs:
           # Filter out the known benign Deno URL import resolution error.
           # Example message: "Cannot find module 'https://...' or its corresponding type declarations."
           FILTERED_LOG="${TS_LOG}.filtered"
-          grep -v "Cannot find module 'https://" "$TS_LOG" > "$FILTERED_LOG" || true
+          grep -Ev "TS2307:.*https://" "$TS_LOG" > "$FILTERED_LOG" || true
 
           if [ -s "$FILTERED_LOG" ]; then
             echo "Unexpected TypeScript errors detected in WAF edge function:"

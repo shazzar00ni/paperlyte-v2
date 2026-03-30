@@ -1,6 +1,10 @@
 import subprocess
 import os
 import sys
+import signal
+
+# Handle SIGPIPE for tools like 'head'
+signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 
 # Critical files that must be present in all branches
 CRITICAL_FILES = [

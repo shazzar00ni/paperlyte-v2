@@ -12,8 +12,9 @@ concurrency:
   group: production-deploy
   cancel-in-progress: false  # Never cancel an in-flight deploy — finish or fail cleanly
 
-permissions:
-  contents: read
+# Default to no permissions; each job declares only what it needs.
+permissions: {}
+
 jobs:
   # ---------------------------------------------------------------------------
   # Pre-deploy security gate
@@ -40,10 +41,12 @@ jobs:
         run: npm ci
 
       - name: Dependency vulnerability audit
+        id: dependency_audit
         # Block on high or critical vulnerabilities; moderate/low are informational
         run: npm audit --audit-level=high
 
       - name: Verify WAF edge function compiles
+        id: tsc_waf
         # Confirm the edge-function TypeScript parses without syntax errors.
         # Uses tsc in --noEmit mode targeting the edge-functions directory.
         # We ignore only the expected Deno URL import resolution error; any
@@ -87,7 +90,16 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Check | Status |" >> $GITHUB_STEP_SUMMARY
           echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
-          echo "| Dependency audit | ${{ job.status == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.dependency_audit.outcome }}" == "success" ]; then
+            echo "| Dependency audit | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Dependency audit | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
+          fi
+          if [ "${{ steps.tsc_waf.outcome }}" == "success" ]; then
+            echo "| WAF edge function | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| WAF edge function | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
+          fi
 
   # ---------------------------------------------------------------------------
   # Production deploy

@@ -61,7 +61,7 @@ const ATTACK_SIGNATURES: RegExp[] = [
   /\.(php|asp|aspx|jsp|cgi|cfm|pl|py|rb|sh)(?:\?|$)/i,
   // SQL injection probes (split into individual patterns to keep complexity low)
   /union\s+(?:all\s+)?select/i,
-  /select\s+\S+\s+from/i,
+  /select\s+\S{1,128}\s+from/i,
   /insert\s+into/i,
   /drop\s+(?:table|database)/i,
   /alter\s+table/i,
@@ -124,9 +124,12 @@ function methodNotAllowed(allowed: string[]): Response {
  *
  * Inspects every inbound request before it reaches the origin and blocks:
  * - Known vulnerability-scanner user agents
- * - Oversized request bodies (potential DoS / payload-stuffing)
+ * - Oversized request bodies — fast-path via `Content-Length` header, then
+ *   authoritative check by reading actual body bytes via a cloned request
  * - Path traversal, sensitive-file exposure, CMS probing, SQL injection,
- *   XSS, and SSRF attack signatures in the decoded URL
+ *   XSS, and SSRF attack signatures — tested against both the raw URL and
+ *   the fully-decoded URL (up to 3 decode passes) to catch multi-encoded
+ *   payloads such as %252e%252e%252f → %2e%2e%2f → ../
  * - Disallowed HTTP methods on serverless function endpoints
  *
  * Clean requests are forwarded to the origin via `context.next()` and the
@@ -153,33 +156,55 @@ export default async function waf(
     }
   }
 
-  // 2. Reject oversized request bodies (DoS / payload-stuffing mitigation)
+  // 2. Fast-path rejection based on the declared Content-Length header.
+  // The header can be spoofed or absent (chunked transfer encoding), so this
+  // is a quick check only; the authoritative measurement follows below.
   if (contentLength > MAX_BODY_BYTES) {
     return payloadTooLarge();
   }
 
-  // 3. Decode and inspect path + query string for attack signatures
-  let target: string;
+  // 2a. Authoritative body-size check: measure actual bytes received for
+  // requests that carry a body. Clone the request so the original body
+  // stream remains available for the origin handler.
+  if (request.body !== null && request.method !== "GET" && request.method !== "HEAD") {
+    let actualSize: number;
+    try {
+      const buffer = await request.clone().arrayBuffer();
+      actualSize = buffer.byteLength;
+    } catch {
+      return badRequest();
+    }
+    if (actualSize > MAX_BODY_BYTES) {
+      return payloadTooLarge();
+    }
+  }
+
+  // 3. Decode and inspect path + query string for attack signatures.
+  // Iteratively decode percent-encoding (up to 3 passes) until the string
+  // stabilises, catching multi-encoded payloads such as:
+  //   %252e%252e%252f  →  %2e%2e%2f  →  ../
+  const raw = url.pathname + url.search;
+  let decoded = raw;
   try {
-    // Decode percent-encoding (up to 2 times) to catch double-encoded traversal attempts
-    const raw = url.pathname + url.search;
-    let decoded = raw;
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < 3; i++) {
       const next = decodeURIComponent(decoded);
-      if (next === decoded) {
-        break;
-      }
+      if (next === decoded) break; // stable — no further encoding layers
       decoded = next;
     }
-    target = decoded;
   } catch {
     // Malformed percent-encoding is itself suspicious
     return badRequest();
   }
 
-  for (const pattern of ATTACK_SIGNATURES) {
-    if (pattern.test(target)) {
-      return forbidden();
+  // Check both the raw (encoded) form and the fully-decoded form so patterns
+  // written against encoded sequences (e.g. /\.\.%2f/i) still fire alongside
+  // patterns written against decoded sequences (e.g. /\.\.[/\\]/).
+  const checkTargets = decoded !== raw ? [raw, decoded] : [raw];
+  for (const t of checkTargets) {
+    for (const pattern of ATTACK_SIGNATURES) {
+      if (pattern.test(t)) {
+        return forbidden();
+      }
     }
   }
 
@@ -206,13 +231,12 @@ export default async function waf(
 
 export const config: Config = {
   path: "/*",
-  // Skip WAF on hashed static assets — they're content-addressed and
-  // served directly from the CDN cache, not the origin.
+  // Skip WAF on static assets served directly from the CDN cache.
+  // Fonts live under /fonts/ (e.g. /fonts/Inter-Variable.woff2); root-level
+  // font globs would never match those URLs, so /fonts/* is used instead.
   excludedPath: [
     "/assets/*",
-    "/*.woff2",
-    "/*.woff",
-    "/*.ttf",
+    "/fonts/*",
     "/*.ico",
     "/*.png",
     "/*.jpg",

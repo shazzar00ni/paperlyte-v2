@@ -68,8 +68,13 @@
     # Disable access to sensitive browser APIs
     Permissions-Policy = "geolocation=(), microphone=(), camera=(), payment=(), usb=(), bluetooth=(), serial=(), magnetometer=(), gyroscope=(), accelerometer=(), ambient-light-sensor=()"
 
-    # Content Security Policy — primarily self-hosted; allow Vercel Analytics
-    Content-Security-Policy = "default-src 'self'; script-src 'self' https://va.vercel-scripts.com; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://vitals.vercel-insights.com; worker-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests;"
+    # Content Security Policy
+    # External origins allowed:
+    #   https://plausible.io         Plausible Analytics script + beacon (VITE_ANALYTICS_PROVIDER=plausible)
+    #   https://*.ingest.sentry.io   Sentry error telemetry (VITE_SENTRY_DSN)
+    # Note: Vercel Analytics domains (va.vercel-scripts.com, vitals.vercel-insights.com)
+    # are intentionally absent — those scripts only load on Vercel deployments.
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://plausible.io; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://plausible.io https://*.ingest.sentry.io; worker-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests;"
 
     # Prevent this site from being embedded by other origins (cross-origin)
     Cross-Origin-Opener-Policy = "same-origin"
@@ -85,14 +90,6 @@
 
     # Legacy XSS auditor (defence-in-depth for older browsers)
     X-XSS-Protection = "1; mode=block"
-
-# Deploy preview & branch deploys: prevent search-engine indexing
-[[headers]]
-  for = "/*"
-
-  [headers.values]
-    # Overridden per-context below for production; default suppresses indexing
-    # on deploy previews (Netlify applies production headers only on production)
 
 # Cache static assets for 1 year (content-addressed filenames ensure freshness)
 [[headers]]

@@ -6,8 +6,8 @@ on:
     branches: [main]  # Production
   workflow_dispatch:  # Manual trigger
 
-# Prevent concurrent production deployments; cancel any queued run if a newer
-# commit arrives while the current deploy is in progress.
+# Prevent concurrent production deployments by ensuring only one deploy runs
+# at a time; newer runs queue behind the current deploy instead of cancelling it.
 concurrency:
   group: production-deploy
   cancel-in-progress: false  # Never cancel an in-flight deploy — finish or fail cleanly

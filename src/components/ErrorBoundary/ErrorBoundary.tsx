@@ -107,11 +107,11 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             <div className={styles.errorIcon} aria-hidden="true">
               <Icon name="fa-triangle-exclamation" size="xl" />
             </div>
-            <h2 className={styles.errorTitle}>Something went wrong</h2>
+            <h2 className={styles.errorTitle}>Paperlyte ran into a problem</h2>
             <p className={styles.errorMessage}>
               {showRetryButton
-                ? "We're sorry, but something unexpected happened. You can try again or reload the page."
-                : 'Multiple errors occurred. Please reload the page to continue.'}
+                ? 'An unexpected error occurred. Your notes are safe — try reloading to continue.'
+                : 'We keep hitting an error. Reload the page to start fresh — your notes are saved locally.'}
             </p>
             {this.state.error && import.meta.env.DEV && (
               <details className={styles.errorDetails}>

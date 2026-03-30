@@ -64,7 +64,7 @@ export const ServerErrorPage: FC<ServerErrorPageProps> = ({
 
         {/* Main content */}
         <h1 id="error-title" className={styles.title}>
-          Oops! Something went wrong
+          Something went wrong on our end
         </h1>
 
         <p className={styles.message}>
@@ -127,8 +127,7 @@ export const ServerErrorPage: FC<ServerErrorPageProps> = ({
           <p className={styles.statusText}>
             <Icon name="fa-clock" size="sm" />
             <span>
-              Our team has been notified and is working to resolve this issue as quickly as
-              possible.
+              We've been automatically notified and are looking into it.
             </span>
           </p>
         </div>

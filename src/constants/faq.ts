@@ -44,7 +44,7 @@ export const FAQ_ITEMS: FAQItem[] = [
     category: 'privacy',
     question: 'How is my data protected?',
     answer:
-      'End-to-end encryption before anything leaves your device. We use zero-knowledge architecture—we literally cannot read your notes even if we wanted to. Your data stays yours.',
+      'Your notes are encrypted on your device before they ever leave it. We use a zero-knowledge design — meaning even we can\'t read your notes, ever. Your data stays yours.',
   },
   {
     id: 'data-export',
@@ -64,7 +64,7 @@ export const FAQ_ITEMS: FAQItem[] = [
     category: 'general',
     question: 'How is this different from Notion/Obsidian/Evernote?',
     answer:
-      "Speed. We load 7x faster than Notion. Simplicity. We removed features instead of adding them. Privacy. End-to-end encryption is built-in, not an afterthought. We're not trying to be an all-in-one workspace—we're focused on doing one thing perfectly: capturing your thoughts.",
+      "Speed: we load 7x faster than Notion. Simplicity: we removed features instead of adding them. Privacy: end-to-end encryption is built-in, not an afterthought. We're not trying to be an all-in-one workspace — we do one thing perfectly: capture your thoughts.",
   },
   {
     id: 'free-trial',

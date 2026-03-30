@@ -152,7 +152,7 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
           handleClose()
         }, 2000)
       } catch (err) {
-        setError('Failed to submit feedback. Please try again.')
+        setError('Couldn't send your feedback. Copy your message and try again.')
         console.error('Feedback submission error:', err)
       } finally {
         setIsSubmitting(false)
@@ -340,7 +340,7 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
                 <div className={styles.formGroup}>
                   <label htmlFor="feedback-message" className={styles.label}>
                     {feedbackType === 'bug'
-                      ? 'Describe the issue you encountered'
+                      ? 'What went wrong?'
                       : 'Share your feature idea'}
                   </label>
                   <textarea
@@ -352,8 +352,8 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
                     }}
                     placeholder={
                       feedbackType === 'bug'
-                        ? 'Please provide details about the bug...'
-                        : 'Tell us about your feature idea...'
+                        ? 'What happened? What did you expect instead?'
+                        : 'What would you like Paperlyte to do? How would it help you?'
                     }
                     rows={5}
                     disabled={isSubmitting}

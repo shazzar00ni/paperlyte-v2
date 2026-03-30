@@ -1,4 +1,6 @@
 {
+  "cleanUrls": true,
+  "trailingSlash": false,
   "headers": [
     {
       "source": "/(.*)",
@@ -17,17 +19,237 @@
         },
         {
           "key": "Permissions-Policy",
-          "value": "geolocation=(), microphone=(), camera=()"
+          "value": "geolocation=(), microphone=(), camera=(), payment=(), usb=(), bluetooth=(), serial=(), magnetometer=(), gyroscope=(), accelerometer=(), ambient-light-sensor=()"
         },
         {
           "key": "Strict-Transport-Security",
-          "value": "max-age=31536000; includeSubDomains; preload"
+          "value": "max-age=63072000; includeSubDomains; preload"
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' https://va.vercel-scripts.com; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://vitals.vercel-insights.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self';"
+          "value": "default-src 'self'; script-src 'self' https://va.vercel-scripts.com; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://vitals.vercel-insights.com; worker-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests;"
+        },
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin"
+        },
+        {
+          "key": "Cross-Origin-Resource-Policy",
+          "value": "same-origin"
+        },
+        {
+          "key": "Cross-Origin-Embedder-Policy",
+          "value": "require-corp"
+        },
+        {
+          "key": "X-Permitted-Cross-Domain-Policies",
+          "value": "none"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/fonts/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
         }
       ]
     }
-  ]
+  ],
+  "rewrites": [
+    {
+      "source": "/((?!api/.*).*)",
+      "destination": "/index.html"
+    }
+  ],
+  "firewall": {
+    "version": 1,
+    "rules": [
+      {
+        "name": "Block vulnerability scanners",
+        "description": "Reject requests from known scanning tools (SQLMap, Nikto, Nmap, etc.)",
+        "active": true,
+        "conditionGroup": [
+          {
+            "conditions": [
+              {
+                "type": "user_agent",
+                "op": "re",
+                "value": "(?i)(sqlmap|nikto|\\bnmap\\b|masscan|acunetix|nessus|openvas|\\bw3af\\b|havij|dirbuster|gobuster|\\bwfuzz\\b|zgrab|nuclei|interactsh|metasploit|burpsuite|\\bhydra\\b|appscan|webinspect)"
+              }
+            ]
+          }
+        ],
+        "action": {
+          "mitigate": {
+            "action": "deny",
+            "rateLimit": null,
+            "redirect": null,
+            "actionDuration": null
+          }
+        }
+      },
+      {
+        "name": "Block path traversal attempts",
+        "description": "Reject requests that attempt to traverse outside the web root",
+        "active": true,
+        "conditionGroup": [
+          {
+            "conditions": [
+              {
+                "type": "path",
+                "op": "re",
+                "value": "(\\.\\.[/\\\\]|\\.\\.(25)?2[Ff]|\\.\\.(25)?5[Cc])"
+              }
+            ]
+          }
+        ],
+        "action": {
+          "mitigate": {
+            "action": "deny",
+            "rateLimit": null,
+            "redirect": null,
+            "actionDuration": null
+          }
+        }
+      },
+      {
+        "name": "Block sensitive file access",
+        "description": "Block attempts to read system files, credentials, and config",
+        "active": true,
+        "conditionGroup": [
+          {
+            "conditions": [
+              {
+                "type": "path",
+                "op": "re",
+                "value": "(?i)(/\\.env|/\\.aws|/\\.ssh|/\\.git/(config|HEAD|objects)|/etc/(passwd|shadow)|/proc/self)"
+              }
+            ]
+          }
+        ],
+        "action": {
+          "mitigate": {
+            "action": "deny",
+            "rateLimit": null,
+            "redirect": null,
+            "actionDuration": null
+          }
+        }
+      },
+      {
+        "name": "Block CMS and framework probing",
+        "description": "Block probes for WordPress, phpMyAdmin, and other CMSs not present on this site",
+        "active": true,
+        "conditionGroup": [
+          {
+            "conditions": [
+              {
+                "type": "path",
+                "op": "re",
+                "value": "(?i)(/wp-(admin|login|config|cron)|/phpmyadmin|/adminer|/xmlrpc\\.php|/administrator/)"
+              }
+            ]
+          }
+        ],
+        "action": {
+          "mitigate": {
+            "action": "deny",
+            "rateLimit": null,
+            "redirect": null,
+            "actionDuration": null
+          }
+        }
+      },
+      {
+        "name": "Block SQL injection probes in URL",
+        "description": "Reject requests with SQL injection signatures in path or query",
+        "active": true,
+        "conditionGroup": [
+          {
+            "conditions": [
+              {
+                "type": "path",
+                "op": "re",
+                "value": "(?i)(union\\s+(all\\s+)?select|select\\s+.+\\s+from|drop\\s+(table|database)|insert\\s+into|exec(ute)?\\s*\\(|xp_cmdshell)"
+              }
+            ]
+          }
+        ],
+        "action": {
+          "mitigate": {
+            "action": "deny",
+            "rateLimit": null,
+            "redirect": null,
+            "actionDuration": null
+          }
+        }
+      },
+      {
+        "name": "Block XSS probes in URL",
+        "description": "Reject requests with XSS signatures in the URL",
+        "active": true,
+        "conditionGroup": [
+          {
+            "conditions": [
+              {
+                "type": "path",
+                "op": "re",
+                "value": "(?i)(<script[\\s>]|javascript\\s*:|vbscript\\s*:|on(load|error|click|mouse|focus|blur|change)\\s*=)"
+              }
+            ]
+          }
+        ],
+        "action": {
+          "mitigate": {
+            "action": "deny",
+            "rateLimit": null,
+            "redirect": null,
+            "actionDuration": null
+          }
+        }
+      },
+      {
+        "name": "Rate limit subscription endpoint",
+        "description": "Limit subscription form submissions to 10 per minute per IP",
+        "active": true,
+        "conditionGroup": [
+          {
+            "conditions": [
+              {
+                "type": "path",
+                "op": "eq",
+                "value": "/api/subscribe"
+              }
+            ]
+          }
+        ],
+        "action": {
+          "mitigate": {
+            "action": "rate_limit",
+            "rateLimit": {
+              "requests": 10,
+              "window": 60
+            },
+            "redirect": null,
+            "actionDuration": null
+          }
+        }
+      }
+    ]
+  }
 }

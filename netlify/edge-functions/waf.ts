@@ -87,18 +87,27 @@ const FUNCTION_ALLOWED_METHODS = new Set(["GET", "POST", "OPTIONS", "HEAD"]);
 // Helpers
 // ---------------------------------------------------------------------------
 
+/** Returns a 403 Forbidden response with no body. */
 function forbidden(): Response {
   return new Response(null, { status: 403 });
 }
 
+/** Returns a 400 Bad Request response with no body. */
 function badRequest(): Response {
   return new Response(null, { status: 400 });
 }
 
+/** Returns a 413 Content Too Large response with no body. */
 function payloadTooLarge(): Response {
   return new Response(null, { status: 413 });
 }
 
+/**
+ * Returns a 405 Method Not Allowed response with an `Allow` header listing
+ * the permitted HTTP methods.
+ *
+ * @param allowed - Array of allowed HTTP method strings (e.g. `["GET", "POST"]`).
+ */
 function methodNotAllowed(allowed: string[]): Response {
   return new Response(null, {
     status: 405,
@@ -110,6 +119,23 @@ function methodNotAllowed(allowed: string[]): Response {
 // WAF handler
 // ---------------------------------------------------------------------------
 
+/**
+ * Netlify Edge Function WAF handler.
+ *
+ * Inspects every inbound request before it reaches the origin and blocks:
+ * - Known vulnerability-scanner user agents
+ * - Oversized request bodies (potential DoS / payload-stuffing)
+ * - Path traversal, sensitive-file exposure, CMS probing, SQL injection,
+ *   XSS, and SSRF attack signatures in the decoded URL
+ * - Disallowed HTTP methods on serverless function endpoints
+ *
+ * Clean requests are forwarded to the origin via `context.next()` and the
+ * response is augmented with an `X-Request-ID` header for audit correlation.
+ *
+ * @param request - The incoming HTTP request.
+ * @param context - Netlify edge-function context providing `next()`.
+ * @returns A `Response` — either a block response (4xx) or the origin response.
+ */
 export default async function waf(
   request: Request,
   context: Context,

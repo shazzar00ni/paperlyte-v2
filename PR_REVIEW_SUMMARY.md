@@ -50,7 +50,7 @@ A comprehensive audit confirms that **100% of unmerged branches** are currently 
 
 If your branch is listed as **Blocked**, please follow these steps to restore health:
 
-1.  **Check for shared history:** Run `git merge-base main <your-branch>`. If it returns nothing, your branch is an **orphan**. You MUST recreate it:
+1. **Check for shared history:** Run `git fetch origin && git merge-base origin/main <your-branch>`. If it returns nothing, your branch is an **orphan**. You MUST recreate it:
     ```bash
     git checkout main && git pull
     git checkout -b <new-branch-name>

@@ -80,8 +80,9 @@ def main():
         nav_content = run_command(["git", "show", f"{branch}:src/utils/navigation.ts"])
         if nav_content:
             for helper in SECURITY_HELPERS:
-                if helper not in nav_content:
-                    issues.append(f"Missing security helper: {helper}")
+                pattern = rf"export\s+function\s+{re.escape(helper)}\s*\("
+                if not re.search(pattern, nav_content):
+                    issues.append(f"Missing security helper definition: {helper}")
         else:
             # If the file itself is missing or cannot be read, it's a regression
             issues.append("Could not read src/utils/navigation.ts")

@@ -38,6 +38,10 @@
           "value": "same-origin"
         },
         {
+          "key": "Cross-Origin-Embedder-Policy",
+          "value": "unsafe-none"
+        },
+        {
           "key": "X-Permitted-Cross-Domain-Policies",
           "value": "none"
         },

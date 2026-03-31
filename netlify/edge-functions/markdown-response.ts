@@ -69,19 +69,27 @@ export default async function handler(
   // ── 2. Skip excluded paths ──────────────────────────────────────────────
   const { pathname } = new URL(request.url);
   if (EXCLUDED_PREFIXES.some((prefix) => pathname.startsWith(prefix))) {
+    // On error, fall back to the original HTML response if available.
+    if (response) {
+      return response;
+    }
+    // If we failed before obtaining a response, fall back to a new origin fetch.
     return context.next();
   }
 
+  let response: Response | undefined;
+
   try {
     // ── 3. Fetch HTML from origin ─────────────────────────────────────────
-    const response = await context.next();
+    response = await context.next();
     const contentType = response.headers.get("Content-Type") ?? "";
 
     if (!contentType.includes("text/html")) {
       return response;
     }
 
-    const html = await response.text();
+    const responseForMarkdown = response.clone();
+    const html = await responseForMarkdown.text();
 
     // ── 4. Strip non-content elements ─────────────────────────────────────
     // Remove script tags (and inline content)

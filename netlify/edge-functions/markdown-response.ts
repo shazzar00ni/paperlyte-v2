@@ -110,7 +110,7 @@ export default async function handler(
     );
     // Remove common sidebar / cookie-banner class patterns (best-effort)
     cleaned = cleaned.replace(
-      /<[^>]+\b(?:class|id)="[^"]*(?:sidebar|cookie|banner|ad-|advertisement)[^"]*"[^>]*>[\s\S]*?<\/[a-z]+>/gi,
+      /<([a-z][a-z0-9]*)\b[^>]*\b(?:class|id)="[^"]*(?:sidebar|cookie|banner|ad-|advertisement)[^"]*"[^>]*>[\s\S]*?<\/\1>/gi,
       "",
     );
 

@@ -71,8 +71,10 @@ export const Icon = ({
   // Parse multi-token names: "fa-spinner fa-spin" → base "fa-spinner", modifiers ["fa-spin"]
   // Extra tokens (e.g. animation classes) are appended to the rendered element's className
   const tokens = name.trim().split(/\s+/)
-  const baseName = tokens[0]
-  const modifierClasses = tokens.slice(1).join(' ')
+  // Special case: "fa-brands fa-twitter" -> base should be "fa-twitter", modifiers ["fa-brands"]
+  const hasFaBrands = tokens.includes('fa-brands')
+  const baseName = hasFaBrands ? tokens.find((t) => t !== 'fa-brands') || tokens[0] : tokens[0]
+  const modifierClasses = tokens.filter((t) => t !== baseName).join(' ')
 
   // Resolve the iconPaths lookup key, supporting both "fa-bolt" and "bolt" formats.
   // Try the base name as-is first; if not found, prepend "fa-" as a convenience fallback.

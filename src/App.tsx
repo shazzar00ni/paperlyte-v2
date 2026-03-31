@@ -55,7 +55,7 @@ function App() {
       </main>
       <Footer />
       <FeedbackWidget />
-      <Analytics />
+      {import.meta.env.PROD && !window.location.hostname.includes('localhost') && <Analytics />}
     </ErrorBoundary>
   )
 }

@@ -112,7 +112,7 @@ export const Solution = (): React.ReactElement => {
               Join the Waitlist
             </Button>
             <p className={styles.ctaMicrocopy}>
-              {WAITLIST_COUNT} people already on the list. Join them for early access.
+              {WAITLIST_COUNT} people already ahead of you. Join them for early access.
             </p>
           </div>
         </AnimatedElement>

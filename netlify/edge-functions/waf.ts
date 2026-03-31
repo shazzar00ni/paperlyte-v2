@@ -88,6 +88,24 @@ const FUNCTION_ALLOWED_METHODS = new Set(["GET", "POST", "OPTIONS", "HEAD"]);
 // Response helpers
 // ---------------------------------------------------------------------------
 
+/**
+ * Clones `response` with an additional `X-Request-ID` header set to `requestId`.
+ * Applied to every response — blocked and forwarded — so all traffic can be
+ * correlated in edge logs regardless of whether the request was blocked.
+ *
+ * @param response  - The response to annotate.
+ * @param requestId - UUID generated at the start of the WAF handler.
+ */
+function withRequestId(response: Response, requestId: string): Response {
+  const headers = new Headers(response.headers);
+  headers.set("X-Request-ID", requestId);
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
+}
+
 /** Returns a 403 Forbidden response with no body. */
 function forbidden(): Response {
   return new Response(null, { status: 403 });
@@ -243,44 +261,39 @@ function checkFunctionMethod(pathname: string, method: string): Response | null 
 /**
  * Netlify Edge Function WAF handler.
  *
+ * Generates a unique `X-Request-ID` at the start and attaches it to every
+ * response — blocked (4xx) and forwarded alike — so all traffic can be
+ * correlated in edge logs regardless of outcome.
+ *
  * Runs each check in sequence; the first non-null result short-circuits
  * and returns the blocking response to the client. Clean requests are
- * forwarded to the origin via `context.next()` and the response is
- * augmented with an `X-Request-ID` header for audit correlation.
+ * forwarded to the origin via `context.next()`.
  *
  * @param request - The incoming HTTP request.
  * @param context - Netlify edge-function context providing `next()`.
- * @returns A `Response` — either a block response (4xx) or the origin response.
+ * @returns A `Response` — either a block response (4xx) or the origin response,
+ *   always carrying an `X-Request-ID` header.
  */
 export default async function waf(
   request: Request,
   context: Context,
 ): Promise<Response> {
   const url = new URL(request.url);
+  const requestId = crypto.randomUUID();
 
   const uaBlock = checkUserAgent(request.headers.get("user-agent") ?? "");
-  if (uaBlock) return uaBlock;
+  if (uaBlock) return withRequestId(uaBlock, requestId);
 
   const bodySizeBlock = await checkBodySize(request);
-  if (bodySizeBlock) return bodySizeBlock;
+  if (bodySizeBlock) return withRequestId(bodySizeBlock, requestId);
 
   const signatureBlock = checkUrlSignatures(url);
-  if (signatureBlock) return signatureBlock;
+  if (signatureBlock) return withRequestId(signatureBlock, requestId);
 
   const methodBlock = checkFunctionMethod(url.pathname, request.method);
-  if (methodBlock) return methodBlock;
+  if (methodBlock) return withRequestId(methodBlock, requestId);
 
-  const requestId = crypto.randomUUID();
-  const response = await context.next();
-
-  const headers = new Headers(response.headers);
-  headers.set("X-Request-ID", requestId);
-
-  return new Response(response.body, {
-    status: response.status,
-    statusText: response.statusText,
-    headers,
-  });
+  return withRequestId(await context.next(), requestId);
 }
 
 export const config: Config = {

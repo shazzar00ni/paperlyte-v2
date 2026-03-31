@@ -69,9 +69,9 @@ def main():
         branch_files_raw = run_command(["git", "ls-tree", "-r", "--name-only", branch])
         if branch_files_raw:
             branch_files = set(branch_files_raw.split('\n'))
-            for file in CRITICAL_FILES:
-                if file not in branch_files:
-                    issues.append(f"Missing {file}")
+            for path in CRITICAL_FILES:
+                if path not in branch_files:
+                    issues.append(f"Missing {path}")
         else:
             issues.append("Could not list branch files")
 

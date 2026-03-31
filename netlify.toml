@@ -86,7 +86,7 @@
 # The `markdown-response` edge function intercepts requests that carry
 # `Accept: text/markdown` and returns a token-efficient Markdown version of
 # each page instead of the full HTML.  Only content pages are listed here;
-# API endpoints, assets, and excluded paths (e.g. /.evn) are not included.
+# API endpoints, assets, and excluded paths (e.g. /.env) are not included.
 #
 # To add a new path:  copy one [[edge_functions]] block and change `path`.
 # To remove a path:   delete its [[edge_functions]] block.

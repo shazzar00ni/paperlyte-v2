@@ -45,7 +45,6 @@ import type { Context } from "https://edge.netlify.com";
 
 // Paths that should never be converted even if accidentally matched.
 const EXCLUDED_PREFIXES = [
-  "/.evn",
   "/.env",
   "/assets/",
   "/api/",

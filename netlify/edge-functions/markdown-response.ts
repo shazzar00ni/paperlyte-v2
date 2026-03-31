@@ -122,8 +122,6 @@ export default async function handler(
       hr: "---",
     });
 
-    // Keep <main> and <article> but don't emit their tags
-    td.keep([]);
     // Remove any leftover elements we don't want in the output
     td.remove(["svg", "canvas", "picture", "figure", "template"]);
 

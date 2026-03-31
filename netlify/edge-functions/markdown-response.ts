@@ -143,6 +143,7 @@ export default async function handler(
     });
   } catch {
     // ── 7. Fallback: return original HTML unchanged ───────────────────────
-    return context.next();
+    return response ?? context.next();
+  }
   }
 }

@@ -34,7 +34,7 @@ describe('Solution Section', () => {
     render(<Solution />)
     const escapedCount = WAITLIST_COUNT.replace('+', '\\+')
     expect(
-      screen.getByText(new RegExp(`${escapedCount} people already on the list`))
+      screen.getByText(new RegExp(`${escapedCount} people already ahead of you`))
     ).toBeInTheDocument()
   })
 })

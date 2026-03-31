@@ -36,7 +36,7 @@ describe('OfflinePage', () => {
       render(<OfflinePage />)
 
       expect(
-        screen.getByText(/It looks like you've lost your internet connection/i)
+        screen.getByText(/You're offline — and that's okay/i)
       ).toBeInTheDocument()
     })
 
@@ -234,13 +234,13 @@ describe('OfflinePage', () => {
     it('should show cached info section by default', () => {
       render(<OfflinePage />)
 
-      expect(screen.getByText(/What you can still do:/i)).toBeInTheDocument()
+      expect(screen.getByText(/Keep working offline:/i)).toBeInTheDocument()
     })
 
     it('should hide cached info when showCachedInfo is false', () => {
       render(<OfflinePage showCachedInfo={false} />)
 
-      expect(screen.queryByText(/What you can still do:/i)).not.toBeInTheDocument()
+      expect(screen.queryByText(/Keep working offline:/i)).not.toBeInTheDocument()
     })
 
     it('should not show offline features when online', () => {
@@ -248,7 +248,7 @@ describe('OfflinePage', () => {
 
       render(<OfflinePage />)
 
-      expect(screen.queryByText(/What you can still do:/i)).not.toBeInTheDocument()
+      expect(screen.queryByText(/Keep working offline:/i)).not.toBeInTheDocument()
     })
 
     it('should list available offline features', () => {

@@ -24,10 +24,10 @@ export const Mobile = (): React.ReactElement => {
           </AnimatedElement>
 
           <AnimatedElement animation="fadeIn" delay={200}>
-            <a href="#mobile" className={styles.link}>
+            <span className={styles.link}>
               iOS &amp; Android apps — coming soon
               <Icon name="fa-arrow-right" size="sm" />
-            </a>
+            </span>
           </AnimatedElement>
         </div>
       </div>

@@ -3,6 +3,7 @@ import { Button } from '@components/ui/Button'
 import { Icon } from '@components/ui/Icon'
 import { trackEvent } from '@utils/analytics'
 import { validateEmail } from '@utils/validation'
+import { logError } from '@utils/monitoring'
 import styles from './EmailCapture.module.css'
 
 interface EmailCaptureProps {
@@ -54,13 +55,13 @@ export const EmailCapture = ({
     const { isValid, error: validationError } = validateEmail(email)
     if (!isValid) {
       setStatus('error')
-      setErrorMessage(validationError ?? 'That email address doesn't look right. Please check and try again.')
+      setErrorMessage("That email address doesn't look right. Please check and try again.")
       return
     }
 
     if (!gdprConsent) {
       setStatus('error')
-      setErrorMessage('Please confirm you'd like to receive updates.')
+      setErrorMessage("Please confirm you'd like to receive updates.")
       return
     }
 
@@ -92,10 +93,10 @@ export const EmailCapture = ({
       })
     } catch (error) {
       setStatus('error')
-      const message =
-        error instanceof Error ? error.message : 'Couldn't add you to the list. Check your email and try again.'
-      setErrorMessage(message)
-      console.error('Email subscription error:', error)
+      setErrorMessage("Couldn't add you to the list. Check your email and try again.")
+      logError(error instanceof Error ? error : new Error(String(error)), {
+        tags: { component: 'EmailCapture', action: 'subscribe' },
+      })
     }
   }
 

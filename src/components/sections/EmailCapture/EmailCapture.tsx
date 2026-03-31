@@ -50,7 +50,7 @@ export const EmailCapture = (): React.ReactElement => {
         error.message.toLowerCase().includes('invalid') ||
         error.message.toLowerCase().includes('validation')
       ) {
-        message = 'That email address doesn't look right. Please check and try again.'
+        message = "That email address doesn't look right. Please check and try again."
       }
 
       setIsLoading(false)

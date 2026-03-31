@@ -37,20 +37,20 @@ describe('Hero', () => {
       // There are multiple headings with "thoughts", use getAllByRole
       const headings = screen.getAllByRole('heading', { name: /thoughts/i })
       expect(headings.length).toBeGreaterThan(0)
-      expect(screen.getByText(/organized/i)).toBeInTheDocument()
+      expect(screen.getByText(/unchained/i)).toBeInTheDocument()
     })
 
     it('should render the subheadline', () => {
       render(<Hero />)
 
-      expect(screen.getByText(/The minimal workspace for busy professionals/i)).toBeInTheDocument()
+      expect(screen.getByText(/Note-taking so fast it gets out of your way/i)).toBeInTheDocument()
     })
 
     it('should render CTA buttons', () => {
       render(<Hero />)
 
       expect(screen.getByRole('button', { name: /start writing for free/i })).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: /view the demo/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /see how it works/i })).toBeInTheDocument()
     })
 
     it('should render trusted by section', () => {
@@ -73,10 +73,10 @@ describe('Hero', () => {
       expect(classList.some((cls) => cls.includes('primary'))).toBe(true)
     })
 
-    it('should have View the Demo button with secondary variant', () => {
+    it('should have See How It Works button with secondary variant', () => {
       render(<Hero />)
 
-      const button = screen.getByRole('button', { name: /view the demo/i })
+      const button = screen.getByRole('button', { name: /see how it works/i })
       // Verify secondary variant by checking class contains 'secondary' (CSS module hash)
       const classList = Array.from(button.classList)
       expect(classList.some((cls) => cls.includes('secondary'))).toBe(true)
@@ -116,7 +116,7 @@ describe('Hero', () => {
       document.body.removeChild(downloadSection)
     })
 
-    it('should scroll to features section when View the Demo is clicked', async () => {
+    it('should scroll to features section when See How It Works is clicked', async () => {
       const user = userEvent.setup()
 
       // Create mock features section
@@ -126,7 +126,7 @@ describe('Hero', () => {
 
       render(<Hero />)
 
-      const button = screen.getByRole('button', { name: /view the demo/i })
+      const button = screen.getByRole('button', { name: /see how it works/i })
       await user.click(button)
 
       expect(scrollIntoViewMock).toHaveBeenCalledWith({
@@ -172,14 +172,14 @@ describe('Hero', () => {
     it('should render subheadline in paragraph tag', () => {
       render(<Hero />)
 
-      const subheadline = screen.getByText(/The minimal workspace for busy professionals/i)
+      const subheadline = screen.getByText(/Note-taking so fast it gets out of your way/i)
       expect(subheadline.tagName).toBe('P')
     })
 
     it('should render headline with italic emphasis', () => {
       render(<Hero />)
 
-      const italicText = screen.getByText('organized.')
+      const italicText = screen.getByText('unchained.')
       expect(italicText.tagName).toBe('EM')
     })
   })
@@ -246,7 +246,7 @@ describe('Hero', () => {
 
       render(<Hero />)
 
-      const button = screen.getByRole('button', { name: /view the demo/i })
+      const button = screen.getByRole('button', { name: /see how it works/i })
 
       await user.click(button)
       await user.click(button)
@@ -289,7 +289,7 @@ describe('Hero', () => {
       render(<Hero />)
 
       expect(screen.getByRole('button', { name: /start writing for free/i })).toHaveAccessibleName()
-      expect(screen.getByRole('button', { name: /view the demo/i })).toHaveAccessibleName()
+      expect(screen.getByRole('button', { name: /see how it works/i })).toHaveAccessibleName()
     })
 
     it('should have main heading visible to screen readers', () => {
@@ -304,7 +304,7 @@ describe('Hero', () => {
     it('should have descriptive text visible to screen readers', () => {
       render(<Hero />)
 
-      const description = screen.getByText(/The minimal workspace for busy professionals/i)
+      const description = screen.getByText(/Note-taking so fast it gets out of your way/i)
       expect(description).toBeVisible()
     })
 
@@ -324,9 +324,9 @@ describe('Hero', () => {
       const buttonTexts = buttons.map((btn) => btn.textContent)
 
       const startIndex = buttonTexts.findIndex((text) => text?.includes('Start Writing'))
-      const demoIndex = buttonTexts.findIndex((text) => text?.includes('View the Demo'))
+      const demoIndex = buttonTexts.findIndex((text) => text?.includes('See How It Works'))
 
-      // Start Writing should come before View the Demo
+      // Start Writing should come before See How It Works
       expect(startIndex).toBeLessThan(demoIndex)
     })
 

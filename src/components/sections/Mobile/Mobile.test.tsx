@@ -27,23 +27,20 @@ describe('Mobile', () => {
     })
   })
 
-  describe('Link', () => {
-    it('should render Explore Mobile Features link', () => {
+  describe('Coming Soon Label', () => {
+    it('should render iOS & Android coming soon label', () => {
       render(<Mobile />)
 
-      const link = screen.getByRole('link', { name: /Explore Mobile Features/i })
-      expect(link).toBeInTheDocument()
-      expect(link).toHaveAttribute('href', '#mobile')
+      expect(screen.getByText(/iOS & Android apps — coming soon/i)).toBeInTheDocument()
     })
 
-    it('should render arrow icon inside the link element', () => {
-      render(<Mobile />)
+    it('should render arrow icon inside the label element', () => {
+      const { container } = render(<Mobile />)
 
-      const link = screen.getByRole('link', { name: /Explore Mobile Features/i })
-      const arrowIcon = link.querySelector('svg[data-icon="fa-arrow-right"]')
+      const label = container.querySelector('[class*="link"]')
+      const arrowIcon = label?.querySelector('svg')
 
       expect(arrowIcon).toBeInTheDocument()
-      expect(link.contains(arrowIcon)).toBe(true)
     })
   })
 
@@ -76,7 +73,7 @@ describe('Mobile', () => {
 
       const headingIndex = children.findIndex((text) => text?.includes('Capture inspiration'))
       const descIndex = children.findIndex((text) => text?.includes('Our mobile app'))
-      const linkIndex = children.findIndex((text) => text?.includes('Explore Mobile'))
+      const linkIndex = children.findIndex((text) => text?.includes('iOS & Android'))
 
       expect(headingIndex).toBeLessThan(descIndex)
       expect(descIndex).toBeLessThan(linkIndex)

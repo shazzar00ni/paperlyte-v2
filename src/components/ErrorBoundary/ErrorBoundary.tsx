@@ -110,8 +110,8 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             <h2 className={styles.errorTitle}>Paperlyte ran into a problem</h2>
             <p className={styles.errorMessage}>
               {showRetryButton
-                ? 'An unexpected error occurred. Your notes are safe — try reloading to continue.'
-                : 'We keep hitting an error. Reload the page to start fresh — your notes are saved locally.'}
+                ? 'An unexpected error occurred. Try reloading to continue.'
+                : 'We keep hitting an error. Reload the page to start fresh.'}
             </p>
             {this.state.error && import.meta.env.DEV && (
               <details className={styles.errorDetails}>

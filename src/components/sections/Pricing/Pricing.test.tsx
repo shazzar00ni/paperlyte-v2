@@ -15,7 +15,7 @@ describe('Pricing', () => {
 
   it('should render main heading', () => {
     render(<Pricing />)
-    expect(screen.getByText('Simple, Transparent Pricing')).toBeInTheDocument()
+    expect(screen.getByText('Simple, transparent pricing')).toBeInTheDocument()
   })
 
   it('should render subtitle', () => {
@@ -57,7 +57,7 @@ describe('Pricing', () => {
 
     const freeTexts = screen.getAllByText('Free')
     expect(freeTexts.length).toBeGreaterThan(0)
-    expect(screen.getByText('Perfect for personal use')).toBeInTheDocument()
+    expect(screen.getByText(PRICING_PLANS.find((p) => p.id === 'free')!.tagline)).toBeInTheDocument()
     expect(screen.getByText('Get Started Free')).toBeInTheDocument()
   })
 
@@ -65,7 +65,7 @@ describe('Pricing', () => {
     render(<Pricing />)
 
     expect(screen.getByText('Pro')).toBeInTheDocument()
-    expect(screen.getByText('For power users')).toBeInTheDocument()
+    expect(screen.getByText(PRICING_PLANS.find((p) => p.id === 'pro')!.tagline)).toBeInTheDocument()
     expect(screen.getByText('4.99')).toBeInTheDocument()
     expect(screen.getAllByText('/month').length).toBeGreaterThan(0)
     expect(screen.getByText('Start Free Trial')).toBeInTheDocument()
@@ -161,7 +161,7 @@ describe('Pricing', () => {
     render(<Pricing />)
 
     // Main heading should be h2
-    const mainHeading = screen.getByText('Simple, Transparent Pricing')
+    const mainHeading = screen.getByText('Simple, transparent pricing')
     expect(mainHeading.tagName).toBe('H2')
 
     // Plan names should be h3

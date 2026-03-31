@@ -52,7 +52,7 @@ export const EmailCapture = ({
     }
 
     // Validation
-    const { isValid, error: validationError } = validateEmail(email)
+    const { isValid } = validateEmail(email)
     if (!isValid) {
       setStatus('error')
       setErrorMessage("That email address doesn't look right. Please check and try again.")

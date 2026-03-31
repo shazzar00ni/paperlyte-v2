@@ -35,7 +35,7 @@ describe('CTA', () => {
     expect(button).toBeInTheDocument()
   })
 
-  it('should render Watch the Demo Again button', () => {
+  it('should render Watch the Demo button', () => {
     render(<CTA />)
 
     const button = screen.getByRole('button', { name: /Watch the Demo/i })

@@ -127,7 +127,7 @@ export const ServerErrorPage: FC<ServerErrorPageProps> = ({
           <p className={styles.statusText}>
             <Icon name="fa-clock" size="sm" />
             <span>
-              We've been automatically notified and are looking into it.
+              We investigate errors and work to resolve them quickly.
             </span>
           </p>
         </div>

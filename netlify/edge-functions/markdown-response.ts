@@ -130,7 +130,8 @@ export default async function handler(
     const tokenEstimate = String(Math.ceil(markdown.length / 4));
 
     return new Response(markdown, {
-      status: 200,
+      status: response.status,
+      statusText: response.statusText,
       headers: {
         "Content-Type": "text/markdown; charset=utf-8",
         "X-Markdown-Tokens": tokenEstimate,

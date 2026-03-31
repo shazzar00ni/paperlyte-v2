@@ -1,0 +1,66 @@
+name: Daily PR Audit and Summary
+
+on:
+  schedule:
+    - cron: "0 1 * * *" # Every day at 01:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Run Audit
+        id: audit
+        run: |
+          python3 scripts/audit_branches.py > audit_log.txt
+          echo "AUDIT_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+
+      - name: Update PR Review Summary
+        run: |
+          # Create temporary file for today's entry
+          echo "## ${{ env.AUDIT_DATE }}" > today_entry.md
+          echo "" >> today_entry.md
+          echo "### Automated Systemic Regression Audit" >> today_entry.md
+          echo "" >> today_entry.md
+          echo '```' >> today_entry.md
+          cat audit_log.txt >> today_entry.md
+          echo '```' >> today_entry.md
+          echo "" >> today_entry.md
+
+          # Insert today's entry at the top of the file (after header)
+          HEADER_END=$(grep -n "^## " PR_REVIEW_SUMMARY.md | head -n 1 | cut -d: -f1)
+          if [ -z "$HEADER_END" ]; then
+            # If no ## headings exist, append to end
+            cat today_entry.md >> PR_REVIEW_SUMMARY.md
+          else
+            # Insert before the first ## heading
+            INSERT_LINE=$((HEADER_END - 1))
+            head -n $INSERT_LINE PR_REVIEW_SUMMARY.md > new_summary.md
+            cat today_entry.md >> new_summary.md
+            tail -n +$HEADER_END PR_REVIEW_SUMMARY.md >> new_summary.md
+            mv new_summary.md PR_REVIEW_SUMMARY.md
+          fi
+
+      - name: Format Summary
+        run: npm run format || true
+
+      - name: Commit and Push
+        run: |
+          git config user.name "Paperlyte Bot"
+          git config user.email "actions@github.com"
+          git add PR_REVIEW_SUMMARY.md
+          git commit -m "docs: automated daily PR audit summary (${{ env.AUDIT_DATE }})" || echo "No changes"
+          git push

@@ -40,7 +40,7 @@
  *   Edge Runtime (Deno-based). No npm install needed.
  */
 
-import TurndownService from "npm:turndown@7";
+import TurndownService from "npm:turndown@7.1.2";
 import type { Context } from "https://edge.netlify.com";
 
 // Paths that should never be converted even if accidentally matched.

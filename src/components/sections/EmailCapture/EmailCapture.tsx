@@ -39,7 +39,7 @@ export const EmailCapture = (): React.ReactElement => {
       const error = err instanceof Error ? err : new Error(String(err))
       logError(error, { tags: { context: 'waitlist-submit' } })
 
-      let message = 'Couldn't add you to the waitlist. Check your connection and try again.'
+      let message = "Couldn't add you to the waitlist. Check your connection and try again."
       if (
         error.name === 'TypeError' ||
         error.message.toLowerCase().includes('network') ||

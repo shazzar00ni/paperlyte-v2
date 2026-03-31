@@ -219,7 +219,7 @@ function decodeIteratively(raw: string): string {
  */
 function checkUrlSignatures(url: URL): Response | null {
   // Translate + to space in the query portion only (path + is literal, not a space).
-  const raw = url.pathname + url.search.replace(/\+/g, " ");
+  const raw = url.pathname + url.search.replaceAll("+", " ");
   let decoded: string;
   try {
     decoded = decodeIteratively(raw);

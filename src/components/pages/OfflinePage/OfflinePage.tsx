@@ -146,7 +146,7 @@ export const OfflinePage: FC<OfflinePageProps> = ({
           <div className={styles.featuresInfo}>
             <h2 className={styles.featuresTitle}>
               <Icon name="fa-circle-check" size="sm" />
-              <span>Keep working offline:</span>
+              <span>What you can still do:</span>
             </h2>
             <ul className={styles.featuresList}>
               <li>

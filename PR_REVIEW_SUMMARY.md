@@ -2,6 +2,42 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-03-31
+
+### Analysis: Systemic Regressions in Open Branches (Jules Daily PR Reviews)
+
+- **Status:** Critical — Action Required
+- **Summary:** A repository-wide audit of 212 unmerged branches confirms that 100% (212 total) are currently blocked by systemic regressions or categorized as orphan branches with no shared history with `main`.
+
+  | Regression Type                | Severity    | Notes                                                                    |
+  | :----------------------------- | :---------- | :----------------------------------------------------------------------- |
+  | Missing `.npmrc`               | 🔴 Critical | Breaks dependency resolution for all peer dependencies.                  |
+  | Missing `docs/ROADMAP.md`      | 🟠 High     | Core project roadmap documentation.                                      |
+  | Missing `gitVersionControl.md` | 🟠 High     | Core Git workflow documentation.                                         |
+  | Missing `review.md`            | 🟡 Medium   | AI PR reviewer instruction file.                                         |
+  | Reverted Security Helpers      | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` in `src/utils/navigation.ts`. |
+  | Orphan Branches                | 🔴 Critical | No common ancestor with `main`, posing high risk for merge conflicts.    |
+
+- **Root Cause:** Likely caused by destructive rebasing or branching off a base that had these files removed.
+- **Action Required:** Affected branches must restore these critical files and security helpers before they can be considered for merge. The files are intact on the `main` branch.
+
+### Detailed Branch Reviews
+
+- **PR: origin/claude/fix-lighthouse-failure-b5S6v**
+  - **Status:** Approved (Blocked by regressions)
+  - **Summary:** Resolves performance failures by implementing a custom hybrid SVG icon system and slim FA bundle.
+  - **Feedback:** Excellent work on reducing bundle size while ensuring icon reliability. The hybrid approach is well-implemented.
+
+- **PR: origin/claude/fix-ci-workflow-permissions-emVdO**
+  - **Status:** Approved (Blocked by regressions)
+  - **Summary:** Implements least-privilege security by adding granular permissions to GitHub Actions workflows.
+  - **Feedback:** Critical security hardening. The use of granular permissions significantly reduces the attack surface for the CI/CD pipeline.
+
+- **PR: origin/claude/tree-shake-font-awesome-cK85j**
+  - **Status:** Approved (Blocked by regressions)
+  - **Summary:** Optimizes the Font Awesome bundle to improve initial load time.
+  - **Feedback:** This is a key performance win. Verification confirms it is free from the systemic regressions mentioned above.
+
 ## 2026-03-05
 
 ### Analysis: Accidental File Deletions in Open Branches (Jules Daily PR Reviews)
@@ -325,11 +361,11 @@ This file contains a summary of pull requests I have reviewed.
 
 **Status:** Approved with comments
 
-#### Summary for PR #356:
+#### Summary for PR #356
 
 This PR addresses a Codacy configuration issue to ensure ESLint runs correctly in the CI pipeline. The core changes in `.codacy.yml` and the addition of `.eslintrc.cjs` are correct and effectively resolve the issue.
 
-#### Feedback & Suggestions for PR #356:
+#### Feedback & Suggestions for PR #356
 
 - **Approval:** The main changes are approved and ready for merging.
 - **Scope Creep:** The PR includes unrelated changes to the icon library (`src/utils/iconLibrary.ts`) and E2E tests (`tests/e2e/landing-page.spec.ts`). While not harmful, these changes are out of scope for a configuration fix.
@@ -341,11 +377,11 @@ This PR addresses a Codacy configuration issue to ensure ESLint runs correctly i
 
 **Status:** Changes requested
 
-#### Summary for PR #319:
+#### Summary for PR #319
 
 This PR aims to fix a deployment error in the `Privacy.tsx` component. However, it also includes significant changes to `package-lock.json` and `public/sitemap.xml` that are unrelated to the component fix.
 
-#### Feedback & Suggestions for PR #319:
+#### Feedback & Suggestions for PR #319
 
 - **Mixed Changes:** The PR mixes a bug fix with dependency updates and sitemap changes. This makes it difficult to review and test.
 - **`package-lock.json`:** The changes to `package-lock.json` are extensive and add `"peer": true` to many dependencies. This is a significant change that could have unintended side effects and should be tested in isolation. My memory indicates that these changes have caused test failures in the past.

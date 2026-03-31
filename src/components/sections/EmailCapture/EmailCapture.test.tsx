@@ -99,10 +99,7 @@ describe('EmailCapture Section', () => {
   })
 
   it('shows invalid email error message when server reports an invalid email', async () => {
-    vi.stubGlobal(
-      'fetch',
-      vi.fn().mockRejectedValue(new Error('invalid email address provided'))
-    )
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('invalid email address provided')))
     const user = userEvent.setup()
     render(<EmailCapture />)
 

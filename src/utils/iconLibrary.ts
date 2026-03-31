@@ -72,10 +72,7 @@ export const brandIconNames = new Set<string>([
 /**
  * Set of all valid icon names in the registry
  */
-export const validIconNames = new Set<string>([
-  ...Object.values(iconNameMap),
-  'circle-question',
-])
+export const validIconNames = new Set<string>([...Object.values(iconNameMap), 'circle-question'])
 
 /**
  * Helper function to convert old icon names to new format
@@ -103,4 +100,3 @@ export const isBrandIcon = (iconName: string): boolean => {
 export const isValidIcon = (iconName: string): boolean => {
   return validIconNames.has(iconName)
 }
-

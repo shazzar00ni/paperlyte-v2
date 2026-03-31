@@ -57,7 +57,8 @@ describe('Icon', () => {
     it('should apply aria-hidden="true" when no ariaLabel is provided', () => {
       const { container } = render(<Icon name="fa-bolt" />)
       // FontAwesomeIcon renders as svg; find it or the span fallback
-      const icon = container.querySelector('svg') ?? container.querySelector('span.icon-placeholder')
+      const icon =
+        container.querySelector('svg') ?? container.querySelector('span.icon-placeholder')
       expect(icon).toHaveAttribute('aria-hidden', 'true')
     })
 
@@ -209,7 +210,8 @@ describe('Icon', () => {
 
     it('should apply custom className to custom SVG icon (fa-bolt)', () => {
       const { container } = render(<Icon name="fa-bolt" className="custom-class" />)
-      const icon = container.querySelector('svg') ?? container.querySelector('span.icon-placeholder')
+      const icon =
+        container.querySelector('svg') ?? container.querySelector('span.icon-placeholder')
       expect(icon).toHaveClass('custom-class')
     })
   })

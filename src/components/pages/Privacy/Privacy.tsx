@@ -175,9 +175,9 @@ export function Privacy() {
               <h2>Cookies & Tracking</h2>
               <p>
                 <strong>Current Landing Page:</strong> We use Plausible Analytics to understand how
-                visitors interact with our waitlist page. Plausible is a privacy-focused, cookie-free
-                analytics tool that does not collect personal data or use cookies. No IP addresses or
-                personal identifiers are stored.
+                visitors interact with our waitlist page. Plausible is a privacy-focused,
+                cookie-free analytics tool that does not collect personal data or use cookies. No IP
+                addresses or personal identifiers are stored.
               </p>
               <p>
                 We also use Vercel Analytics for performance monitoring and Sentry for error

@@ -115,8 +115,7 @@ export const Hero = (): React.ReactElement => {
         <AnimatedElement animation="fadeIn" delay={400}>
           <p className={styles.socialProof}>
             <Icon name="fa-users" size="sm" color="var(--color-text-secondary)" />
-            &nbsp;Join{' '}
-            <strong>{WAITLIST_COUNT}</strong> people already on the waitlist
+            &nbsp;Join <strong>{WAITLIST_COUNT}</strong> people already on the waitlist
           </p>
         </AnimatedElement>
       </div>

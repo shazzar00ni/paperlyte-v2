@@ -428,7 +428,7 @@ describe('analytics/webVitals', () => {
           this.callback = callback
           this.observe = vi.fn((options: { type: string }) => {
             this.observedType = options.type
-            instances.push(this as typeof instances[0])
+            instances.push(this as (typeof instances)[0])
           })
           this.disconnect = vi.fn()
         }

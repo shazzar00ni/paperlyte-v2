@@ -252,9 +252,7 @@ describe('Hero', () => {
     it('should have accessible button labels', () => {
       render(<Hero />)
 
-      expect(
-        screen.getByRole('button', { name: /join the waitlist/i })
-      ).toHaveAccessibleName()
+      expect(screen.getByRole('button', { name: /join the waitlist/i })).toHaveAccessibleName()
     })
 
     it('should have main heading visible to screen readers', () => {
@@ -301,4 +299,3 @@ describe('Hero', () => {
     })
   })
 })
-

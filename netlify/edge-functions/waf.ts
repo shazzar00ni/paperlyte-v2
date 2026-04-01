@@ -155,8 +155,9 @@ function checkUserAgent(ua: string): Response | null {
  * Checks the request body size against `MAX_BODY_BYTES`.
  *
  * Uses the `Content-Length` header as a fast-path early rejection. For
- * requests that carry a body the actual bytes are also measured via a cloned
- * request so that chunked or header-less payloads cannot bypass the limit.
+ * requests that carry a body the stream is read incrementally so that the
+ * edge function never allocates memory for a payload that exceeds the limit —
+ * preventing an attacker from forcing full buffering before the 413 is sent.
  *
  * @param request - The incoming HTTP request.
  * @returns `payloadTooLarge()` if either size check fails, `badRequest()` if
@@ -173,8 +174,21 @@ async function checkBodySize(request: Request): Promise<Response | null> {
   if (!hasBody) return null;
 
   try {
-    const buffer = await request.clone().arrayBuffer();
-    if (buffer.byteLength > MAX_BODY_BYTES) return payloadTooLarge();
+    const stream = request.clone().body;
+    if (stream === null) return null;
+
+    const reader = stream.getReader();
+    let total = 0;
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      total += value.byteLength;
+      if (total > MAX_BODY_BYTES) {
+        await reader.cancel();
+        return payloadTooLarge();
+      }
+    }
   } catch {
     return badRequest();
   }

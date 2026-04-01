@@ -43,6 +43,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history required for SonarCloud blame data and new-code detection
+
       - name: Analyze with SonarCloud
 
         # You can pin the exact commit or the version.

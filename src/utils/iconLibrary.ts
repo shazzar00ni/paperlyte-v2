@@ -13,21 +13,14 @@
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 
-// Solid icons that are NOT in the custom SVG set and need FA rendering
+// Only faStar remains — it needs the filled/solid style for ratings and popular badges.
+// All other previously-FA icons (heart, leaf, rocket, chevrons, etc.) are now served
+// by the custom SVG set in icons.ts and no longer require the FA library.
 import {
-  faStar, // Testimonial star ratings (filled solid style required)
-  faHeart, // Used in tests
-  faLeaf, // Pricing plans - eco-friendly tier
-  faRocket, // Pricing plans - premium tier
+  faStar, // Testimonial star ratings & popular badge (filled solid style required)
 } from '@fortawesome/free-solid-svg-icons'
 
-// Register only the icons that still use the FA fallback path
-library.add(
-  faStar,
-  faHeart,
-  faLeaf,
-  faRocket
-)
+library.add(faStar)
 
 /**
  * Icon name mapping for easy reference

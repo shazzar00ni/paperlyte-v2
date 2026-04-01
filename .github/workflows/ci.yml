@@ -294,7 +294,9 @@ jobs:
 
       - name: Run Lighthouse CI
         id: lighthouse
-        run: npx @lhci/cli@0.15.1 autorun --config=./.lighthouserc.json
+        run: |
+          mkdir -p .lighthouseci
+          npx @lhci/cli@0.15.1 autorun --config=./.lighthouserc.json
         continue-on-error: true
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
@@ -307,6 +309,7 @@ jobs:
           name: lighthouse-results
           path: .lighthouseci/
           retention-days: 30
+          if-no-files-found: warn
 
       - name: Generate Lighthouse report summary
         if: always()

@@ -68,11 +68,7 @@ export default async function handler(
   // ── 2. Skip excluded paths ──────────────────────────────────────────────
   const { pathname } = new URL(request.url);
   if (EXCLUDED_PREFIXES.some((prefix) => pathname.startsWith(prefix))) {
-    // On error, fall back to the original HTML response if available.
-    if (response) {
-      return response;
-    }
-    // If we failed before obtaining a response, fall back to a new origin fetch.
+    // For excluded paths, bypass Markdown conversion and pass through.
     return context.next();
   }
 

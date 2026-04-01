@@ -122,6 +122,10 @@ class Analytics {
       return
     }
 
+    if (this.config?.debug) {
+      console.log('[Analytics] Page view tracked:', url)
+    }
+
     this.provider?.trackPageView(url)
 
     if (this.config?.debug) {
@@ -156,6 +160,10 @@ class Analytics {
   trackWebVitals(vitals: Parameters<AnalyticsProvider['trackWebVitals']>[0]): void {
     if (!this.isEnabled()) {
       return
+    }
+
+    if (this.config?.debug) {
+      console.log('[Analytics] Web Vitals tracked:', vitals)
     }
 
     this.provider?.trackWebVitals(vitals)

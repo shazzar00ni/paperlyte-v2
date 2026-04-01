@@ -8,18 +8,10 @@
  * left unchanged and continues to point to production.
  */
 export function initializeMetaTags(): void {
-  const isProd = import.meta.env.PROD
   const currentUrl = window.location.origin
 
   // In development, prevent search engine indexing and update social sharing URLs
-  if (!isProd) {
-    console.log('[Meta Tags] Initialized for development environment')
-    console.log('  - Robots: noindex, nofollow')
-    console.log('  - Keywords: removed')
-    console.log('  - Canonical URL: unchanged (points to production)')
-    console.log(`  - Open Graph URLs: updated to ${currentUrl}`)
-    console.log(`  - Twitter Card URLs: updated to ${currentUrl}`)
-
+  if (import.meta.env.DEV) {
     // Prevent indexing in development
     const robotsMeta = document.querySelector('meta[name="robots"]')
     if (robotsMeta) {
@@ -59,5 +51,12 @@ export function initializeMetaTags(): void {
     if (twitterImage) {
       twitterImage.setAttribute('content', currentUrl + '/og-image.png')
     }
+
+    console.log('[Meta Tags] Initialized for development environment')
+    console.log('  - Robots: noindex, nofollow')
+    console.log('  - Keywords: removed')
+    console.log('  - Canonical URL: unchanged (points to production)')
+    console.log(`  - Open Graph URLs: updated to ${currentUrl}`)
+    console.log(`  - Twitter Card URLs: updated to ${currentUrl}`)
   }
 }

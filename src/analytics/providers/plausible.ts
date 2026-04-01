@@ -26,7 +26,7 @@ export class PlausibleProvider implements AnalyticsProvider {
    */
   init(config: AnalyticsConfig): void {
     if (this.initialized) {
-      if (config.debug) {
+      if (config.debug || this.config?.debug) {
         console.log('[Analytics] Plausible already initialized')
       }
       return
@@ -248,10 +248,7 @@ export class PlausibleProvider implements AnalyticsProvider {
    * Removes the Plausible script and resets state
    */
   disable(): void {
-    if (this.config?.debug) {
-      console.log('[Analytics] Plausible disabled')
-    }
-
+    const debugEnabled = this.config?.debug
     this.initialized = false
     this.scriptLoaded = false
     this.config = null
@@ -268,6 +265,10 @@ export class PlausibleProvider implements AnalyticsProvider {
     // Clean up window global
     if (typeof window !== 'undefined' && window.plausible) {
       delete window.plausible
+    }
+
+    if (debugEnabled) {
+      console.log('[Analytics] Plausible disabled')
     }
   }
 

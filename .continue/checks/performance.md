@@ -26,7 +26,7 @@ Review changed files for patterns that would regress these targets:
 
 6. **Unthrottled event listeners**: `scroll`, `resize`, or `mousemove` listeners that are not debounced or throttled. These directly harm INP and FID scores.
 
-7. **Font loading regressions**: New web fonts added without `font-display: swap` or without being preloaded in the `<head>`. The project already uses Google Fonts — additions must follow the same pattern.
+7. **Font loading regressions**: New web fonts added without `font-display: swap` or without being preloaded in the `<head>`. The project self-hosts fonts (see `src/styles/typography.css` and local `/fonts/*.woff2` preloads) — additions must follow the same self-hosted, preloaded pattern.
 
 8. **Animations using non-composited properties**: CSS transitions or `@keyframes` animating `width`, `height`, `top`, `left`, `margin`, or `padding` instead of `transform` and `opacity`. These trigger layout recalculation and hurt CLS/INP.
 

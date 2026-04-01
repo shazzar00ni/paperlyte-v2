@@ -10,7 +10,7 @@ Review changed TypeScript and TSX files for these violations:
 
 2. **Type assertions without justification**: `as SomeType` casts that are not accompanied by a comment explaining why the cast is safe. Casts that widen a type (e.g., `as any`, `as unknown as Foo`) are especially suspicious and almost always indicate a design problem.
 
-3. **Missing return type annotations on exported functions**: All exported functions and component props interfaces must have explicit return types. Inline arrow functions used as callbacks are exempt if the type is fully inferred from context.
+3. **Missing type annotations on exported APIs**: All exported functions and React components must declare an explicit return type. All exported props interfaces must be explicitly declared rather than inferred from usage. Inline arrow functions used as callbacks are exempt if the type is fully inferred from context.
 
 4. **Loose event handler types**: Event handlers typed as `(e: any) => void` instead of the correct React event type (e.g., `React.ChangeEvent<HTMLInputElement>`, `React.MouseEvent<HTMLButtonElement>`, `React.FormEvent<HTMLFormElement>`).
 

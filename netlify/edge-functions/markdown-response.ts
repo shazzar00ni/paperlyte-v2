@@ -36,11 +36,14 @@
  * • This site is a React SPA; the static HTML shell is minimal. The edge
  *   function faithfully converts whatever HTML the origin returns, so
  *   SSR or pre-rendered pages will produce richer Markdown output.
- * • Turndown is imported via the `npm:` specifier supported by the Netlify
- *   Edge Runtime (Deno-based). No npm install needed.
+ * • Both Turndown and sanitize-html are imported via the `npm:` specifier
+ *   supported by the Netlify Edge Runtime (Deno-based). No npm install needed.
+ * • sanitize-html is the primary sanitizer: it parses HTML into a real node
+ *   tree and applies an allowlist, which is far more robust than regex.
  */
 
 import TurndownService from 'npm:turndown@7.1.2'
+import sanitizeHtml from 'npm:sanitize-html@2.13.1'
 import type { Context } from 'https://edge.netlify.com'
 
 // Paths that should never be converted even if accidentally matched.
@@ -55,6 +58,21 @@ const EXCLUDED_PREFIXES = [
   '/manifest',
 ]
 
+// Tags whose content Turndown can convert to useful Markdown.
+// Everything not in this list is discarded by sanitize-html.
+const ALLOWED_TAGS = [
+  'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+  'p', 'br', 'hr',
+  'strong', 'em', 'b', 'i', 'u', 's', 'del', 'ins', 'mark',
+  'code', 'pre', 'kbd', 'samp', 'cite', 'q', 'abbr', 'time',
+  'ul', 'ol', 'li', 'dl', 'dt', 'dd',
+  'blockquote',
+  'a', 'img',
+  'table', 'thead', 'tbody', 'tfoot', 'tr', 'th', 'td', 'caption',
+  'section', 'article', 'main', 'div', 'span', 'details', 'summary',
+  'figure', 'figcaption',
+]
+
 export default async function handler(
   request: Request,
   context: Context,
@@ -66,110 +84,90 @@ export default async function handler(
   }
 
   // ── 2. Skip excluded paths ──────────────────────────────────────────────
-  const { pathname } = new URL(request.url);
+  const { pathname } = new URL(request.url)
   if (EXCLUDED_PREFIXES.some((prefix) => pathname.startsWith(prefix))) {
-    // For excluded paths, bypass Markdown conversion and pass through.
-    return context.next();
+    return context.next()
   }
 
-  let originResponse: Response | undefined;
+  let originResponse: Response | undefined
 
   try {
     // ── 3. Fetch HTML from origin ─────────────────────────────────────────
-    originResponse = await context.next();
-    const contentType = originResponse.headers.get("Content-Type") ?? "";
+    originResponse = await context.next()
+    const contentType = originResponse.headers.get('Content-Type') ?? ''
 
-    if (!contentType.includes("text/html")) {
-      return originResponse;
+    if (!contentType.includes('text/html')) {
+      return originResponse
     }
 
-    const responseForMarkdown = originResponse.clone();
-    const html = await responseForMarkdown.text();
+    const html = await originResponse.clone().text()
 
-    // ── 4. Strip non-content elements ─────────────────────────────────────
-    // End tags may have whitespace before the closing `>` (e.g. </script >),
-    // so all closing-tag patterns use `\s*>` instead of a bare `>`.
-
-    // Remove script tags (and inline content)
-    let cleaned = html.replace(
-      /<script\b[^>]*>[\s\S]*?<\/script\s*>/gi,
-      "",
-    );
-    // Remove style tags (and inline content)
-    cleaned = cleaned.replace(/<style\b[^>]*>[\s\S]*?<\/style\s*>/gi, "");
-    // Remove <link> tags (stylesheets, preloads, etc.)
-    cleaned = cleaned.replace(/<link\b[^>]*\/?>/gi, "");
-    // Remove HTML comments
-    cleaned = cleaned.replace(/<!--[\s\S]*?-->/g, "");
-    // Remove structural chrome: nav, header, footer, aside, noscript
-    cleaned = cleaned.replace(
-      /<(nav|header|footer|aside|noscript)\b[^>]*>[\s\S]*?<\/\1\s*>/gi,
-      "",
-    );
-    // Remove common sidebar / cookie-banner class patterns (best-effort)
-    cleaned = cleaned.replace(
-      /<([a-z][a-z0-9]*)\b[^>]*\b(?:class|id)="[^"]*(?:sidebar|cookie|banner|ad-|advertisement)[^"]*"[^>]*>[\s\S]*?<\/\1\s*>/gi,
-      "",
-    );
+    // ── 4. Sanitize with allowlist parser ─────────────────────────────────
+    // sanitize-html parses HTML into a real node tree and discards every
+    // element not in ALLOWED_TAGS (script, style, nav, header, footer,
+    // iframe, object, embed, applet, noscript etc. are all excluded).
+    // This handles malformed markup, nested tag obfuscation, whitespace in
+    // closing tags (e.g. </script\t\n bar>), and HTML comments — all in a
+    // single allowlist pass, unlike a chain of regexes.
+    const sanitized = sanitizeHtml(html, {
+      allowedTags: ALLOWED_TAGS,
+      allowedAttributes: {
+        a: ['href', 'title'],
+        img: ['src', 'alt', 'title'],
+        th: ['colspan', 'rowspan', 'scope'],
+        td: ['colspan', 'rowspan'],
+      },
+      // Discard disallowed elements and their children entirely.
+      disallowedTagsMode: 'discard',
+    })
 
     // ── 5. HTML → Markdown via Turndown ───────────────────────────────────
     const td = new TurndownService({
-      headingStyle: "atx",
-      bulletListMarker: "-",
-      codeBlockStyle: "fenced",
-      hr: "---",
-    });
+      headingStyle: 'atx',
+      bulletListMarker: '-',
+      codeBlockStyle: 'fenced',
+      hr: '---',
+    })
 
-    // Layer 1: Turndown's DOM-based removal.
-    // Regex alone can't handle nested/obfuscated patterns like
-    // <scr<script>ipt>, so we also let Turndown strip these via its
-    // own HTML parser, which builds a proper node tree before converting.
-    td.remove([
-      "script", "style", "noscript",
-      "iframe", "object", "embed", "applet",
-      "svg", "canvas", "picture", "figure", "template",
-    ]);
+    td.remove(['svg', 'canvas', 'template'])
 
-    let markdown = td.turndown(cleaned).trim();
+    let markdown = td.turndown(sanitized).trim()
 
-    // Layer 2: final pass on the Markdown string.
-    // Turndown may pass through unrecognised inline HTML as literal text.
-    // Step A – strip well-formed tags and HTML comments.
-    markdown = markdown.replace(/<!--[\s\S]*?-->/g, "");
-    markdown = markdown.replace(
-      /<\/?(script|style|iframe|object|embed|applet|noscript)\b[^>]*\/?>/gi,
-      "",
-    );
-    // Step B – escape any surviving `<` that precedes a dangerous element name,
-    // including malformed/incomplete tags with no closing `>` (e.g. bare `<script`).
-    // A lookahead is enough: once `<` becomes `&lt;` the sequence can't be parsed
-    // as an HTML tag by any renderer.
-    markdown = markdown.replace(
-      /<(?=\s*\/?\s*(?:script|style|iframe|object|embed|applet|noscript)\b)/gi,
-      "&lt;",
-    );
+    // ── 6. Belt-and-suspenders scrub on the Markdown string ───────────────
+    // Turndown may pass through unrecognised HTML as literal text.  Each
+    // pattern below is an explicit per-tag literal.  The [\s\S]*?(?:>|$)
+    // tail covers both complete tags AND bare fragments with no closing `>`
+    // (e.g. a truncated `<script` at end of string).  HTML comments use
+    // (?:-->|$) for the same reason.
+    markdown = markdown
+      .replace(/<!--[\s\S]*?(?:-->|$)/g, '')
+      .replace(/<\/?\s*script[\s\S]*?(?:>|$)/gim, '')
+      .replace(/<\/?\s*style[\s\S]*?(?:>|$)/gim, '')
+      .replace(/<\/?\s*iframe[\s\S]*?(?:>|$)/gim, '')
+      .replace(/<\/?\s*object[\s\S]*?(?:>|$)/gim, '')
+      .replace(/<\/?\s*embed[\s\S]*?(?:>|$)/gim, '')
+      .replace(/<\/?\s*applet[\s\S]*?(?:>|$)/gim, '')
+      .replace(/<\/?\s*noscript[\s\S]*?(?:>|$)/gim, '')
 
-    // ── 6. Compute estimated token count (chars / 4) ──────────────────────
-    const tokenEstimate = String(Math.ceil(markdown.length / 4));
+    // ── 7. Compute estimated token count (chars / 4) ──────────────────────
+    const tokenEstimate = String(Math.ceil(markdown.length / 4))
 
     return new Response(markdown, {
       status: originResponse.status,
       statusText: originResponse.statusText,
       headers: {
-        "Content-Type": "text/markdown; charset=utf-8",
-        "X-Markdown-Tokens": tokenEstimate,
-        "Content-Signal": "ai-train=yes, search=yes, ai-input=yes",
+        'Content-Type': 'text/markdown; charset=utf-8',
+        'X-Markdown-Tokens': tokenEstimate,
+        'Content-Signal': 'ai-train=yes, search=yes, ai-input=yes',
         // Prevent this stripped response from being cached as HTML
-        "Cache-Control": "no-store",
+        'Cache-Control': 'no-store',
         // Vary so CDN caches both representations separately
-        Vary: "Accept",
+        Vary: 'Accept',
       },
-    });
+    })
   } catch {
-    // ── 7. Fallback: pass through to origin unchanged ─────────────────────
-    // Use the already-fetched HTML response if available (conversion failed),
-    // otherwise pass through to origin (origin fetch failed).
-    if (originResponse) return originResponse;
-    return context.next();
+    // ── 8. Fallback: pass through to origin unchanged ─────────────────────
+    if (originResponse) return originResponse
+    return context.next()
   }
 }

@@ -197,17 +197,19 @@ export default async function handler(request: Request, context: Context): Promi
     const tokenEstimate = String(Math.ceil(markdown.length / 4))
 
     return new Response(markdown, {
-      status: originResponse.status,
-      statusText: originResponse.statusText,
-      headers: {
-        'Content-Type': 'text/markdown; charset=utf-8',
-        'X-Markdown-Tokens': tokenEstimate,
-        'Content-Signal': 'ai-train=yes, search=yes, ai-input=yes',
-        // Prevent this stripped response from being cached as HTML
-        'Cache-Control': 'no-store',
-        // Vary so CDN caches both representations separately
-        Vary: 'Accept',
-      },
+    const headers = new Headers(response.headers);
+    headers.set("Content-Type", "text/markdown; charset=utf-8");
+    headers.set("X-Markdown-Tokens", tokenEstimate);
+    headers.set("Content-Signal", "ai-train=yes, search=yes, ai-input=yes");
+    // Prevent this stripped response from being cached as HTML
+    headers.set("Cache-Control", "no-store");
+    // Vary so CDN caches both representations separately
+    headers.set("Vary", "Accept");
+
+    return new Response(markdown, {
+      status: response.status,
+      statusText: response.statusText,
+      headers,
     })
   } catch {
     // ── 8. Fallback: pass through to origin unchanged ─────────────────────

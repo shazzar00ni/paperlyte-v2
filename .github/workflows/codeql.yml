@@ -1,5 +1,7 @@
 # CodeQL Advanced Setup
-# Replaces GitHub's default CodeQL setup to allow configuration of the Node.js runtime version.
+# Provides an advanced CodeQL configuration that allows setting the Node.js runtime version.
+# If GitHub's default CodeQL "default setup" is enabled for this repository, disable it manually in
+# the Code scanning settings to avoid running CodeQL twice (duplicate alerts/checks).
 # See: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
 
 name: "CodeQL"

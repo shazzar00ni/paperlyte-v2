@@ -76,9 +76,7 @@ describe('ErrorBoundary', () => {
         </ErrorBoundary>
       )
 
-      expect(
-        screen.getByText(/An unexpected error occurred/i)
-      ).toBeInTheDocument()
+      expect(screen.getByText(/An unexpected error occurred/i)).toBeInTheDocument()
     })
 
     it('should log error using monitoring utility', () => {

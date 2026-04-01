@@ -22,7 +22,11 @@ const COMPARISON_DATA: ComparisonItem[] = [
   },
   {
     competitor: 'You',
-    issues: ['Just want to write', 'Ideas slipping away before you capture them', 'Simplicity that works'],
+    issues: [
+      'Just want to write',
+      'Ideas slipping away before you capture them',
+      'Simplicity that works',
+    ],
   },
 ]
 

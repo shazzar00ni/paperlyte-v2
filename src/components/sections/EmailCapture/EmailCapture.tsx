@@ -125,9 +125,7 @@ export const EmailCapture = (): React.ReactElement => {
         </AnimatedElement>
 
         <AnimatedElement animation="fadeIn" delay={100}>
-          <p className={styles.subtitle}>
-            Launching {LAUNCH_QUARTER}. Join the waitlist to:
-          </p>
+          <p className={styles.subtitle}>Launching {LAUNCH_QUARTER}. Join the waitlist to:</p>
         </AnimatedElement>
 
         <AnimatedElement animation="fadeIn" delay={200}>

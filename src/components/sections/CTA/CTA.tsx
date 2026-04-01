@@ -31,8 +31,8 @@ export const CTA = (): React.ReactElement => {
             invisible.
           </p>
           <p className={styles.subtitle}>
-            Join the waitlist and get early access two weeks before public launch — plus 50% off
-            for life.
+            Join the waitlist and get early access two weeks before public launch — plus 50% off for
+            life.
           </p>
         </AnimatedElement>
 

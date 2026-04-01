@@ -341,9 +341,7 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
                 {/* Message textarea */}
                 <div className={styles.formGroup}>
                   <label htmlFor="feedback-message" className={styles.label}>
-                    {feedbackType === 'bug'
-                      ? 'What went wrong?'
-                      : 'Share your feature idea'}
+                    {feedbackType === 'bug' ? 'What went wrong?' : 'Share your feature idea'}
                   </label>
                   <textarea
                     id="feedback-message"

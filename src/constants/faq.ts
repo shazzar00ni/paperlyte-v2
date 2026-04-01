@@ -44,7 +44,7 @@ export const FAQ_ITEMS: FAQItem[] = [
     category: 'privacy',
     question: 'How is my data protected?',
     answer:
-      'Your notes are encrypted on your device before they ever leave it. We use a zero-knowledge design — meaning even we can\'t read your notes, ever. Your data stays yours.',
+      "Your notes are encrypted on your device before they ever leave it. We use a zero-knowledge design — meaning even we can't read your notes, ever. Your data stays yours.",
   },
   {
     id: 'data-export',

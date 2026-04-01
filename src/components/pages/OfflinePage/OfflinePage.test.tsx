@@ -35,9 +35,7 @@ describe('OfflinePage', () => {
     it('should display default offline message', () => {
       render(<OfflinePage />)
 
-      expect(
-        screen.getByText(/You're offline — and that's okay/i)
-      ).toBeInTheDocument()
+      expect(screen.getByText(/You're offline — and that's okay/i)).toBeInTheDocument()
     })
 
     it('should display custom message when provided', () => {

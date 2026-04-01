@@ -8,7 +8,7 @@ Review changed CSS, TSX, and style files for these violations:
 
 1. **Hardcoded color values outside CSS variables**: Any literal hex, rgb, or hsl color that is not referencing a CSS custom property (e.g., `color: #1a1a1a` instead of `color: var(--color-primary)`). All colors must come from the design token system. Exceptions: `transparent`, `currentColor`, `inherit`.
 
-2. **Hardcoded font families**: Font family declarations that do not use the established CSS variable or the project's defined font stack (Inter for UI/body, Playfair Display for headlines). No Arial, Roboto, system-ui, or other generic fonts in component styles.
+2. **Hardcoded font families**: Font-family declarations that do not use the established CSS custom properties / design tokens (for example `var(--font-family)` for the shared stack: Inter for UI/body, Playfair Display for headlines, and their documented fallbacks). Do not introduce ad-hoc stacks like `font-family: Arial, sans-serif` or `font-family: system-ui`; `system-ui` is only acceptable as part of the standard fallback stack defined in the tokens, not as a hardcoded override in component styles.
 
 3. **Border radius deviations on buttons**: Button and pill-shaped components must use `border-radius: 9999px` (or the corresponding CSS variable). Do not introduce square or slightly-rounded buttons — the pill shape is a signature design element.
 

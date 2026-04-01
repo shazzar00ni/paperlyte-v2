@@ -1,8 +1,11 @@
 # CodeQL Advanced Setup
-# Provides an advanced CodeQL configuration that allows setting the Node.js runtime version.
-# If GitHub's default CodeQL "default setup" is enabled for this repository, disable it manually in
-# the Code scanning settings to avoid running CodeQL twice (duplicate alerts/checks).
-# See: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+# Provides an advanced CodeQL configuration that:
+#   - Pins all actions to specific SHAs (actions/checkout v6.0.2, codeql-action v4.34.1)
+#   - Opts into Node.js 24 via FORCE_JAVASCRIPT_ACTIONS_TO_NODE24 to silence Node.js 20
+#     deprecation warnings on the runner (see https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/)
+#   - Skips SARIF upload for forked PRs that lack security-events:write permission
+# NOTE: If GitHub's default CodeQL "default setup" is enabled for this repository, disable it
+# manually in Code scanning settings to avoid running CodeQL twice (duplicate alerts/checks).
 
 name: "CodeQL"
 
@@ -48,5 +51,8 @@ jobs:
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@38697555549f1db7851b81482ff19f1fa5c4fedc  # v4.34.1
+        # Forked PRs run with reduced permissions and cannot write to the Security tab;
+        # swallow the error there but let it fail loudly on main pushes and scheduled runs.
+        continue-on-error: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true }}
         with:
           category: "/language:${{ matrix.language }}"

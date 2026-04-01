@@ -2,11 +2,13 @@
 
 Paperlyte's core value proposition is "lightning-fast." The landing page must load in under 2 seconds and pass all Core Web Vitals. Changes that regress performance do not ship.
 
-## Enforced Limits
+## Performance Targets
+
+These are aspirational code-review targets and may be stricter than the automated Lighthouse CI assertions defined in `.lighthouserc.json` (for example, CI currently enforces `categories:performance` minScore of 0.7).
 
 - Main JS bundle: **≤150 KB** gzipped
 - Main CSS bundle: **≤30 KB** gzipped
-- Lighthouse Performance score: **>90**
+- Lighthouse Performance score: **>90** (manual review target; CI currently enforces ≥0.7 in `.lighthouserc.json`)
 
 ## Check
 

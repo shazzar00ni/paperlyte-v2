@@ -2,6 +2,56 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-03-25
+
+### Ready for Merge
+
+The following branches have been reviewed and are verified to be free from systemic regressions (critical files present, security helpers intact) and align with project standards.
+
+- **`origin/claude/fix-codacy-sarif-limit-4I0x5`**
+  - **Status:** Approved
+  - **Summary:** Successfully implements SARIF merging to bypass GitHub's 20-run limit and adds a robust manual upload step for Codacy.
+- **`origin/claude/accessibility-audit-baseline-USu5N`**
+  - **Status:** Approved
+  - **Summary:** Improves color contrast for accessibility and refactors the `Icon` component for better performance and maintainability.
+- **`origin/dependabot/npm_and_yarn/development-dependencies-d2a3d1254d`**
+  - **Status:** Approved
+  - **Summary:** Routine updates to development dependencies, including ESLint 10.1.0 and TypeScript-ESLint 8.57.2.
+- **`origin/claude/add-doc-sections-1EhnP`**
+  - **Status:** Approved
+  - **Summary:** Pins ESLint to v9 and reduces test duplication while adding documentation sections.
+- **`origin/copilot/sub-pr-593`**
+  - **Status:** Approved
+  - **Summary:** Fixes SonarCloud job failures when the `SONAR_TOKEN` secret is missing.
+- **`origin/claude/setup-sonarcloud-HM572`**
+  - **Status:** Approved
+  - **Summary:** Centralizes SonarCloud configuration in `sonar-project.properties`. This branch (now merged into this PR) also fixes a critical CI failure by providing the mandatory `sonar.projectKey` and `sonar.organization` values and adding a missing `checkout` step to the workflow.
+
+### Blocked by Systemic Regressions
+
+The following branches remain blocked due to the accidental deletion of critical files (`.npmrc`, `docs/ROADMAP.md`, `gitVersionControl.md`, `review.md`) or the reversion of security helpers in `src/utils/navigation.ts`.
+
+- `origin/claude/implement-todo-item-2H9LP`
+- `origin/claude/core-editor-phase-1-PI3Yp`
+- `origin/copilot/sub-pr-503`
+- `origin/copilot/sub-pr-469-again`
+- `origin/claude/fix-peer-dependency-conflicts-Wj2iC`
+- `origin/fix/sarif-run-limits-10682914094722837168`
+- `origin/jules/pr-review-summary-16192473754370522877`
+- `origin/pr-review-summary-2026-02-13-5587410840879607829`
+- `origin/pr-review-summary-20260222-13964675344526938033`
+
+### Needs Review/Action
+
+- **`origin/claude/fix-failing-tests-J1VZ6`**
+  - **Status:** Needs Verification
+  - **Summary:** Resolves icon rendering test failures by migrating to `data-icon` attribute selectors. Should be verified against the latest `main`.
+- **`origin/claude/fix-open-redirect-TX551`**
+  - **Status:** Needs Verification
+  - **Summary:** Implements security hardening for redirects. Requires final verification of the `isSafeUrl` logic.
+
+---
+
 ## 2026-03-05
 
 ### Analysis: Accidental File Deletions in Open Branches (Jules Daily PR Reviews)
@@ -325,11 +375,11 @@ This file contains a summary of pull requests I have reviewed.
 
 **Status:** Approved with comments
 
-#### Summary for PR #356:
+#### Summary for PR #356
 
 This PR addresses a Codacy configuration issue to ensure ESLint runs correctly in the CI pipeline. The core changes in `.codacy.yml` and the addition of `.eslintrc.cjs` are correct and effectively resolve the issue.
 
-#### Feedback & Suggestions for PR #356:
+#### Feedback & Suggestions for PR #356
 
 - **Approval:** The main changes are approved and ready for merging.
 - **Scope Creep:** The PR includes unrelated changes to the icon library (`src/utils/iconLibrary.ts`) and E2E tests (`tests/e2e/landing-page.spec.ts`). While not harmful, these changes are out of scope for a configuration fix.
@@ -341,11 +391,11 @@ This PR addresses a Codacy configuration issue to ensure ESLint runs correctly i
 
 **Status:** Changes requested
 
-#### Summary for PR #319:
+#### Summary for PR #319
 
 This PR aims to fix a deployment error in the `Privacy.tsx` component. However, it also includes significant changes to `package-lock.json` and `public/sitemap.xml` that are unrelated to the component fix.
 
-#### Feedback & Suggestions for PR #319:
+#### Feedback & Suggestions for PR #319
 
 - **Mixed Changes:** The PR mixes a bug fix with dependency updates and sitemap changes. This makes it difficult to review and test.
 - **`package-lock.json`:** The changes to `package-lock.json` are extensive and add `"peer": true` to many dependencies. This is a significant change that could have unintended side effects and should be tested in isolation. My memory indicates that these changes have caused test failures in the past.

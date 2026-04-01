@@ -36,7 +36,11 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <a href="#main" className="skip-link" onClick={handleSkipToMain}>
+      <a
+        href="#main"
+        className="skip-link"
+        onClick={handleSkipToMain}
+      >
         Skip to main content
       </a>
       <Header />

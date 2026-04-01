@@ -1,6 +1,6 @@
 # TypeScript Strict Typing
 
-This project uses TypeScript with `strict: true` plus `noUnusedLocals`, `noUnusedParameters`, and `noUncheckedSideEffectImports`. All code must pass the compiler without errors and without suppressing the type checker.
+This project uses TypeScript with `strict: true` plus `noUnusedLocals`, `noUnusedParameters`, and `noUncheckedSideEffectImports`. All code must pass the compiler without errors and without using bare type-checker suppressions; any `@ts-ignore` or `@ts-expect-error` must follow the policy below.
 
 ## Check
 

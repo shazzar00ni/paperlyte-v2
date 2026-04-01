@@ -10,7 +10,7 @@ Review changed files for the following security issues:
 
 2. **Unsafe `dangerouslySetInnerHTML`**: Use of `dangerouslySetInnerHTML` without sanitization. If user-controlled or externally sourced content is rendered this way, it is an XSS vulnerability. Flag any new usage and verify the content source.
 
-3. **Unvalidated user input reaching the DOM**: Form inputs, URL parameters, or query strings that flow into rendered content without going through the validation and sanitization utilities in `src/utils/` (specifically `validation-sanitization`). All external input is untrusted.
+3. **Unvalidated user input reaching the DOM**: Form inputs, URL parameters, or query strings that flow into rendered content without going through the validation and sanitization utilities in `src/utils/validation.ts`. All external input is untrusted.
 
 4. **Content Security Policy violations**: New inline scripts, inline event handlers (`onclick="..."`), or dynamically constructed `<script>` tags that would be blocked by the production CSP defined in `vercel.json`. Also flag `eval()`, `new Function()`, or `setTimeout(string)` usage outside of Vite's dev tooling.
 

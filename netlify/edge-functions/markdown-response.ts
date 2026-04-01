@@ -115,10 +115,13 @@ const ALLOWED_TAGS = [
 ]
 
 /**
- * Serve a sanitized Markdown representation of the origin page when the request accepts `text/markdown`; otherwise delegate to the origin unchanged.
+ * Serve a sanitized Markdown representation of the origin page when the
+ * request carries `Accept: text/markdown`; otherwise delegate unchanged.
  *
- * @param context - Netlify Edge Function context (provides `context.next()` and upstream response access)
- * @returns A `Response` containing the converted Markdown when HTML was returned and conversion succeeded, the original HTML `Response` when conversion is not applicable, or the upstream/next response when passed through
+ * @param request - The incoming HTTP request.
+ * @param context - Netlify Edge Function context (provides `context.next()`).
+ * @returns Markdown response on success, original HTML response on conversion
+ *   failure, or a pass-through to the origin for non-markdown requests.
  */
 export default async function handler(request: Request, context: Context): Promise<Response> {
   // ── 1. Gate on Accept header ────────────────────────────────────────────
@@ -196,19 +199,30 @@ export default async function handler(request: Request, context: Context): Promi
     // ── 7. Compute estimated token count (chars / 4) ──────────────────────
     const tokenEstimate = String(Math.ceil(markdown.length / 4))
 
-    return new Response(markdown, {
-    const headers = new Headers(response.headers);
-    headers.set("Content-Type", "text/markdown; charset=utf-8");
-    headers.set("X-Markdown-Tokens", tokenEstimate);
-    headers.set("Content-Signal", "ai-train=yes, search=yes, ai-input=yes");
-    // Prevent this stripped response from being cached as HTML
-    headers.set("Cache-Control", "no-store");
-    // Vary so CDN caches both representations separately
-    headers.set("Vary", "Accept");
+    // Start from all origin headers so we preserve things like ETag,
+    // Last-Modified, and any existing Cache-Control policy.  We then
+    // override only the fields specific to the Markdown representation.
+    const headers = new Headers(originResponse.headers)
+    headers.set('Content-Type', 'text/markdown; charset=utf-8')
+    headers.set('X-Markdown-Tokens', tokenEstimate)
+    headers.set('Content-Signal', 'ai-train=yes, search=yes, ai-input=yes')
+
+    // Merge Accept into any existing Vary value so CDNs store HTML and
+    // Markdown as separate cache entries without losing other Vary tokens
+    // (e.g. Accept-Encoding) the origin already set.
+    const originVary = headers.get('Vary') ?? ''
+    const varyParts = originVary
+      .split(',')
+      .map((v) => v.trim())
+      .filter(Boolean)
+    headers.set(
+      'Vary',
+      varyParts.includes('Accept') ? originVary : [...varyParts, 'Accept'].join(', ')
+    )
 
     return new Response(markdown, {
-      status: response.status,
-      statusText: response.statusText,
+      status: originResponse.status,
+      statusText: originResponse.statusText,
       headers,
     })
   } catch {

@@ -117,9 +117,8 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               <details className={styles.errorDetails}>
                 <summary>Error details (development only)</summary>
                 <pre className={styles.errorStack}>
-                  {this.state.error.toString()}
-                  {'\n'}
-                  {this.state.error.stack}
+                  {this.state.error.message}
+                  {this.state.error.stack ? `\n${this.state.error.stack}` : ''}
                 </pre>
               </details>
             )}

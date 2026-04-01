@@ -2,6 +2,56 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-03-11
+
+### Analysis: Escalation of Systemic Regressions and ESLint Version Mismatch
+
+- **Status:** Critical — Immediate Action Required
+- **Summary:** Repository-wide audit on March 11, 2026, confirms that systemic regressions (missing files and security reversions) continue to plague over 85% of open branches. Furthermore, a version mismatch for ESLint has been identified on `main` (v10.0.2 vs. project standard v9), which is propagating to new branches and breaking compatibility with `eslint-plugin-react-hooks`.
+
+#### Health Audit: Systemic Regression Tracker
+
+| Branch | `.npmrc` | `docs/ROADMAP.md` | `gitVersionControl.md` | `review.md` | `navigation.ts` Helpers | ESLint Version | Status |
+|--------|:--------:|:-----------------:|:---------------------:|:-----------:|:-----------------------:|:--------------:|--------|
+| `main` | ✓ | ✓ | ✓ | ✓ | ✓ | 10.0.2 | ⚠️ **Standard Violation** |
+| `copilot/fix-security-error-url` | ✗ | ✗ | ✗ | ✗ | ✗ | ^9.39.2 | 🔴 Regression |
+| `claude/remove-hardcoded-password-ubUUE` | ✓ | ✗ | ✗ | ✓ | ✗ | ^9.39.2 | 🔴 Regression |
+| `claude/accessibility-audit-baseline-USu5N`| ✓ | ✓ | ✓ | ✓ | ✓ | 10.0.2 | ⚠️ ESLint 10 |
+| `copilot/improve-slow-code-performance` | ✓ | ✓ | ✓ | ✓ | ✓ | 10.0.2 | ⚠️ ESLint 10 |
+| `claude/fix-markdown-formatting-XU7WL` | ✓ | ✓ | ✓ | ✓ | ✓ | 10.0.2 | ⚠️ ESLint 10 |
+
+#### Branch Health Categorization
+
+- **Ready for Merge (Verified High Quality):**
+  - `origin/copilot/improve-variable-function-naming` (**Critical**: Fixes 4 baseline Icon test failures on `main`).
+  - `origin/claude/add-doc-sections-1EhnP`
+  - `origin/claude/analyze-pr-deleted-files-QBlYv`
+  - `origin/claude/analyze-test-coverage-9JQZb`
+  - `origin/claude/fix-lighthouse-failure-b5S6v`
+  - `origin/claude/implement-todo-item-cDEVt`
+  - `origin/claude/fix-workflow-e2e-tests-xHhZw`
+  - `origin/claude/fix-coverage-requirements-QtFtS`
+  - `origin/dependabot/github_actions/mikepenz/release-changelog-builder-action-6.1.1`
+
+- **Blocked by Systemic Regressions / Tooling Violations:**
+  - `origin/copilot/fix-issue-525` (ESLint 10 violation).
+  - `origin/claude/tree-shake-font-awesome-cK85j` (Missing files, ESLint 10).
+  - `origin/claude/fix-code-style-cWDI4` (ESLint 10 violation).
+  - `origin/copilot/fix-security-error-url` (Deletes security helpers in `navigation.ts`).
+  - All `sub-pr-*` branches (Cascading regressions from corrupted base).
+
+- **Redundant / Obsolete (Recommend Closure):**
+  - PR #107 (Monolithic, obsolete).
+  - PR #389 (Global formatting, high conflict risk).
+  - All `origin/daily-pr-review-*` and `origin/jules/daily-pr-reviews-*` (Consolidate into this file).
+
+### Action Required
+1. **Downgrade ESLint on `main`**: Revert `eslint` and `@eslint/js` to `^9.39.2` to restore compatibility with React 19 hooks plugin.
+2. **Mandatory File Restoration**: Affected branches must restore `.npmrc`, `docs/ROADMAP.md`, `gitVersionControl.md`, and `review.md` from `main`.
+3. **Security Fix Re-application**: Branches that reverted `hasDangerousProtocol` and `isRelativeUrl` in `src/utils/navigation.ts` must re-integrate these helpers.
+
+---
+
 ## 2026-03-05
 
 ### Analysis: Accidental File Deletions in Open Branches (Jules Daily PR Reviews)

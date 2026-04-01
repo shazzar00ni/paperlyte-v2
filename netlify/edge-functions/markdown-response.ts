@@ -115,13 +115,10 @@ const ALLOWED_TAGS = [
 ]
 
 /**
- * Edge function handler. Intercepts requests that carry `Accept: text/markdown`
- * and returns a sanitized Markdown version of the page instead of HTML.
- * All other requests are passed through to the origin unchanged.
+ * Serve a sanitized Markdown representation of the origin page when the request accepts `text/markdown`; otherwise delegate to the origin unchanged.
  *
- * @param request - The incoming HTTP request.
- * @param context - Netlify edge function context (provides `context.next()`).
- * @returns A Markdown response, the original HTML response, or a pass-through.
+ * @param context - Netlify Edge Function context (provides `context.next()` and upstream response access)
+ * @returns A `Response` containing the converted Markdown when HTML was returned and conversion succeeded, the original HTML `Response` when conversion is not applicable, or the upstream/next response when passed through
  */
 export default async function handler(request: Request, context: Context): Promise<Response> {
   // ── 1. Gate on Accept header ────────────────────────────────────────────

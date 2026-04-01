@@ -87,7 +87,7 @@ export default async function handler(
   context: Context,
 ): Promise<Response> {
   // ── 1. Gate on Accept header ────────────────────────────────────────────
-  const accept = request.headers.get('Accept') ?? ''
+  const accept = (request.headers.get('Accept') ?? '').toLowerCase()
   if (!accept.includes('text/markdown')) {
     return context.next()
   }

@@ -134,11 +134,19 @@ export default async function handler(
 
     // Layer 2: final pass on the Markdown string.
     // Turndown may pass through unrecognised inline HTML as literal text.
-    // Strip surviving HTML comments, then open/close tags for dangerous elements.
+    // Step A – strip well-formed tags and HTML comments.
     markdown = markdown.replace(/<!--[\s\S]*?-->/g, "");
     markdown = markdown.replace(
       /<\/?(script|style|iframe|object|embed|applet|noscript)\b[^>]*\/?>/gi,
       "",
+    );
+    // Step B – escape any surviving `<` that precedes a dangerous element name,
+    // including malformed/incomplete tags with no closing `>` (e.g. bare `<script`).
+    // A lookahead is enough: once `<` becomes `&lt;` the sequence can't be parsed
+    // as an HTML tag by any renderer.
+    markdown = markdown.replace(
+      /<(?=\s*\/?\s*(?:script|style|iframe|object|embed|applet|noscript)\b)/gi,
+      "&lt;",
     );
 
     // ── 6. Compute estimated token count (chars / 4) ──────────────────────

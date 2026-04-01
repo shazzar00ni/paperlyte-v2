@@ -40,29 +40,29 @@
  *   Edge Runtime (Deno-based). No npm install needed.
  */
 
-import TurndownService from "npm:turndown@7.1.2";
-import type { Context } from "https://edge.netlify.com";
+import TurndownService from 'npm:turndown@7.1.2'
+import type { Context } from 'https://edge.netlify.com'
 
 // Paths that should never be converted even if accidentally matched.
 const EXCLUDED_PREFIXES = [
-  "/.env",
-  "/assets/",
-  "/api/",
-  "/.netlify/",
-  "/favicon",
-  "/robots.txt",
-  "/sitemap",
-  "/manifest",
-];
+  '/.env',
+  '/assets/',
+  '/api/',
+  '/.netlify/',
+  '/favicon',
+  '/robots.txt',
+  '/sitemap',
+  '/manifest',
+]
 
 export default async function handler(
   request: Request,
   context: Context,
 ): Promise<Response> {
   // ── 1. Gate on Accept header ────────────────────────────────────────────
-  const accept = request.headers.get("Accept") ?? "";
-  if (!accept.includes("text/markdown")) {
-    return context.next();
+  const accept = request.headers.get('Accept') ?? ''
+  if (!accept.includes('text/markdown')) {
+    return context.next()
   }
 
   // ── 2. Skip excluded paths ──────────────────────────────────────────────

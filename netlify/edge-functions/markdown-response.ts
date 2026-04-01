@@ -72,18 +72,18 @@ export default async function handler(
     return context.next();
   }
 
-  let response: Response | undefined;
+  let originResponse: Response | undefined;
 
   try {
     // ── 3. Fetch HTML from origin ─────────────────────────────────────────
-    response = await context.next();
-    const contentType = response.headers.get("Content-Type") ?? "";
+    originResponse = await context.next();
+    const contentType = originResponse.headers.get("Content-Type") ?? "";
 
     if (!contentType.includes("text/html")) {
-      return response;
+      return originResponse;
     }
 
-    const responseForMarkdown = response.clone();
+    const responseForMarkdown = originResponse.clone();
     const html = await responseForMarkdown.text();
 
     // ── 4. Strip non-content elements ─────────────────────────────────────
@@ -126,8 +126,8 @@ export default async function handler(
     const tokenEstimate = String(Math.ceil(markdown.length / 4));
 
     return new Response(markdown, {
-      status: response.status,
-      statusText: response.statusText,
+      status: originResponse.status,
+      statusText: originResponse.statusText,
       headers: {
         "Content-Type": "text/markdown; charset=utf-8",
         "X-Markdown-Tokens": tokenEstimate,
@@ -139,8 +139,10 @@ export default async function handler(
       },
     });
   } catch {
-    // ── 7. Fallback: return original HTML unchanged ───────────────────────
-    return response ?? context.next();
-  }
+    // ── 7. Fallback: pass through to origin unchanged ─────────────────────
+    // Use the already-fetched HTML response if available (conversion failed),
+    // otherwise pass through to origin (origin fetch failed).
+    if (originResponse) return originResponse;
+    return context.next();
   }
 }

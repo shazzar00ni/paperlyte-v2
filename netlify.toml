@@ -15,6 +15,9 @@
   # Serverless functions directory
   functions = "netlify/functions"
 
+  # Edge functions directory
+  edge_functions = "netlify/edge-functions"
+
   # Node version to use
   environment = { NODE_VERSION = "20" }
 
@@ -77,3 +80,20 @@
 # Skip Netlify's build processing since Vite handles bundling and optimization
 [build.processing]
   skip_processing = true
+
+# ─── Edge Functions: Markdown-for-AI ──────────────────────────────────────────
+#
+# The `markdown-response` edge function intercepts requests that carry
+# `Accept: text/markdown` and returns a token-efficient Markdown version of
+# each page instead of the full HTML.
+#
+# Edge functions run BEFORE Netlify redirects, so `path = "/*"` catches every
+# request — including unknown URLs that would otherwise hit the SPA catch-all
+# redirect — without interfering with normal browser traffic.  Non-content paths
+# (assets, API routes, etc.) are filtered inside the function via EXCLUDED_PREFIXES.
+#
+# To exclude a path: add its prefix to EXCLUDED_PREFIXES in markdown-response.ts.
+# To test locally:   netlify dev  →  curl -H "Accept: text/markdown" http://localhost:8888/
+[[edge_functions]]
+  path = "/*"
+  function = "markdown-response"

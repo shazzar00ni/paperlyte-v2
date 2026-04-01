@@ -120,10 +120,26 @@ export default async function handler(
       hr: "---",
     });
 
-    // Remove any leftover elements we don't want in the output
-    td.remove(["svg", "canvas", "picture", "figure", "template"]);
+    // Layer 1: Turndown's DOM-based removal.
+    // Regex alone can't handle nested/obfuscated patterns like
+    // <scr<script>ipt>, so we also let Turndown strip these via its
+    // own HTML parser, which builds a proper node tree before converting.
+    td.remove([
+      "script", "style", "noscript",
+      "iframe", "object", "embed", "applet",
+      "svg", "canvas", "picture", "figure", "template",
+    ]);
 
-    const markdown = td.turndown(cleaned).trim();
+    let markdown = td.turndown(cleaned).trim();
+
+    // Layer 2: final pass on the Markdown string.
+    // Turndown may pass through unrecognised inline HTML as literal text.
+    // Strip surviving HTML comments, then open/close tags for dangerous elements.
+    markdown = markdown.replace(/<!--[\s\S]*?-->/g, "");
+    markdown = markdown.replace(
+      /<\/?(script|style|iframe|object|embed|applet|noscript)\b[^>]*\/?>/gi,
+      "",
+    );
 
     // ── 6. Compute estimated token count (chars / 4) ──────────────────────
     const tokenEstimate = String(Math.ceil(markdown.length / 4));

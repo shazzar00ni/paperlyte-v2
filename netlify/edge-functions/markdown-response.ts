@@ -87,25 +87,28 @@ export default async function handler(
     const html = await responseForMarkdown.text();
 
     // ── 4. Strip non-content elements ─────────────────────────────────────
+    // End tags may have whitespace before the closing `>` (e.g. </script >),
+    // so all closing-tag patterns use `\s*>` instead of a bare `>`.
+
     // Remove script tags (and inline content)
     let cleaned = html.replace(
-      /<script\b[^>]*>[\s\S]*?<\/script>/gi,
+      /<script\b[^>]*>[\s\S]*?<\/script\s*>/gi,
       "",
     );
     // Remove style tags (and inline content)
-    cleaned = cleaned.replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, "");
-    // Remove <link rel="stylesheet"> and other link tags
-    cleaned = cleaned.replace(/<link\b[^>]*>/gi, "");
+    cleaned = cleaned.replace(/<style\b[^>]*>[\s\S]*?<\/style\s*>/gi, "");
+    // Remove <link> tags (stylesheets, preloads, etc.)
+    cleaned = cleaned.replace(/<link\b[^>]*\/?>/gi, "");
     // Remove HTML comments
     cleaned = cleaned.replace(/<!--[\s\S]*?-->/g, "");
     // Remove structural chrome: nav, header, footer, aside, noscript
     cleaned = cleaned.replace(
-      /<(nav|header|footer|aside|noscript)\b[^>]*>[\s\S]*?<\/\1>/gi,
+      /<(nav|header|footer|aside|noscript)\b[^>]*>[\s\S]*?<\/\1\s*>/gi,
       "",
     );
     // Remove common sidebar / cookie-banner class patterns (best-effort)
     cleaned = cleaned.replace(
-      /<([a-z][a-z0-9]*)\b[^>]*\b(?:class|id)="[^"]*(?:sidebar|cookie|banner|ad-|advertisement)[^"]*"[^>]*>[\s\S]*?<\/\1>/gi,
+      /<([a-z][a-z0-9]*)\b[^>]*\b(?:class|id)="[^"]*(?:sidebar|cookie|banner|ad-|advertisement)[^"]*"[^>]*>[\s\S]*?<\/\1\s*>/gi,
       "",
     );
 

@@ -1,6 +1,6 @@
 # Accessibility Standards (WCAG 2.1 AA)
 
-This project targets a Lighthouse Accessibility score >95 and WCAG 2.1 AA compliance. Every component and section must meet these requirements.
+CI currently enforces a Lighthouse Accessibility score of at least 0.82 (`categories.accessibility` in `.lighthouserc.json`). Our stretch goal is to reach a score >95 while maintaining WCAG 2.1 AA compliance. Every component and section must at least meet the enforced threshold and should move toward the stretch goal wherever feasible.
 
 ## Check
 

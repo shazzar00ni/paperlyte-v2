@@ -1,0 +1,85 @@
+name: Daily PR Audit Summary
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Run daily at midnight UTC
+  workflow_dispatch: # Allow manual trigger
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Run PR Audit
+        id: run_audit
+        run: |
+          chmod +x scripts/audit_branches.py
+          python3 scripts/audit_branches.py > audit_results.txt
+
+          # Extract counts for the summary table
+          ORPHAN=$(grep "Orphan branch" audit_results.txt | wc -l || echo "0")
+          NPMRC=$(grep "Missing .npmrc" audit_results.txt | wc -l || echo "0")
+          ROADMAP=$(grep "Missing docs/ROADMAP.md" audit_results.txt | wc -l || echo "0")
+          GVC=$(grep "Missing gitVersionControl.md" audit_results.txt | wc -l || echo "0")
+          REVIEW=$(grep "Missing review.md" audit_results.txt | wc -l || echo "0")
+          HELPERS=$(grep "Missing security helper definition:" audit_results.txt | wc -l || echo "0")
+          UNREADABLE=$(grep "Could not read src/utils/navigation.ts" audit_results.txt | wc -l || echo "0")
+          TOTAL=$(grep "Total unmerged branches:" audit_results.txt | awk '{print $NF}' || echo "0")
+
+          DATE=$(date +%Y-%m-%d)
+
+          # Create temporary summary file
+          echo "" > daily_summary.txt
+          echo "## $DATE" >> daily_summary.txt
+          echo "" >> daily_summary.txt
+          echo "### Analysis: Systemic Regressions in Open Branches (Automated Daily Audit)" >> daily_summary.txt
+          echo "" >> daily_summary.txt
+          echo "- **Status:** Critical — Action Required" >> daily_summary.txt
+          echo "- **Summary:** An automated repository-wide audit of $TOTAL unmerged branches confirms the following systemic regressions and orphan statuses." >> daily_summary.txt
+          echo "" >> daily_summary.txt
+          echo "| Regression Type                | Count | Severity    | Notes                                                                    |" >> daily_summary.txt
+          echo "| :----------------------------- | :---- | :---------- | :----------------------------------------------------------------------- |" >> daily_summary.txt
+          echo "| Orphan Branches                | $ORPHAN   | 🔴 Critical | No common ancestor with \`main\`, posing high risk for merge conflicts.    |" >> daily_summary.txt
+          echo "| Missing \`.npmrc\`               | $NPMRC    | 🔴 Critical | Breaks dependency resolution for all peer dependencies.                  |" >> daily_summary.txt
+          echo "| Missing \`docs/ROADMAP.md\`      | $ROADMAP    | 🟠 High     | Core project roadmap documentation.                                      |" >> daily_summary.txt
+          echo "| Missing \`gitVersionControl.md\` | $GVC   | 🟠 High     | Core Git workflow documentation.                                         |" >> daily_summary.txt
+          echo "| Missing \`review.md\`            | $REVIEW   | 🟡 Medium   | AI PR reviewer instruction file.                                         |" >> daily_summary.txt
+          echo "| Reverted Security Helpers      | $HELPERS   | 🔴 Critical | \`hasDangerousProtocol\` and \`isRelativeUrl\` in \`src/utils/navigation.ts\`. |" >> daily_summary.txt
+          echo "| Unreadable navigation.ts       | $UNREADABLE     | 🔴 Critical | File itself is missing or cannot be read.                                |" >> daily_summary.txt
+          echo "" >> daily_summary.txt
+          echo "- **Action Required:** ALL affected branches MUST restore these critical files and security helpers. Orphan branches should be rebased onto \`main\` (if possible) or recreated." >> daily_summary.txt
+          echo "" >> daily_summary.txt
+
+          # Insert daily summary after the header in PR_REVIEW_SUMMARY.md
+          HEADER_LINE=$(grep -n "# PR Review Summary" PR_REVIEW_SUMMARY.md | head -n 1 | cut -d: -f1 || echo "1")
+          AFTER_HEADER=$(($HEADER_LINE + 1))
+
+          head -n $AFTER_HEADER PR_REVIEW_SUMMARY.md > top.md
+          tail -n +$(($AFTER_HEADER + 1)) PR_REVIEW_SUMMARY.md > bottom.md
+
+          cat top.md daily_summary.txt bottom.md > updated_summary.md
+          mv updated_summary.md PR_REVIEW_SUMMARY.md
+
+          # Clean up
+          rm audit_results.txt daily_summary.txt top.md bottom.md
+
+      - name: Commit and Push Changes
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "github-actions[bot]"
+          git add PR_REVIEW_SUMMARY.md
+          git commit -m "docs: automated daily PR audit summary ($(date +%Y-%m-%d))" || echo "No changes to commit"
+          git push

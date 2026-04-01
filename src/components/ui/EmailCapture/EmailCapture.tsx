@@ -52,10 +52,10 @@ export const EmailCapture = ({
     }
 
     // Validation
-    const { isValid } = validateEmail(email)
+    const { isValid, error: validationError } = validateEmail(email)
     if (!isValid) {
       setStatus('error')
-      setErrorMessage("That email address doesn't look right. Please check and try again.")
+      setErrorMessage(validationError ?? "That email address doesn't look right.")
       return
     }
 
@@ -94,8 +94,12 @@ export const EmailCapture = ({
     } catch (error) {
       setStatus('error')
       setErrorMessage("Couldn't add you to the list. Check your email and try again.")
-      logError(error instanceof Error ? error : new Error(String(error)), {
-        tags: { component: 'EmailCapture', action: 'subscribe' },
+      logError(new Error('Subscribe failed'), {
+        tags: {
+          component: 'EmailCapture',
+          action: 'subscribe',
+          errorType: error instanceof Error ? error.name : 'Unknown',
+        },
       })
     }
   }

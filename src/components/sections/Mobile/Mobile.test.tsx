@@ -35,12 +35,10 @@ describe('Mobile', () => {
     })
 
     it('should render arrow icon inside the label element', () => {
-      const { container } = render(<Mobile />)
+      render(<Mobile />)
 
-      const label = container.querySelector('[class*="link"]')
-      const arrowIcon = label?.querySelector('svg')
-
-      expect(arrowIcon).toBeInTheDocument()
+      const label = screen.getByText(/iOS & Android apps — coming soon/i)
+      expect(label.querySelector('svg')).toBeInTheDocument()
     })
   })
 

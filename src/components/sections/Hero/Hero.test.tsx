@@ -324,7 +324,9 @@ describe('Hero', () => {
       const buttonTexts = buttons.map((btn) => btn.textContent)
 
       const startIndex = buttonTexts.findIndex((text) => text?.includes('Start Writing'))
-      const demoIndex = buttonTexts.findIndex((text) => text?.includes('See How It Works'))
+      const demoIndex = buttonTexts.findIndex((text) =>
+        text?.toLowerCase().includes('see how it works')
+      )
 
       // Start Writing should come before See How It Works
       expect(startIndex).toBeLessThan(demoIndex)

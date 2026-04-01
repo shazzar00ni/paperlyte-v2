@@ -29,7 +29,7 @@ describe('OfflinePage', () => {
       render(<OfflinePage />)
 
       expect(screen.getByRole('status')).toBeInTheDocument()
-      expect(screen.getByText(/You're offline/i)).toBeInTheDocument()
+      expect(screen.getByRole('heading', { name: /You're offline/i })).toBeInTheDocument()
     })
 
     it('should display default offline message', () => {

@@ -57,7 +57,9 @@ describe('Pricing', () => {
 
     const freeTexts = screen.getAllByText('Free')
     expect(freeTexts.length).toBeGreaterThan(0)
-    expect(screen.getByText(PRICING_PLANS.find((p) => p.id === 'free')!.tagline)).toBeInTheDocument()
+    expect(
+      screen.getByText(PRICING_PLANS.find((p) => p.id === 'free')!.tagline)
+    ).toBeInTheDocument()
     expect(screen.getByText('Get Started Free')).toBeInTheDocument()
   })
 
@@ -75,7 +77,9 @@ describe('Pricing', () => {
     render(<Pricing />)
 
     expect(screen.getByText('Team')).toBeInTheDocument()
-    expect(screen.getByText('Built for collaboration')).toBeInTheDocument()
+    expect(
+      screen.getByText(PRICING_PLANS.find((p) => p.id === 'team')!.tagline)
+    ).toBeInTheDocument()
     expect(screen.getByText('9.99')).toBeInTheDocument()
     expect(screen.getByText('Contact Sales')).toBeInTheDocument()
   })

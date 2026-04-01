@@ -17,19 +17,18 @@
  *   2. Run: netlify dev
  *   3. curl -H "Accept: text/markdown" http://localhost:8888/
  *
- * ─── ADDING / REMOVING PATHS ──────────────────────────────────────────────
+ * ─── PATH SCOPE ───────────────────────────────────────────────────────────
  *
- * Paths are registered in netlify.toml via [[edge_functions]] blocks.
- * To add a new path, append a new block:
+ * netlify.toml registers this function on `path = "/*"` (all paths).
+ * Edge functions run before Netlify redirects, so this correctly intercepts
+ * every route — including unknown URLs that would otherwise hit the SPA
+ * catch-all redirect — without affecting normal browser traffic.
  *
- *   [[edge_functions]]
- *     path = "/blog/my-new-post"
- *     function = "markdown-response"
+ * Non-content paths (assets, API routes, etc.) are filtered here via
+ * EXCLUDED_PREFIXES; any request without `Accept: text/markdown` is passed
+ * through immediately via context.next().
  *
- * To remove a path, delete its corresponding [[edge_functions]] block.
- * To cover all paths at once, set:  path = "/*"
- * (but exclude API/asset paths by adding more specific non-edge-function rules
- * or by checking the pathname inside this function, as done below.)
+ * To exclude additional paths: add their prefix to EXCLUDED_PREFIXES below.
  *
  * ─── NOTES ────────────────────────────────────────────────────────────────
  *
@@ -61,16 +60,58 @@ const EXCLUDED_PREFIXES = [
 // Tags whose content Turndown can convert to useful Markdown.
 // Everything not in this list is discarded by sanitize-html.
 const ALLOWED_TAGS = [
-  'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-  'p', 'br', 'hr',
-  'strong', 'em', 'b', 'i', 'u', 's', 'del', 'ins', 'mark',
-  'code', 'pre', 'kbd', 'samp', 'cite', 'q', 'abbr', 'time',
-  'ul', 'ol', 'li', 'dl', 'dt', 'dd',
+  'h1',
+  'h2',
+  'h3',
+  'h4',
+  'h5',
+  'h6',
+  'p',
+  'br',
+  'hr',
+  'strong',
+  'em',
+  'b',
+  'i',
+  'u',
+  's',
+  'del',
+  'ins',
+  'mark',
+  'code',
+  'pre',
+  'kbd',
+  'samp',
+  'cite',
+  'q',
+  'abbr',
+  'time',
+  'ul',
+  'ol',
+  'li',
+  'dl',
+  'dt',
+  'dd',
   'blockquote',
-  'a', 'img',
-  'table', 'thead', 'tbody', 'tfoot', 'tr', 'th', 'td', 'caption',
-  'section', 'article', 'main', 'div', 'span', 'details', 'summary',
-  'figure', 'figcaption',
+  'a',
+  'img',
+  'table',
+  'thead',
+  'tbody',
+  'tfoot',
+  'tr',
+  'th',
+  'td',
+  'caption',
+  'section',
+  'article',
+  'main',
+  'div',
+  'span',
+  'details',
+  'summary',
+  'figure',
+  'figcaption',
 ]
 
 /**
@@ -82,10 +123,7 @@ const ALLOWED_TAGS = [
  * @param context - Netlify edge function context (provides `context.next()`).
  * @returns A Markdown response, the original HTML response, or a pass-through.
  */
-export default async function handler(
-  request: Request,
-  context: Context,
-): Promise<Response> {
+export default async function handler(request: Request, context: Context): Promise<Response> {
   // ── 1. Gate on Accept header ────────────────────────────────────────────
   const accept = (request.headers.get('Accept') ?? '').toLowerCase()
   if (!accept.includes('text/markdown')) {

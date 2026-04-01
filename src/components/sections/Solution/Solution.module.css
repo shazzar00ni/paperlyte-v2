@@ -169,3 +169,31 @@
     padding: 0.875rem 1rem;
   }
 }
+
+/* Extra small screens */
+@media (max-width: 480px) {
+  .sectionTitle {
+    font-size: 1.5rem;
+  }
+
+  .sectionSubtitle {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .valueProps {
+    gap: 1.5rem;
+  }
+
+  .valueProp {
+    padding: 1.5rem 1rem;
+  }
+
+  .valueHeadline {
+    font-size: 1.25rem;
+  }
+
+  .valueTitle {
+    font-size: 1.125rem;
+  }
+}

@@ -52,6 +52,7 @@
   --spacing-xl: 3rem; /* 48px */
   --spacing-2xl: 4rem; /* 64px */
   --spacing-3xl: 6rem; /* 96px */
+  --spacing-4xl: 8rem; /* 128px */
 
   /* Layout */
   --max-width: 1280px;
@@ -60,7 +61,19 @@
   --border-radius-sm: 0.25rem; /* 4px */
   --border-radius-md: 0.5rem; /* 8px */
   --border-radius-lg: 1rem; /* 16px */
+  --border-radius-xl: 1.5rem; /* 24px */
   --border-radius-full: 9999px; /* Full pill shape */
+
+  /* Semantic color aliases */
+  --color-white: #ffffff;
+  --color-background-primary: var(--color-background);
+  --color-background-secondary: var(--color-surface);
+
+  /* Font Families */
+  --font-family-serif: 'Playfair Display', Georgia, serif;
+
+  /* Line Heights (additional) */
+  --line-height-snug: 1.375;
 
   /* Icon Sizes */
   --icon-size-sm: 3.5rem; /* 56px */
@@ -178,5 +191,6 @@
     --spacing-md: 1rem; /* 16px padding on small screens */
     --spacing-2xl: 3rem; /* 48px on small screens */
     --spacing-3xl: 3rem; /* 48px on small screens */
+    --spacing-4xl: 5rem; /* Reduced on small screens */
   }
 }

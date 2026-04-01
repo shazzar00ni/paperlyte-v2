@@ -63,7 +63,7 @@ Use this checklist to track your progress toward legal compliance and production
   - Regulatory scope (e.g., GDPR, CCPA, international)
   - Internal review and approval cycles
 
-*Choose an estimate that reflects your specific situation and update as needed.*
+_Choose an estimate that reflects your specific situation and update as needed._
 
 ---
 
@@ -436,7 +436,7 @@ Use this checklist to track your progress toward legal compliance and production
     - [ ] (Optional) LGPD Addendum signed (if serving Brazilian users)
     - [ ] (Optional) PIPEDA Clauses/Addendum signed (if serving Canadian users)
     - [ ] (Optional) Other jurisdiction-specific data processing addendums signed (e.g., Swiss FADP, APPI for Japan, etc.)
-    - *Note: Complete these as required for each regulated market. Mark each as completed when the relevant agreement is prepared and signed.*
+    - _Note: Complete these as required for each regulated market. Mark each as completed when the relevant agreement is prepared and signed._
   - [ ] Subprocessor list provided by vendor
   - [ ] Data breach notification terms defined (24-72 hours)
   - [ ] Data deletion upon termination guaranteed
@@ -1231,7 +1231,7 @@ Use this checklist to track your progress toward legal compliance and production
     - [ ] Applicable regulation(s): **\_**
     - [ ] Risk level (Low/Medium/High): **\_**
     - [ ] Assessment date (YYYY-MM-DD): **\_**
-    - *Example:*
+    - _Example:_
       - [ ] Jurisdiction name: Singapore
       - [ ] Applicable regulation(s): Personal Data Protection Act (PDPA)
       - [ ] Risk level (Low/Medium/High): Medium

@@ -4,6 +4,7 @@ import os
 import sys
 import re
 import signal
+import json
 
 # Handle SIGPIPE for tools like 'head'
 signal.signal(signal.SIGPIPE, signal.SIG_DFL)
@@ -40,32 +41,30 @@ def run_command(args):
         return None
 
 def main():
-    print("Auditing unmerged branches for systemic regressions...")
-
     # Get all remote unmerged branches relative to origin/main
     branches_raw = run_command(["git", "branch", "-r", "--no-merged", "origin/main"])
     if not branches_raw:
-        print("No unmerged branches found or error during git branch command.")
+        print(json.dumps({"error": "No unmerged branches found or error during git branch command."}))
         return
 
     # Filter out empty lines and the symbolic HEAD ref
     branches = [b.strip() for b in branches_raw.split('\n') if b.strip() and "origin/HEAD" not in b]
 
-    total_branches = len(branches)
-    blocked_branches = []
-    ready_branches = []
+    audit_data = {
+        "total_branches": len(branches),
+        "blocked": [],
+        "ready": []
+    }
 
     for branch in branches:
         issues = []
 
         # 0. Check for shared history (merge-base) with origin/main
-        # If no merge base exists, it's an orphan branch and very dangerous to merge.
         base = run_command(["git", "merge-base", "origin/main", branch])
         if not base:
             issues.append("Orphan branch (no shared history with main)")
 
         # 1. Check for missing critical files using git ls-tree
-        # This lists all files in the branch and we check for our required list.
         branch_files_raw = run_command(["git", "ls-tree", "-r", "--name-only", branch])
         if branch_files_raw:
             branch_files = set(branch_files_raw.split('\n'))
@@ -76,7 +75,6 @@ def main():
             issues.append("Could not list branch files")
 
         # 2. Check for security helpers in src/utils/navigation.ts
-        # We read the file content directly from the git object database.
         nav_content = run_command(["git", "show", f"{branch}:src/utils/navigation.ts"])
         if nav_content:
             for helper in SECURITY_HELPERS:
@@ -84,28 +82,19 @@ def main():
                 if not re.search(pattern, nav_content):
                     issues.append(f"Missing security helper definition: {helper}")
         else:
-            # If the file itself is missing or cannot be read, it's a regression
             issues.append("Could not read src/utils/navigation.ts")
 
+        branch_name = branch.replace("origin/", "")
         if issues:
-            blocked_branches.append((branch, issues))
+            audit_data["blocked"].append({
+                "branch": branch_name,
+                "issues": issues
+            })
         else:
-            ready_branches.append(branch)
+            audit_data["ready"].append(branch_name)
 
-    # Output the audit summary
-    print(f"\nAudit complete. Total unmerged branches: {total_branches}")
-    print(f"Ready for review/merge: {len(ready_branches)}")
-    print(f"Blocked by systemic regressions: {len(blocked_branches)}")
-
-    if blocked_branches:
-        print("\nBlocked Branches Details:")
-        for branch, issues in blocked_branches:
-            print(f"- {branch}: {', '.join(issues)}")
-
-    if ready_branches:
-        print("\nReady Branches (no systemic regressions found):")
-        for branch in ready_branches:
-            print(f"- {branch}")
+    # Output the audit data as JSON for the workflow to consume
+    print(json.dumps(audit_data, indent=2))
 
 if __name__ == "__main__":
     main()

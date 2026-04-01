@@ -73,6 +73,15 @@ const ALLOWED_TAGS = [
   'figure', 'figcaption',
 ]
 
+/**
+ * Edge function handler. Intercepts requests that carry `Accept: text/markdown`
+ * and returns a sanitized Markdown version of the page instead of HTML.
+ * All other requests are passed through to the origin unchanged.
+ *
+ * @param request - The incoming HTTP request.
+ * @param context - Netlify edge function context (provides `context.next()`).
+ * @returns A Markdown response, the original HTML response, or a pass-through.
+ */
 export default async function handler(
   request: Request,
   context: Context,

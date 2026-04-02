@@ -1,7 +1,12 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from './App'
+
+// Mock Vercel Analytics
+vi.mock('@vercel/analytics/react', () => ({
+  Analytics: vi.fn(() => <div data-testid="vercel-analytics" />),
+}))
 
 describe('App Integration', () => {
   it('should render with proper semantic structure and section order', () => {
@@ -267,6 +272,11 @@ describe('App Integration', () => {
     expect(consoleErrorSpy).not.toHaveBeenCalled()
 
     consoleErrorSpy.mockRestore()
+  })
+
+  it('should not render Vercel Analytics on localhost', () => {
+    render(<App />)
+    expect(screen.queryByTestId('vercel-analytics')).not.toBeInTheDocument()
   })
 
   it('should render all major UI components', () => {

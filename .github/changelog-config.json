@@ -1,0 +1,101 @@
+{
+  "template": "## What's Changed\n\n#{{CHANGELOG}}\n\n**Full Changelog**: https://github.com/shazzar00ni/paperlyte-v2/compare/#{{FROM_TAG}}...#{{TO_TAG}}",
+  "pr_template": "- #{{TITLE}} by @#{{AUTHOR}} in ##{{NUMBER}}",
+  "empty_template": "_No changes_",
+  "categories": [
+    {
+      "title": "### Features",
+      "labels": ["feature", "feat", "enhancement", "type: feature"],
+      "prefix": "feat"
+    },
+    {
+      "title": "### Bug Fixes",
+      "labels": ["bug", "fix", "type: bug"],
+      "prefix": "fix"
+    },
+    {
+      "title": "### Performance",
+      "labels": ["performance", "perf", "type: performance"],
+      "prefix": "perf"
+    },
+    {
+      "title": "### Documentation",
+      "labels": ["documentation", "docs", "type: docs"],
+      "prefix": "docs"
+    },
+    {
+      "title": "### CI/CD",
+      "labels": ["ci", "ci/cd", "type: ci"],
+      "prefix": "ci"
+    },
+    {
+      "title": "### Security",
+      "labels": ["security", "type: security"],
+      "prefix": "security"
+    },
+    {
+      "title": "### Dependencies",
+      "labels": ["dependencies", "deps", "type: dependencies"],
+      "prefix": "chore(deps"
+    },
+    {
+      "title": "### Other Changes",
+      "labels": ["chore", "refactor", "style", "test", "type: chore"],
+      "prefix": "chore"
+    }
+  ],
+  "label_extractor": [
+    {
+      "pattern": "^feat(\\(.+\\))?!?:",
+      "target": "feat",
+      "on_property": "title"
+    },
+    {
+      "pattern": "^fix(\\(.+\\))?!?:",
+      "target": "fix",
+      "on_property": "title"
+    },
+    {
+      "pattern": "^perf(\\(.+\\))?!?:",
+      "target": "perf",
+      "on_property": "title"
+    },
+    {
+      "pattern": "^docs(\\(.+\\))?!?:",
+      "target": "docs",
+      "on_property": "title"
+    },
+    {
+      "pattern": "^ci(\\(.+\\))?!?:",
+      "target": "ci",
+      "on_property": "title"
+    },
+    {
+      "pattern": "^security(\\(.+\\))?!?:",
+      "target": "security",
+      "on_property": "title"
+    },
+    {
+      "pattern": "^chore\\(deps",
+      "target": "chore(deps",
+      "on_property": "title"
+    },
+    {
+      "pattern": "^(chore|refactor|style|test)(\\(.+\\))?!?:",
+      "target": "chore",
+      "on_property": "title"
+    }
+  ],
+  "sort": {
+    "order": "ASC",
+    "on_property": "mergedAt"
+  },
+  "max_tags_to_fetch": 10,
+  "max_pull_requests": 200,
+  "max_back_track_time_days": 90,
+  "exclude_merge_branches": ["main"],
+  "tag_resolver": {
+    "method": "semver"
+  },
+  "base_branches": ["main"]
+}

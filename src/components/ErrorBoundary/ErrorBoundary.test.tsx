@@ -1,6 +1,12 @@
-import { render, screen } from '@testing-library/react'
+import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { createRef } from 'react'
+import { logError } from '@utils/monitoring'
 import { ErrorBoundary } from './ErrorBoundary'
+
+vi.mock('@utils/monitoring', () => ({
+  logError: vi.fn(),
+}))
 
 // Component that throws an error
 const ThrowError = ({ shouldThrow = false }: { shouldThrow?: boolean }) => {
@@ -315,6 +321,63 @@ describe('ErrorBoundary', () => {
       )
 
       expect(screen.getByText(/something went wrong/i)).toBeInTheDocument()
+    })
+  })
+
+  describe('componentDidCatch logging', () => {
+    beforeEach(() => {
+      vi.mocked(logError).mockClear()
+    })
+
+    it('increments retry_count correctly across consecutive errors', async () => {
+      const ref = createRef<ErrorBoundary>()
+      render(
+        <ErrorBoundary ref={ref}>
+          <div />
+        </ErrorBoundary>
+      )
+
+      await act(async () => {
+        ref.current!.componentDidCatch(new Error('first'), { componentStack: 'at A' })
+      })
+      await waitFor(() => {
+        expect(vi.mocked(logError)).toHaveBeenLastCalledWith(
+          expect.any(Error),
+          expect.objectContaining({ tags: { retry_count: '1' } }),
+          'ErrorBoundary'
+        )
+      })
+
+      await act(async () => {
+        ref.current!.componentDidCatch(new Error('second'), { componentStack: 'at A' })
+      })
+      await waitFor(() => {
+        expect(vi.mocked(logError)).toHaveBeenLastCalledWith(
+          expect.any(Error),
+          expect.objectContaining({ tags: { retry_count: '2' } }),
+          'ErrorBoundary'
+        )
+      })
+    })
+
+    it('omits componentStack when it is an empty string', async () => {
+      const ref = createRef<ErrorBoundary>()
+      render(
+        <ErrorBoundary ref={ref}>
+          <div />
+        </ErrorBoundary>
+      )
+
+      await act(async () => {
+        ref.current!.componentDidCatch(new Error('test'), { componentStack: '' })
+      })
+      await waitFor(() => {
+        expect(vi.mocked(logError)).toHaveBeenCalledWith(
+          expect.any(Error),
+          expect.objectContaining({ componentStack: undefined }),
+          'ErrorBoundary'
+        )
+      })
     })
   })
 

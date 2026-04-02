@@ -181,11 +181,11 @@ async function checkBodySize(request: Request): Promise<Response | null> {
     let total = 0;
     let chunk = await reader.read();
 
-    while (chunk.done === false) {
+    while (!chunk.done) {
       total += chunk.value.byteLength;
       if (total > MAX_BODY_BYTES) {
         // Cancel both the clone's branch and the original to release queued data.
-        await Promise.all([reader.cancel(), request.body?.cancel()]);
+        await Promise.all([reader.cancel(), request.body.cancel()]);
         return payloadTooLarge();
       }
       chunk = await reader.read();

@@ -179,14 +179,16 @@ async function checkBodySize(request: Request): Promise<Response | null> {
 
     const reader = stream.getReader();
     let total = 0;
+    let chunk = await reader.read();
 
-    for (let chunk = await reader.read(); !chunk.done; chunk = await reader.read()) {
+    while (chunk.done === false) {
       total += chunk.value.byteLength;
       if (total > MAX_BODY_BYTES) {
         // Cancel both the clone's branch and the original to release queued data.
         await Promise.all([reader.cancel(), request.body?.cancel()]);
         return payloadTooLarge();
       }
+      chunk = await reader.read();
     }
   } catch {
     return badRequest();

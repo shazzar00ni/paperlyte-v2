@@ -76,7 +76,9 @@
     #   https://*.ingest.sentry.io        Sentry error telemetry (VITE_SENTRY_DSN)
     Content-Security-Policy = "default-src 'self'; script-src 'self' https://plausible.io https://va.vercel-scripts.com; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://plausible.io https://vitals.vercel-insights.com https://*.ingest.sentry.io; worker-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests;"
 
-    # Prevent this site from being embedded by other origins (cross-origin)
+    # Isolate this page's browsing context group so cross-origin windows opened
+    # from this page (or that open this page) cannot access each other's DOM or
+    # window object, mitigating Spectre-class side-channel attacks.
     Cross-Origin-Opener-Policy = "same-origin"
 
     # Prevent other origins from loading this site's resources

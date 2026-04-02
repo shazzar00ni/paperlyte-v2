@@ -180,10 +180,8 @@ async function checkBodySize(request: Request): Promise<Response | null> {
     const reader = stream.getReader();
     let total = 0;
 
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      total += value.byteLength;
+    for (let chunk = await reader.read(); !chunk.done; chunk = await reader.read()) {
+      total += chunk.value.byteLength;
       if (total > MAX_BODY_BYTES) {
         await reader.cancel();
         return payloadTooLarge();
@@ -241,7 +239,7 @@ function checkUrlSignatures(url: URL): Response | null {
     return badRequest();
   }
 
-  const targets = decoded !== raw ? [raw, decoded] : [raw];
+  const targets = decoded === raw ? [raw] : [raw, decoded];
   for (const t of targets) {
     for (const pattern of ATTACK_SIGNATURES) {
       if (pattern.test(t)) return forbidden();
@@ -307,7 +305,14 @@ export default async function waf(
   const methodBlock = checkFunctionMethod(url.pathname, request.method);
   if (methodBlock) return withRequestId(methodBlock, requestId);
 
-  return withRequestId(await context.next(), requestId);
+  try {
+    const response = await context.next();
+    return withRequestId(response, requestId);
+  } catch {
+    // Origin or network error — return a 502 with the request ID so the
+    // failed request remains traceable in edge logs alongside blocked traffic.
+    return withRequestId(new Response(null, { status: 502 }), requestId);
+  }
 }
 
 export const config: Config = {

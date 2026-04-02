@@ -78,7 +78,8 @@ def main():
         nav_content = run_command(["git", "show", f"{branch}:src/utils/navigation.ts"])
         if nav_content:
             for helper in SECURITY_HELPERS:
-                pattern = rf"export\s+function\s+{re.escape(helper)}\s*\("
+                # Robust pattern to match both 'export function helperName' and 'export const helperName ='
+                pattern = rf"export\s+(?:function|const)\s+{re.escape(helper)}\b"
                 if not re.search(pattern, nav_content):
                     issues.append(f"Missing security helper definition: {helper}")
         else:

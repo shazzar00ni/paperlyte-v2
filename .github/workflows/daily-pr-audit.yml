@@ -28,7 +28,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python3 scripts/audit_branches.py > audit_results.json
+          python3 scripts/maintenance/audit_branches.py > audit_results.json
 
           # Use python to generate the markdown and comment on PRs
           python3 -c "
@@ -83,7 +83,7 @@ jobs:
                   comment = '### ⚠️ Systemic Regressions Detected\n\nThis branch is currently blocked by the following regressions:\n\n'
                   for issue in issues:
                       comment += f'- {issue}\n'
-                  comment += '\nPlase restore these critical files or security helpers before merging.'
+                  comment += '\nPlease restore these critical files or security helpers before merging.'
                   run_command(['gh', 'pr', 'comment', str(pr_num), '--body', comment])
 
           # Generate Markdown Summary

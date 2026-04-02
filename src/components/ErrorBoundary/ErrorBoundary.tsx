@@ -56,11 +56,12 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
       (prevState) => ({ retryCount: prevState.retryCount + 1 }),
       () => {
         // Log after state is committed so retry_count reflects the updated value
+        const { componentStack, ...restErrorInfo } = errorInfo
         logError(
           error,
           {
-            componentStack: errorInfo.componentStack ?? undefined,
-            errorInfo: errorInfo as Record<string, unknown>,
+            componentStack: componentStack ?? undefined,
+            errorInfo: restErrorInfo as Record<string, unknown>,
             severity: 'high',
             tags: {
               retry_count: String(this.state.retryCount),

@@ -89,14 +89,14 @@ fi
 
 TAG="v${NEW_VERSION}"
 
-# Check tag doesn't already exist locally or on origin
+# Check tag doesn't already exist locally or on the resolved upstream remote
 info "Checking tag ${TAG} does not already exist..."
-git fetch --tags origin 2>/dev/null || true
+git fetch --tags "$UPSTREAM_REMOTE" 2>/dev/null || true
 if git rev-parse "refs/tags/${TAG}" &>/dev/null; then
   error "Tag ${TAG} already exists locally."
 fi
-if git ls-remote --tags origin "refs/tags/${TAG}" | grep -q "refs/tags/${TAG}"; then
-  error "Tag ${TAG} already exists on origin."
+if git ls-remote --tags "$UPSTREAM_REMOTE" "refs/tags/${TAG}" | grep -q "refs/tags/${TAG}"; then
+  error "Tag ${TAG} already exists on ${UPSTREAM_REMOTE}."
 fi
 
 info "New version: ${TAG}"

@@ -55,7 +55,15 @@ function App() {
       </main>
       <Footer />
       <FeedbackWidget />
-      <Analytics />
+      {/*
+          Only render Vercel Analytics in production and when not on localhost.
+          This prevents Lighthouse CI from failing due to analytics injection errors
+          when running on the CI runner's localhost.
+      */}
+      {import.meta.env.PROD &&
+        typeof window !== 'undefined' &&
+        window.location.hostname !== 'localhost' &&
+        window.location.hostname !== '127.0.0.1' && <Analytics />}
     </ErrorBoundary>
   )
 }

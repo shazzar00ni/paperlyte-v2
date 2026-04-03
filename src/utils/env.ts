@@ -59,6 +59,19 @@ export const env: EnvConfig = {
 }
 
 /**
+ * Check if analytics should be rendered
+ * Returns true only in production and when not on localhost
+ */
+export const shouldRenderAnalytics = (): boolean => {
+  if (!import.meta.env.PROD) {
+    return false
+  }
+
+  const hostname = window.location.hostname
+  return hostname !== 'localhost' && hostname !== '127.0.0.1'
+}
+
+/**
  * Update meta tags dynamically based on environment
  * Call this in your main.tsx or App.tsx
  */

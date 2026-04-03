@@ -16,6 +16,7 @@ import { FAQ } from '@components/sections/FAQ'
 import { CTA } from '@components/sections/CTA'
 import { FeedbackWidget } from '@components/ui/FeedbackWidget'
 import { useAnalytics } from '@hooks/useAnalytics'
+import { shouldRenderAnalytics } from '@utils/env'
 
 /**
  * Application root component that composes the page layout and sections.
@@ -55,7 +56,12 @@ function App() {
       </main>
       <Footer />
       <FeedbackWidget />
-      <Analytics />
+      {/*
+          Only render Vercel Analytics in production and when not on localhost.
+          This prevents Lighthouse CI from failing due to analytics injection errors
+          when running on the CI runner's localhost.
+      */}
+      {shouldRenderAnalytics() && <Analytics />}
     </ErrorBoundary>
   )
 }

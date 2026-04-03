@@ -27,6 +27,10 @@ function severityToLevel(
   }
 }
 
+/**
+ * Contextual metadata attached to a captured error.
+ * All fields are optional; supply only the fields that are meaningful for the error.
+ */
 export interface ErrorContext {
   componentStack?: string
   errorInfo?: Record<string, unknown>

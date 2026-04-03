@@ -5,12 +5,12 @@
   "categories": [
     {
       "title": "### Features",
-      "labels": ["feature", "feat", "enhancement", "type: feature"],
+      "labels": ["feature", "feat", "enhancement", "type: feature", "type-feature", "Feature", "Improvement"],
       "prefix": "feat"
     },
     {
       "title": "### Bug Fixes",
-      "labels": ["bug", "fix", "type: bug"],
+      "labels": ["bug", "fix", "type: bug", "type: bugfix"],
       "prefix": "fix"
     },
     {
@@ -20,12 +20,12 @@
     },
     {
       "title": "### Documentation",
-      "labels": ["documentation", "docs", "type: docs"],
+      "labels": ["documentation", "docs", "type: docs", "type-documentation"],
       "prefix": "docs"
     },
     {
       "title": "### CI/CD",
-      "labels": ["ci", "ci/cd", "type: ci"],
+      "labels": ["ci", "ci/cd", "type: ci", "CI"],
       "prefix": "ci"
     },
     {
@@ -34,13 +34,22 @@
       "prefix": "security"
     },
     {
+      "title": "### Infrastructure",
+      "labels": ["type-infrastructure", "config"],
+      "prefix": "build"
+    },
+    {
       "title": "### Dependencies",
       "labels": ["dependencies", "deps", "type: dependencies"],
       "prefix": "chore(deps)"
     },
     {
       "title": "### Other Changes",
-      "labels": ["chore", "refactor", "style", "test", "type: chore"],
+      "labels": [
+        "chore", "refactor", "style", "test", "type: chore",
+        "frontend", "design", "utils", "hooks", "analytics", "styles",
+        "component: ui", "component: sections", "component: layout", "component: pages"
+      ],
       "prefix": "chore"
     }
   ],
@@ -76,6 +85,11 @@
       "on_property": "title"
     },
     {
+      "pattern": "^build(\\(.+\\))?!?:",
+      "target": "type-infrastructure",
+      "on_property": "title"
+    },
+    {
       "pattern": "^chore\\(deps[^)]*\\)!?:",
       "target": "deps",
       "on_property": "title"
@@ -92,7 +106,7 @@
   },
   "max_tags_to_fetch": 10,
   "max_pull_requests": 200,
-  "max_back_track_time_days": 90,
+  "max_back_track_time_days": 365,
   "exclude_merge_branches": ["main"],
   "tag_resolver": {
     "method": "semver"

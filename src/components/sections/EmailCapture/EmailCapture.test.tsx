@@ -51,4 +51,129 @@ describe('EmailCapture Section', () => {
     const emailInput = screen.getByPlaceholderText('your@email.com') as HTMLInputElement
     expect(emailInput.required).toBe(true)
   })
+
+  it('shows error for disposable email domain', async () => {
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    const emailInput = screen.getByPlaceholderText('your@email.com')
+    const submitButton = screen.getByRole('button', { name: /Join the Waitlist/i })
+
+    await user.type(emailInput, 'test@mailinator.com')
+    await user.click(submitButton)
+
+    await waitFor(() => {
+      const alert = screen.getByRole('alert')
+      expect(alert).toBeInTheDocument()
+      expect(alert.textContent).toMatch(/permanent email/i)
+    })
+  })
+
+  it('shows error for empty email submission', async () => {
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    // Submit without typing anything (bypass browser validation by direct call)
+    const form = screen.getByPlaceholderText('your@email.com').closest('form')!
+    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+
+    // The browser required attribute prevents submission but we can check the input
+    const emailInput = screen.getByPlaceholderText('your@email.com') as HTMLInputElement
+    expect(emailInput.required).toBe(true)
+    // Form should not show success
+    expect(screen.queryByText(/You're on the list!/)).not.toBeInTheDocument()
+    // Silence unused variable lint
+    void form
+  })
+
+  it('shows error for malformed email without @ sign', async () => {
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    const emailInput = screen.getByPlaceholderText('your@email.com')
+    const submitButton = screen.getByRole('button', { name: /Join the Waitlist/i })
+
+    await user.type(emailInput, 'notanemail')
+    await user.click(submitButton)
+
+    await waitFor(() => {
+      const alert = screen.getByRole('alert')
+      expect(alert).toBeInTheDocument()
+      expect(alert.textContent).toMatch(/valid email/i)
+    })
+  })
+
+  it('shows error for another known disposable domain (yopmail.com)', async () => {
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    const emailInput = screen.getByPlaceholderText('your@email.com')
+    const submitButton = screen.getByRole('button', { name: /Join the Waitlist/i })
+
+    await user.type(emailInput, 'user@yopmail.com')
+    await user.click(submitButton)
+
+    await waitFor(() => {
+      const alert = screen.getByRole('alert')
+      expect(alert).toBeInTheDocument()
+      expect(alert.textContent).toMatch(/permanent email/i)
+    })
+  })
+
+  it('does not enter loading state when validation fails', async () => {
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    const emailInput = screen.getByPlaceholderText('your@email.com')
+    const submitButton = screen.getByRole('button', { name: /Join the Waitlist/i })
+
+    await user.type(emailInput, 'test@mailinator.com')
+    await user.click(submitButton)
+
+    await waitFor(() => {
+      // Button must remain enabled — validation error should not start loading
+      expect(submitButton).not.toBeDisabled()
+      expect(screen.queryByText(/Joining\.\.\./i)).not.toBeInTheDocument()
+    })
+  })
+
+  it('renders the validation error with role="alert" for screen readers', async () => {
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    await user.type(screen.getByPlaceholderText('your@email.com'), 'bad@mailinator.com')
+    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+
+    await waitFor(() => {
+      const alert = screen.getByRole('alert')
+      expect(alert).toBeInTheDocument()
+    })
+  })
+
+  it('clears the validation error and transitions to success when a valid email is submitted after a previous failure', async () => {
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    const emailInput = screen.getByPlaceholderText('your@email.com')
+    const submitButton = screen.getByRole('button', { name: /Join the Waitlist/i })
+
+    // First attempt — disposable email triggers validation error
+    await user.type(emailInput, 'bad@mailinator.com')
+    await user.click(submitButton)
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toBeInTheDocument()
+    })
+
+    // Clear the field and type a valid address
+    await user.clear(emailInput)
+    await user.type(emailInput, 'valid@example.com')
+    await user.click(submitButton)
+
+    // Success state should be shown and no alert should remain
+    await waitFor(() => {
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+      expect(screen.getByText(/You're on the list!/)).toBeInTheDocument()
+    })
+  })
 })

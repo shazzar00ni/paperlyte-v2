@@ -38,10 +38,13 @@ fi
 # ── Pull latest ───────────────────────────────────────────────────────────────
 info "Fetching latest from origin..."
 git fetch origin "$CURRENT_BRANCH"
-LOCAL="$(git rev-parse HEAD)"
-REMOTE="$(git rev-parse "origin/$CURRENT_BRANCH")"
-if [[ "$LOCAL" != "$REMOTE" ]]; then
-  error "Local branch is behind origin/$CURRENT_BRANCH. Pull first."
+read -r AHEAD_COUNT BEHIND_COUNT <<< "$(git rev-list --left-right --count "HEAD...origin/$CURRENT_BRANCH")"
+if (( BEHIND_COUNT > 0 && AHEAD_COUNT == 0 )); then
+  error "Local branch is behind origin/$CURRENT_BRANCH. Pull or rebase first."
+elif (( AHEAD_COUNT > 0 && BEHIND_COUNT == 0 )); then
+  error "Local branch is ahead of origin/$CURRENT_BRANCH. Push your commits or reset before releasing."
+elif (( AHEAD_COUNT > 0 && BEHIND_COUNT > 0 )); then
+  error "Local branch has diverged from origin/$CURRENT_BRANCH. Reconcile the branches before releasing."
 fi
 
 # ── Determine current version ─────────────────────────────────────────────────

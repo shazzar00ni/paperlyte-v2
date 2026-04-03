@@ -1,6 +1,6 @@
 {
   "template": "## What's Changed\n\n#{{CHANGELOG}}\n\n**Full Changelog**: https://github.com/shazzar00ni/paperlyte-v2/compare/#{{FROM_TAG}}...#{{TO_TAG}}",
-  "pr_template": "- #{{TITLE}} by @#{{AUTHOR}} in ##{{NUMBER}}",
+  "pr_template": "- #{{TITLE}} by @#{{AUTHOR}} in #{{NUMBER}}",
   "empty_template": "_No changes_",
   "categories": [
     {

@@ -29,7 +29,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated issue templates with improved structure
 - Updated `sitemap.xml` last-modified dates
 - Upgraded `@fortawesome/*` packages to v7.2.x
-- Upgraded React to 19.2.4, Vite to 7.2.4
+- Upgraded React to 19.2.4
+- Pinned Vite to 7.2.4 (reverted from 7.3.0 to resolve build instability)
 - Improved SARIF run merging script (removed dead fingerprint filter)
 
 ### Fixed

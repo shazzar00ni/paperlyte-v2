@@ -1,6 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { OfflinePage } from './OfflinePage'
+import * as monitoring from '@/utils/monitoring'
 
 describe('OfflinePage', () => {
   let onLineSpy: ReturnType<typeof vi.spyOn>
@@ -382,6 +383,73 @@ describe('OfflinePage', () => {
       // Clean up: resolve promise to allow click handler to complete
       resolveFetch!()
       await clickPromise
+    })
+  })
+
+  describe('Retry Error Handling', () => {
+    it('should show network error message when fetch rejects', async () => {
+      const user = userEvent.setup()
+      global.fetch = vi.fn(() => Promise.reject(new Error('Network error')))
+
+      render(<OfflinePage />)
+
+      await user.click(screen.getByRole('button', { name: /check connection and retry/i }))
+
+      await waitFor(() => {
+        expect(screen.getByRole('alert')).toBeInTheDocument()
+        expect(
+          screen.getByText(/Unable to reach the network/i)
+        ).toBeInTheDocument()
+      })
+    })
+
+    it('should show timeout message when fetch is aborted', async () => {
+      const user = userEvent.setup()
+      global.fetch = vi.fn(() => Promise.reject(new DOMException('Aborted', 'AbortError')))
+
+      render(<OfflinePage />)
+
+      await user.click(screen.getByRole('button', { name: /check connection and retry/i }))
+
+      await waitFor(() => {
+        expect(screen.getByRole('alert')).toBeInTheDocument()
+        expect(screen.getByText(/timed out/i)).toBeInTheDocument()
+      })
+    })
+
+    it('should call logError with context tag on network failure', async () => {
+      const user = userEvent.setup()
+      const logErrorSpy = vi.spyOn(monitoring, 'logError')
+      global.fetch = vi.fn(() => Promise.reject(new Error('Network error')))
+
+      render(<OfflinePage />)
+
+      await user.click(screen.getByRole('button', { name: /check connection and retry/i }))
+
+      await waitFor(() => {
+        expect(logErrorSpy).toHaveBeenCalledWith(
+          expect.any(Error),
+          expect.objectContaining({
+            tags: expect.objectContaining({ context: 'OfflinePage.handleRetry' }),
+          })
+        )
+      })
+    })
+
+    it('should show error message when fetch returns non-OK status', async () => {
+      const user = userEvent.setup()
+      global.fetch = vi.fn(() =>
+        Promise.resolve(new Response(null, { status: 503, statusText: 'Service Unavailable' }))
+      )
+
+      render(<OfflinePage />)
+
+      await user.click(screen.getByRole('button', { name: /check connection and retry/i }))
+
+      await waitFor(() => {
+        expect(screen.getByRole('alert')).toBeInTheDocument()
+        expect(screen.getByText(/Connection check failed \(503\)/i)).toBeInTheDocument()
+      })
     })
   })
 

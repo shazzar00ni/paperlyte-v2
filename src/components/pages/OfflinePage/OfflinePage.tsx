@@ -101,9 +101,7 @@ export const OfflinePage: FC<OfflinePageProps> = ({
       }
 
       logError(
-        new Error(
-          `Connectivity probe returned unexpected status: ${response.status} ${response.statusText}`
-        ),
+        new Error(`Connectivity probe returned ${response.status} ${response.statusText}`),
         {
           tags: {
             context: 'OfflinePage.handleRetry',
@@ -112,9 +110,7 @@ export const OfflinePage: FC<OfflinePageProps> = ({
           },
         }
       )
-      setRetryError(
-        'Connection check failed. Please verify your network and try again.'
-      )
+      setRetryError(`Connection check failed (${response.status}). Please try again.`)
     } catch (err) {
       clearTimeout(timeoutId)
       const error = err instanceof Error ? err : new Error(String(err))

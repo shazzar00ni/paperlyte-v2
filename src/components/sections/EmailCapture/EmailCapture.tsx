@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { logError } from '@utils/monitoring'
+import { validateEmail } from '@utils/validation'
 import { Section } from '@components/layout/Section'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { Button } from '@components/ui/Button'
@@ -43,13 +44,9 @@ export const EmailCapture = (): React.ReactElement => {
 
     // Pre-submit validation — run before touching loading state so the form
     // stays interactive if the user needs to correct their input.
-    const trimmedEmail = email.trim()
-    if (!trimmedEmail) {
-      setError('Please enter your email address.')
-      return
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
-      setError('Please enter a valid email address.')
+    const validation = validateEmail(email)
+    if (!validation.isValid) {
+      setError(validation.error ?? 'Please enter a valid email address.')
       return
     }
 

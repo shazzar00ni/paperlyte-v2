@@ -120,12 +120,14 @@ fi
 
 info "Updating $CHANGELOG..."
 
-# Replace the entire [Unreleased] block (heading + all content) with a fresh
-# scaffold, then append the new versioned heading. The (?=\n## \[) lookahead
-# stops the match at the next version section without consuming it. -0777
-# slurps the whole file so .* can span newlines with the /s modifier.
+# Replace the [Unreleased] heading with a fresh scaffold, then insert the new
+# versioned heading followed by the captured [Unreleased] content so existing
+# entries are moved under the new version rather than discarded.
+# The (.*?) capture group preserves content; \1 appends it after the heading.
+# The (?=\n## \[) lookahead stops the match at the next version section without
+# consuming it. -0777 slurps the whole file so .* can span newlines (/s flag).
 perl -i -0777pe \
-  's/## \[Unreleased\].*?(?=\n## \[)/## [Unreleased]\n\n### Added\n\n- N\/A\n\n### Changed\n\n- N\/A\n\n### Deprecated\n\n- N\/A\n\n### Removed\n\n- N\/A\n\n### Fixed\n\n- N\/A\n\n### Security\n\n- N\/A\n\n## ['"${NEW_VERSION}"'] - '"${TODAY}"'/s' \
+  's/## \[Unreleased\](.*?)(?=\n## \[)/## [Unreleased]\n\n### Added\n\n- N\/A\n\n### Changed\n\n- N\/A\n\n### Deprecated\n\n- N\/A\n\n### Removed\n\n- N\/A\n\n### Fixed\n\n- N\/A\n\n### Security\n\n- N\/A\n\n## ['"${NEW_VERSION}"'] - '"${TODAY}"'\1/s' \
   "$CHANGELOG"
 
 # Update the Keep a Changelog comparison link footer. Derive the repo URL
@@ -177,5 +179,7 @@ git push --atomic origin "$CURRENT_BRANCH" "$TAG"
 success "Released ${TAG}!"
 echo ""
 echo "  GitHub Actions will now build and publish the release."
-echo "  Track progress: https://github.com/shazzar00ni/paperlyte-v2/actions"
-echo "  Release page:   https://github.com/shazzar00ni/paperlyte-v2/releases/tag/${TAG}"
+if [[ -n "${REPO_URL:-}" ]]; then
+  echo "  Track progress: ${REPO_URL}/actions"
+  echo "  Release page:   ${REPO_URL}/releases/tag/${TAG}"
+fi

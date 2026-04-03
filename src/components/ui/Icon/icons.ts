@@ -75,7 +75,13 @@ export const iconViewBox: Record<string, string> = {
   'fa-windows': '0 0 23 24',
 }
 
-// Returns the viewBox for the given icon, defaulting to "0 0 24 24" for icons not listed above
+/**
+ * Returns the SVG viewBox string for the given icon name.
+ * Defaults to `"0 0 24 24"` for icons not listed in {@link iconViewBox}.
+ *
+ * @param name - The icon name (e.g. `"fa-bolt"`).
+ * @returns The viewBox string to apply to the `<svg>` element.
+ */
 export const getIconViewBox = (name: string): string => {
   return safePropertyAccess(iconViewBox, name) ?? '0 0 24 24'
 }

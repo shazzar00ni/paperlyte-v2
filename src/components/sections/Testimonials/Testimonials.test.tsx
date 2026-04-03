@@ -138,7 +138,7 @@ describe('Testimonials', () => {
       const nextButton = screen.getByRole('button', { name: /Next testimonial/i })
 
       // Click next for each testimonial
-      for (const _t of TESTIMONIALS) {
+      for (let i = 0; i < TESTIMONIALS.length; i++) {
         await user.click(nextButton)
       }
 

@@ -20,8 +20,9 @@ interface NotFoundPageProps {
  * Provides a friendly error illustration, an optional custom message, and
  * action buttons to return home or go back in history.
  *
- * @param message - Optional override for the default "page not found" description.
- * @param onGoHome - Optional callback invoked when the user clicks "Back to Home".
+ * @param props - Component props.
+ * @param props.message - Optional override for the default "page not found" description.
+ * @param props.onGoHome - Optional callback invoked when the user clicks "Back to Home".
  *   Defaults to navigating to `/` via {@link safeNavigate}.
  */
 export const NotFoundPage: FC<NotFoundPageProps> = ({ message, onGoHome }) => {

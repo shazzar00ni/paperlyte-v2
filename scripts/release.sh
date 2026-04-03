@@ -136,6 +136,32 @@ ESCAPED="$(printf '%s' "$UNRELEASED_BLOCK" | perl -pe 's/\[/\\[/g; s/\]/\\]/g; s
 # Use perl for portable multi-line replacement
 perl -i -0pe "s/## \[Unreleased\]/${ESCAPED}/" "$CHANGELOG"
 
+REMOTE_URL="$(git config --get remote.origin.url || true)"
+if [[ -n "$REMOTE_URL" ]]; then
+  REPO_URL="$(printf '%s' "$REMOTE_URL" | perl -pe 's#^git@github\.com:(.+?)(?:\.git)?$#https://github.com/$1#; s#^https?://github\.com/(.+?)(?:\.git)?$#https://github.com/$1#; s#/$##;')"
+  PREVIOUS_TAG="v${CURRENT_VERSION}"
+
+  info "Updating changelog comparison links..."
+  REPO_URL="$REPO_URL" TAG="$TAG" NEW_VERSION="$NEW_VERSION" PREVIOUS_TAG="$PREVIOUS_TAG" perl -i -0pe '
+    my $unreleased = "[Unreleased]: $ENV{REPO_URL}/compare/$ENV{TAG}...HEAD";
+    my $released = "[$ENV{NEW_VERSION}]: $ENV{REPO_URL}/compare/$ENV{PREVIOUS_TAG}...$ENV{TAG}";
+
+    if (s/^\[Unreleased\]: .*$/\$unreleased/m) {
+      1;
+    } else {
+      $_ .= "\n" unless /\n\z/;
+      $_ .= "$unreleased\n";
+    }
+
+    if (s/^\[\Q$ENV{NEW_VERSION}\E\]: .*$/\$released/m) {
+      1;
+    } else {
+      $_ .= "$released\n";
+    }
+  ' "$CHANGELOG"
+else
+  warn "Could not determine origin remote; skipping changelog comparison link update."
+fi
 # ── Update package.json version ───────────────────────────────────────────────
 info "Updating package.json..."
 npm version "$NEW_VERSION" --no-git-tag-version --no-workspaces-update

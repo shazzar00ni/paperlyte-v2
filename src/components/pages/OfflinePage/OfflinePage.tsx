@@ -17,6 +17,15 @@ interface OfflinePageProps {
   onConnectionRestored?: () => void
 }
 
+/**
+ * Offline fallback page displayed when the user loses network connectivity.
+ * Listens to the browser's `online`/`offline` events, updates the UI reactively,
+ * and provides a retry button that probes real internet connectivity before reloading.
+ *
+ * @param message - Optional override for the default "you're offline" description.
+ * @param showCachedInfo - Whether to show the list of offline-capable features (default: `true`).
+ * @param onConnectionRestored - Optional callback invoked when the `online` event fires.
+ */
 export const OfflinePage: FC<OfflinePageProps> = ({
   message,
   showCachedInfo = true,
@@ -28,6 +37,10 @@ export const OfflinePage: FC<OfflinePageProps> = ({
   const [isChecking, setIsChecking] = useState(false)
 
   // Memoize handlers to ensure stable references and proper cleanup
+  /**
+   * Marks the connection as restored and invokes the optional `onConnectionRestored` callback.
+   * Attached to the window `online` event.
+   */
   const handleOnline = useCallback((): void => {
     setIsOnline(true)
     if (onConnectionRestored) {
@@ -35,6 +48,9 @@ export const OfflinePage: FC<OfflinePageProps> = ({
     }
   }, [onConnectionRestored])
 
+  /**
+   * Marks the connection as lost. Attached to the window `offline` event.
+   */
   const handleOffline = useCallback((): void => {
     setIsOnline(false)
   }, [])
@@ -51,6 +67,11 @@ export const OfflinePage: FC<OfflinePageProps> = ({
     }
   }, [handleOnline, handleOffline])
 
+  /**
+   * Probes real internet connectivity by sending a HEAD request to a reliable external
+   * endpoint (Google's generate_204). Reloads the page on success; resets the checking
+   * state on failure or timeout. A 5-second AbortController timeout prevents hanging.
+   */
   const handleRetry = async (): Promise<void> => {
     setIsChecking(true)
 

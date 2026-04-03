@@ -15,6 +15,12 @@ const BENEFITS = [
   'Receive exclusive productivity tips and updates',
 ]
 
+/**
+ * Waitlist sign-up section for the Paperlyte landing page.
+ * Renders a benefit list and an email form. On successful submission the form is
+ * replaced with a confirmation state that includes social-sharing buttons.
+ * Handles network and validation errors with user-facing messages.
+ */
 export const EmailCapture = (): React.ReactElement => {
   const [email, setEmail] = useState('')
   const [isSubmitted, setIsSubmitted] = useState(false)
@@ -24,6 +30,14 @@ export const EmailCapture = (): React.ReactElement => {
   // Safe origin for SSR compatibility
   const origin = typeof window !== 'undefined' ? window.location.origin : ''
 
+  /**
+   * Handles waitlist form submission. Prevents the default form action, calls the
+   * (currently simulated) API, and transitions to the success state. On failure it
+   * classifies the error as a network issue or validation problem and sets an
+   * appropriate user-facing message.
+   *
+   * @param e - The form submission event.
+   */
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsLoading(true)

@@ -73,9 +73,14 @@ fi
 
 TAG="v${NEW_VERSION}"
 
-# Check tag doesn't already exist
-if git rev-parse "$TAG" &>/dev/null; then
-  error "Tag $TAG already exists."
+# Check tag doesn't already exist locally or on origin
+info "Checking tag ${TAG} does not already exist..."
+git fetch --tags origin 2>/dev/null || true
+if git rev-parse "refs/tags/${TAG}" &>/dev/null; then
+  error "Tag ${TAG} already exists locally."
+fi
+if git ls-remote --tags origin "refs/tags/${TAG}" | grep -q "refs/tags/${TAG}"; then
+  error "Tag ${TAG} already exists on origin."
 fi
 
 info "New version: ${TAG}"
@@ -92,7 +97,9 @@ fi
 
 info "Updating $CHANGELOG..."
 
-# Replace ## [Unreleased] header with versioned header, insert new empty [Unreleased]
+# Single source of truth for the empty [Unreleased] scaffold inserted after each release.
+# The perl substitution below replaces `## [Unreleased]` with this block followed by the
+# new versioned heading, so the scaffold and the replacement string are always in sync.
 UNRELEASED_BLOCK="## [Unreleased]
 
 _No unreleased changes._
@@ -121,12 +128,13 @@ _No unreleased changes._
 
 - N/A
 
-"
+## [${NEW_VERSION}] - ${TODAY}"
+
+# Build the escaped replacement string from UNRELEASED_BLOCK so there is no duplication.
+ESCAPED="$(printf '%s' "$UNRELEASED_BLOCK" | perl -pe 's/\[/\\[/g; s/\]/\\]/g; s/\//\\\//g; s/\n/\\n/g')"
 
 # Use perl for portable multi-line replacement
-perl -i -0pe "
-  s/## \[Unreleased\]/## [Unreleased]\n\n_No unreleased changes._\n\n### Added\n\n- N\/A\n\n### Changed\n\n- N\/A\n\n### Deprecated\n\n- N\/A\n\n### Removed\n\n- N\/A\n\n### Fixed\n\n- N\/A\n\n### Security\n\n- N\/A\n\n## [${NEW_VERSION}] - ${TODAY}/
-" "$CHANGELOG"
+perl -i -0pe "s/## \[Unreleased\]/${ESCAPED}/" "$CHANGELOG"
 
 # ── Update package.json version ───────────────────────────────────────────────
 info "Updating package.json..."

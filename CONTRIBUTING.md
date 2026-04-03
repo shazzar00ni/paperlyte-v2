@@ -385,6 +385,34 @@ changes affect consumers.
 dependency on `flatted ^3.4.2` or later, at which point this global override
 can be removed.
 
+---
+
+#### `lodash` and `lodash-es` (`^4.18.1`)
+
+`package.json` contains global overrides that force both `lodash` and `lodash-es` to `^4.18.1`:
+
+```json
+{
+  "overrides": {
+    "lodash": "^4.18.1",
+    "lodash-es": "^4.18.1"
+  }
+}
+```
+
+**Advisories**:
+- GHSA-r5fr-rjxr-66jc — high-severity code injection via `_.template` imports key names (affects `>=4.0.0 <=4.17.23`)
+- GHSA-f23m-r3pf-42rh — prototype pollution via array path bypass in `_.unset` / `_.omit` (affects `<=4.17.23`)
+
+**Affected transitive chains**:
+- `@lhci/cli → inquirer → lodash`
+- `@lhci/cli → lighthouse → lodash-es`
+- `wait-on → lodash`
+
+**Chosen version**: `^4.18.1` is the first release that patches both advisories.
+
+**Revisit when**: upstream packages (`@lhci/cli`, `wait-on`) update their own dependencies to `lodash >=4.18.1`, at which point these overrides can be removed.
+
 ## Questions?
 
 If you have questions:

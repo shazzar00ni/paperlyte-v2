@@ -9,6 +9,12 @@
 
 set -euo pipefail
 
+# ── Resolve repo root ─────────────────────────────────────────────────────────
+# Always run from the repository root, regardless of the caller's working
+# directory, so git/npm/node commands reliably find their config files.
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$REPO_ROOT"
+
 # ── Helpers ──────────────────────────────────────────────────────────────────
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; CYAN='\033[0;36m'; NC='\033[0m'
 info()    { echo -e "${CYAN}[release]${NC} $*"; }
@@ -54,9 +60,12 @@ info "Current version: v${CURRENT_VERSION}"
 # ── Calculate next version ────────────────────────────────────────────────────
 bump_version() {
   local version="$1" part="$2"
-  # Strip pre-release suffix if present (e.g., 1.0.0-beta.1 → 1.0.0)
-  version="${version%%-*}"
-  IFS='.' read -r major minor patch <<< "$version"
+  # Strip any pre-release suffix before arithmetic (e.g. "1.0.0-beta.1" → "1.0.0")
+  local semver_core="${version%%-*}"
+  IFS='.' read -r major minor patch <<< "$semver_core"
+  if ! [[ "$major" =~ ^[0-9]+$ && "$minor" =~ ^[0-9]+$ && "$patch" =~ ^[0-9]+$ ]]; then
+    error "Cannot increment version '$version': major/minor/patch must be numeric integers. Pass an exact version (x.y.z) instead."
+  fi
   case "$part" in
     major) echo "$((major + 1)).0.0" ;;
     minor) echo "${major}.$((minor + 1)).0" ;;
@@ -90,6 +99,13 @@ read -r -p "Release ${TAG}? [y/N] " confirm
 [[ "$confirm" =~ ^[Yy]$ ]] || error "Aborted."
 
 # ── Update CHANGELOG.md ───────────────────────────────────────────────────────
+# NOTE: CHANGELOG.md is the authoritative human-readable changelog for the repo.
+# GitHub Release bodies are auto-generated separately by
+# mikepenz/release-changelog-builder-action in .github/workflows/release.yml and
+# are based on PR labels/titles — not CHANGELOG.md entries. Both are intentionally
+# maintained: CHANGELOG.md for the repository history, GitHub Releases for the
+# release page. If you change the CHANGELOG format, update the release-changelog-
+# builder configuration at .github/changelog-config.json accordingly.
 CHANGELOG="CHANGELOG.md"
 TODAY="$(date +%Y-%m-%d)"
 
@@ -99,45 +115,16 @@ fi
 
 info "Updating $CHANGELOG..."
 
-# Single source of truth for the empty [Unreleased] scaffold inserted after each release.
-# The perl substitution below replaces `## [Unreleased]` with this block followed by the
-# new versioned heading, so the scaffold and the replacement string are always in sync.
-UNRELEASED_BLOCK="## [Unreleased]
+# Replace the entire [Unreleased] block (heading + all content) with a fresh
+# scaffold, then append the new versioned heading. The (?=\n## \[) lookahead
+# stops the match at the next version section without consuming it. -0777
+# slurps the whole file so .* can span newlines with the /s modifier.
+perl -i -0777pe \
+  's/## \[Unreleased\].*?(?=\n## \[)/## [Unreleased]\n\n### Added\n\n- N\/A\n\n### Changed\n\n- N\/A\n\n### Deprecated\n\n- N\/A\n\n### Removed\n\n- N\/A\n\n### Fixed\n\n- N\/A\n\n### Security\n\n- N\/A\n\n## ['"${NEW_VERSION}"'] - '"${TODAY}"'/s' \
+  "$CHANGELOG"
 
-_No unreleased changes._
-
-### Added
-
-- N/A
-
-### Changed
-
-- N/A
-
-### Deprecated
-
-- N/A
-
-### Removed
-
-- N/A
-
-### Fixed
-
-- N/A
-
-### Security
-
-- N/A
-
-## [${NEW_VERSION}] - ${TODAY}"
-
-# Build the escaped replacement string from UNRELEASED_BLOCK so there is no duplication.
-ESCAPED="$(printf '%s' "$UNRELEASED_BLOCK" | perl -pe 's/\[/\\[/g; s/\]/\\]/g; s/\//\\\//g; s/\n/\\n/g')"
-
-# Use perl for portable multi-line replacement
-perl -i -0pe "s/## \[Unreleased\]/${ESCAPED}/" "$CHANGELOG"
-
+# Update the Keep a Changelog comparison link footer. Derive the repo URL
+# dynamically from the git remote so the script works in forks.
 REMOTE_URL="$(git config --get remote.origin.url || true)"
 if [[ -n "$REMOTE_URL" ]]; then
   REPO_URL="$(printf '%s' "$REMOTE_URL" | perl -pe 's#^git@github\.com:(.+?)(?:\.git)?$#https://github.com/$1#; s#^https?://github\.com/(.+?)(?:\.git)?$#https://github.com/$1#; s#/$##;')"
@@ -146,7 +133,7 @@ if [[ -n "$REMOTE_URL" ]]; then
   info "Updating changelog comparison links..."
   REPO_URL="$REPO_URL" TAG="$TAG" NEW_VERSION="$NEW_VERSION" PREVIOUS_TAG="$PREVIOUS_TAG" perl -i -0pe '
     my $unreleased = "[Unreleased]: $ENV{REPO_URL}/compare/$ENV{TAG}...HEAD";
-    my $released = "[$ENV{NEW_VERSION}]: $ENV{REPO_URL}/compare/$ENV{PREVIOUS_TAG}...$ENV{TAG}";
+    my $released   = "[$ENV{NEW_VERSION}]: $ENV{REPO_URL}/compare/$ENV{PREVIOUS_TAG}...$ENV{TAG}";
 
     if (s/^\[Unreleased\]: .*$/$unreleased/m) {
       1;
@@ -164,6 +151,7 @@ if [[ -n "$REMOTE_URL" ]]; then
 else
   warn "Could not determine origin remote; skipping changelog comparison link update."
 fi
+
 # ── Update package.json version ───────────────────────────────────────────────
 info "Updating package.json..."
 npm version "$NEW_VERSION" --no-git-tag-version --no-workspaces-update
@@ -177,10 +165,9 @@ git commit -m "chore(release): ${TAG}"
 info "Tagging ${TAG}..."
 git tag -a "$TAG" -m "Release ${TAG}"
 
-# ── Push ──────────────────────────────────────────────────────────────────────
-info "Pushing commit and tag to origin..."
-git push origin "$CURRENT_BRANCH"
-git push origin "$TAG"
+# ── Push (atomic: commit and tag land together or neither does) ───────────────
+info "Pushing commit and tag to origin (atomic)..."
+git push --atomic origin "$CURRENT_BRANCH" "$TAG"
 
 success "Released ${TAG}!"
 echo ""

@@ -36,6 +36,7 @@ export const OfflinePage: FC<OfflinePageProps> = ({
     typeof navigator !== 'undefined' ? navigator.onLine : true
   )
   const [isChecking, setIsChecking] = useState(false)
+  const [retryError, setRetryError] = useState<string | null>(null)
 
   // Memoize handlers to ensure stable references and proper cleanup
   /**
@@ -75,14 +76,17 @@ export const OfflinePage: FC<OfflinePageProps> = ({
    */
   const handleRetry = async (): Promise<void> => {
     setIsChecking(true)
+    setRetryError(null)
 
     // Create abort controller with timeout to prevent hanging
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), 5000) // 5 second timeout
 
+    const PROBE_URL = 'https://www.gstatic.com/generate_204'
+
     try {
       // Use a reliable external endpoint to check for real internet connectivity
-      const response = await fetch('https://www.gstatic.com/generate_204', {
+      const response = await fetch(PROBE_URL, {
         method: 'HEAD',
         cache: 'no-cache',
         signal: controller.signal,
@@ -176,6 +180,13 @@ export const OfflinePage: FC<OfflinePageProps> = ({
             </button>
           )}
         </div>
+
+        {/* Retry error message */}
+        {retryError && (
+          <p className={styles.retryError} role="alert">
+            {retryError}
+          </p>
+        )}
 
         {/* Offline features */}
         {!isOnline && showCachedInfo && (

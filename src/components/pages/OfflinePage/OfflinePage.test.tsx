@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { OfflinePage } from './OfflinePage'
 import * as monitoring from '@/utils/monitoring'
+import { OfflinePage } from './OfflinePage'
 
 describe('OfflinePage', () => {
   let onLineSpy: ReturnType<typeof vi.spyOn>
@@ -405,6 +405,7 @@ describe('OfflinePage', () => {
 
     it('should show timeout message when fetch is aborted', async () => {
       const user = userEvent.setup()
+      // Use a plain Error with name='AbortError' — DOMException is unreliable in jsdom
       const abortError = new Error('Aborted')
       abortError.name = 'AbortError'
       global.fetch = vi.fn(() => Promise.reject(abortError))

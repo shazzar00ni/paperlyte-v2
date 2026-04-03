@@ -3,6 +3,10 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "engines": {
+    "node": ">=18",
+    "npm": ">=8"
+  },
   "scripts": {
     "dev": "vite",
     "generate:icons": "node scripts/generate-icons.js",

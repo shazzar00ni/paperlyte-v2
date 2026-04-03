@@ -15,6 +15,7 @@ interface ValueProp {
   proof: string
 }
 
+/** Value proposition cards displayed in the Solution section. */
 const VALUE_PROPS: ValueProp[] = [
   {
     icon: 'fa-bolt',

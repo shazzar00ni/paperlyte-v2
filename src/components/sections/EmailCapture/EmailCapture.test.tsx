@@ -73,17 +73,14 @@ describe('EmailCapture Section', () => {
     const user = userEvent.setup()
     render(<EmailCapture />)
 
-    // Submit without typing anything (bypass browser validation by direct call)
-    const form = screen.getByPlaceholderText('your@email.com').closest('form')!
+    // Submit without typing anything (simulate user clicking the submit button)
     await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
 
-    // The browser required attribute prevents submission but we can check the input
+    // The browser required attribute prevents submission
     const emailInput = screen.getByPlaceholderText('your@email.com') as HTMLInputElement
     expect(emailInput.required).toBe(true)
     // Form should not show success
     expect(screen.queryByText(/You're on the list!/)).not.toBeInTheDocument()
-    // Silence unused variable lint
-    void form
   })
 
   it('shows validation error for invalid email format', async () => {

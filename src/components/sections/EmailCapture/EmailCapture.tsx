@@ -9,6 +9,7 @@ import { Icon } from '@components/ui/Icon'
 import { WAITLIST_COUNT, LAUNCH_QUARTER } from '@constants/waitlist'
 import styles from './EmailCapture.module.css'
 
+/** Waitlist sign-up benefit bullet points displayed in the email capture form. */
 const BENEFITS = [
   'Get early access before public launch',
   'Influence features and design decisions',
@@ -39,7 +40,7 @@ export const EmailCapture = (): React.ReactElement => {
    *
    * @param e - The form submission event.
    */
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault()
 
     // Pre-submit validation — run before touching loading state so the form

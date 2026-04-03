@@ -83,7 +83,7 @@ export const OfflinePage: FC<OfflinePageProps> = ({
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), 5000) // 5 second timeout
 
-    const PROBE_URL = 'https://www.gstatic.com/generate_204'
+    const PROBE_URL = import.meta.env.VITE_PROBE_URL ?? '/api/health'
 
     try {
       // Use a reliable external endpoint to check for real internet connectivity
@@ -101,16 +101,13 @@ export const OfflinePage: FC<OfflinePageProps> = ({
         return
       }
 
-      logError(
-        new Error(`Connectivity probe returned ${response.status} ${response.statusText}`),
-        {
-          tags: {
-            context: 'OfflinePage.handleRetry',
-            url: PROBE_URL,
-            status: String(response.status),
-          },
-        }
-      )
+      logError(new Error(`Connectivity probe returned ${response.status} ${response.statusText}`), {
+        tags: {
+          context: 'OfflinePage.handleRetry',
+          url: PROBE_URL,
+          status: String(response.status),
+        },
+      })
       setRetryError(`Connection check failed (${response.status}). Please try again.`)
     } catch (err) {
       clearTimeout(timeoutId)

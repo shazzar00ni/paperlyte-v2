@@ -7,6 +7,7 @@ interface ComparisonItem {
   issues: string[]
 }
 
+/** Competitor pain-point data used to populate the problem comparison grid. */
 const COMPARISON_DATA: ComparisonItem[] = [
   {
     competitor: 'Notion',

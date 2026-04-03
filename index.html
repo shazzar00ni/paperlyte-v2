@@ -49,11 +49,12 @@
     <!-- Theme Color -->
     <meta name="theme-color" content="#1a1a1a" />
 
-    <!-- Font Awesome icons are loaded via @fortawesome/fontawesome-svg-core in JavaScript -->
-    <!-- This approach is CSP-compliant and doesn't require external CDN resources -->
+    <!-- Preload critical fonts to eliminate render-blocking FOUT -->
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/Inter-Variable.woff2" crossorigin="anonymous" />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/PlayfairDisplay-Variable.woff2" crossorigin="anonymous" />
 
-    <!-- Preload critical above-the-fold image for better LCP -->
-    <link rel="preload" as="image" type="image/avif" href="/mockups/notes-list.avif" />
+    <!-- Preload critical above-the-fold hero image for better LCP -->
+    <link rel="preload" as="image" type="image/avif" href="/mockups/notes-list.avif" imagesrcset="/mockups/notes-list-400w.avif 400w, /mockups/notes-list-800w.avif 800w, /mockups/notes-list.avif 1200w" imagesizes="(max-width: 480px) 400px, (max-width: 768px) 800px, 1200px" />
 
     <!-- Schema.org Structured Data (JSON-LD) -->
     <script type="application/ld+json">

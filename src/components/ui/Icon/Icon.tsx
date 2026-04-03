@@ -1,9 +1,5 @@
 import { useMemo, useId } from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { findIconDefinition } from '@fortawesome/fontawesome-svg-core'
-import type { IconName, IconPrefix } from '@fortawesome/fontawesome-svg-core'
 import { iconPaths, getIconViewBox, strokeOnlyIcons } from './icons'
-import { convertIconName, isBrandIcon } from '@utils/iconLibrary'
 import { safePropertyAccess } from '@utils/security'
 import './Icon.css'
 
@@ -28,21 +24,20 @@ const SIZE_MAP = {
 } as const
 
 /**
- * Icon component that renders both custom SVG icons and Font Awesome icons
- * Falls back to FontAwesome if the icon is not found in custom iconPaths
- * Implements security measures to prevent prototype pollution attacks
+ * Icon component that renders custom SVG icons from the bundled icon set.
+ * Implements security measures to prevent prototype pollution attacks.
  *
  * @param props - Icon component props
  * @param props.name - The icon name (e.g., 'fa-github', 'fa-bolt'). Supports
  *   multi-token values like 'fa-spinner fa-spin' where extra tokens become
  *   additional CSS classes on the rendered element.
  * @param props.size - The icon size (default: 'md')
- * @param props.variant - The icon variant for Font Awesome (default: 'solid')
+ * @param props.variant - Accepted for backwards compatibility, unused.
  * @param props.className - Additional CSS classes
  * @param props.ariaLabel - Accessibility label (omit for decorative icons)
  * @param props.color - Icon color (supports hex, CSS vars, or named colors)
  * @param props.style - Additional inline styles
- * @returns A rendered icon element (SVG or FontAwesomeIcon)
+ * @returns A rendered SVG icon element
  *
  * @example
  * ```tsx
@@ -50,7 +45,7 @@ const SIZE_MAP = {
  * <Icon name="fa-bolt" size="lg" />
  *
  * // Meaningful icon with label
- * <Icon name="fa-github" ariaLabel="View on GitHub" variant="brands" />
+ * <Icon name="fa-github" ariaLabel="View on GitHub" />
  *
  * // Custom styled icon
  * <Icon name="fa-circle-check" color="#00ff00" size="2x" />
@@ -59,7 +54,6 @@ const SIZE_MAP = {
 export const Icon = ({
   name,
   size = 'md',
-  variant = 'solid',
   className = '',
   ariaLabel,
   color,
@@ -82,9 +76,6 @@ export const Icon = ({
   // Safely check if icon exists in iconPaths to prevent prototype pollution
   const paths = safePropertyAccess(iconPaths, resolvedKey)
   const viewBox = getIconViewBox(resolvedKey)
-
-  // Convert base name for Font Awesome fallback path
-  const convertedName = convertIconName(baseName)
 
   // Normalize color: detect bare hex strings (3 or 6 hex digits) and prepend "#"
   const normalizedColor = useMemo(() => {
@@ -134,46 +125,20 @@ export const Icon = ({
     )
   }
 
-  // Fallback to Font Awesome React component if icon not found in our set
+  // Icon not found in our set — return a decorative placeholder
   if (import.meta.env.DEV) {
-    console.warn(`Icon "${name}" not found in icon set, using Font Awesome fallback`)
+    console.warn(`Icon "${name}" not found in icon set. Add it to icons.ts.`)
   }
-
-  // Determine prefix based on variant or by checking if it's a brand icon
-  let prefix: IconPrefix
-  if (variant === 'brands' || isBrandIcon(convertedName)) {
-    prefix = 'fab'
-  } else if (variant === 'regular') {
-    prefix = 'far'
-  } else {
-    prefix = 'fas'
-  }
-
-  // Try to find the icon definition in the library
-  // Runtime validation: Check if convertedName is a valid IconName before assertion
-  const iconDefinition = findIconDefinition({ prefix, iconName: convertedName as IconName })
-
   const fallbackClassName = ['icon-fallback', modifierClasses, className].filter(Boolean).join(' ')
-  const commonIconProps = {
-    className: fallbackClassName,
-    style: { fontSize: iconSize, color: normalizedColor, ...style },
-    'aria-label': ariaLabel,
-    'aria-hidden': ariaLabel ? ('false' as const) : ('true' as const),
-    ...(ariaLabel ? { role: 'img' } : {}),
-  }
-
-  // If icon found in library, render it
-  if (iconDefinition) {
-    return <FontAwesomeIcon icon={iconDefinition} {...commonIconProps} />
-  }
-
-  // Icon not found in library — return a placeholder
-  console.warn(
-    `Icon "${name}" (converted to "${convertedName}") not found in Font Awesome library. ` +
-      `Rendering empty/decorative fallback span.`
-  )
   return (
-    <span {...commonIconProps} title={`Icon "${name}" not found`}>
+    <span
+      className={fallbackClassName}
+      style={{ fontSize: iconSize, color: normalizedColor, ...style }}
+      aria-label={ariaLabel}
+      aria-hidden={ariaLabel ? ('false' as const) : ('true' as const)}
+      {...(ariaLabel ? { role: 'img' } : {})}
+      title={`Icon "${name}" not found`}
+    >
       ?
     </span>
   )

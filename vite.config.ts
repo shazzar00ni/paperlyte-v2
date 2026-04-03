@@ -52,7 +52,7 @@ function cspPlugin(): Plugin {
       // - 'unsafe-inline' is required for Vite's dev server CSS injection during HMR
       // - ws: wss: enables WebSocket connections for Vite dev server HMR
       // - All fonts and icons are self-hosted (no external CDN dependencies)
-      // - Fonts: @fontsource/inter, Icons: @fortawesome/fontawesome-free
+      // - Fonts: @fontsource/inter, Icons: bundled custom SVG paths
       const devCSP = `default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' ws: wss:; frame-ancestors 'none'; base-uri 'self'; form-action 'self';`
 
       // Inject CSP meta tag before closing </head> tag (dev only)
@@ -142,10 +142,6 @@ export default defineConfig({
           // React vendor bundle (~190KB) - changes rarely, good cache hit rate
           if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
             return 'react-vendor'
-          }
-          // Font Awesome is large (~100KB+), split it out
-          if (id.includes('node_modules/@fortawesome')) {
-            return 'fontawesome'
           }
           // Keep app code together for better tree-shaking and compression
           // Small chunks (constants, utils, UI components) stay in main bundle

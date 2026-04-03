@@ -405,7 +405,9 @@ describe('OfflinePage', () => {
 
     it('should show timeout message when fetch is aborted', async () => {
       const user = userEvent.setup()
-      global.fetch = vi.fn(() => Promise.reject(new DOMException('Aborted', 'AbortError')))
+      const abortError = new Error('Aborted')
+      abortError.name = 'AbortError'
+      global.fetch = vi.fn(() => Promise.reject(abortError))
 
       render(<OfflinePage />)
 

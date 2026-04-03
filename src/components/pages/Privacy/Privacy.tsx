@@ -1,4 +1,5 @@
 import { Section } from '@components/layout/Section'
+import { LEGAL_CONFIG } from '@/constants/legal'
 import styles from './Privacy.module.css'
 
 /**
@@ -173,11 +174,14 @@ export function Privacy() {
             <section className={styles.section}>
               <h2>Cookies & Tracking</h2>
               <p>
-                <strong>Current Landing Page:</strong> We use Google Analytics 4 to understand how
-                visitors interact with our waitlist page. Google Analytics uses cookies and may
-                collect information such as your IP address, browser type, and pages visited. You
-                can opt out of Google Analytics by using browser extensions like Google Analytics
-                Opt-out Browser Add-on.
+                <strong>Current Landing Page:</strong> We use Plausible Analytics to understand how
+                visitors interact with our waitlist page. Plausible is a privacy-focused,
+                cookie-free analytics tool that does not collect personal data or use cookies. No IP
+                addresses or personal identifiers are stored.
+              </p>
+              <p>
+                We also use Vercel Analytics for performance monitoring and Sentry for error
+                tracking. These tools collect anonymised technical data only.
               </p>
               <p>
                 <strong>When App Launches:</strong> The full application will use minimal cookies to
@@ -227,7 +231,10 @@ export function Privacy() {
               </p>
               <ul>
                 <li>
-                  Email: <a href="mailto:privacy@paperlyte.app">privacy@paperlyte.app</a>
+                  Email:{' '}
+                  <a href={`mailto:${LEGAL_CONFIG.company.privacyEmail}`}>
+                    {LEGAL_CONFIG.company.privacyEmail}
+                  </a>
                 </li>
                 <li>
                   Website:{' '}

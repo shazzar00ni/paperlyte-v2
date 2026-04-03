@@ -1,4 +1,4 @@
-import { useRef, useCallback } from 'react'
+import { useRef, useCallback, lazy, Suspense } from 'react'
 import { Analytics } from '@vercel/analytics/react'
 import { ErrorBoundary } from '@components/ErrorBoundary'
 import { Header } from '@components/layout/Header'
@@ -8,14 +8,29 @@ import { Problem } from '@components/sections/Problem'
 import { Solution } from '@components/sections/Solution'
 import { Features } from '@components/sections/Features'
 import { Mobile } from '@components/sections/Mobile'
-import { Statistics } from '@components/sections/Statistics'
-import { Comparison } from '@components/sections/Comparison'
-import { Testimonials } from '@components/sections/Testimonials'
-import { EmailCapture } from '@components/sections/EmailCapture'
-import { FAQ } from '@components/sections/FAQ'
-import { CTA } from '@components/sections/CTA'
 import { FeedbackWidget } from '@components/ui/FeedbackWidget'
 import { useAnalytics } from '@hooks/useAnalytics'
+
+// Below-the-fold sections are lazy-loaded to reduce initial bundle size
+const Statistics = lazy(() =>
+  import('@components/sections/Statistics').then((m) => ({ default: m.Statistics }))
+)
+const Comparison = lazy(() =>
+  import('@components/sections/Comparison').then((m) => ({ default: m.Comparison }))
+)
+const Testimonials = lazy(() =>
+  import('@components/sections/Testimonials').then((m) => ({ default: m.Testimonials }))
+)
+const EmailCapture = lazy(() =>
+  import('@components/sections/EmailCapture').then((m) => ({ default: m.EmailCapture }))
+)
+const FAQ = lazy(() => import('@components/sections/FAQ').then((m) => ({ default: m.FAQ })))
+const CTA = lazy(() => import('@components/sections/CTA').then((m) => ({ default: m.CTA })))
+
+/** Lightweight fallback shown while lazy sections are loading */
+function SectionFallback() {
+  return <div style={{ minHeight: '200px' }} aria-hidden="true" />
+}
 
 /**
  * Application root component that composes the page layout and sections.
@@ -46,12 +61,14 @@ function App() {
         <Solution />
         <Features />
         <Mobile />
-        <Statistics />
-        <Comparison />
-        <Testimonials />
-        <EmailCapture />
-        <FAQ />
-        <CTA />
+        <Suspense fallback={<SectionFallback />}>
+          <Statistics />
+          <Comparison />
+          <Testimonials />
+          <EmailCapture />
+          <FAQ />
+          <CTA />
+        </Suspense>
       </main>
       <Footer />
       <FeedbackWidget />

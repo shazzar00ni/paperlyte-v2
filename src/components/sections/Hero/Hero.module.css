@@ -59,6 +59,61 @@
 
 .emailWrapper {
   margin-bottom: var(--spacing-md);
+  display: flex;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: stretch;
+}
+
+.heroEmailInput {
+  flex: 1 1 240px;
+  max-width: 320px;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px solid var(--color-border);
+  border-radius: 9999px;
+  font-size: var(--font-size-base);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  outline: none;
+  transition: border-color var(--transition-base);
+}
+
+.heroEmailInput:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb, 0, 0, 0), 0.15);
+}
+
+.heroForm {
+  margin-bottom: var(--spacing-md);
+}
+
+.heroFormError {
+  color: var(--color-error, #dc2626);
+  font-size: var(--font-size-sm);
+  margin-top: var(--spacing-xs);
+  text-align: center;
+}
+
+.successMessage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  color: var(--color-success, #16a34a);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-xl);
+}
+
+.socialProof {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--spacing-xl);
 }
 
 .secondaryCta {
@@ -134,6 +189,7 @@
     0 20px 60px rgba(0, 0, 0, 0.15),
     0 0 0 1px rgba(0, 0, 0, 0.05);
   transition: transform var(--transition-base);
+  aspect-ratio: 1.375;
 }
 
 .mockupPrimary:hover {
@@ -154,6 +210,7 @@
     0 25px 70px rgba(0, 0, 0, 0.2),
     0 0 0 1px rgba(0, 0, 0, 0.08);
   transition: transform var(--transition-base);
+  aspect-ratio: 1.333;
 }
 
 .mockupSecondary:hover {

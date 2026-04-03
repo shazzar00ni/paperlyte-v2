@@ -137,8 +137,7 @@ describe('Legal Constants', () => {
     it('should have all social media links', () => {
       expect(LEGAL_CONFIG.social).toHaveProperty('github')
       expect(LEGAL_CONFIG.social).toHaveProperty('twitter')
-      expect(LEGAL_CONFIG.social).toHaveProperty('linkedin')
-      expect(LEGAL_CONFIG.social).toHaveProperty('discord')
+      expect(LEGAL_CONFIG.social).toHaveProperty('instagram')
     })
 
     it('should have valid GitHub URL', () => {
@@ -207,8 +206,8 @@ describe('Legal Constants', () => {
     })
 
     it('should detect placeholder in jurisdiction', () => {
-      expect(LEGAL_CONFIG.metadata.jurisdiction).toContain('[')
-      expect(needsLegalReview()).toBe(true)
+      // Jurisdiction is now set to "Delaware" — no longer a placeholder
+      expect(LEGAL_CONFIG.metadata.jurisdiction).toBe('Delaware')
     })
   })
 
@@ -243,13 +242,14 @@ describe('Legal Constants', () => {
     })
 
     it('should identify Jurisdiction as placeholder', () => {
+      // Jurisdiction is now resolved to "Delaware" — no longer a placeholder
       const placeholders = getPlaceholderFields()
-      expect(placeholders).toContain('Jurisdiction/Governing Law')
+      expect(placeholders).not.toContain('Jurisdiction/Governing Law')
     })
 
-    it('should have exactly 3 placeholder fields', () => {
+    it('should have exactly 2 placeholder fields', () => {
       const placeholders = getPlaceholderFields()
-      expect(placeholders.length).toBe(3)
+      expect(placeholders.length).toBe(2)
     })
   })
 

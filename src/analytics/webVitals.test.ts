@@ -403,4 +403,166 @@ describe('analytics/webVitals', () => {
       consoleWarnSpy.mockRestore()
     })
   })
+
+  describe('INP tracking', () => {
+    /**
+     * Build a PerformanceObserver mock that tracks instantiated observers by the
+     * entry type they observe, and returns a lookup helper.
+     */
+    function makeObserverMock() {
+      const instances: Array<{
+        callback: PerformanceObserverCallback
+        observe: ReturnType<typeof vi.fn>
+        observedType: string
+        disconnect: ReturnType<typeof vi.fn>
+      }> = []
+
+      global.PerformanceObserver = class {
+        callback: PerformanceObserverCallback
+        observe: ReturnType<typeof vi.fn>
+        observedType = ''
+        disconnect: ReturnType<typeof vi.fn>
+        takeRecords = vi.fn(() => [])
+
+        constructor(callback: PerformanceObserverCallback) {
+          this.callback = callback
+          this.observe = vi.fn((options: { type: string }) => {
+            this.observedType = options.type
+            instances.push(this as (typeof instances)[0])
+          })
+          this.disconnect = vi.fn()
+        }
+      } as unknown as typeof PerformanceObserver
+
+      const getObserverByType = (type: string) => instances.find((obs) => obs.observedType === type)
+
+      return { instances, getObserverByType }
+    }
+
+    /** Helper to fire a visibility-hidden event that triggers INP finalization */
+    function triggerPageHidden() {
+      Object.defineProperty(document, 'visibilityState', {
+        writable: true,
+        configurable: true,
+        value: 'hidden',
+      })
+      document.dispatchEvent(new Event('visibilitychange'))
+    }
+
+    /** Build a fake PerformanceEventTiming-like entry */
+    function makeEntry(startTime: number, processingStart: number, processingEnd: number) {
+      return { startTime, processingStart, processingEnd }
+    }
+
+    it('should use the max duration for exactly 10 interactions (boundary ≤10)', () => {
+      const { getObserverByType } = makeObserverMock()
+      const cleanup = initWebVitals(onReport)
+
+      const inpObserver = getObserverByType('event')
+      expect(inpObserver).toBeDefined()
+
+      // Emit exactly 10 interactions with durations 10, 20, …, 100 ms
+      for (let i = 1; i <= 10; i++) {
+        // duration = processingEnd - startTime = (i*10 + 5) - 0 = i*10 + 5
+        // But we care about processingEnd - startTime, so let startTime=0, processingEnd=i*10
+        inpObserver!.callback(
+          {
+            getEntries: () => [makeEntry(0, i * 10 - 5, i * 10)],
+          } as PerformanceObserverEntryList,
+          inpObserver as unknown as PerformanceObserver
+        )
+      }
+
+      triggerPageHidden()
+
+      // With ≤10 interactions, INP = max duration = processingEnd(10) - startTime(0) = 100
+      expect(onReport).toHaveBeenCalled()
+      const reportedVitals = onReport.mock.calls[0][0] as { INP?: number }
+      expect(reportedVitals.INP).toBe(100)
+
+      cleanup()
+    })
+
+    it('should use the 98th-percentile duration for >10 interactions (boundary 11)', () => {
+      const { getObserverByType } = makeObserverMock()
+      const cleanup = initWebVitals(onReport)
+
+      const inpObserver = getObserverByType('event')
+      expect(inpObserver).toBeDefined()
+
+      // Emit 100 interactions: 99 with duration 10ms and 1 with duration 1000ms
+      // 98th-percentile index = Math.ceil(0.98 * 100) - 1 = 97
+      // sorted[97] = 10 (the 98th smallest, out of 99×10ms + 1×1000ms)
+      for (let i = 0; i < 99; i++) {
+        inpObserver!.callback(
+          { getEntries: () => [makeEntry(0, 5, 10)] } as PerformanceObserverEntryList,
+          inpObserver as unknown as PerformanceObserver
+        )
+      }
+      // One slow interaction
+      inpObserver!.callback(
+        { getEntries: () => [makeEntry(0, 500, 1000)] } as PerformanceObserverEntryList,
+        inpObserver as unknown as PerformanceObserver
+      )
+
+      triggerPageHidden()
+
+      expect(onReport).toHaveBeenCalled()
+      const reportedVitals = onReport.mock.calls[0][0] as { INP?: number }
+      // 98th percentile = 10, NOT the max 1000
+      expect(reportedVitals.INP).toBe(10)
+
+      cleanup()
+    })
+
+    it('should not report INP when there are zero interactions', () => {
+      const { getObserverByType } = makeObserverMock()
+      const cleanup = initWebVitals(onReport)
+
+      const inpObserver = getObserverByType('event')
+      expect(inpObserver).toBeDefined()
+
+      // Emit no interactions — just trigger page-hide
+      triggerPageHidden()
+
+      // The vitals object may still be reported if other metrics (e.g. CLS) have values,
+      // but INP must not be present in the report
+      if (onReport.mock.calls.length > 0) {
+        const reportedVitals = onReport.mock.calls[0][0] as Record<string, unknown>
+        expect(reportedVitals.INP).toBeUndefined()
+      }
+
+      cleanup()
+    })
+
+    it('should filter out entries without processingStart or processingEnd', () => {
+      const { getObserverByType } = makeObserverMock()
+      const cleanup = initWebVitals(onReport)
+
+      const inpObserver = getObserverByType('event')
+      expect(inpObserver).toBeDefined()
+
+      // Emit entries missing processingStart or processingEnd — they must be ignored
+      inpObserver!.callback(
+        {
+          getEntries: () => [
+            { startTime: 0, processingEnd: 100 }, // missing processingStart
+            { startTime: 0, processingStart: 50 }, // missing processingEnd
+            { startTime: 0 }, // both missing
+          ],
+        } as unknown as PerformanceObserverEntryList,
+        inpObserver as unknown as PerformanceObserver
+      )
+
+      triggerPageHidden()
+
+      // No valid interactions → INP should not appear in the report
+      if (onReport.mock.calls.length > 0) {
+        const reportedVitals = onReport.mock.calls[0][0] as Record<string, unknown>
+        expect(reportedVitals.INP).toBeUndefined()
+      }
+
+      cleanup()
+    })
+  })
 })

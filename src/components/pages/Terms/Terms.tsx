@@ -1,4 +1,5 @@
 import { Section } from '@components/layout/Section'
+import { LEGAL_CONFIG } from '@/constants/legal'
 import styles from './Terms.module.css'
 
 /**
@@ -329,7 +330,10 @@ export function Terms() {
               <p>If you have questions about these Terms, please contact us:</p>
               <ul>
                 <li>
-                  Email: <a href="mailto:legal@paperlyte.app">legal@paperlyte.app</a>
+                  Email:{' '}
+                  <a href={`mailto:${LEGAL_CONFIG.company.legalEmail}`}>
+                    {LEGAL_CONFIG.company.legalEmail}
+                  </a>
                 </li>
                 <li>
                   Website:{' '}

@@ -1,25 +1,22 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Hero } from './Hero'
+import { WAITLIST_COUNT } from '@constants/waitlist'
 
 describe('Hero', () => {
-  let scrollIntoViewMock: ReturnType<typeof vi.fn>
-  let originalScrollIntoView: typeof Element.prototype.scrollIntoView
-
   beforeEach(() => {
-    // Capture original scrollIntoView before replacing it
-    originalScrollIntoView = Element.prototype.scrollIntoView
-
-    // Mock scrollIntoView
-    scrollIntoViewMock = vi.fn()
-    Element.prototype.scrollIntoView = scrollIntoViewMock
+    // Mock fetch for form submission tests
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ success: true }),
+      })
+    )
   })
 
   afterEach(() => {
-    // Restore original scrollIntoView
-    Element.prototype.scrollIntoView = originalScrollIntoView
-
-    // Clear mock call history
+    vi.unstubAllGlobals()
     vi.clearAllMocks()
   })
 
@@ -34,128 +31,109 @@ describe('Hero', () => {
     it('should render the main headline', () => {
       render(<Hero />)
 
-      // There are multiple headings with "thoughts", use getAllByRole
       const headings = screen.getAllByRole('heading', { name: /thoughts/i })
       expect(headings.length).toBeGreaterThan(0)
-      expect(screen.getByText(/organized/i)).toBeInTheDocument()
+      expect(screen.getByText(/unchained/i)).toBeInTheDocument()
     })
 
     it('should render the subheadline', () => {
       render(<Hero />)
 
-      expect(screen.getByText(/The minimal workspace for busy professionals/i)).toBeInTheDocument()
+      expect(screen.getByText(/Note-taking that gets out of your way/i)).toBeInTheDocument()
     })
 
-    it('should render CTA buttons', () => {
+    it('should render the email form', () => {
       render(<Hero />)
 
-      expect(screen.getByRole('button', { name: /start writing for free/i })).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: /view the demo/i })).toBeInTheDocument()
+      expect(screen.getByPlaceholderText('your@email.com')).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /join the waitlist/i })).toBeInTheDocument()
     })
 
-    it('should render trusted by section', () => {
+    it('should render social proof badge', () => {
       render(<Hero />)
 
-      expect(screen.getByText(/TRUSTED BY TEAMS AT/i)).toBeInTheDocument()
-      expect(screen.getByText('Acme Corp')).toBeInTheDocument()
-      expect(screen.getByText('Global')).toBeInTheDocument()
-      expect(screen.getByText('Nebula')).toBeInTheDocument()
+      expect(screen.getByText(String(WAITLIST_COUNT))).toBeInTheDocument()
     })
   })
 
-  describe('CTA Buttons', () => {
-    it('should have Start Writing for Free button with primary variant', () => {
+  describe('Email Form', () => {
+    it('should have Join the Waitlist button with primary variant', () => {
       render(<Hero />)
 
-      const button = screen.getByRole('button', { name: /start writing for free/i })
-      // Verify primary variant by checking class contains 'primary' (CSS module hash)
+      const button = screen.getByRole('button', { name: /join the waitlist/i })
       const classList = Array.from(button.classList)
       expect(classList.some((cls) => cls.includes('primary'))).toBe(true)
     })
 
-    it('should have View the Demo button with secondary variant', () => {
+    it('should render arrow icon on Join the Waitlist button', () => {
       render(<Hero />)
 
-      const button = screen.getByRole('button', { name: /view the demo/i })
-      // Verify secondary variant by checking class contains 'secondary' (CSS module hash)
-      const classList = Array.from(button.classList)
-      expect(classList.some((cls) => cls.includes('secondary'))).toBe(true)
-    })
-
-    it('should render arrow icon on Start Writing for Free button', () => {
-      render(<Hero />)
-
-      const button = screen.getByRole('button', { name: /start writing for free/i })
+      const button = screen.getByRole('button', { name: /join the waitlist/i })
       const icon = button.querySelector('svg')
 
       expect(icon).toBeInTheDocument()
     })
-  })
 
-  describe('Scroll Behavior', () => {
-    it('should scroll to download section when Start Writing for Free is clicked', async () => {
+    it('should show success message after form submission', async () => {
       const user = userEvent.setup()
-
-      // Create mock download section
-      const downloadSection = document.createElement('div')
-      downloadSection.id = 'download'
-      document.body.appendChild(downloadSection)
-
       render(<Hero />)
 
-      const button = screen.getByRole('button', { name: /start writing for free/i })
-      await user.click(button)
+      const emailInput = screen.getByPlaceholderText('your@email.com')
+      const submitButton = screen.getByRole('button', { name: /join the waitlist/i })
 
-      expect(scrollIntoViewMock).toHaveBeenCalledWith(
-        expect.objectContaining({
-          behavior: 'smooth',
+      await user.type(emailInput, 'test@example.com')
+      await user.click(submitButton)
+
+      await waitFor(() => {
+        expect(screen.getByText(/You're on the list!/i)).toBeInTheDocument()
+      })
+    })
+
+    it('should show validation error when email is invalid', async () => {
+      const user = userEvent.setup()
+      render(<Hero />)
+
+      const emailInput = screen.getByPlaceholderText('your@email.com')
+      await user.type(emailInput, 'notanemail')
+      await user.click(screen.getByRole('button', { name: /join the waitlist/i }))
+
+      // validateEmail returns isValid:false → setError is called and fetch is never reached
+      const alert = await screen.findByRole('alert')
+      expect(alert).toBeInTheDocument()
+      expect(vi.mocked(fetch)).not.toHaveBeenCalled()
+    })
+
+    it('should show error message when submission fails', async () => {
+      vi.stubGlobal(
+        'fetch',
+        vi.fn().mockResolvedValue({
+          ok: false,
+          json: async () => ({ error: 'Failed to subscribe' }),
         })
       )
-
-      // Cleanup
-      document.body.removeChild(downloadSection)
-    })
-
-    it('should scroll to features section when View the Demo is clicked', async () => {
       const user = userEvent.setup()
-
-      // Create mock features section
-      const featuresSection = document.createElement('div')
-      featuresSection.id = 'features'
-      document.body.appendChild(featuresSection)
-
       render(<Hero />)
 
-      const button = screen.getByRole('button', { name: /view the demo/i })
-      await user.click(button)
+      const emailInput = screen.getByPlaceholderText('your@email.com')
+      await user.type(emailInput, 'test@example.com')
+      await user.click(screen.getByRole('button', { name: /join the waitlist/i }))
 
-      expect(scrollIntoViewMock).toHaveBeenCalledWith({
-        behavior: 'smooth',
+      await waitFor(() => {
+        expect(screen.getByRole('alert')).toBeInTheDocument()
       })
-
-      // Cleanup
-      document.body.removeChild(featuresSection)
     })
 
-    it('should handle missing section gracefully', async () => {
+    it('should handle missing section gracefully when submitting', async () => {
       const user = userEvent.setup()
       render(<Hero />)
 
-      const button = screen.getByRole('button', { name: /start writing for free/i })
+      const emailInput = screen.getByPlaceholderText('your@email.com')
+      await user.type(emailInput, 'test@example.com')
 
-      // Should not throw error when section doesn't exist
-      await expect(user.click(button)).resolves.not.toThrow()
-    })
-
-    it('should not scroll if target element is null', async () => {
-      const user = userEvent.setup()
-      render(<Hero />)
-
-      const button = screen.getByRole('button', { name: /start writing for free/i })
-      await user.click(button)
-
-      // scrollIntoView should not be called if element doesn't exist
-      expect(scrollIntoViewMock).not.toHaveBeenCalled()
+      // Should not throw error when clicking
+      await expect(
+        user.click(screen.getByRole('button', { name: /join the waitlist/i }))
+      ).resolves.not.toThrow()
     })
   })
 
@@ -163,7 +141,6 @@ describe('Hero', () => {
     it('should have proper heading hierarchy', () => {
       render(<Hero />)
 
-      // There are multiple headings with "thoughts", use getAllByRole
       const headings = screen.getAllByRole('heading', { name: /thoughts/i })
       expect(headings.length).toBeGreaterThan(0)
       expect(headings[0].tagName).toBe('H1')
@@ -172,14 +149,14 @@ describe('Hero', () => {
     it('should render subheadline in paragraph tag', () => {
       render(<Hero />)
 
-      const subheadline = screen.getByText(/The minimal workspace for busy professionals/i)
+      const subheadline = screen.getByText(/Note-taking that gets out of your way/i)
       expect(subheadline.tagName).toBe('P')
     })
 
     it('should render headline with italic emphasis', () => {
       render(<Hero />)
 
-      const italicText = screen.getByText('organized.')
+      const italicText = screen.getByText('unchained.')
       expect(italicText.tagName).toBe('EM')
     })
   })
@@ -215,47 +192,34 @@ describe('Hero', () => {
   describe('Button Interactions', () => {
     it('should be keyboard accessible', async () => {
       const user = userEvent.setup()
-
-      // Create mock section
-      const section = document.createElement('div')
-      section.id = 'download'
-      document.body.appendChild(section)
-
       render(<Hero />)
 
-      const button = screen.getByRole('button', { name: /start writing for free/i })
+      const emailInput = screen.getByPlaceholderText('your@email.com')
+      await user.type(emailInput, 'test@example.com')
 
+      const button = screen.getByRole('button', { name: /join the waitlist/i })
       button.focus()
       expect(button).toHaveFocus()
 
       await user.keyboard('{Enter}')
 
-      expect(scrollIntoViewMock).toHaveBeenCalled()
-
-      // Cleanup
-      document.body.removeChild(section)
+      await waitFor(() => {
+        expect(vi.mocked(fetch)).toHaveBeenCalled()
+      })
     })
 
-    it('should handle multiple clicks', async () => {
+    it('should handle multiple submissions correctly', async () => {
       const user = userEvent.setup()
-
-      // Create mock section
-      const section = document.createElement('div')
-      section.id = 'features'
-      document.body.appendChild(section)
-
       render(<Hero />)
 
-      const button = screen.getByRole('button', { name: /view the demo/i })
+      const emailInput = screen.getByPlaceholderText('your@email.com')
+      await user.type(emailInput, 'test@example.com')
+      await user.click(screen.getByRole('button', { name: /join the waitlist/i }))
 
-      await user.click(button)
-      await user.click(button)
-      await user.click(button)
-
-      expect(scrollIntoViewMock).toHaveBeenCalledTimes(3)
-
-      // Cleanup
-      document.body.removeChild(section)
+      // After success, the form should be replaced with the success message
+      await waitFor(() => {
+        expect(screen.getByText(/You're on the list!/i)).toBeInTheDocument()
+      })
     })
   })
 
@@ -288,14 +252,12 @@ describe('Hero', () => {
     it('should have accessible button labels', () => {
       render(<Hero />)
 
-      expect(screen.getByRole('button', { name: /start writing for free/i })).toHaveAccessibleName()
-      expect(screen.getByRole('button', { name: /view the demo/i })).toHaveAccessibleName()
+      expect(screen.getByRole('button', { name: /join the waitlist/i })).toHaveAccessibleName()
     })
 
     it('should have main heading visible to screen readers', () => {
       render(<Hero />)
 
-      // There are multiple headings with "thoughts", use getAllByRole
       const headings = screen.getAllByRole('heading', { name: /thoughts/i })
       expect(headings.length).toBeGreaterThan(0)
       expect(headings[0]).toBeVisible()
@@ -304,7 +266,7 @@ describe('Hero', () => {
     it('should have descriptive text visible to screen readers', () => {
       render(<Hero />)
 
-      const description = screen.getByText(/The minimal workspace for busy professionals/i)
+      const description = screen.getByText(/Note-taking that gets out of your way/i)
       expect(description).toBeVisible()
     })
 
@@ -317,26 +279,23 @@ describe('Hero', () => {
   })
 
   describe('Layout', () => {
-    it('should render CTA buttons in correct order', () => {
+    it('should render email input before submit button', () => {
       render(<Hero />)
 
-      const buttons = screen.getAllByRole('button')
-      const buttonTexts = buttons.map((btn) => btn.textContent)
+      const emailInput = screen.getByPlaceholderText('your@email.com')
+      const submitButton = screen.getByRole('button', { name: /join the waitlist/i })
 
-      const startIndex = buttonTexts.findIndex((text) => text?.includes('Start Writing'))
-      const demoIndex = buttonTexts.findIndex((text) => text?.includes('View the Demo'))
-
-      // Start Writing should come before View the Demo
-      expect(startIndex).toBeLessThan(demoIndex)
+      // Email input should appear before submit button in the DOM
+      expect(emailInput.compareDocumentPosition(submitButton)).toBe(
+        Node.DOCUMENT_POSITION_FOLLOWING
+      )
     })
 
-    it('should render trusted companies', () => {
+    it('should render social proof text', () => {
       render(<Hero />)
 
-      const companies = ['Acme Corp', 'Global', 'Nebula', 'Vertex', 'Horizon']
-      companies.forEach((company) => {
-        expect(screen.getByText(company)).toBeInTheDocument()
-      })
+      // Social proof should mention waitlist count and people
+      expect(screen.getByText(/people already on the waitlist/i)).toBeInTheDocument()
     })
   })
 })

@@ -3,6 +3,7 @@ import type { Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 import { codecovRollupPlugin } from '@codecov/rollup-plugin'
+import { visualizer } from 'rollup-plugin-visualizer'
 
 /**
  * Plugin to inject development-only Content Security Policy
@@ -106,6 +107,17 @@ export default defineConfig({
           }),
         ]
       : []),
+    // Bundle visualizer — only active when ANALYZE=true (npm run build:analyze)
+    ...(process.env.ANALYZE === 'true'
+      ? [
+          visualizer({
+            filename: 'stats.html',
+            open: true,
+            gzipSize: true,
+            brotliSize: true,
+          }) as Plugin,
+        ]
+      : []),
   ],
 
   // Path resolution configuration
@@ -123,9 +135,14 @@ export default defineConfig({
     },
   },
 
+  // Strip debugger statements in production builds; preserve console.warn/error for diagnostics
+  esbuild: {
+    drop: ['debugger'],
+    pure: ['console.log', 'console.debug', 'console.info'],
+  },
+
   // Production build configuration
   build: {
-    // Split CSS into separate files for better caching
     cssCodeSplit: true,
     // Use esbuild for minification (explicit devDependency, supported by Vite 7)
     minify: 'esbuild',
@@ -135,6 +152,7 @@ export default defineConfig({
     cssMinify: true,
     // Rollup-specific options for advanced bundling
     rollupOptions: {
+      treeshake: true,
       output: {
         // Manual chunk splitting for better caching and load performance
         // Strategy: Only split large vendor libraries that change infrequently
@@ -142,10 +160,6 @@ export default defineConfig({
           // React vendor bundle (~190KB) - changes rarely, good cache hit rate
           if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
             return 'react-vendor'
-          }
-          // Font Awesome is large (~100KB+), split it out
-          if (id.includes('node_modules/@fortawesome')) {
-            return 'fontawesome'
           }
           // Keep app code together for better tree-shaking and compression
           // Small chunks (constants, utils, UI components) stay in main bundle

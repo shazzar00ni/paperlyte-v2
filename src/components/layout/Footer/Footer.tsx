@@ -38,8 +38,6 @@ export const Footer = (): React.ReactElement => {
                     Pricing
                   </a>
                 </li>
-                {/* TODO: Add Roadmap link when page is available */}
-                {/* TODO: Add Changelog link when page is available */}
               </ul>
             </div>
 
@@ -51,8 +49,6 @@ export const Footer = (): React.ReactElement => {
                     Contact
                   </a>
                 </li>
-                {/* TODO: Add About link when page is available */}
-                {/* TODO: Add Blog link when page is available */}
               </ul>
             </div>
 

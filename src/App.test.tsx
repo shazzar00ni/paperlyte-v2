@@ -1,10 +1,10 @@
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from './App'
 
 describe('App Integration', () => {
-  it('should render with proper semantic structure and section order', () => {
+  it('should render with proper semantic structure and section order', async () => {
     const { container } = render(<App />)
 
     // Verify semantic landmark regions
@@ -20,36 +20,38 @@ describe('App Integration', () => {
     // Verify header contains navigation
     expect(header?.querySelector('nav')).toBeInTheDocument()
 
-    // Verify sections exist and are in correct order
-    const sections = main?.querySelectorAll('section')
-    expect(sections).toBeDefined()
-    expect(sections!.length).toBeGreaterThanOrEqual(5)
+    // Wait for lazy-loaded sections to render
+    await waitFor(() => {
+      const sections = main?.querySelectorAll('section')
+      expect(sections).toBeDefined()
+      expect(sections!.length).toBeGreaterThanOrEqual(5)
 
-    const sectionIds = Array.from(sections!).map((section) => section.getAttribute('id'))
+      const sectionIds = Array.from(sections!).map((section) => section.getAttribute('id'))
 
-    // Check all sections are present and in correct order
-    const expectedSections = [
-      'hero',
-      'problem',
-      'solution',
-      'features',
-      'mobile',
-      'statistics',
-      'comparison',
-      'testimonials',
-      'email-capture',
-      'faq',
-      'download',
-    ]
+      // Check all sections are present and in correct order
+      const expectedSections = [
+        'hero',
+        'problem',
+        'solution',
+        'features',
+        'mobile',
+        'statistics',
+        'comparison',
+        'testimonials',
+        'email-capture',
+        'faq',
+        'download',
+      ]
 
-    expectedSections.forEach((sectionId) => {
-      expect(sectionIds).toContain(sectionId)
+      expectedSections.forEach((sectionId) => {
+        expect(sectionIds).toContain(sectionId)
+      })
+
+      const indices = expectedSections.map((id) => sectionIds.indexOf(id))
+      for (let i = 0; i < indices.length - 1; i++) {
+        expect(indices[i]).toBeLessThan(indices[i + 1])
+      }
     })
-
-    const indices = expectedSections.map((id) => sectionIds.indexOf(id))
-    for (let i = 0; i < indices.length - 1; i++) {
-      expect(indices[i]).toBeLessThan(indices[i + 1])
-    }
   })
 
   it('should have accessible landmark regions with proper roles', () => {
@@ -104,21 +106,25 @@ describe('App Integration', () => {
     expect(screen.getByText(/Capture inspiration/i)).toBeInTheDocument()
   })
 
-  it('should render Testimonials section', () => {
+  it('should render Testimonials section', async () => {
     const { container } = render(<App />)
 
-    const testimonialsSection = container.querySelector('#testimonials')
-    expect(testimonialsSection).toBeInTheDocument()
+    await waitFor(() => {
+      const testimonialsSection = container.querySelector('#testimonials')
+      expect(testimonialsSection).toBeInTheDocument()
+    })
 
     // Verify testimonials content is present
     expect(screen.getByText(/Sarah Chen/i)).toBeInTheDocument()
   })
 
-  it('should render CTA section', () => {
+  it('should render CTA section', async () => {
     const { container } = render(<App />)
 
-    const ctaSection = container.querySelector('#download')
-    expect(ctaSection).toBeInTheDocument()
+    await waitFor(() => {
+      const ctaSection = container.querySelector('#download')
+      expect(ctaSection).toBeInTheDocument()
+    })
 
     // Verify specific CTA content is present
     expect(screen.getByText(/Stop fighting your tools/i)).toBeInTheDocument()
@@ -203,25 +209,31 @@ describe('App Integration', () => {
     expect(solutionSection).toBeInTheDocument()
   })
 
-  it('should render Statistics section', () => {
+  it('should render Statistics section', async () => {
     const { container } = render(<App />)
 
-    const statisticsSection = container.querySelector('#statistics')
-    expect(statisticsSection).toBeInTheDocument()
+    await waitFor(() => {
+      const statisticsSection = container.querySelector('#statistics')
+      expect(statisticsSection).toBeInTheDocument()
+    })
   })
 
-  it('should render Comparison section', () => {
+  it('should render Comparison section', async () => {
     const { container } = render(<App />)
 
-    const comparisonSection = container.querySelector('#comparison')
-    expect(comparisonSection).toBeInTheDocument()
+    await waitFor(() => {
+      const comparisonSection = container.querySelector('#comparison')
+      expect(comparisonSection).toBeInTheDocument()
+    })
   })
 
-  it('should render FAQ section', () => {
+  it('should render FAQ section', async () => {
     const { container } = render(<App />)
 
-    const faqSection = container.querySelector('#faq')
-    expect(faqSection).toBeInTheDocument()
+    await waitFor(() => {
+      const faqSection = container.querySelector('#faq')
+      expect(faqSection).toBeInTheDocument()
+    })
   })
 
   it('should render FeedbackWidget component', () => {
@@ -251,12 +263,15 @@ describe('App Integration', () => {
     expect(h1Elements.length).toBeGreaterThanOrEqual(1)
   })
 
-  it('should include waitlist form in EmailCapture section', () => {
+  it('should include waitlist form in EmailCapture section', async () => {
     const { container } = render(<App />)
 
-    // EmailCapture section should contain email input
-    const emailInputs = container.querySelectorAll('input[type="email"]')
-    expect(emailInputs.length).toBeGreaterThan(0)
+    // Wait for lazy-loaded EmailCapture to render
+    await waitFor(() => {
+      // EmailCapture section should contain email input
+      const emailInputs = container.querySelectorAll('input[type="email"]')
+      expect(emailInputs.length).toBeGreaterThan(0)
+    })
   })
 
   it('should render without console errors', () => {

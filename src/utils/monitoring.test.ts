@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import * as Sentry from '@sentry/react'
-import { logError, logWarning, logPerformance, logEvent } from './monitoring'
+import { logError, logWarning, logPerformance, logEvent, type ErrorContext } from './monitoring'
 import * as analytics from './analytics'
 
 // Mock Sentry
@@ -221,6 +221,46 @@ describe('monitoring', () => {
     it('should handle negative values', () => {
       logPerformance('negative_metric', -1)
       expect(consoleSpy.log).toHaveBeenCalledWith('[Performance] negative_metric: -1ms')
+    })
+  })
+
+  describe('ErrorContext interface', () => {
+    it('should accept an object with all optional fields', () => {
+      const ctx: ErrorContext = {
+        componentStack: 'at Foo\n  at Bar',
+        errorInfo: { key: 'value' },
+        severity: 'high',
+        tags: { context: 'SomeComponent.method', url: 'https://example.com' },
+      }
+      expect(ctx.severity).toBe('high')
+      expect(ctx.tags?.context).toBe('SomeComponent.method')
+      expect(ctx.componentStack).toBe('at Foo\n  at Bar')
+      expect(ctx.errorInfo?.key).toBe('value')
+    })
+
+    it('should accept an empty object (all fields optional)', () => {
+      const ctx: ErrorContext = {}
+      expect(ctx.severity).toBeUndefined()
+      expect(ctx.tags).toBeUndefined()
+      expect(ctx.componentStack).toBeUndefined()
+      expect(ctx.errorInfo).toBeUndefined()
+    })
+
+    it('should accept only the tags field (used by OfflinePage.handleRetry)', () => {
+      const ctx: ErrorContext = {
+        tags: { context: 'OfflinePage.handleRetry', url: 'https://www.gstatic.com/generate_204' },
+      }
+      expect(ctx.tags?.context).toBe('OfflinePage.handleRetry')
+      logError(new Error('test'), ctx)
+      // No throw — confirms runtime usage matches the type
+    })
+
+    it('should accept all severity levels', () => {
+      const severities: Array<ErrorContext['severity']> = ['low', 'medium', 'high', 'critical']
+      severities.forEach((severity) => {
+        const ctx: ErrorContext = { severity }
+        expect(ctx.severity).toBe(severity)
+      })
     })
   })
 

@@ -45,7 +45,7 @@ The application will be available at `http://localhost:5173`
 
 Familiarize yourself with the project structure:
 
-```
+```text
 src/
 ├── components/
 │   ├── layout/          # Layout components (Section, etc.)
@@ -151,7 +151,7 @@ We follow the [Conventional Commits](https://www.conventionalcommits.org/) speci
 
 ### Commit Message Format
 
-```
+```text
 <type>(<scope>): <subject>
 
 <body>
@@ -205,7 +205,7 @@ Fixes #456
 
 Use the same format as commit messages:
 
-```
+```text
 feat(component): add new feature
 fix(hook): resolve issue with X
 ```

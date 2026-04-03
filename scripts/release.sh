@@ -54,6 +54,8 @@ info "Current version: v${CURRENT_VERSION}"
 # ── Calculate next version ────────────────────────────────────────────────────
 bump_version() {
   local version="$1" part="$2"
+  # Strip pre-release suffix if present (e.g., 1.0.0-beta.1 → 1.0.0)
+  version="${version%%-*}"
   IFS='.' read -r major minor patch <<< "$version"
   case "$part" in
     major) echo "$((major + 1)).0.0" ;;

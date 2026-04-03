@@ -41,16 +41,21 @@ if [[ "$CURRENT_BRANCH" != "main" ]]; then
   [[ "$confirm" =~ ^[Yy]$ ]] || error "Aborted."
 fi
 
+UPSTREAM_REMOTE="$(git config --get "branch.${CURRENT_BRANCH}.remote" || true)"
+if [[ -z "$UPSTREAM_REMOTE" ]]; then
+  error "No upstream remote is configured for branch '$CURRENT_BRANCH'. Set an upstream branch before releasing."
+fi
+
 # ── Pull latest ───────────────────────────────────────────────────────────────
-info "Fetching latest from origin..."
-git fetch origin "$CURRENT_BRANCH"
-read -r AHEAD_COUNT BEHIND_COUNT <<< "$(git rev-list --left-right --count "HEAD...origin/$CURRENT_BRANCH")"
+info "Fetching latest from ${UPSTREAM_REMOTE}..."
+git fetch "$UPSTREAM_REMOTE" "$CURRENT_BRANCH"
+read -r AHEAD_COUNT BEHIND_COUNT <<< "$(git rev-list --left-right --count "HEAD...${UPSTREAM_REMOTE}/$CURRENT_BRANCH")"
 if (( BEHIND_COUNT > 0 && AHEAD_COUNT == 0 )); then
-  error "Local branch is behind origin/$CURRENT_BRANCH. Pull or rebase first."
+  error "Local branch is behind ${UPSTREAM_REMOTE}/$CURRENT_BRANCH. Pull or rebase first."
 elif (( AHEAD_COUNT > 0 && BEHIND_COUNT == 0 )); then
-  error "Local branch is ahead of origin/$CURRENT_BRANCH. Push your commits or reset before releasing."
+  error "Local branch is ahead of ${UPSTREAM_REMOTE}/$CURRENT_BRANCH. Push your commits or reset before releasing."
 elif (( AHEAD_COUNT > 0 && BEHIND_COUNT > 0 )); then
-  error "Local branch has diverged from origin/$CURRENT_BRANCH. Reconcile the branches before releasing."
+  error "Local branch has diverged from ${UPSTREAM_REMOTE}/$CURRENT_BRANCH. Reconcile the branches before releasing."
 fi
 
 # ── Determine current version ─────────────────────────────────────────────────

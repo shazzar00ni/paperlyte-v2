@@ -31,7 +31,7 @@ This checklist tracks legal compliance and production readiness for Paperlyte.
 
 Replace all placeholders with actual values before launch. If you see `**_**`, it means the information is required and must be updated.
 
-## Legal Compliance Checklist
+## Overview
 
 **Last Updated**: November 28, 2025
 **Status**: 🟡 In Progress

@@ -76,8 +76,8 @@
       "on_property": "title"
     },
     {
-      "pattern": "^chore\\(deps",
-      "target": "chore(deps",
+      "pattern": "^chore\\(deps\\)?!?:",
+      "target": "deps",
       "on_property": "title"
     },
     {

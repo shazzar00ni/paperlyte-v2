@@ -1,7 +1,6 @@
 name: PR Quality Check
 
-permissions:
-  contents: read
+permissions: {}
 
 on:
   pull_request:
@@ -11,6 +10,8 @@ jobs:
   pr-metadata:
     name: PR Metadata Check
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout code
@@ -75,6 +76,8 @@ jobs:
   bundle-size-check:
     name: Bundle Size Check
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout code

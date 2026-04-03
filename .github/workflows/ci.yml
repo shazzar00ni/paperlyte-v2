@@ -1,7 +1,6 @@
 name: CI/CD Pipeline
 
-permissions:
-  contents: read
+permissions: {}
 
 on:
   push:
@@ -17,6 +16,8 @@ jobs:
   lint-and-typecheck:
     name: Lint and Type Check
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout code
@@ -142,6 +143,8 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     needs: [lint-and-typecheck, test]
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout code

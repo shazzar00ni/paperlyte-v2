@@ -148,14 +148,14 @@ if [[ -n "$REMOTE_URL" ]]; then
     my $unreleased = "[Unreleased]: $ENV{REPO_URL}/compare/$ENV{TAG}...HEAD";
     my $released = "[$ENV{NEW_VERSION}]: $ENV{REPO_URL}/compare/$ENV{PREVIOUS_TAG}...$ENV{TAG}";
 
-    if (s/^\[Unreleased\]: .*$/\$unreleased/m) {
+    if (s/^\[Unreleased\]: .*$/$unreleased/m) {
       1;
     } else {
       $_ .= "\n" unless /\n\z/;
       $_ .= "$unreleased\n";
     }
 
-    if (s/^\[\Q$ENV{NEW_VERSION}\E\]: .*$/\$released/m) {
+    if (s/^\[\Q$ENV{NEW_VERSION}\E\]: .*$/$released/m) {
       1;
     } else {
       $_ .= "$released\n";

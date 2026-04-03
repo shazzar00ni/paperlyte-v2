@@ -1,7 +1,14 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 
 // Mock the module's environment dependencies
-import { getBaseUrl, getSeoKeywords, getOgImage, env, updateMetaTags } from './env'
+import {
+  getBaseUrl,
+  getSeoKeywords,
+  getOgImage,
+  env,
+  updateMetaTags,
+  shouldRenderAnalytics,
+} from './env'
 
 describe('env', () => {
   beforeEach(() => {
@@ -232,6 +239,41 @@ describe('env', () => {
     it('should handle empty document head gracefully', () => {
       document.head.innerHTML = ''
       expect(() => updateMetaTags()).not.toThrow()
+    })
+  })
+
+  describe('shouldRenderAnalytics', () => {
+    const originalLocation = window.location
+    const originalProd = import.meta.env.PROD
+
+    beforeEach(() => {
+      // @ts-expect-error - overriding location for testing
+      delete window.location
+      window.location = { ...originalLocation, hostname: 'paperlyte.com' }
+    })
+
+    afterEach(() => {
+      window.location = originalLocation
+      vi.stubEnv('PROD', originalProd)
+    })
+
+    it('should return false when not in production', () => {
+      vi.stubEnv('PROD', false)
+      expect(shouldRenderAnalytics()).toBe(false)
+    })
+
+    it('should return false on localhost even in production', () => {
+      vi.stubEnv('PROD', true)
+      // @ts-expect-error - overriding location for testing
+      window.location = { ...originalLocation, hostname: 'localhost' }
+      expect(shouldRenderAnalytics()).toBe(false)
+    })
+
+    it('should return true in production on non-localhost', () => {
+      vi.stubEnv('PROD', true)
+      // @ts-expect-error - overriding location for testing
+      window.location = { ...originalLocation, hostname: 'paperlyte.com' }
+      expect(shouldRenderAnalytics()).toBe(true)
     })
   })
 })

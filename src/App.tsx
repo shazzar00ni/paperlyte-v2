@@ -16,6 +16,7 @@ import { FAQ } from '@components/sections/FAQ'
 import { CTA } from '@components/sections/CTA'
 import { FeedbackWidget } from '@components/ui/FeedbackWidget'
 import { useAnalytics } from '@hooks/useAnalytics'
+import { shouldRenderAnalytics } from '@utils/env'
 
 /**
  * Application root component that composes the page layout and sections.
@@ -60,10 +61,7 @@ function App() {
           This prevents Lighthouse CI from failing due to analytics injection errors
           when running on the CI runner's localhost.
       */}
-      {import.meta.env.PROD &&
-        typeof window !== 'undefined' &&
-        window.location.hostname !== 'localhost' &&
-        window.location.hostname !== '127.0.0.1' && <Analytics />}
+      {shouldRenderAnalytics() && <Analytics />}
     </ErrorBoundary>
   )
 }

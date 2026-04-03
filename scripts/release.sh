@@ -89,7 +89,7 @@ fi
 
 TAG="v${NEW_VERSION}"
 
-# Check tag doesn't already exist locally or on the resolved upstream remote
+# Check tag doesn't already exist locally or on the upstream remote
 info "Checking tag ${TAG} does not already exist..."
 git fetch --tags "$UPSTREAM_REMOTE" 2>/dev/null || true
 if git rev-parse "refs/tags/${TAG}" &>/dev/null; then
@@ -131,9 +131,15 @@ perl -i -0777pe \
   "$CHANGELOG"
 
 # Update the Keep a Changelog comparison link footer. Derive the repo URL
-# dynamically from the git remote so the script works in forks.
-REMOTE_URL="$(git config --get remote.origin.url || true)"
+# from the same remote the script releases to (UPSTREAM_REMOTE) so the links
+# are correct even when origin isn't the release remote.
+REMOTE_URL="$(git config --get "remote.${UPSTREAM_REMOTE}.url" 2>/dev/null || true)"
 if [[ -n "$REMOTE_URL" ]]; then
+  # Normalise the remote URL to a plain HTTPS GitHub URL. Three cases handled:
+  #   SSH:   git@github.com:owner/repo.git → https://github.com/owner/repo
+  #   HTTPS: https://github.com/owner/repo.git → https://github.com/owner/repo
+  #   HTTPS: https://github.com/owner/repo/  → https://github.com/owner/repo
+  # The .git suffix and trailing slash are both stripped in every case.
   REPO_URL="$(printf '%s' "$REMOTE_URL" | perl -pe 's#^git@github\.com:(.+?)(?:\.git)?$#https://github.com/$1#; s#^https?://github\.com/(.+?)(?:\.git)?$#https://github.com/$1#; s#/$##;')"
   PREVIOUS_TAG="v${CURRENT_VERSION}"
 
@@ -156,16 +162,20 @@ if [[ -n "$REMOTE_URL" ]]; then
     }
   ' "$CHANGELOG"
 else
-  warn "Could not determine origin remote; skipping changelog comparison link update."
+  warn "Could not determine URL for remote '${UPSTREAM_REMOTE}'; skipping changelog comparison link update."
 fi
 
 # ── Update package.json version ───────────────────────────────────────────────
 info "Updating package.json..."
+# --no-workspaces-update requires npm >=8; the engines field in package.json
+# enforces this so the flag is always safe here.
 npm version "$NEW_VERSION" --no-git-tag-version --no-workspaces-update
 
 # ── Commit ────────────────────────────────────────────────────────────────────
 info "Committing release..."
-git add "$CHANGELOG" package.json package-lock.json
+LOCK_FILE_ARG=()
+[[ -f package-lock.json ]] && LOCK_FILE_ARG=(package-lock.json)
+git add "$CHANGELOG" package.json "${LOCK_FILE_ARG[@]}"
 git commit -m "chore(release): ${TAG}"
 
 # ── Tag ───────────────────────────────────────────────────────────────────────

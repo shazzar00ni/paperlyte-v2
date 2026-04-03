@@ -12,12 +12,12 @@ This file contains a summary of pull requests I have reviewed.
 | Regression Type                | Count | Severity    | Notes                                               |
 | :----------------------------- | :---- | :---------- | :-------------------------------------------------- |
 | Orphan Branches                | 224   | 🔴 Critical | No common ancestor with `main`.                     |
-| Missing `.npmrc`               | 104   | 🔴 Critical | Breaks dependency resolution.                       |
-| Missing `docs/ROADMAP.md`      | 98    | 🟠 High     | Core project documentation.                         |
-| Missing `gitVersionControl.md` | 112   | 🟠 High     | Core Git workflow documentation.                    |
-| Missing `review.md`            | 112   | 🟡 Medium   | AI PR reviewer instructions.                        |
-| Reverted Security Helpers      | 112   | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers. |
-| Unreadable navigation.ts       | 0     | 🔴 Critical | File missing or unreadable.                         |
+| Missing `.npmrc`               | 95    | 🔴 Critical | Breaks dependency resolution.                       |
+| Missing `docs/ROADMAP.md`      | 89    | 🟠 High     | Core project documentation.                         |
+| Missing `gitVersionControl.md` | 104   | 🟠 High     | Core Git workflow documentation.                    |
+| Missing `review.md`            | 104   | 🟡 Medium   | AI PR reviewer instructions.                        |
+| Reverted Security Helpers      | 103   | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers. |
+| Unreadable navigation.ts       | 8     | 🔴 Critical | File missing or unreadable.                         |
 
 - **Action Required:** ALL affected branches MUST restore these critical files and security helpers.
 
@@ -150,7 +150,7 @@ This file contains a summary of pull requests I have reviewed.
 ### PR #389
 
 - **Status:** Postponed
-- **Summary:** Repository-wide formatting changes that are low priority and likely to conflict with in-flight feature work.
+- **Summary:** Repository-wide formatting changes that are low priority and likely to conflict in-flight feature work.
 - **Feedback:** Recommendation remains unchanged: Postpone #389 (repository-wide formatting) to avoid merge conflicts with active feature PRs and revisit once the codebase is more stable.
 
 ---

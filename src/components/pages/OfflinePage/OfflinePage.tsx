@@ -195,7 +195,7 @@ export const OfflinePage: FC<OfflinePageProps> = ({
 
         {/* Retry error message */}
         {retryError && (
-          <p className={styles.retryError} role="alert">
+          <p className={styles.message} role="alert">
             {retryError}
           </p>
         )}

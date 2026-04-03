@@ -23,9 +23,10 @@ interface OfflinePageProps {
  * Listens to the browser's `online`/`offline` events, updates the UI reactively,
  * and provides a retry button that probes real internet connectivity before reloading.
  *
- * @param message - Optional override for the default "you're offline" description.
- * @param showCachedInfo - Whether to show the list of offline-capable features (default: `true`).
- * @param onConnectionRestored - Optional callback invoked when the `online` event fires.
+ * @param props - Component props.
+ * @param props.message - Optional override for the default "you're offline" description.
+ * @param props.showCachedInfo - Whether to show the list of offline-capable features (default: `true`).
+ * @param props.onConnectionRestored - Optional callback invoked when the `online` event fires.
  */
 export const OfflinePage: FC<OfflinePageProps> = ({
   message,

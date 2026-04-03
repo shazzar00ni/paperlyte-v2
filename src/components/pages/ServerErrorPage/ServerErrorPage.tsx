@@ -29,10 +29,11 @@ interface ServerErrorPageProps {
  * Offers retry and home-navigation actions and optionally surfaces raw error details
  * in development mode. A support contact link can be shown for production incidents.
  *
- * @param message - Optional override for the default server error description.
- * @param errorDetails - Raw error stack/message shown only in `DEV` mode via a `<details>` element.
- * @param onRetry - Optional callback for the retry button; defaults to `window.location.reload()`.
- * @param showSupport - Whether to display the "contact support" link (default: `true`).
+ * @param props - Component props.
+ * @param props.message - Optional override for the default server error description.
+ * @param props.errorDetails - Raw error stack/message shown only in `DEV` mode via a `<details>` element.
+ * @param props.onRetry - Optional callback for the retry button; defaults to `window.location.reload()`.
+ * @param props.showSupport - Whether to display the "contact support" link (default: `true`).
  */
 export const ServerErrorPage: FC<ServerErrorPageProps> = ({
   message,

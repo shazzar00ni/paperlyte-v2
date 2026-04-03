@@ -2,6 +2,43 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-04-02
+
+### Analysis: Systemic Regressions in Open Branches (Jules Daily PR Reviews)
+
+- **Status:** Critical — Action Required
+- **Summary:** A comprehensive repository-wide audit of 215 unmerged branches confirms that 100% (215 total) are currently blocked by systemic regressions or categorized as orphan branches with no shared history with `main`.
+
+  | Regression Type                | Count | Severity    | Notes                                                                    |
+  | :----------------------------- | :---- | :---------- | :----------------------------------------------------------------------- |
+  | Orphan Branches                | 215   | 🔴 Critical | No common ancestor with `main`, posing high risk for merge conflicts.    |
+  | Missing `.npmrc`               | 95    | 🔴 Critical | Breaks dependency resolution for all peer dependencies.                  |
+  | Missing `docs/ROADMAP.md`      | 89    | 🟠 High     | Core project roadmap documentation.                                      |
+  | Missing `gitVersionControl.md` | 104   | 🟠 High     | Core Git workflow documentation.                                         |
+  | Missing `review.md`            | 104   | 🟡 Medium   | AI PR reviewer instruction file.                                         |
+  | Reverted Security Helpers      | 103   | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` in `src/utils/navigation.ts`. |
+  | Unreadable navigation.ts       | 8     | 🔴 Critical | File itself is missing or cannot be read.                                |
+
+- **Root Cause:** Proliferation of orphan branches and branches derived from problematic base states where critical files were removed or security helpers reverted.
+- **Action Required:** ALL affected branches MUST restore these critical files and security helpers. Orphan branches should be rebased onto `main` (if possible) or recreated to establish a shared history before they can be merged.
+
+### Detailed Branch Reviews
+
+- **PR: origin/claude/fix-bash-conditionals-Zlz46**
+  - **Status:** Approved (Blocked by regressions)
+  - **Summary:** Stabilizes Lighthouse CI reporting by resolving shell syntax errors and leveraging `jq` for manifest processing.
+  - **Feedback:** Technical solution is solid, but the branch remains an orphan. Rebase on `main` is required.
+
+- **PR: origin/claude/fix-ci-workflow-permissions-emVdO**
+  - **Status:** Approved (Blocked by regressions)
+  - **Summary:** Implements least-privilege security by adding granular permissions to GitHub Actions workflows.
+  - **Feedback:** Critical security hardening. Still blocked by orphan branch status.
+
+- **PR: origin/claude/tree-shake-font-awesome-cK85j**
+  - **Status:** Approved (Blocked by regressions)
+  - **Summary:** Optimizes the Font Awesome bundle to improve initial load time.
+  - **Feedback:** Performance win. Blocked by orphan branch status.
+
 ## 2026-03-05
 
 ### Analysis: Accidental File Deletions in Open Branches (Jules Daily PR Reviews)
@@ -325,11 +362,11 @@ This file contains a summary of pull requests I have reviewed.
 
 **Status:** Approved with comments
 
-#### Summary for PR #356:
+#### Summary for PR #356
 
 This PR addresses a Codacy configuration issue to ensure ESLint runs correctly in the CI pipeline. The core changes in `.codacy.yml` and the addition of `.eslintrc.cjs` are correct and effectively resolve the issue.
 
-#### Feedback & Suggestions for PR #356:
+#### Feedback & Suggestions for PR #356
 
 - **Approval:** The main changes are approved and ready for merging.
 - **Scope Creep:** The PR includes unrelated changes to the icon library (`src/utils/iconLibrary.ts`) and E2E tests (`tests/e2e/landing-page.spec.ts`). While not harmful, these changes are out of scope for a configuration fix.
@@ -341,19 +378,17 @@ This PR addresses a Codacy configuration issue to ensure ESLint runs correctly i
 
 **Status:** Changes requested
 
-#### Summary for PR #319:
+#### Summary for PR #319
 
 This PR aims to fix a deployment error in the `Privacy.tsx` component. However, it also includes significant changes to `package-lock.json` and `public/sitemap.xml` that are unrelated to the component fix.
 
-#### Feedback & Suggestions for PR #319:
+#### Feedback & Suggestions for PR #319
 
 - **Mixed Changes:** The PR mixes a bug fix with dependency updates and sitemap changes. This makes it difficult to review and test.
 - **`package-lock.json`:** The changes to `package-lock.json` are extensive and add `"peer": true` to many dependencies. This is a significant change that could have unintended side effects and should be tested in isolation. My memory indicates that these changes have caused test failures in the past.
 - **Recommendation:** I've requested that the contributor split this PR into two separate PRs:
   1. A PR with only the fix for `Privacy.tsx`.
   2. A separate PR for the `package-lock.json` and `sitemap.xml` changes.
-
-This will allow us to safely merge the bug fix while the dependency changes can be more thoroughly tested and reviewed.
 
 ---
 

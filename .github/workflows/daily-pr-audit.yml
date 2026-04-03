@@ -1,0 +1,131 @@
+name: Daily PR Audit Summary
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Run daily at midnight UTC
+  workflow_dispatch: # Allow manual trigger
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Run PR Audit
+        id: run_audit
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 scripts/maintenance/audit_branches.py > audit_results.json
+
+          # Use python to generate the markdown and comment on PRs
+          python3 -c "
+          import json
+          import subprocess
+          import os
+          from datetime import datetime
+
+          def run_command(args):
+              try:
+                  result = subprocess.run(args, capture_output=True, text=True, check=True)
+                  return result.stdout.strip()
+              except subprocess.CalledProcessError as e:
+                  print(f'Error: {e.stderr}')
+                  return None
+
+          with open('audit_results.json', 'r') as f:
+              data = json.load(f)
+
+          # Get PR mappings
+          pr_list_json = run_command(['gh', 'pr', 'list', '--state', 'open', '--limit', '1000', '--json', 'number,headRefName'])
+          pr_map = {}
+          if pr_list_json:
+              prs = json.loads(pr_list_json)
+              for pr in prs:
+                  pr_map[pr['headRefName']] = pr['number']
+
+          stats = {
+              'Orphan': 0,
+              'NPMRC': 0,
+              'ROADMAP': 0,
+              'GVC': 0,
+              'REVIEW': 0,
+              'HELPERS': 0,
+              'UNREADABLE': 0
+          }
+
+          for item in data.get('blocked', []):
+              issues = item['issues']
+              if 'Orphan branch' in str(issues): stats['Orphan'] += 1
+              if 'Missing .npmrc' in str(issues): stats['NPMRC'] += 1
+              if 'Missing docs/ROADMAP.md' in str(issues): stats['ROADMAP'] += 1
+              if 'Missing gitVersionControl.md' in str(issues): stats['GVC'] += 1
+              if 'Missing review.md' in str(issues): stats['REVIEW'] += 1
+              if 'security helper' in str(issues): stats['HELPERS'] += 1
+              if 'Could not read src/utils/navigation.ts' in str(issues): stats['UNREADABLE'] += 1
+
+              # Comment on the PR if it exists
+              branch = item['branch']
+              if branch in pr_map:
+                  pr_num = pr_map[branch]
+                  comment = '### ⚠️ Systemic Regressions Detected\n\nThis branch is currently blocked by the following regressions:\n\n'
+                  for issue in issues:
+                      comment += f'- {issue}\n'
+                  comment += '\nPlease restore these critical files or security helpers before merging.'
+                  run_command(['gh', 'pr', 'comment', str(pr_num), '--body', comment])
+
+          # Generate Markdown Summary
+          date_str = datetime.now().strftime('%Y-%m-%d')
+          total = data['total_branches']
+
+          summary = f'## {date_str}\n\n'
+          summary += '### Analysis: Systemic Regressions in Open Branches (Automated Daily Audit)\n\n'
+          summary += '- **Status:** Critical — Action Required\n'
+          summary += f'- **Summary:** An automated repository-wide audit of {total} unmerged branches confirms the following systemic regressions.\n\n'
+          summary += '| Regression Type                | Count | Severity    | Notes                                                                    |\n'
+          summary += '| :----------------------------- | :---- | :---------- | :----------------------------------------------------------------------- |\n'
+          summary += f'| Orphan Branches                | {stats[\"Orphan\"]}   | 🔴 Critical | No common ancestor with `main`.                                          |\n'
+          summary += f'| Missing `.npmrc`               | {stats[\"NPMRC\"]}    | 🔴 Critical | Breaks dependency resolution.                                            |\n'
+          summary += f'| Missing `docs/ROADMAP.md`      | {stats[\"ROADMAP\"]}    | 🟠 High     | Core project documentation.                                              |\n'
+          summary += f'| Missing `gitVersionControl.md` | {stats[\"GVC\"]}   | 🟠 High     | Core Git workflow documentation.                                         |\n'
+          summary += f'| Missing `review.md`            | {stats[\"REVIEW\"]}   | 🟡 Medium   | AI PR reviewer instructions.                                             |\n'
+          summary += f'| Reverted Security Helpers      | {stats[\"HELPERS\"]}   | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers.                      |\n'
+          summary += f'| Unreadable navigation.ts       | {stats[\"UNREADABLE\"]}     | 🔴 Critical | File missing or unreadable.                                              |\n\n'
+          summary += '- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.\n\n'
+
+          with open('daily_summary.txt', 'w') as f:
+              f.write(summary)
+          "
+
+          # Prepend daily summary after the header in PR_REVIEW_SUMMARY.md
+          if [ -f daily_summary.txt ]; then
+            HEADER_LINE=$(grep -n "# PR Review Summary" PR_REVIEW_SUMMARY.md | head -n 1 | cut -d: -f1 || echo "1")
+            AFTER_HEADER=$(($HEADER_LINE + 1))
+
+            head -n $AFTER_HEADER PR_REVIEW_SUMMARY.md > top.md
+            tail -n +$(($AFTER_HEADER + 1)) PR_REVIEW_SUMMARY.md > bottom.md
+
+            cat top.md daily_summary.txt bottom.md > updated_summary.md
+            mv updated_summary.md PR_REVIEW_SUMMARY.md
+            rm top.md bottom.md daily_summary.txt
+          fi
+
+      - name: Commit and Push Changes
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "github-actions[bot]"
+          git add PR_REVIEW_SUMMARY.md
+          git commit -m "docs: automated daily PR audit summary ($(date +%Y-%m-%d))" || echo "No changes to commit"
+          git push

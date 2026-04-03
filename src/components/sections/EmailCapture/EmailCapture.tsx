@@ -40,6 +40,19 @@ export const EmailCapture = (): React.ReactElement => {
    */
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+
+    // Pre-submit validation — run before touching loading state so the form
+    // stays interactive if the user needs to correct their input.
+    const trimmedEmail = email.trim()
+    if (!trimmedEmail) {
+      setError('Please enter your email address.')
+      return
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      setError('Please enter a valid email address.')
+      return
+    }
+
     setIsLoading(true)
     setError(null)
 

@@ -5,7 +5,7 @@ import styles from './Mobile.module.css'
 
 /**
  * Landing page section that highlights Paperlyte's mobile experience.
- * Emphasises speed and automatic sync so users can capture ideas anywhere.
+ * Emphasizes speed and automatic sync so users can capture ideas anywhere.
  */
 export const Mobile = (): React.ReactElement => {
   return (

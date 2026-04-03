@@ -18,6 +18,19 @@ vi.mock('@utils/validation', () => ({
   }),
 }))
 
+// Fills the email input, checks the GDPR checkbox, and clicks submit
+async function fillAndSubmit(user: ReturnType<typeof userEvent.setup>, email = 'test@example.com') {
+  await user.type(screen.getByPlaceholderText('Enter your email'), email)
+  await user.click(screen.getByRole('checkbox'))
+  await user.click(screen.getByRole('button', { name: /Join Waitlist/i }))
+}
+
+// Types into the email input and clicks submit without checking the consent box
+async function typeAndSubmit(user: ReturnType<typeof userEvent.setup>, email: string) {
+  await user.type(screen.getByPlaceholderText('Enter your email'), email)
+  await user.click(screen.getByRole('button', { name: /Join Waitlist/i }))
+}
+
 describe('EmailCapture UI Component', () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -72,13 +85,7 @@ describe('EmailCapture UI Component', () => {
       const user = userEvent.setup()
       render(<EmailCapture />)
 
-      const input = screen.getByPlaceholderText('Enter your email')
-      const checkbox = screen.getByRole('checkbox')
-      const button = screen.getByRole('button', { name: /Join Waitlist/i })
-
-      await user.type(input, 'invalid-email')
-      await user.click(checkbox)
-      await user.click(button)
+      await fillAndSubmit(user, 'invalid-email')
 
       await waitFor(() => {
         expect(screen.getByRole('alert')).toBeInTheDocument()
@@ -89,11 +96,7 @@ describe('EmailCapture UI Component', () => {
       const user = userEvent.setup()
       render(<EmailCapture />)
 
-      const input = screen.getByPlaceholderText('Enter your email')
-      const button = screen.getByRole('button', { name: /Join Waitlist/i })
-
-      await user.type(input, 'test@example.com')
-      await user.click(button)
+      await typeAndSubmit(user, 'test@example.com')
 
       await waitFor(() => {
         expect(
@@ -107,15 +110,10 @@ describe('EmailCapture UI Component', () => {
       const { container } = render(<EmailCapture />)
 
       const honeypot = container.querySelector('input[name="website"]') as HTMLInputElement
-      const input = screen.getByPlaceholderText('Enter your email')
-      const checkbox = screen.getByRole('checkbox')
-      const button = screen.getByRole('button', { name: /Join Waitlist/i })
 
       // Fill honeypot (bot behavior)
       await user.type(honeypot, 'spam-bot')
-      await user.type(input, 'test@example.com')
-      await user.click(checkbox)
-      await user.click(button)
+      await fillAndSubmit(user)
 
       // Should not show success or error - just silently return
       expect(screen.queryByText(/on the list/i)).not.toBeInTheDocument()
@@ -148,13 +146,7 @@ describe('EmailCapture UI Component', () => {
 
       render(<EmailCapture />)
 
-      const input = screen.getByPlaceholderText('Enter your email')
-      const checkbox = screen.getByRole('checkbox')
-      const button = screen.getByRole('button', { name: /Join Waitlist/i })
-
-      await user.type(input, 'test@example.com')
-      await user.click(checkbox)
-      await user.click(button)
+      await fillAndSubmit(user)
 
       await waitFor(() => {
         expect(screen.getByText('Joining...')).toBeInTheDocument()
@@ -172,13 +164,7 @@ describe('EmailCapture UI Component', () => {
 
       render(<EmailCapture />)
 
-      const input = screen.getByPlaceholderText('Enter your email')
-      const checkbox = screen.getByRole('checkbox')
-      const button = screen.getByRole('button', { name: /Join Waitlist/i })
-
-      await user.type(input, 'test@example.com')
-      await user.click(checkbox)
-      await user.click(button)
+      await fillAndSubmit(user)
 
       await waitFor(() => {
         expect(screen.getByText(/on the list/i)).toBeInTheDocument()
@@ -193,13 +179,7 @@ describe('EmailCapture UI Component', () => {
 
       render(<EmailCapture />)
 
-      const input = screen.getByPlaceholderText('Enter your email')
-      const checkbox = screen.getByRole('checkbox')
-      const button = screen.getByRole('button', { name: /Join Waitlist/i })
-
-      await user.type(input, 'test@example.com')
-      await user.click(checkbox)
-      await user.click(button)
+      await fillAndSubmit(user)
 
       await waitFor(() => {
         expect(screen.getByRole('alert')).toBeInTheDocument()
@@ -213,13 +193,7 @@ describe('EmailCapture UI Component', () => {
 
       render(<EmailCapture />)
 
-      const input = screen.getByPlaceholderText('Enter your email')
-      const checkbox = screen.getByRole('checkbox')
-      const button = screen.getByRole('button', { name: /Join Waitlist/i })
-
-      await user.type(input, 'test@example.com')
-      await user.click(checkbox)
-      await user.click(button)
+      await fillAndSubmit(user)
 
       await waitFor(() => {
         expect(screen.getByRole('alert')).toBeInTheDocument()
@@ -232,14 +206,13 @@ describe('EmailCapture UI Component', () => {
       const user = userEvent.setup()
       render(<EmailCapture />)
 
-      const input = screen.getByPlaceholderText('Enter your email')
-      const button = screen.getByRole('button', { name: /Join Waitlist/i })
-
-      await user.type(input, 'bad')
-      await user.click(button)
+      await typeAndSubmit(user, 'bad')
 
       await waitFor(() => {
-        expect(input).toHaveAttribute('aria-invalid', 'true')
+        expect(screen.getByPlaceholderText('Enter your email')).toHaveAttribute(
+          'aria-invalid',
+          'true'
+        )
       })
     })
 
@@ -247,14 +220,13 @@ describe('EmailCapture UI Component', () => {
       const user = userEvent.setup()
       render(<EmailCapture />)
 
-      const input = screen.getByPlaceholderText('Enter your email')
-      const button = screen.getByRole('button', { name: /Join Waitlist/i })
-
-      await user.type(input, 'bad')
-      await user.click(button)
+      await typeAndSubmit(user, 'bad')
 
       await waitFor(() => {
-        expect(input).toHaveAttribute('aria-describedby', 'email-error')
+        expect(screen.getByPlaceholderText('Enter your email')).toHaveAttribute(
+          'aria-describedby',
+          'email-error'
+        )
       })
     })
 

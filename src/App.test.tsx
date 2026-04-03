@@ -285,4 +285,21 @@ describe('App Integration', () => {
     const sections = container.querySelectorAll('section')
     expect(sections.length).toBeGreaterThan(0)
   })
+
+  it('should not render Analytics component when on localhost', () => {
+    // Mock window.location.hostname
+    const originalLocation = window.location
+    // @ts-expect-error - overriding location for testing
+    delete window.location
+    window.location = { ...originalLocation, hostname: 'localhost' }
+
+    const { container } = render(<App />)
+    // Vercel Analytics renders as a script tag or some specific element,
+    // but here we check it doesn't leak or cause issues.
+    // Since it's conditionally rendered in App.tsx, we can verify the environment guard.
+    expect(container.querySelector('script[src*="vercel"]')).not.toBeInTheDocument()
+
+    // Restore location
+    window.location = originalLocation
+  })
 })

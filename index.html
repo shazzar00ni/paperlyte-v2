@@ -13,26 +13,26 @@
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://paperlyte.app/" />
+    <meta property="og:url" content="__SITE_URL__/" />
     <meta property="og:title" content="Paperlyte - Lightning-Fast, Distraction-Free Notes" />
     <meta
       property="og:description"
       content="Your thoughts, unchained from complexity. The simplest, fastest note-taking app with offline-first sync and tag-based organization."
     />
-    <meta property="og:image" content="https://paperlyte.app/og-image.jpg" />
+    <meta property="og:image" content="__OG_IMAGE_URL__" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:locale" content="en_US" />
 
     <!-- Twitter Card Tags -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="https://paperlyte.app/" />
+    <meta name="twitter:url" content="__SITE_URL__/" />
     <meta name="twitter:title" content="Paperlyte - Lightning-Fast, Distraction-Free Notes" />
     <meta
       name="twitter:description"
       content="Your thoughts, unchained from complexity. The simplest, fastest note-taking app with offline-first sync and tag-based organization."
     />
-    <meta name="twitter:image" content="https://paperlyte.app/twitter-image.jpg" />
+    <meta name="twitter:image" content="__TWITTER_IMAGE_URL__" />
     <meta
       name="twitter:image:alt"
       content="Paperlyte app preview showing minimalist notes interface"
@@ -49,8 +49,20 @@
     <!-- Theme Color -->
     <meta name="theme-color" content="#1a1a1a" />
 
+    <!-- Canonical URL -->
+    <link rel="canonical" href="__SITE_URL__/" />
+
+    <!-- SEO Keywords -->
+    <meta name="keywords" content="__META_KEYWORDS__" />
+
+    <!-- Search engine indexing: index/follow is the crawler default; no robots meta needed -->
+
     <!-- Font Awesome icons are loaded via @fortawesome/fontawesome-svg-core in JavaScript -->
     <!-- This approach is CSP-compliant and doesn't require external CDN resources -->
+
+    <!-- Preload critical fonts for better performance -->
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/Inter-Variable.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/PlayfairDisplay-Variable.woff2" crossorigin />
 
     <!-- Preload critical above-the-fold image for better LCP -->
     <link rel="preload" as="image" type="image/avif" href="/mockups/notes-list.avif" />
@@ -70,8 +82,8 @@
           "priceCurrency": "USD",
           "availability": "https://schema.org/InStock"
         },
-        "url": "https://paperlyte.app",
-        "screenshot": "https://paperlyte.app/og-image.jpg",
+        "url": "__SITE_URL__",
+        "screenshot": "__OG_IMAGE_URL__",
         "featureList": [
           "Lightning-fast performance with instant startup",
           "Tag-based organization without rigid folder structures",
@@ -84,7 +96,7 @@
         "author": {
           "@type": "Organization",
           "name": "Paperlyte",
-          "url": "https://paperlyte.app"
+          "url": "__SITE_URL__"
         }
       }
     </script>

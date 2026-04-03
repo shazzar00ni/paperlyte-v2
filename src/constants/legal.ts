@@ -16,6 +16,10 @@ export interface CompanyConfig {
   arbitrationOptOutEmail: string
 }
 
+/**
+ * Centralised legal configuration for Paperlyte.
+ * Update placeholder values (marked with `[…]`) before public launch.
+ */
 export const LEGAL_CONFIG = {
   company: {
     name: 'Paperlyte',

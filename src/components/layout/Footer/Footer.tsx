@@ -2,6 +2,10 @@ import { Icon } from '@components/ui/Icon'
 import { LEGAL_CONFIG } from '@/constants/legal'
 import styles from './Footer.module.css'
 
+/**
+ * Site-wide footer with brand identity, navigation links, legal pages, and social media icons.
+ * Displays the current year dynamically for the copyright notice.
+ */
 export const Footer = (): React.ReactElement => {
   const currentYear = new Date().getFullYear()
 

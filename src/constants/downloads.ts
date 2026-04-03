@@ -23,5 +23,5 @@ export const DOWNLOAD_URLS = {
   linux: `${LEGAL_CONFIG.social.github}/releases/latest`,
 } as const
 
-// Re-export GitHub URL from legal config for consistency
+/** GitHub repository URL, re-exported from {@link LEGAL_CONFIG} for convenience. */
 export const GITHUB_URL = LEGAL_CONFIG.social.github

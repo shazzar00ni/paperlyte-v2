@@ -7,31 +7,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-_All changes have been released in version 1.0.0. This section will track future unreleased changes._
-
 ### Added
 
-- N/A
+- Semantic versioning release automation (`scripts/release.sh`) with patch/minor/major bump support
+- `npm run release:patch`, `release:minor`, `release:major` scripts for one-command releases
+- `.github/changelog-config.json` for automated GitHub Release notes via `release-changelog-builder-action`
+- Sentry error monitoring and CodeQL security scanning integration
+- ESLint GitHub Actions workflow (`eslint.yml`) for PR-time lint enforcement
+- Snyk security analysis workflow (`snyk-security.yml`)
+- CodeScan static analysis workflow (`codescan.yml`)
+- Codacy code quality workflow (`codacy.yml`)
+- Codecov test coverage reporting with JUnit XML integration
+- E2E accessibility tests with improved focus indicator detection
+- `@sentry/react` dependency for client-side error tracking
+- `@vercel/analytics` for privacy-respecting analytics
+- Playwright E2E test suite with accessibility checks
 
 ### Changed
 
-- N/A
-
-### Deprecated
-
-- N/A
-
-### Removed
-
-- N/A
+- Relaxed Lighthouse CI thresholds to match realistic GitHub Actions runner baselines
+- Updated issue templates with improved structure
+- Updated `sitemap.xml` last-modified dates
+- Upgraded `@fortawesome/*` packages to v7.2.x
+- Upgraded React to 19.2.4
+- Pinned Vite to 7.2.4 (reverted from 7.3.0 to resolve build instability)
+- Improved SARIF run merging script (removed dead fingerprint filter)
 
 ### Fixed
 
-- N/A
+- `npm audit` vulnerabilities: brace-expansion, path-to-regexp, undici, flatted, tmp overrides
+- Codecov action configuration (explicit `junit.xml` path)
+- Lighthouse CI: corrected `--no-edit` rebase flag misuse
+- CSS syntax error in design system stylesheet
+- Footer JSX structure and Core Promise copy
+- Markdown linting issues across documentation files
+- Security workflow permissions (no `write-all` scope)
+- Focus indicator detection in E2E accessibility tests
+- `chrome-launcher` moderate vulnerability via version override
 
 ### Security
 
-- N/A
+- Added Content Security Policy workflow validation
+- Applied `brace-expansion`, `balanced-match`, `picomatch` patches (GHSA-f886-m6hf-6m8v)
+- Resolved all high-severity `npm audit` findings
+- Enforced HTTPS-only resource loading in CSP headers
 
 ## [1.0.0] - 2025-12-22
 
@@ -251,30 +270,8 @@ _All changes have been released in version 1.0.0. This section will track future
 
 ---
 
-## Version History Format
+<!-- Comparison links (keep at bottom, update on each release) -->
 
-### [Version] - YYYY-MM-DD
-
-### Added
-
-- New features and capabilities
-
-### Changed
-
-- Changes to existing functionality
-
-### Deprecated
-
-- Features that will be removed in future versions
-
-### Removed
-
-- Features that have been removed
-
-### Fixed
-
-- Bug fixes
-
-### Security
-
-- Security vulnerability fixes and improvements
+[Unreleased]: https://github.com/shazzar00ni/paperlyte-v2/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/shazzar00ni/paperlyte-v2/compare/v0.0.0...v1.0.0
+[0.0.0]: https://github.com/shazzar00ni/paperlyte-v2/releases/tag/v0.0.0

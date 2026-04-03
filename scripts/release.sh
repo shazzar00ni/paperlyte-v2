@@ -173,8 +173,8 @@ info "Tagging ${TAG}..."
 git tag -a "$TAG" -m "Release ${TAG}"
 
 # ── Push (atomic: commit and tag land together or neither does) ───────────────
-info "Pushing commit and tag to origin (atomic)..."
-git push --atomic origin "$CURRENT_BRANCH" "$TAG"
+info "Pushing commit and tag to ${UPSTREAM_REMOTE} (atomic)..."
+git push --atomic "$UPSTREAM_REMOTE" "$CURRENT_BRANCH" "$TAG"
 
 success "Released ${TAG}!"
 echo ""

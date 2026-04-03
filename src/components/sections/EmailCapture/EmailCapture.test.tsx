@@ -85,4 +85,68 @@ describe('EmailCapture Section', () => {
     // Silence unused variable lint
     void form
   })
+
+  it('shows error for malformed email without @ sign', async () => {
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    const emailInput = screen.getByPlaceholderText('your@email.com')
+    const submitButton = screen.getByRole('button', { name: /Join the Waitlist/i })
+
+    await user.type(emailInput, 'notanemail')
+    await user.click(submitButton)
+
+    await waitFor(() => {
+      const alert = screen.getByRole('alert')
+      expect(alert).toBeInTheDocument()
+      expect(alert.textContent).toMatch(/valid email/i)
+    })
+  })
+
+  it('shows error for another known disposable domain (yopmail.com)', async () => {
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    const emailInput = screen.getByPlaceholderText('your@email.com')
+    const submitButton = screen.getByRole('button', { name: /Join the Waitlist/i })
+
+    await user.type(emailInput, 'user@yopmail.com')
+    await user.click(submitButton)
+
+    await waitFor(() => {
+      const alert = screen.getByRole('alert')
+      expect(alert).toBeInTheDocument()
+      expect(alert.textContent).toMatch(/permanent email/i)
+    })
+  })
+
+  it('does not enter loading state when validation fails', async () => {
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    const emailInput = screen.getByPlaceholderText('your@email.com')
+    const submitButton = screen.getByRole('button', { name: /Join the Waitlist/i })
+
+    await user.type(emailInput, 'test@mailinator.com')
+    await user.click(submitButton)
+
+    await waitFor(() => {
+      // Button must remain enabled — validation error should not start loading
+      expect(submitButton).not.toBeDisabled()
+      expect(screen.queryByText(/Joining\.\.\./i)).not.toBeInTheDocument()
+    })
+  })
+
+  it('renders the validation error with role="alert" for screen readers', async () => {
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    await user.type(screen.getByPlaceholderText('your@email.com'), 'bad@mailinator.com')
+    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+
+    await waitFor(() => {
+      const alert = screen.getByRole('alert')
+      expect(alert).toBeInTheDocument()
+    })
+  })
 })

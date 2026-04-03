@@ -152,7 +152,6 @@ describe('EmailCapture Section', () => {
   })
 
   it('shows "Email address is required" error message for empty email via validateEmail', async () => {
-    const user = userEvent.setup()
     render(<EmailCapture />)
 
     // Directly fire the form submit event to bypass HTML5 required check

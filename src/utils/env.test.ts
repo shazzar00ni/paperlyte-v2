@@ -269,6 +269,13 @@ describe('env', () => {
       expect(shouldRenderAnalytics()).toBe(false)
     })
 
+    it('should return false on 127.0.0.1 even in production', () => {
+      vi.stubEnv('PROD', true)
+      // @ts-expect-error - overriding location for testing
+      window.location = { ...originalLocation, hostname: '127.0.0.1' }
+      expect(shouldRenderAnalytics()).toBe(false)
+    })
+
     it('should return true in production on non-localhost', () => {
       vi.stubEnv('PROD', true)
       // @ts-expect-error - overriding location for testing

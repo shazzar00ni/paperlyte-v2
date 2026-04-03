@@ -11,7 +11,9 @@ def run_command(args):
         result = subprocess.run(args, capture_output=True, text=True, check=True)
         return result.stdout.strip()
     except subprocess.CalledProcessError as e:
-        print(f"Error: {e.stderr}", file=sys.stderr)
+        # Don't log errors for 'which' checks
+        if args[0] != 'which':
+            print(f"Error: {e.stderr}", file=sys.stderr)
         return None
 
 def main():

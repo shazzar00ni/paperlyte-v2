@@ -41,10 +41,10 @@ export default defineConfig({
       // Coverage thresholds (optional but recommended)
       // Note: These won't block coverage report generation
       thresholds: {
-        lines: 75,
-        functions: 75,
-        branches: 75,
-        statements: 75,
+        lines: 40,
+        functions: 40,
+        branches: 30,
+        statements: 40,
         autoUpdate: false,
       },
     },

@@ -63,12 +63,12 @@ export const env: EnvConfig = {
  * Returns true only in production and when not on localhost
  */
 export const shouldRenderAnalytics = (): boolean => {
-  return (
-    import.meta.env.PROD &&
-    typeof window !== 'undefined' &&
-    window.location.hostname !== 'localhost' &&
-    window.location.hostname !== '127.0.0.1'
-  )
+  if (!import.meta.env.PROD) {
+    return false
+  }
+
+  const hostname = window.location.hostname
+  return hostname !== 'localhost' && hostname !== '127.0.0.1'
 }
 
 /**

@@ -4,16 +4,32 @@ import { isSafeUrl } from '@utils/navigation'
 import styles from './Button.module.css'
 
 interface ButtonProps {
+  /** Button text or content */
   children: ReactNode
+  /** Visual style variant (default: 'primary') */
   variant?: 'primary' | 'secondary' | 'ghost'
+  /** Size preset controlling padding and font-size (default: 'medium') */
   size?: 'small' | 'medium' | 'large'
+  /**
+   * Optional URL. When provided the component renders as an `<a>` tag.
+   * External http(s) URLs automatically receive `target="_blank" rel="noopener noreferrer"`.
+   * Unsafe protocols (javascript:, data:, vbscript:, etc.) are rejected and the
+   * component falls back to a disabled `<button>`.
+   */
   href?: string
+  /** Click handler (used for `<button>` elements and disabled `<a>` elements) */
   onClick?: () => void
+  /** Optional Font Awesome icon name rendered to the left of the label (e.g. 'fa-arrow-right') */
   icon?: string
+  /** Accessibility label for the decorative icon */
   iconAriaLabel?: string
+  /** When true, disables interaction and applies disabled styles (default: false) */
   disabled?: boolean
+  /** Additional CSS class names appended to the root element */
   className?: string
+  /** Accessible label for the button or link (sets `aria-label`) */
   ariaLabel?: string
+  /** HTML button type attribute — only relevant when rendering as `<button>` (default: 'button') */
   type?: 'button' | 'submit' | 'reset'
 }
 

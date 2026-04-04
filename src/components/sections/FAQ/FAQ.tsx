@@ -74,6 +74,19 @@ const FAQItemComponent = ({
   )
 }
 
+/**
+ * FAQ section component with an accessible accordion pattern.
+ *
+ * Renders all `FAQ_ITEMS` as expandable accordion items. Multiple items can be
+ * open simultaneously. Each item expansion/collapse is announced to screen readers
+ * via an `aria-live` region; the announcement clears after 3 seconds.
+ *
+ * Keyboard navigation follows the WAI-ARIA Accordion pattern:
+ * - `ArrowUp` / `ArrowDown` — move focus between question buttons
+ * - `Home` / `End` — jump to the first or last question
+ *
+ * @returns A `<Section>` element containing the accordion FAQ grid and footer links.
+ */
 export const FAQ = (): React.ReactElement => {
   const [openItems, setOpenItems] = useState<Set<string>>(new Set())
   const [announcement, setAnnouncement] = useState('')

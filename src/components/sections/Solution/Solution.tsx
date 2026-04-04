@@ -6,12 +6,19 @@ import { scrollToSection } from '@/utils/navigation'
 import { WAITLIST_COUNT, LAUNCH_QUARTER } from '@constants/waitlist'
 import styles from './Solution.module.css'
 
+/** Represents a single value-proposition card in the Solution section */
 interface ValueProp {
+  /** Font Awesome icon class used in the card header (e.g. 'fa-bolt') */
   icon: string
+  /** Decorative emoji displayed alongside the headline (aria-hidden) */
   emoji: string
+  /** Short benefit headline (e.g. 'Zero-Lag Typing') */
   headline: string
+  /** Longer sub-heading that elaborates the benefit */
   title: string
+  /** Array of body paragraphs providing detail and proof points */
   body: string[]
+  /** One-line social-proof or spec summary shown at the bottom of the card */
   proof: string
 }
 
@@ -52,6 +59,15 @@ const VALUE_PROPS: ValueProp[] = [
   },
 ]
 
+/**
+ * Solution section component presenting Paperlyte's three core value propositions.
+ *
+ * Iterates over `VALUE_PROPS` to render animated article cards for Zero-Lag Typing,
+ * Tag-Based Organization, and cross-platform offline support. Each card includes an
+ * icon, headline, body copy, and a proof statement. Closes with a waitlist CTA.
+ *
+ * @returns A `<Section>` element containing the solution value-prop cards and CTA.
+ */
 export const Solution = (): React.ReactElement => {
   return (
     <Section id="solution" background="default">

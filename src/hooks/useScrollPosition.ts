@@ -1,7 +1,16 @@
 import { useEffect, useState, useRef, useCallback } from 'react'
 
 /**
- * Get current scroll position values
+ * Read the current scroll position of the page.
+ *
+ * Returns zero values in non-browser (SSR) environments where `window` is
+ * unavailable.
+ *
+ * @returns An object with:
+ * - `scrollX` — horizontal scroll offset in pixels.
+ * - `scrollY` — vertical scroll offset in pixels.
+ * - `scrollProgress` — fraction of the page scrolled vertically, clamped to
+ *   `[0, 1]`. Returns `0` when the document is not tall enough to scroll.
  */
 const getScrollPosition = () => {
   if (typeof window === 'undefined') {

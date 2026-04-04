@@ -8,12 +8,29 @@ import { safePropertyAccess } from '@utils/security'
 import './Icon.css'
 
 interface IconProps {
+  /**
+   * Icon identifier, e.g. `'fa-bolt'` or `'fa-spinner fa-spin'`.
+   * The first token is the base icon name; additional tokens become extra CSS classes
+   * on the rendered element (useful for Font Awesome modifier classes like `fa-spin`).
+   */
   name: string
+  /** Rendered size preset — maps to a fixed pixel dimension (default: 'md') */
   size?: 'sm' | 'md' | 'lg' | 'xl' | '2x' | '3x'
+  /** Font Awesome icon set prefix used when falling back to the FA library (default: 'solid') */
   variant?: 'solid' | 'brands' | 'regular'
+  /** Additional CSS class names appended to the root element */
   className?: string
+  /**
+   * Accessible label for meaningful icons. When provided, `aria-hidden` is set to
+   * `"false"` and `role="img"` is added. Omit for purely decorative icons.
+   */
   ariaLabel?: string
+  /**
+   * Icon stroke/fill colour. Accepts any valid CSS colour value, a CSS custom property
+   * (e.g. `'var(--color-primary)'`), or a bare 3/6-digit hex string (auto-prefixed with `#`).
+   */
   color?: string
+  /** Additional inline styles merged onto the root element */
   style?: React.CSSProperties
 }
 

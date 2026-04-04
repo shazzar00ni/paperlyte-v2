@@ -179,7 +179,8 @@ jobs:
           command: |
             npx serve -s dist -l 4173 &
             npx wait-on http://localhost:4173 --timeout 60000
-            npx playwright test --project=chromium --shard=${CIRCLE_NODE_INDEX}/${CIRCLE_NODE_TOTAL}
+            SHARD_INDEX=$((CIRCLE_NODE_INDEX + 1))
+            npx playwright test --project=chromium --shard=${SHARD_INDEX}/${CIRCLE_NODE_TOTAL}
           environment:
             CI: "true"
             BASE_URL: "http://localhost:4173"

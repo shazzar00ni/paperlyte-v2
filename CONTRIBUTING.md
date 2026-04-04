@@ -324,6 +324,97 @@ describe('Button', () => {
 - ❌ Skip tests for new features
 - ❌ Use `any` type in TypeScript
 
+## Dependency Management
+
+### npm Override Rationale
+
+When a transitive dependency carries a known security vulnerability that upstream packages have not yet resolved, `package.json` uses scoped or global [`overrides`](https://docs.npmjs.com/configuring-npm/package-json#overrides) to pin a safe version. Each override is documented here so reviewers know why it exists and when it can be removed.
+
+#### `extract-zip` → `yauzl` (`^3.2.1`)
+
+`package.json` contains a scoped override that forces the `yauzl` dependency of
+`extract-zip@2.0.1` to version `^3.2.1`:
+
+```json
+{
+  "overrides": {
+    "extract-zip": { "yauzl": "^3.2.1" }
+  }
+}
+```
+
+**Why this override exists**: `yauzl` versions below 3.2.1 carry an unpatched security
+vulnerability. The upstream chain (`@lhci/cli → lighthouse → puppeteer-core →
+@puppeteer/browsers → extract-zip`) still declares `yauzl: ^2.10.0`, and no release
+of `extract-zip` yet expresses a native dependency on yauzl v3.
+
+**Why the major-version crossing is safe**: yauzl v3's breaking changes are limited to
+(a) requiring `_destroy` instead of `destroy` on custom `RandomAccessReader` subclasses,
+and (b) dropping Node < 12 support. `extract-zip` uses none of these: it consumes only
+`yauzl.open()` and the standard event emitter (`readEntry`, `entry`, `close`, `error`)
+API surface, which is fully preserved in v3.
+
+**Revisit when**: `extract-zip` releases a version with `yauzl: ^3.x` in its
+`dependencies`, at which point this override can be removed.
+
+---
+
+#### `flatted` (`^3.4.2`)
+
+`package.json` contains a global override that forces `flatted` to `^3.4.2`:
+
+```json
+{
+  "overrides": {
+    "flatted": "^3.4.2"
+  }
+}
+```
+
+**Advisory**: GHSA-rf6f-7fwh-wjgh — high-severity prototype pollution in
+`flatted` ≤ 3.4.1. Maliciously crafted input can pollute `Object.prototype`,
+potentially enabling privilege escalation or unexpected property injection.
+
+**Affected transitive chain**: `eslint → file-entry-cache → flat-cache → flatted`
+
+**Chosen version**: `^3.4.2` is the first release that patches the vulnerability.
+The fix is a non-breaking patch to internal serialisation logic; no API surface
+changes affect consumers.
+
+**Revisit when**: `flat-cache` (or `eslint` directly) declares a native
+dependency on `flatted ^3.4.2` or later, at which point this global override
+can be removed.
+
+---
+
+#### `lodash` and `lodash-es` (`^4.18.1`)
+
+`package.json` contains global overrides that force both `lodash` and `lodash-es` to `^4.18.1`:
+
+```json
+{
+  "overrides": {
+    "lodash": "^4.18.1",
+    "lodash-es": "^4.18.1"
+  }
+}
+```
+
+**Advisories**:
+
+- GHSA-r5fr-rjxr-66jc — high-severity code injection via `_.template` imports key names (affects `>=4.0.0 <=4.17.23`)
+- GHSA-f23m-r3pf-42rh — prototype pollution via array path bypass in `_.unset` / `_.omit` (affects `<=4.17.23`)
+
+**Affected transitive chains**:
+
+- `@lhci/cli → inquirer → lodash`
+- `@lhci/cli → lighthouse → lodash-es`
+- `wait-on → lodash`
+
+**Chosen version**: `^4.18.1` is the first release that patches both advisories.
+
+**Revisit when**: upstream packages (`@lhci/cli`, `wait-on`) update their own dependencies to `lodash >=4.18.1`, at which point these overrides can be removed.
+
 ## Questions?
 
 If you have questions:

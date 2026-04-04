@@ -16,39 +16,37 @@ We release patches for security vulnerabilities for the following versions:
 
 ## Reporting a Vulnerability
 
-### Please DO NOT:
+To report a security issue, please use the GitHub Security Advisory ["Report a Vulnerability"](https://github.com/shazzar00ni/paperlyte-v2/security/advisories/new) tab. This keeps your report private and ensures the maintainers are notified immediately.
+
+Alternatively, you can email **security@paperlyte.com** if you prefer not to use GitHub.
+
+**Please include the following information where possible**:
+
+- Type of vulnerability (e.g., XSS, SQL injection, authentication bypass)
+- Full paths of affected source files
+- Location of the affected code (tag/branch/commit)
+- Steps to reproduce the issue
+- Any special configuration required to reproduce the issue
+- Proof-of-concept or exploit code (if possible)
+- Potential impact assessment
+
+**Please DO NOT**:
 
 - Open a public GitHub issue for security vulnerabilities
 - Disclose the vulnerability publicly before it has been addressed
 - Exploit the vulnerability in any way
 
-### Please DO:
+The Paperlyte team will send a response indicating the next steps in handling your report. We aim to acknowledge all reports within **48 hours**. After the initial reply, the security team will keep you informed of the progress towards a fix and full announcement, and may ask for additional information or guidance.
 
-1. **Email us privately** at **security@paperlyte.com** with:
-   - A detailed description of the vulnerability
-   - Steps to reproduce the issue
-   - Potential impact of the vulnerability
-   - Any suggested fixes (if you have them)
+## Third-Party Modules
 
-2. **Include the following information** (if applicable):
-   - Type of vulnerability (e.g., XSS, SQL injection, authentication bypass)
-   - Full paths of affected source files
-   - Location of the affected code (tag/branch/commit)
-   - Any special configuration required to reproduce the issue
-   - Proof-of-concept or exploit code (if possible)
-   - Impact assessment
+Report security bugs in third-party modules to the person or team maintaining the module. You can also report a vulnerability through the [npm contact form](https://www.npmjs.com/support) by selecting "I'm reporting a security vulnerability".
 
-3. **Allow us time to respond**:
-   - We will acknowledge receipt within **48 hours**
-   - We will provide a detailed response within **7 days**
-   - We will work with you to understand and resolve the issue
+## Escalation
 
-### Alternative Reporting Methods
+If you do not receive an acknowledgment of your report within **5 business days**, please follow up directly at **security@paperlyte.com** referencing your original report.
 
-If you prefer not to email:
-
-- **GitHub Security Advisory**: Use GitHub's private vulnerability reporting feature
-- **Direct Message**: Contact project maintainers directly via GitHub
+If the issue is acknowledged but no further response or engagement is provided within **14 days**, please request a status update through your original private GitHub Security Advisory thread or by emailing **security@paperlyte.com** and referencing your original report. Do not open a public GitHub issue for security-related follow-up.
 
 ## Our Response Process
 
@@ -148,211 +146,6 @@ We follow responsible disclosure principles:
 - Two-factor authentication (2FA)
 - Regular security audits
 - Penetration testing
-
-### Error Monitoring
-
-Error monitoring is fully configured and ready to activate. To enable Sentry integration:
-
-1. **Install Sentry SDK**:
-
-   ```bash
-   npm install --save @sentry/react
-   # or
-   yarn add @sentry/react
-   ```
-
-2. **Configure Environment Variables**:
-
-   Add to `.env.production` (never commit this file):
-
-   ```bash
-   # Required: Your Sentry DSN from sentry.io project settings
-   VITE_SENTRY_DSN=https://your-key@sentry.io/your-project-id
-
-   # Optional: Environment name for tracking (defaults to MODE)
-   VITE_SENTRY_ENVIRONMENT=production
-
-   # Optional: Performance monitoring sample rate (0.0-1.0, default: 0.1)
-   VITE_SENTRY_SAMPLE_RATE=0.1
-
-   # Optional: Session replay for normal sessions (0.0-1.0, default: 0.1)
-   VITE_SENTRY_REPLAYS_SESSION_SAMPLE_RATE=0.1
-
-   # Optional: Session replay for error sessions (0.0-1.0, default: 1.0)
-   VITE_SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE=1.0
-   ```
-
-3. **Initialization** (already implemented in `src/main.tsx`):
-
-   ```typescript
-   import * as Sentry from '@sentry/react'
-
-   // Initialize Sentry error monitoring in production
-   if (import.meta.env.PROD && import.meta.env.VITE_SENTRY_DSN) {
-     Sentry.init({
-       dsn: import.meta.env.VITE_SENTRY_DSN,
-       environment: import.meta.env.VITE_SENTRY_ENVIRONMENT || import.meta.env.MODE,
-       integrations: [
-         Sentry.browserTracingIntegration(),
-         Sentry.replayIntegration({
-           maskAllText: true, // Privacy-first: mask all user text
-           blockAllMedia: true, // Privacy-first: block media from replays
-         }),
-       ],
-       tracesSampleRate: parseFloat(import.meta.env.VITE_SENTRY_SAMPLE_RATE || '0.1'),
-       replaysSessionSampleRate: parseFloat(
-         import.meta.env.VITE_SENTRY_REPLAYS_SESSION_SAMPLE_RATE || '0.1'
-       ),
-       replaysOnErrorSampleRate: parseFloat(
-         import.meta.env.VITE_SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE || '1.0'
-       ),
-       beforeSend(event) {
-         // Filter sensitive data from URLs
-         if (event.request?.url) {
-           event.request.url = event.request.url.split('?')[0]
-         }
-         return event
-       },
-     })
-   }
-   ```
-
-4. **Usage Examples**:
-
-   **Automatic Error Capture** (via ErrorBoundary):
-
-   ```typescript
-   // Errors caught by React ErrorBoundary are automatically sent to Sentry
-   // through the monitoring.logError() utility
-   ```
-
-   **Manual Error Capture** (in async handlers):
-
-   ```typescript
-   import { logError } from './utils/monitoring'
-
-   async function fetchUserData() {
-     try {
-       const response = await fetch('/api/user')
-       return await response.json()
-     } catch (error) {
-       // Automatically sends to Sentry if DSN configured
-       logError(
-         error as Error,
-         {
-           severity: 'high',
-           tags: { operation: 'fetch_user_data' },
-           errorInfo: { endpoint: '/api/user' },
-         },
-         'UserDataFetch'
-       )
-
-       throw error
-     }
-   }
-   ```
-
-   **With Severity Levels and Context**:
-
-   ```typescript
-   import { logError } from './utils/monitoring'
-
-   // Low severity
-   logError(error, { severity: 'low' }, 'NonCriticalOperation')
-
-   // Medium severity (default)
-   logError(error, { severity: 'medium', tags: { user_action: 'save_note' } })
-
-   // High severity
-   logError(error, { severity: 'high', errorInfo: { user_id: '123' } }, 'PaymentProcessing')
-
-   // Critical severity
-   logError(error, { severity: 'critical' }, 'SecurityViolation')
-   ```
-
-5. **TypeScript Configuration**:
-
-   No additional TSConfig changes required. Sentry is fully TypeScript-compatible and types are included with the package.
-
-6. **Verification**:
-
-   After deployment with `VITE_SENTRY_DSN` configured:
-   - Errors appear in Sentry dashboard at https://sentry.io
-   - Session replays available for debugging
-   - Performance metrics tracked automatically
-   - Breadcrumbs show user actions leading to errors
-
-**Privacy & Security Features**:
-
-- Only activates in production builds
-- All session replay text is automatically masked
-- Media content blocked from replay capture
-- Sensitive URL parameters filtered before sending
-- Full control via environment variables
-
-The application is already fully instrumented. Simply add your Sentry DSN to activate monitoring.
-
-## Dependency Override Rationale
-
-### `extract-zip` → `yauzl` (`^3.2.1`)
-
-`package.json` contains a scoped npm override that forces the `yauzl` dependency of
-`extract-zip@2.0.1` to version `^3.2.1`:
-
-```json
-{
-  "overrides": {
-    "extract-zip": { "yauzl": "^3.2.1" }
-  }
-}
-```
-
-**Why this override exists**: `yauzl` versions below 3.2.1 carry an unpatched security
-vulnerability. The upstream chain (`@lhci/cli → lighthouse → puppeteer-core →
-@puppeteer/browsers → extract-zip`) still declares `yauzl: ^2.10.0`, and no release
-of `extract-zip` yet expresses a native dependency on yauzl v3.
-
-**Why the major-version crossing is safe**: yauzl v3's breaking changes are limited to
-(a) requiring `_destroy` instead of `destroy` on custom `RandomAccessReader` subclasses,
-and (b) dropping Node < 12 support. `extract-zip` uses none of these: it consumes only
-`yauzl.open()` and the standard event emitter (`readEntry`, `entry`, `close`, `error`)
-API surface, which is fully preserved in v3. The scoped override form (nested under
-`extract-zip`) makes this assumption explicit and limits the override to the single
-known consumer.
-
-**Revisit when**: `extract-zip` releases a version with `yauzl: ^3.x` in its
-`dependencies`, at which point this override can be removed.
-
----
-
-### `flatted` (`^3.4.2`)
-
-`package.json` contains a global npm override that forces `flatted` to `^3.4.2`:
-
-```json
-{
-  "overrides": {
-    "flatted": "^3.4.2"
-  }
-}
-```
-
-**Advisory**: GHSA-rf6f-7fwh-wjgh — high-severity prototype pollution in
-`flatted` ≤ 3.4.1. Maliciously crafted input can pollute `Object.prototype`,
-potentially enabling privilege escalation or unexpected property injection.
-
-**Affected transitive chain**: `eslint → file-entry-cache → flat-cache → flatted`
-
-**Chosen version**: `^3.4.2` is the first release that patches the vulnerability.
-The fix is a non-breaking patch to internal serialisation logic; no API surface
-changes affect consumers.
-
-**Review date**: 2026-03-19
-**Owner**: Claude (Anthropic automated security pass)
-
-**Revisit when**: `flat-cache` (or `eslint` directly) declares a native
-dependency on `flatted ^3.4.2` or later, at which point this global override
-can be removed.
 
 ## Known Security Considerations
 

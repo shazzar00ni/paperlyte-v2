@@ -264,8 +264,7 @@ function trackINP(callback: ReportCallback): MetricTracker {
         }
 
         if (
-          eventEntry.processingStart &&
-          eventEntry.processingEnd &&
+          eventEntry.processingEnd != null &&
           eventEntry.startTime != null
         ) {
           const duration = eventEntry.processingEnd - eventEntry.startTime

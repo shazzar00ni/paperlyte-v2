@@ -190,6 +190,10 @@ export const Testimonials = (): React.ReactElement => {
     )
   }
 
+  if (TESTIMONIALS.length === 0) return null
+
+  const activeTestimonial = TESTIMONIALS[currentIndex]
+
   return (
     <Section id="testimonials" background="surface">
       <AnimatedElement animation="fadeIn">
@@ -212,16 +216,8 @@ export const Testimonials = (): React.ReactElement => {
       >
         <AnimatedElement animation="slideUp" delay={100}>
           <div className={styles.carousel}>
-            <div
-              className={styles.track}
-              style={{
-                transform: `translateX(-${currentIndex * 100}%)`,
-                transition: prefersReducedMotion
-                  ? 'none'
-                  : 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
-              }}
-            >
-              {TESTIMONIALS.map((testimonial) => renderTestimonial(testimonial))}
+            <div key={currentIndex} className={styles.track}>
+              {renderTestimonial(activeTestimonial)}
             </div>
           </div>
         </AnimatedElement>

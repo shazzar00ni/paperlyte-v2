@@ -17,8 +17,8 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 # Check if GITHUB_TOKEN is set
-if [ -z "$GITHUB_TOKEN" ]; then
-    echo -e "${RED}Error: GITHUB_TOKEN environment variable is not set${NC}"
+if [[ -z "$GITHUB_TOKEN" ]]; then
+    echo -e "${RED}Error: GITHUB_TOKEN environment variable is not set${NC}" >&2
     echo "Please set it with: export GITHUB_TOKEN=your_personal_access_token"
     echo ""
     echo "To create a personal access token:"
@@ -103,7 +103,7 @@ RESPONSE=$(curl -s -w "\n%{http_code}" \
 HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
 BODY=$(echo "$RESPONSE" | head -n-1)
 
-if [ "$HTTP_CODE" -eq 200 ]; then
+if [[ "$HTTP_CODE" -eq 200 ]]; then
     echo -e "${GREEN}✓ Branch protection configured successfully!${NC}"
     echo ""
     echo "You can view the settings at:"
@@ -124,10 +124,10 @@ else
     fi
     echo ""
 
-    if [ "$HTTP_CODE" -eq 404 ]; then
+    if [[ "$HTTP_CODE" -eq 404 ]]; then
         echo -e "${YELLOW}Note: The branch '${BRANCH}' might not exist yet.${NC}"
         echo "Please ensure the branch exists before setting up protection."
-    elif [ "$HTTP_CODE" -eq 401 ] || [ "$HTTP_CODE" -eq 403 ]; then
+    elif [[ "$HTTP_CODE" -eq 401 || "$HTTP_CODE" -eq 403 ]]; then
         echo -e "${YELLOW}Note: Your token might not have sufficient permissions.${NC}"
         echo "Required scopes: repo (full control)"
     fi

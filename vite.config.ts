@@ -108,6 +108,13 @@ export default defineConfig({
       : []),
   ],
 
+  // Expose build-time environment flags
+  // __IS_VERCEL_DEPLOYMENT__ is true only when building on Vercel's infrastructure
+  // (Vercel sets VERCEL=1 in the build environment)
+  define: {
+    __IS_VERCEL_DEPLOYMENT__: JSON.stringify(!!process.env.VERCEL),
+  },
+
   // Path resolution configuration
   resolve: {
     alias: {

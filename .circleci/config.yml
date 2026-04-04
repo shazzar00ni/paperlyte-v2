@@ -154,7 +154,7 @@ jobs:
       - run:
           name: Start preview server & run E2E tests
           command: |
-            npx serve -s dist -l 4173 &
+            npm run preview -- --host 127.0.0.1 --port 4173 &
             npx wait-on http://localhost:4173 --timeout 60000
             SHARD_INDEX=$((CIRCLE_NODE_INDEX + 1))
             npx playwright test --project=chromium --shard=${SHARD_INDEX}/${CIRCLE_NODE_TOTAL}

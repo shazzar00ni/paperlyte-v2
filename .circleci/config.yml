@@ -126,12 +126,6 @@ jobs:
       - checkout
       - install-deps
       - run:
-          name: Generate icons
-          command: npm run generate:icons
-      - run:
-          name: Generate mockups
-          command: npm run generate:mockups
-      - run:
           name: Build (TypeScript + Vite)
           command: npm run build
           environment:

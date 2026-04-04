@@ -44,23 +44,6 @@ commands:
           paths:
             - node_modules
 
-  restore-build-cache:
-    description: Restore Vite build output from cache
-    steps:
-      - restore_cache:
-          keys:
-            - build-output-v2-{{ .Branch }}-{{ .Revision }}
-            - build-output-v2-{{ .Branch }}-
-            - build-output-v2-
-
-  save-build-cache:
-    description: Save Vite build output to cache
-    steps:
-      - save_cache:
-          key: build-output-v2-{{ .Branch }}-{{ .Revision }}
-          paths:
-            - dist
-
   install-deps:
     description: Install npm dependencies (ci for reproducible installs)
     steps:

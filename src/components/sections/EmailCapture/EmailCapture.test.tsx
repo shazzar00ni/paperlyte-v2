@@ -21,7 +21,7 @@ describe('EmailCapture Section', () => {
     expect(screen.getByText(/Get early access before public launch/)).toBeInTheDocument()
     expect(screen.getByText(/Influence features and design decisions/)).toBeInTheDocument()
     expect(screen.getByText(/Lock in founder pricing/)).toBeInTheDocument()
-    expect(screen.getByText(/Receive exclusive productivity tips and updates/)).toBeInTheDocument()
+    expect(screen.getByText(/Get early product updates and insider tips/)).toBeInTheDocument()
   })
 
   it('renders privacy notice', () => {

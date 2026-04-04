@@ -14,7 +14,7 @@ describe('Comparison', () => {
 
   it('should render main heading', () => {
     render(<Comparison />)
-    expect(screen.getByText('See How We Compare')).toBeInTheDocument()
+    expect(screen.getByText('See how we compare')).toBeInTheDocument()
   })
 
   it('should render subtitle', () => {

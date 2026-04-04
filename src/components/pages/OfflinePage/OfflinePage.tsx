@@ -1,5 +1,6 @@
 import { type FC, useState, useEffect, useCallback } from 'react'
 import { Icon } from '@/components/ui/Icon'
+import { logError } from '@/utils/monitoring'
 import styles from './OfflinePage.module.css'
 
 interface OfflinePageProps {
@@ -72,9 +73,12 @@ export const OfflinePage: FC<OfflinePageProps> = ({
       if (response.ok || response.status === 204) {
         window.location.reload()
       }
-    } catch {
+    } catch (error) {
       // Connection still not available (or timeout/abort)
       clearTimeout(timeoutId)
+      logError(error instanceof Error ? error : new Error('Connectivity retry failed'), {
+        tags: { action: 'connectivityRetry', page: 'OfflinePage' },
+      })
     } finally {
       // Always reset checking state
       setIsChecking(false)
@@ -109,7 +113,7 @@ export const OfflinePage: FC<OfflinePageProps> = ({
           {isOnline
             ? 'Your internet connection has been restored. You can now continue using Paperlyte.'
             : message ||
-              "It looks like you've lost your internet connection. Don't worry, Paperlyte is designed to work offline."}
+              "You're offline — and that's okay. Paperlyte keeps working without an internet connection."}
         </p>
 
         {/* Action buttons */}
@@ -146,12 +150,12 @@ export const OfflinePage: FC<OfflinePageProps> = ({
           <div className={styles.featuresInfo}>
             <h2 className={styles.featuresTitle}>
               <Icon name="fa-circle-check" size="sm" />
-              <span>What you can still do:</span>
+              <span>Keep working offline:</span>
             </h2>
             <ul className={styles.featuresList}>
               <li>
                 <Icon name="fa-pen" size="sm" />
-                <span>Create and edit notes (they'll sync when you're back online)</span>
+                <span>Create and edit notes — they sync automatically when you reconnect</span>
               </li>
               <li>
                 <Icon name="fa-book" size="sm" />

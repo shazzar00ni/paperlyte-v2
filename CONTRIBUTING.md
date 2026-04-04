@@ -401,10 +401,12 @@ can be removed.
 ```
 
 **Advisories**:
+
 - GHSA-r5fr-rjxr-66jc — high-severity code injection via `_.template` imports key names (affects `>=4.0.0 <=4.17.23`)
 - GHSA-f23m-r3pf-42rh — prototype pollution via array path bypass in `_.unset` / `_.omit` (affects `<=4.17.23`)
 
 **Affected transitive chains**:
+
 - `@lhci/cli → inquirer → lodash`
 - `@lhci/cli → lighthouse → lodash-es`
 - `wait-on → lodash`

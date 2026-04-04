@@ -12,7 +12,7 @@ const BENEFITS = [
   'Get early access before public launch',
   'Influence features and design decisions',
   'Lock in founder pricing (save 50% for life)',
-  'Get early product updates and insider tips',
+  'Receive exclusive productivity tips and updates',
 ]
 
 export const EmailCapture = (): React.ReactElement => {

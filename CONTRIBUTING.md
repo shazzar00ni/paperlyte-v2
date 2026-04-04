@@ -328,7 +328,7 @@ describe('Button', () => {
 
 ### npm Override Rationale
 
-When a transitive dependency carries a known security vulnerability that upstream packages have not yet resolved, `package.json` uses scoped or global [`overrides`](https://docs.npmjs.com/cli/v9/configuring-npm/package-json#overrides) to pin a safe version. Each override is documented here so reviewers know why it exists and when it can be removed.
+When a transitive dependency carries a known security vulnerability that upstream packages have not yet resolved, `package.json` uses scoped or global [`overrides`](https://docs.npmjs.com/configuring-npm/package-json#overrides) to pin a safe version. Each override is documented here so reviewers know why it exists and when it can be removed.
 
 #### `extract-zip` → `yauzl` (`^3.2.1`)
 

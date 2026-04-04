@@ -44,7 +44,7 @@ Report security bugs in third-party modules to the person or team maintaining th
 
 ## Escalation
 
-If you do not receive an acknowledgement of your report within **5 business days**, please follow up directly at **security@paperlyte.com** referencing your original report.
+If you do not receive an acknowledgment of your report within **5 business days**, please follow up directly at **security@paperlyte.com** referencing your original report.
 
 If the issue is acknowledged but no further response or engagement is provided within **14 days**, you may escalate by opening a GitHub issue referencing that a private security report has been filed and requesting a status update.
 

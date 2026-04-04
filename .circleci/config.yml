@@ -96,7 +96,7 @@ jobs:
           destination: coverage
       - codecov/upload:
           file: coverage/lcov.info
-          flags: unit
+          flags: unittests
 
   # ----------------------------------------------------------
   # 3. Production build

@@ -101,13 +101,13 @@ jobs:
       - install-deps
       - run:
           name: Run unit tests with coverage
-          command: npm run test:coverage -- --reporter=junit --reporter=default
+          command: mkdir -p test-results && npm run test:coverage -- --reporter=junit --reporter=default --outputFile.junit=test-results/junit.xml
           environment:
             CI: "true"
       - store_test_results:
-          path: junit.xml
+          path: test-results
       - store_artifacts:
-          path: junit.xml
+          path: test-results/junit.xml
           destination: test-results/junit.xml
       - store_artifacts:
           path: coverage

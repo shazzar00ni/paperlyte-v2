@@ -1,7 +1,21 @@
 /**
  * Environment configuration utilities
  *
- * Provides type-safe access to environment variables with fallbacks
+ * Provides type-safe, fallback-safe access to Vite environment variables
+ * (`VITE_*`) and derives runtime values (base URL, OG image path) that are
+ * needed by SEO helpers and meta-tag initialisation.
+ *
+ * All functions are safe to call at module-load time as long as `window` is
+ * defined (i.e. in a browser context). The pre-built {@link env} singleton is
+ * evaluated once on import and is the recommended way to consume these values.
+ *
+ * @example
+ * ```ts
+ * import { env } from '@utils/env'
+ *
+ * console.log(env.baseUrl)       // e.g. 'https://paperlyte.com'
+ * console.log(env.isDevelopment) // true when running `npm run dev`
+ * ```
  */
 
 interface EnvConfig {
@@ -13,15 +27,28 @@ interface EnvConfig {
 }
 
 /**
- * Get the base URL for the application
- * Falls back to window.location.origin if not set
+ * Return the canonical base URL for the application.
+ *
+ * Prefers the `VITE_BASE_URL` environment variable so the value can be pinned
+ * at build time for production deployments. Falls back to
+ * `window.location.origin` at runtime so local development and preview builds
+ * work without any additional configuration.
+ *
+ * @returns The base URL string without a trailing slash
+ *   (e.g. `'https://paperlyte.com'`).
  */
 export const getBaseUrl = (): string => {
   return import.meta.env.VITE_BASE_URL || window.location.origin
 }
 
 /**
- * Get SEO keywords for meta tags
+ * Return the comma-separated SEO keyword string for the `<meta name="keywords">` tag.
+ *
+ * Reads from `VITE_SEO_KEYWORDS`; when the variable is absent a sensible
+ * default covering the product's core value propositions is returned so pages
+ * are never published with an empty keywords tag.
+ *
+ * @returns A non-empty keyword string.
  */
 export const getSeoKeywords = (): string => {
   return (
@@ -31,8 +58,14 @@ export const getSeoKeywords = (): string => {
 }
 
 /**
- * Get Open Graph image URL
- * Returns absolute URL for production, relative for development
+ * Return the absolute URL for the Open Graph image.
+ *
+ * When `VITE_OG_IMAGE` is already an absolute URL (starts with `http://` or
+ * `https://`) it is returned unchanged. Otherwise it is treated as a
+ * root-relative path and prepended with the result of {@link getBaseUrl} so
+ * that social-sharing scrapers always receive a fully-qualified URL.
+ *
+ * @returns An absolute URL string pointing to the OG image asset.
  */
 export const getOgImage = (): string => {
   const ogImage = import.meta.env.VITE_OG_IMAGE || '/og-image.png'
@@ -48,7 +81,20 @@ export const getOgImage = (): string => {
 }
 
 /**
- * Complete environment configuration
+ * Pre-built, read-only snapshot of all environment configuration values.
+ *
+ * Evaluated once when the module is first imported. Components and utilities
+ * should import this object rather than calling the individual `get*` helpers
+ * directly, to avoid redundant `window` accesses on hot paths.
+ *
+ * @example
+ * ```ts
+ * import { env } from '@utils/env'
+ *
+ * if (env.isDevelopment) {
+ *   console.debug('Running in dev mode. Base URL:', env.baseUrl)
+ * }
+ * ```
  */
 export const env: EnvConfig = {
   baseUrl: getBaseUrl(),
@@ -59,8 +105,20 @@ export const env: EnvConfig = {
 }
 
 /**
- * Update meta tags dynamically based on environment
- * Call this in your main.tsx or App.tsx
+ * Apply runtime environment values to `<meta>` and `<link>` elements in the
+ * document `<head>`.
+ *
+ * Should be called once, early in the application lifecycle (e.g. from
+ * `main.tsx`), after the DOM is available. In development it logs the active
+ * configuration to the console. In production it silently updates the
+ * following tags when they are present:
+ *
+ * - `<link rel="canonical">` — set to `baseUrl + '/'`
+ * - `<meta name="keywords">` — set to {@link getSeoKeywords}
+ * - `<meta property="og:url">` — set to `baseUrl + '/'`
+ * - `<meta property="og:image">` — set to the resolved {@link getOgImage} URL
+ *
+ * Missing tags are silently skipped; the function never throws.
  */
 export const updateMetaTags = (): void => {
   if (import.meta.env.DEV) {

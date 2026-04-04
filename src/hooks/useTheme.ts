@@ -7,6 +7,12 @@ const isBrowser = typeof window !== 'undefined'
 const THEME_STORAGE_KEY = 'theme'
 const USER_PREFERENCE_KEY = 'theme-user-preference'
 
+/**
+ * Type guard that narrows a nullable string to the {@link Theme} union.
+ *
+ * @param value - String (or null) read from localStorage.
+ * @returns `true` when `value` is exactly `'light'` or `'dark'`.
+ */
 const isValidTheme = (value: string | null): value is Theme => {
   return value === 'light' || value === 'dark'
 }
@@ -106,6 +112,15 @@ export const useTheme = () => {
     }
   }, [persistenceEnabled])
 
+  /**
+   * Toggles the active theme between `'light'` and `'dark'`.
+   *
+   * Marks the user's choice as an explicit preference so that subsequent
+   * system-level theme changes (e.g. OS switching to dark mode at night) do
+   * not override the user's selection. When persistence is disabled, the
+   * preference flag is still toggled in memory but is never written to
+   * localStorage.
+   */
   const toggleTheme = () => {
     // Mark that user has explicitly set a preference (only meaningful if persistence enabled)
     if (persistenceEnabled) {

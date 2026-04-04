@@ -3,15 +3,39 @@ import { Icon } from '@components/ui/Icon'
 import { logError } from '@utils/monitoring'
 import styles from './ErrorBoundary.module.css'
 
+/**
+ * Props accepted by the {@link ErrorBoundary} component.
+ */
 interface ErrorBoundaryProps {
+  /** The subtree to render normally when no error has occurred. */
   children: ReactNode
+  /**
+   * Optional custom fallback UI to render instead of the built-in error panel
+   * when a child component throws. Provide a fully self-contained element —
+   * the fallback receives no props.
+   */
   fallback?: ReactNode
+  /**
+   * Maximum number of times the user can click "Try Again" before the
+   * boundary forces a full page reload instead.
+   * @default 3
+   */
   maxRetries?: number
 }
 
+/**
+ * Internal state tracked by {@link ErrorBoundary}.
+ */
 interface ErrorBoundaryState {
+  /** Whether a child component has thrown an error during rendering. */
   hasError: boolean
+  /** The most recently caught error, or `null` when none has been caught. */
   error: Error | null
+  /**
+   * Number of times the user has clicked "Try Again". Compared against
+   * `maxRetries` to decide whether to reset the boundary or force a full
+   * page reload.
+   */
   retryCount: number
 }
 

@@ -17,6 +17,25 @@ interface OfflinePageProps {
   onConnectionRestored?: () => void
 }
 
+/**
+ * Offline error page component shown when the user has no internet connection.
+ *
+ * Subscribes to the browser's `online`/`offline` events and updates its displayed
+ * state reactively. Provides a "Try Again" button that performs a real connectivity
+ * check via a HEAD request to a known endpoint (5 s timeout via `AbortController`);
+ * reloads the page only if the check succeeds.
+ *
+ * When `showCachedInfo` is true and the device is offline, a list of features that
+ * still work offline (create/edit notes, view content, search) is displayed.
+ *
+ * @param props - Component props
+ * @param props.message - Optional override for the default offline description.
+ * @param props.showCachedInfo - Whether to show the offline-capable features list
+ *   (default: `true`).
+ * @param props.onConnectionRestored - Optional callback invoked when the browser
+ *   fires the `online` event.
+ * @returns A `<div role="status">` element containing the offline error content.
+ */
 export const OfflinePage: FC<OfflinePageProps> = ({
   message,
   showCachedInfo = true,

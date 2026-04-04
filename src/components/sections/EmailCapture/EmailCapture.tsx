@@ -15,6 +15,26 @@ const BENEFITS = [
   'Receive exclusive productivity tips and updates',
 ]
 
+/**
+ * Landing-page section for waitlist email capture.
+ *
+ * Renders a form that collects the visitor's email address and simulates an
+ * API submission. On success it replaces the form with a confirmation panel
+ * (including social-sharing buttons). On failure it displays a user-friendly
+ * error message derived from the error type (network vs. validation).
+ *
+ * Content is driven by {@link WAITLIST_COUNT} and {@link LAUNCH_QUARTER}
+ * constants so copy can be updated without touching JSX.
+ *
+ * @returns The email-capture section element, or the success confirmation
+ *   panel after a successful submission.
+ *
+ * @example
+ * ```tsx
+ * // Rendered automatically by App.tsx as part of the landing page
+ * <EmailCapture />
+ * ```
+ */
 export const EmailCapture = (): React.ReactElement => {
   const [email, setEmail] = useState('')
   const [isSubmitted, setIsSubmitted] = useState(false)

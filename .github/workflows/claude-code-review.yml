@@ -1,0 +1,121 @@
+name: Claude Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review, reopened]
+
+jobs:
+  # ──────────────────────────────────────────────
+  # 1. Full PR review with progress tracking
+  # ──────────────────────────────────────────────
+  auto-review:
+    name: Auto Review
+    runs-on: ubuntu-latest
+    # Skip draft PRs
+    if: github.event.pull_request.draft == false
+    permissions:
+      contents: read
+      pull-requests: write
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 1
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          track_progress: true
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
+            AUTHOR: ${{ github.event.pull_request.user.login }}
+            TITLE: ${{ github.event.pull_request.title }}
+
+            You are reviewing a pull request for **Paperlyte** — a lightning-fast,
+            distraction-free note-taking app built with React 19, TypeScript, and Vite.
+            The product's core promise is simplicity and speed, so keep that lens in mind.
+
+            ## Review Checklist
+
+            ### Code Quality
+            - [ ] Follows existing code style (TypeScript strict mode, ESLint rules)
+            - [ ] No commented-out code or dead code
+            - [ ] No `any` types introduced without justification
+            - [ ] DRY principle respected; no unnecessary duplication
+
+            ### Performance
+            - [ ] No performance regressions (the app targets sub-10 ms keystroke response)
+            - [ ] CSS animations use `transform`/`opacity` (hardware-accelerated)
+            - [ ] `prefers-reduced-motion` respected for all new animations
+            - [ ] No large unoptimised assets added
+
+            ### Accessibility
+            - [ ] Semantic HTML used correctly
+            - [ ] Interactive elements are keyboard-navigable
+            - [ ] ARIA labels present where needed
+            - [ ] Colour contrast meets WCAG 2.1 AA
+
+            ### Security
+            - [ ] No hardcoded secrets or API keys
+            - [ ] User-supplied input is sanitised before rendering (no XSS risk)
+            - [ ] No sensitive data logged to the console
+
+            ### Testing & Documentation
+            - [ ] Complex logic has comments explaining *why*, not just *what*
+            - [ ] README / design-system docs updated if the public interface changed
+
+            For each unchecked item, post a specific inline comment on the relevant line.
+            Summarise overall findings in a top-level PR comment (approve / request changes / comment).
+
+          claude_args: |
+            --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"
+
+  # ──────────────────────────────────────────────
+  # 2. Security-focused deep-dive
+  # ──────────────────────────────────────────────
+  security-review:
+    name: Security Review
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    permissions:
+      contents: read
+      pull-requests: write
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 1
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
+
+            Perform a **security-focused** review of this PR for the Paperlyte React/TypeScript app.
+
+            ## OWASP Top 10 — check for:
+            - XSS via dangerouslySetInnerHTML or unescaped user input
+            - Broken authentication / authorisation logic
+            - Sensitive data exposure (keys, tokens, PII in code or logs)
+            - Security misconfiguration (Content Security Policy, CORS, headers)
+            - CSRF vulnerabilities
+            - Use of components with known vulnerabilities (check new npm deps)
+            - Insufficient logging — errors swallowed silently
+
+            ## Additional checks:
+            - Hardcoded secrets or credentials
+            - Insecure cryptographic practices
+            - Prototype pollution in JS/TS
+            - Unsafe `eval()` or `Function()` usage
+
+            Rate each finding: **CRITICAL / HIGH / MEDIUM / LOW / INFO**.
+            Only post a PR comment if findings exist at MEDIUM or above.
+            If the PR is clean, post a single brief "✅ No security issues found." comment.
+
+          claude_args: |
+            --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"

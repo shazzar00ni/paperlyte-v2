@@ -1,0 +1,69 @@
+name: Claude External Contributor Review
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  first-time-review:
+    name: First-Time Contributor Review
+    runs-on: ubuntu-latest
+    # Only run for first-time contributors and external collaborators
+    if: |
+      github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR' ||
+      github.event.pull_request.author_association == 'NONE'
+    permissions:
+      contents: read
+      pull-requests: write
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 1
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          track_progress: true
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
+            CONTRIBUTOR: ${{ github.event.pull_request.user.login }}
+            ASSOCIATION: ${{ github.event.pull_request.author_association }}
+
+            @${{ github.event.pull_request.user.login }} is making their **first contribution**
+            to Paperlyte. Welcome them warmly in your review.
+
+            Paperlyte is a React 19 + TypeScript + Vite landing page for a distraction-free
+            note-taking app. The codebase is small and fast-moving.
+
+            ## Comprehensive onboarding review — check:
+
+            ### Standards & Style
+            - [ ] Code follows TypeScript strict mode (no `any`, no implicit types)
+            - [ ] ESLint rules pass (check `npm run lint` output if possible)
+            - [ ] Naming conventions match the existing codebase
+            - [ ] No unused imports or variables
+
+            ### Project Fit
+            - [ ] Change aligns with Paperlyte's "simplicity over feature bloat" philosophy
+            - [ ] No unnecessary dependencies added
+            - [ ] Mobile-first approach maintained
+
+            ### Testing & Documentation
+            - [ ] Complex logic is commented where intent isn't obvious
+            - [ ] If public-facing copy was changed, tone matches brand voice
+
+            ### Breaking Changes
+            - [ ] No unintended breaking changes to existing API / component props
+            - [ ] Build still passes (`npm run build`)
+
+            ## Response format:
+            1. Start with a **warm welcome** thanking them for contributing.
+            2. Summarise what the PR does in 1–2 sentences.
+            3. List any required changes as inline comments.
+            4. Close with encouragement and next steps (e.g. "once CI is green, a maintainer will merge").
+
+          claude_args: |
+            --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"

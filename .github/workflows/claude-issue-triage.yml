@@ -1,0 +1,56 @@
+name: Claude Issue Triage
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  triage:
+    name: Triage New Issue
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            REPO: ${{ github.repository }}
+            ISSUE NUMBER: ${{ github.event.issue.number }}
+            TITLE: ${{ github.event.issue.title }}
+            BODY: ${{ github.event.issue.body }}
+            AUTHOR: ${{ github.event.issue.user.login }}
+
+            You are triaging a new GitHub issue for **Paperlyte** — a distraction-free,
+            lightning-fast note-taking app (React 19 + TypeScript + Vite).
+
+            ## Your tasks:
+
+            1. **Classify** the issue as one of: `bug`, `feature-request`, `question`,
+               `documentation`, `performance`, `accessibility`, `security`, `duplicate`.
+
+            2. **Assess priority**:
+               - `priority: critical` — app crash, data loss, security vulnerability
+               - `priority: high` — significant UX regression or broken core feature
+               - `priority: medium` — noticeable issue with a workaround
+               - `priority: low` — minor polish, typo, nice-to-have
+
+            3. **Check for duplicates**: Search existing open issues for similar titles/content.
+
+            4. **Apply labels** using `gh issue edit ${{ github.event.issue.number }} --add-label "..."`.
+               Available labels to add: bug, feature-request, question, documentation,
+               performance, accessibility, security, priority: critical, priority: high,
+               priority: medium, priority: low, duplicate, good first issue, needs triage.
+
+            5. **Post a comment** acknowledging the issue, explaining the triage outcome,
+               and (for bugs) asking for reproduction steps if missing.
+               For duplicates, link to the original issue.
+
+            Keep the tone friendly and welcoming.
+
+          claude_args: |
+            --allowedTools "Bash(gh issue:*),Bash(gh search:*)"

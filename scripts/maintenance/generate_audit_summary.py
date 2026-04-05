@@ -3,6 +3,7 @@ import json
 import subprocess
 import os
 import sys
+import re
 from datetime import datetime
 
 def run_command(args):
@@ -66,7 +67,9 @@ def main():
             for issue in issues:
                 comment += f'- {issue}\n'
             comment += '\nPlease restore these critical files or security helpers before merging.'
-            run_command(['gh', 'pr', 'comment', str(pr_num), '--body', comment])
+            # Only run if gh is available
+            if gh_cli:
+                run_command(['gh', 'pr', 'comment', str(pr_num), '--body', comment])
 
     # Generate Markdown Summary
     date_str = datetime.now().strftime('%Y-%m-%d')
@@ -76,19 +79,40 @@ def main():
     summary += '### Analysis: Systemic Regressions in Open Branches (Automated Daily Audit)\n\n'
     summary += '- **Status:** Critical — Action Required\n'
     summary += f'- **Summary:** An automated repository-wide audit of {total} unmerged branches confirms the following systemic regressions.\n\n'
-    summary += '| Regression Type                | Count | Severity    | Notes                                                                    |\n'
-    summary += '| :----------------------------- | :---- | :---------- | :----------------------------------------------------------------------- |\n'
-    summary += f'| Orphan Branches                | {stats["Orphan"]}   | 🔴 Critical | No common ancestor with `main`.                                          |\n'
-    summary += f'| Missing `.npmrc`               | {stats["NPMRC"]}    | 🔴 Critical | Breaks dependency resolution.                                            |\n'
-    summary += f'| Missing `docs/ROADMAP.md`      | {stats["ROADMAP"]}    | 🟠 High     | Core project documentation.                                              |\n'
-    summary += f'| Missing `gitVersionControl.md` | {stats["GVC"]}   | 🟠 High     | Core Git workflow documentation.                                         |\n'
-    summary += f'| Missing `review.md`            | {stats["REVIEW"]}   | 🟡 Medium   | AI PR reviewer instructions.                                             |\n'
-    summary += f'| Reverted Security Helpers      | {stats["HELPERS"]}   | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers.                      |\n'
-    summary += f'| Unreadable navigation.ts       | {stats["UNREADABLE"]}     | 🔴 Critical | File missing or unreadable.                                              |\n\n'
+    summary += '| Regression Type                | Count | Severity    | Notes                                               |\n'
+    summary += '| :----------------------------- | :---- | :---------- | :-------------------------------------------------- |\n'
+    summary += f'| Orphan Branches                | {stats["Orphan"]}   | 🔴 Critical | No common ancestor with `main`.                     |\n'
+    summary += f'| Missing `.npmrc`               | {stats["NPMRC"]}    | 🔴 Critical | Breaks dependency resolution.                       |\n'
+    summary += f'| Missing `docs/ROADMAP.md`      | {stats["ROADMAP"]}    | 🟠 High     | Core project documentation.                         |\n'
+    summary += f'| Missing `gitVersionControl.md` | {stats["GVC"]}   | 🟠 High     | Core Git workflow documentation.                    |\n'
+    summary += f'| Missing `review.md`            | {stats["REVIEW"]}   | 🟡 Medium   | AI PR reviewer instructions.                        |\n'
+    summary += f'| Reverted Security Helpers      | {stats["HELPERS"]}   | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers. |\n'
+    summary += f'| Unreadable navigation.ts       | {stats["UNREADABLE"]}     | 🔴 Critical | File missing or unreadable.                         |\n\n'
     summary += '- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.\n\n'
 
-    with open('daily_summary.txt', 'w') as f:
-        f.write(summary)
+    # Update PR_REVIEW_SUMMARY.md
+    if os.path.exists('PR_REVIEW_SUMMARY.md'):
+        with open('PR_REVIEW_SUMMARY.md', 'r') as f:
+            content = f.read()
+
+        header = "# PR Review Summary\n\nThis file contains a summary of pull requests I have reviewed.\n\n"
+
+        # Remove the title and introductory text if they exist to avoid duplication
+        # then prepend the new summary after the standard header.
+        clean_content = content
+        if clean_content.startswith("# PR Review Summary"):
+            # Split by first occurrence of "## " to get everything after the header
+            parts = clean_content.split('## ', 1)
+            if len(parts) > 1:
+                clean_content = '## ' + parts[1]
+            else:
+                clean_content = ""
+
+        with open('PR_REVIEW_SUMMARY.md', 'w') as f:
+            f.write(header + summary + "---\n\n" + clean_content)
+    else:
+        with open('PR_REVIEW_SUMMARY.md', 'w') as f:
+            f.write("# PR Review Summary\n\n" + summary)
 
 if __name__ == "__main__":
     main()

@@ -1,9 +1,19 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from './App'
 
+// Mock Analytics to make it easier to detect
+vi.mock('@vercel/analytics/react', () => ({
+  Analytics: () => <div data-testid="vercel-analytics" />,
+}))
+
 describe('App Integration', () => {
+  beforeEach(() => {
+    vi.restoreAllMocks()
+    vi.stubGlobal('import.meta', { env: { PROD: false } })
+  })
+
   it('should render with proper semantic structure and section order', () => {
     const { container } = render(<App />)
 
@@ -286,38 +296,27 @@ describe('App Integration', () => {
     expect(sections.length).toBeGreaterThan(0)
   })
 
-  it('should conditionally render Analytics based on environment', () => {
-    // Save original env
-    const originalEnv = import.meta.env.PROD
+  it('should not render Analytics in development', () => {
+    vi.stubGlobal('import.meta', { env: { PROD: false } })
+    const { queryByTestId } = render(<App />)
+    expect(queryByTestId('vercel-analytics')).not.toBeInTheDocument()
+  })
 
-    try {
-      // 1. Production + localhost = Hidden
-      vi.stubGlobal('import.meta', { env: { PROD: true } })
-      // Use Object.defineProperty to change hostname without destroying the window object
-      const location = window.location
-      Object.defineProperty(window, 'location', {
-        value: { ...location, hostname: 'localhost' },
-        configurable: true,
-      })
+  it('should not render Analytics on localhost in production', () => {
+    vi.stubGlobal('import.meta', { env: { PROD: true } })
 
-      const { container: c1, rerender } = render(<App />)
-      // The Analytics component from @vercel/analytics/react usually renders a script or null
-      // We are looking for something that shouldn't be there on localhost.
-      expect(c1.querySelector('script[src*="vercel/insights"]')).not.toBeInTheDocument()
+    const originalLocation = window.location
+    Object.defineProperty(window, 'location', {
+      writable: true,
+      value: { ...originalLocation, hostname: 'localhost' },
+    })
 
-      // 2. Production + real host = Visible
-      Object.defineProperty(window, 'location', {
-        value: { ...location, hostname: 'paperlyte.com' },
-        configurable: true,
-      })
-      rerender(<App />)
-    } finally {
-      // Restore
-      vi.stubGlobal('import.meta', { env: { PROD: originalEnv } })
-      Object.defineProperty(window, 'location', {
-        value: window.location,
-        configurable: true,
-      })
-    }
+    const { queryByTestId } = render(<App />)
+    expect(queryByTestId('vercel-analytics')).not.toBeInTheDocument()
+
+    Object.defineProperty(window, 'location', {
+      writable: true,
+      value: originalLocation,
+    })
   })
 })

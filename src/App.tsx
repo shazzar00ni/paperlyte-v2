@@ -34,6 +34,11 @@ function App() {
     mainRef.current?.focus()
   }, [])
 
+  const showAnalytics =
+    import.meta.env.PROD &&
+    typeof window !== 'undefined' &&
+    window.location.hostname !== 'localhost'
+
   return (
     <ErrorBoundary>
       <a href="#main" className="skip-link" onClick={handleSkipToMain}>
@@ -55,7 +60,7 @@ function App() {
       </main>
       <Footer />
       <FeedbackWidget />
-      <Analytics />
+      {showAnalytics && <Analytics />}
     </ErrorBoundary>
   )
 }

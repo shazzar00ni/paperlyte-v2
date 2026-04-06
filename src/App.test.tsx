@@ -285,4 +285,39 @@ describe('App Integration', () => {
     const sections = container.querySelectorAll('section')
     expect(sections.length).toBeGreaterThan(0)
   })
+
+  it('should conditionally render Analytics based on environment', () => {
+    // Save original env
+    const originalEnv = import.meta.env.PROD
+
+    try {
+      // 1. Production + localhost = Hidden
+      vi.stubGlobal('import.meta', { env: { PROD: true } })
+      // Use Object.defineProperty to change hostname without destroying the window object
+      const location = window.location
+      Object.defineProperty(window, 'location', {
+        value: { ...location, hostname: 'localhost' },
+        configurable: true,
+      })
+
+      const { container: c1, rerender } = render(<App />)
+      // The Analytics component from @vercel/analytics/react usually renders a script or null
+      // We are looking for something that shouldn't be there on localhost.
+      expect(c1.querySelector('script[src*="vercel/insights"]')).not.toBeInTheDocument()
+
+      // 2. Production + real host = Visible
+      Object.defineProperty(window, 'location', {
+        value: { ...location, hostname: 'paperlyte.com' },
+        configurable: true,
+      })
+      rerender(<App />)
+    } finally {
+      // Restore
+      vi.stubGlobal('import.meta', { env: { PROD: originalEnv } })
+      Object.defineProperty(window, 'location', {
+        value: window.location,
+        configurable: true,
+      })
+    }
+  })
 })

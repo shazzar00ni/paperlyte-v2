@@ -111,11 +111,13 @@ export const OfflinePage: FC<OfflinePageProps> = ({
       setRetryError(`Connection check failed (${response.status}). Please try again.`)
     } catch (err) {
       clearTimeout(timeoutId)
+      // Check .name on raw err before coercing — DOMException doesn't extend
+      // Error in some environments (e.g. jsdom), so coercing first loses the name.
+      const isAbort = (err as { name?: unknown }).name === 'AbortError'
       const error = err instanceof Error ? err : new Error(String(err))
       logError(error, {
         tags: { context: 'OfflinePage.handleRetry', url: PROBE_URL },
       })
-      const isAbort = error.name === 'AbortError'
       setRetryError(
         isAbort
           ? 'Connection check timed out. Please try again.'

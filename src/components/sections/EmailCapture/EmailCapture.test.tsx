@@ -92,7 +92,9 @@ describe('EmailCapture Section', () => {
 
     // Bypass the browser's type="email" filter by setting value directly,
     // then submit — validateEmail inside handleSubmit should catch it.
-    await user.type(emailInput, 'notanemail')
+    // 'user@notvalid' passes HTML5 type="email" (no TLD required by browser)
+    // but fails our validateEmail regex which requires a ≥2-char TLD.
+    await user.type(emailInput, 'user@notvalid')
     await user.click(submitButton)
 
     await waitFor(() => {
@@ -149,7 +151,6 @@ describe('EmailCapture Section', () => {
   })
 
   it('shows "Email address is required" error message for empty email via validateEmail', async () => {
-    const user = userEvent.setup()
     render(<EmailCapture />)
 
     // Directly fire the form submit event to bypass HTML5 required check

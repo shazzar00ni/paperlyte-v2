@@ -10,21 +10,27 @@ on:
   pull_request:
     types: [opened, synchronize]
 
-permissions:
-  contents: write
-  pull-requests: write
-  issues: write
-  id-token: write
-
 jobs:
   claude:
     name: Claude Code Agent
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
     if: |
-      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
-      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
-      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
-      (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'claude'))
+      (github.event_name == 'issue_comment' &&
+       contains(github.event.comment.body, '@claude') &&
+       contains(fromJson('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)) ||
+      (github.event_name == 'pull_request_review_comment' &&
+       contains(github.event.comment.body, '@claude') &&
+       contains(fromJson('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)) ||
+      (github.event_name == 'pull_request_review' &&
+       contains(github.event.review.body, '@claude') &&
+       contains(fromJson('["OWNER","MEMBER","COLLABORATOR"]'), github.event.review.author_association)) ||
+      (github.event_name == 'pull_request' &&
+       contains(github.event.pull_request.labels.*.name, 'claude') &&
+       contains(fromJson('["OWNER","MEMBER","COLLABORATOR"]'), github.event.pull_request.author_association))
     steps:
       - name: Run Claude Code Action
         uses: anthropics/claude-code-action@v1

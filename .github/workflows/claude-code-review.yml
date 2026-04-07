@@ -11,8 +11,10 @@ jobs:
   auto-review:
     name: Auto Review
     runs-on: ubuntu-latest
-    # Skip draft PRs
-    if: github.event.pull_request.draft == false
+    # Skip draft PRs and fork PRs (secrets unavailable on fork pull_request events)
+    if: |
+      !github.event.pull_request.head.repo.fork &&
+      github.event.pull_request.draft == false
     permissions:
       contents: read
       pull-requests: write
@@ -78,7 +80,10 @@ jobs:
   security-review:
     name: Security Review
     runs-on: ubuntu-latest
-    if: github.event.pull_request.draft == false
+    # Skip draft PRs and fork PRs (secrets unavailable on fork pull_request events)
+    if: |
+      !github.event.pull_request.head.repo.fork &&
+      github.event.pull_request.draft == false
     permissions:
       contents: read
       pull-requests: write

@@ -3,7 +3,6 @@ import json
 import subprocess
 import os
 import sys
-import re
 from datetime import datetime
 
 def run_command(args):

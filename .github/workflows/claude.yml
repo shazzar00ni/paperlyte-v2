@@ -10,6 +10,9 @@ on:
   pull_request:
     types: [opened, synchronize, labeled]
 
+permissions:
+  contents: read
+
 jobs:
   claude:
     name: Claude Code Agent
@@ -18,8 +21,10 @@ jobs:
       contents: write
       pull-requests: write
       issues: write
+      id-token: write
     if: |
       (github.event_name == 'issue_comment' &&
+       github.event.issue.pull_request &&
        contains(github.event.comment.body, '@claude') &&
        contains(fromJson('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)) ||
       (github.event_name == 'pull_request_review_comment' &&
@@ -33,7 +38,7 @@ jobs:
        contains(fromJson('["OWNER","MEMBER","COLLABORATOR"]'), github.event.pull_request.author_association))
     steps:
       - name: Run Claude Code Action
-        uses: anthropics/claude-code-action@v1
+        uses: anthropics/claude-code-action@6e2bd52842c65e914eba5c8badd17560bd26b5de  # v1
         with:
           trigger_phrase: "@claude"
           label_trigger: claude

@@ -397,9 +397,7 @@ describe('OfflinePage', () => {
 
       await waitFor(() => {
         expect(screen.getByRole('alert')).toBeInTheDocument()
-        expect(
-          screen.getByText(/Unable to reach the network/i)
-        ).toBeInTheDocument()
+        expect(screen.getByText(/Unable to reach the network/i)).toBeInTheDocument()
       })
     })
 
@@ -552,7 +550,9 @@ describe('OfflinePage', () => {
     it('should show timeout message when a DOMException AbortError is thrown', async () => {
       const user = userEvent.setup()
       // DOMException is the native AbortController signal error type
-      global.fetch = vi.fn(() => Promise.reject(new DOMException('The user aborted a request.', 'AbortError')))
+      global.fetch = vi.fn(() =>
+        Promise.reject(new DOMException('The user aborted a request.', 'AbortError'))
+      )
 
       render(<OfflinePage />)
       await user.click(screen.getByRole('button', { name: /check connection and retry/i }))

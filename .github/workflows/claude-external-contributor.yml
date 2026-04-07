@@ -13,7 +13,10 @@ jobs:
   first-time-review:
     name: First-Time Contributor Review
     runs-on: ubuntu-latest
-    # Only run for first-time contributors and external collaborators.
+    # Runs for authors with no prior interaction with this repo (NONE) or whose
+    # first PR is still being reviewed (FIRST_TIME_CONTRIBUTOR). COLLABORATOR,
+    # CONTRIBUTOR, MEMBER, and OWNER are all excluded — they're known contributors
+    # who don't need the onboarding review.
     # Fork guard removed — pull_request_target always has secrets regardless
     # of fork status, and the checkout step has been omitted so no untrusted
     # fork code runs in a privileged context.

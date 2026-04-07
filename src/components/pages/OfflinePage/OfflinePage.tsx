@@ -114,8 +114,8 @@ export const OfflinePage: FC<OfflinePageProps> = ({
       // AbortError = our own 5-second timeout; TypeError = network failure.
       // Skip Sentry for these to avoid noise; only log truly unexpected errors.
       clearTimeout(timeoutId)
-      const isExpected =
-        (error instanceof DOMException && error.name === 'AbortError') || error instanceof TypeError
+      const isAbort = error instanceof DOMException && error.name === 'AbortError'
+      const isExpected = isAbort || error instanceof TypeError
       if (!isExpected) {
         logError(
           error instanceof Error ? error : new Error('Connectivity retry failed'),
@@ -126,6 +126,11 @@ export const OfflinePage: FC<OfflinePageProps> = ({
           'OfflinePage'
         )
       }
+      setRetryError(
+        isAbort
+          ? 'Connection check timed out. Please try again.'
+          : 'Unable to reach the network. Check your connection and try again.'
+      )
     } finally {
       // Always reset checking state
       setIsChecking(false)

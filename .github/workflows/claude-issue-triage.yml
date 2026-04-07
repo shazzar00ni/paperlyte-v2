@@ -9,6 +9,7 @@ jobs:
     name: Triage New Issue
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       issues: write
       id-token: write
 

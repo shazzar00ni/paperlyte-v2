@@ -1,7 +1,10 @@
 name: Claude External Contributor Review
 
 on:
-  pull_request:
+  # pull_request_target runs in the base-repo context, so repository secrets
+  # are available even when the PR comes from a fork. No untrusted code is
+  # executed here (checkout removed), so this is safe.
+  pull_request_target:
     types: [opened, synchronize]
 
 permissions: {}
@@ -10,24 +13,20 @@ jobs:
   first-time-review:
     name: First-Time Contributor Review
     runs-on: ubuntu-latest
-    # Only run for first-time contributors and external collaborators
-    # Skip forked PRs because repository secrets are unavailable on pull_request events.
+    # Only run for first-time contributors and external collaborators.
+    # Fork guard removed — pull_request_target always has secrets regardless
+    # of fork status, and the checkout step has been omitted so no untrusted
+    # fork code runs in a privileged context.
     if: |
-      !github.event.pull_request.head.repo.fork &&
-      (
-        github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR' ||
-        github.event.pull_request.author_association == 'NONE'
-      )
+      github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR' ||
+      github.event.pull_request.author_association == 'NONE'
     permissions:
-      contents: read
       pull-requests: write
       id-token: write
 
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          fetch-depth: 1
-
+      # No checkout — Claude uses gh pr diff / gh pr view to inspect changes
+      # via the GitHub API. Checking out fork code here would be unsafe.
       - uses: anthropics/claude-code-action@6e2bd52842c65e914eba5c8badd17560bd26b5de # v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}

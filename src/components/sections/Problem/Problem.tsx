@@ -7,6 +7,7 @@ interface ComparisonItem {
   issues: string[]
 }
 
+/** Competitor pain-point data used to populate the problem comparison grid. */
 const COMPARISON_DATA: ComparisonItem[] = [
   {
     competitor: 'Notion',
@@ -26,6 +27,11 @@ const COMPARISON_DATA: ComparisonItem[] = [
   },
 ]
 
+/**
+ * Landing page section that articulates the pain point Paperlyte solves.
+ * Presents a comparison grid of competing tools and their friction points,
+ * followed by an impact statement quantifying time lost to slow note-taking apps.
+ */
 export const Problem = (): React.ReactElement => {
   return (
     <Section id="problem" background="surface">

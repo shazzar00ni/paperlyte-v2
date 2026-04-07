@@ -43,7 +43,10 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
   const closeButtonRef = useRef<HTMLButtonElement>(null)
   const typeSelectorRef = useRef<HTMLFieldSetElement>(null)
 
-  // Handle modal open
+  /**
+   * Opens the feedback modal. Saves the currently focused element so focus can be
+   * restored to it when the modal is closed, then resets confirmation and error state.
+   */
   const handleOpen = useCallback(() => {
     // Store the element that triggered the modal for focus restoration
     triggerElementRef.current = document.activeElement as HTMLElement
@@ -52,7 +55,10 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
     setShowConfirmation(false)
   }, [])
 
-  // Handle modal close
+  /**
+   * Closes the feedback modal, clears any pending auto-close timeout, resets all
+   * form fields, and restores keyboard focus to the element that triggered the modal.
+   */
   const handleClose = useCallback(() => {
     // Clear any pending timeout to prevent memory leaks
     if (closeTimeoutRef.current !== null) {
@@ -71,7 +77,14 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
     }
   }, [])
 
-  // Handle form submission
+  /**
+   * Handles feedback form submission. Validates that a non-empty message is present,
+   * then delegates to the custom `onSubmit` callback or persists the entry to
+   * `localStorage`. On success, shows a confirmation message and auto-closes the
+   * modal after 2 seconds. Storage failures are surfaced via the monitoring utility.
+   *
+   * @param e - The form submission event.
+   */
   const handleSubmit = useCallback(
     async (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault()
@@ -249,7 +262,12 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
     }
   }, [isOpen, handleClose])
 
-  // Handle backdrop click to close modal
+  /**
+   * Closes the modal when the user clicks the semi-transparent backdrop area
+   * (i.e. outside the modal content box). Clicks within the modal content are ignored.
+   *
+   * @param e - The mouse click event on the backdrop element.
+   */
   const handleBackdropClick = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
       if (e.target === e.currentTarget) {

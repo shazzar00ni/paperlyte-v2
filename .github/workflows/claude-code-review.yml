@@ -125,8 +125,9 @@ jobs:
             - Unsafe `eval()` or `Function()` usage
 
             Rate each finding: **CRITICAL / HIGH / MEDIUM / LOW / INFO**.
-            Only post a PR comment if findings exist at MEDIUM or above.
-            If the PR is clean, post a single brief "✅ No security issues found." comment.
+            Always post a single top-level PR comment summarising the result:
+            - If findings exist, list each one with its severity, affected file/line, and recommendation.
+            - If nothing was found, post: "✅ Security review complete — no issues found."
 
           claude_args: |
             --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"

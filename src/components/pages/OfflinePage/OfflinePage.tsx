@@ -83,10 +83,10 @@ export const OfflinePage: FC<OfflinePageProps> = ({
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), 5000) // 5 second timeout
 
-    const PROBE_URL = import.meta.env.VITE_PROBE_URL ?? '/api/health'
+    const PROBE_URL = import.meta.env.VITE_PROBE_URL ?? '/'
 
     try {
-      // Use a reliable external endpoint to check for real internet connectivity
+      // Probe a known-available endpoint by default; deployments can override with VITE_PROBE_URL
       const response = await fetch(PROBE_URL, {
         method: 'HEAD',
         cache: 'no-cache',

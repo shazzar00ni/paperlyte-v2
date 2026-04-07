@@ -105,10 +105,13 @@ describe('ci.yml – permission structure', () => {
     },
   )
 
-  it.each(['test', 'e2e', 'ci-success'])('%s job should have "contents: read" permission', (jobId) => {
-    const block = assertJobExists(content, jobId, 'ci.yml')
-    expect(jobHasContentsReadPermission(block)).toBe(true)
-  })
+  it.each(['test', 'e2e', 'ci-success'])(
+    '%s job should have "contents: read" permission',
+    (jobId) => {
+      const block = assertJobExists(content, jobId, 'ci.yml')
+      expect(jobHasContentsReadPermission(block)).toBe(true)
+    },
+  )
 
   it('should define the expected set of jobs', () => {
     const expectedJobs = [
@@ -185,7 +188,12 @@ describe('pr-quality-check.yml – permission structure', () => {
   })
 
   it('should define all expected jobs', () => {
-    const expectedJobs = ['pr-metadata', 'dependency-review', 'bundle-size-check', 'quality-summary']
+    const expectedJobs = [
+      'pr-metadata',
+      'dependency-review',
+      'bundle-size-check',
+      'quality-summary',
+    ]
     for (const jobId of expectedJobs) {
       assertJobExists(content, jobId, 'pr-quality-check.yml')
     }
@@ -200,10 +208,13 @@ describe('pr-quality-check.yml – permission structure', () => {
     expect(content).toMatch(/types:\s*\[opened,\s*synchronize,\s*reopened\]/)
   })
 
-  it('quality-summary job should depend on pr-metadata, dependency-review, and bundle-size-check', () => {
-    const block = extractJobBlock(content, 'quality-summary')
-    expect(block).toMatch(/needs:\s*\[pr-metadata,\s*dependency-review,\s*bundle-size-check\]/)
-  })
+  it(
+    'quality-summary job should depend on pr-metadata, dependency-review, and bundle-size-check',
+    () => {
+      const block = extractJobBlock(content, 'quality-summary')
+      expect(block).toMatch(/needs:\s*\[pr-metadata,\s*dependency-review,\s*bundle-size-check\]/)
+    },
+  )
 
   it('only dependency-review job has an explicit permissions block (regression guard)', () => {
     // dependency-review needs additional pull-requests: write permission beyond the workflow default.

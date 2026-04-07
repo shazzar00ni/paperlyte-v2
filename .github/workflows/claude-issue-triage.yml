@@ -54,4 +54,4 @@ jobs:
             Keep the tone friendly and welcoming.
 
           claude_args: |
-            --allowedTools "Bash(gh issue:*),Bash(gh search:*)"
+            --allowedTools "Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(gh search issues:*)"

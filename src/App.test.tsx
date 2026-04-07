@@ -1,9 +1,19 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from './App'
 
+// Mock Analytics to make it easier to detect
+vi.mock('@vercel/analytics/react', () => ({
+  Analytics: () => <div data-testid="vercel-analytics" />,
+}))
+
 describe('App Integration', () => {
+  beforeEach(() => {
+    vi.restoreAllMocks()
+    vi.stubGlobal('import.meta', { env: { PROD: false } })
+  })
+
   it('should render with proper semantic structure and section order', () => {
     const { container } = render(<App />)
 
@@ -284,5 +294,29 @@ describe('App Integration', () => {
     // Verify at least one section renders
     const sections = container.querySelectorAll('section')
     expect(sections.length).toBeGreaterThan(0)
+  })
+
+  it('should not render Analytics in development', () => {
+    vi.stubGlobal('import.meta', { env: { PROD: false } })
+    const { queryByTestId } = render(<App />)
+    expect(queryByTestId('vercel-analytics')).not.toBeInTheDocument()
+  })
+
+  it('should not render Analytics on localhost in production', () => {
+    vi.stubGlobal('import.meta', { env: { PROD: true } })
+
+    const originalLocation = window.location
+    Object.defineProperty(window, 'location', {
+      writable: true,
+      value: { ...originalLocation, hostname: 'localhost' },
+    })
+
+    const { queryByTestId } = render(<App />)
+    expect(queryByTestId('vercel-analytics')).not.toBeInTheDocument()
+
+    Object.defineProperty(window, 'location', {
+      writable: true,
+      value: originalLocation,
+    })
   })
 })

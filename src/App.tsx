@@ -34,6 +34,14 @@ function App() {
     mainRef.current?.focus()
   }, [])
 
+  // Only render Analytics in production environment, excluding localhost
+  const isProd = import.meta.env.PROD
+  const hostname = typeof window !== 'undefined' ? window.location.hostname : ''
+  const isLocalhost =
+    hostname === 'localhost' || hostname === '127.0.0.1' || hostname.endsWith('.localhost')
+
+  const showAnalytics = isProd && !isLocalhost
+
   return (
     <ErrorBoundary>
       <a href="#main" className="skip-link" onClick={handleSkipToMain}>
@@ -55,7 +63,7 @@ function App() {
       </main>
       <Footer />
       <FeedbackWidget />
-      <Analytics />
+      {showAnalytics && <Analytics data-testid="vercel-analytics" />}
     </ErrorBoundary>
   )
 }

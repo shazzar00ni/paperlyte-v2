@@ -9,9 +9,13 @@ jobs:
     name: First-Time Contributor Review
     runs-on: ubuntu-latest
     # Only run for first-time contributors and external collaborators
+    # Skip forked PRs because repository secrets are unavailable on pull_request events.
     if: |
-      github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR' ||
-      github.event.pull_request.author_association == 'NONE'
+      !github.event.pull_request.head.repo.fork &&
+      (
+        github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR' ||
+        github.event.pull_request.author_association == 'NONE'
+      )
     permissions:
       contents: read
       pull-requests: write

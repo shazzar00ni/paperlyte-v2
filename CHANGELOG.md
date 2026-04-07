@@ -30,12 +30,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `sitemap.xml` last-modified dates
 - Upgraded `@fortawesome/*` packages to v7.2.x
 - Upgraded React to 19.2.4
-- Pinned Vite to 7.2.4 (reverted from 7.3.0 to resolve build instability)
+- Upgraded Vite to 7.3.2 (security patch: GHSA-p9ff-h696-f583, GHSA-4w7w-66w2-5vf9, GHSA-v2wj-q39q-566r)
 - Improved SARIF run merging script (removed dead fingerprint filter)
 
 ### Fixed
 
 - `npm audit` vulnerabilities: brace-expansion, path-to-regexp, undici, flatted, tmp overrides
+- `npm audit` high-severity vulnerabilities: lodash-es prototype pollution (GHSA-f23m-r3pf-42rh) via overrides pin; Vite path traversal and file-read CVEs resolved by upgrade to 7.3.2
 - Codecov action configuration (explicit `junit.xml` path)
 - Lighthouse CI: corrected `--no-edit` rebase flag misuse
 - CSS syntax error in design system stylesheet

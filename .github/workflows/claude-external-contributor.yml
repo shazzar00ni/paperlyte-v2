@@ -5,7 +5,11 @@ on:
   # are available even when the PR comes from a fork. No untrusted code is
   # executed here (checkout removed), so this is safe.
   pull_request_target:
-    types: [opened, synchronize]
+    types: [opened, synchronize, ready_for_review, reopened]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 
 permissions: {}
 
@@ -21,8 +25,7 @@ jobs:
     # of fork status, and the checkout step has been omitted so no untrusted
     # fork code runs in a privileged context.
     if: |
-      github.event.pull_request.draft == false &&
-      (
+      github.event.pull_request.draft == false && (
         github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR' ||
         github.event.pull_request.author_association == 'NONE'
       )
@@ -54,11 +57,14 @@ jobs:
             Paperlyte is a React 19 + TypeScript + Vite landing page for a distraction-free
             note-taking app. The codebase is small and fast-moving.
 
+            Note: this job has no local checkout. Assess everything from `gh pr diff` and
+            `gh pr view` output only — do not attempt to run build or lint commands.
+
             ## Comprehensive onboarding review — check:
 
             ### Standards & Style
-            - [ ] Code follows TypeScript strict mode (no `any`, no implicit types)
-            - [ ] ESLint rules pass (check `npm run lint` output if possible)
+            - [ ] Code appears consistent with TypeScript strict mode (no `any`, no implicit types)
+            - [ ] Code appears consistent with the repo's ESLint and TypeScript conventions
             - [ ] Naming conventions match the existing codebase
             - [ ] No unused imports or variables
 
@@ -73,7 +79,7 @@ jobs:
 
             ### Breaking Changes
             - [ ] No unintended breaking changes to existing API / component props
-            - [ ] Build still passes (`npm run build`)
+            - [ ] No obvious build-breaking changes are introduced
 
             ## Response format:
             1. Start with a **warm welcome** thanking them for contributing.

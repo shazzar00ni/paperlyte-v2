@@ -152,6 +152,25 @@
   }
 }
 
+/* Extra small screens */
+@media (max-width: 480px) {
+  .title {
+    font-size: var(--font-size-xl);
+  }
+
+  .subtitle {
+    font-size: var(--font-size-sm);
+  }
+
+  .question {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .footer {
+    padding: var(--spacing-lg);
+  }
+}
+
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   .item,

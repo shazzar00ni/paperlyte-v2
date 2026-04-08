@@ -164,3 +164,27 @@
     font-size: 1.25rem;
   }
 }
+
+/* Extra small screens */
+@media (max-width: 480px) {
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .description,
+  .descriptionEmphasis {
+    font-size: 1rem;
+  }
+
+  .comparisonCard {
+    padding: 1.25rem 1rem;
+  }
+
+  .impact {
+    padding: 1.25rem;
+  }
+
+  .emotionalHook {
+    font-size: 1.125rem;
+  }
+}

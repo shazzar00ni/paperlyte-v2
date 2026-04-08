@@ -191,6 +191,29 @@
   }
 }
 
+/* Extra small screens */
+@media (max-width: 480px) {
+  .title {
+    font-size: var(--font-size-xl);
+  }
+
+  .subtitle {
+    font-size: var(--font-size-sm);
+  }
+
+  .card {
+    padding: var(--spacing-md);
+  }
+
+  .price {
+    font-size: var(--font-size-2xl);
+  }
+
+  .planName {
+    font-size: var(--font-size-xl);
+  }
+}
+
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   .card {

@@ -122,6 +122,29 @@
   }
 }
 
+/* Extra small screens */
+@media (max-width: 480px) {
+  .title {
+    font-size: var(--font-size-xl);
+  }
+
+  .subtitle {
+    font-size: var(--font-size-sm);
+  }
+
+  .card {
+    padding: var(--spacing-md);
+  }
+
+  .value {
+    font-size: var(--font-size-2xl);
+  }
+
+  .label {
+    font-size: var(--font-size-sm);
+  }
+}
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .card:hover {

@@ -67,7 +67,7 @@ export const updateMetaTags = (): void => {
     console.log('🌍 Environment:', {
       baseUrl: env.baseUrl,
       ogImage: env.ogImage,
-      mode: 'development',
+      mode: import.meta.env.MODE,
     })
   }
 

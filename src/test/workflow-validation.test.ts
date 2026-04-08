@@ -223,6 +223,15 @@ describe('pr-quality-check.yml – permission structure', () => {
       hasPermissionsBlock,
       'dependency-review job is missing an explicit permissions block'
     ).toBe(true)
+
+    const jobsWithoutExplicitPermissions = ['pr-metadata', 'bundle-size-check', 'quality-summary']
+    for (const jobId of jobsWithoutExplicitPermissions) {
+      const candidateBlock = assertJobExists(content, jobId, 'pr-quality-check.yml')
+      expect(
+        /^\s{4}permissions:/m.test(candidateBlock),
+        `Job "${jobId}" should not define an explicit permissions block`
+      ).toBe(false)
+    }
   })
 })
 

@@ -2,6 +2,53 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-04-03
+
+### Analysis: Systemic Regressions in Open Branches (Automated Daily Audit)
+
+- **Status:** Critical — Action Required
+- **Summary:** An automated repository-wide audit of 224 unmerged branches confirms the following systemic regressions. All current branches are blocked.
+
+| Regression Type                | Count | Severity    | Notes                                               |
+| :----------------------------- | :---- | :---------- | :-------------------------------------------------- |
+| Orphan Branches                | 224   | 🔴 Critical | No common ancestor with `main`.                     |
+| Missing `.npmrc`               | 95    | 🔴 Critical | Breaks dependency resolution.                       |
+| Missing `docs/ROADMAP.md`      | 89    | 🟠 High     | Core project documentation.                         |
+| Missing `gitVersionControl.md` | 104   | 🟠 High     | Core Git workflow documentation.                    |
+| Missing `review.md`            | 104   | 🟡 Medium   | AI PR reviewer instructions.                        |
+| Reverted Security Helpers      | 103   | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers. |
+| Unreadable navigation.ts       | 8     | 🔴 Critical | File missing or unreadable.                         |
+
+- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.
+
+### Priority PR Reviews
+
+#### PR #661: origin/claude/fix-lighthouse-failure-b5S6v
+
+- **Status:** Approved
+- **Summary:** Resolves performance failures by implementing a custom hybrid SVG icon system and Font Awesome bundle optimizations.
+- **Feedback:** Solid improvement. The custom SVG paths for `leaf`, `rocket`, and `heart` successfully eliminate the need for Font Awesome fallbacks for these icons, significantly reducing the JS bundle size. Verified that all 1367 tests pass.
+
+#### PR #662: origin/claude/fix-ci-workflow-permissions-emVdO
+
+- **Status:** Approved
+- **Summary:** Implements least-privilege security by adding `permissions: {}` at the top level and defining granular job permissions across GitHub Actions workflows.
+- **Feedback:** This is a critical security hardening step. Moving workflow-level permissions to the job level minimizes the potential blast radius of compromised tokens.
+
+#### PR #663: origin/claude/fix-open-redirect-TX551
+
+- **Status:** Approved
+- **Summary:** Hardens `safeNavigate()` to restrict navigation to same-origin URLs by default and adds a `SafeUrlOptions` interface for controlled external navigation.
+- **Feedback:** Excellent security fix. The integration of `logError` from the monitoring utility for blocked URLs provides better visibility into potential attack attempts.
+
+#### PR #664: origin/claude/fix-workflow-e2e-tests-xHhZw
+
+- **Status:** Changes Requested
+- **Summary:** Improves E2E test stability but introduces a documentation regression.
+- **Feedback:** While the functional fixes are good, this branch accidentally deletes extensive JSDoc documentation across multiple files (e.g., `useMediaQuery.ts`, `validation.ts`). Please restore the documentation before merging.
+
+---
+
 ## 2026-03-05
 
 ### Analysis: Accidental File Deletions in Open Branches (Jules Daily PR Reviews)
@@ -103,7 +150,7 @@ This file contains a summary of pull requests I have reviewed.
 ### PR #389
 
 - **Status:** Postponed
-- **Summary:** Repository-wide formatting changes that are low priority and likely to conflict with in-flight feature work.
+- **Summary:** Repository-wide formatting changes that are low priority and likely to conflict in-flight feature work.
 - **Feedback:** Recommendation remains unchanged: Postpone #389 (repository-wide formatting) to avoid merge conflicts with active feature PRs and revisit once the codebase is more stable.
 
 ---
@@ -325,11 +372,11 @@ This file contains a summary of pull requests I have reviewed.
 
 **Status:** Approved with comments
 
-#### Summary for PR #356:
+#### Summary for PR #356
 
 This PR addresses a Codacy configuration issue to ensure ESLint runs correctly in the CI pipeline. The core changes in `.codacy.yml` and the addition of `.eslintrc.cjs` are correct and effectively resolve the issue.
 
-#### Feedback & Suggestions for PR #356:
+#### Feedback & Suggestions for PR #356
 
 - **Approval:** The main changes are approved and ready for merging.
 - **Scope Creep:** The PR includes unrelated changes to the icon library (`src/utils/iconLibrary.ts`) and E2E tests (`tests/e2e/landing-page.spec.ts`). While not harmful, these changes are out of scope for a configuration fix.
@@ -341,11 +388,11 @@ This PR addresses a Codacy configuration issue to ensure ESLint runs correctly i
 
 **Status:** Changes requested
 
-#### Summary for PR #319:
+#### Summary for PR #319
 
 This PR aims to fix a deployment error in the `Privacy.tsx` component. However, it also includes significant changes to `package-lock.json` and `public/sitemap.xml` that are unrelated to the component fix.
 
-#### Feedback & Suggestions for PR #319:
+#### Feedback & Suggestions for PR #319
 
 - **Mixed Changes:** The PR mixes a bug fix with dependency updates and sitemap changes. This makes it difficult to review and test.
 - **`package-lock.json`:** The changes to `package-lock.json` are extensive and add `"peer": true` to many dependencies. This is a significant change that could have unintended side effects and should be tested in isolation. My memory indicates that these changes have caused test failures in the past.

@@ -490,16 +490,6 @@
         <p>&copy; 2025 Paperlyte. All rights reserved.</p>
       </footer>
     </div>
-    <script>
-      // Attach cookie preferences handler for CSP compliance
-      const cookieBtn = document.getElementById('cookie-preferences-btn')
-      if (cookieBtn) {
-        cookieBtn.addEventListener('click', function () {
-          if (globalThis.cookieConsent && typeof globalThis.cookieConsent.open === 'function') {
-            globalThis.cookieConsent.open()
-          }
-        })
-      }
-    </script>
+    <script src="/scripts/cookie-preferences.js"></script>
   </body>
 </html>

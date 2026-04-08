@@ -78,9 +78,9 @@ jobs:
       - attach-build
       - run:
           name: Run unit tests with coverage
-          command: npm run test:coverage -- --reporter=junit --outputFile=junit.xml
+          command: mkdir -p test-results && npm run test:coverage -- --reporter=junit --outputFile=test-results/junit.xml
       - store_test_results:
-          path: junit.xml
+          path: test-results
       - store_artifacts:
           path: coverage
           destination: coverage

@@ -433,7 +433,7 @@ describe('analytics/webVitals', () => {
       cleanup()
     })
 
-    it('should not record interaction when processingEnd or startTime is null', () => {
+    it('should not record interaction when processingEnd is null', () => {
       const observerInstances: Array<{
         callback: PerformanceObserverCallback
         observe: ReturnType<typeof vi.fn>

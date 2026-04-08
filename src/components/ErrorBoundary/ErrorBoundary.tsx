@@ -52,22 +52,25 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    // Increment retry count after error is caught; capture new value for accurate logging
-    const newRetryCount = this.state.retryCount + 1
-    this.setState({ retryCount: newRetryCount })
-
-    // Log error using centralized monitoring utility
-    logError(
-      error,
-      {
-        componentStack: errorInfo.componentStack || undefined,
-        errorInfo: errorInfo as Record<string, unknown>,
-        severity: 'high',
-        tags: {
-          retry_count: String(newRetryCount),
-        },
-      },
-      'ErrorBoundary'
+    // Use functional setState to derive the new count from prevState, avoiding
+    // stale reads if multiple errors fire before React flushes state updates.
+    // Log with the confirmed post-update value inside the setState callback.
+    this.setState(
+      (prevState) => ({ retryCount: prevState.retryCount + 1 }),
+      () => {
+        logError(
+          error,
+          {
+            componentStack: errorInfo.componentStack || undefined,
+            errorInfo: errorInfo as Record<string, unknown>,
+            severity: 'high',
+            tags: {
+              retry_count: String(this.state.retryCount),
+            },
+          },
+          'ErrorBoundary'
+        )
+      }
     )
   }
 

@@ -2,6 +2,47 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-03-22
+
+### Status Overview: Main Branch Regressions
+
+- **Status:** **FIXED** (Verified in daily review branch)
+- **Summary:** The critical regressions on the `main` branch (missing `<Pricing />`, unconditional `<Analytics />`, and `esbuild` build failures) have been successfully addressed in the daily PR review branch.
+- **Action:** Merging this branch will restore full site functionality and CI stability.
+
+### Ready for Merge (High Quality Branches)
+
+The following branches have been verified as clean, passing tests (where applicable), and free from systemic regressions:
+
+| Branch | Summary | Feedback |
+| --- | --- | --- |
+| `origin/claude/apply-code-fixes-BUsgx` | Accessibility & Hooks | Excellent cleanup of `Icon.tsx` and simplification of `useReducedMotion`. Restores baseline test stability. |
+| `origin/claude/fix-open-redirect-TX551` | Security Hardening | Robust fix for `safeNavigate` and `isSafeUrl`. Defaults to same-origin validation, significantly improving security posture. |
+| `origin/claude/fix-failing-tests-J1VZ6` | Test Stability | Resolves icon rendering test failures by migrating to `data-icon` selectors. |
+| `origin/claude/fix-esbuild-dependency-FzL7Q` | Build Stability | Adds explicit `esbuild` dependency, preventing Vite 8 build failures in CI. |
+| `origin/claude/fix-job-timeout-MJJDQ` | CI Optimization | Adds 30-minute timeout to Codacy scans, preventing hanging runners. |
+| `origin/claude/fix-issue-577-v60JV` | Web Vitals Fix | Corrects INP tracking logic in `src/analytics/webVitals.ts`. |
+| `origin/copilot/sub-pr-593` | New FAQ Section | High-quality, accessible FAQ component with full keyboard support. |
+| `origin/copilot/sub-pr-585` | Security Override | Preferred branch for `yauzl` security override; includes detailed rationale in `SECURITY.md`. |
+| `origin/claude/add-git-dates-sitemap-wGlvo` | Sitemap Automation | Automates `<lastmod>` extraction via Git history. |
+| `origin/claude/update-nodejs-actions-6vRnT` | Infrastructure | Comprehensive upgrade to Node 20 and pinning Actions to SHAs. |
+
+### Blocked by Systemic Regressions
+
+The following branches are currently blocked due to the accidental deletion of critical files (`.npmrc`, `docs/ROADMAP.md`, `gitVersionControl.md`, `review.md`) or reversion of security helpers in `src/utils/navigation.ts`.
+
+- **Affected Branches:**
+  - `origin/claude/implement-todo-item-2H9LP`
+  - `origin/claude/core-editor-phase-1-PI3Yp`
+  - `origin/copilot/sub-pr-503`
+  - `origin/copilot/sub-pr-496` (Missing gitVC and review.md)
+  - `origin/claude/tree-shake-font-awesome-cK85j` (Downgraded dependencies compared to main)
+  - `origin/claude/accessibility-audit-baseline-USu5N` (Downgraded dependencies compared to main)
+
+- **Action Required:** These branches must be updated to restore the missing files and align with the latest `main` branch dependencies before they can be considered for merge.
+
+---
+
 ## 2026-03-05
 
 ### Analysis: Accidental File Deletions in Open Branches (Jules Daily PR Reviews)

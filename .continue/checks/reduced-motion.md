@@ -9,11 +9,13 @@ Review all changed CSS, component files, and animation-related hooks for these v
 1. **CSS animations without `prefers-reduced-motion` guard**: Any `@keyframes`, `animation`, or `transition` property that is not wrapped in or overridden inside a `@media (prefers-reduced-motion: no-preference)` block (preferred) or a `@media (prefers-reduced-motion: reduce)` override block.
 
    **Preferred pattern** (opt-in motion):
+
    ```css
    @media (prefers-reduced-motion: no-preference) {
      .element { animation: fadeIn 0.3s ease; }
    }
    ```
+
    Not just adding `transition: none` in the reduce block — the animation must be absent by default or the override must fully disable it.
 
 2. **JavaScript-driven animations ignoring the hook**: Any use of `requestAnimationFrame`, a motion library (e.g., Framer Motion, GSAP), or `Element.animate()` that does not first check the `useReducedMotion` hook (already defined in this codebase at `src/hooks/useReducedMotion`). The hook must gate the animation logic.

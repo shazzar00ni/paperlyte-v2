@@ -24,7 +24,7 @@ Review changed files for patterns that would regress these targets:
 
 5. **CSS layout thrashing**: Reading layout properties (offsetWidth, getBoundingClientRect) immediately after DOM writes inside the same synchronous block. Applies to any scroll/resize handlers.
 
-6. **Unthrottled event listeners**: `scroll`, `resize`, or `mousemove` listeners that are not debounced or throttled. These directly harm INP and FID scores.
+6. **Unthrottled event listeners**: `scroll`, `resize`, or `mousemove` listeners that are not debounced or throttled. These directly harm INP.
 
 7. **Font loading regressions**: New web fonts added without `font-display: swap` or without being preloaded in the `<head>`. The project self-hosts fonts (see `src/styles/typography.css` and local `/fonts/*.woff2` preloads) — additions must follow the same self-hosted, preloaded pattern.
 

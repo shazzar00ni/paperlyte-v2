@@ -14,7 +14,7 @@ Review changed TypeScript and TSX files for these violations:
 
 4. **Loose event handler types**: Event handlers typed as `(e: any) => void` instead of the correct React event type (e.g., `React.ChangeEvent<HTMLInputElement>`, `React.MouseEvent<HTMLButtonElement>`, `React.FormEvent<HTMLFormElement>`).
 
-5. **`@ts-ignore` and `@ts-expect-error` without explanation**: These directives must include a same-line comment describing the specific compiler limitation being worked around and a link to the relevant issue if applicable. Bare suppressions are not acceptable.
+5. **`@ts-ignore` and `@ts-expect-error` without explanation**: These directives must include a comment on the same line explaining the specific compiler limitation being worked around and, if applicable, a link to the relevant issue. Bare suppressions are not acceptable.
 
 6. **Optional chaining masking real type errors**: Excessive use of `?.` to silence type errors rather than correctly typing the value as potentially `undefined` or `null` and handling that case explicitly.
 

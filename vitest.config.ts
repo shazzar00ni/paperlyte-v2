@@ -38,8 +38,7 @@ export default defineConfig({
         '**/*.test.{ts,tsx}',
         'scripts/**',
       ],
-      // Coverage thresholds (optional but recommended)
-      // Note: These won't block coverage report generation
+      // Coverage thresholds - CI will fail if coverage drops below these values
       thresholds: {
         lines: 70,
         functions: 70,
@@ -47,6 +46,10 @@ export default defineConfig({
         statements: 70,
         autoUpdate: false,
       },
+
+      // Generate coverage report even when tests fail (allows inspecting coverage
+      // alongside test failures in CI rather than getting no report at all)
+      reportOnFailure: true,
     },
 
     // Test file patterns

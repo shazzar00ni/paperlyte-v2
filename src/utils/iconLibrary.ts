@@ -17,6 +17,7 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 // Solid icons (from free-solid-svg-icons)
 import {
   faBolt, // Lightning Speed feature
+  faGlobe, // Global access feature
   faPenNib, // Beautiful Simplicity feature
   faTags, // Tag-Based Organization feature
   faMobileScreen, // Universal Access feature
@@ -67,6 +68,8 @@ import {
   faTwitter, // Twitter/X social link
   faApple, // Apple platform
   faWindows, // Windows platform
+  faFacebook, // Facebook social link
+  faLinkedin, // LinkedIn social link
 } from '@fortawesome/free-brands-svg-icons'
 
 // Add all icons to the library
@@ -119,7 +122,10 @@ library.add(
   faGithub,
   faTwitter,
   faApple,
-  faWindows
+  faWindows,
+  faFacebook,
+  faLinkedin,
+  faGlobe
 )
 
 /**
@@ -161,6 +167,9 @@ export const iconNameMap: Record<string, string> = {
   'fa-twitter': 'twitter',
   'fa-apple': 'apple',
   'fa-windows': 'windows',
+  'fa-facebook': 'facebook',
+  'fa-linkedin': 'linkedin',
+  'fa-globe': 'globe',
   'fa-route': 'route', // Offline page - route/navigation issues.
   'fa-wifi': 'wifi', // Offline page - connection status.
   'fa-plane': 'plane', // Offline page - airplane mode.
@@ -179,7 +188,14 @@ export const iconNameMap: Record<string, string> = {
  * Set of brand icon names (derived from imported brand icons)
  * Used to determine the icon prefix (fab vs fas) dynamically
  */
-export const brandIconNames = new Set<string>(['github', 'twitter', 'apple', 'windows'])
+export const brandIconNames = new Set<string>([
+  'github',
+  'twitter',
+  'apple',
+  'windows',
+  'facebook',
+  'linkedin',
+])
 
 /**
  * Set of all valid icon names in the library

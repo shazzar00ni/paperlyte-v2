@@ -26,6 +26,8 @@
         "total-blocking-time": ["error", { "maxNumericValue": 1200 }],
         "speed-index": ["error", { "maxNumericValue": 5500 }],
         "interactive": ["error", { "maxNumericValue": 8000 }],
+        "errors-in-console": "warn",
+        "network-dependency-tree-insight": "warn",
         "max-potential-fid": ["warn", { "maxNumericValue": 130 }],
         "server-response-time": ["warn", { "maxNumericValue": 600 }],
         "uses-responsive-images": "warn",

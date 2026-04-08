@@ -56,10 +56,20 @@ function extractJobBlock(content: string, jobId: string): string {
  * a `contents: read` entry.
  */
 function jobHasContentsReadPermission(jobBlock: string): boolean {
-  // Look for `    permissions:` (4-space indent) then `      contents: read` (6-space indent)
-  const permissionsPattern = /^\s{4}permissions:/m
-  const contentsPattern = /^\s{1,50}contents:\s{1,50}read/m
-  return permissionsPattern.test(jobBlock) && contentsPattern.test(jobBlock)
+  // Walk line-by-line: find the `    permissions:` header (4-space indent),
+  // then check only the indented block that follows (6+ spaces) for
+  // `contents: read`. Stop as soon as indentation drops back to ≤4 spaces.
+  const lines = jobBlock.split('\n')
+  const permissionsStart = lines.findIndex((line: string) => line.startsWith('    permissions:'))
+  if (permissionsStart === -1) return false
+
+  for (let i = permissionsStart + 1; i < lines.length; i += 1) {
+    const line = lines[i]
+    if (!line.startsWith('      ')) break
+    if (line.trim() === 'contents: read') return true
+  }
+
+  return false
 }
 
 /**
@@ -174,7 +184,7 @@ describe('pr-quality-check.yml – permission structure', () => {
 
   it.each(['pr-metadata', 'bundle-size-check'])(
     '%s job inherits "contents: read" from the workflow-level permissions',
-    (jobId) => {
+    (jobId: string): void => {
       assertJobExists(content, jobId, 'pr-quality-check.yml')
       // These jobs rely on the workflow-level contents: read (no separate job-level block needed)
       expect(hasWorkflowLevelPermissions(content)).toBe(true)
@@ -216,20 +226,19 @@ describe('pr-quality-check.yml – permission structure', () => {
   it('only dependency-review job has an explicit permissions block (regression guard)', () => {
     // dependency-review needs additional pull-requests: write permission beyond the workflow default.
     // pr-metadata, bundle-size-check, and quality-summary rely on the workflow-level permissions.
-    // Validate that dependency-review still carries its own explicit block.
+    // Validate that dependency-review still carries its own explicit block …
     const block = assertJobExists(content, 'dependency-review', 'pr-quality-check.yml')
-    const hasPermissionsBlock = /^\s{4}permissions:/m.test(block)
     expect(
-      hasPermissionsBlock,
+      /^\s{4}permissions:/m.test(block),
       'dependency-review job is missing an explicit permissions block'
     ).toBe(true)
 
-    const jobsWithoutExplicitPermissions = ['pr-metadata', 'bundle-size-check', 'quality-summary']
-    for (const jobId of jobsWithoutExplicitPermissions) {
-      const candidateBlock = assertJobExists(content, jobId, 'pr-quality-check.yml')
+    // … and that the other jobs do NOT have one (enforces exclusivity).
+    for (const jobId of ['pr-metadata', 'bundle-size-check', 'quality-summary']) {
+      const jobBlock = assertJobExists(content, jobId, 'pr-quality-check.yml')
       expect(
-        /^\s{4}permissions:/m.test(candidateBlock),
-        `Job "${jobId}" should not define an explicit permissions block`
+        /^\s{4}permissions:/m.test(jobBlock),
+        `${jobId} should not define an explicit permissions block`
       ).toBe(false)
     }
   })
@@ -299,7 +308,6 @@ describe('package-lock.json – picomatch dependency update', () => {
   })
 })
 
-// ---------------------------------------------------------------------------
 // package-lock.json – axios SSRF fix (GHSA-3p68-rc4w-qgx5)
 // Axios < 1.15.0 has a NO_PROXY hostname normalisation bypass that can lead
 // to SSRF. The override in package.json forces >= 1.15.0.
@@ -432,5 +440,203 @@ describe('package-lock.json – lodash-es security update (GHSA-r5fr-rjxr-66jc, 
 
   it('lodash-es resolved URL should not point to a vulnerable release', () => {
     expect(entry.resolved).not.toMatch(/lodash-es-4\.17\.\d+\.tgz/)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// claude-code-review.yml
+// ---------------------------------------------------------------------------
+
+describe('claude-code-review.yml – structure and permissions', () => {
+  let content: string
+
+  beforeAll(() => {
+    content = readWorkflow('claude-code-review.yml')
+  })
+
+  it('should exist and have a top-level permissions deny-all block', () => {
+    expect(content.length).toBeGreaterThan(0)
+    expect(content).toMatch(/^permissions:\s*\{\}/m)
+  })
+
+  it('should trigger on pull_request with the expected event types', () => {
+    expect(content).toMatch(/pull_request:/)
+    expect(content).toMatch(/opened/)
+    expect(content).toMatch(/synchronize/)
+    expect(content).toMatch(/ready_for_review/)
+    expect(content).toMatch(/reopened/)
+  })
+
+  it('should have a concurrency group to cancel stale runs', () => {
+    expect(content).toMatch(/^concurrency:/m)
+    expect(content).toMatch(/cancel-in-progress:\s*true/)
+  })
+
+  it('should define auto-review and security-review jobs', () => {
+    assertJobExists(content, 'auto-review', 'claude-code-review.yml')
+    assertJobExists(content, 'security-review', 'claude-code-review.yml')
+  })
+
+  it('auto-review job should have contents: read permission', () => {
+    const block = assertJobExists(content, 'auto-review', 'claude-code-review.yml')
+    expect(jobHasContentsReadPermission(block)).toBe(true)
+  })
+
+  it('security-review job should have contents: read permission', () => {
+    const block = assertJobExists(content, 'security-review', 'claude-code-review.yml')
+    expect(jobHasContentsReadPermission(block)).toBe(true)
+  })
+
+  it('both jobs should skip fork PRs', () => {
+    const autoBlock = assertJobExists(content, 'auto-review', 'claude-code-review.yml')
+    const secBlock = assertJobExists(content, 'security-review', 'claude-code-review.yml')
+    expect(autoBlock).toMatch(/head\.repo\.fork/)
+    expect(secBlock).toMatch(/head\.repo\.fork/)
+  })
+
+  it('auto-review allowedTools should include inline comment tool', () => {
+    const block = assertJobExists(content, 'auto-review', 'claude-code-review.yml')
+    expect(block).toMatch(/mcp__github_inline_comment__create_inline_comment/)
+  })
+
+  it('security-review allowedTools should NOT include inline comment tool', () => {
+    const block = assertJobExists(content, 'security-review', 'claude-code-review.yml')
+    expect(block).not.toMatch(/mcp__github_inline_comment__create_inline_comment/)
+  })
+
+  it('auto-review prompt should include prompt-injection guardrails', () => {
+    const block = assertJobExists(content, 'auto-review', 'claude-code-review.yml')
+    expect(block).toMatch(/[Pp]rompt [Ii]njection|[Ss]ecurity instructions/)
+    expect(block).toMatch(/untrusted/)
+  })
+
+  it('action should be pinned to a full commit SHA', () => {
+    expect(content).toMatch(/claude-code-action@[0-9a-f]{40}/)
+    expect(content).not.toMatch(/claude-code-action@v\d/)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// claude-issue-triage.yml
+// ---------------------------------------------------------------------------
+
+describe('claude-issue-triage.yml – structure and permissions', () => {
+  let content: string
+
+  beforeAll(() => {
+    content = readWorkflow('claude-issue-triage.yml')
+  })
+
+  it('should exist and have a top-level permissions deny-all block', () => {
+    expect(content.length).toBeGreaterThan(0)
+    expect(content).toMatch(/^permissions:\s*\{\}/m)
+  })
+
+  it('should trigger only on issues opened event', () => {
+    expect(content).toMatch(/^on:/m)
+    expect(content).toMatch(/issues:/)
+    expect(content).toMatch(/types:\s*\[opened\]/)
+    expect(content).not.toMatch(/pull_request/)
+  })
+
+  it('should define a triage job', () => {
+    assertJobExists(content, 'triage', 'claude-issue-triage.yml')
+  })
+
+  it('triage job should NOT include a checkout step', () => {
+    const block = assertJobExists(content, 'triage', 'claude-issue-triage.yml')
+    expect(block).not.toMatch(/actions\/checkout/)
+  })
+
+  it('triage job should have issues: write permission', () => {
+    const block = assertJobExists(content, 'triage', 'claude-issue-triage.yml')
+    expect(block).toMatch(/issues:\s*write/)
+  })
+
+  it('prompt should include prompt-injection guardrails before untrusted data', () => {
+    expect(content).toMatch(/[Ss]ecurity instructions/)
+    expect(content).toMatch(/untrusted/)
+    // Guardrails section must appear before TITLE/BODY fields
+    const guardIdx = content.indexOf('Security instructions')
+    const titleIdx = content.indexOf('TITLE:')
+    expect(guardIdx).toBeLessThan(titleIdx)
+  })
+
+  it('action should be pinned to a full commit SHA', () => {
+    expect(content).toMatch(/claude-code-action@[0-9a-f]{40}/)
+    expect(content).not.toMatch(/claude-code-action@v\d/)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// claude-external-contributor.yml
+// ---------------------------------------------------------------------------
+
+describe('claude-external-contributor.yml – structure and permissions', () => {
+  let content: string
+
+  beforeAll(() => {
+    content = readWorkflow('claude-external-contributor.yml')
+  })
+
+  it('should exist and have a top-level permissions deny-all block', () => {
+    expect(content.length).toBeGreaterThan(0)
+    expect(content).toMatch(/^permissions:\s*\{\}/m)
+  })
+
+  it('should trigger on pull_request_target (not pull_request)', () => {
+    expect(content).toMatch(/pull_request_target:/)
+    expect(content).not.toMatch(/^  pull_request:/m)
+  })
+
+  it('should trigger on opened, synchronize, ready_for_review, and reopened', () => {
+    expect(content).toMatch(/opened/)
+    expect(content).toMatch(/synchronize/)
+    expect(content).toMatch(/ready_for_review/)
+    expect(content).toMatch(/reopened/)
+  })
+
+  it('should have a concurrency group to cancel stale runs', () => {
+    expect(content).toMatch(/^concurrency:/m)
+    expect(content).toMatch(/cancel-in-progress:\s*true/)
+  })
+
+  it('should define a first-time-review job', () => {
+    assertJobExists(content, 'first-time-review', 'claude-external-contributor.yml')
+  })
+
+  it('first-time-review job should NOT include a checkout step', () => {
+    const block = assertJobExists(content, 'first-time-review', 'claude-external-contributor.yml')
+    expect(block).not.toMatch(/actions\/checkout/)
+  })
+
+  it('first-time-review job if: condition should only match FIRST_TIME_CONTRIBUTOR and NONE', () => {
+    const block = assertJobExists(content, 'first-time-review', 'claude-external-contributor.yml')
+    // Extract the if: value (lines between `if: |` and the next non-indented-deeper key)
+    const lines = block.split('\n')
+    const ifStart = lines.findIndex((l: string) => l.trim().startsWith('if:'))
+    const ifLines: string[] = []
+    for (let i = ifStart + 1; i < lines.length; i += 1) {
+      if (lines[i].trim() === '' || (!lines[i].startsWith('      ') && lines[i].trim() !== ''))
+        break
+      ifLines.push(lines[i])
+    }
+    const ifCondition = ifLines.join('\n')
+    expect(ifCondition).toMatch(/FIRST_TIME_CONTRIBUTOR/)
+    expect(ifCondition).toMatch(/NONE/)
+    // Trusted associations must not appear in the condition itself
+    expect(ifCondition).not.toMatch(/COLLABORATOR/)
+    expect(ifCondition).not.toMatch(/MEMBER/)
+    expect(ifCondition).not.toMatch(/OWNER/)
+  })
+
+  it('prompt should not instruct running npm lint or build commands', () => {
+    expect(content).not.toMatch(/npm run lint/)
+    expect(content).not.toMatch(/npm run build/)
+  })
+
+  it('action should be pinned to a full commit SHA', () => {
+    expect(content).toMatch(/claude-code-action@[0-9a-f]{40}/)
+    expect(content).not.toMatch(/claude-code-action@v\d/)
   })
 })

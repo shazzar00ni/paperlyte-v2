@@ -1,5 +1,6 @@
 import { type FC, useState, useEffect, useCallback } from 'react'
 import { Icon } from '@/components/ui/Icon'
+import { logError } from '@/utils/monitoring'
 import styles from './OfflinePage.module.css'
 
 interface OfflinePageProps {
@@ -26,6 +27,7 @@ export const OfflinePage: FC<OfflinePageProps> = ({
     typeof navigator !== 'undefined' ? navigator.onLine : true
   )
   const [isChecking, setIsChecking] = useState(false)
+  const [retryError, setRetryError] = useState<string | null>(null)
 
   // Memoize handlers to ensure stable references and proper cleanup
   const handleOnline = useCallback((): void => {
@@ -53,6 +55,7 @@ export const OfflinePage: FC<OfflinePageProps> = ({
 
   const handleRetry = async (): Promise<void> => {
     setIsChecking(true)
+    setRetryError(null)
 
     // Create abort controller with timeout to prevent hanging
     const controller = new AbortController()
@@ -71,10 +74,24 @@ export const OfflinePage: FC<OfflinePageProps> = ({
       // Only reload if we got a successful response
       if (response.ok || response.status === 204) {
         window.location.reload()
+      } else {
+        const err = new Error(`Connection probe returned ${response.status}`)
+        logError(err, {
+          tags: { context: 'OfflinePage.handleRetry', status: String(response.status) },
+        })
+        setRetryError(`Connection check failed (${response.status})`)
       }
-    } catch {
-      // Connection still not available (or timeout/abort)
+    } catch (err) {
       clearTimeout(timeoutId)
+      const error = err instanceof Error ? err : new Error(String(err))
+      const isAbort =
+        error.name === 'AbortError' || (err instanceof DOMException && err.name === 'AbortError')
+      logError(error, { tags: { context: 'OfflinePage.handleRetry' } })
+      setRetryError(
+        isAbort
+          ? 'Connection check timed out. Please try again.'
+          : 'Unable to reach the network. Please check your connection.'
+      )
     } finally {
       // Always reset checking state
       setIsChecking(false)
@@ -140,6 +157,13 @@ export const OfflinePage: FC<OfflinePageProps> = ({
             </button>
           )}
         </div>
+
+        {/* Retry error message */}
+        {retryError && (
+          <p role="alert" className={styles.retryError}>
+            {retryError}
+          </p>
+        )}
 
         {/* Offline features */}
         {!isOnline && showCachedInfo && (

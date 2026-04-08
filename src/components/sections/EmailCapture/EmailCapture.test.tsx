@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { EmailCapture } from './EmailCapture'
 import { WAITLIST_COUNT } from '@/constants/waitlist'
@@ -91,12 +91,11 @@ describe('EmailCapture Section', () => {
     render(<EmailCapture />)
 
     const emailInput = screen.getByPlaceholderText('your@email.com')
-    const submitButton = screen.getByRole('button', { name: /Join the Waitlist/i })
 
-    // Bypass the browser's type="email" filter by setting value directly,
-    // then submit — validateEmail inside handleSubmit should catch it.
+    // type() sets the input value; jsdom blocks submit via type="email" constraint
+    // validation when using click(), so we bypass that with fireEvent.submit directly.
     await user.type(emailInput, 'notanemail')
-    await user.click(submitButton)
+    fireEvent.submit(emailInput.closest('form')!)
 
     await waitFor(() => {
       const alert = screen.getByRole('alert')

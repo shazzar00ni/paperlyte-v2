@@ -18,10 +18,19 @@ describe('Statistics', () => {
     })
 
     it('should render all four statistic cards', () => {
-      const { container } = render(<Statistics />)
-      // There are 4 statistic items
-      const cards = container.querySelectorAll('[class*="card"]')
-      expect(cards.length).toBe(4)
+      render(<Statistics />)
+      const statisticLabels = [
+        'Active Users',
+        'Notes Created',
+        'Uptime',
+        'User Rating',
+      ]
+
+      statisticLabels.forEach((label) => {
+        expect(screen.getByText(label)).toBeInTheDocument()
+      })
+
+      expect(statisticLabels).toHaveLength(4)
     })
 
     it('should render Active Users statistic label', () => {

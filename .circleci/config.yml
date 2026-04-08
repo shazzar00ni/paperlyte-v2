@@ -2,10 +2,6 @@
 # See: https://circleci.com/docs/reference/configuration-reference
 version: 2.1
 
-# ─── Orbs ────────────────────────────────────────────────────────────────────
-orbs:
-  node: circleci/node@6
-
 # ─── Executors ───────────────────────────────────────────────────────────────
 executors:
   node-executor:

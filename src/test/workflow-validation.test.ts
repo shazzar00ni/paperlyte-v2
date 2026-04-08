@@ -98,7 +98,7 @@ describe('ci.yml – permission structure', () => {
 
   it.each(['lint-and-typecheck', 'build'])(
     '%s job inherits "contents: read" from the workflow-level permissions',
-    (jobId) => {
+    (jobId: string): void => {
       assertJobExists(content, jobId, 'ci.yml')
       // These jobs rely on the workflow-level contents: read (no separate job-level block needed)
       expect(hasWorkflowLevelPermissions(content)).toBe(true)
@@ -107,7 +107,7 @@ describe('ci.yml – permission structure', () => {
 
   it.each(['test', 'e2e', 'ci-success'])(
     '%s job should have "contents: read" permission',
-    (jobId) => {
+    (jobId: string): void => {
       const block = assertJobExists(content, jobId, 'ci.yml')
       expect(jobHasContentsReadPermission(block)).toBe(true)
     }

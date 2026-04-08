@@ -21,8 +21,11 @@ jobs:
     # of fork status, and the checkout step has been omitted so no untrusted
     # fork code runs in a privileged context.
     if: |
-      github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR' ||
-      github.event.pull_request.author_association == 'NONE'
+      github.event.pull_request.draft == false &&
+      (
+        github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR' ||
+        github.event.pull_request.author_association == 'NONE'
+      )
     permissions:
       pull-requests: write
       id-token: write

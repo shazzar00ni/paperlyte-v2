@@ -14,18 +14,18 @@ This file contains a summary of pull requests I have reviewed.
 
 The following branches have been verified as clean, passing tests (where applicable), and free from systemic regressions:
 
-| Branch | Summary | Feedback |
-| --- | --- | --- |
-| `origin/claude/apply-code-fixes-BUsgx` | Accessibility & Hooks | Excellent cleanup of `Icon.tsx` and simplification of `useReducedMotion`. Restores baseline test stability. |
-| `origin/claude/fix-open-redirect-TX551` | Security Hardening | Robust fix for `safeNavigate` and `isSafeUrl`. Defaults to same-origin validation, significantly improving security posture. |
-| `origin/claude/fix-failing-tests-J1VZ6` | Test Stability | Resolves icon rendering test failures by migrating to `data-icon` selectors. |
-| `origin/claude/fix-esbuild-dependency-FzL7Q` | Build Stability | Adds explicit `esbuild` dependency, preventing Vite 8 build failures in CI. |
-| `origin/claude/fix-job-timeout-MJJDQ` | CI Optimization | Adds 30-minute timeout to Codacy scans, preventing hanging runners. |
-| `origin/claude/fix-issue-577-v60JV` | Web Vitals Fix | Corrects INP tracking logic in `src/analytics/webVitals.ts`. |
-| `origin/copilot/sub-pr-593` | New FAQ Section | High-quality, accessible FAQ component with full keyboard support. |
-| `origin/copilot/sub-pr-585` | Security Override | Preferred branch for `yauzl` security override; includes detailed rationale in `SECURITY.md`. |
-| `origin/claude/add-git-dates-sitemap-wGlvo` | Sitemap Automation | Automates `<lastmod>` extraction via Git history. |
-| `origin/claude/update-nodejs-actions-6vRnT` | Infrastructure | Comprehensive upgrade to Node 20 and pinning Actions to SHAs. |
+| Branch                                       | Summary               | Feedback                                                                                                                     |
+| -------------------------------------------- | --------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `origin/claude/apply-code-fixes-BUsgx`       | Accessibility & Hooks | Excellent cleanup of `Icon.tsx` and simplification of `useReducedMotion`. Restores baseline test stability.                  |
+| `origin/claude/fix-open-redirect-TX551`      | Security Hardening    | Robust fix for `safeNavigate` and `isSafeUrl`. Defaults to same-origin validation, significantly improving security posture. |
+| `origin/claude/fix-failing-tests-J1VZ6`      | Test Stability        | Resolves icon rendering test failures by migrating to `data-icon` selectors.                                                 |
+| `origin/claude/fix-esbuild-dependency-FzL7Q` | Build Stability       | Adds explicit `esbuild` dependency, preventing Vite 8 build failures in CI.                                                  |
+| `origin/claude/fix-job-timeout-MJJDQ`        | CI Optimization       | Adds 30-minute timeout to Codacy scans, preventing hanging runners.                                                          |
+| `origin/claude/fix-issue-577-v60JV`          | Web Vitals Fix        | Corrects INP tracking logic in `src/analytics/webVitals.ts`.                                                                 |
+| `origin/copilot/sub-pr-593`                  | New FAQ Section       | High-quality, accessible FAQ component with full keyboard support.                                                           |
+| `origin/copilot/sub-pr-585`                  | Security Override     | Preferred branch for `yauzl` security override; includes detailed rationale in `SECURITY.md`.                                |
+| `origin/claude/add-git-dates-sitemap-wGlvo`  | Sitemap Automation    | Automates `<lastmod>` extraction via Git history.                                                                            |
+| `origin/claude/update-nodejs-actions-6vRnT`  | Infrastructure        | Comprehensive upgrade to Node 20 and pinning Actions to SHAs.                                                                |
 
 ### Blocked by Systemic Regressions
 

@@ -12,6 +12,7 @@
 This document catalogs technical debt across the Paperlyte v2 codebase, including code quality issues, test coverage gaps, performance optimization opportunities, and security considerations. The inventory is organized by severity to help prioritize remediation efforts.
 
 **Key Metrics:**
+
 - **Total TODO/FIXME Comments:** 56+ across 12 files
 - **Critical TODOs:** 13 (legal constants - blocking production)
 - **Untested Modules:** 15 files (0% coverage)
@@ -27,48 +28,52 @@ This document catalogs technical debt across the Paperlyte v2 codebase, includin
 ### 1.1 Critical TODOs (Blocking Production)
 
 #### Legal Constants (`src/constants/legal.ts`)
+
 **Severity:** 🔴 **CRITICAL** - Must be resolved before production deployment
 
-| Line | Field | TODO | Priority |
-|------|-------|------|----------|
-| 22 | `legalName` | Add legal entity name | CRITICAL |
-| 32 | `street` | Add street address | CRITICAL |
-| 33 | `city` | Add city | CRITICAL |
-| 34 | `state` | Add state | CRITICAL |
-| 35 | `zip` | Add ZIP code | CRITICAL |
-| 36 | `country` | Add country | CRITICAL |
-| 41 | `cookies` | Create cookie policy | CRITICAL |
-| 42 | `security` | Create security practices doc | CRITICAL |
-| 43 | `dmca` | Create DMCA policy | CRITICAL |
-| 44 | `accessibility` | Create accessibility statement | CRITICAL |
-| 48 | `twitter` | Add Twitter/X account | HIGH |
-| 49 | `linkedin` | Add LinkedIn page | HIGH |
-| 50 | `discord` | Add Discord server link | MEDIUM |
-| 56 | `jurisdiction` | Add jurisdiction | CRITICAL |
-| 57 | `governingLaw` | Add governing law | CRITICAL |
+| Line | Field           | TODO                           | Priority |
+| ---- | --------------- | ------------------------------ | -------- |
+| 22   | `legalName`     | Add legal entity name          | CRITICAL |
+| 32   | `street`        | Add street address             | CRITICAL |
+| 33   | `city`          | Add city                       | CRITICAL |
+| 34   | `state`         | Add state                      | CRITICAL |
+| 35   | `zip`           | Add ZIP code                   | CRITICAL |
+| 36   | `country`       | Add country                    | CRITICAL |
+| 41   | `cookies`       | Create cookie policy           | CRITICAL |
+| 42   | `security`      | Create security practices doc  | CRITICAL |
+| 43   | `dmca`          | Create DMCA policy             | CRITICAL |
+| 44   | `accessibility` | Create accessibility statement | CRITICAL |
+| 48   | `twitter`       | Add Twitter/X account          | HIGH     |
+| 49   | `linkedin`      | Add LinkedIn page              | HIGH     |
+| 50   | `discord`       | Add Discord server link        | MEDIUM   |
+| 56   | `jurisdiction`  | Add jurisdiction               | CRITICAL |
+| 57   | `governingLaw`  | Add governing law              | CRITICAL |
 
 **Impact:** Cannot launch product without completing legal information. Legal liability risk.
 
 **Recommendation:**
+
 1. Legal team to provide company registration details
 2. Create missing policy documents (cookie, security, DMCA, accessibility)
 3. Set up social media accounts
 4. Legal review of jurisdiction and governing law
 
 #### Download URLs (`src/constants/downloads.ts`)
+
 **Severity:** 🟡 **HIGH** - Affects user experience
 
-| Line | Platform | TODO | Priority |
-|------|----------|------|----------|
-| 14 | Windows | Update GitHub URL | HIGH |
-| 16 | macOS | Update GitHub URL | HIGH |
-| 18 | iOS | Replace with actual App Store URL | HIGH |
-| 20 | Android | Replace with actual Play Store URL | HIGH |
-| 22 | Linux | Update GitHub URL | HIGH |
+| Line | Platform | TODO                               | Priority |
+| ---- | -------- | ---------------------------------- | -------- |
+| 14   | Windows  | Update GitHub URL                  | HIGH     |
+| 16   | macOS    | Update GitHub URL                  | HIGH     |
+| 18   | iOS      | Replace with actual App Store URL  | HIGH     |
+| 20   | Android  | Replace with actual Play Store URL | HIGH     |
+| 22   | Linux    | Update GitHub URL                  | HIGH     |
 
 **Impact:** Download links are broken or point to placeholder URLs.
 
 **Recommendation:**
+
 1. Update GitHub repository URL in `legal.ts` first
 2. Publish apps to App Store and Play Store
 3. Update download constants with actual URLs
@@ -76,21 +81,23 @@ This document catalogs technical debt across the Paperlyte v2 codebase, includin
 ### 1.2 High Priority TODOs
 
 #### Documentation (`docs/PRIVACY-POLICY.md`)
+
 **Severity:** 🟡 **HIGH**
 
-| Line | Issue | Priority |
-|------|-------|----------|
-| 293 | Broken transparency report URL | HIGH |
+| Line | Issue                          | Priority |
+| ---- | ------------------------------ | -------- |
+| 293  | Broken transparency report URL | HIGH     |
 
 **Recommendation:** Create transparency report page or remove link before launch.
 
 #### Legal Documentation
+
 **Severity:** 🟡 **HIGH**
 
-| File | Issue | Priority |
-|------|-------|----------|
-| `docs/TERMS-OF-SERVICE.md:294` | Legal review required for compliance claims | HIGH |
-| `docs/COOKIE-POLICY.md:11` | Cookie policy template needs completion | HIGH |
+| File                           | Issue                                       | Priority |
+| ------------------------------ | ------------------------------------------- | -------- |
+| `docs/TERMS-OF-SERVICE.md:294` | Legal review required for compliance claims | HIGH     |
+| `docs/COOKIE-POLICY.md:11`     | Cookie policy template needs completion     | HIGH     |
 
 **Recommendation:** Legal team review and completion before production.
 
@@ -98,18 +105,18 @@ This document catalogs technical debt across the Paperlyte v2 codebase, includin
 
 #### Component Maintenance
 
-| File | Line | TODO | Priority |
-|------|------|------|----------|
-| `Privacy.tsx` | 14 | Update revision date | MEDIUM |
-| `Terms.tsx` | 14 | Update revision date | MEDIUM |
-| `Footer.tsx` | 37-38 | Add Roadmap/Changelog links | MEDIUM |
-| `Footer.tsx` | 50-51 | Add About/Blog links | MEDIUM |
+| File          | Line  | TODO                        | Priority |
+| ------------- | ----- | --------------------------- | -------- |
+| `Privacy.tsx` | 14    | Update revision date        | MEDIUM   |
+| `Terms.tsx`   | 14    | Update revision date        | MEDIUM   |
+| `Footer.tsx`  | 37-38 | Add Roadmap/Changelog links | MEDIUM   |
+| `Footer.tsx`  | 50-51 | Add About/Blog links        | MEDIUM   |
 
 #### Analytics Implementation
 
-| File | Line | TODO | Priority |
-|------|------|------|----------|
-| `src/analytics/index.ts` | 94 | Implement additional analytics providers | MEDIUM |
+| File                     | Line | TODO                                     | Priority |
+| ------------------------ | ---- | ---------------------------------------- | -------- |
+| `src/analytics/index.ts` | 94   | Implement additional analytics providers | MEDIUM   |
 
 **Note:** Currently only basic analytics tracking is implemented.
 
@@ -117,17 +124,17 @@ This document catalogs technical debt across the Paperlyte v2 codebase, includin
 
 #### Build Configuration
 
-| File | Line | TODO | Priority |
-|------|------|------|----------|
-| `vite.config.ts` | 138 | Monitor bundle size and lower chunkSizeWarningLimit | LOW |
+| File             | Line | TODO                                                | Priority |
+| ---------------- | ---- | --------------------------------------------------- | -------- |
+| `vite.config.ts` | 138  | Monitor bundle size and lower chunkSizeWarningLimit | LOW      |
 
 **Current:** 1000 KB limit intentionally raised. Need to monitor and optimize.
 
 #### Security Testing
 
-| File | Line | Issue | Priority |
-|------|------|-------|----------|
-| `SECURITY_REVIEW.md` | 340, 596 | Pre-production security testing pending | MEDIUM |
+| File                 | Line     | Issue                                   | Priority |
+| -------------------- | -------- | --------------------------------------- | -------- |
+| `SECURITY_REVIEW.md` | 340, 596 | Pre-production security testing pending | MEDIUM   |
 
 ---
 
@@ -137,21 +144,23 @@ This document catalogs technical debt across the Paperlyte v2 codebase, includin
 
 **Severity:** 🟡 **MEDIUM** - Affects code quality and maintainability
 
-| Component | Path | Lines | Risk |
-|-----------|------|-------|------|
-| `Privacy.tsx` | `src/components/pages/Privacy/` | 246 | MEDIUM |
-| `Terms.tsx` | `src/components/pages/Terms/` | 338 | HIGH (large file) |
-| `Statistics.tsx` | `src/components/sections/Statistics/` | ~150 | MEDIUM |
-| `EmailCapture.tsx` | `src/components/sections/EmailCapture/` | ~200 | MEDIUM |
+| Component          | Path                                    | Lines | Risk              |
+| ------------------ | --------------------------------------- | ----- | ----------------- |
+| `Privacy.tsx`      | `src/components/pages/Privacy/`         | 246   | MEDIUM            |
+| `Terms.tsx`        | `src/components/pages/Terms/`           | 338   | HIGH (large file) |
+| `Statistics.tsx`   | `src/components/sections/Statistics/`   | ~150  | MEDIUM            |
+| `EmailCapture.tsx` | `src/components/sections/EmailCapture/` | ~200  | MEDIUM            |
 
 **Note:** EmailCapture.test.tsx exists but may have incomplete coverage.
 
 **Impact:**
+
 - No automated verification of legal page rendering
 - Regression risk when updating privacy/terms content
 - Statistics component untested for accessibility and responsiveness
 
 **Recommendation:**
+
 1. Add smoke tests for Privacy and Terms (verify rendering, links)
 2. Test Statistics component data formatting and animations
 3. Verify EmailCapture form validation and submission
@@ -160,19 +169,21 @@ This document catalogs technical debt across the Paperlyte v2 codebase, includin
 
 **Severity:** 🟡 **MEDIUM**
 
-| Module | Path | Estimated Coverage | Priority |
-|--------|------|-------------------|----------|
-| `monitoring.ts` | `src/utils/` | 0% | MEDIUM |
-| `metaTags.ts` | `src/utils/` | 0% | LOW |
-| `env.ts` | `src/utils/` | 0% | LOW |
+| Module          | Path         | Estimated Coverage | Priority |
+| --------------- | ------------ | ------------------ | -------- |
+| `monitoring.ts` | `src/utils/` | 0%                 | MEDIUM   |
+| `metaTags.ts`   | `src/utils/` | 0%                 | LOW      |
+| `env.ts`        | `src/utils/` | 0%                 | LOW      |
 
 **Tested Utilities:** ✅
+
 - `analytics.ts` - Has tests
 - `keyboard.ts` - Has tests
 - `navigation.ts` - Has tests
 - `iconLibrary.ts` - Has tests
 
 **Recommendation:**
+
 1. Add tests for `monitoring.ts` (error tracking critical)
 2. `metaTags.ts` and `env.ts` are low risk but should have basic smoke tests
 
@@ -181,6 +192,7 @@ This document catalogs technical debt across the Paperlyte v2 codebase, includin
 **Severity:** 🟢 **LOW** - Constants are typically low-risk but should have validation
 
 All constant files lack tests (0% coverage):
+
 - `src/constants/waitlist.ts`
 - `src/constants/faq.ts`
 - `src/constants/downloads.ts`
@@ -192,6 +204,7 @@ All constant files lack tests (0% coverage):
 - `src/constants/features.ts`
 
 **Recommendation:**
+
 1. Add schema validation tests for legal.ts (critical data)
 2. Validate download URLs format
 3. Other constants: Low priority for testing (data files)
@@ -201,6 +214,7 @@ All constant files lack tests (0% coverage):
 **Severity:** 🟡 **MEDIUM** - Analytics are business-critical
 
 All analytics modules have 0% coverage (6 files):
+
 - `src/analytics/types.ts`
 - `src/analytics/index.ts`
 - `src/analytics/webVitals.ts`
@@ -209,11 +223,13 @@ All analytics modules have 0% coverage (6 files):
 - `src/analytics/scrollDepth.ts`
 
 **Impact:**
+
 - No verification that analytics events fire correctly
 - Cannot verify Web Vitals tracking accuracy
 - Scroll depth tracking untested
 
 **Recommendation:**
+
 1. High priority: Test analytics event firing and tracking
 2. Mock analytics providers in tests
 3. Verify Web Vitals collection
@@ -257,21 +273,24 @@ coverage: {
 
 **Severity:** 🟡 **MEDIUM** - Maintainability and performance concern
 
-| Component | Lines | Issue | Recommendation |
-|-----------|-------|-------|----------------|
-| `FeedbackWidget.tsx` | 373 | Too large, complex state | Split into smaller components |
-| `Terms.tsx` | 338 | Legal content inline | Extract to markdown/CMS |
+| Component            | Lines | Issue                    | Recommendation                |
+| -------------------- | ----- | ------------------------ | ----------------------------- |
+| `FeedbackWidget.tsx` | 373   | Too large, complex state | Split into smaller components |
+| `Terms.tsx`          | 338   | Legal content inline     | Extract to markdown/CMS       |
 
 **Additional Large Components:**
+
 - `Testimonials.tsx` - 273 lines (acceptable for feature component)
 - `Privacy.tsx` - 246 lines (acceptable for legal page)
 
 **Impact:**
+
 - Larger bundle size
 - Harder to maintain
 - Slower hot module replacement during development
 
 **Recommendation:**
+
 1. **FeedbackWidget.tsx:** Split into:
    - `FeedbackButton.tsx` (trigger)
    - `FeedbackForm.tsx` (modal content)
@@ -287,9 +306,11 @@ coverage: {
 **Severity:** 🟡 **MEDIUM**
 
 #### React.lazy() Underutilization
+
 **Current Status:** Not used in source files (only mentioned in docs)
 
 **Components that should be lazy-loaded:**
+
 - `Privacy.tsx` (246 lines) - Legal page, not needed on landing
 - `Terms.tsx` (338 lines) - Legal page, not needed on landing
 - `Statistics.tsx` - Below-the-fold section
@@ -300,19 +321,22 @@ coverage: {
 
 ```typescript
 // App.tsx or routes
-const Privacy = lazy(() => import('./components/pages/Privacy'));
-const Terms = lazy(() => import('./components/pages/Terms'));
-const FeedbackWidget = lazy(() => import('./components/ui/FeedbackWidget'));
+const Privacy = lazy(() => import('./components/pages/Privacy'))
+const Terms = lazy(() => import('./components/pages/Terms'))
+const FeedbackWidget = lazy(() => import('./components/ui/FeedbackWidget'))
 ```
 
 **Expected Impact:**
+
 - Reduce initial bundle by ~50-80 KB
 - Improve Time to Interactive (TTI)
 
 #### React.memo() Underutilization
+
 **Current Status:** Only 1 component uses memo (`Section.tsx`)
 
 **Components that should use memo:**
+
 - All animation components (prevent unnecessary re-renders)
 - `Icon.tsx` (rendered frequently)
 - `Button.tsx` (if created as reusable component)
@@ -321,12 +345,13 @@ const FeedbackWidget = lazy(() => import('./components/ui/FeedbackWidget'));
 **Recommendation:**
 
 ```typescript
-export default memo(FloatingElement);
-export default memo(AnimatedElement);
-export default memo(ParallaxLayer);
+export default memo(FloatingElement)
+export default memo(AnimatedElement)
+export default memo(ParallaxLayer)
 ```
 
 **Expected Impact:**
+
 - Reduce re-renders during scroll
 - Smoother animations
 - Better scroll performance
@@ -336,6 +361,7 @@ export default memo(ParallaxLayer);
 **Severity:** 🟡 **MEDIUM** - Affects page load speed
 
 #### Issues Found:
+
 1. **No WebP/AVIF formats:** All images are PNG
    - `android-chrome-192x192.png` (5.2 KB)
    - `android-chrome-512x512.png` (28 KB)
@@ -362,6 +388,7 @@ export default memo(ParallaxLayer);
 4. Implement lazy loading for below-the-fold images
 
 **Expected Impact:**
+
 - 30-50% reduction in image payload
 - Faster LCP (Largest Contentful Paint)
 - Better mobile performance
@@ -371,6 +398,7 @@ export default memo(ParallaxLayer);
 **Severity:** 🟢 **LOW** - Proactive optimization
 
 **Current Animation Components:**
+
 - `FloatingElement.tsx`
 - `AnimatedElement.tsx`
 - `ParallaxLayer.tsx`
@@ -379,6 +407,7 @@ export default memo(ParallaxLayer);
 - `CounterAnimation.tsx`
 
 **Missing Optimizations:**
+
 1. No explicit `will-change` CSS hints (check CSS modules)
 2. May not use `requestAnimationFrame` for all animations
 3. No performance monitoring for animation frame rates
@@ -398,12 +427,14 @@ export default memo(ParallaxLayer);
 ### 3.5 Bundle Size Monitoring
 
 **Current Status:**
+
 - `vite.config.ts` has `chunkSizeWarningLimit: 1000` (intentionally raised)
 - `package.json` includes `size-limit` with 150 KB JS limit
 
 **Issue:** Warning limit raised to suppress warnings without optimization
 
 **Recommendation:**
+
 1. Run bundle analyzer: `npx vite-bundle-visualizer`
 2. Identify largest dependencies
 3. Consider replacing heavy libraries
@@ -428,10 +459,12 @@ export default memo(ParallaxLayer);
 - **Security Headers:** Configured in Netlify deployment
 
 **Missing:**
+
 - No automated security scanning in CI/CD
 - No Software Composition Analysis (SCA) tool
 
 **Recommendation:**
+
 1. Add `npm audit` to CI/CD pipeline
 2. Consider GitHub Advanced Security (if available)
 3. Add OWASP dependency check to pre-commit hooks
@@ -448,15 +481,18 @@ imported from /home/user/paperlyte-v2/scripts/generate-icons.js
 ```
 
 **Root Cause:**
+
 - `sharp` is in `devDependencies` but may not be installed
 - Or `generate-icons.js` script has incorrect import
 
 **Impact:**
+
 - Build process fails
 - Cannot generate icons
 - Blocks deployment
 
 **Recommendation:**
+
 1. Verify `sharp` installation: `npm install`
 2. Check if `sharp` needs to be in `dependencies` instead of `devDependencies`
 3. Review `scripts/generate-icons.js` for correct import syntax
@@ -467,10 +503,12 @@ imported from /home/user/paperlyte-v2/scripts/generate-icons.js
 **Severity:** 🟡 **MEDIUM**
 
 From `SECURITY_REVIEW.md`:
+
 - Line 340: "Status: ⚠️ TODO (pre-production)" - Security testing not completed
 - Line 596: "Status: ⚠️ TODO" - Additional security validation needed
 
 **Recommendation:**
+
 1. Complete pre-production security testing checklist
 2. Run penetration testing before launch
 3. Review Content Security Policy (CSP) headers
@@ -482,53 +520,53 @@ From `SECURITY_REVIEW.md`:
 
 ### 5.1 Must Fix Before Production (Critical)
 
-| Priority | Item | Estimated Effort | Owner |
-|----------|------|------------------|-------|
-| 1 | Complete legal constants (13 TODOs) | 2-4 hours | Legal/Business |
-| 2 | Create missing legal documents (4 policies) | 8-16 hours | Legal |
-| 3 | Fix sharp build dependency | 1 hour | DevOps |
-| 4 | Update download URLs | 2 hours | DevOps |
-| 5 | Complete security testing | 4-8 hours | Security Team |
+| Priority | Item                                        | Estimated Effort | Owner          |
+| -------- | ------------------------------------------- | ---------------- | -------------- |
+| 1        | Complete legal constants (13 TODOs)         | 2-4 hours        | Legal/Business |
+| 2        | Create missing legal documents (4 policies) | 8-16 hours       | Legal          |
+| 3        | Fix sharp build dependency                  | 1 hour           | DevOps         |
+| 4        | Update download URLs                        | 2 hours          | DevOps         |
+| 5        | Complete security testing                   | 4-8 hours        | Security Team  |
 
 **Total Effort:** ~20-35 hours
 **Blocking:** Product launch
 
 ### 5.2 Should Fix Before Launch (High)
 
-| Priority | Item | Estimated Effort | Owner |
-|----------|------|------------------|-------|
-| 1 | Add tests for untested components (4) | 4-8 hours | Engineering |
-| 2 | Add tests for analytics modules (6 files) | 4-6 hours | Engineering |
-| 3 | Implement React.lazy() for large components | 2-4 hours | Engineering |
-| 4 | Refactor FeedbackWidget.tsx | 4-6 hours | Engineering |
-| 5 | Fix broken transparency report URL | 1 hour | Marketing |
-| 6 | Add coverage thresholds to vitest.config | 30 mins | Engineering |
+| Priority | Item                                        | Estimated Effort | Owner       |
+| -------- | ------------------------------------------- | ---------------- | ----------- |
+| 1        | Add tests for untested components (4)       | 4-8 hours        | Engineering |
+| 2        | Add tests for analytics modules (6 files)   | 4-6 hours        | Engineering |
+| 3        | Implement React.lazy() for large components | 2-4 hours        | Engineering |
+| 4        | Refactor FeedbackWidget.tsx                 | 4-6 hours        | Engineering |
+| 5        | Fix broken transparency report URL          | 1 hour           | Marketing   |
+| 6        | Add coverage thresholds to vitest.config    | 30 mins          | Engineering |
 
 **Total Effort:** ~16-26 hours
 
 ### 5.3 Post-Launch Improvements (Medium)
 
-| Priority | Item | Estimated Effort | Owner |
-|----------|------|------------------|-------|
-| 1 | Implement WebP/AVIF image optimization | 2-4 hours | Engineering |
-| 2 | Add React.memo() to animation components | 2-3 hours | Engineering |
-| 3 | Extract Terms.tsx content to markdown/CMS | 4-6 hours | Engineering |
-| 4 | Implement additional analytics providers | 4-8 hours | Engineering |
-| 5 | Add tests for utility modules | 2-4 hours | Engineering |
-| 6 | Add responsive images with srcset | 3-5 hours | Engineering |
-| 7 | Update Privacy/Terms revision dates | 30 mins | Legal |
-| 8 | Add Roadmap/Changelog/About/Blog links | 2-4 hours | Marketing |
+| Priority | Item                                      | Estimated Effort | Owner       |
+| -------- | ----------------------------------------- | ---------------- | ----------- |
+| 1        | Implement WebP/AVIF image optimization    | 2-4 hours        | Engineering |
+| 2        | Add React.memo() to animation components  | 2-3 hours        | Engineering |
+| 3        | Extract Terms.tsx content to markdown/CMS | 4-6 hours        | Engineering |
+| 4        | Implement additional analytics providers  | 4-8 hours        | Engineering |
+| 5        | Add tests for utility modules             | 2-4 hours        | Engineering |
+| 6        | Add responsive images with srcset         | 3-5 hours        | Engineering |
+| 7        | Update Privacy/Terms revision dates       | 30 mins          | Legal       |
+| 8        | Add Roadmap/Changelog/About/Blog links    | 2-4 hours        | Marketing   |
 
 **Total Effort:** ~20-35 hours
 
 ### 5.4 Nice to Have (Low)
 
-| Priority | Item | Estimated Effort | Owner |
-|----------|------|------------------|-------|
-| 1 | Monitor and lower bundle size warning limit | 2-4 hours | Engineering |
-| 2 | Add animation performance monitoring | 2-3 hours | Engineering |
-| 3 | Add tests for constants validation | 2-4 hours | Engineering |
-| 4 | Implement automated security scanning | 4-6 hours | DevOps |
+| Priority | Item                                        | Estimated Effort | Owner       |
+| -------- | ------------------------------------------- | ---------------- | ----------- |
+| 1        | Monitor and lower bundle size warning limit | 2-4 hours        | Engineering |
+| 2        | Add animation performance monitoring        | 2-3 hours        | Engineering |
+| 3        | Add tests for constants validation          | 2-4 hours        | Engineering |
+| 4        | Implement automated security scanning       | 4-6 hours        | DevOps      |
 
 **Total Effort:** ~10-17 hours
 
@@ -538,21 +576,22 @@ From `SECURITY_REVIEW.md`:
 
 ### 6.1 Current Technical Debt Metrics
 
-| Metric | Current | Target | Status |
-|--------|---------|--------|--------|
-| Total TODOs | 56+ | <10 | 🔴 High |
-| Critical TODOs | 13 | 0 | 🔴 Blocking |
-| Test Coverage | ~60-70% | 80% | 🟡 Medium |
-| Untested Components | 4 | 0 | 🟡 Medium |
-| Untested Modules | 15 | <5 | 🟡 Medium |
-| Large Files (>300 LOC) | 2 | 0 | 🟡 Medium |
-| Lazy-Loaded Routes | 0 | 5+ | 🟡 Medium |
-| Dependency Vulnerabilities | 0 | 0 | ✅ Good |
-| Bundle Size Warning Limit | 1000 KB | <600 KB | 🟡 High |
+| Metric                     | Current | Target  | Status      |
+| -------------------------- | ------- | ------- | ----------- |
+| Total TODOs                | 56+     | <10     | 🔴 High     |
+| Critical TODOs             | 13      | 0       | 🔴 Blocking |
+| Test Coverage              | ~60-70% | 80%     | 🟡 Medium   |
+| Untested Components        | 4       | 0       | 🟡 Medium   |
+| Untested Modules           | 15      | <5      | 🟡 Medium   |
+| Large Files (>300 LOC)     | 2       | 0       | 🟡 Medium   |
+| Lazy-Loaded Routes         | 0       | 5+      | 🟡 Medium   |
+| Dependency Vulnerabilities | 0       | 0       | ✅ Good     |
+| Bundle Size Warning Limit  | 1000 KB | <600 KB | 🟡 High     |
 
 ### 6.2 Recommended Tracking
 
 Add these metrics to project dashboard:
+
 1. **TODO Count by Severity** (tracked in CI)
 2. **Test Coverage %** (enforce in CI with thresholds)
 3. **Bundle Size** (monitor with size-limit)
@@ -570,23 +609,19 @@ The Paperlyte v2 codebase has **strong fundamentals** with good test coverage fo
 ### 7.2 Immediate Action Items
 
 **This Week:**
+
 1. ✅ Complete legal constants (business team)
 2. ✅ Fix sharp build dependency (DevOps)
 3. ✅ Create missing legal documents (legal team)
 
-**Next Week:**
-4. ✅ Add tests for untested components
-5. ✅ Implement lazy loading for large components
-6. ✅ Complete security testing
+**Next Week:** 4. ✅ Add tests for untested components 5. ✅ Implement lazy loading for large components 6. ✅ Complete security testing
 
-**Post-Launch:**
-7. ✅ Image optimization (WebP/AVIF)
-8. ✅ Refactor oversized components
-9. ✅ Add coverage thresholds
+**Post-Launch:** 7. ✅ Image optimization (WebP/AVIF) 8. ✅ Refactor oversized components 9. ✅ Add coverage thresholds
 
 ### 7.3 Long-Term Technical Health
 
 **Recommended Practices:**
+
 1. **Pre-commit hooks:** Block commits with new TODOs marked as CRITICAL
 2. **CI/CD gates:** Fail builds if coverage drops below threshold
 3. **Monthly debt review:** Dedicate sprint capacity to debt reduction

@@ -31,19 +31,19 @@ engines:
 # validation-sanitization.test.ts: HTML strings are intentionally used to test
 # sanitizeInput and encodeHtmlEntities functions. These are not XSS vulnerabilities.
 exclude_patterns:
-  - identifier: "Security/detect-non-literal-regexp"
+  - identifier: 'Security/detect-non-literal-regexp'
     paths:
-      - "src/utils/validation-utils.test.ts"
-  - identifier: "ESLint8_security_detect-non-literal-regexp"
+      - 'src/utils/validation-utils.test.ts'
+  - identifier: 'ESLint8_security_detect-non-literal-regexp'
     paths:
-      - "src/utils/validation-utils.test.ts"
-  - identifier: "ESLint8_xss_no-mixed-html"
+      - 'src/utils/validation-utils.test.ts'
+  - identifier: 'ESLint8_xss_no-mixed-html'
     paths:
-      - "src/utils/validation-sanitization.test.ts"
+      - 'src/utils/validation-sanitization.test.ts'
   # Disable SCSS-specific stylelint rule for CSS files (this project uses CSS, not SCSS)
-  - identifier: "scss_function-disallowed-list"
+  - identifier: 'scss_function-disallowed-list'
     paths:
-      - "**/*.css"
+      - '**/*.css'
 
 # Exclude paths from code analysis
 exclude_paths:

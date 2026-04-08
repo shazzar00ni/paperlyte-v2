@@ -84,7 +84,7 @@ Where:
 Use this exact mapping to generate badges deterministically:
 
 | Status Value (from front matter) | STATUS_TEXT | STATUS_URL_ENCODED | COLOR_CODE | Complete Badge Markdown |
-|-----------------------------------|-------------|--------------------|-----------|-----------------------|
+| --------------------------------- | ----------- | ------------------ | ---------- | ----------------------- |
 | `Completed` | `Completed` | `Completed` | `brightgreen` | `![Status: Completed](https://img.shields.io/badge/status-Completed-brightgreen)` |
 | `In progress` | `In progress` | `In%20progress` | `yellow` | `![Status: In progress](https://img.shields.io/badge/status-In%20progress-yellow)` |
 | `Planned` | `Planned` | `Planned` | `blue` | `![Status: Planned](https://img.shields.io/badge/status-Planned-blue)` |

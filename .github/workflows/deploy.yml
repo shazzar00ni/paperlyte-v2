@@ -6,10 +6,15 @@ on:
     branches: [main]  # Production
   workflow_dispatch:  # Manual trigger
 
+permissions: {}
+
 jobs:
   deploy-production:
     name: Deploy to Production
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
     environment:
       name: production
       url: https://paperlyte.com

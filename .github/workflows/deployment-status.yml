@@ -3,6 +3,8 @@ name: Deployment Status
 on:
   deployment_status:
 
+permissions: {}
+
 jobs:
   notify-deployment:
     name: Deployment Notification

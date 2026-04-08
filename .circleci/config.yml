@@ -116,9 +116,6 @@ jobs:
       - checkout
       - attach-build
       - run:
-          name: Install Lighthouse CI
-          command: npm install -g @lhci/cli@0.15
-      - run:
           name: Start preview server (background)
           command: npm run preview -- --port 4173
           background: true
@@ -127,7 +124,7 @@ jobs:
           command: npx wait-on http://localhost:4173 --timeout 30000
       - run:
           name: Run Lighthouse CI
-          command: lhci autorun
+          command: npx lhci autorun
       - store_artifacts:
           path: .lighthouseci
           destination: lighthouse
@@ -139,11 +136,9 @@ jobs:
     steps:
       - checkout
       - attach-build
-      - restore-npm-cache
       - run:
           name: Install npm deps (in Playwright image)
           command: npm ci --prefer-offline
-      - save-npm-cache
       - run:
           name: Start preview server (background)
           command: node_modules/.bin/vite preview --port 4173

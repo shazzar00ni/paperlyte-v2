@@ -132,7 +132,7 @@ jobs:
           path: .lighthouseci
           destination: lighthouse
 
-  # E2E tests with Playwright (Chromium-only on CI for speed; full matrix on main)
+  # E2E tests with Playwright (Chromium-only on CI for speed)
   e2e-tests:
     executor: playwright-executor
     parallelism: 2

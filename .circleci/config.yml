@@ -139,9 +139,11 @@ jobs:
     steps:
       - checkout
       - attach-build
+      - restore-npm-cache
       - run:
           name: Install npm deps (in Playwright image)
           command: npm ci --prefer-offline
+      - save-npm-cache
       - run:
           name: Start preview server (background)
           command: node_modules/.bin/vite preview --port 4173

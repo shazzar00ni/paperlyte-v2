@@ -58,7 +58,10 @@ jobs:
           args:
             -Dsonar.projectKey=shazzar00ni_paperlyte-v2
             -Dsonar.organization=shazzar00ni
-            -Dsonar.coverage.exclusions=scripts/maintenance/**
+            -Dsonar.sources=src
+            -Dsonar.tests=src,scripts
+            -Dsonar.test.inclusions=**/*.test.ts,**/*.test.tsx
+            -Dsonar.coverage.exclusions=scripts/maintenance/**,**/*.test.ts,**/*.test.tsx,src/test/setup.ts
             #-Dsonar.sources= # optional, default is project base directory
             # Comma-separated paths to directories containing test source files.
             #-Dsonar.tests= # optional. For more info about Code Coverage, please refer to https://docs.sonarcloud.io/enriching/test-coverage/overview/

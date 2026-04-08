@@ -121,13 +121,13 @@ Create a web app manifest for PWA support (optional but recommended):
 
 ## Tools for Image Creation
 
-### Design Tools (recommended):
+### Design Tools (recommended)
 
 - **Figma** - Professional design tool (free tier available)
 - **Canva** - Quick mockups and social media images
 - **Adobe Illustrator** - For vector graphics
 
-### Conversion Tools (SVG to PNG):
+### Conversion Tools (SVG to PNG)
 
 ```bash
 # If ImageMagick is available:
@@ -157,9 +157,9 @@ Once all image assets are created:
    ```
 
 3. Test social media previews:
-   - Facebook Debugger: https://developers.facebook.com/tools/debug/
-   - Twitter Card Validator: https://cards-dev.twitter.com/validator
-   - LinkedIn Post Inspector: https://www.linkedin.com/post-inspector/
+   - Facebook Debugger: <https://developers.facebook.com/tools/debug/>
+   - Twitter Card Validator: <https://cards-dev.twitter.com/validator>
+   - LinkedIn Post Inspector: <https://www.linkedin.com/post-inspector/>
 
 ## Priority
 

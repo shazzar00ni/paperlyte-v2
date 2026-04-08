@@ -16,6 +16,7 @@ import { FAQ } from '@components/sections/FAQ'
 import { CTA } from '@components/sections/CTA'
 import { FeedbackWidget } from '@components/ui/FeedbackWidget'
 import { useAnalytics } from '@hooks/useAnalytics'
+import { shouldShowAnalytics } from '@utils/env'
 
 /**
  * Application root component that composes the page layout and sections.
@@ -55,7 +56,7 @@ function App() {
       </main>
       <Footer />
       <FeedbackWidget />
-      <Analytics />
+      {shouldShowAnalytics() && <Analytics />}
     </ErrorBoundary>
   )
 }

@@ -2,6 +2,52 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-04-08
+
+### Analysis: Systemic Regressions in Open Branches (Automated Daily Audit)
+
+- **Status:** Critical — Action Required
+- **Summary:** An automated repository-wide audit of 238 unmerged branches confirms the following systemic regressions.
+
+| Regression Type                | Count | Severity    | Notes                                               |
+| :----------------------------- | :---- | :---------- | :-------------------------------------------------- |
+| Orphan Branches                | 238   | 🔴 Critical | No common ancestor with `main`.                     |
+| Missing `.npmrc`               | 95    | 🔴 Critical | Breaks dependency resolution.                       |
+| Missing `docs/ROADMAP.md`      | 89    | 🟠 High     | Core project documentation.                         |
+| Missing `gitVersionControl.md` | 104   | 🟠 High     | Core Git workflow documentation.                    |
+| Missing `review.md`            | 104   | 🟡 Medium   | AI PR reviewer instructions.                        |
+| Reverted Security Helpers      | 103   | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers. |
+| Unreadable navigation.ts       | 8     | 🔴 Critical | File missing or unreadable.                         |
+
+- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.
+
+### Qualitative Reviews
+
+In addition to the systemic audit, the following PRs were reviewed for technical merit:
+
+- **PR #661 (`origin/claude/fix-lighthouse-failure-b5S6v`)**
+  - **Status:** Approved (Pending Systemic Fixes)
+  - **Summary:** Implements a custom hybrid SVG icon system and Font Awesome bundle optimizations. Resolves Lighthouse performance failures.
+  - **Regressions:** A previous version removed multi-token icon name support; this must be verified/restored.
+
+- **PR #662 (`origin/claude/fix-ci-workflow-permissions-emVdO`)**
+  - **Status:** Approved
+  - **Summary:** Hardens CI security by implementing least-privilege GitHub Actions permissions.
+
+- **PR #663 (`origin/claude/fix-open-redirect-TX551`)**
+  - **Status:** Approved
+  - **Summary:** Fixes open redirect vulnerabilities in navigation utilities.
+
+- **PR #664 (`origin/claude/fix-workflow-e2e-tests-xHhZw`)**
+  - **Status:** Changes Requested
+  - **Summary:** Improves E2E test stability but introduces a documentation regression by deleting extensive JSDoc.
+
+- **PR #680 (`origin/claude/semantic-versioning-releases-lTFRC`)**
+  - **Status:** Blocked / Changes Requested
+  - **Summary:** Implements release automation but introduces suspicious dependency downgrades (e.g., `vitest` from 2.1.8 to 4.1.0).
+
+---
+
 ## 2026-03-05
 
 ### Analysis: Accidental File Deletions in Open Branches (Jules Daily PR Reviews)

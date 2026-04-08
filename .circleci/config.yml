@@ -1,0 +1,283 @@
+version: 2.1
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Paperlyte Landing Page — CircleCI Pipeline
+#
+# Pipeline topology (dependency graph):
+#
+#   [lint] ──┐
+#            ├──► [build] ──┬──► [size-check]
+#   [test] ──┘              ├──► [lighthouse]
+#                           └──► [e2e]
+#
+# • lint and test run in parallel (no shared dependency) to cut wall-clock time.
+# • build is gated on both lint and test succeeding.
+# • size-check, lighthouse, and e2e all consume the pre-built dist/ artifact
+#   produced by build, so they run in parallel after build succeeds.
+#
+# Caching strategy:
+# • npm dependencies are cached by the lock-file hash — cache is shared across
+#   ALL jobs on the same branch, so `npm ci` only runs once per pipeline on a
+#   cache miss.
+# • The compiled dist/ artifact is persisted to the workspace so downstream
+#   jobs never rebuild the application.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── Orbs ──────────────────────────────────────────────────────────────────────
+orbs:
+  node: circleci/node@7
+
+# ── Reusable YAML anchors ─────────────────────────────────────────────────────
+# Shared executor used by every job.
+executors:
+  node-executor:
+    docker:
+      - image: cimg/node:20.19
+    resource_class: medium
+    working_directory: ~/project
+
+# ── Commands (reusable step sequences) ───────────────────────────────────────
+commands:
+  restore-npm-cache:
+    description: Restore node_modules from cache (keyed on package-lock.json)
+    steps:
+      - restore_cache:
+          keys:
+            # Exact lock-file match — fastest restore.
+            - npm-deps-v1-{{ checksum "package-lock.json" }}
+            # Prefix fallback — avoids a full `npm ci` when only one dep changed.
+            - npm-deps-v1-
+
+  save-npm-cache:
+    description: Persist node_modules to cache
+    steps:
+      - save_cache:
+          key: npm-deps-v1-{{ checksum "package-lock.json" }}
+          paths:
+            - ~/.npm
+
+  install-deps:
+    description: Restore npm cache, run npm ci if needed, then save cache
+    steps:
+      - restore-npm-cache
+      - run:
+          name: Install dependencies
+          # `npm ci` respects the lock file and is always safe for CI.
+          command: npm ci
+      - save-npm-cache
+
+  attach-dist:
+    description: Attach workspace and verify dist/ is present
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - run:
+          name: Verify dist/ artifact
+          command: |
+            if [ ! -d dist ]; then
+              echo "dist/ directory not found — workspace attachment failed." >&2
+              exit 1
+            fi
+            echo "dist/ contents:"
+            ls -lh dist/
+
+# ── Jobs ──────────────────────────────────────────────────────────────────────
+jobs:
+
+  # ── lint ────────────────────────────────────────────────────────────────────
+  # Runs ESLint, TypeScript type-checking, Prettier format check, and npm audit
+  # in a single job.  These four checks share the same node_modules so there is
+  # no benefit to splitting them across multiple jobs.
+  lint:
+    executor: node-executor
+    steps:
+      - checkout
+      - install-deps
+      - run:
+          name: ESLint
+          command: npm run lint
+      - run:
+          name: TypeScript type check
+          command: npx tsc --noEmit
+      - run:
+          name: Prettier format check
+          command: npm run format:check
+      - run:
+          name: npm security audit (high+)
+          # Fail only on high/critical advisories; warn on moderate.
+          command: npm audit --audit-level=high
+
+  # ── test ────────────────────────────────────────────────────────────────────
+  # Vitest unit/integration tests with v8 coverage.
+  # Coverage artifacts are stored so they can be reviewed or uploaded externally.
+  test:
+    executor: node-executor
+    steps:
+      - checkout
+      - install-deps
+      - run:
+          name: Run unit tests with coverage
+          # --run disables watch mode; --coverage.reportOnFailure ensures we
+          # always get a report even when some tests fail.
+          command: npm run test:coverage -- --run --coverage.reportOnFailure
+      - store_test_results:
+          # CircleCI parses JUnit XML for test insights / flaky-test detection.
+          path: junit.xml
+      - store_artifacts:
+          path: coverage/
+          destination: coverage
+      - store_artifacts:
+          path: junit.xml
+          destination: junit.xml
+
+  # ── build ───────────────────────────────────────────────────────────────────
+  # Generates pre-build assets (icons, mockups), type-checks + Vite build,
+  # injects dates, and generates the sitemap.  The resulting dist/ directory is
+  # persisted to the workspace so downstream jobs can skip rebuilding.
+  build:
+    executor: node-executor
+    steps:
+      - checkout
+      - install-deps
+      - run:
+          name: Build application (prebuild → tsc + vite → inject-dates → sitemap)
+          command: npm run build
+          environment:
+            NODE_ENV: production
+      - run:
+          name: Summarise build output
+          command: |
+            echo "=== dist/ top-level ==="
+            ls -lh dist/
+            echo ""
+            echo "=== dist/assets (largest first) ==="
+            ls -lhS dist/assets/ | head -20
+      - persist_to_workspace:
+          # Persisting dist/ lets size-check, lighthouse, and e2e reuse it
+          # without repeating the ~60-second build.
+          root: ~/project
+          paths:
+            - dist
+      - store_artifacts:
+          path: dist/
+          destination: dist
+
+  # ── size-check ──────────────────────────────────────────────────────────────
+  # Runs size-limit against the pre-built dist/.
+  # Budget: JS < 150 KB (gzip), CSS < 30 KB (gzip) — defined in package.json.
+  size-check:
+    executor: node-executor
+    steps:
+      - checkout
+      - install-deps
+      - attach-dist
+      - run:
+          name: Bundle size check (size-limit)
+          command: npm run size
+      - run:
+          name: List JS bundles over 200 KB (performance budget warning)
+          command: |
+            LARGE=$(find dist/assets -name "*.js" -size +204800c 2>/dev/null || true)
+            if [ -n "$LARGE" ]; then
+              echo "WARNING: the following JS bundles exceed 200 KB:"
+              echo "$LARGE" | xargs ls -lh
+            else
+              echo "All JS bundles are within the 200 KB performance budget."
+            fi
+
+  # ── lighthouse ──────────────────────────────────────────────────────────────
+  # Runs Lighthouse CI (3 runs, desktop preset) against the production preview
+  # server.  Assertions are defined in .lighthouserc.json.
+  lighthouse:
+    docker:
+      # Use a browser-capable image so Chrome is available without extra setup.
+      - image: cimg/node:20.19-browsers
+    resource_class: medium
+    working_directory: ~/project
+    steps:
+      - checkout
+      - install-deps
+      - attach-dist
+      - run:
+          name: Start Vite preview server
+          command: |
+            npm run preview -- --host 0.0.0.0 --port 4173 &
+            npx wait-on http://127.0.0.1:4173 --timeout 30000
+      - run:
+          name: Run Lighthouse CI
+          command: npx @lhci/cli@0.15.1 autorun --config=./.lighthouserc.json
+          environment:
+            # Headless Chrome flags required in CI container.
+            CHROME_FLAGS: "--no-sandbox --disable-dev-shm-usage --headless=new"
+      - store_artifacts:
+          path: .lighthouseci/
+          destination: lighthouse-results
+
+  # ── e2e ─────────────────────────────────────────────────────────────────────
+  # Playwright end-to-end tests across 5 browser/device profiles (Chromium,
+  # Firefox, WebKit, Mobile Chrome, Mobile Safari).
+  e2e:
+    docker:
+      - image: mcr.microsoft.com/playwright:v1.48.0-noble
+    resource_class: medium
+    working_directory: ~/project
+    environment:
+      # Tell Playwright where the preview server is running.
+      BASE_URL: http://127.0.0.1:4173
+      # Disable colour output from Playwright in plain-text CI logs.
+      FORCE_COLOR: "0"
+    steps:
+      - checkout
+      # The Playwright image ships with browsers pre-installed; still need npm.
+      - restore-npm-cache
+      - run:
+          name: Install npm dependencies
+          command: npm ci
+      - save-npm-cache
+      - attach-dist
+      - run:
+          name: Start Vite preview server
+          command: |
+            npm run preview -- --host 0.0.0.0 --port 4173 &
+            npx wait-on http://127.0.0.1:4173 --timeout 30000
+      - run:
+          name: Run Playwright E2E tests
+          # CI=true activates retries (2) and limits workers (2) per playwright.config.ts.
+          command: CI=true npx playwright test
+      - store_test_results:
+          path: playwright-report/
+      - store_artifacts:
+          path: playwright-report/
+          destination: playwright-report
+      - store_artifacts:
+          path: test-results/
+          destination: playwright-artifacts
+
+# ── Workflows ─────────────────────────────────────────────────────────────────
+workflows:
+
+  # ── ci ──────────────────────────────────────────────────────────────────────
+  # Triggered on every push.  Runs the full quality gate.
+  ci:
+    jobs:
+      # Stage 1 — run lint and test in parallel (no dependencies between them).
+      - lint
+      - test
+
+      # Stage 2 — build only after both lint and test pass.
+      - build:
+          requires:
+            - lint
+            - test
+
+      # Stage 3 — quality gates that all depend on the build artifact,
+      # executed in parallel to minimise total pipeline duration.
+      - size-check:
+          requires:
+            - build
+      - lighthouse:
+          requires:
+            - build
+      - e2e:
+          requires:
+            - build

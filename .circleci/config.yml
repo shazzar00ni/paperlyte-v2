@@ -154,7 +154,7 @@ jobs:
           command: |
             npx playwright test \
               --project=chromium \
-              --shard=$(echo $CIRCLE_NODE_INDEX+1 | bc)/$(echo $CIRCLE_NODE_TOTAL)
+              --shard=$((CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL
           environment:
             BASE_URL: "http://localhost:4173"
       - store_artifacts:

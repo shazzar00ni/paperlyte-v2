@@ -47,17 +47,42 @@ jobs:
 
   test:
     executor: node-executor
+    parallelism: 4
     steps:
       - checkout
       - attach_workspace:
           at: .
       - run:
-          name: Unit tests with coverage
-          command: npm run test:coverage -- --reporter=junit --outputFile=test-results/junit.xml
+          name: Discover and run tests
+          # circleci tests glob discovers all test files (the "discover command").
+          # circleci tests run splits them across parallel nodes by historical
+          # timing data and appends the file list to the vitest command.
+          command: |
+            mkdir -p test-results
+            circleci tests glob "src/**/*.{test,spec}.{ts,tsx}" | \
+              circleci tests run \
+                --command="npx vitest run --reporter=default --reporter=junit --outputFile=test-results/junit.xml" \
+                --split-by=timings \
+                --verbose
           environment:
             CI: "true"
       - store_test_results:
           path: test-results
+      - store_artifacts:
+          path: test-results
+          destination: test-results
+
+  coverage:
+    executor: node-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Coverage report
+          command: npm run test:coverage
+          environment:
+            CI: "true"
       - store_artifacts:
           path: coverage
           destination: coverage
@@ -114,11 +139,15 @@ workflows:
       - test:
           requires:
             - install
+      - coverage:
+          requires:
+            - install
       - build:
           requires:
             - lint
             - typecheck
             - test
+            - coverage
       - e2e:
           requires:
             - build

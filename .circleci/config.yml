@@ -157,8 +157,6 @@ jobs:
               --shard=$(echo $CIRCLE_NODE_INDEX+1 | bc)/$(echo $CIRCLE_NODE_TOTAL)
           environment:
             BASE_URL: "http://localhost:4173"
-      - store_test_results:
-          path: playwright-report
       - store_artifacts:
           path: playwright-report
           destination: playwright-report

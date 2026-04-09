@@ -2,7 +2,7 @@
  * Extended tests for EmailCapture section
  * Focuses on the loading state, success state, and error-handling branches.
  */
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { EmailCapture } from './EmailCapture'

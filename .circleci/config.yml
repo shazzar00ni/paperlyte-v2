@@ -7,7 +7,7 @@ orbs:
 executors:
   node-executor:
     docker:
-      - image: cimg/node:22.14
+      - image: cimg/node:22.14@sha256:d032e271ca3d48c82a5fa392ae05d53e2df08f8540dbc1f2f8c158dea3dabd40
     resource_class: medium
 
 jobs:
@@ -114,7 +114,7 @@ jobs:
 
   e2e:
     docker:
-      - image: mcr.microsoft.com/playwright:v1.58.2-noble
+      - image: mcr.microsoft.com/playwright:v1.58.2-noble@sha256:5bdfa9e125367842206f66ac7e7022c18cd5cf2e13198fba9b68b8f0dc8b0468
     resource_class: medium
     steps:
       - checkout

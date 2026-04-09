@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { vi, beforeEach, afterEach } from 'vitest'
-import { EmailCapture } from './EmailCapture'
+import { EmailCapture } from '@components/ui/EmailCapture/EmailCapture'
 
 // Mock analytics to prevent side effects
 vi.mock('@utils/analytics', () => ({

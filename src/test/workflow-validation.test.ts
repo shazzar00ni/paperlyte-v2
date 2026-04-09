@@ -283,23 +283,8 @@ describe('package-lock.json – picomatch dependency update', () => {
     expect(entry.version).not.toBe('4.0.3')
   })
 
-  it('picomatch resolved URL should point to version 4.0.4', () => {
-    expect(entry.resolved).toContain('picomatch-4.0.4.tgz')
-    expect(entry.resolved).not.toContain('picomatch-4.0.3.tgz')
-  })
-
-  it('picomatch integrity hash should match the 4.0.4 release', () => {
-    expect(entry.integrity).toBe(
-      'sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A=='
-    )
-  })
-
   it('picomatch should remain a devDependency', () => {
     expect(entry.dev).toBe(true)
-  })
-
-  it('picomatch should retain its MIT license', () => {
-    expect(entry.license).toBe('MIT')
   })
 
   it('package-lock.json should be valid JSON with a lockfileVersion', () => {

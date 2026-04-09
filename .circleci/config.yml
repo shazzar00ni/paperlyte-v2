@@ -116,6 +116,16 @@ jobs:
       - attach_workspace:
           at: .
       - run:
+          name: Start preview server
+          command: |
+            npx vite preview --host 0.0.0.0 --port 4173 &
+            for i in {1..30}; do
+              curl -fsS http://127.0.0.1:4173 >/dev/null && exit 0
+              sleep 1
+            done
+            echo "Preview server did not start in time" >&2
+            exit 1
+      - run:
           name: E2E tests
           command: npm run test:e2e
           environment:

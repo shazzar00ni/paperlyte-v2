@@ -109,7 +109,7 @@ jobs:
 
   # Bundle size check
   size-check:
-    executor: node-executor
+    executor: node-browsers-executor
     steps:
       - checkout
       - attach-build

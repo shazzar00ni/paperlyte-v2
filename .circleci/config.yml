@@ -57,9 +57,14 @@ jobs:
           # circleci tests glob discovers all test files (the "discover command").
           # circleci tests run splits them across parallel nodes by historical
           # timing data and appends the file list to the vitest command.
+          # The glob matches vitest's include pattern across the whole repo
+          # (not just src/) so files like scripts/__tests__/*.test.ts are included.
+          # e2e specs are stripped out because Playwright owns those.
           command: |
             mkdir -p test-results
-            circleci tests glob "src/**/*.{test,spec}.{ts,tsx}" | \
+            circleci tests glob \
+              "**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}" | \
+              grep -v "^tests/e2e/" | \
               circleci tests run \
                 --command="npx vitest run --reporter=default --reporter=junit --outputFile=test-results/junit.xml" \
                 --split-by=timings \
@@ -72,6 +77,9 @@ jobs:
           path: test-results
           destination: test-results
 
+  # Coverage runs as a separate single-node job so the report covers the full
+  # suite. The parallelised `test` job only runs a subset of tests per node,
+  # which would produce incomplete coverage if merged naïvely.
   coverage:
     executor: node-executor
     steps:
@@ -110,37 +118,25 @@ jobs:
     resource_class: medium
     steps:
       - checkout
+      # Attach workspace first so it doesn't overwrite dependencies.
+      # The workspace carries node_modules (from install) and dist (from build).
+      # Playwright browsers are pre-installed in the Docker image.
       - attach_workspace:
           at: .
       - run:
           name: Start preview server
           command: |
-            npx vite preview --host 0.0.0.0 --port 4173 &
-            for i in {1..30}; do
-              curl -fsS http://127.0.0.1:4173 >/dev/null && exit 0
-              sleep 1
-            done
-            echo "Preview server did not start in time" >&2
-            exit 1
-      - run:
-          name: Start preview server
-          command: |
-            npm run preview > /tmp/preview.log 2>&1 &
-            for i in $(seq 1 60); do
-              if curl -fsS http://127.0.0.1:4173 > /dev/null; then
-                exit 0
-              fi
-              sleep 1
-            done
-            echo "Preview server failed to start"
-            cat /tmp/preview.log
-            exit 1
+            npm run preview -- --host 0.0.0.0 --port 4173 &
+            npx wait-on http://127.0.0.1:4173 --timeout 30000
       - run:
           name: E2E tests
           command: npm run test:e2e
           environment:
             CI: "true"
             BASE_URL: "http://127.0.0.1:4173"
+      - store_test_results:
+          # JUnit XML is written by the junit reporter added to playwright.config.ts
+          path: test-results
       - store_artifacts:
           path: playwright-report
           destination: playwright-report

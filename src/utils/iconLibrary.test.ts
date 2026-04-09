@@ -204,9 +204,29 @@ describe('iconLibrary', () => {
       expect(solidIcons.length).toBeGreaterThanOrEqual(31)
     })
 
-    it('should have exactly 8 brand icons registered', () => {
-      // github, twitter, apple, windows + instagram, x-twitter, facebook, linkedin
-      expect(brandIconNames.size).toBe(8)
+    it('should have exactly 8 brand icons registered with correct names', () => {
+      const expectedBrands = [
+        'github',
+        'twitter',
+        'apple',
+        'windows',
+        'instagram',
+        'x-twitter',
+        'facebook',
+        'linkedin',
+      ]
+      expectedBrands.forEach((name) => {
+        expect(brandIconNames.has(name), `"${name}" should be in brandIconNames`).toBe(true)
+      })
+      expect(brandIconNames.size).toBe(expectedBrands.length)
+    })
+
+    it('should have all brand icons present in validIconNames', () => {
+      brandIconNames.forEach((name) => {
+        expect(validIconNames.has(name), `brand icon "${name}" should be in validIconNames`).toBe(
+          true
+        )
+      })
     })
 
     it('should maintain icon count in validIconNames', () => {

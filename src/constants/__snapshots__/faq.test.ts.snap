@@ -30,7 +30,7 @@ exports[`FAQ Constants > Snapshot Tests > should match FAQ_ITEMS snapshot 1`] = 
     "question": "What platforms do you support?",
   },
   {
-    "answer": "End-to-end encryption before anything leaves your device. We use zero-knowledge architecture—we literally cannot read your notes even if we wanted to. Your data stays yours.",
+    "answer": "Your notes are encrypted on your device before they ever leave it. We use a zero-knowledge design — meaning even we can't read your notes, ever. Your data stays yours.",
     "category": "privacy",
     "id": "data-privacy",
     "question": "How is my data protected?",
@@ -48,7 +48,7 @@ exports[`FAQ Constants > Snapshot Tests > should match FAQ_ITEMS snapshot 1`] = 
     "question": "Will there be a mobile app?",
   },
   {
-    "answer": "Speed. We load 7x faster than Notion. Simplicity. We removed features instead of adding them. Privacy. End-to-end encryption is built-in, not an afterthought. We're not trying to be an all-in-one workspace—we're focused on doing one thing perfectly: capturing your thoughts.",
+    "answer": "Speed: we load 7x faster than Notion. Simplicity: we removed features instead of adding them. Privacy: end-to-end encryption is built-in, not an afterthought. We're not trying to be an all-in-one workspace — we do one thing perfectly: capture your thoughts.",
     "category": "general",
     "id": "vs-competitors",
     "question": "How is this different from Notion/Obsidian/Evernote?",

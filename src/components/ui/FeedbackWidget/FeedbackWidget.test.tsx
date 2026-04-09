@@ -295,7 +295,7 @@ describe('FeedbackWidget', () => {
       await user.click(submitButton)
 
       await waitFor(() => {
-        expect(screen.getByText(/failed to submit feedback/i)).toBeInTheDocument()
+        expect(screen.getByText(/couldn't send your feedback/i)).toBeInTheDocument()
       })
     })
 
@@ -443,7 +443,7 @@ describe('FeedbackWidget', () => {
         const textarea = screen.getByRole('textbox')
         expect(textarea).toHaveAttribute('id', 'feedback-message')
 
-        const label = screen.getByText(/describe the issue you encountered/i)
+        const label = screen.getByText(/what went wrong/i)
         expect(label).toHaveAttribute('for', 'feedback-message')
       })
     })

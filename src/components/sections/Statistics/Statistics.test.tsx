@@ -30,7 +30,9 @@ describe('Statistics', () => {
         expect(screen.getByText(label)).toBeInTheDocument()
       })
 
-      expect(statisticLabels).toHaveLength(4)
+      expect(
+        screen.getAllByText(/^(Active Users|Notes Created|Uptime|User Rating)$/)
+      ).toHaveLength(4)
     })
 
     it('should render Active Users statistic label', () => {

@@ -102,13 +102,16 @@ describe('ci.yml – permission structure', () => {
       assertJobExists(content, jobId, 'ci.yml')
       // These jobs rely on the workflow-level contents: read (no separate job-level block needed)
       expect(hasWorkflowLevelPermissions(content)).toBe(true)
-    },
+    }
   )
 
-  it.each(['test', 'e2e', 'ci-success'])('%s job should have "contents: read" permission', (jobId) => {
-    const block = assertJobExists(content, jobId, 'ci.yml')
-    expect(jobHasContentsReadPermission(block)).toBe(true)
-  })
+  it.each(['test', 'e2e', 'ci-success'])(
+    '%s job should have "contents: read" permission',
+    (jobId) => {
+      const block = assertJobExists(content, jobId, 'ci.yml')
+      expect(jobHasContentsReadPermission(block)).toBe(true)
+    }
+  )
 
   it('should define the expected set of jobs', () => {
     const expectedJobs = [
@@ -134,7 +137,7 @@ describe('ci.yml – permission structure', () => {
       const block = assertJobExists(content, jobId, 'ci.yml')
       expect(
         jobHasContentsReadPermission(block),
-        `Job "${jobId}" is missing "contents: read" permission`,
+        `Job "${jobId}" is missing "contents: read" permission`
       ).toBe(true)
     }
   })
@@ -175,7 +178,7 @@ describe('pr-quality-check.yml – permission structure', () => {
       assertJobExists(content, jobId, 'pr-quality-check.yml')
       // These jobs rely on the workflow-level contents: read (no separate job-level block needed)
       expect(hasWorkflowLevelPermissions(content)).toBe(true)
-    },
+    }
   )
 
   it('dependency-review job should retain its existing permissions', () => {
@@ -185,7 +188,12 @@ describe('pr-quality-check.yml – permission structure', () => {
   })
 
   it('should define all expected jobs', () => {
-    const expectedJobs = ['pr-metadata', 'dependency-review', 'bundle-size-check', 'quality-summary']
+    const expectedJobs = [
+      'pr-metadata',
+      'dependency-review',
+      'bundle-size-check',
+      'quality-summary',
+    ]
     for (const jobId of expectedJobs) {
       assertJobExists(content, jobId, 'pr-quality-check.yml')
     }
@@ -213,7 +221,7 @@ describe('pr-quality-check.yml – permission structure', () => {
     const hasPermissionsBlock = /^\s{4}permissions:/m.test(block)
     expect(
       hasPermissionsBlock,
-      'dependency-review job is missing an explicit permissions block',
+      'dependency-review job is missing an explicit permissions block'
     ).toBe(true)
   })
 })
@@ -264,7 +272,7 @@ describe('package-lock.json – picomatch dependency update', () => {
 
   it('picomatch integrity hash should match the 4.0.4 release', () => {
     expect(entry.integrity).toBe(
-      'sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A==',
+      'sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A=='
     )
   })
 

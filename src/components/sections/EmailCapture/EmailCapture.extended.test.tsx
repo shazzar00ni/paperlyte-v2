@@ -3,13 +3,14 @@
  * Focuses on the loading state, success state, and error-handling branches.
  */
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, act, fireEvent, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { EmailCapture } from './EmailCapture'
 
 describe('EmailCapture extended', () => {
   afterEach(() => {
     vi.restoreAllMocks()
+    vi.useRealTimers()
   })
 
   // ----------------------------------------------------------------
@@ -17,48 +18,45 @@ describe('EmailCapture extended', () => {
   // ----------------------------------------------------------------
   it('shows loading text while form is being submitted', async () => {
     vi.useFakeTimers()
-    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
     render(<EmailCapture />)
 
-    const emailInput = screen.getByPlaceholderText('your@email.com')
-    await user.type(emailInput, 'user@example.com')
-
-    const submitButton = screen.getByRole('button', { name: /Join the Waitlist/i })
-    // Start the click but don't advance timers yet
-    const clickPromise = user.click(submitButton)
-
-    // The loading state should be visible immediately after click starts
-    await waitFor(() => {
-      expect(screen.queryByRole('button', { name: /Joining\.\.\./i })).not.toBeNull()
+    // Use fireEvent.change to set the controlled input value synchronously
+    fireEvent.change(screen.getByPlaceholderText('your@email.com'), {
+      target: { value: 'user@example.com' },
     })
 
-    // Advance to finish
-    vi.advanceTimersByTime(2000)
-    await clickPromise
-    vi.useRealTimers()
+    // Click submit and flush React state updates via act
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+    })
+
+    expect(screen.getByRole('button', { name: /Joining\.\.\./i })).toBeInTheDocument()
+
+    // Advance timers to complete the simulated API call
+    await act(async () => {
+      vi.advanceTimersByTime(1500)
+    })
   })
 
   it('disables submit button while loading', async () => {
     vi.useFakeTimers()
-    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
     render(<EmailCapture />)
 
-    const emailInput = screen.getByPlaceholderText('your@email.com')
-    await user.type(emailInput, 'user@example.com')
-
-    const submitButton = screen.getByRole('button', { name: /Join the Waitlist/i })
-    const clickPromise = user.click(submitButton)
-
-    await waitFor(() => {
-      const loadingButton = screen.queryByRole('button', { name: /Joining\.\.\./i })
-      if (loadingButton) {
-        expect(loadingButton).toBeDisabled()
-      }
+    fireEvent.change(screen.getByPlaceholderText('your@email.com'), {
+      target: { value: 'user@example.com' },
     })
 
-    vi.advanceTimersByTime(2000)
-    await clickPromise
-    vi.useRealTimers()
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+    })
+
+    const loadingButton = screen.getByRole('button', { name: /Joining\.\.\./i })
+    expect(loadingButton).toBeDisabled()
+
+    // Advance timers to complete the simulated API call
+    await act(async () => {
+      vi.advanceTimersByTime(1500)
+    })
   })
 
   // ----------------------------------------------------------------

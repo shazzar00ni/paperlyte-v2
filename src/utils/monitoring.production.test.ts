@@ -4,7 +4,7 @@
  * The existing monitoring.test.ts covers development (DEV=true) paths.
  * This file covers the production paths by setting import.meta.env.DEV = false.
  */
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, vi, beforeAll, beforeEach, afterEach, afterAll } from 'vitest'
 
 // Mock Sentry
 vi.mock('@sentry/react', () => ({
@@ -17,10 +17,6 @@ vi.mock('./analytics', () => ({
   trackEvent: vi.fn(),
 }))
 
-// Override import.meta.env to simulate production
-vi.stubEnv('DEV', false as unknown as string)
-vi.stubEnv('PROD', true as unknown as string)
-
 describe('monitoring (production paths)', () => {
   // We need to import the module AFTER stubbing the env so that
   // the module-level `import.meta.env.DEV` evaluates to false.
@@ -31,7 +27,6 @@ describe('monitoring (production paths)', () => {
   let logPerformance: typeof import('./monitoring').logPerformance
   let logEvent: typeof import('./monitoring').logEvent
   let trackEvent: ReturnType<typeof vi.fn>
-  let Sentry: { captureException: ReturnType<typeof vi.fn>; addBreadcrumb: ReturnType<typeof vi.fn> }
 
   let consoleSpy: {
     log: ReturnType<typeof vi.spyOn>
@@ -40,6 +35,16 @@ describe('monitoring (production paths)', () => {
     group: ReturnType<typeof vi.spyOn>
     groupEnd: ReturnType<typeof vi.spyOn>
   }
+
+  beforeAll(() => {
+    // Override import.meta.env to simulate production before any imports
+    vi.stubEnv('DEV', false)
+    vi.stubEnv('PROD', true)
+  })
+
+  afterAll(() => {
+    vi.unstubAllEnvs()
+  })
 
   beforeEach(async () => {
     vi.clearAllMocks()
@@ -60,8 +65,6 @@ describe('monitoring (production paths)', () => {
 
     const analyticsModule = await import('./analytics')
     trackEvent = analyticsModule.trackEvent as ReturnType<typeof vi.fn>
-
-    Sentry = (await import('@sentry/react')) as unknown as typeof Sentry
   })
 
   afterEach(() => {

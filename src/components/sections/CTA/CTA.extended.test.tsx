@@ -83,8 +83,7 @@ describe('CTA extended', () => {
   it('buttons are of type button', () => {
     render(<CTA />)
     const buttons = screen.getAllByRole('button')
-    // The text-link button inside CTA has explicit type="button"
-    const textLinkButton = screen.getByRole('button', { name: /Watch the Demo Again/i })
-    expect(textLinkButton).toHaveAttribute('type', 'button')
+    expect(buttons.length).toBeGreaterThan(0)
+    buttons.forEach((button) => expect(button).toHaveAttribute('type', 'button'))
   })
 })

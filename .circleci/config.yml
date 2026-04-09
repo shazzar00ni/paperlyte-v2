@@ -66,7 +66,7 @@ jobs:
               "**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}" | \
               grep -v "^tests/e2e/" | \
               circleci tests run \
-                --command="xargs npx vitest run --reporter=default --reporter=junit --outputFile=test-results/junit-${CIRCLE_NODE_INDEX}.xml --" \
+                --command="xargs -r npx vitest run --reporter=default --reporter=junit --outputFile=test-results/junit-${CIRCLE_NODE_INDEX}.xml --" \
                 --split-by=timings \
                 --verbose
           environment:
@@ -118,8 +118,8 @@ jobs:
     resource_class: medium
     steps:
       - checkout
-      # Attach workspace first so it doesn't overwrite dependencies.
-      # The workspace carries node_modules (from install) and dist (from build).
+      # After checking out the repository, attach the workspace to provide
+      # node_modules (from install) and dist (from build).
       # Playwright browsers are pre-installed in the Docker image.
       - attach_workspace:
           at: .

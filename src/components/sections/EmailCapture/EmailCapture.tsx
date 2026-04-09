@@ -87,7 +87,7 @@ export const EmailCapture = (): React.ReactElement => {
                   <Button
                     variant="secondary"
                     size="medium"
-                    icon="fa-brands fa-twitter"
+                    icon="fa-twitter"
                     href={`https://twitter.com/intent/tweet?text=${encodeURIComponent('Check out Paperlyte – the note-taking app that gets out of your way. Get early access:')}&url=${encodeURIComponent(origin)}`}
                   >
                     Twitter
@@ -95,7 +95,7 @@ export const EmailCapture = (): React.ReactElement => {
                   <Button
                     variant="secondary"
                     size="medium"
-                    icon="fa-brands fa-facebook"
+                    icon="fa-facebook"
                     href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(origin)}`}
                   >
                     Facebook
@@ -103,7 +103,7 @@ export const EmailCapture = (): React.ReactElement => {
                   <Button
                     variant="secondary"
                     size="medium"
-                    icon="fa-brands fa-linkedin"
+                    icon="fa-linkedin"
                     href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(origin)}&title=${encodeURIComponent('Check out Paperlyte – the note-taking app that gets out of your way')}`}
                   >
                     LinkedIn

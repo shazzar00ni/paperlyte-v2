@@ -38,7 +38,8 @@ interface EnvConfig {
  *   (e.g. `'https://paperlyte.com'`).
  */
 export const getBaseUrl = (): string => {
-  return import.meta.env.VITE_BASE_URL || window.location.origin
+  const url = import.meta.env.VITE_BASE_URL || window.location.origin
+  return url.replace(/\/+$/, '')
 }
 
 /**

@@ -22,6 +22,27 @@ describe('env', () => {
       // Should return a valid origin format
       expect(result).toMatch(/^https?:\/\//)
     })
+
+    it('should strip trailing slash from VITE_BASE_URL', () => {
+      vi.stubEnv('VITE_BASE_URL', 'https://paperlyte.com/')
+      const result = getBaseUrl()
+      expect(result).toBe('https://paperlyte.com')
+      vi.unstubAllEnvs()
+    })
+
+    it('should strip multiple trailing slashes from VITE_BASE_URL', () => {
+      vi.stubEnv('VITE_BASE_URL', 'https://paperlyte.com///')
+      const result = getBaseUrl()
+      expect(result).toBe('https://paperlyte.com')
+      vi.unstubAllEnvs()
+    })
+
+    it('should not alter a URL without a trailing slash', () => {
+      vi.stubEnv('VITE_BASE_URL', 'https://paperlyte.com')
+      const result = getBaseUrl()
+      expect(result).toBe('https://paperlyte.com')
+      vi.unstubAllEnvs()
+    })
   })
 
   describe('getSeoKeywords', () => {

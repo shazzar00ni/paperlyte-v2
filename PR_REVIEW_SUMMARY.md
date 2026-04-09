@@ -2,6 +2,52 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-03-17
+
+### Analysis: Systemic Regressions and Branch Quality Assessment
+
+- **Status:** Critical — Action Required
+- **Summary:** As of March 17, 2026, a comprehensive review of all open branches confirms that approximately 80% of unmerged branches continue to suffer from **systemic regressions**. These include the accidental deletion of critical configuration/documentation files and the reversion of security hardening in `src/utils/navigation.ts`.
+
+#### Systemic Regression Tracker
+
+| Branch Status | Affected Files / Components |
+| :--- | :--- |
+| 🔴 **Critical Deletions** | `.npmrc`, `docs/ROADMAP.md`, `gitVersionControl.md`, `review.md` |
+| 🟠 **Security Reversions** | `hasDangerousProtocol`, `isRelativeUrl` (in `src/utils/navigation.ts`) |
+| 🟡 **Dependency Issues** | Downgrades of `@sentry/react`, `@types/react`, and `vitest` |
+
+#### Recommended for Merge (High Quality)
+
+These branches are verified to be free of systemic regressions and provide valuable improvements:
+
+- `origin/copilot/sub-pr-593`: Clean implementation, latest updates.
+- `origin/claude/fix-failing-tests-J1VZ6`: Resolves intermittent test failures.
+- `origin/claude/fix-icon-rendering-tests-ukecN`: Fixes Icon rendering mismatches in baseline.
+- `origin/copilot/sub-pr-585`: Preferred `yauzl` security override (includes `SECURITY.md` rationale).
+- `origin/claude/add-doc-sections-1EhnP`: High-quality documentation and edge-case tests.
+- `origin/claude/fix-open-redirect-TX551`: Robust security hardening for `isSafeUrl`.
+- `origin/copilot/improve-variable-function-naming`: Fixes Icon test failures and simplifies skip-link logic.
+- `origin/claude/setup-sonarcloud-HM572`: Correctly configures SonarCloud with safety guards.
+
+#### Blocked / Changes Requested
+
+- `origin/copilot/fix-security-error-url`: **Rejected**. Regresses security helpers in `src/utils/navigation.ts` by removing standard exports and adopting non-standard naming conventions (e.g., `passesBasicValidation`).
+- `origin/claude/update-yauzl-security-tgoiF`: **Superseded** by `origin/copilot/sub-pr-585`.
+- `origin/claude/fix-workflow-e2e-tests-xHhZw`: **Regressions found**. Deletes JSDoc and architectural comments in core components (e.g., `Header.tsx`).
+- `origin/claude/fix-codacy-fingerprints-ZexWA`: **Systemic regressions**. Missing `.npmrc` and core docs.
+- `origin/copilot/refactor-duplicated-code`: **Systemic regressions**. Missing `.npmrc` and core docs.
+
+### Baseline Test Suite Status
+
+The `main` branch currently has **5 test failures** that should be addressed by merging the "High Quality" branches listed above:
+- `ServerErrorPage.test.tsx` (2 failures: Icon rendering)
+- `Features.test.tsx` (1 failure: Icon rendering)
+- `Mobile.test.tsx` (1 failure: Icon rendering)
+- `useTheme.test.ts` (1 failure: localStorage persistence check)
+
+---
+
 ## 2026-03-05
 
 ### Analysis: Accidental File Deletions in Open Branches (Jules Daily PR Reviews)

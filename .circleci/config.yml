@@ -1,13 +1,13 @@
 version: 2.1
 
 orbs:
-  node: circleci/node@6.3.0
-  browser-tools: circleci/browser-tools@1.4.8
+  node: circleci/node@7.2.1
+  browser-tools: circleci/browser-tools@2.4.1
 
 executors:
   node-executor:
     docker:
-      - image: cimg/node:22.14@sha256:d032e271ca3d48c82a5fa392ae05d53e2df08f8540dbc1f2f8c158dea3dabd40
+      - image: cimg/node:22.14.0@sha256:d032e271ca3d48c82a5fa392ae05d53e2df08f8540dbc1f2f8c158dea3dabd40
     resource_class: medium
 
 jobs:
@@ -66,7 +66,7 @@ jobs:
               "**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}" | \
               grep -v "^tests/e2e/" | \
               circleci tests run \
-                --command="npx vitest run --reporter=default --reporter=junit --outputFile=test-results/junit.xml" \
+                --command="xargs npx vitest run --reporter=default --reporter=junit --outputFile=test-results/junit-${CIRCLE_NODE_INDEX}.xml --" \
                 --split-by=timings \
                 --verbose
           environment:
@@ -125,9 +125,13 @@ jobs:
           at: .
       - run:
           name: Start preview server
-          command: |
-            npm run preview -- --host 0.0.0.0 --port 4173 &
-            npx wait-on http://127.0.0.1:4173 --timeout 30000
+          # background: true keeps the process alive across subsequent steps.
+          # Using & within a step would terminate the server when the step exits.
+          command: npm run preview -- --host 0.0.0.0 --port 4173
+          background: true
+      - run:
+          name: Wait for preview server
+          command: npx wait-on http://127.0.0.1:4173 --timeout 30000
       - run:
           name: E2E tests
           command: npm run test:e2e

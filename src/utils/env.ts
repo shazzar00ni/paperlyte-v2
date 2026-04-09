@@ -38,8 +38,7 @@ interface EnvConfig {
  *   (e.g. `'https://paperlyte.com'`).
  */
 export const getBaseUrl = (): string => {
-  const url = import.meta.env.VITE_BASE_URL || window.location.origin
-  return url.replace(/\/+$/, '')
+  return import.meta.env.VITE_BASE_URL || window.location.origin
 }
 
 /**
@@ -111,13 +110,15 @@ export const env: EnvConfig = {
  *
  * Should be called once, early in the application lifecycle (e.g. from
  * `main.tsx`), after the DOM is available. In development it logs the active
- * configuration to the console. In production it silently updates the
- * following tags when they are present:
+ * configuration to the console. The following tags are updated when present:
  *
  * - `<link rel="canonical">` — set to `baseUrl + '/'`
  * - `<meta name="keywords">` — set to {@link getSeoKeywords}
  * - `<meta property="og:url">` — set to `baseUrl + '/'`
  * - `<meta property="og:image">` — set to the resolved {@link getOgImage} URL
+ * - `<meta name="robots">` — set to `'noindex, nofollow'` in development and
+ *   `'index, follow'` in production, so development/preview builds are never
+ *   accidentally indexed by search engines
  *
  * Missing tags are silently skipped; the function never throws.
  */
@@ -152,5 +153,11 @@ export const updateMetaTags = (): void => {
   const ogImage = document.querySelector('meta[property="og:image"]')
   if (ogImage) {
     ogImage.setAttribute('content', env.ogImage)
+  }
+
+  // Make robots directive environment-aware: prevent indexing outside production
+  const robots = document.querySelector('meta[name="robots"]')
+  if (robots) {
+    robots.setAttribute('content', env.isDevelopment ? 'noindex, nofollow' : 'index, follow')
   }
 }

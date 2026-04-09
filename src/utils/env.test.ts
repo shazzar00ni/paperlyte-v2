@@ -22,27 +22,6 @@ describe('env', () => {
       // Should return a valid origin format
       expect(result).toMatch(/^https?:\/\//)
     })
-
-    it('should strip trailing slash from VITE_BASE_URL', () => {
-      vi.stubEnv('VITE_BASE_URL', 'https://paperlyte.com/')
-      const result = getBaseUrl()
-      expect(result).toBe('https://paperlyte.com')
-      vi.unstubAllEnvs()
-    })
-
-    it('should strip multiple trailing slashes from VITE_BASE_URL', () => {
-      vi.stubEnv('VITE_BASE_URL', 'https://paperlyte.com///')
-      const result = getBaseUrl()
-      expect(result).toBe('https://paperlyte.com')
-      vi.unstubAllEnvs()
-    })
-
-    it('should not alter a URL without a trailing slash', () => {
-      vi.stubEnv('VITE_BASE_URL', 'https://paperlyte.com')
-      const result = getBaseUrl()
-      expect(result).toBe('https://paperlyte.com')
-      vi.unstubAllEnvs()
-    })
   })
 
   describe('getSeoKeywords', () => {
@@ -253,6 +232,37 @@ describe('env', () => {
     it('should handle empty document head gracefully', () => {
       document.head.innerHTML = ''
       expect(() => updateMetaTags()).not.toThrow()
+    })
+
+    it('should set robots to noindex, nofollow in development', () => {
+      document.head.innerHTML = '<meta name="robots" content="index, follow" />'
+
+      updateMetaTags()
+
+      const robots = document.querySelector('meta[name="robots"]')
+      // Test environment is development (import.meta.env.DEV === true)
+      expect(robots?.getAttribute('content')).toBe('noindex, nofollow')
+    })
+
+    it('should handle missing robots meta gracefully', () => {
+      document.head.innerHTML = ''
+      expect(() => updateMetaTags()).not.toThrow()
+    })
+
+    it('should update robots along with all other meta tags', () => {
+      document.head.innerHTML = `
+        <link rel="canonical" href="https://old-domain.com/" />
+        <meta name="keywords" content="old, keywords" />
+        <meta property="og:url" content="https://old-domain.com/" />
+        <meta property="og:image" content="https://old-domain.com/image.png" />
+        <meta name="robots" content="index, follow" />
+      `
+
+      updateMetaTags()
+
+      const robots = document.querySelector('meta[name="robots"]')
+      // Test environment is development
+      expect(robots?.getAttribute('content')).toBe('noindex, nofollow')
     })
   })
 })

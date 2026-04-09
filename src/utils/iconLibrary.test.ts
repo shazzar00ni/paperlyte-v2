@@ -196,7 +196,7 @@ describe('iconLibrary', () => {
   describe('Regression Prevention', () => {
     it('should have at least 31 solid icons registered', () => {
       // Based on current imports - prevents accidental removal
-      // Icon breakdown: 31 solid (non-fallback) + 4 brand + 1 fallback = 36 total
+      // Icon breakdown: 31+ solid (non-fallback) + 8 brand + 1 fallback = 40+ total
       const solidIcons = Array.from(validIconNames).filter(
         (icon) => !brandIconNames.has(icon) && icon !== 'circle-question'
       )
@@ -204,14 +204,14 @@ describe('iconLibrary', () => {
       expect(solidIcons.length).toBeGreaterThanOrEqual(31)
     })
 
-    it('should have exactly 4 brand icons registered', () => {
-      // Icon breakdown: 31 solid (non-fallback) + 4 brand + 1 fallback = 36 total
-      expect(brandIconNames.size).toBe(4)
+    it('should have exactly 8 brand icons registered', () => {
+      // github, twitter, apple, windows + instagram, x-twitter, facebook, linkedin
+      expect(brandIconNames.size).toBe(8)
     })
 
     it('should maintain icon count in validIconNames', () => {
-      // Icon breakdown: 31 solid (non-fallback) + 4 brand + 1 fallback = 36 total
-      expect(validIconNames.size).toBeGreaterThanOrEqual(36)
+      // Icon breakdown: 31+ solid (non-fallback) + 8 brand + 1 fallback = 40+ total
+      expect(validIconNames.size).toBeGreaterThanOrEqual(40)
     })
   })
 })

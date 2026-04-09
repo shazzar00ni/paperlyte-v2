@@ -173,13 +173,67 @@ export const iconNameMap: Record<string, string> = {
   'fa-arrow-left': 'arrow-left', // Navigation back.
   'fa-spinner': 'spinner', // Loading states.
   'fa-circle-check': 'circle-check', // Checkmark/success indicator.
+  // Navigation & Controls
+  'fa-house': 'house',
+  'fa-bars': 'bars',
+  'fa-xmark': 'xmark',
+  'fa-chevron-down': 'chevron-down',
+  'fa-chevron-up': 'chevron-up',
+  'fa-chevron-left': 'chevron-left',
+  'fa-chevron-right': 'chevron-right',
+  'fa-arrow-left': 'arrow-left',
+  // Media controls
+  'fa-play': 'play',
+  'fa-pause': 'pause',
+  // Status & Feedback
+  'fa-check': 'check',
+  'fa-check-circle': 'check-circle',
+  'fa-circle-info': 'circle-info',
+  'fa-star': 'star',
+  'fa-clock': 'clock',
+  // Content & Typography
+  'fa-pen': 'pen',
+  'fa-book': 'book',
+  'fa-magnifying-glass': 'magnifying-glass',
+  'fa-code': 'code',
+  'fa-globe': 'globe',
+  // People & Infrastructure
+  'fa-users': 'users',
+  'fa-server': 'server',
+  // Pricing plans
+  'fa-leaf': 'leaf',
+  'fa-rocket': 'rocket',
+  // Connectivity & Offline
+  'fa-wifi': 'wifi',
+  'fa-plane': 'plane',
+  'fa-route': 'route',
+  // Refresh / Reload
+  'fa-rotate-right': 'rotate-right',
+  'fa-arrow-rotate-right': 'arrow-rotate-right',
+  'fa-arrow-rotate-left': 'arrow-rotate-left',
+  // Social / Brand
+  'fa-instagram': 'instagram',
+  'fa-x-twitter': 'x-twitter',
+  'fa-facebook': 'facebook',
+  'fa-linkedin': 'linkedin',
+  // Error pages
+  'fa-file-circle-question': 'file-circle-question',
 }
 
 /**
  * Set of brand icon names (derived from imported brand icons)
  * Used to determine the icon prefix (fab vs fas) dynamically
  */
-export const brandIconNames = new Set<string>(['github', 'twitter', 'apple', 'windows'])
+export const brandIconNames = new Set<string>([
+  'github',
+  'twitter',
+  'apple',
+  'windows',
+  'instagram',
+  'x-twitter',
+  'facebook',
+  'linkedin',
+])
 
 /**
  * Set of all valid icon names in the library

@@ -51,7 +51,7 @@ npm run preview
 
 - **React**: 19.2.4 (with React DOM 19.2.4)
 - **TypeScript**: ~5.9.3 with strict mode enabled
-- **Build Tool**: Vite 7.2.4 with @vitejs/plugin-react
+- **Build Tool**: Vite 7.3.2 with @vitejs/plugin-react
 - **Linting**: ESLint ^10.0.0 (currently 10.0.2) with TypeScript ESLint, React Hooks, and React Refresh plugins
 
 ## Project Structure

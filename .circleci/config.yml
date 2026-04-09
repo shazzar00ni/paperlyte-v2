@@ -134,9 +134,21 @@ jobs:
           command: npx wait-on http://127.0.0.1:4173 --timeout 30000
       - run:
           name: E2E tests
-          command: npm run test:e2e
-          environment:
-            CI: "true"
+          command: |
+            set -e
+            npm run preview -- --host 0.0.0.0 --port 4173 > /tmp/preview.log 2>&1 &
+            PREVIEW_PID=$!
+            trap 'kill $PREVIEW_PID' EXIT
+
+            for i in $(seq 1 60); do
+              if curl -fsS http://127.0.0.1:4173 > /dev/null; then
+                break
+              fi
+              sleep 1
+            done
+
+            curl -fsS http://127.0.0.1:4173 > /dev/null
+            CI=true BASE_URL=http://127.0.0.1:4173 npm run test:e2e
             BASE_URL: "http://127.0.0.1:4173"
       - store_test_results:
           # JUnit XML is written by the junit reporter added to playwright.config.ts

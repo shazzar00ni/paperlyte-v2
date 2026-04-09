@@ -418,15 +418,11 @@ describe('analytics/webVitals', () => {
         inpObserver as PerformanceObserver
       )
 
-      // Finalize to trigger report
-      Object.defineProperty(document, 'visibilityState', {
-        writable: true,
-        configurable: true,
-        value: 'hidden',
-      })
-      document.dispatchEvent(new Event('visibilitychange'))
+      // Trigger reporting via pagehide (does not require visibilityState check)
+      window.dispatchEvent(new Event('pagehide'))
 
       // INP value should be processingEnd - startTime = 100
+      expect(onReport).toHaveBeenCalled()
       const reportedVitals = onReport.mock.calls[0][0]
       expect(reportedVitals.INP).toBe(100)
 
@@ -470,13 +466,8 @@ describe('analytics/webVitals', () => {
         inpObserver as PerformanceObserver
       )
 
-      // Finalize to trigger report
-      Object.defineProperty(document, 'visibilityState', {
-        writable: true,
-        configurable: true,
-        value: 'hidden',
-      })
-      document.dispatchEvent(new Event('visibilitychange'))
+      // Trigger reporting via pagehide (does not require visibilityState check)
+      window.dispatchEvent(new Event('pagehide'))
 
       // INP should not be in the report since no valid interactions were recorded
       const reportedVitals = onReport.mock.calls[0]?.[0]

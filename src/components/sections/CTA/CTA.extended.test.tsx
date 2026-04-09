@@ -63,12 +63,12 @@ describe('CTA extended', () => {
   it('renders waitlist count from WAITLIST_COUNT constant', () => {
     render(<CTA />)
     // WAITLIST_COUNT appears in the microcopy paragraph
-    expect(screen.getByText(new RegExp(WAITLIST_COUNT, 'i'))).toBeInTheDocument()
+    expect(screen.getByText(WAITLIST_COUNT)).toBeInTheDocument()
   })
 
   it('renders launch quarter from LAUNCH_QUARTER constant', () => {
     render(<CTA />)
-    expect(screen.getByText(new RegExp(LAUNCH_QUARTER, 'i'))).toBeInTheDocument()
+    expect(screen.getByText(LAUNCH_QUARTER)).toBeInTheDocument()
   })
 
   // ----------------------------------------------------------------

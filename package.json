@@ -94,6 +94,8 @@
     "flatted": "^3.4.2",
     "extract-zip": {
       "yauzl": "^3.2.1"
-    }
+    },
+    "basic-ftp": "^5.2.1",
+    "lodash-es": "^4.18.1"
   }
 }

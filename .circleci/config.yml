@@ -123,10 +123,24 @@ jobs:
             echo "Preview server did not start in time" >&2
             exit 1
       - run:
+          name: Start preview server
+          command: |
+            npm run preview > /tmp/preview.log 2>&1 &
+            for i in $(seq 1 60); do
+              if curl -fsS http://127.0.0.1:4173 > /dev/null; then
+                exit 0
+              fi
+              sleep 1
+            done
+            echo "Preview server failed to start"
+            cat /tmp/preview.log
+            exit 1
+      - run:
           name: E2E tests
           command: npm run test:e2e
           environment:
             CI: "true"
+            BASE_URL: "http://127.0.0.1:4173"
       - store_artifacts:
           path: playwright-report
           destination: playwright-report

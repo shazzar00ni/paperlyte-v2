@@ -61,14 +61,13 @@ describe('CTA extended', () => {
   // Content from constants
   // ----------------------------------------------------------------
   it('renders waitlist count from WAITLIST_COUNT constant', () => {
-    render(<CTA />)
-    // WAITLIST_COUNT appears in the microcopy paragraph
-    expect(screen.getByText(WAITLIST_COUNT)).toBeInTheDocument()
+    const { container } = render(<CTA />)
+    expect(container.textContent).toContain(WAITLIST_COUNT)
   })
 
   it('renders launch quarter from LAUNCH_QUARTER constant', () => {
-    render(<CTA />)
-    expect(screen.getByText(LAUNCH_QUARTER)).toBeInTheDocument()
+    const { container } = render(<CTA />)
+    expect(container.textContent).toContain(LAUNCH_QUARTER)
   })
 
   // ----------------------------------------------------------------

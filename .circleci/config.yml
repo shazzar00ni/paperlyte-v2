@@ -110,9 +110,6 @@ jobs:
     resource_class: medium
     steps:
       - checkout
-      - run:
-          name: Install dependencies
-          command: npm ci
       - attach_workspace:
           at: .
       - run:

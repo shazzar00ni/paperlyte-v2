@@ -9,7 +9,8 @@
  *   data is sent to external services.
  * - **Production**: Events are tracked via {@link trackEvent} (GA4) and, when
  *   `VITE_SENTRY_DSN` is configured, forwarded to Sentry for aggregated error
- *   monitoring. Console output is minimal.
+ *   monitoring. Limited console output may still occur for error and
+ *   monitoring-reporting failures.
  *
  * **Usage**
  * ```ts

@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   sonarqube:
-    name: SonarQube
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

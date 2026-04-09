@@ -170,9 +170,12 @@ describe('EmailCapture (UI component)', () => {
       Object.defineProperty(honeypot, 'value', { value: 'http://spam.com', writable: true })
       honeypot.dispatchEvent(new Event('input', { bubbles: true }))
 
-      // fetch should never be called when honeypot is filled
-      // (the component silently returns)
-      expect(fetchMock).not.toHaveBeenCalled()
+      // Attempt submission and verify the honeypot prevents any network request
+      await user.click(screen.getByRole('button', { name: /Join Waitlist/i }))
+
+      await waitFor(() => {
+        expect(fetchMock).not.toHaveBeenCalled()
+      })
     })
   })
 

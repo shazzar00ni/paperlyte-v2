@@ -71,10 +71,10 @@ export const OfflinePage: FC<OfflinePageProps> = ({
   }, [handleOnline, handleOffline])
 
   /**
-   * Probes connectivity by sending a HEAD request to the configured probe URL
-   * (`import.meta.env.VITE_PROBE_URL`), defaulting to `/api/health` when unset.
-   * Reloads the page on success; resets the checking state on failure or timeout.
-   * A 5-second AbortController timeout prevents hanging.
+   * Probes real internet connectivity by sending a HEAD request to `VITE_PROBE_URL`
+   * (defaults to `'/'`). Reloads the page on success; shows a user-facing error
+   * and logs to monitoring on failure or timeout. A 5-second AbortController timeout
+   * prevents hanging.
    */
   const handleRetry = async (): Promise<void> => {
     setIsChecking(true)

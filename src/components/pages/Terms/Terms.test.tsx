@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react'
-import { Terms } from './Terms'
+import { Terms } from '@components/pages/Terms/Terms'
 
 describe('Terms', () => {
   describe('Rendering', () => {
@@ -158,6 +158,7 @@ describe('Terms', () => {
       const externalLinks = screen
         .getAllByRole('link')
         .filter((link) => link.getAttribute('target') === '_blank')
+      expect(externalLinks.length).toBeGreaterThan(0)
       externalLinks.forEach((link) => {
         expect(link).toHaveAttribute('rel', 'noopener noreferrer')
       })

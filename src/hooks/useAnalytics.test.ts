@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react'
 import { vi, beforeEach, afterEach, describe, it, expect } from 'vitest'
-import { useAnalytics } from './useAnalytics'
+import { useAnalytics } from '@hooks/useAnalytics'
 
 // Mock the analytics utilities so we can assert on calls
 vi.mock('@utils/analytics', () => ({

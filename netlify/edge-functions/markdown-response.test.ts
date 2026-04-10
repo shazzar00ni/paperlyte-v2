@@ -44,18 +44,15 @@ function jsonResponse(body: string, status = 200): Response {
 }
 
 // ── Import handler under test ───────────────────────────────────────────────
-// Dynamic import ensures mocks declared via vi.mock() hoisting have taken
-// effect before the module initialises.
 
-let handler: (request: Request, context: Context) => Promise<Response>
+import handler from './markdown-response'
 
-beforeEach(async () => {
-  // Re-import a fresh copy of the handler for each test so module-level state
-  // doesn't leak between tests.
-  const mod = await import('./markdown-response?t=' + Date.now())
-  handler = mod.default
-})
+// `handler` is imported once; the function under test is stateless so we do
+// not need to re-import it for every test case.
 
+// (If module-level state is introduced in future and per-test isolation is
+// required, prefer `vi.resetModules()` with a stable specifier over adding
+// unique query parameters to the import path.)
 // ── Test suites ─────────────────────────────────────────────────────────────
 
 describe('markdown-response edge function', () => {

@@ -35,7 +35,7 @@ describe('Terms', () => {
       'Contact Information',
     ]
 
-    headings.forEach((heading) => {
+    headings.forEach((heading: string): void => {
       expect(screen.getByRole('heading', { name: heading })).toBeInTheDocument()
     })
   })

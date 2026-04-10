@@ -36,7 +36,10 @@
  *   function faithfully converts whatever HTML the origin returns, so
  *   SSR or pre-rendered pages will produce richer Markdown output.
  * • Both Turndown and sanitize-html are imported via the `npm:` specifier
- *   supported by the Netlify Edge Runtime (Deno-based). No npm install needed.
+ *   supported by the Netlify Edge Runtime (Deno-based), so the deployed
+ *   Edge Function does not require a separate `npm install` step.
+ * • For local Node/Vitest tests and other build tooling, these packages
+ *   are also present in `devDependencies` and must exist in `node_modules`.
  * • sanitize-html is the primary sanitizer: it parses HTML into a real node
  *   tree and applies an allowlist, which is far more robust than regex.
  */
@@ -46,7 +49,7 @@ import sanitizeHtml from 'npm:sanitize-html@2.13.1'
 import type { Context } from 'https://edge.netlify.com'
 
 // Paths that should never be converted even if accidentally matched.
-const EXCLUDED_PREFIXES = [
+const EXCLUDED_PREFIXES: readonly string[] = [
   '/.env',
   '/assets/',
   '/api/',
@@ -57,9 +60,21 @@ const EXCLUDED_PREFIXES = [
   '/manifest',
 ]
 
+// Structural chrome tags whose entire subtree (tag + all descendants) should
+// be dropped so nav links, header text, and footer content do not bleed into
+// the Markdown output.  These must NOT appear in ALLOWED_TAGS.
+const DROP_WITH_CHILDREN: ReadonlySet<string> = new Set(['nav', 'header', 'footer', 'aside'])
+
+// Combined regex for belt-and-suspenders Markdown scrub (step 6).
+// Matches HTML comments AND dangerous inline tag fragments in a single pass,
+// covering both complete tags and bare fragments with no closing delimiter
+// (e.g. a truncated `<script` at end of string).
+const DANGEROUS_FRAGMENT_RE =
+  /<!--[\s\S]*?(?:-->|$)|<\/?\s*(?:script|style|iframe|object|embed|applet|noscript)[\s\S]*?(?:>|$)/gim
+
 // Tags whose content Turndown can convert to useful Markdown.
 // Everything not in this list is discarded by sanitize-html.
-const ALLOWED_TAGS = [
+const ALLOWED_TAGS: readonly string[] = [
   'h1',
   'h2',
   'h3',
@@ -141,7 +156,7 @@ export default async function handler(request: Request, context: Context): Promi
   try {
     // ── 3. Fetch HTML from origin ─────────────────────────────────────────
     originResponse = await context.next()
-    const contentType = originResponse.headers.get('Content-Type') ?? ''
+    const contentType = (originResponse.headers.get('Content-Type') ?? '').toLowerCase()
 
     if (!contentType.includes('text/html')) {
       return originResponse
@@ -150,12 +165,19 @@ export default async function handler(request: Request, context: Context): Promi
     const html = await originResponse.clone().text()
 
     // ── 4. Sanitize with allowlist parser ─────────────────────────────────
-    // sanitize-html parses HTML into a real node tree and discards every
-    // element not in ALLOWED_TAGS (script, style, nav, header, footer,
-    // iframe, object, embed, applet, noscript etc. are all excluded).
-    // This handles malformed markup, nested tag obfuscation, whitespace in
-    // closing tags (e.g. </script\t\n bar>), and HTML comments — all in a
-    // single allowlist pass, unlike a chain of regexes.
+    // sanitize-html parses HTML into a real node tree and applies a strict
+    // allowlist (script, style, nav, header, footer, iframe, object, embed,
+    // applet, noscript etc. are excluded).  Using an allowlist-based parser
+    // is far more robust than regex: it handles malformed markup, nested tag
+    // obfuscation, and whitespace in closing tags (e.g. </script\t\n bar>).
+    //
+    // Key hardening options:
+    //   • allowedSchemes / allowedSchemesByTag — blocks javascript: and
+    //     data: URIs from leaking into Markdown links/images.
+    //   • allowProtocolRelative: false — blocks //evil.com style URLs.
+    //   • exclusiveFilter — drops nav/header/footer/aside together with ALL
+    //     their descendants, so navigation links and UI chrome never bleed
+    //     into the Markdown output.
     const sanitized = sanitizeHtml(html, {
       allowedTags: ALLOWED_TAGS,
       allowedAttributes: {
@@ -164,8 +186,19 @@ export default async function handler(request: Request, context: Context): Promi
         th: ['colspan', 'rowspan', 'scope'],
         td: ['colspan', 'rowspan'],
       },
+      // Restrict URL schemes to prevent javascript: / vbscript: / data: injection.
+      allowedSchemes: ['http', 'https', 'ftp', 'mailto'],
+      allowedSchemesByTag: {
+        img: ['http', 'https'],
+      },
+      allowProtocolRelative: false,
       // Discard disallowed elements and their children entirely.
       disallowedTagsMode: 'discard',
+      // Drop structural chrome together with ALL descendants so navigation
+      // links and other UI chrome do not leak into the Markdown output.
+      exclusiveFilter(frame) {
+        return DROP_WITH_CHILDREN.has(frame.tag)
+      },
     })
 
     // ── 5. HTML → Markdown via Turndown ───────────────────────────────────
@@ -178,25 +211,18 @@ export default async function handler(request: Request, context: Context): Promi
 
     td.remove(['svg', 'canvas', 'template'])
 
-    let markdown = td.turndown(sanitized).trim()
+    // Convert sanitized HTML to Markdown, then scrub any dangerous fragments
+    // that Turndown may have passed through as literal text (belt-and-suspenders,
+    // step 6). DANGEROUS_FRAGMENT_RE (defined at module level) covers HTML
+    // comments and all dangerous tag fragments in a single pass; the final
+    // .trim() normalises any whitespace reintroduced by the scrub.
+    const markdown = td
+      .turndown(sanitized)
+      .trim()
+      .replace(DANGEROUS_FRAGMENT_RE, '')
+      .trim()
 
-    // ── 6. Belt-and-suspenders scrub on the Markdown string ───────────────
-    // Turndown may pass through unrecognised HTML as literal text.  Each
-    // pattern below is an explicit per-tag literal.  The [\s\S]*?(?:>|$)
-    // tail covers both complete tags AND bare fragments with no closing `>`
-    // (e.g. a truncated `<script` at end of string).  HTML comments use
-    // (?:-->|$) for the same reason.
-    markdown = markdown
-      .replace(/<!--[\s\S]*?(?:-->|$)/g, '')
-      .replace(/<\/?\s*script[\s\S]*?(?:>|$)/gim, '')
-      .replace(/<\/?\s*style[\s\S]*?(?:>|$)/gim, '')
-      .replace(/<\/?\s*iframe[\s\S]*?(?:>|$)/gim, '')
-      .replace(/<\/?\s*object[\s\S]*?(?:>|$)/gim, '')
-      .replace(/<\/?\s*embed[\s\S]*?(?:>|$)/gim, '')
-      .replace(/<\/?\s*applet[\s\S]*?(?:>|$)/gim, '')
-      .replace(/<\/?\s*noscript[\s\S]*?(?:>|$)/gim, '')
-
-    // ── 7. Compute estimated token count (chars / 4) ──────────────────────
+    // ── 6. Compute estimated token count (chars / 4) ──────────────────────
     const tokenEstimate = String(Math.ceil(markdown.length / 4))
 
     // Start from all origin headers so we preserve things like ETag,
@@ -206,6 +232,8 @@ export default async function handler(request: Request, context: Context): Promi
     headers.set('Content-Type', 'text/markdown; charset=utf-8')
     headers.set('X-Markdown-Tokens', tokenEstimate)
     headers.set('Content-Signal', 'ai-train=yes, search=yes, ai-input=yes')
+    // Prevent stale Markdown representations from being served from cache.
+    headers.set('Cache-Control', 'no-store')
 
     // Merge Accept into any existing Vary value so CDNs store HTML and
     // Markdown as separate cache entries without losing other Vary tokens
@@ -226,7 +254,7 @@ export default async function handler(request: Request, context: Context): Promi
       headers,
     })
   } catch {
-    // ── 8. Fallback: pass through to origin unchanged ─────────────────────
+    // ── 7. Fallback: pass through to origin unchanged ─────────────────────
     if (originResponse) return originResponse
     return context.next()
   }

@@ -601,8 +601,9 @@ describe('markdown-response edge function', () => {
         const markdown = await result.clone().text()
         const tokens = Number(result.headers.get('X-Markdown-Tokens'))
 
-        // The token count reflects the final markdown, not the input
+        // Token count must equal ceil(markdown.length / 4) and the pre-computed expected value.
         expect(tokens).toBe(Math.ceil(markdown.length / 4))
+        expect(tokens).toBe(expected)
       }
     })
   })

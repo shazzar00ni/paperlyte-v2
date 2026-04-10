@@ -173,13 +173,38 @@ export const iconNameMap: Record<string, string> = {
   'fa-arrow-left': 'arrow-left', // Navigation back.
   'fa-spinner': 'spinner', // Loading states.
   'fa-circle-check': 'circle-check', // Checkmark/success indicator.
+  // New icons added to custom SVG set
+  'fa-house': 'house',
+  'fa-check-circle': 'check-circle',
+  'fa-circle-info': 'circle-info',
+  'fa-clock': 'clock',
+  'fa-code': 'code',
+  'fa-globe': 'globe',
+  'fa-instagram': 'instagram',
+  'fa-x-twitter': 'x-twitter',
+  'fa-facebook': 'facebook',
+  'fa-linkedin': 'linkedin',
+  'fa-file-circle-question': 'file-circle-question',
 }
 
 /**
- * Set of brand icon names (derived from imported brand icons)
- * Used to determine the icon prefix (fab vs fas) dynamically
+ * Set of brand icon names — covers both icons imported from
+ * @fortawesome/free-brands-svg-icons (github, twitter, apple, windows) and
+ * custom brand aliases rendered via the SVG icon set (instagram, x-twitter,
+ * facebook, linkedin). Used to determine the icon prefix (fab vs fas) at
+ * runtime. Update this set whenever a brand icon is added or removed from
+ * either source.
  */
-export const brandIconNames = new Set<string>(['github', 'twitter', 'apple', 'windows'])
+export const brandIconNames = new Set<string>([
+  'github',
+  'twitter',
+  'apple',
+  'windows',
+  'instagram',
+  'x-twitter',
+  'facebook',
+  'linkedin',
+])
 
 /**
  * Set of all valid icon names in the library

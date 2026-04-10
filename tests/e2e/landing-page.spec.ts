@@ -125,6 +125,54 @@ test.describe('Landing Page', () => {
     await expect(menuList).toBeVisible();
   });
 
+  test('should toggle dark mode and update data-theme attribute', async ({ page }) => {
+    await page.goto('/');
+
+    // The theme toggle button label is "Switch to dark mode" in the initial (light) state
+    const toggleButton = page.getByRole('button', { name: /switch to dark mode/i });
+    await expect(toggleButton).toBeVisible();
+
+    await toggleButton.click();
+
+    // After toggling, the <html> element should carry data-theme="dark"
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+
+    // The button label should now offer to switch back to light mode
+    await expect(page.getByRole('button', { name: /switch to light mode/i })).toBeVisible();
+  });
+
+  test('should expand and collapse a FAQ item', async ({ page }) => {
+    await page.goto('/');
+
+    // Grab the first question button inside the FAQ section
+    const firstQuestion = page.locator('#faq').getByRole('button').first();
+
+    // Initially collapsed
+    await expect(firstQuestion).toHaveAttribute('aria-expanded', 'false');
+
+    await firstQuestion.click();
+
+    // Should be expanded after click
+    await expect(firstQuestion).toHaveAttribute('aria-expanded', 'true');
+
+    // Click again to collapse
+    await firstQuestion.click();
+    await expect(firstQuestion).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  test('should submit waitlist email and show success state', async ({ page }) => {
+    await page.goto('/');
+
+    const emailInput = page.locator('#email-capture input[type="email"]');
+    const submitButton = page.locator('#email-capture').getByRole('button', { name: /join the waitlist/i });
+
+    await emailInput.fill('e2e-test@example.com');
+    await submitButton.click();
+
+    // The component simulates a 1s API call then shows a success message
+    await expect(page.getByText(/You're on the list!/i)).toBeVisible({ timeout: 5000 });
+  });
+
   test('should have accessible keyboard navigation', async ({ page }) => {
     await page.goto('/');
 

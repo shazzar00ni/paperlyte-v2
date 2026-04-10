@@ -120,6 +120,42 @@ describe('suggestEmailCorrection', () => {
   })
 })
 
+describe('validateEmail — Unicode and IDN edge cases', () => {
+  it('should reject Unicode characters in the local part', () => {
+    // EMAIL_REGEX only allows [a-zA-Z0-9._+-], so non-ASCII is invalid
+    const result = validateEmail('用户@example.com')
+    expect(result.isValid).toBe(false)
+    expect(result.error).toBeDefined()
+  })
+
+  it('should reject Internationalized Domain Names (IDN) with non-ASCII characters', () => {
+    // EMAIL_REGEX domain pattern only allows [a-zA-Z0-9.-], so non-ASCII domains are invalid
+    const result = validateEmail('user@例子.com')
+    expect(result.isValid).toBe(false)
+    expect(result.error).toBeDefined()
+  })
+
+  it('should reject emoji characters in the local part', () => {
+    const result = validateEmail('user🙂@example.com')
+    expect(result.isValid).toBe(false)
+    expect(result.error).toBeDefined()
+  })
+
+  it('should reject punycode-encoded IDN domains due to consecutive hyphens', () => {
+    // Punycode labels contain "--" (e.g. xn--fiq228c) which the regex does not allow:
+    // the pattern only permits a single separator character before an alphanumeric,
+    // so two consecutive hyphens fail to match.
+    const result = validateEmail('user@xn--fiq228c.com')
+    expect(result.isValid).toBe(false)
+  })
+
+  it('should accept standard plus-sign subaddressing', () => {
+    // user+tag@gmail.com is a standard and widely-used email format
+    const result = validateEmail('user+tag@gmail.com')
+    expect(result.isValid).toBe(true)
+  })
+})
+
 describe('validateEmailDomain', () => {
   it('should return true for valid email (placeholder implementation)', async () => {
     const result = await validateEmailDomain('user@example.com')

@@ -411,9 +411,9 @@ can be removed.
 - `@lhci/cli → lighthouse → lodash-es`
 - `wait-on → lodash`
 
-**Chosen version**: `^4.18.1` is the first release that patches both advisories.
+**Chosen override**: `lodash` and `lodash-es` are pinned to `^4.18.1` as shown above so transitive installs resolve outside the advisory-affected ranges.
 
-**Revisit when**: upstream packages (`@lhci/cli`, `wait-on`) update their own dependencies to `lodash >=4.18.1`, at which point these overrides can be removed.
+**Revisit when**: upstream packages (`@lhci/cli`, `wait-on`) update their own dependencies to patched `lodash` / `lodash-es` versions that satisfy these overrides, at which point the overrides can be removed.
 
 ## Questions?
 

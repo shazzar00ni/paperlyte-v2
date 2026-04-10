@@ -2,6 +2,47 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-04-10
+
+### Analysis: Systemic Regressions in Open Branches (Automated Daily Audit)
+
+- **Status:** Critical — Action Required
+- **Summary:** An automated repository-wide audit of 246 unmerged branches confirms the following systemic regressions.
+
+| Regression Type                | Count | Severity    | Notes                                               |
+| :----------------------------- | :---- | :---------- | :-------------------------------------------------- |
+| Orphan Branches                | 246   | 🔴 Critical | No common ancestor with `main`.                     |
+| Missing `.npmrc`               | 95    | 🔴 Critical | Breaks dependency resolution.                       |
+| Missing `docs/ROADMAP.md`      | 89    | 🟠 High     | Core project documentation.                         |
+| Missing `gitVersionControl.md` | 104   | 🟠 High     | Core Git workflow documentation.                    |
+| Missing `review.md`            | 104   | 🟡 Medium   | AI PR reviewer instructions.                        |
+| Reverted Security Helpers      | 103   | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers. |
+| Unreadable navigation.ts       | 8     | 🔴 Critical | File missing or unreadable.                         |
+
+- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.
+
+### Qualitative Reviews
+
+#### PR #661: origin/claude/fix-lighthouse-failure-b5S6v
+
+- **Status:** Blocked (Technical Review Complete)
+- **Technical Analysis:** Implements a custom hybrid SVG icon system and Font Awesome bundle optimizations.
+- **Feedback:** While the hybrid SVG system is well-implemented, this branch remains blocked by its orphan status and missing critical configuration files. Additionally, ensure that the multi-token icon name support (e.g., 'fa-brands fa-twitter') is fully tested after the refactor.
+
+#### PR #664: origin/claude/fix-workflow-e2e-tests-xHhZw
+
+- **Status:** Changes Requested
+- **Technical Analysis:** Focuses on improving E2E test stability.
+- **Feedback:** This branch introduces a major regression by deleting extensive JSDoc documentation across several files. It also removes skip-link accessibility logic. These changes must be reverted before the PR can be considered for merge.
+
+#### PR #680: origin/claude/semantic-versioning-releases-lTFRC
+
+- **Status:** Blocked
+- **Technical Analysis:** Implements release automation via `scripts/release.sh`.
+- **Feedback:** The release automation script is a valuable addition, but the PR introduces suspicious dependency downgrades (e.g., `vitest` from 2.1.8 to 4.1.0 in devDependencies - likely a versioning syntax error). Please verify dependency versions and align with the current `main` branch.
+
+---
+
 ## 2026-03-05
 
 ### Analysis: Accidental File Deletions in Open Branches (Jules Daily PR Reviews)
@@ -325,11 +366,11 @@ This file contains a summary of pull requests I have reviewed.
 
 **Status:** Approved with comments
 
-#### Summary for PR #356:
+#### Summary for PR #356
 
 This PR addresses a Codacy configuration issue to ensure ESLint runs correctly in the CI pipeline. The core changes in `.codacy.yml` and the addition of `.eslintrc.cjs` are correct and effectively resolve the issue.
 
-#### Feedback & Suggestions for PR #356:
+#### Feedback & Suggestions for PR #356
 
 - **Approval:** The main changes are approved and ready for merging.
 - **Scope Creep:** The PR includes unrelated changes to the icon library (`src/utils/iconLibrary.ts`) and E2E tests (`tests/e2e/landing-page.spec.ts`). While not harmful, these changes are out of scope for a configuration fix.
@@ -341,11 +382,11 @@ This PR addresses a Codacy configuration issue to ensure ESLint runs correctly i
 
 **Status:** Changes requested
 
-#### Summary for PR #319:
+#### Summary for PR #319
 
 This PR aims to fix a deployment error in the `Privacy.tsx` component. However, it also includes significant changes to `package-lock.json` and `public/sitemap.xml` that are unrelated to the component fix.
 
-#### Feedback & Suggestions for PR #319:
+#### Feedback & Suggestions for PR #319
 
 - **Mixed Changes:** The PR mixes a bug fix with dependency updates and sitemap changes. This makes it difficult to review and test.
 - **`package-lock.json`:** The changes to `package-lock.json` are extensive and add `"peer": true` to many dependencies. This is a significant change that could have unintended side effects and should be tested in isolation. My memory indicates that these changes have caused test failures in the past.

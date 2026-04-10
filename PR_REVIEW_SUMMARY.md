@@ -21,6 +21,27 @@ This file contains a summary of pull requests I have reviewed.
 
 - **Action Required:** ALL affected branches MUST restore these critical files and security helpers.
 
+---
+
+## 2026-04-10
+
+### Analysis: Systemic Regressions in Open Branches (Automated Daily Audit)
+
+- **Status:** Critical — Action Required
+- **Summary:** An automated repository-wide audit of 246 unmerged branches confirms the following systemic regressions.
+
+| Regression Type                | Count | Severity    | Notes                                               |
+| :----------------------------- | :---- | :---------- | :-------------------------------------------------- |
+| Orphan Branches                | 246   | 🔴 Critical | No common ancestor with `main`.                     |
+| Missing `.npmrc`               | 95    | 🔴 Critical | Breaks dependency resolution.                       |
+| Missing `docs/ROADMAP.md`      | 89    | 🟠 High     | Core project documentation.                         |
+| Missing `gitVersionControl.md` | 104   | 🟠 High     | Core Git workflow documentation.                    |
+| Missing `review.md`            | 104   | 🟡 Medium   | AI PR reviewer instructions.                        |
+| Reverted Security Helpers      | 103   | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers. |
+| Unreadable navigation.ts       | 8     | 🔴 Critical | File missing or unreadable.                         |
+
+- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.
+
 ### Qualitative Reviews
 
 #### PR #661: origin/claude/fix-lighthouse-failure-b5S6v

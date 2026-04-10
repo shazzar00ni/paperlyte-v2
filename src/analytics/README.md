@@ -63,11 +63,7 @@ import { useAnalytics } from '@hooks/useAnalytics'
 function MyComponent() {
   const { trackCTAClick, trackDownload } = useAnalytics()
 
-  return (
-    <button onClick={() => trackCTAClick('Get Started', 'hero')}>
-      Get Started
-    </button>
-  )
+  return <button onClick={() => trackCTAClick('Get Started', 'hero')}>Get Started</button>
 }
 ```
 
@@ -77,12 +73,12 @@ function MyComponent() {
 
 ```tsx
 const {
-  trackEvent,       // Track custom events
-  trackPageView,    // Track page views
-  trackCTAClick,    // Track CTA button clicks
-  trackDownload,    // Track download button clicks
-  trackNavigation,  // Track navigation clicks
-  isEnabled,        // Check if analytics is enabled
+  trackEvent, // Track custom events
+  trackPageView, // Track page views
+  trackCTAClick, // Track CTA button clicks
+  trackDownload, // Track download button clicks
+  trackNavigation, // Track navigation clicks
+  isEnabled, // Check if analytics is enabled
 } = useAnalytics()
 ```
 

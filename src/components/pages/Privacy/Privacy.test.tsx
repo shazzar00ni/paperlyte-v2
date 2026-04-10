@@ -30,7 +30,7 @@ describe('Privacy', () => {
       'Contact Us',
     ]
 
-    headings.forEach((heading) => {
+    headings.forEach((heading: string): void => {
       expect(screen.getByRole('heading', { name: heading })).toBeInTheDocument()
     })
   })

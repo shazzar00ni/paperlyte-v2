@@ -72,9 +72,11 @@ jobs:
             CI: "true"
       - store_test_results:
           path: test-results
+          when: always
       - store_artifacts:
           path: test-results
           destination: test-results
+          when: always
 
   # Coverage runs as a separate single-node job so the report covers the full
   # suite. The parallelised `test` job only runs a subset of tests per node,
@@ -140,9 +142,11 @@ jobs:
       - store_test_results:
           # JUnit XML is written by the junit reporter added to playwright.config.ts
           path: test-results
+          when: always
       - store_artifacts:
           path: playwright-report
           destination: playwright-report
+          when: always
 
 workflows:
   ci:

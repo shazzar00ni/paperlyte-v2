@@ -86,9 +86,12 @@ describe('EmailCapture Section', () => {
     await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
 
     // Wait up to 3s for the simulated 1s API call to complete
-    await waitFor(() => {
-      expect(screen.getByText(/You're on the list!/)).toBeInTheDocument()
-    }, { timeout: 3000 })
+    await waitFor(
+      () => {
+        expect(screen.getByText(/You're on the list!/)).toBeInTheDocument()
+      },
+      { timeout: 3000 }
+    )
 
     // Social sharing buttons should appear in the success state
     expect(screen.getByRole('link', { name: /Twitter/i })).toBeInTheDocument()

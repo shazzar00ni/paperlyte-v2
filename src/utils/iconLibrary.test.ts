@@ -94,6 +94,10 @@ describe('iconLibrary', () => {
     it('should correctly identify brand icons', () => {
       expect(isBrandIcon('github')).toBe(true)
       expect(isBrandIcon('twitter')).toBe(true)
+      expect(isBrandIcon('facebook')).toBe(true)
+      expect(isBrandIcon('linkedin')).toBe(true)
+      expect(isBrandIcon('x-twitter')).toBe(true)
+      expect(isBrandIcon('instagram')).toBe(true)
       expect(isBrandIcon('apple')).toBe(true)
       expect(isBrandIcon('windows')).toBe(true)
     })
@@ -132,11 +136,16 @@ describe('iconLibrary', () => {
       expect(isValidIcon('bolt')).toBe(true)
       expect(isValidIcon('heart')).toBe(true)
       expect(isValidIcon('download')).toBe(true)
+      expect(isValidIcon('globe')).toBe(true)
     })
 
     it('should validate known brand icons', () => {
       expect(isValidIcon('github')).toBe(true)
       expect(isValidIcon('twitter')).toBe(true)
+      expect(isValidIcon('facebook')).toBe(true)
+      expect(isValidIcon('linkedin')).toBe(true)
+      expect(isValidIcon('x-twitter')).toBe(true)
+      expect(isValidIcon('instagram')).toBe(true)
     })
   })
 
@@ -204,9 +213,9 @@ describe('iconLibrary', () => {
       expect(solidIcons.length).toBeGreaterThanOrEqual(31)
     })
 
-    it('should have exactly 4 brand icons registered', () => {
-      // Icon breakdown: 31 solid (non-fallback) + 4 brand + 1 fallback = 36 total
-      expect(brandIconNames.size).toBe(4)
+    it('should have exactly 8 brand icons registered', () => {
+      // Icon breakdown: 31 solid (non-fallback) + 8 brand + 1 fallback = 40 total
+      expect(brandIconNames.size).toBe(8)
     })
 
     it('should maintain icon count in validIconNames', () => {

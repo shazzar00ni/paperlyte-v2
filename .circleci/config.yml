@@ -133,9 +133,10 @@ jobs:
           command: npx wait-on http://127.0.0.1:4173 --timeout 30000
       - run:
           name: E2E tests
-          command: |
-            set -e
-            CI=true BASE_URL=http://127.0.0.1:4173 npm run test:e2e
+          command: npm run test:e2e
+          environment:
+            CI: "true"
+            BASE_URL: "http://127.0.0.1:4173"
       - store_test_results:
           # JUnit XML is written by the junit reporter added to playwright.config.ts
           path: test-results

@@ -379,6 +379,104 @@ describe('analytics/webVitals', () => {
     })
   })
 
+  describe('INP tracking', () => {
+    it('should record interaction duration when processingEnd and startTime are present', () => {
+      const observerInstances: Array<{
+        callback: PerformanceObserverCallback
+        observe: ReturnType<typeof vi.fn>
+      }> = []
+
+      global.PerformanceObserver = class {
+        callback: PerformanceObserverCallback
+        observe: ReturnType<typeof vi.fn>
+        constructor(callback: PerformanceObserverCallback) {
+          this.callback = callback
+          this.observe = vi.fn()
+          observerInstances.push(this)
+        }
+        disconnect = vi.fn()
+        takeRecords = vi.fn(() => [])
+      } as unknown as typeof PerformanceObserver
+
+      const cleanup = initWebVitals(onReport)
+
+      // Find the INP observer (observes 'event' type)
+      const inpObserver = observerInstances.find((obs) => {
+        const observeCall = obs.observe.mock.calls[0]
+        return observeCall && observeCall[0].type === 'event'
+      })
+
+      if (!inpObserver) {
+        throw new Error('INP observer not found')
+      }
+
+      // Fire callback with an entry that has processingEnd and startTime (not null)
+      inpObserver.callback(
+        {
+          getEntries: () => [{ processingEnd: 150, startTime: 50 }],
+        } as PerformanceObserverEntryList,
+        inpObserver as PerformanceObserver
+      )
+
+      // Trigger reporting via pagehide (does not require visibilityState check)
+      window.dispatchEvent(new Event('pagehide'))
+
+      // INP value should be processingEnd - startTime = 100
+      expect(onReport).toHaveBeenCalled()
+      const reportedVitals = onReport.mock.calls[0][0]
+      expect(reportedVitals.INP).toBe(100)
+
+      cleanup()
+    })
+
+    it('should not record interaction when processingEnd is null', () => {
+      const observerInstances: Array<{
+        callback: PerformanceObserverCallback
+        observe: ReturnType<typeof vi.fn>
+      }> = []
+
+      global.PerformanceObserver = class {
+        callback: PerformanceObserverCallback
+        observe: ReturnType<typeof vi.fn>
+        constructor(callback: PerformanceObserverCallback) {
+          this.callback = callback
+          this.observe = vi.fn()
+          observerInstances.push(this)
+        }
+        disconnect = vi.fn()
+        takeRecords = vi.fn(() => [])
+      } as unknown as typeof PerformanceObserver
+
+      const cleanup = initWebVitals(onReport)
+
+      const inpObserver = observerInstances.find((obs) => {
+        const observeCall = obs.observe.mock.calls[0]
+        return observeCall && observeCall[0].type === 'event'
+      })
+
+      if (!inpObserver) {
+        throw new Error('INP observer not found')
+      }
+
+      // Fire callback with an entry missing processingEnd (null/undefined)
+      inpObserver.callback(
+        {
+          getEntries: () => [{ processingEnd: null, startTime: 50 }],
+        } as PerformanceObserverEntryList,
+        inpObserver as PerformanceObserver
+      )
+
+      // Trigger reporting via pagehide (does not require visibilityState check)
+      window.dispatchEvent(new Event('pagehide'))
+
+      // INP should not be in the report since no valid interactions were recorded
+      const reportedVitals = onReport.mock.calls[0]?.[0]
+      expect(reportedVitals?.INP).toBeUndefined()
+
+      cleanup()
+    })
+  })
+
   describe('error handling', () => {
     it('should handle errors in PerformanceObserver gracefully', () => {
       // Mock PerformanceObserver to throw

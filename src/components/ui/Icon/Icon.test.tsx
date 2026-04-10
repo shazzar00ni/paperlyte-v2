@@ -212,6 +212,16 @@ describe('Icon', () => {
     })
   })
 
+  describe('Variants', () => {
+    it('should use far prefix when variant="regular" is set', () => {
+      render(<Icon name="missing-regular-icon" variant="regular" />)
+      // Line 147 in Icon.tsx sets prefix = 'far'
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('not found in Font Awesome library')
+      )
+    })
+  })
+
   describe('Styling', () => {
     it('should apply custom className to fallback span', () => {
       const { container } = render(<Icon name="missing-icon" className="custom-class" />)

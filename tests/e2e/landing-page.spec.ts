@@ -170,7 +170,7 @@ test.describe('Landing Page', () => {
     await submitButton.click();
 
     // The component simulates a 1s API call then shows a success message
-    await expect(page.getByText(/You're on the list!/i)).toBeVisible({ timeout: 5000 });
+    await expect(page.getByText(/You['']re on the list!/i)).toBeVisible({ timeout: 5000 });
   });
 
   test('should have accessible keyboard navigation', async ({ page }) => {

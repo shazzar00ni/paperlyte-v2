@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""Audit unmerged remote branches for critical file presence, security helpers, and shared history with main."""
 import subprocess
 import os
 import sys
@@ -41,6 +42,7 @@ def run_command(args):
         return None
 
 def main():
+    """Run the branch audit and print a JSON report of blocked and ready branches to stdout."""
     # Get all remote unmerged branches relative to origin/main
     branches_raw = run_command(["git", "branch", "-r", "--no-merged", "origin/main"])
     if not branches_raw:

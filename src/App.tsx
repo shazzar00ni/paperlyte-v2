@@ -59,9 +59,9 @@ function App() {
           Only render Vercel Analytics in production environments where the domain is not localhost.
           This prevents redundant script injection and console errors during development/testing.
       */}
-      {import.meta.env.PROD && typeof window !== 'undefined' && window.location.hostname !== 'localhost' && (
-        <Analytics />
-      )}
+      {import.meta.env.PROD &&
+        typeof window !== 'undefined' &&
+        window.location.hostname !== 'localhost' && <Analytics />}
     </ErrorBoundary>
   )
 }

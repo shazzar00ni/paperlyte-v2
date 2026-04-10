@@ -269,6 +269,17 @@ describe('App Integration', () => {
     consoleErrorSpy.mockRestore()
   })
 
+  it('should not render Analytics component on localhost', () => {
+    // In test environment, window.location.hostname is 'localhost' or '127.0.0.1'
+    // and import.meta.env.PROD is false.
+    const { container } = render(<App />)
+
+    // The Analytics component renders a script tag.
+    // We check that it's NOT present.
+    const script = container.querySelector('script[src*="vercel-insights"]')
+    expect(script).toBeNull()
+  })
+
   it('should render all major UI components', () => {
     const { container } = render(<App />)
 

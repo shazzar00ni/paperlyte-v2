@@ -323,7 +323,7 @@ describe('ErrorBoundary', () => {
       const user = userEvent.setup()
 
       // A component that always throws so clicking "Try Again" never recovers
-      const AlwaysThrows = () => {
+      const AlwaysThrows = (): never => {
         throw new Error('persistent error')
       }
 

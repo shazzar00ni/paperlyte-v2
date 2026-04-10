@@ -111,6 +111,12 @@ jobs:
 
           # Prepend daily summary after the header in PR_REVIEW_SUMMARY.md
           if [ -f daily_summary.txt ]; then
+            DATE_HEADING="## $(date -u +%Y-%m-%d)"
+            if grep -q "^${DATE_HEADING}$" PR_REVIEW_SUMMARY.md; then
+              echo "Summary for ${DATE_HEADING} already exists; skipping prepend."
+              exit 0
+            fi
+
             HEADER_LINE=$(grep -n "# PR Review Summary" PR_REVIEW_SUMMARY.md | head -n 1 | cut -d: -f1 || echo "1")
             AFTER_HEADER=$(($HEADER_LINE + 1))
 

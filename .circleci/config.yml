@@ -2,11 +2,19 @@
 # See: https://circleci.com/docs/reference/configuration-reference
 version: 2.1
 
+# ─── Orbs ────────────────────────────────────────────────────────────────────
+orbs:
+  browser-tools: circleci/browser-tools@1.4.3
+
 # ─── Executors ───────────────────────────────────────────────────────────────
 executors:
   node-executor:
     docker:
       - image: cimg/node:22.19
+    resource_class: medium
+  node-browsers-executor:
+    docker:
+      - image: cimg/node:22.19-browsers
     resource_class: medium
   playwright-executor:
     docker:
@@ -111,7 +119,7 @@ jobs:
 
   # Lighthouse CI — requires the production build
   lighthouse:
-    executor: node-executor
+    executor: node-browsers-executor
     steps:
       - checkout
       - attach-build
@@ -119,6 +127,7 @@ jobs:
           name: Start preview server (background)
           command: npm run preview -- --port 4173
           background: true
+      - browser-tools/install-chrome
       - run:
           name: Wait for preview server
           command: npx wait-on http://localhost:4173 --timeout 30000
@@ -136,6 +145,7 @@ jobs:
     steps:
       - checkout
       - attach-build
+      - restore-npm-cache
       - run:
           name: Install npm deps (in Playwright image)
           command: npm ci --prefer-offline

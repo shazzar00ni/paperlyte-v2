@@ -28,6 +28,8 @@
         "interactive": ["error", { "maxNumericValue": 8000 }],
         "max-potential-fid": ["warn", { "maxNumericValue": 130 }],
         "server-response-time": ["warn", { "maxNumericValue": 600 }],
+        "errors-in-console": "warn",
+        "network-dependency-tree-insight": "warn",
         "uses-responsive-images": "warn",
         "offscreen-images": "warn",
         "uses-optimized-images": "warn",

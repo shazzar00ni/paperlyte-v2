@@ -3,7 +3,7 @@
 [![Tracked Issue](https://img.shields.io/github/issues/detail?id=shazzar00ni/paperlyte-v2/50&label=SECURITY.md%20Tracking%20Issue)](https://github.com/shazzar00ni/paperlyte-v2/issues/50)
 
 **Status:** In progress — see [issue #50](https://github.com/shazzar00ni/paperlyte-v2/issues/50) for details and updates.  
-**Last updated:** December 2, 2025
+**Last updated:** April 3, 2026
 
 ---
 
@@ -20,10 +20,11 @@
 
 If you discover a security vulnerability, please report it responsibly:
 
-- Email: [security@paperlyte.com](mailto:security@paperlyte.com)
+- Use GitHub's private ["Report a Vulnerability"](https://github.com/shazzar00ni/paperlyte-v2/security/advisories/new) tab — this is the preferred method.
+- Alternatively, email: [security@paperlyte.com](mailto:security@paperlyte.com)
 - Do **not** create a public GitHub issue for security vulnerabilities.
 - Provide as much detail as possible (steps to reproduce, impact, etc.).
-- We aim to acknowledge all reports within 24 hours and resolve critical issues promptly.
+- We aim to acknowledge all reports within 48 hours and resolve critical issues promptly.
 
 ## Security Policies & Resources
 

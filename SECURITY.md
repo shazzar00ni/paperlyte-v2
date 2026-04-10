@@ -18,7 +18,7 @@ We release patches for security vulnerabilities for the following versions:
 
 To report a security issue, please use the GitHub Security Advisory ["Report a Vulnerability"](https://github.com/shazzar00ni/paperlyte-v2/security/advisories/new) tab. This keeps your report private and ensures the maintainers are notified immediately.
 
-Alternatively, you can email **security@paperlyte.com** if you prefer not to use GitHub.
+Alternatively, you can email [security@paperlyte.com](mailto:security@paperlyte.com) if you prefer not to use GitHub.
 
 **Please include the following information where possible**:
 
@@ -44,9 +44,9 @@ Report security bugs in third-party modules to the person or team maintaining th
 
 ## Escalation
 
-If you do not receive an acknowledgment of your report within **5 business days**, please follow up directly at **security@paperlyte.com** referencing your original report.
+If you do not receive an acknowledgment of your report within **5 business days**, please follow up directly at [security@paperlyte.com](mailto:security@paperlyte.com) referencing your original report.
 
-If the issue is acknowledged but no further response or engagement is provided within **14 days**, please request a status update through your original private GitHub Security Advisory thread or by emailing **security@paperlyte.com** and referencing your original report. Do not open a public GitHub issue for security-related follow-up.
+If the issue is acknowledged but no further response or engagement is provided within **14 days**, please request a status update through your original private GitHub Security Advisory thread or by emailing [security@paperlyte.com](mailto:security@paperlyte.com) and referencing your original report. Do not open a public GitHub issue for security-related follow-up.
 
 ## Our Response Process
 

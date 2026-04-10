@@ -289,3 +289,139 @@ describe('package-lock.json – picomatch dependency update', () => {
     expect(lockfile.lockfileVersion).toBeGreaterThanOrEqual(1)
   })
 })
+
+// ---------------------------------------------------------------------------
+// package-lock.json – axios SSRF fix (GHSA-3p68-rc4w-qgx5)
+// Axios < 1.15.0 has a NO_PROXY hostname normalisation bypass that can lead
+// to SSRF. The override in package.json forces >= 1.15.0.
+// ---------------------------------------------------------------------------
+
+describe('package-lock.json – axios security update (GHSA-3p68-rc4w-qgx5)', () => {
+  interface PackageLock {
+    lockfileVersion: number
+    packages: Record<string, { version: string; resolved: string; dev?: boolean }>
+  }
+
+  let lockfile: PackageLock
+  let entry: { version: string; resolved: string; dev?: boolean }
+
+  beforeAll(() => {
+    const raw = readFileSync(resolve(projectRoot, 'package-lock.json'), 'utf-8')
+    lockfile = JSON.parse(raw) as PackageLock
+    entry = lockfile.packages['node_modules/axios']
+  })
+
+  it('should have axios listed in packages', () => {
+    expect(lockfile.packages).toHaveProperty('node_modules/axios')
+  })
+
+  it('axios version should be >= 1.15.0 (not vulnerable)', () => {
+    const [major, minor, patch] = entry.version.split('.').map(Number)
+    const isAtLeast1_15_0 =
+      major > 1 || (major === 1 && minor > 15) || (major === 1 && minor === 15 && patch >= 0)
+    expect(isAtLeast1_15_0, `axios ${entry.version} is below the minimum safe version 1.15.0`).toBe(
+      true
+    )
+  })
+
+  it('axios should NOT be the vulnerable version range (< 1.15.0)', () => {
+    const [major, minor] = entry.version.split('.').map(Number)
+    expect(major === 1 && minor < 15).toBe(false)
+  })
+
+  it('axios resolved URL should point to a non-vulnerable release', () => {
+    expect(entry.resolved).toContain('axios-1.15.')
+  })
+})
+
+// ---------------------------------------------------------------------------
+// package-lock.json – basic-ftp FTP command injection fix (GHSA-chqc-8p9q-pq6q)
+// basic-ftp 5.2.0 allows FTP command injection via CRLF sequences.
+// The override in package.json forces >= 5.2.1.
+// ---------------------------------------------------------------------------
+
+describe('package-lock.json – basic-ftp security update (GHSA-chqc-8p9q-pq6q)', () => {
+  interface PackageLock {
+    lockfileVersion: number
+    packages: Record<string, { version: string; resolved: string; dev?: boolean }>
+  }
+
+  let lockfile: PackageLock
+  let entry: { version: string; resolved: string; dev?: boolean }
+
+  beforeAll(() => {
+    const raw = readFileSync(resolve(projectRoot, 'package-lock.json'), 'utf-8')
+    lockfile = JSON.parse(raw) as PackageLock
+    entry = lockfile.packages['node_modules/basic-ftp']
+  })
+
+  it('should have basic-ftp listed in packages', () => {
+    expect(lockfile.packages).toHaveProperty('node_modules/basic-ftp')
+  })
+
+  it('basic-ftp should NOT be the vulnerable version 5.2.0', () => {
+    expect(entry.version).not.toBe('5.2.0')
+  })
+
+  it('basic-ftp version should be >= 5.2.1 (not vulnerable)', () => {
+    const [major, minor, patch] = entry.version.split('.').map(Number)
+    const isAtLeast5_2_1 =
+      major > 5 || (major === 5 && minor > 2) || (major === 5 && minor === 2 && patch >= 1)
+    expect(
+      isAtLeast5_2_1,
+      `basic-ftp ${entry.version} is below the minimum safe version 5.2.1`
+    ).toBe(true)
+  })
+
+  it('basic-ftp resolved URL should not point to the vulnerable 5.2.0 release', () => {
+    expect(entry.resolved).not.toContain('basic-ftp-5.2.0.tgz')
+  })
+})
+
+// ---------------------------------------------------------------------------
+// package-lock.json – lodash-es prototype pollution / code injection fix
+// (GHSA-r5fr-rjxr-66jc, GHSA-f23m-r3pf-42rh)
+// lodash-es <= 4.17.23 is affected. The override in package.json forces >= 4.18.0.
+// ---------------------------------------------------------------------------
+
+describe('package-lock.json – lodash-es security update (GHSA-r5fr-rjxr-66jc, GHSA-f23m-r3pf-42rh)', () => {
+  interface PackageLock {
+    lockfileVersion: number
+    packages: Record<string, { version: string; resolved: string; dev?: boolean }>
+  }
+
+  let lockfile: PackageLock
+  let entry: { version: string; resolved: string; dev?: boolean }
+
+  beforeAll(() => {
+    const raw = readFileSync(resolve(projectRoot, 'package-lock.json'), 'utf-8')
+    lockfile = JSON.parse(raw) as PackageLock
+    entry = lockfile.packages['node_modules/lodash-es']
+  })
+
+  it('should have lodash-es listed in packages', () => {
+    expect(lockfile.packages).toHaveProperty('node_modules/lodash-es')
+  })
+
+  it('lodash-es should NOT be at or below the vulnerable version 4.17.23', () => {
+    const [major, minor, patch] = entry.version.split('.').map(Number)
+    const isVulnerable =
+      major < 4 || (major === 4 && minor < 17) || (major === 4 && minor === 17 && patch <= 23)
+    expect(isVulnerable, `lodash-es ${entry.version} is in the vulnerable range (<= 4.17.23)`).toBe(
+      false
+    )
+  })
+
+  it('lodash-es version should be >= 4.18.0 (not vulnerable)', () => {
+    const [major, minor] = entry.version.split('.').map(Number)
+    const isAtLeast4_18 = major > 4 || (major === 4 && minor >= 18)
+    expect(
+      isAtLeast4_18,
+      `lodash-es ${entry.version} is below the minimum safe version 4.18.0`
+    ).toBe(true)
+  })
+
+  it('lodash-es resolved URL should not point to a vulnerable release', () => {
+    expect(entry.resolved).not.toMatch(/lodash-es-4\.17\.\d+\.tgz/)
+  })
+})

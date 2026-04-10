@@ -194,6 +194,13 @@ export default async function handler(request: Request, context: Context): Promi
       allowProtocolRelative: false,
       // Discard disallowed elements and their children entirely.
       disallowedTagsMode: 'discard',
+      // Explicitly drop structural containers like nav/header/footer/aside
+      // together with all of their descendants so navigation/chrome content
+      // doesn't leak into the Markdown.
+      exclusiveFilter(frame) {
+        const dropWithChildren = new Set(['nav', 'header', 'footer', 'aside'])
+        return dropWithChildren.has(frame.tag)
+      },
       // Drop structural chrome together with ALL descendants so navigation
       // links and other UI chrome do not leak into the Markdown output.
       exclusiveFilter(frame) {

@@ -52,7 +52,7 @@ jobs:
           fetch-depth: 0
 
       - name: Validate Sonar token presence
-        if: github.repository_owner == 'shazzar00ni' && env.SONAR_TOKEN == ''
+        if: env.SONAR_TOKEN == ''
         run: |
           echo "::error::SONAR_TOKEN is not configured; SonarCloud analysis is required."
           exit 1

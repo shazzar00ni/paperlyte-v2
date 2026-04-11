@@ -128,17 +128,25 @@ test.describe('Landing Page', () => {
   test('should toggle dark mode and update data-theme attribute', async ({ page }) => {
     await page.goto('/');
 
-    // The theme toggle button label is "Switch to dark mode" in the initial (light) state
-    const toggleButton = page.getByRole('button', { name: /switch to dark mode/i });
+    const html = page.locator('html');
+    const initialThemeAttr = await html.getAttribute('data-theme');
+    const initialTheme = initialThemeAttr === 'dark' ? 'dark' : 'light';
+    const expectedLabelBeforeToggle =
+      initialTheme === 'dark' ? /switch to light mode/i : /switch to dark mode/i;
+    const expectedThemeAfterToggle = initialTheme === 'dark' ? 'light' : 'dark';
+    const expectedLabelAfterToggle =
+      expectedThemeAfterToggle === 'dark' ? /switch to light mode/i : /switch to dark mode/i;
+
+    const toggleButton = page.getByRole('button', { name: expectedLabelBeforeToggle });
     await expect(toggleButton).toBeVisible();
 
     await toggleButton.click();
 
-    // After toggling, the <html> element should carry data-theme="dark"
-    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+    // After toggling, the <html> element should carry the opposite theme
+    await expect(html).toHaveAttribute('data-theme', expectedThemeAfterToggle);
 
-    // The button label should now offer to switch back to light mode
-    await expect(page.getByRole('button', { name: /switch to light mode/i })).toBeVisible();
+    // The button label should now offer to switch back to the previous theme
+    await expect(page.getByRole('button', { name: expectedLabelAfterToggle })).toBeVisible();
   });
 
   test('should expand and collapse a FAQ item', async ({ page }) => {

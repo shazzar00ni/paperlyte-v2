@@ -318,6 +318,67 @@ describe('ErrorBoundary', () => {
     })
   })
 
+  describe('maxRetries exhaustion', () => {
+    it('should hide "Try Again" and change message after retryCount reaches maxRetries', async () => {
+      const user = userEvent.setup()
+
+      // A component that always throws so clicking "Try Again" never recovers
+      const AlwaysThrows: () => never = () => {
+        throw new Error('persistent error')
+      }
+
+      render(
+        // Use maxRetries=2 to reach the limit faster
+        <ErrorBoundary maxRetries={2}>
+          <AlwaysThrows />
+        </ErrorBoundary>
+      )
+
+      // After 1st error: retryCount=1, showRetryButton = 1 < 2 = true → "Try Again" visible
+      expect(screen.getByText('Try Again')).toBeInTheDocument()
+      expect(screen.getByText(/something unexpected happened/i)).toBeInTheDocument()
+
+      // Click "Try Again" → 2nd error thrown → retryCount=2, showRetryButton = 2 < 2 = false
+      await user.click(screen.getByText('Try Again'))
+
+      // After 2nd error: "Try Again" should be gone and message should change
+      expect(screen.queryByText('Try Again')).not.toBeInTheDocument()
+      expect(screen.getByText(/Multiple errors occurred/i)).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: 'Reload Page' })).toBeInTheDocument()
+    })
+
+    it('should show "Reload Page" button and call location.reload when retry limit is reached', async () => {
+      const user = userEvent.setup()
+      const reloadMock = vi.fn()
+
+      Object.defineProperty(window, 'location', {
+        configurable: true,
+        writable: true,
+        value: { ...originalLocation, reload: reloadMock },
+      })
+
+      const AlwaysThrows: () => never = () => {
+        throw new Error('persistent error')
+      }
+
+      // maxRetries=1: after 1 error retryCount=1, showRetryButton = 1 < 1 = false immediately
+      render(
+        <ErrorBoundary maxRetries={1}>
+          <AlwaysThrows />
+        </ErrorBoundary>
+      )
+
+      // retryCount=1, maxRetries=1: "Try Again" should already be hidden
+      expect(screen.queryByText('Try Again')).not.toBeInTheDocument()
+      expect(screen.getByText(/Multiple errors occurred/i)).toBeInTheDocument()
+
+      // "Reload Page" should still be present
+      const reloadButton = screen.getByRole('button', { name: 'Reload Page' })
+      await user.click(reloadButton)
+      expect(reloadMock).toHaveBeenCalled()
+    })
+  })
+
   describe('getDerivedStateFromError', () => {
     it('should set hasError to true when error is thrown', () => {
       render(

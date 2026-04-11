@@ -95,7 +95,13 @@ jobs:
           echo "Uploading merged SARIF to Codacy..."
           HTTP_STATUS=""
           CURL_EXIT=0
-          HTTP_STATUS=$(curl -sS -o /tmp/codacy_upload_response.txt -w "%{http_code}" -X POST \
+          HTTP_STATUS=$(curl -sS \
+            --connect-timeout 10 \
+            --max-time 90 \
+            --retry 3 \
+            --retry-delay 2 \
+            --retry-all-errors \
+            -o /tmp/codacy_upload_response.txt -w "%{http_code}" -X POST \
             "https://api.codacy.com/api/v3/analysis/organizations/gh/$ORG/repositories/$REPO/upload" \
             -H "api-token: $CODACY_PROJECT_TOKEN" \
             -F "commitUuid=$COMMIT_UUID" \

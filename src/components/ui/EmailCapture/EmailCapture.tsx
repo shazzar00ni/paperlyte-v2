@@ -94,11 +94,13 @@ export const EmailCapture = ({
     } catch (error) {
       setStatus('error')
       setErrorMessage("Couldn't add you to the list. Check your email and try again.")
-      logError(new Error('Subscribe failed'), {
+      const loggedError =
+        error instanceof Error ? error : new Error(`Subscribe failed: ${String(error)}`)
+      logError(loggedError, {
         tags: {
           component: 'EmailCapture',
           action: 'subscribe',
-          errorType: error instanceof Error ? error.name : 'Unknown',
+          errorType: error instanceof Error ? error.name : typeof error,
         },
       })
     }

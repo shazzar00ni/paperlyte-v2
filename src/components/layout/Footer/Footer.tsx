@@ -34,7 +34,7 @@ export const Footer = (): React.ReactElement => {
                   </a>
                 </li>
                 <li>
-                  <a href="#pricing" className={styles.link}>
+                  <a href="#email-capture" className={styles.link}>
                     Pricing
                   </a>
                 </li>

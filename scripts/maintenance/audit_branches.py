@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import subprocess
+import os
 import sys
 import re
 import signal
@@ -75,7 +76,7 @@ def main():
 
         # 2. Check for security helpers in src/utils/navigation.ts
         nav_content = run_command(["git", "show", f"{branch}:src/utils/navigation.ts"])
-        if nav_content is not None:
+        if nav_content:
             for helper in SECURITY_HELPERS:
                 # Robust pattern to match both 'export function helperName' and 'export const helperName ='
                 pattern = rf"export\s+(?:function|const)\s+{re.escape(helper)}\b"

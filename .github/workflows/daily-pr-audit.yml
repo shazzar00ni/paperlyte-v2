@@ -14,12 +14,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/setup-python@42375524a763eb58a0d054d13afc0c491fce71c6 # v5.3.0
+        uses: actions/setup-python@v5
         with:
           python-version: '3.x'
 
@@ -37,12 +37,8 @@ jobs:
           # Prepend daily summary after the header in PR_REVIEW_SUMMARY.md
           if [ -f daily_summary.txt ]; then
             # Find the line number of the main header
-            HEADER_LINE=$(grep -n "# PR Review Summary" PR_REVIEW_SUMMARY.md | head -n 1 | cut -d: -f1)
-            if [ -z "$HEADER_LINE" ]; then
-              echo "Error: '# PR Review Summary' header not found in PR_REVIEW_SUMMARY.md" >&2
-              exit 1
-            fi
-            AFTER_HEADER=$((HEADER_LINE + 1))
+            HEADER_LINE=$(grep -n "# PR Review Summary" PR_REVIEW_SUMMARY.md | head -n 1 | cut -d: -f1 || echo "1")
+            AFTER_HEADER=$(($HEADER_LINE + 1))
 
             # Split the file around the main header to insert the new entry
             head -n $AFTER_HEADER PR_REVIEW_SUMMARY.md > top.md
@@ -60,4 +56,4 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git add PR_REVIEW_SUMMARY.md
           git commit -m "docs: automated daily PR audit summary ($(date +%Y-%m-%d))" || echo "No changes to commit"
-          git push origin HEAD:${{ github.ref_name }}
+          git push

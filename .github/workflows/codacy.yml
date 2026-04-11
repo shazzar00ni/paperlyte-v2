@@ -113,7 +113,7 @@ jobs:
             fi
             echo "Codacy upload response (if any):"
             cat /tmp/codacy_upload_response.txt 2>/dev/null || true
-            exit 0
+            exit 1
           fi
           echo "Codacy upload HTTP status: $HTTP_STATUS"
           cat /tmp/codacy_upload_response.txt || true
@@ -121,6 +121,7 @@ jobs:
             echo "Codacy upload succeeded."
           else
             echo "Warning: Codacy upload returned HTTP $HTTP_STATUS"
+            exit 1
           fi
 
       # Upload the SARIF file only after successful merge.

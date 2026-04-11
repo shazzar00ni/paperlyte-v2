@@ -323,7 +323,7 @@ describe('ErrorBoundary', () => {
       const user = userEvent.setup()
 
       // A component that always throws so clicking "Try Again" never recovers
-      const AlwaysThrows = (): never => {
+      const AlwaysThrows: () => never = () => {
         throw new Error('persistent error')
       }
 
@@ -347,7 +347,7 @@ describe('ErrorBoundary', () => {
       expect(screen.getByRole('button', { name: 'Reload Page' })).toBeInTheDocument()
     })
 
-    it('should call location.reload when "Try Again" is clicked at retry limit', async () => {
+    it('should show "Reload Page" button and call location.reload when retry limit is reached', async () => {
       const user = userEvent.setup()
       const reloadMock = vi.fn()
 
@@ -357,7 +357,7 @@ describe('ErrorBoundary', () => {
         value: { ...originalLocation, reload: reloadMock },
       })
 
-      const AlwaysThrows = () => {
+      const AlwaysThrows: () => never = () => {
         throw new Error('persistent error')
       }
 

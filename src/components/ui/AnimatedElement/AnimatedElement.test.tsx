@@ -1,8 +1,13 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render, screen, act } from '@testing-library/react'
 import { AnimatedElement } from './AnimatedElement'
 
 describe('AnimatedElement', () => {
+  afterEach(() => {
+    // Restore any globals stubbed during the test (e.g. IntersectionObserver).
+    // Running this in afterEach ensures cleanup happens even if a test fails early.
+    vi.unstubAllGlobals()
+  })
   it('should render children', () => {
     render(
       <AnimatedElement>
@@ -112,8 +117,6 @@ describe('AnimatedElement', () => {
 
     // Now the visible class should be applied
     expect(wrapper.className).toContain('visible')
-
-    vi.unstubAllGlobals()
   })
 
   it('should pass threshold prop to IntersectionObserver', () => {
@@ -139,8 +142,6 @@ describe('AnimatedElement', () => {
     )
 
     expect(capturedOptions).toMatchObject({ threshold: 0.5 })
-
-    vi.unstubAllGlobals()
   })
 
   it('should support different animation types', () => {

@@ -119,7 +119,9 @@ def main():
             upsert_pr_comment(owner, repo, pr_num, comment)
 
     # Generate Markdown Summary
-    date_str = datetime.now().strftime('%Y-%m-%d')
+from datetime import datetime, timezone
+
+    date_str = datetime.now(timezone.utc).strftime('%Y-%m-%d')
     total = data.get('total_branches', 0)
 
     summary = f'## {date_str}\n\n'

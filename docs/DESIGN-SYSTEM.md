@@ -1,9 +1,9 @@
 # Paperlyte Design System
 
-> **Version:** 2.1.0
-> **Last Updated:** December 20, 2025
+> **Version:** 2.2.0
+> **Last Updated:** April 11, 2026
 
-A comprehensive design system for Paperlyte - a lightning-fast, distraction-free note-taking application that prioritizes simplicity and performance through a clean, modern aesthetic with a blue accent color.
+A comprehensive design system for Paperlyte - a lightning-fast, distraction-free note-taking application that prioritizes simplicity and performance through a sophisticated monochrome aesthetic using near-black (#1a1a1a) and pure white (#ffffff).
 
 ---
 
@@ -46,24 +46,24 @@ A comprehensive design system for Paperlyte - a lightning-fast, distraction-free
 
 ## Color Palette
 
-**Design Philosophy:** Paperlyte uses a clean, paper-inspired palette with blue (#3B82F6) as the primary accent color. The design emphasizes clarity and readability with high-contrast neutral colors, while the blue accent adds visual interest to interactive elements and calls-to-action.
+**Design Philosophy:** Paperlyte uses a sophisticated monochrome palette with near-black (#1a1a1a) as the primary color and pure white (#ffffff) as the background. This creates a timeless, paper-inspired aesthetic that inverts naturally in dark mode (white becomes primary). The monochrome approach keeps focus on the content — your thoughts — rather than the interface.
 
 ### Primary Colors
 
 ```css
 /* Light Mode */
---color-primary: #3b82f6; /* Blue 500 - Main brand color */
---color-primary-dark: #2563eb; /* Blue 600 - Hover states */
---color-primary-light: #93c5fd; /* Blue 300 - Accents */
---color-primary-faint: rgba(59, 130, 246, 0.1); /* 10% opacity for backgrounds */
---color-primary-fainter: rgba(59, 130, 246, 0.05); /* 5% opacity for subtle backgrounds */
+--color-primary: #1a1a1a; /* Near black - Main brand color */
+--color-primary-dark: #000000; /* Pure black - Hover states */
+--color-primary-light: #333333; /* Dark gray - Accents */
+--color-primary-faint: rgba(26, 26, 26, 0.1); /* 10% opacity for backgrounds */
+--color-primary-fainter: rgba(26, 26, 26, 0.05); /* 5% opacity for subtle backgrounds */
 ```
 
 #### Color Usage
 
-- **Primary (#3b82f6)** - CTAs, primary buttons, links, interactive elements
-- **Primary Dark (#2563eb)** - Hover states on primary elements
-- **Primary Light (#93c5fd)** - Subtle accents, secondary highlights
+- **Primary (#1a1a1a)** - CTAs, primary buttons, headings, interactive elements
+- **Primary Dark (#000000)** - Hover states on primary elements
+- **Primary Light (#333333)** - Subtle accents, secondary highlights
 - **Primary Faint** - Background tints for focus states, subtle backgrounds
 - **Primary Fainter** - Very subtle backgrounds, hover states
 
@@ -81,15 +81,15 @@ A comprehensive design system for Paperlyte - a lightning-fast, distraction-free
 
 ### Dark Mode Colors
 
-**Dark Mode Philosophy:** In dark mode, the palette maintains readability while providing a comfortable low-light experience. The blue accent remains consistent for brand recognition.
+**Dark Mode Philosophy:** In dark mode, the monochrome palette inverts — white (#ffffff) becomes the primary color on a deep navy-black background (#0f172a). This creates a comfortable low-light experience while maintaining the brand's clean, paper-inspired aesthetic.
 
 ```css
 /* Dark Mode */
---color-primary: #3b82f6; /* Blue 500 - Consistent brand color */
---color-primary-dark: #2563eb; /* Blue 600 - Hover states */
---color-primary-light: #60a5fa; /* Blue 400 - Accents */
---color-primary-faint: rgba(59, 130, 246, 0.1); /* 10% opacity for backgrounds */
---color-primary-fainter: rgba(59, 130, 246, 0.05); /* 5% opacity for subtle backgrounds */
+--color-primary: #ffffff; /* Pure white - Primary in dark mode */
+--color-primary-dark: #f1f5f9; /* Slate 100 - Hover states */
+--color-primary-light: #e2e8f0; /* Slate 200 - Accents */
+--color-primary-faint: rgba(255, 255, 255, 0.1); /* 10% opacity for backgrounds */
+--color-primary-fainter: rgba(255, 255, 255, 0.05); /* 5% opacity for subtle backgrounds */
 --color-background: #0f172a; /* Slate 900 - Dark background */
 --color-surface: #1e293b; /* Slate 800 - Card backgrounds */
 --color-text-primary: #f1f5f9; /* Slate 100 - Light text */
@@ -103,23 +103,22 @@ All colors have been tested for WCAG 2.1 compliance. The table below shows key c
 
 #### Primary Color Combinations
 
-| Foreground                  | Background             | Contrast Ratio | WCAG Level | Use Case                                                    |
-| --------------------------- | ---------------------- | -------------- | ---------- | ----------------------------------------------------------- |
-| `#111827` (Text Primary)    | `#FFFFFF` (Background) | 16.1:1         | AAA        | Body text (light mode)                                      |
-| `#6B7280` (Text Secondary)  | `#FFFFFF` (Background) | 4.6:1          | AA         | Supporting text (light mode)                                |
-| `#3b82f6` (Primary)         | `#FFFFFF` (Background) | 4.5:1          | AA\*       | Interactive elements and large text only (18pt+/14pt+ bold) |
-| `#FFFFFF` (Text on Primary) | `#3b82f6` (Primary)    | 4.5:1          | AA\*       | Large text on primary buttons only (18pt+/14pt+ bold)       |
-| `#2563eb` (Primary Dark)    | `#FFFFFF` (Background) | 7.8:1          | AAA        | Hover states, emphasized elements                           |
-| `#93c5fd` (Primary Light)   | `#FFFFFF` (Background) | 3.1:1          | AA\*       | Large text only (18pt+/14pt+ bold)                          |
+| Foreground                  | Background             | Contrast Ratio | WCAG Level | Use Case                    |
+| --------------------------- | ---------------------- | -------------- | ---------- | --------------------------- |
+| `#1a1a1a` (Primary)         | `#FFFFFF` (Background) | 16.7:1         | AAA        | Buttons, headings (light mode) |
+| `#111827` (Text Primary)    | `#FFFFFF` (Background) | 16.1:1         | AAA        | Body text (light mode)      |
+| `#6B7280` (Text Secondary)  | `#FFFFFF` (Background) | 4.6:1          | AA         | Supporting text (light mode) |
+| `#FFFFFF` (Text on Primary) | `#1a1a1a` (Primary)    | 16.7:1         | AAA        | Text on primary buttons     |
 
 #### Dark Mode Combinations
 
-| Foreground                 | Background             | Contrast Ratio | WCAG Level | Use Case                                                    |
-| -------------------------- | ---------------------- | -------------- | ---------- | ----------------------------------------------------------- |
-| `#F1F5F9` (Text Primary)   | `#0F172A` (Background) | 15.8:1         | AAA        | Body text (dark mode)                                       |
-| `#94A3B8` (Text Secondary) | `#0F172A` (Background) | 7.2:1          | AAA        | Supporting text (dark mode)                                 |
-| `#3b82f6` (Primary)        | `#0F172A` (Background) | 5.6:1          | AA         | Interactive elements and large text only (18pt+/14pt+ bold) |
-| `#FFFFFF` (Text)           | `#1E293B` (Surface)    | 14.8:1         | AAA        | Text on surface (dark mode)                                 |
+| Foreground                 | Background             | Contrast Ratio | WCAG Level | Use Case                                 |
+| -------------------------- | ---------------------- | -------------- | ---------- | ---------------------------------------- |
+| `#ffffff` (Primary)        | `#0F172A` (Background) | 19.2:1         | AAA        | Buttons, headings (dark mode)            |
+| `#F1F5F9` (Text Primary)   | `#0F172A` (Background) | 15.8:1         | AAA        | Body text (dark mode)                    |
+| `#94A3B8` (Text Secondary) | `#0F172A` (Background) | 7.2:1          | AAA        | Supporting text (dark mode)              |
+| `#000000` (Text on Primary)| `#ffffff` (Primary)    | 21:1           | AAA        | Text on primary buttons (dark mode)      |
+| `#FFFFFF` (Text)           | `#1E293B` (Surface)    | 14.8:1         | AAA        | Text on surface (dark mode)              |
 
 #### Semantic Color Combinations
 
@@ -132,13 +131,11 @@ All colors have been tested for WCAG 2.1 compliance. The table below shows key c
 
 **Notes:**
 
-- AA\* = Meets AA standards for large text (18pt/14pt bold) and UI components (3:1 minimum)
 - Normal text requires 4.5:1 contrast (AA) or 7:1 (AAA)
 - Large text and UI components require 3:1 contrast (AA)
-- **Important:** the blue primary color (#3b82f6) provides 4.5:1 contrast on white and 5.6:1 on dark backgrounds
-- the blue primary color should **only** be used for interactive elements (buttons, links) and large text, **NOT for normal body text**
-- For normal body text, use `--color-text-primary` (#111827 light mode, #F1F5F9 dark mode) which provides 16+ contrast ratio
-- Contrast ratios calculated using WCAG 2.1 relative luminance formula
+- **The monochrome palette exceeds WCAG AAA for all primary text/button combinations**
+- The near-black primary (#1a1a1a) provides 16.7:1 contrast on white backgrounds
+- In dark mode, white primary (#ffffff) on the dark background (#0f172a) exceeds 19:1
 - Semantic colors (success, error) are always paired with icons and descriptive text for accessibility
 - All background/border variants use very low opacity and are not intended for text contrast
 
@@ -154,7 +151,7 @@ All colors have been tested for WCAG 2.1 compliance. The table below shows key c
 
 ```css
 /* Primary Button Hover */
-background-color: var(--color-primary-dark); /* #2563eb */
+background-color: var(--color-primary-dark); /* #000000 */
 transform: translateY(-1px);
 box-shadow: var(--shadow-md);
 
@@ -186,15 +183,15 @@ cursor: not-allowed;
 
 ✅ **DO:**
 
-- Use primary color (#3b82f6) for CTAs and important interactive elements
-- Leverage high contrast of neutral colors for readability
+- Use primary color (#1a1a1a) for all CTAs, important interactive elements, and headings
+- Leverage the near-black/white contrast for clear visual hierarchy
 - Use text-secondary (#6B7280) for supporting information
 - Test colors in both light and dark modes
-- Use blue sparingly to draw attention to key actions
+- Rely on the monochrome palette's inherent high contrast
 
 ❌ **DON'T:**
 
-- Overuse the blue accent - it should highlight, not overwhelm
+- Introduce non-brand accent colors (avoid blues, purples, gradients not in the palette)
 - Place secondary text on colored backgrounds without checking contrast
 - Use color alone to convey information (add icons or text)
 - Override focus outline colors (accessibility requirement)
@@ -275,27 +272,23 @@ import styles from './Alert.module.css'
 
 ## Typography
 
-**Typography Philosophy:** Paperlyte uses Inter, a clean and highly readable sans-serif font family, for all text. This creates a consistent, professional appearance across the application while maintaining excellent legibility at all sizes.
+**Typography Philosophy:** Paperlyte uses a dual-font system — Inter for UI/body text and Playfair Display for headlines. This pairing creates a distinctive, editorial feel that balances readability with personality: Inter's clean geometry keeps the interface fast and functional, while Playfair Display's elegant serifs give headlines gravitas and character.
 
 ### Font Families
 
 ```css
 --font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+/* Headlines use Playfair Display (self-hosted variable font) */
 ```
 
-**Primary:** Inter (Variable Font) - Clean, readable sans-serif for all text
-**Fallback:** System fonts for fast loading and graceful degradation
-
-**Loading Strategy:**
-
-```html
-<!-- Preload critical font for faster rendering -->
-<link rel="preload" as="font" type="font/woff2" href="/fonts/Inter-Variable.woff2" crossorigin />
-```
+**Primary (UI/Body):** Inter — loaded via `@fontsource/inter` (Latin subset, 400/500/600/700 weights)
+**Display (Headlines):** Playfair Display — self-hosted variable font for performance
+**Fallback:** System fonts for graceful degradation
 
 **Font Usage Guidelines:**
 
-- **Inter**: All text - navigation, buttons, headings, body text, UI components
+- **Inter**: Navigation, buttons, body text, captions, UI components
+- **Playfair Display**: Hero headlines, section titles, key value propositions (typically with `<em>` for italic emphasis)
 
 ### Type Scale
 

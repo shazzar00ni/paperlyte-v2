@@ -3,6 +3,7 @@ import { Button } from '@components/ui/Button'
 import { Icon } from '@components/ui/Icon'
 import { trackEvent } from '@utils/analytics'
 import { validateEmail } from '@utils/validation'
+import { logError } from '@utils/monitoring'
 import styles from './EmailCapture.module.css'
 
 interface EmailCaptureProps {
@@ -54,13 +55,13 @@ export const EmailCapture = ({
     const { isValid, error: validationError } = validateEmail(email)
     if (!isValid) {
       setStatus('error')
-      setErrorMessage(validationError ?? 'Please enter a valid email address')
+      setErrorMessage(validationError ?? "That email address doesn't look right.")
       return
     }
 
     if (!gdprConsent) {
       setStatus('error')
-      setErrorMessage('Please agree to receive emails from Paperlyte')
+      setErrorMessage("Please confirm you'd like to receive updates.")
       return
     }
 
@@ -92,10 +93,16 @@ export const EmailCapture = ({
       })
     } catch (error) {
       setStatus('error')
-      const message =
-        error instanceof Error ? error.message : 'Something went wrong. Please try again.'
-      setErrorMessage(message)
-      console.error('Email subscription error:', error)
+      setErrorMessage("Couldn't add you to the list. Check your email and try again.")
+      const loggedError =
+        error instanceof Error ? error : new Error(`Subscribe failed: ${String(error)}`)
+      logError(loggedError, {
+        tags: {
+          component: 'EmailCapture',
+          action: 'subscribe',
+          errorType: error instanceof Error ? error.name : typeof error,
+        },
+      })
     }
   }
 
@@ -107,7 +114,7 @@ export const EmailCapture = ({
           <p className={styles.successMessage}>
             <strong>You're on the list!</strong>
             <br />
-            Check your email to confirm your subscription.
+            Check your inbox to confirm.
           </p>
         </div>
       </div>
@@ -182,7 +189,7 @@ export const EmailCapture = ({
               required
             />
             <span className={styles.gdprText}>
-              I agree to receive emails from Paperlyte. View our{' '}
+              I agree to receive product updates from Paperlyte. View our{' '}
               <a
                 href="/privacy.html"
                 className={styles.link}

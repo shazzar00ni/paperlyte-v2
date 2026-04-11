@@ -12,7 +12,7 @@ const BENEFITS = [
   'Get early access before public launch',
   'Influence features and design decisions',
   'Lock in founder pricing (save 50% for life)',
-  'Receive exclusive productivity tips and updates',
+  'Get early product updates and insider tips',
 ]
 
 export const EmailCapture = (): React.ReactElement => {
@@ -39,18 +39,18 @@ export const EmailCapture = (): React.ReactElement => {
       const error = err instanceof Error ? err : new Error(String(err))
       logError(error, { tags: { context: 'waitlist-submit' } })
 
-      let message = 'Failed to join waitlist. Please try again.'
+      let message = "Couldn't add you to the waitlist. Check your connection and try again."
       if (
         error.name === 'TypeError' ||
         error.message.toLowerCase().includes('network') ||
         error.message.toLowerCase().includes('fetch')
       ) {
-        message = 'Network error. Please check your connection and try again.'
+        message = 'Connection error. Check your internet and try again.'
       } else if (
         error.message.toLowerCase().includes('invalid') ||
         error.message.toLowerCase().includes('validation')
       ) {
-        message = 'Invalid email address. Please check and try again.'
+        message = "That email address doesn't look right. Please check and try again."
       }
 
       setIsLoading(false)
@@ -75,14 +75,14 @@ export const EmailCapture = (): React.ReactElement => {
               <div className={styles.nextSteps}>
                 <h3 className={styles.nextStepsTitle}>What happens next:</h3>
                 <ul className={styles.nextStepsList}>
-                  <li>We'll email you product updates as we build</li>
+                  <li>We'll send occasional product updates — no spam</li>
                   <li>You'll get early access 2 weeks before public launch</li>
-                  <li>We'll ask for your feedback to make Paperlyte better</li>
+                  <li>You'll shape the product — we'll ask for your input as we build</li>
                 </ul>
               </div>
 
               <div className={styles.shareSection}>
-                <p className={styles.shareText}>Share Paperlyte with friends</p>
+                <p className={styles.shareText}>Know someone who'd love this? Share Paperlyte:</p>
                 <div className={styles.socialButtons}>
                   <Button
                     variant="secondary"
@@ -125,9 +125,7 @@ export const EmailCapture = (): React.ReactElement => {
         </AnimatedElement>
 
         <AnimatedElement animation="fadeIn" delay={100}>
-          <p className={styles.subtitle}>
-            We're launching in {LAUNCH_QUARTER}. Join the waitlist now to:
-          </p>
+          <p className={styles.subtitle}>Launching {LAUNCH_QUARTER}. Join the waitlist to:</p>
         </AnimatedElement>
 
         <AnimatedElement animation="fadeIn" delay={200}>

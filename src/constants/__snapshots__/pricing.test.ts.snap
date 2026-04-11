@@ -16,7 +16,7 @@ exports[`Pricing Constants > Snapshot Tests > should match PRICING_PLANS snapsho
     "id": "free",
     "name": "Free",
     "price": null,
-    "tagline": "Perfect for personal use",
+    "tagline": "Start writing immediately. No card needed.",
   },
   {
     "ctaText": "Start Free Trial",
@@ -34,7 +34,7 @@ exports[`Pricing Constants > Snapshot Tests > should match PRICING_PLANS snapsho
     "isPopular": true,
     "name": "Pro",
     "price": 4.99,
-    "tagline": "For power users",
+    "tagline": "For writers, thinkers, and teams of one.",
   },
   {
     "ctaText": "Contact Sales",

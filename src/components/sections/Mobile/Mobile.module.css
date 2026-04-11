@@ -31,32 +31,13 @@
   margin-bottom: var(--spacing-lg);
 }
 
-.link {
+.statusLabel {
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-xs);
-  color: var(--color-text-on-dark);
+  color: var(--color-text-on-dark-secondary);
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-medium);
-  text-decoration: none;
-  border-bottom: 1px solid var(--color-text-on-dark);
-  padding-bottom: 0.25rem;
-  transition:
-    opacity var(--transition-base),
-    gap var(--transition-base);
-}
-
-.link:hover {
-  opacity: 0.8;
-  gap: var(--spacing-sm);
-}
-
-.link i {
-  transition: transform var(--transition-base);
-}
-
-.link:hover i {
-  transform: translateX(4px);
 }
 
 /* Mobile styles */

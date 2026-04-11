@@ -40,7 +40,7 @@ export const Comparison = (): React.ReactElement => {
     <Section id="comparison" background="default">
       <div className={styles.header}>
         <AnimatedElement animation="fadeIn">
-          <h2 className={styles.title}>See How We Compare</h2>
+          <h2 className={styles.title}>See how we compare</h2>
         </AnimatedElement>
         <AnimatedElement animation="fadeIn" delay={100}>
           <p className={styles.subtitle}>

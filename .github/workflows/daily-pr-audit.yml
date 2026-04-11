@@ -60,4 +60,4 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git add PR_REVIEW_SUMMARY.md
           git commit -m "docs: automated daily PR audit summary ($(date +%Y-%m-%d))" || echo "No changes to commit"
-          git push
+          git push origin HEAD:${{ github.ref_name }}

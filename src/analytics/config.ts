@@ -8,16 +8,28 @@
 import type { AnalyticsConfig } from './types'
 
 /**
- * Get analytics configuration from environment variables
+ * Build an {@link AnalyticsConfig} from Vite environment variables.
  *
- * Environment variables (defined in .env):
- * - VITE_ANALYTICS_ENABLED: Enable/disable analytics
- *   - Default: 'true' in production, 'false' in development
- *   - Explicitly set to 'true' to enable or 'false' to disable
- * - VITE_ANALYTICS_PROVIDER: Analytics provider (plausible, fathom, umami, simple)
- * - VITE_ANALYTICS_DOMAIN: Domain/site ID for analytics service
- * - VITE_ANALYTICS_SCRIPT_URL: Custom script URL (optional)
- * - VITE_ANALYTICS_DEBUG: Enable debug mode (default: false)
+ * Returns `null` in two cases:
+ * - `VITE_ANALYTICS_DOMAIN` is not set (analytics cannot function without a
+ *   domain/site ID).
+ * - Analytics is explicitly disabled via `VITE_ANALYTICS_ENABLED=false`, or
+ *   defaults to disabled because the app is running in development mode.
+ *
+ * **Recognised environment variables** (set in `.env` / `.env.production`):
+ *
+ * | Variable | Description | Default |
+ * |---|---|---|
+ * | `VITE_ANALYTICS_DOMAIN` | Domain or site ID for the provider | _(required)_ |
+ * | `VITE_ANALYTICS_ENABLED` | `'true'` / `'false'` override | `'true'` in prod, `'false'` in dev |
+ * | `VITE_ANALYTICS_PROVIDER` | `plausible` \| `fathom` \| `umami` \| `simple` \| `custom` | `'plausible'` |
+ * | `VITE_ANALYTICS_SCRIPT_URL` | Custom script URL for self-hosted providers | _(provider default)_ |
+ * | `VITE_ANALYTICS_DEBUG` | `'true'` enables verbose logging | `'false'` in prod, `'true'` in dev |
+ *
+ * Invalid `VITE_ANALYTICS_PROVIDER` values fall back silently to `'plausible'`.
+ *
+ * @returns A fully-populated {@link AnalyticsConfig} ready to pass to
+ *   `analytics.init()`, or `null` when analytics should not be initialised.
  */
 export function getAnalyticsConfig(): AnalyticsConfig | null {
   const domain = import.meta.env.VITE_ANALYTICS_DOMAIN
@@ -75,7 +87,14 @@ export function getAnalyticsConfig(): AnalyticsConfig | null {
 }
 
 /**
- * Check if analytics is enabled based on environment configuration
+ * Convenience predicate that reports whether analytics is enabled for the
+ * current environment.
+ *
+ * Delegates to {@link getAnalyticsConfig} and returns `true` only when that
+ * function returns a non-null configuration object. Useful as a lightweight
+ * guard before building analytics-specific UI or importing heavy provider code.
+ *
+ * @returns `true` if analytics is configured and enabled, `false` otherwise.
  */
 export function isAnalyticsEnabled(): boolean {
   return getAnalyticsConfig() !== null

@@ -138,9 +138,16 @@ export const Testimonials = (): React.ReactElement => {
   }, [handleKeyDown])
 
   /**
-   * Render star rating
+   * Renders a row of five star icons representing a numeric rating.
+   *
+   * Filled stars use the primary brand colour; empty stars are rendered at
+   * 30% opacity. The container is labelled with `role="img"` so screen
+   * readers announce e.g. "4 out of 5 stars".
+   *
+   * @param rating - Integer from 1–5 indicating the number of filled stars.
+   * @returns A `<div>` element containing five `<Icon>` star elements.
    */
-  const renderStars = (rating: number) => {
+  const renderStars = (rating: number): React.ReactElement => {
     return (
       <div className={styles.stars} role="img" aria-label={`${rating} out of 5 stars`}>
         {[...Array(5)].map((_, index) => (
@@ -157,9 +164,16 @@ export const Testimonials = (): React.ReactElement => {
   }
 
   /**
-   * Render testimonial card
+   * Renders a single testimonial card as an accessible `<article>`.
+   *
+   * Displays the star rating, block quote, and author information (avatar image
+   * or initials fallback, name, role, and optional company). The avatar wrapper
+   * is `aria-hidden` so decorative images are skipped by screen readers.
+   *
+   * @param testimonial - The testimonial data to render.
+   * @returns An `<article>` element containing the full testimonial card.
    */
-  const renderTestimonial = (testimonial: Testimonial) => {
+  const renderTestimonial = (testimonial: Testimonial): React.ReactElement => {
     return (
       <article key={testimonial.id} className={styles.card}>
         {renderStars(testimonial.rating)}

@@ -33,7 +33,7 @@ export const iconPaths: Record<string, string> = {
 
   // Navigation & Controls
   'fa-home': 'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z M9 22V12h6v10',
-  'fa-house': 'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z M9 22V12h6v10',
+  // fa-house is an alias for fa-home — resolved via iconNameMap in Icon.tsx
   'fa-bars': 'M3 6h18 M3 12h18 M3 18h18',
   'fa-xmark': 'M18 6L6 18 M6 6l12 12',
   'fa-chevron-down': 'M6 9l6 6 6-6',
@@ -48,7 +48,7 @@ export const iconPaths: Record<string, string> = {
 
   // Status & Feedback
   'fa-check': 'M20 6L9 17l-5-5',
-  'fa-check-circle': 'M22 11.08V12a10 10 0 1 1-5.93-9.14 M22 4L12 14.01l-3-3',
+  // fa-check-circle is an alias for fa-circle-check — resolved via iconNameMap in Icon.tsx
   'fa-circle-info': 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z M12 16v-4 M12 8h.01',
   'fa-star':
     'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z',

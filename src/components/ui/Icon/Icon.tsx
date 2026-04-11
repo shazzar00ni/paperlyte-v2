@@ -74,10 +74,18 @@ export const Icon = ({
   const baseName = tokens[0]
   const modifierClasses = tokens.slice(1).join(' ')
 
-  // Resolve the iconPaths lookup key, supporting both "fa-bolt" and "bolt" formats.
-  // Try the base name as-is first; if not found, prepend "fa-" as a convenience fallback.
-  const baseIconExists = safePropertyAccess(iconPaths, baseName) !== null
-  const resolvedKey = baseIconExists ? baseName : `fa-${baseName}`
+  // Resolve the iconPaths lookup key using a three-step priority:
+  // 1. Direct match (e.g. "fa-bolt" or "fa-circle-check")
+  // 2. Alias resolution via iconNameMap (e.g. "fa-check-circle" → "circle-check" → "fa-circle-check",
+  //    or "fa-house" → "home" → "fa-home"), enabling aliases without duplicating SVG data
+  // 3. Bare-name convenience prefix (e.g. "bolt" → "fa-bolt")
+  const aliasedKey = `fa-${convertIconName(baseName)}`
+  const resolvedKey =
+    safePropertyAccess(iconPaths, baseName) !== undefined
+      ? baseName
+      : safePropertyAccess(iconPaths, aliasedKey) !== undefined
+        ? aliasedKey
+        : `fa-${baseName}`
 
   // Safely check if icon exists in iconPaths to prevent prototype pollution
   const paths = safePropertyAccess(iconPaths, resolvedKey)

@@ -174,8 +174,8 @@ export const iconNameMap: Record<string, string> = {
   'fa-spinner': 'spinner', // Loading states.
   'fa-circle-check': 'circle-check', // Checkmark/success indicator.
   // New icons added to custom SVG set
-  'fa-house': 'house',
-  'fa-check-circle': 'circle-check',
+  'fa-house': 'home', // alias → fa-home
+  'fa-check-circle': 'circle-check', // alias → fa-circle-check
   'fa-circle-info': 'circle-info',
   'fa-clock': 'clock',
   'fa-code': 'code',

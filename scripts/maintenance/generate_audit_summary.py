@@ -98,13 +98,20 @@ def main():
     for item in data.get('blocked', []):
         issues = item['issues']
         issues_str = str(issues)
-        if 'Orphan branch' in issues_str: stats['Orphan'] += 1
-        if 'Missing .npmrc' in issues_str: stats['NPMRC'] += 1
-        if 'Missing docs/ROADMAP.md' in issues_str: stats['ROADMAP'] += 1
-        if 'Missing gitVersionControl.md' in issues_str: stats['GVC'] += 1
-        if 'Missing review.md' in issues_str: stats['REVIEW'] += 1
-        if 'security helper' in issues_str: stats['HELPERS'] += 1
-        if 'Could not read src/utils/navigation.ts' in issues_str: stats['UNREADABLE'] += 1
+        if 'Orphan branch' in issues_str:
+            stats['Orphan'] += 1
+        if 'Missing .npmrc' in issues_str:
+            stats['NPMRC'] += 1
+        if 'Missing docs/ROADMAP.md' in issues_str:
+            stats['ROADMAP'] += 1
+        if 'Missing gitVersionControl.md' in issues_str:
+            stats['GVC'] += 1
+        if 'Missing review.md' in issues_str:
+            stats['REVIEW'] += 1
+        if 'security helper' in issues_str:
+            stats['HELPERS'] += 1
+        if 'Could not read src/utils/navigation.ts' in issues_str:
+            stats['UNREADABLE'] += 1
 
         # Upsert (create-or-update) the audit comment on the matching open PR.
         # Using a stable marker ensures only one bot comment exists per PR regardless

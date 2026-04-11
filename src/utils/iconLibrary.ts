@@ -175,7 +175,7 @@ export const iconNameMap: Record<string, string> = {
   'fa-circle-check': 'circle-check', // Checkmark/success indicator.
   // New icons added to custom SVG set
   'fa-house': 'house',
-  'fa-check-circle': 'check-circle',
+  'fa-check-circle': 'circle-check',
   'fa-circle-info': 'circle-info',
   'fa-clock': 'clock',
   'fa-code': 'code',

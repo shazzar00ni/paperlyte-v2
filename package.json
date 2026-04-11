@@ -92,7 +92,7 @@
     "tmp": "^0.2.5",
     "undici": "^7.20.0",
     "lodash": "^4.18.1",
-    "lodash-es": "^4.18.1",
+    "lodash-es": "4.17.23",
     "flatted": "^3.4.2",
     "extract-zip": {
       "yauzl": "^3.2.1"

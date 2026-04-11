@@ -18,6 +18,9 @@ def run_command(args):
         return None
 
 def main():
+    """Reads audit_results.json, generates a Markdown summary of systemic regressions,
+    updates PR_REVIEW_SUMMARY.md with the dated entry, and optionally posts
+    idempotent warning comments on affected PRs via the GitHub CLI."""
     if not os.path.exists('audit_results.json'):
         print("Error: audit_results.json not found.", file=sys.stderr)
         sys.exit(1)

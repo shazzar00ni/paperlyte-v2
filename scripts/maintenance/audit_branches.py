@@ -39,6 +39,8 @@ def run_command(args):
         return None
 
 def main():
+    """Audits all unmerged remote branches for orphan status, missing critical files,
+    and missing security helpers, then prints a JSON report to stdout."""
     # Get all remote unmerged branches relative to origin/main
     branches_raw = run_command(["git", "branch", "-r", "--no-merged", "origin/main"])
     if not branches_raw:

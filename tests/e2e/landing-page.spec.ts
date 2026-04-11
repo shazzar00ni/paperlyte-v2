@@ -200,7 +200,8 @@ test.describe('Landing Page', () => {
       .locator('#email-capture')
       .getByRole('button', { name: /join the waitlist/i })
 
-    await emailInput.fill('e2e-test@example.com')
+    const uniqueEmail = `e2e-${Date.now()}@example.com`
+    await emailInput.fill(uniqueEmail)
     await submitButton.click()
 
     // Accept both straight (') and typographic (') apostrophes for cross-environment robustness

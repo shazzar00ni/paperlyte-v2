@@ -1,0 +1,180 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@7.2.1
+
+executors:
+  node-executor:
+    docker:
+      - image: cimg/node:22.14.0@sha256:d032e271ca3d48c82a5fa392ae05d53e2df08f8540dbc1f2f8c158dea3dabd40
+    resource_class: medium
+
+jobs:
+  install:
+    executor: node-executor
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
+      - persist_to_workspace:
+          root: .
+          paths:
+            - node_modules
+
+  lint:
+    executor: node-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Lint
+          command: npm run lint
+      - run:
+          name: Format check
+          command: npm run format:check
+
+  typecheck:
+    executor: node-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: TypeScript type check
+          command: npx tsc -b --noEmit
+
+  test:
+    executor: node-executor
+    parallelism: 4
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Discover and run tests
+          # circleci tests glob discovers all test files (the "discover command").
+          # circleci tests run splits them across parallel nodes by historical
+          # timing data and appends the file list to the vitest command.
+          # The glob matches vitest's include pattern across the whole repo
+          # (not just src/) so files like scripts/__tests__/*.test.ts are included.
+          # e2e specs are stripped out because Playwright owns those.
+          command: |
+            mkdir -p test-results
+            circleci tests glob \
+              "**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}" | \
+              grep -v "^tests/e2e/" | \
+              circleci tests run \
+                --command="xargs -r npx vitest run --reporter=default --reporter=junit --outputFile=test-results/junit-${CIRCLE_NODE_INDEX}.xml --" \
+                --split-by=timings \
+                --verbose
+          environment:
+            CI: "true"
+      - store_test_results:
+          path: test-results
+          when: always
+      - store_artifacts:
+          path: test-results
+          destination: test-results
+          when: always
+
+  # Coverage runs as a separate single-node job so the report covers the full
+  # suite. The parallelised `test` job only runs a subset of tests per node,
+  # which would produce incomplete coverage if merged naïvely.
+  coverage:
+    executor: node-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Coverage report
+          command: npm run test:coverage
+          environment:
+            CI: "true"
+      - store_artifacts:
+          path: coverage
+          destination: coverage
+
+  build:
+    executor: node-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build
+          command: npm run build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist
+      - store_artifacts:
+          path: dist
+          destination: dist
+
+  e2e:
+    docker:
+      - image: mcr.microsoft.com/playwright:v1.58.2-noble@sha256:5bdfa9e125367842206f66ac7e7022c18cd5cf2e13198fba9b68b8f0dc8b0468
+    resource_class: medium
+    steps:
+      - checkout
+      # After checking out the repository, attach the workspace to provide
+      # node_modules (from install) and dist (from build).
+      # Playwright browsers are pre-installed in the Docker image.
+      - attach_workspace:
+          at: .
+      - run:
+          name: Start preview server
+          # background: true keeps the process alive across subsequent steps.
+          # Using & within a step would terminate the server when the step exits.
+          command: npm run preview -- --host 0.0.0.0 --port 4173
+          background: true
+      - run:
+          name: Wait for preview server
+          command: npx wait-on http://127.0.0.1:4173 --timeout 30000
+      - run:
+          name: E2E tests
+          command: npm run test:e2e
+          environment:
+            CI: "true"
+            BASE_URL: "http://127.0.0.1:4173"
+      - store_test_results:
+          # JUnit XML is written by the junit reporter added to playwright.config.ts
+          path: test-results
+          when: always
+      - store_artifacts:
+          path: playwright-report
+          destination: playwright-report
+          when: always
+
+workflows:
+  ci:
+    jobs:
+      - install
+      - lint:
+          requires:
+            - install
+      - typecheck:
+          requires:
+            - install
+      - test:
+          requires:
+            - install
+      - coverage:
+          requires:
+            - install
+      - build:
+          requires:
+            - lint
+            - typecheck
+            - test
+            - coverage
+      - e2e:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - main
+                - /^claude\/.*/

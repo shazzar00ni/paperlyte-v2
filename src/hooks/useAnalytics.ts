@@ -4,10 +4,10 @@ import {
   trackCTAClick,
   trackExternalLink,
   trackSocialClick,
-  initScrollDepthTracking,
   AnalyticsEvents,
   type AnalyticsEventParams,
 } from '@utils/analytics'
+import { createScrollTracker } from '../analytics/scrollDepth'
 
 /**
  * React hook for analytics tracking with automatic scroll depth tracking
@@ -29,12 +29,14 @@ import {
  * ```
  */
 export function useAnalytics(enableScrollTracking = true) {
-  // Initialize scroll depth tracking on mount
+  // Initialize scroll depth tracking on mount (single source: analytics/scrollDepth.ts)
   useEffect(() => {
     if (!enableScrollTracking) return
 
-    const cleanup = initScrollDepthTracking()
-    return cleanup
+    const tracker = createScrollTracker((depth) => {
+      trackEvent(AnalyticsEvents.SCROLL_DEPTH, { depth_percentage: depth })
+    })
+    return () => tracker.disable()
   }, [enableScrollTracking])
 
   // Memoized tracking functions to prevent unnecessary re-renders

@@ -85,10 +85,10 @@ export const FAQ = (): React.ReactElement => {
       const newSet = new Set(prev)
       const isOpening = !newSet.has(id)
 
-      if (newSet.has(id)) {
-        newSet.delete(id)
-      } else {
+      if (isOpening) {
         newSet.add(id)
+      } else {
+        newSet.delete(id)
       }
 
       // Announce the change for screen readers

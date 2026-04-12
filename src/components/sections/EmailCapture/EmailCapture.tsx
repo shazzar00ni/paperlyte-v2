@@ -6,14 +6,8 @@ import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { Button } from '@components/ui/Button'
 import { Icon } from '@components/ui/Icon'
 import { WAITLIST_COUNT, LAUNCH_QUARTER } from '@constants/waitlist'
+import { EMAIL_CAPTURE_CONTENT as COPY, BENEFITS } from './emailCapture.data'
 import styles from './EmailCapture.module.css'
-
-const BENEFITS = [
-  'Get early access before public launch',
-  'Influence features and design decisions',
-  'Lock in founder pricing (save 50% for life)',
-  'Receive exclusive productivity tips and updates',
-]
 
 export const EmailCapture = (): React.ReactElement => {
   const [email, setEmail] = useState('')
@@ -30,8 +24,16 @@ export const EmailCapture = (): React.ReactElement => {
     setError(null)
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      const res = await fetch('/.netlify/functions/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      })
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        throw new Error((data as { message?: string; error?: string }).message ?? (data as { error?: string }).error ?? 'Subscription failed')
+      }
 
       setIsLoading(false)
       setIsSubmitted(true)
@@ -67,22 +69,20 @@ export const EmailCapture = (): React.ReactElement => {
               <div className={styles.successIcon}>
                 <Icon name="fa-check-circle" size="xl" color="var(--color-success)" />
               </div>
-              <h2 className={styles.successTitle}>✓ You're on the list!</h2>
-              <p className={styles.successText}>
-                Check your inbox—we just sent you a welcome email with next steps.
-              </p>
+              <h2 className={styles.successTitle}>{COPY.successTitle}</h2>
+              <p className={styles.successText}>{COPY.successText}</p>
 
               <div className={styles.nextSteps}>
-                <h3 className={styles.nextStepsTitle}>What happens next:</h3>
+                <h3 className={styles.nextStepsTitle}>{COPY.nextStepsTitle}</h3>
                 <ul className={styles.nextStepsList}>
-                  <li>We'll email you product updates as we build</li>
-                  <li>You'll get early access 2 weeks before public launch</li>
-                  <li>We'll ask for your feedback to make Paperlyte better</li>
+                  {COPY.nextSteps.map((step) => (
+                    <li key={step}>{step}</li>
+                  ))}
                 </ul>
               </div>
 
               <div className={styles.shareSection}>
-                <p className={styles.shareText}>Share Paperlyte with friends</p>
+                <p className={styles.shareText}>{COPY.shareText}</p>
                 <div className={styles.socialButtons}>
                   <Button
                     variant="secondary"
@@ -148,7 +148,7 @@ export const EmailCapture = (): React.ReactElement => {
                 type="email"
                 id="email"
                 name="email"
-                placeholder="your@email.com"
+                placeholder={COPY.placeholder}
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value)
@@ -162,7 +162,7 @@ export const EmailCapture = (): React.ReactElement => {
                 className={`${styles.submitButton} ${isLoading ? styles.submitButtonLoading : ''}`}
                 disabled={isLoading}
               >
-                {isLoading ? 'Joining...' : 'Join the Waitlist'}
+                {isLoading ? COPY.loadingText : COPY.submitText}
                 {!isLoading && (
                   <i className="fa-solid fa-arrow-right" style={{ marginLeft: '0.5rem' }} />
                 )}
@@ -173,9 +173,7 @@ export const EmailCapture = (): React.ReactElement => {
                 {error}
               </p>
             )}
-            <p className={styles.privacy}>
-              We respect your privacy. Unsubscribe anytime. No spam, ever.
-            </p>
+            <p className={styles.privacy}>{COPY.privacy}</p>
           </form>
         </AnimatedElement>
       </div>

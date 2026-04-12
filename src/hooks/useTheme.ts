@@ -43,10 +43,10 @@ export const useTheme = () => {
 
     // Only check localStorage if persistence is enabled
     if (persistenceEnabled) {
-      // Check if user has explicitly set a preference before
-      const hasUserPreference = getInitialUserPreference()
+      // Reuse the value already read during useRef initialisation above
+      const hasUserPreference = userHasExplicitPreference.current
 
-      // Check localStorage for saved theme
+      // Check localStorage for saved theme (single read per mount)
       const stored = localStorage.getItem(THEME_STORAGE_KEY)
       if (stored && isValidTheme(stored) && hasUserPreference) {
         return stored

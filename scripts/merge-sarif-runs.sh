@@ -37,10 +37,18 @@ echo "Found $RUN_COUNT runs in SARIF file"
 
 if [ "$RUN_COUNT" -le 1 ]; then
   echo "Single run detected, no merging needed"
-  # Copy to output if different from input
-  if [ "$INPUT_FILE" != "$OUTPUT_FILE" ]; then
-    cp "$INPUT_FILE" "$OUTPUT_FILE"
+  # Strip partialFingerprints even for single-run files so that
+  # github/codeql-action/upload-sarif can calculate its own consistent
+  # fingerprints from source-file line hashes without conflicting with
+  # pre-embedded values from the analysis tool.
+  SINGLE_RUN_TEMP=$(mktemp)
+  trap 'rm -f "$SINGLE_RUN_TEMP"' EXIT
+  if ! jq 'del(.runs[].results[]?.partialFingerprints)' "$INPUT_FILE" > "$SINGLE_RUN_TEMP"; then
+    echo "Error: jq fingerprint-strip failed for single run"
+    exit 1
   fi
+  mv "$SINGLE_RUN_TEMP" "$OUTPUT_FILE"
+  trap - EXIT
   exit 0
 fi
 
@@ -109,13 +117,20 @@ if ! jq '
     # - [0] // {}: Default to empty object if array is empty
     # - .physicalLocation // {}: Default if no physical location
     # - .region.* // 0: Default line/column numbers to 0
-    results: [.runs[].results // [] | .[]] | unique_by(
+    #
+    # Fingerprint normalisation: all partialFingerprints are stripped so that
+    # github/codeql-action/upload-sarif can calculate its own consistent
+    # fingerprints from source-file line hashes without conflicting with
+    # pre-embedded values from the analysis tool.
+    results: [
+      .runs[].results // [] | .[]
+    ] | unique_by(
       (.ruleId // "") +
       ((((.locations // [])[0] // {}).physicalLocation // {}).artifactLocation.uri // "") +
       ((((.locations // [])[0] // {}).physicalLocation // {}).region.startLine // 0 | tostring) +
       ((((.locations // [])[0] // {}).physicalLocation // {}).region.startColumn // 0 | tostring) +
       ((((.locations // [])[0] // {}).physicalLocation // {}).region.endLine // 0 | tostring)
-    ),
+    ) | map(del(.partialFingerprints)),
 
     # -------------------------------------------------------------------------
     # ADDITIONAL SARIF PROPERTIES
@@ -127,22 +142,22 @@ if ! jq '
     originalUriBaseIds: (reduce (.runs[].originalUriBaseIds // {}) as $m ({}; . * $m)),
 
     # artifacts: List of files analyzed
-    # Merge strategy: Combine all artifact lists (may contain duplicates)
-    artifacts: [.runs[].artifacts // [] | .[]],
+    # Merge strategy: Combine all artifact lists and deduplicate by URI
+    # Note: Artifacts without URIs are grouped together; this is acceptable as
+    # SARIF artifacts without location.uri are typically redundant metadata
+    artifacts: [.runs[].artifacts // [] | .[]] | unique_by(.location.uri // ""),
 
     # invocations: Records of tool executions (timing, exit codes, etc.)
     # Merge strategy: Keep all invocation records from all runs
-    invocations: [.runs[].invocations // [] | .[]],
-
-    # columnKind: Specifies if columns are 1-based or UTF-16 code units
-    # Merge strategy: Use first non-null value (should be consistent across runs)
-    # Note: Use array subscript [0] with // null fallback to avoid 'empty' propagating
-    columnKind: ([.runs[].columnKind | select(. != null)][0] // null),
-
-    # conversion: Info about SARIF format conversion if applicable
-    # Merge strategy: Use first non-null value
-    conversion: ([.runs[].conversion | select(. != null)][0] // null)
-  }]
+    invocations: [.runs[].invocations // [] | .[]]
+  }
+  # Add columnKind only if a valid value exists (SARIF requires valid enum string, not null)
+  + (([.runs[].columnKind | select(. != null and . != "")][0]) as $ck |
+     if $ck then { columnKind: $ck } else {} end)
+  # Add conversion only if a valid object exists (SARIF requires object type, not null)
+  + (([.runs[].conversion | select(. != null and type == "object")][0]) as $cv |
+     if $cv then { conversion: $cv } else {} end)
+  ]
 }
 ' "$INPUT_FILE" > "$TEMP_FILE"; then
   echo "Error: jq merge operation failed"

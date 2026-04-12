@@ -392,6 +392,85 @@ export function trackSocialClick(platform: string): void {
 // regardless of whether they import from '@utils/analytics' or 'analytics/index'
 export { analytics } from '../analytics/index'
 
-// Backwards-compatible export for older consumers/tests that still import
-// `initScrollDepthTracking` from this module.
-export { createScrollTracker as initScrollDepthTracking } from '../analytics/scrollDepth'
+/**
+ * Calculate current scroll percentage
+ * @returns Scroll percentage rounded to nearest integer
+ */
+function calculateScrollPercent(): number {
+  const windowHeight = window.innerHeight
+  const documentHeight = document.documentElement.scrollHeight
+  const scrollTop = window.scrollY
+
+  if (documentHeight <= 0) return 0
+
+  const scrollPercent = ((scrollTop + windowHeight) / documentHeight) * 100
+  return Math.round(scrollPercent)
+}
+
+/**
+ * Track scroll milestones that haven't been tracked yet
+ */
+function trackScrollMilestones(currentPercent: number, trackedMilestones: Set<number>): void {
+  const milestones = [25, 50, 75, 100]
+
+  milestones.forEach((milestone) => {
+    if (currentPercent >= milestone && !trackedMilestones.has(milestone)) {
+      trackedMilestones.add(milestone)
+      trackEvent(AnalyticsEvents.SCROLL_DEPTH, {
+        depth_percentage: milestone,
+      })
+    }
+  })
+}
+
+/**
+ * Create a throttled scroll handler using requestAnimationFrame
+ */
+function createThrottledScrollHandler(callback: () => void): () => void {
+  let ticking = false
+
+  return () => {
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        callback()
+        ticking = false
+      })
+      ticking = true
+    }
+  }
+}
+
+/**
+ * Initialize scroll depth tracking for Google Analytics (GA4).
+ * Sets up a requestAnimationFrame-throttled scroll listener that fires
+ * trackEvent calls at the 25 / 50 / 75 / 100 % milestones.
+ *
+ * NOTE: This is the GA4-specific tracker. The provider-agnostic
+ * createScrollTracker in analytics/scrollDepth.ts is used by the
+ * Plausible/other-provider path in analytics/index.ts.
+ *
+ * @returns Cleanup function that removes the scroll listener
+ *
+ * @example
+ * ```tsx
+ * useEffect(() => {
+ *   const cleanup = initScrollDepthTracking()
+ *   return cleanup
+ * }, [])
+ * ```
+ */
+export function initScrollDepthTracking(): () => void {
+  const trackedMilestones = new Set<number>()
+
+  const handleScroll = () => {
+    const scrollPercent = calculateScrollPercent()
+    trackScrollMilestones(scrollPercent, trackedMilestones)
+  }
+
+  const throttledScroll = createThrottledScrollHandler(handleScroll)
+  window.addEventListener('scroll', throttledScroll, { passive: true })
+
+  return () => {
+    window.removeEventListener('scroll', throttledScroll)
+  }
+}

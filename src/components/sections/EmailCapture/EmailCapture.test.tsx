@@ -1,10 +1,24 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { EmailCapture } from './EmailCapture'
 import { WAITLIST_COUNT } from '@/constants/waitlist'
 
 describe('EmailCapture Section', () => {
+  beforeEach(() => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ success: true }),
+      })
+    )
+  })
+
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
   it('renders the section title', () => {
     render(<EmailCapture />)
     expect(screen.getByText(`Join ${WAITLIST_COUNT} people on the waitlist`)).toBeInTheDocument()

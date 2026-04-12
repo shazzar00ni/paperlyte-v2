@@ -32,7 +32,7 @@ export const Header = (): React.ReactElement => {
   const menuButtonRef = useRef<HTMLButtonElement>(null)
   const menuRef = useRef<HTMLUListElement>(null)
 
-  const toggleMobileMenu = useCallback(() => {
+  const toggleMobileMenu = useCallback((): void => {
     setMobileMenuOpen((prev) => !prev)
   }, [])
 

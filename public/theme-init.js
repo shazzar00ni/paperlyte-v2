@@ -32,7 +32,7 @@
 
   // Compute the system preference first so it is available as a fallback in
   // both the normal flow and error recovery below.
-  const systemTheme = globalThis.matchMedia?.('(prefers-color-scheme: dark)').matches
+  const systemTheme = globalThis.matchMedia?.('(prefers-color-scheme: dark)')?.matches
     ? 'dark'
     : 'light'
 

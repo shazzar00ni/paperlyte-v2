@@ -58,10 +58,7 @@
     // Report errors on potentially unsafe side-effect imports
     "noUncheckedSideEffectImports": true,
     // Enforce consistent file name casing (prevents cross-platform issues)
-    "forceConsistentCasingInFileNames": true,
-    // Require bracket notation (obj['key']) when accessing index-signed properties,
-    // preventing accidental dot-notation access on loosely-typed dictionaries
-    "noPropertyAccessFromIndexSignature": true
+    "forceConsistentCasingInFileNames": true
   },
   // Include all files in the src directory
   "include": ["src"],

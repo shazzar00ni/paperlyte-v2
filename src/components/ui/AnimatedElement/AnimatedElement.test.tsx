@@ -74,6 +74,8 @@ describe('AnimatedElement', () => {
 
     // Should not have animation class when reduced motion is preferred
     expect(wrapper).not.toHaveClass('fadeIn')
+    // --animation-delay CSS variable should be cleared in reduced-motion mode
+    expect(wrapper.style.getPropertyValue('--animation-delay')).toBe('')
   })
 
   it('should support different animation types', () => {

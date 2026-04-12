@@ -6,25 +6,18 @@
  * to <html> so the page renders in the right theme immediately.
  *
  * Mirrors the logic in src/hooks/useTheme.ts:
- * - Reads ALLOW_PERSISTENT_THEME from a window global or
- *   <meta name="allow-persistent-theme"> to stay in sync with
- *   PERSISTENCE_CONFIG.ALLOW_PERSISTENT_THEME.
+ * - Reads <meta name="allow-persistent-theme"> (set in index.html) to stay
+ *   in sync with PERSISTENCE_CONFIG.ALLOW_PERSISTENT_THEME in config.ts.
  * - If persistence is allowed and the user has an explicit stored preference,
  *   that value is used.
  * - Otherwise falls back to the OS prefers-color-scheme media query.
  * - Defaults to 'light' only when both of the above are unavailable.
  */
 ;(function () {
-  // Returns false only when explicitly disabled via boolean false or string "false";
-  // any other value (including absent) leaves persistence enabled.
+  // Reads the <meta name="allow-persistent-theme"> tag set in index.html,
+  // which mirrors PERSISTENCE_CONFIG.ALLOW_PERSISTENT_THEME in config.ts.
+  // Returns false only when the tag is explicitly set to "false".
   function getAllowPersistent() {
-    if ('ALLOW_PERSISTENT_THEME' in globalThis) {
-      const value = globalThis.ALLOW_PERSISTENT_THEME
-      // Explicitly disabled: boolean false or string "false" opts out.
-      // Any other value (true, "true", unknown) keeps persistence enabled.
-      if (value === false || value === 'false') return false
-      return true
-    }
     const meta = document.querySelector('meta[name="allow-persistent-theme"]')
     return !meta || meta.getAttribute('content') !== 'false'
   }

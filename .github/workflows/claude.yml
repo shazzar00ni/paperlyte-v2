@@ -17,6 +17,9 @@ jobs:
   claude:
     name: Claude Code Agent
     runs-on: ubuntu-latest
+    concurrency:
+      group: claude-${{ github.event.pull_request.number || github.event.issue.number || github.run_id }}
+      cancel-in-progress: true
     permissions:
       contents: write
       pull-requests: write

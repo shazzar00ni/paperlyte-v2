@@ -226,8 +226,20 @@ export const handler: Handler = async (event: HandlerEvent) => {
       };
     }
 
+    const { email } = body;
+    const normalizedEmail = email.trim();
+
     // Validate email using the shared canonical validator (same rules as the client)
-    if (!isValidEmail(email)) {
+    if (!isValidEmail(normalizedEmail)) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({ error: "Invalid email address" }),
+      };
+    }
+
+    // Subscribe to ConvertKit
+    const result = await subscribeToConvertKit(normalizedEmail);
       return {
         statusCode: 400,
         headers,

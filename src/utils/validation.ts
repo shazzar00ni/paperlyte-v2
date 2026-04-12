@@ -33,8 +33,9 @@ export const EMAIL_REGEX =
   /^[a-zA-Z0-9](?:[a-zA-Z0-9]|[._+-][a-zA-Z0-9])*@[a-zA-Z0-9](?:[a-zA-Z0-9]|[.-][a-zA-Z0-9])*\.[a-zA-Z]{2,}$/
 
 /**
- * Lightweight predicate for quick email validation checks.
- * Delegates to validateEmail for full RFC 5322 + disposable-domain checks.
+ * Predicate wrapper around validateEmail.
+ * Runs the same RFC 5322–simplified regex, length, and disposable-domain
+ * checks — use this when you only need a boolean rather than an error message.
  *
  * @param email - The email address to validate
  * @returns true if the email passes all validation rules

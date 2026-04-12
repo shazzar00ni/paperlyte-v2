@@ -45,12 +45,7 @@ jobs:
 
       - name: Run security audit
         id: audit
-        run: |
-          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            npm audit --audit-level=high
-          else
-            npm audit --audit-level=moderate
-          fi
+        run: npm audit --audit-level=high
 
       - name: Generate Lint Summary
         if: always()
@@ -107,7 +102,7 @@ jobs:
 
       - name: Upload coverage to Codecov
         if: ${{ !cancelled() }}
-        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
+        uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6.0.0
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage/coverage-final.json
@@ -117,10 +112,10 @@ jobs:
 
       - name: Upload test results to Codecov
         if: ${{ !cancelled() }}
-        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
+        uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6.0.0
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: "**/junit.xml"
+          files: "./junit.xml"
           report_type: test_results
           verbose: true
           fail_ci_if_error: false

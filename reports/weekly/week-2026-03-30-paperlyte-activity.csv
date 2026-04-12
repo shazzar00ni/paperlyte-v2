@@ -1,0 +1,61 @@
+Type,Title,Last Visited,Host
+Pull Request,fix: set SonarCloud project key and organization,2026-03-29T12:05:12Z,github.com
+Pull Request,Daily PR Review Summary - 2026-03-29,2026-03-29T12:26:51Z,github.com
+Pull Request,Daily PR Review Summary - 2026-03-28,2026-03-28T11:03:59Z,github.com
+Pull Request,Improve test coverage: add 76 tests across 9 files,2026-03-29T07:55:48Z,github.com
+Pull Request,"feat: resolve TODOs, remove FontAwesome, lazy-load sections, Hero email capture, INP tests",2026-03-28T08:36:29Z,github.com
+Pull Request,Optimize asset delivery and remove Font Awesome dependencies,2026-03-29T04:17:14Z,github.com
+Pull Request,Add Super-Linter GitHub Actions workflow,2026-03-29T07:55:34Z,github.com
+Pull Request,Set up SonarCloud test coverage reporting,2026-03-28T07:10:14Z,github.com
+Pull Request,Update dependabot.yml,2026-03-28T00:07:04Z,github.com
+Pull Request,Daily PR Review Summary - 2026-03-27 Audit,2026-03-28T00:15:12Z,github.com
+Pull Request,fix: resolve moderate npm vulnerabilities in brace-expansion and chrome-launcher,2026-03-28T07:23:55Z,github.com
+Issue,Code splitting and build optimizations,2026-03-27T03:24:44Z,github.com
+Issue,Optimize asset delivery and remove unused dependencies,2026-03-27T15:43:06Z,github.com
+Pull Request,fix(ci): relax Lighthouse thresholds to match current app baselines,2026-03-29T05:54:18Z,github.com
+Pull Request,chore(deps): bump picomatch from 4.0.3 to 4.0.4,2026-03-26T12:01:20Z,github.com
+Pull Request,Daily PR Review Summary - 2026-03-26,2026-03-26T12:35:03Z,github.com
+Pull Request,CodeRabbit Generated Unit Tests: Add generated unit tests for PR changes,2026-03-28T08:33:31Z,github.com
+Pull Request,fix(ci): enforce least-privilege GITHUB_TOKEN permissions across all workflows,2026-03-29T05:59:03Z,github.com
+Pull Request,Replace single brackets with double brackets in shell scripts,2026-03-29T09:42:22Z,github.com
+Pull Request,Improve SEO and performance with metadata and font preloading,2026-03-29T17:10:50Z,github.com
+Pull Request,fix: address medium/low priority code review issues from #24,2026-03-27T03:44:25Z,github.com
+Pull Request,Relax ESLint version constraints to allow minor updates,2026-03-29T17:11:54Z,github.com
+Pull Request,feat: enhance mobile responsiveness for extra small screens,2026-03-29T10:55:01Z,github.com
+Pull Request,docs: Standardize markdown formatting and improve code quality,2026-03-29T13:39:28Z,github.com
+Pull Request,Add a Codacy badge to README.md,2026-03-25T11:23:30Z,github.com
+Pull Request,Daily PR Review Summary - 2026-03-25,2026-03-25T10:46:39Z,github.com
+Pull Request,docs: add analysis of files flagged as accidentally deleted in Jules' PR reviews,2026-03-25T04:47:00Z,github.com
+Pull Request,Add legacy .eslintrc.cjs for Codacy ESLint compatibility,2026-03-29T13:17:20Z,github.com
+Pull Request,chore(deps-dev): bump the development-dependencies group across 1 directory with 3 updates,2026-03-28T07:30:12Z,github.com
+Pull Request,fix(ci): move workflow-level read permissions to job level,2026-03-27T03:22:06Z,github.com
+Commit,Merge pull request #660 from shazzar00ni/claude/relax-lighthouse-thresholds-DLVoz,2026-03-29T05:54:16Z,github.com
+Commit,Update issue templates,2026-03-28T08:41:54Z,github.com
+Commit,Merge pull request #663 from shazzar00ni/claude/fix-npm-vulnerabilities-wyGfa,2026-03-28T07:23:53Z,github.com
+Commit,fix: use explicit junit.xml path for Codecov test results upload,2026-03-27T23:17:45Z,github.com
+Commit,fix: resolve all npm vulnerabilities without breaking lockfile sync,2026-03-27T23:13:11Z,github.com
+Commit,Update package.json,2026-03-27T23:07:43Z,github.com
+Commit,fix(ci): revert brace-expansion override; raise npm audit level to high,2026-03-27T03:32:03Z,github.com
+Commit,fix: resolve moderate npm vulnerabilities in brace-expansion and chrome-launcher,2026-03-27T03:24:07Z,github.com
+Commit,fix(deps): override brace-expansion and balanced-match to resolve GHSA-f886-m6hf-6m8v,2026-03-27T03:07:42Z,github.com
+Commit,fix(ci): relax Lighthouse thresholds to match current app baselines,2026-03-27T02:51:33Z,github.com
+Commit,Merge pull request #659 from shazzar00ni/dependabot/npm_and_yarn/picomatch-4.0.4,2026-03-26T12:01:17Z,github.com
+Commit,chore(deps): bump picomatch from 4.0.3 to 4.0.4,2026-03-26T11:36:06Z,github.com
+Commit,Merge pull request #565 from shazzar00ni/claude/update-codecov-action-1HLHH,2026-03-25T11:10:57Z,github.com
+Commit,fix: summary script exit 1 should not fail the Lighthouse job,2026-03-25T11:09:05Z,github.com
+Commit,fix: relax Lighthouse CI thresholds for shared GitHub Actions runners,2026-03-25T08:28:56Z,github.com
+Commit,refactor: remove dead selective fingerprint filter in merge-sarif-runs.sh,2026-03-25T08:21:13Z,github.com
+Commit,style: apply Prettier formatting to package.json,2026-03-25T04:54:53Z,github.com
+Commit,"chore: merge main into branch, resolve scripts/merge-sarif-runs.sh conflict",2026-03-25T04:44:15Z,github.com
+Commit,Merge pull request #585 from shazzar00ni/claude/update-yauzl-security-tgoiF,2026-03-25T04:20:40Z,github.com
+Commit,"fix: resolve PR review findings — dedup esbuild, pin vite, add flatted rationale",2026-03-25T04:19:21Z,github.com
+Commit,Merge branch 'main' into claude/update-yauzl-security-tgoiF,2026-03-25T04:16:00Z,github.com
+Commit,Merge pull request #613 from shazzar00ni/claude/fix-icon-rendering-tests-ukecN,2026-03-25T04:15:09Z,github.com
+Commit,refactor: remove negated conditions in Icon; guard test mock cleanup with finally,2026-03-25T04:09:51Z,github.com
+Commit,Merge branch 'main' into claude/fix-icon-rendering-tests-ukecN,2026-03-25T04:06:46Z,github.com
+Commit,Merge pull request #619 from shazzar00ni/claude/setup-build-generation-4yjxA,2026-03-25T04:06:10Z,github.com
+Commit,Merge pull request #643 from shazzar00ni/claude/fix-codacy-issues-yersz,2026-03-25T04:05:08Z,github.com
+Commit,fix: replace window.location.reload with globalThis.location.reload in ErrorBoundary,2026-03-25T03:59:20Z,github.com
+Commit,fix: run Prettier over all markdown files to normalize list indentation,2026-03-25T03:32:26Z,github.com
+Commit,fix: simplify reload onClick to arrow expression (no semicolon),2026-03-25T03:28:42Z,github.com
+Commit,fix: expand inline arrow-function blocks and remove trailing semicolons,2026-03-25T03:20:41Z,github.com

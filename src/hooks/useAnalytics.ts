@@ -33,7 +33,7 @@ export function useAnalytics(enableScrollTracking = true) {
   useEffect(() => {
     if (!enableScrollTracking) return
 
-    const tracker = createScrollTracker((depth) => {
+    const tracker = createScrollTracker((depth: number): void => {
       trackEvent(AnalyticsEvents.SCROLL_DEPTH, { depth_percentage: depth })
     })
     return () => tracker.disable()

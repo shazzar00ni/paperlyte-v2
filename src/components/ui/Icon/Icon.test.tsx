@@ -113,6 +113,23 @@ describe('Icon', () => {
       const fallback = container.querySelector('span.icon-fallback')
       expect(fallback).not.toBeInTheDocument()
     })
+  })
+
+  // This describe block is isolated because it uses vi.resetModules() and vi.doMock(),
+  // which mutate global module registry state. Keeping it separate with its own
+  // beforeEach/afterEach lifecycle prevents module state leakage into other tests.
+  describe('Brand icon prefix detection (module mock isolation)', () => {
+    let isolatedConsoleWarnSpy: ReturnType<typeof vi.spyOn>
+
+    beforeEach(() => {
+      isolatedConsoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    })
+
+    afterEach(() => {
+      isolatedConsoleWarnSpy.mockRestore()
+      vi.doUnmock('./icons')
+      vi.resetModules()
+    })
 
     it('should use fab prefix via isBrandIcon() when brand icon falls through to FA fallback', async () => {
       // Mock iconPaths to omit all custom icons, forcing the FA fallback path
@@ -123,26 +140,21 @@ describe('Icon', () => {
         strokeOnlyIcons: new Set(),
       }))
 
-      try {
-        const { Icon: FallbackIcon } = await import('./Icon')
-        const { container } = render(<FallbackIcon name="fa-github" />)
+      const { Icon: FallbackIcon } = await import('./Icon')
+      const { container } = render(<FallbackIcon name="fa-github" />)
 
-        // isBrandIcon('github') → true → fab prefix → found in FA library → SVG, not ? placeholder
-        expect(container.querySelector('span.icon-fallback')).not.toBeInTheDocument()
-        const svg = container.querySelector('svg')
-        expect(svg).toBeInTheDocument()
-        // One warning (not in icon set) but NOT the "not found in FA library" warning
-        expect(consoleWarnSpy).toHaveBeenCalledTimes(1)
-        expect(consoleWarnSpy).toHaveBeenCalledWith(
-          'Icon "fa-github" not found in icon set, using Font Awesome fallback'
-        )
-        expect(consoleWarnSpy).not.toHaveBeenCalledWith(
-          expect.stringContaining('not found in Font Awesome library')
-        )
-      } finally {
-        vi.doUnmock('./icons')
-        vi.resetModules()
-      }
+      // isBrandIcon('github') → true → fab prefix → found in FA library → SVG, not ? placeholder
+      expect(container.querySelector('span.icon-fallback')).not.toBeInTheDocument()
+      const svg = container.querySelector('svg')
+      expect(svg).toBeInTheDocument()
+      // One warning (not in icon set) but NOT the "not found in FA library" warning
+      expect(isolatedConsoleWarnSpy).toHaveBeenCalledTimes(1)
+      expect(isolatedConsoleWarnSpy).toHaveBeenCalledWith(
+        'Icon "fa-github" not found in icon set, using Font Awesome fallback'
+      )
+      expect(isolatedConsoleWarnSpy).not.toHaveBeenCalledWith(
+        expect.stringContaining('not found in Font Awesome library')
+      )
     })
   })
 
@@ -150,13 +162,15 @@ describe('Icon', () => {
     it('should prepend # to bare 6-digit hex colors', () => {
       const { container } = render(<Icon name="definitely-missing-icon" color="FF0000" />)
       const fallback = container.querySelector('span.icon-fallback')
-      expect(fallback).toHaveStyle({ color: '#FF0000' })
+      // jsdom normalizes hex colors to rgb() in computed styles; use rgb() for reliable comparison
+      expect(fallback).toHaveStyle({ color: 'rgb(255, 0, 0)' })
     })
 
     it('should prepend # to bare 3-digit hex colors', () => {
       const { container } = render(<Icon name="definitely-missing-icon" color="F00" />)
       const fallback = container.querySelector('span.icon-fallback')
-      expect(fallback).toHaveStyle({ color: '#F00' })
+      // jsdom normalizes shorthand hex #F00 to rgb(255, 0, 0) in computed styles
+      expect(fallback).toHaveStyle({ color: 'rgb(255, 0, 0)' })
     })
 
     it('should pass CSS variables through unchanged', () => {
@@ -176,7 +190,8 @@ describe('Icon', () => {
     it('should pass already-prefixed hex colors through unchanged', () => {
       const { container } = render(<Icon name="definitely-missing-icon" color="#FF0000" />)
       const fallback = container.querySelector('span.icon-fallback')
-      expect(fallback).toHaveStyle({ color: '#FF0000' })
+      // jsdom normalizes hex colors to rgb() in computed styles; use rgb() for reliable comparison
+      expect(fallback).toHaveStyle({ color: 'rgb(255, 0, 0)' })
     })
   })
 

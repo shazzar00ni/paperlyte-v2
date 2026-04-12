@@ -20,7 +20,10 @@
   function getAllowPersistent() {
     if ('ALLOW_PERSISTENT_THEME' in globalThis) {
       const value = globalThis.ALLOW_PERSISTENT_THEME
-      return value !== false && value !== 'false'
+      // Explicitly disabled: boolean false or string "false" opts out.
+      // Any other value (true, "true", unknown) keeps persistence enabled.
+      if (value === false || value === 'false') return false
+      return true
     }
     const meta = document.querySelector('meta[name="allow-persistent-theme"]')
     return !meta || meta.getAttribute('content') !== 'false'

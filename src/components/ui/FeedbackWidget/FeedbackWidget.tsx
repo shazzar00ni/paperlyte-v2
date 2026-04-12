@@ -200,7 +200,9 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
 
     typeSelector.addEventListener('keydown', handleArrowKeys)
 
-    return () => typeSelector.removeEventListener('keydown', handleArrowKeys)
+    return () => {
+      typeSelector.removeEventListener('keydown', handleArrowKeys)
+    }
   }, [isOpen])
 
   // Focus trap - prevent tabbing out of modal
@@ -311,7 +313,9 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
                   <button
                     type="button"
                     className={`${styles.typeButton} ${feedbackType === 'bug' ? styles.typeButtonActive : ''}`}
-                    onClick={() => setFeedbackType('bug')}
+                    onClick={() => {
+                      setFeedbackType('bug')
+                    }}
                     aria-pressed={feedbackType === 'bug'}
                   >
                     <Icon name="fa-bug" size="lg" />
@@ -320,7 +324,9 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
                   <button
                     type="button"
                     className={`${styles.typeButton} ${feedbackType === 'feature' ? styles.typeButtonActive : ''}`}
-                    onClick={() => setFeedbackType('feature')}
+                    onClick={() => {
+                      setFeedbackType('feature')
+                    }}
                     aria-pressed={feedbackType === 'feature'}
                   >
                     <Icon name="fa-lightbulb" size="lg" />
@@ -339,7 +345,9 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
                     id="feedback-message"
                     className={styles.textarea}
                     value={message}
-                    onChange={(e) => setMessage(e.target.value)}
+                    onChange={(e) => {
+                      setMessage(e.target.value)
+                    }}
                     placeholder={
                       feedbackType === 'bug'
                         ? 'Please provide details about the bug...'

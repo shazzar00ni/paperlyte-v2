@@ -35,6 +35,7 @@ A comprehensive design system for Paperlyte - a lightning-fast, distraction-free
 **Core Promise:** "Your thoughts, unchained."
 
 ### UX Principles
+
 1. **Speed First** - Every interaction should feel instantaneous
 2. **Clarity Over Cleverness** - Clear communication over creative copy
 3. **Mobile Excellence** - Mobile experience must be as good as desktop
@@ -51,10 +52,10 @@ A comprehensive design system for Paperlyte - a lightning-fast, distraction-free
 
 ```css
 /* Light Mode */
---color-primary: #3b82f6;         /* Blue 500 - Main brand color */
---color-primary-dark: #2563eb;    /* Blue 600 - Hover states */
---color-primary-light: #93c5fd;   /* Blue 300 - Accents */
---color-primary-faint: rgba(59, 130, 246, 0.1);    /* 10% opacity for backgrounds */
+--color-primary: #3b82f6; /* Blue 500 - Main brand color */
+--color-primary-dark: #2563eb; /* Blue 600 - Hover states */
+--color-primary-light: #93c5fd; /* Blue 300 - Accents */
+--color-primary-faint: rgba(59, 130, 246, 0.1); /* 10% opacity for backgrounds */
 --color-primary-fainter: rgba(59, 130, 246, 0.05); /* 5% opacity for subtle backgrounds */
 ```
 
@@ -70,12 +71,12 @@ A comprehensive design system for Paperlyte - a lightning-fast, distraction-free
 
 ```css
 /* Light Mode */
---color-background: #FFFFFF;      /* Pure white - Main background */
---color-surface: #F9FAFB;         /* Gray 50 - Card backgrounds */
---color-text-primary: #111827;    /* Gray 900 - Headings, body text */
---color-text-secondary: #6B7280;  /* Gray 500 - Supporting text */
---color-text-on-primary: #FFFFFF; /* White text on primary backgrounds */
---color-border: #E5E7EB;          /* Gray 200 - Borders, dividers */
+--color-background: #ffffff; /* Pure white - Main background */
+--color-surface: #f9fafb; /* Gray 50 - Card backgrounds */
+--color-text-primary: #111827; /* Gray 900 - Headings, body text */
+--color-text-secondary: #6b7280; /* Gray 500 - Supporting text */
+--color-text-on-primary: #ffffff; /* White text on primary backgrounds */
+--color-border: #e5e7eb; /* Gray 200 - Borders, dividers */
 ```
 
 ### Dark Mode Colors
@@ -84,16 +85,16 @@ A comprehensive design system for Paperlyte - a lightning-fast, distraction-free
 
 ```css
 /* Dark Mode */
---color-primary: #3b82f6;        /* Blue 500 - Consistent brand color */
---color-primary-dark: #2563eb;   /* Blue 600 - Hover states */
---color-primary-light: #60a5fa;  /* Blue 400 - Accents */
---color-primary-faint: rgba(59, 130, 246, 0.1);    /* 10% opacity for backgrounds */
+--color-primary: #3b82f6; /* Blue 500 - Consistent brand color */
+--color-primary-dark: #2563eb; /* Blue 600 - Hover states */
+--color-primary-light: #60a5fa; /* Blue 400 - Accents */
+--color-primary-faint: rgba(59, 130, 246, 0.1); /* 10% opacity for backgrounds */
 --color-primary-fainter: rgba(59, 130, 246, 0.05); /* 5% opacity for subtle backgrounds */
---color-background: #0F172A;     /* Slate 900 - Dark background */
---color-surface: #1E293B;        /* Slate 800 - Card backgrounds */
---color-text-primary: #F1F5F9;   /* Slate 100 - Light text */
---color-text-secondary: #94A3B8; /* Slate 400 - Supporting text */
---color-border: #334155;         /* Slate 700 - Borders */
+--color-background: #0f172a; /* Slate 900 - Dark background */
+--color-surface: #1e293b; /* Slate 800 - Card backgrounds */
+--color-text-primary: #f1f5f9; /* Slate 100 - Light text */
+--color-text-secondary: #94a3b8; /* Slate 400 - Supporting text */
+--color-border: #334155; /* Slate 700 - Borders */
 ```
 
 ### WCAG Compliance Matrix
@@ -102,35 +103,36 @@ All colors have been tested for WCAG 2.1 compliance. The table below shows key c
 
 #### Primary Color Combinations
 
-| Foreground | Background | Contrast Ratio | WCAG Level | Use Case |
-|------------|------------|----------------|------------|----------|
-| `#111827` (Text Primary) | `#FFFFFF` (Background) | 16.1:1 | AAA | Body text (light mode) |
-| `#6B7280` (Text Secondary) | `#FFFFFF` (Background) | 4.6:1 | AA | Supporting text (light mode) |
-| `#3b82f6` (Primary) | `#FFFFFF` (Background) | 4.5:1 | AA* | Interactive elements and large text only (18pt+/14pt+ bold) |
-| `#FFFFFF` (Text on Primary) | `#3b82f6` (Primary) | 4.5:1 | AA* | Large text on primary buttons only (18pt+/14pt+ bold) |
-| `#2563eb` (Primary Dark) | `#FFFFFF` (Background) | 7.8:1 | AAA | Hover states, emphasized elements |
-| `#93c5fd` (Primary Light) | `#FFFFFF` (Background) | 3.1:1 | AA* | Large text only (18pt+/14pt+ bold) |
+| Foreground                  | Background             | Contrast Ratio | WCAG Level | Use Case                                                    |
+| --------------------------- | ---------------------- | -------------- | ---------- | ----------------------------------------------------------- |
+| `#111827` (Text Primary)    | `#FFFFFF` (Background) | 16.1:1         | AAA        | Body text (light mode)                                      |
+| `#6B7280` (Text Secondary)  | `#FFFFFF` (Background) | 4.6:1          | AA         | Supporting text (light mode)                                |
+| `#3b82f6` (Primary)         | `#FFFFFF` (Background) | 4.5:1          | AA\*       | Interactive elements and large text only (18pt+/14pt+ bold) |
+| `#FFFFFF` (Text on Primary) | `#3b82f6` (Primary)    | 4.5:1          | AA\*       | Large text on primary buttons only (18pt+/14pt+ bold)       |
+| `#2563eb` (Primary Dark)    | `#FFFFFF` (Background) | 7.8:1          | AAA        | Hover states, emphasized elements                           |
+| `#93c5fd` (Primary Light)   | `#FFFFFF` (Background) | 3.1:1          | AA\*       | Large text only (18pt+/14pt+ bold)                          |
 
 #### Dark Mode Combinations
 
-| Foreground | Background | Contrast Ratio | WCAG Level | Use Case |
-|------------|------------|----------------|------------|----------|
-| `#F1F5F9` (Text Primary) | `#0F172A` (Background) | 15.8:1 | AAA | Body text (dark mode) |
-| `#94A3B8` (Text Secondary) | `#0F172A` (Background) | 7.2:1 | AAA | Supporting text (dark mode) |
-| `#3b82f6` (Primary) | `#0F172A` (Background) | 5.6:1 | AA | Interactive elements and large text only (18pt+/14pt+ bold) |
-| `#FFFFFF` (Text) | `#1E293B` (Surface) | 14.8:1 | AAA | Text on surface (dark mode) |
+| Foreground                 | Background             | Contrast Ratio | WCAG Level | Use Case                                                    |
+| -------------------------- | ---------------------- | -------------- | ---------- | ----------------------------------------------------------- |
+| `#F1F5F9` (Text Primary)   | `#0F172A` (Background) | 15.8:1         | AAA        | Body text (dark mode)                                       |
+| `#94A3B8` (Text Secondary) | `#0F172A` (Background) | 7.2:1          | AAA        | Supporting text (dark mode)                                 |
+| `#3b82f6` (Primary)        | `#0F172A` (Background) | 5.6:1          | AA         | Interactive elements and large text only (18pt+/14pt+ bold) |
+| `#FFFFFF` (Text)           | `#1E293B` (Surface)    | 14.8:1         | AAA        | Text on surface (dark mode)                                 |
 
 #### Semantic Color Combinations
 
-| Foreground | Background | Contrast Ratio | WCAG Level | Use Case |
-|------------|------------|----------------|------------|----------|
-| `#22c55e` (Success) | `#FFFFFF` (Background) | 3.1:1 | AA* | Success icons/badges (large text only) |
-| `#dc2626` (Error) | `#FFFFFF` (Background) | 5.9:1 | AA | Error messages, alerts |
-| `#4ade80` (Success Dark) | `#0F172A` (Background) | 4.2:1 | AA* | Success states (dark mode, large text) |
-| `#f87171` (Error Dark) | `#0F172A` (Background) | 4.8:1 | AA | Error states (dark mode) |
+| Foreground               | Background             | Contrast Ratio | WCAG Level | Use Case                               |
+| ------------------------ | ---------------------- | -------------- | ---------- | -------------------------------------- |
+| `#22c55e` (Success)      | `#FFFFFF` (Background) | 3.1:1          | AA\*       | Success icons/badges (large text only) |
+| `#dc2626` (Error)        | `#FFFFFF` (Background) | 5.9:1          | AA         | Error messages, alerts                 |
+| `#4ade80` (Success Dark) | `#0F172A` (Background) | 4.2:1          | AA\*       | Success states (dark mode, large text) |
+| `#f87171` (Error Dark)   | `#0F172A` (Background) | 4.8:1          | AA         | Error states (dark mode)               |
 
 **Notes:**
-- AA* = Meets AA standards for large text (18pt/14pt bold) and UI components (3:1 minimum)
+
+- AA\* = Meets AA standards for large text (18pt/14pt bold) and UI components (3:1 minimum)
 - Normal text requires 4.5:1 contrast (AA) or 7:1 (AAA)
 - Large text and UI components require 3:1 contrast (AA)
 - **Important:** the blue primary color (#3b82f6) provides 4.5:1 contrast on white and 5.6:1 on dark backgrounds
@@ -141,6 +143,7 @@ All colors have been tested for WCAG 2.1 compliance. The table below shows key c
 - All background/border variants use very low opacity and are not intended for text contrast
 
 **Testing Tools:**
+
 - [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/)
 - [APCA Contrast Calculator](https://www.myndex.com/APCA/) (next-generation contrast algorithm)
 - Chrome DevTools Lighthouse Accessibility Audit
@@ -166,12 +169,14 @@ color: var(--color-text-primary);
 ```
 
 #### Active States
+
 ```css
 /* All Buttons */
 transform: translateY(0); /* Remove hover lift */
 ```
 
 #### Disabled States
+
 ```css
 opacity: 0.5;
 cursor: not-allowed;
@@ -180,6 +185,7 @@ cursor: not-allowed;
 ### ✅ Do's and ❌ Don'ts
 
 ✅ **DO:**
+
 - Use primary color (#3b82f6) for CTAs and important interactive elements
 - Leverage high contrast of neutral colors for readability
 - Use text-secondary (#6B7280) for supporting information
@@ -187,6 +193,7 @@ cursor: not-allowed;
 - Use blue sparingly to draw attention to key actions
 
 ❌ **DON'T:**
+
 - Overuse the blue accent - it should highlight, not overwhelm
 - Place secondary text on colored backgrounds without checking contrast
 - Use color alone to convey information (add icons or text)
@@ -198,18 +205,18 @@ Semantic colors are used for success, error, warning, and info states. **Never r
 
 ```css
 /* Semantic colors (Light Mode) */
---color-success: #22c55e;  /* Green 500 */
+--color-success: #22c55e; /* Green 500 */
 --color-success-bg: rgba(34, 197, 94, 0.1);
 --color-success-border: rgba(34, 197, 94, 0.3);
---color-error: #dc2626;    /* Red 600 */
+--color-error: #dc2626; /* Red 600 */
 --color-error-bg: rgba(239, 68, 68, 0.1);
 --color-error-border: rgba(239, 68, 68, 0.3);
 
 /* Semantic colors (Dark Mode) */
---color-success: #4ade80;  /* Green 400 - higher contrast */
+--color-success: #4ade80; /* Green 400 - higher contrast */
 --color-success-bg: rgba(74, 222, 128, 0.15);
 --color-success-border: rgba(74, 222, 128, 0.35);
---color-error: #f87171;    /* Red 400 - higher contrast */
+--color-error: #f87171; /* Red 400 - higher contrast */
 --color-error-bg: rgba(248, 113, 113, 0.15);
 --color-error-border: rgba(248, 113, 113, 0.35);
 ```
@@ -283,47 +290,42 @@ import styles from './Alert.module.css'
 
 ```html
 <!-- Preload critical font for faster rendering -->
-<link
-  rel="preload"
-  as="font"
-  type="font/woff2"
-  href="/fonts/Inter-Variable.woff2"
-  crossorigin
-/>
+<link rel="preload" as="font" type="font/woff2" href="/fonts/Inter-Variable.woff2" crossorigin />
 ```
 
 **Font Usage Guidelines:**
+
 - **Inter**: All text - navigation, buttons, headings, body text, UI components
 
 ### Type Scale
 
-| Name | Size | rem | px | Line Height | Use Case |
-|------|------|-----|----|-------------|----------|
-| **5xl** | `--font-size-5xl` | 3rem | 48px | 1.25 (tight) | Hero headlines |
-| **4xl** | `--font-size-4xl` | 2.25rem | 36px | 1.25 (tight) | Page titles |
-| **3xl** | `--font-size-3xl` | 1.875rem | 30px | 1.25 (tight) | Section headers |
-| **2xl** | `--font-size-2xl` | 1.5rem | 24px | 1.25 (tight) | Subsection headers |
-| **XL** | `--font-size-xl` | 1.25rem | 20px | 1.25 (normal) | Card titles |
-| **LG** | `--font-size-lg` | 1.125rem | 18px | 1.5 (normal) | Small headers, emphasized text |
-| **Base** | `--font-size-base` | 1rem | 16px | 1.75 (relaxed) | Body text, paragraphs |
-| **SM** | `--font-size-sm` | 0.875rem | 14px | 1.5 (normal) | Captions, labels, small text |
-| **XS** | `--font-size-xs` | 0.75rem | 12px | 1.5 (normal) | Metadata, timestamps |
+| Name     | Size               | rem      | px   | Line Height    | Use Case                       |
+| -------- | ------------------ | -------- | ---- | -------------- | ------------------------------ |
+| **5xl**  | `--font-size-5xl`  | 3rem     | 48px | 1.25 (tight)   | Hero headlines                 |
+| **4xl**  | `--font-size-4xl`  | 2.25rem  | 36px | 1.25 (tight)   | Page titles                    |
+| **3xl**  | `--font-size-3xl`  | 1.875rem | 30px | 1.25 (tight)   | Section headers                |
+| **2xl**  | `--font-size-2xl`  | 1.5rem   | 24px | 1.25 (tight)   | Subsection headers             |
+| **XL**   | `--font-size-xl`   | 1.25rem  | 20px | 1.25 (normal)  | Card titles                    |
+| **LG**   | `--font-size-lg`   | 1.125rem | 18px | 1.5 (normal)   | Small headers, emphasized text |
+| **Base** | `--font-size-base` | 1rem     | 16px | 1.75 (relaxed) | Body text, paragraphs          |
+| **SM**   | `--font-size-sm`   | 0.875rem | 14px | 1.5 (normal)   | Captions, labels, small text   |
+| **XS**   | `--font-size-xs`   | 0.75rem  | 12px | 1.5 (normal)   | Metadata, timestamps           |
 
 ### Font Weights
 
 ```css
---font-weight-normal: 400;    /* Body text */
---font-weight-medium: 500;    /* Emphasis */
---font-weight-semibold: 600;  /* Strong emphasis */
---font-weight-bold: 700;      /* Headings */
+--font-weight-normal: 400; /* Body text */
+--font-weight-medium: 500; /* Emphasis */
+--font-weight-semibold: 600; /* Strong emphasis */
+--font-weight-bold: 700; /* Headings */
 ```
 
 ### Line Heights
 
 ```css
---line-height-tight: 1.25;    /* Headings */
---line-height-normal: 1.5;    /* UI elements, small text */
---line-height-relaxed: 1.75;  /* Body text, paragraphs */
+--line-height-tight: 1.25; /* Headings */
+--line-height-normal: 1.5; /* UI elements, small text */
+--line-height-relaxed: 1.75; /* Body text, paragraphs */
 ```
 
 ### Responsive Typography
@@ -333,14 +335,14 @@ Typography automatically adjusts on mobile devices for better readability and sp
 ```css
 @media (max-width: 768px) {
   --font-size-4xl: 1.875rem; /* 36px → 30px */
-  --font-size-5xl: 2.25rem;  /* 48px → 36px */
-  --spacing-3xl: 4rem;       /* 96px → 64px */
+  --font-size-5xl: 2.25rem; /* 48px → 36px */
+  --spacing-3xl: 4rem; /* 96px → 64px */
 }
 
 @media (max-width: 480px) {
-  --font-size-3xl: 1.5rem;   /* 30px → 24px */
-  --font-size-4xl: 1.75rem;  /* 30px → 28px */
-  --font-size-5xl: 2rem;     /* 36px → 32px */
+  --font-size-3xl: 1.5rem; /* 30px → 24px */
+  --font-size-4xl: 1.75rem; /* 30px → 28px */
+  --font-size-5xl: 2rem; /* 36px → 32px */
 }
 ```
 
@@ -377,17 +379,17 @@ import styles from './Component.module.css'
 /* Component.module.css */
 .hero {
   font-family: var(--font-family);
-  font-size: var(--font-size-5xl);        /* 48px */
-  font-weight: var(--font-weight-bold);   /* 700 */
-  line-height: var(--line-height-tight);  /* 1.25 */
+  font-size: var(--font-size-5xl); /* 48px */
+  font-weight: var(--font-weight-bold); /* 700 */
+  line-height: var(--line-height-tight); /* 1.25 */
   letter-spacing: -0.01em;
 }
 
 .sectionTitle {
   font-family: var(--font-family);
-  font-size: var(--font-size-3xl);        /* 30px */
-  font-weight: var(--font-weight-bold);   /* 700 */
-  line-height: var(--line-height-tight);  /* 1.25 */
+  font-size: var(--font-size-3xl); /* 30px */
+  font-weight: var(--font-weight-bold); /* 700 */
+  line-height: var(--line-height-tight); /* 1.25 */
 }
 ```
 
@@ -402,6 +404,7 @@ import styles from './Component.module.css'
 ### ✅ Do's and ❌ Don'ts
 
 ✅ **DO:**
+
 - Use Inter for all text consistently
 - Use semantic HTML headings (h1-h6) in hierarchical order
 - Use relaxed line-height (1.75) for body text
@@ -409,6 +412,7 @@ import styles from './Component.module.css'
 - Use font-weight variations (medium, semibold, bold) to create hierarchy
 
 ❌ **DON'T:**
+
 - Mix multiple font families
 - Skip heading levels (h1 → h3)
 - Use font sizes smaller than 12px (--font-size-xs)
@@ -426,26 +430,26 @@ All spacing follows a consistent 8px grid system for visual harmony and precise 
 ### Spacing Scale
 
 ```css
---spacing-xs: 0.5rem;   /* 8px   - Tight spacing, icon gaps */
---spacing-sm: 1rem;     /* 16px  - Small spacing, form fields */
---spacing-md: 1.5rem;   /* 24px  - Medium spacing, card padding */
---spacing-lg: 2rem;     /* 32px  - Large spacing, between sections */
---spacing-xl: 3rem;     /* 48px  - Extra large spacing */
---spacing-2xl: 4rem;    /* 64px  - Section padding (mobile) */
---spacing-3xl: 6rem;    /* 96px  - Major section spacing (desktop) */
---spacing-4xl: 8rem;    /* 128px - Hero section spacing, major dividers */
+--spacing-xs: 0.5rem; /* 8px   - Tight spacing, icon gaps */
+--spacing-sm: 1rem; /* 16px  - Small spacing, form fields */
+--spacing-md: 1.5rem; /* 24px  - Medium spacing, card padding */
+--spacing-lg: 2rem; /* 32px  - Large spacing, between sections */
+--spacing-xl: 3rem; /* 48px  - Extra large spacing */
+--spacing-2xl: 4rem; /* 64px  - Section padding (mobile) */
+--spacing-3xl: 6rem; /* 96px  - Major section spacing (desktop) */
+--spacing-4xl: 8rem; /* 128px - Hero section spacing, major dividers */
 ```
 
 ### Component Spacing Guidelines
 
-| Context | Spacing Value | Usage |
-|---------|---------------|-------|
-| **Icon-to-text gap** | `xs` (8px) | Buttons with icons, list items |
-| **Between form fields** | `sm` (16px) | Input fields, form elements |
-| **Between related elements** | `md` (24px) | Card content, paragraphs |
-| **Between unrelated sections** | `lg` (32px) | Feature cards, content blocks |
-| **Section top/bottom padding** | `2xl` (64px) | Hero, Features, CTA sections |
-| **Major section spacing** | `3xl` (96px) | Between major page sections |
+| Context                        | Spacing Value | Usage                          |
+| ------------------------------ | ------------- | ------------------------------ |
+| **Icon-to-text gap**           | `xs` (8px)    | Buttons with icons, list items |
+| **Between form fields**        | `sm` (16px)   | Input fields, form elements    |
+| **Between related elements**   | `md` (24px)   | Card content, paragraphs       |
+| **Between unrelated sections** | `lg` (32px)   | Feature cards, content blocks  |
+| **Section top/bottom padding** | `2xl` (64px)  | Hero, Features, CTA sections   |
+| **Major section spacing**      | `3xl` (96px)  | Between major page sections    |
 
 ### Section Padding Standards
 
@@ -472,34 +476,64 @@ section {
 
 ```css
 /* Margin utilities */
-.mt-xs { margin-top: var(--spacing-xs); }
-.mt-sm { margin-top: var(--spacing-sm); }
-.mt-md { margin-top: var(--spacing-md); }
-.mt-lg { margin-top: var(--spacing-lg); }
-.mt-xl { margin-top: var(--spacing-xl); }
+.mt-xs {
+  margin-top: var(--spacing-xs);
+}
+.mt-sm {
+  margin-top: var(--spacing-sm);
+}
+.mt-md {
+  margin-top: var(--spacing-md);
+}
+.mt-lg {
+  margin-top: var(--spacing-lg);
+}
+.mt-xl {
+  margin-top: var(--spacing-xl);
+}
 
-.mb-xs { margin-bottom: var(--spacing-xs); }
-.mb-sm { margin-bottom: var(--spacing-sm); }
-.mb-md { margin-bottom: var(--spacing-md); }
-.mb-lg { margin-bottom: var(--spacing-lg); }
-.mb-xl { margin-bottom: var(--spacing-xl); }
+.mb-xs {
+  margin-bottom: var(--spacing-xs);
+}
+.mb-sm {
+  margin-bottom: var(--spacing-sm);
+}
+.mb-md {
+  margin-bottom: var(--spacing-md);
+}
+.mb-lg {
+  margin-bottom: var(--spacing-lg);
+}
+.mb-xl {
+  margin-bottom: var(--spacing-xl);
+}
 
 /* Gap utilities (for flexbox/grid) */
-.gap-xs { gap: var(--spacing-xs); }
-.gap-sm { gap: var(--spacing-sm); }
-.gap-md { gap: var(--spacing-md); }
-.gap-lg { gap: var(--spacing-lg); }
+.gap-xs {
+  gap: var(--spacing-xs);
+}
+.gap-sm {
+  gap: var(--spacing-sm);
+}
+.gap-md {
+  gap: var(--spacing-md);
+}
+.gap-lg {
+  gap: var(--spacing-lg);
+}
 ```
 
 ### ✅ Do's and ❌ Don'ts
 
 ✅ **DO:**
+
 - Use spacing tokens (never hardcode pixel values)
 - Maintain consistent 8px grid alignment
 - Use larger spacing (lg, xl, 2xl) to create visual hierarchy
 - Reduce spacing on mobile for efficient screen usage
 
 ❌ **DON'T:**
+
 - Use spacing values outside the defined scale (e.g., 13px, 27px)
 - Use same spacing value for different hierarchical levels
 - Forget to adjust spacing for mobile breakpoints
@@ -517,7 +551,7 @@ section {
   max-width: var(--max-width); /* 1280px */
   margin-left: auto;
   margin-right: auto;
-  padding-left: var(--spacing-md);  /* 24px */
+  padding-left: var(--spacing-md); /* 24px */
   padding-right: var(--spacing-md); /* 24px */
 }
 
@@ -530,21 +564,22 @@ section {
 ### Layout Variables
 
 ```css
---max-width: 1280px;           /* Maximum page width */
---max-width-content: 1024px;   /* Maximum content width for readability */
---header-height: 64px;         /* Fixed header height */
+--max-width: 1280px; /* Maximum page width */
+--max-width-content: 1024px; /* Maximum content width for readability */
+--header-height: 64px; /* Fixed header height */
 ```
 
 ### Border Radius
 
 ```css
---border-radius-sm: 0.25rem;   /* 4px  - Small elements, checkboxes */
---border-radius-md: 0.5rem;    /* 8px  - Cards, inputs */
---border-radius-lg: 1rem;      /* 16px - Large cards, feature boxes */
---border-radius-full: 9999px;  /* Full - Pills, badges, primary buttons */
+--border-radius-sm: 0.25rem; /* 4px  - Small elements, checkboxes */
+--border-radius-md: 0.5rem; /* 8px  - Cards, inputs */
+--border-radius-lg: 1rem; /* 16px - Large cards, feature boxes */
+--border-radius-full: 9999px; /* Full - Pills, badges, primary buttons */
 ```
 
 **Usage Notes:**
+
 - **Full border-radius** is the signature style for buttons and badges in the Paperlyte design
 - Cards and inputs use moderate radius (md) for a clean, professional look
 - Large radius (lg) is reserved for prominent content containers
@@ -552,13 +587,14 @@ section {
 ### Shadows
 
 ```css
---shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);       /* Subtle elevation */
---shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);     /* Buttons, hover states */
---shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);   /* Modals, dropdowns */
---shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);   /* Hero mockup, large modals */
+--shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* Subtle elevation */
+--shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1); /* Buttons, hover states */
+--shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1); /* Modals, dropdowns */
+--shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1); /* Hero mockup, large modals */
 ```
 
 **Shadow Usage:**
+
 - Use shadows to create depth and establish visual hierarchy
 - Apply sparingly for a clean, minimalist aesthetic
 - Darker shadows for more prominent elevation
@@ -566,9 +602,9 @@ section {
 ### Z-Index Layers
 
 ```css
---z-header: 1000;   /* Sticky header */
---z-modal: 2000;    /* Modal overlays */
---z-tooltip: 3000;  /* Tooltips, popovers */
+--z-header: 1000; /* Sticky header */
+--z-modal: 2000; /* Modal overlays */
+--z-tooltip: 3000; /* Tooltips, popovers */
 ```
 
 ---
@@ -579,25 +615,26 @@ Paperlyte's component library provides reusable UI elements that follow the desi
 
 ### Available Components
 
-| Component | Location | Purpose |
-|-----------|----------|---------|
-| **Button** | `ui/Button` | Primary, secondary, and ghost button variants |
-| **Icon** | `ui/Icon` | Font Awesome icon wrapper with accessibility |
-| **AnimatedElement** | `ui/AnimatedElement` | Scroll-triggered animations (fade, slide, scale) |
-| **ParallaxLayer** | `ui/ParallaxLayer` | Parallax scrolling effects for backgrounds |
-| **FloatingElement** | `ui/FloatingElement` | Floating/bobbing animations for decorative elements |
-| **TextReveal** | `ui/TextReveal` | Text reveal animations |
-| **CounterAnimation** | `ui/CounterAnimation` | Animated number counting |
-| **SVGPathAnimation** | `ui/SVGPathAnimation` | SVG path drawing animations |
-| **EmailCapture** | `ui/EmailCapture` | Email signup form component |
-| **FeedbackWidget** | `ui/FeedbackWidget` | User feedback collection widget |
-| **ThemeToggle** | `ui/ThemeToggle` | Light/dark mode toggle switch |
+| Component            | Location              | Purpose                                             |
+| -------------------- | --------------------- | --------------------------------------------------- |
+| **Button**           | `ui/Button`           | Primary, secondary, and ghost button variants       |
+| **Icon**             | `ui/Icon`             | Font Awesome icon wrapper with accessibility        |
+| **AnimatedElement**  | `ui/AnimatedElement`  | Scroll-triggered animations (fade, slide, scale)    |
+| **ParallaxLayer**    | `ui/ParallaxLayer`    | Parallax scrolling effects for backgrounds          |
+| **FloatingElement**  | `ui/FloatingElement`  | Floating/bobbing animations for decorative elements |
+| **TextReveal**       | `ui/TextReveal`       | Text reveal animations                              |
+| **CounterAnimation** | `ui/CounterAnimation` | Animated number counting                            |
+| **SVGPathAnimation** | `ui/SVGPathAnimation` | SVG path drawing animations                         |
+| **EmailCapture**     | `ui/EmailCapture`     | Email signup form component                         |
+| **FeedbackWidget**   | `ui/FeedbackWidget`   | User feedback collection widget                     |
+| **ThemeToggle**      | `ui/ThemeToggle`      | Light/dark mode toggle switch                       |
 
 ### Component Overview
 
 Components are organized into three categories:
 
 **UI Components** - Reusable, atomic interface elements
+
 - [Button](#button) - Primary, secondary, ghost button variants
 - [Icon](#icon) - SVG icons with Font Awesome fallback and accessibility
 - [ThemeToggle](#themetoggle) - Theme switcher
@@ -611,11 +648,13 @@ Components are organized into three categories:
 - [SVGPathAnimation](#svgpathanimation) - SVG path drawing
 
 **Layout Components** - Page structure and composition
+
 - [Section](#section) - Consistent section wrapper
 - [Header](#header) - Main navigation
 - [Footer](#footer) - Site footer
 
 **Section Components** - Pre-composed page sections
+
 - [Hero](#hero) - Hero section
 - [Features](#features) - Feature grid
 - [Pricing](#pricing) - Pricing plans
@@ -627,6 +666,7 @@ Components are organized into three categories:
 - [Mobile](#mobile) - Mobile app showcase
 
 **Hooks** - React hooks for common patterns
+
 - [useMediaQuery](#usemediaquery) - Responsive breakpoints
 - [useParallax](#useparallax) - Parallax effects
 - [useIntersectionObserver](#useintersectionobserver) - Viewport detection
@@ -650,25 +690,27 @@ Components are organized into three categories:
 
 ```typescript
 interface ButtonProps {
-  children: ReactNode              // Button content/label
-  variant?: 'primary' | 'secondary' | 'ghost'  // Button style variant (default: 'primary')
-  size?: 'small' | 'medium' | 'large'          // Button size (default: 'medium')
-  href?: string                                 // Optional link URL (renders as <a> if provided)
-  onClick?: () => void                          // Click handler
-  icon?: string                                 // Font Awesome icon name (e.g., 'fa-download')
-  disabled?: boolean                            // Disabled state (default: false)
-  className?: string                            // Additional CSS classes
-  ariaLabel?: string                            // Accessibility label
-  type?: 'button' | 'submit' | 'reset'         // Button type (default: 'button')
+  children: ReactNode // Button content/label
+  variant?: 'primary' | 'secondary' | 'ghost' // Button style variant (default: 'primary')
+  size?: 'small' | 'medium' | 'large' // Button size (default: 'medium')
+  href?: string // Optional link URL (renders as <a> if provided)
+  onClick?: () => void // Click handler
+  icon?: string // Font Awesome icon name (e.g., 'fa-download')
+  disabled?: boolean // Disabled state (default: false)
+  className?: string // Additional CSS classes
+  ariaLabel?: string // Accessibility label
+  type?: 'button' | 'submit' | 'reset' // Button type (default: 'button')
 }
 ```
 
 **Variants:**
+
 - `primary` - Filled with primary color, for main CTAs
 - `secondary` - Outlined with border, for alternative actions
 - `ghost` - Transparent background, for tertiary actions
 
 **Sizes:**
+
 - `small` - 44px min-height, 14px font
 - `medium` - 44px min-height, 16px font (default)
 - `large` - 52px min-height, 16px font
@@ -698,6 +740,7 @@ interface ButtonProps {
 ```
 
 **Design Tokens:**
+
 - Background: `--color-primary` (primary), transparent (secondary/ghost) - See [Color Palette](#color-palette)
 - Border Radius: `--border-radius-full` (9999px - pill shape) - See [Layout & Grid](#layout--grid)
 - Minimum Touch Target: 44x44px (WCAG 2.5.5 Level AAA) - See [Accessibility](#accessibility)
@@ -715,17 +758,18 @@ interface ButtonProps {
 
 ```typescript
 interface IconProps {
-  name: string                           // Icon name (e.g., 'fa-bolt', 'fa-circle-check')
-  size?: 'sm' | 'md' | 'lg' | 'xl' | '2x' | '3x'  // Icon size (default: 'md')
-  variant?: 'solid' | 'brands' | 'regular'         // Icon variant (default: 'solid')
-  className?: string                               // Additional CSS classes
-  ariaLabel?: string                               // Accessibility label (required for semantic icons)
-  color?: string                                   // Custom color (default: currentColor)
-  style?: React.CSSProperties                      // Inline styles
+  name: string // Icon name (e.g., 'fa-bolt', 'fa-circle-check')
+  size?: 'sm' | 'md' | 'lg' | 'xl' | '2x' | '3x' // Icon size (default: 'md')
+  variant?: 'solid' | 'brands' | 'regular' // Icon variant (default: 'solid')
+  className?: string // Additional CSS classes
+  ariaLabel?: string // Accessibility label (required for semantic icons)
+  color?: string // Custom color (default: currentColor)
+  style?: React.CSSProperties // Inline styles
 }
 ```
 
 **Size Mapping:**
+
 - `sm` - 16px
 - `md` - 20px (default)
 - `lg` - 24px
@@ -750,6 +794,7 @@ interface IconProps {
 ```
 
 **Accessibility:**
+
 - Decorative icons: Use `aria-hidden="true"`, no `ariaLabel`
 - Semantic icons: Provide descriptive `ariaLabel`, automatic `role="img"`
 - Falls back to Font Awesome if icon not in custom set
@@ -772,6 +817,7 @@ interface IconProps {
 ```
 
 **Features:**
+
 - Automatic icon switching (moon/sun)
 - Aria-label updates based on current theme
 - Integrates with `useTheme` hook
@@ -789,13 +835,14 @@ interface IconProps {
 
 ```typescript
 interface EmailCaptureProps {
-  variant?: 'inline' | 'centered'   // Layout variant (default: 'inline')
-  placeholder?: string               // Input placeholder (default: 'Enter your email')
-  buttonText?: string                // Submit button text (default: 'Join Waitlist')
+  variant?: 'inline' | 'centered' // Layout variant (default: 'inline')
+  placeholder?: string // Input placeholder (default: 'Enter your email')
+  buttonText?: string // Submit button text (default: 'Join Waitlist')
 }
 ```
 
 **Features:**
+
 - Email validation
 - Honeypot spam protection
 - GDPR consent checkbox
@@ -815,6 +862,7 @@ interface EmailCaptureProps {
 ```
 
 **States:**
+
 - `idle` - Initial state
 - `loading` - Submitting form
 - `success` - Email submitted successfully
@@ -832,16 +880,17 @@ interface EmailCaptureProps {
 
 ```typescript
 interface FeedbackWidgetProps {
-  onSubmit?: (data: FeedbackFormData) => Promise<void> | void  // Optional submit handler
+  onSubmit?: (data: FeedbackFormData) => Promise<void> | void // Optional submit handler
 }
 
 interface FeedbackFormData {
-  type: 'bug' | 'feature'   // Feedback type
-  message: string            // User's feedback message
+  type: 'bug' | 'feature' // Feedback type
+  message: string // User's feedback message
 }
 ```
 
 **Features:**
+
 - Floating button accessible from anywhere
 - Modal with form (bug report or feature request)
 - Focus management and keyboard navigation
@@ -859,7 +908,7 @@ interface FeedbackFormData {
 <FeedbackWidget />
 
 // Custom submit handler
-<FeedbackWidget 
+<FeedbackWidget
   onSubmit={async (data) => {
     await fetch('/api/feedback', {
       method: 'POST',
@@ -870,6 +919,7 @@ interface FeedbackFormData {
 ```
 
 **Accessibility:**
+
 - Modal uses `role="dialog"` and `aria-modal="true"`
 - Focus trapped within modal
 - Focus restored to trigger button on close
@@ -887,15 +937,16 @@ interface FeedbackFormData {
 
 ```typescript
 interface AnimatedElementProps {
-  children: ReactNode                    // Content to animate
-  animation?: 'fadeIn' | 'slideUp' | 'slideInLeft' | 'slideInRight' | 'scale'  // Animation type (default: 'fadeIn')
-  delay?: number                         // Animation delay in ms (default: 0)
-  threshold?: number                     // Intersection Observer threshold 0-1 (default: 0.1)
-  className?: string                     // Additional CSS classes
+  children: ReactNode // Content to animate
+  animation?: 'fadeIn' | 'slideUp' | 'slideInLeft' | 'slideInRight' | 'scale' // Animation type (default: 'fadeIn')
+  delay?: number // Animation delay in ms (default: 0)
+  threshold?: number // Intersection Observer threshold 0-1 (default: 0.1)
+  className?: string // Additional CSS classes
 }
 ```
 
 **Animation Types:**
+
 - `fadeIn` - Opacity fade in
 - `slideUp` - Slide up from below with fade
 - `slideInLeft` - Slide in from left
@@ -922,6 +973,7 @@ interface AnimatedElementProps {
 ```
 
 **Accessibility:**
+
 - Automatically disabled when `prefers-reduced-motion` is set
 - Uses CSS transitions with hardware acceleration
 
@@ -937,16 +989,17 @@ interface AnimatedElementProps {
 
 ```typescript
 interface ParallaxLayerProps {
-  children: ReactNode       // Content to apply parallax effect to
-  speed?: number            // Parallax speed multiplier (default: 0.3)
-  zIndex?: number           // Z-index for layering (default: 0)
-  className?: string        // Additional CSS classes
-  absolute?: boolean        // Position absolute for background layers (default: false)
-  opacity?: number          // Layer opacity (default: 1)
+  children: ReactNode // Content to apply parallax effect to
+  speed?: number // Parallax speed multiplier (default: 0.3)
+  zIndex?: number // Z-index for layering (default: 0)
+  className?: string // Additional CSS classes
+  absolute?: boolean // Position absolute for background layers (default: false)
+  opacity?: number // Layer opacity (default: 1)
 }
 ```
 
 **Speed Guidelines:**
+
 - `0` - No movement (static)
 - `0.1-0.3` - Subtle background effect (recommended)
 - `0.4-0.6` - Medium parallax
@@ -976,6 +1029,7 @@ interface ParallaxLayerProps {
 ```
 
 **Performance:**
+
 - GPU-accelerated CSS transforms (60fps)
 - Disabled on mobile by default (via `useParallax` hook)
 - Respects `prefers-reduced-motion` - See [Animation Guidelines](#animation-guidelines)
@@ -993,13 +1047,13 @@ interface ParallaxLayerProps {
 
 ```typescript
 interface FloatingElementProps {
-  children: ReactNode                          // Content to float
-  duration?: number                            // Animation duration in seconds (default: 3)
-  delay?: number                               // Animation delay in seconds (default: 0)
-  distance?: number                            // Float distance in pixels (default: 20)
-  direction?: 'vertical' | 'horizontal' | 'circular'  // Float direction (default: 'vertical')
-  className?: string                           // Additional CSS classes
-  pauseWhenHidden?: boolean                    // Pause when out of viewport (default: true)
+  children: ReactNode // Content to float
+  duration?: number // Animation duration in seconds (default: 3)
+  delay?: number // Animation delay in seconds (default: 0)
+  distance?: number // Float distance in pixels (default: 20)
+  direction?: 'vertical' | 'horizontal' | 'circular' // Float direction (default: 'vertical')
+  className?: string // Additional CSS classes
+  pauseWhenHidden?: boolean // Pause when out of viewport (default: true)
 }
 ```
 
@@ -1023,6 +1077,7 @@ interface FloatingElementProps {
 ```
 
 **Performance:**
+
 - CSS animations with GPU acceleration
 - Automatically pauses when out of viewport (saves CPU)
 - Respects `prefers-reduced-motion` - See [Animation Guidelines](#animation-guidelines)
@@ -1039,16 +1094,16 @@ interface FloatingElementProps {
 
 ```typescript
 interface CounterAnimationProps {
-  end: number                              // Target number to count to
-  start?: number                           // Starting number (default: 0)
-  duration?: number                        // Animation duration in ms (default: 2000)
-  prefix?: string                          // Prefix before number (e.g., "$")
-  suffix?: string                          // Suffix after number (e.g., "+", "%")
-  decimals?: number                        // Decimal places to show (default: 0)
-  className?: string                       // Additional CSS classes
-  easing?: 'linear' | 'easeOutQuart' | 'easeOutExpo'  // Easing function (default: 'easeOutQuart')
-  separator?: boolean                      // Add thousands separator (default: true)
-  minWidth?: string                        // Min width to prevent layout shift
+  end: number // Target number to count to
+  start?: number // Starting number (default: 0)
+  duration?: number // Animation duration in ms (default: 2000)
+  prefix?: string // Prefix before number (e.g., "$")
+  suffix?: string // Suffix after number (e.g., "+", "%")
+  decimals?: number // Decimal places to show (default: 0)
+  className?: string // Additional CSS classes
+  easing?: 'linear' | 'easeOutQuart' | 'easeOutExpo' // Easing function (default: 'easeOutQuart')
+  separator?: boolean // Add thousands separator (default: true)
+  minWidth?: string // Min width to prevent layout shift
 }
 ```
 
@@ -1069,6 +1124,7 @@ interface CounterAnimationProps {
 ```
 
 **Features:**
+
 - requestAnimationFrame for smooth 60fps
 - Intersection Observer triggers animation when scrolled into view
 - Automatic thousands separator formatting
@@ -1087,14 +1143,14 @@ interface CounterAnimationProps {
 
 ```typescript
 interface TextRevealProps {
-  children: string                        // Text content to animate
-  type?: 'character' | 'word'             // Reveal type (default: 'word')
-  delay?: number                          // Base delay before start in ms (default: 0)
-  stagger?: number                        // Delay between units in ms (default: 50)
-  animation?: 'fadeUp' | 'fadeIn' | 'slideUp' | 'blur'  // Effect type (default: 'fadeUp')
-  as?: 'h1' | 'h2' | 'h3' | 'h4' | 'p' | 'span' | 'div'  // HTML tag to render as
-  className?: string                      // Additional CSS classes
-  threshold?: number                      // Intersection threshold 0-1 (default: 0.2)
+  children: string // Text content to animate
+  type?: 'character' | 'word' // Reveal type (default: 'word')
+  delay?: number // Base delay before start in ms (default: 0)
+  stagger?: number // Delay between units in ms (default: 50)
+  animation?: 'fadeUp' | 'fadeIn' | 'slideUp' | 'blur' // Effect type (default: 'fadeUp')
+  as?: 'h1' | 'h2' | 'h3' | 'h4' | 'p' | 'span' | 'div' // HTML tag to render as
+  className?: string // Additional CSS classes
+  threshold?: number // Intersection threshold 0-1 (default: 0.2)
 }
 ```
 
@@ -1118,6 +1174,7 @@ interface TextRevealProps {
 ```
 
 **Animation Types:**
+
 - `fadeUp` - Fade in with upward slide
 - `fadeIn` - Simple opacity fade
 - `slideUp` - Slide up from below
@@ -1135,18 +1192,18 @@ interface TextRevealProps {
 
 ```typescript
 interface SVGPathAnimationProps {
-  children: ReactNode                     // SVG <path> elements to animate
-  duration?: number                       // Animation duration in ms (default: 2000)
-  delay?: number                          // Delay before start in ms (default: 0)
-  staggerDelay?: number                   // Delay between paths in ms (default: 200)
-  easing?: string                         // CSS timing function (default: 'ease-out')
-  width?: number                          // SVG viewBox width (default: 100)
-  height?: number                         // SVG viewBox height (default: 100)
-  className?: string                      // Additional CSS classes
-  strokeColor?: string                    // Stroke color (default: 'currentColor')
-  strokeWidth?: number                    // Stroke width (default: 2)
-  fillColor?: string                      // Fill color (default: 'none')
-  animateFill?: boolean                   // Animate fill after stroke (default: false)
+  children: ReactNode // SVG <path> elements to animate
+  duration?: number // Animation duration in ms (default: 2000)
+  delay?: number // Delay before start in ms (default: 0)
+  staggerDelay?: number // Delay between paths in ms (default: 200)
+  easing?: string // CSS timing function (default: 'ease-out')
+  width?: number // SVG viewBox width (default: 100)
+  height?: number // SVG viewBox height (default: 100)
+  className?: string // Additional CSS classes
+  strokeColor?: string // Stroke color (default: 'currentColor')
+  strokeWidth?: number // Stroke width (default: 2)
+  fillColor?: string // Fill color (default: 'none')
+  animateFill?: boolean // Animate fill after stroke (default: false)
 }
 ```
 
@@ -1177,6 +1234,7 @@ interface SVGPathAnimationProps {
 ```
 
 **Features:**
+
 - Automatic path length calculation
 - Multiple paths with staggered animation
 - Optional fill animation after stroke completes
@@ -1196,20 +1254,22 @@ interface SVGPathAnimationProps {
 
 ```typescript
 interface SectionProps {
-  id?: string                             // Section ID for navigation
-  children: ReactNode                     // Section content
-  className?: string                      // Additional CSS classes
-  background?: 'default' | 'surface' | 'primary'  // Background variant (default: 'default')
-  padding?: 'default' | 'large' | 'none'          // Padding size (default: 'default')
+  id?: string // Section ID for navigation
+  children: ReactNode // Section content
+  className?: string // Additional CSS classes
+  background?: 'default' | 'surface' | 'primary' // Background variant (default: 'default')
+  padding?: 'default' | 'large' | 'none' // Padding size (default: 'default')
 }
 ```
 
 **Background Variants:**
+
 - `default` - Uses `--color-background`
 - `surface` - Uses `--color-surface` (subtle gray)
 - `primary` - Uses `--color-primary` (blue accent)
 
 **Padding Sizes:**
+
 - `default` - Standard section spacing (64px vertical)
 - `large` - Extra spacing for hero sections (96px vertical)
 - `none` - No padding (for custom layouts)
@@ -1235,6 +1295,7 @@ interface SectionProps {
 ```
 
 **Features:**
+
 - Consistent max-width container
 - Responsive padding adjustments
 - Semantic `<section>` element
@@ -1251,6 +1312,7 @@ interface SectionProps {
 **Props:** None (self-contained component)
 
 **Features:**
+
 - Sticky/fixed positioning
 - Mobile hamburger menu
 - Focus management and keyboard navigation
@@ -1266,6 +1328,7 @@ interface SectionProps {
 ```
 
 **Accessibility:**
+
 - ARIA roles and labels
 - Keyboard navigation support
 - Focus trap in mobile menu
@@ -1302,6 +1365,7 @@ Section components are pre-composed layouts for specific page sections.
 **Props:** None
 
 **Features:**
+
 - AnimatedElement integration for staggered entrance
 - EmailCapture component
 - Icon tags for key features
@@ -1318,6 +1382,7 @@ Section components are pre-composed layouts for specific page sections.
 **Props:** None
 
 **Features:**
+
 - Pulls feature data from `@constants/features`
 - Responsive grid layout (1-2-3 columns)
 - Animated card entrance with stagger
@@ -1344,6 +1409,7 @@ Section components are pre-composed layouts for specific page sections.
 **Props:** None
 
 **Features:**
+
 - Testimonial data from constants
 - Responsive layout
 - Animated entrance
@@ -1359,6 +1425,7 @@ Section components are pre-composed layouts for specific page sections.
 **Props:** None
 
 **Features:**
+
 - Comparison data from `@constants/comparison`
 - Checkmark/cross icons
 - Mobile-responsive table
@@ -1374,6 +1441,7 @@ Section components are pre-composed layouts for specific page sections.
 **Props:** None
 
 **Features:**
+
 - CounterAnimation integration
 - Grid layout
 - Animated number counting
@@ -1389,6 +1457,7 @@ Section components are pre-composed layouts for specific page sections.
 **Props:** None
 
 **Features:**
+
 - FAQ data from constants
 - Collapsible accordion pattern
 - Keyboard navigation
@@ -1404,6 +1473,7 @@ Section components are pre-composed layouts for specific page sections.
 **Props:** None
 
 **Features:**
+
 - EmailCapture integration
 - Prominent positioning
 - Action-focused copy
@@ -1435,9 +1505,11 @@ function useMediaQuery(query: string): boolean
 ```
 
 **Parameters:**
+
 - `query` - CSS media query string (e.g., `'(min-width: 768px)'`)
 
 **Returns:**
+
 - `boolean` - Whether the media query currently matches
 
 **Usage Examples:**
@@ -1449,7 +1521,7 @@ function ResponsiveComponent() {
   const isMobile = useMediaQuery('(max-width: 768px)')
   const isTablet = useMediaQuery('(min-width: 769px) and (max-width: 1023px)')
   const isDesktop = useMediaQuery('(min-width: 1024px)')
-  
+
   return (
     <div>
       {isMobile && <MobileView />}
@@ -1462,14 +1534,14 @@ function ResponsiveComponent() {
 // Conditional rendering based on screen size
 function Navigation() {
   const isMobile = useMediaQuery('(max-width: 768px)')
-  
+
   return isMobile ? <MobileNav /> : <DesktopNav />
 }
 
 // Hide elements on specific breakpoints
 function HeroSection() {
   const showFloatingIcons = useMediaQuery('(min-width: 769px)')
-  
+
   return (
     <section>
       {showFloatingIcons && <FloatingDecorations />}
@@ -1480,6 +1552,7 @@ function HeroSection() {
 ```
 
 **How It Works:**
+
 - Wraps `window.matchMedia()` with reactive state
 - Listens to viewport changes via `MediaQueryListEvent`
 - Updates component when media query match status changes
@@ -1513,18 +1586,21 @@ const prefersDark = useMediaQuery('(prefers-color-scheme: dark)')
 **When to Use CSS vs useMediaQuery:**
 
 **Use CSS media queries for:**
+
 - Pure visual changes (layout, spacing, sizing)
 - No conditional logic needed
 - Better performance (no JS execution)
 - Style-only responsive adjustments
 
 **Use useMediaQuery hook for:**
+
 - Conditional component rendering
 - Different component trees for different screen sizes
 - Logic that depends on viewport size
 - Dynamic content loading based on screen size
 
 **Performance Notes:**
+
 - Hook only re-renders when match status actually changes
 - Safe to use in multiple components simultaneously
 - No polling - event-based updates only
@@ -1541,6 +1617,7 @@ const prefersDark = useMediaQuery('(prefers-color-scheme: dark)')
 **Purpose:** Creates parallax scrolling effects.
 
 **Features:**
+
 - GPU-accelerated transforms
 - Intersection Observer for viewport detection
 - Automatic mobile/reduced motion disabling
@@ -1555,6 +1632,7 @@ const prefersDark = useMediaQuery('(prefers-color-scheme: dark)')
 **Purpose:** Detects when element enters viewport.
 
 **Features:**
+
 - Configurable threshold
 - Optional trigger-once behavior
 - Used by AnimatedElement, ParallaxLayer, etc.
@@ -1578,6 +1656,7 @@ const prefersDark = useMediaQuery('(prefers-color-scheme: dark)')
 **Purpose:** Manages light/dark theme state.
 
 **Features:**
+
 - localStorage persistence
 - System preference detection
 - Theme toggle function
@@ -1617,6 +1696,7 @@ export type { ComponentNameProps } from './ComponentName'
 ```
 
 **Benefits:**
+
 - Clean imports: `from '@components/ui/Button'` instead of `from '@components/ui/Button/Button'`
 - Easy to refactor internal structure
 - Type exports available alongside component
@@ -1636,6 +1716,7 @@ export const ComponentName = (props: ComponentNameProps): React.ReactElement => 
 ```
 
 **Conventions:**
+
 - Interface name matches component name + `Props`
 - Export props interface for type composition
 - Use `ReactElement` or `ReactNode` for return types
@@ -1646,21 +1727,21 @@ export const ComponentName = (props: ComponentNameProps): React.ReactElement => 
 Layout and section components use `React.memo` for performance:
 
 ```typescript
-export const Section = React.memo<SectionProps>(
-  ({ id, children, className }) => {
-    // Component implementation
-  }
-)
+export const Section = React.memo<SectionProps>(({ id, children, className }) => {
+  // Component implementation
+})
 
 Section.displayName = 'Section'
 ```
 
 **When to Use:**
+
 - Layout components that rarely change props
 - Section components with static content
 - Components in lists or grids
 
 **When NOT to Use:**
+
 - Components with props that change frequently
 - Components with children that update often
 - Small, simple components (overhead not worth it)
@@ -1672,18 +1753,20 @@ All components use CSS Modules for scoped styling:
 ```tsx
 import styles from './Component.module.css'
 
-<div className={styles.container}>
+;<div className={styles.container}>
   <h1 className={styles.title}>Title</h1>
 </div>
 ```
 
 **Benefits:**
+
 - No class name conflicts
 - Co-located with component
 - Type-safe with TypeScript
 - Automatic optimization/minification
 
 **Naming Conventions:**
+
 - Use camelCase for class names
 - Descriptive names (`.primaryButton` not `.pb`)
 - BEM-like modifiers: `.button`, `.buttonPrimary`, `.buttonDisabled`
@@ -1704,12 +1787,14 @@ Components reference CSS custom properties from `src/styles/variables.css`:
 ```
 
 **Never hardcode values that exist as design tokens:**
+
 - ❌ `color: #3b82f6`
 - ✅ `color: var(--color-primary)`
 - ❌ `padding: 16px 24px`
 - ✅ `padding: var(--spacing-sm) var(--spacing-md)`
 
 **See also:**
+
 - [Color Palette](#color-palette) - All color tokens
 - [Typography](#typography) - Font size and weight tokens
 - [Spacing System](#spacing-system) - Spacing scale
@@ -1730,7 +1815,7 @@ describe('Button', () => {
     render(<Button>Click me</Button>)
     expect(screen.getByText('Click me')).toBeInTheDocument()
   })
-  
+
   it('calls onClick when clicked', () => {
     const handleClick = vi.fn()
     render(<Button onClick={handleClick}>Click</Button>)
@@ -1741,6 +1826,7 @@ describe('Button', () => {
 ```
 
 **Testing Best Practices:**
+
 - Test user behavior, not implementation
 - Use `screen` queries from Testing Library
 - Test accessibility (aria labels, keyboard navigation)
@@ -1752,6 +1838,7 @@ describe('Button', () => {
 All components must meet WCAG 2.1 AA standards:
 
 **Required:**
+
 - Semantic HTML elements
 - Proper heading hierarchy
 - ARIA labels for interactive elements
@@ -1761,12 +1848,14 @@ All components must meet WCAG 2.1 AA standards:
 - Touch target sizes (44x44px minimum)
 
 **Animation Accessibility:**
+
 - All animations respect `prefers-reduced-motion`
 - Use `useReducedMotion` hook
 - Provide static fallbacks
 - Never rely on motion alone to convey information
 
 **Form Accessibility:**
+
 - Associate labels with inputs
 - Provide error messages with `role="alert"`
 - Use `aria-invalid` for validation states
@@ -1792,10 +1881,10 @@ All components must meet WCAG 2.1 AA standards:
 
 ```css
 .primary {
-  background-color: var(--color-primary);      /* #3b82f6 */
-  color: var(--color-text-on-primary);         /* #ffffff */
+  background-color: var(--color-primary); /* #3b82f6 */
+  color: var(--color-text-on-primary); /* #ffffff */
   border: 1px solid transparent;
-  border-radius: var(--border-radius-full);    /* 9999px - pill shape */
+  border-radius: var(--border-radius-full); /* 9999px - pill shape */
   min-height: 44px;
   min-width: 44px;
 }
@@ -1824,7 +1913,7 @@ All components must meet WCAG 2.1 AA standards:
   background-color: transparent;
   color: var(--color-text-primary);
   border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-full);  /* 9999px - pill shape */
+  border-radius: var(--border-radius-full); /* 9999px - pill shape */
 }
 
 .secondary:hover {
@@ -1851,7 +1940,7 @@ All components must meet WCAG 2.1 AA standards:
   background-color: transparent;
   color: var(--color-text-primary);
   border: 1px solid transparent;
-  border-radius: var(--border-radius-full);  /* 9999px - pill shape */
+  border-radius: var(--border-radius-full); /* 9999px - pill shape */
 }
 
 .ghost:hover {
@@ -1867,24 +1956,24 @@ All buttons use pill-shaped border-radius for a modern, friendly appearance.
 ```css
 /* Small - 44px min-height (accessibility minimum) */
 .small {
-  padding: 0.5rem 1.25rem;    /* 8px 20px */
-  font-size: var(--font-size-sm);  /* 14px */
+  padding: 0.5rem 1.25rem; /* 8px 20px */
+  font-size: var(--font-size-sm); /* 14px */
   min-height: 44px;
   min-width: 44px;
 }
 
 /* Medium (default) - 44px min-height */
 .medium {
-  padding: 0.75rem 1.5rem;    /* 12px 24px */
-  font-size: var(--font-size-base);  /* 16px */
+  padding: 0.75rem 1.5rem; /* 12px 24px */
+  font-size: var(--font-size-base); /* 16px */
   min-height: 44px;
   min-width: 44px;
 }
 
 /* Large - 52px min-height (hero CTAs) */
 .large {
-  padding: 1rem 2rem;         /* 16px 32px */
-  font-size: var(--font-size-base);  /* 16px */
+  padding: 1rem 2rem; /* 16px 32px */
+  font-size: var(--font-size-base); /* 16px */
   min-height: 52px;
   min-width: 52px;
 }
@@ -1927,7 +2016,7 @@ Cards use consistent styling across the application:
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--border-radius-md); /* 8px */
-  padding: var(--spacing-md);             /* 24px */
+  padding: var(--spacing-md); /* 24px */
   box-shadow: var(--shadow-sm);
   transition: box-shadow var(--transition-base);
 }
@@ -1946,7 +2035,7 @@ input,
 textarea,
 select {
   font: inherit;
-  padding: var(--spacing-sm);           /* 16px */
+  padding: var(--spacing-sm); /* 16px */
   border: 2px solid var(--color-border);
   border-radius: var(--border-radius-md);
   background-color: var(--color-background);
@@ -1966,6 +2055,7 @@ select:focus {
 ### Navigation
 
 **Header:**
+
 - Height: `--header-height` (64px)
 - Position: Sticky or fixed
 - Z-index: `--z-header` (1000)
@@ -1986,12 +2076,14 @@ select:focus {
 ### ✅ Do's and ❌ Don'ts
 
 ✅ **DO:**
+
 - Use primary buttons for main CTAs (max 1-2 per section)
 - Maintain 44px minimum touch target size (meets WCAG 2.5.5 Level AAA)
 - Show clear hover/focus states for interactive elements
 - Use semantic button types (`<button type="button">`)
 
 ❌ **DON'T:**
+
 - Use more than one primary button in close proximity
 - Create buttons smaller than 44x44px (violates WCAG 2.5.5 Level AAA)
 - Remove focus indicators
@@ -2020,40 +2112,40 @@ select:focus {
 
 ```tsx
 <Icon
-  name="fa-bolt"           // Font Awesome class name
-  size="md"                // sm | md | lg | xl | 2x | 3x
-  ariaLabel="Speed"        // Optional for decorative icons
-  color="#3b82f6"          // Optional custom color
+  name="fa-bolt" // Font Awesome class name
+  size="md" // sm | md | lg | xl | 2x | 3x
+  ariaLabel="Speed" // Optional for decorative icons
+  color="#3b82f6" // Optional custom color
 />
 ```
 
 ### Icon Sizing Standards
 
-| Size | Class | Use Case |
-|------|-------|----------|
+| Size   | Class   | Use Case                        |
+| ------ | ------- | ------------------------------- |
 | **sm** | `fa-sm` | Inline with text, small buttons |
-| **md** | `fa-lg` | Default size, feature icons |
-| **lg** | `fa-lg` | Section headers, emphasis |
-| **xl** | `fa-xl` | Hero section, large features |
+| **md** | `fa-lg` | Default size, feature icons     |
+| **lg** | `fa-lg` | Section headers, emphasis       |
+| **xl** | `fa-xl` | Hero section, large features    |
 | **2x** | `fa-2x` | Feature cards, landing sections |
-| **3x** | `fa-3x` | Hero icons, major features |
+| **3x** | `fa-3x` | Hero icons, major features      |
 
 ### Approved Icons for Features
 
-| Feature | Icon | Class Name |
-|---------|------|------------|
-| **Speed** | ⚡ | `fa-bolt` |
-| **Simplicity** | ✨ | `fa-sparkles` |
-| **Tags** | 🏷️ | `fa-tags` |
-| **Sync** | 🔄 | `fa-sync` or `fa-arrows-rotate` |
-| **Offline** | 📡 | `fa-wifi-slash` or `fa-cloud-arrow-down` |
-| **Search** | 🔍 | `fa-magnifying-glass` |
-| **Edit** | ✏️ | `fa-pen` or `fa-pen-to-square` |
-| **Download** | ⬇️ | `fa-download` |
-| **Mobile** | 📱 | `fa-mobile-screen` |
-| **Desktop** | 💻 | `fa-desktop` |
-| **Security** | 🔒 | `fa-lock` |
-| **Check/Success** | ✅ | `fa-check` or `fa-circle-check` |
+| Feature           | Icon | Class Name                               |
+| ----------------- | ---- | ---------------------------------------- |
+| **Speed**         | ⚡   | `fa-bolt`                                |
+| **Simplicity**    | ✨   | `fa-sparkles`                            |
+| **Tags**          | 🏷️   | `fa-tags`                                |
+| **Sync**          | 🔄   | `fa-sync` or `fa-arrows-rotate`          |
+| **Offline**       | 📡   | `fa-wifi-slash` or `fa-cloud-arrow-down` |
+| **Search**        | 🔍   | `fa-magnifying-glass`                    |
+| **Edit**          | ✏️   | `fa-pen` or `fa-pen-to-square`           |
+| **Download**      | ⬇️   | `fa-download`                            |
+| **Mobile**        | 📱   | `fa-mobile-screen`                       |
+| **Desktop**       | 💻   | `fa-desktop`                             |
+| **Security**      | 🔒   | `fa-lock`                                |
+| **Check/Success** | ✅   | `fa-check` or `fa-circle-check`          |
 
 ### Icon Usage Guidelines
 
@@ -2085,12 +2177,14 @@ select:focus {
 ### ✅ Do's and ❌ Don'ts
 
 ✅ **DO:**
+
 - Use solid (`fa-solid`) icons for consistency
 - Provide `aria-label` for standalone icons
 - Use `aria-hidden="true"` for decorative icons
 - Maintain consistent icon size within sections
 
 ❌ **DON'T:**
+
 - Mix Font Awesome styles (solid, regular, brands) randomly
 - Use icons larger than `3x` in body content
 - Forget to hide decorative icons from screen readers
@@ -2103,20 +2197,20 @@ select:focus {
 ### Timing Functions
 
 ```css
---transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);    /* Quick interactions */
---transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);    /* Standard transitions */
---transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);    /* Scroll animations */
+--transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1); /* Quick interactions */
+--transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1); /* Standard transitions */
+--transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1); /* Scroll animations */
 ```
 
 **Easing Curve:** `cubic-bezier(0.4, 0, 0.2, 1)` - Custom ease-out curve for smooth, natural motion
 
 ### Animation Durations
 
-| Duration | Value | Use Case |
-|----------|-------|----------|
-| **Fast** | 150ms | Hover states, micro-interactions |
+| Duration   | Value | Use Case                                         |
+| ---------- | ----- | ------------------------------------------------ |
+| **Fast**   | 150ms | Hover states, micro-interactions                 |
 | **Normal** | 250ms | Button clicks, theme toggle, general transitions |
-| **Slow** | 350ms | Scroll-triggered animations, page transitions |
+| **Slow**   | 350ms | Scroll-triggered animations, page transitions    |
 
 ### Animation Types
 
@@ -2139,7 +2233,9 @@ select:focus {
 .slideUp {
   opacity: 0;
   transform: translateY(30px);
-  transition: opacity var(--transition-slow), transform var(--transition-slow);
+  transition:
+    opacity var(--transition-slow),
+    transform var(--transition-slow);
 }
 
 .slideUp.visible {
@@ -2154,13 +2250,17 @@ select:focus {
 .slideInLeft {
   opacity: 0;
   transform: translateX(-30px);
-  transition: opacity var(--transition-slow), transform var(--transition-slow);
+  transition:
+    opacity var(--transition-slow),
+    transform var(--transition-slow);
 }
 
 .slideInRight {
   opacity: 0;
   transform: translateX(30px);
-  transition: opacity var(--transition-slow), transform var(--transition-slow);
+  transition:
+    opacity var(--transition-slow),
+    transform var(--transition-slow);
 }
 ```
 
@@ -2170,7 +2270,9 @@ select:focus {
 .scale {
   opacity: 0;
   transform: scale(0.95);
-  transition: opacity var(--transition-slow), transform var(--transition-slow);
+  transition:
+    opacity var(--transition-slow),
+    transform var(--transition-slow);
   will-change: opacity, transform;
 }
 
@@ -2184,9 +2286,9 @@ select:focus {
 
 ```tsx
 <AnimatedElement
-  animation="fadeIn"      // fadeIn | slideUp | slideInLeft | slideInRight | scale
-  delay={200}             // Optional delay in milliseconds
-  threshold={0.1}         // Intersection Observer threshold (0-1)
+  animation="fadeIn" // fadeIn | slideUp | slideInLeft | slideInRight | scale
+  delay={200} // Optional delay in milliseconds
+  threshold={0.1} // Intersection Observer threshold (0-1)
 >
   <h2>Animated Content</h2>
 </AnimatedElement>
@@ -2230,12 +2332,14 @@ Use `will-change` for animations to enable GPU acceleration:
 ### ✅ Do's and ❌ Don'ts
 
 ✅ **DO:**
+
 - Always respect `prefers-reduced-motion`
 - Use GPU-accelerated properties (opacity, transform)
 - Keep animations under 500ms
 - Use `will-change` for performance-critical animations
 
 ❌ **DON'T:**
+
 - Animate width, height, or top/left (use transform instead)
 - Use animations longer than 500ms (feels sluggish)
 - Forget to test with reduced motion enabled
@@ -2252,49 +2356,70 @@ Use `will-change` for animations to enable GPU acceleration:
 /* Base styles: Mobile (320px - 768px) */
 
 /* Tablet and above */
-@media (min-width: 769px) { }
+@media (min-width: 769px) {
+}
 
 /* Desktop and above */
-@media (min-width: 1024px) { }
+@media (min-width: 1024px) {
+}
 
 /* Large desktop */
-@media (min-width: 1280px) { }
+@media (min-width: 1280px) {
+}
 ```
 
-| Breakpoint | Value | Target Devices |
-|------------|-------|----------------|
-| **Mobile** | < 768px | Smartphones |
-| **Tablet** | 769px - 1023px | Tablets, small laptops |
-| **Desktop** | 1024px - 1279px | Laptops, desktops |
-| **Large Desktop** | ≥ 1280px | Large monitors |
+| Breakpoint        | Value           | Target Devices         |
+| ----------------- | --------------- | ---------------------- |
+| **Mobile**        | < 768px         | Smartphones            |
+| **Tablet**        | 769px - 1023px  | Tablets, small laptops |
+| **Desktop**       | 1024px - 1279px | Laptops, desktops      |
+| **Large Desktop** | ≥ 1280px        | Large monitors         |
 
 ### Quick Reference
 
 **CSS Variables (min-width approach):**
+
 ```css
 /* These breakpoints are implemented in variables.css */
-@media (max-width: 768px)  { /* Mobile */ }
-@media (max-width: 480px)  { /* Small mobile (extra adjustments) */ }
-@media (min-width: 769px)  { /* Tablet and above */ }
-@media (min-width: 1024px) { /* Desktop and above */ }
-@media (min-width: 1280px) { /* Large desktop */ }
+@media (max-width: 768px) {
+  /* Mobile */
+}
+@media (max-width: 480px) {
+  /* Small mobile (extra adjustments) */
+}
+@media (min-width: 769px) {
+  /* Tablet and above */
+}
+@media (min-width: 1024px) {
+  /* Desktop and above */
+}
+@media (min-width: 1280px) {
+  /* Large desktop */
+}
 ```
 
 **Common Patterns:**
+
 ```css
 /* Hide on mobile, show on tablet+ */
 @media (max-width: 768px) {
-  .desktop-only { display: none; }
+  .desktop-only {
+    display: none;
+  }
 }
 
 /* Show on mobile, hide on tablet+ */
 @media (min-width: 769px) {
-  .mobile-only { display: none; }
+  .mobile-only {
+    display: none;
+  }
 }
 
 /* Adjust layout at tablet breakpoint */
 @media (min-width: 769px) {
-  .grid { grid-template-columns: repeat(2, 1fr); }
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 ```
 
@@ -2356,10 +2481,10 @@ Paperlyte provides utility classes in `src/styles/utilities.css` for common resp
 ```css
 .container {
   width: 100%;
-  max-width: var(--max-width);        /* 1280px */
+  max-width: var(--max-width); /* 1280px */
   margin-left: auto;
   margin-right: auto;
-  padding-left: var(--spacing-md);    /* 24px */
+  padding-left: var(--spacing-md); /* 24px */
   padding-right: var(--spacing-md);
 }
 
@@ -2371,35 +2496,73 @@ Paperlyte provides utility classes in `src/styles/utilities.css` for common resp
 **Flexbox Utilities:**
 
 ```css
-.flex { display: flex; }
-.flex-col { flex-direction: column; }
-.items-center { align-items: center; }
-.justify-center { justify-content: center; }
-.justify-between { justify-content: space-between; }
+.flex {
+  display: flex;
+}
+.flex-col {
+  flex-direction: column;
+}
+.items-center {
+  align-items: center;
+}
+.justify-center {
+  justify-content: center;
+}
+.justify-between {
+  justify-content: space-between;
+}
 
 /* Gap utilities */
-.gap-xs { gap: var(--spacing-xs); }  /* 8px */
-.gap-sm { gap: var(--spacing-sm); }  /* 16px */
-.gap-md { gap: var(--spacing-md); }  /* 24px */
-.gap-lg { gap: var(--spacing-lg); }  /* 32px */
+.gap-xs {
+  gap: var(--spacing-xs);
+} /* 8px */
+.gap-sm {
+  gap: var(--spacing-sm);
+} /* 16px */
+.gap-md {
+  gap: var(--spacing-md);
+} /* 24px */
+.gap-lg {
+  gap: var(--spacing-lg);
+} /* 32px */
 ```
 
 **Spacing Utilities:**
 
 ```css
 /* Margin top */
-.mt-xs { margin-top: var(--spacing-xs); }  /* 8px */
-.mt-sm { margin-top: var(--spacing-sm); }  /* 16px */
-.mt-md { margin-top: var(--spacing-md); }  /* 24px */
-.mt-lg { margin-top: var(--spacing-lg); }  /* 32px */
-.mt-xl { margin-top: var(--spacing-xl); }  /* 48px */
+.mt-xs {
+  margin-top: var(--spacing-xs);
+} /* 8px */
+.mt-sm {
+  margin-top: var(--spacing-sm);
+} /* 16px */
+.mt-md {
+  margin-top: var(--spacing-md);
+} /* 24px */
+.mt-lg {
+  margin-top: var(--spacing-lg);
+} /* 32px */
+.mt-xl {
+  margin-top: var(--spacing-xl);
+} /* 48px */
 
 /* Margin bottom */
-.mb-xs { margin-bottom: var(--spacing-xs); }
-.mb-sm { margin-bottom: var(--spacing-sm); }
-.mb-md { margin-bottom: var(--spacing-md); }
-.mb-lg { margin-bottom: var(--spacing-lg); }
-.mb-xl { margin-bottom: var(--spacing-xl); }
+.mb-xs {
+  margin-bottom: var(--spacing-xs);
+}
+.mb-sm {
+  margin-bottom: var(--spacing-sm);
+}
+.mb-md {
+  margin-bottom: var(--spacing-md);
+}
+.mb-lg {
+  margin-bottom: var(--spacing-lg);
+}
+.mb-xl {
+  margin-bottom: var(--spacing-xl);
+}
 ```
 
 ### CSS vs Programmatic Responsive Patterns
@@ -2409,12 +2572,12 @@ Paperlyte provides utility classes in `src/styles/utilities.css` for common resp
 ```css
 /* Visual-only changes - no logic needed */
 .hero-title {
-  font-size: var(--font-size-5xl);  /* 48px */
+  font-size: var(--font-size-5xl); /* 48px */
 }
 
 @media (max-width: 768px) {
   .hero-title {
-    font-size: var(--font-size-4xl);  /* 36px */
+    font-size: var(--font-size-4xl); /* 36px */
   }
 }
 
@@ -2445,21 +2608,17 @@ function HeroSection() {
   // Conditional component rendering
   const isMobile = useMediaQuery('(max-width: 768px)')
   const showParallax = useMediaQuery('(min-width: 1024px)')
-  
+
   return (
     <section>
       {/* Different components for different screens */}
       {isMobile ? <MobileHero /> : <DesktopHero />}
-      
+
       {/* Conditionally render expensive features */}
       {showParallax && <ParallaxBackground />}
-      
+
       {/* Different content structure */}
-      {isMobile ? (
-        <SimpleLayout />
-      ) : (
-        <ComplexTwoColumnLayout />
-      )}
+      {isMobile ? <SimpleLayout /> : <ComplexTwoColumnLayout />}
     </section>
   )
 }
@@ -2468,10 +2627,10 @@ function HeroSection() {
 function ImageGallery() {
   const isMobile = useMediaQuery('(max-width: 768px)')
   const imageSize = isMobile ? 'small' : 'large'
-  
+
   return (
     <div>
-      {images.map(img => (
+      {images.map((img) => (
         <img src={img[imageSize]} alt={img.alt} />
       ))}
     </div>
@@ -2485,12 +2644,14 @@ function ImageGallery() {
 function FeatureSection() {
   // Use hook for component logic
   const showAnimations = useMediaQuery('(min-width: 769px)')
-  
+
   return (
     // Use CSS class for styling
     <section className={styles.features}>
-      <div className={styles.grid}> {/* CSS handles grid columns */}
-        {features.map((feature) => (
+      <div className={styles.grid}>
+        {' '}
+        {/* CSS handles grid columns */}
+        {features.map((feature) =>
           showAnimations ? (
             <AnimatedElement key={feature.id} animation="slideUp">
               <FeatureCard {...feature} />
@@ -2498,7 +2659,7 @@ function FeatureSection() {
           ) : (
             <FeatureCard key={feature.id} {...feature} />
           )
-        ))}
+        )}
       </div>
     </section>
   )
@@ -2508,12 +2669,14 @@ function FeatureSection() {
 **Performance Best Practices:**
 
 ✅ **DO:**
+
 - Use CSS for visual-only changes (better performance)
 - Use `useMediaQuery` sparingly for conditional logic
 - Combine CSS classes with media queries for most cases
 - Cache media query results when possible
 
 ❌ **DON'T:**
+
 - Use `useMediaQuery` for simple hiding/showing (use CSS classes)
 - Create many `useMediaQuery` hooks with same query (use once, pass down)
 - Poll `window.innerWidth` manually (use `useMediaQuery` instead)
@@ -2527,7 +2690,7 @@ function FeatureSection() {
 /* Mobile (default) */
 .feature-grid {
   display: grid;
-  grid-template-columns: 1fr;  /* Single column */
+  grid-template-columns: 1fr; /* Single column */
   gap: var(--spacing-md);
 }
 
@@ -2554,8 +2717,8 @@ Font sizes automatically reduce on mobile:
 @media (max-width: 768px) {
   :root {
     --font-size-4xl: 1.875rem; /* 36px → 30px */
-    --font-size-5xl: 2.25rem;  /* 48px → 36px */
-    --spacing-3xl: 4rem;       /* 96px → 64px */
+    --font-size-5xl: 2.25rem; /* 48px → 36px */
+    --spacing-3xl: 4rem; /* 96px → 64px */
   }
 }
 ```
@@ -2615,12 +2778,14 @@ a {
 ### ✅ Do's and ❌ Don'ts
 
 ✅ **DO:**
+
 - Design for mobile first, enhance for desktop
 - Test on real devices, not just browser DevTools
 - Ensure touch targets are at least 44x44px (meets WCAG 2.5.5 Level AAA)
 - Use relative units (rem, em, %) for better scaling
 
 ❌ **DON'T:**
+
 - Use fixed pixel widths for containers
 - Forget to test landscape orientation on mobile
 - Assume hover states work on touch devices
@@ -2671,15 +2836,17 @@ The hero section is the most prominent part of the landing page, featuring disti
       </p>
 
       <div className="ctas">
-        <Button variant="primary" size="large">Download App</Button>
-        <Button variant="secondary" size="large">Learn More</Button>
+        <Button variant="primary" size="large">
+          Download App
+        </Button>
+        <Button variant="secondary" size="large">
+          Learn More
+        </Button>
       </div>
     </div>
 
     {/* App mockup/preview */}
-    <div className="mockup">
-      {/* Mockup content... */}
-    </div>
+    <div className="mockup">{/* Mockup content... */}</div>
   </div>
 
   {/* Trusted by section */}
@@ -2718,16 +2885,16 @@ Small, pill-shaped badges for announcements or status indicators:
 
 ```css
 .headline {
-  font-family: var(--font-family);        /* Inter */
-  font-size: var(--font-size-5xl);        /* 48px */
-  font-weight: var(--font-weight-bold);   /* 700 */
-  line-height: var(--line-height-tight);  /* 1.25 */
-  letter-spacing: -0.01em;                /* Slightly tight tracking */
+  font-family: var(--font-family); /* Inter */
+  font-size: var(--font-size-5xl); /* 48px */
+  font-weight: var(--font-weight-bold); /* 700 */
+  line-height: var(--line-height-tight); /* 1.25 */
+  letter-spacing: -0.01em; /* Slightly tight tracking */
 }
 
 .headlineItalic {
   font-style: italic;
-  color: var(--color-primary);            /* blue accent for emphasis */
+  color: var(--color-primary); /* blue accent for emphasis */
 }
 ```
 
@@ -2741,17 +2908,17 @@ Blurred, gradient shapes that move at different speeds on scroll. These create s
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    var(--color-primary) 0%,    /* Blue center */
-    transparent 70%             /* Fades to transparent */
+    var(--color-primary) 0%,
+    /* Blue center */ transparent 70% /* Fades to transparent */
   );
-  filter: blur(60px);            /* Heavy blur creates soft gradient */
-  opacity: 0.03;                 /* Very subtle - barely visible */
+  filter: blur(60px); /* Heavy blur creates soft gradient */
+  opacity: 0.03; /* Very subtle - barely visible */
 }
 
 /* Reduce blur on mobile for better performance */
 @media (max-width: 768px) {
   .shape {
-    filter: blur(40px);          /* Reduced blur for mobile */
+    filter: blur(40px); /* Reduced blur for mobile */
   }
 }
 ```
@@ -2788,13 +2955,14 @@ Animated icons positioned absolutely, floating with subtle motion:
 .mockupCard {
   background-color: var(--color-background);
   border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-lg);  /* 16px */
+  border-radius: var(--border-radius-lg); /* 16px */
   padding: var(--spacing-lg);
   box-shadow: var(--shadow-xl);
 }
 ```
 
 The mockup includes:
+
 - Header with window dots
 - Skeleton content lines
 - Checkboxes
@@ -2816,7 +2984,7 @@ The mockup includes:
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);
   color: var(--color-text-secondary);
-  letter-spacing: 0.05em;  /* Wide tracking for labels */
+  letter-spacing: 0.05em; /* Wide tracking for labels */
 }
 ```
 
@@ -2838,7 +3006,7 @@ The mockup includes:
 @media (max-width: 768px) {
   /* Reduce headline size */
   .headline {
-    font-size: var(--font-size-4xl);  /* 48px → 30px */
+    font-size: var(--font-size-4xl); /* 48px → 30px */
   }
 
   /* Stack CTAs vertically */
@@ -2871,15 +3039,13 @@ import { useParallax } from '@hooks/useParallax'
 
 const MyParallaxComponent = () => {
   const { ref, offset, isActive } = useParallax({
-    speed: 0.3,  // Move slower than scroll for background effect
-    disableOnMobile: true  // Disable on mobile for performance
+    speed: 0.3, // Move slower than scroll for background effect
+    disableOnMobile: true, // Disable on mobile for performance
   })
 
   return (
     <div ref={ref}>
-      <div style={{ transform: `translateY(${offset}px)` }}>
-        {/* Parallax content */}
-      </div>
+      <div style={{ transform: `translateY(${offset}px)` }}>{/* Parallax content */}</div>
     </div>
   )
 }
@@ -2891,7 +3057,7 @@ const MyParallaxComponent = () => {
 /* Reduce blur for better performance when motion is reduced */
 @media (prefers-reduced-motion: reduce) {
   .shape {
-    filter: blur(40px);  /* Reduced from 60px */
+    filter: blur(40px); /* Reduced from 60px */
   }
 }
 
@@ -2920,6 +3086,7 @@ const MyParallaxComponent = () => {
 ### Color Contrast
 
 All color combinations meet **WCAG 2.1 AA standards:**
+
 - **Normal text:** 4.5:1 minimum
 - **Large text (18px+ or 14px+ bold):** 3:1 minimum
 - **UI components:** 3:1 minimum
@@ -3058,6 +3225,7 @@ Always respect `prefers-reduced-motion`:
 ### ✅ Do's and ❌ Don'ts
 
 ✅ **DO:**
+
 - Use semantic HTML elements (nav, main, article, etc.)
 - Provide text alternatives for images and icons
 - Ensure keyboard navigation works everywhere
@@ -3065,6 +3233,7 @@ Always respect `prefers-reduced-motion`:
 - Respect user preferences (reduced motion, color scheme)
 
 ❌ **DON'T:**
+
 - Use `<div>` or `<span>` for interactive elements
 - Remove focus outlines without providing alternatives
 - Use color alone to convey information
@@ -3082,24 +3251,24 @@ If you prefer to use Tailwind's built-in dark mode instead, here's the configura
 ```js
 // tailwind.config.js
 module.exports = {
-  darkMode: 'class',  // or 'media' for automatic system preference
+  darkMode: 'class', // or 'media' for automatic system preference
   theme: {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#3b82f6',  // Blue 500
-          dark: '#2563eb',     // Blue 600
-          light: '#93c5fd',    // Blue 300
+          DEFAULT: '#3b82f6', // Blue 500
+          dark: '#2563eb', // Blue 600
+          light: '#93c5fd', // Blue 300
           faint: 'rgba(59, 130, 246, 0.1)',
           fainter: 'rgba(59, 130, 246, 0.05)',
         },
         background: {
           DEFAULT: '#FFFFFF',
-          dark: '#0F172A',     // Slate 900 (dark mode)
+          dark: '#0F172A', // Slate 900 (dark mode)
         },
         surface: {
           DEFAULT: '#F9FAFB',
-          dark: '#1E293B',     // Slate 800 (dark mode)
+          dark: '#1E293B', // Slate 800 (dark mode)
         },
         text: {
           primary: '#111827',
@@ -3109,41 +3278,48 @@ module.exports = {
           DEFAULT: '#E5E7EB',
         },
         success: {
-          DEFAULT: '#22c55e',  // Green 500
-          dark: '#4ade80',     // Green 400 (dark mode)
+          DEFAULT: '#22c55e', // Green 500
+          dark: '#4ade80', // Green 400 (dark mode)
         },
         error: {
-          DEFAULT: '#dc2626',  // Red 600
-          dark: '#f87171',     // Red 400 (dark mode)
+          DEFAULT: '#dc2626', // Red 600
+          dark: '#f87171', // Red 400 (dark mode)
         },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+        sans: [
+          'Inter',
+          'system-ui',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'Segoe UI',
+          'sans-serif',
+        ],
       },
       fontSize: {
-        xs: '0.75rem',    // 12px
-        sm: '0.875rem',   // 14px
-        base: '1rem',     // 16px
-        lg: '1.125rem',   // 18px
-        xl: '1.25rem',    // 20px
-        '2xl': '1.5rem',  // 24px
-        '3xl': '1.875rem',// 30px
+        xs: '0.75rem', // 12px
+        sm: '0.875rem', // 14px
+        base: '1rem', // 16px
+        lg: '1.125rem', // 18px
+        xl: '1.25rem', // 20px
+        '2xl': '1.5rem', // 24px
+        '3xl': '1.875rem', // 30px
         '4xl': '2.25rem', // 36px
-        '5xl': '3rem',    // 48px
+        '5xl': '3rem', // 48px
       },
       spacing: {
-        xs: '0.5rem',   // 8px
-        sm: '1rem',     // 16px
-        md: '1.5rem',   // 24px
-        lg: '2rem',     // 32px
-        xl: '3rem',     // 48px
-        '2xl': '4rem',  // 64px
-        '3xl': '6rem',  // 96px
+        xs: '0.5rem', // 8px
+        sm: '1rem', // 16px
+        md: '1.5rem', // 24px
+        lg: '2rem', // 32px
+        xl: '3rem', // 48px
+        '2xl': '4rem', // 64px
+        '3xl': '6rem', // 96px
       },
       borderRadius: {
-        sm: '0.25rem',  // 4px
-        md: '0.5rem',   // 8px
-        lg: '1rem',     // 16px
+        sm: '0.25rem', // 4px
+        md: '0.5rem', // 8px
+        lg: '1rem', // 16px
         full: '9999px', // Pill shape
       },
       boxShadow: {
@@ -3154,7 +3330,7 @@ module.exports = {
       },
     },
   },
-};
+}
 ```
 
 **Dark Mode Implementation:**
@@ -3173,10 +3349,10 @@ This is handled automatically via the CSS variables in `src/styles/variables.css
 
 ## Version History
 
-| Version | Date | Changes |
-|---------|------|---------|
-| 2.1.0 | 2025-12-20 | **Major expansion**: Added comprehensive component library documentation (28 components), TypeScript prop interfaces, detailed hook documentation (useMediaQuery, useParallax, etc.), architectural patterns, responsive utility classes, CSS vs programmatic patterns, and enhanced cross-referencing. |
-| 1.0.0 | 2025-12-20 | Updated documentation to match current implementation: blue accent color (#3b82f6), Inter-only typography, accurate WCAG contrast ratios, current breakpoints, and comprehensive component library documentation. |
+| Version | Date       | Changes                                                                                                                                                                                                                                                                                                 |
+| ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2.1.0   | 2025-12-20 | **Major expansion**: Added comprehensive component library documentation (28 components), TypeScript prop interfaces, detailed hook documentation (useMediaQuery, useParallax, etc.), architectural patterns, responsive utility classes, CSS vs programmatic patterns, and enhanced cross-referencing. |
+| 1.0.0   | 2025-12-20 | Updated documentation to match current implementation: blue accent color (#3b82f6), Inter-only typography, accurate WCAG contrast ratios, current breakpoints, and comprehensive component library documentation.                                                                                       |
 
 ---
 

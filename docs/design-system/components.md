@@ -22,19 +22,19 @@ The foundational interactive element. Renders as a `<button>` or `<a>` depending
 
 #### Props
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `children` | `ReactNode` | required | Button label or content |
-| `variant` | `'primary' \| 'secondary' \| 'ghost'` | `'primary'` | Visual style |
-| `size` | `'small' \| 'medium' \| 'large'` | `'medium'` | Padding and font-size |
-| `href` | `string` | — | Renders as `<a>` with external link handling |
-| `onClick` | `() => void` | — | Click handler |
-| `icon` | `string` | — | Icon name from icon library |
-| `iconAriaLabel` | `string` | — | Accessible label for icon |
-| `disabled` | `boolean` | `false` | Disables interaction; prevents unsafe href |
-| `className` | `string` | `''` | Additional CSS classes |
-| `ariaLabel` | `string` | — | Accessible label for the button |
-| `type` | `'button' \| 'submit' \| 'reset'` | `'button'` | Form submission type |
+| Prop            | Type                                  | Default     | Description                                  |
+| --------------- | ------------------------------------- | ----------- | -------------------------------------------- |
+| `children`      | `ReactNode`                           | required    | Button label or content                      |
+| `variant`       | `'primary' \| 'secondary' \| 'ghost'` | `'primary'` | Visual style                                 |
+| `size`          | `'small' \| 'medium' \| 'large'`      | `'medium'`  | Padding and font-size                        |
+| `href`          | `string`                              | —           | Renders as `<a>` with external link handling |
+| `onClick`       | `() => void`                          | —           | Click handler                                |
+| `icon`          | `string`                              | —           | Icon name from icon library                  |
+| `iconAriaLabel` | `string`                              | —           | Accessible label for icon                    |
+| `disabled`      | `boolean`                             | `false`     | Disables interaction; prevents unsafe href   |
+| `className`     | `string`                              | `''`        | Additional CSS classes                       |
+| `ariaLabel`     | `string`                              | —           | Accessible label for the button              |
+| `type`          | `'button' \| 'submit' \| 'reset'`     | `'button'`  | Form submission type                         |
 
 #### Variants
 
@@ -45,33 +45,37 @@ The foundational interactive element. Renders as a `<button>` or `<a>` depending
 ```
 
 **Secondary** — Transparent with border. Used for secondary actions alongside a primary button.
+
 ```tsx
-<Button variant="secondary" icon="arrow-right">See Features</Button>
+<Button variant="secondary" icon="arrow-right">
+  See Features
+</Button>
 ```
 
 **Ghost** — No border, no background. Used in navigation and low-emphasis contexts.
+
 ```tsx
 <Button variant="ghost">Learn More</Button>
 ```
 
 #### Sizes
 
-| Size | Min-height | Padding | Font size |
-|---|---|---|---|
-| `small` | 48px | 0.5rem 1.25rem | `--font-size-sm` |
-| `medium` | 48px | 0.75rem 1.5rem | `--font-size-base` |
-| `large` | 52px | 1rem 2rem | `--font-size-base` |
+| Size     | Min-height | Padding        | Font size          |
+| -------- | ---------- | -------------- | ------------------ |
+| `small`  | 48px       | 0.5rem 1.25rem | `--font-size-sm`   |
+| `medium` | 48px       | 0.75rem 1.5rem | `--font-size-base` |
+| `large`  | 52px       | 1rem 2rem      | `--font-size-base` |
 
 > **Minimum touch target:** All sizes enforce `min-height: 48px` and `min-width: 48px` to meet WCAG 2.1 criterion 2.5.5 (Target Size).
 
 #### States
 
-| State | Effect |
-|---|---|
-| Default | `--color-primary` background |
-| Hover | `--color-primary-dark`, `translateY(-1px)`, `--shadow-md` |
-| Active | `translateY(0)` |
-| Focus | `outline: 2px solid --color-primary`, `outline-offset: 2px` |
+| State    | Effect                                                         |
+| -------- | -------------------------------------------------------------- |
+| Default  | `--color-primary` background                                   |
+| Hover    | `--color-primary-dark`, `translateY(-1px)`, `--shadow-md`      |
+| Active   | `translateY(0)`                                                |
+| Focus    | `outline: 2px solid --color-primary`, `outline-offset: 2px`    |
 | Disabled | `opacity: 0.50`, `cursor: not-allowed`, `pointer-events: none` |
 
 #### Security
@@ -88,23 +92,23 @@ Renders Font Awesome icons with a custom SVG path fallback. Supports solid, regu
 
 #### Props
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `name` | `string` | required | Icon name — see **Naming conventions** below |
-| `size` | `'sm' \| 'md' \| 'lg' \| 'xl' \| '2x' \| '3x'` | `'md'` | Pixel dimensions |
-| `variant` | `'solid' \| 'brands' \| 'regular'` | `'solid'` | Icon style; brand icons are also auto-detected, see below |
-| `className` | `string` | — | Additional CSS classes |
-| `ariaLabel` | `string` | — | Accessible label; sets `role="img"` when provided, `aria-hidden="true"` otherwise |
-| `color` | `string` | — | CSS color override |
-| `style` | `CSSProperties` | — | Inline style override |
+| Prop        | Type                                           | Default   | Description                                                                       |
+| ----------- | ---------------------------------------------- | --------- | --------------------------------------------------------------------------------- |
+| `name`      | `string`                                       | required  | Icon name — see **Naming conventions** below                                      |
+| `size`      | `'sm' \| 'md' \| 'lg' \| 'xl' \| '2x' \| '3x'` | `'md'`    | Pixel dimensions                                                                  |
+| `variant`   | `'solid' \| 'brands' \| 'regular'`             | `'solid'` | Icon style; brand icons are also auto-detected, see below                         |
+| `className` | `string`                                       | —         | Additional CSS classes                                                            |
+| `ariaLabel` | `string`                                       | —         | Accessible label; sets `role="img"` when provided, `aria-hidden="true"` otherwise |
+| `color`     | `string`                                       | —         | CSS color override                                                                |
+| `style`     | `CSSProperties`                                | —         | Inline style override                                                             |
 
 #### Naming Conventions
 
 The `name` prop accepts two forms — both resolve to the same icon:
 
-| Form | Example | Notes |
-|---|---|---|
-| Bare kebab-case name | `bolt` | Preferred |
+| Form                      | Example   | Notes                                                     |
+| ------------------------- | --------- | --------------------------------------------------------- |
+| Bare kebab-case name      | `bolt`    | Preferred                                                 |
 | `fa-`-prefixed class name | `fa-bolt` | Supported for compatibility; `fa-` is stripped internally |
 
 The component passes `name` through `convertIconName()` in `src/utils/iconLibrary.ts`, which maps `fa-` class names to bare names. **Names that are not in the library render the `circle-question` fallback** — check `validIconNames` in `iconLibrary.ts` before using a new name.
@@ -133,13 +137,13 @@ To add a new icon, import it from `@fortawesome/free-solid-svg-icons` (or brands
 #### Size Map
 
 | Prop value | Pixel size |
-|---|---|
-| `sm` | 16px |
-| `md` | 20px |
-| `lg` | 24px |
-| `xl` | 32px |
-| `2x` | 40px |
-| `3x` | 48px |
+| ---------- | ---------- |
+| `sm`       | 16px       |
+| `md`       | 20px       |
+| `lg`       | 24px       |
+| `xl`       | 32px       |
+| `2x`       | 40px       |
+| `3x`       | 48px       |
 
 #### Accessibility
 
@@ -173,26 +177,24 @@ Scroll-triggered entrance animation wrapper. Uses `IntersectionObserver` for per
 
 #### Props
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `children` | `ReactNode` | required | Content to animate |
-| `animation` | `'fadeIn' \| 'slideUp' \| 'slideInLeft' \| 'slideInRight' \| 'scale'` | `'fadeIn'` | Entrance animation |
-| `delay` | `number` | `0` | Delay in milliseconds before animation fires |
-| `threshold` | `number` | `0.1` | IntersectionObserver threshold (0–1) |
-| `className` | `string` | — | Additional CSS classes |
+| Prop        | Type                                                                  | Default    | Description                                  |
+| ----------- | --------------------------------------------------------------------- | ---------- | -------------------------------------------- |
+| `children`  | `ReactNode`                                                           | required   | Content to animate                           |
+| `animation` | `'fadeIn' \| 'slideUp' \| 'slideInLeft' \| 'slideInRight' \| 'scale'` | `'fadeIn'` | Entrance animation                           |
+| `delay`     | `number`                                                              | `0`        | Delay in milliseconds before animation fires |
+| `threshold` | `number`                                                              | `0.1`      | IntersectionObserver threshold (0–1)         |
+| `className` | `string`                                                              | —          | Additional CSS classes                       |
 
 #### Staggered Grid Example
 
 ```tsx
-{features.map((feature, index) => (
-  <AnimatedElement
-    key={feature.id}
-    animation="slideUp"
-    delay={index * 100}
-  >
-    <FeatureCard {...feature} />
-  </AnimatedElement>
-))}
+{
+  features.map((feature, index) => (
+    <AnimatedElement key={feature.id} animation="slideUp" delay={index * 100}>
+      <FeatureCard {...feature} />
+    </AnimatedElement>
+  ))
+}
 ```
 
 #### Notes
@@ -211,16 +213,16 @@ Animates text entrance character-by-character or word-by-word. Designed for hero
 
 #### Props
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `children` | `string` | required | Text to animate (plain string only) |
-| `as` | `'h1' \| 'h2' \| 'h3' \| 'h4' \| 'p' \| 'span' \| 'div'` | `'span'` | HTML tag to render as |
-| `type` | `'character' \| 'word'` | `'word'` | Animation unit |
-| `animation` | `'fadeUp' \| 'fadeIn' \| 'slideUp' \| 'blur'` | `'fadeUp'` | Entrance animation style |
-| `delay` | `number` | `0` | Base delay in ms before animation starts |
-| `stagger` | `number` | `50` | Delay in ms between each unit |
-| `threshold` | `number` | `0.2` | IntersectionObserver threshold (0–1) |
-| `className` | `string` | — | Additional CSS classes |
+| Prop        | Type                                                     | Default    | Description                              |
+| ----------- | -------------------------------------------------------- | ---------- | ---------------------------------------- |
+| `children`  | `string`                                                 | required   | Text to animate (plain string only)      |
+| `as`        | `'h1' \| 'h2' \| 'h3' \| 'h4' \| 'p' \| 'span' \| 'div'` | `'span'`   | HTML tag to render as                    |
+| `type`      | `'character' \| 'word'`                                  | `'word'`   | Animation unit                           |
+| `animation` | `'fadeUp' \| 'fadeIn' \| 'slideUp' \| 'blur'`            | `'fadeUp'` | Entrance animation style                 |
+| `delay`     | `number`                                                 | `0`        | Base delay in ms before animation starts |
+| `stagger`   | `number`                                                 | `50`       | Delay in ms between each unit            |
+| `threshold` | `number`                                                 | `0.2`      | IntersectionObserver threshold (0–1)     |
+| `className` | `string`                                                 | —          | Additional CSS classes                   |
 
 #### TextReveal Usage
 
@@ -240,15 +242,16 @@ CSS keyframe float animation for decorative elements (icons, shapes). Pauses whe
 
 #### Props
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `children` | `ReactNode` | required | Content to float |
-| `duration` | `number` | `3` | Animation duration in seconds |
-| `delay` | `number` | `0` | Delay before animation starts in seconds |
-| `distance` | `number` | `20` | Float amplitude in pixels |
-| `direction` | `'vertical' \| 'horizontal' \| 'circular'` | `'vertical'` | Float direction |
-| `className` | `string` | — | Additional CSS classes |
-| `pauseWhenHidden` | `boolean` | `true` | Pause animation when out of viewport |
+| Prop              | Type                                       | Default      | Description                              |
+| ----------------- | ------------------------------------------ | ------------ | ---------------------------------------- |
+| `children`        | `ReactNode`                                | required     | Content to float                         |
+| `duration`        | `number`                                   | `3`          | Animation duration in seconds            |
+| `delay`           | `number`                                   | `0`          | Delay before animation starts in seconds |
+| `distance`        | `number`                                   | `20`         | Float amplitude in pixels                |
+| `direction`       | `'vertical' \| 'horizontal' \| 'circular'` | `'vertical'` | Float direction                          |
+| `className`       | `string`                                   | —            | Additional CSS classes                   |
+| `pauseWhenHidden` | `boolean`                                  | `true`       | Pause animation when out of viewport     |
+
 ---
 
 ### ParallaxLayer
@@ -259,13 +262,13 @@ Performance-optimised parallax via `transform: translateY()` on scroll. Uses `wi
 
 #### Props
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `children` | `ReactNode` | required | Parallax content |
-| `speed` | `number` | `0.3` | Multiplier: 0=static, 0.3=subtle, 1.0=strong, negative=reverse |
-| `zIndex` | `number` | `0` | Stacking layer |
-| `className` | `string` | — | Additional CSS classes |
-| `absolute` | `boolean` | `false` | `position: absolute` for background layers |
+| Prop        | Type        | Default  | Description                                                    |
+| ----------- | ----------- | -------- | -------------------------------------------------------------- |
+| `children`  | `ReactNode` | required | Parallax content                                               |
+| `speed`     | `number`    | `0.3`    | Multiplier: 0=static, 0.3=subtle, 1.0=strong, negative=reverse |
+| `zIndex`    | `number`    | `0`      | Stacking layer                                                 |
+| `className` | `string`    | —        | Additional CSS classes                                         |
+| `absolute`  | `boolean`   | `false`  | `position: absolute` for background layers                     |
 
 ---
 
@@ -277,17 +280,17 @@ Animates a numeric value from `start` to `end` using easing. Fires when the elem
 
 #### Props
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `end` | `number` | required | Target number |
-| `start` | `number` | `0` | Starting number |
-| `duration` | `number` | `2000` | Animation duration in ms |
-| `prefix` | `string` | — | Prefix (e.g. `'$'`) |
-| `suffix` | `string` | — | Suffix (e.g. `'+'`, `'ms'`) |
-| `decimals` | `number` | `0` | Decimal places |
-| `easing` | `'linear' \| 'easeOutQuart' \| 'easeOutExpo'` | `'easeOutQuart'` | Easing curve |
-| `separator` | `boolean` | `true` | Thousands separator |
-| `className` | `string` | — | Additional CSS classes |
+| Prop        | Type                                          | Default          | Description                 |
+| ----------- | --------------------------------------------- | ---------------- | --------------------------- |
+| `end`       | `number`                                      | required         | Target number               |
+| `start`     | `number`                                      | `0`              | Starting number             |
+| `duration`  | `number`                                      | `2000`           | Animation duration in ms    |
+| `prefix`    | `string`                                      | —                | Prefix (e.g. `'$'`)         |
+| `suffix`    | `string`                                      | —                | Suffix (e.g. `'+'`, `'ms'`) |
+| `decimals`  | `number`                                      | `0`              | Decimal places              |
+| `easing`    | `'linear' \| 'easeOutQuart' \| 'easeOutExpo'` | `'easeOutQuart'` | Easing curve                |
+| `separator` | `boolean`                                     | `true`           | Thousands separator         |
+| `className` | `string`                                      | —                | Additional CSS classes      |
 
 ```tsx
 <CounterAnimation end={10} suffix="ms" duration={1500} />
@@ -303,12 +306,12 @@ Animates SVG `<path>` elements using stroke-dashoffset. Each direct child `<path
 
 #### Props
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `children` | `ReactNode` | required | Direct `<path>` children |
-| `duration` | `number` | `2000` | Animation duration in ms |
-| `delay` | `number` | `0` | Delay before animation in ms |
-| `className` | `string` | — | Additional CSS classes |
+| Prop        | Type        | Default  | Description                  |
+| ----------- | ----------- | -------- | ---------------------------- |
+| `children`  | `ReactNode` | required | Direct `<path>` children     |
+| `duration`  | `number`    | `2000`   | Animation duration in ms     |
+| `delay`     | `number`    | `0`      | Delay before animation in ms |
+| `className` | `string`    | —        | Additional CSS classes       |
 
 > **Constraint:** Only direct `<path>` children are supported. Nested `<g>` groups are not traversed.
 
@@ -322,11 +325,11 @@ Waitlist signup form with client-side validation, GDPR consent, and Netlify Func
 
 #### Props
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `variant` | `'inline' \| 'centered'` | `'inline'` | Layout style |
-| `placeholder` | `string` | `'Enter your email'` | Input placeholder |
-| `buttonText` | `string` | `'Join Waitlist'` | Submit button label |
+| Prop          | Type                     | Default              | Description         |
+| ------------- | ------------------------ | -------------------- | ------------------- |
+| `variant`     | `'inline' \| 'centered'` | `'inline'`           | Layout style        |
+| `placeholder` | `string`                 | `'Enter your email'` | Input placeholder   |
+| `buttonText`  | `string`                 | `'Join Waitlist'`    | Submit button label |
 
 #### Validation Rules
 
@@ -336,12 +339,12 @@ Waitlist signup form with client-side validation, GDPR consent, and Netlify Func
 
 #### EmailCapture States
 
-| State | UI |
-|---|---|
-| Idle | Input + submit button |
-| Submitting | Button shows loading spinner, input disabled |
-| Success | Green check icon + "You're on the list!" message |
-| Error | Red error message below input |
+| State      | UI                                               |
+| ---------- | ------------------------------------------------ |
+| Idle       | Input + submit button                            |
+| Submitting | Button shows loading spinner, input disabled     |
+| Success    | Green check icon + "You're on the list!" message |
+| Error      | Red error message below input                    |
 
 ---
 
@@ -368,11 +371,12 @@ Floating feedback button that opens a modal with a form for bug reports and feat
 
 #### Props
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `onSubmit` | `(data: FeedbackFormData) => Promise<void> \| void` | — | Custom submit handler |
+| Prop       | Type                                                | Default | Description           |
+| ---------- | --------------------------------------------------- | ------- | --------------------- |
+| `onSubmit` | `(data: FeedbackFormData) => Promise<void> \| void` | —       | Custom submit handler |
 
 `FeedbackFormData`:
+
 ```ts
 type FeedbackType = 'bug' | 'feature'
 interface FeedbackFormData {
@@ -383,9 +387,6 @@ interface FeedbackFormData {
 
 ---
 
-## Layout Components (`layout/`)
-
-### Header
 ## Layout Components (`layout/`)
 
 ### Header
@@ -425,12 +426,12 @@ Reusable section wrapper that applies consistent vertical padding and optional b
 
 #### Props
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `children` | `ReactNode` | required | Section content |
-| `id` | `string` | — | HTML `id` for anchor navigation |
-| `background` | `'default' \| 'surface' \| 'primary'` | `'default'` | Background variant |
-| `className` | `string` | — | Additional CSS classes |
+| Prop         | Type                                  | Default     | Description                     |
+| ------------ | ------------------------------------- | ----------- | ------------------------------- |
+| `children`   | `ReactNode`                           | required    | Section content                 |
+| `id`         | `string`                              | —           | HTML `id` for anchor navigation |
+| `background` | `'default' \| 'surface' \| 'primary'` | `'default'` | Background variant              |
+| `className`  | `string`                              | —           | Additional CSS classes          |
 
 Background values:
 
@@ -444,31 +445,32 @@ Background values:
 
 Section components are page-level compositions. They consume primitives and layout components; they do not export reusable APIs.
 
-| Component | Purpose |
-|---|---|
-| `Hero` | Landing page hero with headline, subheading, CTA pair, and floating elements |
-| `Features` | 6-card feature grid with icons, metrics, and animated entrances |
-| `Problem` | Pain-point section contrasting legacy tools with Paperlyte |
-| `Solution` | Feature walkthrough with illustrative detail |
-| `Statistics` | Animated counter stats (e.g. "10ms", "99.9% uptime") |
-| `Testimonials` | Rotating quote cards |
-| `Comparison` | Feature comparison table vs. competitors |
-| `Pricing` | Pricing tiers teaser |
-| `CTA` | Full-width waitlist signup strip |
-| `FAQ` | Accordion-style FAQ list |
-| `Mobile` | Mobile app preview section |
+| Component      | Purpose                                                                      |
+| -------------- | ---------------------------------------------------------------------------- |
+| `Hero`         | Landing page hero with headline, subheading, CTA pair, and floating elements |
+| `Features`     | 6-card feature grid with icons, metrics, and animated entrances              |
+| `Problem`      | Pain-point section contrasting legacy tools with Paperlyte                   |
+| `Solution`     | Feature walkthrough with illustrative detail                                 |
+| `Statistics`   | Animated counter stats (e.g. "10ms", "99.9% uptime")                         |
+| `Testimonials` | Rotating quote cards                                                         |
+| `Comparison`   | Feature comparison table vs. competitors                                     |
+| `Pricing`      | Pricing tiers teaser                                                         |
+| `CTA`          | Full-width waitlist signup strip                                             |
+| `FAQ`          | Accordion-style FAQ list                                                     |
+| `Mobile`       | Mobile app preview section                                                   |
 
 For section-specific layout and copy guidelines, see [`landing-page.md`](./landing-page.md).
+
 ---
 
 ## Shared Hooks
 
-| Hook | Purpose |
-|---|---|
-| `useIntersectionObserver` | Watches element visibility; used by animated components |
-| `useReducedMotion` | Returns `true` if `prefers-reduced-motion: reduce`; used to skip animations |
-| `useTheme` | Reads/writes `data-theme` and `localStorage`; provides `theme` + `toggleTheme` |
-| `useParallax` | Returns a scroll offset `y` value for parallax calculations |
+| Hook                      | Purpose                                                                        |
+| ------------------------- | ------------------------------------------------------------------------------ |
+| `useIntersectionObserver` | Watches element visibility; used by animated components                        |
+| `useReducedMotion`        | Returns `true` if `prefers-reduced-motion: reduce`; used to skip animations    |
+| `useTheme`                | Reads/writes `data-theme` and `localStorage`; provides `theme` + `toggleTheme` |
+| `useParallax`             | Returns a scroll offset `y` value for parallax calculations                    |
 
 ---
 

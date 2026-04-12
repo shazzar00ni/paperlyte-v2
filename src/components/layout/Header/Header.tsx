@@ -103,7 +103,9 @@ export const Header = (): React.ReactElement => {
     }
 
     document.addEventListener('keydown', handleEscape)
-    return () => document.removeEventListener('keydown', handleEscape)
+    return () => {
+      document.removeEventListener('keydown', handleEscape)
+    }
   }, [mobileMenuOpen, closeMobileMenu])
 
   // Focus trap and arrow key navigation for mobile menu – single handler to reduce
@@ -175,7 +177,13 @@ export const Header = (): React.ReactElement => {
               </a>
             </li>
             <li className={styles.navCta}>
-              <Button variant="primary" size="small" onClick={() => scrollToSection('download')}>
+              <Button
+                variant="primary"
+                size="small"
+                onClick={() => {
+                  scrollToSection('download')
+                }}
+              >
                 Get Started
               </Button>
             </li>

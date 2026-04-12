@@ -200,7 +200,8 @@ test.describe('Landing Page', () => {
       .locator('#email-capture')
       .getByRole('button', { name: /join the waitlist/i })
 
-    const uniqueEmail = `e2e-${Date.now()}@example.com`
+    // Use a unique address each run to avoid duplicate-submission issues
+    const uniqueEmail = `e2e-test-${Date.now()}@example.com`
     await emailInput.fill(uniqueEmail)
     await submitButton.click()
 

@@ -319,7 +319,7 @@ describe('ErrorBoundary', () => {
   })
 
   describe('maxRetries exhaustion', () => {
-    it('should hide "Try Again" and change message after retryCount reaches maxRetries', async () => {
+    it('should hide "Try Again" and change message after retryCount reaches maxRetries', async (): Promise<void> => {
       const user = userEvent.setup()
 
       // A component that always throws so clicking "Try Again" never recovers
@@ -347,7 +347,7 @@ describe('ErrorBoundary', () => {
       expect(screen.getByRole('button', { name: 'Reload Page' })).toBeInTheDocument()
     })
 
-    it('should show "Reload Page" button and call location.reload when retry limit is reached', async () => {
+    it('should show "Reload Page" button and call location.reload when retry limit is reached', async (): Promise<void> => {
       const user = userEvent.setup()
       const reloadMock = vi.fn()
 

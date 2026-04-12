@@ -37,8 +37,7 @@ jobs:
        contains(github.event.review.body, '@claude') &&
        contains(fromJson('["OWNER","MEMBER","COLLABORATOR"]'), github.event.review.author_association)) ||
       (github.event_name == 'pull_request' &&
-       contains(github.event.pull_request.labels.*.name, 'claude') &&
-       contains(fromJson('["OWNER","MEMBER","COLLABORATOR"]'), github.event.pull_request.author_association))
+       contains(github.event.pull_request.labels.*.name, 'claude'))
     steps:
       - name: Run Claude Code Action
         uses: anthropics/claude-code-action@6e2bd52842c65e914eba5c8badd17560bd26b5de  # v1

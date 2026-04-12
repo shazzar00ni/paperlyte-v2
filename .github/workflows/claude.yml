@@ -22,7 +22,6 @@ jobs:
       pull-requests: write
       issues: write
       id-token: write
-      id-token: write
     if: |
       (github.event_name == 'issue_comment' &&
        github.event.issue.pull_request &&

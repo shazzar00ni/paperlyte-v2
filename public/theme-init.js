@@ -15,49 +15,36 @@
  * - Defaults to 'light' only when both of the above are unavailable.
  */
 ;(function () {
-  // Resolve whether theme persistence is enabled, mirroring
-  // PERSISTENCE_CONFIG.ALLOW_PERSISTENT_THEME in src/constants/config.ts.
-  // Check a window global first; fall back to a <meta> tag; default to true.
-  let allowPersistent = true
-
-  if ('ALLOW_PERSISTENT_THEME' in globalThis) {
-    const value = globalThis.ALLOW_PERSISTENT_THEME
-    if (value === true || value === 'true') {
-      allowPersistent = true
-    } else if (value === false || value === 'false') {
-      allowPersistent = false
+  // Returns false only when explicitly disabled via boolean false or string "false";
+  // any other value (including absent) leaves persistence enabled.
+  function getAllowPersistent() {
+    if ('ALLOW_PERSISTENT_THEME' in globalThis) {
+      const value = globalThis.ALLOW_PERSISTENT_THEME
+      return value !== false && value !== 'false'
     }
-    // Any other type leaves allowPersistent at the default (true).
-  } else {
     const meta = document.querySelector('meta[name="allow-persistent-theme"]')
-    if (meta) {
-      const content = meta.getAttribute('content')
-      allowPersistent = (content ?? 'true') !== 'false'
-    }
+    return !meta || meta.getAttribute('content') !== 'false'
   }
 
-  // Compute the system preference first so it is available as a fallback in
-  // both the normal flow and error recovery below.
+  // Returns the user's stored theme if persistence is valid, otherwise null.
+  function getStoredTheme() {
+    try {
+      const stored = localStorage.getItem('theme')
+      const hasUserPref = localStorage.getItem('theme-user-preference') === 'true'
+      if (hasUserPref && (stored === 'light' || stored === 'dark')) {
+        return stored
+      }
+    } catch {
+      // localStorage is unavailable (e.g. private browsing, strict security
+      // settings) — fall through to return null.
+    }
+    return null
+  }
+
   const systemTheme = globalThis.matchMedia?.('(prefers-color-scheme: dark)')?.matches
     ? 'dark'
     : 'light'
 
-  let theme = systemTheme
-
-  if (allowPersistent) {
-    try {
-      const stored = localStorage.getItem('theme')
-      const hasUserPref = localStorage.getItem('theme-user-preference') === 'true'
-
-      if (hasUserPref && (stored === 'light' || stored === 'dark')) {
-        theme = stored
-      }
-    } catch {
-      // localStorage is unavailable (e.g. private browsing, strict security
-      // settings).  systemTheme was already assigned above, so no further
-      // action is needed here.
-    }
-  }
-
-  document.documentElement.dataset['theme'] = theme
+  const storedTheme = getAllowPersistent() ? getStoredTheme() : null
+  document.documentElement.dataset['theme'] = storedTheme ?? systemTheme
 })()

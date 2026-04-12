@@ -6,7 +6,7 @@ orbs:
 executors:
   node-executor:
     docker:
-      - image: cimg/node:22.14.0@sha256:d032e271ca3d48c82a5fa392ae05d53e2df08f8540dbc1f2f8c158dea3dabd40
+      - image: cimg/node:20.19.2@sha256:93d8e5b75c74e61b792ecdfe533c8a6b1d7367317430fa7ba84909cb0191b099
     resource_class: medium
 
 jobs:
@@ -59,8 +59,11 @@ jobs:
           # The glob matches vitest's include pattern across the whole repo
           # (not just src/) so files like scripts/__tests__/*.test.ts are included.
           # e2e specs are stripped out because Playwright owns those.
+          # set +eo pipefail so the pipeline doesn't abort on test failure;
+          # the exit code is saved and re-raised after artifact upload.
           command: |
             mkdir -p test-results
+            set +eo pipefail
             circleci tests glob \
               "**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}" | \
               grep -v "^tests/e2e/" | \
@@ -68,15 +71,18 @@ jobs:
                 --command="xargs -r npx vitest run --reporter=default --reporter=junit --outputFile=test-results/junit-${CIRCLE_NODE_INDEX}.xml --" \
                 --split-by=timings \
                 --verbose
+            echo $? > /tmp/test-exit-code
           environment:
             CI: "true"
       - store_test_results:
           path: test-results
-          when: always
       - store_artifacts:
           path: test-results
           destination: test-results
+      - run:
+          name: Report test status
           when: always
+          command: exit $(cat /tmp/test-exit-code)
 
   # Coverage runs as a separate single-node job so the report covers the full
   # suite. The parallelised `test` job only runs a subset of tests per node,
@@ -135,18 +141,25 @@ jobs:
           command: npx wait-on http://127.0.0.1:4173 --timeout 30000
       - run:
           name: E2E tests
-          command: npm run test:e2e
+          # set +e so the job doesn't abort on test failure; the exit code is
+          # saved and re-raised after artifact upload.
+          command: |
+            set +e
+            npm run test:e2e
+            echo $? > /tmp/e2e-exit-code
           environment:
             CI: "true"
             BASE_URL: "http://127.0.0.1:4173"
       - store_test_results:
           # JUnit XML is written by the junit reporter added to playwright.config.ts
           path: test-results
-          when: always
       - store_artifacts:
           path: playwright-report
           destination: playwright-report
+      - run:
+          name: Report E2E test status
           when: always
+          command: exit $(cat /tmp/e2e-exit-code)
 
 workflows:
   ci:

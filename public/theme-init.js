@@ -21,7 +21,13 @@
   let allowPersistent = true
 
   if ('ALLOW_PERSISTENT_THEME' in globalThis) {
-    allowPersistent = !!globalThis.ALLOW_PERSISTENT_THEME
+    const value = globalThis.ALLOW_PERSISTENT_THEME
+    if (value === true || value === 'true') {
+      allowPersistent = true
+    } else if (value === false || value === 'false') {
+      allowPersistent = false
+    }
+    // Any other type leaves allowPersistent at the default (true).
   } else {
     const meta = document.querySelector('meta[name="allow-persistent-theme"]')
     if (meta) {

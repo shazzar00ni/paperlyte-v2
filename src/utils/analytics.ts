@@ -392,3 +392,6 @@ export function trackSocialClick(platform: string): void {
 // regardless of whether they import from '@utils/analytics' or 'analytics/index'
 export { analytics } from '../analytics/index'
 
+// Backwards-compatible export for older consumers/tests that still import
+// `initScrollDepthTracking` from this module.
+export { createScrollTracker as initScrollDepthTracking } from '../analytics/scrollDepth'

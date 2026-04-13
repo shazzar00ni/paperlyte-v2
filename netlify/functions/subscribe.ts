@@ -1,6 +1,6 @@
 import type { Handler, HandlerEvent } from "@netlify/functions";
 import { z } from "zod";
-import { isValidEmail } from "@utils/validation";
+import { normalizeEmail } from "@utils/validation";
 
 // Rate limiting store (in-memory, resets on cold start)
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
@@ -226,10 +226,10 @@ export const handler: Handler = async (event: HandlerEvent) => {
       };
     }
 
-    const normalizedEmail = email.trim();
+    // Normalize (trim + lowercase) and validate in one step; returns null for invalid input
+    const normalizedEmail = normalizeEmail(email);
 
-    // Validate email using the shared canonical validator (same rules as the client)
-    if (!isValidEmail(normalizedEmail)) {
+    if (!normalizedEmail) {
       return {
         statusCode: 400,
         headers,

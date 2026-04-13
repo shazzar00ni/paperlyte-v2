@@ -37,10 +37,10 @@ export const Header = (): React.ReactElement => {
   }, [])
 
   const closeMobileMenu = useCallback(() => {
+    if (!mobileMenuOpen) return
     setMobileMenuOpen(false)
-    // Return focus to menu button when closing
     menuButtonRef.current?.focus()
-  }, [])
+  }, [mobileMenuOpen])
 
   // Handle Escape key to close menu
   useEffect(() => {
@@ -150,7 +150,7 @@ export const Header = (): React.ReactElement => {
                 onClick={(e) => {
                   e.preventDefault()
                   scrollToSection('features')
-                  if (mobileMenuOpen) closeMobileMenu()
+                  closeMobileMenu()
                 }}
                 className={styles.navLink}
               >
@@ -163,7 +163,7 @@ export const Header = (): React.ReactElement => {
                 onClick={(e) => {
                   e.preventDefault()
                   scrollToSection('download')
-                  if (mobileMenuOpen) closeMobileMenu()
+                  closeMobileMenu()
                 }}
                 className={styles.navLink}
               >
@@ -176,7 +176,7 @@ export const Header = (): React.ReactElement => {
                 size="small"
                 onClick={() => {
                   scrollToSection('download')
-                  if (mobileMenuOpen) closeMobileMenu()
+                  closeMobileMenu()
                 }}
               >
                 Get Started

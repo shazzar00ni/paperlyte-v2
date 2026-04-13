@@ -32,7 +32,24 @@ export const EmailCapture = (): React.ReactElement => {
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}))
-        throw new Error((data as { message?: string; error?: string }).message ?? (data as { error?: string }).error ?? 'Subscription failed')
+        const serverMessage =
+          (data as { message?: string; error?: string }).message ??
+          (data as { error?: string }).error
+
+        if (res.status === 400 || res.status === 429) {
+          // User-caused error — display message without logging to monitoring
+          setIsLoading(false)
+          setError(
+            serverMessage ??
+              (res.status === 429
+                ? 'Too many requests. Please try again later.'
+                : 'Invalid email address. Please check and try again.')
+          )
+          return
+        }
+
+        // Unexpected server error — propagate to catch block for monitoring
+        throw new Error(serverMessage ?? 'Subscription failed')
       }
 
       setIsLoading(false)
@@ -41,22 +58,14 @@ export const EmailCapture = (): React.ReactElement => {
       const error = err instanceof Error ? err : new Error(String(err))
       logError(error, { tags: { context: 'waitlist-submit' } })
 
-      let message = 'Failed to join waitlist. Please try again.'
-      if (
-        error.name === 'TypeError' ||
-        error.message.toLowerCase().includes('network') ||
-        error.message.toLowerCase().includes('fetch')
-      ) {
-        message = 'Network error. Please check your connection and try again.'
-      } else if (
-        error.message.toLowerCase().includes('invalid') ||
-        error.message.toLowerCase().includes('validation')
-      ) {
-        message = 'Invalid email address. Please check and try again.'
-      }
-
       setIsLoading(false)
-      setError(message)
+      setError(
+        error.name === 'TypeError' ||
+          error.message.toLowerCase().includes('network') ||
+          error.message.toLowerCase().includes('fetch')
+          ? 'Network error. Please check your connection and try again.'
+          : 'Failed to join waitlist. Please try again.'
+      )
     }
   }
 

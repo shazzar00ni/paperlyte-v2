@@ -36,7 +36,7 @@ export function useAnalytics(enableScrollTracking = true) {
     const tracker = createScrollTracker((depth: number): void => {
       trackEvent(AnalyticsEvents.SCROLL_DEPTH, { depth_percentage: depth })
     })
-    return () => tracker.disable()
+    return () => { tracker.disable(); }
   }, [enableScrollTracking])
 
   // Memoized tracking functions to prevent unnecessary re-renders

@@ -5,19 +5,19 @@ import { EmailCapture } from './EmailCapture'
 import { WAITLIST_COUNT } from '@/constants/waitlist'
 
 describe('EmailCapture Section', () => {
-let fetchMock = vi.fn()
+  let fetchMock: ReturnType<typeof vi.fn>
 
-beforeEach(() => {
-  fetchMock = vi.fn().mockResolvedValue({
-    ok: true,
-    json: () => Promise.resolve({ success: true }),
+  beforeEach(() => {
+    fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ success: true }),
+    })
+    vi.stubGlobal('fetch', fetchMock)
   })
-  vi.stubGlobal('fetch', fetchMock)
-})
 
-afterEach(() => {
-  vi.unstubAllGlobals()
-})
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
 
   it('renders the section title', () => {
     render(<EmailCapture />)
@@ -57,6 +57,46 @@ afterEach(() => {
 
     await waitFor(() => {
       expect(screen.getByText(/You're on the list!/)).toBeInTheDocument()
+    })
+
+    // Verify the correct HTTP contract was used
+    expect(fetchMock).toHaveBeenCalledWith('/.netlify/functions/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: 'test@example.com' }),
+    })
+  })
+
+  it('shows a generic error message when the API returns a non-OK response', async () => {
+    fetchMock.mockResolvedValueOnce({
+      ok: false,
+      json: () => Promise.resolve({ message: 'Subscription failed' }),
+    })
+
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
+    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toBeInTheDocument()
+    })
+  })
+
+  it('shows a network error message when fetch throws', async () => {
+    fetchMock.mockRejectedValueOnce(new TypeError('Failed to fetch'))
+
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
+    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toHaveTextContent(
+        /Network error. Please check your connection/
+      )
     })
   })
 

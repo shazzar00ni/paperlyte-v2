@@ -1,6 +1,6 @@
 import type { Handler, HandlerEvent } from "@netlify/functions";
 import { z } from "zod";
-import { isValidEmail } from "../../src/utils/validation";
+import { isValidEmail } from "@utils/validation";
 
 // Rate limiting store (in-memory, resets on cold start)
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();

@@ -150,7 +150,7 @@ export const Header = (): React.ReactElement => {
                 onClick={(e) => {
                   e.preventDefault()
                   scrollToSection('features')
-                  closeMobileMenu()
+                  if (mobileMenuOpen) closeMobileMenu()
                 }}
                 className={styles.navLink}
               >
@@ -163,7 +163,7 @@ export const Header = (): React.ReactElement => {
                 onClick={(e) => {
                   e.preventDefault()
                   scrollToSection('download')
-                  closeMobileMenu()
+                  if (mobileMenuOpen) closeMobileMenu()
                 }}
                 className={styles.navLink}
               >
@@ -176,7 +176,7 @@ export const Header = (): React.ReactElement => {
                 size="small"
                 onClick={() => {
                   scrollToSection('download')
-                  closeMobileMenu()
+                  if (mobileMenuOpen) closeMobileMenu()
                 }}
               >
                 Get Started

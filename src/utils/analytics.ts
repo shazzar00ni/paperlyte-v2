@@ -445,9 +445,9 @@ function createThrottledScrollHandler(callback: () => void): () => void {
  * Sets up a requestAnimationFrame-throttled scroll listener that fires
  * trackEvent calls at the 25 / 50 / 75 / 100 % milestones.
  *
- * NOTE: This is the GA4-specific tracker. The provider-agnostic
- * createScrollTracker in analytics/scrollDepth.ts is used by the
- * Plausible/other-provider path in analytics/index.ts.
+ * NOTE: This helper is GA4-oriented. The provider-agnostic
+ * createScrollTracker in analytics/scrollDepth.ts is used by
+ * src/analytics/index.ts when scroll-depth tracking is enabled.
  *
  * @returns Cleanup function that removes the scroll listener
  *

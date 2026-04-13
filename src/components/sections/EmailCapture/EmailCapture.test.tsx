@@ -5,19 +5,19 @@ import { EmailCapture } from './EmailCapture'
 import { WAITLIST_COUNT } from '@/constants/waitlist'
 
 describe('EmailCapture Section', () => {
-  beforeEach(() => {
-    vi.stubGlobal(
-      'fetch',
-      vi.fn().mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve({ success: true }),
-      })
-    )
-  })
+let fetchMock = vi.fn()
 
-  afterEach(() => {
-    vi.unstubAllGlobals()
+beforeEach(() => {
+  fetchMock = vi.fn().mockResolvedValue({
+    ok: true,
+    json: () => Promise.resolve({ success: true }),
   })
+  vi.stubGlobal('fetch', fetchMock)
+})
+
+afterEach(() => {
+  vi.unstubAllGlobals()
+})
 
   it('renders the section title', () => {
     render(<EmailCapture />)

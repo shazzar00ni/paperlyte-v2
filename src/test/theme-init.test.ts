@@ -10,12 +10,17 @@
  *
  * Strategy: read the script as a string and eval() it inside jsdom for each
  * test case so that every test gets a clean DOM and fresh mock state.
+ *
+ * NOTE: This test intentionally lives in src/test/ rather than public/ so
+ * that Vite does not copy it verbatim into the production build output.
  */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { readFileSync } from 'node:fs'
-import { join } from 'node:path'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-const scriptContent = readFileSync(join(import.meta.dirname, './theme-init.js'), 'utf-8')
+const currentDir = dirname(fileURLToPath(import.meta.url))
+const scriptContent = readFileSync(join(currentDir, '../../public/theme-init.js'), 'utf-8')
 
 /** Execute the IIFE inside the current jsdom context. */
 function runScript() {

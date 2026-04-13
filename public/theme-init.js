@@ -16,10 +16,12 @@
 ;(function () {
   // Reads the <meta name="allow-persistent-theme"> tag set in index.html,
   // which mirrors PERSISTENCE_CONFIG.ALLOW_PERSISTENT_THEME in config.ts.
-  // Returns false only when the tag is explicitly set to "false".
+  // Returns false when the tag content is "false" (case-insensitive, trimmed).
+  // Missing tag → allow (defaults to opt-in); any non-"false" value → allow.
   function getAllowPersistent() {
     const meta = document.querySelector('meta[name="allow-persistent-theme"]')
-    return !meta || meta.getAttribute('content') !== 'false'
+    const content = meta?.getAttribute('content')?.trim().toLowerCase()
+    return content !== 'false'
   }
 
   // Returns the user's stored theme if persistence is valid, otherwise null.

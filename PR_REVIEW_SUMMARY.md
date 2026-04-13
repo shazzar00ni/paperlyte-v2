@@ -2,6 +2,47 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-04-12
+
+### Analysis: Systemic Regressions in Open Branches (Automated Daily Audit)
+
+- **Status:** Critical — Action Required
+- **Summary:** An automated repository-wide audit of 251 unmerged branches confirms the following systemic regressions.
+
+| Regression Type                | Count | Severity    | Notes                                               |
+| :----------------------------- | :---- | :---------- | :-------------------------------------------------- |
+| Orphan Branches                | 251   | 🔴 Critical | No common ancestor with `main`.                     |
+| Missing `.npmrc`               | 94    | 🔴 Critical | Breaks dependency resolution.                       |
+| Missing `docs/ROADMAP.md`      | 88    | 🟠 High     | Core project documentation.                         |
+| Missing `gitVersionControl.md` | 103   | 🟠 High     | Core Git workflow documentation.                    |
+| Missing `review.md`            | 103   | 🟡 Medium   | AI PR reviewer instructions.                        |
+| Reverted Security Helpers      | 102   | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers. |
+| Unreadable navigation.ts       | 8     | 🔴 Critical | File missing or unreadable.                         |
+
+- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.
+
+### Qualitative Reviews
+
+#### PR #661: Hybrid SVG Icon System & Font Awesome Optimizations
+
+- **Status:** Changes Requested
+- **Summary:** Implements a custom SVG icon system to reduce bundle size.
+- **Feedback:** The implementation is technically sound but introduces a critical regression: it removes support for multi-token icon names (e.g., `'fa-spinner fa-spin'`). Additionally, the branch is currently an orphan.
+
+#### PR #664: E2E Stability & Documentation
+
+- **Status:** Changes Requested
+- **Summary:** Improves E2E test stability.
+- **Feedback:** While E2E stability is improved, this PR introduces major regressions by deleting extensive JSDoc documentation and core design system documentation. It also removes critical accessibility logic (skip-link focus handling) in `App.tsx`. The branch is currently an orphan.
+
+#### PR #680: Semantic Versioning & Release Automation
+
+- **Status:** Changes Requested
+- **Summary:** Implements release automation via `scripts/release.sh`.
+- **Feedback:** The release scripts are well-implemented, but the PR contains suspicious downgrades of critical devDependencies (e.g., `vitest` from 4.1.2 to 4.1.0). The branch is currently an orphan.
+
+---
+
 ## 2026-03-05
 
 ### Analysis: Accidental File Deletions in Open Branches (Jules Daily PR Reviews)

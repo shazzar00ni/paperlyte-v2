@@ -4,29 +4,19 @@
  * The script is a plain IIFE that runs before React hydrates; it:
  *   1. Reads <meta name="allow-persistent-theme"> to decide whether
  *      stored preferences are honoured.
- *   2. Reads localStorage to find an explicit user preference.
- *   3. Falls back to prefers-color-scheme when no stored value exists.
- *   4. Writes the resolved theme to document.documentElement.dataset.theme.
+ * NOTE:
+ * This file should not contain the real theme-init test implementation while it
+ * lives under `public/`, because Vite copies `public/` files verbatim into the
+ * production build output.
  *
- * Strategy: read the script as a string and eval() it inside jsdom for each
- * test case so that every test gets a clean DOM and fresh mock state.
- *
- * NOTE: This test intentionally lives in src/test/ rather than public/ so
- * that Vite does not copy it verbatim into the production build output.
+ * Move the actual test to a normal test location (for example `tests/` or
+ * `src/`) and keep only `theme-init.js` in `public/`.
  */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { readFileSync } from 'node:fs'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
 
-const currentDir = dirname(fileURLToPath(import.meta.url))
-const scriptContent = readFileSync(join(currentDir, '../../public/theme-init.js'), 'utf-8')
-
-/** Execute the IIFE inside the current jsdom context. */
+/** Placeholder stub: the real test harness must live outside `public/`. */
 function runScript() {
-  // eval is the only practical way to re-execute a non-module IIFE per-test.
-  // eslint-disable-next-line no-eval
-  eval(scriptContent)
+  throw new Error('Move theme-init.test.ts out of public/ before running this test.')
 }
 
 // ---------------------------------------------------------------------------

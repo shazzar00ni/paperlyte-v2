@@ -1,3 +1,24 @@
+/**
+ * Application entry point.
+ *
+ * Responsibilities at startup (in order):
+ * 1. Conditionally initialises Sentry error monitoring and session replay in
+ *    production when `VITE_SENTRY_DSN` is set. Query parameters are stripped
+ *    from request URLs in `beforeSend` to avoid leaking sensitive data.
+ * 2. Calls `updateMetaTags()` to make Open Graph / Twitter Card URLs and the
+ *    robots meta tag environment-aware (e.g. `noindex` in development).
+ * 3. Mounts the `<App />` component inside React `StrictMode` on the `#root`
+ *    DOM node.
+ *
+ * Font loading: Inter (Latin subset, weights 400–700) is imported as
+ * self-hosted CSS to avoid external Google Fonts requests, improving both
+ * security (no third-party DNS lookups) and performance (~800 KB bundle savings
+ * via the Latin-only subset).
+ *
+ * Icon loading: `iconLibrary` is imported as a side-effect to register the
+ * tree-shaken Font Awesome icon subset used by the application (~150–180 KB
+ * savings vs. importing the full library).
+ */
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import * as Sentry from '@sentry/react'

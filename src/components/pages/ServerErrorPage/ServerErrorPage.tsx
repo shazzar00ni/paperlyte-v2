@@ -24,6 +24,25 @@ interface ServerErrorPageProps {
   showSupport?: boolean
 }
 
+/**
+ * 500 Server Error page component displayed when an unexpected server-side failure occurs.
+ *
+ * Shows a decorative server/warning illustration, an error code badge ("500"), a
+ * user-friendly message, and optional stack-trace details (development only via
+ * `import.meta.env.DEV`). Offers "Try Again" (triggers `onRetry` or full reload)
+ * and "Go to Homepage" (uses `safeNavigate('/')`) buttons.
+ *
+ * Navigation uses `safeNavigate` to prevent open-redirect vulnerabilities.
+ *
+ * @param props - Component props
+ * @param props.message - Optional override for the default error description.
+ * @param props.errorDetails - Optional raw error details shown only in development.
+ * @param props.onRetry - Optional callback for the retry action; defaults to
+ *   `window.location.reload()`.
+ * @param props.showSupport - Whether to show the support contact link
+ *   (default: `true`).
+ * @returns A `<main>` element containing the server error content.
+ */
 export const ServerErrorPage: FC<ServerErrorPageProps> = ({
   message,
   errorDetails,

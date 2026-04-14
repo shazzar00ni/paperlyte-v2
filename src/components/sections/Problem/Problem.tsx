@@ -2,8 +2,11 @@ import { Section } from '@components/layout/Section'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
 import styles from './Problem.module.css'
 
+/** Represents one column in the problem comparison grid */
 interface ComparisonItem {
+  /** Display name of the competitor app or user persona (e.g. 'Notion', 'You') */
   competitor: string
+  /** Short pain-point bullet strings for this competitor/persona */
   issues: string[]
 }
 
@@ -26,6 +29,15 @@ const COMPARISON_DATA: ComparisonItem[] = [
   },
 ]
 
+/**
+ * Problem section component that frames the pain points of existing note-taking tools.
+ *
+ * Presents a comparison grid contrasting Notion, Obsidian, Evernote, and the user's
+ * current frustrations, followed by an impact statement that quantifies the time lost
+ * to poor tooling. Uses staggered `AnimatedElement` entrance animations.
+ *
+ * @returns A `<Section>` element containing the problem framing content.
+ */
 export const Problem = (): React.ReactElement => {
   return (
     <Section id="problem" background="surface">

@@ -1,8 +1,27 @@
 /**
  * Application Monitoring & Error Reporting
  *
- * Centralized error logging and monitoring utility.
- * Handles error reporting to analytics and external services.
+ * Centralised error logging and monitoring utility that routes diagnostics to
+ * the appropriate destination based on the runtime environment:
+ *
+ * - **Development**: All errors, warnings, and performance metrics are written
+ *   to the browser console with structured grouping for easy inspection. No
+ *   data is sent to external services.
+ * - **Production**: Events are tracked via {@link trackEvent} (GA4) and, when
+ *   `VITE_SENTRY_DSN` is configured, forwarded to Sentry for aggregated error
+ *   monitoring. Limited console output may still occur for error and
+ *   monitoring-reporting failures.
+ *
+ * **Usage**
+ * ```ts
+ * import { logError, logWarning, logPerformance } from '@utils/monitoring'
+ *
+ * try {
+ *   await submitForm(data)
+ * } catch (err) {
+ *   logError(err as Error, { severity: 'high', tags: { feature: 'waitlist' } }, 'EmailCapture')
+ * }
+ * ```
  */
 
 import * as Sentry from '@sentry/react'
@@ -27,10 +46,38 @@ function severityToLevel(
   }
 }
 
+/**
+ * Optional metadata passed alongside an error to {@link logError}.
+ *
+ * All fields are optional; only the fields relevant to the call site need to
+ * be supplied.
+ */
 export interface ErrorContext {
+  /**
+   * React component stack trace string produced by `React.ErrorInfo`.
+   * Included automatically when {@link logError} is called from an
+   * `ErrorBoundary.componentDidCatch` handler.
+   */
   componentStack?: string
+  /**
+   * Arbitrary additional diagnostic data (e.g. request payloads, form state)
+   * that helps reproduce the error. Never include PII.
+   */
   errorInfo?: Record<string, unknown>
+  /**
+   * How severe the error is. Maps to Sentry log levels:
+   * - `'low'` → `info`
+   * - `'medium'` → `warning` (default when omitted)
+   * - `'high'` → `error`
+   * - `'critical'` → `fatal`
+   * @default 'medium'
+   */
   severity?: 'low' | 'medium' | 'high' | 'critical'
+  /**
+   * String key-value pairs attached to the Sentry event as searchable tags.
+   * Useful for filtering errors by feature, user segment, or release stage.
+   * Example: `{ feature: 'waitlist', action: 'submit' }`.
+   */
   tags?: Record<string, string>
 }
 

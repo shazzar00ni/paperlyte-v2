@@ -2,6 +2,15 @@ import { Icon } from '@components/ui/Icon'
 import { LEGAL_CONFIG } from '@/constants/legal'
 import styles from './Footer.module.css'
 
+/**
+ * Footer component rendered at the bottom of every page.
+ *
+ * Displays the Paperlyte brand mark, a product/company/legal navigation grid,
+ * social-media icon links, and a copyright notice with the current year.
+ * All external links open in a new tab with `rel="noopener noreferrer"`.
+ *
+ * @returns A `<footer>` element containing the site-wide footer content.
+ */
 export const Footer = (): React.ReactElement => {
   const currentYear = new Date().getFullYear()
 

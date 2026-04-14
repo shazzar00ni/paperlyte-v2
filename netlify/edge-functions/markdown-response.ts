@@ -250,9 +250,10 @@ export default async function handler(request: Request, context: Context): Promi
       .split(',')
       .map((v) => v.trim())
       .filter(Boolean)
+    const normalizedVaryParts = varyParts.map((v) => v.toLowerCase())
     headers.set(
       'Vary',
-      varyParts.includes('Accept') ? originVary : [...varyParts, 'Accept'].join(', ')
+      normalizedVaryParts.includes('accept') ? originVary : [...varyParts, 'Accept'].join(', ')
     )
 
     return new Response(markdown, {

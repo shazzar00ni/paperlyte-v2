@@ -15,6 +15,7 @@ const BENEFITS = [
   'Get early product updates and insider tips',
 ]
 
+/** Renders the Email Capture section with a waitlist signup form and benefit highlights. */
 export const EmailCapture = (): React.ReactElement => {
   const [email, setEmail] = useState('')
   const [isSubmitted, setIsSubmitted] = useState(false)

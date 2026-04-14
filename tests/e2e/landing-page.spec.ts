@@ -63,8 +63,10 @@ test.describe('Landing Page', () => {
 
       // Get LCP using PerformanceObserver
       return new Promise((resolve) => {
-        let lcp = 0;
-        let cls = 0;
+        // null means the observer never fired — distinguishes "not observed"
+        // from a genuine 0 (e.g. CLS with no layout shifts).
+        let lcp: number | null = null;
+        let cls: number | null = null;
 
         const lcpObserver = new PerformanceObserver((list) => {
           const entries = list.getEntries();
@@ -77,7 +79,7 @@ test.describe('Landing Page', () => {
           for (const entry of list.getEntries()) {
             const layoutShift = entry as PerformanceEntry & { hadRecentInput?: boolean; value: number };
             if (!layoutShift.hadRecentInput) {
-              cls += layoutShift.value;
+              cls = (cls ?? 0) + layoutShift.value;
             }
           }
         });
@@ -101,7 +103,9 @@ test.describe('Landing Page', () => {
     // Validate Core Web Vitals thresholds
     expect(metrics.fcp).not.toBeNull();
     expect(metrics.fcp).toBeLessThan(2000); // FCP < 2s
+    expect(metrics.lcp).not.toBeNull(); // fail if LCP was never observed
     expect(metrics.lcp).toBeLessThan(2500); // LCP < 2.5s (good threshold)
+    expect(metrics.cls).not.toBeNull(); // fail if CLS observer never fired
     expect(metrics.cls).toBeLessThan(0.1); // CLS < 0.1 (good threshold)
   });
 

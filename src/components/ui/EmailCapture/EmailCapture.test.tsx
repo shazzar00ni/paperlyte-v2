@@ -111,9 +111,7 @@ describe('EmailCapture (ui)', () => {
   describe('Successful submission', () => {
     it('shows success state after a successful fetch', async () => {
       const user = userEvent.setup()
-      global.fetch = vi.fn(() =>
-        Promise.resolve(new Response(JSON.stringify({}), { status: 200 }))
-      )
+      global.fetch = vi.fn(() => Promise.resolve(new Response(JSON.stringify({}), { status: 200 })))
 
       render(<EmailCapture />)
       await fillAndSubmit(user, 'test@example.com')
@@ -153,9 +151,7 @@ describe('EmailCapture (ui)', () => {
       await fillAndSubmit(user, 'test@example.com')
 
       await waitFor(() => {
-        expect(
-          screen.getByText(/couldn't add you to the list/i)
-        ).toBeInTheDocument()
+        expect(screen.getByText(/couldn't add you to the list/i)).toBeInTheDocument()
       })
     })
 
@@ -167,9 +163,7 @@ describe('EmailCapture (ui)', () => {
       await fillAndSubmit(user, 'test@example.com')
 
       await waitFor(() => {
-        expect(
-          screen.getByText(/couldn't add you to the list/i)
-        ).toBeInTheDocument()
+        expect(screen.getByText(/couldn't add you to the list/i)).toBeInTheDocument()
       })
     })
 
@@ -185,9 +179,7 @@ describe('EmailCapture (ui)', () => {
       await fillAndSubmit(user, 'test@example.com')
 
       await waitFor(() => {
-        expect(
-          screen.getByText(/couldn't add you to the list/i)
-        ).toBeInTheDocument()
+        expect(screen.getByText(/couldn't add you to the list/i)).toBeInTheDocument()
       })
     })
 

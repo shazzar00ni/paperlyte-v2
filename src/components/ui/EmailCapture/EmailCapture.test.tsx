@@ -197,7 +197,8 @@ describe('EmailCapture (ui)', () => {
           networkError,
           expect.objectContaining({
             tags: expect.objectContaining({ component: 'EmailCapture', action: 'subscribe' }),
-          })
+          }),
+          'EmailCapture'
         )
       })
     })
@@ -215,7 +216,8 @@ describe('EmailCapture (ui)', () => {
           expect.objectContaining({ message: expect.stringContaining('Subscribe failed') }),
           expect.objectContaining({
             tags: expect.objectContaining({ errorType: 'string' }),
-          })
+          }),
+          'EmailCapture'
         )
       })
     })

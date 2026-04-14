@@ -2,6 +2,18 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Persistent Memory System
+
+At the **start of every session**, read these files to restore context:
+
+- `memory/decisions.md` — key architectural and technical decisions
+- `memory/people.md` — contributors, stakeholders, and their context
+- `memory/preferences.md` — coding style, design, and workflow preferences
+- `memory/user.md` — user goals, context, and working style
+
+At the **end of every session**, update any of the above files with new information learned during the session (new decisions made, preferences expressed, user context gathered, etc.). Keep entries concise and dated where relevant.
+Never store secrets or sensitive personal data (API keys, tokens, passwords, emails, phone numbers, or private identifiers). Redact or omit sensitive details.
+
 ## Project Overview
 
 **Paperlyte** is a lightning-fast, distraction-free note-taking application that prioritizes simplicity over feature bloat. The landing page aims to communicate this value proposition to frustrated note-takers who are overwhelmed by complex tools like Notion, Evernote, and OneNote.
@@ -40,7 +52,7 @@ npm run preview
 - **React**: 19.2.0 (with React DOM 19.2.0)
 - **TypeScript**: ~5.9.3 with strict mode enabled
 - **Build Tool**: Vite 7.2.4 with @vitejs/plugin-react
-- **Linting**: ESLint 9.39.1 with TypeScript ESLint, React Hooks, and React Refresh plugins
+- **Linting**: ESLint ^10.0.0 (currently 10.0.2) with TypeScript ESLint, React Hooks, and React Refresh plugins
 
 ## Project Structure
 

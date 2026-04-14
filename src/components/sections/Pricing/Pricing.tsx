@@ -5,16 +5,29 @@ import { Icon } from '@components/ui/Icon'
 import { PRICING_PLANS } from '@constants/pricing'
 import styles from './Pricing.module.css'
 
+/**
+ * Pricing section component that displays available pricing plans
+ * Shows plan cards with features, pricing, and call-to-action buttons
+ * Highlights the most popular plan with a badge
+ * Includes money-back guarantee badge at the bottom
+ *
+ * @returns A pricing section with plan cards and guarantee information
+ *
+ * @example
+ * ```tsx
+ * <Pricing />
+ * ```
+ */
 export const Pricing = (): React.ReactElement => {
   return (
     <Section id="pricing" background="surface">
       <div className={styles.header}>
         <AnimatedElement animation="fadeIn">
-          <h2 className={styles.title}>Simple pricing. No surprises.</h2>
+          <h2 className={styles.title}>Simple, Transparent Pricing</h2>
         </AnimatedElement>
         <AnimatedElement animation="fadeIn" delay={100}>
           <p className={styles.subtitle}>
-            Start free, upgrade whenever. No credit card needed to get started.
+            Start free, upgrade when you're ready. No credit card required.
           </p>
         </AnimatedElement>
       </div>

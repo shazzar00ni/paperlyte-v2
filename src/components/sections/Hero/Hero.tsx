@@ -41,11 +41,7 @@ export const Hero = (): React.ReactElement => {
             >
               Start Writing for Free
             </Button>
-            <Button
-              variant="secondary"
-              size="large"
-              onClick={() => scrollToSection('features')}
-            >
+            <Button variant="secondary" size="large" onClick={() => scrollToSection('features')}>
               See How It Works
             </Button>
           </div>

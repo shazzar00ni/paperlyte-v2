@@ -60,7 +60,7 @@ jobs:
         # Uses the job-level env variable to make the missing-secret case explicit
         # and reusable here; when SONAR_TOKEN is unavailable (such as in forks or
         # unconfigured repositories), it resolves to an empty string and this step skips.
-        if: env.SONAR_TOKEN != ''
+        if: env.SONAR_TOKEN != '' && vars.SONAR_PROJECT_KEY != '' && vars.SONAR_ORGANIZATION != ''
         id: sonar-analysis
         continue-on-error: true
 

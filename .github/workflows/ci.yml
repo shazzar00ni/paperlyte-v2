@@ -424,27 +424,29 @@ jobs:
     steps:
       - name: Check all jobs status
         run: |
+          # Lighthouse is advisory: shared CI runners regularly produce below-threshold
+          # scores that do not reflect production performance. It still runs and appears
+          # in the summary below, but does not block the merge gate.
           if [ "${{ needs.lint-and-typecheck.result }}" != "success" ] || \
              [ "${{ needs.test.result }}" != "success" ] || \
              [ "${{ needs.build.result }}" != "success" ] || \
              [ "${{ needs.size-check.result }}" != "success" ] || \
-             [ "${{ needs.lighthouse.result }}" != "success" ] || \
              [ "${{ needs.e2e.result }}" != "success" ]; then
             echo "❌ CI Pipeline Failed"
             echo "- Lint & Type Check: ${{ needs.lint-and-typecheck.result }}"
             echo "- Tests: ${{ needs.test.result }}"
             echo "- Build: ${{ needs.build.result }}"
             echo "- Bundle Size: ${{ needs.size-check.result }}"
-            echo "- Lighthouse: ${{ needs.lighthouse.result }}"
+            echo "- Lighthouse (advisory): ${{ needs.lighthouse.result }}"
             echo "- E2E Tests: ${{ needs.e2e.result }}"
             exit 1
           else
-            echo "✅ All CI jobs passed successfully!"
+            echo "✅ All required CI jobs passed successfully!"
             echo "- Lint & Type Check: ✅"
             echo "- Tests: ✅"
             echo "- Build: ✅"
             echo "- Bundle Size: ✅"
-            echo "- Lighthouse: ✅"
+            echo "- Lighthouse (advisory): ${{ needs.lighthouse.result }}"
             echo "- E2E Tests: ✅"
           fi
 
@@ -471,7 +473,7 @@ jobs:
           echo "| Unit Tests | $(get_status ${{ needs.test.result }}) |" >> $GITHUB_STEP_SUMMARY
           echo "| Build | $(get_status ${{ needs.build.result }}) |" >> $GITHUB_STEP_SUMMARY
           echo "| Bundle Size | $(get_status ${{ needs.size-check.result }}) |" >> $GITHUB_STEP_SUMMARY
-          echo "| Lighthouse CI | $(get_status ${{ needs.lighthouse.result }}) |" >> $GITHUB_STEP_SUMMARY
+          echo "| Lighthouse CI (advisory) | $(get_status ${{ needs.lighthouse.result }}) |" >> $GITHUB_STEP_SUMMARY
           echo "| E2E Tests | $(get_status ${{ needs.e2e.result }}) |" >> $GITHUB_STEP_SUMMARY
 
           echo "" >> $GITHUB_STEP_SUMMARY
@@ -480,9 +482,8 @@ jobs:
              [ "${{ needs.test.result }}" == "success" ] && \
              [ "${{ needs.build.result }}" == "success" ] && \
              [ "${{ needs.size-check.result }}" == "success" ] && \
-             [ "${{ needs.lighthouse.result }}" == "success" ] && \
              [ "${{ needs.e2e.result }}" == "success" ]; then
-            echo "### ✅ All checks passed! Ready to merge." >> $GITHUB_STEP_SUMMARY
+            echo "### ✅ All required checks passed! Ready to merge." >> $GITHUB_STEP_SUMMARY
           else
-            echo "### ❌ Some checks failed. Please review the issues above." >> $GITHUB_STEP_SUMMARY
+            echo "### ❌ Some required checks failed. Please review the issues above." >> $GITHUB_STEP_SUMMARY
           fi

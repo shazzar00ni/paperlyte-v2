@@ -143,10 +143,12 @@ const ALLOWED_TAGS: readonly string[] = [
  */
 export default async function handler(request: Request, context: Context): Promise<Response> {
   // ── 1. Gate on HTTP method ──────────────────────────────────────────────
-  // Only safe, idempotent methods (GET/HEAD) should enter the conversion path.
-  // Non-GET/HEAD requests may be non-idempotent; replaying them via context.next()
-  // inside the error catch block would be unsafe.
-  if (request.method !== 'GET' && request.method !== 'HEAD') {
+  // Only GET requests should enter the conversion path.
+  // HEAD responses must not include a message body, so pass them through
+  // unchanged instead of rewriting them into Markdown.
+  // Non-GET requests may also be non-idempotent; replaying them via
+  // context.next() inside the error catch block would be unsafe.
+  if (request.method !== 'GET') {
     return context.next()
   }
 

@@ -228,9 +228,7 @@ describe('markdown-response edge function', () => {
 
     it('converts links preserving href', async () => {
       const req = makeRequest('https://example.com/', mdHeaders)
-      const ctx = makeContext(
-        htmlResponse('<a href="https://example.com">Click here</a>')
-      )
+      const ctx = makeContext(htmlResponse('<a href="https://example.com">Click here</a>'))
 
       const result = await handler(req, ctx)
       const body = await result.text()
@@ -250,9 +248,7 @@ describe('markdown-response edge function', () => {
 
     it('converts code blocks with fenced style', async () => {
       const req = makeRequest('https://example.com/', mdHeaders)
-      const ctx = makeContext(
-        htmlResponse('<pre><code>const x = 1;\nconst y = 2;</code></pre>')
-      )
+      const ctx = makeContext(htmlResponse('<pre><code>const x = 1;\nconst y = 2;</code></pre>'))
 
       const result = await handler(req, ctx)
       const body = await result.text()
@@ -293,9 +289,7 @@ describe('markdown-response edge function', () => {
 
     it('preserves image alt text and src', async () => {
       const req = makeRequest('https://example.com/', mdHeaders)
-      const ctx = makeContext(
-        htmlResponse('<img src="/logo.png" alt="Logo">')
-      )
+      const ctx = makeContext(htmlResponse('<img src="/logo.png" alt="Logo">'))
 
       const result = await handler(req, ctx)
       const body = await result.text()
@@ -321,9 +315,7 @@ describe('markdown-response edge function', () => {
 
     it('strips <script> tags and their content', async () => {
       const req = makeRequest('https://example.com/', mdHeaders)
-      const ctx = makeContext(
-        htmlResponse('<p>Safe</p><script>alert("xss")</script>')
-      )
+      const ctx = makeContext(htmlResponse('<p>Safe</p><script>alert("xss")</script>'))
 
       const result = await handler(req, ctx)
       const body = await result.text()
@@ -335,9 +327,7 @@ describe('markdown-response edge function', () => {
 
     it('strips <style> tags and their content', async () => {
       const req = makeRequest('https://example.com/', mdHeaders)
-      const ctx = makeContext(
-        htmlResponse('<style>body { color: red }</style><p>Content</p>')
-      )
+      const ctx = makeContext(htmlResponse('<style>body { color: red }</style><p>Content</p>'))
 
       const result = await handler(req, ctx)
       const body = await result.text()
@@ -349,9 +339,7 @@ describe('markdown-response edge function', () => {
 
     it('strips <iframe> tags', async () => {
       const req = makeRequest('https://example.com/', mdHeaders)
-      const ctx = makeContext(
-        htmlResponse('<iframe src="https://evil.com"></iframe><p>Page</p>')
-      )
+      const ctx = makeContext(htmlResponse('<iframe src="https://evil.com"></iframe><p>Page</p>'))
 
       const result = await handler(req, ctx)
       const body = await result.text()
@@ -391,9 +379,7 @@ describe('markdown-response edge function', () => {
 
     it('strips disallowed attributes (e.g. onclick, onload)', async () => {
       const req = makeRequest('https://example.com/', mdHeaders)
-      const ctx = makeContext(
-        htmlResponse('<p onclick="alert(1)">Text</p>')
-      )
+      const ctx = makeContext(htmlResponse('<p onclick="alert(1)">Text</p>'))
 
       const result = await handler(req, ctx)
       const body = await result.text()
@@ -427,9 +413,7 @@ describe('markdown-response edge function', () => {
       const req = makeRequest('https://example.com/', mdHeaders)
       // We craft content that includes an HTML comment literally so if Turndown
       // or sanitize-html passes it through it gets scrubbed.
-      const ctx = makeContext(
-        htmlResponse('<p><!-- hidden comment -->Visible</p>')
-      )
+      const ctx = makeContext(htmlResponse('<p><!-- hidden comment -->Visible</p>'))
 
       const result = await handler(req, ctx)
       const body = await result.text()
@@ -452,9 +436,7 @@ describe('markdown-response edge function', () => {
 
     it('removes <noscript> tags that survive sanitisation', async () => {
       const req = makeRequest('https://example.com/', mdHeaders)
-      const ctx = makeContext(
-        htmlResponse('<noscript><p>Enable JS</p></noscript><p>Content</p>')
-      )
+      const ctx = makeContext(htmlResponse('<noscript><p>Enable JS</p></noscript><p>Content</p>'))
 
       const result = await handler(req, ctx)
       const body = await result.text()
@@ -466,10 +448,7 @@ describe('markdown-response edge function', () => {
     it('removes <object> and <embed> tags', async () => {
       const req = makeRequest('https://example.com/', mdHeaders)
       const ctx = makeContext(
-        htmlResponse(
-          '<object data="file.swf"></object>' +
-            '<embed src="plugin.swf"><p>Content</p>'
-        )
+        htmlResponse('<object data="file.swf"></object>' + '<embed src="plugin.swf"><p>Content</p>')
       )
 
       const result = await handler(req, ctx)
@@ -481,9 +460,7 @@ describe('markdown-response edge function', () => {
 
     it('removes <applet> tags', async () => {
       const req = makeRequest('https://example.com/', mdHeaders)
-      const ctx = makeContext(
-        htmlResponse('<applet code="App.class"></applet><p>Content</p>')
-      )
+      const ctx = makeContext(htmlResponse('<applet code="App.class"></applet><p>Content</p>'))
 
       const result = await handler(req, ctx)
       const body = await result.text()
@@ -555,9 +532,7 @@ describe('markdown-response edge function', () => {
 
       const result = await handler(req, ctx)
 
-      expect(result.headers.get('Content-Signal')).toBe(
-        'ai-train=yes, search=yes, ai-input=yes'
-      )
+      expect(result.headers.get('Content-Signal')).toBe('ai-train=yes, search=yes, ai-input=yes')
     })
 
     it('preserves the origin status code', async () => {
@@ -583,10 +558,10 @@ describe('markdown-response edge function', () => {
 
     it('calculates token estimate as ceiling of chars divided by 4', async () => {
       const testCases = [
-        { len: 4, expected: 1 },   // exactly divisible
-        { len: 5, expected: 2 },   // rounds up
-        { len: 8, expected: 2 },   // exactly divisible
-        { len: 9, expected: 3 },   // rounds up
+        { len: 4, expected: 1 }, // exactly divisible
+        { len: 5, expected: 2 }, // rounds up
+        { len: 8, expected: 2 }, // exactly divisible
+        { len: 9, expected: 3 }, // rounds up
       ]
 
       for (const { len, expected } of testCases) {
@@ -734,8 +709,7 @@ describe('markdown-response edge function', () => {
 
     it('handles HTML with deeply nested elements', async () => {
       const req = makeRequest('https://example.com/', mdHeaders)
-      const nested =
-        '<div><section><article><p><strong>Deep</strong></p></article></section></div>'
+      const nested = '<div><section><article><p><strong>Deep</strong></p></article></section></div>'
       const ctx = makeContext(htmlResponse(nested))
 
       const result = await handler(req, ctx)
@@ -746,9 +720,7 @@ describe('markdown-response edge function', () => {
 
     it('handles HTML with only disallowed tags (outputs empty or whitespace)', async () => {
       const req = makeRequest('https://example.com/', mdHeaders)
-      const ctx = makeContext(
-        htmlResponse('<script>doEvil()</script><style>body{}</style>')
-      )
+      const ctx = makeContext(htmlResponse('<script>doEvil()</script><style>body{}</style>'))
 
       const result = await handler(req, ctx)
       const body = await result.text()
@@ -773,15 +745,27 @@ describe('markdown-response edge function', () => {
     })
 
     it('handles a path that begins with an excluded prefix substring but is not excluded', async () => {
-      // /apikey starts with /api — confirm that our check is prefix-based
-      // /sitemap-index.xml starts with /sitemap — should be excluded
-      const req = makeRequest('https://example.com/sitemap-index.xml', mdHeaders)
-      const ctx = makeContext(htmlResponse('<p>Sitemap</p>'))
+      // /apikey begins with the substring "/api" but does not match the excluded
+      // prefix "/api/", so it should still be processed as Markdown.
+      const includedReq = makeRequest('https://example.com/apikey', mdHeaders)
+      const includedCtx = makeContext(htmlResponse('<p>API key docs</p>'))
 
-      await handler(req, ctx)
+      const includedResult = await handler(includedReq, includedCtx)
+      const includedBody = await includedResult.text()
 
-      // /sitemap-index.xml starts with /sitemap → excluded → context.next called once
-      expect(ctx.next).toHaveBeenCalledOnce()
+      expect(includedCtx.next).toHaveBeenCalledOnce()
+      expect(includedBody).toContain('API key docs')
+      expect(includedBody).not.toContain('<p>')
+
+      // /sitemap-index.xml starts with /sitemap → excluded → raw HTML passed through
+      const excludedReq = makeRequest('https://example.com/sitemap-index.xml', mdHeaders)
+      const excludedCtx = makeContext(htmlResponse('<p>Sitemap</p>'))
+
+      const excludedResult = await handler(excludedReq, excludedCtx)
+      const excludedBody = await excludedResult.text()
+
+      expect(excludedCtx.next).toHaveBeenCalledOnce()
+      expect(excludedBody).toBe('<p>Sitemap</p>')
     })
 
     it('handles XSS vectors with mixed-case and whitespace tags', async () => {

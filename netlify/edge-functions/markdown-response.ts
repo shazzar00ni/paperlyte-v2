@@ -65,13 +65,6 @@ const EXCLUDED_PREFIXES: readonly string[] = [
 // the Markdown output.  These must NOT appear in ALLOWED_TAGS.
 const DROP_WITH_CHILDREN: ReadonlySet<string> = new Set(['nav', 'header', 'footer', 'aside'])
 
-// Combined regex for belt-and-suspenders Markdown scrub (step 6).
-// Matches HTML comments AND dangerous inline tag fragments in a single pass,
-// covering both complete tags and bare fragments with no closing delimiter
-// (e.g. a truncated `<script` at end of string).
-const DANGEROUS_FRAGMENT_RE =
-  /<!--[\s\S]*?(?:-->|$)|<\/?\s*(?:script|style|iframe|object|embed|applet|noscript)[\s\S]*?(?:>|$)/gim
-
 // Turndown instance — initialised once at module scope because the
 // configuration and custom rules are static across all requests.
 const td = new TurndownService({
@@ -212,12 +205,10 @@ export default async function handler(request: Request, context: Context): Promi
     })
 
     // ── 5. HTML → Markdown via Turndown ───────────────────────────────────
-    // Convert sanitized HTML to Markdown, then scrub any dangerous fragments
-    // that Turndown may have passed through as literal text (belt-and-suspenders,
-    // step 6). DANGEROUS_FRAGMENT_RE (defined at module level) covers HTML
-    // comments and all dangerous tag fragments in a single pass; the final
-    // .trim() normalises any whitespace reintroduced by the scrub.
-    const markdown = td.turndown(sanitized).trim().replace(DANGEROUS_FRAGMENT_RE, '').trim()
+    // Convert the sanitized HTML to Markdown. Sanitization must happen on the
+    // parsed HTML tree (step 4), not on the final Markdown text, so we rely on
+    // sanitize-html above and only normalise surrounding whitespace here.
+    const markdown = td.turndown(sanitized).trim()
 
     // ── 6. Compute estimated token count (chars / 4) ──────────────────────
     const tokenEstimate = String(Math.ceil(markdown.length / 4))

@@ -30,13 +30,13 @@ name: SonarCloud analysis
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ['main']
   pull_request:
-    branches: [ "main" ]
+    branches: ['main']
   workflow_dispatch:
 
 permissions:
-  contents: read      # allows actions/checkout to fetch the repository
+  contents: read # allows actions/checkout to fetch the repository
   pull-requests: read # allows SonarCloud to decorate PRs with analysis results
 
 jobs:
@@ -52,13 +52,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # Pinned checkout commit for this workflow (aligned with repo pattern)
         with:
-          fetch-depth: 0  # Full history required for SonarCloud blame data and new-code detection
+          fetch-depth: 0 # Full history required for SonarCloud blame data and new-code detection
 
       - name: Analyze with SonarCloud
         # Skip gracefully when the token or project identifiers are not
         # configured (e.g., forks or repositories that haven't set up SonarCloud).
-        # Uses a job-level env variable so the empty-secret case can be detected
-        # in an `if` expression (secrets cannot be referenced directly in `if`).
+        # Uses the job-level env variable to make the missing-secret case explicit
+        # and reusable here; when SONAR_TOKEN is unavailable (such as in forks or
+        # unconfigured repositories), it resolves to an empty string and this step skips.
         if: env.SONAR_TOKEN != ''
         id: sonar-analysis
         continue-on-error: true
@@ -67,7 +68,7 @@ jobs:
         # uses: SonarSource/sonarcloud-github-action@v2.2.0
         uses: SonarSource/sonarcloud-github-action@4006f663ecaf1f8093e8e4abb9227f6041f52216
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}   # Generate a token on Sonarcloud.io, add it to the secrets of this repo with the name SONAR_TOKEN (Settings > Secrets > Actions > add new repository secret)
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # Generate a token on Sonarcloud.io, add it to the secrets of this repo with the name SONAR_TOKEN (Settings > Secrets > Actions > add new repository secret)
         with:
           # Additional arguments for the SonarScanner CLI
           args: >

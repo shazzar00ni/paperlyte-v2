@@ -681,9 +681,8 @@ describe('markdown-response edge function', () => {
     it('returns the origin response when HTML conversion throws', async () => {
       const req = makeRequest('https://example.com/', mdHeaders)
 
-      // context.next() itself is called twice: once in the gated path.
-      // Simulate context.next() returning a response with a body that
-      // throws when read (to trigger the catch block).
+      // Simulate context.next() resolving successfully with a response whose
+      // cloned body throws when read, triggering the catch block.
       const brokenResponse = new Response(null, {
         status: 200,
         headers: { 'Content-Type': 'text/html' },

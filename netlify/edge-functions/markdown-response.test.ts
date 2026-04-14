@@ -8,7 +8,7 @@
  * their local node_modules equivalents so the handler can be imported in Node.
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import type { Context } from './__stubs__/edge-netlify'
 
 // ── Helpers ────────────────────────────────────────────────────────────────
@@ -609,6 +609,15 @@ describe('markdown-response edge function', () => {
 
   describe('error fallback (step 8)', () => {
     const mdHeaders = { Accept: 'text/markdown' }
+    let consoleErrorSpy: ReturnType<typeof vi.spyOn>
+
+    beforeEach(() => {
+      consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+    })
+
+    afterEach(() => {
+      consoleErrorSpy.mockRestore()
+    })
 
     it('returns the origin response when HTML conversion throws', async () => {
       const req = makeRequest('https://example.com/', mdHeaders)
@@ -637,6 +646,36 @@ describe('markdown-response edge function', () => {
       expect(result).toBe(brokenResponse)
     })
 
+    it('logs the error with url and pathname when conversion throws', async () => {
+      const req = makeRequest('https://example.com/privacy', mdHeaders)
+
+      const brokenResponse = new Response(null, {
+        status: 200,
+        headers: { 'Content-Type': 'text/html' },
+      })
+      Object.defineProperty(brokenResponse, 'clone', {
+        value: () => ({
+          text: () => Promise.reject(new Error('read error')),
+        }),
+      })
+
+      const ctx: Context = {
+        next: vi.fn().mockResolvedValue(brokenResponse),
+      } as unknown as Context
+
+      await handler(req, ctx)
+
+      expect(consoleErrorSpy).toHaveBeenCalledOnce()
+      const [label, context] = consoleErrorSpy.mock.calls[0]
+      expect(label).toContain('markdown-response')
+      expect(label).toContain('falling back')
+      expect(context).toMatchObject({
+        url: 'https://example.com/privacy',
+        pathname: '/privacy',
+        error: 'read error',
+      })
+    })
+
     it('calls context.next() as ultimate fallback when no origin response exists', async () => {
       const req = makeRequest('https://example.com/', mdHeaders)
 
@@ -652,6 +691,28 @@ describe('markdown-response edge function', () => {
       const result = await handler(req, ctx)
 
       expect(result).toBe(fallbackResponse)
+    })
+
+    it('logs the error even when originResponse is undefined', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+
+      const fallbackResponse = new Response('fallback', { status: 200 })
+      const ctx: Context = {
+        next: vi
+          .fn()
+          .mockRejectedValueOnce(new Error('network error'))
+          .mockResolvedValueOnce(fallbackResponse),
+      } as unknown as Context
+
+      await handler(req, ctx)
+
+      expect(consoleErrorSpy).toHaveBeenCalledOnce()
+      const [label, context] = consoleErrorSpy.mock.calls[0]
+      expect(label).toContain('markdown-response')
+      expect(context).toMatchObject({
+        url: 'https://example.com/',
+        error: 'network error',
+      })
     })
   })
 

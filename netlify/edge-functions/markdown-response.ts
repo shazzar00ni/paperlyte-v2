@@ -194,13 +194,6 @@ export default async function handler(request: Request, context: Context): Promi
       allowProtocolRelative: false,
       // Discard disallowed elements and their children entirely.
       disallowedTagsMode: 'discard',
-      // Explicitly drop structural containers like nav/header/footer/aside
-      // together with all of their descendants so navigation/chrome content
-      // doesn't leak into the Markdown.
-      exclusiveFilter(frame) {
-        const dropWithChildren = new Set(['nav', 'header', 'footer', 'aside'])
-        return dropWithChildren.has(frame.tag)
-      },
       // Drop structural chrome together with ALL descendants so navigation
       // links and other UI chrome do not leak into the Markdown output.
       exclusiveFilter(frame) {
@@ -261,8 +254,20 @@ export default async function handler(request: Request, context: Context): Promi
       statusText: originResponse.statusText,
       headers,
     })
-  } catch {
+  } catch (err) {
     // ── 7. Fallback: pass through to origin unchanged ─────────────────────
+    // Log the failure so it appears in Netlify edge function logs.
+    // console.error is the correct logging mechanism in the Deno-based Edge
+    // Runtime; src/utils/monitoring.ts cannot be imported here because it
+    // depends on @sentry/react and Vite's import.meta.env.
+    const message = err instanceof Error ? err.message : String(err)
+    const stack = err instanceof Error && err.stack ? err.stack : undefined
+    console.error('[markdown-response] Markdown conversion failed; falling back to HTML', {
+      url: request.url,
+      pathname,
+      error: message,
+      ...(stack !== undefined ? { stack } : {}),
+    })
     if (originResponse) return originResponse
     return context.next()
   }

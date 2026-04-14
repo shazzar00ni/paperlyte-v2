@@ -72,6 +72,16 @@ const DROP_WITH_CHILDREN: ReadonlySet<string> = new Set(['nav', 'header', 'foote
 const DANGEROUS_FRAGMENT_RE =
   /<!--[\s\S]*?(?:-->|$)|<\/?\s*(?:script|style|iframe|object|embed|applet|noscript)[\s\S]*?(?:>|$)/gim
 
+// Turndown instance — initialised once at module scope because the
+// configuration and custom rules are static across all requests.
+const td = new TurndownService({
+  headingStyle: 'atx',
+  bulletListMarker: '-',
+  codeBlockStyle: 'fenced',
+  hr: '---',
+})
+td.remove(['svg', 'canvas', 'template'])
+
 // Tags whose content Turndown can convert to useful Markdown.
 // Everything not in this list is discarded by sanitize-html.
 const ALLOWED_TAGS: readonly string[] = [
@@ -202,15 +212,6 @@ export default async function handler(request: Request, context: Context): Promi
     })
 
     // ── 5. HTML → Markdown via Turndown ───────────────────────────────────
-    const td = new TurndownService({
-      headingStyle: 'atx',
-      bulletListMarker: '-',
-      codeBlockStyle: 'fenced',
-      hr: '---',
-    })
-
-    td.remove(['svg', 'canvas', 'template'])
-
     // Convert sanitized HTML to Markdown, then scrub any dangerous fragments
     // that Turndown may have passed through as literal text (belt-and-suspenders,
     // step 6). DANGEROUS_FRAGMENT_RE (defined at module level) covers HTML
@@ -229,6 +230,12 @@ export default async function handler(request: Request, context: Context): Promi
     // Last-Modified, and any existing Cache-Control policy.  We then
     // override only the fields specific to the Markdown representation.
     const headers = new Headers(originResponse.headers)
+    // The body has been rewritten from HTML to Markdown, so any entity
+    // headers that describe the original payload are now stale and must
+    // be removed to prevent clients / CDNs from mis-handling the response.
+    headers.delete('Content-Length')
+    headers.delete('Content-Encoding')
+    headers.delete('Transfer-Encoding')
     headers.set('Content-Type', 'text/markdown; charset=utf-8')
     headers.set('X-Markdown-Tokens', tokenEstimate)
     headers.set('Content-Signal', 'ai-train=yes, search=yes, ai-input=yes')

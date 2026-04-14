@@ -74,7 +74,10 @@ export default defineConfig({
       'npm:turndown@7.1.2': 'turndown',
       'npm:sanitize-html@2.13.1': 'sanitize-html',
       // Stub the Netlify Edge Runtime type-only import (stripped at compile time)
-      'https://edge.netlify.com': path.resolve(__dirname, './netlify/edge-functions/__stubs__/edge-netlify.ts'),
+      'https://edge.netlify.com': path.resolve(
+        __dirname,
+        './netlify/edge-functions/__stubs__/edge-netlify.ts'
+      ),
     },
   },
 })

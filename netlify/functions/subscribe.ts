@@ -1,5 +1,6 @@
 import type { Handler, HandlerEvent } from "@netlify/functions";
-import { z } from "zod";
+import { neon } from "@neondatabase/serverless";
+import crypto from "crypto";
 
 // Rate limiting store (in-memory, resets on cold start)
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
@@ -13,28 +14,12 @@ interface SubscribeRequest {
   email: string;
 }
 
-// Zod schema for runtime validation of only the fields actually used
-const ConvertKitResponseSchema = z.object({
-  subscription: z.object({
-    id: z.number(),
-  }),
-});
-
-// TypeScript type derived from Zod schema (ensures type/schema consistency)
-export type ConvertKitResponse = z.infer<typeof ConvertKitResponseSchema>;
-
 /**
- * Enforces the per-IP rate limit and updates the in-memory store for the given client IP.
- *
- * May evict expired entries or the oldest entry when the store is at capacity to make room for new IPs.
- *
- * @param ip - Client IP address used as the rate-limiting key
- * @returns `true` if the IP is under the limit and the request is allowed, `false` if the rate limit has been exceeded
+ * Enforces the per-IP rate limit and updates the in-memory store.
  */
 function checkRateLimit(ip: string): boolean {
   const now = Date.now();
 
-  // Remove expired entry on access
   const record = rateLimitStore.get(ip);
   if (record && now > record.resetTime) {
     rateLimitStore.delete(ip);
@@ -42,15 +27,12 @@ function checkRateLimit(ip: string): boolean {
   const freshRecord = rateLimitStore.get(ip);
   const willAddNewEntry = !freshRecord;
 
-  // Size-based: enforce maximum store size before potentially adding new entry
   if (willAddNewEntry && rateLimitStore.size >= MAX_STORE_SIZE) {
-    // Remove expired entries first (handled by periodic cleanup, but do again for safety)
     for (const [key, rec] of rateLimitStore.entries()) {
       if (now > rec.resetTime) {
         rateLimitStore.delete(key);
       }
     }
-    // If still at capacity after cleanup, remove oldest entry (FIFO eviction)
     if (rateLimitStore.size >= MAX_STORE_SIZE) {
       const firstKey = rateLimitStore.keys().next().value;
       if (firstKey !== undefined) {
@@ -60,10 +42,7 @@ function checkRateLimit(ip: string): boolean {
   }
 
   if (!freshRecord) {
-    rateLimitStore.set(ip, {
-      count: 1,
-      resetTime: now + RATE_LIMIT_WINDOW,
-    });
+    rateLimitStore.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
     return true;
   }
 
@@ -76,86 +55,44 @@ function checkRateLimit(ip: string): boolean {
 }
 
 /**
- * Subscribe an email address to a configured ConvertKit form.
- *
- * @param email - The subscriber's email address
- * @returns The validated ConvertKit response containing the `subscription` object with its `id`
- * @throws If ConvertKit API credentials (API key or form ID) are not configured
- * @throws If the ConvertKit API request fails (non-OK HTTP response)
- * @throws If the ConvertKit response is not valid JSON or does not match the expected schema
+ * One-way hash of the client IP for privacy-preserving deduplication.
+ * We never store the raw IP address.
  */
-async function subscribeToConvertKit(
-  email: string
-): Promise<ConvertKitResponse> {
-  const apiKey = process.env.CONVERTKIT_API_KEY;
-  const formId = process.env.CONVERTKIT_FORM_ID;
-
-  if (!apiKey || !formId) {
-    throw new Error("ConvertKit API credentials not configured");
-  }
-
-  const tagId = process.env.CONVERTKIT_TAG_ID;
-  const requestBody: {
-    api_key: string;
-    email: string;
-    tags?: string[];
-  } = {
-    api_key: apiKey,
-    email: email,
-  };
-
-  // Only include tags if tag ID is configured
-  if (tagId) {
-    requestBody.tags = [tagId];
-  }
-
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
-
-  const response = await fetch(
-    `https://api.convertkit.com/v3/forms/${formId}/subscribe`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(requestBody),
-      signal: controller.signal,
-    }
-  ).finally(() => clearTimeout(timeoutId));
-
-  if (!response.ok) {
-    // Log error without PII (don't log full error response which may contain email)
-    console.error("ConvertKit API error: HTTP", response.status);
-    throw new Error("Failed to subscribe email");
-  }
-
-  // Parse and validate response structure with Zod
-  let data: unknown;
-  try {
-    data = await response.json();
-  } catch {
-    console.error("Failed to parse ConvertKit response as JSON");
-    throw new Error("Invalid response from email service");
-  }
-
-  // Validate response structure using Zod schema
-  try {
-    return ConvertKitResponseSchema.parse(data);
-  } catch (error) {
-    console.error(
-      "ConvertKit response validation failed:",
-      error instanceof Error ? error.message : "Unknown error"
-    );
-    throw new Error("Invalid response from email service", { cause: error });
-  }
+function hashIp(ip: string): string {
+  return crypto.createHash("sha256").update(ip).digest("hex").slice(0, 16);
 }
 
 /**
- * Netlify serverless function handler
+ * Inserts the email into the Neon waitlist table.
+ * Returns { alreadyExists: true } if the email is already registered.
+ */
+async function saveToWaitlist(
+  email: string,
+  ipHash: string
+): Promise<{ alreadyExists: boolean }> {
+  const databaseUrl = process.env.DATABASE_URL;
+  if (!databaseUrl) {
+    throw new Error("DATABASE_URL environment variable is not configured");
+  }
+
+  const sql = neon(databaseUrl);
+
+  // Upsert — do nothing on conflict so we can detect duplicates
+  const rows = await sql`
+    INSERT INTO waitlist (email, ip_hash, source)
+    VALUES (${email}, ${ipHash}, 'website')
+    ON CONFLICT (email) DO NOTHING
+    RETURNING id
+  `;
+
+  return { alreadyExists: rows.length === 0 };
+}
+
+/**
+ * Netlify serverless function handler for waitlist sign-ups.
  */
 export const handler: Handler = async (event: HandlerEvent) => {
-  // CORS headers - restrict to allowed origin for security
+  // CORS headers — restrict to allowed origin
   const allowedOrigin = process.env.ALLOWED_ORIGIN ?? "https://paperlyte.com";
   const origin = event.headers.origin ?? event.headers.Origin ?? "";
   const isAllowedOrigin = origin === allowedOrigin;
@@ -167,16 +104,12 @@ export const handler: Handler = async (event: HandlerEvent) => {
     "Content-Type": "application/json",
   };
 
-  // Handle preflight request
+  // Handle preflight
   if (event.httpMethod === "OPTIONS") {
-    return {
-      statusCode: 204,
-      headers,
-      body: "",
-    };
+    return { statusCode: 204, headers, body: "" };
   }
 
-  // Only allow POST
+  // Only POST allowed
   if (event.httpMethod !== "POST") {
     return {
       statusCode: 405,
@@ -186,13 +119,12 @@ export const handler: Handler = async (event: HandlerEvent) => {
   }
 
   try {
-    // Get IP address for rate limiting
+    // Rate limiting
     const ip =
-      event.headers["x-forwarded-for"]?.split(",")[0] ??
+      event.headers["x-forwarded-for"]?.split(",")[0]?.trim() ??
       event.headers["client-ip"] ??
       "unknown";
 
-    // Check rate limit
     if (!checkRateLimit(ip)) {
       return {
         statusCode: 429,
@@ -203,7 +135,7 @@ export const handler: Handler = async (event: HandlerEvent) => {
       };
     }
 
-    // Parse request body
+    // Parse body
     let body: SubscribeRequest;
     try {
       body = JSON.parse(event.body ?? "{}");
@@ -214,9 +146,10 @@ export const handler: Handler = async (event: HandlerEvent) => {
         body: JSON.stringify({ error: "Invalid request body" }),
       };
     }
+
     const { email } = body;
 
-    // Validate email
+    // Validate email presence and type
     if (!email || typeof email !== "string") {
       return {
         statusCode: 400,
@@ -225,9 +158,9 @@ export const handler: Handler = async (event: HandlerEvent) => {
       };
     }
 
-    // Basic email validation
+    // Basic email format validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    if (!emailRegex.test(email.trim())) {
       return {
         statusCode: 400,
         headers,
@@ -235,29 +168,39 @@ export const handler: Handler = async (event: HandlerEvent) => {
       };
     }
 
-    // Subscribe to ConvertKit
-    const result = await subscribeToConvertKit(email);
+    const normalizedEmail = email.trim().toLowerCase();
+    const ipHash = hashIp(ip);
 
-    // Log success without PII (privacy-compliant)
-    console.log("Successfully subscribed user to newsletter");
+    const { alreadyExists } = await saveToWaitlist(normalizedEmail, ipHash);
+
+    if (alreadyExists) {
+      // Return success so we don't leak which emails are registered
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({
+          success: true,
+          message: "You're already on the waitlist!",
+        }),
+      };
+    }
+
+    console.log("New waitlist signup recorded");
 
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
         success: true,
-        message: "Successfully subscribed! Please check your email to confirm.",
-        subscriptionId: result.subscription.id,
+        message: "You're on the waitlist! We'll be in touch.",
       }),
     };
   } catch (error) {
-    // Log error type without PII (don't log error object which may contain email)
     console.error(
       "Subscription error:",
       error instanceof Error ? error.message : "Unknown error"
     );
 
-    // Don't expose internal errors to client
     return {
       statusCode: 500,
       headers,

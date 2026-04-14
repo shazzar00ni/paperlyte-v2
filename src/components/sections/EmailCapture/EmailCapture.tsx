@@ -30,8 +30,17 @@ export const EmailCapture = (): React.ReactElement => {
     setError(null)
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      const response = await fetch('/.netlify/functions/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      })
+
+      const data = (await response.json()) as { success?: boolean; error?: string }
+
+      if (!response.ok) {
+        throw new Error(data.error ?? `Server error ${response.status}`)
+      }
 
       setIsLoading(false)
       setIsSubmitted(true)

@@ -217,23 +217,18 @@ export default async function handler(request: Request, context: Context): Promi
     // step 6). DANGEROUS_FRAGMENT_RE (defined at module level) covers HTML
     // comments and all dangerous tag fragments in a single pass; the final
     // .trim() normalises any whitespace reintroduced by the scrub.
-    const markdown = td
-      .turndown(sanitized)
-      .trim()
-      .replace(DANGEROUS_FRAGMENT_RE, '')
-      .trim()
+    const markdown = td.turndown(sanitized).trim().replace(DANGEROUS_FRAGMENT_RE, '').trim()
 
     // ── 6. Compute estimated token count (chars / 4) ──────────────────────
     const tokenEstimate = String(Math.ceil(markdown.length / 4))
 
-    // Start from all origin headers so we preserve unrelated metadata and
-    // any existing Cache-Control policy. We then remove validators/entity
-    // headers tied to the original HTML payload and override fields specific
-    // to the Markdown representation.
+    // Start from all origin headers so we preserve unrelated metadata
+    // (e.g. any existing Cache-Control policy, CORS headers, etc.).  We
+    // then remove validators and entity headers that describe the HTML
+    // payload — they are now stale for the rewritten Markdown body and
+    // must be stripped to prevent clients / CDNs from mis-handling the
+    // response (wrong Content-Length, mismatched ETag, etc.).
     const headers = new Headers(originResponse.headers)
-    // The body has been rewritten from HTML to Markdown, so any headers
-    // that describe or validate the original payload are now stale and must
-    // be removed to prevent clients / CDNs from mis-handling the response.
     headers.delete('Content-Length')
     headers.delete('Content-Encoding')
     headers.delete('Transfer-Encoding')
@@ -242,7 +237,9 @@ export default async function handler(request: Request, context: Context): Promi
     headers.set('Content-Type', 'text/markdown; charset=utf-8')
     headers.set('X-Markdown-Tokens', tokenEstimate)
     headers.set('Content-Signal', 'ai-train=yes, search=yes, ai-input=yes')
-    // Prevent stale Markdown representations from being served from cache.
+    // The Markdown body is a lossy transformation of the HTML; caching it
+    // as if it were the canonical resource would return wrong content to
+    // subsequent HTML requests sharing the same cache key.  Force-bypass.
     headers.set('Cache-Control', 'no-store')
 
     // Merge Accept into any existing Vary value so CDNs store HTML and

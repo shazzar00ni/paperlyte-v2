@@ -76,6 +76,7 @@ export const Header: React.FC = () => {
             type="button"
             className={styles.mobileMenuButton}
             onClick={toggleMobileMenu}
+            aria-expanded={mobileMenuOpen}
             aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileMenuOpen}
             aria-controls="main-menu"

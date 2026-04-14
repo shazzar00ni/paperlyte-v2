@@ -276,7 +276,7 @@ export default async function handler(request: Request, context: Context): Promi
       headers,
     })
   } catch (err) {
-    // ── 7. Fallback: pass through to origin unchanged ─────────────────────
+    // ── 8. Fallback: pass through to origin unchanged ─────────────────────
     // Log the failure so it appears in Netlify edge function logs.
     // console.error is the correct logging mechanism in the Deno-based Edge
     // Runtime; src/utils/monitoring.ts cannot be imported here because it

@@ -58,7 +58,7 @@ import handler from './markdown-response'
 describe('markdown-response edge function', () => {
   // ── Method gating ─────────────────────────────────────────────────────────
 
-  describe('method gate (step 1)', () => {
+  describe('method gate', () => {
     it('passes through POST requests even with Accept: text/markdown', async () => {
       const req = new Request('https://example.com/', {
         method: 'POST',
@@ -113,7 +113,7 @@ describe('markdown-response edge function', () => {
 
   // ── Accept-header gating ──────────────────────────────────────────────────
 
-  describe('Accept-header gate (step 2)', () => {
+  describe('Accept-header gate', () => {
     it('passes through when Accept header is absent', async () => {
       const req = makeRequest('https://example.com/')
       const originalResponse = htmlResponse('<h1>Hello</h1>')
@@ -206,7 +206,7 @@ describe('markdown-response edge function', () => {
 
   // ── Excluded-path gating ──────────────────────────────────────────────────
 
-  describe('excluded-path gate (step 3)', () => {
+  describe('excluded-path gate', () => {
     const mdHeaders = { Accept: 'text/markdown' }
 
     it.each([
@@ -248,7 +248,7 @@ describe('markdown-response edge function', () => {
 
   // ── Non-HTML origin responses ─────────────────────────────────────────────
 
-  describe('non-HTML origin content-type pass-through (step 4)', () => {
+  describe('non-HTML origin content-type pass-through', () => {
     const mdHeaders = { Accept: 'text/markdown' }
 
     it('returns the original response when origin content-type is not text/html', async () => {
@@ -265,7 +265,7 @@ describe('markdown-response edge function', () => {
 
   // ── Markdown conversion ───────────────────────────────────────────────────
 
-  describe('HTML-to-Markdown conversion (steps 5–6)', () => {
+  describe('HTML-to-Markdown conversion', () => {
     const mdHeaders = { Accept: 'text/markdown' }
 
     it('converts headings to ATX style', async () => {
@@ -396,7 +396,7 @@ describe('markdown-response edge function', () => {
 
   // ── HTML sanitisation ─────────────────────────────────────────────────────
 
-  describe('HTML sanitisation (step 5)', () => {
+  describe('HTML sanitisation', () => {
     const mdHeaders = { Accept: 'text/markdown' }
 
     it('strips <script> tags and their content', async () => {
@@ -637,7 +637,7 @@ describe('markdown-response edge function', () => {
 
   // ── Token estimate ────────────────────────────────────────────────────────
 
-  describe('token estimate calculation (step 7 — chars / 4)', () => {
+  describe('token estimate calculation (chars / 4)', () => {
     const mdHeaders = { Accept: 'text/markdown' }
 
     it('calculates token estimate as ceiling of chars divided by 4', async () => {

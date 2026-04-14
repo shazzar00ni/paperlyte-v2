@@ -142,13 +142,30 @@ const ALLOWED_TAGS: readonly string[] = [
  *   failure, or a pass-through to the origin for non-markdown requests.
  */
 export default async function handler(request: Request, context: Context): Promise<Response> {
-  // ── 1. Gate on Accept header ────────────────────────────────────────────
-  const accept = (request.headers.get('Accept') ?? '').toLowerCase()
-  if (!accept.includes('text/markdown')) {
+  // ── 1. Gate on HTTP method ──────────────────────────────────────────────
+  // Only safe, idempotent methods (GET/HEAD) should enter the conversion path.
+  // Non-GET/HEAD requests may be non-idempotent; replaying them via context.next()
+  // inside the error catch block would be unsafe.
+  if (request.method !== 'GET' && request.method !== 'HEAD') {
     return context.next()
   }
 
-  // ── 2. Skip excluded paths ──────────────────────────────────────────────
+  // ── 2. Gate on Accept header ────────────────────────────────────────────
+  // Parse the Accept header properly, respecting q=0 (explicit opt-out).
+  // A token is accepted if:
+  //   • its media type is text/markdown (case-insensitive), AND
+  //   • it has no q parameter OR its q value is > 0.
+  const acceptsMarkdown = (request.headers.get('Accept') ?? '').split(',').some((token) => {
+    const [type, ...params] = token.trim().split(';')
+    if (type.trim().toLowerCase() !== 'text/markdown') return false
+    const qParam = params.map((p) => p.trim()).find((p) => p.startsWith('q='))
+    return qParam === undefined || parseFloat(qParam.slice(2)) > 0
+  })
+  if (!acceptsMarkdown) {
+    return context.next()
+  }
+
+  // ── 3. Skip excluded paths ──────────────────────────────────────────────
   const { pathname } = new URL(request.url)
   if (EXCLUDED_PREFIXES.some((prefix) => pathname.startsWith(prefix))) {
     return context.next()
@@ -157,7 +174,7 @@ export default async function handler(request: Request, context: Context): Promi
   let originResponse: Response | undefined
 
   try {
-    // ── 3. Fetch HTML from origin ─────────────────────────────────────────
+    // ── 4. Fetch HTML from origin ─────────────────────────────────────────
     originResponse = await context.next()
     const contentType = (originResponse.headers.get('Content-Type') ?? '').toLowerCase()
 
@@ -167,7 +184,7 @@ export default async function handler(request: Request, context: Context): Promi
 
     const html = await originResponse.clone().text()
 
-    // ── 4. Sanitize with allowlist parser ─────────────────────────────────
+    // ── 5. Sanitize with allowlist parser ─────────────────────────────────
     // sanitize-html parses HTML into a real node tree and applies a strict
     // allowlist (script, style, nav, header, footer, iframe, object, embed,
     // applet, noscript etc. are excluded).  Using an allowlist-based parser
@@ -204,13 +221,13 @@ export default async function handler(request: Request, context: Context): Promi
       },
     })
 
-    // ── 5. HTML → Markdown via Turndown ───────────────────────────────────
+    // ── 6. HTML → Markdown via Turndown ───────────────────────────────────
     // Convert the sanitized HTML to Markdown. Sanitization must happen on the
-    // parsed HTML tree (step 4), not on the final Markdown text, so we rely on
+    // parsed HTML tree (step 5), not on the final Markdown text, so we rely on
     // sanitize-html above and only normalise surrounding whitespace here.
     const markdown = td.turndown(sanitized).trim()
 
-    // ── 6. Compute estimated token count (chars / 4) ──────────────────────
+    // ── 7. Compute estimated token count (chars / 4) ──────────────────────
     const tokenEstimate = String(Math.ceil(markdown.length / 4))
 
     // Start from all origin headers so we preserve unrelated metadata

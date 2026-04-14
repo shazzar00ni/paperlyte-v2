@@ -56,9 +56,64 @@ import handler from './markdown-response'
 // ── Test suites ─────────────────────────────────────────────────────────────
 
 describe('markdown-response edge function', () => {
+  // ── Method gating ─────────────────────────────────────────────────────────
+
+  describe('method gate (step 1)', () => {
+    it('passes through POST requests even with Accept: text/markdown', async () => {
+      const req = new Request('https://example.com/', {
+        method: 'POST',
+        headers: { Accept: 'text/markdown' },
+      })
+      const ctx = makeContext(htmlResponse('<p>Data</p>'))
+
+      await handler(req, ctx)
+
+      // context.next called once for pass-through; Content-Type not rewritten
+      expect(ctx.next).toHaveBeenCalledOnce()
+      const result = await ctx.next.mock.results[0].value
+      expect(result.headers.get('Content-Type')).not.toBe('text/markdown; charset=utf-8')
+    })
+
+    it('passes through PUT requests even with Accept: text/markdown', async () => {
+      const req = new Request('https://example.com/', {
+        method: 'PUT',
+        headers: { Accept: 'text/markdown' },
+      })
+      const ctx = makeContext(htmlResponse('<p>Data</p>'))
+
+      await handler(req, ctx)
+
+      expect(ctx.next).toHaveBeenCalledOnce()
+    })
+
+    it('processes GET requests with Accept: text/markdown', async () => {
+      const req = new Request('https://example.com/', {
+        method: 'GET',
+        headers: { Accept: 'text/markdown' },
+      })
+      const ctx = makeContext(htmlResponse('<p>Home</p>'))
+
+      const result = await handler(req, ctx)
+
+      expect(result.headers.get('Content-Type')).toBe('text/markdown; charset=utf-8')
+    })
+
+    it('processes HEAD requests with Accept: text/markdown', async () => {
+      const req = new Request('https://example.com/', {
+        method: 'HEAD',
+        headers: { Accept: 'text/markdown' },
+      })
+      const ctx = makeContext(htmlResponse('<p>Home</p>'))
+
+      const result = await handler(req, ctx)
+
+      expect(result.headers.get('Content-Type')).toBe('text/markdown; charset=utf-8')
+    })
+  })
+
   // ── Accept-header gating ──────────────────────────────────────────────────
 
-  describe('Accept-header gate (step 1)', () => {
+  describe('Accept-header gate (step 2)', () => {
     it('passes through when Accept header is absent', async () => {
       const req = makeRequest('https://example.com/')
       const originalResponse = htmlResponse('<h1>Hello</h1>')
@@ -116,11 +171,42 @@ describe('markdown-response edge function', () => {
 
       expect(result.headers.get('Content-Type')).toBe('text/markdown; charset=utf-8')
     })
+
+    it('passes through when Accept: text/markdown;q=0 (explicit opt-out)', async () => {
+      const req = makeRequest('https://example.com/', { Accept: 'text/markdown;q=0' })
+      const ctx = makeContext(htmlResponse('<p>Page</p>'))
+
+      await handler(req, ctx)
+
+      expect(ctx.next).toHaveBeenCalledOnce()
+      const result = await ctx.next.mock.results[0].value
+      expect(result.headers.get('Content-Type')).not.toBe('text/markdown; charset=utf-8')
+    })
+
+    it('processes request when Accept: text/markdown;q=0.5 (positive q-value)', async () => {
+      const req = makeRequest('https://example.com/', { Accept: 'text/markdown;q=0.5' })
+      const ctx = makeContext(htmlResponse('<p>Page</p>'))
+
+      const result = await handler(req, ctx)
+
+      expect(result.headers.get('Content-Type')).toBe('text/markdown; charset=utf-8')
+    })
+
+    it('passes through when text/markdown appears with q=0 in a multi-value Accept list', async () => {
+      const req = makeRequest('https://example.com/', {
+        Accept: 'text/html, text/markdown;q=0, */*',
+      })
+      const ctx = makeContext(htmlResponse('<p>Page</p>'))
+
+      await handler(req, ctx)
+
+      expect(ctx.next).toHaveBeenCalledOnce()
+    })
   })
 
   // ── Excluded-path gating ──────────────────────────────────────────────────
 
-  describe('excluded-path gate (step 2)', () => {
+  describe('excluded-path gate (step 3)', () => {
     const mdHeaders = { Accept: 'text/markdown' }
 
     it.each([
@@ -162,7 +248,7 @@ describe('markdown-response edge function', () => {
 
   // ── Non-HTML origin responses ─────────────────────────────────────────────
 
-  describe('non-HTML origin content-type pass-through (step 3)', () => {
+  describe('non-HTML origin content-type pass-through (step 4)', () => {
     const mdHeaders = { Accept: 'text/markdown' }
 
     it('returns the original response when origin content-type is not text/html', async () => {
@@ -179,7 +265,7 @@ describe('markdown-response edge function', () => {
 
   // ── Markdown conversion ───────────────────────────────────────────────────
 
-  describe('HTML-to-Markdown conversion (steps 4–5)', () => {
+  describe('HTML-to-Markdown conversion (steps 5–6)', () => {
     const mdHeaders = { Accept: 'text/markdown' }
 
     it('converts headings to ATX style', async () => {
@@ -310,7 +396,7 @@ describe('markdown-response edge function', () => {
 
   // ── HTML sanitisation ─────────────────────────────────────────────────────
 
-  describe('HTML sanitisation (step 4)', () => {
+  describe('HTML sanitisation (step 5)', () => {
     const mdHeaders = { Accept: 'text/markdown' }
 
     it('strips <script> tags and their content', async () => {
@@ -403,16 +489,14 @@ describe('markdown-response edge function', () => {
     })
   })
 
-  // ── Belt-and-suspenders regex scrub ──────────────────────────────────────
+  // ── Sanitisation: dangerous tags and content removal ─────────────────────
 
-  describe('belt-and-suspenders regex scrub (step 6)', () => {
+  describe('sanitisation: dangerous tags and content removal', () => {
     const mdHeaders = { Accept: 'text/markdown' }
 
     it('removes HTML comments that survive sanitisation', async () => {
-      // Inject a comment via a text node (sanitize-html may pass them through)
+      // sanitize-html strips HTML comments structurally from the parsed tree.
       const req = makeRequest('https://example.com/', mdHeaders)
-      // We craft content that includes an HTML comment literally so if Turndown
-      // or sanitize-html passes it through it gets scrubbed.
       const ctx = makeContext(htmlResponse('<p><!-- hidden comment -->Visible</p>'))
 
       const result = await handler(req, ctx)
@@ -471,7 +555,7 @@ describe('markdown-response edge function', () => {
 
   // ── Response headers ──────────────────────────────────────────────────────
 
-  describe('response headers (step 7)', () => {
+  describe('response headers', () => {
     const mdHeaders = { Accept: 'text/markdown' }
 
     it('sets Content-Type to text/markdown; charset=utf-8', async () => {
@@ -553,7 +637,7 @@ describe('markdown-response edge function', () => {
 
   // ── Token estimate ────────────────────────────────────────────────────────
 
-  describe('token estimate calculation (step 7)', () => {
+  describe('token estimate calculation (step 7 — chars / 4)', () => {
     const mdHeaders = { Accept: 'text/markdown' }
 
     it('calculates token estimate as ceiling of chars divided by 4', async () => {
@@ -582,7 +666,7 @@ describe('markdown-response edge function', () => {
 
   // ── Error / fallback handling ─────────────────────────────────────────────
 
-  describe('error fallback (step 8)', () => {
+  describe('error fallback', () => {
     const mdHeaders = { Accept: 'text/markdown' }
     let consoleErrorSpy: ReturnType<typeof vi.spyOn>
 

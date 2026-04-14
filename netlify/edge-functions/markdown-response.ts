@@ -226,16 +226,19 @@ export default async function handler(request: Request, context: Context): Promi
     // ── 6. Compute estimated token count (chars / 4) ──────────────────────
     const tokenEstimate = String(Math.ceil(markdown.length / 4))
 
-    // Start from all origin headers so we preserve things like ETag,
-    // Last-Modified, and any existing Cache-Control policy.  We then
-    // override only the fields specific to the Markdown representation.
+    // Start from all origin headers so we preserve unrelated metadata and
+    // any existing Cache-Control policy. We then remove validators/entity
+    // headers tied to the original HTML payload and override fields specific
+    // to the Markdown representation.
     const headers = new Headers(originResponse.headers)
-    // The body has been rewritten from HTML to Markdown, so any entity
-    // headers that describe the original payload are now stale and must
+    // The body has been rewritten from HTML to Markdown, so any headers
+    // that describe or validate the original payload are now stale and must
     // be removed to prevent clients / CDNs from mis-handling the response.
     headers.delete('Content-Length')
     headers.delete('Content-Encoding')
     headers.delete('Transfer-Encoding')
+    headers.delete('ETag')
+    headers.delete('Last-Modified')
     headers.set('Content-Type', 'text/markdown; charset=utf-8')
     headers.set('X-Markdown-Tokens', tokenEstimate)
     headers.set('Content-Signal', 'ai-train=yes, search=yes, ai-input=yes')

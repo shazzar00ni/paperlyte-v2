@@ -42,6 +42,11 @@ permissions:
 jobs:
   Analysis:
     runs-on: ubuntu-latest
+    # Expose the token as a job-level env so steps can gate on its presence.
+    # When SONAR_TOKEN is not configured the env var is an empty string and
+    # the analysis step is skipped rather than failing the whole workflow.
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
     steps:
       - name: Checkout repository
@@ -50,6 +55,13 @@ jobs:
           fetch-depth: 0  # Full history required for SonarCloud blame data and new-code detection
 
       - name: Analyze with SonarCloud
+        # Skip gracefully when the token or project identifiers are not
+        # configured (e.g., forks or repositories that haven't set up SonarCloud).
+        # Uses a job-level env variable so the empty-secret case can be detected
+        # in an `if` expression (secrets cannot be referenced directly in `if`).
+        if: env.SONAR_TOKEN != ''
+        id: sonar-analysis
+        continue-on-error: true
 
         # You can pin the exact commit or the version.
         # uses: SonarSource/sonarcloud-github-action@v2.2.0
@@ -63,3 +75,20 @@ jobs:
             -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
           # When you need the analysis to take place in a directory other than the one from which it was launched, default is .
           projectBaseDir: .
+
+      - name: SonarCloud Analysis Summary
+        if: always()
+        run: |
+          echo "## 🔬 SonarCloud Analysis" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.sonar-analysis.outcome }}" == "success" ]; then
+            echo "✅ **SonarCloud:** Analysis completed successfully" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ steps.sonar-analysis.outcome }}" == "skipped" ]; then
+            echo "⏭️ **SonarCloud:** Skipped — SONAR_TOKEN / project vars not configured" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "To enable: add \`SONAR_TOKEN\` secret and \`SONAR_PROJECT_KEY\` / \`SONAR_ORGANIZATION\` variables." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ **SonarCloud:** Analysis encountered an issue — check the step log above" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📊 View findings in the **Security** tab once configured." >> $GITHUB_STEP_SUMMARY

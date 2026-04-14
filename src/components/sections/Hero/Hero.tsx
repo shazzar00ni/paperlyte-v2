@@ -44,7 +44,6 @@ export const Hero = (): React.ReactElement => {
             <Button
               variant="secondary"
               size="large"
-              data-testid="hero-secondary-cta"
               onClick={() => scrollToSection('features')}
             >
               See How It Works

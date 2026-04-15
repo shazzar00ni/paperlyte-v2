@@ -70,6 +70,14 @@ export default defineConfig({
       '@constants': path.resolve(__dirname, './src/constants'),
       '@styles': path.resolve(__dirname, './src/styles'),
       '@utils': path.resolve(__dirname, './src/utils'),
+      // Resolve Deno-style npm: specifiers used by edge functions to local node_modules
+      'npm:turndown@7.1.2': 'turndown',
+      'npm:sanitize-html@2.13.1': 'sanitize-html',
+      // Stub the Netlify Edge Runtime type-only import (stripped at compile time)
+      'https://edge.netlify.com': path.resolve(
+        __dirname,
+        './netlify/edge-functions/__stubs__/edge-netlify.ts'
+      ),
     },
   },
 })

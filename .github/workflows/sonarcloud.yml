@@ -62,9 +62,10 @@ jobs:
         # unconfigured repositories), it resolves to an empty string and this step skips.
         if: env.SONAR_TOKEN != '' && vars.SONAR_PROJECT_KEY != '' && vars.SONAR_ORGANIZATION != ''
         id: sonar-analysis
-        # On main branch pushes, failures are blocking so regressions are caught.
-        # On PRs and other refs, transient scanner issues are tolerated.
-        continue-on-error: ${{ github.event_name == 'pull_request' }}
+        # Fail only on direct pushes to main (protects the merge gate).
+        # PRs, workflow_dispatch on feature branches, and scheduled runs are
+        # advisory so transient scanner issues do not block development.
+        continue-on-error: ${{ github.ref != 'refs/heads/main' }}
 
         # You can pin the exact commit or the version.
         # uses: SonarSource/sonarcloud-github-action@v2.2.0

@@ -449,6 +449,7 @@ describe('markdown-response edge function', () => {
 
       // Nav links stripped but main content preserved
       expect(body).toContain('Content')
+      expect(body).not.toContain('Home')
     })
 
     it('strips <header> and <footer> tags', async () => {
@@ -465,6 +466,8 @@ describe('markdown-response edge function', () => {
       const body = await result.text()
 
       expect(body).toContain('Body')
+      expect(body).not.toContain('Site Header')
+      expect(body).not.toContain('Footer')
     })
 
     it('strips disallowed attributes (e.g. onclick, onload)', async () => {
@@ -523,7 +526,10 @@ describe('markdown-response edge function', () => {
       expect(body).not.toContain('<script')
     })
 
-    it('removes <noscript> tags that survive sanitisation', async () => {
+    it('removes <noscript> tags and their children', async () => {
+      // sanitize-html's disallowedTagsMode:'discard' removes the <noscript>
+      // wrapper but would keep its ALLOWED_TAGS children (e.g. <p>Enable JS</p>).
+      // exclusiveFilter drops the entire subtree via DROP_WITH_CHILDREN.
       const req = makeRequest('https://example.com/', mdHeaders)
       const ctx = makeContext(htmlResponse('<noscript><p>Enable JS</p></noscript><p>Content</p>'))
 
@@ -531,6 +537,7 @@ describe('markdown-response edge function', () => {
       const body = await result.text()
 
       expect(body).not.toContain('<noscript')
+      expect(body).not.toContain('Enable JS')
       expect(body).toContain('Content')
     })
 

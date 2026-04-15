@@ -61,9 +61,22 @@ const EXCLUDED_PREFIXES: readonly string[] = [
 ]
 
 // Structural chrome tags whose entire subtree (tag + all descendants) should
-// be dropped so nav links, header text, and footer content do not bleed into
-// the Markdown output.  These must NOT appear in ALLOWED_TAGS.
-const DROP_WITH_CHILDREN: ReadonlySet<string> = new Set(['nav', 'header', 'footer', 'aside'])
+// be dropped so nav links, header text, footer content, and noscript fallback
+// text do not bleed into the Markdown output.
+//
+// IMPORTANT: sanitize-html's exclusiveFilter callback is ONLY invoked for tags
+// that appear in allowedTags.  Tags that are NOT in allowedTags are handled by
+// disallowedTagsMode:'discard', which removes the wrapper tag but KEEPS its
+// children — the opposite of what we want here.  Therefore these tags MUST
+// also appear in ALLOWED_TAGS so that exclusiveFilter can intercept them and
+// drop both the tag and all descendants.
+const DROP_WITH_CHILDREN: ReadonlySet<string> = new Set([
+  'nav',
+  'header',
+  'footer',
+  'aside',
+  'noscript',
+])
 
 // Turndown instance — initialised once at module scope because the
 // configuration and custom rules are static across all requests.
@@ -77,6 +90,12 @@ td.remove(['svg', 'canvas', 'template'])
 
 // Tags whose content Turndown can convert to useful Markdown.
 // Everything not in this list is discarded by sanitize-html.
+//
+// Note: 'nav', 'header', 'footer', 'aside', and 'noscript' are listed here
+// even though their subtrees are ultimately dropped by exclusiveFilter
+// (via DROP_WITH_CHILDREN).  They must be in allowedTags so that
+// exclusiveFilter is invoked for them; if omitted, disallowedTagsMode:'discard'
+// would strip the wrapper tag but silently pass children through to Markdown.
 const ALLOWED_TAGS: readonly string[] = [
   'h1',
   'h2',
@@ -130,6 +149,13 @@ const ALLOWED_TAGS: readonly string[] = [
   'summary',
   'figure',
   'figcaption',
+  // Structural chrome — listed here so exclusiveFilter can drop them WITH
+  // their children. See DROP_WITH_CHILDREN and its comment for the rationale.
+  'nav',
+  'header',
+  'footer',
+  'aside',
+  'noscript',
 ]
 
 /**
@@ -203,7 +229,8 @@ export default async function handler(request: Request, context: Context): Promi
     // sanitizeHtml IS the sanitizer: passing untrusted HTML to it is exactly
     // correct.  Static analysers that flag "untrusted HTML reaches sanitizeHtml"
     // as a sink are producing a false positive here.
-    const sanitized = sanitizeHtml(html, { // nosemgrep: javascript.lang.security.audit.xss.raw-html-concat
+    // nosemgrep: javascript.lang.security.audit.xss.raw-html-concat, javascript.lang.security.audit.xss.raw-html-in-node-js-method
+    const sanitized = sanitizeHtml(html, {
       allowedTags: ALLOWED_TAGS,
       allowedAttributes: {
         a: ['href', 'title'],

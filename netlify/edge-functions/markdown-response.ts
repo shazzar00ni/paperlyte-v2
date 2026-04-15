@@ -186,8 +186,20 @@ export default async function handler(request: Request, context: Context): Promi
   const acceptsMarkdown = (request.headers.get('Accept') ?? '').split(',').some((token) => {
     const [type, ...params] = token.trim().split(';')
     if (type.trim().toLowerCase() !== 'text/markdown') return false
-    const qParam = params.map((p) => p.trim()).find((p) => p.startsWith('q='))
-    return qParam === undefined || parseFloat(qParam.slice(2)) > 0
+    // RFC 7231 §5.3: parameter names are case-insensitive and optional
+    // whitespace is allowed around the '=' sign, so 'Q=0' and 'q = 0' are
+    // valid opt-outs that must be recognised.
+    const qParamValue = params
+      .map((p) => p.trim())
+      .map((p) => {
+        const eqIdx = p.indexOf('=')
+        if (eqIdx === -1) return undefined
+        const name = p.slice(0, eqIdx).trim().toLowerCase()
+        const value = p.slice(eqIdx + 1).trim()
+        return name === 'q' ? value : undefined
+      })
+      .find((value): value is string => value !== undefined)
+    return qParamValue === undefined || parseFloat(qParamValue) > 0
   })
   if (!acceptsMarkdown) {
     return context.next()
@@ -244,7 +256,7 @@ export default async function handler(request: Request, context: Context): Promi
         img: ['http', 'https'],
       },
       allowProtocolRelative: false,
-      // Discard disallowed elements and their children entirely.
+      // Remove disallowed tags while generally preserving their child content.
       disallowedTagsMode: 'discard',
       // Drop structural chrome together with ALL descendants so navigation
       // links and other UI chrome do not leak into the Markdown output.

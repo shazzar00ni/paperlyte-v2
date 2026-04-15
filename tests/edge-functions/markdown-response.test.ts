@@ -206,6 +206,30 @@ describe('markdown-response edge function', () => {
 
       expect(ctx.next).toHaveBeenCalledOnce()
     })
+
+    it('respects RFC 7231 case-insensitive q param: Q=0 is an opt-out', async () => {
+      // RFC 7231 §5.3: parameter names are case-insensitive
+      const req = makeRequest('https://example.com/', { Accept: 'text/markdown;Q=0' })
+      const ctx = makeContext(htmlResponse('<p>Page</p>'))
+
+      await handler(req, ctx)
+
+      expect(ctx.next).toHaveBeenCalledOnce()
+      const result = await ctx.next.mock.results[0].value
+      expect(result.headers.get('Content-Type')).not.toBe('text/markdown; charset=utf-8')
+    })
+
+    it('respects RFC 7231 whitespace around = in q param: q = 0 is an opt-out', async () => {
+      // RFC 7231 §5.3: optional whitespace is allowed around the '=' sign
+      const req = makeRequest('https://example.com/', { Accept: 'text/markdown; q = 0' })
+      const ctx = makeContext(htmlResponse('<p>Page</p>'))
+
+      await handler(req, ctx)
+
+      expect(ctx.next).toHaveBeenCalledOnce()
+      const result = await ctx.next.mock.results[0].value
+      expect(result.headers.get('Content-Type')).not.toBe('text/markdown; charset=utf-8')
+    })
   })
 
   // ── Excluded-path gating ──────────────────────────────────────────────────
@@ -438,7 +462,7 @@ describe('markdown-response edge function', () => {
       expect(body).not.toContain('evil.com')
     })
 
-    it('strips <nav> tags (not in ALLOWED_TAGS)', async () => {
+    it('strips <nav> tags via exclusiveFilter (DROP_WITH_CHILDREN)', async () => {
       const req = makeRequest('https://example.com/', mdHeaders)
       const ctx = makeContext(
         htmlResponse('<nav><a href="/">Home</a></nav><main><p>Content</p></main>')

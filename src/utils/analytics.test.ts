@@ -7,6 +7,7 @@ import {
   trackExternalLink,
   trackSocialClick,
   initScrollDepthTracking,
+  shouldRenderAnalytics,
   AnalyticsEvents,
 } from './analytics'
 
@@ -552,6 +553,76 @@ describe('Analytics Utility', () => {
       expect(rafSpy).toHaveBeenCalledTimes(2)
 
       cleanup()
+    })
+  })
+
+  describe('shouldRenderAnalytics', () => {
+    it('should return false in development environment', () => {
+      expect(shouldRenderAnalytics(false, 'paperlyte.com')).toBe(false)
+    })
+
+    it('should return true in production on a remote host', () => {
+      expect(shouldRenderAnalytics(true, 'paperlyte.com')).toBe(true)
+    })
+
+    it('should return false on localhost even in production', () => {
+      expect(shouldRenderAnalytics(true, 'localhost')).toBe(false)
+      expect(shouldRenderAnalytics(true, '127.0.0.1')).toBe(false)
+    })
+
+    it('should return false on private network IPs in production', () => {
+      expect(shouldRenderAnalytics(true, '10.0.0.1')).toBe(false)
+      expect(shouldRenderAnalytics(true, '192.168.1.1')).toBe(false)
+    })
+
+    it('should return false if window is undefined', () => {
+      const originalWindow = global.window
+      // @ts-expect-error - testing undefined window
+      delete global.window
+      expect(shouldRenderAnalytics(true, 'paperlyte.com')).toBe(false)
+      global.window = originalWindow
+    })
+
+    it('should hit default hostname when window is defined', () => {
+      // Stub hostname to something non-localhost
+      vi.stubGlobal('location', { hostname: 'paperlyte.com' })
+
+      // Calling with true for isProd but without second arg should hit the default hostname logic
+      // In jsdom, window is defined, so it should hit window.location.hostname
+      expect(shouldRenderAnalytics(true)).toBe(true)
+    })
+
+    it('should use default values from environment', () => {
+      // In tests, PROD is false, so it should be false
+      expect(shouldRenderAnalytics()).toBe(false)
+    })
+
+    it('should hit default hostname when window is undefined', () => {
+      const originalWindow = global.window
+      // @ts-expect-error - testing undefined window
+      delete global.window
+
+      // Calling without second argument should trigger the default value logic
+      // which uses ternary on window
+      expect(shouldRenderAnalytics(true)).toBe(false)
+
+      global.window = originalWindow
+    })
+  })
+
+  describe('Unsafe key blocking', () => {
+    it('should log warning in dev mode when unsafe key is blocked', () => {
+      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+      // Use a key that is rejected by isSafePropertyKey
+      trackEvent('test', { ['__proto__']: 'bad' })
+
+      expect(consoleSpy).toHaveBeenCalledWith(
+        '[Analytics] Blocked potentially unsafe property key:',
+        '__proto__'
+      )
+
+      consoleSpy.mockRestore()
     })
   })
 })

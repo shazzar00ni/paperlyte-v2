@@ -13,12 +13,18 @@ jobs:
     permissions:
       contents: read
       issues: write
-      id-token: write
+    env:
+      # Mapped here so steps can guard with `if: env.ANTHROPIC_API_KEY != ''`
+      # (job-level if: cannot reference secrets directly in GitHub Actions).
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 
     steps:
       - uses: anthropics/claude-code-action@6e2bd52842c65e914eba5c8badd17560bd26b5de # v1
+        # Skip gracefully if the secret is not configured rather than hard-failing.
+        if: env.ANTHROPIC_API_KEY != ''
         env:
           GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           prompt: |
@@ -50,7 +56,8 @@ jobs:
                - `priority: medium` — noticeable issue with a workaround
                - `priority: low` — minor polish, typo, nice-to-have
 
-            3. **Check for duplicates**: Search existing open issues for similar titles/content.
+            3. **Check for duplicates**: Use `gh issue list --search "<keywords>" --state open`
+               to find similar issues in this repo (repo-scoped, unlike `gh search issues`).
 
             4. **Apply labels** using `gh issue edit ${{ github.event.issue.number }} --add-label "..."`.
                Available labels to add: bug, feature-request, question, documentation,
@@ -64,4 +71,4 @@ jobs:
             Keep the tone friendly and welcoming.
 
           claude_args: |
-            --allowedTools "Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(gh search issues:*)"
+            --allowedTools "Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(gh issue list:*)"

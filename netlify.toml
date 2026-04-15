@@ -132,10 +132,15 @@
 # `Accept: text/markdown` and returns a token-efficient Markdown version of
 # each page instead of the full HTML.
 #
-# Edge functions run BEFORE Netlify redirects, so `path = "/*"` catches every
-# request — including unknown URLs that would otherwise hit the SPA catch-all
-# redirect — without interfering with normal browser traffic.  Non-content paths
-# (assets, API routes, etc.) are filtered inside the function via EXCLUDED_PREFIXES.
+# `path = "/*"` is intentional: it must cover ALL paths so that unknown URLs
+# that would otherwise hit the SPA catch-all redirect are also intercepted.
+# Registering on only specific routes (e.g. /, /privacy, /terms) would silently
+# return HTML for every other path even when the caller requests Markdown.
+#
+# Edge functions run BEFORE Netlify redirects, so `/*` works correctly without
+# interfering with normal browser traffic.  Non-content paths (assets, API
+# routes, etc.) are filtered inside the function via EXCLUDED_PREFIXES; only
+# GET requests with a non-zero-q `Accept: text/markdown` token are converted.
 #
 # To exclude a path: add its prefix to EXCLUDED_PREFIXES in markdown-response.ts.
 # To test locally:   netlify dev  →  curl -H "Accept: text/markdown" http://localhost:8888/

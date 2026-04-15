@@ -9,7 +9,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import type { Context } from './__stubs__/edge-netlify'
+import type { Context } from '../../netlify/edge-functions/__stubs__/edge-netlify'
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
@@ -45,7 +45,7 @@ function jsonResponse(body: string, status = 200): Response {
 
 // ── Import handler under test ───────────────────────────────────────────────
 
-import handler from './markdown-response'
+import handler from '../../netlify/edge-functions/markdown-response'
 
 // `handler` is imported once; the function under test is stateless so we do
 // not need to re-import it for every test case.
@@ -98,16 +98,20 @@ describe('markdown-response edge function', () => {
       expect(result.headers.get('Content-Type')).toBe('text/markdown; charset=utf-8')
     })
 
-    it('processes HEAD requests with Accept: text/markdown', async () => {
+    it('passes through HEAD requests unchanged (HEAD responses must not include a body)', async () => {
       const req = new Request('https://example.com/', {
         method: 'HEAD',
         headers: { Accept: 'text/markdown' },
       })
       const ctx = makeContext(htmlResponse('<p>Home</p>'))
 
-      const result = await handler(req, ctx)
+      await handler(req, ctx)
 
-      expect(result.headers.get('Content-Type')).toBe('text/markdown; charset=utf-8')
+      // HEAD responses must not include a message body, so the handler passes
+      // HEAD through unchanged rather than converting it to Markdown.
+      expect(ctx.next).toHaveBeenCalledOnce()
+      const result = await ctx.next.mock.results[0].value
+      expect(result.headers.get('Content-Type')).not.toBe('text/markdown; charset=utf-8')
     })
   })
 

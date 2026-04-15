@@ -17,10 +17,14 @@ jobs:
   auto-review:
     name: Auto Review
     runs-on: ubuntu-latest
-    # Skip draft PRs and fork PRs (secrets unavailable on fork pull_request events)
+    # Skip draft PRs, fork PRs (secrets unavailable), and first-time contributors /
+    # users with no prior interaction — those PRs are handled exclusively by
+    # claude-external-contributor.yml so they only receive one review.
     if: |
       !github.event.pull_request.head.repo.fork &&
-      github.event.pull_request.draft == false
+      github.event.pull_request.draft == false &&
+      github.event.pull_request.author_association != 'FIRST_TIME_CONTRIBUTOR' &&
+      github.event.pull_request.author_association != 'NONE'
     permissions:
       contents: read
       pull-requests: write
@@ -97,10 +101,13 @@ jobs:
   security-review:
     name: Security Review
     runs-on: ubuntu-latest
-    # Skip draft PRs and fork PRs (secrets unavailable on fork pull_request events)
+    # Skip draft PRs, fork PRs (secrets unavailable), and first-time contributors /
+    # users with no prior interaction — those PRs are handled by the onboarding workflow.
     if: |
       !github.event.pull_request.head.repo.fork &&
-      github.event.pull_request.draft == false
+      github.event.pull_request.draft == false &&
+      github.event.pull_request.author_association != 'FIRST_TIME_CONTRIBUTOR' &&
+      github.event.pull_request.author_association != 'NONE'
     permissions:
       contents: read
       pull-requests: write

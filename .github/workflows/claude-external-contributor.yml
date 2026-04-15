@@ -4,8 +4,11 @@ on:
   # pull_request_target runs in the base-repo context, so repository secrets
   # are available even when the PR comes from a fork. No untrusted code is
   # executed here (checkout removed), so this is safe.
+  # A maintainer must apply the 'safe-to-review' label before Claude runs —
+  # this is an explicit human gate that prevents untrusted fork code from
+  # influencing a privileged workflow context.
   pull_request_target:
-    types: [opened, synchronize, ready_for_review, reopened]
+    types: [opened, synchronize, ready_for_review, reopened, labeled]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
@@ -21,11 +24,12 @@ jobs:
     # first PR is still being reviewed (FIRST_TIME_CONTRIBUTOR). COLLABORATOR,
     # CONTRIBUTOR, MEMBER, and OWNER are all excluded — they're known contributors
     # who don't need the onboarding review.
-    # Fork guard removed — pull_request_target always has secrets regardless
-    # of fork status, and the checkout step has been omitted so no untrusted
-    # fork code runs in a privileged context.
+    # The 'safe-to-review' label acts as a human gate: a maintainer must apply
+    # it before Claude will process the PR, ensuring a human has verified the
+    # PR is safe before granting it access to a secrets-bearing workflow context.
     if: |
-      github.event.pull_request.draft == false && (
+      github.event.pull_request.draft == false &&
+      contains(github.event.pull_request.labels.*.name, 'safe-to-review') && (
         github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR' ||
         github.event.pull_request.author_association == 'NONE'
       )
@@ -38,8 +42,7 @@ jobs:
       - uses: anthropics/claude-code-action@6e2bd52842c65e914eba5c8badd17560bd26b5de # v1
         env:
           GH_TOKEN: ${{ github.token }}
-        env:
-          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           track_progress: true

@@ -142,7 +142,7 @@ describe('ci.yml – permission structure', () => {
   it('each job that has a permissions block should include at least "contents: read"', () => {
     // Regression guard: jobs with explicit permissions blocks must keep contents: read.
     // lint-and-typecheck and build rely on the workflow-level block instead.
-    const jobsWithExplicitPermissions = ['test', 'size-check', 'lighthouse', 'e2e', 'ci-success']
+    const jobsWithExplicitPermissions = ['test', 'size-check', 'lighthouse', 'e2e', 'add-to-project', 'ci-success']
     for (const jobId of jobsWithExplicitPermissions) {
       const block = assertJobExists(content, jobId, 'ci.yml')
       expect(
@@ -153,7 +153,12 @@ describe('ci.yml – permission structure', () => {
   })
 
   it('should trigger on pushes to main and develop branches', () => {
-    expect(content).toMatch(/branches:\s*\[main,\s*develop\]/)
+    // Match both inline ([main, develop]) and multi-line list forms so the
+    // test isn't coupled to a specific YAML formatting style.
+    const hasBranches =
+      /branches:\s*\[main,\s*develop\]/.test(content) ||
+      (/branches:/.test(content) && /- main/.test(content) && /- develop/.test(content))
+    expect(hasBranches).toBe(true)
   })
 
   it('should trigger on pull_request events targeting main and develop', () => {
@@ -290,6 +295,8 @@ describe('package-lock.json – picomatch dependency update', () => {
   it('picomatch should have a valid integrity hash', () => {
     expect(typeof entry.integrity).toBe('string')
     expect(entry.integrity).toContain('sha512-')
+  })
+
   it('picomatch should remain a devDependency', () => {
     expect(entry.dev).toBe(true)
   })

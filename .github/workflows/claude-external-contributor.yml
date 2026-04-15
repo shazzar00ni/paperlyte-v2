@@ -31,7 +31,6 @@ jobs:
       )
     permissions:
       pull-requests: write
-      id-token: write
 
     steps:
       # No checkout — Claude uses gh pr diff / gh pr view to inspect changes

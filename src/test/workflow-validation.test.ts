@@ -1,9 +1,9 @@
 /**
- * Tests for GitHub Actions workflow permission changes.
+ * Tests for GitHub Actions workflow permission configuration.
  *
- * This PR moved `permissions` from the workflow level to individual job level
- * in ci.yml and pr-quality-check.yml, following the principle of least privilege.
- * These tests verify that structure is correctly enforced.
+ * These tests verify the permission structure currently enforced in workflow
+ * files, including a workflow-level `permissions: contents: read` block and
+ * any required job-level permission checks.
  */
 
 import { readFileSync } from 'node:fs'

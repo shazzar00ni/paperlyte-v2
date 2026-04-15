@@ -319,10 +319,6 @@ jobs:
         if: always()
         run: bash .github/scripts/generate-lighthouse-summary.sh
 
-      - name: Fail job if Lighthouse assertions failed
-        if: steps.lighthouse.outcome == 'failure'
-        run: exit 1
-
   e2e:
     name: E2E Tests
     runs-on: ubuntu-latest

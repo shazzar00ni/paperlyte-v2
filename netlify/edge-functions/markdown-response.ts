@@ -203,8 +203,7 @@ export default async function handler(request: Request, context: Context): Promi
     // sanitizeHtml IS the sanitizer: passing untrusted HTML to it is exactly
     // correct.  Static analysers that flag "untrusted HTML reaches sanitizeHtml"
     // as a sink are producing a false positive here.
-    // nosemgrep: javascript.lang.security.audit.xss.raw-html-concat
-    const sanitized = sanitizeHtml(html, {
+    const sanitized = sanitizeHtml(html, { // nosemgrep: javascript.lang.security.audit.xss.raw-html-concat
       allowedTags: ALLOWED_TAGS,
       allowedAttributes: {
         a: ['href', 'title'],
@@ -290,6 +289,13 @@ export default async function handler(request: Request, context: Context): Promi
       ...(stack !== undefined ? { stack } : {}),
     })
     if (originResponse) return originResponse
-    return context.next()
+    // context.next() threw before any origin response was received; calling it
+    // again would double origin traffic and could throw a second unhandled error.
+    // Return a synthetic 502 so the caller gets a well-formed Response.
+    return new Response('Bad Gateway', {
+      status: 502,
+      statusText: 'Bad Gateway',
+      headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+    })
   }
 }

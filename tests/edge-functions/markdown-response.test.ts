@@ -21,8 +21,8 @@ function makeRequest(url: string, headers: Record<string, string> = {}): Request
 /** Build a mock Context whose next() returns the supplied Response. */
 function makeContext(response: Response): Context {
   return {
-    next: vi.fn().mockResolvedValue(response),
-  } as unknown as Context
+    next: vi.fn<Context['next']>().mockResolvedValue(response),
+  }
 }
 
 /** Build a plain HTML Response. */
@@ -513,7 +513,8 @@ describe('markdown-response edge function', () => {
 
     it('removes bare <script fragments with no closing bracket', async () => {
       const req = makeRequest('https://example.com/', mdHeaders)
-      // Simulate Turndown outputting a truncated tag literal
+      // sanitize-html strips malformed/partial script tags from the HTML tree
+      // before Turndown ever sees the input.
       const ctx = makeContext(htmlResponse('<p>Text</p><script'))
 
       const result = await handler(req, ctx)
@@ -699,8 +700,8 @@ describe('markdown-response edge function', () => {
       })
 
       const ctx: Context = {
-        next: vi.fn().mockResolvedValue(brokenResponse),
-      } as unknown as Context
+        next: vi.fn<Context['next']>().mockResolvedValue(brokenResponse),
+      }
 
       const result = await handler(req, ctx)
 
@@ -722,8 +723,8 @@ describe('markdown-response edge function', () => {
       })
 
       const ctx: Context = {
-        next: vi.fn().mockResolvedValue(brokenResponse),
-      } as unknown as Context
+        next: vi.fn<Context['next']>().mockResolvedValue(brokenResponse),
+      }
 
       await handler(req, ctx)
 
@@ -738,33 +739,28 @@ describe('markdown-response edge function', () => {
       })
     })
 
-    it('calls context.next() as ultimate fallback when no origin response exists', async () => {
+    it('returns 502 when context.next() throws before origin response is fetched', async () => {
       const req = makeRequest('https://example.com/', mdHeaders)
 
-      // context.next() throws, so originResponse is never assigned
-      const fallbackResponse = new Response('fallback', { status: 200 })
+      // context.next() throws, so originResponse is never assigned.
+      // The handler must not call context.next() again (double origin traffic);
+      // it returns a synthetic 502 instead.
       const ctx: Context = {
-        next: vi
-          .fn()
-          .mockRejectedValueOnce(new Error('network error'))
-          .mockResolvedValueOnce(fallbackResponse),
-      } as unknown as Context
+        next: vi.fn<Context['next']>().mockRejectedValueOnce(new Error('network error')),
+      }
 
       const result = await handler(req, ctx)
 
-      expect(result).toBe(fallbackResponse)
+      expect(result.status).toBe(502)
+      expect(ctx.next).toHaveBeenCalledOnce()
     })
 
     it('logs the error even when originResponse is undefined', async () => {
       const req = makeRequest('https://example.com/', mdHeaders)
 
-      const fallbackResponse = new Response('fallback', { status: 200 })
       const ctx: Context = {
-        next: vi
-          .fn()
-          .mockRejectedValueOnce(new Error('network error'))
-          .mockResolvedValueOnce(fallbackResponse),
-      } as unknown as Context
+        next: vi.fn<Context['next']>().mockRejectedValueOnce(new Error('network error')),
+      }
 
       await handler(req, ctx)
 

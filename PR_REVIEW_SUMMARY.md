@@ -7,28 +7,29 @@
 - **Status:** Critical — Action Required
 - **Summary:** An automated repository-wide audit of 251 unmerged branches confirms the following systemic regressions.
 
-| Regression Type                | Count | Severity    | Notes                                                                    |
-| :----------------------------- | :---- | :---------- | :----------------------------------------------------------------------- |
-| Orphan Branches                | 251   | 🔴 Critical | No common ancestor with `main`.                                          |
-| Missing `.npmrc`               | 93    | 🔴 Critical | Breaks dependency resolution.                                            |
-| Missing `docs/ROADMAP.md`      | 87    | 🟠 High     | Core project documentation.                                              |
-| Missing `gitVersionControl.md` | 102   | 🟠 High     | Core Git workflow documentation.                                         |
-| Missing `review.md`            | 102   | 🟡 Medium   | AI PR reviewer instructions.                                             |
-| Reverted Security Helpers      | 101   | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers.                      |
-| Unreadable navigation.ts       | 8     | 🔴 Critical | File missing or unreadable.                                              |
+| Regression Type                | Count | Severity    | Notes                                               |
+| :----------------------------- | :---- | :---------- | :-------------------------------------------------- |
+| Orphan Branches                | 251   | 🔴 Critical | No common ancestor with `main`.                     |
+| Missing `.npmrc`               | 93    | 🔴 Critical | Breaks dependency resolution.                       |
+| Missing `docs/ROADMAP.md`      | 87    | 🟠 High     | Core project documentation.                         |
+| Missing `gitVersionControl.md` | 102   | 🟠 High     | Core Git workflow documentation.                    |
+| Missing `review.md`            | 102   | 🟡 Medium   | AI PR reviewer instructions.                        |
+| Reverted Security Helpers      | 101   | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers. |
+| Unreadable navigation.ts       | 8     | 🔴 Critical | File missing or unreadable.                         |
 
 - **Action Required:** ALL affected branches MUST restore these critical files and security helpers.
-
 
 ### Qualitative Review: Priority Branches
 
 #### PR #661 (origin/claude/fix-issue-661-7gozH)
+
 - **Status:** Ready for Review (Critical files restored)
 - **Regressions Fixed:** Verified that `.npmrc`, `docs/ROADMAP.md`, `gitVersionControl.md`, and `review.md` are present.
 - **Security Helpers:** Verified `hasDangerousProtocol` and `isRelativeUrl` are present in `src/utils/navigation.ts`.
 - **Key Changes:** Includes updates to CI workflows, Lighthouse configuration, and Netlify configuration. Removed CircleCI badge from README.
 
 #### origin/claude/paperlyte-12-issue-fixes-1fvmr
+
 - **Status:** Ready for Review (Critical files restored)
 - **Regressions Fixed:** Verified that `.npmrc`, `docs/ROADMAP.md`, `gitVersionControl.md`, and `review.md` are present.
 - **Security Helpers:** Verified `hasDangerousProtocol` and `isRelativeUrl` are present in `src/utils/navigation.ts`.

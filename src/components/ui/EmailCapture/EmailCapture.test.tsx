@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { vi } from 'vitest'
 import { EmailCapture } from './EmailCapture'
@@ -230,9 +230,9 @@ describe('EmailCapture (ui)', () => {
 
       render(<EmailCapture />)
 
-      // Fill the hidden honeypot input directly (users never see it)
+      // Fill the hidden honeypot input directly — bypass pointer interaction since it's non-interactive
       const honeypot = document.querySelector<HTMLInputElement>('input[name="website"]')!
-      await user.type(honeypot, 'spambot')
+      fireEvent.change(honeypot, { target: { value: 'spambot' } })
 
       await user.type(screen.getByLabelText('Email address'), 'test@example.com')
       await user.click(screen.getByRole('checkbox'))

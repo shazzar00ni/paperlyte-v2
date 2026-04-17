@@ -152,6 +152,21 @@ describe('ErrorBoundary', () => {
     })
   })
 
+  describe('Max Retries Exceeded', () => {
+    it('should show "too many errors" message when retry count reaches max', () => {
+      render(
+        <ErrorBoundary maxRetries={1}>
+          <ThrowError shouldThrow={true} />
+        </ErrorBoundary>
+      )
+
+      expect(
+        screen.getByText('We keep hitting an error. Reload the page to start fresh.')
+      ).toBeInTheDocument()
+      expect(screen.queryByText('Try Again')).not.toBeInTheDocument()
+    })
+  })
+
   describe('Error Recovery', () => {
     it('should render "Try Again" button', () => {
       render(

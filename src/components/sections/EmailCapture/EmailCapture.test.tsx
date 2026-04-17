@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { describe, it, expect, vi, afterEach } from 'vitest'
+import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { EmailCapture } from './EmailCapture'
 import { WAITLIST_COUNT } from '@/constants/waitlist'
@@ -50,5 +50,45 @@ describe('EmailCapture Section', () => {
     render(<EmailCapture />)
     const emailInput = screen.getByPlaceholderText('your@email.com') as HTMLInputElement
     expect(emailInput.required).toBe(true)
+  })
+
+  describe('Error handling', () => {
+    afterEach(() => {
+      vi.restoreAllMocks()
+    })
+
+    it('shows a network error message when a network failure occurs', async () => {
+      // Use fireEvent to avoid userEvent's focus handling triggering jsdom's Selection
+      // setTimeout before the component's own setTimeout can be mocked
+      vi.spyOn(global, 'setTimeout').mockImplementationOnce(() => {
+        throw new Error('network request failed')
+      })
+
+      render(<EmailCapture />)
+      fireEvent.change(screen.getByPlaceholderText('your@email.com'), {
+        target: { value: 'test@example.com' },
+      })
+      fireEvent.submit(screen.getByPlaceholderText('your@email.com').closest('form')!)
+
+      await waitFor(() => {
+        expect(screen.getByRole('alert')).toHaveTextContent(/Connection error/i)
+      })
+    })
+
+    it('shows a validation error message when email is flagged as invalid', async () => {
+      vi.spyOn(global, 'setTimeout').mockImplementationOnce(() => {
+        throw new Error('invalid email address')
+      })
+
+      render(<EmailCapture />)
+      fireEvent.change(screen.getByPlaceholderText('your@email.com'), {
+        target: { value: 'test@example.com' },
+      })
+      fireEvent.submit(screen.getByPlaceholderText('your@email.com').closest('form')!)
+
+      await waitFor(() => {
+        expect(screen.getByRole('alert')).toHaveTextContent(/doesn't look right/i)
+      })
+    })
   })
 })

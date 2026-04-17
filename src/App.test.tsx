@@ -302,7 +302,7 @@ describe('App Integration', () => {
 
     it('should render Analytics component when shouldRenderAnalytics returns true', () => {
       vi.spyOn(analyticsUtils, 'shouldRenderAnalytics').mockReturnValue(true)
-      const { container } = render(<App />)
+      render(<App />)
 
       // When rendered, vercel analytics usually adds a script or some structure.
       // Since it might be mocked or no-op in test env, we are mainly testing the App.tsx branch.

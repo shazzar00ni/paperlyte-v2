@@ -57,7 +57,7 @@
   left: 50%;
   transform: translateX(-50%);
   background: var(--color-primary);
-  color: var(--color-white);
+  color: var(--color-text-on-primary);
   padding: 4px 16px;
   border-radius: var(--border-radius-full);
   font-size: var(--font-size-sm);

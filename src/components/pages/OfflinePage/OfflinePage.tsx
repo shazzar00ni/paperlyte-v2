@@ -76,9 +76,18 @@ export const OfflinePage: FC<OfflinePageProps> = ({
     } catch (error) {
       // Connection still not available (or timeout/abort)
       clearTimeout(timeoutId)
+      const originalError = error instanceof Error ? undefined : String(error)
+      const errorToLog =
+        error instanceof Error ? error : new Error(`Connectivity retry failed: ${originalError}`)
       logError(
-        error instanceof Error ? error : new Error('Connectivity retry failed'),
-        { tags: { action: 'connectivityRetry', page: 'OfflinePage' } },
+        errorToLog,
+        {
+          tags: {
+            action: 'connectivityRetry',
+            page: 'OfflinePage',
+            ...(originalError ? { originalError } : {}),
+          },
+        },
         'OfflinePage'
       )
     } finally {

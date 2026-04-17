@@ -153,9 +153,11 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
         }, 2000)
       } catch (err) {
         setError("Couldn't send your feedback. Copy your message and try again.")
-        logError(err instanceof Error ? err : new Error(String(err)), {
-          tags: { component: 'FeedbackWidget', action: 'submit' },
-        })
+        logError(
+          err instanceof Error ? err : new Error(String(err)),
+          { tags: { component: 'FeedbackWidget', action: 'submit' } },
+          'FeedbackWidget'
+        )
       } finally {
         setIsSubmitting(false)
       }

@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { Pricing } from './Pricing'
 import { PRICING_PLANS } from '@constants/pricing'
-import { escapeRegExp } from '@/utils/test/regexHelpers'
+import { escapeRegExp } from '@/utils/validation'
 
 describe('Pricing', () => {
   it('should render as a section with correct id', () => {
@@ -113,11 +113,6 @@ describe('Pricing', () => {
 
   it('should render checkmark icons for all features', () => {
     render(<Pricing />)
-
-    const checkmarks = screen.getAllByLabelText('Included')
-
-    // Count total features across all plans
-    const totalFeatures = PRICING_PLANS.reduce((sum, plan) => sum + plan.features.length, 0)
 
     // Find all checkmark icons by aria-label
     const checkmarks = screen.getAllByLabelText('Included')

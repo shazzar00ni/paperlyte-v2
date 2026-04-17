@@ -229,7 +229,7 @@ describe('ServerErrorPage', () => {
 
   describe('Icon Integration', () => {
     it('should render server icon in illustration', () => {
-      const { container } = render(<ServerErrorPage />)
+      render(<ServerErrorPage />)
 
       const main = screen.getByRole('main')
       const serverIcon = main.querySelector('svg')
@@ -237,10 +237,11 @@ describe('ServerErrorPage', () => {
     })
 
     it('should render warning icon in error badge', () => {
-      const { container } = render(<ServerErrorPage />)
+      render(<ServerErrorPage />)
 
       // Find the illustration container which has both server and warning icons
-      const illustration = container.querySelector('[aria-hidden="true"]')
+      const main = screen.getByRole('main')
+      const illustration = main.querySelector('[aria-hidden="true"]')
       expect(illustration).toBeInTheDocument()
 
       // Should have exactly 2 icons in illustration: server icon + warning icon

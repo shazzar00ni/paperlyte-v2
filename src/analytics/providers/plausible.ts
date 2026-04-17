@@ -45,10 +45,6 @@ export class PlausibleProvider implements AnalyticsProvider {
 
     // Load Plausible script asynchronously
     this.loadScript()
-
-    if (config.debug) {
-      console.log('[Analytics] Plausible initialized', config)
-    }
   }
 
   /**
@@ -172,10 +168,6 @@ export class PlausibleProvider implements AnalyticsProvider {
     window.plausible('pageview', {
       props: { path: pageUrl },
     })
-
-    if (this.config?.debug) {
-      console.log('[Analytics] Page view tracked:', pageUrl)
-    }
   }
 
   /**
@@ -210,10 +202,6 @@ export class PlausibleProvider implements AnalyticsProvider {
       : undefined
 
     window.plausible(event.name, props ? { props } : undefined)
-
-    if (this.config?.debug) {
-      console.log('[Analytics] Event tracked:', event.name, props)
-    }
   }
 
   /**
@@ -241,10 +229,6 @@ export class PlausibleProvider implements AnalyticsProvider {
         })
       }
     })
-
-    if (this.config?.debug) {
-      console.log('[Analytics] Core Web Vitals tracked:', vitals)
-    }
   }
 
   /**
@@ -264,7 +248,9 @@ export class PlausibleProvider implements AnalyticsProvider {
    * Removes the Plausible script and resets state
    */
   disable(): void {
-    const debug = this.config?.debug
+    if (this.config?.debug) {
+      console.log('[Analytics] Plausible disabled')
+    }
 
     this.initialized = false
     this.scriptLoaded = false
@@ -282,10 +268,6 @@ export class PlausibleProvider implements AnalyticsProvider {
     // Clean up window global
     if (typeof window !== 'undefined' && window.plausible) {
       delete window.plausible
-    }
-
-    if (debug) {
-      console.log('[Analytics] Plausible disabled')
     }
   }
 

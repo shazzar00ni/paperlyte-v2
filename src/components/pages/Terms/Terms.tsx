@@ -1,19 +1,17 @@
 import { Section } from '@components/layout/Section'
 import styles from './Terms.module.css'
 
+// Last updated date for the terms of service
+const LAST_UPDATED = 'March 7, 2026'
+
 /**
- * Terms of Service page component
- * Displays Paperlyte's terms of service and usage agreement
+ * Terms of Service page component.
+ * Displays Paperlyte's terms of service and usage agreement.
  *
- * Note: Update LAST_UPDATED constant whenever terms are modified
+ * Update `LAST_UPDATED` whenever terms are modified.
  *
  * @returns Terms of Service page JSX
  */
-
-// Last update date for the terms of service
-// TODO: Update this date whenever the terms are revised
-const LAST_UPDATED = 'December 13, 2024'
-
 export function Terms() {
   return (
     <>

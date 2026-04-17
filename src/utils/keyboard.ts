@@ -86,6 +86,9 @@ export function getFocusableElements(container: HTMLElement): HTMLElement[] {
     } else if (position & Node.DOCUMENT_POSITION_PRECEDING) {
       return 1 // b comes before a
     }
+    // Defensive return for edge cases (e.g., disconnected nodes).
+    // In practice, this branch is unreachable when sorting elements from querySelectorAll
+    // since all returned nodes are connected and have a defined document order.
     return 0
   })
 

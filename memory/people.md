@@ -10,4 +10,18 @@ This file tracks information about people involved in the project (contributors,
 
 ---
 
-<!-- Log people below -->
+## Contributors
+
+- **Name**: shazzar00ni
+- **Role**: Project owner / primary developer (GitHub account owner of the repo)
+- **Notes**: Runs sessions via Claude Code; uses Claude AI for feature development, security fixes (e.g., PR #738), and code review. Prefers concise communication.
+
+## Automated Contributors
+
+- **Name**: Dependabot
+- **Role**: Automated dependency updater
+- **Notes**: Active — regularly opens PRs for dependency bumps (React, Sentry, Playwright, esbuild, GitHub Actions). Most PRs merged without changes after CI passes.
+
+- **Name**: Claude (AI assistant)
+- **Role**: Development assistant
+- **Notes**: Contributes via Claude Code CLI. Has assisted with security vulnerability fixes (PR #738) and general feature development.

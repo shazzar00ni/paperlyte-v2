@@ -480,18 +480,12 @@ export function shouldRenderAnalytics(
   isProd = import.meta.env.PROD,
   currentHostname = typeof window !== 'undefined' ? window.location.hostname : ''
 ): boolean {
-  // Only render in production environment
-  if (!isProd) {
-    return false
-  }
+  // Check if we are in production
+  if (!isProd) return false
 
-  // Ensure window and location are available (SSR safety)
-  if (typeof window === 'undefined') {
-    return false
-  }
-
-  // Disable on localhost to prevent console noise during local Lighthouse runs
+  // Disable on localhost or if hostname is missing to prevent console noise during local runs
   const isLocalhost =
+    !currentHostname ||
     currentHostname === 'localhost' ||
     currentHostname === '127.0.0.1' ||
     currentHostname.startsWith('10.') ||

@@ -24,8 +24,6 @@ const scriptContent = readFileSync(join(currentDir, '../../public/theme-init.js'
 
 /** Execute the IIFE inside the current jsdom context. */
 function runScript() {
-  // eval is the only practical way to re-execute a non-module IIFE per-test.
-  // eslint-disable-next-line no-eval
   eval(scriptContent)
 }
 

@@ -38,8 +38,6 @@ jobs:
 
     steps:
       # No checkout — Claude uses gh pr diff / gh pr view to inspect changes
-      # via the GitHub API. Checking out fork code here would be unsafe.
-      - uses: anthropics/claude-code-action@6e2bd52842c65e914eba5c8badd17560bd26b5de # v1
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}

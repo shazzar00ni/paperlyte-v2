@@ -5,13 +5,19 @@
  * This script runs before React hydrates and applies the correct theme
  * to <html> so the page renders in the right theme immediately.
  *
- * Mirrors the logic in src/hooks/useTheme.ts:
+ * It follows the same overall precedence as src/hooks/useTheme.ts
+ * (explicit user preference first, otherwise system preference), but this
+ * bootstrap version is intentionally more defensive because it runs before
+ * the app has hydrated:
  * - Reads <meta name="allow-persistent-theme"> (set in index.html) to stay
  *   in sync with PERSISTENCE_CONFIG.ALLOW_PERSISTENT_THEME in config.ts.
  * - If persistence is allowed and the user has an explicit stored preference,
  *   that value is used.
+ * - localStorage access is wrapped defensively so startup still succeeds when
+ *   storage is unavailable.
  * - Otherwise falls back to the OS prefers-color-scheme media query.
- * - Defaults to 'light' only when both of the above are unavailable.
+ * - Defaults to 'light' only when matchMedia is unavailable or does not
+ *   report a dark preference.
  */
 ;(function () {
   // Reads the <meta name="allow-persistent-theme"> tag set in index.html,

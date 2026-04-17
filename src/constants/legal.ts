@@ -18,7 +18,7 @@ export interface CompanyConfig {
 
 /**
  * Centralised legal configuration for Paperlyte.
- * Update placeholder values (marked with `[…]`) before public launch.
+ * Update placeholder values (marked with `[...]`, e.g. `[Company Legal Name]`) before public launch.
  */
 export const LEGAL_CONFIG = {
   company: {

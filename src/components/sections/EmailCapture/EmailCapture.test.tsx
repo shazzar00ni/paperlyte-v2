@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { EmailCapture } from './EmailCapture'
 import { WAITLIST_COUNT } from '@/constants/waitlist'
@@ -153,10 +153,9 @@ describe('EmailCapture Section', () => {
   it('shows "Email address is required" error message for empty email via validateEmail', async () => {
     render(<EmailCapture />)
 
-    // Directly fire the form submit event to bypass HTML5 required check
+    // Use fireEvent.submit (act()-wrapped) to bypass HTML5 required constraint
     const form = screen.getByPlaceholderText('your@email.com').closest('form')!
-    // Dispatch a submit event directly (bypasses the required constraint)
-    form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }))
+    fireEvent.submit(form)
 
     await waitFor(() => {
       const alert = screen.queryByRole('alert')

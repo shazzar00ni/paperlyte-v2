@@ -19,11 +19,11 @@ The following branches/PRs are **blocked from merging** until they restore 4 del
 
 | Branch / PR | Missing Files |
 |---|---|
-| `origin/claude/implement-todo-item-2H9LP` | `.npmrc`, `docs/ROADMAP.md`, `gitVersionControl.md`, `review.md`, `navigation.ts` helpers |
+| `origin/claude/implement-todo-item-2H9LP` | `.npmrc`, `docs/ROADMAP.md`, `gitVersionControl.md`, `review.md`, `src/utils/navigation.ts` (restore helper functions) |
 | `origin/claude/core-editor-phase-1-PI3Yp` | same as above |
-| `origin/copilot/sub-pr-503` | `.npmrc`, `gitVersionControl.md`, `review.md`, `navigation.ts` helpers |
+| `origin/copilot/sub-pr-503` | `.npmrc`, `gitVersionControl.md`, `review.md`, `src/utils/navigation.ts` (restore helper functions) |
 | `origin/copilot/sub-pr-469-again` | same as sub-pr-503 |
-| `origin/claude/fix-peer-dependency-conflicts-Wj2iC` | `.npmrc`, `navigation.ts` helpers |
+| `origin/claude/fix-peer-dependency-conflicts-Wj2iC` | `.npmrc`, `src/utils/navigation.ts` (restore helper functions) |
 | PR #469, #488, #491, #502, #506 | `.npmrc`, `docs/ROADMAP.md`, `gitVersionControl.md`, `review.md` |
 
 Each branch must restore from `main`:

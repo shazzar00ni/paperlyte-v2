@@ -469,3 +469,33 @@ export function initScrollDepthTracking(): () => void {
     window.removeEventListener('scroll', throttledScroll)
   }
 }
+
+/**
+ * Determines if analytics should be rendered based on the environment and current host.
+ * This helper avoids console errors during local Lighthouse audits and development.
+ *
+ * @returns True if analytics should be rendered
+ */
+export function shouldRenderAnalytics(
+  isProd = import.meta.env.PROD,
+  currentHostname = typeof window !== 'undefined' ? window.location.hostname : ''
+): boolean {
+  // Only render in production environment
+  if (!isProd) {
+    return false
+  }
+
+  // Ensure window and location are available (SSR safety)
+  if (typeof window === 'undefined') {
+    return false
+  }
+
+  // Disable on localhost to prevent console noise during local Lighthouse runs
+  const isLocalhost =
+    currentHostname === 'localhost' ||
+    currentHostname === '127.0.0.1' ||
+    currentHostname.startsWith('10.') ||
+    currentHostname.startsWith('192.168.')
+
+  return !isLocalhost
+}

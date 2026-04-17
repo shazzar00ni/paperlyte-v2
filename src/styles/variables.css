@@ -70,7 +70,7 @@
   --color-background-secondary: var(--color-surface);
 
   /* Font Families */
-  --font-family-serif: 'Playfair Display', Georgia, serif;
+  --font-family-serif: 'Playfair Display', georgia, serif;
 
   /* Line Heights (additional) */
   --line-height-snug: 1.375;

@@ -170,11 +170,11 @@
   }
 
   .featureHeader {
-    min-width: 90px;
+    min-width: 5.625rem; /* 90px */
   }
 
   .competitorHeader {
-    min-width: 60px;
+    min-width: 5rem; /* 80px — prevents competitor names wrapping */
   }
 }
 

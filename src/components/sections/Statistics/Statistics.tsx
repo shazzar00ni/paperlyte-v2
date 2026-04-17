@@ -58,7 +58,7 @@ const statistics: StatisticItem[] = [
 /**
  * Props for the Statistics section component
  */
-export interface StatisticsProps extends Record<string, never> {}
+export type StatisticsProps = Record<string, never>
 
 /**
  * Statistics section displaying animated counters showcasing product metrics

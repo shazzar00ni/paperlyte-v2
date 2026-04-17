@@ -82,8 +82,10 @@ describe('Button', () => {
       </Button>
     )
 
-    const icon = screen.getByLabelText('Download icon')
-    expect(icon).toBeInTheDocument()
+    // FontAwesome renders SVG, not CSS classes
+    const svg = container.querySelector('svg')
+    expect(svg).toBeInTheDocument()
+    expect(svg).toHaveAttribute('aria-hidden', 'true')
   })
 
   it('should apply custom className', () => {

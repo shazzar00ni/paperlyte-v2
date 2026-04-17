@@ -1,6 +1,8 @@
 import { expect, afterEach } from 'vitest'
 import { cleanup } from '@testing-library/react'
 import * as matchers from '@testing-library/jest-dom/matchers'
+// Import icon library to initialize Font Awesome icons for tests
+import '@utils/iconLibrary'
 
 // Import FontAwesome icon library for tests
 import '@utils/iconLibrary'

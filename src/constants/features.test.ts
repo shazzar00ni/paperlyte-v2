@@ -7,7 +7,7 @@
 
 import { describe, it, expect } from 'vitest'
 import { FEATURES, type Feature } from './features'
-import { escapeRegExp } from '@/utils/validation'
+import { escapeRegExp } from '@/utils/test/regexHelpers'
 
 /**
  * Counts occurrences of words in a text using word boundary matching.

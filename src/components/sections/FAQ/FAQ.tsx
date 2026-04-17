@@ -18,6 +18,13 @@ interface FAQItemProps {
   delay: number
 }
 
+/**
+ * Individual FAQ item component with accordion functionality
+ * Supports keyboard navigation and animated expand/collapse
+ *
+ * @param props - FAQ item props
+ * @returns An animated accordion item for FAQ
+ */
 const FAQItemComponent = ({
   question,
   answer,
@@ -67,6 +74,7 @@ const FAQItemComponent = ({
   )
 }
 
+/** Renders the FAQ section with an accessible, keyboard-navigable accordion of common questions. */
 export const FAQ = (): React.ReactElement => {
   const [openItems, setOpenItems] = useState<Set<string>>(new Set())
   const [announcement, setAnnouncement] = useState('')
@@ -184,7 +192,9 @@ export const FAQ = (): React.ReactElement => {
             question={item.question}
             answer={item.answer}
             isOpen={openItems.has(item.id)}
-            onToggle={() => toggleItem(item.id)}
+            onToggle={() => {
+              toggleItem(item.id)
+            }}
             delay={150 + index * 50}
           />
         ))}

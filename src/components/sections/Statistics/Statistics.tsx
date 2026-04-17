@@ -69,7 +69,7 @@ export type StatisticsProps = Record<string, never>
  * - Staggered reveal animations for each stat card
  * - Fully accessible with proper ARIA labels
  */
-export const Statistics: React.FC<StatisticsProps> = (_: StatisticsProps) => {
+export const Statistics: React.FC<StatisticsProps> = () => {
   return (
     <Section id="statistics" className={styles.statistics} background="primary">
       <div className={styles.container}>

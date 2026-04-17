@@ -58,7 +58,7 @@ const statistics: StatisticItem[] = [
 /**
  * Props for the Statistics section component
  */
-export type StatisticsProps = Record<string, never>
+export interface StatisticsProps {}
 
 /**
  * Statistics section displaying animated counters showcasing product metrics
@@ -69,7 +69,7 @@ export type StatisticsProps = Record<string, never>
  * - Staggered reveal animations for each stat card
  * - Fully accessible with proper ARIA labels
  */
-export const Statistics = (): React.ReactElement => {
+export const Statistics: React.FC<StatisticsProps> = () => {
   return (
     <Section id="statistics" className={styles.statistics} background="primary">
       <div className={styles.container}>

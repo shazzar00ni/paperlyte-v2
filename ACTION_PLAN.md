@@ -107,6 +107,7 @@ Changes:
 1. Update `safeNavigate()` JSDoc — remove the "allows external HTTP/HTTPS" language; add
    "same-origin and relative URLs only" to the description
 2. Replace the body of `safeNavigate()` to reject non-same-origin URLs using a new helper:
+
    ```ts
    function isSameOriginUrl(url: string): boolean {
      try {
@@ -115,8 +116,11 @@ Changes:
      } catch { return false }
    }
    ```
+
    Then in `safeNavigate`: after `isSafeUrl` check, also reject if `!isSameOriginUrl(url) && !isRelativeUrl(url)`
+
 3. Add after `safeNavigate()`:
+
    ```ts
    export function safeNavigateExternal(url: string): boolean {
      if (typeof window === 'undefined') return false
@@ -150,6 +154,7 @@ Current state: plain object at lines 42–46; bracket-notation lookup at line 12
 Changes:
 
 - Lines 42–46: replace plain object with `Map<string, (t: number) => number>`:
+
   ```ts
   const easingFunctions = new Map<string, (t: number) => number>([
     ['linear', (t: number) => t],
@@ -157,11 +162,14 @@ Changes:
     ['easeOutExpo', (t: number) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t))],
   ])
   ```
+
 - Line 128: replace `easingFunctions[animEasing](progress)` with:
+
   ```ts
   const easingFn = easingFunctions.get(animEasing) ?? ((t: number) => t)
   const easedProgress = easingFn(progress)
   ```
+
   (update line 129 accordingly — `currentValue` uses `easedProgress`)
 
 ---
@@ -196,6 +204,7 @@ assume Codacy reads `.eslintrc.json` exclusively.
 ### 4. PR #279 — React Router Integration (if proceeding with Option A)
 
 If the decision is to complete routing:
+
 - `package.json`: add `react-router-dom`
 - `src/main.tsx`: wrap `<App />` in `<BrowserRouter>`
 - `src/App.tsx`: add `<Routes>` with `"/"` → landing page, `"/privacy"` → `<Privacy />`,

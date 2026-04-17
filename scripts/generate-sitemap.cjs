@@ -4,7 +4,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
+const { spawnSync } = require('child_process');
 
 // Base domain for sitemap URLs
 const DOMAIN = 'https://paperlyte.com';
@@ -32,25 +32,66 @@ const pages = [
 ];
 
 /**
+ * Resolve the absolute path to the git executable by checking known safe
+ * directories, or return null if none is found.
+ *
+ * @returns {string|null}
+ */
+function resolveGitExecutable() {
+  const candidates = [
+    '/usr/bin/git',
+    '/bin/git',
+    '/usr/local/bin/git',
+    '/opt/homebrew/bin/git',
+  ];
+  for (const candidate of candidates) {
+    try {
+      fs.accessSync(candidate, fs.constants.X_OK);
+      return candidate;
+    } catch {
+      // not found or not executable at this path
+    }
+  }
+  return null;
+}
+
+/**
  * Retrieve the last Git commit date for a file as `YYYY-MM-DD`.
  *
  * @param {string} filePath - Path to the file to inspect.
  * @returns {string|null} The commit date in `YYYY-MM-DD` format if available and valid, `null` otherwise.
  */
 function getLastGitCommitDate(filePath) {
-  try {
-    const date = execSync(
-      `git log -1 --format=%cs -- "${filePath}"`,
-      { encoding: 'utf8' }
-    ).trim();
-    // Validate YYYY-MM-DD
-    if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-      return date;
-    }
-    return null;
-  } catch {
+  const gitExe = resolveGitExecutable();
+
+  let executable;
+  let spawnEnv;
+
+  if (gitExe) {
+    // Use the absolute path; restrict PATH to only the directory that contains it.
+    executable = gitExe;
+    spawnEnv = { PATH: path.dirname(gitExe) };
+  } else {
+    // git not found in known safe locations — fail closed to avoid PATH-based lookup.
+    console.warn(
+      'Warning: git executable not found in known safe directories. ' +
+      'Skipping git lookup to avoid PATH-based command resolution; <lastmod> will be omitted.'
+    );
     return null;
   }
+
+  const result = spawnSync(
+    executable,
+    ['log', '-1', '--format=%cs', '--', filePath],
+    { encoding: 'utf8', env: spawnEnv }
+  );
+  if (result.status !== 0 || result.error) return null;
+  const date = result.stdout.trim();
+  // Validate YYYY-MM-DD
+  if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    return date;
+  }
+  return null;
 }
 
 /**
@@ -65,7 +106,7 @@ function buildSitemap(pages) {
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"',
     '        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"',
     '        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9',
-    '        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">',
+    '        https://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">',
     '',
   ];
   for (const page of pages) {

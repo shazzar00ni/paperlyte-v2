@@ -26,6 +26,7 @@ const COMPARISON_DATA: ComparisonItem[] = [
   },
 ]
 
+/** Renders the Problem section contrasting Paperlyte against overcomplicated competitor tools. */
 export const Problem = (): React.ReactElement => {
   return (
     <Section id="problem" background="surface">

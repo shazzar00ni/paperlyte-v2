@@ -42,6 +42,7 @@ permissions:
 jobs:
   Analysis:
     runs-on: ubuntu-latest
+    if: secrets.SONAR_TOKEN != ''
 
     steps:
       - name: Checkout repository
@@ -59,7 +60,7 @@ jobs:
         with:
           # Additional arguments for the SonarScanner CLI
           args: >
-            -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }}
-            -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
+            -Dsonar.projectKey=shazzar00ni_paperlyte-v2
+            -Dsonar.organization=shazzar00ni
           # When you need the analysis to take place in a directory other than the one from which it was launched, default is .
           projectBaseDir: .

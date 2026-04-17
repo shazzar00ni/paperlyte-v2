@@ -172,7 +172,8 @@ Changes:
 ```
 
 ESLint 9 ignores this file when `eslint.config.js` is present — no conflict for local dev.
-Codacy reads `.eslintrc.json` exclusively.
+This repo's current Codacy setup uses the `eslint-9` engine with `eslint.config.js`, so do not
+assume Codacy reads `.eslintrc.json` exclusively.
 
 ---
 

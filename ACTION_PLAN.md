@@ -15,23 +15,35 @@ Branch: `claude/pr-review-action-plan-Rl6dF`
 
 ### CRITICAL — Accidental File Deletions (2026-03-05)
 
-The following branches/PRs are **blocked from merging** until they restore 4 deleted files:
+The following branches/PRs are **blocked from merging** until they restore 4 deleted files and,
+where applicable, revert content changes to `src/utils/navigation.ts`:
 
-| Branch / PR | Missing Files |
-|---|---|
-| `origin/claude/implement-todo-item-2H9LP` | `.npmrc`, `docs/ROADMAP.md`, `gitVersionControl.md`, `review.md`, `src/utils/navigation.ts` (restore helper functions) |
-| `origin/claude/core-editor-phase-1-PI3Yp` | same as above |
-| `origin/copilot/sub-pr-503` | `.npmrc`, `gitVersionControl.md`, `review.md`, `src/utils/navigation.ts` (restore helper functions) |
-| `origin/copilot/sub-pr-469-again` | same as sub-pr-503 |
-| `origin/claude/fix-peer-dependency-conflicts-Wj2iC` | `.npmrc`, `src/utils/navigation.ts` (restore helper functions) |
-| PR #469, #488, #491, #502, #506 | `.npmrc`, `docs/ROADMAP.md`, `gitVersionControl.md`, `review.md` |
+**4 deleted files** (restore from `main`):
 
-Each branch must restore from `main`:
-- `.npmrc` → content: `legacy-peer-deps=true`
-- `docs/ROADMAP.md`
-- `gitVersionControl.md`
-- `review.md`
-- `src/utils/navigation.ts` — must contain `hasDangerousProtocol` and `isRelativeUrl` (both present at lines 28–69 on main)
+| Branch / PR | `.npmrc` | `docs/ROADMAP.md` | `gitVersionControl.md` | `review.md` |
+|---|:---:|:---:|:---:|:---:|
+| `origin/claude/implement-todo-item-2H9LP` | ✗ | ✗ | ✗ | ✗ |
+| `origin/claude/core-editor-phase-1-PI3Yp` | ✗ | ✗ | ✗ | ✗ |
+| `origin/copilot/sub-pr-503` | ✗ | — | ✗ | ✗ |
+| `origin/copilot/sub-pr-469-again` | ✗ | — | ✗ | ✗ |
+| `origin/claude/fix-peer-dependency-conflicts-Wj2iC` | ✗ | — | — | — |
+| PR #469, #488, #491, #502, #506 | ✗ | ✗ | ✗ | ✗ |
+
+- `.npmrc` → content must be exactly: `legacy-peer-deps=true`
+- `docs/ROADMAP.md`, `gitVersionControl.md`, `review.md` → restore verbatim from `main`
+
+**Separate content restoration** (file exists but helpers were reverted):
+
+| Branch / PR | `navigation.ts` helpers reverted |
+|---|:---:|
+| `origin/claude/implement-todo-item-2H9LP` | ✗ |
+| `origin/claude/core-editor-phase-1-PI3Yp` | ✗ |
+| `origin/copilot/sub-pr-503` | ✗ |
+| `origin/copilot/sub-pr-469-again` | ✗ |
+| `origin/claude/fix-peer-dependency-conflicts-Wj2iC` | ✗ |
+
+- `src/utils/navigation.ts` — the file is present but `hasDangerousProtocol` and `isRelativeUrl`
+  have been reverted; restore both helpers from `main` (lines 28–69)
 
 ---
 
@@ -86,10 +98,12 @@ Each branch must restore from `main`:
 
 Current state: `safeNavigate()` at lines 150–166 allows external HTTP/HTTPS. Its security note
 even warns this is not same-origin-only. PR #428's approval means:
+
 - `safeNavigate()` should be tightened to same-origin + relative URLs only
 - New `safeNavigateExternal(url: string): boolean` handles intentional external navigation
 
 Changes:
+
 1. Update `safeNavigate()` JSDoc — remove the "allows external HTTP/HTTPS" language; add
    "same-origin and relative URLs only" to the description
 2. Replace the body of `safeNavigate()` to reject non-same-origin URLs using a new helper:
@@ -120,6 +134,7 @@ Changes:
    ```
 
 Also update `src/utils/navigation.test.ts`:
+
 - Import `safeNavigateExternal`
 - Add `describe('safeNavigateExternal')` block testing: allows https://, allows http://, blocks
   javascript:, blocks data:, blocks relative paths, returns false in SSR, uses `window.open`
@@ -133,6 +148,7 @@ Also update `src/utils/navigation.test.ts`:
 Current state: plain object at lines 42–46; bracket-notation lookup at line 128.
 
 Changes:
+
 - Lines 42–46: replace plain object with `Map<string, (t: number) => number>`:
   ```ts
   const easingFunctions = new Map<string, (t: number) => number>([

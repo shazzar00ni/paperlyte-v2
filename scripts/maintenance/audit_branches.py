@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import subprocess
-import os
 import sys
 import re
 import signal
@@ -41,6 +40,15 @@ def run_command(args):
         return None
 
 def main():
+    """Audits all unmerged remote branches and prints a JSON report of blocked and ready branches.
+
+    Checks each branch for:
+    - Shared history with origin/main (orphan detection)
+    - Presence of critical project files (.npmrc, ROADMAP.md, etc.)
+    - Presence of required security helper exports in src/utils/navigation.ts
+
+    Outputs a JSON object to stdout with keys: total_branches, blocked, ready.
+    """
     # Get all remote unmerged branches relative to origin/main
     branches_raw = run_command(["git", "branch", "-r", "--no-merged", "origin/main"])
     if not branches_raw:

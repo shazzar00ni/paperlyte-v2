@@ -17,6 +17,14 @@ def run_command(args):
         return None
 
 def main():
+    """Reads audit_results.json and generates a Markdown daily summary in daily_summary.txt.
+
+    Also posts a warning comment to each blocked PR's GitHub thread (when the GitHub CLI
+    is available and the branch is associated with an open, non-cross-repository PR).
+    Aggregates regression counts by type and writes a formatted summary table.
+
+    Exits with status 1 if audit_results.json is not found.
+    """
     if not os.path.exists('audit_results.json'):
         print("Error: audit_results.json not found.", file=sys.stderr)
         sys.exit(1)

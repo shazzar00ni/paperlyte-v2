@@ -28,12 +28,16 @@ def main():
     pr_map = {}
     gh_cli = run_command(['which', 'gh'])
     if gh_cli:
-        pr_list_json = run_command(['gh', 'pr', 'list', '--state', 'open', '--limit', '1000', '--json', 'number,headRefName'])
+        pr_list_json = run_command([
+            'gh', 'pr', 'list', '--state', 'open', '--limit', '1000',
+            '--json', 'number,headRefName,isCrossRepository'
+        ])
         if pr_list_json:
             try:
                 prs = json.loads(pr_list_json)
                 for pr in prs:
-                    pr_map[pr['headRefName']] = pr['number']
+                    if not pr.get('isCrossRepository', False):
+                        pr_map[pr['headRefName']] = pr['number']
             except json.JSONDecodeError:
                 pass
 

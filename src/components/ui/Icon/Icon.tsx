@@ -27,6 +27,12 @@ const SIZE_MAP = {
   '3x': 48,
 } as const
 
+function getIconPrefix(variant: IconProps['variant'], convertedName: string): IconPrefix {
+  if (variant === 'brands' || isBrandIcon(convertedName)) return 'fab'
+  if (variant === 'regular') return 'far'
+  return 'fas'
+}
+
 /**
  * Icon component that renders both custom SVG icons and Font Awesome icons
  * Falls back to FontAwesome if the icon is not found in custom iconPaths
@@ -140,14 +146,7 @@ export const Icon = ({
   }
 
   // Determine prefix based on variant or by checking if it's a brand icon
-  let prefix: IconPrefix
-  if (variant === 'brands' || isBrandIcon(convertedName)) {
-    prefix = 'fab'
-  } else if (variant === 'regular') {
-    prefix = 'far'
-  } else {
-    prefix = 'fas'
-  }
+  const prefix = getIconPrefix(variant, convertedName)
 
   // Try to find the icon definition in the library
   // Runtime validation: Check if convertedName is a valid IconName before assertion
@@ -168,10 +167,12 @@ export const Icon = ({
   }
 
   // Icon not found in library — return a placeholder
-  console.warn(
-    `Icon "${name}" (converted to "${convertedName}") not found in Font Awesome library. ` +
-      `Rendering empty/decorative fallback span.`
-  )
+  if (import.meta.env.DEV) {
+    console.warn(
+      `Icon "${name}" (converted to "${convertedName}") not found in Font Awesome library. ` +
+        `Rendering empty/decorative fallback span.`
+    )
+  }
   return (
     <span {...commonIconProps} title={`Icon "${name}" not found`}>
       ?

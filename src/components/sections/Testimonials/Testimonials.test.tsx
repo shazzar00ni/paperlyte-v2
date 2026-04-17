@@ -17,25 +17,34 @@ describe('Testimonials', () => {
     expect(screen.getByText('What people are saying')).toBeInTheDocument()
   })
 
-  it('should render the testimonial quote', () => {
+  it.each(['light', 'dark'])('should render the testimonial quote in %s theme', (theme) => {
+    document.documentElement.dataset.theme = theme
     render(<Testimonials />)
 
-    // Should render at least one testimonial quote (Marcus Johnson's quote)
-    expect(screen.getByText(/I've tried every note app out there/i)).toBeInTheDocument()
+    // Should render the first testimonial quote (Sarah Chen's, index 0)
+    expect(screen.getByText(/Paperlyte transformed how I capture ideas/i)).toBeInTheDocument()
+
+    delete document.documentElement.dataset.theme
   })
 
-  it('should render placeholder author name', () => {
+  it.each(['light', 'dark'])('should render placeholder author name in %s theme', (theme) => {
+    document.documentElement.dataset.theme = theme
     render(<Testimonials />)
 
-    // Should render Marcus Johnson's name (from testimonial-2)
-    expect(screen.getByText('Marcus Johnson')).toBeInTheDocument()
+    // Should render Sarah Chen's name (testimonial-1, index 0)
+    expect(screen.getByText('Sarah Chen')).toBeInTheDocument()
+
+    delete document.documentElement.dataset.theme
   })
 
-  it('should render placeholder author role', () => {
+  it.each(['light', 'dark'])('should render placeholder author role in %s theme', (theme) => {
+    document.documentElement.dataset.theme = theme
     render(<Testimonials />)
 
-    // Should render Marcus Johnson's role
-    expect(screen.getByText('Freelance Writer')).toBeInTheDocument()
+    // Should render Sarah Chen's role (displayed as "Product Manager • TechCorp")
+    expect(screen.getByText(/Product Manager/)).toBeInTheDocument()
+
+    delete document.documentElement.dataset.theme
   })
 
   it('should render note about beta testimonials', () => {

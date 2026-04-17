@@ -76,7 +76,7 @@ async function generateMockup(sourceName, width, height, format, options) {
     if (!isPathSafe(mockupsDir, outputName)) {
       throw new Error(`Invalid output path: ${outputName}. Path traversal detected.`)
     }
-    
+
     const outputPath = join(mockupsDir, outputName)
 
     // Verify source file exists

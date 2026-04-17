@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef, type FormEvent } from 'react'
 import { Icon } from '@components/ui/Icon'
 import { Button } from '@components/ui/Button'
 import { handleArrowNavigation, getFocusableElements } from '@utils/keyboard'
+import { logError } from '@utils/monitoring'
 import styles from './FeedbackWidget.module.css'
 
 type FeedbackType = 'bug' | 'feature'
@@ -123,15 +124,23 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
           try {
             localStorage.setItem('paperlyte_feedback', JSON.stringify(feedbackArray))
           } catch (storageError) {
-            // Provide a clearer message for storage-related issues
-            console.error('LocalStorage error:', storageError)
+            // Log via centralized monitoring before throwing
+            logError(
+              storageError instanceof Error ? storageError : new Error(String(storageError)),
+              {
+                severity: 'medium',
+                tags: { module: 'FeedbackWidget', action: 'saveFeedback' },
+                errorInfo: { note: 'local storage failure' },
+              },
+              'FeedbackWidget'
+            )
             throw new Error(
               `Unable to save feedback locally. Your browser storage may be full or disabled. ${
                 storageError instanceof Error ? storageError.message : String(storageError)
-              }`
+              }`,
+              { cause: storageError }
             )
           }
-          console.log('Feedback submitted:', feedbackEntry)
         }
 
         // Show confirmation
@@ -191,7 +200,9 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
 
     typeSelector.addEventListener('keydown', handleArrowKeys)
 
-    return () => typeSelector.removeEventListener('keydown', handleArrowKeys)
+    return () => {
+      typeSelector.removeEventListener('keydown', handleArrowKeys)
+    }
   }, [isOpen])
 
   // Focus trap - prevent tabbing out of modal
@@ -304,7 +315,9 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
                   <button
                     type="button"
                     className={`${styles.typeButton} ${feedbackType === 'bug' ? styles.typeButtonActive : ''}`}
-                    onClick={() => setFeedbackType('bug')}
+                    onClick={() => {
+                      setFeedbackType('bug')
+                    }}
                     aria-pressed={feedbackType === 'bug'}
                   >
                     <Icon name="fa-bug" size="lg" />
@@ -313,7 +326,9 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
                   <button
                     type="button"
                     className={`${styles.typeButton} ${feedbackType === 'feature' ? styles.typeButtonActive : ''}`}
-                    onClick={() => setFeedbackType('feature')}
+                    onClick={() => {
+                      setFeedbackType('feature')
+                    }}
                     aria-pressed={feedbackType === 'feature'}
                   >
                     <Icon name="fa-lightbulb" size="lg" />
@@ -332,7 +347,9 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
                     id="feedback-message"
                     className={styles.textarea}
                     value={message}
-                    onChange={(e) => setMessage(e.target.value)}
+                    onChange={(e) => {
+                      setMessage(e.target.value)
+                    }}
                     placeholder={
                       feedbackType === 'bug'
                         ? 'Please provide details about the bug...'

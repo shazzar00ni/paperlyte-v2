@@ -8,9 +8,13 @@ Lightning-fast, distraction-free note-taking application landing page built with
 
 ![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/shazzar00ni/paperlyte-v2?utm_source=oss&utm_medium=github&utm_campaign=shazzar00ni%2Fpaperlyte-v2&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
 
+[![Claude Code](https://github.com/shazzar00ni/paperlyte-v2/actions/workflows/claude.yml/badge.svg)](https://github.com/shazzar00ni/paperlyte-v2/actions/workflows/claude.yml)
+
 [![PR Quality Check](https://github.com/shazzar00ni/paperlyte-v2/actions/workflows/pr-quality-check.yml/badge.svg)](https://github.com/shazzar00ni/paperlyte-v2/actions/workflows/pr-quality-check.yml)
 
 [![codecov](https://codecov.io/github/shazzar00ni/paperlyte-v2/graph/badge.svg?token=yQtvXFB0KF)](https://codecov.io/github/shazzar00ni/paperlyte-v2)
+
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/shazzar00ni/paperlyte-v2/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/shazzar00ni/paperlyte-v2/tree/main)
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![React](https://img.shields.io/badge/React-19.2.0-blue)

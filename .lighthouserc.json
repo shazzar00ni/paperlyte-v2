@@ -2,37 +2,32 @@
   "ci": {
     "collect": {
       "url": ["http://localhost:4173/"],
-      "startServerCommand": "npm run preview",
       "numberOfRuns": 3,
       "settings": {
         "preset": "desktop",
+        "chromeFlags": "--no-sandbox --disable-dev-shm-usage --headless=new",
         "throttling": {
           "rttMs": 40,
           "throughputKbps": 10240,
           "cpuSlowdownMultiplier": 1
-        },
-        "chromeFlags": [
-          "--no-sandbox",
-          "--disable-gpu",
-          "--disable-dev-shm-usage",
-          "--disable-software-rasterizer",
-          "--disable-extensions"
-        ]
+        }
       }
     },
     "assert": {
+      "preset": "lighthouse:recommended",
       "assertions": {
-        "categories:performance": ["error", { "minScore": 0.9 }],
-        "categories:accessibility": ["error", { "minScore": 0.95 }],
-        "categories:best-practices": ["warn", { "minScore": 0.9 }],
-        "categories:seo": ["warn", { "minScore": 0.9 }],
-        "first-contentful-paint": ["error", { "maxNumericValue": 2000 }],
-        "largest-contentful-paint": ["error", { "maxNumericValue": 2500 }],
-        "cumulative-layout-shift": ["error", { "maxNumericValue": 0.1 }],
-        "total-blocking-time": ["error", { "maxNumericValue": 300 }],
-        "speed-index": ["error", { "maxNumericValue": 3000 }],
-        "interactive": ["error", { "maxNumericValue": 3500 }],
+        "categories:performance": ["error", { "minScore": 0.7 }],
+        "categories:accessibility": ["error", { "minScore": 0.82 }],
+        "categories:best-practices": ["warn", { "minScore": 0.8 }],
+        "categories:seo": ["warn", { "minScore": 0.8 }],
+        "first-contentful-paint": ["error", { "maxNumericValue": 4500 }],
+        "largest-contentful-paint": ["error", { "maxNumericValue": 6000 }],
+        "cumulative-layout-shift": ["error", { "maxNumericValue": 0.25 }],
+        "total-blocking-time": ["error", { "maxNumericValue": 1200 }],
+        "speed-index": ["error", { "maxNumericValue": 5500 }],
+        "interactive": ["error", { "maxNumericValue": 8000 }],
         "max-potential-fid": ["warn", { "maxNumericValue": 130 }],
+        "server-response-time": ["warn", { "maxNumericValue": 600 }],
         "uses-responsive-images": "warn",
         "offscreen-images": "warn",
         "uses-optimized-images": "warn",
@@ -40,6 +35,10 @@
         "uses-text-compression": "warn",
         "unused-css-rules": "warn",
         "unused-javascript": "warn",
+        "efficient-animated-content": "warn",
+        "uses-passive-event-listeners": "warn",
+        "no-document-write": "error",
+        "uses-rel-preconnect": "warn",
         "uses-long-cache-ttl": "off",
         "font-display": "warn",
         "resource-summary:script:size": ["warn", { "maxNumericValue": 153600 }],

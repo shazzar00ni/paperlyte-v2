@@ -6,6 +6,9 @@ import styles from './Comparison.module.css'
 
 /**
  * Renders a checkmark, X, or text value for a comparison cell
+ * @param props - Cell props
+ * @param props.value - Boolean for check/x or string for text value
+ * @returns Icon or text element
  */
 const ComparisonCell = ({ value }: { value: boolean | string }): React.ReactElement => {
   if (typeof value === 'boolean') {
@@ -20,16 +23,28 @@ const ComparisonCell = ({ value }: { value: boolean | string }): React.ReactElem
   return <span className={styles.textValue}>{value}</span>
 }
 
+/**
+ * Comparison section component that shows feature comparison table
+ * Compares Paperlyte against competitor note-taking applications
+ * Uses responsive table with horizontal scroll on mobile
+ *
+ * @returns A comparison section with feature matrix table
+ *
+ * @example
+ * ```tsx
+ * <Comparison />
+ * ```
+ */
 export const Comparison = (): React.ReactElement => {
   return (
     <Section id="comparison" background="default">
       <div className={styles.header}>
         <AnimatedElement animation="fadeIn">
-          <h2 className={styles.title}>How we stack up</h2>
+          <h2 className={styles.title}>See How We Compare</h2>
         </AnimatedElement>
         <AnimatedElement animation="fadeIn" delay={100}>
           <p className={styles.subtitle}>
-            No marketing spin. Here's how Paperlyte compares to the tools you already know.
+            We believe in transparency. Here's how Paperlyte stacks up against the competition.
           </p>
         </AnimatedElement>
       </div>

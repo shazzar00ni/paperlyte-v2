@@ -1,0 +1,61 @@
+Type,Title,Last Visited,Host
+Pull Request,Daily PR Review Summary - 2026-02-08,2026-02-08T12:01:14Z,github.com
+Pull Request,Fix PR #275 and #279 missing entries in 2026-02-07 review section,2026-02-08T05:08:08Z,github.com
+Pull Request,docs: add missing PR #275 and #279 entries to 2026-02-07 review section,2026-02-07T15:37:16Z,github.com
+Pull Request,Fix PR #107 duplication and add missing PRs #275 and #279 to 2026-02-07 section,2026-02-07T15:39:44Z,github.com
+Pull Request,Fix chronological ordering of date sections in PR_REVIEW_SUMMARY.md,2026-02-07T15:36:31Z,github.com
+Pull Request,Fix markdown formatting for configuration key in PR #388 heading,2026-02-07T15:35:07Z,github.com
+Pull Request,Daily PR Review Summary - 2026-02-07,2026-02-07T15:37:17Z,github.com
+Pull Request,Daily PR Review Summary - 2026-02-06,2026-02-07T15:31:59Z,github.com
+Pull Request,Fix open redirect vulnerability in safeNavigate() (Alert #2305),2026-02-07T20:20:23Z,github.com
+Pull Request,Configure Claude Code GitHub Action,2026-02-06T03:25:27Z,github.com
+Pull Request,Fix Prettier formatting failures in security PR files,2026-02-06T02:38:50Z,github.com
+Pull Request,Add legacy ESLint config for Codacy compatibility,2026-02-06T02:33:24Z,github.com
+Pull Request,Fix open redirect and command injection vulnerabilities,2026-02-06T02:40:27Z,github.com
+Pull Request,Fix SARIF validation errors in merge-sarif-runs.sh,2026-02-06T02:27:01Z,github.com
+Pull Request,Update type definitions to latest versions,2026-02-05T17:05:04Z,github.com
+Pull Request,Consolidate duplicate PR entries in review summary,2026-02-05T16:51:43Z,github.com
+Pull Request,Daily PR Review Summary - 2026-02-05,2026-02-05T16:51:36Z,github.com
+Pull Request,Set up Vercel Web Analytics integration,2026-02-05T16:46:23Z,github.com
+Pull Request,Add Vercel Analytics integration to track user interactions,2026-02-05T05:06:48Z,github.com
+Pull Request,Daily PR Review Summary - 2026-02-04,2026-02-05T16:48:24Z,github.com
+Pull Request,Clarify PR description - no temporary file cleanup occurred,2026-02-04T12:00:07Z,github.com
+Pull Request,docs: fix outdated title in PR_REVIEW_SUMMARY.md,2026-02-04T11:59:54Z,github.com
+Pull Request,Update PR description to reflect actual icon library changes,2026-02-04T05:09:23Z,github.com
+Pull Request,Integrate icon library test error handling with Vitest assertion framework,2026-02-04T15:49:21Z,github.com
+Pull Request,Fix Prettier formatting for iconLibrary test error message,2026-02-04T05:04:19Z,github.com
+Pull Request,Suppress scss_function-disallowed-list false positive for CSS files,2026-02-06T03:20:24Z,github.com
+Pull Request,Improve test coverage for analytics.ts and keyboard.ts,2026-02-05T17:19:59Z,github.com
+Pull Request,fix(ci): ensure ESLint SARIF file always exists for code scanning,2026-02-05T17:06:08Z,github.com
+Pull Request,Add copilot-setup-steps.yml workflow,2026-02-03T20:35:04Z,github.com
+Pull Request,Remove backticks from PR #107 heading for formatting consistency,2026-02-03T19:33:00Z,github.com
+Commit,Merge pull request #429 from shazzar00ni/daily-pr-review-2026-02-06-15857342910748546162,2026-02-07T15:30:36Z,github.com
+Commit,Update PR_REVIEW_SUMMARY.md,2026-02-07T15:30:01Z,github.com
+Commit,docs: update PR review summary for 2026-02-06,2026-02-06T10:30:22Z,github.com
+Commit,Merge pull request #411 from shazzar00ni/copilot/fix-scss-function-rule,2026-02-06T02:28:26Z,github.com
+Commit,Merge pull request #423 from shazzar00ni/copilot/reconfigure-analysis-file-uploads,2026-02-06T02:26:59Z,github.com
+Commit,Sync package.json and package-lock.json from main branch,2026-02-05T21:01:30Z,github.com
+Commit,Merge pull request #405 from shazzar00ni/copilot/setup-codecov-integration,2026-02-05T17:20:35Z,github.com
+Commit,Merge pull request #410 from shazzar00ni/copilot/fix-code-coverage-analytics,2026-02-05T17:18:38Z,github.com
+Commit,Add defensive comment explaining uncoverable line 89 in keyboard.ts,2026-02-05T17:13:09Z,github.com
+Commit,Address PR review comments: fix test comments and cleanup,2026-02-05T17:09:53Z,github.com
+Commit,Update src/utils/analytics.test.ts,2026-02-05T17:08:17Z,github.com
+Commit,Merge pull request #409 from shazzar00ni/copilot/fix-eslint-configuration-error,2026-02-05T17:06:06Z,github.com
+Commit,Fix SARIF validation errors in merge-sarif-runs.sh,2026-02-05T17:03:28Z,github.com
+Commit,Initial plan,2026-02-05T16:58:46Z,github.com
+Commit,Update .github/workflows/eslint.yml,2026-02-05T16:49:12Z,github.com
+Commit,Update .github/workflows/eslint.yml,2026-02-05T16:49:01Z,github.com
+Commit,Merge pull request #418 from shazzar00ni/claude/setup-vercel-analytics-ofOpz,2026-02-05T05:05:41Z,github.com
+Commit,Add @vercel/analytics dependency to package.json,2026-02-05T05:04:42Z,github.com
+Commit,Update CSP to allow Vercel Analytics domains,2026-02-05T05:00:22Z,github.com
+Commit,Update package.json,2026-02-05T04:58:29Z,github.com
+Commit,Merge pull request #384 from shazzar00ni/claude/fix-header-keyboard-tests-FJzuZ,2026-02-04T15:50:26Z,github.com
+Commit,Add Vercel Analytics for privacy-friendly web analytics,2026-02-04T15:49:41Z,github.com
+Commit,Merge pull request #413 from shazzar00ni/copilot/sub-pr-384-again,2026-02-04T15:49:18Z,github.com
+Commit,Merge pull request #400 from shazzar00ni/jules/pr-review-summary-2026-02-03-8313316493899821801,2026-02-04T12:00:43Z,github.com
+Commit,Merge branch 'main' into jules/pr-review-summary-2026-02-03-8313316493899821801,2026-02-04T12:00:37Z,github.com
+Commit,Merge pull request #416 from shazzar00ni/copilot/sub-pr-400-another-one,2026-02-04T12:00:05Z,github.com
+Commit,Merge pull request #415 from shazzar00ni/copilot/sub-pr-400,2026-02-04T11:58:54Z,github.com
+Commit,chore: remove temporary merge marker file,2026-02-04T05:15:42Z,github.com
+Commit,chore: mark merge as complete,2026-02-04T05:15:28Z,github.com
+Commit,Merge remote-tracking branch 'origin/claude/fix-header-keyboard-tests-FJzuZ' into copilot/sub-pr-384-again,2026-02-04T05:15:13Z,github.com

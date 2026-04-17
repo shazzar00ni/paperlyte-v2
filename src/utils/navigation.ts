@@ -17,6 +17,75 @@ export function scrollToSection(sectionId: string): void {
 }
 
 /**
+ * Pattern matching dangerous protocols (javascript:, data:, vbscript:, file:, about:).
+ */
+const DANGEROUS_PROTOCOL_PATTERN = /^(javascript|data|vbscript|file|about):/i
+
+/**
+ * Checks whether a URL string contains a dangerous protocol, accounting for
+ * whitespace obfuscation and percent-encoding.
+ */
+export function hasDangerousProtocol(url: string): boolean {
+  // Direct check
+  if (DANGEROUS_PROTOCOL_PATTERN.test(url)) {
+    return true
+  }
+
+  // Check after stripping whitespace (catches "javascript :alert(1)")
+  if (DANGEROUS_PROTOCOL_PATTERN.test(url.replace(/\s/g, ''))) {
+    return true
+  }
+
+  // Check for percent-encoded protocol before the first colon
+  const colonIndex = url.indexOf(':')
+  if (colonIndex > 0 && /%[0-9a-f]{2}/i.test(url.substring(0, colonIndex))) {
+    try {
+      if (DANGEROUS_PROTOCOL_PATTERN.test(decodeURIComponent(url))) {
+        return true
+      }
+    } catch {
+      // Malformed encoding is suspicious — treat as dangerous
+      return true
+    }
+  }
+
+  return false
+}
+
+/**
+ * Checks whether a URL is a safe relative path (/, ./, or ../ prefixed)
+ * without embedded protocol injection.
+ */
+export function isRelativeUrl(url: string): boolean {
+  const isSlashRelative = url.startsWith('/') && !url.startsWith('//')
+  const isDotRelative = url.startsWith('./') || url.startsWith('../')
+
+  if (!isSlashRelative && !isDotRelative) {
+    return false
+  }
+
+  // Block protocol injection hidden inside relative paths
+  return !url.includes('://')
+}
+
+/**
+ * Checks whether a parsed absolute URL uses an allowed protocol or is same-origin.
+ */
+export function isAllowedAbsoluteUrl(url: string): boolean {
+  try {
+    const parsedUrl = new URL(url, window.location.origin)
+
+    if (parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:') {
+      return true
+    }
+
+    return parsedUrl.origin === window.location.origin
+  } catch {
+    return false
+  }
+}
+
+/**
  * Validates if a URL is safe for navigation (prevents XSS and injection attacks).
  * Allows relative URLs, same-origin URLs, and legitimate external HTTPS/HTTP URLs.
  * Blocks dangerous protocols like javascript:, data:, vbscript:, etc.
@@ -30,181 +99,50 @@ export function isSafeUrl(url: string): boolean {
     return false
   }
 
-  try {
-    // Empty or null URLs are not safe
-    if (!url || url.trim() === '') {
-      return false
-    }
-
-    const trimmedUrl = url.trim()
-
-    // Reject URLs containing ASCII control characters (null bytes, etc.)
-    // eslint-disable-next-line no-control-regex
-    if (/[\x00-\x1F\x7F]/.test(trimmedUrl)) {
-      return false
-    }
-    // Block protocol-relative URLs (//example.com)
-    if (trimmedUrl.startsWith('//')) {
-      return false
-    }
-
-    // Block javascript:, data:, vbscript:, and other dangerous protocols
-    // Check both before and after removing whitespace to catch variations like 'javascript :alert(1)'
-    const dangerousProtocolPattern = /^(javascript|data|vbscript|file|about):/i
-    const urlWithoutWhitespace = trimmedUrl.replace(/\s/g, '')
-    if (
-      dangerousProtocolPattern.test(trimmedUrl) ||
-      dangerousProtocolPattern.test(urlWithoutWhitespace)
-    ) {
-      return false
-    }
-
-    // Block URL-encoded variations of dangerous protocols
-    // Check if the URL contains % encoding before a colon (could be trying to hide a dangerous protocol)
-    // Match patterns like "java%73cript:" or "%6A%61%76%61script:"
-    // Only check the protocol part (before the first colon)
-    const colonIndex = trimmedUrl.indexOf(':')
-    const hasEncodedProtocol =
-      colonIndex > 0 && /%[0-9a-f]{2}/i.test(trimmedUrl.substring(0, colonIndex))
-    if (hasEncodedProtocol) {
-      // Try to decode and check if it's a dangerous protocol
-      try {
-        const decoded = decodeURIComponent(trimmedUrl)
-        if (dangerousProtocolPattern.test(decoded)) {
-          return false
-        }
-      } catch {
-        // If decoding fails, reject it as suspicious
-        return false
-      }
-    }
-
-    // Allow single slash relative URLs (but check they don't contain ://)
-    if (trimmedUrl.startsWith('/') && !trimmedUrl.startsWith('//')) {
-      // Additional safety: ensure no protocol injection
-      if (trimmedUrl.includes('://')) {
-        return false
-      }
-      return true
-    }
-
-    // Allow ./ and ../ relative URLs
-    if (trimmedUrl.startsWith('./') || trimmedUrl.startsWith('../')) {
-      // Additional safety: ensure no protocol injection
-      if (trimmedUrl.includes('://')) {
-        return false
-      }
-      return true
-    }
-
-    // For absolute URLs, parse and validate the protocol
-    const parsedUrl = new URL(trimmedUrl, window.location.origin)
-
-    // Allow http: and https: protocols (safe for external links)
-    // Allow same-origin URLs with any protocol
-    if (parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:') {
-      return true
-    }
-
-    // For other protocols, only allow if same-origin
-    const currentOrigin = window.location.origin
-    return parsedUrl.origin === currentOrigin
-  } catch {
-    // If URL parsing fails, it's not safe
+  if (!url || url.trim() === '') {
     return false
   }
-}
 
-/**
- * List of allowed external domains for navigation.
- * Only domains in this allowlist can be navigated to when using safeNavigate.
- * This prevents open redirect attacks by blocking navigation to arbitrary external sites.
- *
- * CONFIGURATION: Add trusted external domains here when the application needs to
- * navigate to specific external sites. This list is intentionally empty by default
- * to enforce a "deny by default" security posture.
- *
- * @example
- * const ALLOWED_EXTERNAL_DOMAINS: ReadonlySet<string> = new Set([
- *   'github.com',
- *   'twitter.com',
- *   'support.paperlyte.app',
- * ])
- */
-const ALLOWED_EXTERNAL_DOMAINS: ReadonlySet<string> = new Set([
-  // Add trusted external domains here as needed
-])
+  const trimmedUrl = url.trim()
 
-/**
- * Checks if a URL is a safe relative path (no protocol injection).
- * Accepts paths starting with /, ./, or ../ but rejects protocol-relative URLs (//)
- * and paths containing :// which could be protocol injection attempts.
- */
-function isSafeRelativeUrl(trimmedUrl: string): boolean {
-  // Must not contain protocol injection
-  if (trimmedUrl.includes('://')) {
+  // Reject ASCII control characters (null bytes, etc.)
+  // eslint-disable-next-line no-control-regex
+  if (/[\x00-\x1F\x7F]/.test(trimmedUrl)) {
     return false
   }
-  // Accept single-slash relative paths (but not protocol-relative //)
-  if (trimmedUrl.startsWith('/') && !trimmedUrl.startsWith('//')) {
+
+  // Block protocol-relative URLs (//example.com)
+  if (trimmedUrl.startsWith('//')) {
+    return false
+  }
+
+  if (hasDangerousProtocol(trimmedUrl)) {
+    return false
+  }
+
+  if (isRelativeUrl(trimmedUrl)) {
     return true
   }
-  // Accept dot-relative paths
-  return trimmedUrl.startsWith('./') || trimmedUrl.startsWith('../')
-}
 
-/**
- * Checks if a URL is same-origin or on the allowed external domains list.
- * This provides protection against open redirect attacks.
- *
- * @param url - The URL to validate
- * @returns true if the URL is same-origin or on the allowlist, false otherwise
- */
-export function isAllowedDestination(url: string): boolean {
-  // SSR guard
-  if (typeof window === 'undefined') {
+  // Reject slash-prefixed paths that failed isRelativeUrl due to :// injection
+  if (trimmedUrl.startsWith('/')) {
     return false
   }
 
-  try {
-    const trimmedUrl = url.trim()
-
-    // Disallow empty or whitespace-only URLs
-    if (!trimmedUrl) {
-      return false
-    }
-
-    // Relative URLs are same-origin by definition
-    if (isSafeRelativeUrl(trimmedUrl)) {
-      return true
-    }
-
-    // Parse and validate absolute URLs
-    const parsedUrl = new URL(trimmedUrl, window.location.origin)
-    const currentOrigin = window.location.origin
-
-    // Same-origin URLs are always allowed
-    if (parsedUrl.origin === currentOrigin) {
-      return true
-    }
-
-    // External URLs must use http/https and be on the allowlist
-    const hasAllowedProtocol = parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:'
-    return hasAllowedProtocol && ALLOWED_EXTERNAL_DOMAINS.has(parsedUrl.hostname)
-  } catch {
-    // If URL parsing fails, don't allow it
-    return false
-  }
+  return isAllowedAbsoluteUrl(trimmedUrl)
 }
 
 /**
  * Safely navigates to a URL by validating it first.
- * Only allows relative URLs and same-origin URLs to prevent open redirect attacks.
- * External URLs are blocked unless they are on the ALLOWED_EXTERNAL_DOMAINS allowlist.
+ * Allows relative URLs, HTTP/HTTPS URLs (including external), and blocks dangerous protocols
+ * like javascript:, data:, vbscript:, etc.
  *
- * SECURITY: This function is designed to prevent open redirect vulnerabilities.
- * It blocks navigation to external domains that are not explicitly allowlisted.
- * Use this function when the URL might contain user-controlled input.
+ * SECURITY NOTE: This function allows external HTTP/HTTPS URLs. For use cases requiring
+ * same-origin navigation only (to prevent open redirects), implement additional domain
+ * validation before calling this function or use a different approach.
+ *
+ * Safe usage: Only call with hardcoded URLs or URLs from trusted sources. Never pass
+ * user-controlled query parameters directly to this function without domain validation.
  *
  * @param url - The URL to navigate to
  * @returns true if navigation was performed, false if URL was rejected or navigation not needed (SSR)
@@ -216,15 +154,10 @@ export function safeNavigate(url: string): boolean {
     return false
   }
 
-  // First, check basic URL safety (blocks javascript:, data:, etc.)
   if (!isSafeUrl(url)) {
-    console.warn(`Navigation blocked: URL "${url}" failed security validation`)
-    return false
-  }
-
-  // Then, check if destination is allowed (same-origin or allowlisted)
-  if (!isAllowedDestination(url)) {
-    console.warn(`Navigation blocked: URL "${url}" is not an allowed destination`)
+    if (import.meta.env.DEV) {
+      console.warn(`Navigation blocked: URL "${url}" failed security validation`)
+    }
     return false
   }
 

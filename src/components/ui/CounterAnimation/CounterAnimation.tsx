@@ -37,7 +37,6 @@ interface CounterAnimationProps {
 }
 
 /** Type for easing functions */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type EasingFunction = (t: number) => number
 
 /** Default easing function name */
@@ -77,8 +76,8 @@ function getEasingFunction(easingName: string): EasingFunction {
   }
 
   console.warn(`Invalid easing function "${easingName}", falling back to "${DEFAULT_EASING_NAME}"`)
-  // Non-null assertion is safe here because DEFAULT_EASING_NAME is a known key
-  return easingFunctionsMap.get(DEFAULT_EASING_NAME)!
+  // Use nullish coalescing with a guaranteed fallback for safety
+  return easingFunctionsMap.get(DEFAULT_EASING_NAME) ?? easeOutQuartEasing
 }
 
 /**

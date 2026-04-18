@@ -45,20 +45,20 @@ This file tracks key architectural, design, and technical decisions made during 
 
 ## Analytics
 
-- **Date**: unknown
-- **Decision**: Privacy-first analytics — cookie-less, GDPR-compliant, respects DNT
-- **Rationale**: Paperlyte brand value is privacy; using tracking cookies would undermine trust
-- **Alternatives considered**: Google Analytics, Mixpanel
+- **Date**: unknown, clarified 2026-04-18
+- **Decision**: Privacy-first analytics is the stated goal; current runtime uses GA4 (`@utils/analytics`) which does not fully meet that bar — migration to the Plausible module is a known future step
+- **Rationale**: Paperlyte brand value is privacy; GA4 is a pragmatic interim choice while the provider-abstraction layer matures
+- **Alternatives considered**: Plausible (target), Fathom, Umami, Mixpanel
 
-- **Date**: unknown
-- **Decision**: Plausible Analytics as primary provider via provider-abstraction interface
-- **Rationale**: Privacy-friendly, lightweight, easy to swap via environment config
-- **Alternatives considered**: Fathom, Umami, Simple Analytics (planned as future provider options / TODO if additional providers are needed)
+- **Date**: unknown, later clarified 2026-04-18
+- **Decision**: `useAnalytics()` currently routes analytics events through `@utils/analytics` (gtag/GA4); the Plausible module (`src/analytics/`) exists as an abstraction/provider candidate but is not yet wired into runtime initialization
+- **Rationale**: Reflects the actual current integration state in the codebase while preserving flexibility to switch providers later
+- **Alternatives considered**: Plausible as the active provider, Fathom, Umami, Simple Analytics
 
-- **Date**: unknown
-- **Decision**: Analytics initialized via `useAnalytics()` hook in App.tsx; singleton pattern
-- **Rationale**: Single initialization point; hook ensures correct React lifecycle
-- **Alternatives considered**: Module-level initialization
+- **Date**: unknown, later clarified 2026-04-18
+- **Decision**: Analytics usage is exposed via the `useAnalytics()` hook, but current runtime behavior is backed by the GA4 utility (`@utils/analytics`) rather than App-level Plausible singleton initialization
+- **Rationale**: Keeps analytics calls centralized behind a hook while accurately documenting that the active implementation is `@utils/analytics` today
+- **Alternatives considered**: Module-level initialization, wiring the existing Plausible singleton into runtime
 
 ## Error & Performance Monitoring
 

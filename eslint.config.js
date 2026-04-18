@@ -51,11 +51,7 @@ export default defineConfig([
   // must be available. The TS rules from the block above still apply via
   // flat-config merging; this block only supplements the globals.
   {
-    files: [
-      '*.config.ts',
-      'scripts/**/*.ts',
-      'netlify/functions/**/*.ts',
-    ],
+    files: ['*.config.ts', 'scripts/**/*.ts', 'netlify/functions/**/*.ts'],
     languageOptions: {
       globals: globals.node,
     },

@@ -17,7 +17,7 @@ This file tracks information about the user's goals, context, and working style.
 ## Current Phase
 
 - **Category**: Development phase
-- **Notes**: Phase 1 (MVP Landing Page) — all core sections implemented: Hero, Problem, Solution, Features, Mobile, Statistics, Comparison, Testimonials, EmailCapture, FAQ, CTA. Phase 2 (Conversion Optimization) is next: newsletter form, testimonial slider, comparison table, pricing teaser, FAQ section.
+- **Notes**: Phase 1 (MVP Landing Page) — all core sections implemented: Hero, Problem, Solution, Features, Mobile, Statistics, Comparison, Testimonials, EmailCapture, FAQ, CTA. Phase 2 (Conversion Optimization) is next: optimize the existing EmailCapture/newsletter flow, upgrade testimonials into a slider, refine the existing comparison section, add a pricing teaser, and improve FAQ content/UX.
 
 ## Tech Stack Summary
 

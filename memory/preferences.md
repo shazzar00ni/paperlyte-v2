@@ -38,7 +38,7 @@ This file tracks coding style, design, and workflow preferences for this project
 ## Workflow
 
 - Vitest for unit/component tests, Playwright for E2E
-- Coverage threshold: 70% minimum (lines, functions, branches, statements)
+- Coverage thresholds: 70% minimum overall in Vitest (lines, functions, branches, statements) and 80% patch coverage target in Codecov for PR changes
 - ESLint flat config format; Prettier for formatting
 - Bundle size limits enforced: main JS <150KB gzipped, CSS <30KB gzipped
 - Sentry error monitoring active in production; filter sensitive query params before sending

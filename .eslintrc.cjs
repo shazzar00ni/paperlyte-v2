@@ -52,6 +52,7 @@ module.exports = {
     {
       files: [
         '*.config.{js,cjs,mjs,ts,cts,mts}',
+        '.*.cjs', // dotfile CJS configs (e.g. .eslintrc.cjs itself) — module/exports must be defined
         'scripts/**/*.{js,cjs,mjs,ts,cts,mts}',
         'netlify/**/*.{js,cjs,mjs,ts,cts,mts}',
       ],

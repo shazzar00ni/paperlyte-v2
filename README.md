@@ -14,6 +14,8 @@ Lightning-fast, distraction-free note-taking application landing page built with
 
 [![codecov](https://codecov.io/github/shazzar00ni/paperlyte-v2/graph/badge.svg?token=yQtvXFB0KF)](https://codecov.io/github/shazzar00ni/paperlyte-v2)
 
+[![Codacy Security Scan](https://github.com/shazzar00ni/paperlyte-v2/actions/workflows/codacy.yml/badge.svg)](https://github.com/shazzar00ni/paperlyte-v2/actions/workflows/codacy.yml)
+
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/shazzar00ni/paperlyte-v2/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/shazzar00ni/paperlyte-v2/tree/main)
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)

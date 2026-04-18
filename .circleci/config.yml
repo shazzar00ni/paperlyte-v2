@@ -58,20 +58,31 @@ jobs:
           # timing data and appends the file list to the vitest command.
           # The glob matches vitest's include pattern across the whole repo
           # (not just src/) so files like scripts/__tests__/*.test.ts are included.
+          # node_modules/ and dist/ are excluded to avoid slow traversal and
+          # accidentally picking up dependency test files.
           # e2e specs are stripped out because Playwright owns those.
-          # set +eo pipefail so the pipeline doesn't abort on test failure;
-          # the exit code is saved and re-raised after artifact upload.
+          # set +e so the job doesn't abort on test failure; pipefail is kept
+          # enabled so glob/filter errors are not masked. PIPESTATUS captures
+          # each stage's exit code; the vitest exit code is re-raised after
+          # artifact upload.
           command: |
             mkdir -p test-results
-            set +eo pipefail
+            set +e
             circleci tests glob \
               "**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}" | \
-              grep -v "^tests/e2e/" | \
+              grep -v -e "^node_modules/" -e "^dist/" -e "^tests/e2e/" | \
               circleci tests run \
                 --command="xargs -r npx vitest run --reporter=default --reporter=junit --outputFile=test-results/junit-${CIRCLE_NODE_INDEX}.xml --" \
                 --split-by=timings \
                 --verbose
-            echo $? > /tmp/test-exit-code
+            glob_exit=${PIPESTATUS[0]}
+            filter_exit=${PIPESTATUS[1]}
+            vitest_exit=${PIPESTATUS[2]}
+            if [ "$glob_exit" -ne 0 ] || [ "$filter_exit" -ne 0 ]; then
+              echo 1 > /tmp/test-exit-code
+            else
+              echo "$vitest_exit" > /tmp/test-exit-code
+            fi
           environment:
             CI: "true"
       - store_test_results:

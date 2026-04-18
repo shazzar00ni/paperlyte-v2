@@ -75,7 +75,7 @@ This file tracks key architectural, design, and technical decisions made during 
 ## Security
 
 - **Date**: (initial setup)
-- **Decision**: Two-tier CSP — relaxed in dev (allows unsafe-eval for Vite HMR), strict in prod via `vercel.json` headers
+- **Decision**: Two-tier CSP — relaxed in dev (allows unsafe-eval for Vite HMR), strict in prod via hosting-provided HTTP headers (`vercel.json` / `netlify.toml`)
 - **Rationale**: Dev ergonomics vs. production security; CSP meta tags not sufficient for frame-ancestors
 - **Alternatives considered**: Single CSP for both environments
 

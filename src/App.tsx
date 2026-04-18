@@ -59,10 +59,20 @@ function App() {
         <Mobile />
         <Suspense>
           <Statistics />
+        </Suspense>
+        <Suspense>
           <Comparison />
+        </Suspense>
+        <Suspense>
           <Testimonials />
+        </Suspense>
+        <Suspense>
           <EmailCapture />
+        </Suspense>
+        <Suspense>
           <FAQ />
+        </Suspense>
+        <Suspense>
           <CTA />
         </Suspense>
       </main>

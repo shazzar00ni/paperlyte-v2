@@ -40,19 +40,16 @@ function setAllowPersistentMeta(content: string) {
 }
 
 function setMatchMedia(prefersDark: boolean) {
-  vi.stubGlobal(
-    'matchMedia',
-    (query: string) => ({
-      matches: query === '(prefers-color-scheme: dark)' ? prefersDark : false,
-      media: query,
-      onchange: null,
-      addListener: () => {},
-      removeListener: () => {},
-      addEventListener: () => {},
-      removeEventListener: () => {},
-      dispatchEvent: () => true,
-    })
-  )
+  vi.stubGlobal('matchMedia', (query: string) => ({
+    matches: query === '(prefers-color-scheme: dark)' ? prefersDark : false,
+    media: query,
+    onchange: null,
+    addListener: () => {},
+    removeListener: () => {},
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    dispatchEvent: () => true,
+  }))
 }
 
 // ---------------------------------------------------------------------------

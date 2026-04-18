@@ -7,6 +7,7 @@ import {
   trackExternalLink,
   trackSocialClick,
   initScrollDepthTracking,
+  shouldRenderAnalytics,
   AnalyticsEvents,
 } from './analytics'
 
@@ -552,6 +553,54 @@ describe('Analytics Utility', () => {
       expect(rafSpy).toHaveBeenCalledTimes(2)
 
       cleanup()
+    })
+  })
+
+  describe('shouldRenderAnalytics', () => {
+    it('should return false when isProd is false', () => {
+      expect(shouldRenderAnalytics(false, 'paperlyte.app')).toBe(false)
+    })
+
+    it('should return false when on localhost', () => {
+      expect(shouldRenderAnalytics(true, 'localhost')).toBe(false)
+    })
+
+    it('should return false when on 127.0.0.1', () => {
+      expect(shouldRenderAnalytics(true, '127.0.0.1')).toBe(false)
+    })
+
+    it('should return false when on private network IP (10.x)', () => {
+      expect(shouldRenderAnalytics(true, '10.0.0.1')).toBe(false)
+    })
+
+    it('should return false when on private network IP (192.168.x)', () => {
+      expect(shouldRenderAnalytics(true, '192.168.1.1')).toBe(false)
+    })
+
+    it('should return true in production on a public domain', () => {
+      expect(shouldRenderAnalytics(true, 'paperlyte.app')).toBe(true)
+      expect(shouldRenderAnalytics(true, 'www.paperlyte.app')).toBe(true)
+    })
+
+    it('should use default parameters when not provided', () => {
+      // In vitest environment, import.meta.env.PROD might be false or true depending on setup
+      // We'll just verify it doesn't crash
+      expect(typeof shouldRenderAnalytics()).toBe('boolean')
+    })
+
+    it('should return false when window is undefined', () => {
+      const originalWindow = global.window
+      // @ts-expect-error - testing environment where window is missing
+      delete global.window
+
+      // We need to pass isProd as true to get past the first check
+      expect(shouldRenderAnalytics(true)).toBe(false)
+
+      global.window = originalWindow
+    })
+
+    it('should handle missing hostname', () => {
+      expect(shouldRenderAnalytics(true, '')).toBe(false)
     })
   })
 })

@@ -77,7 +77,7 @@ function App() {
         </Suspense>
       </main>
       <Footer />
-      <Suspense>
+      <Suspense fallback={null}>
         <FeedbackWidget />
       </Suspense>
       <Analytics />

@@ -1,4 +1,4 @@
-import { useMemo, useId } from 'react'
+import { memo, useMemo, useId } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { findIconDefinition } from '@fortawesome/fontawesome-svg-core'
 import type { IconName, IconPrefix } from '@fortawesome/fontawesome-svg-core'
@@ -56,7 +56,7 @@ const SIZE_MAP = {
  * <Icon name="fa-circle-check" color="#00ff00" size="2x" />
  * ```
  */
-export const Icon = ({
+function IconBase({
   name,
   size = 'md',
   variant = 'solid',
@@ -64,7 +64,7 @@ export const Icon = ({
   ariaLabel,
   color,
   style,
-}: IconProps): React.ReactElement => {
+}: IconProps): React.ReactElement {
   const iconSize = SIZE_MAP[size]
   const titleId = useId()
 
@@ -168,13 +168,17 @@ export const Icon = ({
   }
 
   // Icon not found in library — return a placeholder
-  console.warn(
-    `Icon "${name}" (converted to "${convertedName}") not found in Font Awesome library. ` +
-      `Rendering empty/decorative fallback span.`
-  )
+  if (import.meta.env.DEV) {
+    console.warn(
+      `Icon "${name}" (converted to "${convertedName}") not found in Font Awesome library. ` +
+        `Rendering empty/decorative fallback span.`
+    )
+  }
   return (
     <span {...commonIconProps} title={`Icon "${name}" not found`}>
       ?
     </span>
   )
 }
+
+export const Icon = memo(IconBase)

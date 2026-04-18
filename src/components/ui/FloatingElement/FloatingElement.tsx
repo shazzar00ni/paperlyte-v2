@@ -1,4 +1,4 @@
-import { type ReactNode, useRef } from 'react'
+import { memo, type ReactNode, useRef } from 'react'
 import { useReducedMotion } from '@hooks/useReducedMotion'
 import { useIntersectionObserver } from '@hooks/useIntersectionObserver'
 import styles from './FloatingElement.module.css'
@@ -63,7 +63,7 @@ interface FloatingElementProps {
  * </FloatingElement>
  * ```
  */
-export const FloatingElement = ({
+function FloatingElementBase({
   children,
   duration = 3,
   delay = 0,
@@ -71,7 +71,7 @@ export const FloatingElement = ({
   direction = 'vertical',
   className = '',
   pauseWhenHidden = true,
-}: FloatingElementProps): React.ReactElement => {
+}: FloatingElementProps): React.ReactElement {
   const prefersReducedMotion = useReducedMotion()
   const { ref, isVisible } = useIntersectionObserver({
     threshold: 0,
@@ -119,3 +119,5 @@ export const FloatingElement = ({
     </div>
   )
 }
+
+export const FloatingElement = memo(FloatingElementBase)

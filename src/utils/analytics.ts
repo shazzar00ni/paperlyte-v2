@@ -296,7 +296,9 @@ export function trackEvent(eventName: string, eventParams?: AnalyticsEventParams
   try {
     window.gtag!('event', eventName, sanitizedParams)
   } catch (error) {
-    console.error('[Analytics] Error tracking event:', error)
+    if (import.meta.env.DEV) {
+      console.error('[Analytics] Error tracking event:', error)
+    }
   }
 }
 
@@ -325,7 +327,9 @@ export function trackPageView(pagePath: string, pageTitle?: string): void {
       page_title: pageTitle,
     })
   } catch (error) {
-    console.error('[Analytics] Error tracking page view:', error)
+    if (import.meta.env.DEV) {
+      console.error('[Analytics] Error tracking page view:', error)
+    }
   }
 }
 

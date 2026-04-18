@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react'
+import { memo, type ReactNode } from 'react'
 import { useParallax } from '@hooks/useParallax'
 import styles from './ParallaxLayer.module.css'
 
@@ -57,14 +57,14 @@ interface ParallaxLayerProps {
  * </ParallaxLayer>
  * ```
  */
-export const ParallaxLayer = ({
+function ParallaxLayerBase({
   children,
   speed = 0.3,
   zIndex = 0,
   className = '',
   absolute = false,
   opacity = 1,
-}: ParallaxLayerProps): React.ReactElement => {
+}: ParallaxLayerProps): React.ReactElement {
   const { ref, transform, isActive } = useParallax({ speed })
 
   const layerClasses = [styles.layer, absolute ? styles.absolute : '', className]
@@ -86,3 +86,5 @@ export const ParallaxLayer = ({
     </div>
   )
 }
+
+export const ParallaxLayer = memo(ParallaxLayerBase)

@@ -27,7 +27,7 @@ This file tracks information about the user's goals, context, and working style.
 ## Hosting / Deployment
 
 - **Category**: Infrastructure
-- **Notes**: Deployed on Vercel (CSP headers in vercel.json). Netlify functions also present (email subscribe handler, edge functions). Likely a Vercel-primary deployment with legacy Netlify artifacts.
+- **Notes**: Supports both Vercel and Netlify configurations. Vercel config includes CSP headers in `vercel.json`, and Netlify is also configured for email subscribe handling and edge/functions.
 
 ## Quality Targets
 

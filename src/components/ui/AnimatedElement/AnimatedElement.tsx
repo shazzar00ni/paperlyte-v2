@@ -1,4 +1,4 @@
-import { memo, type ReactNode, useEffect } from 'react'
+import { type ReactNode, useEffect } from 'react'
 import { useIntersectionObserver } from '@hooks/useIntersectionObserver'
 import { useReducedMotion } from '@hooks/useReducedMotion'
 import styles from './AnimatedElement.module.css'
@@ -37,13 +37,13 @@ interface AnimatedElementProps {
  * </AnimatedElement>
  * ```
  */
-function AnimatedElementBase({
+export const AnimatedElement = ({
   children,
   animation = 'fadeIn',
   delay = 0,
   threshold = 0.1,
   className = '',
-}: AnimatedElementProps): React.ReactElement {
+}: AnimatedElementProps): React.ReactElement => {
   const { ref, isVisible } = useIntersectionObserver({ threshold })
   const prefersReducedMotion = useReducedMotion()
 
@@ -68,5 +68,3 @@ function AnimatedElementBase({
     </div>
   )
 }
-
-export const AnimatedElement = memo(AnimatedElementBase)

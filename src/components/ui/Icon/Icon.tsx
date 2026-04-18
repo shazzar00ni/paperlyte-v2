@@ -1,4 +1,4 @@
-import { memo, useMemo, useId } from 'react'
+import { useMemo, useId } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { findIconDefinition } from '@fortawesome/fontawesome-svg-core'
 import type { IconName, IconPrefix } from '@fortawesome/fontawesome-svg-core'
@@ -56,7 +56,7 @@ const SIZE_MAP = {
  * <Icon name="fa-circle-check" color="#00ff00" size="2x" />
  * ```
  */
-function IconBase({
+export function Icon({
   name,
   size = 'md',
   variant = 'solid',
@@ -180,5 +180,3 @@ function IconBase({
     </span>
   )
 }
-
-export const Icon = memo(IconBase)

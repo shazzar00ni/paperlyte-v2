@@ -33,6 +33,7 @@
  */
 
 import { isSafePropertyKey } from './security'
+import { logError } from './monitoring'
 
 /**
  * Extend Window interface to include gtag for Google Analytics
@@ -299,6 +300,9 @@ export function trackEvent(eventName: string, eventParams?: AnalyticsEventParams
     if (import.meta.env.DEV) {
       console.error('[Analytics] Error tracking event:', error)
     }
+    logError(error instanceof Error ? error : new Error(String(error)), {
+      errorInfo: { function: 'trackEvent', eventName },
+    })
   }
 }
 
@@ -330,6 +334,9 @@ export function trackPageView(pagePath: string, pageTitle?: string): void {
     if (import.meta.env.DEV) {
       console.error('[Analytics] Error tracking page view:', error)
     }
+    logError(error instanceof Error ? error : new Error(String(error)), {
+      errorInfo: { function: 'trackPageView', path: pagePath, title: pageTitle },
+    })
   }
 }
 

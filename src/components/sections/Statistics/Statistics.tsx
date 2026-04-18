@@ -115,3 +115,5 @@ export const Statistics = (): React.ReactElement => {
     </Section>
   )
 }
+
+export { Statistics as default }

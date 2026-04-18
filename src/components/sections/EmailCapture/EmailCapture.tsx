@@ -183,3 +183,5 @@ export const EmailCapture = (): React.ReactElement => {
     </Section>
   )
 }
+
+export { EmailCapture as default }

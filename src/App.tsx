@@ -10,23 +10,13 @@ import { Features } from '@components/sections/Features'
 import { Mobile } from '@components/sections/Mobile'
 import { useAnalytics } from '@hooks/useAnalytics'
 
-const Statistics = lazy(() =>
-  import('@components/sections/Statistics').then((m) => ({ default: m.Statistics }))
-)
-const Comparison = lazy(() =>
-  import('@components/sections/Comparison').then((m) => ({ default: m.Comparison }))
-)
-const Testimonials = lazy(() =>
-  import('@components/sections/Testimonials').then((m) => ({ default: m.Testimonials }))
-)
-const EmailCapture = lazy(() =>
-  import('@components/sections/EmailCapture').then((m) => ({ default: m.EmailCapture }))
-)
-const FAQ = lazy(() => import('@components/sections/FAQ').then((m) => ({ default: m.FAQ })))
-const CTA = lazy(() => import('@components/sections/CTA').then((m) => ({ default: m.CTA })))
-const FeedbackWidget = lazy(() =>
-  import('@components/ui/FeedbackWidget').then((m) => ({ default: m.FeedbackWidget }))
-)
+const Statistics = lazy(() => import('@components/sections/Statistics/index'))
+const Comparison = lazy(() => import('@components/sections/Comparison/index'))
+const Testimonials = lazy(() => import('@components/sections/Testimonials/index'))
+const EmailCapture = lazy(() => import('@components/sections/EmailCapture/index'))
+const FAQ = lazy(() => import('@components/sections/FAQ/index'))
+const CTA = lazy(() => import('@components/sections/CTA/index'))
+const FeedbackWidget = lazy(() => import('@components/ui/FeedbackWidget/index'))
 
 /**
  * Application root component that composes the page layout and sections.
@@ -57,27 +47,27 @@ function App() {
         <Solution />
         <Features />
         <Mobile />
-        <Suspense>
+        <Suspense fallback={<div style={{ minHeight: '28rem' }} aria-hidden="true" />}>
           <Statistics />
         </Suspense>
-        <Suspense>
+        <Suspense fallback={<div style={{ minHeight: '40rem' }} aria-hidden="true" />}>
           <Comparison />
         </Suspense>
-        <Suspense>
+        <Suspense fallback={<div style={{ minHeight: '32rem' }} aria-hidden="true" />}>
           <Testimonials />
         </Suspense>
-        <Suspense>
+        <Suspense fallback={<div style={{ minHeight: '20rem' }} aria-hidden="true" />}>
           <EmailCapture />
         </Suspense>
-        <Suspense>
+        <Suspense fallback={<div style={{ minHeight: '36rem' }} aria-hidden="true" />}>
           <FAQ />
         </Suspense>
-        <Suspense>
+        <Suspense fallback={<div style={{ minHeight: '20rem' }} aria-hidden="true" />}>
           <CTA />
         </Suspense>
       </main>
       <Footer />
-      <Suspense fallback={null}>
+      <Suspense fallback={<div style={{ width: '3.5rem', height: '3.5rem' }} aria-hidden="true" />}>
         <FeedbackWidget />
       </Suspense>
       <Analytics />

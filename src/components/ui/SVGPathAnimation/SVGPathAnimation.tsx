@@ -1,7 +1,6 @@
 import {
   Children,
   isValidElement,
-  memo,
   type CSSProperties,
   type ReactElement,
   type ReactNode,
@@ -110,7 +109,7 @@ interface SVGPathAnimationProps {
  * </SVGPathAnimation>
  * ```
  */
-function SVGPathAnimationBase({
+export const SVGPathAnimation = ({
   children,
   duration = 2000,
   delay = 0,
@@ -123,7 +122,7 @@ function SVGPathAnimationBase({
   strokeWidth = 2,
   fillColor = 'none',
   animateFill = false,
-}: SVGPathAnimationProps): ReactElement {
+}: SVGPathAnimationProps): ReactElement => {
   const { ref, isVisible } = useIntersectionObserver({ threshold: 0.3 })
   const prefersReducedMotion = useReducedMotion()
   const svgRef = useRef<SVGSVGElement>(null)
@@ -241,5 +240,3 @@ function SVGPathAnimationBase({
     </div>
   )
 }
-
-export const SVGPathAnimation = memo(SVGPathAnimationBase)

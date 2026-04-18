@@ -388,3 +388,5 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
     </>
   )
 }
+
+export { FeedbackWidget as default }

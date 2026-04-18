@@ -60,3 +60,5 @@ export const CTA = (): React.ReactElement => {
     </Section>
   )
 }
+
+export { CTA as default }

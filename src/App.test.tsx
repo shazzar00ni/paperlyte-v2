@@ -1,11 +1,12 @@
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from './App'
 
 describe('App Integration', () => {
-  it('should render with proper semantic structure and section order', () => {
+  it('should render with proper semantic structure and section order', async () => {
     const { container } = render(<App />)
+    await waitFor(() => expect(container.querySelector('#statistics')).not.toBeNull())
 
     // Verify semantic landmark regions
     const header = container.querySelector('header')
@@ -104,8 +105,9 @@ describe('App Integration', () => {
     expect(screen.getByText(/Capture inspiration/i)).toBeInTheDocument()
   })
 
-  it('should render Testimonials section', () => {
+  it('should render Testimonials section', async () => {
     const { container } = render(<App />)
+    await waitFor(() => expect(container.querySelector('#testimonials')).not.toBeNull())
 
     const testimonialsSection = container.querySelector('#testimonials')
     expect(testimonialsSection).toBeInTheDocument()
@@ -114,8 +116,9 @@ describe('App Integration', () => {
     expect(screen.getByText(/Sarah Chen/i)).toBeInTheDocument()
   })
 
-  it('should render CTA section', () => {
+  it('should render CTA section', async () => {
     const { container } = render(<App />)
+    await waitFor(() => expect(container.querySelector('#download')).not.toBeNull())
 
     const ctaSection = container.querySelector('#download')
     expect(ctaSection).toBeInTheDocument()
@@ -203,29 +206,33 @@ describe('App Integration', () => {
     expect(solutionSection).toBeInTheDocument()
   })
 
-  it('should render Statistics section', () => {
+  it('should render Statistics section', async () => {
     const { container } = render(<App />)
+    await waitFor(() => expect(container.querySelector('#statistics')).not.toBeNull())
 
     const statisticsSection = container.querySelector('#statistics')
     expect(statisticsSection).toBeInTheDocument()
   })
 
-  it('should render Comparison section', () => {
+  it('should render Comparison section', async () => {
     const { container } = render(<App />)
+    await act(async () => {})
 
     const comparisonSection = container.querySelector('#comparison')
     expect(comparisonSection).toBeInTheDocument()
   })
 
-  it('should render FAQ section', () => {
+  it('should render FAQ section', async () => {
     const { container } = render(<App />)
+    await act(async () => {})
 
     const faqSection = container.querySelector('#faq')
     expect(faqSection).toBeInTheDocument()
   })
 
-  it('should render FeedbackWidget component', () => {
+  it('should render FeedbackWidget component', async () => {
     render(<App />)
+    await act(async () => {})
 
     // FeedbackWidget renders a floating button with specific aria-label
     const feedbackButton = screen.getByRole('button', { name: /Open feedback form/i })
@@ -251,8 +258,9 @@ describe('App Integration', () => {
     expect(h1Elements.length).toBeGreaterThanOrEqual(1)
   })
 
-  it('should include waitlist form in EmailCapture section', () => {
+  it('should include waitlist form in EmailCapture section', async () => {
     const { container } = render(<App />)
+    await act(async () => {})
 
     // EmailCapture section should contain email input
     const emailInputs = container.querySelectorAll('input[type="email"]')

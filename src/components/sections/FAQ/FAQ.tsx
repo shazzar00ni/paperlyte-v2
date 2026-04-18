@@ -223,3 +223,5 @@ export const FAQ = (): React.ReactElement => {
     </Section>
   )
 }
+
+export { FAQ as default }

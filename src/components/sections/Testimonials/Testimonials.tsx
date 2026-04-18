@@ -277,3 +277,5 @@ export const Testimonials = (): React.ReactElement => {
     </Section>
   )
 }
+
+export { Testimonials as default }

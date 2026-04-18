@@ -14,7 +14,7 @@ This file tracks information about people involved in the project (contributors,
 
 - **Name**: shazzar00ni
 - **Role**: Project owner / primary developer (GitHub account owner of the repo)
-- **Notes**: Runs sessions via Claude Code; uses Claude AI for feature development, security fixes (e.g., PR #738), and code review. Prefers concise communication.
+- **Notes**: Runs sessions via Claude Code; uses Claude AI for feature development, security fixes, and code review. Prefers concise communication.
 
 ## Automated Contributors
 

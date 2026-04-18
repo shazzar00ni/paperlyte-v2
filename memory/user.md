@@ -22,7 +22,7 @@ This file tracks information about the user's goals, context, and working style.
 ## Tech Stack Summary
 
 - **Category**: Stack
-- **Notes**: React 19.2, TypeScript 5.9 (strict), Vite 7.3. Testing: Vitest + Playwright. Analytics: Plausible (privacy-first). Errors: Sentry. Performance: Vercel Analytics. Email: Netlify Functions. Fonts: @fontsource/inter (self-hosted Latin subset). Icons: Font Awesome SVG core.
+- **Notes**: React 19.2, TypeScript 5.9 (strict), Vite 7.3. Testing: Vitest + Playwright. Analytics: Google Analytics/gtag via `@utils/analytics` (Plausible may be planned, but is not currently wired into the runtime). Errors: Sentry. Performance: Vercel Analytics. Email: Netlify Functions. Fonts: @fontsource/inter (self-hosted Latin subset). Icons: Font Awesome SVG core.
 
 ## Hosting / Deployment
 

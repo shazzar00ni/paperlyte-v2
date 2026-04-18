@@ -2,6 +2,59 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-04-15
+
+### Analysis: Systemic Regressions in Open Branches (Automated Daily Audit)
+
+- **Status:** Critical — Action Required
+- **Summary:** An automated repository-wide audit of 250 unmerged branches confirms the following systemic regressions.
+
+| Regression Type                | Count | Severity    | Notes                                               |
+| :----------------------------- | :---- | :---------- | :-------------------------------------------------- |
+| Orphan Branches                | 250   | 🔴 Critical | No common ancestor with `main`.                     |
+| Missing `.npmrc`               | 93    | 🔴 Critical | Breaks dependency resolution.                       |
+| Missing `docs/ROADMAP.md`      | 87    | 🟠 High     | Core project documentation.                         |
+| Missing `gitVersionControl.md` | 102   | 🟠 High     | Core Git workflow documentation.                    |
+| Missing `review.md`            | 102   | 🟡 Medium   | AI PR reviewer instructions.                        |
+| Reverted Security Helpers      | 101   | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers. |
+| Unreadable navigation.ts       | 8     | 🔴 Critical | File missing or unreadable.                         |
+
+- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.
+
+### Qualitative Reviews
+
+#### PR #661: Hybrid SVG Icon System
+
+- **Status:** Approved (Pending Systemic Fixes)
+- **Summary:** Implementation of a custom hybrid SVG icon system to reduce Font Awesome bundle size.
+- **Feedback:** Verified that multi-token icon names are correctly handled via `convertIconName`. The implementation successfully reduces the Font Awesome JS chunk while maintaining compatibility.
+
+#### PR #664: E2E Stability & Documentation
+
+- **Status:** Approved (Pending Systemic Fixes)
+- **Summary:** Improvements to E2E test stability and documentation.
+- **Feedback:** Verified that the `SkipLink` accessibility logic and extensive JSDoc documentation are present. Earlier reported regressions regarding their removal appear to be resolved in the current branch state.
+
+#### PR #680: Semantic Versioning & Release Automation
+
+- **Status:** Under Review (Blocked)
+- **Summary:** Implementation of release automation via `scripts/release.sh`.
+- **Feedback:** While the automation logic is sound, the branch contains several suspicious dependency downgrades (e.g., `vitest` from 4.1.2 to 4.1.0, `eslint` from 10.2.0 to 10.0.3) compared to `main`. These should be updated to match the current `main` branch before merging.
+
+#### PR #662 & #663: Security Hardening
+
+- **Status:** Approved (Pending Systemic Fixes)
+- **Summary:** Least-privilege GHA permissions (#662) and hardened navigation (#663).
+- **Feedback:** Both PRs follow security best practices and are ready for merge once the systemic orphan status is resolved.
+
+#### Branch: `claude/paperlyte-12-issue-fixes-1fvmr`
+
+- **Status:** Approved (Pending Systemic Fixes)
+- **Summary:** Production-ready email capture and error handling improvements.
+- **Feedback:** Implementation of Netlify functions for email capture is verified. Externalization of component copy to data files improves maintainability.
+
+---
+
 ## 2026-03-05
 
 ### Analysis: Accidental File Deletions in Open Branches (Jules Daily PR Reviews)
@@ -325,11 +378,11 @@ This file contains a summary of pull requests I have reviewed.
 
 **Status:** Approved with comments
 
-#### Summary for PR #356:
+#### Summary for PR #356
 
 This PR addresses a Codacy configuration issue to ensure ESLint runs correctly in the CI pipeline. The core changes in `.codacy.yml` and the addition of `.eslintrc.cjs` are correct and effectively resolve the issue.
 
-#### Feedback & Suggestions for PR #356:
+#### Feedback & Suggestions for PR #356
 
 - **Approval:** The main changes are approved and ready for merging.
 - **Scope Creep:** The PR includes unrelated changes to the icon library (`src/utils/iconLibrary.ts`) and E2E tests (`tests/e2e/landing-page.spec.ts`). While not harmful, these changes are out of scope for a configuration fix.
@@ -341,11 +394,11 @@ This PR addresses a Codacy configuration issue to ensure ESLint runs correctly i
 
 **Status:** Changes requested
 
-#### Summary for PR #319:
+#### Summary for PR #319
 
 This PR aims to fix a deployment error in the `Privacy.tsx` component. However, it also includes significant changes to `package-lock.json` and `public/sitemap.xml` that are unrelated to the component fix.
 
-#### Feedback & Suggestions for PR #319:
+#### Feedback & Suggestions for PR #319
 
 - **Mixed Changes:** The PR mixes a bug fix with dependency updates and sitemap changes. This makes it difficult to review and test.
 - **`package-lock.json`:** The changes to `package-lock.json` are extensive and add `"peer": true` to many dependencies. This is a significant change that could have unintended side effects and should be tested in isolation. My memory indicates that these changes have caused test failures in the past.

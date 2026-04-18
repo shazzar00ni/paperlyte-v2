@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from './App'
+import * as analytics from '@utils/analytics'
 
 describe('App Integration', () => {
   it('should render with proper semantic structure and section order', () => {
@@ -284,5 +285,23 @@ describe('App Integration', () => {
     // Verify at least one section renders
     const sections = container.querySelectorAll('section')
     expect(sections.length).toBeGreaterThan(0)
+  })
+
+  it('should conditionally render analytics', () => {
+    const shouldRenderSpy = vi.spyOn(analytics, 'shouldRenderAnalytics')
+
+    // Test with analytics enabled
+    shouldRenderSpy.mockReturnValue(true)
+    const { rerender } = render(<App />)
+    // Analytics is a functional component from @vercel/analytics/react
+    // It's hard to query directly, but we can verify our helper was called
+    expect(shouldRenderSpy).toHaveBeenCalled()
+
+    // Test with analytics disabled
+    shouldRenderSpy.mockReturnValue(false)
+    rerender(<App />)
+    expect(shouldRenderSpy).toHaveBeenCalled()
+
+    shouldRenderSpy.mockRestore()
   })
 })

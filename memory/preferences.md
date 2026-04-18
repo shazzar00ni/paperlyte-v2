@@ -33,7 +33,7 @@ This file tracks coding style, design, and workflow preferences for this project
 - TypeScript strict mode everywhere; no `any` types
 - Component folder structure: `ComponentName.tsx`, `ComponentName.module.css`, `ComponentName.test.tsx`, `index.ts` (barrel)
 - URL validation required on any component that renders `<a>` tags with dynamic hrefs
-- Analytics events tracked via `useAnalytics()` hook, not direct analytics API calls from components
+- Prefer tracking analytics events via the `useAnalytics()` hook in components; direct analytics utility calls may still exist in older code and should be migrated when touched
 
 ## Workflow
 

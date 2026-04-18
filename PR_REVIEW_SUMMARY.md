@@ -1,5 +1,46 @@
 # PR Review Summary
 
+## 2026-04-16
+
+### Analysis: Systemic Regressions in Open Branches (Automated Daily Audit)
+
+- **Status:** Critical — Action Required
+- **Summary:** An automated repository-wide audit of 251 unmerged branches confirms the following systemic regressions.
+
+| Regression Type                | Count | Severity    | Notes                                               |
+| :----------------------------- | :---- | :---------- | :-------------------------------------------------- |
+| Orphan Branches                | 251   | 🔴 Critical | No common ancestor with `main`.                     |
+| Missing `.npmrc`               | 93    | 🔴 Critical | Breaks dependency resolution.                       |
+| Missing `docs/ROADMAP.md`      | 87    | 🟠 High     | Core project documentation.                         |
+| Missing `gitVersionControl.md` | 102   | 🟠 High     | Core Git workflow documentation.                    |
+| Missing `review.md`            | 102   | 🟡 Medium   | AI PR reviewer instructions.                        |
+| Reverted Security Helpers      | 101   | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers. |
+| Unreadable navigation.ts       | 8     | 🔴 Critical | File missing or unreadable.                         |
+
+- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.
+
+### Qualitative Review: Priority Branches
+
+#### PR #661 (origin/claude/fix-issue-661-7gozH)
+
+- **Status:** Ready for Review (Critical files restored)
+- **Regressions Fixed:** Verified that `.npmrc`, `docs/ROADMAP.md`, `gitVersionControl.md`, and `review.md` are present.
+- **Security Helpers:** Verified `hasDangerousProtocol` and `isRelativeUrl` are present in `src/utils/navigation.ts`.
+- **Key Changes:** Includes updates to CI workflows, Lighthouse configuration, and Netlify configuration. Removed CircleCI badge from README.
+
+#### origin/claude/paperlyte-12-issue-fixes-1fvmr
+
+- **Status:** Ready for Review (Critical files restored)
+- **Regressions Fixed:** Verified that `.npmrc`, `docs/ROADMAP.md`, `gitVersionControl.md`, and `review.md` are present.
+- **Security Helpers:** Verified `hasDangerousProtocol` and `isRelativeUrl` are present in `src/utils/navigation.ts`.
+- **Key Changes:**
+  - Implements actual API calls for the `EmailCapture` component using Netlify functions.
+  - Refactors `EmailCapture` to use external data file (`emailCapture.data.ts`).
+  - Added unit tests for `Header` component and improved `EmailCapture` tests.
+  - Minor fixes to `Privacy` and `Terms` pages.
+
+---
+
 This file contains a summary of pull requests I have reviewed.
 
 ## 2026-03-05
@@ -67,22 +108,18 @@ This file contains a summary of pull requests I have reviewed.
   - **Status:** Reviewed/Approved
   - **Summary:** Critical security fix related to `safeNavigate`.
   - **Feedback:** Solid improvement; this approach to `safeNavigate` is preferred for its flexibility over #424.
-
 - **PR #424**
   - **Status:** Reviewed/Approved
   - **Summary:** Critical security fix overlapping with #428.
   - **Feedback:** Improvement is solid but superseded by #428's `safeNavigate` implementation.
-
 - **PR #422**
   - **Status:** Reviewed/Approved
   - **Summary:** Dependency updates.
   - **Feedback:** Changes look good and keep dependencies current without introducing regressions.
-
 - **PR #419**
   - **Status:** Reviewed/Approved
   - **Summary:** Analytics integration.
   - **Feedback:** Implementation is sound and aligns with existing CSP and privacy requirements.
-
 - **PR #406**
   - **Status:** Reviewed/Approved
   - **Summary:** Miscellaneous improvements.

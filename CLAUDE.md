@@ -68,14 +68,14 @@ npm run generate:mockups
 
 - **React**: ^19.2.4 (with React DOM ^19.2.4)
 - **TypeScript**: ~5.9.3 with strict mode enabled
-- **Build Tool**: Vite ^7.3.1 with @vitejs/plugin-react ^5.1.2
+- **Build Tool**: Vite ^7.3.1 with @vitejs/plugin-react ^5.1.4
 - **Unit Testing**: Vitest ^4.0.15 with React Testing Library ^16.3.2 (jsdom environment)
 - **E2E Testing**: Playwright ^1.58.2 (Chromium, Firefox, WebKit, Pixel 5, iPhone 12)
-- **Linting**: ESLint ^10.0.0 with TypeScript ESLint, React Hooks, React Refresh, and Prettier integration
+- **Linting**: ESLint 10.0.2 with TypeScript ESLint, React Hooks, React Refresh, and Prettier integration
 - **Formatting**: Prettier ^3.8.1
-- **Icons**: Font Awesome (tree-shaken, ^7.1.0)
+- **Icons**: Font Awesome (tree-shaken, ^7.2.0)
 - **Fonts**: Inter (self-hosted via @fontsource, Latin subset), Playfair Display (self-hosted in public/fonts/)
-- **Error Monitoring**: Sentry ^10.38.0 (production only)
+- **Error Monitoring**: Sentry ^10.39.0 (production only)
 - **Analytics**: Vercel Analytics ^1.6.1 (production), event tracking utility with PII sanitization (`src/utils/analytics.ts`), and a Plausible-based privacy-first module (`src/analytics/` — infrastructure ready, not yet integrated into app)
 - **Deployment**: Vercel (primary) and Netlify (secondary), with serverless functions on Netlify
 

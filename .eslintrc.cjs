@@ -51,9 +51,9 @@ module.exports = {
     // Build scripts and Node config files — add Node globals, relax module rules
     {
       files: [
-        '*.config.{js,cjs,mjs}',
-        'scripts/**/*.{js,cjs,mjs}',
-        'netlify/**/*.{js,cjs,mjs}',
+        '*.config.{js,cjs,mjs,ts,cts,mts}',
+        'scripts/**/*.{js,cjs,mjs,ts,cts,mts}',
+        'netlify/**/*.{js,cjs,mjs,ts,cts,mts}',
       ],
       env: {
         node: true,

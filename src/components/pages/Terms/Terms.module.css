@@ -1,6 +1,6 @@
 .termsHero {
-  background: linear-gradient(135deg, var(--color-primary-600) 0%, var(--color-primary-800) 100%);
-  color: var(--color-white);
+  background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary-dark) 100%);
+  color: var(--color-text-on-dark);
   padding: var(--spacing-xl) 0;
   text-align: center;
 }
@@ -10,7 +10,7 @@
 }
 
 .container {
-  max-width: var(--container-md);
+  max-width: var(--max-width-content);
   margin: 0 auto;
   padding: 0 var(--spacing-md);
 }
@@ -23,7 +23,7 @@
 }
 
 .lastUpdated {
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-sm);
   opacity: 0.9;
   font-weight: var(--font-weight-medium);
 }
@@ -42,7 +42,7 @@
   font-size: var(--font-size-2xl);
   font-weight: var(--font-weight-semibold);
   margin-bottom: var(--spacing-md);
-  color: var(--color-primary-700);
+  color: var(--color-primary);
 }
 
 .section h3 {
@@ -67,12 +67,12 @@
 }
 
 .section a {
-  color: var(--color-primary-600);
+  color: var(--color-primary);
   text-decoration: underline;
 }
 
 .section a:hover {
-  color: var(--color-primary-700);
+  color: var(--color-primary);
 }
 
 .section strong {

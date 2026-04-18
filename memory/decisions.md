@@ -69,7 +69,7 @@ This file tracks key architectural, design, and technical decisions made during 
 
 - **Date**: (initial setup)
 - **Decision**: Vercel Analytics for performance metrics
-- **Rationale**: <1KB, cookie-less, zero-config with Vercel hosting
+- **Rationale**: <1KB, cookie-less performance metrics with a lightweight integration; `@vercel/analytics` is used even when deploying on Netlify
 - **Alternatives considered**: Custom performance tracking
 
 ## Security

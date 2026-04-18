@@ -50,5 +50,5 @@ This file tracks coding style, design, and workflow preferences for this project
 - Always respect `prefers-reduced-motion: reduce` — transition durations set to 0.01ms
 - `Skip to main content` skip link at top of page
 - 2px focus outline with 2px offset on all interactive elements
-- All icons must have `ariaLabel` props
+- Meaningful icons must have `ariaLabel`; decorative icons should omit `ariaLabel` so they remain hidden from assistive technology
 - Color contrast verified against WCAG AA/AAA matrix (see docs/DESIGN-SYSTEM.md)

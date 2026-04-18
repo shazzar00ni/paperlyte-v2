@@ -53,7 +53,7 @@ This file tracks key architectural, design, and technical decisions made during 
 - **Date**: (initial setup)
 - **Decision**: Plausible Analytics as primary provider via provider-abstraction interface
 - **Rationale**: Privacy-friendly, lightweight, easy to swap via environment config
-- **Alternatives considered**: Fathom, Umami, Simple Analytics (stubs exist for all three)
+- **Alternatives considered**: Fathom, Umami, Simple Analytics (planned as future provider options / TODO if additional providers are needed)
 
 - **Date**: (initial setup)
 - **Decision**: Analytics initialized via `useAnalytics()` hook in App.tsx; singleton pattern

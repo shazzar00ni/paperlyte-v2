@@ -64,10 +64,7 @@ const AnimatedElementComponent = ({
         ref.current.style.setProperty('--animation-delay', `${delay}ms`)
       }
     }
-    // `ref` (from useRef) is flagged as missing by exhaustive-deps, but useRef
-    // returns a stable object that never changes identity — safe to omit.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [delay, prefersReducedMotion])
+  }, [delay, prefersReducedMotion, ref])
 
   return (
     <div ref={ref} className={classes}>

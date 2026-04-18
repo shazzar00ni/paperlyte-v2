@@ -40,10 +40,9 @@ function setAllowPersistentMeta(content: string) {
 }
 
 function setMatchMedia(prefersDark: boolean) {
-  Object.defineProperty(globalThis, 'matchMedia', {
-    writable: true,
-    configurable: true,
-    value: (query: string) => ({
+  vi.stubGlobal(
+    'matchMedia',
+    (query: string) => ({
       matches: query === '(prefers-color-scheme: dark)' ? prefersDark : false,
       media: query,
       onchange: null,
@@ -52,8 +51,8 @@ function setMatchMedia(prefersDark: boolean) {
       addEventListener: () => {},
       removeEventListener: () => {},
       dispatchEvent: () => true,
-    }),
-  })
+    })
+  )
 }
 
 // ---------------------------------------------------------------------------
@@ -70,6 +69,7 @@ describe('theme-init.js', () => {
 
   afterEach(() => {
     vi.restoreAllMocks()
+    vi.unstubAllGlobals()
   })
 
   // -------------------------------------------------------------------------

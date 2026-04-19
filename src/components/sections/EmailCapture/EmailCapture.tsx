@@ -5,6 +5,7 @@ import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { Button } from '@components/ui/Button'
 import { Icon } from '@components/ui/Icon'
 import { WAITLIST_COUNT, LAUNCH_QUARTER } from '@constants/waitlist'
+import { logError } from '@utils/monitoring'
 import styles from './EmailCapture.module.css'
 
 const BENEFITS = [
@@ -29,16 +30,37 @@ export const EmailCapture = (): React.ReactElement => {
     setIsLoading(true)
     setError(null)
 
-    // TODO: Replace this simulated delay with the real waitlist API call
-    // (see src/components/ui/EmailCapture for a working implementation that
-    // posts to /.netlify/functions/subscribe). When wiring up the real call,
-    // wrap it in try/catch and restore error handling: call logError() and
-    // map failures (network / validation) to user-friendly messages via
-    // setError().
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    try {
+      // TODO: Replace this simulated delay with the real waitlist API call
+      // (see src/components/ui/EmailCapture for a working implementation that
+      // posts to /.netlify/functions/subscribe).
+      await new Promise((resolve) => setTimeout(resolve, 1000))
 
-    setIsLoading(false)
-    setIsSubmitted(true)
+      setIsLoading(false)
+      setIsSubmitted(true)
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error(String(err))
+      logError(error, {
+        tags: { feature: 'waitlist', action: 'submit_form' },
+      })
+
+      let message = 'Failed to join waitlist. Please try again.'
+      if (
+        error.name === 'TypeError' ||
+        error.message.toLowerCase().includes('network') ||
+        error.message.toLowerCase().includes('fetch')
+      ) {
+        message = 'Network error. Please check your connection and try again.'
+      } else if (
+        error.message.toLowerCase().includes('invalid') ||
+        error.message.toLowerCase().includes('validation')
+      ) {
+        message = 'Invalid email address. Please check and try again.'
+      }
+
+      setIsLoading(false)
+      setError(message)
+    }
   }
 
   if (isSubmitted) {

@@ -466,7 +466,7 @@ describe('CounterAnimation', () => {
       })
 
       // Using type assertion to simulate runtime bypass of TypeScript type checking
-      // This tests the runtime safety mechanism against command injection
+      // This tests the runtime safety mechanism against unsafe property key access / prototype pollution
       render(
         <CounterAnimation end={100} start={0} duration={1000} easing={'__proto__' as 'linear'} />
       )

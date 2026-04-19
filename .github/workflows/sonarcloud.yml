@@ -30,4 +30,8 @@ jobs:
           args: >
             -Dsonar.projectKey=shazzar00ni_paperlyte-v2
             -Dsonar.organization=shazzar00ni
+            -Dsonar.sources=src
+            -Dsonar.tests=src
+            -Dsonar.exclusions=scripts/maintenance/**
+            -Dsonar.coverage.exclusions=scripts/maintenance/**
           projectBaseDir: .

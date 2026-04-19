@@ -76,7 +76,9 @@ function getEasingFunction(easingName: string): EasingFunction {
   }
 
   if (import.meta.env.DEV) {
-    console.warn(`Invalid easing function "${easingName}", falling back to "${DEFAULT_EASING_NAME}"`)
+    console.warn(
+      `Invalid easing function "${easingName}", falling back to "${DEFAULT_EASING_NAME}"`
+    )
   }
   // Use nullish coalescing with a guaranteed fallback for safety
   return easingFunctionsMap.get(DEFAULT_EASING_NAME) ?? easeOutQuartEasing

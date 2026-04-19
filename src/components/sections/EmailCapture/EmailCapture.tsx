@@ -47,17 +47,17 @@ export const EmailCapture = (): React.ReactElement => {
       setIsSubmitted(true)
     } catch (err) {
       const error = err instanceof Error ? err : new Error(String(err))
-      logError(error, {
-        tags: { feature: 'waitlist', action: 'submit_form' },
-      }, 'EmailCapture')
+      logError(
+        error,
+        {
+          tags: { feature: 'waitlist', action: 'submit_form' },
+        },
+        'EmailCapture'
+      )
 
       const msg = error.message.toLowerCase()
       let message = 'Failed to join waitlist. Please try again.'
-      if (
-        error.name === 'TypeError' ||
-        msg.includes('network') ||
-        msg.includes('fetch')
-      ) {
+      if (error.name === 'TypeError' || msg.includes('network') || msg.includes('fetch')) {
         message = 'Network error. Please check your connection and try again.'
       } else if (msg.includes('too many')) {
         message = 'Too many requests. Please try again in a minute.'

@@ -14,10 +14,10 @@ permissions:
 jobs:
   Analysis:
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
+    if: github.event.pull_request.head.repo.full_name == github.repository || github.event_name == 'push'
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
         with:
           fetch-depth: 0
@@ -28,10 +28,11 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
-            -Dsonar.projectKey=shazzar00ni_paperlyte-v2
-            -Dsonar.organization=shazzar00ni
+            -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }}
+            -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
             -Dsonar.sources=src
-            -Dsonar.tests=src
-            -Dsonar.exclusions=scripts/maintenance/**
-            -Dsonar.coverage.exclusions=scripts/maintenance/**
+            -Dsonar.tests=src,scripts/__tests__
+            -Dsonar.test.inclusions=src/**/*.test.ts,src/**/*.test.tsx,src/**/test/**,scripts/__tests__/**
+            -Dsonar.exclusions=src/**/*.test.ts,src/**/*.test.tsx,src/**/test/**,scripts/maintenance/**,node_modules/**
+            -Dsonar.coverage.exclusions=src/**/*.test.ts,src/**/*.test.tsx,src/**/test/**,scripts/**,node_modules/**
           projectBaseDir: .

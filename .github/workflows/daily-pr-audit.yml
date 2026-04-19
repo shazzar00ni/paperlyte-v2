@@ -2,8 +2,8 @@ name: Daily PR Audit Summary
 
 on:
   schedule:
-    - cron: '0 0 * * *' # Run daily at midnight UTC
-  workflow_dispatch: # Allow manual trigger
+    - cron: '0 0 * * *'
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -14,40 +14,46 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
         with:
           fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@39cd5ad89571546021298f1c1211e1b4b3f33c39
         with:
           python-version: '3.x'
 
       - name: Run PR Audit
-        id: run_audit
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Generate audit results JSON
-          python3 scripts/maintenance/audit_branches.py > audit_results.json
+          if [ ! -f PR_REVIEW_SUMMARY.md ]; then
+            echo "# PR Review Summary" > PR_REVIEW_SUMMARY.md
+            echo "" >> PR_REVIEW_SUMMARY.md
+            echo "This file contains a summary of pull requests I have reviewed." >> PR_REVIEW_SUMMARY.md
+          fi
 
-          # Generate markdown and comment on PRs using dedicated script
+          python3 scripts/maintenance/audit_branches.py > audit_results.json
           python3 scripts/maintenance/generate_audit_summary.py
 
-          # Prepend daily summary after the header in PR_REVIEW_SUMMARY.md
           if [ -f daily_summary.txt ]; then
-            # Find the line number of the main header
             HEADER_LINE=$(grep -n "# PR Review Summary" PR_REVIEW_SUMMARY.md | head -n 1 | cut -d: -f1 || echo "1")
             AFTER_HEADER=$(($HEADER_LINE + 1))
 
-            # Split the file around the main header to insert the new entry
             head -n $AFTER_HEADER PR_REVIEW_SUMMARY.md > top.md
             tail -n +$(($AFTER_HEADER + 1)) PR_REVIEW_SUMMARY.md > bottom.md
 
-            # Combine and clean up
-            cat top.md daily_summary.txt bottom.md > updated_summary.md
+            {
+              cat top.md
+              echo ""
+              cat daily_summary.txt
+              echo ""
+              echo "---"
+              cat bottom.md
+            } > updated_summary.md
+
             mv updated_summary.md PR_REVIEW_SUMMARY.md
-            rm top.md bottom.md daily_summary.txt audit_results.json
+            rm -f top.md bottom.md daily_summary.txt audit_results.json
           fi
 
       - name: Commit and Push Changes

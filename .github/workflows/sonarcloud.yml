@@ -28,11 +28,11 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
-            -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }}
-            -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
+            -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY || 'shazzar00ni_paperlyte-v2' }}
+            -Dsonar.organization=${{ vars.SONAR_ORGANIZATION || 'shazzar00ni' }}
             -Dsonar.sources=src
-            -Dsonar.tests=src,scripts/__tests__
-            -Dsonar.test.inclusions=src/**/*.test.ts,src/**/*.test.tsx,src/**/test/**,scripts/__tests__/**
-            -Dsonar.exclusions=src/**/*.test.ts,src/**/*.test.tsx,src/**/test/**,scripts/maintenance/**,node_modules/**
-            -Dsonar.coverage.exclusions=src/**/*.test.ts,src/**/*.test.tsx,src/**/test/**,scripts/**,node_modules/**
+            -Dsonar.tests=src
+            -Dsonar.test.inclusions=**/*.test.ts,**/*.test.tsx,src/test/**
+            -Dsonar.exclusions=**/*.test.ts,**/*.test.tsx,src/test/**,scripts/**,node_modules/**
+            -Dsonar.coverage.exclusions=**/*.test.ts,**/*.test.tsx,src/test/**,scripts/**,node_modules/**
           projectBaseDir: .

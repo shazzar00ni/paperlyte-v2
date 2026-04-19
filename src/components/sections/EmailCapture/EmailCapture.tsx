@@ -31,10 +31,17 @@ export const EmailCapture = (): React.ReactElement => {
     setError(null)
 
     try {
-      // TODO: Replace this simulated delay with the real waitlist API call
-      // (see src/components/ui/EmailCapture for a working implementation that
-      // posts to /.netlify/functions/subscribe).
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      const response = await fetch('/.netlify/functions/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      })
+
+      const data = (await response.json().catch(() => ({}))) as { error?: string }
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Subscription failed')
+      }
 
       setIsLoading(false)
       setIsSubmitted(true)

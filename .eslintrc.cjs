@@ -48,17 +48,25 @@ module.exports = {
         ],
       },
     },
-    // Build scripts and Node config files — add Node globals, relax module rules
+    // Build scripts, Node config files, and Netlify serverless functions — add Node globals
     {
       files: [
         '*.config.{js,cjs,mjs,ts,cts,mts}',
         '.*.cjs', // dotfile CJS configs (e.g. .eslintrc.cjs itself) — module/exports must be defined
         'scripts/**/*.{js,cjs,mjs,ts,cts,mts}',
-        'netlify/**/*.{js,cjs,mjs,ts,cts,mts}',
+        'netlify/functions/**/*.{js,cjs,mjs,ts,cts,mts}',
       ],
       env: {
         node: true,
         browser: false,
+      },
+    },
+    // Netlify Edge Functions run in an edge/Web runtime, not Node.js
+    {
+      files: ['netlify/edge-functions/**/*.{js,cjs,mjs,ts,cts,mts}'],
+      env: {
+        browser: true,
+        node: false,
       },
     },
   ],

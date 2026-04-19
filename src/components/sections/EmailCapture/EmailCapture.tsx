@@ -40,7 +40,7 @@ export const EmailCapture = (): React.ReactElement => {
       const data = (await response.json().catch(() => ({}))) as { error?: string }
 
       if (!response.ok) {
-        throw new Error(data.error || 'Subscription failed')
+        throw new Error(data.error ?? 'Subscription failed')
       }
 
       setIsLoading(false)

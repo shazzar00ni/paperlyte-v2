@@ -6,6 +6,11 @@
  */
 
 import { describe, it, expect } from 'vitest'
+// Side-effect import: ensures iconLibrary.ts is evaluated so that
+// `config.autoAddCss = false` runs before the CSP Compliance assertion.
+// Kept explicit (rather than relying on the named imports below) so the
+// CSP test cannot regress to passing vacuously if those imports change.
+import './iconLibrary'
 import { config } from '@fortawesome/fontawesome-svg-core'
 import {
   iconNameMap,

@@ -14,11 +14,6 @@
 
 import { library, config } from '@fortawesome/fontawesome-svg-core'
 import '@fortawesome/fontawesome-svg-core/styles.css'
-
-// Prevent FA from injecting a <style> tag (blocked by strict style-src CSP).
-// The styles.css import above serves the same CSS as a proper bundled stylesheet.
-config.autoAddCss = false
-
 // Solid icons (from free-solid-svg-icons)
 import {
   faBolt, // Lightning Speed feature
@@ -65,7 +60,6 @@ import {
   faArrowLeft, // Navigation back
   faSpinner, // Loading states
 } from '@fortawesome/free-solid-svg-icons'
-
 // Brand icons (from free-brands-svg-icons)
 import {
   faGithub, // GitHub social link
@@ -73,6 +67,12 @@ import {
   faApple, // Apple platform
   faWindows, // Windows platform
 } from '@fortawesome/free-brands-svg-icons'
+
+// Prevent FA from injecting a <style> tag (blocked by strict style-src CSP).
+// The styles.css import above serves the same CSS as a proper bundled stylesheet.
+// Safe to set after the import because FA reads autoAddCss lazily at render
+// time (dom.watch / dom.i2svg), not at module import time.
+config.autoAddCss = false
 
 // Add all icons to the library
 library.add(

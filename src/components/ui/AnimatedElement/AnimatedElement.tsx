@@ -53,13 +53,11 @@ export const AnimatedElement = ({
     .filter(Boolean)
     .join(' ')
 
-  // Set CSS custom property for animation delay programmatically
-  // ref is a stable object returned by useIntersectionObserver and does not need to be a dep
   useEffect(() => {
     if (ref.current) {
       ref.current.style.setProperty('--animation-delay', `${delay}ms`)
     }
-  }, [delay])
+  }, [delay, ref])
 
   return (
     <div ref={ref} className={classes}>

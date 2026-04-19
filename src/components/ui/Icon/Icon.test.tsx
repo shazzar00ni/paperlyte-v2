@@ -212,6 +212,48 @@ describe('Icon', () => {
     })
   })
 
+  describe('Alias resolution', () => {
+    it('should resolve fa-check-circle to fa-circle-check via iconNameMap without warning', () => {
+      // fa-check-circle is not in iconPaths; convertIconName maps it to 'circle-check',
+      // so aliasedKey becomes 'fa-circle-check' which IS in iconPaths (step 2)
+      const { container } = render(<Icon name="fa-check-circle" />)
+
+      const svg = container.querySelector('svg.icon-svg')
+      expect(svg).toBeInTheDocument()
+      expect(consoleWarnSpy).toHaveBeenCalledTimes(0)
+    })
+
+    it('should resolve fa-house to fa-home via iconNameMap without warning', () => {
+      // fa-house is not in iconPaths; convertIconName maps it to 'home',
+      // so aliasedKey becomes 'fa-home' which IS in iconPaths (step 2)
+      const { container } = render(<Icon name="fa-house" />)
+
+      const svg = container.querySelector('svg.icon-svg')
+      expect(svg).toBeInTheDocument()
+      expect(consoleWarnSpy).toHaveBeenCalledTimes(0)
+    })
+
+    it('should resolve bare icon name without fa- prefix via aliased key', () => {
+      // name="bolt" → baseName="bolt" not in iconPaths directly
+      // convertIconName('bolt') = 'bolt' (no mapping, strips nothing) → aliasedKey='fa-bolt'
+      // 'fa-bolt' IS in iconPaths (step 2), so renders custom SVG without warning
+      const { container } = render(<Icon name="bolt" />)
+
+      const svg = container.querySelector('svg.icon-svg')
+      expect(svg).toBeInTheDocument()
+      expect(consoleWarnSpy).toHaveBeenCalledTimes(0)
+    })
+
+    it('should resolve fa-prefixed name directly when present in iconPaths (step 1)', () => {
+      // Verifies step 1 still works after alias logic was added
+      const { container } = render(<Icon name="fa-circle-check" />)
+
+      const svg = container.querySelector('svg.icon-svg')
+      expect(svg).toBeInTheDocument()
+      expect(consoleWarnSpy).toHaveBeenCalledTimes(0)
+    })
+  })
+
   describe('Styling', () => {
     it('should apply custom className to fallback span', () => {
       const { container } = render(<Icon name="missing-icon" className="custom-class" />)

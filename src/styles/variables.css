@@ -65,7 +65,6 @@
   --border-radius-full: 9999px; /* Full pill shape */
 
   /* Semantic color aliases */
-  --color-white: #ffffff;
   --color-background-primary: var(--color-background);
   --color-background-secondary: var(--color-surface);
 

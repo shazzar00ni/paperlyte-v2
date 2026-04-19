@@ -34,10 +34,11 @@ describe('Hero', () => {
     it('should render the main headline', () => {
       render(<Hero />)
 
-      // There are multiple headings with "thoughts", use getAllByRole
-      const headings = screen.getAllByRole('heading', { name: /thoughts/i })
-      expect(headings.length).toBeGreaterThan(0)
-      expect(screen.getByText(/organized/i)).toBeInTheDocument()
+      // Query by heading level to avoid ambiguity with other headings
+      const h1 = screen.getByRole('heading', { level: 1 })
+      expect(h1).toBeInTheDocument()
+      expect(h1.textContent).toMatch(/thoughts/i)
+      expect(h1.textContent).toMatch(/organized/i)
     })
 
     it('should render the subheadline', () => {

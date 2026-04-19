@@ -14,9 +14,17 @@ engines:
   # --- Enabled engines (well under the 20-run SARIF limit) ---
   semgrep:
     enabled: true
-  # eslint-9 only: project uses ESLint 9 flat config (eslint.config.js); no .eslintrc present
+  # eslint-9: authoritative ESLint engine — uses eslint.config.js (flat config, ESLint 9+).
   eslint-9:
     enabled: true
+  # eslint (legacy, ESLint 7 + @typescript-eslint v4): disabled to prevent duplicate analysis
+  # alongside eslint-9. The repo contains .eslintrc.cjs for tools that do not support flat
+  # config (e.g. Codacy's own legacy runner), but Codacy should only run eslint-9 here.
+  # Codacy's legacy Docker image bundles its own plugins and does NOT use the project's
+  # node_modules, so the project's @typescript-eslint v8.x does not create a peer-dep
+  # conflict — this entry is disabled purely to avoid redundant findings.
+  eslint:
+    enabled: false
   lizard:
     enabled: true
     exclude_paths:

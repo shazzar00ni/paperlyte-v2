@@ -37,10 +37,10 @@ export const EmailCapture = (): React.ReactElement => {
         body: JSON.stringify({ email }),
       })
 
-      const data = (await response.json().catch(() => ({}))) as { error?: string }
+      const data = (await response.json().catch(() => ({}))) as { error?: string } | null
 
       if (!response.ok) {
-        throw new Error(data.error ?? 'Subscription failed')
+        throw new Error(data?.error ?? 'Subscription failed')
       }
 
       setIsLoading(false)
@@ -49,19 +49,19 @@ export const EmailCapture = (): React.ReactElement => {
       const error = err instanceof Error ? err : new Error(String(err))
       logError(error, {
         tags: { feature: 'waitlist', action: 'submit_form' },
-      })
+      }, 'EmailCapture')
 
+      const msg = error.message.toLowerCase()
       let message = 'Failed to join waitlist. Please try again.'
       if (
         error.name === 'TypeError' ||
-        error.message.toLowerCase().includes('network') ||
-        error.message.toLowerCase().includes('fetch')
+        msg.includes('network') ||
+        msg.includes('fetch')
       ) {
         message = 'Network error. Please check your connection and try again.'
-      } else if (
-        error.message.toLowerCase().includes('invalid') ||
-        error.message.toLowerCase().includes('validation')
-      ) {
+      } else if (msg.includes('too many')) {
+        message = 'Too many requests. Please try again in a minute.'
+      } else if (msg.includes('invalid') || msg.includes('validation')) {
         message = 'Invalid email address. Please check and try again.'
       }
 

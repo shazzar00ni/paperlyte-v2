@@ -87,6 +87,29 @@ describe('EmailCapture Section', () => {
     expect(screen.queryByText(/You're on the list!/)).not.toBeInTheDocument()
   })
 
+  it('shows a rate-limit error message when the server returns 429', async () => {
+    vi.mocked(global.fetch).mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({ error: 'Too many requests. Please try again in a minute.' }),
+        {
+          status: 429,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      )
+    )
+
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
+    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+
+    await waitFor(() => {
+      expect(screen.getByText(/Too many requests/)).toBeInTheDocument()
+    })
+    expect(screen.queryByText(/You're on the list!/)).not.toBeInTheDocument()
+  })
+
   it('shows a network error message when fetch throws', async () => {
     vi.mocked(global.fetch).mockRejectedValueOnce(new TypeError('Failed to fetch'))
 

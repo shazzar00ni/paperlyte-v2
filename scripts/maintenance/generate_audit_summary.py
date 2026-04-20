@@ -107,20 +107,34 @@ def main():
     date_str = datetime.now(timezone.utc).strftime('%Y-%m-%d')
     total = data.get('total_branches', 0)
 
+    # Bail out on error payloads from audit_branches.py
+    if 'error' in data:
+        print(f"Audit returned an error: {data['error']}", file=sys.stderr)
+        print("Skipping summary generation.", file=sys.stderr)
+        return
+
+    # If no regressions were found, write a clean-bill-of-health summary
+    has_regressions = any(v > 0 for v in stats.values())
+
     summary = f'## {date_str}\n\n'
     summary += '### Analysis: Systemic Regressions in Open Branches (Automated Daily Audit)\n\n'
-    summary += '- **Status:** Critical — Action Required\n'
-    summary += f'- **Summary:** An automated repository-wide audit of {total} unmerged branches confirms the following systemic regressions.\n\n'
-    summary += '| Regression Type                | Count | Severity    | Notes                                                                    |\n'
-    summary += '| :----------------------------- | :---- | :---------- | :----------------------------------------------------------------------- |\n'
-    summary += f'| Orphan Branches                | {str(stats["Orphan"]).ljust(5)} | 🔴 Critical | No common ancestor with `main`.                                          |\n'
-    summary += f'| Missing `.npmrc`               | {str(stats["NPMRC"]).ljust(5)} | 🔴 Critical | Breaks dependency resolution.                                            |\n'
-    summary += f'| Missing `docs/ROADMAP.md`      | {str(stats["ROADMAP"]).ljust(5)} | 🟠 High     | Core project documentation.                                              |\n'
-    summary += f'| Missing `gitVersionControl.md` | {str(stats["GVC"]).ljust(5)} | 🟠 High     | Core Git workflow documentation.                                         |\n'
-    summary += f'| Missing `review.md`            | {str(stats["REVIEW"]).ljust(5)} | 🟡 Medium   | AI PR reviewer instructions.                                             |\n'
-    summary += f'| Reverted Security Helpers      | {str(stats["HELPERS"]).ljust(5)} | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers.                      |\n'
-    summary += f'| Unreadable navigation.ts       | {str(stats["UNREADABLE"]).ljust(5)} | 🔴 Critical | File missing or unreadable.                                              |\n\n'
-    summary += '- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.\n\n'
+
+    if not has_regressions:
+        summary += '- **Status:** ✅ All Clear\n'
+        summary += f'- **Summary:** An automated repository-wide audit of {total} unmerged branches found no systemic regressions.\n\n'
+    else:
+        summary += '- **Status:** Critical — Action Required\n'
+        summary += f'- **Summary:** An automated repository-wide audit of {total} unmerged branches confirms the following systemic regressions.\n\n'
+        summary += '| Regression Type                | Count | Severity    | Notes                                                                    |\n'
+        summary += '| :----------------------------- | :---- | :---------- | :----------------------------------------------------------------------- |\n'
+        summary += f'| Orphan Branches                | {str(stats["Orphan"]).ljust(5)} | 🔴 Critical | No common ancestor with `main`.                                          |\n'
+        summary += f'| Missing `.npmrc`               | {str(stats["NPMRC"]).ljust(5)} | 🔴 Critical | Breaks dependency resolution.                                            |\n'
+        summary += f'| Missing `docs/ROADMAP.md`      | {str(stats["ROADMAP"]).ljust(5)} | 🟠 High     | Core project documentation.                                              |\n'
+        summary += f'| Missing `gitVersionControl.md` | {str(stats["GVC"]).ljust(5)} | 🟠 High     | Core Git workflow documentation.                                         |\n'
+        summary += f'| Missing `review.md`            | {str(stats["REVIEW"]).ljust(5)} | 🟡 Medium   | AI PR reviewer instructions.                                             |\n'
+        summary += f'| Reverted Security Helpers      | {str(stats["HELPERS"]).ljust(5)} | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers.                      |\n'
+        summary += f'| Unreadable navigation.ts       | {str(stats["UNREADABLE"]).ljust(5)} | 🔴 Critical | File missing or unreadable.                                              |\n\n'
+        summary += '- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.\n\n'
 
     with open('daily_summary.txt', 'w') as f:
         f.write(summary)

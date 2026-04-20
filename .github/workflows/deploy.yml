@@ -6,6 +6,8 @@ on:
     branches: [main]  # Production
   workflow_dispatch:  # Manual trigger
 
+permissions: {}
+
 jobs:
   deploy-production:
     name: Deploy to Production

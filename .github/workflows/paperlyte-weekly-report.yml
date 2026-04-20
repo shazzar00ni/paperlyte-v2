@@ -5,6 +5,8 @@ on:
     - cron: "0 0 * * MON"   # every Monday at 00:00 UTC
   workflow_dispatch:
 
+permissions: {}
+
 jobs:
   build-report:
     runs-on: ubuntu-latest

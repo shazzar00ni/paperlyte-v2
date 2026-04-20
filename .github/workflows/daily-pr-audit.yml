@@ -36,6 +36,14 @@ jobs:
 
           # Prepend daily summary after the header in PR_REVIEW_SUMMARY.md
           if [ -f daily_summary.txt ]; then
+            # Guard against duplicate insertion on same-day reruns
+            NEW_HEADING="$(head -n 1 daily_summary.txt)"
+            if grep -Fxq "$NEW_HEADING" PR_REVIEW_SUMMARY.md; then
+              echo "Summary for this date already exists; skipping insert."
+              rm -f daily_summary.txt audit_results.json
+              exit 0
+            fi
+
             # Find the line number of the main header
             HEADER_LINE=$(grep -n "# PR Review Summary" PR_REVIEW_SUMMARY.md | head -n 1 | cut -d: -f1 || echo "1")
             AFTER_HEADER=$(($HEADER_LINE + 1))

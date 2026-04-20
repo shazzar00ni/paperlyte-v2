@@ -28,7 +28,7 @@ executors:
 # ============================================================
 commands:
   restore-node-cache:
-    description: Restore node_modules from cache
+    description: Restore npm cache
     steps:
       - restore_cache:
           keys:
@@ -36,12 +36,12 @@ commands:
             - node-deps-v2-
 
   save-node-cache:
-    description: Save node_modules to cache
+    description: Save npm cache
     steps:
       - save_cache:
           key: node-deps-v2-{{ checksum "package-lock.json" }}
           paths:
-            - node_modules
+            - ~/.npm
 
   install-deps:
     description: Install npm dependencies (ci for reproducible installs)

@@ -19,7 +19,7 @@ export const EmailCapture = (): React.ReactElement => {
   // Safe origin for SSR compatibility
   const origin = typeof window !== 'undefined' ? window.location.origin : ''
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault()
     setError(null)
 

@@ -52,15 +52,12 @@ jobs:
       - name: Analyze with SonarCloud
         if: ${{ secrets.SONAR_TOKEN != '' }}
         # Pinned to SHA 383f7e52eae3ab0510c3cb0e7d9d150bbaeab838 (v3.1.0)
-        # to ensure immutable releases and satisfy security mandates.
+        # Configuration is loaded from sonar-project.properties
         uses: SonarSource/sonarcloud-github-action@383f7e52eae3ab0510c3cb0e7d9d150bbaeab838
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           # Additional arguments for the SonarScanner CLI
-          # Hardcoded keys are required to resolve "empty project key" failures in CI
-          args: >
-            -Dsonar.projectKey=shazzar00ni_paperlyte-v2
-            -Dsonar.organization=shazzar00ni
+          args: ""
           # When you need the analysis to take place in a directory other than the one from which it was launched, default is .
           projectBaseDir: .

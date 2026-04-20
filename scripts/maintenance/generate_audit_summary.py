@@ -70,15 +70,37 @@ def main():
         if 'security helper' in issues_str: stats['HELPERS'] += 1
         if 'Could not read src/utils/navigation.ts' in issues_str: stats['UNREADABLE'] += 1
 
-        # Comment on the PR if it exists and GH CLI is available
+        # Comment on the PR if it exists and GH CLI is available.
+        # Uses a stable HTML marker to make comments idempotent: if a prior
+        # audit comment exists it is updated in-place instead of posting a duplicate.
         branch = item['branch']
-        if branch in pr_map:
+        if branch in pr_map and gh_cli:
             pr_num = pr_map[branch]
-            comment = '### ⚠️ Systemic Regressions Detected\n\nThis branch is currently blocked by the following regressions:\n\n'
+            marker = '<!-- daily-audit-regressions -->'
+            body = f'{marker}\n### ⚠️ Systemic Regressions Detected\n\n'
+            body += 'This branch is currently blocked by the following regressions:\n\n'
             for issue in issues:
-                comment += f'- {issue}\n'
-            comment += '\nPlease restore these critical files or security helpers before merging.'
-            run_command(['gh', 'pr', 'comment', str(pr_num), '--body', comment])
+                body += f'- {issue}\n'
+            body += '\nPlease restore these critical files or security helpers before merging.'
+
+            # Look for an existing comment with the marker
+            comments_json = run_command([
+                'gh', 'api',
+                f'repos/{{owner}}/{{repo}}/issues/{pr_num}/comments',
+                '--paginate', '--jq',
+                f'[.[] | select(.body | contains("{marker}")) | .id] | first'
+            ])
+
+            if comments_json and comments_json not in ('null', ''):
+                # Update existing comment in-place
+                run_command([
+                    'gh', 'api', '--method', 'PATCH',
+                    f'repos/{{owner}}/{{repo}}/issues/comments/{comments_json}',
+                    '-f', f'body={body}'
+                ])
+            else:
+                # First time — create the comment
+                run_command(['gh', 'pr', 'comment', str(pr_num), '--body', body])
 
     # Generate Markdown Summary
     date_str = datetime.now().strftime('%Y-%m-%d')

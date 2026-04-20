@@ -45,7 +45,9 @@ export const useTheme = () => {
     if (persistenceEnabled) {
       // Check localStorage for saved theme (single read per mount)
       const stored = localStorage.getItem(THEME_STORAGE_KEY)
-      if (stored && isValidTheme(stored) && getInitialUserPreference()) {
+      if (stored && isValidTheme(stored) && userHasExplicitPreference.current) {
+        return stored
+      }
         return stored
       }
     }

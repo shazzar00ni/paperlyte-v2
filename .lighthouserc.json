@@ -35,6 +35,8 @@
         "uses-text-compression": "warn",
         "unused-css-rules": "warn",
         "unused-javascript": "warn",
+        "errors-in-console": "warn",
+        "network-dependency-tree-insight": "warn",
         "efficient-animated-content": "warn",
         "uses-passive-event-listeners": "warn",
         "no-document-write": "error",

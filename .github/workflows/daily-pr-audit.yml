@@ -1,0 +1,65 @@
+name: Daily PR Audit Summary
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@39cd5ad89571546021298f1c1211e1b4b3f33c39
+        with:
+          python-version: '3.x'
+
+      - name: Run PR Audit
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ ! -f PR_REVIEW_SUMMARY.md ]; then
+            echo "# PR Review Summary" > PR_REVIEW_SUMMARY.md
+            echo "" >> PR_REVIEW_SUMMARY.md
+            echo "This file contains a summary of pull requests I have reviewed." >> PR_REVIEW_SUMMARY.md
+          fi
+
+          python3 scripts/maintenance/audit_branches.py > audit_results.json
+          python3 scripts/maintenance/generate_audit_summary.py
+
+          if [ -f daily_summary.txt ]; then
+            HEADER_LINE=$(grep -n "# PR Review Summary" PR_REVIEW_SUMMARY.md | head -n 1 | cut -d: -f1 || echo "1")
+            AFTER_HEADER=$(($HEADER_LINE + 1))
+
+            head -n $AFTER_HEADER PR_REVIEW_SUMMARY.md > top.md
+            tail -n +$(($AFTER_HEADER + 1)) PR_REVIEW_SUMMARY.md > bottom.md
+
+            {
+              cat top.md
+              echo ""
+              cat daily_summary.txt
+              echo ""
+              echo "---"
+              cat bottom.md
+            } > updated_summary.md
+
+            mv updated_summary.md PR_REVIEW_SUMMARY.md
+            rm -f top.md bottom.md daily_summary.txt audit_results.json
+          fi
+
+      - name: Commit and Push Changes
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "github-actions[bot]"
+          git add PR_REVIEW_SUMMARY.md
+          git commit -m "docs: automated daily PR audit summary ($(date +%Y-%m-%d))" || echo "No changes to commit"
+          git push

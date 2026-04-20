@@ -142,4 +142,19 @@ describe('EmailCapture Section', () => {
     const emailInput = screen.getByPlaceholderText('your@email.com') as HTMLInputElement
     expect(emailInput.required).toBe(true)
   })
+
+  it('shows a client-side error and does not call fetch for an invalid email', async () => {
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    const emailInput = screen.getByPlaceholderText('your@email.com')
+    // Type an invalid email that passes HTML5 type="email" but fails our validator
+    await user.type(emailInput, 'user..name@example.com')
+    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toHaveTextContent(/valid email address/)
+    })
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
 })

@@ -42,9 +42,7 @@ export const EmailCapture = (): React.ReactElement => {
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}))
-        const serverMessage =
-          (data as { message?: string; error?: string }).message ??
-          (data as { error?: string }).error
+        const serverMessage = (data as { error?: string }).error
 
         if (res.status === 400 || res.status === 429) {
           // User-caused error — display message without logging to monitoring

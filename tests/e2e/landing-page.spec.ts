@@ -54,19 +54,25 @@ test.describe('Landing Page', () => {
     await page.goto('/');
     await page.waitForLoadState('load');
 
+    interface CoreWebVitalsMetrics {
+      fcp: number | null;
+      lcp: number | null;
+      cls: number;
+    }
+
     // Measure Core Web Vitals using Performance Timeline
-    const metrics = await page.evaluate(() => {
+    const metrics = await page.evaluate<CoreWebVitalsMetrics>((): Promise<CoreWebVitalsMetrics> => {
       const paintEntries = performance.getEntriesByType('paint');
       const fcpEntry = paintEntries.find(
         (entry) => entry.name === 'first-contentful-paint'
       );
 
       // Get LCP using PerformanceObserver
-      return new Promise((resolve) => {
-        // null means the observer never fired — distinguishes "not observed"
-        // from a genuine 0 (e.g. CLS with no layout shifts).
+      return new Promise<CoreWebVitalsMetrics>((resolve) => {
+        // null means LCP observer never fired — distinguishes "not observed" from a genuine 0.
+        // CLS starts at 0: a page with no layout shifts correctly scores 0 (best case).
         let lcp: number | null = null;
-        let cls: number | null = null;
+        let cls = 0;
 
         const lcpObserver = new PerformanceObserver((list) => {
           const entries = list.getEntries();
@@ -79,7 +85,7 @@ test.describe('Landing Page', () => {
           for (const entry of list.getEntries()) {
             const layoutShift = entry as PerformanceEntry & { hadRecentInput?: boolean; value: number };
             if (!layoutShift.hadRecentInput) {
-              cls = (cls ?? 0) + layoutShift.value;
+              cls += layoutShift.value;
             }
           }
         });
@@ -105,9 +111,8 @@ test.describe('Landing Page', () => {
 
     expect(fcp).not.toBeNull();
     expect(lcp).not.toBeNull(); // fail if LCP was never observed
-    expect(cls).not.toBeNull(); // fail if CLS observer never fired
 
-    if (fcp === null || lcp === null || cls === null) {
+    if (fcp === null || lcp === null) {
       return;
     }
 

@@ -36,7 +36,7 @@ export const Header = (): React.ReactElement => {
     setMobileMenuOpen((prev) => !prev)
   }, [])
 
-  const closeMobileMenu = useCallback(() => {
+  const closeMobileMenu = useCallback((): void => {
     if (!mobileMenuOpen) return
     setMobileMenuOpen(false)
     menuButtonRef.current?.focus()

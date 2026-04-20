@@ -81,9 +81,9 @@ export const Icon = ({
   // 3. Bare-name convenience prefix (e.g. "bolt" → "fa-bolt")
   const aliasedKey = `fa-${convertIconName(baseName)}`
   const resolvedKey =
-    safePropertyAccess(iconPaths, baseName) !== null
+    safePropertyAccess(iconPaths, baseName) !== undefined
       ? baseName
-      : safePropertyAccess(iconPaths, aliasedKey) !== null
+      : safePropertyAccess(iconPaths, aliasedKey) !== undefined
         ? aliasedKey
         : `fa-${baseName}`
 

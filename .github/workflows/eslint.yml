@@ -24,7 +24,7 @@ jobs:
     permissions:
       contents: read
       security-events: write
-      actions: read # required for github/codeql-action/upload-sarif on private repositories
+      actions: read  # required for github/codeql-action/upload-sarif on private repositories
     steps:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2

@@ -1,0 +1,39 @@
+Type,Title,Last Visited,Host
+Pull Request,test(flaky): fix Icon.test.tsx.Icon > Color normalization > should prepend # to bare 6-digit hex colors,2026-04-12T22:51:02Z,github.com
+Pull Request,"fix: apply 12-issue patch set for analytics, form, and code quality",2026-04-12T15:13:20Z,github.com
+Issue,[CLEANUP] Add missing barrel export to sections/Statistics/,2026-04-12T11:45:16Z,github.com
+Issue,[PERF] toggleMobileMenu not memoized in Header.tsx,2026-04-12T11:45:47Z,github.com
+Issue,[CLEANUP] Remove unnecessary eslint-disable in AnimatedElement.tsx,2026-04-12T11:45:21Z,github.com
+Issue,[BUG] Divergent email regexes between client and Netlify function,2026-04-12T11:45:35Z,github.com
+Issue,[PERF] isBrowser recomputed on every render in Button.tsx,2026-04-12T11:45:11Z,github.com
+Issue,[REFACTOR] Extract EmailCapture content data to sibling data file,2026-04-12T11:45:27Z,github.com
+Issue,[CLEANUP] Redundant condition in FAQ toggleItem,2026-04-12T11:44:36Z,github.com
+Issue,[PERF] Double localStorage read in useTheme on mount,2026-04-12T11:44:30Z,github.com
+Issue,[REFACTOR] Duplicate scrollToSection — remove inline copy from Header.tsx,2026-04-12T11:44:47Z,github.com
+Issue,[BUG] Analytics singleton/hook disconnect — disable() has no effect,2026-04-12T11:45:03Z,github.com
+Issue,[BUG] Duplicate scroll tracking — double analytics events,2026-04-12T11:44:46Z,github.com
+Issue,🚨 [BUG] Form never calls API — waitlist signup broken,2026-04-12T11:45:17Z,github.com
+Pull Request,ci: update dependency-review-action to v4.9.0 and Node.js 24,2026-04-12T11:18:05Z,github.com
+Pull Request,"Daily PR Audit & Qualitative Review - April 12, 2026",2026-04-12T11:08:21Z,github.com
+Issue,create skills for Claude for the repository,2026-04-12T10:44:38Z,github.com
+Issue,Network Performance Recommendations,2026-04-11T21:50:12Z,github.com
+Issue,SEO Recommendations,2026-04-11T21:49:09Z,github.com
+Issue,Critical Issues & Recommendations,2026-04-11T21:48:08Z,github.com
+Issue,Production Readiness Checklist,2026-04-11T21:45:36Z,github.com
+Issue,Network Performance Recommendations,2026-04-11T21:41:47Z,github.com
+Issue,Audit report areas for improvement ,2026-04-11T21:40:30Z,github.com
+Issue,Address audit report actions,2026-04-11T21:37:44Z,github.com
+Pull Request,"Fix design delivery checklist gaps: manifest, SEO, social images, footer anchor, design system docs",2026-04-11T18:22:32Z,github.com
+Pull Request,"Fix design delivery checklist gaps: social images, manifest, SEO, broken footer link, design system docs",2026-04-11T16:18:05Z,github.com
+Pull Request,"Daily PR Audit Automation & Review Summary (April 11, 2026)",2026-04-11T15:06:55Z,github.com
+Pull Request,fix: pin basic-ftp and lodash-es to resolve high-severity CVEs,2026-04-11T08:41:09Z,github.com
+Pull Request,"Add test coverage for identified gaps across components, hooks, and utils",2026-04-11T08:44:08Z,github.com
+Pull Request,"Daily PR Review Summary - April 10, 2026",2026-04-10T12:04:28Z,github.com
+Commit,Create ACTIONS-SPEC.md,2026-04-11T18:02:49Z,github.com
+Commit,Merge pull request #735 from shazzar00ni/claude/fix-axios-vulnerability-6pBlh,2026-04-10T06:40:18Z,github.com
+Commit,"test: add lockfile regression tests for axios, basic-ftp, and lodash-es",2026-04-10T06:38:16Z,github.com
+Commit,fix: pin basic-ftp and lodash-es to resolve high severity vulnerabilities,2026-04-10T06:30:23Z,github.com
+Commit,style: fix prettier formatting in workflow-validation.test.ts,2026-04-10T06:28:28Z,github.com
+Commit,fix: upgrade axios to 1.15.0 to resolve SSRF vulnerability,2026-04-10T06:23:08Z,github.com
+Commit,Merge pull request #716 from shazzar00ni/dependabot/npm_and_yarn/vite-7.3.2,2026-04-07T10:22:50Z,github.com
+Commit,chore(deps-dev): bump vite from 7.2.4 to 7.3.2,2026-04-06T20:30:21Z,github.com

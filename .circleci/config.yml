@@ -112,7 +112,7 @@ jobs:
           command: npm run build
           environment:
             NODE_ENV: production
-      - save-build-cache
+
       - persist_to_workspace:
           root: ~/project
           paths:

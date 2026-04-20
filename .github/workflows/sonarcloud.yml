@@ -13,9 +13,6 @@ permissions:
 jobs:
   Analysis:
     runs-on: ubuntu-latest
-jobs:
-  Analysis:
-    runs-on: ubuntu-latest
     env:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
@@ -30,19 +27,9 @@ jobs:
         uses: SonarSource/sonarcloud-github-action@4006f663ecaf1f8093e8e4abb9227f6041f52216
         env:
           SONAR_TOKEN: ${{ env.SONAR_TOKEN }}
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-
-      - name: Analyze with SonarCloud
-        uses: SonarSource/sonarcloud-github-action@4006f663ecaf1f8093e8e4abb9227f6041f52216
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          args: -Dsonar.projectKey=shazzar00ni_paperlyte-v2
+          args: >-
+            -Dsonar.projectKey=shazzar00ni_paperlyte-v2
             -Dsonar.organization=shazzar00ni
             -Dsonar.sources=src
             -Dsonar.tests=src

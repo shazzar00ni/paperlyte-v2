@@ -48,8 +48,6 @@ export const useTheme = () => {
       if (stored && isValidTheme(stored) && userHasExplicitPreference.current) {
         return stored
       }
-        return stored
-      }
     }
 
     // Fall back to system preference

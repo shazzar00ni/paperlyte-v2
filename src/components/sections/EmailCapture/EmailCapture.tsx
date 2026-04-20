@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { logError } from '@utils/monitoring'
-import { isValidEmail } from '@utils/validation'
+import { validateEmail } from '@utils/validation'
 import { Section } from '@components/layout/Section'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { Button } from '@components/ui/Button'
 import { Icon } from '@components/ui/Icon'
 import { WAITLIST_COUNT, LAUNCH_QUARTER } from '@constants/waitlist'
-import { EMAIL_CAPTURE_CONTENT as COPY, BENEFITS } from '@components/sections/EmailCapture/emailCapture.data'
+import { EMAIL_CAPTURE_CONTENT as COPY, BENEFITS } from './emailCapture.data'
 import styles from './EmailCapture.module.css'
 
 
@@ -26,8 +26,9 @@ export const EmailCapture = (): React.ReactElement => {
 
     const normalizedEmail = email.trim().toLowerCase()
 
-    if (!isValidEmail(normalizedEmail)) {
-      setError('Please enter a valid email address.')
+    const validation = validateEmail(normalizedEmail)
+    if (!validation.isValid) {
+      setError(validation.error ?? 'Please enter a valid email address.')
       return
     }
 

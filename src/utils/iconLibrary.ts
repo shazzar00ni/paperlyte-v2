@@ -67,6 +67,10 @@ import {
   faTwitter, // Twitter/X social link
   faApple, // Apple platform
   faWindows, // Windows platform
+  faInstagram, // Instagram social link (defensive fallback; primary render via iconPaths SVG)
+  faFacebook, // Facebook social link (defensive fallback; primary render via iconPaths SVG)
+  faLinkedin, // LinkedIn social link (defensive fallback; primary render via iconPaths SVG)
+  faXTwitter, // X/Twitter social link (defensive fallback; primary render via iconPaths SVG)
 } from '@fortawesome/free-brands-svg-icons'
 
 // Add all icons to the library
@@ -119,7 +123,11 @@ library.add(
   faGithub,
   faTwitter,
   faApple,
-  faWindows
+  faWindows,
+  faInstagram,
+  faFacebook,
+  faLinkedin,
+  faXTwitter
 )
 
 /**

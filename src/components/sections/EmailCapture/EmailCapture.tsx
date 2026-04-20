@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { logError } from '@utils/monitoring'
 import { Section } from '@components/layout/Section'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { Button } from '@components/ui/Button'
 import { Icon } from '@components/ui/Icon'
 import { WAITLIST_COUNT, LAUNCH_QUARTER } from '@constants/waitlist'
+import { logError } from '@utils/monitoring'
 import styles from './EmailCapture.module.css'
 
 const BENEFITS = [
@@ -31,26 +31,37 @@ export const EmailCapture = (): React.ReactElement => {
     setError(null)
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      const response = await fetch('/.netlify/functions/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      })
+
+      const data = (await response.json().catch(() => ({}))) as { error?: string } | null
+
+      if (!response.ok) {
+        throw new Error(data?.error ?? 'Subscription failed')
+      }
 
       setIsLoading(false)
       setIsSubmitted(true)
     } catch (err) {
       const error = err instanceof Error ? err : new Error(String(err))
-      logError(error, { tags: { context: 'waitlist-submit' } })
+      logError(
+        error,
+        {
+          tags: { feature: 'waitlist', action: 'submit_form' },
+        },
+        'EmailCapture'
+      )
 
+      const msg = error.message.toLowerCase()
       let message = 'Failed to join waitlist. Please try again.'
-      if (
-        error.name === 'TypeError' ||
-        error.message.toLowerCase().includes('network') ||
-        error.message.toLowerCase().includes('fetch')
-      ) {
+      if (error.name === 'TypeError' || msg.includes('network') || msg.includes('fetch')) {
         message = 'Network error. Please check your connection and try again.'
-      } else if (
-        error.message.toLowerCase().includes('invalid') ||
-        error.message.toLowerCase().includes('validation')
-      ) {
+      } else if (msg.includes('too many')) {
+        message = 'Too many requests. Please try again in a minute.'
+      } else if (msg.includes('invalid') || msg.includes('validation')) {
         message = 'Invalid email address. Please check and try again.'
       }
 

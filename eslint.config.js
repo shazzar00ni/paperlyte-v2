@@ -45,6 +45,15 @@ export default defineConfig([
       // Browser globals (window, document, etc.)
       globals: globals.browser,
     },
+
+    rules: {
+      // Allow unused parameters prefixed with _ and type-only parameters
+      // (e.g., in type aliases like `type EasingFunction = (t: number) => number`)
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+      ],
+    },
   },
   // Node.js globals for build-tool configs and server-side scripts.
   // These files run in Node, not the browser, so process/Buffer/__dirname etc.

@@ -101,12 +101,19 @@ test.describe('Landing Page', () => {
     });
 
     // Validate Core Web Vitals thresholds
-    expect(metrics.fcp).not.toBeNull();
-    expect(metrics.fcp).toBeLessThan(2000); // FCP < 2s
-    expect(metrics.lcp).not.toBeNull(); // fail if LCP was never observed
-    expect(metrics.lcp).toBeLessThan(2500); // LCP < 2.5s (good threshold)
-    expect(metrics.cls).not.toBeNull(); // fail if CLS observer never fired
-    expect(metrics.cls).toBeLessThan(0.1); // CLS < 0.1 (good threshold)
+    const { fcp, lcp, cls } = metrics;
+
+    expect(fcp).not.toBeNull();
+    expect(lcp).not.toBeNull(); // fail if LCP was never observed
+    expect(cls).not.toBeNull(); // fail if CLS observer never fired
+
+    if (fcp === null || lcp === null || cls === null) {
+      return;
+    }
+
+    expect(fcp).toBeLessThan(2000); // FCP < 2s
+    expect(lcp).toBeLessThan(2500); // LCP < 2.5s (good threshold)
+    expect(cls).toBeLessThan(0.1); // CLS < 0.1 (good threshold)
   });
 
   test('should show mobile-specific UI on small screens', async ({ page, isMobile }) => {

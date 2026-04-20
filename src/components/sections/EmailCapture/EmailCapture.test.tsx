@@ -67,10 +67,11 @@ describe('EmailCapture Section', () => {
     })
   })
 
-  it('shows a generic error message when the API returns a non-OK response', async () => {
+  it('shows a generic error message when the API returns a 5xx response', async () => {
     fetchMock.mockResolvedValueOnce({
       ok: false,
-      json: () => Promise.resolve({ message: 'Subscription failed' }),
+      status: 500,
+      json: () => Promise.resolve({ error: 'Internal server error' }),
     })
 
     const user = userEvent.setup()
@@ -81,6 +82,42 @@ describe('EmailCapture Section', () => {
 
     await waitFor(() => {
       expect(screen.getByRole('alert')).toBeInTheDocument()
+    })
+  })
+
+  it('shows the server error message for a 400 response without reaching the catch block', async () => {
+    fetchMock.mockResolvedValueOnce({
+      ok: false,
+      status: 400,
+      json: () => Promise.resolve({ error: 'Invalid email address' }),
+    })
+
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
+    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toHaveTextContent('Invalid email address')
+    })
+  })
+
+  it('shows the server error message for a 429 rate-limit response', async () => {
+    fetchMock.mockResolvedValueOnce({
+      ok: false,
+      status: 429,
+      json: () => Promise.resolve({ error: 'Too many requests. Please try again in a minute.' }),
+    })
+
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
+    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toHaveTextContent(/Too many requests/)
     })
   })
 

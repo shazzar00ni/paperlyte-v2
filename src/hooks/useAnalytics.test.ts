@@ -2,11 +2,21 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { renderHook } from '@testing-library/react'
 import { useAnalytics } from './useAnalytics'
 import { createScrollTracker } from '../analytics/scrollDepth'
+import { trackEvent, AnalyticsEvents } from '@utils/analytics'
 
 // Stub createScrollTracker so tests don't depend on DOM scroll events
 vi.mock('../analytics/scrollDepth', () => ({
   createScrollTracker: vi.fn(() => ({ disable: vi.fn() })),
 }))
+
+// Stub trackEvent so we can assert the scroll-depth callback wiring
+vi.mock('@utils/analytics', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@utils/analytics')>()
+  return {
+    ...actual,
+    trackEvent: vi.fn(),
+  }
+})
 
 describe('useAnalytics', () => {
   beforeEach(() => {
@@ -16,6 +26,18 @@ describe('useAnalytics', () => {
   it('initialises scroll tracking on mount when enabled', () => {
     renderHook(() => useAnalytics(true))
     expect(createScrollTracker).toHaveBeenCalledTimes(1)
+  })
+
+  it('fires SCROLL_DEPTH event when the scroll callback is invoked', () => {
+    renderHook(() => useAnalytics(true))
+
+    // Grab the callback that useAnalytics passed to createScrollTracker
+    const cb = vi.mocked(createScrollTracker).mock.calls[0][0]
+    cb(75 as Parameters<typeof cb>[0])
+
+    expect(trackEvent).toHaveBeenCalledWith(AnalyticsEvents.SCROLL_DEPTH, {
+      depth_percentage: 75,
+    })
   })
 
   it('does not initialise scroll tracking when disabled', () => {

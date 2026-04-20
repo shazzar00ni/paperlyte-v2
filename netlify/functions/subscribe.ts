@@ -1,6 +1,6 @@
 import type { Handler, HandlerEvent } from "@netlify/functions";
 import { z } from "zod";
-import { normalizeEmail } from "../../src/utils/validation";
+import { validateEmail } from "../../src/utils/validation";
 
 // Rate limiting store (in-memory, resets on cold start)
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
@@ -226,16 +226,18 @@ export const handler: Handler = async (event: HandlerEvent) => {
       };
     }
 
-    // Normalize (trim + lowercase) and validate in one step; returns null for invalid input
-    const normalizedEmail = normalizeEmail(email);
-
-    if (!normalizedEmail) {
+    // Validate first to get a specific user-facing error (e.g. disposable domain rejection),
+    // then derive the normalized form for storage/ConvertKit.
+    const validation = validateEmail(email);
+    if (!validation.isValid) {
       return {
         statusCode: 400,
         headers,
-        body: JSON.stringify({ error: "Invalid email address" }),
+        body: JSON.stringify({ error: validation.error ?? "Invalid email address" }),
       };
     }
+
+    const normalizedEmail = email.trim().toLowerCase();
 
     // Subscribe to ConvertKit
     const result = await subscribeToConvertKit(normalizedEmail);

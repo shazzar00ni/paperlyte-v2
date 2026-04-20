@@ -240,10 +240,11 @@ workflows:
       - lint
       - test-unit
 
-      # Stage 2: production build (depends on lint passing to gate quality)
+      # Stage 2: production build (depends on Stage 1 passing to gate quality)
       - build:
           requires:
             - lint
+            - test-unit
 
       # Stage 3: post-build validation (parallel, all need dist artifact)
       - size-limit:

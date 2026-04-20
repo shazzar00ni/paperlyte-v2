@@ -3,7 +3,7 @@ import json
 import subprocess
 import os
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 
 def run_command(args):
     """Executes a command securely using list-based arguments and shell=False."""
@@ -103,7 +103,8 @@ def main():
                 run_command(['gh', 'pr', 'comment', str(pr_num), '--body', body])
 
     # Generate Markdown Summary
-    date_str = datetime.now().strftime('%Y-%m-%d')
+    # Use explicit UTC to match the workflow's midnight-UTC schedule
+    date_str = datetime.now(timezone.utc).strftime('%Y-%m-%d')
     total = data.get('total_branches', 0)
 
     summary = f'## {date_str}\n\n'

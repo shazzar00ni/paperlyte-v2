@@ -52,8 +52,8 @@ def main():
     # Get all remote unmerged branches relative to origin/main
     branches_raw = run_command(["git", "branch", "-r", "--no-merged", "origin/main"])
     if not branches_raw:
-        print(json.dumps({"error": "No unmerged branches found or error during git branch command."}))
-        return
+        print("Error: no unmerged branches found, or git branch command failed.", file=sys.stderr)
+        sys.exit(1)
 
     # Filter out empty lines and the symbolic HEAD ref
     branches = [b.strip() for b in branches_raw.split('\n') if b.strip() and "origin/HEAD" not in b]

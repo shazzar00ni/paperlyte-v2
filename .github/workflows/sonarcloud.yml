@@ -51,13 +51,13 @@ jobs:
 
       - name: Analyze with SonarCloud
         if: ${{ secrets.SONAR_TOKEN != '' }}
-        # Pinned to SHA 383f7e52eae3ab0510c3cb0e7d9d150bbaeab838 (v3.1.0)
-        # Configuration is loaded from sonar-project.properties
-        uses: SonarSource/sonarcloud-github-action@383f7e52eae3ab0510c3cb0e7d9d150bbaeab838
+        # Pinned to v4.0.0 SHA to ensure stable release and security.
+        # Configuration keys are loaded from sonar-project.properties to avoid false-positive alerts.
+        uses: SonarSource/sonarcloud-github-action@02ef91109b2d589e757aefcfb2854c2783fd7b19
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
-          # Additional arguments for the SonarScanner CLI
+          # Arguments are omitted here as they are provided in sonar-project.properties
           args: ""
           # When you need the analysis to take place in a directory other than the one from which it was launched, default is .
           projectBaseDir: .

@@ -225,13 +225,12 @@ jobs:
         id: size-limit
         run: npm run size
 
-      - name: Compare bundle sizes
-        # Temporarily disabled to resolve build deadlock between main and PR
-        if: false && github.event_name == 'pull_request'
-        uses: andresz1/size-limit-action@94bc357df29c36c8f8d50ea497c3e225c3c95d1d # v1.8.0.6.1.8.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          skip_step: install
+      # - name: Compare bundle sizes
+      #   if: github.event_name == 'pull_request'
+      #   uses: andresz1/size-limit-action@94bc357df29c36c8f8d50ea497c3e225c3c95d1d # v1.8.0.6.1.8.0
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     skip_step: install
 
       - name: Bundle Size Summary
         if: always()

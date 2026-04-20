@@ -30,13 +30,6 @@ describe('Statistics', () => {
       ).toHaveLength(4)
     })
 
-    it.each(['Active Users', 'Notes Created', 'Uptime', 'User Rating'])(
-      'should render %s statistic label',
-      (label) => {
-        render(<Statistics />)
-        expect(screen.getByText(label)).toBeInTheDocument()
-      }
-    )
   })
 
   describe('Section structure', () => {

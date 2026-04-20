@@ -5,13 +5,6 @@ import path from 'path'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  // @vercel/analytics uses __IS_VERCEL_DEPLOYMENT__ as a build-time constant.
-  // Vite replaces it during production builds, but the test environment does
-  // not — resulting in a ReferenceError when the <Analytics /> component is
-  // rendered in tests. Define it as false so the analytics no-op path is taken.
-  define: {
-    __IS_VERCEL_DEPLOYMENT__: 'false',
-  },
   test: {
     // Use jsdom for browser-like environment
     environment: 'jsdom',

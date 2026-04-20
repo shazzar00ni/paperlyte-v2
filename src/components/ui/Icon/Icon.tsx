@@ -80,12 +80,13 @@ export const Icon = ({
   //    or "fa-house" → "home" → "fa-home"), enabling aliases without duplicating SVG data
   // 3. Bare-name convenience prefix (e.g. "bolt" → "fa-bolt")
   const aliasedKey = `fa-${convertIconName(baseName)}`
+  const fallbackKey = baseName.startsWith('fa-') ? baseName : `fa-${baseName}`
   const resolvedKey =
-    safePropertyAccess(iconPaths, baseName) !== undefined
+    safePropertyAccess(iconPaths, baseName) !== null
       ? baseName
-      : safePropertyAccess(iconPaths, aliasedKey) !== undefined
+      : safePropertyAccess(iconPaths, aliasedKey) !== null
         ? aliasedKey
-        : `fa-${baseName}`
+        : fallbackKey
 
   // Safely check if icon exists in iconPaths to prevent prototype pollution
   const paths = safePropertyAccess(iconPaths, resolvedKey)

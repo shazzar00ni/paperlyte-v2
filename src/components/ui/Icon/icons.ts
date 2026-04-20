@@ -33,7 +33,7 @@ export const iconPaths: Record<string, string> = {
 
   // Navigation & Controls
   'fa-home': 'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z M9 22V12h6v10',
-  // fa-house is an alias for fa-home — resolved via iconNameMap in Icon.tsx
+  // fa-house is an alias for fa-home — resolved via convertIconName in @utils/iconLibrary
   'fa-bars': 'M3 6h18 M3 12h18 M3 18h18',
   'fa-xmark': 'M18 6L6 18 M6 6l12 12',
   'fa-chevron-down': 'M6 9l6 6 6-6',

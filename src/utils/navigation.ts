@@ -4,6 +4,8 @@
  *
  * @param sectionId - The ID of the section to scroll to (without the # prefix)
  */
+import { logError } from '@utils/monitoring'
+
 export function scrollToSection(sectionId: string): void {
   // SSR guard - document is not available during server-side rendering
   if (typeof document === 'undefined') {
@@ -15,6 +17,18 @@ export function scrollToSection(sectionId: string): void {
     element.scrollIntoView({ behavior: 'smooth' })
   }
 }
+
+export interface SafeUrlOptions {
+  /**
+   * When true, allows external HTTP/HTTPS URLs (e.g., https://example.com).
+   * When false (default), only same-origin and relative URLs are permitted.
+   * Use allowExternal: true only for rendering <a> tags, never for window.location assignments.
+   */
+  allowExternal?: boolean
+}
+
+// eslint-disable-next-line no-control-regex
+const CONTROL_CHAR_PATTERN = /[\x00-\x1F\x7F]/
 
 /**
  * Pattern matching dangerous protocols (javascript:, data:, vbscript:, file:, about:).
@@ -87,14 +101,17 @@ export function isAllowedAbsoluteUrl(url: string): boolean {
 
 /**
  * Validates if a URL is safe for navigation (prevents XSS and injection attacks).
- * Allows relative URLs, same-origin URLs, and legitimate external HTTPS/HTTP URLs.
- * Blocks dangerous protocols like javascript:, data:, vbscript:, etc.
+ * By default, only allows relative URLs and same-origin URLs to prevent open redirects.
+ * Pass { allowExternal: true } to also allow external HTTP/HTTPS URLs (for <a> tags).
+ * Always blocks dangerous protocols like javascript:, data:, vbscript:, etc.
  *
  * @param url - The URL to validate
+ * @param options - Validation options
  * @returns true if the URL is safe for navigation, false otherwise
  */
-export function isSafeUrl(url: string): boolean {
-  // SSR guard
+export function isSafeUrl(url: string, options: SafeUrlOptions = {}): boolean {
+  const { allowExternal = false } = options
+
   if (typeof window === 'undefined') {
     return false
   }
@@ -106,13 +123,12 @@ export function isSafeUrl(url: string): boolean {
   const trimmedUrl = url.trim()
 
   // Reject ASCII control characters (null bytes, etc.)
-  // eslint-disable-next-line no-control-regex
-  if (/[\x00-\x1F\x7F]/.test(trimmedUrl)) {
+  if (CONTROL_CHAR_PATTERN.test(trimmedUrl)) {
     return false
   }
 
-  // Block protocol-relative URLs (//example.com)
-  if (trimmedUrl.startsWith('//')) {
+  // Block protocol-relative URLs and backslash variants (//example.com, \/example.com, \\example.com)
+  if (/^[\\/]{2}/.test(trimmedUrl)) {
     return false
   }
 
@@ -124,27 +140,40 @@ export function isSafeUrl(url: string): boolean {
     return true
   }
 
-  // Reject slash-prefixed paths that failed isRelativeUrl due to :// injection
+  // Slash-prefixed paths that failed isRelativeUrl (e.g., contain ://)
+  // Use URL constructor to check if they resolve safely as same-origin
   if (trimmedUrl.startsWith('/')) {
-    return false
+    try {
+      const parsed = new URL(trimmedUrl, window.location.origin)
+      return (parsed.protocol === 'http:' || parsed.protocol === 'https:') && parsed.origin === window.location.origin
+    } catch {
+      return false
+    }
   }
 
-  return isAllowedAbsoluteUrl(trimmedUrl)
+  // Absolute or naked-path URLs
+  if (allowExternal) {
+    return isAllowedAbsoluteUrl(trimmedUrl)
+  }
+
+  // Default: same-origin only (prevents open redirects)
+  try {
+    const parsed = new URL(trimmedUrl, window.location.origin)
+    return (parsed.protocol === 'http:' || parsed.protocol === 'https:') && parsed.origin === window.location.origin
+  } catch {
+    return false
+  }
 }
 
 /**
  * Safely navigates to a URL by validating it first.
- * Allows relative URLs, HTTP/HTTPS URLs (including external), and blocks dangerous protocols
- * like javascript:, data:, vbscript:, etc.
+ * Only allows relative URLs and same-origin HTTP/HTTPS URLs to prevent open redirects.
+ * Blocks dangerous protocols like javascript:, data:, vbscript:, etc.
  *
- * SECURITY NOTE: This function allows external HTTP/HTTPS URLs. For use cases requiring
- * same-origin navigation only (to prevent open redirects), implement additional domain
- * validation before calling this function or use a different approach.
+ * SECURITY: This function restricts navigation to same-origin URLs only. External URLs
+ * are rejected to prevent open redirect attacks via user-controlled input.
  *
- * Safe usage: Only call with hardcoded URLs or URLs from trusted sources. Never pass
- * user-controlled query parameters directly to this function without domain validation.
- *
- * @param url - The URL to navigate to
+ * @param url - The URL to navigate to (must be relative or same-origin)
  * @returns true if navigation was performed, false if URL was rejected or navigation not needed (SSR)
  */
 export function safeNavigate(url: string): boolean {
@@ -155,12 +184,19 @@ export function safeNavigate(url: string): boolean {
   }
 
   if (!isSafeUrl(url)) {
-    if (import.meta.env.DEV) {
-      console.warn(`Navigation blocked: URL "${url}" failed security validation`)
-    }
+    logError(
+      new Error('Navigation blocked: URL failed security validation'),
+      { severity: 'medium', errorInfo: { reason: 'unsafe_url', urlPresent: true } },
+      'navigation'
+    )
     return false
   }
 
-  window.location.href = url
-  return true
+  try {
+    // SECURITY: URL has been validated as same-origin and safe via isSafeUrl()
+    window.location.assign(url)
+    return true
+  } catch {
+    return false
+  }
 }

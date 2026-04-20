@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import subprocess
 import sys
-
+import re
 import signal
 import json
 
@@ -93,7 +93,7 @@ def main():
         else:
             issues.append("Could not read src/utils/navigation.ts")
 
-        branch_name = branch.replace("origin/", "")
+        branch_name = branch.removeprefix("origin/")
         if issues:
             audit_data["blocked"].append({
                 "branch": branch_name,

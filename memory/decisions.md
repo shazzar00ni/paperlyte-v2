@@ -75,7 +75,7 @@ This file tracks key architectural, design, and technical decisions made during 
 - **Date**: 2026-04-20 (known pre-existing issue)
 - **Decision**: `worker-src 'none'` in production CSP — Sentry Session Replay likely silently disabled
 - **Rationale**: Sentry `replayIntegration()` is configured in `src/main.tsx` but its web-worker transport is blocked by the current CSP. This is a pre-existing issue unrelated to the CSP/analytics PR. To enable Replay, `worker-src 'self' blob:` would need to be added to both `netlify.toml` and `vercel.json`.
-- **Alternatives considered**: `worker-src 'self' blob:'` (would enable Replay), removing `replayIntegration()` entirely
+- **Alternatives considered**: `worker-src 'self' blob:` (would enable Replay), removing `replayIntegration()` entirely
 
 ## Security
 

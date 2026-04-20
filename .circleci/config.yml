@@ -13,13 +13,13 @@ orbs:
 executors:
   node-executor:
     docker:
-      - image: cimg/node:22.19
+      - image: cimg/node:20.19
     resource_class: medium
     working_directory: ~/project
 
   node-browsers-executor:
     docker:
-      - image: cimg/node:22.19-browsers
+      - image: cimg/node:20.19-browsers
     resource_class: medium+
     working_directory: ~/project
 

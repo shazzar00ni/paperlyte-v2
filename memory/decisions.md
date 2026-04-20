@@ -67,16 +67,22 @@ This file tracks key architectural, design, and technical decisions made during 
 - **Rationale**: Production visibility into errors; filtering prevents accidental PII capture
 - **Alternatives considered**: Datadog, Bugsnag, no monitoring
 
-- **Date**: YYYY-MM-DD (unknown)
-- **Decision**: Vercel Analytics for performance metrics
-- **Rationale**: <1KB, cookie-less performance metrics with a lightweight integration; `@vercel/analytics` is used even when deploying on Netlify
-- **Alternatives considered**: Custom performance tracking
+- **Date**: 2026-04-20
+- **Decision**: Removed `@vercel/analytics` — component stripped from `App.tsx`, dependency removed from `package.json`
+- **Rationale**: Site is deployed on Netlify; `/_vercel/insights/script.js` does not exist there, causing a MIME-type console error that degraded the Lighthouse Best Practices score
+- **Alternatives considered**: Conditional rendering per platform, keeping it for a future Vercel deployment
+
+- **Date**: 2026-04-20 (known pre-existing issue)
+- **Decision**: `worker-src 'none'` in production CSP — Sentry Session Replay likely silently disabled
+- **Rationale**: Sentry `replayIntegration()` is configured in `src/main.tsx` but its web-worker transport is blocked by the current CSP. This is a pre-existing issue unrelated to the CSP/analytics PR. To enable Replay, `worker-src 'self' blob:` would need to be added to both `netlify.toml` and `vercel.json`.
+- **Alternatives considered**: `worker-src 'self' blob:` (would enable Replay), removing `replayIntegration()` entirely
 
 ## Security
 
 - **Date**: YYYY-MM-DD (unknown)
 - **Decision**: Two-tier CSP — relaxed in dev (allows unsafe-eval for Vite HMR), strict in prod via hosting-provided HTTP headers (`vercel.json` / `netlify.toml`)
 - **Rationale**: Dev ergonomics vs. production security; CSP meta tags not sufficient for frame-ancestors
+- **Note**: `netlify.toml` and `vercel.json` must always have identical CSP values. Drift between them is a common bug source — any future CSP change must update both files.
 - **Alternatives considered**: Single CSP for both environments
 
 - **Date**: YYYY-MM-DD (unknown)

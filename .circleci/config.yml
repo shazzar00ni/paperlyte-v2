@@ -188,7 +188,7 @@ jobs:
       - run:
           name: Start preview server & run full E2E suite
           command: |
-            npx serve -s dist -l 4173 &
+            npm run preview -- --host 127.0.0.1 --port 4173 &
             npx wait-on http://localhost:4173 --timeout 60000
             npx playwright test
           environment:
@@ -218,7 +218,7 @@ jobs:
       - run:
           name: Start preview server
           command: |
-            npx serve -s dist -l 4173 &
+            npm run preview -- --host 127.0.0.1 --port 4173 &
             npx wait-on http://localhost:4173 --timeout 60000
       - run:
           name: Run Lighthouse CI

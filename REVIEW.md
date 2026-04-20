@@ -23,3 +23,12 @@
 
 - **Shard indexing**: CircleCI's `CIRCLE_NODE_INDEX` is 0-based, but Playwright `--shard` expects 1-based indices. Always compute `SHARD_INDEX=$((CIRCLE_NODE_INDEX + 1))`.
 - **Preview server**: Use `npm run preview -- --host 127.0.0.1 --port 4173` consistently across all jobs that need to serve the built app.
+
+## TODOs
+
+- [ ] **Tighten Lighthouse CI thresholds**: `.lighthouserc.json` gates at Performance ≥ 0.70 and Accessibility ≥ 0.82, but `AGENTS.md` targets Performance > 90 and Accessibility > 95. Bump `minScore` values in `.lighthouserc.json` to match the documented targets so regressions are caught by CI.
+- [ ] **Consolidate Vitest reporter config**: `vitest.config.ts` sets `outputFile: { junit: 'junit.xml' }` but CI overrides it via CLI flags to `test-results/junit.xml`. Update `vitest.config.ts` to use `test-results/junit.xml` as the default and remove the CLI override to have a single source of truth.
+- [ ] **Add `engines` field to `package.json`**: No `.nvmrc`, `.node-version`, or `engines` field exists. Add `"engines": { "node": ">=20" }` to make the required Node version explicit project-wide.
+- [ ] **Resolve duplicate CI systems**: Both GitHub Actions (`.github/workflows/ci.yml`) and CircleCI (`.circleci/config.yml`) run the same pipeline stages on every push/PR, doubling compute costs. Decide on a primary CI system or document the multi-platform strategy.
+- [ ] **Cache `~/.npm` instead of `node_modules` in CircleCI**: The `save-node-cache` command caches `node_modules`, but `npm ci` deletes it before installing. Change the cached path to `~/.npm`.
+- [ ] **Migrate nightly workflow to scheduled pipelines**: The `nightly-e2e` workflow uses the legacy `triggers` → `schedule` syntax which is deprecated. Migrate to CircleCI Scheduled Pipelines for better reliability.

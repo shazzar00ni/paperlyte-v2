@@ -1,0 +1,61 @@
+Type,Title,Last Visited,Host
+Pull Request,test(flaky): fix Hero.test.tsx.Hero > Rendering > should render the main headline,2026-04-19T23:14:59Z,github.com
+Pull Request,Implement Daily PR Audit System and Update Summary,2026-04-19T11:31:41Z,github.com
+Pull Request,fix: add missing checkout step to Claude Code Action workflow,2026-04-18T20:04:02Z,github.com
+Pull Request,Update memory files with full codebase context,2026-04-19T13:14:58Z,github.com
+Pull Request,fix(tech-debt): address high-priority technical debt items,2026-04-18T18:28:59Z,github.com
+Pull Request,Restore Daily PR Audit System and Update Summary,2026-04-18T10:39:17Z,github.com
+Pull Request,fix: resolve Lighthouse CSP console errors,2026-04-19T09:14:32Z,github.com
+Pull Request,docs: add PR review action plan,2026-04-17T14:36:18Z,github.com
+Pull Request,Daily PR Audit System Implementation and Summary Update,2026-04-17T19:19:26Z,github.com
+Pull Request,Automated Daily PR Audit Summary (2026-04-16),2026-04-16T10:59:12Z,github.com
+Pull Request,Daily PR Review Summary - 2026-04-15,2026-04-15T11:41:55Z,github.com
+Pull Request,fix: add StatisticsProps type and complete barrel export for Statistics section,2026-04-18T16:28:45Z,github.com
+Pull Request,"Daily PR Audit & Qualitative Review - April 14, 2026",2026-04-15T10:18:03Z,github.com
+Pull Request,chore(deps-dev): bump follow-redirects from 1.15.11 to 1.16.0,2026-04-14T12:21:21Z,github.com
+Pull Request,"April 13, 2026 Daily PR Audit & Qualitative Reviews",2026-04-17T17:54:29Z,github.com
+Pull Request,ci: bump actions/upload-artifact from 7.0.0 to 7.0.1,2026-04-14T12:23:28Z,github.com
+Pull Request,ci: bump codelytv/pr-size-labeler from 1.10.3 to 1.10.4,2026-04-14T12:24:06Z,github.com
+Pull Request,chore(deps-dev): bump jsdom from 29.0.0 to 29.0.2,2026-04-14T12:16:39Z,github.com
+Pull Request,chore(deps-dev): bump @netlify/functions from 5.1.3 to 5.2.0,2026-04-14T12:24:43Z,github.com
+Pull Request,chore(deps): bump @sentry/react from 10.46.0 to 10.48.0,2026-04-14T12:29:12Z,github.com
+Pull Request,chore(deps-dev): bump postcss from 8.5.8 to 8.5.9,2026-04-14T12:21:29Z,github.com
+Pull Request,chore(deps): bump the production-dependencies group across 1 directory with 2 updates,2026-04-17T07:06:57Z,github.com
+Pull Request,test(flaky): fix Icon.test.tsx.Icon > Color normalization > should prepend # to bare 6-digit hex colors,2026-04-14T13:09:10Z,github.com
+Pull Request,"fix: apply 12-issue patch set for analytics, form, and code quality",2026-04-19T07:47:27Z,github.com
+Issue,[CLEANUP] Add missing barrel export to sections/Statistics/,2026-04-18T12:14:47Z,github.com
+Issue,[BUG] Divergent email regexes between client and Netlify function,2026-04-17T20:11:24Z,github.com
+Pull Request,ci: update dependency-review-action to v4.9.0 and Node.js 24,2026-04-14T04:25:00Z,github.com
+Issue,Critical Issues & Recommendations,2026-04-17T20:15:20Z,github.com
+Pull Request,"Fix design delivery checklist gaps: manifest, SEO, social images, footer anchor, design system docs",2026-04-16T08:55:31Z,github.com
+Pull Request,"Fix design delivery checklist gaps: social images, manifest, SEO, broken footer link, design system docs",2026-04-16T09:03:39Z,github.com
+Commit,Merge pull request #646 from shazzar00ni/claude/add-eslint-config-ZCKYQ,2026-04-19T07:36:22Z,github.com
+Commit,Update .eslintrc.cjs,2026-04-19T07:34:46Z,github.com
+Commit,style: fix prettier formatting in eslint.config.js,2026-04-18T19:38:34Z,github.com
+Commit,fix(eslint): add .*.cjs to Node override so module/exports are defined globals,2026-04-18T19:36:55Z,github.com
+Commit,fix(eslint): add Node globals override for config and script TS files,2026-04-18T19:33:46Z,github.com
+Commit,Update .eslintrc.cjs,2026-04-18T19:30:29Z,github.com
+Commit,Merge branch 'main' into claude/add-eslint-config-ZCKYQ,2026-04-18T19:30:17Z,github.com
+Commit,Merge pull request #784 from shazzar00ni/claude/update-memory-files-HtIA8,2026-04-18T19:20:29Z,github.com
+Commit,Update memory/user.md,2026-04-18T19:19:28Z,github.com
+Commit,Update memory/preferences.md,2026-04-18T19:17:20Z,github.com
+Commit,Normalize decision dates to YYYY-MM-DD (unknown) placeholder,2026-04-18T19:07:55Z,github.com
+Commit,Correct analytics decisions to reflect actual codebase state,2026-04-18T19:07:12Z,github.com
+Commit,Normalize decision dates to 'unknown' placeholder,2026-04-18T19:05:55Z,github.com
+Commit,Update memory/preferences.md,2026-04-18T19:04:51Z,github.com
+Commit,Update memory/preferences.md,2026-04-18T19:04:42Z,github.com
+Commit,Update memory/user.md,2026-04-18T19:04:27Z,github.com
+Commit,Replace ephemeral PR number with durable in-repo doc citation,2026-04-18T19:03:39Z,github.com
+Commit,Update memory/user.md,2026-04-18T19:03:08Z,github.com
+Commit,Update memory/people.md,2026-04-18T19:02:41Z,github.com
+Commit,Update memory/decisions.md,2026-04-18T18:57:27Z,github.com
+Commit,Update memory/decisions.md,2026-04-18T18:57:19Z,github.com
+Commit,Update memory/decisions.md,2026-04-18T18:57:11Z,github.com
+Commit,Merge branch 'main' into claude/update-memory-files-HtIA8,2026-04-18T18:56:59Z,github.com
+Commit,Update README with screenshot and clean up content,2026-04-18T16:01:23Z,github.com
+Commit,Enhance README with app description and badges,2026-04-18T15:47:54Z,github.com
+Commit,Add Codacy Security Scan badge,2026-04-18T15:44:15Z,github.com
+Commit,Merge pull request #776 from shazzar00ni/claude/fix-issue-763-9GUd3,2026-04-18T12:14:46Z,github.com
+Commit,fix: remove React import and use (): React.ReactElement pattern,2026-04-18T12:13:42Z,github.com
+Commit,fix: resolve high severity basic-ftp vulnerability via npm audit fix,2026-04-18T12:09:50Z,github.com
+Commit,fix: revert to section-standard (): React.ReactElement typing pattern,2026-04-17T22:41:15Z,github.com

@@ -34,7 +34,7 @@
 
 - Analytics is gated by the `VITE_ANALYTICS_ENABLED` environment variable.
 - Sentry must filter sensitive query parameters before sending events. The filter list is in `src/main.tsx` — add parameters there, not inline.
-- GA4 is the current analytics runtime (`@utils/analytics`). Migration to Plausible (privacy-first) is a planned future step. Do not add new direct GA4 calls — route through `useAnalytics()`.
+- The legacy GA4 integration exists in `@utils/analytics` and is still used by the `useAnalytics()` hook. The newer privacy-first analytics module lives in `src/analytics/` and uses Plausible as the recommended provider. Do not add new direct GA4 calls — route through `useAnalytics()` or the `src/analytics/` module.
 
 ## Headers
 

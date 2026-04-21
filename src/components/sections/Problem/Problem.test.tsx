@@ -5,7 +5,7 @@ import { Problem } from './Problem'
 describe('Problem Section', () => {
   it('renders the section title', () => {
     render(<Problem />)
-    expect(screen.getByText('Why note-taking apps suck right now')).toBeInTheDocument()
+    expect(screen.getByText('Why note-taking apps keep slowing you down')).toBeInTheDocument()
   })
 
   it('renders the problem description', () => {

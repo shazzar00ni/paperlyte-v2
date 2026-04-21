@@ -25,7 +25,7 @@ describe('CTA', () => {
 
   it('should render waitlist message', () => {
     render(<CTA />)
-    expect(screen.getByText(/Join the waitlist today and be among the first/i)).toBeInTheDocument()
+    expect(screen.getByText(/Join the waitlist and get early access/i)).toBeInTheDocument()
   })
 
   it('should render Join the Waitlist button', () => {
@@ -35,10 +35,10 @@ describe('CTA', () => {
     expect(button).toBeInTheDocument()
   })
 
-  it('should render Watch the Demo Again button', () => {
+  it('should render Watch the Demo button', () => {
     render(<CTA />)
 
-    const button = screen.getByRole('button', { name: /Watch the Demo Again/i })
+    const button = screen.getByRole('button', { name: /Watch the Demo/i })
     expect(button).toBeInTheDocument()
   })
 

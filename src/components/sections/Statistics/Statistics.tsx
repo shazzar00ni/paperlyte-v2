@@ -2,6 +2,7 @@ import { Section } from '@components/layout/Section'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { CounterAnimation } from '@components/ui/CounterAnimation'
 import { SVGPathAnimation } from '@components/ui/SVGPathAnimation'
+import { WAITLIST_COUNT } from '@constants/waitlist'
 import styles from './Statistics.module.css'
 
 /**
@@ -27,9 +28,9 @@ interface StatisticItem {
  */
 const statistics: StatisticItem[] = [
   {
-    value: 50000,
+    value: 500,
     suffix: '+',
-    label: 'Active Users',
+    label: 'Waitlist Members',
     icon: 'fa-users',
   },
   {
@@ -74,9 +75,11 @@ export const Statistics = (): React.ReactElement => {
       <div className={styles.container}>
         <AnimatedElement animation="fadeIn">
           <div className={styles.header}>
-            <h2 className={styles.title}>Join thousands who've simplified their notes</h2>
+            <h2 className={styles.title}>
+              Join {WAITLIST_COUNT} professionals writing without friction
+            </h2>
             <p className={styles.subtitle}>
-              Real people, real productivity gains, real peace of mind.
+              Trusted by writers, developers, and thinkers who value their time.
             </p>
           </div>
         </AnimatedElement>

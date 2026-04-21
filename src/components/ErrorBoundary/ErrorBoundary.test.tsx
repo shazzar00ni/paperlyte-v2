@@ -66,7 +66,7 @@ describe('ErrorBoundary', () => {
       )
 
       expect(screen.getByRole('alert')).toBeInTheDocument()
-      expect(screen.getByText(/something went wrong/i)).toBeInTheDocument()
+      expect(screen.getByText(/ran into a problem/i)).toBeInTheDocument()
     })
 
     it('should display default error message', () => {
@@ -76,9 +76,7 @@ describe('ErrorBoundary', () => {
         </ErrorBoundary>
       )
 
-      expect(
-        screen.getByText(/We're sorry, but something unexpected happened/i)
-      ).toBeInTheDocument()
+      expect(screen.getByText(/An unexpected error occurred/i)).toBeInTheDocument()
     })
 
     it('should log error using monitoring utility', () => {
@@ -154,6 +152,21 @@ describe('ErrorBoundary', () => {
     })
   })
 
+  describe('Max Retries Exceeded', () => {
+    it('should show "too many errors" message when retry count reaches max', () => {
+      render(
+        <ErrorBoundary maxRetries={1}>
+          <ThrowError shouldThrow={true} />
+        </ErrorBoundary>
+      )
+
+      expect(
+        screen.getByText('We keep hitting an error. Reload the page to start fresh.')
+      ).toBeInTheDocument()
+      expect(screen.queryByText('Try Again')).not.toBeInTheDocument()
+    })
+  })
+
   describe('Error Recovery', () => {
     it('should render "Try Again" button', () => {
       render(
@@ -194,7 +207,7 @@ describe('ErrorBoundary', () => {
       )
 
       // Error should be shown
-      expect(screen.getByText(/something went wrong/i)).toBeInTheDocument()
+      expect(screen.getByText(/ran into a problem/i)).toBeInTheDocument()
 
       // Fix the error condition
       shouldThrow = false
@@ -250,7 +263,7 @@ describe('ErrorBoundary', () => {
       )
 
       // Verify semantic elements are present and accessible
-      expect(screen.getByRole('heading', { name: /something went wrong/i })).toBeInTheDocument()
+      expect(screen.getByRole('heading', { name: /ran into a problem/i })).toBeInTheDocument()
       expect(screen.getByText('Try Again')).toBeInTheDocument()
       expect(screen.getByRole('button', { name: 'Reload Page' })).toBeInTheDocument()
     })
@@ -286,7 +299,7 @@ describe('ErrorBoundary', () => {
           <ThrowError shouldThrow={true} />
         </ErrorBoundary>
       )
-      expect(screen.getByText(/something went wrong/i)).toBeInTheDocument()
+      expect(screen.getByText(/ran into a problem/i)).toBeInTheDocument()
 
       // Reset
       const tryAgainButton = screen.getByText('Try Again')
@@ -298,7 +311,7 @@ describe('ErrorBoundary', () => {
           <ThrowError shouldThrow={true} />
         </ErrorBoundary>
       )
-      expect(screen.getByText(/something went wrong/i)).toBeInTheDocument()
+      expect(screen.getByText(/ran into a problem/i)).toBeInTheDocument()
     })
 
     it('should handle errors with no stack trace', () => {
@@ -314,7 +327,7 @@ describe('ErrorBoundary', () => {
         </ErrorBoundary>
       )
 
-      expect(screen.getByText(/something went wrong/i)).toBeInTheDocument()
+      expect(screen.getByText(/ran into a problem/i)).toBeInTheDocument()
     })
   })
 

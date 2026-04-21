@@ -50,7 +50,7 @@ jobs:
           fetch-depth: 0 # Full history required for SonarCloud blame data and new-code detection
 
       - name: Analyze with SonarCloud
-        uses: SonarSource/sonarcloud-github-action@383f7e52eae3ab0510c3cb0e7d9d150bbaeab838
+        uses: SonarSource/sonarcloud-github-action@eb211723266fe8e83102bac7361f0a05c3ac1d1b # SonarSource/sonarcloud-github-action@v3.0.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:

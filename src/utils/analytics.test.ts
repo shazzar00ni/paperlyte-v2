@@ -23,12 +23,11 @@ describe('Analytics Utility', () => {
     vi.stubEnv('PROD', 'true')
     vi.stubGlobal('location', { hostname: 'paperlyte.app' })
 
-    // Mock requestAnimationFrame
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.stubGlobal('requestAnimationFrame', (cb: any) => {
-        cb()
+    // Mock requestAnimationFrame to execute synchronously by default
+    vi.stubGlobal('requestAnimationFrame', vi.fn((cb: FrameRequestCallback) => {
+        cb(0)
         return 0
-    })
+    }))
   })
 
   afterEach(() => {
@@ -59,6 +58,14 @@ describe('Analytics Utility', () => {
     it('should return false on localhost with default parameters', () => {
         vi.stubGlobal('location', { hostname: 'localhost' })
         expect(shouldRenderAnalytics()).toBe(false)
+    })
+
+    it('should handle undefined window gracefully', () => {
+        const originalWindow = global.window
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        delete (global as any).window
+        expect(shouldRenderAnalytics(true)).toBe(true)
+        global.window = originalWindow
     })
   })
 
@@ -124,7 +131,7 @@ describe('Analytics Utility', () => {
         expect(mockGtag).not.toHaveBeenCalled()
     })
 
-    it('should handle unsafe property keys', () => {
+    it('should handle unsafe property keys and warn in DEV', () => {
         const mockGtag = vi.fn()
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ;(window as any).gtag = mockGtag
@@ -135,7 +142,7 @@ describe('Analytics Utility', () => {
         trackEvent('test', { constructor: 'pollute' })
 
         expect(mockGtag).toHaveBeenCalledWith('event', 'test', {})
-        expect(consoleSpy).toHaveBeenCalled()
+        expect(consoleSpy).toHaveBeenCalledWith('[Analytics] Blocked potentially unsafe property key:', 'constructor')
         consoleSpy.mockRestore()
     })
   })
@@ -286,8 +293,8 @@ describe('Analytics Utility', () => {
       initScrollDepthTracking()
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const scrollHandler = addSpy.mock.calls.find(call => call[0] === 'scroll')?.[1] as any
-      scrollHandler()
+      const scrollHandler = addSpy.mock.calls.find(call => call[0] === 'scroll')?.[1] as EventListener
+      scrollHandler(new Event('scroll'))
 
       // 75% depth -> milestones 25, 50, 75
       expect(mockGtag).toHaveBeenCalledWith('event', AnalyticsEvents.SCROLL_DEPTH, { depth_percentage: 25 })
@@ -306,9 +313,43 @@ describe('Analytics Utility', () => {
         Object.defineProperty(document.documentElement, 'scrollHeight', { value: 0, configurable: true })
         const addSpy = vi.spyOn(window, 'addEventListener')
         initScrollDepthTracking()
+        const handler = addSpy.mock.calls.find(c => c[0] === 'scroll')![1] as EventListener
+        expect(() => handler(new Event('scroll'))).not.toThrow()
+    })
+
+    it('should throttle scroll events', () => {
+        const mockGtag = vi.fn()
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const handler = addSpy.mock.calls.find(c => c[0] === 'scroll')![1] as any
-        expect(() => handler()).not.toThrow()
+        ;(window as any).gtag = mockGtag
+
+        let frameCb: FrameRequestCallback | null = null
+        vi.stubGlobal('requestAnimationFrame', vi.fn((cb: FrameRequestCallback) => {
+            frameCb = cb
+            return 1
+        }))
+
+        Object.defineProperty(document.documentElement, 'scrollHeight', { value: 1000, configurable: true })
+        Object.defineProperty(window, 'innerHeight', { value: 500, configurable: true })
+        Object.defineProperty(window, 'scrollY', { value: 500, writable: true, configurable: true })
+
+        const addSpy = vi.spyOn(window, 'addEventListener')
+        initScrollDepthTracking()
+        const handler = addSpy.mock.calls.find(c => c[0] === 'scroll')![1] as EventListener
+
+        // Call twice rapidly
+        handler(new Event('scroll'))
+        handler(new Event('scroll'))
+
+        expect(vi.mocked(window.requestAnimationFrame)).toHaveBeenCalledTimes(1)
+        expect(mockGtag).not.toHaveBeenCalled() // Still waiting for RAF
+
+        if (frameCb) frameCb(0)
+
+        expect(mockGtag).toHaveBeenCalled()
+
+        // Now ticking is false again. Another call should trigger another RAF.
+        handler(new Event('scroll'))
+        expect(vi.mocked(window.requestAnimationFrame)).toHaveBeenCalledTimes(2)
     })
   })
 })

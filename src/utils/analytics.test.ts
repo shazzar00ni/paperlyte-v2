@@ -14,16 +14,16 @@ import {
 describe('Analytics Utility', () => {
   beforeEach(() => {
     // Clear any existing gtag
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    delete (window as any).gtag
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    delete (window as any).dataLayer
+    // @ts-expect-error - testing window property cleanup
+    delete window.gtag
+    // @ts-expect-error - testing window property cleanup
+    delete window.dataLayer
 
     // Mock environment to production and a real domain by default
     vi.stubEnv('PROD', 'true')
     vi.stubGlobal('location', { hostname: 'paperlyte.app' })
 
-    // Mock requestAnimationFrame to execute synchronously by default
+    // Default synchronous RAF for most tests
     vi.stubGlobal('requestAnimationFrame', vi.fn((cb: FrameRequestCallback) => {
         cb(0)
         return 0
@@ -62,8 +62,8 @@ describe('Analytics Utility', () => {
 
     it('should handle undefined window gracefully', () => {
         const originalWindow = global.window
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        delete (global as any).window
+        // @ts-expect-error - intentionally deleting window for test
+        delete global.window
         expect(shouldRenderAnalytics(true)).toBe(true)
         global.window = originalWindow
     })
@@ -75,8 +75,7 @@ describe('Analytics Utility', () => {
     })
 
     it('should return true when gtag is available', () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ;(window as any).gtag = vi.fn()
+      window.gtag = vi.fn()
       expect(isAnalyticsAvailable()).toBe(true)
     })
   })
@@ -84,8 +83,7 @@ describe('Analytics Utility', () => {
   describe('trackEvent', () => {
     it('should call gtag with correct parameters when available and enabled', () => {
       const mockGtag = vi.fn()
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ;(window as any).gtag = mockGtag
+      window.gtag = mockGtag
 
       trackEvent('test_event', { param1: 'value1', param2: 123 })
 
@@ -97,8 +95,7 @@ describe('Analytics Utility', () => {
 
     it('should NOT call gtag when on localhost', () => {
       const mockGtag = vi.fn()
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ;(window as any).gtag = mockGtag
+      window.gtag = mockGtag
       vi.stubGlobal('location', { hostname: 'localhost' })
 
       trackEvent('test_event')
@@ -110,8 +107,7 @@ describe('Analytics Utility', () => {
       const mockGtag = vi.fn(() => {
         throw new Error('Analytics error')
       })
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ;(window as any).gtag = mockGtag
+      window.gtag = mockGtag
 
       const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
 
@@ -133,8 +129,7 @@ describe('Analytics Utility', () => {
 
     it('should handle unsafe property keys and warn in DEV', () => {
         const mockGtag = vi.fn()
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ;(window as any).gtag = mockGtag
+        window.gtag = mockGtag
 
         vi.stubEnv('DEV', 'true')
         const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
@@ -150,8 +145,7 @@ describe('Analytics Utility', () => {
   describe('trackPageView', () => {
     it('should track page view when enabled', () => {
       const mockGtag = vi.fn()
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ;(window as any).gtag = mockGtag
+      window.gtag = mockGtag
 
       trackPageView('/test', 'Test Page')
 
@@ -163,8 +157,7 @@ describe('Analytics Utility', () => {
 
     it('should not track page view when disabled', () => {
       const mockGtag = vi.fn()
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ;(window as any).gtag = mockGtag
+      window.gtag = mockGtag
       vi.stubGlobal('location', { hostname: 'localhost' })
 
       trackPageView('/test')
@@ -186,8 +179,7 @@ describe('Analytics Utility', () => {
 
     it('should handle errors in gtag gracefully', () => {
         const mockGtag = vi.fn(() => { throw new Error('fail') })
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ;(window as any).gtag = mockGtag
+        window.gtag = mockGtag
         const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
 
         trackPageView('/error-test')
@@ -200,8 +192,7 @@ describe('Analytics Utility', () => {
   describe('CTA Tracking', () => {
     it('should track CTA clicks', () => {
       const mockGtag = vi.fn()
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ;(window as any).gtag = mockGtag
+      window.gtag = mockGtag
 
       trackCTAClick('Get Started', 'hero')
 
@@ -213,8 +204,7 @@ describe('Analytics Utility', () => {
 
     it('should track external link clicks', () => {
       const mockGtag = vi.fn()
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ;(window as any).gtag = mockGtag
+      window.gtag = mockGtag
 
       trackExternalLink('https://twitter.com', 'Twitter')
 
@@ -226,8 +216,7 @@ describe('Analytics Utility', () => {
 
     it('should track social clicks', () => {
       const mockGtag = vi.fn()
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ;(window as any).gtag = mockGtag
+      window.gtag = mockGtag
 
       trackSocialClick('GitHub')
 
@@ -240,8 +229,7 @@ describe('Analytics Utility', () => {
   describe('PII filtering', () => {
     it('should strip PII fields from event parameters', () => {
       const mockGtag = vi.fn()
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ;(window as any).gtag = mockGtag
+      window.gtag = mockGtag
 
       const paramsWithPII = {
         safe_param: 'safe_value',
@@ -260,8 +248,7 @@ describe('Analytics Utility', () => {
 
     it('should strip fields that look like email addresses', () => {
         const mockGtag = vi.fn()
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ;(window as any).gtag = mockGtag
+        window.gtag = mockGtag
 
         trackEvent('test', { some_field: 'test@example.com' })
 
@@ -281,8 +268,7 @@ describe('Analytics Utility', () => {
 
     it('should track scroll milestones when scrolling in production', () => {
       const mockGtag = vi.fn()
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ;(window as any).gtag = mockGtag
+      window.gtag = mockGtag
 
       // Mock document dimensions
       Object.defineProperty(document.documentElement, 'scrollHeight', { value: 1000, configurable: true })
@@ -292,7 +278,6 @@ describe('Analytics Utility', () => {
       const addSpy = vi.spyOn(window, 'addEventListener')
       initScrollDepthTracking()
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const scrollHandler = addSpy.mock.calls.find(call => call[0] === 'scroll')?.[1] as EventListener
       scrollHandler(new Event('scroll'))
 
@@ -319,10 +304,10 @@ describe('Analytics Utility', () => {
 
     it('should throttle scroll events', () => {
         const mockGtag = vi.fn()
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ;(window as any).gtag = mockGtag
+        window.gtag = mockGtag
 
         let frameCb: FrameRequestCallback | null = null
+        // Override the default mock from beforeEach to test throttling
         vi.stubGlobal('requestAnimationFrame', vi.fn((cb: FrameRequestCallback) => {
             frameCb = cb
             return 1

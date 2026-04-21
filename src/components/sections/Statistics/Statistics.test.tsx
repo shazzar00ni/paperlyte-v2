@@ -19,12 +19,7 @@ describe('Statistics', () => {
 
     it('should render all four statistic cards', () => {
       render(<Statistics />)
-      const statisticLabels = [
-        'Active Users',
-        'Notes Created',
-        'Uptime',
-        'User Rating',
-      ]
+      const statisticLabels = ['Active Users', 'Notes Created', 'Uptime', 'User Rating']
 
       statisticLabels.forEach((label) => {
         expect(screen.getByText(label)).toBeInTheDocument()
@@ -35,25 +30,6 @@ describe('Statistics', () => {
       ).toHaveLength(4)
     })
 
-    it('should render Active Users statistic label', () => {
-      render(<Statistics />)
-      expect(screen.getByText('Active Users')).toBeInTheDocument()
-    })
-
-    it('should render Notes Created statistic label', () => {
-      render(<Statistics />)
-      expect(screen.getByText('Notes Created')).toBeInTheDocument()
-    })
-
-    it('should render Uptime statistic label', () => {
-      render(<Statistics />)
-      expect(screen.getByText('Uptime')).toBeInTheDocument()
-    })
-
-    it('should render User Rating statistic label', () => {
-      render(<Statistics />)
-      expect(screen.getByText('User Rating')).toBeInTheDocument()
-    })
   })
 
   describe('Section structure', () => {

@@ -16,7 +16,8 @@
 ## API Keys & Secrets
 
 - No secrets in the client bundle. Environment variables prefixed `VITE_` are exposed to the browser at build time.
-- API keys (email provider, analytics, Sentry DSN) must live in server-side Netlify Functions or CI secrets only.
+- Truly secret API keys (email provider credentials) must live in server-side Netlify Functions or CI secrets only.
+- Sentry DSN (`VITE_SENTRY_DSN`) is intentionally client-side — it is a public identifier, not a secret. Do not remove the `VITE_` prefix or move it server-side.
 - `.env.example` lists required variables without values. Never commit `.env`, `.env.local`, or `.env.production` with real values.
 
 ## Dependency Security

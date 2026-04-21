@@ -6,7 +6,7 @@
 - Provide explicit return types for all exported functions and component props.
 - Use interface for object shapes that represent public contracts; use type for unions, intersections, and utility types.
 - Never suppress TypeScript errors with `// @ts-ignore` or `// @ts-expect-error` without a detailed comment explaining why.
-- Path aliases are configured: `@/*`, `@components/*`, `@hooks/*`, `@utils/*`, `@styles/*`, `@constants/*`. Always use them instead of relative paths that cross directory boundaries.
+- Path aliases are configured: `@/*`, `@components/*`, `@hooks/*`, `@utils/*`, `@styles/*`, `@constants/*`, `@types/*`. Always use them instead of relative paths that cross directory boundaries.
 
 ## React Components
 

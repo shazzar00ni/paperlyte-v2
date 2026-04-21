@@ -35,13 +35,14 @@ on:
     branches: [ "main" ]
   workflow_dispatch:
 
-permissions:
-  contents: read      # allows actions/checkout to fetch the repository
-  pull-requests: read # allows SonarCloud to decorate PRs with analysis results
+permissions: {}
 
 jobs:
   Analysis:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read # allows SonarCloud to decorate PRs with analysis results
 
     steps:
       - name: Checkout repository

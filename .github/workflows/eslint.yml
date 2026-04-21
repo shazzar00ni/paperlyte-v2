@@ -17,19 +17,16 @@ on:
   schedule:
     - cron: '21 15 * * 2'
 
-# Using 'pull_request' (not 'pull_request_target') means this workflow runs in
-# a restricted context where untrusted fork code has no access to secrets.
-# Adding security-events:write here is safe: it only allows writing to the
-# Security tab and does not elevate code execution privileges.
-permissions:
-  contents: read
-  security-events: write
-  actions: read # required for github/codeql-action/upload-sarif on private repositories
+permissions: {}
 
 jobs:
   eslint:
     name: Run eslint scanning
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+      actions: read  # required for github/codeql-action/upload-sarif on private repositories
     steps:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2

@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react'
-import { Terms } from '@components/pages/Terms/Terms'
+import { Terms } from './Terms'
 
 describe('Terms', () => {
   describe('Rendering', () => {

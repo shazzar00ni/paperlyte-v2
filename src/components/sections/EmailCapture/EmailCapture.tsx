@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { logError } from '@utils/monitoring'
+import { validateEmail } from '@utils/validation'
 import { Section } from '@components/layout/Section'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { Button } from '@components/ui/Button'
@@ -27,8 +28,15 @@ export const EmailCapture = (): React.ReactElement => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setIsLoading(true)
     setError(null)
+
+    const validation = validateEmail(email)
+    if (!validation.isValid) {
+      setError(validation.error ?? 'Invalid email address')
+      return
+    }
+
+    setIsLoading(true)
 
     try {
       // Simulate API call

@@ -10,7 +10,7 @@ Full spec: `docs/DESIGN-SYSTEM.md`. This file summarises the rules you must foll
 
 ## Typography
 
-- Headlines: **Playfair Display** (serif), loaded via Google Fonts. Use italic weight for emphasis.
+- Headlines: **Playfair Display** (serif), self-hosted variable font in `public/fonts/` (loaded via `@font-face` in `src/styles/typography.css`). Use italic weight for emphasis.
 - Body / UI: **Inter** (sans-serif), loaded via `@fontsource/inter` (Latin subset only — do not switch to a CDN). `font-display: swap` is required.
 - Fluid type: use `clamp()` for all font sizes. Valid range is 12px–48px.
 - **Never** use Arial, Roboto, system-ui, or other generic fallbacks as the primary font.

@@ -41,6 +41,7 @@ export const EmailCapture = ({
   const [honeypot, setHoneypot] = useState('') // Spam protection
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [errorMessage, setErrorMessage] = useState('')
+  const [errorField, setErrorField] = useState<'email' | 'other' | null>(null)
   const [gdprConsent, setGdprConsent] = useState(false)
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -55,17 +56,20 @@ export const EmailCapture = ({
     const { isValid, error: validationError } = validateEmail(email)
     if (!isValid) {
       setStatus('error')
+      setErrorField('email')
       setErrorMessage(validationError ?? "That email address doesn't look right.")
       return
     }
 
     if (!gdprConsent) {
       setStatus('error')
+      setErrorField('other')
       setErrorMessage("Please confirm you'd like to receive updates.")
       return
     }
 
     setStatus('loading')
+    setErrorField(null)
     setErrorMessage('')
 
     try {
@@ -93,6 +97,7 @@ export const EmailCapture = ({
       })
     } catch (error) {
       setStatus('error')
+      setErrorField('other')
       setErrorMessage("Couldn't add you to the list. Check your email and try again.")
       const loggedError =
         error instanceof Error ? error : new Error(`Subscribe failed: ${String(error)}`)
@@ -158,8 +163,8 @@ export const EmailCapture = ({
             className={styles.input}
             disabled={status === 'loading'}
             required
-            aria-invalid={status === 'error'}
-            aria-describedby={status === 'error' ? 'email-error' : undefined}
+            aria-invalid={errorField === 'email'}
+            aria-describedby={errorField === 'email' ? 'email-error' : undefined}
           />
           <Button
             type="submit"

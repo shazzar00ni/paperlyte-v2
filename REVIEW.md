@@ -30,5 +30,5 @@
 - [ ] **Consolidate Vitest reporter config**: `vitest.config.ts` sets `outputFile: { junit: 'junit.xml' }` but CI overrides it via CLI flags to `test-results/junit.xml`. Update `vitest.config.ts` to use `test-results/junit.xml` as the default and remove the CLI override to have a single source of truth.
 - [ ] **Add `engines` field to `package.json`**: No `.nvmrc`, `.node-version`, or `engines` field exists. Add `"engines": { "node": ">=20" }` to make the required Node version explicit project-wide.
 - [ ] **Resolve duplicate CI systems**: Both GitHub Actions (`.github/workflows/ci.yml`) and CircleCI (`.circleci/config.yml`) run the same pipeline stages on every push/PR, doubling compute costs. Decide on a primary CI system or document the multi-platform strategy.
-- [ ] **Cache `~/.npm` instead of `node_modules` in CircleCI**: The `save-node-cache` command caches `node_modules`, but `npm ci` deletes it before installing. Change the cached path to `~/.npm`.
+- [x] **~~Cache `~/.npm` instead of `node_modules` in CircleCI~~**: Already resolved — `save-node-cache` correctly caches `~/.npm`.
 - [ ] **Migrate nightly workflow to scheduled pipelines**: The `nightly-e2e` workflow uses the legacy `triggers` → `schedule` syntax which is deprecated. Migrate to CircleCI Scheduled Pipelines for better reliability.

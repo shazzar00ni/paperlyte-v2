@@ -31,6 +31,8 @@
     "jsx": "react-jsx",
 
     /* Path aliases - Enables cleaner imports */
+    // Removing baseUrl: "." to resolve TS5101 deprecation error in TS 5.5+ when using moduleResolution: bundler.
+    // Path resolution remains functional via the paths mapping below.
     // Path mapping for cleaner imports (e.g., @components/Button instead of ../../../components/Button)
     "paths": {
       "@/*": ["./src/*"],

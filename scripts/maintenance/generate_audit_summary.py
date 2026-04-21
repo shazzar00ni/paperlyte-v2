@@ -62,11 +62,28 @@ def main():
         branch = item['branch']
         if branch in pr_map:
             pr_num = pr_map[branch]
-            comment = '### ⚠️ Systemic Regressions Detected\n\nThis branch is currently blocked by the following regressions:\n\n'
+
+            # Construct the comment body
+            comment_body = '### ⚠️ Systemic Regressions Detected\n\nThis branch is currently blocked by the following regressions:\n\n'
             for issue in issues:
-                comment += f'- {issue}\n'
-            comment += '\nPlease restore these critical files or security helpers before merging.'
-            run_command(['gh', 'pr', 'comment', str(pr_num), '--body', comment])
+                comment_body += f'- {issue}\n'
+            comment_body += '\nPlease restore these critical files or security helpers before merging.'
+
+            # Check if an identical comment already exists to avoid spam
+            should_comment = True
+            comments_json = run_command(['gh', 'pr', 'view', str(pr_num), '--json', 'comments'])
+            if comments_json:
+                try:
+                    existing_comments = json.loads(comments_json).get('comments', [])
+                    for c in existing_comments:
+                        if comment_body in c.get('body', ''):
+                            should_comment = False
+                            break
+                except json.JSONDecodeError:
+                    pass
+
+            if should_comment:
+                run_command(['gh', 'pr', 'comment', str(pr_num), '--body', comment_body])
 
     # Generate Markdown Summary
     date_str = datetime.now().strftime('%Y-%m-%d')

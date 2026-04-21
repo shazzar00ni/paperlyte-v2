@@ -50,13 +50,13 @@ jobs:
           fetch-depth: 0 # Full history required for SonarCloud blame data and new-code detection
 
       - name: Analyze with SonarCloud
-        uses: SonarSource/sonarcloud-github-action@383f7e52eae3ab0510c3cb0e7d9d150bbaeab838 # SonarSource/sonarcloud-github-action@v3.1.0
+        uses: SonarSource/sonarcloud-github-action@383f7e52eae3ab0510c3cb0e7d9d150bbaeab838
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           # Additional arguments for the SonarScanner CLI
           args: >
-            -Dsonar.projectKey=shazzar00ni_paperlyte-v2
-            -Dsonar.organization=shazzar00ni
+            -Dsonar.projectKey=${{ 'shazzar00ni_paperlyte-v2' }}
+            -Dsonar.organization=${{ 'shazzar00ni' }}
           # When you need the analysis to take place in a directory other than the one from which it was launched, default is .
           projectBaseDir: .

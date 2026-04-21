@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    // Silence TS5101 deprecation warnings for options still needed (e.g., baseUrl)
+    "ignoreDeprecations": "5.0",
+
     /* Build Configuration */
     // Store TypeScript incremental build info for faster rebuilds
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",

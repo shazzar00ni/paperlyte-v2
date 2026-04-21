@@ -1,3 +1,51 @@
+## 2026-03-23
+
+### Systemic Regression Update: 111 Branches Blocked
+
+- **Status:** Critical — Action Required
+- **Summary:** A comprehensive scan of all open branches confirms that **111 branches** are currently blocked by systemic regressions. These regressions typically involve the accidental deletion of critical configuration files or the reversion of vital security helpers.
+- **Regression Checklist:**
+  - [ ] `.npmrc` (Restores `legacy-peer-deps=true`)
+  - [ ] `docs/ROADMAP.md`
+  - [ ] `gitVersionControl.md`
+  - [ ] `review.md`
+  - [ ] `src/utils/navigation.ts` (Restores `hasDangerousProtocol`, `isRelativeUrl`, and `isSafeUrl` hardened logic)
+
+### Verified: Ready for Merge (High Quality)
+
+The following branches have been verified to be free of systemic regressions and are recommended for immediate merge:
+
+| Branch                                             | Summary                                                                                     |
+| :------------------------------------------------- | :------------------------------------------------------------------------------------------ |
+| `origin/claude/fix-esbuild-dependency-FzL7Q`       | Fixes Vite build failures in CI by adding explicit `esbuild` dependency.                    |
+| `origin/claude/fix-open-redirect-TX551`            | Hardens `safeNavigate` to same-origin by default and adds `SafeUrlOptions`.                 |
+| `origin/claude/fix-codacy-warnings-QTZ9S`          | Security hardening for Netlify functions (regex-based `formId` validation).                 |
+| `origin/copilot/sub-pr-585`                        | Preferred implementation for `yauzl` security override with documentation in `SECURITY.md`. |
+| `origin/claude/accessibility-audit-baseline-USu5N` | Improves color contrast (`--color-text-tertiary`) and simplifies skip-link logic.           |
+| `origin/claude/apply-code-fixes-BUsgx`             | Implements robust `useTheme` with persistence and simplifies accessibility hooks.           |
+| `origin/claude/add-git-dates-sitemap-wGlvo`        | Implements Git-based `<lastmod>` extraction in sitemap generation.                          |
+| `origin/claude/setup-sonarcloud-HM572`             | Configures SonarCloud analysis with proper GitHub Actions integration.                      |
+| `origin/claude/fix-issue-577-v60JV`                | Fixes Interaction to Next Paint (INP) tracking in Web Vitals.                               |
+| `origin/claude/fix-failing-tests-J1VZ6`            | Resolves icon rendering test failures by migrating to attribute selectors.                  |
+| `origin/copilot/sub-pr-593`                        | Keyboard-accessible FAQ component with full Arrow/Home/End support.                         |
+| `origin/claude/tree-shake-font-awesome-cK85j`      | Implements explicit Font Awesome imports for optimal bundle size.                           |
+
+### Blocked by Systemic Deletions (Notable Examples)
+
+These branches are high-priority features but **MUST** restore the missing files and security helpers before they can be considered for merge:
+
+- `origin/claude/core-editor-phase-1-PI3Yp`
+- `origin/claude/implement-todo-item-2H9LP`
+- `origin/copilot/sub-pr-503`
+- `origin/claude/fix-peer-dependency-conflicts-Wj2iC`
+
+### Action Items for All Contributors
+
+1. **Check your branch:** Run `ls .npmrc docs/ROADMAP.md gitVersionControl.md review.md`
+2. **Restore Files:** If missing, restore them from `main`: `git checkout main -- .npmrc docs/ROADMAP.md gitVersionControl.md review.md`
+3. **Verify Security Helpers:** Ensure `src/utils/navigation.ts` contains the `hasDangerousProtocol` function. If not, restore it from `main`.
+4. **Rebase Carefully:** Use `git rebase main` and ensure these files are not removed during conflict resolution.
+
 # PR Review Summary
 
 This file contains a summary of pull requests I have reviewed.

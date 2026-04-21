@@ -57,7 +57,7 @@
   left: 50%;
   transform: translateX(-50%);
   background: var(--color-primary);
-  color: var(--color-white);
+  color: var(--color-text-on-primary);
   padding: 4px 16px;
   border-radius: var(--border-radius-full);
   font-size: var(--font-size-sm);
@@ -188,6 +188,29 @@
     flex-direction: column;
     text-align: center;
     font-size: var(--font-size-sm);
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+  .title {
+    font-size: var(--font-size-xl);
+  }
+
+  .subtitle {
+    font-size: var(--font-size-sm);
+  }
+
+  .card {
+    padding: var(--spacing-md);
+  }
+
+  .price {
+    font-size: var(--font-size-2xl);
+  }
+
+  .planName {
+    font-size: var(--font-size-xl);
   }
 }
 

@@ -67,7 +67,7 @@
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
   background: var(--color-primary);
-  color: var(--color-white);
+  color: var(--color-text-on-primary);
   border-radius: var(--border-radius-full);
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -147,6 +147,34 @@
     display: block;
     margin: var(--spacing-xs) auto 0;
     width: fit-content;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+  .title {
+    font-size: var(--font-size-xl);
+  }
+
+  .subtitle {
+    font-size: var(--font-size-sm);
+  }
+
+  .table {
+    font-size: var(--font-size-xs);
+  }
+
+  .table th,
+  .table td {
+    padding: var(--spacing-xs);
+  }
+
+  .featureHeader {
+    min-width: 5.625rem; /* 90px */
+  }
+
+  .competitorHeader {
+    min-width: 5rem; /* 80px — prevents competitor names wrapping */
   }
 }
 

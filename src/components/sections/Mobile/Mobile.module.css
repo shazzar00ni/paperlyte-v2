@@ -73,3 +73,18 @@
     font-size: var(--font-size-base);
   }
 }
+
+/* Extra small screens */
+@media (max-width: 480px) {
+  .container {
+    padding: var(--spacing-2xl) var(--spacing-sm);
+  }
+
+  .headline {
+    font-size: var(--font-size-3xl);
+  }
+
+  .description {
+    font-size: var(--font-size-sm);
+  }
+}

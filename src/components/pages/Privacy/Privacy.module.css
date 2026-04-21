@@ -1,6 +1,6 @@
 .privacyHero {
   background: linear-gradient(135deg, var(--color-primary-600) 0%, var(--color-primary-800) 100%);
-  color: var(--color-white);
+  color: var(--color-text-on-primary);
   padding: var(--spacing-xl) 0;
   text-align: center;
 }

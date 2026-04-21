@@ -131,13 +131,15 @@ Per `.lighthouserc.json`, the application must meet:
 
 **Action Required:** Run manual Lighthouse audits against deployed site using Chrome DevTools
 
-**Core Web Vitals Targets:**
+**Core Web Vitals Targets (Production / CI):**
 
-- First Contentful Paint (FCP): ≤2000ms
-- Largest Contentful Paint (LCP): ≤2500ms
-- Cumulative Layout Shift (CLS): ≤0.1
-- Total Blocking Time (TBT): ≤300ms
-- Speed Index: ≤3000ms
+- First Contentful Paint (FCP): ≤2000ms (production) / ≤4500ms (CI)
+- Largest Contentful Paint (LCP): ≤2500ms (production) / ≤6000ms (CI)
+- Cumulative Layout Shift (CLS): ≤0.1 (production) / ≤0.25 (CI)
+- Total Blocking Time (TBT): ≤300ms (production) / ≤1200ms (CI)
+- Speed Index: ≤3000ms (production) / ≤5500ms (CI)
+
+> CI thresholds are relaxed for GitHub Actions shared runners. See `docs/LIGHTHOUSE-CI.md` for details.
 
 ---
 

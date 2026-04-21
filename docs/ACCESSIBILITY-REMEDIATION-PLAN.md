@@ -373,7 +373,7 @@ The following accessibility limitations have been identified and are prioritized
 **Tools**:
 
 - **axe DevTools**: Run on every page/component
-- **Lighthouse**: Monthly audits (target score >95)
+- **Lighthouse**: Monthly audits (production target >95; CI threshold >82 — see `docs/LIGHTHOUSE-CI.md`)
 - **WAVE**: Ad-hoc testing during development
 - **ESLint jsx-a11y**: Enforced in CI/CD pipeline
 

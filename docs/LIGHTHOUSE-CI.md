@@ -19,9 +19,9 @@ The main configuration file that defines:
 
 ### Performance Budgets
 
-#### Critical Metrics (Error Level)
+#### Production Targets (Aspirational)
 
-These metrics will **fail the build** if not met:
+These are the quality goals for production on real hardware and networks:
 
 | Metric                         | Target  | Rationale                |
 | ------------------------------ | ------- | ------------------------ |
@@ -34,12 +34,31 @@ These metrics will **fail the build** if not met:
 | Speed Index                    | ≤3000ms | Visual completeness      |
 | Time to Interactive (TTI)      | ≤3500ms | Full interactivity       |
 
+#### CI Enforcement Thresholds
+
+GitHub Actions shared runners have constrained CPU and no GPU, producing lower scores than real devices. The thresholds in `.lighthouserc.json` are relaxed to avoid false failures while still catching significant regressions:
+
+| Metric                         | CI Threshold | Level | Rationale                          |
+| ------------------------------ | ------------ | ----- | ---------------------------------- |
+| Performance Score              | ≥70          | error | Catches major regressions on CI    |
+| Accessibility Score            | ≥82          | error | Structural a11y gate              |
+| Best Practices Score           | ≥80          | warn  | Advisory only                      |
+| SEO Score                      | ≥80          | warn  | Advisory only                      |
+| First Contentful Paint (FCP)   | ≤4500ms      | error | CI-adjusted (2× headroom)         |
+| Largest Contentful Paint (LCP) | ≤6000ms      | error | CI-adjusted (2.4× headroom)       |
+| Cumulative Layout Shift (CLS)  | ≤0.25        | error | CI-adjusted                        |
+| Total Blocking Time (TBT)      | ≤1200ms      | error | CI-adjusted (4× headroom)         |
+| Speed Index                    | ≤5500ms      | error | CI-adjusted                        |
+| Time to Interactive (TTI)      | ≤8000ms      | error | CI-adjusted                        |
+
+> **Note:** Production targets should be validated manually using Chrome DevTools Lighthouse or [PageSpeed Insights](https://pagespeed.web.dev/) against the deployed site. CI thresholds are a safety net, not a quality bar.
+
 #### Warning Metrics
 
 These generate warnings but don't fail the build:
 
-- **Best Practices Score**: ≥90
-- **SEO Score**: ≥90
+- **Best Practices Score**: ≥80 (CI) / ≥90 (production target)
+- **SEO Score**: ≥80 (CI) / ≥90 (production target)
 - **Max Potential FID**: ≤130ms
 - **Bundle Sizes**:
   - Scripts: ≤150KB (gzipped)

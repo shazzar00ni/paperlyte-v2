@@ -104,16 +104,10 @@ Main continuous integration workflow that runs on all pushes and pull requests.
 - Runs Lighthouse audits (3 runs per check)
 - Enforces performance/accessibility thresholds
 - Uploads detailed reports
-- **Thresholds**:
-  - Performance: ≥90
-  - Accessibility: ≥95
-  - Best Practices: ≥90
-  - SEO: ≥90
-- **Core Web Vitals**:
-  - FCP: ≤2000ms
-  - LCP: ≤2500ms
-  - CLS: ≤0.1
-  - TBT: ≤300ms
+- **Production Targets**: Performance ≥90, Accessibility ≥95, Best Practices ≥90, SEO ≥90
+- **CI Thresholds** (relaxed for shared runners): Performance ≥70, Accessibility ≥82, Best Practices ≥80, SEO ≥80
+- **Core Web Vitals (CI)**: FCP ≤4500ms, LCP ≤6000ms, CLS ≤0.25, TBT ≤1200ms
+- See [Performance Thresholds](#performance-thresholds) for the full two-tier table
 - **Depends On**: Build
 - **Trigger**: On push/PR to main or develop
 
@@ -186,18 +180,20 @@ The following checks must pass before merging to `main`:
 
 ### Performance Thresholds
 
-All thresholds are enforced by Lighthouse CI:
+Lighthouse CI enforces two tiers of thresholds. **Production targets** represent the quality bar for the deployed site on real hardware. **CI thresholds** are relaxed for GitHub Actions shared runners (constrained CPU, no GPU) to avoid false failures while still catching regressions.
 
-| Metric                   | Threshold | Category        |
-| ------------------------ | --------- | --------------- |
-| Performance Score        | ≥90       | Performance     |
-| Accessibility Score      | ≥95       | Accessibility   |
-| Best Practices Score     | ≥90       | Quality         |
-| SEO Score                | ≥90       | SEO             |
-| First Contentful Paint   | ≤2000ms   | Core Web Vitals |
-| Largest Contentful Paint | ≤2500ms   | Core Web Vitals |
-| Cumulative Layout Shift  | ≤0.1      | Core Web Vitals |
-| Total Blocking Time      | ≤300ms    | Performance     |
+| Metric                   | Production Target | CI Threshold | Category        |
+| ------------------------ | ----------------- | ------------ | --------------- |
+| Performance Score        | ≥90               | ≥70 (error)  | Performance     |
+| Accessibility Score      | ≥95               | ≥82 (error)  | Accessibility   |
+| Best Practices Score     | ≥90               | ≥80 (warn)   | Quality         |
+| SEO Score                | ≥90               | ≥80 (warn)   | SEO             |
+| First Contentful Paint   | ≤2000ms           | ≤4500ms      | Core Web Vitals |
+| Largest Contentful Paint | ≤2500ms           | ≤6000ms      | Core Web Vitals |
+| Cumulative Layout Shift  | ≤0.1              | ≤0.25        | Core Web Vitals |
+| Total Blocking Time      | ≤300ms            | ≤1200ms      | Performance     |
+
+> See `.lighthouserc.json` for the authoritative CI values and `docs/LIGHTHOUSE-CI.md` for full details.
 
 ### Bundle Size Budget
 

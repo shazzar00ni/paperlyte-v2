@@ -928,8 +928,8 @@ _"Your thoughts, unchained."_
 | Metric                       | Target       | Measurement Frequency |
 | ---------------------------- | ------------ | --------------------- |
 | **Page Load Speed**          | <2 seconds   | Weekly (automated)    |
-| **Lighthouse Performance**   | >90          | Weekly (automated)    |
-| **Lighthouse Accessibility** | >95          | Weekly (automated)    |
+| **Lighthouse Performance**   | >90 (production) / >70 (CI) | Weekly (automated)    |
+| **Lighthouse Accessibility** | >95 (production) / >82 (CI) | Weekly (automated)    |
 | **Bounce Rate**              | <45%         | Weekly                |
 | **App Crash Rate**           | <0.1%        | Daily                 |
 | **Support Ticket Volume**    | <2% of users | Weekly                |

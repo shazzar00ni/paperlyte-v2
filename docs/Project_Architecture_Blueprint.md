@@ -1994,7 +1994,7 @@ Before merging any PR:
 - [ ] ESLint passes with no warnings
 - [ ] All tests pass
 - [ ] Coverage thresholds met
-- [ ] Lighthouse scores maintained (>90 performance, >95 accessibility)
+- [ ] Lighthouse scores maintained (production targets: >90 performance, >95 accessibility; CI thresholds: >70 performance, >82 accessibility — see `docs/LIGHTHOUSE-CI.md`)
 - [ ] Accessibility reviewed (keyboard nav, screen reader)
 - [ ] Mobile responsiveness verified
 - [ ] Documentation updated if needed

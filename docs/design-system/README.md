@@ -132,4 +132,4 @@ src/
 2. New components require a CSS Module (`.module.css`) alongside the `.tsx` file.
 3. Every new component needs a `*.test.tsx` file.
 4. Run `npm run lint` before committing.
-5. Lighthouse accessibility score must remain ≥ 95 after any change.
+5. Lighthouse accessibility score must remain ≥ 95 on production (≥ 82 CI threshold — see `docs/LIGHTHOUSE-CI.md`).

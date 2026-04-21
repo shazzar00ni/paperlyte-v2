@@ -130,7 +130,15 @@ describe('ci.yml – permission structure', () => {
 
   it('every job with a permissions block should include at least "contents: read"', () => {
     // Regression guard: all jobs with explicit permissions must keep contents: read.
-    const allJobs = ['lint-and-typecheck', 'test', 'build', 'size-check', 'lighthouse', 'e2e', 'ci-success']
+    const allJobs = [
+      'lint-and-typecheck',
+      'test',
+      'build',
+      'size-check',
+      'lighthouse',
+      'e2e',
+      'ci-success',
+    ]
     for (const jobId of allJobs) {
       const block = assertJobExists(content, jobId, 'ci.yml')
       expect(
@@ -210,10 +218,9 @@ describe('pr-quality-check.yml – permission structure', () => {
     for (const jobId of allJobs) {
       const block = assertJobExists(content, jobId, 'pr-quality-check.yml')
       const hasPermissionsBlock = /^\s{4}permissions:/m.test(block)
-      expect(
-        hasPermissionsBlock,
-        `Job "${jobId}" is missing an explicit permissions block`
-      ).toBe(true)
+      expect(hasPermissionsBlock, `Job "${jobId}" is missing an explicit permissions block`).toBe(
+        true
+      )
     }
   })
 })

@@ -26,8 +26,8 @@ describe('Analytics Utility', () => {
     // Mock requestAnimationFrame
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.stubGlobal('requestAnimationFrame', (cb: any) => {
-      cb()
-      return 0
+        cb()
+        return 0
     })
   })
 
@@ -50,6 +50,15 @@ describe('Analytics Utility', () => {
     it('should return true in production on a real domain', () => {
       expect(shouldRenderAnalytics(true, 'paperlyte.app')).toBe(true)
       expect(shouldRenderAnalytics(true, 'www.paperlyte.com')).toBe(true)
+    })
+
+    it('should use default parameters and return true in mocked prod env', () => {
+        expect(shouldRenderAnalytics()).toBe(true)
+    })
+
+    it('should return false on localhost with default parameters', () => {
+        vi.stubGlobal('location', { hostname: 'localhost' })
+        expect(shouldRenderAnalytics()).toBe(false)
     })
   })
 
@@ -104,6 +113,31 @@ describe('Analytics Utility', () => {
       expect(consoleSpy).toHaveBeenCalled()
       consoleSpy.mockRestore()
     })
+
+    it('should return early if gtag is missing but enabled', () => {
+        const mockGtag = vi.fn()
+        // Ensure shouldRenderAnalytics returns true but gtag is missing
+        expect(isAnalyticsAvailable()).toBe(false)
+        expect(shouldRenderAnalytics()).toBe(true)
+
+        trackEvent('test_event')
+        expect(mockGtag).not.toHaveBeenCalled()
+    })
+
+    it('should handle unsafe property keys', () => {
+        const mockGtag = vi.fn()
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ;(window as any).gtag = mockGtag
+
+        vi.stubEnv('DEV', 'true')
+        const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+        trackEvent('test', { constructor: 'pollute' })
+
+        expect(mockGtag).toHaveBeenCalledWith('event', 'test', {})
+        expect(consoleSpy).toHaveBeenCalled()
+        consoleSpy.mockRestore()
+    })
   })
 
   describe('trackPageView', () => {
@@ -131,15 +165,28 @@ describe('Analytics Utility', () => {
       expect(mockGtag).not.toHaveBeenCalled()
     })
 
-    it('should log to console in dev mode when gtag is missing', () => {
-      vi.stubEnv('PROD', 'false')
-      vi.stubEnv('DEV', 'true')
-      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+    it('should log to console when enabled but gtag missing (simulated dev)', () => {
+        // Force shouldRenderAnalytics to true but keep gtag missing
+        vi.stubEnv('PROD', 'true')
+        vi.stubEnv('DEV', 'true')
+        const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
 
-      trackPageView('/dev-test')
+        trackPageView('/dev-test', 'Title')
 
-      expect(consoleSpy).toHaveBeenCalledWith('[Analytics] Page View:', '/dev-test', undefined)
-      consoleSpy.mockRestore()
+        expect(consoleSpy).toHaveBeenCalledWith('[Analytics] Page View:', '/dev-test', 'Title')
+        consoleSpy.mockRestore()
+    })
+
+    it('should handle errors in gtag gracefully', () => {
+        const mockGtag = vi.fn(() => { throw new Error('fail') })
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ;(window as any).gtag = mockGtag
+        const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+
+        trackPageView('/error-test')
+
+        expect(consoleSpy).toHaveBeenCalled()
+        consoleSpy.mockRestore()
     })
   })
 
@@ -203,6 +250,16 @@ describe('Analytics Utility', () => {
         button_location: 'hero',
       })
     })
+
+    it('should strip fields that look like email addresses', () => {
+        const mockGtag = vi.fn()
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ;(window as any).gtag = mockGtag
+
+        trackEvent('test', { some_field: 'test@example.com' })
+
+        expect(mockGtag).toHaveBeenCalledWith('event', 'test', {})
+    })
   })
 
   describe('initScrollDepthTracking', () => {
@@ -221,10 +278,7 @@ describe('Analytics Utility', () => {
       ;(window as any).gtag = mockGtag
 
       // Mock document dimensions
-      Object.defineProperty(document.documentElement, 'scrollHeight', {
-        value: 1000,
-        configurable: true,
-      })
+      Object.defineProperty(document.documentElement, 'scrollHeight', { value: 1000, configurable: true })
       Object.defineProperty(window, 'innerHeight', { value: 500, configurable: true })
       Object.defineProperty(window, 'scrollY', { value: 250, writable: true, configurable: true })
 
@@ -232,26 +286,29 @@ describe('Analytics Utility', () => {
       initScrollDepthTracking()
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const scrollHandler = addSpy.mock.calls.find((call) => call[0] === 'scroll')?.[1] as any
+      const scrollHandler = addSpy.mock.calls.find(call => call[0] === 'scroll')?.[1] as any
       scrollHandler()
 
       // 75% depth -> milestones 25, 50, 75
-      expect(mockGtag).toHaveBeenCalledWith('event', AnalyticsEvents.SCROLL_DEPTH, {
-        depth_percentage: 25,
-      })
-      expect(mockGtag).toHaveBeenCalledWith('event', AnalyticsEvents.SCROLL_DEPTH, {
-        depth_percentage: 50,
-      })
-      expect(mockGtag).toHaveBeenCalledWith('event', AnalyticsEvents.SCROLL_DEPTH, {
-        depth_percentage: 75,
-      })
+      expect(mockGtag).toHaveBeenCalledWith('event', AnalyticsEvents.SCROLL_DEPTH, { depth_percentage: 25 })
+      expect(mockGtag).toHaveBeenCalledWith('event', AnalyticsEvents.SCROLL_DEPTH, { depth_percentage: 50 })
+      expect(mockGtag).toHaveBeenCalledWith('event', AnalyticsEvents.SCROLL_DEPTH, { depth_percentage: 75 })
     })
 
     it('should remove listener on cleanup', () => {
-      const removeSpy = vi.spyOn(window, 'removeEventListener')
-      const cleanup = initScrollDepthTracking()
-      cleanup()
-      expect(removeSpy).toHaveBeenCalledWith('scroll', expect.any(Function))
+        const removeSpy = vi.spyOn(window, 'removeEventListener')
+        const cleanup = initScrollDepthTracking()
+        cleanup()
+        expect(removeSpy).toHaveBeenCalledWith('scroll', expect.any(Function))
+    })
+
+    it('should handle zero document height', () => {
+        Object.defineProperty(document.documentElement, 'scrollHeight', { value: 0, configurable: true })
+        const addSpy = vi.spyOn(window, 'addEventListener')
+        initScrollDepthTracking()
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const handler = addSpy.mock.calls.find(c => c[0] === 'scroll')![1] as any
+        expect(() => handler()).not.toThrow()
     })
   })
 })

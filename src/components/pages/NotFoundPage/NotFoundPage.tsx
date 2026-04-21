@@ -15,7 +15,21 @@ interface NotFoundPageProps {
   onGoHome?: () => void
 }
 
+/**
+ * 404 Not Found page shown when a user navigates to a non-existent route.
+ * Provides a friendly error illustration, an optional custom message, and
+ * action buttons to return home or go back in history.
+ *
+ * @param props - Component props.
+ * @param props.message - Optional override for the default "page not found" description.
+ * @param props.onGoHome - Optional callback invoked when the user clicks "Back to Home".
+ *   Defaults to navigating to `/` via {@link safeNavigate}.
+ */
 export const NotFoundPage: FC<NotFoundPageProps> = ({ message, onGoHome }) => {
+  /**
+   * Navigates the user to the homepage, using the custom `onGoHome` callback
+   * when provided, or falling back to a safe navigation to `/`.
+   */
   const handleGoHome = (): void => {
     if (onGoHome) {
       onGoHome()

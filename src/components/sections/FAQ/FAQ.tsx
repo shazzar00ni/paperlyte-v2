@@ -74,7 +74,11 @@ const FAQItemComponent = ({
   )
 }
 
-/** Renders the FAQ section with an accessible, keyboard-navigable accordion of common questions. */
+/**
+ * FAQ accordion section for the Paperlyte landing page.
+ * Renders a list of frequently asked questions with keyboard-accessible
+ * expand/collapse behavior and a live ARIA region for screen-reader announcements.
+ */
 export const FAQ = (): React.ReactElement => {
   const [openItems, setOpenItems] = useState<Set<string>>(new Set())
   const [announcement, setAnnouncement] = useState('')

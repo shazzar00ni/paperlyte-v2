@@ -3,6 +3,10 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "engines": {
+    "node": ">=18",
+    "npm": ">=8"
+  },
   "scripts": {
     "dev": "vite",
     "generate:icons": "node scripts/generate-icons.js",
@@ -22,7 +26,10 @@
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:report": "playwright show-report",
     "lighthouse": "npm run build && npx @lhci/cli autorun",
-    "size": "size-limit"
+    "size": "size-limit",
+    "release:patch": "bash scripts/release.sh patch",
+    "release:minor": "bash scripts/release.sh minor",
+    "release:major": "bash scripts/release.sh major"
   },
   "dependencies": {
     "@fontsource/inter": "^5.2.8",
@@ -88,6 +95,7 @@
   "overrides": {
     "axios": "^1.15.0",
     "basic-ftp": "^5.2.2",
+    "lodash": "^4.18.1",
     "lodash-es": "^4.18.1",
     "brace-expansion": "^5.0.5",
     "path-to-regexp": "^0.1.13",

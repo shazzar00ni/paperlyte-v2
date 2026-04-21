@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { logError } from '@utils/monitoring'
+import { validateEmail } from '@utils/validation'
 import { Section } from '@components/layout/Section'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { Button } from '@components/ui/Button'
@@ -8,6 +9,7 @@ import { Icon } from '@components/ui/Icon'
 import { WAITLIST_COUNT, LAUNCH_QUARTER } from '@constants/waitlist'
 import styles from './EmailCapture.module.css'
 
+/** Waitlist sign-up benefit bullet points displayed in the email capture form. */
 const BENEFITS = [
   'Get early access before public launch',
   'Influence features and design decisions',
@@ -15,7 +17,12 @@ const BENEFITS = [
   'Receive exclusive productivity tips and updates',
 ]
 
-/** Renders the Email Capture section with a waitlist signup form and benefit highlights. */
+/**
+ * Waitlist sign-up section for the Paperlyte landing page.
+ * Renders a benefit list and an email form. On successful submission the form is
+ * replaced with a confirmation state that includes social-sharing buttons.
+ * Handles network and validation errors with user-facing messages.
+ */
 export const EmailCapture = (): React.ReactElement => {
   const [email, setEmail] = useState('')
   const [isSubmitted, setIsSubmitted] = useState(false)
@@ -25,8 +32,25 @@ export const EmailCapture = (): React.ReactElement => {
   // Safe origin for SSR compatibility
   const origin = typeof window !== 'undefined' ? window.location.origin : ''
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  /**
+   * Handles waitlist form submission. Prevents the default form action, calls the
+   * (currently simulated) API, and transitions to the success state. On failure it
+   * classifies the error as a network issue or validation problem and sets an
+   * appropriate user-facing message.
+   *
+   * @param e - The form submission event.
+   */
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault()
+
+    // Pre-submit validation — run before touching loading state so the form
+    // stays interactive if the user needs to correct their input.
+    const validation = validateEmail(email)
+    if (!validation.isValid) {
+      setError(validation.error ?? 'Please enter a valid email address.')
+      return
+    }
+
     setIsLoading(true)
     setError(null)
 

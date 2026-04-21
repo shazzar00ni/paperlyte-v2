@@ -24,12 +24,27 @@ interface ServerErrorPageProps {
   showSupport?: boolean
 }
 
+/**
+ * 500 Server Error page rendered when an unexpected server-side failure occurs.
+ * Offers retry and home-navigation actions and optionally surfaces raw error details
+ * in development mode. A support contact link can be shown for production incidents.
+ *
+ * @param props - Component props.
+ * @param props.message - Optional override for the default server error description.
+ * @param props.errorDetails - Raw error stack/message shown only in `DEV` mode via a `<details>` element.
+ * @param props.onRetry - Optional callback for the retry button; defaults to `window.location.reload()`.
+ * @param props.showSupport - Whether to display the "contact support" link (default: `true`).
+ */
 export const ServerErrorPage: FC<ServerErrorPageProps> = ({
   message,
   errorDetails,
   onRetry,
   showSupport = true,
 }) => {
+  /**
+   * Retries the failed operation by invoking the custom `onRetry` callback when provided,
+   * or falling back to a full page reload to clear the error state.
+   */
   const handleRetry = (): void => {
     if (onRetry) {
       onRetry()
@@ -41,6 +56,10 @@ export const ServerErrorPage: FC<ServerErrorPageProps> = ({
     }
   }
 
+  /**
+   * Navigates the user to the homepage using {@link safeNavigate} to prevent
+   * open-redirect vulnerabilities.
+   */
   const handleGoHome = (): void => {
     // Full page navigation to homepage using safe navigation
     // This validates the URL to prevent open redirect vulnerabilities

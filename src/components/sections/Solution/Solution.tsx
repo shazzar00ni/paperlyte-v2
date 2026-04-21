@@ -15,6 +15,7 @@ interface ValueProp {
   proof: string
 }
 
+/** Value proposition cards displayed in the Solution section. */
 const VALUE_PROPS: ValueProp[] = [
   {
     icon: 'fa-bolt',
@@ -52,7 +53,11 @@ const VALUE_PROPS: ValueProp[] = [
   },
 ]
 
-/** Renders the Solution section presenting Paperlyte's key differentiating features. */
+/**
+ * Landing page section presenting Paperlyte's three core value propositions:
+ * zero-lag typing, tag-based organization, and cross-platform offline-first sync.
+ * Each value prop includes an icon, headline, body copy, and proof point.
+ */
 export const Solution = (): React.ReactElement => {
   return (
     <Section id="solution" background="default">

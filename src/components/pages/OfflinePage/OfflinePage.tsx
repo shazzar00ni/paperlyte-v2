@@ -1,5 +1,6 @@
 import { type FC, useState, useEffect, useCallback } from 'react'
 import { Icon } from '@/components/ui/Icon'
+import { logError } from '@/utils/monitoring'
 import styles from './OfflinePage.module.css'
 
 interface OfflinePageProps {
@@ -17,6 +18,16 @@ interface OfflinePageProps {
   onConnectionRestored?: () => void
 }
 
+/**
+ * Offline fallback page displayed when the user loses network connectivity.
+ * Listens to the browser's `online`/`offline` events, updates the UI reactively,
+ * and provides a retry button that probes real internet connectivity before reloading.
+ *
+ * @param props - Component props.
+ * @param props.message - Optional override for the default "you're offline" description.
+ * @param props.showCachedInfo - Whether to show the list of offline-capable features (default: `true`).
+ * @param props.onConnectionRestored - Optional callback invoked when the `online` event fires.
+ */
 export const OfflinePage: FC<OfflinePageProps> = ({
   message,
   showCachedInfo = true,
@@ -26,8 +37,13 @@ export const OfflinePage: FC<OfflinePageProps> = ({
     typeof navigator !== 'undefined' ? navigator.onLine : true
   )
   const [isChecking, setIsChecking] = useState(false)
+  const [retryError, setRetryError] = useState<string | null>(null)
 
   // Memoize handlers to ensure stable references and proper cleanup
+  /**
+   * Marks the connection as restored and invokes the optional `onConnectionRestored` callback.
+   * Attached to the window `online` event.
+   */
   const handleOnline = useCallback((): void => {
     setIsOnline(true)
     if (onConnectionRestored) {
@@ -35,6 +51,9 @@ export const OfflinePage: FC<OfflinePageProps> = ({
     }
   }, [onConnectionRestored])
 
+  /**
+   * Marks the connection as lost. Attached to the window `offline` event.
+   */
   const handleOffline = useCallback((): void => {
     setIsOnline(false)
   }, [])
@@ -51,16 +70,25 @@ export const OfflinePage: FC<OfflinePageProps> = ({
     }
   }, [handleOnline, handleOffline])
 
+  /**
+   * Probes real internet connectivity by sending a HEAD request to `VITE_PROBE_URL`
+   * (defaults to `'/'`). Reloads the page on success; shows a user-facing error
+   * and logs to monitoring on failure or timeout. A 5-second AbortController timeout
+   * prevents hanging.
+   */
   const handleRetry = async (): Promise<void> => {
     setIsChecking(true)
+    setRetryError(null)
 
     // Create abort controller with timeout to prevent hanging
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), 5000) // 5 second timeout
 
+    const PROBE_URL = import.meta.env.VITE_PROBE_URL ?? '/'
+
     try {
-      // Use a reliable external endpoint to check for real internet connectivity
-      const response = await fetch('https://www.gstatic.com/generate_204', {
+      // Probe a known-available endpoint by default; deployments can override with VITE_PROBE_URL
+      const response = await fetch(PROBE_URL, {
         method: 'HEAD',
         cache: 'no-cache',
         signal: controller.signal,
@@ -71,10 +99,31 @@ export const OfflinePage: FC<OfflinePageProps> = ({
       // Only reload if we got a successful response
       if (response.ok || response.status === 204) {
         window.location.reload()
+        return
       }
-    } catch {
-      // Connection still not available (or timeout/abort)
+
+      logError(new Error(`Connectivity probe returned ${response.status} ${response.statusText}`), {
+        tags: {
+          context: 'OfflinePage.handleRetry',
+          url: PROBE_URL,
+          status: String(response.status),
+        },
+      })
+      setRetryError(`Connection check failed (${response.status}). Please try again.`)
+    } catch (err) {
       clearTimeout(timeoutId)
+      // Check .name on raw err before coercing — DOMException doesn't extend
+      // Error in some environments (e.g. jsdom), so coercing first loses the name.
+      const isAbort = (err as { name?: unknown }).name === 'AbortError'
+      const error = err instanceof Error ? err : new Error(String(err))
+      logError(error, {
+        tags: { context: 'OfflinePage.handleRetry', url: PROBE_URL },
+      })
+      setRetryError(
+        isAbort
+          ? 'Connection check timed out. Please try again.'
+          : 'Unable to reach the network. Check your connection and try again.'
+      )
     } finally {
       // Always reset checking state
       setIsChecking(false)
@@ -140,6 +189,13 @@ export const OfflinePage: FC<OfflinePageProps> = ({
             </button>
           )}
         </div>
+
+        {/* Retry error message */}
+        {retryError && (
+          <p className={styles.message} role="alert">
+            {retryError}
+          </p>
+        )}
 
         {/* Offline features */}
         {!isOnline && showCachedInfo && (

@@ -1,8 +1,12 @@
 import { safePropertyAccess } from '@utils/security'
 
-// Lightweight SVG icon paths to replace Font Awesome CDN
-// Only includes icons actually used in the app
-
+/**
+ * Lightweight inline SVG `d` path strings keyed by Font Awesome class name.
+ * Only icons actually consumed by the application are included to keep the
+ * bundle small. Add new entries here when introducing a new `<Icon>` usage.
+ *
+ * All paths target a 24×24 viewBox unless noted in {@link iconViewBox}.
+ */
 export const iconPaths: Record<string, string> = {
   // Logo & Brand
   'fa-feather': 'M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z M16 8L2 22 M17.5 15H9',
@@ -61,13 +65,23 @@ export const iconPaths: Record<string, string> = {
   'fa-paper-plane': 'M22 2L11 13 M22 2l-7 20-4-9-9-4 20-7z',
 }
 
-// Icon viewBox configurations (most use 0 0 24 24, but some may differ)
+/**
+ * Per-icon `viewBox` overrides for icons whose SVG coordinate space differs from the
+ * standard 24×24 grid. Icons not listed here default to `"0 0 24 24"` in
+ * {@link getIconViewBox}.
+ */
 export const iconViewBox: Record<string, string> = {
   'fa-apple': '0 0 24 24',
   'fa-windows': '0 0 23 24',
 }
 
-// Returns the viewBox for the given icon, defaulting to "0 0 24 24" for icons not listed above
+/**
+ * Returns the SVG viewBox string for the given icon name.
+ * Defaults to `"0 0 24 24"` for icons not listed in {@link iconViewBox}.
+ *
+ * @param name - The icon name (e.g. `"fa-bolt"`).
+ * @returns The viewBox string to apply to the `<svg>` element.
+ */
 export const getIconViewBox = (name: string): string => {
   return safePropertyAccess(iconViewBox, name) ?? '0 0 24 24'
 }

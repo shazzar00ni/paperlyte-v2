@@ -102,7 +102,7 @@ def main():
     summary += f'| Missing `review.md`            | {stats["REVIEW"]}   | 🟡 Medium   | AI PR reviewer instructions.                                             |\n'
     summary += f'| Reverted Security Helpers      | {stats["HELPERS"]}   | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers.                      |\n'
     summary += f'| Unreadable navigation.ts       | {stats["UNREADABLE"]}     | 🔴 Critical | File missing or unreadable.                                              |\n\n'
-    summary += '- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.\n\n'
+    summary += '- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.\n\n---\n\n'
 
     with open('daily_summary.txt', 'w') as f:
         f.write(summary)

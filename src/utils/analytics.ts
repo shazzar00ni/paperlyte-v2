@@ -261,6 +261,24 @@ function sanitizeAnalyticsParams(params?: AnalyticsEventParams): AnalyticsEventP
 }
 
 /**
+ * Check if analytics should be enabled for the current environment.
+ * Prevents analytics from running on localhost or in non-production environments
+ * to ensure data accuracy and improve Lighthouse scores.
+ *
+ * @param isProd - Whether the environment is production (defaults to import.meta.env.PROD)
+ * @param currentHostname - Current window hostname (defaults to window.location.hostname)
+ * @returns True if analytics should be active
+ */
+export function shouldRenderAnalytics(
+  isProd = import.meta.env.PROD,
+  currentHostname = typeof window !== 'undefined' ? window.location.hostname : ''
+): boolean {
+  if (!isProd) return false
+  if (currentHostname === 'localhost' || currentHostname === '127.0.0.1') return false
+  return true
+}
+
+/**
  * Check if Google Analytics is loaded and available
  *
  * @returns True if gtag is available, false otherwise
@@ -286,6 +304,11 @@ export function isAnalyticsAvailable(): boolean {
  * ```
  */
 export function trackEvent(eventName: string, eventParams?: AnalyticsEventParams): void {
+  // Check if analytics should be active
+  if (!shouldRenderAnalytics()) {
+    return
+  }
+
   // Sanitize parameters to remove any PII
   const sanitizedParams = sanitizeAnalyticsParams(eventParams)
 
@@ -312,6 +335,11 @@ export function trackEvent(eventName: string, eventParams?: AnalyticsEventParams
  * ```
  */
 export function trackPageView(pagePath: string, pageTitle?: string): void {
+  // Check if analytics should be active
+  if (!shouldRenderAnalytics()) {
+    return
+  }
+
   if (!isAnalyticsAvailable()) {
     if (import.meta.env.DEV) {
       console.log('[Analytics] Page View:', pagePath, pageTitle)
@@ -455,6 +483,11 @@ function createThrottledScrollHandler(callback: () => void): () => void {
  * ```
  */
 export function initScrollDepthTracking(): () => void {
+  // Check if analytics should be active
+  if (!shouldRenderAnalytics()) {
+    return () => {}
+  }
+
   const trackedMilestones = new Set<number>()
 
   const handleScroll = () => {

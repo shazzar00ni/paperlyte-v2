@@ -2,6 +2,10 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import {
   isAnalyticsAvailable,
   trackEvent,
+  trackPageView,
+  trackCTAClick,
+  trackExternalLink,
+  trackSocialClick,
   initScrollDepthTracking,
   AnalyticsEvents,
   shouldRenderAnalytics,
@@ -102,6 +106,83 @@ describe('Analytics Utility', () => {
     })
   })
 
+  describe('trackPageView', () => {
+    it('should track page view when enabled', () => {
+      const mockGtag = vi.fn()
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ;(window as any).gtag = mockGtag
+
+      trackPageView('/test', 'Test Page')
+
+      expect(mockGtag).toHaveBeenCalledWith('event', 'page_view', {
+        page_path: '/test',
+        page_title: 'Test Page',
+      })
+    })
+
+    it('should not track page view when disabled', () => {
+      const mockGtag = vi.fn()
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ;(window as any).gtag = mockGtag
+      vi.stubGlobal('location', { hostname: 'localhost' })
+
+      trackPageView('/test')
+
+      expect(mockGtag).not.toHaveBeenCalled()
+    })
+
+    it('should log to console in dev mode when gtag is missing', () => {
+      vi.stubEnv('PROD', 'false')
+      vi.stubEnv('DEV', 'true')
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+
+      trackPageView('/dev-test')
+
+      expect(consoleSpy).toHaveBeenCalledWith('[Analytics] Page View:', '/dev-test', undefined)
+      consoleSpy.mockRestore()
+    })
+  })
+
+  describe('CTA Tracking', () => {
+    it('should track CTA clicks', () => {
+      const mockGtag = vi.fn()
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ;(window as any).gtag = mockGtag
+
+      trackCTAClick('Get Started', 'hero')
+
+      expect(mockGtag).toHaveBeenCalledWith('event', AnalyticsEvents.CTA_CLICK, {
+        button_text: 'Get Started',
+        button_location: 'hero',
+      })
+    })
+
+    it('should track external link clicks', () => {
+      const mockGtag = vi.fn()
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ;(window as any).gtag = mockGtag
+
+      trackExternalLink('https://twitter.com', 'Twitter')
+
+      expect(mockGtag).toHaveBeenCalledWith('event', AnalyticsEvents.EXTERNAL_LINK_CLICK, {
+        link_url: 'https://twitter.com',
+        link_text: 'Twitter',
+      })
+    })
+
+    it('should track social clicks', () => {
+      const mockGtag = vi.fn()
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ;(window as any).gtag = mockGtag
+
+      trackSocialClick('GitHub')
+
+      expect(mockGtag).toHaveBeenCalledWith('event', AnalyticsEvents.SOCIAL_LINK_CLICK, {
+        platform: 'github',
+      })
+    })
+  })
+
   describe('PII filtering', () => {
     it('should strip PII fields from event parameters', () => {
       const mockGtag = vi.fn()
@@ -164,6 +245,13 @@ describe('Analytics Utility', () => {
       expect(mockGtag).toHaveBeenCalledWith('event', AnalyticsEvents.SCROLL_DEPTH, {
         depth_percentage: 75,
       })
+    })
+
+    it('should remove listener on cleanup', () => {
+      const removeSpy = vi.spyOn(window, 'removeEventListener')
+      const cleanup = initScrollDepthTracking()
+      cleanup()
+      expect(removeSpy).toHaveBeenCalledWith('scroll', expect.any(Function))
     })
   })
 })

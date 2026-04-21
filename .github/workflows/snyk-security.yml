@@ -18,6 +18,8 @@
 
 name: Snyk Security
 
+permissions: {}
+
 on:
   push:
     branches: ["main" ]

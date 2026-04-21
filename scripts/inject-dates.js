@@ -24,6 +24,7 @@ const BUILD_DATE = new Date().toLocaleDateString("en-US", {
 // Configuration for production site
 const SITE_URL = "https://paperlyte.app";
 const OG_IMAGE_URL = "https://paperlyte.app/og-image.jpg";
+const TWITTER_IMAGE_URL = "https://paperlyte.app/twitter-image.jpg";
 const META_KEYWORDS = "note-taking app, distraction-free notes, offline notes, fast note app, tag-based organization, simple notes, privacy-focused notes, cross-platform notes, real-time sync, minimalist note app";
 
 const LEGAL_FILES = ["privacy.html", "terms.html"];
@@ -72,12 +73,14 @@ try {
   content = content.replace(/__META_KEYWORDS__/g, META_KEYWORDS);
   content = content.replace(/__SITE_URL__/g, SITE_URL);
   content = content.replace(/__OG_IMAGE_URL__/g, OG_IMAGE_URL);
+  content = content.replace(/__TWITTER_IMAGE_URL__/g, TWITTER_IMAGE_URL);
 
   // Verify that placeholders were replaced
   const replacements = [
     { placeholder: "__META_KEYWORDS__", found: originalContent.includes("__META_KEYWORDS__") },
     { placeholder: "__SITE_URL__", found: originalContent.includes("__SITE_URL__") },
     { placeholder: "__OG_IMAGE_URL__", found: originalContent.includes("__OG_IMAGE_URL__") },
+    { placeholder: "__TWITTER_IMAGE_URL__", found: originalContent.includes("__TWITTER_IMAGE_URL__") },
   ];
 
   const foundPlaceholders = replacements.filter(r => r.found);

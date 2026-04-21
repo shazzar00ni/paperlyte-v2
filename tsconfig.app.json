@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     /* Build Configuration */
-    "ignoreDeprecations": "6.0",
     // Store TypeScript incremental build info for faster rebuilds
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     // Target modern browsers with ES2022 features

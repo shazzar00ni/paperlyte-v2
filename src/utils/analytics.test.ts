@@ -8,65 +8,13 @@ import {
   trackSocialClick,
   initScrollDepthTracking,
   AnalyticsEvents,
-  shouldRenderAnalytics,
 } from './analytics'
 
 describe('Analytics Utility', () => {
   beforeEach(() => {
     // Clear any existing gtag
-    // @ts-expect-error - testing window property cleanup
-    delete window.gtag
-    // @ts-expect-error - testing window property cleanup
-    delete window.dataLayer
-
-    // Mock environment to production and a real domain by default
-    vi.stubEnv('PROD', 'true')
-    vi.stubGlobal('location', { hostname: 'paperlyte.app' })
-
-    // Default synchronous RAF for most tests
-    vi.stubGlobal('requestAnimationFrame', vi.fn((cb: FrameRequestCallback) => {
-        cb(0)
-        return 0
-    }))
-  })
-
-  afterEach(() => {
-    vi.unstubAllEnvs()
-    vi.unstubAllGlobals()
-    vi.restoreAllMocks()
-  })
-
-  describe('shouldRenderAnalytics', () => {
-    it('should return false when not in production', () => {
-      expect(shouldRenderAnalytics(false, 'paperlyte.com')).toBe(false)
-    })
-
-    it('should return false when on localhost even in production', () => {
-      expect(shouldRenderAnalytics(true, 'localhost')).toBe(false)
-      expect(shouldRenderAnalytics(true, '127.0.0.1')).toBe(false)
-    })
-
-    it('should return true in production on a real domain', () => {
-      expect(shouldRenderAnalytics(true, 'paperlyte.app')).toBe(true)
-      expect(shouldRenderAnalytics(true, 'www.paperlyte.com')).toBe(true)
-    })
-
-    it('should use default parameters and return true in mocked prod env', () => {
-        expect(shouldRenderAnalytics()).toBe(true)
-    })
-
-    it('should return false on localhost with default parameters', () => {
-        vi.stubGlobal('location', { hostname: 'localhost' })
-        expect(shouldRenderAnalytics()).toBe(false)
-    })
-
-    it('should handle undefined window gracefully', () => {
-        const originalWindow = global.window
-        // @ts-expect-error - intentionally deleting window for test
-        delete global.window
-        expect(shouldRenderAnalytics(true)).toBe(true)
-        global.window = originalWindow
-    })
+    delete (window as Window & { gtag?: unknown }).gtag
+    delete (window as Window & { dataLayer?: unknown }).dataLayer
   })
 
   describe('isAnalyticsAvailable', () => {
@@ -75,15 +23,15 @@ describe('Analytics Utility', () => {
     })
 
     it('should return true when gtag is available', () => {
-      window.gtag = vi.fn()
+      ;(window as Window & { gtag?: () => void }).gtag = vi.fn()
       expect(isAnalyticsAvailable()).toBe(true)
     })
   })
 
   describe('trackEvent', () => {
-    it('should call gtag with correct parameters when available and enabled', () => {
+    it('should call gtag with correct parameters when available', () => {
       const mockGtag = vi.fn()
-      window.gtag = mockGtag
+      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
 
       trackEvent('test_event', { param1: 'value1', param2: 123 })
 
@@ -93,21 +41,17 @@ describe('Analytics Utility', () => {
       })
     })
 
-    it('should NOT call gtag when on localhost', () => {
-      const mockGtag = vi.fn()
-      window.gtag = mockGtag
-      vi.stubGlobal('location', { hostname: 'localhost' })
-
-      trackEvent('test_event')
-
-      expect(mockGtag).not.toHaveBeenCalled()
+    it('should not throw error when gtag is not available', () => {
+      expect(() => {
+        trackEvent('test_event')
+      }).not.toThrow()
     })
 
     it('should handle errors gracefully', () => {
       const mockGtag = vi.fn(() => {
         throw new Error('Analytics error')
       })
-      window.gtag = mockGtag
+      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
 
       const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
 
@@ -117,108 +61,148 @@ describe('Analytics Utility', () => {
       consoleSpy.mockRestore()
     })
 
-    it('should return early if gtag is missing but enabled', () => {
-        const mockGtag = vi.fn()
-        // Ensure shouldRenderAnalytics returns true but gtag is missing
-        expect(isAnalyticsAvailable()).toBe(false)
-        expect(shouldRenderAnalytics()).toBe(true)
+    it('should track event without parameters', () => {
+      const mockGtag = vi.fn()
+      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
 
-        trackEvent('test_event')
-        expect(mockGtag).not.toHaveBeenCalled()
+      trackEvent('simple_event')
+
+      expect(mockGtag).toHaveBeenCalledWith('event', 'simple_event', undefined)
     })
 
-    it('should handle unsafe property keys and warn in DEV', () => {
-        const mockGtag = vi.fn()
-        window.gtag = mockGtag
+    it('should block prototype pollution via __proto__ property', () => {
+      const mockGtag = vi.fn()
+      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
 
-        vi.stubEnv('DEV', 'true')
-        const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const maliciousParams = {
+        safe_param: 'safe_value',
+        __proto__: { polluted: 'bad' },
+      } as Record<string, unknown>
 
-        trackEvent('test', { constructor: 'pollute' })
+      trackEvent('test_event', maliciousParams)
 
-        expect(mockGtag).toHaveBeenCalledWith('event', 'test', {})
-        expect(consoleSpy).toHaveBeenCalledWith('[Analytics] Blocked potentially unsafe property key:', 'constructor')
-        consoleSpy.mockRestore()
+      // Should only include safe_param, not __proto__
+      expect(mockGtag).toHaveBeenCalledWith('event', 'test_event', {
+        safe_param: 'safe_value',
+      })
+    })
+
+    it('should block prototype pollution via constructor property', () => {
+      const mockGtag = vi.fn()
+      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
+
+      const maliciousParams = {
+        safe_param: 'safe_value',
+        constructor: { polluted: 'bad' },
+      } as Record<string, unknown>
+
+      trackEvent('test_event', maliciousParams)
+
+      // Should only include safe_param, not constructor
+      expect(mockGtag).toHaveBeenCalledWith('event', 'test_event', {
+        safe_param: 'safe_value',
+      })
+    })
+
+    it('should block prototype pollution via prototype property', () => {
+      const mockGtag = vi.fn()
+      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
+
+      const maliciousParams = {
+        safe_param: 'safe_value',
+        prototype: { polluted: 'bad' },
+      } as Record<string, unknown>
+
+      trackEvent('test_event', maliciousParams)
+
+      // Should only include safe_param, not prototype
+      expect(mockGtag).toHaveBeenCalledWith('event', 'test_event', {
+        safe_param: 'safe_value',
+      })
     })
   })
 
   describe('trackPageView', () => {
-    it('should track page view when enabled', () => {
+    it('should track page view with path and title', () => {
       const mockGtag = vi.fn()
-      window.gtag = mockGtag
+      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
 
-      trackPageView('/test', 'Test Page')
+      trackPageView('/privacy', 'Privacy Policy')
 
       expect(mockGtag).toHaveBeenCalledWith('event', 'page_view', {
-        page_path: '/test',
-        page_title: 'Test Page',
+        page_path: '/privacy',
+        page_title: 'Privacy Policy',
       })
     })
 
-    it('should not track page view when disabled', () => {
+    it('should track page view with only path', () => {
       const mockGtag = vi.fn()
-      window.gtag = mockGtag
-      vi.stubGlobal('location', { hostname: 'localhost' })
+      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
 
-      trackPageView('/test')
+      trackPageView('/about')
 
-      expect(mockGtag).not.toHaveBeenCalled()
-    })
-
-    it('should log to console when enabled but gtag missing (simulated dev)', () => {
-        // Force shouldRenderAnalytics to true but keep gtag missing
-        vi.stubEnv('PROD', 'true')
-        vi.stubEnv('DEV', 'true')
-        const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
-
-        trackPageView('/dev-test', 'Title')
-
-        expect(consoleSpy).toHaveBeenCalledWith('[Analytics] Page View:', '/dev-test', 'Title')
-        consoleSpy.mockRestore()
-    })
-
-    it('should handle errors in gtag gracefully', () => {
-        const mockGtag = vi.fn(() => { throw new Error('fail') })
-        window.gtag = mockGtag
-        const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-
-        trackPageView('/error-test')
-
-        expect(consoleSpy).toHaveBeenCalled()
-        consoleSpy.mockRestore()
+      expect(mockGtag).toHaveBeenCalledWith('event', 'page_view', {
+        page_path: '/about',
+        page_title: undefined,
+      })
     })
   })
 
-  describe('CTA Tracking', () => {
-    it('should track CTA clicks', () => {
+  describe('trackCTAClick', () => {
+    it('should track CTA click with button text and location', () => {
       const mockGtag = vi.fn()
-      window.gtag = mockGtag
+      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
 
-      trackCTAClick('Get Started', 'hero')
+      trackCTAClick('Join Waitlist', 'hero')
 
       expect(mockGtag).toHaveBeenCalledWith('event', AnalyticsEvents.CTA_CLICK, {
-        button_text: 'Get Started',
+        button_text: 'Join Waitlist',
         button_location: 'hero',
       })
     })
 
-    it('should track external link clicks', () => {
+    it('should track multiple CTA clicks with different parameters', () => {
       const mockGtag = vi.fn()
-      window.gtag = mockGtag
+      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
 
-      trackExternalLink('https://twitter.com', 'Twitter')
+      trackCTAClick('Sign Up', 'header')
+      trackCTAClick('Learn More', 'features')
+
+      expect(mockGtag).toHaveBeenCalledTimes(2)
+    })
+  })
+
+  describe('trackExternalLink', () => {
+    it('should track external link click', () => {
+      const mockGtag = vi.fn()
+      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
+
+      trackExternalLink('https://example.com', 'Example Link')
 
       expect(mockGtag).toHaveBeenCalledWith('event', AnalyticsEvents.EXTERNAL_LINK_CLICK, {
-        link_url: 'https://twitter.com',
-        link_text: 'Twitter',
+        link_url: 'https://example.com',
+        link_text: 'Example Link',
+      })
+    })
+  })
+
+  describe('trackSocialClick', () => {
+    it('should track social media click with lowercase platform', () => {
+      const mockGtag = vi.fn()
+      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
+
+      trackSocialClick('Twitter')
+
+      expect(mockGtag).toHaveBeenCalledWith('event', AnalyticsEvents.SOCIAL_LINK_CLICK, {
+        platform: 'twitter',
       })
     })
 
-    it('should track social clicks', () => {
+    it('should normalize platform name to lowercase', () => {
       const mockGtag = vi.fn()
-      window.gtag = mockGtag
+      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
 
-      trackSocialClick('GitHub')
+      trackSocialClick('GITHUB')
 
       expect(mockGtag).toHaveBeenCalledWith('event', AnalyticsEvents.SOCIAL_LINK_CLICK, {
         platform: 'github',
@@ -226,11 +210,28 @@ describe('Analytics Utility', () => {
     })
   })
 
+  describe('AnalyticsEvents', () => {
+    it('should have all required event names', () => {
+      expect(AnalyticsEvents.WAITLIST_JOIN).toBe('Waitlist_Join')
+      expect(AnalyticsEvents.WAITLIST_SUBMIT).toBe('Waitlist_Submit')
+      expect(AnalyticsEvents.WAITLIST_SUCCESS).toBe('Waitlist_Success')
+      expect(AnalyticsEvents.WAITLIST_ERROR).toBe('Waitlist_Error')
+      expect(AnalyticsEvents.CTA_CLICK).toBe('CTA_Click')
+      expect(AnalyticsEvents.SCROLL_DEPTH).toBe('Scroll_Depth')
+      expect(AnalyticsEvents.VIDEO_PLAY).toBe('Video_Play')
+      expect(AnalyticsEvents.NAVIGATION_CLICK).toBe('Navigation_Click')
+      expect(AnalyticsEvents.EXTERNAL_LINK_CLICK).toBe('External_Link_Click')
+      expect(AnalyticsEvents.SOCIAL_LINK_CLICK).toBe('Social_Link_Click')
+      expect(AnalyticsEvents.FAQ_EXPAND).toBe('FAQ_Expand')
+    })
+  })
+
   describe('PII filtering', () => {
     it('should strip PII fields from event parameters', () => {
       const mockGtag = vi.fn()
-      window.gtag = mockGtag
+      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
 
+      // These parameters contain PII that should be stripped
       const paramsWithPII = {
         safe_param: 'safe_value',
         email: 'user@example.com',
@@ -240,101 +241,317 @@ describe('Analytics Utility', () => {
 
       trackEvent('test_event', paramsWithPII)
 
+      // Should only include safe params, not PII keys
       expect(mockGtag).toHaveBeenCalledWith('event', 'test_event', {
         safe_param: 'safe_value',
         button_location: 'hero',
       })
     })
 
-    it('should strip fields that look like email addresses', () => {
-        const mockGtag = vi.fn()
-        window.gtag = mockGtag
+    it('should strip values that look like email addresses', () => {
+      const mockGtag = vi.fn()
+      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
 
-        trackEvent('test', { some_field: 'test@example.com' })
+      // A non-PII key but with a value that looks like an email
+      const paramsWithEmailValue = {
+        safe_param: 'safe_value',
+        some_field: 'user@example.com',
+      }
 
-        expect(mockGtag).toHaveBeenCalledWith('event', 'test', {})
+      trackEvent('test_event', paramsWithEmailValue)
+
+      // Should strip the field with email-like value
+      expect(mockGtag).toHaveBeenCalledWith('event', 'test_event', {
+        safe_param: 'safe_value',
+      })
+    })
+
+    it('should warn in DEV mode when PII is found and stripped', () => {
+      const mockGtag = vi.fn()
+      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
+
+      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+      // Send params with PII
+      trackEvent('test_event', {
+        safe_param: 'value',
+        email: 'test@example.com',
+      })
+
+      // In DEV mode, should warn about PII
+      expect(consoleSpy).toHaveBeenCalledWith(
+        '[Analytics] PII detected and removed from event parameters. Never send emails, passwords, or other sensitive data to analytics.'
+      )
+
+      consoleSpy.mockRestore()
+    })
+
+    it('should strip password and token fields', () => {
+      const mockGtag = vi.fn()
+      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
+
+      const paramsWithSensitive = {
+        safe_param: 'safe_value',
+        password: 'test_value',
+        auth_token: 'test_value',
+        api_key: 'test_value',
+      }
+
+      trackEvent('test_event', paramsWithSensitive)
+
+      expect(mockGtag).toHaveBeenCalledWith('event', 'test_event', {
+        safe_param: 'safe_value',
+      })
+    })
+  })
+
+  describe('trackPageView error handling', () => {
+    it('should handle errors gracefully', () => {
+      const mockGtag = vi.fn(() => {
+        throw new Error('Analytics error')
+      })
+      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
+
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+
+      trackPageView('/test', 'Test Page')
+
+      expect(consoleSpy).toHaveBeenCalledWith(
+        '[Analytics] Error tracking page view:',
+        expect.any(Error)
+      )
+      consoleSpy.mockRestore()
+    })
+
+    it('should log page view in DEV mode when gtag is not available', () => {
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+
+      trackPageView('/about', 'About Page')
+
+      expect(consoleSpy).toHaveBeenCalledWith('[Analytics] Page View:', '/about', 'About Page')
+      consoleSpy.mockRestore()
     })
   })
 
   describe('initScrollDepthTracking', () => {
-    it('should not add listener when on localhost', () => {
-      vi.stubGlobal('location', { hostname: 'localhost' })
-      const addSpy = vi.spyOn(window, 'addEventListener')
+    let mockGtag: ReturnType<typeof vi.fn>
+    let addEventListenerSpy: ReturnType<typeof vi.spyOn>
+    let removeEventListenerSpy: ReturnType<typeof vi.spyOn>
+    let rafSpy: ReturnType<typeof vi.spyOn>
 
-      initScrollDepthTracking()
+    beforeEach(() => {
+      mockGtag = vi.fn()
+      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
 
-      expect(addSpy).not.toHaveBeenCalledWith('scroll', expect.any(Function), expect.any(Object))
+      addEventListenerSpy = vi.spyOn(window, 'addEventListener')
+      removeEventListenerSpy = vi.spyOn(window, 'removeEventListener')
+      rafSpy = vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+        cb(0)
+        return 0
+      })
     })
 
-    it('should track scroll milestones when scrolling in production', () => {
-      const mockGtag = vi.fn()
-      window.gtag = mockGtag
+    afterEach(() => {
+      addEventListenerSpy.mockRestore()
+      removeEventListenerSpy.mockRestore()
+      rafSpy.mockRestore()
 
-      // Mock document dimensions
-      Object.defineProperty(document.documentElement, 'scrollHeight', { value: 1000, configurable: true })
-      Object.defineProperty(window, 'innerHeight', { value: 500, configurable: true })
-      Object.defineProperty(window, 'scrollY', { value: 250, writable: true, configurable: true })
+      // Reset mocked scroll-related properties to avoid test pollution
+      Object.defineProperty(document.documentElement, 'scrollHeight', {
+        value: 0,
+        configurable: true,
+        writable: true,
+      })
+      Object.defineProperty(window, 'innerHeight', {
+        value: 0,
+        configurable: true,
+        writable: true,
+      })
+      Object.defineProperty(window, 'scrollY', {
+        value: 0,
+        configurable: true,
+        writable: true,
+      })
+    })
 
-      const addSpy = vi.spyOn(window, 'addEventListener')
-      initScrollDepthTracking()
+    it('should set up scroll event listener', () => {
+      const cleanup = initScrollDepthTracking()
 
-      const scrollHandler = addSpy.mock.calls.find(call => call[0] === 'scroll')?.[1] as EventListener
+      expect(addEventListenerSpy).toHaveBeenCalledWith('scroll', expect.any(Function), {
+        passive: true,
+      })
+
+      cleanup()
+    })
+
+    it('should remove scroll event listener on cleanup', () => {
+      const cleanup = initScrollDepthTracking()
+      cleanup()
+
+      expect(removeEventListenerSpy).toHaveBeenCalledWith('scroll', expect.any(Function))
+    })
+
+    it('should track scroll milestones when scrolling', () => {
+      // Mock document scroll dimensions
+      Object.defineProperty(document.documentElement, 'scrollHeight', {
+        value: 1000,
+        configurable: true,
+      })
+      Object.defineProperty(window, 'innerHeight', {
+        value: 500,
+        configurable: true,
+      })
+      Object.defineProperty(window, 'scrollY', {
+        value: 250,
+        writable: true,
+        configurable: true,
+      })
+
+      const cleanup = initScrollDepthTracking()
+
+      // Get the scroll handler and call it
+      const scrollHandler = addEventListenerSpy.mock.calls.find(
+        (call) => call[0] === 'scroll'
+      )?.[1] as EventListener
+
+      // Simulate scroll to 75% (scrollY + innerHeight) / scrollHeight = (250 + 500) / 1000 = 75%
       scrollHandler(new Event('scroll'))
 
-      // 75% depth -> milestones 25, 50, 75
-      expect(mockGtag).toHaveBeenCalledWith('event', AnalyticsEvents.SCROLL_DEPTH, { depth_percentage: 25 })
-      expect(mockGtag).toHaveBeenCalledWith('event', AnalyticsEvents.SCROLL_DEPTH, { depth_percentage: 50 })
-      expect(mockGtag).toHaveBeenCalledWith('event', AnalyticsEvents.SCROLL_DEPTH, { depth_percentage: 75 })
+      // Should track all milestones up to 75%
+      expect(mockGtag).toHaveBeenCalledWith('event', AnalyticsEvents.SCROLL_DEPTH, {
+        depth_percentage: 25,
+      })
+      expect(mockGtag).toHaveBeenCalledWith('event', AnalyticsEvents.SCROLL_DEPTH, {
+        depth_percentage: 50,
+      })
+      expect(mockGtag).toHaveBeenCalledWith('event', AnalyticsEvents.SCROLL_DEPTH, {
+        depth_percentage: 75,
+      })
+
+      cleanup()
     })
 
-    it('should remove listener on cleanup', () => {
-        const removeSpy = vi.spyOn(window, 'removeEventListener')
-        const cleanup = initScrollDepthTracking()
-        cleanup()
-        expect(removeSpy).toHaveBeenCalledWith('scroll', expect.any(Function))
+    it('should not track same milestone twice', () => {
+      // Mock document scroll dimensions
+      Object.defineProperty(document.documentElement, 'scrollHeight', {
+        value: 1000,
+        configurable: true,
+      })
+      Object.defineProperty(window, 'innerHeight', {
+        value: 500,
+        configurable: true,
+      })
+      Object.defineProperty(window, 'scrollY', {
+        value: 0,
+        writable: true,
+        configurable: true,
+      })
+
+      const cleanup = initScrollDepthTracking()
+
+      const scrollHandler = addEventListenerSpy.mock.calls.find(
+        (call) => call[0] === 'scroll'
+      )?.[1] as EventListener
+
+      // Scroll to 50% ((0 + 500) / 1000 = 50%)
+      scrollHandler(new Event('scroll'))
+
+      const callCount = mockGtag.mock.calls.filter(
+        (call) => call[1] === AnalyticsEvents.SCROLL_DEPTH && call[2]?.depth_percentage === 25
+      ).length
+
+      // Scroll again to same position
+      scrollHandler(new Event('scroll'))
+
+      const newCallCount = mockGtag.mock.calls.filter(
+        (call) => call[1] === AnalyticsEvents.SCROLL_DEPTH && call[2]?.depth_percentage === 25
+      ).length
+
+      // Should only track 25% milestone once
+      expect(newCallCount).toBe(callCount)
+
+      cleanup()
     })
 
-    it('should handle zero document height', () => {
-        Object.defineProperty(document.documentElement, 'scrollHeight', { value: 0, configurable: true })
-        const addSpy = vi.spyOn(window, 'addEventListener')
-        initScrollDepthTracking()
-        const handler = addSpy.mock.calls.find(c => c[0] === 'scroll')![1] as EventListener
-        expect(() => handler(new Event('scroll'))).not.toThrow()
+    it('should handle zero document height gracefully', () => {
+      Object.defineProperty(document.documentElement, 'scrollHeight', {
+        value: 0,
+        configurable: true,
+      })
+      Object.defineProperty(window, 'innerHeight', {
+        value: 500,
+        configurable: true,
+      })
+      Object.defineProperty(window, 'scrollY', {
+        value: 0,
+        writable: true,
+        configurable: true,
+      })
+
+      const cleanup = initScrollDepthTracking()
+
+      const scrollHandler = addEventListenerSpy.mock.calls.find(
+        (call) => call[0] === 'scroll'
+      )?.[1] as EventListener
+
+      // Should not throw
+      expect(() => scrollHandler(new Event('scroll'))).not.toThrow()
+
+      // Should not track any milestones when document height is 0
+      expect(mockGtag).not.toHaveBeenCalledWith(
+        'event',
+        AnalyticsEvents.SCROLL_DEPTH,
+        expect.any(Object)
+      )
+
+      cleanup()
     })
 
-    it('should throttle scroll events', () => {
-        const mockGtag = vi.fn()
-        window.gtag = mockGtag
+    it('should throttle scroll events using requestAnimationFrame', () => {
+      let frameCallback: FrameRequestCallback | null = null
+      rafSpy.mockImplementation((cb) => {
+        frameCallback = cb
+        return 1
+      })
 
-        let frameCb: FrameRequestCallback | null = null
-        // Override the default mock from beforeEach to test throttling
-        vi.stubGlobal('requestAnimationFrame', vi.fn((cb: FrameRequestCallback) => {
-            frameCb = cb
-            return 1
-        }))
+      Object.defineProperty(document.documentElement, 'scrollHeight', {
+        value: 1000,
+        configurable: true,
+      })
+      Object.defineProperty(window, 'innerHeight', {
+        value: 500,
+        configurable: true,
+      })
+      Object.defineProperty(window, 'scrollY', {
+        value: 500,
+        writable: true,
+        configurable: true,
+      })
 
-        Object.defineProperty(document.documentElement, 'scrollHeight', { value: 1000, configurable: true })
-        Object.defineProperty(window, 'innerHeight', { value: 500, configurable: true })
-        Object.defineProperty(window, 'scrollY', { value: 500, writable: true, configurable: true })
+      const cleanup = initScrollDepthTracking()
 
-        const addSpy = vi.spyOn(window, 'addEventListener')
-        initScrollDepthTracking()
-        const handler = addSpy.mock.calls.find(c => c[0] === 'scroll')![1] as EventListener
+      const scrollHandler = addEventListenerSpy.mock.calls.find(
+        (call) => call[0] === 'scroll'
+      )?.[1] as EventListener
 
-        // Call twice rapidly
-        handler(new Event('scroll'))
-        handler(new Event('scroll'))
+      // Trigger multiple scroll events rapidly
+      scrollHandler(new Event('scroll'))
+      scrollHandler(new Event('scroll'))
+      scrollHandler(new Event('scroll'))
 
-        expect(vi.mocked(window.requestAnimationFrame)).toHaveBeenCalledTimes(1)
-        expect(mockGtag).not.toHaveBeenCalled() // Still waiting for RAF
+      // requestAnimationFrame should only be called once until the frame callback executes
+      expect(rafSpy).toHaveBeenCalledTimes(1)
 
-        if (frameCb) frameCb(0)
+      // Execute the frame callback
+      if (frameCallback) {
+        frameCallback(0)
+      }
 
-        expect(mockGtag).toHaveBeenCalled()
+      // Now another scroll should trigger a new raf call
+      scrollHandler(new Event('scroll'))
+      expect(rafSpy).toHaveBeenCalledTimes(2)
 
-        // Now ticking is false again. Another call should trigger another RAF.
-        handler(new Event('scroll'))
-        expect(vi.mocked(window.requestAnimationFrame)).toHaveBeenCalledTimes(2)
+      cleanup()
     })
   })
 })

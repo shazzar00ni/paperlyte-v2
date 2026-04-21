@@ -23,7 +23,7 @@
 
 ---
 
-## See also:
+## See also
 
 - [Terms of Service](./TERMS-OF-SERVICE.md)
 - [Privacy Policy](./PRIVACY-POLICY.md)

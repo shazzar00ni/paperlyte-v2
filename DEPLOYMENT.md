@@ -82,7 +82,7 @@ Add the following DNS records at your domain registrar:
 
 **A Record** (for apex domain):
 
-```
+```text
 Type: A
 Name: @
 Value: 75.2.60.5  (Netlify's load balancer IP)
@@ -91,7 +91,7 @@ TTL: 3600
 
 **CNAME Record** (for www subdomain):
 
-```
+```text
 Type: CNAME
 Name: www
 Value: random-name-123.netlify.app  (your Netlify site URL)

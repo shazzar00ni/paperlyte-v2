@@ -227,7 +227,7 @@ function EmailCapture() {
 
 ## File Structure
 
-```
+```text
 paperlyte-v2/
 ├── src/
 │   ├── components/           # React components

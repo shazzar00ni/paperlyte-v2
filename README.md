@@ -205,7 +205,7 @@ All browsers receive optimized images - newer browsers get smaller files, older 
 
 ## Project Structure
 
-```
+```text
 paperlyte-v2/
 ├── public/               # Static assets
 ├── src/

@@ -147,6 +147,175 @@ describe('monitoring', () => {
     })
   })
 
+  describe('logError (production mode)', () => {
+    beforeEach(() => {
+      // Set production mode
+      vi.stubEnv('DEV', false as unknown as string)
+      vi.stubEnv('VITE_SENTRY_DSN', 'https://test@sentry.io/123')
+    })
+
+    afterEach(() => {
+      vi.unstubAllEnvs()
+    })
+
+    it('should call trackEvent in production', () => {
+      const error = new Error('Production error')
+      logError(error, { severity: 'high' }, 'ProdComponent')
+
+      expect(analytics.trackEvent).toHaveBeenCalledWith(
+        'application_error',
+        expect.objectContaining({
+          error_name: 'Error',
+          error_source: 'ProdComponent',
+          severity: 'high',
+        })
+      )
+    })
+
+    it('should call Sentry.captureException in production with DSN', () => {
+      const error = new Error('Sentry error')
+      logError(error, { severity: 'critical', tags: { feature: 'auth' } }, 'AuthService')
+
+      expect(Sentry.captureException).toHaveBeenCalledWith(
+        error,
+        expect.objectContaining({
+          level: 'fatal',
+          tags: expect.objectContaining({
+            source: 'AuthService',
+            feature: 'auth',
+          }),
+        })
+      )
+    })
+
+    it('should add Sentry breadcrumb in production', () => {
+      const error = new Error('Breadcrumb error')
+      logError(error, { tags: { module: 'ui' } }, 'UIComponent')
+
+      expect(Sentry.addBreadcrumb).toHaveBeenCalledWith(
+        expect.objectContaining({
+          category: 'error',
+          message: 'UIComponent: Breadcrumb error',
+          data: { module: 'ui' },
+        })
+      )
+    })
+
+    it('should truncate error messages to 200 characters', () => {
+      const longMessage = 'A'.repeat(300)
+      const error = new Error(longMessage)
+      logError(error)
+
+      expect(analytics.trackEvent).toHaveBeenCalledWith(
+        'application_error',
+        expect.objectContaining({
+          error_message: 'A'.repeat(200),
+        })
+      )
+    })
+
+    it('should log to console.error in production', () => {
+      const error = new Error('Console error')
+      logError(error, undefined, 'TestSource')
+
+      expect(consoleSpy.error).toHaveBeenCalledWith(
+        '[Error]',
+        'TestSource',
+        'Console error',
+        expect.objectContaining({ severity: 'medium' })
+      )
+    })
+
+    it('should handle monitoring errors gracefully in production', () => {
+      // Make trackEvent throw
+      vi.mocked(analytics.trackEvent).mockImplementationOnce(() => {
+        throw new Error('Monitoring failed')
+      })
+
+      const error = new Error('Original error')
+      expect(() => logError(error)).not.toThrow()
+
+      // Should log the monitoring error
+      expect(consoleSpy.error).toHaveBeenCalledWith('Monitoring error:', expect.any(Error))
+    })
+
+    it('should include componentStack and errorInfo in Sentry extra', () => {
+      const error = new Error('Component error')
+      logError(
+        error,
+        {
+          componentStack: 'at Comp\n  at App',
+          errorInfo: { retryCount: 3 },
+        },
+        'ErrorBoundary'
+      )
+
+      expect(Sentry.captureException).toHaveBeenCalledWith(
+        error,
+        expect.objectContaining({
+          extra: expect.objectContaining({
+            componentStack: 'at Comp\n  at App',
+            retryCount: 3,
+          }),
+        })
+      )
+    })
+  })
+
+  describe('logWarning (production mode)', () => {
+    beforeEach(() => {
+      vi.stubEnv('DEV', false as unknown as string)
+    })
+
+    afterEach(() => {
+      vi.unstubAllEnvs()
+    })
+
+    it('should call trackEvent in production', () => {
+      logWarning('Production warning', { area: 'cache' })
+
+      expect(analytics.trackEvent).toHaveBeenCalledWith(
+        'application_warning',
+        expect.objectContaining({
+          message: 'Production warning',
+          area: 'cache',
+        })
+      )
+    })
+
+    it('should truncate warning messages to 200 characters in production', () => {
+      const longMessage = 'W'.repeat(300)
+      logWarning(longMessage)
+
+      expect(analytics.trackEvent).toHaveBeenCalledWith(
+        'application_warning',
+        expect.objectContaining({
+          message: 'W'.repeat(200),
+        })
+      )
+    })
+  })
+
+  describe('logPerformance (production mode)', () => {
+    beforeEach(() => {
+      vi.stubEnv('DEV', false as unknown as string)
+    })
+
+    afterEach(() => {
+      vi.unstubAllEnvs()
+    })
+
+    it('should call trackEvent in production', () => {
+      logPerformance('render_time', 150, 'ms')
+
+      expect(analytics.trackEvent).toHaveBeenCalledWith('performance_metric', {
+        metric: 'render_time',
+        value: 150,
+        unit: 'ms',
+      })
+    })
+  })
+
   describe('logWarning', () => {
     it('should log warning to console', () => {
       logWarning('This is a warning')

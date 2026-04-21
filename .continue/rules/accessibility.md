@@ -27,7 +27,7 @@ Target: **WCAG 2.1 AA** compliance. Lighthouse accessibility score must stay abo
 - Normal text (< 18px / 14px bold): minimum **4.5:1** contrast ratio.
 - Large text (≥ 18px or ≥ 14px bold): minimum **3:1** contrast ratio.
 - UI components (borders, icons, focus indicators): minimum **3:1** against adjacent colours.
-- See `docs/DESIGN-SYSTEM.md` for the verified contrast matrix.
+- See `docs/DESIGN-SYSTEM.md` for the contrast matrix (note: that doc's matrix uses a blue palette that predates the current monochrome design — verify ratios against `src/styles/variables.css` values).
 
 ## Images & Media
 

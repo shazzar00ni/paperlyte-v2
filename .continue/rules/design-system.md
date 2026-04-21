@@ -1,6 +1,6 @@
 # Design System
 
-Full spec: `docs/DESIGN-SYSTEM.md`. This file summarises the rules you must follow when writing or modifying UI code.
+Full spec: `docs/DESIGN-SYSTEM.md` (⚠️ that doc still references a blue `#3b82f6` palette and Inter-only typography — it predates the monochrome redesign. Where it conflicts with these rules or `src/styles/variables.css`, **these rules and the runtime CSS take precedence**). This file summarises the rules you must follow when writing or modifying UI code.
 
 ## Visual Identity
 

@@ -49,12 +49,20 @@
     <!-- Theme Color -->
     <meta name="theme-color" content="#1a1a1a" />
 
+    <!-- Persistent theme flag - read by public/theme-init.js before React hydrates.
+         Injected at build time to avoid duplicating PERSISTENCE_CONFIG.ALLOW_PERSISTENT_THEME in HTML. -->
+    <meta name="allow-persistent-theme" content="%VITE_ALLOW_PERSISTENT_THEME%" />
+
     <!-- Font Awesome icons are loaded via @fortawesome/fontawesome-svg-core in JavaScript -->
     <!-- This approach is CSP-compliant and doesn't require external CDN resources -->
 
     <!-- Preload critical above-the-fold image for better LCP -->
     <link rel="preload" as="image" type="image/avif" href="/mockups/notes-list.avif" />
 
+    <!-- Theme initialization - loaded synchronously to prevent flash of wrong theme.
+         Must run before React hydrates so the correct data-theme is applied immediately.
+         Mirrors the logic in src/hooks/useTheme.ts. -->
+    <script src="/theme-init.js"></script>
     <!-- Schema.org Structured Data (JSON-LD) -->
     <script type="application/ld+json">
       {

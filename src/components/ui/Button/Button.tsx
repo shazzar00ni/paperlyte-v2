@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react'
+import { type ReactNode, memo } from 'react'
 import { Icon } from '@components/ui/Icon'
 import { isSafeUrl } from '@utils/navigation'
 import styles from './Button.module.css'
@@ -48,7 +48,7 @@ interface ButtonProps {
  * <Button disabled onClick={handleClick}>Submit</Button>
  * ```
  */
-export const Button = ({
+const ButtonComponent = ({
   children,
   variant = 'primary',
   size = 'medium',
@@ -135,3 +135,6 @@ export const Button = ({
     </button>
   )
 }
+
+export const Button = memo(ButtonComponent)
+Button.displayName = 'Button'

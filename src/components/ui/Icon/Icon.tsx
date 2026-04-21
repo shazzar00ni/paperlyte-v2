@@ -7,7 +7,7 @@ import { convertIconName, isBrandIcon } from '@utils/iconLibrary'
 import { safePropertyAccess } from '@utils/security'
 import './Icon.css'
 
-interface IconProps {
+export interface IconProps {
   name: string
   size?: 'sm' | 'md' | 'lg' | 'xl' | '2x' | '3x'
   variant?: 'solid' | 'brands' | 'regular'

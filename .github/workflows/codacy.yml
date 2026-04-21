@@ -22,9 +22,6 @@ on:
   schedule:
     - cron: '19 22 * * 5'
 
-permissions:
-  contents: read
-
 jobs:
   codacy-security-scan:
     permissions:

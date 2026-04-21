@@ -31,9 +31,8 @@
     "jsx": "react-jsx",
 
     /* Path aliases - Enables cleaner imports */
-    // Base directory for path resolution (required for paths to work)
-    "baseUrl": ".",
     // Path mapping for cleaner imports (e.g., @components/Button instead of ../../../components/Button)
+    // Note: baseUrl omitted (deprecated in TS 7.0); paths resolve relative to this tsconfig file.
     "paths": {
       "@/*": ["./src/*"],
       "@components/*": ["./src/components/*"],

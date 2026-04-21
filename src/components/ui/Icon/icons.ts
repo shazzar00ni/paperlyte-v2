@@ -31,8 +31,28 @@ export const iconPaths: Record<string, string> = {
     'M17 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z M12 18h.01',
   'fa-shield-halved': 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z M12 2v20',
 
-  // Navigation
+  // Navigation & Controls
   'fa-home': 'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z M9 22V12h6v10',
+  // fa-house is an alias for fa-home — resolved via convertIconName in @utils/iconLibrary
+  'fa-bars': 'M3 6h18 M3 12h18 M3 18h18',
+  'fa-xmark': 'M18 6L6 18 M6 6l12 12',
+  'fa-chevron-down': 'M6 9l6 6 6-6',
+  'fa-chevron-up': 'M18 15l-6-6-6 6',
+  'fa-chevron-left': 'M15 18l-6-6 6-6',
+  'fa-chevron-right': 'M9 18l6-6-6-6',
+  'fa-arrow-left': 'M19 12H5 M12 19l-7-7 7-7',
+
+  // Media controls
+  'fa-play': 'M5 3l14 9-14 9V3z',
+  'fa-pause': 'M6 4h4v16H6z M14 4h4v16h-4z',
+
+  // Status & Feedback
+  'fa-check': 'M20 6L9 17l-5-5',
+  // fa-check-circle is an alias for fa-circle-check — resolved via iconNameMap in Icon.tsx
+  'fa-circle-info': 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z M12 16v-4 M12 8h.01',
+  'fa-star':
+    'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z',
+  'fa-clock': 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z M12 6v6l4 2',
 
   // UI States
   'fa-triangle-exclamation':
@@ -42,6 +62,50 @@ export const iconPaths: Record<string, string> = {
     'M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83',
   'fa-circle-exclamation':
     'M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z M12 8v4 M12 16h.01',
+
+  // Content & Typography
+  'fa-pen': 'M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z',
+  'fa-book':
+    'M4 19.5A2.5 2.5 0 0 1 6.5 17H20 M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z',
+  'fa-magnifying-glass': 'M11 17.25a6.25 6.25 0 1 1 0-12.5 6.25 6.25 0 0 1 0 12.5z M16 16l4.5 4.5',
+  'fa-code': 'M16 18l6-6-6-6 M8 6l-6 6 6 6',
+  'fa-globe':
+    'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z M2 12h20 M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z',
+
+  // People & Infrastructure
+  'fa-users':
+    'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2 M23 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75 M13 7a4 4 0 1 0-8 0 4 4 0 0 0 8 0z',
+  'fa-server': 'M2 2h20v8H2z M2 14h20v8H2z M6 6h.01 M6 18h.01',
+
+  // Pricing plans
+  'fa-leaf': 'M2 22a14 14 0 0 1 14-14h6v6a14 14 0 0 1-14 14H2z M22 8L12 18',
+  'fa-rocket':
+    'M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0 M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5',
+
+  // Connectivity & Offline
+  'fa-wifi':
+    'M5 12.55a11 11 0 0 1 14.08 0 M1.42 9a16 16 0 0 1 21.16 0 M8.53 16.11a6 6 0 0 1 6.95 0 M12 20h.01',
+  'fa-plane':
+    'M17.8 19.2L16 11l3.5-3.5C21 6 21 4 19 4c-.7 0-1.5.3-2 .8L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z',
+  'fa-route':
+    'M3 19a3 3 0 1 0 6 0 3 3 0 0 0-6 0 M15 5a3 3 0 1 0 6 0 3 3 0 0 0-6 0 M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15',
+
+  // Refresh / Reload
+  'fa-rotate-right': 'M21 2v6h-6 M21 13a9 9 0 1 1-3-7.7L21 8',
+  'fa-arrow-rotate-right': 'M21 2v6h-6 M21 13a9 9 0 1 1-3-7.7L21 8',
+  'fa-arrow-rotate-left': 'M3 2v6h6 M3 13a9 9 0 1 0 3-7.7L3 8',
+
+  // Social / Brand (custom SVG)
+  'fa-instagram':
+    'M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z M17.5 6.5h.01 M7.5 2h9A5.5 5.5 0 0 1 22 7.5v9A5.5 5.5 0 0 1 16.5 22h-9A5.5 5.5 0 0 1 2 16.5v-9A5.5 5.5 0 0 1 7.5 2z',
+  'fa-x-twitter': 'M4 4l16 16 M20 4L4 20',
+  'fa-facebook': 'M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z',
+  'fa-linkedin':
+    'M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4V9h4v2a6 6 0 0 1 4-3z M2 9h4v12H2z M4 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4z',
+
+  // Miscellaneous (error/not-found pages)
+  'fa-file-circle-question':
+    'M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z M14 2v6h6 M11.5 17a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z M11.5 14a2 2 0 0 1 2-2c.55 0 1 .45 1 1s-.45 1-1 1h-1v1',
 
   // Buttons (via Button component icon prop)
   'fa-download': 'M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4 M7 10l5 5 5-5 M12 15V3',

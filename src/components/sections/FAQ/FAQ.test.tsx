@@ -236,15 +236,25 @@ describe('FAQ', () => {
 
       const questionButton = getQuestionButton(FAQ_ITEMS[0].question)
 
-      // When collapsed, should show "Expand answer"
+      // When collapsed, should show "Expand answer" via aria-labelledby + <title>
       let icon = questionButton.querySelector('svg')
-      expect(icon).toHaveAttribute('aria-label', 'Expand answer')
+      expect(icon).toHaveAttribute('aria-labelledby')
+      const expandTitleId = icon?.getAttribute('aria-labelledby')
+      expect(expandTitleId).toBeTruthy()
+      const expandTitleEl = document.getElementById(expandTitleId!)
+      expect(expandTitleEl).not.toBeNull()
+      expect(expandTitleEl).toHaveTextContent('Expand answer')
 
       await user.click(questionButton)
 
-      // When expanded, should show "Collapse answer"
+      // When expanded, should show "Collapse answer" via aria-labelledby + <title>
       icon = questionButton.querySelector('svg')
-      expect(icon).toHaveAttribute('aria-label', 'Collapse answer')
+      expect(icon).toHaveAttribute('aria-labelledby')
+      const collapseTitleId = icon?.getAttribute('aria-labelledby')
+      expect(collapseTitleId).toBeTruthy()
+      const collapseTitleEl = document.getElementById(collapseTitleId!)
+      expect(collapseTitleEl).not.toBeNull()
+      expect(collapseTitleEl).toHaveTextContent('Collapse answer')
     })
   })
 

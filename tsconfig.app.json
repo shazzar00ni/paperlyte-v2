@@ -17,8 +17,8 @@
     "skipLibCheck": true,
 
     /* Bundler mode - Optimized for Vite */
-    // Use bundler-specific module resolution (supports .ts imports)
     "ignoreDeprecations": "6.0",
+    // Use bundler-specific module resolution (supports .ts imports)
     "moduleResolution": "bundler",
     // Allow importing .ts files directly (Vite handles transpilation)
     "allowImportingTsExtensions": true,

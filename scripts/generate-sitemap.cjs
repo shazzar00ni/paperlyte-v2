@@ -70,7 +70,7 @@ function getLastGitCommitDate(filePath) {
   if (gitExe) {
     // Use the absolute path; restrict PATH to only the directory that contains it.
     executable = gitExe;
-    spawnEnv = { PATH: path.dirname(gitExe) };
+    spawnEnv = { ...process.env, PATH: path.dirname(gitExe) };
   } else {
     // git not found in known safe locations — fail closed to avoid PATH-based lookup.
     console.warn(

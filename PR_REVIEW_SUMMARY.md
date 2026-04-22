@@ -23,7 +23,6 @@ This file contains a summary of pull requests I have reviewed.
 
 ---
 
-
 ## 2026-02-08
 
 ### PR #427: Configure Claude Code GitHub Action

@@ -31,7 +31,7 @@ Run `npm run lighthouse` (builds first, then runs `@lhci/cli`):
 | Best Practices | **90** |
 | SEO | **90** |
 
-Config: `.lighthouserc.json`. Do not lower these thresholds.
+These are the design targets. CI assertions in `.lighthouserc.json` use lower thresholds (e.g., performance 70, accessibility 82) because CI environments score lower than local runs. Do not lower either set of thresholds.
 
 ## Core Web Vitals
 

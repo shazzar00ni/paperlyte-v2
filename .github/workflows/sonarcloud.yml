@@ -61,5 +61,6 @@ jobs:
           args: >
             -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY || 'shazzar00ni_paperlyte-v2' }}
             -Dsonar.organization=${{ vars.SONAR_ORGANIZATION || 'shazzar00ni' }}
+            -Dsonar.exclusions=scripts/maintenance/**
           # When you need the analysis to take place in a directory other than the one from which it was launched, default is .
           projectBaseDir: .

@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+"""
+Audits all unmerged remote branches for systemic regressions.
+Checks for missing critical files and reverted security helpers.
+Outputs findings in a structured JSON format.
+"""
 import subprocess
 import os
 import sys
@@ -7,7 +12,8 @@ import signal
 import json
 
 # Handle SIGPIPE for tools like 'head'
-signal.signal(signal.SIGPIPE, signal.SIG_DFL)
+if hasattr(signal, 'SIGPIPE'):
+    signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 
 # Critical files that must be present in all branches
 CRITICAL_FILES = [
@@ -36,11 +42,15 @@ def run_command(args):
         if result.returncode == 0:
             return result.stdout.strip()
         return None
+    except subprocess.SubprocessError as e:
+        print(f"Subprocess error executing {' '.join(args)}: {e}", file=sys.stderr)
+        return None
     except Exception as e:
-        print(f"Error executing command {' '.join(args)}: {e}", file=sys.stderr)
+        print(f"Unexpected error executing {' '.join(args)}: {e}", file=sys.stderr)
         return None
 
 def main():
+    """Main execution block for branch auditing."""
     # Get all remote unmerged branches relative to origin/main
     branches_raw = run_command(["git", "branch", "-r", "--no-merged", "origin/main"])
     if not branches_raw:

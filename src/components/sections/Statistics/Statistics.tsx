@@ -1,4 +1,3 @@
-import React from 'react'
 import { Section } from '@components/layout/Section'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { CounterAnimation } from '@components/ui/CounterAnimation'
@@ -56,6 +55,11 @@ const statistics: StatisticItem[] = [
 ]
 
 /**
+ * Props for the Statistics section component
+ */
+export type StatisticsProps = Record<string, never>
+
+/**
  * Statistics section displaying animated counters showcasing product metrics
  *
  * Features:
@@ -66,7 +70,7 @@ const statistics: StatisticItem[] = [
  */
 export const Statistics = (): React.ReactElement => {
   return (
-    <Section id="statistics" className={styles.statistics} background="surface">
+    <Section id="statistics" className={styles.statistics} background="primary">
       <div className={styles.container}>
         <AnimatedElement animation="fadeIn">
           <div className={styles.header}>

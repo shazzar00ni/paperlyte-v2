@@ -2,50 +2,35 @@
 
 This file contains a summary of pull requests I have reviewed.
 
-## 2026-02-09
+## 2026-03-05
 
-### PR #437: docs: Complete comprehensive Project Architecture Blueprint for issue #293
+### Analysis: Accidental File Deletions in Open Branches (Jules Daily PR Reviews)
 
-- **Status:** Approved
-- **Summary:** Provides a massive and very thorough documentation update. It covers project principles, architecture, component patterns, hooks, analytics, form validation, ADRs, governance, and quality standards.
-- **Feedback:** This is an excellent addition to the repository. It significantly improves the onboarding experience for new developers and provides a clear source of truth for architectural decisions. Highly recommended for immediate merge.
+- **Status:** Critical — Action Required
+- **Summary:** Analysis of Jules' daily PR reviews (2026-03-01, 2026-03-04, and 2026-03-05) confirms that a large number of open branches have **accidentally deleted** the following critical files from the repository:
 
-### PR #444, #443, #442, #441, #440, #439, #438: Automated Dependency Updates
+  | File                   | Severity    | Notes                                                                                                |
+  | ---------------------- | ----------- | ---------------------------------------------------------------------------------------------------- |
+  | `.npmrc`               | 🔴 Critical | Controls `legacy-peer-deps=true`; its removal breaks dependency resolution for all peer dependencies |
+  | `docs/ROADMAP.md`      | 🟠 High     | Core project roadmap documentation                                                                   |
+  | `gitVersionControl.md` | 🟠 High     | Core Git workflow documentation                                                                      |
+  | `review.md`            | 🟡 Medium   | AI PR reviewer instruction file                                                                      |
 
-- **Status:** Approved
-- **Summary:** Routine maintenance updates for various dependencies, including CodeQL actions, FontAwesome, JSDOM (v28), ESLint (v10), Playwright, and Type definitions.
-- **Feedback:** All updates appear safe and follow standard project maintenance procedures. Note that JSDOM v28 is now compatible with our existing `undici` override.
+- **Affected Branches (confirmed across multiple reviews):**
 
-### PR #275: Implement P0-CRITICAL hero section conversion optimization (#274)
+  | Branch / PR                                         | `.npmrc` | `docs/ROADMAP.md` | `gitVersionControl.md` | `review.md` | `src/utils/navigation.ts` reverted |
+  | --------------------------------------------------- | :------: | :---------------: | :--------------------: | :---------: | :--------------------------------: |
+  | `origin/claude/implement-todo-item-2H9LP`           |    ✗     |         ✗         |           ✗            |      ✗      |                 ✗                  |
+  | `origin/claude/core-editor-phase-1-PI3Yp`           |    ✗     |         ✗         |           ✗            |      ✗      |                 ✗                  |
+  | `origin/copilot/sub-pr-503`                         |    ✗     |         —         |           ✗            |      ✗      |                 ✗                  |
+  | `origin/copilot/sub-pr-469-again`                   |    ✗     |         —         |           ✗            |      ✗      |                 ✗                  |
+  | `origin/claude/fix-peer-dependency-conflicts-Wj2iC` |    ✗     |         —         |           —            |      —      |                 ✗                  |
+  | PR #469, #488, #491, #502, #506                     |    ✗     |         ✗         |           ✗            |      ✗      |                 —                  |
 
-- **Status:** Under Review (Changes Requested)
-- **Summary:** Major UI and test suite updates for the Hero section.
-- **Feedback:** The PR has been significantly improved and reduced to 11 files. Security vulnerabilities previously identified have been removed. However, the "P0-CRITICAL" title remains misleading. I recommend renaming the PR to accurately reflect its content (UI optimization and test coverage) and ensuring it is fully rebased with the latest security headers in `main`.
+  _✗ = accidentally deleted/reverted; — = not affected_
 
-### PR #279: feat: Implement React Router and legal pages with dark footer
-
-- **Status:** Changes Requested
-- **Summary:** Introduces `react-router-dom` and creates dedicated pages for Privacy and Terms.
-- **Feedback:** While routing is now integrated into `App.tsx`, several issues remain:
-  1. **CSP Regression:** The `vercel.json` changes add `'unsafe-inline'` and remove the Vercel Analytics domain from `script-src`, which will break analytics.
-  2. **Domain Inconsistency:** `sitemap.xml` was updated to `.com`, but `package.json` and other configs still point to `.app`.
-  3. **Sync Required:** The PR needs a rebase to incorporate recent CSP and analytics changes from `main`.
-
-### PR #319, #311: Component Fixes and Accessibility
-
-- **Status:** Changes Requested
-- **Summary:** Bug fixes for Privacy.tsx and Icon component refactoring.
-- **Feedback:** Both PRs still contain unrelated changes (sitemap, package-lock) or problematic refactors (Icon component fallback to raw `<i>` tags). Recommendations to split and clean up these PRs remain active.
-
-### Redundant Summary PRs
-
-- **Summary:** Identified a large number of open PRs that only update `PR_REVIEW_SUMMARY.md` or are duplicates/attempts to fix the summary file.
-- **Action:** Recommend closing all redundant summary PRs (#436, #435, #434, #433, #432, #431, #430, #420, #417, #396, #385, #383, #380, #363, #349, #341, #271, #259, #242, #239, #238) in favor of a single daily summary.
-
-### PR #107, #389
-
-- **Status:** Postponed / Close
-- **Feedback:** Recommendations remain unchanged: Close #107 (massive monolithic PR) and postpone #389 (repository-wide formatting) to avoid merge conflicts with active feature PRs.
+- **Root Cause:** Likely caused by a destructive rebase or a base branch that had these files removed; propagated across many branches that branched off from it.
+- **Action Required:** All affected branches must restore the four files listed above (and the `hasDangerousProtocol`/`isRelativeUrl` helpers in `src/utils/navigation.ts`) before they can be merged. The files all exist and are intact on `main`.
 
 ---
 
@@ -54,14 +39,72 @@ This file contains a summary of pull requests I have reviewed.
 ### PR #427: Configure Claude Code GitHub Action
 
 - **Status:** Approved
-- **Summary:** Adds a GitHub Actions workflow for Claude Code integration.
-- **Feedback:** The author (Copilot) has successfully addressed the permissions issues and clarified the necessity of `contents: write` for the action's functionality. The implementation now follows project security standards.
+- **Notes (2026-02-08):** See detailed review under **2026-02-06 → PR #427**. Latest status remains **Approved**; no additional feedback beyond that entry.
 
-### PR #428, #424, #422, #419, #406
+### PR #275: Implement P0-CRITICAL hero section conversion optimization (#274)
 
-- **Status:** Reviewed/Approved
-- **Summary:** These PRs cover critical security fixes (#428, #424), dependency updates (#422), and analytics integration (#419).
-- **Feedback:** All are solid improvements. Note the overlap between #428 and #424; #428's approach to `safeNavigate` is preferred for its flexibility.
+- **Status:** Under Review (Changes Requested)
+- **Notes (2026-02-08):** See detailed review under **2026-02-06 → PR #275**. Status is still **Under Review (Changes Requested)** as of this date.
+
+### PR #279: feat: Implement React Router and legal pages with dark footer
+
+- **Status:** Changes Requested
+- **Notes (2026-02-08):** See detailed review under **2026-02-06 → PR #279**. Status remains **Changes Requested**; prior concerns documented there continue to apply.
+
+### PR #319: Fix Deployment Error in Privacy.tsx
+
+- **Status:** Changes Requested
+- **Notes (2026-02-08):** See detailed review under **2026-02-06 → PR #319**. Status is still **Changes Requested** with no new blocking issues recorded here.
+
+### PR #311: Fix Icon component fallback rendering (Update 2026-02-08)
+
+- **Status:** Changes Requested
+- **Notes (2026-02-08):** See detailed review under **2026-02-06 → PR #311**. Status remains **Changes Requested**; refer to the earlier entry for the full accessibility and rendering discussion.
+
+### Additional PRs
+
+- **PR #428**
+  - **Status:** Reviewed/Approved
+  - **Summary:** Critical security fix related to `safeNavigate`.
+  - **Feedback:** Solid improvement; this approach to `safeNavigate` is preferred for its flexibility over #424.
+
+- **PR #424**
+  - **Status:** Reviewed/Approved
+  - **Summary:** Critical security fix overlapping with #428.
+  - **Feedback:** Improvement is solid but superseded by #428's `safeNavigate` implementation.
+
+- **PR #422**
+  - **Status:** Reviewed/Approved
+  - **Summary:** Dependency updates.
+  - **Feedback:** Changes look good and keep dependencies current without introducing regressions.
+
+- **PR #419**
+  - **Status:** Reviewed/Approved
+  - **Summary:** Analytics integration.
+  - **Feedback:** Implementation is sound and aligns with existing CSP and privacy requirements.
+
+- **PR #406**
+  - **Status:** Reviewed/Approved
+  - **Summary:** Miscellaneous improvements.
+  - **Feedback:** Changes are straightforward and low risk.
+
+### Redundant Summary PRs
+
+- **Summary:** Identified several redundant PRs that only update `PR_REVIEW_SUMMARY.md` or are duplicates/attempts to fix the summary file.
+- **PRs:** #435, #434, #433, #432, #431, #385, #383.
+- **Action:** Recommend closing these in favor of a single daily summary.
+
+### PR #107
+
+- **Status:** Close Recommended
+- **Summary:** Large monolithic changes that are difficult to review and risky to merge as-is.
+- **Feedback:** Recommendation remains unchanged: Close #107 (massive monolithic PR) to avoid merge conflicts with active feature PRs and to encourage smaller, focused PRs.
+
+### PR #389
+
+- **Status:** Postponed
+- **Summary:** Repository-wide formatting changes that are low priority and likely to conflict with in-flight feature work.
+- **Feedback:** Recommendation remains unchanged: Postpone #389 (repository-wide formatting) to avoid merge conflicts with active feature PRs and revisit once the codebase is more stable.
 
 ---
 
@@ -115,7 +158,7 @@ This file contains a summary of pull requests I have reviewed.
 - **Summary:** Enforces semicolons via Prettier across the entire codebase (186 files).
 - **Feedback:** While consistent styling is good, merging a 186-file formatting change while many other PRs are open will cause widespread merge conflicts. Recommend postponing until current feature PRs are merged.
 
-### PR #388: Remove invalid slack_app key from codecov.yml
+### PR #388: Remove invalid `slack_app` key from `codecov.yml`
 
 - **Status:** Approved
 - **Summary:** Removes a deprecated/invalid configuration key from `codecov.yml`.

@@ -17,16 +17,16 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
 
       - name: Label based on changed files
-        uses: actions/labeler@v6
+        uses: actions/labeler@634933edcd8ababfe52f92936142cc22ac488b1b  # v6.0.1
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           configuration-path: .github/labeler.yml
 
       - name: Label PR size
-        uses: codelytv/pr-size-labeler@4ec67706cd878fbc1c8db0a5dcd28b6bb412e85a # v1.10.3
+        uses: codelytv/pr-size-labeler@095a41fca88b8764fd9e008ad269bcdb82bb38b9  # v1.10.4
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           xs_label: 'size/xs'
@@ -49,7 +49,7 @@ jobs:
 
     steps:
       - name: Validate PR has description
-        uses: actions/github-script@v8
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
         with:
           script: |
             const pr = context.payload.pull_request;

@@ -109,15 +109,17 @@
     Cache-Control = "public, max-age=31536000, immutable"
 
 # Prevent indexing of deploy previews and branch deploys
-[[context.deploy-preview.headers]]
-  for = "/*"
-  [context.deploy-preview.headers.values]
-    X-Robots-Tag = "noindex, nofollow, noarchive, nosnippet"
+[context.deploy-preview]
+  [[context.deploy-preview.headers]]
+    for = "/*"
+    [context.deploy-preview.headers.values]
+      X-Robots-Tag = "noindex, nofollow, noarchive, nosnippet"
 
-[[context.branch-deploy.headers]]
-  for = "/*"
-  [context.branch-deploy.headers.values]
-    X-Robots-Tag = "noindex, nofollow, noarchive, nosnippet"
+[context.branch-deploy]
+  [[context.branch-deploy.headers]]
+    for = "/*"
+    [context.branch-deploy.headers.values]
+      X-Robots-Tag = "noindex, nofollow, noarchive, nosnippet"
 
 # Performance optimizations
 # Skip Netlify's build processing since Vite handles bundling and optimization

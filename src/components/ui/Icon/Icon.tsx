@@ -97,8 +97,7 @@ export const Icon = memo(({
   }, [color])
 
   // Split the path string on " M " to get individual sub-paths.
-  // paths is already computed above — no need for a separate safePropertyAccess call.
-  // Manual useMemo is omitted here; the React Compiler handles memoization automatically.
+  // The operation is trivial (1–3 sub-paths) so useMemo is unnecessary here.
   const pathArray = paths ? paths.split(' M ') : []
 
   // Render custom SVG if icon found in our set

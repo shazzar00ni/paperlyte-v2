@@ -5,6 +5,7 @@
 Lightning-fast, distraction-free note-taking app — landing page built with React, TypeScript, and Vite.
 
 🌐 **Live site:** [paperlyte.app](https://paperlyte.app)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/a51f0b4b-0c40-4fd1-8821-73adb9a48d64/deploy-status)](https://app.netlify.com/projects/paperlyte-v2/deploys)
 
 [![Deployment Status](https://github.com/shazzar00ni/paperlyte-v2/actions/workflows/deployment-status.yml/badge.svg)](https://github.com/shazzar00ni/paperlyte-v2/actions/workflows/deployment-status.yml) [![codecov](https://codecov.io/github/shazzar00ni/paperlyte-v2/graph/badge.svg?token=yQtvXFB0KF)](https://codecov.io/github/shazzar00ni/paperlyte-v2) [![CircleCI](https://dl.circleci.com/status-badge/img/gh/shazzar00ni/paperlyte-v2/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/shazzar00ni/paperlyte-v2/tree/main) ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 

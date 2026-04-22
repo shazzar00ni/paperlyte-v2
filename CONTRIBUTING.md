@@ -307,12 +307,16 @@ describe('Button', () => {
 4. **Performance Budget** - If a feature slows the page, it doesn't ship.
 5. **Reduced Motion** - Always respect `prefers-reduced-motion`.
 
-### Performance Targets
+### Performance Targets (Production Goals)
 
 - **Page Load** - < 2 seconds initial load
 - **Lighthouse Performance** - > 90 score
 - **Lighthouse Accessibility** - > 95 score
 - **Core Web Vitals** - Must pass all metrics
+
+> **Note**: CI assertion thresholds in `.lighthouserc.json` are relaxed compared to
+> the production targets above to account for shared GitHub Actions runner
+> variability. See `docs/LIGHTHOUSE-CI.md` for CI-specific values.
 
 ### What NOT to Do
 

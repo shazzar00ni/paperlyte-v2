@@ -76,7 +76,7 @@ export const Icon = memo(({
 
   // Resolve the iconPaths lookup key, supporting both "fa-bolt" and "bolt" formats.
   // Try the base name as-is first; if not found, prepend "fa-" as a convenience fallback.
-  const baseIconExists = safePropertyAccess(iconPaths, baseName) !== null
+  const baseIconExists = safePropertyAccess(iconPaths, baseName) !== undefined
   const resolvedKey = baseIconExists ? baseName : `fa-${baseName}`
 
   // Safely check if icon exists in iconPaths to prevent prototype pollution

@@ -41,6 +41,8 @@ permissions:
 jobs:
   Analysis:
     runs-on: ubuntu-latest
+    # Skip until SonarCloud is configured (projectKey, organization, and SONAR_TOKEN)
+    if: ${{ secrets.SONAR_TOKEN != '' }}
 
     steps:
       - name: Analyze with SonarCloud

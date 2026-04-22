@@ -1,0 +1,46 @@
+name: Daily PR Audit Summary
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Run daily at midnight UTC
+  workflow_dispatch: # Allow manual trigger
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v5.3.0
+        with:
+          python-version: '3.x'
+
+      - name: Run PR Audit
+        id: run_audit
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Generate audit results JSON
+          python3 scripts/maintenance/audit_branches.py > audit_results.json
+
+          # Generate markdown, update PR_REVIEW_SUMMARY.md, and comment on PRs
+          python3 scripts/maintenance/generate_audit_summary.py
+
+          # Clean up transient files
+          rm audit_results.json
+
+      - name: Commit and Push Changes
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "github-actions[bot]"
+          git add PR_REVIEW_SUMMARY.md
+          git commit -m "docs: automated daily PR audit summary ($(date +%Y-%m-%d))" || echo "No changes to commit"
+          git push

@@ -33,6 +33,8 @@
     /* Path aliases - Enables cleaner imports */
     // Base directory for path resolution (required for paths to work)
     "baseUrl": ".",
+    // Silence deprecation warning for baseUrl
+    "ignoreDeprecations": "6.0",
     // Path mapping for cleaner imports (e.g., @components/Button instead of ../../../components/Button)
     "paths": {
       "@/*": ["./src/*"],

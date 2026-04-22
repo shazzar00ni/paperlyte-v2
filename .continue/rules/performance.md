@@ -14,6 +14,7 @@ Run `npm run size` after any build to verify. CI will fail if limits are exceede
 ## Manual Chunk Splitting
 
 Vite is configured to split into two stable vendor chunks:
+
 - `react-vendor` — React + React DOM (~190 KB uncompressed, cached separately)
 - `fontawesome` — Font Awesome SVG core (~100 KB uncompressed, cached separately)
 
@@ -35,6 +36,7 @@ Config: `.lighthouserc.json`. Do not lower these thresholds.
 ## Core Web Vitals
 
 All CWV metrics must pass:
+
 - **LCP** (Largest Contentful Paint): ≤ 2.5s
 - **CLS** (Cumulative Layout Shift): ≤ 0.1
 - **INP** (Interaction to Next Paint): ≤ 200ms

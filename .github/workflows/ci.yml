@@ -396,6 +396,7 @@ jobs:
 
     steps:
       - name: Add To GitHub Projects
+        if: ${{ secrets.ADD_TO_PROJECT_PAT != '' }}
         uses: actions/add-to-project@244f685bbc3b7adfa8466e08b698b5577571133e # v1.0.2
         continue-on-error: true
         with:

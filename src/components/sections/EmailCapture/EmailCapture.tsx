@@ -31,7 +31,8 @@ export const EmailCapture = (): React.ReactElement => {
     setError(null)
 
     try {
-      // Simulate API call
+      // TODO: Replace with real API call (e.g. fetch('/.netlify/functions/subscribe', ...))
+      // The catch block below is scaffolded for that integration.
       await new Promise((resolve) => setTimeout(resolve, 1000))
 
       setIsLoading(false)

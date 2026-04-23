@@ -9,15 +9,15 @@ This file contains a summary of pull requests I have reviewed.
 - **Status:** Critical — Action Required
 - **Summary:** An automated repository-wide audit of 257 unmerged branches confirms the following systemic regressions.
 
-| Regression Type                | Count | Severity    | Notes                                               |
-| :----------------------------- | :---- | :---------- | :-------------------------------------------------- |
-| Orphan Branches                | 257   | 🔴 Critical | No common ancestor with `main`.                     |
-| Missing `.npmrc`               | 88    | 🔴 Critical | Breaks dependency resolution.                       |
-| Missing `docs/ROADMAP.md`      | 82    | 🟠 High     | Core project documentation.                         |
-| Missing `gitVersionControl.md` | 97    | 🟠 High     | Core Git workflow documentation.                    |
-| Missing `review.md`            | 97    | 🟡 Medium   | AI PR reviewer instructions.                        |
-| Reverted Security Helpers      | 96    | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers. |
-| Unreadable navigation.ts       | 8     | 🔴 Critical | File missing or unreadable.                         |
+| Regression Type                | Count | Severity    | Notes                                                                    |
+| :----------------------------- | :---- | :---------- | :----------------------------------------------------------------------- |
+| Orphan Branches                | 257   | 🔴 Critical | No common ancestor with `main`.                                          |
+| Missing `.npmrc`               | 88    | 🔴 Critical | Breaks dependency resolution.                                            |
+| Missing `docs/ROADMAP.md`      | 82    | 🟠 High     | Core project documentation.                                              |
+| Missing `gitVersionControl.md` | 97   | 🟠 High     | Core Git workflow documentation.                                         |
+| Missing `review.md`            | 97   | 🟡 Medium   | AI PR reviewer instructions.                                             |
+| Reverted Security Helpers      | 96   | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers.                      |
+| Unreadable navigation.ts       | 8     | 🔴 Critical | File missing or unreadable.                                              |
 
 - **Action Required:** ALL affected branches MUST restore these critical files and security helpers.
 

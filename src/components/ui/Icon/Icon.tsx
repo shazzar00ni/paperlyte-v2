@@ -74,17 +74,13 @@ export const Icon = ({
   const baseName = tokens[0]
   const modifierClasses = tokens.slice(1).join(' ')
 
-  // Resolve the iconPaths lookup key, supporting both "fa-bolt" and "bolt" formats.
-  // Try the base name as-is first; if not found, prepend "fa-" as a convenience fallback.
-  const baseIconExists = safePropertyAccess(iconPaths, baseName) !== null
-  const resolvedKey = baseIconExists ? baseName : `fa-${baseName}`
+  // Convert the icon name to the normalized key used in iconPaths.
+  // convertIconName handles "fa-bolt" → "bolt" via iconNameMap, as well as bare names.
+  const convertedName = convertIconName(baseName)
 
   // Safely check if icon exists in iconPaths to prevent prototype pollution
-  const paths = safePropertyAccess(iconPaths, resolvedKey)
-  const viewBox = getIconViewBox(resolvedKey)
-
-  // Convert base name for Font Awesome fallback path
-  const convertedName = convertIconName(baseName)
+  const paths = safePropertyAccess(iconPaths, convertedName)
+  const viewBox = getIconViewBox(convertedName)
 
   // Normalize color: detect bare hex strings (3 or 6 hex digits) and prepend "#"
   const normalizedColor = useMemo(() => {
@@ -127,7 +123,7 @@ export const Icon = ({
           <path
             key={index}
             d={index === 0 ? pathData : `M ${pathData}`}
-            fill={strokeOnlyIcons.has(resolvedKey) ? 'none' : undefined}
+            fill={strokeOnlyIcons.has(convertedName) ? 'none' : undefined}
           />
         ))}
       </svg>

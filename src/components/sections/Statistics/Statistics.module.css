@@ -16,13 +16,13 @@
 .title {
   font-size: var(--font-size-3xl);
   font-weight: var(--font-weight-bold);
-  color: var(--color-text-primary);
+  color: var(--color-text-on-primary);
   margin-bottom: var(--spacing-sm);
 }
 
 .subtitle {
   font-size: var(--font-size-lg);
-  color: var(--color-text-secondary);
+  color: var(--color-text-on-dark-secondary);
   max-width: 600px;
   margin: 0 auto;
 }

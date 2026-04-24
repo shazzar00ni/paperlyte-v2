@@ -119,3 +119,4 @@ export const Statistics = (): React.ReactElement => {
     </Section>
   )
 }
+

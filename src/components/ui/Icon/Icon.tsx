@@ -5,7 +5,12 @@ import type { IconName, IconPrefix } from '@fortawesome/fontawesome-svg-core'
 import { iconPaths, getIconViewBox, strokeOnlyIcons } from './icons'
 import { convertIconName, isBrandIcon } from '@utils/iconLibrary'
 import { safePropertyAccess } from '@utils/security'
+import { logWarning } from '@utils/monitoring'
 import './Icon.css'
+
+// Deduplicates missing-icon analytics events in production.
+// In DEV the Set is never populated so every render warns (preserves test assertions).
+const _warnedMissing = new Set<string>()
 
 interface IconProps {
   name: string
@@ -56,7 +61,7 @@ const SIZE_MAP = {
  * <Icon name="fa-circle-check" color="#00ff00" size="2x" />
  * ```
  */
-export const Icon = ({
+export function Icon({
   name,
   size = 'md',
   variant = 'solid',
@@ -64,7 +69,7 @@ export const Icon = ({
   ariaLabel,
   color,
   style,
-}: IconProps): React.ReactElement => {
+}: IconProps): React.ReactElement {
   const iconSize = SIZE_MAP[size]
   const titleId = useId()
 
@@ -168,10 +173,12 @@ export const Icon = ({
   }
 
   // Icon not found in library — return a placeholder
-  console.warn(
-    `Icon "${name}" (converted to "${convertedName}") not found in Font Awesome library. ` +
-      `Rendering empty/decorative fallback span.`
-  )
+  // In production, fire at most once per unique icon name to avoid GA rate-limit overhead.
+  // In DEV the Set is bypassed so test assertions that check call counts still hold.
+  if (import.meta.env.DEV || !_warnedMissing.has(name)) {
+    if (!import.meta.env.DEV) _warnedMissing.add(name)
+    logWarning(`Icon "${name}" not found in Font Awesome library`, { name, convertedName })
+  }
   return (
     <span {...commonIconProps} title={`Icon "${name}" not found`}>
       ?

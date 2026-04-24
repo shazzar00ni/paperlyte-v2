@@ -33,6 +33,14 @@
  */
 
 import { isSafePropertyKey } from './security'
+// Intentional circular dependency: analytics ↔ monitoring.
+// ES module live bindings ensure both exports are defined by the time either
+// function is *called*. Safe as long as neither module calls the other during
+// top-level initialization (i.e., outside a function body).
+import { logError } from './monitoring'
+
+// Prevents trackEvent catch → logError → trackEvent('application_error') infinite recursion
+let _isReportingError = false
 
 /**
  * Extend Window interface to include gtag for Google Analytics
@@ -296,7 +304,19 @@ export function trackEvent(eventName: string, eventParams?: AnalyticsEventParams
   try {
     window.gtag!('event', eventName, sanitizedParams)
   } catch (error) {
-    console.error('[Analytics] Error tracking event:', error)
+    if (import.meta.env.DEV) {
+      console.error('[Analytics] Error tracking event:', error)
+    }
+    if (!_isReportingError) {
+      _isReportingError = true
+      try {
+        logError(error instanceof Error ? error : new Error(String(error)), {
+          errorInfo: { function: 'trackEvent', eventName },
+        }, 'analytics.trackEvent')
+      } finally {
+        _isReportingError = false
+      }
+    }
   }
 }
 
@@ -325,7 +345,19 @@ export function trackPageView(pagePath: string, pageTitle?: string): void {
       page_title: pageTitle,
     })
   } catch (error) {
-    console.error('[Analytics] Error tracking page view:', error)
+    if (import.meta.env.DEV) {
+      console.error('[Analytics] Error tracking page view:', error)
+    }
+    if (!_isReportingError) {
+      _isReportingError = true
+      try {
+        logError(error instanceof Error ? error : new Error(String(error)), {
+          errorInfo: { function: 'trackPageView', path: pagePath, title: pageTitle },
+        }, 'analytics.trackPageView')
+      } finally {
+        _isReportingError = false
+      }
+    }
   }
 }
 

@@ -390,4 +390,4 @@ export function trackSocialClick(platform: string): void {
 
 // Re-export the singleton so all consumers share the same instance
 // regardless of whether they import from '@utils/analytics' or 'analytics/index'
-export { analytics } from '../analytics/index'
+export { analytics } from '@/analytics/index'

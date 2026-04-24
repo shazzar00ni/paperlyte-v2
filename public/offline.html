@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>You're Offline – Paperlyte</title>
+    <style>
+      @font-face {
+        font-family: 'Playfair Display';
+        src: url('/fonts/PlayfairDisplay-Variable.woff2') format('woff2');
+        font-weight: 100 900;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      @font-face {
+        font-family: 'Inter';
+        src: url('/fonts/Inter-Variable.woff2') format('woff2');
+        font-weight: 100 900;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg: #0e0e0e;
+        --fg: #ffffff;
+        --muted: #888888;
+        --border: rgba(255, 255, 255, 0.08);
+        --btn-bg: #ffffff;
+        --btn-fg: #0e0e0e;
+      }
+
+      @media (prefers-color-scheme: light) {
+        :root {
+          --bg: #f7f6f3;
+          --fg: #1a1a1a;
+          --muted: #666666;
+          --border: rgba(0, 0, 0, 0.08);
+          --btn-bg: #1a1a1a;
+          --btn-fg: #ffffff;
+        }
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--fg);
+        font-family:
+          'Inter',
+          ui-sans-serif,
+          system-ui,
+          sans-serif;
+        display: grid;
+        place-items: center;
+        padding: 2rem;
+        min-height: 100svh;
+      }
+
+      .card {
+        max-width: 440px;
+        width: 100%;
+        text-align: center;
+      }
+
+      .wordmark {
+        font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+        font-size: 1.25rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        color: var(--muted);
+        display: block;
+        margin-bottom: 3.5rem;
+      }
+
+      .glyph {
+        display: block;
+        width: 72px;
+        height: 72px;
+        margin: 0 auto 2rem;
+        border: 1px solid var(--border);
+        border-radius: 50%;
+        position: relative;
+        color: var(--muted);
+      }
+
+      /* Signal arc pattern built from box-shadows */
+      .glyph::before,
+      .glyph::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        border: 2px solid transparent;
+      }
+
+      /* Diagonal slash */
+      .slash {
+        display: block;
+        position: absolute;
+        inset: 0;
+        margin: auto;
+        width: 2px;
+        height: 52px;
+        background: var(--muted);
+        transform: rotate(-45deg);
+        transform-origin: center;
+        border-radius: 1px;
+        opacity: 0.45;
+      }
+
+      /* SVG wifi icon */
+      .glyph svg {
+        position: absolute;
+        inset: 0;
+        margin: auto;
+        width: 34px;
+        height: 34px;
+        fill: none;
+        stroke: var(--muted);
+        stroke-width: 2;
+        stroke-linecap: round;
+      }
+
+      h1 {
+        font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+        font-size: clamp(2rem, 6vw, 2.875rem);
+        font-weight: 700;
+        line-height: 1.1;
+        letter-spacing: -0.035em;
+        margin-bottom: 1.125rem;
+      }
+
+      h1 em {
+        font-style: italic;
+        color: var(--muted);
+      }
+
+      p {
+        font-size: 1rem;
+        line-height: 1.75;
+        color: var(--muted);
+        margin-bottom: 2.5rem;
+      }
+
+      button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: var(--btn-bg);
+        color: var(--btn-fg);
+        border: none;
+        border-radius: 9999px;
+        padding: 0.875rem 2.25rem;
+        font-family: inherit;
+        font-size: 0.9375rem;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+        cursor: pointer;
+        transition: opacity 0.15s ease;
+      }
+
+      button:hover {
+        opacity: 0.82;
+      }
+
+      button:active {
+        opacity: 0.65;
+      }
+
+      button:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        button {
+          transition: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <span class="wordmark" aria-label="Paperlyte">Paperlyte</span>
+
+      <div class="glyph" aria-hidden="true">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <!-- Wifi arcs -->
+          <path d="M5 12.55a11 11 0 0 1 14.08 0" opacity="0.3" />
+          <path d="M1.42 9a16 16 0 0 1 21.16 0" opacity="0.15" />
+          <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
+          <circle cx="12" cy="20" r="1" fill="currentColor" stroke="none" />
+        </svg>
+        <span class="slash"></span>
+      </div>
+
+      <h1>You're <em>offline</em></h1>
+
+      <p>
+        No internet connection right now. Your notes are safe — everything will sync automatically when
+        you're back online.
+      </p>
+
+      <button id="retry-btn" type="button" onclick="retry()">
+        <svg
+          width="15"
+          height="15"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          aria-hidden="true"
+        >
+          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+          <path d="M3 3v5h5" />
+        </svg>
+        Try again
+      </button>
+    </div>
+
+    <script>
+      async function retry() {
+        const btn = document.getElementById('retry-btn')
+        btn.disabled = true
+        btn.textContent = 'Checking…'
+
+        const controller = new AbortController()
+        const timeout = setTimeout(() => controller.abort(), 5000)
+
+        try {
+          const res = await fetch('/', { method: 'HEAD', cache: 'no-store', signal: controller.signal })
+          clearTimeout(timeout)
+          if (res.ok || res.status === 304) window.location.reload()
+        } catch {
+          clearTimeout(timeout)
+        } finally {
+          btn.disabled = false
+          btn.innerHTML =
+            '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg> Try again'
+        }
+      }
+    </script>
+  </body>
+</html>

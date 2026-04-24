@@ -128,10 +128,35 @@ export function logWarning(message: string, context?: Record<string, unknown>): 
     return
   }
 
-  // In production, track as low-severity event
+  // In production, track as low-severity event.
+  // Coerce context values to analytics-safe primitives so complex objects
+  // (which would otherwise bypass PII sanitization and reach gtag) can't leak.
+  const safeContext: Record<string, string | number | boolean | undefined> = {}
+  if (context) {
+    for (const [key, value] of Object.entries(context)) {
+      if (
+        typeof value === 'string' ||
+        typeof value === 'number' ||
+        typeof value === 'boolean' ||
+        value === undefined
+      ) {
+        safeContext[key] = value
+      } else if (value === null) {
+        safeContext[key] = undefined
+      } else {
+        // Stringify non-primitive values with a truncation cap
+        try {
+          safeContext[key] = JSON.stringify(value).slice(0, 200)
+        } catch {
+          safeContext[key] = '[unserializable]'
+        }
+      }
+    }
+  }
+
   trackEvent('application_warning', {
     message: message.slice(0, 200),
-    ...context,
+    ...safeContext,
   })
 }
 

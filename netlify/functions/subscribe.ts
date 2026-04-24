@@ -226,9 +226,11 @@ export const handler: Handler = async (event: HandlerEvent) => {
       };
     }
 
-    // Validate first to get a specific user-facing error (e.g. disposable domain rejection),
-    // then derive the normalized form for storage/ConvertKit.
-    const validation = validateEmail(email);
+    // Normalize first so validation and ConvertKit submission both operate on the
+    // canonical form — matches the client's ordering in EmailCapture.
+    const normalizedEmail = email.trim().toLowerCase();
+
+    const validation = validateEmail(normalizedEmail);
     if (!validation.isValid) {
       return {
         statusCode: 400,
@@ -236,8 +238,6 @@ export const handler: Handler = async (event: HandlerEvent) => {
         body: JSON.stringify({ error: validation.error ?? "Invalid email address" }),
       };
     }
-
-    const normalizedEmail = email.trim().toLowerCase();
 
     // Subscribe to ConvertKit
     const result = await subscribeToConvertKit(normalizedEmail);

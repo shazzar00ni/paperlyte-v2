@@ -19,6 +19,7 @@ covered by ~220 lines of tests in `src/utils/analytics.test.ts`.
 Leave the function in place rather than removing it in this PR.
 
 **Rationale:**
+
 - The function is tree-shaken out of the production bundle (Vite/Rollup
   dead-code elimination), so it has zero runtime cost.
 - Its test suite validates shared helpers (`calculateScrollPercent`,

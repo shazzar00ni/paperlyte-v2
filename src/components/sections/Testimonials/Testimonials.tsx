@@ -199,7 +199,7 @@ export const Testimonials = (): React.ReactElement => {
         </div>
       </AnimatedElement>
 
-      {/* accessibility-fixed: issue-810 - tabIndex={0} is intentional; carouselRef receives keydown events for arrow-key navigation (see useEffect line 130) */}
+      {/* accessibility-fixed: issue-810 - tabIndex={0} is intentional; carouselRef receives keydown events for arrow-key navigation */}
       <section
         ref={carouselRef}
         className={styles.carouselWrapper}

@@ -31,6 +31,7 @@
   margin-bottom: var(--spacing-lg);
 }
 
+/* accessibility-fix: issue-808 - .link missing :focus-visible style; keyboard users cannot see focus on dark background */
 .link {
   display: inline-flex;
   align-items: center;
@@ -50,6 +51,7 @@
   opacity: 0.8;
   gap: var(--spacing-sm);
 }
+/* /accessibility-fix */
 
 .link i {
   transition: transform var(--transition-base);

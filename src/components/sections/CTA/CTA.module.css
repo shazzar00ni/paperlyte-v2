@@ -108,6 +108,7 @@
   font-size: var(--font-size-lg);
 }
 
+/* accessibility-fix: issue-808 - .textLink missing :focus-visible style; keyboard users cannot see focus */
 .textLink {
   background: none;
   border: none;
@@ -133,6 +134,7 @@
     transition: none;
   }
 }
+/* /accessibility-fix */
 
 .microcopy {
   margin-top: var(--spacing-md);

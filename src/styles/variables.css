@@ -10,7 +10,9 @@
   --color-surface-dark: #18181b; /* Zinc 900 - Dark surface sections */
   --color-text-primary: #111827; /* Gray 900 - Headings, body text */
   --color-text-secondary: #6b7280; /* Gray 500 - Supporting text */
+  /* accessibility-fix: issue-809 - --color-text-tertiary (#9ca3af) contrast ~2.85:1 on white fails WCAG AA; raise to ≥4.5:1 */
   --color-text-tertiary: #9ca3af; /* Gray 400 - Muted text (large text only) */
+  /* /accessibility-fix */
   --color-text-on-primary: #ffffff; /* White text on primary backgrounds */
   --color-text-on-dark: #ffffff; /* White text on dark surfaces */
   --color-text-on-dark-secondary: rgba(255, 255, 255, 0.7); /* Semi-transparent white */

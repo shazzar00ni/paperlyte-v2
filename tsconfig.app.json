@@ -32,6 +32,7 @@
 
     /* Path aliases - Enables cleaner imports */
     // Path mapping for cleaner imports (e.g., @components/Button instead of ../../../components/Button)
+    // Paths use relative prefixes (./src/*) so baseUrl is not required under moduleResolution: "bundler"
     "paths": {
       "@/*": ["./src/*"],
       "@components/*": ["./src/components/*"],

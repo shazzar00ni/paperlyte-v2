@@ -223,7 +223,4 @@ export const FAQ = (): React.ReactElement => {
     </Section>
   )
 }
-
-export const FAQ = (): React.ReactElement => {
-  // ... implementation ...
 }

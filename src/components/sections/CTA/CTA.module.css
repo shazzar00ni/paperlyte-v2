@@ -203,6 +203,15 @@
     background-color: rgba(255, 255, 255, 0.2);
     border-color: rgba(255, 255, 255, 0.35);
   }
+
+  /* CTA gradient inverts to white in dark mode; override to dark colors for visibility */
+  .textLink:focus-visible {
+    outline-color: var(--color-text-on-primary);
+  }
+
+  .microcopy {
+    color: var(--color-text-on-primary);
+  }
 }
 
 [data-theme='dark'] .cta::before {
@@ -217,4 +226,12 @@
 [data-theme='dark'] .badge:hover {
   background-color: rgba(255, 255, 255, 0.2);
   border-color: rgba(255, 255, 255, 0.35);
+}
+
+[data-theme='dark'] .textLink:focus-visible {
+  outline-color: var(--color-text-on-primary);
+}
+
+[data-theme='dark'] .microcopy {
+  color: var(--color-text-on-primary);
 }

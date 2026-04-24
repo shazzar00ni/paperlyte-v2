@@ -79,7 +79,13 @@ export const Hero = (): React.ReactElement => {
               &nbsp;You&apos;re on the list! We&apos;ll be in touch soon.
             </p>
           ) : (
-            <form onSubmit={handleSubmit} className={styles.heroForm} noValidate>
+            <form
+              onSubmit={(e) => {
+                void handleSubmit(e)
+              }}
+              className={styles.heroForm}
+              noValidate
+            >
               <div className={styles.emailWrapper}>
                 <input
                   type="email"
@@ -87,7 +93,9 @@ export const Hero = (): React.ReactElement => {
                   name="email"
                   placeholder="your@email.com"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value)
+                  }}
                   required
                   className={styles.heroEmailInput}
                   aria-label="Email address"

@@ -44,5 +44,8 @@ public/favicon.ico
 
 # Deployment platforms
 .netlify
-.vercelaudit_results.json
+.vercel
+
+# Daily PR Audit transient files
+audit_results.json
 daily_summary.txt

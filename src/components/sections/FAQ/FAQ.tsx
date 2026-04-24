@@ -224,4 +224,6 @@ export const FAQ = (): React.ReactElement => {
   )
 }
 
-export { FAQ as default }
+export const FAQ = (): React.ReactElement => {
+  // ... implementation ...
+}

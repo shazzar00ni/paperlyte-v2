@@ -7,7 +7,7 @@ import {
   AnalyticsEvents,
   type AnalyticsEventParams,
 } from '@utils/analytics'
-import { createScrollTracker } from '../analytics/scrollDepth'
+import { createScrollTracker } from '@/analytics/scrollDepth'
 
 /**
  * React hook for analytics tracking with automatic scroll depth tracking

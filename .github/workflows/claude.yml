@@ -62,6 +62,12 @@ jobs:
               core.warning(`Actor ${username} is not authorized to run Claude. Required: write, maintain, or admin.`);
             }
 
+      - name: Checkout repository
+        if: github.event_name == 'pull_request' || steps.permission_check.outputs.allowed == 'true'
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+        with:
+          fetch-depth: 0
+
       - name: Run Claude Code Action
         if: github.event_name == 'pull_request' || steps.permission_check.outputs.allowed == 'true'
         uses: anthropics/claude-code-action@6e2bd52842c65e914eba5c8badd17560bd26b5de  # v1.0.89

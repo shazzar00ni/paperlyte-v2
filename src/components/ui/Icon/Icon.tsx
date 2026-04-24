@@ -5,6 +5,7 @@ import type { IconName, IconPrefix } from '@fortawesome/fontawesome-svg-core'
 import { iconPaths, getIconViewBox, strokeOnlyIcons } from './icons'
 import { convertIconName, isBrandIcon } from '@utils/iconLibrary'
 import { safePropertyAccess } from '@utils/security'
+import { logWarning } from '@utils/monitoring'
 import './Icon.css'
 
 interface IconProps {
@@ -168,12 +169,8 @@ export function Icon({
   }
 
   // Icon not found in library — return a placeholder
-  if (import.meta.env.DEV) {
-    console.warn(
-      `Icon "${name}" (converted to "${convertedName}") not found in Font Awesome library. ` +
-        `Rendering empty/decorative fallback span.`
-    )
-  }
+  // logWarning handles DEV (console.warn) and production (analytics event) internally
+  logWarning(`Icon "${name}" not found in Font Awesome library`, { name, convertedName })
   return (
     <span {...commonIconProps} title={`Icon "${name}" not found`}>
       ?

@@ -33,10 +33,10 @@ describe('Icon', () => {
       expect(consoleWarnSpy).toHaveBeenCalledWith(
         'Icon "definitely-missing-icon" not found in icon set, using Font Awesome fallback'
       )
-      // Second warning: not found in Font Awesome library either
+      // Second warning: not found in Font Awesome library either (routed via logWarning)
       expect(consoleWarnSpy).toHaveBeenCalledWith(
-        'Icon "definitely-missing-icon" (converted to "definitely-missing-icon") not found in Font Awesome library. ' +
-          'Rendering empty/decorative fallback span.'
+        'Icon "definitely-missing-icon" not found in Font Awesome library',
+        { name: 'definitely-missing-icon', convertedName: 'definitely-missing-icon' }
       )
       expect(consoleWarnSpy).toHaveBeenCalledTimes(2)
     })

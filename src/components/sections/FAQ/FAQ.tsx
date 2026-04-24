@@ -223,4 +223,3 @@ export const FAQ = (): React.ReactElement => {
     </Section>
   )
 }
-}

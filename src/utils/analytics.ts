@@ -35,6 +35,9 @@
 import { isSafePropertyKey } from './security'
 import { logError } from './monitoring'
 
+// Prevents trackEvent catch → logError → trackEvent('application_error') infinite recursion
+let _isReportingError = false
+
 /**
  * Extend Window interface to include gtag for Google Analytics
  * Note: dataLayer is already declared in lib.dom.d.ts as Window['dataLayer']: unknown[]
@@ -300,9 +303,16 @@ export function trackEvent(eventName: string, eventParams?: AnalyticsEventParams
     if (import.meta.env.DEV) {
       console.error('[Analytics] Error tracking event:', error)
     }
-    logError(error instanceof Error ? error : new Error(String(error)), {
-      errorInfo: { function: 'trackEvent', eventName },
-    })
+    if (!_isReportingError) {
+      _isReportingError = true
+      try {
+        logError(error instanceof Error ? error : new Error(String(error)), {
+          errorInfo: { function: 'trackEvent', eventName },
+        }, 'analytics.trackEvent')
+      } finally {
+        _isReportingError = false
+      }
+    }
   }
 }
 
@@ -334,9 +344,16 @@ export function trackPageView(pagePath: string, pageTitle?: string): void {
     if (import.meta.env.DEV) {
       console.error('[Analytics] Error tracking page view:', error)
     }
-    logError(error instanceof Error ? error : new Error(String(error)), {
-      errorInfo: { function: 'trackPageView', path: pagePath, title: pageTitle },
-    })
+    if (!_isReportingError) {
+      _isReportingError = true
+      try {
+        logError(error instanceof Error ? error : new Error(String(error)), {
+          errorInfo: { function: 'trackPageView', path: pagePath, title: pageTitle },
+        }, 'analytics.trackPageView')
+      } finally {
+        _isReportingError = false
+      }
+    }
   }
 }
 

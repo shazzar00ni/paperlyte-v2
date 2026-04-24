@@ -9,3 +9,25 @@
 main {
   flex: 1;
 }
+
+/* Suspense fallback placeholders — reserve space to prevent CLS */
+.suspense-statistics { min-height: 28rem; }
+.suspense-comparison { min-height: 40rem; }
+.suspense-testimonials { min-height: 32rem; }
+.suspense-email-capture { min-height: 20rem; }
+.suspense-faq { min-height: 36rem; }
+.suspense-cta { min-height: 20rem; }
+.suspense-feedback { width: 3.5rem; height: 3.5rem; }
+
+/* Visually hidden but accessible to screen readers */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

@@ -10,13 +10,13 @@ import { Features } from '@components/sections/Features'
 import { Mobile } from '@components/sections/Mobile'
 import { useAnalytics } from '@hooks/useAnalytics'
 
-const Statistics = lazy(() => import('@components/sections/Statistics/index'))
-const Comparison = lazy(() => import('@components/sections/Comparison/index'))
-const Testimonials = lazy(() => import('@components/sections/Testimonials/index'))
-const EmailCapture = lazy(() => import('@components/sections/EmailCapture/index'))
-const FAQ = lazy(() => import('@components/sections/FAQ/index'))
-const CTA = lazy(() => import('@components/sections/CTA/index'))
-const FeedbackWidget = lazy(() => import('@components/ui/FeedbackWidget/index'))
+const Statistics = lazy(() => import('@components/sections/Statistics'))
+const Comparison = lazy(() => import('@components/sections/Comparison'))
+const Testimonials = lazy(() => import('@components/sections/Testimonials'))
+const EmailCapture = lazy(() => import('@components/sections/EmailCapture'))
+const FAQ = lazy(() => import('@components/sections/FAQ'))
+const CTA = lazy(() => import('@components/sections/CTA'))
+const FeedbackWidget = lazy(() => import('@components/ui/FeedbackWidget'))
 
 /**
  * Application root component that composes the page layout and sections.
@@ -47,27 +47,27 @@ function App() {
         <Solution />
         <Features />
         <Mobile />
-        <Suspense fallback={<div style={{ minHeight: '28rem' }} aria-hidden="true" />}>
+        <Suspense fallback={<div className="suspense-statistics" role="status"><span className="sr-only">Loading statistics…</span></div>}>
           <Statistics />
         </Suspense>
-        <Suspense fallback={<div style={{ minHeight: '40rem' }} aria-hidden="true" />}>
+        <Suspense fallback={<div className="suspense-comparison" role="status"><span className="sr-only">Loading comparison…</span></div>}>
           <Comparison />
         </Suspense>
-        <Suspense fallback={<div style={{ minHeight: '32rem' }} aria-hidden="true" />}>
+        <Suspense fallback={<div className="suspense-testimonials" role="status"><span className="sr-only">Loading testimonials…</span></div>}>
           <Testimonials />
         </Suspense>
-        <Suspense fallback={<div style={{ minHeight: '20rem' }} aria-hidden="true" />}>
+        <Suspense fallback={<div className="suspense-email-capture" role="status"><span className="sr-only">Loading sign-up form…</span></div>}>
           <EmailCapture />
         </Suspense>
-        <Suspense fallback={<div style={{ minHeight: '36rem' }} aria-hidden="true" />}>
+        <Suspense fallback={<div className="suspense-faq" role="status"><span className="sr-only">Loading FAQ…</span></div>}>
           <FAQ />
         </Suspense>
-        <Suspense fallback={<div style={{ minHeight: '20rem' }} aria-hidden="true" />}>
+        <Suspense fallback={<div className="suspense-cta" role="status"><span className="sr-only">Loading call to action…</span></div>}>
           <CTA />
         </Suspense>
       </main>
       <Footer />
-      <Suspense fallback={<div style={{ width: '3.5rem', height: '3.5rem' }} aria-hidden="true" />}>
+      <Suspense fallback={<div className="suspense-feedback" role="status"><span className="sr-only">Loading feedback widget…</span></div>}>
         <FeedbackWidget />
       </Suspense>
       <Analytics />

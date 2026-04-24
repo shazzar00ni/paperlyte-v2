@@ -113,5 +113,3 @@ export const Comparison = (): React.ReactElement => {
     </Section>
   )
 }
-
-export { Comparison as default }

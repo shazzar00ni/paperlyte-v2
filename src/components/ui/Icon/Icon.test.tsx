@@ -137,7 +137,8 @@ describe('Icon', () => {
           'Icon "fa-github" not found in icon set, using Font Awesome fallback'
         )
         expect(consoleWarnSpy).not.toHaveBeenCalledWith(
-          expect.stringContaining('not found in Font Awesome library')
+          expect.stringContaining('not found in Font Awesome library'),
+          expect.anything()
         )
       } finally {
         vi.doUnmock('./icons')

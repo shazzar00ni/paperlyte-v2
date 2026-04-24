@@ -15,6 +15,11 @@ describe('Analytics Utility', () => {
     // Clear any existing gtag
     delete (window as Window & { gtag?: unknown }).gtag
     delete (window as Window & { dataLayer?: unknown }).dataLayer
+
+    // Silence DEV-mode console.group/groupEnd noise emitted by logError
+    // when analytics error paths delegate to monitoring.
+    vi.spyOn(console, 'group').mockImplementation(() => {})
+    vi.spyOn(console, 'groupEnd').mockImplementation(() => {})
   })
 
   describe('isAnalyticsAvailable', () => {

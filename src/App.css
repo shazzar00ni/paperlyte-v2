@@ -17,17 +17,8 @@ main {
 .suspense-email-capture { min-height: 20rem; }
 .suspense-faq { min-height: 36rem; }
 .suspense-cta { min-height: 20rem; }
-.suspense-feedback { width: 3.5rem; height: 3.5rem; }
+/* FeedbackWidget is position:fixed, so the fallback must be out-of-flow
+   to avoid pushing page content while the chunk loads. */
+.suspense-feedback { position: fixed; width: 0; height: 0; }
 
-/* Visually hidden but accessible to screen readers */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
+/* .sr-only utility lives in src/styles/utilities.css */

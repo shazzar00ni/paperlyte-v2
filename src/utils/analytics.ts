@@ -33,6 +33,10 @@
  */
 
 import { isSafePropertyKey } from './security'
+// Intentional circular dependency: analytics ↔ monitoring.
+// ES module live bindings ensure both exports are defined by the time either
+// function is *called*. Safe as long as neither module calls the other during
+// top-level initialization (i.e., outside a function body).
 import { logError } from './monitoring'
 
 // Prevents trackEvent catch → logError → trackEvent('application_error') infinite recursion

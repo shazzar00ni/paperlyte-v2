@@ -8,6 +8,10 @@ import { safePropertyAccess } from '@utils/security'
 import { logWarning } from '@utils/monitoring'
 import './Icon.css'
 
+// Deduplicates missing-icon analytics events in production.
+// In DEV the Set is never populated so every render warns (preserves test assertions).
+const _warnedMissing = new Set<string>()
+
 interface IconProps {
   name: string
   size?: 'sm' | 'md' | 'lg' | 'xl' | '2x' | '3x'
@@ -169,8 +173,12 @@ export function Icon({
   }
 
   // Icon not found in library — return a placeholder
-  // logWarning handles DEV (console.warn) and production (analytics event) internally
-  logWarning(`Icon "${name}" not found in Font Awesome library`, { name, convertedName })
+  // In production, fire at most once per unique icon name to avoid GA rate-limit overhead.
+  // In DEV the Set is bypassed so test assertions that check call counts still hold.
+  if (import.meta.env.DEV || !_warnedMissing.has(name)) {
+    if (!import.meta.env.DEV) _warnedMissing.add(name)
+    logWarning(`Icon "${name}" not found in Font Awesome library`, { name, convertedName })
+  }
   return (
     <span {...commonIconProps} title={`Icon "${name}" not found`}>
       ?

@@ -5,10 +5,9 @@
 
 /**
  * Assert that an icon element has the expected size
- * Handles three cases:
+ * Handles two cases:
  * - SVG elements: checks width/height attributes
- * - SPAN fallback: checks fontSize style
- * - FontAwesomeIcon SVG: checks fontSize in style prop
+ * - SPAN placeholder: checks fontSize style
  */
 export function expectIconSize(icon: Element | null, expectedSize: string): void {
   expect(icon).toBeInTheDocument()
@@ -18,11 +17,11 @@ export function expectIconSize(icon: Element | null, expectedSize: string): void
     expect(icon).toHaveAttribute('width', expectedSize)
     expect(icon).toHaveAttribute('height', expectedSize)
   } else if (icon?.tagName === 'svg') {
-    // FontAwesomeIcon SVG with fontSize in style
+    // SVG without explicit width/height — check fontSize in style
     const expectedFontSize = expectedSize.endsWith('px') ? expectedSize : `${expectedSize}px`
     expect(icon).toHaveStyle({ fontSize: expectedFontSize })
   } else if (icon?.tagName === 'SPAN') {
-    // Span fallback uses fontSize style
+    // Span placeholder uses fontSize style
     const expectedFontSize = expectedSize.endsWith('px') ? expectedSize : `${expectedSize}px`
     expect((icon as HTMLElement).style.fontSize).toBe(expectedFontSize)
   } else {
@@ -33,10 +32,10 @@ export function expectIconSize(icon: Element | null, expectedSize: string): void
 
 /**
  * Get icon element from a container
- * Handles both SVG and fallback (.icon-fallback) elements
+ * Handles both SVG and placeholder (.icon-placeholder) elements
  */
 export function getIconElement(container: HTMLElement): Element | null {
-  return container.querySelector('svg, .icon-fallback')
+  return container.querySelector('svg, .icon-placeholder')
 }
 
 /**

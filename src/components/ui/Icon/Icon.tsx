@@ -6,6 +6,10 @@ import './Icon.css'
 interface IconProps {
   name: string
   size?: 'sm' | 'md' | 'lg' | 'xl' | '2x' | '3x'
+  /**
+   * Reserved for API compatibility with the previous Font Awesome implementation.
+   * No longer used now that all icons are self-hosted SVGs.
+   */
   variant?: 'solid' | 'brands' | 'regular'
   className?: string
   ariaLabel?: string
@@ -55,8 +59,6 @@ const SIZE_MAP = {
 export const Icon = ({
   name,
   size = 'md',
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  variant: _variant = 'solid',
   className = '',
   ariaLabel,
   color,

@@ -5,7 +5,7 @@
   vertical-align: middle;
 }
 
-.icon-fallback {
-  /* Fallback Font Awesome icons inherit color from parent */
+.icon-placeholder {
+  /* Placeholder span for icons missing from the self-hosted registry — inherit color from parent */
   color: currentColor;
 }

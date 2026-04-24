@@ -45,9 +45,11 @@ test.describe('Landing Page', () => {
     await expect(page.locator('#features')).toBeInViewport();
   });
 
-  // Only run performance test on chromium desktop to avoid flakiness
-  // Lighthouse CI already provides comprehensive Core Web Vitals monitoring
-  test('should pass Core Web Vitals', async ({ page, browserName }) => {
+  // Load-performance smoke check — only runs on chromium desktop to avoid flakiness.
+  // This is NOT a full Core Web Vitals gate: it measures FCP/LCP/CLS only (no INP/FID,
+  // since those require real user interaction). Lighthouse CI is the authoritative
+  // Core Web Vitals monitor for this project.
+  test('load-performance smoke check (FCP/LCP/CLS)', async ({ page, browserName }) => {
     test.skip(browserName !== 'chromium', 'Performance test runs on chromium only');
     test.skip(!!process.env.CI, 'Skip performance tests in CI to avoid environment flakiness');
 

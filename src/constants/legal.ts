@@ -1,7 +1,7 @@
 /**
  * Legal and company information configuration
  *
- * TODO: Update these values with your actual company information
+ * Placeholder values marked with [...] must be replaced before launch.
  */
 
 export interface CompanyConfig {
@@ -19,7 +19,7 @@ export interface CompanyConfig {
 export const LEGAL_CONFIG = {
   company: {
     name: 'Paperlyte',
-    legalName: '[Company Legal Name]', // TODO: Add legal entity name
+    legalName: '[Company Legal Name]',
     email: 'hello@paperlyte.com',
     supportEmail: 'support@paperlyte.com',
     privacyEmail: 'privacy@paperlyte.com',
@@ -29,7 +29,7 @@ export const LEGAL_CONFIG = {
     arbitrationOptOutEmail: 'arbitration-opt-out@paperlyte.com',
   },
   address: {
-    street: '[Street Address]', // TODO: Add street address
+    street: '[Street Address]',
     city: '[City]',
     state: '[State]',
     zip: '[ZIP]',
@@ -38,24 +38,24 @@ export const LEGAL_CONFIG = {
   documents: {
     privacy: '/privacy.html',
     terms: '/terms.html',
-    cookies: '#', // TODO: Create cookie policy
-    security: '#', // TODO: Create security practices doc
-    dmca: '#', // TODO: Create DMCA policy
-    accessibility: '#', // TODO: Create accessibility statement
+    cookies: '#',
+    security: '#',
+    dmca: '#',
+    accessibility: '#',
   },
   social: {
     github: 'https://github.com/shazzar00ni/paperlyte-v2',
     twitter: 'https://x.com/paperlyte',
-    linkedin: '#', // TODO: Create LinkedIn company page or update to existing page
+    linkedin: '#',
     instagram: 'https://instagram.com/paperlytefilms',
-    discord: '#', // TODO: Add Discord server link
+    discord: '#',
   },
   metadata: {
     privacyLastUpdated: '2025-11-28',
     termsLastUpdated: '2025-11-28',
     termsVersion: '1.0',
-    jurisdiction: '[State/Country]', // TODO: Add jurisdiction
-    governingLaw: '[State] law', // TODO: Add governing law
+    jurisdiction: '[State/Country]',
+    governingLaw: '[State] law',
   },
 } as const
 

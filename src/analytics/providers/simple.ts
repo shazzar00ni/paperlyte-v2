@@ -1,0 +1,173 @@
+/**
+ * Simple Analytics provider implementation
+ *
+ * Privacy-friendly, no-cookie analytics with a clean dashboard.
+ * Page views are tracked automatically by the script.
+ *
+ * @see https://docs.simpleanalytics.com
+ */
+
+import type { AnalyticsConfig, AnalyticsEvent, AnalyticsProvider, CoreWebVitals } from '../types'
+import { isSafePropertyKey } from '../../utils/security'
+
+/**
+ * Simple Analytics provider
+ * Implements cookie-less analytics tracking via the Simple Analytics script API
+ */
+export class SimpleAnalyticsProvider implements AnalyticsProvider {
+  private config: AnalyticsConfig | null = null
+  private initialized = false
+  private scriptLoaded = false
+  private scriptElement: HTMLScriptElement | null = null
+
+  init(config: AnalyticsConfig): void {
+    if (this.initialized) {
+      if (config.debug) {
+        console.log('[Analytics] Simple Analytics already initialized')
+      }
+      return
+    }
+
+    if (config.respectDNT !== false && this.isDNTEnabled()) {
+      if (config.debug) {
+        console.log('[Analytics] Do Not Track is enabled, analytics disabled')
+      }
+      return
+    }
+
+    this.config = config
+    this.initialized = true
+    this.loadScript()
+  }
+
+  private loadScript(): void {
+    if (this.scriptLoaded || typeof window === 'undefined' || typeof document === 'undefined') {
+      return
+    }
+
+    const scriptUrl =
+      this.config?.scriptUrl || 'https://scripts.simpleanalyticscdn.com/latest.js'
+
+    const script = document.createElement('script')
+    script.async = true
+    script.defer = true
+    script.src = scriptUrl
+
+    // Simple Analytics detects the domain automatically; no data attribute needed.
+    if (this.config?.trackPageviews === false) {
+      script.setAttribute('data-auto-collect', 'false')
+    }
+
+    script.onerror = () => {
+      if (this.config?.debug) {
+        console.warn('[Analytics] Failed to load Simple Analytics script')
+      }
+      this.scriptLoaded = false
+    }
+
+    script.onload = () => {
+      this.scriptLoaded = true
+      if (this.config?.debug) {
+        console.log('[Analytics] Simple Analytics script loaded successfully')
+      }
+    }
+
+    this.scriptElement = script
+    document.head.appendChild(script)
+  }
+
+  trackPageView(url?: string): void {
+    if (!this.isEnabled() || typeof window === 'undefined' || !window.sa_pageview) {
+      return
+    }
+
+    const pageUrl = url || window.location.pathname
+    window.sa_pageview(pageUrl)
+  }
+
+  trackEvent(event: AnalyticsEvent): void {
+    if (!this.isEnabled() || typeof window === 'undefined' || !window.sa_event) {
+      return
+    }
+
+    const props = event.properties
+      ? Object.entries(event.properties).reduce(
+          (acc, [key, value]) => {
+            if (!isSafePropertyKey(key)) {
+              if (this.config?.debug || import.meta.env.DEV) {
+                console.warn('[Analytics] Blocked potentially unsafe property key:', key)
+              }
+              return acc
+            }
+            if (value !== undefined && value !== null) {
+              acc[key] = value
+            }
+            return acc
+          },
+          {} as Record<string, string | number | boolean>
+        )
+      : undefined
+
+    // Simple Analytics event names must be snake_case; replace any spaces with underscores
+    const safeName = event.name.replace(/\s+/g, '_')
+    window.sa_event(safeName, props)
+  }
+
+  trackWebVitals(vitals: CoreWebVitals): void {
+    if (!this.isEnabled()) {
+      return
+    }
+
+    Object.entries(vitals).forEach(([metric, value]) => {
+      if (value !== undefined) {
+        const formattedValue = metric === 'CLS' ? Number(value.toFixed(3)) : Math.round(value)
+        this.trackEvent({
+          name: 'web_vitals',
+          properties: { metric, value: formattedValue },
+        })
+      }
+    })
+  }
+
+  isEnabled(): boolean {
+    return (
+      this.initialized &&
+      this.scriptLoaded &&
+      typeof window !== 'undefined' &&
+      typeof window.sa_event === 'function'
+    )
+  }
+
+  disable(): void {
+    if (this.config?.debug) {
+      console.log('[Analytics] Simple Analytics disabled')
+    }
+
+    this.initialized = false
+    this.scriptLoaded = false
+    this.config = null
+
+    if (typeof document !== 'undefined' && this.scriptElement?.parentNode) {
+      this.scriptElement.parentNode.removeChild(this.scriptElement)
+      this.scriptElement = null
+    }
+
+    if (typeof window !== 'undefined') {
+      if (window.sa_event) delete window.sa_event
+      if (window.sa_pageview) delete window.sa_pageview
+    }
+  }
+
+  private isDNTEnabled(): boolean {
+    if (typeof window === 'undefined' || typeof navigator === 'undefined') {
+      return false
+    }
+
+    const dnt =
+      navigator.doNotTrack ||
+      (window as Window & { doNotTrack?: string }).doNotTrack ||
+      (navigator as Navigator & { msDoNotTrack?: string }).msDoNotTrack
+
+    return dnt === '1' || dnt === 'yes'
+  }
+}

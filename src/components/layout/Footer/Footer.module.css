@@ -86,6 +86,15 @@
   outline-offset: 2px;
 }
 
+.linkComingSoon {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  opacity: 0.4;
+  cursor: default;
+  padding: var(--spacing-xs) 0;
+  display: inline-block;
+}
+
 .socialIcons {
   display: flex;
   gap: var(--spacing-md);

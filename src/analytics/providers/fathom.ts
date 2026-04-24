@@ -1,0 +1,168 @@
+/**
+ * Fathom Analytics provider implementation
+ *
+ * Privacy-focused, cookie-less analytics that's GDPR compliant.
+ * Lightweight script with async loading for minimal performance impact.
+ *
+ * @see https://usefathom.com/docs
+ */
+
+import type { AnalyticsConfig, AnalyticsEvent, AnalyticsProvider, CoreWebVitals } from '../types'
+import { isSafePropertyKey } from '../../utils/security'
+
+/**
+ * Fathom Analytics provider
+ * Implements privacy-first, cookie-less analytics tracking
+ */
+export class FathomProvider implements AnalyticsProvider {
+  private config: AnalyticsConfig | null = null
+  private initialized = false
+  private scriptLoaded = false
+  private scriptElement: HTMLScriptElement | null = null
+
+  init(config: AnalyticsConfig): void {
+    if (this.initialized) {
+      if (config.debug) {
+        console.log('[Analytics] Fathom already initialized')
+      }
+      return
+    }
+
+    if (config.respectDNT !== false && this.isDNTEnabled()) {
+      if (config.debug) {
+        console.log('[Analytics] Do Not Track is enabled, analytics disabled')
+      }
+      return
+    }
+
+    this.config = config
+    this.initialized = true
+    this.loadScript()
+  }
+
+  private loadScript(): void {
+    if (this.scriptLoaded || typeof window === 'undefined' || typeof document === 'undefined') {
+      return
+    }
+
+    const scriptUrl = this.config?.scriptUrl || 'https://cdn.usefathom.com/script.js'
+
+    const script = document.createElement('script')
+    script.async = true
+    script.defer = true
+    script.src = scriptUrl
+    script.setAttribute('data-site', this.config?.domain || '')
+
+    script.onerror = () => {
+      if (this.config?.debug) {
+        console.warn('[Analytics] Failed to load Fathom script')
+      }
+      this.scriptLoaded = false
+    }
+
+    script.onload = () => {
+      this.scriptLoaded = true
+      if (this.config?.debug) {
+        console.log('[Analytics] Fathom script loaded successfully')
+      }
+    }
+
+    this.scriptElement = script
+    document.head.appendChild(script)
+  }
+
+  trackPageView(url?: string): void {
+    if (!this.isEnabled() || typeof window === 'undefined' || !window.fathom) {
+      return
+    }
+
+    const pageUrl = url || window.location.pathname
+    window.fathom.trackPageview({ url: pageUrl })
+  }
+
+  trackEvent(event: AnalyticsEvent): void {
+    if (!this.isEnabled() || typeof window === 'undefined' || !window.fathom) {
+      return
+    }
+
+    // Fathom uses goal codes (short IDs) rather than arbitrary names.
+    // We encode the event name as the goal code and pass a value of 0.
+    // Properties are JSON-encoded and sent as a custom value where supported.
+    const props = event.properties
+      ? Object.entries(event.properties).reduce(
+          (acc, [key, value]) => {
+            if (!isSafePropertyKey(key)) {
+              if (this.config?.debug || import.meta.env.DEV) {
+                console.warn('[Analytics] Blocked potentially unsafe property key:', key)
+              }
+              return acc
+            }
+            if (value !== undefined && value !== null) {
+              acc[key] = value
+            }
+            return acc
+          },
+          {} as Record<string, string | number | boolean>
+        )
+      : undefined
+
+    window.fathom.trackGoal(event.name, 0, props)
+  }
+
+  trackWebVitals(vitals: CoreWebVitals): void {
+    if (!this.isEnabled()) {
+      return
+    }
+
+    Object.entries(vitals).forEach(([metric, value]) => {
+      if (value !== undefined) {
+        const formattedValue = metric === 'CLS' ? Number(value.toFixed(3)) : Math.round(value)
+        this.trackEvent({
+          name: 'web_vitals',
+          properties: { metric, value: formattedValue },
+        })
+      }
+    })
+  }
+
+  isEnabled(): boolean {
+    return (
+      this.initialized &&
+      this.scriptLoaded &&
+      typeof window !== 'undefined' &&
+      typeof window.fathom !== 'undefined'
+    )
+  }
+
+  disable(): void {
+    if (this.config?.debug) {
+      console.log('[Analytics] Fathom disabled')
+    }
+
+    this.initialized = false
+    this.scriptLoaded = false
+    this.config = null
+
+    if (typeof document !== 'undefined' && this.scriptElement?.parentNode) {
+      this.scriptElement.parentNode.removeChild(this.scriptElement)
+      this.scriptElement = null
+    }
+
+    if (typeof window !== 'undefined' && window.fathom) {
+      delete window.fathom
+    }
+  }
+
+  private isDNTEnabled(): boolean {
+    if (typeof window === 'undefined' || typeof navigator === 'undefined') {
+      return false
+    }
+
+    const dnt =
+      navigator.doNotTrack ||
+      (window as Window & { doNotTrack?: string }).doNotTrack ||
+      (navigator as Navigator & { msDoNotTrack?: string }).msDoNotTrack
+
+    return dnt === '1' || dnt === 'yes'
+  }
+}

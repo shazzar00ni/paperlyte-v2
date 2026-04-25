@@ -36,7 +36,7 @@ jobs:
 
       - name: Run fuzz target (time-boxed)
         run: |
-          npx jazzer fuzz/sanitize-input.fuzz.js \
+          npx jazzer fuzz/sanitize-input.fuzz.cjs \
             -- -max_total_time=30 -max_len=4096 -print_final_stats=1
         timeout-minutes: 5
         continue-on-error: true

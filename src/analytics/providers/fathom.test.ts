@@ -304,7 +304,11 @@ describe('analytics/providers/fathom', () => {
     it('should log a debug warning when metrics are present and debug is enabled', () => {
       const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
       document.head.innerHTML = ''
-      Object.defineProperty(window, 'doNotTrack', { writable: true, configurable: true, value: null })
+      Object.defineProperty(window, 'doNotTrack', {
+        writable: true,
+        configurable: true,
+        value: null,
+      })
       const debugProvider = new FathomProvider()
       debugProvider.init({ ...config, debug: true })
       window.fathom = mockFathom()

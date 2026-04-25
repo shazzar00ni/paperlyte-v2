@@ -2,6 +2,50 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-04-25
+
+### Analysis: Systemic Regressions in Open Branches (Automated Daily Audit)
+
+- **Status:** Critical — Action Required
+- **Summary:** An automated repository-wide audit of 262 unmerged branches confirms the following systemic regressions.
+
+| Regression Type                | Count | Severity    | Notes                                               |
+| :----------------------------- | :---- | :---------- | :-------------------------------------------------- |
+| Orphan Branches                | 262   | 🔴 Critical | No common ancestor with `main`.                     |
+| Missing `.npmrc`               | 88    | 🔴 Critical | Breaks dependency resolution.                       |
+| Missing `docs/ROADMAP.md`      | 82    | 🟠 High     | Core project documentation.                         |
+| Missing `gitVersionControl.md` | 97    | 🟠 High     | Core Git workflow documentation.                    |
+| Missing `review.md`            | 97    | 🟡 Medium   | AI PR reviewer instructions.                        |
+| Reverted Security Helpers      | 96    | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers. |
+| Unreadable navigation.ts       | 8     | 🔴 Critical | File missing or unreadable.                         |
+
+- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.
+
+### Manual Reviews
+
+#### PR: Implement Service Worker for PWA Offline Support
+
+- **Branch:** `origin/claude/implement-service-worker-YLeLZ`
+- **Status:** Approved
+- **Summary:** Implements a robust service worker with cache-first, stale-while-revalidate, and network-first strategies. Includes a custom offline fallback page and necessary CSP updates.
+- **Feedback:** Clean implementation, follows PWA best practices. Verified that `worker-src` was correctly updated in both `vercel.json` and `vite.config.ts`.
+
+#### PR: Fix Lighthouse CI failures
+
+- **Branch:** `origin/claude/fix-lighthouse-ci-P9FYE`
+- **Status:** Rejected
+- **Summary:** While it aims to fix Lighthouse CI, it contains massive accidental deletions of documentation and configuration files (over 6,000 lines deleted).
+- **Feedback:** This branch is severely corrupted. It must be recreated from `main` or restored using the files identified in the automated audit.
+
+#### PR: Fix Icon Component Errors
+
+- **Branch:** `origin/copilot/fix-icon-component-errors`
+- **Status:** Rejected
+- **Summary:** Similar to the Lighthouse PR, this branch has accidentally deleted 19,000+ lines of code and documentation.
+- **Feedback:** This branch is severely corrupted and should be closed.
+
+---
+
 ## 2026-03-05
 
 ### Analysis: Accidental File Deletions in Open Branches (Jules Daily PR Reviews)

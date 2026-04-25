@@ -13,6 +13,8 @@ dist-ssr
 *.local
 coverage
 junit.xml
+audit_results.json
+daily_summary.txt
 
 # Environment variables
 .env

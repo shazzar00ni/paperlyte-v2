@@ -132,6 +132,30 @@ We follow responsible disclosure principles:
 - Follow GDPR and privacy best practices
 - Minimize data collection and retention
 
+## Verifying Release Artifacts
+
+Release tarballs published under [GitHub Releases](https://github.com/shazzar00ni/paperlyte-v2/releases) are signed using [Sigstore](https://www.sigstore.dev/) keyless signing via [cosign](https://github.com/sigstore/cosign) in our [release workflow](.github/workflows/release.yml). Each release includes a `.bundle` file containing the signature, Fulcio certificate, and Rekor transparency-log inclusion proof — enabling fully offline verification.
+
+### Verifying a release
+
+1. Download both the artifact and its bundle from the GitHub release page:
+   - `paperlyte-<version>.tar.gz`
+   - `paperlyte-<version>.tar.gz.bundle`
+
+2. [Install cosign](https://docs.sigstore.dev/system_config/installation/) (v2.0+ recommended).
+
+3. Verify the artifact:
+
+   ```bash
+   cosign verify-blob \
+     --bundle paperlyte-<version>.tar.gz.bundle \
+     --certificate-identity-regexp '^https://github\.com/shazzar00ni/paperlyte-v2/\.github/workflows/release\.yml@refs/tags/v' \
+     --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+     paperlyte-<version>.tar.gz
+   ```
+
+A successful run prints `Verified OK`, confirming the artifact was produced by the official release workflow at a `v*` tag and has not been tampered with.
+
 ## Security Features in Paperlyte
 
 ### Current Implementation
@@ -141,6 +165,7 @@ We follow responsible disclosure principles:
 - **Content Security Policy** - Protect against XSS attacks
 - **Secure external links** - All external links use `rel="noopener noreferrer"`
 - **Input sanitization** - All user input is validated and sanitized
+- **Signed releases** - Release tarballs signed with cosign keyless (Sigstore); see [Verifying Release Artifacts](#verifying-release-artifacts)
 
 ### Planned Security Features
 

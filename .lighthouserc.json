@@ -40,6 +40,7 @@
         "no-document-write": "error",
         "uses-rel-preconnect": "warn",
         "uses-long-cache-ttl": "off",
+        "network-dependency-tree-insight": "off",
         "font-display": "warn",
         "resource-summary:script:size": ["warn", { "maxNumericValue": 153600 }],
         "resource-summary:stylesheet:size": ["warn", { "maxNumericValue": 30720 }],

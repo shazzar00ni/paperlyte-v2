@@ -160,7 +160,7 @@ export const EmailCapture = (): React.ReactElement => {
         </AnimatedElement>
 
         <AnimatedElement animation="fadeIn" delay={300}>
-          <form onSubmit={handleSubmit} className={styles.form}>
+          <form onSubmit={handleSubmit} className={styles.form} noValidate>
             <div className={styles.inputGroup}>
               <input
                 type="email"

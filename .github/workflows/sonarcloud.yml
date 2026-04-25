@@ -35,8 +35,8 @@ jobs:
         run: npm run test:coverage -- --run
 
       - name: Analyze with SonarCloud
-        # Pinning to commit SHA for security
-        uses: SonarSource/sonarqube-scan-action@0f224976722d715970c1737e424a13f2f01f2fde # v5.0.0
+        # Pinned to v2.3.0 SHA to avoid false positive API key detection in newer versions
+        uses: SonarSource/sonarcloud-github-action@4296df447a9b0c7a525d886616a9a08e64c5d3f4
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:

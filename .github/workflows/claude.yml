@@ -39,7 +39,7 @@ jobs:
       - name: Check actor repository permission
         id: permission_check
         if: github.event_name != 'pull_request'
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd  # v8.0.0
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
         with:
           script: |
             const allowedPermissions = new Set(['admin', 'maintain', 'write']);
@@ -61,6 +61,12 @@ jobs:
             if (!allowed) {
               core.warning(`Actor ${username} is not authorized to run Claude. Required: write, maintain, or admin.`);
             }
+
+      - name: Checkout repository
+        if: github.event_name == 'pull_request' || steps.permission_check.outputs.allowed == 'true'
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+        with:
+          fetch-depth: 0
 
       - name: Run Claude Code Action
         if: github.event_name == 'pull_request' || steps.permission_check.outputs.allowed == 'true'

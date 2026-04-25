@@ -294,36 +294,37 @@ describe('analytics/providers/fathom', () => {
       script.onload?.(new Event('load'))
     })
 
-    it('should track each defined Core Web Vitals metric', () => {
+    it('should not call trackGoal (Fathom requires explicit goal codes for web vitals)', () => {
       const vitals: CoreWebVitals = { LCP: 2500, CLS: 0.12345, FCP: 1800 }
       provider.trackWebVitals(vitals)
 
-      expect(window.fathom!.trackGoal).toHaveBeenCalledTimes(3)
-      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals', 0, {
-        metric: 'LCP',
-        value: 2500,
-      })
-      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('web_vitals', 0, {
-        metric: 'CLS',
-        value: 0.123,
-      })
+      expect(window.fathom!.trackGoal).not.toHaveBeenCalled()
     })
 
-    it('should skip undefined metrics', () => {
-      const vitals: CoreWebVitals = { LCP: 2500, FID: undefined }
-      provider.trackWebVitals(vitals)
+    it('should log a debug warning when metrics are present and debug is enabled', () => {
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      document.head.innerHTML = ''
+      Object.defineProperty(window, 'doNotTrack', { writable: true, configurable: true, value: null })
+      const debugProvider = new FathomProvider()
+      debugProvider.init({ ...config, debug: true })
+      window.fathom = mockFathom()
 
-      expect(window.fathom!.trackGoal).toHaveBeenCalledTimes(1)
+      const script = document.querySelector('script[data-site]') as HTMLScriptElement
+      script.onload?.(new Event('load'))
+
+      debugProvider.trackWebVitals({ LCP: 2500, CLS: 0.12345 })
+
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Fathom does not track Web Vitals')
+      )
+      consoleWarnSpy.mockRestore()
     })
 
-    it('should not track when provider is not enabled', () => {
-      provider.disable()
-      const fathomMock = mockFathom()
-      window.fathom = fathomMock
-
-      provider.trackWebVitals({ LCP: 2500 })
-
-      expect(fathomMock.trackGoal).not.toHaveBeenCalled()
+    it('should not log a warning when no metrics are defined', () => {
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      provider.trackWebVitals({ LCP: undefined, FID: undefined })
+      expect(consoleWarnSpy).not.toHaveBeenCalled()
+      consoleWarnSpy.mockRestore()
     })
   })
 

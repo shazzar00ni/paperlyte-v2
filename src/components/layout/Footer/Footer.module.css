@@ -87,7 +87,6 @@
 }
 
 .linkComingSoon {
-  /* aria-disabled="true" marks these as inactive UI components (WCAG SC 1.4.3 exemption) */
   color: var(--color-text-tertiary);
   font-size: var(--font-size-sm);
   cursor: not-allowed;

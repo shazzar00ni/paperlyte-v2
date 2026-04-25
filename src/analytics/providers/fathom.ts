@@ -132,19 +132,19 @@ export class FathomProvider implements AnalyticsProvider {
   }
 
   trackWebVitals(vitals: CoreWebVitals): void {
-    if (!this.isEnabled()) {
-      return
-    }
-
-    Object.entries(vitals).forEach(([metric, value]) => {
-      if (value !== undefined) {
-        const formattedValue = metric === 'CLS' ? Number(value.toFixed(3)) : Math.round(value)
-        this.trackEvent({
-          name: 'web_vitals',
-          properties: { metric, value: formattedValue },
-        })
+    // Fathom goal tracking requires provider-assigned goal codes; arbitrary names like
+    // 'web_vitals' will be silently dropped. Skip rather than send phantom events.
+    if (this.config?.debug) {
+      const available = Object.entries(vitals)
+        .filter(([, v]) => v !== undefined)
+        .map(([metric]) => metric)
+      if (available.length > 0) {
+        console.warn(
+          `[Analytics] Fathom does not track Web Vitals without explicit goal-code mapping. ` +
+            `Skipped metrics: ${available.join(', ')}.`
+        )
       }
-    })
+    }
   }
 
   isEnabled(): boolean {

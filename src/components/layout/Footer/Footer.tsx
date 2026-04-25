@@ -40,21 +40,13 @@ export const Footer = (): React.ReactElement => {
                   </a>
                 </li>
                 <li>
-                  <span
-                    className={styles.linkComingSoon}
-                    aria-label="Roadmap (coming soon)"
-                    aria-disabled="true"
-                  >
+                  <span className={styles.linkComingSoon}>
                     Roadmap
                     <span className={styles.visuallyHidden}> (coming soon)</span>
                   </span>
                 </li>
                 <li>
-                  <span
-                    className={styles.linkComingSoon}
-                    aria-label="Changelog (coming soon)"
-                    aria-disabled="true"
-                  >
+                  <span className={styles.linkComingSoon}>
                     Changelog
                     <span className={styles.visuallyHidden}> (coming soon)</span>
                   </span>
@@ -71,21 +63,13 @@ export const Footer = (): React.ReactElement => {
                   </a>
                 </li>
                 <li>
-                  <span
-                    className={styles.linkComingSoon}
-                    aria-label="About (coming soon)"
-                    aria-disabled="true"
-                  >
+                  <span className={styles.linkComingSoon}>
                     About
                     <span className={styles.visuallyHidden}> (coming soon)</span>
                   </span>
                 </li>
                 <li>
-                  <span
-                    className={styles.linkComingSoon}
-                    aria-label="Blog (coming soon)"
-                    aria-disabled="true"
-                  >
+                  <span className={styles.linkComingSoon}>
                     Blog
                     <span className={styles.visuallyHidden}> (coming soon)</span>
                   </span>

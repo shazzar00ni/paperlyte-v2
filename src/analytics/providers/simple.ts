@@ -40,13 +40,27 @@ export class SimpleAnalyticsProvider implements AnalyticsProvider {
     this.loadScript()
   }
 
+  private isValidScriptUrl(url: string): boolean {
+    try {
+      const parsed = new URL(url)
+      return parsed.protocol === 'https:' && parsed.pathname.endsWith('.js')
+    } catch {
+      return false
+    }
+  }
+
   private loadScript(): void {
     if (this.scriptLoaded || typeof window === 'undefined' || typeof document === 'undefined') {
       return
     }
 
-    const scriptUrl =
-      this.config?.scriptUrl || 'https://scripts.simpleanalyticscdn.com/latest.js'
+    const defaultUrl = 'https://scripts.simpleanalyticscdn.com/latest.js'
+    const configured = this.config?.scriptUrl
+    const scriptUrl = configured && this.isValidScriptUrl(configured) ? configured : defaultUrl
+
+    if (configured && scriptUrl !== configured && this.config?.debug) {
+      console.warn('[Analytics] Invalid Simple Analytics scriptUrl, falling back to default')
+    }
 
     const script = document.createElement('script')
     script.async = true

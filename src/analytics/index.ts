@@ -97,8 +97,12 @@ class Analytics {
       case 'simple':
         return new SimpleAnalyticsProvider()
       case 'custom':
+        throw new Error(
+          `[Analytics] Provider "custom" requires a custom implementation. ` +
+            `Extend AnalyticsProvider and wire it in before calling analytics.init().`
+        )
       default:
-        // Fallback to Plausible for any other value (with warning in dev)
+        // Fallback to Plausible for any unknown value (with warning in dev)
         if (import.meta.env.DEV) {
           console.warn(
             `[Analytics] Unknown provider "${provider}", falling back to Plausible. ` +

@@ -1,7 +1,8 @@
 /**
  * Legal and company information configuration
  *
- * Placeholder values marked with [...] must be replaced before launch.
+ * Placeholder values marked with [...] and sentinel values such as '#'
+ * (for temporary document/social links) must be reviewed and replaced before launch.
  */
 
 export interface CompanyConfig {

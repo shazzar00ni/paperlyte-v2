@@ -40,12 +40,27 @@ export class FathomProvider implements AnalyticsProvider {
     this.loadScript()
   }
 
+  private isValidScriptUrl(url: string): boolean {
+    try {
+      const parsed = new URL(url)
+      return parsed.protocol === 'https:' && parsed.pathname.endsWith('.js')
+    } catch {
+      return false
+    }
+  }
+
   private loadScript(): void {
     if (this.scriptLoaded || typeof window === 'undefined' || typeof document === 'undefined') {
       return
     }
 
-    const scriptUrl = this.config?.scriptUrl || 'https://cdn.usefathom.com/script.js'
+    const defaultUrl = 'https://cdn.usefathom.com/script.js'
+    const configured = this.config?.scriptUrl
+    const scriptUrl = configured && this.isValidScriptUrl(configured) ? configured : defaultUrl
+
+    if (configured && scriptUrl !== configured && this.config?.debug) {
+      console.warn('[Analytics] Invalid Fathom scriptUrl, falling back to default')
+    }
 
     const script = document.createElement('script')
     script.async = true
@@ -85,9 +100,16 @@ export class FathomProvider implements AnalyticsProvider {
       return
     }
 
-    // Fathom uses goal codes (short IDs) rather than arbitrary names.
-    // We encode the event name as the goal code and pass a value of 0.
-    // Properties are JSON-encoded and sent as a custom value where supported.
+    // Fathom uses provider-assigned goal codes (e.g. "ABCD1234"), not arbitrary strings.
+    // Using event.name as the code will silently drop events unless it matches a real goal ID.
+    // Create matching goals in the Fathom dashboard and pass their codes as event names.
+    if (this.config?.debug) {
+      console.log(
+        `[Analytics] Fathom trackGoal called with code "${event.name}". ` +
+          `Ensure this matches a goal code defined in your Fathom dashboard.`
+      )
+    }
+
     const props = event.properties
       ? Object.entries(event.properties).reduce(
           (acc, [key, value]) => {

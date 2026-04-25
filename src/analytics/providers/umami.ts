@@ -22,32 +22,48 @@ export class UmamiProvider implements AnalyticsProvider {
 
   init(config: AnalyticsConfig): void {
     if (this.initialized) {
-      if (config.debug) {
-        console.log('[Analytics] Umami already initialized')
-      }
+      if (config.debug) console.log('[Analytics] Umami already initialized')
       return
     }
-
     if (config.respectDNT !== false && this.isDNTEnabled()) {
-      if (config.debug) {
-        console.log('[Analytics] Do Not Track is enabled, analytics disabled')
-      }
+      if (config.debug) console.log('[Analytics] Do Not Track is enabled, analytics disabled')
       return
     }
+    if (!this.resolveScriptUrl(config)) {
+      return
+    }
+    this.config = config
+    this.initialized = true
+    this.loadScript()
+  }
 
-    if (!config.scriptUrl) {
+  private resolveScriptUrl(config: AnalyticsConfig): string | null {
+    const url = config.scriptUrl
+    if (!url) {
       if (config.debug || import.meta.env.DEV) {
         console.warn(
           '[Analytics] Umami requires a scriptUrl (your self-hosted or cloud instance script URL). ' +
             'Set VITE_ANALYTICS_SCRIPT_URL in your environment.'
         )
       }
-      return
+      return null
     }
+    if (!this.isValidScriptUrl(url)) {
+      if (config.debug || import.meta.env.DEV) {
+        console.warn('[Analytics] Umami scriptUrl must be HTTPS and point to a .js file:', url)
+      }
+      return null
+    }
+    return url
+  }
 
-    this.config = config
-    this.initialized = true
-    this.loadScript()
+  private isValidScriptUrl(url: string): boolean {
+    try {
+      const parsed = new URL(url)
+      return parsed.protocol === 'https:' && parsed.pathname.endsWith('.js')
+    } catch {
+      return false
+    }
   }
 
   private loadScript(): void {

@@ -109,10 +109,12 @@
 }
 
 /* accessibility-fixed: issue-808 - added :focus-visible with white outline for dark CTA background */
+/* accessibility-fixed: issue-823 - color changed from var(--color-primary) to var(--color-text-on-primary)
+   so "Watch the Demo Again" label is readable: #fff on dark gradient (light mode), #000 on white gradient (dark mode) */
 .textLink {
   background: none;
   border: none;
-  color: var(--color-primary);
+  color: var(--color-text-on-primary);
   font-size: var(--font-size-base);
   text-decoration: underline;
   cursor: pointer;
@@ -120,7 +122,8 @@
 }
 
 .textLink:hover {
-  color: var(--color-primary-dark);
+  color: var(--color-text-on-primary);
+  opacity: 0.8;
 }
 
 .textLink:focus-visible {

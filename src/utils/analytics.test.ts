@@ -331,5 +331,4 @@ describe('Analytics Utility', () => {
       consoleSpy.mockRestore()
     })
   })
-
 })

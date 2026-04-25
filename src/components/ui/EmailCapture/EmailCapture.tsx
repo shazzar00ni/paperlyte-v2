@@ -107,7 +107,8 @@ export const EmailCapture = ({
     } catch (error) {
       setStatus('error')
       const message =
-        error instanceof Error && (error.name === 'TypeError' ||
+        error instanceof Error &&
+        (error.name === 'TypeError' ||
           error.message.toLowerCase().includes('network') ||
           error.message.toLowerCase().includes('fetch'))
           ? 'Network error. Please check your connection and try again.'

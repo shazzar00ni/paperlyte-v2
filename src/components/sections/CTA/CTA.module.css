@@ -196,6 +196,22 @@
     background-color: rgba(255, 255, 255, 0.2);
     border-color: rgba(255, 255, 255, 0.35);
   }
+
+  .title {
+    color: var(--color-text-on-primary);
+  }
+
+  .subtitle {
+    color: var(--color-text-on-primary);
+  }
+
+  .textLink {
+    color: var(--color-text-on-primary);
+  }
+
+  .textLink:hover {
+    color: var(--color-text-on-primary);
+  }
 }
 
 [data-theme='dark'] .cta::before {
@@ -210,4 +226,20 @@
 [data-theme='dark'] .badge:hover {
   background-color: rgba(255, 255, 255, 0.2);
   border-color: rgba(255, 255, 255, 0.35);
+}
+
+[data-theme='dark'] .title {
+  color: var(--color-text-on-primary);
+}
+
+[data-theme='dark'] .subtitle {
+  color: var(--color-text-on-primary);
+}
+
+[data-theme='dark'] .textLink {
+  color: var(--color-text-on-primary);
+}
+
+[data-theme='dark'] .textLink:hover {
+  color: var(--color-text-on-primary);
 }

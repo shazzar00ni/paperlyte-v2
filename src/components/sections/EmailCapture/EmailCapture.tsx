@@ -10,6 +10,7 @@ import { WAITLIST_COUNT, LAUNCH_QUARTER } from '@constants/waitlist'
 import { EMAIL_CAPTURE_CONTENT as COPY, BENEFITS } from './emailCapture.data'
 import styles from './EmailCapture.module.css'
 
+/** Renders the Email Capture section with a waitlist signup form and benefit highlights. */
 export const EmailCapture = (): React.ReactElement => {
   const [email, setEmail] = useState('')
   const [isSubmitted, setIsSubmitted] = useState(false)

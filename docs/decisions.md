@@ -5,31 +5,22 @@ remembering but don't warrant a full ADR document.
 
 ---
 
-## 2026-04-20 — Keep `initScrollDepthTracking` as dead code (for now)
+## 2026-04-20 — Remove `initScrollDepthTracking` in favour of `createScrollTracker`
 
 **Context:**
 PR #764 replaced the GA4-specific `initScrollDepthTracking`
-(`src/utils/analytics.ts:463`) with the provider-agnostic
-`createScrollTracker` from `src/analytics/scrollDepth.ts` inside
-`useAnalytics`. After the switch, `initScrollDepthTracking` is no longer
-imported by any production code. It is still exported, documented, and
-covered by ~220 lines of tests in `src/utils/analytics.test.ts`.
+(`src/utils/analytics.ts`) with the provider-agnostic `createScrollTracker`
+from `src/analytics/scrollDepth.ts`, wired up inside `useAnalytics`.
 
 **Decision:**
-Leave the function in place rather than removing it in this PR.
+Delete `initScrollDepthTracking` and its ~220 lines of dedicated tests from
+`src/utils/analytics.test.ts` in the same PR.
 
 **Rationale:**
 
-- The function is tree-shaken out of the production bundle (Vite/Rollup
-  dead-code elimination), so it has zero runtime cost.
-- Its test suite validates shared helpers (`calculateScrollPercent`,
-  `trackScrollMilestones`, `createThrottledScrollHandler`) that could be
-  reused if a GA4-only scroll tracker is ever needed again.
-- Removing it would expand the scope of an already-large PR and require
-  deleting or rewriting the associated tests.
-
-**Follow-up:**
-Remove `initScrollDepthTracking` and its dedicated tests in a future
-cleanup PR once the `createScrollTracker` path has been validated in
-production. Alternatively, mark the export as `@deprecated` so editors
-surface a warning if anyone imports it.
+- The old function was no longer imported by any production code; keeping it
+  would be misleading dead code.
+- Deleting it alongside the feature switch keeps the codebase consistent and
+  avoids deferring cleanup.
+- `createScrollTracker` is the canonical scroll-depth primitive going forward;
+  `useAnalytics` is the integration point for React consumers.

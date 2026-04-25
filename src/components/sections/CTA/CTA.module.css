@@ -115,6 +115,7 @@
   background: none;
   border: none;
   color: var(--color-text-on-primary);
+  opacity: 1;
   font-size: var(--font-size-base);
   text-decoration: underline;
   cursor: pointer;
@@ -134,7 +135,7 @@
 
 @media (prefers-reduced-motion: no-preference) {
   .textLink {
-    transition: color 0.2s ease;
+    transition: opacity 0.2s ease;
   }
 }
 

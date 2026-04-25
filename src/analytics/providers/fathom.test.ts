@@ -38,6 +38,12 @@ describe('analytics/providers/fathom', () => {
       configurable: true,
       value: null,
     })
+
+    Object.defineProperty(window, 'doNotTrack', {
+      writable: true,
+      configurable: true,
+      value: null,
+    })
   })
 
   afterEach(() => {

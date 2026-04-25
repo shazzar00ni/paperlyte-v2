@@ -39,6 +39,12 @@ describe('analytics/providers/umami', () => {
       configurable: true,
       value: null,
     })
+
+    Object.defineProperty(window, 'doNotTrack', {
+      writable: true,
+      configurable: true,
+      value: null,
+    })
   })
 
   afterEach(() => {

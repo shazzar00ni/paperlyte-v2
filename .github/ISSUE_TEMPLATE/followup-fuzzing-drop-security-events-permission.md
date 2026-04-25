@@ -8,17 +8,20 @@ assignees: []
 
 ## Context
 
-Follow-up from PR #820.
+Regression guard from PR #820.
 
-The `jazzer` job in `.github/workflows/fuzzing.yml` requests
-`security-events: write`, but the workflow does not upload SARIF or any other
-results to GitHub Code Scanning. This violates least-privilege.
+The `jazzer` job in `.github/workflows/fuzzing.yml` currently grants only
+`contents: read`, which is the least-privilege configuration since the
+workflow does not upload SARIF to GitHub Code Scanning. File this issue if
+a future change adds `security-events: write` (or other write scopes) to
+the fuzzing job without a corresponding `github/codeql-action/upload-sarif`
+step that justifies it.
 
 ## Proposed change
 
 Either:
 
-1. Drop `security-events: write` from the job permissions (preferred), or
+1. Drop the unused write permission from the job permissions (preferred), or
 2. Add a `github/codeql-action/upload-sarif` step if SARIF upload is intended.
 
 ```yaml
@@ -28,6 +31,6 @@ permissions:
 
 ## Acceptance criteria
 
-- [ ] `security-events: write` is removed from `fuzzing.yml`, **or** a SARIF
-      upload step is added that justifies the permission.
+- [ ] Unused write permissions are removed from `fuzzing.yml`, **or** a SARIF
+      upload step is added that justifies them.
 - [ ] Fuzzing workflow continues to run successfully.

@@ -8,7 +8,7 @@ This file captures repo-specific review context for Devin Review and contributor
 
 The `Analysis` GitHub Actions job fails on every PR with:
 
-```
+```text
 ERROR Validation of project reactor failed:
   o "" is not a valid project or module key. It cannot be empty nor contain whitespaces.
 ```

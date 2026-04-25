@@ -8,17 +8,18 @@ assignees: []
 
 ## Context
 
-Follow-up from PR #820 (OpenSSF Scorecard hardening).
+Regression guard from PR #820 (OpenSSF Scorecard hardening).
 
-`.github/workflows/scorecard.yml` currently sets `permissions: read-all` at the
-workflow level, which grants broader read access than necessary and undermines
-the top-level `permissions: {}` pattern used elsewhere in this PR
+`.github/workflows/scorecard.yml` currently sets `permissions: {}` at the
+workflow level, matching the deny-all pattern used in the other workflows
 (`deployment-status.yml`, `fuzzing.yml`, `paperlyte-weekly-report.yml`,
-`release.yml`).
+`release.yml`). File this issue if a future change reintroduces
+`permissions: read-all` (or any broader workflow-level grant) without
+justification.
 
 ## Proposed change
 
-Set workflow-level `permissions: {}` and rely on the existing job-level
+Restore workflow-level `permissions: {}` and rely on the job-level
 permissions block (`contents: read`, `actions: read`, `security-events: write`,
 `id-token: write`).
 

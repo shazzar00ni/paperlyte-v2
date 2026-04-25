@@ -91,7 +91,7 @@ Path aliases are configured (`@/*`, `@components/*`, `@hooks/*`, `@utils/*`, etc
 
 ## PR-Specific Rules
 
-- **Branch**: Feature branches off `develop`; PRs target `develop`, not `main`.
+- **Branch**: Feature branches off `main`; PRs target `main`.
 - **Size**: Keep PRs focused. A PR that touches both a new section and refactors utilities is two PRs.
 - **Bundle size**: Main JS must stay under 150 KB gzip, CSS under 30 KB gzip. CI enforces this (`npm run size`).
 - **No new fonts without approval**: Each font adds significant weight. Self-hosting is required for GDPR compliance.

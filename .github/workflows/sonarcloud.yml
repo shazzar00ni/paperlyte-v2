@@ -47,5 +47,5 @@ jobs:
             -Dsonar.test.inclusions="**/*.test.ts,**/*.test.tsx,**/*.spec.ts,**/*.spec.tsx" \
             -Dsonar.exclusions="**/*.test.ts,**/*.test.tsx,**/*.spec.ts,**/*.spec.tsx" \
             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
-            -Dsonar.coverage.exclusions="scripts/maintenance/**"
-          projectBaseDir: .
+            -Dsonar.coverage.exclusions="scripts/maintenance/**" \
+            -Dsonar.projectBaseDir=.

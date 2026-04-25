@@ -81,7 +81,7 @@ Path aliases are configured (`@/*`, `@components/*`, `@hooks/*`, `@utils/*`, etc
 - **TypeScript**: Strict mode, no `any`. Explicit return types on exported functions.
 - **Naming**: PascalCase for components/types, camelCase for functions/variables, SCREAMING_SNAKE_CASE for top-level constants.
 - **Imports**: Use path aliases (`@components/...`). Barrel imports from `index.ts` only.
-- **Comments**: Only when the *why* is non-obvious. No JSDoc, no `// TODO` left in PRs.
+- **Comments**: Only when the *why* is non-obvious. JSDoc is required on all public APIs (see CONTRIBUTING.md). No `// TODO` left in PRs.
 - **No semi**: Prettier enforces this. Run `npm run format` before committing.
 - **Accessibility**: Every interactive element needs an `aria-label` or visible label. Reduced-motion support is required (`prefers-reduced-motion`). Skip links and semantic HTML are not optional.
 - **Analytics**: Always use the `useAnalytics()` hook — never call analytics utilities directly from components.

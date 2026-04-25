@@ -35,14 +35,14 @@ jobs:
         run: npm run test:coverage -- --run
 
       - name: Analyze with SonarCloud
-        # Pinned to v3.1.0 SHA to satisfy Codacy and avoid false positive API key detection
-        uses: SonarSource/sonarcloud-github-action@4006f663ecaf1f8093e8e4abb9227f6041f52216
+        # Pinning to commit SHA for security
+        uses: SonarSource/sonarqube-scan-action@0f224976722d715970c1737e424a13f2f01f2fde # v5.0.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
-            -Dsonar.projectKey=shazzar00ni_paperlyte-v2
-            -Dsonar.organization=shazzar00ni
+            -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY || 'shazzar00ni_paperlyte-v2' }}
+            -Dsonar.organization=${{ vars.SONAR_ORGANIZATION || 'shazzar00ni' }}
             -Dsonar.sources=src
             -Dsonar.tests=src
             -Dsonar.test.inclusions=**/*.test.ts,**/*.test.tsx,**/*.spec.ts,**/*.spec.tsx

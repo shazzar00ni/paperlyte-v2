@@ -54,7 +54,7 @@ jobs:
       - name: Sign release artifact
         run: |
           cosign sign-blob --yes \
-            --bundle paperlyte-${{ github.ref_name }}.tar.gz.bundle \
+            --bundle paperlyte-${{ github.ref_name }}.tar.gz.sigstore.json \
             paperlyte-${{ github.ref_name }}.tar.gz
 
       - name: Create GitHub Release
@@ -63,7 +63,7 @@ jobs:
           body: ${{ steps.changelog.outputs.changelog }}
           files: |
             paperlyte-${{ github.ref_name }}.tar.gz
-            paperlyte-${{ github.ref_name }}.tar.gz.bundle
+            paperlyte-${{ github.ref_name }}.tar.gz.sigstore.json
           draft: false
           prerelease: ${{ contains(github.ref_name, 'alpha') || contains(github.ref_name, 'beta') }}
         env:

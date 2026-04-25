@@ -31,9 +31,6 @@ jobs:
       - name: Install project dependencies
         run: npm ci
 
-      - name: Install Jazzer.js
-        run: npm install --no-save @jazzer.js/core
-
       - name: Run fuzz target (time-boxed)
         run: |
           npx jazzer fuzz/sanitize-input.fuzz.cjs \

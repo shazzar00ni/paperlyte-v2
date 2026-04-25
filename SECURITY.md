@@ -134,13 +134,13 @@ We follow responsible disclosure principles:
 
 ## Verifying Release Artifacts
 
-Release tarballs published under [GitHub Releases](https://github.com/shazzar00ni/paperlyte-v2/releases) are signed using [Sigstore](https://www.sigstore.dev/) keyless signing via [cosign](https://github.com/sigstore/cosign) in our [release workflow](.github/workflows/release.yml). Each release includes a `.bundle` file containing the signature, Fulcio certificate, and Rekor transparency-log inclusion proof — enabling fully offline verification.
+Release tarballs published under [GitHub Releases](https://github.com/shazzar00ni/paperlyte-v2/releases) are signed using [Sigstore](https://www.sigstore.dev/) keyless signing via [cosign](https://github.com/sigstore/cosign) in our [release workflow](.github/workflows/release.yml). Each release includes a `.sigstore.json` bundle file containing the signature, Fulcio certificate, and Rekor transparency-log inclusion proof — enabling fully offline verification.
 
 ### Verifying a release
 
 1. Download both the artifact and its bundle from the GitHub release page:
    - `paperlyte-<version>.tar.gz`
-   - `paperlyte-<version>.tar.gz.bundle`
+   - `paperlyte-<version>.tar.gz.sigstore.json`
 
 2. [Install cosign](https://docs.sigstore.dev/system_config/installation/) (v2.0+ recommended).
 
@@ -148,7 +148,7 @@ Release tarballs published under [GitHub Releases](https://github.com/shazzar00n
 
    ```bash
    cosign verify-blob \
-     --bundle paperlyte-<version>.tar.gz.bundle \
+     --bundle paperlyte-<version>.tar.gz.sigstore.json \
      --certificate-identity-regexp '^https://github\.com/shazzar00ni/paperlyte-v2/\.github/workflows/release\.yml@refs/tags/v' \
      --certificate-oidc-issuer https://token.actions.githubusercontent.com \
      paperlyte-<version>.tar.gz

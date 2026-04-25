@@ -33,13 +33,16 @@ Paperlyte is a React/TypeScript landing page for a distraction-free note-taking 
 | `memory/` | Claude Code session memory — not application code, do not review |
 | `scripts/` | Build-time helpers (icon generation, sitemap, date injection) |
 
-Each component follows a mandatory four-file structure:
-```
+Each component should generally follow this preferred four-file structure:
+
+```text
 ComponentName.tsx
 ComponentName.module.css
 ComponentName.test.tsx
 index.ts  ← barrel export
 ```
+
+Documented exceptions exist (e.g., `src/components/ui/Icon/` uses a global `Icon.css` plus an extra `icons.ts` data module, and a few components currently lack co-located tests). New components should follow the four-file structure unless there's a clear reason not to.
 
 ---
 
@@ -52,8 +55,8 @@ index.ts  ← barrel export
 | Vite | 7.x | Build tool, dev server (port 3000), manual chunking |
 | Vitest | 4.x | Unit & component tests (jsdom environment) |
 | Playwright | 1.59 | E2E tests (5 projects: Chromium, Firefox, WebKit, Mobile Chrome, Mobile Safari) |
-| ESLint 10 | flat config | Linting (includes React Hooks, React Refresh, Prettier rules) |
-| Prettier 3 | `.prettierrc.json` | Formatting (no semi, single quotes, 100-char width) |
+| ESLint 10 | flat config | Linting (React Hooks, React Refresh; extends `eslint-config-prettier` to disable conflicting rules — does not enforce formatting) |
+| Prettier 3 | `.prettierrc.json` | Formatting via `npm run format` / `format:check` (no semi, single quotes, 100-char width) |
 | CSS Modules | — | Component-scoped styles |
 | Font Awesome | — | Icons via `src/utils/iconLibrary.ts` (tree-shaken) |
 | @fontsource/inter | — | Self-hosted Inter (Latin subset only — GDPR compliance) |
@@ -84,7 +87,7 @@ Path aliases are configured (`@/*`, `@components/*`, `@hooks/*`, `@utils/*`, etc
 - **Comments**: Only when the *why* is non-obvious. JSDoc is required on all public APIs (see CONTRIBUTING.md). No `// TODO` left in PRs.
 - **No semi**: Prettier enforces this. Run `npm run format` before committing.
 - **Accessibility**: Every interactive element needs an `aria-label` or visible label. Reduced-motion support is required (`prefers-reduced-motion`). Skip links and semantic HTML are not optional.
-- **Analytics**: Always use the `useAnalytics()` hook — never call analytics utilities directly from components.
+- **Analytics**: Prefer the `useAnalytics()` hook in components. Direct calls to `trackEvent` from `@utils/analytics` are acceptable in places where the hook isn't a fit (e.g., form submit handlers in `src/components/ui/EmailCapture/EmailCapture.tsx`), but never call provider SDKs (`window.gtag`, etc.) directly — always go through the abstraction in `src/analytics/` or `@utils/analytics`.
 - **Security**: Dynamic `href` values must pass through `isSafeUrl()` (blocks `javascript:`, `data:`, `vbscript:`). User-facing strings must be sanitized via `src/utils/validation.ts`.
 
 ---
@@ -109,7 +112,7 @@ Path aliases are configured (`@/*`, `@components/*`, `@hooks/*`, `@utils/*`, etc
 - **Direct DOM manipulation**: Should never appear in components. All DOM effects belong in custom hooks.
 - **Missing barrel exports**: If a new component doesn't export from its `index.ts`, the import alias breaks.
 - **`any` types**: Flag immediately. Use `unknown` + type narrowing or a proper interface.
-- **Inline event analytics**: Calling `window.gtag` or analytics utils directly in JSX is an anti-pattern; always go through `useAnalytics()`.
+- **Inline event analytics**: Calling provider SDKs (`window.gtag`, etc.) directly in JSX is an anti-pattern; always go through `useAnalytics()` or `@utils/analytics`.
 - **External URLs without `rel="noopener noreferrer"`**: The `Button` component handles this automatically — only flag if someone bypasses it with a raw `<a>` tag.
 - **Missing accessibility attributes on icon-only buttons**: Font Awesome icons have `aria-hidden="true"` by default; a sibling `aria-label` on the button is required.
 - **Test mocking `window` directly**: Use the helpers in `src/test/setup.ts` and `src/test/analytics-helpers.ts` instead.

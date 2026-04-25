@@ -10,7 +10,7 @@ Paperlyte is a React/TypeScript landing page for a distraction-free note-taking 
 
 - **SPA, no router**: All navigation is anchor-link-based. Do not introduce `react-router` or any router.
 - **No global state**: Each section uses component-local state and custom hooks. No Redux, Zustand, or Context for app state.
-- **CSS Modules only**: No Tailwind, no styled-components. All component styles live in `.module.css` files.
+- **CSS Modules preferred**: No Tailwind, no styled-components. New component styles should live in `.module.css` files. A small number of legacy/global-scoped exceptions exist (e.g., `src/components/ui/Icon/Icon.css`) where global class names are required; new exceptions need explicit justification.
 - **Design tokens via CSS variables**: Defined in `src/styles/variables.css`. Never hardcode colors, spacing, or transitions.
 
 ---

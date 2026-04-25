@@ -35,18 +35,17 @@ jobs:
         run: npm run test:coverage -- --run
 
       - name: Analyze with SonarCloud
-        # Pinned to v2.3.0 SHA to avoid false positive API key detection in newer versions
-        uses: SonarSource/sonarcloud-github-action@4296df447a9b0c7a525d886616a9a08e64c5d3f4
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          args: >
-            -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY || 'shazzar00ni_paperlyte-v2' }}
-            -Dsonar.organization=${{ vars.SONAR_ORGANIZATION || 'shazzar00ni' }}
-            -Dsonar.sources=src
-            -Dsonar.tests=src
-            -Dsonar.test.inclusions=**/*.test.ts,**/*.test.tsx,**/*.spec.ts,**/*.spec.tsx
-            -Dsonar.exclusions=**/*.test.ts,**/*.test.tsx,**/*.spec.ts,**/*.spec.tsx
-            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
-            -Dsonar.coverage.exclusions=scripts/maintenance/**
+        run: |
+          npx -y sonarqube-scanner \
+            -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY || 'shazzar00ni_paperlyte-v2' }} \
+            -Dsonar.organization=${{ vars.SONAR_ORGANIZATION || 'shazzar00ni' }} \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.sources=src \
+            -Dsonar.tests=src \
+            -Dsonar.test.inclusions="**/*.test.ts,**/*.test.tsx,**/*.spec.ts,**/*.spec.tsx" \
+            -Dsonar.exclusions="**/*.test.ts,**/*.test.tsx,**/*.spec.ts,**/*.spec.tsx" \
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
+            -Dsonar.coverage.exclusions="scripts/maintenance/**"
           projectBaseDir: .

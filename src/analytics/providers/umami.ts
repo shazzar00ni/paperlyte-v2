@@ -159,7 +159,8 @@ export class UmamiProvider implements AnalyticsProvider {
       this.initialized &&
       this.scriptLoaded &&
       typeof window !== 'undefined' &&
-      typeof window.umami !== 'undefined'
+      typeof window.umami !== 'undefined' &&
+      typeof window.umami.track === 'function'
     )
   }
 

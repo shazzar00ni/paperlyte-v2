@@ -152,7 +152,9 @@ export class FathomProvider implements AnalyticsProvider {
       this.initialized &&
       this.scriptLoaded &&
       typeof window !== 'undefined' &&
-      typeof window.fathom !== 'undefined'
+      typeof window.fathom !== 'undefined' &&
+      typeof window.fathom.trackPageview === 'function' &&
+      typeof window.fathom.trackGoal === 'function'
     )
   }
 

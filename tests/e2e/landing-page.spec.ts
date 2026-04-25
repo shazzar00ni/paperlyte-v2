@@ -80,7 +80,7 @@ test.describe('Landing Page', () => {
           const entries = list.getEntries();
           const lastEntry = entries[entries.length - 1];
           const lcpEntry = lastEntry as PerformanceEntry & { renderTime?: number; loadTime?: number };
-          lcp = lcpEntry.renderTime || lcpEntry.loadTime || 0;
+          lcp = lcpEntry.renderTime || lcpEntry.loadTime || lastEntry.startTime;
         });
 
         const clsObserver = new PerformanceObserver((list) => {

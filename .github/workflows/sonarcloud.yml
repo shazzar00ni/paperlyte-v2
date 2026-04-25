@@ -35,8 +35,8 @@ jobs:
         run: npm run test:coverage -- --run
 
       - name: Analyze with SonarCloud
-        # Pinned to v4.0.0 SHA to satisfy Codacy security requirements and avoid false positives
-        uses: SonarSource/sonarcloud-github-action@e3328e19e71239c0d453880629a8f4c541577742
+        # Pinned to v3.1.0 SHA to satisfy Codacy and avoid false positive API key detection
+        uses: SonarSource/sonarcloud-github-action@4006f663ecaf1f8093e8e4abb9227f6041f52216
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:

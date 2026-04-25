@@ -58,7 +58,7 @@ export class FathomProvider implements AnalyticsProvider {
     const configured = this.config?.scriptUrl
     const scriptUrl = configured && this.isValidScriptUrl(configured) ? configured : defaultUrl
 
-    if (configured && scriptUrl !== configured && this.config?.debug) {
+    if (configured && scriptUrl !== configured && (this.config?.debug || import.meta.env.DEV)) {
       console.warn('[Analytics] Invalid Fathom scriptUrl, falling back to default')
     }
 

@@ -211,10 +211,7 @@ describe('analytics/providers/simple', () => {
       delete window.sa_pageview
       // sa_event still present (needed for isEnabled), but sa_pageview missing
 
-      provider.trackPageView('/test')
-
-      // no error thrown
-      expect(true).toBe(true)
+      expect(() => provider.trackPageView('/test')).not.toThrow()
     })
   })
 

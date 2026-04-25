@@ -60,7 +60,6 @@ describe('analytics/providers/umami', () => {
       expect(script.src).toBe(SCRIPT_URL)
       expect(script.getAttribute('data-website-id')).toBe('my-website-id-uuid')
       expect(script.async).toBe(true)
-      expect(script.defer).toBe(true)
     })
 
     it('should warn and not init when scriptUrl is missing', () => {
@@ -200,13 +199,21 @@ describe('analytics/providers/umami', () => {
     it('should track page view with current pathname by default', () => {
       provider.trackPageView()
 
-      expect(window.umami!.track).toHaveBeenCalledWith({ url: window.location.pathname })
+      expect(window.umami!.track).toHaveBeenCalledWith(expect.any(Function))
+      const callback = vi.mocked(window.umami!.track).mock.calls[0][0] as (
+        p: Record<string, unknown>
+      ) => Record<string, unknown>
+      expect(callback({ title: 'Home' })).toEqual({ title: 'Home', url: window.location.pathname })
     })
 
     it('should track page view with custom URL', () => {
       provider.trackPageView('/features')
 
-      expect(window.umami!.track).toHaveBeenCalledWith({ url: '/features' })
+      expect(window.umami!.track).toHaveBeenCalledWith(expect.any(Function))
+      const callback = vi.mocked(window.umami!.track).mock.calls[0][0] as (
+        p: Record<string, unknown>
+      ) => Record<string, unknown>
+      expect(callback({ title: 'Features' })).toEqual({ title: 'Features', url: '/features' })
     })
 
     it('should not track when provider is not enabled', () => {

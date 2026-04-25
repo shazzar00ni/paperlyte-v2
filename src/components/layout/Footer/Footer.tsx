@@ -40,10 +40,24 @@ export const Footer = (): React.ReactElement => {
                   </a>
                 </li>
                 <li>
-                  <span className={styles.linkComingSoon}>Roadmap</span>
+                  <span
+                    className={styles.linkComingSoon}
+                    aria-label="Roadmap (coming soon)"
+                    aria-disabled="true"
+                  >
+                    Roadmap
+                    <span className={styles.visuallyHidden}> (coming soon)</span>
+                  </span>
                 </li>
                 <li>
-                  <span className={styles.linkComingSoon}>Changelog</span>
+                  <span
+                    className={styles.linkComingSoon}
+                    aria-label="Changelog (coming soon)"
+                    aria-disabled="true"
+                  >
+                    Changelog
+                    <span className={styles.visuallyHidden}> (coming soon)</span>
+                  </span>
                 </li>
               </ul>
             </div>
@@ -57,10 +71,24 @@ export const Footer = (): React.ReactElement => {
                   </a>
                 </li>
                 <li>
-                  <span className={styles.linkComingSoon}>About</span>
+                  <span
+                    className={styles.linkComingSoon}
+                    aria-label="About (coming soon)"
+                    aria-disabled="true"
+                  >
+                    About
+                    <span className={styles.visuallyHidden}> (coming soon)</span>
+                  </span>
                 </li>
                 <li>
-                  <span className={styles.linkComingSoon}>Blog</span>
+                  <span
+                    className={styles.linkComingSoon}
+                    aria-label="Blog (coming soon)"
+                    aria-disabled="true"
+                  >
+                    Blog
+                    <span className={styles.visuallyHidden}> (coming soon)</span>
+                  </span>
                 </li>
               </ul>
             </div>

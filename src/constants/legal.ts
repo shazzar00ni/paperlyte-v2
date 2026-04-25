@@ -64,12 +64,16 @@ export const LEGAL_CONFIG = {
  * Helper function to check if legal documents need updating
  */
 export const needsLegalReview = (): boolean => {
-  const hasPlaceholders =
+  const hasBracketPlaceholders =
     LEGAL_CONFIG.company.legalName.includes('[') ||
     LEGAL_CONFIG.address.street.includes('[') ||
     LEGAL_CONFIG.metadata.jurisdiction.includes('[')
 
-  return hasPlaceholders
+  const hasSentinelLinks =
+    Object.values(LEGAL_CONFIG.documents).includes('#') ||
+    Object.values(LEGAL_CONFIG.social).includes('#')
+
+  return hasBracketPlaceholders || hasSentinelLinks
 }
 
 /**
@@ -86,6 +90,12 @@ export const getPlaceholderFields = (): string[] => {
   }
   if (LEGAL_CONFIG.metadata.jurisdiction.includes('[')) {
     placeholders.push('Jurisdiction/Governing Law')
+  }
+  for (const [key, value] of Object.entries(LEGAL_CONFIG.documents)) {
+    if (value === '#') placeholders.push(`documents.${key}`)
+  }
+  for (const [key, value] of Object.entries(LEGAL_CONFIG.social)) {
+    if (value === '#') placeholders.push(`social.${key}`)
   }
 
   return placeholders

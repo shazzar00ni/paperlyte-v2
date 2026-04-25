@@ -75,12 +75,13 @@ export class UmamiProvider implements AnalyticsProvider {
 
     const script = document.createElement('script')
     script.async = true
-    script.defer = true
     script.src = scriptUrl
     // Umami uses data-website-id for the site identifier
     script.setAttribute('data-website-id', this.config?.domain || '')
 
     if (this.config?.trackPageviews === false) {
+      // data-auto-track="false" disables ALL automatic tracking (pageviews and events),
+      // not just pageviews. Manual umami.track(...) calls continue to work.
       script.setAttribute('data-auto-track', 'false')
     }
 
@@ -108,7 +109,7 @@ export class UmamiProvider implements AnalyticsProvider {
     }
 
     const pageUrl = url || window.location.pathname
-    window.umami.track({ url: pageUrl })
+    window.umami.track((props: Record<string, unknown>) => ({ ...props, url: pageUrl }))
   }
 
   trackEvent(event: AnalyticsEvent): void {

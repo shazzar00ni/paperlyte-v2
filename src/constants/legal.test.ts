@@ -247,9 +247,10 @@ describe('Legal Constants', () => {
       expect(placeholders).toContain('Jurisdiction/Governing Law')
     })
 
-    it('should have exactly 3 placeholder fields', () => {
+    it('should include sentinel # links as placeholder fields', () => {
       const placeholders = getPlaceholderFields()
-      expect(placeholders.length).toBe(3)
+      expect(placeholders).toContain('documents.cookies')
+      expect(placeholders).toContain('social.linkedin')
     })
   })
 

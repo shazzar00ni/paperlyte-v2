@@ -30,6 +30,7 @@ interface Window {
   umami?: {
     track(eventName: string, props?: Record<string, string | number | boolean>): void
     track(data: { url?: string; referrer?: string; title?: string }): void
+    track(callback: (props: Record<string, unknown>) => Record<string, unknown>): void
     identify(sessionData: Record<string, string | number | boolean>): void
   }
 

@@ -87,12 +87,24 @@
 }
 
 .linkComingSoon {
-  color: var(--color-text-secondary);
+  /* aria-disabled="true" marks these as inactive UI components (WCAG SC 1.4.3 exemption) */
+  color: var(--color-text-tertiary);
   font-size: var(--font-size-sm);
-  opacity: 0.4;
-  cursor: default;
+  cursor: not-allowed;
   padding: var(--spacing-xs) 0;
   display: inline-block;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }
 
 .socialIcons {

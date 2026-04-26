@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { ErrorBoundary } from './ErrorBoundary'
 
@@ -341,8 +341,12 @@ describe('ErrorBoundary', () => {
       // Click "Try Again" → 2nd error thrown → retryCount=2, showRetryButton = 2 < 2 = false
       await user.click(screen.getByText('Try Again'))
 
-      // After 2nd error: "Try Again" should be gone and message should change
-      expect(screen.queryByText('Try Again')).not.toBeInTheDocument()
+      // After 2nd error: "Try Again" should be gone and message should change.
+      // Wrap in waitFor since retryCount is updated via setState in componentDidCatch,
+      // which can briefly re-render with the previous count before settling.
+      await waitFor(() => {
+        expect(screen.queryByText('Try Again')).not.toBeInTheDocument()
+      })
       expect(screen.getByText(/Multiple errors occurred/i)).toBeInTheDocument()
       expect(screen.getByRole('button', { name: 'Reload Page' })).toBeInTheDocument()
     })
@@ -368,8 +372,12 @@ describe('ErrorBoundary', () => {
         </ErrorBoundary>
       )
 
-      // retryCount=1, maxRetries=1: "Try Again" should already be hidden
-      expect(screen.queryByText('Try Again')).not.toBeInTheDocument()
+      // retryCount=1, maxRetries=1: "Try Again" should be hidden once setState lands.
+      // Use waitFor since retryCount starts at 0 and is incremented in componentDidCatch,
+      // so the UI may briefly render with the retry button visible before updating.
+      await waitFor(() => {
+        expect(screen.queryByText('Try Again')).not.toBeInTheDocument()
+      })
       expect(screen.getByText(/Multiple errors occurred/i)).toBeInTheDocument()
 
       // "Reload Page" should still be present

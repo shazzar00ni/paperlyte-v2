@@ -149,7 +149,10 @@ describe('Pricing', () => {
 
     const checkIcon = container.querySelector('[data-icon*="circle-check"]')
     expect(checkIcon).toBeInTheDocument()
-    expect(checkIcon).toHaveAttribute('aria-label', 'Guarantee')
+    // Icon component uses aria-labelledby with a title element, not aria-label attribute
+    expect(checkIcon).toHaveAttribute('aria-labelledby')
+    const titleElement = checkIcon?.querySelector('title')
+    expect(titleElement).toHaveTextContent('Guarantee')
   })
 
   it('should use semantic article elements for pricing cards', () => {

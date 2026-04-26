@@ -35,6 +35,7 @@
         "uses-text-compression": "warn",
         "unused-css-rules": "warn",
         "unused-javascript": "warn",
+        "network-dependency-tree-insight": "off",
         "efficient-animated-content": "warn",
         "uses-passive-event-listeners": "warn",
         "no-document-write": "error",

@@ -54,20 +54,17 @@ describe('AnimatedElement', () => {
   })
 
   it('should respect reduced motion preference', () => {
-    // Mock prefers-reduced-motion: reduce
-    Object.defineProperty(window, 'matchMedia', {
-      writable: true,
-      value: (query: string) => ({
-        matches: query === '(prefers-reduced-motion: reduce)',
-        media: query,
-        onchange: null,
-        addListener: () => {},
-        removeListener: () => {},
-        addEventListener: () => {},
-        removeEventListener: () => {},
-        dispatchEvent: () => true,
-      }),
-    })
+    // Use vi.stubGlobal so afterEach(vi.unstubAllGlobals) reverts this automatically
+    vi.stubGlobal('matchMedia', (query: string) => ({
+      matches: query === '(prefers-reduced-motion: reduce)',
+      media: query,
+      onchange: null,
+      addListener: () => {},
+      removeListener: () => {},
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      dispatchEvent: () => true,
+    }))
 
     const { container } = render(
       <AnimatedElement animation="fadeIn">

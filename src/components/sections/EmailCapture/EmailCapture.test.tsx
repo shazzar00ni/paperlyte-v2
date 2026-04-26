@@ -75,6 +75,13 @@ describe('EmailCapture Section', () => {
     // React flushes the synchronous state update (setIsLoading(true)) inside act();
     // the 1s setTimeout is frozen, so isLoading stays true.
     expect(screen.getByRole('button', { name: /Joining\.\.\./i })).toBeDisabled()
+
+    // Drain the pending setTimeout so the handleSubmit promise resolves before
+    // testing-library unmounts the component. Without this, React logs a
+    // "state update on unmounted component" warning when afterEach swaps timers.
+    act(() => {
+      vi.advanceTimersByTime(1000)
+    })
   })
 
   it('shows success state with social sharing buttons', async () => {

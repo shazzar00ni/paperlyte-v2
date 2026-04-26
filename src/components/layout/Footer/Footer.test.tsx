@@ -84,7 +84,7 @@ describe('Footer', () => {
 
     const twitterLink = screen.getByRole('link', { name: 'Follow us on X (Twitter)' })
     expect(twitterLink).toBeInTheDocument()
-    expect(twitterLink).toHaveAttribute('href', 'https://x.com/paperlyte')
+    expect(twitterLink).toHaveAttribute('href', LEGAL_CONFIG.social.twitter)
     expect(twitterLink).toHaveAttribute('target', '_blank')
     expect(twitterLink).toHaveAttribute('rel', 'noopener noreferrer')
   })
@@ -94,7 +94,7 @@ describe('Footer', () => {
 
     const instagramLink = screen.getByRole('link', { name: 'Follow us on Instagram' })
     expect(instagramLink).toBeInTheDocument()
-    expect(instagramLink).toHaveAttribute('href', 'https://instagram.com/paperlytefilms')
+    expect(instagramLink).toHaveAttribute('href', LEGAL_CONFIG.social.instagram)
     expect(instagramLink).toHaveAttribute('target', '_blank')
     expect(instagramLink).toHaveAttribute('rel', 'noopener noreferrer')
   })
@@ -104,7 +104,7 @@ describe('Footer', () => {
 
     const emailLink = screen.getByRole('link', { name: 'Email us' })
     expect(emailLink).toBeInTheDocument()
-    expect(emailLink).toHaveAttribute('href', 'mailto:hello@paperlyte.com')
+    expect(emailLink).toHaveAttribute('href', `mailto:${LEGAL_CONFIG.company.email}`)
   })
 
   it('should render copyright with current year', () => {

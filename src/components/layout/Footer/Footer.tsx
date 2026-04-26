@@ -99,7 +99,7 @@ export const Footer = (): React.ReactElement => {
                 </li>
                 <li>
                   <a
-                    href="https://x.com/paperlyte"
+                    href={LEGAL_CONFIG.social.twitter}
                     target="_blank"
                     rel="noopener noreferrer"
                     className={styles.socialLink}
@@ -110,7 +110,7 @@ export const Footer = (): React.ReactElement => {
                 </li>
                 <li>
                   <a
-                    href="https://instagram.com/paperlytefilms"
+                    href={LEGAL_CONFIG.social.instagram}
                     target="_blank"
                     rel="noopener noreferrer"
                     className={styles.socialLink}
@@ -121,7 +121,7 @@ export const Footer = (): React.ReactElement => {
                 </li>
                 <li>
                   <a
-                    href="mailto:hello@paperlyte.com"
+                    href={`mailto:${LEGAL_CONFIG.company.email}`}
                     className={styles.socialLink}
                     aria-label="Email us"
                   >

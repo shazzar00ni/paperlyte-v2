@@ -140,8 +140,9 @@ describe('Pricing', () => {
     render(<Pricing />)
 
     PRICING_PLANS.forEach((plan) => {
+      // Button aria-label is "{ctaText} for {planName} plan", so we match the full label
       const button = screen.getByRole('button', {
-        name: new RegExp(plan.ctaText),
+        name: `${plan.ctaText} for ${plan.name} plan`,
       })
       expect(button).toBeInTheDocument()
     })

@@ -1,5 +1,46 @@
 # PR Review Summary
 
+## 2026-04-26
+
+### Analysis: Systemic Regressions in Open Branches (Automated Daily Audit)
+
+- **Status:** Critical — Action Required
+- **Summary:** An automated repository-wide audit of 261 unmerged branches confirms the following systemic regressions.
+
+| Regression Type                | Count | Severity    | Notes                                               |
+| :----------------------------- | :---- | :---------- | :-------------------------------------------------- |
+| Orphan Branches                | 261   | 🔴 Critical | No common ancestor with `main`.                     |
+| Missing `.npmrc`               | 88    | 🔴 Critical | Breaks dependency resolution.                       |
+| Missing `docs/ROADMAP.md`      | 82    | 🟠 High     | Core project documentation.                         |
+| Missing `gitVersionControl.md` | 97    | 🟠 High     | Core Git workflow documentation.                    |
+| Missing `review.md`            | 97    | 🟡 Medium   | AI PR reviewer instructions.                        |
+| Reverted Security Helpers      | 96    | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers. |
+| Unreadable navigation.ts       | 8     | 🔴 Critical | File missing or unreadable.                         |
+
+- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.
+
+### Manual PR Reviews (2026-04-26)
+
+#### `origin/claude/implement-service-worker-YLeLZ`
+
+- **Status:** Blocked (Orphan)
+- **Summary:** Implements service worker and offline support.
+- **Feedback:** The technical implementation of the service worker (`public/sw.js`) and offline page (`public/offline.html`) looks correct. However, this branch is an **orphan** (no shared history with `main`) and has accidentally deleted `ACTION_PLAN.md`. It must be rebased or recreated from `main` to be mergeable.
+
+#### `origin/claude/tree-shake-font-awesome-cK85j`
+
+- **Status:** Blocked (Orphan)
+- **Summary:** Large refactor for Font Awesome tree shaking and analytics providers.
+- **Feedback:** This branch contains 1,800+ additions and 3,600+ deletions. It is an **orphan** branch that deletes critical CI workflows and documentation. The massive scope and lack of shared history make it highly risky. Recommend closing and splitting into smaller, focused PRs.
+
+#### `origin/fix/sni-328-cta-dark-mode`
+
+- **Status:** Blocked (Orphan)
+- **Summary:** UI fixes for CTA section in dark mode.
+- **Feedback:** While the CSS changes in `CTA.module.css` look valid, the branch is an **orphan** and deletes `ACTION_PLAN.md`. Must be restored/recreated.
+
+---
+
 This file contains a summary of pull requests I have reviewed.
 
 ## 2026-03-05

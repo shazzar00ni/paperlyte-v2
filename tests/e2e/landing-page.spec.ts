@@ -205,7 +205,7 @@ test.describe('Landing Page', () => {
     await emailInput.fill(uniqueEmail)
     await submitButton.click()
 
-    // Accept both straight (') and typographic (') apostrophes for cross-environment robustness
+    // Accept both straight (') and typographic (’) apostrophes for cross-environment robustness
     await expect(page.getByText(/You['\u2019]re on the list!/i)).toBeVisible({ timeout: 5000 })
   })
 

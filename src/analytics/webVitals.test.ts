@@ -381,6 +381,15 @@ describe('analytics/webVitals', () => {
   })
 
   describe('trackINP', () => {
+    const triggerHidden = (): void => {
+      Object.defineProperty(document, 'visibilityState', {
+        writable: true,
+        configurable: true,
+        value: 'hidden',
+      })
+      document.dispatchEvent(new Event('visibilitychange'))
+    }
+
     it('should use Math.max for ≤10 interactions and 98th percentile for >10 at the boundary', () => {
       // Helper: creates a valid event entry; duration = processingEnd - startTime
       const makeEntry = (duration: number) => ({
@@ -402,16 +411,13 @@ describe('analytics/webVitals', () => {
 
       // Feed 10 entries with durations [10, 20, ..., 100]
       inpObserver10?.callback(
-        { getEntries: () => [10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map(makeEntry) } as PerformanceObserverEntryList,
+        {
+          getEntries: () => [10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map(makeEntry),
+        } as PerformanceObserverEntryList,
         inpObserver10 as PerformanceObserver
       )
 
-      Object.defineProperty(document, 'visibilityState', {
-        writable: true,
-        configurable: true,
-        value: 'hidden',
-      })
-      document.dispatchEvent(new Event('visibilitychange'))
+      triggerHidden()
 
       // Math.max([10..100]) = 100
       expect(onReport).toHaveBeenCalledWith(expect.objectContaining({ INP: 100 }))
@@ -438,12 +444,7 @@ describe('analytics/webVitals', () => {
         inpObserver11 as PerformanceObserver
       )
 
-      Object.defineProperty(document, 'visibilityState', {
-        writable: true,
-        configurable: true,
-        value: 'hidden',
-      })
-      document.dispatchEvent(new Event('visibilitychange'))
+      triggerHidden()
 
       // 98th percentile of sorted [10..110] (11 items):
       //   index = Math.max(0, Math.ceil(0.98 * 11) - 1) = Math.max(0, 11 - 1) = 10
@@ -459,12 +460,7 @@ describe('analytics/webVitals', () => {
       const cleanup = initWebVitals(onReport)
 
       // Trigger finalization without feeding any entries to the INP observer
-      Object.defineProperty(document, 'visibilityState', {
-        writable: true,
-        configurable: true,
-        value: 'hidden',
-      })
-      document.dispatchEvent(new Event('visibilitychange'))
+      triggerHidden()
 
       // onReport may still be called (e.g., CLS=0 is always finalised), but INP must be absent
       expect(onReport).toHaveBeenCalled()
@@ -498,12 +494,7 @@ describe('analytics/webVitals', () => {
         inpObserver as PerformanceObserver
       )
 
-      Object.defineProperty(document, 'visibilityState', {
-        writable: true,
-        configurable: true,
-        value: 'hidden',
-      })
-      document.dispatchEvent(new Event('visibilitychange'))
+      triggerHidden()
 
       // No valid interactions were recorded, so INP must not appear in the report
       expect(onReport).toHaveBeenCalled()

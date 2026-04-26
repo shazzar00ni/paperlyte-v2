@@ -55,30 +55,13 @@ export class FathomProvider implements AnalyticsProvider {
     }
 
     const defaultUrl = 'https://cdn.usefathom.com/script.js'
-  private isValidScriptUrl(scriptUrl: string): boolean {
-    try {
-      const parsedUrl = new URL(scriptUrl)
-      return parsedUrl.protocol === 'https:' && parsedUrl.pathname.endsWith('.js')
-    } catch {
-      return false
-    }
-  }
+    const configured = this.config?.scriptUrl
+    const scriptUrl = configured && this.isValidScriptUrl(configured) ? configured : defaultUrl
 
-  private loadScript(): void {
-    if (this.scriptLoaded || typeof window === 'undefined' || typeof document === 'undefined') {
-      return
+    if (configured && scriptUrl !== configured && (this.config?.debug || import.meta.env.DEV)) {
+      console.warn('[Analytics] Invalid Fathom scriptUrl, falling back to default')
     }
 
-    const defaultScriptUrl = 'https://cdn.usefathom.com/script.js'
-    const configuredScriptUrl = this.config?.scriptUrl
-    const scriptUrl =
-      configuredScriptUrl && this.isValidScriptUrl(configuredScriptUrl)
-        ? configuredScriptUrl
-        : defaultScriptUrl
-
-    if (configuredScriptUrl && scriptUrl !== configuredScriptUrl && this.config?.debug) {
-      console.warn('[Analytics] Invalid Fathom script URL configured, falling back to default script')
-    }
     const script = document.createElement('script')
     script.async = true
     script.defer = true

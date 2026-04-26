@@ -21,7 +21,7 @@ jobs:
         run: npm run build
 
       - name: Depcheck
-        uses: dependency-check/Dependency-Check_Action@main
+        uses: dependency-check/Dependency-Check_Action@75ba02d6183445fe0761d26e836bde58b1560600 # v1.1.0
         id: Depcheck
         with:
           project: 'paperlyte-v2'

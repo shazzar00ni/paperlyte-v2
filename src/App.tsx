@@ -1,5 +1,4 @@
 import { useRef, useCallback } from 'react'
-import { Analytics } from '@vercel/analytics/react'
 import { ErrorBoundary } from '@components/ErrorBoundary'
 import { Header } from '@components/layout/Header'
 import { Footer } from '@components/layout/Footer'
@@ -36,11 +35,7 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <a
-        href="#main"
-        className="skip-link"
-        onClick={handleSkipToMain}
-      >
+      <a href="#main" className="skip-link" onClick={handleSkipToMain}>
         Skip to main content
       </a>
       <Header />
@@ -59,7 +54,6 @@ function App() {
       </main>
       <Footer />
       <FeedbackWidget />
-      <Analytics />
     </ErrorBoundary>
   )
 }

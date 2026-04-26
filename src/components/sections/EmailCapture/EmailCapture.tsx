@@ -15,6 +15,7 @@ const BENEFITS = [
   'Receive exclusive productivity tips and updates',
 ]
 
+/** Renders the Email Capture section with a waitlist signup form and benefit highlights. */
 export const EmailCapture = (): React.ReactElement => {
   const [email, setEmail] = useState('')
   const [isSubmitted, setIsSubmitted] = useState(false)
@@ -150,7 +151,9 @@ export const EmailCapture = (): React.ReactElement => {
                 name="email"
                 placeholder="your@email.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value)
+                }}
                 required
                 className={styles.input}
                 aria-label="Email address"

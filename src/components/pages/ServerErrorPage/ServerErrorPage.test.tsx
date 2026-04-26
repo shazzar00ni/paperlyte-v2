@@ -232,7 +232,7 @@ describe('ServerErrorPage', () => {
       render(<ServerErrorPage />)
 
       const mainElement = screen.getByRole('main')
-      // Icon component may render as SVG or <i> tag, check for either
+      // Icon component may render as SVG or <span> placeholder, check for either
       const serverIcon = mainElement.querySelector('[data-icon="fa-server"]')
       expect(serverIcon).toBeInTheDocument()
     })
@@ -240,7 +240,7 @@ describe('ServerErrorPage', () => {
     it('should render warning icon in error badge', () => {
       const { container } = render(<ServerErrorPage />)
 
-      // Icon component may render as SVG or <i> tag, check for either
+      // Icon component may render as SVG or <span> placeholder, check for either
       const warningIcon = container.querySelector('[data-icon="fa-triangle-exclamation"]')
       expect(warningIcon).toBeInTheDocument()
     })
@@ -249,7 +249,7 @@ describe('ServerErrorPage', () => {
       render(<ServerErrorPage />)
 
       const retryButton = screen.getByRole('button', { name: /retry loading the page/i })
-      // Icon component may render as SVG or <i> tag, check for either
+      // Icon component may render as SVG or <span> placeholder, check for either
       const icon = retryButton.querySelector('[data-icon="fa-rotate-right"]')
       expect(icon).toBeInTheDocument()
     })
@@ -258,7 +258,7 @@ describe('ServerErrorPage', () => {
       render(<ServerErrorPage />)
 
       const homeButton = screen.getByRole('button', { name: /return to homepage/i })
-      // Icon component may render as SVG or <i> tag, check for either
+      // Icon component may render as SVG or <span> placeholder, check for either
       const icon = homeButton.querySelector('[data-icon="fa-home"]')
       expect(icon).toBeInTheDocument()
     })

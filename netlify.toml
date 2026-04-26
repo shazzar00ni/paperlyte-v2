@@ -19,10 +19,7 @@
   edge_functions = "netlify/edge-functions"
 
   # Node version to use
-  # NPM_CONFIG_PRODUCTION=false ensures devDependencies (e.g. sharp used by
-  # the prebuild icon-generation script) are installed even though Netlify
-  # sets NODE_ENV=production by default.
-  environment = { NODE_VERSION = "20", NPM_CONFIG_PRODUCTION = "false" }
+  environment = { NODE_VERSION = "20" }
 
 # Production context: all deploys from the main branch
 [context.production]

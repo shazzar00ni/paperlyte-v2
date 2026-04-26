@@ -87,8 +87,12 @@
 }
 
 .linkComingSoon {
-  color: var(--color-text-tertiary);
+  /* Use --color-text-secondary (≥4.5:1 contrast on --color-surface) to satisfy WCAG 2.1 AA
+   * minimum contrast for normal text. Italic + not-allowed cursor convey the
+   * "coming soon / inactive" affordance without relying on low contrast. */
+  color: var(--color-text-secondary);
   font-size: var(--font-size-sm);
+  font-style: italic;
   cursor: not-allowed;
   padding: var(--spacing-xs) 0;
   display: inline-block;

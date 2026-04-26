@@ -174,30 +174,19 @@ Changes:
 
 ---
 
-### 3. Create `.eslintrc.json` for Codacy
+### 3. Clarify legacy ESLint config usage
 
-**File to create:** `.eslintrc.json` (repo root)
+Do **not** add `.eslintrc.json` for the repo's current Codacy/local setup.
+This repository already uses `eslint.config.js` (flat config), and that should remain the source
+of truth for current ESLint runs.
 
-```json
-{
-  "env": { "browser": true, "es2020": true },
-  "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:react-hooks/recommended"
-  ],
-  "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint", "react-hooks", "react-refresh"],
-  "rules": {
-    "react-refresh/only-export-components": ["warn", { "allowConstantExport": true }]
-  },
-  "ignorePatterns": ["dist"]
-}
-```
+Only add a legacy `.eslintrc.json` if a **separate external tool** is confirmed to require the
+legacy ESLint config format and cannot consume `eslint.config.js`. If that happens, document the
+exact tool/integration and keep any legacy config aligned with the flat config to avoid drift.
 
-ESLint 9 ignores this file when `eslint.config.js` is present — no conflict for local dev.
-This repo's current Codacy setup uses the `eslint-9` engine with `eslint.config.js`, so do not
-assume Codacy reads `.eslintrc.json` exclusively.
+Avoid version-specific wording such as "ESLint 9 ignores this file"; the important point is that
+the current repo setup is based on `eslint.config.js`, while `.eslintrc.*` is only for legacy
+compatibility when explicitly needed.
 
 ---
 

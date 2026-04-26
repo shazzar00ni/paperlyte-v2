@@ -251,6 +251,12 @@ describe('analytics/providers/simple', () => {
       expect(window.sa_event).toHaveBeenCalledWith('my_event_name', undefined)
     })
 
+    it('should fully normalise event name to snake_case', () => {
+      provider.trackEvent({ name: 'My-Event Name!  Test' })
+
+      expect(window.sa_event).toHaveBeenCalledWith('my_event_name_test', undefined)
+    })
+
     it('should filter out null and undefined properties', () => {
       const event: AnalyticsEvent = {
         name: 'test_event',

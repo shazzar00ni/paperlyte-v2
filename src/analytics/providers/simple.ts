@@ -122,9 +122,17 @@ export class SimpleAnalyticsProvider implements AnalyticsProvider {
         )
       : undefined
 
-    // Simple Analytics recommends snake_case event names; spaces are replaced with underscores
-    const safeName = event.name.replace(/\s+/g, '_')
+    // Normalise to snake_case: lowercase, replace non-alphanumeric with underscores, collapse/trim
+    const safeName = this.normalizeEventName(event.name)
     window.sa_event(safeName, props)
+  }
+
+  private normalizeEventName(name: string): string {
+    return name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '_')
+      .replace(/_+/g, '_')
+      .replace(/^_+|_+$/g, '')
   }
 
   trackWebVitals(vitals: CoreWebVitals): void {

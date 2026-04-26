@@ -97,9 +97,16 @@ describe('Pricing', () => {
 
     PRICING_PLANS.forEach((plan) => {
       if (plan.icon) {
-        const icon = container.querySelector(`.${plan.icon}`)
+        const icon = container.querySelector(`[data-icon~="${plan.icon}"]`)
         expect(icon).toBeInTheDocument()
-        expect(icon).toHaveAttribute('aria-label', `${plan.name} plan icon`)
+        // Icon component uses either aria-labelledby with title (custom SVG)
+        // or aria-label attribute (FontAwesome fallback)
+        const titleElement = icon?.querySelector('title')
+        if (titleElement) {
+          expect(titleElement).toHaveTextContent(`${plan.name} plan icon`)
+        } else {
+          expect(icon).toHaveAttribute('aria-label', `${plan.name} plan icon`)
+        }
       }
     })
   })

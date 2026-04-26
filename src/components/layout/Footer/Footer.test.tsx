@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { Footer } from './Footer'
+import { LEGAL_CONFIG } from '@/constants/legal'
 
 describe('Footer', () => {
   it('should render footer element', () => {
@@ -73,7 +74,7 @@ describe('Footer', () => {
 
     const githubLink = screen.getByRole('link', { name: 'Follow us on GitHub' })
     expect(githubLink).toBeInTheDocument()
-    expect(githubLink).toHaveAttribute('href', 'https://github.com/paperlyte')
+    expect(githubLink).toHaveAttribute('href', LEGAL_CONFIG.social.github)
     expect(githubLink).toHaveAttribute('target', '_blank')
     expect(githubLink).toHaveAttribute('rel', 'noopener noreferrer')
   })

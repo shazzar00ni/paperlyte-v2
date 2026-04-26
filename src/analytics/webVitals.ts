@@ -269,7 +269,9 @@ function trackINP(callback: ReportCallback): MetricTracker {
           typeof eventEntry.startTime === 'number'
         ) {
           const duration = eventEntry.processingEnd - eventEntry.startTime
-          interactions.push(duration)
+          if (isFinite(duration)) {
+            interactions.push(duration)
+          }
         }
       }
     })

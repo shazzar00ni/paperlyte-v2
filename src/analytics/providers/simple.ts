@@ -122,7 +122,7 @@ export class SimpleAnalyticsProvider implements AnalyticsProvider {
         )
       : undefined
 
-    // Simple Analytics event names must be snake_case; replace any spaces with underscores
+    // Simple Analytics recommends snake_case event names; spaces are replaced with underscores
     const safeName = event.name.replace(/\s+/g, '_')
     window.sa_event(safeName, props)
   }

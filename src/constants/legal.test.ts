@@ -232,19 +232,21 @@ describe('Legal Constants', () => {
       })
     })
 
-    it('should identify Company Legal Name as placeholder', () => {
+    it('should identify company.legalName as placeholder', () => {
       const placeholders = getPlaceholderFields()
-      expect(placeholders).toContain('Company Legal Name')
+      expect(placeholders).toContain('company.legalName')
     })
 
-    it('should identify Physical Address as placeholder', () => {
+    it('should identify address fields as placeholders', () => {
       const placeholders = getPlaceholderFields()
-      expect(placeholders).toContain('Physical Address')
+      expect(placeholders).toContain('address.street')
+      expect(placeholders).toContain('address.city')
+      expect(placeholders).toContain('address.state')
     })
 
-    it('should identify Jurisdiction as placeholder', () => {
+    it('should identify metadata.jurisdiction as placeholder', () => {
       const placeholders = getPlaceholderFields()
-      expect(placeholders).toContain('Jurisdiction/Governing Law')
+      expect(placeholders).toContain('metadata.jurisdiction')
     })
 
     it('should include sentinel # links as placeholder fields', () => {

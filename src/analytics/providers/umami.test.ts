@@ -364,6 +364,16 @@ describe('analytics/providers/umami', () => {
 
       expect(provider.isEnabled()).toBe(false)
     })
+
+    it('should return false when window.umami exists but track is not a function', () => {
+      provider.init(config)
+      window.umami = { track: 'not-a-function' } as unknown as typeof window.umami
+
+      const script = document.querySelector('script[data-website-id]') as HTMLScriptElement
+      script.onload?.(new Event('load'))
+
+      expect(provider.isEnabled()).toBe(false)
+    })
   })
 
   describe('disable', () => {

@@ -363,6 +363,19 @@ describe('analytics/providers/fathom', () => {
 
       expect(provider.isEnabled()).toBe(false)
     })
+
+    it('should return false when window.fathom exists but methods are not functions', () => {
+      provider.init(config)
+      window.fathom = {
+        trackPageview: 'not-a-function',
+        trackGoal: 'not-a-function',
+      } as unknown as typeof window.fathom
+
+      const script = document.querySelector('script[data-site]') as HTMLScriptElement
+      script.onload?.(new Event('load'))
+
+      expect(provider.isEnabled()).toBe(false)
+    })
   })
 
   describe('disable', () => {

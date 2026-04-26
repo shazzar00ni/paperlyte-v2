@@ -42,13 +42,13 @@ export const Footer = (): React.ReactElement => {
                 <li>
                   <span className={styles.linkComingSoon}>
                     Roadmap
-                    <span className={styles.visuallyHidden}> (coming soon)</span>
+                    <span className="sr-only"> (coming soon)</span>
                   </span>
                 </li>
                 <li>
                   <span className={styles.linkComingSoon}>
                     Changelog
-                    <span className={styles.visuallyHidden}> (coming soon)</span>
+                    <span className="sr-only"> (coming soon)</span>
                   </span>
                 </li>
               </ul>
@@ -65,13 +65,13 @@ export const Footer = (): React.ReactElement => {
                 <li>
                   <span className={styles.linkComingSoon}>
                     About
-                    <span className={styles.visuallyHidden}> (coming soon)</span>
+                    <span className="sr-only"> (coming soon)</span>
                   </span>
                 </li>
                 <li>
                   <span className={styles.linkComingSoon}>
                     Blog
-                    <span className={styles.visuallyHidden}> (coming soon)</span>
+                    <span className="sr-only"> (coming soon)</span>
                   </span>
                 </li>
               </ul>

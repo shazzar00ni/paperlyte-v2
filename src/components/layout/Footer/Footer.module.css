@@ -94,18 +94,6 @@
   display: inline-block;
 }
 
-.visuallyHidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: inset(50%);
-  white-space: nowrap;
-  border: 0;
-}
-
 .socialIcons {
   display: flex;
   gap: var(--spacing-md);

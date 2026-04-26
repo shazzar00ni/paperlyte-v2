@@ -60,43 +60,30 @@ export const LEGAL_CONFIG = {
   },
 } as const
 
+const allConfigEntries = (): Array<[string, string]> => {
+  const entries: Array<[string, string]> = []
+  for (const [section, values] of Object.entries(LEGAL_CONFIG)) {
+    for (const [key, value] of Object.entries(values)) {
+      if (typeof value === 'string') {
+        entries.push([`${section}.${key}`, value])
+      }
+    }
+  }
+  return entries
+}
+
 /**
  * Helper function to check if legal documents need updating
  */
 export const needsLegalReview = (): boolean => {
-  const hasBracketPlaceholders =
-    LEGAL_CONFIG.company.legalName.includes('[') ||
-    LEGAL_CONFIG.address.street.includes('[') ||
-    LEGAL_CONFIG.metadata.jurisdiction.includes('[')
-
-  const hasSentinelLinks =
-    Object.values(LEGAL_CONFIG.documents).includes('#') ||
-    Object.values(LEGAL_CONFIG.social).includes('#')
-
-  return hasBracketPlaceholders || hasSentinelLinks
+  return allConfigEntries().some(([, value]) => value.includes('[') || value === '#')
 }
 
 /**
  * Get all placeholder fields that need to be filled
  */
 export const getPlaceholderFields = (): string[] => {
-  const placeholders: string[] = []
-
-  if (LEGAL_CONFIG.company.legalName.includes('[')) {
-    placeholders.push('Company Legal Name')
-  }
-  if (LEGAL_CONFIG.address.street.includes('[')) {
-    placeholders.push('Physical Address')
-  }
-  if (LEGAL_CONFIG.metadata.jurisdiction.includes('[')) {
-    placeholders.push('Jurisdiction/Governing Law')
-  }
-  for (const [key, value] of Object.entries(LEGAL_CONFIG.documents)) {
-    if (value === '#') placeholders.push(`documents.${key}`)
-  }
-  for (const [key, value] of Object.entries(LEGAL_CONFIG.social)) {
-    if (value === '#') placeholders.push(`social.${key}`)
-  }
-
-  return placeholders
+  return allConfigEntries()
+    .filter(([, value]) => value.includes('[') || value === '#')
+    .map(([key]) => key)
 }

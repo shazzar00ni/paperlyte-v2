@@ -84,11 +84,12 @@ Path aliases are configured (`@/*`, `@components/*`, `@hooks/*`, `@utils/*`, etc
 - **TypeScript**: Strict mode, no `any`. Explicit return types on exported functions.
 - **Naming**: PascalCase for components/types, camelCase for functions/variables, SCREAMING_SNAKE_CASE for top-level constants.
 - **Imports**: Use path aliases (`@components/...`). Barrel imports from `index.ts` only.
-- **Comments**: Only when the *why* is non-obvious. JSDoc is required on all public APIs (see CONTRIBUTING.md). No `// TODO` left in PRs.
+- **JSDoc**: Required on all exported public APIs — hooks, utility functions, and component prop interfaces. Use `@param`, `@returns`, and `@default` where applicable. Include a usage example for non-trivial APIs (see `src/hooks/useParallax.ts` for reference style). Inline `//` comments are only for non-obvious *why*, not *what*.
+- **No `// TODO`**: Not allowed in merged PRs.
 - **No semi**: Prettier enforces this. Run `npm run format` before committing.
 - **Accessibility**: Every interactive element needs an `aria-label` or visible label. Reduced-motion support is required (`prefers-reduced-motion`). Skip links and semantic HTML are not optional.
 - **Analytics**: Prefer the `useAnalytics()` hook in components. Direct calls to `trackEvent` from `@utils/analytics` are acceptable in places where the hook isn't a fit (e.g., form submit handlers in `src/components/ui/EmailCapture/EmailCapture.tsx`), but never call provider SDKs (`window.gtag`, etc.) directly — always go through the abstraction in `src/analytics/` or `@utils/analytics`.
-- **Security**: Dynamic `href` values must pass through `isSafeUrl()` (blocks `javascript:`, `data:`, `vbscript:`). User-facing strings must be sanitized via `src/utils/validation.ts`.
+- **Security**: Dynamic `href` values must pass through `isSafeUrl()` from `src/utils/navigation.ts` (blocks `javascript:`, `data:`, `vbscript:`). User-facing strings must be sanitized via `src/utils/validation.ts`.
 
 ---
 

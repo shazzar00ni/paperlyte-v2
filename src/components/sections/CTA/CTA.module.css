@@ -211,6 +211,7 @@
 
   .textLink:hover {
     color: var(--color-text-on-primary);
+    opacity: 0.8;
   }
 }
 
@@ -242,4 +243,5 @@
 
 [data-theme='dark'] .textLink:hover {
   color: var(--color-text-on-primary);
+  opacity: 0.8;
 }

@@ -265,13 +265,12 @@ function trackINP(callback: ReportCallback): MetricTracker {
 
         if (
           typeof eventEntry.processingStart === 'number' &&
-          typeof eventEntry.processingEnd === 'number' &&
-          typeof eventEntry.startTime === 'number'
+          Number.isFinite(eventEntry.processingEnd) &&
+          Number.isFinite(eventEntry.startTime) &&
+          eventEntry.processingEnd >= eventEntry.startTime
         ) {
           const duration = eventEntry.processingEnd - eventEntry.startTime
-          if (isFinite(duration)) {
-            interactions.push(duration)
-          }
+          interactions.push(duration)
         }
       }
     })

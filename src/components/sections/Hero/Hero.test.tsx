@@ -37,7 +37,11 @@ describe('Hero', () => {
       // There are multiple headings with "thoughts", use getAllByRole
       const headings = screen.getAllByRole('heading', { name: /thoughts/i })
       expect(headings.length).toBeGreaterThan(0)
-      expect(screen.getByText(/organized/i)).toBeInTheDocument()
+      // Use exact text match to target only the <em> element, avoiding a
+      // "Found multiple elements" error caused by the regex /organized/i
+      // matching both the <em> child and its <h1> parent (whose full text
+      // content also contains "organized").
+      expect(screen.getByText('organized.')).toBeInTheDocument()
     })
 
     it('should render the subheadline', () => {

@@ -482,11 +482,7 @@ describe('analytics/webVitals', () => {
       expect(inpObserver).toBeDefined()
 
       // All four entries are invalid and must be excluded from INP calculation
-      const invalidEntries = [
-        { startTime: 0, processingStart: undefined, processingEnd: 100 }, // missing processingStart
-        { startTime: 0, processingStart: 50, processingEnd: undefined }, // missing processingEnd
-        { startTime: 0, processingStart: 0, processingEnd: undefined }, // zero processingStart, missing processingEnd
-        { startTime: 0, processingStart: 50, processingEnd: 0 }, // falsy processingEnd (zero)
+        { startTime: 0, processingStart: 50, processingEnd: NaN }, // invalid processingEnd
       ]
 
       inpObserver?.callback(

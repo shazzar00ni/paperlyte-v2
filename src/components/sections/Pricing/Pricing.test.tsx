@@ -87,7 +87,7 @@ describe('Pricing', () => {
     const popularBadge = screen.getByLabelText('Most popular')
     expect(popularBadge).toBeInTheDocument()
 
-    const starIcon = container.querySelector('[data-icon~="fa-star"]')
+    const starIcon = container.querySelector('[data-icon="fa-star"]')
     expect(starIcon).toBeInTheDocument()
     expect(starIcon).toHaveAttribute('aria-label', 'Most popular')
   })

@@ -250,7 +250,7 @@ describe('ServerErrorPage', () => {
 
       const retryButton = screen.getByRole('button', { name: /retry loading the page/i })
       // Icon component may render as SVG or <i> tag, check for either
-       const icon = retryButton.querySelector('[data-icon="fa-rotate-right"]')
+      const icon = retryButton.querySelector('[data-icon="fa-rotate-right"]')
       expect(icon).toBeInTheDocument()
     })
 

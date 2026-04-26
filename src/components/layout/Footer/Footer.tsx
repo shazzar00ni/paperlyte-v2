@@ -48,7 +48,7 @@ export const Footer = (): React.ReactElement => {
               <h3 className={styles.linkGroupTitle}>Company</h3>
               <ul className={styles.linkList}>
                 <li>
-                   <a href={`mailto:${LEGAL_CONFIG.company.email}`} className={styles.link}>
+                  <a href={`mailto:${LEGAL_CONFIG.company.email}`} className={styles.link}>
                     Contact
                   </a>
                 </li>

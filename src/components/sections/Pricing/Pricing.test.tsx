@@ -21,9 +21,7 @@ describe('Pricing', () => {
 
   it('should render subtitle', () => {
     render(<Pricing />)
-    expect(
-      screen.getByText(/Start free.*No credit card/i)
-    ).toBeInTheDocument()
+    expect(screen.getByText(/Start free.*No credit card/i)).toBeInTheDocument()
   })
 
   it('should render all pricing plan cards', () => {

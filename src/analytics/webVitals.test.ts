@@ -471,7 +471,7 @@ describe('analytics/webVitals', () => {
       cleanupPO()
     })
 
-    it('should filter out entries with missing or invalid processingStart/processingEnd', () => {
+    it('should filter out entries with missing or invalid startTime/processingStart/processingEnd', () => {
       const { instances, cleanup: cleanupPO } = mockPerformanceObserver()
       const cleanup = initWebVitals(onReport)
 
@@ -482,12 +482,11 @@ describe('analytics/webVitals', () => {
       expect(inpObserver).toBeDefined()
 
       // All entries are invalid and must be excluded from INP calculation.
-      // Production guard requires processingStart, processingEnd, and startTime
-      // to all be of type 'number', so undefined values are filtered out.
       const invalidEntries = [
         { startTime: 0, processingStart: undefined, processingEnd: 100 }, // missing processingStart
         { startTime: 0, processingStart: 50, processingEnd: undefined }, // missing processingEnd
         { startTime: undefined, processingStart: 50, processingEnd: 100 }, // missing startTime
+        { startTime: 100, processingStart: 50, processingEnd: 150 }, // startTime > processingStart ordering violated
       ]
 
       inpObserver?.callback(

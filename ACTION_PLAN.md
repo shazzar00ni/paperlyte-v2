@@ -15,8 +15,8 @@ Branch: `claude/pr-review-action-plan-Rl6dF`
 
 ### CRITICAL — Accidental File Deletions (2026-03-05)
 
-The following branches/PRs are **blocked from merging** until they restore 4 deleted files and,
-where applicable, revert content changes to `src/utils/navigation.ts`:
+The following branches/PRs are **blocked from merging** until they restore the deleted files
+listed below and, where applicable, revert content changes to `src/utils/navigation.ts`:
 
 **4 deleted files** (restore from `main`):
 

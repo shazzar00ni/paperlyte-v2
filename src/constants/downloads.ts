@@ -1,4 +1,4 @@
-import { LEGAL_CONFIG } from '@constants/legal'
+import { LEGAL_CONFIG } from './legal'
 
 /**
  * Download URLs for Paperlyte across different platforms.

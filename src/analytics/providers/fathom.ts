@@ -134,6 +134,12 @@ export class FathomProvider implements AnalyticsProvider {
   trackWebVitals(vitals: CoreWebVitals): void {
     // Fathom goal tracking requires provider-assigned goal codes; arbitrary names like
     // 'web_vitals' will be silently dropped. Skip rather than send phantom events.
+    // Guard with isEnabled() for consistency with other providers — avoids work and
+    // log noise when the provider is uninitialised or disabled.
+    if (!this.isEnabled()) {
+      return
+    }
+
     if (this.config?.debug) {
       const available = Object.entries(vitals)
         .filter(([, v]) => v !== undefined)

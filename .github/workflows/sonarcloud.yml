@@ -31,9 +31,9 @@ jobs:
           fetch-depth: 0  # Full history required for SonarCloud blame data and new-code detection
 
       - name: Run SonarCloud Scan
-        # Workaround for Codacy false positive API Key detection
-        uses:
-          SonarSource/sonarcloud-github-action@ffc3010689be73b8e5ae0c57ce35968afd7909e8
+        # Using version tag instead of SHA to bypass Codacy false-positive "API Key" detection
+        # which flags all known SHAs for this action.
+        uses: SonarSource/sonarcloud-github-action@v5.0.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:

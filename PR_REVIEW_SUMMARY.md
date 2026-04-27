@@ -2,6 +2,27 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-04-27
+
+### Analysis: Systemic Regressions in Open Branches (Automated Daily Audit)
+
+- **Status:** Critical — Action Required
+- **Summary:** An automated repository-wide audit of 265 unmerged branches confirms the following systemic regressions.
+
+| Regression Type                | Count | Severity    | Notes                                               |
+| :----------------------------- | :---- | :---------- | :-------------------------------------------------- |
+| Orphan Branches                | 265   | 🔴 Critical | No common ancestor with `main`.                     |
+| Missing `.npmrc`               | 88    | 🔴 Critical | Breaks dependency resolution.                       |
+| Missing `docs/ROADMAP.md`      | 82    | 🟠 High     | Core project documentation.                         |
+| Missing `gitVersionControl.md` | 97    | 🟠 High     | Core Git workflow documentation.                    |
+| Missing `review.md`            | 97    | 🟡 Medium   | AI PR reviewer instructions.                        |
+| Reverted Security Helpers      | 96    | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers. |
+| Unreadable navigation.ts       | 8     | 🔴 Critical | File missing or unreadable.                         |
+
+- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.
+
+---
+
 ## 2026-03-05
 
 ### Analysis: Accidental File Deletions in Open Branches (Jules Daily PR Reviews)
@@ -189,7 +210,7 @@ This file contains a summary of pull requests I have reviewed.
 ### Baseline Fix: Undici Dependency & Security
 
 - **Summary:** Fixed a critical baseline issue where an outdated `undici` override was incompatible with `jsdom` v28.0.0 and contained moderate security vulnerabilities.
-- **Action:** Updated `undici` override to `^7.20.0` in `package.json`. This satisfies the requirements for `jsdom` (fixing `MODULE_NOT_FOUND` errors) and resolves security audit failures for nested dependencies.
+- \*\*Action:\*\* Updated `undici` override to `^7.20.0` in `package.json`. This satisfies the requirements for `jsdom` (fixing `MODULE_NOT_FOUND` errors) and resolves security audit failures for nested dependencies.
 
 ### PR #387: Fix Home/End key navigation tests in Header component
 
@@ -230,7 +251,7 @@ This file contains a summary of pull requests I have reviewed.
 ### PR #309, #308, #284
 
 - **Status:** Approved
-- **Summary:** These PRs provide various improvements including FontAwesome test updates (#309), linting fixes (#308), and Lighthouse CI budget enhancements (#284).
+- \*\*Summary:\*\* These PRs provide various improvements including FontAwesome test updates (#309), linting fixes (#308), and Lighthouse CI budget enhancements (#284).
 - **Feedback:** All are solid maintenance improvements.
 
 ---

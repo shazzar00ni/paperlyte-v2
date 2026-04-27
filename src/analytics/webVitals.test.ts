@@ -392,7 +392,9 @@ describe('analytics/webVitals', () => {
 
     it('should use Math.max for ≤10 interactions and 98th percentile for >10 at the boundary', () => {
       // Helper: creates a valid event entry; duration = processingEnd - startTime
-      const makeEntry = (duration: number) => ({
+      const makeEntry = (
+        duration: number
+      ): { startTime: number; processingStart: number; processingEnd: number } => ({
         startTime: 0,
         processingStart: 0,
         processingEnd: duration,

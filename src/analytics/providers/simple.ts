@@ -73,6 +73,7 @@ export class SimpleAnalyticsProvider implements AnalyticsProvider {
     }
 
     script.onerror = () => {
+      if (this.scriptElement !== script) return
       if (this.config?.debug) {
         console.warn('[Analytics] Failed to load Simple Analytics script')
       }
@@ -80,6 +81,7 @@ export class SimpleAnalyticsProvider implements AnalyticsProvider {
     }
 
     script.onload = () => {
+      if (this.scriptElement !== script) return
       this.scriptLoaded = true
       if (this.config?.debug) {
         console.log('[Analytics] Simple Analytics script loaded successfully')

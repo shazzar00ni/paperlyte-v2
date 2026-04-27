@@ -86,6 +86,7 @@ export class UmamiProvider implements AnalyticsProvider {
     }
 
     script.onerror = () => {
+      if (this.scriptElement !== script) return
       if (this.config?.debug) {
         console.warn('[Analytics] Failed to load Umami script')
       }
@@ -93,6 +94,7 @@ export class UmamiProvider implements AnalyticsProvider {
     }
 
     script.onload = () => {
+      if (this.scriptElement !== script) return
       this.scriptLoaded = true
       if (this.config?.debug) {
         console.log('[Analytics] Umami script loaded successfully')

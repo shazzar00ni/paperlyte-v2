@@ -62,6 +62,15 @@ export class FathomProvider implements AnalyticsProvider {
       console.warn('[Analytics] Invalid Fathom scriptUrl, falling back to default')
     }
 
+    // Fathom has no script attribute to suppress the initial automatic pageview.
+    // Warn in debug/dev so callers know trackPageviews: false cannot be fully honored.
+    if (this.config?.trackPageviews === false && (this.config?.debug || import.meta.env.DEV)) {
+      console.warn(
+        '[Analytics] Fathom does not support disabling automatic pageview tracking via script ' +
+          'attribute. The initial pageview will still be recorded by the Fathom script.'
+      )
+    }
+
     const script = document.createElement('script')
     script.async = true
     script.src = scriptUrl

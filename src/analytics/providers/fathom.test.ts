@@ -126,6 +126,30 @@ describe('analytics/providers/fathom', () => {
       expect(document.querySelector('script[data-site]')).toBeTruthy()
     })
 
+    it('should warn when trackPageviews is false because Fathom cannot suppress the initial pageview', () => {
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+      provider.init({ ...config, debug: true, trackPageviews: false })
+
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Fathom does not support disabling automatic pageview tracking')
+      )
+      // Script is still injected — the limitation is documented, not a hard block
+      expect(document.querySelector('script[data-site]')).toBeTruthy()
+      consoleWarnSpy.mockRestore()
+    })
+
+    it('should not warn about trackPageviews when trackPageviews is true', () => {
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+      provider.init({ ...config, debug: true, trackPageviews: true })
+
+      expect(consoleWarnSpy).not.toHaveBeenCalledWith(
+        expect.stringContaining('Fathom does not support disabling automatic pageview tracking')
+      )
+      consoleWarnSpy.mockRestore()
+    })
+
     it('should handle script load success', () => {
       const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
       provider.init({ ...config, debug: true })

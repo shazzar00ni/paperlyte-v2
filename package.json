@@ -61,7 +61,7 @@
     "globals": "^17.5.0",
     "jsdom": "^29.1.0",
     "png-to-ico": "^3.0.1",
-    "postcss": "^8.5.10",
+    "postcss": "^8.5.12",
     "prettier": "^3.8.3",
     "sharp": "^0.34.5",
     "terser": "^5.46.1",

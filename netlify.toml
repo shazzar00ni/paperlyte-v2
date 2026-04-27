@@ -7,7 +7,9 @@
   base = "."
 
   # Build command
-  command = "npm run build"
+  # npm ci --include=dev ensures devDependencies (e.g. sharp, png-to-ico used
+  # by prebuild scripts) are installed even when Netlify sets NODE_ENV=production.
+  command = "npm ci --include=dev && npm run build"
 
   # Directory with the build output (relative to repo root)
   publish = "dist"

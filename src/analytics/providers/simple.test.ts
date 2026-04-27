@@ -52,7 +52,6 @@ describe('analytics/providers/simple', () => {
       expect(script).toBeTruthy()
       expect(script.src).toBe('https://scripts.simpleanalyticscdn.com/latest.js')
       expect(script.async).toBe(true)
-      expect(script.defer).toBe(true)
     })
 
     it('should use a valid custom scriptUrl', () => {
@@ -272,10 +271,14 @@ describe('analytics/providers/simple', () => {
     })
 
     it('should block prototype pollution via __proto__', () => {
-      const event: AnalyticsEvent = {
-        name: 'test_event',
-        properties: { safe: 'ok', __proto__: { bad: true } } as Record<string, unknown>,
-      }
+      const properties: Record<string, unknown> = { safe: 'ok' }
+      Object.defineProperty(properties, '__proto__', {
+        value: { bad: true },
+        enumerable: true,
+        configurable: true,
+        writable: true,
+      })
+      const event: AnalyticsEvent = { name: 'test_event', properties }
       provider.trackEvent(event)
 
       expect(window.sa_event).toHaveBeenCalledWith('test_event', { safe: 'ok' })

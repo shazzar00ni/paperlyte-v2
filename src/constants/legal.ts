@@ -72,11 +72,13 @@ const allConfigEntries = (): Array<[string, string]> => {
   return entries
 }
 
+const isPlaceholder = (value: string): boolean => value.includes('[') || value === '#'
+
 /**
  * Helper function to check if legal documents need updating
  */
 export const needsLegalReview = (): boolean => {
-  return allConfigEntries().some(([, value]) => value.includes('[') || value === '#')
+  return allConfigEntries().some(([, value]) => isPlaceholder(value))
 }
 
 /**
@@ -84,6 +86,6 @@ export const needsLegalReview = (): boolean => {
  */
 export const getPlaceholderFields = (): string[] => {
   return allConfigEntries()
-    .filter(([, value]) => value.includes('[') || value === '#')
+    .filter(([, value]) => isPlaceholder(value))
     .map(([key]) => key)
 }

@@ -271,10 +271,14 @@ describe('analytics/providers/umami', () => {
     })
 
     it('should block prototype pollution via __proto__', () => {
-      const event: AnalyticsEvent = {
-        name: 'test_event',
-        properties: { safe: 'ok', __proto__: { bad: true } } as Record<string, unknown>,
-      }
+      const properties: Record<string, unknown> = { safe: 'ok' }
+      Object.defineProperty(properties, '__proto__', {
+        value: { bad: true },
+        enumerable: true,
+        configurable: true,
+        writable: true,
+      })
+      const event: AnalyticsEvent = { name: 'test_event', properties }
       provider.trackEvent(event)
 
       expect(window.umami!.track).toHaveBeenCalledWith('test_event', { safe: 'ok' })

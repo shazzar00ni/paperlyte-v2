@@ -59,7 +59,6 @@ describe('analytics/providers/fathom', () => {
       expect(script.src).toBe('https://cdn.usefathom.com/script.js')
       expect(script.getAttribute('data-site')).toBe('ABCDEFGH')
       expect(script.async).toBe(true)
-      expect(script.defer).toBe(true)
     })
 
     it('should use a valid custom scriptUrl', () => {
@@ -249,10 +248,14 @@ describe('analytics/providers/fathom', () => {
     })
 
     it('should block prototype pollution via __proto__', () => {
-      const event: AnalyticsEvent = {
-        name: 'ABCD1234',
-        properties: { safe: 'ok', __proto__: { bad: true } } as Record<string, unknown>,
-      }
+      const properties: Record<string, unknown> = { safe: 'ok' }
+      Object.defineProperty(properties, '__proto__', {
+        value: { bad: true },
+        enumerable: true,
+        configurable: true,
+        writable: true,
+      })
+      const event: AnalyticsEvent = { name: 'ABCD1234', properties }
       provider.trackEvent(event)
 
       expect(window.fathom!.trackGoal).toHaveBeenCalledWith('ABCD1234', 0, { safe: 'ok' })

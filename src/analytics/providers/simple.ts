@@ -64,7 +64,6 @@ export class SimpleAnalyticsProvider implements AnalyticsProvider {
 
     const script = document.createElement('script')
     script.async = true
-    script.defer = true
     script.src = scriptUrl
 
     // Simple Analytics detects the domain automatically; no data attribute needed.

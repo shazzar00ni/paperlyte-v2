@@ -7,9 +7,7 @@
   base = "."
 
   # Build command
-  # npm ci --include=dev ensures devDependencies (e.g. sharp, png-to-ico used
-  # by prebuild scripts) are installed even when Netlify sets NODE_ENV=production.
-  command = "npm ci --include=dev && npm run build"
+  command = "npm run build"
 
   # Directory with the build output (relative to repo root)
   publish = "dist"
@@ -20,22 +18,25 @@
   # Edge functions directory
   edge_functions = "netlify/edge-functions"
 
-  # Node version to use
-  environment = { NODE_VERSION = "20" }
+  # NPM_FLAGS="--include=dev" is passed to Netlify's automatic npm install so
+  # that devDependencies (e.g. sharp, png-to-ico used by prebuild scripts) are
+  # installed even when Netlify sets NODE_ENV=production. Avoids running a
+  # second `npm ci` inside the build command, which would double install time.
+  environment = { NODE_VERSION = "20", NPM_FLAGS = "--include=dev" }
 
 # Production context: all deploys from the main branch
 [context.production]
-  command = "npm ci --include=dev && npm run build"
+  command = "npm run build"
   publish = "dist"
 
 # Deploy Preview context: all Deploy Previews from pull requests
 [context.deploy-preview]
-  command = "npm ci --include=dev && npm run build"
+  command = "npm run build"
   publish = "dist"
 
 # Branch Deploy context: all deploys from branches that aren't main
 [context.branch-deploy]
-  command = "npm ci --include=dev && npm run build"
+  command = "npm run build"
   publish = "dist"
 
 # WAF edge function — runs on every request before the origin

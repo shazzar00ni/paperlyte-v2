@@ -381,6 +381,26 @@ describe('analytics/webVitals', () => {
   })
 
   describe('trackINP', () => {
+    let originalVisibilityState: PropertyDescriptor | undefined
+
+    beforeEach(() => {
+      originalVisibilityState = Object.getOwnPropertyDescriptor(
+        Document.prototype,
+        'visibilityState'
+      )
+    })
+
+    afterEach(() => {
+      // Restore visibilityState so mutations from triggerHidden() don't leak
+      // across tests and cause order-dependent behavior.
+      if (originalVisibilityState) {
+        Object.defineProperty(document, 'visibilityState', originalVisibilityState)
+      } else {
+        // @ts-expect-error: cleanup of test-only property
+        delete (document as Document).visibilityState
+      }
+    })
+
     const triggerHidden = (): void => {
       Object.defineProperty(document, 'visibilityState', {
         writable: true,
@@ -427,34 +447,40 @@ describe('analytics/webVitals', () => {
       cleanup10()
       po10.cleanup()
 
-      // --- >10 interactions: 98th-percentile path (exactly 11) ---
-      const po11 = mockPerformanceObserver()
+      // --- >10 interactions: 98th-percentile path with a clear distinction
+      // from Math.max. Use 51 entries: 50 baseline values [10..500] plus a
+      // single extreme outlier (9999). The 98th percentile must NOT pick the
+      // outlier; Math.max would.
+      const poP = mockPerformanceObserver()
       onReport.mockClear()
-      const cleanup11 = initWebVitals(onReport)
+      const cleanupP = initWebVitals(onReport)
 
-      const inpObserver11 = po11.instances.find((obs) => {
+      const inpObserverP = poP.instances.find((obs) => {
         const call = obs.observe.mock.calls[0]
         return call?.[0].type === 'event'
       })
-      expect(inpObserver11).toBeDefined()
+      expect(inpObserverP).toBeDefined()
 
-      // Feed 11 entries with durations [10, 20, ..., 110]
-      inpObserver11?.callback(
+      const baseline = Array.from({ length: 50 }, (_, i) => (i + 1) * 10) // [10,20,..,500]
+      const durations = [...baseline, 9999]
+
+      inpObserverP?.callback(
         {
-          getEntries: () => [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110].map(makeEntry),
+          getEntries: () => durations.map(makeEntry),
         } as PerformanceObserverEntryList,
-        inpObserver11 as PerformanceObserver
+        inpObserverP as PerformanceObserver
       )
 
       triggerHidden()
 
-      // 98th percentile of sorted [10..110] (11 items):
-      //   index = Math.max(0, Math.ceil(0.98 * 11) - 1) = Math.max(0, 11 - 1) = 10
-      //   value = sortedInteractions[10] = 110
-      expect(onReport).toHaveBeenCalledWith(expect.objectContaining({ INP: 110 }))
+      // 98th percentile of sorted [10,20,..,500,9999] (51 items):
+      //   index = Math.max(0, Math.ceil(0.98 * 51) - 1) = Math.max(0, 50 - 1) = 49
+      //   value = sortedInteractions[49] = 500
+      // Math.max would yield 9999 — the assertion below would fail under that path.
+      expect(onReport).toHaveBeenCalledWith(expect.objectContaining({ INP: 500 }))
 
-      cleanup11()
-      po11.cleanup()
+      cleanupP()
+      poP.cleanup()
     })
 
     it('should not report INP when no interactions occurred', () => {

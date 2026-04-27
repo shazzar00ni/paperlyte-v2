@@ -2,7 +2,8 @@
  * Simple Analytics provider implementation
  *
  * Privacy-friendly, no-cookie analytics with a clean dashboard.
- * Page views are tracked automatically by the script.
+ * The script tracks the initial page load automatically.
+ * For SPA navigations, call `sa_pageview` manually via `trackPageView()`.
  *
  * @see https://docs.simpleanalytics.com
  */

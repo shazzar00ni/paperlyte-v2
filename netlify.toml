@@ -25,17 +25,17 @@
 
 # Production context: all deploys from the main branch
 [context.production]
-  command = "npm run build"
+  command = "npm ci --include=dev && npm run build"
   publish = "dist"
 
 # Deploy Preview context: all Deploy Previews from pull requests
 [context.deploy-preview]
-  command = "npm run build"
+  command = "npm ci --include=dev && npm run build"
   publish = "dist"
 
 # Branch Deploy context: all deploys from branches that aren't main
 [context.branch-deploy]
-  command = "npm run build"
+  command = "npm ci --include=dev && npm run build"
   publish = "dist"
 
 # WAF edge function — runs on every request before the origin

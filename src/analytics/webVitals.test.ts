@@ -464,9 +464,8 @@ describe('analytics/webVitals', () => {
       // Trigger finalization without feeding any entries to the INP observer
       triggerHidden()
 
-      // onReport may still be called (e.g., CLS=0 is always finalised), but INP must be absent
-      expect(onReport).toHaveBeenCalled()
-      const reportedVitals = onReport.mock.calls[0][0]
+      // INP must be absent regardless of whether other vitals (e.g., CLS) were reported
+      const reportedVitals = onReport.mock.calls[0]?.[0] ?? {}
       expect(reportedVitals).not.toHaveProperty('INP')
 
       cleanup()

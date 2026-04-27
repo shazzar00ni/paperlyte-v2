@@ -487,6 +487,7 @@ describe('analytics/webVitals', () => {
         { startTime: 0, processingStart: 50, processingEnd: undefined }, // missing processingEnd
         { startTime: undefined, processingStart: 50, processingEnd: 100 }, // missing startTime
         { startTime: 100, processingStart: 50, processingEnd: 150 }, // startTime > processingStart ordering violated
+        { startTime: 0, processingStart: 100, processingEnd: 50 }, // processingEnd < processingStart ordering violated
       ]
 
       inpObserver?.callback(

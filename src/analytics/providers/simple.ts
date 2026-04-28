@@ -171,8 +171,10 @@ export class SimpleAnalyticsProvider implements AnalyticsProvider {
     this.scriptLoaded = false
     this.config = null
 
-    if (typeof document !== 'undefined' && this.scriptElement?.parentNode) {
-      this.scriptElement.parentNode.removeChild(this.scriptElement)
+    if (typeof document !== 'undefined' && this.scriptElement) {
+      if (this.scriptElement.parentNode) {
+        this.scriptElement.parentNode.removeChild(this.scriptElement)
+      }
       this.scriptElement = null
     }
 

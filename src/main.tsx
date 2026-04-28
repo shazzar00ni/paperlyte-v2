@@ -50,9 +50,9 @@ if (import.meta.env.PROD && import.meta.env.VITE_SENTRY_DSN) {
       })
   }
 
-  // Cast to Record to avoid TypeScript narrowing `requestIdleCallback` as always-present
-  // (TS 6 marks it as required on Window, making the else-branches unreachable otherwise)
-  if ('requestIdleCallback' in (window as Record<string, unknown>)) {
+  // Use unknown intermediate cast — TS marks requestIdleCallback as required on Window in 5.9,
+  // making the else-branches unreachable if we narrow window directly with `in`.
+  if ('requestIdleCallback' in (window as unknown as Record<string, unknown>)) {
     window.requestIdleCallback(loadReplay)
   } else if (document.readyState === 'complete') {
     window.setTimeout(loadReplay, 0)

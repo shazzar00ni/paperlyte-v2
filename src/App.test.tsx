@@ -20,13 +20,15 @@ describe('App Integration', () => {
     // Verify header contains navigation
     expect(header?.querySelector('nav')).toBeInTheDocument()
 
-    // Wait for lazy-loaded sections to render before checking order
-    await waitFor(() => expect(container.querySelector('#statistics')).toBeInTheDocument())
-    await waitFor(() => expect(container.querySelector('#comparison')).toBeInTheDocument())
-    await waitFor(() => expect(container.querySelector('#testimonials')).toBeInTheDocument())
-    await waitFor(() => expect(container.querySelector('#email-capture')).toBeInTheDocument())
-    await waitFor(() => expect(container.querySelector('#faq')).toBeInTheDocument())
-    await waitFor(() => expect(container.querySelector('#download')).toBeInTheDocument())
+    // Wait for all lazy-loaded sections to render before checking order
+    await waitFor(() => {
+      expect(container.querySelector('#statistics')).toBeInTheDocument()
+      expect(container.querySelector('#comparison')).toBeInTheDocument()
+      expect(container.querySelector('#testimonials')).toBeInTheDocument()
+      expect(container.querySelector('#email-capture')).toBeInTheDocument()
+      expect(container.querySelector('#faq')).toBeInTheDocument()
+      expect(container.querySelector('#download')).toBeInTheDocument()
+    })
 
     // Verify sections exist and are in correct order
     const sections = main?.querySelectorAll('section')
@@ -260,18 +262,19 @@ describe('App Integration', () => {
   it('should include waitlist form in EmailCapture section', async () => {
     const { container } = render(<App />)
 
-    // EmailCapture section should contain email input (lazy-loaded)
-    await waitFor(() =>
-      expect(container.querySelectorAll('input[type="email"]').length).toBeGreaterThan(0)
-    )
+    // Wait for the lazy #email-capture section specifically
+    await waitFor(() => expect(container.querySelector('#email-capture')).toBeInTheDocument())
+
+    const emailCaptureSection = container.querySelector('#email-capture')
+    expect(emailCaptureSection?.querySelector('input[type="email"]')).toBeInTheDocument()
   })
 
   it('should render without console errors', async () => {
     const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
 
     const { container } = render(<App />)
-    // Flush lazy-loaded sections to prevent act() warnings from polluting the spy
-    await waitFor(() => expect(container.querySelector('#statistics')).toBeInTheDocument())
+    // Flush all lazy-loaded sections to prevent act() warnings from polluting the spy
+    await waitFor(() => expect(container.querySelector('#download')).toBeInTheDocument())
 
     expect(consoleErrorSpy).not.toHaveBeenCalled()
 

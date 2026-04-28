@@ -13,19 +13,10 @@ jobs:
     if: secrets.SONAR_TOKEN != ''
     steps:
       - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           fetch-depth: 0
       - name: Scan
-        uses: SonarSource/sonarcloud-github-action@ffc3010689be73b8e5ae0c57ce35968afd7909e8 # v5.0.0
+        uses: SonarSource/sonarqube-scan-action@299e4b793aaa83bf2aba7c9c14bedbb485688ec4
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          args: >-
-            -Dsonar.projectKey=${{ github.repository_owner }}_paperlyte-v2
-            -Dsonar.organization=${{ github.repository_owner }}
-            -Dsonar.sources=src
-            -Dsonar.tests=src
-            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
-            -Dsonar.coverage.exclusions=scripts/maintenance/**
-          projectBaseDir: .

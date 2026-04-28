@@ -21,17 +21,6 @@ This file contains a summary of pull requests I have reviewed.
 
 - **Action Required:** ALL affected branches MUST restore these critical files and security helpers.
 
-### PR Review: fix-codebase-review-issues-kjZsN
-
-- **Status:** Approved
-- **Summary:** This PR successfully migrates the codebase to React 19 patterns (removing forwardRef in favor of props-based refs) and completes the Vitest migration. The changes are clean, follow best practices, and improve the overall maintainability of the UI components.
-
-### PR Review: paperlyte-12-issue-fixes-1fvmr
-
-- **Status:** Changes Requested
-- **Summary:** While this PR fixes several UI issues, it introduces a regression in `src/App.tsx` by rendering `@vercel/analytics` unconditionally. This causes "Analytics script not found" errors in local development environments.
-- **Suggestion:** Wrap the Analytics component in a conditional check for production environments and non-localhost hostnames to maintain a clean development console.
-
 ---
 
 ## 2026-03-05

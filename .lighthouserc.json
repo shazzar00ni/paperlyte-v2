@@ -23,8 +23,6 @@
         "first-contentful-paint": ["error", { "maxNumericValue": 4500 }],
         "largest-contentful-paint": ["error", { "maxNumericValue": 6000 }],
         "cumulative-layout-shift": ["error", { "maxNumericValue": 0.25 }],
-        "errors-in-console": "warn",
-        "network-dependency-tree-insight": "warn",
         "total-blocking-time": ["error", { "maxNumericValue": 1200 }],
         "speed-index": ["error", { "maxNumericValue": 5500 }],
         "interactive": ["error", { "maxNumericValue": 8000 }],

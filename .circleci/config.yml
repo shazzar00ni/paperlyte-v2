@@ -12,6 +12,10 @@ executors:
 jobs:
   install:
     executor: node-executor
+    environment:
+      # Skip browser download in the install job; e2e uses the Playwright Docker
+      # image which already has browsers bundled.
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
     steps:
       - checkout
       - node/install-packages:
@@ -132,7 +136,9 @@ jobs:
 
   e2e:
     docker:
-      - image: mcr.microsoft.com/playwright:v1.59.1-noble
+      # Pinned to digest for reproducible, secure builds (avoids mutable-tag risk).
+      # Tag: v1.59.1-noble
+      - image: mcr.microsoft.com/playwright:v1.59.1-noble@sha256:eac9b0a5312cdab40ee8c2429df5bf19bffdccf8f3bf3c42268e173f97541645
     resource_class: medium
     steps:
       - checkout
@@ -145,7 +151,7 @@ jobs:
           name: Prepare E2E workspace
           command: |
             cp -R /tmp/workspace/dist ./dist
-            npm ci
+            PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm ci
       - run:
           name: Start preview server
           # background: true keeps the process alive across subsequent steps.

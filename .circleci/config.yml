@@ -110,7 +110,7 @@ jobs:
           at: .
       - run:
           name: Coverage report
-          command: npm run test:coverage
+          command: npm run test:coverage -- --run
           environment:
             CI: "true"
       - store_artifacts:

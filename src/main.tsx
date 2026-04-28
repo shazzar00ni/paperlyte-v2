@@ -19,13 +19,7 @@ if (import.meta.env.PROD && import.meta.env.VITE_SENTRY_DSN) {
   Sentry.init({
     dsn: import.meta.env.VITE_SENTRY_DSN,
     environment: import.meta.env.VITE_SENTRY_ENVIRONMENT || import.meta.env.MODE,
-    integrations: [
-      Sentry.browserTracingIntegration(),
-      Sentry.replayIntegration({
-        maskAllText: true,
-        blockAllMedia: true,
-      }),
-    ],
+    integrations: [Sentry.browserTracingIntegration()],
     // Performance monitoring
     tracesSampleRate: parseFloat(import.meta.env.VITE_SENTRY_SAMPLE_RATE || '0.1'),
     // Session replay
@@ -45,6 +39,12 @@ if (import.meta.env.PROD && import.meta.env.VITE_SENTRY_DSN) {
       return event
     },
   })
+
+  if (typeof window !== 'undefined') {
+    import('@sentry/react').then(({ replayIntegration }) => {
+      Sentry.addIntegration(replayIntegration({ maskAllText: true, blockAllMedia: true }))
+    })
+  }
 }
 
 // Initialize environment-aware meta tags

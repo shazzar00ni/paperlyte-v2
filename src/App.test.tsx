@@ -1,10 +1,10 @@
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from './App'
 
 describe('App Integration', () => {
-  it('should render with proper semantic structure and section order', () => {
+  it('should render with proper semantic structure and section order', async () => {
     const { container } = render(<App />)
 
     // Verify semantic landmark regions
@@ -19,6 +19,14 @@ describe('App Integration', () => {
 
     // Verify header contains navigation
     expect(header?.querySelector('nav')).toBeInTheDocument()
+
+    // Wait for lazy-loaded sections to render before checking order
+    await waitFor(() => expect(container.querySelector('#statistics')).toBeInTheDocument())
+    await waitFor(() => expect(container.querySelector('#comparison')).toBeInTheDocument())
+    await waitFor(() => expect(container.querySelector('#testimonials')).toBeInTheDocument())
+    await waitFor(() => expect(container.querySelector('#email-capture')).toBeInTheDocument())
+    await waitFor(() => expect(container.querySelector('#faq')).toBeInTheDocument())
+    await waitFor(() => expect(container.querySelector('#download')).toBeInTheDocument())
 
     // Verify sections exist and are in correct order
     const sections = main?.querySelectorAll('section')
@@ -104,21 +112,19 @@ describe('App Integration', () => {
     expect(screen.getByText(/Capture inspiration/i)).toBeInTheDocument()
   })
 
-  it('should render Testimonials section', () => {
+  it('should render Testimonials section', async () => {
     const { container } = render(<App />)
 
-    const testimonialsSection = container.querySelector('#testimonials')
-    expect(testimonialsSection).toBeInTheDocument()
+    await waitFor(() => expect(container.querySelector('#testimonials')).toBeInTheDocument())
 
     // Verify testimonials content is present
     expect(screen.getByText(/Sarah Chen/i)).toBeInTheDocument()
   })
 
-  it('should render CTA section', () => {
+  it('should render CTA section', async () => {
     const { container } = render(<App />)
 
-    const ctaSection = container.querySelector('#download')
-    expect(ctaSection).toBeInTheDocument()
+    await waitFor(() => expect(container.querySelector('#download')).toBeInTheDocument())
 
     // Verify specific CTA content is present
     expect(screen.getByText(/Stop fighting your tools/i)).toBeInTheDocument()
@@ -134,11 +140,15 @@ describe('App Integration', () => {
     expect(screen.getByRole('contentinfo')).toBeInTheDocument()
   })
 
-  it('should render CTA buttons in download section', () => {
+  it('should render CTA buttons in download section', async () => {
     render(<App />)
 
-    // Check for actual CTA buttons (there may be multiple "Join the Waitlist" buttons across sections)
-    expect(screen.getAllByRole('button', { name: /Join the Waitlist/i }).length).toBeGreaterThan(0)
+    // Wait for lazy CTA section to render
+    await waitFor(() =>
+      expect(screen.getAllByRole('button', { name: /Join the Waitlist/i }).length).toBeGreaterThan(
+        0
+      )
+    )
 
     // Check for demo button (use flexible pattern to handle different wording)
     const demoButtons = screen.getAllByRole('button', { name: /Watch the Demo|View the Demo/i })
@@ -203,25 +213,22 @@ describe('App Integration', () => {
     expect(solutionSection).toBeInTheDocument()
   })
 
-  it('should render Statistics section', () => {
+  it('should render Statistics section', async () => {
     const { container } = render(<App />)
 
-    const statisticsSection = container.querySelector('#statistics')
-    expect(statisticsSection).toBeInTheDocument()
+    await waitFor(() => expect(container.querySelector('#statistics')).toBeInTheDocument())
   })
 
-  it('should render Comparison section', () => {
+  it('should render Comparison section', async () => {
     const { container } = render(<App />)
 
-    const comparisonSection = container.querySelector('#comparison')
-    expect(comparisonSection).toBeInTheDocument()
+    await waitFor(() => expect(container.querySelector('#comparison')).toBeInTheDocument())
   })
 
-  it('should render FAQ section', () => {
+  it('should render FAQ section', async () => {
     const { container } = render(<App />)
 
-    const faqSection = container.querySelector('#faq')
-    expect(faqSection).toBeInTheDocument()
+    await waitFor(() => expect(container.querySelector('#faq')).toBeInTheDocument())
   })
 
   it('should render FeedbackWidget component', () => {
@@ -251,18 +258,19 @@ describe('App Integration', () => {
     expect(h1Elements.length).toBeGreaterThanOrEqual(1)
   })
 
-  it('should include waitlist form in EmailCapture section', () => {
+  it('should include waitlist form in EmailCapture section', async () => {
     const { container } = render(<App />)
 
-    // EmailCapture section should contain email input
-    const emailInputs = container.querySelectorAll('input[type="email"]')
-    expect(emailInputs.length).toBeGreaterThan(0)
+    // EmailCapture section should contain email input (lazy-loaded)
+    await waitFor(() => expect(container.querySelectorAll('input[type="email"]').length).toBeGreaterThan(0))
   })
 
-  it('should render without console errors', () => {
+  it('should render without console errors', async () => {
     const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
 
-    render(<App />)
+    const { container } = render(<App />)
+    // Flush lazy-loaded sections to prevent act() warnings from polluting the spy
+    await waitFor(() => expect(container.querySelector('#statistics')).toBeInTheDocument())
 
     expect(consoleErrorSpy).not.toHaveBeenCalled()
 

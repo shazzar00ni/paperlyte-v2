@@ -21,8 +21,12 @@ def main():
         print("Error: audit_results.json not found.", file=sys.stderr)
         sys.exit(1)
 
-    with open('audit_results.json', 'r') as f:
-        data = json.load(f)
+    try:
+        with open('audit_results.json', 'r', encoding='utf-8') as f:
+            data = json.load(f)
+    except (OSError, json.JSONDecodeError) as exc:
+        print(f"Error: invalid audit_results.json: {exc}", file=sys.stderr)
+        sys.exit(1)
 
     # Get PR mappings from GitHub CLI (if available)
     pr_map = {}

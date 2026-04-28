@@ -25,18 +25,31 @@ def update_summary_file(new_content):
         with open(filepath, 'r') as f:
             existing_content = f.read()
 
-    # Remove existing title/header if present to avoid duplication
-    cleaned_existing = existing_content.replace("# PR Review Summary\n\nThis file contains a summary of pull requests I have reviewed.\n\n", "")
-    cleaned_existing = cleaned_existing.replace("# PR Review Summary\n", "").replace("This file contains a summary of pull requests I have reviewed.\n", "")
-    cleaned_existing = cleaned_existing.lstrip()
+    # Extract only the historical entries (everything after the first --- if today exists, or everything after header)
+    # This is safer than string replacement which is fragile with formatting.
 
-    # Look for current date entry to avoid duplicates if run multiple times same day
+    historical_parts = existing_content.split("---")
+    # If we have parts, the last parts are historical.
+    # But wait, if there are multiple days, they are all separated by ---
+
+    # Better approach: find where the first real entry (date heading) starts that IS NOT today
     date_str = datetime.now().strftime('%Y-%m-%d')
-    if f"## {date_str}" in cleaned_existing:
-        # Split at the next entry and discard the first one (today's previous run)
-        parts = cleaned_existing.split("---", 1)
-        if len(parts) > 1:
-            cleaned_existing = parts[1].lstrip()
+    lines = existing_content.splitlines()
+    historical_start_index = -1
+
+    for i, line in enumerate(lines):
+        if line.startswith("## ") and date_str not in line:
+            historical_start_index = i
+            break
+
+    if historical_start_index != -1:
+        cleaned_existing = "\n".join(lines[historical_start_index:])
+    else:
+        # If no other date found, just keep everything after the first --- if it exists
+        if len(historical_parts) > 1:
+            cleaned_existing = historical_parts[-1].strip()
+        else:
+            cleaned_existing = ""
 
     final_content = header + new_content + "\n---\n\n" + cleaned_existing
 

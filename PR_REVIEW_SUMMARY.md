@@ -21,30 +21,6 @@ This file contains a summary of pull requests I have reviewed.
 
 - **Action Required:** ALL affected branches MUST restore these critical files and security helpers.
 
-### Qualitative Reviews — 2026-04-28
-
-#### PR: `origin/claude/fix-codebase-review-issues-kjZsN`
-
-- **Status:** Approved (Pending Systemic Fixes)
-- **Summary:** Implements performance optimizations and stability fixes across core UI components and utility functions.
-- **Key Changes:**
-  - **Early Theme Initialization:** Added `public/theme-init.js` and integrated it into `index.html` to prevent Flash of Unstyled Content (FOUC).
-  - **AnimatedElement Optimization:** Wrapped `AnimatedElement` in `React.memo` and optimized `useEffect` to avoid unnecessary work when `prefers-reduced-motion` is active.
-  - **Safe Property Access:** Updated `src/utils/validation.ts` to use bracket notation for safer property access on form data.
-  - **Improved Testing:** Added a comprehensive test suite for the new theme initialization logic.
-- **Feedback:** These are high-quality improvements that directly address performance and UX issues. The early theme initialization is a best practice for apps with dark mode.
-
-#### PR: `origin/claude/paperlyte-12-issue-fixes-1fvmr`
-
-- **Status:** Approved (Pending Systemic Fixes)
-- **Summary:** Enhances the `EmailCapture` component with real backend integration, better error handling, and externalized content.
-- **Key Changes:**
-  - **Production Email Capture:** Replaced simulated API call in `EmailCapture.tsx` with a real `fetch` to `/.netlify/functions/subscribe`.
-  - **Robust Error Handling:** Added logic to differentiate between user-side errors (400/429) and server-side errors, improving the user feedback loop.
-  - **Content Externalization:** Moved hardcoded strings into `emailCapture.data.ts` for better maintainability.
-  - **Coverage Improvements:** Added significant test coverage for `EmailCapture` (E2E simulation) and `useAnalytics` hook.
-- **Feedback:** This PR moves the project closer to production readiness. The separation of copy from logic is a welcome cleanup.
-
 ---
 
 ## 2026-03-05

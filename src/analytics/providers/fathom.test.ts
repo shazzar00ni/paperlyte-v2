@@ -230,7 +230,7 @@ describe('analytics/providers/fathom', () => {
 
   describe('trackEvent', () => {
     beforeEach(() => {
-      provider.init({ ...config, goalCodes: { ABCD1234: 'ABCD1234', cta_click: 'WXYZ9876' } })
+      provider.init({ ...config, goalCodes: { example_event: 'ABCD1234', cta_click: 'WXYZ9876' } })
       window.fathom = mockFathom()
 
       const script = document.querySelector('script[data-site]') as HTMLScriptElement
@@ -238,7 +238,7 @@ describe('analytics/providers/fathom', () => {
     })
 
     it('should call trackGoal with the mapped goal code and zero value', () => {
-      const event: AnalyticsEvent = { name: 'ABCD1234' }
+      const event: AnalyticsEvent = { name: 'example_event' }
       provider.trackEvent(event)
 
       expect(window.fathom!.trackGoal).toHaveBeenCalledWith('ABCD1234', 0, undefined)
@@ -302,7 +302,7 @@ describe('analytics/providers/fathom', () => {
 
     it('should pass sanitised properties to trackGoal', () => {
       const event: AnalyticsEvent = {
-        name: 'ABCD1234',
+        name: 'example_event',
         properties: { button: 'Join Waitlist', count: 1 },
       }
       provider.trackEvent(event)
@@ -315,7 +315,7 @@ describe('analytics/providers/fathom', () => {
 
     it('should filter out null and undefined properties', () => {
       const event: AnalyticsEvent = {
-        name: 'ABCD1234',
+        name: 'example_event',
         properties: {
           valid: 'value',
           nullProp: null as unknown as string,
@@ -335,7 +335,7 @@ describe('analytics/providers/fathom', () => {
         configurable: true,
         writable: true,
       })
-      const event: AnalyticsEvent = { name: 'ABCD1234', properties }
+      const event: AnalyticsEvent = { name: 'example_event', properties }
       provider.trackEvent(event)
 
       expect(window.fathom!.trackGoal).toHaveBeenCalledWith('ABCD1234', 0, { safe: 'ok' })
@@ -344,16 +344,18 @@ describe('analytics/providers/fathom', () => {
     it('should log debug message with goal code when debug is enabled', () => {
       document.head.innerHTML = ''
       const debugProvider = new FathomProvider()
-      debugProvider.init({ ...config, debug: true, goalCodes: { ABCD1234: 'ABCD1234' } })
+      debugProvider.init({ ...config, debug: true, goalCodes: { cta_click: 'GOAL1234' } })
       window.fathom = mockFathom()
 
       const script = document.querySelector('script[data-site]') as HTMLScriptElement
       script.onload?.(new Event('load'))
 
       const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
-      debugProvider.trackEvent({ name: 'ABCD1234' })
+      debugProvider.trackEvent({ name: 'cta_click' })
 
-      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Fathom trackGoal'))
+      expect(consoleLogSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Fathom trackGoal')
+      )
       consoleLogSpy.mockRestore()
     })
 

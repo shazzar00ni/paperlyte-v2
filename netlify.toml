@@ -15,8 +15,14 @@
   # Serverless functions directory
   functions = "netlify/functions"
 
-  # Node version to use
-  environment = { NODE_VERSION = "20" }
+  # Edge functions directory
+  edge_functions = "netlify/edge-functions"
+
+  # NPM_FLAGS="--include=dev" is passed to Netlify's automatic npm install so
+  # that devDependencies (e.g. sharp, png-to-ico used by prebuild scripts) are
+  # installed even when Netlify sets NODE_ENV=production. Avoids running a
+  # second `npm ci` inside the build command, which would double install time.
+  environment = { NODE_VERSION = "20", NPM_FLAGS = "--include=dev" }
 
 # Production context: all deploys from the main branch
 [context.production]
@@ -33,13 +39,20 @@
   command = "npm run build"
   publish = "dist"
 
+# WAF edge function — runs on every request before the origin
+[[edge_functions]]
+  function = "waf"
+  path = "/*"
+
 # Redirect rules for SPA routing
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
 
-# Security headers
+# ---------------------------------------------------------------------------
+# Security headers — applied to all responses
+# ---------------------------------------------------------------------------
 [[headers]]
   for = "/*"
   [headers.values]
@@ -52,26 +65,62 @@
     # Referrer policy
     Referrer-Policy = "strict-origin-when-cross-origin"
 
-    # Strict Transport Security
-    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    # Strict Transport Security (2 years, include subdomains, preload-eligible)
+    Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
 
-    # Permissions Policy
-    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+    # Disable access to sensitive browser APIs
+    Permissions-Policy = "geolocation=(), microphone=(), camera=(), payment=(), usb=(), bluetooth=(), serial=(), magnetometer=(), gyroscope=(), accelerometer=(), ambient-light-sensor=()"
 
-    # Content Security Policy - all assets self-hosted for security (matches vercel.json)
-    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';"
+    # Content Security Policy
+    # External origins allowed:
+    #   https://plausible.io              Plausible Analytics script + beacon (VITE_ANALYTICS_PROVIDER=plausible)
+    #   https://*.ingest.sentry.io        Sentry error telemetry (VITE_SENTRY_DSN)
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://plausible.io; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://plausible.io https://*.ingest.sentry.io; worker-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests;"
 
-# Cache static assets for 1 year
+    # Isolate this page's browsing context group so cross-origin windows opened
+    # from this page (or that open this page) cannot access each other's DOM or
+    # window object, mitigating Spectre-class side-channel attacks.
+    Cross-Origin-Opener-Policy = "same-origin"
+
+    # Prevent other origins from loading this site's resources
+    Cross-Origin-Resource-Policy = "same-origin"
+
+    # Cross-Origin-Embedder-Policy disabled to avoid blocking third-party analytics
+    Cross-Origin-Embedder-Policy = "unsafe-none"
+
+    # Block Adobe/Silverlight cross-domain policy files
+    X-Permitted-Cross-Domain-Policies = "none"
+
+    # Legacy XSS auditor (defence-in-depth for older browsers)
+    X-XSS-Protection = "1; mode=block"
+
+# Cache static assets for 1 year (content-addressed filenames ensure freshness)
 [[headers]]
   for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
-# Cache fonts for 1 year
+# Cache self-hosted fonts for 1 year
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+
 [[headers]]
   for = "/*.woff2"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# Prevent indexing of deploy previews and branch deploys
+[[context.deploy-preview.headers]]
+  for = "/*"
+  [context.deploy-preview.headers.values]
+    X-Robots-Tag = "noindex, nofollow, noarchive, nosnippet"
+
+[[context.branch-deploy.headers]]
+  for = "/*"
+  [context.branch-deploy.headers.values]
+    X-Robots-Tag = "noindex, nofollow, noarchive, nosnippet"
 
 # Performance optimizations
 # Skip Netlify's build processing since Vite handles bundling and optimization

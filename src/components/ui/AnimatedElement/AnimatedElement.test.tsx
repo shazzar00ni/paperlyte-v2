@@ -1,8 +1,13 @@
-import { describe, it, expect } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { describe, it, expect, vi, afterEach } from 'vitest'
+import { render, screen, act } from '@testing-library/react'
 import { AnimatedElement } from './AnimatedElement'
 
 describe('AnimatedElement', () => {
+  afterEach(() => {
+    // Restore any globals stubbed during the test (e.g. IntersectionObserver).
+    // Running this in afterEach ensures cleanup happens even if a test fails early.
+    vi.unstubAllGlobals()
+  })
   it('should render children', () => {
     render(
       <AnimatedElement>
@@ -49,20 +54,17 @@ describe('AnimatedElement', () => {
   })
 
   it('should respect reduced motion preference', () => {
-    // Mock prefers-reduced-motion: reduce
-    Object.defineProperty(window, 'matchMedia', {
-      writable: true,
-      value: (query: string) => ({
-        matches: query === '(prefers-reduced-motion: reduce)',
-        media: query,
-        onchange: null,
-        addListener: () => {},
-        removeListener: () => {},
-        addEventListener: () => {},
-        removeEventListener: () => {},
-        dispatchEvent: () => true,
-      }),
-    })
+    // Use vi.stubGlobal so afterEach(vi.unstubAllGlobals) reverts this automatically
+    vi.stubGlobal('matchMedia', (query: string) => ({
+      matches: query === '(prefers-reduced-motion: reduce)',
+      media: query,
+      onchange: null,
+      addListener: () => {},
+      removeListener: () => {},
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      dispatchEvent: () => true,
+    }))
 
     const { container } = render(
       <AnimatedElement animation="fadeIn">
@@ -74,6 +76,69 @@ describe('AnimatedElement', () => {
 
     // Should not have animation class when reduced motion is preferred
     expect(wrapper).not.toHaveClass('fadeIn')
+  })
+
+  it('should apply visible class when IntersectionObserver fires with isIntersecting=true', () => {
+    // Capture the IntersectionObserver callback so we can trigger it manually.
+    // Must use a regular function (not arrow) so it can be called with `new`.
+    let observerCallback: IntersectionObserverCallback | null = null
+
+    const MockIO = vi.fn(function (callback: IntersectionObserverCallback) {
+      observerCallback = callback
+    }) as unknown as typeof IntersectionObserver
+    ;(MockIO.prototype as { observe: () => void }).observe = vi.fn()
+    ;(MockIO.prototype as { unobserve: () => void }).unobserve = vi.fn()
+    ;(MockIO.prototype as { disconnect: () => void }).disconnect = vi.fn()
+    ;(MockIO.prototype as { takeRecords: () => [] }).takeRecords = () => []
+
+    vi.stubGlobal('IntersectionObserver', MockIO)
+
+    const { container } = render(
+      <AnimatedElement animation="fadeIn">
+        <div>Visible content</div>
+      </AnimatedElement>
+    )
+
+    const wrapper = container.firstChild as HTMLElement
+
+    // Before observer fires, visible class should not be present
+    expect(wrapper.className).not.toContain('visible')
+
+    // Simulate the observer reporting that the element is intersecting
+    act(() => {
+      observerCallback!(
+        [{ isIntersecting: true } as IntersectionObserverEntry],
+        {} as IntersectionObserver
+      )
+    })
+
+    // Now the visible class should be applied
+    expect(wrapper.className).toContain('visible')
+  })
+
+  it('should pass threshold prop to IntersectionObserver', () => {
+    let capturedOptions: IntersectionObserverInit | undefined
+
+    const MockIO = vi.fn(function (
+      _callback: IntersectionObserverCallback,
+      options?: IntersectionObserverInit
+    ) {
+      capturedOptions = options
+    }) as unknown as typeof IntersectionObserver
+    ;(MockIO.prototype as { observe: () => void }).observe = vi.fn()
+    ;(MockIO.prototype as { unobserve: () => void }).unobserve = vi.fn()
+    ;(MockIO.prototype as { disconnect: () => void }).disconnect = vi.fn()
+    ;(MockIO.prototype as { takeRecords: () => [] }).takeRecords = () => []
+
+    vi.stubGlobal('IntersectionObserver', MockIO)
+
+    render(
+      <AnimatedElement animation="slideUp" threshold={0.5}>
+        <div>Content</div>
+      </AnimatedElement>
+    )
+
+    expect(capturedOptions).toMatchObject({ threshold: 0.5 })
   })
 
   it('should support different animation types', () => {

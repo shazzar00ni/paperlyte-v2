@@ -1,5 +1,4 @@
 import { useRef, useCallback } from 'react'
-import { Analytics } from '@vercel/analytics/react'
 import { ErrorBoundary } from '@components/ErrorBoundary'
 import { Header } from '@components/layout/Header'
 import { Footer } from '@components/layout/Footer'
@@ -55,9 +54,6 @@ function App() {
       </main>
       <Footer />
       <FeedbackWidget />
-      {import.meta.env.PROD &&
-        !['localhost', '127.0.0.1', '::1'].includes(window.location.hostname) &&
-        <Analytics />}
     </ErrorBoundary>
   )
 }

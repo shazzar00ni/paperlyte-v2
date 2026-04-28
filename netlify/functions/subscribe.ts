@@ -108,7 +108,9 @@ async function subscribeToConvertKit(email: string): Promise<ConvertKitResponse>
   }
 
   const controller = new AbortController()
-  const timeoutId = setTimeout(() => controller.abort(), 10000) // 10 second timeout
+  const timeoutId = setTimeout(() => {
+    controller.abort()
+  }, 10000) // 10 second timeout
 
   const response = await fetch(`https://api.convertkit.com/v3/forms/${formId}/subscribe`, {
     method: 'POST',
@@ -117,7 +119,9 @@ async function subscribeToConvertKit(email: string): Promise<ConvertKitResponse>
     },
     body: JSON.stringify(requestBody),
     signal: controller.signal,
-  }).finally(() => clearTimeout(timeoutId))
+  }).finally(() => {
+    clearTimeout(timeoutId)
+  })
 
   if (!response.ok) {
     // Log error without PII (don't log full error response which may contain email)

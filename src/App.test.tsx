@@ -9,12 +9,9 @@ describe('App Integration', () => {
 
   it('should render with proper semantic structure and section order', () => {
     const { container } = render(<App />)
-
-    // Verify semantic landmark regions
     const header = container.querySelector('header')
     const main = container.querySelector('main')
     const footer = container.querySelector('footer')
-
     expect(header).toBeInTheDocument()
     expect(main).toBeInTheDocument()
     expect(main).toHaveAttribute('id', 'main')
@@ -23,9 +20,9 @@ describe('App Integration', () => {
 
   it('should have accessible landmark regions with proper roles', () => {
     render(<App />)
-    expect(screen.getByRole('banner')).toBeInTheDocument() // Header
+    expect(screen.getByRole('banner')).toBeInTheDocument()
     expect(screen.getByRole('main')).toBeInTheDocument()
-    expect(screen.getByRole('contentinfo')).toBeInTheDocument() // Footer
+    expect(screen.getByRole('contentinfo')).toBeInTheDocument()
   })
 })
 
@@ -35,12 +32,7 @@ describe('App Analytics', () => {
   })
 
   it('should render Analytics component only in production and not on localhost', () => {
-    // Mock window.location.hostname
-    vi.stubGlobal('location', {
-      ...window.location,
-      hostname: 'paperlyte.app',
-    })
-
+    vi.stubGlobal('location', { ...window.location, hostname: 'paperlyte.app' })
     render(<App />)
     expect(screen.getByRole('main')).toBeInTheDocument()
   })

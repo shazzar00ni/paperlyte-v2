@@ -262,7 +262,9 @@ describe('App Integration', () => {
     const { container } = render(<App />)
 
     // EmailCapture section should contain email input (lazy-loaded)
-    await waitFor(() => expect(container.querySelectorAll('input[type="email"]').length).toBeGreaterThan(0))
+    await waitFor(() =>
+      expect(container.querySelectorAll('input[type="email"]').length).toBeGreaterThan(0)
+    )
   })
 
   it('should render without console errors', async () => {

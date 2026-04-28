@@ -1,9 +1,16 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from './App'
+import { _clearPendingScrollObservers } from '@utils/navigation'
 
 describe('App Integration', () => {
+  afterEach(() => {
+    // Clear any module-level MutationObservers created by scrollToSection in
+    // components under test — prevents observer leakage across tests.
+    _clearPendingScrollObservers()
+  })
+
   it('should render with proper semantic structure and section order', async () => {
     const { container } = render(<App />)
 

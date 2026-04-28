@@ -14,12 +14,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v4.2.2
         with:
           fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/setup-python@3958dc975a74996155c996548332007931f4a601 # v5.3.0
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v5.3.0
         with:
           python-version: '3.x'
 
@@ -37,6 +37,10 @@ jobs:
           # Prepend daily summary after the header in PR_REVIEW_SUMMARY.md
           if [ -f daily_summary.txt ]; then
             # Find the line number of the main header
+            if [ ! -f PR_REVIEW_SUMMARY.md ]; then echo "# PR Review Summary
+
+This file contains a summary of pull requests I have reviewed.
+" > PR_REVIEW_SUMMARY.md; fi
             HEADER_LINE=$(grep -n "# PR Review Summary" PR_REVIEW_SUMMARY.md | head -n 1 | cut -d: -f1 || echo "1")
             AFTER_HEADER=$(($HEADER_LINE + 1))
 

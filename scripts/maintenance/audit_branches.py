@@ -65,7 +65,8 @@ def main():
             issues.append("Orphan branch (no shared history with main)")
 
         # 1. Check for missing critical files using git ls-tree
-        branch_files_raw = run_command(["git", "ls-tree", "-r", "--name-only", branch])
+        files_to_check = CRITICAL_FILES + ["src/utils/navigation.ts"]
+        branch_files_raw = run_command(["git", "ls-tree", "-r", "--name-only", branch] + files_to_check)
         if branch_files_raw:
             branch_files = set(branch_files_raw.split('\n'))
             for path in CRITICAL_FILES:

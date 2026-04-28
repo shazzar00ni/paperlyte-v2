@@ -230,18 +230,74 @@ describe('analytics/providers/fathom', () => {
 
   describe('trackEvent', () => {
     beforeEach(() => {
-      provider.init(config)
+      provider.init({ ...config, goalCodes: { ABCD1234: 'ABCD1234', cta_click: 'WXYZ9876' } })
       window.fathom = mockFathom()
 
       const script = document.querySelector('script[data-site]') as HTMLScriptElement
       script.onload?.(new Event('load'))
     })
 
-    it('should call trackGoal with event name and zero value', () => {
+    it('should call trackGoal with the mapped goal code and zero value', () => {
       const event: AnalyticsEvent = { name: 'ABCD1234' }
       provider.trackEvent(event)
 
       expect(window.fathom!.trackGoal).toHaveBeenCalledWith('ABCD1234', 0, undefined)
+    })
+
+    it('should resolve the goal code from the event name mapping', () => {
+      provider.trackEvent({ name: 'cta_click' })
+
+      expect(window.fathom!.trackGoal).toHaveBeenCalledWith('WXYZ9876', 0, undefined)
+    })
+
+    it('should skip and warn when event name has no goal code mapping (debug mode)', () => {
+      document.head.innerHTML = ''
+      const warnProvider = new FathomProvider()
+      warnProvider.init({ ...config, debug: true, goalCodes: {} })
+      window.fathom = mockFathom()
+
+      const script = document.querySelector('script[data-site]') as HTMLScriptElement
+      script.onload?.(new Event('load'))
+
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      warnProvider.trackEvent({ name: 'scroll_depth' })
+
+      expect(window.fathom!.trackGoal).not.toHaveBeenCalled()
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('no goal code mapped for event "scroll_depth"')
+      )
+      consoleWarnSpy.mockRestore()
+    })
+
+    it('should skip silently when event name has no goal code mapping (non-debug mode)', () => {
+      document.head.innerHTML = ''
+      const silentProvider = new FathomProvider()
+      silentProvider.init({ ...config, debug: false, goalCodes: {} })
+      window.fathom = mockFathom()
+
+      const script = document.querySelector('script[data-site]') as HTMLScriptElement
+      script.onload?.(new Event('load'))
+
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      silentProvider.trackEvent({ name: 'scroll_depth' })
+
+      expect(window.fathom!.trackGoal).not.toHaveBeenCalled()
+      expect(consoleWarnSpy).not.toHaveBeenCalled()
+      consoleWarnSpy.mockRestore()
+    })
+
+    it('should skip when no goalCodes config is provided at all', () => {
+      document.head.innerHTML = ''
+      const noMapProvider = new FathomProvider()
+      noMapProvider.init(config) // no goalCodes
+      window.fathom = mockFathom()
+
+      const script = document.querySelector('script[data-site]') as HTMLScriptElement
+      script.onload?.(new Event('load'))
+
+      noMapProvider.trackEvent({ name: 'ABCD1234' })
+
+      expect(window.fathom!.trackGoal).not.toHaveBeenCalled()
     })
 
     it('should pass sanitised properties to trackGoal', () => {
@@ -285,10 +341,10 @@ describe('analytics/providers/fathom', () => {
       expect(window.fathom!.trackGoal).toHaveBeenCalledWith('ABCD1234', 0, { safe: 'ok' })
     })
 
-    it('should log debug message when debug is enabled', () => {
+    it('should log debug message with goal code when debug is enabled', () => {
       document.head.innerHTML = ''
       const debugProvider = new FathomProvider()
-      debugProvider.init({ ...config, debug: true })
+      debugProvider.init({ ...config, debug: true, goalCodes: { ABCD1234: 'ABCD1234' } })
       window.fathom = mockFathom()
 
       const script = document.querySelector('script[data-site]') as HTMLScriptElement

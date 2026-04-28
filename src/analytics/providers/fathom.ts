@@ -103,13 +103,23 @@ export class FathomProvider implements AnalyticsProvider {
     }
 
     // Fathom uses provider-assigned goal codes (e.g. "ABCD1234"), not arbitrary strings.
-    // Using event.name as the code will silently drop events unless it matches a real goal ID.
-    // Create matching goals in the Fathom dashboard and pass their codes as event names.
+    // Look up the event name in the configured goalCodes map. If no mapping is found,
+    // skip the event and warn rather than sending an invalid code that Fathom would
+    // silently drop.
+    const goalCode = this.config?.goalCodes?.[event.name]
+    if (!goalCode) {
+      if (this.config?.debug) {
+        console.warn(
+          `[Analytics] Fathom: no goal code mapped for event "${event.name}". ` +
+            `Add an entry to config.goalCodes (e.g. { "${event.name}": "ABCD1234" }) ` +
+            `to enable tracking for this event.`
+        )
+      }
+      return
+    }
+
     if (this.config?.debug) {
-      console.log(
-        `[Analytics] Fathom trackGoal called with code "${event.name}". ` +
-          `Ensure this matches a goal code defined in your Fathom dashboard.`
-      )
+      console.log(`[Analytics] Fathom trackGoal called with code "${goalCode}" for event "${event.name}".`)
     }
 
     const props = event.properties
@@ -130,7 +140,7 @@ export class FathomProvider implements AnalyticsProvider {
         )
       : undefined
 
-    window.fathom.trackGoal(event.name, 0, props)
+    window.fathom.trackGoal(goalCode, 0, props)
   }
 
   trackWebVitals(vitals: CoreWebVitals): void {

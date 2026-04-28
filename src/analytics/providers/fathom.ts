@@ -89,7 +89,9 @@ export class FathomProvider implements AnalyticsProvider {
   }
 
   trackPageView(url?: string): void {
-    if (!this.isEnabled() || typeof window === 'undefined' || !window.fathom) {
+    // isEnabled() already verifies window and window.fathom.trackPageview;
+    // re-check the optional chain so TypeScript narrows window.fathom for the call below.
+    if (!this.isEnabled() || !window.fathom?.trackPageview) {
       return
     }
 
@@ -98,7 +100,7 @@ export class FathomProvider implements AnalyticsProvider {
   }
 
   trackEvent(event: AnalyticsEvent): void {
-    if (!this.isEnabled() || typeof window === 'undefined' || !window.fathom) {
+    if (!this.isEnabled() || !window.fathom?.trackGoal) {
       return
     }
 

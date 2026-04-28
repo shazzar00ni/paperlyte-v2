@@ -118,6 +118,14 @@ export class SimpleAnalyticsProvider implements AnalyticsProvider {
 
     // Normalise to snake_case: lowercase, replace non-alphanumeric with underscores, collapse/trim
     const safeName = this.normalizeEventName(event.name)
+    if (!safeName) {
+      if (this.config?.debug || import.meta.env.DEV) {
+        console.warn(
+          `[Analytics] Simple Analytics: event name "${event.name}" normalises to an empty string; skipping.`
+        )
+      }
+      return
+    }
     window.sa_event(safeName, props)
   }
 

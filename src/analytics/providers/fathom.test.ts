@@ -409,9 +409,19 @@ describe('analytics/providers/fathom', () => {
       consoleWarnSpy.mockRestore()
     })
 
-    it('should not log a warning when no metrics are defined', () => {
+    it('should not log a warning when no metrics are defined (debug enabled)', () => {
+      // Use debug: true so the "skipped metrics" branch is actually entered;
+      // the assertion then meaningfully verifies that an empty vitals object produces no warning.
+      document.head.innerHTML = ''
+      const debugProvider = new FathomProvider()
+      debugProvider.init({ ...config, debug: true })
+      window.fathom = mockFathom()
+
+      const script = document.querySelector('script[data-site]') as HTMLScriptElement
+      script.onload?.(new Event('load'))
+
       const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
-      provider.trackWebVitals({ LCP: undefined, FID: undefined })
+      debugProvider.trackWebVitals({ LCP: undefined, FID: undefined })
       expect(consoleWarnSpy).not.toHaveBeenCalled()
       consoleWarnSpy.mockRestore()
     })

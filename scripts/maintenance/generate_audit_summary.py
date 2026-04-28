@@ -50,17 +50,24 @@ def main():
         'HELPERS': 0,
         'UNREADABLE': 0
     }
+    issue_prefix_map = {
+        'Orphan branch': 'Orphan',
+        'Missing .npmrc': 'NPMRC',
+        'Missing docs/ROADMAP.md': 'ROADMAP',
+        'Missing gitVersionControl.md': 'GVC',
+        'Missing review.md': 'REVIEW',
+        'security helper': 'HELPERS',
+    }
 
     for item in data.get('blocked', []):
         issues = item['issues']
-        issues_str = str(issues)
-        if 'Orphan branch' in issues_str: stats['Orphan'] += 1
-        if 'Missing .npmrc' in issues_str: stats['NPMRC'] += 1
-        if 'Missing docs/ROADMAP.md' in issues_str: stats['ROADMAP'] += 1
-        if 'Missing gitVersionControl.md' in issues_str: stats['GVC'] += 1
-        if 'Missing review.md' in issues_str: stats['REVIEW'] += 1
-        if 'security helper' in issues_str: stats['HELPERS'] += 1
-        if 'Could not read src/utils/navigation.ts' in issues_str: stats['UNREADABLE'] += 1
+        for issue in issues:
+            for issue_prefix, stat_key in issue_prefix_map.items():
+                if issue.startswith(issue_prefix):
+                    stats[stat_key] += 1
+                    break
+            if issue == 'Could not read src/utils/navigation.ts':
+                stats['UNREADABLE'] += 1
 
         # Comment on the PR if it exists and GH CLI is available
         branch = item['branch']

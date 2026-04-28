@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useMemo } from 'react'
 import { PERSISTENCE_CONFIG } from '@constants/config'
 
 type Theme = 'light' | 'dark'
@@ -28,15 +28,18 @@ const isValidTheme = (value: string | null): value is Theme => {
 export const useTheme = () => {
   const persistenceEnabled = PERSISTENCE_CONFIG.ALLOW_PERSISTENT_THEME
 
-  // This localStorage read runs on every render, but only the first evaluation
-  // matters: useRef ignores its argument after mount and useState's lazy
-  // initializer runs only once. The ref guard pattern React recommends for
-  // one-time initialisation (if ref.current === undefined) is blocked here by
-  // react-hooks/refs, which prohibits any .current access during render.
-  const initialUserPref =
-    isBrowser && persistenceEnabled
-      ? localStorage.getItem(USER_PREFERENCE_KEY) === 'true'
-      : false
+  // useMemo ensures the localStorage read runs once per persistenceEnabled value
+  // (in practice only on mount, since persistenceEnabled is a build-time constant).
+  // The try/catch guards against SecurityError in sandboxed iframes or when
+  // storage is blocked in private-browsing mode.
+  const initialUserPref = useMemo(() => {
+    if (!isBrowser || !persistenceEnabled) return false
+    try {
+      return localStorage.getItem(USER_PREFERENCE_KEY) === 'true'
+    } catch {
+      return false
+    }
+  }, [persistenceEnabled])
 
   const userHasExplicitPreference = useRef(initialUserPref)
 
@@ -46,9 +49,13 @@ export const useTheme = () => {
 
     // Only check localStorage if persistence is enabled
     if (persistenceEnabled && initialUserPref) {
-      const stored = localStorage.getItem(THEME_STORAGE_KEY)
-      if (stored && isValidTheme(stored)) {
-        return stored
+      try {
+        const stored = localStorage.getItem(THEME_STORAGE_KEY)
+        if (stored && isValidTheme(stored)) {
+          return stored
+        }
+      } catch {
+        // Storage blocked — fall through to system preference
       }
     }
 

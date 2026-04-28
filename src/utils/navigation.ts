@@ -1,9 +1,23 @@
 const SCROLL_RETRY_TIMEOUT_MS = 5000
 
+// Tracks in-flight observers keyed by sectionId — ensures rapid repeat calls to
+// the same target cancel the previous observer instead of accumulating observers.
+const pendingScrollObservers = new Map<string, { observer: MutationObserver; timeoutId: number }>()
+
+function cancelPendingScroll(sectionId: string): void {
+  const pending = pendingScrollObservers.get(sectionId)
+  if (pending) {
+    pending.observer.disconnect()
+    clearTimeout(pending.timeoutId)
+    pendingScrollObservers.delete(sectionId)
+  }
+}
+
 /**
  * Scrolls smoothly to a section identified by its ID.
  * If the section is not yet in the DOM (e.g. still loading as a lazy chunk),
- * waits up to 5 s for it to appear before scrolling.
+ * waits up to 5 s for it to appear before scrolling. Rapid repeat calls for
+ * the same target cancel the previous pending scroll to avoid stacking observers.
  *
  * @param sectionId - The ID of the section to scroll to (without the # prefix)
  */
@@ -15,21 +29,25 @@ export function scrollToSection(sectionId: string): void {
 
   const element = document.getElementById(sectionId)
   if (element) {
+    cancelPendingScroll(sectionId)
     element.scrollIntoView({ behavior: 'smooth' })
     return
   }
+
+  // Cancel any previous pending observer for this target before creating a new one
+  cancelPendingScroll(sectionId)
 
   // Section not yet mounted — observe DOM until it appears (handles lazy chunks)
   const observer = new MutationObserver(() => {
     const el = document.getElementById(sectionId)
     if (el) {
-      observer.disconnect()
-      clearTimeout(timeoutId)
+      cancelPendingScroll(sectionId)
       el.scrollIntoView({ behavior: 'smooth' })
     }
   })
 
-  const timeoutId = setTimeout(() => observer.disconnect(), SCROLL_RETRY_TIMEOUT_MS)
+  const timeoutId = window.setTimeout(() => cancelPendingScroll(sectionId), SCROLL_RETRY_TIMEOUT_MS)
+  pendingScrollObservers.set(sectionId, { observer, timeoutId })
   observer.observe(document.body, { childList: true, subtree: true })
 }
 

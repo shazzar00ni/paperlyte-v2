@@ -75,13 +75,13 @@ All templates use placeholder variables that should be replaced by your email sy
 
 ```javascript
 function autoResponder(e) {
-  var message = e.message
-  var ticketId = 'PRIV-' + new Date().getTime()
-  var template = 'Your template here with {{TICKET_ID}}'
-  template = template.replace('{{TICKET_ID}}', ticketId)
-  template = template.replace('{{DATE_RECEIVED}}', new Date().toString())
+  var message = e.message;
+  var ticketId = "PRIV-" + new Date().getTime();
+  var template = "Your template here with {{TICKET_ID}}";
+  template = template.replace("{{TICKET_ID}}", ticketId);
+  template = template.replace("{{DATE_RECEIVED}}", new Date().toString());
   // Send auto-response
-  message.reply(template)
+  message.reply(template);
 }
 ```
 

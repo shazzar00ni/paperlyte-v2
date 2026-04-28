@@ -57,9 +57,9 @@ engines:
 # validation-utils.test.ts: RegExp constructor is used with pre-escaped strings
 # to validate the escapeRegExp function behavior. These are intentional and safe.
 exclude_patterns:
-  - identifier: 'Security/detect-non-literal-regexp'
+  - identifier: "Security/detect-non-literal-regexp"
     paths:
-      - 'src/utils/validation-utils.test.ts'
+      - "src/utils/validation-utils.test.ts"
 
 # Exclude paths from code analysis
 exclude_paths:

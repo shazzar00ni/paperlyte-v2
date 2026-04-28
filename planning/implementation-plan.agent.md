@@ -1,38 +1,7 @@
 ---
-description: 'Generate an implementation plan for new features or refactoring existing code.'
-name: 'Implementation Plan Generation Mode'
-tools:
-  [
-    'search/codebase',
-    'search/usages',
-    'vscode/vscodeAPI',
-    'think',
-    'read/problems',
-    'search/changes',
-    'execute/testFailure',
-    'read/terminalSelection',
-    'read/terminalLastCommand',
-    'vscode/openSimpleBrowser',
-    'web/fetch',
-    'findTestFiles',
-    'search/searchResults',
-    'web/githubRepo',
-    'vscode/extensions',
-    'edit/editFiles',
-    'execute/runNotebookCell',
-    'read/getNotebookSummary',
-    'read/readNotebookCellOutput',
-    'search',
-    'vscode/getProjectSetupInfo',
-    'vscode/installExtension',
-    'vscode/newWorkspace',
-    'vscode/runCommand',
-    'execute/getTerminalOutput',
-    'execute/runInTerminal',
-    'execute/createAndRunTask',
-    'execute/getTaskOutput',
-    'execute/runTask',
-  ]
+description: "Generate an implementation plan for new features or refactoring existing code."
+name: "Implementation Plan Generation Mode"
+tools: ["search/codebase", "search/usages", "vscode/vscodeAPI", "think", "read/problems", "search/changes", "execute/testFailure", "read/terminalSelection", "read/terminalLastCommand", "vscode/openSimpleBrowser", "web/fetch", "findTestFiles", "search/searchResults", "web/githubRepo", "vscode/extensions", "edit/editFiles", "execute/runNotebookCell", "read/getNotebookSummary", "read/readNotebookCellOutput", "search", "vscode/getProjectSetupInfo", "vscode/installExtension", "vscode/newWorkspace", "vscode/runCommand", "execute/getTerminalOutput", "execute/runInTerminal", "execute/createAndRunTask", "execute/getTaskOutput", "execute/runTask"]
 ---
 
 # Implementation Plan Generation Mode
@@ -114,13 +83,13 @@ Where:
 
 Use this exact mapping to generate badges deterministically:
 
-| Status Value (from front matter) | STATUS_TEXT   | STATUS_URL_ENCODED | COLOR_CODE    | Complete Badge Markdown                                                            |
-| -------------------------------- | ------------- | ------------------ | ------------- | ---------------------------------------------------------------------------------- |
-| `Completed`                      | `Completed`   | `Completed`        | `brightgreen` | `![Status: Completed](https://img.shields.io/badge/status-Completed-brightgreen)`  |
-| `In progress`                    | `In progress` | `In%20progress`    | `yellow`      | `![Status: In progress](https://img.shields.io/badge/status-In%20progress-yellow)` |
-| `Planned`                        | `Planned`     | `Planned`          | `blue`        | `![Status: Planned](https://img.shields.io/badge/status-Planned-blue)`             |
-| `Deprecated`                     | `Deprecated`  | `Deprecated`       | `red`         | `![Status: Deprecated](https://img.shields.io/badge/status-Deprecated-red)`        |
-| `On Hold`                        | `On Hold`     | `On%20Hold`        | `orange`      | `![Status: On Hold](https://img.shields.io/badge/status-On%20Hold-orange)`         |
+| Status Value (from front matter) | STATUS_TEXT | STATUS_URL_ENCODED | COLOR_CODE | Complete Badge Markdown |
+|-----------------------------------|-------------|--------------------|-----------|-----------------------|
+| `Completed` | `Completed` | `Completed` | `brightgreen` | `![Status: Completed](https://img.shields.io/badge/status-Completed-brightgreen)` |
+| `In progress` | `In progress` | `In%20progress` | `yellow` | `![Status: In progress](https://img.shields.io/badge/status-In%20progress-yellow)` |
+| `Planned` | `Planned` | `Planned` | `blue` | `![Status: Planned](https://img.shields.io/badge/status-Planned-blue)` |
+| `Deprecated` | `Deprecated` | `Deprecated` | `red` | `![Status: Deprecated](https://img.shields.io/badge/status-Deprecated-red)` |
+| `On Hold` | `On Hold` | `On%20Hold` | `orange` | `![Status: On Hold](https://img.shields.io/badge/status-On%20Hold-orange)` |
 
 **Algorithm for AI agents:**
 
@@ -132,19 +101,18 @@ Use this exact mapping to generate badges deterministically:
 
 ```md
 ---
-goal: 'Implementation Plan Title'
-version: '1.0.0'
-date_created: 'YYYY-MM-DD'
-last_updated: 'YYYY-MM-DD' # Optional field
-owner: 'Team or Individual Name' # Optional field
-status: 'Planned' # Valid values: 'Completed', 'In progress', 'Planned', 'Deprecated', 'On Hold'
-tags: ['feature', 'architecture'] # Optional: e.g., feature, upgrade, chore, architecture, migration, bug
+goal: "Implementation Plan Title"
+version: "1.0.0"
+date_created: "YYYY-MM-DD"
+last_updated: "YYYY-MM-DD" # Optional field
+owner: "Team or Individual Name" # Optional field
+status: "Planned" # Valid values: 'Completed', 'In progress', 'Planned', 'Deprecated', 'On Hold'
+tags: ["feature", "architecture"] # Optional: e.g., feature, upgrade, chore, architecture, migration, bug
 ---
 
 # Introduction
 
 {GENERATE_STATUS_BADGE_HERE}
-
 <!-- AI Agent Instruction: Generate the status badge using the algorithm from the Status Badges section -->
 <!-- 1. Read the 'status' field from front matter above -->
 <!-- 2. Look up the corresponding badge markdown from the Status-to-Color Mapping table -->
@@ -224,6 +192,6 @@ tags: ['feature', 'architecture'] # Optional: e.g., feature, upgrade, chore, arc
 
 ## 8. Related Specifications / Further Reading
 
-- [Link text for related specification](https://example.com/related-spec)
-- [Link text for external documentation](https://example.com/external-docs)
+- [Link text for related specification](<https://example.com/related-spec>)
+- [Link text for external documentation](<https://example.com/external-docs>)
 ```

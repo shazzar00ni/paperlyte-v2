@@ -1,8 +1,8 @@
-name: Daily PR Audit Summary
+name: Daily PR Audit
 
 on:
   schedule:
-    - cron: '0 0 * * *' # Run daily at midnight UTC
+    - cron: '0 0 * * *' # Every day at midnight UTC
   workflow_dispatch: # Allow manual trigger
 
 permissions:
@@ -11,9 +11,12 @@ permissions:
 
 jobs:
   audit:
+    name: Audit Open PRs
     runs-on: ubuntu-latest
+    if: github.repository_owner == 'shazzar00ni'
+
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -21,39 +24,20 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: '3.12'
 
-      - name: Run PR Audit
-        id: run_audit
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run Branch Audit
         run: |
-          # Generate audit results JSON
           python3 scripts/maintenance/audit_branches.py > audit_results.json
 
-          # Generate markdown and comment on PRs using dedicated script
+      - name: Generate Summary and Comment
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
           python3 scripts/maintenance/generate_audit_summary.py
 
-          # Prepend daily summary after the header in PR_REVIEW_SUMMARY.md
-          if [ -f daily_summary.txt ]; then
-            # Find the line number of the main header
-            HEADER_LINE=$(grep -n "# PR Review Summary" PR_REVIEW_SUMMARY.md | head -n 1 | cut -d: -f1 || echo "1")
-            AFTER_HEADER=$(($HEADER_LINE + 1))
-
-            # Split the file around the main header to insert the new entry
-            head -n $AFTER_HEADER PR_REVIEW_SUMMARY.md > top.md
-            tail -n +$(($AFTER_HEADER + 1)) PR_REVIEW_SUMMARY.md > bottom.md
-
-            # Combine and clean up
-            cat top.md daily_summary.txt bottom.md > updated_summary.md
-            mv updated_summary.md PR_REVIEW_SUMMARY.md
-            rm top.md bottom.md daily_summary.txt audit_results.json
-          fi
-
-      - name: Commit and Push Changes
-        run: |
-          git config --local user.email "actions@github.com"
-          git config --local user.name "github-actions[bot]"
-          git add PR_REVIEW_SUMMARY.md
-          git commit -m "docs: automated daily PR audit summary ($(date +%Y-%m-%d))" || echo "No changes to commit"
-          git push
+      - name: Commit Updated Summary
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'docs: update daily PR review summary [skip ci]'
+          file_pattern: PR_REVIEW_SUMMARY.md

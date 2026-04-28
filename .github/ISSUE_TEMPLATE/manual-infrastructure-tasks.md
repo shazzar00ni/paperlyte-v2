@@ -4,6 +4,7 @@ about: Complete the remaining manual infrastructure setup tasks from Issue
 title: Complete Manual Infrastructure Configuration Tasks
 labels: documentation
 assignees: ''
+
 ---
 
 ## 🎯 Objective

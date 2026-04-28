@@ -1752,6 +1752,7 @@ All components use CSS Modules for scoped styling:
 
 ```tsx
 import styles from './Component.module.css'
+
 ;<div className={styles.container}>
   <h1 className={styles.title}>Title</h1>
 </div>

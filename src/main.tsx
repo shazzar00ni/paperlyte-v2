@@ -50,9 +50,7 @@ if (import.meta.env.PROD && import.meta.env.VITE_SENTRY_DSN) {
       })
   }
 
-  if ('requestIdleCallback' in window) {
-    window.requestIdleCallback(() => loadReplay())
-  } else if (document.readyState === 'complete') {
+  if (document.readyState === 'complete') {
     window.setTimeout(loadReplay, 0)
   } else {
     window.addEventListener('load', loadReplay, { once: true })

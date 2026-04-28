@@ -19,6 +19,12 @@ export const EmailCapture = (): React.ReactElement => {
 
   // Safe origin for SSR compatibility
   const origin = typeof window !== 'undefined' ? window.location.origin : ''
+  const shareText = 'Check out Paperlyte – the note-taking app that gets out of your way. Get early access:'
+  const shareTitle = 'Check out Paperlyte – the note-taking app that gets out of your way'
+  const encodedOrigin = encodeURIComponent(origin)
+  const twitterShareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodedOrigin}`
+  const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedOrigin}`
+  const linkedinShareUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${encodedOrigin}&title=${encodeURIComponent(shareTitle)}`
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault()
@@ -106,7 +112,7 @@ export const EmailCapture = (): React.ReactElement => {
                     variant="secondary"
                     size="medium"
                     icon="fa-brands fa-twitter"
-                    href={`https://twitter.com/intent/tweet?text=${encodeURIComponent('Check out Paperlyte – the note-taking app that gets out of your way. Get early access:')}&url=${encodeURIComponent(origin)}`}
+                    href={twitterShareUrl}
                   >
                     Twitter
                   </Button>
@@ -114,7 +120,7 @@ export const EmailCapture = (): React.ReactElement => {
                     variant="secondary"
                     size="medium"
                     icon="fa-brands fa-facebook"
-                    href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(origin)}`}
+                    href={facebookShareUrl}
                   >
                     Facebook
                   </Button>
@@ -122,7 +128,7 @@ export const EmailCapture = (): React.ReactElement => {
                     variant="secondary"
                     size="medium"
                     icon="fa-brands fa-linkedin"
-                    href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(origin)}&title=${encodeURIComponent('Check out Paperlyte – the note-taking app that gets out of your way')}`}
+                    href={linkedinShareUrl}
                   >
                     LinkedIn
                   </Button>

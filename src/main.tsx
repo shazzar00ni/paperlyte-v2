@@ -56,7 +56,8 @@ if (import.meta.env.PROD && import.meta.env.VITE_SENTRY_DSN) {
   }
 
   if (typeof window.requestIdleCallback === 'function') {
-    window.requestIdleCallback(loadReplay)
+    // Timeout ensures replay eventually loads even on a busy main thread
+    window.requestIdleCallback(loadReplay, { timeout: 2000 })
   } else if (document.readyState === 'complete') {
     window.setTimeout(loadReplay, 0)
   } else {

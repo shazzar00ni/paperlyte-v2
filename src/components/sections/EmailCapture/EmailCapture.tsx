@@ -70,14 +70,14 @@ export const EmailCapture = (): React.ReactElement => {
       setIsLoading(false)
       setIsSubmitted(true)
     } catch (err) {
-      const error = err instanceof Error ? err : new Error(String(err))
-      logError(error, { tags: { context: 'waitlist-submit' } })
+      const caughtError = err instanceof Error ? err : new Error(String(err))
+      logError(caughtError, { tags: { context: 'waitlist-submit' } })
 
       setIsLoading(false)
       setError(
-        error.name === 'TypeError' ||
-          error.message.toLowerCase().includes('network') ||
-          error.message.toLowerCase().includes('fetch')
+        caughtError.name === 'TypeError' ||
+          caughtError.message.toLowerCase().includes('network') ||
+          caughtError.message.toLowerCase().includes('fetch')
           ? 'Network error. Please check your connection and try again.'
           : 'Failed to join waitlist. Please try again.'
       )

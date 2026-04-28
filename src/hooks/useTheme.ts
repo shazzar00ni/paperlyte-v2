@@ -28,14 +28,15 @@ const isValidTheme = (value: string | null): value is Theme => {
 export const useTheme = () => {
   const persistenceEnabled = PERSISTENCE_CONFIG.ALLOW_PERSISTENT_THEME
 
-  // Read once before hooks so both useRef and useState share the same value
-  // without double-reading localStorage on the first render.
+  // Read once before hooks. useRef ignores its argument after the first render,
+  // so this localStorage call is effectively a one-time cost despite appearing
+  // on every render path. Writing `.current` inside a useState initializer would
+  // violate react-hooks/refs, so this plain-const pattern is the lint-safe choice.
   const initialUserPref =
     isBrowser && persistenceEnabled
       ? localStorage.getItem(USER_PREFERENCE_KEY) === 'true'
       : false
 
-  // Track if user has explicitly set a preference (not just from system)
   const userHasExplicitPreference = useRef(initialUserPref)
 
   const [theme, setTheme] = useState<Theme>(() => {
@@ -43,9 +44,9 @@ export const useTheme = () => {
     if (!isBrowser) return 'light'
 
     // Only check localStorage if persistence is enabled
-    if (persistenceEnabled) {
+    if (persistenceEnabled && initialUserPref) {
       const stored = localStorage.getItem(THEME_STORAGE_KEY)
-      if (stored && isValidTheme(stored) && initialUserPref) {
+      if (stored && isValidTheme(stored)) {
         return stored
       }
     }

@@ -6,6 +6,10 @@ import { logError } from '@utils/monitoring'
 import { validateEmail } from '@utils/validation'
 import styles from './EmailCapture.module.css'
 
+interface SubscribeErrorResponse {
+  error?: string
+}
+
 interface EmailCaptureProps {
   variant?: 'inline' | 'centered'
   placeholder?: string
@@ -79,8 +83,11 @@ export const EmailCapture = ({
       })
 
       if (!response.ok) {
-        const data = await response.json().catch(() => ({}))
-        const serverMessage = (data as { error?: string }).error
+        const data: unknown = await response.json().catch(() => ({}))
+        const serverMessage =
+          data !== null && typeof data === 'object' && 'error' in data
+            ? (data as SubscribeErrorResponse).error
+            : undefined
 
         if (response.status === 400 || response.status === 429) {
           setStatus('error')

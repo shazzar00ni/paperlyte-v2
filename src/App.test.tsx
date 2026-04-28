@@ -244,7 +244,14 @@ describe('App Integration', () => {
     const { container } = render(<App />)
 
     // Wait for all lazy sections so their IDs are included in the check
-    await waitFor(() => expect(container.querySelector('#download')).toBeInTheDocument())
+    await waitFor(() => {
+      expect(container.querySelector('#statistics')).toBeInTheDocument()
+      expect(container.querySelector('#comparison')).toBeInTheDocument()
+      expect(container.querySelector('#testimonials')).toBeInTheDocument()
+      expect(container.querySelector('#email-capture')).toBeInTheDocument()
+      expect(container.querySelector('#faq')).toBeInTheDocument()
+      expect(container.querySelector('#download')).toBeInTheDocument()
+    })
 
     const elementsWithId = container.querySelectorAll('[id]')
     const ids = Array.from(elementsWithId).map((el) => el.getAttribute('id'))

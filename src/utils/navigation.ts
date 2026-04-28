@@ -1,6 +1,9 @@
+const SCROLL_RETRY_TIMEOUT_MS = 5000
+
 /**
  * Scrolls smoothly to a section identified by its ID.
- * If the section doesn't exist or running in SSR, the function does nothing.
+ * If the section is not yet in the DOM (e.g. still loading as a lazy chunk),
+ * waits up to 5 s for it to appear before scrolling.
  *
  * @param sectionId - The ID of the section to scroll to (without the # prefix)
  */
@@ -13,7 +16,21 @@ export function scrollToSection(sectionId: string): void {
   const element = document.getElementById(sectionId)
   if (element) {
     element.scrollIntoView({ behavior: 'smooth' })
+    return
   }
+
+  // Section not yet mounted — observe DOM until it appears (handles lazy chunks)
+  const observer = new MutationObserver(() => {
+    const el = document.getElementById(sectionId)
+    if (el) {
+      observer.disconnect()
+      clearTimeout(timeoutId)
+      el.scrollIntoView({ behavior: 'smooth' })
+    }
+  })
+
+  const timeoutId = setTimeout(() => observer.disconnect(), SCROLL_RETRY_TIMEOUT_MS)
+  observer.observe(document.body, { childList: true, subtree: true })
 }
 
 /**

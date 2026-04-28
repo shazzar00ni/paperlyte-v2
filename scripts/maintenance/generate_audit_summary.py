@@ -2,8 +2,9 @@
 import json
 import subprocess
 import os
+import shutil
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 
 def run_command(args):
     """Executes a command securely using list-based arguments and shell=False."""
@@ -30,7 +31,7 @@ def main():
 
     # Get PR mappings from GitHub CLI (if available)
     pr_map = {}
-    gh_cli = run_command(['which', 'gh'])
+    gh_cli = shutil.which('gh')
     if gh_cli:
         pr_list_json = run_command(['gh', 'pr', 'list', '--state', 'open', '--limit', '1000', '--json', 'number,headRefName'])
         if pr_list_json:
@@ -93,13 +94,24 @@ def main():
             run_command(['gh', 'pr', 'comment', str(pr_num), '--body', comment])
 
     # Generate Markdown Summary
-    date_str = datetime.now().strftime('%Y-%m-%d')
+    date_str = datetime.now(timezone.utc).strftime('%Y-%m-%d')
     total = data.get('total_branches', 0)
+    blocked_count = len(data.get('blocked', []))
+    has_issues = blocked_count > 0
+    status_line = (
+        '- **Status:** Critical — Action Required\n'
+        if has_issues
+        else '- **Status:** ✅ Clean — No Systemic Regressions Detected\n'
+    )
+    summary_line = (
+        f'- **Summary:** An automated repository-wide audit of {total} unmerged branches '
+        f'{"confirms the following systemic regressions" if has_issues else "found no systemic regressions"}.\n\n'
+    )
 
     summary = f'## {date_str}\n\n'
     summary += '### Analysis: Systemic Regressions in Open Branches (Automated Daily Audit)\n\n'
-    summary += '- **Status:** Critical — Action Required\n'
-    summary += f'- **Summary:** An automated repository-wide audit of {total} unmerged branches confirms the following systemic regressions.\n\n'
+    summary += status_line
+    summary += summary_line
     summary += '| Regression Type                | Count | Severity    | Notes                                                                    |\n'
     summary += '| :----------------------------- | :---- | :---------- | :----------------------------------------------------------------------- |\n'
     summary += f'| Orphan Branches                | {stats["Orphan"]}   | 🔴 Critical | No common ancestor with `main`.                                          |\n'
@@ -109,7 +121,8 @@ def main():
     summary += f'| Missing `review.md`            | {stats["REVIEW"]}   | 🟡 Medium   | AI PR reviewer instructions.                                             |\n'
     summary += f'| Reverted Security Helpers      | {stats["HELPERS"]}   | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers.                      |\n'
     summary += f'| Unreadable navigation.ts       | {stats["UNREADABLE"]}     | 🔴 Critical | File missing or unreadable.                                              |\n\n'
-    summary += '- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.\n\n'
+    if has_issues:
+        summary += '- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.\n\n'
     summary += '---\n\n'
 
     with open('daily_summary.txt', 'w') as f:

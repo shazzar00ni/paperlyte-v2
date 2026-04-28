@@ -9,6 +9,10 @@ permissions:
   contents: write
   pull-requests: write
 
+concurrency:
+  group: daily-pr-audit
+  cancel-in-progress: false
+
 jobs:
   audit:
     runs-on: ubuntu-latest
@@ -41,17 +45,26 @@ jobs:
 
 This file contains a summary of pull requests I have reviewed.
 " > PR_REVIEW_SUMMARY.md; fi
-            HEADER_LINE=$(grep -n "# PR Review Summary" PR_REVIEW_SUMMARY.md | head -n 1 | cut -d: -f1 || echo "1")
-            AFTER_HEADER=$(($HEADER_LINE + 1))
+            TODAY_HEADER="## $(date -u +%Y-%m-%d)"
+            if grep -Fqx "$TODAY_HEADER" PR_REVIEW_SUMMARY.md; then
+              echo "Summary for $TODAY_HEADER already exists; skipping prepend."
+            else
+              HEADER_LINE=$(grep -n "# PR Review Summary" PR_REVIEW_SUMMARY.md | head -n 1 | cut -d: -f1)
+              if [ -z "$HEADER_LINE" ]; then
+                HEADER_LINE=1
+              fi
+              AFTER_HEADER=$(($HEADER_LINE + 1))
 
-            # Split the file around the main header to insert the new entry
-            head -n $AFTER_HEADER PR_REVIEW_SUMMARY.md > top.md
-            tail -n +$(($AFTER_HEADER + 1)) PR_REVIEW_SUMMARY.md > bottom.md
+              # Split the file around the main header to insert the new entry
+              head -n $AFTER_HEADER PR_REVIEW_SUMMARY.md > top.md
+              tail -n +$(($AFTER_HEADER + 1)) PR_REVIEW_SUMMARY.md > bottom.md
 
-            # Combine and clean up
-            cat top.md daily_summary.txt bottom.md > updated_summary.md
-            mv updated_summary.md PR_REVIEW_SUMMARY.md
-            rm top.md bottom.md daily_summary.txt audit_results.json
+              # Combine and clean up
+              cat top.md daily_summary.txt bottom.md > updated_summary.md
+              mv updated_summary.md PR_REVIEW_SUMMARY.md
+              rm top.md bottom.md
+            fi
+            rm -f daily_summary.txt audit_results.json
           fi
 
       - name: Commit and Push Changes

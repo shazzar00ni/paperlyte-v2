@@ -240,8 +240,11 @@ describe('App Integration', () => {
     expect(feedbackButton).toBeInTheDocument()
   })
 
-  it('should not have any duplicate IDs', () => {
+  it('should not have any duplicate IDs', async () => {
     const { container } = render(<App />)
+
+    // Wait for all lazy sections so their IDs are included in the check
+    await waitFor(() => expect(container.querySelector('#download')).toBeInTheDocument())
 
     const elementsWithId = container.querySelectorAll('[id]')
     const ids = Array.from(elementsWithId).map((el) => el.getAttribute('id'))
@@ -272,13 +275,22 @@ describe('App Integration', () => {
   it('should render without console errors', async () => {
     const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
 
-    const { container } = render(<App />)
-    // Flush all lazy-loaded sections to prevent act() warnings from polluting the spy
-    await waitFor(() => expect(container.querySelector('#download')).toBeInTheDocument())
+    try {
+      const { container } = render(<App />)
+      // Flush ALL lazy-loaded sections so none resolve after the assertion and emit act() warnings
+      await waitFor(() => {
+        expect(container.querySelector('#statistics')).toBeInTheDocument()
+        expect(container.querySelector('#comparison')).toBeInTheDocument()
+        expect(container.querySelector('#testimonials')).toBeInTheDocument()
+        expect(container.querySelector('#email-capture')).toBeInTheDocument()
+        expect(container.querySelector('#faq')).toBeInTheDocument()
+        expect(container.querySelector('#download')).toBeInTheDocument()
+      })
 
-    expect(consoleErrorSpy).not.toHaveBeenCalled()
-
-    consoleErrorSpy.mockRestore()
+      expect(consoleErrorSpy).not.toHaveBeenCalled()
+    } finally {
+      consoleErrorSpy.mockRestore()
+    }
   })
 
   it('should render all major UI components', () => {

@@ -1,6 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import * as Sentry from '@sentry/react'
+import * as monitoring from '@utils/monitoring'
 // Self-hosted Google Fonts (Inter) for better security and performance
 // Using Latin-only subset to reduce bundle size (~800 KB savings)
 import '@fontsource/inter/latin-400.css'
@@ -45,8 +46,12 @@ if (import.meta.env.PROD && import.meta.env.VITE_SENTRY_DSN) {
       .then(({ replayIntegration }) => {
         Sentry.addIntegration(replayIntegration({ maskAllText: true, blockAllMedia: true }))
       })
-      .catch((error) => {
-        console.error('Failed to load Sentry Replay integration', error)
+      .catch((error: unknown) => {
+        monitoring.logError(
+          error instanceof Error ? error : new Error(String(error)),
+          { errorInfo: { component: 'loadReplay', action: 'import-replay' }, severity: 'medium' },
+          'loadReplay'
+        )
       })
   }
 

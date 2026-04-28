@@ -185,6 +185,20 @@ describe('analytics/providers/umami', () => {
       provider.init(config)
       expect(document.querySelector('script[data-website-id]')).toBeNull()
     })
+
+    it('should not inject a second script when loadScript is called while already loaded', () => {
+      provider.init(config)
+      window.umami = mockUmami()
+
+      const script = document.querySelector('script[data-website-id]') as HTMLScriptElement
+      script.onload?.(new Event('load'))
+
+      // scriptLoaded is now true; manually trigger loadScript via the internal state path
+      ;(provider as unknown as { loadScript: () => void }).loadScript()
+
+      // Only one script should be in the DOM
+      expect(document.querySelectorAll('script[data-website-id]').length).toBe(1)
+    })
   })
 
   describe('trackPageView', () => {

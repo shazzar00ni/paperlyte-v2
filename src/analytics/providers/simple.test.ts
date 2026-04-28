@@ -172,6 +172,21 @@ describe('analytics/providers/simple', () => {
       provider.init(config)
       expect(document.querySelector('script')).toBeNull()
     })
+
+    it('should not inject a second script when loadScript is called while already loaded', () => {
+      provider.init(config)
+      window.sa_event = vi.fn()
+      window.sa_pageview = vi.fn()
+
+      const script = document.querySelector('script') as HTMLScriptElement
+      script.onload?.(new Event('load'))
+
+      // scriptLoaded is now true; manually trigger loadScript via the internal state path
+      ;(provider as unknown as { loadScript: () => void }).loadScript()
+
+      // Only one script should be in the DOM
+      expect(document.querySelectorAll('script').length).toBe(1)
+    })
   })
 
   describe('trackPageView', () => {
@@ -254,6 +269,26 @@ describe('analytics/providers/simple', () => {
       provider.trackEvent({ name: 'My-Event Name!  Test' })
 
       expect(window.sa_event).toHaveBeenCalledWith('my_event_name_test', undefined)
+    })
+
+    it('should skip and warn when event name normalises to an empty string (debug mode)', () => {
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      document.head.innerHTML = ''
+      const debugProvider = new SimpleAnalyticsProvider()
+      debugProvider.init({ ...config, debug: true })
+      window.sa_event = vi.fn()
+
+      const script = document.querySelector('script') as HTMLScriptElement
+      script.onload?.(new Event('load'))
+
+      // '---' normalises to '' after all replacements, triggering the empty-name guard
+      debugProvider.trackEvent({ name: '---' })
+
+      expect(window.sa_event).not.toHaveBeenCalled()
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('normalises to an empty string')
+      )
+      consoleWarnSpy.mockRestore()
     })
 
     it('should filter out null and undefined properties', () => {

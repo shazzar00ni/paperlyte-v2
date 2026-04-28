@@ -24,6 +24,24 @@ describe('analytics/providers/utils', () => {
       expect(isDNTEnabled()).toBe(false)
     })
 
+    it('should return false in SSR environments where navigator is undefined', () => {
+      const original = globalThis.navigator
+      Object.defineProperty(globalThis, 'navigator', {
+        value: undefined,
+        configurable: true,
+        writable: true,
+      })
+      try {
+        expect(isDNTEnabled()).toBe(false)
+      } finally {
+        Object.defineProperty(globalThis, 'navigator', {
+          value: original,
+          configurable: true,
+          writable: true,
+        })
+      }
+    })
+
     it('should return true when navigator.doNotTrack is "1"', () => {
       Object.defineProperty(navigator, 'doNotTrack', { writable: true, value: '1' })
       expect(isDNTEnabled()).toBe(true)

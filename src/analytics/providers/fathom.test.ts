@@ -192,6 +192,20 @@ describe('analytics/providers/fathom', () => {
       provider.init(config)
       expect(document.querySelector('script[data-site]')).toBeNull()
     })
+
+    it('should not inject a second script when loadScript is called while already loaded', () => {
+      provider.init(config)
+      window.fathom = mockFathom()
+
+      const script = document.querySelector('script[data-site]') as HTMLScriptElement
+      script.onload?.(new Event('load'))
+
+      // scriptLoaded is now true; manually trigger loadScript via the internal state path
+      ;(provider as unknown as { loadScript: () => void }).loadScript()
+
+      // Only one script should be in the DOM
+      expect(document.querySelectorAll('script[data-site]').length).toBe(1)
+    })
   })
 
   describe('trackPageView', () => {
@@ -384,6 +398,17 @@ describe('analytics/providers/fathom', () => {
       provider.trackWebVitals(vitals)
 
       expect(window.fathom!.trackGoal).not.toHaveBeenCalled()
+    })
+
+    it('should return early when provider is not enabled', () => {
+      provider.disable()
+      const fathomMock = mockFathom()
+      window.fathom = fathomMock
+
+      // No throw and no trackGoal call – covers the isEnabled() early-return branch
+      provider.trackWebVitals({ LCP: 2500, CLS: 0.1 })
+
+      expect(fathomMock.trackGoal).not.toHaveBeenCalled()
     })
 
     it('should log a debug warning when metrics are present and debug is enabled', () => {

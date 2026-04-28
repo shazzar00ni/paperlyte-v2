@@ -136,11 +136,16 @@ jobs:
     resource_class: medium
     steps:
       - checkout
-      # After checking out the repository, attach the workspace to provide
-      # node_modules (from install) and dist (from build).
-      # Playwright browsers are pre-installed in the Docker image.
+      # Attach the workspace to a temporary location so this job can copy the
+      # built dist/ output without reusing node_modules created in a different
+      # Docker image. Playwright browsers are pre-installed in the Docker image.
       - attach_workspace:
-          at: .
+          at: /tmp/workspace
+      - run:
+          name: Prepare E2E workspace
+          command: |
+            cp -R /tmp/workspace/dist ./dist
+            npm ci
       - run:
           name: Start preview server
           # background: true keeps the process alive across subsequent steps.

@@ -41,7 +41,7 @@ if (import.meta.env.PROD && import.meta.env.VITE_SENTRY_DSN) {
   })
 
   const loadReplay = () => {
-    import('@sentry/react')
+    import('@sentry/browser')
       .then(({ replayIntegration }) => {
         Sentry.addIntegration(replayIntegration({ maskAllText: true, blockAllMedia: true }))
       })
@@ -50,7 +50,11 @@ if (import.meta.env.PROD && import.meta.env.VITE_SENTRY_DSN) {
       })
   }
 
-  if (document.readyState === 'complete') {
+  // Cast to Record to avoid TypeScript narrowing `requestIdleCallback` as always-present
+  // (TS 6 marks it as required on Window, making the else-branches unreachable otherwise)
+  if ('requestIdleCallback' in (window as Record<string, unknown>)) {
+    window.requestIdleCallback(loadReplay)
+  } else if (document.readyState === 'complete') {
     window.setTimeout(loadReplay, 0)
   } else {
     window.addEventListener('load', loadReplay, { once: true })

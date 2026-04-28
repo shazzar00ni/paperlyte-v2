@@ -54,24 +54,36 @@ function App() {
         <Solution />
         <Features />
         <Mobile />
-        <Suspense fallback={null}>
-          <Statistics />
-        </Suspense>
-        <Suspense fallback={null}>
-          <Comparison />
-        </Suspense>
-        <Suspense fallback={null}>
-          <Testimonials />
-        </Suspense>
-        <Suspense fallback={null}>
-          <EmailCapture />
-        </Suspense>
-        <Suspense fallback={null}>
-          <FAQ />
-        </Suspense>
-        <Suspense fallback={null}>
-          <CTA />
-        </Suspense>
+        <ErrorBoundary fallback={null}>
+          <Suspense fallback={null}>
+            <Statistics />
+          </Suspense>
+        </ErrorBoundary>
+        <ErrorBoundary fallback={null}>
+          <Suspense fallback={null}>
+            <Comparison />
+          </Suspense>
+        </ErrorBoundary>
+        <ErrorBoundary fallback={null}>
+          <Suspense fallback={null}>
+            <Testimonials />
+          </Suspense>
+        </ErrorBoundary>
+        <ErrorBoundary fallback={null}>
+          <Suspense fallback={null}>
+            <EmailCapture />
+          </Suspense>
+        </ErrorBoundary>
+        <ErrorBoundary fallback={null}>
+          <Suspense fallback={null}>
+            <FAQ />
+          </Suspense>
+        </ErrorBoundary>
+        <ErrorBoundary fallback={null}>
+          <Suspense fallback={null}>
+            <CTA />
+          </Suspense>
+        </ErrorBoundary>
       </main>
       <Footer />
       <FeedbackWidget />

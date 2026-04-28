@@ -2,12 +2,12 @@
 // Dynamically generates sitemap.xml with <lastmod> tags using last git commit date for each page.
 // Usage: node scripts/generate-sitemap.cjs
 
-const fs = require('fs');
-const path = require('path');
-const { spawnSync } = require('child_process');
+const fs = require('fs')
+const path = require('path')
+const { spawnSync } = require('child_process')
 
 // Base domain for sitemap URLs
-const DOMAIN = 'https://paperlyte.com';
+const DOMAIN = 'https://paperlyte.com'
 
 // Map URLs to their source files for lastmod tracking
 const pages = [
@@ -29,7 +29,7 @@ const pages = [
     changefreq: 'monthly',
     priority: '0.5',
   },
-];
+]
 
 /**
  * Resolve the absolute path to the git executable by checking known safe
@@ -38,21 +38,16 @@ const pages = [
  * @returns {string|null}
  */
 function resolveGitExecutable() {
-  const candidates = [
-    '/usr/bin/git',
-    '/bin/git',
-    '/usr/local/bin/git',
-    '/opt/homebrew/bin/git',
-  ];
+  const candidates = ['/usr/bin/git', '/bin/git', '/usr/local/bin/git', '/opt/homebrew/bin/git']
   for (const candidate of candidates) {
     try {
-      fs.accessSync(candidate, fs.constants.X_OK);
-      return candidate;
+      fs.accessSync(candidate, fs.constants.X_OK)
+      return candidate
     } catch {
       // not found or not executable at this path
     }
   }
-  return null;
+  return null
 }
 
 /**
@@ -62,36 +57,35 @@ function resolveGitExecutable() {
  * @returns {string|null} The commit date in `YYYY-MM-DD` format if available and valid, `null` otherwise.
  */
 function getLastGitCommitDate(filePath) {
-  const gitExe = resolveGitExecutable();
+  const gitExe = resolveGitExecutable()
 
-  let executable;
-  let spawnEnv;
+  let executable
+  let spawnEnv
 
   if (gitExe) {
     // Use the absolute path; restrict PATH to only the directory that contains it.
-    executable = gitExe;
-    spawnEnv = { PATH: path.dirname(gitExe) };
+    executable = gitExe
+    spawnEnv = { PATH: path.dirname(gitExe) }
   } else {
     // git not found in known safe locations — fail closed to avoid PATH-based lookup.
     console.warn(
       'Warning: git executable not found in known safe directories. ' +
-      'Skipping git lookup to avoid PATH-based command resolution; <lastmod> will be omitted.'
-    );
-    return null;
+        'Skipping git lookup to avoid PATH-based command resolution; <lastmod> will be omitted.'
+    )
+    return null
   }
 
-  const result = spawnSync(
-    executable,
-    ['log', '-1', '--format=%cs', '--', filePath],
-    { encoding: 'utf8', env: spawnEnv }
-  );
-  if (result.status !== 0 || result.error) return null;
-  const date = result.stdout.trim();
+  const result = spawnSync(executable, ['log', '-1', '--format=%cs', '--', filePath], {
+    encoding: 'utf8',
+    env: spawnEnv,
+  })
+  if (result.status !== 0 || result.error) return null
+  const date = result.stdout.trim()
   // Validate YYYY-MM-DD
   if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-    return date;
+    return date
   }
-  return null;
+  return null
 }
 
 /**
@@ -108,30 +102,30 @@ function buildSitemap(pages) {
     '        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9',
     '        https://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">',
     '',
-  ];
+  ]
   for (const page of pages) {
-    lines.push('  <url>');
-    lines.push(`    <loc>${page.url}</loc>`);
+    lines.push('  <url>')
+    lines.push(`    <loc>${page.url}</loc>`)
     if (page.file) {
-      const lastmod = getLastGitCommitDate(page.file);
-      if (lastmod) lines.push(`    <lastmod>${lastmod}</lastmod>`);
+      const lastmod = getLastGitCommitDate(page.file)
+      if (lastmod) lines.push(`    <lastmod>${lastmod}</lastmod>`)
     }
-    lines.push(`    <changefreq>${page.changefreq}</changefreq>`);
-    lines.push(`    <priority>${page.priority}</priority>`);
-    lines.push('  </url>');
-    lines.push('');
+    lines.push(`    <changefreq>${page.changefreq}</changefreq>`)
+    lines.push(`    <priority>${page.priority}</priority>`)
+    lines.push('  </url>')
+    lines.push('')
   }
-  lines.push('</urlset>');
-  return lines.join('\n');
+  lines.push('</urlset>')
+  return lines.join('\n')
 }
 
-const sitemap = buildSitemap(pages);
-const outPath = path.join(__dirname, '../dist/sitemap.xml');
+const sitemap = buildSitemap(pages)
+const outPath = path.join(__dirname, '../dist/sitemap.xml')
 
 try {
-  fs.writeFileSync(outPath, sitemap, 'utf8');
-  console.log(`✓ Sitemap generated at ${outPath}`);
+  fs.writeFileSync(outPath, sitemap, 'utf8')
+  console.log(`✓ Sitemap generated at ${outPath}`)
 } catch (error) {
-  console.error(`✗ Failed to write sitemap: ${error.message}`);
-  process.exit(1);
+  console.error(`✗ Failed to write sitemap: ${error.message}`)
+  process.exit(1)
 }

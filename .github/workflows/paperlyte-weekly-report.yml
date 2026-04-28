@@ -5,12 +5,13 @@ on:
     - cron: "0 0 * * MON"   # every Monday at 00:00 UTC
   workflow_dispatch:
 
-permissions:
-  contents: write
+permissions: {}
 
 jobs:
   build-report:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout repo
@@ -22,7 +23,7 @@ jobs:
           python-version: "3.x"
 
       - name: Install Python deps
-        run: pip install requests pandas
+        run: pip install requests==2.32.4 pandas==2.2.3
 
       - name: Generate weekly report
         env:

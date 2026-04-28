@@ -58,6 +58,13 @@ export function scrollToSection(sectionId: string): void {
   observer.observe(root, { childList: true, subtree: true })
 }
 
+/** @internal For use in tests only — cancels all in-flight scroll observers. */
+export function _clearPendingScrollObservers(): void {
+  for (const sectionId of [...pendingScrollObservers.keys()]) {
+    cancelPendingScroll(sectionId)
+  }
+}
+
 /**
  * Pattern matching dangerous protocols (javascript:, data:, vbscript:, file:, about:).
  */

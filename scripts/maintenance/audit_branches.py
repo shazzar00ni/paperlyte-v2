@@ -67,13 +67,10 @@ def main():
         # 1. Check for missing critical files using git ls-tree
         files_to_check = CRITICAL_FILES + ["src/utils/navigation.ts"]
         branch_files_raw = run_command(["git", "ls-tree", "-r", "--name-only", branch] + files_to_check)
-        if branch_files_raw:
-            branch_files = set(branch_files_raw.split('\n'))
-            for path in CRITICAL_FILES:
-                if path not in branch_files:
-                    issues.append(f"Missing {path}")
-        else:
-            issues.append("Could not list branch files")
+        branch_files = set(branch_files_raw.split('\n')) if branch_files_raw else set()
+        for path in CRITICAL_FILES:
+            if path not in branch_files:
+                issues.append(f"Missing {path}")
 
         # 2. Check for security helpers in src/utils/navigation.ts
         nav_content = run_command(["git", "show", f"{branch}:src/utils/navigation.ts"])

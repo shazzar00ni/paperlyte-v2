@@ -2,24 +2,11 @@
  * Tests for shared analytics provider utilities
  */
 
-import { describe, it, expect, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, afterEach } from 'vitest'
 import { isDNTEnabled, isValidScriptUrl } from './utils'
 
 describe('analytics/providers/utils', () => {
   describe('isDNTEnabled', () => {
-    beforeEach(() => {
-      Object.defineProperty(navigator, 'doNotTrack', {
-        writable: true,
-        configurable: true,
-        value: null,
-      })
-      Object.defineProperty(window, 'doNotTrack', {
-        writable: true,
-        configurable: true,
-        value: null,
-      })
-    })
-
     afterEach(() => {
       Object.defineProperty(navigator, 'doNotTrack', {
         writable: true,

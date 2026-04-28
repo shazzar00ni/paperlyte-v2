@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { Button } from '@components/ui/Button'
 import { Icon } from '@components/ui/Icon'
 import { trackEvent } from '@utils/analytics'
+import { logError } from '@utils/monitoring'
 import { validateEmail } from '@utils/validation'
 import styles from './EmailCapture.module.css'
 
@@ -114,7 +115,8 @@ export const EmailCapture = ({
           ? 'Network error. Please check your connection and try again.'
           : 'Something went wrong. Please try again.'
       setErrorMessage(message)
-      console.error('Email subscription error:', error)
+      const err = error instanceof Error ? error : new Error(String(error))
+      logError(err, { tags: { context: 'ui-email-capture-submit' } })
     }
   }
 

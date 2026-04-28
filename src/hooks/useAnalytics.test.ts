@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { renderHook } from '@testing-library/react'
 import { useAnalytics } from './useAnalytics'
-import { createScrollTracker } from '../analytics/scrollDepth'
+import { createScrollTracker } from '@/analytics/scrollDepth'
 import { trackEvent, AnalyticsEvents } from '@utils/analytics'
 
 // Stub createScrollTracker so tests don't depend on DOM scroll events
-vi.mock('../analytics/scrollDepth', () => ({
+vi.mock('@/analytics/scrollDepth', () => ({
   createScrollTracker: vi.fn(() => ({ disable: vi.fn() })),
 }))
 

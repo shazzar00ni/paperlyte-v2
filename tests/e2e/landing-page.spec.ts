@@ -51,7 +51,7 @@ test.describe('Landing Page', () => {
   // Core Web Vitals monitor for this project.
   test('load-performance smoke check (FCP/LCP/CLS)', async ({ page, browserName }) => {
     test.skip(browserName !== 'chromium', 'Performance test runs on chromium only');
-    test.skip(!!process.env.CI, 'Skip performance tests in CI to avoid environment flakiness');
+    test.skip(process.env.RUN_CWV_SMOKE !== '1', 'Skip unless RUN_CWV_SMOKE=1 — set this in a dedicated scheduled CI job');
 
     await page.goto('/');
     await page.waitForLoadState('load');

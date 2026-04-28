@@ -7,7 +7,7 @@ import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { Button } from '@components/ui/Button'
 import { Icon } from '@components/ui/Icon'
 import { WAITLIST_COUNT, LAUNCH_QUARTER } from '@constants/waitlist'
-import { EMAIL_CAPTURE_CONTENT as COPY, BENEFITS } from './emailCapture.data'
+import { EMAIL_CAPTURE_CONTENT as COPY, BENEFITS } from '@components/sections/EmailCapture/emailCapture.data'
 import styles from './EmailCapture.module.css'
 
 /** Renders the Email Capture section with a waitlist signup form and benefit highlights. */

@@ -28,14 +28,15 @@ const isValidTheme = (value: string | null): value is Theme => {
 export const useTheme = () => {
   const persistenceEnabled = PERSISTENCE_CONFIG.ALLOW_PERSISTENT_THEME
 
-  // Get initial user preference flag from localStorage (only during init, not reactive)
-  const getInitialUserPreference = (): boolean => {
-    if (!isBrowser || !persistenceEnabled) return false
-    return localStorage.getItem(USER_PREFERENCE_KEY) === 'true'
-  }
+  // Read once before hooks so both useRef and useState share the same value
+  // without double-reading localStorage on the first render.
+  const initialUserPref =
+    isBrowser && persistenceEnabled
+      ? localStorage.getItem(USER_PREFERENCE_KEY) === 'true'
+      : false
 
   // Track if user has explicitly set a preference (not just from system)
-  const userHasExplicitPreference = useRef(getInitialUserPreference())
+  const userHasExplicitPreference = useRef(initialUserPref)
 
   const [theme, setTheme] = useState<Theme>(() => {
     // SSR guard: return default theme if not in browser
@@ -44,7 +45,7 @@ export const useTheme = () => {
     // Only check localStorage if persistence is enabled
     if (persistenceEnabled) {
       const stored = localStorage.getItem(THEME_STORAGE_KEY)
-      if (stored && isValidTheme(stored) && localStorage.getItem(USER_PREFERENCE_KEY) === 'true') {
+      if (stored && isValidTheme(stored) && initialUserPref) {
         return stored
       }
     }

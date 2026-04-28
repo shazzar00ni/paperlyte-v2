@@ -36,6 +36,16 @@ def run_command(args):
         if result.returncode == 0:
             return result.stdout.strip()
         return None
+
+def run_command_ok(args):
+    """Like run_command but distinguishes success-with-empty-output from failure."""
+    try:
+        result = subprocess.run(args, shell=False, check=False, capture_output=True, text=True)
+        if result.returncode == 0:
+            return result.stdout.strip(), True
+        return None, False
+    except Exception:
+        return None, False
     except Exception as e:
         print(f"Error executing command {' '.join(args)}: {e}", file=sys.stderr)
         return None

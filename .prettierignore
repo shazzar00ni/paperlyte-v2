@@ -27,6 +27,3 @@ coverage
 package-lock.json
 *.min.js
 *.min.css
-
-# Working artifacts
-ACTION_PLAN.md

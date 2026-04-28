@@ -1,0 +1,43 @@
+name: Daily PR Audit
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  audit:
+    name: Audit Open PRs
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'shazzar00ni'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@3958dc975a74996155c996548332007931f4a601
+        with:
+          python-version: '3.12'
+
+      - name: Run Branch Audit
+        run: |
+          python3 scripts/maintenance/audit_branches.py > audit_results.json
+
+      - name: Generate Summary and Comment
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 scripts/maintenance/generate_audit_summary.py
+
+      - name: Commit Updated Summary
+        uses: stefanzweifel/git-auto-commit-action@8621497c8c39c72f3e2a999a26b4ca1b5058a842
+        with:
+          commit_message: 'docs: update daily PR review summary [skip ci]'
+          file_pattern: PR_REVIEW_SUMMARY.md

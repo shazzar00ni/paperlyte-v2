@@ -74,7 +74,6 @@ const FAQItemComponent = ({
   )
 }
 
-/** Renders the FAQ section with an accessible, keyboard-navigable accordion of common questions. */
 export const FAQ = (): React.ReactElement => {
   const [openItems, setOpenItems] = useState<Set<string>>(new Set())
   const [announcement, setAnnouncement] = useState('')

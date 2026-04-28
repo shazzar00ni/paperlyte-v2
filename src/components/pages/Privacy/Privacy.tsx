@@ -1,17 +1,18 @@
 import { Section } from '@components/layout/Section'
 import styles from './Privacy.module.css'
 
-// Last updated date for the privacy policy
-const LAST_UPDATED = 'March 7, 2026'
-
 /**
- * Privacy Policy page component.
- * Displays Paperlyte's privacy policy and data handling practices.
+ * Privacy Policy page component
+ * Displays Paperlyte's privacy policy and data handling practices
  *
- * Update `LAST_UPDATED` whenever policy changes are made.
+ * Note: Update LAST_UPDATED constant whenever policy changes are made
  *
  * @returns Privacy Policy page JSX
  */
+
+// Last updated date for the privacy policy
+const LAST_UPDATED = 'March 7, 2026'
+
 export function Privacy() {
   return (
     <>

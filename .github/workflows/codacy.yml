@@ -69,7 +69,7 @@ jobs:
       # raw 23-run file when the merge step fails or is skipped.
       - name: Upload SARIF results file
         id: upload-sarif
-        uses: github/codeql-action/upload-sarif@95e58e9a2cdfd71adc6e0353d5c52f41a045d225  # v4.35.2
+        uses: github/codeql-action/upload-sarif@c10b8064de6f491fea524254123dbe5e09572f13  # v4.35.1
         if: steps.merge-sarif.conclusion == 'success'
         continue-on-error: true
         with:
@@ -81,13 +81,13 @@ jobs:
         run: |
           echo "## 🔒 Codacy Security Scan" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           if [ "${{ steps.codacy-run.outcome }}" == "success" ]; then
             echo "✅ **Codacy Analysis:** Completed successfully" >> $GITHUB_STEP_SUMMARY
           else
             echo "⚠️ **Codacy Analysis:** Issues detected" >> $GITHUB_STEP_SUMMARY
           fi
-          
+
           if [ "${{ steps.upload-sarif.outcome }}" == "success" ]; then
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "📄 SARIF results uploaded to GitHub Code Scanning." >> $GITHUB_STEP_SUMMARY
@@ -98,6 +98,6 @@ jobs:
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "⚠️ **SARIF upload skipped** – merge step did not succeed." >> $GITHUB_STEP_SUMMARY
           fi
-          
+
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "📊 View detailed security findings in the **Security** tab." >> $GITHUB_STEP_SUMMARY

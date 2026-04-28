@@ -30,8 +30,9 @@ export const useTheme = () => {
 
   // This localStorage read runs on every render, but only the first evaluation
   // matters: useRef ignores its argument after mount and useState's lazy
-  // initializer runs only once. Writing `.current` inside a useState initializer
-  // violates react-hooks/refs, so this plain-const is the lint-safe alternative.
+  // initializer runs only once. The ref guard pattern React recommends for
+  // one-time initialisation (if ref.current === undefined) is blocked here by
+  // react-hooks/refs, which prohibits any .current access during render.
   const initialUserPref =
     isBrowser && persistenceEnabled
       ? localStorage.getItem(USER_PREFERENCE_KEY) === 'true'

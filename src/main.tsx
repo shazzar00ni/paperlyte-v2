@@ -55,9 +55,7 @@ if (import.meta.env.PROD && import.meta.env.VITE_SENTRY_DSN) {
       })
   }
 
-  // Use unknown intermediate cast — TS marks requestIdleCallback as required on Window in 5.9,
-  // making the else-branches unreachable if we narrow window directly with `in`.
-  if ('requestIdleCallback' in (window as unknown as Record<string, unknown>)) {
+  if (typeof window.requestIdleCallback === 'function') {
     window.requestIdleCallback(loadReplay)
   } else if (document.readyState === 'complete') {
     window.setTimeout(loadReplay, 0)

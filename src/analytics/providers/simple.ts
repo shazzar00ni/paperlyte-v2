@@ -10,6 +10,7 @@
 
 import type { AnalyticsConfig, AnalyticsEvent, AnalyticsProvider, CoreWebVitals } from '../types'
 import { isSafePropertyKey } from '../../utils/security'
+import { isDNTEnabled, isValidScriptUrl } from './utils'
 
 /**
  * Simple Analytics provider
@@ -29,7 +30,7 @@ export class SimpleAnalyticsProvider implements AnalyticsProvider {
       return
     }
 
-    if (config.respectDNT !== false && this.isDNTEnabled()) {
+    if (config.respectDNT !== false && isDNTEnabled()) {
       if (config.debug) {
         console.log('[Analytics] Do Not Track is enabled, analytics disabled')
       }
@@ -41,15 +42,6 @@ export class SimpleAnalyticsProvider implements AnalyticsProvider {
     this.loadScript()
   }
 
-  private isValidScriptUrl(url: string): boolean {
-    try {
-      const parsed = new URL(url)
-      return parsed.protocol === 'https:' && parsed.pathname.endsWith('.js')
-    } catch {
-      return false
-    }
-  }
-
   private loadScript(): void {
     if (this.scriptLoaded || typeof window === 'undefined' || typeof document === 'undefined') {
       return
@@ -57,7 +49,7 @@ export class SimpleAnalyticsProvider implements AnalyticsProvider {
 
     const defaultUrl = 'https://scripts.simpleanalyticscdn.com/latest.js'
     const configured = this.config?.scriptUrl
-    const scriptUrl = configured && this.isValidScriptUrl(configured) ? configured : defaultUrl
+    const scriptUrl = configured && isValidScriptUrl(configured) ? configured : defaultUrl
 
     if (configured && scriptUrl !== configured && (this.config?.debug || import.meta.env.DEV)) {
       console.warn('[Analytics] Invalid Simple Analytics scriptUrl, falling back to default')
@@ -182,18 +174,5 @@ export class SimpleAnalyticsProvider implements AnalyticsProvider {
       if (window.sa_event) delete window.sa_event
       if (window.sa_pageview) delete window.sa_pageview
     }
-  }
-
-  private isDNTEnabled(): boolean {
-    if (typeof window === 'undefined' || typeof navigator === 'undefined') {
-      return false
-    }
-
-    const dnt =
-      navigator.doNotTrack ||
-      (window as Window & { doNotTrack?: string }).doNotTrack ||
-      (navigator as Navigator & { msDoNotTrack?: string }).msDoNotTrack
-
-    return dnt === '1' || dnt === 'yes'
   }
 }

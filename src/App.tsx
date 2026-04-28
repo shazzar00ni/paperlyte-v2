@@ -63,11 +63,21 @@ function App() {
         <Suspense fallback={null}>
           <Testimonials />
         </Suspense>
+          <Statistics />
+        </Suspense>
+        <Suspense fallback={null}>
+          <Comparison />
+        </Suspense>
+        <Suspense fallback={null}>
+          <Testimonials />
+        </Suspense>
         <Suspense fallback={null}>
           <EmailCapture />
         </Suspense>
         <Suspense fallback={null}>
           <FAQ />
+        </Suspense>
+        <Suspense fallback={null}>
         </Suspense>
         <Suspense fallback={null}>
           <CTA />

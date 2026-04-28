@@ -30,6 +30,14 @@ def update_summary_file(new_content):
     cleaned_existing = cleaned_existing.replace("# PR Review Summary\n", "").replace("This file contains a summary of pull requests I have reviewed.\n", "")
     cleaned_existing = cleaned_existing.lstrip()
 
+    # Look for current date entry to avoid duplicates if run multiple times same day
+    date_str = datetime.now().strftime('%Y-%m-%d')
+    if f"## {date_str}" in cleaned_existing:
+        # Split at the next entry and discard the first one (today's previous run)
+        parts = cleaned_existing.split("---", 1)
+        if len(parts) > 1:
+            cleaned_existing = parts[1].lstrip()
+
     final_content = header + new_content + "\n---\n\n" + cleaned_existing
 
     with open(filepath, 'w') as f:

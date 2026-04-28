@@ -1,0 +1,1858 @@
+{
+  "total_branches": 270,
+  "blocked": [
+    {
+      "branch": "alert-autofix-5671",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "alert-fix-1715",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "alert-fix-2305",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "alert-fix-2324",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "alert-fix-5794",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "chunk/add-circleci-pipeline-config-1775183765935",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "chunk/add-circleci-pipeline-config-1775641543010",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "chunk/changes-1775167039485-1775167591921",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "chunk/changes-1775305642568-1775307459374",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "chunk/changes-1775305658506-1775307529479",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "chunk/changes-1775643992778-1775643992779",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "chunk/changes-1775701302988-1775701302988",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "chunk/changes-1775723260127-1775723260127",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "chunk/extended-test-coverage-components-hooks-1775643695691",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "chunk/fix-retry-count-logging-inp-null-check-1775307100928",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "circleci-project-setup",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "circleci/fix-flaky-test-1776639412235",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "circleci/fix-flaky-test-1777243626428",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/accessibility-audit-baseline-USu5N",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/accessibility-audit-wcag-wOLML",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "claude/add-analytics-tests-L5KyM",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "claude/add-analytics-tests-uFBpl-15472485915422703271",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "claude/add-circleci-config-OrVJ4",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/add-claude-documentation-QxLA4",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/add-claude-documentation-TYNqv",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/add-codebase-checks-56l1d",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/add-codebase-checks-Hqp78",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/add-constants-tests-OnNXg",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "claude/add-doc-sections-1EhnP",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/add-duotone-illustrations-x4GKk",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "claude/add-super-linter-RUXVL",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/analyze-pr-deleted-files-QBlYv",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/analyze-test-coverage-9JQZb",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/apply-code-fixes-BUsgx",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/audit-ux-copy-7zVaN",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/automated-daily-pr-audit-2026-04-24-5376172053159170321",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/awesome-albattani-HK4YA",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/claude-md-mi99o181rvyluac7-01GBap4tmQKY2HHePk1jxVXy",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Could not read src/utils/navigation.ts"
+      ]
+    },
+    {
+      "branch": "claude/core-editor-phase-1-PI3Yp",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "claude/create-audit-issues-S4QtL",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "claude/create-pr-reviewer-guide-xHd0f",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/daily-pr-audit-2026-04-23-6871598200381641507",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/daily-pr-review-2026-03-25-16003728981745369675",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/daily-pr-review-2026-03-26-16003728981745369675-427534641767457171",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/daily-pr-review-2026-03-27-audit-summary-5742365564555726578",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/daily-pr-review-2026-03-28-v11058406235041512552-15523061360441833649",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/daily-pr-review-2026-03-29-4272459762196132129",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/daily-pr-review-2026-03-30-v12345-3238385978125521038",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/daily-pr-review-2026-04-12-v2-13923515044891571961",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/daily-pr-review-2026-04-13-6191560225633768446",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/enhance-mobile-responsiveness-GCMC6",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/eslint-10-upgrade-issue-Bg8XP",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/eslint-v9-to-v10-upgrade-EYLU6",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/fix-bash-conditionals-Zlz46",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/fix-ci-workflow-permissions-emVdO",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/fix-codacy-issues-bp3bR",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/fix-codacy-sarif-limit-4I0x5",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/fix-codacy-warnings-QTZ9S",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/fix-code-style-cWDI4",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/fix-codebase-review-issues-kjZsN",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/fix-component-tests-pq68t",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "claude/fix-coverage-requirements-QtFtS",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/fix-debug-logging-tests-G10GL",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/fix-deployment-failure-lpxjb",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/fix-eslint-docker-error-zPw7G",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/fix-eslint-workflow-xWVbe",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/fix-failing-tests-J1VZ6",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/fix-footer-accessibility-tests-UTTCF",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "claude/fix-icon-selectors-X35Bu",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "claude/fix-icon-warnings-IrGG3",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/fix-issue-192-zaEVH",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "claude/fix-issue-243-OkdVQ",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "claude/fix-issue-274-F2eKP",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "claude/fix-issue-661-7gozH",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/fix-issue-763-9GUd3",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/fix-issues-dfsyO",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/fix-lighthouse-ci-P9FYE",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/fix-lighthouse-failure-b5S6v",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/fix-npm-vulnerabilities-tkCap",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "claude/fix-open-redirect-TX551",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/fix-outstanding-todos-V7kMj",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/fix-peer-dependency-conflicts-Wj2iC",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/fix-sarif-run-limit-Sqg3v",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "claude/fix-shell-injection-workflow-oX0sB",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "claude/fix-sonarcloud-project-key-Mwsdx",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/fix-workflow-e2e-tests-xHhZw",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/fix-workflow-permissions-dnoLR",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/implement-service-worker-YLeLZ",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/implement-todo-2vcWQ",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/implement-todo-item-2H9LP",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "claude/implement-todo-item-cDEVt",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/issue-184-8mfSq",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "claude/issue-230-paperlyte-StkbW",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/issue-816-implementation-Rtt2X",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/mvp-landing-page-6csSA",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/netlify-markdown-edge-function-cdyQy",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/paperlyte-12-issue-fixes-1fvmr",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/recreate-paperlyte-ui-011V7rcoZYdnsQBn3JkDbQWP",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "claude/resolve-merge-conflicts-G8pSa",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "claude/resolve-merge-conflicts-KzQIj",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "claude/review-close-issues-FZziy",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/review-roadmap-tasks-FF6Bj",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "claude/review-technical-debt-LaHiU",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/semantic-versioning-releases-lTFRC",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/setup-analytics-test-helpers-PwW8u",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "claude/setup-code-reviews-A19qx",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/setup-neon-waitlist-db-mJon9",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/setup-routing-legal-pages-FITCE",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "claude/setup-sonar-coverage-7V3u2",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/setup-sonarcloud-HM572",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/tree-shake-font-awesome-cK85j",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "claude/update-nodejs-actions-dJNyd",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "coderabbitai/utg/a787981",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "coderabbitai/utg/a7bf748",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "copilot/analyze-test-coverage",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "copilot/configure-claude-code-action",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "copilot/disable-nlp-and-spell-linters",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "copilot/ensure-design-delivery-checklist",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "copilot/ensure-design-delivery-checklist-again",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "copilot/ensure-security-md-up-to-standard",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "copilot/explain-codebase-structure",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "copilot/explore-codebase-and-create-plan",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "copilot/fix-branch-protection-sanitization",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "copilot/fix-eslint-configuration-error",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "copilot/fix-icon-component-errors",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "copilot/fix-input-validation-issues",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "copilot/fix-invalid-coverage-yaml",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "copilot/fix-issues-in-paperlyte-v2",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "copilot/fix-lodash-vulnerabilities",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "copilot/fix-missing-semicolons",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "copilot/fix-missing-semicolons-again",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "copilot/fix-security-error-url",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "copilot/fix-sitemap-injection-issue",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "copilot/improve-slow-code-performance",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "copilot/improve-variable-function-naming",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "copilot/refactor-hero-test-and-add-faq-timer-test",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "copilot/resolve-security-alerts",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "copilot/sub-pr-107",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Could not read src/utils/navigation.ts"
+      ]
+    },
+    {
+      "branch": "copilot/sub-pr-107-yet-again",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Could not read src/utils/navigation.ts"
+      ]
+    },
+    {
+      "branch": "copilot/sub-pr-113",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "copilot/sub-pr-113-another-one",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "copilot/sub-pr-163",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "copilot/sub-pr-182",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "copilot/sub-pr-182-again",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "copilot/sub-pr-191",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "copilot/sub-pr-191-again",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "copilot/sub-pr-204",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "copilot/sub-pr-241",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "copilot/sub-pr-251",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "copilot/sub-pr-345",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "copilot/sub-pr-353",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "copilot/sub-pr-379",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "copilot/sub-pr-384-another-one",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "copilot/sub-pr-43",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Could not read src/utils/navigation.ts"
+      ]
+    },
+    {
+      "branch": "copilot/sub-pr-43-again",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Could not read src/utils/navigation.ts"
+      ]
+    },
+    {
+      "branch": "copilot/sub-pr-43-another-one",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Could not read src/utils/navigation.ts"
+      ]
+    },
+    {
+      "branch": "copilot/sub-pr-460",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "copilot/sub-pr-496",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "copilot/sub-pr-503",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "copilot/sub-pr-524",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "copilot/sub-pr-602",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "copilot/sub-pr-602-again",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "copilot/sub-pr-602-another-one",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "copilot/sub-pr-602-yet-again",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "copilot/sub-pr-80-f05b16e3-82a1-4c4e-a395-37518caeb994",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Could not read src/utils/navigation.ts"
+      ]
+    },
+    {
+      "branch": "copilot/update-ci-workflow-for-multi-os",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "daily-pr-audit-2026-04-05-3443753137520312381",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "daily-pr-audit-2026-04-17-v2-10685662186184674741",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "daily-pr-audit-2026-04-19-v2-15562392244252533745",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "daily-pr-audit-2026-04-22-14934652059943771304",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "daily-pr-review-2026-02-10-4472388519152119826",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "daily-pr-review-2026-02-14-14414050132137760025",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "daily-pr-review-2026-02-21-9802456407838076625",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "daily-pr-review-2026-02-24-17585160201633769475",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "daily-pr-review-2026-02-26-jules-4281948076072664101",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "daily-pr-review-2026-02-27-jules-3696951863852039787",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "daily-pr-review-2026-03-02-jules-3089381486739758831",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "daily-pr-review-2026-03-03-jules-1902255574970321238",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "daily-pr-review-2026-03-07-v2-10609599013389250671",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "daily-pr-review-2026-03-18-14185320304070748022",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "daily-pr-review-2026-03-20-jules-13211665603284065781",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "daily-pr-review-2026-03-21-jules-4286228387657707862",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "daily-pr-review-2026-03-22-18059757736993501950",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "daily-pr-review-2026-03-23-jules-6205842812267622963-13609828713534931666",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "daily-pr-review-2026-03-24-11058406235041512552",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "daily-pr-review-2026-04-25-jules-v2-8261134034489343839",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "daily-pr-review-summary-2026-02-08-4785299271730500259",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "daily-pr-review-summary-2026-02-09-14823275582180140059",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "daily-pr-review-summary-6282778158436239546",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "dependabot/npm_and_yarn/fortawesome/react-fontawesome-3.3.1",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "dependabot/npm_and_yarn/terser-5.46.2",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "dependabot/npm_and_yarn/vite-8.0.10",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "dependabot/npm_and_yarn/vitejs/plugin-react-6.0.1",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "dependabot/npm_and_yarn/vitest/coverage-v8-4.1.5",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "feat/automated-daily-pr-review-system-2026-04-02-6668155851787717889",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "feat/daily-pr-review-summary-15372459533392607538",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "feat/pr-review-summary-14848597437187470619",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "feat/pr-review-summary-6056504200618815877",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "fix-codacy-eslint-issue-v2-12644842812267622963",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "fix-daily-pr-review-automation-apr-11-15118097948514234650",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "fix/automated-daily-pr-audit-2026-04-04-17277955772521444341",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "fix/axios-security-vulnerability-v1.13.5-5405739559523723967",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "fix/comprehensive-code-review",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Could not read src/utils/navigation.ts"
+      ]
+    },
+    {
+      "branch": "fix/daily-pr-review-summary-2026-04-01-1138475060013004806",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "fix/deployment-error-privacy-tsx-8314844507989551467",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "fix/pr-audit-automation-summary-6701ab10-5298137624235926554",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "fix/pr-review-summary-13658223490607794745",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "fix/restore-daily-pr-review-system-2026-04-09-3489798590759450162",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "fix/restore-pr-audit-automation-2026-04-06-6205842812267622963-2058480588922162639",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "fix/sarif-run-limits-10682914094722837168",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "fix/sni-328-cta-dark-mode",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "jules-8236059562684373115-776dd3d4",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "jules-pr-review-summary-20240729-8106851808364211252",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "jules/automated-pr-review-and-audit-2026-04-26-3123001340642936329",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "jules/daily-pr-audit-2026-04-20-14082057380816644290",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "jules/daily-pr-audit-2026-04-21-report-summary-v255-blocked-14082057380816644290-12005262722263100591",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "jules/daily-pr-audit-2026-04-27-automation-v2-3464808888224221596",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "jules/daily-pr-audit-summary-2026-04-14-3496094672471583671",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "jules/daily-pr-audit-summary-2026-04-16-14254589929898416131",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "jules/daily-pr-review-2026-03-16-6275738728465901381",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "jules/daily-pr-review-2026-03-17-16842176607985156216",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "jules/daily-pr-review-2026-03-31-report-summary-v212-blocked-12539204503719547486",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "jules/daily-pr-review-2026-04-03-v661-v664-blocked-audit-summary-8383534599097949572",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "jules/daily-pr-review-2026-04-10-7988264900092098409",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "jules/daily-pr-review-2026-04-15-8372350259136682247",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "jules/daily-pr-review-2026-04-18-v2-11017581088898951188",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "jules/daily-pr-reviews-2026-02-01-17765626361386676202",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "jules/daily-pr-reviews-2026-02-11-6972036485928485234",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "jules/daily-pr-reviews-2026-02-12-16809836452214312343",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "jules/daily-pr-reviews-2026-02-19-4719887369919462222",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "jules/daily-pr-reviews-2026-02-22-3223731670528855322",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "jules/daily-pr-reviews-2026-02-28-7717523501616120739",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "jules/daily-pr-reviews-2026-03-01-18244792920487672966",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "jules/daily-pr-reviews-2026-03-04-report-10251414130935094083",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "jules/daily-pr-reviews-2026-03-05-report-summary-5667099997819338057",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "jules/daily-pr-reviews-2026-03-06-report-summary-6243541760084439098",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "jules/daily-pr-reviews-2026-03-08-summary-v2-3899556432930976504",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "jules/daily-pr-reviews-2026-03-09-summary-8301806644760865448",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "jules/daily-pr-reviews-2026-03-10-report-summary-v3-8392104751930214876-15174514179081041706",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "jules/daily-pr-reviews-2026-03-11-report-summary-v4-10302112025603386365",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "jules/daily-pr-reviews-2026-03-12-summary-v5-fixed-eslint-10302112025603386365-15174514179081041706-v6-final-11283762388414469049-473b9a60",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "jules/daily-pr-reviews-2026-03-13-4072900007824955159",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "jules/daily-pr-reviews-2026-03-14-13849909000730381014",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "jules/daily-pr-reviews-2026-03-19-report-summary-v7-final-11283762388414469049-473b9a60-11255955781419997158",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "jules/pr-review-summary-11165912646709707472",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "jules/pr-review-summary-16192473754370522877",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "jules/pr-review-summary-20240726-873152842204259271",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "jules/pr-review-summary-20240729-18162471950143534115",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "jules/pr-review-summary-2026-01-29-11365988357200820095",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "jules/pr-review-summary-2026-01-29-8139623939605678303",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "jules/pr-review-summary-2026-02-04-8313316493899821801-4679997370915905942",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "jules/pr-review-summary-20260122-4406564911245225919",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "jules/pr-review-summary-20260202-11578380962463584985",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "jules/pr-reviews-20260120-7390116479901445093",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "jules/review-pr-10-8522388930699352215",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "jules/review-pr-260-13001538872636404965",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "pr-review-summary-2026-02-07-14469583565173805961",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "pr-review-summary-2026-02-13-5587410840879607829",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "pr-review-summary-2026-02-14-17680461667561612344",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "pr-review-summary-2026-02-20-7148546196303944665",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "pr-review-summary-2026-02-22-18062806459601458035",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "pr-review-summary-2026-02-22-8032514686182351081",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "pr-review-summary-20260216-report-7559260836207558703",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "pr-review-summary-20260222-13964675344526938033",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    },
+    {
+      "branch": "restore-pr-audit-automation-2026-04-07-12050685081863354409",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "shazzar00ni-patch-1",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "shazzar00ni-patch-2",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "v0/shazzar00ni-19f2fb61",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "v0/shazzar00ni-71f12529",
+      "issues": ["Orphan branch (no shared history with main)"]
+    },
+    {
+      "branch": "vercel/set-up-vercel-web-analytics-in-a3qtl4",
+      "issues": [
+        "Orphan branch (no shared history with main)",
+        "Missing .npmrc",
+        "Missing docs/ROADMAP.md",
+        "Missing gitVersionControl.md",
+        "Missing review.md",
+        "Missing security helper definition: hasDangerousProtocol",
+        "Missing security helper definition: isRelativeUrl"
+      ]
+    }
+  ],
+  "ready": []
+}

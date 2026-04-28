@@ -1,7 +1,7 @@
 /**
  * Shared utilities for analytics providers.
  *
- * Centralises Do Not Track detection and script URL validation so all providers
+ * Centralizes Do Not Track detection and script URL validation so all providers
  * behave consistently and updates only need to be made in one place.
  */
 

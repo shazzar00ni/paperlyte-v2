@@ -60,9 +60,7 @@ export class PlausibleProvider implements AnalyticsProvider {
 
     const scriptUrl = this.config?.scriptUrl || 'https://plausible.io/js/script.js'
 
-    // Validate script URL to prevent injection attacks.
-    // Uses the shared isValidScriptUrl (HTTPS + .js) rather than a domain whitelist:
-    // the previous whitelist was redundant since it allowed any HTTPS .js URL anyway.
+    // Validate script URL to prevent injection attacks. Requires HTTPS protocol and .js extension.
     if (!isValidScriptUrl(scriptUrl)) {
       if (this.config?.debug || import.meta.env.DEV) {
         console.error(

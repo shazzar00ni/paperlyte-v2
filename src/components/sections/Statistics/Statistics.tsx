@@ -1,3 +1,4 @@
+import React from 'react'
 import { Section } from '@components/layout/Section'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { CounterAnimation } from '@components/ui/CounterAnimation'
@@ -53,11 +54,6 @@ const statistics: StatisticItem[] = [
     icon: 'fa-star',
   },
 ]
-
-/**
- * Props for the Statistics section component
- */
-export type StatisticsProps = Record<string, never>
 
 /**
  * Statistics section displaying animated counters showcasing product metrics

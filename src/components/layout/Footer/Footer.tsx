@@ -2,7 +2,6 @@ import { Icon } from '@components/ui/Icon'
 import { LEGAL_CONFIG } from '@/constants/legal'
 import styles from './Footer.module.css'
 
-/** Renders the site footer with navigation links, social links, and legal information. */
 export const Footer = (): React.ReactElement => {
   const currentYear = new Date().getFullYear()
 

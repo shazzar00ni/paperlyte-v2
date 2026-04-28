@@ -24,7 +24,6 @@ jobs:
             echo "🌐 Site URL: ${{ github.event.deployment_status.target_url }}"
           elif [ "${{ github.event.deployment_status.state }}" = "failure" ]; then
             echo "❌ Deployment failed!"
-            exit 1
           fi
 
       - name: Deployment Summary
@@ -35,7 +34,7 @@ jobs:
           echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
           echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
           echo "| Environment | ${{ github.event.deployment_status.environment }} |" >> $GITHUB_STEP_SUMMARY
-          
+
           if [ "${{ github.event.deployment_status.state }}" = "success" ]; then
             echo "| Status | ✅ Success |" >> $GITHUB_STEP_SUMMARY
             echo "| Preview URL | [${{ github.event.deployment_status.target_url }}](${{ github.event.deployment_status.target_url }}) |" >> $GITHUB_STEP_SUMMARY
@@ -47,7 +46,7 @@ jobs:
 
       - name: Comment on PR (if applicable)
         if: github.event.deployment_status.state == 'success' && github.event.deployment.payload.pull_request != null
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |

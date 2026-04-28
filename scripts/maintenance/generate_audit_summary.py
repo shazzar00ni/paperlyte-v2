@@ -3,7 +3,7 @@ import json
 import subprocess
 import os
 import sys
-from datetime import datetime, timezone
+from datetime import datetime
 
 def run_command(args):
     """Executes a command securely using list-based arguments and shell=False."""
@@ -11,20 +11,31 @@ def run_command(args):
         result = subprocess.run(args, capture_output=True, text=True, check=True)
         return result.stdout.strip()
     except subprocess.CalledProcessError as e:
-        # Don't log errors for 'which' checks
         if args[0] != 'which':
-            print(f"Error: {e.stderr}", file=sys.stderr)
+            print(f"Error executing {' '.join(args)}: {e.stderr}", file=sys.stderr)
         return None
 
+def update_summary_file(new_content):
+    """Prepends new content to PR_REVIEW_SUMMARY.md while maintaining structure."""
+    filepath = 'PR_REVIEW_SUMMARY.md'
+    header = "# PR Review Summary\n\nThis file contains a summary of pull requests I have reviewed.\n\n"
+
+    existing_content = ""
+    if os.path.exists(filepath):
+        with open(filepath, 'r') as f:
+            existing_content = f.read()
+
+    # Remove existing title/header if present to avoid duplication
+    cleaned_existing = existing_content.replace("# PR Review Summary\n\nThis file contains a summary of pull requests I have reviewed.\n\n", "")
+    cleaned_existing = cleaned_existing.replace("# PR Review Summary\n", "").replace("This file contains a summary of pull requests I have reviewed.\n", "")
+    cleaned_existing = cleaned_existing.lstrip()
+
+    final_content = header + new_content + "\n---\n\n" + cleaned_existing
+
+    with open(filepath, 'w') as f:
+        f.write(final_content)
+
 def main():
-    """Reads audit_results.json and generates a Markdown daily summary in daily_summary.txt.
-
-    Also posts a warning comment to each blocked PR's GitHub thread (when the GitHub CLI
-    is available and the branch is associated with an open, non-cross-repository PR).
-    Aggregates regression counts by type and writes a formatted summary table.
-
-    Exits with status 1 if audit_results.json is not found.
-    """
     if not os.path.exists('audit_results.json'):
         print("Error: audit_results.json not found.", file=sys.stderr)
         sys.exit(1)
@@ -32,31 +43,20 @@ def main():
     with open('audit_results.json', 'r') as f:
         data = json.load(f)
 
-    # Get PR mappings from GitHub CLI (if available)
-    pr_map = {}
     gh_cli = run_command(['which', 'gh'])
+    pr_map = {}
     if gh_cli:
-        pr_list_json = run_command([
-            'gh', 'pr', 'list', '--state', 'open', '--limit', '1000',
-            '--json', 'number,headRefName,isCrossRepository'
-        ])
+        pr_list_json = run_command(['gh', 'pr', 'list', '--state', 'open', '--limit', '1000', '--json', 'number,headRefName'])
         if pr_list_json:
             try:
                 prs = json.loads(pr_list_json)
                 for pr in prs:
-                    if not pr.get('isCrossRepository', False):
-                        pr_map[pr['headRefName']] = pr['number']
+                    pr_map[pr['headRefName']] = pr['number']
             except json.JSONDecodeError:
                 pass
 
     stats = {
-        'Orphan': 0,
-        'NPMRC': 0,
-        'ROADMAP': 0,
-        'GVC': 0,
-        'REVIEW': 0,
-        'HELPERS': 0,
-        'UNREADABLE': 0
+        'Orphan': 0, 'NPMRC': 0, 'ROADMAP': 0, 'GVC': 0, 'REVIEW': 0, 'HELPERS': 0, 'UNREADABLE': 0
     }
 
     for item in data.get('blocked', []):
@@ -70,74 +70,50 @@ def main():
         if 'security helper' in issues_str: stats['HELPERS'] += 1
         if 'Could not read src/utils/navigation.ts' in issues_str: stats['UNREADABLE'] += 1
 
-        # Comment on the PR if it exists and GH CLI is available.
-        # Uses a stable HTML marker to make comments idempotent: if a prior
-        # audit comment exists it is updated in-place instead of posting a duplicate.
         branch = item['branch']
-        if branch in pr_map and gh_cli:
+        if branch in pr_map:
             pr_num = pr_map[branch]
-            marker = '<!-- daily-audit-regressions -->'
-            body = f'{marker}\n### ⚠️ Systemic Regressions Detected\n\n'
-            body += 'This branch is currently blocked by the following regressions:\n\n'
-            for issue in issues:
-                body += f'- {issue}\n'
-            body += '\nPlease restore these critical files or security helpers before merging.'
 
-            # Look for an existing comment with the marker
-            comments_json = run_command([
-                'gh', 'api',
-                f'repos/{{owner}}/{{repo}}/issues/{pr_num}/comments',
-                '--paginate', '--jq',
-                f'[.[] | select(.body | contains("{marker}")) | .id] | first'
-            ])
+            # Idempotency check: Don't comment if we already commented on this PR with these specific issues
+            existing_comments = run_command(['gh', 'pr', 'view', str(pr_num), '--json', 'comments'])
+            already_commented = False
+            if existing_comments:
+                try:
+                    comments = json.loads(existing_comments).get('comments', [])
+                    for c in comments:
+                        if '### ⚠️ Systemic Regressions Detected' in c['body']:
+                            already_commented = True
+                            break
+                except json.JSONDecodeError:
+                    pass
 
-            if comments_json and comments_json not in ('null', ''):
-                # Update existing comment in-place
-                run_command([
-                    'gh', 'api', '--method', 'PATCH',
-                    f'repos/{{owner}}/{{repo}}/issues/comments/{comments_json}',
-                    '-f', f'body={body}'
-                ])
-            else:
-                # First time — create the comment
-                run_command(['gh', 'pr', 'comment', str(pr_num), '--body', body])
+            if not already_commented:
+                comment = '### ⚠️ Systemic Regressions Detected\n\nThis branch is currently blocked by the following regressions:\n\n'
+                for issue in issues:
+                    comment += f'- {issue}\n'
+                comment += '\nPlease restore these critical files or security helpers before merging.'
+                run_command(['gh', 'pr', 'comment', str(pr_num), '--body', comment])
 
     # Generate Markdown Summary
-    # Use explicit UTC to match the workflow's midnight-UTC schedule
-    date_str = datetime.now(timezone.utc).strftime('%Y-%m-%d')
+    date_str = datetime.now().strftime('%Y-%m-%d')
     total = data.get('total_branches', 0)
-
-    # Bail out on error payloads from audit_branches.py
-    if 'error' in data:
-        print(f"Audit returned an error: {data['error']}", file=sys.stderr)
-        print("Skipping summary generation.", file=sys.stderr)
-        return
-
-    # If no regressions were found, write a clean-bill-of-health summary
-    has_regressions = any(v > 0 for v in stats.values())
 
     summary = f'## {date_str}\n\n'
     summary += '### Analysis: Systemic Regressions in Open Branches (Automated Daily Audit)\n\n'
+    summary += '- **Status:** Critical — Action Required\n'
+    summary += f'- **Summary:** An automated repository-wide audit of {total} unmerged branches confirms the following systemic regressions.\n\n'
+    summary += '| Regression Type                | Count | Severity    | Notes                                                                    |\n'
+    summary += '| :----------------------------- | :---- | :---------- | :----------------------------------------------------------------------- |\n'
+    summary += f'| Orphan Branches                | {stats["Orphan"]}   | 🔴 Critical | No common ancestor with `main`.                                          |\n'
+    summary += f'| Missing `.npmrc`               | {stats["NPMRC"]}    | 🔴 Critical | Breaks dependency resolution.                                            |\n'
+    summary += f'| Missing `docs/ROADMAP.md`      | {stats["ROADMAP"]}    | 🟠 High     | Core project documentation.                                              |\n'
+    summary += f'| Missing `gitVersionControl.md` | {stats["GVC"]}   | 🟠 High     | Core Git workflow documentation.                                         |\n'
+    summary += f'| Missing `review.md`            | {stats["REVIEW"]}   | 🟡 Medium   | AI PR reviewer instructions.                                             |\n'
+    summary += f'| Reverted Security Helpers      | {stats["HELPERS"]}   | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers.                      |\n'
+    summary += f'| Unreadable navigation.ts       | {stats["UNREADABLE"]}     | 🔴 Critical | File missing or unreadable.                                              |\n\n'
+    summary += '- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.\n'
 
-    if not has_regressions:
-        summary += '- **Status:** ✅ All Clear\n'
-        summary += f'- **Summary:** An automated repository-wide audit of {total} unmerged branches found no systemic regressions.\n\n'
-    else:
-        summary += '- **Status:** Critical — Action Required\n'
-        summary += f'- **Summary:** An automated repository-wide audit of {total} unmerged branches confirms the following systemic regressions.\n\n'
-        summary += '| Regression Type                | Count | Severity    | Notes                                                                    |\n'
-        summary += '| :----------------------------- | :---- | :---------- | :----------------------------------------------------------------------- |\n'
-        summary += f'| Orphan Branches                | {str(stats["Orphan"]).ljust(5)} | 🔴 Critical | No common ancestor with `main`.                                          |\n'
-        summary += f'| Missing `.npmrc`               | {str(stats["NPMRC"]).ljust(5)} | 🔴 Critical | Breaks dependency resolution.                                            |\n'
-        summary += f'| Missing `docs/ROADMAP.md`      | {str(stats["ROADMAP"]).ljust(5)} | 🟠 High     | Core project documentation.                                              |\n'
-        summary += f'| Missing `gitVersionControl.md` | {str(stats["GVC"]).ljust(5)} | 🟠 High     | Core Git workflow documentation.                                         |\n'
-        summary += f'| Missing `review.md`            | {str(stats["REVIEW"]).ljust(5)} | 🟡 Medium   | AI PR reviewer instructions.                                             |\n'
-        summary += f'| Reverted Security Helpers      | {str(stats["HELPERS"]).ljust(5)} | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers.                      |\n'
-        summary += f'| Unreadable navigation.ts       | {str(stats["UNREADABLE"]).ljust(5)} | 🔴 Critical | File missing or unreadable.                                              |\n\n'
-        summary += '- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.\n\n'
-
-    with open('daily_summary.txt', 'w') as f:
-        f.write(summary)
+    update_summary_file(summary)
 
 if __name__ == "__main__":
     main()

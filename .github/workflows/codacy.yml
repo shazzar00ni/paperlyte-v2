@@ -15,10 +15,10 @@ name: Codacy Security Scan
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ['main']
   pull_request:
     # The branches below must be a subset of the branches above
-    branches: [ "main" ]
+    branches: ['main']
   schedule:
     - cron: '19 22 * * 5'
 
@@ -37,12 +37,12 @@ jobs:
     steps:
       # Checkout the repository to the GitHub Actions runner
       - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       # Execute Codacy Analysis CLI and generate a SARIF output with the security issues identified during the analysis
       - name: Run Codacy Analysis CLI
         id: codacy-run
-        uses: codacy/codacy-analysis-cli-action@562ee3e92b8e92df8b67e0a5ff8aa8e261919c08  # v4.4.7
+        uses: codacy/codacy-analysis-cli-action@562ee3e92b8e92df8b67e0a5ff8aa8e261919c08 # v4.4.7
         with:
           # Check https://github.com/codacy/codacy-analysis-cli#project-token to get your project token from your Codacy repository
           # You can also omit the token and run the tools that support default configurations
@@ -69,7 +69,7 @@ jobs:
       # raw 23-run file when the merge step fails or is skipped.
       - name: Upload SARIF results file
         id: upload-sarif
-        uses: github/codeql-action/upload-sarif@95e58e9a2cdfd71adc6e0353d5c52f41a045d225  # v4.35.2
+        uses: github/codeql-action/upload-sarif@c10b8064de6f491fea524254123dbe5e09572f13 # v4.35.1
         if: steps.merge-sarif.conclusion == 'success'
         continue-on-error: true
         with:
@@ -81,13 +81,13 @@ jobs:
         run: |
           echo "## 🔒 Codacy Security Scan" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           if [ "${{ steps.codacy-run.outcome }}" == "success" ]; then
             echo "✅ **Codacy Analysis:** Completed successfully" >> $GITHUB_STEP_SUMMARY
           else
             echo "⚠️ **Codacy Analysis:** Issues detected" >> $GITHUB_STEP_SUMMARY
           fi
-          
+
           if [ "${{ steps.upload-sarif.outcome }}" == "success" ]; then
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "📄 SARIF results uploaded to GitHub Code Scanning." >> $GITHUB_STEP_SUMMARY
@@ -98,6 +98,6 @@ jobs:
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "⚠️ **SARIF upload skipped** – merge step did not succeed." >> $GITHUB_STEP_SUMMARY
           fi
-          
+
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "📊 View detailed security findings in the **Security** tab." >> $GITHUB_STEP_SUMMARY

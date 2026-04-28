@@ -141,14 +141,13 @@ describe('App Integration', () => {
   })
 
   it('should render CTA buttons in download section', async () => {
-    render(<App />)
+    const { container } = render(<App />)
 
-    // Wait for lazy CTA section to render
-    await waitFor(() =>
-      expect(screen.getAllByRole('button', { name: /Join the Waitlist/i }).length).toBeGreaterThan(
-        0
-      )
-    )
+    // Wait for the lazy #download section specifically (not a button that also exists in eager sections)
+    await waitFor(() => expect(container.querySelector('#download')).toBeInTheDocument())
+
+    // Check for actual CTA buttons (there may be multiple "Join the Waitlist" buttons across sections)
+    expect(screen.getAllByRole('button', { name: /Join the Waitlist/i }).length).toBeGreaterThan(0)
 
     // Check for demo button (use flexible pattern to handle different wording)
     const demoButtons = screen.getAllByRole('button', { name: /Watch the Demo|View the Demo/i })

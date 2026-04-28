@@ -40,10 +40,22 @@ if (import.meta.env.PROD && import.meta.env.VITE_SENTRY_DSN) {
     },
   })
 
-  if (typeof window !== 'undefined') {
-    import('@sentry/react').then(({ replayIntegration }) => {
-      Sentry.addIntegration(replayIntegration({ maskAllText: true, blockAllMedia: true }))
-    })
+  const loadReplay = () => {
+    import('@sentry/react')
+      .then(({ replayIntegration }) => {
+        Sentry.addIntegration(replayIntegration({ maskAllText: true, blockAllMedia: true }))
+      })
+      .catch((error) => {
+        console.error('Failed to load Sentry Replay integration', error)
+      })
+  }
+
+  if ('requestIdleCallback' in window) {
+    window.requestIdleCallback(() => loadReplay())
+  } else if (document.readyState === 'complete') {
+    window.setTimeout(loadReplay, 0)
+  } else {
+    window.addEventListener('load', loadReplay, { once: true })
   }
 }
 

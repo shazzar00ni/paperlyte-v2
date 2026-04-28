@@ -54,32 +54,32 @@ function App() {
         <Solution />
         <Features />
         <Mobile />
-        <ErrorBoundary fallback={null}>
+        <ErrorBoundary fallback={<></>}>
           <Suspense fallback={null}>
             <Statistics />
           </Suspense>
         </ErrorBoundary>
-        <ErrorBoundary fallback={null}>
+        <ErrorBoundary fallback={<></>}>
           <Suspense fallback={null}>
             <Comparison />
           </Suspense>
         </ErrorBoundary>
-        <ErrorBoundary fallback={null}>
+        <ErrorBoundary fallback={<></>}>
           <Suspense fallback={null}>
             <Testimonials />
           </Suspense>
         </ErrorBoundary>
-        <ErrorBoundary fallback={null}>
+        <ErrorBoundary fallback={<></>}>
           <Suspense fallback={null}>
             <EmailCapture />
           </Suspense>
         </ErrorBoundary>
-        <ErrorBoundary fallback={null}>
+        <ErrorBoundary fallback={<></>}>
           <Suspense fallback={null}>
             <FAQ />
           </Suspense>
         </ErrorBoundary>
-        <ErrorBoundary fallback={null}>
+        <ErrorBoundary fallback={<></>}>
           <Suspense fallback={null}>
             <CTA />
           </Suspense>

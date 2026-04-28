@@ -121,6 +121,11 @@ def main():
     summary += f'| Unreadable navigation.ts       | {stats["UNREADABLE"]}     | 🔴 Critical | File missing or unreadable.                                              |\n\n'
     summary += '- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.\n'
 
+    # Append qualitative reviews if file exists
+    if os.path.exists('qualitative_reviews.md'):
+        with open('qualitative_reviews.md', 'r') as f:
+            summary += '\n' + f.read()
+
     update_summary_file(summary)
 
 if __name__ == "__main__":

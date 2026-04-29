@@ -19,6 +19,12 @@ export default defineConfig({
     // Setup files to run before each test file
     setupFiles: ['./src/test/setup.ts'],
 
+    // Increase timeouts so component-rendering tests don't trip the default
+    // 5s limit on slower CI runners, especially when v8 coverage instrumentation
+    // is enabled (adds significant per-test overhead).
+    testTimeout: 30000,
+    hookTimeout: 30000,
+
     // Global test utilities
     globals: true,
 

@@ -66,7 +66,7 @@ This file tracks coding style, design, and workflow preferences for this project
 
 ## Icons
 
-- Icon names use the `fa-` prefix (`fa-bolt`, `fa-github`). New icons must be registered in `src/utils/iconLibrary.ts` via `library.add()` before use; unregistered names fall back to a FontAwesome runtime lookup with a dev console warning, then a placeholder `?` span
+- Icon names use the `fa-` prefix (`fa-bolt`, `fa-github`). New icons must be registered in `src/utils/iconLibrary.ts` via `library.add()` before use; unregistered names fall back to a FontAwesome runtime lookup. If the icon is not found in the app's icon set, a dev-only console warning is emitted; if it is truly missing from the Font Awesome library, the runtime fallback may also warn in production before rendering a placeholder `?` span
 - Meaningful icons (conveying information) must receive an `ariaLabel` prop — this ensures an accessible label and `role="img"`. On the custom SVG render path a `<title>` element is also added; the FontAwesomeIcon fallback path sets `aria-label`/`role` but does not add a `<title>`. Decorative icons must omit `ariaLabel` entirely — `aria-hidden="true"` is applied automatically
 - Multi-token names (`"fa-spinner fa-spin"`) are supported: the first token is the icon, subsequent tokens become extra CSS classes on the rendered element
 

@@ -1,4 +1,4 @@
-name: SonarCloud
+name: Analysis
 on:
   push:
     branches: [ "main" ]
@@ -9,15 +9,14 @@ permissions:
   pull-requests: read
 jobs:
   sonar:
-    name: Analysis
+    name: SonarCloud
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
       - name: Scan
-        # Using SonarQube Scan Action v3.1.0 SHA to avoid false-positive alert
-        # gitleaks:allow
-        uses: SonarSource/sonarqube-scan-action@13990a695682794b53148ff9f6a8b6e22e43955e
+        # Pinning to v8.0.0 SHA to avoid false positives and security issues
+        uses: SonarSource/sonarqube-scan-action@59db25f34e16620e48ab4bb9e4a5dce155cb5432
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

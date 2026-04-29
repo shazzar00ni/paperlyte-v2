@@ -18,7 +18,7 @@ executors:
     resource_class: medium
   playwright-executor:
     docker:
-      - image: mcr.microsoft.com/playwright:v1.50.0-noble
+      - image: mcr.microsoft.com/playwright:v1.58.2-noble
     resource_class: medium+
     environment:
       CI: "true"
@@ -109,7 +109,7 @@ jobs:
 
   # Bundle size check
   size-check:
-    executor: node-executor
+    executor: node-browsers-executor
     steps:
       - checkout
       - attach-build

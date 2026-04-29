@@ -84,7 +84,8 @@
       "path": "dist/assets/*.css",
       "limit": "30 KB",
       "gzip": true,
-      "import": false
+      "webpack": false,
+      "esbuild": false
     }
   ],
   "overrides": {

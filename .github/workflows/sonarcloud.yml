@@ -17,7 +17,7 @@ jobs:
           fetch-depth: 0
       - name: Scan
         # uses: SonarSource/sonarqube-scan-action@v5.0.0
-        # gitleaks:allow
         uses: SonarSource/sonarqube-scan-action@529c91f99c658700ef26061fdb93ca9c4051659f
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_SCANNER_OPTS: "-Dsonar.projectKey=shazzar00ni_paperlyte-v2 -Dsonar.organization=shazzar00ni"

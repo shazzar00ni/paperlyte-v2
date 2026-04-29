@@ -69,9 +69,9 @@ Path aliases are configured (`@/*`, `@components/*`, `@hooks/*`, `@utils/*`, etc
 ## Testing
 
 - **Framework**: Vitest (unit/component) + Playwright (E2E)
-- **Coverage threshold**: 70% on lines, functions, branches, and statements — PRs that drop below this will fail CI
+- **Coverage thresholds**: Vitest enforces 70% overall coverage on lines, functions, branches, and statements. PRs are also checked by Codecov for patch coverage on changed lines, with a higher target (80%), so a PR can fail coverage even if overall project coverage remains above 70%.
 - **Test location**: Co-located with source (`Component.test.tsx` next to `Component.tsx`); E2E in `tests/e2e/`
-- **What to test**: Every new component needs a `.test.tsx`. New hooks, utils, and constants need paired `.test.ts` files.
+- **What to test**: Every new component needs a `.test.tsx`. New hooks, utils, and constants need paired `.test.ts` files. Add tests for changed code too, especially on PRs, to keep Codecov patch coverage healthy.
 - **Setup file**: `src/test/setup.ts` mocks `IntersectionObserver` and `matchMedia` — do not duplicate these mocks inline.
 - **Snapshot tests**: Used in `src/constants/__snapshots__/`; update only intentionally.
 - **E2E scope**: Cross-browser + mobile device matrix runs in CI with 2 retries.

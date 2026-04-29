@@ -2,9 +2,8 @@
  * Test suite for eslint.config.js
  *
  * Validates that the ESLint flat configuration:
- * - Targets only TypeScript/TSX source files
- * - Uses browser globals (not Node.js globals)
- * - Does NOT include a Node.js globals block (removed in this PR)
+ * - Targets TypeScript/TSX source files (browser block)
+ * - Includes a Node.js globals block for *.config.ts, scripts/**, netlify/functions/**
  * - Properly ignores the dist directory
  * - Includes the expected plugin extensions
  */
@@ -44,22 +43,20 @@ describe('eslint.config.js — file content validation', () => {
     expect(eslintConfigContent).toContain('globals.browser')
   })
 
-  it('should NOT include Node.js globals', () => {
-    // The Node.js globals block for config files and scripts was removed in this PR
-    expect(eslintConfigContent).not.toContain('globals.node')
+  it('should include Node.js globals for build-tool configs and scripts', () => {
+    expect(eslintConfigContent).toContain('globals.node')
   })
 
-  it('should NOT have a separate block for *.config.ts files', () => {
-    // The removed block targeted '*.config.ts', 'scripts/**/*.ts', 'netlify/functions/**/*.ts'
-    expect(eslintConfigContent).not.toContain("'*.config.ts'")
+  it('should have a separate block for *.config.ts files', () => {
+    expect(eslintConfigContent).toContain("'*.config.ts'")
   })
 
-  it('should NOT have a separate block for scripts/**/*.ts', () => {
-    expect(eslintConfigContent).not.toContain("'scripts/**/*.ts'")
+  it('should have a separate block for scripts/**/*.ts', () => {
+    expect(eslintConfigContent).toContain("'scripts/**/*.ts'")
   })
 
-  it('should NOT have a separate block for netlify/functions/**/*.ts', () => {
-    expect(eslintConfigContent).not.toContain("'netlify/functions/**/*.ts'")
+  it('should have a separate block for netlify/functions/**/*.ts', () => {
+    expect(eslintConfigContent).toContain("'netlify/functions/**/*.ts'")
   })
 
   it('should include @eslint/js recommended rules', () => {
@@ -90,13 +87,14 @@ describe('eslint.config.js — file content validation', () => {
     expect(eslintConfigContent).toContain('ecmaVersion: 2020')
   })
 
-  it('should have exactly one non-ignore config block', () => {
-    // The config should have exactly two top-level items in defineConfig:
+  it('should have exactly two non-ignore config blocks', () => {
+    // The config has three top-level items in defineConfig:
     // 1. globalIgnores block
-    // 2. One config block for ts/tsx files (the Node.js block was removed)
+    // 2. Browser block for ts/tsx files
+    // 3. Node.js block for config/scripts/functions
     // Count occurrences of 'files:' as a proxy for config blocks
     const filesCount = (eslintConfigContent.match(/files:\s*\[/g) || []).length
-    expect(filesCount).toBe(1)
+    expect(filesCount).toBe(2)
   })
 })
 
@@ -118,20 +116,18 @@ describe('eslint.config.js — NOT using legacy config format', () => {
   })
 })
 
-describe('eslint.config.js — removed Node.js globals block', () => {
-  it('should NOT contain a languageOptions block with globals.node', () => {
-    // Verify the entire removed block is absent
-    expect(eslintConfigContent).not.toContain('globals.node')
+describe('eslint.config.js — Node.js globals block', () => {
+  it('should contain a languageOptions block with globals.node', () => {
+    expect(eslintConfigContent).toContain('globals.node')
   })
 
-  it('should only have one languageOptions block', () => {
-    // Count languageOptions occurrences — should be exactly 1 (browser only)
+  it('should have two languageOptions blocks (browser + node)', () => {
     const count = (eslintConfigContent.match(/languageOptions:/g) || []).length
-    expect(count).toBe(1)
+    expect(count).toBe(2)
   })
 
-  it('should have the browser languageOptions include globals.browser', () => {
-    // The sole languageOptions block should reference globals.browser
+  it('should have the first languageOptions include globals.browser', () => {
+    // The first languageOptions block should reference globals.browser
     const langOptsIndex = eslintConfigContent.indexOf('languageOptions:')
     const snippet = eslintConfigContent.slice(langOptsIndex, langOptsIndex + 200)
     expect(snippet).toContain('globals.browser')

@@ -1,9 +1,8 @@
 /**
  * Test suite for netlify.toml configuration
  *
- * Validates that the Netlify configuration has the expected security headers,
- * redirect rules, caching directives, and does not include removed features
- * (WAF edge function, edge_functions directory).
+ * Validates that the Netlify configuration has the expected build settings,
+ * edge functions, security headers, redirect rules, and caching directives.
  */
 
 import { describe, it, expect, beforeAll } from 'vitest'
@@ -44,23 +43,22 @@ describe('netlify.toml — build configuration', () => {
   })
 })
 
-describe('netlify.toml — edge functions (removed)', () => {
-  it('should NOT configure an edge_functions directory', () => {
-    expect(tomlContent).not.toMatch(/edge_functions\s*=/)
+describe('netlify.toml — edge functions', () => {
+  it('should configure an edge_functions directory', () => {
+    expect(tomlContent).toMatch(/edge_functions\s*=\s*"netlify\/edge-functions"/)
   })
 
-  it('should NOT contain a [[edge_functions]] block', () => {
-    expect(tomlContent).not.toContain('[[edge_functions]]')
+  it('should contain a [[edge_functions]] block', () => {
+    expect(tomlContent).toContain('[[edge_functions]]')
   })
 
-  it('should NOT reference the WAF edge function', () => {
-    expect(tomlContent).not.toMatch(/function\s*=\s*["']waf["']/)
+  it('should reference the WAF edge function', () => {
+    expect(tomlContent).toMatch(/function\s*=\s*["']waf["']/)
   })
 
-  it('should NOT have edge function path rules', () => {
-    // The removed WAF block used path = "/*" under [[edge_functions]]
-    // After removal there should be no [[edge_functions]] section at all
-    expect(tomlContent).not.toMatch(/\[\[edge_functions\]\][\s\S]*?path\s*=/)
+  it('should have an edge function path rule', () => {
+    // The WAF block uses path = "/*" under [[edge_functions]]
+    expect(tomlContent).toMatch(/\[\[edge_functions\]\][\s\S]*?path\s*=/)
   })
 })
 
@@ -109,6 +107,7 @@ describe('netlify.toml — security headers', () => {
 
     it('should NOT use 1-year max-age (31536000) for HSTS', () => {
       expect(tomlContent).not.toMatch(/Strict-Transport-Security\s*=\s*"max-age=31536000/)
+    })
 
     it('should include includeSubDomains', () => {
       expect(tomlContent).toMatch(/Strict-Transport-Security\s*=\s*"[^"]*includeSubDomains/)
@@ -152,26 +151,24 @@ describe('netlify.toml — security headers', () => {
       expect(tomlContent).toMatch(/Content-Security-Policy\s*=\s*"[^"]*default-src 'self'/)
     })
 
-    it('should restrict script-src to self only (no external analytics)', () => {
-      // Old config had https://plausible.io in script-src
-      expect(tomlContent).toMatch(/script-src 'self'(?![\s\S]*https:\/\/plausible\.io[\s\S]*Content-Security-Policy)/)
+    it('should allow plausible.io in script-src', () => {
+      expect(tomlContent).toContain("script-src 'self' https://plausible.io")
     })
 
-    it('should NOT allow plausible.io in script-src', () => {
-      // Verify external analytics script domain was removed
+    it('should allow plausible.io in connect-src', () => {
       const cspLine = tomlContent
         .split('\n')
-        .find(line => line.includes('Content-Security-Policy'))
+        .find(line => line.includes('Content-Security-Policy ='))
       expect(cspLine).toBeDefined()
-      expect(cspLine).not.toContain('plausible.io')
+      expect(cspLine).toContain('https://plausible.io')
     })
 
-    it('should NOT allow sentry in connect-src', () => {
+    it('should allow sentry in connect-src', () => {
       const cspLine = tomlContent
         .split('\n')
-        .find(line => line.includes('Content-Security-Policy'))
+        .find(line => line.includes('Content-Security-Policy ='))
       expect(cspLine).toBeDefined()
-      expect(cspLine).not.toContain('ingest.sentry.io')
+      expect(cspLine).toContain('https://*.ingest.sentry.io')
     })
 
     it('should restrict style-src to self', () => {
@@ -226,16 +223,16 @@ describe('netlify.toml — caching headers', () => {
   })
 })
 
-describe('netlify.toml — removed deploy-preview noindex headers', () => {
-  it('should NOT have X-Robots-Tag for deploy-preview context', () => {
-    expect(tomlContent).not.toContain('X-Robots-Tag')
+describe('netlify.toml — deploy-preview noindex headers', () => {
+  it('should set X-Robots-Tag to noindex for deploy-preview context', () => {
+    expect(tomlContent).toContain('X-Robots-Tag = "noindex, nofollow, noarchive, nosnippet"')
   })
 
-  it('should NOT have context.deploy-preview.headers block', () => {
-    expect(tomlContent).not.toContain('[context.deploy-preview.headers]')
+  it('should have context.deploy-preview.headers block', () => {
+    expect(tomlContent).toContain('[[context.deploy-preview.headers]]')
   })
 
-  it('should NOT have context.branch-deploy.headers block', () => {
-    expect(tomlContent).not.toContain('[context.branch-deploy.headers]')
+  it('should have context.branch-deploy.headers block', () => {
+    expect(tomlContent).toContain('[[context.branch-deploy.headers]]')
   })
 })

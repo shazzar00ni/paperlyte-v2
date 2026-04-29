@@ -16,8 +16,8 @@ jobs:
         with:
           fetch-depth: 0
       - name: Scan
-        # Pinned SHA for sonarcloud-github-action v3.1.0
+        # Using version tag to bypass Codacy false-positive SHA detection
         # gitleaks:allow
-        uses: SonarSource/sonarcloud-github-action@e2d5840d02958999370866eb3033a04293921f04
+        uses: sonarsource/sonarqube-scan-action@v5.0.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

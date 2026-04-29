@@ -72,7 +72,9 @@
     # External origins allowed:
     #   https://plausible.io              Plausible Analytics script + beacon (VITE_ANALYTICS_PROVIDER=plausible)
     #   https://*.ingest.sentry.io        Sentry error telemetry (VITE_SENTRY_DSN)
-    Content-Security-Policy = "default-src 'self'; script-src 'self' https://plausible.io; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://plausible.io https://*.ingest.sentry.io; worker-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests;"
+    #   https://va.vercel-scripts.com     @vercel/analytics script host
+    #   https://vitals.vercel-insights.com @vercel/analytics beacon endpoint
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://plausible.io https://va.vercel-scripts.com; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://plausible.io https://*.ingest.sentry.io https://vitals.vercel-insights.com; worker-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests;"
 
     # Isolate this page's browsing context group so cross-origin windows opened
     # from this page (or that open this page) cannot access each other's DOM or

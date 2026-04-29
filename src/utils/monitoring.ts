@@ -154,9 +154,11 @@ export function logWarning(message: string, context?: Record<string, unknown>): 
     }
   }
 
+  // Spread safeContext first so caller-supplied keys can never override the
+  // canonical `message` field on the analytics event.
   trackEvent('application_warning', {
-    message: message.slice(0, 200),
     ...safeContext,
+    message: message.slice(0, 200),
   })
 }
 

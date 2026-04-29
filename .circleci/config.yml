@@ -106,7 +106,7 @@ jobs:
     executor: node-executor
     steps:
       - checkout
-      - attach_workspace:
+          command: npm run test:coverage -- --run
           at: .
       - run:
           name: Coverage report

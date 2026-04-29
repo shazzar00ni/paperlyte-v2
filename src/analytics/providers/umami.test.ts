@@ -49,6 +49,7 @@ describe('analytics/providers/umami', () => {
 
   afterEach(() => {
     vi.restoreAllMocks()
+    vi.unstubAllEnvs()
   })
 
   describe('init', () => {

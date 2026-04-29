@@ -70,7 +70,8 @@
     "vite": "7.2.4",
     "vitest": "^4.1.0",
     "wait-on": "^9.0.4",
-    "@size-limit/preset-small-lib": "^12.0.0"
+    "@size-limit/preset-small-lib": "^12.0.0",
+    "size-limit": "^12.0.0"
   },
   "size-limit": [
     {
@@ -83,7 +84,8 @@
       "name": "Main bundle (CSS)",
       "path": "dist/assets/*.css",
       "limit": "30 KB",
-      "gzip": true
+      "gzip": true,
+      "import": false
     }
   ],
   "overrides": {

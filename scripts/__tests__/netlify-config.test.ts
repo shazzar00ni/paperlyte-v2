@@ -103,13 +103,12 @@ describe('netlify.toml — security headers', () => {
       expect(tomlContent).toContain('Strict-Transport-Security')
     })
 
-    it('should use 1-year max-age (31536000)', () => {
-      expect(tomlContent).toMatch(/Strict-Transport-Security\s*=\s*"max-age=31536000/)
+    it('should use 2-year max-age (63072000)', () => {
+      expect(tomlContent).toMatch(/Strict-Transport-Security\s*=\s*"max-age=63072000/)
     })
 
-    it('should NOT use 2-year max-age (63072000)', () => {
-      expect(tomlContent).not.toContain('max-age=63072000')
-    })
+    it('should NOT use 1-year max-age (31536000) for HSTS', () => {
+      expect(tomlContent).not.toMatch(/Strict-Transport-Security\s*=\s*"max-age=31536000/)
 
     it('should include includeSubDomains', () => {
       expect(tomlContent).toMatch(/Strict-Transport-Security\s*=\s*"[^"]*includeSubDomains/)

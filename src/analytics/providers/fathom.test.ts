@@ -6,6 +6,10 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { FathomProvider } from './fathom'
 import type { AnalyticsConfig, AnalyticsEvent, CoreWebVitals } from '../types'
 
+const removeFathomScripts = (): void => {
+  document.querySelectorAll('script[data-site]').forEach((el) => el.remove())
+}
+
 describe('analytics/providers/fathom', () => {
   let provider: FathomProvider
   let config: AnalyticsConfig
@@ -31,7 +35,7 @@ describe('analytics/providers/fathom', () => {
     }
 
     delete window.fathom
-    document.head.innerHTML = ''
+    removeFathomScripts()
 
     Object.defineProperty(navigator, 'doNotTrack', {
       writable: true,
@@ -265,7 +269,7 @@ describe('analytics/providers/fathom', () => {
     })
 
     it('should skip and warn when event name has no goal code mapping (debug mode)', () => {
-      document.head.innerHTML = ''
+      removeFathomScripts()
       const warnProvider = new FathomProvider()
       warnProvider.init({ ...config, debug: true, goalCodes: {} })
       window.fathom = mockFathom()
@@ -284,7 +288,7 @@ describe('analytics/providers/fathom', () => {
     })
 
     it('should skip silently when event name has no goal code mapping (non-debug mode)', () => {
-      document.head.innerHTML = ''
+      removeFathomScripts()
       const silentProvider = new FathomProvider()
       silentProvider.init({ ...config, debug: false, goalCodes: {} })
       window.fathom = mockFathom()
@@ -301,7 +305,7 @@ describe('analytics/providers/fathom', () => {
     })
 
     it('should skip when no goalCodes config is provided at all', () => {
-      document.head.innerHTML = ''
+      removeFathomScripts()
       const noMapProvider = new FathomProvider()
       noMapProvider.init(config) // no goalCodes
       window.fathom = mockFathom()
@@ -356,7 +360,7 @@ describe('analytics/providers/fathom', () => {
     })
 
     it('should log debug message with goal code when debug is enabled', () => {
-      document.head.innerHTML = ''
+      removeFathomScripts()
       const debugProvider = new FathomProvider()
       debugProvider.init({ ...config, debug: true, goalCodes: { cta_click: 'GOAL1234' } })
       window.fathom = mockFathom()
@@ -367,9 +371,7 @@ describe('analytics/providers/fathom', () => {
       const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
       debugProvider.trackEvent({ name: 'cta_click' })
 
-      expect(consoleLogSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Fathom trackGoal')
-      )
+      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Fathom trackGoal'))
       consoleLogSpy.mockRestore()
     })
 
@@ -413,7 +415,7 @@ describe('analytics/providers/fathom', () => {
 
     it('should log a debug warning when metrics are present and debug is enabled', () => {
       const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
-      document.head.innerHTML = ''
+      removeFathomScripts()
       Object.defineProperty(window, 'doNotTrack', {
         writable: true,
         configurable: true,
@@ -437,7 +439,7 @@ describe('analytics/providers/fathom', () => {
     it('should not log a warning when no metrics are defined (debug enabled)', () => {
       // Use debug: true so the "skipped metrics" branch is actually entered;
       // the assertion then meaningfully verifies that an empty vitals object produces no warning.
-      document.head.innerHTML = ''
+      removeFathomScripts()
       const debugProvider = new FathomProvider()
       debugProvider.init({ ...config, debug: true })
       window.fathom = mockFathom()

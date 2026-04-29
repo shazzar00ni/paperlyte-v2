@@ -12,7 +12,9 @@ describe('analytics/providers/umami', () => {
 
   const SCRIPT_URL = 'https://analytics.example.com/umami.js'
 
-  const mockUmami = () => ({
+  type UmamiMock = { track: ReturnType<typeof vi.fn>; identify: ReturnType<typeof vi.fn> }
+
+  const mockUmami = (): UmamiMock => ({
     track: vi.fn(),
     identify: vi.fn(),
   })
@@ -32,7 +34,7 @@ describe('analytics/providers/umami', () => {
     }
 
     delete window.umami
-    document.head.innerHTML = ''
+    document.head.replaceChildren()
 
     Object.defineProperty(navigator, 'doNotTrack', {
       writable: true,

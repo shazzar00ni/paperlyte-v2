@@ -178,5 +178,4 @@ export class UmamiProvider implements AnalyticsProvider {
       delete window.umami
     }
   }
-
 }

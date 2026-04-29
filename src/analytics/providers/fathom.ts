@@ -121,7 +121,9 @@ export class FathomProvider implements AnalyticsProvider {
     }
 
     if (this.config?.debug) {
-      console.log(`[Analytics] Fathom trackGoal called with code "${goalCode}" for event "${event.name}".`)
+      console.log(
+        `[Analytics] Fathom trackGoal called with code "${goalCode}" for event "${event.name}".`
+      )
     }
 
     const props = event.properties
@@ -198,5 +200,4 @@ export class FathomProvider implements AnalyticsProvider {
       delete window.fathom
     }
   }
-
 }

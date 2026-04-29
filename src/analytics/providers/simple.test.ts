@@ -273,7 +273,7 @@ describe('analytics/providers/simple', () => {
 
     it('should skip and warn when event name normalises to an empty string (debug mode)', () => {
       const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
-      document.head.innerHTML = ''
+      document.head.replaceChildren()
       const debugProvider = new SimpleAnalyticsProvider()
       debugProvider.init({ ...config, debug: true })
       window.sa_event = vi.fn()

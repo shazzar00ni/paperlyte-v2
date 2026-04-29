@@ -2,11 +2,14 @@
  * Tests for shared analytics provider utilities
  */
 
-import { describe, it, expect, afterEach } from 'vitest'
+import { describe, it, expect, afterEach, afterAll } from 'vitest'
 import { isDNTEnabled, isValidScriptUrl } from './utils'
 
 describe('analytics/providers/utils', () => {
   describe('isDNTEnabled', () => {
+    const originalNavigatorDnt = Object.getOwnPropertyDescriptor(navigator, 'doNotTrack')
+    const originalWindowDnt = Object.getOwnPropertyDescriptor(window, 'doNotTrack')
+
     afterEach(() => {
       Object.defineProperty(navigator, 'doNotTrack', {
         writable: true,
@@ -18,6 +21,22 @@ describe('analytics/providers/utils', () => {
         configurable: true,
         value: null,
       })
+    })
+
+    afterAll(() => {
+      if (originalNavigatorDnt) {
+        Object.defineProperty(navigator, 'doNotTrack', originalNavigatorDnt)
+      } else {
+        Reflect.deleteProperty(
+          navigator as Navigator & { doNotTrack?: string | null },
+          'doNotTrack'
+        )
+      }
+      if (originalWindowDnt) {
+        Object.defineProperty(window, 'doNotTrack', originalWindowDnt)
+      } else {
+        Reflect.deleteProperty(window as Window & { doNotTrack?: string | null }, 'doNotTrack')
+      }
     })
 
     it('should return false when doNotTrack is null', () => {
@@ -43,23 +62,57 @@ describe('analytics/providers/utils', () => {
     })
 
     it('should return true when navigator.doNotTrack is "1"', () => {
-      Object.defineProperty(navigator, 'doNotTrack', { writable: true, value: '1' })
+      Object.defineProperty(navigator, 'doNotTrack', {
+        writable: true,
+        configurable: true,
+        value: '1',
+      })
       expect(isDNTEnabled()).toBe(true)
     })
 
     it('should return true when navigator.doNotTrack is "yes"', () => {
-      Object.defineProperty(navigator, 'doNotTrack', { writable: true, value: 'yes' })
+      Object.defineProperty(navigator, 'doNotTrack', {
+        writable: true,
+        configurable: true,
+        value: 'yes',
+      })
       expect(isDNTEnabled()).toBe(true)
     })
 
     it('should return true when window.doNotTrack is "1"', () => {
-      Object.defineProperty(window, 'doNotTrack', { writable: true, value: '1' })
+      Object.defineProperty(window, 'doNotTrack', {
+        writable: true,
+        configurable: true,
+        value: '1',
+      })
       expect(isDNTEnabled()).toBe(true)
     })
 
     it('should return false when doNotTrack is "0"', () => {
-      Object.defineProperty(navigator, 'doNotTrack', { writable: true, value: '0' })
+      Object.defineProperty(navigator, 'doNotTrack', {
+        writable: true,
+        configurable: true,
+        value: '0',
+      })
       expect(isDNTEnabled()).toBe(false)
+    })
+
+    it('should return true when navigator.msDoNotTrack is "1"', () => {
+      const originalMsDnt = Object.getOwnPropertyDescriptor(navigator, 'msDoNotTrack')
+      Object.defineProperty(navigator, 'msDoNotTrack', {
+        writable: true,
+        configurable: true,
+        value: '1',
+      })
+      try {
+        expect(isDNTEnabled()).toBe(true)
+      } finally {
+        if (originalMsDnt) {
+          Object.defineProperty(navigator, 'msDoNotTrack', originalMsDnt)
+        } else {
+          Reflect.deleteProperty(navigator as Navigator & { msDoNotTrack?: string }, 'msDoNotTrack')
+        }
+      }
     })
   })
 

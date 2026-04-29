@@ -83,6 +83,7 @@ export class PlausibleProvider implements AnalyticsProvider {
     }
 
     script.onerror = () => {
+      if (this.scriptElement !== script) return
       if (this.config?.debug) {
         console.warn('[Analytics] Failed to load Plausible script')
       }
@@ -90,6 +91,7 @@ export class PlausibleProvider implements AnalyticsProvider {
     }
 
     script.onload = () => {
+      if (this.scriptElement !== script) return
       this.scriptLoaded = true
       if (this.config?.debug) {
         console.log('[Analytics] Plausible script loaded successfully')
@@ -218,5 +220,4 @@ export class PlausibleProvider implements AnalyticsProvider {
       delete window.plausible
     }
   }
-
 }

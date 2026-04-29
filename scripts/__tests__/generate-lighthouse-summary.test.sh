@@ -242,62 +242,7 @@ assert_contains \
   "❌ No representative run found in Lighthouse manifest" \
   "$output"
 
-rm -rf "$T"; trap - EXIT
-
-# ─── Test 4: Manifest exists but jsonPath resolves to "null" → exit 1 ─────────
-#
-# jq returns the literal string "null" when select() finds no matching entry.
-# The script guards against this with: [ "$REPORT_FILE" = "null" ]
-
-echo ""
-echo "Test 4: manifest exists but jsonPath is null (no isRepresentativeRun entry) → exit 1"
-
-T=$(mktemp -d)
-trap 'rm -rf "$T"' EXIT
-
-make_lighthouserc "$T"
-mkdir -p "$T/.lighthouseci"
-# Completely empty manifest array — jq select returns nothing → head -1 → empty string
-cat > "$T/.lighthouseci/manifest.json" <<'JSON'
-[]
-JSON
-
-output=$(cd "$T" && run_script "$T")
-exit_code=$(cd "$T" && run_script_exit_code "$T" || echo $?)
-
-assert_eq \
-  "script exits 1 when manifest is empty (no runs at all)" \
-  "1" \
-  "$exit_code"
-
-assert_contains \
-  "summary contains ❌ error message when manifest is empty" \
-  "❌ No representative run found in Lighthouse manifest" \
-  "$output"
-
-rm -rf "$T"; trap - EXIT
-
-# ─── Test 5: Regression — ⚠️ message is NOT emitted for missing representative run ─
-#
-# Before this PR the script used ⚠️ and exited 0. This test guards against regression.
-
-echo ""
-echo "Test 5: regression — ⚠️ warning emoji is NOT used when representative run is absent"
-
-T=$(mktemp -d)
-trap 'rm -rf "$T"' EXIT
-
-make_lighthouserc "$T"
-mkdir -p "$T/.lighthouseci"
-cat > "$T/.lighthouseci/manifest.json" <<'JSON'
-[
-  { "url": "http://localhost/", "isRepresentativeRun": false, "jsonPath": "/tmp/lhr.json" }
-]
-JSON
-
-output=$(cd "$T" && run_script "$T")
-
-# The old ⚠️ message must not appear; ❌ is the correct message after this PR.
+# Regression guard: the old ⚠️ message must not appear (pre-PR behaviour).
 if echo "$output" | grep -qF "⚠️ No representative run found"; then
   echo "  ❌ regression: old ⚠️ warning message found (should be ❌ error)"
   FAIL=$((FAIL + 1))
@@ -305,6 +250,42 @@ else
   echo "  ✅ old ⚠️ warning message is absent (correct post-PR behaviour)"
   PASS=$((PASS + 1))
 fi
+
+rm -rf "$T"; trap - EXIT
+
+# ─── Test 4: Manifest entry has jsonPath: null → exit 1 ──────────────────────
+#
+# When the representative entry exists but its jsonPath is JSON null, jq emits
+# the literal string "null". The script guards against this with:
+#   [ "$REPORT_FILE" = "null" ]
+
+echo ""
+echo "Test 4: manifest representative entry has jsonPath: null → exit 1"
+
+T=$(mktemp -d)
+trap 'rm -rf "$T"' EXIT
+
+make_lighthouserc "$T"
+mkdir -p "$T/.lighthouseci"
+# Representative run is present, but jsonPath is JSON null → jq -r prints "null".
+cat > "$T/.lighthouseci/manifest.json" <<'JSON'
+[
+  { "url": "http://localhost/", "isRepresentativeRun": true, "jsonPath": null }
+]
+JSON
+
+output=$(cd "$T" && run_script "$T")
+exit_code=$(cd "$T" && run_script_exit_code "$T" || echo $?)
+
+assert_eq \
+  "script exits 1 when jsonPath is the literal string \"null\"" \
+  "1" \
+  "$exit_code"
+
+assert_contains \
+  "summary contains ❌ error message when jsonPath is null" \
+  "❌ No representative run found in Lighthouse manifest" \
+  "$output"
 
 rm -rf "$T"; trap - EXIT
 

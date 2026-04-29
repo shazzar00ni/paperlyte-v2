@@ -31,7 +31,6 @@ This file tracks coding style, design, and workflow preferences for this project
 - Performance budget is strict: <2s load, >90 Lighthouse performance score, >95 Lighthouse accessibility score
 - CSS Modules for all component styles — no styled-components, no Tailwind
 - TypeScript strict mode everywhere; no `any` types
-- Component folder structure: `ComponentName.tsx`, `ComponentName.module.css`, `ComponentName.test.tsx`, `index.ts` (barrel)
 - URL validation required on any component that renders `<a>` tags with dynamic hrefs
 - Prefer tracking analytics events via the `useAnalytics()` hook in components; direct analytics utility calls may still exist in older code and should be migrated when touched
 
@@ -55,9 +54,9 @@ This file tracks coding style, design, and workflow preferences for this project
 
 ## Component Organisation
 
-- `src/components/` is divided into four sub-trees: `ui/` (reusable primitives — Button, Icon, AnimatedElement, FloatingElement, etc.), `layout/` (Header, Footer, Section), `sections/` (landing page sections — Hero, Features, FAQ, Comparison, etc.), `pages/` (routable pages — Privacy, Terms, NotFoundPage, ServerErrorPage, OfflinePage)
-- Each component lives in its own folder: `ComponentName.tsx`, `ComponentName.module.css`, `ComponentName.test.tsx`, `index.ts` (barrel re-export)
-- Import via path alias, e.g. `@components/ui/Button` — never use deep relative paths
+- `src/components/` is primarily divided into four sub-trees: `ui/` (reusable primitives — Button, Icon, AnimatedElement, FloatingElement, etc.), `layout/` (Header, Footer, Section), `sections/` (landing page sections — Hero, Features, FAQ, Comparison, etc.), `pages/` (routable pages — Privacy, Terms, NotFoundPage, ServerErrorPage, OfflinePage). Note: `ErrorBoundary/` sits at the top level outside these sub-trees.
+- Components generally live in their own folder and prefer the structure: `ComponentName.tsx`, `ComponentName.module.css`, `ComponentName.test.tsx`, `index.ts` (barrel re-export). Known exceptions exist — e.g. `Icon/` uses `Icon.css` (not a CSS Module) and includes an extra `icons.ts`.
+- Within `src/components/**`, import via path alias where available, e.g. `@components/ui/Button`, rather than deep relative paths. Outside `src/components/` (e.g. analytics modules) relative imports are still in use.
 
 ## Animations
 
@@ -68,7 +67,7 @@ This file tracks coding style, design, and workflow preferences for this project
 ## Icons
 
 - Icon names use the `fa-` prefix (`fa-bolt`, `fa-github`). New icons must be registered in `src/utils/iconLibrary.ts` via `library.add()` before use; unregistered names fall back to a FontAwesome runtime lookup with a dev console warning, then a placeholder `?` span
-- Meaningful icons (conveying information) must receive an `ariaLabel` prop — this renders `role="img"` and a `<title>` element. Decorative icons must omit `ariaLabel` entirely — `aria-hidden="true"` is applied automatically
+- Meaningful icons (conveying information) must receive an `ariaLabel` prop — this ensures an accessible label and `role="img"`. On the custom SVG render path a `<title>` element is also added; the FontAwesomeIcon fallback path sets `aria-label`/`role` but does not add a `<title>`. Decorative icons must omit `ariaLabel` entirely — `aria-hidden="true"` is applied automatically
 - Multi-token names (`"fa-spinner fa-spin"`) are supported: the first token is the icon, subsequent tokens become extra CSS classes on the rendered element
 
 ## Security Layers

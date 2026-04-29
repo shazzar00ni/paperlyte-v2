@@ -47,4 +47,4 @@ This file tracks information about the user's goals, context, and working style.
 ## Known Tech Debt (Pre-Launch Blockers)
 
 - **Category**: Tech debt
-- **Notes**: `src/constants/legal.ts` has 13 critical TODO placeholders (legal entity name, address, jurisdiction, governing law) — blocks production launch. `src/constants/downloads.ts` URLs are placeholder GitHub paths. `React.lazy()` is not yet used for large components (Privacy ~246 LOC, Terms ~338 LOC, FeedbackWidget ~373 LOC) — known optimization gap. Full inventory in `docs/TECHNICAL-DEBT.md`.
+- **Notes**: `src/constants/legal.ts` contains critical TODO placeholders (legal entity name, address, jurisdiction, governing law) — blocks production launch. `src/constants/downloads.ts` constructs GitHub Releases download URLs from `LEGAL_CONFIG.social.github`, but that value is currently a placeholder (`#`), so all download links are broken until the repo URL and release artifacts are in place. `React.lazy()` is not yet used for large components such as `Privacy`, `Terms`, and `FeedbackWidget` — known optimization gap. Full inventory in `docs/TECHNICAL-DEBT.md`.

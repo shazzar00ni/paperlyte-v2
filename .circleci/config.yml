@@ -79,9 +79,10 @@ jobs:
                 --command="xargs -r npx vitest run --reporter=default --reporter=junit --outputFile=test-results/junit-${CIRCLE_NODE_INDEX}.xml --" \
                 --split-by=timings \
                 --verbose
-            glob_exit=${PIPESTATUS[0]}
-            filter_exit=${PIPESTATUS[1]}
-            vitest_exit=${PIPESTATUS[2]}
+            pipe_statuses=("${PIPESTATUS[@]}")
+            glob_exit=${pipe_statuses[0]}
+            filter_exit=${pipe_statuses[1]}
+            vitest_exit=${pipe_statuses[2]}
             if [ "$glob_exit" -ne 0 ] || [ "$filter_exit" -ne 0 ]; then
               echo 1 > /tmp/test-exit-code
             else
@@ -97,7 +98,7 @@ jobs:
       - run:
           name: Report test status
           when: always
-          command: exit $(cat /tmp/test-exit-code)
+          command: exit $(cat /tmp/test-exit-code 2>/dev/null || echo 1)
 
   # Coverage runs as a separate single-node job so the report covers the full
   # suite. The parallelised `test` job only runs a subset of tests per node,
@@ -181,7 +182,7 @@ jobs:
       - run:
           name: Report E2E test status
           when: always
-          command: exit $(cat /tmp/e2e-exit-code)
+          command: exit $(cat /tmp/e2e-exit-code 2>/dev/null || echo 1)
 
 workflows:
   ci:

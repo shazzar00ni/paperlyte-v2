@@ -136,11 +136,10 @@ describe('netlify.toml — security headers', () => {
       expect(tomlContent).toMatch(/Permissions-Policy\s*=\s*"[^"]*camera=\(\)/)
     })
 
-    it('should NOT include the extended set of restricted APIs from the old config', () => {
-      // Old config had payment=(), usb=(), bluetooth=(), serial=(), etc.
-      // New config is trimmed to just the three primary APIs
-      expect(tomlContent).not.toMatch(/Permissions-Policy\s*=\s*"[^"]*payment=\(\)/)
-      expect(tomlContent).not.toMatch(/Permissions-Policy\s*=\s*"[^"]*usb=\(\)/)
+    it('should include the extended set of restricted APIs', () => {
+      // Config restricts payment, usb, bluetooth, serial, etc.
+      expect(tomlContent).toMatch(/Permissions-Policy\s*=\s*"[^"]*payment=\(\)/)
+      expect(tomlContent).toMatch(/Permissions-Policy\s*=\s*"[^"]*usb=\(\)/)
     })
   })
 

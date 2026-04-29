@@ -84,7 +84,6 @@
       "path": "dist/assets/*.css",
       "limit": "30 KB",
       "gzip": true,
-      "webpack": false,
       "esbuild": false
     }
   ],

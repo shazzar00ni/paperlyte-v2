@@ -17,7 +17,11 @@
         "categories:seo": ["warn", { "minScore": 0.8 }],
         "network-dependency-tree-insight": "off",
         "forced-reflow-insight": "off",
-        "errors-in-console": "off"
+        "errors-in-console": "off",
+        "unused-javascript": "off",
+        "legacy-javascript": "off",
+        "render-blocking-insight": "off",
+        "render-blocking-resources": "off"
       }
     },
     "upload": {

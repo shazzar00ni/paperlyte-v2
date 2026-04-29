@@ -26,8 +26,7 @@ jobs:
           fetch-depth: 0  # Full history required for SonarCloud blame data and new-code detection
 
       - name: Analyze with SonarCloud
-        # Using SHA that previously resolved Codacy false positives
-        uses: SonarSource/sonarqube-scan-action@529c91f99c658700ef26061fdb93ca9c4051659f # v5.0.0
+        uses: SonarSource/sonarqube-scan-action@v5.0.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:

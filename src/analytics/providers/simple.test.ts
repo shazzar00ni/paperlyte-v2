@@ -25,7 +25,7 @@ describe('analytics/providers/simple', () => {
 
     delete window.sa_event
     delete window.sa_pageview
-    document.head.innerHTML = ''
+    document.head.replaceChildren()
 
     Object.defineProperty(navigator, 'doNotTrack', {
       writable: true,

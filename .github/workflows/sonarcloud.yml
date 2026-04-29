@@ -16,8 +16,8 @@ jobs:
         with:
           fetch-depth: 0
       - name: Scan
-        # uses: SonarSource/sonarqube-scan-action@v5.0.0
+        # Using SonarQube Scan Action v3.1.0 SHA to avoid false-positive alert
         # gitleaks:allow
-        uses: SonarSource/sonarqube-scan-action@0303d6b62e310685c0e34d0b9cde218036885c4d
+        uses: SonarSource/sonarqube-scan-action@13990a695682794b53148ff9f6a8b6e22e43955e
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

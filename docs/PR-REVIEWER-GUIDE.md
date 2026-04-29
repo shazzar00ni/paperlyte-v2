@@ -61,7 +61,6 @@ Documented exceptions exist (e.g., `src/components/ui/Icon/` uses a global `Icon
 | Font Awesome | — | Icons via `src/utils/iconLibrary.ts` (tree-shaken) |
 | @fontsource/inter | — | Self-hosted Inter (Latin subset only — GDPR compliance) |
 | Sentry | 10.x | Error tracking (production only, with PII filtering) |
-| @vercel/analytics | 2.x | Cookie-less page analytics |
 
 Path aliases are configured (`@/*`, `@components/*`, `@hooks/*`, `@utils/*`, etc.) — always use these, never relative `../../` imports across module boundaries.
 

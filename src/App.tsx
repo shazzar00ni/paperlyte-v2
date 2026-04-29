@@ -37,6 +37,9 @@ function App() {
 
   return (
     <ErrorBoundary>
+      {/* TODO(a11y): Duplicate skip-link — index.html:94 already renders one
+          pre-hydration. Pick one (prefer the static HTML link) and remove the
+          other to avoid two skip-to-main targets in the DOM. */}
       <a href="#main" className="skip-link" onClick={handleSkipToMain}>
         Skip to main content
       </a>

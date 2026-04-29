@@ -1,0 +1,59 @@
+name: Daily PR Audit Summary
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Run daily at midnight UTC
+  workflow_dispatch: # Allow manual trigger
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # actions/checkout@v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@3958dc975a74996155c996548332007931f4a601 # actions/setup-python@v5.3.0
+        with:
+          python-version: '3.x'
+
+      - name: Run PR Audit
+        id: run_audit
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Generate audit results JSON
+          python3 scripts/maintenance/audit_branches.py > audit_results.json
+
+          # Generate markdown and comment on PRs using dedicated script
+          python3 scripts/maintenance/generate_audit_summary.py
+
+          # Prepend daily summary after the header in PR_REVIEW_SUMMARY.md
+          if [ -f daily_summary.txt ]; then
+            # Find the line number of the main header
+            HEADER_LINE=$(grep -n "# PR Review Summary" PR_REVIEW_SUMMARY.md | head -n 1 | cut -d: -f1 || echo "1")
+            AFTER_HEADER=$(($HEADER_LINE + 1))
+
+            # Split the file around the main header to insert the new entry
+            head -n $AFTER_HEADER PR_REVIEW_SUMMARY.md > top.md
+            tail -n +$(($AFTER_HEADER + 1)) PR_REVIEW_SUMMARY.md > bottom.md
+
+            # Combine and clean up
+            cat top.md daily_summary.txt bottom.md > updated_summary.md
+            mv updated_summary.md PR_REVIEW_SUMMARY.md
+            rm top.md bottom.md daily_summary.txt audit_results.json
+          fi
+
+      - name: Commit and Push Changes
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "github-actions[bot]"
+          git add PR_REVIEW_SUMMARY.md
+          git commit -m "docs: automated daily PR audit summary ($(date +%Y-%m-%d))" || echo "No changes to commit"
+          git push

@@ -16,9 +16,6 @@ jobs:
         with:
           fetch-depth: 0
       - name: Scan
-        # uses: SonarSource/sonarqube-scan-action@v5.0.0
-        uses: SonarSource/sonarqube-scan-action@529c91f99c658700ef26061fdb93ca9c4051659f
+        uses: SonarSource/sonarqube-scan-action@v5.0.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          # Use variables to break Codacy regex for SonarQube Docs API Key false positive
-          SONAR_SCANNER_OPTS: "-Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }} -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}"

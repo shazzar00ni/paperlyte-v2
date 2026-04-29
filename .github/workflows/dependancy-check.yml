@@ -7,8 +7,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-      - name: Build project with Maven
-        run: mvn clean install
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - name: Build project with npm
+        run: npm ci && npm run build
       - name: Depcheck
         uses: dependency-check/Dependency-Check_Action@main
         id: Depcheck

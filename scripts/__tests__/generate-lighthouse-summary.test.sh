@@ -208,10 +208,110 @@ assert_contains \
 
 rm -rf "$T"; trap - EXIT
 
+# ─── Test 3: Manifest exists but no representative run → exit 1 + ❌ message ──
+#
+# PR change: previously exit 0 (graceful), now exit 1 (hard failure) so that
+# the CI job fails when Lighthouse produces a manifest with no representative run.
+# The error emoji was also changed from ⚠️ to ❌ to reflect the severity.
+
+echo ""
+echo "Test 3: manifest exists but no run has isRepresentativeRun=true → exit 1"
+
+T=$(mktemp -d)
+trap 'rm -rf "$T"' EXIT
+
+make_lighthouserc "$T"
+mkdir -p "$T/.lighthouseci"
+# Manifest with every entry marked as NOT the representative run
+cat > "$T/.lighthouseci/manifest.json" <<'JSON'
+[
+  { "url": "http://localhost/", "isRepresentativeRun": false, "jsonPath": "/tmp/lhr.json" }
+]
+JSON
+
+output=$(cd "$T" && run_script "$T")
+exit_code=$(cd "$T" && run_script_exit_code "$T" || echo $?)
+
+assert_eq \
+  "script exits 1 when no representative run found (regression guard: was exit 0)" \
+  "1" \
+  "$exit_code"
+
+assert_contains \
+  "summary contains ❌ error message (not ⚠️) when no representative run found" \
+  "❌ No representative run found in Lighthouse manifest" \
+  "$output"
+
+rm -rf "$T"; trap - EXIT
+
+# ─── Test 4: Manifest exists but jsonPath resolves to "null" → exit 1 ─────────
+#
+# jq returns the literal string "null" when select() finds no matching entry.
+# The script guards against this with: [ "$REPORT_FILE" = "null" ]
+
+echo ""
+echo "Test 4: manifest exists but jsonPath is null (no isRepresentativeRun entry) → exit 1"
+
+T=$(mktemp -d)
+trap 'rm -rf "$T"' EXIT
+
+make_lighthouserc "$T"
+mkdir -p "$T/.lighthouseci"
+# Completely empty manifest array — jq select returns nothing → head -1 → empty string
+cat > "$T/.lighthouseci/manifest.json" <<'JSON'
+[]
+JSON
+
+output=$(cd "$T" && run_script "$T")
+exit_code=$(cd "$T" && run_script_exit_code "$T" || echo $?)
+
+assert_eq \
+  "script exits 1 when manifest is empty (no runs at all)" \
+  "1" \
+  "$exit_code"
+
+assert_contains \
+  "summary contains ❌ error message when manifest is empty" \
+  "❌ No representative run found in Lighthouse manifest" \
+  "$output"
+
+rm -rf "$T"; trap - EXIT
+
+# ─── Test 5: Regression — ⚠️ message is NOT emitted for missing representative run ─
+#
+# Before this PR the script used ⚠️ and exited 0. This test guards against regression.
+
+echo ""
+echo "Test 5: regression — ⚠️ warning emoji is NOT used when representative run is absent"
+
+T=$(mktemp -d)
+trap 'rm -rf "$T"' EXIT
+
+make_lighthouserc "$T"
+mkdir -p "$T/.lighthouseci"
+cat > "$T/.lighthouseci/manifest.json" <<'JSON'
+[
+  { "url": "http://localhost/", "isRepresentativeRun": false, "jsonPath": "/tmp/lhr.json" }
+]
+JSON
+
+output=$(cd "$T" && run_script "$T")
+
+# The old ⚠️ message must not appear; ❌ is the correct message after this PR.
+if echo "$output" | grep -qF "⚠️ No representative run found"; then
+  echo "  ❌ regression: old ⚠️ warning message found (should be ❌ error)"
+  FAIL=$((FAIL + 1))
+else
+  echo "  ✅ old ⚠️ warning message is absent (correct post-PR behaviour)"
+  PASS=$((PASS + 1))
+fi
+
+rm -rf "$T"; trap - EXIT
+
 # ─── Summary ──────────────────────────────────────────────────────────────────
 
 echo ""
-echo "Results: ${PASS} passed, ${FAIL} failed"
+
 echo ""
 
 [ "$FAIL" -eq 0 ]   # non-zero exit when any assertion fails

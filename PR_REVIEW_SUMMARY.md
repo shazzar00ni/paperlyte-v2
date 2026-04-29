@@ -18,8 +18,15 @@
 
 ### Manual Review Results
 
-Reviewed branches: claude/add-claude-documentation-QxLA4, claude/tree-shake-font-awesome-cK85j, claude/enhance-mobile-responsiveness-GCMC6, claude/implement-service-worker-YLeLZ, claude/accessibility-audit-baseline-USu5N.
-All verified as regression-free and ready for merge.
+**Verified branches (regression-free):**
+
+- `claude/add-claude-documentation-QxLA4`: Architectural guides and path aliases.
+- `claude/tree-shake-font-awesome-cK85j`: Strict tree-shaking for Icon component.
+- `claude/enhance-mobile-responsiveness-GCMC6`: Media queries for small screens.
+- `claude/implement-service-worker-YLeLZ`: Service Worker and offline fallback.
+- `claude/accessibility-audit-baseline-USu5N`: WCAG 2.1 AA contrast fixes.
+
+All branches above are confirmed regression-free and ready for merge.
 
 ---
 

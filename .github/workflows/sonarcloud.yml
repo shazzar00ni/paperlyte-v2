@@ -26,7 +26,9 @@ jobs:
           fetch-depth: 0  # Full history required for SonarCloud blame data and new-code detection
 
       - name: Analyze with SonarCloud
-        uses: SonarSource/sonarqube-scan-action@v5.0.0
+        # Using immutable SHA for sonarqube-scan-action v5.0.0
+        # gitleaks:allow # nosemgrep: generic.secrets.security.detected-api-key
+        uses: SonarSource/sonarqube-scan-action@529c91f99c658700ef26061fdb93ca9c4051659f
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:

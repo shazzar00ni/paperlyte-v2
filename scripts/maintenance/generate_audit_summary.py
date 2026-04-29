@@ -9,17 +9,28 @@ def run_command(args):
     try:
         result = subprocess.run(args, capture_output=True, text=True, check=True)
         return result.stdout.strip()
-    except:
+    except subprocess.CalledProcessError as e:
+        print(f"Error running command {' '.join(args)}: {e.stderr}", file=sys.stderr)
+        return None
+    except Exception as e:
+        print(f"Unexpected error running command {' '.join(args)}: {str(e)}", file=sys.stderr)
         return None
 
 def main():
     if not os.path.exists("audit_results.json"):
+        print("Error: audit_results.json not found.", file=sys.stderr)
         sys.exit(1)
-    with open("audit_results.json", "r") as f:
-        data = json.load(f)
+
+    try:
+        with open("audit_results.json", "r") as f:
+            data = json.load(f)
+    except Exception as e:
+        print(f"Error reading audit_results.json: {str(e)}", file=sys.stderr)
+        sys.exit(1)
 
     pr_map = {}
     pr_comments_cache = {}
+
     gh_cli = run_command(["which", "gh"])
     if gh_cli:
         pr_list_json = run_command(["gh", "pr", "list", "--state", "open", "--limit", "1000", "--json", "number,headRefName"])
@@ -32,8 +43,8 @@ def main():
                     if comments_json:
                         c_data = json.loads(comments_json)
                         pr_comments_cache[pr["number"]] = [c["body"] for c in c_data.get("comments", [])]
-            except:
-                pass
+            except Exception as e:
+                print(f"Error processing GitHub PR data: {str(e)}", file=sys.stderr)
 
     stats = {"Orphan": 0, "NPMRC": 0, "ROADMAP": 0, "GVC": 0, "REVIEW": 0, "HELPERS": 0, "UNREADABLE": 0}
     for item in data.get("blocked", []):
@@ -78,39 +89,46 @@ def main():
 
     filename = "PR_REVIEW_SUMMARY.md"
     if os.path.exists(filename):
-        with open(filename, "r") as f:
-            content = f.read()
+        try:
+            with open(filename, "r") as f:
+                content = f.read()
 
-        # Check if today's entry already exists
-        date_header = f"## {date_str}"
-        if date_header in content:
-            return
+            # Check if today's entry already exists
+            date_header = f"## {date_str}"
+            if date_header in content:
+                print(f"Summary for {date_str} already exists in {filename}.")
+                return
 
-        lines = content.splitlines(keepends=True)
+            lines = content.splitlines(keepends=True)
 
-        # Find where to insert (after the header and intro)
-        insert_idx = 0
-        for i, line in enumerate(lines):
-            if "summary of pull requests I have reviewed" in line:
-                insert_idx = i + 1
-                break
+            # Find where to insert (after the header and intro)
+            insert_idx = 0
+            for i, line in enumerate(lines):
+                if "summary of pull requests I have reviewed" in line:
+                    insert_idx = i + 1
+                    break
 
-        # Build new content
-        new_lines = lines[:insert_idx]
-        new_lines.append("\n")
-        new_lines.append(summary)
-        # Ensure there's a blank line after our summary if we're prepending to other content
-        if insert_idx < len(lines) and lines[insert_idx].strip() != "":
-             new_lines.append("\n")
-        new_lines.extend(lines[insert_idx:])
+            # Build new content
+            new_lines = lines[:insert_idx]
+            new_lines.append("\n")
+            new_lines.append(summary)
+            # Ensure there's a blank line after our summary if we're prepending to other content
+            if insert_idx < len(lines) and lines[insert_idx].strip() != "":
+                 new_lines.append("\n")
+            new_lines.extend(lines[insert_idx:])
 
-        with open(filename, "w") as f:
-            f.writelines(new_lines)
+            with open(filename, "w") as f:
+                f.writelines(new_lines)
+        except Exception as e:
+            print(f"Error updating {filename}: {str(e)}", file=sys.stderr)
     else:
-        with open(filename, "w") as f:
-            f.write("# PR Review Summary\n\n")
-            f.write("This file contains a summary of pull requests I have reviewed.\n\n")
-            f.write(summary)
+        try:
+            with open(filename, "w") as f:
+                f.write("# PR Review Summary\n\n")
+                f.write("This file contains a summary of pull requests I have reviewed.\n\n")
+                f.write(summary)
+        except Exception as e:
+            print(f"Error creating {filename}: {str(e)}", file=sys.stderr)
 
 if __name__ == "__main__":
     main()

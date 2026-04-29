@@ -16,8 +16,8 @@ jobs:
         with:
           fetch-depth: 0
       - name: Scan
-        # uses: SonarSource/sonarqube-scan-action@v5.0.0
+        # Pinned SHA for sonarcloud-github-action v3.1.0
         # gitleaks:allow
-        uses: SonarSource/sonarqube-scan-action@0303d6b62e310685c0e34d0b9cde218036885c4d
+        uses: SonarSource/sonarcloud-github-action@e2d5840d02958999370866eb3033a04293921f04
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

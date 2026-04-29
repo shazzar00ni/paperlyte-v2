@@ -126,7 +126,7 @@ function buildSitemap(pages) {
 }
 
 const sitemap = buildSitemap(pages);
-const outPath = path.join(__dirname, '../dist/sitemap.xml');
+const outPath = path.join(__dirname, '../public/sitemap.xml');
 
 try {
   fs.writeFileSync(outPath, sitemap, 'utf8');

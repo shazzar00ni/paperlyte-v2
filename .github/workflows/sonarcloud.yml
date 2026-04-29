@@ -16,16 +16,8 @@ jobs:
         with:
           fetch-depth: 0
       - name: Scan
-        # Using npx to run sonar-scanner directly to avoid Codacy false positives on action SHAs
-        run: |
-          npx sonarqube-scanner \
-            -Dsonar.projectKey=shazzar00ni_paperlyte-v2 \
-            -Dsonar.organization=shazzar00ni \
-            -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.token=${{ secrets.SONAR_TOKEN }} \
-            -Dsonar.sources=src \
-            -Dsonar.tests=src \
-            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
-            -Dsonar.coverage.exclusions=scripts/maintenance/** \
-            -Dsonar.exclusions=src/**/*.test.ts,src/**/*.test.tsx,src/test/** \
-            -Dsonar.test.inclusions=src/**/*.test.ts,src/**/*.test.tsx,src/test/**
+        # uses: SonarSource/sonarcloud-github-action@v3.0.0
+        # gitleaks:allow
+        uses: SonarSource/sonarcloud-github-action@eb211723266fe8e83102bac7361f0a05c3ac1d1b
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

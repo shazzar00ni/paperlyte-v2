@@ -68,6 +68,10 @@ exclude_patterns:
   - identifier: "Security/detect-non-literal-regexp"
     paths:
       - "src/utils/validation-utils.test.ts"
+  # Ignore false-positives for SonarCloud SHA being flagged as an API key in CI workflows
+  - identifier: "sonarcloud-sha-false-positive"
+    paths:
+      - ".github/workflows/analysis.yml"
 
 # Exclude paths from code analysis
 exclude_paths:

@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useMemo } from 'react'
 import { PERSISTENCE_CONFIG } from '@constants/config'
 
 type Theme = 'light' | 'dark'
@@ -28,15 +28,17 @@ const isValidTheme = (value: string | null): value is Theme => {
 export const useTheme = () => {
   const persistenceEnabled = PERSISTENCE_CONFIG.ALLOW_PERSISTENT_THEME
 
-  // This localStorage read runs on every render, but only the first evaluation
-  // matters: useRef ignores its argument after mount and useState's lazy
-  // initializer runs only once. The ref guard pattern React recommends for
-  // one-time initialisation (if ref.current === undefined) is blocked here by
-  // react-hooks/refs, which prohibits any .current access during render.
-  const initialUserPref =
-    isBrowser && persistenceEnabled
-      ? localStorage.getItem(USER_PREFERENCE_KEY) === 'true'
-      : false
+  // Read localStorage exactly once, memoized on persistenceEnabled.
+  // Wrapped in try/catch so a blocked/throwing storage backend (private mode,
+  // SecurityError) cannot break rendering.
+  const initialUserPref = useMemo(() => {
+    if (!isBrowser || !persistenceEnabled) return false
+    try {
+      return localStorage.getItem(USER_PREFERENCE_KEY) === 'true'
+    } catch {
+      return false
+    }
+  }, [persistenceEnabled])
 
   const userHasExplicitPreference = useRef(initialUserPref)
 

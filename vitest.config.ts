@@ -22,8 +22,8 @@ export default defineConfig({
     // Increase timeouts so component-rendering tests don't trip the default
     // 5s limit on slower CI runners, especially when v8 coverage instrumentation
     // is enabled (adds significant per-test overhead).
-    testTimeout: 30000,
-    hookTimeout: 30000,
+    testTimeout: process.env.CI ? 30000 : 5000,
+    hookTimeout: process.env.CI ? 30000 : 5000,
 
     // Global test utilities
     globals: true,

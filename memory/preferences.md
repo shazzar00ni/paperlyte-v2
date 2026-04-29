@@ -52,3 +52,30 @@ This file tracks coding style, design, and workflow preferences for this project
 - 2px focus outline with 2px offset on all interactive elements
 - Meaningful icons must have `ariaLabel`; decorative icons should omit `ariaLabel` so they remain hidden from assistive technology
 - Color contrast verified against WCAG AA/AAA matrix (see docs/DESIGN-SYSTEM.md)
+
+## Component Organisation
+
+- `src/components/` is divided into four sub-trees: `ui/` (reusable primitives — Button, Icon, AnimatedElement, FloatingElement, etc.), `layout/` (Header, Footer, Section), `sections/` (landing page sections — Hero, Features, FAQ, Comparison, etc.), `pages/` (routable pages — Privacy, Terms, NotFoundPage, ServerErrorPage, OfflinePage)
+- Each component lives in its own folder: `ComponentName.tsx`, `ComponentName.module.css`, `ComponentName.test.tsx`, `index.ts` (barrel re-export)
+- Import via path alias, e.g. `@components/ui/Button` — never use deep relative paths
+
+## Animations
+
+- Scroll-triggered entrance animations use `AnimatedElement` (wrapper component) + `useIntersectionObserver` (fires once at 10% viewport visibility by default) + `useReducedMotion` (zeroes animation when `prefers-reduced-motion: reduce` is set)
+- Animation delay is injected as the CSS custom property `--animation-delay` via `useEffect` to enable staggered reveals without prop-drilling
+- This is the only approved pattern for scroll-triggered effects — do not introduce a separate animation library
+
+## Icons
+
+- Icon names use the `fa-` prefix (`fa-bolt`, `fa-github`). New icons must be registered in `src/utils/iconLibrary.ts` via `library.add()` before use; unregistered names fall back to a FontAwesome runtime lookup with a dev console warning, then a placeholder `?` span
+- Meaningful icons (conveying information) must receive an `ariaLabel` prop — this renders `role="img"` and a `<title>` element. Decorative icons must omit `ariaLabel` entirely — `aria-hidden="true"` is applied automatically
+- Multi-token names (`"fa-spinner fa-spin"`) are supported: the first token is the icon, subsequent tokens become extra CSS classes on the rendered element
+
+## Security Layers
+
+- The codebase maintains five distinct security layers — all must be preserved when touching related code:
+  1. **Edge** — WAF edge function (`netlify/edge-functions/waf.ts`) blocks malicious requests before origin
+  2. **Transport** — HTTP security headers in `netlify.toml` and `vercel.json` (these two files must stay identical on CSP values; drift is a known bug source)
+  3. **CSP** — Two-tier: relaxed meta tag injected by Vite plugin in dev, strict HTTP header in prod
+  4. **App boundary** — `isSafeUrl()` from `@utils/navigation` on any dynamic `href`; `safePropertyAccess()` from `@utils/security` guards all dynamic object lookups against prototype pollution
+  5. **Input** — `validateEmail()`, `sanitizeInput()`, `encodeHtmlEntities()` from `@utils/validation`; rate limiting (3 req/min/IP) + Zod schema validation in serverless functions

@@ -83,8 +83,7 @@
       "name": "Main bundle (CSS)",
       "path": "dist/assets/*.css",
       "limit": "30 KB",
-      "gzip": true,
-      "esbuild": false
+      "gzip": true
     }
   ],
   "overrides": {

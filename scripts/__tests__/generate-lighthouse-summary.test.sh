@@ -48,8 +48,9 @@ run_script() {
 run_script_exit_code() {
   local tmpdir="$1"
   local summary_file="$tmpdir/summary.txt"
-  GITHUB_STEP_SUMMARY="$summary_file" bash "$SCRIPT" 2>/dev/null
-  echo $?
+  local rc=0
+  GITHUB_STEP_SUMMARY="$summary_file" bash "$SCRIPT" 2>/dev/null || rc=$?
+  echo "$rc"
 }
 
 # ─── Fixture helpers ──────────────────────────────────────────────────────────

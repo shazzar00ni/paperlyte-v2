@@ -65,13 +65,14 @@ jobs:
           # node_modules/ and dist/ are excluded to avoid slow traversal and
           # accidentally picking up dependency test files.
           # e2e specs are stripped out because Playwright owns those.
-          # set +e so the job doesn't abort on test failure; pipefail is kept
-          # enabled so glob/filter errors are not masked. PIPESTATUS captures
-          # each stage's exit code; the vitest exit code is re-raised after
-          # artifact upload.
+          # set +e so the job doesn't abort on test failure; pipefail is
+          # explicitly enabled so glob/filter errors are not masked even if the
+          # shell's default options change. PIPESTATUS captures each stage's
+          # exit code; the vitest exit code is re-raised after artifact upload.
           command: |
             mkdir -p test-results
             set +e
+            set -o pipefail
             circleci tests glob \
               "**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}" | \
               grep -v -e "^node_modules/" -e "^dist/" -e "^tests/e2e/" | \

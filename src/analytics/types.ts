@@ -86,6 +86,14 @@ export interface AnalyticsConfig {
   trackScrollDepth?: boolean
   /** Respect Do Not Track browser setting (default: true) */
   respectDNT?: boolean
+  /**
+   * Fathom-only: mapping from event names to provider-assigned Fathom goal codes.
+   * Fathom goal codes are short IDs created in the Fathom dashboard (e.g. "ABCD1234").
+   * Events whose names are not present in this map will be skipped rather than sent
+   * with an invalid code that Fathom would silently drop.
+   * Example: { cta_click: 'ABCD1234', scroll_depth: 'EFGH5678' }
+   */
+  goalCodes?: Record<string, string>
 }
 
 /**

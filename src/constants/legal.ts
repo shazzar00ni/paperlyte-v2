@@ -1,7 +1,8 @@
 /**
  * Legal and company information configuration
  *
- * TODO: Update these values with your actual company information
+ * Placeholder values marked with [...] and sentinel values such as '#'
+ * (for temporary document/social links) must be reviewed and replaced before launch.
  */
 
 export interface CompanyConfig {
@@ -19,7 +20,7 @@ export interface CompanyConfig {
 export const LEGAL_CONFIG = {
   company: {
     name: 'Paperlyte',
-    legalName: '[Company Legal Name]', // TODO: Add legal entity name
+    legalName: '[Company Legal Name]',
     email: 'hello@paperlyte.com',
     supportEmail: 'support@paperlyte.com',
     privacyEmail: 'privacy@paperlyte.com',
@@ -29,7 +30,7 @@ export const LEGAL_CONFIG = {
     arbitrationOptOutEmail: 'arbitration-opt-out@paperlyte.com',
   },
   address: {
-    street: '[Street Address]', // TODO: Add street address
+    street: '[Street Address]',
     city: '[City]',
     state: '[State]',
     zip: '[ZIP]',
@@ -38,54 +39,53 @@ export const LEGAL_CONFIG = {
   documents: {
     privacy: '/privacy.html',
     terms: '/terms.html',
-    cookies: '#', // TODO: Create cookie policy
-    security: '#', // TODO: Create security practices doc
-    dmca: '#', // TODO: Create DMCA policy
-    accessibility: '#', // TODO: Create accessibility statement
+    cookies: '#',
+    security: '#',
+    dmca: '#',
+    accessibility: '#',
   },
   social: {
     github: 'https://github.com/shazzar00ni/paperlyte-v2',
     twitter: 'https://x.com/paperlyte',
-    linkedin: '#', // TODO: Create LinkedIn company page or update to existing page
+    linkedin: '#',
     instagram: 'https://instagram.com/paperlytefilms',
-    discord: '#', // TODO: Add Discord server link
+    discord: '#',
   },
   metadata: {
     privacyLastUpdated: '2025-11-28',
     termsLastUpdated: '2025-11-28',
     termsVersion: '1.0',
-    jurisdiction: '[State/Country]', // TODO: Add jurisdiction
-    governingLaw: '[State] law', // TODO: Add governing law
+    jurisdiction: '[State/Country]',
+    governingLaw: '[State] law',
   },
 } as const
+
+const allConfigEntries = (): Array<[string, string]> => {
+  const entries: Array<[string, string]> = []
+  for (const [section, values] of Object.entries(LEGAL_CONFIG)) {
+    for (const [key, value] of Object.entries(values)) {
+      if (typeof value === 'string') {
+        entries.push([`${section}.${key}`, value])
+      }
+    }
+  }
+  return entries
+}
+
+const isPlaceholder = (value: string): boolean => value.includes('[') || value === '#'
 
 /**
  * Helper function to check if legal documents need updating
  */
 export const needsLegalReview = (): boolean => {
-  const hasPlaceholders =
-    LEGAL_CONFIG.company.legalName.includes('[') ||
-    LEGAL_CONFIG.address.street.includes('[') ||
-    LEGAL_CONFIG.metadata.jurisdiction.includes('[')
-
-  return hasPlaceholders
+  return allConfigEntries().some(([, value]) => isPlaceholder(value))
 }
 
 /**
  * Get all placeholder fields that need to be filled
  */
 export const getPlaceholderFields = (): string[] => {
-  const placeholders: string[] = []
-
-  if (LEGAL_CONFIG.company.legalName.includes('[')) {
-    placeholders.push('Company Legal Name')
-  }
-  if (LEGAL_CONFIG.address.street.includes('[')) {
-    placeholders.push('Physical Address')
-  }
-  if (LEGAL_CONFIG.metadata.jurisdiction.includes('[')) {
-    placeholders.push('Jurisdiction/Governing Law')
-  }
-
-  return placeholders
+  return allConfigEntries()
+    .filter(([, value]) => isPlaceholder(value))
+    .map(([key]) => key)
 }

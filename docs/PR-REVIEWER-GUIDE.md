@@ -124,7 +124,7 @@ Path aliases are configured (`@/*`, `@components/*`, `@hooks/*`, `@utils/*`, etc
 ## Out of Scope
 
 - **`memory/` directory**: Claude Code session state — ignore entirely during review.
-- **`docs/` directory**: Documentation-only files — not subject to code style rules.
+- **`docs/` directory**: Documentation-only files — skip code-style nitpicks, but still review for factual accuracy and policy consistency.
 - **`scripts/` directory**: Build tooling — only review if a PR specifically modifies build behavior.
 - **`vercel.json` CSP headers**: These are intentionally strict; do not suggest relaxing them.
 - **Prettier formatting**: CI enforces it. Don't leave style comments — just ask the author to run `npm run format`.

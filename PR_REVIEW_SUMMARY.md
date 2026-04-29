@@ -2,6 +2,27 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-04-29
+
+### Analysis: Systemic Regressions in Open Branches (Automated Daily Audit)
+
+- **Status:** Critical — Action Required
+- **Summary:** An automated repository-wide audit confirms regressions in 259 unmerged branches.
+
+| Regression Type      | Count | Severity    | Notes                |
+| :------------------- | :---- | :---------- | :------------------- |
+| Orphan Branches      | 0     | 🔴 Critical | No shared history.   |
+| Missing .npmrc       | 82    | 🔴 Critical | Breaks dependencies. |
+| Missing ROADMAP      | 76    | 🟠 High     | Core documentation.  |
+| Missing Git Workflow | 91    | 🟠 High     | Workflow docs.       |
+| Missing review.md    | 91    | 🟡 Medium   | AI instructions.     |
+| Reverted Helpers     | 90    | 🔴 Critical | Security utilities.  |
+| Unreadable nav.ts    | 8     | 🔴 Critical | File missing/broken. |
+
+- **Action Required:** ALL affected branches MUST restore these critical files.
+
+---
+
 ## 2026-03-05
 
 ### Analysis: Accidental File Deletions in Open Branches (Jules Daily PR Reviews)

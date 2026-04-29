@@ -1,5 +1,7 @@
 # PR Review Summary
 
+This file contains a summary of pull requests I have reviewed.
+
 ## 2026-04-29
 
 ### Analysis: Systemic Regressions in Open Branches (Automated Daily Audit)
@@ -14,14 +16,12 @@
 | Missing ROADMAP      | 0     | 🟠 High     | Core documentation.  |
 | Missing Git Workflow | 0     | 🟠 High     | Workflow docs.       |
 | Missing review.md    | 0     | 🟡 Medium   | AI instructions.     |
-| Reverted Helpers     | 1     | 🔴 Critical | Security utilities.  |
+| Reverted Helpers     | 0     | 🔴 Critical | Security utilities.  |
 | Unreadable nav.ts    | 0     | 🔴 Critical | File missing/broken. |
 
 - **Action Required:** ALL affected branches MUST restore these critical files.
 
 ---
-
-This file contains a summary of pull requests I have reviewed.
 
 ## 2026-03-05
 

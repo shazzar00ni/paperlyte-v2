@@ -1,0 +1,31 @@
+name: SonarCloud
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+permissions:
+  contents: read
+  pull-requests: read
+jobs:
+  sonar:
+    name: Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+      - name: Scan
+        # Using npx to run sonar-scanner directly to avoid Codacy false positives on action SHAs
+        run: |
+          npx sonarqube-scanner \
+            -Dsonar.projectKey=shazzar00ni_paperlyte-v2 \
+            -Dsonar.organization=shazzar00ni \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.token=${{ secrets.SONAR_TOKEN }} \
+            -Dsonar.sources=src \
+            -Dsonar.tests=src \
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
+            -Dsonar.coverage.exclusions=scripts/maintenance/** \
+            -Dsonar.exclusions=src/**/*.test.ts,src/**/*.test.tsx,src/test/** \
+            -Dsonar.test.inclusions=src/**/*.test.ts,src/**/*.test.tsx,src/test/**

@@ -79,29 +79,37 @@ def main():
     filename = "PR_REVIEW_SUMMARY.md"
     if os.path.exists(filename):
         with open(filename, "r") as f:
-            lines = f.readlines()
+            content = f.read()
 
-        # Keep the main header and insert after it
-        if lines and lines[0].startswith("# "):
-            new_content = [lines[0], "\n", summary]
-            start_index = 1
-        else:
-            new_content = ["# PR Review Summary\n", "\n", summary]
-            start_index = 0
+        # Check if today's entry already exists
+        date_header = f"## {date_str}"
+        if date_header in content:
+            return
 
-        if start_index < len(lines):
-            # Skip any immediate whitespace
-            while start_index < len(lines) and lines[start_index].strip() == "":
-                start_index += 1
-            if start_index < len(lines):
-                new_content.append("\n")
-                new_content.extend(lines[start_index:])
+        lines = content.splitlines(keepends=True)
+
+        # Find where to insert (after the header and intro)
+        insert_idx = 0
+        for i, line in enumerate(lines):
+            if "summary of pull requests I have reviewed" in line:
+                insert_idx = i + 1
+                break
+
+        # Build new content
+        new_lines = lines[:insert_idx]
+        new_lines.append("\n")
+        new_lines.append(summary)
+        # Ensure there's a blank line after our summary if we're prepending to other content
+        if insert_idx < len(lines) and lines[insert_idx].strip() != "":
+             new_lines.append("\n")
+        new_lines.extend(lines[insert_idx:])
 
         with open(filename, "w") as f:
-            f.writelines(new_content)
+            f.writelines(new_lines)
     else:
         with open(filename, "w") as f:
             f.write("# PR Review Summary\n\n")
+            f.write("This file contains a summary of pull requests I have reviewed.\n\n")
             f.write(summary)
 
 if __name__ == "__main__":

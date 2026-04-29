@@ -208,10 +208,133 @@ assert_contains \
 
 rm -rf "$T"; trap - EXIT
 
+# ─── Test 3: manifest exists but has no representative run → exit 1 ──────────
+# PR change: was `exit 0` (graceful), now `exit 1` (hard failure).
+# This ensures CI fails when Lighthouse ran but produced no representative run.
+
+echo ""
+echo "Test 3: manifest exists but no isRepresentativeRun=true entry → must exit 1"
+
+T=$(mktemp -d)
+trap 'rm -rf "$T"' EXIT
+
+make_lighthouserc "$T"
+mkdir -p "$T/.lighthouseci"
+# All entries have isRepresentativeRun=false — jq will return empty string
+cat > "$T/.lighthouseci/manifest.json" <<'JSON'
+[
+  { "url": "http://localhost/", "isRepresentativeRun": false, "jsonPath": "/tmp/fake.json" }
+]
+JSON
+
+summary_out=$(cd "$T" && run_script "$T")
+exit_code=$(cd "$T" && run_script_exit_code "$T" || echo $?)
+
+assert_eq \
+  "script exits 1 when manifest has no representative run" \
+  "1" \
+  "$exit_code"
+
+assert_contains \
+  "summary contains ❌ error (not ⚠️ warning) for missing representative run" \
+  "❌ No representative run found in Lighthouse manifest" \
+  "$summary_out"
+
+rm -rf "$T"; trap - EXIT
+
+# ─── Test 4: manifest exists with isRepresentativeRun=true but jsonPath=null ──
+# Guard against jq outputting the literal string "null" for a missing/null path.
+
+echo ""
+echo "Test 4: manifest has representative run with null jsonPath → must exit 1"
+
+T=$(mktemp -d)
+trap 'rm -rf "$T"' EXIT
+
+make_lighthouserc "$T"
+mkdir -p "$T/.lighthouseci"
+cat > "$T/.lighthouseci/manifest.json" <<'JSON'
+[
+  { "url": "http://localhost/", "isRepresentativeRun": true, "jsonPath": null }
+]
+JSON
+
+summary_out=$(cd "$T" && run_script "$T")
+exit_code=$(cd "$T" && run_script_exit_code "$T" || echo $?)
+
+assert_eq \
+  "script exits 1 when representative run jsonPath is null" \
+  "1" \
+  "$exit_code"
+
+assert_contains \
+  "summary contains ❌ error for null jsonPath" \
+  "❌ No representative run found in Lighthouse manifest" \
+  "$summary_out"
+
+rm -rf "$T"; trap - EXIT
+
+# ─── Test 5: manifest exists but is an empty array → exit 1 ──────────────────
+
+echo ""
+echo "Test 5: manifest is an empty array → must exit 1"
+
+T=$(mktemp -d)
+trap 'rm -rf "$T"' EXIT
+
+make_lighthouserc "$T"
+mkdir -p "$T/.lighthouseci"
+printf '[]' > "$T/.lighthouseci/manifest.json"
+
+summary_out=$(cd "$T" && run_script "$T")
+exit_code=$(cd "$T" && run_script_exit_code "$T" || echo $?)
+
+assert_eq \
+  "script exits 1 when manifest is an empty array" \
+  "1" \
+  "$exit_code"
+
+assert_contains \
+  "summary contains ❌ error for empty manifest array" \
+  "❌ No representative run found in Lighthouse manifest" \
+  "$summary_out"
+
+rm -rf "$T"; trap - EXIT
+
+# ─── Test 6: no representative run must NOT emit the old ⚠️ warning ──────────
+# Regression guard: before the PR change the message used ⚠️; it must now use ❌.
+
+echo ""
+echo "Test 6: missing-representative-run message must NOT contain ⚠️ (regression guard)"
+
+T=$(mktemp -d)
+trap 'rm -rf "$T"' EXIT
+
+make_lighthouserc "$T"
+mkdir -p "$T/.lighthouseci"
+cat > "$T/.lighthouseci/manifest.json" <<'JSON'
+[
+  { "url": "http://localhost/", "isRepresentativeRun": false, "jsonPath": "/tmp/nope.json" }
+]
+JSON
+
+summary_out=$(cd "$T" && run_script "$T")
+
+# The old message was "⚠️ No representative run found …"; it must be gone.
+if echo "$summary_out" | grep -qF "⚠️ No representative run found"; then
+  echo "  ❌ summary still contains deprecated ⚠️ representative-run message"
+  FAIL=$((FAIL + 1))
+else
+  echo "  ✅ summary does not contain deprecated ⚠️ representative-run message"
+  PASS=$((PASS + 1))
+fi
+
+rm -rf "$T"; trap - EXIT
+
 # ─── Summary ──────────────────────────────────────────────────────────────────
 
 echo ""
-echo "Results: ${PASS} passed, ${FAIL} failed"
+
 echo ""
 
 [ "$FAIL" -eq 0 ]   # non-zero exit when any assertion fails

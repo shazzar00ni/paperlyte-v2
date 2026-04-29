@@ -24,8 +24,9 @@ def main():
     with open('audit_results.json', 'r') as f:
         data = json.load(f)
 
-    # Get PR mappings from GitHub CLI (if available)
+    # Get PR mappings and existing comments from GitHub CLI (if available)
     pr_map = {}
+    pr_comments_cache = {}
     gh_cli = run_command(['which', 'gh'])
     if gh_cli:
         pr_list_json = run_command(['gh', 'pr', 'list', '--state', 'open', '--limit', '1000', '--json', 'number,headRefName'])
@@ -34,6 +35,11 @@ def main():
                 prs = json.loads(pr_list_json)
                 for pr in prs:
                     pr_map[pr['headRefName']] = pr['number']
+                    # Fetch existing comments for each PR to prevent spam
+                    comments_json = run_command(['gh', 'pr', 'view', str(pr['number']), '--json', 'comments'])
+                    if comments_json:
+                        comments_data = json.loads(comments_json)
+                        pr_comments_cache[pr['number']] = [c['body'] for c in comments_data.get('comments', [])]
             except json.JSONDecodeError:
                 pass
 
@@ -62,11 +68,21 @@ def main():
         branch = item['branch']
         if branch in pr_map:
             pr_num = pr_map[branch]
-            comment = '### ⚠️ Systemic Regressions Detected\n\nThis branch is currently blocked by the following regressions:\n\n'
-            for issue in issues:
-                comment += f'- {issue}\n'
-            comment += '\nPlease restore these critical files or security helpers before merging.'
-            run_command(['gh', 'pr', 'comment', str(pr_num), '--body', comment])
+            comment_marker = '### ⚠️ Systemic Regressions Detected'
+
+            # Prevent duplicate comments
+            already_commented = False
+            for existing_comment in pr_comments_cache.get(pr_num, []):
+                if comment_marker in existing_comment:
+                    already_commented = True
+                    break
+
+            if not already_commented:
+                comment = f'{comment_marker}\n\nThis branch is currently blocked by the following regressions:\n\n'
+                for issue in issues:
+                    comment += f'- {issue}\n'
+                comment += '\nPlease restore these critical files or security helpers before merging.'
+                run_command(['gh', 'pr', 'comment', str(pr_num), '--body', comment])
 
     # Generate Markdown Summary
     date_str = datetime.now().strftime('%Y-%m-%d')
@@ -86,6 +102,7 @@ def main():
     summary += f'| Reverted Security Helpers      | {stats["HELPERS"]}   | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers.                      |\n'
     summary += f'| Unreadable navigation.ts       | {stats["UNREADABLE"]}     | 🔴 Critical | File missing or unreadable.                                              |\n\n'
     summary += '- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.\n\n'
+    summary += '---\n'
 
     with open('daily_summary.txt', 'w') as f:
         f.write(summary)

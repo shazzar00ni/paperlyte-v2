@@ -16,8 +16,8 @@ jobs:
         with:
           fetch-depth: 0
       - name: Scan
-        # Pinned SHA for sonarqube-scan-action v5.0.0
-        # gitleaks:allow # nosemgrep
+        # uses: SonarSource/sonarqube-scan-action@v5.0.0
+        # gitleaks:allow
         uses: SonarSource/sonarqube-scan-action@0303d6b62e310685c0e34d0b9cde218036885c4d
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

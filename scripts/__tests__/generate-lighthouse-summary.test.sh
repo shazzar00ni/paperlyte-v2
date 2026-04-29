@@ -311,7 +311,6 @@ rm -rf "$T"; trap - EXIT
 # ─── Summary ──────────────────────────────────────────────────────────────────
 
 echo ""
-
-echo ""
+echo "Results: ${PASS} passed, ${FAIL} failed"
 
 [ "$FAIL" -eq 0 ]   # non-zero exit when any assertion fails

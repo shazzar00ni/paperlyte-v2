@@ -42,6 +42,7 @@ function App() {
   }, [])
 
   return (
+    <>
     <ErrorBoundary>
       {/* TODO(a11y): Duplicate skip-link — index.html:94 already renders one
           pre-hydration. Pick one (prefer the static HTML link) and remove the
@@ -79,12 +80,19 @@ function App() {
       <Suspense fallback={<div className="suspense-feedback" role="status"><span className="sr-only">Loading feedback widget…</span></div>}>
         <FeedbackWidget />
       </Suspense>
-      {/* Only render @vercel/analytics on Vercel deployments. On Netlify the
-          beacons go nowhere useful and add unnecessary network requests; see
-          memory/decisions.md. VITE_DEPLOY_TARGET is set to "vercel" via
-          vercel.json's build env and is undefined on Netlify builds. */}
-      {import.meta.env.VITE_DEPLOY_TARGET === 'vercel' && <Analytics />}
     </ErrorBoundary>
+    {/* Render @vercel/analytics outside the main ErrorBoundary so a render
+        failure in the analytics library can never blank the entire page.
+        Only render on Vercel deployments — on Netlify the beacons go nowhere
+        useful and add unnecessary network requests; see memory/decisions.md.
+        VITE_DEPLOY_TARGET is set to "vercel" via vercel.json's build env and
+        is undefined on Netlify builds. */}
+    {import.meta.env.VITE_DEPLOY_TARGET === 'vercel' && (
+      <ErrorBoundary>
+        <Analytics />
+      </ErrorBoundary>
+    )}
+    </>
   )
 }
 

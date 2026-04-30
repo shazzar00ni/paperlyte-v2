@@ -72,6 +72,11 @@ This file tracks key architectural, design, and technical decisions made during 
 - **Rationale**: Site is deployed on Netlify; `/_vercel/insights/script.js` does not exist there, causing a MIME-type console error that degraded the Lighthouse Best Practices score
 - **Alternatives considered**: Conditional rendering per platform, keeping it for a future Vercel deployment
 
+- **Date**: 2026-04-30
+- **Decision**: Re-added `@vercel/analytics@^2.0.1`, gated to Vercel deployments only via `import.meta.env.VITE_DEPLOY_TARGET === 'vercel'` in `src/App.tsx`. The env var is set in `vercel.json` (`build.env.VITE_DEPLOY_TARGET = "vercel"`) and is undefined on Netlify builds, so `<Analytics />` is tree-shaken/no-op on Netlify. CSP entries (`https://va.vercel-scripts.com`, `https://vitals.vercel-insights.com`) added to both `vercel.json` and `netlify.toml` to keep the configs in sync. `<Analytics />` is rendered inside its own `<ErrorBoundary>` outside the main app tree so a library render failure cannot blank the page
+- **Rationale**: v2 loads from `https://va.vercel-scripts.com` (external) instead of v1's same-origin `/_vercel/insights/script.js`, avoiding the original MIME-type error. Vercel-only gating prevents dead-end network requests on Netlify and keeps the previous decision's intent (no Lighthouse regression on the primary deployment)
+- **Alternatives considered**: Render unconditionally and accept Netlify network noise; keep removed and rely solely on Plausible/GA4; switch primary deployment to Vercel
+
 - **Date**: 2026-04-20 (known pre-existing issue)
 - **Decision**: `worker-src 'none'` in production CSP — Sentry Session Replay likely silently disabled
 - **Rationale**: Sentry `replayIntegration()` is configured in `src/main.tsx` but its web-worker transport is blocked by the current CSP. This is a pre-existing issue unrelated to the CSP/analytics PR. To enable Replay, `worker-src 'self' blob:` would need to be added to both `netlify.toml` and `vercel.json`.

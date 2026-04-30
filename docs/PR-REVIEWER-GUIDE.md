@@ -51,7 +51,7 @@ Documented exceptions exist (e.g., `src/components/ui/Icon/` uses a global `Icon
 | Tool | Version | Role |
 |---|---|---|
 | React | 19.2 | UI framework |
-| TypeScript | ~5.9 | Strict typing everywhere |
+| TypeScript | ~6.0 | Strict typing everywhere |
 | Vite | 7.x | Build tool, dev server (port 3000), manual chunking |
 | Vitest | 4.x | Unit & component tests (jsdom environment) |
 | Playwright | 1.59 | E2E tests (5 projects: Chromium, Firefox, WebKit, Mobile Chrome, Mobile Safari) |

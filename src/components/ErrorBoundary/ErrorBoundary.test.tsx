@@ -381,6 +381,63 @@ describe('ErrorBoundary', () => {
     })
   })
 
+  describe('maxRetries exhaustion', () => {
+    it('should hide "Try Again" and change message after retryCount reaches maxRetries', async (): Promise<void> => {
+      const user = userEvent.setup()
+
+      const AlwaysThrows: () => never = () => {
+        throw new Error('persistent error')
+      }
+
+      render(
+        <ErrorBoundary maxRetries={2}>
+          <AlwaysThrows />
+        </ErrorBoundary>
+      )
+
+      expect(screen.getByText('Try Again')).toBeInTheDocument()
+      expect(screen.getByText(/something unexpected happened/i)).toBeInTheDocument()
+
+      await user.click(screen.getByText('Try Again'))
+
+      await waitFor(() => {
+        expect(screen.queryByText('Try Again')).not.toBeInTheDocument()
+      })
+      expect(screen.getByText(/Multiple errors occurred/i)).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: 'Reload Page' })).toBeInTheDocument()
+    })
+
+    it('should show "Reload Page" button and call location.reload when retry limit is reached', async (): Promise<void> => {
+      const user = userEvent.setup()
+      const reloadMock = vi.fn()
+
+      Object.defineProperty(window, 'location', {
+        configurable: true,
+        writable: true,
+        value: { ...originalLocation, reload: reloadMock },
+      })
+
+      const AlwaysThrows: () => never = () => {
+        throw new Error('persistent error')
+      }
+
+      render(
+        <ErrorBoundary maxRetries={1}>
+          <AlwaysThrows />
+        </ErrorBoundary>
+      )
+
+      await waitFor(() => {
+        expect(screen.queryByText('Try Again')).not.toBeInTheDocument()
+      })
+      expect(screen.getByText(/Multiple errors occurred/i)).toBeInTheDocument()
+
+      const reloadButton = screen.getByRole('button', { name: 'Reload Page' })
+      await user.click(reloadButton)
+      expect(reloadMock).toHaveBeenCalled()
+    })
+  })
+
   describe('getDerivedStateFromError', () => {
     it('should set hasError to true when error is thrown', () => {
       render(

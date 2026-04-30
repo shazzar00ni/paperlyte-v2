@@ -52,6 +52,7 @@ const VALUE_PROPS: ValueProp[] = [
   },
 ]
 
+/** Renders the Solution section presenting Paperlyte's key differentiating features. */
 export const Solution = (): React.ReactElement => {
   return (
     <Section id="solution" background="default">

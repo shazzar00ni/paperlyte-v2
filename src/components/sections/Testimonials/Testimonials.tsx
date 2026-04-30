@@ -199,6 +199,7 @@ export const Testimonials = (): React.ReactElement => {
         </div>
       </AnimatedElement>
 
+      {/* accessibility-fixed: issue-810 - tabIndex={0} is intentional; carouselRef receives keydown events for arrow-key navigation */}
       <section
         ref={carouselRef}
         className={styles.carouselWrapper}
@@ -269,6 +270,7 @@ export const Testimonials = (): React.ReactElement => {
           <Icon name={isPlaying ? 'fa-pause' : 'fa-play'} size="sm" />
         </button>
       </section>
+      {/* /accessibility-fixed */}
 
       {/* Screen reader announcement */}
       <div className={styles.srOnly} aria-live="polite" aria-atomic="true">

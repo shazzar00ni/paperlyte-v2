@@ -7,6 +7,7 @@ import {
   handleArrowNavigation,
   handleHomeEndNavigation,
 } from '@utils/keyboard'
+import { scrollToSection as scrollToSectionUtil } from '@utils/navigation'
 import styles from './Header.module.css'
 
 /**
@@ -43,11 +44,12 @@ export const Header = (): React.ReactElement => {
 
   const scrollToSection = useCallback(
     (sectionId: string) => {
-      const element = document.getElementById(sectionId)
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' })
-        closeMobileMenu()
-      }
+      // Use the shared utility so lazy-loaded sections (e.g. #download) are
+      // observed and scrolled to once their chunk mounts.
+      scrollToSectionUtil(sectionId)
+      // Close the mobile menu regardless of whether the section is mounted yet —
+      // otherwise the menu would stay open while waiting for a lazy chunk.
+      closeMobileMenu()
     },
     [closeMobileMenu]
   )

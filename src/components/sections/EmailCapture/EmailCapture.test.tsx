@@ -17,6 +17,7 @@ describe('EmailCapture Section', () => {
 
   afterEach(() => {
     vi.unstubAllGlobals()
+    vi.useRealTimers()
   })
 
   it('renders the section title', () => {
@@ -156,5 +157,52 @@ describe('EmailCapture Section', () => {
       expect(screen.getByRole('alert')).toHaveTextContent(/valid email address/)
     })
     expect(fetchMock).not.toHaveBeenCalled()
+  })
+
+  it('shows loading state while submitting', async () => {
+    // Use a deferred promise so isLoading stays true while we assert the loading UI
+    let resolveSubmit!: () => void
+    fetchMock.mockImplementationOnce(
+      () =>
+        new Promise<{ ok: boolean; json: () => Promise<{ success: boolean }> }>((resolve) => {
+          resolveSubmit = () => resolve({ ok: true, json: () => Promise.resolve({ success: true }) })
+        })
+    )
+
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
+
+    // Click but don't await — submission is in-flight
+    void user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+
+    // Loading state should appear while fetch is pending
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /Joining\.\.\./i })).toBeDisabled()
+    })
+
+    // Resolve so component finishes cleanly and avoids unmounted-state warnings
+    resolveSubmit()
+    await waitFor(() => {
+      expect(screen.getByText(/You're on the list!/)).toBeInTheDocument()
+    })
+  })
+
+  it('shows success state with social sharing buttons', async () => {
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
+    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+
+    await waitFor(() => {
+      expect(screen.getByText(/You're on the list!/)).toBeInTheDocument()
+    })
+
+    // Social sharing buttons should appear in the success state
+    expect(screen.getByRole('link', { name: /Twitter/i })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /Facebook/i })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /LinkedIn/i })).toBeInTheDocument()
   })
 })

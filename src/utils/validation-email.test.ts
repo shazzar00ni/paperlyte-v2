@@ -138,6 +138,43 @@ describe('isValidEmail', () => {
   })
 })
 
+describe('validateEmail — Unicode and IDN edge cases', () => {
+  it('should reject Unicode characters in the local part', () => {
+    // EMAIL_REGEX only allows [a-zA-Z0-9._+-], so non-ASCII is invalid
+    const result = validateEmail('用户@example.com')
+    expect(result.isValid).toBe(false)
+    expect(result.error).toBeDefined()
+  })
+
+  it('should reject Internationalized Domain Names (IDN) with non-ASCII characters', () => {
+    // EMAIL_REGEX domain pattern only allows [a-zA-Z0-9.-], so non-ASCII domains are invalid
+    const result = validateEmail('user@例子.com')
+    expect(result.isValid).toBe(false)
+    expect(result.error).toBeDefined()
+  })
+
+  it('should reject emoji characters in the local part', () => {
+    const result = validateEmail('user🙂@example.com')
+    expect(result.isValid).toBe(false)
+    expect(result.error).toBeDefined()
+  })
+
+  // TODO: EMAIL_REGEX only allows a single separator character between alphanumerics,
+  // so punycode-encoded IDN domains (e.g. xn--fiq228c) containing "--" are rejected.
+  // This is a known limitation of the current regex. If IDN support is needed, EMAIL_REGEX
+  // should be updated to allow consecutive hyphens in domain labels (per RFC 5891).
+  it('should reject punycode-encoded IDN domains due to consecutive hyphens', () => {
+    const result = validateEmail('user@xn--fiq228c.com')
+    expect(result.isValid).toBe(false)
+  })
+
+  it('should accept standard plus-sign subaddressing', () => {
+    // user+tag@gmail.com is a standard and widely-used email format
+    const result = validateEmail('user+tag@gmail.com')
+    expect(result.isValid).toBe(true)
+  })
+})
+
 describe('validateEmailDomain', () => {
   it('should return true for valid email (placeholder implementation)', async () => {
     const result = await validateEmailDomain('user@example.com')

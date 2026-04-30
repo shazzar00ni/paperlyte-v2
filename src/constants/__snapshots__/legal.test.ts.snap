@@ -49,8 +49,19 @@ exports[`Legal Constants > Snapshot Tests > should match needsLegalReview result
 
 exports[`Legal Constants > Snapshot Tests > should match placeholder fields snapshot 1`] = `
 [
-  "Company Legal Name",
-  "Physical Address",
-  "Jurisdiction/Governing Law",
+  "company.legalName",
+  "address.street",
+  "address.city",
+  "address.state",
+  "address.zip",
+  "address.country",
+  "documents.cookies",
+  "documents.security",
+  "documents.dmca",
+  "documents.accessibility",
+  "social.linkedin",
+  "social.discord",
+  "metadata.jurisdiction",
+  "metadata.governingLaw",
 ]
 `;

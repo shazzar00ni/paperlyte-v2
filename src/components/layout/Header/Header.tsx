@@ -7,7 +7,7 @@ import {
   handleArrowNavigation,
   handleHomeEndNavigation,
 } from '@utils/keyboard'
-import { scrollToSection } from '@utils/navigation'
+import { scrollToSection as scrollToSectionUtil } from '@utils/navigation'
 import styles from './Header.module.css'
 
 /**
@@ -41,6 +41,14 @@ export const Header = (): React.ReactElement => {
     setMobileMenuOpen(false)
     menuButtonRef.current?.focus()
   }, [mobileMenuOpen])
+
+  const scrollToSection = useCallback(
+    (sectionId: string): void => {
+      scrollToSectionUtil(sectionId)
+      closeMobileMenu()
+    },
+    [closeMobileMenu]
+  )
 
   // Handle Escape key to close menu
   useEffect(() => {
@@ -150,7 +158,6 @@ export const Header = (): React.ReactElement => {
                 onClick={(e) => {
                   e.preventDefault()
                   scrollToSection('features')
-                  closeMobileMenu()
                 }}
                 className={styles.navLink}
               >
@@ -163,7 +170,6 @@ export const Header = (): React.ReactElement => {
                 onClick={(e) => {
                   e.preventDefault()
                   scrollToSection('download')
-                  closeMobileMenu()
                 }}
                 className={styles.navLink}
               >
@@ -174,10 +180,7 @@ export const Header = (): React.ReactElement => {
               <Button
                 variant="primary"
                 size="small"
-                onClick={() => {
-                  scrollToSection('download')
-                  closeMobileMenu()
-                }}
+                onClick={() => scrollToSection('download')}
               >
                 Get Started
               </Button>

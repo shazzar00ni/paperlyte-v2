@@ -18,8 +18,11 @@
   # Edge functions directory
   edge_functions = "netlify/edge-functions"
 
-  # Node version to use
-  environment = { NODE_VERSION = "20" }
+  # NPM_FLAGS="--include=dev" is passed to Netlify's automatic npm install so
+  # that devDependencies (e.g. sharp, png-to-ico used by prebuild scripts) are
+  # installed even when Netlify sets NODE_ENV=production. Avoids running a
+  # second `npm ci` inside the build command, which would double install time.
+  environment = { NODE_VERSION = "20", NPM_FLAGS = "--include=dev" }
 
 # Production context: all deploys from the main branch
 [context.production]

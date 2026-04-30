@@ -80,6 +80,7 @@ exclude_paths:
   - '**/*.spec.tsx'
   - 'src/test/**'
   - 'scripts/**'
+  - '.github/workflows/sonarcloud.yml'
   - '**/*.min.js'
 
 # Note: semgrep may report false positives for non-literal RegExp patterns in tests.

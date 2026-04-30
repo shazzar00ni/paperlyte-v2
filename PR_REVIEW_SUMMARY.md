@@ -2,6 +2,68 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-04-30
+
+### Analysis: Systemic Regressions in Open Branches (Automated Daily Audit)
+
+- **Status:** Critical — Action Required
+- **Summary:** An automated repository-wide audit of 257 unmerged branches confirms the following systemic regressions.
+
+| Regression Type                | Count | Severity    | Notes                                               |
+| :----------------------------- | :---- | :---------- | :-------------------------------------------------- |
+| Orphan Branches                | 0     | 🔴 Critical | No common ancestor with `main`.                     |
+| Missing `.npmrc`               | 82    | 🔴 Critical | Breaks dependency resolution.                       |
+| Missing `docs/ROADMAP.md`      | 76    | 🟠 High     | Core project documentation.                         |
+| Missing `gitVersionControl.md` | 91    | 🟠 High     | Core Git workflow documentation.                    |
+| Missing `review.md`            | 91    | 🟡 Medium   | AI PR reviewer instructions.                        |
+| Reverted Security Helpers      | 90    | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers. |
+| Unreadable navigation.ts       | 8     | 🔴 Critical | File missing or unreadable.                         |
+
+- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.
+
+### Manual Review Supplement
+
+The following branches were identified as "Ready" (no systemic regressions) and have been reviewed for quality and impact:
+
+#### 🟢 [claude/implement-service-worker-YLeLZ](https://github.com/shazzar00ni/paperlyte-v2/tree/claude/implement-service-worker-YLeLZ)
+
+- **Status:** Recommended for Merge
+- **Summary:** Implements robust PWA offline support.
+- **Highlights:**
+  - Well-crafted `offline.html` that maintains the monochrome brand identity.
+  - Intelligent caching strategies (Cache-first for hashed assets, Network-first for navigation).
+  - Clean service worker registration in `main.tsx`.
+- **Suggestions:** None. The implementation is exemplary.
+
+#### 🟢 [claude/tree-shake-font-awesome-cK85j](https://github.com/shazzar00ni/paperlyte-v2/tree/claude/tree-shake-font-awesome-cK85j)
+
+- **Status:** Recommended for Merge
+- **Summary:** Optimizes icon system and simplifies analytics.
+- **Highlights:**
+  - Normalized icon naming in `icons.ts` (removing redundant `fa-` prefixes).
+  - Simplified `PlausibleProvider` by removing dead code.
+- **Suggestions:** Ensure that all components using the `Icon` component have been updated to the new naming convention if they were bypassing the `Icon` wrapper's internal normalization.
+
+#### 🟢 [claude/accessibility-audit-baseline-USu5N](https://github.com/shazzar00ni/paperlyte-v2/tree/claude/accessibility-audit-baseline-USu5N)
+
+- **Status:** Recommended for Merge
+- **Summary:** Establishes a strong accessibility baseline.
+- **Highlights:**
+  - Comprehensive `docs/ACCESSIBILITY_CHECKLIST.md` for manual verification.
+  - Critical color contrast fixes for muted text (tertiary color).
+- **Suggestions:** Integrate the checklist into the CI process or as a PR template requirement to ensure continued compliance.
+
+#### 🟢 [claude/add-claude-documentation-QxLA4](https://github.com/shazzar00ni/paperlyte-v2/tree/claude/add-claude-documentation-QxLA4)
+
+- **Status:** Recommended for Merge
+- **Summary:** Massive documentation overhaul.
+- **Highlights:**
+  - Detailed sections on CSS architecture, design tokens, and security protocols in `AGENTS.md`.
+  - Clarified path aliases and testing infrastructure.
+- **Suggestions:** None. This significantly lowers the barrier for new contributors.
+
+---
+
 ## 2026-03-05
 
 ### Analysis: Accidental File Deletions in Open Branches (Jules Daily PR Reviews)

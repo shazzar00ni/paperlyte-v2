@@ -38,6 +38,8 @@
         "render-blocking-resources": "off",
         "network-dependency-tree-insight": "off",
         "errors-in-console": "off",
+        "legacy-javascript": "off",
+        "resource-summary:total:size": "off",
         "efficient-animated-content": "warn",
         "uses-passive-event-listeners": "warn",
         "no-document-write": "error",

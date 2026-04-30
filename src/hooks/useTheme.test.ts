@@ -58,6 +58,44 @@ describe('useTheme', () => {
     window.matchMedia = originalMatchMedia
   })
 
+  describe('Legacy key migration', () => {
+    it('should migrate theme value from legacy key and remove old keys', () => {
+      localStorageMock.setItem('theme', 'dark')
+      localStorageMock.setItem('theme-user-preference', 'true')
+      const { result } = renderHook(() => useTheme())
+
+      // Theme is restored from migrated value
+      expect(result.current.theme).toBe('dark')
+      // New versioned keys are populated
+      expect(localStorageMock.getItem('paperlyte:v1:theme')).toBe('dark')
+      expect(localStorageMock.getItem('paperlyte:v1:theme-user-preference')).toBe('true')
+      // Legacy keys are removed
+      expect(localStorageMock.getItem('theme')).toBeNull()
+      expect(localStorageMock.getItem('theme-user-preference')).toBeNull()
+    })
+
+    it('should migrate theme without user-preference flag when only theme key exists', () => {
+      localStorageMock.setItem('theme', 'light')
+      const { result } = renderHook(() => useTheme())
+
+      expect(localStorageMock.getItem('paperlyte:v1:theme')).toBe('light')
+      expect(localStorageMock.getItem('paperlyte:v1:theme-user-preference')).toBeNull()
+      expect(localStorageMock.getItem('theme')).toBeNull()
+      // Without user preference, system preference takes over; theme may be light or dark
+      expect(['light', 'dark']).toContain(result.current.theme)
+    })
+
+    it('should not overwrite new keys if no legacy keys exist', () => {
+      localStorageMock.setItem('paperlyte:v1:theme', 'dark')
+      localStorageMock.setItem('paperlyte:v1:theme-user-preference', 'true')
+      renderHook(() => useTheme())
+
+      // New keys are untouched
+      expect(localStorageMock.getItem('paperlyte:v1:theme')).toBe('dark')
+      expect(localStorageMock.getItem('paperlyte:v1:theme-user-preference')).toBe('true')
+    })
+  })
+
   describe('Initialization', () => {
     it('should initialize with light theme by default', () => {
       const { result } = renderHook(() => useTheme())

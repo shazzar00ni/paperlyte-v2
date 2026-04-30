@@ -324,11 +324,11 @@ describe('ErrorBoundary', () => {
   })
 
   describe('componentDidCatch logging', () => {
-    beforeEach(() => {
+    beforeEach((): void => {
       vi.mocked(logError).mockClear()
     })
 
-    it('increments retry_count correctly across consecutive errors', async () => {
+    it('increments retry_count correctly across consecutive errors', async (): Promise<void> => {
       const ref = createRef<ErrorBoundary>()
       render(
         <ErrorBoundary ref={ref}>

@@ -20,17 +20,29 @@ export interface ValidationResult {
 }
 
 /**
- * Email validation regex pattern
- * Follows RFC 5322 simplified pattern for practical use
- * Prevents ReDoS vulnerabilities by eliminating quantifier overlap
+ * Email validation regex pattern — single canonical source used by both client and server.
+ * Follows RFC 5322 simplified pattern for practical use.
+ * Prevents ReDoS vulnerabilities by eliminating quantifier overlap.
  * Pattern breakdown:
  * - Local part: single alphanumeric + (alphanumeric OR separator+alphanumeric)*
  * - Domain: single alphanumeric + (alphanumeric OR separator+alphanumeric)*
  * - TLD: at least 2 letters
- * This eliminates overlapping quantifiers by making choices mutually exclusive
+ * This eliminates overlapping quantifiers by making choices mutually exclusive.
  */
-const EMAIL_REGEX =
+export const EMAIL_REGEX =
   /^[a-zA-Z0-9](?:[a-zA-Z0-9]|[._+-][a-zA-Z0-9])*@[a-zA-Z0-9](?:[a-zA-Z0-9]|[.-][a-zA-Z0-9])*\.[a-zA-Z]{2,}$/
+
+/**
+ * Predicate wrapper around validateEmail.
+ * Runs the same RFC 5322–simplified regex, length, and disposable-domain
+ * checks — use this when you only need a boolean rather than an error message.
+ *
+ * @param email - The email address to validate
+ * @returns true if the email passes all validation rules
+ */
+export function isValidEmail(email: string): boolean {
+  return validateEmail(email).isValid
+}
 
 /**
  * Common disposable email domains to block

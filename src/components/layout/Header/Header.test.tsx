@@ -146,6 +146,26 @@ describe('Header', () => {
     expect(scrollIntoViewMock).toHaveBeenCalled()
   })
 
+  it('should scroll to download section and close mobile menu when Download link is clicked', async () => {
+    render(<Header />)
+    const user = userEvent.setup()
+
+    // Open the mobile menu first so closeMobileMenu() is triggered
+    const menuButton = screen.getByRole('button', { name: /open menu/i })
+    await user.click(menuButton)
+    expect(menuButton).toHaveAttribute('aria-expanded', 'true')
+
+    const downloadLink = screen.getByRole('link', { name: 'Download' })
+    await user.click(downloadLink)
+
+    expect(scrollIntoViewMock).toHaveBeenCalledWith({ behavior: 'smooth' })
+    // Menu should be closed after navigating
+    expect(screen.getByRole('button', { name: /open menu/i })).toHaveAttribute(
+      'aria-expanded',
+      'false'
+    )
+  })
+
   // ------------------------------------------------------------------
   // Accessibility
   // ------------------------------------------------------------------

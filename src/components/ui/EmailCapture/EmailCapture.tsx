@@ -2,8 +2,13 @@ import { useState, type FormEvent } from 'react'
 import { Button } from '@components/ui/Button'
 import { Icon } from '@components/ui/Icon'
 import { trackEvent } from '@utils/analytics'
+import { logError } from '@utils/monitoring'
 import { validateEmail } from '@utils/validation'
 import styles from './EmailCapture.module.css'
+
+interface SubscribeErrorResponse {
+  error?: string
+}
 
 interface EmailCaptureProps {
   variant?: 'inline' | 'centered'
@@ -50,8 +55,10 @@ export const EmailCapture = ({
       return
     }
 
+    const normalizedEmail = email.trim().toLowerCase()
+
     // Validation
-    const { isValid, error: validationError } = validateEmail(email)
+    const { isValid, error: validationError } = validateEmail(normalizedEmail)
     if (!isValid) {
       setStatus('error')
       setErrorMessage(validationError ?? 'Please enter a valid email address')
@@ -72,13 +79,31 @@ export const EmailCapture = ({
       const response = await fetch('/.netlify/functions/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email: normalizedEmail }),
       })
 
-      const data = await response.json()
-
       if (!response.ok) {
-        throw new Error(data.error || 'Subscription failed')
+        const data: unknown = await response.json().catch(() => ({}))
+        const serverMessage =
+          data !== null &&
+          typeof data === 'object' &&
+          'error' in data &&
+          typeof data.error === 'string'
+            ? data.error
+            : undefined
+
+        if (response.status === 400 || response.status === 429) {
+          setStatus('error')
+          setErrorMessage(
+            serverMessage ??
+              (response.status === 429
+                ? 'Too many requests. Please try again later.'
+                : 'Invalid email address. Please check and try again.')
+          )
+          return
+        }
+
+        throw new Error(serverMessage ?? 'Subscription failed')
       }
 
       setStatus('success')
@@ -93,9 +118,15 @@ export const EmailCapture = ({
     } catch (error) {
       setStatus('error')
       const message =
-        error instanceof Error ? error.message : 'Something went wrong. Please try again.'
+        error instanceof Error &&
+        (error.name === 'TypeError' ||
+          error.message.toLowerCase().includes('network') ||
+          error.message.toLowerCase().includes('fetch'))
+          ? 'Network error. Please check your connection and try again.'
+          : 'Something went wrong. Please try again.'
       setErrorMessage(message)
-      console.error('Email subscription error:', error)
+      const err = error instanceof Error ? error : new Error(String(error))
+      logError(err, { tags: { context: 'ui-email-capture-submit' } })
     }
   }
 

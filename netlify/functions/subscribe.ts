@@ -1,5 +1,6 @@
 import type { Handler, HandlerEvent } from "@netlify/functions";
 import { z } from "zod";
+import { validateEmail } from "../../src/utils/validation";
 
 // Rate limiting store (in-memory, resets on cold start)
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
@@ -225,18 +226,21 @@ export const handler: Handler = async (event: HandlerEvent) => {
       };
     }
 
-    // Basic email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    // Normalize first so validation and ConvertKit submission both operate on the
+    // canonical form — matches the client's ordering in EmailCapture.
+    const normalizedEmail = email.trim().toLowerCase();
+
+    const validation = validateEmail(normalizedEmail);
+    if (!validation.isValid) {
       return {
         statusCode: 400,
         headers,
-        body: JSON.stringify({ error: "Invalid email address" }),
+        body: JSON.stringify({ error: validation.error ?? "Invalid email address" }),
       };
     }
 
     // Subscribe to ConvertKit
-    const result = await subscribeToConvertKit(email);
+    const result = await subscribeToConvertKit(normalizedEmail);
 
     // Log success without PII (privacy-compliant)
     console.log("Successfully subscribed user to newsletter");

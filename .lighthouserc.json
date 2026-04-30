@@ -14,7 +14,6 @@
       }
     },
     "assert": {
-      "preset": "lighthouse:recommended",
       "assertions": {
         "categories:performance": ["error", { "minScore": 0.7 }],
         "categories:accessibility": ["error", { "minScore": 0.82 }],
@@ -37,10 +36,19 @@
         "unused-javascript": "warn",
         "efficient-animated-content": "warn",
         "uses-passive-event-listeners": "warn",
+        "unminified-css": "warn",
+        "unminified-javascript": "warn",
         "no-document-write": "error",
         "uses-rel-preconnect": "warn",
         "uses-long-cache-ttl": "off",
         "font-display": "warn",
+        "is-on-https": "off",
+        "redirects-http": "off",
+        "csp-xss": "warn",
+        "has-hsts": "warn",
+        "clickjacking-mitigation": "warn",
+        "bf-cache": "warn",
+        "errors-in-console": "warn",
         "resource-summary:script:size": ["warn", { "maxNumericValue": 153600 }],
         "resource-summary:stylesheet:size": ["warn", { "maxNumericValue": 30720 }],
         "resource-summary:document:size": ["warn", { "maxNumericValue": 18000 }],

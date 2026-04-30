@@ -3,6 +3,9 @@ import { Icon } from '@components/ui/Icon'
 import { isSafeUrl } from '@utils/navigation'
 import styles from './Button.module.css'
 
+// Evaluated once at import time — avoids repeated typeof checks on every render
+const isBrowser = typeof window !== 'undefined'
+
 interface ButtonProps {
   children: ReactNode
   variant?: 'primary' | 'secondary' | 'ghost'
@@ -77,8 +80,6 @@ export const Button = ({
       {children}
     </>
   )
-
-  const isBrowser = typeof window !== 'undefined'
 
   if (href) {
     // Validate URL for security - prevent javascript:, data:, and other dangerous protocols.

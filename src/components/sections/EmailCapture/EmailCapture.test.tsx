@@ -1,14 +1,25 @@
-import { describe, it, expect, vi, afterEach } from 'vitest'
-import { render, screen, waitFor, act, fireEvent } from '@testing-library/react'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { EmailCapture } from './EmailCapture'
 import { WAITLIST_COUNT } from '@/constants/waitlist'
 
 describe('EmailCapture Section', () => {
+  let fetchMock: ReturnType<typeof vi.fn>
+
+  beforeEach(() => {
+    fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ success: true }),
+    })
+    vi.stubGlobal('fetch', fetchMock)
+  })
+
   afterEach(() => {
-    // Ensure real timers are always restored even if a test times out
+    vi.unstubAllGlobals()
     vi.useRealTimers()
   })
+
   it('renders the section title', () => {
     render(<EmailCapture />)
     expect(screen.getByText(`Join ${WAITLIST_COUNT} people on the waitlist`)).toBeInTheDocument()
@@ -48,6 +59,83 @@ describe('EmailCapture Section', () => {
     await waitFor(() => {
       expect(screen.getByText(/You're on the list!/)).toBeInTheDocument()
     })
+
+    // Verify the correct HTTP contract was used
+    expect(fetchMock).toHaveBeenCalledWith('/.netlify/functions/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: 'test@example.com' }),
+    })
+  })
+
+  it('shows a generic error message when the API returns a 5xx response', async () => {
+    fetchMock.mockResolvedValueOnce({
+      ok: false,
+      status: 500,
+      json: () => Promise.resolve({ error: 'Internal server error' }),
+    })
+
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
+    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toBeInTheDocument()
+    })
+  })
+
+  it('shows the server error message for a 400 response without reaching the catch block', async () => {
+    fetchMock.mockResolvedValueOnce({
+      ok: false,
+      status: 400,
+      json: () => Promise.resolve({ error: 'Invalid email address' }),
+    })
+
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
+    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toHaveTextContent('Invalid email address')
+    })
+  })
+
+  it('shows the server error message for a 429 rate-limit response', async () => {
+    fetchMock.mockResolvedValueOnce({
+      ok: false,
+      status: 429,
+      json: () => Promise.resolve({ error: 'Too many requests. Please try again in a minute.' }),
+    })
+
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
+    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toHaveTextContent(/Too many requests/)
+    })
+  })
+
+  it('shows a network error message when fetch throws', async () => {
+    fetchMock.mockRejectedValueOnce(new TypeError('Failed to fetch'))
+
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
+    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toHaveTextContent(
+        /Network error. Please check your connection/
+      )
+    })
   })
 
   it('validates email input is required', () => {
@@ -56,31 +144,49 @@ describe('EmailCapture Section', () => {
     expect(emailInput.required).toBe(true)
   })
 
-  it('shows loading state while submitting', () => {
-    // Use fake timers so the 1000ms simulated API call never resolves,
-    // keeping isLoading=true for the duration of this test.
-    vi.useFakeTimers()
-
+  it('shows a client-side error and does not call fetch for an invalid email', async () => {
+    const user = userEvent.setup()
     render(<EmailCapture />)
 
     const emailInput = screen.getByPlaceholderText('your@email.com')
-    fireEvent.change(emailInput, { target: { value: 'test@example.com' } })
+    // Type an invalid email that passes HTML5 type="email" but fails our validator
+    await user.type(emailInput, 'user..name@example.com')
+    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
 
-    // Submit the form synchronously via fireEvent (avoids async userEvent hang with fake timers)
-    const form = emailInput.closest('form')!
-    act(() => {
-      fireEvent.submit(form)
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toHaveTextContent(/valid email address/)
+    })
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
+
+  it('shows loading state while submitting', async () => {
+    // Use a deferred promise so isLoading stays true while we assert the loading UI
+    let resolveSubmit!: () => void
+    fetchMock.mockImplementationOnce(
+      () =>
+        new Promise<{ ok: boolean; json: () => Promise<{ success: boolean }> }>((resolve) => {
+          resolveSubmit = () =>
+            resolve({ ok: true, json: () => Promise.resolve({ success: true }) })
+        })
+    )
+
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
+
+    // Click but don't await — submission is in-flight
+    void user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+
+    // Loading state should appear while fetch is pending
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /Joining\.\.\./i })).toBeDisabled()
     })
 
-    // React flushes the synchronous state update (setIsLoading(true)) inside act();
-    // the 1s setTimeout is frozen, so isLoading stays true.
-    expect(screen.getByRole('button', { name: /Joining\.\.\./i })).toBeDisabled()
-
-    // Drain the pending setTimeout so the handleSubmit promise resolves before
-    // testing-library unmounts the component. Without this, React logs a
-    // "state update on unmounted component" warning when afterEach swaps timers.
-    act(() => {
-      vi.advanceTimersByTime(1000)
+    // Resolve so component finishes cleanly and avoids unmounted-state warnings
+    resolveSubmit()
+    await waitFor(() => {
+      expect(screen.getByText(/You're on the list!/)).toBeInTheDocument()
     })
   })
 
@@ -88,17 +194,12 @@ describe('EmailCapture Section', () => {
     const user = userEvent.setup()
     render(<EmailCapture />)
 
-    const emailInput = screen.getByPlaceholderText('your@email.com')
-    await user.type(emailInput, 'test@example.com')
+    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
     await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
 
-    // Wait up to 3s for the simulated 1s API call to complete
-    await waitFor(
-      () => {
-        expect(screen.getByText(/You're on the list!/)).toBeInTheDocument()
-      },
-      { timeout: 3000 }
-    )
+    await waitFor(() => {
+      expect(screen.getByText(/You're on the list!/)).toBeInTheDocument()
+    })
 
     // Social sharing buttons should appear in the success state
     expect(screen.getByRole('link', { name: /Twitter/i })).toBeInTheDocument()

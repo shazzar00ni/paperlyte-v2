@@ -85,8 +85,11 @@ export const EmailCapture = ({
       if (!response.ok) {
         const data: unknown = await response.json().catch(() => ({}))
         const serverMessage =
-          data !== null && typeof data === 'object' && 'error' in data
-            ? (data as SubscribeErrorResponse).error
+          data !== null &&
+          typeof data === 'object' &&
+          'error' in data &&
+          typeof data.error === 'string'
+            ? data.error
             : undefined
 
         if (response.status === 400 || response.status === 429) {

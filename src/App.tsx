@@ -1,6 +1,5 @@
 import { lazy, Suspense, useRef, useCallback } from 'react'
 import { Analytics } from '@vercel/analytics/react'
-import './App.css'
 import { ErrorBoundary } from '@components/ErrorBoundary'
 import { Header } from '@components/layout/Header'
 import { Footer } from '@components/layout/Footer'
@@ -10,6 +9,7 @@ import { Solution } from '@components/sections/Solution'
 import { Features } from '@components/sections/Features'
 import { Mobile } from '@components/sections/Mobile'
 import { useAnalytics } from '@hooks/useAnalytics'
+import './App.css'
 
 const Statistics = lazy(() => import('@components/sections/Statistics'))
 const Comparison = lazy(() => import('@components/sections/Comparison'))

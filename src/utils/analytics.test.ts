@@ -22,6 +22,11 @@ describe('Analytics Utility', () => {
     vi.spyOn(console, 'groupEnd').mockImplementation(() => {})
   })
 
+  afterEach(() => {
+    // Restore console spies so they don't leak into other test files.
+    vi.restoreAllMocks()
+  })
+
   describe('isAnalyticsAvailable', () => {
     it('should return false when gtag is not available', () => {
       expect(isAnalyticsAvailable()).toBe(false)

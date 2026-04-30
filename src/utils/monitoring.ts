@@ -144,12 +144,12 @@ export function logWarning(message: string, context?: Record<string, unknown>): 
       } else if (value === null) {
         safeContext[key] = undefined
       } else {
-        // Stringify non-primitive values with a truncation cap
-        try {
-          safeContext[key] = JSON.stringify(value).slice(0, 200)
-        } catch {
-          safeContext[key] = '[unserializable]'
-        }
+        // Drop non-primitive values entirely. The analytics PII scrubber only
+        // inspects top-level keys/values, so serializing a nested object could
+        // smuggle emails/tokens past sanitization. If structured context is
+        // needed in future, add a dedicated recursive sanitizer instead of
+        // re-enabling JSON.stringify here.
+        safeContext[key] = '[non-primitive omitted]'
       }
     }
   }

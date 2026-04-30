@@ -204,6 +204,18 @@ test.describe('Landing Page', () => {
   }: {
     page: Page
   }): Promise<void> => {
+    // Mock the Netlify subscribe endpoint so this test does not depend on
+     // `netlify dev` being running. The Vite preview server used in CI does not
+     // serve `/.netlify/functions/*`, which would otherwise return a 404 and
+     // surface as the error state instead of the success state.
+    await page.route('**/.netlify/functions/subscribe', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true }),
+      })
+    })
+
     await page.goto('/')
 
     const emailInput = page.locator('#email-capture input[type="email"]')
@@ -211,9 +223,8 @@ test.describe('Landing Page', () => {
       .locator('#email-capture')
       .getByRole('button', { name: /join the waitlist/i })
 
-    // Use a unique address each run; harmless today (the submit handler is stubbed
-    // with a setTimeout) but avoids duplicate-rejection flakiness once a real
-    // waitlist backend is wired up.
+    // Use a unique address each run to avoid duplicate-rejection flakiness
+    // if this test is ever pointed at a real backend.
     const uniqueEmail = `e2e-test-${Date.now()}@example.com`
     await emailInput.fill(uniqueEmail)
     await submitButton.click()

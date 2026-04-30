@@ -80,14 +80,19 @@ export const useTheme = () => {
       root.setAttribute('data-theme', 'light')
     }
 
-    // Only persist to localStorage if persistence is enabled
+    // Only persist to localStorage if persistence is enabled.
+    // Wrapped in try/catch to mirror the read-side guards: setItem can throw
+    // SecurityError in sandboxed iframes or QuotaExceededError in private mode.
     if (persistenceEnabled) {
-      // Save to localStorage
-      localStorage.setItem(THEME_STORAGE_KEY, theme)
+      try {
+        localStorage.setItem(THEME_STORAGE_KEY, theme)
 
-      // Save user preference flag if they've explicitly chosen
-      if (userHasExplicitPreference.current) {
-        localStorage.setItem(USER_PREFERENCE_KEY, 'true')
+        // Save user preference flag if they've explicitly chosen
+        if (userHasExplicitPreference.current) {
+          localStorage.setItem(USER_PREFERENCE_KEY, 'true')
+        }
+      } catch {
+        // Storage blocked — theme still applies in-memory for this session
       }
     }
   }, [theme, persistenceEnabled])

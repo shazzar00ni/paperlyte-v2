@@ -359,7 +359,37 @@ describe('ErrorBoundary', () => {
       })
     })
 
-    it('omits componentStack when it is an empty string', async () => {
+    it('increments retry_count correctly when errors are caught in the same batch', async (): Promise<void> => {
+      const ref = createRef<ErrorBoundary>()
+      render(
+        <ErrorBoundary ref={ref}>
+          <div />
+        </ErrorBoundary>
+      )
+
+      await act(async () => {
+        ref.current!.componentDidCatch(new Error('first'), { componentStack: 'at A' })
+        ref.current!.componentDidCatch(new Error('second'), { componentStack: 'at B' })
+      })
+
+      await waitFor(() => {
+        expect(vi.mocked(logError)).toHaveBeenCalledTimes(2)
+      })
+      expect(vi.mocked(logError)).toHaveBeenNthCalledWith(
+        1,
+        expect.any(Error),
+        expect.objectContaining({ tags: { retry_count: '1' } }),
+        'ErrorBoundary'
+      )
+      expect(vi.mocked(logError)).toHaveBeenNthCalledWith(
+        2,
+        expect.any(Error),
+        expect.objectContaining({ tags: { retry_count: '2' } }),
+        'ErrorBoundary'
+      )
+    })
+
+    it('omits componentStack when it is an empty string', async (): Promise<void> => {
       const ref = createRef<ErrorBoundary>()
       render(
         <ErrorBoundary ref={ref}>

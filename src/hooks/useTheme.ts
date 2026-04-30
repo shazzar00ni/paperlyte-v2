@@ -28,8 +28,12 @@ const isValidTheme = (value: string | null): value is Theme => {
 export const useTheme = () => {
   const persistenceEnabled = PERSISTENCE_CONFIG.ALLOW_PERSISTENT_THEME
 
-  // useMemo ensures the localStorage read runs once per persistenceEnabled value
-  // (in practice only on mount, since persistenceEnabled is a build-time constant).
+  // Read the user-preference flag from localStorage. useMemo caches the result
+  // across re-renders whenever persistenceEnabled is unchanged — in practice
+  // that's the entire component lifetime, since persistenceEnabled is a
+  // build-time constant. This is not a hard "read once" guarantee (React may
+  // invoke the factory more than once, e.g. under StrictMode in dev), but the
+  // read is idempotent and side-effect-free, so re-invocation is harmless.
   // The try/catch guards against SecurityError in sandboxed iframes or when
   // storage is blocked in private-browsing mode.
   const initialUserPref = useMemo(() => {

@@ -1,6 +1,6 @@
+import { createRef } from 'react'
 import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { createRef } from 'react'
 import { logError } from '@utils/monitoring'
 import { ErrorBoundary } from './ErrorBoundary'
 

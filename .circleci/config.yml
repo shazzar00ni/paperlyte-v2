@@ -1,0 +1,273 @@
+version: 2.1
+
+# ============================================================
+# Orbs
+# ============================================================
+orbs:
+  browser-tools: circleci/browser-tools@1.5.2
+  codecov: codecov/codecov@5.4.3
+
+# ============================================================
+# Reusable executors
+# ============================================================
+executors:
+  node-executor:
+    docker:
+      - image: cimg/node:20.19
+    resource_class: medium
+    working_directory: ~/project
+
+  node-browsers-executor:
+    docker:
+      - image: cimg/node:20.19-browsers
+    resource_class: medium+
+    working_directory: ~/project
+
+# ============================================================
+# Reusable commands
+# ============================================================
+commands:
+  restore-node-cache:
+    description: Restore npm cache
+    steps:
+      - restore_cache:
+          keys:
+            - node-deps-v2-{{ checksum "package-lock.json" }}
+            - node-deps-v2-
+
+  save-node-cache:
+    description: Save npm cache
+    steps:
+      - save_cache:
+          key: node-deps-v2-{{ checksum "package-lock.json" }}
+          paths:
+            - ~/.npm
+
+  install-deps:
+    description: Install npm dependencies (ci for reproducible installs)
+    steps:
+      - restore-node-cache
+      - run:
+          name: Install dependencies
+          command: npm ci
+      - save-node-cache
+
+# ============================================================
+# Jobs
+# ============================================================
+jobs:
+  # ----------------------------------------------------------
+  # 1. Lint & Format check
+  # Fastest gate — fail early on code style issues
+  # ----------------------------------------------------------
+  lint:
+    executor: node-executor
+    steps:
+      - checkout
+      - install-deps
+      - run:
+          name: Lint
+          command: npm run lint
+      - run:
+          name: Format check
+          command: npm run format:check
+
+  # ----------------------------------------------------------
+  # 2. Unit tests (Vitest)
+  # Produces JUnit XML + coverage reports for Codecov
+  # ----------------------------------------------------------
+  test-unit:
+    executor: node-executor
+    steps:
+      - checkout
+      - install-deps
+      - run:
+          name: Run unit tests with coverage
+          command: mkdir -p test-results && npm run test:coverage -- --reporter=junit --reporter=default --outputFile.junit=test-results/junit.xml
+          environment:
+            CI: "true"
+      - store_test_results:
+          path: test-results
+      - store_artifacts:
+          path: test-results/junit.xml
+          destination: test-results/junit.xml
+      - store_artifacts:
+          path: coverage
+          destination: coverage
+      - codecov/upload:
+          file: coverage/lcov.info
+          flags: unittests
+
+  # ----------------------------------------------------------
+  # 3. Production build
+  # Shared artifact consumed by E2E, Lighthouse, and size-limit
+  # ----------------------------------------------------------
+  build:
+    executor: node-executor
+    steps:
+      - checkout
+      - install-deps
+      - run:
+          name: Build (TypeScript + Vite)
+          command: npm run build
+          environment:
+            NODE_ENV: production
+
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - dist
+
+  # ----------------------------------------------------------
+  # 4. Bundle size check
+  # Enforces JS ≤ 150 KB and CSS ≤ 30 KB (gzip)
+  # ----------------------------------------------------------
+  size-limit:
+    executor: node-executor
+    steps:
+      - checkout
+      - install-deps
+      - attach_workspace:
+          at: ~/project
+      - run:
+          name: Check bundle size
+          command: npm run size
+
+  # ----------------------------------------------------------
+  # 5. E2E tests (Playwright)
+  # Chromium only on CI to keep duration predictable;
+  # full cross-browser matrix runs on a schedule (see below).
+  # ----------------------------------------------------------
+  test-e2e:
+    executor: node-browsers-executor
+    parallelism: 2
+    steps:
+      - checkout
+      - install-deps
+      - attach_workspace:
+          at: ~/project
+      - browser-tools/install-chrome
+      - run:
+          name: Install Playwright browsers
+          command: npx playwright install --with-deps chromium
+      - run:
+          name: Start preview server & run E2E tests
+          command: |
+            npm run preview -- --host 127.0.0.1 --port 4173 &
+            npx wait-on http://localhost:4173 --timeout 60000
+            SHARD_INDEX=$((CIRCLE_NODE_INDEX + 1))
+            npx playwright test --project=chromium --shard=${SHARD_INDEX}/${CIRCLE_NODE_TOTAL}
+          environment:
+            CI: "true"
+            BASE_URL: "http://localhost:4173"
+      - store_test_results:
+          path: test-results
+      - store_artifacts:
+          path: test-results
+          destination: playwright-results
+      - store_artifacts:
+          path: playwright-report
+          destination: playwright-report
+
+  # ----------------------------------------------------------
+  # 6. E2E – full cross-browser matrix (schedule-only)
+  # Runs all 5 Playwright projects (chromium, firefox, webkit,
+  # Mobile Chrome, Mobile Safari).
+  # ----------------------------------------------------------
+  test-e2e-full:
+    executor: node-browsers-executor
+    steps:
+      - checkout
+      - install-deps
+      - attach_workspace:
+          at: ~/project
+      - browser-tools/install-chrome
+      - run:
+          name: Install all Playwright browsers
+          command: npx playwright install --with-deps
+      - run:
+          name: Start preview server & run full E2E suite
+          command: |
+            npm run preview -- --host 127.0.0.1 --port 4173 &
+            npx wait-on http://localhost:4173 --timeout 60000
+            npx playwright test
+          environment:
+            CI: "true"
+            BASE_URL: "http://localhost:4173"
+      - store_test_results:
+          path: test-results
+      - store_artifacts:
+          path: test-results
+          destination: playwright-results
+      - store_artifacts:
+          path: playwright-report
+          destination: playwright-report
+
+  # ----------------------------------------------------------
+  # 7. Lighthouse CI
+  # Performance ≥ 0.7, Accessibility ≥ 0.82 (see .lighthouserc.json)
+  # ----------------------------------------------------------
+  lighthouse:
+    executor: node-browsers-executor
+    steps:
+      - checkout
+      - install-deps
+      - attach_workspace:
+          at: ~/project
+      - browser-tools/install-chrome
+      - run:
+          name: Start preview server
+          command: |
+            npm run preview -- --host 127.0.0.1 --port 4173 &
+            npx wait-on http://localhost:4173 --timeout 60000
+      - run:
+          name: Run Lighthouse CI
+          command: npx @lhci/cli autorun
+          environment:
+            LHCI_BUILD_CONTEXT__CURRENT_BRANCH: << pipeline.git.branch >>
+      - store_artifacts:
+          path: .lighthouseci
+          destination: lighthouse
+
+# ============================================================
+# Workflows
+# ============================================================
+workflows:
+  # Main CI workflow — every push / PR
+  ci:
+    jobs:
+      # Stage 1: fast feedback (parallel)
+      - lint
+      - test-unit
+
+      # Stage 2: production build (depends on Stage 1 passing to gate quality)
+      - build:
+          requires:
+            - lint
+            - test-unit
+
+      # Stage 3: post-build validation (parallel, all need dist artifact)
+      - size-limit:
+          requires:
+            - build
+      - test-e2e:
+          requires:
+            - build
+      - lighthouse:
+          requires:
+            - build
+
+  # Nightly cross-browser E2E — avoids slowing down every PR
+  nightly-e2e:
+    triggers:
+      - schedule:
+          cron: "0 3 * * *"  # 03:00 UTC daily
+          filters:
+            branches:
+              only:
+                - main
+    jobs:
+      - build
+      - test-e2e-full:
+          requires:
+            - build

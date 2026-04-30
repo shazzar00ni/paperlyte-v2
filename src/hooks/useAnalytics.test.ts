@@ -27,7 +27,9 @@ vi.mock('@utils/analytics', () => ({
 describe('useAnalytics — scroll depth deferral', () => {
   beforeEach(() => {
     vi.useFakeTimers()
-    vi.clearAllMocks()
+    // resetAllMocks clears mockReturnValueOnce queues too, unlike clearAllMocks —
+    // prevents stale queued values from test 3 (cancelled timer) leaking into test 4.
+    vi.resetAllMocks()
   })
 
   afterEach(() => {

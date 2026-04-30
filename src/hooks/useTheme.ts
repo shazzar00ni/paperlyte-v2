@@ -13,6 +13,10 @@ const migrateLegacyTheme = () => {
     const legacy = localStorage.getItem('theme')
     if (legacy) {
       localStorage.setItem(THEME_STORAGE_KEY, legacy)
+      const legacyPref = localStorage.getItem('theme-user-preference')
+      if (legacyPref) {
+        localStorage.setItem(USER_PREFERENCE_KEY, legacyPref)
+      }
       localStorage.removeItem('theme')
       localStorage.removeItem('theme-user-preference')
     }

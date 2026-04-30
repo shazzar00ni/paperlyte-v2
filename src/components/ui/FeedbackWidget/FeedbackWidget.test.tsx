@@ -231,7 +231,7 @@ describe('FeedbackWidget', () => {
 
       // Check localStorage
       await waitFor(() => {
-        const storedFeedback = localStorage.getItem('paperlyte_feedback')
+        const storedFeedback = localStorage.getItem('paperlyte:v1:feedback')
         expect(storedFeedback).toBeTruthy()
 
         const feedbackArray = JSON.parse(storedFeedback!)

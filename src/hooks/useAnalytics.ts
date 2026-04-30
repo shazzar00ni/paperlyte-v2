@@ -29,12 +29,26 @@ import {
  * ```
  */
 export function useAnalytics(enableScrollTracking = true) {
-  // Initialize scroll depth tracking on mount
+  // Defer scroll depth tracking to browser idle time so it doesn't compete with first paint
   useEffect(() => {
     if (!enableScrollTracking) return
 
-    const cleanup = initScrollDepthTracking()
-    return cleanup
+    let cleanup: (() => void) | undefined
+    const scheduleInit =
+      typeof requestIdleCallback !== 'undefined'
+        ? (cb: () => void) => requestIdleCallback(cb, { timeout: 3000 })
+        : (cb: () => void) => setTimeout(cb, 0) as unknown as number
+    const cancelInit =
+      typeof cancelIdleCallback !== 'undefined' ? cancelIdleCallback : clearTimeout
+
+    const handle = scheduleInit(() => {
+      cleanup = initScrollDepthTracking()
+    })
+
+    return () => {
+      cancelInit(handle as number)
+      cleanup?.()
+    }
   }, [enableScrollTracking])
 
   // Memoized tracking functions to prevent unnecessary re-renders

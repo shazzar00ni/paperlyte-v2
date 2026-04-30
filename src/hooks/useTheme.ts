@@ -4,8 +4,22 @@ import { PERSISTENCE_CONFIG } from '@constants/config'
 type Theme = 'light' | 'dark'
 
 const isBrowser = typeof window !== 'undefined'
-const THEME_STORAGE_KEY = 'theme'
-const USER_PREFERENCE_KEY = 'theme-user-preference'
+const THEME_STORAGE_KEY = 'paperlyte:v1:theme'
+const USER_PREFERENCE_KEY = 'paperlyte:v1:theme-user-preference'
+
+// One-time migration: move data from legacy unversioned keys to versioned keys
+const migrateLegacyTheme = () => {
+  try {
+    const legacy = localStorage.getItem('theme')
+    if (legacy) {
+      localStorage.setItem(THEME_STORAGE_KEY, legacy)
+      localStorage.removeItem('theme')
+      localStorage.removeItem('theme-user-preference')
+    }
+  } catch {
+    // Silently ignore — incognito/storage-disabled browsers
+  }
+}
 
 const isValidTheme = (value: string | null): value is Theme => {
   return value === 'light' || value === 'dark'
@@ -40,6 +54,11 @@ export const useTheme = () => {
   const [theme, setTheme] = useState<Theme>(() => {
     // SSR guard: return default theme if not in browser
     if (!isBrowser) return 'light'
+
+    // Migrate legacy unversioned keys on first load
+    if (persistenceEnabled) {
+      migrateLegacyTheme()
+    }
 
     // Only check localStorage if persistence is enabled
     if (persistenceEnabled) {

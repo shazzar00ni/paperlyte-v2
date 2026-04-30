@@ -1,9 +1,11 @@
-import { useState, useEffect, useCallback, useRef, type FormEvent } from 'react'
+import { useState, useEffect, useCallback, useRef, useTransition, type FormEvent } from 'react'
 import { Icon } from '@components/ui/Icon'
 import { Button } from '@components/ui/Button'
 import { handleArrowNavigation, getFocusableElements } from '@utils/keyboard'
 import { logError } from '@utils/monitoring'
 import styles from './FeedbackWidget.module.css'
+
+const FEEDBACK_KEY = 'paperlyte:v1:feedback'
 
 type FeedbackType = 'bug' | 'feature'
 
@@ -34,7 +36,7 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
   const [isOpen, setIsOpen] = useState(false)
   const [feedbackType, setFeedbackType] = useState<FeedbackType>('bug')
   const [message, setMessage] = useState('')
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isPending, startTransition] = useTransition()
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const closeTimeoutRef = useRef<number | null>(null)
@@ -73,7 +75,7 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
 
   // Handle form submission
   const handleSubmit = useCallback(
-    async (e: FormEvent<HTMLFormElement>) => {
+    (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault()
 
       // Validate message
@@ -82,81 +84,85 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
         return
       }
 
-      setIsSubmitting(true)
       setError(null)
 
-      try {
-        const feedbackData: FeedbackFormData = {
-          type: feedbackType,
-          message: message.trim(),
-        }
-
-        // Call custom submit handler if provided
-        if (onSubmit) {
-          await onSubmit(feedbackData)
-        } else {
-          // Default behavior: store in localStorage and log
-          const timestamp = new Date().toISOString()
-          const feedbackEntry = {
-            ...feedbackData,
-            timestamp,
+      startTransition(async () => {
+        try {
+          const feedbackData: FeedbackFormData = {
+            type: feedbackType,
+            message: message.trim(),
           }
 
-          // Get existing feedback from localStorage
-          const existingFeedback = localStorage.getItem('paperlyte_feedback')
-          let feedbackArray: unknown = []
+          // Call custom submit handler if provided
+          if (onSubmit) {
+            await onSubmit(feedbackData)
+          } else {
+            // Default behavior: store in localStorage and log
+            const timestamp = new Date().toISOString()
+            const feedbackEntry = {
+              ...feedbackData,
+              timestamp,
+            }
 
-          if (existingFeedback) {
+            // Get existing feedback from localStorage
+            let existingFeedback: string | null = null
             try {
-              feedbackArray = JSON.parse(existingFeedback)
-            } catch (parseError) {
-              console.error('Failed to parse stored feedback from localStorage', parseError)
+              existingFeedback = localStorage.getItem(FEEDBACK_KEY)
+            } catch {
+              // Incognito or storage-disabled — treat as empty
+            }
+            let feedbackArray: unknown = []
+
+            if (existingFeedback) {
+              try {
+                feedbackArray = JSON.parse(existingFeedback)
+              } catch (parseError) {
+                console.error('Failed to parse stored feedback from localStorage', parseError)
+                feedbackArray = []
+              }
+            }
+
+            if (!Array.isArray(feedbackArray)) {
               feedbackArray = []
+            }
+
+            ;(feedbackArray as unknown[]).push(feedbackEntry)
+            // Store updated feedback
+            try {
+              localStorage.setItem(FEEDBACK_KEY, JSON.stringify(feedbackArray))
+            } catch (storageError) {
+              // Log via centralized monitoring before throwing
+              logError(
+                storageError instanceof Error ? storageError : new Error(String(storageError)),
+                {
+                  severity: 'medium',
+                  tags: { module: 'FeedbackWidget', action: 'saveFeedback' },
+                  errorInfo: { note: 'local storage failure' },
+                },
+                'FeedbackWidget'
+              )
+              throw new Error(
+                `Unable to save feedback locally. Your browser storage may be full or disabled. ${
+                  storageError instanceof Error ? storageError.message : String(storageError)
+                }`,
+                { cause: storageError }
+              )
             }
           }
 
-          if (!Array.isArray(feedbackArray)) {
-            feedbackArray = []
-          }
+          // Show confirmation
+          setShowConfirmation(true)
+          setMessage('')
 
-          ;(feedbackArray as unknown[]).push(feedbackEntry)
-          // Store updated feedback
-          try {
-            localStorage.setItem('paperlyte_feedback', JSON.stringify(feedbackArray))
-          } catch (storageError) {
-            // Log via centralized monitoring before throwing
-            logError(
-              storageError instanceof Error ? storageError : new Error(String(storageError)),
-              {
-                severity: 'medium',
-                tags: { module: 'FeedbackWidget', action: 'saveFeedback' },
-                errorInfo: { note: 'local storage failure' },
-              },
-              'FeedbackWidget'
-            )
-            throw new Error(
-              `Unable to save feedback locally. Your browser storage may be full or disabled. ${
-                storageError instanceof Error ? storageError.message : String(storageError)
-              }`,
-              { cause: storageError }
-            )
-          }
+          // Close modal after 2 seconds (store timeout ID for cleanup)
+          closeTimeoutRef.current = window.setTimeout(() => {
+            handleClose()
+          }, 2000)
+        } catch (err) {
+          setError('Failed to submit feedback. Please try again.')
+          console.error('Feedback submission error:', err)
         }
-
-        // Show confirmation
-        setShowConfirmation(true)
-        setMessage('')
-
-        // Close modal after 2 seconds (store timeout ID for cleanup)
-        closeTimeoutRef.current = window.setTimeout(() => {
-          handleClose()
-        }, 2000)
-      } catch (err) {
-        setError('Failed to submit feedback. Please try again.')
-        console.error('Feedback submission error:', err)
-      } finally {
-        setIsSubmitting(false)
-      }
+      })
     },
     [feedbackType, message, onSubmit, handleClose]
   )
@@ -356,7 +362,7 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
                         : 'Tell us about your feature idea...'
                     }
                     rows={5}
-                    disabled={isSubmitting}
+                    disabled={isPending}
                     required
                   />
                 </div>
@@ -374,10 +380,10 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
                   <Button
                     type="submit"
                     variant="primary"
-                    disabled={isSubmitting || !message.trim()}
+                    disabled={isPending || !message.trim()}
                     icon="fa-paper-plane"
                   >
-                    {isSubmitting ? 'Sending...' : 'Send Feedback'}
+                    {isPending ? 'Sending...' : 'Send Feedback'}
                   </Button>
                 </div>
               </form>

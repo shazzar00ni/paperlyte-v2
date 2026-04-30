@@ -85,6 +85,9 @@ test.describe('Landing Page', () => {
         const lcpObserver = new PerformanceObserver((list) => {
           const entries = list.getEntries();
           const lastEntry = entries[entries.length - 1];
+          if (!lastEntry) {
+            return;
+          }
           const lcpEntry = lastEntry as PerformanceEntry & { renderTime?: number; loadTime?: number };
           lcp = lcpEntry.renderTime || lcpEntry.loadTime || lastEntry.startTime;
         });

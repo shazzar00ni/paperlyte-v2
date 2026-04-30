@@ -39,6 +39,9 @@ export function useAnalytics(enableScrollTracking = true) {
     return (): void => {
       tracker.disable()
     }
+    // createScrollTracker, trackEvent, and AnalyticsEvents are stable module
+    // imports — listing them keeps react-hooks/exhaustive-deps satisfied
+    // without causing extra effect runs.
   }, [enableScrollTracking])
 
   // Memoized tracking functions to prevent unnecessary re-renders

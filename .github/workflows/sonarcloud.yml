@@ -50,7 +50,7 @@ jobs:
           fetch-depth: 0  # Full history required for SonarCloud blame data and new-code detection
 
       - name: Static Code Analysis
-        uses: sonarsource/sonarqube-scan-action@0303d6b62e310685c0e34d0b9cde218036885c4d # v5.0.0
+        uses: sonarsource/sonarqube-scan-action@59db25f34e16620e48ab4bb9e4a5dce155cb5432 # v8.0.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:

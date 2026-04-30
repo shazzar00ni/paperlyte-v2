@@ -3,7 +3,7 @@ on: [push]
 jobs:
   depchecktest:
     runs-on: ubuntu-latest
-    name: depecheck_test
+    name: depcheck_test
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -12,10 +12,12 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
-      - name: Build project with npm
-        run: npm ci && npm run build
+      - name: Install dependencies
+        run: npm ci
+      - name: Build project
+        run: npm run build
       - name: Depcheck
-        uses: dependency-check/Dependency-Check_Action@1e54355a8b4c8abaa8cc7d0b70aa655a3bb15a6c # main
+        uses: dependency-check/Dependency-Check_Action@1e54355a8b4c8abaa8cc7d0b70aa655a3bb15a6c # main@2025-12-10
         id: Depcheck
         with:
           project: 'test'
@@ -25,7 +27,8 @@ jobs:
           args: >
             --failOnCVSS 7
             --enableRetired
-      - name: Upload Test results
+      - name: Upload Depcheck report
+        if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
            name: Depcheck report

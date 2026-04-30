@@ -174,9 +174,11 @@ export function Icon({
 
   // Icon not found in library — return a placeholder
   // In production, fire at most once per unique icon name to avoid GA rate-limit overhead.
+  // Key on `baseName` (not the raw `name`) so modifier classes like "fa-spin" don't
+  // produce duplicate warnings for the same underlying icon.
   // In DEV the Set is bypassed so test assertions that check call counts still hold.
-  if (import.meta.env.DEV || !_warnedMissing.has(name)) {
-    if (!import.meta.env.DEV) _warnedMissing.add(name)
+  if (import.meta.env.DEV || !_warnedMissing.has(baseName)) {
+    if (!import.meta.env.DEV) _warnedMissing.add(baseName)
     logWarning(`Icon "${name}" not found in Font Awesome library`, { name, convertedName })
   }
   return (

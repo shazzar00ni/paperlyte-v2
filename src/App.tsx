@@ -1,5 +1,4 @@
 import { lazy, Suspense, useRef, useCallback } from 'react'
-import { Analytics } from '@vercel/analytics/react'
 import { ErrorBoundary } from '@components/ErrorBoundary'
 import { Header } from '@components/layout/Header'
 import { Footer } from '@components/layout/Footer'
@@ -23,6 +22,14 @@ const CTA = lazy(() => import('@components/sections/CTA'))
 // chunk during idle time (e.g. via a useEffect(() => { import('...') }, []) in
 // App) or reverting to an eager import if the bundle size is small.
 const FeedbackWidget = lazy(() => import('@components/ui/FeedbackWidget'))
+
+// Dynamic import keeps @vercel/analytics out of non-Vercel bundles entirely.
+// On Netlify builds, the constant-folded `VITE_DEPLOY_TARGET !== 'vercel'`
+// guard below means this import() call is never reached, and Rollup elides
+// the module from the bundle.
+const Analytics = lazy(() =>
+  import('@vercel/analytics/react').then((m) => ({ default: m.Analytics }))
+)
 
 /**
  * Application root component that composes the page layout and sections.
@@ -89,7 +96,9 @@ function App() {
         is undefined on Netlify builds. */}
     {import.meta.env.VITE_DEPLOY_TARGET === 'vercel' && (
       <ErrorBoundary>
-        <Analytics />
+        <Suspense fallback={null}>
+          <Analytics />
+        </Suspense>
       </ErrorBoundary>
     )}
     </>

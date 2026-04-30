@@ -87,7 +87,7 @@ This file tracks key architectural, design, and technical decisions made during 
 - **Date**: YYYY-MM-DD (unknown)
 - **Decision**: Two-tier CSP — relaxed in dev (allows unsafe-eval for Vite HMR), strict in prod via hosting-provided HTTP headers (`vercel.json` / `netlify.toml`)
 - **Rationale**: Dev ergonomics vs. production security; CSP meta tags not sufficient for frame-ancestors
-- **Note**: `netlify.toml` and `vercel.json` must always have identical CSP values. Drift between them is a common bug source — any future CSP change must update both files.
+- **Note**: `netlify.toml` and `vercel.json` should have identical CSP values **except** where the runtime intentionally differs per platform. As of 2026-04-30, `@vercel/analytics` is rendered on Vercel only (gated via `VITE_DEPLOY_TARGET`), so its origins (`va.vercel-scripts.com`, `vitals.vercel-insights.com`) appear in `vercel.json` but not `netlify.toml`. Any new CSP change unrelated to platform-gated runtime must still update both files in lockstep.
 - **Alternatives considered**: Single CSP for both environments
 
 - **Date**: YYYY-MM-DD (unknown)

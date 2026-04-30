@@ -72,9 +72,13 @@
     # External origins allowed:
     #   https://plausible.io              Plausible Analytics script + beacon (VITE_ANALYTICS_PROVIDER=plausible)
     #   https://*.ingest.sentry.io        Sentry error telemetry (VITE_SENTRY_DSN)
-    #   https://va.vercel-scripts.com     @vercel/analytics script host
-    #   https://vitals.vercel-insights.com @vercel/analytics beacon endpoint
-    Content-Security-Policy = "default-src 'self'; script-src 'self' https://plausible.io https://va.vercel-scripts.com; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://plausible.io https://*.ingest.sentry.io https://vitals.vercel-insights.com; worker-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests;"
+    # Note: @vercel/analytics origins (va.vercel-scripts.com, vitals.vercel-insights.com)
+    # are intentionally NOT included here — <Analytics /> only renders on Vercel
+    # (gated by VITE_DEPLOY_TARGET in src/App.tsx), so widening the Netlify CSP
+    # would expand attack surface for no functional benefit. CSP drift between
+    # netlify.toml and vercel.json is acceptable here because the two platforms
+    # have intentionally different runtime behavior; see memory/decisions.md.
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://plausible.io; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://plausible.io https://*.ingest.sentry.io; worker-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests;"
 
     # Isolate this page's browsing context group so cross-origin windows opened
     # from this page (or that open this page) cannot access each other's DOM or

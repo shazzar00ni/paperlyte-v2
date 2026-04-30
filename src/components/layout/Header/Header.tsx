@@ -177,11 +177,7 @@ export const Header = (): React.ReactElement => {
               </a>
             </li>
             <li className={styles.navCta}>
-              <Button
-                variant="primary"
-                size="small"
-                onClick={() => scrollToSection('download')}
-              >
+              <Button variant="primary" size="small" onClick={() => scrollToSection('download')}>
                 Get Started
               </Button>
             </li>

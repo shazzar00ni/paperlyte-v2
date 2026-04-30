@@ -165,7 +165,8 @@ describe('EmailCapture Section', () => {
     fetchMock.mockImplementationOnce(
       () =>
         new Promise<{ ok: boolean; json: () => Promise<{ success: boolean }> }>((resolve) => {
-          resolveSubmit = () => resolve({ ok: true, json: () => Promise.resolve({ success: true }) })
+          resolveSubmit = () =>
+            resolve({ ok: true, json: () => Promise.resolve({ success: true }) })
         })
     )
 

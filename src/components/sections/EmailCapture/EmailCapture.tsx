@@ -7,7 +7,10 @@ import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { Button } from '@components/ui/Button'
 import { Icon } from '@components/ui/Icon'
 import { WAITLIST_COUNT, LAUNCH_QUARTER } from '@constants/waitlist'
-import { EMAIL_CAPTURE_CONTENT as COPY, BENEFITS } from '@components/sections/EmailCapture/emailCapture.data'
+import {
+  EMAIL_CAPTURE_CONTENT as COPY,
+  BENEFITS,
+} from '@components/sections/EmailCapture/emailCapture.data'
 import styles from './EmailCapture.module.css'
 
 /** Renders the Email Capture section with a waitlist signup form and benefit highlights. */
@@ -19,7 +22,8 @@ export const EmailCapture = (): React.ReactElement => {
 
   // Safe origin for SSR compatibility
   const origin = typeof window !== 'undefined' ? window.location.origin : ''
-  const shareText = 'Check out Paperlyte – the note-taking app that gets out of your way. Get early access:'
+  const shareText =
+    'Check out Paperlyte – the note-taking app that gets out of your way. Get early access:'
   const shareTitle = 'Check out Paperlyte – the note-taking app that gets out of your way'
   const encodedOrigin = encodeURIComponent(origin)
   const twitterShareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodedOrigin}`

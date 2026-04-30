@@ -52,6 +52,12 @@
     <!-- Font Awesome icons are loaded via @fortawesome/fontawesome-svg-core in JavaScript -->
     <!-- This approach is CSP-compliant and doesn't require external CDN resources -->
 
+    <!-- Preload variable fonts served from /fonts/ (outside the Rollup bundle).
+         Bundled Inter woff2 files are preloaded at build time by fontPreloadPlugin in vite.config.ts.
+         Together these break the HTML→CSS→fonts depth-2 critical-request chain that
+         fails the network-dependency-tree-insight Lighthouse assertion. -->
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/PlayfairDisplay-Variable.woff2" crossorigin>
+
     <!-- Preload critical above-the-fold image for better LCP -->
     <link rel="preload" as="image" type="image/avif" href="/mockups/notes-list.avif" />
 

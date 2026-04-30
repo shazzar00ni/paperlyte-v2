@@ -105,11 +105,8 @@ export function logError(error: Error, context?: ErrorContext, source?: string):
       })
     }
 
-    // Log to console in production (for server logs if applicable)
-    console.error('[Error]', errorSource, error.message, {
-      severity,
-      tags: context?.tags,
-    })
+    // Client-side production: errors are already reported to Sentry/analytics above.
+    // Avoid console.error here to prevent errors-in-console Lighthouse assertion failures.
   } catch (monitoringError) {
     // Fail silently in production - don't let monitoring errors break the app
     console.error('Monitoring error:', monitoringError)

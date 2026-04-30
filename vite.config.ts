@@ -5,6 +5,35 @@ import path from 'path'
 import { codecovRollupPlugin } from '@codecov/rollup-plugin'
 
 /**
+ * Injects <link rel="preload"> tags for all bundled woff2 fonts into the
+ * production HTML. Fonts discovered via CSS @font-face create a depth-2 chain
+ * (HTML → CSS → fonts) that fails the network-dependency-tree-insight
+ * Lighthouse assertion. Preloading moves fonts to depth 1 (parallel with CSS).
+ */
+function fontPreloadPlugin(): Plugin {
+  return {
+    name: 'font-preload',
+    apply: 'build',
+    transformIndexHtml: {
+      order: 'post',
+      handler(html, ctx) {
+        const bundle = ctx.bundle
+        if (!bundle) return html
+        const preloads = Object.keys(bundle)
+          .filter((key) => key.endsWith('.woff2'))
+          .map(
+            (key) =>
+              `    <link rel="preload" href="/${key}" as="font" type="font/woff2" crossorigin>`
+          )
+          .join('\n')
+        if (!preloads) return html
+        return html.replace('</head>', `${preloads}\n  </head>`)
+      },
+    },
+  }
+}
+
+/**
  * Plugin to inject development-only Content Security Policy
  *
  * Development: Relaxed CSP meta tag to allow Vite HMR (WebSockets + unsafe-eval)
@@ -96,6 +125,7 @@ export default defineConfig({
   plugins: [
     react(),
     cspPlugin(),
+    fontPreloadPlugin(),
     // Only instantiate Codecov plugin when token is present (CI environment)
     ...(process.env.CODECOV_TOKEN
       ? [

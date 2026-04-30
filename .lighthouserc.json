@@ -41,6 +41,8 @@
         "uses-rel-preconnect": "warn",
         "uses-long-cache-ttl": "off",
         "font-display": "warn",
+        "network-dependency-tree-insight": "warn",
+        "render-blocking-insight": "warn",
         "resource-summary:script:size": ["warn", { "maxNumericValue": 153600 }],
         "resource-summary:stylesheet:size": ["warn", { "maxNumericValue": 30720 }],
         "resource-summary:document:size": ["warn", { "maxNumericValue": 18000 }],

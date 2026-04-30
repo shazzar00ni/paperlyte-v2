@@ -40,7 +40,7 @@ describe('Mobile', () => {
       render(<Mobile />)
 
       const link = screen.getByRole('link', { name: /Explore Mobile Features/i })
-      const arrowIcon = link.querySelector('svg[data-icon="fa-arrow-right"]')
+      const arrowIcon = link.querySelector('[data-icon~="fa-arrow-right"]')
 
       expect(arrowIcon).toBeInTheDocument()
       expect(link.contains(arrowIcon)).toBe(true)
@@ -59,7 +59,7 @@ describe('Mobile', () => {
       const { container } = render(<Mobile />)
 
       const section = container.querySelector('section')
-      const classList = Array.from(section?.classList ?? [])
+      const classList = Array.from(section?.classList || [])
       expect(classList.some((cls) => cls.includes('mobile'))).toBe(true)
     })
   })
@@ -72,7 +72,7 @@ describe('Mobile', () => {
       const content = container.querySelector('[class*="content"]')
       expect(content).toBeInTheDocument()
 
-      const children = Array.from(content?.children ?? []).map((child) => child.textContent)
+      const children = Array.from(content?.children || []).map((child) => child.textContent)
 
       const headingIndex = children.findIndex((text) => text?.includes('Capture inspiration'))
       const descIndex = children.findIndex((text) => text?.includes('Our mobile app'))

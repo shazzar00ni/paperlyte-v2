@@ -162,18 +162,18 @@ export const Icon = ({
     ...(ariaLabel ? { role: 'img' } : {}),
   }
 
-  // If icon found in library, render it
+  // If icon found in library, render it with data-icon attribute
   if (iconDefinition) {
-    return <FontAwesomeIcon icon={iconDefinition} {...commonIconProps} />
+    return <FontAwesomeIcon icon={iconDefinition} data-icon={baseName} {...commonIconProps} />
   }
 
-  // Icon not found in library — return a placeholder
+  // Icon not found in library — return a placeholder with data-icon attribute
   console.warn(
     `Icon "${name}" (converted to "${convertedName}") not found in Font Awesome library. ` +
       `Rendering empty/decorative fallback span.`
   )
   return (
-    <span {...commonIconProps} title={`Icon "${name}" not found`}>
+    <span {...commonIconProps} data-icon={baseName} title={`Icon "${name}" not found`}>
       ?
     </span>
   )

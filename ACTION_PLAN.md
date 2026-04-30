@@ -20,27 +20,27 @@ listed below and, where applicable, revert content changes to `src/utils/navigat
 
 **4 deleted files** (restore from `main`):
 
-| Branch / PR | `.npmrc` | `docs/ROADMAP.md` | `gitVersionControl.md` | `review.md` |
-|---|:---:|:---:|:---:|:---:|
-| `origin/claude/implement-todo-item-2H9LP` | ✗ | ✗ | ✗ | ✗ |
-| `origin/claude/core-editor-phase-1-PI3Yp` | ✗ | ✗ | ✗ | ✗ |
-| `origin/copilot/sub-pr-503` | ✗ | — | ✗ | ✗ |
-| `origin/copilot/sub-pr-469-again` | ✗ | — | ✗ | ✗ |
-| `origin/claude/fix-peer-dependency-conflicts-Wj2iC` | ✗ | — | — | — |
-| PR #469, #488, #491, #502, #506 | ✗ | ✗ | ✗ | ✗ |
+| Branch / PR                                         | `.npmrc` | `docs/ROADMAP.md` | `gitVersionControl.md` | `review.md` |
+| --------------------------------------------------- | :------: | :---------------: | :--------------------: | :---------: |
+| `origin/claude/implement-todo-item-2H9LP`           |    ✗     |         ✗         |           ✗            |      ✗      |
+| `origin/claude/core-editor-phase-1-PI3Yp`           |    ✗     |         ✗         |           ✗            |      ✗      |
+| `origin/copilot/sub-pr-503`                         |    ✗     |         —         |           ✗            |      ✗      |
+| `origin/copilot/sub-pr-469-again`                   |    ✗     |         —         |           ✗            |      ✗      |
+| `origin/claude/fix-peer-dependency-conflicts-Wj2iC` |    ✗     |         —         |           —            |      —      |
+| PR #469, #488, #491, #502, #506                     |    ✗     |         ✗         |           ✗            |      ✗      |
 
 - `.npmrc` → content must be exactly: `legacy-peer-deps=true`
 - `docs/ROADMAP.md`, `gitVersionControl.md`, `review.md` → restore verbatim from `main`
 
 **Separate content restoration** (file exists but helpers were reverted):
 
-| Branch / PR | `navigation.ts` helpers reverted |
-|---|:---:|
-| `origin/claude/implement-todo-item-2H9LP` | ✗ |
-| `origin/claude/core-editor-phase-1-PI3Yp` | ✗ |
-| `origin/copilot/sub-pr-503` | ✗ |
-| `origin/copilot/sub-pr-469-again` | ✗ |
-| `origin/claude/fix-peer-dependency-conflicts-Wj2iC` | ✗ |
+| Branch / PR                                         | `navigation.ts` helpers reverted |
+| --------------------------------------------------- | :------------------------------: |
+| `origin/claude/implement-todo-item-2H9LP`           |                ✗                 |
+| `origin/claude/core-editor-phase-1-PI3Yp`           |                ✗                 |
+| `origin/copilot/sub-pr-503`                         |                ✗                 |
+| `origin/copilot/sub-pr-469-again`                   |                ✗                 |
+| `origin/claude/fix-peer-dependency-conflicts-Wj2iC` |                ✗                 |
 
 - `src/utils/navigation.ts` — the file is present but `hasDangerousProtocol` and `isRelativeUrl`
   have been reverted; restore both helpers from `main` (lines 28–69)
@@ -49,43 +49,43 @@ listed below and, where applicable, revert content changes to `src/utils/navigat
 
 ### PRs — Approved but NOT yet in codebase (implement now)
 
-| PR | Summary | Status |
-|---|---|---|
-| #428 | Add `safeNavigateExternal()` + restrict `safeNavigate` to same-origin | Approved — **missing from codebase** |
-| #424 | Convert `CounterAnimation` easing functions from object to `Map` | Approved — **missing from codebase** |
-| #425 | Add `.eslintrc.json` for Codacy compatibility | Approved — **missing from codebase** |
-| #422 | Update `@types/node` and `@types/react` | Approved — **already in codebase** |
-| #419 | Vercel Web Analytics integration | Approved — **already in codebase** |
-| #406, #388, #387, #384, #381, #379, #355, #353, #332, #331, #329, #321, #309, #308, #284, #260, #263, #265, #262 | Various CI, test, security, accessibility, analytics improvements | Approved — assumed merged |
+| PR                                                                                                               | Summary                                                               | Status                               |
+| ---------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- | ------------------------------------ |
+| #428                                                                                                             | Add `safeNavigateExternal()` + restrict `safeNavigate` to same-origin | Approved — **missing from codebase** |
+| #424                                                                                                             | Convert `CounterAnimation` easing functions from object to `Map`      | Approved — **missing from codebase** |
+| #425                                                                                                             | Add `.eslintrc.json` for Codacy compatibility                         | Approved — **missing from codebase** |
+| #422                                                                                                             | Update `@types/node` and `@types/react`                               | Approved — **already in codebase**   |
+| #419                                                                                                             | Vercel Web Analytics integration                                      | Approved — **already in codebase**   |
+| #406, #388, #387, #384, #381, #379, #355, #353, #332, #331, #329, #321, #309, #308, #284, #260, #263, #265, #262 | Various CI, test, security, accessibility, analytics improvements     | Approved — assumed merged            |
 
 ---
 
 ### PRs — Changes Requested (author action needed)
 
-| PR | Issue | Action |
-|---|---|---|
-| #427 | Duplicate `permissions` keys and multiple `if` conditions in GitHub Actions workflow | Verify PR branch matches clean `claude.yml` on main; if not, fix duplicate key + combine `if` into single expression |
-| #275 | Misleading title; previous security regressions mostly removed but PR is stale | Close; reopen with accurate title scoped only to Codacy warning fixes |
-| #279 | React Router routing not wired into `App.tsx`; `react-router-dom` not installed | Either complete routing integration OR mark as WIP; see implementation path below |
-| #319 | Mixed PR: `Privacy.tsx` fix + unrelated `package-lock.json` + `sitemap.xml` changes | Split into 2 PRs: one for `Privacy.tsx` only, one for dependency/sitemap changes |
-| #311 | Proposes switching Icon fallback from `FontAwesomeIcon` component to raw `<i>` tags | Reject this change; current `Icon.tsx` (FontAwesomeIcon-based) is correct; accessibility improvements can be separate PR |
+| PR   | Issue                                                                                | Action                                                                                                                   |
+| ---- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------ |
+| #427 | Duplicate `permissions` keys and multiple `if` conditions in GitHub Actions workflow | Verify PR branch matches clean `claude.yml` on main; if not, fix duplicate key + combine `if` into single expression     |
+| #275 | Misleading title; previous security regressions mostly removed but PR is stale       | Close; reopen with accurate title scoped only to Codacy warning fixes                                                    |
+| #279 | React Router routing not wired into `App.tsx`; `react-router-dom` not installed      | Either complete routing integration OR mark as WIP; see implementation path below                                        |
+| #319 | Mixed PR: `Privacy.tsx` fix + unrelated `package-lock.json` + `sitemap.xml` changes  | Split into 2 PRs: one for `Privacy.tsx` only, one for dependency/sitemap changes                                         |
+| #311 | Proposes switching Icon fallback from `FontAwesomeIcon` component to raw `<i>` tags  | Reject this change; current `Icon.tsx` (FontAwesomeIcon-based) is correct; accessibility improvements can be separate PR |
 
 ---
 
 ### PRs — Close Recommended
 
-| PR | Reason |
-|---|---|
-| #259 | Empty diff; title claims Twitter link update but no changes |
-| #107 | 118-file monolithic PR, mostly superseded; unique changes should be in focused PRs |
-| #435, #434, #433, #432, #431, #385, #383 | Redundant PRs that only update `PR_REVIEW_SUMMARY.md` |
+| PR                                       | Reason                                                                             |
+| ---------------------------------------- | ---------------------------------------------------------------------------------- |
+| #259                                     | Empty diff; title claims Twitter link update but no changes                        |
+| #107                                     | 118-file monolithic PR, mostly superseded; unique changes should be in focused PRs |
+| #435, #434, #433, #432, #431, #385, #383 | Redundant PRs that only update `PR_REVIEW_SUMMARY.md`                              |
 
 ---
 
 ### PRs — Postpone
 
-| PR | Reason |
-|---|---|
+| PR   | Reason                                                                                                          |
+| ---- | --------------------------------------------------------------------------------------------------------------- |
 | #389 | 186-file semicolons formatting change — will conflict with all active PRs; merge after all in-flight work lands |
 
 ---
@@ -113,7 +113,9 @@ Changes:
      try {
        const parsed = new URL(url, window.location.origin)
        return parsed.origin === window.location.origin
-     } catch { return false }
+     } catch {
+       return false
+     }
    }
    ```
 
@@ -131,7 +133,9 @@ Changes:
      try {
        const parsed = new URL(url)
        if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return false
-     } catch { return false }
+     } catch {
+       return false
+     }
      window.open(url, '_blank', 'noopener,noreferrer')
      return true
    }

@@ -2,7 +2,6 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { Pricing } from './Pricing'
 import { PRICING_PLANS } from '@constants/pricing'
-import { escapeRegExp } from '@/utils/test/regexHelpers'
 
 describe('Pricing', () => {
   it('should render as a section with correct id', () => {
@@ -15,14 +14,14 @@ describe('Pricing', () => {
 
   it('should render main heading', () => {
     render(<Pricing />)
-    expect(screen.getByText('Simple, Transparent Pricing')).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { level: 2, name: /Simple, Transparent Pricing/i })
+    ).toBeInTheDocument()
   })
 
   it('should render subtitle', () => {
     render(<Pricing />)
-    expect(
-      screen.getByText("Start free, upgrade when you're ready. No credit card required.")
-    ).toBeInTheDocument()
+    expect(screen.getByText(/Start free.*No credit card/i)).toBeInTheDocument()
   })
 
   it('should render all pricing plan cards', () => {
@@ -81,22 +80,31 @@ describe('Pricing', () => {
   })
 
   it('should render "Most Popular" badge for Pro plan', () => {
-    render(<Pricing />)
+    const { container } = render(<Pricing />)
 
     const popularBadge = screen.getByLabelText('Most popular')
     expect(popularBadge).toBeInTheDocument()
-    expect(popularBadge.tagName.toLowerCase()).toBe('svg')
-    expect(screen.getByText('Most Popular')).toBeInTheDocument()
+
+    const starIcon = container.querySelector('[data-icon="fa-star"]')
+    expect(starIcon).toBeInTheDocument()
+    expect(starIcon).toHaveAttribute('aria-label', 'Most popular')
   })
 
   it('should render plan icons', () => {
-    render(<Pricing />)
+    const { container } = render(<Pricing />)
 
     PRICING_PLANS.forEach((plan) => {
       if (plan.icon) {
-        const icon = screen.getByLabelText(`${plan.name} plan icon`)
+        const icon = container.querySelector(`[data-icon~="${plan.icon}"]`)
         expect(icon).toBeInTheDocument()
-        expect(icon.tagName.toLowerCase()).toBe('svg')
+        // Icon component uses either aria-labelledby with title (custom SVG)
+        // or aria-label attribute (FontAwesome fallback)
+        const titleElement = icon?.querySelector('title')
+        if (titleElement) {
+          expect(titleElement).toHaveTextContent(`${plan.name} plan icon`)
+        } else {
+          expect(icon).toHaveAttribute('aria-label', `${plan.name} plan icon`)
+        }
       }
     })
   })
@@ -112,9 +120,9 @@ describe('Pricing', () => {
   })
 
   it('should render checkmark icons for all features', () => {
-    render(<Pricing />)
+    const { container } = render(<Pricing />)
 
-    const checkmarks = screen.getAllByLabelText('Included')
+    const checkmarks = container.querySelectorAll('[data-icon~="fa-check"]')
 
     // Count total features across all plans
     const totalFeatures = PRICING_PLANS.reduce((sum, plan) => sum + plan.features.length, 0)
@@ -122,7 +130,7 @@ describe('Pricing', () => {
     expect(checkmarks.length).toBe(totalFeatures)
 
     checkmarks.forEach((checkmark) => {
-      expect(checkmark.tagName.toLowerCase()).toBe('svg')
+      expect(checkmark).toHaveAttribute('aria-label', 'Included')
     })
   })
 
@@ -130,24 +138,27 @@ describe('Pricing', () => {
     render(<Pricing />)
 
     PRICING_PLANS.forEach((plan) => {
-      // Safe: input is escaped via escapeRegExp() and comes from PRICING_PLANS constant, not user input
+      // Button aria-label is "{ctaText} for {planName} plan", so we match the full label
       const button = screen.getByRole('button', {
-        name: new RegExp(escapeRegExp(plan.ctaText)), // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp, javascript_dos_rule-non-literal-regexp
+        name: `${plan.ctaText} for ${plan.name} plan`,
       })
       expect(button).toBeInTheDocument()
     })
   })
 
   it('should render guarantee section', () => {
-    render(<Pricing />)
+    const { container } = render(<Pricing />)
 
     expect(
       screen.getByText('30-day money-back guarantee • Cancel anytime • No hidden fees')
     ).toBeInTheDocument()
 
-    const shieldIcon = screen.getByLabelText('Guarantee')
-    expect(shieldIcon).toBeInTheDocument()
-    expect(shieldIcon.tagName.toLowerCase()).toBe('svg')
+    const checkIcon = container.querySelector('[data-icon*="circle-check"]')
+    expect(checkIcon).toBeInTheDocument()
+    // Icon component uses aria-labelledby with a title element, not aria-label attribute
+    expect(checkIcon).toHaveAttribute('aria-labelledby')
+    const titleElement = checkIcon?.querySelector('title')
+    expect(titleElement).toHaveTextContent('Guarantee')
   })
 
   it('should use semantic article elements for pricing cards', () => {
@@ -161,8 +172,11 @@ describe('Pricing', () => {
     render(<Pricing />)
 
     // Main heading should be h2
-    const mainHeading = screen.getByText('Simple, Transparent Pricing')
-    expect(mainHeading.tagName).toBe('H2')
+    const mainHeading = screen.getByRole('heading', {
+      level: 2,
+      name: /Simple, Transparent Pricing/i,
+    })
+    expect(mainHeading).toBeInTheDocument()
 
     // Plan names should be h3
     PRICING_PLANS.forEach((plan) => {

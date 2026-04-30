@@ -28,8 +28,8 @@ jobs:
             --failOnCVSS 7
             --enableRetired
       - name: Upload Depcheck report
-        if: always()
+        if: steps.Depcheck.conclusion == 'success' || steps.Depcheck.conclusion == 'failure'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-           name: Depcheck report
+           name: depcheck-report
            path: ${{github.workspace}}/reports

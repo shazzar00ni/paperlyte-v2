@@ -1,6 +1,11 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
+  "build": {
+    "env": {
+      "VITE_DEPLOY_TARGET": "vercel"
+    }
+  },
   "headers": [
     {
       "source": "/(.*)",

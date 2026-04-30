@@ -79,7 +79,11 @@ function App() {
       <Suspense fallback={<div className="suspense-feedback" role="status"><span className="sr-only">Loading feedback widget…</span></div>}>
         <FeedbackWidget />
       </Suspense>
-      <Analytics />
+      {/* Only render @vercel/analytics on Vercel deployments. On Netlify the
+          beacons go nowhere useful and add unnecessary network requests; see
+          memory/decisions.md. VITE_DEPLOY_TARGET is set to "vercel" via
+          vercel.json's build env and is undefined on Netlify builds. */}
+      {import.meta.env.VITE_DEPLOY_TARGET === 'vercel' && <Analytics />}
     </ErrorBoundary>
   )
 }

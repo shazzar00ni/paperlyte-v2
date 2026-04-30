@@ -1,6 +1,26 @@
+const SCROLL_RETRY_TIMEOUT_MS = 5000
+
+// Tracks in-flight observers keyed by sectionId — ensures rapid repeat calls to
+// the same target cancel the previous observer instead of accumulating observers.
+const pendingScrollObservers = new Map<
+  string,
+  { observer: MutationObserver; timeoutId: ReturnType<typeof setTimeout> }
+>()
+
+function cancelPendingScroll(sectionId: string): void {
+  const pending = pendingScrollObservers.get(sectionId)
+  if (pending) {
+    pending.observer.disconnect()
+    clearTimeout(pending.timeoutId)
+    pendingScrollObservers.delete(sectionId)
+  }
+}
+
 /**
  * Scrolls smoothly to a section identified by its ID.
- * If the section doesn't exist or running in SSR, the function does nothing.
+ * If the section is not yet in the DOM (e.g. still loading as a lazy chunk),
+ * waits up to 5 s for it to appear before scrolling. Rapid repeat calls for
+ * the same target cancel the previous pending scroll to avoid stacking observers.
  *
  * @param sectionId - The ID of the section to scroll to (without the # prefix)
  */
@@ -12,7 +32,36 @@ export function scrollToSection(sectionId: string): void {
 
   const element = document.getElementById(sectionId)
   if (element) {
+    cancelPendingScroll(sectionId)
     element.scrollIntoView({ behavior: 'smooth' })
+    return
+  }
+
+  // Cancel any previous pending observer for this target before creating a new one
+  cancelPendingScroll(sectionId)
+
+  // Section not yet mounted — observe DOM until it appears (handles lazy chunks).
+  // Scope to #main to avoid firing on unrelated mutations (header, overlays, etc.).
+  const root = document.getElementById('main') ?? document.body
+  const observer = new MutationObserver(() => {
+    const el = document.getElementById(sectionId)
+    if (el) {
+      cancelPendingScroll(sectionId)
+      el.scrollIntoView({ behavior: 'smooth' })
+    }
+  })
+
+  const timeoutId = setTimeout(() => cancelPendingScroll(sectionId), SCROLL_RETRY_TIMEOUT_MS)
+  // unref() prevents the timer from keeping the Node.js/JSDOM event loop alive in tests
+  ;(timeoutId as unknown as { unref?: () => void }).unref?.()
+  pendingScrollObservers.set(sectionId, { observer, timeoutId })
+  observer.observe(root, { childList: true, subtree: true })
+}
+
+/** @internal For use in tests only — cancels all in-flight scroll observers. */
+export function _clearPendingScrollObservers(): void {
+  for (const sectionId of [...pendingScrollObservers.keys()]) {
+    cancelPendingScroll(sectionId)
   }
 }
 

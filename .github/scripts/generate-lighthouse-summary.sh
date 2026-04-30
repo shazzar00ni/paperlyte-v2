@@ -12,8 +12,8 @@ if [ -f .lighthouseci/manifest.json ]; then
 
   # Validate that REPORT_FILE is non-empty and not "null"
   if [ -z "$REPORT_FILE" ] || [ "$REPORT_FILE" = "null" ]; then
-    echo "⚠️ No representative run found in Lighthouse manifest" >> "$GITHUB_STEP_SUMMARY"
-    exit 0
+    echo "❌ No representative run found in Lighthouse manifest" >> "$GITHUB_STEP_SUMMARY"
+    exit 1
   fi
 
   if [ -f "$REPORT_FILE" ]; then

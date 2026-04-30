@@ -88,20 +88,19 @@ describe('ErrorBoundary', () => {
     })
 
     it('should log error using monitoring utility', () => {
+      vi.mocked(logError).mockClear()
+
       render(
         <ErrorBoundary>
           <ThrowError shouldThrow={true} />
         </ErrorBoundary>
       )
 
-      // React's error logging format includes the error and component stack
-      expect(console.error).toHaveBeenCalled()
-      const mockConsoleError = vi.mocked(console.error)
-      const errorCalls = mockConsoleError.mock.calls
-      const hasErrorLogged = errorCalls.some((call: unknown[]) =>
-        call.some((arg: unknown) => arg instanceof Error && arg.message === 'Test error')
+      expect(vi.mocked(logError)).toHaveBeenCalledWith(
+        expect.objectContaining({ message: 'Test error' }),
+        expect.objectContaining({ severity: 'high' }),
+        'ErrorBoundary'
       )
-      expect(hasErrorLogged).toBe(true)
     })
 
     it('should use custom fallback if provided', () => {

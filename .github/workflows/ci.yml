@@ -307,6 +307,7 @@ jobs:
 
       - name: Generate Lighthouse report summary
         if: always()
+        continue-on-error: true
         run: bash .github/scripts/generate-lighthouse-summary.sh
 
       - name: Fail job if Lighthouse assertions failed

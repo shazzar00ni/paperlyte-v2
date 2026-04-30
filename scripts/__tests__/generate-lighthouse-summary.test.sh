@@ -36,21 +36,16 @@ assert_contains() {
   fi
 }
 
-# Run the script in a tmp working directory; echo the GITHUB_STEP_SUMMARY text.
-run_script() {
+# Run the script in a tmp working directory once, capturing both the
+# GITHUB_STEP_SUMMARY contents and the exit code into caller-visible globals
+# (LAST_OUTPUT, LAST_EXIT_CODE). Avoids invoking the script twice per test
+# (which would also append duplicate content to the summary file via `>>`).
+run_script_capture() {
   local tmpdir="$1"
   local summary_file="$tmpdir/summary.txt"
-  GITHUB_STEP_SUMMARY="$summary_file" bash "$SCRIPT" 2>/dev/null || true
-  cat "$summary_file" 2>/dev/null || true
-}
-
-# Returns the exit code of the script (0 or non-zero), suppressing set -e.
-run_script_exit_code() {
-  local tmpdir="$1"
-  local summary_file="$tmpdir/summary.txt"
-  local rc=0
-  GITHUB_STEP_SUMMARY="$summary_file" bash "$SCRIPT" 2>/dev/null || rc=$?
-  echo "$rc"
+  LAST_EXIT_CODE=0
+  GITHUB_STEP_SUMMARY="$summary_file" bash "$SCRIPT" 2>/dev/null || LAST_EXIT_CODE=$?
+  LAST_OUTPUT="$(cat "$summary_file" 2>/dev/null || true)"
 }
 
 # ─── Fixture helpers ──────────────────────────────────────────────────────────
@@ -128,8 +123,9 @@ trap 'rm -rf "$T"' EXIT
 # Only create the config; no .lighthouseci directory at all
 make_lighthouserc "$T"
 
-output=$(cd "$T" && run_script "$T")
-exit_code=$(cd "$T" && run_script_exit_code "$T" || echo $?)
+(cd "$T" && run_script_capture "$T")
+output="$LAST_OUTPUT"
+exit_code="$LAST_EXIT_CODE"
 
 assert_contains \
   "summary contains graceful error message" \
@@ -156,7 +152,8 @@ make_lighthouserc "$T"
 make_lhr "$LHR" "0.08"
 make_manifest "$T" "$LHR"
 
-output=$(cd "$T" && run_script "$T")
+(cd "$T" && run_script_capture "$T")
+output="$LAST_OUTPUT"
 
 assert_contains \
   "CLS row contains ✅ when cls (0.08) ≤ threshold (0.1)" \
@@ -178,7 +175,8 @@ make_lighthouserc "$T"
 make_lhr "$LHR" "0.15"
 make_manifest "$T" "$LHR"
 
-output=$(cd "$T" && run_script "$T")
+(cd "$T" && run_script_capture "$T")
+output="$LAST_OUTPUT"
 
 assert_contains \
   "CLS row contains ❌ when cls (0.15) > threshold (0.1)" \
@@ -200,7 +198,8 @@ make_lighthouserc "$T"   # already has "uses-responsive-images": "warn"
 make_lhr "$LHR" "0.05"
 make_manifest "$T" "$LHR"
 
-output=$(cd "$T" && run_script "$T")
+(cd "$T" && run_script_capture "$T")
+output="$LAST_OUTPUT"
 
 assert_contains \
   "script produces a Scores table despite string-format assertions" \
@@ -230,8 +229,9 @@ cat > "$T/.lighthouseci/manifest.json" <<'JSON'
 ]
 JSON
 
-output=$(cd "$T" && run_script "$T")
-exit_code=$(cd "$T" && run_script_exit_code "$T" || echo $?)
+(cd "$T" && run_script_capture "$T")
+output="$LAST_OUTPUT"
+exit_code="$LAST_EXIT_CODE"
 
 assert_eq \
   "script exits 1 when no representative run found (regression guard: was exit 0)" \
@@ -275,8 +275,9 @@ cat > "$T/.lighthouseci/manifest.json" <<'JSON'
 ]
 JSON
 
-output=$(cd "$T" && run_script "$T")
-exit_code=$(cd "$T" && run_script_exit_code "$T" || echo $?)
+(cd "$T" && run_script_capture "$T")
+output="$LAST_OUTPUT"
+exit_code="$LAST_EXIT_CODE"
 
 assert_eq \
   "script exits 1 when jsonPath is the literal string \"null\"" \

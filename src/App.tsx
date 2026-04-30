@@ -1,5 +1,6 @@
 import { lazy, Suspense, useRef, useCallback } from 'react'
 import { Analytics } from '@vercel/analytics/react'
+import './App.css'
 import { ErrorBoundary } from '@components/ErrorBoundary'
 import { Header } from '@components/layout/Header'
 import { Footer } from '@components/layout/Footer'

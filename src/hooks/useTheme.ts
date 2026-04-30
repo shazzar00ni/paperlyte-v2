@@ -7,26 +7,32 @@ const isBrowser = typeof window !== 'undefined'
 const THEME_STORAGE_KEY = 'paperlyte:v1:theme'
 const USER_PREFERENCE_KEY = 'paperlyte:v1:theme-user-preference'
 
-// One-time migration: move data from legacy unversioned keys to versioned keys
+const isValidTheme = (value: string | null): value is Theme => {
+  return value === 'light' || value === 'dark'
+}
+
+// One-time migration: move data from legacy unversioned keys to versioned keys.
+// Idempotent: exits immediately when no legacy keys exist, so safe to call on
+// every render (including React StrictMode double-invocation in dev).
+// Handles partial-state: migrates each key independently so an orphaned
+// theme-user-preference key is cleaned up even when the theme key is absent.
 const migrateLegacyTheme = () => {
   try {
-    const legacy = localStorage.getItem('theme')
-    if (legacy) {
-      localStorage.setItem(THEME_STORAGE_KEY, legacy)
-      const legacyPref = localStorage.getItem('theme-user-preference')
-      if (legacyPref) {
-        localStorage.setItem(USER_PREFERENCE_KEY, legacyPref)
-      }
-      localStorage.removeItem('theme')
-      localStorage.removeItem('theme-user-preference')
+    const legacyTheme = localStorage.getItem('theme')
+    const legacyPref = localStorage.getItem('theme-user-preference')
+    if (legacyTheme === null && legacyPref === null) return
+
+    if (isValidTheme(legacyTheme)) {
+      localStorage.setItem(THEME_STORAGE_KEY, legacyTheme)
     }
+    if (legacyPref !== null) {
+      localStorage.setItem(USER_PREFERENCE_KEY, legacyPref)
+    }
+    if (legacyTheme !== null) localStorage.removeItem('theme')
+    if (legacyPref !== null) localStorage.removeItem('theme-user-preference')
   } catch {
     // Silently ignore — incognito/storage-disabled browsers
   }
-}
-
-const isValidTheme = (value: string | null): value is Theme => {
-  return value === 'light' || value === 'dark'
 }
 
 /**

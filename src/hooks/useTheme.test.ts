@@ -85,6 +85,15 @@ describe('useTheme', () => {
       expect(['light', 'dark']).toContain(result.current.theme)
     })
 
+    it('should clean up orphaned theme-user-preference key when theme key is absent', () => {
+      localStorageMock.setItem('theme-user-preference', 'true')
+      renderHook(() => useTheme())
+
+      expect(localStorageMock.getItem('theme-user-preference')).toBeNull()
+      expect(localStorageMock.getItem('paperlyte:v1:theme-user-preference')).toBe('true')
+      expect(localStorageMock.getItem('paperlyte:v1:theme')).toBeNull()
+    })
+
     it('should not overwrite new keys if no legacy keys exist', () => {
       localStorageMock.setItem('paperlyte:v1:theme', 'dark')
       localStorageMock.setItem('paperlyte:v1:theme-user-preference', 'true')

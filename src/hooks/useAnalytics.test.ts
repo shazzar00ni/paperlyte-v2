@@ -1,5 +1,12 @@
 import { renderHook } from '@testing-library/react'
 import { useAnalytics } from './useAnalytics'
+import {
+  trackEvent,
+  trackCTAClick,
+  trackExternalLink,
+  trackSocialClick,
+  initScrollDepthTracking,
+} from '@utils/analytics'
 
 vi.mock('@utils/analytics', () => ({
   trackEvent: vi.fn(),
@@ -17,15 +24,6 @@ vi.mock('@utils/analytics', () => ({
   },
 }))
 
-// Import after mocking so we get the spy references
-import {
-  trackEvent,
-  trackCTAClick,
-  trackExternalLink,
-  trackSocialClick,
-  initScrollDepthTracking,
-} from '@utils/analytics'
-
 describe('useAnalytics — scroll depth deferral', () => {
   beforeEach(() => {
     vi.useFakeTimers()
@@ -37,17 +35,15 @@ describe('useAnalytics — scroll depth deferral', () => {
   })
 
   it('defers initScrollDepthTracking via setTimeout when requestIdleCallback is unavailable', () => {
-    // jsdom does not provide requestIdleCallback, so the setTimeout path is taken
+    // jsdom does not provide requestIdleCallback — the setTimeout fallback path is taken
     expect(typeof (globalThis as unknown as Record<string, unknown>).requestIdleCallback).toBe(
       'undefined'
     )
 
     renderHook(() => useAnalytics(true))
-
     expect(initScrollDepthTracking).not.toHaveBeenCalled()
 
     vi.runAllTimers()
-
     expect(initScrollDepthTracking).toHaveBeenCalledTimes(1)
   })
 
@@ -57,27 +53,23 @@ describe('useAnalytics — scroll depth deferral', () => {
     expect(initScrollDepthTracking).not.toHaveBeenCalled()
   })
 
-  it('cancels pending setTimeout and calls scroll cleanup on unmount before timer fires', () => {
+  it('cancels pending setTimeout on unmount before timer fires', () => {
     const scrollCleanup = vi.fn()
     vi.mocked(initScrollDepthTracking).mockReturnValueOnce(scrollCleanup)
 
     const { unmount } = renderHook(() => useAnalytics(true))
-
-    // Unmount before the deferred callback fires
     unmount()
     vi.runAllTimers()
 
-    // Timer was cancelled — initScrollDepthTracking never ran
     expect(initScrollDepthTracking).not.toHaveBeenCalled()
     expect(scrollCleanup).not.toHaveBeenCalled()
   })
 
-  it('calls scroll cleanup on unmount when timer already fired', () => {
+  it('calls scroll cleanup on unmount after timer already fired', () => {
     const scrollCleanup = vi.fn()
     vi.mocked(initScrollDepthTracking).mockReturnValueOnce(scrollCleanup)
 
     const { unmount } = renderHook(() => useAnalytics(true))
-
     vi.runAllTimers()
     expect(initScrollDepthTracking).toHaveBeenCalledTimes(1)
 
@@ -101,7 +93,6 @@ describe('useAnalytics — scroll depth deferral', () => {
       expect(mockRic).toHaveBeenCalledWith(expect.any(Function), { timeout: 3000 })
       expect(initScrollDepthTracking).not.toHaveBeenCalled()
 
-      // Fire the idle callback
       idleCallback?.()
       expect(initScrollDepthTracking).toHaveBeenCalledTimes(1)
     } finally {
@@ -137,19 +128,19 @@ describe('useAnalytics — tracking functions', () => {
     expect(typeof result.current.trackFAQExpand).toBe('function')
   })
 
-  it('trackCTA calls trackCTAClick with button text and location', () => {
+  it('trackCTA delegates to trackCTAClick', () => {
     const { result } = renderHook(() => useAnalytics(false))
     result.current.trackCTA('Join Waitlist', 'hero')
     expect(trackCTAClick).toHaveBeenCalledWith('Join Waitlist', 'hero')
   })
 
-  it('trackExternal calls trackExternalLink with url and text', () => {
+  it('trackExternal delegates to trackExternalLink', () => {
     const { result } = renderHook(() => useAnalytics(false))
     result.current.trackExternal('https://example.com', 'Example')
     expect(trackExternalLink).toHaveBeenCalledWith('https://example.com', 'Example')
   })
 
-  it('trackSocial calls trackSocialClick with platform', () => {
+  it('trackSocial delegates to trackSocialClick', () => {
     const { result } = renderHook(() => useAnalytics(false))
     result.current.trackSocial('twitter')
     expect(trackSocialClick).toHaveBeenCalledWith('twitter')

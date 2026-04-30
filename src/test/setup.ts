@@ -1,7 +1,10 @@
 import { expect, afterEach } from 'vitest'
 import { cleanup } from '@testing-library/react'
 import * as matchers from '@testing-library/jest-dom/matchers'
-// Import icon library to initialize Font Awesome icons for tests
+
+// Register all Font Awesome icons used by the app so that findIconDefinition()
+// resolves correctly in tests. Without this, the FA global registry is empty and
+// any icon not in the custom iconPaths map renders as a fallback "?" span.
 import '@utils/iconLibrary'
 
 // Extend Vitest's expect with jest-dom matchers

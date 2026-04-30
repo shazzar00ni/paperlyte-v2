@@ -1,0 +1,217 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@7.2.1
+
+executors:
+  node-executor:
+    docker:
+      - image: cimg/node:20.19.2@sha256:93d8e5b75c74e61b792ecdfe533c8a6b1d7367317430fa7ba84909cb0191b099
+    resource_class: medium
+
+jobs:
+  install:
+    executor: node-executor
+    environment:
+      # Skip browser download in the install job; e2e uses the Playwright Docker
+      # image which already has browsers bundled.
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
+      - persist_to_workspace:
+          root: .
+          paths:
+            - node_modules
+
+  lint:
+    executor: node-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Lint
+          command: npm run lint
+      - run:
+          name: Format check
+          command: npm run format:check
+
+  typecheck:
+    executor: node-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: TypeScript type check
+          command: npx tsc -b --noEmit
+
+  test:
+    executor: node-executor
+    parallelism: 4
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Discover and run tests
+          # circleci tests glob discovers all test files (the "discover command").
+          # circleci tests run splits them across parallel nodes by historical
+          # timing data and appends the file list to the vitest command.
+          # The glob matches vitest's include pattern across the whole repo
+          # (not just src/) so files like scripts/__tests__/*.test.ts are included.
+          # node_modules/ and dist/ are excluded to avoid slow traversal and
+          # accidentally picking up dependency test files.
+          # e2e specs are stripped out because Playwright owns those.
+          # set +e so the job doesn't abort on test failure; pipefail is
+          # explicitly enabled so glob/filter errors are not masked even if the
+          # shell's default options change. PIPESTATUS captures each stage's
+          # exit code; the vitest exit code is re-raised after artifact upload.
+          command: |
+            mkdir -p test-results
+            set +e
+            set -o pipefail
+            circleci tests glob \
+              "**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}" | \
+              grep -v -e "^node_modules/" -e "^dist/" -e "^tests/e2e/" | \
+              circleci tests run \
+                --command="xargs -r npx vitest run --reporter=default --reporter=junit --outputFile=test-results/junit-${CIRCLE_NODE_INDEX}.xml --" \
+                --split-by=timings \
+                --verbose
+            pipe_statuses=("${PIPESTATUS[@]}")
+            glob_exit=${pipe_statuses[0]}
+            filter_exit=${pipe_statuses[1]}
+            vitest_exit=${pipe_statuses[2]}
+            if [ "$glob_exit" -ne 0 ] || [ "$filter_exit" -ne 0 ]; then
+              echo 1 > /tmp/test-exit-code
+            else
+              echo "$vitest_exit" > /tmp/test-exit-code
+            fi
+          environment:
+            CI: "true"
+      - store_test_results:
+          path: test-results
+      - store_artifacts:
+          path: test-results
+          destination: test-results
+      - run:
+          name: Report test status
+          when: always
+          command: exit $(cat /tmp/test-exit-code 2>/dev/null || echo 1)
+
+  # Coverage runs as a separate single-node job so the report covers the full
+  # suite. The parallelised `test` job only runs a subset of tests per node,
+  # which would produce incomplete coverage if merged naïvely.
+  coverage:
+    executor: node-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Coverage report
+          command: npm run test:coverage -- --run
+          environment:
+            CI: "true"
+      - store_artifacts:
+          path: coverage
+          destination: coverage
+
+  build:
+    executor: node-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build
+          command: npm run build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist
+      - store_artifacts:
+          path: dist
+          destination: dist
+
+  e2e:
+    docker:
+      # Pinned to digest for reproducible, secure builds (avoids mutable-tag risk).
+      # Tag: v1.59.1-noble
+      - image: mcr.microsoft.com/playwright:v1.59.1-noble@sha256:eac9b0a5312cdab40ee8c2429df5bf19bffdccf8f3bf3c42268e173f97541645
+    resource_class: medium
+    steps:
+      - checkout
+      # Attach the workspace to a temporary location so this job can copy the
+      # built dist/ output without reusing node_modules created in a different
+      # Docker image. Playwright browsers are pre-installed in the Docker image.
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          name: Prepare E2E workspace
+          command: |
+            cp -R /tmp/workspace/dist ./dist
+            PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm ci
+      - run:
+          name: Start preview server
+          # background: true keeps the process alive across subsequent steps.
+          # Using & within a step would terminate the server when the step exits.
+          command: npm run preview -- --host 0.0.0.0 --port 4173
+          background: true
+      - run:
+          name: Wait for preview server
+          command: npx wait-on http://127.0.0.1:4173 --timeout 30000
+      - run:
+          name: E2E tests
+          # set +e so the job doesn't abort on test failure; the exit code is
+          # saved and re-raised after artifact upload.
+          command: |
+            set +e
+            npm run test:e2e
+            echo $? > /tmp/e2e-exit-code
+          environment:
+            CI: "true"
+            BASE_URL: "http://127.0.0.1:4173"
+      - store_test_results:
+          # JUnit XML is written by the junit reporter added to playwright.config.ts
+          path: test-results
+      - store_artifacts:
+          path: playwright-report
+          destination: playwright-report
+      - run:
+          name: Report E2E test status
+          when: always
+          command: exit $(cat /tmp/e2e-exit-code 2>/dev/null || echo 1)
+
+workflows:
+  ci:
+    jobs:
+      - install
+      - lint:
+          requires:
+            - install
+      - typecheck:
+          requires:
+            - install
+      - test:
+          requires:
+            - install
+      - coverage:
+          requires:
+            - install
+      - build:
+          requires:
+            - lint
+            - typecheck
+            - test
+            - coverage
+      - e2e:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - main
+                - /^claude\/.*/

@@ -6,7 +6,11 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 2 : undefined,
-  reporter: process.env.CI ? [['html'], ['github']] : 'list',
+  reporter: process.env.CI
+    ? process.env.GITHUB_ACTIONS
+      ? [['html'], ['github'], ['junit', { outputFile: 'test-results/e2e-junit.xml' }]]
+      : [['html'], ['junit', { outputFile: 'test-results/e2e-junit.xml' }]]
+    : 'list',
 
   use: {
     baseURL: process.env.BASE_URL ?? 'http://localhost:4173',

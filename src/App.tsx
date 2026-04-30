@@ -17,6 +17,11 @@ const Testimonials = lazy(() => import('@components/sections/Testimonials'))
 const EmailCapture = lazy(() => import('@components/sections/EmailCapture'))
 const FAQ = lazy(() => import('@components/sections/FAQ'))
 const CTA = lazy(() => import('@components/sections/CTA'))
+// TODO(perf/ux): FeedbackWidget is a floating button visible on every page,
+// so lazy-loading it introduces a small visibility gap on slow connections.
+// The zero-size Suspense fallback prevents CLS, but consider prefetching this
+// chunk during idle time (e.g. via a useEffect(() => { import('...') }, []) in
+// App) or reverting to an eager import if the bundle size is small.
 const FeedbackWidget = lazy(() => import('@components/ui/FeedbackWidget'))
 
 /**

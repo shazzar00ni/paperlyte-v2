@@ -16,18 +16,23 @@ function fontPreloadPlugin(): Plugin {
     apply: 'build',
     transformIndexHtml: {
       order: 'post',
-      handler(html, ctx) {
+      handler(_html, ctx) {
         const bundle = ctx.bundle
-        if (!bundle) return html
-        const preloads = Object.keys(bundle)
+        if (!bundle) return
+        return Object.keys(bundle)
           .filter((key) => key.endsWith('.woff2'))
-          .map(
-            (key) =>
-              `    <link rel="preload" href="/${key}" as="font" type="font/woff2" crossorigin>`
-          )
-          .join('\n')
-        if (!preloads) return html
-        return html.replace('</head>', `${preloads}\n  </head>`)
+          .sort()
+          .map((key) => ({
+            tag: 'link',
+            attrs: {
+              rel: 'preload',
+              href: `/${key}`,
+              as: 'font',
+              type: 'font/woff2',
+              crossorigin: true,
+            },
+            injectTo: 'head' as const,
+          }))
       },
     },
   }

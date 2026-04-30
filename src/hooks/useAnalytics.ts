@@ -38,8 +38,7 @@ export function useAnalytics(enableScrollTracking = true) {
       typeof requestIdleCallback !== 'undefined'
         ? (cb: () => void) => requestIdleCallback(cb, { timeout: 3000 })
         : (cb: () => void) => setTimeout(cb, 0) as unknown as number
-    const cancelInit =
-      typeof cancelIdleCallback !== 'undefined' ? cancelIdleCallback : clearTimeout
+    const cancelInit = typeof cancelIdleCallback !== 'undefined' ? cancelIdleCallback : clearTimeout
 
     const handle = scheduleInit(() => {
       cleanup = initScrollDepthTracking()

@@ -46,6 +46,12 @@ const isValidTheme = (value: string | null): value is Theme => {
 export const useTheme = () => {
   const persistenceEnabled = PERSISTENCE_CONFIG.ALLOW_PERSISTENT_THEME
 
+  // Migrate legacy unversioned keys before reading any preferences so that
+  // useRef and useState both see the updated versioned keys.
+  if (isBrowser && persistenceEnabled) {
+    migrateLegacyTheme()
+  }
+
   // Get initial user preference flag from localStorage (only during init, not reactive)
   const getInitialUserPreference = (): boolean => {
     if (!isBrowser || !persistenceEnabled) return false
@@ -58,11 +64,6 @@ export const useTheme = () => {
   const [theme, setTheme] = useState<Theme>(() => {
     // SSR guard: return default theme if not in browser
     if (!isBrowser) return 'light'
-
-    // Migrate legacy unversioned keys on first load
-    if (persistenceEnabled) {
-      migrateLegacyTheme()
-    }
 
     // Only check localStorage if persistence is enabled
     if (persistenceEnabled) {

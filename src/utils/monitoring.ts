@@ -156,6 +156,10 @@ export function logWarning(message: string, context?: Record<string, unknown>): 
 
   // Spread safeContext first so caller-supplied keys can never override the
   // canonical `message` field on the analytics event.
+  // TODO(monitoring): safeContext keys are spread flat into AnalyticsEventParams
+  // and could still collide with other reserved fields (e.g. `value`, `error_name`).
+  // Safe today because callers are internal and pass namespaced keys, but
+  // consider prefixing all keys (e.g. `ctx_<key>`) for robust isolation.
   trackEvent('application_warning', {
     ...safeContext,
     message: message.slice(0, 200),

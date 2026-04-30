@@ -126,8 +126,8 @@ function buildSitemap(pages) {
 }
 
 const sitemap = buildSitemap(pages);
-// Target the dist directory for Netlify deployment
-const outPath = path.join(__dirname, '../dist/sitemap.xml');
+// Target the public directory so it's copied to dist during build
+const outPath = path.join(__dirname, '../public/sitemap.xml');
 
 try {
   fs.writeFileSync(outPath, sitemap, 'utf8');

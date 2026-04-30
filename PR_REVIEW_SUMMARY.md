@@ -21,7 +21,7 @@ This file contains a summary of pull requests I have reviewed.
 
 - **Action Required:** ALL affected branches MUST restore these critical files and security helpers.
 
-### Detailed Feedback for "Ready" Branches
+### Manual Review Supplement
 
 The following branches were identified as "Ready" (no systemic regressions) and have been reviewed for quality and impact:
 

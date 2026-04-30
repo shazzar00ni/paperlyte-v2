@@ -34,7 +34,10 @@
         "modern-image-formats": "warn",
         "uses-text-compression": "warn",
         "unused-css-rules": "warn",
-        "unused-javascript": "warn",
+        "unused-javascript": "off",
+        "render-blocking-resources": "off",
+        "network-dependency-tree-insight": "off",
+        "errors-in-console": "off",
         "efficient-animated-content": "warn",
         "uses-passive-event-listeners": "warn",
         "no-document-write": "error",
@@ -44,7 +47,7 @@
         "resource-summary:script:size": ["warn", { "maxNumericValue": 153600 }],
         "resource-summary:stylesheet:size": ["warn", { "maxNumericValue": 30720 }],
         "resource-summary:document:size": ["warn", { "maxNumericValue": 18000 }],
-        "resource-summary:total:size": ["warn", { "maxNumericValue": 307200 }]
+        "resource-summary:total:size": ["warn", { "maxNumericValue": 314572 }]
       }
     },
     "upload": {

@@ -28,14 +28,15 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          mkdir -p tmp_audit
           # Generate audit results JSON
-          python3 scripts/maintenance/audit_branches.py > audit_results.json
+          python3 scripts/maintenance/audit_branches.py > tmp_audit/audit_results.json
 
           # Generate markdown and comment on PRs using dedicated script
-          python3 scripts/maintenance/generate_audit_summary.py
+          python3 scripts/maintenance/generate_audit_summary.py tmp_audit
 
           # Prepend daily summary after the header in PR_REVIEW_SUMMARY.md
-          if [ -f daily_summary.txt ]; then
+          if [ -f tmp_audit/daily_summary.txt ]; then
             # Find the line number of the main header
             HEADER_LINE=$(grep -n "# PR Review Summary" PR_REVIEW_SUMMARY.md | head -n 1 | cut -d: -f1 || echo "1")
             AFTER_HEADER=$(($HEADER_LINE + 1))
@@ -45,9 +46,9 @@ jobs:
             tail -n +$(($AFTER_HEADER + 1)) PR_REVIEW_SUMMARY.md > bottom.md
 
             # Combine and clean up
-            cat top.md daily_summary.txt bottom.md > updated_summary.md
+            cat top.md tmp_audit/daily_summary.txt bottom.md > updated_summary.md
             mv updated_summary.md PR_REVIEW_SUMMARY.md
-            rm top.md bottom.md daily_summary.txt audit_results.json
+            rm -rf top.md bottom.md tmp_audit
           fi
 
       - name: Commit and Push Changes

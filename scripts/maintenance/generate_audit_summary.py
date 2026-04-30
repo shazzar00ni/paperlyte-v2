@@ -17,11 +17,17 @@ def run_command(args):
         return None
 
 def main():
-    if not os.path.exists('audit_results.json'):
-        print("Error: audit_results.json not found.", file=sys.stderr)
+    # Use the provided directory for audit results, defaulting to current directory
+    audit_dir = sys.argv[1] if len(sys.argv) > 1 else '.'
+    audit_file = os.path.join(audit_dir, 'audit_results.json')
+    summary_file = os.path.join(audit_dir, 'daily_summary.txt')
+    manual_feedback_file = os.path.join(audit_dir, 'manual_feedback.md')
+
+    if not os.path.exists(audit_file):
+        print(f"Error: {audit_file} not found.", file=sys.stderr)
         sys.exit(1)
 
-    with open('audit_results.json', 'r') as f:
+    with open(audit_file, 'r') as f:
         data = json.load(f)
 
     # Get PR mappings from GitHub CLI (if available)
@@ -87,7 +93,14 @@ def main():
     summary += f'| Unreadable navigation.ts       | {stats["UNREADABLE"]}     | 🔴 Critical | File missing or unreadable.                                              |\n\n'
     summary += '- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.\n\n'
 
-    with open('daily_summary.txt', 'w') as f:
+    # Append manual feedback if available
+    if os.path.exists(manual_feedback_file):
+        with open(manual_feedback_file, 'r') as f:
+            summary += "\n### Manual Review Supplement\n\n"
+            summary += f.read()
+            summary += "\n"
+
+    with open(summary_file, 'w') as f:
         f.write(summary)
 
 if __name__ == "__main__":

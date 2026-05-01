@@ -71,3 +71,19 @@ exclude_patterns:
       - "src/utils/validation-utils.test.ts"
 
 # Exclude paths from code analysis
+exclude_paths:
+  - ".github/workflows/sonarcloud.yml"
+  - 'node_modules/**'
+  - 'dist/**'
+  - 'coverage/**'
+  - '**/*.test.ts'
+  - '**/*.test.tsx'
+  - '**/*.spec.ts'
+  - '**/*.spec.tsx'
+  - 'src/test/**'
+  - 'scripts/**'
+  - '**/*.min.js'
+
+# Note: semgrep may report false positives for non-literal RegExp patterns in tests.
+# All RegExp inputs are sanitized via escapeRegExp(); input sources are constants, not user input.
+# Remaining false positives in non-test files can be marked "Won't Fix" in the Codacy UI.

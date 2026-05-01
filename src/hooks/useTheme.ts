@@ -1,11 +1,14 @@
 import { useEffect, useState, useRef } from 'react'
 import { PERSISTENCE_CONFIG } from '@constants/config'
+import { logError } from '@utils/monitoring'
 
 type Theme = 'light' | 'dark'
 
 const isBrowser = typeof window !== 'undefined'
 const THEME_STORAGE_KEY = 'paperlyte:v1:theme'
 const USER_PREFERENCE_KEY = 'paperlyte:v1:theme-user-preference'
+
+const toError = (e: unknown): Error => (e instanceof Error ? e : new Error(String(e)))
 
 const isValidTheme = (value: string | null): value is Theme => {
   return value === 'light' || value === 'dark'
@@ -16,7 +19,7 @@ const isValidTheme = (value: string | null): value is Theme => {
 // every render (including React StrictMode double-invocation in dev).
 // Handles partial-state: migrates each key independently so an orphaned
 // theme-user-preference key is cleaned up even when the theme key is absent.
-const migrateLegacyTheme = () => {
+const migrateLegacyTheme = (): void => {
   try {
     const legacyTheme = localStorage.getItem('theme')
     const legacyPref = localStorage.getItem('theme-user-preference')
@@ -34,8 +37,16 @@ const migrateLegacyTheme = () => {
     // removeItem is a no-op when the key doesn't exist, so guards are unnecessary
     localStorage.removeItem('theme')
     localStorage.removeItem('theme-user-preference')
-  } catch {
-    // Silently ignore — incognito/storage-disabled browsers
+  } catch (err) {
+    // Storage blocked (incognito/quota) — fall back silently but report for diagnostics
+    logError(
+      toError(err),
+      {
+        severity: 'low',
+        tags: { module: 'useTheme', action: 'migrateLegacyTheme' },
+      },
+      'useTheme'
+    )
   }
 }
 
@@ -67,7 +78,15 @@ export const useTheme = () => {
     if (!isBrowser || !persistenceEnabled) return false
     try {
       return localStorage.getItem(USER_PREFERENCE_KEY) === 'true'
-    } catch {
+    } catch (err) {
+      logError(
+        toError(err),
+        {
+          severity: 'low',
+          tags: { module: 'useTheme', action: 'getInitialUserPreference' },
+        },
+        'useTheme'
+      )
       return false
     }
   }
@@ -90,8 +109,16 @@ export const useTheme = () => {
         if (stored && isValidTheme(stored) && hasUserPreference) {
           return stored
         }
-      } catch {
+      } catch (err) {
         // Storage blocked — fall through to system preference
+        logError(
+          toError(err),
+          {
+            severity: 'low',
+            tags: { module: 'useTheme', action: 'readInitialTheme' },
+          },
+          'useTheme'
+        )
       }
     }
 
@@ -123,8 +150,16 @@ export const useTheme = () => {
         if (userHasExplicitPreference.current) {
           localStorage.setItem(USER_PREFERENCE_KEY, 'true')
         }
-      } catch {
+      } catch (err) {
         // Storage blocked — theme still applied to DOM above
+        logError(
+          toError(err),
+          {
+            severity: 'low',
+            tags: { module: 'useTheme', action: 'persistTheme' },
+          },
+          'useTheme'
+        )
       }
     }
   }, [theme, persistenceEnabled])

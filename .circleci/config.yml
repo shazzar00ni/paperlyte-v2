@@ -8,17 +8,21 @@ orbs:
 
 # ─── Executors ───────────────────────────────────────────────────────────────
 executors:
+  # Node 20 to match Netlify production (netlify.toml: NODE_VERSION="20")
+  # and GitHub Actions CI (.github/workflows/ci.yml).
   node-executor:
     docker:
-      - image: cimg/node:22.19
+      - image: cimg/node:20.18
     resource_class: medium
   node-browsers-executor:
     docker:
-      - image: cimg/node:22.19-browsers
+      - image: cimg/node:20.18-browsers
     resource_class: medium
   playwright-executor:
+    # NOTE: Keep this image tag in lockstep with the `@playwright/test` version
+    # in package-lock.json. Mismatched versions cause browser-binary errors.
     docker:
-      - image: mcr.microsoft.com/playwright:v1.50.0-noble
+      - image: mcr.microsoft.com/playwright:v1.58.2-noble
     resource_class: medium+
     environment:
       CI: "true"
@@ -86,7 +90,7 @@ jobs:
       - attach-build
       - run:
           name: Run unit tests with coverage
-          command: mkdir -p test-results && npm run test:coverage -- --reporter=junit --outputFile=test-results/junit.xml
+          command: mkdir -p test-results && npm run test:coverage -- --reporter=default --reporter=junit --outputFile=test-results/junit.xml
       - store_test_results:
           path: test-results
       - store_artifacts:
@@ -109,7 +113,7 @@ jobs:
 
   # Bundle size check
   size-check:
-    executor: node-executor
+    executor: node-browsers-executor
     steps:
       - checkout
       - attach-build
@@ -149,6 +153,7 @@ jobs:
       - run:
           name: Install npm deps (in Playwright image)
           command: npm ci --prefer-offline
+      - save-npm-cache
       - run:
           name: Start preview server (background)
           command: node_modules/.bin/vite preview --port 4173

@@ -31,8 +31,9 @@ const migrateLegacyTheme = () => {
     if (legacyPref !== null && currentPref === null) {
       localStorage.setItem(USER_PREFERENCE_KEY, legacyPref)
     }
-    if (legacyTheme !== null) localStorage.removeItem('theme')
-    if (legacyPref !== null) localStorage.removeItem('theme-user-preference')
+    // removeItem is a no-op when the key doesn't exist, so guards are unnecessary
+    localStorage.removeItem('theme')
+    localStorage.removeItem('theme-user-preference')
   } catch {
     // Silently ignore — incognito/storage-disabled browsers
   }

@@ -301,6 +301,49 @@ describe('FeedbackWidget', () => {
       })
     })
 
+    it('handles corrupted localStorage feedback data gracefully', async () => {
+      const user = userEvent.setup()
+      // Pre-populate with invalid JSON to exercise the parseError catch branch
+      localStorage.setItem('paperlyte:v1:feedback', '{not valid json}')
+
+      render(<FeedbackWidget />)
+      await user.click(screen.getByRole('button', { name: /open feedback form/i }))
+      await waitFor(() => expect(screen.getByRole('dialog')).toBeInTheDocument())
+
+      await user.type(screen.getByRole('textbox'), 'After parse error')
+      await user.click(screen.getByRole('button', { name: /send feedback/i }))
+
+      await waitFor(() => {
+        // Parsed as empty array on error, new entry appended — should save successfully
+        const stored = localStorage.getItem('paperlyte:v1:feedback')
+        expect(stored).toBeTruthy()
+        const arr = JSON.parse(stored!)
+        expect(arr).toHaveLength(1)
+        expect(arr[0].message).toBe('After parse error')
+      })
+    })
+
+    it('shows error when localStorage setItem fails', async () => {
+      const user = userEvent.setup()
+      vi.spyOn(console, 'group').mockImplementation(() => {})
+      vi.spyOn(console, 'groupEnd').mockImplementation(() => {})
+      // Throw on the first setItem call (saving feedback) to exercise storageError catch
+      vi.spyOn(Storage.prototype, 'setItem').mockImplementationOnce(() => {
+        throw new Error('QuotaExceededError')
+      })
+
+      render(<FeedbackWidget />)
+      await user.click(screen.getByRole('button', { name: /open feedback form/i }))
+      await waitFor(() => expect(screen.getByRole('dialog')).toBeInTheDocument())
+
+      await user.type(screen.getByRole('textbox'), 'Storage failure test')
+      await user.click(screen.getByRole('button', { name: /send feedback/i }))
+
+      await waitFor(() => {
+        expect(screen.getByText(/failed to submit feedback/i)).toBeInTheDocument()
+      })
+    })
+
     it('disables submit button when submitting', async () => {
       const user = userEvent.setup()
       const mockSubmit = vi.fn(() => new Promise((resolve) => setTimeout(resolve, 100)))

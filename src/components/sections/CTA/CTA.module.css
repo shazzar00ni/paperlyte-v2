@@ -208,29 +208,15 @@
     border-color: rgba(255, 255, 255, 0.35);
   }
 
-  .title {
-    color: var(--color-text-on-primary);
-  }
-
-  .subtitle {
-    color: var(--color-text-on-primary);
-  }
-
-  .textLink {
-    color: var(--color-text-on-primary);
-  }
-
-  .textLink:hover {
-    color: var(--color-text-on-primary);
-    opacity: 0.8;
-  }
-
-  .textLink:focus-visible {
-    outline-color: var(--color-text-on-primary);
-  }
-
+  .title,
+  .subtitle,
   .microcopy {
     color: var(--color-text-on-primary);
+  }
+
+  /* .textLink color/hover-opacity already set in base styles; only focus outline needs override */
+  .textLink:focus-visible {
+    outline-color: var(--color-text-on-primary);
   }
 }
 
@@ -248,27 +234,13 @@
   border-color: rgba(255, 255, 255, 0.35);
 }
 
-[data-theme='dark'] .title {
-  color: var(--color-text-on-primary);
-}
-
-[data-theme='dark'] .subtitle {
-  color: var(--color-text-on-primary);
-}
-
-[data-theme='dark'] .textLink {
-  color: var(--color-text-on-primary);
-}
-
-[data-theme='dark'] .textLink:hover {
-  color: var(--color-text-on-primary);
-  opacity: 0.8;
-}
-
-[data-theme='dark'] .textLink:focus-visible {
-  outline-color: var(--color-text-on-primary);
-}
-
+[data-theme='dark'] .title,
+[data-theme='dark'] .subtitle,
 [data-theme='dark'] .microcopy {
   color: var(--color-text-on-primary);
+}
+
+/* .textLink color/hover-opacity already set in base styles; only focus outline needs override */
+[data-theme='dark'] .textLink:focus-visible {
+  outline-color: var(--color-text-on-primary);
 }

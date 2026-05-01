@@ -5,7 +5,7 @@ import { handleArrowNavigation, getFocusableElements } from '@utils/keyboard'
 import { logError } from '@utils/monitoring'
 import styles from './FeedbackWidget.module.css'
 
-const FEEDBACK_KEY = 'paperlyte:v1:feedback'
+const FEEDBACK_KEY = 'paperlyte_feedback'
 
 type FeedbackType = 'bug' | 'feature'
 

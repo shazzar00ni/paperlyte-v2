@@ -6,6 +6,69 @@ import { logError } from '@utils/monitoring'
 import styles from './FeedbackWidget.module.css'
 
 const FEEDBACK_KEY = 'paperlyte:v1:feedback'
+const LEGACY_FEEDBACK_KEY = 'paperlyte_feedback'
+
+// One-time migration of feedback entries from the legacy unversioned key.
+// Module-level flag avoids repeated reads on every widget mount.
+let legacyFeedbackMigrationRun = false
+const migrateLegacyFeedback = (): void => {
+  if (legacyFeedbackMigrationRun) return
+  legacyFeedbackMigrationRun = true
+  try {
+    const legacy = localStorage.getItem(LEGACY_FEEDBACK_KEY)
+    if (legacy === null) return
+    // Backfill only — never overwrite an already-migrated versioned entry
+    if (localStorage.getItem(FEEDBACK_KEY) === null) {
+      localStorage.setItem(FEEDBACK_KEY, legacy)
+    }
+    localStorage.removeItem(LEGACY_FEEDBACK_KEY)
+  } catch {
+    // Silently ignore — incognito/storage-disabled browsers
+  }
+}
+
+// Append a feedback entry to localStorage. Throws on setItem failure so the
+// caller can surface an error to the user; logs via centralized monitoring.
+const appendFeedbackToStorage = (entry: unknown): void => {
+  let existing: string | null = null
+  try {
+    existing = localStorage.getItem(FEEDBACK_KEY)
+  } catch {
+    // Incognito or storage-disabled — treat as empty
+  }
+
+  let arr: unknown = []
+  if (existing) {
+    try {
+      arr = JSON.parse(existing)
+    } catch (parseError) {
+      console.error('Failed to parse stored feedback from localStorage', parseError)
+      arr = []
+    }
+  }
+  if (!Array.isArray(arr)) arr = []
+  ;(arr as unknown[]).push(entry)
+
+  try {
+    localStorage.setItem(FEEDBACK_KEY, JSON.stringify(arr))
+  } catch (storageError) {
+    logError(
+      storageError instanceof Error ? storageError : new Error(String(storageError)),
+      {
+        severity: 'medium',
+        tags: { module: 'FeedbackWidget', action: 'saveFeedback' },
+        errorInfo: { note: 'local storage failure' },
+      },
+      'FeedbackWidget'
+    )
+    throw new Error(
+      `Unable to save feedback locally. Your browser storage may be full or disabled. ${
+        storageError instanceof Error ? storageError.message : String(storageError)
+      }`,
+      { cause: storageError }
+    )
+  }
+}
 
 type FeedbackType = 'bug' | 'feature'
 
@@ -44,6 +107,22 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
   const modalRef = useRef<HTMLDivElement>(null)
   const closeButtonRef = useRef<HTMLButtonElement>(null)
   const typeSelectorRef = useRef<HTMLFieldSetElement>(null)
+  // Tracks the submission in flight so the success path can detect whether
+  // the user closed the modal (or unmounted) mid-submit and skip auto-close.
+  const submissionIdRef = useRef(0)
+  const isMountedRef = useRef(true)
+
+  // Run one-time legacy localStorage key migration on first mount
+  useEffect(() => {
+    migrateLegacyFeedback()
+  }, [])
+
+  // Track unmount so async callbacks don't touch state after teardown
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false
+    }
+  }, [])
 
   // Handle modal open
   const handleOpen = useCallback(() => {
@@ -61,6 +140,9 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
       clearTimeout(closeTimeoutRef.current)
       closeTimeoutRef.current = null
     }
+    // Invalidate any in-flight submission so its success path won't re-open
+    // confirmation or schedule auto-close after the user manually closed.
+    submissionIdRef.current += 1
     setIsOpen(false)
     setMessage('')
     setFeedbackType('bug')
@@ -86,6 +168,8 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
 
       setError(null)
 
+      const submissionId = ++submissionIdRef.current
+
       startTransition(async () => {
         try {
           const feedbackData: FeedbackFormData = {
@@ -93,64 +177,21 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
             message: message.trim(),
           }
 
-          // Call custom submit handler if provided
           if (onSubmit) {
             await onSubmit(feedbackData)
           } else {
-            // Default behavior: store in localStorage and log
-            const timestamp = new Date().toISOString()
-            const feedbackEntry = {
+            appendFeedbackToStorage({
               ...feedbackData,
-              timestamp,
-            }
-
-            // Get existing feedback from localStorage
-            let existingFeedback: string | null = null
-            try {
-              existingFeedback = localStorage.getItem(FEEDBACK_KEY)
-            } catch {
-              // Incognito or storage-disabled — treat as empty
-            }
-            let feedbackArray: unknown = []
-
-            if (existingFeedback) {
-              try {
-                feedbackArray = JSON.parse(existingFeedback)
-              } catch (parseError) {
-                console.error('Failed to parse stored feedback from localStorage', parseError)
-                feedbackArray = []
-              }
-            }
-
-            if (!Array.isArray(feedbackArray)) {
-              feedbackArray = []
-            }
-
-            ;(feedbackArray as unknown[]).push(feedbackEntry)
-            // Store updated feedback
-            try {
-              localStorage.setItem(FEEDBACK_KEY, JSON.stringify(feedbackArray))
-            } catch (storageError) {
-              // Log via centralized monitoring before throwing
-              logError(
-                storageError instanceof Error ? storageError : new Error(String(storageError)),
-                {
-                  severity: 'medium',
-                  tags: { module: 'FeedbackWidget', action: 'saveFeedback' },
-                  errorInfo: { note: 'local storage failure' },
-                },
-                'FeedbackWidget'
-              )
-              throw new Error(
-                `Unable to save feedback locally. Your browser storage may be full or disabled. ${
-                  storageError instanceof Error ? storageError.message : String(storageError)
-                }`,
-                { cause: storageError }
-              )
-            }
+              timestamp: new Date().toISOString(),
+            })
           }
 
-          // Show confirmation
+          // Skip success-path side effects if the user closed the modal or
+          // started a newer submission while this one was in flight.
+          if (!isMountedRef.current || submissionId !== submissionIdRef.current) {
+            return
+          }
+
           setShowConfirmation(true)
           setMessage('')
 
@@ -159,6 +200,9 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
             handleClose()
           }, 2000)
         } catch (err) {
+          if (!isMountedRef.current || submissionId !== submissionIdRef.current) {
+            return
+          }
           setError('Failed to submit feedback. Please try again.')
           console.error('Feedback submission error:', err)
         }

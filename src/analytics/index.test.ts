@@ -82,10 +82,26 @@ describe('analytics/index', () => {
       expect(script.src).toContain('plausible')
     })
 
-    it('should throw error for unimplemented providers', () => {
-      const fathomConfig = { ...config, provider: 'fathom' as const }
+    it('should throw error for custom provider (requires user implementation)', () => {
+      const customConfig = { ...config, provider: 'custom' as const }
 
-      expect(() => analytics.init(fathomConfig)).toThrow('Provider "fathom" is not yet implemented')
+      expect(() => analytics.init(customConfig)).toThrow(
+        'Provider "custom" requires a custom implementation'
+      )
+    })
+
+    it('should initialize without throwing for fathom, umami, and simple providers', () => {
+      const providers = ['fathom', 'umami', 'simple'] as const
+      for (const provider of providers) {
+        analytics.reset()
+        document.head.innerHTML = ''
+        const providerConfig = {
+          ...config,
+          provider,
+          scriptUrl: 'https://cdn.example.com/script.js',
+        }
+        expect(() => analytics.init(providerConfig)).not.toThrow()
+      }
     })
 
     it('should fallback to Plausible for unknown providers', () => {

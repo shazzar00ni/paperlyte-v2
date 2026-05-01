@@ -10,7 +10,7 @@ This directory contains self-hosted font files for security and performance.
 
 - ⚠️ **Playfair Display Variable** (`PlayfairDisplay-Variable.woff2`) - Headings
 
-### To Add Playfair Display:
+### To Add Playfair Display
 
 1. Visit [Google Webfonts Helper](https://gwfh.mranftl.com/fonts/playfair-display?subsets=latin)
 2. Select "Variable" font

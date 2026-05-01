@@ -56,6 +56,11 @@ def main():
         "ready": []
     }
 
+    # Determine which critical files actually exist on main to avoid false positives
+    main_files_raw = run_command(["git", "ls-tree", "-r", "--name-only", "origin/main"])
+    main_files = set(main_files_raw.split('\n')) if main_files_raw else set()
+    active_critical_files = [f for f in CRITICAL_FILES if f in main_files]
+
     for branch in branches:
         issues = []
 
@@ -68,22 +73,28 @@ def main():
         branch_files_raw = run_command(["git", "ls-tree", "-r", "--name-only", branch])
         if branch_files_raw:
             branch_files = set(branch_files_raw.split('\n'))
-            for path in CRITICAL_FILES:
+            for path in active_critical_files:
                 if path not in branch_files:
                     issues.append(f"Missing {path}")
         else:
             issues.append("Could not list branch files")
 
-        # 2. Check for security helpers in src/utils/navigation.ts
-        nav_content = run_command(["git", "show", f"{branch}:src/utils/navigation.ts"])
-        if nav_content:
-            for helper in SECURITY_HELPERS:
-                # Robust pattern to match both 'export function helperName' and 'export const helperName ='
-                pattern = rf"export\s+(?:function|const)\s+{re.escape(helper)}\b"
-                if not re.search(pattern, nav_content):
-                    issues.append(f"Missing security helper definition: {helper}")
-        else:
-            issues.append("Could not read src/utils/navigation.ts")
+        # 2. Check for security helpers in src/utils/navigation.ts (if it exists on main)
+        if "src/utils/navigation.ts" in main_files:
+            nav_content = run_command(["git", "show", f"{branch}:src/utils/navigation.ts"])
+            if nav_content:
+                for helper in SECURITY_HELPERS:
+                    # Robust pattern to match both 'export function helperName' and 'export const helperName ='
+                    pattern = rf"export\s+(?:function|const)\s+{re.escape(helper)}\b"
+                    if not re.search(pattern, nav_content):
+                        issues.append(f"Missing security helper definition: {helper}")
+            else:
+                # Only flag as missing if the file exists on the branch but is unreadable
+                # or if it exists on main but not on the branch (indicating a deletion)
+                if "src/utils/navigation.ts" not in branch_files:
+                    issues.append("Missing src/utils/navigation.ts (critical file)")
+                else:
+                    issues.append("Could not read src/utils/navigation.ts")
 
         branch_name = branch.replace("origin/", "")
         if issues:

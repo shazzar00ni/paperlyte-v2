@@ -34,10 +34,23 @@ jobs:
           # Generate markdown and comment on PRs using dedicated script
           python3 scripts/maintenance/generate_audit_summary.py
 
+          # Initialize file if missing
+          if [ ! -f PR_REVIEW_SUMMARY.md ]; then
+            echo "# PR Review Summary" > PR_REVIEW_SUMMARY.md
+            echo "" >> PR_REVIEW_SUMMARY.md
+            echo "This file contains a summary of pull requests I have reviewed." >> PR_REVIEW_SUMMARY.md
+          fi
+
           # Prepend daily summary after the header in PR_REVIEW_SUMMARY.md
           if [ -f daily_summary.txt ]; then
             # Find the line number of the main header
             HEADER_LINE=$(grep -n "# PR Review Summary" PR_REVIEW_SUMMARY.md | head -n 1 | cut -d: -f1 || echo "1")
+
+            # Ensure there is a blank line after the header for consistent insertion
+            if ! grep -q "^$" <(sed -n "$(($HEADER_LINE + 1))p" PR_REVIEW_SUMMARY.md); then
+              sed -i "${HEADER_LINE}a \\" PR_REVIEW_SUMMARY.md
+            fi
+
             AFTER_HEADER=$(($HEADER_LINE + 1))
 
             # Split the file around the main header to insert the new entry

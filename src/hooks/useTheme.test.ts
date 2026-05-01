@@ -91,7 +91,9 @@ describe('useTheme', () => {
 
       expect(localStorageMock.getItem('theme-user-preference')).toBeNull()
       expect(localStorageMock.getItem('paperlyte:v1:theme-user-preference')).toBe('true')
-      expect(localStorageMock.getItem('paperlyte:v1:theme')).toBeNull()
+      // Migration does not set paperlyte:v1:theme (no legacy theme key existed),
+      // but the useEffect writes the system-default theme after render — not null.
+      expect(['light', 'dark']).toContain(localStorageMock.getItem('paperlyte:v1:theme'))
     })
 
     it('should not overwrite new keys if no legacy keys exist', () => {

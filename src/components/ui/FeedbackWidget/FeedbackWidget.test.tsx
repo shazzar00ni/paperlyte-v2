@@ -317,7 +317,11 @@ describe('FeedbackWidget', () => {
         // Parsed as empty array on error, new entry appended — should save successfully
         const stored = localStorage.getItem('paperlyte:v1:feedback')
         expect(stored).toBeTruthy()
-        interface StoredFeedbackEntry { message: string; type: string; timestamp: string }
+        interface StoredFeedbackEntry {
+          message: string
+          type: string
+          timestamp: string
+        }
         const arr = JSON.parse(stored!) as StoredFeedbackEntry[]
         expect(arr).toHaveLength(1)
         expect(arr[0].message).toBe('After parse error')

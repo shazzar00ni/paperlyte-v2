@@ -8,6 +8,10 @@ import {
   initScrollDepthTracking,
 } from '@utils/analytics'
 
+// TODO: align AnalyticsEvents mock values with production constants in
+// src/utils/analytics.ts (PascalCase like 'Waitlist_Join'). Tests are
+// internally consistent today, but won't catch a regression in the actual
+// event-name strings emitted to the analytics provider.
 vi.mock('@utils/analytics', () => ({
   trackEvent: vi.fn(),
   trackCTAClick: vi.fn(),

@@ -48,13 +48,14 @@
 }
 
 .downloadButton {
-  background-color: white !important;
+  background-color: var(--color-text-on-primary) !important;
   color: var(--color-primary) !important;
-  border-color: white !important;
+  border-color: var(--color-text-on-primary) !important;
 }
 
 .downloadButton:hover {
-  background-color: rgba(255, 255, 255, 0.9) !important;
+  background-color: var(--color-text-on-primary) !important;
+  opacity: 0.9;
   transform: translateY(-2px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }

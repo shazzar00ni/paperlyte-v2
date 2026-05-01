@@ -25,7 +25,7 @@ const migrateLegacyTheme = () => {
     const currentTheme = localStorage.getItem(THEME_STORAGE_KEY)
     const currentPref = localStorage.getItem(USER_PREFERENCE_KEY)
     // Backfill only — never overwrite an already-migrated versioned key
-    if (isValidTheme(legacyTheme) && !isValidTheme(currentTheme)) {
+    if (isValidTheme(legacyTheme) && currentTheme === null) {
       localStorage.setItem(THEME_STORAGE_KEY, legacyTheme)
     }
     if (legacyPref !== null && currentPref === null) {
@@ -65,7 +65,11 @@ export const useTheme = () => {
   // Get initial user preference flag from localStorage (only during init, not reactive)
   const getInitialUserPreference = (): boolean => {
     if (!isBrowser || !persistenceEnabled) return false
-    return localStorage.getItem(USER_PREFERENCE_KEY) === 'true'
+    try {
+      return localStorage.getItem(USER_PREFERENCE_KEY) === 'true'
+    } catch {
+      return false
+    }
   }
 
   // Track if user has explicitly set a preference (not just from system)
@@ -77,13 +81,17 @@ export const useTheme = () => {
 
     // Only check localStorage if persistence is enabled
     if (persistenceEnabled) {
-      // Check if user has explicitly set a preference before
-      const hasUserPreference = getInitialUserPreference()
+      try {
+        // Check if user has explicitly set a preference before
+        const hasUserPreference = getInitialUserPreference()
 
-      // Check localStorage for saved theme
-      const stored = localStorage.getItem(THEME_STORAGE_KEY)
-      if (stored && isValidTheme(stored) && hasUserPreference) {
-        return stored
+        // Check localStorage for saved theme
+        const stored = localStorage.getItem(THEME_STORAGE_KEY)
+        if (stored && isValidTheme(stored) && hasUserPreference) {
+          return stored
+        }
+      } catch {
+        // Storage blocked — fall through to system preference
       }
     }
 
@@ -110,12 +118,13 @@ export const useTheme = () => {
 
     // Only persist to localStorage if persistence is enabled
     if (persistenceEnabled) {
-      // Save to localStorage
-      localStorage.setItem(THEME_STORAGE_KEY, theme)
-
-      // Save user preference flag if they've explicitly chosen
-      if (userHasExplicitPreference.current) {
-        localStorage.setItem(USER_PREFERENCE_KEY, 'true')
+      try {
+        localStorage.setItem(THEME_STORAGE_KEY, theme)
+        if (userHasExplicitPreference.current) {
+          localStorage.setItem(USER_PREFERENCE_KEY, 'true')
+        }
+      } catch {
+        // Storage blocked — theme still applied to DOM above
       }
     }
   }, [theme, persistenceEnabled])

@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react'
-import { useAnalytics } from './useAnalytics'
+import { useAnalytics } from '@hooks/useAnalytics'
 import {
   trackEvent,
   trackCTAClick,

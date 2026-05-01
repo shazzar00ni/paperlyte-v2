@@ -81,8 +81,8 @@ describe('useTheme', () => {
       expect(localStorageMock.getItem('paperlyte:v1:theme')).toBe('light')
       expect(localStorageMock.getItem('paperlyte:v1:theme-user-preference')).toBeNull()
       expect(localStorageMock.getItem('theme')).toBeNull()
-      // Without user preference, system preference takes over; theme may be light or dark
-      expect(['light', 'dark']).toContain(result.current.theme)
+      // beforeEach mocks matchMedia to return false (light preference)
+      expect(result.current.theme).toBe('light')
     })
 
     it('should clean up orphaned theme-user-preference key when theme key is absent', () => {
@@ -91,9 +91,10 @@ describe('useTheme', () => {
 
       expect(localStorageMock.getItem('theme-user-preference')).toBeNull()
       expect(localStorageMock.getItem('paperlyte:v1:theme-user-preference')).toBe('true')
-      // Migration does not set paperlyte:v1:theme (no legacy theme key existed),
-      // but the useEffect writes the system-default theme after render — not null.
-      expect(['light', 'dark']).toContain(localStorageMock.getItem('paperlyte:v1:theme'))
+      // Migration does not set paperlyte:v1:theme (no legacy theme key existed).
+      // The useEffect writes the system-default theme after render; beforeEach
+      // mocks matchMedia to return false so the system preference is 'light'.
+      expect(localStorageMock.getItem('paperlyte:v1:theme')).toBe('light')
     })
 
     it('should not overwrite new keys if no legacy keys exist', () => {

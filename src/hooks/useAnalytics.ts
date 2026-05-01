@@ -34,11 +34,14 @@ export function useAnalytics(enableScrollTracking = true) {
     if (!enableScrollTracking) return
 
     let cleanup: (() => void) | undefined
-    const scheduleInit =
-      typeof requestIdleCallback !== 'undefined'
-        ? (cb: () => void) => requestIdleCallback(cb, { timeout: 3000 })
-        : (cb: () => void) => setTimeout(cb, 0) as unknown as number
-    const cancelInit = typeof cancelIdleCallback !== 'undefined' ? cancelIdleCallback : clearTimeout
+    // Pair schedule/cancel from the same branch so a polyfill that only
+    // implements requestIdleCallback never ends up with clearTimeout as its cancel.
+    const useIdle =
+      typeof requestIdleCallback !== 'undefined' && typeof cancelIdleCallback !== 'undefined'
+    const scheduleInit = useIdle
+      ? (cb: () => void) => requestIdleCallback(cb, { timeout: 3000 })
+      : (cb: () => void) => setTimeout(cb, 0) as unknown as number
+    const cancelInit = useIdle ? cancelIdleCallback : clearTimeout
 
     const handle = scheduleInit(() => {
       cleanup = initScrollDepthTracking()

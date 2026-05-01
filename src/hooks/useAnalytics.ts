@@ -42,6 +42,7 @@ export function useAnalytics(enableScrollTracking = true) {
 
     const handle = scheduleInit(() => {
       cleanup = initScrollDepthTracking()
+      window.dispatchEvent(new Event('scroll'))
     })
 
     return () => {

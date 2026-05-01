@@ -154,6 +154,36 @@ describe('useAnalytics — tracking functions', () => {
     expect(trackEvent).toHaveBeenCalledWith('waitlist_join', { button_location: 'hero' })
   })
 
+  it('trackWaitlistSubmit calls trackEvent with form_location', () => {
+    const { result } = renderHook(() => useAnalytics(false))
+    result.current.trackWaitlistSubmit('hero')
+    expect(trackEvent).toHaveBeenCalledWith('waitlist_submit', { form_location: 'hero' })
+  })
+
+  it('trackWaitlistSuccess calls trackEvent with no extra params', () => {
+    const { result } = renderHook(() => useAnalytics(false))
+    result.current.trackWaitlistSuccess()
+    expect(trackEvent).toHaveBeenCalledWith('waitlist_success', {})
+  })
+
+  it('trackWaitlistError calls trackEvent with error_code and form_location', () => {
+    const { result } = renderHook(() => useAnalytics(false))
+    result.current.trackWaitlistError('rate_limited', 'footer')
+    expect(trackEvent).toHaveBeenCalledWith('waitlist_error', {
+      error_code: 'rate_limited',
+      form_location: 'footer',
+    })
+  })
+
+  it('trackNavigation calls trackEvent with destination and link_text', () => {
+    const { result } = renderHook(() => useAnalytics(false))
+    result.current.trackNavigation('/pricing', 'Pricing')
+    expect(trackEvent).toHaveBeenCalledWith('navigation_click', {
+      destination: '/pricing',
+      link_text: 'Pricing',
+    })
+  })
+
   it('trackFAQExpand calls trackEvent with question_index', () => {
     const { result } = renderHook(() => useAnalytics(false))
     result.current.trackFAQExpand(2)

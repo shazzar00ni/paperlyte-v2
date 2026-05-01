@@ -105,6 +105,26 @@ describe('useTheme', () => {
       expect(localStorageMock.getItem('paperlyte:v1:theme')).toBe('dark')
       expect(localStorageMock.getItem('paperlyte:v1:theme-user-preference')).toBe('true')
     })
+
+    it('should not overwrite versioned keys when both legacy and versioned keys coexist', () => {
+      // Versioned keys already set by current code
+      localStorageMock.setItem('paperlyte:v1:theme', 'dark')
+      localStorageMock.setItem('paperlyte:v1:theme-user-preference', 'true')
+      // Stale legacy keys also present (e.g. from an old browser tab)
+      localStorageMock.setItem('theme', 'light')
+      localStorageMock.setItem('theme-user-preference', 'true')
+
+      const { result } = renderHook(() => useTheme())
+
+      // Versioned keys win — legacy 'light' must not overwrite versioned 'dark'
+      expect(localStorageMock.getItem('paperlyte:v1:theme')).toBe('dark')
+      expect(localStorageMock.getItem('paperlyte:v1:theme-user-preference')).toBe('true')
+      // Legacy keys are removed
+      expect(localStorageMock.getItem('theme')).toBeNull()
+      expect(localStorageMock.getItem('theme-user-preference')).toBeNull()
+      // Hook uses the versioned value (dark), not the legacy one (light)
+      expect(result.current.theme).toBe('dark')
+    })
   })
 
   describe('Initialization', () => {

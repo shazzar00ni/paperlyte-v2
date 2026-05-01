@@ -22,10 +22,13 @@ const migrateLegacyTheme = () => {
     const legacyPref = localStorage.getItem('theme-user-preference')
     if (legacyTheme === null && legacyPref === null) return
 
-    if (isValidTheme(legacyTheme)) {
+    const currentTheme = localStorage.getItem(THEME_STORAGE_KEY)
+    const currentPref = localStorage.getItem(USER_PREFERENCE_KEY)
+    // Backfill only — never overwrite an already-migrated versioned key
+    if (isValidTheme(legacyTheme) && !isValidTheme(currentTheme)) {
       localStorage.setItem(THEME_STORAGE_KEY, legacyTheme)
     }
-    if (legacyPref !== null) {
+    if (legacyPref !== null && currentPref === null) {
       localStorage.setItem(USER_PREFERENCE_KEY, legacyPref)
     }
     if (legacyTheme !== null) localStorage.removeItem('theme')

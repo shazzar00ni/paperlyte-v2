@@ -232,7 +232,9 @@ describe('FeedbackWidget', () => {
       // Check localStorage
       await waitFor(() => {
         const storedFeedback = localStorage.getItem('paperlyte:v1:feedback')
+        const legacyStoredFeedback = localStorage.getItem('paperlyte_feedback')
         expect(storedFeedback).toBeTruthy()
+        expect(legacyStoredFeedback).toBeNull()
 
         const feedbackArray = JSON.parse(storedFeedback!)
         expect(feedbackArray).toHaveLength(1)

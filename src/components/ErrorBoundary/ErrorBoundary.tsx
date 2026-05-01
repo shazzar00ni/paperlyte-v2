@@ -64,7 +64,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
         logError(
           error,
           {
-            componentStack: componentStack || undefined,
+            componentStack: componentStack ? componentStack : undefined,
             errorInfo: restErrorInfo as Record<string, unknown>,
             severity: 'high',
             tags: {

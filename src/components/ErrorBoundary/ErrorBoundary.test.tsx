@@ -87,7 +87,7 @@ describe('ErrorBoundary', () => {
       ).toBeInTheDocument()
     })
 
-    it('should log error using monitoring utility', () => {
+    it('should log error using monitoring utility', async () => {
       vi.mocked(logError).mockClear()
 
       render(
@@ -96,11 +96,13 @@ describe('ErrorBoundary', () => {
         </ErrorBoundary>
       )
 
-      expect(vi.mocked(logError)).toHaveBeenCalledWith(
-        expect.objectContaining({ message: 'Test error' }),
-        expect.objectContaining({ severity: 'high' }),
-        'ErrorBoundary'
-      )
+      await waitFor(() => {
+        expect(vi.mocked(logError)).toHaveBeenCalledWith(
+          expect.objectContaining({ message: 'Test error' }),
+          expect.objectContaining({ severity: 'high' }),
+          'ErrorBoundary'
+        )
+      })
     })
 
     it('should use custom fallback if provided', () => {

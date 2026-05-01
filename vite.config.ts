@@ -29,7 +29,7 @@ function fontPreloadPlugin(): Plugin {
               href: `/${key}`,
               as: 'font',
               type: 'font/woff2',
-              crossorigin: true,
+              crossorigin: 'anonymous',
             },
             injectTo: 'head' as const,
           }))

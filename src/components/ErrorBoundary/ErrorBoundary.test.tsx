@@ -409,6 +409,12 @@ describe('ErrorBoundary', () => {
           'ErrorBoundary'
         )
       })
+      // Also verify the nested errorInfo does not carry componentStack through
+      // (guards against reintroducing the duplicate-stack bug via Sentry extras)
+      const lastCall = vi.mocked(logError).mock.calls.at(-1)
+      expect(lastCall).toBeDefined()
+      const context = lastCall![1] as { errorInfo?: Record<string, unknown> }
+      expect(context.errorInfo).not.toHaveProperty('componentStack')
     })
   })
 

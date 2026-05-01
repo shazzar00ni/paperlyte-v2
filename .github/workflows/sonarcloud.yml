@@ -30,7 +30,7 @@ jobs:
         run: npm run test:coverage -- --run
       - name: SonarCloud Scan
         if: ${{ env.SONAR_TOKEN != '' }}
-        uses: SonarSource/sonarqube-scan-action@59db25f34e16620e48ab4bb9e4a5dce155cb5432 # v8.0.0 # nosemgrep: generic.secrets.security.detected-sonarqube-api-token # gitleaks:allow
+        uses: SonarSource/sonarqube-scan-action@v8.0.0
         env:
           SONAR_HOST_URL: https://sonarcloud.io
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

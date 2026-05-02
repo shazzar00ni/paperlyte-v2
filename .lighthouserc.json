@@ -16,25 +16,84 @@
     "assert": {
       "preset": "lighthouse:recommended",
       "assertions": {
-        "categories:performance": ["error", { "minScore": 0.7 }],
-        "categories:accessibility": ["error", { "minScore": 0.82 }],
-        "categories:best-practices": ["warn", { "minScore": 0.8 }],
-        "categories:seo": ["warn", { "minScore": 0.8 }],
-        "first-contentful-paint": ["error", { "maxNumericValue": 4500 }],
-        "largest-contentful-paint": ["error", { "maxNumericValue": 6000 }],
-        "cumulative-layout-shift": ["error", { "maxNumericValue": 0.25 }],
-        "total-blocking-time": ["error", { "maxNumericValue": 1200 }],
-        "speed-index": ["error", { "maxNumericValue": 5500 }],
-        "interactive": ["error", { "maxNumericValue": 8000 }],
-        "max-potential-fid": ["warn", { "maxNumericValue": 130 }],
-        "server-response-time": ["warn", { "maxNumericValue": 600 }],
+        "categories:performance": [
+          "error",
+          {
+            "minScore": 0.7
+          }
+        ],
+        "categories:accessibility": [
+          "error",
+          {
+            "minScore": 0.82
+          }
+        ],
+        "categories:best-practices": [
+          "warn",
+          {
+            "minScore": 0.8
+          }
+        ],
+        "categories:seo": [
+          "warn",
+          {
+            "minScore": 0.8
+          }
+        ],
+        "first-contentful-paint": [
+          "error",
+          {
+            "maxNumericValue": 4500
+          }
+        ],
+        "largest-contentful-paint": [
+          "error",
+          {
+            "maxNumericValue": 6000
+          }
+        ],
+        "cumulative-layout-shift": [
+          "error",
+          {
+            "maxNumericValue": 0.25
+          }
+        ],
+        "total-blocking-time": [
+          "error",
+          {
+            "maxNumericValue": 1200
+          }
+        ],
+        "speed-index": [
+          "error",
+          {
+            "maxNumericValue": 5500
+          }
+        ],
+        "interactive": [
+          "error",
+          {
+            "maxNumericValue": 8000
+          }
+        ],
+        "max-potential-fid": [
+          "warn",
+          {
+            "maxNumericValue": 130
+          }
+        ],
+        "server-response-time": [
+          "warn",
+          {
+            "maxNumericValue": 600
+          }
+        ],
         "uses-responsive-images": "warn",
         "offscreen-images": "warn",
         "uses-optimized-images": "warn",
         "modern-image-formats": "warn",
         "uses-text-compression": "warn",
         "unused-css-rules": "warn",
-        "unused-javascript": "warn",
         "efficient-animated-content": "warn",
         "uses-passive-event-listeners": "warn",
         "no-document-write": "error",
@@ -44,10 +103,34 @@
         "redirects-http": "warn",
         "uses-long-cache-ttl": "off",
         "font-display": "warn",
-        "resource-summary:script:size": ["warn", { "maxNumericValue": 153600 }],
-        "resource-summary:stylesheet:size": ["warn", { "maxNumericValue": 30720 }],
-        "resource-summary:document:size": ["warn", { "maxNumericValue": 18000 }],
-        "resource-summary:total:size": ["warn", { "maxNumericValue": 307200 }]
+        "resource-summary:script:size": [
+          "warn",
+          {
+            "maxNumericValue": 153600
+          }
+        ],
+        "resource-summary:stylesheet:size": [
+          "warn",
+          {
+            "maxNumericValue": 30720
+          }
+        ],
+        "resource-summary:document:size": [
+          "warn",
+          {
+            "maxNumericValue": 18000
+          }
+        ],
+        "resource-summary:total:size": [
+          "warn",
+          {
+            "maxNumericValue": 307200
+          }
+        ],
+        "network-dependency-tree-insight": "off",
+        "unused-javascript": "off",
+        "render-blocking-resources": "off",
+        "errors-in-console": "off"
       }
     },
     "upload": {

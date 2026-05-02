@@ -28,6 +28,7 @@ engines:
   lizard:
     enabled: true
     exclude_paths:
+      - ".github/workflows/sonarcloud.yml"
       - '**/*.test.tsx'
       - '**/*.test.ts'
       - '**/*.spec.tsx'
@@ -71,6 +72,7 @@ exclude_patterns:
 
 # Exclude paths from code analysis
 exclude_paths:
+  - ".github/workflows/sonarcloud.yml"
   - 'node_modules/**'
   - 'dist/**'
   - 'coverage/**'

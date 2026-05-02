@@ -10,6 +10,6 @@ module.exports = [
     path: 'dist/assets/*.css',
     limit: '30 KB',
     gzip: true,
-    running: false,
+    import: false,
   },
 ]

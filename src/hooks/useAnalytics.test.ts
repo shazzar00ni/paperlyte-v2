@@ -102,10 +102,8 @@ describe('useAnalytics — scroll depth deferral', () => {
       idleCallback?.()
       expect(initScrollDepthTracking).toHaveBeenCalledTimes(1)
     } finally {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      delete (globalThis as any).requestIdleCallback
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      delete (globalThis as any).cancelIdleCallback
+      Reflect.deleteProperty(globalThis, 'requestIdleCallback')
+      Reflect.deleteProperty(globalThis, 'cancelIdleCallback')
     }
   })
 })

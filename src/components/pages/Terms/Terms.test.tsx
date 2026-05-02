@@ -207,7 +207,7 @@ describe('Terms', () => {
 
     it('renders "Our Content" sub-heading', () => {
       render(<Terms />)
-      expect(screen.getByRole('heading', { name: /Our Content/i })).toBeInTheDocument()
+      expect(screen.getByRole('heading', { name: 'Our Content' })).toBeInTheDocument()
     })
 
     it('renders "Governing Law" sub-heading', () => {

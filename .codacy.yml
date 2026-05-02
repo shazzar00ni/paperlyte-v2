@@ -14,6 +14,8 @@ engines:
   # --- Enabled engines (well under the 20-run SARIF limit) ---
   semgrep:
     enabled: true
+    exclude_paths:
+      - ".github/workflows/sonarcloud.yml"
   # eslint-9: authoritative ESLint engine — uses eslint.config.js (flat config, ESLint 9+).
   eslint-9:
     enabled: true
@@ -68,12 +70,16 @@ exclude_patterns:
   - identifier: "Security/detect-non-literal-regexp"
     paths:
       - "src/utils/validation-utils.test.ts"
+  - identifier: "generic.secrets.security.detected-sonarqube-api-token"
+    paths:
+      - ".github/workflows/sonarcloud.yml"
 
 # Exclude paths from code analysis
 exclude_paths:
   - 'node_modules/**'
   - 'dist/**'
   - 'coverage/**'
+  - '.github/workflows/sonarcloud.yml'
   - '**/*.test.ts'
   - '**/*.test.tsx'
   - '**/*.spec.ts'

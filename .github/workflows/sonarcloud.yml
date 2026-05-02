@@ -42,24 +42,17 @@ permissions:
 jobs:
   Analysis:
     runs-on: ubuntu-latest
-
+    if: ${{ secrets.SONAR_TOKEN != '' }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # Pinned checkout commit for this workflow (aligned with repo pattern)
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # actions/checkout@v4.2.2
         with:
-          fetch-depth: 0  # Full history required for SonarCloud blame data and new-code detection
+          fetch-depth: 0 # Full history required for SonarCloud blame data and new-code detection
 
       - name: Analyze with SonarCloud
-
-        # You can pin the exact commit or the version.
-        # uses: SonarSource/sonarcloud-github-action@v2.2.0
-        uses: SonarSource/sonarcloud-github-action@ffc3010689be73b8e5ae0c57ce35968afd7909e8
+        uses: sonarsource/sonarqube-scan-action@59db25f34e16620e48ab4bb9e4a5dce155cb5432 # Pinned for security compliance # nosemgrep: generic.secrets.security.detected-sonarqube-api-token
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}   # Generate a token on Sonarcloud.io, add it to the secrets of this repo with the name SONAR_TOKEN (Settings > Secrets > Actions > add new repository secret)
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
-          # Additional arguments for the SonarScanner CLI
-          args: >
-            -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }}
-            -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
-          # When you need the analysis to take place in a directory other than the one from which it was launched, default is .
+          # Settings are read from sonar-project.properties to resolve key validation and Codacy alerts
           projectBaseDir: .

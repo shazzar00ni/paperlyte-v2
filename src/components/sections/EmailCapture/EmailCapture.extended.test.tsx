@@ -15,6 +15,8 @@ async function submitAndSucceed() {
   await act(async () => {
     fireEvent.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
   })
+  // The component's simulated API call uses setTimeout(1000).
+  // Advancing by 1500ms gives a 500ms buffer for microtask resolution.
   await act(async () => {
     vi.advanceTimersByTime(1500)
   })

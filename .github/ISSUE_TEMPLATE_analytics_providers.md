@@ -13,7 +13,7 @@ Currently, only Plausible Analytics is implemented. We need to add support for a
 
 ### 1. Fathom Analytics
 
-- **Website**: https://usefathom.com
+- **Website**: <https://usefathom.com>
 - **Script URL**: `https://cdn.usefathom.com/script.js`
 - **Configuration**: Site ID (not domain)
 - **Features**: Cookie-less, GDPR compliant, simple event tracking
@@ -21,7 +21,7 @@ Currently, only Plausible Analytics is implemented. We need to add support for a
 
 ### 2. Umami Analytics
 
-- **Website**: https://umami.is
+- **Website**: <https://umami.is>
 - **Script URL**: Self-hosted or cloud (`https://analytics.umami.is/script.js`)
 - **Configuration**: Website ID + optional custom domain
 - **Features**: Self-hosted option, open source, privacy-focused
@@ -29,7 +29,7 @@ Currently, only Plausible Analytics is implemented. We need to add support for a
 
 ### 3. Simple Analytics
 
-- **Website**: https://simpleanalytics.com
+- **Website**: <https://simpleanalytics.com>
 - **Script URL**: `https://scripts.simpleanalytics.com/latest.js`
 - **Configuration**: Domain-based (like Plausible)
 - **Features**: Cookie-less, GDPR compliant, minimal

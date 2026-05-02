@@ -16,15 +16,15 @@ We release patches for security vulnerabilities for the following versions:
 
 ## Reporting a Vulnerability
 
-### Please DO NOT:
+### Please DO NOT
 
 - Open a public GitHub issue for security vulnerabilities
 - Disclose the vulnerability publicly before it has been addressed
 - Exploit the vulnerability in any way
 
-### Please DO:
+### Please DO
 
-1. **Email us privately** at **security@paperlyte.com** with:
+1. **Email us privately** at **<security@paperlyte.com>** with:
    - A detailed description of the vulnerability
    - Steps to reproduce the issue
    - Potential impact of the vulnerability
@@ -73,14 +73,14 @@ If you prefer not to email:
 
 ## Security Update Policy
 
-### For Critical Vulnerabilities:
+### For Critical Vulnerabilities
 
 - **Immediate patch** released as soon as fix is ready
 - **Security advisory** published on GitHub
 - **Email notification** to known users/deployments
 - **Public disclosure** after patch is available
 
-### For Non-Critical Vulnerabilities:
+### For Non-Critical Vulnerabilities
 
 - **Patch included** in next scheduled release
 - **Security advisory** published with release
@@ -277,7 +277,7 @@ Error monitoring is fully configured and ready to activate. To enable Sentry int
 6. **Verification**:
 
    After deployment with `VITE_SENTRY_DSN` configured:
-   - Errors appear in Sentry dashboard at https://sentry.io
+   - Errors appear in Sentry dashboard at <https://sentry.io>
    - Session replays available for debugging
    - Performance metrics tracked automatically
    - Breadcrumbs show user actions leading to errors
@@ -390,7 +390,7 @@ If you have questions about:
 - How to report a vulnerability
 - The status of a reported vulnerability
 
-Please email: **security@paperlyte.com**
+Please email: **<security@paperlyte.com>**
 
 ---
 

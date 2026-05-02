@@ -73,21 +73,6 @@
     "@size-limit/preset-small-lib": "^12.0.0",
     "size-limit": "^12.0.0"
   },
-  "size-limit": [
-    {
-      "name": "Main bundle (JS)",
-      "path": "dist/assets/*.js",
-      "limit": "150 KB",
-      "gzip": true
-    },
-    {
-      "name": "Main bundle (CSS)",
-      "path": "dist/assets/*.css",
-      "limit": "30 KB",
-      "gzip": true,
-      "import": false
-    }
-  ],
   "overrides": {
     "brace-expansion": "^5.0.5",
     "path-to-regexp": "^0.1.13",

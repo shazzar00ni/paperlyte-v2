@@ -260,7 +260,6 @@ function trackINP(callback: ReportCallback): MetricTracker {
         const eventEntry = entry as PerformanceEntry & {
           processingStart?: number
           processingEnd?: number
-          startTime?: number
         }
 
         if (

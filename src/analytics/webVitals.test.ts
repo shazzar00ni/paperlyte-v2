@@ -531,6 +531,7 @@ describe('analytics/webVitals', () => {
 
       cleanup()
       cleanupPO()
+
     })
   })
 

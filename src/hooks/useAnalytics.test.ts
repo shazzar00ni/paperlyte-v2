@@ -8,25 +8,19 @@ import {
   initScrollDepthTracking,
 } from '@utils/analytics'
 
-// TODO: align AnalyticsEvents mock values with production constants in
-// src/utils/analytics.ts (PascalCase like 'Waitlist_Join'). Tests are
-// internally consistent today, but won't catch a regression in the actual
-// event-name strings emitted to the analytics provider.
-vi.mock('@utils/analytics', () => ({
-  trackEvent: vi.fn(),
-  trackCTAClick: vi.fn(),
-  trackExternalLink: vi.fn(),
-  trackSocialClick: vi.fn(),
-  initScrollDepthTracking: vi.fn(() => vi.fn()),
-  AnalyticsEvents: {
-    WAITLIST_JOIN: 'waitlist_join',
-    WAITLIST_SUBMIT: 'waitlist_submit',
-    WAITLIST_SUCCESS: 'waitlist_success',
-    WAITLIST_ERROR: 'waitlist_error',
-    FAQ_EXPAND: 'faq_expand',
-    NAVIGATION_CLICK: 'navigation_click',
-  },
-}))
+// Reuse the real AnalyticsEvents constants via importActual so tests catch
+// regressions in the actual event-name strings emitted to the analytics provider.
+vi.mock('@utils/analytics', async () => {
+  const actual = await vi.importActual<typeof import('@utils/analytics')>('@utils/analytics')
+  return {
+    ...actual,
+    trackEvent: vi.fn(),
+    trackCTAClick: vi.fn(),
+    trackExternalLink: vi.fn(),
+    trackSocialClick: vi.fn(),
+    initScrollDepthTracking: vi.fn(() => vi.fn()),
+  }
+})
 
 describe('useAnalytics — scroll depth deferral', () => {
   beforeEach(() => {
@@ -153,25 +147,25 @@ describe('useAnalytics — tracking functions', () => {
   it('trackWaitlistJoin calls trackEvent with button_location', () => {
     const { result } = renderHook(() => useAnalytics(false))
     result.current.trackWaitlistJoin('hero')
-    expect(trackEvent).toHaveBeenCalledWith('waitlist_join', { button_location: 'hero' })
+    expect(trackEvent).toHaveBeenCalledWith('Waitlist_Join', { button_location: 'hero' })
   })
 
   it('trackWaitlistSubmit calls trackEvent with form_location', () => {
     const { result } = renderHook(() => useAnalytics(false))
     result.current.trackWaitlistSubmit('hero')
-    expect(trackEvent).toHaveBeenCalledWith('waitlist_submit', { form_location: 'hero' })
+    expect(trackEvent).toHaveBeenCalledWith('Waitlist_Submit', { form_location: 'hero' })
   })
 
   it('trackWaitlistSuccess calls trackEvent with no extra params', () => {
     const { result } = renderHook(() => useAnalytics(false))
     result.current.trackWaitlistSuccess()
-    expect(trackEvent).toHaveBeenCalledWith('waitlist_success', {})
+    expect(trackEvent).toHaveBeenCalledWith('Waitlist_Success', {})
   })
 
   it('trackWaitlistError calls trackEvent with error_code and form_location', () => {
     const { result } = renderHook(() => useAnalytics(false))
     result.current.trackWaitlistError('rate_limited', 'footer')
-    expect(trackEvent).toHaveBeenCalledWith('waitlist_error', {
+    expect(trackEvent).toHaveBeenCalledWith('Waitlist_Error', {
       error_code: 'rate_limited',
       form_location: 'footer',
     })
@@ -180,7 +174,7 @@ describe('useAnalytics — tracking functions', () => {
   it('trackNavigation calls trackEvent with destination and link_text', () => {
     const { result } = renderHook(() => useAnalytics(false))
     result.current.trackNavigation('/pricing', 'Pricing')
-    expect(trackEvent).toHaveBeenCalledWith('navigation_click', {
+    expect(trackEvent).toHaveBeenCalledWith('Navigation_Click', {
       destination: '/pricing',
       link_text: 'Pricing',
     })
@@ -189,6 +183,6 @@ describe('useAnalytics — tracking functions', () => {
   it('trackFAQExpand calls trackEvent with question_index', () => {
     const { result } = renderHook(() => useAnalytics(false))
     result.current.trackFAQExpand(2)
-    expect(trackEvent).toHaveBeenCalledWith('faq_expand', { question_index: 2 })
+    expect(trackEvent).toHaveBeenCalledWith('FAQ_Expand', { question_index: 2 })
   })
 })

@@ -29,12 +29,32 @@ import {
  * ```
  */
 export function useAnalytics(enableScrollTracking = true) {
-  // Initialize scroll depth tracking on mount
+  // Defer scroll depth tracking to browser idle time so it doesn't compete with first paint
   useEffect(() => {
     if (!enableScrollTracking) return
 
-    const cleanup = initScrollDepthTracking()
-    return cleanup
+    let cleanup: (() => void) | undefined
+    // Pair schedule/cancel from the same branch so a polyfill that only
+    // implements requestIdleCallback never ends up with clearTimeout as its cancel.
+    const useIdle =
+      typeof requestIdleCallback !== 'undefined' && typeof cancelIdleCallback !== 'undefined'
+    const scheduleInit = useIdle
+      ? (cb: () => void) => requestIdleCallback(cb, { timeout: 3000 })
+      : (cb: () => void) => setTimeout(cb, 0) as unknown as number
+    const cancelInit = useIdle ? cancelIdleCallback : clearTimeout
+
+    const handle = scheduleInit(() => {
+      cleanup = initScrollDepthTracking()
+      // TODO: replace this synthetic scroll dispatch with a direct
+      // measurement call into initScrollDepthTracking so unrelated scroll
+      // listeners (parallax, scroll position) don't run extra work on init.
+      window.dispatchEvent(new Event('scroll'))
+    })
+
+    return () => {
+      cancelInit(handle as number)
+      cleanup?.()
+    }
   }, [enableScrollTracking])
 
   // Memoized tracking functions to prevent unnecessary re-renders

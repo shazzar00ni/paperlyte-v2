@@ -1,14 +1,53 @@
 import { useEffect, useState, useRef } from 'react'
 import { PERSISTENCE_CONFIG } from '@constants/config'
+import { logError } from '@utils/monitoring'
 
 type Theme = 'light' | 'dark'
 
 const isBrowser = typeof window !== 'undefined'
-const THEME_STORAGE_KEY = 'theme'
-const USER_PREFERENCE_KEY = 'theme-user-preference'
+const THEME_STORAGE_KEY = 'paperlyte:v1:theme'
+const USER_PREFERENCE_KEY = 'paperlyte:v1:theme-user-preference'
+
+const toError = (e: unknown): Error => (e instanceof Error ? e : new Error(String(e)))
 
 const isValidTheme = (value: string | null): value is Theme => {
   return value === 'light' || value === 'dark'
+}
+
+// One-time migration: move data from legacy unversioned keys to versioned keys.
+// Idempotent: exits immediately when no legacy keys exist, so safe to call on
+// every render (including React StrictMode double-invocation in dev).
+// Handles partial-state: migrates each key independently so an orphaned
+// theme-user-preference key is cleaned up even when the theme key is absent.
+const migrateLegacyTheme = (): void => {
+  try {
+    const legacyTheme = localStorage.getItem('theme')
+    const legacyPref = localStorage.getItem('theme-user-preference')
+    if (legacyTheme === null && legacyPref === null) return
+
+    const currentTheme = localStorage.getItem(THEME_STORAGE_KEY)
+    const currentPref = localStorage.getItem(USER_PREFERENCE_KEY)
+    // Backfill only — never overwrite an already-migrated versioned key
+    if (isValidTheme(legacyTheme) && currentTheme === null) {
+      localStorage.setItem(THEME_STORAGE_KEY, legacyTheme)
+    }
+    if (legacyPref !== null && currentPref === null) {
+      localStorage.setItem(USER_PREFERENCE_KEY, legacyPref)
+    }
+    // removeItem is a no-op when the key doesn't exist, so guards are unnecessary
+    localStorage.removeItem('theme')
+    localStorage.removeItem('theme-user-preference')
+  } catch (err) {
+    // Storage blocked (incognito/quota) — fall back silently but report for diagnostics
+    logError(
+      toError(err),
+      {
+        severity: 'low',
+        tags: { module: 'useTheme', action: 'migrateLegacyTheme' },
+      },
+      'useTheme'
+    )
+  }
 }
 
 /**
@@ -28,10 +67,28 @@ const isValidTheme = (value: string | null): value is Theme => {
 export const useTheme = () => {
   const persistenceEnabled = PERSISTENCE_CONFIG.ALLOW_PERSISTENT_THEME
 
+  // Migrate legacy unversioned keys before reading any preferences so that
+  // useRef and useState both see the updated versioned keys.
+  if (isBrowser && persistenceEnabled) {
+    migrateLegacyTheme()
+  }
+
   // Get initial user preference flag from localStorage (only during init, not reactive)
   const getInitialUserPreference = (): boolean => {
     if (!isBrowser || !persistenceEnabled) return false
-    return localStorage.getItem(USER_PREFERENCE_KEY) === 'true'
+    try {
+      return localStorage.getItem(USER_PREFERENCE_KEY) === 'true'
+    } catch (err) {
+      logError(
+        toError(err),
+        {
+          severity: 'low',
+          tags: { module: 'useTheme', action: 'getInitialUserPreference' },
+        },
+        'useTheme'
+      )
+      return false
+    }
   }
 
   // Track if user has explicitly set a preference (not just from system)
@@ -43,13 +100,25 @@ export const useTheme = () => {
 
     // Only check localStorage if persistence is enabled
     if (persistenceEnabled) {
-      // Check if user has explicitly set a preference before
-      const hasUserPreference = getInitialUserPreference()
+      try {
+        // Check if user has explicitly set a preference before
+        const hasUserPreference = getInitialUserPreference()
 
-      // Check localStorage for saved theme
-      const stored = localStorage.getItem(THEME_STORAGE_KEY)
-      if (stored && isValidTheme(stored) && hasUserPreference) {
-        return stored
+        // Check localStorage for saved theme
+        const stored = localStorage.getItem(THEME_STORAGE_KEY)
+        if (stored && isValidTheme(stored) && hasUserPreference) {
+          return stored
+        }
+      } catch (err) {
+        // Storage blocked — fall through to system preference
+        logError(
+          toError(err),
+          {
+            severity: 'low',
+            tags: { module: 'useTheme', action: 'readInitialTheme' },
+          },
+          'useTheme'
+        )
       }
     }
 
@@ -76,12 +145,21 @@ export const useTheme = () => {
 
     // Only persist to localStorage if persistence is enabled
     if (persistenceEnabled) {
-      // Save to localStorage
-      localStorage.setItem(THEME_STORAGE_KEY, theme)
-
-      // Save user preference flag if they've explicitly chosen
-      if (userHasExplicitPreference.current) {
-        localStorage.setItem(USER_PREFERENCE_KEY, 'true')
+      try {
+        localStorage.setItem(THEME_STORAGE_KEY, theme)
+        if (userHasExplicitPreference.current) {
+          localStorage.setItem(USER_PREFERENCE_KEY, 'true')
+        }
+      } catch (err) {
+        // Storage blocked — theme still applied to DOM above
+        logError(
+          toError(err),
+          {
+            severity: 'low',
+            tags: { module: 'useTheme', action: 'persistTheme' },
+          },
+          'useTheme'
+        )
       }
     }
   }, [theme, persistenceEnabled])

@@ -231,8 +231,10 @@ describe('FeedbackWidget', () => {
 
       // Check localStorage
       await waitFor(() => {
-        const storedFeedback = localStorage.getItem('paperlyte_feedback')
+        const storedFeedback = localStorage.getItem('paperlyte:v1:feedback')
+        const legacyStoredFeedback = localStorage.getItem('paperlyte_feedback')
         expect(storedFeedback).toBeTruthy()
+        expect(legacyStoredFeedback).toBeNull()
 
         const feedbackArray = JSON.parse(storedFeedback!)
         expect(feedbackArray).toHaveLength(1)
@@ -293,6 +295,59 @@ describe('FeedbackWidget', () => {
       // Submit form
       const submitButton = screen.getByRole('button', { name: /send feedback/i })
       await user.click(submitButton)
+
+      await waitFor(() => {
+        expect(screen.getByText(/failed to submit feedback/i)).toBeInTheDocument()
+      })
+    })
+
+    it('handles corrupted localStorage feedback data gracefully', async () => {
+      const user = userEvent.setup()
+      // Pre-populate with invalid JSON to exercise the parseError catch branch
+      localStorage.setItem('paperlyte:v1:feedback', '{not valid json}')
+
+      render(<FeedbackWidget />)
+      await user.click(screen.getByRole('button', { name: /open feedback form/i }))
+      await waitFor(() => expect(screen.getByRole('dialog')).toBeInTheDocument())
+
+      await user.type(screen.getByRole('textbox'), 'After parse error')
+      await user.click(screen.getByRole('button', { name: /send feedback/i }))
+
+      await waitFor(() => {
+        // Parsed as empty array on error, new entry appended — should save successfully
+        const stored = localStorage.getItem('paperlyte:v1:feedback')
+        expect(stored).toBeTruthy()
+        interface StoredFeedbackEntry {
+          message: string
+          type: string
+          timestamp: string
+        }
+        const arr = JSON.parse(stored!) as StoredFeedbackEntry[]
+        expect(arr).toHaveLength(1)
+        expect(arr[0].message).toBe('After parse error')
+      })
+    })
+
+    it('shows error when localStorage setItem fails', async () => {
+      const user = userEvent.setup()
+      vi.spyOn(console, 'group').mockImplementation(() => {})
+      vi.spyOn(console, 'groupEnd').mockImplementation(() => {})
+      // Throw only when saving to the feedback key, not for unrelated writes
+      const originalSetItem = Storage.prototype.setItem
+      vi.spyOn(Storage.prototype, 'setItem').mockImplementation(function (
+        key: string,
+        value: string
+      ): void {
+        if (key === 'paperlyte:v1:feedback') throw new Error('QuotaExceededError')
+        return originalSetItem.call(this, key, value)
+      })
+
+      render(<FeedbackWidget />)
+      await user.click(screen.getByRole('button', { name: /open feedback form/i }))
+      await waitFor(() => expect(screen.getByRole('dialog')).toBeInTheDocument())
+
+      await user.type(screen.getByRole('textbox'), 'Storage failure test')
+      await user.click(screen.getByRole('button', { name: /send feedback/i }))
 
       await waitFor(() => {
         expect(screen.getByText(/failed to submit feedback/i)).toBeInTheDocument()

@@ -73,7 +73,8 @@ describe('Solution extended', () => {
     expect(screen.getByText(/8 milliseconds/i)).toBeInTheDocument()
     // "#tags" text may be split across elements; check it appears somewhere in the page
     expect(document.body.textContent).toMatch(/#project/)
-    expect(screen.getByText(/offline-first/i)).toBeInTheDocument()
+    // "offline-first" also appears in the proof span; check page content instead
+    expect(document.body.textContent).toMatch(/offline-first/i)
   })
 
   it('renders proof text for each value prop', () => {

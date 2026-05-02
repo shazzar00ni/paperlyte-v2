@@ -48,13 +48,14 @@
 }
 
 .downloadButton {
-  background-color: white !important;
+  background-color: var(--color-text-on-primary) !important;
   color: var(--color-primary) !important;
-  border-color: white !important;
+  border-color: var(--color-text-on-primary) !important;
 }
 
 .downloadButton:hover {
-  background-color: rgba(255, 255, 255, 0.9) !important;
+  background-color: var(--color-text-on-primary) !important;
+  opacity: 0.9;
   transform: translateY(-2px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
@@ -191,30 +192,34 @@
   }
 }
 
-/* Dark mode support */
+/* Dark mode support — scoped to :root:not([data-theme='light']) so rules do not
+   fire when the user has explicitly selected light mode (useTheme always sets data-theme). */
 @media (prefers-color-scheme: dark) {
-  .cta::before {
+  :root:not([data-theme='light']) .cta::before {
     /* Enhance gradient vibrancy in dark mode */
     opacity: 1;
   }
 
-  .badge {
+  :root:not([data-theme='light']) .badge {
     background-color: rgba(255, 255, 255, 0.15);
     border-color: rgba(255, 255, 255, 0.25);
   }
 
-  .badge:hover {
+  :root:not([data-theme='light']) .badge:hover {
     background-color: rgba(255, 255, 255, 0.2);
     border-color: rgba(255, 255, 255, 0.35);
   }
 
-  /* CTA gradient inverts to white in dark mode; override to dark colors for visibility */
-  .textLink:focus-visible {
-    outline-color: var(--color-text-on-primary);
+  :root:not([data-theme='light']) .title,
+  :root:not([data-theme='light']) .subtitle,
+  :root:not([data-theme='light']) .microcopy {
+    color: var(--color-text-on-primary);
   }
 
-  .microcopy {
-    color: var(--color-text-on-primary);
+  /* .textLink base styles use var(--color-text-on-primary) which resolves correctly via CSS
+     variables — no explicit color override needed; only focus outline requires an override */
+  :root:not([data-theme='light']) .textLink:focus-visible {
+    outline-color: var(--color-text-on-primary);
   }
 }
 
@@ -232,10 +237,13 @@
   border-color: rgba(255, 255, 255, 0.35);
 }
 
-[data-theme='dark'] .textLink:focus-visible {
-  outline-color: var(--color-text-on-primary);
-}
-
+[data-theme='dark'] .title,
+[data-theme='dark'] .subtitle,
 [data-theme='dark'] .microcopy {
   color: var(--color-text-on-primary);
+}
+
+/* .textLink color/hover-opacity already set in base styles; only focus outline needs override */
+[data-theme='dark'] .textLink:focus-visible {
+  outline-color: var(--color-text-on-primary);
 }

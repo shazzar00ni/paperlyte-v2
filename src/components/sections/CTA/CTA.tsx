@@ -38,7 +38,12 @@ export const CTA = (): React.ReactElement => {
 
         <AnimatedElement animation="fadeIn" delay={300}>
           <div className={styles.buttons}>
-            <Button variant="primary" size="large" onClick={() => scrollToSection('email-capture')}>
+            <Button
+              variant="primary"
+              size="large"
+              className={styles.downloadButton}
+              onClick={() => scrollToSection('email-capture')}
+            >
               Join the Waitlist
             </Button>
             <button

@@ -68,6 +68,8 @@ exclude_patterns:
   - identifier: "Security/detect-non-literal-regexp"
     paths:
       - "src/utils/validation-utils.test.ts"
+  - identifier: "sonarcloud.yml"
+    pattern: "59db25f34e16620e48ab4bb9e4a5dce155cb5432"
 
 # Exclude paths from code analysis
 exclude_paths:

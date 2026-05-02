@@ -473,7 +473,7 @@ https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css
 **Open Graph (Facebook/LinkedIn):**
 
 - ✅ og:type: website (index.html:15)
-- ✅ og:url: https://paperlyte.app/ (index.html:16)
+- ✅ og:url: <https://paperlyte.app/> (index.html:16)
 - ✅ og:title: Matching page title (index.html:17)
 - ✅ og:description: Matching meta description (index.html:18-21)
 - ✅ og:image: og-image.jpg with dimensions (1200x630) (index.html:22-24)

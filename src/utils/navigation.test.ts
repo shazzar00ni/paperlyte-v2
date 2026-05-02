@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import {
   scrollToSection,
+  _clearPendingScrollObservers,
   isSafeUrl,
   safeNavigate,
   hasDangerousProtocol,
@@ -12,6 +13,11 @@ describe('navigation utilities', () => {
   describe('scrollToSection', () => {
     beforeEach(() => {
       vi.clearAllMocks()
+    })
+
+    afterEach(() => {
+      // Cancel any MutationObservers left pending when a section ID wasn't found
+      _clearPendingScrollObservers()
     })
 
     it('should scroll to element when it exists', () => {

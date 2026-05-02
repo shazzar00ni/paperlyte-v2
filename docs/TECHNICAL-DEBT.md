@@ -291,7 +291,7 @@ coverage: {
 
 **Recommendation:**
 
-1.  **FeedbackWidget.tsx:** Split into:
+1. **FeedbackWidget.tsx:** Split into:
 
 - `FeedbackButton.tsx` (trigger)
 - `FeedbackForm.tsx` (modal content)
@@ -361,9 +361,9 @@ export default memo(ParallaxLayer)
 
 **Severity:** 🟡 **MEDIUM** - Affects page load speed
 
-#### Issues Found:
+#### Issues Found
 
-1.  **No WebP/AVIF formats:** All images are PNG
+1. **No WebP/AVIF formats:** All images are PNG
 
 - `android-chrome-192x192.png` (5.2 KB)
 - `android-chrome-512x512.png` (28 KB)

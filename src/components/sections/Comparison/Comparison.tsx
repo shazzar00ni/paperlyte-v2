@@ -57,6 +57,7 @@ export const Comparison = (): React.ReactElement => {
                 <th className={styles.featureHeader} scope="col">
                   Feature
                 </th>
+                {/* accessibility-fix: issue-811 - competitor.color applied inline without contrast validation */}
                 {COMPETITORS.map((competitor) => (
                   <th
                     key={competitor.id}
@@ -76,6 +77,7 @@ export const Comparison = (): React.ReactElement => {
                     )}
                   </th>
                 ))}
+                {/* /accessibility-fix */}
               </tr>
             </thead>
             <tbody>

@@ -115,3 +115,45 @@ This file tracks key architectural, design, and technical decisions made during 
 - **Decision**: Web manifest present but no service worker implemented yet
 - **Rationale**: PWA manifest enables "add to home screen" and branding; SW deferred until offline-first is a real requirement
 - **Alternatives considered**: Full PWA with Workbox from the start
+
+## Infrastructure / Edge
+
+- **Date**: 2026-04-29
+- **Decision**: Netlify WAF edge function runs on every non-asset request before origin
+- **Rationale**: Blocks scanner UAs, path traversal, SQL/XSS injection signatures, oversized payloads (>512 KB), and illegal HTTP methods on `/.netlify/functions/*` at the CDN edge before any serverless function cold-start cost is incurred. Static assets (`/assets/*`, `/fonts/*`, images) are excluded via `excludedPath`. Every response — blocked or forwarded — receives an `X-Request-ID` UUID for log correlation.
+- **Alternatives considered**: Application-level middleware, Netlify's built-in DDoS protection only
+
+## Privacy / Storage
+
+- **Date**: 2026-04-29
+- **Decision**: Theme persistence is gated by `PERSISTENCE_CONFIG.ALLOW_PERSISTENT_THEME` in `src/constants/config.ts`
+- **Rationale**: Enforces a privacy-first default for persistent theme storage: the theme preference is only written to localStorage when explicitly permitted. It contains no PII, measurably improves UX across visits, and can be cleared by the user. Note: this decision covers theme persistence specifically — other localStorage usage (e.g. `FeedbackWidget` writes `paperlyte_feedback` directly) is not yet gated by this config.
+- **Alternatives considered**: Always persist theme preference, sessionStorage for theme only
+
+## Data Layer
+
+- **Date**: 2026-04-29
+- **Decision**: Much of the reusable section content is centralized in `src/constants/*.ts` as typed `as const` objects; some sections still define local data inline in their component files
+- **Rationale**: Centralizing content separates it from presentation, enables type-safe access, snapshot testing of data shapes, and content updates without touching component files. Covers features, testimonials, FAQs, comparisons, pricing, downloads, waitlist copy, and legal metadata. Not yet universal — e.g. `Solution.tsx` defines `VALUE_PROPS` inline.
+- **Alternatives considered**: All content inline in JSX, headless CMS (deferred to later phase), MDX files
+
+## Serverless Functions
+
+- **Date**: 2026-04-29
+- **Decision**: Netlify Functions validate external API responses at runtime using Zod; TypeScript types are derived from Zod schemas via `z.infer<>`
+- **Rationale**: External APIs (ConvertKit, etc.) can change their response shape without warning; runtime validation catches this in production and prevents silent data corruption. Deriving TypeScript types from the schema guarantees type/schema consistency — no drift possible.
+- **Alternatives considered**: Trust TypeScript types only (no runtime check), manual type guards
+
+## React
+
+- **Date**: 2026-04-29
+- **Decision**: React is used with standard `@vitejs/plugin-react` — the React Compiler is not configured; `useMemo`/`useCallback`/`memo` should only be added when profiling shows a clear need
+- **Rationale**: The Vite config uses `react()` with no Babel plugin or `babel-plugin-react-compiler` dependency, so automatic compiler memoization cannot be assumed. Avoid adding manual memoization by default — only add it when a measured performance problem exists. Note: some code comments in the repo incorrectly state the compiler is active; these are aspirational/stale and should be corrected when encountered.
+- **Alternatives considered**: Enable React Compiler via `babel-plugin-react-compiler`, manual memoization everywhere
+
+## CSS / Theming
+
+- **Date**: 2026-04-29
+- **Decision**: Dark-mode CSS tokens are intentionally duplicated in two blocks in `src/styles/variables.css`
+- **Rationale**: Two distinct use cases require separate selectors: (1) `[data-theme='dark']` for explicit user toggle, (2) `@media (prefers-color-scheme: dark) { :root:not([data-theme='light']) }` for system preference when no explicit choice has been made. The `:root:not([data-theme='light'])` guard is critical — it prevents system preference from overriding an explicit light-mode choice. Any palette change must update both blocks in sync; drift is a known bug source.
+- **Alternatives considered**: Single CSS custom property override, JavaScript-only theming

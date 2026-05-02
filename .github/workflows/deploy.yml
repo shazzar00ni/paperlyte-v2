@@ -6,20 +6,124 @@ on:
     branches: [main]  # Production
   workflow_dispatch:  # Manual trigger
 
+# Prevent concurrent production deployments by ensuring only one deploy runs
+# at a time; newer runs queue behind the current deploy instead of cancelling it.
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false  # Never cancel an in-flight deploy — finish or fail cleanly
+
+# Default to no permissions; each job declares only what it needs.
+permissions: {}
+
 jobs:
-  deploy-production:
-    name: Deploy to Production
+  # ---------------------------------------------------------------------------
+  # Pre-deploy security gate
+  # Runs before the deploy job. A high-severity vulnerability or a failed
+  # audit blocks the deployment without spending time building first.
+  # ---------------------------------------------------------------------------
+  security-gate:
+    name: Pre-Deploy Security Gate
     runs-on: ubuntu-latest
-    environment:
-      name: production
-      url: https://paperlyte.com
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Setup Node.js
-        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Dependency vulnerability audit
+        id: dependency_audit
+        # Block on high or critical vulnerabilities; moderate/low are informational
+        run: npm audit --audit-level=high
+
+      - name: Verify WAF edge function compiles
+        id: tsc_waf
+        # Confirm the edge-function TypeScript parses without syntax errors.
+        # Uses tsc in --noEmit mode targeting the edge-functions directory.
+        # We ignore only the expected Deno URL import resolution error; any
+        # other diagnostics will fail the security gate.
+        run: |
+          set -euo pipefail
+
+          TS_LOG="$(mktemp)"
+
+          # Run TypeScript check against the WAF edge function.
+          if npx tsc \
+            --noEmit \
+            --target ES2022 \
+            --module ES2022 \
+            --moduleResolution bundler \
+            --strict \
+            --skipLibCheck \
+            netlify/edge-functions/waf.ts 2> "$TS_LOG"
+          then
+            echo "WAF edge function TypeScript check passed."
+            exit 0
+          fi
+
+          # Filter out the known benign Deno URL import resolution error.
+          # Example message: "Cannot find module 'https://...' or its corresponding type declarations."
+          FILTERED_LOG="${TS_LOG}.filtered"
+          grep -Ev "TS2307:.*https://" "$TS_LOG" > "$FILTERED_LOG" || true
+
+          if [ -s "$FILTERED_LOG" ]; then
+            echo "Unexpected TypeScript errors detected in WAF edge function:"
+            cat "$FILTERED_LOG"
+            exit 1
+          fi
+
+          echo "Only expected Deno URL import resolution error(s) detected; treating TypeScript check as passed."
+          exit 0
+      - name: Security gate summary
+        if: always()
+        run: |
+          echo "## Security Gate" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Check | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.dependency_audit.outcome }}" == "success" ]; then
+            echo "| Dependency audit | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Dependency audit | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
+          fi
+          if [ "${{ steps.tsc_waf.outcome }}" == "success" ]; then
+            echo "| WAF edge function | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| WAF edge function | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
+          fi
+
+  # ---------------------------------------------------------------------------
+  # Production deploy
+  # Only runs after the security gate passes.
+  # The GitHub environment named "production" can be configured in the repo
+  # settings with required reviewers and wait timers for an approval gate.
+  # ---------------------------------------------------------------------------
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: security-gate
+    environment:
+      name: production
+      url: https://paperlyte.com
+    permissions:
+      contents: read
+      deployments: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version: "20"
           cache: "npm"
@@ -32,17 +136,27 @@ jobs:
         env:
           NODE_ENV: production
 
-      # Example: Deploy to Netlify
       - name: Deploy to Netlify
         uses: nwtgck/actions-netlify@4cbaf4c08f1a7bfa537d6113472ef4424e4eb654 # v3.0.0
         with:
           publish-dir: './dist'
           production-deploy: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          deploy-message: "Deploy from GitHub Actions"
+          deploy-message: "Deploy from GitHub Actions — ${{ github.sha }}"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        timeout-minutes: 10
+
+      - name: Deploy summary
+        if: always()
+        run: |
+          echo "## Production Deploy" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch:** \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Actor:** \`${{ github.actor }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status:** ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
 
       # Alternative: Deploy to Vercel
       # - name: Deploy to Vercel

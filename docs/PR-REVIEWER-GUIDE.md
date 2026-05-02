@@ -22,7 +22,7 @@ Paperlyte is a React/TypeScript landing page for a distraction-free note-taking 
 | `src/components/sections/` | One directory per landing page section (Hero, Features, CTA, etc.) |
 | `src/components/ui/` | Reusable primitives (Button, Icon, AnimatedElement, etc.) |
 | `src/components/layout/` | Header, Footer, Section wrapper |
-| `src/components/pages/` | Standalone pages (404, Offline, Privacy, Terms) |
+| `src/components/pages/` | Standalone pages (`NotFoundPage/`, `OfflinePage/`, `ServerErrorPage/`, `Privacy/`, `Terms/`) |
 | `src/hooks/` | Custom React hooks (theme, media query, parallax, scroll, analytics) |
 | `src/constants/` | Static data modules (features, testimonials, FAQ, pricing, comparison) |
 | `src/utils/` | Pure utility functions (validation, analytics, security, env, metaTags) |
@@ -50,12 +50,12 @@ Documented exceptions exist (e.g., `src/components/ui/Icon/` uses a global `Icon
 
 | Tool | Version | Role |
 |---|---|---|
-| React | 19.2 | UI framework |
-| TypeScript | ~6.0 | Strict typing everywhere |
-| Vite | 7.x | Build tool, dev server (port 3000), manual chunking |
-| Vitest | 4.x | Unit & component tests (jsdom environment) |
-| Playwright | 1.59 | E2E tests (5 projects: Chromium, Firefox, WebKit, Mobile Chrome, Mobile Safari) |
-| ESLint 10 | flat config | Linting (React Hooks, React Refresh; extends `eslint-config-prettier` to disable conflicting rules — does not enforce formatting) |
+| React | ^19.2.5 | UI framework |
+| TypeScript | ~6.0.3 | Strict typing everywhere |
+| Vite | 8.0.10 | Build tool, dev server (port 3000), manual chunking |
+| Vitest | ^4.1.5 | Unit & component tests (jsdom environment) |
+| Playwright | ^1.59.1 | E2E tests (5 projects: Chromium, Firefox, WebKit, Mobile Chrome, Mobile Safari) |
+| ESLint | 10.2.1 | Linting via flat config (React Hooks, React Refresh; extends `eslint-config-prettier` to disable conflicting rules — does not enforce formatting) |
 | Prettier 3 | `.prettierrc.json` | Formatting via `npm run format` / `format:check` (no semi, single quotes, 100-char width) |
 | CSS Modules | — | Component-scoped styles |
 | Font Awesome | — | Icons via `src/utils/iconLibrary.ts` (tree-shaken) |
@@ -80,15 +80,15 @@ Path aliases are configured (`@/*`, `@components/*`, `@hooks/*`, `@utils/*`, etc
 
 ## Code Style & Conventions
 
-- **TypeScript**: Strict mode, no `any`. Explicit return types on exported functions.
+- **TypeScript**: Strict mode, no `any`. Prefer explicit return types on exported utility functions; React components and hooks may rely on inference where it improves readability.
 - **Naming**: PascalCase for components/types, camelCase for functions/variables, SCREAMING_SNAKE_CASE for top-level constants.
-- **Imports**: Use path aliases (`@components/...`). Barrel imports from `index.ts` only.
+- **Imports**: Prefer path aliases (`@components/...`, `@hooks/...`, `@utils/...`) for cross-module imports in app code. Use barrel `index.ts` exports where they exist. Relative imports within a feature folder, and direct deep imports in tests (e.g., to spy on a specific module export), are acceptable exceptions.
 - **JSDoc**: Required on all exported public APIs — hooks, utility functions, and component prop interfaces. Use `@param`, `@returns`, and `@default` where applicable. Include a usage example for non-trivial APIs (see `src/hooks/useParallax.ts` for reference style). Inline `//` comments are only for non-obvious *why*, not *what*.
-- **No `// TODO`**: Not allowed in merged PRs.
+- **No new `// TODO`s**: Don't introduce new `// TODO` comments in PRs — track follow-ups as GitHub issues instead. Existing TODOs in the codebase (e.g., in `src/analytics/index.ts`, `src/components/layout/Footer/Footer.tsx`, `src/constants/legal.ts`) are legacy and will be cleaned up over time.
 - **No semi**: Prettier enforces this. Run `npm run format` before committing.
 - **Accessibility**: Every interactive element needs an `aria-label` or visible label. Reduced-motion support is required (`prefers-reduced-motion`). Skip links and semantic HTML are not optional.
 - **Analytics**: Prefer the `useAnalytics()` hook in components. Direct calls to `trackEvent` from `@utils/analytics` are acceptable in places where the hook isn't a fit (e.g., form submit handlers in `src/components/ui/EmailCapture/EmailCapture.tsx`), but never call provider SDKs (`window.gtag`, etc.) directly — always go through the abstraction in `src/analytics/` or `@utils/analytics`.
-- **Security**: Dynamic `href` values must pass through `isSafeUrl()` from `src/utils/navigation.ts` (blocks `javascript:`, `data:`, `vbscript:`). User-facing strings must be sanitized via `src/utils/validation.ts`.
+- **Security**: Dynamic `href` values must pass through `isSafeUrl()` from `src/utils/navigation.ts` (blocks `javascript:`, `data:`, `vbscript:`). React already escapes text nodes by default, so sanitization helpers in `src/utils/validation.ts` (`sanitizeInput`, `encodeHtmlEntities`) are only required for actual risk cases — user-provided input persisted or echoed back, anything passed to `dangerouslySetInnerHTML`, or strings interpolated into URLs/HTML attributes.
 
 ---
 

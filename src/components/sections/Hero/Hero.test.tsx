@@ -37,7 +37,7 @@ describe('Hero', () => {
       // There are multiple headings with "thoughts", use getAllByRole
       const headings = screen.getAllByRole('heading', { name: /thoughts/i })
       expect(headings.length).toBeGreaterThan(0)
-      expect(screen.getByText(/organized/i)).toBeInTheDocument()
+      expect(screen.getByText(/^organized\.$/i)).toBeInTheDocument()
     })
 
     it('should render the subheadline', () => {

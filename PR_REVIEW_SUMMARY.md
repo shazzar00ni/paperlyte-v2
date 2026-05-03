@@ -2,6 +2,39 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-05-03
+
+### Analysis: Systemic Regressions in Open Branches (Automated Daily Audit)
+
+- **Status:** Critical — Action Required
+- **Summary:** An automated repository-wide audit of 260 unmerged branches confirms the following systemic regressions.
+
+| Regression Type                | Count | Severity    | Notes                                               |
+| :----------------------------- | :---- | :---------- | :-------------------------------------------------- |
+| Orphan Branches                | 0     | 🔴 Critical | No common ancestor with `main`.                     |
+| Missing `.npmrc`               | 82    | 🔴 Critical | Breaks dependency resolution.                       |
+| Missing `docs/ROADMAP.md`      | 76    | 🟠 High     | Core project documentation.                         |
+| Missing `gitVersionControl.md` | 91    | 🟠 High     | Core Git workflow documentation.                    |
+| Missing `review.md`            | 91    | 🟡 Medium   | AI PR reviewer instructions.                        |
+| Reverted Security Helpers      | 90    | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers. |
+| Unreadable navigation.ts       | 8     | 🔴 Critical | File missing or unreadable.                         |
+
+- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.
+
+### Qualitative Feedback: Selected 'Ready' Branches
+
+- **Branch: `claude/implement-service-worker-YLeLZ`**
+  - **Status:** Ready for Merge
+  - **Review:** Implementation of PWA service worker is robust. The strategy uses `cache-first` for hashed assets and `stale-while-revalidate` for other static files, which is optimal for performance. The `offline.html` fallback is well-designed and follows the project's aesthetic.
+  - **Suggestion:** Consider adding a small toast notification when the app is ready for offline use or when an update is available.
+
+- **Branch: `claude/tree-shake-font-awesome-cK85j`**
+  - **Status:** Ready for Merge
+  - **Review:** Excellent refactoring of the `Icon` component. Normalizing icon names and using a local `iconPaths` object significantly reduces bundle size by eliminating the need for a full FontAwesome distribution.
+  - **Suggestion:** Ensure that any new icons added in the future are also added to `icons.ts` to maintain this optimization.
+
+---
+
 ## 2026-03-05
 
 ### Analysis: Accidental File Deletions in Open Branches (Jules Daily PR Reviews)

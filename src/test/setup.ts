@@ -12,15 +12,41 @@ afterEach(() => {
   cleanup()
 })
 
-// Mock IntersectionObserver (not available in jsdom)
+// Mock IntersectionObserver (not available in jsdom).
+// The callback is invoked synchronously with isIntersecting: true so that
+// AnimatedElement (and any other component that uses useIntersectionObserver)
+// renders its visible state immediately, preventing race-condition flakiness
+// in tests that assert on content inside animated wrappers.
 global.IntersectionObserver = class IntersectionObserver {
-  constructor() {}
+  private callback: IntersectionObserverCallback
+
+  constructor(callback: IntersectionObserverCallback) {
+    this.callback = callback
+  }
+
+  observe(target: Element) {
+    // Fire the callback synchronously so isVisible becomes true right away
+    this.callback(
+      [
+        {
+          isIntersecting: true,
+          target,
+          boundingClientRect: target.getBoundingClientRect(),
+          intersectionRatio: 1,
+          intersectionRect: target.getBoundingClientRect(),
+          rootBounds: null,
+          time: Date.now(),
+        } as IntersectionObserverEntry,
+      ],
+      this
+    )
+  }
+
   disconnect() {}
-  observe() {}
+  unobserve() {}
   takeRecords(): IntersectionObserverEntry[] {
     return []
   }
-  unobserve() {}
 } as unknown as typeof global.IntersectionObserver
 
 // Mock matchMedia (not available in jsdom)

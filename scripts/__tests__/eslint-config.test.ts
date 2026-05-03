@@ -8,18 +8,21 @@
  * - Includes the expected plugin extensions
  */
 
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeAll } from 'vitest'
 import { readFileSync } from 'fs'
-import { resolve } from 'path'
+import { resolve, dirname } from 'path'
 import { fileURLToPath } from 'url'
-import { dirname } from 'path'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-// Read the raw file to validate structure without executing it in a complex environment
-const eslintConfigPath = resolve(__dirname, '../../eslint.config.js')
-const eslintConfigContent = readFileSync(eslintConfigPath, 'utf-8')
+let eslintConfigContent: string
+
+beforeAll(() => {
+  // Read the raw file to validate structure without executing it in a complex environment
+  const eslintConfigPath = resolve(__dirname, '../../eslint.config.js')
+  eslintConfigContent = readFileSync(eslintConfigPath, 'utf-8')
+})
 
 describe('eslint.config.js — file content validation', () => {
   it('should exist and be readable', () => {

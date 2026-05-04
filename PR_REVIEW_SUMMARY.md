@@ -50,6 +50,59 @@ This file contains a summary of pull requests I have reviewed.
 - **Feedback:**
   - Crucial security hardening for `isSafeUrl` and `safeNavigate`.
   - Restricting `safeNavigate` to same-origin URLs by default effectively mitigates open redirect vulnerabilities.
+  - The inclusion of `allowExternal` options for `isSafeUrl` provides necessary flexibility for <a> tags while keeping navigation safe.
+  - Integration with the `monitoring` utility for logging blocked attempts is a best practice.
+
+---
+
+## 2026-05-04
+
+### Analysis: Systemic Regressions in Open Branches (Automated Daily Audit)
+
+- **Status:** Critical — Action Required
+- **Summary:** An automated repository-wide audit of 262 unmerged branches confirms the following systemic regressions.
+
+| Regression Type                | Count | Severity    | Notes                                               |
+| :----------------------------- | :---- | :---------- | :-------------------------------------------------- |
+| Orphan Branches                | 0     | 🔴 Critical | No common ancestor with `main`.                     |
+| Missing `.npmrc`               | 82    | 🔴 Critical | Breaks dependency resolution.                       |
+| Missing `docs/ROADMAP.md`      | 76    | 🟠 High     | Core project documentation.                         |
+| Missing `gitVersionControl.md` | 91    | 🟠 High     | Core Git workflow documentation.                    |
+| Missing `review.md`            | 91    | 🟡 Medium   | AI PR reviewer instructions.                        |
+| Reverted Security Helpers      | 90    | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers. |
+| Unreadable navigation.ts       | 8     | 🔴 Critical | File missing or unreadable.                         |
+
+- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.
+
+### Manual Review Feedback (2026-05-04)
+
+#### PR Review: Implement Service Worker for PWA Support
+
+- **Branch:** `origin/claude/implement-service-worker-YLeLZ`
+- **Status:** Ready
+- **Feedback:**
+  - Excellent implementation of a robust PWA service worker (`sw.js`).
+  - The `offline.html` page is well-designed with a "Try again" feature.
+  - Correct integration into `main.tsx` with production-only registration.
+  - CSP update in `vercel.json` to allow `worker-src 'self'` is correct and necessary.
+
+#### PR Review: Tree-shake Font Awesome Icons
+
+- **Branch:** `origin/claude/tree-shake-font-awesome-cK85j`
+- **Status:** Ready
+- **Feedback:**
+  - Significant performance improvement by replacing CDN/full-library Font Awesome with a curated map of SVG paths.
+  - The normalization of icon names (removing `fa-` prefix internally) simplifies the `Icon` component logic.
+  - Good use of `safePropertyAccess` to prevent prototype pollution.
+  - Cleaning up unused analytics methods in `PlausibleProvider` reduces bundle size further.
+
+#### PR Review: Fix Open Redirect in safeNavigate
+
+- **Branch:** `origin/claude/fix-open-redirect-TX551`
+- **Status:** Ready
+- **Feedback:**
+  - Crucial security hardening for `isSafeUrl` and `safeNavigate`.
+  - Restricting `safeNavigate` to same-origin URLs by default effectively mitigates open redirect vulnerabilities.
   - The inclusion of `allowExternal` options for `isSafeUrl` provides necessary flexibility for `<a>` tags while keeping navigation safe.
   - Integration with the `monitoring` utility for logging blocked attempts is a best practice.
 

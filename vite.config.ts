@@ -5,11 +5,25 @@ import path from 'path'
 import { codecovRollupPlugin } from '@codecov/rollup-plugin'
 
 /**
- * Injects <link rel="preload"> tags for all bundled woff2 fonts into the
+ * Injects <link rel="preload"> tags for bundled woff2 fonts into the
  * production HTML. Fonts discovered via CSS @font-face create a depth-2 chain
  * (HTML → CSS → fonts) that fails the network-dependency-tree-insight
  * Lighthouse assertion. Preloading moves fonts to depth 1 (parallel with CSS).
+ *
+ * Only the Inter latin fonts explicitly imported in main.tsx are preloaded.
+ * Preloading every .woff2 in the bundle would unnecessarily prioritise fonts
+ * that aren't needed for the initial render and increase bandwidth/request overhead.
  */
+
+/**
+ * Matches only the Inter latin static font files imported in main.tsx:
+ *   @fontsource/inter/latin-400.css → inter-latin-400-normal-[hash].woff2
+ *   @fontsource/inter/latin-500.css → inter-latin-500-normal-[hash].woff2
+ *   @fontsource/inter/latin-600.css → inter-latin-600-normal-[hash].woff2
+ *   @fontsource/inter/latin-700.css → inter-latin-700-normal-[hash].woff2
+ */
+const INTER_FONT_PATTERN = /inter-latin-\d+-normal-[^/]+\.woff2$/
+
 function fontPreloadPlugin(): Plugin {
   return {
     name: 'font-preload',
@@ -20,7 +34,7 @@ function fontPreloadPlugin(): Plugin {
         const bundle = ctx.bundle
         if (!bundle) return
         return Object.keys(bundle)
-          .filter((key) => key.endsWith('.woff2'))
+          .filter((key) => INTER_FONT_PATTERN.test(key))
           .sort()
           .map((key) => ({
             tag: 'link',

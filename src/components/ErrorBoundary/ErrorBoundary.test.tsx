@@ -1,6 +1,12 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { createRef } from 'react'
+import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { logError } from '@utils/monitoring'
 import { ErrorBoundary } from './ErrorBoundary'
+
+vi.mock('@utils/monitoring', () => ({
+  logError: vi.fn(),
+}))
 
 // Component that throws an error
 const ThrowError = ({ shouldThrow = false }: { shouldThrow?: boolean }) => {
@@ -81,21 +87,22 @@ describe('ErrorBoundary', () => {
       ).toBeInTheDocument()
     })
 
-    it('should log error using monitoring utility', () => {
+    it('should log error using monitoring utility', async () => {
+      vi.mocked(logError).mockClear()
+
       render(
         <ErrorBoundary>
           <ThrowError shouldThrow={true} />
         </ErrorBoundary>
       )
 
-      // React's error logging format includes the error and component stack
-      expect(console.error).toHaveBeenCalled()
-      const mockConsoleError = vi.mocked(console.error)
-      const errorCalls = mockConsoleError.mock.calls
-      const hasErrorLogged = errorCalls.some((call: unknown[]) =>
-        call.some((arg: unknown) => arg instanceof Error && arg.message === 'Test error')
-      )
-      expect(hasErrorLogged).toBe(true)
+      await waitFor(() => {
+        expect(vi.mocked(logError)).toHaveBeenCalledWith(
+          expect.objectContaining({ message: 'Test error' }),
+          expect.objectContaining({ severity: 'high' }),
+          'ErrorBoundary'
+        )
+      })
     })
 
     it('should use custom fallback if provided', () => {
@@ -318,32 +325,118 @@ describe('ErrorBoundary', () => {
     })
   })
 
+  describe('componentDidCatch logging', () => {
+    beforeEach((): void => {
+      vi.mocked(logError).mockClear()
+    })
+
+    it('increments retry_count correctly across consecutive errors', async (): Promise<void> => {
+      const ref = createRef<ErrorBoundary>()
+      render(
+        <ErrorBoundary ref={ref}>
+          <div />
+        </ErrorBoundary>
+      )
+
+      await act(async () => {
+        ref.current!.componentDidCatch(new Error('first'), { componentStack: 'at A' })
+      })
+      await waitFor(() => {
+        expect(vi.mocked(logError)).toHaveBeenLastCalledWith(
+          expect.any(Error),
+          expect.objectContaining({ tags: { retry_count: '1' } }),
+          'ErrorBoundary'
+        )
+      })
+
+      await act(async () => {
+        ref.current!.componentDidCatch(new Error('second'), { componentStack: 'at A' })
+      })
+      await waitFor(() => {
+        expect(vi.mocked(logError)).toHaveBeenLastCalledWith(
+          expect.any(Error),
+          expect.objectContaining({ tags: { retry_count: '2' } }),
+          'ErrorBoundary'
+        )
+      })
+    })
+
+    it('increments retry_count correctly when errors are caught in the same batch', async (): Promise<void> => {
+      const ref = createRef<ErrorBoundary>()
+      render(
+        <ErrorBoundary ref={ref}>
+          <div />
+        </ErrorBoundary>
+      )
+
+      await act(async () => {
+        ref.current!.componentDidCatch(new Error('first'), { componentStack: 'at A' })
+        ref.current!.componentDidCatch(new Error('second'), { componentStack: 'at B' })
+      })
+
+      await waitFor(() => {
+        expect(vi.mocked(logError)).toHaveBeenCalledTimes(2)
+      })
+      expect(vi.mocked(logError)).toHaveBeenNthCalledWith(
+        1,
+        expect.any(Error),
+        expect.objectContaining({ tags: { retry_count: '1' } }),
+        'ErrorBoundary'
+      )
+      expect(vi.mocked(logError)).toHaveBeenNthCalledWith(
+        2,
+        expect.any(Error),
+        expect.objectContaining({ tags: { retry_count: '2' } }),
+        'ErrorBoundary'
+      )
+    })
+
+    it('omits componentStack when it is an empty string', async (): Promise<void> => {
+      const ref = createRef<ErrorBoundary>()
+      render(
+        <ErrorBoundary ref={ref}>
+          <div />
+        </ErrorBoundary>
+      )
+
+      await act(async () => {
+        ref.current!.componentDidCatch(new Error('test'), { componentStack: '' })
+      })
+      await waitFor(() => {
+        expect(vi.mocked(logError)).toHaveBeenCalledWith(
+          expect.any(Error),
+          expect.objectContaining({ componentStack: undefined }),
+          'ErrorBoundary'
+        )
+      })
+      // Also verify the nested errorInfo does not carry componentStack through
+      // (guards against reintroducing the duplicate-stack bug via Sentry extras)
+      const lastCall = vi.mocked(logError).mock.calls.at(-1)
+      expect(lastCall).toBeDefined()
+      const context = lastCall![1] as { errorInfo?: Record<string, unknown> }
+      expect(context.errorInfo).not.toHaveProperty('componentStack')
+    })
+  })
+
   describe('maxRetries exhaustion', () => {
     it('should hide "Try Again" and change message after retryCount reaches maxRetries', async (): Promise<void> => {
       const user = userEvent.setup()
 
-      // A component that always throws so clicking "Try Again" never recovers
       const AlwaysThrows: () => never = () => {
         throw new Error('persistent error')
       }
 
       render(
-        // Use maxRetries=2 to reach the limit faster
         <ErrorBoundary maxRetries={2}>
           <AlwaysThrows />
         </ErrorBoundary>
       )
 
-      // After 1st error: retryCount=1, showRetryButton = 1 < 2 = true → "Try Again" visible
       expect(screen.getByText('Try Again')).toBeInTheDocument()
       expect(screen.getByText(/something unexpected happened/i)).toBeInTheDocument()
 
-      // Click "Try Again" → 2nd error thrown → retryCount=2, showRetryButton = 2 < 2 = false
       await user.click(screen.getByText('Try Again'))
 
-      // After 2nd error: "Try Again" should be gone and message should change.
-      // Wrap in waitFor since retryCount is updated via setState in componentDidCatch,
-      // which can briefly re-render with the previous count before settling.
       await waitFor(() => {
         expect(screen.queryByText('Try Again')).not.toBeInTheDocument()
       })
@@ -365,22 +458,17 @@ describe('ErrorBoundary', () => {
         throw new Error('persistent error')
       }
 
-      // maxRetries=1: after 1 error retryCount=1, showRetryButton = 1 < 1 = false immediately
       render(
         <ErrorBoundary maxRetries={1}>
           <AlwaysThrows />
         </ErrorBoundary>
       )
 
-      // retryCount=1, maxRetries=1: "Try Again" should be hidden once setState lands.
-      // Use waitFor since retryCount starts at 0 and is incremented in componentDidCatch,
-      // so the UI may briefly render with the retry button visible before updating.
       await waitFor(() => {
         expect(screen.queryByText('Try Again')).not.toBeInTheDocument()
       })
       expect(screen.getByText(/Multiple errors occurred/i)).toBeInTheDocument()
 
-      // "Reload Page" should still be present
       const reloadButton = screen.getByRole('button', { name: 'Reload Page' })
       await user.click(reloadButton)
       expect(reloadMock).toHaveBeenCalled()

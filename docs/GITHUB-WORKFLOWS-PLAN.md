@@ -1084,7 +1084,7 @@ jobs:
 
 ## 🚨 Critical Warnings
 
-### DO NOT:
+### DO NOT
 
 1. ❌ Skip test execution in CI (currently happening!)
 2. ❌ Disable security checks to make CI pass
@@ -1092,7 +1092,7 @@ jobs:
 4. ❌ Auto-merge Dependabot PRs without review for major updates
 5. ❌ Deploy to production without passing all checks
 
-### MUST DO:
+### MUST DO
 
 1. ✅ Run all tests on every PR
 2. ✅ Enforce bundle size limits
@@ -1100,7 +1100,7 @@ jobs:
 4. ✅ Keep dependencies updated weekly
 5. ✅ Monitor performance metrics continuously
 
-### 🔒 SECURITY BEST PRACTICES:
+### 🔒 SECURITY BEST PRACTICES
 
 **Third-Party Action Pinning**:
 

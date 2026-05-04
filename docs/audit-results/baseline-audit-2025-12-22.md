@@ -611,4 +611,4 @@ This baseline audit establishes performance and quality benchmarks for the Paper
 **Report Generated:** December 22, 2025
 **Next Audit Scheduled:** Post-production launch (TBD)
 **Owner:** Engineering Team
-**Contact:** development@paperlyte.com
+**Contact:** <development@paperlyte.com>

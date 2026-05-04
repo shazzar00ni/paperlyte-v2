@@ -47,7 +47,7 @@ For details on our ongoing efforts and planned improvements, see our [Accessibil
 ## Target Completion & Responsible Owner
 
 - **Target for full WCAG 2.1 AA conformance:** March 31, 2026
-- **Accessibility Owner:** Jane Doe, Accessibility Lead (accessibility@paperlyte.com)
+- **Accessibility Owner:** Jane Doe, Accessibility Lead (<accessibility@paperlyte.com>)
 
 ## Statement Updates
 

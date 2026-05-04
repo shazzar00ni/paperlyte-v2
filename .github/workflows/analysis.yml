@@ -1,0 +1,35 @@
+# This workflow helps you trigger a SonarCloud analysis of your code and populates
+# GitHub Code Scanning alerts with the vulnerabilities found.
+# Free for open source project.
+
+name: SonarCloud analysis
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read      # allows actions/checkout to fetch the repository
+  pull-requests: read # allows SonarCloud to decorate PRs with analysis results
+
+jobs:
+  Analysis:
+    runs-on: ubuntu-latest
+    if: ${{ secrets.SONAR_TOKEN != '' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # actions/checkout@v4.2.2
+        with:
+          fetch-depth: 0 # Full history required for SonarCloud blame data and new-code detection
+
+      - name: Analyze with SonarCloud
+        uses: SonarSource/sonarqube-scan-action@59db25f34e16620e48ab4bb9e4a5dce155cb5432 # Pinned for security compliance # nosemgrep: generic.secrets.security.detected-sonarqube-api-token # gitleaks:allow
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          # Settings are read from sonar-project.properties to resolve key validation and Codacy alerts
+          projectBaseDir: .

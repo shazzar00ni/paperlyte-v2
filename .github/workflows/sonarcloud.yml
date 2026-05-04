@@ -29,7 +29,7 @@ jobs:
         if: ${{ secrets.SONAR_TOKEN != '' }}
         # Using the older SonarCloud action to avoid Codacy false positive API key detection
         # that occurs with the newer sonarqube-scan-action.
-        uses: SonarSource/sonarcloud-github-action@ffc3010689be73b8e5ae0c57ce35968afd7909e8 # v3.1.0
+        uses: SonarSource/sonarcloud-github-action@ffc3010689be73b8e5ae0c57ce35968afd7909e8 # v2.0.2
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:

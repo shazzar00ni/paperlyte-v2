@@ -51,8 +51,7 @@ jobs:
 
       - name: Analyze with SonarCloud
         if: ${{ secrets.SONAR_TOKEN != '' }}
-        # You can pin the exact commit or the version.
-        # uses: sonarsource/sonarqube-scan-action@v5.0.0
+        # Pinned SonarCloud scan action
         uses: sonarsource/sonarqube-scan-action@59db25f34e16620e48ab4bb9e4a5dce155cb5432
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}   # Generate a token on Sonarcloud.io, add it to the secrets of this repo with the name SONAR_TOKEN (Settings > Secrets > Actions > add new repository secret)

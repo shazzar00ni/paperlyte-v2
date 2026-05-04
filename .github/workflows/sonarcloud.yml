@@ -36,8 +36,8 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read      # allows actions/checkout to fetch the repository
-  pull-requests: read # allows SonarCloud to decorate PRs with analysis results
+  contents: read
+  pull-requests: read
 
 jobs:
   Analysis:
@@ -45,18 +45,14 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # Pinned checkout commit for this workflow (aligned with repo pattern)
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Full history required for SonarCloud blame data and new-code detection
+          fetch-depth: 0
 
       - name: Analyze with SonarCloud
         if: ${{ secrets.SONAR_TOKEN != '' }}
-        # Pinned SonarCloud scan action
-        # nosemgrep: generic.secrets.security.detected-sonarqube-api-token
-        # gitleaks:allow
-        uses: sonarsource/sonarqube-scan-action@59db25f34e16620e48ab4bb9e4a5dce155cb5432
+        uses: sonarsource/sonarqube-scan-action@v5
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}   # Generate a token on Sonarcloud.io, add it to the secrets of this repo with the name SONAR_TOKEN (Settings > Secrets > Actions > add new repository secret)
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
-          # Configuration is centralized in sonar-project.properties
           projectBaseDir: .

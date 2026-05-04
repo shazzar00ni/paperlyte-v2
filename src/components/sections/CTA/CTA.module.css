@@ -54,8 +54,8 @@
 }
 
 .downloadButton:hover {
-  background-color: var(--color-text-on-primary) !important;
-  opacity: 0.9;
+  background-color: color-mix(in srgb, var(--color-text-on-primary) 92%, var(--color-primary)) !important;
+  border-color: color-mix(in srgb, var(--color-text-on-primary) 92%, var(--color-primary)) !important;
   transform: translateY(-2px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }

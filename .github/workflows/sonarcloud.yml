@@ -52,7 +52,7 @@ jobs:
       - name: Analyze with SonarCloud
         if: ${{ secrets.SONAR_TOKEN != '' }}
         # Pinned SonarCloud scan action
-        uses: sonarsource/sonarqube-scan-action@59db25f34e16620e48ab4bb9e4a5dce155cb5432
+        uses: sonarsource/sonarqube-scan-action@59db25f34e16620e48ab4bb9e4a5dce155cb5432 # nosemgrep: generic.secrets.security.detected-sonarqube-api-token
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}   # Generate a token on Sonarcloud.io, add it to the secrets of this repo with the name SONAR_TOKEN (Settings > Secrets > Actions > add new repository secret)
         with:

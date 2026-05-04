@@ -204,6 +204,7 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
             return
           }
 
+          setError(null)
           setShowConfirmation(true)
           setMessage('')
 

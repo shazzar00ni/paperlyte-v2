@@ -84,6 +84,7 @@ exclude_paths:
   - 'src/test/**'
   - 'scripts/**'
   - '**/*.min.js'
+  - '.github/workflows/sonarcloud.yml'
 
 # Note: semgrep may report false positives for non-literal RegExp patterns in tests.
 # All RegExp inputs are sanitized via escapeRegExp(); input sources are constants, not user input.

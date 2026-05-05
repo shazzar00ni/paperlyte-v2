@@ -150,19 +150,14 @@ describe('useTheme', () => {
     it('falls back gracefully when getInitialUserPreference throws', () => {
       // First few getItem calls succeed (legacy key checks), then throw on USER_PREFERENCE_KEY
       const originalGetItem = localStorageMock.getItem
-      let callCount = 0
       localStorageMock.getItem = vi.fn((key: string) => {
-        callCount++
         // Throw on reads for user preference key
         if (key === 'paperlyte:v1:theme-user-preference') throw new Error('SecurityError')
         return originalGetItem(key)
       })
 
-      let result: ReturnType<typeof renderHook<ReturnType<typeof useTheme>>>
-      expect(() => {
-        result = renderHook(() => useTheme())
-      }).not.toThrow()
-      expect(result!.result.current.theme).toBe('light')
+      const { result } = renderHook(() => useTheme())
+      expect(result.current.theme).toBe('light')
 
       localStorageMock.getItem = originalGetItem
     })
@@ -173,10 +168,7 @@ describe('useTheme', () => {
         throw new Error('QuotaExceededError')
       })
 
-      let result: ReturnType<typeof renderHook<ReturnType<typeof useTheme>>>
-      expect(() => {
-        result = renderHook(() => useTheme())
-      }).not.toThrow()
+      renderHook(() => useTheme())
 
       // Theme is still applied to the DOM even if storage fails
       await waitFor(() => {

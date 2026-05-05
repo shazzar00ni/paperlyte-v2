@@ -122,7 +122,21 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
             try {
               const parsed: unknown = JSON.parse(existingFeedback)
               if (Array.isArray(parsed)) {
-                feedbackArray = parsed as FeedbackEntry[]
+                feedbackArray = parsed
+                  .filter(
+                    (entry): entry is FeedbackEntry =>
+                      typeof entry === 'object' &&
+                      entry !== null &&
+                      (entry.type === 'bug' || entry.type === 'feature') &&
+                      typeof entry.message === 'string' &&
+                      typeof entry.timestamp === 'string'
+                  )
+                  .map((entry) => ({
+                    ...entry,
+                    // Normalize legacy stored entries so oversized messages from
+                    // older builds do not continue to inflate localStorage usage.
+                    message: entry.message.slice(0, FEEDBACK_MESSAGE_MAX_LENGTH),
+                  }))
               }
             } catch (parseError) {
               console.error('Failed to parse stored feedback from localStorage', parseError)

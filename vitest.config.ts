@@ -33,7 +33,7 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'json', 'json-summary', 'html', 'lcov'],
       reportsDirectory: './coverage',
-      all: true,
+      // all: removed in Vitest v3+ (coverage collects all files via exclude patterns)
       exclude: [
         'node_modules/**',
         'src/test/**',

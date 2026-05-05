@@ -121,7 +121,8 @@ jobs:
             npm run test:coverage -- --run \
               --reporter=default \
               --reporter=junit \
-              --outputFile=./test-results/coverage-junit.xml
+              --outputFile=./test-results/coverage-junit.xml \
+              --coverage.reportOnFailure
           environment:
             CI: "true"
       - store_test_results:
@@ -155,6 +156,13 @@ jobs:
     resource_class: medium
     steps:
       - checkout
+      # Cache node_modules keyed by package-lock.json so re-installs are fast.
+      # Uses a separate cache from the node-executor jobs because this image
+      # may have a different ABI for native modules (e.g. sharp).
+      - restore_cache:
+          keys:
+            - playwright-node-modules-v1-{{ checksum "package-lock.json" }}
+            - playwright-node-modules-v1-
       # Attach the workspace to a temporary location so this job can copy the
       # built dist/ output without reusing node_modules created in a different
       # Docker image. Playwright browsers are pre-installed in the Docker image.
@@ -165,6 +173,10 @@ jobs:
           command: |
             cp -R /tmp/workspace/dist ./dist
             PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm ci
+      - save_cache:
+          key: playwright-node-modules-v1-{{ checksum "package-lock.json" }}
+          paths:
+            - node_modules
       - run:
           name: Start preview server
           # background: true keeps the process alive across subsequent steps.
@@ -221,8 +233,3 @@ workflows:
       - e2e:
           requires:
             - build
-          filters:
-            branches:
-              only:
-                - main
-                - /^claude\/.*/

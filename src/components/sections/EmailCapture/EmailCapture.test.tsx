@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { describe, it, expect, vi, afterEach } from 'vitest'
+import { render, screen, waitFor, act, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { EmailCapture } from './EmailCapture'
 import { WAITLIST_COUNT, LAUNCH_QUARTER } from '@/constants/waitlist'
@@ -10,6 +10,10 @@ vi.mock('@utils/monitoring', () => ({
 }))
 
 describe('EmailCapture Section', () => {
+  afterEach(() => {
+    // Ensure real timers are always restored even if a test times out
+    vi.useRealTimers()
+  })
   it('renders the section title', () => {
     render(<EmailCapture />)
     expect(screen.getByText(`Join ${WAITLIST_COUNT} people on the waitlist`)).toBeInTheDocument()
@@ -57,44 +61,54 @@ describe('EmailCapture Section', () => {
     expect(emailInput.required).toBe(true)
   })
 
-  it('shows loading state during submission', async () => {
-    const user = userEvent.setup()
+  it('shows loading state while submitting', () => {
+    // Use fake timers so the 1000ms simulated API call never resolves,
+    // keeping isLoading=true for the duration of this test.
+    vi.useFakeTimers()
+
     render(<EmailCapture />)
 
     const emailInput = screen.getByPlaceholderText('your@email.com')
-    const submitButton = screen.getByRole('button', { name: /Join the Waitlist/i })
+    fireEvent.change(emailInput, { target: { value: 'test@example.com' } })
 
-    await user.type(emailInput, 'test@example.com')
-    await user.click(submitButton)
+    // Submit the form synchronously via fireEvent (avoids async userEvent hang with fake timers)
+    const form = emailInput.closest('form')!
+    act(() => {
+      fireEvent.submit(form)
+    })
 
-    // Should show loading text immediately after click
-    expect(screen.getByText('Joining...')).toBeInTheDocument()
-    expect(submitButton).toBeDisabled()
+    // React flushes the synchronous state update (setIsLoading(true)) inside act();
+    // the 1s setTimeout is frozen, so isLoading stays true.
+    expect(screen.getByRole('button', { name: /Joining\.\.\./i })).toBeDisabled()
 
-    // Wait for the 1 s timer to flush before cleanup to prevent state updates after unmount
-    await waitFor(() => expect(screen.queryByText('Joining...')).not.toBeInTheDocument(), {
-      timeout: 2000,
+    // Drain the pending setTimeout so the handleSubmit promise resolves before
+    // testing-library unmounts the component. Without this, React logs a
+    // "state update on unmounted component" warning when afterEach swaps timers.
+    act(() => {
+      vi.advanceTimersByTime(1000)
     })
   })
 
-  it('renders success state with social sharing buttons', async () => {
+  it('shows success state with social sharing buttons', async () => {
     const user = userEvent.setup()
     render(<EmailCapture />)
 
     const emailInput = screen.getByPlaceholderText('your@email.com')
-    const submitButton = screen.getByRole('button', { name: /Join the Waitlist/i })
-
     await user.type(emailInput, 'test@example.com')
-    await user.click(submitButton)
+    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
 
-    await waitFor(() => {
-      expect(screen.getByText(/You're on the list!/)).toBeInTheDocument()
-    })
+    // Wait up to 3s for the simulated 1s API call to complete
+    await waitFor(
+      () => {
+        expect(screen.getByText(/You're on the list!/)).toBeInTheDocument()
+      },
+      { timeout: 3000 }
+    )
 
-    // Should show social sharing buttons
-    expect(screen.getByText('Twitter')).toBeInTheDocument()
-    expect(screen.getByText('Facebook')).toBeInTheDocument()
-    expect(screen.getByText('LinkedIn')).toBeInTheDocument()
+    // Social sharing buttons should appear in the success state
+    expect(screen.getByRole('link', { name: /Twitter/i })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /Facebook/i })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /LinkedIn/i })).toBeInTheDocument()
   })
 
   it('renders success state with next steps', async () => {

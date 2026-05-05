@@ -2,6 +2,7 @@ import { Icon } from '@components/ui/Icon'
 import { LEGAL_CONFIG } from '@/constants/legal'
 import styles from './Footer.module.css'
 
+/** Renders the site footer with navigation links, social links, and legal information. */
 export const Footer = (): React.ReactElement => {
   const currentYear = new Date().getFullYear()
 
@@ -38,8 +39,18 @@ export const Footer = (): React.ReactElement => {
                     Pricing
                   </a>
                 </li>
-                {/* TODO: Add Roadmap link when page is available */}
-                {/* TODO: Add Changelog link when page is available */}
+                <li>
+                  <span className={styles.linkComingSoon}>
+                    Roadmap
+                    <span className="sr-only"> (coming soon)</span>
+                  </span>
+                </li>
+                <li>
+                  <span className={styles.linkComingSoon}>
+                    Changelog
+                    <span className="sr-only"> (coming soon)</span>
+                  </span>
+                </li>
               </ul>
             </div>
 
@@ -51,8 +62,18 @@ export const Footer = (): React.ReactElement => {
                     Contact
                   </a>
                 </li>
-                {/* TODO: Add About link when page is available */}
-                {/* TODO: Add Blog link when page is available */}
+                <li>
+                  <span className={styles.linkComingSoon}>
+                    About
+                    <span className="sr-only"> (coming soon)</span>
+                  </span>
+                </li>
+                <li>
+                  <span className={styles.linkComingSoon}>
+                    Blog
+                    <span className="sr-only"> (coming soon)</span>
+                  </span>
+                </li>
               </ul>
             </div>
 

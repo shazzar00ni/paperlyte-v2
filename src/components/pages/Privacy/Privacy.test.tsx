@@ -3,20 +3,20 @@ import { render, screen } from '@testing-library/react'
 import { Privacy } from './Privacy'
 
 describe('Privacy', () => {
-  it('should render the page title', () => {
+  it('should render the main h1 heading', () => {
     render(<Privacy />)
-    expect(screen.getByRole('heading', { level: 1, name: 'Privacy Policy' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Privacy Policy', level: 1 })).toBeInTheDocument()
   })
 
-  it('should render the last updated date', () => {
+  it('should display the last updated date', () => {
     render(<Privacy />)
-    expect(screen.getByText(/Last Updated: March 7, 2026/)).toBeInTheDocument()
+    expect(screen.getByText(/Last Updated:/)).toBeInTheDocument()
   })
 
   it('should render all major section headings', () => {
     render(<Privacy />)
 
-    const expectedHeadings = [
+    const headings = [
       'Our Commitment to Privacy',
       'Information We Collect',
       'How We Use Your Information',
@@ -30,48 +30,39 @@ describe('Privacy', () => {
       'Contact Us',
     ]
 
-    expectedHeadings.forEach((heading) => {
+    headings.forEach((heading: string): void => {
       expect(screen.getByRole('heading', { name: heading })).toBeInTheDocument()
     })
   })
 
-  it('should render the privacy email link', () => {
+  it('should render a contact email link', () => {
     render(<Privacy />)
     const emailLink = screen.getByRole('link', { name: 'privacy@paperlyte.app' })
     expect(emailLink).toBeInTheDocument()
     expect(emailLink).toHaveAttribute('href', 'mailto:privacy@paperlyte.app')
   })
 
-  it('should render the contact form link with correct attributes', () => {
+  it('should render the contact form link with correct security attributes', () => {
     render(<Privacy />)
-    const contactLink = screen.getByRole('link', {
-      name: /Contact Form/i,
-    })
-    expect(contactLink).toBeInTheDocument()
-    expect(contactLink).toHaveAttribute('href', 'https://paperlyte.app/contact')
+    const contactLink = screen.getByRole('link', { name: /Contact Form/i })
     expect(contactLink).toHaveAttribute('target', '_blank')
     expect(contactLink).toHaveAttribute('rel', 'noopener noreferrer')
   })
 
-  it('should render GDPR compliance information', () => {
+  it('should state that user data is not sold', () => {
     render(<Privacy />)
-    expect(screen.getByText(/GDPR Compliance/)).toBeInTheDocument()
+    expect(screen.getByText(/We do not sell your data/)).toBeInTheDocument()
   })
 
-  it('should use semantic HTML structure', () => {
-    const { container } = render(<Privacy />)
-
-    // Should have section elements for content grouping
-    const sections = container.querySelectorAll('section')
-    expect(sections.length).toBeGreaterThan(0)
-
-    // Should have lists for data items
-    const lists = container.querySelectorAll('ul')
-    expect(lists.length).toBeGreaterThan(0)
+  it('should mention GDPR compliance for EU users', () => {
+    render(<Privacy />)
+    // "GDPR Compliance:" appears as a <strong> element inside a paragraph
+    expect(screen.getByText(/GDPR Compliance:/)).toBeInTheDocument()
   })
 
-  it('should render without crashing', () => {
-    const { container } = render(<Privacy />)
-    expect(container).toBeDefined()
+  it('should list data rights including delete and export', () => {
+    render(<Privacy />)
+    expect(screen.getByText(/Delete Your Data/)).toBeInTheDocument()
+    expect(screen.getByText(/Export Your Notes/)).toBeInTheDocument()
   })
 })

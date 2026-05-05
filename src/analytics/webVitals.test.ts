@@ -5,6 +5,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { initWebVitals } from './webVitals'
 import type { CoreWebVitals } from './types'
+import { mockPerformanceObserver } from '../test/analytics-helpers'
 
 describe('analytics/webVitals', () => {
   let onReport: ReturnType<typeof vi.fn<[CoreWebVitals], void>>
@@ -376,6 +377,160 @@ describe('analytics/webVitals', () => {
       expect(reportedVitals.CLS).toBeCloseTo(0.15, 2)
 
       cleanup()
+    })
+  })
+
+  describe('trackINP', () => {
+    let originalVisibilityState: PropertyDescriptor | undefined
+
+    beforeEach(() => {
+      originalVisibilityState = Object.getOwnPropertyDescriptor(
+        Document.prototype,
+        'visibilityState'
+      )
+    })
+
+    afterEach(() => {
+      // Restore visibilityState so mutations from triggerHidden() don't leak
+      // across tests and cause order-dependent behavior.
+      if (originalVisibilityState) {
+        Object.defineProperty(document, 'visibilityState', originalVisibilityState)
+      } else {
+        // @ts-expect-error: cleanup of test-only property
+        delete (document as Document).visibilityState
+      }
+    })
+
+    const triggerHidden = (): void => {
+      Object.defineProperty(document, 'visibilityState', {
+        writable: true,
+        configurable: true,
+        value: 'hidden',
+      })
+      document.dispatchEvent(new Event('visibilitychange'))
+    }
+
+    it('should use Math.max for ≤10 interactions and 98th percentile for >10 at the boundary', () => {
+      // Helper: creates a valid event entry; duration = processingEnd - startTime
+      const makeEntry = (
+        duration: number
+      ): { startTime: number; processingStart: number; processingEnd: number } => ({
+        startTime: 0,
+        processingStart: 0,
+        processingEnd: duration,
+      })
+
+      // --- ≤10 interactions: Math.max path (exactly 10) ---
+      const po10 = mockPerformanceObserver()
+      onReport.mockClear()
+      const cleanup10 = initWebVitals(onReport)
+
+      const inpObserver10 = po10.instances.find((obs) => {
+        const call = obs.observe.mock.calls[0]
+        return call?.[0].type === 'event'
+      })
+      expect(inpObserver10).toBeDefined()
+
+      // Feed 10 entries with durations [10, 20, ..., 100]
+      inpObserver10?.callback(
+        {
+          getEntries: () => [10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map(makeEntry),
+        } as PerformanceObserverEntryList,
+        inpObserver10 as PerformanceObserver
+      )
+
+      triggerHidden()
+
+      // Math.max([10..100]) = 100
+      expect(onReport).toHaveBeenCalledWith(expect.objectContaining({ INP: 100 }))
+
+      cleanup10()
+      po10.cleanup()
+
+      // --- >10 interactions: 98th-percentile path with a clear distinction
+      // from Math.max. Use 51 entries: 50 baseline values [10..500] plus a
+      // single extreme outlier (9999). The 98th percentile must NOT pick the
+      // outlier; Math.max would.
+      const poP = mockPerformanceObserver()
+      onReport.mockClear()
+      const cleanupP = initWebVitals(onReport)
+
+      const inpObserverP = poP.instances.find((obs) => {
+        const call = obs.observe.mock.calls[0]
+        return call?.[0].type === 'event'
+      })
+      expect(inpObserverP).toBeDefined()
+
+      const baseline = Array.from({ length: 50 }, (_, i) => (i + 1) * 10) // [10,20,..,500]
+      const durations = [...baseline, 9999]
+
+      inpObserverP?.callback(
+        {
+          getEntries: () => durations.map(makeEntry),
+        } as PerformanceObserverEntryList,
+        inpObserverP as PerformanceObserver
+      )
+
+      triggerHidden()
+
+      // 98th percentile of sorted [10,20,..,500,9999] (51 items):
+      //   index = Math.max(0, Math.ceil(0.98 * 51) - 1) = Math.max(0, 50 - 1) = 49
+      //   value = sortedInteractions[49] = 500
+      // Math.max would yield 9999 — the assertion below would fail under that path.
+      expect(onReport).toHaveBeenCalledWith(expect.objectContaining({ INP: 500 }))
+
+      cleanupP()
+      poP.cleanup()
+    })
+
+    it('should not report INP when no interactions occurred', () => {
+      const { cleanup: cleanupPO } = mockPerformanceObserver()
+      const cleanup = initWebVitals(onReport)
+
+      // Trigger finalization without feeding any entries to the INP observer
+      triggerHidden()
+
+      // INP must be absent regardless of whether other vitals (e.g., CLS) were reported
+      const reportedVitals = onReport.mock.calls[0]?.[0] ?? {}
+      expect(reportedVitals).not.toHaveProperty('INP')
+
+      cleanup()
+      cleanupPO()
+    })
+
+    it('should filter out entries with missing or invalid startTime/processingStart/processingEnd', () => {
+      const { instances, cleanup: cleanupPO } = mockPerformanceObserver()
+      const cleanup = initWebVitals(onReport)
+
+      const inpObserver = instances.find((obs) => {
+        const call = obs.observe.mock.calls[0]
+        return call?.[0].type === 'event'
+      })
+      expect(inpObserver).toBeDefined()
+
+      // All entries are invalid and must be excluded from INP calculation.
+      const invalidEntries = [
+        { startTime: 0, processingStart: undefined, processingEnd: 100 }, // missing processingStart
+        { startTime: 0, processingStart: 50, processingEnd: undefined }, // missing processingEnd
+        { startTime: undefined, processingStart: 50, processingEnd: 100 }, // missing startTime
+        { startTime: 100, processingStart: 50, processingEnd: 150 }, // startTime > processingStart ordering violated
+        { startTime: 0, processingStart: 100, processingEnd: 50 }, // processingEnd < processingStart ordering violated
+      ]
+
+      inpObserver?.callback(
+        { getEntries: () => invalidEntries } as PerformanceObserverEntryList,
+        inpObserver as PerformanceObserver
+      )
+
+      triggerHidden()
+
+      // No valid interactions were recorded, so INP must not appear in the report
+      expect(onReport).toHaveBeenCalled()
+      const reportedVitals = onReport.mock.calls[0][0]
+      expect(reportedVitals).not.toHaveProperty('INP')
+
+      cleanup()
+      cleanupPO()
     })
   })
 

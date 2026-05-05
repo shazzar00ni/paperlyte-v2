@@ -3,6 +3,7 @@ import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { Icon } from '@components/ui/Icon'
 import styles from './Mobile.module.css'
 
+/** Renders the Mobile section highlighting Paperlyte's cross-platform availability. */
 export const Mobile = (): React.ReactElement => {
   return (
     <Section id="mobile" className={styles.mobile} padding="large">

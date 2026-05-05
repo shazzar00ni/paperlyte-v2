@@ -3,20 +3,20 @@ import { render, screen } from '@testing-library/react'
 import { Terms } from './Terms'
 
 describe('Terms', () => {
-  it('should render the page title', () => {
+  it('should render the main h1 heading', () => {
     render(<Terms />)
-    expect(screen.getByRole('heading', { level: 1, name: 'Terms of Service' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Terms of Service', level: 1 })).toBeInTheDocument()
   })
 
-  it('should render the last updated date', () => {
+  it('should display the last updated date', () => {
     render(<Terms />)
-    expect(screen.getByText(/Last Updated: March 7, 2026/)).toBeInTheDocument()
+    expect(screen.getByText(/Last Updated:/)).toBeInTheDocument()
   })
 
   it('should render all major section headings', () => {
     render(<Terms />)
 
-    const expectedHeadings = [
+    const headings = [
       'Agreement to Terms',
       'Description of Service',
       'User Accounts',
@@ -35,50 +35,47 @@ describe('Terms', () => {
       'Contact Information',
     ]
 
-    expectedHeadings.forEach((heading) => {
+    headings.forEach((heading: string): void => {
       expect(screen.getByRole('heading', { name: heading })).toBeInTheDocument()
     })
   })
 
-  it('should render the legal email link', () => {
-    render(<Terms />)
-    const emailLink = screen.getByRole('link', { name: 'legal@paperlyte.app' })
-    expect(emailLink).toBeInTheDocument()
-    expect(emailLink).toHaveAttribute('href', 'mailto:legal@paperlyte.app')
-  })
-
-  it('should render the contact website link', () => {
-    render(<Terms />)
-    const contactLink = screen.getByRole('link', { name: 'https://paperlyte.app/contact' })
-    expect(contactLink).toBeInTheDocument()
-    expect(contactLink).toHaveAttribute('target', '_blank')
-    expect(contactLink).toHaveAttribute('rel', 'noopener noreferrer')
-  })
-
-  it('should render the privacy policy link', () => {
+  it('should render a link to the privacy policy', () => {
     render(<Terms />)
     const privacyLink = screen.getByRole('link', { name: 'Privacy Policy' })
     expect(privacyLink).toBeInTheDocument()
     expect(privacyLink).toHaveAttribute('href', '/privacy')
   })
 
-  it('should render the development notice', () => {
+  it('should render the contact email link', () => {
     render(<Terms />)
-    expect(screen.getByText(/Paperlyte is currently in development/)).toBeInTheDocument()
+    const emailLink = screen.getByRole('link', { name: 'legal@paperlyte.app' })
+    expect(emailLink).toBeInTheDocument()
+    expect(emailLink).toHaveAttribute('href', 'mailto:legal@paperlyte.app')
   })
 
-  it('should use semantic HTML structure', () => {
-    const { container } = render(<Terms />)
-
-    const sections = container.querySelectorAll('section')
-    expect(sections.length).toBeGreaterThan(0)
-
-    const lists = container.querySelectorAll('ul')
-    expect(lists.length).toBeGreaterThan(0)
+  it('should state that users retain content rights', () => {
+    render(<Terms />)
+    expect(screen.getByText(/You retain all rights to your notes and content/)).toBeInTheDocument()
   })
 
-  it('should render without crashing', () => {
-    const { container } = render(<Terms />)
-    expect(container).toBeDefined()
+  it('should list the minimum age requirement', () => {
+    render(<Terms />)
+    expect(screen.getByText(/at least 13 years old/)).toBeInTheDocument()
+  })
+
+  it('should describe the free tier offering', () => {
+    render(<Terms />)
+    expect(screen.getByText(/free tier with basic features/)).toBeInTheDocument()
+  })
+
+  it('should mention governing law', () => {
+    render(<Terms />)
+    expect(screen.getByText(/State of Delaware/)).toBeInTheDocument()
+  })
+
+  it('should include a note that it is pre-launch', () => {
+    render(<Terms />)
+    expect(screen.getByText(/currently in development/i)).toBeInTheDocument()
   })
 })

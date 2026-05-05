@@ -7,9 +7,18 @@ import styles from './FeedbackWidget.module.css'
 
 type FeedbackType = 'bug' | 'feature'
 
+// Maximum number of feedback entries retained in localStorage to bound storage growth.
+const MAX_FEEDBACK_ENTRIES = 20
+// Maximum character length for a stored feedback message.
+const FEEDBACK_MESSAGE_MAX_LENGTH = 2000
+
 interface FeedbackFormData {
   type: FeedbackType
   message: string
+}
+
+interface FeedbackEntry extends FeedbackFormData {
+  timestamp: string
 }
 
 interface FeedbackWidgetProps {
@@ -97,29 +106,37 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
         } else {
           // Default behavior: store in localStorage and log
           const timestamp = new Date().toISOString()
-          const feedbackEntry = {
+          const feedbackEntry: FeedbackEntry = {
             ...feedbackData,
+            // Enforce message length limit before persisting to localStorage so a
+            // very long paste cannot inflate storage consumption unboundedly.
+            message: feedbackData.message.slice(0, FEEDBACK_MESSAGE_MAX_LENGTH),
             timestamp,
           }
 
           // Get existing feedback from localStorage
           const existingFeedback = localStorage.getItem('paperlyte_feedback')
-          let feedbackArray: unknown = []
+          let feedbackArray: FeedbackEntry[] = []
 
           if (existingFeedback) {
             try {
-              feedbackArray = JSON.parse(existingFeedback)
+              const parsed: unknown = JSON.parse(existingFeedback)
+              if (Array.isArray(parsed)) {
+                feedbackArray = parsed as FeedbackEntry[]
+              }
             } catch (parseError) {
               console.error('Failed to parse stored feedback from localStorage', parseError)
               feedbackArray = []
             }
           }
 
-          if (!Array.isArray(feedbackArray)) {
-            feedbackArray = []
+          // Enforce entry cap: keep only the most recent (MAX_FEEDBACK_ENTRIES - 1)
+          // entries so the new one fits within the limit, preventing unbounded growth.
+          if (feedbackArray.length >= MAX_FEEDBACK_ENTRIES) {
+            feedbackArray = feedbackArray.slice(-(MAX_FEEDBACK_ENTRIES - 1))
           }
 
-          ;(feedbackArray as unknown[]).push(feedbackEntry)
+          feedbackArray.push(feedbackEntry)
           // Store updated feedback
           try {
             localStorage.setItem('paperlyte_feedback', JSON.stringify(feedbackArray))

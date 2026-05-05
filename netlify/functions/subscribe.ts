@@ -94,7 +94,19 @@ async function subscribeToConvertKit(
     throw new Error("ConvertKit API credentials not configured");
   }
 
+  // Validate formId is a numeric string to prevent path traversal / SSRF via
+  // a misconfigured environment variable injecting extra path segments.
+  if (!/^\d+$/.test(formId)) {
+    throw new Error("Invalid ConvertKit form ID configuration");
+  }
+
   const tagId = process.env.CONVERTKIT_TAG_ID;
+
+  // Validate tagId (if configured) is also numeric for the same reason.
+  if (tagId && !/^\d+$/.test(tagId)) {
+    throw new Error("Invalid ConvertKit tag ID configuration");
+  }
+
   const requestBody: {
     api_key: string;
     email: string;
@@ -186,10 +198,13 @@ export const handler: Handler = async (event: HandlerEvent) => {
   }
 
   try {
-    // Get IP address for rate limiting
+    // Get IP address for rate limiting.
+    // Prefer `client-ip` (set by Netlify infrastructure, not spoofable by the
+    // client) over `x-forwarded-for` which can be forged by sending a crafted
+    // header, potentially bypassing per-IP rate limiting.
     const ip =
-      event.headers["x-forwarded-for"]?.split(",")[0] ??
       event.headers["client-ip"] ??
+      event.headers["x-forwarded-for"]?.split(",")[0] ??
       "unknown";
 
     // Check rate limit

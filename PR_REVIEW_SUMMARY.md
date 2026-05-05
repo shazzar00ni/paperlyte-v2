@@ -50,7 +50,7 @@ This file contains a summary of pull requests I have reviewed.
 - **Feedback:**
   - Crucial security hardening for `isSafeUrl` and `safeNavigate`.
   - Restricting `safeNavigate` to same-origin URLs by default effectively mitigates open redirect vulnerabilities.
-  - The inclusion of `allowExternal` options for `isSafeUrl` provides necessary flexibility for <a> tags while keeping navigation safe.
+  - The inclusion of `allowExternal` options for `isSafeUrl` provides necessary flexibility for `<a>` tags while keeping navigation safe.
   - Integration with the `monitoring` utility for logging blocked attempts is a best practice.
 
 ---

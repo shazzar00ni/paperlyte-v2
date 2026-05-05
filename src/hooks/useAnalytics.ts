@@ -44,10 +44,8 @@ export function useAnalytics(enableScrollTracking = true) {
     const cancelInit = useIdle ? cancelIdleCallback : clearTimeout
 
     const handle = scheduleInit(() => {
-      const scrollDepth = initScrollDepthTracking()
-      cleanup = scrollDepth.cleanup
-      scrollDepth.measureNow()
-    })
+      cleanup = initScrollDepthTracking()
+      window.dispatchEvent(new Event('scroll'))
     })
 
     return () => {

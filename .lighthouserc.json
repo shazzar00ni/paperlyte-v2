@@ -47,8 +47,6 @@
         "redirects-http": "warn",
         "uses-long-cache-ttl": "off",
         "font-display": "warn",
-        "is-on-https": "off",
-        "redirects-http": "off",
         "csp-xss": "warn",
         "has-hsts": "warn",
         "clickjacking-mitigation": "warn",

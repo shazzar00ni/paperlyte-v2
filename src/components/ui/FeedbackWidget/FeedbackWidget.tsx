@@ -134,12 +134,14 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
               },
               'FeedbackWidget'
             )
-            throw new Error(
+            const wrappedError = new Error(
               `Unable to save feedback locally. Your browser storage may be full or disabled. ${
                 storageError instanceof Error ? storageError.message : String(storageError)
               }`,
               { cause: storageError }
             )
+            ;(wrappedError as Error & { alreadyLogged: boolean }).alreadyLogged = true
+            throw wrappedError
           }
         }
 
@@ -153,7 +155,9 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
         }, 2000)
       } catch (err) {
         setError('Failed to submit feedback. Please try again.')
-        console.error('Feedback submission error:', err)
+        if (!(err instanceof Error) || !(err as Error & { alreadyLogged?: boolean }).alreadyLogged) {
+          console.error('Feedback submission error:', err)
+        }
       } finally {
         setIsSubmitting(false)
       }

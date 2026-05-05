@@ -7,6 +7,8 @@ import styles from './FeedbackWidget.module.css'
 
 type FeedbackType = 'bug' | 'feature'
 
+type LoggedError = Error & { alreadyLogged?: boolean }
+
 interface FeedbackFormData {
   type: FeedbackType
   message: string
@@ -134,12 +136,14 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
               },
               'FeedbackWidget'
             )
-            throw new Error(
+            const wrappedError: LoggedError = new Error(
               `Unable to save feedback locally. Your browser storage may be full or disabled. ${
                 storageError instanceof Error ? storageError.message : String(storageError)
               }`,
               { cause: storageError }
             )
+            wrappedError.alreadyLogged = true
+            throw wrappedError
           }
         }
 
@@ -153,7 +157,9 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
         }, 2000)
       } catch (err) {
         setError('Failed to submit feedback. Please try again.')
-        console.error('Feedback submission error:', err)
+        if (!(err instanceof Error) || !(err as LoggedError).alreadyLogged) {
+          console.error('Feedback submission error:', err)
+        }
       } finally {
         setIsSubmitting(false)
       }

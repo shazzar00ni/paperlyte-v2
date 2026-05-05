@@ -84,7 +84,11 @@ jobs:
             glob_exit=${pipe_statuses[0]}
             filter_exit=${pipe_statuses[1]}
             vitest_exit=${pipe_statuses[2]}
-            if [ "$glob_exit" -ne 0 ] || [ "$filter_exit" -ne 0 ]; then
+            # grep -v returns exit code 1 when *no* lines pass the filter
+            # (i.e. all files were excluded). That's not an error — allow it.
+            # Exit code 2 means an actual grep error (e.g. bad flag), so we
+            # still fail hard in that case.
+            if [ "$glob_exit" -ne 0 ] || [ "$filter_exit" -gt 1 ]; then
               echo 1 > /tmp/test-exit-code
             else
               echo "$vitest_exit" > /tmp/test-exit-code
@@ -112,9 +116,16 @@ jobs:
           at: .
       - run:
           name: Coverage report
-          command: npm run test:coverage -- --run
+          command: |
+            mkdir -p test-results
+            npm run test:coverage -- --run \
+              --reporter=default \
+              --reporter=junit \
+              --outputFile=./test-results/coverage-junit.xml
           environment:
             CI: "true"
+      - store_test_results:
+          path: test-results
       - store_artifacts:
           path: coverage
           destination: coverage

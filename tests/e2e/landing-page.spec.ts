@@ -56,38 +56,43 @@ test.describe('Landing Page', () => {
   // since those require real user interaction). Lighthouse CI is the authoritative
   // Core Web Vitals monitor for this project.
   test('load-performance smoke check (FCP/LCP/CLS)', async ({ page, browserName }) => {
-    test.skip(browserName !== 'chromium', 'Performance test runs on chromium only');
-    test.skip(process.env.RUN_CWV_SMOKE !== '1', 'Skip unless RUN_CWV_SMOKE=1 — set this in a dedicated scheduled CI job');
+    test.skip(browserName !== 'chromium', 'Performance test runs on chromium only')
+    test.skip(
+      process.env.RUN_CWV_SMOKE !== '1',
+      'Skip unless RUN_CWV_SMOKE=1 — set this in a dedicated scheduled CI job'
+    )
 
     await page.goto('/')
     await page.waitForLoadState('load')
 
     interface CoreWebVitalsMetrics {
-      fcp: number | null;
-      lcp: number | null;
-      cls: number;
+      fcp: number | null
+      lcp: number | null
+      cls: number
     }
 
     // Measure Core Web Vitals using Performance Timeline
     const metrics = await page.evaluate<CoreWebVitalsMetrics>((): Promise<CoreWebVitalsMetrics> => {
-      const paintEntries = performance.getEntriesByType('paint');
-      const fcpEntry = paintEntries.find(
-        (entry) => entry.name === 'first-contentful-paint'
-      );
+      const paintEntries = performance.getEntriesByType('paint')
+      const fcpEntry = paintEntries.find((entry) => entry.name === 'first-contentful-paint')
 
       // Get LCP using PerformanceObserver
       return new Promise<CoreWebVitalsMetrics>((resolve) => {
         // null means LCP observer never fired — distinguishes "not observed" from a genuine 0.
         // CLS starts at 0: a page with no layout shifts correctly scores 0 (best case).
-        let lcp: number | null = null;
-        let cls = 0;
+        let lcp: number | null = null
+        let cls = 0
 
         const lcpObserver = new PerformanceObserver((list) => {
-          const entries = list.getEntries();
-          const lastEntry = entries[entries.length - 1];
-          const lcpEntry = lastEntry as PerformanceEntry & { renderTime?: number; loadTime?: number };
-          lcp = lcpEntry.renderTime || lcpEntry.loadTime || lastEntry.startTime;
-        });
+          const entries = list.getEntries()
+          const lastEntry = entries[entries.length - 1]
+          if (!lastEntry) return
+          const lcpEntry = lastEntry as PerformanceEntry & {
+            renderTime?: number
+            loadTime?: number
+          }
+          lcp = lcpEntry.renderTime || lcpEntry.loadTime || lastEntry.startTime
+        })
 
         const clsObserver = new PerformanceObserver((list) => {
           for (const entry of list.getEntries()) {
@@ -118,19 +123,19 @@ test.describe('Landing Page', () => {
     })
 
     // Validate Core Web Vitals thresholds
-    const { fcp, lcp, cls } = metrics;
+    const { fcp, lcp, cls } = metrics
 
-    expect(fcp).not.toBeNull();
-    expect(lcp).not.toBeNull(); // fail if LCP was never observed
+    expect(fcp).not.toBeNull()
+    expect(lcp).not.toBeNull() // fail if LCP was never observed
 
     if (fcp === null || lcp === null) {
-      return;
+      return
     }
 
-    expect(fcp).toBeLessThan(2000); // FCP < 2s
-    expect(lcp).toBeLessThan(2500); // LCP < 2.5s (good threshold)
-    expect(cls).toBeLessThan(0.1); // CLS < 0.1 (good threshold)
-  });
+    expect(fcp).toBeLessThan(2000) // FCP < 2s
+    expect(lcp).toBeLessThan(2500) // LCP < 2.5s (good threshold)
+    expect(cls).toBeLessThan(0.1) // CLS < 0.1 (good threshold)
+  })
 
   test('should show mobile-specific UI on small screens', async ({
     page,
@@ -204,6 +209,12 @@ test.describe('Landing Page', () => {
   }: {
     page: Page
   }): Promise<void> => {
+    // Intercept the Netlify function so the test doesn't require a live backend.
+    // The Vite preview server only serves static files; /.netlify/functions/* would 404.
+    await page.route('/.netlify/functions/subscribe', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: '{"success":true}' })
+    )
+
     await page.goto('/')
 
     const emailInput = page.locator('#email-capture input[type="email"]')
@@ -211,15 +222,12 @@ test.describe('Landing Page', () => {
       .locator('#email-capture')
       .getByRole('button', { name: /join the waitlist/i })
 
-    // Use a unique address each run; harmless today (the submit handler is stubbed
-    // with a setTimeout) but avoids duplicate-rejection flakiness once a real
-    // waitlist backend is wired up.
     const uniqueEmail = `e2e-test-${Date.now()}@example.com`
     await emailInput.fill(uniqueEmail)
     await submitButton.click()
 
     // Accept both straight (') and typographic (') apostrophes for cross-environment robustness
-    await expect(page.getByText(/You['’]re on the list!/i)).toBeVisible({ timeout: 5000 })
+    await expect(page.getByText(/You['']re on the list!/i)).toBeVisible({ timeout: 5000 })
   })
 
   test('should have accessible keyboard navigation', async ({

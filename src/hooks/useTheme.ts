@@ -82,12 +82,13 @@ export const useTheme = () => {
 
     // Only persist to localStorage if persistence is enabled
     if (persistenceEnabled) {
-      // Save to localStorage
-      localStorage.setItem(THEME_STORAGE_KEY, theme)
-
-      // Save user preference flag if they've explicitly chosen
-      if (userHasExplicitPreference.current) {
-        localStorage.setItem(USER_PREFERENCE_KEY, 'true')
+      try {
+        localStorage.setItem(THEME_STORAGE_KEY, theme)
+        if (userHasExplicitPreference.current) {
+          localStorage.setItem(USER_PREFERENCE_KEY, 'true')
+        }
+      } catch {
+        // Storage blocked (sandboxed iframe, private browsing SecurityError) — skip persistence
       }
     }
   }, [theme, persistenceEnabled])

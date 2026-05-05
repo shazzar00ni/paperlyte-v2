@@ -444,12 +444,14 @@ function createThrottledScrollHandler(callback: () => void): () => void {
  * Initialize scroll depth tracking
  * Sets up a scroll listener that tracks depth milestones
  *
- * @returns Cleanup function to remove the scroll listener
+ * @returns Object with `cleanup` (removes the scroll listener) and `measureNow`
+ *   (samples the current scroll depth immediately without dispatching a scroll event)
  *
  * @example
  * ```tsx
  * useEffect(() => {
- *   const cleanup = initScrollDepthTracking()
+ *   const { cleanup, measureNow } = initScrollDepthTracking()
+ *   measureNow() // capture initial depth
  *   return cleanup
  * }, [])
  * ```

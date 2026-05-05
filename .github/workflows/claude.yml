@@ -70,7 +70,7 @@ jobs:
 
       - name: Run Claude Code Action
         if: github.event_name == 'pull_request' || steps.permission_check.outputs.allowed == 'true'
-        uses: anthropics/claude-code-action@567fe954a4527e81f132d87d1bdbcc94f7737434  # v1.0.107
+        uses: anthropics/claude-code-action@fefa07e9c665b7320f08c3b525980457f22f58aa  # v1.0.111
         with:
           trigger_phrase: "@claude"
           label_trigger: claude

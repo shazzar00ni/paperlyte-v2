@@ -164,12 +164,31 @@ async function subscribeToConvertKit(
 }
 
 /**
+ * Returns a shallow copy of `raw` with every header key lowercased.
+ *
+ * HTTP header names are case-insensitive per RFC 7230.  Normalising them once
+ * at the boundary means all downstream lookups can safely use lowercase
+ * strings without worrying about runtime or proxy casing differences.
+ */
+function normalizeHeaders(
+  raw: Record<string, string | undefined>
+): Record<string, string | undefined> {
+  return Object.fromEntries(
+    Object.entries(raw).map(([k, v]) => [k.toLowerCase(), v])
+  );
+}
+
+/**
  * Netlify serverless function handler
  */
 export const handler: Handler = async (event: HandlerEvent) => {
+  // Normalise all incoming request headers to lowercase so lookups are
+  // unaffected by casing differences across runtimes or proxies.
+  const reqHeaders = normalizeHeaders(event.headers);
+
   // CORS headers - restrict to allowed origin for security
   const allowedOrigin = process.env.ALLOWED_ORIGIN ?? "https://paperlyte.com";
-  const origin = event.headers.origin ?? event.headers.Origin ?? "";
+  const origin = reqHeaders["origin"] ?? "";
   const isAllowedOrigin = origin === allowedOrigin;
 
   const headers = {
@@ -202,9 +221,11 @@ export const handler: Handler = async (event: HandlerEvent) => {
     // Prefer `client-ip` (set by Netlify infrastructure, not spoofable by the
     // client) over `x-forwarded-for` which can be forged by sending a crafted
     // header, potentially bypassing per-IP rate limiting.
+    // Both keys are looked up on the lowercase-normalised copy of the request
+    // headers so casing differences (e.g. `Client-IP`) are handled correctly.
     const ip =
-      event.headers["client-ip"] ??
-      event.headers["x-forwarded-for"]?.split(",")[0] ??
+      reqHeaders["client-ip"] ??
+      reqHeaders["x-forwarded-for"]?.split(",")[0] ??
       "unknown";
 
     // Check rate limit

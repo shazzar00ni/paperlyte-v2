@@ -454,7 +454,7 @@ function createThrottledScrollHandler(callback: () => void): () => void {
  * }, [])
  * ```
  */
-export function initScrollDepthTracking(): () => void {
+export function initScrollDepthTracking(): { cleanup: () => void; measureNow: () => void } {
   const trackedMilestones = new Set<number>()
 
   const handleScroll = () => {
@@ -465,7 +465,10 @@ export function initScrollDepthTracking(): () => void {
   const throttledScroll = createThrottledScrollHandler(handleScroll)
   window.addEventListener('scroll', throttledScroll, { passive: true })
 
-  return () => {
-    window.removeEventListener('scroll', throttledScroll)
+  return {
+    cleanup: () => {
+      window.removeEventListener('scroll', throttledScroll)
+    },
+    measureNow: handleScroll,
   }
 }

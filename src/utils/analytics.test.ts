@@ -375,7 +375,7 @@ describe('Analytics Utility', () => {
     })
 
     it('should set up scroll event listener', () => {
-      const cleanup = initScrollDepthTracking()
+      const { cleanup } = initScrollDepthTracking()
 
       expect(addEventListenerSpy).toHaveBeenCalledWith('scroll', expect.any(Function), {
         passive: true,
@@ -385,10 +385,32 @@ describe('Analytics Utility', () => {
     })
 
     it('should remove scroll event listener on cleanup', () => {
-      const cleanup = initScrollDepthTracking()
+      const { cleanup } = initScrollDepthTracking()
       cleanup()
 
       expect(removeEventListenerSpy).toHaveBeenCalledWith('scroll', expect.any(Function))
+    })
+
+    it('measureNow triggers scroll depth calculation without dispatching a scroll event', () => {
+      Object.defineProperty(document.documentElement, 'scrollHeight', {
+        value: 1000,
+        configurable: true,
+      })
+      Object.defineProperty(window, 'innerHeight', { value: 500, configurable: true })
+      Object.defineProperty(window, 'scrollY', { value: 250, writable: true, configurable: true })
+
+      const dispatchSpy = vi.spyOn(window, 'dispatchEvent')
+      const { cleanup, measureNow } = initScrollDepthTracking()
+
+      measureNow()
+
+      expect(dispatchSpy).not.toHaveBeenCalled()
+      expect(mockGtag).toHaveBeenCalledWith('event', AnalyticsEvents.SCROLL_DEPTH, {
+        depth_percentage: 25,
+      })
+
+      cleanup()
+      dispatchSpy.mockRestore()
     })
 
     it('should track scroll milestones when scrolling', () => {
@@ -407,7 +429,7 @@ describe('Analytics Utility', () => {
         configurable: true,
       })
 
-      const cleanup = initScrollDepthTracking()
+      const { cleanup } = initScrollDepthTracking()
 
       // Get the scroll handler and call it
       const scrollHandler = addEventListenerSpy.mock.calls.find(
@@ -447,7 +469,7 @@ describe('Analytics Utility', () => {
         configurable: true,
       })
 
-      const cleanup = initScrollDepthTracking()
+      const { cleanup } = initScrollDepthTracking()
 
       const scrollHandler = addEventListenerSpy.mock.calls.find(
         (call) => call[0] === 'scroll'
@@ -488,7 +510,7 @@ describe('Analytics Utility', () => {
         configurable: true,
       })
 
-      const cleanup = initScrollDepthTracking()
+      const { cleanup } = initScrollDepthTracking()
 
       const scrollHandler = addEventListenerSpy.mock.calls.find(
         (call) => call[0] === 'scroll'
@@ -528,7 +550,7 @@ describe('Analytics Utility', () => {
         configurable: true,
       })
 
-      const cleanup = initScrollDepthTracking()
+      const { cleanup } = initScrollDepthTracking()
 
       const scrollHandler = addEventListenerSpy.mock.calls.find(
         (call) => call[0] === 'scroll'

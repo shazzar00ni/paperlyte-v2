@@ -18,7 +18,7 @@ vi.mock('@utils/analytics', async () => {
     trackCTAClick: vi.fn(),
     trackExternalLink: vi.fn(),
     trackSocialClick: vi.fn(),
-    initScrollDepthTracking: vi.fn(() => vi.fn()),
+    initScrollDepthTracking: vi.fn(() => ({ cleanup: vi.fn(), measureNow: vi.fn() })),
   }
 })
 
@@ -55,7 +55,10 @@ describe('useAnalytics — scroll depth deferral', () => {
 
   it('cancels pending setTimeout on unmount before timer fires', () => {
     const scrollCleanup = vi.fn()
-    vi.mocked(initScrollDepthTracking).mockReturnValueOnce(scrollCleanup)
+    vi.mocked(initScrollDepthTracking).mockReturnValueOnce({
+      cleanup: scrollCleanup,
+      measureNow: vi.fn(),
+    })
 
     const { unmount } = renderHook(() => useAnalytics(true))
     unmount()
@@ -67,7 +70,10 @@ describe('useAnalytics — scroll depth deferral', () => {
 
   it('calls scroll cleanup on unmount after timer already fired', () => {
     const scrollCleanup = vi.fn()
-    vi.mocked(initScrollDepthTracking).mockReturnValueOnce(scrollCleanup)
+    vi.mocked(initScrollDepthTracking).mockReturnValueOnce({
+      cleanup: scrollCleanup,
+      measureNow: vi.fn(),
+    })
 
     const { unmount } = renderHook(() => useAnalytics(true))
     vi.runAllTimers()

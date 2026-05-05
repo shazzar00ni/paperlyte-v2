@@ -63,15 +63,6 @@ const appendFeedbackToStorage = (entry: unknown): void => {
   try {
     localStorage.setItem(FEEDBACK_KEY, JSON.stringify(arr))
   } catch (storageError) {
-    logError(
-      storageError instanceof Error ? storageError : new Error(String(storageError)),
-      {
-        severity: 'medium',
-        tags: { module: 'FeedbackWidget', action: 'saveFeedback' },
-        errorInfo: { note: 'local storage failure' },
-      },
-      'FeedbackWidget'
-    )
     throw new Error(
       `Unable to save feedback locally. Your browser storage may be full or disabled. ${
         storageError instanceof Error ? storageError.message : String(storageError)

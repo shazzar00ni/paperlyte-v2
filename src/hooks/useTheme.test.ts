@@ -128,6 +128,65 @@ describe('useTheme', () => {
     })
   })
 
+  describe('Storage error resilience', () => {
+    it('falls back to light theme and does not throw when migration throws', () => {
+      // Make the first getItem call (legacy key lookup in migrateLegacyTheme) throw
+      const originalGetItem = localStorageMock.getItem
+      let callCount = 0
+      localStorageMock.getItem = vi.fn((key: string) => {
+        if (callCount++ === 0) throw new Error('SecurityError: storage is blocked')
+        return originalGetItem(key)
+      })
+
+      let result: ReturnType<typeof renderHook<ReturnType<typeof useTheme>>>
+      expect(() => {
+        result = renderHook(() => useTheme())
+      }).not.toThrow()
+      expect(result!.result.current.theme).toBe('light')
+
+      localStorageMock.getItem = originalGetItem
+    })
+
+    it('falls back gracefully when getInitialUserPreference throws', () => {
+      // First few getItem calls succeed (legacy key checks), then throw on USER_PREFERENCE_KEY
+      const originalGetItem = localStorageMock.getItem
+      let callCount = 0
+      localStorageMock.getItem = vi.fn((key: string) => {
+        callCount++
+        // Throw on reads for user preference key
+        if (key === 'paperlyte:v1:theme-user-preference') throw new Error('SecurityError')
+        return originalGetItem(key)
+      })
+
+      let result: ReturnType<typeof renderHook<ReturnType<typeof useTheme>>>
+      expect(() => {
+        result = renderHook(() => useTheme())
+      }).not.toThrow()
+      expect(result!.result.current.theme).toBe('light')
+
+      localStorageMock.getItem = originalGetItem
+    })
+
+    it('applies theme to DOM and does not throw when localStorage.setItem throws', async () => {
+      const originalSetItem = localStorageMock.setItem
+      localStorageMock.setItem = vi.fn(() => {
+        throw new Error('QuotaExceededError')
+      })
+
+      let result: ReturnType<typeof renderHook<ReturnType<typeof useTheme>>>
+      expect(() => {
+        result = renderHook(() => useTheme())
+      }).not.toThrow()
+
+      // Theme is still applied to the DOM even if storage fails
+      await waitFor(() => {
+        expect(document.documentElement.getAttribute('data-theme')).toBe('light')
+      })
+
+      localStorageMock.setItem = originalSetItem
+    })
+  })
+
   describe('Initialization', () => {
     it('should initialize with light theme by default', () => {
       const { result } = renderHook(() => useTheme())
@@ -504,6 +563,26 @@ describe('useTheme with persistence disabled', () => {
       (call) => call[0] === 'paperlyte:v1:theme' || call[0] === 'paperlyte:v1:theme-user-preference'
     )
     expect(themeSetCalls).toHaveLength(0)
+  })
+
+  it('should update filter to catch regressions writing legacy keys when persistence disabled', async () => {
+    const { useTheme: useThemeNoPersist } = await import('./useTheme')
+
+    const { result } = renderHook(() => useThemeNoPersist())
+
+    act(() => {
+      result.current.toggleTheme()
+    })
+
+    const allSetCalls = localStorageMock.setItem.mock.calls.filter((call) =>
+      [
+        'paperlyte:v1:theme',
+        'paperlyte:v1:theme-user-preference',
+        'theme',
+        'theme-user-preference',
+      ].includes(call[0])
+    )
+    expect(allSetCalls).toHaveLength(0)
   })
 
   it('should follow system preference changes when persistence is disabled', async () => {

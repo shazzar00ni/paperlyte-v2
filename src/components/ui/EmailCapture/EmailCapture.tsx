@@ -6,10 +6,6 @@ import { logError } from '@utils/monitoring'
 import { validateEmail } from '@utils/validation'
 import styles from './EmailCapture.module.css'
 
-interface SubscribeErrorResponse {
-  error?: string
-}
-
 interface EmailCaptureProps {
   variant?: 'inline' | 'centered'
   placeholder?: string

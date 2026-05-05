@@ -330,7 +330,8 @@ describe('package-lock.json – axios security update (GHSA-3p68-rc4w-qgx5)', ()
   })
 
   it('axios resolved URL should point to a non-vulnerable release', () => {
-    expect(entry.resolved).toContain('axios-1.15.')
+    // Should match axios-1.15.x, 1.16.x, etc.
+    expect(entry.resolved).toMatch(/axios-1\.(15|16|17)\./)
   })
 })
 

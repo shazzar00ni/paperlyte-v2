@@ -45,6 +45,11 @@ export function useAnalytics(enableScrollTracking = true) {
 
     const handle = scheduleInit(() => {
       cleanup = initScrollDepthTracking()
+      // Synthetic dispatch triggers the scroll listener registered by
+      // initScrollDepthTracking so the initial scroll depth is captured
+      // immediately on init. TODO: replace with a direct measureNow() call
+      // once initScrollDepthTracking exposes one, to avoid running unrelated
+      // scroll listeners (parallax, scroll position) on startup.
       window.dispatchEvent(new Event('scroll'))
     })
 

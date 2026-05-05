@@ -273,6 +273,75 @@ describe('FeedbackWidget', () => {
       })
     })
 
+    it('evicts oldest entries when MAX_FEEDBACK_ENTRIES is reached', async () => {
+      const user = userEvent.setup()
+
+      // Pre-populate localStorage with 20 entries (the cap)
+      const existingEntries = Array.from({ length: 20 }, (_, i) => ({
+        type: 'bug',
+        message: `Old entry ${i + 1}`,
+        timestamp: new Date(Date.now() - (20 - i) * 1000).toISOString(),
+      }))
+      localStorage.setItem('paperlyte_feedback', JSON.stringify(existingEntries))
+
+      render(<FeedbackWidget />)
+
+      const openButton = screen.getByRole('button', { name: /open feedback form/i })
+      await user.click(openButton)
+
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+      })
+
+      const textarea = screen.getByRole('textbox')
+      await user.type(textarea, 'New entry')
+
+      const submitButton = screen.getByRole('button', { name: /send feedback/i })
+      await user.click(submitButton)
+
+      await waitFor(() => {
+        const stored = localStorage.getItem('paperlyte_feedback')
+        expect(stored).toBeTruthy()
+        const feedbackArray = JSON.parse(stored!)
+        // Still at the cap — oldest entry was evicted to make room
+        expect(feedbackArray).toHaveLength(20)
+        // The oldest entry ('Old entry 1') should have been evicted
+        expect(feedbackArray[0].message).toBe('Old entry 2')
+        // The new entry is the last one
+        expect(feedbackArray[19].message).toBe('New entry')
+      })
+    })
+
+    it('truncates messages longer than 2000 characters before storing', async () => {
+      const user = userEvent.setup()
+      render(<FeedbackWidget />)
+
+      const openButton = screen.getByRole('button', { name: /open feedback form/i })
+      await user.click(openButton)
+
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+      })
+
+      // Create a message that exceeds the 2000-char limit
+      const longMessage = 'A'.repeat(2500)
+      const textarea = screen.getByRole('textbox')
+      fireEvent.change(textarea, { target: { value: longMessage } })
+
+      const submitButton = screen.getByRole('button', { name: /send feedback/i })
+      await user.click(submitButton)
+
+      await waitFor(() => {
+        const stored = localStorage.getItem('paperlyte_feedback')
+        expect(stored).toBeTruthy()
+        const feedbackArray = JSON.parse(stored!)
+        expect(feedbackArray).toHaveLength(1)
+        // Message must be capped at 2000 characters
+        expect(feedbackArray[0].message).toHaveLength(2000)
+        expect(feedbackArray[0].message).toBe('A'.repeat(2000))
+      })
+    })
+
     it('handles submission errors gracefully', async () => {
       const user = userEvent.setup()
       const mockSubmit = vi.fn().mockRejectedValue(new Error('Network error'))

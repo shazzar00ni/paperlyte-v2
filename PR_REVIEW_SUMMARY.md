@@ -2,6 +2,44 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-05-06
+
+### Analysis: Systemic Regressions in Open Branches (Automated Daily Audit)
+
+- **Status:** Critical — Action Required
+- **Summary:** An automated repository-wide audit of 266 unmerged branches confirms the following systemic regressions.
+
+| Regression Type                | Count | Severity    | Notes                                               |
+| :----------------------------- | :---- | :---------- | :-------------------------------------------------- |
+| Orphan Branches                | 0     | 🔴 Critical | No common ancestor with `main`.                     |
+| Missing `.npmrc`               | 79    | 🔴 Critical | Breaks dependency resolution.                       |
+| Missing `docs/ROADMAP.md`      | 75    | 🟠 High     | Core project documentation.                         |
+| Missing `gitVersionControl.md` | 88    | 🟠 High     | Core Git workflow documentation.                    |
+| Missing `review.md`            | 88    | 🟡 Medium   | AI PR reviewer instructions.                        |
+| Reverted Security Helpers      | 87    | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers. |
+| Unreadable navigation.ts       | 8     | 🔴 Critical | File missing or unreadable.                         |
+
+- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.
+
+### Manual Branch Reviews
+
+#### origin/claude/implement-service-worker-YLeLZ
+
+- **Status:** Ready
+- **Review:** Robust PWA implementation. Includes a well-structured service worker (`public/sw.js`) with appropriate caching strategies (cache-first for hashed assets, stale-while-revalidate for static assets). The addition of `public/offline.html` provides a graceful fallback for users.
+
+#### origin/claude/fix-open-redirect-TX551
+
+- **Status:** Ready
+- **Review:** High-quality security hardening of navigation utilities. The implementation of `isSafeUrl` and `hasDangerousProtocol` correctly handles various obfuscation techniques. Restricting `safeNavigate` to same-origin by default effectively mitigates open redirect vulnerabilities.
+
+#### origin/claude/tree-shake-font-awesome-cK85j
+
+- **Status:** Ready
+- **Review:** Efficient refactoring of the Icon component and analytics providers. Moving to a more modular architecture for analytics providers (Fathom, Plausible) improves maintainability and reduces the main bundle size by enabling better tree-shaking of Font Awesome icons.
+
+---
+
 ## 2026-03-05
 
 ### Analysis: Accidental File Deletions in Open Branches (Jules Daily PR Reviews)

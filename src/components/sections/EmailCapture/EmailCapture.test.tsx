@@ -146,6 +146,28 @@ describe('EmailCapture Section', () => {
     expect(emailInput.required).toBe(true)
   })
 
+  it('email input has aria-invalid=false and no aria-describedby when there is no error', () => {
+    render(<EmailCapture />)
+    const emailInput = screen.getByPlaceholderText('your@email.com')
+    expect(emailInput).toHaveAttribute('aria-invalid', 'false')
+    expect(emailInput).not.toHaveAttribute('aria-describedby')
+  })
+
+  it('email input has aria-invalid=true and aria-describedby pointing to the error element on error', async () => {
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    await user.type(screen.getByPlaceholderText('your@email.com'), 'user..name@example.com')
+    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+
+    await waitFor(() => {
+      const emailInput = screen.getByPlaceholderText('your@email.com')
+      expect(emailInput).toHaveAttribute('aria-invalid', 'true')
+      expect(emailInput).toHaveAttribute('aria-describedby', 'email-error')
+      expect(screen.getByRole('alert')).toHaveAttribute('id', 'email-error')
+    })
+  })
+
   it('shows a client-side error and does not call fetch for an invalid email', async () => {
     const user = userEvent.setup()
     render(<EmailCapture />)

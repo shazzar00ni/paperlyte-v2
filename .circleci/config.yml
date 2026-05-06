@@ -3,7 +3,7 @@ version: 2.1
 executors:
   node-executor:
     docker:
-      - image: cimg/node:20.19.2@sha256:93d8e5b75c74e61b792ecdfe533c8a6b1d7367317430fa7ba84909cb0191b099
+      - image: cimg/node:20.19.2
     resource_class: medium
 
 jobs:

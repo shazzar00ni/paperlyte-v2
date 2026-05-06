@@ -335,9 +335,10 @@ describe('package-lock.json – axios security update (GHSA-3p68-rc4w-qgx5)', ()
 })
 
 // ---------------------------------------------------------------------------
-// package-lock.json – basic-ftp FTP command injection fix (GHSA-chqc-8p9q-pq6q)
-// basic-ftp 5.2.0 allows FTP command injection via CRLF sequences.
-// The override in package.json forces >= 5.2.1.
+// package-lock.json – basic-ftp security updates
+// GHSA-chqc-8p9q-pq6q: FTP command injection via CRLF (fixed in 5.2.1)
+// GHSA-rpmf-866q-6p89: DoS via unbounded multiline response buffering (fixed in 5.3.1)
+// The override in package.json forces >= 5.3.1 to cover both advisories.
 // ---------------------------------------------------------------------------
 
 describe('package-lock.json – basic-ftp security update (GHSA-chqc-8p9q-pq6q + GHSA-rpmf-866q-6p89)', () => {

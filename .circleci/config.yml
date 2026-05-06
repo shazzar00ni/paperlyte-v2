@@ -150,6 +150,7 @@ jobs:
           # set +e so the job doesn't abort on test failure; the exit code is
           # saved and re-raised after artifact upload.
           command: |
+            mkdir -p test-results
             set +e
             npm run test:e2e
             echo $? > /tmp/e2e-exit-code

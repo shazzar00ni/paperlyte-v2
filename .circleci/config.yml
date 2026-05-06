@@ -67,11 +67,7 @@ jobs:
           command: |
             mkdir -p test-results
             set +e
-            npm run test:coverage -- --run \
-              --reporter=default \
-              --reporter=junit \
-              --outputFile=./test-results/junit.xml \
-              --coverage.reportOnFailure
+            npm run test:coverage -- --run
             echo $? > /tmp/test-exit-code
           environment:
             CI: "true"

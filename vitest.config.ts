@@ -22,10 +22,11 @@ export default defineConfig({
     // Global test utilities
     globals: true,
 
-    // Add JUnit reporter
+    // Add JUnit reporter — write to test-results/ so CircleCI's
+    // store_test_results can ingest it alongside coverage artifacts.
     reporters: ['default', 'junit'],
     outputFile: {
-      junit: 'junit.xml',
+      junit: 'test-results/junit.xml',
     },
 
     // Coverage configuration
@@ -48,6 +49,9 @@ export default defineConfig({
         '**/*.test.{ts,tsx}',
         'scripts/**',
       ],
+      // Ensure coverage artifacts are written even when tests fail so CI can
+      // upload them for diagnosis (mirrors --coverage.reportOnFailure CLI flag).
+      reportOnFailure: true,
       // Coverage thresholds (optional but recommended)
       // Note: These won't block coverage report generation
       thresholds: {

@@ -89,8 +89,8 @@ export const useTheme = () => {
 
   // Migrate legacy unversioned keys before reading any preferences so that
   // useRef and useState both see the updated versioned keys.
-  // The module-level guard in migrateLegacyTheme ensures writes/removes happen
-  // exactly once per session even when the hook re-renders.
+  // migrateLegacyTheme exits immediately when no legacy keys exist (2 cheap
+  // reads), so repeated calls on re-renders are safe and inexpensive.
   if (isBrowser && persistenceEnabled) {
     migrateLegacyTheme()
   }

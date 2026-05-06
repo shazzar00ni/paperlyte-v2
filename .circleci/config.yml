@@ -73,12 +73,15 @@ jobs:
             CI: "true"
       - store_test_results:
           path: test-results
+          when: always
       - store_artifacts:
           path: test-results
           destination: test-results
+          when: always
       - store_artifacts:
           path: coverage
           destination: coverage
+          when: always
       - run:
           name: Report test status
           when: always

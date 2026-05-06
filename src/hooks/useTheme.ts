@@ -87,20 +87,18 @@ export const useTheme = () => {
     }
   }
 
-  // Migrate legacy unversioned keys before reading any preferences so that
-  // useRef and useState both see the updated versioned keys.
-  // migrateLegacyTheme exits immediately when no legacy keys exist (2 cheap
-  // reads), so repeated calls on re-renders are safe and inexpensive.
-  if (isBrowser && persistenceEnabled) {
-    migrateLegacyTheme()
-  }
-
-  // Track if user has explicitly set a preference (not just from system)
-  const userHasExplicitPreference = useRef(getInitialUserPreference())
-
+  // useState lazy initializer runs exactly once per hook instance (not on re-renders),
+  // so migration and initial storage reads happen only on mount — no repeated reads
+  // or logError spam on subsequent renders even if storage is blocked.
+  // useState is called before useRef so the ref is initialised from post-migration storage.
   const [theme, setTheme] = useState<Theme>(() => {
     // SSR guard: return default theme if not in browser
     if (!isBrowser) return 'light'
+
+    // Migrate legacy unversioned keys first so the storage reads below see versioned keys.
+    if (persistenceEnabled) {
+      migrateLegacyTheme()
+    }
 
     // Only check localStorage if persistence is enabled
     if (persistenceEnabled) {
@@ -133,6 +131,10 @@ export const useTheme = () => {
 
     return 'light'
   })
+
+  // Initialised after useState so it reads post-migration storage (USER_PREFERENCE_KEY
+  // may have been written by migrateLegacyTheme inside the lazy initializer above).
+  const userHasExplicitPreference = useRef(getInitialUserPreference())
 
   useEffect(() => {
     // SSR guard: skip if not in browser

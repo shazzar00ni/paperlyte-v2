@@ -59,7 +59,7 @@ test.describe('Landing Page', () => {
     test.skip(browserName !== 'chromium', 'Performance test runs on chromium only')
     test.skip(
       process.env.RUN_CWV_SMOKE !== '1',
-      'Skip unless RUN_CWV_SMOKE=1 — set this in a dedicated scheduled CI job'
+      'Skip unless RUN_CWV_SMOKE=1 — set in CI env or run locally with RUN_CWV_SMOKE=1 npx playwright test'
     )
 
     await page.goto('/')
@@ -86,7 +86,9 @@ test.describe('Landing Page', () => {
         const lcpObserver = new PerformanceObserver((list) => {
           const entries = list.getEntries()
           const lastEntry = entries[entries.length - 1]
-          if (!lastEntry) return
+          if (!lastEntry) {
+            return
+          }
           const lcpEntry = lastEntry as PerformanceEntry & {
             renderTime?: number
             loadTime?: number
@@ -204,30 +206,46 @@ test.describe('Landing Page', () => {
     await expect(firstQuestion).toHaveAttribute('aria-expanded', 'false')
   })
 
-  test('should submit waitlist email and show success state', async ({
+  test(‘should submit waitlist email and show success state’, async ({
     page,
   }: {
     page: Page
   }): Promise<void> => {
-    // Intercept the Netlify function so the test doesn't require a live backend.
-    // The Vite preview server only serves static files; /.netlify/functions/* would 404.
-    await page.route('/.netlify/functions/subscribe', (route) =>
-      route.fulfill({ status: 200, contentType: 'application/json', body: '{"success":true}' })
-    )
+    // Mock the Netlify subscribe endpoint so this test does not depend on
+    // `netlify dev` being running. The Vite preview server used in CI does not
+    // serve `/.netlify/functions/*`, which would otherwise return a 404 and
+    // surface as the error state instead of the success state.
+    let capturedPostBody: string | null = null
+    await page.route(‘**/.netlify/functions/subscribe’, async (route) => {
+      capturedPostBody = route.request().postData()
+      await route.fulfill({
+        status: 200,
+        contentType: ‘application/json’,
+        body: JSON.stringify({ success: true }),
+      })
+    })
 
-    await page.goto('/')
+    await page.goto(‘/’)
 
-    const emailInput = page.locator('#email-capture input[type="email"]')
+    const emailInput = page.locator(‘#email-capture input[type="email"]’)
     const submitButton = page
-      .locator('#email-capture')
-      .getByRole('button', { name: /join the waitlist/i })
+      .locator(‘#email-capture’)
+      .getByRole(‘button’, { name: /join the waitlist/i })
 
-    const uniqueEmail = `e2e-test-${Date.now()}@example.com`
-    await emailInput.fill(uniqueEmail)
+    // Use mixed-case to verify the component normalises (trim + lowercase) before POSTing.
+    // Use a unique timestamp to avoid duplicate-rejection flakiness if pointed at a real backend.
+    const timestamp = Date.now()
+    const rawEmail = `E2E-Test-${timestamp}@EXAMPLE.COM`
+    const expectedEmail = `e2e-test-${timestamp}@example.com`
+    await emailInput.fill(rawEmail)
     await submitButton.click()
 
-    // Accept both straight (') and typographic (') apostrophes for cross-environment robustness
-    await expect(page.getByText(/You['']re on the list!/i)).toBeVisible({ timeout: 5000 })
+    // Accept both straight (‘) and typographic (‘) apostrophes for cross-environment robustness
+    await expect(page.getByText(/You[‘’]re on the list!/i)).toBeVisible({ timeout: 5000 })
+
+    // Assert the component sent the normalised (trimmed + lowercased) email
+    expect(capturedPostBody).not.toBeNull()
+    expect(JSON.parse(capturedPostBody!)).toEqual({ email: expectedEmail })
   })
 
   test('should have accessible keyboard navigation', async ({

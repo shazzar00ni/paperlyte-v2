@@ -57,8 +57,8 @@ export const EmailCapture = (): React.ReactElement => {
           typeof data === 'object' &&
           data !== null &&
           'error' in data &&
-          typeof (data as { error: unknown }).error === 'string'
-            ? (data as { error: string }).error
+          typeof data.error === 'string'
+            ? data.error
             : undefined
 
         if (res.status === 400 || res.status === 429) {
@@ -190,6 +190,8 @@ export const EmailCapture = (): React.ReactElement => {
                 required
                 className={styles.input}
                 aria-label="Email address"
+                aria-invalid={!!error}
+                aria-describedby={error ? 'email-error' : undefined}
               />
               <button
                 type="submit"
@@ -203,7 +205,7 @@ export const EmailCapture = (): React.ReactElement => {
               </button>
             </div>
             {error && (
-              <p className={styles.error} role="alert">
+              <p id="email-error" className={styles.error} role="alert">
                 {error}
               </p>
             )}

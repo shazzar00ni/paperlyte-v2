@@ -14,6 +14,7 @@
       }
     },
     "assert": {
+      "preset": "lighthouse:recommended",
       "assertions": {
         "categories:performance": ["error", { "minScore": 0.7 }],
         "categories:accessibility": ["error", { "minScore": 0.82 }],
@@ -39,11 +40,13 @@
         "unminified-css": "warn",
         "unminified-javascript": "warn",
         "no-document-write": "error",
+        "network-dependency-tree-insight": "warn",
         "uses-rel-preconnect": "warn",
+        "is-on-https": "warn",
+        "uses-http2": "off",
+        "redirects-http": "warn",
         "uses-long-cache-ttl": "off",
         "font-display": "warn",
-        "is-on-https": "off",
-        "redirects-http": "off",
         "csp-xss": "warn",
         "has-hsts": "warn",
         "clickjacking-mitigation": "warn",

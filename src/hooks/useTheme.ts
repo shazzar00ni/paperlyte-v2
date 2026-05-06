@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef, useMemo } from 'react'
 import { PERSISTENCE_CONFIG } from '@constants/config'
+import { logError } from '@utils/monitoring'
 
 type Theme = 'light' | 'dark'
 
@@ -28,15 +29,22 @@ const isValidTheme = (value: string | null): value is Theme => {
 export const useTheme = () => {
   const persistenceEnabled = PERSISTENCE_CONFIG.ALLOW_PERSISTENT_THEME
 
-  // useMemo ensures the localStorage read runs once per persistenceEnabled value
-  // (in practice only on mount, since persistenceEnabled is a build-time constant).
+  // Read the user-preference flag from localStorage. useMemo caches the result
+  // across re-renders whenever persistenceEnabled is unchanged — in practice
+  // that's the entire component lifetime, since persistenceEnabled is a
+  // build-time constant. This is not a hard "read once" guarantee (React may
+  // invoke the factory more than once, e.g. under StrictMode in dev), but the
+  // read is idempotent and side-effect-free, so re-invocation is harmless.
   // The try/catch guards against SecurityError in sandboxed iframes or when
   // storage is blocked in private-browsing mode.
   const initialUserPref = useMemo(() => {
     if (!isBrowser || !persistenceEnabled) return false
     try {
       return localStorage.getItem(USER_PREFERENCE_KEY) === 'true'
-    } catch {
+    } catch (error: unknown) {
+      logError(error instanceof Error ? error : new Error(String(error)), {
+        tags: { hook: 'useTheme', operation: 'readUserPreferenceFlag' },
+      })
       return false
     }
   }, [persistenceEnabled])
@@ -80,15 +88,22 @@ export const useTheme = () => {
       root.setAttribute('data-theme', 'light')
     }
 
-    // Only persist to localStorage if persistence is enabled
+    // Only persist to localStorage if persistence is enabled.
+    // Wrapped in try/catch to mirror the read-side guards: setItem can throw
+    // SecurityError in sandboxed iframes or QuotaExceededError in private mode.
     if (persistenceEnabled) {
       try {
         localStorage.setItem(THEME_STORAGE_KEY, theme)
+
+        // Save user preference flag if they've explicitly chosen
         if (userHasExplicitPreference.current) {
           localStorage.setItem(USER_PREFERENCE_KEY, 'true')
         }
-      } catch {
-        // Storage blocked (sandboxed iframe, private browsing SecurityError) — skip persistence
+      } catch (error: unknown) {
+        logError(error instanceof Error ? error : new Error(String(error)), {
+          tags: { hook: 'useTheme', operation: 'persistTheme' },
+        })
+        // Theme still applies in-memory for this session
       }
     }
   }, [theme, persistenceEnabled])

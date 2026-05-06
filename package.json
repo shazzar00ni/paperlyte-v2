@@ -30,13 +30,13 @@
     "@fortawesome/free-brands-svg-icons": "^7.2.0",
     "@fortawesome/free-solid-svg-icons": "^7.2.0",
     "@fortawesome/react-fontawesome": "^3.3.1",
-    "@sentry/react": "^10.50.0",
+    "@sentry/react": "^10.51.0",
     "@testing-library/dom": "^10.4.1",
     "react": "^19.2.5",
     "react-dom": "^19.2.5"
   },
   "devDependencies": {
-    "@codecov/rollup-plugin": "^1.9.1",
+    "@codecov/rollup-plugin": "^2.0.1",
     "@eslint/js": "10.0.1",
     "@lhci/cli": "^0.15.1",
     "@netlify/functions": "^5.2.0",
@@ -53,23 +53,23 @@
     "@vitest/coverage-v8": "^4.1.5",
     "autoprefixer": "^10.5.0",
     "esbuild": "^0.28.0",
-    "eslint": "10.2.1",
+    "eslint": "10.3.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
-    "globals": "^17.5.0",
-    "jsdom": "^29.1.0",
+    "globals": "^17.6.0",
+    "jsdom": "^29.1.1",
     "png-to-ico": "^3.0.1",
-    "postcss": "^8.5.12",
+    "postcss": "^8.5.13",
     "prettier": "^3.8.3",
     "sharp": "^0.34.5",
     "terser": "^5.46.2",
     "typescript": "~6.0.3",
-    "typescript-eslint": "^8.59.0",
+    "typescript-eslint": "^8.59.2",
     "vite": "8.0.10",
     "vitest": "^4.1.5",
-    "wait-on": "^9.0.4"
+    "wait-on": "^9.0.5"
   },
   "size-limit": [
     {
@@ -88,12 +88,13 @@
   "overrides": {
     "axios": "^1.15.0",
     "basic-ftp": "^5.2.2",
-    "lodash-es": "^4.18.1",
     "brace-expansion": "^5.0.5",
+    "flatted": "^3.4.2",
+    "lodash": "^4.18.1",
+    "lodash-es": "^4.18.1",
     "path-to-regexp": "^0.1.13",
     "tmp": "^0.2.5",
     "undici": "^7.20.0",
-    "flatted": "^3.4.2",
     "extract-zip": {
       "yauzl": "^3.2.1"
     },

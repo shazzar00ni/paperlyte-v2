@@ -351,6 +351,7 @@ jobs:
         id: playwright
         env:
           BASE_URL: http://127.0.0.1:4173
+          RUN_CWV_SMOKE: '1'
         run: npx playwright test
 
       - name: Upload test results

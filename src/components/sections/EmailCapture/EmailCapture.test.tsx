@@ -82,7 +82,9 @@ describe('EmailCapture Section', () => {
     await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
 
     await waitFor(() => {
-      expect(screen.getByRole('alert')).toBeInTheDocument()
+      expect(screen.getByRole('alert')).toHaveTextContent(
+        /Failed to join waitlist\. Please try again\./
+      )
     })
   })
 

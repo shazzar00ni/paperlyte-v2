@@ -1,24 +1,25 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
-import { useAnalytics } from './useAnalytics'
-import * as analytics from '@utils/analytics'
+import { createScrollTracker } from '@/analytics/scrollDepth'
+import { trackEvent, trackCTAClick, trackExternalLink, trackSocialClick, AnalyticsEvents } from '@utils/analytics'
+import { useAnalytics } from '@/hooks/useAnalytics'
 
-// Mock analytics module
-vi.mock('@utils/analytics', () => ({
-  trackEvent: vi.fn(),
-  trackCTAClick: vi.fn(),
-  trackExternalLink: vi.fn(),
-  trackSocialClick: vi.fn(),
-  initScrollDepthTracking: vi.fn(() => vi.fn()),
-  AnalyticsEvents: {
-    WAITLIST_JOIN: 'waitlist_join',
-    WAITLIST_SUBMIT: 'waitlist_submit',
-    WAITLIST_SUCCESS: 'waitlist_success',
-    WAITLIST_ERROR: 'waitlist_error',
-    FAQ_EXPAND: 'faq_expand',
-    NAVIGATION_CLICK: 'navigation_click',
-  },
+// Stub createScrollTracker so tests don't depend on DOM scroll events
+vi.mock('@/analytics/scrollDepth', () => ({
+  createScrollTracker: vi.fn(() => ({ disable: vi.fn() })),
 }))
+
+// Stub tracking functions so we can assert they are called correctly
+vi.mock('@utils/analytics', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@utils/analytics')>()
+  return {
+    ...actual,
+    trackEvent: vi.fn(),
+    trackCTAClick: vi.fn(),
+    trackExternalLink: vi.fn(),
+    trackSocialClick: vi.fn(),
+  }
+})
 
 describe('useAnalytics', () => {
   beforeEach(() => {
@@ -26,35 +27,51 @@ describe('useAnalytics', () => {
   })
 
   describe('scroll depth tracking', () => {
-    it('should initialize scroll depth tracking on mount', () => {
-      renderHook(() => useAnalytics())
-      expect(analytics.initScrollDepthTracking).toHaveBeenCalledTimes(1)
+    it('initialises scroll tracking on mount when enabled', () => {
+      renderHook(() => useAnalytics(true))
+      expect(createScrollTracker).toHaveBeenCalledTimes(1)
     })
 
-    it('should not initialize scroll depth tracking when disabled', () => {
+    it('fires SCROLL_DEPTH event when the scroll callback is invoked', () => {
+      renderHook(() => useAnalytics(true))
+
+      // Grab the callback that useAnalytics passed to createScrollTracker
+      const cb = vi.mocked(createScrollTracker).mock.calls[0][0]
+      cb(75 as Parameters<typeof cb>[0])
+
+      expect(trackEvent).toHaveBeenCalledWith(AnalyticsEvents.SCROLL_DEPTH, {
+        depth_percentage: 75,
+      })
+    })
+
+    it('does not initialise scroll tracking when disabled', () => {
       renderHook(() => useAnalytics(false))
-      expect(analytics.initScrollDepthTracking).not.toHaveBeenCalled()
+      expect(createScrollTracker).not.toHaveBeenCalled()
     })
 
-    it('should call cleanup on unmount', () => {
-      const cleanupFn = vi.fn()
-      vi.mocked(analytics.initScrollDepthTracking).mockReturnValue(cleanupFn)
+    it('calls tracker.disable() on unmount', () => {
+      const disableMock = vi.fn()
+      vi.mocked(createScrollTracker).mockReturnValueOnce({ disable: disableMock })
 
-      const { unmount } = renderHook(() => useAnalytics())
+      const { unmount } = renderHook(() => useAnalytics(true))
       unmount()
 
-      expect(cleanupFn).toHaveBeenCalledTimes(1)
+      expect(disableMock).toHaveBeenCalledTimes(1)
     })
+  })
 
-    it('should not call cleanup on unmount when tracking is disabled', () => {
-      const cleanupFn = vi.fn()
-      vi.mocked(analytics.initScrollDepthTracking).mockReturnValue(cleanupFn)
-
-      const { unmount } = renderHook(() => useAnalytics(false))
-      unmount()
-
-      expect(cleanupFn).not.toHaveBeenCalled()
-    })
+  it('returns tracking functions', () => {
+    const { result } = renderHook(() => useAnalytics())
+    expect(typeof result.current.trackEvent).toBe('function')
+    expect(typeof result.current.trackCTA).toBe('function')
+    expect(typeof result.current.trackExternal).toBe('function')
+    expect(typeof result.current.trackSocial).toBe('function')
+    expect(typeof result.current.trackNavigation).toBe('function')
+    expect(typeof result.current.trackWaitlistJoin).toBe('function')
+    expect(typeof result.current.trackWaitlistSubmit).toBe('function')
+    expect(typeof result.current.trackWaitlistSuccess).toBe('function')
+    expect(typeof result.current.trackWaitlistError).toBe('function')
+    expect(typeof result.current.trackFAQExpand).toBe('function')
   })
 
   describe('trackEvent', () => {
@@ -65,7 +82,7 @@ describe('useAnalytics', () => {
         result.current.trackEvent('test_event')
       })
 
-      expect(analytics.trackEvent).toHaveBeenCalledWith('test_event', undefined)
+      expect(trackEvent).toHaveBeenCalledWith('test_event', undefined)
     })
 
     it('should call trackEvent with event name and params', () => {
@@ -75,7 +92,7 @@ describe('useAnalytics', () => {
         result.current.trackEvent('test_event', { key: 'value' })
       })
 
-      expect(analytics.trackEvent).toHaveBeenCalledWith('test_event', { key: 'value' })
+      expect(trackEvent).toHaveBeenCalledWith('test_event', { key: 'value' })
     })
   })
 
@@ -87,7 +104,7 @@ describe('useAnalytics', () => {
         result.current.trackCTA('Join Waitlist', 'hero')
       })
 
-      expect(analytics.trackCTAClick).toHaveBeenCalledWith('Join Waitlist', 'hero')
+      expect(trackCTAClick).toHaveBeenCalledWith('Join Waitlist', 'hero')
     })
   })
 
@@ -99,7 +116,7 @@ describe('useAnalytics', () => {
         result.current.trackExternal('https://example.com', 'Example')
       })
 
-      expect(analytics.trackExternalLink).toHaveBeenCalledWith('https://example.com', 'Example')
+      expect(trackExternalLink).toHaveBeenCalledWith('https://example.com', 'Example')
     })
   })
 
@@ -111,7 +128,7 @@ describe('useAnalytics', () => {
         result.current.trackSocial('twitter')
       })
 
-      expect(analytics.trackSocialClick).toHaveBeenCalledWith('twitter')
+      expect(trackSocialClick).toHaveBeenCalledWith('twitter')
     })
   })
 
@@ -123,7 +140,7 @@ describe('useAnalytics', () => {
         result.current.trackWaitlistJoin('hero_section')
       })
 
-      expect(analytics.trackEvent).toHaveBeenCalledWith('waitlist_join', {
+      expect(trackEvent).toHaveBeenCalledWith(AnalyticsEvents.WAITLIST_JOIN, {
         button_location: 'hero_section',
       })
     })
@@ -137,7 +154,7 @@ describe('useAnalytics', () => {
         result.current.trackWaitlistSubmit('footer')
       })
 
-      expect(analytics.trackEvent).toHaveBeenCalledWith('waitlist_submit', {
+      expect(trackEvent).toHaveBeenCalledWith(AnalyticsEvents.WAITLIST_SUBMIT, {
         form_location: 'footer',
       })
     })
@@ -151,7 +168,7 @@ describe('useAnalytics', () => {
         result.current.trackWaitlistSuccess()
       })
 
-      expect(analytics.trackEvent).toHaveBeenCalledWith('waitlist_success', {})
+      expect(trackEvent).toHaveBeenCalledWith(AnalyticsEvents.WAITLIST_SUCCESS, {})
     })
   })
 
@@ -163,7 +180,7 @@ describe('useAnalytics', () => {
         result.current.trackWaitlistError('INVALID_EMAIL', 'hero')
       })
 
-      expect(analytics.trackEvent).toHaveBeenCalledWith('waitlist_error', {
+      expect(trackEvent).toHaveBeenCalledWith(AnalyticsEvents.WAITLIST_ERROR, {
         error_code: 'INVALID_EMAIL',
         form_location: 'hero',
       })
@@ -178,7 +195,7 @@ describe('useAnalytics', () => {
         result.current.trackFAQExpand(3)
       })
 
-      expect(analytics.trackEvent).toHaveBeenCalledWith('faq_expand', {
+      expect(trackEvent).toHaveBeenCalledWith(AnalyticsEvents.FAQ_EXPAND, {
         question_index: 3,
       })
     })
@@ -192,18 +209,10 @@ describe('useAnalytics', () => {
         result.current.trackNavigation('/features', 'Features')
       })
 
-      expect(analytics.trackEvent).toHaveBeenCalledWith('navigation_click', {
+      expect(trackEvent).toHaveBeenCalledWith(AnalyticsEvents.NAVIGATION_CLICK, {
         destination: '/features',
         link_text: 'Features',
       })
-    })
-  })
-
-  describe('events constant', () => {
-    it('should expose AnalyticsEvents as events property', () => {
-      const { result } = renderHook(() => useAnalytics())
-
-      expect(result.current.events).toBe(analytics.AnalyticsEvents)
     })
   })
 

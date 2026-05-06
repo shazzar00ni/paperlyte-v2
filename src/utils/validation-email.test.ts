@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   validateEmail,
+  isValidEmail,
   normalizeEmail,
   validateEmailDomain,
   suggestEmailCorrection,
@@ -117,6 +118,23 @@ describe('suggestEmailCorrection', () => {
   it('should preserve local part when suggesting correction', () => {
     const suggestion = suggestEmailCorrection('test.user+tag@gmial.com')
     expect(suggestion).toBe('test.user+tag@gmail.com')
+  })
+})
+
+describe('isValidEmail', () => {
+  it('returns true for a valid email address', () => {
+    expect(isValidEmail('user@example.com')).toBe(true)
+    expect(isValidEmail('test.user+tag@example.co.uk')).toBe(true)
+  })
+
+  it('returns false for an invalid email address', () => {
+    expect(isValidEmail('')).toBe(false)
+    expect(isValidEmail('not-an-email')).toBe(false)
+    expect(isValidEmail('@example.com')).toBe(false)
+  })
+
+  it('returns false for a disposable-domain email', () => {
+    expect(isValidEmail('user@mailinator.com')).toBe(false)
   })
 })
 

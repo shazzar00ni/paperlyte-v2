@@ -32,23 +32,19 @@ export const Header = (): React.ReactElement => {
   const menuButtonRef = useRef<HTMLButtonElement>(null)
   const menuRef = useRef<HTMLUListElement>(null)
 
-  const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen)
-  }
-
-  const closeMobileMenu = useCallback(() => {
-    setMobileMenuOpen(false)
-    // Return focus to menu button when closing
-    menuButtonRef.current?.focus()
+  const toggleMobileMenu = useCallback((): void => {
+    setMobileMenuOpen((prev) => !prev)
   }, [])
 
+  const closeMobileMenu = useCallback((): void => {
+    if (!mobileMenuOpen) return
+    setMobileMenuOpen(false)
+    menuButtonRef.current?.focus()
+  }, [mobileMenuOpen])
+
   const scrollToSection = useCallback(
-    (sectionId: string) => {
-      // Use the shared utility so lazy-loaded sections (e.g. #download) are
-      // observed and scrolled to once their chunk mounts.
+    (sectionId: string): void => {
       scrollToSectionUtil(sectionId)
-      // Close the mobile menu regardless of whether the section is mounted yet —
-      // otherwise the menu would stay open while waiting for a lazy chunk.
       closeMobileMenu()
     },
     [closeMobileMenu]
@@ -181,13 +177,7 @@ export const Header = (): React.ReactElement => {
               </a>
             </li>
             <li className={styles.navCta}>
-              <Button
-                variant="primary"
-                size="small"
-                onClick={() => {
-                  scrollToSection('download')
-                }}
-              >
+              <Button variant="primary" size="small" onClick={() => scrollToSection('download')}>
                 Get Started
               </Button>
             </li>

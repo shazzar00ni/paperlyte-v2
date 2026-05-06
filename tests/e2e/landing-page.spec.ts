@@ -57,10 +57,6 @@ test.describe('Landing Page', () => {
   // Core Web Vitals monitor for this project.
   test('load-performance smoke check (FCP/LCP/CLS)', async ({ page, browserName }) => {
     test.skip(browserName !== 'chromium', 'Performance test runs on chromium only')
-    test.skip(
-      process.env.RUN_CWV_SMOKE !== '1',
-      'Skip unless RUN_CWV_SMOKE=1 — set in CI env or run locally with RUN_CWV_SMOKE=1 npx playwright test'
-    )
 
     await page.goto('/')
     await page.waitForLoadState('load')

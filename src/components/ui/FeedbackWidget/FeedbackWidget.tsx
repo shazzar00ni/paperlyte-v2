@@ -21,6 +21,41 @@ interface FeedbackEntry extends FeedbackFormData {
   timestamp: string
 }
 
+/** Returns true when `e` is a well-formed {@link FeedbackEntry} object. */
+function isFeedbackEntry(e: unknown): e is FeedbackEntry {
+  if (typeof e !== 'object' || e === null) return false
+  const entry = e as Record<string, unknown>
+  return (
+    (entry.type === 'bug' || entry.type === 'feature') &&
+    typeof entry.message === 'string' &&
+    typeof entry.timestamp === 'string'
+  )
+}
+
+/**
+ * Parses a JSON-serialised feedback array from localStorage.
+ * Returns a validated array of {@link FeedbackEntry} items on success, or an
+ * empty array if the stored value is not valid JSON / not an array.
+ * Any oversized messages are capped to {@link FEEDBACK_MESSAGE_MAX_LENGTH}.
+ */
+function parseFeedbackArray(stored: string): FeedbackEntry[] {
+  try {
+    const parsed: unknown = JSON.parse(stored)
+    if (!Array.isArray(parsed)) return []
+    return parsed
+      .filter(isFeedbackEntry)
+      .map((e) => ({
+        ...e,
+        // Normalise legacy stored entries so oversized messages from
+        // older builds do not continue to inflate localStorage usage.
+        message: e.message.slice(0, FEEDBACK_MESSAGE_MAX_LENGTH),
+      }))
+  } catch (parseError) {
+    console.error('Failed to parse stored feedback from localStorage', parseError)
+    return []
+  }
+}
+
 /**
  * Reads the existing feedback array from localStorage, normalises legacy
  * oversized messages, enforces the {@link MAX_FEEDBACK_ENTRIES} cap, appends
@@ -31,34 +66,8 @@ interface FeedbackEntry extends FeedbackFormData {
  *   The original storage error is available as `error.cause`.
  */
 function saveFeedbackToLocalStorage(entry: FeedbackEntry): void {
-  const existingFeedback = localStorage.getItem('paperlyte_feedback')
-  let feedbackArray: FeedbackEntry[] = []
-
-  if (existingFeedback) {
-    try {
-      const parsed: unknown = JSON.parse(existingFeedback)
-      if (Array.isArray(parsed)) {
-        feedbackArray = parsed
-          .filter(
-            (e): e is FeedbackEntry =>
-              typeof e === 'object' &&
-              e !== null &&
-              (e.type === 'bug' || e.type === 'feature') &&
-              typeof e.message === 'string' &&
-              typeof e.timestamp === 'string'
-          )
-          .map((e) => ({
-            ...e,
-            // Normalise legacy stored entries so oversized messages from
-            // older builds do not continue to inflate localStorage usage.
-            message: e.message.slice(0, FEEDBACK_MESSAGE_MAX_LENGTH),
-          }))
-      }
-    } catch (parseError) {
-      console.error('Failed to parse stored feedback from localStorage', parseError)
-      feedbackArray = []
-    }
-  }
+  const stored = localStorage.getItem('paperlyte_feedback')
+  let feedbackArray = stored ? parseFeedbackArray(stored) : []
 
   // Enforce entry cap: keep only the most recent (MAX_FEEDBACK_ENTRIES - 1)
   // entries so the new one fits within the limit, preventing unbounded growth.

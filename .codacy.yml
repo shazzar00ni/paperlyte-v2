@@ -74,6 +74,7 @@ exclude_patterns:
 
 # Exclude paths from code analysis
 exclude_paths:
+  - '.github/workflows/sonarcloud.yml'
   - 'node_modules/**'
   - 'dist/**'
   - 'coverage/**'

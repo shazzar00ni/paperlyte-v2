@@ -185,3 +185,8 @@ workflows:
       - e2e:
           requires:
             - build
+          filters:
+            branches:
+              only:
+                - main
+                - /claude\/.*/

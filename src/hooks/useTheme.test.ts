@@ -431,7 +431,11 @@ describe('useTheme with persistence disabled', () => {
     // localStorage.setItem should not have been called for theme storage
     // (it may be called for other things, so we check specifically)
     const themeSetCalls = localStorageMock.setItem.mock.calls.filter(
-      (call) => call[0] === 'theme' || call[0] === 'theme-user-preference'
+      (call) =>
+        call[0] === 'theme' ||
+        call[0] === 'theme-user-preference' ||
+        call[0] === 'paperlyte:v1:theme' ||
+        call[0] === 'paperlyte:v1:theme-user-preference'
     )
     expect(themeSetCalls).toHaveLength(0)
   })

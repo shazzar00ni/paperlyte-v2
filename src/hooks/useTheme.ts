@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { PERSISTENCE_CONFIG } from '@constants/config'
 
 type Theme = 'light' | 'dark'
@@ -35,7 +35,9 @@ export const useTheme = () => {
   }
 
   // Track if user has explicitly set a preference (not just from system)
-  const userHasExplicitPreference = useRef(getInitialUserPreference())
+  const [userHasExplicitPreference, setUserHasExplicitPreference] = useState(() =>
+    getInitialUserPreference()
+  )
 
   const [theme, setTheme] = useState<Theme>(() => {
     // SSR guard: return default theme if not in browser
@@ -80,11 +82,11 @@ export const useTheme = () => {
       localStorage.setItem(THEME_STORAGE_KEY, theme)
 
       // Save user preference flag if they've explicitly chosen
-      if (userHasExplicitPreference.current) {
+      if (userHasExplicitPreference) {
         localStorage.setItem(USER_PREFERENCE_KEY, 'true')
       }
     }
-  }, [theme, persistenceEnabled])
+  }, [theme, persistenceEnabled, userHasExplicitPreference])
 
   // Listen for system preference changes
   useEffect(() => {
@@ -95,7 +97,7 @@ export const useTheme = () => {
     const handleChange = (e: MediaQueryListEvent) => {
       // Only update if user hasn't explicitly set a preference
       // (or if persistence is disabled, always follow system)
-      if (!userHasExplicitPreference.current || !persistenceEnabled) {
+      if (!userHasExplicitPreference || !persistenceEnabled) {
         setTheme(e.matches ? 'dark' : 'light')
       }
     }
@@ -104,12 +106,12 @@ export const useTheme = () => {
     return () => {
       mediaQuery.removeEventListener('change', handleChange)
     }
-  }, [persistenceEnabled])
+  }, [persistenceEnabled, userHasExplicitPreference])
 
   const toggleTheme = () => {
     // Mark that user has explicitly set a preference (only meaningful if persistence enabled)
     if (persistenceEnabled) {
-      userHasExplicitPreference.current = true
+      setUserHasExplicitPreference(true)
     }
     setTheme((prev) => (prev === 'light' ? 'dark' : 'light'))
   }

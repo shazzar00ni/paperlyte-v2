@@ -340,7 +340,7 @@ describe('package-lock.json – axios security update (GHSA-3p68-rc4w-qgx5)', ()
 // The override in package.json forces >= 5.2.1.
 // ---------------------------------------------------------------------------
 
-describe('package-lock.json – basic-ftp security update (GHSA-chqc-8p9q-pq6q)', () => {
+describe('package-lock.json – basic-ftp security update (GHSA-chqc-8p9q-pq6q + GHSA-rpmf-866q-6p89)', () => {
   interface PackageLock {
     lockfileVersion: number
     packages: Record<string, { version: string; resolved: string; dev?: boolean }>
@@ -359,22 +359,28 @@ describe('package-lock.json – basic-ftp security update (GHSA-chqc-8p9q-pq6q)'
     expect(lockfile.packages).toHaveProperty('node_modules/basic-ftp')
   })
 
-  it('basic-ftp should NOT be the vulnerable version 5.2.0', () => {
-    expect(entry.version).not.toBe('5.2.0')
+  it('basic-ftp should NOT be in the vulnerable range (<= 5.3.0)', () => {
+    const [major, minor, patch] = entry.version.split('.').map(Number)
+    const isVulnerable =
+      major < 5 || (major === 5 && minor < 3) || (major === 5 && minor === 3 && patch <= 0)
+    expect(isVulnerable, `basic-ftp ${entry.version} is in the vulnerable range (<= 5.3.0)`).toBe(
+      false
+    )
   })
 
-  it('basic-ftp version should be >= 5.2.1 (not vulnerable)', () => {
+  it('basic-ftp version should be >= 5.3.1 (not vulnerable)', () => {
     const [major, minor, patch] = entry.version.split('.').map(Number)
-    const isAtLeast5_2_1 =
-      major > 5 || (major === 5 && minor > 2) || (major === 5 && minor === 2 && patch >= 1)
+    const isAtLeast5_3_1 =
+      major > 5 || (major === 5 && minor > 3) || (major === 5 && minor === 3 && patch >= 1)
     expect(
-      isAtLeast5_2_1,
-      `basic-ftp ${entry.version} is below the minimum safe version 5.2.1`
+      isAtLeast5_3_1,
+      `basic-ftp ${entry.version} is below the minimum safe version 5.3.1`
     ).toBe(true)
   })
 
-  it('basic-ftp resolved URL should not point to the vulnerable 5.2.0 release', () => {
-    expect(entry.resolved).not.toContain('basic-ftp-5.2.0.tgz')
+  it('basic-ftp resolved URL should not point to a vulnerable release', () => {
+    expect(entry.resolved).not.toMatch(/basic-ftp-5\.[0-2]\.\d+\.tgz/)
+    expect(entry.resolved).not.toContain('basic-ftp-5.3.0.tgz')
   })
 })
 

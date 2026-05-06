@@ -8,6 +8,7 @@ import {
   type AnalyticsEventParams,
 } from '@utils/analytics'
 import { createScrollTracker } from '@/analytics/scrollDepth'
+import type { ScrollDepth } from '@/analytics/types'
 
 /**
  * React hook for analytics tracking with automatic scroll depth tracking
@@ -33,7 +34,7 @@ export function useAnalytics(enableScrollTracking = true) {
   useEffect(() => {
     if (!enableScrollTracking) return
 
-    const tracker = createScrollTracker((depth: number): void => {
+    const tracker = createScrollTracker((depth: ScrollDepth): void => {
       trackEvent(AnalyticsEvents.SCROLL_DEPTH, { depth_percentage: depth })
     })
     return (): void => {

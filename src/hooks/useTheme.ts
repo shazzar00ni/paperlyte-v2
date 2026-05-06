@@ -34,7 +34,9 @@ export const useTheme = () => {
   // that's the entire component lifetime, since persistenceEnabled is a
   // build-time constant. This is not a hard "read once" guarantee (React may
   // invoke the factory more than once, e.g. under StrictMode in dev), but the
-  // read is idempotent and side-effect-free, so re-invocation is harmless.
+  // read is idempotent, so re-invocation is harmless. The catch path calls
+  // logError, which is a side effect, but storage errors are exceptional so
+  // logging on re-invocation is benign.
   // The try/catch guards against SecurityError in sandboxed iframes or when
   // storage is blocked in private-browsing mode.
   const initialUserPref = useMemo(() => {

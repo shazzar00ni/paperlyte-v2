@@ -166,10 +166,8 @@ function trackCLS(callback: ReportCallback): MetricTracker {
 
     // Cleanup function to disconnect observer
     const cleanup = () => {
-      if (observer) {
-        observer.disconnect()
-        observer = null
-      }
+      observer?.disconnect()
+      observer = null
     }
 
     return { finalize, cleanup }
@@ -191,7 +189,7 @@ function trackTTFB(callback: ReportCallback): void {
       | (PerformanceEntry & { responseStart?: number })
       | undefined
 
-    if (navigationEntry && navigationEntry.responseStart) {
+    if (navigationEntry?.responseStart) {
       const value = navigationEntry.responseStart
       callback({
         name: 'TTFB',
@@ -308,10 +306,8 @@ function trackINP(callback: ReportCallback): MetricTracker {
 
     // Cleanup function to disconnect observer
     const cleanup = () => {
-      if (observer) {
-        observer.disconnect()
-        observer = null
-      }
+      observer?.disconnect()
+      observer = null
     }
 
     return { finalize, cleanup }

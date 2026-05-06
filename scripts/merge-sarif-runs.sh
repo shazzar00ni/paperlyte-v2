@@ -2,8 +2,19 @@
 #
 # merge-sarif-runs.sh
 #
-# Merges multiple SARIF runs into a single run to comply with GitHub's July 2025
-# requirement that each SARIF upload must have a single run per category.
+# Prepares a Codacy-generated SARIF file for GitHub Code Scanning upload:
+#
+# - When the file has ≤20 runs: strips partialFingerprints from each run so
+#   github/codeql-action/upload-sarif can compute consistent fingerprints, while
+#   preserving each tool's original name. This lets GitHub Code Scanning track
+#   per-tool alerts correctly and auto-close alerts when a tool's findings change.
+#
+# - When the file has >20 runs: merges all runs into a single "Codacy" run to
+#   comply with GitHub's July 2025 limit of 20 runs per SARIF upload.
+#   NOTE: merging renames all tools to "Codacy", which means GitHub Code Scanning
+#   cannot auto-close per-tool alerts from previous uploads under their original
+#   tool names. Keep the run count ≤20 (via .codacy.yml engine settings) to avoid
+#   this limitation.
 #
 # See: https://github.blog/changelog/2025-07-21-code-scanning-will-stop-combining-multiple-sarif-runs-uploaded-in-the-same-sarif-file/
 #
@@ -15,6 +26,9 @@
 #   1 - Error (invalid input, jq failure, or invalid output)
 
 set -e
+
+# GitHub Code Scanning limit: max runs per SARIF upload
+MAX_RUNS=20
 
 # --- Argument parsing ---
 INPUT_FILE="${1:-}"
@@ -35,24 +49,28 @@ fi
 RUN_COUNT=$(jq '.runs | length' "$INPUT_FILE")
 echo "Found $RUN_COUNT runs in SARIF file"
 
-if [ "$RUN_COUNT" -le 1 ]; then
-  echo "Single run detected, no merging needed"
-  # Strip partialFingerprints even for single-run files so that
-  # github/codeql-action/upload-sarif can calculate its own consistent
-  # fingerprints from source-file line hashes without conflicting with
-  # pre-embedded values from the analysis tool.
-  SINGLE_RUN_TEMP=$(mktemp)
-  trap 'rm -f "$SINGLE_RUN_TEMP"' EXIT
-  if ! jq 'del(.runs[].results[]?.partialFingerprints)' "$INPUT_FILE" > "$SINGLE_RUN_TEMP"; then
-    echo "Error: jq fingerprint-strip failed for single run"
+if [ "$RUN_COUNT" -le "$MAX_RUNS" ]; then
+  echo "Run count (${RUN_COUNT}) is within the ${MAX_RUNS}-run limit — preserving original tool names."
+  # Strip partialFingerprints from all runs so that github/codeql-action/upload-sarif
+  # can calculate its own consistent fingerprints from source-file line hashes without
+  # conflicting with pre-embedded values from the analysis tools.
+  # Preserving tool names allows GitHub Code Scanning to:
+  #   - Track alerts per-tool (e.g. "Csslint (reported by Codacy)")
+  #   - Auto-close stale alerts when a tool's findings change or the tool stops running
+  STRIP_TEMP=$(mktemp)
+  trap 'rm -f "$STRIP_TEMP"' EXIT
+  if ! jq 'del(.runs[].results[]?.partialFingerprints)' "$INPUT_FILE" > "$STRIP_TEMP"; then
+    echo "Error: jq fingerprint-strip failed"
     exit 1
   fi
-  mv "$SINGLE_RUN_TEMP" "$OUTPUT_FILE"
+  mv "$STRIP_TEMP" "$OUTPUT_FILE"
   trap - EXIT
+  echo "Fingerprints stripped. Run count unchanged: $(jq '.runs | length' "$OUTPUT_FILE")"
   exit 0
 fi
 
-echo "Merging $RUN_COUNT runs into a single run..."
+echo "Run count (${RUN_COUNT}) exceeds the ${MAX_RUNS}-run limit — merging all runs into a single 'Codacy' run..."
+echo "Note: merging renames tools to 'Codacy'. Keep run count ≤${MAX_RUNS} via .codacy.yml to preserve per-tool alert tracking."
 
 # --- Create temporary file for merge output ---
 TEMP_FILE=$(mktemp)

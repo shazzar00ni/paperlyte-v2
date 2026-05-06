@@ -34,6 +34,8 @@ engines:
       - '**/*.spec.ts'
   # --- Disabled engines: prevent auto-detection from pushing run count over 20 ---
   # CSS/JS linters not needed alongside ESLint
+  # Note: csslint 1.0.5 does not support modern CSS features (Grid fr units, CSS custom
+  # properties). Its Jan 2026 stale alert is a false positive dismissed in the workflow.
   csslint:
     enabled: false
   stylelint:
@@ -59,6 +61,16 @@ engines:
     enabled: false
   # Duplication detector (runs separately but adds a run to the SARIF)
   pmd-legacy:
+    enabled: false
+  # Tools that auto-detect but cannot find applicable files in this project:
+  # disabling prevents empty SARIF runs that inflate the run count toward the 20-run limit.
+  biome:
+    enabled: false
+  remark-lint:
+    enabled: false
+  agentlinter:
+    enabled: false
+  spectral:
     enabled: false
 
 # Exclude specific patterns in test files where they are false positives

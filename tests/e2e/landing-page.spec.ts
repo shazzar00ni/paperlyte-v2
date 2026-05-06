@@ -55,8 +55,9 @@ test.describe('Landing Page', () => {
   // This is NOT a full Core Web Vitals gate: it measures FCP/LCP/CLS only (no INP/FID,
   // since those require real user interaction). Lighthouse CI is the authoritative
   // Core Web Vitals monitor for this project.
-  test('load-performance smoke check (FCP/LCP/CLS)', async ({ page, browserName }) => {
+  test('load-performance smoke check (FCP/LCP/CLS)', async ({ page, browserName, isMobile }) => {
     test.skip(browserName !== 'chromium', 'Performance test runs on chromium only')
+    test.skip(isMobile, 'Performance budgets target desktop viewport')
 
     await page.goto('/')
     await page.waitForLoadState('load')
@@ -236,8 +237,8 @@ test.describe('Landing Page', () => {
     await emailInput.fill(rawEmail)
     await submitButton.click()
 
-    // Accept both straight (') and typographic (') apostrophes for cross-environment robustness
-    await expect(page.getByText(/You['']re on the list!/i)).toBeVisible({ timeout: 5000 })
+    // Accept both straight (U+0027) and typographic (U+2019) apostrophes for cross-environment robustness
+    await expect(page.getByText(/You['\u2019]re on the list!/i)).toBeVisible({ timeout: 5000 })
 
     // Assert the component sent the normalised (trimmed + lowercased) email
     expect(capturedPostBody).not.toBeNull()

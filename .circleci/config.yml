@@ -71,7 +71,7 @@ jobs:
           # saved and re-raised after artifact upload so JUnit + coverage HTML
           # are preserved even when tests fail.
           command: |
-            mkdir -p test-results
+            mkdir -p test-results coverage
             set +e
             npm run test:coverage -- --run
             echo $? > /tmp/test-exit-code

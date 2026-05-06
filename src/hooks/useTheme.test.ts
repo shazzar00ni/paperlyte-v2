@@ -138,11 +138,10 @@ describe('useTheme', () => {
         return originalGetItem(key)
       })
 
-      let result: ReturnType<typeof renderHook<ReturnType<typeof useTheme>>>
-      expect(() => {
-        result = renderHook(() => useTheme())
-      }).not.toThrow()
-      expect(result!.result.current.theme).toBe('light')
+      const render = () => renderHook(() => useTheme())
+      expect(render).not.toThrow()
+      const { result } = render()
+      expect(result.current.theme).toBe('light')
 
       localStorageMock.getItem = originalGetItem
     })

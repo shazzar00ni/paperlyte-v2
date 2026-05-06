@@ -67,12 +67,6 @@ const migrateLegacyTheme = (): void => {
 export const useTheme = () => {
   const persistenceEnabled = PERSISTENCE_CONFIG.ALLOW_PERSISTENT_THEME
 
-  // Migrate legacy unversioned keys before reading any preferences so that
-  // useRef and useState both see the updated versioned keys.
-  if (isBrowser && persistenceEnabled) {
-    migrateLegacyTheme()
-  }
-
   // Get initial user preference flag from localStorage (only during init, not reactive)
   const getInitialUserPreference = (): boolean => {
     if (!isBrowser || !persistenceEnabled) return false
@@ -92,17 +86,26 @@ export const useTheme = () => {
   }
 
   // Track if user has explicitly set a preference (not just from system)
-  const userHasExplicitPreference = useRef(getInitialUserPreference())
+  const userHasExplicitPreference = useRef(false)
 
   const [theme, setTheme] = useState<Theme>(() => {
     // SSR guard: return default theme if not in browser
     if (!isBrowser) return 'light'
+
+    // Migrate legacy unversioned keys inside the lazy initializer so it runs
+    // exactly once per hook instance (not on every render).
+    if (persistenceEnabled) {
+      migrateLegacyTheme()
+    }
 
     // Only check localStorage if persistence is enabled
     if (persistenceEnabled) {
       try {
         // Check if user has explicitly set a preference before
         const hasUserPreference = getInitialUserPreference()
+
+        // Initialise the ref so it reflects post-migration storage state.
+        userHasExplicitPreference.current = hasUserPreference
 
         // Check localStorage for saved theme
         const stored = localStorage.getItem(THEME_STORAGE_KEY)

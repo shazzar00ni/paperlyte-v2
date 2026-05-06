@@ -105,14 +105,14 @@ describe('navigation utilities', () => {
 
     it('should reject backslash-based protocol-relative URLs', () => {
       // Browsers like Chrome and Safari treat backslashes as forward slashes
-      expect(isSafeUrl('\\\\example.com')).toBe(false)
-      expect(isSafeUrl('\\\\evil.com/path')).toBe(false)
+      expect(isSafeUrl(String.raw`\\example.com`)).toBe(false)
+      expect(isSafeUrl(String.raw`\\evil.com/path`)).toBe(false)
     })
 
     it('should reject mixed slash combinations', () => {
       // Mixed slash combinations can bypass naive validation
-      expect(isSafeUrl('/\\example.com')).toBe(false)
-      expect(isSafeUrl('/\\evil.com/path')).toBe(false)
+      expect(isSafeUrl(String.raw`/\example.com`)).toBe(false)
+      expect(isSafeUrl(String.raw`/\evil.com/path`)).toBe(false)
     })
 
     it('should reject encoded backslash bypasses', () => {
@@ -180,7 +180,7 @@ describe('navigation utilities', () => {
     })
 
     it('should allow same-origin absolute URLs', () => {
-      const currentOrigin = window.location.origin
+      const currentOrigin = globalThis.location.origin
       expect(isSafeUrl(currentOrigin)).toBe(true)
       expect(isSafeUrl(`${currentOrigin}/`)).toBe(true)
       expect(isSafeUrl(`${currentOrigin}/page`)).toBe(true)
@@ -205,12 +205,12 @@ describe('navigation utilities', () => {
 
     beforeEach(() => {
       vi.clearAllMocks()
-      originalLocation = window.location
+      originalLocation = globalThis.location
     })
 
     it('should navigate to safe relative URLs', () => {
       const mockLocation = { href: '' } as Location
-      Object.defineProperty(window, 'location', {
+      Object.defineProperty(globalThis, 'location', {
         value: mockLocation,
         writable: true,
         configurable: true,
@@ -218,9 +218,9 @@ describe('navigation utilities', () => {
 
       const result = safeNavigate('/')
       expect(result).toBe(true)
-      expect(window.location.href).toBe('/')
-      // Restore window.location
-      Object.defineProperty(window, 'location', {
+      expect(globalThis.location.href).toBe('/')
+      // Restore globalThis.location
+      Object.defineProperty(globalThis, 'location', {
         value: originalLocation,
         writable: true,
         configurable: true,
@@ -229,7 +229,7 @@ describe('navigation utilities', () => {
 
     it('should block navigation to external HTTPS URLs (prevents open redirect)', () => {
       const mockLocation = { href: '', origin: 'http://localhost' } as Location
-      Object.defineProperty(window, 'location', {
+      Object.defineProperty(globalThis, 'location', {
         value: mockLocation,
         writable: true,
         configurable: true,
@@ -242,8 +242,8 @@ describe('navigation utilities', () => {
       expect(consoleWarnSpy).toHaveBeenCalled()
 
       consoleWarnSpy.mockRestore()
-      // Restore window.location
-      Object.defineProperty(window, 'location', {
+      // Restore globalThis.location
+      Object.defineProperty(globalThis, 'location', {
         value: originalLocation,
         writable: true,
         configurable: true,
@@ -252,7 +252,7 @@ describe('navigation utilities', () => {
 
     it('should block navigation to javascript: URLs', () => {
       const mockLocation = { href: '', origin: 'http://localhost' } as Location
-      Object.defineProperty(window, 'location', {
+      Object.defineProperty(globalThis, 'location', {
         value: mockLocation,
         writable: true,
         configurable: true,
@@ -265,8 +265,8 @@ describe('navigation utilities', () => {
       expect(consoleWarnSpy).toHaveBeenCalled()
 
       consoleWarnSpy.mockRestore()
-      // Restore window.location
-      Object.defineProperty(window, 'location', {
+      // Restore globalThis.location
+      Object.defineProperty(globalThis, 'location', {
         value: originalLocation,
         writable: true,
         configurable: true,
@@ -275,7 +275,7 @@ describe('navigation utilities', () => {
 
     it('should return true for successful navigation', () => {
       const mockLocation = { href: '' } as Location
-      Object.defineProperty(window, 'location', {
+      Object.defineProperty(globalThis, 'location', {
         value: mockLocation,
         writable: true,
         configurable: true,
@@ -284,8 +284,8 @@ describe('navigation utilities', () => {
       const result = safeNavigate('/about')
       expect(result).toBe(true)
 
-      // Restore window.location
-      Object.defineProperty(window, 'location', {
+      // Restore globalThis.location
+      Object.defineProperty(globalThis, 'location', {
         value: originalLocation,
         writable: true,
         configurable: true,
@@ -294,7 +294,7 @@ describe('navigation utilities', () => {
 
     it('should return false for blocked navigation', () => {
       const mockLocation = { href: '', origin: 'http://localhost' } as Location
-      Object.defineProperty(window, 'location', {
+      Object.defineProperty(globalThis, 'location', {
         value: mockLocation,
         writable: true,
         configurable: true,
@@ -306,8 +306,8 @@ describe('navigation utilities', () => {
       expect(result).toBe(false)
 
       consoleWarnSpy.mockRestore()
-      // Restore window.location
-      Object.defineProperty(window, 'location', {
+      // Restore globalThis.location
+      Object.defineProperty(globalThis, 'location', {
         value: originalLocation,
         writable: true,
         configurable: true,
@@ -320,12 +320,12 @@ describe('navigation utilities', () => {
 
     beforeEach(() => {
       vi.clearAllMocks()
-      originalLocation = window.location
+      originalLocation = globalThis.location
     })
 
     it('should allow navigation to external HTTPS URLs', () => {
       const mockLocation = { href: '', origin: 'http://localhost' } as Location
-      Object.defineProperty(window, 'location', {
+      Object.defineProperty(globalThis, 'location', {
         value: mockLocation,
         writable: true,
         configurable: true,
@@ -335,8 +335,8 @@ describe('navigation utilities', () => {
       expect(result).toBe(true)
       expect(mockLocation.href).toBe('https://example.com')
 
-      // Restore window.location
-      Object.defineProperty(window, 'location', {
+      // Restore globalThis.location
+      Object.defineProperty(globalThis, 'location', {
         value: originalLocation,
         writable: true,
         configurable: true,
@@ -345,7 +345,7 @@ describe('navigation utilities', () => {
 
     it('should allow navigation to external HTTP URLs', () => {
       const mockLocation = { href: '', origin: 'http://localhost' } as Location
-      Object.defineProperty(window, 'location', {
+      Object.defineProperty(globalThis, 'location', {
         value: mockLocation,
         writable: true,
         configurable: true,
@@ -355,8 +355,8 @@ describe('navigation utilities', () => {
       expect(result).toBe(true)
       expect(mockLocation.href).toBe('http://example.com/page')
 
-      // Restore window.location
-      Object.defineProperty(window, 'location', {
+      // Restore globalThis.location
+      Object.defineProperty(globalThis, 'location', {
         value: originalLocation,
         writable: true,
         configurable: true,
@@ -365,7 +365,7 @@ describe('navigation utilities', () => {
 
     it('should block navigation to javascript: URLs', () => {
       const mockLocation = { href: '', origin: 'http://localhost' } as Location
-      Object.defineProperty(window, 'location', {
+      Object.defineProperty(globalThis, 'location', {
         value: mockLocation,
         writable: true,
         configurable: true,
@@ -378,8 +378,8 @@ describe('navigation utilities', () => {
       expect(consoleWarnSpy).toHaveBeenCalled()
 
       consoleWarnSpy.mockRestore()
-      // Restore window.location
-      Object.defineProperty(window, 'location', {
+      // Restore globalThis.location
+      Object.defineProperty(globalThis, 'location', {
         value: originalLocation,
         writable: true,
         configurable: true,
@@ -388,7 +388,7 @@ describe('navigation utilities', () => {
 
     it('should block navigation to data: URLs', () => {
       const mockLocation = { href: '', origin: 'http://localhost' } as Location
-      Object.defineProperty(window, 'location', {
+      Object.defineProperty(globalThis, 'location', {
         value: mockLocation,
         writable: true,
         configurable: true,
@@ -402,8 +402,8 @@ describe('navigation utilities', () => {
       expect(mockLocation.href).toBe('')
 
       consoleWarnSpy.mockRestore()
-      // Restore window.location
-      Object.defineProperty(window, 'location', {
+      // Restore globalThis.location
+      Object.defineProperty(globalThis, 'location', {
         value: originalLocation,
         writable: true,
         configurable: true,
@@ -412,7 +412,7 @@ describe('navigation utilities', () => {
 
     it('should block navigation to protocol-relative URLs', () => {
       const mockLocation = { href: '', origin: 'http://localhost' } as Location
-      Object.defineProperty(window, 'location', {
+      Object.defineProperty(globalThis, 'location', {
         value: mockLocation,
         writable: true,
         configurable: true,
@@ -426,8 +426,8 @@ describe('navigation utilities', () => {
       expect(mockLocation.href).toBe('')
 
       consoleWarnSpy.mockRestore()
-      // Restore window.location
-      Object.defineProperty(window, 'location', {
+      // Restore globalThis.location
+      Object.defineProperty(globalThis, 'location', {
         value: originalLocation,
         writable: true,
         configurable: true,
@@ -435,15 +435,15 @@ describe('navigation utilities', () => {
     })
 
     it('should return false in SSR environment', () => {
-      const originalWindow = global.window
+      const originalWindow = globalThis.window
       // @ts-expect-error - Testing SSR environment
-      delete global.window
+      delete globalThis.window
 
       const result = safeNavigateExternal('https://example.com')
       expect(result).toBe(false)
 
       // Restore window
-      global.window = originalWindow
+      globalThis.window = originalWindow
     })
   })
 })

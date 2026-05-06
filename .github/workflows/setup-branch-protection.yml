@@ -6,6 +6,9 @@ name: Setup Branch Protection
 on:
   workflow_dispatch:
 
+env:
+  PROTECTED_BRANCH: main
+
 permissions:
   contents: read
 
@@ -20,7 +23,7 @@ jobs:
 
       - name: Validate branch exists
         env:
-          BRANCH: main
+          BRANCH: ${{ env.PROTECTED_BRANCH }}
         run: |
           git fetch origin
           if git show-ref --verify --quiet "refs/remotes/origin/$BRANCH"; then
@@ -33,7 +36,7 @@ jobs:
       - name: Configure branch protection
         env:
           GITHUB_TOKEN: ${{ secrets.BRANCH_PROTECTION_TOKEN }}
-          BRANCH: main
+          BRANCH: ${{ env.PROTECTED_BRANCH }}
         run: |
           if [ -z "$GITHUB_TOKEN" ]; then
             echo "❌ Error: BRANCH_PROTECTION_TOKEN secret is not configured"

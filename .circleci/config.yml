@@ -1,8 +1,5 @@
 version: 2.1
 
-orbs:
-  node: circleci/node@7.2.1
-
 executors:
   node-executor:
     docker:
@@ -18,8 +15,17 @@ jobs:
       PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
     steps:
       - checkout
-      - node/install-packages:
-          pkg-manager: npm
+      - restore_cache:
+          keys:
+            - node-npm-cache-v1-{{ checksum "package-lock.json" }}
+            - node-npm-cache-v1-
+      - run:
+          name: Install dependencies
+          command: npm ci
+      - save_cache:
+          key: node-npm-cache-v1-{{ checksum "package-lock.json" }}
+          paths:
+            - ~/.npm
       - persist_to_workspace:
           root: .
           paths:
@@ -73,15 +79,12 @@ jobs:
             CI: "true"
       - store_test_results:
           path: test-results
-          when: always
       - store_artifacts:
           path: test-results
           destination: test-results
-          when: always
       - store_artifacts:
           path: coverage
           destination: coverage
-          when: always
       - run:
           name: Report test status
           when: always

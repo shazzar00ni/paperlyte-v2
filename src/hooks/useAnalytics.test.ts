@@ -27,7 +27,14 @@ describe('useAnalytics — scroll depth deferral', () => {
     vi.useFakeTimers()
     // resetAllMocks clears mockReturnValueOnce queues too, unlike clearAllMocks —
     // prevents stale queued values from test 3 (cancelled timer) leaking into test 4.
+    // Re-apply the default implementation after reset so initScrollDepthTracking
+    // always returns the expected shape; without this the hook throws accessing
+    // scrollDepth.cleanup/measureNow after reset clears the vi.mock() factory impl.
     vi.resetAllMocks()
+    vi.mocked(initScrollDepthTracking).mockImplementation(() => ({
+      cleanup: vi.fn(),
+      measureNow: vi.fn(),
+    }))
   })
 
   afterEach(() => {

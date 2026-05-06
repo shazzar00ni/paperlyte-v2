@@ -343,12 +343,13 @@ describe('package-lock.json – axios security update (multiple CVEs)', () => {
 })
 
 // ---------------------------------------------------------------------------
-// package-lock.json – basic-ftp FTP command injection fix (GHSA-chqc-8p9q-pq6q)
-// basic-ftp 5.2.0 allows FTP command injection via CRLF sequences.
-// The override in package.json forces >= 5.2.1.
+// package-lock.json – basic-ftp security fixes
+// GHSA-chqc-8p9q-pq6q: FTP command injection via CRLF in basic-ftp 5.2.0, fixed >= 5.2.1
+// GHSA-rpmf-866q-6p89: DoS via unbounded multiline control response in <= 5.3.0, fixed >= 5.3.1
+// The override in package.json forces >= 5.3.1.
 // ---------------------------------------------------------------------------
 
-describe('package-lock.json – basic-ftp security update (GHSA-chqc-8p9q-pq6q)', () => {
+describe('package-lock.json – basic-ftp security update (GHSA-chqc-8p9q-pq6q, GHSA-rpmf-866q-6p89)', () => {
   interface PackageLock {
     lockfileVersion: number
     packages: Record<string, { version: string; resolved: string; dev?: boolean }>
@@ -371,18 +372,19 @@ describe('package-lock.json – basic-ftp security update (GHSA-chqc-8p9q-pq6q)'
     expect(entry.version).not.toBe('5.2.0')
   })
 
-  it('basic-ftp version should be >= 5.2.1 (not vulnerable)', () => {
+  it('basic-ftp version should be >= 5.3.1 (minimum safe for all known CVEs)', () => {
     const [major, minor, patch] = entry.version.split('.').map(Number)
-    const isAtLeast5_2_1 =
-      major > 5 || (major === 5 && minor > 2) || (major === 5 && minor === 2 && patch >= 1)
+    const isAtLeast5_3_1 =
+      major > 5 || (major === 5 && minor > 3) || (major === 5 && minor === 3 && patch >= 1)
     expect(
-      isAtLeast5_2_1,
-      `basic-ftp ${entry.version} is below the minimum safe version 5.2.1`
+      isAtLeast5_3_1,
+      `basic-ftp ${entry.version} is below the minimum safe version 5.3.1`
     ).toBe(true)
   })
 
-  it('basic-ftp resolved URL should not point to the vulnerable 5.2.0 release', () => {
+  it('basic-ftp resolved URL should not point to a vulnerable release', () => {
     expect(entry.resolved).not.toContain('basic-ftp-5.2.0.tgz')
+    expect(entry.resolved).not.toContain('basic-ftp-5.3.0.tgz')
   })
 })
 

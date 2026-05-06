@@ -3,7 +3,7 @@ version: 2.1
 executors:
   node-executor:
     docker:
-      - image: cimg/node:20.18.1
+      - image: node:20.18.1-bullseye
     resource_class: medium
 
 jobs:

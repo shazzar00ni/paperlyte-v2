@@ -324,9 +324,7 @@ describe('package-lock.json – axios security update (multiple CVEs)', () => {
   it('axios version should be >= 1.15.2 (minimum safe version; installed: 1.16.0)', () => {
     const [major, minor, patch] = entry.version.split('.').map(Number)
     const isAtLeast1_15_2 =
-      major > 1 ||
-      (major === 1 && minor > 15) ||
-      (major === 1 && minor === 15 && patch >= 2)
+      major > 1 || (major === 1 && minor > 15) || (major === 1 && minor === 15 && patch >= 2)
     expect(
       isAtLeast1_15_2,
       `axios ${entry.version} is in the vulnerable range 1.0.0 – 1.15.1`
@@ -335,12 +333,11 @@ describe('package-lock.json – axios security update (multiple CVEs)', () => {
 
   it('axios should NOT be in the vulnerable range (1.0.0 – 1.15.1)', () => {
     const [major, minor, patch] = entry.version.split('.').map(Number)
-    const isVulnerable =
-      major === 1 && (minor < 15 || (minor === 15 && patch < 2))
+    const isVulnerable = major === 1 && (minor < 15 || (minor === 15 && patch < 2))
     expect(isVulnerable).toBe(false)
   })
 
-  it('axios resolved URL should point to the installed (safe) version', () => {
+  it('axios resolved URL should point to a non-vulnerable release', () => {
     expect(entry.resolved).toContain(`axios-${entry.version}`)
   })
 })

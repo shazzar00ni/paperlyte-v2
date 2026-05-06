@@ -144,13 +144,18 @@ describe('navigation utilities', () => {
   })
 
   describe('isAllowedAbsoluteUrl', () => {
-    it('should allow http: URLs', () => {
-      expect(isAllowedAbsoluteUrl('http://example.com')).toBe(true)
+    it('should allow same-origin http: URLs', () => {
+      const currentOrigin = window.location.origin
+      expect(isAllowedAbsoluteUrl(currentOrigin)).toBe(true)
     })
 
-    it('should allow https: URLs', () => {
-      expect(isAllowedAbsoluteUrl('https://example.com')).toBe(true)
-      expect(isAllowedAbsoluteUrl('https://github.com/path')).toBe(true)
+    it('should reject external https: URLs', () => {
+      expect(isAllowedAbsoluteUrl('https://example.com')).toBe(false)
+      expect(isAllowedAbsoluteUrl('https://github.com/path')).toBe(false)
+    })
+
+    it('should reject external http: URLs', () => {
+      expect(isAllowedAbsoluteUrl('http://example.com')).toBe(false)
     })
 
     it('should allow same-origin URLs', () => {
@@ -213,10 +218,10 @@ describe('navigation utilities', () => {
       expect(isSafeUrl('/path/with://protocol')).toBe(false)
     })
 
-    it('should allow external HTTP/HTTPS URLs (for linking to external resources)', () => {
-      expect(isSafeUrl('http://example.com')).toBe(true)
-      expect(isSafeUrl('https://example.com/page')).toBe(true)
-      expect(isSafeUrl('https://github.com')).toBe(true)
+    it('should reject external HTTP/HTTPS URLs (open-redirect prevention)', () => {
+      expect(isSafeUrl('http://example.com')).toBe(false)
+      expect(isSafeUrl('https://example.com/page')).toBe(false)
+      expect(isSafeUrl('https://github.com')).toBe(false)
     })
 
     it('should reject javascript: protocol URLs', () => {
@@ -338,24 +343,28 @@ describe('navigation utilities', () => {
       expect(mock.href).toBe('/search?q=test#results')
     })
 
-    // --- HTTPS URLs ---
+    // --- External URLs (blocked — open-redirect prevention) ---
 
-    it('should navigate to external HTTPS URL', () => {
-      const mock = mockLocation()
-      expect(safeNavigate('https://example.com')).toBe(true)
-      expect(mock.href).toBe('https://example.com')
+    it('should block external HTTPS URL', () => {
+      mockLocation()
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      expect(safeNavigate('https://example.com')).toBe(false)
+      expect(warnSpy).toHaveBeenCalled()
+      warnSpy.mockRestore()
     })
 
-    it('should navigate to HTTPS URL with path', () => {
-      const mock = mockLocation()
-      expect(safeNavigate('https://example.com/page?key=val')).toBe(true)
-      expect(mock.href).toBe('https://example.com/page?key=val')
+    it('should block HTTPS URL with path', () => {
+      mockLocation()
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      expect(safeNavigate('https://example.com/page?key=val')).toBe(false)
+      warnSpy.mockRestore()
     })
 
-    it('should navigate to HTTP URL', () => {
-      const mock = mockLocation()
-      expect(safeNavigate('http://example.com')).toBe(true)
-      expect(mock.href).toBe('http://example.com')
+    it('should block external HTTP URL', () => {
+      mockLocation()
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      expect(safeNavigate('http://example.com')).toBe(false)
+      warnSpy.mockRestore()
     })
 
     // --- javascript: protocol ---

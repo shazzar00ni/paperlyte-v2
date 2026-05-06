@@ -64,7 +64,7 @@ test.describe('Landing Page', () => {
     test.skip(!!process.env.CI, 'Skip performance tests in CI to avoid environment flakiness')
 
     await page.goto('/')
-    // Wait for a stable UI element instead of networkidle to avoid hangs on long-lived connections
+    // Wait for a stable visible UI element instead of relying on page load-state readiness
     await page.waitForSelector('h1', { state: 'visible' })
 
     // Measure Core Web Vitals using Performance Timeline

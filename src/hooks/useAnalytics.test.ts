@@ -35,16 +35,32 @@ describe('useAnalytics — scroll depth deferral', () => {
   })
 
   it('defers initScrollDepthTracking via setTimeout when requestIdleCallback is unavailable', () => {
-    // jsdom does not provide requestIdleCallback — the setTimeout fallback path is taken
-    expect(typeof (globalThis as unknown as Record<string, unknown>).requestIdleCallback).toBe(
-      'undefined'
+    const requestIdleCallbackDescriptor = Object.getOwnPropertyDescriptor(
+      globalThis,
+      'requestIdleCallback'
+    )
+    const cancelIdleCallbackDescriptor = Object.getOwnPropertyDescriptor(
+      globalThis,
+      'cancelIdleCallback'
     )
 
-    renderHook(() => useAnalytics(true))
-    expect(initScrollDepthTracking).not.toHaveBeenCalled()
+    Reflect.deleteProperty(globalThis, 'requestIdleCallback')
+    Reflect.deleteProperty(globalThis, 'cancelIdleCallback')
 
-    vi.runAllTimers()
-    expect(initScrollDepthTracking).toHaveBeenCalledTimes(1)
+    try {
+      renderHook(() => useAnalytics(true))
+      expect(initScrollDepthTracking).not.toHaveBeenCalled()
+
+      vi.runAllTimers()
+      expect(initScrollDepthTracking).toHaveBeenCalledTimes(1)
+    } finally {
+      if (requestIdleCallbackDescriptor) {
+        Object.defineProperty(globalThis, 'requestIdleCallback', requestIdleCallbackDescriptor)
+      }
+      if (cancelIdleCallbackDescriptor) {
+        Object.defineProperty(globalThis, 'cancelIdleCallback', cancelIdleCallbackDescriptor)
+      }
+    }
   })
 
   it('does not schedule scroll tracking when enableScrollTracking is false', () => {

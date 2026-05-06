@@ -15,8 +15,10 @@ const isValidTheme = (value: string | null): value is Theme => {
 }
 
 // One-time migration: move data from legacy unversioned keys to versioned keys.
-// Idempotent: exits immediately when no legacy keys exist, so safe to call on
-// every render (including React StrictMode double-invocation in dev).
+// Safe to call in the hook body on every render because it exits immediately when
+// no legacy keys exist (only 2 cheap localStorage.getItem reads on the hot path).
+// Concurrent-mode safe: the backfill-only writes and subsequent removeItem calls are
+// idempotent, so re-running an aborted render produces the same final storage state.
 // Handles partial-state: migrates each key independently so an orphaned
 // theme-user-preference key is cleaned up even when the theme key is absent.
 const migrateLegacyTheme = (): void => {
@@ -85,27 +87,26 @@ export const useTheme = () => {
     }
   }
 
+  // Migrate legacy unversioned keys before reading any preferences so that
+  // useRef and useState both see the updated versioned keys.
+  // The module-level guard in migrateLegacyTheme ensures writes/removes happen
+  // exactly once per session even when the hook re-renders.
+  if (isBrowser && persistenceEnabled) {
+    migrateLegacyTheme()
+  }
+
   // Track if user has explicitly set a preference (not just from system)
-  const userHasExplicitPreference = useRef(false)
+  const userHasExplicitPreference = useRef(getInitialUserPreference())
 
   const [theme, setTheme] = useState<Theme>(() => {
     // SSR guard: return default theme if not in browser
     if (!isBrowser) return 'light'
-
-    // Migrate legacy unversioned keys inside the lazy initializer so it runs
-    // exactly once per hook instance (not on every render).
-    if (persistenceEnabled) {
-      migrateLegacyTheme()
-    }
 
     // Only check localStorage if persistence is enabled
     if (persistenceEnabled) {
       try {
         // Check if user has explicitly set a preference before
         const hasUserPreference = getInitialUserPreference()
-
-        // Initialise the ref so it reflects post-migration storage state.
-        userHasExplicitPreference.current = hasUserPreference
 
         // Check localStorage for saved theme
         const stored = localStorage.getItem(THEME_STORAGE_KEY)

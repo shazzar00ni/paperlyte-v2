@@ -321,7 +321,7 @@ describe('package-lock.json – axios security update (multiple CVEs)', () => {
     expect(lockfile.packages).toHaveProperty('node_modules/axios')
   })
 
-  it('axios version should be >= 1.15.2 (minimum safe version; installed: 1.16.0)', () => {
+  it('axios version should be >= 1.15.2 (minimum safe version)', () => {
     const [major, minor, patch] = entry.version.split('.').map(Number)
     const isAtLeast1_15_2 =
       major > 1 || (major === 1 && minor > 15) || (major === 1 && minor === 15 && patch >= 2)

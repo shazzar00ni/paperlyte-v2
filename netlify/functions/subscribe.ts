@@ -224,10 +224,13 @@ export const handler: Handler = async (event: HandlerEvent) => {
     // header, potentially bypassing per-IP rate limiting.
     // Both keys are looked up on the lowercase-normalised copy of the request
     // headers so casing differences (e.g. `Client-IP`) are handled correctly.
-    const ip =
+    // The resolved value is trimmed to prevent whitespace variants (e.g.
+    // ' 1.2.3.4' vs '1.2.3.4') from producing separate rate-limit buckets.
+    const rawIp =
       reqHeaders["client-ip"] ??
       reqHeaders["x-forwarded-for"]?.split(",")[0] ??
-      "unknown";
+      "";
+    const ip = rawIp.trim() || "unknown";
 
     // Check rate limit
     if (!checkRateLimit(ip)) {

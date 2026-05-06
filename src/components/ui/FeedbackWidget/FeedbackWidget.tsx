@@ -10,10 +10,9 @@ const LEGACY_FEEDBACK_KEY = 'paperlyte_feedback'
 
 // One-time migration of feedback entries from the legacy unversioned key.
 // Module-level flag avoids repeated reads on every widget mount.
-// TODO: add test coverage for migrateLegacyFeedback (legacy-only, versioned-only,
-// both-present collision, and incognito/throwing-storage cases) — mirrors the
-// migration test suite in useTheme.test.ts. Note: the module-level flag means
-// tests must reset modules (vi.resetModules()) between cases.
+// Migration behavior is covered by FeedbackWidget.migration.test.tsx.
+// Because this uses a module-level flag, tests that exercise multiple cases
+// should reset modules (vi.resetModules()) between scenarios.
 let legacyFeedbackMigrationRun = false
 const migrateLegacyFeedback = (): void => {
   if (legacyFeedbackMigrationRun) return

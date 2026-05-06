@@ -92,8 +92,18 @@ if ! jq '
         rules: [.runs[].tool.driver.rules // [] | .[]] | unique_by(.id)
       }),
 
-      # EXTENSIONS: Combine all tool extensions and deduplicate by name/id
-      extensions: ([.runs[].tool.extensions // [] | .[]] | unique_by(.name // .id))
+      # EXTENSIONS: Combine all tool extensions and deduplicate by a composite key
+      extensions: (
+        [.runs[].tool.extensions // [] | .[]]
+        | unique_by(
+            (
+              (.name // "") + "|" +
+              (.id // "") + "|" +
+              (.guid // "") + "|" +
+              (tostring)
+            )
+          )
+      )
     },
 
     # -------------------------------------------------------------------------

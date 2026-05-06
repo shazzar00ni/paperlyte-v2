@@ -202,7 +202,7 @@ test.describe('Landing Page', () => {
     await expect(firstQuestion).toHaveAttribute('aria-expanded', 'false')
   })
 
-  test(‘should submit waitlist email and show success state’, async ({
+  test('should submit waitlist email and show success state', async ({
     page,
   }: {
     page: Page
@@ -212,21 +212,21 @@ test.describe('Landing Page', () => {
     // serve `/.netlify/functions/*`, which would otherwise return a 404 and
     // surface as the error state instead of the success state.
     let capturedPostBody: string | null = null
-    await page.route(‘**/.netlify/functions/subscribe’, async (route) => {
+    await page.route('**/.netlify/functions/subscribe', async (route) => {
       capturedPostBody = route.request().postData()
       await route.fulfill({
         status: 200,
-        contentType: ‘application/json’,
+        contentType: 'application/json',
         body: JSON.stringify({ success: true }),
       })
     })
 
-    await page.goto(‘/’)
+    await page.goto('/')
 
-    const emailInput = page.locator(‘#email-capture input[type="email"]’)
+    const emailInput = page.locator('#email-capture input[type="email"]')
     const submitButton = page
-      .locator(‘#email-capture’)
-      .getByRole(‘button’, { name: /join the waitlist/i })
+      .locator('#email-capture')
+      .getByRole('button', { name: /join the waitlist/i })
 
     // Use mixed-case to verify the component normalises (trim + lowercase) before POSTing.
     // Use a unique timestamp to avoid duplicate-rejection flakiness if pointed at a real backend.
@@ -236,8 +236,8 @@ test.describe('Landing Page', () => {
     await emailInput.fill(rawEmail)
     await submitButton.click()
 
-    // Accept both straight (‘) and typographic (‘) apostrophes for cross-environment robustness
-    await expect(page.getByText(/You[‘’]re on the list!/i)).toBeVisible({ timeout: 5000 })
+    // Accept both straight (') and typographic (') apostrophes for cross-environment robustness
+    await expect(page.getByText(/You['']re on the list!/i)).toBeVisible({ timeout: 5000 })
 
     // Assert the component sent the normalised (trimmed + lowercased) email
     expect(capturedPostBody).not.toBeNull()

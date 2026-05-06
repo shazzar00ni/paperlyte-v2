@@ -80,8 +80,17 @@ jobs:
           fi
 
       - name: Merge SARIF runs into single run
+        id: merge_sarif
         if: always() && hashFiles('eslint-results.sarif') != ''
         run: ./scripts/merge-sarif-runs.sh eslint-results.sarif
+
+      - name: Upload analysis results to GitHub
+        uses: github/codeql-action/upload-sarif@45cbd0c69e560cd9e7cd7f8c32362050c9b7ded2 # v4.32.2
+        if: always() && hashFiles('eslint-results.sarif') != '' && steps.merge_sarif.outcome == 'success'
+        with:
+          sarif_file: eslint-results.sarif
+          category: eslint
+          wait-for-processing: true
 
       - name: Upload analysis results to GitHub
         uses: github/codeql-action/upload-sarif@45cbd0c69e560cd9e7cd7f8c32362050c9b7ded2 # v4.32.2

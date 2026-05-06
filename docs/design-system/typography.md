@@ -23,7 +23,13 @@ font-family: 'Playfair Display', serif;
 ### Inter — UI and Body
 
 ```css
-font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+font-family:
+  'Inter',
+  system-ui,
+  -apple-system,
+  BlinkMacSystemFont,
+  'Segoe UI',
+  sans-serif;
 ```
 
 - **Role:** All body copy, UI labels, buttons, navigation, metadata
@@ -39,17 +45,17 @@ The system-font fallback stack (`system-ui, -apple-system…`) ensures zero-flas
 
 All sizes use `clamp()` for fluid scaling between mobile and desktop breakpoints. The minimum viewport is 320px; the maximum is 1280px.
 
-| Token | Mobile | Desktop | Element |
-|---|---|---|---|
-| `--font-size-5xl` | `2rem` (32px) | `3rem` (48px) | Hero headline (h1) |
-| `--font-size-4xl` | `1.75rem` (28px) | `2.25rem` (36px) | Section headline (h2) |
-| `--font-size-3xl` | `1.5rem` (24px) | `1.875rem` (30px) | Sub-section (h3) |
-| `--font-size-2xl` | `1.25rem` (20px) | `1.5rem` (24px) | Card headline (h4) |
-| `--font-size-xl` | `1.125rem` (18px) | `1.25rem` (20px) | Large body / h5 |
-| `--font-size-lg` | `1rem` (16px) | `1.125rem` (18px) | Lead paragraph |
-| `--font-size-base` | `1rem` (16px) | `1rem` (16px) | Body copy |
-| `--font-size-sm` | `0.875rem` (14px) | `0.875rem` (14px) | Captions, labels |
-| `--font-size-xs` | `0.75rem` (12px) | `0.75rem` (12px) | Fine print, tags |
+| Token              | Mobile            | Desktop           | Element               |
+| ------------------ | ----------------- | ----------------- | --------------------- |
+| `--font-size-5xl`  | `2rem` (32px)     | `3rem` (48px)     | Hero headline (h1)    |
+| `--font-size-4xl`  | `1.75rem` (28px)  | `2.25rem` (36px)  | Section headline (h2) |
+| `--font-size-3xl`  | `1.5rem` (24px)   | `1.875rem` (30px) | Sub-section (h3)      |
+| `--font-size-2xl`  | `1.25rem` (20px)  | `1.5rem` (24px)   | Card headline (h4)    |
+| `--font-size-xl`   | `1.125rem` (18px) | `1.25rem` (20px)  | Large body / h5       |
+| `--font-size-lg`   | `1rem` (16px)     | `1.125rem` (18px) | Lead paragraph        |
+| `--font-size-base` | `1rem` (16px)     | `1rem` (16px)     | Body copy             |
+| `--font-size-sm`   | `0.875rem` (14px) | `0.875rem` (14px) | Captions, labels      |
+| `--font-size-xs`   | `0.75rem` (12px)  | `0.75rem` (12px)  | Fine print, tags      |
 
 > **16px floor:** `--font-size-base` never scales below 16px. This prevents iOS Safari from auto-zooming on form inputs and maintains comfortable reading on small screens.
 
@@ -57,11 +63,11 @@ All sizes use `clamp()` for fluid scaling between mobile and desktop breakpoints
 
 ## Line Heights
 
-| Token | Value | Usage |
-|---|---|---|
-| `--line-height-tight` | `1.25` | Headlines — keeps multi-line headings compact |
-| `--line-height-normal` | `1.5` | Short body, UI labels |
-| `--line-height-relaxed` | `1.75` | Long-form paragraphs, feature descriptions |
+| Token                   | Value  | Usage                                         |
+| ----------------------- | ------ | --------------------------------------------- |
+| `--line-height-tight`   | `1.25` | Headlines — keeps multi-line headings compact |
+| `--line-height-normal`  | `1.5`  | Short body, UI labels                         |
+| `--line-height-relaxed` | `1.75` | Long-form paragraphs, feature descriptions    |
 
 **Rule:** Paragraphs (`<p>`) always use `--line-height-relaxed`. Headings always use `--line-height-tight`. Never apply relaxed line-height to headings — it makes large Playfair Display text feel sluggish.
 
@@ -69,12 +75,12 @@ All sizes use `clamp()` for fluid scaling between mobile and desktop breakpoints
 
 ## Font Weights
 
-| Token | Value | Usage |
-|---|---|---|
-| `--font-weight-normal` | `400` | Body copy, supporting text |
-| `--font-weight-medium` | `500` | Buttons, nav links, emphasis |
-| `--font-weight-semibold` | `600` | Sub-headings, card titles |
-| `--font-weight-bold` | `700` | Headlines, CTAs |
+| Token                    | Value | Usage                        |
+| ------------------------ | ----- | ---------------------------- |
+| `--font-weight-normal`   | `400` | Body copy, supporting text   |
+| `--font-weight-medium`   | `500` | Buttons, nav links, emphasis |
+| `--font-weight-semibold` | `600` | Sub-headings, card titles    |
+| `--font-weight-bold`     | `700` | Headlines, CTAs              |
 
 ---
 
@@ -83,19 +89,42 @@ All sizes use `clamp()` for fluid scaling between mobile and desktop breakpoints
 Defined globally in `src/styles/typography.css`:
 
 ```css
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: 'Playfair Display', serif;
   font-weight: var(--font-weight-bold);
   line-height: var(--line-height-tight);
   color: var(--color-text-primary);
 }
 
-h1 { font-size: var(--font-size-5xl); margin-bottom: var(--spacing-md); }
-h2 { font-size: var(--font-size-4xl); margin-bottom: var(--spacing-md); }
-h3 { font-size: var(--font-size-3xl); margin-bottom: var(--spacing-sm); }
-h4 { font-size: var(--font-size-2xl); margin-bottom: var(--spacing-sm); }
-h5 { font-size: var(--font-size-xl);  margin-bottom: var(--spacing-sm); }
-h6 { font-size: var(--font-size-lg);  margin-bottom: var(--spacing-sm); }
+h1 {
+  font-size: var(--font-size-5xl);
+  margin-bottom: var(--spacing-md);
+}
+h2 {
+  font-size: var(--font-size-4xl);
+  margin-bottom: var(--spacing-md);
+}
+h3 {
+  font-size: var(--font-size-3xl);
+  margin-bottom: var(--spacing-sm);
+}
+h4 {
+  font-size: var(--font-size-2xl);
+  margin-bottom: var(--spacing-sm);
+}
+h5 {
+  font-size: var(--font-size-xl);
+  margin-bottom: var(--spacing-sm);
+}
+h6 {
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--spacing-sm);
+}
 ```
 
 ---
@@ -119,15 +148,31 @@ Body paragraphs use `--color-text-secondary` (#6b7280) by default — this subtl
 Defined in `src/styles/typography.css`:
 
 ```css
-.text-primary     { color: var(--color-primary); }
-.text-center      { text-align: center; }
-.text-left        { text-align: left; }
-.text-right       { text-align: right; }
+.text-primary {
+  color: var(--color-primary);
+}
+.text-center {
+  text-align: center;
+}
+.text-left {
+  text-align: left;
+}
+.text-right {
+  text-align: right;
+}
 
-.font-normal      { font-weight: var(--font-weight-normal); }
-.font-medium      { font-weight: var(--font-weight-medium); }
-.font-semibold    { font-weight: var(--font-weight-semibold); }
-.font-bold        { font-weight: var(--font-weight-bold); }
+.font-normal {
+  font-weight: var(--font-weight-normal);
+}
+.font-medium {
+  font-weight: var(--font-weight-medium);
+}
+.font-semibold {
+  font-weight: var(--font-weight-semibold);
+}
+.font-bold {
+  font-weight: var(--font-weight-bold);
+}
 ```
 
 ---
@@ -155,7 +200,7 @@ Small all-caps labels above section headlines:
 
 ```css
 .eyebrow {
-  font-family: var(--font-family);       /* Inter */
+  font-family: var(--font-family); /* Inter */
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
   letter-spacing: 0.1em;
@@ -170,8 +215,7 @@ Small all-caps labels above section headlines:
 Feature metrics displayed in large Playfair Display numerals:
 
 ```html
-<span class="stat-number">10ms</span>
-<span class="stat-label">keystroke response</span>
+<span class="stat-number">10ms</span> <span class="stat-label">keystroke response</span>
 ```
 
 ```css
@@ -202,11 +246,11 @@ Feature metrics displayed in large Playfair Display numerals:
 
 ## Prohibited Patterns
 
-| Pattern | Reason |
-|---|---|
-| Using `font-size` below `--font-size-sm` for body text | Accessibility violation |
-| Raw pixel values (`font-size: 14px`) | Prevents user browser font-size scaling |
-| `text-align: justify` | Harms readability for dyslexic users |
-| Playfair Display for body copy | Not optimised for small sizes; harms legibility |
-| Inter for primary headlines | Lacks the editorial weight the brand requires |
-| `letter-spacing` on lowercase body copy | Impairs readability of Inter at normal sizes |
+| Pattern                                                | Reason                                          |
+| ------------------------------------------------------ | ----------------------------------------------- |
+| Using `font-size` below `--font-size-sm` for body text | Accessibility violation                         |
+| Raw pixel values (`font-size: 14px`)                   | Prevents user browser font-size scaling         |
+| `text-align: justify`                                  | Harms readability for dyslexic users            |
+| Playfair Display for body copy                         | Not optimised for small sizes; harms legibility |
+| Inter for primary headlines                            | Lacks the editorial weight the brand requires   |
+| `letter-spacing` on lowercase body copy                | Impairs readability of Inter at normal sizes    |

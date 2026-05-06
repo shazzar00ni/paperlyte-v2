@@ -337,8 +337,8 @@ The subscribe function restricts requests to a specific origin for security. By 
 To adjust rate limits, edit `netlify/functions/subscribe.ts`:
 
 ```typescript
-const RATE_LIMIT_REQUESTS = 5; // Increase from 3
-const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
+const RATE_LIMIT_REQUESTS = 5 // Increase from 3
+const RATE_LIMIT_WINDOW = 60 * 1000 // 1 minute
 ```
 
 ---

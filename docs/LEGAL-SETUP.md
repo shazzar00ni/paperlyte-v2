@@ -156,19 +156,16 @@ File: `docs/PRIVACY-POLICY.md`
 **Key sections to review:**
 
 1. **Section 3: Data Storage & Security**
-
    - Update cloud provider details
    - Verify encryption standards
    - Confirm backup policies
 
 2. **Section 4: Data Sharing**
-
    - List your actual service providers
    - Update the service provider table
    - Add or remove providers as needed
 
 3. **Section 8: International Data Transfers**
-
    - Verify transfer mechanisms (SCCs, etc.)
    - Update if operating internationally
 
@@ -196,24 +193,20 @@ File: `docs/TERMS-OF-SERVICE.md`
 **Key sections to review with your attorney:**
 
 1. **Section 5: Payment & Subscriptions**
-
    - Verify pricing and refund policies match your business model
    - Update payment methods
    - Confirm tax handling
 
 2. **Section 6: Service Availability**
-
    - Review SLA guarantees (99.9% uptime)
    - Update support response times
    - Adjust for your service tiers
 
 3. **Section 9: Limitation of Liability**
-
    - **CRITICAL**: Have attorney review liability caps
    - Ensure compliance with local consumer protection laws
 
 4. **Section 15: Dispute Resolution**
-
    - **CRITICAL**: Arbitration clauses vary by jurisdiction
    - Confirm class action waiver is enforceable in your region
    - Update arbitration provider (AAA vs. others)
@@ -257,6 +250,7 @@ Use this checklist to ensure everything is properly configured:
 - [ ] Liability limitations reviewed by attorney
 - [ ] Arbitration clause reviewed by attorney
 - [ ] Service descriptions match what you offer
+
 ---
 
 ## 🧪 Step 4: Testing
@@ -266,11 +260,11 @@ Use this checklist to ensure everything is properly configured:
 Run this in your browser console or add to your tests:
 
 ```typescript
-import { needsLegalReview, getPlaceholderFields } from "@/constants/legal";
+import { needsLegalReview, getPlaceholderFields } from '@/constants/legal'
 
 if (needsLegalReview()) {
-  console.warn("Legal documents need review!");
-  console.warn("Missing:", getPlaceholderFields());
+  console.warn('Legal documents need review!')
+  console.warn('Missing:', getPlaceholderFields())
 }
 ```
 

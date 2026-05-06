@@ -7,6 +7,7 @@ import {
   handleArrowNavigation,
   handleHomeEndNavigation,
 } from '@utils/keyboard'
+import { scrollToSection as scrollToSectionUtil } from '@utils/navigation'
 import styles from './Header.module.css'
 
 /**
@@ -31,23 +32,20 @@ export const Header = (): React.ReactElement => {
   const menuButtonRef = useRef<HTMLButtonElement>(null)
   const menuRef = useRef<HTMLUListElement>(null)
 
-  const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen)
-  }
-
-  const closeMobileMenu = useCallback(() => {
-    setMobileMenuOpen(false)
-    // Return focus to menu button when closing
-    menuButtonRef.current?.focus()
+  const toggleMobileMenu = useCallback((): void => {
+    setMobileMenuOpen((prev) => !prev)
   }, [])
 
+  const closeMobileMenu = useCallback((): void => {
+    if (!mobileMenuOpen) return
+    setMobileMenuOpen(false)
+    menuButtonRef.current?.focus()
+  }, [mobileMenuOpen])
+
   const scrollToSection = useCallback(
-    (sectionId: string) => {
-      const element = document.getElementById(sectionId)
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' })
-        closeMobileMenu()
-      }
+    (sectionId: string): void => {
+      scrollToSectionUtil(sectionId)
+      closeMobileMenu()
     },
     [closeMobileMenu]
   )
@@ -61,7 +59,9 @@ export const Header = (): React.ReactElement => {
     }
 
     document.addEventListener('keydown', handleEscape)
-    return () => document.removeEventListener('keydown', handleEscape)
+    return () => {
+      document.removeEventListener('keydown', handleEscape)
+    }
   }, [mobileMenuOpen, closeMobileMenu])
 
   // Focus trap for mobile menu
@@ -96,7 +96,9 @@ export const Header = (): React.ReactElement => {
     // Focus first element when menu opens
     firstFocusable?.focus()
 
-    return () => menu.removeEventListener('keydown', handleTabKey)
+    return () => {
+      menu.removeEventListener('keydown', handleTabKey)
+    }
   }, [mobileMenuOpen])
 
   // Arrow key navigation for menu items
@@ -131,7 +133,9 @@ export const Header = (): React.ReactElement => {
 
     menu.addEventListener('keydown', handleArrowKeys)
 
-    return () => menu.removeEventListener('keydown', handleArrowKeys)
+    return () => {
+      menu.removeEventListener('keydown', handleArrowKeys)
+    }
   }, [mobileMenuOpen])
 
   return (

@@ -239,7 +239,7 @@ Monitor these metrics to meet Paperlyte's performance goals:
 
 If you still encounter this error:
 
-1. Verify `netlify.toml` contains `base = "."` 
+1. Verify `netlify.toml` contains `base = "."`
 2. Check Netlify dashboard: Site settings → Build & deploy → Build settings
 3. Ensure "Base directory" field matches the `netlify.toml` configuration
 4. Clear build cache and redeploy

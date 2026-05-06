@@ -31,6 +31,7 @@
   margin-bottom: var(--spacing-lg);
 }
 
+/* accessibility-fixed: issue-808 - added :focus-visible with white outline for dark Mobile section background */
 .link {
   display: inline-flex;
   align-items: center;
@@ -49,6 +50,12 @@
 .link:hover {
   opacity: 0.8;
   gap: var(--spacing-sm);
+}
+
+.link:focus-visible {
+  outline: 2px solid var(--color-text-on-dark);
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 
 .link i {

@@ -10,9 +10,9 @@ Paperlyte does not use a traditional 12-column CSS grid framework. Instead, it u
 
 Two container widths are defined:
 
-| Class / Token | Width | Use |
-|---|---|---|
-| `.container` + `--max-width` | `1280px` | Outer page container — all sections |
+| Class / Token                                | Width    | Use                                     |
+| -------------------------------------------- | -------- | --------------------------------------- |
+| `.container` + `--max-width`                 | `1280px` | Outer page container — all sections     |
 | `.container-content` + `--max-width-content` | `1024px` | Text-heavy sections (CTA, FAQ, Problem) |
 
 `.container` centers itself and provides horizontal padding. `.container-content` only sets `max-width` — it has **no** `margin: auto` of its own, so it inherits the left-alignment of its parent. To center prose within a section, apply both classes to the same element, or add explicit centering to the inner element:
@@ -50,12 +50,16 @@ Used by the Features section and similar 3-up layouts:
 
 /* Tablet */
 @media (max-width: 768px) {
-  .grid { grid-template-columns: repeat(2, 1fr); }
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 /* Mobile */
 @media (max-width: 480px) {
-  .grid { grid-template-columns: 1fr; }
+  .grid {
+    grid-template-columns: 1fr;
+  }
 }
 ```
 
@@ -83,13 +87,13 @@ Used by the Solution and Mobile sections:
 
 ## Breakpoints
 
-| Name | Width | Target |
-|---|---|---|
-| Desktop | > 1024px | Primary layout |
-| Tablet | ≤ 1024px | Two-column collapses |
-| Tablet small | ≤ 768px | Grid collapses to 2 columns; hamburger nav |
-| Mobile | ≤ 480px | Single column; reduced spacing; floating elements hidden |
-| Mobile small | ≤ 375px | Fine-tune font sizes and padding |
+| Name         | Width    | Target                                                   |
+| ------------ | -------- | -------------------------------------------------------- |
+| Desktop      | > 1024px | Primary layout                                           |
+| Tablet       | ≤ 1024px | Two-column collapses                                     |
+| Tablet small | ≤ 768px  | Grid collapses to 2 columns; hamburger nav               |
+| Mobile       | ≤ 480px  | Single column; reduced spacing; floating elements hidden |
+| Mobile small | ≤ 375px  | Fine-tune font sizes and padding                         |
 
 **Mobile-first philosophy:** Write base styles for mobile, then add desktop overrides with `@media (min-width: ...)`. Exception: complex desktop-only features (parallax, floating elements) use `@media (max-width: 768px) { display: none }` for simplicity.
 
@@ -119,10 +123,10 @@ Every page section follows a consistent vertical rhythm:
 
 ### Section Background Variants
 
-| Variant | Background | Foreground |
-|---|---|---|
-| `default` | `--color-background` (#fff) | Standard text colours |
-| `surface` | `--color-surface` (#f9fafb) | Standard text colours |
+| Variant   | Background                       | Foreground                                                                         |
+| --------- | -------------------------------- | ---------------------------------------------------------------------------------- |
+| `default` | `--color-background` (#fff)      | Standard text colours                                                              |
+| `surface` | `--color-surface` (#f9fafb)      | Standard text colours                                                              |
 | `primary` | `--color-surface-dark` (#18181b) | `--color-text-on-dark` (white) — used for dark, high-contrast sections like Mobile |
 
 Alternate section backgrounds (default → surface → primary → default…) to create visual rhythm without adding colour. Use the `primary` variant when you want a dark `--color-surface-dark` section with `--color-text-on-dark` contrast, as in the Mobile section.
@@ -149,6 +153,7 @@ Alternate section backgrounds (default → surface → primary → default…) t
 ## Footer Layout
 
 Desktop (3-column):
+
 ```text
 ┌──────────────┬──────────────┬──────────────┐
 │ Brand column │ Product links│ Legal links  │
@@ -199,11 +204,11 @@ Defined in `src/styles/utilities.css`:
 
 ## Z-Index Layers
 
-| Layer | Token | Value |
-|---|---|---|
-| Header | `--z-header` | 1000 |
-| Modal / Drawer | `--z-modal` | 2000 |
-| Tooltip / Popover | `--z-tooltip` | 3000 |
+| Layer             | Token         | Value |
+| ----------------- | ------------- | ----- |
+| Header            | `--z-header`  | 1000  |
+| Modal / Drawer    | `--z-modal`   | 2000  |
+| Tooltip / Popover | `--z-tooltip` | 3000  |
 
 Always use tokens rather than raw z-index values. This prevents stacking context conflicts as the layout grows.
 

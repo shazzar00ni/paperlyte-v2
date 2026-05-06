@@ -11,12 +11,20 @@ coverage:
     file: 70
 
 engines:
+  # --- Enabled engines (well under the 20-run SARIF limit) ---
   semgrep:
     enabled: true
+  # eslint-9: authoritative ESLint engine — uses eslint.config.js (flat config, ESLint 9+).
   eslint-9:
     enabled: true
-  eslint-8:
-    enabled: true
+  # eslint (legacy, ESLint 7 + @typescript-eslint v4): disabled to prevent duplicate analysis
+  # alongside eslint-9. The repo contains .eslintrc.cjs for tools that do not support flat
+  # config (e.g. Codacy's own legacy runner), but Codacy should only run eslint-9 here.
+  # Codacy's legacy Docker image bundles its own plugins and does NOT use the project's
+  # node_modules, so the project's @typescript-eslint v8.x does not create a peer-dep
+  # conflict — this entry is disabled purely to avoid redundant findings.
+  eslint:
+    enabled: false
   lizard:
     enabled: true
     exclude_paths:
@@ -24,26 +32,42 @@ engines:
       - '**/*.test.ts'
       - '**/*.spec.tsx'
       - '**/*.spec.ts'
+  # --- Disabled engines: prevent auto-detection from pushing run count over 20 ---
+  # CSS/JS linters not needed alongside ESLint
+  csslint:
+    enabled: false
+  stylelint:
+    enabled: false
+  jshint:
+    enabled: false
+  # Deprecated TypeScript linter
+  tslint:
+    enabled: false
+  # Security scanners – semgrep covers this project's security needs
+  trivy:
+    enabled: false
+  checkov:
+    enabled: false
+  # Container/IaC tools not applicable to this web project
+  hadolint:
+    enabled: false
+  # Shell scripts exist (.github/scripts/, scripts/, public/mockups/)
+  shellcheck:
+    enabled: true
+  # Docs linter not required
+  markdownlint:
+    enabled: false
+  # Duplication detector (runs separately but adds a run to the SARIF)
+  pmd-legacy:
+    enabled: false
 
 # Exclude specific patterns in test files where they are false positives
 # validation-utils.test.ts: RegExp constructor is used with pre-escaped strings
 # to validate the escapeRegExp function behavior. These are intentional and safe.
-# validation-sanitization.test.ts: HTML strings are intentionally used to test
-# sanitizeInput and encodeHtmlEntities functions. These are not XSS vulnerabilities.
 exclude_patterns:
   - identifier: "Security/detect-non-literal-regexp"
     paths:
       - "src/utils/validation-utils.test.ts"
-  - identifier: "ESLint8_security_detect-non-literal-regexp"
-    paths:
-      - "src/utils/validation-utils.test.ts"
-  - identifier: "ESLint8_xss_no-mixed-html"
-    paths:
-      - "src/utils/validation-sanitization.test.ts"
-  # Disable SCSS-specific stylelint rule for CSS files (this project uses CSS, not SCSS)
-  - identifier: "scss_function-disallowed-list"
-    paths:
-      - "**/*.css"
 
 # Exclude paths from code analysis
 exclude_paths:
@@ -58,19 +82,6 @@ exclude_paths:
   - 'scripts/**'
   - '**/*.min.js'
 
-# Note: Codacy ESLint8 engine reports some false positive issues for non-literal RegExp
-# patterns (ESLint8_security_detect-non-literal-regexp, ESLint8_security-node_non-literal-reg-expr).
-# Most are now excluded via test file exclusions above.
-# For any remaining false positives in component tests:
-# 1. All RegExp inputs are sanitized via escapeRegExp() utility
-# 2. Input sources are constants (FAQ_ITEMS, PRICING_PLANS, COMPETITORS), not user input
-# 3. Semgrep scans these lines and approves them with inline nosemgrep suppressions
-# 4. Every usage has clear safety documentation comments
-#
-# We attempted multiple suppression approaches:
-# - Global exclude_patterns: Not recognized by Codacy
-# - Engine-level exclusions: Not supported
-# - Inline codacy-disable-next-line comments: Not working
-# - Now using test file exclusions (exclude_paths) which works
-#
-# Any warnings in non-test files should be manually marked as "Won't Fix" or "False Positive" in Codacy UI.
+# Note: semgrep may report false positives for non-literal RegExp patterns in tests.
+# All RegExp inputs are sanitized via escapeRegExp(); input sources are constants, not user input.
+# Remaining false positives in non-test files can be marked "Won't Fix" in the Codacy UI.

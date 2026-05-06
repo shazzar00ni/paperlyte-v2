@@ -38,7 +38,7 @@ If you experience difficulty accessing any part of the Paperlyte platform, or wi
 
 - Email: [accessibility@paperlyte.com](mailto:accessibility@paperlyte.com)
 - Alternate: [legal@paperlyte.com](mailto:legal@paperlyte.com)
-We aim to respond to accessibility requests within 5 business days.
+  We aim to respond to accessibility requests within 5 business days.
 
 ## Accessibility Remediation Plan
 
@@ -47,7 +47,7 @@ For details on our ongoing efforts and planned improvements, see our [Accessibil
 ## Target Completion & Responsible Owner
 
 - **Target for full WCAG 2.1 AA conformance:** March 31, 2026
-- **Accessibility Owner:** Jane Doe, Accessibility Lead (accessibility@paperlyte.com)
+- **Accessibility Owner:** Jane Doe, Accessibility Lead (<accessibility@paperlyte.com>)
 
 ## Statement Updates
 

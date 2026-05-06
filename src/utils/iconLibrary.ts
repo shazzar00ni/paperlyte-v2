@@ -59,6 +59,8 @@ import {
   faArrowRight, // Navigation forward
   faArrowLeft, // Navigation back
   faSpinner, // Loading states
+  faHome, // Home/back to home
+  faTriangleExclamation, // Error/warning indicator
 } from '@fortawesome/free-solid-svg-icons'
 // Brand icons (from free-brands-svg-icons)
 import {
@@ -122,6 +124,8 @@ library.add(
   faArrowRight,
   faArrowLeft,
   faSpinner,
+  faHome,
+  faTriangleExclamation,
   // Brand icons
   faGithub,
   faTwitter,
@@ -184,6 +188,8 @@ export const iconNameMap: Record<string, string> = {
   'fa-arrow-left': 'arrow-left', // Navigation back.
   'fa-spinner': 'spinner', // Loading states.
   'fa-circle-check': 'circle-check', // Checkmark/success indicator.
+  'fa-home': 'home', // Home/back to home.
+  'fa-triangle-exclamation': 'triangle-exclamation', // Error/warning indicator.
 }
 
 /**

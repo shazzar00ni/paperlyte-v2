@@ -7,9 +7,95 @@ import styles from './FeedbackWidget.module.css'
 
 type FeedbackType = 'bug' | 'feature'
 
+// Maximum number of feedback entries retained in localStorage to bound storage growth.
+const MAX_FEEDBACK_ENTRIES = 20
+// Maximum character length for a stored feedback message.
+const FEEDBACK_MESSAGE_MAX_LENGTH = 2000
+
 interface FeedbackFormData {
   type: FeedbackType
   message: string
+}
+
+interface FeedbackEntry extends FeedbackFormData {
+  timestamp: string
+}
+
+/** Returns true when `e` is a well-formed {@link FeedbackEntry} object. */
+function isFeedbackEntry(e: unknown): e is FeedbackEntry {
+  if (typeof e !== 'object' || e === null) return false
+  const entry = e as Record<string, unknown>
+  return (
+    (entry.type === 'bug' || entry.type === 'feature') &&
+    typeof entry.message === 'string' &&
+    typeof entry.timestamp === 'string'
+  )
+}
+
+/**
+ * Parses a JSON-serialised feedback array from localStorage.
+ * Returns a validated array of {@link FeedbackEntry} items on success, or an
+ * empty array if the stored value is not valid JSON / not an array.
+ * Any oversized messages are capped to {@link FEEDBACK_MESSAGE_MAX_LENGTH}.
+ */
+function parseFeedbackArray(stored: string): FeedbackEntry[] {
+  try {
+    const parsed: unknown = JSON.parse(stored)
+    if (!Array.isArray(parsed)) return []
+    return parsed
+      .filter(isFeedbackEntry)
+      .map((e) => ({
+        ...e,
+        // Normalise legacy stored entries so oversized messages from
+        // older builds do not continue to inflate localStorage usage.
+        message: e.message.slice(0, FEEDBACK_MESSAGE_MAX_LENGTH),
+      }))
+  } catch (parseError) {
+    console.error('Failed to parse stored feedback from localStorage', parseError)
+    return []
+  }
+}
+
+/**
+ * Reads the existing feedback array from localStorage, normalises legacy
+ * oversized messages, enforces the {@link MAX_FEEDBACK_ENTRIES} cap, appends
+ * `entry`, and writes the result back.
+ *
+ * @param entry - The validated, length-capped feedback entry to persist.
+ * @throws {Error} When `localStorage.setItem` fails (e.g. quota exceeded).
+ *   The original storage error is available as `error.cause`.
+ */
+function saveFeedbackToLocalStorage(entry: FeedbackEntry): void {
+  const stored = localStorage.getItem('paperlyte_feedback')
+  let feedbackArray = stored ? parseFeedbackArray(stored) : []
+
+  // Enforce entry cap: keep only the most recent (MAX_FEEDBACK_ENTRIES - 1)
+  // entries so the new one fits within the limit, preventing unbounded growth.
+  if (feedbackArray.length >= MAX_FEEDBACK_ENTRIES) {
+    feedbackArray = feedbackArray.slice(-(MAX_FEEDBACK_ENTRIES - 1))
+  }
+
+  feedbackArray.push(entry)
+
+  try {
+    localStorage.setItem('paperlyte_feedback', JSON.stringify(feedbackArray))
+  } catch (storageError) {
+    logError(
+      storageError instanceof Error ? storageError : new Error(String(storageError)),
+      {
+        severity: 'medium',
+        tags: { module: 'FeedbackWidget', action: 'saveFeedback' },
+        errorInfo: { note: 'local storage failure' },
+      },
+      'FeedbackWidget'
+    )
+    throw new Error(
+      `Unable to save feedback locally. Your browser storage may be full or disabled. ${
+        storageError instanceof Error ? storageError.message : String(storageError)
+      }`,
+      { cause: storageError }
+    )
+  }
 }
 
 interface FeedbackWidgetProps {
@@ -96,51 +182,14 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
           await onSubmit(feedbackData)
         } else {
           // Default behavior: store in localStorage and log
-          const timestamp = new Date().toISOString()
-          const feedbackEntry = {
+          const feedbackEntry: FeedbackEntry = {
             ...feedbackData,
-            timestamp,
+            // Enforce message length limit before persisting to localStorage so a
+            // very long paste cannot inflate storage consumption unboundedly.
+            message: feedbackData.message.slice(0, FEEDBACK_MESSAGE_MAX_LENGTH),
+            timestamp: new Date().toISOString(),
           }
-
-          // Get existing feedback from localStorage
-          const existingFeedback = localStorage.getItem('paperlyte_feedback')
-          let feedbackArray: unknown = []
-
-          if (existingFeedback) {
-            try {
-              feedbackArray = JSON.parse(existingFeedback)
-            } catch (parseError) {
-              console.error('Failed to parse stored feedback from localStorage', parseError)
-              feedbackArray = []
-            }
-          }
-
-          if (!Array.isArray(feedbackArray)) {
-            feedbackArray = []
-          }
-
-          ;(feedbackArray as unknown[]).push(feedbackEntry)
-          // Store updated feedback
-          try {
-            localStorage.setItem('paperlyte_feedback', JSON.stringify(feedbackArray))
-          } catch (storageError) {
-            // Log via centralized monitoring before throwing
-            logError(
-              storageError instanceof Error ? storageError : new Error(String(storageError)),
-              {
-                severity: 'medium',
-                tags: { module: 'FeedbackWidget', action: 'saveFeedback' },
-                errorInfo: { note: 'local storage failure' },
-              },
-              'FeedbackWidget'
-            )
-            throw new Error(
-              `Unable to save feedback locally. Your browser storage may be full or disabled. ${
-                storageError instanceof Error ? storageError.message : String(storageError)
-              }`,
-              { cause: storageError }
-            )
-          }
+          saveFeedbackToLocalStorage(feedbackEntry)
         }
 
         // Show confirmation

@@ -150,6 +150,36 @@ describe('FeedbackWidget', () => {
         expect(screen.getByText(/share your feature idea/i)).toBeInTheDocument()
       })
     })
+
+    it('switches back to bug report type when bug button is clicked', async () => {
+      render(<FeedbackWidget />)
+
+      // Open modal
+      const openButton = screen.getByRole('button', { name: /open feedback form/i })
+      fireEvent.click(openButton)
+
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+      })
+
+      // First switch to feature type
+      const featureButton = screen.getByRole('button', { name: /request a feature/i })
+      fireEvent.click(featureButton)
+
+      await waitFor(() => {
+        expect(featureButton).toHaveAttribute('aria-pressed', 'true')
+      })
+
+      // Then switch back to bug type
+      const bugButton = screen.getByRole('button', { name: /report a bug/i })
+      fireEvent.click(bugButton)
+
+      await waitFor(() => {
+        expect(bugButton).toHaveAttribute('aria-pressed', 'true')
+        expect(featureButton).toHaveAttribute('aria-pressed', 'false')
+        expect(screen.getByText(/describe the issue you encountered/i)).toBeInTheDocument()
+      })
+    })
   })
 
   describe('Form Submission', () => {
@@ -244,6 +274,36 @@ describe('FeedbackWidget', () => {
       })
     })
 
+    it('recovers gracefully when existing localStorage contains invalid JSON', async () => {
+      const user = userEvent.setup()
+      // Seed corrupted JSON to trigger the parse-error fallback path
+      localStorage.setItem('paperlyte_feedback', '{not valid json')
+
+      render(<FeedbackWidget />)
+
+      const openButton = screen.getByRole('button', { name: /open feedback form/i })
+      await user.click(openButton)
+
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+      })
+
+      const textarea = screen.getByRole('textbox')
+      await user.type(textarea, 'Recovery test')
+
+      const submitButton = screen.getByRole('button', { name: /send feedback/i })
+      await user.click(submitButton)
+
+      // Corrupt data should be discarded; new entry should be saved cleanly
+      await waitFor(() => {
+        const stored = localStorage.getItem('paperlyte_feedback')
+        expect(stored).toBeTruthy()
+        const feedbackArray = JSON.parse(stored!)
+        expect(feedbackArray).toHaveLength(1)
+        expect(feedbackArray[0].message).toBe('Recovery test')
+      })
+    })
+
     it('calls custom onSubmit handler when provided', async () => {
       const user = userEvent.setup()
       const mockSubmit = vi.fn().mockResolvedValue(undefined)
@@ -270,6 +330,75 @@ describe('FeedbackWidget', () => {
           type: 'bug',
           message: 'Custom handler test',
         })
+      })
+    })
+
+    it('evicts oldest entries when MAX_FEEDBACK_ENTRIES is reached', async () => {
+      const user = userEvent.setup()
+
+      // Pre-populate localStorage with 20 entries (the cap)
+      const existingEntries = Array.from({ length: 20 }, (_, i) => ({
+        type: 'bug',
+        message: `Old entry ${i + 1}`,
+        timestamp: new Date(Date.now() - (20 - i) * 1000).toISOString(),
+      }))
+      localStorage.setItem('paperlyte_feedback', JSON.stringify(existingEntries))
+
+      render(<FeedbackWidget />)
+
+      const openButton = screen.getByRole('button', { name: /open feedback form/i })
+      await user.click(openButton)
+
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+      })
+
+      const textarea = screen.getByRole('textbox')
+      await user.type(textarea, 'New entry')
+
+      const submitButton = screen.getByRole('button', { name: /send feedback/i })
+      await user.click(submitButton)
+
+      await waitFor(() => {
+        const stored = localStorage.getItem('paperlyte_feedback')
+        expect(stored).toBeTruthy()
+        const feedbackArray = JSON.parse(stored!)
+        // Still at the cap — oldest entry was evicted to make room
+        expect(feedbackArray).toHaveLength(20)
+        // The oldest entry ('Old entry 1') should have been evicted
+        expect(feedbackArray[0].message).toBe('Old entry 2')
+        // The new entry is the last one
+        expect(feedbackArray[19].message).toBe('New entry')
+      })
+    })
+
+    it('truncates messages longer than 2000 characters before storing', async () => {
+      const user = userEvent.setup()
+      render(<FeedbackWidget />)
+
+      const openButton = screen.getByRole('button', { name: /open feedback form/i })
+      await user.click(openButton)
+
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+      })
+
+      // Create a message that exceeds the 2000-char limit
+      const longMessage = 'A'.repeat(2500)
+      const textarea = screen.getByRole('textbox')
+      fireEvent.change(textarea, { target: { value: longMessage } })
+
+      const submitButton = screen.getByRole('button', { name: /send feedback/i })
+      await user.click(submitButton)
+
+      await waitFor(() => {
+        const stored = localStorage.getItem('paperlyte_feedback')
+        expect(stored).toBeTruthy()
+        const feedbackArray = JSON.parse(stored!)
+        expect(feedbackArray).toHaveLength(1)
+        // Message must be capped at 2000 characters
+        expect(feedbackArray[0].message).toHaveLength(2000)
+        expect(feedbackArray[0].message).toBe('A'.repeat(2000))
       })
     })
 
@@ -415,6 +544,32 @@ describe('FeedbackWidget', () => {
         vi.useRealTimers()
       }
     })
+
+    it('shows an error when localStorage quota is exceeded', async () => {
+      const user = userEvent.setup()
+      vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+        throw new DOMException('QuotaExceededError')
+      })
+
+      render(<FeedbackWidget />)
+
+      const openButton = screen.getByRole('button', { name: /open feedback form/i })
+      await user.click(openButton)
+
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+      })
+
+      const textarea = screen.getByRole('textbox')
+      await user.type(textarea, 'Test quota exceeded')
+
+      const submitButton = screen.getByRole('button', { name: /send feedback/i })
+      await user.click(submitButton)
+
+      await waitFor(() => {
+        expect(screen.getByText(/failed to submit feedback/i)).toBeInTheDocument()
+      })
+    })
   })
 
   describe('Accessibility', () => {
@@ -558,6 +713,60 @@ describe('FeedbackWidget', () => {
       await user.keyboard('{ArrowLeft}')
 
       expect(featureButton).toHaveFocus()
+    })
+
+    it('wraps focus from last focusable element to first on Tab', async () => {
+      const user = userEvent.setup()
+      render(<FeedbackWidget />)
+
+      const openButton = screen.getByRole('button', { name: /open feedback form/i })
+      await user.click(openButton)
+
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+      })
+
+      // Type a message so the submit button is enabled and focusable
+      const textarea = screen.getByRole('textbox')
+      await user.type(textarea, 'Test focus wrapping')
+
+      const closeButton = screen.getByRole('button', { name: /close feedback form/i })
+      const submitButton = screen.getByRole('button', { name: /send feedback/i })
+
+      // Focus the last focusable element (submit), then Tab — focus should wrap to first (close)
+      submitButton.focus()
+      expect(submitButton).toHaveFocus()
+
+      fireEvent.keyDown(document, { key: 'Tab', shiftKey: false })
+
+      expect(closeButton).toHaveFocus()
+    })
+
+    it('wraps focus from first focusable element to last on Shift+Tab', async () => {
+      const user = userEvent.setup()
+      render(<FeedbackWidget />)
+
+      const openButton = screen.getByRole('button', { name: /open feedback form/i })
+      await user.click(openButton)
+
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+      })
+
+      // Type a message so the submit button is enabled and focusable
+      const textarea = screen.getByRole('textbox')
+      await user.type(textarea, 'Test focus wrapping')
+
+      const closeButton = screen.getByRole('button', { name: /close feedback form/i })
+      const submitButton = screen.getByRole('button', { name: /send feedback/i })
+
+      // Focus the first focusable element (close), then Shift+Tab — focus should wrap to last (submit)
+      closeButton.focus()
+      expect(closeButton).toHaveFocus()
+
+      fireEvent.keyDown(document, { key: 'Tab', shiftKey: true })
+
+      expect(submitButton).toHaveFocus()
     })
   })
 })

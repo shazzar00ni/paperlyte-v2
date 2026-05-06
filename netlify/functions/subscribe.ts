@@ -95,7 +95,19 @@ async function subscribeToConvertKit(
     throw new Error("ConvertKit API credentials not configured");
   }
 
+  // Validate formId is a numeric string to prevent path traversal / SSRF via
+  // a misconfigured environment variable injecting extra path segments.
+  if (!/^\d+$/.test(formId)) {
+    throw new Error("Invalid ConvertKit form ID configuration");
+  }
+
   const tagId = process.env.CONVERTKIT_TAG_ID;
+
+  // Validate tagId (if configured) is also numeric for the same reason.
+  if (tagId && !/^\d+$/.test(tagId)) {
+    throw new Error("Invalid ConvertKit tag ID configuration");
+  }
+
   const requestBody: {
     api_key: string;
     email: string;
@@ -153,12 +165,31 @@ async function subscribeToConvertKit(
 }
 
 /**
+ * Returns a shallow copy of `raw` with every header key lowercased.
+ *
+ * HTTP header names are case-insensitive per RFC 7230.  Normalising them once
+ * at the boundary means all downstream lookups can safely use lowercase
+ * strings without worrying about runtime or proxy casing differences.
+ */
+function normalizeHeaders(
+  raw: Record<string, string | undefined>
+): Record<string, string | undefined> {
+  return Object.fromEntries(
+    Object.entries(raw).map(([k, v]) => [k.toLowerCase(), v])
+  );
+}
+
+/**
  * Netlify serverless function handler
  */
 export const handler: Handler = async (event: HandlerEvent) => {
+  // Normalise all incoming request headers to lowercase so lookups are
+  // unaffected by casing differences across runtimes or proxies.
+  const reqHeaders = normalizeHeaders(event.headers);
+
   // CORS headers - restrict to allowed origin for security
   const allowedOrigin = process.env.ALLOWED_ORIGIN ?? "https://paperlyte.com";
-  const origin = event.headers.origin ?? event.headers.Origin ?? "";
+  const origin = reqHeaders["origin"] ?? "";
   const isAllowedOrigin = origin === allowedOrigin;
 
   const headers = {
@@ -187,11 +218,19 @@ export const handler: Handler = async (event: HandlerEvent) => {
   }
 
   try {
-    // Get IP address for rate limiting
-    const ip =
-      event.headers["x-forwarded-for"]?.split(",")[0] ??
-      event.headers["client-ip"] ??
-      "unknown";
+    // Get IP address for rate limiting.
+    // Prefer `client-ip` (set by Netlify infrastructure, not spoofable by the
+    // client) over `x-forwarded-for` which can be forged by sending a crafted
+    // header, potentially bypassing per-IP rate limiting.
+    // Both keys are looked up on the lowercase-normalised copy of the request
+    // headers so casing differences (e.g. `Client-IP`) are handled correctly.
+    // The resolved value is trimmed to prevent whitespace variants (e.g.
+    // ' 1.2.3.4' vs '1.2.3.4') from producing separate rate-limit buckets.
+    const rawIp =
+      reqHeaders["client-ip"] ??
+      reqHeaders["x-forwarded-for"]?.split(",")[0] ??
+      "";
+    const ip = rawIp.trim() || "unknown";
 
     // Check rate limit
     if (!checkRateLimit(ip)) {

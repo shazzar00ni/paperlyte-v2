@@ -48,51 +48,31 @@ jobs:
           name: TypeScript type check
           command: npx tsc -b --noEmit
 
+  # Runs the full test suite once, producing both JUnit results (for CircleCI
+  # timing-based splitting in future runs) and a complete coverage report.
+  # Running tests and coverage together avoids executing the suite twice, which
+  # was the previous design's main drawback (parallel test job + separate
+  # coverage job = 5x redundant test work per pipeline).
   test:
     executor: node-executor
-    parallelism: 4
     steps:
       - checkout
       - attach_workspace:
           at: .
       - run:
-          name: Discover and run tests
-          # circleci tests glob discovers all test files (the "discover command").
-          # circleci tests run splits them across parallel nodes by historical
-          # timing data and appends the file list to the vitest command.
-          # The glob matches vitest's include pattern across the whole repo
-          # (not just src/) so files like scripts/__tests__/*.test.ts are included.
-          # node_modules/ and dist/ are excluded to avoid slow traversal and
-          # accidentally picking up dependency test files.
-          # e2e specs are stripped out because Playwright owns those.
-          # set +e so the job doesn't abort on test failure; pipefail is
-          # explicitly enabled so glob/filter errors are not masked even if the
-          # shell's default options change. PIPESTATUS captures each stage's
-          # exit code; the vitest exit code is re-raised after artifact upload.
+          name: Test and coverage
+          # set +e so the job doesn't abort on test failure; the exit code is
+          # saved and re-raised after artifact upload so JUnit + coverage HTML
+          # are preserved even when tests fail.
           command: |
             mkdir -p test-results
             set +e
-            set -o pipefail
-            circleci tests glob \
-              "**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}" | \
-              grep -v -e "^node_modules/" -e "^dist/" -e "^tests/e2e/" | \
-              circleci tests run \
-                --command="xargs -r npx vitest run --reporter=default --reporter=junit --outputFile=test-results/junit-${CIRCLE_NODE_INDEX}.xml --" \
-                --split-by=timings \
-                --verbose
-            pipe_statuses=("${PIPESTATUS[@]}")
-            glob_exit=${pipe_statuses[0]}
-            filter_exit=${pipe_statuses[1]}
-            vitest_exit=${pipe_statuses[2]}
-            # grep -v returns exit code 1 when *no* lines pass the filter
-            # (i.e. all files were excluded). That's not an error — allow it.
-            # Exit code 2 means an actual grep error (e.g. bad flag), so we
-            # still fail hard in that case.
-            if [ "$glob_exit" -ne 0 ] || [ "$filter_exit" -gt 1 ]; then
-              echo 1 > /tmp/test-exit-code
-            else
-              echo "$vitest_exit" > /tmp/test-exit-code
-            fi
+            npm run test:coverage -- --run \
+              --reporter=default \
+              --reporter=junit \
+              --outputFile=./test-results/junit.xml \
+              --coverage.reportOnFailure
+            echo $? > /tmp/test-exit-code
           environment:
             CI: "true"
       - store_test_results:
@@ -100,36 +80,13 @@ jobs:
       - store_artifacts:
           path: test-results
           destination: test-results
+      - store_artifacts:
+          path: coverage
+          destination: coverage
       - run:
           name: Report test status
           when: always
           command: exit $(cat /tmp/test-exit-code 2>/dev/null || echo 1)
-
-  # Coverage runs as a separate single-node job so the report covers the full
-  # suite. The parallelised `test` job only runs a subset of tests per node,
-  # which would produce incomplete coverage if merged naïvely.
-  coverage:
-    executor: node-executor
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Coverage report
-          command: |
-            mkdir -p test-results
-            npm run test:coverage -- --run \
-              --reporter=default \
-              --reporter=junit \
-              --outputFile=./test-results/coverage-junit.xml \
-              --coverage.reportOnFailure
-          environment:
-            CI: "true"
-      - store_test_results:
-          path: test-results
-      - store_artifacts:
-          path: coverage
-          destination: coverage
 
   build:
     executor: node-executor
@@ -221,15 +178,11 @@ workflows:
       - test:
           requires:
             - install
-      - coverage:
-          requires:
-            - install
       - build:
           requires:
             - lint
             - typecheck
             - test
-            - coverage
       - e2e:
           requires:
             - build

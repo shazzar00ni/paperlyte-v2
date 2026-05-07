@@ -118,10 +118,23 @@ export function isRelativeUrl(url: string): boolean {
 }
 
 /**
- * Checks whether a parsed absolute URL is same-origin.
- * External URLs are rejected to prevent open-redirect attacks.
+ * Checks whether a parsed absolute URL is allowed for linking.
+ * Allows legitimate external HTTP/HTTPS URLs while excluding other schemes.
  */
 export function isAllowedAbsoluteUrl(url: string): boolean {
+  try {
+    const parsedUrl = new URL(url, window.location.origin)
+    return parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:'
+  } catch {
+    return false
+  }
+}
+
+/**
+ * Checks whether a parsed absolute URL is same-origin.
+ * Use this for navigation flows that must not leave the current origin.
+ */
+export function isSameOriginAbsoluteUrl(url: string): boolean {
   try {
     const parsedUrl = new URL(url, window.location.origin)
     return parsedUrl.origin === window.location.origin

@@ -70,15 +70,21 @@ test.describe('Landing Page', () => {
 
     // Measure Core Web Vitals using Performance Timeline
     const metrics = await page.evaluate<CoreWebVitalsMetrics>((): Promise<CoreWebVitalsMetrics> => {
-      const paintEntries = performance.getEntriesByType('paint')
-      const fcpEntry = paintEntries.find((entry) => entry.name === 'first-contentful-paint')
-
-      // Get LCP using PerformanceObserver
+      // Get LCP and FCP using PerformanceObserver
       return new Promise<CoreWebVitalsMetrics>((resolve) => {
-        // null means LCP observer never fired — distinguishes "not observed" from a genuine 0.
+        // null means observer never fired — distinguishes "not observed" from a genuine 0.
         // CLS starts at 0: a page with no layout shifts correctly scores 0 (best case).
+        let fcp: number | null = null
         let lcp: number | null = null
         let cls = 0
+
+        const paintObserver = new PerformanceObserver((list) => {
+          const entries = list.getEntries()
+          const fcpEntry = entries.find((entry) => entry.name === 'first-contentful-paint')
+          if (fcpEntry) {
+            fcp = fcpEntry.startTime
+          }
+        })
 
         const lcpObserver = new PerformanceObserver((list) => {
           const entries = list.getEntries()
@@ -105,19 +111,30 @@ test.describe('Landing Page', () => {
           }
         })
 
+        paintObserver.observe({ type: 'paint', buffered: true })
         lcpObserver.observe({ type: 'largest-contentful-paint', buffered: true })
         clsObserver.observe({ type: 'layout-shift', buffered: true })
 
         // Wait a bit for metrics to be collected
+        // Increased timeout to 5s for slower CI environments
         setTimeout(() => {
+          paintObserver.disconnect()
           lcpObserver.disconnect()
           clsObserver.disconnect()
+
+          // Fallback to direct query if observer didn't catch it
+          if (fcp === null) {
+            const paintEntries = performance.getEntriesByType('paint')
+            const fcpEntry = paintEntries.find((entry) => entry.name === 'first-contentful-paint')
+            if (fcpEntry) fcp = fcpEntry.startTime
+          }
+
           resolve({
-            fcp: fcpEntry ? fcpEntry.startTime : null,
+            fcp,
             lcp,
             cls,
           })
-        }, 2500)
+        }, 5000)
       })
     })
 

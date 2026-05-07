@@ -33,7 +33,7 @@ def main():
         insertion_point = 0
         header_found = False
         for i, line in enumerate(original_lines):
-            if '# PR Review Summary' in line:
+            if '# PR Review Summary' in line or '# Pull Request Review Summary' in line:
                 header_found = True
                 insertion_point = i + 1
                 # Move past the description line if it exists

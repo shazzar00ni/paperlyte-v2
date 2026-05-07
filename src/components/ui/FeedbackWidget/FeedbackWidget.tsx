@@ -110,7 +110,7 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
             try {
               feedbackArray = JSON.parse(existingFeedback)
             } catch (parseError) {
-              console.error('Failed to parse stored feedback from localStorage', parseError)
+              console.warn('[FeedbackWidget] Failed to parse stored feedback:', parseError)
               feedbackArray = []
             }
           }
@@ -153,7 +153,12 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
         }, 2000)
       } catch (err) {
         setError('Failed to submit feedback. Please try again.')
-        console.error('Feedback submission error:', err)
+        logError(
+          err instanceof Error ? err : new Error(String(err)),
+          { severity: 'medium', tags: { module: 'FeedbackWidget', action: 'handleSubmit' } },
+          'FeedbackWidget'
+        )
+        console.warn('[FeedbackWidget] Submission failed:', err)
       } finally {
         setIsSubmitting(false)
       }

@@ -107,8 +107,26 @@ export function logError(error: Error, context?: ErrorContext, source?: string):
 
     // Client-side production: errors are already reported to Sentry/analytics above.
     // Avoid console.error here to prevent errors-in-console Lighthouse assertion failures.
-  } catch {
-    // Fail silently in production - don't let monitoring errors break the app
+  } catch (err) {
+    // Forward the monitoring failure to Sentry so it isn't silently dropped.
+    // A nested try/catch prevents infinite recursion if Sentry itself throws.
+    if (import.meta.env.VITE_SENTRY_DSN) {
+      try {
+        const monitoringErr = err instanceof Error ? err : new Error(String(err))
+        Sentry.addBreadcrumb({
+          category: 'monitoring',
+          message: 'Error reporting pipeline failed',
+          level: 'warning',
+          data: { originalError: String(err) },
+        })
+        Sentry.captureException(monitoringErr)
+      } catch {
+        // Fully silent if Sentry is also unavailable
+      }
+    }
+    // console.warn (not console.error) preserves browser devtools visibility
+    // without triggering the Lighthouse errors-in-console assertion.
+    console.warn('[monitoring] Error reporting failed:', err)
   }
 }
 

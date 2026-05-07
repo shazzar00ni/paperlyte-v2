@@ -3,6 +3,7 @@ import { Button } from '@components/ui/Button'
 import { Icon } from '@components/ui/Icon'
 import { trackEvent } from '@utils/analytics'
 import { validateEmail } from '@utils/validation'
+import { logError } from '@utils/monitoring'
 import styles from './EmailCapture.module.css'
 
 interface EmailCaptureProps {
@@ -95,7 +96,12 @@ export const EmailCapture = ({
       const message =
         error instanceof Error ? error.message : 'Something went wrong. Please try again.'
       setErrorMessage(message)
-      console.error('Email subscription error:', error)
+      logError(
+        error instanceof Error ? error : new Error(String(error)),
+        { severity: 'medium', tags: { context: 'email-subscription' } },
+        'EmailCapture'
+      )
+      console.warn('[EmailCapture] Subscription failed:', error)
     }
   }
 

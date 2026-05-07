@@ -33,8 +33,9 @@ jobs:
 
       - name: Analyze with SonarCloud
         if: ${{ secrets.SONAR_TOKEN != '' }}
-        # Using version tag instead of SHA to avoid Codacy false-positive 'SonarQube Docs API Key' detection
-        uses: sonarsource/sonarqube-scan-action@v5.0.0
+        # Pinned to v5.3.1 (SHA: 1a6d90ebcb0e6a6b1d87e37ba693fe453195ae25)
+        # Using SHA pinning for security compliance and to avoid GHSA-f79p-9c5r-xg88
+        uses: sonarsource/sonarqube-scan-action@1a6d90ebcb0e6a6b1d87e37ba693fe453195ae25
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:

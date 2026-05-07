@@ -38,7 +38,20 @@ export const EmailCapture = (): React.ReactElement => {
       setIsSubmitted(true)
     } catch (err) {
       const error = err instanceof Error ? err : new Error(String(err))
-      logError(error, { tags: { context: 'waitlist-submit' } })
+      logError(
+        error,
+        {
+          tags: {
+            component: 'EmailCapture',
+            action: 'subscribe',
+            errorType: error.name,
+          },
+          ...(!(err instanceof Error)
+            ? { errorInfo: { originalError: String(err).slice(0, 200) } }
+            : {}),
+        },
+        'EmailCapture'
+      )
 
       let message = "Couldn't add you to the waitlist. Check your connection and try again."
       if (

@@ -182,7 +182,7 @@ describe('ServerErrorPage', () => {
       render(<ServerErrorPage />)
 
       expect(
-        screen.getByText(/We investigate errors and work to resolve them quickly/i)
+        screen.getByText(/This error has been reported. We're on it./i)
       ).toBeInTheDocument()
     })
   })

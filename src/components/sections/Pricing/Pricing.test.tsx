@@ -57,9 +57,10 @@ describe('Pricing', () => {
 
     const freePlan = PRICING_PLANS.find((p) => p.id === 'free')
     expect(freePlan).toBeDefined()
+    if (!freePlan) return
     const freeTexts = screen.getAllByText('Free')
     expect(freeTexts.length).toBeGreaterThan(0)
-    expect(screen.getByText(freePlan!.tagline)).toBeInTheDocument()
+    expect(screen.getByText(freePlan.tagline)).toBeInTheDocument()
     expect(screen.getByText('Get Started Free')).toBeInTheDocument()
   })
 
@@ -68,8 +69,9 @@ describe('Pricing', () => {
 
     const proPlan = PRICING_PLANS.find((p) => p.id === 'pro')
     expect(proPlan).toBeDefined()
+    if (!proPlan) return
     expect(screen.getByText('Pro')).toBeInTheDocument()
-    expect(screen.getByText(proPlan!.tagline)).toBeInTheDocument()
+    expect(screen.getByText(proPlan.tagline)).toBeInTheDocument()
     expect(screen.getByText('4.99')).toBeInTheDocument()
     expect(screen.getAllByText('/month').length).toBeGreaterThan(0)
     expect(screen.getByText('Start Free Trial')).toBeInTheDocument()
@@ -80,8 +82,9 @@ describe('Pricing', () => {
 
     const teamPlan = PRICING_PLANS.find((p) => p.id === 'team')
     expect(teamPlan).toBeDefined()
+    if (!teamPlan) return
     expect(screen.getByText('Team')).toBeInTheDocument()
-    expect(screen.getByText(teamPlan!.tagline)).toBeInTheDocument()
+    expect(screen.getByText(teamPlan.tagline)).toBeInTheDocument()
     expect(screen.getByText('9.99')).toBeInTheDocument()
     expect(screen.getByText('Contact Sales')).toBeInTheDocument()
   })

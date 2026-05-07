@@ -216,6 +216,16 @@ export function safeNavigate(url: string): boolean {
     return false
   }
 
-  window.location.href = url
+  const trimmedUrl = url.trim()
+  // Restrict absolute URLs to same-origin to prevent open-redirect attacks.
+  // Relative URLs are implicitly same-origin and skip this check.
+  if (!isRelativeUrl(trimmedUrl) && !isSameOriginAbsoluteUrl(trimmedUrl)) {
+    if (import.meta.env.DEV) {
+      console.warn(`Navigation blocked: URL "${url}" is not same-origin`)
+    }
+    return false
+  }
+
+  window.location.href = trimmedUrl
   return true
 }

@@ -76,6 +76,11 @@ jobs:
             echo $? > /tmp/test-exit-code
           environment:
             CI: "true"
+            # On CircleCI medium (4 GB), Node.js defaults to a ~1.5 GB heap
+            # limit.  With singleFork + 70+ jsdom environments the worker
+            # hits that ceiling before all tests complete.  3 GB leaves ~1 GB
+            # headroom for the main Vitest process, OS, and Docker overhead.
+            NODE_OPTIONS: "--max-old-space-size=3072"
       - store_test_results:
           path: test-results
       - store_artifacts:

@@ -13,6 +13,7 @@ dist-ssr
 *.local
 coverage
 junit.xml
+test-results/
 
 # Environment variables
 .env

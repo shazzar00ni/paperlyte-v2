@@ -63,6 +63,15 @@ export default defineConfig({
       },
     },
 
+    // Serialise test execution in CI to stay within CircleCI's 4 GB memory budget
+    // (multiple jsdom forks spike RAM even without v8 coverage instrumentation).
+    ...(process.env.CI
+      ? {
+          pool: 'forks',
+          poolOptions: { forks: { singleFork: true } },
+        }
+      : {}),
+
     // Test file patterns
     include: ['**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
 

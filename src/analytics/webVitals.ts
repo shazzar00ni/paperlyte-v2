@@ -87,7 +87,6 @@ function trackFID(callback: ReportCallback): void {
       const entries = list.getEntries()
       const firstEntry = entries[0] as PerformanceEntry & {
         processingStart?: number
-        startTime?: number
       }
 
       if (firstEntry) {

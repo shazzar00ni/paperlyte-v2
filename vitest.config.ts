@@ -63,14 +63,6 @@ export default defineConfig({
       },
     },
 
-    // singleFork: reduce peak RAM so v8 coverage fits within CircleCI's 4 GB medium class.
-    ...(process.env.CI
-      ? {
-          pool: 'forks',
-          poolOptions: { forks: { singleFork: true } },
-        }
-      : {}),
-
     // Test file patterns
     include: ['**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
 

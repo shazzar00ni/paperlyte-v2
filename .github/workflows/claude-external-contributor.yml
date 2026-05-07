@@ -1,0 +1,83 @@
+name: Claude Code (External Contributor)
+
+on:
+  pull_request_target:
+    types: [labeled]
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+  pull_request_review:
+    types: [submitted]
+
+permissions:
+  contents: read
+
+jobs:
+  claude-external:
+    name: Claude Code Agent (External Contributor)
+    runs-on: ubuntu-latest
+    concurrency:
+      group: claude-external-${{ github.event.pull_request.number || github.event.issue.number || github.run_id }}
+      cancel-in-progress: true
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      id-token: write
+    if: |
+      (github.event_name == 'pull_request_target' &&
+       contains(github.event.pull_request.labels.*.name, 'claude')) ||
+      (github.event_name == 'issue_comment' &&
+       github.event.issue.pull_request &&
+       contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review_comment' &&
+       contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review' &&
+       contains(github.event.review.body, '@claude'))
+    steps:
+      - name: Check actor repository permission
+        id: permission_check
+        if: github.event_name != 'pull_request_target'
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const username = context.actor;
+
+            const { data } = await github.rest.repos.getCollaboratorPermissionLevel({
+              owner,
+              repo,
+              username
+            });
+
+            const permission = data.permission;
+            const isExternal = permission === 'read' || permission === 'none';
+
+            core.info(`Actor ${username} has repository permission: ${permission}`);
+            core.setOutput('is_external', isExternal ? 'true' : 'false');
+
+            if (!isExternal) {
+              core.warning(`Actor ${username} has elevated permissions (${permission}). Use the main Claude workflow instead.`);
+            }
+
+      - name: Checkout repository
+        if: github.event_name == 'pull_request_target' || steps.permission_check.outputs.is_external == 'true'
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+        with:
+          fetch-depth: 0
+
+      - name: Run Claude Code Action
+        if: github.event_name == 'pull_request_target' || steps.permission_check.outputs.is_external == 'true'
+        uses: anthropics/claude-code-action@fefa07e9c665b7320f08c3b525980457f22f58aa  # v1.0.111
+        with:
+          trigger_phrase: "@claude"
+          label_trigger: claude
+          branch_prefix: claude/
+          use_bedrock: false
+          use_vertex: false
+          use_sticky_comment: false
+          use_commit_signing: false
+          track_progress: false
+          include_fix_links: true
+          show_full_output: false

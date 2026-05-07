@@ -59,8 +59,37 @@ test.describe('Landing Page', () => {
     test.skip(browserName !== 'chromium', 'Performance test runs on chromium only')
     test.skip(isMobile, 'Performance budgets target desktop viewport')
 
+    // Inject observers before navigation so every paint/LCP/CLS event is captured.
+    // Setting them up post-load with buffered:true is unreliable in fast headless CI
+    // because the LCP observation window may close before evaluate() runs.
+    await page.addInitScript(() => {
+      const cwv = { fcp: null as number | null, lcp: null as number | null, cls: 0 }
+      ;(window as Window & { __cwv: typeof cwv }).__cwv = cwv
+
+      new PerformanceObserver((list) => {
+        for (const entry of list.getEntries())
+          if (entry.name === 'first-contentful-paint') cwv.fcp = entry.startTime
+      }).observe({ type: 'paint', buffered: true })
+
+      new PerformanceObserver((list) => {
+        for (const entry of list.getEntries()) {
+          const e = entry as PerformanceEntry & { renderTime?: number; loadTime?: number }
+          cwv.lcp = e.renderTime || e.loadTime || entry.startTime
+        }
+      }).observe({ type: 'largest-contentful-paint', buffered: true })
+
+      new PerformanceObserver((list) => {
+        for (const entry of list.getEntries()) {
+          const e = entry as PerformanceEntry & { hadRecentInput?: boolean; value: number }
+          if (!e.hadRecentInput) cwv.cls += e.value
+        }
+      }).observe({ type: 'layout-shift', buffered: true })
+    })
+
     await page.goto('/')
-    await page.waitForLoadState('load')
+    await page.waitForLoadState('networkidle')
+    // Allow a moment for LCP to be finalised after the page becomes idle
+    await page.waitForTimeout(500)
 
     interface CoreWebVitalsMetrics {
       fcp: number | null
@@ -68,64 +97,15 @@ test.describe('Landing Page', () => {
       cls: number
     }
 
-    // Measure Core Web Vitals using Performance Timeline
-    const metrics = await page.evaluate<CoreWebVitalsMetrics>((): Promise<CoreWebVitalsMetrics> => {
-      const paintEntries = performance.getEntriesByType('paint')
-      const fcpEntry = paintEntries.find((entry) => entry.name === 'first-contentful-paint')
-
-      // Get LCP using PerformanceObserver
-      return new Promise<CoreWebVitalsMetrics>((resolve) => {
-        // null means LCP observer never fired — distinguishes "not observed" from a genuine 0.
-        // CLS starts at 0: a page with no layout shifts correctly scores 0 (best case).
-        let lcp: number | null = null
-        let cls = 0
-
-        const lcpObserver = new PerformanceObserver((list) => {
-          const entries = list.getEntries()
-          const lastEntry = entries[entries.length - 1]
-          if (!lastEntry) {
-            return
-          }
-          const lcpEntry = lastEntry as PerformanceEntry & {
-            renderTime?: number
-            loadTime?: number
-          }
-          lcp = lcpEntry.renderTime || lcpEntry.loadTime || lastEntry.startTime
-        })
-
-        const clsObserver = new PerformanceObserver((list) => {
-          for (const entry of list.getEntries()) {
-            const layoutShift = entry as PerformanceEntry & {
-              hadRecentInput?: boolean
-              value: number
-            }
-            if (!layoutShift.hadRecentInput) {
-              cls += layoutShift.value
-            }
-          }
-        })
-
-        lcpObserver.observe({ type: 'largest-contentful-paint', buffered: true })
-        clsObserver.observe({ type: 'layout-shift', buffered: true })
-
-        // Wait a bit for metrics to be collected
-        setTimeout(() => {
-          lcpObserver.disconnect()
-          clsObserver.disconnect()
-          resolve({
-            fcp: fcpEntry ? fcpEntry.startTime : null,
-            lcp,
-            cls,
-          })
-        }, 2500)
-      })
-    })
+    const metrics = await page.evaluate<CoreWebVitalsMetrics>(
+      () => (window as Window & { __cwv: CoreWebVitalsMetrics }).__cwv
+    )
 
     // Validate Core Web Vitals thresholds
     const { fcp, lcp, cls } = metrics
 
     expect(fcp).not.toBeNull()
-    expect(lcp).not.toBeNull() // fail if LCP was never observed
+    expect(lcp).not.toBeNull()
 
     if (fcp === null || lcp === null) {
       return

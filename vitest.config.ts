@@ -16,8 +16,8 @@ export default defineConfig({
     // 5s limit on slower CI runners, especially when v8 coverage instrumentation
     // is enabled (adds significant per-test overhead).
     testTimeout: process.env.CI ? 30000 : 5000,
-    hookTimeout: process.env.CI ? 30000 : undefined,
-    teardownTimeout: process.env.CI ? 30000 : undefined,
+    hookTimeout: process.env.CI ? 30000 : 5000,
+    teardownTimeout: process.env.CI ? 30000 : 5000,
 
     // Global test utilities
     globals: true,
@@ -62,6 +62,15 @@ export default defineConfig({
         autoUpdate: false,
       },
     },
+
+    // singleFork: reduce peak RAM so v8 coverage fits within CircleCI's 4 GB medium class.
+    // poolOptions was removed in Vitest 4; singleFork is now a top-level option.
+    ...(process.env.CI
+      ? {
+          pool: 'forks',
+          singleFork: true,
+        }
+      : {}),
 
     // Test file patterns
     include: ['**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],

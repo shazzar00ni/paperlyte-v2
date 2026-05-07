@@ -16,15 +16,8 @@ def run_command(args):
             print(f"Error: {e.stderr}", file=sys.stderr)
         return None
 
-def main():
-    if not os.path.exists('audit_results.json'):
-        print("Error: audit_results.json not found.", file=sys.stderr)
-        sys.exit(1)
-
-    with open('audit_results.json', 'r') as f:
-        data = json.load(f)
-
-    # Get PR mappings from GitHub CLI (if available)
+def get_pr_map():
+    """Maps branch names to open PR numbers using GitHub CLI."""
     pr_map = {}
     gh_cli = run_command(['which', 'gh'])
     if gh_cli:
@@ -36,43 +29,47 @@ def main():
                     pr_map[pr['headRefName']] = pr['number']
             except json.JSONDecodeError:
                 pass
+    return pr_map
 
-    stats = {
-        'Orphan': 0,
-        'NPMRC': 0,
-        'ROADMAP': 0,
-        'GVC': 0,
-        'REVIEW': 0,
-        'HELPERS': 0,
-        'UNREADABLE': 0
+def comment_on_pr(pr_num, issues):
+    """Posts a regression comment on a PR if not already present."""
+    # Check for existing comments to avoid spamming
+    existing_comments = run_command(['gh', 'pr', 'view', str(pr_num), '--json', 'comments'])
+    if existing_comments and '### ⚠️ Systemic Regressions Detected' in existing_comments:
+        return
+
+    comment = '### ⚠️ Systemic Regressions Detected\n\nThis branch is currently blocked by the following regressions:\n\n'
+    for issue in issues:
+        comment += f'- {issue}\n'
+    comment += '\nPlease restore these critical files or security helpers before merging.'
+    run_command(['gh', 'pr', 'comment', str(pr_num), '--body', comment])
+
+def main():
+    if not os.path.exists('audit_results.json'):
+        print("Error: audit_results.json not found.", file=sys.stderr)
+        sys.exit(1)
+
+    with open('audit_results.json', 'r') as f:
+        data = json.load(f)
+
+    pr_map = get_pr_map()
+    stats = {k: 0 for k in ['Orphan', 'NPMRC', 'ROADMAP', 'GVC', 'REVIEW', 'HELPERS', 'UNREADABLE']}
+
+    mapping = {
+        'Orphan branch': 'Orphan', 'Missing .npmrc': 'NPMRC', 'Missing docs/ROADMAP.md': 'ROADMAP',
+        'Missing gitVersionControl.md': 'GVC', 'Missing review.md': 'REVIEW',
+        'security helper': 'HELPERS', 'Could not read src/utils/navigation.ts': 'UNREADABLE'
     }
 
     for item in data.get('blocked', []):
         issues = item['issues']
         issues_str = str(issues)
-        if 'Orphan branch' in issues_str: stats['Orphan'] += 1
-        if 'Missing .npmrc' in issues_str: stats['NPMRC'] += 1
-        if 'Missing docs/ROADMAP.md' in issues_str: stats['ROADMAP'] += 1
-        if 'Missing gitVersionControl.md' in issues_str: stats['GVC'] += 1
-        if 'Missing review.md' in issues_str: stats['REVIEW'] += 1
-        if 'security helper' in issues_str: stats['HELPERS'] += 1
-        if 'Could not read src/utils/navigation.ts' in issues_str: stats['UNREADABLE'] += 1
+        for key, stat in mapping.items():
+            if key in issues_str: stats[stat] += 1
 
-        # Comment on the PR if it exists and GH CLI is available
         branch = item['branch']
         if branch in pr_map:
-            pr_num = pr_map[branch]
-
-            # Check for existing comments to avoid spamming
-            existing_comments = run_command(['gh', 'pr', 'view', str(pr_num), '--json', 'comments'])
-            if existing_comments and '### ⚠️ Systemic Regressions Detected' in existing_comments:
-                continue
-
-            comment = '### ⚠️ Systemic Regressions Detected\n\nThis branch is currently blocked by the following regressions:\n\n'
-            for issue in issues:
-                comment += f'- {issue}\n'
-            comment += '\nPlease restore these critical files or security helpers before merging.'
-            run_command(['gh', 'pr', 'comment', str(pr_num), '--body', comment])
+            comment_on_pr(pr_map[branch], issues)
 
     # Generate Markdown Summary
     date_str = datetime.now().strftime('%Y-%m-%d')

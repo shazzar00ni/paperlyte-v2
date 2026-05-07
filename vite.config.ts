@@ -5,18 +5,8 @@ import path from 'path'
 import { codecovRollupPlugin } from '@codecov/rollup-plugin'
 
 /**
- * Injects <link rel="preload"> tags for bundled woff2 fonts into the
- * production HTML. Fonts discovered via CSS @font-face create a depth-2 chain
- * (HTML → CSS → fonts) that fails the network-dependency-tree-insight
- * Lighthouse assertion. Preloading moves fonts to depth 1 (parallel with CSS).
- *
- * Only the Inter latin fonts explicitly imported in main.tsx are preloaded.
- * Preloading every .woff2 in the bundle would unnecessarily prioritise fonts
- * that aren't needed for the initial render and increase bandwidth/request overhead.
- */
-
-/**
- * Matches only the Inter latin static font files imported in main.tsx:
+ * Regular expression that matches only the Inter latin static font files
+ * explicitly imported in main.tsx:
  *   @fontsource/inter/latin-400.css → inter-latin-400-normal-[hash].woff2
  *   @fontsource/inter/latin-500.css → inter-latin-500-normal-[hash].woff2
  *   @fontsource/inter/latin-600.css → inter-latin-600-normal-[hash].woff2
@@ -24,6 +14,20 @@ import { codecovRollupPlugin } from '@codecov/rollup-plugin'
  */
 const INTER_FONT_PATTERN = /inter-latin-\d+-normal-[^/]+\.woff2$/
 
+/**
+ * Vite plugin that injects `<link rel="preload">` tags for bundled Inter latin
+ * woff2 fonts into the production HTML.
+ *
+ * Fonts discovered via CSS `@font-face` create a depth-2 critical-request chain
+ * (HTML → CSS → fonts) that fails the `network-dependency-tree-insight` Lighthouse
+ * assertion. Preloading moves the fonts to depth 1 so they load in parallel with CSS.
+ *
+ * Only the four Inter latin weights imported in `main.tsx` are preloaded (matched by
+ * {@link INTER_FONT_PATTERN}). Preloading every `.woff2` in the bundle would
+ * unnecessarily prioritise fonts not needed for the initial render.
+ *
+ * @returns A Vite {@link Plugin} that runs during the `build` phase only.
+ */
 function fontPreloadPlugin(): Plugin {
   return {
     name: 'font-preload',

@@ -95,11 +95,6 @@ This file tracks key architectural, design, and technical decisions made during 
 - **Rationale**: Accidental deletion of these files on several branches blocked their PRs from merging (Issue #876). Restoration is done via `git checkout origin/main -- .npmrc docs/ROADMAP.md gitVersionControl.md review.md src/utils/navigation.ts`.
 - **Alternatives considered**: Manual re-creation of file content
 
-- **Date**: 2026-05-07
-- **Decision**: `.github/workflows/claude.yml` uses only a job-level `permissions` block (no workflow-level `permissions` key)
-- **Rationale**: Duplicate `permissions` keys at different YAML levels made intent ambiguous during PR review; the workflow-level `contents: read` block was removed because the job-level block already grants the required scopes.
-- **Alternatives considered**: Keep both workflow-level and job-level permissions blocks
-
 ## Email / Waitlist
 
 - **Date**: YYYY-MM-DD (unknown)

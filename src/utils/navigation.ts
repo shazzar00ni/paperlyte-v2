@@ -221,7 +221,7 @@ export function safeNavigate(url: string): boolean {
   // Relative URLs are implicitly same-origin and skip this check.
   if (!isRelativeUrl(trimmedUrl) && !isSameOriginAbsoluteUrl(trimmedUrl)) {
     if (import.meta.env.DEV) {
-      console.warn(`Navigation blocked: URL "${url}" is not same-origin`)
+      console.warn(`Navigation blocked: URL "${trimmedUrl}" is not same-origin`)
     }
     return false
   }

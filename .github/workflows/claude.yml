@@ -15,10 +15,7 @@ concurrency:
 jobs:
   claude:
     runs-on: ubuntu-latest
-    if: ${{ secrets.ANTHROPIC_API_KEY != '' }}
-    if: |
-      contains(github.event.comment.body, '@claude') &&
-      github.event.sender.type != 'Bot'
+    if: ${{ secrets.ANTHROPIC_API_KEY != '' && contains(github.event.comment.body, '@claude') && github.event.sender.type != 'Bot' }}
     permissions:
       contents: write
       issues: write

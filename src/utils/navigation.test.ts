@@ -346,10 +346,13 @@ describe('navigation utilities', () => {
     // --- External URLs (blocked — open-redirect prevention) ---
 
     it('should block external HTTPS URL', () => {
-      mockLocation()
+      const mock = mockLocation()
       const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
       expect(safeNavigate('https://example.com')).toBe(false)
-      expect(warnSpy).toHaveBeenCalled()
+      expect(mock.href).toBe('')
+      if (import.meta.env.DEV) {
+        expect(warnSpy).toHaveBeenCalled()
+      }
       warnSpy.mockRestore()
     })
 

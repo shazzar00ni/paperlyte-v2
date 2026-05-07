@@ -27,6 +27,10 @@ permissions:
 
 jobs:
   codacy-security-scan:
+    # Runs on push to main and the weekly schedule only.
+    # Pull requests are handled by codacy-pr-review (upload mode) instead,
+    # avoiding a double analysis run per PR.
+    if: github.event_name != 'pull_request'
     permissions:
       contents: read # for actions/checkout to fetch code
       security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
@@ -103,16 +107,18 @@ jobs:
           echo "📊 View detailed security findings in the **Security** tab." >> $GITHUB_STEP_SUMMARY
 
   codacy-pr-review:
-    # Runs only on pull requests. Uploads analysis to the Codacy platform so it
-    # can post inline PR review comments. Separate from the SARIF job above
+    # Runs only on non-fork pull requests. Uploads analysis to the Codacy platform
+    # so it can post inline PR review comments. Separate from the SARIF job above
     # because format:sarif and upload:true are mutually exclusive in the CLI.
+    # Skipped on fork PRs because CODACY_PROJECT_TOKEN is not available there.
+    # The Codacy GitHub App posts comments via its own installation token, so
+    # pull-requests: write on GITHUB_TOKEN is not needed here.
     name: Codacy PR Review
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == false
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
       contents: read
-      pull-requests: write # required for Codacy platform to post inline PR comments
     steps:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2

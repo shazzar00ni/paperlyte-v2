@@ -104,8 +104,8 @@
   --color-surface-dark: #0f172a; /* Slate 900 - Dark sections */
   --color-text-primary: #f1f5f9; /* Slate 100 - Light text */
   --color-text-secondary: #94a3b8; /* Slate 400 - Supporting text */
-  /* accessibility-fixed: raised from `#64748b` (~3.08:1) to `#94a3b8` (~4.8:1 on surface) */
-  --color-text-tertiary: #94a3b8; /* Slate 400 - Muted text (meets WCAG AA 4.5:1 on dark surfaces) */
+  /* accessibility-fixed: raised from `#64748b` to `#8fa1b5` to preserve hierarchy while keeping muted text AA-compliant on dark surfaces */
+  --color-text-tertiary: #8fa1b5; /* Muted text - distinct from secondary while remaining accessible in dark mode */
   --color-text-on-primary: #000000; /* Black text on white primary (dark mode) */
   --color-text-on-dark: #ffffff; /* White text on dark surfaces */
   --color-text-on-dark-secondary: rgba(255, 255, 255, 0.7); /* Semi-transparent white */

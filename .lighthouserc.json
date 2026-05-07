@@ -45,7 +45,6 @@
         "redirects-http": "warn",
         "uses-long-cache-ttl": "off",
         "font-display": "warn",
-        "network-dependency-tree-insight": "warn",
         "render-blocking-insight": "warn",
         "resource-summary:script:size": ["warn", { "maxNumericValue": 153600 }],
         "resource-summary:stylesheet:size": ["warn", { "maxNumericValue": 30720 }],

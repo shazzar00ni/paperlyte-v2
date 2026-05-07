@@ -155,8 +155,8 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
         setError('Failed to submit feedback. Please try again.')
         logError(
           err instanceof Error ? err : new Error(String(err)),
-          { severity: 'medium', tags: { module: 'FeedbackWidget', action: 'handleSubmit' } },
-          'FeedbackWidget'
+          { severity: 'medium', tags: { action: 'handleSubmit' } },
+          'feedback_submission'
         )
         console.warn('[FeedbackWidget] Submission failed:', err)
       } finally {

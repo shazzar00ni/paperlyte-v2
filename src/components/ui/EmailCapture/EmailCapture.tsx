@@ -99,7 +99,7 @@ export const EmailCapture = ({
       logError(
         error instanceof Error ? error : new Error(String(error)),
         { severity: 'medium', tags: { context: 'email-subscription' } },
-        'EmailCapture'
+        'email_subscription'
       )
       console.warn('[EmailCapture] Subscription failed:', error)
     }

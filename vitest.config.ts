@@ -16,8 +16,8 @@ export default defineConfig({
     // 5s limit on slower CI runners, especially when v8 coverage instrumentation
     // is enabled (adds significant per-test overhead).
     testTimeout: process.env.CI ? 30000 : 5000,
-    hookTimeout: process.env.CI ? 30000 : 5000,
-    teardownTimeout: process.env.CI ? 30000 : 5000,
+    hookTimeout: process.env.CI ? 30000 : undefined,
+    teardownTimeout: process.env.CI ? 30000 : undefined,
 
     // Global test utilities
     globals: true,

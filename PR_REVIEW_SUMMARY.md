@@ -2,6 +2,51 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-05-07
+
+### Analysis: Systemic Regressions in Open Branches (Automated Daily Audit)
+
+- **Status:** Critical — Action Required
+- **Summary:** An automated repository-wide audit of 271 unmerged branches confirms the following systemic regressions.
+
+| Regression Type                | Count | Severity    | Notes                                               |
+| :----------------------------- | :---- | :---------- | :-------------------------------------------------- |
+| Orphan Branches                | 0     | 🔴 Critical | No common ancestor with `main`.                     |
+| Missing `.npmrc`               | 79    | 🔴 Critical | Breaks dependency resolution.                       |
+| Missing `docs/ROADMAP.md`      | 75    | 🟠 High     | Core project documentation.                         |
+| Missing `gitVersionControl.md` | 88    | 🟠 High     | Core Git workflow documentation.                    |
+| Missing `review.md`            | 88    | 🟡 Medium   | AI PR reviewer instructions.                        |
+| Reverted Security Helpers      | 87    | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers. |
+| Unreadable navigation.ts       | 8     | 🔴 Critical | File missing or unreadable.                         |
+
+- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.
+
+### Manual Branch Reviews (2026-05-07)
+
+I have manually reviewed several branches identified as "Ready" by the automated audit. Below is a summary of findings:
+
+#### 🟢 [Ready] `origin/claude/accessibility-audit-baseline-USu5N`
+
+- **Summary:** Implements a comprehensive accessibility checklist (`docs/ACCESSIBILITY_CHECKLIST.md`) and improves color contrast for muted text.
+- **Feedback:** This is a high-quality contribution that formalizes accessibility testing. The color contrast adjustments in `variables.css` ensure WCAG 2.1 AA compliance for text elements.
+
+#### 🟢 [Ready] `origin/claude/add-claude-documentation-QxLA4`
+
+- **Summary:** Extensively updates `CLAUDE.md` with project architecture, design tokens, and testing guidelines.
+- **Feedback:** Excellent documentation update. It provides much-needed clarity on path aliases, CSS architecture, and testing infrastructure. This will greatly improve developer onboarding and consistency.
+
+#### 🟢 [Ready] `origin/claude/client-side-polish-br27G`
+
+- **Summary:** Updates dependency security tests for `axios` and `basic-ftp`, and enhances scroll depth tracking in analytics.
+- **Feedback:** Strong focus on security and telemetry. The updates to `workflow-validation.test.ts` ensure the project stays protected against known CVEs in critical dependencies. The addition of `measureNow` to `initScrollDepthTracking` allows for more accurate initial session analytics.
+
+#### 🟡 [Observation] Large Number of Orphan Branches
+
+- **Note:** 95 branches were identified as having no common ancestor with `main`. Many of these appear to be from automated alert-fix tools.
+- **Suggestion:** Consider a repository cleanup to prune stale orphan branches that are no longer relevant.
+
+---
+
 ## 2026-03-05
 
 ### Analysis: Accidental File Deletions in Open Branches (Jules Daily PR Reviews)

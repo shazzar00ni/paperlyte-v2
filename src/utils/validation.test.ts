@@ -223,6 +223,33 @@ describe('sanitizeInput', () => {
     expect(sanitizeInput('  hello  ')).toBe('hello')
   })
 
+  it('should remove dangerous protocols with large whitespace runs', () => {
+    // Test with 20 spaces between protocol and colon
+    const input20Spaces = 'javascript' + ' '.repeat(20) + ':alert(1)'
+    expect(sanitizeInput(input20Spaces)).not.toMatch(/javascript/i)
+    expect(sanitizeInput(input20Spaces)).toBe('alert(1)')
+
+    // Test with 50 spaces
+    const input50Spaces = 'javascript' + ' '.repeat(50) + ':alert(1)'
+    expect(sanitizeInput(input50Spaces)).not.toMatch(/javascript/i)
+
+    // Test with multiple slashes for file protocol (file:/// pattern)
+    const inputManySlashes = 'file:' + '/'.repeat(20) + 'etc/passwd'
+    expect(sanitizeInput(inputManySlashes)).not.toMatch(/file:/i)
+    expect(sanitizeInput(inputManySlashes)).toBe('etc/passwd')
+  })
+
+  it('should remove event handlers with large whitespace runs', () => {
+    // Test with 20 spaces around equals sign
+    const input20Spaces = 'onclick' + ' '.repeat(20) + '=' + ' '.repeat(20) + 'alert(1)'
+    expect(sanitizeInput(input20Spaces)).not.toMatch(/on\w+/i)
+    expect(sanitizeInput(input20Spaces)).toBe('alert(1)')
+
+    // Test with 50 spaces
+    const input50Spaces = 'onclick' + ' '.repeat(50) + '=' + ' '.repeat(50) + 'alert(1)'
+    expect(sanitizeInput(input50Spaces)).not.toMatch(/on\w+/i)
+  })
+
   it('should limit input length', () => {
     const longInput = 'a'.repeat(600)
     const result = sanitizeInput(longInput)

@@ -113,30 +113,19 @@ const MAX_SANITIZATION_ITERATIONS = 100
  * Helper function to iteratively apply a replacement pattern
  * Continues until no more matches or iteration limit is reached
  *
- * Note: This function requires a global RegExp pattern. The function will throw an error if the pattern is not global.
  * @param input - String to sanitize
- * @param pattern - Regex pattern to replace (will be normalized to global if needed)
+ * @param pattern - Global regex pattern to replace (must have the 'g' flag)
  * @param replacement - Replacement string (default: empty string)
  * @returns Sanitized string
+ * @throws {Error} If pattern is not global
  */
 function iterativeReplace(input: string, pattern: RegExp, replacement = ''): string {
-  // Ensure pattern has global flag for efficient replacement
-  // Ensure pattern has global flag for efficient replacement.
-  // The function implicitly requires a global pattern for iterative replacement;
-  // callers must provide a global RegExp.
   if (!pattern.global) {
     throw new Error('iterativeReplace requires a global RegExp pattern.')
   }
 
-  // Early exit if pattern doesn't match to avoid unnecessary iteration
-  pattern.lastIndex = 0
-  if (!pattern.test(input)) {
-    return input
-  }
-  pattern.lastIndex = 0
-
   let sanitized = input
-  let prevValue
+  let prevValue: string
   let iterations = 0
 
   do {
@@ -196,21 +185,21 @@ export function sanitizeInput(input: string): string {
   sanitized = sanitized.replace(/[<>]/g, '')
 
   // Iteratively remove dangerous protocols to prevent bypasses like 'jajavascript:vascript:'
-  // Use bounded quantifiers to prevent ReDoS: \s{0,10} instead of \s*, \/{0,10} handles file:///
+  // Allow up to 500 whitespace/slash chars to prevent bypass with large whitespace runs
   sanitized = iterativeReplace(
     sanitized,
-    /(javascript|data|vbscript|file|about)\s{0,10}:\/{0,10}/gi
+    /(javascript|data|vbscript|file|about)\s{0,500}:\/{0,500}/gi
   )
 
   // Iteratively remove event handlers to prevent bypasses like 'ononclick='
-  // Use bounded quantifier to prevent ReDoS and include optional spaces after =
-  sanitized = iterativeReplace(sanitized, /\bon\w+\s{0,10}=\s{0,10}/gi)
+  // Allow up to 500 whitespace chars to prevent bypass with large whitespace runs
+  sanitized = iterativeReplace(sanitized, /\bon\w+\s{0,500}=\s{0,500}/gi)
 
   // Encode remaining HTML entities (`&`, `"`, `'`) after angle brackets are stripped above
   sanitized = sanitized.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;')
 
-  // Limit length to prevent buffer overflow
-  return sanitized.slice(0, 500)
+  // Trim whitespace and limit length to prevent buffer overflow
+  return sanitized.trim().slice(0, 500)
 }
 
 /**

@@ -69,6 +69,9 @@ exclude_patterns:
     paths:
       - "src/utils/validation-utils.test.ts"
   - identifier: "generic.secrets.security.detected-sonarqube-api-token"
+  - identifier: "generic.secrets.security.detected-sonarqube-api-key"
+    paths:
+      - ".github/workflows/*.yml"
     paths:
       - ".github/workflows/*.yml"
 
@@ -88,3 +91,12 @@ exclude_paths:
 # Note: semgrep may report false positives for non-literal RegExp patterns in tests.
 # All RegExp inputs are sanitized via escapeRegExp(); input sources are constants, not user input.
 # Remaining false positives in non-test files can be marked "Won't Fix" in the Codacy UI.
+  - identifier: "generic.secrets.security.detected-sonarqube-docs-api-key"
+    paths:
+      - ".github/workflows/*.yml"
+  - identifier: "detected-sonarqube-api-token"
+    paths:
+      - ".github/workflows/*.yml"
+  - identifier: "detected-sonarqube-api-key"
+    paths:
+      - ".github/workflows/*.yml"

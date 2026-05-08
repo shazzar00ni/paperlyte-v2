@@ -5,8 +5,8 @@ import { logError } from '@utils/monitoring'
 type Theme = 'light' | 'dark'
 
 const isBrowser = typeof window !== 'undefined'
-const THEME_STORAGE_KEY = 'paperlyte:v1:theme'
-const USER_PREFERENCE_KEY = 'paperlyte:v1:theme-user-preference'
+const THEME_STORAGE_KEY = 'paperlyte:v1:theme' // nosemgrep: generic.secrets.security.hardcoded-password-string
+const USER_PREFERENCE_KEY = 'paperlyte:v1:theme-user-preference' // nosemgrep: generic.secrets.security.hardcoded-password-string
 
 const toError = (e: unknown): Error => (e instanceof Error ? e : new Error(String(e)))
 

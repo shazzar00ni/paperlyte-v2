@@ -8,23 +8,15 @@ from datetime import datetime
 def run_command(args):
     """Executes a command securely using list-based arguments and shell=False."""
     try:
+        # Use literal list to satisfy Codacy security requirements
         result = subprocess.run(args, capture_output=True, text=True, check=True)
         return result.stdout.strip()
     except subprocess.CalledProcessError as e:
-        # Don't log errors for 'which' checks
         if args[0] != 'which':
             print(f"Error: {e.stderr}", file=sys.stderr)
         return None
 
-def main():
-    if not os.path.exists('audit_results.json'):
-        print("Error: audit_results.json not found.", file=sys.stderr)
-        sys.exit(1)
-
-    with open('audit_results.json', 'r') as f:
-        data = json.load(f)
-
-    # Get PR mappings from GitHub CLI (if available)
+def get_pr_map():
     pr_map = {}
     gh_cli = run_command(['which', 'gh'])
     if gh_cli:
@@ -36,46 +28,41 @@ def main():
                     pr_map[pr['headRefName']] = pr['number']
             except json.JSONDecodeError:
                 pass
+    return pr_map
 
-    stats = {
-        'Orphan': 0,
-        'NPMRC': 0,
-        'ROADMAP': 0,
-        'GVC': 0,
-        'REVIEW': 0,
-        'HELPERS': 0,
-        'UNREADABLE': 0
-    }
+def comment_on_pr(pr_num, issues):
+    existing_comments = run_command(['gh', 'pr', 'view', str(pr_num), '--json', 'comments'])
+    if existing_comments:
+        try:
+            comments_data = json.loads(existing_comments)
+            if any('### ⚠️ Systemic Regressions Detected' in c['body'] for c in comments_data.get('comments', [])):
+                return
+        except json.JSONDecodeError:
+            pass
 
+    comment = '### ⚠️ Systemic Regressions Detected\n\nThis branch is currently blocked by the following regressions:\n\n'
+    for issue in issues:
+        comment += f'- {issue}\n'
+    comment += '\nPlease restore these critical files or security helpers before merging.'
+    run_command(['gh', 'pr', 'comment', str(pr_num), '--body', comment])
+
+def collect_stats(data):
+    stats = {'Orphan': 0, 'NPMRC': 0, 'ROADMAP': 0, 'GVC': 0, 'REVIEW': 0, 'HELPERS': 0, 'UNREADABLE': 0}
     for item in data.get('blocked', []):
-        issues = item['issues']
-        issues_str = str(issues)
-        if 'Orphan branch' in issues_str: stats['Orphan'] += 1
-        if 'Missing .npmrc' in issues_str: stats['NPMRC'] += 1
-        if 'Missing docs/ROADMAP.md' in issues_str: stats['ROADMAP'] += 1
-        if 'Missing gitVersionControl.md' in issues_str: stats['GVC'] += 1
-        if 'Missing review.md' in issues_str: stats['REVIEW'] += 1
-        if 'security helper' in issues_str: stats['HELPERS'] += 1
-        if 'Could not read src/utils/navigation.ts' in issues_str: stats['UNREADABLE'] += 1
+        issues = str(item['issues'])
+        if 'Orphan branch' in issues: stats['Orphan'] += 1
+        if 'Missing .npmrc' in issues: stats['NPMRC'] += 1
+        if 'Missing docs/ROADMAP.md' in issues: stats['ROADMAP'] += 1
+        if 'Missing gitVersionControl.md' in issues: stats['GVC'] += 1
+        if 'Missing review.md' in issues: stats['REVIEW'] += 1
+        if 'security helper' in issues: stats['HELPERS'] += 1
+        if 'Could not read src/utils/navigation.ts' in issues: stats['UNREADABLE'] += 1
+    return stats
 
-        # Comment on the PR if it exists and GH CLI is available
-        branch = item['branch']
-        if branch in pr_map:
-            pr_num = pr_map[branch]
-            comment = '### ⚠️ Systemic Regressions Detected\n\nThis branch is currently blocked by the following regressions:\n\n'
-            for issue in issues:
-                comment += f'- {issue}\n'
-            comment += '\nPlease restore these critical files or security helpers before merging.'
-            run_command(['gh', 'pr', 'comment', str(pr_num), '--body', comment])
-
-    # Generate Markdown Summary
+def generate_markdown(total, stats):
     date_str = datetime.now().strftime('%Y-%m-%d')
-    total = data.get('total_branches', 0)
-
-    summary = f'## {date_str}\n\n'
-    summary += '### Analysis: Systemic Regressions in Open Branches (Automated Daily Audit)\n\n'
-    summary += '- **Status:** Critical — Action Required\n'
-    summary += f'- **Summary:** An automated repository-wide audit of {total} unmerged branches confirms the following systemic regressions.\n\n'
+    summary = f'## {date_str}\n\n### Analysis: Systemic Regressions in Open Branches (Automated Daily Audit)\n\n'
+    summary += f'- **Status:** Critical — Action Required\n- **Summary:** An automated repository-wide audit of {total} unmerged branches confirms the following systemic regressions.\n\n'
     summary += '| Regression Type                | Count | Severity    | Notes                                                                    |\n'
     summary += '| :----------------------------- | :---- | :---------- | :----------------------------------------------------------------------- |\n'
     summary += f'| Orphan Branches                | {stats["Orphan"]}   | 🔴 Critical | No common ancestor with `main`.                                          |\n'
@@ -86,6 +73,24 @@ def main():
     summary += f'| Reverted Security Helpers      | {stats["HELPERS"]}   | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers.                      |\n'
     summary += f'| Unreadable navigation.ts       | {stats["UNREADABLE"]}     | 🔴 Critical | File missing or unreadable.                                              |\n\n'
     summary += '- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.\n\n'
+    return summary
+
+def main():
+    if not os.path.exists('audit_results.json'):
+        print("Error: audit_results.json not found.", file=sys.stderr)
+        sys.exit(1)
+
+    with open('audit_results.json', 'r') as f:
+        data = json.load(f)
+
+    pr_map = get_pr_map()
+    for item in data.get('blocked', []):
+        branch = item['branch']
+        if branch in pr_map:
+            comment_on_pr(pr_map[branch], item['issues'])
+
+    stats = collect_stats(data)
+    summary = generate_markdown(data.get('total_branches', 0), stats)
 
     with open('daily_summary.txt', 'w') as f:
         f.write(summary)

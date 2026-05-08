@@ -4,7 +4,6 @@ import { Icon } from '@components/ui/Icon'
 import { trackEvent } from '@utils/analytics'
 import { logError } from '@utils/monitoring'
 import { validateEmail } from '@utils/validation'
-import { logError } from '@utils/monitoring'
 import styles from './EmailCapture.module.css'
 
 interface EmailCaptureProps {

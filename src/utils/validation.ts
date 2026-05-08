@@ -206,7 +206,7 @@ export function sanitizeInput(input: string): string {
   // Use bounded quantifier to prevent ReDoS and include optional spaces after =
   sanitized = iterativeReplace(sanitized, /\bon\w+\s{0,10}=\s{0,10}/gi)
 
-  // Encode HTML entities
+  // Encode remaining HTML entities (`&`, `"`, `'`) after angle brackets are stripped above
   sanitized = sanitized.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;')
 
   // Limit length to prevent buffer overflow

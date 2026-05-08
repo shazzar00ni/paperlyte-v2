@@ -24,7 +24,9 @@ jobs:
       pull-requests: write
       issues: write
       id-token: write
-    if: contains(github.event.pull_request.labels.*.name, 'claude')
+    if: >
+      github.event.label.name == 'claude' &&
+      github.event.pull_request.head.repo.full_name != github.repository
     steps:
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2

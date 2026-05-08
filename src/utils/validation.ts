@@ -129,9 +129,11 @@ function iterativeReplace(input: string, pattern: RegExp, replacement = ''): str
   }
 
   // Early exit if pattern doesn't match to avoid unnecessary iteration
+  pattern.lastIndex = 0
   if (!pattern.test(input)) {
     return input
   }
+  pattern.lastIndex = 0
 
   let sanitized = input
   let prevValue

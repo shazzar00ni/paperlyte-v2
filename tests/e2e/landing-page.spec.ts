@@ -1,7 +1,7 @@
-import { test, expect } from '@playwright/test'
+import { test, expect, type Page } from '@playwright/test'
 
 test.describe('Landing Page', () => {
-  test('should load and display hero section', async ({ page }) => {
+  test('should load and display hero section', async ({ page }: { page: Page }): Promise<void> => {
     await page.goto('/')
 
     // Check hero heading exists
@@ -17,7 +17,13 @@ test.describe('Landing Page', () => {
     await expect(page).toHaveTitle(/Paperlyte/i)
   })
 
-  test('should navigate to features section on click', async ({ page, isMobile }) => {
+  test('should navigate to features section on click', async ({
+    page,
+    isMobile,
+  }: {
+    page: Page
+    isMobile: boolean
+  }): Promise<void> => {
     await page.goto('/')
 
     // Disable smooth scrolling so the scroll is instant and position detection is reliable
@@ -47,33 +53,46 @@ test.describe('Landing Page', () => {
     await expect(page.locator('#features')).toBeInViewport()
   })
 
-  // Only run performance test on chromium desktop to avoid flakiness
-  // Lighthouse CI already provides comprehensive Core Web Vitals monitoring
-  test('should pass Core Web Vitals', async ({ page, browserName }) => {
+  // Load-performance smoke check — only runs on chromium desktop to avoid flakiness.
+  // This is NOT a full Core Web Vitals gate: it measures FCP/LCP/CLS only (no INP/FID,
+  // since those require real user interaction). Lighthouse CI is the authoritative
+  // Core Web Vitals monitor for this project.
+  test('load-performance smoke check (FCP/LCP/CLS)', async ({ page, browserName, isMobile }) => {
     test.skip(browserName !== 'chromium', 'Performance test runs on chromium only')
-    test.skip(!!process.env.CI, 'Skip performance tests in CI to avoid environment flakiness')
+    test.skip(isMobile, 'Performance budgets target desktop viewport')
 
     await page.goto('/')
     await page.waitForLoadState('load')
 
+    interface CoreWebVitalsMetrics {
+      fcp: number | null
+      lcp: number | null
+      cls: number
+    }
+
     // Measure Core Web Vitals using Performance Timeline
-    const metrics = await page.evaluate(() => {
+    const metrics = await page.evaluate<CoreWebVitalsMetrics>((): Promise<CoreWebVitalsMetrics> => {
       const paintEntries = performance.getEntriesByType('paint')
       const fcpEntry = paintEntries.find((entry) => entry.name === 'first-contentful-paint')
 
       // Get LCP using PerformanceObserver
-      return new Promise((resolve) => {
-        let lcp = 0
+      return new Promise<CoreWebVitalsMetrics>((resolve) => {
+        // null means LCP observer never fired — distinguishes "not observed" from a genuine 0.
+        // CLS starts at 0: a page with no layout shifts correctly scores 0 (best case).
+        let lcp: number | null = null
         let cls = 0
 
         const lcpObserver = new PerformanceObserver((list) => {
           const entries = list.getEntries()
           const lastEntry = entries[entries.length - 1]
+          if (!lastEntry) {
+            return
+          }
           const lcpEntry = lastEntry as PerformanceEntry & {
             renderTime?: number
             loadTime?: number
           }
-          lcp = lcpEntry.renderTime || lcpEntry.loadTime || 0
+          lcp = lcpEntry.renderTime || lcpEntry.loadTime || lastEntry.startTime
         })
 
         const clsObserver = new PerformanceObserver((list) => {
@@ -105,13 +124,27 @@ test.describe('Landing Page', () => {
     })
 
     // Validate Core Web Vitals thresholds
-    expect(metrics.fcp).not.toBeNull()
-    expect(metrics.fcp).toBeLessThan(2000) // FCP < 2s
-    expect(metrics.lcp).toBeLessThan(2500) // LCP < 2.5s (good threshold)
-    expect(metrics.cls).toBeLessThan(0.1) // CLS < 0.1 (good threshold)
+    const { fcp, lcp, cls } = metrics
+
+    expect(fcp).not.toBeNull()
+    expect(lcp).not.toBeNull() // fail if LCP was never observed
+
+    if (fcp === null || lcp === null) {
+      return
+    }
+
+    expect(fcp).toBeLessThan(2000) // FCP < 2s
+    expect(lcp).toBeLessThan(2500) // LCP < 2.5s (good threshold)
+    expect(cls).toBeLessThan(0.1) // CLS < 0.1 (good threshold)
   })
 
-  test('should show mobile-specific UI on small screens', async ({ page, isMobile }) => {
+  test('should show mobile-specific UI on small screens', async ({
+    page,
+    isMobile,
+  }: {
+    page: Page
+    isMobile: boolean
+  }): Promise<void> => {
     // Skip on desktop browsers since mobile projects already test mobile viewports
     test.skip(!isMobile, 'Mobile UI test runs on mobile projects only')
 
@@ -131,7 +164,94 @@ test.describe('Landing Page', () => {
     await expect(menuList).toBeVisible()
   })
 
-  test('should have accessible keyboard navigation', async ({ page }) => {
+  test('should toggle dark mode and update data-theme attribute', async ({
+    page,
+  }: {
+    page: Page
+  }): Promise<void> => {
+    // Force light color scheme so useTheme starts in light mode regardless of CI/system settings
+    await page.emulateMedia({ colorScheme: 'light' })
+    await page.goto('/')
+
+    // The theme toggle button label is "Switch to dark mode" in the initial (light) state
+    const toggleButton = page.getByRole('button', { name: /switch to dark mode/i })
+    await expect(toggleButton).toBeVisible()
+
+    await toggleButton.click()
+
+    // After toggling, the <html> element should carry data-theme="dark"
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+
+    // The button label should now offer to switch back to light mode
+    await expect(page.getByRole('button', { name: /switch to light mode/i })).toBeVisible()
+  })
+
+  test('should expand and collapse a FAQ item', async ({ page }: { page: Page }): Promise<void> => {
+    await page.goto('/')
+
+    // Grab the first question button inside the FAQ section
+    const firstQuestion = page.locator('#faq').getByRole('button').first()
+
+    // Initially collapsed
+    await expect(firstQuestion).toHaveAttribute('aria-expanded', 'false')
+
+    await firstQuestion.click()
+
+    // Should be expanded after click
+    await expect(firstQuestion).toHaveAttribute('aria-expanded', 'true')
+
+    // Click again to collapse
+    await firstQuestion.click()
+    await expect(firstQuestion).toHaveAttribute('aria-expanded', 'false')
+  })
+
+  test('should submit waitlist email and show success state', async ({
+    page,
+  }: {
+    page: Page
+  }): Promise<void> => {
+    // Mock the Netlify subscribe endpoint so this test does not depend on
+    // `netlify dev` being running. The Vite preview server used in CI does not
+    // serve `/.netlify/functions/*`, which would otherwise return a 404 and
+    // surface as the error state instead of the success state.
+    let capturedPostBody: string | null = null
+    await page.route('**/.netlify/functions/subscribe', async (route) => {
+      capturedPostBody = route.request().postData()
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true }),
+      })
+    })
+
+    await page.goto('/')
+
+    const emailInput = page.locator('#email-capture input[type="email"]')
+    const submitButton = page
+      .locator('#email-capture')
+      .getByRole('button', { name: /join the waitlist/i })
+
+    // Use mixed-case to verify the component normalises (trim + lowercase) before POSTing.
+    // Use a unique timestamp to avoid duplicate-rejection flakiness if pointed at a real backend.
+    const timestamp = Date.now()
+    const rawEmail = `E2E-Test-${timestamp}@EXAMPLE.COM`
+    const expectedEmail = `e2e-test-${timestamp}@example.com`
+    await emailInput.fill(rawEmail)
+    await submitButton.click()
+
+    // Accept both straight (U+0027) and typographic (U+2019) apostrophes for cross-environment robustness
+    await expect(page.getByText(/You['\u2019]re on the list!/i)).toBeVisible({ timeout: 5000 })
+
+    // Assert the component sent the normalised (trimmed + lowercased) email
+    expect(capturedPostBody).not.toBeNull()
+    expect(JSON.parse(capturedPostBody!)).toEqual({ email: expectedEmail })
+  })
+
+  test('should have accessible keyboard navigation', async ({
+    page,
+  }: {
+    page: Page
+  }): Promise<void> => {
     await page.goto('/')
 
     // Test complete keyboard navigation flow

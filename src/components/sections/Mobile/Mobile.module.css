@@ -31,6 +31,7 @@
   margin-bottom: var(--spacing-lg);
 }
 
+/* accessibility-fixed: issue-808 - added :focus-visible with white outline for dark Mobile section background */
 .statusLabel {
   display: inline-flex;
   align-items: center;

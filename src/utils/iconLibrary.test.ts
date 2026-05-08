@@ -6,6 +6,12 @@
  */
 
 import { describe, it, expect } from 'vitest'
+// Side-effect import: ensures iconLibrary.ts is evaluated so that
+// `config.autoAddCss = false` runs before the CSP Compliance assertion.
+// Kept explicit (rather than relying on the named imports below) so the
+// CSP test cannot regress to passing vacuously if those imports change.
+import './iconLibrary'
+import { config } from '@fortawesome/fontawesome-svg-core'
 import {
   iconNameMap,
   brandIconNames,
@@ -190,6 +196,15 @@ describe('iconLibrary', () => {
       values.forEach((iconName) => {
         expect(isValidIcon(iconName)).toBe(true)
       })
+    })
+  })
+
+  describe('CSP Compliance', () => {
+    it('should disable autoAddCss to prevent inline <style> injection blocked by strict CSP', () => {
+      // iconLibrary.ts sets config.autoAddCss = false so FA never injects a
+      // <style> tag at runtime (which would be blocked by style-src 'self').
+      // If this regresses, FA will silently reintroduce CSP console errors.
+      expect(config.autoAddCss).toBe(false)
     })
   })
 

@@ -45,7 +45,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # Pinned checkout commit for this workflow (aligned with repo pattern)
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # Pinned checkout commit for this workflow (aligned with repo pattern)
         with:
           fetch-depth: 0  # Full history required for SonarCloud blame data and new-code detection
 

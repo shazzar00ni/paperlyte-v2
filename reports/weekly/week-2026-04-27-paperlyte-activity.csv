@@ -1,0 +1,61 @@
+Type,Title,Last Visited,Host
+Pull Request,test(flaky): fix Hero.test.tsx.Hero > Rendering > should render the main headline,2026-04-26T22:50:59Z,github.com
+Pull Request,CodeRabbit Generated Unit Tests: Add generated unit tests for PR changes,2026-04-26T14:00:20Z,github.com
+Pull Request,Implement Automated Daily PR Audit and Report Summary,2026-04-26T14:51:49Z,github.com
+Pull Request,"fix(cta): add dark mode text overrides for title, subtitle, textLink [SNI-328]",2026-04-26T18:34:08Z,github.com
+Pull Request,docs: add PR reviewer guide with essential codebase context,2026-04-26T05:40:37Z,github.com
+Pull Request,Daily PR Review and Audit System Implementation (2026-04-25),2026-04-25T15:44:30Z,github.com
+Issue,--color-text-tertiary dark mode value (#64748b) fails WCAG AA on dark backgrounds,2026-04-25T09:34:50Z,github.com
+Issue,CTA section text is white-on-white in dark mode (pre-existing),2026-04-26T14:03:36Z,github.com
+Issue,Add AI Policy,2026-04-24T19:37:59Z,github.com
+Pull Request,fix: resolve all outstanding TODOs in codebase,2026-04-26T20:17:27Z,github.com
+Pull Request,ci: improve OpenSSF Scorecard security posture,2026-04-25T20:33:06Z,github.com
+Pull Request,chore(deps-dev): bump postcss from 8.5.9 to 8.5.10,2026-04-25T16:08:44Z,github.com
+Issue,"[MEDIUM] Client-side polish: localStorage versioning, useTransition, and analytics deferral",2026-04-25T09:36:44Z,github.com
+Issue,"[HIGH] Re-render optimization: inline handlers, redundant computation, and hoisted regex",2026-04-24T18:10:49Z,github.com
+Issue,[CRITICAL] Bundle optimization: add code splitting and defer heavy dependencies,2026-04-26T15:46:19Z,github.com
+Issue,chore: address remaining OpenSSF Scorecard checks,2026-04-24T18:06:53Z,github.com
+Pull Request,Automated Daily PR Audit and Summary - 2026-04-24,2026-04-24T15:15:01Z,github.com
+Issue,"This Week In Paperlyte-V2 - April 17 - April 24, 2026",2026-04-24T15:11:16Z,github.com
+Pull Request,chore(a11y): add accessibility-fix markers from automated scan,2026-04-26T05:58:10Z,github.com
+Issue,[A11Y] [Medium] Dynamic inline color applied without contrast validation in Comparison table header,2026-04-25T08:57:02Z,github.com
+Issue,[A11Y] [Medium] Unnecessary tabIndex={0} adds extra tab stop on non-interactive carousel section,2026-04-24T15:12:01Z,github.com
+Issue,[A11Y] [High] Color contrast failures with --color-text-tertiary across multiple sections,2026-04-24T18:58:04Z,github.com
+Issue,[A11Y] [Critical] Missing :focus-visible styles on interactive elements,2026-04-24T18:57:53Z,github.com
+Pull Request,Restore Daily PR Audit Automation and Update Summary,2026-04-23T17:21:43Z,github.com
+Pull Request,Automated Daily PR Audit Summary - 2026-04-22,2026-04-22T17:28:51Z,github.com
+Pull Request,Add Continue.dev codebase rules configuration,2026-04-22T04:58:35Z,github.com
+Pull Request,Daily PR Audit Summary - 2026-04-21,2026-04-21T14:19:06Z,github.com
+Pull Request,fix(tsconfig): remove deprecated baseUrl option,2026-04-24T19:04:33Z,github.com
+Pull Request,Daily PR Audit and Review Summary - 2026-04-20,2026-04-20T14:35:53Z,github.com
+Pull Request,ci: bump softprops/action-gh-release from 2.6.1 to 3.0.0,2026-04-20T10:51:25Z,github.com
+Commit,Merge pull request #737 from shazzar00ni/claude/analyze-test-coverage-Z4TlK,2026-04-26T13:54:17Z,github.com
+Commit,test(e2e): clarify intent of unique-email pattern in waitlist test,2026-04-26T13:50:38Z,github.com
+Commit,test(EmailCapture): drain pending timer to avoid unmounted-update warning,2026-04-26T13:48:58Z,github.com
+Commit,chore: ignore ACTION_PLAN.md in prettier,2026-04-26T13:47:34Z,github.com
+Commit,Use waitFor for ErrorBoundary maxRetries assertions to avoid flakiness,2026-04-26T13:41:50Z,github.com
+Commit,fix: use vi.stubGlobal for matchMedia in AnimatedElement test,2026-04-26T08:07:39Z,github.com
+Commit,Update tests/e2e/landing-page.spec.ts,2026-04-26T08:06:44Z,github.com
+Commit,Merge pull request #780 from shazzar00ni/claude/pr-review-action-plan-Rl6dF,2026-04-26T08:05:23Z,github.com
+Commit,Update ACTION_PLAN.md,2026-04-26T08:04:49Z,github.com
+Commit,Update ACTION_PLAN.md,2026-04-26T08:03:23Z,github.com
+Commit,Merge pull request #812 from shazzar00ni/claude/accessibility-scan-agent-6jSFc,2026-04-26T05:51:02Z,github.com
+Commit,Merge branch 'main' into claude/accessibility-scan-agent-6jSFc,2026-04-26T05:38:22Z,github.com
+Commit,Merge pull request #819 from shazzar00ni/dependabot/npm_and_yarn/postcss-8.5.10,2026-04-25T16:08:13Z,github.com
+Commit,Merge branch 'main' into dependabot/npm_and_yarn/postcss-8.5.10,2026-04-25T09:37:10Z,github.com
+Commit,fix(cta): textLink hover transition targets opacity not color,2026-04-25T09:27:07Z,github.com
+Commit,fix(cta): textLink text invisible on CTA gradient in both light and dark mode,2026-04-25T09:21:11Z,github.com
+Commit,Merge branch 'main' into claude/accessibility-scan-agent-6jSFc,2026-04-25T09:08:35Z,github.com
+Commit,fix(cta): dark mode contrast regressions in focus ring and microcopy,2026-04-24T23:39:47Z,github.com
+Commit,fix(a11y): address contrast regression and token collision from #809 fix,2026-04-24T23:31:51Z,github.com
+Commit,Create dependancy-check.yml,2026-04-24T23:05:49Z,github.com
+Commit,Merge pull request #803 from shazzar00ni/claude/fix-tsconfig-deprecations-CYcmJ,2026-04-24T19:01:40Z,github.com
+Commit,Merge branch 'main' into claude/fix-tsconfig-deprecations-CYcmJ,2026-04-24T19:00:45Z,github.com
+Commit,fix(a11y): apply fixes for issues #808 and #809,2026-04-24T18:57:09Z,github.com
+Commit,chore(deps-dev): bump postcss from 8.5.9 to 8.5.10,2026-04-24T18:26:08Z,github.com
+Commit,Merge pull request #785 from shazzar00ni/claude/fix-github-action-p7wxH,2026-04-24T18:24:57Z,github.com
+Commit,fix(tsconfig): remove deprecated baseUrl (paths use relative prefixes),2026-04-24T18:24:33Z,github.com
+Commit,fix(ci): use full git history for Claude Code Action checkout,2026-04-24T18:23:04Z,github.com
+Commit,fix(a11y): correct issue-810 marker in Testimonials carousel,2026-04-24T08:09:25Z,github.com
+Commit,Merge branch 'main' into claude/accessibility-scan-agent-6jSFc,2026-04-24T08:05:52Z,github.com
+Commit,chore(a11y): add accessibility-fix markers from automated scan,2026-04-24T04:49:50Z,github.com

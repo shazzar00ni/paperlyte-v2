@@ -7,6 +7,7 @@ import {
   handleArrowNavigation,
   handleHomeEndNavigation,
 } from '@utils/keyboard'
+import { scrollToSection as scrollToSectionUtil } from '@utils/navigation'
 import styles from './Header.module.css'
 
 /**
@@ -31,23 +32,20 @@ export const Header = (): React.ReactElement => {
   const menuButtonRef = useRef<HTMLButtonElement>(null)
   const menuRef = useRef<HTMLUListElement>(null)
 
-  const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen)
-  }
-
-  const closeMobileMenu = useCallback(() => {
-    setMobileMenuOpen(false)
-    // Return focus to menu button when closing
-    menuButtonRef.current?.focus()
+  const toggleMobileMenu = useCallback((): void => {
+    setMobileMenuOpen((prev) => !prev)
   }, [])
 
+  const closeMobileMenu = useCallback((): void => {
+    if (!mobileMenuOpen) return
+    setMobileMenuOpen(false)
+    menuButtonRef.current?.focus()
+  }, [mobileMenuOpen])
+
   const scrollToSection = useCallback(
-    (sectionId: string) => {
-      const element = document.getElementById(sectionId)
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' })
-        closeMobileMenu()
-      }
+    (sectionId: string): void => {
+      scrollToSectionUtil(sectionId)
+      closeMobileMenu()
     },
     [closeMobileMenu]
   )
@@ -179,13 +177,7 @@ export const Header = (): React.ReactElement => {
               </a>
             </li>
             <li className={styles.navCta}>
-              <Button
-                variant="primary"
-                size="small"
-                onClick={() => {
-                  scrollToSection('download')
-                }}
-              >
+              <Button variant="primary" size="small" onClick={() => scrollToSection('download')}>
                 Get Started
               </Button>
             </li>

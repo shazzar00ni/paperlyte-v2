@@ -18,8 +18,11 @@
   # Edge functions directory
   edge_functions = "netlify/edge-functions"
 
-  # Node version to use
-  environment = { NODE_VERSION = "20" }
+  # NPM_FLAGS="--include=dev" is passed to Netlify's automatic npm install so
+  # that devDependencies (e.g. sharp, png-to-ico used by prebuild scripts) are
+  # installed even when Netlify sets NODE_ENV=production. Avoids running a
+  # second `npm ci` inside the build command, which would double install time.
+  environment = { NODE_VERSION = "20", NPM_FLAGS = "--include=dev" }
 
 # Production context: all deploys from the main branch
 [context.production]
@@ -71,10 +74,8 @@
     # Content Security Policy
     # External origins allowed:
     #   https://plausible.io              Plausible Analytics script + beacon (VITE_ANALYTICS_PROVIDER=plausible)
-    #   https://va.vercel-scripts.com     @vercel/analytics script (rendered unconditionally in App.tsx)
-    #   https://vitals.vercel-insights.com  @vercel/analytics beacon endpoint
     #   https://*.ingest.sentry.io        Sentry error telemetry (VITE_SENTRY_DSN)
-    Content-Security-Policy = "default-src 'self'; script-src 'self' https://plausible.io https://va.vercel-scripts.com; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://plausible.io https://vitals.vercel-insights.com https://*.ingest.sentry.io; worker-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests;"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://plausible.io; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://plausible.io https://*.ingest.sentry.io; worker-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests;"
 
     # Isolate this page's browsing context group so cross-origin windows opened
     # from this page (or that open this page) cannot access each other's DOM or

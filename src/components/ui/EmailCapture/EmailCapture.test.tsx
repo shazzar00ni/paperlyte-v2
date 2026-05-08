@@ -179,7 +179,7 @@ describe('EmailCapture (ui)', () => {
       await fillAndSubmit(user, 'test@example.com')
 
       await waitFor(() => {
-        expect(screen.getByText(/couldn't add you to the list/i)).toBeInTheDocument()
+        expect(screen.getByText(/Already subscribed/i)).toBeInTheDocument()
       })
     })
 

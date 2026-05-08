@@ -45,4 +45,5 @@ exclude_paths:
   - '**/*.test.tsx'
   - 'src/test/**'
   - 'scripts/maintenance/**'
+  - '.github/workflows/sonarcloud.yml'
   - '**/*.min.js'

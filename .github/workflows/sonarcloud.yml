@@ -39,6 +39,9 @@ permissions:
   contents: read      # allows actions/checkout to fetch the repository
   pull-requests: read # allows SonarCloud to decorate PRs with analysis results
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   Analysis:
     runs-on: ubuntu-latest

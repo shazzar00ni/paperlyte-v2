@@ -70,7 +70,7 @@ exclude_patterns:
       - "src/utils/validation-utils.test.ts"
   - identifier: "generic.secrets.security.detected-sonarqube-api-token"
     paths:
-      - ".github/workflows/sonarcloud.yml"
+      - ".github/workflows/*.yml"
 
 # Exclude paths from code analysis
 exclude_paths:

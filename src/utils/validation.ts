@@ -185,15 +185,15 @@ export function sanitizeInput(input: string): string {
   sanitized = sanitized.replace(/[<>]/g, '')
 
   // Iteratively remove dangerous protocols to prevent bypasses like 'jajavascript:vascript:'
-  // Allow up to 500 whitespace/slash chars to prevent bypass with large whitespace runs
+  // Allow up to 100 whitespace/slash chars to balance bypass prevention with ReDoS protection
   sanitized = iterativeReplace(
     sanitized,
-    /(javascript|data|vbscript|file|about)\s{0,500}:\/{0,500}/gi
+    /(javascript|data|vbscript|file|about)\s{0,100}:\/{0,100}/gi
   )
 
   // Iteratively remove event handlers to prevent bypasses like 'ononclick='
-  // Allow up to 500 whitespace chars to prevent bypass with large whitespace runs
-  sanitized = iterativeReplace(sanitized, /\bon\w+\s{0,500}=\s{0,500}/gi)
+  // Allow up to 100 whitespace chars to balance bypass prevention with ReDoS protection
+  sanitized = iterativeReplace(sanitized, /\bon\w+\s{0,100}=\s{0,100}/gi)
 
   // Encode remaining HTML entities (`&`, `"`, `'`) after angle brackets are stripped above
   sanitized = sanitized.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;')

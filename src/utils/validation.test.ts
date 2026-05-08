@@ -227,11 +227,13 @@ describe('sanitizeInput', () => {
     // Test with 20 spaces between protocol and colon
     const input20Spaces = 'javascript' + ' '.repeat(20) + ':alert(1)'
     expect(sanitizeInput(input20Spaces)).not.toMatch(/javascript/i)
+    expect(sanitizeInput(input20Spaces)).not.toContain(':')
     expect(sanitizeInput(input20Spaces)).toBe('alert(1)')
 
     // Test with 50 spaces
     const input50Spaces = 'javascript' + ' '.repeat(50) + ':alert(1)'
     expect(sanitizeInput(input50Spaces)).not.toMatch(/javascript/i)
+    expect(sanitizeInput(input50Spaces)).toBe('alert(1)')
 
     // Test with multiple slashes for file protocol (file:/// pattern)
     const inputManySlashes = 'file:' + '/'.repeat(20) + 'etc/passwd'
@@ -248,6 +250,7 @@ describe('sanitizeInput', () => {
     // Test with 50 spaces
     const input50Spaces = 'onclick' + ' '.repeat(50) + '=' + ' '.repeat(50) + 'alert(1)'
     expect(sanitizeInput(input50Spaces)).not.toMatch(/on\w+/i)
+    expect(sanitizeInput(input50Spaces)).toBe('alert(1)')
   })
 
   it('should limit input length', () => {

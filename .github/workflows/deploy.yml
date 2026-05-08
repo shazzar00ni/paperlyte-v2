@@ -13,7 +13,6 @@ concurrency:
   cancel-in-progress: false  # Never cancel an in-flight deploy — finish or fail cleanly
 
 # Default to no permissions; each job declares only what it needs.
-
 permissions: {}
 
 jobs:

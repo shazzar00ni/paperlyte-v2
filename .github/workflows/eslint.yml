@@ -21,7 +21,6 @@ on:
 # a restricted context where untrusted fork code has no access to secrets.
 # Adding security-events:write here is safe: it only allows writing to the
 # Security tab and does not elevate code execution privileges.
-
 permissions:
   contents: read
   security-events: write

@@ -21,39 +21,37 @@ This file contains a summary of pull requests I have reviewed.
 
 - **Action Required:** ALL affected branches MUST restore these critical files and security helpers.
 
-### Manual Review: High-Quality 'Ready' Branches
+---
 
-The following branches have been manually reviewed and are identified as high-quality contributions ready for merging, provided they pass final CI checks:
+## 2026-03-05
 
-- **`claude/implement-service-worker-YLeLZ`**
-  - **Status:** Ready
-  - **Summary:** Robust PWA service worker implementation.
-  - **Feedback:** Successfully implements a service worker with offline support, including a dedicated offline page and registration logic in `main.tsx`. Well-structured and follows best practices for PWA.
+### Analysis: Accidental File Deletions in Open Branches (Jules Daily PR Reviews)
 
-- **`claude/tree-shake-font-awesome-cK85j`**
-  - **Status:** Ready
-  - **Summary:** Efficient Icon component refactoring and font-awesome tree-shaking.
-  - **Feedback:** Significantly reduces bundle size by optimizing icon imports and refactoring the `Icon` component to use a more efficient provider pattern.
+- **Status:** Critical — Action Required
+- **Summary:** Analysis of Jules' daily PR reviews (2026-03-01, 2026-03-04, and 2026-03-05) confirms that a large number of open branches have **accidentally deleted** the following critical files from the repository:
 
-- **`claude/fix-open-redirect-TX551`**
-  - **Status:** Ready
-  - **Summary:** Security hardening of navigation utilities.
-  - **Feedback:** Implements robust URL validation in `safeNavigate` to prevent open redirect vulnerabilities. Includes comprehensive unit tests covering various edge cases and protocol bypass attempts.
+  | File                   | Severity    | Notes                                                                                                |
+  | ---------------------- | ----------- | ---------------------------------------------------------------------------------------------------- |
+  | `.npmrc`               | 🔴 Critical | Controls `legacy-peer-deps=true`; its removal breaks dependency resolution for all peer dependencies |
+  | `docs/ROADMAP.md`      | 🟠 High     | Core project roadmap documentation                                                                   |
+  | `gitVersionControl.md` | 🟠 High     | Core Git workflow documentation                                                                      |
+  | `review.md`            | 🟡 Medium   | AI PR reviewer instruction file                                                                      |
 
-- **`claude/accessibility-audit-baseline-USu5N`**
-  - **Status:** Ready
-  - **Summary:** WCAG 2.1 AA compliance baseline and documentation.
-  - **Feedback:** Provides a thorough accessibility audit report and a keyboard navigation checklist. Includes necessary ARIA improvements and color contrast adjustments in the global styles.
+- **Affected Branches (confirmed across multiple reviews):**
 
-- **`claude/add-claude-documentation-QxLA4`**
-  - **Status:** Ready
-  - **Summary:** Detailed architecture and coding documentation.
-  - **Feedback:** Adds valuable documentation to the `docs/` directory covering project architecture, coding standards, and developer onboarding.
+  | Branch / PR                                         | `.npmrc` | `docs/ROADMAP.md` | `gitVersionControl.md` | `review.md` | `src/utils/navigation.ts` reverted |
+  | --------------------------------------------------- | :------: | :---------------: | :--------------------: | :---------: | :--------------------------------: |
+  | `origin/claude/implement-todo-item-2H9LP`           |    ✗     |         ✗         |           ✗            |      ✗      |                 ✗                  |
+  | `origin/claude/core-editor-phase-1-PI3Yp`           |    ✗     |         ✗         |           ✗            |      ✗      |                 ✗                  |
+  | `origin/copilot/sub-pr-503`                         |    ✗     |         —         |           ✗            |      ✗      |                 ✗                  |
+  | `origin/copilot/sub-pr-469-again`                   |    ✗     |         —         |           ✗            |      ✗      |                 ✗                  |
+  | `origin/claude/fix-peer-dependency-conflicts-Wj2iC` |    ✗     |         —         |           —            |      —      |                 ✗                  |
+  | PR #469, #488, #491, #502, #506                     |    ✗     |         ✗         |           ✗            |      ✗      |                 —                  |
 
-- **`claude/client-side-polish-br27G`**
-  - **Status:** Ready
-  - **Summary:** Security updates and analytics hardening.
-  - **Feedback:** Refines analytics implementation to ensure zero PII leakage and updates dependency overrides to address known security vulnerabilities.
+  _✗ = accidentally deleted/reverted; — = not affected_
+
+- **Root Cause:** Likely caused by a destructive rebase or a base branch that had these files removed; propagated across many branches that branched off from it.
+- **Action Required:** All affected branches must restore the four files listed above (and the `hasDangerousProtocol`/`isRelativeUrl` helpers in `src/utils/navigation.ts`) before they can be merged. The files all exist and are intact on `main`.
 
 ---
 
@@ -138,8 +136,6 @@ The following branches have been manually reviewed and are identified as high-qu
 - **Status:** Approved
 - **Summary:** Fixes an open redirect vulnerability by restricting `safeNavigate()` to same-origin URLs by default. It introduces `safeNavigateExternal()` for intentional external navigation and adds a parameter to `isSafeUrl()` to control external URL allowance.
 - **Feedback:** Solid security improvement. The separation of internal and external navigation is a good pattern.
-
-## 2026-02-08
 
 ### PR #427: Configure Claude Code GitHub Action
 

@@ -62,18 +62,6 @@ def main():
         branch = item['branch']
         if branch in pr_map:
             pr_num = pr_map[branch]
-
-            # Check if we already commented on this PR to avoid spam
-            existing_comments = run_command(['gh', 'pr', 'view', str(pr_num), '--json', 'comments'])
-            if existing_comments:
-                try:
-                    comments_data = json.loads(existing_comments)
-                    has_commented = any('### ⚠️ Systemic Regressions Detected' in c['body'] for c in comments_data.get('comments', []))
-                    if has_commented:
-                        continue
-                except json.JSONDecodeError:
-                    pass
-
             comment = '### ⚠️ Systemic Regressions Detected\n\nThis branch is currently blocked by the following regressions:\n\n'
             for issue in issues:
                 comment += f'- {issue}\n'

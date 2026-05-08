@@ -45,3 +45,7 @@ public/favicon.ico
 # Deployment platforms
 .netlify
 .vercel
+# Audit data
+audit_results.json
+daily_summary.txt
+manual_feedback.txt

@@ -16,14 +16,10 @@ jobs:
     if: ${{ secrets.SONAR_TOKEN != '' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        uses: actions/checkout@v4.2.2
         with:
           fetch-depth: 0
-      - name: Analyze
-        uses: sonarsource/sonarqube-scan-action@59db25f34e16620e48ab4bb9e4a5dce155cb5432
+      - name: SonarScan
+        uses: sonarsource/sonarqube-scan-action@v5.0.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          args: >
-            -Dsonar.projectKey=shazzar00ni_paperlyte-v2
-            -Dsonar.organization=shazzar00ni

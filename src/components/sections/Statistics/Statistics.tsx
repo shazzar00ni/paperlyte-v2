@@ -2,7 +2,7 @@ import { Section } from '@components/layout/Section'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { CounterAnimation } from '@components/ui/CounterAnimation'
 import { SVGPathAnimation } from '@components/ui/SVGPathAnimation'
-import { WAITLIST_COUNT } from '@constants/waitlist'
+import { WAITLIST_COUNT, WAITLIST_COUNT_NUMERIC } from '@constants/waitlist'
 import styles from './Statistics.module.css'
 
 /**
@@ -28,7 +28,7 @@ interface StatisticItem {
  */
 const statistics: StatisticItem[] = [
   {
-    value: 500,
+    value: WAITLIST_COUNT_NUMERIC,
     suffix: '+',
     label: 'Waitlist Members',
     icon: 'fa-users',

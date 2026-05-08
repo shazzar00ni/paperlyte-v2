@@ -113,9 +113,7 @@ const MAX_SANITIZATION_ITERATIONS = 100
  * Helper function to iteratively apply a replacement pattern
  * Continues until no more matches or iteration limit is reached
  *
- * Note: This function requires a global RegExp. If the pattern is not global,
- * it will be normalized by creating a new RegExp with the global flag added.
- *
+ * Note: This function requires a global RegExp pattern. The function will throw an error if the pattern is not global.
  * @param input - String to sanitize
  * @param pattern - Regex pattern to replace (will be normalized to global if needed)
  * @param replacement - Replacement string (default: empty string)

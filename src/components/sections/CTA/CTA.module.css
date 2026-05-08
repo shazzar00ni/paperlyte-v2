@@ -115,7 +115,7 @@
 .textLink {
   background: none;
   border: none;
-  color: var(--color-text-on-primary);
+  color: rgba(255, 255, 255, 0.9);
   opacity: 1;
   font-size: var(--font-size-base);
   text-decoration: underline;
@@ -124,7 +124,7 @@
 }
 
 .textLink:hover {
-  color: var(--color-text-on-primary);
+  color: rgba(255, 255, 255, 0.9);
   opacity: 0.8;
 }
 
@@ -136,7 +136,7 @@
 
 @media (prefers-reduced-motion: no-preference) {
   .textLink {
-    transition: opacity 0.2s ease;
+    transition: color 0.2s ease, opacity 0.2s ease;
   }
 }
 
@@ -212,12 +212,17 @@
 
   :root:not([data-theme='light']) .title,
   :root:not([data-theme='light']) .subtitle,
+  :root:not([data-theme='light']) .textLink,
   :root:not([data-theme='light']) .microcopy {
     color: var(--color-text-on-primary);
   }
 
-  /* .textLink base styles use var(--color-text-on-primary) which resolves correctly via CSS
-     variables — no explicit color override needed; only focus outline requires an override */
+  :root:not([data-theme='light']) .subtitle {
+    opacity: 0.85;
+  }
+
+  /* .textLink base styles use rgba(255,255,255,0.9) which is visible on the dark gradient;
+     only focus outline requires an override */
   :root:not([data-theme='light']) .textLink:focus-visible {
     outline-color: var(--color-text-on-primary);
   }
@@ -239,8 +244,13 @@
 
 [data-theme='dark'] .title,
 [data-theme='dark'] .subtitle,
+[data-theme='dark'] .textLink,
 [data-theme='dark'] .microcopy {
   color: var(--color-text-on-primary);
+}
+
+[data-theme='dark'] .subtitle {
+  opacity: 0.85;
 }
 
 /* .textLink color/hover-opacity already set in base styles; only focus outline needs override */

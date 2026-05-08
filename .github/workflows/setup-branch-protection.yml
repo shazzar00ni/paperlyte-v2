@@ -12,6 +12,7 @@ on:
         default: 'main'
         type: string
 
+
 permissions:
   contents: read
 

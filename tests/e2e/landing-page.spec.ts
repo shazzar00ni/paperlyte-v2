@@ -70,54 +70,47 @@ test.describe('Landing Page', () => {
 
     // Measure Core Web Vitals using Performance Timeline
     const metrics = await page.evaluate<CoreWebVitalsMetrics>((): Promise<CoreWebVitalsMetrics> => {
-      const paintEntries = performance.getEntriesByType('paint')
-      const fcpEntry = paintEntries.find((entry) => entry.name === 'first-contentful-paint')
-
-      // Get LCP using PerformanceObserver
+      // Get metrics using PerformanceObserver
       return new Promise<CoreWebVitalsMetrics>((resolve) => {
-        // null means LCP observer never fired — distinguishes "not observed" from a genuine 0.
+        // null means observer never fired — distinguishes "not observed" from a genuine 0.
         // CLS starts at 0: a page with no layout shifts correctly scores 0 (best case).
+        let fcp: number | null = null
         let lcp: number | null = null
         let cls = 0
 
-        const lcpObserver = new PerformanceObserver((list) => {
-          const entries = list.getEntries()
-          const lastEntry = entries[entries.length - 1]
-          if (!lastEntry) {
-            return
-          }
-          const lcpEntry = lastEntry as PerformanceEntry & {
-            renderTime?: number
-            loadTime?: number
-          }
-          lcp = lcpEntry.renderTime || lcpEntry.loadTime || lastEntry.startTime
-        })
-
-        const clsObserver = new PerformanceObserver((list) => {
+        const observer = new PerformanceObserver((list) => {
           for (const entry of list.getEntries()) {
-            const layoutShift = entry as PerformanceEntry & {
-              hadRecentInput?: boolean
-              value: number
+            if (entry.name === 'first-contentful-paint') {
+              fcp = entry.startTime
             }
-            if (!layoutShift.hadRecentInput) {
-              cls += layoutShift.value
+            if (entry.entryType === 'largest-contentful-paint') {
+              const lcpEntry = entry as PerformanceEntry & {
+                renderTime?: number
+                loadTime?: number
+              }
+              lcp = lcpEntry.renderTime || lcpEntry.loadTime || entry.startTime
+            }
+            if (entry.entryType === 'layout-shift') {
+              const layoutShift = entry as PerformanceEntry & {
+                hadRecentInput?: boolean
+                value: number
+              }
+              if (!layoutShift.hadRecentInput) {
+                cls += layoutShift.value
+              }
             }
           }
         })
 
-        lcpObserver.observe({ type: 'largest-contentful-paint', buffered: true })
-        clsObserver.observe({ type: 'layout-shift', buffered: true })
+        observer.observe({ type: 'paint', buffered: true })
+        observer.observe({ type: 'largest-contentful-paint', buffered: true })
+        observer.observe({ type: 'layout-shift', buffered: true })
 
         // Wait a bit for metrics to be collected
         setTimeout(() => {
-          lcpObserver.disconnect()
-          clsObserver.disconnect()
-          resolve({
-            fcp: fcpEntry ? fcpEntry.startTime : null,
-            lcp,
-            cls,
-          })
-        }, 2500)
+          observer.disconnect()
+          resolve({ fcp, lcp, cls })
+        }, 3000) // Increased timeout to 3s for better reliability in CI
       })
     })
 

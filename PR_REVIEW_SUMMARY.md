@@ -27,10 +27,12 @@ This file contains a summary of pull requests I have reviewed.
   - **Status:** Ready / Recommended for Merge
   - **Summary:** Implements a robust PWA service worker with offline support.
   - **Feedback:** The implementation is clean and follows best practices for service worker registration and caching strategies. The addition of `offline.html` significantly improves the user experience during connectivity issues.
+
 - **Branch:** `claude/netlify-markdown-edge-function-cdyQy`
   - **Status:** Ready / Recommended for Merge
   - **Summary:** Adds a Netlify Edge Function for dynamic Markdown processing.
   - **Feedback:** Excellent work on the Edge Function implementation. The use of stubs for local testing and the comprehensive test suite in `tests/edge-functions/` ensures high reliability. This provides a flexible way to serve documentation or blog content.
+
 - **Branch:** `copilot/fix-hardcoded-passwords`
   - **Status:** Ready (with minor note)
   - **Summary:** Refactors theme storage keys in `useTheme.ts`.

@@ -12,13 +12,15 @@ export default defineConfig({
     // Setup files to run before each test file
     setupFiles: ['./src/test/setup.ts'],
 
-    // Use longer timeouts in CI so component-rendering tests don't trip the
-    // 5s limit on slower runners, especially when v8 coverage instrumentation
-    // is enabled (adds significant per-test overhead). Keep explicit 5s
-    // timeouts for local runs.
+    // In CI, increase timeouts so component-rendering and hook/teardown work
+    // doesn't trip limits on slower runners (especially with v8 coverage
+    // instrumentation, which adds significant per-test overhead).
+    // Locally, keep testTimeout at 5 s for fast feedback; leave hookTimeout
+    // and teardownTimeout undefined so Vitest's higher defaults apply and
+    // avoid flakiness on slower developer machines.
     testTimeout: process.env.CI ? 30000 : 5000,
-    hookTimeout: process.env.CI ? 30000 : 5000,
-    teardownTimeout: process.env.CI ? 30000 : 5000,
+    hookTimeout: process.env.CI ? 30000 : undefined,
+    teardownTimeout: process.env.CI ? 30000 : undefined,
 
     // Global test utilities
     globals: true,

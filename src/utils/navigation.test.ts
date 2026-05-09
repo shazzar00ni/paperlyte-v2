@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import {
   scrollToSection,
+  _clearPendingScrollObservers,
   isSafeUrl,
   safeNavigate,
   hasDangerousProtocol,
@@ -12,6 +13,10 @@ describe('navigation utilities', () => {
   describe('scrollToSection', () => {
     beforeEach(() => {
       vi.clearAllMocks()
+    })
+
+    afterEach(() => {
+      _clearPendingScrollObservers()
     })
 
     it('should scroll to element when it exists', () => {
@@ -55,6 +60,26 @@ describe('navigation utilities', () => {
       scrollToSection('features')
 
       expect(scrollIntoViewMock).toHaveBeenCalledTimes(1)
+      expect(scrollIntoViewMock).toHaveBeenCalledWith({ behavior: 'smooth' })
+
+      document.body.removeChild(mockElement)
+    })
+
+    it('should scroll when lazy-loaded element appears in DOM', async () => {
+      // Element does not exist yet (simulates a lazy-loaded section)
+      scrollToSection('lazy-section')
+
+      // Now insert the element to trigger the MutationObserver
+      const mockElement = document.createElement('section')
+      mockElement.id = 'lazy-section'
+      const scrollIntoViewMock = vi.fn()
+      mockElement.scrollIntoView = scrollIntoViewMock
+
+      document.body.appendChild(mockElement)
+
+      // MutationObserver callbacks fire asynchronously; flush microtasks
+      await new Promise((resolve) => setTimeout(resolve, 0))
+
       expect(scrollIntoViewMock).toHaveBeenCalledWith({ behavior: 'smooth' })
 
       document.body.removeChild(mockElement)

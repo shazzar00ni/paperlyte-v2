@@ -1,8 +1,40 @@
+/** Maximum time (ms) to wait for a lazy-loaded section to appear in the DOM. */
+const SCROLL_RETRY_TIMEOUT_MS = 3000
+
+/** Active MutationObservers waiting for a deferred section. Exposed for test cleanup. */
+const pendingScrollObservers: MutationObserver[] = []
+
+/**
+ * Disconnects and removes all pending scroll observers created by {@link scrollToSection}.
+ *
+ * @internal Exported **for test use only**. Call this in `afterEach` hooks to prevent
+ * MutationObserver leakage across test suites. Do not call from production code.
+ */
+export function _clearPendingScrollObservers(): void {
+  for (const observer of pendingScrollObservers) {
+    observer.disconnect()
+  }
+  pendingScrollObservers.length = 0
+}
+
+/** Disconnects a single observer and removes it from the pending list. */
+function removeObserver(observer: MutationObserver): void {
+  observer.disconnect()
+  const idx = pendingScrollObservers.indexOf(observer)
+  if (idx !== -1) pendingScrollObservers.splice(idx, 1)
+}
+
 /**
  * Scrolls smoothly to a section identified by its ID.
- * If the section doesn't exist or running in SSR, the function does nothing.
  *
- * @param sectionId - The ID of the section to scroll to (without the # prefix)
+ * If the section is not yet in the DOM (e.g. it lives inside a React `Suspense`
+ * boundary and its lazy chunk hasn't resolved yet), a `MutationObserver` watches
+ * for the element to appear and then scrolls once it is found — or gives up after
+ * {@link SCROLL_RETRY_TIMEOUT_MS} milliseconds.
+ *
+ * Does nothing when running in an SSR context (no `document`).
+ *
+ * @param sectionId - The `id` of the section to scroll to (without the `#` prefix)
  */
 export function scrollToSection(sectionId: string): void {
   // SSR guard - document is not available during server-side rendering
@@ -13,7 +45,25 @@ export function scrollToSection(sectionId: string): void {
   const element = document.getElementById(sectionId)
   if (element) {
     element.scrollIntoView({ behavior: 'smooth' })
+    return
   }
+
+  // Element not yet in the DOM (e.g. inside a lazy-loaded Suspense boundary).
+  // Watch for it to be inserted and then scroll once it appears.
+  const startTime = Date.now()
+
+  const observer = new MutationObserver(() => {
+    const el = document.getElementById(sectionId)
+    if (el) {
+      removeObserver(observer)
+      el.scrollIntoView({ behavior: 'smooth' })
+    } else if (Date.now() - startTime > SCROLL_RETRY_TIMEOUT_MS) {
+      removeObserver(observer)
+    }
+  })
+
+  observer.observe(document.body, { childList: true, subtree: true })
+  pendingScrollObservers.push(observer)
 }
 
 /**

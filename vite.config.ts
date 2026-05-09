@@ -53,7 +53,7 @@ function cspPlugin(): Plugin {
       // - 'unsafe-inline' is required for Vite's dev server CSS injection during HMR
       // - ws: wss: enables WebSocket connections for Vite dev server HMR
       // - All fonts and icons are self-hosted (no external CDN dependencies)
-      // - Fonts: @fontsource/inter, Icons: @fortawesome/fontawesome-free
+      // - Fonts: @fontsource/inter, Icons: self-hosted SVG paths (src/components/ui/Icon/icons.ts)
       const devCSP = `default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' ws: wss:; frame-ancestors 'none'; base-uri 'self'; form-action 'self';`
 
       // Inject CSP meta tag before closing </head> tag (dev only)

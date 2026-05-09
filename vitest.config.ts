@@ -17,8 +17,8 @@ export default defineConfig({
     // is enabled (adds significant per-test overhead). Keep explicit 5s
     // timeouts for local runs.
     testTimeout: process.env.CI ? 30000 : 5000,
-    hookTimeout: process.env.CI ? 30000 : undefined,
-    teardownTimeout: process.env.CI ? 30000 : undefined,
+    hookTimeout: process.env.CI ? 30000 : 5000,
+    teardownTimeout: process.env.CI ? 30000 : 5000,
 
     // Global test utilities
     globals: true,

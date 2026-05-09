@@ -1,7 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
 import { createScrollTracker } from '@/analytics/scrollDepth'
-import { trackEvent, trackCTAClick, trackExternalLink, trackSocialClick, AnalyticsEvents } from '@utils/analytics'
+import {
+  trackEvent,
+  trackCTAClick,
+  trackExternalLink,
+  trackSocialClick,
+  AnalyticsEvents,
+} from '@utils/analytics'
 import { useAnalytics } from '@/hooks/useAnalytics'
 
 // Stub createScrollTracker so tests don't depend on DOM scroll events

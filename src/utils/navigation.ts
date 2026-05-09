@@ -226,6 +226,10 @@ export function safeNavigate(url: string): boolean {
     return false
   }
 
+  // nosemgrep: javascript.browser.security.open-redirect.js-open-redirect
+  // URL is validated above: isSafeUrl() blocks dangerous protocols and
+  // isSameOriginAbsoluteUrl() restricts absolute URLs to the current origin,
+  // so only safe relative or same-origin URLs reach this assignment.
   window.location.href = trimmedUrl
   return true
 }

@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite'
-import type { Plugin } from 'vite'
+import type { Plugin, IndexHtmlTransformContext, HtmlTagDescriptor } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 import { codecovRollupPlugin } from '@codecov/rollup-plugin'
@@ -34,7 +34,7 @@ function fontPreloadPlugin(): Plugin {
     apply: 'build',
     transformIndexHtml: {
       order: 'post',
-      handler(_html, ctx) {
+      handler(_html: string, ctx: IndexHtmlTransformContext): HtmlTagDescriptor[] | void {
         const bundle = ctx.bundle
         if (!bundle) return
         return Object.keys(bundle)

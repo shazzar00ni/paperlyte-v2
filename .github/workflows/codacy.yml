@@ -112,14 +112,16 @@ jobs:
       # full security-events:write access.
       - name: Dismiss stale CSSlint false-positive alerts
         if: >
-          steps.upload-sarif.conclusion == 'success' &&
+          steps.upload-sarif.outcome == 'success' &&
           (github.event_name == 'push' || github.event_name == 'schedule')
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          ALERTS=$(gh api "repos/${{ github.repository }}/code-scanning/alerts" \
+          API_RESPONSE=$(gh api "repos/${{ github.repository }}/code-scanning/alerts" \
+            --paginate \
             --jq '[.[] | select(.tool.name == "Csslint (reported by Codacy)" and .state == "open") | .number] | .[]' \
-            2>/dev/null || true)
+            2>&1) || { echo "Warning: gh api call to code-scanning/alerts endpoint failed. Output: ${API_RESPONSE}"; exit 0; }
+          ALERTS="${API_RESPONSE}"
 
           if [ -z "$ALERTS" ]; then
             echo "No open CSSlint alerts found — nothing to dismiss."

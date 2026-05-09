@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { _clearPendingScrollObservers } from '@utils/navigation'
 import { CTA } from './CTA'
 
 describe('CTA', () => {
@@ -14,6 +15,7 @@ describe('CTA', () => {
   })
 
   afterEach(() => {
+    _clearPendingScrollObservers()
     Element.prototype.scrollIntoView = originalScrollIntoView
     vi.clearAllMocks()
   })

@@ -151,11 +151,7 @@ describe('netlify.toml — security headers', () => {
     })
 
     it('should allow plausible.io in connect-src', () => {
-      const cspLine = tomlContent
-        .split('\n')
-        .find(line => line.includes('Content-Security-Policy ='))
-      expect(cspLine).toBeDefined()
-      expect(cspLine).toContain('https://plausible.io')
+      expect(tomlContent).toMatch(/connect-src[^;]*https:\/\/plausible\.io/)
     })
 
     it('should allow sentry in connect-src', () => {

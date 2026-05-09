@@ -65,12 +65,10 @@ export default defineConfig({
 
     // Serialise test execution in CI to stay within CircleCI's 4 GB memory budget
     // (multiple jsdom forks spike RAM even without v8 coverage instrumentation).
-    ...(process.env.CI
-      ? {
-          pool: 'forks',
-          poolOptions: { forks: { singleFork: true } },
-        }
-      : {}),
+    // fileParallelism: false is the Vitest 4 equivalent of the removed singleFork
+    // option (poolOptions was removed in Vitest 4); it sets maxWorkers to 1 so
+    // only one test file runs at a time.
+    ...(process.env.CI ? { fileParallelism: false } : {}),
 
     // Test file patterns
     include: ['**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],

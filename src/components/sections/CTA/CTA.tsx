@@ -41,7 +41,7 @@ export const CTA = (): React.ReactElement => {
             <Button
               variant="primary"
               size="large"
-              className={styles.downloadButton}
+              className={styles.waitlistButton}
               onClick={() => scrollToSection('email-capture')}
             >
               Join the Waitlist

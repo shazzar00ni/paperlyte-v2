@@ -9,31 +9,75 @@ This file contains a summary of pull requests I have reviewed.
 - **Status:** Critical — Action Required
 - **Summary:** An automated repository-wide audit of 277 unmerged branches confirms the following systemic regressions.
 
-| Regression Type                | Count | Severity    | Notes                                                                    |
-| :----------------------------- | :---- | :---------- | :----------------------------------------------------------------------- |
-| Orphan Branches                | 0   | 🔴 Critical | No common ancestor with `main`.                                          |
-| Missing `.npmrc`               | 79    | 🔴 Critical | Breaks dependency resolution.                                            |
-| Missing `docs/ROADMAP.md`      | 75    | 🟠 High     | Core project documentation.                                              |
-| Missing `gitVersionControl.md` | 88   | 🟠 High     | Core Git workflow documentation.                                         |
-| Missing `review.md`            | 88   | 🟡 Medium   | AI PR reviewer instructions.                                             |
-| Reverted Security Helpers      | 87   | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers.                      |
-| Unreadable navigation.ts       | 8     | 🔴 Critical | File missing or unreadable.                                              |
+| Regression Type                | Count | Severity    | Notes                                               |
+| :----------------------------- | :---- | :---------- | :-------------------------------------------------- |
+| Orphan Branches                | 0     | 🔴 Critical | No common ancestor with `main`.                     |
+| Missing `.npmrc`               | 79    | 🔴 Critical | Breaks dependency resolution.                       |
+| Missing `docs/ROADMAP.md`      | 75    | 🟠 High     | Core project documentation.                         |
+| Missing `gitVersionControl.md` | 88    | 🟠 High     | Core Git workflow documentation.                    |
+| Missing `review.md`            | 88    | 🟡 Medium   | AI PR reviewer instructions.                        |
+| Reverted Security Helpers      | 87    | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers. |
+| Unreadable navigation.ts       | 8     | 🔴 Critical | File missing or unreadable.                         |
 
 - **Action Required:** ALL affected branches MUST restore these critical files and security helpers.
 
 ### Manual PR Reviews - 2026-05-09
 
-#### Branch: `claude/implement-service-worker-YLeLZ`
+**Branch:** `claude/implement-service-worker-YLeLZ`
+
 - **Status:** Ready / Recommended for Merge
 - **Summary:** Implements a robust PWA service worker with offline support.
 - **Feedback:** The implementation is clean and follows best practices for service worker registration and caching strategies. The addition of `offline.html` significantly improves the user experience during connectivity issues.
 
-#### Branch: `claude/netlify-markdown-edge-function-cdyQy`
+**Branch:** `claude/netlify-markdown-edge-function-cdyQy`
+
 - **Status:** Ready / Recommended for Merge
 - **Summary:** Adds a Netlify Edge Function for dynamic Markdown processing.
 - **Feedback:** Excellent work on the Edge Function implementation. The use of stubs for local testing and the comprehensive test suite in `tests/edge-functions/` ensures high reliability. This provides a flexible way to serve documentation or blog content.
 
-#### Branch: `copilot/fix-hardcoded-passwords`
+**Branch:** `copilot/fix-hardcoded-passwords`
+
+- **Status:** Ready (with minor note)
+- **Summary:** Refactors theme storage keys in `useTheme.ts`.
+- **Feedback:** The changes correctly refactor `THEME_STORAGE_KEY` and `USER_PREFERENCE_KEY` to more descriptive `THEME_STORAGE_NAME` and `USER_PREFERENCE_STORAGE_NAME`. Note: The branch name `fix-hardcoded-passwords` is misleading as the PR addresses code maintainability/naming rather than security credentials.
+
+---
+
+## 2026-05-09
+
+### Analysis: Systemic Regressions in Open Branches (Automated Daily Audit)
+
+- **Status:** Critical — Action Required
+- **Summary:** An automated repository-wide audit of 277 unmerged branches confirms the following systemic regressions.
+
+| Regression Type                | Count | Severity    | Notes                                               |
+| :----------------------------- | :---- | :---------- | :-------------------------------------------------- |
+| Orphan Branches                | 0     | 🔴 Critical | No common ancestor with `main`.                     |
+| Missing `.npmrc`               | 79    | 🔴 Critical | Breaks dependency resolution.                       |
+| Missing `docs/ROADMAP.md`      | 75    | 🟠 High     | Core project documentation.                         |
+| Missing `gitVersionControl.md` | 88    | 🟠 High     | Core Git workflow documentation.                    |
+| Missing `review.md`            | 88    | 🟡 Medium   | AI PR reviewer instructions.                        |
+| Reverted Security Helpers      | 87    | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers. |
+| Unreadable navigation.ts       | 8     | 🔴 Critical | File missing or unreadable.                         |
+
+- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.
+
+### Manual PR Reviews - 2026-05-09
+
+**Branch:** `claude/implement-service-worker-YLeLZ`
+
+- **Status:** Ready / Recommended for Merge
+- **Summary:** Implements a robust PWA service worker with offline support.
+- **Feedback:** The implementation is clean and follows best practices for service worker registration and caching strategies. The addition of `offline.html` significantly improves the user experience during connectivity issues.
+
+**Branch:** `claude/netlify-markdown-edge-function-cdyQy`
+
+- **Status:** Ready / Recommended for Merge
+- **Summary:** Adds a Netlify Edge Function for dynamic Markdown processing.
+- **Feedback:** Excellent work on the Edge Function implementation. The use of stubs for local testing and the comprehensive test suite in `tests/edge-functions/` ensures high reliability. This provides a flexible way to serve documentation or blog content.
+
+**Branch:** `copilot/fix-hardcoded-passwords`
+
 - **Status:** Ready (with minor note)
 - **Summary:** Refactors theme storage keys in `useTheme.ts`.
 - **Feedback:** The changes correctly refactor `THEME_STORAGE_KEY` and `USER_PREFERENCE_KEY` to more descriptive `THEME_STORAGE_NAME` and `USER_PREFERENCE_STORAGE_NAME`. Note: The branch name `fix-hardcoded-passwords` is misleading as the PR addresses code maintainability/naming rather than security credentials.

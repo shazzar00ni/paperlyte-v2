@@ -152,8 +152,11 @@ describe('EmailCapture UI Component', () => {
         expect(screen.getByText('Joining...')).toBeInTheDocument()
       })
 
-      // Resolve the deferred request to avoid a dangling promise after cleanup
+      // Resolve the deferred request and wait for the component to settle
       resolveRequest(new Response(JSON.stringify({})))
+      await waitFor(() => {
+        expect(screen.queryByText('Joining...')).not.toBeInTheDocument()
+      })
     })
 
     it('should show success state after successful submission', async () => {

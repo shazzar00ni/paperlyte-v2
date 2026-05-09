@@ -150,7 +150,7 @@ describe('monitoring', () => {
   describe('logError (production mode)', () => {
     beforeEach(() => {
       // Set production mode
-      vi.stubEnv('DEV', false as unknown as string)
+      vi.stubEnv('DEV', false)
       vi.stubEnv('VITE_SENTRY_DSN', 'https://test@sentry.io/123')
     })
 
@@ -264,7 +264,7 @@ describe('monitoring', () => {
 
   describe('logWarning (production mode)', () => {
     beforeEach(() => {
-      vi.stubEnv('DEV', false as unknown as string)
+      vi.stubEnv('DEV', false)
     })
 
     afterEach(() => {
@@ -298,7 +298,7 @@ describe('monitoring', () => {
 
   describe('logPerformance (production mode)', () => {
     beforeEach(() => {
-      vi.stubEnv('DEV', false as unknown as string)
+      vi.stubEnv('DEV', false)
     })
 
     afterEach(() => {

@@ -18,6 +18,7 @@ describe('CTA', () => {
     _clearPendingScrollObservers()
     Element.prototype.scrollIntoView = originalScrollIntoView
     vi.clearAllMocks()
+    _clearPendingScrollObservers()
   })
 
   it('should render as a section with correct id', () => {

@@ -40,20 +40,19 @@ export const Hero = (): React.ReactElement => {
         body: JSON.stringify({ email }),
       })
 
-      const data = response.ok
-        ? ((await response.json()) as { error?: string; success?: boolean })
-        : await response.json().catch(() => ({}) as { error?: string; success?: boolean })
-
       if (!response.ok) {
+        const data = await response
+          .json()
+          .catch(() => ({}) as { error?: string; success?: boolean })
         throw new Error(data.error ?? 'Failed to join waitlist')
       }
-      setIsLoading(false)
       setIsSubmitted(true)
     } catch (err) {
       const e = err instanceof Error ? err : new Error(String(err))
       logError(e, { tags: { context: 'hero-waitlist-submit' } })
-      setIsLoading(false)
       setError('Something went wrong. Please try again.')
+    } finally {
+      setIsLoading(false)
     }
   }
 

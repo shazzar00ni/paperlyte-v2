@@ -110,7 +110,18 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
             try {
               feedbackArray = JSON.parse(existingFeedback)
             } catch (parseError) {
-              console.warn('[FeedbackWidget] Failed to parse stored feedback:', parseError)
+              logError(
+                new Error('Failed to load stored feedback'),
+                {
+                  tags: { context: 'feedback-storage-parse' },
+                  errorInfo: {
+                    parseError:
+                      parseError instanceof Error ? parseError.message : String(parseError),
+                    key: 'paperlyte_feedback',
+                  },
+                },
+                'feedback_widget'
+              )
               feedbackArray = []
             }
           }

@@ -93,7 +93,7 @@ export const Statistics = (): React.ReactElement => {
                   >
                     <path d="M 24 4 A 20 20 0 1 1 23.99 4" fill="none" />
                   </SVGPathAnimation>
-                  <Icon name={stat.icon} size="lg" aria-hidden="true" />
+                  <Icon name={stat.icon} size="lg" />
                 </div>
 
                 <div className={styles.value}>

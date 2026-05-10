@@ -409,13 +409,18 @@ describe('analytics/webVitals', () => {
      * Build a PerformanceObserver mock that tracks instantiated observers by the
      * entry type they observe, and returns a lookup helper.
      */
-    function makeObserverMock() {
-      const instances: Array<{
-        callback: PerformanceObserverCallback
-        observe: ReturnType<typeof vi.fn>
-        observedType: string
-        disconnect: ReturnType<typeof vi.fn>
-      }> = []
+    interface MockObserverInstance {
+      callback: PerformanceObserverCallback
+      observe: ReturnType<typeof vi.fn>
+      observedType: string
+      disconnect: ReturnType<typeof vi.fn>
+    }
+
+    function makeObserverMock(): {
+      instances: MockObserverInstance[]
+      getObserverByType: (type: string) => MockObserverInstance | undefined
+    } {
+      const instances: MockObserverInstance[] = []
 
       global.PerformanceObserver = class {
         callback: PerformanceObserverCallback
@@ -434,13 +439,14 @@ describe('analytics/webVitals', () => {
         }
       } as unknown as typeof PerformanceObserver
 
-      const getObserverByType = (type: string) => instances.find((obs) => obs.observedType === type)
+      const getObserverByType = (type: string): MockObserverInstance | undefined =>
+        instances.find((obs) => obs.observedType === type)
 
       return { instances, getObserverByType }
     }
 
     /** Helper to fire a visibility-hidden event that triggers INP finalization */
-    function triggerPageHidden() {
+    function triggerPageHidden(): void {
       Object.defineProperty(document, 'visibilityState', {
         writable: true,
         configurable: true,
@@ -450,7 +456,11 @@ describe('analytics/webVitals', () => {
     }
 
     /** Build a fake PerformanceEventTiming-like entry */
-    function makeEntry(startTime: number, processingStart: number, processingEnd: number) {
+    function makeEntry(
+      startTime: number,
+      processingStart: number,
+      processingEnd: number
+    ): { startTime: number; processingStart: number; processingEnd: number } {
       return { startTime, processingStart, processingEnd }
     }
 

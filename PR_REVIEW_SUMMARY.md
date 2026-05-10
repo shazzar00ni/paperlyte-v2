@@ -2,6 +2,49 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-05-10
+
+### Analysis: Systemic Regressions in Open Branches (Automated Daily Audit)
+
+- **Status:** Critical — Action Required
+- **Summary:** An automated repository-wide audit of 277 unmerged branches confirms the following systemic regressions.
+
+| Regression Type                | Count | Severity    | Notes                                                                    |
+| :----------------------------- | :---- | :---------- | :----------------------------------------------------------------------- |
+| Orphan Branches                | 0   | 🔴 Critical | No common ancestor with `main`.                                          |
+| Missing `.npmrc`               | 79    | 🔴 Critical | Breaks dependency resolution.                                            |
+| Missing `docs/ROADMAP.md`      | 75    | 🟠 High     | Core project documentation.                                              |
+| Missing `gitVersionControl.md` | 88   | 🟠 High     | Core Git workflow documentation.                                         |
+| Missing `review.md`            | 88   | 🟡 Medium   | AI PR reviewer instructions.                                             |
+| Reverted Security Helpers      | 87   | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers.                      |
+| Unreadable navigation.ts       | 8     | 🔴 Critical | File missing or unreadable.                                              |
+
+- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.
+
+### Qualitative Reviews
+
+#### origin/claude/implement-service-worker-YLeLZ
+- **Status:** Ready
+- **Summary:** Implements a robust PWA service worker (`sw.js`) with sophisticated caching strategies (cache-first for hashed assets, network-first for navigation, stale-while-revalidate for static assets). Includes a beautiful, accessible offline fallback page (`offline.html`) and properly updates CSP headers.
+- **Feedback:** Excellent implementation. The offline page is fully responsive and respects reduced motion. Integration with Sentry and environment-aware registration in `main.tsx` is professionally handled.
+
+#### origin/claude/tree-shake-font-awesome-cK85j
+- **Status:** Ready
+- **Summary:** Refactors the `Icon` component to use a localized SVG path library (`icons.ts`) instead of the full Font Awesome package/CDN.
+- **Feedback:** Significant performance win by removing external dependencies and reducing the JavaScript payload. The mapping logic from FA class names to local paths ensures backward compatibility for existing components.
+
+#### origin/claude/fix-open-redirect-TX551
+- **Status:** Ready
+- **Summary:** Security hardening of `src/utils/navigation.ts`. Restricts `safeNavigate()` to same-origin URLs by default and adds robust protocol validation.
+- **Feedback:** Critical security improvement. The addition of `isSafeUrl` options and comprehensive unit tests for various attack vectors (data URLs, javascript:, backslash variants) demonstrates high security awareness.
+
+#### origin/claude/accessibility-audit-baseline-USu5N
+- **Status:** Ready
+- **Summary:** Completes a WCAG 2.1 AA audit and implements a detailed regression checklist (`docs/ACCESSIBILITY_CHECKLIST.md`). Includes fixes for color contrast on muted text.
+- **Feedback:** High-quality contribution to project sustainability. The checklist provides clear, actionable steps for manual verification that automated tools might miss.
+
+---
+
 ## 2026-03-05
 
 ### Analysis: Accidental File Deletions in Open Branches (Jules Daily PR Reviews)

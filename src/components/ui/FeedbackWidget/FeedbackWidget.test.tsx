@@ -2,6 +2,12 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { FeedbackWidget } from './FeedbackWidget'
+import * as monitoringModule from '@utils/monitoring'
+
+// Mock monitoring so we can assert logError is called
+vi.mock('@utils/monitoring', () => ({
+  logError: vi.fn(),
+}))
 
 describe('FeedbackWidget', () => {
   beforeEach(() => {
@@ -558,6 +564,33 @@ describe('FeedbackWidget', () => {
       await user.keyboard('{ArrowLeft}')
 
       expect(featureButton).toHaveFocus()
+    })
+  })
+
+  describe('localStorage parse error', () => {
+    it('calls logError when stored feedback JSON is invalid', async () => {
+      // Pre-seed localStorage with invalid JSON
+      localStorage.setItem('paperlyte_feedback', 'not-valid-json{{{')
+
+      render(<FeedbackWidget />)
+
+      // Open modal and submit feedback so the component reads localStorage
+      const openButton = screen.getByRole('button', { name: /open feedback form/i })
+      fireEvent.click(openButton)
+      await waitFor(() => expect(screen.getByRole('dialog')).toBeInTheDocument())
+
+      const textarea = screen.getByRole('textbox')
+      fireEvent.change(textarea, { target: { value: 'Test parse error path' } })
+      const submitButton = screen.getByRole('button', { name: /send feedback/i })
+      fireEvent.click(submitButton)
+
+      await waitFor(() => {
+        expect(vi.mocked(monitoringModule.logError)).toHaveBeenCalledWith(
+          expect.objectContaining({ message: 'Failed to load stored feedback' }),
+          expect.objectContaining({ tags: { context: 'feedback-storage-parse' } }),
+          'feedback_widget'
+        )
+      })
     })
   })
 })

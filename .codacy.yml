@@ -10,6 +10,21 @@ coverage:
     overall: 70
     file: 70
 
+# Global exclusions - Codacy should not scan these to avoid false-positive secret detection
+exclude_paths:
+  - 'node_modules/**'
+  - 'dist/**'
+  - 'coverage/**'
+  - '**/*.test.ts'
+  - '**/*.test.tsx'
+  - '**/*.spec.ts'
+  - '**/*.spec.tsx'
+  - 'src/test/**'
+  - 'scripts/**'
+  - '**/*.min.js'
+  - '.github/workflows/sonarcloud.yml'
+  - '.github/workflows/daily-pr-audit.yml'
+
 engines:
   # --- Enabled engines (well under the 20-run SARIF limit) ---
   semgrep:
@@ -70,35 +85,22 @@ exclude_patterns:
       - "src/utils/validation-utils.test.ts"
   - identifier: "generic.secrets.security.detected-sonarqube-api-token"
     paths:
-      - ".github/workflows/analysis.yml"
+      - ".github/workflows/sonarcloud.yml"
   - identifier: "generic.secrets.security.detected-sonarqube-api-key"
     paths:
-      - ".github/workflows/analysis.yml"
+      - ".github/workflows/sonarcloud.yml"
   - identifier: "generic.secrets.security.detected-sonarqube-docs-api-key"
     paths:
-      - ".github/workflows/analysis.yml"
+      - ".github/workflows/sonarcloud.yml"
   - identifier: "detected-sonarqube-api-token"
     paths:
-      - ".github/workflows/analysis.yml"
+      - ".github/workflows/sonarcloud.yml"
   - identifier: "detected-sonarqube-api-key"
     paths:
-      - ".github/workflows/analysis.yml"
+      - ".github/workflows/sonarcloud.yml"
   - identifier: "detected-sonarqube-docs-api-key"
     paths:
-      - ".github/workflows/analysis.yml"
-
-# Exclude paths from code analysis
-exclude_paths:
-  - 'node_modules/**'
-  - 'dist/**'
-  - 'coverage/**'
-  - '**/*.test.ts'
-  - '**/*.test.tsx'
-  - '**/*.spec.ts'
-  - '**/*.spec.tsx'
-  - 'src/test/**'
-  - 'scripts/**'
-  - '**/*.min.js'
+      - ".github/workflows/sonarcloud.yml"
 
 # Note: semgrep may report false positives for non-literal RegExp patterns in tests.
 # All RegExp inputs are sanitized via escapeRegExp(); input sources are constants, not user input.

@@ -4,6 +4,7 @@ import {
   _clearPendingScrollObservers,
   isSafeUrl,
   safeNavigate,
+  safeNavigateExternal,
   hasDangerousProtocol,
   isRelativeUrl,
   isAllowedAbsoluteUrl,
@@ -340,22 +341,25 @@ describe('navigation utilities', () => {
 
     // --- HTTPS URLs ---
 
-    it('should navigate to external HTTPS URL', () => {
-      const mock = mockLocation()
-      expect(safeNavigate('https://example.com')).toBe(true)
-      expect(mock.href).toBe('https://example.com')
+    it('should block external HTTPS URL (use safeNavigateExternal instead)', () => {
+      mockLocation()
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      expect(safeNavigate('https://example.com')).toBe(false)
+      warnSpy.mockRestore()
     })
 
-    it('should navigate to HTTPS URL with path', () => {
-      const mock = mockLocation()
-      expect(safeNavigate('https://example.com/page?key=val')).toBe(true)
-      expect(mock.href).toBe('https://example.com/page?key=val')
+    it('should block HTTPS URL with path (use safeNavigateExternal instead)', () => {
+      mockLocation()
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      expect(safeNavigate('https://example.com/page?key=val')).toBe(false)
+      warnSpy.mockRestore()
     })
 
-    it('should navigate to HTTP URL', () => {
-      const mock = mockLocation()
-      expect(safeNavigate('http://example.com')).toBe(true)
-      expect(mock.href).toBe('http://example.com')
+    it('should block HTTP URL (use safeNavigateExternal instead)', () => {
+      mockLocation()
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      expect(safeNavigate('http://example.com')).toBe(false)
+      warnSpy.mockRestore()
     })
 
     // --- javascript: protocol ---
@@ -459,6 +463,87 @@ describe('navigation utilities', () => {
       try {
         expect(safeNavigate('/dashboard')).toBe(false)
         expect(safeNavigate('https://example.com')).toBe(false)
+      } finally {
+        globalThis.window = originalWindow
+      }
+    })
+  })
+
+  describe('safeNavigateExternal', () => {
+    let originalOpen: typeof window.open
+
+    beforeEach(() => {
+      vi.clearAllMocks()
+      originalOpen = window.open
+      window.open = vi.fn()
+    })
+
+    afterEach(() => {
+      window.open = originalOpen
+    })
+
+    it('should open an HTTPS URL in a new tab with noopener,noreferrer', () => {
+      expect(safeNavigateExternal('https://example.com')).toBe(true)
+      expect(window.open).toHaveBeenCalledWith('https://example.com', '_blank', 'noopener,noreferrer')
+    })
+
+    it('should open an HTTP URL in a new tab', () => {
+      expect(safeNavigateExternal('http://example.com')).toBe(true)
+      expect(window.open).toHaveBeenCalledWith('http://example.com', '_blank', 'noopener,noreferrer')
+    })
+
+    it('should open an HTTPS URL with path and query', () => {
+      expect(safeNavigateExternal('https://example.com/page?key=val')).toBe(true)
+      expect(window.open).toHaveBeenCalledWith(
+        'https://example.com/page?key=val',
+        '_blank',
+        'noopener,noreferrer',
+      )
+    })
+
+    it('should block javascript: URLs', () => {
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      expect(safeNavigateExternal('javascript:alert(1)')).toBe(false)
+      expect(window.open).not.toHaveBeenCalled()
+      warnSpy.mockRestore()
+    })
+
+    it('should block data: URLs', () => {
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      expect(safeNavigateExternal('data:text/html,<script>alert(1)</script>')).toBe(false)
+      expect(window.open).not.toHaveBeenCalled()
+      warnSpy.mockRestore()
+    })
+
+    it('should block relative paths', () => {
+      // Relative paths pass isSafeUrl but are rejected by new URL(url) (no base),
+      // so the catch block returns false without triggering console.warn.
+      expect(safeNavigateExternal('/about')).toBe(false)
+      expect(safeNavigateExternal('./page')).toBe(false)
+      expect(window.open).not.toHaveBeenCalled()
+    })
+
+    it('should block protocol-relative URLs', () => {
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      expect(safeNavigateExternal('//evil.com')).toBe(false)
+      expect(window.open).not.toHaveBeenCalled()
+      warnSpy.mockRestore()
+    })
+
+    it('should block empty string', () => {
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      expect(safeNavigateExternal('')).toBe(false)
+      expect(window.open).not.toHaveBeenCalled()
+      warnSpy.mockRestore()
+    })
+
+    it('should return false during server-side rendering when window is undefined', () => {
+      const originalWindow = globalThis.window
+      // @ts-expect-error -- simulate SSR by removing window
+      delete globalThis.window
+
+      try {
+        expect(safeNavigateExternal('https://example.com')).toBe(false)
       } finally {
         globalThis.window = originalWindow
       }

@@ -4,7 +4,7 @@ import os
 import re
 import signal
 import json
-from .utils import run_command
+from scripts.maintenance.utils import run_command
 
 # Handle SIGPIPE for tools like 'head'
 signal.signal(signal.SIGPIPE, signal.SIG_DFL)

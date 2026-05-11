@@ -3,7 +3,7 @@ import json
 import os
 import sys
 from datetime import datetime
-from .utils import run_command
+from scripts.maintenance.utils import run_command
 
 def get_pr_map():
     """Maps branch names to open PR numbers using GitHub CLI."""

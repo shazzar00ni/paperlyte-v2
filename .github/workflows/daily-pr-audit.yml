@@ -31,16 +31,16 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # 1. Generate audit results JSON
-          python3 scripts/maintenance/audit_branches.py > audit_results.json
+          python3 -m scripts.maintenance.audit_branches > audit_results.json
 
           # 2. Generate markdown summary and post PR comments (via gh cli inside script)
-          python3 scripts/maintenance/generate_audit_summary.py
+          python3 -m scripts.maintenance.generate_audit_summary
 
       - name: Update Summary Documentation
         run: |
           # 3. Use dedicated Python script to robustly integrate the daily summary
           if [ -f daily_summary.txt ]; then
-            python3 scripts/maintenance/update_summary_file.py --daily-file daily_summary.txt
+            python3 -m scripts.maintenance.update_summary_file --daily-file daily_summary.txt
           fi
 
       - name: Commit and Push Changes

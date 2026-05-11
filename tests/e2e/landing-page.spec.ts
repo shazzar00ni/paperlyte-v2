@@ -71,17 +71,22 @@ test.describe('Landing Page', () => {
       cls: number
     }
 
-    // Measure Core Web Vitals using Performance Timeline
+    // Measure Core Web Vitals using PerformanceObserver with buffered:true for all three
+    // metrics so headless Chromium can register entries that fired before evaluate() runs.
     const metrics = await page.evaluate<CoreWebVitalsMetrics>((): Promise<CoreWebVitalsMetrics> => {
-      const paintEntries = performance.getEntriesByType('paint')
-      const fcpEntry = paintEntries.find((entry) => entry.name === 'first-contentful-paint')
-
-      // Get LCP using PerformanceObserver
       return new Promise<CoreWebVitalsMetrics>((resolve) => {
-        // null means LCP observer never fired — distinguishes "not observed" from a genuine 0.
+        // null means the observer never fired — distinguishes "not observed" from a genuine 0.
         // CLS starts at 0: a page with no layout shifts correctly scores 0 (best case).
+        let fcp: number | null = null
         let lcp: number | null = null
         let cls = 0
+
+        const fcpObserver = new PerformanceObserver((list) => {
+          const entry = list.getEntries().find((e) => e.name === 'first-contentful-paint')
+          if (entry) {
+            fcp = entry.startTime
+          }
+        })
 
         const lcpObserver = new PerformanceObserver((list) => {
           const entries = list.getEntries()
@@ -108,18 +113,16 @@ test.describe('Landing Page', () => {
           }
         })
 
+        fcpObserver.observe({ type: 'paint', buffered: true })
         lcpObserver.observe({ type: 'largest-contentful-paint', buffered: true })
         clsObserver.observe({ type: 'layout-shift', buffered: true })
 
         // Wait a bit for metrics to be collected
         setTimeout(() => {
+          fcpObserver.disconnect()
           lcpObserver.disconnect()
           clsObserver.disconnect()
-          resolve({
-            fcp: fcpEntry ? fcpEntry.startTime : null,
-            lcp,
-            cls,
-          })
+          resolve({ fcp, lcp, cls })
         }, 2500)
       })
     })

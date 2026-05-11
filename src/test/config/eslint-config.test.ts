@@ -26,7 +26,6 @@ describe('eslint.config.js', () => {
     it('should contain file pattern for netlify/functions/**/*.ts', () => {
       expect(content).toContain("'netlify/functions/**/*.ts'")
     })
-
   })
 
   describe('main TypeScript configuration block (retained)', () => {

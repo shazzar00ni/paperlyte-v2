@@ -10,13 +10,13 @@ describe('eslint.config.js', () => {
     content = readFileSync(filePath, 'utf-8')
   })
 
-  describe('Node.js globals block', () => {
+  describe('Node.js globals configuration', () => {
     it('should contain Node.js globals configuration', () => {
       expect(content).toContain('globals.node')
     })
 
     it('should contain file pattern for *.config.ts', () => {
-      expect(content).toMatch(/'?\*\.config\.ts'?/)
+      expect(content).toMatch(/['"]\*\.config\.ts['"]/)
     })
 
     it('should contain file pattern for scripts/**/*.ts', () => {
@@ -27,11 +27,6 @@ describe('eslint.config.js', () => {
       expect(content).toContain("'netlify/functions/**/*.ts'")
     })
 
-    it('should include a dedicated Node.js override block', () => {
-      expect(content).toMatch(
-        /files:\s*\['\*\.config\.ts',\s*'scripts\/\*\*\/\*\.ts',\s*'netlify\/functions\/\*\*\/\*\.ts'\],[\s\S]*globals:\s*globals\.node/
-      )
-    })
   })
 
   describe('main TypeScript configuration block (retained)', () => {

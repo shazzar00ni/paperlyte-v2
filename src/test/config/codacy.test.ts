@@ -12,7 +12,7 @@ describe('.codacy.yml configuration', () => {
     lines = content.split('\n')
   })
 
-  describe('legacy eslint engine compatibility', () => {
+  describe('legacy eslint engine configuration', () => {
     it('should keep the legacy eslint engine entry', () => {
       const legacyEslintPattern = /^\s*eslint:\s*$/m
       expect(content).toMatch(legacyEslintPattern)

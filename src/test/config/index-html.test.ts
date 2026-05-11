@@ -13,57 +13,14 @@ describe('index.html structure', () => {
     document = new DOMParser().parseFromString(content, 'text/html')
   })
 
-  describe('font preloads (added in this PR)', () => {
-    it('should preload Inter variable font', () => {
+  describe('font preloads', () => {
+    it('should not preload fonts in index.html', () => {
       const links = document.querySelectorAll('link[rel="preload"][as="font"]')
-      const interPreload = Array.from(links).find(
-        (link) => link.getAttribute('href') === '/fonts/Inter-Variable.woff2'
-      )
-      expect(interPreload).toBeDefined()
-    })
-
-    it('should preload PlayfairDisplay variable font', () => {
-      const links = document.querySelectorAll('link[rel="preload"][as="font"]')
-      const playfairPreload = Array.from(links).find(
-        (link) => link.getAttribute('href') === '/fonts/PlayfairDisplay-Variable.woff2'
-      )
-      expect(playfairPreload).toBeDefined()
-    })
-
-    it('should set font type to font/woff2 for Inter', () => {
-      const links = document.querySelectorAll('link[rel="preload"][as="font"]')
-      const interPreload = Array.from(links).find(
-        (link) => link.getAttribute('href') === '/fonts/Inter-Variable.woff2'
-      )
-      expect(interPreload?.getAttribute('type')).toBe('font/woff2')
-    })
-
-    it('should set font type to font/woff2 for PlayfairDisplay', () => {
-      const links = document.querySelectorAll('link[rel="preload"][as="font"]')
-      const playfairPreload = Array.from(links).find(
-        (link) => link.getAttribute('href') === '/fonts/PlayfairDisplay-Variable.woff2'
-      )
-      expect(playfairPreload?.getAttribute('type')).toBe('font/woff2')
-    })
-
-    it('should have crossorigin attribute on Inter font preload', () => {
-      const links = document.querySelectorAll('link[rel="preload"][as="font"]')
-      const interPreload = Array.from(links).find(
-        (link) => link.getAttribute('href') === '/fonts/Inter-Variable.woff2'
-      )
-      expect(interPreload?.hasAttribute('crossorigin')).toBe(true)
-    })
-
-    it('should have crossorigin attribute on PlayfairDisplay font preload', () => {
-      const links = document.querySelectorAll('link[rel="preload"][as="font"]')
-      const playfairPreload = Array.from(links).find(
-        (link) => link.getAttribute('href') === '/fonts/PlayfairDisplay-Variable.woff2'
-      )
-      expect(playfairPreload?.hasAttribute('crossorigin')).toBe(true)
+      expect(links.length).toBe(0)
     })
   })
 
-  describe('responsive image preload (added in this PR)', () => {
+  describe('critical image preload', () => {
     let imagePreload: Element | null
 
     beforeAll(() => {
@@ -82,41 +39,14 @@ describe('index.html structure', () => {
       expect(imagePreload?.getAttribute('type')).toBe('image/avif')
     })
 
-    it('should have imagesrcset attribute with multiple resolutions', () => {
+    it('should not define imagesrcset on the preload link', () => {
       const imagesrcset = imagePreload?.getAttribute('imagesrcset')
-      expect(imagesrcset).toBeDefined()
-      expect(imagesrcset).toContain('400w')
-      expect(imagesrcset).toContain('800w')
-      expect(imagesrcset).toContain('1100w')
+      expect(imagesrcset).toBeNull()
     })
 
-    it('should reference correct image files in imagesrcset', () => {
-      const imagesrcset = imagePreload?.getAttribute('imagesrcset')
-      expect(imagesrcset).toContain('/mockups/notes-list-400w.avif')
-      expect(imagesrcset).toContain('/mockups/notes-list-800w.avif')
-      expect(imagesrcset).toContain('/mockups/notes-list.avif')
-    })
-
-    it('should have imagesizes attribute with responsive breakpoints', () => {
+    it('should not define imagesizes on the preload link', () => {
       const imagesizes = imagePreload?.getAttribute('imagesizes')
-      expect(imagesizes).toBeDefined()
-      expect(imagesizes).toContain('480px')
-      expect(imagesizes).toContain('768px')
-    })
-
-    it('should reference 400px image for mobile breakpoint', () => {
-      const imagesizes = imagePreload?.getAttribute('imagesizes')
-      expect(imagesizes).toContain('400px')
-    })
-
-    it('should reference 800px image for tablet breakpoint', () => {
-      const imagesizes = imagePreload?.getAttribute('imagesizes')
-      expect(imagesizes).toContain('800px')
-    })
-
-    it('should reference 1100px image as default size', () => {
-      const imagesizes = imagePreload?.getAttribute('imagesizes')
-      expect(imagesizes).toContain('1100px')
+      expect(imagesizes).toBeNull()
     })
   })
 

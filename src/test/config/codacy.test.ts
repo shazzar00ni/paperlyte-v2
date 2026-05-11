@@ -12,26 +12,19 @@ describe('.codacy.yml configuration', () => {
     lines = content.split('\n')
   })
 
-  describe('legacy eslint engine removal (PR change)', () => {
-    it('should NOT contain the legacy eslint engine entry', () => {
-      // The legacy eslint engine was removed in this PR
-      // It previously contained: eslint:\n    enabled: false
-      const legacyEslintPattern = /^eslint:\s*$/m
-      expect(content).not.toMatch(legacyEslintPattern)
+  describe('legacy eslint engine compatibility', () => {
+    it('should keep the legacy eslint engine entry', () => {
+      const legacyEslintPattern = /^\s*eslint:\s*$/m
+      expect(content).toMatch(legacyEslintPattern)
     })
 
-    it('should NOT contain enabled: false for eslint (legacy) engine', () => {
-      // Verify no legacy eslint block with enabled: false
-      const legacyBlock = content.match(/eslint:\s*\n\s*enabled:\s*false/)
-      expect(legacyBlock).toBeNull()
+    it('should keep legacy eslint disabled to avoid duplicate analysis', () => {
+      expect(content).toMatch(/eslint:\s*\n\s*enabled:\s*false/)
     })
 
-    it('should NOT have duplicate eslint engines', () => {
-      // Count occurrences of eslint-related engine keys at start of line (after whitespace)
-      const eslintEngineMatches = lines.filter(
-        (line) => line.match(/^\s*eslint:\s*$/) // plain 'eslint:' (legacy)
-      )
-      expect(eslintEngineMatches.length).toBe(0)
+    it('should define the legacy eslint engine only once', () => {
+      const eslintEngineMatches = lines.filter((line) => line.match(/^\s*eslint:\s*$/))
+      expect(eslintEngineMatches.length).toBe(1)
     })
   })
 

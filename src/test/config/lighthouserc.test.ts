@@ -32,14 +32,14 @@ interface LighthouseConfig {
 }
 
 describe('.lighthouserc.json configuration', () => {
-  let config: LighthouseConfig
   let rawContent: string
 
   beforeAll(() => {
     const filePath = join(process.cwd(), '.lighthouserc.json')
     rawContent = readFileSync(filePath, 'utf-8')
-    config = JSON.parse(rawContent) as LighthouseConfig
   })
+
+  const getConfig = (): LighthouseConfig => JSON.parse(rawContent) as LighthouseConfig
 
   describe('JSON validity and structure', () => {
     it('should be valid JSON', () => {
@@ -47,6 +47,7 @@ describe('.lighthouserc.json configuration', () => {
     })
 
     it('should have ci.collect configuration', () => {
+      const config = getConfig()
       expect(config.ci).toBeDefined()
       expect(config.ci.collect).toBeDefined()
       expect(config.ci.collect.url).toBeInstanceOf(Array)
@@ -54,90 +55,109 @@ describe('.lighthouserc.json configuration', () => {
     })
 
     it('should have ci.assert configuration', () => {
+      const config = getConfig()
       expect(config.ci.assert).toBeDefined()
       expect(config.ci.assert.preset).toBe('lighthouse:recommended')
       expect(config.ci.assert.assertions).toBeDefined()
     })
 
     it('should have ci.upload configuration', () => {
+      const config = getConfig()
       expect(config.ci.upload).toBeDefined()
       expect(config.ci.upload.target).toBe('temporary-public-storage')
     })
   })
 
-  describe('removed assertions (PR cleanup)', () => {
-    it('should NOT have unminified-css assertion', () => {
-      expect(config.ci.assert.assertions).not.toHaveProperty('unminified-css')
+  describe('existing assertions', () => {
+    it('should have unminified-css assertion as warn', () => {
+      const config = getConfig()
+      expect(config.ci.assert.assertions).toHaveProperty('unminified-css', 'warn')
     })
 
-    it('should NOT have unminified-javascript assertion', () => {
-      expect(config.ci.assert.assertions).not.toHaveProperty('unminified-javascript')
+    it('should have unminified-javascript assertion as warn', () => {
+      const config = getConfig()
+      expect(config.ci.assert.assertions).toHaveProperty('unminified-javascript', 'warn')
     })
 
-    it('should NOT have network-dependency-tree-insight assertion', () => {
-      expect(config.ci.assert.assertions).not.toHaveProperty('network-dependency-tree-insight')
+    it('should have network-dependency-tree-insight assertion as warn', () => {
+      const config = getConfig()
+      expect(config.ci.assert.assertions).toHaveProperty('network-dependency-tree-insight', 'warn')
     })
 
-    it('should NOT have is-on-https assertion', () => {
-      expect(config.ci.assert.assertions).not.toHaveProperty('is-on-https')
+    it('should have is-on-https assertion as warn', () => {
+      const config = getConfig()
+      expect(config.ci.assert.assertions).toHaveProperty('is-on-https', 'warn')
     })
 
-    it('should NOT have uses-http2 assertion', () => {
-      expect(config.ci.assert.assertions).not.toHaveProperty('uses-http2')
+    it('should have uses-http2 assertion as off', () => {
+      const config = getConfig()
+      expect(config.ci.assert.assertions).toHaveProperty('uses-http2', 'off')
     })
 
-    it('should NOT have redirects-http assertion', () => {
-      expect(config.ci.assert.assertions).not.toHaveProperty('redirects-http')
+    it('should have redirects-http assertion as warn', () => {
+      const config = getConfig()
+      expect(config.ci.assert.assertions).toHaveProperty('redirects-http', 'warn')
     })
 
-    it('should NOT have csp-xss assertion', () => {
-      expect(config.ci.assert.assertions).not.toHaveProperty('csp-xss')
+    it('should have csp-xss assertion as warn', () => {
+      const config = getConfig()
+      expect(config.ci.assert.assertions).toHaveProperty('csp-xss', 'warn')
     })
 
-    it('should NOT have has-hsts assertion', () => {
-      expect(config.ci.assert.assertions).not.toHaveProperty('has-hsts')
+    it('should have has-hsts assertion as warn', () => {
+      const config = getConfig()
+      expect(config.ci.assert.assertions).toHaveProperty('has-hsts', 'warn')
     })
 
-    it('should NOT have clickjacking-mitigation assertion', () => {
-      expect(config.ci.assert.assertions).not.toHaveProperty('clickjacking-mitigation')
+    it('should have clickjacking-mitigation assertion as warn', () => {
+      const config = getConfig()
+      expect(config.ci.assert.assertions).toHaveProperty('clickjacking-mitigation', 'warn')
     })
 
-    it('should NOT have bf-cache assertion', () => {
-      expect(config.ci.assert.assertions).not.toHaveProperty('bf-cache')
+    it('should have bf-cache assertion as warn', () => {
+      const config = getConfig()
+      expect(config.ci.assert.assertions).toHaveProperty('bf-cache', 'warn')
     })
 
-    it('should NOT have errors-in-console assertion', () => {
-      expect(config.ci.assert.assertions).not.toHaveProperty('errors-in-console')
+    it('should have errors-in-console assertion as warn', () => {
+      const config = getConfig()
+      expect(config.ci.assert.assertions).toHaveProperty('errors-in-console', 'warn')
     })
   })
 
   describe('retained assertions', () => {
     it('should have no-document-write as error', () => {
+      const config = getConfig()
       const assertion = config.ci.assert.assertions['no-document-write']
       expect(assertion).toBe('error')
     })
 
     it('should have uses-rel-preconnect as warn', () => {
+      const config = getConfig()
       const assertion = config.ci.assert.assertions['uses-rel-preconnect']
       expect(assertion).toBe('warn')
     })
 
     it('should have uses-long-cache-ttl as off', () => {
+      const config = getConfig()
       const assertion = config.ci.assert.assertions['uses-long-cache-ttl']
       expect(assertion).toBe('off')
     })
 
     it('should have font-display as warn', () => {
+      const config = getConfig()
       const assertion = config.ci.assert.assertions['font-display']
       expect(assertion).toBe('warn')
     })
 
     it('should have unused-javascript as warn', () => {
+      const config = getConfig()
       const assertion = config.ci.assert.assertions['unused-javascript']
       expect(assertion).toBe('warn')
     })
 
     it('should have modern-image-formats as warn', () => {
+      const config = getConfig()
       const assertion = config.ci.assert.assertions['modern-image-formats']
       expect(assertion).toBe('warn')
     })
@@ -145,6 +165,7 @@ describe('.lighthouserc.json configuration', () => {
 
   describe('core performance thresholds', () => {
     it('should enforce minimum performance score of 0.7', () => {
+      const config = getConfig()
       const assertion = config.ci.assert.assertions['categories:performance']
       expect(assertion).toBeInstanceOf(Array)
       const [level, options] = assertion as [string, { minScore: number }]
@@ -153,6 +174,7 @@ describe('.lighthouserc.json configuration', () => {
     })
 
     it('should enforce minimum accessibility score of 0.82', () => {
+      const config = getConfig()
       const assertion = config.ci.assert.assertions['categories:accessibility']
       expect(assertion).toBeInstanceOf(Array)
       const [level, options] = assertion as [string, { minScore: number }]
@@ -161,6 +183,7 @@ describe('.lighthouserc.json configuration', () => {
     })
 
     it('should enforce LCP maximum of 6000ms', () => {
+      const config = getConfig()
       const assertion = config.ci.assert.assertions['largest-contentful-paint']
       expect(assertion).toBeInstanceOf(Array)
       const [level, options] = assertion as [string, { maxNumericValue: number }]
@@ -169,6 +192,7 @@ describe('.lighthouserc.json configuration', () => {
     })
 
     it('should enforce resource summary script size limit', () => {
+      const config = getConfig()
       const assertion = config.ci.assert.assertions['resource-summary:script:size']
       expect(assertion).toBeInstanceOf(Array)
       const [level, options] = assertion as [string, { maxNumericValue: number }]
@@ -179,14 +203,17 @@ describe('.lighthouserc.json configuration', () => {
 
   describe('collect settings', () => {
     it('should use desktop preset', () => {
+      const config = getConfig()
       expect(config.ci.collect.settings.preset).toBe('desktop')
     })
 
     it('should collect 3 runs for accuracy', () => {
+      const config = getConfig()
       expect(config.ci.collect.numberOfRuns).toBe(3)
     })
 
     it('should include headless chrome flags', () => {
+      const config = getConfig()
       expect(config.ci.collect.settings.chromeFlags).toContain('--headless')
     })
   })

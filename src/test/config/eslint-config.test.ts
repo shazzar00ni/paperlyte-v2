@@ -10,34 +10,27 @@ describe('eslint.config.js', () => {
     content = readFileSync(filePath, 'utf-8')
   })
 
-  describe('removed Node.js globals block (PR change)', () => {
-    it('should NOT contain Node.js globals configuration', () => {
-      expect(content).not.toContain('globals.node')
+  describe('Node.js globals block', () => {
+    it('should contain Node.js globals configuration', () => {
+      expect(content).toContain('globals.node')
     })
 
-    it('should NOT contain file pattern for *.config.ts', () => {
-      // The removed block targeted '*.config.ts' files for Node.js globals
-      expect(content).not.toMatch(/'?\*\.config\.ts'?/)
+    it('should contain file pattern for *.config.ts', () => {
+      expect(content).toMatch(/'?\*\.config\.ts'?/)
     })
 
-    it('should NOT contain file pattern for scripts/**/*.ts in a separate block', () => {
-      // The removed block included scripts/**/*.ts as a separate Node.js globals pattern
-      expect(content).not.toContain("'scripts/**/*.ts'")
+    it('should contain file pattern for scripts/**/*.ts', () => {
+      expect(content).toContain("'scripts/**/*.ts'")
     })
 
-    it('should NOT contain file pattern for netlify/functions/**/*.ts', () => {
-      // The removed block included netlify/functions/**/*.ts for Node.js globals
-      expect(content).not.toContain("'netlify/functions/**/*.ts'")
+    it('should contain file pattern for netlify/functions/**/*.ts', () => {
+      expect(content).toContain("'netlify/functions/**/*.ts'")
     })
 
-    it('should NOT have multiple config array entries beyond the global ignore and main TS block', () => {
-      // After removal, the config should only have 2 entries: globalIgnores and the TS/TSX block
-      // Count the opening object braces at the top level of the array
-      // A simple heuristic: count defineConfig array entries
-      const arrayEntryPattern = /^\s*\{$/gm
-      const entries = content.match(arrayEntryPattern)
-      // Should have at most 2 entries (the main TS config and potentially globalIgnores)
-      expect(entries?.length ?? 0).toBeLessThanOrEqual(2)
+    it('should include a dedicated Node.js override block', () => {
+      expect(content).toMatch(
+        /files:\s*\['\*\.config\.ts',\s*'scripts\/\*\*\/\*\.ts',\s*'netlify\/functions\/\*\*\/\*\.ts'\],[\s\S]*globals:\s*globals\.node/
+      )
     })
   })
 

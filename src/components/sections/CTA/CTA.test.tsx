@@ -15,6 +15,7 @@ describe('CTA', () => {
   })
 
   afterEach(() => {
+    _clearPendingScrollObservers()
     Element.prototype.scrollIntoView = originalScrollIntoView
     vi.clearAllMocks()
     _clearPendingScrollObservers()

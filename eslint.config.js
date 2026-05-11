@@ -9,6 +9,10 @@
  * - Prettier integration for code formatting
  *
  * @see https://eslint.org/docs/latest/use/configure/configuration-files
+ *
+ * TODO: Upgrade eslint and @eslint/js from v9 to v10 once eslint-plugin-react-hooks
+ * expands its peerDeps to include eslint@^10.0.0. Track upstream at:
+ * https://github.com/facebook/react/tree/main/packages/eslint-plugin-react-hooks
  */
 import js from '@eslint/js'
 import globals from 'globals'

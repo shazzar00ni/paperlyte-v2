@@ -66,35 +66,30 @@ export function _clearPendingScrollObservers(): void {
 }
 
 /**
- * Pattern matching dangerous protocols (javascript:, data:, vbscript:, file:, about:).
+ * Checks if a URL contains dangerous protocols that could lead to XSS attacks.
+ * @param url - The URL to check
+ * @returns true if the URL contains a dangerous protocol, false otherwise
  */
-const DANGEROUS_PROTOCOL_PATTERN = /^(javascript|data|vbscript|file|about):/i
-
-/**
- * Checks whether a URL string contains a dangerous protocol, accounting for
- * whitespace obfuscation and percent-encoding.
- */
-export function hasDangerousProtocol(url: string): boolean {
-  // Direct check
-  if (DANGEROUS_PROTOCOL_PATTERN.test(url)) {
+function hasDangerousProtocol(url: string): boolean {
+  // NOSONAR: This regex pattern is used to DETECT and BLOCK dangerous protocols like javascript:
+  // It is NOT executing any code - it's a security validation function that prevents XSS attacks
+  const dangerousProtocolPattern = /^(javascript|data|vbscript|file|about):/i
+  const urlWithoutWhitespace = url.replace(/\s/g, '')
+  
+  if (dangerousProtocolPattern.test(url) || dangerousProtocolPattern.test(urlWithoutWhitespace)) {
     return true
   }
 
-  // Check after stripping whitespace (catches "javascript :alert(1)")
-  if (DANGEROUS_PROTOCOL_PATTERN.test(url.replace(/\s/g, ''))) {
-    return true
-  }
-
-  // Check for percent-encoded protocol before the first colon
+  // Check for URL-encoded variations of dangerous protocols
   const colonIndex = url.indexOf(':')
-  if (colonIndex > 0 && /%[0-9a-f]{2}/i.test(url.substring(0, colonIndex))) {
+  const hasEncodedProtocol = colonIndex > 0 && /%[0-9a-f]{2}/i.test(url.substring(0, colonIndex))
+  
+  if (hasEncodedProtocol) {
     try {
-      if (DANGEROUS_PROTOCOL_PATTERN.test(decodeURIComponent(url))) {
-        return true
-      }
+      const decoded = decodeURIComponent(url)
+      return dangerousProtocolPattern.test(decoded)
     } catch {
-      // Malformed encoding is suspicious — treat as dangerous
-      return true
+      return true // If decoding fails, reject it as suspicious
     }
   }
 
@@ -102,98 +97,144 @@ export function hasDangerousProtocol(url: string): boolean {
 }
 
 /**
- * Checks whether a URL is a safe relative path (/, ./, or ../ prefixed)
- * without embedded protocol injection.
- */
-export function isRelativeUrl(url: string): boolean {
-  const isSlashRelative = url.startsWith('/') && !url.startsWith('//')
-  const isDotRelative = url.startsWith('./') || url.startsWith('../')
-
-  if (!isSlashRelative && !isDotRelative) {
-    return false
-  }
-
-  // Block protocol injection hidden inside relative paths
-  return !url.includes('://')
-}
-
-/**
- * Checks whether a parsed absolute URL uses an allowed protocol or is same-origin.
- */
-export function isAllowedAbsoluteUrl(url: string): boolean {
-  try {
-    const parsedUrl = new URL(url, window.location.origin)
-
-    if (parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:') {
-      return true
-    }
-
-    return parsedUrl.origin === window.location.origin
-  } catch {
-    return false
-  }
-}
-
-/**
- * Validates if a URL is safe for navigation (prevents XSS and injection attacks).
- * Allows relative URLs, same-origin URLs, and legitimate external HTTPS/HTTP URLs.
- * Blocks dangerous protocols like javascript:, data:, vbscript:, etc.
- *
+ * Validates basic URL requirements (non-empty, no control chars, no protocol-relative).
  * @param url - The URL to validate
- * @returns true if the URL is safe for navigation, false otherwise
+ * @returns true if basic validation passes, false otherwise
  */
-export function isSafeUrl(url: string): boolean {
-  // SSR guard
-  if (typeof window === 'undefined') {
-    return false
-  }
-
+function passesBasicValidation(url: string): boolean {
   if (!url || url.trim() === '') {
     return false
   }
 
   const trimmedUrl = url.trim()
 
-  // Reject ASCII control characters (null bytes, etc.)
+  // Reject URLs containing ASCII control characters (null bytes, etc.)
   // eslint-disable-next-line no-control-regex
   if (/[\x00-\x1F\x7F]/.test(trimmedUrl)) {
     return false
   }
 
-  // Block protocol-relative URLs (//example.com)
-  if (trimmedUrl.startsWith('//')) {
+  // Block protocol-relative URLs (//example.com) and backslash bypasses (\\example.com, /\example.com)
+  // Some browsers treat backslashes as forward slashes, which can bypass validation
+  if (trimmedUrl.startsWith('//') || trimmedUrl.startsWith('\\\\') || trimmedUrl.startsWith('/\\')) {
     return false
   }
 
-  if (hasDangerousProtocol(trimmedUrl)) {
-    return false
+  // Block encoded backslash bypasses (e.g., /%5C%5Cexample.com or /%5Cexample.com)
+  // Decode and check if it starts with protocol-relative or backslash patterns
+  if (trimmedUrl.includes('%5C') || trimmedUrl.includes('%5c')) {
+    try {
+      const decoded = decodeURIComponent(trimmedUrl)
+      if (decoded.startsWith('//') || decoded.startsWith('\\\\') || decoded.startsWith('/\\')) {
+        return false
+      }
+    } catch {
+      // If decoding fails, reject as suspicious
+      return false
+    }
   }
 
-  if (isRelativeUrl(trimmedUrl)) {
-    return true
-  }
-
-  // Reject slash-prefixed paths that failed isRelativeUrl due to :// injection
-  if (trimmedUrl.startsWith('/')) {
-    return false
-  }
-
-  return isAllowedAbsoluteUrl(trimmedUrl)
+  return true
 }
 
 /**
- * Safely navigates to a URL by validating it first.
- * Allows relative URLs, HTTP/HTTPS URLs (including external), and blocks dangerous protocols
- * like javascript:, data:, vbscript:, etc.
+ * Checks if an absolute URL is allowed based on origin and external permission.
+ * @param parsedUrl - The parsed URL object
+ * @param currentOrigin - The current window origin
+ * @param allowExternal - Whether external URLs are permitted
+ * @returns true if the URL is allowed, false otherwise
+ */
+function isAllowedAbsoluteUrl(parsedUrl: URL, currentOrigin: string, allowExternal: boolean): boolean {
+  // Always allow same-origin URLs
+  if (parsedUrl.origin === currentOrigin) {
+    return true
+  }
+
+  // Only allow external HTTP/HTTPS URLs if explicitly permitted
+  return allowExternal && (parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:')
+}
+
+/**
+ * Checks if a URL is a safe relative URL.
+ * @param url - The URL to check
+ * @returns 'safe' if valid, 'unsafe' if invalid, 'not-relative' if not a relative URL
+ */
+function isSafeRelativeUrl(url: string): 'safe' | 'unsafe' | 'not-relative' {
+  // Check single slash relative URLs (but not protocol-relative //)
+  if (url.startsWith('/') && !url.startsWith('//')) {
+    // Reject if it contains protocol injection (://)
+    return url.includes('://') ? 'unsafe' : 'safe'
+  }
+
+  // Check ./ and ../ relative URLs
+  if (url.startsWith('./') || url.startsWith('../')) {
+    // Reject if it contains protocol injection (://)
+    return url.includes('://') ? 'unsafe' : 'safe'
+  }
+
+  return 'not-relative'
+}
+
+/**
+ * Validates if a URL is safe for navigation (prevents XSS and injection attacks).
+ * Allows relative URLs and same-origin URLs only (prevents open redirect attacks).
+ * Blocks dangerous protocols like javascript:, data:, vbscript:, etc.
+ * Blocks external domains to prevent open redirect vulnerabilities.
  *
- * SECURITY NOTE: This function allows external HTTP/HTTPS URLs. For use cases requiring
- * same-origin navigation only (to prevent open redirects), implement additional domain
- * validation before calling this function or use a different approach.
+ * @param url - The URL to validate
+ * @param allowExternal - If true, allows external HTTP/HTTPS URLs (default: false)
+ * @returns true if the URL is safe for navigation, false otherwise
+ */
+export function isSafeUrl(url: string, allowExternal: boolean = false): boolean {
+  // SSR guard
+  if (typeof window === 'undefined') {
+    return false
+  }
+
+  try {
+    // Perform basic validation checks
+    if (!passesBasicValidation(url)) {
+      return false
+    }
+
+    const trimmedUrl = url.trim()
+
+    // Block dangerous protocols
+    if (hasDangerousProtocol(trimmedUrl)) {
+      return false
+    }
+
+    // Check if it's a relative URL (safe, unsafe, or not-relative)
+    const relativeCheck = isSafeRelativeUrl(trimmedUrl)
+    if (relativeCheck === 'safe') {
+      return true
+    }
+    if (relativeCheck === 'unsafe') {
+      return false
+    }
+
+    // For absolute URLs, parse and validate the protocol and origin
+    const parsedUrl = new URL(trimmedUrl, window.location.origin)
+    return isAllowedAbsoluteUrl(parsedUrl, window.location.origin, allowExternal)
+  } catch {
+    // If URL parsing fails, it's not safe
+    return false
+  }
+}
+
+/**
+ * Safely navigates to a same-origin URL by validating it first.
+ * Allows relative URLs and same-origin URLs only (prevents open redirect attacks).
+ * Blocks dangerous protocols like javascript:, data:, vbscript:, etc.
+ * Blocks external domains to prevent open redirect vulnerabilities.
  *
- * Safe usage: Only call with hardcoded URLs or URLs from trusted sources. Never pass
- * user-controlled query parameters directly to this function without domain validation.
+ * SECURITY NOTE: This function ONLY allows same-origin navigation to prevent open redirects.
+ * For external navigation, use safeNavigateExternal() instead.
  *
- * @param url - The URL to navigate to
+ * Safe usage: Call with URLs from your application. Never pass unvalidated user-controlled
+ * query parameters directly to this function.
+ *
+ * @param url - The URL to navigate to (must be same-origin)
  * @returns true if navigation was performed, false if URL was rejected or navigation not needed (SSR)
  */
 export function safeNavigate(url: string): boolean {
@@ -206,6 +247,35 @@ export function safeNavigate(url: string): boolean {
   if (!isSafeUrl(url)) {
     if (import.meta.env.DEV) {
       console.warn(`Navigation blocked: URL "${url}" failed security validation`)
+    }
+    return false
+  }
+
+  window.location.href = url
+  return true
+}
+
+/**
+ * Safely navigates to an external URL (allows HTTP/HTTPS to external domains).
+ * Still blocks dangerous protocols (javascript:, data:, etc.) for security.
+ * 
+ * ⚠️ **Security Warning**: This function allows navigation to external domains.
+ * Only use this when you explicitly need to navigate to external URLs.
+ * For same-origin navigation, use safeNavigate() instead.
+ * 
+ * @param url - The URL to navigate to
+ * @returns true if navigation was performed, false if URL was rejected or navigation not needed (SSR)
+ */
+export function safeNavigateExternal(url: string): boolean {
+  // SSR guard - return false as navigation is not applicable in server-side context
+  if (typeof window === 'undefined') {
+    return false
+  }
+
+  // Use isSafeUrl with allowExternal=true to permit external HTTP/HTTPS URLs
+  if (!isSafeUrl(url, true)) {
+    if (import.meta.env.DEV) {
+      console.warn(`External navigation blocked: URL "${url}" failed security validation`)
     }
     return false
   }

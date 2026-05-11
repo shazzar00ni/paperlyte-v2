@@ -27,6 +27,9 @@ test.describe('Landing Page', () => {
     // Disable smooth scrolling so the scroll is instant and position detection is reliable
     await page.addStyleTag({ content: 'html { scroll-behavior: auto !important; }' })
 
+    // Disable smooth scrolling so the scroll is instant and position detection is reliable
+    await page.addStyleTag({ content: 'html { scroll-behavior: auto !important; }' });
+
     if (isMobile) {
       // Open mobile menu first
       const menuButton = page.getByRole('button', { name: /menu/i })

@@ -5,8 +5,8 @@ import { logError } from '@utils/monitoring'
 type Theme = 'light' | 'dark'
 
 const isBrowser = typeof window !== 'undefined'
-const THEME_STORAGE_KEY = 'theme'
-const USER_PREFERENCE_KEY = 'theme-user-preference'
+const THEME_STORAGE_NAME = 'theme'
+const USER_PREFERENCE_STORAGE_NAME = 'theme-user-preference'
 
 const isValidTheme = (value: string | null): value is Theme => {
   return value === 'light' || value === 'dark'
@@ -42,7 +42,7 @@ export const useTheme = () => {
   const initialUserPref = useMemo(() => {
     if (!isBrowser || !persistenceEnabled) return false
     try {
-      return localStorage.getItem(USER_PREFERENCE_KEY) === 'true'
+      return localStorage.getItem(USER_PREFERENCE_STORAGE_NAME) === 'true'
     } catch (error: unknown) {
       logError(error instanceof Error ? error : new Error(String(error)), {
         tags: { hook: 'useTheme', operation: 'readUserPreferenceFlag' },
@@ -60,7 +60,7 @@ export const useTheme = () => {
     // Only check localStorage if persistence is enabled
     if (persistenceEnabled && initialUserPref) {
       try {
-        const stored = localStorage.getItem(THEME_STORAGE_KEY)
+        const stored = localStorage.getItem(THEME_STORAGE_NAME)
         if (stored && isValidTheme(stored)) {
           return stored
         }
@@ -95,11 +95,11 @@ export const useTheme = () => {
     // SecurityError in sandboxed iframes or QuotaExceededError in private mode.
     if (persistenceEnabled) {
       try {
-        localStorage.setItem(THEME_STORAGE_KEY, theme)
+        localStorage.setItem(THEME_STORAGE_NAME, theme)
 
         // Save user preference flag if they've explicitly chosen
         if (userHasExplicitPreference.current) {
-          localStorage.setItem(USER_PREFERENCE_KEY, 'true')
+          localStorage.setItem(USER_PREFERENCE_STORAGE_NAME, 'true')
         }
       } catch (error: unknown) {
         logError(error instanceof Error ? error : new Error(String(error)), {

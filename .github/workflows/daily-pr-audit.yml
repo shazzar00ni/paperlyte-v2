@@ -1,0 +1,56 @@
+name: Daily PR Audit Summary
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Run daily at midnight UTC
+  workflow_dispatch: # Allow manual trigger
+
+# Permissions: read content to audit, write content to update summary, write pull-requests to comment
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  audit:
+    name: Run Repository Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0 # Full history required for merge-base checks
+
+      - name: Set up Python
+        uses: actions/setup-python@3958dc975a74996155c996548332007931f4a601 # v5.3.0
+        with:
+          python-version: '3.11'
+
+      - name: Run PR Audit and Comment
+        id: run_audit
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # 1. Generate audit results JSON
+          python3 -m scripts.maintenance.audit_branches > audit_results.json
+
+          # 2. Generate markdown summary and post PR comments (via gh cli inside script)
+          python3 -m scripts.maintenance.generate_audit_summary
+
+      - name: Update Summary Documentation
+        run: |
+          # 3. Use dedicated Python script to robustly integrate the daily summary
+          if [ -f daily_summary.txt ]; then
+            python3 -m scripts.maintenance.update_summary_file --daily-file daily_summary.txt
+          fi
+
+      - name: Commit and Push Changes
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "github-actions[bot]"
+          git add PR_REVIEW_SUMMARY.md
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "docs: automated daily PR audit summary ($(date +%Y-%m-%d))"
+            git push
+          fi

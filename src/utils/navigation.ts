@@ -183,12 +183,11 @@ export function isSafeUrl(url: string): boolean {
 
 /**
  * Checks whether a URL resolves to the same origin as the current page.
- * Relative URLs are always considered same-origin.
+ * Always parses with the URL constructor (using the current origin as base) so that
+ * browser-normalised paths (e.g. backslash variants) are resolved before the origin
+ * comparison, avoiding open-redirect bypasses that rely on parser quirks.
  */
 function isSameOriginUrl(url: string): boolean {
-  if (isRelativeUrl(url)) {
-    return true
-  }
   try {
     const parsed = new URL(url, window.location.origin)
     return parsed.origin === window.location.origin
@@ -212,14 +211,19 @@ export function safeNavigate(url: string): boolean {
     return false
   }
 
-  if (!isSafeUrl(url) || !isSameOriginUrl(url)) {
+  // Normalise once so the same value is used for validation and for the final assignment.
+  // isSafeUrl trims internally, but trimming here avoids a mismatch where a URL with
+  // leading/trailing whitespace passes validation yet is assigned raw to location.href.
+  const trimmedUrl = url.trim()
+
+  if (!isSafeUrl(trimmedUrl) || !isSameOriginUrl(trimmedUrl)) {
     if (import.meta.env.DEV) {
       console.warn(`Navigation blocked: URL "${url}" failed security validation`)
     }
     return false
   }
 
-  window.location.href = url
+  window.location.href = trimmedUrl
   return true
 }
 
@@ -229,7 +233,8 @@ export function safeNavigate(url: string): boolean {
  * Uses `noopener,noreferrer` to prevent tab-napping attacks.
  *
  * @param url - The external HTTP/HTTPS URL to open
- * @returns true if navigation was performed, false if URL was rejected or navigation not needed (SSR)
+ * @returns true if the new window was opened, false if the URL was rejected, the pop-up
+ *   was blocked by the browser, or this is a server-side rendering context
  */
 export function safeNavigateExternal(url: string): boolean {
   if (typeof window === 'undefined') {
@@ -257,6 +262,8 @@ export function safeNavigateExternal(url: string): boolean {
     return false
   }
 
-  window.open(url, '_blank', 'noopener,noreferrer')
-  return true
+  // window.open returns null when the browser's pop-up blocker prevents the window
+  // from opening; treat that as "navigation not performed".
+  const opened = window.open(url, '_blank', 'noopener,noreferrer')
+  return opened !== null
 }

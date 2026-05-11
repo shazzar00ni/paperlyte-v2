@@ -342,23 +342,26 @@ describe('navigation utilities', () => {
     // --- HTTPS URLs ---
 
     it('should block external HTTPS URL (use safeNavigateExternal instead)', () => {
-      mockLocation()
+      const mock = mockLocation()
       const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
       expect(safeNavigate('https://example.com')).toBe(false)
+      expect(mock.href).toBe('')
       warnSpy.mockRestore()
     })
 
     it('should block HTTPS URL with path (use safeNavigateExternal instead)', () => {
-      mockLocation()
+      const mock = mockLocation()
       const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
       expect(safeNavigate('https://example.com/page?key=val')).toBe(false)
+      expect(mock.href).toBe('')
       warnSpy.mockRestore()
     })
 
     it('should block HTTP URL (use safeNavigateExternal instead)', () => {
-      mockLocation()
+      const mock = mockLocation()
       const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
       expect(safeNavigate('http://example.com')).toBe(false)
+      expect(mock.href).toBe('')
       warnSpy.mockRestore()
     })
 
@@ -535,6 +538,34 @@ describe('navigation utilities', () => {
       expect(safeNavigateExternal('')).toBe(false)
       expect(window.open).not.toHaveBeenCalled()
       warnSpy.mockRestore()
+    })
+
+    it('should return false when the pop-up is blocked (window.open returns null)', () => {
+      window.open = vi.fn().mockReturnValue(null)
+      expect(safeNavigateExternal('https://example.com')).toBe(false)
+      expect(window.open).toHaveBeenCalledWith('https://example.com', '_blank', 'noopener,noreferrer')
+    })
+
+    it('should block same-origin URLs with a non-HTTP/HTTPS protocol', () => {
+      // Simulate an origin that uses a non-standard protocol (e.g. ws:).
+      // Such a URL passes isSafeUrl via the same-origin check but must be rejected by
+      // safeNavigateExternal because it is not a legitimate http/https navigation target.
+      const originalLocation = window.location
+      Object.defineProperty(window, 'location', {
+        value: { ...originalLocation, origin: 'ws://localhost' },
+        writable: true,
+        configurable: true,
+      })
+      try {
+        expect(safeNavigateExternal('ws://localhost')).toBe(false)
+        expect(window.open).not.toHaveBeenCalled()
+      } finally {
+        Object.defineProperty(window, 'location', {
+          value: originalLocation,
+          writable: true,
+          configurable: true,
+        })
+      }
     })
 
     it('should return false during server-side rendering when window is undefined', () => {

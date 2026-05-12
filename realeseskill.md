@@ -42,7 +42,7 @@ When the user triggers `/release <version>`:
 7. **Watch CI** — after the push, start a background dispatch to watch the
    publish workflow. Use `interactive_shell` in dispatch mode with:
 
-   ```
+   ```shell
    gh run watch $(gh run list --workflow=publish.yml --limit=1 --json databaseId --jq '.[0].databaseId') --exit-status
    ```
 

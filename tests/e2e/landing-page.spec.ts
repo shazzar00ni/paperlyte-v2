@@ -62,23 +62,23 @@ test.describe('Landing Page', () => {
     // Inject observers before navigation so every paint/LCP/CLS event is captured.
     // Setting them up post-load with buffered:true is unreliable in fast headless CI
     // because the LCP observation window may close before evaluate() runs.
-    await page.addInitScript(() => {
+    await page.addInitScript((): void => {
       const cwv = { fcp: null as number | null, lcp: null as number | null, cls: 0 }
       ;(window as Window & { __cwv: typeof cwv }).__cwv = cwv
 
-      new PerformanceObserver((list) => {
+      new PerformanceObserver((list: PerformanceObserverEntryList): void => {
         for (const entry of list.getEntries())
           if (entry.name === 'first-contentful-paint') cwv.fcp = entry.startTime
       }).observe({ type: 'paint', buffered: true })
 
-      new PerformanceObserver((list) => {
+      new PerformanceObserver((list: PerformanceObserverEntryList): void => {
         for (const entry of list.getEntries()) {
           const e = entry as PerformanceEntry & { renderTime?: number; loadTime?: number }
           cwv.lcp = e.renderTime || e.loadTime || entry.startTime
         }
       }).observe({ type: 'largest-contentful-paint', buffered: true })
 
-      new PerformanceObserver((list) => {
+      new PerformanceObserver((list: PerformanceObserverEntryList): void => {
         for (const entry of list.getEntries()) {
           const e = entry as PerformanceEntry & { hadRecentInput?: boolean; value: number }
           if (!e.hadRecentInput) cwv.cls += e.value
@@ -98,7 +98,7 @@ test.describe('Landing Page', () => {
     }
 
     const metrics = await page.evaluate<CoreWebVitalsMetrics>(
-      () => (window as Window & { __cwv: CoreWebVitalsMetrics }).__cwv
+      (): CoreWebVitalsMetrics => (window as Window & { __cwv: CoreWebVitalsMetrics }).__cwv
     )
 
     // Validate Core Web Vitals thresholds

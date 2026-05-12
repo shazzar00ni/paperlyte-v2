@@ -583,15 +583,20 @@ describe('FeedbackWidget', () => {
       const textarea = screen.getByRole('textbox')
       await user.type(textarea, 'Test storage write error')
 
+      // Reset mock so we can assert only the calls from this submit action
+      vi.mocked(monitoringModule.logError).mockClear()
+
       const submitButton = screen.getByRole('button', { name: /send feedback/i })
       await user.click(submitButton)
 
       await waitFor(() => {
         expect(screen.getByText(/failed to submit feedback/i)).toBeInTheDocument()
+        // logError is called exactly once by handleSubmit's catch (saveFeedbackLocally throws without logging)
+        expect(vi.mocked(monitoringModule.logError)).toHaveBeenCalledTimes(1)
         expect(vi.mocked(monitoringModule.logError)).toHaveBeenCalledWith(
           expect.any(Error),
-          expect.objectContaining({ tags: { module: 'FeedbackWidget', action: 'saveFeedback' } }),
-          'FeedbackWidget'
+          expect.objectContaining({ tags: { action: 'handleSubmit' } }),
+          'feedback_submission'
         )
       })
     })

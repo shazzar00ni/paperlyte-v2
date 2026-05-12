@@ -135,9 +135,9 @@ describe('monitoring', () => {
       logError(error, { severity: 'high' }, 'TestComponent')
 
       // Original error should only be captured once — the guard prevents a duplicate
-      const captureCallsWithOriginalError = vi.mocked(Sentry.captureException).mock.calls.filter(
-        (call) => call[0] === error
-      )
+      const captureCallsWithOriginalError = vi
+        .mocked(Sentry.captureException)
+        .mock.calls.filter((call) => call[0] === error)
       expect(captureCallsWithOriginalError).toHaveLength(1)
     })
 

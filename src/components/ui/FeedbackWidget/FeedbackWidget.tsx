@@ -22,7 +22,12 @@ function saveFeedbackLocally(feedbackData: FeedbackFormData): void {
   const timestamp = new Date().toISOString()
   const feedbackEntry = { ...feedbackData, timestamp }
 
-  const existingFeedback = localStorage.getItem(FEEDBACK_STORAGE_KEY)
+  let existingFeedback: string | null = null
+  try {
+    existingFeedback = localStorage.getItem(FEEDBACK_STORAGE_KEY)
+  } catch {
+    // SecurityError in sandboxed/private browsing — treat as empty storage
+  }
   let feedbackArray: unknown = []
 
   if (existingFeedback) {
@@ -53,15 +58,7 @@ function saveFeedbackLocally(feedbackData: FeedbackFormData): void {
   try {
     localStorage.setItem(FEEDBACK_STORAGE_KEY, JSON.stringify(feedbackArray))
   } catch (storageError) {
-    logError(
-      storageError instanceof Error ? storageError : new Error(String(storageError)),
-      {
-        severity: 'medium',
-        tags: { module: 'FeedbackWidget', action: 'saveFeedback' },
-        errorInfo: { note: 'local storage failure' },
-      },
-      'FeedbackWidget'
-    )
+    // Don't logError here — handleSubmit's catch will report it once via 'feedback_submission'
     throw new Error(
       `Unable to save feedback locally. Your browser storage may be full or disabled. ${
         storageError instanceof Error ? storageError.message : String(storageError)

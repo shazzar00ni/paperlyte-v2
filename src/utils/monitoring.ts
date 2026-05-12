@@ -140,7 +140,7 @@ export function logError(error: Error, context?: ErrorContext, source?: string):
           category: 'monitoring',
           message: 'Error reporting pipeline failed',
           level: 'warning',
-          data: { originalError: monitoringErr.message },
+          data: { pipelineError: monitoringErr.message, appError: error.message },
         })
         Sentry.captureException(monitoringErr)
       } catch {

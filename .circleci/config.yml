@@ -77,9 +77,10 @@ jobs:
           environment:
             CI: "true"
             # On CircleCI medium (4 GB), Node.js defaults to a ~1.5 GB heap
-            # limit.  With singleFork + 70+ jsdom environments the worker
-            # hits that ceiling before all tests complete.  3 GB leaves ~1 GB
-            # headroom for the main Vitest process, OS, and Docker overhead.
+            # limit.  With fileParallelism: false, jsdom environments still
+            # run serially but the heap ceiling can still be hit on slower
+            # runs.  3 GB leaves ~1 GB headroom for the Vitest process, OS,
+            # and Docker overhead.
             NODE_OPTIONS: "--max-old-space-size=3072"
       - store_test_results:
           path: test-results

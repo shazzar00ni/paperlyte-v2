@@ -26,7 +26,7 @@ export default defineConfig({
     globals: true,
 
     // Add JUnit reporter — write to test-results/ so CircleCI's
-    // store_test_results can ingest it alongside coverage artifacts.
+    // store_test_results can ingest it for test insights and timing.
     reporters: ['default', 'junit'],
     outputFile: {
       junit: 'test-results/junit.xml',

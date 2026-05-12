@@ -16,17 +16,64 @@ interface FeedbackWidgetProps {
   onSubmit?: (data: FeedbackFormData) => Promise<void> | void
 }
 
+const FEEDBACK_STORAGE_KEY = 'paperlyte_feedback'
+
+function saveFeedbackLocally(feedbackData: FeedbackFormData): void {
+  const timestamp = new Date().toISOString()
+  const feedbackEntry = { ...feedbackData, timestamp }
+
+  const existingFeedback = localStorage.getItem(FEEDBACK_STORAGE_KEY)
+  let feedbackArray: unknown = []
+
+  if (existingFeedback) {
+    try {
+      feedbackArray = JSON.parse(existingFeedback)
+    } catch (parseError) {
+      logError(
+        new Error('Failed to load stored feedback'),
+        {
+          tags: { context: 'feedback-storage-parse' },
+          errorInfo: {
+            parseError: parseError instanceof Error ? parseError.message : String(parseError),
+            key: FEEDBACK_STORAGE_KEY,
+          },
+        },
+        'feedback_widget'
+      )
+      feedbackArray = []
+    }
+  }
+
+  if (!Array.isArray(feedbackArray)) {
+    feedbackArray = []
+  }
+
+  ;(feedbackArray as unknown[]).push(feedbackEntry)
+
+  try {
+    localStorage.setItem(FEEDBACK_STORAGE_KEY, JSON.stringify(feedbackArray))
+  } catch (storageError) {
+    logError(
+      storageError instanceof Error ? storageError : new Error(String(storageError)),
+      {
+        severity: 'medium',
+        tags: { module: 'FeedbackWidget', action: 'saveFeedback' },
+        errorInfo: { note: 'local storage failure' },
+      },
+      'FeedbackWidget'
+    )
+    throw new Error(
+      `Unable to save feedback locally. Your browser storage may be full or disabled. ${
+        storageError instanceof Error ? storageError.message : String(storageError)
+      }`,
+      { cause: storageError }
+    )
+  }
+}
+
 /**
  * Interactive user feedback widget with a floating button and modal.
  * Allows users to submit bug reports and feature requests.
- *
- * Features:
- * - Floating button accessible from anywhere on the page
- * - Modal with form for feedback submission
- * - Support for bug reports and feature ideas
- * - Confirmation message after submission
- * - Keyboard navigation and accessibility support
- * - Mobile responsive design
  *
  * @param onSubmit - Optional callback for handling feedback submission
  */
@@ -91,67 +138,11 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
           message: message.trim(),
         }
 
-        // Call custom submit handler if provided
+        // Call custom submit handler if provided, otherwise persist locally
         if (onSubmit) {
           await onSubmit(feedbackData)
         } else {
-          // Default behavior: store in localStorage and log
-          const timestamp = new Date().toISOString()
-          const feedbackEntry = {
-            ...feedbackData,
-            timestamp,
-          }
-
-          // Get existing feedback from localStorage
-          const existingFeedback = localStorage.getItem('paperlyte_feedback')
-          let feedbackArray: unknown = []
-
-          if (existingFeedback) {
-            try {
-              feedbackArray = JSON.parse(existingFeedback)
-            } catch (parseError) {
-              logError(
-                new Error('Failed to load stored feedback'),
-                {
-                  tags: { context: 'feedback-storage-parse' },
-                  errorInfo: {
-                    parseError:
-                      parseError instanceof Error ? parseError.message : String(parseError),
-                    key: 'paperlyte_feedback',
-                  },
-                },
-                'feedback_widget'
-              )
-              feedbackArray = []
-            }
-          }
-
-          if (!Array.isArray(feedbackArray)) {
-            feedbackArray = []
-          }
-
-          ;(feedbackArray as unknown[]).push(feedbackEntry)
-          // Store updated feedback
-          try {
-            localStorage.setItem('paperlyte_feedback', JSON.stringify(feedbackArray))
-          } catch (storageError) {
-            // Log via centralized monitoring before throwing
-            logError(
-              storageError instanceof Error ? storageError : new Error(String(storageError)),
-              {
-                severity: 'medium',
-                tags: { module: 'FeedbackWidget', action: 'saveFeedback' },
-                errorInfo: { note: 'local storage failure' },
-              },
-              'FeedbackWidget'
-            )
-            throw new Error(
-              `Unable to save feedback locally. Your browser storage may be full or disabled. ${
-                storageError instanceof Error ? storageError.message : String(storageError)
-              }`,
-              { cause: storageError }
-            )
-          }
+          saveFeedbackLocally(feedbackData)
         }
 
         // Show confirmation

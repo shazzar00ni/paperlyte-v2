@@ -89,5 +89,9 @@ function runFuzzer(iterations) {
   process.stdout.write(`Fuzz run complete: ${iter} iterations, no crashes.\n`);
 }
 
-const ITERATIONS = parseInt(process.env.FUZZ_ITERATIONS || '50000', 10);
+const ITERATIONS = Number.parseInt(process.env.FUZZ_ITERATIONS || '50000', 10);
+if (!Number.isInteger(ITERATIONS) || ITERATIONS <= 0) {
+  process.stderr.write(`Invalid FUZZ_ITERATIONS: ${process.env.FUZZ_ITERATIONS}\n`);
+  process.exit(2);
+}
 runFuzzer(ITERATIONS);

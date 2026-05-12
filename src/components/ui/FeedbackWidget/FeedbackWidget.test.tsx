@@ -567,6 +567,36 @@ describe('FeedbackWidget', () => {
     })
   })
 
+  describe('localStorage write error', () => {
+    it('shows submission error and calls logError when setItem throws', async () => {
+      const user = userEvent.setup()
+      vi.spyOn(Storage.prototype, 'setItem').mockImplementationOnce(() => {
+        throw new DOMException('QuotaExceededError')
+      })
+
+      render(<FeedbackWidget />)
+
+      const openButton = screen.getByRole('button', { name: /open feedback form/i })
+      await user.click(openButton)
+      await waitFor(() => expect(screen.getByRole('dialog')).toBeInTheDocument())
+
+      const textarea = screen.getByRole('textbox')
+      await user.type(textarea, 'Test storage write error')
+
+      const submitButton = screen.getByRole('button', { name: /send feedback/i })
+      await user.click(submitButton)
+
+      await waitFor(() => {
+        expect(screen.getByText(/failed to submit feedback/i)).toBeInTheDocument()
+        expect(vi.mocked(monitoringModule.logError)).toHaveBeenCalledWith(
+          expect.any(Error),
+          expect.objectContaining({ tags: { module: 'FeedbackWidget', action: 'saveFeedback' } }),
+          'FeedbackWidget'
+        )
+      })
+    })
+  })
+
   describe('localStorage parse error', () => {
     it('calls logError when stored feedback JSON is invalid', async () => {
       // Pre-seed localStorage with invalid JSON

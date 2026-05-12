@@ -125,6 +125,22 @@ describe('monitoring', () => {
       )
     })
 
+    it('should not re-capture original error in Sentry when already captured before addBreadcrumb fails', () => {
+      vi.stubEnv('VITE_SENTRY_DSN', 'https://sentry.example.com')
+      // captureException succeeds; addBreadcrumb throws → enters catch block with originalErrorCaptured=true
+      vi.mocked(Sentry.addBreadcrumb).mockImplementationOnce(() => {
+        throw new Error('Breadcrumb failed')
+      })
+      const error = new Error('App error')
+      logError(error, { severity: 'high' }, 'TestComponent')
+
+      // Original error should only be captured once — the guard prevents a duplicate
+      const captureCallsWithOriginalError = vi.mocked(Sentry.captureException).mock.calls.filter(
+        (call) => call[0] === error
+      )
+      expect(captureCallsWithOriginalError).toHaveLength(1)
+    })
+
     it('should remain silent when Sentry also throws inside catch block', () => {
       vi.stubEnv('VITE_SENTRY_DSN', 'https://sentry.example.com')
       vi.mocked(analytics.trackEvent).mockImplementationOnce(() => {

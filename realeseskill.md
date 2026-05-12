@@ -42,7 +42,7 @@ When the user triggers `/release <version>`:
 7. **Watch CI** — after the push, start a background dispatch to watch the
    publish workflow. Use `interactive_shell` in dispatch mode with:
 
-   ```
+   ```bash
    gh run watch $(gh run list --workflow=publish.yml --limit=1 --json databaseId --jq '.[0].databaseId') --exit-status
    ```
 
@@ -76,7 +76,7 @@ The changelog lives in `CHANGELOG.md` and follows [Keep a Changelog](https://kee
 
 Each version entry has two parts:
 
-**1. Highlights (optional, 1-4 sentences of prose)**
+### 1. Highlights (optional, 1-4 sentences of prose)
 
 Immediately after the version heading, before any `###` section. The elevator
 pitch — what would you tell someone in 30 seconds? Only for significant

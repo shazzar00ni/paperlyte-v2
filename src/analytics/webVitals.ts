@@ -87,7 +87,6 @@ function trackFID(callback: ReportCallback): void {
       const entries = list.getEntries()
       const firstEntry = entries[0] as PerformanceEntry & {
         processingStart?: number
-        startTime?: number
       }
 
       if (firstEntry) {
@@ -258,7 +257,6 @@ function trackINP(callback: ReportCallback): MetricTracker {
         const eventEntry = entry as PerformanceEntry & {
           processingStart?: number
           processingEnd?: number
-          startTime?: number
         }
 
         if (

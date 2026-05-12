@@ -34,7 +34,8 @@ jobs:
       (github.event_name == 'pull_request_review' &&
        contains(github.event.review.body, '@claude')) ||
       (github.event_name == 'pull_request' &&
-       contains(github.event.pull_request.labels.*.name, 'claude'))
+       contains(github.event.pull_request.labels.*.name, 'claude') &&
+       github.event.pull_request.head.repo.full_name == github.repository)
     steps:
       - name: Check actor repository permission
         id: permission_check
@@ -70,7 +71,7 @@ jobs:
 
       - name: Run Claude Code Action
         if: github.event_name == 'pull_request' || steps.permission_check.outputs.allowed == 'true'
-        uses: anthropics/claude-code-action@6e2bd52842c65e914eba5c8badd17560bd26b5de  # v1.0.89
+        uses: anthropics/claude-code-action@fefa07e9c665b7320f08c3b525980457f22f58aa  # v1.0.111
         with:
           trigger_phrase: "@claude"
           label_trigger: claude

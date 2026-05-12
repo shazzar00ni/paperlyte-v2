@@ -1,45 +1,36 @@
-name: Claude Code
+name: Claude Code (External Contributor)
 
+# Triggered when a maintainer applies the 'claude' label to a fork PR.
+# Comment-based triggers are intentionally omitted: any user can post a comment,
+# so allowing issue_comment / pull_request_review_comment / pull_request_review here
+# would let untrusted actors invoke a write-privileged job via pull_request_target.
+# Internal collaborators (write+) are handled by the main claude.yml workflow instead.
+# The labeler's permission is verified at runtime to guard against triage-role labeling.
 on:
-  issue_comment:
-    types: [created]
-  pull_request_review_comment:
-    types: [created]
-  pull_request_review:
-    types: [submitted]
-  pull_request:
-    types: [opened, synchronize, labeled]
+  pull_request_target:
+    types: [labeled]
 
 permissions:
   contents: read
 
 jobs:
-  claude:
-    name: Claude Code Agent
+  claude-external:
+    name: Claude Code Agent (External Contributor)
     runs-on: ubuntu-latest
     concurrency:
-      group: claude-${{ github.event.pull_request.number || github.event.issue.number || github.run_id }}
+      group: claude-external-${{ github.event.pull_request.number || github.run_id }}
       cancel-in-progress: true
     permissions:
       contents: write
       pull-requests: write
       issues: write
       id-token: write
-    if: |
-      (github.event_name == 'issue_comment' &&
-       github.event.issue.pull_request &&
-       contains(github.event.comment.body, '@claude')) ||
-      (github.event_name == 'pull_request_review_comment' &&
-       contains(github.event.comment.body, '@claude')) ||
-      (github.event_name == 'pull_request_review' &&
-       contains(github.event.review.body, '@claude')) ||
-      (github.event_name == 'pull_request' &&
-       contains(github.event.pull_request.labels.*.name, 'claude') &&
-       github.event.pull_request.head.repo.full_name == github.repository)
+    if: >
+      github.event.label.name == 'claude' &&
+      github.event.pull_request.head.repo.full_name != github.repository
     steps:
       - name: Check actor repository permission
         id: permission_check
-        if: github.event_name != 'pull_request'
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
         with:
           script: |
@@ -64,13 +55,13 @@ jobs:
             }
 
       - name: Checkout repository
-        if: github.event_name == 'pull_request' || steps.permission_check.outputs.allowed == 'true'
+        if: steps.permission_check.outputs.allowed == 'true'
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
         with:
           fetch-depth: 0
 
       - name: Run Claude Code Action
-        if: github.event_name == 'pull_request' || steps.permission_check.outputs.allowed == 'true'
+        if: steps.permission_check.outputs.allowed == 'true'
         uses: anthropics/claude-code-action@fefa07e9c665b7320f08c3b525980457f22f58aa  # v1.0.111
         with:
           trigger_phrase: "@claude"

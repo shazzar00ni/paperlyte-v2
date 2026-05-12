@@ -18,20 +18,31 @@ SHA256 hashes), not bare version pins.
 
 ## Proposed change
 
-1. Generate a hash-pinned `requirements.txt` (e.g. with `pip-compile
-   --generate-hashes`) for the weekly-report workflow.
-2. Update the workflow step to:
+1. Install `pip-tools` and generate a hash-pinned requirements file:
 
-   ```yaml
-   - run: pip install --require-hashes -r .github/workflows/weekly-report-requirements.txt
+   ```bash
+   pip install pip-tools
+   pip-compile --generate-hashes --output-file requirements/weekly-report.txt \
+     <(echo $'requests==2.32.4\npandas==2.2.3')
    ```
 
-3. Add a Dependabot/Renovate config (or scheduled task) so the pinned hashes
-   are kept current.
+2. Commit `requirements/weekly-report.txt` to the repository.
+
+3. Update the workflow step to reference the new file:
+
+   ```yaml
+   - run: pip install --require-hashes -r requirements/weekly-report.txt
+   ```
+
+4. Add a Dependabot/Renovate config (or scheduled task) so the pinned hashes
+   are kept current when new patch releases are available.
 
 ## Acceptance criteria
 
-- [ ] Workflow installs Python deps via `pip install --require-hashes -r ...`.
+- [ ] `requirements/weekly-report.txt` exists at the repo root and contains
+      `--hash=sha256:...` entries for every package and its transitive deps.
+- [ ] Workflow installs Python deps via
+      `pip install --require-hashes -r requirements/weekly-report.txt`.
 - [ ] OpenSSF Scorecard Pinned-Dependencies check no longer warns on this
       workflow.
 - [ ] An automated update mechanism is documented or configured.

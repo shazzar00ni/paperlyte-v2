@@ -11,12 +11,11 @@ on:
 permissions: {}
 
 jobs:
-  jazzer:
-    name: Jazzer.js Fuzzing
+  fuzz:
+    name: Hand-rolled Node.js Fuzzing
     runs-on: ubuntu-latest
     permissions:
       contents: read
-
 
     steps:
       - name: Checkout code
@@ -31,18 +30,14 @@ jobs:
       - name: Install project dependencies
         run: npm ci
 
-      - name: Run fuzz target (time-boxed)
+      - name: Compile validation module for fuzzing
         run: |
-          npx @jazzer.js/core fuzz/sanitize-input.fuzz.cjs \
-            -- -max_total_time=30 -max_len=4096 -print_final_stats=1
-        timeout-minutes: 5
-        continue-on-error: true
+          npx esbuild src/utils/validation.ts \
+            --bundle --platform=node --format=cjs \
+            --outfile=fuzz/validation.cjs
 
-      - name: Upload fuzzing corpus
-        if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: fuzzing-corpus
-          path: fuzz/corpus/
-          retention-days: 30
-          if-no-files-found: ignore
+      - name: Run fuzz target (time-boxed)
+        run: node fuzz/sanitize-input.fuzz.cjs
+        timeout-minutes: 5
+        env:
+          FUZZ_ITERATIONS: '50000'

@@ -1,6 +1,6 @@
 ---
 name: 'Follow-up: Tighten top-level permissions in scorecard.yml'
-about: Replace `permissions: read-all` with `permissions: {}` at the workflow level in scorecard.yml.
+about: Regression guard — alert if scorecard.yml reverts to broader workflow-level permissions (e.g. read-all) instead of the current permissions: {}.
 title: 'ci(scorecard): set top-level `permissions: {}` instead of `read-all`'
 labels: ['ci', 'security', 'good first issue']
 assignees: []

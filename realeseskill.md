@@ -96,13 +96,17 @@ through parallel contexts. GPU auto-detection replaces the unreliable
 ### Changes
 
 - Runtime: support Node.js (>=22) alongside Bun. The `qmd` wrapper
+
   auto-detects a suitable install via PATH. #149 (thanks @igrigorik)
+
 - Performance: parallel embedding & reranking — up to 2.7x faster on
+
   multi-core machines.
 
 ### Fixes
 
 - Prevent VRAM waste from duplicate context creation during concurrent
+
   `embedBatch` calls. #152 (thanks @jkrems)
 ```
 
@@ -113,6 +117,7 @@ through parallel contexts. GPU auto-detection replaces the unreliable
 - **Group by theme, not by file.** "Performance" not "Changes to llm.ts".
 - **Don't list every commit.** Aggregate related changes.
 - **Credit contributors:** end bullets with `#NNN (thanks @username)` for
+
   external PRs. No need to credit the repo owner.
 
 ### What not to include

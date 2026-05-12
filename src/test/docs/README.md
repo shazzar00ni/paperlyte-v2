@@ -65,6 +65,7 @@ When adding new strategic documents (like design specs, product roadmaps, etc.):
 ## Test Philosophy
 
 These tests strike a balance between:
+
 - **Structure validation** (ensuring documents are well-organized)
 - **Content validation** (ensuring key information is present)
 - **Quality checks** (ensuring professional formatting and consistency)

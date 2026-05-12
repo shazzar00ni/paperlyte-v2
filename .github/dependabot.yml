@@ -4,48 +4,48 @@
 version: 2
 updates:
   # Maintain npm dependencies
-  - package-ecosystem: "npm"
-    directory: "/"
+  - package-ecosystem: 'npm'
+    directory: '/'
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
+      interval: 'weekly'
+      day: 'monday'
+      time: '09:00'
     open-pull-requests-limit: 10
     labels:
-      - "dependencies"
-      - "automated"
+      - 'dependencies'
+      - 'automated'
     commit-message:
-      prefix: "chore"
-      include: "scope"
+      prefix: 'chore'
+      include: 'scope'
     # Group minor and patch updates together to reduce PR noise
     groups:
       development-dependencies:
         patterns:
-          - "@types/*"
-          - "@eslint/*"
-          - "eslint*"
-          - "typescript*"
-          - "@vitejs/*"
-          - "vite"
+          - '@types/*'
+          - '@eslint/*'
+          - 'eslint*'
+          - 'typescript*'
+          - '@vitejs/*'
+          - 'vite'
         update-types:
-          - "minor"
-          - "patch"
+          - 'minor'
+          - 'patch'
       production-dependencies:
         patterns:
-          - "react*"
+          - 'react*'
         update-types:
-          - "minor"
-          - "patch"
+          - 'minor'
+          - 'patch'
 
   # Maintain GitHub Actions
-  - package-ecosystem: "github-actions"
-    directory: "/"
+  - package-ecosystem: 'github-actions'
+    directory: '/'
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
+      interval: 'weekly'
+      day: 'monday'
+      time: '09:00'
     labels:
-      - "ci"
-      - "automated"
+      - 'ci'
+      - 'automated'
     commit-message:
-      prefix: "ci"
+      prefix: 'ci'

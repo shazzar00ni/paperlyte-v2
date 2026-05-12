@@ -45,3 +45,9 @@ public/favicon.ico
 # Deployment platforms
 .netlify
 .vercel
+
+# Maintenance and Audit artifacts
+scripts/maintenance/__pycache__/
+audit_results.json
+daily_summary.txt
+manual_feedback.txt

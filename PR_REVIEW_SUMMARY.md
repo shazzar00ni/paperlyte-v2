@@ -2,6 +2,44 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-05-12
+
+### Analysis: Systemic Regressions in Open Branches (Automated Daily Audit)
+
+- **Status:** Critical — Action Required
+- **Summary:** An automated repository-wide audit of 291 unmerged branches confirms the following systemic regressions.
+
+| Regression Type                | Count | Severity    | Notes                                                                    |
+| :----------------------------- | :---- | :---------- | :----------------------------------------------------------------------- |
+| Orphan Branches                | 0   | 🔴 Critical | No common ancestor with `main`.                                          |
+| Missing `.npmrc`               | 79    | 🔴 Critical | Breaks dependency resolution.                                            |
+| Missing `docs/ROADMAP.md`      | 75    | 🟠 High     | Core project documentation.                                              |
+| Missing `gitVersionControl.md` | 88   | 🟠 High     | Core Git workflow documentation.                                         |
+| Missing `review.md`            | 88   | 🟡 Medium   | AI PR reviewer instructions.                                             |
+| Reverted Security Helpers      | 87   | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers.                      |
+| Unreadable navigation.ts       | 8     | 🔴 Critical | File missing or unreadable.                                              |
+
+- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.
+
+### Manual Branch Reviews (May 12, 2026)
+
+#### origin/claude/fix-open-redirect-TX551
+- **Status:** Ready
+- **Summary:** Security hardening for navigation utilities.
+- **Feedback:** Successfully restricts `safeNavigate` to same-origin URLs by default, preventing open redirect vulnerabilities. The implementation of `isSafeUrl` with `SafeUrlOptions` is flexible and well-tested. Excellent integration with the monitoring system for tracking blocked navigation attempts.
+
+#### origin/claude/implement-service-worker-YLeLZ
+- **Status:** Ready
+- **Summary:** Robust PWA Service Worker implementation.
+- **Feedback:** Provides a comprehensive offline experience with a dedicated `offline.html` fallback and intelligent caching strategies (`cache-first` for hashed assets, `stale-while-revalidate` for static media). CSP updates are correctly handled in both Vercel and Vite configurations.
+
+#### origin/claude/tree-shake-font-awesome-cK85j
+- **Status:** Ready
+- **Summary:** Efficient Icon component refactoring.
+- **Feedback:** Significantly reduces bundle size by replacing the global Font Awesome library with a localized SVG path mapping. The normalization of icon names and the use of CSS modules for styling ensure a clean and maintainable implementation.
+
+---
+
 ## 2026-03-05
 
 ### Analysis: Accidental File Deletions in Open Branches (Jules Daily PR Reviews)

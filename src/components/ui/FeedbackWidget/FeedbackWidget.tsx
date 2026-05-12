@@ -16,7 +16,7 @@ interface FeedbackWidgetProps {
   onSubmit?: (data: FeedbackFormData) => Promise<void> | void
 }
 
-const FEEDBACK_STORAGE_KEY = 'paperlyte_feedback'
+const FEEDBACK_STORAGE_NAME = 'paperlyte_feedback'
 
 function saveFeedbackLocally(feedbackData: FeedbackFormData): void {
   const timestamp = new Date().toISOString()
@@ -24,7 +24,7 @@ function saveFeedbackLocally(feedbackData: FeedbackFormData): void {
 
   let existingFeedback: string | null = null
   try {
-    existingFeedback = localStorage.getItem(FEEDBACK_STORAGE_KEY)
+    existingFeedback = localStorage.getItem(FEEDBACK_STORAGE_NAME)
   } catch {
     // SecurityError in sandboxed/private browsing — treat as empty storage
   }
@@ -40,7 +40,7 @@ function saveFeedbackLocally(feedbackData: FeedbackFormData): void {
           tags: { context: 'feedback-storage-parse' },
           errorInfo: {
             parseError: parseError instanceof Error ? parseError.message : String(parseError),
-            key: FEEDBACK_STORAGE_KEY,
+            key: FEEDBACK_STORAGE_NAME,
           },
         },
         'feedback_widget'
@@ -56,7 +56,7 @@ function saveFeedbackLocally(feedbackData: FeedbackFormData): void {
   ;(feedbackArray as unknown[]).push(feedbackEntry)
 
   try {
-    localStorage.setItem(FEEDBACK_STORAGE_KEY, JSON.stringify(feedbackArray))
+    localStorage.setItem(FEEDBACK_STORAGE_NAME, JSON.stringify(feedbackArray))
   } catch (storageError) {
     // Don't logError here — handleSubmit's catch will report it once via 'feedback_submission'
     throw new Error(

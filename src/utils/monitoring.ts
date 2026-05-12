@@ -65,6 +65,7 @@ export function logError(error: Error, context?: ErrorContext, source?: string):
   }
 
   // In production, report to monitoring services
+  let originalErrorCaptured = false
   try {
     // Track in analytics
     trackEvent('application_error', {
@@ -95,6 +96,7 @@ export function logError(error: Error, context?: ErrorContext, source?: string):
           },
         },
       })
+      originalErrorCaptured = true
 
       // Add breadcrumb for tracking error context
       Sentry.addBreadcrumb({
@@ -113,26 +115,27 @@ export function logError(error: Error, context?: ErrorContext, source?: string):
     if (import.meta.env.VITE_SENTRY_DSN) {
       try {
         const monitoringErr = err instanceof Error ? err : new Error(String(err))
-        // Always attempt to capture the original application error: Sentry.captureException(error)
-        // inside the outer try may not have run if the pipeline failed before reaching it
-        // (e.g. trackEvent threw). This ensures the original error is never silently dropped.
-        Sentry.captureException(error, {
-          level: severityToLevel(severity),
-          tags: {
-            source: errorSource,
-            ...context?.tags,
-          },
-          extra: {
-            componentStack: context?.componentStack,
-            ...context?.errorInfo,
-          },
-          contexts: {
-            error_context: {
-              severity,
+        // Only re-capture the original error if it wasn't already sent — avoids duplicate
+        // Sentry events when the pipeline fails after captureException succeeded (e.g. addBreadcrumb throws).
+        if (!originalErrorCaptured) {
+          Sentry.captureException(error, {
+            level: severityToLevel(severity),
+            tags: {
               source: errorSource,
+              ...context?.tags,
             },
-          },
-        })
+            extra: {
+              componentStack: context?.componentStack,
+              ...context?.errorInfo,
+            },
+            contexts: {
+              error_context: {
+                severity,
+                source: errorSource,
+              },
+            },
+          })
+        }
         Sentry.addBreadcrumb({
           category: 'monitoring',
           message: 'Error reporting pipeline failed',

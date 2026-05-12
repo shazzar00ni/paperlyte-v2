@@ -141,10 +141,10 @@ function cspPlugin(): Plugin {
 export default defineConfig({
   // React plugin with Fast Refresh for instant Hot Module Replacement
   // CSP plugin for environment-aware security headers
-  // Codecov Rollup plugin for bundle analysis (Vite 7 compatible)
+  // Codecov Rollup plugin for bundle analysis (Vite 8 compatible)
   // Note: Using @codecov/rollup-plugin instead of @codecov/vite-plugin
-  // because the Vite plugin only supports Vite 4.x-6.x (project uses Vite 7.3.0)
-  // Rollup plugin works with Vite 7 since Vite uses Rollup ^4.43.0 internally
+  // because the Vite plugin only supports Vite 4.x-6.x (project uses Vite 8.0.10)
+  // Rollup plugin works with Vite 8 since Vite uses Rollup ^4.43.0 internally
   plugins: [
     react(),
     cspPlugin(),

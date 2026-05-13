@@ -50,3 +50,7 @@ public/favicon.ico
 # Deployment platforms
 .netlify
 .vercel
+
+# Lighthouse CI local report artifacts
+.lighthouseci
+.lighthouseci-*

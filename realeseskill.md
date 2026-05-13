@@ -41,12 +41,14 @@ When the user triggers `/release <version>`:
 
 7. **Watch CI** — after the push, start a background dispatch to watch the
    publish workflow. Use `interactive_shell` in dispatch mode with:
+
    ```
    gh run watch $(gh run list --workflow=publish.yml --limit=1 --json databaseId --jq '.[0].databaseId') --exit-status
    ```
+
    The agent will be notified when CI completes and should report the result.
 
-7. **Check dependency updates** — before cutting the release, check for
+8. **Check dependency updates** — before cutting the release, check for
    updates to `sqlite-vec` (and platform packages), `node-llama-cpp`,
    and `better-sqlite3`. Run `pnpm outdated` and report any available
    updates for these packages. If updates exist, bump them (pinned, no

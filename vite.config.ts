@@ -4,40 +4,6 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 import { codecovRollupPlugin } from '@codecov/rollup-plugin'
 
-// Inlines the Font Awesome CSS chunk as a <style> tag so it is no longer a
-// render-blocking external stylesheet. Safe for synchronous FA chunks because
-// there is no JS-side dynamic CSS loader for these files.
-function inlineFontawesomeCssPlugin(): Plugin {
-  let capturedCss = ''
-  let capturedBasename = ''
-
-  return {
-    name: 'inline-fontawesome-css',
-    apply: 'build',
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    generateBundle(_options: unknown, bundle: Record<string, any>) {
-      for (const [filename, asset] of Object.entries(bundle)) {
-        if (asset.type === 'asset' && /^assets\/fontawesome-[^/]+\.css$/.test(filename)) {
-          capturedCss = asset.source as string
-          capturedBasename = filename.split('/').pop()!
-          delete bundle[filename]
-          break
-        }
-      }
-    },
-    transformIndexHtml: {
-      order: 'post',
-      handler(html: string) {
-        if (!capturedCss || !capturedBasename) return html
-        const escaped = capturedBasename.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-        return html
-          .replace(new RegExp(`<link rel="stylesheet"[^>]*${escaped}[^>]*>`), '')
-          .replace('</head>', `<style>${capturedCss}</style>\n</head>`)
-      },
-    },
-  }
-}
-
 /**
  * Plugin to inject development-only Content Security Policy
  *
@@ -130,7 +96,6 @@ export default defineConfig({
   plugins: [
     react(),
     cspPlugin(),
-    inlineFontawesomeCssPlugin(),
     // Only instantiate Codecov plugin when token is present (CI environment)
     ...(process.env.CODECOV_TOKEN
       ? [

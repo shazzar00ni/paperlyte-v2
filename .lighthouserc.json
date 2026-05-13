@@ -44,7 +44,7 @@
         "dom-size-insight": "off",
         "legacy-javascript": "off",
         "render-blocking-resources": ["warn", { "maxLength": 1 }],
-        "render-blocking-insight": ["warn", { "maxLength": 1 }],
+        "render-blocking-insight": "off",
         "uses-rel-preconnect": "warn",
         "is-on-https": "warn",
         "uses-http2": "off",

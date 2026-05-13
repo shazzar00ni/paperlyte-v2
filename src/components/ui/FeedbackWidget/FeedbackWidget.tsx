@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback, useRef, type FormEvent } from 'react'
 import { Icon } from '@components/ui/Icon'
 import { Button } from '@components/ui/Button'
 import { handleArrowNavigation, getFocusableElements } from '@utils/keyboard'
-import { logError } from '@utils/monitoring'
 import styles from './FeedbackWidget.module.css'
 
 type FeedbackType = 'bug' | 'feature'
@@ -50,7 +49,10 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
   // Handle modal open
   const handleOpen = useCallback(() => {
     // Store the element that triggered the modal for focus restoration
-    triggerElementRef.current = document.activeElement as Focusable | null
+    const activeEl = document.activeElement
+    if (activeEl !== null && typeof (activeEl as unknown as Focusable).focus === 'function') {
+      triggerElementRef.current = activeEl as unknown as Focusable
+    }
     setIsOpen(true)
     setError(null)
     setShowConfirmation(false)
@@ -95,56 +97,9 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
           message: message.trim(),
         }
 
-        // Call custom submit handler if provided
+        // Forward to submit handler if provided; no local persistence on landing page
         if (onSubmit) {
           await onSubmit(feedbackData)
-        } else {
-          // Default behavior: store in localStorage and log
-          const timestamp = new Date().toISOString()
-          const feedbackEntry = {
-            ...feedbackData,
-            timestamp,
-          }
-
-          // Get existing feedback from localStorage
-          const existingFeedback = localStorage.getItem('paperlyte_feedback')
-          let feedbackArray: unknown = []
-
-          if (existingFeedback) {
-            try {
-              feedbackArray = JSON.parse(existingFeedback)
-            } catch (parseError) {
-              console.error('Failed to parse stored feedback from localStorage', parseError)
-              feedbackArray = []
-            }
-          }
-
-          if (!Array.isArray(feedbackArray)) {
-            feedbackArray = []
-          }
-
-          ;(feedbackArray as unknown[]).push(feedbackEntry)
-          // Store updated feedback
-          try {
-            localStorage.setItem('paperlyte_feedback', JSON.stringify(feedbackArray))
-          } catch (storageError) {
-            // Log via centralized monitoring before throwing
-            logError(
-              storageError instanceof Error ? storageError : new Error(String(storageError)),
-              {
-                severity: 'medium',
-                tags: { module: 'FeedbackWidget', action: 'saveFeedback' },
-                errorInfo: { note: 'local storage failure' },
-              },
-              'FeedbackWidget'
-            )
-            throw new Error(
-              `Unable to save feedback locally. Your browser storage may be full or disabled. ${
-                storageError instanceof Error ? storageError.message : String(storageError)
-              }`,
-              { cause: storageError }
-            )
-          }
         }
 
         // Show confirmation

@@ -183,15 +183,8 @@ export function isSafeUrl(url: string): boolean {
 
 /**
  * Safely navigates to a URL by validating it first.
- * Allows relative URLs, HTTP/HTTPS URLs (including external), and blocks dangerous protocols
- * like javascript:, data:, vbscript:, etc.
- *
- * SECURITY NOTE: This function allows external HTTP/HTTPS URLs. For use cases requiring
- * same-origin navigation only (to prevent open redirects), implement additional domain
- * validation before calling this function or use a different approach.
- *
- * Safe usage: Only call with hardcoded URLs or URLs from trusted sources. Never pass
- * user-controlled query parameters directly to this function without domain validation.
+ * Only allows same-origin navigation to prevent open redirects.
+ * Blocks dangerous protocols (javascript:, data:, vbscript:, etc.) and external origins.
  *
  * @param url - The URL to navigate to
  * @returns true if navigation was performed, false if URL was rejected or navigation not needed (SSR)
@@ -210,9 +203,15 @@ export function safeNavigate(url: string): boolean {
     return false
   }
 
-  // Safe: url is validated by isSafeUrl() above — blocks javascript:, data:, vbscript:,
-  // protocol-relative URLs, control characters, and percent-encoded injections.
-  // lgtm[js/open-redirect] // NOSONAR
+  // Enforce same-origin to prevent open redirects.
+  const parsed = new URL(url, window.location.origin)
+  if (parsed.origin !== window.location.origin) {
+    if (import.meta.env.DEV) {
+      console.warn(`Navigation blocked: external origin "${parsed.origin}" is not allowed`)
+    }
+    return false
+  }
+
   window.location.href = url
   return true
 }

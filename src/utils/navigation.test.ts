@@ -338,24 +338,27 @@ describe('navigation utilities', () => {
       expect(mock.href).toBe('/search?q=test#results')
     })
 
-    // --- HTTPS URLs ---
+    // --- External URLs (blocked: same-origin enforcement) ---
 
-    it('should navigate to external HTTPS URL', () => {
-      const mock = mockLocation()
-      expect(safeNavigate('https://example.com')).toBe(true)
-      expect(mock.href).toBe('https://example.com')
+    it('should block external HTTPS URL to prevent open redirect', () => {
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      mockLocation()
+      expect(safeNavigate('https://example.com')).toBe(false)
+      warnSpy.mockRestore()
     })
 
-    it('should navigate to HTTPS URL with path', () => {
-      const mock = mockLocation()
-      expect(safeNavigate('https://example.com/page?key=val')).toBe(true)
-      expect(mock.href).toBe('https://example.com/page?key=val')
+    it('should block external HTTPS URL with path to prevent open redirect', () => {
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      mockLocation()
+      expect(safeNavigate('https://example.com/page?key=val')).toBe(false)
+      warnSpy.mockRestore()
     })
 
-    it('should navigate to HTTP URL', () => {
-      const mock = mockLocation()
-      expect(safeNavigate('http://example.com')).toBe(true)
-      expect(mock.href).toBe('http://example.com')
+    it('should block external HTTP URL to prevent open redirect', () => {
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      mockLocation()
+      expect(safeNavigate('http://example.com')).toBe(false)
+      warnSpy.mockRestore()
     })
 
     // --- javascript: protocol ---

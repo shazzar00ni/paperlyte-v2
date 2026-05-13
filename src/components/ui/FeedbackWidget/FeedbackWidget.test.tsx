@@ -209,7 +209,7 @@ describe('FeedbackWidget', () => {
       })
     })
 
-    it('stores feedback in localStorage by default', async () => {
+    it('shows confirmation without persisting when no onSubmit provided', async () => {
       const user = userEvent.setup()
       render(<FeedbackWidget />)
 
@@ -229,19 +229,11 @@ describe('FeedbackWidget', () => {
       const submitButton = screen.getByRole('button', { name: /send feedback/i })
       await user.click(submitButton)
 
-      // Check localStorage
+      // Should show confirmation — no localStorage persistence (landing page has no data layer)
       await waitFor(() => {
-        const storedFeedback = localStorage.getItem('paperlyte_feedback')
-        expect(storedFeedback).toBeTruthy()
-
-        const feedbackArray = JSON.parse(storedFeedback!)
-        expect(feedbackArray).toHaveLength(1)
-        expect(feedbackArray[0]).toMatchObject({
-          type: 'bug',
-          message: 'Test feedback message',
-        })
-        expect(feedbackArray[0].timestamp).toBeTruthy()
+        expect(screen.getByText(/thank you!/i)).toBeInTheDocument()
       })
+      expect(localStorage.getItem('paperlyte_feedback')).toBeNull()
     })
 
     it('calls custom onSubmit handler when provided', async () => {

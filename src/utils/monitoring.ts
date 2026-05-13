@@ -136,13 +136,13 @@ export function logError(error: Error, context?: ErrorContext, source?: string):
             },
           })
         }
+        Sentry.captureException(monitoringErr)
         Sentry.addBreadcrumb({
           category: 'monitoring',
           message: 'Error reporting pipeline failed',
           level: 'warning',
           data: { pipelineError: monitoringErr.message, appError: error.message },
         })
-        Sentry.captureException(monitoringErr)
       } catch {
         // Fully silent if Sentry is also unavailable
       }

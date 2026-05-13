@@ -100,7 +100,7 @@ jobs:
             --max-time 90 \
             --retry 3 \
             --retry-delay 2 \
-            --retry-all-errors \
+            --retry-connrefused \
             -o /tmp/codacy_upload_response.txt -w "%{http_code}" -X POST \
             "https://api.codacy.com/api/v3/analysis/organizations/gh/$ORG/repositories/$REPO/upload" \
             -H "api-token: $CODACY_PROJECT_TOKEN" \

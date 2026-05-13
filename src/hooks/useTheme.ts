@@ -41,14 +41,9 @@ const migrateLegacyTheme = (): void => {
     localStorage.removeItem('theme-user-preference')
   } catch (err) {
     // Storage blocked (incognito/quota) — fall back silently but report for diagnostics
-    logError(
-      toError(err),
-      {
-        severity: 'low',
-        tags: { module: 'useTheme', action: 'migrateLegacyTheme' },
-      },
-      'useTheme'
-    )
+    logError(toError(err), {
+      tags: { hook: 'useTheme', operation: 'migrateLegacyTheme' },
+    })
   }
 }
 
@@ -75,14 +70,9 @@ export const useTheme = () => {
     try {
       return localStorage.getItem(USER_PREFERENCE_KEY) === 'true'
     } catch (err) {
-      logError(
-        toError(err),
-        {
-          severity: 'low',
-          tags: { module: 'useTheme', action: 'getInitialUserPreference' },
-        },
-        'useTheme'
-      )
+      logError(toError(err), {
+        tags: { hook: 'useTheme', operation: 'readUserPreferenceFlag' },
+      })
       return false
     }
   }
@@ -113,14 +103,9 @@ export const useTheme = () => {
         }
       } catch (err) {
         // Storage blocked — fall through to system preference
-        logError(
-          toError(err),
-          {
-            severity: 'low',
-            tags: { module: 'useTheme', action: 'readInitialTheme' },
-          },
-          'useTheme'
-        )
+        logError(toError(err), {
+          tags: { hook: 'useTheme', operation: 'readInitialTheme' },
+        })
       }
     }
 
@@ -158,14 +143,9 @@ export const useTheme = () => {
         }
       } catch (err) {
         // Storage blocked — theme still applied to DOM above
-        logError(
-          toError(err),
-          {
-            severity: 'low',
-            tags: { module: 'useTheme', action: 'persistTheme' },
-          },
-          'useTheme'
-        )
+        logError(toError(err), {
+          tags: { hook: 'useTheme', operation: 'persistTheme' },
+        })
       }
     }
   }, [theme, persistenceEnabled])

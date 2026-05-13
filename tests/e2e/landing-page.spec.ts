@@ -60,7 +60,8 @@ test.describe('Landing Page', () => {
     test.skip(isMobile, 'Performance budgets target desktop viewport')
 
     await page.goto('/')
-    await page.waitForLoadState('load')
+    // Wait for h1 to be visible to ensure initial render is complete
+    await page.waitForSelector('h1', { state: 'visible' })
 
     interface CoreWebVitalsMetrics {
       fcp: number | null

@@ -5,7 +5,7 @@
  * Blocks malicious requests: scanner user agents, path traversal, injection
  * probes, oversized payloads, and known attack signatures.
  */
-import type { Config, Context } from "https://edge.netlify.com";
+import type { Config, Context } from 'https://edge.netlify.com'
 
 // ---------------------------------------------------------------------------
 // Blocked user-agent patterns (vulnerability scanners & automated attack tools)
@@ -31,7 +31,7 @@ const BLOCKED_USER_AGENTS: RegExp[] = [
   /\bhydra\b/i,
   /appscan/i,
   /webinspect/i,
-];
+]
 
 // ---------------------------------------------------------------------------
 // Attack signature patterns (checked against decoded path + query string)
@@ -75,14 +75,14 @@ const ATTACK_SIGNATURES: RegExp[] = [
   /on(?:load|error|click|mouse|focus|blur|change)\s*=/i,
   // SSRF / open-redirect probes
   /(?:file|dict|gopher|ldap|ftp):\/\//i,
-];
+]
 
 // Maximum accepted Content-Length (512 KB) — generous for a form submit,
 // protective against payload-stuffing attacks on serverless functions.
-const MAX_BODY_BYTES = 512 * 1024;
+const MAX_BODY_BYTES = 512 * 1024
 
 // Allowed HTTP methods for serverless function endpoints.
-const FUNCTION_ALLOWED_METHODS = new Set(["GET", "POST", "OPTIONS", "HEAD"]);
+const FUNCTION_ALLOWED_METHODS = new Set(['GET', 'POST', 'OPTIONS', 'HEAD'])
 
 // ---------------------------------------------------------------------------
 // Response helpers
@@ -97,28 +97,28 @@ const FUNCTION_ALLOWED_METHODS = new Set(["GET", "POST", "OPTIONS", "HEAD"]);
  * @param requestId - UUID generated at the start of the WAF handler.
  */
 function withRequestId(response: Response, requestId: string): Response {
-  const headers = new Headers(response.headers);
-  headers.set("X-Request-ID", requestId);
+  const headers = new Headers(response.headers)
+  headers.set('X-Request-ID', requestId)
   return new Response(response.body, {
     status: response.status,
     statusText: response.statusText,
     headers,
-  });
+  })
 }
 
 /** Returns a 403 Forbidden response with no body. */
 function forbidden(): Response {
-  return new Response(null, { status: 403 });
+  return new Response(null, { status: 403 })
 }
 
 /** Returns a 400 Bad Request response with no body. */
 function badRequest(): Response {
-  return new Response(null, { status: 400 });
+  return new Response(null, { status: 400 })
 }
 
 /** Returns a 413 Content Too Large response with no body. */
 function payloadTooLarge(): Response {
-  return new Response(null, { status: 413 });
+  return new Response(null, { status: 413 })
 }
 
 /**
@@ -130,8 +130,8 @@ function payloadTooLarge(): Response {
 function methodNotAllowed(allowed: string[]): Response {
   return new Response(null, {
     status: 405,
-    headers: { Allow: allowed.join(", ") },
-  });
+    headers: { Allow: allowed.join(', ') },
+  })
 }
 
 // ---------------------------------------------------------------------------
@@ -146,9 +146,9 @@ function methodNotAllowed(allowed: string[]): Response {
  */
 function checkUserAgent(ua: string): Response | null {
   for (const pattern of BLOCKED_USER_AGENTS) {
-    if (pattern.test(ua)) return forbidden();
+    if (pattern.test(ua)) return forbidden()
   }
-  return null;
+  return null
 }
 
 /**
@@ -164,37 +164,35 @@ function checkUserAgent(ua: string): Response | null {
  *   the body cannot be read, or `null` if the size is within the limit.
  */
 async function checkBodySize(request: Request): Promise<Response | null> {
-  const contentLength = Number(request.headers.get("content-length") ?? "0");
-  if (contentLength > MAX_BODY_BYTES) return payloadTooLarge();
+  const contentLength = Number(request.headers.get('content-length') ?? '0')
+  if (contentLength > MAX_BODY_BYTES) return payloadTooLarge()
 
-  const hasBody = request.body !== null
-    && request.method !== "GET"
-    && request.method !== "HEAD";
+  const hasBody = request.body !== null && request.method !== 'GET' && request.method !== 'HEAD'
 
-  if (!hasBody) return null;
+  if (!hasBody) return null
 
   try {
-    const stream = request.clone().body;
-    if (stream === null) return null;
+    const stream = request.clone().body
+    if (stream === null) return null
 
-    const reader = stream.getReader();
-    let total = 0;
-    let chunk = await reader.read();
+    const reader = stream.getReader()
+    let total = 0
+    let chunk = await reader.read()
 
     while (!chunk.done) {
-      total += chunk.value.byteLength;
+      total += chunk.value.byteLength
       if (total > MAX_BODY_BYTES) {
         // Cancel both the clone's branch and the original to release queued data.
-        await Promise.all([reader.cancel(), request.body.cancel()]);
-        return payloadTooLarge();
+        await Promise.all([reader.cancel(), request.body.cancel()])
+        return payloadTooLarge()
       }
-      chunk = await reader.read();
+      chunk = await reader.read()
     }
   } catch {
-    return badRequest();
+    return badRequest()
   }
 
-  return null;
+  return null
 }
 
 /**
@@ -207,13 +205,13 @@ async function checkBodySize(request: Request): Promise<Response | null> {
  * @throws {URIError} If `raw` contains malformed percent-encoding.
  */
 function decodeIteratively(raw: string): string {
-  let decoded = raw;
+  let decoded = raw
   for (let i = 0; i < 3; i++) {
-    const next = decodeURIComponent(decoded);
-    if (next === decoded) break; // stable — no further encoding layers
-    decoded = next;
+    const next = decodeURIComponent(decoded)
+    if (next === decoded) break // stable — no further encoding layers
+    decoded = next
   }
-  return decoded;
+  return decoded
 }
 
 /**
@@ -234,21 +232,21 @@ function decodeIteratively(raw: string): string {
  */
 function checkUrlSignatures(url: URL): Response | null {
   // Translate + to space in the query portion only (path + is literal, not a space).
-  const raw = url.pathname + url.search.replaceAll("+", " ");
-  let decoded: string;
+  const raw = url.pathname + url.search.replaceAll('+', ' ')
+  let decoded: string
   try {
-    decoded = decodeIteratively(raw);
+    decoded = decodeIteratively(raw)
   } catch {
-    return badRequest();
+    return badRequest()
   }
 
-  const targets = decoded === raw ? [raw] : [raw, decoded];
+  const targets = decoded === raw ? [raw] : [raw, decoded]
   for (const t of targets) {
     for (const pattern of ATTACK_SIGNATURES) {
-      if (pattern.test(t)) return forbidden();
+      if (pattern.test(t)) return forbidden()
     }
   }
-  return null;
+  return null
 }
 
 /**
@@ -261,12 +259,12 @@ function checkUrlSignatures(url: URL): Response | null {
  *   endpoint, or `null` to continue.
  */
 function checkFunctionMethod(pathname: string, method: string): Response | null {
-  const isFunctionEndpoint = pathname.startsWith("/.netlify/functions/");
-  const isMethodAllowed = FUNCTION_ALLOWED_METHODS.has(method);
+  const isFunctionEndpoint = pathname.startsWith('/.netlify/functions/')
+  const isMethodAllowed = FUNCTION_ALLOWED_METHODS.has(method)
   if (isFunctionEndpoint && !isMethodAllowed) {
-    return methodNotAllowed([...FUNCTION_ALLOWED_METHODS]);
+    return methodNotAllowed([...FUNCTION_ALLOWED_METHODS])
   }
-  return null;
+  return null
 }
 
 // ---------------------------------------------------------------------------
@@ -289,50 +287,47 @@ function checkFunctionMethod(pathname: string, method: string): Response | null 
  * @returns A `Response` — either a block response (4xx) or the origin response,
  *   always carrying an `X-Request-ID` header.
  */
-export default async function waf(
-  request: Request,
-  context: Context,
-): Promise<Response> {
-  const url = new URL(request.url);
-  const requestId = crypto.randomUUID();
+export default async function waf(request: Request, context: Context): Promise<Response> {
+  const url = new URL(request.url)
+  const requestId = crypto.randomUUID()
 
-  const uaBlock = checkUserAgent(request.headers.get("user-agent") ?? "");
-  if (uaBlock) return withRequestId(uaBlock, requestId);
+  const uaBlock = checkUserAgent(request.headers.get('user-agent') ?? '')
+  if (uaBlock) return withRequestId(uaBlock, requestId)
 
-  const bodySizeBlock = await checkBodySize(request);
-  if (bodySizeBlock) return withRequestId(bodySizeBlock, requestId);
+  const bodySizeBlock = await checkBodySize(request)
+  if (bodySizeBlock) return withRequestId(bodySizeBlock, requestId)
 
-  const signatureBlock = checkUrlSignatures(url);
-  if (signatureBlock) return withRequestId(signatureBlock, requestId);
+  const signatureBlock = checkUrlSignatures(url)
+  if (signatureBlock) return withRequestId(signatureBlock, requestId)
 
-  const methodBlock = checkFunctionMethod(url.pathname, request.method);
-  if (methodBlock) return withRequestId(methodBlock, requestId);
+  const methodBlock = checkFunctionMethod(url.pathname, request.method)
+  if (methodBlock) return withRequestId(methodBlock, requestId)
 
   try {
-    const response = await context.next();
-    return withRequestId(response, requestId);
+    const response = await context.next()
+    return withRequestId(response, requestId)
   } catch {
     // Origin or network error — return a 502 with the request ID so the
     // failed request remains traceable in edge logs alongside blocked traffic.
-    return withRequestId(new Response(null, { status: 502 }), requestId);
+    return withRequestId(new Response(null, { status: 502 }), requestId)
   }
 }
 
 export const config: Config = {
-  path: "/*",
+  path: '/*',
   // Skip WAF on static assets served directly from the CDN cache.
   // Fonts live under /fonts/ (e.g. /fonts/Inter-Variable.woff2); root-level
   // font globs would never match those URLs, so /fonts/* is used instead.
   excludedPath: [
-    "/assets/*",
-    "/fonts/*",
-    "/*.ico",
-    "/*.png",
-    "/*.jpg",
-    "/*.jpeg",
-    "/*.webp",
-    "/*.avif",
-    "/*.svg",
-    "/*.gif",
+    '/assets/*',
+    '/fonts/*',
+    '/*.ico',
+    '/*.png',
+    '/*.jpg',
+    '/*.jpeg',
+    '/*.webp',
+    '/*.avif',
+    '/*.svg',
+    '/*.gif',
   ],
-};
+}

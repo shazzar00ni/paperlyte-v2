@@ -17,21 +17,21 @@ Paperlyte is a React/TypeScript landing page for a distraction-free note-taking 
 
 ## Folder Structure
 
-| Path | What lives here |
-|---|---|
-| `src/components/sections/` | One directory per landing page section (Hero, Features, CTA, etc.) |
-| `src/components/ui/` | Reusable primitives (Button, Icon, AnimatedElement, etc.) |
-| `src/components/layout/` | Header, Footer, Section wrapper |
-| `src/components/pages/` | Standalone pages (`NotFoundPage/`, `OfflinePage/`, `ServerErrorPage/`, `Privacy/`, `Terms/`) |
-| `src/hooks/` | Custom React hooks (theme, media query, parallax, scroll, analytics) |
-| `src/constants/` | Static data modules (features, testimonials, FAQ, pricing, comparison) |
-| `src/utils/` | Pure utility functions (validation, analytics, security, env, metaTags) |
-| `src/styles/` | Global CSS: `variables.css`, `reset.css`, `typography.css`, `utilities.css` |
-| `src/analytics/` | Privacy-first analytics abstraction layer + providers |
-| `tests/e2e/` | Playwright end-to-end tests |
-| `docs/` | Project documentation (design system, architecture, roadmap, audits) |
-| `memory/` | Claude Code session memory — not application code, do not review |
-| `scripts/` | Build-time helpers (icon generation, sitemap, date injection) |
+| Path                       | What lives here                                                                              |
+| -------------------------- | -------------------------------------------------------------------------------------------- |
+| `src/components/sections/` | One directory per landing page section (Hero, Features, CTA, etc.)                           |
+| `src/components/ui/`       | Reusable primitives (Button, Icon, AnimatedElement, etc.)                                    |
+| `src/components/layout/`   | Header, Footer, Section wrapper                                                              |
+| `src/components/pages/`    | Standalone pages (`NotFoundPage/`, `OfflinePage/`, `ServerErrorPage/`, `Privacy/`, `Terms/`) |
+| `src/hooks/`               | Custom React hooks (theme, media query, parallax, scroll, analytics)                         |
+| `src/constants/`           | Static data modules (features, testimonials, FAQ, pricing, comparison)                       |
+| `src/utils/`               | Pure utility functions (validation, analytics, security, env, metaTags)                      |
+| `src/styles/`              | Global CSS: `variables.css`, `reset.css`, `typography.css`, `utilities.css`                  |
+| `src/analytics/`           | Privacy-first analytics abstraction layer + providers                                        |
+| `tests/e2e/`               | Playwright end-to-end tests                                                                  |
+| `docs/`                    | Project documentation (design system, architecture, roadmap, audits)                         |
+| `memory/`                  | Claude Code session memory — not application code, do not review                             |
+| `scripts/`                 | Build-time helpers (icon generation, sitemap, date injection)                                |
 
 Each component should generally follow this preferred four-file structure:
 
@@ -48,19 +48,19 @@ Documented exceptions exist (e.g., `src/components/ui/Icon/` uses a global `Icon
 
 ## Stack
 
-| Tool | Version | Role |
-|---|---|---|
-| React | ^19.2.5 | UI framework |
-| TypeScript | ~6.0.3 | Strict typing everywhere |
-| Vite | 8.0.10 | Build tool, dev server (port 3000), manual chunking |
-| Vitest | ^4.1.5 | Unit & component tests (jsdom environment) |
-| Playwright | ^1.59.1 | E2E tests (5 projects: Chromium, Firefox, WebKit, Mobile Chrome, Mobile Safari) |
-| ESLint | 10.2.1 | Linting via flat config (React Hooks, React Refresh; extends `eslint-config-prettier` to disable conflicting rules — does not enforce formatting) |
-| Prettier 3 | `.prettierrc.json` | Formatting via `npm run format` / `format:check` (no semi, single quotes, 100-char width) |
-| CSS Modules | — | Component-scoped styles |
-| Font Awesome | — | Icons via `src/utils/iconLibrary.ts` (tree-shaken) |
-| @fontsource/inter | — | Self-hosted Inter (Latin subset only — GDPR compliance) |
-| Sentry | 10.x | Error tracking (production only, with PII filtering) |
+| Tool              | Version            | Role                                                                                                                                              |
+| ----------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| React             | ^19.2.5            | UI framework                                                                                                                                      |
+| TypeScript        | ~6.0.3             | Strict typing everywhere                                                                                                                          |
+| Vite              | 8.0.10             | Build tool, dev server (port 3000), manual chunking                                                                                               |
+| Vitest            | ^4.1.5             | Unit & component tests (jsdom environment)                                                                                                        |
+| Playwright        | ^1.59.1            | E2E tests (5 projects: Chromium, Firefox, WebKit, Mobile Chrome, Mobile Safari)                                                                   |
+| ESLint            | 10.2.1             | Linting via flat config (React Hooks, React Refresh; extends `eslint-config-prettier` to disable conflicting rules — does not enforce formatting) |
+| Prettier 3        | `.prettierrc.json` | Formatting via `npm run format` / `format:check` (no semi, single quotes, 100-char width)                                                         |
+| CSS Modules       | —                  | Component-scoped styles                                                                                                                           |
+| Font Awesome      | —                  | Icons via `src/utils/iconLibrary.ts` (tree-shaken)                                                                                                |
+| @fontsource/inter | —                  | Self-hosted Inter (Latin subset only — GDPR compliance)                                                                                           |
+| Sentry            | 10.x               | Error tracking (production only, with PII filtering)                                                                                              |
 
 Path aliases are configured (`@/*`, `@components/*`, `@hooks/*`, `@utils/*`, etc.) — always use these, never relative `../../` imports across module boundaries.
 
@@ -83,7 +83,7 @@ Path aliases are configured (`@/*`, `@components/*`, `@hooks/*`, `@utils/*`, etc
 - **TypeScript**: Strict mode, no `any`. Prefer explicit return types on exported utility functions; React components and hooks may rely on inference where it improves readability.
 - **Naming**: PascalCase for components/types, camelCase for functions/variables, SCREAMING_SNAKE_CASE for top-level constants.
 - **Imports**: Prefer path aliases (`@components/...`, `@hooks/...`, `@utils/...`) for cross-module imports in app code. Use barrel `index.ts` exports where they exist. Relative imports within a feature folder, and direct deep imports in tests (e.g., to spy on a specific module export), are acceptable exceptions.
-- **JSDoc**: Required on all exported public APIs — hooks, utility functions, and component prop interfaces. Use `@param`, `@returns`, and `@default` where applicable. Include a usage example for non-trivial APIs (see `src/hooks/useParallax.ts` for reference style). Inline `//` comments are only for non-obvious *why*, not *what*.
+- **JSDoc**: Required on all exported public APIs — hooks, utility functions, and component prop interfaces. Use `@param`, `@returns`, and `@default` where applicable. Include a usage example for non-trivial APIs (see `src/hooks/useParallax.ts` for reference style). Inline `//` comments are only for non-obvious _why_, not _what_.
 - **No new `// TODO`s**: Don't introduce new `// TODO` comments in PRs — track follow-ups as GitHub issues instead. A small number of legacy TODOs may still exist (e.g., in test files); those will be cleaned up over time.
 - **No semi**: Prettier enforces this. Run `npm run format` before committing.
 - **Accessibility**: Every interactive element needs an `aria-label` or visible label. Reduced-motion support is required (`prefers-reduced-motion`). Skip links and semantic HTML are not optional.

@@ -2,6 +2,47 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-05-12
+
+### Analysis: Systemic Regressions in Open Branches (Automated Daily Audit)
+
+- **Status:** Critical — Action Required
+- **Summary:** An automated repository-wide audit of 291 unmerged branches confirms the following systemic regressions.
+
+| Regression Type                | Count | Severity    | Notes                                               |
+| :----------------------------- | :---- | :---------- | :-------------------------------------------------- |
+| Orphan Branches                | 0     | 🔴 Critical | No common ancestor with `main`.                     |
+| Missing `.npmrc`               | 79    | 🔴 Critical | Breaks dependency resolution.                       |
+| Missing `docs/ROADMAP.md`      | 75    | 🟠 High     | Core project documentation.                         |
+| Missing `gitVersionControl.md` | 88    | 🟠 High     | Core Git workflow documentation.                    |
+| Missing `review.md`            | 88    | 🟡 Medium   | AI PR reviewer instructions.                        |
+| Reverted Security Helpers      | 87    | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers. |
+| Unreadable navigation.ts       | 8     | 🔴 Critical | File missing or unreadable.                         |
+
+- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.
+
+### Manual Branch Reviews (May 12, 2026)
+
+#### origin/claude/fix-open-redirect-TX551
+
+- **Status:** Ready
+- **Summary:** Security hardening for navigation utilities.
+- **Feedback:** Successfully restricts `safeNavigate` to same-origin URLs by default, preventing open redirect vulnerabilities. The implementation of `isSafeUrl` with `SafeUrlOptions` is flexible and well-tested. Excellent integration with the monitoring system for tracking blocked navigation attempts.
+
+#### origin/claude/implement-service-worker-YLeLZ
+
+- **Status:** Ready
+- **Summary:** Robust PWA Service Worker implementation.
+- **Feedback:** Provides a comprehensive offline experience with a dedicated `offline.html` fallback and intelligent caching strategies (`cache-first` for hashed assets, `stale-while-revalidate` for static media). CSP updates are correctly handled in both Vercel and Vite configurations.
+
+#### origin/claude/tree-shake-font-awesome-cK85j
+
+- **Status:** Ready
+- **Summary:** Efficient Icon component refactoring.
+- **Feedback:** Significantly reduces bundle size by replacing the global Font Awesome library with a localized SVG path mapping. The normalization of icon names and the use of CSS modules for styling ensure a clean and maintainable implementation.
+
+---
+
 ## 2026-03-05
 
 ### Analysis: Accidental File Deletions in Open Branches (Jules Daily PR Reviews)
@@ -36,12 +77,12 @@ This file contains a summary of pull requests I have reviewed.
 
 ## 2026-02-08
 
-### PR #427: Configure Claude Code GitHub Action
+### PR #427 Configure Claude Code GitHub Action
 
 - **Status:** Approved
 - **Notes (2026-02-08):** See detailed review under **2026-02-06 → PR #427**. Latest status remains **Approved**; no additional feedback beyond that entry.
 
-### PR #275: Implement P0-CRITICAL hero section conversion optimization (#274)
+### PR #275 Implement P0-CRITICAL hero section conversion optimization (#274)
 
 - **Status:** Under Review (Changes Requested)
 - **Notes (2026-02-08):** See detailed review under **2026-02-06 → PR #275**. Status is still **Under Review (Changes Requested)** as of this date.
@@ -116,7 +157,7 @@ This file contains a summary of pull requests I have reviewed.
 - **Summary:** Fixes an open redirect vulnerability by restricting `safeNavigate()` to same-origin URLs by default. It introduces `safeNavigateExternal()` for intentional external navigation and adds a parameter to `isSafeUrl()` to control external URL allowance.
 - **Feedback:** Solid security improvement. The separation of internal and external navigation is a good pattern.
 
-### PR #427: Configure Claude Code GitHub Action
+### PR #427 Configure Claude Code GitHub Action
 
 - **Status:** Changes Requested
 - **Summary:** Adds a GitHub Actions workflow for Claude Code integration.
@@ -215,7 +256,7 @@ This file contains a summary of pull requests I have reviewed.
 - **Summary:** Introduces `react-router-dom` and creates dedicated pages for Privacy and Terms.
 - **Feedback:** The routing logic is not yet integrated into `App.tsx`, which currently renders everything on a single page. Routing should be fully implemented or the PR should be explicitly marked as a "Work in Progress" toward that goal.
 
-### PR #275: Implement P0-CRITICAL hero section conversion optimization (#274)
+### PR #275 Implement P0-CRITICAL hero section conversion optimization (#274)
 
 - **Status:** Under Review (Previously Rejected)
 - **Summary:** Re-evaluated this PR after previous rejection for critical security issues. Recent commits have removed the most dangerous changes (like the CSP weakening).
@@ -325,11 +366,11 @@ This file contains a summary of pull requests I have reviewed.
 
 **Status:** Approved with comments
 
-#### Summary for PR #356:
+#### Summary for PR #356
 
 This PR addresses a Codacy configuration issue to ensure ESLint runs correctly in the CI pipeline. The core changes in `.codacy.yml` and the addition of `.eslintrc.cjs` are correct and effectively resolve the issue.
 
-#### Feedback & Suggestions for PR #356:
+#### Feedback & Suggestions for PR #356
 
 - **Approval:** The main changes are approved and ready for merging.
 - **Scope Creep:** The PR includes unrelated changes to the icon library (`src/utils/iconLibrary.ts`) and E2E tests (`tests/e2e/landing-page.spec.ts`). While not harmful, these changes are out of scope for a configuration fix.
@@ -341,11 +382,11 @@ This PR addresses a Codacy configuration issue to ensure ESLint runs correctly i
 
 **Status:** Changes requested
 
-#### Summary for PR #319:
+#### Summary for PR #319
 
 This PR aims to fix a deployment error in the `Privacy.tsx` component. However, it also includes significant changes to `package-lock.json` and `public/sitemap.xml` that are unrelated to the component fix.
 
-#### Feedback & Suggestions for PR #319:
+#### Feedback & Suggestions for PR #319
 
 - **Mixed Changes:** The PR mixes a bug fix with dependency updates and sitemap changes. This makes it difficult to review and test.
 - **`package-lock.json`:** The changes to `package-lock.json` are extensive and add `"peer": true` to many dependencies. This is a significant change that could have unintended side effects and should be tested in isolation. My memory indicates that these changes have caused test failures in the past.

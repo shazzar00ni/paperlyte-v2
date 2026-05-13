@@ -14,7 +14,7 @@ interface StatisticItem {
   value: number
   /** Display label shown below the counter */
   label: string
-  /** Font Awesome icon class (e.g., 'fa-users') */
+  /** Icon key used by the shared Icon component (e.g., 'fa-users') */
   icon: string
   /** Text displayed after the number (e.g., '+', '%', 'M+') */
   suffix?: string

@@ -205,7 +205,7 @@ describe('Legal Constants', () => {
       expect(needsLegalReview()).toBe(true)
     })
 
-    it('should detect placeholder in jurisdiction', () => {
+    it('should have jurisdiction resolved to Delaware', () => {
       // Jurisdiction is now set to "Delaware" — no longer a placeholder
       expect(LEGAL_CONFIG.metadata.jurisdiction).toBe('Delaware')
     })
@@ -241,7 +241,7 @@ describe('Legal Constants', () => {
       expect(placeholders).toContain('Physical Address')
     })
 
-    it('should identify Jurisdiction as placeholder', () => {
+    it('should not include Jurisdiction/Governing Law in placeholders', () => {
       // Jurisdiction is now resolved to "Delaware" — no longer a placeholder
       const placeholders = getPlaceholderFields()
       expect(placeholders).not.toContain('Jurisdiction/Governing Law')

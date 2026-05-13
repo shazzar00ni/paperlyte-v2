@@ -3,6 +3,7 @@ const SCROLL_RETRY_TIMEOUT_MS = 3000
 
 /** Active MutationObservers waiting for a deferred section. Exposed for test cleanup. */
 const pendingScrollObservers: MutationObserver[] = []
+const pendingObserverTimeouts = new Map<MutationObserver, ReturnType<typeof setTimeout>>()
 
 /**
  * Disconnects and removes all pending scroll observers created by {@link scrollToSection}.
@@ -13,6 +14,11 @@ const pendingScrollObservers: MutationObserver[] = []
 export function _clearPendingScrollObservers(): void {
   for (const observer of pendingScrollObservers) {
     observer.disconnect()
+    const timeoutId = pendingObserverTimeouts.get(observer)
+    if (timeoutId) {
+      clearTimeout(timeoutId)
+      pendingObserverTimeouts.delete(observer)
+    }
   }
   pendingScrollObservers.length = 0
 }
@@ -20,6 +26,11 @@ export function _clearPendingScrollObservers(): void {
 /** Disconnects a single observer and removes it from the pending list. */
 function removeObserver(observer: MutationObserver): void {
   observer.disconnect()
+  const timeoutId = pendingObserverTimeouts.get(observer)
+  if (timeoutId) {
+    clearTimeout(timeoutId)
+    pendingObserverTimeouts.delete(observer)
+  }
   const idx = pendingScrollObservers.indexOf(observer)
   if (idx !== -1) pendingScrollObservers.splice(idx, 1)
 }
@@ -64,6 +75,10 @@ export function scrollToSection(sectionId: string): void {
 
   observer.observe(document.body, { childList: true, subtree: true })
   pendingScrollObservers.push(observer)
+  const timeoutId = setTimeout(() => {
+    removeObserver(observer)
+  }, SCROLL_RETRY_TIMEOUT_MS)
+  pendingObserverTimeouts.set(observer, timeoutId)
 }
 
 /**

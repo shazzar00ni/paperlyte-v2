@@ -87,7 +87,7 @@ function cspPlugin(): Plugin {
  *
  * @see https://vite.dev/config/
  */
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   // React plugin with Fast Refresh for instant Hot Module Replacement
   // CSP plugin for environment-aware security headers
   // Codecov Rollup plugin for bundle analysis (Vite 7 compatible)
@@ -112,7 +112,7 @@ export default defineConfig({
       ? [
           visualizer({
             filename: 'stats.html',
-            open: true,
+            open: !process.env.CI,
             gzipSize: true,
             brotliSize: true,
           }) as Plugin,
@@ -136,10 +136,13 @@ export default defineConfig({
   },
 
   // Strip debugger statements in production builds; preserve console.warn/error for diagnostics
-  esbuild: {
-    drop: ['debugger'],
-    pure: ['console.log', 'console.debug', 'console.info'],
-  },
+  esbuild:
+    mode === 'production'
+      ? {
+          drop: ['debugger'],
+          pure: ['console.log', 'console.debug', 'console.info'],
+        }
+      : undefined,
 
   // Production build configuration
   build: {
@@ -182,4 +185,4 @@ export default defineConfig({
     // Automatically open browser when dev server starts
     open: true,
   },
-})
+}))

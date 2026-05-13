@@ -44,6 +44,25 @@ def comment_on_pr(pr_num, issues):
     comment += '\nPlease restore these critical files or security helpers before merging.'
     run_command(['gh', 'pr', 'comment', str(pr_num), '--body', comment])
 
+def get_stats_and_comment(blocked_data, pr_map, stats):
+    """Updates statistics and comments on PRs for blocked branches."""
+    mapping = {
+        'Orphan branch': 'Orphan', 'Missing .npmrc': 'NPMRC', 'Missing docs/ROADMAP.md': 'ROADMAP',
+        'Missing gitVersionControl.md': 'GVC', 'Missing review.md': 'REVIEW',
+        'security helper': 'HELPERS', 'Could not read src/utils/navigation.ts': 'UNREADABLE'
+    }
+
+    for item in blocked_data:
+        issues = item['issues']
+        issues_str = str(issues)
+        for key, stat in mapping.items():
+            if key in issues_str:
+                stats[stat] += 1
+
+        branch = item['branch']
+        if branch in pr_map:
+            comment_on_pr(pr_map[branch], issues)
+
 def main():
     if not os.path.exists('audit_results.json'):
         print("Error: audit_results.json not found.", file=sys.stderr)
@@ -55,21 +74,7 @@ def main():
     pr_map = get_pr_map()
     stats = {k: 0 for k in ['Orphan', 'NPMRC', 'ROADMAP', 'GVC', 'REVIEW', 'HELPERS', 'UNREADABLE']}
 
-    mapping = {
-        'Orphan branch': 'Orphan', 'Missing .npmrc': 'NPMRC', 'Missing docs/ROADMAP.md': 'ROADMAP',
-        'Missing gitVersionControl.md': 'GVC', 'Missing review.md': 'REVIEW',
-        'security helper': 'HELPERS', 'Could not read src/utils/navigation.ts': 'UNREADABLE'
-    }
-
-    for item in data.get('blocked', []):
-        issues = item['issues']
-        issues_str = str(issues)
-        for key, stat in mapping.items():
-            if key in issues_str: stats[stat] += 1
-
-        branch = item['branch']
-        if branch in pr_map:
-            comment_on_pr(pr_map[branch], issues)
+    get_stats_and_comment(data.get('blocked', []), pr_map, stats)
 
     # Generate Markdown Summary
     date_str = datetime.now().strftime('%Y-%m-%d')

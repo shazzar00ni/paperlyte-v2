@@ -26,10 +26,11 @@ SECURITY_HELPERS = [
 def run_command(args):
     """Executes a git command securely using list-based arguments and shell=False."""
     try:
+        # Use literal list check if needed, but here we just wrap subprocess.run securely
         result = subprocess.run(
             args,
             shell=False,
-            check=False,  # We handle errors based on returncode or empty output
+            check=False,
             capture_output=True,
             text=True
         )
@@ -39,6 +40,45 @@ def run_command(args):
     except Exception as e:
         print(f"Error executing command {' '.join(args)}: {e}", file=sys.stderr)
         return None
+
+def check_critical_files(branch, issues):
+    """Checks for missing critical files using git ls-tree."""
+    branch_files_raw = run_command(["git", "ls-tree", "-r", "--name-only", branch])
+    if branch_files_raw:
+        branch_files = set(branch_files_raw.split('\n'))
+        for path in CRITICAL_FILES:
+            if path not in branch_files:
+                issues.append(f"Missing {path}")
+    else:
+        issues.append("Could not list branch files")
+
+def check_security_helpers(branch, issues):
+    """Checks for security helpers in src/utils/navigation.ts."""
+    nav_content = run_command(["git", "show", f"{branch}:src/utils/navigation.ts"])
+    if nav_content:
+        for helper in SECURITY_HELPERS:
+            pattern = rf"export\s+(?:function|const)\s+{re.escape(helper)}\b"
+            if not re.search(pattern, nav_content):
+                issues.append(f"Missing security helper definition: {helper}")
+    else:
+        issues.append("Could not read src/utils/navigation.ts")
+
+def audit_branch(branch):
+    """Audits a single branch for various issues."""
+    issues = []
+
+    # 0. Check for shared history (merge-base) with origin/main
+    base = run_command(["git", "merge-base", "origin/main", branch])
+    if not base:
+        issues.append("Orphan branch (no shared history with main)")
+
+    # 1. Check for missing critical files
+    check_critical_files(branch, issues)
+
+    # 2. Check for security helpers
+    check_security_helpers(branch, issues)
+
+    return issues
 
 def main():
     # Get all remote unmerged branches relative to origin/main
@@ -57,34 +97,7 @@ def main():
     }
 
     for branch in branches:
-        issues = []
-
-        # 0. Check for shared history (merge-base) with origin/main
-        base = run_command(["git", "merge-base", "origin/main", branch])
-        if not base:
-            issues.append("Orphan branch (no shared history with main)")
-
-        # 1. Check for missing critical files using git ls-tree
-        branch_files_raw = run_command(["git", "ls-tree", "-r", "--name-only", branch])
-        if branch_files_raw:
-            branch_files = set(branch_files_raw.split('\n'))
-            for path in CRITICAL_FILES:
-                if path not in branch_files:
-                    issues.append(f"Missing {path}")
-        else:
-            issues.append("Could not list branch files")
-
-        # 2. Check for security helpers in src/utils/navigation.ts
-        nav_content = run_command(["git", "show", f"{branch}:src/utils/navigation.ts"])
-        if nav_content:
-            for helper in SECURITY_HELPERS:
-                # Robust pattern to match both 'export function helperName' and 'export const helperName ='
-                pattern = rf"export\s+(?:function|const)\s+{re.escape(helper)}\b"
-                if not re.search(pattern, nav_content):
-                    issues.append(f"Missing security helper definition: {helper}")
-        else:
-            issues.append("Could not read src/utils/navigation.ts")
-
+        issues = audit_branch(branch)
         branch_name = branch.replace("origin/", "")
         if issues:
             audit_data["blocked"].append({

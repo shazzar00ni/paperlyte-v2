@@ -91,7 +91,9 @@ function runFuzzer(iterations) {
 
 const ITERATIONS = Number.parseInt(process.env.FUZZ_ITERATIONS || '50000', 10);
 if (!Number.isInteger(ITERATIONS) || ITERATIONS <= 0) {
-  process.stderr.write(`Invalid FUZZ_ITERATIONS: ${process.env.FUZZ_ITERATIONS}\n`);
-  process.exit(2);
+  process.stderr.write(
+    `Invalid FUZZ_ITERATIONS "${process.env.FUZZ_ITERATIONS}": must be a positive integer.\n`
+  );
+  process.exit(1);
 }
 runFuzzer(ITERATIONS);

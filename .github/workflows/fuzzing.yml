@@ -32,7 +32,7 @@ jobs:
 
       - name: Compile validation module for fuzzing
         run: |
-          npx esbuild src/utils/validation.ts \
+          node_modules/.bin/esbuild src/utils/validation.ts \
             --bundle --platform=node --format=cjs \
             --outfile=fuzz/validation.cjs
 

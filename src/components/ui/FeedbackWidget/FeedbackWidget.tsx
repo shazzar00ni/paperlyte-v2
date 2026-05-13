@@ -5,8 +5,8 @@ import { handleArrowNavigation, getFocusableElements } from '@utils/keyboard'
 import { logError } from '@utils/monitoring'
 import styles from './FeedbackWidget.module.css'
 
-const FEEDBACK_KEY = 'paperlyte:v1:feedback'
-const LEGACY_FEEDBACK_KEY = 'paperlyte_feedback'
+const FEEDBACK_KEY = 'paperlyte:v1:feedback' // nosemgrep: generic.secrets.security.hardcoded-password-string
+const LEGACY_FEEDBACK_KEY = 'paperlyte_feedback' // nosemgrep: generic.secrets.security.hardcoded-password-string
 
 // One-time migration of feedback entries from the legacy unversioned key.
 // Module-level flag avoids repeated reads on every widget mount.

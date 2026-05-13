@@ -7,6 +7,10 @@ import styles from './FeedbackWidget.module.css'
 
 type FeedbackType = 'bug' | 'feature'
 
+interface Focusable {
+  focus: () => void
+}
+
 interface FeedbackFormData {
   type: FeedbackType
   message: string
@@ -38,7 +42,7 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const closeTimeoutRef = useRef<number | null>(null)
-  const triggerElementRef = useRef<HTMLElement | null>(null)
+  const triggerElementRef = useRef<Focusable | null>(null)
   const modalRef = useRef<HTMLDivElement>(null)
   const closeButtonRef = useRef<HTMLButtonElement>(null)
   const typeSelectorRef = useRef<HTMLFieldSetElement>(null)
@@ -46,7 +50,7 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
   // Handle modal open
   const handleOpen = useCallback(() => {
     // Store the element that triggered the modal for focus restoration
-    triggerElementRef.current = document.activeElement as HTMLElement
+    triggerElementRef.current = document.activeElement as Focusable | null
     setIsOpen(true)
     setError(null)
     setShowConfirmation(false)

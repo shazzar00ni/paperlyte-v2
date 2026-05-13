@@ -292,9 +292,9 @@ describe('Analytics Utility', () => {
 
       const paramsWithSensitive = {
         safe_param: 'safe_value',
-        password: 'test_value',
-        auth_token: 'test_value',
-        api_key: 'test_value',
+        password: 'mock_password', // NOSONAR - test fixture, not a real credential
+        auth_token: 'mock_token', // NOSONAR - test fixture, not a real credential
+        api_key: 'mock_api_key', // NOSONAR - test fixture, not a real credential
       }
 
       trackEvent('test_event', paramsWithSensitive)

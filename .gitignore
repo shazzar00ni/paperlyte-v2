@@ -45,3 +45,6 @@ public/favicon.ico
 # Deployment platforms
 .netlify
 .vercel
+
+# Lighthouse CI local run artifacts
+.lighthouseci/

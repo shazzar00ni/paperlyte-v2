@@ -1,5 +1,10 @@
 import { renderHook, act, waitFor } from '@testing-library/react'
+import { logError } from '@utils/monitoring'
 import { useTheme } from './useTheme'
+
+vi.mock('@utils/monitoring', () => ({
+  logError: vi.fn(),
+}))
 
 // Mock the config module
 vi.mock('@constants/config', () => ({
@@ -612,5 +617,93 @@ describe('useTheme with persistence disabled', () => {
 
     // Theme should follow system even after user toggled (no persistence)
     expect(result.current.theme).toBe('light')
+  })
+})
+
+describe('useTheme — localStorage error handling', () => {
+  const originalMatchMedia = window.matchMedia
+  let originalLocalStorage: Storage
+
+  beforeEach(() => {
+    originalLocalStorage = window.localStorage
+    vi.mocked(logError).mockClear()
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: vi.fn().mockImplementation((query: string) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    })
+  })
+
+  afterEach(() => {
+    Object.defineProperty(window, 'localStorage', {
+      value: originalLocalStorage,
+      writable: true,
+    })
+    window.matchMedia = originalMatchMedia
+  })
+
+  it('initialises to light theme and reports via logError when getItem throws SecurityError', () => {
+    const storageError = new DOMException('Storage access denied', 'SecurityError')
+    Object.defineProperty(window, 'localStorage', {
+      value: {
+        getItem: vi.fn().mockImplementation(() => {
+          throw storageError
+        }),
+        setItem: vi.fn(),
+        removeItem: vi.fn(),
+        clear: vi.fn(),
+      },
+      writable: true,
+    })
+
+    const { result } = renderHook(() => useTheme())
+
+    expect(result.current.theme).toBe('light')
+    expect(vi.mocked(logError)).toHaveBeenCalledWith(
+      expect.objectContaining({ message: expect.any(String) }),
+      expect.objectContaining({
+        tags: expect.objectContaining({ operation: 'readUserPreferenceFlag' }),
+      })
+    )
+  })
+
+  it('still updates theme in memory and reports via logError when setItem throws SecurityError', async () => {
+    const storageError = new DOMException('Storage access denied', 'SecurityError')
+    Object.defineProperty(window, 'localStorage', {
+      value: {
+        getItem: vi.fn().mockReturnValue(null),
+        setItem: vi.fn().mockImplementation(() => {
+          throw storageError
+        }),
+        removeItem: vi.fn(),
+        clear: vi.fn(),
+      },
+      writable: true,
+    })
+
+    const { result } = renderHook(() => useTheme())
+    expect(result.current.theme).toBe('light')
+
+    act(() => {
+      result.current.toggleTheme()
+    })
+
+    await waitFor(() => {
+      expect(result.current.theme).toBe('dark')
+    })
+    expect(vi.mocked(logError)).toHaveBeenCalledWith(
+      expect.objectContaining({ message: expect.any(String) }),
+      expect.objectContaining({
+        tags: expect.objectContaining({ operation: 'persistTheme' }),
+      })
+    )
   })
 })

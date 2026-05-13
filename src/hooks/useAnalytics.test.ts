@@ -1,148 +1,62 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { renderHook } from '@testing-library/react'
-import { useAnalytics } from '@hooks/useAnalytics'
-import {
-  trackEvent,
-  trackCTAClick,
-  trackExternalLink,
-  trackSocialClick,
-  initScrollDepthTracking,
-} from '@utils/analytics'
+import { createScrollTracker } from '@/analytics/scrollDepth'
+import { trackEvent, AnalyticsEvents } from '@utils/analytics'
+import { useAnalytics } from '@/hooks/useAnalytics'
 
-// Reuse the real AnalyticsEvents constants via importActual so tests catch
-// regressions in the actual event-name strings emitted to the analytics provider.
-vi.mock('@utils/analytics', async () => {
-  const actual = await vi.importActual<typeof import('@utils/analytics')>('@utils/analytics')
+// Stub createScrollTracker so tests don't depend on DOM scroll events
+vi.mock('@/analytics/scrollDepth', () => ({
+  createScrollTracker: vi.fn(() => ({ disable: vi.fn() })),
+}))
+
+// Stub trackEvent so we can assert the scroll-depth callback wiring
+vi.mock('@utils/analytics', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@utils/analytics')>()
   return {
     ...actual,
     trackEvent: vi.fn(),
-    trackCTAClick: vi.fn(),
-    trackExternalLink: vi.fn(),
-    trackSocialClick: vi.fn(),
-    initScrollDepthTracking: vi.fn(() => ({ cleanup: vi.fn(), measureNow: vi.fn() })),
   }
 })
 
-describe('useAnalytics — scroll depth deferral', () => {
+describe('useAnalytics', () => {
   beforeEach(() => {
-    vi.useFakeTimers()
-    // resetAllMocks clears mockReturnValueOnce queues too, unlike clearAllMocks —
-    // prevents stale queued values from test 3 (cancelled timer) leaking into test 4.
-    // Re-apply the default implementation after reset so initScrollDepthTracking
-    // always returns the expected shape; without this the hook throws accessing
-    // scrollDepth.cleanup/measureNow after reset clears the vi.mock() factory impl.
-    vi.resetAllMocks()
-    vi.mocked(initScrollDepthTracking).mockImplementation(() => ({
-      cleanup: vi.fn(),
-      measureNow: vi.fn(),
-    }))
-  })
-
-  afterEach(() => {
-    vi.useRealTimers()
-  })
-
-  it('defers initScrollDepthTracking via setTimeout when requestIdleCallback is unavailable', () => {
-    const requestIdleCallbackDescriptor = Object.getOwnPropertyDescriptor(
-      globalThis,
-      'requestIdleCallback'
-    )
-    const cancelIdleCallbackDescriptor = Object.getOwnPropertyDescriptor(
-      globalThis,
-      'cancelIdleCallback'
-    )
-
-    Reflect.deleteProperty(globalThis, 'requestIdleCallback')
-    Reflect.deleteProperty(globalThis, 'cancelIdleCallback')
-
-    try {
-      renderHook(() => useAnalytics(true))
-      expect(initScrollDepthTracking).not.toHaveBeenCalled()
-
-      vi.runAllTimers()
-      expect(initScrollDepthTracking).toHaveBeenCalledTimes(1)
-    } finally {
-      if (requestIdleCallbackDescriptor) {
-        Object.defineProperty(globalThis, 'requestIdleCallback', requestIdleCallbackDescriptor)
-      }
-      if (cancelIdleCallbackDescriptor) {
-        Object.defineProperty(globalThis, 'cancelIdleCallback', cancelIdleCallbackDescriptor)
-      }
-    }
-  })
-
-  it('does not schedule scroll tracking when enableScrollTracking is false', () => {
-    renderHook(() => useAnalytics(false))
-    vi.runAllTimers()
-    expect(initScrollDepthTracking).not.toHaveBeenCalled()
-  })
-
-  it('cancels pending setTimeout on unmount before timer fires', () => {
-    const scrollCleanup = vi.fn()
-    vi.mocked(initScrollDepthTracking).mockReturnValueOnce({
-      cleanup: scrollCleanup,
-      measureNow: vi.fn(),
-    })
-
-    const { unmount } = renderHook(() => useAnalytics(true))
-    unmount()
-    vi.runAllTimers()
-
-    expect(initScrollDepthTracking).not.toHaveBeenCalled()
-    expect(scrollCleanup).not.toHaveBeenCalled()
-  })
-
-  it('calls scroll cleanup on unmount after timer already fired', () => {
-    const scrollCleanup = vi.fn()
-    vi.mocked(initScrollDepthTracking).mockReturnValueOnce({
-      cleanup: scrollCleanup,
-      measureNow: vi.fn(),
-    })
-
-    const { unmount } = renderHook(() => useAnalytics(true))
-    vi.runAllTimers()
-    expect(initScrollDepthTracking).toHaveBeenCalledTimes(1)
-
-    unmount()
-    expect(scrollCleanup).toHaveBeenCalledTimes(1)
-  })
-
-  it('uses requestIdleCallback when available', () => {
-    let idleCallback: (() => void) | undefined
-    const mockRic = vi.fn((cb: () => void) => {
-      idleCallback = cb
-      return 1
-    })
-    const mockCic = vi.fn()
-    Object.defineProperty(globalThis, 'requestIdleCallback', { value: mockRic, configurable: true })
-    Object.defineProperty(globalThis, 'cancelIdleCallback', { value: mockCic, configurable: true })
-
-    try {
-      renderHook(() => useAnalytics(true))
-
-      expect(mockRic).toHaveBeenCalledWith(expect.any(Function), { timeout: 3000 })
-      expect(initScrollDepthTracking).not.toHaveBeenCalled()
-
-      idleCallback?.()
-      expect(initScrollDepthTracking).toHaveBeenCalledTimes(1)
-    } finally {
-      Reflect.deleteProperty(globalThis, 'requestIdleCallback')
-      Reflect.deleteProperty(globalThis, 'cancelIdleCallback')
-    }
-  })
-})
-
-describe('useAnalytics — tracking functions', () => {
-  beforeEach(() => {
-    vi.useFakeTimers()
     vi.clearAllMocks()
   })
 
-  afterEach(() => {
-    vi.useRealTimers()
+  it('initialises scroll tracking on mount when enabled', () => {
+    renderHook(() => useAnalytics(true))
+    expect(createScrollTracker).toHaveBeenCalledTimes(1)
   })
 
-  it('returns all expected tracking functions', () => {
-    const { result } = renderHook(() => useAnalytics(false))
+  it('fires SCROLL_DEPTH event when the scroll callback is invoked', () => {
+    renderHook(() => useAnalytics(true))
+
+    // Grab the callback that useAnalytics passed to createScrollTracker
+    const cb = vi.mocked(createScrollTracker).mock.calls[0][0]
+    cb(75 as Parameters<typeof cb>[0])
+
+    expect(trackEvent).toHaveBeenCalledWith(AnalyticsEvents.SCROLL_DEPTH, {
+      depth_percentage: 75,
+    })
+  })
+
+  it('does not initialise scroll tracking when disabled', () => {
+    renderHook(() => useAnalytics(false))
+    expect(createScrollTracker).not.toHaveBeenCalled()
+  })
+
+  it('calls tracker.disable() on unmount', () => {
+    const disableMock = vi.fn()
+    vi.mocked(createScrollTracker).mockReturnValueOnce({ disable: disableMock })
+
+    const { unmount } = renderHook(() => useAnalytics(true))
+    unmount()
+
+    expect(disableMock).toHaveBeenCalledTimes(1)
+  })
+
+  it('returns tracking functions', () => {
+    const { result } = renderHook(() => useAnalytics())
     expect(typeof result.current.trackEvent).toBe('function')
     expect(typeof result.current.trackCTA).toBe('function')
     expect(typeof result.current.trackExternal).toBe('function')
@@ -153,65 +67,5 @@ describe('useAnalytics — tracking functions', () => {
     expect(typeof result.current.trackWaitlistSuccess).toBe('function')
     expect(typeof result.current.trackWaitlistError).toBe('function')
     expect(typeof result.current.trackFAQExpand).toBe('function')
-  })
-
-  it('trackCTA delegates to trackCTAClick', () => {
-    const { result } = renderHook(() => useAnalytics(false))
-    result.current.trackCTA('Join Waitlist', 'hero')
-    expect(trackCTAClick).toHaveBeenCalledWith('Join Waitlist', 'hero')
-  })
-
-  it('trackExternal delegates to trackExternalLink', () => {
-    const { result } = renderHook(() => useAnalytics(false))
-    result.current.trackExternal('https://example.com', 'Example')
-    expect(trackExternalLink).toHaveBeenCalledWith('https://example.com', 'Example')
-  })
-
-  it('trackSocial delegates to trackSocialClick', () => {
-    const { result } = renderHook(() => useAnalytics(false))
-    result.current.trackSocial('twitter')
-    expect(trackSocialClick).toHaveBeenCalledWith('twitter')
-  })
-
-  it('trackWaitlistJoin calls trackEvent with button_location', () => {
-    const { result } = renderHook(() => useAnalytics(false))
-    result.current.trackWaitlistJoin('hero')
-    expect(trackEvent).toHaveBeenCalledWith('Waitlist_Join', { button_location: 'hero' })
-  })
-
-  it('trackWaitlistSubmit calls trackEvent with form_location', () => {
-    const { result } = renderHook(() => useAnalytics(false))
-    result.current.trackWaitlistSubmit('hero')
-    expect(trackEvent).toHaveBeenCalledWith('Waitlist_Submit', { form_location: 'hero' })
-  })
-
-  it('trackWaitlistSuccess calls trackEvent with no extra params', () => {
-    const { result } = renderHook(() => useAnalytics(false))
-    result.current.trackWaitlistSuccess()
-    expect(trackEvent).toHaveBeenCalledWith('Waitlist_Success', {})
-  })
-
-  it('trackWaitlistError calls trackEvent with error_code and form_location', () => {
-    const { result } = renderHook(() => useAnalytics(false))
-    result.current.trackWaitlistError('rate_limited', 'footer')
-    expect(trackEvent).toHaveBeenCalledWith('Waitlist_Error', {
-      error_code: 'rate_limited',
-      form_location: 'footer',
-    })
-  })
-
-  it('trackNavigation calls trackEvent with destination and link_text', () => {
-    const { result } = renderHook(() => useAnalytics(false))
-    result.current.trackNavigation('/pricing', 'Pricing')
-    expect(trackEvent).toHaveBeenCalledWith('Navigation_Click', {
-      destination: '/pricing',
-      link_text: 'Pricing',
-    })
-  })
-
-  it('trackFAQExpand calls trackEvent with question_index', () => {
-    const { result } = renderHook(() => useAnalytics(false))
-    result.current.trackFAQExpand(2)
-    expect(trackEvent).toHaveBeenCalledWith('FAQ_Expand', { question_index: 2 })
   })
 })

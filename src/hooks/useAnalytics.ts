@@ -4,10 +4,11 @@ import {
   trackCTAClick,
   trackExternalLink,
   trackSocialClick,
-  initScrollDepthTracking,
   AnalyticsEvents,
   type AnalyticsEventParams,
 } from '@utils/analytics'
+import { createScrollTracker } from '@/analytics/scrollDepth'
+import type { ScrollDepth } from '@/analytics/types'
 
 /**
  * React hook for analytics tracking with automatic scroll depth tracking
@@ -29,30 +30,19 @@ import {
  * ```
  */
 export function useAnalytics(enableScrollTracking = true) {
-  // Defer scroll depth tracking to browser idle time so it doesn't compete with first paint
+  // Initialize scroll depth tracking on mount (single source: analytics/scrollDepth.ts)
   useEffect(() => {
     if (!enableScrollTracking) return
 
-    let cleanup: (() => void) | undefined
-    // Pair schedule/cancel from the same branch so a polyfill that only
-    // implements requestIdleCallback never ends up with clearTimeout as its cancel.
-    const useIdle =
-      typeof requestIdleCallback !== 'undefined' && typeof cancelIdleCallback !== 'undefined'
-    const scheduleInit = useIdle
-      ? (cb: () => void) => requestIdleCallback(cb, { timeout: 3000 })
-      : (cb: () => void) => setTimeout(cb, 0) as unknown as number
-    const cancelInit = useIdle ? cancelIdleCallback : clearTimeout
-
-    const handle = scheduleInit(() => {
-      const scrollDepth = initScrollDepthTracking()
-      cleanup = scrollDepth.cleanup
-      scrollDepth.measureNow()
+    const tracker = createScrollTracker((depth: ScrollDepth): void => {
+      trackEvent(AnalyticsEvents.SCROLL_DEPTH, { depth_percentage: depth })
     })
-
-    return () => {
-      cancelInit(handle as number)
-      cleanup?.()
+    return (): void => {
+      tracker.disable()
     }
+    // createScrollTracker, trackEvent, and AnalyticsEvents are stable
+    // module-level imports (not component-scope values), so react-hooks/
+    // exhaustive-deps correctly does not require them in this array.
   }, [enableScrollTracking])
 
   // Memoized tracking functions to prevent unnecessary re-renders

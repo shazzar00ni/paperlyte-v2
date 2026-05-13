@@ -141,7 +141,7 @@ Paperlyte's users trust us with their notes and personal information. This trust
 - **Never input user data, user notes, or any PII into any AI system** — whether approved or unapproved — without explicit consent and appropriate data processing agreements
 - Personal or sensitive data used for internal analysis must be fully anonymised before being passed to any AI tool
 - AI must not be used to re-identify anonymised data
-- All AI tool access must use work accounts managed by Paperlyte; personal accounts must not be used for work-related AI tasks (see Section 3.9 for provisioning)
+- All AI tool access must use work accounts managed by Paperlyte; personal accounts must not be used for work-related AI tasks (see Section 3.9.1 for provisioning)
 - Adhere to Paperlyte's Data Handling Policy and Privacy Policy at all times
 
 > **Important:** Our product's privacy guarantees (local-first architecture, end-to-end encrypted sync) mean users share sensitive personal information with us under specific expectations. Using that data with external AI services — even inadvertently — would constitute a serious breach of trust and potentially violate our terms of service and applicable law.
@@ -269,7 +269,7 @@ Personnel must report any of the following as soon as possible:
 **Reporting channels:**
 
 - **Email:** ai-policy@paperlyte.com
-- **Anonymous Reporting Form:** Available on the company intranet
+- **Anonymous Reporting Form:** _[Intranet > Compliance > Anonymous Reporting]_ or contact the AI Officer at ai-policy@paperlyte.com
 - **Direct escalation:** Your manager or the AI Officer
 
 Reports will be treated confidentially and investigated promptly.

@@ -533,11 +533,7 @@ describe('navigation utilities', () => {
 
     it('should open with noopener,noreferrer', () => {
       safeNavigateExternal('https://github.com')
-      expect(openSpy).toHaveBeenCalledWith(
-        'https://github.com',
-        '_blank',
-        'noopener,noreferrer',
-      )
+      expect(openSpy).toHaveBeenCalledWith('https://github.com', '_blank', 'noopener,noreferrer')
     })
   })
 })

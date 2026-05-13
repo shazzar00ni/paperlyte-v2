@@ -11,6 +11,7 @@
 | Version | Date       | Author(s)        | Summary of Changes                                                                 |
 |---------|------------|------------------|------------------------------------------------------------------------------------|
 | 1.0     | 2026-05-13 | Paperlyte Team   | Initial draft. Sent to relevant stakeholders for review before wider release.      |
+| 1.1     | 2026-05-13 | Paperlyte Team   | Added definitions for "Substantially AI-Generated"; clarified LLM examples as illustrative; added work account provisioning (3.9.1); added third-party approval timelines and appeal process; clarified Tier 1 AI developer tool requirements; made training section concrete; added graduated enforcement framework; minor style fixes. |
 
 ---
 
@@ -76,9 +77,9 @@ This Policy applies to all employees, officers, directors, contractors, consulta
 
 This Policy governs the use, development, procurement, and management of all Artificial Intelligence ("AI") systems at Paperlyte, including but not limited to:
 
-- **Large Language Models (LLMs):** AI models that understand and generate human-like text, such as GPT-4, Claude (Anthropic), Gemini, and similar technologies used for writing assistance, code generation, summarisation, or analysis.
+- **Large Language Models (LLMs):** AI models that understand and generate human-like text — e.g. GPT-4, Claude (Anthropic), Gemini, among others — used for writing assistance, code generation, summarisation, or analysis.
 - **Machine Learning Models:** Algorithms that enable computers to perform tasks without explicit instructions, relying on patterns and inference — including any models used in product features or internal data analysis.
-- **AI-Powered Developer Tools:** Code completion and review tools such as GitHub Copilot, Cursor, or similar IDEs and editor plugins.
+- **AI-Powered Developer Tools:** Code completion and review tools such as GitHub Copilot, Cursor, or similar IDEs and editor plugins. When used with Tier 1 data (see Section 3.10), only enterprise or self-hosted instances with contractually guaranteed no-training configurations are acceptable — see Appendix C for approved configurations and required contractual proof.
 - **AI Plugins and Extensions:** Software extensions incorporating AI capabilities within productivity tools (e.g. Notion AI, Grammarly, Google Workspace AI features).
 - **Autonomous Systems:** AI-driven systems capable of performing tasks without direct human oversight.
 - **Third-Party AI Services:** Any AI technology or platform provided by an external vendor or service provider.
@@ -92,6 +93,7 @@ This Policy governs the use, development, procurement, and management of all Art
 | **Confidential Information** | Any non-public information pertaining to Paperlyte's business operations, strategies, users, source code, architecture, financials, or any other sensitive data — including information covered by an NDA. |
 | **PII (Personally Identifiable Information)** | Any data that could directly or indirectly identify a specific individual, including names, email addresses, device identifiers, and usage patterns. |
 | **AI Officer** | The designated person responsible for overseeing AI policy implementation and compliance at Paperlyte. |
+| **Substantially AI-Generated** | Content where AI tools produced more than 50% of the final output by volume, or where AI determined the core structure, argument, or message — even if the result was subsequently edited by a human. When uncertain, Personnel should apply this definition conservatively or escalate to their manager. |
 
 ---
 
@@ -139,7 +141,7 @@ Paperlyte's users trust us with their notes and personal information. This trust
 - **Never input user data, user notes, or any PII into any AI system** — whether approved or unapproved — without explicit consent and appropriate data processing agreements
 - Personal or sensitive data used for internal analysis must be fully anonymised before being passed to any AI tool
 - AI must not be used to re-identify anonymised data
-- All AI tool access must use work accounts managed by Paperlyte; personal accounts must not be used for work-related AI tasks
+- All AI tool access must use work accounts managed by Paperlyte; personal accounts must not be used for work-related AI tasks (see Section 3.9 for provisioning)
 - Adhere to Paperlyte's Data Handling Policy and Privacy Policy at all times
 
 > **Important:** Our product's privacy guarantees (local-first architecture, end-to-end encrypted sync) mean users share sensitive personal information with us under specific expectations. Using that data with external AI services — even inadvertently — would constitute a serious breach of trust and potentially violate our terms of service and applicable law.
@@ -175,9 +177,14 @@ AI systems augment human decision-making; they do not replace it. Personnel must
 
 ### 3.8 Training and Education
 
-Personnel who use AI systems must complete appropriate training before using those tools for work-related tasks. Paperlyte will:
+Personnel who use AI systems must complete the following training before using those tools for work-related tasks:
 
-- Provide onboarding guidance on approved AI tools and acceptable use
+- **Required course:** "Responsible AI Use at Paperlyte" — available on the company Learning Management System (LMS) at _[Intranet > Learning > AI Training]_. Estimated duration: 45 minutes. Completion is tracked automatically by the LMS.
+- **Registration:** Self-enrol via the LMS. If you encounter access issues, contact _[Insert LMS admin contact / IT helpdesk]_.
+- **Manager sign-off:** Managers must confirm completion in the LMS before granting access to Tier 1 or Tier 2 approved tools.
+
+Paperlyte will additionally:
+
 - Share updates on significant changes to AI technology, tool capabilities, or regulatory requirements
 - Offer refresher sessions at least annually or when major policy changes occur
 
@@ -185,9 +192,11 @@ Personnel who use AI systems must complete appropriate training before using tho
 
 Before using any new third-party AI service for work-related tasks:
 
-1. Complete the **Third-Party AI Service Approval Form** (available on the company intranet)
-2. Submit the form to the AI Officer for evaluation
+1. Complete the **Third-Party AI Service Approval Form** (available at _[Intranet > Policies > AI Tool Requests]_)
+2. Submit the form to the AI Officer at ai-policy@paperlyte.com for evaluation
 3. Await written approval before use — do not proceed with an unapproved tool even for a trial or one-off task
+4. **Standard review timeline:** 5 business days. Urgent requests (submitted with a business justification) will be reviewed within 2 business days.
+5. **If denied:** You may appeal to the AI Governance Group with additional justification by emailing ai-policy@paperlyte.com with the subject line "AI Tool Appeal — [Tool Name]".
 
 When evaluating third-party AI services, Paperlyte will assess:
 
@@ -196,13 +205,29 @@ When evaluating third-party AI services, Paperlyte will assess:
 - Alignment with Paperlyte's privacy-first values
 - Contractual safeguards for confidential information
 
+### 3.9.1 Work Account Provisioning for AI Tools
+
+All approved AI tools must be accessed via work accounts managed by Paperlyte. Personal accounts must not be used for work-related AI tasks.
+
+**To request a work account:**
+
+1. Confirm the tool is approved in Appendix C before requesting access
+2. Submit an account request via _[Intranet > IT > Software Access Requests]_ or by emailing _[IT helpdesk contact]_
+3. Provide: your name, team, manager, the tool name, and intended use tier (Tier 1/2/3)
+4. **Provisioning SLA:** 3 business days for standard requests; urgent requests (with manager approval) within 1 business day
+5. Access will be disabled automatically when you leave the company or when the tool is no longer approved
+
+**Exceptions — tools without organisational account support:**
+
+If a Tier 3-approved tool does not support org accounts, contact the AI Officer to request a temporary exception. Exceptions must be re-approved every 90 days, and use is restricted to non-sensitive data only. No exceptions are permitted for Tier 1 or Tier 2 data.
+
 ### 3.10 Tiered Data Classification
 
 All AI use is governed by the following data tiers. When in doubt, apply the higher-sensitivity tier.
 
 | Tier | Description | Requirements |
 |------|-------------|--------------|
-| **Tier 1** | **Highly sensitive.** Includes: Paperlyte source code and architecture, unreleased product features, user PII or user-generated content, NDA-covered partner/customer information, employee private or confidential information, security credentials. | 1. Data must not be used to train any external AI model. 2. Data must not be retained by third-party vendors without explicit written consent from Paperlyte. 3. Data must be handled under Paperlyte's confidentiality agreements. 4. Only Tier 1-approved tools may be used. All lower-tier requirements also apply. |
+| **Tier 1** | **Highly sensitive.** Includes: Paperlyte source code and architecture, unreleased product features, user PII or user-generated content, NDA-covered partner/customer information, employee private or confidential information, security credentials. | 1. Data must not be used to train any external AI model. AI-powered developer tools (e.g. GitHub Copilot, Cursor) may only be used with Tier 1 data if operating under an enterprise or self-hosted instance with a contractually guaranteed no-training configuration — see Appendix C for approved configurations and required contractual proof. 2. Data must not be retained by third-party vendors without explicit written consent from Paperlyte. 3. Data must be handled under Paperlyte's confidentiality agreements. 4. Only Tier 1-approved tools may be used. All lower-tier requirements also apply. |
 | **Tier 2** | **Moderately sensitive.** Includes: Paperlyte product terminology, internal project names, non-public company communications, customer or partner names covered by NDA. | 1. Specific names, identifiers, and proprietary terminology must be anonymised or removed before input to any AI tool. 2. Such data must not be retained by third-party providers without prior consent. All lower-tier requirements also apply. |
 | **Tier 3** | **Non-sensitive.** Includes: publicly available information, generic writing and editing tasks, research on publicly known topics, internal brainstorming involving no confidential data. | 1. AI tools must be approved through the Paperlyte tool adoption process before use. 2. Work and personal AI accounts must remain strictly separate. Work access is managed by Paperlyte and must be disabled when no longer needed. |
 
@@ -253,9 +278,15 @@ Reports will be treated confidentially and investigated promptly.
 
 ## 5. Enforcement
 
-Violations of this policy may result in disciplinary action, up to and including termination of employment or contract, in accordance with Paperlyte's disciplinary policies and procedures.
+Violations of this policy are assessed according to severity. Severity determinations follow Paperlyte's investigatory procedures and applicable employment law.
 
-Violations involving user data, PII, or Paperlyte's intellectual property may also result in legal action and mandatory regulatory disclosure under applicable data protection law.
+| Tier | Examples | Consequence |
+|------|---------|-------------|
+| **Minor** | Inadvertent use of an unapproved tool for non-sensitive tasks; first-time policy deviation with no data exposure | Coaching conversation; mandatory remedial training; documented warning |
+| **Moderate** | Repeated policy violations; using an unapproved tool with Tier 2 data; failure to disclose AI use where required; sharing Paperlyte-specific terminology with unapproved systems | Formal written warning; suspension of AI tool access; escalation to HR |
+| **Severe** | Intentional or negligent exposure of user PII, Paperlyte source code, or Tier 1 data to an unauthorised AI system; using AI to circumvent security or access controls; deliberate misrepresentation of AI use | Termination of employment or contract; legal action; mandatory regulatory disclosure under applicable data protection law |
+
+All violations will be investigated before consequences are applied. Personnel are encouraged to self-report inadvertent breaches promptly — self-reporting is a mitigating factor in severity determinations.
 
 ---
 
@@ -327,7 +358,7 @@ The following scenarios illustrate when Personnel are expected to disclose AI us
 - Notifying affected employees if AI tools are used in performance evaluation or workplace monitoring
 
 **Product and Analytics:**
-- Explaining to a business partner that AI was used in data analysis covered by a joint collaboration agreement
+- Explaining to a business partner that AI was used in data analysis covered by a collaboration agreement
 - Alerting stakeholders that AI-generated predictions or recommendations carry inherent uncertainty or model limitations
 
 **Creative and Marketing:**
@@ -365,7 +396,7 @@ The following tools are approved for use at Paperlyte, subject to the data tier 
 |------|---------|---------------|
 | _[Insert Tool]_ | _[Insert Context]_ | _[Date]_ |
 
-> Note: This table is maintained by the AI Officer and updated as tools are approved or revoked. Always check the latest version on the company intranet before using a new tool.
+> Note: This table is maintained by the AI Officer and updated as tools are approved or revoked. Always check the latest version at _[Intranet > Policies > AI Tools Approved List]_ before using a new tool. For access issues, contact the AI Officer at ai-policy@paperlyte.com or the IT helpdesk at _[Insert IT helpdesk contact]_.
 
 ---
 

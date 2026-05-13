@@ -602,6 +602,32 @@ describe('FeedbackWidget', () => {
     })
   })
 
+  describe('localStorage non-array value', () => {
+    it('resets to empty array and appends when stored value is valid JSON but not an array', async () => {
+      // Pre-seed with valid JSON that is not an array (e.g., a plain object)
+      localStorage.setItem('paperlyte_feedback', '{"corrupted": true}')
+
+      render(<FeedbackWidget />)
+
+      const openButton = screen.getByRole('button', { name: /open feedback form/i })
+      fireEvent.click(openButton)
+      await waitFor(() => expect(screen.getByRole('dialog')).toBeInTheDocument())
+
+      const textarea = screen.getByRole('textbox')
+      fireEvent.change(textarea, { target: { value: 'Test non-array reset' } })
+      fireEvent.click(screen.getByRole('button', { name: /send feedback/i }))
+
+      await waitFor(() => {
+        const stored = localStorage.getItem('paperlyte_feedback')
+        expect(stored).toBeTruthy()
+        const parsed = JSON.parse(stored!)
+        expect(Array.isArray(parsed)).toBe(true)
+        expect(parsed).toHaveLength(1)
+        expect(parsed[0]).toMatchObject({ message: 'Test non-array reset' })
+      })
+    })
+  })
+
   describe('localStorage parse error', () => {
     it('calls logError when stored feedback JSON is invalid', async () => {
       // Pre-seed localStorage with invalid JSON

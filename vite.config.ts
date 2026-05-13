@@ -180,7 +180,7 @@ export default defineConfig({
   build: {
     // Split CSS into separate files for better caching
     cssCodeSplit: true,
-    // Use esbuild for minification (explicit devDependency, supported by Vite 7)
+    // Use esbuild for minification (explicit devDependency, supported by Vite 8)
     minify: 'esbuild',
     // Target modern browsers for smaller bundle sizes
     target: 'es2020',

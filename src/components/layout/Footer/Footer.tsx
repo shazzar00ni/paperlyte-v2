@@ -13,7 +13,13 @@ export const Footer = (): React.ReactElement => {
         <div className={styles.grid}>
           <div className={styles.brand}>
             <div className={styles.logo}>
-              <img src={logoSrc} alt="Paperlyte logo" width="32" height="32" className={styles.logoImage} />
+              <img
+                src={logoSrc}
+                alt="Paperlyte logo"
+                width="32"
+                height="32"
+                className={styles.logoImage}
+              />
               <span className={styles.logoText}>Paperlyte.</span>
             </div>
             <p className={styles.tagline}>Your thoughts, unchained.</p>

@@ -70,8 +70,8 @@ export const Header = (): React.ReactElement => {
 
     const menu = menuRef.current
     const focusableElements = getFocusableElements(menu)
-    const firstFocusable = focusableElements[0]
-    const lastFocusable = focusableElements[focusableElements.length - 1]
+    const firstFocusable = focusableElements.at(0)
+    const lastFocusable = focusableElements.at(-1)
 
     const handleTabKey = (event: KeyboardEvent) => {
       if (event.key !== 'Tab') return
@@ -115,7 +115,7 @@ export const Header = (): React.ReactElement => {
       const homeEndIndex = handleHomeEndNavigation(event, focusableElements)
       if (homeEndIndex !== null) {
         event.preventDefault()
-        focusableElements[homeEndIndex]?.focus()
+        focusableElements.at(homeEndIndex)?.focus()
         return
       }
 
@@ -127,7 +127,7 @@ export const Header = (): React.ReactElement => {
       const newIndex = handleArrowNavigation(event, focusableElements, currentIndex, 'horizontal')
       if (newIndex !== null) {
         event.preventDefault()
-        focusableElements[newIndex]?.focus()
+        focusableElements.at(newIndex)?.focus()
       }
     }
 

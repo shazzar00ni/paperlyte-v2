@@ -144,7 +144,7 @@ export const FAQ = (): React.ReactElement => {
     const homeEndIndex = handleHomeEndNavigation(event, focusableElements)
     if (homeEndIndex !== null) {
       event.preventDefault()
-      focusableElements[homeEndIndex]?.focus()
+      focusableElements.at(homeEndIndex)?.focus()
       return
     }
 
@@ -152,7 +152,7 @@ export const FAQ = (): React.ReactElement => {
     const newIndex = handleArrowNavigation(event, focusableElements, currentIndex, 'vertical')
     if (newIndex !== null) {
       event.preventDefault()
-      focusableElements[newIndex]?.focus()
+      focusableElements.at(newIndex)?.focus()
     }
   }, [])
 

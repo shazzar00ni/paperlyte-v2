@@ -12,6 +12,11 @@ interface EmailCaptureProps {
   buttonText?: string
 }
 
+const VARIANT_CLASS_MAP = {
+  inline: styles.inline,
+  centered: styles.centered,
+} as const
+
 /**
  * Email capture form component for collecting waitlist signups
  * Features email validation, GDPR consent, spam protection, and Netlify function integration
@@ -133,7 +138,7 @@ export const EmailCapture = ({
 
   if (status === 'success') {
     return (
-      <div className={`${styles.container} ${styles[variant]}`}>
+      <div className={`${styles.container} ${VARIANT_CLASS_MAP[variant]}`}>
         <div className={styles.success} role="alert">
           <Icon name="fa-circle-check" size="lg" />
           <p className={styles.successMessage}>
@@ -147,7 +152,7 @@ export const EmailCapture = ({
   }
 
   return (
-    <div className={`${styles.container} ${styles[variant]}`}>
+    <div className={`${styles.container} ${VARIANT_CLASS_MAP[variant]}`}>
       <form onSubmit={handleSubmit} className={styles.form} noValidate>
         {/* Honeypot field - hidden from users */}
         <input

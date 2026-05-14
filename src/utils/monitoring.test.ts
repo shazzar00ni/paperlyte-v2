@@ -42,6 +42,131 @@ describe('monitoring', () => {
     Object.values(consoleSpy).forEach((spy) => spy.mockRestore())
   })
 
+  describe('logError – production path', () => {
+    beforeEach(() => {
+      vi.stubEnv('DEV', false)
+    })
+
+    afterEach(() => {
+      vi.unstubAllEnvs()
+    })
+
+    it('should call trackEvent with error details in production', () => {
+      const error = new Error('Prod error')
+      logError(error, { severity: 'high', tags: { foo: 'bar' } }, 'ProdComponent')
+
+      expect(analytics.trackEvent).toHaveBeenCalledWith('application_error', {
+        error_name: 'Error',
+        error_message: 'Prod error',
+        error_source: 'ProdComponent',
+        severity: 'high',
+        foo: 'bar',
+      })
+    })
+
+    it('should not log to console in production', () => {
+      const error = new Error('Prod error')
+      logError(error, undefined, 'ProdComponent')
+
+      expect(consoleSpy.group).not.toHaveBeenCalled()
+      expect(consoleSpy.error).not.toHaveBeenCalled()
+    })
+
+    it('should not call Sentry when VITE_SENTRY_DSN is not set', () => {
+      const error = new Error('Prod error')
+      logError(error, undefined, 'ProdComponent')
+
+      expect(Sentry.captureException).not.toHaveBeenCalled()
+    })
+
+    it('should call Sentry when VITE_SENTRY_DSN is set', () => {
+      vi.stubEnv('VITE_SENTRY_DSN', 'https://sentry.example.com')
+      const error = new Error('Sentry error')
+      logError(error, { severity: 'critical', tags: { region: 'us' } }, 'SentryComponent')
+
+      expect(Sentry.captureException).toHaveBeenCalledWith(
+        error,
+        expect.objectContaining({
+          level: 'fatal',
+          tags: expect.objectContaining({ source: 'SentryComponent', region: 'us' }),
+        })
+      )
+      expect(Sentry.addBreadcrumb).toHaveBeenCalledWith(
+        expect.objectContaining({ category: 'error', level: 'fatal' })
+      )
+    })
+
+    it('should emit console.warn (not console.error) when reporting pipeline throws', () => {
+      vi.mocked(analytics.trackEvent).mockImplementationOnce(() => {
+        throw new Error('Analytics down')
+      })
+      const error = new Error('App error')
+      logError(error, undefined, 'ProdComponent')
+
+      expect(consoleSpy.warn).toHaveBeenCalledWith(
+        '[monitoring] Error reporting failed:',
+        expect.any(Error)
+      )
+      expect(consoleSpy.error).not.toHaveBeenCalled()
+    })
+
+    it('should capture original error in Sentry when pipeline fails and DSN is set', () => {
+      vi.stubEnv('VITE_SENTRY_DSN', 'https://sentry.example.com')
+      vi.mocked(analytics.trackEvent).mockImplementationOnce(() => {
+        throw new Error('Analytics down')
+      })
+      const error = new Error('Original app error')
+      logError(error, { severity: 'high' }, 'FailComponent')
+
+      // Sentry.captureException is called at least once for the original error recovery
+      expect(Sentry.captureException).toHaveBeenCalledWith(
+        error,
+        expect.objectContaining({ level: 'error' })
+      )
+    })
+
+    it('should not re-capture original error in Sentry when already captured before addBreadcrumb fails', () => {
+      vi.stubEnv('VITE_SENTRY_DSN', 'https://sentry.example.com')
+      // captureException succeeds; addBreadcrumb throws → enters catch block with originalErrorCaptured=true
+      vi.mocked(Sentry.addBreadcrumb).mockImplementationOnce(() => {
+        throw new Error('Breadcrumb failed')
+      })
+      const error = new Error('App error')
+      logError(error, { severity: 'high' }, 'TestComponent')
+
+      // Original error should only be captured once — the guard prevents a duplicate
+      const captureCallsWithOriginalError = vi
+        .mocked(Sentry.captureException)
+        .mock.calls.filter((call) => call[0] === error)
+      expect(captureCallsWithOriginalError).toHaveLength(1)
+    })
+
+    it('should remain silent when Sentry also throws inside catch block', () => {
+      vi.stubEnv('VITE_SENTRY_DSN', 'https://sentry.example.com')
+      vi.mocked(analytics.trackEvent).mockImplementationOnce(() => {
+        throw new Error('Analytics down')
+      })
+      vi.mocked(Sentry.captureException).mockImplementation(() => {
+        throw new Error('Sentry also down')
+      })
+      const error = new Error('Double failure')
+
+      expect(() => logError(error, undefined, 'BrokenComponent')).not.toThrow()
+    })
+
+    it('should handle non-Error thrown values in the catch block', () => {
+      vi.mocked(analytics.trackEvent).mockImplementationOnce(() => {
+        throw 'string error'
+      })
+      const error = new Error('App error')
+      expect(() => logError(error)).not.toThrow()
+      expect(consoleSpy.warn).toHaveBeenCalledWith(
+        '[monitoring] Error reporting failed:',
+        'string error'
+      )
+    })
+  })
+
   describe('logError', () => {
     it('should log error to console with group formatting', () => {
       const error = new Error('Test error')

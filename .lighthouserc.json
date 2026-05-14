@@ -41,6 +41,7 @@
         "unminified-javascript": "warn",
         "no-document-write": "error",
         "network-dependency-tree-insight": "warn",
+        "render-blocking-insight": "warn",
         "uses-rel-preconnect": "warn",
         "is-on-https": "warn",
         "uses-http2": "off",

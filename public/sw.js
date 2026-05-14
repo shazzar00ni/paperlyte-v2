@@ -106,22 +106,27 @@ async function cacheFirst(request) {
 
 /**
  * Network-first strategy for navigation requests.
- * Falls back to the cached version of the URL, then the app shell (/), then the offline page.
+ * All navigation URLs on this SPA serve the same shell; responses are stored under
+ * the canonical key '/' (pathname-only) so that UTM/query-string variants don't
+ * create unbounded cache entries on long-lived clients.
+ * Falls back to the cached shell, then the offline page.
  * @param {Request} request
  * @returns {Promise<Response>}
  */
 async function navigateFetch(request) {
+  // Normalize to pathname to prevent unbounded cache growth from query-string variants
+  const cacheKey = new URL(request.url).pathname
   try {
     const response = await fetch(request)
     if (response.ok) {
       const cache = await caches.open(CACHE_VERSION)
-      cache.put(request, response.clone())
+      cache.put(cacheKey, response.clone())
     }
     return response
   } catch {
-    // Offline: serve the cached version of this URL, or the app shell, or the offline page
+    // Offline: serve the cached shell or the offline page
     return (
-      (await caches.match(request)) ??
+      (await caches.match(cacheKey)) ??
       (await caches.match('/')) ??
       (await caches.match(OFFLINE_PAGE))
     )

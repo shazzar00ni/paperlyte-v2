@@ -191,15 +191,16 @@ export function isSafeUrl(url: string): boolean {
 }
 
 /**
- * Safely navigates to a URL by validating it first.
- * Only allows relative URLs and same-origin absolute URLs.
- * Blocks dangerous protocols (javascript:, data:, vbscript:, etc.) and
- * external URLs to prevent open-redirect attacks.
+ * Safely navigates to same-origin and relative URLs only.
+ * Blocks dangerous protocols (javascript:, data:, vbscript:, etc.) and external origins
+ * to prevent open redirect attacks.
+ *
+ * For legitimate external navigation, use safeNavigateExternal() instead.
  *
  * Safe usage: Only call with hardcoded URLs or URLs from trusted same-origin sources.
  * Never pass user-controlled input directly to this function.
  *
- * @param url - The URL to navigate to
+ * @param url - The URL to navigate to (must be same-origin or relative)
  * @returns true if navigation was performed, false if URL was rejected or navigation not needed (SSR)
  */
 export function safeNavigate(url: string): boolean {
@@ -232,4 +233,27 @@ export function safeNavigate(url: string): boolean {
   // so only safe relative or same-origin URLs reach this assignment.
   window.location.href = trimmedUrl
   return true
+}
+
+/**
+ * Safely opens an external URL in a new tab with noopener,noreferrer.
+ * Allows only http: and https: absolute URLs. Blocks dangerous protocols,
+ * relative paths, and non-HTTP schemes.
+ *
+ * @param url - The external URL to open
+ * @returns true if the window was opened, false if the URL was rejected or in SSR
+ */
+export function safeNavigateExternal(url: string): boolean {
+  if (typeof window === 'undefined') return false
+  if (!isSafeUrl(url)) {
+    if (import.meta.env.DEV) console.warn(`External navigation blocked: "${url}"`)
+    return false
+  }
+  try {
+    const parsed = new URL(url)
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return false
+  } catch {
+    return false
+  }
+  return window.open(url, '_blank', 'noopener,noreferrer') !== null
 }

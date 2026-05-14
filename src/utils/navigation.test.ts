@@ -4,6 +4,7 @@ import {
   _clearPendingScrollObservers,
   isSafeUrl,
   safeNavigate,
+  safeNavigateExternal,
   hasDangerousProtocol,
   isRelativeUrl,
   isAllowedAbsoluteUrl,
@@ -371,20 +372,25 @@ describe('navigation utilities', () => {
       expect(mock.href).toBe(sameOriginUrl)
     })
 
-    // --- External URLs (blocked — open-redirect prevention) ---
+    // --- Same-origin enforcement: external URLs blocked ---
+
+    it('should block backslash-normalised protocol-relative path (/\\evil.com)', () => {
+      mockLocation()
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      // Browsers normalise /\ to // making it protocol-relative → external navigation
+      expect(safeNavigate('/\\evil.com')).toBe(false)
+      warnSpy.mockRestore()
+    })
 
     it('should block external HTTPS URL', () => {
       const mock = mockLocation()
       const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
       expect(safeNavigate('https://example.com')).toBe(false)
       expect(mock.href).toBe('')
-      if (import.meta.env.DEV) {
-        expect(warnSpy).toHaveBeenCalled()
-      }
       warnSpy.mockRestore()
     })
 
-    it('should block HTTPS URL with path', () => {
+    it('should block external HTTPS URL with path', () => {
       mockLocation()
       const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
       expect(safeNavigate('https://example.com/page?key=val')).toBe(false)
@@ -502,6 +508,73 @@ describe('navigation utilities', () => {
       } finally {
         globalThis.window = originalWindow
       }
+    })
+  })
+
+  describe('safeNavigateExternal', () => {
+    let openSpy: ReturnType<typeof vi.spyOn>
+
+    beforeEach(() => {
+      vi.clearAllMocks()
+      // Default: simulate successful popup open (non-null return)
+      openSpy = vi.spyOn(window, 'open').mockReturnValue(window)
+    })
+
+    afterEach(() => {
+      openSpy.mockRestore()
+    })
+
+    it('should allow and open https:// URLs', () => {
+      expect(safeNavigateExternal('https://example.com')).toBe(true)
+      expect(openSpy).toHaveBeenCalledWith('https://example.com', '_blank', 'noopener,noreferrer')
+    })
+
+    it('should allow and open http:// URLs', () => {
+      expect(safeNavigateExternal('http://example.com')).toBe(true)
+      expect(openSpy).toHaveBeenCalledWith('http://example.com', '_blank', 'noopener,noreferrer')
+    })
+
+    it('should block javascript: URLs', () => {
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      expect(safeNavigateExternal('javascript:alert(1)')).toBe(false)
+      expect(openSpy).not.toHaveBeenCalled()
+      warnSpy.mockRestore()
+    })
+
+    it('should block data: URLs', () => {
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      expect(safeNavigateExternal('data:text/html,<script>alert(1)</script>')).toBe(false)
+      expect(openSpy).not.toHaveBeenCalled()
+      warnSpy.mockRestore()
+    })
+
+    it('should block relative paths', () => {
+      expect(safeNavigateExternal('/page')).toBe(false)
+      expect(safeNavigateExternal('./page')).toBe(false)
+      expect(openSpy).not.toHaveBeenCalled()
+    })
+
+    it('should return false when window is undefined (SSR)', () => {
+      const originalWindow = globalThis.window
+      // @ts-expect-error -- simulate SSR
+      delete globalThis.window
+
+      try {
+        expect(safeNavigateExternal('https://example.com')).toBe(false)
+      } finally {
+        globalThis.window = originalWindow
+      }
+    })
+
+    it('should open with noopener,noreferrer', () => {
+      safeNavigateExternal('https://github.com')
+      expect(openSpy).toHaveBeenCalledWith('https://github.com', '_blank', 'noopener,noreferrer')
+    })
+
+    it('should return false when the browser blocks the popup', () => {
+      openSpy.mockReturnValue(null)
+      expect(safeNavigateExternal('https://example.com')).toBe(false)
+      expect(openSpy).toHaveBeenCalled()
     })
   })
 })

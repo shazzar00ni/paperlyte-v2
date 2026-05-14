@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef, type FormEvent } from 'react'
 import { Icon } from '@components/ui/Icon'
 import { Button } from '@components/ui/Button'
 import { handleArrowNavigation, getFocusableElements } from '@utils/keyboard'
+import { logError } from '@utils/monitoring'
 import styles from './FeedbackWidget.module.css'
 
 type FeedbackType = 'bug' | 'feature'
@@ -89,9 +90,14 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
           message: message.trim(),
         }
 
-        // Forward to submit handler if provided; no local persistence on landing page
         if (onSubmit) {
           await onSubmit(feedbackData)
+        } else if (import.meta.env.DEV) {
+          // No submission handler provided — wire an onSubmit prop to send feedback to a backend.
+          // No local persistence on the landing page (see AGENTS.md).
+          console.warn(
+            '[FeedbackWidget] No onSubmit handler provided. Feedback was not sent anywhere.'
+          )
         }
 
         // Show confirmation
@@ -104,6 +110,10 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
         }, 2000)
       } catch (err) {
         setError('Failed to submit feedback. Please try again.')
+        logError(err instanceof Error ? err : new Error(String(err)), {
+          severity: 'medium',
+          tags: { action: 'handleSubmit', component: 'FeedbackWidget' },
+        })
         console.warn('[FeedbackWidget] Submission failed:', err)
       } finally {
         setIsSubmitting(false)

@@ -17,6 +17,9 @@ const PRECACHE = [
 // Vite-hashed assets (content-addressed, immutable) → cache-first
 const HASHED_ASSET_RE = /^\/assets\/.+\.(js|css|woff2?)$/
 
+// Root-level offline support files (pre-cached, not content-hashed) → cache-first
+const OFFLINE_ASSET_RE = /^\/(offline\.css|offline\.js)$/
+
 // Other cacheable static files (images, icons, fonts) → stale-while-revalidate
 const CACHEABLE_RE = /\.(png|jpg|jpeg|webp|avif|svg|ico|woff2?)$/
 
@@ -24,16 +27,12 @@ const CACHEABLE_RE = /\.(png|jpg|jpeg|webp|avif|svg|ico|woff2?)$/
 
 /**
  * Pre-cache critical assets so the offline fallback is available from the first visit.
- * Calls skipWaiting() so the new SW activates immediately without waiting for tabs to close.
+ * Does NOT call skipWaiting() — the new SW waits until all tabs on the old version
+ * are closed before activating, preventing open tabs from losing their cached assets.
  * @param {ExtendableEvent} event
  */
 function onInstall(event) {
-  event.waitUntil(
-    caches
-      .open(CACHE_VERSION)
-      .then((cache) => cache.addAll(PRECACHE))
-      .then(() => self.skipWaiting())
-  )
+  event.waitUntil(caches.open(CACHE_VERSION).then((cache) => cache.addAll(PRECACHE)))
 }
 
 /**
@@ -68,8 +67,9 @@ function onFetch(event) {
 
   const path = url.pathname
 
-  if (HASHED_ASSET_RE.test(path)) {
-    // Content-hashed Vite bundles never change; serve from cache, populate on miss
+  if (HASHED_ASSET_RE.test(path) || OFFLINE_ASSET_RE.test(path)) {
+    // Content-hashed Vite bundles and pre-cached offline support files: serve from
+    // cache immediately, populate on miss
     event.respondWith(cacheFirst(request))
   } else if (request.mode === 'navigate') {
     // HTML navigation: try network, fall back to app shell, then offline page

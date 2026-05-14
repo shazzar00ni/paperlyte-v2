@@ -61,6 +61,20 @@ engines:
   pmd-legacy:
     enabled: false
 
+# Exclude paths from code analysis
+exclude_paths:
+  - ".github/workflows/**"
+  - "node_modules/**"
+  - "dist/**"
+  - "coverage/**"
+  - "**/*.test.ts"
+  - "**/*.test.tsx"
+  - "**/*.spec.ts"
+  - "**/*.spec.tsx"
+  - "src/test/**"
+  - "scripts/**"
+  - "**/*.min.js"
+
 # Exclude specific patterns in files where they are false positives
 exclude_patterns:
   # validation-utils.test.ts: RegExp constructor is used with pre-escaped strings
@@ -77,20 +91,6 @@ exclude_patterns:
   - identifier: 'SonarQube Docs API Key'
     paths:
       - '.github/workflows/sonarcloud.yml'
-
-# Exclude paths from code analysis
-exclude_paths:
-  - '.github/workflows/**'
-  - 'node_modules/**'
-  - 'dist/**'
-  - 'coverage/**'
-  - '**/*.test.ts'
-  - '**/*.test.tsx'
-  - '**/*.spec.ts'
-  - '**/*.spec.tsx'
-  - 'src/test/**'
-  - 'scripts/**'
-  - '**/*.min.js'
 
 # Note: semgrep may report false positives for non-literal RegExp patterns in tests.
 # All RegExp inputs are sanitized via escapeRegExp(); input sources are constants, not user input.

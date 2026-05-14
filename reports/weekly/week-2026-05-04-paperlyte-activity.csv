@@ -1,0 +1,61 @@
+Type,Title,Last Visited,Host
+Pull Request,test(flaky): fix Hero.test.tsx.Hero > Rendering > should render the main headline,2026-05-03T22:44:17Z,github.com
+Pull Request,Automated Daily PR Audit and Report - 2026-05-03,2026-05-03T12:07:33Z,github.com
+Pull Request,Daily PR Audit Summary - 2026-05-02,2026-05-02T11:12:40Z,github.com
+Pull Request,fix: remove duplicate size-limit config from package.json,2026-05-02T18:16:08Z,github.com
+Pull Request,fix: swap @size-limit/preset-app → @size-limit/file and sync package-lock.json,2026-05-03T06:52:50Z,github.com
+Pull Request,Implement Automated Daily PR Audit System,2026-05-01T17:55:10Z,github.com
+Pull Request,fix(lighthouse): resolve CI assertion failures for errors-in-console and network-dependency-tree-insight,2026-05-01T12:45:19Z,github.com
+Pull Request,"fix: localStorage versioning, useTransition, and analytics idle deferral (#818)",2026-05-02T06:09:56Z,github.com
+Issue,Fix Security Alerts,2026-04-30T18:46:42Z,github.com
+Pull Request,Daily PR Review and Audit Summary (2026-04-30),2026-04-30T18:04:07Z,github.com
+Pull Request,fix(ci): replace Maven build step with npm in dependency-check workflow,2026-04-30T05:32:55Z,github.com
+Pull Request,Automated Daily PR Review and Repository Audit System,2026-04-29T19:59:23Z,github.com
+Pull Request,fix: disable esbuild bundling for CSS in size-limit check,2026-05-02T07:29:20Z,github.com
+Pull Request,fix(ci): use browsers executor for size-check job,2026-04-29T08:26:10Z,github.com
+Pull Request,CodeRabbit Generated Unit Tests: Generate unit tests for PR changes,2026-04-30T10:53:25Z,github.com
+Pull Request,CodeRabbit Generated Unit Tests: Add unit tests for PR changes,2026-04-29T14:34:32Z,github.com
+Pull Request,docs(memory): document undiscovered codebase patterns and conventions,2026-04-29T15:04:20Z,github.com
+Pull Request,fix: pin uuid >=14.0.0 to resolve CVE GHSA-w5hq-g745-h8pq,2026-04-29T15:09:33Z,github.com
+Pull Request,fix(test): resolve flaky Hero headline test via exact text match,2026-05-01T23:18:29Z,github.com
+Pull Request,Automated Daily PR Audit and Review System,2026-04-29T01:24:00Z,github.com
+Pull Request,perf: code-split below-the-fold sections and defer Sentry Replay (#816),2026-04-28T19:35:40Z,github.com
+Pull Request,ci: bump anthropics/claude-code-action from 1.0.89 to 1.0.107,2026-04-27T20:09:03Z,github.com
+Pull Request,ci: bump actions/checkout from 2 to 6,2026-04-27T16:23:19Z,github.com
+Pull Request,ci: bump github/codeql-action from 4.35.1 to 4.35.2,2026-04-27T16:23:41Z,github.com
+Pull Request,chore(deps-dev): bump jsdom from 29.0.2 to 29.1.0,2026-04-27T16:22:40Z,github.com
+Pull Request,chore(deps-dev): bump @vitest/coverage-v8 from 4.1.4 to 4.1.5,2026-04-28T14:25:15Z,github.com
+Pull Request,chore(deps): bump @fortawesome/react-fontawesome from 3.3.0 to 3.3.1,2026-04-28T14:23:47Z,github.com
+Pull Request,chore(deps-dev): bump vite from 7.3.2 to 8.0.10,2026-04-29T21:39:16Z,github.com
+Pull Request,chore(deps): bump @sentry/react from 10.49.0 to 10.50.0,2026-04-27T16:20:44Z,github.com
+Pull Request,chore(deps-dev): bump postcss from 8.5.10 to 8.5.12,2026-04-27T20:15:08Z,github.com
+Commit,Add Claude Code badge to README,2026-05-03T07:06:36Z,github.com
+Commit,Merge pull request #826 from shazzar00ni/claude/create-pr-reviewer-guide-xHd0f,2026-05-02T18:12:06Z,github.com
+Commit,docs: remove inaccurate TODO file references,2026-05-02T18:10:31Z,github.com
+Commit,ci(lighthouse): downgrade network-dependency-tree-insight to warn,2026-05-02T18:05:38Z,github.com
+Commit,docs: scope sanitization guidance to actual risk cases,2026-05-02T17:58:49Z,github.com
+Commit,Merge branch 'main' into claude/create-pr-reviewer-guide-xHd0f,2026-05-02T17:54:08Z,github.com
+Commit,Merge pull request #846 from shazzar00ni/copilot/fix-hero-main-headline-test,2026-05-01T23:15:18Z,github.com
+Commit,Merge branch 'main' into copilot/fix-hero-main-headline-test,2026-05-01T23:14:31Z,github.com
+Commit,Merge pull request #687 from shazzar00ni/claude/fix-issues-dfsyO,2026-05-01T23:05:20Z,github.com
+Commit,test(ErrorBoundary): assert errorInfo does not carry componentStack,2026-05-01T22:58:31Z,github.com
+Commit,test(ErrorBoundary): wrap logError assertion in waitFor for setState callback timing,2026-05-01T22:56:01Z,github.com
+Commit,chore(deps): use caret range for basic-ftp override to allow future patches,2026-05-01T22:55:32Z,github.com
+Commit,Update src/components/ErrorBoundary/ErrorBoundary.tsx,2026-05-01T22:51:04Z,github.com
+Commit,chore: pin basic-ftp override to exact version for deterministic installs,2026-04-30T16:23:39Z,github.com
+Commit,fix: add caret prefix to lodash/lodash-es overrides for consistent semver range,2026-04-30T16:22:09Z,github.com
+Commit,Apply suggestion for src/components/ErrorBoundary/ErrorBoundary.test.tsx,2026-04-30T16:21:35Z,github.com
+Commit,test: assert logError mock instead of console.error in ErrorBoundary test,2026-04-30T12:03:03Z,github.com
+Commit,"fix: address review comments — lighthouse warn for HTTPS checks, fix import order",2026-04-30T12:01:21Z,github.com
+Commit,Update .lighthouserc.json,2026-04-30T11:59:58Z,github.com
+Commit,fix: regenerate lock file preserving cross-platform optional packages,2026-04-30T06:57:57Z,github.com
+Commit,chore: resolve merge conflicts with main,2026-04-30T06:52:52Z,github.com
+Commit,Update docs/PR-REVIEWER-GUIDE.md,2026-04-30T05:29:50Z,github.com
+Commit,Merge pull request #854 from shazzar00ni/claude/add-maven-pom-950eI,2026-04-30T05:27:15Z,github.com
+Commit,fix(ci): pin dependency-check action to official v1.1.0 release SHA,2026-04-30T05:25:06Z,github.com
+Commit,fix(ci): tighten upload condition and fix artifact name,2026-04-30T05:23:54Z,github.com
+Commit,fix(ci): address review comments on dependency-check workflow,2026-04-30T05:21:36Z,github.com
+Commit,Merge pull request #837 from shazzar00ni/dependabot/npm_and_yarn/vite-8.0.10,2026-04-29T21:39:13Z,github.com
+Commit,Potential fix for pull request finding,2026-04-29T15:26:07Z,github.com
+Commit,Potential fix for pull request finding,2026-04-29T15:25:51Z,github.com
+Commit,Update docs/PR-REVIEWER-GUIDE.md,2026-04-29T15:25:31Z,github.com

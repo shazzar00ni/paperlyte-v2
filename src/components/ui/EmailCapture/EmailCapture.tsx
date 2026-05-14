@@ -122,7 +122,12 @@ export const EmailCapture = ({
           : 'Something went wrong. Please try again.'
       setErrorMessage(message)
       const err = error instanceof Error ? error : new Error(String(error))
-      logError(err, { tags: { context: 'ui-email-capture-submit' } })
+      logError(
+        err,
+        { severity: 'medium', tags: { context: 'ui-email-capture-submit' } },
+        'email_subscription'
+      )
+      console.warn('[EmailCapture] Subscription failed:', error)
     }
   }
 

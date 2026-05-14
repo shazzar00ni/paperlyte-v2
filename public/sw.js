@@ -20,16 +20,26 @@ const CACHEABLE_RE = /\.(png|jpg|jpeg|webp|avif|svg|ico|woff2?)$/
 
 // ─── Lifecycle ───────────────────────────────────────────────────────────────
 
-self.addEventListener('install', (event) => {
+/**
+ * Pre-cache critical assets so the offline fallback is available from the first visit.
+ * Calls skipWaiting() so the new SW activates immediately without waiting for tabs to close.
+ * @param {ExtendableEvent} event
+ */
+function onInstall(event) {
   event.waitUntil(
     caches
       .open(CACHE_VERSION)
       .then((cache) => cache.addAll(PRECACHE))
       .then(() => self.skipWaiting())
   )
-})
+}
 
-self.addEventListener('activate', (event) => {
+/**
+ * Delete all caches that don't match the current CACHE_VERSION, then claim existing
+ * clients so they are controlled by this SW without requiring a page reload.
+ * @param {ExtendableEvent} event
+ */
+function onActivate(event) {
   event.waitUntil(
     caches
       .keys()
@@ -38,11 +48,16 @@ self.addEventListener('activate', (event) => {
       )
       .then(() => self.clients.claim())
   )
-})
+}
 
 // ─── Fetch routing ───────────────────────────────────────────────────────────
 
-self.addEventListener('fetch', (event) => {
+/**
+ * Route same-origin GET requests to the appropriate caching strategy.
+ * Non-GET and cross-origin requests are ignored (browser handles them normally).
+ * @param {FetchEvent} event
+ */
+function onFetch(event) {
   const { request } = event
   const url = new URL(request.url)
 
@@ -62,7 +77,11 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(staleWhileRevalidate(request))
   }
   // Everything else: let the browser handle normally (no respondWith)
-})
+}
+
+self.addEventListener('install', onInstall)
+self.addEventListener('activate', onActivate)
+self.addEventListener('fetch', onFetch)
 
 // ─── Strategies ──────────────────────────────────────────────────────────────
 

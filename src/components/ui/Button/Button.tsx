@@ -3,6 +3,9 @@ import { Icon } from '@components/ui/Icon'
 import { isSafeUrl } from '@utils/navigation'
 import styles from './Button.module.css'
 
+// Evaluated once at import time — avoids repeated typeof checks on every render
+const isBrowser = typeof window !== 'undefined'
+
 interface ButtonProps {
   children: ReactNode
   variant?: 'primary' | 'secondary' | 'ghost'
@@ -78,8 +81,6 @@ export const Button = ({
     </>
   )
 
-  const isBrowser = typeof window !== 'undefined'
-
   if (href) {
     // Validate URL for security - prevent javascript:, data:, and other dangerous protocols.
     // Skip this check during SSR (when window is undefined) to avoid disabling links on initial render.
@@ -100,6 +101,8 @@ export const Button = ({
           disabled={true}
           aria-label={ariaLabel}
           aria-disabled="true"
+          data-variant={variant}
+          data-size={size}
         >
           {content}
         </button>
@@ -113,6 +116,8 @@ export const Button = ({
         aria-label={ariaLabel}
         aria-disabled={disabled ? 'true' : 'false'}
         onClick={disabled ? (e) => e.preventDefault() : onClick}
+        data-variant={variant}
+        data-size={size}
         {...(href.startsWith('http') && {
           target: '_blank',
           rel: 'noopener noreferrer',
@@ -130,6 +135,8 @@ export const Button = ({
       onClick={onClick}
       disabled={disabled}
       aria-label={ariaLabel}
+      data-variant={variant}
+      data-size={size}
     >
       {content}
     </button>

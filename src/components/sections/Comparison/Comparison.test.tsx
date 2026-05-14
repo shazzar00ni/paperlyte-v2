@@ -14,15 +14,13 @@ describe('Comparison', () => {
 
   it('should render main heading', () => {
     render(<Comparison />)
-    expect(screen.getByText('See How We Compare')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /See How We Compare/i })).toBeInTheDocument()
   })
 
   it('should render subtitle', () => {
     render(<Comparison />)
     expect(
-      screen.getByText(
-        "We believe in transparency. Here's how Paperlyte stacks up against the competition."
-      )
+      screen.getByText(/We believe in transparency.*stacks up against the competition/i)
     ).toBeInTheDocument()
   })
 
@@ -41,7 +39,6 @@ describe('Comparison', () => {
 
     // Check all competitor headers
     COMPETITORS.forEach((competitor) => {
-      // Simpler approach: use string matching instead of RegExp
       const header = screen.getByRole('columnheader', {
         name: (content) => content.includes(competitor.name),
       })
@@ -66,19 +63,29 @@ describe('Comparison', () => {
   })
 
   it('should render checkmark icons for true boolean values', () => {
-    render(<Comparison />)
+    const { container } = render(<Comparison />)
 
-    // Find all checkmarks by aria-label
-    const checkmarks = screen.getAllByLabelText('Supported')
+    // Find all checkmarks using data-icon token match for resilience
+    const checkmarks = container.querySelectorAll('[data-icon~="fa-check"]')
     expect(checkmarks.length).toBeGreaterThan(0)
+
+    // Check they have proper accessibility labels
+    checkmarks.forEach((checkmark) => {
+      expect(checkmark).toHaveAttribute('aria-label', 'Supported')
+    })
   })
 
   it('should render X icons for false boolean values', () => {
-    render(<Comparison />)
+    const { container } = render(<Comparison />)
 
-    // Find all X marks by aria-label
-    const xmarks = screen.getAllByLabelText('Not supported')
+    // Find all X marks using data-icon token match for resilience
+    const xmarks = container.querySelectorAll('[data-icon~="fa-xmark"]')
     expect(xmarks.length).toBeGreaterThan(0)
+
+    // Check they have proper accessibility labels
+    xmarks.forEach((xmark) => {
+      expect(xmark).toHaveAttribute('aria-label', 'Not supported')
+    })
   })
 
   it('should render text values for string comparisons', () => {

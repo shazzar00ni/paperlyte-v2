@@ -552,4 +552,5 @@ describe('FeedbackWidget', () => {
       expect(featureButton).toHaveFocus()
     })
   })
+
 })

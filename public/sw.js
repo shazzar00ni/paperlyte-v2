@@ -20,27 +20,29 @@ const CACHEABLE_RE = /\.(png|jpg|jpeg|webp|avif|svg|ico|woff2?)$/
 
 // ─── Lifecycle ───────────────────────────────────────────────────────────────
 
-self.addEventListener('install', event => {
+self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_VERSION)
-      .then(cache => cache.addAll(PRECACHE))
+    caches
+      .open(CACHE_VERSION)
+      .then((cache) => cache.addAll(PRECACHE))
       .then(() => self.skipWaiting())
   )
 })
 
-self.addEventListener('activate', event => {
+self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys()
-      .then(keys => Promise.all(
-        keys.filter(k => k !== CACHE_VERSION).map(k => caches.delete(k))
-      ))
+    caches
+      .keys()
+      .then((keys) =>
+        Promise.all(keys.filter((k) => k !== CACHE_VERSION).map((k) => caches.delete(k)))
+      )
       .then(() => self.clients.claim())
   )
 })
 
 // ─── Fetch routing ───────────────────────────────────────────────────────────
 
-self.addEventListener('fetch', event => {
+self.addEventListener('fetch', (event) => {
   const { request } = event
   const url = new URL(request.url)
 
@@ -116,7 +118,7 @@ async function navigateFetch(request) {
 async function staleWhileRevalidate(request) {
   const cache = await caches.open(CACHE_VERSION)
   const cached = await cache.match(request)
-  const fetchPromise = fetch(request).then(response => {
+  const fetchPromise = fetch(request).then((response) => {
     if (response.ok) cache.put(request, response.clone())
     return response
   })

@@ -143,7 +143,7 @@ export const Header = (): React.ReactElement => {
     <header className={styles.header}>
       <div className={styles.container}>
         <div className={styles.logo}>
-          <img src={logoSrc} alt="" className={styles.logoImage} aria-hidden="true" />
+          <img src={logoSrc} alt="" width="32" height="32" className={styles.logoImage} aria-hidden="true" />
           <span className={styles.logoText}>Paperlyte</span>
         </div>
 

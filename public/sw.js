@@ -1,5 +1,7 @@
 'use strict'
 
+// Bump this string on each deploy that changes pre-cached assets; onActivate
+// deletes all caches whose name differs from this value.
 const CACHE_VERSION = 'paperlyte-v1'
 const OFFLINE_PAGE = '/offline.html'
 
@@ -99,7 +101,7 @@ async function cacheFirst(request) {
   const response = await fetch(request)
   if (response.ok) {
     const cache = await caches.open(CACHE_VERSION)
-    cache.put(request, response.clone())
+    await cache.put(request, response.clone())
   }
   return response
 }
@@ -120,7 +122,7 @@ async function navigateFetch(request) {
     const response = await fetch(request)
     if (response.ok) {
       const cache = await caches.open(CACHE_VERSION)
-      cache.put(cacheKey, response.clone())
+      await cache.put(cacheKey, response.clone())
     }
     return response
   } catch {
@@ -144,8 +146,8 @@ async function navigateFetch(request) {
 async function staleWhileRevalidate(request) {
   const cache = await caches.open(CACHE_VERSION)
   const cached = await cache.match(request)
-  const fetchPromise = fetch(request).then((response) => {
-    if (response.ok) cache.put(request, response.clone())
+  const fetchPromise = fetch(request).then(async (response) => {
+    if (response.ok) await cache.put(request, response.clone())
     return response
   })
   if (cached) {

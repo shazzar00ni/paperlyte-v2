@@ -349,6 +349,14 @@ describe('navigation utilities', () => {
 
     // --- Same-origin enforcement: external URLs blocked ---
 
+    it('should block backslash-normalised protocol-relative path (/\\evil.com)', () => {
+      mockLocation()
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      // Browsers normalise /\ to // making it protocol-relative → external navigation
+      expect(safeNavigate('/\\evil.com')).toBe(false)
+      warnSpy.mockRestore()
+    })
+
     it('should block external HTTPS URL', () => {
       mockLocation()
       const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
@@ -482,7 +490,8 @@ describe('navigation utilities', () => {
 
     beforeEach(() => {
       vi.clearAllMocks()
-      openSpy = vi.spyOn(window, 'open').mockImplementation(() => null)
+      // Default: simulate successful popup open (non-null return)
+      openSpy = vi.spyOn(window, 'open').mockReturnValue(window)
     })
 
     afterEach(() => {
@@ -534,6 +543,12 @@ describe('navigation utilities', () => {
     it('should open with noopener,noreferrer', () => {
       safeNavigateExternal('https://github.com')
       expect(openSpy).toHaveBeenCalledWith('https://github.com', '_blank', 'noopener,noreferrer')
+    })
+
+    it('should return false when the browser blocks the popup', () => {
+      openSpy.mockReturnValue(null)
+      expect(safeNavigateExternal('https://example.com')).toBe(false)
+      expect(openSpy).toHaveBeenCalled()
     })
   })
 })

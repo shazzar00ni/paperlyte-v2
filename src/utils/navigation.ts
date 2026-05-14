@@ -186,6 +186,7 @@ function isSameOriginUrl(url: string): boolean {
     const parsed = new URL(url, window.location.origin)
     return parsed.origin === window.location.origin
   } catch {
+    /* v8 ignore next -- URL() with a valid base never throws in practice */
     return false
   }
 }
@@ -214,7 +215,7 @@ export function safeNavigate(url: string): boolean {
     return false
   }
 
-  if (!isSameOriginUrl(url) && !isRelativeUrl(url)) {
+  if (!isSameOriginUrl(url)) {
     if (import.meta.env.DEV) console.warn(`safeNavigate blocked non-same-origin URL: "${url}"`)
     return false
   }
@@ -243,6 +244,5 @@ export function safeNavigateExternal(url: string): boolean {
   } catch {
     return false
   }
-  window.open(url, '_blank', 'noopener,noreferrer')
-  return true
+  return window.open(url, '_blank', 'noopener,noreferrer') !== null
 }

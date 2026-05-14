@@ -64,6 +64,12 @@ self.addEventListener('fetch', event => {
 
 // ─── Strategies ──────────────────────────────────────────────────────────────
 
+/**
+ * Cache-first strategy: serve from cache immediately, fetch and populate on miss.
+ * Suitable for immutable content-hashed assets that never change at the same URL.
+ * @param {Request} request
+ * @returns {Promise<Response>}
+ */
 async function cacheFirst(request) {
   const cached = await caches.match(request)
   if (cached) return cached
@@ -75,6 +81,12 @@ async function cacheFirst(request) {
   return response
 }
 
+/**
+ * Network-first strategy for navigation requests.
+ * Falls back to the cached version of the URL, then the app shell (/), then the offline page.
+ * @param {Request} request
+ * @returns {Promise<Response>}
+ */
 async function navigateFetch(request) {
   try {
     const response = await fetch(request)
@@ -93,6 +105,14 @@ async function navigateFetch(request) {
   }
 }
 
+/**
+ * Stale-while-revalidate strategy: return cached response immediately if available,
+ * while refreshing the cache in the background. Falls through to the network when
+ * no cached entry exists. The background fetch rejection is explicitly suppressed
+ * to avoid unhandled promise rejections when a cached response is returned.
+ * @param {Request} request
+ * @returns {Promise<Response>}
+ */
 async function staleWhileRevalidate(request) {
   const cache = await caches.open(CACHE_VERSION)
   const cached = await cache.match(request)

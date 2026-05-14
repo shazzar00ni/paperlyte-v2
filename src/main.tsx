@@ -14,7 +14,6 @@ import './utils/iconLibrary'
 import './index.css'
 import App from './App.tsx'
 import { updateMetaTags } from './utils/env'
-import * as monitoring from './utils/monitoring'
 
 // Initialize Sentry error monitoring in production
 if (import.meta.env.PROD && import.meta.env.VITE_SENTRY_DSN) {

@@ -19,58 +19,6 @@ interface FeedbackWidgetProps {
   onSubmit?: (data: FeedbackFormData) => Promise<void> | void
 }
 
-const FEEDBACK_STORAGE_NAME = 'paperlyte_feedback'
-
-function saveFeedbackLocally(feedbackData: FeedbackFormData): void {
-  const timestamp = new Date().toISOString()
-  const feedbackEntry = { ...feedbackData, timestamp }
-
-  let existingFeedback: string | null = null
-  try {
-    existingFeedback = localStorage.getItem(FEEDBACK_STORAGE_NAME)
-  } catch {
-    // SecurityError in sandboxed/private browsing — treat as empty storage
-  }
-  let feedbackArray: unknown = []
-
-  if (existingFeedback) {
-    try {
-      feedbackArray = JSON.parse(existingFeedback)
-    } catch (parseError) {
-      logError(
-        new Error('Failed to load stored feedback'),
-        {
-          tags: { context: 'feedback-storage-parse' },
-          errorInfo: {
-            parseError: parseError instanceof Error ? parseError.message : String(parseError),
-            key: FEEDBACK_STORAGE_NAME,
-          },
-        },
-        'feedback_widget'
-      )
-      feedbackArray = []
-    }
-  }
-
-  if (!Array.isArray(feedbackArray)) {
-    feedbackArray = []
-  }
-
-  ;(feedbackArray as unknown[]).push(feedbackEntry)
-
-  try {
-    localStorage.setItem(FEEDBACK_STORAGE_NAME, JSON.stringify(feedbackArray))
-  } catch (storageError) {
-    // Don't logError here — handleSubmit's catch will report it once via 'feedback_submission'
-    throw new Error(
-      `Unable to save feedback locally. Your browser storage may be full or disabled. ${
-        storageError instanceof Error ? storageError.message : String(storageError)
-      }`,
-      { cause: storageError }
-    )
-  }
-}
-
 /**
  * Interactive user feedback widget with a floating button and modal.
  * Allows users to submit bug reports and feature requests.
@@ -156,11 +104,6 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
         }, 2000)
       } catch (err) {
         setError('Failed to submit feedback. Please try again.')
-        logError(
-          err instanceof Error ? err : new Error(String(err)),
-          { severity: 'medium', tags: { action: 'handleSubmit' } },
-          'feedback_submission'
-        )
         console.warn('[FeedbackWidget] Submission failed:', err)
       } finally {
         setIsSubmitting(false)

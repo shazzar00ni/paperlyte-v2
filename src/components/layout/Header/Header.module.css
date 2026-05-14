@@ -44,6 +44,12 @@
   cursor: pointer;
 }
 
+.logoImage {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
 .logoText {
   color: var(--color-text-primary);
 }

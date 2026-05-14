@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { Button } from '@components/ui/Button'
 import { Icon } from '@components/ui/Icon'
 import { ThemeToggle } from '@components/ui/ThemeToggle'
+import logoSrc from '@/assets/logo.png'
 import {
   getFocusableElements,
   handleArrowNavigation,
@@ -142,7 +143,7 @@ export const Header = (): React.ReactElement => {
     <header className={styles.header}>
       <div className={styles.container}>
         <div className={styles.logo}>
-          <Icon name="fa-feather" size="lg" />
+          <img src={logoSrc} alt="" className={styles.logoImage} aria-hidden="true" />
           <span className={styles.logoText}>Paperlyte</span>
         </div>
 

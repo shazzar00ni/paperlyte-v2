@@ -1,7 +1,13 @@
 'use strict'
 
-// Bump this string on each deploy that changes pre-cached assets; onActivate
-// deletes all caches whose name differs from this value.
+// Bump this string on each deploy that changes pre-cached assets.
+// IMPORTANT: each service worker version MUST use a unique cache name.
+// An installing SW and the currently active SW share the same Cache Storage
+// origin; if both use the same name, the installer's cache.addAll() can
+// overwrite entries (e.g. '/') that the active SW is still serving, mixing
+// old runtime code with a new shell before activation handoff completes.
+// onActivate then deletes every cache whose name differs from this value,
+// so old caches are cleaned up once the new SW takes over.
 const CACHE_VERSION = 'paperlyte-v1'
 const OFFLINE_PAGE = '/offline.html'
 
@@ -15,6 +21,11 @@ const PRECACHE = [
   '/fonts/Inter-Variable.woff2',
   '/fonts/PlayfairDisplay-Variable.woff2',
 ]
+
+// Maximum number of content-hashed /assets/* entries to retain per cache version.
+// cacheFirst() accumulates a new entry for every unique hashed URL a user visits;
+// without eviction this grows unboundedly across long-lived SW registrations.
+const MAX_ASSET_ENTRIES = 60
 
 // Vite-hashed assets (content-addressed, immutable) → cache-first
 const HASHED_ASSET_RE = /^\/assets\/.+\.(js|css|woff2?)$/
@@ -38,8 +49,9 @@ function onInstall(event) {
 }
 
 /**
- * Delete all caches that don't match the current CACHE_VERSION, then claim existing
- * clients so they are controlled by this SW without requiring a page reload.
+ * Delete all caches that don't match the current CACHE_VERSION, prune stale
+ * hashed-asset entries within the current cache, then claim existing clients
+ * so they are controlled by this SW without requiring a page reload.
  * @param {ExtendableEvent} event
  */
 function onActivate(event) {
@@ -49,6 +61,8 @@ function onActivate(event) {
       .then((keys) =>
         Promise.all(keys.filter((k) => k !== CACHE_VERSION).map((k) => caches.delete(k)))
       )
+      .then(() => caches.open(CACHE_VERSION))
+      .then((cache) => pruneAssetEntries(cache))
       .then(() => self.clients.claim())
   )
 }
@@ -86,6 +100,24 @@ function onFetch(event) {
 self.addEventListener('install', onInstall)
 self.addEventListener('activate', onActivate)
 self.addEventListener('fetch', onFetch)
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+/**
+ * Evict the oldest hashed-asset cache entries beyond MAX_ASSET_ENTRIES.
+ * Cache.keys() preserves insertion order in all major engines, so slicing
+ * from the front removes the longest-unused entries first.
+ * @param {Cache} cache
+ * @returns {Promise<void>}
+ */
+async function pruneAssetEntries(cache) {
+  const keys = await cache.keys()
+  const assetKeys = keys.filter((req) => HASHED_ASSET_RE.test(new URL(req.url).pathname))
+  if (assetKeys.length <= MAX_ASSET_ENTRIES) return
+  await Promise.all(
+    assetKeys.slice(0, assetKeys.length - MAX_ASSET_ENTRIES).map((req) => cache.delete(req))
+  )
+}
 
 // ─── Strategies ──────────────────────────────────────────────────────────────
 

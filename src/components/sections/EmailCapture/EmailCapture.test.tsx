@@ -2,7 +2,12 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { EmailCapture } from './EmailCapture'
-import { WAITLIST_COUNT } from '@/constants/waitlist'
+import { WAITLIST_COUNT, LAUNCH_QUARTER } from '@/constants/waitlist'
+
+// Mock monitoring
+vi.mock('@utils/monitoring', () => ({
+  logError: vi.fn(),
+}))
 
 describe('EmailCapture Section', () => {
   let fetchMock: ReturnType<typeof vi.fn>
@@ -229,5 +234,41 @@ describe('EmailCapture Section', () => {
     expect(screen.getByRole('link', { name: /Twitter/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /Facebook/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /LinkedIn/i })).toBeInTheDocument()
+  })
+
+  it('renders success state with next steps', async () => {
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    const emailInput = screen.getByPlaceholderText('your@email.com')
+    const submitButton = screen.getByRole('button', { name: /Join the Waitlist/i })
+
+    await user.type(emailInput, 'test@example.com')
+    await user.click(submitButton)
+
+    await waitFor(() => {
+      expect(screen.getByText(/What happens next:/)).toBeInTheDocument()
+    })
+
+    expect(screen.getByText(/email you product updates/)).toBeInTheDocument()
+    expect(screen.getByText(/early access 2 weeks before/)).toBeInTheDocument()
+    expect(screen.getByText(/ask for your feedback/)).toBeInTheDocument()
+  })
+
+  it('renders section with correct id', () => {
+    const { container } = render(<EmailCapture />)
+    const section = container.querySelector('section')
+    expect(section).toHaveAttribute('id', 'email-capture')
+  })
+
+  it('has accessible email input', () => {
+    render(<EmailCapture />)
+    const emailInput = screen.getByPlaceholderText('your@email.com')
+    expect(emailInput).toHaveAttribute('aria-label', 'Email address')
+  })
+
+  it('renders launch quarter in subtitle', () => {
+    render(<EmailCapture />)
+    expect(screen.getByText(new RegExp(`We're launching in ${LAUNCH_QUARTER}`))).toBeInTheDocument()
   })
 })

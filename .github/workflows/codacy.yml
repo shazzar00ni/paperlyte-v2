@@ -29,7 +29,7 @@ jobs:
   codacy-security-scan:
     permissions:
       contents: read # for actions/checkout to fetch code
-      security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
+      security-events: write # for github/codeql-action/upload-sarif to upload SARIF results, and to dismiss stale code scanning alerts
       actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
     name: Codacy Security Scan
     runs-on: ubuntu-latest
@@ -56,7 +56,8 @@ jobs:
           max-allowed-issues: 2147483647
 
       # Merge multiple SARIF runs into a single run to stay within GitHub Code Scanning's
-      # 20-run limit per SARIF upload. Codacy generates one run per tool (23 tools = 23 runs).
+      # 20-run limit per SARIF upload. Codacy generates one run per tool; with the tools
+      # disabled in .codacy.yml this should be well under 20, but we merge defensively.
       # We must merge before uploading, and only upload when merge succeeds.
       # See: https://github.blog/changelog/2025-07-21-code-scanning-will-stop-combining-multiple-sarif-runs-uploaded-in-the-same-sarif-file/
       - name: Merge SARIF runs into single run
@@ -101,3 +102,38 @@ jobs:
           
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "📊 View detailed security findings in the **Security** tab." >> $GITHUB_STEP_SUMMARY
+
+      # Dismiss stale CSSlint false-positive alerts.
+      # CSSlint 1.0.5 cannot parse modern CSS Grid syntax (fr units, minmax(), repeat()).
+      # The tool is disabled in .codacy.yml, but GitHub Code Scanning retains alerts
+      # from the last run (Jan 2026) as "out of date" and marks PRs as action_required.
+      # Dismissing them here permanently clears the blocking status.
+      # Runs only on push-to-main and schedule (not on PRs) where GITHUB_TOKEN has
+      # full security-events:write access.
+      - name: Dismiss stale CSSlint false-positive alerts
+        if: >
+          steps.upload-sarif.outcome == 'success' &&
+          (github.event_name == 'push' || github.event_name == 'schedule')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          API_RESPONSE=$(gh api "repos/${{ github.repository }}/code-scanning/alerts" \
+            --paginate \
+            --jq '[.[] | select(.tool.name == "Csslint (reported by Codacy)" and .state == "open") | .number] | .[]' \
+            2>&1) || { echo "Warning: gh api call to code-scanning/alerts endpoint failed. Output: ${API_RESPONSE}"; exit 0; }
+          ALERTS="${API_RESPONSE}"
+
+          if [ -z "$ALERTS" ]; then
+            echo "No open CSSlint alerts found — nothing to dismiss."
+          else
+            for alert_id in $ALERTS; do
+              echo "Dismissing stale CSSlint alert #${alert_id} (false positive: modern CSS Grid syntax not supported by CSSlint 1.0.5)"
+              gh api --method PATCH \
+                "repos/${{ github.repository }}/code-scanning/alerts/${alert_id}" \
+                --field state=dismissed \
+                --field dismissed_reason=false_positive \
+                --field dismissed_comment="CSSlint 1.0.5 does not support modern CSS Grid syntax (fr units, minmax(), repeat()). Tool is disabled in .codacy.yml. Dismissed automatically to clear stale code-scanning status." \
+                && echo "Alert #${alert_id} dismissed." \
+                || echo "Warning: could not dismiss alert #${alert_id} — may require elevated permissions."
+            done
+          fi

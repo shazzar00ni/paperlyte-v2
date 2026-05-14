@@ -137,6 +137,7 @@ describe('ci.yml – permission structure', () => {
       'size-check',
       'lighthouse',
       'e2e',
+      'add-to-project',
       'ci-success',
     ]
     for (const jobId of allJobs) {
@@ -329,7 +330,7 @@ describe('package-lock.json – axios security update (GHSA-3p68-rc4w-qgx5)', ()
   })
 
   it('axios resolved URL should point to a non-vulnerable release', () => {
-    expect(entry.resolved).toContain('axios-1.15.')
+    expect(entry.resolved).toContain(`axios-${entry.version}`)
   })
 })
 

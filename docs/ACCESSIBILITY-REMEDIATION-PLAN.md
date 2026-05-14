@@ -2,7 +2,7 @@
 
 **Version**: 1.0  
 **Last Updated**: December 21, 2025  
-**Owner**: Jane Doe, Accessibility Lead (accessibility@paperlyte.com)  
+**Owner**: Jane Doe, Accessibility Lead (<accessibility@paperlyte.com>)  
 **Status**: Active
 
 ---
@@ -481,7 +481,7 @@ After achieving WCAG 2.1 AA conformance:
    - Share accessibility wins and learnings
 
 5. **User Feedback Loop**
-   - Maintain accessibility@paperlyte.com for reports
+   - Maintain <accessibility@paperlyte.com> for reports
    - Track and respond to accessibility feedback within 5 business days
    - Incorporate user feedback into roadmap
 
@@ -508,7 +508,7 @@ After achieving WCAG 2.1 AA conformance:
 
 For questions about this remediation plan or to report accessibility issues:
 
-- **Email**: accessibility@paperlyte.com
+- **Email**: <accessibility@paperlyte.com>
 - **Accessibility Lead**: Jane Doe
 - **Response Time**: 5 business days
 
@@ -524,9 +524,9 @@ For questions about this remediation plan or to report accessibility issues:
 
 ## References
 
-- **WCAG 2.1 Guidelines**: https://www.w3.org/WAI/WCAG21/quickref/
+- **WCAG 2.1 Guidelines**: <https://www.w3.org/WAI/WCAG21/quickref/>
 - **Paperlyte Accessibility Statement**: `/docs/ACCESSIBILITY.md`
 - **Paperlyte Design System**: `/docs/DESIGN-SYSTEM.md`
-- **WebAIM Contrast Checker**: https://webaim.org/resources/contrastchecker/
-- **axe DevTools**: https://www.deque.com/axe/devtools/
-- **WAVE Tool**: https://wave.webaim.org/
+- **WebAIM Contrast Checker**: <https://webaim.org/resources/contrastchecker/>
+- **axe DevTools**: <https://www.deque.com/axe/devtools/>
+- **WAVE Tool**: <https://wave.webaim.org/>

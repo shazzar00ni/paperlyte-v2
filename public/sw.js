@@ -100,5 +100,9 @@ async function staleWhileRevalidate(request) {
     if (response.ok) cache.put(request, response.clone())
     return response
   })
-  return cached ?? (await fetchPromise)
+  if (cached) {
+    void fetchPromise.catch(() => undefined)
+    return cached
+  }
+  return await fetchPromise
 }

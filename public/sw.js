@@ -7,6 +7,8 @@ const OFFLINE_PAGE = '/offline.html'
 const PRECACHE = [
   '/',
   OFFLINE_PAGE,
+  '/offline.css',
+  '/offline.js',
   '/site.webmanifest',
   '/fonts/Inter-Variable.woff2',
   '/fonts/PlayfairDisplay-Variable.woff2',

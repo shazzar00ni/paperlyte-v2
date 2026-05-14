@@ -59,11 +59,15 @@ import {
   faArrowRight, // Navigation forward
   faArrowLeft, // Navigation back
   faSpinner, // Loading states
+  faHome, // Home/back to home
+  faTriangleExclamation, // Error/warning indicator
 } from '@fortawesome/free-solid-svg-icons'
 // Brand icons (from free-brands-svg-icons)
 import {
   faGithub, // GitHub social link
-  faTwitter, // Twitter/X social link
+  faTwitter, // Twitter/X social link (legacy)
+  faXTwitter, // X/Twitter social link (new)
+  faInstagram, // Instagram social link
   faApple, // Apple platform
   faWindows, // Windows platform
 } from '@fortawesome/free-brands-svg-icons'
@@ -120,9 +124,13 @@ library.add(
   faArrowRight,
   faArrowLeft,
   faSpinner,
+  faHome,
+  faTriangleExclamation,
   // Brand icons
   faGithub,
   faTwitter,
+  faXTwitter,
+  faInstagram,
   faApple,
   faWindows
 )
@@ -164,6 +172,8 @@ export const iconNameMap: Record<string, string> = {
   'fa-server': 'server',
   'fa-github': 'github',
   'fa-twitter': 'twitter',
+  'fa-x-twitter': 'x-twitter',
+  'fa-instagram': 'instagram',
   'fa-apple': 'apple',
   'fa-windows': 'windows',
   'fa-route': 'route', // Offline page - route/navigation issues.
@@ -178,13 +188,22 @@ export const iconNameMap: Record<string, string> = {
   'fa-arrow-left': 'arrow-left', // Navigation back.
   'fa-spinner': 'spinner', // Loading states.
   'fa-circle-check': 'circle-check', // Checkmark/success indicator.
+  'fa-home': 'home', // Home/back to home.
+  'fa-triangle-exclamation': 'triangle-exclamation', // Error/warning indicator.
 }
 
 /**
  * Set of brand icon names (derived from imported brand icons)
  * Used to determine the icon prefix (fab vs fas) dynamically
  */
-export const brandIconNames = new Set<string>(['github', 'twitter', 'apple', 'windows'])
+export const brandIconNames = new Set<string>([
+  'github',
+  'twitter',
+  'x-twitter',
+  'instagram',
+  'apple',
+  'windows',
+])
 
 /**
  * Set of all valid icon names in the library

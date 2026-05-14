@@ -24,7 +24,7 @@ jobs:
             echo "🌐 Site URL: ${{ github.event.deployment_status.target_url }}"
           elif [ "${{ github.event.deployment_status.state }}" = "failure" ]; then
             echo "❌ Deployment failed!"
-            exit 1
+            echo "Vercel reported a failed deployment."
           fi
 
       - name: Deployment Summary

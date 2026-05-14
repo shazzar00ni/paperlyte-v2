@@ -92,28 +92,35 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
 
         if (onSubmit) {
           await onSubmit(feedbackData)
-        } else if (import.meta.env.DEV) {
-          // No submission handler provided — wire an onSubmit prop to send feedback to a backend.
+
+          // Show confirmation only after a successful submission
+          setShowConfirmation(true)
+          setMessage('')
+
+          // Close modal after 2 seconds (store timeout ID for cleanup)
+          closeTimeoutRef.current = window.setTimeout(() => {
+            handleClose()
+          }, 2000)
+        } else {
+          // No handler is wired — feedback cannot be sent or persisted on this page.
           // No local persistence on the landing page (see AGENTS.md).
-          console.warn(
-            '[FeedbackWidget] No onSubmit handler provided. Feedback was not sent anywhere.'
-          )
+          if (import.meta.env.DEV) {
+            console.warn(
+              '[FeedbackWidget] No onSubmit handler provided. Feedback was not sent anywhere.'
+            )
+          }
+          setError('Feedback submission is not yet available. Please try again later.')
         }
-
-        // Show confirmation
-        setShowConfirmation(true)
-        setMessage('')
-
-        // Close modal after 2 seconds (store timeout ID for cleanup)
-        closeTimeoutRef.current = window.setTimeout(() => {
-          handleClose()
-        }, 2000)
       } catch (err) {
         setError('Failed to submit feedback. Please try again.')
-        logError(err instanceof Error ? err : new Error(String(err)), {
-          severity: 'medium',
-          tags: { action: 'handleSubmit', component: 'FeedbackWidget' },
-        })
+        logError(
+          err instanceof Error ? err : new Error(String(err)),
+          {
+            severity: 'medium',
+            tags: { action: 'handleSubmit', component: 'FeedbackWidget' },
+          },
+          'feedback_submission'
+        )
         console.warn('[FeedbackWidget] Submission failed:', err)
       } finally {
         setIsSubmitting(false)

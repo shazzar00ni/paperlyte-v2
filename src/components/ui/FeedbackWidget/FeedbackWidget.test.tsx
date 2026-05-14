@@ -182,7 +182,7 @@ describe('FeedbackWidget', () => {
 
     it('submits feedback and shows confirmation', async () => {
       const user = userEvent.setup()
-      render(<FeedbackWidget />)
+      render(<FeedbackWidget onSubmit={vi.fn().mockResolvedValue(undefined)} />)
 
       // Open modal
       const openButton = screen.getByRole('button', { name: /open feedback form/i })
@@ -209,7 +209,7 @@ describe('FeedbackWidget', () => {
       })
     })
 
-    it('shows confirmation without persisting when no onSubmit provided', async () => {
+    it('shows unavailable error when no onSubmit provided', async () => {
       const user = userEvent.setup()
       render(<FeedbackWidget />)
 
@@ -229,10 +229,11 @@ describe('FeedbackWidget', () => {
       const submitButton = screen.getByRole('button', { name: /send feedback/i })
       await user.click(submitButton)
 
-      // Should show confirmation — no localStorage persistence (landing page has no data layer)
+      // Should show an error — no handler wired, no localStorage (landing page has no data layer)
       await waitFor(() => {
-        expect(screen.getByText(/thank you!/i)).toBeInTheDocument()
+        expect(screen.getByText(/not yet available/i)).toBeInTheDocument()
       })
+      expect(screen.queryByText(/thank you!/i)).not.toBeInTheDocument()
       expect(localStorage.getItem('paperlyte_feedback')).toBeNull()
     })
 
@@ -326,7 +327,7 @@ describe('FeedbackWidget', () => {
       vi.useFakeTimers()
 
       try {
-        render(<FeedbackWidget />)
+        render(<FeedbackWidget onSubmit={vi.fn().mockResolvedValue(undefined)} />)
 
         // Open modal
         const openButton = screen.getByRole('button', { name: /open feedback form/i })
@@ -368,7 +369,7 @@ describe('FeedbackWidget', () => {
       vi.useFakeTimers()
 
       try {
-        render(<FeedbackWidget />)
+        render(<FeedbackWidget onSubmit={vi.fn().mockResolvedValue(undefined)} />)
 
         // Open modal
         const openButton = screen.getByRole('button', { name: /open feedback form/i })

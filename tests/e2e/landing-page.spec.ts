@@ -208,13 +208,16 @@ test.describe('Landing Page', () => {
     // Initially collapsed
     await expect(firstQuestion).toHaveAttribute('aria-expanded', 'false')
 
-    await firstQuestion.click()
+    // force:true bypasses the opacity:0 actionability check. AnimatedElement keeps
+    // below-fold sections invisible until IntersectionObserver fires, which doesn't
+    // happen in CI headless viewports. React's event delegation handles the event correctly.
+    await firstQuestion.click({ force: true })
 
     // Should be expanded after click
     await expect(firstQuestion).toHaveAttribute('aria-expanded', 'true')
 
     // Click again to collapse
-    await firstQuestion.click()
+    await firstQuestion.click({ force: true })
     await expect(firstQuestion).toHaveAttribute('aria-expanded', 'false')
   })
 
@@ -249,8 +252,9 @@ test.describe('Landing Page', () => {
     const timestamp = Date.now()
     const rawEmail = `E2E-Test-${timestamp}@EXAMPLE.COM`
     const expectedEmail = `e2e-test-${timestamp}@example.com`
-    await emailInput.fill(rawEmail)
-    await submitButton.click()
+    // force:true bypasses opacity:0 actionability check (same reason as FAQ test above)
+    await emailInput.fill(rawEmail, { force: true })
+    await submitButton.click({ force: true })
 
     // Accept both straight (U+0027) and typographic (U+2019) apostrophes for cross-environment robustness
     await expect(page.getByText(/You['\u2019]re on the list!/i)).toBeVisible({ timeout: 5000 })

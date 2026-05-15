@@ -24,6 +24,18 @@ jobs:
         with:
           fetch-depth: 0 # Full history required for SonarCloud blame data and new-code detection
 
+      - name: Set up Node.js
+        uses: actions/setup-node@1d4298130ca49e48e6906a74a7bd5c6a1656c570 # v4.0.2
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Run tests with coverage
+        run: npm run test:coverage
+
       - name: Analyze with SonarCloud
         uses: sonarsource/sonarqube-scan-action@59db25f34e16620e48ab4bb9e4a5dce155cb5432 # SHA for security
         env:

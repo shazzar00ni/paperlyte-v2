@@ -37,6 +37,7 @@ jobs:
         run: npm run test:coverage
 
       - name: Analyze with SonarCloud
+        if: ${{ secrets.SONAR_TOKEN != '' }}
         uses: sonarsource/sonarqube-scan-action@59db25f34e16620e48ab4bb9e4a5dce155cb5432 # SHA for security
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

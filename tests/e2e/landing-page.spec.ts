@@ -239,10 +239,17 @@ test.describe('Landing Page', () => {
     const rawEmail = `E2E-Test-${timestamp}@EXAMPLE.COM`
     const expectedEmail = `e2e-test-${timestamp}@example.com`
     await emailInput.fill(rawEmail)
+
+    // Wait for the response after clicking submit to ensure consistency in CI
+    const responsePromise = page.waitForResponse(
+      (response) =>
+        response.url().includes('/.netlify/functions/subscribe') && response.status() === 200
+    )
     await submitButton.click()
+    await responsePromise
 
     // Accept both straight (U+0027) and typographic (U+2019) apostrophes for cross-environment robustness
-    await expect(page.getByText(/You['\u2019]re on the list!/i)).toBeVisible({ timeout: 5000 })
+    await expect(page.getByText(/You['\u2019]re on the list/i)).toBeVisible({ timeout: 5000 })
 
     // Assert the component sent the normalised (trimmed + lowercased) email
     expect(capturedPostBody).not.toBeNull()

@@ -14,10 +14,9 @@ describe('index.html structure', () => {
   })
 
   describe('font preloads', () => {
-    it('should not preload fonts in index.html', () => {
-      // Fonts are loaded through CSS/fontsource and intentionally not preloaded here.
+    it('should preload at least one self-hosted font', () => {
       const links = document.querySelectorAll('link[rel="preload"][as="font"]')
-      expect(links.length).toBe(0)
+      expect(links.length).toBeGreaterThan(0)
     })
   })
 

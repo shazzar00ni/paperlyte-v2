@@ -1,11 +1,15 @@
 import { test, expect, type Page } from '@playwright/test'
 
 test.describe('Landing Page', () => {
-  // Disable CSS entrance animations globally. AnimatedElement starts children at opacity:0 and
-  // transitions to visible only after IntersectionObserver fires. In CI headless viewports,
-  // below-fold elements never enter the viewport, so they stay invisible and Playwright's
-  // click() times out. prefers-reduced-motion:reduce bypasses the opacity-0 initial state.
-  test.use({ reducedMotion: 'reduce' })
+  // Disable CSS entrance animations for every test. AnimatedElement starts children at
+  // opacity:0 and only transitions to visible after IntersectionObserver fires. In CI
+  // headless viewports, below-fold sections never enter the viewport so their buttons
+  // stay invisible and Playwright's click() times out.
+  // Note: reducedMotion is NOT a top-level PlaywrightTestOptions key so test.use() won't
+  // work — page.emulateMedia() in beforeEach is the reliable approach.
+  test.beforeEach(async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+  })
 
   test('should load and display hero section', async ({ page }: { page: Page }): Promise<void> => {
     await page.goto('/')

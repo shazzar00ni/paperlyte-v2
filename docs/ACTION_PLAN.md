@@ -20,7 +20,7 @@ listed below and, where applicable, revert content changes to `src/utils/navigat
 
 **4 deleted files** (restore from `main`):
 
-| Branch / PR                                         | `.npmrc` | `docs/ROADMAP.md` | `gitVersionControl.md` | `review.md` |
+| Branch / PR                                         | `.npmrc` | `docs/ROADMAP.md` | `docs/gitVersionControl.md` | `docs/review.md` |
 | --------------------------------------------------- | :------: | :---------------: | :--------------------: | :---------: |
 | `origin/claude/implement-todo-item-2H9LP`           |    ✗     |         ✗         |           ✗            |      ✗      |
 | `origin/claude/core-editor-phase-1-PI3Yp`           |    ✗     |         ✗         |           ✗            |      ✗      |

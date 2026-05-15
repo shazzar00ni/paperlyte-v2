@@ -1,8 +1,8 @@
 /**
  * Tests for GitHub Actions workflow permission changes.
  *
- * All workflows use `permissions: {}` at the workflow level (deny-all default)
- * and grant only the minimum required permissions at the individual job level,
+ * This PR moves `permissions` to the job level in ci.yml and pr-quality-check.yml,
+ * and adds `permissions: {}` at the workflow level across all modified workflows,
  * following the principle of least privilege.
  */
 

@@ -2,7 +2,9 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { Button } from '@components/ui/Button'
 import { Icon } from '@components/ui/Icon'
 import { ThemeToggle } from '@components/ui/ThemeToggle'
-import logoSrc from '@/assets/logo.png'
+import logoAvifSrc from '@/assets/logo.avif'
+import logoPngSrc from '@/assets/logo.png'
+import logoWebpSrc from '@/assets/logo.webp'
 import {
   getFocusableElements,
   handleArrowNavigation,
@@ -143,7 +145,17 @@ export const Header = (): React.ReactElement => {
     <header className={styles.header}>
       <div className={styles.container}>
         <div className={styles.logo}>
-          <img src={logoSrc} alt="" width="32" height="32" className={styles.logoImage} />
+          <picture>
+            <source srcSet={logoAvifSrc} type="image/avif" />
+            <source srcSet={logoWebpSrc} type="image/webp" />
+            <img
+              src={logoPngSrc}
+              alt="Paperlyte logo"
+              width="32"
+              height="32"
+              className={styles.logoImage}
+            />
+          </picture>
           <span className={styles.logoText}>Paperlyte</span>
         </div>
 

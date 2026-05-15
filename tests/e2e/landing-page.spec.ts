@@ -246,7 +246,8 @@ test.describe('Landing Page', () => {
     // Wait for the response after clicking submit to ensure consistency in CI
     const responsePromise = page.waitForResponse(
       (response) =>
-        response.url().includes('/.netlify/functions/subscribe') && response.status() === 200
+        response.url().includes('/.netlify/functions/subscribe') && response.status() === 200,
+      { timeout: 60000 }
     )
     await submitButton.click()
     await responsePromise

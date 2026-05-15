@@ -2,6 +2,51 @@
 
 This file contains a summary of pull requests I have reviewed.
 
+## 2026-05-15
+
+### Analysis: Systemic Regressions in Open Branches (Automated Daily Audit)
+
+- **Status:** Critical — Action Required
+- **Summary:** An automated repository-wide audit of 295 unmerged branches confirms the following systemic regressions.
+
+| Regression Type                | Count | Severity    | Notes                                               |
+| :----------------------------- | :---- | :---------- | :-------------------------------------------------- |
+| Orphan Branches                | 0     | 🔴 Critical | No common ancestor with `main`.                     |
+| Missing `.npmrc`               | 79    | 🔴 Critical | Breaks dependency resolution.                       |
+| Missing `docs/ROADMAP.md`      | 75    | 🟠 High     | Core project documentation.                         |
+| Missing `gitVersionControl.md` | 89    | 🟠 High     | Core Git workflow documentation.                    |
+| Missing `review.md`            | 89    | 🟡 Medium   | AI PR reviewer instructions.                        |
+| Reverted Security Helpers      | 87    | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers. |
+| Unreadable navigation.ts       | 8     | 🔴 Critical | File missing or unreadable.                         |
+
+- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.
+
+### Manual Review: High-Quality Branches
+
+#### [origin/claude/fix-open-redirect-TX551](https://github.com/shazzar00ni/paperlyte-v2/tree/claude/fix-open-redirect-TX551)
+
+- **Status:** Ready for Merge (Post-Audit)
+- **Summary:** Exceptional security hardening for the navigation utility.
+- **Key Improvements:**
+  - Refactored `isSafeUrl` to default to same-origin only, mitigating open redirect risks.
+  - Introduced `SafeUrlOptions` for explicit external URL allowance (e.g., for `<a>` tags).
+  - Switched from `window.location.href` to `window.location.assign()` for better programmatic control.
+  - Added comprehensive tests for edge cases, including control characters and protocol-relative URL variants (e.g., `\\/`).
+- **Suggestion:** This branch should be prioritized as it addresses a significant security vulnerability.
+
+#### [origin/claude/client-side-polish-br27G](https://github.com/shazzar00ni/paperlyte-v2/tree/claude/client-side-polish-br27G)
+
+- **Status:** Ready for Merge (Post-Audit)
+- **Summary:** Comprehensive cleanup of client-side logic, theming, and feedback mechanisms.
+- **Key Improvements:**
+  - Robust refactoring of `useTheme` hook with better system preference detection and state management.
+  - Enhanced `FeedbackWidget` with better validation and user feedback.
+  - Significant cleanup of unused assets and legacy workflow files.
+  - Improved test coverage for theme switching and component-level accessibility.
+- **Note:** Ensure that the removal of `sw.js` and related offline files is intentional and coordinated with the PWA strategy.
+
+---
+
 ## 2026-03-05
 
 ### Analysis: Accidental File Deletions in Open Branches (Jules Daily PR Reviews)

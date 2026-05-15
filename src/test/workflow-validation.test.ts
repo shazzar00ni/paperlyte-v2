@@ -130,7 +130,7 @@ describe('ci.yml – permission structure', () => {
 
   it('every job with a permissions block should include at least "contents: read"', () => {
     // Regression guard: all jobs with explicit permissions must keep contents: read.
-    const allJobs = ['lint-and-typecheck', 'test', 'build', 'size-check', 'lighthouse', 'e2e', 'add-to-project', 'ci-success']
+    const allJobs = [
       'lint-and-typecheck',
       'test',
       'build',

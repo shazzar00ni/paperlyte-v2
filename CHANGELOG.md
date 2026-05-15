@@ -7,15 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-_All changes have been released in version 1.0.0. This section will track future unreleased changes._
-
 ### Added
 
-- N/A
+- Added AVIF and WebP logo assets, with `<picture>`-based fallback rendering in header and footer.
+- Added service worker stale hashed-asset pruning to control long-term cache growth.
 
 ### Changed
 
-- N/A
+- Optimized and right-sized logo delivery to improve performance and Lighthouse diagnostics.
+- Refactored service worker event handlers into named, documented functions for maintainability.
 
 ### Deprecated
 
@@ -23,15 +23,18 @@ _All changes have been released in version 1.0.0. This section will track future
 
 ### Removed
 
-- N/A
+- Removed unsafe `skipWaiting` behavior from service worker activation flow.
 
 ### Fixed
 
-- N/A
+- Fixed offline asset serving to reliably load fallback assets from cache.
+- Fixed service worker cache write race risk by awaiting cache writes.
+- Fixed CSP-related offline fallback and service worker header issues.
+- Fixed footer test expectations after logo implementation updates.
 
 ### Security
 
-- N/A
+- Tightened service worker/offline behavior to reduce risk of stale or inconsistent cache usage.
 
 ## [1.0.0] - 2025-12-22
 

@@ -212,6 +212,9 @@ test.describe('Landing Page', () => {
   }: {
     page: Page
   }): Promise<void> => {
+    // Increase timeout for this test as webkit/safari can be slow in CI
+    test.slow()
+
     // Mock the Netlify subscribe endpoint so this test does not depend on
     // `netlify dev` being running. The Vite preview server used in CI does not
     // serve `/.netlify/functions/*`, which would otherwise return a 404 and

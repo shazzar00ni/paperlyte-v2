@@ -242,10 +242,9 @@ test.describe('Landing Page', () => {
     await submitButton.click()
 
     // Accept both straight (U+0027) and typographic (U+2019) apostrophes for cross-environment robustness.
-    // Use a container-scoped locator and increased timeout to mitigate WebKit/Mobile Safari flakiness.
-    // CSS selector :has-text ensures we find the heading even if text normalization varies.
-    await page.waitForSelector('#email-capture h2:has-text("list")', {
-      state: 'visible',
+    // Use a robust selector and increased timeout to mitigate WebKit/Mobile Safari flakiness.
+    await page.waitForSelector("#email-capture h2:has-text(\"list\")", {
+      state: "visible",
       timeout: 10000,
     })
 

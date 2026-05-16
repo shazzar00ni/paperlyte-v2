@@ -74,5 +74,6 @@ exclude_paths:
   - '**/*.spec.tsx'
   - 'src/test/**'
   - 'scripts/**'
+  - '.github/workflows/**'
   - '**/*.min.js'
   - 'docs/**'

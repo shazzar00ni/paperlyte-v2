@@ -16,10 +16,11 @@ test.describe('Landing Page', () => {
   test.beforeEach(async ({ page }: { page: Page }): Promise<void> => {
     await page.emulateMedia({ reducedMotion: 'reduce' })
     await page.addInitScript(() => {
+      // Layer 1: patch window.matchMedia via Proxy so useReducedMotion() returns
+      // true on first render → AnimatedElement never applies the opacity:0 class.
+      // Proxy is used instead of Object.defineProperty because MediaQueryList.matches
+      // is non-configurable in Firefox/WebKit, causing defineProperty to throw.
       const orig = window.matchMedia.bind(window)
-      // Use Proxy instead of Object.defineProperty: in Firefox and WebKit,
-      // MediaQueryList.matches is non-configurable so defineProperty throws
-      // TypeError. Proxy intercepts the getter without touching the descriptor.
       window.matchMedia = (query) => {
         const mql = orig(query)
         if (query === '(prefers-reduced-motion: reduce)') {
@@ -32,6 +33,23 @@ test.describe('Landing Page', () => {
           })
         }
         return mql
+      }
+
+      // Layer 2: inject a CSS rule that forces all AnimatedElement wrappers
+      // (identified by data-reduced-motion attribute) to be fully visible.
+      // DOMContentLoaded fires before <script type="module"> executes in all
+      // browsers, so the style is already in <head> when React mounts and sets
+      // the data-reduced-motion attribute — the rule then applies immediately.
+      const injectStyle = (): void => {
+        const s = document.createElement('style')
+        s.textContent =
+          '[data-reduced-motion]{opacity:1!important;transform:none!important;transition:none!important}'
+        document.head.appendChild(s)
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', injectStyle)
+      } else {
+        injectStyle()
       }
     })
   })
@@ -59,8 +77,20 @@ test.describe('Landing Page', () => {
   }): Promise<void> => {
     await page.goto('/')
 
-    // Disable smooth scrolling so the scroll is instant and position detection is reliable
+    // Disable smooth scrolling so the scroll is instant and position detection is reliable.
+    // CSS scroll-behavior only affects CSS-initiated scrolls; scrollIntoView({behavior:'smooth'})
+    // ignores it. Override Element.prototype.scrollIntoView to force instant scrolls too.
     await page.addStyleTag({ content: 'html { scroll-behavior: auto !important; }' })
+    await page.evaluate(() => {
+      const orig = Element.prototype.scrollIntoView
+      Element.prototype.scrollIntoView = function (options?: boolean | ScrollIntoViewOptions) {
+        if (options && typeof options === 'object') {
+          orig.call(this, { ...options, behavior: 'instant' })
+        } else {
+          orig.call(this, options)
+        }
+      }
+    })
 
     if (isMobile) {
       // Open mobile menu first

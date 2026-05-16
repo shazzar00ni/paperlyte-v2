@@ -5,10 +5,26 @@ test.describe('Landing Page', () => {
   // opacity:0 and only transitions to visible after IntersectionObserver fires. In CI
   // headless viewports, below-fold sections never enter the viewport so their buttons
   // stay invisible and Playwright's click() times out.
-  // Note: reducedMotion is NOT a top-level PlaywrightTestOptions key so test.use() won't
-  // work — page.emulateMedia() in beforeEach is the reliable approach.
+  //
+  // Two-layer fix:
+  // 1. emulateMedia — activates the CSS @media(prefers-reduced-motion:reduce) override
+  //    that sets opacity:1!important on all animation classes.
+  // 2. addInitScript — patches window.matchMedia before React mounts so the
+  //    useReducedMotion() hook returns true on first render, meaning AnimatedElement
+  //    never applies the opacity:0 animation class at all. emulateMedia alone is
+  //    unreliable in Firefox/WebKit where CDP media emulation behaves differently.
   test.beforeEach(async ({ page }: { page: Page }): Promise<void> => {
     await page.emulateMedia({ reducedMotion: 'reduce' })
+    await page.addInitScript(() => {
+      const orig = window.matchMedia.bind(window)
+      window.matchMedia = (query: string): MediaQueryList => {
+        const mql = orig(query)
+        if (query === '(prefers-reduced-motion: reduce)') {
+          Object.defineProperty(mql, 'matches', { get: () => true, configurable: true })
+        }
+        return mql
+      }
+    })
   })
 
   test('should load and display hero section', async ({ page }: { page: Page }): Promise<void> => {

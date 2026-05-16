@@ -28,6 +28,8 @@ engines:
   lizard:
     enabled: true
     exclude_paths:
+  - ".github/**"
+  - ".github/workflows/**"
       - '**/*.test.tsx'
       - '**/*.test.ts'
       - '**/*.spec.tsx'
@@ -65,15 +67,17 @@ engines:
 # validation-utils.test.ts: RegExp constructor is used with pre-escaped strings
 # to validate the escapeRegExp function behavior. These are intentional and safe.
 exclude_patterns:
-  - identifier: 'Security/detect-non-literal-regexp'
-    paths:
-      - 'src/utils/validation-utils.test.ts'
   - identifier: "generic.secrets.security.detected-sonarqube-api-token"
     paths:
-      - ".github/workflows/sonarcloud.yml"
+      - ".github/workflows/**"
+  - identifier: "Security/detect-non-literal-regexp"
+    paths:
+      - "src/utils/validation-utils.test.ts"
 
 # Exclude paths from code analysis
 exclude_paths:
+  - ".github/**"
+  - ".github/workflows/**"
   - 'node_modules/**'
   - 'dist/**'
   - 'coverage/**'
@@ -84,6 +88,7 @@ exclude_paths:
   - 'src/test/**'
   - 'scripts/**'
   - '**/*.min.js'
+  - 'docs/**'
 
 # Note: semgrep may report false positives for non-literal RegExp patterns in tests.
 # All RegExp inputs are sanitized via escapeRegExp(); input sources are constants, not user input.

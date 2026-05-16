@@ -21,32 +21,6 @@ This file contains a summary of pull requests I have reviewed.
 
 - **Action Required:** ALL affected branches MUST restore these critical files and security helpers.
 
-### PR Reviews (Manual Feedback)
-
-#### origin/claude/fix-open-redirect-TX551: Fix open redirect vulnerability in safeNavigate()
-
-- **Status:** Approved
-- **Feedback:** This is a high-quality security fix. Restricting `safeNavigate()` to same-origin URLs by default effectively prevents open redirect vulnerabilities. The introduction of `SafeUrlOptions` provides necessary flexibility for cases where external URLs are intentional (e.g., in `<a>` tags).
-- **Highlights:**
-  - Robust URL validation using the `URL` constructor and origin checks.
-  - Addition of `CONTROL_CHAR_PATTERN` to reject dangerous ASCII characters.
-  - Comprehensive test suite in `src/utils/navigation.test.ts` with 233 additions.
-  - Integration with `logError` for better monitoring of blocked navigation attempts.
-
-#### origin/claude/tree-shake-font-awesome-cK85j: Tree-shake Font Awesome by using localized SVG paths
-
-- **Status:** Approved
-- **Feedback:** Great optimization for the bundle size and performance. By replacing the Font Awesome CDN/library with localized SVG paths in `src/components/ui/Icon/icons.ts`, the application becomes more self-contained and loads faster.
-- **Highlights:**
-  - Clean refactoring of the `Icon` component to use internal `iconPaths`.
-  - Normalized icon names (stripping `fa-` prefix) improves consistency.
-  - Good use of `safePropertyAccess` to prevent prototype pollution.
-  - Comprehensive new analytics providers (Fathom, Plausible) with dedicated tests.
-
-#### origin/claude/implement-service-worker-YLeLZ
-
-- **Note:** Branch not found in current `git branch -a` output, but previously identified as high-quality. If this branch still exists, it should be prioritized for review as it likely improves offline capabilities and performance.
-
 ---
 
 ## 2026-03-05

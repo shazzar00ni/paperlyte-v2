@@ -5,8 +5,8 @@ import { logError } from '@utils/monitoring'
 type Theme = 'light' | 'dark'
 
 const isBrowser = typeof window !== 'undefined'
-const THEME_STORAGE_KEY = 'paperlyte:v1:theme' // nosemgrep: generic.secrets.security.hardcoded-password-string
-const USER_PREFERENCE_KEY = 'paperlyte:v1:theme-user-preference' // nosemgrep: generic.secrets.security.hardcoded-password-string
+const THEME_STORAGE_NAME = 'paperlyte:v1:theme'
+const USER_PREFERENCE_STORAGE_NAME = 'paperlyte:v1:theme-user-preference'
 
 const toError = (e: unknown): Error => (e instanceof Error ? e : new Error(String(e)))
 
@@ -27,14 +27,14 @@ const migrateLegacyTheme = (): void => {
     const legacyPref = localStorage.getItem('theme-user-preference')
     if (legacyTheme === null && legacyPref === null) return
 
-    const currentTheme = localStorage.getItem(THEME_STORAGE_KEY)
-    const currentPref = localStorage.getItem(USER_PREFERENCE_KEY)
+    const currentTheme = localStorage.getItem(THEME_STORAGE_NAME)
+    const currentPref = localStorage.getItem(USER_PREFERENCE_STORAGE_NAME)
     // Backfill only — never overwrite an already-migrated versioned key
     if (isValidTheme(legacyTheme) && currentTheme === null) {
-      localStorage.setItem(THEME_STORAGE_KEY, legacyTheme)
+      localStorage.setItem(THEME_STORAGE_NAME, legacyTheme)
     }
     if (legacyPref !== null && currentPref === null) {
-      localStorage.setItem(USER_PREFERENCE_KEY, legacyPref)
+      localStorage.setItem(USER_PREFERENCE_STORAGE_NAME, legacyPref)
     }
     // removeItem is a no-op when the key doesn't exist, so guards are unnecessary
     localStorage.removeItem('theme')
@@ -68,7 +68,7 @@ export const useTheme = () => {
   const getInitialUserPreference = (): boolean => {
     if (!isBrowser || !persistenceEnabled) return false
     try {
-      return localStorage.getItem(USER_PREFERENCE_KEY) === 'true'
+      return localStorage.getItem(USER_PREFERENCE_STORAGE_NAME) === 'true'
     } catch (err) {
       logError(toError(err), {
         tags: { hook: 'useTheme', operation: 'readUserPreferenceFlag' },
@@ -97,7 +97,7 @@ export const useTheme = () => {
         const hasUserPreference = getInitialUserPreference()
 
         // Check localStorage for saved theme
-        const stored = localStorage.getItem(THEME_STORAGE_KEY)
+        const stored = localStorage.getItem(THEME_STORAGE_NAME)
         if (stored && isValidTheme(stored) && hasUserPreference) {
           return stored
         }
@@ -117,7 +117,7 @@ export const useTheme = () => {
     return 'light'
   })
 
-  // Initialised after useState so it reads post-migration storage (USER_PREFERENCE_KEY
+  // Initialised after useState so it reads post-migration storage (USER_PREFERENCE_STORAGE_NAME
   // may have been written by migrateLegacyTheme inside the lazy initializer above).
   // Lazy-ref pattern: getInitialUserPreference() runs only on first render. Passing
   // it as useRef's argument would re-evaluate on every render, re-reading storage.
@@ -142,9 +142,9 @@ export const useTheme = () => {
     // Only persist to localStorage if persistence is enabled
     if (persistenceEnabled) {
       try {
-        localStorage.setItem(THEME_STORAGE_KEY, theme)
+        localStorage.setItem(THEME_STORAGE_NAME, theme)
         if (userHasExplicitPreference.current) {
-          localStorage.setItem(USER_PREFERENCE_KEY, 'true')
+          localStorage.setItem(USER_PREFERENCE_STORAGE_NAME, 'true')
         }
       } catch (err) {
         // Storage blocked — theme still applied to DOM above

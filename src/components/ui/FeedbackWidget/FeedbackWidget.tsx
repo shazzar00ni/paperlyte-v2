@@ -5,8 +5,8 @@ import { handleArrowNavigation, getFocusableElements } from '@utils/keyboard'
 import { logError } from '@utils/monitoring'
 import styles from './FeedbackWidget.module.css'
 
-const FEEDBACK_KEY = 'paperlyte:v1:feedback' // nosemgrep: generic.secrets.security.hardcoded-password-string
-const LEGACY_FEEDBACK_KEY = 'paperlyte_feedback' // nosemgrep: generic.secrets.security.hardcoded-password-string
+const FEEDBACK_STORAGE_NAME = 'paperlyte:v1:feedback'
+const LEGACY_FEEDBACK_NAME = 'paperlyte_feedback'
 
 // One-time migration of feedback entries from the legacy unversioned key.
 // Module-level flag avoids repeated reads on every widget mount.
@@ -18,13 +18,13 @@ const migrateLegacyFeedback = (): void => {
   if (legacyFeedbackMigrationRun) return
   legacyFeedbackMigrationRun = true
   try {
-    const legacy = localStorage.getItem(LEGACY_FEEDBACK_KEY)
+    const legacy = localStorage.getItem(LEGACY_FEEDBACK_NAME)
     if (legacy === null) return
     // Backfill only — never overwrite an already-migrated versioned entry
-    if (localStorage.getItem(FEEDBACK_KEY) === null) {
-      localStorage.setItem(FEEDBACK_KEY, legacy)
+    if (localStorage.getItem(FEEDBACK_STORAGE_NAME) === null) {
+      localStorage.setItem(FEEDBACK_STORAGE_NAME, legacy)
     }
-    localStorage.removeItem(LEGACY_FEEDBACK_KEY)
+    localStorage.removeItem(LEGACY_FEEDBACK_NAME)
   } catch {
     // Silently ignore — incognito/storage-disabled browsers
   }
@@ -35,7 +35,7 @@ const migrateLegacyFeedback = (): void => {
 const appendFeedbackToStorage = (entry: unknown): void => {
   let existing: string | null = null
   try {
-    existing = localStorage.getItem(FEEDBACK_KEY)
+    existing = localStorage.getItem(FEEDBACK_STORAGE_NAME)
   } catch {
     // Incognito or storage-disabled — treat as empty
   }
@@ -60,7 +60,7 @@ const appendFeedbackToStorage = (entry: unknown): void => {
   ;(arr as unknown[]).push(entry)
 
   try {
-    localStorage.setItem(FEEDBACK_KEY, JSON.stringify(arr))
+    localStorage.setItem(FEEDBACK_STORAGE_NAME, JSON.stringify(arr))
   } catch (storageError) {
     throw new Error(
       `Unable to save feedback locally. Your browser storage may be full or disabled. ${
@@ -69,6 +69,16 @@ const appendFeedbackToStorage = (entry: unknown): void => {
       { cause: storageError }
     )
   }
+}
+
+// Storage errors from appendFeedbackToStorage carry a user-facing message
+// explaining the local-storage failure; surface it directly. Other errors
+// get the generic copy so we don't leak unexpected internals to the user.
+const getSubmitErrorMessage = (err: unknown): string => {
+  if (err instanceof Error && err.message.startsWith('Unable to save feedback locally')) {
+    return err.message
+  }
+  return 'Failed to submit feedback. Please try again.'
 }
 
 type FeedbackType = 'bug' | 'feature'
@@ -206,14 +216,7 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
           if (!isMountedRef.current || submissionId !== submissionIdRef.current) {
             return
           }
-          // Storage errors from appendFeedbackToStorage carry a user-facing message
-          // explaining the local-storage failure; surface it directly. Other errors
-          // get the generic copy so we don't leak unexpected internals to the user.
-          const isStorageError =
-            err instanceof Error && err.message.startsWith('Unable to save feedback locally')
-          setError(
-            isStorageError ? (err as Error).message : 'Failed to submit feedback. Please try again.'
-          )
+          setError(getSubmitErrorMessage(err))
           logError(
             err instanceof Error ? err : new Error(String(err)),
             {

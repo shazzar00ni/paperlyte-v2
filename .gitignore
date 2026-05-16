@@ -15,6 +15,11 @@ coverage
 junit.xml
 test-results/
 
+# Playwright test artifacts
+test-results/
+playwright-report/
+playwright/.cache/
+
 # Environment variables
 .env
 .env.local
@@ -46,3 +51,7 @@ public/favicon.ico
 # Deployment platforms
 .netlify
 .vercel
+
+# Lighthouse CI local report artifacts
+.lighthouseci
+.lighthouseci-*

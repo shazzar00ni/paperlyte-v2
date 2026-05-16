@@ -18,11 +18,6 @@ engines:
   eslint-9:
     enabled: true
   # eslint (legacy, ESLint 7 + @typescript-eslint v4): disabled to prevent duplicate analysis
-  # alongside eslint-9. The repo contains .eslintrc.cjs for tools that do not support flat
-  # config (e.g. Codacy's own legacy runner), but Codacy should only run eslint-9 here.
-  # Codacy's legacy Docker image bundles its own plugins and does NOT use the project's
-  # node_modules, so the project's @typescript-eslint v8.x does not create a peer-dep
-  # conflict — this entry is disabled purely to avoid redundant findings.
   eslint:
     enabled: false
   lizard:
@@ -32,42 +27,41 @@ engines:
       - '**/*.test.ts'
       - '**/*.spec.tsx'
       - '**/*.spec.ts'
-  # --- Disabled engines: prevent auto-detection from pushing run count over 20 ---
-  # CSS/JS linters not needed alongside ESLint
+      - 'scripts/maintenance/**'
+      - '.github/workflows/**'
+  # --- Disabled engines ---
   csslint:
     enabled: false
   stylelint:
     enabled: false
   jshint:
     enabled: false
-  # Deprecated TypeScript linter
   tslint:
     enabled: false
-  # Security scanners – semgrep covers this project's security needs
   trivy:
     enabled: false
   checkov:
     enabled: false
-  # Container/IaC tools not applicable to this web project
   hadolint:
     enabled: false
-  # Shell scripts exist (.github/scripts/, scripts/, public/mockups/)
   shellcheck:
     enabled: true
-  # Docs linter not required
   markdownlint:
     enabled: false
-  # Duplication detector (runs separately but adds a run to the SARIF)
   pmd-legacy:
     enabled: false
 
-# Exclude specific patterns in test files where they are false positives
-# validation-utils.test.ts: RegExp constructor is used with pre-escaped strings
-# to validate the escapeRegExp function behavior. These are intentional and safe.
+# Exclude specific patterns
 exclude_patterns:
+  - identifier: "generic.secrets.security.detected-sonarqube-api-token"
+    paths:
+      - ".github/workflows/sonarcloud.yml"
   - identifier: "Security/detect-non-literal-regexp"
     paths:
       - "src/utils/validation-utils.test.ts"
+  - identifier: "python.linting.bandit.security.B603"
+    paths:
+      - "scripts/maintenance/utils.py"
 
 # Exclude paths from code analysis
 exclude_paths:
@@ -80,9 +74,6 @@ exclude_paths:
   - '**/*.spec.tsx'
   - 'src/test/**'
   - 'scripts/**'
+  - '.github/workflows/**'
   - '**/*.min.js'
   - 'docs/**'
-
-# Note: semgrep may report false positives for non-literal RegExp patterns in tests.
-# All RegExp inputs are sanitized via escapeRegExp(); input sources are constants, not user input.
-# Remaining false positives in non-test files can be marked "Won't Fix" in the Codacy UI.

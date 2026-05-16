@@ -182,7 +182,7 @@ describe('FeedbackWidget', () => {
 
     it('submits feedback and shows confirmation', async () => {
       const user = userEvent.setup()
-      render(<FeedbackWidget />)
+      render(<FeedbackWidget onSubmit={vi.fn().mockResolvedValue(undefined)} />)
 
       // Open modal
       const openButton = screen.getByRole('button', { name: /open feedback form/i })
@@ -209,7 +209,7 @@ describe('FeedbackWidget', () => {
       })
     })
 
-    it('stores feedback in localStorage by default', async () => {
+    it('shows unavailable error when no onSubmit provided', async () => {
       const user = userEvent.setup()
       render(<FeedbackWidget />)
 
@@ -229,19 +229,12 @@ describe('FeedbackWidget', () => {
       const submitButton = screen.getByRole('button', { name: /send feedback/i })
       await user.click(submitButton)
 
-      // Check localStorage
+      // Should show an error — no handler wired, no localStorage (landing page has no data layer)
       await waitFor(() => {
-        const storedFeedback = localStorage.getItem('paperlyte_feedback')
-        expect(storedFeedback).toBeTruthy()
-
-        const feedbackArray = JSON.parse(storedFeedback!)
-        expect(feedbackArray).toHaveLength(1)
-        expect(feedbackArray[0]).toMatchObject({
-          type: 'bug',
-          message: 'Test feedback message',
-        })
-        expect(feedbackArray[0].timestamp).toBeTruthy()
+        expect(screen.getByText(/not yet available/i)).toBeInTheDocument()
       })
+      expect(screen.queryByText(/thank you!/i)).not.toBeInTheDocument()
+      expect(localStorage.getItem('paperlyte_feedback')).toBeNull()
     })
 
     it('calls custom onSubmit handler when provided', async () => {
@@ -334,7 +327,7 @@ describe('FeedbackWidget', () => {
       vi.useFakeTimers()
 
       try {
-        render(<FeedbackWidget />)
+        render(<FeedbackWidget onSubmit={vi.fn().mockResolvedValue(undefined)} />)
 
         // Open modal
         const openButton = screen.getByRole('button', { name: /open feedback form/i })
@@ -376,7 +369,7 @@ describe('FeedbackWidget', () => {
       vi.useFakeTimers()
 
       try {
-        render(<FeedbackWidget />)
+        render(<FeedbackWidget onSubmit={vi.fn().mockResolvedValue(undefined)} />)
 
         // Open modal
         const openButton = screen.getByRole('button', { name: /open feedback form/i })

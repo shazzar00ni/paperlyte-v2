@@ -46,10 +46,9 @@ export const Footer = (): React.ReactElement => {
                   </span>
                 </li>
                 <li>
-                  <span className={styles.linkComingSoon}>
+                  <a href="/changelog" className={styles.link}>
                     Changelog
-                    <span className="sr-only"> (coming soon)</span>
-                  </span>
+                  </a>
                 </li>
               </ul>
             </div>

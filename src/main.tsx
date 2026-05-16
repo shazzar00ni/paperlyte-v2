@@ -13,6 +13,7 @@ import '@fontsource/inter/latin-700.css'
 import './utils/iconLibrary'
 import './index.css'
 import App from './App.tsx'
+import { Changelog, NotFoundPage, Privacy, Terms } from '@components/pages'
 import { updateMetaTags } from './utils/env'
 
 // Initialize Sentry error monitoring in production
@@ -68,8 +69,16 @@ if (import.meta.env.PROD && import.meta.env.VITE_SENTRY_DSN) {
 // Initialize environment-aware meta tags
 updateMetaTags()
 
+const pathname = window.location.pathname
+
+const page = (() => {
+  if (pathname === '/privacy') return <Privacy />
+  if (pathname === '/terms') return <Terms />
+  if (pathname === '/changelog') return <Changelog />
+  if (pathname === '/' || pathname === '') return <App />
+  return <NotFoundPage />
+})()
+
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>
+  <StrictMode>{page}</StrictMode>
 )

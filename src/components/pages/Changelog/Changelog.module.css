@@ -1,0 +1,60 @@
+.hero {
+  padding: 6rem 0 2rem;
+}
+
+.container {
+  width: min(64rem, 92vw);
+  margin: 0 auto;
+}
+
+.title {
+  font-family: var(--font-heading, 'Playfair Display', serif);
+  font-size: clamp(2rem, 4vw, 3rem);
+  margin-bottom: 0.75rem;
+}
+
+.subtitle {
+  color: var(--color-text-secondary, rgba(26, 26, 26, 0.75));
+  max-width: 42rem;
+}
+
+.content {
+  padding: 1rem 0 5rem;
+}
+
+.timeline {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.releaseCard {
+  border: 1px solid var(--color-border, rgba(26, 26, 26, 0.15));
+  border-radius: 1rem;
+  padding: 1.25rem;
+  background: var(--color-surface, #ffffff);
+}
+
+.releaseHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.releaseHeader h2 {
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+.releaseHeader time {
+  color: var(--color-text-secondary, rgba(26, 26, 26, 0.7));
+  font-size: 0.95rem;
+}
+
+.releaseCard ul {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: grid;
+  gap: 0.5rem;
+}

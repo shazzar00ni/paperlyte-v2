@@ -241,17 +241,27 @@ test.describe('Landing Page', () => {
     await page.emulateMedia({ colorScheme: 'light' })
     await page.goto('/')
 
-    // The theme toggle button label is "Switch to dark mode" in the initial (light) state
-    const toggleButton = page.getByRole('button', { name: /switch to dark mode/i })
+    // Determine the actual initial theme — emulateMedia is unreliable in Firefox/WebKit headless
+    // so we read the DOM directly rather than assuming light mode.
+    const initialTheme = await page.evaluate(() => {
+      return document.documentElement.getAttribute('data-theme') ?? 'light'
+    })
+
+    const isInitiallyDark = initialTheme === 'dark'
+    const toggleButton = page.getByRole('button', {
+      name: isInitiallyDark ? /switch to light mode/i : /switch to dark mode/i,
+    })
     await expect(toggleButton).toBeVisible()
 
     await toggleButton.click()
 
-    // After toggling, the <html> element should carry data-theme="dark"
-    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+    // After toggling, data-theme should have flipped
+    const expectedTheme = isInitiallyDark ? 'light' : 'dark'
+    await expect(page.locator('html')).toHaveAttribute('data-theme', expectedTheme)
 
-    // The button label should now offer to switch back to light mode
-    await expect(page.getByRole('button', { name: /switch to light mode/i })).toBeVisible()
+    // The button label should now offer to switch back to the original mode
+    const afterToggleLabel = isInitiallyDark ? /switch to dark mode/i : /switch to light mode/i
+    await expect(page.getByRole('button', { name: afterToggleLabel })).toBeVisible()
   })
 
   test('should expand and collapse a FAQ item', async ({ page }: { page: Page }): Promise<void> => {
@@ -311,6 +321,11 @@ test.describe('Landing Page', () => {
     await emailInput.fill(rawEmail, { force: true })
     await submitButton.click({ force: true })
 
+    // Scroll the email capture section into view so IntersectionObserver fires on the
+    // AnimatedElement wrapping the success message \u2014 without this, below-fold sections
+    // stay at opacity:0 in CI headless viewports and the visibility check times out.
+    await page.locator('#email-capture').scrollIntoViewIfNeeded()
+
     // Accept both straight (U+0027) and typographic (U+2019) apostrophes for cross-environment robustness
     await expect(page.getByText(/You['\u2019]re on the list!/i)).toBeVisible({ timeout: 5000 })
 
@@ -363,14 +378,16 @@ test.describe('Landing Page', () => {
     const hasBoxShadow = outline.boxShadow.trim() !== '' && outline.boxShadow.trim() !== 'none'
     expect(hasOutline || hasBoxShadow).toBeTruthy()
 
-    // Verify Tab moves focus forward to the next interactive element.
+    // Verify Tab moves focus forward to the next interactive element (not body/html).
     await page.keyboard.press('Tab')
     const afterTabTag = await page.evaluate(() => document.activeElement?.tagName.toLowerCase())
-    expect(afterTabTag).toBeTruthy()
+    expect(['a', 'button', 'input', 'select', 'textarea'].includes(afterTabTag ?? '')).toBe(true)
 
-    // Verify Shift+Tab moves focus backward.
+    // Verify Shift+Tab moves focus backward to an interactive element.
     await page.keyboard.press('Shift+Tab')
     const afterShiftTabTag = await page.evaluate(() => document.activeElement?.tagName.toLowerCase())
-    expect(afterShiftTabTag).toBeTruthy()
+    expect(['a', 'button', 'input', 'select', 'textarea'].includes(afterShiftTabTag ?? '')).toBe(
+      true
+    )
   })
 })

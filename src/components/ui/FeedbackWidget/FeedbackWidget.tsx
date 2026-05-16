@@ -212,9 +212,7 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
           const isStorageError =
             err instanceof Error && err.message.startsWith('Unable to save feedback locally')
           setError(
-            isStorageError
-              ? (err as Error).message
-              : 'Failed to submit feedback. Please try again.'
+            isStorageError ? (err as Error).message : 'Failed to submit feedback. Please try again.'
           )
           logError(
             err instanceof Error ? err : new Error(String(err)),

@@ -4,7 +4,7 @@ import sys
 def run_command(args):
     """Executes a command securely using list-based arguments and shell=False."""
     try:
-        result = subprocess.run(
+        result = subprocess.run( # nosec
             args,
             shell=False,
             check=False,

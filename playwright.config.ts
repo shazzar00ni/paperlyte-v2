@@ -9,7 +9,7 @@ export default defineConfig({
   reporter: process.env.CI ? [['html'], ['github']] : 'list',
 
   use: {
-    baseURL: process.env.BASE_URL ?? 'http://localhost:4173',
+    baseURL: process.env.BASE_URL ?? 'http://127.0.0.1:4175',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
   },
@@ -43,8 +43,8 @@ export default defineConfig({
   webServer: process.env.CI
     ? undefined
     : {
-        command: 'npm run preview',
-        url: 'http://localhost:4173',
+        command: 'BROWSER=none npm run preview -- --host 127.0.0.1 --port 4175 --strictPort',
+        url: 'http://127.0.0.1:4175',
         reuseExistingServer: true,
       },
 })

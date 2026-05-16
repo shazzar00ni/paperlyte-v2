@@ -8,7 +8,7 @@
 // old runtime code with a new shell before activation handoff completes.
 // onActivate then deletes every cache whose name differs from this value,
 // so old caches are cleaned up once the new SW takes over.
-const CACHE_VERSION = 'paperlyte-v1'
+const CACHE_VERSION = 'paperlyte-v2'
 const OFFLINE_PAGE = '/offline.html'
 
 // Pre-cache these on install so offline fallback is always available

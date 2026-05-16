@@ -7,7 +7,7 @@ test.describe('Landing Page', () => {
   // stay invisible and Playwright's click() times out.
   // Note: reducedMotion is NOT a top-level PlaywrightTestOptions key so test.use() won't
   // work — page.emulateMedia() in beforeEach is the reliable approach.
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page }: { page: Page }): Promise<void> => {
     await page.emulateMedia({ reducedMotion: 'reduce' })
   })
 

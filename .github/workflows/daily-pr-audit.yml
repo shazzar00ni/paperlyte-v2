@@ -41,13 +41,8 @@ jobs:
       - name: Update Summary Documentation
         run: |
           # 3. Use dedicated Python script to robustly integrate the daily summary
-          # Manual feedback can be provided by creating a manual_feedback.txt file in a previous step or via artifact
           if [ -f daily_summary.txt ]; then
-            FEEDBACK_ARG=""
-            if [ -f manual_feedback.txt ]; then
-              FEEDBACK_ARG="--manual-feedback manual_feedback.txt"
-            fi
-            python3 -m scripts.maintenance.update_summary_file --daily-file daily_summary.txt $FEEDBACK_ARG
+            python3 -m scripts.maintenance.update_summary_file --daily-file daily_summary.txt
           fi
 
       - name: Commit and Push Changes

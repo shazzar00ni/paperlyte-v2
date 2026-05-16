@@ -14,11 +14,6 @@ dist-ssr
 coverage
 junit.xml
 
-# Playwright test artifacts
-test-results/
-playwright-report/
-playwright/.cache/
-
 # Environment variables
 .env
 .env.local
@@ -51,12 +46,8 @@ public/favicon.ico
 .netlify
 .vercel
 
-# Lighthouse CI local report artifacts
-.lighthouseci
-.lighthouseci-*
-
-# PR Audit artifacts
-__pycache__/
+# Maintenance and Audit artifacts
+scripts/maintenance/__pycache__/
 audit_results.json
 daily_summary.txt
 manual_feedback.txt

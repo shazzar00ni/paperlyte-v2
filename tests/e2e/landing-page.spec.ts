@@ -17,10 +17,19 @@ test.describe('Landing Page', () => {
     await page.emulateMedia({ reducedMotion: 'reduce' })
     await page.addInitScript(() => {
       const orig = window.matchMedia.bind(window)
-      window.matchMedia = (query: string): MediaQueryList => {
+      // Use Proxy instead of Object.defineProperty: in Firefox and WebKit,
+      // MediaQueryList.matches is non-configurable so defineProperty throws
+      // TypeError. Proxy intercepts the getter without touching the descriptor.
+      window.matchMedia = (query) => {
         const mql = orig(query)
         if (query === '(prefers-reduced-motion: reduce)') {
-          Object.defineProperty(mql, 'matches', { get: () => true, configurable: true })
+          return new Proxy(mql, {
+            get(target, prop) {
+              if (prop === 'matches') return true
+              const val = Reflect.get(target, prop, target)
+              return typeof val === 'function' ? val.bind(target) : val
+            },
+          })
         }
         return mql
       }

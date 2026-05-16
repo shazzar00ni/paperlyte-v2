@@ -46,6 +46,14 @@ public/favicon.ico
 .netlify
 .vercel
 
+# Playwright and E2E artifacts
+test-results/
+playwright-report/
+blob-report/
+
+# Lighthouse reports
+lighthouse/
+
 # Maintenance and Audit artifacts
 scripts/maintenance/__pycache__/
 audit_results.json

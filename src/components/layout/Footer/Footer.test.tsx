@@ -12,8 +12,7 @@ describe('Footer', () => {
   it('should render Paperlyte logo with icon and text', () => {
     render(<Footer />)
 
-    // Icon component renders SVG, check for aria-label
-    expect(screen.getByLabelText('Paperlyte logo')).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: 'Paperlyte logo' })).toBeInTheDocument()
     expect(screen.getByText('Paperlyte.')).toBeInTheDocument()
   })
 

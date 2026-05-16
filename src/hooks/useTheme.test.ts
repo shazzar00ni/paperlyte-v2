@@ -143,9 +143,10 @@ describe('useTheme', () => {
         return originalGetItem(key)
       })
 
-      const render = () => renderHook(() => useTheme())
-      expect(render).not.toThrow()
-      const { result } = render()
+      // Single renderHook call: each call to localStorageMock.getItem mutates the
+      // counter, so rendering twice consumes the throwing call before the assertion
+      // and hides regressions where the hook leaks the throw on subsequent reads.
+      const { result } = renderHook(() => useTheme())
       expect(result.current.theme).toBe('light')
 
       localStorageMock.getItem = originalGetItem

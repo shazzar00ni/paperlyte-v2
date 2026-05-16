@@ -119,7 +119,12 @@ export const useTheme = () => {
 
   // Initialised after useState so it reads post-migration storage (USER_PREFERENCE_KEY
   // may have been written by migrateLegacyTheme inside the lazy initializer above).
-  const userHasExplicitPreference = useRef(getInitialUserPreference())
+  // Lazy-ref pattern: getInitialUserPreference() runs only on first render. Passing
+  // it as useRef's argument would re-evaluate on every render, re-reading storage.
+  const userHasExplicitPreference = useRef<boolean | null>(null)
+  if (userHasExplicitPreference.current === null) {
+    userHasExplicitPreference.current = getInitialUserPreference()
+  }
 
   useEffect(() => {
     // SSR guard: skip if not in browser

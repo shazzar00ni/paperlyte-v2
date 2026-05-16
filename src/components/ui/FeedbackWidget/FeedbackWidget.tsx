@@ -206,7 +206,16 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
           if (!isMountedRef.current || submissionId !== submissionIdRef.current) {
             return
           }
-          setError('Failed to submit feedback. Please try again.')
+          // Storage errors from appendFeedbackToStorage carry a user-facing message
+          // explaining the local-storage failure; surface it directly. Other errors
+          // get the generic copy so we don't leak unexpected internals to the user.
+          const isStorageError =
+            err instanceof Error && err.message.startsWith('Unable to save feedback locally')
+          setError(
+            isStorageError
+              ? (err as Error).message
+              : 'Failed to submit feedback. Please try again.'
+          )
           logError(
             err instanceof Error ? err : new Error(String(err)),
             {

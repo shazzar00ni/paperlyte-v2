@@ -2,6 +2,12 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { FeedbackWidget } from './FeedbackWidget'
+import * as monitoringModule from '@utils/monitoring'
+
+// Mock monitoring so we can assert logError is called
+vi.mock('@utils/monitoring', () => ({
+  logError: vi.fn(),
+}))
 
 describe('FeedbackWidget', () => {
   beforeEach(() => {
@@ -349,8 +355,10 @@ describe('FeedbackWidget', () => {
       await user.type(screen.getByRole('textbox'), 'Storage failure test')
       await user.click(screen.getByRole('button', { name: /send feedback/i }))
 
+      // Storage failures surface the appendFeedbackToStorage message verbatim so the
+      // user understands why submission failed (quota exceeded, storage disabled, etc.)
       await waitFor(() => {
-        expect(screen.getByText(/failed to submit feedback/i)).toBeInTheDocument()
+        expect(screen.getByText(/unable to save feedback locally/i)).toBeInTheDocument()
       })
     })
 
@@ -615,4 +623,5 @@ describe('FeedbackWidget', () => {
       expect(featureButton).toHaveFocus()
     })
   })
+
 })

@@ -345,46 +345,53 @@ test.describe('Landing Page', () => {
     )
     const count = await interactiveElements.count()
 
-    // Tab to the first focusable element (the skip link). Use toBeAttached()
-    // rather than toBeVisible(): the skip link lives at top:-40px and some
-    // Playwright versions treat off-screen absolute elements as non-visible.
+    // Tab to the first focusable element (the skip link).
+    // Use document.activeElement rather than page.locator(':focus'): the CSS
+    // :focus selector is evaluated lazily by Playwright's locator engine and
+    // can return 0 matches if the focused element transitions between the
+    // keypress and selector evaluation. document.activeElement is synchronous
+    // and always reflects the current focus at the moment evaluate() runs.
     await page.keyboard.press('Tab')
-    let focused = page.locator(':focus')
-    await expect(focused).toBeAttached()
 
-    // Verify focus indicator is present on the focused element.
-    // reset.css applies :focus-visible { outline: 2px solid } globally, so
-    // Tab-focused elements always have an explicit outline in Chromium.
-    // outlineStyle 'auto' is the browser-managed focus ring; its computed
-    // outlineWidth reports 0px even though the ring is rendered — so accept
-    // any non-'none' outlineStyle as evidence of a focus indicator.
-    const outline = await focused.evaluate((el) => {
-      const styles = window.getComputedStyle(el)
+    type FocusInfo = { tag: string; outlineStyle: string; outlineWidth: string; boxShadow: string }
+    const firstActive = await page.evaluate((): FocusInfo | null => {
+      const el = document.activeElement
+      if (!el || el === document.body || el === document.documentElement) return null
+      const s = window.getComputedStyle(el)
       return {
-        outlineStyle: styles.outlineStyle,
-        outlineWidth: styles.outlineWidth,
-        boxShadow: styles.boxShadow,
+        tag: el.tagName.toLowerCase(),
+        outlineStyle: s.outlineStyle,
+        outlineWidth: s.outlineWidth,
+        boxShadow: s.boxShadow,
       }
     })
 
-    const hasOutline = outline.outlineStyle !== 'none'
-    const hasBoxShadow = outline.boxShadow.trim() !== '' && outline.boxShadow.trim() !== 'none'
+    // null means Tab left focus on <body> — navigation did not move to any element.
+    expect(firstActive).not.toBeNull()
 
+    // Verify focus indicator. reset.css applies :focus-visible { outline: 2px solid }
+    // globally; accept any non-'none' outlineStyle (includes 'auto', 'solid', etc.).
+    const hasOutline = firstActive!.outlineStyle !== 'none'
+    const hasBoxShadow =
+      firstActive!.boxShadow.trim() !== '' && firstActive!.boxShadow.trim() !== 'none'
     expect(hasOutline || hasBoxShadow).toBeTruthy()
 
-    // Verify focus moves through the page — use toBeAttached() rather than
-    // toBeVisible(): below-fold AnimatedElement wrappers may still be at
-    // opacity:0 in headless viewports where IntersectionObserver never fires,
-    // but the interactive children are correctly in the tab order.
+    // Verify focus moves through several more elements.
     for (let i = 1; i < Math.min(count, 5); i++) {
       await page.keyboard.press('Tab')
-      focused = page.locator(':focus')
-      await expect(focused).toBeAttached()
+      const active = await page.evaluate(() => {
+        const el = document.activeElement
+        return el && el !== document.body ? el.tagName.toLowerCase() : null
+      })
+      expect(active).not.toBeNull()
     }
 
-    // Test reverse navigation
+    // Test reverse navigation.
     await page.keyboard.press('Shift+Tab')
-    focused = page.locator(':focus')
-    await expect(focused).toBeAttached()
+    const reverseActive = await page.evaluate(() => {
+      const el = document.activeElement
+      return el && el !== document.body ? el.tagName.toLowerCase() : null
+    })
+    expect(reverseActive).not.toBeNull()
   })
 })

@@ -82,9 +82,7 @@ describe('EmailCapture Section', () => {
     await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
 
     await waitFor(() => {
-      expect(screen.getByRole('alert')).toHaveTextContent(
-        /Couldn't add you to the waitlist/i
-      )
+      expect(screen.getByRole('alert')).toHaveTextContent(/Couldn't add you to the waitlist/i)
     })
   })
 
@@ -134,9 +132,7 @@ describe('EmailCapture Section', () => {
     await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
 
     await waitFor(() => {
-      expect(screen.getByRole('alert')).toHaveTextContent(
-        /Connection error. Check your internet/
-      )
+      expect(screen.getByRole('alert')).toHaveTextContent(/Connection error. Check your internet/)
     })
   })
 

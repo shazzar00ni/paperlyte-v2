@@ -181,9 +181,7 @@ describe('ServerErrorPage', () => {
     it('should display status notification', () => {
       render(<ServerErrorPage />)
 
-      expect(
-        screen.getByText(/This error has been reported. We're on it./i)
-      ).toBeInTheDocument()
+      expect(screen.getByText(/This error has been reported. We're on it./i)).toBeInTheDocument()
     })
   })
 

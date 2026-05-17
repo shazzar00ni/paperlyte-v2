@@ -124,6 +124,7 @@ export const EmailCapture = ({
       logError(
         loggedError,
         {
+          severity: 'medium',
           tags: {
             component: 'EmailCapture',
             action: 'subscribe',

@@ -60,7 +60,7 @@ export const AnimatedElement = ({
   }, [delay, ref])
 
   return (
-    <div ref={ref} className={classes}>
+    <div ref={ref} className={classes} data-reduced-motion={prefersReducedMotion}>
       {children}
     </div>
   )

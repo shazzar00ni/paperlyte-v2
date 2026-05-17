@@ -231,28 +231,26 @@ describe('ServerErrorPage', () => {
     it('should render server icon in illustration', () => {
       render(<ServerErrorPage />)
 
-      const main = screen.getByRole('main')
-      const serverIcon = main.querySelector('svg')
+      const mainElement = screen.getByRole('main')
+      // Icon component may render as SVG or <span> placeholder, check for either
+      const serverIcon = mainElement.querySelector('[data-icon="fa-server"]')
       expect(serverIcon).toBeInTheDocument()
     })
 
     it('should render warning icon in error badge', () => {
       const { container } = render(<ServerErrorPage />)
 
-      // Find the illustration container which has both server and warning icons
-      const illustration = container.querySelector('[aria-hidden="true"]')
-      expect(illustration).toBeInTheDocument()
-
-      // Should have exactly 2 icons in illustration: server icon + warning icon
-      const iconsInIllustration = illustration?.querySelectorAll('svg')
-      expect(iconsInIllustration?.length).toBe(2)
+      // Icon component may render as SVG or <span> placeholder, check for either
+      const warningIcon = container.querySelector('[data-icon="fa-triangle-exclamation"]')
+      expect(warningIcon).toBeInTheDocument()
     })
 
     it('should render retry icon in primary button', () => {
       render(<ServerErrorPage />)
 
       const retryButton = screen.getByRole('button', { name: /retry loading the page/i })
-      const icon = retryButton.querySelector('svg')
+      // Icon component may render as SVG or <span> placeholder, check for either
+      const icon = retryButton.querySelector('[data-icon="fa-rotate-right"]')
       expect(icon).toBeInTheDocument()
     })
 
@@ -260,7 +258,8 @@ describe('ServerErrorPage', () => {
       render(<ServerErrorPage />)
 
       const homeButton = screen.getByRole('button', { name: /return to homepage/i })
-      const icon = homeButton.querySelector('svg')
+      // Icon component may render as SVG or <span> placeholder, check for either
+      const icon = homeButton.querySelector('[data-icon="fa-home"]')
       expect(icon).toBeInTheDocument()
     })
   })

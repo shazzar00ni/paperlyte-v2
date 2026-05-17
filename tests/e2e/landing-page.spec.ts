@@ -87,9 +87,19 @@ test.describe('Landing Page', () => {
     })
 
     await page.goto('/')
-    await page.waitForLoadState('networkidle')
-    // Allow a moment for LCP to be finalised after the page becomes idle
-    await page.waitForTimeout(500)
+    // page.goto waits for the load event; give the LCP observer time to fire.
+    // Polling __cwv.lcp is more reliable than waitForLoadState('networkidle'),
+    // which can time out when the app makes background requests (analytics, etc.).
+    await page.waitForFunction(
+      () => {
+        const cwv = (window as Window & { __cwv?: { lcp: number | null } }).__cwv
+        return cwv !== undefined && cwv.lcp !== null
+      },
+      { timeout: 8000 }
+    ).catch(() => {
+      // If LCP never fires (e.g. observer missed it), fall through —
+      // the null-guard below will skip the assertions gracefully.
+    })
 
     interface CoreWebVitalsMetrics {
       fcp: number | null

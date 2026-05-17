@@ -1,90 +1,9 @@
-import { useState, useEffect, useCallback, useRef, useTransition, type FormEvent } from 'react'
+import { useState, useEffect, useCallback, useRef, type FormEvent } from 'react'
 import { Icon } from '@components/ui/Icon'
 import { Button } from '@components/ui/Button'
 import { handleArrowNavigation, getFocusableElements } from '@utils/keyboard'
 import { logError } from '@utils/monitoring'
 import styles from './FeedbackWidget.module.css'
-
-// Build versioned storage names from parts so static-analysis secret scanners
-// (Codacy / semgrep) don't match the literal string against credential heuristics.
-const STORAGE_NS = ['paperlyte', 'v1'].join(':')
-const FEEDBACK_STORAGE_NAME = `${STORAGE_NS}:feedback`
-const LEGACY_FEEDBACK_NAME = ['paperlyte', 'feedback'].join('_')
-
-// One-time migration of feedback entries from the legacy unversioned key.
-// Module-level flag avoids repeated reads on every widget mount.
-// Migration behavior is covered by FeedbackWidget.migration.test.tsx.
-// Because this uses a module-level flag, tests that exercise multiple cases
-// should reset modules (vi.resetModules()) between scenarios.
-let legacyFeedbackMigrationRun = false
-const migrateLegacyFeedback = (): void => {
-  if (legacyFeedbackMigrationRun) return
-  legacyFeedbackMigrationRun = true
-  try {
-    const legacy = localStorage.getItem(LEGACY_FEEDBACK_NAME)
-    if (legacy === null) return
-    // Backfill only — never overwrite an already-migrated versioned entry
-    if (localStorage.getItem(FEEDBACK_STORAGE_NAME) === null) {
-      localStorage.setItem(FEEDBACK_STORAGE_NAME, legacy)
-    }
-    localStorage.removeItem(LEGACY_FEEDBACK_NAME)
-  } catch {
-    // Silently ignore — incognito/storage-disabled browsers
-  }
-}
-
-// Append a feedback entry to localStorage. Throws on setItem failure so the
-// caller can surface an error to the user; logs via centralized monitoring.
-const appendFeedbackToStorage = (entry: unknown): void => {
-  let existing: string | null = null
-  try {
-    existing = localStorage.getItem(FEEDBACK_STORAGE_NAME)
-  } catch {
-    // Incognito or storage-disabled — treat as empty
-  }
-
-  let arr: unknown = []
-  if (existing) {
-    try {
-      arr = JSON.parse(existing)
-    } catch (parseError) {
-      logError(
-        parseError instanceof Error ? parseError : new Error(String(parseError)),
-        {
-          severity: 'low',
-          tags: { module: 'FeedbackWidget', action: 'parseStoredFeedback' },
-        },
-        'FeedbackWidget'
-      )
-      arr = []
-    }
-  }
-  if (!Array.isArray(arr)) arr = []
-  ;(arr as unknown[]).push(entry)
-
-  try {
-    localStorage.setItem(FEEDBACK_STORAGE_NAME, JSON.stringify(arr))
-  } catch (storageError) {
-    throw new Error(
-      `Unable to save feedback locally. Your browser storage may be full or disabled. ${
-        storageError instanceof Error ? storageError.message : String(storageError)
-      }`,
-      { cause: storageError }
-    )
-  }
-}
-
-const toError = (err: unknown): Error => (err instanceof Error ? err : new Error(String(err)))
-
-// Storage errors from appendFeedbackToStorage carry a user-facing message
-// explaining the local-storage failure; surface it directly. Other errors
-// get the generic copy so we don't leak unexpected internals to the user.
-const getSubmitErrorMessage = (err: unknown): string => {
-  if (err instanceof Error && err.message.startsWith('Unable to save feedback locally')) {
-    return err.message
-  }
-  return 'Failed to submit feedback. Please try again.'
-}
 
 type FeedbackType = 'bug' | 'feature'
 
@@ -105,21 +24,13 @@ interface FeedbackWidgetProps {
  * Interactive user feedback widget with a floating button and modal.
  * Allows users to submit bug reports and feature requests.
  *
- * Features:
- * - Floating button accessible from anywhere on the page
- * - Modal with form for feedback submission
- * - Support for bug reports and feature ideas
- * - Confirmation message after submission
- * - Keyboard navigation and accessibility support
- * - Mobile responsive design
- *
  * @param onSubmit - Optional callback for handling feedback submission
  */
 export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactElement => {
   const [isOpen, setIsOpen] = useState(false)
   const [feedbackType, setFeedbackType] = useState<FeedbackType>('bug')
   const [message, setMessage] = useState('')
-  const [isPending, startTransition] = useTransition()
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const closeTimeoutRef = useRef<number | null>(null)
@@ -127,23 +38,6 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
   const modalRef = useRef<HTMLDivElement>(null)
   const closeButtonRef = useRef<HTMLButtonElement>(null)
   const typeSelectorRef = useRef<HTMLFieldSetElement>(null)
-  // Tracks the submission in flight so the success path can detect whether
-  // the user closed the modal (or unmounted) mid-submit and skip auto-close.
-  const submissionIdRef = useRef(0)
-  const isMountedRef = useRef(true)
-
-  // Run one-time legacy localStorage key migration on first mount
-  useEffect(() => {
-    migrateLegacyFeedback()
-  }, [])
-
-  // Track unmount so async callbacks don't touch state after teardown
-  useEffect(() => {
-    isMountedRef.current = true
-    return () => {
-      isMountedRef.current = false
-    }
-  }, [])
 
   // Handle modal open
   const handleOpen = useCallback(() => {
@@ -164,9 +58,6 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
       clearTimeout(closeTimeoutRef.current)
       closeTimeoutRef.current = null
     }
-    // Invalidate any in-flight submission so its success path won't re-open
-    // confirmation or schedule auto-close after the user manually closed.
-    submissionIdRef.current += 1
     setIsOpen(false)
     setMessage('')
     setFeedbackType('bug')
@@ -181,7 +72,7 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
 
   // Handle form submission
   const handleSubmit = useCallback(
-    (e: FormEvent<HTMLFormElement>) => {
+    async (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault()
 
       // Validate message
@@ -190,53 +81,13 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
         return
       }
 
+      setIsSubmitting(true)
       setError(null)
 
-      const submissionId = ++submissionIdRef.current
-
-      startTransition(async () => {
-        try {
-          const feedbackData: FeedbackFormData = {
-            type: feedbackType,
-            message: message.trim(),
-          }
-
-          if (onSubmit) {
-            await onSubmit(feedbackData)
-          } else {
-            appendFeedbackToStorage({
-              ...feedbackData,
-              timestamp: new Date().toISOString(),
-            })
-          }
-
-          // Skip success-path side effects if the user closed the modal or
-          // started a newer submission while this one was in flight.
-          if (!isMountedRef.current || submissionId !== submissionIdRef.current) {
-            return
-          }
-
-          setError(null)
-          setShowConfirmation(true)
-          setMessage('')
-
-          // Close modal after 2 seconds (store timeout ID for cleanup)
-          closeTimeoutRef.current = window.setTimeout(() => {
-            handleClose()
-          }, 2000)
-        } catch (err) {
-          if (!isMountedRef.current || submissionId !== submissionIdRef.current) {
-            return
-          }
-          setError(getSubmitErrorMessage(err))
-          logError(
-            toError(err),
-            {
-              severity: 'medium',
-              tags: { module: 'FeedbackWidget', action: 'submitFeedback' },
-            },
-            'FeedbackWidget'
-          )
+      try {
+        const feedbackData: FeedbackFormData = {
+          type: feedbackType,
+          message: message.trim(),
         }
 
         if (onSubmit) {
@@ -473,7 +324,7 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
                         : 'Tell us about your feature idea...'
                     }
                     rows={5}
-                    disabled={isPending}
+                    disabled={isSubmitting}
                     required
                   />
                 </div>
@@ -491,10 +342,10 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
                   <Button
                     type="submit"
                     variant="primary"
-                    disabled={isPending || !message.trim()}
+                    disabled={isSubmitting || !message.trim()}
                     icon="fa-paper-plane"
                   >
-                    {isPending ? 'Sending...' : 'Send Feedback'}
+                    {isSubmitting ? 'Sending...' : 'Send Feedback'}
                   </Button>
                 </div>
               </form>

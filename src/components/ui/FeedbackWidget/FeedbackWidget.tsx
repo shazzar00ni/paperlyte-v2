@@ -88,6 +88,10 @@ const getSubmitErrorMessage = (err: unknown): string => {
 
 type FeedbackType = 'bug' | 'feature'
 
+interface Focusable {
+  focus: () => void
+}
+
 interface FeedbackFormData {
   type: FeedbackType
   message: string
@@ -119,7 +123,7 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const closeTimeoutRef = useRef<number | null>(null)
-  const triggerElementRef = useRef<HTMLElement | null>(null)
+  const triggerElementRef = useRef<Focusable | null>(null)
   const modalRef = useRef<HTMLDivElement>(null)
   const closeButtonRef = useRef<HTMLButtonElement>(null)
   const typeSelectorRef = useRef<HTMLFieldSetElement>(null)
@@ -144,7 +148,10 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
   // Handle modal open
   const handleOpen = useCallback(() => {
     // Store the element that triggered the modal for focus restoration
-    triggerElementRef.current = document.activeElement as HTMLElement
+    const activeEl = document.activeElement
+    if (activeEl !== null && typeof (activeEl as unknown as Focusable).focus === 'function') {
+      triggerElementRef.current = activeEl as unknown as Focusable
+    }
     setIsOpen(true)
     setError(null)
     setShowConfirmation(false)
@@ -231,7 +238,42 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
             'FeedbackWidget'
           )
         }
-      })
+
+        if (onSubmit) {
+          await onSubmit(feedbackData)
+
+          // Show confirmation only after a successful submission
+          setShowConfirmation(true)
+          setMessage('')
+
+          // Close modal after 2 seconds (store timeout ID for cleanup)
+          closeTimeoutRef.current = window.setTimeout(() => {
+            handleClose()
+          }, 2000)
+        } else {
+          // No handler is wired — feedback cannot be sent or persisted on this page.
+          // No local persistence on the landing page (see AGENTS.md).
+          if (import.meta.env.DEV) {
+            console.warn(
+              '[FeedbackWidget] No onSubmit handler provided. Feedback was not sent anywhere.'
+            )
+          }
+          setError('Feedback submission is not yet available. Please try again later.')
+        }
+      } catch (err) {
+        setError('Failed to submit feedback. Please try again.')
+        logError(
+          err instanceof Error ? err : new Error(String(err)),
+          {
+            severity: 'medium',
+            tags: { action: 'handleSubmit', component: 'FeedbackWidget' },
+          },
+          'feedback_submission'
+        )
+        console.warn('[FeedbackWidget] Submission failed:', err)
+      } finally {
+        setIsSubmitting(false)
+      }
     },
     [feedbackType, message, onSubmit, handleClose]
   )

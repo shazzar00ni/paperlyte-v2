@@ -51,10 +51,35 @@ describe('FAQ', () => {
       expect(screen.getByRole('link', { name: /help center/i })).toBeInTheDocument()
       expect(screen.getByRole('link', { name: /community forum/i })).toBeInTheDocument()
     })
+
+    it('should render updated subtitle text (PR change)', () => {
+      render(<FAQ />)
+
+      // Changed from "Common questions answered. Still curious?" in this PR
+      expect(
+        screen.getByText(/Everything you need to know/i)
+      ).toBeInTheDocument()
+    })
+
+    it('subtitle should contain a "Contact us" link', () => {
+      render(<FAQ />)
+
+      // The subtitle includes a "Contact us" anchor
+      const contactLink = screen.getByRole('link', { name: /contact us/i })
+      expect(contactLink).toBeInTheDocument()
+      expect(contactLink).toHaveAttribute('href', '#contact')
+    })
+
+    it('should not render old subtitle text', () => {
+      render(<FAQ />)
+
+      // Regression guard: the old subtitle was "Common questions answered."
+      expect(screen.queryByText(/Common questions answered/i)).not.toBeInTheDocument()
+    })
   })
 
   describe('Accordion Functionality', () => {
-    it('should render all items collapsed by default', () => {
+
       render(<FAQ />)
 
       FAQ_ITEMS.forEach((item) => {

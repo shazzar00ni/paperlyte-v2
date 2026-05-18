@@ -20,7 +20,7 @@ listed below and, where applicable, revert content changes to `src/utils/navigat
 
 **4 deleted files** (restore from `main`):
 
-| Branch / PR                                         | `.npmrc` | `docs/ROADMAP.md` | `gitVersionControl.md` | `review.md` |
+| Branch / PR                                         | `.npmrc` | `docs/ROADMAP.md` | `docs/gitVersionControl.md` | `docs/review.md` |
 | --------------------------------------------------- | :------: | :---------------: | :--------------------: | :---------: |
 | `origin/claude/implement-todo-item-2H9LP`           |    ✗     |         ✗         |           ✗            |      ✗      |
 | `origin/claude/core-editor-phase-1-PI3Yp`           |    ✗     |         ✗         |           ✗            |      ✗      |
@@ -30,7 +30,7 @@ listed below and, where applicable, revert content changes to `src/utils/navigat
 | PR #469, #488, #491, #502, #506                     |    ✗     |         ✗         |           ✗            |      ✗      |
 
 - `.npmrc` → content must be exactly: `legacy-peer-deps=true`
-- `docs/ROADMAP.md`, `gitVersionControl.md`, `review.md` → restore verbatim from `main`
+- `docs/ROADMAP.md`, `docs/gitVersionControl.md`, `docs/review.md` → restore verbatim from `main`
 
 **Separate content restoration** (file exists but helpers were reverted):
 
@@ -228,4 +228,4 @@ test -f .eslintrc.json        # must pass
 - `src/utils/navigation.test.ts` — add tests for `safeNavigateExternal`
 - `src/components/ui/CounterAnimation/CounterAnimation.tsx` — Map-based easing (lines 42–46, 128)
 - `.eslintrc.json` — create new file at root
-- `.npmrc`, `docs/ROADMAP.md`, `gitVersionControl.md`, `review.md` — must exist on all branches before merge
+- `.npmrc`, `docs/ROADMAP.md`, `docs/gitVersionControl.md`, `docs/review.md` — must exist on all branches before merge

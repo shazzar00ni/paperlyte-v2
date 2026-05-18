@@ -91,8 +91,8 @@ This file tracks key architectural, design, and technical decisions made during 
 - **Alternatives considered**: No validation (unsafe), allow-list of domains
 
 - **Date**: 2026-05-06
-- **Decision**: `.npmrc` (content must be exactly `legacy-peer-deps=true`), `docs/ROADMAP.md`, `gitVersionControl.md`, `review.md`, and the `hasDangerousProtocol`/`isRelativeUrl` helpers in `src/utils/navigation.ts` are required files that must never be deleted from any branch
-- **Rationale**: Accidental deletion of these files on several branches blocked their PRs from merging (Issue #876). Restoration is done via `git checkout origin/main -- .npmrc docs/ROADMAP.md gitVersionControl.md review.md src/utils/navigation.ts`.
+- **Decision**: `.npmrc` (content must be exactly `legacy-peer-deps=true`), `docs/ROADMAP.md`, `docs/gitVersionControl.md`, `docs/review.md`, and the `hasDangerousProtocol`/`isRelativeUrl` helpers in `src/utils/navigation.ts` are required files that must never be deleted from any branch
+- **Rationale**: Accidental deletion of these files on several branches blocked their PRs from merging (Issue #876). Restoration is done via `git checkout origin/main -- .npmrc docs/ROADMAP.md docs/gitVersionControl.md docs/review.md src/utils/navigation.ts`.
 - **Alternatives considered**: Manual re-creation of file content
 
 ## Email / Waitlist

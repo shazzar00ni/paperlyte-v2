@@ -7,6 +7,10 @@ import styles from './FeedbackWidget.module.css'
 
 type FeedbackType = 'bug' | 'feature'
 
+interface Focusable {
+  focus: () => void
+}
+
 interface FeedbackFormData {
   type: FeedbackType
   message: string
@@ -14,58 +18,6 @@ interface FeedbackFormData {
 
 interface FeedbackWidgetProps {
   onSubmit?: (data: FeedbackFormData) => Promise<void> | void
-}
-
-const FEEDBACK_STORAGE_NAME = 'paperlyte_feedback'
-
-function saveFeedbackLocally(feedbackData: FeedbackFormData): void {
-  const timestamp = new Date().toISOString()
-  const feedbackEntry = { ...feedbackData, timestamp }
-
-  let existingFeedback: string | null = null
-  try {
-    existingFeedback = localStorage.getItem(FEEDBACK_STORAGE_NAME)
-  } catch {
-    // SecurityError in sandboxed/private browsing — treat as empty storage
-  }
-  let feedbackArray: unknown = []
-
-  if (existingFeedback) {
-    try {
-      feedbackArray = JSON.parse(existingFeedback)
-    } catch (parseError) {
-      logError(
-        new Error('Failed to load stored feedback'),
-        {
-          tags: { context: 'feedback-storage-parse' },
-          errorInfo: {
-            parseError: parseError instanceof Error ? parseError.message : String(parseError),
-            key: FEEDBACK_STORAGE_NAME,
-          },
-        },
-        'feedback_widget'
-      )
-      feedbackArray = []
-    }
-  }
-
-  if (!Array.isArray(feedbackArray)) {
-    feedbackArray = []
-  }
-
-  ;(feedbackArray as unknown[]).push(feedbackEntry)
-
-  try {
-    localStorage.setItem(FEEDBACK_STORAGE_NAME, JSON.stringify(feedbackArray))
-  } catch (storageError) {
-    // Don't logError here — handleSubmit's catch will report it once via 'feedback_submission'
-    throw new Error(
-      `Unable to save feedback locally. Your browser storage may be full or disabled. ${
-        storageError instanceof Error ? storageError.message : String(storageError)
-      }`,
-      { cause: storageError }
-    )
-  }
 }
 
 /**
@@ -82,7 +34,7 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const closeTimeoutRef = useRef<number | null>(null)
-  const triggerElementRef = useRef<HTMLElement | null>(null)
+  const triggerElementRef = useRef<Focusable | null>(null)
   const modalRef = useRef<HTMLDivElement>(null)
   const closeButtonRef = useRef<HTMLButtonElement>(null)
   const typeSelectorRef = useRef<HTMLFieldSetElement>(null)
@@ -90,7 +42,10 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
   // Handle modal open
   const handleOpen = useCallback(() => {
     // Store the element that triggered the modal for focus restoration
-    triggerElementRef.current = document.activeElement as HTMLElement
+    const activeEl = document.activeElement
+    if (activeEl !== null && typeof (activeEl as unknown as Focusable).focus === 'function') {
+      triggerElementRef.current = activeEl as unknown as Focusable
+    }
     setIsOpen(true)
     setError(null)
     setShowConfirmation(false)
@@ -135,29 +90,37 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
           message: message.trim(),
         }
 
-        // Call custom submit handler if provided, otherwise persist locally
         if (onSubmit) {
           await onSubmit(feedbackData)
+
+          // Show confirmation only after a successful submission
+          setShowConfirmation(true)
+          setMessage('')
+
+          // Close modal after 2 seconds (store timeout ID for cleanup)
+          closeTimeoutRef.current = window.setTimeout(() => {
+            handleClose()
+          }, 2000)
         } else {
-          saveFeedbackLocally(feedbackData)
+          // No handler is wired — feedback cannot be sent or persisted on this page.
+          // No local persistence on the landing page (see AGENTS.md).
+          if (import.meta.env.DEV) {
+            console.warn(
+              '[FeedbackWidget] No onSubmit handler provided. Feedback was not sent anywhere.'
+            )
+          }
+          setError('Feedback submission is not yet available. Please try again later.')
         }
-
-        // Show confirmation
-        setShowConfirmation(true)
-        setMessage('')
-
-        // Close modal after 2 seconds (store timeout ID for cleanup)
-        closeTimeoutRef.current = window.setTimeout(() => {
-          handleClose()
-        }, 2000)
       } catch (err) {
-        setError('Failed to submit feedback. Please try again.')
+        setError("Couldn't send your feedback. Copy your message and try again.")
         logError(
           err instanceof Error ? err : new Error(String(err)),
-          { severity: 'medium', tags: { action: 'handleSubmit' } },
-          'feedback_submission'
+          {
+            severity: 'medium',
+            tags: { component: 'FeedbackWidget', action: 'submit' },
+          },
+          'FeedbackWidget'
         )
-        console.warn('[FeedbackWidget] Submission failed:', err)
       } finally {
         setIsSubmitting(false)
       }
@@ -343,9 +306,7 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
                 {/* Message textarea */}
                 <div className={styles.formGroup}>
                   <label htmlFor="feedback-message" className={styles.label}>
-                    {feedbackType === 'bug'
-                      ? 'Describe the issue you encountered'
-                      : 'Share your feature idea'}
+                    {feedbackType === 'bug' ? 'What went wrong?' : 'Share your feature idea'}
                   </label>
                   <textarea
                     id="feedback-message"
@@ -356,8 +317,8 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
                     }}
                     placeholder={
                       feedbackType === 'bug'
-                        ? 'Please provide details about the bug...'
-                        : 'Tell us about your feature idea...'
+                        ? 'What happened? What did you expect instead?'
+                        : 'What would you like Paperlyte to do? How would it help you?'
                     }
                     rows={5}
                     disabled={isSubmitting}

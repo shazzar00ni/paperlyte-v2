@@ -15,7 +15,7 @@ Complete the remaining manual infrastructure configuration tasks that require Gi
 
 - ✅ All automated infrastructure is complete (see #14)
 - ✅ Code changes committed and merged
-- ✅ `INFRASTRUCTURE_SETUP.md` documentation available
+- ✅ `docs/INFRASTRUCTURE_SETUP.md` documentation available
 
 ## 🔧 Tasks
 
@@ -141,7 +141,7 @@ Currently, no environment variables are required. Document any added later:
 - [Netlify Deployment Docs](https://docs.netlify.com/site-deploys/overview/)
 - [Netlify Custom Domains](https://docs.netlify.com/domains-https/custom-domains/)
 - [Netlify DNS Configuration](https://docs.netlify.com/domains-https/netlify-dns/)
-- Project Infrastructure Documentation: `INFRASTRUCTURE_SETUP.md`
+- Project Infrastructure Documentation: `docs/INFRASTRUCTURE_SETUP.md`
 
 ---
 

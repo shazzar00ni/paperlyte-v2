@@ -31,8 +31,8 @@ export const CTA = (): React.ReactElement => {
             invisible.
           </p>
           <p className={styles.subtitle}>
-            Join the waitlist today and be among the first to experience what note-taking should
-            have been all along.
+            Join the waitlist and get early access two weeks before public launch — plus 50% off for
+            life.
           </p>
         </AnimatedElement>
 
@@ -46,7 +46,7 @@ export const CTA = (): React.ReactElement => {
               className={styles.textLink}
               onClick={() => scrollToSection('hero')}
             >
-              Watch the Demo Again
+              Watch the Demo
             </button>
           </div>
         </AnimatedElement>

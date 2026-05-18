@@ -27,7 +27,7 @@ describe('ServerErrorPage', () => {
       render(<ServerErrorPage />)
 
       expect(screen.getByRole('main')).toBeInTheDocument()
-      expect(screen.getByText(/Oops! Something went wrong/i)).toBeInTheDocument()
+      expect(screen.getByText(/Something went wrong on our end/i)).toBeInTheDocument()
     })
 
     it('should display default error message', () => {
@@ -181,9 +181,7 @@ describe('ServerErrorPage', () => {
     it('should display status notification', () => {
       render(<ServerErrorPage />)
 
-      expect(
-        screen.getByText(/Our team has been notified and is working to resolve this issue/i)
-      ).toBeInTheDocument()
+      expect(screen.getByText(/This error has been reported. We're on it./i)).toBeInTheDocument()
     })
   })
 

@@ -68,6 +68,21 @@ if (import.meta.env.PROD && import.meta.env.VITE_SENTRY_DSN) {
 // Initialize environment-aware meta tags
 updateMetaTags()
 
+// Register service worker for PWA offline support (production only)
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('/sw.js', { updateViaCache: 'none' })
+      .catch((error: unknown) => {
+        monitoring.logError(
+          error instanceof Error ? error : new Error('Service worker registration failed'),
+          { severity: 'low', tags: { action: 'register' } },
+          'serviceWorker'
+        )
+      })
+  })
+}
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />

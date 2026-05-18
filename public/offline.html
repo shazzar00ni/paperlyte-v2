@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>You're Offline – Paperlyte</title>
+    <link rel="stylesheet" href="/offline.css" />
+  </head>
+  <body>
+    <div class="card">
+      <span class="wordmark" aria-label="Paperlyte">Paperlyte</span>
+
+      <div class="glyph" aria-hidden="true">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <!-- Wifi arcs -->
+          <path d="M5 12.55a11 11 0 0 1 14.08 0" opacity="0.3" />
+          <path d="M1.42 9a16 16 0 0 1 21.16 0" opacity="0.15" />
+          <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
+          <circle cx="12" cy="20" r="1" fill="currentColor" stroke="none" />
+        </svg>
+        <span class="slash"></span>
+      </div>
+
+      <h1>You're <em>offline</em></h1>
+
+      <p>No internet connection right now. Come back when you're connected to explore Paperlyte.</p>
+
+      <button id="retry-btn" type="button">
+        <svg
+          width="15"
+          height="15"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          aria-hidden="true"
+        >
+          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+          <path d="M3 3v5h5" />
+        </svg>
+        Try again
+      </button>
+    </div>
+
+    <script src="/offline.js"></script>
+  </body>
+</html>

@@ -120,54 +120,54 @@ export const EmailCapture = (): React.ReactElement => {
       <Section id="email-capture" background="surface">
         <div className={styles.container}>
           <div className={styles.successContainer}>
-              <div className={styles.successIcon}>
-                <Icon name="fa-check-circle" size="xl" color="var(--color-success)" />
-              </div>
-              <h2 className={styles.successTitle}>{COPY.successTitle}</h2>
-              <p className={styles.successText}>{COPY.successText}</p>
+            <div className={styles.successIcon}>
+              <Icon name="fa-check-circle" size="xl" color="var(--color-success)" />
+            </div>
+            <h2 className={styles.successTitle}>{COPY.successTitle}</h2>
+            <p className={styles.successText}>{COPY.successText}</p>
 
-              <div className={styles.nextSteps}>
-                <h3 className={styles.nextStepsTitle}>{COPY.nextStepsTitle}</h3>
-                <ul className={styles.nextStepsList}>
-                  {COPY.nextSteps.map((step) => (
-                    <li key={step}>{step}</li>
-                  ))}
-                </ul>
-              </div>
+            <div className={styles.nextSteps}>
+              <h3 className={styles.nextStepsTitle}>{COPY.nextStepsTitle}</h3>
+              <ul className={styles.nextStepsList}>
+                {COPY.nextSteps.map((step) => (
+                  <li key={step}>{step}</li>
+                ))}
+              </ul>
+            </div>
 
-              <div className={styles.shareSection}>
-                <p className={styles.shareText}>{COPY.shareText}</p>
-                <div className={styles.socialButtons}>
-                  <Button
-                    variant="secondary"
-                    size="medium"
-                    icon="fa-brands fa-twitter"
-                    href={twitterShareUrl}
-                  >
-                    Twitter
-                  </Button>
-                  <Button
-                    variant="secondary"
-                    size="medium"
-                    icon="fa-brands fa-facebook"
-                    href={facebookShareUrl}
-                  >
-                    Facebook
-                  </Button>
-                  <Button
-                    variant="secondary"
-                    size="medium"
-                    icon="fa-brands fa-linkedin"
-                    href={linkedinShareUrl}
-                  >
-                    LinkedIn
-                  </Button>
-                </div>
+            <div className={styles.shareSection}>
+              <p className={styles.shareText}>{COPY.shareText}</p>
+              <div className={styles.socialButtons}>
+                <Button
+                  variant="secondary"
+                  size="medium"
+                  icon="fa-brands fa-twitter"
+                  href={twitterShareUrl}
+                >
+                  Twitter
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="medium"
+                  icon="fa-brands fa-facebook"
+                  href={facebookShareUrl}
+                >
+                  Facebook
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="medium"
+                  icon="fa-brands fa-linkedin"
+                  href={linkedinShareUrl}
+                >
+                  LinkedIn
+                </Button>
               </div>
             </div>
           </div>
-        </Section>
-      )
+        </div>
+      </Section>
+    )
   }
 
   return (

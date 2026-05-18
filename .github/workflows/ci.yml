@@ -396,7 +396,7 @@ jobs:
 
     steps:
       - name: Add To GitHub Projects
-        uses: actions/add-to-project@244f685bbc3b7adfa8466e08b698b5577571133e # v1.0.2
+        uses: actions/add-to-project@5afcf98fcd03f1c2f92c3c83f58ae24323cc57fd # v2.0.0
         continue-on-error: true
         with:
           project-url: ${{ vars.PROJECT_URL || 'https://github.com/users/shazzar00ni/projects/1' }}

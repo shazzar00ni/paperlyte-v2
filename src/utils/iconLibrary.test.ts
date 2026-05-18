@@ -150,8 +150,8 @@ describe('iconLibrary', () => {
     it('should have unique values in iconNameMap (except known aliases)', () => {
       // Known intentional aliases where multiple keys map to the same icon
       const knownAliases: Record<string, string[]> = {
-        'network-wired': ['fa-network-wired', 'fa-router'], // fa-router uses network-wired icon
-        'circle-check': ['fa-circle-check', 'fa-check-circle'], // fa-check-circle aliases fa-circle-check
+        'circle-check': ['fa-circle-check', 'fa-check-circle'],
+        'home': ['fa-home', 'fa-house'],
       }
 
       // Create a fresh copy of values to avoid any module state issues

@@ -241,7 +241,11 @@ test.describe('Landing Page', () => {
     const rawEmail = `E2E-Test-${timestamp}@EXAMPLE.COM`
     const expectedEmail = `e2e-test-${timestamp}@example.com`
     await emailInput.fill(rawEmail)
+    // Wait for the mocked subscribe response alongside the click so the test
+    // doesn't race the route interception in WebKit/Mobile Safari.
+    const responsePromise = page.waitForResponse('**/.netlify/functions/subscribe')
     await submitButton.click()
+    await responsePromise
 
     // Accept both straight (U+0027) and typographic (U+2019) apostrophes for cross-environment robustness
     await expect(page.getByText(/You['\u2019]re on the list!/i)).toBeVisible({ timeout: 5000 })

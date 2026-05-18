@@ -7,9 +7,11 @@ test.describe('Landing Page', () => {
     // Check hero heading exists
     await expect(page.locator('h1')).toBeVisible()
 
-    // Check CTA button exists (matches actual Hero component buttons)
-    const ctaButton = page.getByRole('button', { name: /start writing for free|view the demo/i })
-    await expect(ctaButton.first()).toBeVisible()
+    // Check primary CTA button exists
+    await expect(page.getByRole('button', { name: /start writing for free/i })).toBeVisible()
+
+    // Check secondary CTA button exists separately (prevents a missing button being masked by .first())
+    await expect(page.getByRole('button', { name: /see how it works/i })).toBeVisible()
 
     // Check page is accessible
     await expect(page).toHaveTitle(/Paperlyte/i)
@@ -212,10 +214,13 @@ test.describe('Landing Page', () => {
   }: {
     page: Page
   }): Promise<void> => {
-    // Mock the Netlify subscribe endpoint so this test does not depend on
-    // `netlify dev` being running. The Vite preview server used in CI does not
-    // serve `/.netlify/functions/*`, which would otherwise return a 404 and
-    // surface as the error state instead of the success state.
+    await page.goto('/')
+
+    // Mock the Netlify subscribe endpoint after navigation so WebKit registers
+    // the handler against the live page context. Setting it up before goto() can
+    // cause WebKit to miss dynamically-triggered fetches. The Vite preview server
+    // used in CI does not serve `/.netlify/functions/*`, so without this mock the
+    // component would receive a 404 and show the error state instead.
     let capturedPostBody: string | null = null
     await page.route('**/.netlify/functions/subscribe', async (route) => {
       capturedPostBody = route.request().postData()
@@ -225,8 +230,6 @@ test.describe('Landing Page', () => {
         body: JSON.stringify({ success: true }),
       })
     })
-
-    await page.goto('/')
 
     const emailInput = page.locator('#email-capture input[type="email"]')
     const submitButton = page
@@ -239,7 +242,11 @@ test.describe('Landing Page', () => {
     const rawEmail = `E2E-Test-${timestamp}@EXAMPLE.COM`
     const expectedEmail = `e2e-test-${timestamp}@example.com`
     await emailInput.fill(rawEmail)
+    // Await the mocked response alongside the click to avoid racing the route
+    // interception in WebKit/Mobile Safari before checking the success state.
+    const responsePromise = page.waitForResponse('**/.netlify/functions/subscribe')
     await submitButton.click()
+    await responsePromise
 
     // Accept both straight (U+0027) and typographic (U+2019) apostrophes for cross-environment robustness
     await expect(page.getByText(/You['\u2019]re on the list!/i)).toBeVisible({ timeout: 5000 })

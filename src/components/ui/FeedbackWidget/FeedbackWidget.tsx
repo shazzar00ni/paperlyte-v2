@@ -112,16 +112,15 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
           setError('Feedback submission is not yet available. Please try again later.')
         }
       } catch (err) {
-        setError('Failed to submit feedback. Please try again.')
+        setError("Couldn't send your feedback. Copy your message and try again.")
         logError(
           err instanceof Error ? err : new Error(String(err)),
           {
             severity: 'medium',
-            tags: { action: 'handleSubmit', component: 'FeedbackWidget' },
+            tags: { component: 'FeedbackWidget', action: 'submit' },
           },
-          'feedback_submission'
+          'FeedbackWidget'
         )
-        console.warn('[FeedbackWidget] Submission failed:', err)
       } finally {
         setIsSubmitting(false)
       }
@@ -307,9 +306,7 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
                 {/* Message textarea */}
                 <div className={styles.formGroup}>
                   <label htmlFor="feedback-message" className={styles.label}>
-                    {feedbackType === 'bug'
-                      ? 'Describe the issue you encountered'
-                      : 'Share your feature idea'}
+                    {feedbackType === 'bug' ? 'What went wrong?' : 'Share your feature idea'}
                   </label>
                   <textarea
                     id="feedback-message"
@@ -320,8 +317,8 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
                     }}
                     placeholder={
                       feedbackType === 'bug'
-                        ? 'Please provide details about the bug...'
-                        : 'Tell us about your feature idea...'
+                        ? 'What happened? What did you expect instead?'
+                        : 'What would you like Paperlyte to do? How would it help you?'
                     }
                     rows={5}
                     disabled={isSubmitting}

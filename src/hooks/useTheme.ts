@@ -71,7 +71,10 @@ export const useTheme = () => {
   const getInitialUserPreference = (): boolean => {
     if (!isBrowser || !persistenceEnabled) return false
     try {
-      return localStorage.getItem(USER_PREFERENCE_STORAGE_NAME) === 'true'
+      const storedTheme = localStorage.getItem(THEME_STORAGE_NAME)
+      return (
+        isValidTheme(storedTheme) && localStorage.getItem(USER_PREFERENCE_STORAGE_NAME) === 'true'
+      )
     } catch (err) {
       logError(toError(err), {
         tags: { hook: 'useTheme', operation: 'readUserPreferenceFlag' },
@@ -122,12 +125,9 @@ export const useTheme = () => {
 
   // Initialised after useState so it reads post-migration storage (USER_PREFERENCE_STORAGE_NAME
   // may have been written by migrateLegacyTheme inside the lazy initializer above).
-  // Lazy-ref pattern: getInitialUserPreference() runs only on first render. Passing
-  // it as useRef's argument would re-evaluate on every render, re-reading storage.
-  const userHasExplicitPreference = useRef<boolean | null>(null)
-  if (userHasExplicitPreference.current === null) {
-    userHasExplicitPreference.current = getInitialUserPreference()
-  }
+  // useState lazy initializer runs once on mount — safe to read storage here after migration.
+  const [initialUserPref] = useState(getInitialUserPreference)
+  const userHasExplicitPreference = useRef(initialUserPref)
 
   useEffect(() => {
     // SSR guard: skip if not in browser

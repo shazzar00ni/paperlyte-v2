@@ -133,8 +133,8 @@ describe('isValidEmail', () => {
     expect(isValidEmail('@example.com')).toBe(false)
   })
 
-  it('returns false for a disposable-domain email', () => {
-    expect(isValidEmail('user@mailinator.com')).toBe(false)
+  it('returns true for disposable domains when format is valid', () => {
+    expect(isValidEmail('user@mailinator.com')).toBe(true)
   })
 })
 

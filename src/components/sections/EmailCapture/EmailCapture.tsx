@@ -142,7 +142,7 @@ export const EmailCapture = (): React.ReactElement => {
                   <Button
                     variant="secondary"
                     size="medium"
-                    icon="fa-brands fa-twitter"
+                    icon="fa-twitter"
                     href={twitterShareUrl}
                   >
                     Twitter
@@ -150,7 +150,7 @@ export const EmailCapture = (): React.ReactElement => {
                   <Button
                     variant="secondary"
                     size="medium"
-                    icon="fa-brands fa-facebook"
+                    icon="fa-facebook"
                     href={facebookShareUrl}
                   >
                     Facebook
@@ -158,7 +158,7 @@ export const EmailCapture = (): React.ReactElement => {
                   <Button
                     variant="secondary"
                     size="medium"
-                    icon="fa-brands fa-linkedin"
+                    icon="fa-linkedin"
                     href={linkedinShareUrl}
                   >
                     LinkedIn

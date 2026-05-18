@@ -26,19 +26,15 @@ describe('Icon', () => {
       expect(fallback).toHaveAttribute('title', 'Icon "definitely-missing-icon" not found')
     })
 
-    it('should warn twice for icons missing from both custom set and Font Awesome library', () => {
+    it('should warn once for icons missing from both custom set and Font Awesome library', () => {
       render(<Icon name="definitely-missing-icon" variant="solid" />)
 
-      // First warning: not in icon set, falling back to Font Awesome
+      // Single warning: covers both miss cases (not in custom set AND not in FA library)
       expect(consoleWarnSpy).toHaveBeenCalledWith(
-        'Icon "definitely-missing-icon" not found in icon set, using Font Awesome fallback'
-      )
-      // Second warning: not found in Font Awesome library either
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
-        'Icon "definitely-missing-icon" (converted to "definitely-missing-icon") not found in Font Awesome library. ' +
+        'Icon "definitely-missing-icon" (converted to "definitely-missing-icon") not found in custom set or Font Awesome library. ' +
           'Rendering empty/decorative fallback span.'
       )
-      expect(consoleWarnSpy).toHaveBeenCalledTimes(2)
+      expect(consoleWarnSpy).toHaveBeenCalledTimes(1)
     })
 
     it('should render custom SVG for known icons in iconPaths', () => {
@@ -131,13 +127,13 @@ describe('Icon', () => {
         expect(container.querySelector('span.icon-fallback')).not.toBeInTheDocument()
         const svg = container.querySelector('svg')
         expect(svg).toBeInTheDocument()
-        // One warning (not in icon set) but NOT the "not found in FA library" warning
+        // One warning (FA fallback used) but NOT the "not found" fallback span warning
         expect(consoleWarnSpy).toHaveBeenCalledTimes(1)
         expect(consoleWarnSpy).toHaveBeenCalledWith(
-          'Icon "fa-github" not found in icon set, using Font Awesome fallback'
+          'Icon "fa-github" not in custom set — rendered via Font Awesome fallback'
         )
         expect(consoleWarnSpy).not.toHaveBeenCalledWith(
-          expect.stringContaining('not found in Font Awesome library')
+          expect.stringContaining('not found in custom set or Font Awesome library')
         )
       } finally {
         vi.doUnmock('./icons')

@@ -135,9 +135,6 @@ export const Icon = ({
   }
 
   // Fallback to Font Awesome React component if icon not found in our set
-  if (import.meta.env.DEV) {
-    console.warn(`Icon "${name}" not found in icon set, using Font Awesome fallback`)
-  }
 
   // Determine prefix based on variant or by checking if it's a brand icon
   let prefix: IconPrefix
@@ -162,16 +159,21 @@ export const Icon = ({
     ...(ariaLabel ? { role: 'img' } : {}),
   }
 
-  // If icon found in library, render it with data-icon attribute
+  // If icon found in FA library, render it (single DEV warning — FA fallback was used)
   if (iconDefinition) {
+    if (import.meta.env.DEV) {
+      console.warn(`Icon "${name}" not in custom set — rendered via Font Awesome fallback`)
+    }
     return <FontAwesomeIcon icon={iconDefinition} data-icon={baseName} {...commonIconProps} />
   }
 
-  // Icon not found in library — return a placeholder with data-icon attribute
-  console.warn(
-    `Icon "${name}" (converted to "${convertedName}") not found in Font Awesome library. ` +
-      `Rendering empty/decorative fallback span.`
-  )
+  // Icon not found anywhere — render ? placeholder (single DEV warning covers both miss cases)
+  if (import.meta.env.DEV) {
+    console.warn(
+      `Icon "${name}" (converted to "${convertedName}") not found in custom set or Font Awesome library. ` +
+        `Rendering empty/decorative fallback span.`
+    )
+  }
   return (
     <span {...commonIconProps} data-icon={baseName} title={`Icon "${name}" not found`}>
       ?

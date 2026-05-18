@@ -258,4 +258,69 @@ describe('EmailCapture Section', () => {
     expect(screen.getByRole('link', { name: /Facebook/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /LinkedIn/i })).toBeInTheDocument()
   })
+
+  describe('Success state without AnimatedElement wrapper', () => {
+    it('success state renders without any AnimatedElement (data-reduced-motion) wrapper', async () => {
+      const user = userEvent.setup()
+      render(<EmailCapture />)
+
+      await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
+      await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+
+      await waitFor(() => {
+        expect(screen.getByText(/You're on the list!/)).toBeInTheDocument()
+      })
+
+      // AnimatedElement renders a div with data-reduced-motion attribute.
+      // The PR removed it from the success state, so no such element should exist
+      // inside the success container.
+      const animationWrappers = document.querySelectorAll('[data-reduced-motion]')
+      expect(animationWrappers).toHaveLength(0)
+    })
+
+    it('success title is immediately accessible without animation wrapper', async () => {
+      const user = userEvent.setup()
+      render(<EmailCapture />)
+
+      await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
+      await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+
+      await waitFor(() => {
+        // The h2 heading is a direct descendant of the success container —
+        // not nested inside an extra AnimatedElement div wrapper.
+        const successTitle = screen.getByRole('heading', { level: 2, name: /You're on the list!/i })
+        expect(successTitle).toBeInTheDocument()
+        // Parent should be the successContainer div, not an AnimatedElement div
+        expect(successTitle.parentElement).not.toHaveAttribute('data-reduced-motion')
+      })
+    })
+
+    it('success state renders next steps list without AnimatedElement wrapper', async () => {
+      const user = userEvent.setup()
+      render(<EmailCapture />)
+
+      await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
+      await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+
+      await waitFor(() => {
+        expect(screen.getByText(/You're on the list!/)).toBeInTheDocument()
+      })
+
+      // All success content should be visible without any --animation-delay CSS variable
+      // that AnimatedElement sets via useEffect. Content is accessible immediately.
+      const successHeading = screen.getByRole('heading', { level: 2 })
+      const successContainer = successHeading.closest('div')
+      expect(successContainer).not.toBeNull()
+      // No intermediate animation wrapper between success container and heading
+      const animationDivs = successContainer?.querySelectorAll('[data-reduced-motion]')
+      expect(animationDivs).toHaveLength(0)
+    })
+
+    it('form state still uses AnimatedElement wrappers (regression guard)', () => {
+      render(<EmailCapture />)
+      // The non-submitted form should still have AnimatedElement wrappers
+      const animationWrappers = document.querySelectorAll('[data-reduced-motion]')
+      expect(animationWrappers.length).toBeGreaterThan(0)
+    })
+  })
 })

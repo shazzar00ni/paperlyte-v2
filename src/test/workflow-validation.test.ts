@@ -291,12 +291,18 @@ describe('package-lock.json – picomatch dependency update', () => {
 })
 
 // ---------------------------------------------------------------------------
-// package-lock.json – axios SSRF fix (GHSA-3p68-rc4w-qgx5)
-// Axios < 1.15.0 has a NO_PROXY hostname normalisation bypass that can lead
-// to SSRF. The override in package.json forces >= 1.15.0.
+// package-lock.json – axios multiple CVE fix
+// Axios 1.0.0 – 1.15.1 carries a broad set of high-severity vulnerabilities
+// (prototype pollution, SSRF, CRLF injection, header injection, DoS, etc.).
+// The override in package.json forces >= 1.15.2.
+// Relevant advisories include: GHSA-3p68-rc4w-qgx5, GHSA-w9j2-pvgh-6h63,
+// GHSA-pmwg-cvhr-8vh7, GHSA-3w6x-2g7m-8v23, GHSA-q8qp-cvcw-x6jj,
+// GHSA-xhjh-pmcv-23jw, GHSA-445q-vr5w-6q77, GHSA-m7pr-hjqh-92cm,
+// GHSA-62hf-57xw-28j9, GHSA-5c9x-8gcm-mpgx, GHSA-vf2m-468p-8v99,
+// GHSA-pf86-5x62-jrwf, GHSA-6chq-wfr3-2hj9, GHSA-xx6v-rp6x-q39c.
 // ---------------------------------------------------------------------------
 
-describe('package-lock.json – axios security update (GHSA-3p68-rc4w-qgx5)', () => {
+describe('package-lock.json – axios security update (multiple CVEs)', () => {
   interface PackageLock {
     lockfileVersion: number
     packages: Record<string, { version: string; resolved: string; dev?: boolean }>
@@ -315,34 +321,37 @@ describe('package-lock.json – axios security update (GHSA-3p68-rc4w-qgx5)', ()
     expect(lockfile.packages).toHaveProperty('node_modules/axios')
   })
 
-  it('axios version should be >= 1.15.0 (not vulnerable)', () => {
+  it('axios version should be >= 1.15.2 (minimum safe version)', () => {
     const [major, minor, patch] = entry.version.split('.').map(Number)
-    const isAtLeast1_15_0 =
-      major > 1 || (major === 1 && minor > 15) || (major === 1 && minor === 15 && patch >= 0)
-    expect(isAtLeast1_15_0, `axios ${entry.version} is below the minimum safe version 1.15.0`).toBe(
-      true
-    )
+    const isAtLeast1_15_2 =
+      major > 1 || (major === 1 && minor > 15) || (major === 1 && minor === 15 && patch >= 2)
+    expect(
+      isAtLeast1_15_2,
+      `axios ${entry.version} is in the vulnerable range 1.0.0 – 1.15.1`
+    ).toBe(true)
   })
 
-  it('axios should NOT be the vulnerable version range (< 1.15.0)', () => {
-    const [major, minor] = entry.version.split('.').map(Number)
-    expect(major === 1 && minor < 15).toBe(false)
+  it('axios should NOT be in the vulnerable range (1.0.0 – 1.15.1)', () => {
+    const [major, minor, patch] = entry.version.split('.').map(Number)
+    const isVulnerable = major === 1 && (minor < 15 || (minor === 15 && patch < 2))
+    expect(isVulnerable).toBe(false)
   })
 
   it('axios resolved URL should point to a non-vulnerable release', () => {
-    // Verify URL version matches the installed version (>= 1.15.0 already checked above).
+    // Verify URL version matches the installed version (>= 1.15.2 already checked above).
     // Avoids hardcoding a specific patch version that breaks on future bumps.
     expect(entry.resolved).toContain(`axios-${entry.version}.tgz`)
   })
 })
 
 // ---------------------------------------------------------------------------
-// package-lock.json – basic-ftp FTP command injection fix (GHSA-chqc-8p9q-pq6q)
-// basic-ftp 5.2.0 allows FTP command injection via CRLF sequences.
-// The override in package.json forces >= 5.2.1.
+// package-lock.json – basic-ftp security fixes
+// GHSA-chqc-8p9q-pq6q: FTP command injection via CRLF in basic-ftp 5.2.0, fixed >= 5.2.1
+// GHSA-rpmf-866q-6p89: DoS via unbounded multiline control response in <= 5.3.0, fixed >= 5.3.1
+// The override in package.json forces >= 5.3.1.
 // ---------------------------------------------------------------------------
 
-describe('package-lock.json – basic-ftp security update (GHSA-chqc-8p9q-pq6q)', () => {
+describe('package-lock.json – basic-ftp security update (GHSA-chqc-8p9q-pq6q, GHSA-rpmf-866q-6p89)', () => {
   interface PackageLock {
     lockfileVersion: number
     packages: Record<string, { version: string; resolved: string; dev?: boolean }>
@@ -365,18 +374,19 @@ describe('package-lock.json – basic-ftp security update (GHSA-chqc-8p9q-pq6q)'
     expect(entry.version).not.toBe('5.2.0')
   })
 
-  it('basic-ftp version should be >= 5.2.1 (not vulnerable)', () => {
+  it('basic-ftp version should be >= 5.3.1 (minimum safe for all known CVEs)', () => {
     const [major, minor, patch] = entry.version.split('.').map(Number)
-    const isAtLeast5_2_1 =
-      major > 5 || (major === 5 && minor > 2) || (major === 5 && minor === 2 && patch >= 1)
+    const isAtLeast5_3_1 =
+      major > 5 || (major === 5 && minor > 3) || (major === 5 && minor === 3 && patch >= 1)
     expect(
-      isAtLeast5_2_1,
-      `basic-ftp ${entry.version} is below the minimum safe version 5.2.1`
+      isAtLeast5_3_1,
+      `basic-ftp ${entry.version} is below the minimum safe version 5.3.1`
     ).toBe(true)
   })
 
-  it('basic-ftp resolved URL should not point to the vulnerable 5.2.0 release', () => {
+  it('basic-ftp resolved URL should not point to a vulnerable release', () => {
     expect(entry.resolved).not.toContain('basic-ftp-5.2.0.tgz')
+    expect(entry.resolved).not.toContain('basic-ftp-5.3.0.tgz')
   })
 })
 
@@ -425,5 +435,107 @@ describe('package-lock.json – lodash-es security update (GHSA-r5fr-rjxr-66jc, 
 
   it('lodash-es resolved URL should not point to a vulnerable release', () => {
     expect(entry.resolved).not.toMatch(/lodash-es-4\.17\.\d+\.tgz/)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// .github/workflows/codacy.yml – upload simplification
+// PR changes:
+//   - Removed `upload: "false"` from the Run Codacy Analysis CLI step
+//   - Removed the entire "Upload merged SARIF to Codacy" step (manual curl upload)
+//   - The merge-sarif step and GitHub Code Scanning upload step are retained
+// ---------------------------------------------------------------------------
+
+describe('.github/workflows/codacy.yml – upload step removal', () => {
+  let content: string
+
+  beforeAll(() => {
+    content = readFileSync(resolve(projectRoot, '.github/workflows/codacy.yml'), 'utf-8')
+  })
+
+  it('should exist and be non-empty', () => {
+    expect(content.length).toBeGreaterThan(0)
+  })
+
+  it('should define the codacy-security-scan job', () => {
+    expect(content).toMatch(/codacy-security-scan:/)
+  })
+
+  it('should define the codacy-pr-review job', () => {
+    expect(content).toMatch(/codacy-pr-review:/)
+  })
+
+  it('codacy-security-scan should NOT have upload: "false" (was removed to allow default upload)', () => {
+    // The PR removed the explicit `upload: "false"` override from the Run Codacy Analysis CLI step.
+    // Verify it is no longer present to prevent regression.
+    const securityScanBlock = (() => {
+      const lines = content.split('\n')
+      const startIdx = lines.findIndex((l) => l.startsWith('  codacy-security-scan:'))
+      if (startIdx === -1) return ''
+      const jobLines: string[] = [lines[startIdx]]
+      for (let i = startIdx + 1; i < lines.length; i++) {
+        const line = lines[i]
+        if (line.startsWith('  ') && line.length > 2 && line[2] !== ' ' && line[2] !== '\t') break
+        jobLines.push(line)
+      }
+      return jobLines.join('\n')
+    })()
+
+    expect(securityScanBlock).not.toMatch(/upload:\s*["']false["']/)
+  })
+
+  it('should NOT contain a step named "Upload merged SARIF to Codacy" (manual curl step was removed)', () => {
+    expect(content).not.toContain('Upload merged SARIF to Codacy')
+  })
+
+  it('should NOT contain a manual curl upload to api.codacy.com (manual upload removed)', () => {
+    expect(content).not.toContain('api.codacy.com')
+  })
+
+  it('should NOT reference CODACY_PROJECT_TOKEN in a curl command (manual upload removed)', () => {
+    // The old manual curl step used CODACY_PROJECT_TOKEN; it must not appear in curl context.
+    // Note: it may still appear as a project-token input to the official action, which is fine.
+    expect(content).not.toMatch(/curl[\s\S]{0,200}CODACY_PROJECT_TOKEN/)
+  })
+
+  it('should retain the Merge SARIF runs step', () => {
+    expect(content).toContain('Merge SARIF runs into single run')
+    expect(content).toContain('merge-sarif-runs.sh')
+  })
+
+  it('should retain the Upload SARIF results file step for GitHub Code Scanning', () => {
+    expect(content).toContain('Upload SARIF results file')
+    expect(content).toContain('github/codeql-action/upload-sarif')
+  })
+
+  it('upload-sarif step should be conditional on merge-sarif success', () => {
+    expect(content).toMatch(/steps\.merge-sarif\.conclusion\s*==\s*['"]success['"]/)
+  })
+
+  it('codacy-pr-review job should still have upload: true for PR inline comments', () => {
+    const lines = content.split('\n')
+    const startIdx = lines.findIndex((l) => l.startsWith('  codacy-pr-review:'))
+    if (startIdx === -1) {
+      throw new Error('codacy-pr-review job not found')
+    }
+    const jobLines: string[] = [lines[startIdx]]
+    for (let i = startIdx + 1; i < lines.length; i++) {
+      const line = lines[i]
+      if (line.startsWith('  ') && line.length > 2 && line[2] !== ' ' && line[2] !== '\t') break
+      jobLines.push(line)
+    }
+    const prReviewBlock = jobLines.join('\n')
+    expect(prReviewBlock).toMatch(/upload:\s*true/)
+  })
+
+  it('workflow should trigger on push to main, pull_request, and schedule', () => {
+    expect(content).toMatch(/push:/)
+    expect(content).toMatch(/pull_request:/)
+    expect(content).toMatch(/schedule:/)
+  })
+
+  it('codacy-security-scan job should skip pull_request events', () => {
+    // The job has a condition to run only on push/schedule (not PRs, which use codacy-pr-review)
+    expect(content).toMatch(/github\.event_name\s*!=\s*['"]pull_request['"]/)
   })
 })

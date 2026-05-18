@@ -338,7 +338,7 @@ describe('package-lock.json – axios security update (multiple CVEs)', () => {
   })
 
   it('axios resolved URL should point to a non-vulnerable release', () => {
-    // Verify URL version matches the installed version (>= 1.15.0 already checked above).
+    // Verify URL version matches the installed version (>= 1.15.2 already checked above).
     // Avoids hardcoding a specific patch version that breaks on future bumps.
     expect(entry.resolved).toContain(`axios-${entry.version}.tgz`)
   })

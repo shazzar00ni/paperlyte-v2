@@ -119,8 +119,7 @@ export const EmailCapture = (): React.ReactElement => {
     return (
       <Section id="email-capture" background="surface">
         <div className={styles.container}>
-          <AnimatedElement animation="fadeIn">
-            <div className={styles.successContainer}>
+          <div className={styles.successContainer}>
               <div className={styles.successIcon}>
                 <Icon name="fa-check-circle" size="xl" color="var(--color-success)" />
               </div>
@@ -166,10 +165,9 @@ export const EmailCapture = (): React.ReactElement => {
                 </div>
               </div>
             </div>
-          </AnimatedElement>
-        </div>
-      </Section>
-    )
+          </div>
+        </Section>
+      )
   }
 
   return (

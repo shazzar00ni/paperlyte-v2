@@ -243,8 +243,11 @@ test.describe('Landing Page', () => {
     await emailInput.fill(rawEmail)
     await submitButton.click()
 
-    // Accept both straight (U+0027) and typographic (U+2019) apostrophes for cross-environment robustness
-    await expect(page.getByText(/You['\u2019]re on the list!/i)).toBeVisible({ timeout: 5000 })
+    // Accept both straight (U+0027) and typographic (U+2019) apostrophes for cross-environment robustness.
+    // Use a more specific locator and increased timeout (10s) to resolve WebKit/Mobile Safari flakiness.
+    await expect(page.locator('#email-capture h2').getByText(/You['\u2019]re on the list!/i)).toBeVisible({
+      timeout: 10000,
+    })
 
     // Assert the component sent the normalised (trimmed + lowercased) email
     expect(capturedPostBody).not.toBeNull()

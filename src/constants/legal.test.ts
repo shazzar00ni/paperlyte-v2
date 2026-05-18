@@ -112,6 +112,7 @@ describe('Legal Constants', () => {
     it('should have all required document links', () => {
       expect(LEGAL_CONFIG.documents).toHaveProperty('privacy')
       expect(LEGAL_CONFIG.documents).toHaveProperty('terms')
+      expect(LEGAL_CONFIG.documents).toHaveProperty('gdpr')
       expect(LEGAL_CONFIG.documents).toHaveProperty('cookies')
       expect(LEGAL_CONFIG.documents).toHaveProperty('security')
       expect(LEGAL_CONFIG.documents).toHaveProperty('dmca')
@@ -130,6 +131,7 @@ describe('Legal Constants', () => {
     it('should have privacy and terms documents available', () => {
       expect(LEGAL_CONFIG.documents.privacy).toBe('/privacy.html')
       expect(LEGAL_CONFIG.documents.terms).toBe('/terms.html')
+      expect(LEGAL_CONFIG.documents.gdpr).toBe('/gdpr.html')
     })
   })
 

@@ -112,6 +112,7 @@ describe('Legal Constants', () => {
     it('should have all required document links', () => {
       expect(LEGAL_CONFIG.documents).toHaveProperty('privacy')
       expect(LEGAL_CONFIG.documents).toHaveProperty('terms')
+      expect(LEGAL_CONFIG.documents).toHaveProperty('gdpr')
       expect(LEGAL_CONFIG.documents).toHaveProperty('cookies')
       expect(LEGAL_CONFIG.documents).toHaveProperty('security')
       expect(LEGAL_CONFIG.documents).toHaveProperty('dmca')
@@ -130,6 +131,27 @@ describe('Legal Constants', () => {
     it('should have privacy and terms documents available', () => {
       expect(LEGAL_CONFIG.documents.privacy).toBe('/privacy.html')
       expect(LEGAL_CONFIG.documents.terms).toBe('/terms.html')
+      expect(LEGAL_CONFIG.documents.gdpr).toBe('/gdpr.html')
+    })
+
+    it('gdpr document should be a real path, not the sentinel placeholder "#"', () => {
+      expect(LEGAL_CONFIG.documents.gdpr).not.toBe('#')
+    })
+
+    it('gdpr document should start with "/" indicating a local path', () => {
+      expect(LEGAL_CONFIG.documents.gdpr).toMatch(/^\//)
+    })
+
+    it('gdpr document path should end with ".html"', () => {
+      expect(LEGAL_CONFIG.documents.gdpr).toMatch(/\.html$/)
+    })
+
+    it('unimplemented documents should still use sentinel "#" value', () => {
+      // Regression: verify sentinel documents haven't been accidentally given real paths
+      expect(LEGAL_CONFIG.documents.cookies).toBe('#')
+      expect(LEGAL_CONFIG.documents.security).toBe('#')
+      expect(LEGAL_CONFIG.documents.dmca).toBe('#')
+      expect(LEGAL_CONFIG.documents.accessibility).toBe('#')
     })
   })
 

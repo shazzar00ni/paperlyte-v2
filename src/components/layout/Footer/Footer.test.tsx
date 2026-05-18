@@ -55,6 +55,40 @@ describe('Footer', () => {
 
     const termsLink = screen.getByRole('link', { name: 'Terms of Service' })
     expect(termsLink).toBeInTheDocument()
+
+    const gdprLink = screen.getByRole('link', { name: 'GDPR Statement' })
+    expect(gdprLink).toBeInTheDocument()
+  })
+
+  it('should render GDPR Statement link with correct href', () => {
+    render(<Footer />)
+
+    const gdprLink = screen.getByRole('link', { name: 'GDPR Statement' })
+    expect(gdprLink).toHaveAttribute('href', LEGAL_CONFIG.documents.gdpr)
+    expect(gdprLink).toHaveAttribute('href', '/gdpr.html')
+  })
+
+  it('should render GDPR Statement link with target="_blank" and rel="noopener noreferrer"', () => {
+    render(<Footer />)
+
+    const gdprLink = screen.getByRole('link', { name: 'GDPR Statement' })
+    expect(gdprLink).toHaveAttribute('target', '_blank')
+    expect(gdprLink).toHaveAttribute('rel', 'noopener noreferrer')
+  })
+
+  it('should render all three legal links with consistent security attributes', () => {
+    render(<Footer />)
+
+    const legalLinks = [
+      screen.getByRole('link', { name: 'Privacy Policy' }),
+      screen.getByRole('link', { name: 'Terms of Service' }),
+      screen.getByRole('link', { name: 'GDPR Statement' }),
+    ]
+
+    legalLinks.forEach((link) => {
+      expect(link).toHaveAttribute('target', '_blank')
+      expect(link).toHaveAttribute('rel', 'noopener noreferrer')
+    })
   })
 
   it('should render Connect link group with social links', () => {

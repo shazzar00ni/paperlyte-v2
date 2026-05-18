@@ -63,6 +63,157 @@ describe('useTheme', () => {
     window.matchMedia = originalMatchMedia
   })
 
+  describe('Legacy key migration', () => {
+    it('should migrate theme value from legacy key and remove old keys', () => {
+      localStorageMock.setItem('theme', 'dark')
+      localStorageMock.setItem('theme-user-preference', 'true')
+      const { result } = renderHook(() => useTheme())
+
+      // Theme is restored from migrated value
+      expect(result.current.theme).toBe('dark')
+      // New versioned keys are populated
+      expect(localStorageMock.getItem('paperlyte:v1:theme')).toBe('dark')
+      expect(localStorageMock.getItem('paperlyte:v1:theme-user-preference')).toBe('true')
+      // Legacy keys are removed
+      expect(localStorageMock.getItem('theme')).toBeNull()
+      expect(localStorageMock.getItem('theme-user-preference')).toBeNull()
+    })
+
+    it('should migrate theme without user-preference flag when only theme key exists', () => {
+      localStorageMock.setItem('theme', 'light')
+      const { result } = renderHook(() => useTheme())
+
+      expect(localStorageMock.getItem('paperlyte:v1:theme')).toBe('light')
+      expect(localStorageMock.getItem('paperlyte:v1:theme-user-preference')).toBeNull()
+      expect(localStorageMock.getItem('theme')).toBeNull()
+      // beforeEach mocks matchMedia to return false (light preference)
+      expect(result.current.theme).toBe('light')
+    })
+
+    it('should clean up orphaned theme-user-preference key when theme key is absent', () => {
+      localStorageMock.setItem('theme-user-preference', 'true')
+      renderHook(() => useTheme())
+
+      expect(localStorageMock.getItem('theme-user-preference')).toBeNull()
+      expect(localStorageMock.getItem('paperlyte:v1:theme-user-preference')).toBe('true')
+      // Migration does not set paperlyte:v1:theme (no legacy theme key existed).
+      // The useEffect writes the system-default theme after render; beforeEach
+      // mocks matchMedia to return false so the system preference is 'light'.
+      expect(localStorageMock.getItem('paperlyte:v1:theme')).toBe('light')
+    })
+
+    it('should not overwrite new keys if no legacy keys exist', () => {
+      localStorageMock.setItem('paperlyte:v1:theme', 'dark')
+      localStorageMock.setItem('paperlyte:v1:theme-user-preference', 'true')
+      renderHook(() => useTheme())
+
+      // New keys are untouched
+      expect(localStorageMock.getItem('paperlyte:v1:theme')).toBe('dark')
+      expect(localStorageMock.getItem('paperlyte:v1:theme-user-preference')).toBe('true')
+    })
+
+    it('should not overwrite versioned keys when both legacy and versioned keys coexist', () => {
+      // Versioned keys already set by current code
+      localStorageMock.setItem('paperlyte:v1:theme', 'dark')
+      localStorageMock.setItem('paperlyte:v1:theme-user-preference', 'true')
+      // Stale legacy keys also present (e.g. from an old browser tab)
+      localStorageMock.setItem('theme', 'light')
+      localStorageMock.setItem('theme-user-preference', 'true')
+
+      const { result } = renderHook(() => useTheme())
+
+      // Versioned keys win — legacy 'light' must not overwrite versioned 'dark'
+      expect(localStorageMock.getItem('paperlyte:v1:theme')).toBe('dark')
+      expect(localStorageMock.getItem('paperlyte:v1:theme-user-preference')).toBe('true')
+      // Legacy keys are removed
+      expect(localStorageMock.getItem('theme')).toBeNull()
+      expect(localStorageMock.getItem('theme-user-preference')).toBeNull()
+      // Hook uses the versioned value (dark), not the legacy one (light)
+      expect(result.current.theme).toBe('dark')
+    })
+
+    it('should remove legacy theme key even when its value is invalid (not light/dark)', () => {
+      // An invalid value stored in the legacy key must not be copied to the versioned key,
+      // but the legacy key must still be cleaned up.
+      localStorageMock.setItem('theme', 'invalid-value')
+      localStorageMock.setItem('theme-user-preference', 'true')
+
+      renderHook(() => useTheme())
+
+      // Invalid legacy value must NOT be written to the versioned key
+      expect(localStorageMock.getItem('paperlyte:v1:theme')).not.toBe('invalid-value')
+      // Legacy key must be removed regardless
+      expect(localStorageMock.getItem('theme')).toBeNull()
+      expect(localStorageMock.getItem('theme-user-preference')).toBeNull()
+      // Preference key is still migrated independently of the theme value
+      expect(localStorageMock.getItem('paperlyte:v1:theme-user-preference')).toBe('true')
+    })
+
+    it('should not write any versioned keys when no legacy keys exist (pure no-op path)', () => {
+      // Absolutely no storage data — migration must be a true no-op
+      renderHook(() => useTheme())
+
+      // Migration should not have touched any legacy keys
+      expect(localStorageMock.getItem('theme')).toBeNull()
+      expect(localStorageMock.getItem('theme-user-preference')).toBeNull()
+      // The only versioned key written is the theme set by the useEffect persistence
+      // (paperlyte:v1:theme). User-preference key must NOT be written without an
+      // explicit toggle, since userHasExplicitPreference starts as false.
+      expect(localStorageMock.getItem('paperlyte:v1:theme-user-preference')).toBeNull()
+    })
+  })
+
+  describe('Storage error resilience', () => {
+    it('falls back to light theme and does not throw when migration throws', () => {
+      // Make the first getItem call (legacy key lookup in migrateLegacyTheme) throw
+      const originalGetItem = localStorageMock.getItem
+      let callCount = 0
+      localStorageMock.getItem = vi.fn((key: string) => {
+        if (callCount++ === 0) throw new Error('SecurityError: storage is blocked')
+        return originalGetItem(key)
+      })
+
+      // Single renderHook call: each call to localStorageMock.getItem mutates the
+      // counter, so rendering twice consumes the throwing call before the assertion
+      // and hides regressions where the hook leaks the throw on subsequent reads.
+      const { result } = renderHook(() => useTheme())
+      expect(result.current.theme).toBe('light')
+
+      localStorageMock.getItem = originalGetItem
+    })
+
+    it('falls back gracefully when getInitialUserPreference throws', () => {
+      // First few getItem calls succeed (legacy key checks), then throw on USER_PREFERENCE_KEY
+      const originalGetItem = localStorageMock.getItem
+      localStorageMock.getItem = vi.fn((key: string) => {
+        // Throw on reads for user preference key
+        if (key === 'paperlyte:v1:theme-user-preference') throw new Error('SecurityError')
+        return originalGetItem(key)
+      })
+
+      const { result } = renderHook(() => useTheme())
+      expect(result.current.theme).toBe('light')
+
+      localStorageMock.getItem = originalGetItem
+    })
+
+    it('applies theme to DOM and does not throw when localStorage.setItem throws', async () => {
+      const originalSetItem = localStorageMock.setItem
+      localStorageMock.setItem = vi.fn(() => {
+        throw new Error('QuotaExceededError')
+      })
+
+      renderHook(() => useTheme())
+
+      // Theme is still applied to the DOM even if storage fails
+      await waitFor(() => {
+        expect(document.documentElement.getAttribute('data-theme')).toBe('light')
+      })
+
+      localStorageMock.setItem = originalSetItem
+    })
+  })
+
   describe('Initialization', () => {
     it('should initialize with light theme by default', () => {
       const { result } = renderHook(() => useTheme())
@@ -70,14 +221,14 @@ describe('useTheme', () => {
     })
 
     it('should load theme from localStorage if present', () => {
-      localStorageMock.setItem('theme', 'dark')
-      localStorageMock.setItem('theme-user-preference', 'true')
+      localStorageMock.setItem('paperlyte:v1:theme', 'dark')
+      localStorageMock.setItem('paperlyte:v1:theme-user-preference', 'true')
       const { result } = renderHook(() => useTheme())
       expect(result.current.theme).toBe('dark')
     })
 
     it('should ignore invalid theme values from localStorage', () => {
-      localStorageMock.setItem('theme', 'invalid')
+      localStorageMock.setItem('paperlyte:v1:theme', 'invalid')
       const { result } = renderHook(() => useTheme())
       expect(result.current.theme).toBe('light')
     })
@@ -99,8 +250,8 @@ describe('useTheme', () => {
     })
 
     it('should prefer localStorage over system preference', () => {
-      localStorageMock.setItem('theme', 'light')
-      localStorageMock.setItem('theme-user-preference', 'true')
+      localStorageMock.setItem('paperlyte:v1:theme', 'light')
+      localStorageMock.setItem('paperlyte:v1:theme-user-preference', 'true')
       window.matchMedia = vi.fn().mockImplementation((query: string) => ({
         matches: query === '(prefers-color-scheme: dark)',
         media: query,
@@ -126,7 +277,7 @@ describe('useTheme', () => {
       })
 
       await waitFor(() => {
-        expect(localStorageMock.getItem('theme')).toBe('dark')
+        expect(localStorageMock.getItem('paperlyte:v1:theme')).toBe('dark')
       })
     })
 
@@ -143,8 +294,8 @@ describe('useTheme', () => {
     })
 
     it('should set data-theme to light for light theme', async () => {
-      localStorageMock.setItem('theme', 'dark')
-      localStorageMock.setItem('theme-user-preference', 'true')
+      localStorageMock.setItem('paperlyte:v1:theme', 'dark')
+      localStorageMock.setItem('paperlyte:v1:theme-user-preference', 'true')
       const { result } = renderHook(() => useTheme())
 
       act(() => {
@@ -169,8 +320,8 @@ describe('useTheme', () => {
     })
 
     it('should toggle from dark to light', () => {
-      localStorageMock.setItem('theme', 'dark')
-      localStorageMock.setItem('theme-user-preference', 'true')
+      localStorageMock.setItem('paperlyte:v1:theme', 'dark')
+      localStorageMock.setItem('paperlyte:v1:theme-user-preference', 'true')
       const { result } = renderHook(() => useTheme())
 
       act(() => {
@@ -241,7 +392,7 @@ describe('useTheme', () => {
 
       // Clear localStorage to simulate no user preference
       act(() => {
-        localStorageMock.removeItem('theme')
+        localStorageMock.removeItem('paperlyte:v1:theme')
       })
 
       // Simulate system preference change to dark
@@ -255,8 +406,8 @@ describe('useTheme', () => {
     })
 
     it('should NOT update theme when system preference changes if user has set preference', () => {
-      localStorageMock.setItem('theme', 'light')
-      localStorageMock.setItem('theme-user-preference', 'true')
+      localStorageMock.setItem('paperlyte:v1:theme', 'light')
+      localStorageMock.setItem('paperlyte:v1:theme-user-preference', 'true')
       let changeHandler: ((e: MediaQueryListEvent) => void) | null = null
 
       window.matchMedia = vi.fn().mockImplementation(() => ({
@@ -436,9 +587,29 @@ describe('useTheme with persistence disabled', () => {
     // localStorage.setItem should not have been called for theme storage
     // (it may be called for other things, so we check specifically)
     const themeSetCalls = localStorageMock.setItem.mock.calls.filter(
-      (call) => call[0] === 'theme' || call[0] === 'theme-user-preference'
+      (call) => call[0] === 'paperlyte:v1:theme' || call[0] === 'paperlyte:v1:theme-user-preference'
     )
     expect(themeSetCalls).toHaveLength(0)
+  })
+
+  it('should update filter to catch regressions writing legacy keys when persistence disabled', async () => {
+    const { useTheme: useThemeNoPersist } = await import('./useTheme')
+
+    const { result } = renderHook(() => useThemeNoPersist())
+
+    act(() => {
+      result.current.toggleTheme()
+    })
+
+    const allSetCalls = localStorageMock.setItem.mock.calls.filter((call) =>
+      [
+        'paperlyte:v1:theme',
+        'paperlyte:v1:theme-user-preference',
+        'theme',
+        'theme-user-preference',
+      ].includes(call[0])
+    )
+    expect(allSetCalls).toHaveLength(0)
   })
 
   it('should follow system preference changes when persistence is disabled', async () => {

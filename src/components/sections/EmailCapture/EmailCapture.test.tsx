@@ -258,4 +258,41 @@ describe('EmailCapture Section', () => {
     expect(screen.getByRole('link', { name: /Facebook/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /LinkedIn/i })).toBeInTheDocument()
   })
+
+  it('success state renders without AnimatedElement animation wrapper', async () => {
+    const user = userEvent.setup()
+    const { container } = render(<EmailCapture />)
+
+    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
+    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+
+    await waitFor(() => {
+      expect(screen.getByText(/You're on the list!/)).toBeInTheDocument()
+    })
+
+    // AnimatedElement renders a <div data-reduced-motion="...">. The success
+    // state in this PR removes the AnimatedElement wrapper, so no such div
+    // should exist as a wrapper around the success content.
+    const animationWrappers = container.querySelectorAll('[data-reduced-motion]')
+    expect(animationWrappers).toHaveLength(0)
+  })
+
+  it('success state content is immediately accessible without intersection observer gating', async () => {
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
+    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+
+    // Content must be visible immediately on render, not gated behind
+    // an intersection observer (which AnimatedElement previously used).
+    await waitFor(() => {
+      expect(screen.getByText(/You're on the list!/)).toBeVisible()
+    })
+
+    // All next-steps and sharing content is rendered directly (not deferred)
+    expect(screen.getByRole('link', { name: /Twitter/i })).toBeVisible()
+    expect(screen.getByRole('link', { name: /Facebook/i })).toBeVisible()
+    expect(screen.getByRole('link', { name: /LinkedIn/i })).toBeVisible()
+  })
 })

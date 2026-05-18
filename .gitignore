@@ -52,6 +52,6 @@ public/favicon.ico
 .netlify
 .vercel
 
-# Lighthouse CI local report artifacts
-.lighthouseci
+# Lighthouse CI local run artifacts
+.lighthouseci/
 .lighthouseci-*

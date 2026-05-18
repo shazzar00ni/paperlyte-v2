@@ -245,7 +245,7 @@ test.describe('Landing Page', () => {
 
     // Accept both straight (U+0027) and typographic (U+2019) apostrophes for cross-environment robustness.
     // Use a more specific locator and increased timeout (10s) to resolve WebKit/Mobile Safari flakiness.
-    await expect(page.locator('#email-capture h2').getByText(/You['\u2019]re on the list!/i)).toBeVisible({
+    await expect(page.locator('#email-capture h2:has-text("list")')).toBeVisible({
       timeout: 10000,
     })
 

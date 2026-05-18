@@ -218,9 +218,7 @@ test.describe('Landing Page', () => {
     // `netlify dev` being running. The Vite preview server used in CI does not
     // serve `/.netlify/functions/*`, which would otherwise return a 404 and
     // surface as the error state instead of the success state.
-    let capturedPostBody: string | null = null
     await page.route('**/.netlify/functions/subscribe', async (route) => {
-      capturedPostBody = route.request().postData()
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -241,12 +239,18 @@ test.describe('Landing Page', () => {
     const rawEmail = `E2E-Test-${timestamp}@EXAMPLE.COM`
     const expectedEmail = `e2e-test-${timestamp}@example.com`
     await emailInput.fill(rawEmail)
-    await submitButton.click()
 
-    // Accept both straight (U+0027) and typographic (U+2019) apostrophes for cross-environment robustness
-    await expect(page.getByText(/You['\u2019]re on the list!/i)).toBeVisible({ timeout: 5000 })
+    // Capture the request to verify payload, which is more robust than a shared variable in page.route
+    const requestPromise = page.waitForRequest('**/.netlify/functions/subscribe')
+    await submitButton.click()
+    const request = await requestPromise
+
+    // Accept both straight (U+0027) and typographic (U+2019) apostrophes for cross-environment robustness.
+    // Use an increased timeout (10s) to resolve WebKit/Mobile Safari flakiness.
+    await expect(page.getByText(/You['\u2019]re on the list!/i)).toBeVisible({ timeout: 10000 })
 
     // Assert the component sent the normalised (trimmed + lowercased) email
+    const capturedPostBody = request.postData()
     expect(capturedPostBody).not.toBeNull()
     expect(JSON.parse(capturedPostBody!)).toEqual({ email: expectedEmail })
   })

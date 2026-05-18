@@ -7,9 +7,11 @@ test.describe('Landing Page', () => {
     // Check hero heading exists
     await expect(page.locator('h1')).toBeVisible()
 
-    // Check CTA button exists (matches actual Hero component buttons)
-    const ctaButton = page.getByRole('button', { name: /start writing for free|view the demo/i })
-    await expect(ctaButton.first()).toBeVisible()
+    // Check primary CTA button exists
+    await expect(page.getByRole('button', { name: /start writing for free/i })).toBeVisible()
+
+    // Check secondary CTA button exists separately (prevents a missing button being masked by .first())
+    await expect(page.getByRole('button', { name: /see how it works/i })).toBeVisible()
 
     // Check page is accessible
     await expect(page).toHaveTitle(/Paperlyte/i)
@@ -60,7 +62,8 @@ test.describe('Landing Page', () => {
     test.skip(isMobile, 'Performance budgets target desktop viewport')
 
     await page.goto('/')
-    await page.waitForLoadState('load')
+    // Wait for h1 to be visible to ensure initial render is complete
+    await page.waitForSelector('h1', { state: 'visible' })
 
     interface CoreWebVitalsMetrics {
       fcp: number | null

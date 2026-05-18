@@ -80,17 +80,38 @@ export const EmailCapture = (): React.ReactElement => {
       setIsLoading(false)
       setIsSubmitted(true)
     } catch (err) {
-      const caughtError = err instanceof Error ? err : new Error(String(err))
-      logError(caughtError, { tags: { context: 'waitlist-submit' } })
+      const error = err instanceof Error ? err : new Error(String(err))
+      logError(
+        error,
+        {
+          tags: {
+            component: 'EmailCapture',
+            action: 'subscribe',
+            errorType: error.name,
+          },
+          ...(!(err instanceof Error)
+            ? { errorInfo: { originalError: String(err).slice(0, 200) } }
+            : {}),
+        },
+        'EmailCapture'
+      )
+
+      let message = "Couldn't add you to the waitlist. Check your connection and try again."
+      if (
+        error.name === 'TypeError' ||
+        error.message.toLowerCase().includes('network') ||
+        error.message.toLowerCase().includes('fetch')
+      ) {
+        message = 'Connection error. Check your internet and try again.'
+      } else if (
+        error.message.toLowerCase().includes('invalid') ||
+        error.message.toLowerCase().includes('validation')
+      ) {
+        message = "That email address doesn't look right. Please check and try again."
+      }
 
       setIsLoading(false)
-      setError(
-        caughtError.name === 'TypeError' ||
-          caughtError.message.toLowerCase().includes('network') ||
-          caughtError.message.toLowerCase().includes('fetch')
-          ? 'Network error. Please check your connection and try again.'
-          : 'Failed to join waitlist. Please try again.'
-      )
+      setError(message)
     }
   }
 
@@ -159,9 +180,7 @@ export const EmailCapture = (): React.ReactElement => {
         </AnimatedElement>
 
         <AnimatedElement animation="fadeIn" delay={100}>
-          <p className={styles.subtitle}>
-            We're launching in {LAUNCH_QUARTER}. Join the waitlist now to:
-          </p>
+          <p className={styles.subtitle}>Launching {LAUNCH_QUARTER}. Join the waitlist to:</p>
         </AnimatedElement>
 
         <AnimatedElement animation="fadeIn" delay={200}>

@@ -241,6 +241,11 @@ test.describe('Landing Page', () => {
     await page.emulateMedia({ colorScheme: 'light' })
     await page.goto('/')
 
+    // useTheme sets data-theme in a useEffect, which runs after the first paint.
+    // page.goto() resolves on the 'load' event, which fires before useEffects run,
+    // so we must wait for the attribute to appear before reading it.
+    await page.waitForFunction(() => document.documentElement.hasAttribute('data-theme'))
+
     // Determine the actual initial theme — emulateMedia is unreliable in Firefox/WebKit headless
     // so we read the DOM directly rather than assuming light mode.
     const initialTheme = await page.evaluate(() => {
@@ -312,22 +317,25 @@ test.describe('Landing Page', () => {
       .locator('#email-capture')
       .getByRole('button', { name: /join the waitlist/i })
 
+    // Scroll the section into view before interacting. This (a) fires IntersectionObserver
+    // so AnimatedElement wrappers become visible and actionable \u2014 no force:true needed,
+    // and (b) mirrors the real user path (scroll to see form, then fill it).
+    await page.locator('#email-capture').scrollIntoViewIfNeeded()
+    await expect(emailInput).toBeVisible()
+
     // Use mixed-case to verify the component normalises (trim + lowercase) before POSTing.
     // Use a unique timestamp to avoid duplicate-rejection flakiness if pointed at a real backend.
     const timestamp = Date.now()
     const rawEmail = `E2E-Test-${timestamp}@EXAMPLE.COM`
     const expectedEmail = `e2e-test-${timestamp}@example.com`
-    // force:true bypasses opacity:0 actionability check (same reason as FAQ test above)
-    await emailInput.fill(rawEmail, { force: true })
-    await submitButton.click({ force: true })
+    await emailInput.fill(rawEmail)
+    await submitButton.click()
 
-    // Scroll the email capture section into view so IntersectionObserver fires on the
-    // AnimatedElement wrapping the success message \u2014 without this, below-fold sections
-    // stay at opacity:0 in CI headless viewports and the visibility check times out.
-    await page.locator('#email-capture').scrollIntoViewIfNeeded()
-
+    // Success banner replaces the form inside the same #email-capture section, which is
+    // already in the viewport from the scroll above, so IntersectionObserver fires on the
+    // new AnimatedElement immediately when it mounts.
     // Accept both straight (U+0027) and typographic (U+2019) apostrophes for cross-environment robustness
-    await expect(page.getByText(/You['\u2019]re on the list!/i)).toBeVisible({ timeout: 5000 })
+    await expect(page.getByText(/You['\u2019]re on the list!/i)).toBeVisible({ timeout: 10000 })
 
     // Assert the component sent the normalised (trimmed + lowercased) email
     expect(capturedPostBody).not.toBeNull()
@@ -354,11 +362,17 @@ test.describe('Landing Page', () => {
     // Wait for initial render so all interactive elements are present in the DOM.
     await page.waitForSelector('h1', { state: 'visible' })
 
-    // Focus a known nav element with explicit :focus-visible CSS rather than
-    // pressing Tab from the page root. page.keyboard.press('Tab') without prior
-    // user activation (mouse click/hover) does not reliably trigger the browser's
-    // focus-management system in headless Chromium, leaving document.activeElement
-    // as <body>. Programmatic focus via locator.focus() is always reliable.
+    // Validate the initial Tab path from an unfocused document. In Chromium,
+    // CDP-level keyboard dispatch works without prior pointer activation, so the
+    // first Tab lands on the first focusable element (the skip-link).
+    await page.keyboard.press('Tab')
+    const firstTabTag = await page.evaluate(() => document.activeElement?.tagName.toLowerCase())
+    expect(['a', 'button', 'input', 'select', 'textarea'].includes(firstTabTag ?? '')).toBe(true)
+
+    // Programmatically focus a known nav link for the focus-indicator check.
+    // locator.focus() is used here (rather than tabbing from the skip-link) because
+    // the number of Tab presses to reach the Features link could change if the DOM
+    // order changes — programmatic focus keeps this assertion stable.
     const featuresLink = page.locator('header').getByRole('link', { name: /^features$/i })
     await featuresLink.focus()
 

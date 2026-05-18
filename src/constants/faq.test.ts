@@ -83,7 +83,7 @@ describe('FAQ Constants', () => {
     it('should include data privacy FAQ', () => {
       const privacyFaq = FAQ_ITEMS.find((item) => item.id === 'data-privacy')
       expect(privacyFaq).toBeDefined()
-      expect(privacyFaq?.answer).toContain('encryption')
+      expect(privacyFaq?.answer).toContain('encrypt')
     })
 
     it('should reference the LAUNCH_QUARTER in answers', () => {

@@ -71,7 +71,10 @@ export const useTheme = () => {
   const getInitialUserPreference = (): boolean => {
     if (!isBrowser || !persistenceEnabled) return false
     try {
-      return localStorage.getItem(USER_PREFERENCE_STORAGE_NAME) === 'true'
+      const storedTheme = localStorage.getItem(THEME_STORAGE_NAME)
+      return (
+        isValidTheme(storedTheme) && localStorage.getItem(USER_PREFERENCE_STORAGE_NAME) === 'true'
+      )
     } catch (err) {
       logError(toError(err), {
         tags: { hook: 'useTheme', operation: 'readUserPreferenceFlag' },

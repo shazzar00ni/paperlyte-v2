@@ -1,0 +1,26 @@
+### Manual Branch Reviews (May 18, 2026)
+
+#### origin/claude/fix-open-redirect-TX551
+- **Status:** Ready
+- **Summary:** Security hardening for navigation utilities.
+- **Feedback:** Comprehensive security update to `src/utils/navigation.ts`. Successfully restricts `safeNavigate` to same-origin URLs by default, effectively preventing open redirect vulnerabilities. The implementation of `isSafeUrl` with `SafeUrlOptions` is flexible and well-tested, allowing for controlled external navigation in components (like `<a>` tags) while maintaining a strict default for programmatic navigation. Excellent integration with the monitoring system for tracking blocked navigation attempts.
+
+#### origin/claude/tree-shake-font-awesome-cK85j
+- **Status:** Ready
+- **Summary:** Bundle size optimization via Icon refactor.
+- **Feedback:** Significantly reduces bundle size by replacing the global Font Awesome library with a localized SVG path mapping in `src/components/ui/Icon/icons.ts`. The normalization of icon names (stripping `fa-` prefixes) and the use of CSS modules for styling ensure a clean, maintainable implementation. This approach ensures that only the SVG paths for icons actually used in the application are included in the final bundle.
+
+#### origin/claude/accessibility-audit-baseline-USu5N
+- **Status:** Ready
+- **Summary:** WCAG compliance documentation and baseline improvements.
+- **Feedback:** Provides extensive documentation on accessibility compliance in `docs/AUDIT-REPORT.md` and a new `docs/KEYBOARD-NAVIGATION-CHECKLIST.md`. Includes minor but important fixes for keyboard navigation and focus management in `src/App.tsx`. This documentation is a valuable resource for maintaining high accessibility standards as the project evolves.
+
+#### origin/claude/netlify-markdown-edge-function-cdyQy
+- **Status:** Ready
+- **Summary:** Netlify Edge Function for Markdown content delivery.
+- **Feedback:** Implements a robust Edge Function in `netlify/edge-functions/markdown-response.ts` that serves Markdown versions of site content when requested via the `Accept: text/markdown` header. This is an excellent optimization for AI agents, reducing token usage by approximately 80%. The implementation uses `sanitize-html` and `turndown` for secure and accurate conversion, and includes a comprehensive test suite.
+
+#### origin/claude/add-claude-documentation-QxLA4
+- **Status:** Ready
+- **Summary:** Comprehensive architecture and coding documentation.
+- **Feedback:** Significant update to `CLAUDE.md`, providing detailed documentation on project architecture, coding standards, and common tasks. This serves as an essential guide for new contributors and ensures consistency across the codebase. The documentation is well-structured and covers everything from environment setup to deployment procedures.

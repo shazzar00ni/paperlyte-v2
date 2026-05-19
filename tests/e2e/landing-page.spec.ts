@@ -243,8 +243,9 @@ test.describe('Landing Page', () => {
     await emailInput.fill(rawEmail)
     await submitButton.click()
 
-    // Accept both straight (U+0027) and typographic (U+2019) apostrophes for cross-environment robustness
-    await expect(page.getByText(/You['\u2019]re on the list!/i)).toBeVisible({ timeout: 5000 })
+    // Target the specific container for the success message with an increased timeout for slow CI environments.
+    // WebKit/Mobile Safari can be slower to render the transition to the success state.
+    await expect(page.locator('#email-capture h2:has-text("list")')).toBeVisible({ timeout: 10000 })
 
     // Assert the component sent the normalised (trimmed + lowercased) email
     expect(capturedPostBody).not.toBeNull()

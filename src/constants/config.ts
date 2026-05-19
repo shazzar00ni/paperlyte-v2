@@ -44,8 +44,9 @@ export const APP_CONFIG = {
 export const PERSISTENCE_CONFIG = {
   /**
    * Allow theme preference to be persisted to localStorage.
+   * Driven by VITE_ALLOW_PERSISTENT_THEME (see .env files and index.html meta tag).
    * When true: User's explicit theme choice is saved and restored on next visit.
    * When false: Theme falls back to system preference on each visit (in-memory only).
    */
-  ALLOW_PERSISTENT_THEME: true,
-} as const
+  ALLOW_PERSISTENT_THEME: import.meta.env.VITE_ALLOW_PERSISTENT_THEME !== 'false',
+}

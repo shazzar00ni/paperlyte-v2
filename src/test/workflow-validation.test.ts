@@ -52,6 +52,23 @@ function extractJobBlock(content: string, jobId: string): string {
 }
 
 /**
+ * Extracts the YAML block that belongs to a specific top-level key (e.g. `on`).
+ * Starts at the line `<key>:` at column 0 and ends before the next top-level key.
+ */
+function extractTopLevelBlock(content: string, key: string): string {
+  const lines = content.split('\n')
+  const startIdx = lines.findIndex((line) => line.startsWith(`${key}:`))
+  if (startIdx === -1) return ''
+  const blockLines: string[] = [lines[startIdx]]
+  for (let i = startIdx + 1; i < lines.length; i++) {
+    const line = lines[i]
+    if (line.length > 0 && !line.startsWith(' ') && !line.startsWith('\t')) break
+    blockLines.push(line)
+  }
+  return blockLines.join('\n')
+}
+
+/**
  * Returns true when the given job block contains `permissions:` followed by
  * a `contents: read` entry.
  */
@@ -65,6 +82,7 @@ function jobHasContentsReadPermission(jobBlock: string): boolean {
 
   for (let i = permissionsStart + 1; i < lines.length; i += 1) {
     const line = lines[i]
+    if (line.trim() === '' || line.trim().startsWith('#')) continue
     if (!line.startsWith('      ')) break
     if (line.trim() === 'contents: read') return true
   }
@@ -454,9 +472,11 @@ describe('package-lock.json – lodash-es security update (GHSA-r5fr-rjxr-66jc, 
 
 describe('claude-code-review.yml – structure and permissions', () => {
   let content: string
+  let onBlock: string
 
   beforeAll(() => {
     content = readWorkflow('claude-code-review.yml')
+    onBlock = extractTopLevelBlock(content, 'on')
   })
 
   it('should exist and have a top-level permissions deny-all block', () => {
@@ -465,11 +485,11 @@ describe('claude-code-review.yml – structure and permissions', () => {
   })
 
   it('should trigger on pull_request with the expected event types', () => {
-    expect(content).toMatch(/pull_request:/)
-    expect(content).toMatch(/opened/)
-    expect(content).toMatch(/synchronize/)
-    expect(content).toMatch(/ready_for_review/)
-    expect(content).toMatch(/reopened/)
+    expect(onBlock).toMatch(/pull_request:/)
+    expect(onBlock).toMatch(/opened/)
+    expect(onBlock).toMatch(/synchronize/)
+    expect(onBlock).toMatch(/ready_for_review/)
+    expect(onBlock).toMatch(/reopened/)
   })
 
   it('should have a concurrency group to cancel stale runs', () => {
@@ -579,9 +599,11 @@ describe('claude-issue-triage.yml – structure and permissions', () => {
 
 describe('claude-external-contributor.yml – structure and permissions', () => {
   let content: string
+  let onBlock: string
 
   beforeAll(() => {
     content = readWorkflow('claude-external-contributor.yml')
+    onBlock = extractTopLevelBlock(content, 'on')
   })
 
   it('should exist and have a top-level permissions deny-all block', () => {
@@ -590,15 +612,15 @@ describe('claude-external-contributor.yml – structure and permissions', () => 
   })
 
   it('should trigger on pull_request_target (not pull_request)', () => {
-    expect(content).toMatch(/pull_request_target:/)
-    expect(content).not.toMatch(/^ {2}pull_request:/m)
+    expect(onBlock).toMatch(/pull_request_target:/)
+    expect(onBlock).not.toMatch(/^ {2}pull_request:/m)
   })
 
   it('should trigger on opened, synchronize, ready_for_review, and reopened', () => {
-    expect(content).toMatch(/opened/)
-    expect(content).toMatch(/synchronize/)
-    expect(content).toMatch(/ready_for_review/)
-    expect(content).toMatch(/reopened/)
+    expect(onBlock).toMatch(/opened/)
+    expect(onBlock).toMatch(/synchronize/)
+    expect(onBlock).toMatch(/ready_for_review/)
+    expect(onBlock).toMatch(/reopened/)
   })
 
   it('should have a concurrency group to cancel stale runs', () => {
@@ -615,7 +637,7 @@ describe('claude-external-contributor.yml – structure and permissions', () => 
     expect(block).not.toMatch(/actions\/checkout/)
   })
 
-  it('first-time-review job if: condition should only match FIRST_TIME_CONTRIBUTOR and NONE', () => {
+  it('first-time-review job if: condition should match FIRST_TIMER, FIRST_TIME_CONTRIBUTOR and NONE', () => {
     const block = assertJobExists(content, 'first-time-review', 'claude-external-contributor.yml')
     // Extract the if: value (lines between `if: |` and the next non-indented-deeper key)
     const lines = block.split('\n')
@@ -627,6 +649,7 @@ describe('claude-external-contributor.yml – structure and permissions', () => 
       ifLines.push(lines[i])
     }
     const ifCondition = ifLines.join('\n')
+    expect(ifCondition).toMatch(/FIRST_TIMER/)
     expect(ifCondition).toMatch(/FIRST_TIME_CONTRIBUTOR/)
     expect(ifCondition).toMatch(/NONE/)
     // Trusted associations must not appear in the condition itself

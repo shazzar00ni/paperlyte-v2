@@ -21,15 +21,20 @@ jobs:
     name: First-Time Contributor Review
     runs-on: ubuntu-latest
     # Runs for authors with no prior interaction with this repo (NONE) or whose
-    # first PR is still being reviewed (FIRST_TIME_CONTRIBUTOR). COLLABORATOR,
-    # CONTRIBUTOR, MEMBER, and OWNER are all excluded — they're known contributors
+    # first PR is still being reviewed (FIRST_TIME_CONTRIBUTOR) or who have
+    # never opened a PR on GitHub before (FIRST_TIMER). COLLABORATOR,
+    # CONTRIBUTOR, MEMBER, and OWNER are excluded — they're known contributors
     # who don't need the onboarding review.
     # The 'safe-to-review' label acts as a human gate: a maintainer must apply
     # it before Claude will process the PR, ensuring a human has verified the
     # PR is safe before granting it access to a secrets-bearing workflow context.
+    # The labeled-event guard prevents duplicate runs when unrelated labels are
+    # added after 'safe-to-review' is already present.
     if: |
       github.event.pull_request.draft == false &&
+      (github.event.action != 'labeled' || github.event.label.name == 'safe-to-review') &&
       contains(github.event.pull_request.labels.*.name, 'safe-to-review') && (
+        github.event.pull_request.author_association == 'FIRST_TIMER' ||
         github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR' ||
         github.event.pull_request.author_association == 'NONE'
       )

@@ -23,6 +23,7 @@ jobs:
     if: |
       !github.event.pull_request.head.repo.fork &&
       github.event.pull_request.draft == false &&
+      github.event.pull_request.author_association != 'FIRST_TIMER' &&
       github.event.pull_request.author_association != 'FIRST_TIME_CONTRIBUTOR' &&
       github.event.pull_request.author_association != 'NONE'
     permissions:
@@ -36,6 +37,9 @@ jobs:
           fetch-depth: 1
 
       - uses: anthropics/claude-code-action@6e2bd52842c65e914eba5c8badd17560bd26b5de # v1
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           track_progress: true
@@ -106,6 +110,7 @@ jobs:
     if: |
       !github.event.pull_request.head.repo.fork &&
       github.event.pull_request.draft == false &&
+      github.event.pull_request.author_association != 'FIRST_TIMER' &&
       github.event.pull_request.author_association != 'FIRST_TIME_CONTRIBUTOR' &&
       github.event.pull_request.author_association != 'NONE'
     permissions:
@@ -119,6 +124,9 @@ jobs:
           fetch-depth: 1
 
       - uses: anthropics/claude-code-action@6e2bd52842c65e914eba5c8badd17560bd26b5de # v1
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           prompt: |

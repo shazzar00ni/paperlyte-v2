@@ -94,8 +94,12 @@ describe('useTheme', () => {
       localStorageMock.setItem('theme-user-preference', 'true')
       renderHook(() => useTheme())
 
+      // Legacy key is always removed.
       expect(localStorageMock.getItem('theme-user-preference')).toBeNull()
-      expect(localStorageMock.getItem('paperlyte:v1:theme-user-preference')).toBe('true')
+      // Orphaned preference flag must NOT be promoted to the versioned key when
+      // there is no valid legacy theme to pair it with — writing it alone would
+      // prevent system-theme updates for the user on subsequent visits.
+      expect(localStorageMock.getItem('paperlyte:v1:theme-user-preference')).toBeNull()
       // Migration does not set paperlyte:v1:theme (no legacy theme key existed).
       // The useEffect writes the system-default theme after render; beforeEach
       // mocks matchMedia to return false so the system preference is 'light'.

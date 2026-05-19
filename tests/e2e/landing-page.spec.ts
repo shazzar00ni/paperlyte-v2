@@ -214,22 +214,36 @@ test.describe('Landing Page', () => {
   }: {
     page: Page
   }): Promise<void> => {
-    await page.goto('/')
-
-    // Mock the Netlify subscribe endpoint after navigation so WebKit registers
-    // the handler against the live page context. Setting it up before goto() can
-    // cause WebKit to miss dynamically-triggered fetches. The Vite preview server
-    // used in CI does not serve `/.netlify/functions/*`, so without this mock the
-    // component would receive a 404 and show the error state instead.
-    let capturedPostBody: string | null = null
-    await page.route('**/.netlify/functions/subscribe', async (route) => {
-      capturedPostBody = route.request().postData()
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({ success: true }),
-      })
+    // Inject a browser-level fetch mock before navigation. This approach is more
+    // reliable than page.route() for WebKit/Mobile Safari, where Playwright's
+    // network-layer interception can miss dynamically-triggered POST requests.
+    // The Vite preview server in CI does not serve /.netlify/functions/*, so
+    // without this mock the component would receive a 404 and show an error.
+    await page.addInitScript(() => {
+      const orig = window.fetch
+      ;(window as unknown as Record<string, unknown>)['__subscribeMockBody'] = null
+      window.fetch = async (...args: Parameters<typeof fetch>): Promise<Response> => {
+        const input = args[0]
+        const url =
+          typeof input === 'string'
+            ? input
+            : input instanceof URL
+              ? input.href
+              : (input as Request).url
+        if (url.includes('/.netlify/functions/subscribe')) {
+          const init = args[1]
+          ;(window as unknown as Record<string, unknown>)['__subscribeMockBody'] =
+            typeof init?.body === 'string' ? init.body : null
+          return new Response(JSON.stringify({ success: true }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          })
+        }
+        return orig(...args)
+      }
     })
+
+    await page.goto('/')
 
     const emailInput = page.locator('#email-capture input[type="email"]')
     const submitButton = page
@@ -242,16 +256,15 @@ test.describe('Landing Page', () => {
     const rawEmail = `E2E-Test-${timestamp}@EXAMPLE.COM`
     const expectedEmail = `e2e-test-${timestamp}@example.com`
     await emailInput.fill(rawEmail)
-    // Await the mocked response alongside the click to avoid racing the route
-    // interception in WebKit/Mobile Safari before checking the success state.
-    const responsePromise = page.waitForResponse('**/.netlify/functions/subscribe')
     await submitButton.click()
-    await responsePromise
 
     // Accept both straight (U+0027) and typographic (U+2019) apostrophes for cross-environment robustness
     await expect(page.getByText(/You['\u2019]re on the list!/i)).toBeVisible({ timeout: 5000 })
 
     // Assert the component sent the normalised (trimmed + lowercased) email
+    const capturedPostBody = await page.evaluate(
+      () => (window as unknown as Record<string, unknown>)['__subscribeMockBody'] as string | null
+    )
     expect(capturedPostBody).not.toBeNull()
     expect(JSON.parse(capturedPostBody!)).toEqual({ email: expectedEmail })
   })

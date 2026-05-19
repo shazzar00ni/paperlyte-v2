@@ -36,7 +36,9 @@ const migrateLegacyTheme = (): void => {
     if (isValidTheme(legacyTheme) && currentTheme === null) {
       localStorage.setItem(THEME_STORAGE_NAME, legacyTheme)
     }
-    if (legacyPref !== null && currentPref === null) {
+    // Only migrate the preference flag when there is also a valid theme to pair it with;
+    // an orphaned flag without a valid theme would incorrectly prevent system-theme updates.
+    if (isValidTheme(legacyTheme) && legacyPref !== null && currentPref === null) {
       localStorage.setItem(USER_PREFERENCE_STORAGE_NAME, legacyPref)
     }
     // removeItem is a no-op when the key doesn't exist, so guards are unnecessary
@@ -148,6 +150,8 @@ export const useTheme = () => {
         localStorage.setItem(THEME_STORAGE_NAME, theme)
         if (userHasExplicitPreference.current) {
           localStorage.setItem(USER_PREFERENCE_STORAGE_NAME, 'true')
+        } else {
+          localStorage.removeItem(USER_PREFERENCE_STORAGE_NAME)
         }
       } catch (err) {
         // Storage blocked — theme still applied to DOM above

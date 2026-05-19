@@ -591,7 +591,7 @@ describe('claude-external-contributor.yml – structure and permissions', () => 
 
   it('should trigger on pull_request_target (not pull_request)', () => {
     expect(content).toMatch(/pull_request_target:/)
-    expect(content).not.toMatch(/^  pull_request:/m)
+    expect(content).not.toMatch(/^ {2}pull_request:/m)
   })
 
   it('should trigger on opened, synchronize, ready_for_review, and reopened', () => {

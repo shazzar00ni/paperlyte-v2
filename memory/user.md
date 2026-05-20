@@ -43,3 +43,8 @@ This file tracks information about the user's goals, context, and working style.
 
 - **Category**: Reference
 - **Notes**: `docs/DESIGN-SYSTEM.md` — comprehensive design documentation. `docs/ROADMAP.md` — product roadmap. `docs/TECHNICAL-DEBT.md` — known tech debt. `docs/CHANGELOG.md` — version history. `docs/design-system/` — detailed design tokens, typography, layout, motion guides.
+
+## Known Tech Debt (Pre-Launch Blockers)
+
+- **Category**: Tech debt
+- **Notes**: `src/constants/legal.ts` contains critical TODO placeholders (legal entity name, address, jurisdiction, governing law) — blocks production launch. `src/constants/downloads.ts` constructs GitHub Releases download URLs from `LEGAL_CONFIG.social.github`, but that value is currently a placeholder (`#`), so all download links are broken until the repo URL and release artifacts are in place. `React.lazy()` is not yet used for large components such as `Privacy`, `Terms`, and `FeedbackWidget` — known optimization gap. Full inventory in `docs/TECHNICAL-DEBT.md`.

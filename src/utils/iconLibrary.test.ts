@@ -6,6 +6,12 @@
  */
 
 import { describe, it, expect } from 'vitest'
+// Side-effect import: ensures iconLibrary.ts is evaluated so that
+// `config.autoAddCss = false` runs before the CSP Compliance assertion.
+// Kept explicit (rather than relying on the named imports below) so the
+// CSP test cannot regress to passing vacuously if those imports change.
+import './iconLibrary'
+import { config } from '@fortawesome/fontawesome-svg-core'
 import {
   iconNameMap,
   brandIconNames,
@@ -32,7 +38,7 @@ describe('iconLibrary', () => {
 
     it('should have all brand icons from iconNameMap in brandIconNames', () => {
       // Known brand icons from the mapping
-      const expectedBrandIcons = ['github', 'twitter', 'apple', 'windows']
+      const expectedBrandIcons = ['github', 'twitter', 'x-twitter', 'instagram', 'apple', 'windows']
 
       expectedBrandIcons.forEach((iconName) => {
         expect(
@@ -193,6 +199,15 @@ describe('iconLibrary', () => {
     })
   })
 
+  describe('CSP Compliance', () => {
+    it('should disable autoAddCss to prevent inline <style> injection blocked by strict CSP', () => {
+      // iconLibrary.ts sets config.autoAddCss = false so FA never injects a
+      // <style> tag at runtime (which would be blocked by style-src 'self').
+      // If this regresses, FA will silently reintroduce CSP console errors.
+      expect(config.autoAddCss).toBe(false)
+    })
+  })
+
   describe('Regression Prevention', () => {
     it('should have at least 31 solid icons registered', () => {
       // Based on current imports - prevents accidental removal
@@ -204,14 +219,14 @@ describe('iconLibrary', () => {
       expect(solidIcons.length).toBeGreaterThanOrEqual(31)
     })
 
-    it('should have exactly 4 brand icons registered', () => {
-      // Icon breakdown: 31 solid (non-fallback) + 4 brand + 1 fallback = 36 total
-      expect(brandIconNames.size).toBe(4)
+    it('should have exactly 6 brand icons registered', () => {
+      // Icon breakdown: 33 solid (non-fallback) + 6 brand + 1 fallback = 40 total
+      expect(brandIconNames.size).toBe(6)
     })
 
     it('should maintain icon count in validIconNames', () => {
-      // Icon breakdown: 31 solid (non-fallback) + 4 brand + 1 fallback = 36 total
-      expect(validIconNames.size).toBeGreaterThanOrEqual(36)
+      // Icon breakdown: 33 solid (non-fallback) + 6 brand + 1 fallback = 40 total
+      expect(validIconNames.size).toBeGreaterThanOrEqual(40)
     })
   })
 })

@@ -81,15 +81,15 @@ export const FAQ = (): React.ReactElement => {
   const gridRef = useRef<HTMLDivElement>(null)
   const announcementTimeoutRef = useRef<number | null>(null)
 
-  const toggleItem = (id: string) => {
+  const toggleItem = (id: string): void => {
     setOpenItems((prev) => {
       const newSet = new Set(prev)
       const isOpening = !newSet.has(id)
 
-      if (newSet.has(id)) {
-        newSet.delete(id)
-      } else {
+      if (isOpening) {
         newSet.add(id)
+      } else {
+        newSet.delete(id)
       }
 
       // Announce the change for screen readers
@@ -176,7 +176,7 @@ export const FAQ = (): React.ReactElement => {
         </AnimatedElement>
         <AnimatedElement animation="fadeIn" delay={100}>
           <p className={styles.subtitle}>
-            Everything you need to know. Can't find what you're looking for?{' '}
+            Common questions answered. Still curious?{' '}
             <a href="#contact" className={styles.link}>
               Contact us
             </a>

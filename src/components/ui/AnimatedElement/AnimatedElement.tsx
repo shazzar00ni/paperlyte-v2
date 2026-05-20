@@ -53,9 +53,6 @@ const AnimatedElementComponent = ({
     .filter(Boolean)
     .join(' ')
 
-  // Set CSS custom property for animation delay programmatically
-  // Only apply delay when motion is not reduced - avoids unnecessary timing overhead
-  // when animations are disabled
   useEffect(() => {
     if (ref.current) {
       if (prefersReducedMotion) {
@@ -67,7 +64,7 @@ const AnimatedElementComponent = ({
   }, [delay, prefersReducedMotion, ref])
 
   return (
-    <div ref={ref} className={classes}>
+    <div ref={ref} className={classes} data-reduced-motion={prefersReducedMotion}>
       {children}
     </div>
   )

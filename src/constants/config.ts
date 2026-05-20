@@ -48,5 +48,6 @@ export const PERSISTENCE_CONFIG = {
    * When true: User's explicit theme choice is saved and restored on next visit.
    * When false: Theme falls back to system preference on each visit (in-memory only).
    */
-  ALLOW_PERSISTENT_THEME: import.meta.env.VITE_ALLOW_PERSISTENT_THEME !== 'false',
+  ALLOW_PERSISTENT_THEME:
+    import.meta.env.VITE_ALLOW_PERSISTENT_THEME?.trim().toLowerCase() !== 'false',
 }

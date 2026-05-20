@@ -256,9 +256,16 @@ test.describe('Landing Page', () => {
 
   test('should have accessible keyboard navigation', async ({
     page,
+    isMobile,
   }: {
     page: Page
+    isMobile: boolean
   }): Promise<void> => {
+    // Tab-key focus navigation is a desktop interaction pattern; mobile browser
+    // emulation (hasTouch: true) handles Tab focus differently and is not a
+    // reliable target for this assertion.
+    test.skip(isMobile, 'Tab key focus navigation is desktop-only')
+
     await page.goto('/')
 
     // Test complete keyboard navigation flow

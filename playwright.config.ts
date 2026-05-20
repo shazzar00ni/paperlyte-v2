@@ -12,6 +12,9 @@ export default defineConfig({
     baseURL: process.env.BASE_URL ?? 'http://localhost:4173',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
+    // Disable animations so AnimatedElement wrappers (opacity:0 → 1) don't block
+    // actionability checks or cause timing flakiness across browsers.
+    reducedMotion: 'reduce',
   },
 
   projects: [

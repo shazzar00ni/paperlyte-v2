@@ -18,27 +18,23 @@ const isValidTheme = (value: string | null): value is Theme => {
 }
 
 // One-time migration: move data from legacy unversioned keys to versioned keys.
-// Safe to call in the hook body on every render because it exits immediately when
-// no legacy keys exist (only 2 cheap localStorage.getItem reads on the hot path).
-// Concurrent-mode safe: the backfill-only writes and subsequent removeItem calls are
-// idempotent, so re-running an aborted render produces the same final storage state.
-// Handles partial-state: migrates each key independently so an orphaned
-// theme-user-preference key is cleaned up even when the theme key is absent.
+// Called once per hook mount (inside the useState lazy initializer — not on every render).
+// Concurrent-mode safe: backfill-only writes and removeItem calls are idempotent, so
+// re-running an aborted render produces the same final storage state.
+// No early-exit guard needed: isValidTheme(null) is already false, and removeItem is a
+// no-op on missing keys, so correctness holds even when both legacy keys are absent.
 const migrateLegacyTheme = (): void => {
   try {
     const legacyTheme = localStorage.getItem('theme')
     const legacyPref = localStorage.getItem('theme-user-preference')
-    if (legacyTheme === null && legacyPref === null) return
-
-    const currentTheme = localStorage.getItem(THEME_STORAGE_NAME)
-    const currentPref = localStorage.getItem(USER_PREFERENCE_STORAGE_NAME)
     // Backfill only — never overwrite an already-migrated versioned key.
     // Both writes are gated on a valid legacy theme: an orphaned preference flag
     // without a paired theme must not be promoted (it would lock out system-theme updates).
     if (isValidTheme(legacyTheme)) {
-      if (currentTheme === null) {
+      if (localStorage.getItem(THEME_STORAGE_NAME) === null) {
         localStorage.setItem(THEME_STORAGE_NAME, legacyTheme)
       }
+      const currentPref = localStorage.getItem(USER_PREFERENCE_STORAGE_NAME)
       if (legacyPref !== null && currentPref === null) {
         localStorage.setItem(USER_PREFERENCE_STORAGE_NAME, legacyPref)
       }

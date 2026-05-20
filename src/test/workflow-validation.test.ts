@@ -160,7 +160,14 @@ describe('ci.yml – permission structure', () => {
   it('each job that has a permissions block should include at least "contents: read"', () => {
     // Regression guard: jobs with explicit permissions blocks must keep contents: read.
     // lint-and-typecheck and build rely on the workflow-level block instead.
-    const jobsWithExplicitPermissions = ['test', 'size-check', 'lighthouse', 'e2e', 'add-to-project', 'ci-success']
+    const jobsWithExplicitPermissions = [
+      'test',
+      'size-check',
+      'lighthouse',
+      'e2e',
+      'add-to-project',
+      'ci-success',
+    ]
     for (const jobId of jobsWithExplicitPermissions) {
       const block = assertJobExists(content, jobId, 'ci.yml')
       expect(

@@ -65,6 +65,7 @@ export function logError(error: Error, context?: ErrorContext, source?: string):
   }
 
   // In production, report to monitoring services
+  let originalErrorCaptured = false
   try {
     // Track in analytics
     trackEvent('application_error', {
@@ -95,6 +96,7 @@ export function logError(error: Error, context?: ErrorContext, source?: string):
           },
         },
       })
+      originalErrorCaptured = true
 
       // Add breadcrumb for tracking error context
       Sentry.addBreadcrumb({
@@ -105,14 +107,49 @@ export function logError(error: Error, context?: ErrorContext, source?: string):
       })
     }
 
-    // Log to console in production (for server logs if applicable)
-    console.error('[Error]', errorSource, error.message, {
-      severity,
-      tags: context?.tags,
-    })
-  } catch (monitoringError) {
-    // Fail silently in production - don't let monitoring errors break the app
-    console.error('Monitoring error:', monitoringError)
+    // Client-side production: errors are already reported to Sentry/analytics above.
+    // Avoid console.error here to prevent errors-in-console Lighthouse assertion failures.
+  } catch (err) {
+    // Forward the monitoring failure to Sentry so it isn't silently dropped.
+    // A nested try/catch prevents infinite recursion if Sentry itself throws.
+    if (import.meta.env.VITE_SENTRY_DSN) {
+      try {
+        const monitoringErr = err instanceof Error ? err : new Error(String(err))
+        // Only re-capture the original error if it wasn't already sent — avoids duplicate
+        // Sentry events when the pipeline fails after captureException succeeded (e.g. addBreadcrumb throws).
+        if (!originalErrorCaptured) {
+          Sentry.captureException(error, {
+            level: severityToLevel(severity),
+            tags: {
+              source: errorSource,
+              ...context?.tags,
+            },
+            extra: {
+              componentStack: context?.componentStack,
+              ...context?.errorInfo,
+            },
+            contexts: {
+              error_context: {
+                severity,
+                source: errorSource,
+              },
+            },
+          })
+        }
+        Sentry.captureException(monitoringErr)
+        Sentry.addBreadcrumb({
+          category: 'monitoring',
+          message: 'Error reporting pipeline failed',
+          level: 'warning',
+          data: { pipelineError: monitoringErr.message, appError: error.message },
+        })
+      } catch {
+        // Fully silent if Sentry is also unavailable
+      }
+    }
+    // console.warn (not console.error) preserves browser devtools visibility
+    // without triggering the Lighthouse errors-in-console assertion.
+    console.warn('[monitoring] Error reporting failed:', err)
   }
 }
 

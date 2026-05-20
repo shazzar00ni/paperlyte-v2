@@ -108,10 +108,14 @@
   font-size: var(--font-size-lg);
 }
 
+/* accessibility-fixed: issue-808 - added :focus-visible with white outline for dark CTA background */
+/* accessibility-fixed: issue-823 - color changed from var(--color-primary) to var(--color-text-on-primary)
+   so "Watch the Demo Again" label is readable: #fff on dark gradient (light mode), #000 on white gradient (dark mode) */
 .textLink {
   background: none;
   border: none;
-  color: var(--color-primary);
+  color: var(--color-text-on-primary);
+  opacity: 1;
   font-size: var(--font-size-base);
   text-decoration: underline;
   cursor: pointer;
@@ -119,12 +123,19 @@
 }
 
 .textLink:hover {
-  color: var(--color-primary-dark);
+  color: var(--color-text-on-primary);
+  opacity: 0.8;
+}
+
+.textLink:focus-visible {
+  outline: 2px solid var(--color-text-on-dark);
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 
 @media (prefers-reduced-motion: no-preference) {
   .textLink {
-    transition: color 0.2s ease;
+    transition: opacity 0.2s ease;
   }
 }
 
@@ -137,7 +148,7 @@
 .microcopy {
   margin-top: var(--spacing-md);
   font-size: var(--font-size-sm);
-  color: var(--color-text-tertiary);
+  color: var(--color-text-on-dark-secondary);
 }
 
 /* Mobile styles */
@@ -196,6 +207,15 @@
     background-color: rgba(255, 255, 255, 0.2);
     border-color: rgba(255, 255, 255, 0.35);
   }
+
+  /* CTA gradient inverts to white in dark mode; override to dark colors for visibility */
+  .textLink:focus-visible {
+    outline-color: var(--color-text-on-primary);
+  }
+
+  .microcopy {
+    color: var(--color-text-on-primary);
+  }
 }
 
 [data-theme='dark'] .cta::before {
@@ -210,4 +230,12 @@
 [data-theme='dark'] .badge:hover {
   background-color: rgba(255, 255, 255, 0.2);
   border-color: rgba(255, 255, 255, 0.35);
+}
+
+[data-theme='dark'] .textLink:focus-visible {
+  outline-color: var(--color-text-on-primary);
+}
+
+[data-theme='dark'] .microcopy {
+  color: var(--color-text-on-primary);
 }

@@ -122,7 +122,7 @@ export function Icon({
         strokeLinejoin="round"
         className={svgClassName}
         style={style}
-        data-icon={baseName}
+        data-icon={resolvedKey}
         aria-labelledby={ariaLabel ? titleId : undefined}
         aria-hidden={ariaLabel ? ('false' as const) : ('true' as const)}
         {...(ariaLabel && { role: 'img' })}
@@ -167,9 +167,9 @@ export function Icon({
     ...(ariaLabel ? { role: 'img' } : {}),
   }
 
-  // If icon found in library, render it
+  // If icon found in library, render it with data-icon attribute
   if (iconDefinition) {
-    return <FontAwesomeIcon icon={iconDefinition} {...commonIconProps} />
+    return <FontAwesomeIcon icon={iconDefinition} data-icon={baseName} {...commonIconProps} />
   }
 
   // Icon not found in library — return a placeholder
@@ -182,7 +182,7 @@ export function Icon({
     logWarning(`Icon "${name}" not found in Font Awesome library`, { name, convertedName })
   }
   return (
-    <span {...commonIconProps} title={`Icon "${name}" not found`}>
+    <span {...commonIconProps} data-icon={baseName} title={`Icon "${name}" not found`}>
       ?
     </span>
   )

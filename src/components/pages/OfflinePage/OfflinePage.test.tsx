@@ -29,15 +29,13 @@ describe('OfflinePage', () => {
       render(<OfflinePage />)
 
       expect(screen.getByRole('status')).toBeInTheDocument()
-      expect(screen.getByText(/You're offline/i)).toBeInTheDocument()
+      expect(screen.getByRole('heading', { name: /You're offline/i })).toBeInTheDocument()
     })
 
     it('should display default offline message', () => {
       render(<OfflinePage />)
 
-      expect(
-        screen.getByText(/It looks like you've lost your internet connection/i)
-      ).toBeInTheDocument()
+      expect(screen.getByText(/You're offline — and that's okay/i)).toBeInTheDocument()
     })
 
     it('should display custom message when provided', () => {
@@ -223,6 +221,23 @@ describe('OfflinePage', () => {
       expect(screen.getByRole('button', { name: /reload the page/i })).toBeInTheDocument()
     })
 
+    it('should reload the page when the reload button is clicked', async () => {
+      const user = userEvent.setup()
+      const reloadSpy = vi.fn()
+      onLineSpy.mockReturnValue(true)
+      Object.defineProperty(window, 'location', {
+        configurable: true,
+        writable: true,
+        value: { reload: reloadSpy },
+      })
+
+      render(<OfflinePage />)
+
+      await user.click(screen.getByRole('button', { name: /reload the page/i }))
+
+      expect(reloadSpy).toHaveBeenCalledTimes(1)
+    })
+
     it('should not show reload button when offline', () => {
       render(<OfflinePage />)
 
@@ -234,13 +249,13 @@ describe('OfflinePage', () => {
     it('should show cached info section by default', () => {
       render(<OfflinePage />)
 
-      expect(screen.getByText(/What you can still do:/i)).toBeInTheDocument()
+      expect(screen.getByText(/Keep working offline:/i)).toBeInTheDocument()
     })
 
     it('should hide cached info when showCachedInfo is false', () => {
       render(<OfflinePage showCachedInfo={false} />)
 
-      expect(screen.queryByText(/What you can still do:/i)).not.toBeInTheDocument()
+      expect(screen.queryByText(/Keep working offline:/i)).not.toBeInTheDocument()
     })
 
     it('should not show offline features when online', () => {
@@ -248,7 +263,7 @@ describe('OfflinePage', () => {
 
       render(<OfflinePage />)
 
-      expect(screen.queryByText(/What you can still do:/i)).not.toBeInTheDocument()
+      expect(screen.queryByText(/Keep working offline:/i)).not.toBeInTheDocument()
     })
 
     it('should list available offline features', () => {
@@ -341,12 +356,7 @@ describe('OfflinePage', () => {
     it('should render wifi icon in illustration', () => {
       render(<OfflinePage />)
 
-      // Query specifically for the illustration container within the status region
-      const illustration = screen.getByRole('status').querySelector('[aria-hidden="true"]')
-      expect(illustration).toBeInTheDocument()
-
-      // Query for the wifi illustration SVG within the illustration container
-      const wifiIcon = illustration?.querySelector('svg')
+      const wifiIcon = screen.getByRole('status').querySelector('[data-icon="fa-wifi"]')
       expect(wifiIcon).toBeInTheDocument()
     })
 
@@ -354,7 +364,7 @@ describe('OfflinePage', () => {
       render(<OfflinePage />)
 
       const retryButton = screen.getByRole('button', { name: /check connection and retry/i })
-      const icon = retryButton.querySelector('svg')
+      const icon = retryButton.querySelector('[data-icon="fa-rotate-right"]')
       expect(icon).toBeInTheDocument()
     })
 
@@ -375,7 +385,7 @@ describe('OfflinePage', () => {
 
       // Check spinner is shown while checking (without awaiting click to complete)
       await waitFor(() => {
-        const spinnerIcon = retryButton.querySelector('svg')
+        const spinnerIcon = retryButton.querySelector('[data-icon*="spinner"]')
         expect(spinnerIcon).toBeInTheDocument()
       })
 

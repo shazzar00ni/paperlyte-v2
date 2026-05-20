@@ -1,0 +1,62 @@
+Type,Title,Last Visited,Host
+Pull Request,test(flaky): fix Hero.test.tsx.Hero > Rendering > should render the main headline,2026-05-10T22:52:39Z,github.com
+Pull Request,CodeRabbit Generated Unit Tests: Add unit tests,2026-05-10T13:22:23Z,github.com
+Pull Request,"Daily PR Audit and Maintenance Infrastructure Restoration (May 10, 2026)",2026-05-10T11:21:35Z,github.com
+Pull Request,Automated Daily PR Audit and Review System,2026-05-09T12:10:54Z,github.com
+Pull Request,Reconcile PR #720 review findings with current branch state,2026-05-09T09:44:18Z,github.com
+Pull Request,Narrow CTA dark-mode PR scope and isolate CTA scroll tests,2026-05-09T10:07:45Z,github.com
+Pull Request,fix: remove workflow_dispatch inputs to satisfy Checkov CKV_GHA_7,2026-05-09T09:19:43Z,github.com
+Pull Request,fix: resolve stale CSSlint code-scanning alert blocking PRs,2026-05-09T09:19:37Z,github.com
+Pull Request,fix: replace unsafe dynamic easing method dispatch in CounterAnimation,2026-05-09T08:31:56Z,github.com
+Issue,fix: Ensure navigation.ts security helpers are present and exported in default branch,2026-05-08T20:16:39Z,github.com
+Issue,fix: Add .npmrc to default branch and document registry configuration,2026-05-08T20:16:13Z,github.com
+Issue,feat: Add sitemap.xml and robots.txt for SEO crawlability,2026-05-08T20:16:07Z,github.com
+Issue,"feat: Integrate Web Vitals (CLS, LCP, FID) reporting alongside existing analytics",2026-05-08T20:16:16Z,github.com
+Issue,fix: Ensure dark mode toggle respects system preference and persists across sessions,2026-05-08T20:16:03Z,github.com
+Issue,feat: Create Changelog page component with route,2026-05-08T20:15:20Z,github.com
+Issue,feat: Add client-side validation and error state handling to EmailCapture component,2026-05-08T20:16:50Z,github.com
+Issue,feat: Add comprehensive SEO meta tags and Open Graph support to landing page,2026-05-08T20:16:06Z,github.com
+Issue,feat: Replace generic spinner with content-aware loading skeletons for lazy sections,2026-05-08T20:15:54Z,github.com
+Issue,feat: Wire up Pricing section with anchor navigation and dedicated route,2026-05-08T20:16:17Z,github.com
+Pull Request,Automated Daily PR Review and Audit System,2026-05-08T12:58:33Z,github.com
+Pull Request,fix: add valid claude-external-contributor workflow,2026-05-10T13:08:28Z,github.com
+Issue,"Update all test files to wrap components with the appropriate React Router
+context and adjust assertions for the new 3-column Footer structure.",2026-05-07T11:40:37Z,github.com
+Issue,Redesign the Footer component to a dark-themed 3-column layout and integrate React Router `Link` for internal navigation.,2026-05-07T11:37:44Z,github.com
+Issue,Update the Privacy and Terms page components with document metadata management and standardized styling.,2026-05-07T11:37:58Z,github.com
+Issue,Set up React Router v6 infrastructure,2026-05-07T11:36:15Z,github.com
+Pull Request,fix(test): replace deprecated poolOptions with top-level singleFork for Vitest 4,2026-05-08T19:52:32Z,github.com
+Pull Request,"Daily PR Audit and Maintenance System Hardening - May 7, 2026",2026-05-07T12:17:15Z,github.com
+Pull Request,fix: rename localStorage constants to silence false-positive hardcoded-password lint,2026-05-10T10:24:08Z,github.com
+Pull Request,fix: close open-redirect in safeNavigate by restricting to same-origin URLs,2026-05-09T17:02:45Z,github.com
+Pull Request,fix(ci): remove sonarcloud.yml boilerplate comments causing false-positive secret detection,2026-05-10T01:18:50Z,github.com
+Commit,Merge pull request #706 from shazzar00ni/chunk/fix-retry-count-logging-inp-null-check-1775307100928,2026-05-10T10:33:41Z,github.com
+Commit,Merge branch 'main' into chunk/fix-retry-count-logging-inp-null-check-1775307100928,2026-05-10T10:25:54Z,github.com
+Commit,Merge pull request #897 from shazzar00ni/copilot/fix-hardcoded-passwords,2026-05-10T10:23:26Z,github.com
+Commit,Merge branch 'main' into copilot/fix-hardcoded-passwords,2026-05-10T10:20:02Z,github.com
+Commit,Merge pull request #895 from shazzar00ni/copilot/fix-sonarqube-docs-api-key-detection,2026-05-10T01:16:43Z,github.com
+Commit,fix(e2e): collect FCP via PerformanceObserver with buffered:true to fix headless Chromium null,2026-05-07T15:19:54Z,github.com
+Commit,style: run Prettier on webVitals.test.ts to fix CI format check,2026-05-07T11:19:01Z,github.com
+Commit,fix: remove redundant startTime?: number from trackFID type assertion,2026-05-07T11:15:36Z,github.com
+Commit,Merge branch 'main' into chunk/fix-retry-count-logging-inp-null-check-1775307100928,2026-05-07T11:09:49Z,github.com
+Commit,fix: rename localStorage key constants to avoid false positive hardcoded-password warning,2026-05-06T22:09:05Z,github.com
+Commit,fix: remove sonarcloud.yml boilerplate comments that triggered false-positive secret detection,2026-05-06T21:58:38Z,github.com
+Commit,Add stale.yml workflow for managing stale issues and PRs,2026-05-06T21:53:22Z,github.com
+Commit,Merge pull request #764 from shazzar00ni/claude/paperlyte-12-issue-fixes-1fvmr,2026-05-06T21:36:13Z,github.com
+Commit,Fix useMemo comment and ScrollDepth type annotation,2026-05-06T21:01:05Z,github.com
+Commit,Fix high-severity basic-ftp and ip-address CVEs via npm audit fix,2026-05-06T20:53:35Z,github.com
+Commit,Merge main: resolve axios URL assertion conflict,2026-05-06T20:49:48Z,github.com
+Commit,Add ARIA attribute coverage tests for sections EmailCapture,2026-05-06T20:29:29Z,github.com
+Commit,Merge pull request #886 from shazzar00ni/claude/fix-issue-876-ej8EV,2026-05-06T13:57:08Z,github.com
+Commit,Fix e2e spec: mobile skip and cross-env apostrophe regex,2026-05-06T06:13:17Z,github.com
+Commit,Fix typographic quotes in e2e spec causing ESLint parse error,2026-05-06T06:08:57Z,github.com
+Commit,Resolve merge conflict: accept remote removal of RUN_CWV_SMOKE guard,2026-05-06T06:06:40Z,github.com
+Commit,Merge remote branch and apply review fixes,2026-05-06T06:05:41Z,github.com
+Commit,"fix(test): update axios URL assertion to match current version, improve decisions entry",2026-05-06T06:03:04Z,github.com
+Commit,Merge branch 'main' into claude/paperlyte-12-issue-fixes-1fvmr,2026-05-06T06:02:44Z,github.com
+Commit,chore: record file-restoration decision from issue #876,2026-05-06T05:58:33Z,github.com
+Commit,Merge pull request #883 from shazzar00ni/copilot/fix-deployment-status-check,2026-05-05T14:01:18Z,github.com
+Commit,Potential fix for pull request finding,2026-05-05T13:37:42Z,github.com
+Commit,Potential fix for pull request finding,2026-05-05T13:36:52Z,github.com
+Commit,Update .lighthouserc.json,2026-05-05T13:36:07Z,github.com
+Commit,fix: upgrade axios override to 1.16.0 to resolve high severity vulnerabilities,2026-05-05T06:59:08Z,github.com

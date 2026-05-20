@@ -10,18 +10,28 @@ import { Mobile } from '@components/sections/Mobile'
 import { useAnalytics } from '@hooks/useAnalytics'
 import './App.css'
 
-const Statistics = lazy(() => import('@components/sections/Statistics'))
-const Comparison = lazy(() => import('@components/sections/Comparison'))
-const Testimonials = lazy(() => import('@components/sections/Testimonials'))
-const EmailCapture = lazy(() => import('@components/sections/EmailCapture'))
-const FAQ = lazy(() => import('@components/sections/FAQ'))
-const CTA = lazy(() => import('@components/sections/CTA'))
+const Statistics = lazy(() =>
+  import('@components/sections/Statistics').then((m) => ({ default: m.Statistics }))
+)
+const Comparison = lazy(() =>
+  import('@components/sections/Comparison').then((m) => ({ default: m.Comparison }))
+)
+const Testimonials = lazy(() =>
+  import('@components/sections/Testimonials').then((m) => ({ default: m.Testimonials }))
+)
+const EmailCapture = lazy(() =>
+  import('@components/sections/EmailCapture').then((m) => ({ default: m.EmailCapture }))
+)
+const FAQ = lazy(() => import('@components/sections/FAQ').then((m) => ({ default: m.FAQ })))
+const CTA = lazy(() => import('@components/sections/CTA').then((m) => ({ default: m.CTA })))
 // TODO(perf/ux): FeedbackWidget is a floating button visible on every page,
 // so lazy-loading it introduces a small visibility gap on slow connections.
 // The zero-size Suspense fallback prevents CLS, but consider prefetching this
 // chunk during idle time (e.g. via a useEffect(() => { import('...') }, []) in
 // App) or reverting to an eager import if the bundle size is small.
-const FeedbackWidget = lazy(() => import('@components/ui/FeedbackWidget'))
+const FeedbackWidget = lazy(() =>
+  import('@components/ui/FeedbackWidget').then((m) => ({ default: m.FeedbackWidget }))
+)
 
 // Dynamic import keeps @vercel/analytics out of non-Vercel bundles entirely.
 // On Netlify builds, the constant-folded `VITE_DEPLOY_TARGET !== 'vercel'`
@@ -64,24 +74,36 @@ function App() {
         <Solution />
         <Features />
         <Mobile />
-        <Suspense fallback={<div className="suspense-statistics" role="status"><span className="sr-only">Loading statistics…</span></div>}>
-          <Statistics />
-        </Suspense>
-        <Suspense fallback={<div className="suspense-comparison" role="status"><span className="sr-only">Loading comparison…</span></div>}>
-          <Comparison />
-        </Suspense>
-        <Suspense fallback={<div className="suspense-testimonials" role="status"><span className="sr-only">Loading testimonials…</span></div>}>
-          <Testimonials />
-        </Suspense>
-        <Suspense fallback={<div className="suspense-email-capture" role="status"><span className="sr-only">Loading sign-up form…</span></div>}>
-          <EmailCapture />
-        </Suspense>
-        <Suspense fallback={<div className="suspense-faq" role="status"><span className="sr-only">Loading FAQ…</span></div>}>
-          <FAQ />
-        </Suspense>
-        <Suspense fallback={<div className="suspense-cta" role="status"><span className="sr-only">Loading call to action…</span></div>}>
-          <CTA />
-        </Suspense>
+        <ErrorBoundary fallback={<></>}>
+          <Suspense fallback={<div className="suspense-statistics" role="status"><span className="sr-only">Loading statistics…</span></div>}>
+            <Statistics />
+          </Suspense>
+        </ErrorBoundary>
+        <ErrorBoundary fallback={<></>}>
+          <Suspense fallback={<div className="suspense-comparison" role="status"><span className="sr-only">Loading comparison…</span></div>}>
+            <Comparison />
+          </Suspense>
+        </ErrorBoundary>
+        <ErrorBoundary fallback={<></>}>
+          <Suspense fallback={<div className="suspense-testimonials" role="status"><span className="sr-only">Loading testimonials…</span></div>}>
+            <Testimonials />
+          </Suspense>
+        </ErrorBoundary>
+        <ErrorBoundary fallback={<></>}>
+          <Suspense fallback={<div className="suspense-email-capture" role="status"><span className="sr-only">Loading sign-up form…</span></div>}>
+            <EmailCapture />
+          </Suspense>
+        </ErrorBoundary>
+        <ErrorBoundary fallback={<></>}>
+          <Suspense fallback={<div className="suspense-faq" role="status"><span className="sr-only">Loading FAQ…</span></div>}>
+            <FAQ />
+          </Suspense>
+        </ErrorBoundary>
+        <ErrorBoundary fallback={<></>}>
+          <Suspense fallback={<div className="suspense-cta" role="status"><span className="sr-only">Loading call to action…</span></div>}>
+            <CTA />
+          </Suspense>
+        </ErrorBoundary>
       </main>
       <Footer />
       <Suspense fallback={<div className="suspense-feedback" role="status"><span className="sr-only">Loading feedback widget…</span></div>}>

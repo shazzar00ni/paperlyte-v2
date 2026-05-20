@@ -115,9 +115,11 @@ function assertJobExists(content: string, jobId: string, workflowFileName: strin
 
 describe('ci.yml – permission structure', () => {
   let content: string
+  let onBlock: string
 
   beforeAll(() => {
     content = readWorkflow('ci.yml')
+    onBlock = extractTopLevelBlock(content, 'on')
   })
 
   it('should exist and have a workflow-level "contents: read" permissions block', () => {
@@ -178,11 +180,13 @@ describe('ci.yml – permission structure', () => {
   })
 
   it('should trigger on pushes to main and develop branches', () => {
-    // Match both inline ([main, develop]) and multi-line list forms so the
-    // test isn't coupled to a specific YAML formatting style.
+    // Extract only the push: sub-block from on: so the assertion is scoped
+    // to push triggers and cannot pass on pull_request branch filters alone.
+    const pushMatch = onBlock.match(/^ {2}push:\n((?:^ {4}.+\n?)+)/m)
+    const pushBlock = pushMatch ? pushMatch[0] : ''
     const hasBranches =
-      /branches:\s*\[main,\s*develop\]/.test(content) ||
-      (/branches:/.test(content) && /- main/.test(content) && /- develop/.test(content))
+      /branches:\s*\[main,\s*develop\]/.test(pushBlock) ||
+      (/branches:/.test(pushBlock) && /- main/.test(pushBlock) && /- develop/.test(pushBlock))
     expect(hasBranches).toBe(true)
   })
 

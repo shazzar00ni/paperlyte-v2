@@ -84,7 +84,7 @@ function jobHasContentsReadPermission(jobBlock: string): boolean {
     const line = lines[i]
     if (line.trim() === '' || line.trim().startsWith('#')) continue
     if (!line.startsWith('      ')) break
-    if (line.trim() === 'contents: read') return true
+    if (line.split('#')[0].trim() === 'contents: read') return true
   }
 
   return false

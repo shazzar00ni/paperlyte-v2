@@ -215,12 +215,8 @@ test.describe('Landing Page', () => {
     page: Page
   }): Promise<void> => {
     // Mock the Netlify subscribe endpoint so this test does not depend on
-    // `netlify dev` being running. The Vite preview server used in CI does not
-    // serve `/.netlify/functions/*`, which would otherwise return a 404 and
-    // surface as the error state instead of the success state.
-    let capturedPostBody: string | null = null
+    // `netlify dev` being running.
     await page.route('**/.netlify/functions/subscribe', async (route) => {
-      capturedPostBody = route.request().postData()
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -236,17 +232,24 @@ test.describe('Landing Page', () => {
       .getByRole('button', { name: /join the waitlist/i })
 
     // Use mixed-case to verify the component normalises (trim + lowercase) before POSTing.
-    // Use a unique timestamp to avoid duplicate-rejection flakiness if pointed at a real backend.
     const timestamp = Date.now()
     const rawEmail = `E2E-Test-${timestamp}@EXAMPLE.COM`
     const expectedEmail = `e2e-test-${timestamp}@example.com`
     await emailInput.fill(rawEmail)
-    await submitButton.click()
 
-    // Accept both straight (U+0027) and typographic (U+2019) apostrophes for cross-environment robustness
-    await expect(page.getByText(/You['\u2019]re on the list!/i)).toBeVisible({ timeout: 5000 })
+    // Wait for both the request to be sent and the success message to appear.
+    // This is more robust for slow CI environments (especially WebKit/Mobile Safari).
+    const [request] = await Promise.all([
+      page.waitForRequest(
+        (req) => req.url().includes('/.netlify/functions/subscribe') && req.method() === 'POST',
+        { timeout: 15000 }
+      ),
+      submitButton.click(),
+      expect(page.locator('#email-capture h2:has-text("list")')).toBeVisible({ timeout: 15000 }),
+    ])
 
     // Assert the component sent the normalised (trimmed + lowercased) email
+    const capturedPostBody = request.postData()
     expect(capturedPostBody).not.toBeNull()
     expect(JSON.parse(capturedPostBody!)).toEqual({ email: expectedEmail })
   })

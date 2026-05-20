@@ -32,14 +32,16 @@ const migrateLegacyTheme = (): void => {
 
     const currentTheme = localStorage.getItem(THEME_STORAGE_NAME)
     const currentPref = localStorage.getItem(USER_PREFERENCE_STORAGE_NAME)
-    // Backfill only — never overwrite an already-migrated versioned key
-    if (isValidTheme(legacyTheme) && currentTheme === null) {
-      localStorage.setItem(THEME_STORAGE_NAME, legacyTheme)
-    }
-    // Only migrate the preference flag when there is also a valid theme to pair it with;
-    // an orphaned flag without a valid theme would incorrectly prevent system-theme updates.
-    if (isValidTheme(legacyTheme) && legacyPref !== null && currentPref === null) {
-      localStorage.setItem(USER_PREFERENCE_STORAGE_NAME, legacyPref)
+    // Backfill only — never overwrite an already-migrated versioned key.
+    // Both writes are gated on a valid legacy theme: an orphaned preference flag
+    // without a paired theme must not be promoted (it would lock out system-theme updates).
+    if (isValidTheme(legacyTheme)) {
+      if (currentTheme === null) {
+        localStorage.setItem(THEME_STORAGE_NAME, legacyTheme)
+      }
+      if (legacyPref !== null && currentPref === null) {
+        localStorage.setItem(USER_PREFERENCE_STORAGE_NAME, legacyPref)
+      }
     }
     // removeItem is a no-op when the key doesn't exist, so guards are unnecessary
     localStorage.removeItem('theme')

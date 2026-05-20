@@ -15,6 +15,9 @@ export default defineConfig({
     // Disable animations so AnimatedElement wrappers (opacity:0 → 1) don't block
     // actionability checks or cause timing flakiness across browsers.
     reducedMotion: 'reduce',
+    // Force light color scheme so useTheme and theme-init.js start in a known
+    // state across all CI environments and headless browsers.
+    colorScheme: 'light',
   },
 
   projects: [

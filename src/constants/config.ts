@@ -50,4 +50,4 @@ export const PERSISTENCE_CONFIG = {
    */
   ALLOW_PERSISTENT_THEME:
     import.meta.env.VITE_ALLOW_PERSISTENT_THEME?.trim().toLowerCase() !== 'false',
-}
+} as const

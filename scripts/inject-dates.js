@@ -26,13 +26,13 @@ const SITE_URL = "https://paperlyte.app";
 const OG_IMAGE_URL = "https://paperlyte.app/og-image.jpg";
 const META_KEYWORDS = "note-taking app, distraction-free notes, offline notes, fast note app, tag-based organization, simple notes, privacy-focused notes, cross-platform notes, real-time sync, minimalist note app";
 
-const LEGAL_FILES = ["privacy.html", "terms.html"];
+const LEGAL_FILES = ["privacy.html", "terms.html", "gdpr.html"];
 
 console.log(`Injecting build values...`);
 console.log(`- Build date: ${BUILD_DATE}`);
 console.log(`- Site URL: ${SITE_URL}`);
 
-// Process legal pages (privacy, terms)
+// Process legal pages (privacy, terms, gdpr)
 LEGAL_FILES.forEach((file) => {
   // Validate filename
   if (!isFilenameSafe(file)) {
@@ -46,12 +46,13 @@ LEGAL_FILES.forEach((file) => {
     const originalContent = readFileSync(filePath, "utf8");
     let content = originalContent;
 
-    // Replace placeholder with actual build date
+    // Replace placeholders with build-time values
     content = content.replace(/{{BUILD_DATE}}/g, BUILD_DATE);
+    content = content.replace(/{{YEAR}}/g, String(new Date().getFullYear()));
 
     // Verify that placeholders were actually replaced
     if (originalContent === content) {
-      console.warn('⚠ Warning: No {{BUILD_DATE}} placeholder found in', file);
+      console.warn('⚠ Warning: No legal placeholders ({{BUILD_DATE}}/{{YEAR}}) found in', file);
     } else {
       writeFileSync(filePath, content, "utf8");
       console.log('✓ Updated', file);

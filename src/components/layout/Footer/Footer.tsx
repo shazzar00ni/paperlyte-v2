@@ -113,6 +113,16 @@ export const Footer = (): React.ReactElement => {
                     Terms of Service
                   </a>
                 </li>
+                <li>
+                  <a
+                    href={LEGAL_CONFIG.documents.gdpr}
+                    className={styles.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    GDPR Statement
+                  </a>
+                </li>
               </ul>
             </div>
 

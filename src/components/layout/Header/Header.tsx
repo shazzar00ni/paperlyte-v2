@@ -42,6 +42,7 @@ export const Header = (): React.ReactElement => {
   const closeMobileMenu = useCallback((): void => {
     if (!mobileMenuOpen) return
     setMobileMenuOpen(false)
+    menuButtonRef.current?.focus({ preventScroll: true })
   }, [mobileMenuOpen])
 
   const scrollToSection = useCallback(
@@ -57,7 +58,6 @@ export const Header = (): React.ReactElement => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && mobileMenuOpen) {
         closeMobileMenu()
-        menuButtonRef.current?.focus({ preventScroll: true })
       }
     }
 

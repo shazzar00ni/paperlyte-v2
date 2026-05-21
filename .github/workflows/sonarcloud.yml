@@ -23,14 +23,14 @@ jobs:
 
       - name: Analyze with SonarCloud
         # Upgrade to newer, non-deprecated SonarQube scan action
-        uses: SonarSource/sonarqube-scan-action@59db25f3818e6c7c00681b95383f982467d5830e # v5.0.0
+        uses: SonarSource/sonarqube-scan-action@0303d6b62e310685c0e34d0b9cde218036885c4d # v5.0.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           # Additional arguments for the SonarScanner CLI
           # Fallback values ensure analysis continues even if repo variables are not yet configured
           args: >
-            -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY || 'shazzar00ni_paperlyte-v2' }}
-            -Dsonar.organization=${{ vars.SONAR_ORGANIZATION || 'shazzar00ni' }}
+            -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY || 'your_project_key' }}
+            -Dsonar.organization=${{ vars.SONAR_ORGANIZATION || 'your_organization' }}
           # When you need the analysis to take place in a directory other than the one from which it was launched, default is .
           projectBaseDir: .

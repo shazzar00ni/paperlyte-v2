@@ -1,0 +1,566 @@
+# PR Review Summary
+
+This file contains a summary of pull requests I have reviewed.
+
+## 2026-05-21
+
+### Analysis: Systemic Regressions in Open Branches (Automated Daily Audit)
+
+- **Status:** Critical — Action Required
+- **Summary:** An automated repository-wide audit of 304 unmerged branches confirms the following systemic regressions.
+
+| Regression Type                | Count | Severity    | Notes                                               |
+| :----------------------------- | :---- | :---------- | :-------------------------------------------------- |
+| Orphan Branches                | 0     | 🔴 Critical | No common ancestor with `main`.                     |
+| Missing `.npmrc`               | 79    | 🔴 Critical | Breaks dependency resolution.                       |
+| Missing `docs/ROADMAP.md`      | 75    | 🟠 High     | Core project documentation.                         |
+| Missing `gitVersionControl.md` | 113   | 🟠 High     | Core Git workflow documentation.                    |
+| Missing `review.md`            | 113   | 🟡 Medium   | AI PR reviewer instructions.                        |
+| Reverted Security Helpers      | 87    | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers. |
+| Unreadable navigation.ts       | 8     | 🔴 Critical | File missing or unreadable.                         |
+
+- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.
+
+### Manual Branch Reviews (May 21, 2026)
+
+#### origin/claude/fix-open-redirect-TX551
+
+- **Status:** Ready
+- **Summary:** Security hardening of programmatic navigation to prevent open redirects.
+- **Feedback:** Successfully restricts `safeNavigate` to same-origin URLs by default. The migration from `window.location.href` to `window.location.assign()` for validated URLs follows best practices. Excellent integration with the monitoring utility to log security-related navigation blocks, providing valuable telemetry for identifying potential attack patterns or misconfigurations.
+
+#### origin/claude/tree-shake-font-awesome-cK85j
+
+- **Status:** Ready
+- **Summary:** Icon component refactor using localized SVG paths and analytics provider cleanup.
+- **Feedback:** Significant reduction in bundle size by eliminating global Font Awesome dependencies. The normalization of icon names and the introduction of a robust mapping system (`iconNameMap`) makes the `Icon` component more predictable and maintainable. Cleanup of unused methods in analytics providers further improves code hygiene and runtime performance.
+
+#### origin/claude/accessibility-audit-baseline-USu5N
+
+- **Status:** Ready
+- **Summary:** Comprehensive WCAG compliance documentation and design token updates.
+- **Feedback:** The `docs/ACCESSIBILITY-CHECKLIST.md` provides a vital manual verification framework for UI components. Updates to `variables.css` ensure that muted text colors meet WCAG 2.1 AA contrast requirements (4.5:1) in both light and dark modes, resolving several identified accessibility regressions.
+
+#### origin/claude/netlify-markdown-edge-function-cdyQy
+
+- **Status:** Ready
+- **Summary:** Sanitized HTML-to-Markdown conversion via Netlify Edge Function.
+- **Feedback:** Robust implementation using `sanitize-html` and `turndown`. The handler correctly manages content-type negotiation and provides helpful token estimation headers. Extensive test coverage for edge cases, including malformed HTML and XSS vectors, ensures high reliability and security in the production edge runtime.
+
+#### origin/claude/add-claude-documentation-QxLA4
+
+- **Status:** Ready
+- **Summary:** Extensive updates to CLAUDE.md covering architecture, design, and testing.
+- **Feedback:** A major documentation milestone. The updated `CLAUDE.md` provides clear, actionable guidance on path aliases, CSS modules, design tokens, and the testing strategy. This serves as an essential onboarding resource and maintains high development standards across the contributor base.
+
+---
+
+## 2026-05-20
+
+### Analysis: Systemic Regressions in Open Branches (Automated Daily Audit)
+
+- **Status:** Critical — Action Required
+- **Summary:** An automated repository-wide audit of 302 unmerged branches confirms the following systemic regressions.
+
+| Regression Type                | Count | Severity    | Notes                                               |
+| :----------------------------- | :---- | :---------- | :-------------------------------------------------- |
+| Orphan Branches                | 0     | 🔴 Critical | No common ancestor with `main`.                     |
+| Missing `.npmrc`               | 79    | 🔴 Critical | Breaks dependency resolution.                       |
+| Missing `docs/ROADMAP.md`      | 75    | 🟠 High     | Core project documentation.                         |
+| Missing `gitVersionControl.md` | 110   | 🟠 High     | Core Git workflow documentation.                    |
+| Missing `review.md`            | 110   | 🟡 Medium   | AI PR reviewer instructions.                        |
+| Reverted Security Helpers      | 87    | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers. |
+| Unreadable navigation.ts       | 8     | 🔴 Critical | File missing or unreadable.                         |
+
+- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.
+
+### Manual Branch Reviews (May 20, 2026)
+
+#### origin/claude/fix-open-redirect-TX551
+
+- **Status:** Ready
+- **Summary:** Security hardening for navigation utilities to prevent open redirects.
+- **Feedback:** Successfully restricts `safeNavigate` to same-origin URLs by default. The introduction of `SafeUrlOptions` allows for controlled external navigation where appropriate (e.g., UI links). Improved error logging with context provides better visibility into blocked navigation attempts.
+
+#### origin/claude/tree-shake-font-awesome-cK85j
+
+- **Status:** Ready
+- **Summary:** Performance optimization via Icon component refactoring.
+- **Feedback:** Replaces the global Font Awesome library with localized SVG paths, significantly reducing bundle size. The normalization of icon names and consistent use of the `iconPaths` mapping makes the component more maintainable and performant.
+
+#### origin/claude/accessibility-audit-baseline-USu5N
+
+- **Status:** Ready
+- **Summary:** WCAG compliance audit and design token updates.
+- **Feedback:** The new `docs/ACCESSIBILITY-CHECKLIST.md` is an excellent resource for ongoing manual verification. Updates to `variables.css` successfully resolve contrast issues for muted text, ensuring WCAG 2.1 AA compliance across both light and dark themes.
+
+#### origin/claude/netlify-markdown-edge-function-cdyQy
+
+- **Status:** Ready
+- **Summary:** Netlify Edge Function for HTML-to-Markdown conversion.
+- **Feedback:** A well-architected Edge Function with comprehensive test coverage. Use of `sanitize-html` ensures security, and the token estimation logic is a nice touch for downstream consumers.
+
+#### origin/claude/add-claude-documentation-QxLA4
+
+- **Status:** Ready
+- **Summary:** Comprehensive project documentation update in CLAUDE.md.
+- **Feedback:** Greatly enhances the developer experience by documenting the full technology stack, CSS architecture, and testing strategies. The addition of security and performance constraints helps maintain project standards.
+
+---
+
+## 2026-05-19
+
+### Analysis: Systemic Regressions in Open Branches (Automated Daily Audit)
+
+- **Status:** Critical — Action Required
+- **Summary:** An automated repository-wide audit of 307 unmerged branches confirms the following systemic regressions.
+
+| Regression Type                | Count | Severity    | Notes                                               |
+| :----------------------------- | :---- | :---------- | :-------------------------------------------------- |
+| Orphan Branches                | 0     | 🔴 Critical | No common ancestor with `main`.                     |
+| Missing `.npmrc`               | 79    | 🔴 Critical | Breaks dependency resolution.                       |
+| Missing `docs/ROADMAP.md`      | 75    | 🟠 High     | Core project documentation.                         |
+| Missing `gitVersionControl.md` | 113   | 🟠 High     | Core Git workflow documentation.                    |
+| Missing `review.md`            | 113   | 🟡 Medium   | AI PR reviewer instructions.                        |
+| Reverted Security Helpers      | 87    | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers. |
+| Unreadable navigation.ts       | 8     | 🔴 Critical | File missing or unreadable.                         |
+
+- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.
+
+### Manual Branch Reviews (May 19, 2026)
+
+#### origin/claude/fix-open-redirect-TX551
+
+- **Status:** Ready
+- **Summary:** Security hardening for navigation utilities.
+- **Feedback:** Successfully restricts `safeNavigate` to same-origin URLs by default, preventing open redirect vulnerabilities. The implementation of `isSafeUrl` with `SafeUrlOptions` is flexible and well-tested. Excellent integration with the monitoring system for tracking blocked navigation attempts.
+
+#### origin/claude/tree-shake-font-awesome-cK85j
+
+- **Status:** Ready
+- **Summary:** Efficient Icon component refactoring and performance optimization.
+- **Feedback:** Significantly reduces bundle size by replacing the global Font Awesome library with a localized SVG path mapping. The normalization of icon names and the use of CSS modules for styling ensure a clean and maintainable implementation. Also includes cleanup of Plausible analytics provider.
+
+#### origin/claude/accessibility-audit-baseline-USu5N
+
+- **Status:** Ready
+- **Summary:** WCAG AA compliance audit and documentation.
+- **Feedback:** Provides a comprehensive accessibility checklist (`docs/ACCESSIBILITY-CHECKLIST.md`) for manual verification. Updates to `variables.css` ensure that muted text colors meet the 4.5:1 contrast ratio requirements.
+
+#### origin/claude/netlify-markdown-edge-function-cdyQy
+
+- **Status:** Ready
+- **Summary:** Netlify Edge Function for Markdown conversion.
+- **Feedback:** A robust implementation that converts HTML responses to Markdown when requested via the `Accept: text/markdown` header. Includes thorough security sanitization using `sanitize-html` and excellent test coverage for edge cases and error fallbacks.
+
+#### origin/claude/add-claude-documentation-QxLA4
+
+- **Status:** Ready
+- **Summary:** Major update to CLAUDE.md with comprehensive project architecture.
+- **Feedback:** Greatly improves developer onboarding by documenting the full technology stack, CSS architecture (design tokens, modules), testing strategies (Vitest, Playwright, Lighthouse), and security practices (CSP, Sentry).
+
+---
+
+## 2026-05-12
+
+### Analysis: Systemic Regressions in Open Branches (Automated Daily Audit)
+
+- **Status:** Critical — Action Required
+- **Summary:** An automated repository-wide audit of 291 unmerged branches confirms the following systemic regressions.
+
+| Regression Type                | Count | Severity    | Notes                                               |
+| :----------------------------- | :---- | :---------- | :-------------------------------------------------- |
+| Orphan Branches                | 0     | 🔴 Critical | No common ancestor with `main`.                     |
+| Missing `.npmrc`               | 79    | 🔴 Critical | Breaks dependency resolution.                       |
+| Missing `docs/ROADMAP.md`      | 75    | 🟠 High     | Core project documentation.                         |
+| Missing `gitVersionControl.md` | 88    | 🟠 High     | Core Git workflow documentation.                    |
+| Missing `review.md`            | 88    | 🟡 Medium   | AI PR reviewer instructions.                        |
+| Reverted Security Helpers      | 87    | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers. |
+| Unreadable navigation.ts       | 8     | 🔴 Critical | File missing or unreadable.                         |
+
+- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.
+
+### Manual Branch Reviews (May 12, 2026)
+
+#### origin/claude/fix-open-redirect-TX551
+
+- **Status:** Ready
+- **Summary:** Security hardening for navigation utilities.
+- **Feedback:** Successfully restricts `safeNavigate` to same-origin URLs by default, preventing open redirect vulnerabilities. The implementation of `isSafeUrl` with `SafeUrlOptions` is flexible and well-tested. Excellent integration with the monitoring system for tracking blocked navigation attempts.
+
+#### origin/claude/implement-service-worker-YLeLZ
+
+- **Status:** Ready
+- **Summary:** Robust PWA Service Worker implementation.
+- **Feedback:** Provides a comprehensive offline experience with a dedicated `offline.html` fallback and intelligent caching strategies (`cache-first` for hashed assets, `stale-while-revalidate` for static media). CSP updates are correctly handled in both Vercel and Vite configurations.
+
+#### origin/claude/tree-shake-font-awesome-cK85j
+
+- **Status:** Ready
+- **Summary:** Efficient Icon component refactoring.
+- **Feedback:** Significantly reduces bundle size by replacing the global Font Awesome library with a localized SVG path mapping. The normalization of icon names and the use of CSS modules for styling ensure a clean and maintainable implementation.
+
+---
+
+## 2026-03-05
+
+### Analysis: Accidental File Deletions in Open Branches (Jules Daily PR Reviews)
+
+- **Status:** Critical — Action Required
+- **Summary:** Analysis of Jules' daily PR reviews (2026-03-01, 2026-03-04, and 2026-03-05) confirms that a large number of open branches have **accidentally deleted** the following critical files from the repository:
+
+  | File                   | Severity    | Notes                                                                                                |
+  | ---------------------- | ----------- | ---------------------------------------------------------------------------------------------------- |
+  | `.npmrc`               | 🔴 Critical | Controls `legacy-peer-deps=true`; its removal breaks dependency resolution for all peer dependencies |
+  | `docs/ROADMAP.md`      | 🟠 High     | Core project roadmap documentation                                                                   |
+  | `gitVersionControl.md` | 🟠 High     | Core Git workflow documentation                                                                      |
+  | `review.md`            | 🟡 Medium   | AI PR reviewer instruction file                                                                      |
+
+- **Affected Branches (confirmed across multiple reviews):**
+
+  | Branch / PR                                         | `.npmrc` | `docs/ROADMAP.md` | `gitVersionControl.md` | `review.md` | `src/utils/navigation.ts` reverted |
+  | --------------------------------------------------- | :------: | :---------------: | :--------------------: | :---------: | :--------------------------------: |
+  | `origin/claude/implement-todo-item-2H9LP`           |    ✗     |         ✗         |           ✗            |      ✗      |                 ✗                  |
+  | `origin/claude/core-editor-phase-1-PI3Yp`           |    ✗     |         ✗         |           ✗            |      ✗      |                 ✗                  |
+  | `origin/copilot/sub-pr-503`                         |    ✗     |         —         |           ✗            |      ✗      |                 ✗                  |
+  | `origin/copilot/sub-pr-469-again`                   |    ✗     |         —         |           ✗            |      ✗      |                 ✗                  |
+  | `origin/claude/fix-peer-dependency-conflicts-Wj2iC` |    ✗     |         —         |           —            |      —      |                 ✗                  |
+  | PR #469, #488, #491, #502, #506                     |    ✗     |         ✗         |           ✗            |      ✗      |                 —                  |
+
+  _✗ = accidentally deleted/reverted; — = not affected_
+
+- **Root Cause:** Likely caused by a destructive rebase or a base branch that had these files removed; propagated across many branches that branched off from it.
+- **Action Required:** All affected branches must restore the four files listed above (and the `hasDangerousProtocol`/`isRelativeUrl` helpers in `src/utils/navigation.ts`) before they can be merged. The files all exist and are intact on `main`.
+
+---
+
+## 2026-02-08
+
+### PR #427 Configure Claude Code GitHub Action
+
+- **Status:** Approved
+- **Notes (2026-02-08):** See detailed review under **2026-02-06 → PR #427**. Latest status remains **Approved**; no additional feedback beyond that entry.
+
+### PR #275 Implement P0-CRITICAL hero section conversion optimization (#274)
+
+- **Status:** Under Review (Changes Requested)
+- **Notes (2026-02-08):** See detailed review under **2026-02-06 → PR #275**. Status is still **Under Review (Changes Requested)** as of this date.
+
+### PR #279: feat: Implement React Router and legal pages with dark footer
+
+- **Status:** Changes Requested
+- **Notes (2026-02-08):** See detailed review under **2026-02-06 → PR #279**. Status remains **Changes Requested**; prior concerns documented there continue to apply.
+
+### PR #319: Fix Deployment Error in Privacy.tsx
+
+- **Status:** Changes Requested
+- **Notes (2026-02-08):** See detailed review under **2026-02-06 → PR #319**. Status is still **Changes Requested** with no new blocking issues recorded here.
+
+### PR #311: Fix Icon component fallback rendering (Update 2026-02-08)
+
+- **Status:** Changes Requested
+- **Notes (2026-02-08):** See detailed review under **2026-02-06 → PR #311**. Status remains **Changes Requested**; refer to the earlier entry for the full accessibility and rendering discussion.
+
+### Additional PRs
+
+- **PR #428**
+  - **Status:** Reviewed/Approved
+  - **Summary:** Critical security fix related to `safeNavigate`.
+  - **Feedback:** Solid improvement; this approach to `safeNavigate` is preferred for its flexibility over #424.
+
+- **PR #424**
+  - **Status:** Reviewed/Approved
+  - **Summary:** Critical security fix overlapping with #428.
+  - **Feedback:** Improvement is solid but superseded by #428's `safeNavigate` implementation.
+
+- **PR #422**
+  - **Status:** Reviewed/Approved
+  - **Summary:** Dependency updates.
+  - **Feedback:** Changes look good and keep dependencies current without introducing regressions.
+
+- **PR #419**
+  - **Status:** Reviewed/Approved
+  - **Summary:** Analytics integration.
+  - **Feedback:** Implementation is sound and aligns with existing CSP and privacy requirements.
+
+- **PR #406**
+  - **Status:** Reviewed/Approved
+  - **Summary:** Miscellaneous improvements.
+  - **Feedback:** Changes are straightforward and low risk.
+
+### Redundant Summary PRs
+
+- **Summary:** Identified several redundant PRs that only update `PR_REVIEW_SUMMARY.md` or are duplicates/attempts to fix the summary file.
+- **PRs:** #435, #434, #433, #432, #431, #385, #383.
+- **Action:** Recommend closing these in favor of a single daily summary.
+
+### PR #107
+
+- **Status:** Close Recommended
+- **Summary:** Large monolithic changes that are difficult to review and risky to merge as-is.
+- **Feedback:** Recommendation remains unchanged: Close #107 (massive monolithic PR) to avoid merge conflicts with active feature PRs and to encourage smaller, focused PRs.
+
+### PR #389
+
+- **Status:** Postponed
+- **Summary:** Repository-wide formatting changes that are low priority and likely to conflict with in-flight feature work.
+- **Feedback:** Recommendation remains unchanged: Postpone #389 (repository-wide formatting) to avoid merge conflicts with active feature PRs and revisit once the codebase is more stable.
+
+---
+
+## 2026-02-06
+
+### PR #428: Fix open redirect vulnerability in safeNavigate() (Alert #2305)
+
+- **Status:** Approved
+- **Summary:** Fixes an open redirect vulnerability by restricting `safeNavigate()` to same-origin URLs by default. It introduces `safeNavigateExternal()` for intentional external navigation and adds a parameter to `isSafeUrl()` to control external URL allowance.
+- **Feedback:** Solid security improvement. The separation of internal and external navigation is a good pattern.
+
+### PR #427 Configure Claude Code GitHub Action
+
+- **Status:** Changes Requested
+- **Summary:** Adds a GitHub Actions workflow for Claude Code integration.
+- **Feedback:** The workflow file has several issues: duplicate `permissions` keys and invalid multiple `if` conditions on the same job (only the last one will be evaluated). Recommend combining `if` conditions into a single expression; the `actions/checkout@v6` usage is consistent with this repository’s conventions.
+
+### PR #424: Fix open redirect and command injection vulnerabilities
+
+- **Status:** Approved
+- **Summary:** Addresses multiple security issues, including open redirect in `navigation.ts` (using an allowlist approach) and a potential object injection in `CounterAnimation.tsx` by using a `Map` instead of an object for easing functions.
+- **Feedback:** This is a comprehensive security PR. The `Map` implementation in `CounterAnimation` effectively prevents prototype pollution. Note that this overlaps with PR #428; this version is more robust but more complex.
+
+### PR #425: Add legacy ESLint config for Codacy compatibility
+
+- **Status:** Approved
+- **Summary:** Adds a legacy `.eslintrc.json` to support Codacy's older ESLint engine.
+- **Feedback:** Helpful for maintaining CI compatibility with legacy tools.
+
+### PR #422: Update type definitions to latest versions
+
+- **Status:** Approved
+- **Summary:** Minor updates to `@types/node` and `@types/react`.
+- **Feedback:** Routine maintenance, looks safe.
+
+### PR #419: Set up Vercel Web Analytics integration
+
+- **Status:** Approved
+- **Summary:** Integrates `@vercel/analytics` and configures necessary CSP headers.
+- **Feedback:** Implementation follows best practices. Verified that CSP headers in both `vercel.json` and `vite.config.ts` are correctly updated to allow Vercel's analytics domains.
+
+### PR #406: Correct PR #384 documentation entry in review summary
+
+- **Status:** Approved
+- **Summary:** Fixes an inaccurate description of PR #384 in this file.
+- **Feedback:** Good for documentation accuracy.
+
+### PR #389: Standardize code style with semicolons across codebase
+
+- **Status:** Postponed
+- **Summary:** Enforces semicolons via Prettier across the entire codebase (186 files).
+- **Feedback:** While consistent styling is good, merging a 186-file formatting change while many other PRs are open will cause widespread merge conflicts. Recommend postponing until current feature PRs are merged.
+
+### PR #388: Remove invalid `slack_app` key from `codecov.yml`
+
+- **Status:** Approved
+- **Summary:** Removes a deprecated/invalid configuration key from `codecov.yml`.
+- **Feedback:** Clean maintenance fix.
+
+### PR #311: Fix Icon component fallback rendering and missing aria-labels
+
+- **Status:** Changes Requested
+- **Summary:** Refactors the `Icon` component fallback to use `<i>` tags and adds accessibility labels.
+- **Feedback:** Switching from the `FontAwesomeIcon` React component to raw `<i>` tags for fallbacks might break rendering if the Font Awesome CSS isn't globally loaded, which it typically isn't in this project's self-hosted setup. Recommend sticking with the React component for consistency.
+
+### PR #319: Fix Deployment Error in Privacy.tsx
+
+- **Status:** Changes Requested (Follow-up)
+- **Summary:** Fixes a bug in `Privacy.tsx` but includes unrelated changes to `package-lock.json` and `sitemap.xml`.
+- **Feedback:** Previous request to split the PR remains unaddressed. The `package-lock.json` changes add `"peer": true` to many packages, which has caused issues in the past.
+
+---
+
+## 2026-02-03
+
+### PR #399: fix(ci): fix SARIF merge script jq syntax errors causing run limit rejection
+
+- **Status:** Approved (with corrections)
+- **Summary:** Fixes syntax errors (unbalanced parentheses) in the `jq` filter used in `scripts/merge-sarif-runs.sh`. Also improves the robustness of property extraction for `columnKind` and `conversion` by avoiding the `first(empty)` pitfall.
+- **Feedback:** A syntax error was found in the initial PR submission (unbalanced parentheses in the `unique_by` filter). This has been corrected in the current branch to restore CI functionality.
+
+### Baseline Fix: Undici Dependency & Security
+
+- **Summary:** Fixed a critical baseline issue where an outdated `undici` override was incompatible with `jsdom` v28.0.0 and contained moderate security vulnerabilities.
+- **Action:** Updated `undici` override to `^7.20.0` in `package.json`. This satisfies the requirements for `jsdom` (fixing `MODULE_NOT_FOUND` errors) and resolves security audit failures for nested dependencies.
+
+### PR #387: Fix Home/End key navigation tests in Header component
+
+- **Status:** Approved
+- **Summary:** Modifies `Header.test.tsx` to handle `jsdom`'s lack of support for `Home` and `End` key simulation. Instead of simulating the keypress, it verifies the DOM order of focusable elements and manually sets focus.
+- **Feedback:** A sensible approach to environment-specific testing limitations. Since the core navigation logic is covered in `keyboard.test.ts`, this maintains sufficient coverage.
+
+### PR #384: Improve icon library test reporting with duplicate key detection
+
+- **Status:** Approved
+- **Summary:** Adds detailed diagnostic information to `iconLibrary.test.ts` to help debug duplicate icon values in CI. Includes duplicate detection logic and improved error reporting for duplicate icon names.
+- **Feedback:** Good improvement to test diagnostics. The duplicate key detection will help catch issues earlier in development.
+
+### PR #107: Implement critical accessibility fixes, legal documents, and performance optimizations
+
+- **Status:** Needs Cleanup / Close
+- **Summary:** A massive, monolithic PR (118 files) that has been open for several months. Many of its core changes appear to have been merged via other PRs. It also includes many Lighthouse report artifacts.
+- **Feedback:** Recommend closing this PR. Any remaining unique changes should be extracted into smaller, focused PRs to facilitate review and merge.
+
+### PR #279: feat: Implement React Router and legal pages with dark footer
+
+- **Status:** Changes Requested
+- **Summary:** Introduces `react-router-dom` and creates dedicated pages for Privacy and Terms.
+- **Feedback:** The routing logic is not yet integrated into `App.tsx`, which currently renders everything on a single page. Routing should be fully implemented or the PR should be explicitly marked as a "Work in Progress" toward that goal.
+
+### PR #275 Implement P0-CRITICAL hero section conversion optimization (#274)
+
+- **Status:** Under Review (Previously Rejected)
+- **Summary:** Re-evaluated this PR after previous rejection for critical security issues. Recent commits have removed the most dangerous changes (like the CSP weakening).
+- **Feedback:** While improved, the PR title remains misleading as the recent focus is on Codacy warning fixes. A fresh, accurately titled PR with only the safe changes is recommended.
+
+### PR #321: Add tests for analytics utilities
+
+- **Status:** Approved
+- **Summary:** Adds a comprehensive test suite for analytics utilities in `src/utils/analytics.test.ts`.
+- **Feedback:** Great improvement to test coverage.
+
+### PR #309, #308, #284
+
+- **Status:** Approved
+- **Summary:** These PRs provide various improvements including FontAwesome test updates (#309), linting fixes (#308), and Lighthouse CI budget enhancements (#284).
+- **Feedback:** All are solid maintenance improvements.
+
+---
+
+## 2026-01-31
+
+### PR #381: Fix SARIF upload to comply with GitHub's July 2025 requirements
+
+- **Status:** Approved
+- **Summary:** This PR correctly addresses the upcoming breaking change in GitHub Code Scanning by merging multiple SARIF runs into a single run using `jq`. This ensures continued CI/CD reliability.
+- **Feedback:** Solid implementation. It's recommended to merge this soon as it affects security reporting.
+
+### PR #379: Add legacy ESLint configuration for backward compatibility
+
+- **Status:** Approved with comments
+- **Summary:** This PR adds a legacy `.eslintrc.cjs` and a Node script for merging SARIF runs.
+- **Feedback:** There is significant overlap with PR #381 regarding SARIF merging. It's suggested to coordinate these two PRs to avoid redundant or conflicting CI changes. The legacy config itself is a good addition for compatibility.
+
+### PR #355: Fix icon query selector issues in tests
+
+- **Status:** Approved
+- **Summary:** Improves test resilience by using more generic selectors for icons (`svg, .icon-fallback`). This reduces flakiness when the internal rendering of the `Icon` component changes.
+- **Feedback:** Good improvement. Noted some date reverts in `sitemap.xml` that might be accidental; please verify if those were intended.
+
+### PR #353: fix(tests): update component tests after Icon refactor
+
+- **Status:** Approved with suggestions
+- **Summary:** Extensive updates to tests following an Icon component refactor. It also adds `continue-on-error` to SARIF uploads as a temporary fix.
+- **Feedback:** While `continue-on-error` prevents CI failure, it's a stopgap. PR #381 provides a more permanent fix by merging SARIF runs. Combining the test improvements here with the SARIF fix in #381 would be ideal.
+
+### PR #332: Fix command injection vulnerability in branch protection workflow
+
+- **Status:** Approved
+- **Summary:** Critical security fix that prevents command injection by validating branch names in the protection workflow. Includes a very thorough test suite and CI integration for shell script coverage.
+- **Feedback:** Exceptional work. The addition of comprehensive tests and coverage tracking for shell scripts sets a high standard for security-critical parts of the codebase.
+
+### PR #331: Fix command injection vulnerability in sitemap generation
+
+- **Status:** Approved with comments
+- **Summary:** Fixes a security vulnerability in sitemap generation and adds path traversal protection utilities. It also includes a major update to `AGENTS.md` to reflect the current state of the landing page project.
+- **Feedback:** The security fixes are essential. The documentation updates are very helpful for clarifying the project's scope.
+
+### PR #329: feat: Complete WCAG 2.1 AA accessibility audit with comprehensive documentation
+
+- **Status:** Approved
+- **Summary:** Provides extensive documentation on accessibility compliance, keyboard navigation, and screen reader testing. Includes a minor but important fix for email input autocomplete.
+- **Feedback:** This is a fantastic resource for the team and ensures the project maintains high accessibility standards.
+
+---
+
+## 2026-01-18
+
+### PR #259: Fix: update social link for twitter
+
+- **Summary:** The PR description claims to update a Twitter social link, but the diff is empty and the commits are unrelated to the title.
+- **Recommendation:** Close the PR.
+- **Action:** Left a comment on the PR recommending closure.
+
+---
+
+## PR #260: refactor: add shared test helpers for analytics
+
+- **Status:** Approved
+- **Summary:** This PR adds a new file `src/test/analytics-helpers.ts` which contains a collection of well-documented test helpers for analytics testing. This is a good addition for improving the test suite.
+- **Feedback:** No issues found. The code is clean and the helpers are useful. I will leave a comment on the PR and approve it.
+
+## PR #262: fix: Fix intermittent Lighthouse CI failures
+
+- **Status:** Approved with comments
+- **Summary:** This PR addresses two separate issues. First, it corrects the port in `.lighthouserc.json` from 3000 to 4173, which should resolve the Lighthouse CI failures. Second, it introduces a well-documented workaround for a `querySelectorAll` bug in JSDOM, complete with a new test file to demonstrate the issue.
+- **Feedback:** Both changes are valuable and well-implemented. However, they address unrelated concerns and should have been submitted in separate pull requests for better separation of concerns. I will approve the PR but leave a comment advising the author to split up unrelated changes in the future.
+
+## PR #263: feat: add illustration component and enhance Solution section
+
+- **Status:** Approved
+- **Summary:** This PR introduces a new, well-implemented `Illustration` component and integrates it into the `Solution` section, enhancing the visual presentation. The component is well-tested and includes CSS modules for styling.
+- **Feedback:** This is a solid feature addition with no issues found. The code is clean, and the new component is a great improvement.
+
+## PR #265: ci: update vitest config for codecov
+
+- **Status:** Approved with comments
+- **Summary:** This PR is titled "ci: update vitest config for codecov," but it actually contains a number of valuable improvements to mobile responsiveness. The changes include fluid typography, new utility classes, and a new `viewport` utility to address the 100vh issue in iOS Safari.
+- **Feedback:** The code changes are a significant improvement for mobile users and are well-implemented. However, the PR title is completely unrelated to the content. This is a recurring issue with this author's PRs, and I will leave a comment strongly advising them to use descriptive and accurate titles in the future.
+
+---
+
+## 2024-07-29
+
+### PR #356: Fix Codacy ESLint Configuration Issue
+
+**Branch:** `fix-codacy-eslint-issue-v2-12644842812267622963`
+
+**Status:** Approved with comments
+
+#### Summary for PR #356
+
+This PR addresses a Codacy configuration issue to ensure ESLint runs correctly in the CI pipeline. The core changes in `.codacy.yml` and the addition of `.eslintrc.cjs` are correct and effectively resolve the issue.
+
+#### Feedback & Suggestions for PR #356
+
+- **Approval:** The main changes are approved and ready for merging.
+- **Scope Creep:** The PR includes unrelated changes to the icon library (`src/utils/iconLibrary.ts`) and E2E tests (`tests/e2e/landing-page.spec.ts`). While not harmful, these changes are out of scope for a configuration fix.
+- **Recommendation:** I've recommended that the contributor move the icon and test-related changes to a separate PR to maintain a clean and focused commit history. This will make it easier to track changes and revert them if necessary.
+
+### PR #319: Fix Deployment Error in Privacy.tsx
+
+**Branch:** `fix/deployment-error-privacy-tsx-8314844507989551467`
+
+**Status:** Changes requested
+
+#### Summary for PR #319
+
+This PR aims to fix a deployment error in the `Privacy.tsx` component. However, it also includes significant changes to `package-lock.json` and `public/sitemap.xml` that are unrelated to the component fix.
+
+#### Feedback & Suggestions for PR #319
+
+- **Mixed Changes:** The PR mixes a bug fix with dependency updates and sitemap changes. This makes it difficult to review and test.
+- **`package-lock.json`:** The changes to `package-lock.json` are extensive and add `"peer": true` to many dependencies. This is a significant change that could have unintended side effects and should be tested in isolation. My memory indicates that these changes have caused test failures in the past.
+- **Recommendation:** I've requested that the contributor split this PR into two separate PRs:
+  1. A PR with only the fix for `Privacy.tsx`.
+  2. A separate PR for the `package-lock.json` and `sitemap.xml` changes.
+
+This will allow us to safely merge the bug fix while the dependency changes can be more thoroughly tested and reviewed.
+
+---
+
+## 2026-01-26
+
+## PR #275: "Implement P0-CRITICAL hero section conversion optimization (#274)"
+
+**Status:** Rejected - Critical Issues Found
+**Summary:** This PR introduces severe and critical regressions that make the application significantly less safe. It includes a path traversal vulnerability, a prototype pollution vulnerability, a weakened Content Security Policy (CSP), and the removal of important security headers. Additionally, it contains suspicious downgrades of dependencies and GitHub Actions. The test suite is also failing with 27 failed tests.
+**Suggestions:** This PR should be closed immediately. The author needs to address the critical security vulnerabilities and the failing tests in a new PR.

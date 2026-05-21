@@ -12,6 +12,12 @@ export default defineConfig({
     baseURL: process.env.BASE_URL ?? 'http://localhost:4173',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
+    // Disable animations so AnimatedElement wrappers (opacity:0 → 1) don't block
+    // actionability checks or cause timing flakiness across browsers.
+    reducedMotion: 'reduce',
+    // Force light color scheme so useTheme and theme-init.js start in a known
+    // state across all CI environments and headless browsers.
+    colorScheme: 'light',
   },
 
   projects: [

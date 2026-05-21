@@ -16,6 +16,9 @@ export default defineConfig({
     baseURL: process.env.BASE_URL ?? 'http://localhost:4173',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
+    // Disable motion so AnimatedElement (opacity:0 → 1 via IntersectionObserver)
+    // does not leave elements invisible when assertions run in headless CI.
+    reducedMotion: 'reduce',
   },
 
   projects: [

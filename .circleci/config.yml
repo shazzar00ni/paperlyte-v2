@@ -130,6 +130,16 @@ jobs:
       - attach_workspace:
           at: /tmp/workspace
       - run:
+          # The Playwright Docker image ships with the Node.js LTS available at
+          # build time (Node 20.x for v1.59.1-noble), which pre-dates the
+          # Node 20.19.0 release. Vite 8 requires ^20.19.0 || >=22.12.0, so
+          # `npm run preview` would fail without this upgrade.
+          name: Upgrade to Node.js 22 (Vite 8 requires >=22.12.0)
+          command: |
+            curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
+            apt-get install -y nodejs
+            node --version
+      - run:
           name: Prepare E2E workspace
           command: |
             cp -R /tmp/workspace/dist ./dist

@@ -86,9 +86,9 @@ describe('.lighthouserc.json configuration', () => {
       expect(config.ci.assert.assertions).toHaveProperty('unminified-javascript', 'warn')
     })
 
-    it('should have network-dependency-tree-insight assertion as warn', () => {
+    it('should have network-dependency-tree-insight assertion as off', () => {
       const config = getOrParseConfig()
-      expect(config.ci.assert.assertions).toHaveProperty('network-dependency-tree-insight', 'warn')
+      expect(config.ci.assert.assertions).toHaveProperty('network-dependency-tree-insight', 'off')
     })
 
     it('should have is-on-https assertion as warn', () => {

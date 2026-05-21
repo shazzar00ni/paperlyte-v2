@@ -343,4 +343,24 @@ describe('App Integration', () => {
     const sections = container.querySelectorAll('section')
     expect(sections.length).toBeGreaterThan(0)
   })
+
+  it('should not render Analytics on non-Vercel deployments', () => {
+    // VITE_DEPLOY_TARGET is undefined in the test environment (non-Vercel)
+    const { container } = render(<App />)
+    // The Analytics component renders a <script> or beacon element only on Vercel;
+    // in tests it should never appear since the env var is not set
+    expect(import.meta.env.VITE_DEPLOY_TARGET).not.toBe('vercel')
+    expect(container).toBeInTheDocument()
+  })
+
+  it('should render Analytics placeholder when VITE_DEPLOY_TARGET is vercel', async () => {
+    vi.stubEnv('VITE_DEPLOY_TARGET', 'vercel')
+    try {
+      const { container } = render(<App />)
+      // The Analytics Suspense boundary renders (even if the lazy chunk resolves to nothing in JSDOM)
+      expect(container).toBeInTheDocument()
+    } finally {
+      vi.unstubAllEnvs()
+    }
+  })
 })

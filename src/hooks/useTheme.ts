@@ -50,53 +50,30 @@ const migrateLegacyTheme = (): void => {
   }
 }
 
-// Extracted to module level so the hook body stays flat and its cyclomatic
-// complexity remains below the medium threshold (was: inner function + lazy
-// initializer pushed the hook past the limit).
-const getInitialUserPreference = (persistenceEnabled: boolean): boolean => {
-  if (!isBrowser || !persistenceEnabled) return false
+// Returns the previously persisted, user-chosen theme, or null when unavailable.
+// A non-null return also signals that the user has an explicit preference (so
+// system-preference changes should be ignored until they toggle again).
+const readPersistedTheme = (persistenceEnabled: boolean): Theme | null => {
+  if (!isBrowser || !persistenceEnabled) return null
   try {
-    const storedTheme = localStorage.getItem(THEME_STORAGE_NAME)
-    return (
-      isValidTheme(storedTheme) && localStorage.getItem(USER_PREFERENCE_STORAGE_NAME) === 'true'
-    )
+    const stored = localStorage.getItem(THEME_STORAGE_NAME)
+    if (!isValidTheme(stored)) return null
+    return localStorage.getItem(USER_PREFERENCE_STORAGE_NAME) === 'true' ? stored : null
   } catch (err) {
-    logError(toError(err), {
-      tags: { hook: 'useTheme', operation: 'readUserPreferenceFlag' },
-    })
-    return false
+    logError(toError(err), { tags: { hook: 'useTheme', operation: 'readPersistedTheme' } })
+    return null
   }
 }
 
 // Runs exactly once per hook instance (passed as a lazy initializer to useState).
-// Migration happens first so subsequent storage reads see the versioned keys.
-// Concurrent-mode safe: all writes are idempotent.
+// Migration happens first so subsequent reads see the versioned keys.
+// Concurrent-mode safe: all writes inside migrateLegacyTheme are idempotent.
 const getInitialTheme = (persistenceEnabled: boolean): Theme => {
   if (!isBrowser) return 'light'
-
-  if (persistenceEnabled) {
-    migrateLegacyTheme()
-  }
-
-  if (persistenceEnabled) {
-    try {
-      const hasUserPreference = getInitialUserPreference(persistenceEnabled)
-      const stored = localStorage.getItem(THEME_STORAGE_NAME)
-      if (stored && isValidTheme(stored) && hasUserPreference) {
-        return stored
-      }
-    } catch (err) {
-      logError(toError(err), {
-        tags: { hook: 'useTheme', operation: 'readInitialTheme' },
-      })
-    }
-  }
-
-  if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    return 'dark'
-  }
-
-  return 'light'
+  if (persistenceEnabled) migrateLegacyTheme()
+  const persisted = readPersistedTheme(persistenceEnabled)
+  if (persisted) return persisted
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 }
 
 /**
@@ -119,7 +96,7 @@ export const useTheme = () => {
   const [theme, setTheme] = useState<Theme>(() => getInitialTheme(persistenceEnabled))
 
   // Read after useState so it sees storage written by migrateLegacyTheme inside getInitialTheme.
-  const [initialUserPref] = useState(() => getInitialUserPreference(persistenceEnabled))
+  const [initialUserPref] = useState(() => readPersistedTheme(persistenceEnabled) !== null)
   const userHasExplicitPreference = useRef(initialUserPref)
 
   useEffect(() => {

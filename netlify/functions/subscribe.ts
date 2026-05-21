@@ -1,6 +1,6 @@
 import type { Handler, HandlerEvent } from "@netlify/functions";
 import { z } from "zod";
-import { validateEmail } from "../../src/utils/validation";
+import { isValidEmail } from "../../src/utils/validation";
 
 // Rate limiting store (in-memory, resets on cold start)
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
@@ -230,12 +230,11 @@ export const handler: Handler = async (event: HandlerEvent) => {
     // canonical form — matches the client's ordering in EmailCapture.
     const normalizedEmail = email.trim().toLowerCase();
 
-    const validation = validateEmail(normalizedEmail);
-    if (!validation.isValid) {
+    if (!isValidEmail(normalizedEmail)) {
       return {
         statusCode: 400,
         headers,
-        body: JSON.stringify({ error: validation.error ?? "Invalid email address" }),
+        body: JSON.stringify({ error: "Invalid email address" }),
       };
     }
 

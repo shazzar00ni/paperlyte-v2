@@ -33,15 +33,13 @@ export const EMAIL_REGEX =
   /^[a-zA-Z0-9](?:[a-zA-Z0-9]|[._+-][a-zA-Z0-9])*@[a-zA-Z0-9](?:[a-zA-Z0-9]|[.-][a-zA-Z0-9])*\.[a-zA-Z]{2,}$/
 
 /**
- * Predicate wrapper around validateEmail.
- * Runs the same RFC 5322–simplified regex, length, and disposable-domain
- * checks — use this when you only need a boolean rather than an error message.
+ * Lightweight email-format predicate using the canonical email regex.
  *
  * @param email - The email address to validate
- * @returns true if the email passes all validation rules
+ * @returns true if the trimmed email matches the canonical email pattern
  */
 export function isValidEmail(email: string): boolean {
-  return validateEmail(email).isValid
+  return EMAIL_REGEX.test(email.trim())
 }
 
 /**

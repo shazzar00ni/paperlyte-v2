@@ -168,23 +168,23 @@
 /* Extra small screens */
 @media (max-width: 480px) {
   .title {
-    font-size: 1.5rem;
+    font-size: var(--font-size-3xl);
   }
 
   .description,
   .descriptionEmphasis {
-    font-size: 1rem;
+    font-size: var(--font-size-base);
   }
 
   .comparisonCard {
-    padding: 1.25rem 1rem;
+    padding: var(--spacing-md) var(--spacing-sm);
   }
 
   .impact {
-    padding: 1.25rem;
+    padding: var(--spacing-md);
   }
 
   .emotionalHook {
-    font-size: 1.125rem;
+    font-size: var(--font-size-lg);
   }
 }

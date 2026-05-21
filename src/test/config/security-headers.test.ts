@@ -51,7 +51,7 @@ describe('netlify.toml – security headers', () => {
   })
 
   it('should have a [[headers]] section for "/*"', () => {
-    expect(content).toMatch(/\[\[headers\]\]\s+for\s*=\s*"\\/\*"/)
+    expect(content).toMatch(/\[\[headers\]\]\s+for\s*=\s*"\/\*"/)
   })
 
   describe('required security header presence', () => {

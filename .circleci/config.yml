@@ -130,16 +130,6 @@ jobs:
       - attach_workspace:
           at: /tmp/workspace
       - run:
-          # The Playwright Docker image ships with the Node.js LTS available at
-          # build time (Node 20.x for v1.59.1-noble), which pre-dates the
-          # Node 20.19.0 release. Vite 8 requires ^20.19.0 || >=22.12.0, so
-          # `npm run preview` would fail without this upgrade.
-          name: Upgrade to Node.js 22 (Vite 8 requires >=22.12.0)
-          command: |
-            curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
-            apt-get install -y nodejs
-            node --version
-      - run:
           name: Prepare E2E workspace
           command: |
             cp -R /tmp/workspace/dist ./dist
@@ -150,9 +140,11 @@ jobs:
             - ~/.npm
       - run:
           name: Start preview server
-          # background: true keeps the process alive across subsequent steps.
-          # Using & within a step would terminate the server when the step exits.
-          command: npm run preview -- --host 0.0.0.0 --port 4173
+          # Use `serve` (static file server) rather than `npm run preview` (Vite).
+          # Vite 8 requires Node >=20.19.0 but the Playwright Docker image ships
+          # an older Node LTS; `serve` has no such constraint and avoids the need
+          # to upgrade Node.js at runtime (which would require a curl|bash pipe).
+          command: npx --yes serve dist --single --listen 4173
           background: true
       - run:
           name: Wait for preview server

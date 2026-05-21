@@ -1,6 +1,12 @@
 import { test, expect, type Page } from '@playwright/test'
 
 test.describe('Landing Page', () => {
+  // Emulate prefers-reduced-motion so AnimatedElement skips its opacity:0→1
+  // transition and elements are immediately visible when assertions run.
+  test.beforeEach(async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+  })
+
   test('should load and display hero section', async ({ page }: { page: Page }): Promise<void> => {
     await page.goto('/')
 

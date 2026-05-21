@@ -314,9 +314,10 @@ describe('package-lock.json – picomatch dependency update', () => {
     expect(entry.version).toBe('4.0.4')
   })
 
-  it('picomatch should have a valid integrity hash', () => {
-    expect(typeof entry.integrity).toBe('string')
-    expect(entry.integrity).toContain('sha512-')
+  it('picomatch should have the expected integrity hash', () => {
+    expect(entry.integrity).toBe(
+      'sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A=='
+    )
   })
 
   it('picomatch should remain a devDependency', () => {

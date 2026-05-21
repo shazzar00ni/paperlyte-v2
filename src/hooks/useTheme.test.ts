@@ -675,7 +675,7 @@ describe('useTheme — localStorage error handling', () => {
     expect(vi.mocked(logError)).toHaveBeenCalledWith(
       expect.objectContaining({ message: expect.any(String) }),
       expect.objectContaining({
-        tags: expect.objectContaining({ operation: 'readUserPreferenceFlag' }),
+        tags: expect.objectContaining({ operation: 'readPersistedTheme' }),
       })
     )
   })

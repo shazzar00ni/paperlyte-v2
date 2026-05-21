@@ -310,9 +310,13 @@ export function trackEvent(eventName: string, eventParams?: AnalyticsEventParams
     if (!_isReportingError) {
       _isReportingError = true
       try {
-        logError(error instanceof Error ? error : new Error(String(error)), {
-          errorInfo: { function: 'trackEvent', eventName },
-        }, 'analytics.trackEvent')
+        logError(
+          error instanceof Error ? error : new Error(String(error)),
+          {
+            errorInfo: { function: 'trackEvent', eventName },
+          },
+          'analytics.trackEvent'
+        )
       } finally {
         _isReportingError = false
       }
@@ -351,9 +355,13 @@ export function trackPageView(pagePath: string, pageTitle?: string): void {
     if (!_isReportingError) {
       _isReportingError = true
       try {
-        logError(error instanceof Error ? error : new Error(String(error)), {
-          errorInfo: { function: 'trackPageView', path: pagePath, title: pageTitle },
-        }, 'analytics.trackPageView')
+        logError(
+          error instanceof Error ? error : new Error(String(error)),
+          {
+            errorInfo: { function: 'trackPageView', path: pagePath, title: pageTitle },
+          },
+          'analytics.trackPageView'
+        )
       } finally {
         _isReportingError = false
       }

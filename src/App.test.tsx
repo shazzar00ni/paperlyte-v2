@@ -15,7 +15,14 @@ describe('App Integration', () => {
     const { container } = render(<App />)
     // Wait for all lazy sections — separate Suspense boundaries resolve independently
     await waitFor(() => {
-      const lazyIds = ['statistics', 'comparison', 'testimonials', 'email-capture', 'faq', 'download']
+      const lazyIds = [
+        'statistics',
+        'comparison',
+        'testimonials',
+        'email-capture',
+        'faq',
+        'download',
+      ]
       lazyIds.forEach((id) => expect(container.querySelector(`#${id}`)).not.toBeNull())
     })
 

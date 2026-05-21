@@ -165,10 +165,41 @@ export function logWarning(message: string, context?: Record<string, unknown>): 
     return
   }
 
-  // In production, track as low-severity event
+  // In production, track as low-severity event.
+  // Coerce context values to analytics-safe primitives so complex objects
+  // (which would otherwise bypass PII sanitization and reach gtag) can't leak.
+  const safeContext: Record<string, string | number | boolean | undefined> = {}
+  if (context) {
+    for (const [key, value] of Object.entries(context)) {
+      if (
+        typeof value === 'string' ||
+        typeof value === 'number' ||
+        typeof value === 'boolean' ||
+        value === undefined
+      ) {
+        safeContext[key] = value
+      } else if (value === null) {
+        safeContext[key] = undefined
+      } else {
+        // Drop non-primitive values entirely. The analytics PII scrubber only
+        // inspects top-level keys/values, so serializing a nested object could
+        // smuggle emails/tokens past sanitization. If structured context is
+        // needed in future, add a dedicated recursive sanitizer instead of
+        // re-enabling JSON.stringify here.
+        safeContext[key] = '[non-primitive omitted]'
+      }
+    }
+  }
+
+  // Spread safeContext first so caller-supplied keys can never override the
+  // canonical `message` field on the analytics event.
+  // TODO(monitoring): safeContext keys are spread flat into AnalyticsEventParams
+  // and could still collide with other reserved fields (e.g. `value`, `error_name`).
+  // Safe today because callers are internal and pass namespaced keys, but
+  // consider prefixing all keys (e.g. `ctx_<key>`) for robust isolation.
   trackEvent('application_warning', {
+    ...safeContext,
     message: message.slice(0, 200),
-    ...context,
   })
 }
 

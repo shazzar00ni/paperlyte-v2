@@ -5,7 +5,12 @@ import type { IconName, IconPrefix } from '@fortawesome/fontawesome-svg-core'
 import { iconPaths, getIconViewBox, strokeOnlyIcons } from './icons'
 import { convertIconName, isBrandIcon } from '@utils/iconLibrary'
 import { safePropertyAccess } from '@utils/security'
+import { logWarning } from '@utils/monitoring'
 import './Icon.css'
+
+// Deduplicates missing-icon analytics events in production.
+// In DEV the Set is never populated so every render warns (preserves test assertions).
+const _warnedMissing = new Set<string>()
 
 interface IconProps {
   name: string
@@ -56,7 +61,7 @@ const SIZE_MAP = {
  * <Icon name="fa-circle-check" color="#00ff00" size="2x" />
  * ```
  */
-export const Icon = ({
+export function Icon({
   name,
   size = 'md',
   variant = 'solid',
@@ -64,7 +69,7 @@ export const Icon = ({
   ariaLabel,
   color,
   style,
-}: IconProps): React.ReactElement => {
+}: IconProps): React.ReactElement {
   const iconSize = SIZE_MAP[size]
   const titleId = useId()
 
@@ -167,11 +172,15 @@ export const Icon = ({
     return <FontAwesomeIcon icon={iconDefinition} data-icon={baseName} {...commonIconProps} />
   }
 
-  // Icon not found in library — return a placeholder with data-icon attribute
-  console.warn(
-    `Icon "${name}" (converted to "${convertedName}") not found in Font Awesome library. ` +
-      `Rendering empty/decorative fallback span.`
-  )
+  // Icon not found in library — return a placeholder
+  // In production, fire at most once per unique icon name to avoid GA rate-limit overhead.
+  // Key on `baseName` (not the raw `name`) so modifier classes like "fa-spin" don't
+  // produce duplicate warnings for the same underlying icon.
+  // In DEV the Set is bypassed so test assertions that check call counts still hold.
+  if (import.meta.env.DEV || !_warnedMissing.has(baseName)) {
+    if (!import.meta.env.DEV) _warnedMissing.add(baseName)
+    logWarning(`Icon "${name}" not found in Font Awesome library`, { name, convertedName })
+  }
   return (
     <span {...commonIconProps} data-icon={baseName} title={`Icon "${name}" not found`}>
       ?

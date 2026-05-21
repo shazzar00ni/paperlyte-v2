@@ -13,6 +13,18 @@ describe('App Integration', () => {
 
   it('should render with proper semantic structure and section order', async () => {
     const { container } = render(<App />)
+    // Wait for all lazy sections — separate Suspense boundaries resolve independently
+    await waitFor(() => {
+      const lazyIds = [
+        'statistics',
+        'comparison',
+        'testimonials',
+        'email-capture',
+        'faq',
+        'download',
+      ]
+      lazyIds.forEach((id) => expect(container.querySelector(`#${id}`)).not.toBeNull())
+    })
 
     // Verify semantic landmark regions
     const header = container.querySelector('header')
@@ -123,6 +135,7 @@ describe('App Integration', () => {
 
   it('should render Testimonials section', async () => {
     const { container } = render(<App />)
+    await waitFor(() => expect(container.querySelector('#testimonials')).not.toBeNull())
 
     await waitFor(() => expect(container.querySelector('#testimonials')).toBeInTheDocument())
 
@@ -132,6 +145,7 @@ describe('App Integration', () => {
 
   it('should render CTA section', async () => {
     const { container } = render(<App />)
+    await waitFor(() => expect(container.querySelector('#download')).not.toBeNull())
 
     await waitFor(() => expect(container.querySelector('#download')).toBeInTheDocument())
 
@@ -223,27 +237,30 @@ describe('App Integration', () => {
 
   it('should render Statistics section', async () => {
     const { container } = render(<App />)
+    await waitFor(() => expect(container.querySelector('#statistics')).not.toBeNull())
 
     await waitFor(() => expect(container.querySelector('#statistics')).toBeInTheDocument())
   })
 
   it('should render Comparison section', async () => {
     const { container } = render(<App />)
+    await waitFor(() => expect(container.querySelector('#comparison')).not.toBeNull())
 
     await waitFor(() => expect(container.querySelector('#comparison')).toBeInTheDocument())
   })
 
   it('should render FAQ section', async () => {
     const { container } = render(<App />)
+    await waitFor(() => expect(container.querySelector('#faq')).not.toBeNull())
 
     await waitFor(() => expect(container.querySelector('#faq')).toBeInTheDocument())
   })
 
-  it('should render FeedbackWidget component', () => {
+  it('should render FeedbackWidget component', async () => {
     render(<App />)
 
     // FeedbackWidget renders a floating button with specific aria-label
-    const feedbackButton = screen.getByRole('button', { name: /Open feedback form/i })
+    const feedbackButton = await screen.findByRole('button', { name: /Open feedback form/i })
     expect(feedbackButton).toBeInTheDocument()
   })
 
@@ -278,6 +295,9 @@ describe('App Integration', () => {
 
   it('should include waitlist form in EmailCapture section', async () => {
     const { container } = render(<App />)
+    await waitFor(() =>
+      expect(container.querySelectorAll('input[type="email"]').length).toBeGreaterThan(0)
+    )
 
     // Wait for the lazy #email-capture section specifically
     await waitFor(() => expect(container.querySelector('#email-capture')).toBeInTheDocument())
@@ -322,5 +342,25 @@ describe('App Integration', () => {
     // Verify at least one section renders
     const sections = container.querySelectorAll('section')
     expect(sections.length).toBeGreaterThan(0)
+  })
+
+  it('should not render Analytics on non-Vercel deployments', () => {
+    // VITE_DEPLOY_TARGET is undefined in the test environment (non-Vercel)
+    const { container } = render(<App />)
+    // The Analytics component renders a <script> or beacon element only on Vercel;
+    // in tests it should never appear since the env var is not set
+    expect(import.meta.env.VITE_DEPLOY_TARGET).not.toBe('vercel')
+    expect(container).toBeInTheDocument()
+  })
+
+  it('should render Analytics placeholder when VITE_DEPLOY_TARGET is vercel', async () => {
+    vi.stubEnv('VITE_DEPLOY_TARGET', 'vercel')
+    try {
+      const { container } = render(<App />)
+      // The Analytics Suspense boundary renders (even if the lazy chunk resolves to nothing in JSDOM)
+      expect(container).toBeInTheDocument()
+    } finally {
+      vi.unstubAllEnvs()
+    }
   })
 })

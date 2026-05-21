@@ -9,3 +9,32 @@
 main {
   flex: 1;
 }
+
+/* Suspense fallback placeholders — reserve space to prevent CLS */
+.suspense-statistics {
+  min-height: 28rem;
+}
+.suspense-comparison {
+  min-height: 40rem;
+}
+.suspense-testimonials {
+  min-height: 32rem;
+}
+.suspense-email-capture {
+  min-height: 20rem;
+}
+.suspense-faq {
+  min-height: 36rem;
+}
+.suspense-cta {
+  min-height: 20rem;
+}
+/* FeedbackWidget is position:fixed, so the fallback must be out-of-flow
+   to avoid pushing page content while the chunk loads. */
+.suspense-feedback {
+  position: fixed;
+  width: 0;
+  height: 0;
+}
+
+/* .sr-only utility lives in src/styles/utilities.css */

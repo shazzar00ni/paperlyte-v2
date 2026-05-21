@@ -101,8 +101,8 @@ export const TextReveal = ({
     return children.split(/(\s+)/)
   }, [children, type])
 
-  // Cast ref for compatibility with dynamic element types
-  // Safe because all allowed Component types (h1-h4, p, span, div) extend HTMLElement
+  // TypeScript's invariant ref generics prevent assigning RefObject<HTMLElement>
+  // to element-specific ref types. Safe: all allowed Component types extend HTMLElement.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const elementRef = ref as React.RefObject<any>
 

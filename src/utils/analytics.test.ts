@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
+import * as monitoring from './monitoring'
 import {
   isAnalyticsAvailable,
   trackEvent,
@@ -14,6 +15,16 @@ describe('Analytics Utility', () => {
     // Clear any existing gtag
     delete (window as Window & { gtag?: unknown }).gtag
     delete (window as Window & { dataLayer?: unknown }).dataLayer
+
+    // Silence DEV-mode console.group/groupEnd noise emitted by logError
+    // when analytics error paths delegate to monitoring.
+    vi.spyOn(console, 'group').mockImplementation(() => {})
+    vi.spyOn(console, 'groupEnd').mockImplementation(() => {})
+  })
+
+  afterEach(() => {
+    // Restore console spies so they don't leak into other test files.
+    vi.restoreAllMocks()
   })
 
   describe('isAnalyticsAvailable', () => {
@@ -56,8 +67,88 @@ describe('Analytics Utility', () => {
 
       trackEvent('test_event')
 
-      expect(consoleSpy).toHaveBeenCalled()
+      expect(consoleSpy).toHaveBeenCalledWith(
+        '[Analytics] Error tracking event:',
+        expect.any(Error)
+      )
       consoleSpy.mockRestore()
+    })
+
+    it('should not log to console in production mode on gtag error', () => {
+      // Stub DEV=false to exercise the false branch of the if (import.meta.env.DEV) guard
+      // in the trackEvent catch block (production path: no console.error).
+      vi.stubEnv('DEV', false as unknown as string)
+      try {
+        const mockGtag = vi.fn(() => {
+          throw new Error('gtag error')
+        })
+        ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
+
+        const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+        const logErrorSpy = vi.spyOn(monitoring, 'logError').mockImplementation(() => {})
+
+        trackEvent('test_event')
+
+        // In production (DEV=false), console.error should NOT be called
+        expect(consoleSpy).not.toHaveBeenCalledWith(
+          '[Analytics] Error tracking event:',
+          expect.any(Error)
+        )
+        // logError should still be called to report the error
+        expect(logErrorSpy).toHaveBeenCalledTimes(1)
+      } finally {
+        vi.unstubAllEnvs()
+      }
+    })
+
+    it('should handle non-Error throws from gtag', () => {
+      const mockGtag = vi.fn(() => {
+        // eslint-disable-next-line @typescript-eslint/only-throw-error
+        throw 'string error'
+      })
+      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
+
+      expect(() => trackEvent('test_event')).not.toThrow()
+    })
+
+    it('should not re-enter logError when already handling a trackEvent error', () => {
+      // Simulate the re-entry scenario: gtag always throws, so if the guard is
+      // absent the catch block would recurse via logError → trackEvent infinitely.
+      let callCount = 0
+      const mockGtag = vi.fn(() => {
+        callCount++
+        if (callCount > 5) throw new Error('Infinite recursion detected')
+        throw new Error('gtag error')
+      })
+      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
+
+      vi.spyOn(console, 'error').mockImplementation(() => {})
+
+      // Should complete without stack overflow regardless of recursion depth
+      expect(() => trackEvent('test_event')).not.toThrow()
+    })
+
+    it('should skip logError call when _isReportingError re-entry guard is active', () => {
+      // Simulate production: logError calls trackEvent('application_error') which
+      // re-enters the catch block. The guard must prevent a recursive logError call.
+      const throwingGtag = vi.fn(() => {
+        throw new Error('gtag error')
+      })
+      ;(window as Window & { gtag?: typeof throwingGtag }).gtag = throwingGtag
+
+      const logErrorSpy = vi.spyOn(monitoring, 'logError').mockImplementation(() => {
+        // Simulate what production logError does: call trackEvent, which re-enters
+        // the catch block with _isReportingError already true.
+        trackEvent('application_error')
+      })
+
+      vi.spyOn(console, 'error').mockImplementation(() => {})
+
+      expect(() => trackEvent('test_event')).not.toThrow()
+      // logError called once for the original error, not again for the re-entrant call
+      expect(logErrorSpy).toHaveBeenCalledTimes(1)
+      // gtag called twice: once for test_event, once for application_error
+      expect(throwingGtag).toHaveBeenCalledTimes(2)
     })
 
     it('should track event without parameters', () => {
@@ -144,6 +235,60 @@ describe('Analytics Utility', () => {
         page_path: '/about',
         page_title: undefined,
       })
+    })
+
+    it('should handle errors from gtag gracefully', () => {
+      const mockGtag = vi.fn(() => {
+        throw new Error('gtag page view error')
+      })
+      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
+
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+
+      expect(() => trackPageView('/test', 'Test Page')).not.toThrow()
+      expect(consoleSpy).toHaveBeenCalledWith(
+        '[Analytics] Error tracking page view:',
+        expect.any(Error)
+      )
+
+      consoleSpy.mockRestore()
+    })
+
+    it('should handle non-Error throws from gtag', () => {
+      const mockGtag = vi.fn(() => {
+        // eslint-disable-next-line @typescript-eslint/only-throw-error
+        throw 'string error'
+      })
+      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
+
+      expect(() => trackPageView('/test')).not.toThrow()
+    })
+
+    it('should not log to console in production mode on gtag error', () => {
+      // Stub DEV=false to exercise the false branch of the if (import.meta.env.DEV) guard
+      // in the trackPageView catch block (production path: no console.error).
+      vi.stubEnv('DEV', false as unknown as string)
+      try {
+        const mockGtag = vi.fn(() => {
+          throw new Error('gtag page view error')
+        })
+        ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
+
+        const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+        const logErrorSpy = vi.spyOn(monitoring, 'logError').mockImplementation(() => {})
+
+        trackPageView('/test', 'Test Page')
+
+        // In production (DEV=false), console.error should NOT be called
+        expect(consoleSpy).not.toHaveBeenCalledWith(
+          '[Analytics] Error tracking page view:',
+          expect.any(Error)
+        )
+        // logError should still be called to report the error
+        expect(logErrorSpy).toHaveBeenCalledTimes(1)
+      } finally {
+        vi.unstubAllEnvs()
+      }
     })
   })
 
@@ -329,6 +474,33 @@ describe('Analytics Utility', () => {
 
       expect(consoleSpy).toHaveBeenCalledWith('[Analytics] Page View:', '/about', 'About Page')
       consoleSpy.mockRestore()
+    })
+
+    it('should skip logError call when _isReportingError re-entry guard is active (trackPageView catch)', () => {
+      // To cover trackPageView's !_isReportingError false branch, trackPageView's catch
+      // must run while _isReportingError is already true. This happens when:
+      // trackEvent throws → _isReportingError=true → logError mock → calls trackPageView
+      // → trackPageView throws → trackPageView's catch sees _isReportingError=true → skips logError.
+      const throwingGtag = vi.fn(() => {
+        throw new Error('gtag error')
+      })
+      ;(window as Window & { gtag?: typeof throwingGtag }).gtag = throwingGtag
+
+      const logErrorSpy = vi.spyOn(monitoring, 'logError').mockImplementation(() => {
+        // Called from trackEvent's catch with _isReportingError=true.
+        // Calling trackPageView here causes trackPageView's catch to run with
+        // _isReportingError already true, exercising trackPageView's false branch.
+        trackPageView('/re-entry')
+      })
+
+      vi.spyOn(console, 'error').mockImplementation(() => {})
+
+      // Start from trackEvent so _isReportingError=true when mock calls trackPageView
+      expect(() => trackEvent('test_event')).not.toThrow()
+      // logError called once for the original trackEvent error, not again for re-entry
+      expect(logErrorSpy).toHaveBeenCalledTimes(1)
+      // gtag called twice: test_event + page_view from the re-entrant trackPageView
+      expect(throwingGtag).toHaveBeenCalledTimes(2)
     })
   })
 })

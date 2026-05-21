@@ -40,7 +40,7 @@ export function scrollToSection(sectionId: string): void {
     typeof window !== 'undefined' &&
     typeof window.matchMedia === 'function' &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  const behavior: ScrollBehavior = prefersReducedMotion ? 'auto' : 'smooth'
+  const behavior: ScrollBehavior = prefersReducedMotion ? 'instant' : 'smooth'
 
   const element = document.getElementById(sectionId)
   if (element) {

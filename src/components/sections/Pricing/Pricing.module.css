@@ -58,7 +58,7 @@
   transform: translateX(-50%);
   background: var(--color-primary);
   color: var(--color-text-on-primary);
-  padding: 4px 16px;
+  padding: 0.25rem 1rem;
   border-radius: var(--border-radius-full);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);

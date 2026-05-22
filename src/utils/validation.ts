@@ -20,17 +20,29 @@ export interface ValidationResult {
 }
 
 /**
- * Email validation regex pattern
- * Follows RFC 5322 simplified pattern for practical use
- * Prevents ReDoS vulnerabilities by eliminating quantifier overlap
+ * Email validation regex pattern — single canonical source used by both client and server.
+ * Follows RFC 5322 simplified pattern for practical use.
+ * Prevents ReDoS vulnerabilities by eliminating quantifier overlap.
  * Pattern breakdown:
  * - Local part: single alphanumeric + (alphanumeric OR separator+alphanumeric)*
  * - Domain: single alphanumeric + (alphanumeric OR separator+alphanumeric)*
  * - TLD: at least 2 letters
- * This eliminates overlapping quantifiers by making choices mutually exclusive
+ * This eliminates overlapping quantifiers by making choices mutually exclusive.
  */
-const EMAIL_REGEX =
+export const EMAIL_REGEX =
   /^[a-zA-Z0-9](?:[a-zA-Z0-9]|[._+-][a-zA-Z0-9])*@[a-zA-Z0-9](?:[a-zA-Z0-9]|[.-][a-zA-Z0-9])*\.[a-zA-Z]{2,}$/
+
+/**
+ * Predicate wrapper around validateEmail.
+ * Runs the same RFC 5322–simplified regex, length, and disposable-domain
+ * checks — use this when you only need a boolean rather than an error message.
+ *
+ * @param email - The email address to validate
+ * @returns true if the email passes all validation rules
+ */
+export function isValidEmail(email: string): boolean {
+  return validateEmail(email).isValid
+}
 
 /**
  * Common disposable email domains to block
@@ -260,31 +272,31 @@ export function validateForm(formData: Record<string, unknown>): ValidationResul
   const errors: Record<string, string> = {}
 
   if ('email' in formData) {
-    if (typeof formData.email !== 'string') {
-      errors.email = 'Email must be a string'
+    if (typeof formData['email'] !== 'string') {
+      errors['email'] = 'Email must be a string'
     } else {
-      const emailValidation = validateEmail(formData.email)
+      const emailValidation = validateEmail(formData['email'])
       if (!emailValidation.isValid) {
-        errors.email = emailValidation.error || 'Invalid email'
+        errors['email'] = emailValidation.error || 'Invalid email'
       }
     }
   }
 
   if ('name' in formData) {
-    if (typeof formData.name !== 'string') {
-      errors.name = 'Name must be a string'
+    if (typeof formData['name'] !== 'string') {
+      errors['name'] = 'Name must be a string'
     } else {
-      const trimmedName = formData.name.trim()
-      if (trimmedName.length < 2) errors.name = 'Name must be at least 2 characters'
-      if (trimmedName.length > 100) errors.name = 'Name is too long'
+      const trimmedName = formData['name'].trim()
+      if (trimmedName.length < 2) errors['name'] = 'Name must be at least 2 characters'
+      if (trimmedName.length > 100) errors['name'] = 'Name is too long'
     }
   }
 
   if ('acceptTerms' in formData) {
-    if (typeof formData.acceptTerms !== 'boolean') {
-      errors.acceptTerms = 'Accept terms must be a boolean'
-    } else if (!formData.acceptTerms) {
-      errors.acceptTerms = 'You must accept the terms and conditions'
+    if (typeof formData['acceptTerms'] !== 'boolean') {
+      errors['acceptTerms'] = 'Accept terms must be a boolean'
+    } else if (!formData['acceptTerms']) {
+      errors['acceptTerms'] = 'You must accept the terms and conditions'
     }
   }
 

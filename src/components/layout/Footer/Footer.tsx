@@ -1,5 +1,8 @@
 import { Icon } from '@components/ui/Icon'
 import { LEGAL_CONFIG } from '@/constants/legal'
+import logoAvifSrc from '@/assets/logo.avif'
+import logoPngSrc from '@/assets/logo.png'
+import logoWebpSrc from '@/assets/logo.webp'
 import styles from './Footer.module.css'
 
 /** Renders the site footer with navigation links, social links, and legal information. */
@@ -12,7 +15,17 @@ export const Footer = (): React.ReactElement => {
         <div className={styles.grid}>
           <div className={styles.brand}>
             <div className={styles.logo}>
-              <Icon name="fa-feather" size="lg" ariaLabel="Paperlyte logo" />
+              <picture>
+                <source srcSet={logoAvifSrc} type="image/avif" />
+                <source srcSet={logoWebpSrc} type="image/webp" />
+                <img
+                  src={logoPngSrc}
+                  alt="Paperlyte logo"
+                  width="32"
+                  height="32"
+                  className={styles.logoImage}
+                />
+              </picture>
               <span className={styles.logoText}>Paperlyte.</span>
             </div>
             <p className={styles.tagline}>Your thoughts, unchained.</p>
@@ -39,8 +52,18 @@ export const Footer = (): React.ReactElement => {
                     Pricing
                   </a>
                 </li>
-                {/* TODO: Add Roadmap link when page is available */}
-                {/* TODO: Add Changelog link when page is available */}
+                <li>
+                  <span className={styles.linkComingSoon}>
+                    Roadmap
+                    <span className="sr-only"> (coming soon)</span>
+                  </span>
+                </li>
+                <li>
+                  <span className={styles.linkComingSoon}>
+                    Changelog
+                    <span className="sr-only"> (coming soon)</span>
+                  </span>
+                </li>
               </ul>
             </div>
 
@@ -52,8 +75,18 @@ export const Footer = (): React.ReactElement => {
                     Contact
                   </a>
                 </li>
-                {/* TODO: Add About link when page is available */}
-                {/* TODO: Add Blog link when page is available */}
+                <li>
+                  <span className={styles.linkComingSoon}>
+                    About
+                    <span className="sr-only"> (coming soon)</span>
+                  </span>
+                </li>
+                <li>
+                  <span className={styles.linkComingSoon}>
+                    Blog
+                    <span className="sr-only"> (coming soon)</span>
+                  </span>
+                </li>
               </ul>
             </div>
 

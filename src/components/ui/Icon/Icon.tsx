@@ -7,7 +7,7 @@ import { convertIconName, isBrandIcon } from '@utils/iconLibrary'
 import { safePropertyAccess } from '@utils/security'
 import './Icon.css'
 
-interface IconProps {
+export interface IconProps {
   name: string
   size?: 'sm' | 'md' | 'lg' | 'xl' | '2x' | '3x'
   variant?: 'solid' | 'brands' | 'regular'
@@ -126,7 +126,8 @@ export const Icon = ({
         strokeLinejoin="round"
         className={svgClassName}
         style={style}
-        data-icon={baseName}
+        data-icon={resolvedKey}
+        aria-label={ariaLabel}
         aria-labelledby={ariaLabel ? titleId : undefined}
         aria-hidden={ariaLabel ? ('false' as const) : ('true' as const)}
         {...(ariaLabel && { role: 'img' })}
@@ -171,18 +172,18 @@ export const Icon = ({
     ...(ariaLabel ? { role: 'img' } : {}),
   }
 
-  // If icon found in library, render it
+  // If icon found in library, render it with data-icon attribute
   if (iconDefinition) {
-    return <FontAwesomeIcon icon={iconDefinition} {...commonIconProps} />
+    return <FontAwesomeIcon icon={iconDefinition} data-icon={baseName} {...commonIconProps} />
   }
 
-  // Icon not found in library — return a placeholder
+  // Icon not found in library — return a placeholder with data-icon attribute
   console.warn(
     `Icon "${name}" (converted to "${convertedName}") not found in Font Awesome library. ` +
       `Rendering empty/decorative fallback span.`
   )
   return (
-    <span {...commonIconProps} title={`Icon "${name}" not found`}>
+    <span {...commonIconProps} data-icon={baseName} title={`Icon "${name}" not found`}>
       ?
     </span>
   )

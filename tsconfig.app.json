@@ -32,7 +32,7 @@
 
     /* Path aliases - Enables cleaner imports */
     // Path mapping for cleaner imports (e.g., @components/Button instead of ../../../components/Button)
-    // Note: baseUrl omitted (deprecated in TS 7.0); paths resolve relative to this tsconfig file.
+    // Paths use relative prefixes (./src/*) so baseUrl is not required under moduleResolution: "bundler"
     "paths": {
       "@/*": ["./src/*"],
       "@components/*": ["./src/components/*"],

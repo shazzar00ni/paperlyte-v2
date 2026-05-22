@@ -59,17 +59,19 @@ import {
   faArrowRight, // Navigation forward
   faArrowLeft, // Navigation back
   faSpinner, // Loading states
+  faHome, // Home/back to home
+  faTriangleExclamation, // Error/warning indicator
 } from '@fortawesome/free-solid-svg-icons'
 // Brand icons (from free-brands-svg-icons)
 import {
   faGithub, // GitHub social link
-  faTwitter, // Twitter/X social link
+  faTwitter, // Twitter/X social link (legacy)
+  faXTwitter, // X/Twitter social link (new)
+  faInstagram, // Instagram social link
   faApple, // Apple platform
   faWindows, // Windows platform
-  faInstagram, // Instagram social link (defensive fallback; primary render via iconPaths SVG)
   faFacebook, // Facebook social link (defensive fallback; primary render via iconPaths SVG)
   faLinkedin, // LinkedIn social link (defensive fallback; primary render via iconPaths SVG)
-  faXTwitter, // X/Twitter social link (defensive fallback; primary render via iconPaths SVG)
 } from '@fortawesome/free-brands-svg-icons'
 
 // Prevent FA from injecting a <style> tag (blocked by strict style-src CSP).
@@ -124,15 +126,17 @@ library.add(
   faArrowRight,
   faArrowLeft,
   faSpinner,
+  faHome,
+  faTriangleExclamation,
   // Brand icons
   faGithub,
   faTwitter,
+  faXTwitter,
+  faInstagram,
   faApple,
   faWindows,
-  faInstagram,
   faFacebook,
   faLinkedin,
-  faXTwitter
 )
 
 /**
@@ -172,6 +176,8 @@ export const iconNameMap: Record<string, string> = {
   'fa-server': 'server',
   'fa-github': 'github',
   'fa-twitter': 'twitter',
+  'fa-x-twitter': 'x-twitter',
+  'fa-instagram': 'instagram',
   'fa-apple': 'apple',
   'fa-windows': 'windows',
   'fa-route': 'route', // Offline page - route/navigation issues.
@@ -193,11 +199,11 @@ export const iconNameMap: Record<string, string> = {
   'fa-clock': 'clock',
   'fa-code': 'code',
   'fa-globe': 'globe',
-  'fa-instagram': 'instagram',
-  'fa-x-twitter': 'x-twitter',
   'fa-facebook': 'facebook',
   'fa-linkedin': 'linkedin',
   'fa-file-circle-question': 'file-circle-question',
+  'fa-home': 'home', // Home/back to home.
+  'fa-triangle-exclamation': 'triangle-exclamation', // Error/warning indicator.
 }
 
 /**

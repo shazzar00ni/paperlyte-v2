@@ -151,7 +151,7 @@ describe('iconLibrary', () => {
       // Known intentional aliases where multiple keys map to the same icon
       const knownAliases: Record<string, string[]> = {
         'circle-check': ['fa-circle-check', 'fa-check-circle'],
-        'home': ['fa-home', 'fa-house'],
+        home: ['fa-home', 'fa-house'],
       }
 
       // Create a fresh copy of values to avoid any module state issues

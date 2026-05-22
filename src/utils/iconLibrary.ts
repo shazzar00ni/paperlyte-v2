@@ -136,7 +136,7 @@ library.add(
   faApple,
   faWindows,
   faFacebook,
-  faLinkedin,
+  faLinkedin
 )
 
 /**

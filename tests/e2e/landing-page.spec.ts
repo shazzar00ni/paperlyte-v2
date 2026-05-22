@@ -1,60 +1,69 @@
 import { test, expect, type Page } from '@playwright/test'
 
-test.describe('Landing Page', () => {
-  // Disable CSS entrance animations for every test. AnimatedElement starts children at
-  // opacity:0 and only transitions to visible after IntersectionObserver fires. In CI
-  // headless viewports, below-fold sections never enter the viewport so their buttons
-  // stay invisible and Playwright's click() times out.
-  //
-  // Two-layer fix:
-  // 1. emulateMedia — activates the CSS @media(prefers-reduced-motion:reduce) override
-  //    that sets opacity:1!important on all animation classes.
-  // 2. addInitScript — patches window.matchMedia before React mounts so the
-  //    useReducedMotion() hook returns true on first render, meaning AnimatedElement
-  //    never applies the opacity:0 animation class at all. emulateMedia alone is
-  //    unreliable in Firefox/WebKit where CDP media emulation behaves differently.
-  test.beforeEach(async ({ page }: { page: Page }): Promise<void> => {
-    await page.emulateMedia({ reducedMotion: 'reduce' })
-    await page.addInitScript(() => {
-      // Layer 1: patch window.matchMedia via Proxy so useReducedMotion() returns
-      // true on first render → AnimatedElement never applies the opacity:0 class.
-      // Proxy is used instead of Object.defineProperty because MediaQueryList.matches
-      // is non-configurable in Firefox/WebKit, causing defineProperty to throw.
-      const orig = window.matchMedia.bind(window)
-      window.matchMedia = (query) => {
-        const mql = orig(query)
-        if (query === '(prefers-reduced-motion: reduce)') {
-          return new Proxy(mql, {
-            get(target, prop) {
-              if (prop === 'matches') return true
-              const val = Reflect.get(target, prop, target)
-              return typeof val === 'function' ? val.bind(target) : val
-            },
-          })
-        }
-        return mql
+// ---------------------------------------------------------------------------
+// Helper: apply reduced-motion overrides so entrance animations don't hide
+// elements before IntersectionObserver fires in CI headless viewports.
+//
+// Two-layer fix:
+// 1. emulateMedia — activates the CSS @media(prefers-reduced-motion:reduce) override
+//    that sets opacity:1!important on all animation classes.
+// 2. addInitScript — patches window.matchMedia before React mounts so the
+//    useReducedMotion() hook returns true on first render, meaning AnimatedElement
+//    never applies the opacity:0 animation class at all. emulateMedia alone is
+//    unreliable in Firefox/WebKit where CDP media emulation behaves differently.
+//
+// IMPORTANT: Must be called BEFORE page.goto() because addInitScript only takes
+// effect on pages navigated after it is registered.
+//
+// NOT applied to the load-performance smoke check: forcing reduced motion
+// disables entrance animations/transforms, which can produce artificially better
+// FCP/LCP/CLS values and allow real performance regressions to go undetected.
+// ---------------------------------------------------------------------------
+async function applyReducedMotion(page: Page): Promise<void> {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.addInitScript(() => {
+    // Layer 1: patch window.matchMedia via Proxy so useReducedMotion() returns
+    // true on first render → AnimatedElement never applies the opacity:0 class.
+    // Proxy is used instead of Object.defineProperty because MediaQueryList.matches
+    // is non-configurable in Firefox/WebKit, causing defineProperty to throw.
+    const orig = window.matchMedia.bind(window)
+    window.matchMedia = (query) => {
+      const mql = orig(query)
+      if (query === '(prefers-reduced-motion: reduce)') {
+        return new Proxy(mql, {
+          get(target, prop) {
+            if (prop === 'matches') return true
+            const val = Reflect.get(target, prop, target)
+            return typeof val === 'function' ? val.bind(target) : val
+          },
+        })
       }
+      return mql
+    }
 
-      // Layer 2: inject a CSS rule that forces all AnimatedElement wrappers
-      // (identified by data-reduced-motion attribute) to be fully visible.
-      // DOMContentLoaded fires before <script type="module"> executes in all
-      // browsers, so the style is already in <head> when React mounts and sets
-      // the data-reduced-motion attribute — the rule then applies immediately.
-      const injectStyle = (): void => {
-        const s = document.createElement('style')
-        s.textContent =
-          '[data-reduced-motion]{opacity:1!important;transform:none!important;transition:none!important}'
-        document.head.appendChild(s)
-      }
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', injectStyle)
-      } else {
-        injectStyle()
-      }
-    })
+    // Layer 2: inject a CSS rule that forces all AnimatedElement wrappers
+    // (identified by data-reduced-motion attribute) to be fully visible.
+    // DOMContentLoaded fires before <script type="module"> executes in all
+    // browsers, so the style is already in <head> when React mounts and sets
+    // the data-reduced-motion attribute — the rule then applies immediately.
+    const injectStyle = (): void => {
+      const s = document.createElement('style')
+      s.textContent =
+        '[data-reduced-motion]{opacity:1!important;transform:none!important;transition:none!important}'
+      document.head.appendChild(s)
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', injectStyle)
+    } else {
+      injectStyle()
+    }
   })
+}
+
+test.describe('Landing Page', () => {
 
   test('should load and display hero section', async ({ page }: { page: Page }): Promise<void> => {
+    await applyReducedMotion(page)
     await page.goto('/')
 
     // Check hero heading exists
@@ -75,6 +84,7 @@ test.describe('Landing Page', () => {
     page: Page
     isMobile: boolean
   }): Promise<void> => {
+    await applyReducedMotion(page)
     await page.goto('/')
 
     // Disable smooth scrolling so the scroll is instant and position detection is reliable.
@@ -120,6 +130,11 @@ test.describe('Landing Page', () => {
   // This is NOT a full Core Web Vitals gate: it measures FCP/LCP/CLS only (no INP/FID,
   // since those require real user interaction). Lighthouse CI is the authoritative
   // Core Web Vitals monitor for this project.
+  //
+  // Reduced-motion is intentionally NOT applied here. Forcing prefers-reduced-motion
+  // disables entrance animations/transforms, producing artificially better FCP/LCP/CLS
+  // readings that can mask genuine regressions. This test must reflect the default
+  // user experience.
   test('load-performance smoke check (FCP/LCP/CLS)', async ({ page, browserName, isMobile }) => {
     test.skip(browserName !== 'chromium', 'Performance test runs on chromium only')
     test.skip(isMobile, 'Performance budgets target desktop viewport')
@@ -216,6 +231,7 @@ test.describe('Landing Page', () => {
     // Skip on desktop browsers since mobile projects already test mobile viewports
     test.skip(!isMobile, 'Mobile UI test runs on mobile projects only')
 
+    await applyReducedMotion(page)
     await page.goto('/')
 
     // Verify mobile menu button is present (desktop has regular nav)
@@ -237,6 +253,7 @@ test.describe('Landing Page', () => {
   }: {
     page: Page
   }): Promise<void> => {
+    await applyReducedMotion(page)
     // Force light color scheme so useTheme starts in light mode regardless of CI/system settings
     await page.emulateMedia({ colorScheme: 'light' })
     await page.goto('/')
@@ -270,6 +287,7 @@ test.describe('Landing Page', () => {
   })
 
   test('should expand and collapse a FAQ item', async ({ page }: { page: Page }): Promise<void> => {
+    await applyReducedMotion(page)
     await page.goto('/')
 
     // Grab the first question button inside the FAQ section
@@ -296,6 +314,8 @@ test.describe('Landing Page', () => {
   }: {
     page: Page
   }): Promise<void> => {
+    await applyReducedMotion(page)
+
     // Mock the Netlify subscribe endpoint so this test does not depend on
     // `netlify dev` being running. The Vite preview server used in CI does not
     // serve `/.netlify/functions/*`, which would otherwise return a 404 and
@@ -358,6 +378,7 @@ test.describe('Landing Page', () => {
     test.skip(browserName !== 'chromium', 'Keyboard navigation test runs on chromium only')
     test.skip(isMobile, 'Keyboard navigation test runs on desktop only')
 
+    await applyReducedMotion(page)
     await page.goto('/')
     // Wait for initial render so all interactive elements are present in the DOM.
     await page.waitForSelector('h1', { state: 'visible' })

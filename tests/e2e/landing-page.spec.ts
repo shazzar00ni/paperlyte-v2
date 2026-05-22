@@ -149,12 +149,24 @@ test.describe('Landing Page', () => {
       cls: number
     }
 
-    // Measure Core Web Vitals using PerformanceObserver with buffered:true for all three
-    // metrics so headless Chromium can register entries that fired before evaluate() runs.
+    // Collect Core Web Vitals via two complementary paths so neither alone is a
+    // single point of failure:
+    //
+    // 1. PerformanceObserver (buffered:true) — fires callbacks for entries that
+    //    arrived before evaluate() was called; most reliable in "live" Chromium.
+    // 2. performance.getEntriesByType() — synchronous read of the buffered
+    //    timeline; used as a fallback because headless Chromium occasionally
+    //    delivers buffered entries to the synchronous API but not to observer
+    //    callbacks within the collection window.
+    //
+    // Both paths run concurrently; whichever populates a value first wins.
+    // If neither path produces FCP or LCP the test fails — a hard failure is
+    // intentional: it signals a broken metric-collection pipeline rather than
+    // silently removing the performance guardrail via test.skip().
     const metrics = await page.evaluate<CoreWebVitalsMetrics>((): Promise<CoreWebVitalsMetrics> => {
       return new Promise<CoreWebVitalsMetrics>((resolve) => {
-        // null means the observer never fired — distinguishes "not observed" from a genuine 0.
-        // CLS starts at 0: a page with no layout shifts correctly scores 0 (best case).
+        // null means no entry was observed — distinguishes "not collected" from a genuine 0.
+        // CLS starts at 0: a page with no layout shifts correctly scores 0.
         let fcp: number | null = null
         let lcp: number | null = null
         let cls = 0
@@ -195,30 +207,53 @@ test.describe('Landing Page', () => {
         lcpObserver.observe({ type: 'largest-contentful-paint', buffered: true })
         clsObserver.observe({ type: 'layout-shift', buffered: true })
 
-        // Wait a bit for metrics to be collected
         setTimeout(() => {
           fcpObserver.disconnect()
           lcpObserver.disconnect()
           clsObserver.disconnect()
+
+          // Fallback: read the buffered performance timeline synchronously.
+          // In some headless Chromium runs the observer callbacks above do not
+          // fire within the collection window even though the entries are present
+          // in the timeline. getEntriesByType() is synchronous and does not
+          // depend on the observer delivery path.
+          if (fcp === null) {
+            const paintEntry = performance
+              .getEntriesByType('paint')
+              .find((e) => e.name === 'first-contentful-paint')
+            if (paintEntry) fcp = paintEntry.startTime
+          }
+
+          if (lcp === null) {
+            const lcpEntries = performance.getEntriesByType('largest-contentful-paint')
+            const last = lcpEntries[lcpEntries.length - 1] as
+              | (PerformanceEntry & { renderTime?: number; loadTime?: number })
+              | undefined
+            if (last) lcp = last.renderTime || last.loadTime || last.startTime
+          }
+
+          for (const entry of performance.getEntriesByType('layout-shift')) {
+            const ls = entry as PerformanceEntry & { hadRecentInput?: boolean; value: number }
+            if (!ls.hadRecentInput) cls += ls.value
+          }
+
           resolve({ fcp, lcp, cls })
         }, 2500)
       })
     })
 
-    // Validate Core Web Vitals thresholds
+    // Hard-assert that FCP and LCP were collected. Skipping when they are null
+    // would silently remove the performance guardrail if the metric-collection
+    // pipeline ever breaks. A test failure here means the PerformanceObserver
+    // and synchronous timeline APIs both failed to produce entries — that is a
+    // signal worth investigating, not hiding.
     const { fcp, lcp, cls } = metrics
+    expect(fcp, 'FCP metric was not collected — PerformanceObserver/timeline pipeline may be broken').not.toBeNull()
+    expect(lcp, 'LCP metric was not collected — PerformanceObserver/timeline pipeline may be broken').not.toBeNull()
 
-    // Headless Chromium does not always dispatch FCP/LCP entries even with
-    // buffered:true. Skip rather than hard-failing: Lighthouse CI is the
-    // authoritative performance gate; this test is a best-effort smoke check.
-    if (fcp === null || lcp === null) {
-      test.skip(true, 'FCP/LCP metrics not observed in headless environment; Lighthouse CI is authoritative')
-      return
-    }
-
-    expect(fcp).toBeLessThan(2000) // FCP < 2s
-    expect(lcp).toBeLessThan(2500) // LCP < 2.5s (good threshold)
-    expect(cls).toBeLessThan(0.1) // CLS < 0.1 (good threshold)
+    expect(fcp!).toBeLessThan(2000) // FCP < 2s
+    expect(lcp!).toBeLessThan(2500) // LCP < 2.5s (good threshold)
+    expect(cls).toBeLessThan(0.1)   // CLS < 0.1 (good threshold)
   })
 
   test('should show mobile-specific UI on small screens', async ({
@@ -290,22 +325,25 @@ test.describe('Landing Page', () => {
     await applyReducedMotion(page)
     await page.goto('/')
 
-    // Grab the first question button inside the FAQ section
+    // Scroll the FAQ section into view before interacting. This (a) fires the
+    // IntersectionObserver so any remaining AnimatedElement wrappers become visible,
+    // and (b) mirrors the real user path — applyReducedMotion's CSS override already
+    // ensures opacity:1 on [data-reduced-motion] elements, so no force:true is needed.
+    await page.locator('#faq').scrollIntoViewIfNeeded()
+
     const firstQuestion = page.locator('#faq').getByRole('button').first()
+    await expect(firstQuestion).toBeVisible()
 
     // Initially collapsed
     await expect(firstQuestion).toHaveAttribute('aria-expanded', 'false')
 
-    // force:true bypasses the opacity:0 actionability check. AnimatedElement keeps
-    // below-fold sections invisible until IntersectionObserver fires, which doesn't
-    // happen in CI headless viewports. React's event delegation handles the event correctly.
-    await firstQuestion.click({ force: true })
+    await firstQuestion.click()
 
     // Should be expanded after click
     await expect(firstQuestion).toHaveAttribute('aria-expanded', 'true')
 
     // Click again to collapse
-    await firstQuestion.click({ force: true })
+    await firstQuestion.click()
     await expect(firstQuestion).toHaveAttribute('aria-expanded', 'false')
   })
 

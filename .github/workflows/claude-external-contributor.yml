@@ -22,9 +22,9 @@ jobs:
     runs-on: ubuntu-latest
     # Runs for authors with no prior interaction with this repo (NONE) or whose
     # first PR is still being reviewed (FIRST_TIME_CONTRIBUTOR) or who have
-    # never opened a PR on GitHub before (FIRST_TIMER). COLLABORATOR,
-    # CONTRIBUTOR, MEMBER, and OWNER are excluded — they're known contributors
-    # who don't need the onboarding review.
+    # never opened a PR on GitHub before (FIRST_TIMER), or who are returning
+    # external fork contributors (CONTRIBUTOR). COLLABORATOR, MEMBER, and OWNER
+    # are excluded — they're known contributors who don't need this review.
     # The 'safe-to-review' label acts as a human gate: a maintainer must apply
     # it before Claude will process the PR, ensuring a human has verified the
     # PR is safe before granting it access to a secrets-bearing workflow context.
@@ -36,15 +36,44 @@ jobs:
       contains(github.event.pull_request.labels.*.name, 'safe-to-review') && (
         github.event.pull_request.author_association == 'FIRST_TIMER' ||
         github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR' ||
-        github.event.pull_request.author_association == 'NONE'
+        github.event.pull_request.author_association == 'NONE' ||
+        github.event.pull_request.author_association == 'CONTRIBUTOR'
       )
     permissions:
+      contents: read
       pull-requests: write
+      id-token: write
 
     steps:
+      # When the triggering event is a label application, verify the actor who
+      # applied 'safe-to-review' holds at least write access. Triage-role users
+      # can apply labels without write access, so the label alone is not a
+      # sufficient signal that a trusted human reviewed the PR.
+      - name: Check labeler permission
+        id: check-labeler
+        if: github.event.action == 'labeled' && github.event.label.name == 'safe-to-review'
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            const { data } = await github.rest.repos.getCollaboratorPermissionLevel({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              username: context.payload.sender.login,
+            })
+            const writeRoles = ['write', 'maintain', 'admin']
+            const trusted = writeRoles.includes(data.permission)
+            core.setOutput('trusted', trusted ? 'true' : 'false')
+            if (!trusted) {
+              core.warning(
+                `Label applied by ${context.payload.sender.login} who has ` +
+                `'${data.permission}' permission — skipping Claude review.`
+              )
+            }
+
       # No checkout — Claude uses gh pr diff / gh pr view to inspect changes
       # via the GitHub API. Checking out fork code here would be unsafe.
       - uses: anthropics/claude-code-action@6e2bd52842c65e914eba5c8badd17560bd26b5de # v1
+        if: github.event.action != 'labeled' || steps.check-labeler.outputs.trusted == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}

@@ -654,7 +654,12 @@ describe('claude-external-contributor.yml – structure and permissions', () => 
     expect(block).not.toMatch(/actions\/checkout/)
   })
 
-  it('first-time-review job if: condition should match FIRST_TIMER, FIRST_TIME_CONTRIBUTOR and NONE', () => {
+  it('first-time-review job should have contents: read permission', () => {
+    const block = assertJobExists(content, 'first-time-review', 'claude-external-contributor.yml')
+    expect(jobHasContentsReadPermission(block)).toBe(true)
+  })
+
+  it('first-time-review job if: condition should match FIRST_TIMER, FIRST_TIME_CONTRIBUTOR, NONE, and CONTRIBUTOR', () => {
     const block = assertJobExists(content, 'first-time-review', 'claude-external-contributor.yml')
     // Extract the if: value (lines between `if: |` and the next non-indented-deeper key)
     const lines = block.split('\n')
@@ -669,6 +674,7 @@ describe('claude-external-contributor.yml – structure and permissions', () => 
     expect(ifCondition).toMatch(/FIRST_TIMER/)
     expect(ifCondition).toMatch(/FIRST_TIME_CONTRIBUTOR/)
     expect(ifCondition).toMatch(/NONE/)
+    expect(ifCondition).toMatch(/CONTRIBUTOR/)
     // Trusted associations must not appear in the condition itself
     expect(ifCondition).not.toMatch(/COLLABORATOR/)
     expect(ifCondition).not.toMatch(/MEMBER/)

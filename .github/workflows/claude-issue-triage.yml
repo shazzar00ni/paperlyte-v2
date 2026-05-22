@@ -11,7 +11,6 @@ jobs:
     name: Triage New Issue
     runs-on: ubuntu-latest
     permissions:
-      contents: read
       issues: write
     env:
       # Mapped here so steps can guard with `if: env.ANTHROPIC_API_KEY != ''`

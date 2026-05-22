@@ -291,12 +291,18 @@ describe('package-lock.json – picomatch dependency update', () => {
 })
 
 // ---------------------------------------------------------------------------
-// package-lock.json – axios SSRF fix (GHSA-3p68-rc4w-qgx5)
-// Axios < 1.15.0 has a NO_PROXY hostname normalisation bypass that can lead
-// to SSRF. The override in package.json forces >= 1.15.0.
+// package-lock.json – axios multiple CVE fix
+// Axios 1.0.0 – 1.15.1 carries a broad set of high-severity vulnerabilities
+// (prototype pollution, SSRF, CRLF injection, header injection, DoS, etc.).
+// The override in package.json forces >= 1.15.2.
+// Relevant advisories include: GHSA-3p68-rc4w-qgx5, GHSA-w9j2-pvgh-6h63,
+// GHSA-pmwg-cvhr-8vh7, GHSA-3w6x-2g7m-8v23, GHSA-q8qp-cvcw-x6jj,
+// GHSA-xhjh-pmcv-23jw, GHSA-445q-vr5w-6q77, GHSA-m7pr-hjqh-92cm,
+// GHSA-62hf-57xw-28j9, GHSA-5c9x-8gcm-mpgx, GHSA-vf2m-468p-8v99,
+// GHSA-pf86-5x62-jrwf, GHSA-6chq-wfr3-2hj9, GHSA-xx6v-rp6x-q39c.
 // ---------------------------------------------------------------------------
 
-describe('package-lock.json – axios security update (GHSA-3p68-rc4w-qgx5)', () => {
+describe('package-lock.json – axios security update (multiple CVEs)', () => {
   interface PackageLock {
     lockfileVersion: number
     packages: Record<string, { version: string; resolved: string; dev?: boolean }>
@@ -315,35 +321,37 @@ describe('package-lock.json – axios security update (GHSA-3p68-rc4w-qgx5)', ()
     expect(lockfile.packages).toHaveProperty('node_modules/axios')
   })
 
-  it('axios version should be >= 1.15.0 (not vulnerable)', () => {
+  it('axios version should be >= 1.15.2 (minimum safe version)', () => {
     const [major, minor, patch] = entry.version.split('.').map(Number)
-    const isAtLeast1_15_0 =
-      major > 1 || (major === 1 && minor > 15) || (major === 1 && minor === 15 && patch >= 0)
-    expect(isAtLeast1_15_0, `axios ${entry.version} is below the minimum safe version 1.15.0`).toBe(
-      true
-    )
+    const isAtLeast1_15_2 =
+      major > 1 || (major === 1 && minor > 15) || (major === 1 && minor === 15 && patch >= 2)
+    expect(
+      isAtLeast1_15_2,
+      `axios ${entry.version} is in the vulnerable range 1.0.0 – 1.15.1`
+    ).toBe(true)
   })
 
-  it('axios should NOT be the vulnerable version range (< 1.15.0)', () => {
-    const [major, minor] = entry.version.split('.').map(Number)
-    expect(major === 1 && minor < 15).toBe(false)
+  it('axios should NOT be in the vulnerable range (1.0.0 – 1.15.1)', () => {
+    const [major, minor, patch] = entry.version.split('.').map(Number)
+    const isVulnerable = major === 1 && (minor < 15 || (minor === 15 && patch < 2))
+    expect(isVulnerable).toBe(false)
   })
 
   it('axios resolved URL should point to a non-vulnerable release', () => {
-    // Verify URL version matches the installed version (>= 1.15.0 already checked above).
+    // Verify URL version matches the installed version (>= 1.15.2 already checked above).
     // Avoids hardcoding a specific patch version that breaks on future bumps.
     expect(entry.resolved).toContain(`axios-${entry.version}.tgz`)
   })
 })
 
 // ---------------------------------------------------------------------------
-// package-lock.json – basic-ftp security updates
-// GHSA-chqc-8p9q-pq6q: FTP command injection via CRLF (fixed in 5.2.1)
-// GHSA-rpmf-866q-6p89: DoS via unbounded multiline response buffering (fixed in 5.3.1)
-// The override in package.json forces >= 5.3.1 to cover both advisories.
+// package-lock.json – basic-ftp security fixes
+// GHSA-chqc-8p9q-pq6q: FTP command injection via CRLF in basic-ftp 5.2.0, fixed >= 5.2.1
+// GHSA-rpmf-866q-6p89: DoS via unbounded multiline control response in <= 5.3.0, fixed >= 5.3.1
+// The override in package.json forces >= 5.3.1.
 // ---------------------------------------------------------------------------
 
-describe('package-lock.json – basic-ftp security update (GHSA-chqc-8p9q-pq6q + GHSA-rpmf-866q-6p89)', () => {
+describe('package-lock.json – basic-ftp security update (GHSA-chqc-8p9q-pq6q, GHSA-rpmf-866q-6p89)', () => {
   interface PackageLock {
     lockfileVersion: number
     packages: Record<string, { version: string; resolved: string; dev?: boolean }>
@@ -371,7 +379,7 @@ describe('package-lock.json – basic-ftp security update (GHSA-chqc-8p9q-pq6q +
     )
   })
 
-  it('basic-ftp version should be >= 5.3.1 (not vulnerable)', () => {
+  it('basic-ftp version should be >= 5.3.1 (minimum safe for all known CVEs)', () => {
     const [major, minor, patch] = entry.version.split('.').map(Number)
     const isAtLeast5_3_1 =
       major > 5 || (major === 5 && minor > 3) || (major === 5 && minor === 3 && patch >= 1)
@@ -382,7 +390,7 @@ describe('package-lock.json – basic-ftp security update (GHSA-chqc-8p9q-pq6q +
   })
 
   it('basic-ftp resolved URL should not point to a vulnerable release', () => {
-    expect(entry.resolved).not.toMatch(/basic-ftp-5\.[0-2]\.\d+\.tgz/)
+    expect(entry.resolved).not.toContain('basic-ftp-5.2.0.tgz')
     expect(entry.resolved).not.toContain('basic-ftp-5.3.0.tgz')
   })
 })

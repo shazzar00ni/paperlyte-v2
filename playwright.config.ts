@@ -16,6 +16,9 @@ export default defineConfig({
     baseURL: process.env.BASE_URL ?? 'http://localhost:4173',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
+    // Force light color scheme so useTheme and theme-init.js start in a known
+    // state across all CI environments and headless browsers.
+    colorScheme: 'light',
   },
 
   projects: [

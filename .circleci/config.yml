@@ -144,7 +144,7 @@ jobs:
           # Vite 8 requires Node >=20.19.0 but the Playwright Docker image ships
           # an older Node LTS; `serve` has no such constraint and avoids the need
           # to upgrade Node.js at runtime (which would require a curl|bash pipe).
-          command: npx --yes serve dist --single --listen 4173
+          command: npx --yes serve dist --single -p 4173
           background: true
       - run:
           name: Wait for preview server

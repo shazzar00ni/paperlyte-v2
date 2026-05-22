@@ -218,7 +218,8 @@ export default defineConfig({
   server: {
     // Run dev server on port 3000
     port: 3000,
-    // Automatically open browser when dev server starts
-    open: true,
+    // Automatically open browser only during interactive local development
+    // Disable for headless environments (e.g., Playwright webServer in CI/containers)
+    open: !process.env.CI && !process.env.PLAYWRIGHT,
   },
 })

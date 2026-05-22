@@ -102,7 +102,7 @@
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-secondary);
-  margin-right: 2px;
+  margin-right: 0.125rem;
 }
 
 .price {

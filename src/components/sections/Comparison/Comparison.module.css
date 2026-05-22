@@ -63,7 +63,7 @@
 .badge {
   display: inline-block;
   margin-left: var(--spacing-xs);
-  padding: 2px 8px;
+  padding: 0.125rem var(--spacing-xs);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
   background: var(--color-primary);

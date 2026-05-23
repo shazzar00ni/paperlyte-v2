@@ -169,3 +169,31 @@
     padding: 0.875rem 1rem;
   }
 }
+
+/* Extra small screens */
+@media (max-width: 480px) {
+  .sectionTitle {
+    font-size: var(--font-size-3xl);
+  }
+
+  .sectionSubtitle {
+    font-size: var(--font-size-base);
+    margin-bottom: var(--spacing-md);
+  }
+
+  .valueProps {
+    gap: var(--spacing-md);
+  }
+
+  .valueProp {
+    padding: var(--spacing-md) var(--spacing-sm);
+  }
+
+  .valueHeadline {
+    font-size: var(--font-size-xl);
+  }
+
+  .valueTitle {
+    font-size: var(--font-size-lg);
+  }
+}

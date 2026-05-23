@@ -115,7 +115,7 @@ jobs:
         uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6.0.0
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: "./junit.xml"
+          files: "test-results/junit.xml"
           report_type: test_results
           verbose: true
           fail_ci_if_error: false

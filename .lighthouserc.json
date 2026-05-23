@@ -40,7 +40,7 @@
         "unminified-css": "warn",
         "unminified-javascript": "warn",
         "no-document-write": "error",
-        "network-dependency-tree-insight": "warn",
+        "network-dependency-tree-insight": "off",
         "dom-size-insight": "off",
         "legacy-javascript": "off",
         "render-blocking-resources": ["warn", { "maxLength": 1 }],

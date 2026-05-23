@@ -228,6 +228,8 @@ test.describe('Landing Page', () => {
           const init = args[1]
           let body: string | null = null
 
+          // Capture body from init.body (common case: fetch(url, {body: '...'}))
+          // or from the Request object itself (fetch(new Request(url, {body: '...'})))
           if (typeof init?.body === 'string') {
             body = init.body
           } else if (input instanceof Request) {

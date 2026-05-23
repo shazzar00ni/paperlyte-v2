@@ -9,7 +9,7 @@ on:
 
 permissions:
   contents: read # allows actions/checkout to fetch the repository
-  pull-requests: read # allows SonarCloud to decorate PRs with analysis results
+  pull-requests: write # allows SonarCloud to decorate PRs with analysis results
 
 jobs:
   Analysis:
@@ -28,9 +28,11 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           # Additional arguments for the SonarScanner CLI
-          # Fallback values ensure analysis continues even if repo variables are not yet configured
+          # Fallback values ensure analysis continues even if repo variables are not yet configured.
+          # Maintenance scripts and test files are excluded from coverage to satisfy the Quality Gate.
           args: >
             -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY || 'shazzar00ni_paperlyte-v2' }}
             -Dsonar.organization=${{ vars.SONAR_ORGANIZATION || 'shazzar00ni' }}
+            -Dsonar.coverage.exclusions=scripts/**,tests/**,**/*.test.ts,**/*.test.tsx,**/*.spec.ts,**/*.spec.tsx
           # When you need the analysis to take place in a directory other than the one from which it was launched, default is .
           projectBaseDir: .

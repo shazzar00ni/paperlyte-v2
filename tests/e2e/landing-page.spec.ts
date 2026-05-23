@@ -226,8 +226,17 @@ test.describe('Landing Page', () => {
               : (input as Request).url
         if (url.includes('/.netlify/functions/subscribe')) {
           const init = args[1]
-          ;(window as unknown as Record<string, unknown>)['__subscribeMockBody'] =
-            typeof init?.body === 'string' ? init.body : null
+          let body: string | null = null
+
+          // Capture body from init.body (common case: fetch(url, {body: '...'}))
+          // or from the Request object itself (fetch(new Request(url, {body: '...'})))
+          if (typeof init?.body === 'string') {
+            body = init.body
+          } else if (input instanceof Request) {
+            body = await input.clone().text()
+          }
+
+          ;(window as unknown as Record<string, unknown>)['__subscribeMockBody'] = body
           return new Response(JSON.stringify({ success: true }), {
             status: 200,
             headers: { 'Content-Type': 'application/json' },

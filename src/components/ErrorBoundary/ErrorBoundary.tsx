@@ -52,23 +52,28 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    // Increment retry count after error is caught
-    this.setState((prevState) => ({
-      retryCount: prevState.retryCount + 1,
-    }))
-
-    // Log error using centralized monitoring utility
-    logError(
-      error,
-      {
-        componentStack: errorInfo.componentStack || undefined,
-        errorInfo: errorInfo as Record<string, unknown>,
-        severity: 'high',
-        tags: {
-          retry_count: String(this.state.retryCount),
-        },
+    let newRetryCount: number
+    this.setState(
+      (prevState) => {
+        newRetryCount = prevState.retryCount + 1
+        return { retryCount: newRetryCount }
       },
-      'ErrorBoundary'
+      () => {
+        // Log after state is committed so retry_count reflects the updated value
+        const { componentStack, ...restErrorInfo } = errorInfo
+        logError(
+          error,
+          {
+            componentStack: componentStack ? componentStack : undefined,
+            errorInfo: restErrorInfo as Record<string, unknown>,
+            severity: 'high',
+            tags: {
+              retry_count: String(newRetryCount),
+            },
+          },
+          'ErrorBoundary'
+        )
+      }
     )
   }
 
@@ -107,11 +112,11 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             <div className={styles.errorIcon} aria-hidden="true">
               <Icon name="fa-triangle-exclamation" size="xl" />
             </div>
-            <h2 className={styles.errorTitle}>Something went wrong</h2>
+            <h2 className={styles.errorTitle}>Paperlyte ran into a problem</h2>
             <p className={styles.errorMessage}>
               {showRetryButton
-                ? "We're sorry, but something unexpected happened. You can try again or reload the page."
-                : 'Multiple errors occurred. Please reload the page to continue.'}
+                ? 'An unexpected error occurred. Try reloading to continue.'
+                : 'We keep hitting an error. Reload the page to start fresh.'}
             </p>
             {this.state.error && import.meta.env.DEV && (
               <details className={styles.errorDetails}>

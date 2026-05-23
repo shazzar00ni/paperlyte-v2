@@ -38,7 +38,7 @@ describe('iconLibrary', () => {
 
     it('should have all brand icons from iconNameMap in brandIconNames', () => {
       // Known brand icons from the mapping
-      const expectedBrandIcons = ['github', 'twitter', 'apple', 'windows']
+      const expectedBrandIcons = ['github', 'twitter', 'x-twitter', 'instagram', 'apple', 'windows']
 
       expectedBrandIcons.forEach((iconName) => {
         expect(
@@ -219,14 +219,14 @@ describe('iconLibrary', () => {
       expect(solidIcons.length).toBeGreaterThanOrEqual(31)
     })
 
-    it('should have exactly 4 brand icons registered', () => {
-      // Icon breakdown: 31 solid (non-fallback) + 4 brand + 1 fallback = 36 total
-      expect(brandIconNames.size).toBe(4)
+    it('should have exactly 6 brand icons registered', () => {
+      // Icon breakdown: 33 solid (non-fallback) + 6 brand + 1 fallback = 40 total
+      expect(brandIconNames.size).toBe(6)
     })
 
     it('should maintain icon count in validIconNames', () => {
-      // Icon breakdown: 31 solid (non-fallback) + 4 brand + 1 fallback = 36 total
-      expect(validIconNames.size).toBeGreaterThanOrEqual(36)
+      // Icon breakdown: 33 solid (non-fallback) + 6 brand + 1 fallback = 40 total
+      expect(validIconNames.size).toBeGreaterThanOrEqual(40)
     })
   })
 })

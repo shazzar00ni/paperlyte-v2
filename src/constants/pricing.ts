@@ -30,7 +30,7 @@ export const PRICING_PLANS: PricingPlan[] = [
     id: 'free',
     name: 'Free',
     price: null,
-    tagline: 'Perfect for personal use',
+    tagline: 'Start writing immediately. No card needed.',
     icon: 'fa-leaf',
     features: [
       'Unlimited notes',
@@ -46,7 +46,7 @@ export const PRICING_PLANS: PricingPlan[] = [
     id: 'pro',
     name: 'Pro',
     price: 4.99,
-    tagline: 'For power users',
+    tagline: 'For writers, thinkers, and teams of one.',
     icon: 'fa-rocket',
     isPopular: true,
     features: [

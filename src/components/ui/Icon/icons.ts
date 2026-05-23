@@ -61,12 +61,10 @@ export const iconPaths: Record<string, string> = {
   'fa-paper-plane': 'M22 2L11 13 M22 2l-7 20-4-9-9-4 20-7z',
 
   // Social / Brand icons
-  'fa-x-twitter':
-    'M4 4l6.5 8.75L4 20.5h1.5l5.25-6 4.25 6H18l-6.75-9L18 4h-1.5l-5 5.5L8 4z',
+  'fa-x-twitter': 'M4 4l6.5 8.75L4 20.5h1.5l5.25-6 4.25 6H18l-6.75-9L18 4h-1.5l-5 5.5L8 4z',
   'fa-instagram':
     'M3 8a5 5 0 0 1 5-5h8a5 5 0 0 1 5 5v8a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5z M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M17.5 6.5h.01',
-  'fa-facebook':
-    'M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z',
+  'fa-facebook': 'M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z',
   'fa-linkedin':
     'M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z M2 9h4v12H2z M4 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4z',
 

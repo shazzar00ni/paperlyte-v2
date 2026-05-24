@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect } from 'react'
+import { type ReactNode, useEffect, memo } from 'react'
 import { useIntersectionObserver } from '@hooks/useIntersectionObserver'
 import { useReducedMotion } from '@hooks/useReducedMotion'
 import styles from './AnimatedElement.module.css'
@@ -37,7 +37,7 @@ interface AnimatedElementProps {
  * </AnimatedElement>
  * ```
  */
-export const AnimatedElement = ({
+const AnimatedElementComponent = ({
   children,
   animation = 'fadeIn',
   delay = 0,
@@ -53,18 +53,22 @@ export const AnimatedElement = ({
     .filter(Boolean)
     .join(' ')
 
-  // Set CSS custom property for animation delay programmatically
   useEffect(() => {
     if (ref.current) {
-      ref.current.style.setProperty('--animation-delay', `${delay}ms`)
+      if (prefersReducedMotion) {
+        ref.current.style.removeProperty('--animation-delay')
+      } else {
+        ref.current.style.setProperty('--animation-delay', `${delay}ms`)
+      }
     }
-    // ref is a stable object and doesn't need to be in dependencies
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [delay])
+  }, [delay, prefersReducedMotion, ref])
 
   return (
-    <div ref={ref} className={classes}>
+    <div ref={ref} className={classes} data-reduced-motion={prefersReducedMotion}>
       {children}
     </div>
   )
 }
+
+export const AnimatedElement = memo(AnimatedElementComponent)
+AnimatedElement.displayName = 'AnimatedElement'

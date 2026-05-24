@@ -149,6 +149,29 @@ The following metrics are tracked automatically when analytics is enabled:
   VITE_ANALYTICS_DOMAIN=YOUR_SITE_ID
   ```
 
+- **Custom events**: Fathom uses provider-assigned **goal codes** (short IDs created in
+  the Fathom dashboard, e.g. `ABCD1234`), not arbitrary event names. Custom events
+  whose names are not present in `config.goalCodes` are skipped. `getAnalyticsConfig()`
+  does not populate `goalCodes` from environment variables; you must augment the
+  config when calling `analytics.init()`:
+
+  ```tsx
+  const config = getAnalyticsConfig()
+  if (config) {
+    analytics.init({
+      ...config,
+      goalCodes: {
+        cta_click: 'ABCD1234',
+        scroll_depth: 'EFGH5678',
+        download_click: 'IJKL9012',
+      },
+    })
+  }
+  ```
+
+  Web Vitals are not forwarded to Fathom (they would require dedicated goal codes
+  per metric); use a different provider if Web Vitals tracking is important to you.
+
 ### Umami (Self-Hosted)
 
 - **Website**: <https://umami.is>
@@ -286,7 +309,11 @@ src/analytics/
 ├── webVitals.ts          # Core Web Vitals tracking
 ├── scrollDepth.ts        # Scroll depth monitoring
 ├── providers/
-│   └── plausible.ts      # Plausible provider implementation
+│   ├── plausible.ts      # Plausible provider implementation
+│   ├── fathom.ts         # Fathom provider implementation
+│   ├── umami.ts          # Umami provider implementation
+│   ├── simple.ts         # Simple Analytics provider implementation
+│   └── utils.ts          # Shared provider helpers (DNT, URL validation)
 └── README.md             # This file
 
 src/hooks/

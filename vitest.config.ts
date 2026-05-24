@@ -63,12 +63,14 @@ export default defineConfig({
       },
     },
 
-    // singleFork: reduce peak RAM so v8 coverage fits within CircleCI's 4 GB medium class.
-    // poolOptions was removed in Vitest 4; singleFork is now a top-level option.
+    // fileParallelism: false limits Vitest to a single worker process in CI to
+    // keep peak RAM within CircleCI's 4 GB medium class limit.
+    // In Vitest 4 the old poolOptions.forks.singleFork was removed; setting
+    // fileParallelism: false is the direct replacement (it sets maxWorkers to 1).
     ...(process.env.CI
       ? {
           pool: 'forks',
-          singleFork: true,
+          fileParallelism: false,
         }
       : {}),
 

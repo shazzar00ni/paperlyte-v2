@@ -19,7 +19,7 @@ import styles from './Testimonials.module.css'
  * - Screen reader accessible with ARIA labels
  * - Respects prefers-reduced-motion
  */
-export const Testimonials = (): React.ReactElement => {
+export const Testimonials = (): React.ReactElement | null => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(true)
   const [touchStart, setTouchStart] = useState(0)
@@ -203,6 +203,7 @@ export const Testimonials = (): React.ReactElement => {
         </div>
       </AnimatedElement>
 
+      {/* accessibility-fixed: issue-810 - tabIndex={0} is intentional; carouselRef receives keydown events for arrow-key navigation */}
       <section
         ref={carouselRef}
         className={styles.carouselWrapper}
@@ -272,6 +273,7 @@ export const Testimonials = (): React.ReactElement => {
           <Icon name={isPlaying ? 'fa-pause' : 'fa-play'} size="sm" />
         </button>
       </section>
+      {/* /accessibility-fixed */}
 
       {/* Screen reader announcement */}
       <div className={styles.srOnly} aria-live="polite" aria-atomic="true">

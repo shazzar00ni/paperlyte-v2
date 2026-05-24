@@ -1,0 +1,177 @@
+@font-face {
+  font-family: 'Playfair Display';
+  src: url('/fonts/PlayfairDisplay-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #0e0e0e;
+  --fg: #ffffff;
+  --muted: #888888;
+  --border: rgba(255, 255, 255, 0.08);
+  --btn-bg: #ffffff;
+  --btn-fg: #0e0e0e;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #f7f6f3;
+    --fg: #1a1a1a;
+    --muted: #666666;
+    --border: rgba(0, 0, 0, 0.08);
+    --btn-bg: #1a1a1a;
+    --btn-fg: #ffffff;
+  }
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+  min-height: 100svh;
+}
+
+.card {
+  max-width: 440px;
+  width: 100%;
+  text-align: center;
+}
+
+.wordmark {
+  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 3.5rem;
+}
+
+.glyph {
+  display: block;
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 2rem;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  position: relative;
+  color: var(--muted);
+}
+
+.glyph::before,
+.glyph::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid transparent;
+}
+
+.slash {
+  display: block;
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 2px;
+  height: 52px;
+  background: var(--muted);
+  transform: rotate(-45deg);
+  transform-origin: center;
+  border-radius: 1px;
+  opacity: 0.45;
+}
+
+.glyph svg {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 34px;
+  height: 34px;
+  fill: none;
+  stroke: var(--muted);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+h1 {
+  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  font-size: clamp(2rem, 6vw, 2.875rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  margin-bottom: 1.125rem;
+}
+
+h1 em {
+  font-style: italic;
+  color: var(--muted);
+}
+
+p {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--muted);
+  margin-bottom: 2.5rem;
+}
+
+button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  border: none;
+  border-radius: 9999px;
+  padding: 0.875rem 2.25rem;
+  font-family: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+button:hover {
+  opacity: 0.82;
+}
+
+button:active {
+  opacity: 0.65;
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button {
+    transition: none;
+  }
+}

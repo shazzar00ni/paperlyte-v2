@@ -189,7 +189,7 @@ export function isSafeUrl(url: string): boolean {
  */
 function isSameOriginUrl(url: string): boolean {
   try {
-    const parsed = new URL(url, window.location.origin)
+    const parsed = new URL(url, window.location.href)
     return parsed.origin === window.location.origin
   } catch {
     return false
@@ -214,6 +214,10 @@ export function safeNavigate(url: string): boolean {
   // Normalise once so the same value is used for validation and for the final assignment.
   // isSafeUrl trims internally, but trimming here avoids a mismatch where a URL with
   // leading/trailing whitespace passes validation yet is assigned raw to location.href.
+  if (typeof url !== 'string') {
+    return false
+  }
+
   const trimmedUrl = url.trim()
 
   if (!isSafeUrl(trimmedUrl) || !isSameOriginUrl(trimmedUrl)) {
@@ -223,7 +227,7 @@ export function safeNavigate(url: string): boolean {
     return false
   }
 
-  window.location.href = trimmedUrl
+  window.location.href = new URL(trimmedUrl, window.location.href).href
   return true
 }
 
@@ -233,8 +237,8 @@ export function safeNavigate(url: string): boolean {
  * Uses `noopener,noreferrer` to prevent tab-napping attacks.
  *
  * @param url - The external HTTP/HTTPS URL to open
- * @returns true if the new window was opened, false if the URL was rejected, the pop-up
- *   was blocked by the browser, or this is a server-side rendering context
+ * @returns true if navigation was attempted via window.open, false if the URL was rejected
+ *   or this is a server-side rendering context
  */
 export function safeNavigateExternal(url: string): boolean {
   if (typeof window === 'undefined') {
@@ -262,8 +266,6 @@ export function safeNavigateExternal(url: string): boolean {
     return false
   }
 
-  // window.open returns null when the browser's pop-up blocker prevents the window
-  // from opening; treat that as "navigation not performed".
-  const opened = window.open(url, '_blank', 'noopener,noreferrer')
-  return opened !== null
+  window.open(url, '_blank', 'noopener,noreferrer')
+  return true
 }

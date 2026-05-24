@@ -298,7 +298,11 @@ describe('navigation utilities', () => {
     })
 
     function mockLocation(overrides: Partial<Location> = {}) {
-      const mock = { href: '', origin: 'http://localhost', ...overrides } as Location
+      const mock = {
+        href: 'http://localhost/',
+        origin: 'http://localhost',
+        ...overrides,
+      } as Location
       Object.defineProperty(window, 'location', {
         value: mock,
         writable: true,
@@ -312,31 +316,31 @@ describe('navigation utilities', () => {
     it('should navigate to root-relative URL', () => {
       const mock = mockLocation()
       expect(safeNavigate('/')).toBe(true)
-      expect(mock.href).toBe('/')
+      expect(mock.href).toBe('http://localhost/')
     })
 
     it('should navigate to a relative path', () => {
       const mock = mockLocation()
       expect(safeNavigate('/about')).toBe(true)
-      expect(mock.href).toBe('/about')
+      expect(mock.href).toBe('http://localhost/about')
     })
 
     it('should navigate to dot-relative URLs', () => {
       const mock = mockLocation()
       expect(safeNavigate('./page')).toBe(true)
-      expect(mock.href).toBe('./page')
+      expect(mock.href).toBe('http://localhost/page')
     })
 
     it('should navigate to parent-relative URLs', () => {
       const mock = mockLocation()
       expect(safeNavigate('../page')).toBe(true)
-      expect(mock.href).toBe('../page')
+      expect(mock.href).toBe('http://localhost/page')
     })
 
     it('should navigate to relative URL with query and fragment', () => {
       const mock = mockLocation()
       expect(safeNavigate('/search?q=test#results')).toBe(true)
-      expect(mock.href).toBe('/search?q=test#results')
+      expect(mock.href).toBe('http://localhost/search?q=test#results')
     })
 
     // --- HTTPS URLs ---
@@ -345,7 +349,7 @@ describe('navigation utilities', () => {
       const mock = mockLocation()
       const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
       expect(safeNavigate('https://example.com')).toBe(false)
-      expect(mock.href).toBe('')
+      expect(mock.href).toBe('http://localhost/')
       warnSpy.mockRestore()
     })
 
@@ -353,7 +357,7 @@ describe('navigation utilities', () => {
       const mock = mockLocation()
       const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
       expect(safeNavigate('https://example.com/page?key=val')).toBe(false)
-      expect(mock.href).toBe('')
+      expect(mock.href).toBe('http://localhost/')
       warnSpy.mockRestore()
     })
 
@@ -361,7 +365,7 @@ describe('navigation utilities', () => {
       const mock = mockLocation()
       const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
       expect(safeNavigate('http://example.com')).toBe(false)
-      expect(mock.href).toBe('')
+      expect(mock.href).toBe('http://localhost/')
       warnSpy.mockRestore()
     })
 
@@ -436,11 +440,17 @@ describe('navigation utilities', () => {
       warnSpy.mockRestore()
     })
 
+    it('should return false for non-string input from untyped boundaries', () => {
+      mockLocation()
+      expect(safeNavigate(null as unknown as string)).toBe(false)
+      expect(safeNavigate(undefined as unknown as string)).toBe(false)
+    })
+
     it('should not modify location.href when navigation is blocked', () => {
       const mock = mockLocation()
       const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
       safeNavigate('javascript:alert(1)')
-      expect(mock.href).toBe('')
+      expect(mock.href).toBe('http://localhost/')
       warnSpy.mockRestore()
     })
 
@@ -487,12 +497,20 @@ describe('navigation utilities', () => {
 
     it('should open an HTTPS URL in a new tab with noopener,noreferrer', () => {
       expect(safeNavigateExternal('https://example.com')).toBe(true)
-      expect(window.open).toHaveBeenCalledWith('https://example.com', '_blank', 'noopener,noreferrer')
+      expect(window.open).toHaveBeenCalledWith(
+        'https://example.com',
+        '_blank',
+        'noopener,noreferrer'
+      )
     })
 
     it('should open an HTTP URL in a new tab', () => {
       expect(safeNavigateExternal('http://example.com')).toBe(true)
-      expect(window.open).toHaveBeenCalledWith('http://example.com', '_blank', 'noopener,noreferrer')
+      expect(window.open).toHaveBeenCalledWith(
+        'http://example.com',
+        '_blank',
+        'noopener,noreferrer'
+      )
     })
 
     it('should open an HTTPS URL with path and query', () => {
@@ -500,7 +518,7 @@ describe('navigation utilities', () => {
       expect(window.open).toHaveBeenCalledWith(
         'https://example.com/page?key=val',
         '_blank',
-        'noopener,noreferrer',
+        'noopener,noreferrer'
       )
     })
 
@@ -540,10 +558,14 @@ describe('navigation utilities', () => {
       warnSpy.mockRestore()
     })
 
-    it('should return false when the pop-up is blocked (window.open returns null)', () => {
+    it('should return true when window.open returns null with noopener behavior', () => {
       window.open = vi.fn().mockReturnValue(null)
-      expect(safeNavigateExternal('https://example.com')).toBe(false)
-      expect(window.open).toHaveBeenCalledWith('https://example.com', '_blank', 'noopener,noreferrer')
+      expect(safeNavigateExternal('https://example.com')).toBe(true)
+      expect(window.open).toHaveBeenCalledWith(
+        'https://example.com',
+        '_blank',
+        'noopener,noreferrer'
+      )
     })
 
     it('should block same-origin URLs with a non-HTTP/HTTPS protocol', () => {

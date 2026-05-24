@@ -220,9 +220,7 @@ export const Testimonials = (): React.ReactElement | null => {
               style={{ transform: `translateX(-${currentIndex * 100}%)` }}
             >
               {TESTIMONIALS.map((testimonial, index) => (
-                <div key={index}>
-                  {renderTestimonial(testimonial)}
-                </div>
+                <div key={index}>{renderTestimonial(testimonial)}</div>
               ))}
             </div>
           </div>

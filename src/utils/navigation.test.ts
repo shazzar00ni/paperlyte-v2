@@ -133,6 +133,10 @@ describe('navigation utilities', () => {
       expect(isRelativeUrl('//evil.com')).toBe(false)
     })
 
+    it('should reject backslash-normalized protocol-relative paths', () => {
+      expect(isRelativeUrl('/\\evil.com')).toBe(false)
+    })
+
     it('should reject relative paths with embedded protocol injection', () => {
       expect(isRelativeUrl('/path/with://protocol')).toBe(false)
       expect(isRelativeUrl('./foo://bar')).toBe(false)
@@ -211,6 +215,7 @@ describe('navigation utilities', () => {
     it('should reject protocol-relative URLs and URLs with protocol injection', () => {
       expect(isSafeUrl('//evil.com')).toBe(false)
       expect(isSafeUrl('//evil.com/path')).toBe(false)
+      expect(isSafeUrl('/\\evil.com')).toBe(false)
       expect(isSafeUrl('/path/with://protocol')).toBe(false)
     })
 

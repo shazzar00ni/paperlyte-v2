@@ -125,6 +125,12 @@ export function isRelativeUrl(url: string): boolean {
     return false
   }
 
+  // Block "/\" paths because browsers normalize them to "//"
+  // (protocol-relative URLs), which can enable open redirect attacks.
+  if (/^\/\\/.test(url)) {
+    return false
+  }
+
   // Block protocol injection hidden inside relative paths
   return !url.includes('://')
 }
@@ -174,6 +180,12 @@ export function isSafeUrl(url: string): boolean {
 
   // Block protocol-relative URLs (//example.com)
   if (trimmedUrl.startsWith('//')) {
+    return false
+  }
+
+  // Block "/\" paths because browsers normalize them to "//"
+  // (protocol-relative URLs), which can enable open redirect attacks.
+  if (/^\/\\/.test(trimmedUrl)) {
     return false
   }
 

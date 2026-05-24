@@ -13,7 +13,7 @@ Regression guard from PR #820 (OpenSSF Scorecard hardening).
 `.github/workflows/scorecard.yml` uploads Scorecard findings to GitHub Code
 Scanning with `category: ossf-scorecard`. This category was added to prevent
 Scorecard findings from overriding results from other scanners
-(`snyk-security.yml` sets `category: snyk-security`; `eslint.yml`, `codacy.yml`,
+(`snyk-security.yml` sets `category: snyk`; `eslint.yml`, `codacy.yml`,
 and `codescan.yml` each upload under their own categories).
 
 File this issue if a future change to `scorecard.yml` removes or renames the

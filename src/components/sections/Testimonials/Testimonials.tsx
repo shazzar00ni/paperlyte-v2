@@ -192,8 +192,6 @@ export const Testimonials = (): React.ReactElement | null => {
 
   if (TESTIMONIALS.length === 0) return null
 
-  const activeTestimonial = TESTIMONIALS[currentIndex]
-
   return (
     <Section id="testimonials" background="surface">
       <AnimatedElement animation="fadeIn">

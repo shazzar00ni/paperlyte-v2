@@ -9,6 +9,7 @@
 
 import type { AnalyticsConfig, AnalyticsEvent, AnalyticsProvider, CoreWebVitals } from '../types'
 import { isSafePropertyKey } from '../../utils/security'
+import { isDNTEnabled, isValidScriptUrl } from './utils'
 
 /**
  * Plausible Analytics provider
@@ -33,7 +34,7 @@ export class PlausibleProvider implements AnalyticsProvider {
     }
 
     // Check if user has Do Not Track enabled
-    if (config.respectDNT !== false && this.isDNTEnabled()) {
+    if (config.respectDNT !== false && isDNTEnabled()) {
       if (config.debug) {
         console.log('[Analytics] Do Not Track is enabled, analytics disabled')
       }
@@ -45,63 +46,6 @@ export class PlausibleProvider implements AnalyticsProvider {
 
     // Load Plausible script asynchronously
     this.loadScript()
-
-    if (config.debug) {
-      console.log('[Analytics] Plausible initialized', config)
-    }
-  }
-
-  /**
-   * Validate script URL to prevent script injection attacks
-   * Only allows HTTPS URLs from known analytics providers or valid domains
-   *
-   * @param url - The URL to validate
-   * @returns true if URL is valid and safe, false otherwise
-   */
-  private isValidScriptUrl(url: string): boolean {
-    try {
-      const parsedUrl = new URL(url)
-
-      // Only allow HTTPS for security
-      if (parsedUrl.protocol !== 'https:') {
-        if (this.config?.debug) {
-          console.warn('[Analytics] Script URL must use HTTPS protocol:', url)
-        }
-        return false
-      }
-
-      // Whitelist known analytics providers or allow any HTTPS domain
-      // This prevents obviously malicious URLs while allowing self-hosted instances
-      const knownProviders = [
-        'plausible.io',
-        'analytics.google.com',
-        'fathom.com',
-        'umami.is',
-        'simpleanalytics.com',
-      ]
-
-      const isKnownProvider = knownProviders.some((provider) =>
-        parsedUrl.hostname.endsWith(provider)
-      )
-      const hasValidPath = parsedUrl.pathname.endsWith('.js')
-
-      if (!hasValidPath) {
-        if (this.config?.debug) {
-          console.warn('[Analytics] Script URL must point to a .js file:', url)
-        }
-        return false
-      }
-
-      // Allow known providers or any HTTPS URL pointing to a .js file
-      // (for self-hosted instances)
-      return isKnownProvider || parsedUrl.protocol === 'https:'
-    } catch (error) {
-      // Invalid URL format
-      if (this.config?.debug) {
-        console.warn('[Analytics] Invalid script URL format:', url, error)
-      }
-      return false
-    }
   }
 
   /**
@@ -116,8 +60,8 @@ export class PlausibleProvider implements AnalyticsProvider {
 
     const scriptUrl = this.config?.scriptUrl || 'https://plausible.io/js/script.js'
 
-    // Validate script URL to prevent injection attacks
-    if (!this.isValidScriptUrl(scriptUrl)) {
+    // Validate script URL to prevent injection attacks. Requires HTTPS protocol and .js extension.
+    if (!isValidScriptUrl(scriptUrl)) {
       if (this.config?.debug || import.meta.env.DEV) {
         console.error(
           '[Analytics] Invalid or unsafe script URL. Must be HTTPS and point to a .js file:',
@@ -139,6 +83,7 @@ export class PlausibleProvider implements AnalyticsProvider {
     }
 
     script.onerror = () => {
+      if (this.scriptElement !== script) return
       if (this.config?.debug) {
         console.warn('[Analytics] Failed to load Plausible script')
       }
@@ -146,6 +91,7 @@ export class PlausibleProvider implements AnalyticsProvider {
     }
 
     script.onload = () => {
+      if (this.scriptElement !== script) return
       this.scriptLoaded = true
       if (this.config?.debug) {
         console.log('[Analytics] Plausible script loaded successfully')
@@ -172,10 +118,6 @@ export class PlausibleProvider implements AnalyticsProvider {
     window.plausible('pageview', {
       props: { path: pageUrl },
     })
-
-    if (this.config?.debug) {
-      console.log('[Analytics] Page view tracked:', pageUrl)
-    }
   }
 
   /**
@@ -210,10 +152,6 @@ export class PlausibleProvider implements AnalyticsProvider {
       : undefined
 
     window.plausible(event.name, props ? { props } : undefined)
-
-    if (this.config?.debug) {
-      console.log('[Analytics] Event tracked:', event.name, props)
-    }
   }
 
   /**
@@ -241,10 +179,6 @@ export class PlausibleProvider implements AnalyticsProvider {
         })
       }
     })
-
-    if (this.config?.debug) {
-      console.log('[Analytics] Core Web Vitals tracked:', vitals)
-    }
   }
 
   /**
@@ -264,7 +198,9 @@ export class PlausibleProvider implements AnalyticsProvider {
    * Removes the Plausible script and resets state
    */
   disable(): void {
-    const debug = this.config?.debug
+    if (this.config?.debug) {
+      console.log('[Analytics] Plausible disabled')
+    }
 
     this.initialized = false
     this.scriptLoaded = false
@@ -283,26 +219,5 @@ export class PlausibleProvider implements AnalyticsProvider {
     if (typeof window !== 'undefined' && window.plausible) {
       delete window.plausible
     }
-
-    if (debug) {
-      console.log('[Analytics] Plausible disabled')
-    }
-  }
-
-  /**
-   * Check if Do Not Track is enabled in browser
-   */
-  private isDNTEnabled(): boolean {
-    // Guard against SSR/Node.js environments
-    if (typeof window === 'undefined' || typeof navigator === 'undefined') {
-      return false
-    }
-
-    const dnt =
-      navigator.doNotTrack ||
-      (window as Window & { doNotTrack?: string }).doNotTrack ||
-      (navigator as Navigator & { msDoNotTrack?: string }).msDoNotTrack
-
-    return dnt === '1' || dnt === 'yes'
   }
 }

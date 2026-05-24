@@ -2,6 +2,8 @@ import { useState, type FormEvent } from 'react'
 import { Button } from '@components/ui/Button'
 import { Icon } from '@components/ui/Icon'
 import { trackEvent } from '@utils/analytics'
+import { logError } from '@utils/monitoring'
+import { validateEmail } from '@utils/validation'
 import styles from './EmailCapture.module.css'
 
 interface EmailCaptureProps {
@@ -10,12 +12,26 @@ interface EmailCaptureProps {
   buttonText?: string
 }
 
-// Pure validation function - moved outside component to avoid recreation on every render
-const validateEmail = (email: string): boolean => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  return emailRegex.test(email)
-}
-
+/**
+ * Email capture form component for collecting waitlist signups
+ * Features email validation, GDPR consent, spam protection, and Netlify function integration
+ * Displays success/error states and tracks signup events via analytics
+ *
+ * @param props - Component props
+ * @param props.variant - Form layout variant: 'inline' (default) or 'centered'
+ * @param props.placeholder - Email input placeholder text (default: 'Enter your email')
+ * @param props.buttonText - Submit button text (default: 'Join Waitlist')
+ * @returns Email capture form element
+ *
+ * @example
+ * ```tsx
+ * // Inline variant (hero/CTA sections)
+ * <EmailCapture variant="inline" buttonText="Get Early Access" />
+ *
+ * // Centered variant (dedicated signup page)
+ * <EmailCapture variant="centered" placeholder="your@email.com" />
+ * ```
+ */
 export const EmailCapture = ({
   variant = 'inline',
   placeholder = 'Enter your email',
@@ -25,6 +41,7 @@ export const EmailCapture = ({
   const [honeypot, setHoneypot] = useState('') // Spam protection
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [errorMessage, setErrorMessage] = useState('')
+  const [errorField, setErrorField] = useState<'email' | 'other' | null>(null)
   const [gdprConsent, setGdprConsent] = useState(false)
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -35,26 +52,26 @@ export const EmailCapture = ({
       return
     }
 
-    // Validation
-    if (!email.trim()) {
-      setStatus('error')
-      setErrorMessage('Please enter your email address')
-      return
-    }
+    const normalizedEmail = email.trim().toLowerCase()
 
-    if (!validateEmail(email)) {
+    // Validation
+    const { isValid, error: validationError } = validateEmail(normalizedEmail)
+    if (!isValid) {
       setStatus('error')
-      setErrorMessage('Please enter a valid email address')
+      setErrorField('email')
+      setErrorMessage(validationError ?? "That email address doesn't look right.")
       return
     }
 
     if (!gdprConsent) {
       setStatus('error')
-      setErrorMessage('Please agree to receive emails from Paperlyte')
+      setErrorField('other')
+      setErrorMessage("Please confirm you'd like to receive updates.")
       return
     }
 
     setStatus('loading')
+    setErrorField(null)
     setErrorMessage('')
 
     try {
@@ -62,13 +79,31 @@ export const EmailCapture = ({
       const response = await fetch('/.netlify/functions/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email: normalizedEmail }),
       })
 
-      const data = await response.json()
-
       if (!response.ok) {
-        throw new Error(data.error || 'Subscription failed')
+        const data: unknown = await response.json().catch(() => ({}))
+        const serverMessage =
+          data !== null &&
+          typeof data === 'object' &&
+          'error' in data &&
+          typeof data.error === 'string'
+            ? data.error
+            : undefined
+
+        if (response.status === 400 || response.status === 429) {
+          setStatus('error')
+          setErrorMessage(
+            serverMessage ??
+              (response.status === 429
+                ? 'Too many requests. Please try again later.'
+                : 'Invalid email address. Please check and try again.')
+          )
+          return
+        }
+
+        throw new Error(serverMessage ?? 'Subscription failed')
       }
 
       setStatus('success')
@@ -82,10 +117,22 @@ export const EmailCapture = ({
       })
     } catch (error) {
       setStatus('error')
-      const message =
-        error instanceof Error ? error.message : 'Something went wrong. Please try again.'
-      setErrorMessage(message)
-      console.error('Email subscription error:', error)
+      setErrorField('other')
+      setErrorMessage("Couldn't add you to the list. Check your email and try again.")
+      const loggedError =
+        error instanceof Error ? error : new Error(`Subscribe failed: ${String(error)}`)
+      logError(
+        loggedError,
+        {
+          severity: 'medium',
+          tags: {
+            component: 'EmailCapture',
+            action: 'subscribe',
+            errorType: error instanceof Error ? error.name : typeof error,
+          },
+        },
+        'EmailCapture'
+      )
     }
   }
 
@@ -97,7 +144,7 @@ export const EmailCapture = ({
           <p className={styles.successMessage}>
             <strong>You're on the list!</strong>
             <br />
-            Check your email to confirm your subscription.
+            Check your inbox to confirm.
           </p>
         </div>
       </div>
@@ -112,7 +159,9 @@ export const EmailCapture = ({
           type="text"
           name="website"
           value={honeypot}
-          onChange={(e) => setHoneypot(e.target.value)}
+          onChange={(e) => {
+            setHoneypot(e.target.value)
+          }}
           tabIndex={-1}
           autoComplete="off"
           className={styles.honeypot}
@@ -128,13 +177,15 @@ export const EmailCapture = ({
             id="email"
             name="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value)
+            }}
             placeholder={placeholder}
             className={styles.input}
             disabled={status === 'loading'}
             required
-            aria-invalid={status === 'error'}
-            aria-describedby={status === 'error' ? 'email-error' : undefined}
+            aria-invalid={errorField === 'email'}
+            aria-describedby={errorField === 'email' ? 'email-error' : undefined}
           />
           <Button
             type="submit"
@@ -160,13 +211,15 @@ export const EmailCapture = ({
               type="checkbox"
               id="gdpr-consent"
               checked={gdprConsent}
-              onChange={(e) => setGdprConsent(e.target.checked)}
+              onChange={(e) => {
+                setGdprConsent(e.target.checked)
+              }}
               className={styles.checkbox}
               disabled={status === 'loading'}
               required
             />
             <span className={styles.gdprText}>
-              I agree to receive emails from Paperlyte. View our{' '}
+              I agree to receive product updates from Paperlyte. View our{' '}
               <a
                 href="/privacy.html"
                 className={styles.link}

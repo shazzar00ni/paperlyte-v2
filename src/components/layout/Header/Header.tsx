@@ -2,35 +2,53 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { Button } from '@components/ui/Button'
 import { Icon } from '@components/ui/Icon'
 import { ThemeToggle } from '@components/ui/ThemeToggle'
+import logoAvifSrc from '@/assets/logo.avif'
+import logoPngSrc from '@/assets/logo.png'
+import logoWebpSrc from '@/assets/logo.webp'
 import {
   getFocusableElements,
   handleArrowNavigation,
   handleHomeEndNavigation,
 } from '@utils/keyboard'
+import { scrollToSection as scrollToSectionUtil } from '@utils/navigation'
 import styles from './Header.module.css'
 
+/**
+ * Main navigation header component with responsive mobile menu
+ * Features smooth scrolling to sections, keyboard navigation, focus trap, and theme toggle
+ * Implements ARIA best practices for accessible navigation and menu behavior
+ *
+ * @returns Header element with navigation, logo, and theme toggle
+ *
+ * @example
+ * ```tsx
+ * // In your App or layout component
+ * <Header />
+ * <main>
+ *   <section id="features">Features</section>
+ *   <section id="pricing">Pricing</section>
+ * </main>
+ * ```
+ */
 export const Header = (): React.ReactElement => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const menuButtonRef = useRef<HTMLButtonElement>(null)
   const menuRef = useRef<HTMLUListElement>(null)
 
-  const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen)
-  }
-
-  const closeMobileMenu = useCallback(() => {
-    setMobileMenuOpen(false)
-    // Return focus to menu button when closing
-    menuButtonRef.current?.focus()
+  const toggleMobileMenu = useCallback((): void => {
+    setMobileMenuOpen((prev) => !prev)
   }, [])
 
+  const closeMobileMenu = useCallback((): void => {
+    if (!mobileMenuOpen) return
+    setMobileMenuOpen(false)
+    menuButtonRef.current?.focus({ preventScroll: true })
+  }, [mobileMenuOpen])
+
   const scrollToSection = useCallback(
-    (sectionId: string) => {
-      const element = document.getElementById(sectionId)
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' })
-        closeMobileMenu()
-      }
+    (sectionId: string): void => {
+      scrollToSectionUtil(sectionId)
+      closeMobileMenu()
     },
     [closeMobileMenu]
   )
@@ -44,7 +62,9 @@ export const Header = (): React.ReactElement => {
     }
 
     document.addEventListener('keydown', handleEscape)
-    return () => document.removeEventListener('keydown', handleEscape)
+    return () => {
+      document.removeEventListener('keydown', handleEscape)
+    }
   }, [mobileMenuOpen, closeMobileMenu])
 
   // Focus trap for mobile menu
@@ -79,7 +99,9 @@ export const Header = (): React.ReactElement => {
     // Focus first element when menu opens
     firstFocusable?.focus()
 
-    return () => menu.removeEventListener('keydown', handleTabKey)
+    return () => {
+      menu.removeEventListener('keydown', handleTabKey)
+    }
   }, [mobileMenuOpen])
 
   // Arrow key navigation for menu items
@@ -114,14 +136,26 @@ export const Header = (): React.ReactElement => {
 
     menu.addEventListener('keydown', handleArrowKeys)
 
-    return () => menu.removeEventListener('keydown', handleArrowKeys)
+    return () => {
+      menu.removeEventListener('keydown', handleArrowKeys)
+    }
   }, [mobileMenuOpen])
 
   return (
     <header className={styles.header}>
       <div className={styles.container}>
         <div className={styles.logo}>
-          <Icon name="fa-feather" size="lg" />
+          <picture>
+            <source srcSet={logoAvifSrc} type="image/avif" />
+            <source srcSet={logoWebpSrc} type="image/webp" />
+            <img
+              src={logoPngSrc}
+              alt="Paperlyte logo"
+              width="32"
+              height="32"
+              className={styles.logoImage}
+            />
+          </picture>
           <span className={styles.logoText}>Paperlyte</span>
         </div>
 

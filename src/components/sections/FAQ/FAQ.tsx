@@ -18,6 +18,13 @@ interface FAQItemProps {
   delay: number
 }
 
+/**
+ * Individual FAQ item component with accordion functionality
+ * Supports keyboard navigation and animated expand/collapse
+ *
+ * @param props - FAQ item props
+ * @returns An animated accordion item for FAQ
+ */
 const FAQItemComponent = ({
   question,
   answer,
@@ -67,21 +74,22 @@ const FAQItemComponent = ({
   )
 }
 
+/** Renders the FAQ section with an accessible, keyboard-navigable accordion of common questions. */
 export const FAQ = (): React.ReactElement => {
   const [openItems, setOpenItems] = useState<Set<string>>(new Set())
   const [announcement, setAnnouncement] = useState('')
   const gridRef = useRef<HTMLDivElement>(null)
   const announcementTimeoutRef = useRef<number | null>(null)
 
-  const toggleItem = (id: string) => {
+  const toggleItem = (id: string): void => {
     setOpenItems((prev) => {
       const newSet = new Set(prev)
       const isOpening = !newSet.has(id)
 
-      if (newSet.has(id)) {
-        newSet.delete(id)
-      } else {
+      if (isOpening) {
         newSet.add(id)
+      } else {
+        newSet.delete(id)
       }
 
       // Announce the change for screen readers
@@ -168,7 +176,7 @@ export const FAQ = (): React.ReactElement => {
         </AnimatedElement>
         <AnimatedElement animation="fadeIn" delay={100}>
           <p className={styles.subtitle}>
-            Everything you need to know. Can't find what you're looking for?{' '}
+            Common questions answered. Still curious?{' '}
             <a href="#contact" className={styles.link}>
               Contact us
             </a>
@@ -184,7 +192,9 @@ export const FAQ = (): React.ReactElement => {
             question={item.question}
             answer={item.answer}
             isOpen={openItems.has(item.id)}
-            onToggle={() => toggleItem(item.id)}
+            onToggle={() => {
+              toggleItem(item.id)
+            }}
             delay={150 + index * 50}
           />
         ))}

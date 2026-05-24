@@ -5,6 +5,18 @@ import { scrollToSection } from '@/utils/navigation'
 import { WAITLIST_COUNT, LAUNCH_QUARTER } from '@constants/waitlist'
 import styles from './CTA.module.css'
 
+/**
+ * Call-to-Action section component that encourages users to join the waitlist
+ * Features headline, subtitle, action buttons, and social proof with waitlist count
+ * Uses AnimatedElement for staggered entrance animations
+ *
+ * @returns A CTA section with download/waitlist buttons and social proof
+ *
+ * @example
+ * ```tsx
+ * <CTA />
+ * ```
+ */
 export const CTA = (): React.ReactElement => {
   return (
     <Section id="download" background="primary" className={styles.cta}>
@@ -19,8 +31,8 @@ export const CTA = (): React.ReactElement => {
             invisible.
           </p>
           <p className={styles.subtitle}>
-            Join the waitlist today and be among the first to experience what note-taking should
-            have been all along.
+            Join the waitlist and get early access two weeks before public launch — plus 50% off for
+            life.
           </p>
         </AnimatedElement>
 
@@ -34,7 +46,7 @@ export const CTA = (): React.ReactElement => {
               className={styles.textLink}
               onClick={() => scrollToSection('hero')}
             >
-              Watch the Demo Again
+              Watch the Demo
             </button>
           </div>
         </AnimatedElement>

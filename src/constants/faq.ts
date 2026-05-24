@@ -44,7 +44,7 @@ export const FAQ_ITEMS: FAQItem[] = [
     category: 'privacy',
     question: 'How is my data protected?',
     answer:
-      'End-to-end encryption before anything leaves your device. We use zero-knowledge architecture—we literally cannot read your notes even if we wanted to. Your data stays yours.',
+      "Your notes are protected in transit with TLS and encrypted at rest on our servers. End-to-end encryption (so even we can't read your notes) is on our roadmap and will be added before public launch. Your data stays yours and is never sold or shared.",
   },
   {
     id: 'data-export',
@@ -64,7 +64,7 @@ export const FAQ_ITEMS: FAQItem[] = [
     category: 'general',
     question: 'How is this different from Notion/Obsidian/Evernote?',
     answer:
-      "Speed. We load 7x faster than Notion. Simplicity. We removed features instead of adding them. Privacy. End-to-end encryption is built-in, not an afterthought. We're not trying to be an all-in-one workspace—we're focused on doing one thing perfectly: capturing your thoughts.",
+      "Speed: Paperlyte is built to load and respond faster than tools like Notion that bundle collaboration, databases, and wikis into one page. Simplicity: we removed features instead of adding them. Privacy: privacy is a first-class design goal, not an afterthought. We're not trying to be an all-in-one workspace — we do one thing perfectly: capture your thoughts.",
   },
   {
     id: 'free-trial',

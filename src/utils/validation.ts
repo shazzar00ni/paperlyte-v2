@@ -20,17 +20,29 @@ export interface ValidationResult {
 }
 
 /**
- * Email validation regex pattern
- * Follows RFC 5322 simplified pattern for practical use
- * Prevents ReDoS vulnerabilities by eliminating quantifier overlap
+ * Email validation regex pattern — single canonical source used by both client and server.
+ * Follows RFC 5322 simplified pattern for practical use.
+ * Prevents ReDoS vulnerabilities by eliminating quantifier overlap.
  * Pattern breakdown:
  * - Local part: single alphanumeric + (alphanumeric OR separator+alphanumeric)*
  * - Domain: single alphanumeric + (alphanumeric OR separator+alphanumeric)*
  * - TLD: at least 2 letters
- * This eliminates overlapping quantifiers by making choices mutually exclusive
+ * This eliminates overlapping quantifiers by making choices mutually exclusive.
  */
-const EMAIL_REGEX =
+export const EMAIL_REGEX =
   /^[a-zA-Z0-9](?:[a-zA-Z0-9]|[._+-][a-zA-Z0-9])*@[a-zA-Z0-9](?:[a-zA-Z0-9]|[.-][a-zA-Z0-9])*\.[a-zA-Z]{2,}$/
+
+/**
+ * Predicate wrapper around validateEmail.
+ * Runs the same RFC 5322–simplified regex, length, and disposable-domain
+ * checks — use this when you only need a boolean rather than an error message.
+ *
+ * @param email - The email address to validate
+ * @returns true if the email passes all validation rules
+ */
+export function isValidEmail(email: string): boolean {
+  return validateEmail(email).isValid
+}
 
 /**
  * Common disposable email domains to block
@@ -47,7 +59,21 @@ const DISPOSABLE_EMAIL_DOMAINS = [
 ]
 
 /**
- * Validate email address format
+ * Validates an email address against RFC 5322 simplified pattern
+ * Checks for format, length limits, and blocks disposable email domains
+ *
+ * @param email - The email address to validate
+ * @returns Validation result with isValid boolean and optional error message
+ *
+ * @example
+ * ```tsx
+ * const result = validateEmail('user@example.com')
+ * if (result.isValid) {
+ *   // Email is valid
+ * } else {
+ *   console.error(result.error)
+ * }
+ * ```
  */
 export function validateEmail(email: string): EmailValidationResult {
   if (!email || email.trim() === '') {
@@ -79,7 +105,17 @@ export function validateEmail(email: string): EmailValidationResult {
 }
 
 /**
- * Normalize email
+ * Normalizes an email address by trimming whitespace and converting to lowercase
+ * Returns null if the email is invalid
+ *
+ * @param email - The email address to normalize
+ * @returns Normalized email address or null if invalid
+ *
+ * @example
+ * ```tsx
+ * const normalized = normalizeEmail('  User@Example.COM  ')
+ * // Returns: 'user@example.com'
+ * ```
  */
 export function normalizeEmail(email: string): string | null {
   const validation = validateEmail(email)
@@ -88,7 +124,19 @@ export function normalizeEmail(email: string): string | null {
 }
 
 /**
- * Placeholder for MX record validation
+ * Validates the domain of an email address
+ * Currently uses basic format validation; can be extended with MX record checks
+ *
+ * @param email - The email address to validate
+ * @returns Promise resolving to true if domain is valid, false otherwise
+ *
+ * @example
+ * ```tsx
+ * const isValid = await validateEmailDomain('user@example.com')
+ * if (isValid) {
+ *   // Domain is valid
+ * }
+ * ```
  */
 export async function validateEmailDomain(email: string): Promise<boolean> {
   const validation = validateEmail(email)
@@ -96,7 +144,23 @@ export async function validateEmailDomain(email: string): Promise<boolean> {
 }
 
 /**
- * Debounce utility
+ * Creates a debounced function that delays invoking the provided function
+ * until after the specified delay has elapsed since the last invocation
+ *
+ * @param func - The function to debounce
+ * @param delay - The delay in milliseconds
+ * @returns Debounced version of the function
+ *
+ * @example
+ * ```tsx
+ * const handleSearch = debounce((query: string) => {
+ *   console.log('Searching for:', query)
+ * }, 300)
+ *
+ * // Will only execute once after 300ms of no calls
+ * handleSearch('hello')
+ * handleSearch('hello world') // Previous call cancelled
+ * ```
  */
 export function debounce<T extends (...args: unknown[]) => unknown>(
   func: T,
@@ -186,37 +250,53 @@ export function sanitizeInput(input: string): string {
 }
 
 /**
- * Validate form data
+ * Validates form data including email, name, and terms acceptance
+ * Checks type safety and field-specific validation rules
+ *
+ * @param formData - Object containing form field values
+ * @returns Validation result with isValid boolean and errors object
+ *
+ * @example
+ * ```tsx
+ * const result = validateForm({
+ *   email: 'user@example.com',
+ *   name: 'John Doe',
+ *   acceptTerms: true
+ * })
+ * if (!result.isValid) {
+ *   console.error(result.errors)
+ * }
+ * ```
  */
 export function validateForm(formData: Record<string, unknown>): ValidationResult {
   const errors: Record<string, string> = {}
 
   if ('email' in formData) {
-    if (typeof formData.email !== 'string') {
-      errors.email = 'Email must be a string'
+    if (typeof formData['email'] !== 'string') {
+      errors['email'] = 'Email must be a string'
     } else {
-      const emailValidation = validateEmail(formData.email)
+      const emailValidation = validateEmail(formData['email'])
       if (!emailValidation.isValid) {
-        errors.email = emailValidation.error || 'Invalid email'
+        errors['email'] = emailValidation.error || 'Invalid email'
       }
     }
   }
 
   if ('name' in formData) {
-    if (typeof formData.name !== 'string') {
-      errors.name = 'Name must be a string'
+    if (typeof formData['name'] !== 'string') {
+      errors['name'] = 'Name must be a string'
     } else {
-      const trimmedName = formData.name.trim()
-      if (trimmedName.length < 2) errors.name = 'Name must be at least 2 characters'
-      if (trimmedName.length > 100) errors.name = 'Name is too long'
+      const trimmedName = formData['name'].trim()
+      if (trimmedName.length < 2) errors['name'] = 'Name must be at least 2 characters'
+      if (trimmedName.length > 100) errors['name'] = 'Name is too long'
     }
   }
 
   if ('acceptTerms' in formData) {
-    if (typeof formData.acceptTerms !== 'boolean') {
-      errors.acceptTerms = 'Accept terms must be a boolean'
-    } else if (!formData.acceptTerms) {
-      errors.acceptTerms = 'You must accept the terms and conditions'
+    if (typeof formData['acceptTerms'] !== 'boolean') {
+      errors['acceptTerms'] = 'Accept terms must be a boolean'
+    } else if (!formData['acceptTerms']) {
+      errors['acceptTerms'] = 'You must accept the terms and conditions'
     }
   }
 
@@ -227,7 +307,20 @@ export function validateForm(formData: Record<string, unknown>): ValidationResul
 }
 
 /**
- * Suggest corrections for common email typos
+ * Suggests corrections for common email domain typos
+ * Helps users fix mistakes like gmial.com → gmail.com
+ *
+ * @param email - The email address to check for typos
+ * @returns Corrected email address or null if no correction is suggested
+ *
+ * @example
+ * ```tsx
+ * const suggestion = suggestEmailCorrection('user@gmial.com')
+ * // Returns: 'user@gmail.com'
+ *
+ * const noSuggestion = suggestEmailCorrection('user@gmail.com')
+ * // Returns: null (already correct)
+ * ```
  */
 export function suggestEmailCorrection(email: string): string | null {
   const commonTypos: Record<string, string> = {

@@ -69,11 +69,35 @@
     padding: var(--spacing-3xl) var(--spacing-md);
   }
 
+  .title {
+    font-size: var(--font-size-2xl);
+    margin-bottom: var(--spacing-lg);
+  }
+
   .quoteIcon {
     font-size: 4rem;
   }
 
   .quote {
     font-size: var(--font-size-2xl);
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+  .container {
+    padding: var(--spacing-2xl) var(--spacing-sm);
+  }
+
+  .title {
+    font-size: var(--font-size-xl);
+  }
+
+  .quoteIcon {
+    font-size: 3rem;
+  }
+
+  .quote {
+    font-size: var(--font-size-xl);
   }
 }

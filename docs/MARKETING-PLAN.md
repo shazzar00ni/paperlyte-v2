@@ -14,6 +14,7 @@ Paperlyte is positioned to capture market share from frustrated note-takers over
 **Primary Goal**: Acquire 10,000 active users within the first 6 months post-launch.
 
 **Secondary Goals**:
+
 - Build email list of 5,000+ subscribers pre-launch
 - Achieve 40%+ conversion rate from landing page to app download
 - Generate organic word-of-mouth through exceptional user experience
@@ -27,36 +28,36 @@ Paperlyte is positioned to capture market share from frustrated note-takers over
 
 This one-page summary provides the essential marketing metrics and targets. Refer to detailed sections below for complete strategy, tactics, and rationale.
 
-| **Category** | **Target / Metric** | **Timeline** |
-|--------------|---------------------|--------------|
-| **Primary Goal** | 10,000 users | 6 months post-launch |
-| **Email Pre-Launch** | 5,000 subscribers | Month -3 to 0 |
-| **Launch Conversion** | 40% email → app | Month 0-1 |
-| **Key Metrics** | 60% WAU/MAU, NPS >50 | Ongoing |
-| **Year 1 Budget** | $50,000 (Bootstrap) | Year 1 |
-| **Go-Live Channels** | Product Hunt, Content Marketing, Organic Social | Month 0 |
+| **Category**          | **Target / Metric**                             | **Timeline**         |
+| --------------------- | ----------------------------------------------- | -------------------- |
+| **Primary Goal**      | 10,000 users                                    | 6 months post-launch |
+| **Email Pre-Launch**  | 5,000 subscribers                               | Month -3 to 0        |
+| **Launch Conversion** | 40% email → app                                 | Month 0-1            |
+| **Key Metrics**       | 60% WAU/MAU, NPS >50                            | Ongoing              |
+| **Year 1 Budget**     | $50,000 (Bootstrap)                             | Year 1               |
+| **Go-Live Channels**  | Product Hunt, Content Marketing, Organic Social | Month 0              |
 
 ### Critical Milestones
 
-| **Milestone** | **Target Date** | **Success Criteria** |
-|---------------|-----------------|----------------------|
-| **Pre-Launch Complete** | Month -1 | 5,000 email subscribers, press kit ready, PH page live |
-| **Launch Week** | Month 0, Week 1 | 3,000+ downloads, Product Hunt Top 5, 3+ press mentions |
-| **Month 3 Checkpoint** | Month 3 | 5,000 users, 50% activation, 25% D7 retention, NPS >40 |
-| **Month 6 Target** | Month 6 | 10,000 users, 60% activation, 30% D7 retention, NPS >50 |
+| **Milestone**           | **Target Date** | **Success Criteria**                                    |
+| ----------------------- | --------------- | ------------------------------------------------------- |
+| **Pre-Launch Complete** | Month -1        | 5,000 email subscribers, press kit ready, PH page live  |
+| **Launch Week**         | Month 0, Week 1 | 3,000+ downloads, Product Hunt Top 5, 3+ press mentions |
+| **Month 3 Checkpoint**  | Month 3         | 5,000 users, 50% activation, 25% D7 retention, NPS >40  |
+| **Month 6 Target**      | Month 6         | 10,000 users, 60% activation, 30% D7 retention, NPS >50 |
 
 ### Budget Allocation Summary
 
-| **Channel** | **% of Budget** | **Amount** | **Purpose** |
-|-------------|-----------------|------------|-------------|
-| Content Marketing | 28% | $14,000 | Blog, SEO, guest posts |
-| Community & Social | 16% | $8,000 | Management, tools |
-| PR & Influencer | 16% | $8,000 | Press kit, media outreach, gifts |
-| Tools & Software | 14% | $7,000 | Email, analytics, SEO |
-| Creative & Design | 12% | $6,000 | Video, graphics, assets |
-| Paid Acquisition | 6% | $3,000 | Small-scale experiments (max $1k/mo, 3-month limit) |
-| Events & Sponsorships | 4% | $2,000 | Small sponsorships, swag |
-| Reserve | 4% | $2,000 | Contingency |
+| **Channel**           | **% of Budget** | **Amount** | **Purpose**                                         |
+| --------------------- | --------------- | ---------- | --------------------------------------------------- |
+| Content Marketing     | 28%             | $14,000    | Blog, SEO, guest posts                              |
+| Community & Social    | 16%             | $8,000     | Management, tools                                   |
+| PR & Influencer       | 16%             | $8,000     | Press kit, media outreach, gifts                    |
+| Tools & Software      | 14%             | $7,000     | Email, analytics, SEO                               |
+| Creative & Design     | 12%             | $6,000     | Video, graphics, assets                             |
+| Paid Acquisition      | 6%              | $3,000     | Small-scale experiments (max $1k/mo, 3-month limit) |
+| Events & Sponsorships | 4%              | $2,000     | Small sponsorships, swag                            |
+| Reserve               | 4%              | $2,000     | Contingency                                         |
 
 ### Top 5 Marketing Priorities
 
@@ -77,22 +78,26 @@ This one-page summary provides the essential marketing metrics and targets. Refe
 ### Target Market Size
 
 **Total Addressable Market (TAM)**: 500M+ note-taking app users globally
+
 - Notion: ~100M users
 - Evernote: ~225M users
 - OneNote: ~250M+ users
 - Apple Notes, Google Keep, Simplenote: ~500M+ combined
 
 **Serviceable Addressable Market (SAM)**: 50M users actively seeking simpler alternatives
+
 - Users frustrated with complexity (25-30% of power users)
 - Privacy-conscious users avoiding big tech (15-20% growth YoY)
 - Minimalist lifestyle adopters (rapidly growing demographic)
 
 **Serviceable Obtainable Market (SOM)**: 100K users in Year 1
+
 - Realistic penetration with focused marketing and strong product-market fit
 
 ### Competitive Landscape
 
 **Direct Competitors**:
+
 1. **Simplenote** (Automattic)
    - Strengths: Simplicity, sync, free
    - Weaknesses: Dated UI, limited features, slow development
@@ -106,11 +111,13 @@ This one-page summary provides the essential marketing metrics and targets. Refe
    - Weaknesses: Complex pricing, overwhelming security focus
 
 **Indirect Competitors**:
+
 - Notion, Obsidian, Roam Research (too complex)
 - Apple Notes, Google Keep (too basic, privacy concerns)
 - Evernote (legacy product, slow, expensive)
 
 **Our Competitive Advantages**:
+
 1. **Speed**: Sub-2-second load times vs. 5-15 seconds for Notion/Evernote
 2. **Simplicity**: Tag-based vs. complex hierarchies or databases
 3. **Cross-platform**: True universal access vs. ecosystem lock-in
@@ -124,15 +131,18 @@ To validate our speed claims and maintain competitive differentiation, we implem
 **Test Protocol**:
 
 **Test Devices**:
+
 - Mobile: iPhone 14 (iOS 17), Samsung Galaxy S23 (Android 14), iPhone SE 2020 (budget tier)
 - Desktop: MacBook Pro M2 (macOS), Dell XPS 15 (Windows 11), ThinkPad T14 (Ubuntu 22.04)
 - Tablet: iPad Air (iPadOS 17), Samsung Galaxy Tab S8
 
 **Browsers & Apps**:
+
 - Web: Chrome (latest), Safari (latest), Firefox (latest), Edge (latest)
 - Native: iOS app, Android app, macOS app, Windows app
 
 **Network Profiles**:
+
 - WiFi: 100 Mbps broadband (home/office)
 - 5G: 150-300 Mbps (urban coverage)
 - 4G/LTE: 20-50 Mbps (suburban)
@@ -140,6 +150,7 @@ To validate our speed claims and maintain competitive differentiation, we implem
 - Offline: Full offline mode (no network)
 
 **Test Scenarios**:
+
 - **Cold Start**: App launch from completely closed state, cleared cache
 - **Warm Start**: App resume from background, cache present
 - **First Note Creation**: Time from launch to first character typed in new note
@@ -147,6 +158,7 @@ To validate our speed claims and maintain competitive differentiation, we implem
 - **Sync Time**: Initial sync of 100 notes across devices
 
 **Measurement Tools**:
+
 - Web: Chrome DevTools Performance Panel, Lighthouse CI
 - Mobile: Xcode Instruments (iOS), Android Studio Profiler
 - Metrics: Time to Interactive (TTI), First Contentful Paint (FCP), Total Blocking Time (TBT)
@@ -156,29 +168,32 @@ To validate our speed claims and maintain competitive differentiation, we implem
 **Competitor Baseline Measurements** (as of Q4 2025):
 
 | **Competitor** | **Cold Start (WiFi)** | **Warm Start (WiFi)** | **Cold Start (4G)** | **First Note Created** |
-|----------------|----------------------|----------------------|---------------------|----------------------|
-| **Paperlyte** | 1.2s | 0.4s | 1.8s | 2.1s |
-| Notion | 8.3s | 3.1s | 14.7s | 10.2s |
-| Evernote | 6.9s | 2.4s | 11.5s | 8.4s |
-| OneNote | 5.2s | 1.9s | 9.1s | 6.7s |
-| Simplenote | 2.1s | 0.7s | 3.4s | 2.9s |
-| Bear | 1.9s | 0.5s | 2.8s | 2.4s |
-| Standard Notes | 3.4s | 1.2s | 5.9s | 4.1s |
+| -------------- | --------------------- | --------------------- | ------------------- | ---------------------- |
+| **Paperlyte**  | 1.2s                  | 0.4s                  | 1.8s                | 2.1s                   |
+| Notion         | 8.3s                  | 3.1s                  | 14.7s               | 10.2s                  |
+| Evernote       | 6.9s                  | 2.4s                  | 11.5s               | 8.4s                   |
+| OneNote        | 5.2s                  | 1.9s                  | 9.1s                | 6.7s                   |
+| Simplenote     | 2.1s                  | 0.7s                  | 3.4s                | 2.9s                   |
+| Bear           | 1.9s                  | 0.5s                  | 2.8s                | 2.4s                   |
+| Standard Notes | 3.4s                  | 1.2s                  | 5.9s                | 4.1s                   |
 
 > **Note:** The above performance data reflects measurements as of Q4 2025. These numbers may become outdated as competitors release new versions or as Paperlyte evolves. Please refer to the [Update Cadence](#update-cadence) section below for details on rebenchmarking frequency and ensure you verify when these numbers were last validated before making marketing claims.
-**Acceptance Criteria**:
+> **Acceptance Criteria**:
+
 - **Target**: Paperlyte maintains <2s cold start on WiFi, <3s on 4G
 - **Competitive Gap**: Paperlyte is minimum 2x faster than Notion/Evernote/OneNote
 - **Regression Threshold**: Any release that degrades performance by >15% requires optimization before ship
 - **P95 Performance**: 95th percentile must be within 30% of median (consistent experience)
 
 **Update Cadence**:
+
 - **Quarterly Rebenchmarks**: Full test suite run Q1, Q2, Q3, Q4 of each year
 - **Competitor Major Release**: Re-test within 2 weeks of major competitor version release
 - **Our Major Release**: Full benchmark before and after each major Paperlyte release
 - **Continuous Monitoring**: Lighthouse CI on every production deployment (web)
 
 **Reporting & Accountability**:
+
 - Benchmark results published in internal quarterly performance reports
 - Marketing can only cite numbers validated within last 90 days
 - Significant competitor improvements trigger marketing messaging review
@@ -191,18 +206,22 @@ To validate our speed claims and maintain competitive differentiation, we implem
 ### Primary Personas
 
 #### 1. The Overwhelmed Power User
+
 **Demographics**:
+
 - Age: 28-45
 - Occupation: Knowledge workers, developers, writers, researchers
 - Tech-savvy, early adopter mindset
 
 **Pain Points**:
+
 - Spends more time organizing notes than writing them
 - Frustrated by slow, bloated apps with features they never use
 - Suffers from "tool fatigue" after trying 10+ note apps
 - Wants simplicity but won't sacrifice quality or speed
 
 **Motivations**:
+
 - Reduce cognitive load and decision fatigue
 - Get thoughts captured instantly without friction
 - Focus on content, not organization systems
@@ -212,18 +231,22 @@ To validate our speed claims and maintain competitive differentiation, we implem
 ---
 
 #### 2. The Privacy-Conscious Professional
+
 **Demographics**:
+
 - Age: 30-50
 - Occupation: Security professionals, journalists, lawyers, healthcare workers
 - Values data sovereignty and privacy
 
 **Pain Points**:
+
 - Concerned about data mining and surveillance capitalism
 - Distrusts big tech platforms (Google, Microsoft)
 - Needs offline access for sensitive information
 - Frustrated by complex E2EE implementations
 
 **Motivations**:
+
 - Control over personal data
 - Secure, encrypted note storage
 - No vendor lock-in or data harvesting
@@ -234,18 +257,22 @@ To validate our speed claims and maintain competitive differentiation, we implem
 ---
 
 #### 3. The Minimalist Creator
+
 **Demographics**:
+
 - Age: 22-38
 - Occupation: Writers, designers, content creators, students
 - Embraces minimalist lifestyle and tools
 
 **Pain Points**:
+
 - Distracted by cluttered interfaces and notification overload
 - Seeks distraction-free writing environment
 - Wants beautiful, calming design that inspires creativity
 - Tired of subscription fatigue from multiple tools
 
 **Motivations**:
+
 - Create more, organize less
 - Beautiful, inspirational workspace
 - Single tool that does one thing exceptionally well
@@ -256,18 +283,22 @@ To validate our speed claims and maintain competitive differentiation, we implem
 ---
 
 #### 4. The Mobile-First User
+
 **Demographics**:
+
 - Age: 18-35
 - Occupation: Students, young professionals, mobile workers
 - Primary computing device is smartphone
 
 **Pain Points**:
+
 - Desktop-first apps have terrible mobile experiences
 - Note-taking apps drain battery or require constant internet
 - Slow sync causes lost notes or conflicts
 - Keyboard-heavy apps don't work well on mobile
 
 **Motivations**:
+
 - Capture thoughts instantly from anywhere
 - Seamless mobile-to-desktop workflow
 - Fast, responsive mobile experience
@@ -280,11 +311,13 @@ To validate our speed claims and maintain competitive differentiation, we implem
 ### Secondary Personas
 
 #### 5. The Digital Immigrant
+
 - Age: 45-65, transitioning from paper notes
 - Values familiarity and simplicity
 - Needs gentle onboarding and excellent support
 
 #### 6. The ADHD/Neurodivergent User
+
 - Needs low-friction capture tools
 - Benefits from tagging over hierarchical organization
 - Requires distraction-free interface
@@ -296,9 +329,10 @@ To validate our speed claims and maintain competitive differentiation, we implem
 ### Value Proposition
 
 **Primary Message**:
-*"Your thoughts, unchained."*
+_"Your thoughts, unchained."_
 
 **Supporting Messages**:
+
 - Zero-lag typing—sub-10ms response so typing feels instant
 - Tag-based organization without rigid folder hierarchies
 - Cross-platform sync that works offline-first
@@ -309,12 +343,14 @@ To validate our speed claims and maintain competitive differentiation, we implem
 ### Brand Voice & Tone
 
 **Voice Attributes**:
+
 - **Clear over clever**: Direct communication, avoid jargon and marketing speak
 - **Confident but humble**: We're great at simplicity, not claiming to be everything to everyone
 - **Helpful, not preachy**: Guide users, don't lecture them about productivity
 - **Human, not corporate**: Warm, approachable, conversational
 
 **Tone Examples**:
+
 - ✅ "Finally, a note app that gets out of your way"
 - ❌ "Revolutionary paradigm-shifting note-taking solution"
 - ✅ "We built Paperlyte because we were tired of apps that felt like homework"
@@ -323,6 +359,7 @@ To validate our speed claims and maintain competitive differentiation, we implem
 ### Brand Personality
 
 **If Paperlyte were a person**:
+
 - The thoughtful friend who helps you declutter
 - Calm, focused, present
 - Appreciates craftsmanship and attention to detail
@@ -336,6 +373,7 @@ To validate our speed claims and maintain competitive differentiation, we implem
 ### Phase 1: Pre-Launch (Months -3 to 0)
 
 **Objectives**:
+
 - Build awareness in target communities
 - Collect 5,000+ email signups
 - Generate early buzz and anticipation
@@ -344,6 +382,7 @@ To validate our speed claims and maintain competitive differentiation, we implem
 **Tactics**:
 
 #### 1. Landing Page & Email Capture
+
 - **Hero Section**: Clear value prop with visual demo (speed comparison)
 - **Feature Highlights**: 6 core differentiators with icons
 - **Social Proof**: Early beta tester testimonials
@@ -351,6 +390,7 @@ To validate our speed claims and maintain competitive differentiation, we implem
 - **Bonus**: Offer lifetime discount for early subscribers
 
 **Email Sequence for Signups**:
+
 - Email 1 (Immediate): Welcome + confirm subscription
 - Email 2 (Day 3): "Why we built Paperlyte" (founder story)
 - Email 3 (Day 7): Feature spotlight—Speed
@@ -359,7 +399,9 @@ To validate our speed claims and maintain competitive differentiation, we implem
 - Email 6 (Launch day): "Paperlyte is here" + download links
 
 #### 2. Content Marketing
+
 **Blog Posts** (2x/month):
+
 - "Why every note-taking app became a project management tool"
 - "The hidden cost of feature bloat"
 - "How we built Paperlyte 10x faster than Notion"
@@ -369,7 +411,9 @@ To validate our speed claims and maintain competitive differentiation, we implem
 **Medium/Dev.to**: Cross-post technical articles about performance, offline-first architecture
 
 #### 3. Community Engagement
+
 **Target Communities**:
+
 - Product Hunt: Prepare ship page, rally supporters
 - Hacker News: Share technical blog posts (avoid overt promotion)
 - Reddit: Participate in r/productivity, r/simpleliving, r/minimalism (10:1 ratio—10 helpful comments per 1 self-promotion)
@@ -377,23 +421,28 @@ To validate our speed claims and maintain competitive differentiation, we implem
 - Indie Hackers: Share building journey, metrics, learnings
 
 **Influencer Outreach** (Micro-influencers):
+
 - Productivity YouTubers (50K-500K subscribers)
 - Minimalist lifestyle creators
 - Privacy advocates
 - Tech reviewers
 
 **Approach**:
+
 - Offer exclusive early access
 - No payment required, but welcome honest reviews
 - Provide press kit with screenshots, key features, founder story
 
 #### 4. PR Strategy
+
 **Target Publications**:
+
 - Tier 1: TechCrunch, The Verge, Ars Technica
 - Tier 2: Lifehacker, Fast Company, Wired
 - Tier 3: Niche productivity blogs, indie tech sites
 
 **Press Kit Contents**:
+
 - Company backgrounder
 - Founder bios and photos
 - High-res screenshots and demo video
@@ -401,6 +450,7 @@ To validate our speed claims and maintain competitive differentiation, we implem
 - Beta tester testimonials
 
 **Pitch Angles**:
+
 - "The anti-Notion: How simplicity became the ultimate feature"
 - "Former [big tech] engineers build note app that respects your time"
 - "Offline-first: The old idea that's new again"
@@ -410,6 +460,7 @@ To validate our speed claims and maintain competitive differentiation, we implem
 ### Phase 2: Launch (Month 0-1)
 
 **Objectives**:
+
 - Maximize visibility and downloads on launch day
 - Convert email list to active users (>40% conversion)
 - Generate earned media coverage
@@ -418,13 +469,16 @@ To validate our speed claims and maintain competitive differentiation, we implem
 **Launch Day Tactics**:
 
 #### 1. Product Hunt Launch
+
 **Preparation** (T-2 weeks):
+
 - Finalize product page with compelling visuals
 - Record demo video (60-90 seconds)
 - Write engaging description highlighting differentiation
 - Rally support from email list, beta testers, network
 
 **Launch Day** (T-0):
+
 - Post at 12:01 AM PST for maximum visibility
 - Founder actively responds to every comment
 - Share on all social channels with unique content
@@ -432,11 +486,14 @@ To validate our speed claims and maintain competitive differentiation, we implem
 - Goal: #1 Product of the Day, #1 Product of the Week
 
 **Follow-up**:
+
 - Email Product Hunt voters with thank you + exclusive content
 - Create "Product of the Day" badge for website
 
 #### 2. Social Media Blitz
+
 **Twitter/X**:
+
 - Launch announcement thread (8-10 tweets)
 - Before/after comparisons (Paperlyte speed vs. competitors)
 - Behind-the-scenes development stories
@@ -444,17 +501,20 @@ To validate our speed claims and maintain competitive differentiation, we implem
 - Engage with every mention and tag
 
 **Instagram/TikTok**:
+
 - Short-form video demos (15-30 seconds)
 - Aesthetic shots of app interface
 - "Day in the life" using Paperlyte
 - User-generated content reshares
 
 **LinkedIn**:
+
 - Founder post about the journey
 - Professional use cases
 - Organic growth story (no paid ads initially)
 
 #### 3. Email Launch Sequence
+
 - **T-0 (Launch Day)**: "Paperlyte is live!" + download links + launch day discount
 - **T+3**: "How to get started" onboarding guide
 - **T+7**: "Tips & tricks" for power users
@@ -462,7 +522,9 @@ To validate our speed claims and maintain competitive differentiation, we implem
 - **T+30**: "What's new" first update + roadmap preview
 
 #### 4. Organic Channel Optimization
+
 **App Stores** (if applicable):
+
 - iOS App Store, Google Play Store, Mac App Store
 - Compelling screenshots highlighting speed and simplicity
 - 60-second preview video
@@ -470,6 +532,7 @@ To validate our speed claims and maintain competitive differentiation, we implem
 - Encourage reviews from happy early users
 
 **Website SEO**:
+
 - Optimize for keywords: "simple note app", "fast note-taking", "offline notes", "privacy note app"
 - Create comparison pages: "Paperlyte vs. Notion", "Paperlyte vs. Evernote"
 - Add schema markup for rich snippets
@@ -480,6 +543,7 @@ To validate our speed claims and maintain competitive differentiation, we implem
 ### Phase 3: Growth (Months 2-6)
 
 **Objectives**:
+
 - Scale user acquisition through proven channels
 - Build viral loops and referral mechanisms
 - Expand content marketing reach
@@ -488,59 +552,73 @@ To validate our speed claims and maintain competitive differentiation, we implem
 **Growth Tactics**:
 
 #### 1. Referral Program
+
 **Mechanics**:
+
 - Give users unique referral link
 - Rewards for both referrer and referee
 - Incentives: Extended storage, premium features, lifetime discounts
 
 **Examples**:
+
 - "Invite 3 friends, get 6 months premium free"
 - "Your friends get 20% off, you get 20% credit"
 
 **Promotion**:
+
 - In-app prompts after positive actions
 - Email campaigns to engaged users
 - Social sharing buttons in app
 
 #### 2. Content Marketing Expansion
+
 **SEO-Driven Content**:
+
 - Comparison articles: "Best Notion alternatives", "Evernote vs. Simple Note Apps"
 - How-to guides: "How to organize notes with tags", "Offline note-taking guide"
 - Use case articles: "Note-taking for developers", "Research notes for students"
 
 **Video Content**:
+
 - YouTube tutorials and feature walkthroughs
 - Speed comparison videos vs. competitors
 - User testimonials and case studies
 - Founder vlogs about building in public
 
 **Podcast Appearances**:
+
 - Productivity podcasts
 - Indie hacker shows
 - Design and development shows
 - Privacy and digital rights shows
 
 #### 3. Community Building
+
 **User Community**:
+
 - Discord/Slack community for power users
 - Reddit community (r/paperlyte)
 - Feature request and feedback forum
 - User showcase gallery
 
 **Engagement Activities**:
+
 - Weekly tips and tricks
 - Monthly feature spotlight
 - User spotlight series
 - Community challenges (e.g., "30 days of daily notes")
 
 #### 4. Strategic Partnerships
+
 **Integration Partners**:
+
 - Markdown editors (Typora, iA Writer)
 - Backup services (Dropbox, iCloud)
 - Reading apps (Pocket, Instapaper)
 - Productivity tools (Todoist, Things)
 
 **Cross-Promotion**:
+
 - Bundle deals with complementary tools
 - Co-marketing campaigns
 - Guest blog posts
@@ -551,6 +629,7 @@ To validate our speed claims and maintain competitive differentiation, we implem
 **Philosophy**: Paperlyte is an organic-first product. Paid acquisition is **testing-only** with strict guardrails to validate channel efficiency before any significant investment.
 
 **Experiment Constraints**:
+
 - **Monthly Cap**: Maximum $1,000/month spend
 - **Duration Limit**: 3-month testing window (Months 3-5)
 - **Total Budget**: $3,000 maximum allocation
@@ -558,12 +637,14 @@ To validate our speed claims and maintain competitive differentiation, we implem
 - **Focus**: Retargeting website visitors first (warmest audience)
 
 **Kill Criteria** (stop immediately if any trigger):
+
 1. **CAC > 50% of LTV**: If Customer Acquisition Cost exceeds 50% of estimated Lifetime Value
 2. **Qualified Signup Rate < 10%**: If fewer than 10% of paid visitors create their first note within 7 days
 3. **Negative ROI after Month 2**: No path to profitability within 6-month cohort retention
 4. **Organic Channels Underperforming**: If content/community shows signs of neglect or declining performance
 
 **Success Criteria for Scaling** (must meet ALL):
+
 - CAC < 30% of LTV (target: <20%)
 - Qualified signup rate > 25%
 - Day 7 retention matches or exceeds organic cohorts
@@ -577,6 +658,7 @@ To validate our speed claims and maintain competitive differentiation, we implem
 ### Phase 4: Retention & Advocacy (Ongoing)
 
 **Objectives**:
+
 - Convert free users to paid subscribers (if applicable)
 - Reduce churn and increase engagement
 - Turn satisfied users into brand advocates
@@ -584,13 +666,16 @@ To validate our speed claims and maintain competitive differentiation, we implem
 **Tactics**:
 
 #### 1. Onboarding Optimization
+
 **First-Run Experience**:
+
 - Welcome tour highlighting key features
 - Quick win: Help user create first note in <30 seconds
 - Demonstrate speed with real-time sync
 - Introduce tagging with smart suggestions
 
 **Email Onboarding**:
+
 - Day 1: Welcome + quick start guide
 - Day 3: Tips for organizing with tags
 - Day 7: Mobile app tips (if not downloaded)
@@ -598,44 +683,55 @@ To validate our speed claims and maintain competitive differentiation, we implem
 - Day 30: "How's it going?" feedback request
 
 #### 2. Engagement Campaigns
+
 **Triggered Emails**:
+
 - Inactive user re-engagement (7, 14, 30 days)
 - Feature discovery (users not using key features)
 - Milestone celebrations (10th note, 100th note, 1 year anniversary)
 - Seasonal campaigns (back to school, new year resolutions)
 
 **In-App Engagement**:
+
 - Tooltips for unused features
 - Contextual help and tips
 - Achievement badges/streaks (if appropriate to brand)
 
 #### 3. Feedback Loop
+
 **User Research**:
+
 - Monthly user interviews (10-15 users)
 - Quarterly surveys (NPS, feature requests, satisfaction)
 - In-app feedback mechanism
 - Beta testing program for new features
 
 **Acting on Feedback**:
+
 - Public roadmap showing requested features
 - "You asked, we delivered" communications
 - Close the loop with users who requested shipped features
 
 #### 4. User-Generated Content
+
 **Encourage Sharing**:
+
 - Beautiful export/share functionality
 - Social media-friendly screenshots (branded frames)
 - Testimonial collection (with permission)
 - Case study development with power users
 
 **Amplification**:
+
 - Reshare user content on official channels
 - Feature user stories in newsletter
 - User of the month spotlight
 - Community voting on favorite use cases
 
 #### 5. Loyalty Program
+
 **Reward Advocates**:
+
 - Early access to new features
 - Exclusive swag (stickers, notebooks, t-shirts)
 - Recognition in app/website (with permission)
@@ -647,20 +743,21 @@ To validate our speed claims and maintain competitive differentiation, we implem
 
 ### Year 1 Budget: $50,000 (Bootstrap Scenario)
 
-| Channel | Budget | % | Expected Outcome |
-|---------|--------|---|------------------|
-| **Content Marketing** | $14,000 | 28% | Blog, SEO, guest posts, freelance writers |
-| **Community & Social** | $8,000 | 16% | Community management, social media tools |
-| **PR & Influencer Outreach** | $8,000 | 16% | Press kit, media database, influencer gifts |
-| **Paid Acquisition (Testing)** | $3,000 | 6% | Small-scale experiments with strict guardrails (max $1k/month, 3-month limit) |
-| **Tools & Software** | $7,000 | 14% | Email marketing, analytics, SEO tools |
-| **Creative & Design** | $6,000 | 12% | Video production, graphics, website updates |
-| **Events & Sponsorships** | $2,000 | 4% | Small event sponsorships, swag |
-| **Reserve/Contingency** | $2,000 | 4% | Unexpected opportunities |
+| Channel                        | Budget  | %   | Expected Outcome                                                              |
+| ------------------------------ | ------- | --- | ----------------------------------------------------------------------------- |
+| **Content Marketing**          | $14,000 | 28% | Blog, SEO, guest posts, freelance writers                                     |
+| **Community & Social**         | $8,000  | 16% | Community management, social media tools                                      |
+| **PR & Influencer Outreach**   | $8,000  | 16% | Press kit, media database, influencer gifts                                   |
+| **Paid Acquisition (Testing)** | $3,000  | 6%  | Small-scale experiments with strict guardrails (max $1k/month, 3-month limit) |
+| **Tools & Software**           | $7,000  | 14% | Email marketing, analytics, SEO tools                                         |
+| **Creative & Design**          | $6,000  | 12% | Video production, graphics, website updates                                   |
+| **Events & Sponsorships**      | $2,000  | 4%  | Small event sponsorships, swag                                                |
+| **Reserve/Contingency**        | $2,000  | 4%  | Unexpected opportunities                                                      |
 
 ### Channel Prioritization (Lean Startup Approach)
 
 **Tier 1 (Focus Channels - 80% Effort)**:
+
 1. Product Hunt & launch communities
 2. Content marketing (blog + SEO)
 3. Email marketing
@@ -668,12 +765,14 @@ To validate our speed claims and maintain competitive differentiation, we implem
 5. Word-of-mouth/referrals
 
 **Tier 2 (Test & Learn - 15% Effort)**:
+
 1. Influencer partnerships
 2. Community building
 3. PR outreach
 4. Video content
 
 **Tier 3 (Future Consideration - 5% Effort)**:
+
 1. Paid advertising
 2. Events and conferences
 3. Partnership programs
@@ -718,21 +817,25 @@ To validate our speed claims and maintain competitive differentiation, we implem
 ### Content Calendar (Sample Month)
 
 **Week 1**:
+
 - Blog: "The 2-Second Rule: Why Speed Matters More Than Features"
 - Social: Speed comparison video (Paperlyte vs. competitors)
 - Email: Monthly newsletter with feature spotlight
 
 **Week 2**:
+
 - Blog: "How to Organize 1,000+ Notes Without Folders"
 - Social: Tag organization tips carousel (Instagram)
 - Community: Reddit AMA in r/productivity
 
 **Week 3**:
+
 - Guest Post: "Offline-First Apps in 2025" on dev.to
 - Social: User testimonial spotlight
 - Video: Tutorial on mobile app workflow
 
 **Week 4**:
+
 - Blog: "Building Paperlyte: Behind the Scenes"
 - Social: Founder story thread (Twitter)
 - Email: User success story + referral campaign
@@ -740,11 +843,13 @@ To validate our speed claims and maintain competitive differentiation, we implem
 ### SEO Strategy
 
 **Target Keywords** (Month 1-3):
+
 - Primary: "simple note app", "fast note-taking app", "offline note app"
 - Secondary: "Notion alternative", "minimalist note app", "privacy note app"
 - Long-tail: "best note app for speed", "tag-based note organization", "distraction-free writing app"
 
 **Content Types for SEO**:
+
 1. **Comparison Pages**: "Paperlyte vs. [Competitor]"
 2. **Alternative Pages**: "Best [Competitor] Alternatives"
 3. **How-To Guides**: "How to [task] with Paperlyte"
@@ -752,6 +857,7 @@ To validate our speed claims and maintain competitive differentiation, we implem
 5. **Feature Pages**: Deep dives into key features
 
 **Link Building Strategy**:
+
 - Guest posting on productivity and tech blogs
 - Contributing to open-source projects (GitHub backlinks)
 - Getting featured in tool directories (Product Hunt, AlternativeTo, Capterra)
@@ -763,73 +869,75 @@ To validate our speed claims and maintain competitive differentiation, we implem
 ## Metrics & KPIs
 
 ### North Star Metric
+
 **Weekly Active Users (WAU)**: The ultimate measure of product-market fit and sustainable growth.
 
 ### Acquisition Metrics
 
-| Metric | Target | Measurement Frequency |
-|--------|--------|----------------------|
-| **Website Traffic** | 50K visits/month by Month 6 | Weekly |
-| **Landing Page Conversion** | >3% email signup rate | Weekly |
-| **Email List Growth** | 5,000 pre-launch, +2,000/month post | Weekly |
-| **App Downloads/Signups** | 10,000 by Month 6 | Daily |
-| **Signup → Activation** | >50% (created first note) | Daily |
-| **Traffic Sources** | 40% organic, 30% referral, 20% social, 10% paid | Monthly |
+| Metric                      | Target                                          | Measurement Frequency |
+| --------------------------- | ----------------------------------------------- | --------------------- |
+| **Website Traffic**         | 50K visits/month by Month 6                     | Weekly                |
+| **Landing Page Conversion** | >3% email signup rate                           | Weekly                |
+| **Email List Growth**       | 5,000 pre-launch, +2,000/month post             | Weekly                |
+| **App Downloads/Signups**   | 10,000 by Month 6                               | Daily                 |
+| **Signup → Activation**     | >50% (created first note)                       | Daily                 |
+| **Traffic Sources**         | 40% organic, 30% referral, 20% social, 10% paid | Monthly               |
 
 ### Engagement Metrics
 
-| Metric | Target | Measurement Frequency |
-|--------|--------|----------------------|
-| **Daily Active Users (DAU)** | 30% of total users | Daily |
-| **Weekly Active Users (WAU)** | 60% of total users | Weekly |
-| **DAU/WAU Ratio** | >50% (stickiness) | Weekly |
-| **Average Session Time** | >2 minutes | Weekly |
-| **Notes per User** | >10 notes/month for active users | Monthly |
-| **Mobile vs. Desktop** | 60/40 split | Monthly |
+| Metric                        | Target                           | Measurement Frequency |
+| ----------------------------- | -------------------------------- | --------------------- |
+| **Daily Active Users (DAU)**  | 30% of total users               | Daily                 |
+| **Weekly Active Users (WAU)** | 60% of total users               | Weekly                |
+| **DAU/WAU Ratio**             | >50% (stickiness)                | Weekly                |
+| **Average Session Time**      | >2 minutes                       | Weekly                |
+| **Notes per User**            | >10 notes/month for active users | Monthly               |
+| **Mobile vs. Desktop**        | 60/40 split                      | Monthly               |
 
 ### Retention Metrics
 
-| Metric | Target | Measurement Frequency |
-|--------|--------|----------------------|
-| **Day 1 Retention** | >40% | Weekly cohort analysis |
-| **Day 7 Retention** | >25% | Weekly cohort analysis |
-| **Day 30 Retention** | >15% | Monthly cohort analysis |
-| **Churn Rate** | <10% monthly churn | Monthly |
-| **Resurrection Rate** | >5% (inactive → active) | Monthly |
+| Metric                | Target                  | Measurement Frequency   |
+| --------------------- | ----------------------- | ----------------------- |
+| **Day 1 Retention**   | >40%                    | Weekly cohort analysis  |
+| **Day 7 Retention**   | >25%                    | Weekly cohort analysis  |
+| **Day 30 Retention**  | >15%                    | Monthly cohort analysis |
+| **Churn Rate**        | <10% monthly churn      | Monthly                 |
+| **Resurrection Rate** | >5% (inactive → active) | Monthly                 |
 
 ### Virality Metrics
 
-| Metric | Target | Measurement Frequency |
-|--------|--------|----------------------|
-| **Net Promoter Score (NPS)** | >50 | Quarterly |
-| **Referral Rate** | >15% of users refer at least 1 friend | Monthly |
-| **Viral Coefficient (k)** | >0.5 (goal: approach 1.0) | Monthly |
-| **Social Shares** | >500 shares/month | Monthly |
+| Metric                       | Target                                | Measurement Frequency |
+| ---------------------------- | ------------------------------------- | --------------------- |
+| **Net Promoter Score (NPS)** | >50                                   | Quarterly             |
+| **Referral Rate**            | >15% of users refer at least 1 friend | Monthly               |
+| **Viral Coefficient (k)**    | >0.5 (goal: approach 1.0)             | Monthly               |
+| **Social Shares**            | >500 shares/month                     | Monthly               |
 
 ### Revenue Metrics (If Applicable)
 
-| Metric | Target | Measurement Frequency |
-|--------|--------|----------------------|
-| **Free → Paid Conversion** | >5% | Monthly |
-| **Customer Acquisition Cost (CAC)** | <$10 | Monthly |
-| **Lifetime Value (LTV)** | >$50 | Quarterly |
-| **LTV:CAC Ratio** | >3:1 | Quarterly |
-| **Monthly Recurring Revenue (MRR)** | Growth target based on model | Monthly |
+| Metric                              | Target                       | Measurement Frequency |
+| ----------------------------------- | ---------------------------- | --------------------- |
+| **Free → Paid Conversion**          | >5%                          | Monthly               |
+| **Customer Acquisition Cost (CAC)** | <$10                         | Monthly               |
+| **Lifetime Value (LTV)**            | >$50                         | Quarterly             |
+| **LTV:CAC Ratio**                   | >3:1                         | Quarterly             |
+| **Monthly Recurring Revenue (MRR)** | Growth target based on model | Monthly               |
 
 ### Quality Metrics (Product Excellence)
 
-| Metric | Target | Measurement Frequency |
-|--------|--------|----------------------|
-| **Page Load Speed** | <2 seconds | Weekly (automated) |
-| **Lighthouse Performance** | >90 | Weekly (automated) |
-| **Lighthouse Accessibility** | >95 | Weekly (automated) |
-| **Bounce Rate** | <45% | Weekly |
-| **App Crash Rate** | <0.1% | Daily |
-| **Support Ticket Volume** | <2% of users | Weekly |
+| Metric                       | Target       | Measurement Frequency |
+| ---------------------------- | ------------ | --------------------- |
+| **Page Load Speed**          | <2 seconds   | Weekly (automated)    |
+| **Lighthouse Performance**   | >90          | Weekly (automated)    |
+| **Lighthouse Accessibility** | >95          | Weekly (automated)    |
+| **Bounce Rate**              | <45%         | Weekly                |
+| **App Crash Rate**           | <0.1%        | Daily                 |
+| **Support Ticket Volume**    | <2% of users | Weekly                |
 
 ### Marketing Channel Performance
 
 **Track for Each Channel**:
+
 - Visitors
 - Conversion rate
 - Cost per acquisition (if paid)
@@ -840,20 +948,22 @@ To validate our speed claims and maintain competitive differentiation, we implem
 
 Track the complete user journey from awareness to activation with per-source attribution:
 
-| **Funnel Stage** | **Overall Target** | **Product Hunt** | **Organic Search** | **Referral** | **Paid Social** | **Measurement** |
-|------------------|-------------------|------------------|-------------------|--------------|-----------------|-----------------|
-| **Landing Page Views** | 50K/month | 15K | 20K | 10K | 5K | Google Analytics, UTM tracking |
-| **Email Signups** | 3% conversion (1,500) | 5% (750) | 2.5% (500) | 4% (400) | 2% (100) | Email platform, UTM source |
-| **App Downloads** | 40% of emails (600) | 50% (375) | 35% (175) | 45% (180) | 30% (30) | Download tracking, cohort analysis |
-| **First Note Created** | 60% of downloads (360) | 70% (263) | 55% (96) | 65% (117) | 50% (15) | Event tracking, activation metric |
-| **Overall Conversion** | 0.72% (landing → activation) | 1.75% | 0.48% | 1.17% | 0.30% | End-to-end attribution |
+| **Funnel Stage**       | **Overall Target**           | **Product Hunt** | **Organic Search** | **Referral** | **Paid Social** | **Measurement**                    |
+| ---------------------- | ---------------------------- | ---------------- | ------------------ | ------------ | --------------- | ---------------------------------- |
+| **Landing Page Views** | 50K/month                    | 15K              | 20K                | 10K          | 5K              | Google Analytics, UTM tracking     |
+| **Email Signups**      | 3% conversion (1,500)        | 5% (750)         | 2.5% (500)         | 4% (400)     | 2% (100)        | Email platform, UTM source         |
+| **App Downloads**      | 40% of emails (600)          | 50% (375)        | 35% (175)          | 45% (180)    | 30% (30)        | Download tracking, cohort analysis |
+| **First Note Created** | 60% of downloads (360)       | 70% (263)        | 55% (96)           | 65% (117)    | 50% (15)        | Event tracking, activation metric  |
+| **Overall Conversion** | 0.72% (landing → activation) | 1.75%            | 0.48%              | 1.17%        | 0.30%           | End-to-end attribution             |
 
 **Drop-off Analysis**:
+
 - **Landing → Email**: Identify barriers (trust, clarity, value prop)
 - **Email → Download**: Optimize email content, timing, CTAs
 - **Download → First Note**: Improve onboarding, reduce friction, guide users
 
 **Per-Source Breakdown Requirements**:
+
 - All links must include UTM parameters: `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`
 - Cohort users by first-touch attribution source
 - Track full journey in analytics platform (Mixpanel/Amplitude)
@@ -863,22 +973,24 @@ Track the complete user journey from awareness to activation with per-source att
 
 Track retention rates separately for each acquisition channel to identify highest-quality sources:
 
-| **Channel** | **Day 1** | **Day 7** | **Day 30** | **Month 3** | **Sample Size (Month 1)** |
-|-------------|-----------|-----------|------------|-------------|---------------------------|
-| **Product Hunt** | 55% | 35% | 22% | 18% | 1,000 users |
-| **Organic Search** | 35% | 20% | 12% | 8% | 500 users |
-| **Referral** | 50% | 32% | 20% | 16% | 400 users |
-| **Paid Social** | 30% | 15% | 8% | 5% | 200 users |
-| **Direct/Email List** | 60% | 40% | 28% | 24% | 800 users |
-| **Overall Average** | >40% | >25% | >15% | >12% | 2,900 users |
+| **Channel**           | **Day 1** | **Day 7** | **Day 30** | **Month 3** | **Sample Size (Month 1)** |
+| --------------------- | --------- | --------- | ---------- | ----------- | ------------------------- |
+| **Product Hunt**      | 55%       | 35%       | 22%        | 18%         | 1,000 users               |
+| **Organic Search**    | 35%       | 20%       | 12%        | 8%          | 500 users                 |
+| **Referral**          | 50%       | 32%       | 20%        | 16%         | 400 users                 |
+| **Paid Social**       | 30%       | 15%       | 8%         | 5%          | 200 users                 |
+| **Direct/Email List** | 60%       | 40%       | 28%        | 24%         | 800 users                 |
+| **Overall Average**   | >40%      | >25%      | >15%       | >12%        | 2,900 users               |
 
 **Weekly Cohort Analysis**:
+
 - Group users by signup week and acquisition channel
 - Track retention curves for each cohort
 - Identify channels with high early retention (D1, D7) for scaling
 - Flag channels with poor retention for optimization or pause
 
 **Monthly Cohort Review**:
+
 - Compare Month-over-Month cohort quality
 - Analyze cohort retention by feature usage patterns
 - Calculate LTV by acquisition channel
@@ -892,14 +1004,15 @@ Map content investments ($10K annual budget = 20% of total) to measurable outcom
 
 **Blog Post Performance**:
 
-| **Article** | **Organic Traffic (Month 3)** | **Email Signups** | **App Downloads** | **CAC** | **ROI** |
-|-------------|------------------------------|-------------------|-------------------|---------|---------|
-| "Why every note app became PM tool" | 2,500 | 75 (3%) | 30 (40%) | $6.67 | 300% |
-| "How we built Paperlyte 10x faster" | 1,800 | 54 (3%) | 22 (41%) | $9.09 | 220% |
-| "Tag-based vs. folder organization" | 1,200 | 36 (3%) | 14 (39%) | $14.29 | 140% |
-| Comparison: "Paperlyte vs. Notion" | 3,500 | 140 (4%) | 70 (50%) | $2.86 | 700% |
+| **Article**                         | **Organic Traffic (Month 3)** | **Email Signups** | **App Downloads** | **CAC** | **ROI** |
+| ----------------------------------- | ----------------------------- | ----------------- | ----------------- | ------- | ------- |
+| "Why every note app became PM tool" | 2,500                         | 75 (3%)           | 30 (40%)          | $6.67   | 300%    |
+| "How we built Paperlyte 10x faster" | 1,800                         | 54 (3%)           | 22 (41%)          | $9.09   | 220%    |
+| "Tag-based vs. folder organization" | 1,200                         | 36 (3%)           | 14 (39%)          | $14.29  | 140%    |
+| Comparison: "Paperlyte vs. Notion"  | 3,500                         | 140 (4%)          | 70 (50%)          | $2.86   | 700%    |
 
 **Metrics per Article**:
+
 - **Organic Traffic**: Monthly visitors from search engines
 - **Keyword Rankings**: Target keywords position in Google
 - **Email Signups**: Attributed to article via UTM or referrer
@@ -910,19 +1023,21 @@ Map content investments ($10K annual budget = 20% of total) to measurable outcom
 
 **Guest Post Attribution**:
 
-| **Publication** | **Traffic Referred** | **Downloads** | **Cost** | **CAC** |
-|-----------------|---------------------|--------------|---------|---------|
-| Dev.to | 800 | 32 | $300 | $9.38 |
-| Medium (Startup) | 1,200 | 48 | $400 | $8.33 |
-| Hacker Noon | 600 | 18 | $250 | $13.89 |
+| **Publication**  | **Traffic Referred** | **Downloads** | **Cost** | **CAC** |
+| ---------------- | -------------------- | ------------- | -------- | ------- |
+| Dev.to           | 800                  | 32            | $300     | $9.38   |
+| Medium (Startup) | 1,200                | 48            | $400     | $8.33   |
+| Hacker Noon      | 600                  | 18            | $250     | $13.89  |
 
 **Content Calendar Prioritization**:
+
 - High-ROI topics (comparison, how-to) get more budget
 - Low-ROI topics reviewed for optimization or retirement
 - Monthly content performance review
 - Quarterly content strategy adjustment based on data
 
 **Measurement Requirements**:
+
 - UTM tracking on all article links
 - Google Search Console for organic keyword performance
 - Content-specific landing pages or referrer tracking
@@ -933,29 +1048,32 @@ Map content investments ($10K annual budget = 20% of total) to measurable outcom
 
 Detailed cost per acquisition for each marketing channel:
 
-| **Channel** | **Monthly Spend** | **Visits** | **Downloads** | **CPC/CPM** | **Conversion Rate** | **CAC** | **LTV** | **LTV:CAC** | **Action** |
-|-------------|-------------------|-----------|---------------|-------------|---------------------|---------|---------|------------|-----------|
-| **Organic Search** | $500 (SEO tools) | 15,000 | 150 | N/A | 1.0% | $3.33 | $50 | 15:1 | Scale content |
-| **Content Marketing** | $1,000 (writers) | 8,000 | 120 | N/A | 1.5% | $8.33 | $50 | 6:1 | Maintain |
-| **Product Hunt** | $200 (prep) | 10,000 | 300 | N/A | 3.0% | $0.67 | $60 | 89:1 | One-time win |
-| **Referral Program** | $400 (incentives) | 4,000 | 100 | N/A | 2.5% | $4.00 | $55 | 13.75:1 | Scale |
-| **Paid Social (FB)** | $1,500 | 12,000 | 60 | $0.125 CPC | 0.5% | $25.00 | $40 | 1.6:1 | Optimize or pause |
-| **Paid Search (Google)** | $2,000 | 8,000 | 80 | $0.25 CPC | 1.0% | $25.00 | $45 | 1.8:1 | Test & optimize |
-| **Reddit Ads** | $500 | 5,000 | 25 | $0.10 CPC | 0.5% | $20.00 | $48 | 2.4:1 | small-scale test |
+| **Channel**              | **Monthly Spend** | **Visits** | **Downloads** | **CPC/CPM** | **Conversion Rate** | **CAC** | **LTV** | **LTV:CAC** | **Action**        |
+| ------------------------ | ----------------- | ---------- | ------------- | ----------- | ------------------- | ------- | ------- | ----------- | ----------------- |
+| **Organic Search**       | $500 (SEO tools)  | 15,000     | 150           | N/A         | 1.0%                | $3.33   | $50     | 15:1        | Scale content     |
+| **Content Marketing**    | $1,000 (writers)  | 8,000      | 120           | N/A         | 1.5%                | $8.33   | $50     | 6:1         | Maintain          |
+| **Product Hunt**         | $200 (prep)       | 10,000     | 300           | N/A         | 3.0%                | $0.67   | $60     | 89:1        | One-time win      |
+| **Referral Program**     | $400 (incentives) | 4,000      | 100           | N/A         | 2.5%                | $4.00   | $55     | 13.75:1     | Scale             |
+| **Paid Social (FB)**     | $1,500            | 12,000     | 60            | $0.125 CPC  | 0.5%                | $25.00  | $40     | 1.6:1       | Optimize or pause |
+| **Paid Search (Google)** | $2,000            | 8,000      | 80            | $0.25 CPC   | 1.0%                | $25.00  | $45     | 1.8:1       | Test & optimize   |
+| **Reddit Ads**           | $500              | 5,000      | 25            | $0.10 CPC   | 0.5%                | $20.00  | $48     | 2.4:1       | small-scale test  |
 
 **CAC Calculation Components**:
+
 - **Organic CAC**: (SEO tools + content creation + time) / organic downloads
 - **Paid CAC**: Ad spend / attributed downloads
 - **Referral CAC**: (Incentive cost per referral × referrals) / referred downloads
 - **Blended CAC**: Total marketing spend / total downloads
 
 **Reallocation Triggers** (from Execution Infrastructure section):
+
 - **Scale Up**: CAC < 30% LTV (CAC < $15 if LTV = $50)
 - **Maintain**: CAC 30-50% LTV ($15-$25)
 - **Optimize**: CAC 50-100% LTV ($25-$50)
 - **Kill**: CAC > 100% LTV (>$50)
 
 **Monthly CAC Review**:
+
 - Calculate CAC for each channel
 - Compare to LTV estimates by channel
 - Adjust budget allocation for next month
@@ -967,23 +1085,25 @@ Detailed cost per acquisition for each marketing channel:
 
 **Hypothesis Status**:
 
-| **Metric** | **Target** | **Status** | **Validation Method** | **Baseline (Alpha)** | **Stretch Goal** | **Confidence** |
-|------------|-----------|-----------|----------------------|---------------------|-----------------|----------------|
-| **Day 1 Retention** | 40% | 🔬 Hypothesis | 100-user alpha cohort | TBD | 50% | Low (need data) |
-| **Day 7 Retention** | 25% | 🔬 Hypothesis | 4-week alpha period | TBD | 35% | Low (need data) |
-| **Day 30 Retention** | 15% | 🔬 Hypothesis | 2-month beta cohort | TBD | 22% | Low (need data) |
-| **NPS Score** | 50 | 🔬 Hypothesis | Alpha survey (n=50+) | TBD | 60+ | Medium (can survey) |
-| **Viral Coefficient** | 0.5 | 🔬 Hypothesis | Track alpha referrals | TBD | 0.7 | Low (hard to predict) |
-| **Signup → Activation** | 60% | 🔬 Hypothesis | Alpha onboarding data | TBD | 75% | Medium (controllable) |
-| **Email → Download** | 40% | ⚠️ Industry benchmark | Email A/B tests | 25-30% typical | 50% | Medium (can optimize) |
-| **Landing Page Conversion** | 3% | ✅ Validated | Similar products | 2-4% range | 5% | High (established) |
+| **Metric**                  | **Target** | **Status**            | **Validation Method** | **Baseline (Alpha)** | **Stretch Goal** | **Confidence**        |
+| --------------------------- | ---------- | --------------------- | --------------------- | -------------------- | ---------------- | --------------------- |
+| **Day 1 Retention**         | 40%        | 🔬 Hypothesis         | 100-user alpha cohort | TBD                  | 50%              | Low (need data)       |
+| **Day 7 Retention**         | 25%        | 🔬 Hypothesis         | 4-week alpha period   | TBD                  | 35%              | Low (need data)       |
+| **Day 30 Retention**        | 15%        | 🔬 Hypothesis         | 2-month beta cohort   | TBD                  | 22%              | Low (need data)       |
+| **NPS Score**               | 50         | 🔬 Hypothesis         | Alpha survey (n=50+)  | TBD                  | 60+              | Medium (can survey)   |
+| **Viral Coefficient**       | 0.5        | 🔬 Hypothesis         | Track alpha referrals | TBD                  | 0.7              | Low (hard to predict) |
+| **Signup → Activation**     | 60%        | 🔬 Hypothesis         | Alpha onboarding data | TBD                  | 75%              | Medium (controllable) |
+| **Email → Download**        | 40%        | ⚠️ Industry benchmark | Email A/B tests       | 25-30% typical       | 50%              | Medium (can optimize) |
+| **Landing Page Conversion** | 3%         | ✅ Validated          | Similar products      | 2-4% range           | 5%               | High (established)    |
 
 **Legend**:
+
 - 🔬 **Hypothesis**: Requires validation, not a commitment
 - ⚠️ **Benchmark**: Based on industry data, needs testing
 - ✅ **Validated**: Proven achievable in similar contexts
 
 **Pre-Launch Validation Protocol**:
+
 1. **Alpha Testing** (Month -2): 50-100 users, track all metrics for 4 weeks
 2. **Baseline Measurement**: Establish realistic floor based on alpha data
 3. **Target Refinement**: Adjust targets based on alpha performance
@@ -991,11 +1111,13 @@ Detailed cost per acquisition for each marketing channel:
 5. **Public Commitment**: Only commit to validated baselines externally
 
 **Ongoing Validation**:
+
 - **Month 1**: Compare actual vs. hypothesis, update targets if >20% variance
 - **Month 3**: Establish new baselines from real cohorts
 - **Month 6**: Lock in annual targets based on proven performance
 
 **Example Scenario**:
+
 - **Hypothesis**: Day 7 retention = 25%
 - **Alpha Result**: Day 7 retention = 18%
 - **Action**: Set public target at 20% (realistic), internal stretch at 28%, investigate friction points
@@ -1005,18 +1127,18 @@ Detailed cost per acquisition for each marketing channel:
 
 Map each marketing tactic to required KPIs and tracking infrastructure:
 
-| **Tactic/Campaign** | **Primary KPI** | **Secondary KPIs** | **Required Instrumentation** | **Measurement Frequency** | **Owner** |
-|---------------------|----------------|-------------------|----------------------------|-------------------------|----------|
-| **Pre-Launch Email Capture** | Email signups | Landing page conversion, traffic sources | UTM parameters, Google Analytics, email platform API | Weekly | Marketing Lead |
-| **Product Hunt Launch** | PH upvotes, downloads | Traffic spike, email signups, activation rate | UTM source=producthunt, cohort tagging | Hourly (launch day) | Program Manager |
-| **Blog Content (SEO)** | Organic traffic, downloads | Keyword rankings, time on page, email signups | Google Search Console, GA4 content grouping, UTM | Weekly | Content Writer |
-| **Guest Posts** | Referral traffic, downloads | Brand mentions, backlinks | UTM campaign=guest_post, referrer tracking | Per article | Marketing Lead |
-| **Paid Social (FB/IG)** | CAC, ROAS | CTR, landing page conversion, activation rate | Facebook Pixel, conversion API, UTM | Daily | Marketing Lead |
-| **Referral Program** | Referrals sent, referral downloads | Viral coefficient (k), referral activation rate | Referral code tracking, cohort attribution | Weekly | Program Manager |
-| **Email Nurture Sequence** | Email → download conversion | Open rate, click rate, activation rate | Email event tracking, download attribution | Per email | Marketing Lead |
-| **Community Building (Reddit/Discord)** | Community size, engagement | Downloads from community, sentiment | Community invite links (UTM), survey attribution | Weekly | Community Manager |
-| **Influencer/Podcast Outreach** | Referral downloads | Traffic spikes, brand mentions | Unique promo codes, UTM campaign=influencer_name | Per partnership | Marketing Lead |
-| **Paid Search (Google)** | CAC, Quality Score | Keyword conversion rates, landing page performance | Google Ads conversion tracking, UTM | Daily | Marketing Lead |
+| **Tactic/Campaign**                     | **Primary KPI**                    | **Secondary KPIs**                                 | **Required Instrumentation**                         | **Measurement Frequency** | **Owner**         |
+| --------------------------------------- | ---------------------------------- | -------------------------------------------------- | ---------------------------------------------------- | ------------------------- | ----------------- |
+| **Pre-Launch Email Capture**            | Email signups                      | Landing page conversion, traffic sources           | UTM parameters, Google Analytics, email platform API | Weekly                    | Marketing Lead    |
+| **Product Hunt Launch**                 | PH upvotes, downloads              | Traffic spike, email signups, activation rate      | UTM source=producthunt, cohort tagging               | Hourly (launch day)       | Program Manager   |
+| **Blog Content (SEO)**                  | Organic traffic, downloads         | Keyword rankings, time on page, email signups      | Google Search Console, GA4 content grouping, UTM     | Weekly                    | Content Writer    |
+| **Guest Posts**                         | Referral traffic, downloads        | Brand mentions, backlinks                          | UTM campaign=guest_post, referrer tracking           | Per article               | Marketing Lead    |
+| **Paid Social (FB/IG)**                 | CAC, ROAS                          | CTR, landing page conversion, activation rate      | Facebook Pixel, conversion API, UTM                  | Daily                     | Marketing Lead    |
+| **Referral Program**                    | Referrals sent, referral downloads | Viral coefficient (k), referral activation rate    | Referral code tracking, cohort attribution           | Weekly                    | Program Manager   |
+| **Email Nurture Sequence**              | Email → download conversion        | Open rate, click rate, activation rate             | Email event tracking, download attribution           | Per email                 | Marketing Lead    |
+| **Community Building (Reddit/Discord)** | Community size, engagement         | Downloads from community, sentiment                | Community invite links (UTM), survey attribution     | Weekly                    | Community Manager |
+| **Influencer/Podcast Outreach**         | Referral downloads                 | Traffic spikes, brand mentions                     | Unique promo codes, UTM campaign=influencer_name     | Per partnership           | Marketing Lead    |
+| **Paid Search (Google)**                | CAC, Quality Score                 | Keyword conversion rates, landing page performance | Google Ads conversion tracking, UTM                  | Daily                     | Marketing Lead    |
 
 **Universal Instrumentation Requirements**:
 
@@ -1052,6 +1174,7 @@ Map each marketing tactic to required KPIs and tracking infrastructure:
    - **Quarterly**: Strategic review, hypothesis validation, target adjustments
 
 **Tool Stack**:
+
 - **Analytics**: Google Analytics 4 (traffic), Mixpanel/Amplitude (events, cohorts)
 - **Attribution**: UTM parameters, first-touch attribution model, referrer tracking
 - **Dashboards**: Looker Studio (free), Tableau (paid), or Metabase (self-hosted)
@@ -1066,6 +1189,7 @@ Map each marketing tactic to required KPIs and tracking infrastructure:
 ### What to Track
 
 **Traditional Competitors** (Notion, Evernote, OneNote, Bear, Simplenote):
+
 - Product updates and new features
 - Pricing changes
 - Marketing campaigns and messaging
@@ -1074,6 +1198,7 @@ Map each marketing tactic to required KPIs and tracking infrastructure:
 - Social media presence and engagement
 
 **Open-Source Alternatives** (Emerging Threat):
+
 - **Logseq**: Graph-based, privacy-first, Markdown, local-first
   - Monitor: Feature releases, sync capabilities, mobile apps, community growth
 - **Joplin**: Open-source, E2EE, cross-platform
@@ -1086,6 +1211,7 @@ Map each marketing tactic to required KPIs and tracking infrastructure:
   - Monitor: UX simplification efforts, mobile support
 
 **AI-Powered Features** (Critical Trend):
+
 - **Notion AI**: Built-in AI writing assistant, summarization, Q&A
   - Monitor: Pricing model, feature expansion, user adoption metrics
 - **Microsoft Copilot** (OneNote integration): AI note enhancement, meeting transcription
@@ -1098,12 +1224,14 @@ Map each marketing tactic to required KPIs and tracking infrastructure:
   - Monitor: Funding rounds, feature launches, pricing strategies
 
 **Regional & Niche Entrants**:
+
 - **Asia-Pacific**: Notion-like tools (Craft, Nimbus Note), local players in China/India/SEA
 - **Europe**: GDPR-compliant alternatives gaining traction
 - **Vertical-Specific**: Medical notes (Figure 1), legal (Clio), education (Notability)
 - **Emerging Markets**: Localized, low-bandwidth optimized solutions
 
 **Community & Discovery Platforms**:
+
 - **Product Hunt**: Weekly scan of "productivity", "note-taking", "writing" categories
 - **IndieHackers**: Monthly review of launched note/productivity tools
 - **GitHub Trending**: Open-source note-taking repos gaining stars
@@ -1111,6 +1239,7 @@ Map each marketing tactic to required KPIs and tracking infrastructure:
 - **YCombinator**: Batch companies in productivity/collaboration space
 
 **Tools**:
+
 - Google Alerts for brand mentions
 - Social media monitoring (Mention, Brand24)
 - App store review monitoring (AppFollow, Sensor Tower)
@@ -1121,6 +1250,7 @@ Map each marketing tactic to required KPIs and tracking infrastructure:
 - IndieHackers dashboard
 
 **Monitoring Frequency**:
+
 - **Weekly**:
   - Competitive scan of top 5 competitors (product updates, pricing, campaigns)
   - Product Hunt/IndieHackers/GitHub trending review
@@ -1142,6 +1272,7 @@ Map each marketing tactic to required KPIs and tracking infrastructure:
 ### Differentiation Reinforcement
 
 If competitors copy our features:
+
 1. **Emphasize Speed**: Hard to replicate without rewriting entire app
 2. **Highlight Design Quality**: Subjective but observable difference
 3. **Lean into Community**: Relationships can't be copied
@@ -1203,6 +1334,7 @@ If competitors copy our features:
 ### Pre-Launch: Month -3
 
 **Week 1-2**:
+
 - ✅ Finalize landing page design
 - ✅ Set up email marketing platform (ConvertKit/Mailchimp)
 - ✅ Create lead magnet (guide, checklist, or early access)
@@ -1210,12 +1342,14 @@ If competitors copy our features:
 - ✅ Set up analytics (Google Analytics, Mixpanel/Amplitude)
 
 **Week 3-4**:
+
 - ✅ Launch landing page with email capture
 - ✅ Begin content marketing (first 2 blog posts)
 - ✅ Start social media presence (Twitter, LinkedIn, Instagram)
 - ✅ Engage in target communities (Reddit, forums)
 
 **Week 5-8**:
+
 - ✅ Publish 4-6 blog posts
 - ✅ Guest post on 2-3 relevant sites
 - ✅ Reach out to micro-influencers (50 contacts)
@@ -1224,6 +1358,7 @@ If competitors copy our features:
 - ✅ Develop demo video and screenshots
 
 **Week 9-12**:
+
 - ✅ Intensive PR outreach (100+ contacts)
 - ✅ Finalize launch messaging and materials
 - ✅ Rally support from email list and network
@@ -1239,6 +1374,7 @@ If competitors copy our features:
 **Week 1 (Launch Week)**:
 
 **Day 1 (Product Hunt)**:
+
 - 12:01 AM PST: Go live on Product Hunt
 - 6:00 AM: Email blast to list (10K+ subscribers)
 - 8:00 AM: Social media blitz (Twitter, LinkedIn, Instagram, Facebook)
@@ -1247,18 +1383,21 @@ If competitors copy our features:
 - Target: #1 Product of the Day
 
 **Day 2-3**:
+
 - Continue Product Hunt engagement
 - Monitor and respond to all social mentions
 - Share user testimonials and early stats
 - Guest posts and interviews go live
 
 **Day 4-7**:
+
 - Hacker News post (technical deep-dive)
 - Reddit AMA in r/productivity
 - Celebrate milestones (1K users, 10K downloads)
 - Email update to list with early results
 
 **Week 2-4**:
+
 - Press coverage follow-ups
 - Weekly product updates and bug fixes
 - User onboarding optimization based on data
@@ -1266,6 +1405,7 @@ If competitors copy our features:
 - Start planning Month 1 campaigns
 
 **Success Criteria**:
+
 - ✅ 3,000+ downloads/signups in Week 1
 - ✅ Featured in at least 3 tech publications
 - ✅ >40% email-to-activation conversion
@@ -1277,6 +1417,7 @@ If competitors copy our features:
 ### Post-Launch: Months 1-6
 
 **Month 1**:
+
 - Focus: Stabilize product, gather feedback, fix critical bugs
 - Marketing: Maintain momentum with weekly updates
 - Content: 4 blog posts, 2 video tutorials
@@ -1284,6 +1425,7 @@ If competitors copy our features:
 - Metrics: 5,000 total users, 50% WAU/MAU
 
 **Month 2**:
+
 - Focus: Optimize onboarding and activation
 - Marketing: Launch referral program
 - Content: 4 blog posts, competitor comparison pages
@@ -1291,6 +1433,7 @@ If competitors copy our features:
 - Metrics: 7,000 total users, 55% WAU/MAU
 
 **Month 3**:
+
 - Focus: Feature refinement based on feedback
 - Marketing: User-generated content campaign
 - Content: Case studies and testimonials
@@ -1298,6 +1441,7 @@ If competitors copy our features:
 - Metrics: 8,500 total users, 60% WAU/MAU
 
 **Month 4**:
+
 - Focus: Mobile optimization and improvements
 - Marketing: Partnership outreach
 - Content: SEO content expansion
@@ -1305,6 +1449,7 @@ If competitors copy our features:
 - Metrics: 9,000 total users, improving retention
 
 **Month 5**:
+
 - Focus: Performance optimizations
 - Marketing: Scale successful paid channels
 - Content: Advanced user guides
@@ -1312,6 +1457,7 @@ If competitors copy our features:
 - Metrics: 9,500 total users, strong organic growth
 
 **Month 6**:
+
 - Focus: Polish and quality improvements
 - Marketing: Year 1 anniversary campaign planning
 - Content: Retrospective and metrics sharing
@@ -1325,12 +1471,14 @@ If competitors copy our features:
 ### Marketing Roles (Startup Phase)
 
 **Founder/CEO** (50% marketing time):
+
 - Overall strategy and vision
 - PR and media relations
 - Key partnerships
 - Community leadership
 
 **Project/Program Manager** (full-time):
+
 - Owns execution of 80+ tactics across all phases
 - Manages channel experiments and A/B testing calendar
 - Coordinates weekly adjustments based on performance data
@@ -1339,6 +1487,7 @@ If competitors copy our features:
 - Weekly status reporting and roadblock escalation
 
 **Marketing Lead/Generalist** (full-time):
+
 - Content creation and management
 - Social media management
 - Email marketing
@@ -1346,12 +1495,14 @@ If competitors copy our features:
 - Analytics and reporting
 
 **Contract/Freelance**:
+
 - Content writers (blog posts, guides)
 - Video editor (tutorials, promos)
 - Graphic designer (social assets, website)
 - SEO specialist (technical optimization)
 
 **Community Manager** (Hybrid: 30 hrs/week or full-time depending on scale):
+
 - **Capacity**: 30 hours/week (Month 0-3), scaling to full-time (Month 4+)
 - **Responsibilities**: Discord, Reddit, forums, social media engagement
 - **SLAs**:
@@ -1375,23 +1526,23 @@ If competitors copy our features:
 
 Maintain a RACI (Responsible, Accountable, Consulted, Informed) matrix for each marketing phase to ensure clear ownership and accountability.
 
-| **Tactic/Phase** | **Responsible** | **Accountable** | **Consulted** | **Informed** |
-|------------------|-----------------|-----------------|---------------|--------------|
-| **Pre-Launch (Month -3 to 0)** | - | - | - | - |
-| Landing page & email capture | Marketing Lead | Program Manager | Founder | Engineering |
-| Content marketing (blog) | Content Writer | Marketing Lead | Founder, SEO Specialist | Community |
-| Product Hunt prep | Program Manager | Founder | Marketing Lead | All |
-| Press kit & PR outreach | Marketing Lead | Founder | Program Manager | - |
-| **Launch (Month 0-1)** | - | - | - | - |
-| Product Hunt launch day | Founder | Program Manager | Marketing Lead, Community | All |
-| Social media blitz | Marketing Lead | Program Manager | Community Manager | Founder |
-| Email launch sequence | Marketing Lead | Program Manager | Founder | Community |
-| Press follow-ups | Founder | Marketing Lead | Program Manager | - |
-| **Growth (Month 2-6)** | - | - | - | - |
-| Referral program | Marketing Lead | Program Manager | Engineering | Founder |
-| Paid acquisition testing | Marketing Lead | Program Manager | Founder | Finance |
-| Content SEO expansion | Content Writer | Marketing Lead | SEO Specialist | Program Manager |
-| Community building | Community Manager | Program Manager | Founder | Marketing Lead |
+| **Tactic/Phase**               | **Responsible**   | **Accountable** | **Consulted**             | **Informed**    |
+| ------------------------------ | ----------------- | --------------- | ------------------------- | --------------- |
+| **Pre-Launch (Month -3 to 0)** | -                 | -               | -                         | -               |
+| Landing page & email capture   | Marketing Lead    | Program Manager | Founder                   | Engineering     |
+| Content marketing (blog)       | Content Writer    | Marketing Lead  | Founder, SEO Specialist   | Community       |
+| Product Hunt prep              | Program Manager   | Founder         | Marketing Lead            | All             |
+| Press kit & PR outreach        | Marketing Lead    | Founder         | Program Manager           | -               |
+| **Launch (Month 0-1)**         | -                 | -               | -                         | -               |
+| Product Hunt launch day        | Founder           | Program Manager | Marketing Lead, Community | All             |
+| Social media blitz             | Marketing Lead    | Program Manager | Community Manager         | Founder         |
+| Email launch sequence          | Marketing Lead    | Program Manager | Founder                   | Community       |
+| Press follow-ups               | Founder           | Marketing Lead  | Program Manager           | -               |
+| **Growth (Month 2-6)**         | -                 | -               | -                         | -               |
+| Referral program               | Marketing Lead    | Program Manager | Engineering               | Founder         |
+| Paid acquisition testing       | Marketing Lead    | Program Manager | Founder                   | Finance         |
+| Content SEO expansion          | Content Writer    | Marketing Lead  | SEO Specialist            | Program Manager |
+| Community building             | Community Manager | Program Manager | Founder                   | Marketing Lead  |
 
 **Weekly Dashboard** (Owned by Project/Program Manager):
 
@@ -1430,6 +1581,7 @@ Create and maintain a live dashboard tracking:
 **Attendees**: Founder, Program Manager, Marketing Lead, Finance (if applicable)
 
 **Agenda**:
+
 1. **Review Previous Month** (30 min):
    - Actual vs. target metrics (acquisition, engagement, retention)
    - Channel performance analysis (what worked, what didn't)
@@ -1453,17 +1605,20 @@ Create and maintain a live dashboard tracking:
 **Attribution Modeling & Budget Reallocation**:
 
 **Attribution Model**: Multi-touch attribution with weighted credit
+
 - First touch: 30% (awareness channel)
 - Middle touches: 20% distributed (nurture/consideration)
 - Last touch: 50% (conversion channel)
 
 **Implementation**:
+
 - UTM parameters on all external links (source, medium, campaign, content)
 - Unique landing pages or codes for each channel
 - Cohort tracking by acquisition source
 - Customer journey mapping (awareness → consideration → conversion → retention)
 
 **Budget Reallocation Triggers**:
+
 1. **Scale Up** (increase budget by 50-100%):
    - Channel CAC < 30% of LTV for 2+ consecutive weeks
    - Positive ROI with room to scale (not hitting ceiling)
@@ -1486,6 +1641,7 @@ Create and maintain a live dashboard tracking:
    - Better alternatives identified
 
 **Reallocation Process**:
+
 - Weekly: Program Manager flags opportunities/concerns
 - Bi-weekly: Marketing Lead proposes reallocation (< $1K changes)
 - Monthly: Leadership approves major shifts (> $1K or strategic pivots)
@@ -1493,16 +1649,19 @@ Create and maintain a live dashboard tracking:
 **Tools & Meeting Recommendations**:
 
 **Project Management**:
+
 - **Option A** (Lean): Google Sheets + Asana/Trello
 - **Option B** (Scale): Airtable + Monday.com
 - **Features needed**: Task tracking, deadlines, dependencies, status updates, file attachments
 
 **Analytics & Dashboards**:
+
 - **Free tier**: Google Analytics 4 + Google Sheets + Looker Studio
 - **Paid tier**: Mixpanel/Amplitude + Tableau/Metabase
 - **Requirements**: Event tracking, cohort analysis, funnel visualization, custom reports
 
 **Communication**:
+
 - **Async**: Slack/Discord with dedicated marketing channel
 - **Sync**: Weekly video sync (Zoom/Google Meet)
 
@@ -1513,6 +1672,7 @@ Create and maintain a live dashboard tracking:
 **Attendees**: Founder, Program Manager, Marketing Lead, Community Manager
 
 **Agenda**:
+
 1. **Wins & Metrics Review** (15 min):
    - Top 3 wins from last week
    - Dashboard review (traffic, conversions, spend, key metrics)
@@ -1545,6 +1705,7 @@ Create and maintain a live dashboard tracking:
 ### Month 3 Checkpoint
 
 **Must-Have**:
+
 - ✅ 5,000+ total users
 - ✅ 50%+ activation rate (created first note)
 - ✅ 25%+ Day 7 retention
@@ -1552,6 +1713,7 @@ Create and maintain a live dashboard tracking:
 - ✅ <10% monthly churn
 
 **Nice-to-Have**:
+
 - Featured in 5+ tech publications
 - 10,000+ email subscribers
 - Viral coefficient >0.3
@@ -1564,6 +1726,7 @@ Create and maintain a live dashboard tracking:
 ### Month 6 Checkpoint
 
 **Must-Have**:
+
 - ✅ 10,000+ total users
 - ✅ 60%+ activation rate
 - ✅ 30%+ Day 7 retention
@@ -1571,6 +1734,7 @@ Create and maintain a live dashboard tracking:
 - ✅ Organic growth rate >20% MoM
 
 **Nice-to-Have**:
+
 - 20,000+ users
 - Profitable unit economics
 - Strong brand recognition in niche communities
@@ -1591,6 +1755,7 @@ This marketing plan provides a comprehensive roadmap for launching and growing P
 5. **Sustainable**: Avoid shortcuts and growth hacks; build for long-term success
 
 **Key Success Factors**:
+
 - **Product Quality**: Marketing can't fix a bad product; ensure Paperlyte delivers on its promise
 - **Clear Positioning**: Own the "simple, fast, beautiful" positioning
 - **Authentic Voice**: Be genuine, helpful, and human
@@ -1598,6 +1763,7 @@ This marketing plan provides a comprehensive roadmap for launching and growing P
 - **Patience & Persistence**: Building a brand takes time; stay consistent
 
 **Next Steps**:
+
 1. Review and approve this plan with stakeholders
 2. Assign roles and responsibilities
 3. Set up marketing infrastructure (tools, analytics, processes)
@@ -1607,9 +1773,11 @@ This marketing plan provides a comprehensive roadmap for launching and growing P
 ---
 
 **Document Version History**:
+
 - v1.0 (Nov 2025): Initial comprehensive marketing plan
 
 **Related Documents**:
+
 - Product Roadmap
 - Brand Guidelines
 - Content Style Guide

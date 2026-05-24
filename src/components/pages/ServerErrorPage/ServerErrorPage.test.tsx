@@ -27,7 +27,7 @@ describe('ServerErrorPage', () => {
       render(<ServerErrorPage />)
 
       expect(screen.getByRole('main')).toBeInTheDocument()
-      expect(screen.getByText(/Oops! Something went wrong/i)).toBeInTheDocument()
+      expect(screen.getByText(/Something went wrong on our end/i)).toBeInTheDocument()
     })
 
     it('should display default error message', () => {
@@ -181,9 +181,7 @@ describe('ServerErrorPage', () => {
     it('should display status notification', () => {
       render(<ServerErrorPage />)
 
-      expect(
-        screen.getByText(/Our team has been notified and is working to resolve this issue/i)
-      ).toBeInTheDocument()
+      expect(screen.getByText(/This error has been reported. We're on it./i)).toBeInTheDocument()
     })
   })
 
@@ -229,35 +227,38 @@ describe('ServerErrorPage', () => {
 
   describe('Icon Integration', () => {
     it('should render server icon in illustration', () => {
-      const { container } = render(<ServerErrorPage />)
+      render(<ServerErrorPage />)
 
-      // Icon is decorative (inside aria-hidden), so we verify it exists via DOM query
-      const illustration = container.querySelector('[aria-hidden="true"]')
-      expect(illustration).toBeInTheDocument()
-      expect(illustration?.querySelector('svg')).toBeInTheDocument()
+      const mainElement = screen.getByRole('main')
+      // Icon component may render as SVG or <span> placeholder, check for either
+      const serverIcon = mainElement.querySelector('[data-icon="fa-server"]')
+      expect(serverIcon).toBeInTheDocument()
     })
 
     it('should render warning icon in error badge', () => {
       const { container } = render(<ServerErrorPage />)
 
-      // Icon is decorative (inside aria-hidden), so we verify via DOM query
-      const errorBadge = container.querySelector('[class*="errorBadge"]')
-      expect(errorBadge).toBeInTheDocument()
-      expect(errorBadge?.querySelector('svg')).toBeInTheDocument()
+      // Icon component may render as SVG or <span> placeholder, check for either
+      const warningIcon = container.querySelector('[data-icon="fa-triangle-exclamation"]')
+      expect(warningIcon).toBeInTheDocument()
     })
 
     it('should render retry icon in primary button', () => {
       render(<ServerErrorPage />)
 
-      const retryIcon = screen.getByLabelText('Retry icon')
-      expect(retryIcon).toBeInTheDocument()
+      const retryButton = screen.getByRole('button', { name: /retry loading the page/i })
+      // Icon component may render as SVG or <span> placeholder, check for either
+      const icon = retryButton.querySelector('[data-icon="fa-rotate-right"]')
+      expect(icon).toBeInTheDocument()
     })
 
     it('should render home icon in secondary button', () => {
       render(<ServerErrorPage />)
 
-      const homeIcon = screen.getByLabelText('Home icon')
-      expect(homeIcon).toBeInTheDocument()
+      const homeButton = screen.getByRole('button', { name: /return to homepage/i })
+      // Icon component may render as SVG or <span> placeholder, check for either
+      const icon = homeButton.querySelector('[data-icon="fa-home"]')
+      expect(icon).toBeInTheDocument()
     })
   })
 })

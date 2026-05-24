@@ -2,9 +2,14 @@ import { useState, useEffect, useCallback, useRef, type FormEvent } from 'react'
 import { Icon } from '@components/ui/Icon'
 import { Button } from '@components/ui/Button'
 import { handleArrowNavigation, getFocusableElements } from '@utils/keyboard'
+import { logError } from '@utils/monitoring'
 import styles from './FeedbackWidget.module.css'
 
 type FeedbackType = 'bug' | 'feature'
+
+interface Focusable {
+  focus: () => void
+}
 
 interface FeedbackFormData {
   type: FeedbackType
@@ -19,14 +24,6 @@ interface FeedbackWidgetProps {
  * Interactive user feedback widget with a floating button and modal.
  * Allows users to submit bug reports and feature requests.
  *
- * Features:
- * - Floating button accessible from anywhere on the page
- * - Modal with form for feedback submission
- * - Support for bug reports and feature ideas
- * - Confirmation message after submission
- * - Keyboard navigation and accessibility support
- * - Mobile responsive design
- *
  * @param onSubmit - Optional callback for handling feedback submission
  */
 export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactElement => {
@@ -37,7 +34,7 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const closeTimeoutRef = useRef<number | null>(null)
-  const triggerElementRef = useRef<HTMLElement | null>(null)
+  const triggerElementRef = useRef<Focusable | null>(null)
   const modalRef = useRef<HTMLDivElement>(null)
   const closeButtonRef = useRef<HTMLButtonElement>(null)
   const typeSelectorRef = useRef<HTMLFieldSetElement>(null)
@@ -45,7 +42,10 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
   // Handle modal open
   const handleOpen = useCallback(() => {
     // Store the element that triggered the modal for focus restoration
-    triggerElementRef.current = document.activeElement as HTMLElement
+    const activeEl = document.activeElement
+    if (activeEl !== null && typeof (activeEl as unknown as Focusable).focus === 'function') {
+      triggerElementRef.current = activeEl as unknown as Focusable
+    }
     setIsOpen(true)
     setError(null)
     setShowConfirmation(false)
@@ -90,61 +90,37 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
           message: message.trim(),
         }
 
-        // Call custom submit handler if provided
         if (onSubmit) {
           await onSubmit(feedbackData)
+
+          // Show confirmation only after a successful submission
+          setShowConfirmation(true)
+          setMessage('')
+
+          // Close modal after 2 seconds (store timeout ID for cleanup)
+          closeTimeoutRef.current = window.setTimeout(() => {
+            handleClose()
+          }, 2000)
         } else {
-          // Default behavior: store in localStorage and log
-          const timestamp = new Date().toISOString()
-          const feedbackEntry = {
-            ...feedbackData,
-            timestamp,
-          }
-
-          // Get existing feedback from localStorage
-          const existingFeedback = localStorage.getItem('paperlyte_feedback')
-          let feedbackArray: unknown = []
-
-          if (existingFeedback) {
-            try {
-              feedbackArray = JSON.parse(existingFeedback)
-            } catch (parseError) {
-              console.error('Failed to parse stored feedback from localStorage', parseError)
-              feedbackArray = []
-            }
-          }
-
-          if (!Array.isArray(feedbackArray)) {
-            feedbackArray = []
-          }
-
-          ;(feedbackArray as unknown[]).push(feedbackEntry)
-          // Store updated feedback
-          try {
-            localStorage.setItem('paperlyte_feedback', JSON.stringify(feedbackArray))
-          } catch (storageError) {
-            // Provide a clearer message for storage-related issues
-            console.error('LocalStorage error:', storageError)
-            throw new Error(
-              `Unable to save feedback locally. Your browser storage may be full or disabled. ${
-                storageError instanceof Error ? storageError.message : String(storageError)
-              }`
+          // No handler is wired — feedback cannot be sent or persisted on this page.
+          // No local persistence on the landing page (see AGENTS.md).
+          if (import.meta.env.DEV) {
+            console.warn(
+              '[FeedbackWidget] No onSubmit handler provided. Feedback was not sent anywhere.'
             )
           }
-          console.log('Feedback submitted:', feedbackEntry)
+          setError('Feedback submission is not yet available. Please try again later.')
         }
-
-        // Show confirmation
-        setShowConfirmation(true)
-        setMessage('')
-
-        // Close modal after 2 seconds (store timeout ID for cleanup)
-        closeTimeoutRef.current = window.setTimeout(() => {
-          handleClose()
-        }, 2000)
       } catch (err) {
-        setError('Failed to submit feedback. Please try again.')
-        console.error('Feedback submission error:', err)
+        setError("Couldn't send your feedback. Copy your message and try again.")
+        logError(
+          err instanceof Error ? err : new Error(String(err)),
+          {
+            severity: 'medium',
+            tags: { component: 'FeedbackWidget', action: 'submit' },
+          },
+          'FeedbackWidget'
+        )
       } finally {
         setIsSubmitting(false)
       }
@@ -191,7 +167,9 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
 
     typeSelector.addEventListener('keydown', handleArrowKeys)
 
-    return () => typeSelector.removeEventListener('keydown', handleArrowKeys)
+    return () => {
+      typeSelector.removeEventListener('keydown', handleArrowKeys)
+    }
   }, [isOpen])
 
   // Focus trap - prevent tabbing out of modal
@@ -304,7 +282,9 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
                   <button
                     type="button"
                     className={`${styles.typeButton} ${feedbackType === 'bug' ? styles.typeButtonActive : ''}`}
-                    onClick={() => setFeedbackType('bug')}
+                    onClick={() => {
+                      setFeedbackType('bug')
+                    }}
                     aria-pressed={feedbackType === 'bug'}
                   >
                     <Icon name="fa-bug" size="lg" />
@@ -313,7 +293,9 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
                   <button
                     type="button"
                     className={`${styles.typeButton} ${feedbackType === 'feature' ? styles.typeButtonActive : ''}`}
-                    onClick={() => setFeedbackType('feature')}
+                    onClick={() => {
+                      setFeedbackType('feature')
+                    }}
                     aria-pressed={feedbackType === 'feature'}
                   >
                     <Icon name="fa-lightbulb" size="lg" />
@@ -324,19 +306,19 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
                 {/* Message textarea */}
                 <div className={styles.formGroup}>
                   <label htmlFor="feedback-message" className={styles.label}>
-                    {feedbackType === 'bug'
-                      ? 'Describe the issue you encountered'
-                      : 'Share your feature idea'}
+                    {feedbackType === 'bug' ? 'What went wrong?' : 'Share your feature idea'}
                   </label>
                   <textarea
                     id="feedback-message"
                     className={styles.textarea}
                     value={message}
-                    onChange={(e) => setMessage(e.target.value)}
+                    onChange={(e) => {
+                      setMessage(e.target.value)
+                    }}
                     placeholder={
                       feedbackType === 'bug'
-                        ? 'Please provide details about the bug...'
-                        : 'Tell us about your feature idea...'
+                        ? 'What happened? What did you expect instead?'
+                        : 'What would you like Paperlyte to do? How would it help you?'
                     }
                     rows={5}
                     disabled={isSubmitting}

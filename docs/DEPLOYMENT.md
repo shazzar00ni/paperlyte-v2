@@ -34,10 +34,12 @@ This document outlines the deployment process for the Paperlyte landing page on 
 
 The build settings are automatically configured via `netlify.toml`, but you can verify them in the Netlify UI:
 
-- **Base directory**: (leave empty)
+- **Base directory**: `.` (explicitly set to prevent UI configuration conflicts)
 - **Build command**: `npm run build`
 - **Publish directory**: `dist`
-- **Node version**: 18 (set via environment variable in netlify.toml)
+- **Node version**: 20 (set via environment variable in netlify.toml)
+
+> **Note**: The base directory is explicitly set to `.` in `netlify.toml` to ensure the repository root is always used, regardless of any Netlify dashboard settings. This prevents errors like "invalid root directory 'backend': directory does not exist".
 
 ### 3. Deploy Site
 
@@ -58,7 +60,7 @@ Currently, no environment variables are required for the landing page. If needed
 
 ### Node Version
 
-The Node version is set to 18.x in `netlify.toml`:
+The Node version is set to 20 in `netlify.toml`:
 
 ```toml
 [build]
@@ -224,6 +226,24 @@ Monitor these metrics to meet Paperlyte's performance goals:
 
 ## Troubleshooting
 
+### Invalid Root Directory Error
+
+**Problem**: Build fails with "invalid root directory 'backend': directory does not exist"
+
+**Solution**: This error occurs when Netlify UI settings override the file-based configuration. The fix is already implemented in `netlify.toml`:
+
+```toml
+[build]
+  base = "."  # Explicitly set to repo root
+```
+
+If you still encounter this error:
+
+1. Verify `netlify.toml` contains `base = "."`
+2. Check Netlify dashboard: Site settings → Build & deploy → Build settings
+3. Ensure "Base directory" field matches the `netlify.toml` configuration
+4. Clear build cache and redeploy
+
 ### Build Failures
 
 **Problem**: Build fails with error message
@@ -297,5 +317,5 @@ Monitor these metrics to meet Paperlyte's performance goals:
 
 ---
 
-**Last Updated**: 2025-11-28
+**Last Updated**: 2026-01-03
 **Maintained By**: Paperlyte Team

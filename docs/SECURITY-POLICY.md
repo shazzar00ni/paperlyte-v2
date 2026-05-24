@@ -16,15 +16,15 @@ We release patches for security vulnerabilities for the following versions:
 
 ## Reporting a Vulnerability
 
-### Please DO NOT:
+### Please DO NOT
 
 - Open a public GitHub issue for security vulnerabilities
 - Disclose the vulnerability publicly before it has been addressed
 - Exploit the vulnerability in any way
 
-### Please DO:
+### Please DO
 
-1. **Email us privately** at **security@paperlyte.com** with:
+1. **Email us privately** at **<security@paperlyte.com>** with:
    - A detailed description of the vulnerability
    - Steps to reproduce the issue
    - Potential impact of the vulnerability
@@ -73,14 +73,14 @@ If you prefer not to email:
 
 ## Security Update Policy
 
-### For Critical Vulnerabilities:
+### For Critical Vulnerabilities
 
 - **Immediate patch** released as soon as fix is ready
 - **Security advisory** published on GitHub
 - **Email notification** to known users/deployments
 - **Public disclosure** after patch is available
 
-### For Non-Critical Vulnerabilities:
+### For Non-Critical Vulnerabilities
 
 - **Patch included** in next scheduled release
 - **Security advisory** published with release
@@ -277,7 +277,7 @@ Error monitoring is fully configured and ready to activate. To enable Sentry int
 6. **Verification**:
 
    After deployment with `VITE_SENTRY_DSN` configured:
-   - Errors appear in Sentry dashboard at https://sentry.io
+   - Errors appear in Sentry dashboard at <https://sentry.io>
    - Session replays available for debugging
    - Performance metrics tracked automatically
    - Breadcrumbs show user actions leading to errors
@@ -291,6 +291,68 @@ Error monitoring is fully configured and ready to activate. To enable Sentry int
 - Full control via environment variables
 
 The application is already fully instrumented. Simply add your Sentry DSN to activate monitoring.
+
+## Dependency Override Rationale
+
+### `extract-zip` → `yauzl` (`^3.2.1`)
+
+`package.json` contains a scoped npm override that forces the `yauzl` dependency of
+`extract-zip@2.0.1` to version `^3.2.1`:
+
+```json
+{
+  "overrides": {
+    "extract-zip": { "yauzl": "^3.2.1" }
+  }
+}
+```
+
+**Why this override exists**: `yauzl` versions below 3.2.1 carry an unpatched security
+vulnerability. The upstream chain (`@lhci/cli → lighthouse → puppeteer-core →
+@puppeteer/browsers → extract-zip`) still declares `yauzl: ^2.10.0`, and no release
+of `extract-zip` yet expresses a native dependency on yauzl v3.
+
+**Why the major-version crossing is safe**: yauzl v3's breaking changes are limited to
+(a) requiring `_destroy` instead of `destroy` on custom `RandomAccessReader` subclasses,
+and (b) dropping Node < 12 support. `extract-zip` uses none of these: it consumes only
+`yauzl.open()` and the standard event emitter (`readEntry`, `entry`, `close`, `error`)
+API surface, which is fully preserved in v3. The scoped override form (nested under
+`extract-zip`) makes this assumption explicit and limits the override to the single
+known consumer.
+
+**Revisit when**: `extract-zip` releases a version with `yauzl: ^3.x` in its
+`dependencies`, at which point this override can be removed.
+
+---
+
+### `flatted` (`^3.4.2`)
+
+`package.json` contains a global npm override that forces `flatted` to `^3.4.2`:
+
+```json
+{
+  "overrides": {
+    "flatted": "^3.4.2"
+  }
+}
+```
+
+**Advisory**: GHSA-rf6f-7fwh-wjgh — high-severity prototype pollution in
+`flatted` ≤ 3.4.1. Maliciously crafted input can pollute `Object.prototype`,
+potentially enabling privilege escalation or unexpected property injection.
+
+**Affected transitive chain**: `eslint → file-entry-cache → flat-cache → flatted`
+
+**Chosen version**: `^3.4.2` is the first release that patches the vulnerability.
+The fix is a non-breaking patch to internal serialisation logic; no API surface
+changes affect consumers.
+
+**Review date**: 2026-03-19
+**Owner**: Claude (Anthropic automated security pass)
+
+**Revisit when**: `flat-cache` (or `eslint` directly) declares a native
+dependency on `flatted ^3.4.2` or later, at which point this global override
+can be removed.
 
 ## Known Security Considerations
 
@@ -328,7 +390,7 @@ If you have questions about:
 - How to report a vulnerability
 - The status of a reported vulnerability
 
-Please email: **security@paperlyte.com**
+Please email: **<security@paperlyte.com>**
 
 ---
 

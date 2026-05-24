@@ -15,6 +15,24 @@ interface ErrorBoundaryState {
   retryCount: number
 }
 
+/**
+ * React Error Boundary component that catches JavaScript errors in child components
+ * Displays fallback UI when errors occur and logs errors to monitoring system
+ * Includes retry mechanism with configurable max retries to prevent infinite loops
+ *
+ * @example
+ * ```tsx
+ * // Wrap your app or specific components
+ * <ErrorBoundary maxRetries={3}>
+ *   <App />
+ * </ErrorBoundary>
+ *
+ * // With custom fallback
+ * <ErrorBoundary fallback={<CustomErrorPage />}>
+ *   <RiskyComponent />
+ * </ErrorBoundary>
+ * ```
+ */
 export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props)
@@ -34,23 +52,28 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    // Increment retry count after error is caught
-    this.setState((prevState) => ({
-      retryCount: prevState.retryCount + 1,
-    }))
-
-    // Log error using centralized monitoring utility
-    logError(
-      error,
-      {
-        componentStack: errorInfo.componentStack || undefined,
-        errorInfo: errorInfo as Record<string, unknown>,
-        severity: 'high',
-        tags: {
-          retry_count: String(this.state.retryCount),
-        },
+    let newRetryCount: number
+    this.setState(
+      (prevState) => {
+        newRetryCount = prevState.retryCount + 1
+        return { retryCount: newRetryCount }
       },
-      'ErrorBoundary'
+      () => {
+        // Log after state is committed so retry_count reflects the updated value
+        const { componentStack, ...restErrorInfo } = errorInfo
+        logError(
+          error,
+          {
+            componentStack: componentStack ? componentStack : undefined,
+            errorInfo: restErrorInfo as Record<string, unknown>,
+            severity: 'high',
+            tags: {
+              retry_count: String(newRetryCount),
+            },
+          },
+          'ErrorBoundary'
+        )
+      }
     )
   }
 
@@ -60,7 +83,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     // Prevent infinite retry loops
     if (this.state.retryCount >= maxRetries) {
       // Too many retries - force page reload
-      window.location.reload()
+      globalThis.location.reload()
       return
     }
 
@@ -74,8 +97,8 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
   render(): ReactNode {
     if (this.state.hasError) {
-      // Use custom fallback if provided
-      if (this.props.fallback) {
+      // Use custom fallback if provided (including null to render nothing)
+      if (this.props.fallback !== undefined) {
         return this.props.fallback
       }
 
@@ -89,11 +112,11 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             <div className={styles.errorIcon} aria-hidden="true">
               <Icon name="fa-triangle-exclamation" size="xl" />
             </div>
-            <h2 className={styles.errorTitle}>Something went wrong</h2>
+            <h2 className={styles.errorTitle}>Paperlyte ran into a problem</h2>
             <p className={styles.errorMessage}>
               {showRetryButton
-                ? "We're sorry, but something unexpected happened. You can try again or reload the page."
-                : 'Multiple errors occurred. Please reload the page to continue.'}
+                ? 'An unexpected error occurred. Try reloading to continue.'
+                : 'We keep hitting an error. Reload the page to start fresh.'}
             </p>
             {this.state.error && import.meta.env.DEV && (
               <details className={styles.errorDetails}>
@@ -117,7 +140,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                 </button>
               )}
               <button
-                onClick={() => window.location.reload()}
+                onClick={() => globalThis.location.reload()}
                 className={styles.reloadButton}
                 type="button"
               >

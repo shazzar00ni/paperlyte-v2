@@ -8,7 +8,7 @@
     <title>Paperlyte - Lightning-Fast, Distraction-Free Notes</title>
     <meta
       name="description"
-      content="Your thoughts, unchained from complexity. The simplest, fastest note-taking app with offline-first sync and tag-based organization."
+      content="The fastest, simplest note-taking app. Capture ideas in milliseconds, organize with tags, and work offline across all your devices."
     />
 
     <!-- Open Graph / Facebook -->
@@ -17,7 +17,7 @@
     <meta property="og:title" content="Paperlyte - Lightning-Fast, Distraction-Free Notes" />
     <meta
       property="og:description"
-      content="Your thoughts, unchained from complexity. The simplest, fastest note-taking app with offline-first sync and tag-based organization."
+      content="The fastest, simplest note-taking app. Capture ideas in milliseconds, organize with tags, and work offline across all your devices."
     />
     <meta property="og:image" content="https://paperlyte.app/og-image.jpg" />
     <meta property="og:image:width" content="1200" />
@@ -30,7 +30,7 @@
     <meta name="twitter:title" content="Paperlyte - Lightning-Fast, Distraction-Free Notes" />
     <meta
       name="twitter:description"
-      content="Your thoughts, unchained from complexity. The simplest, fastest note-taking app with offline-first sync and tag-based organization."
+      content="The fastest, simplest note-taking app. Capture ideas in milliseconds, organize with tags, and work offline across all your devices."
     />
     <meta name="twitter:image" content="https://paperlyte.app/twitter-image.jpg" />
     <meta
@@ -49,12 +49,32 @@
     <!-- Theme Color -->
     <meta name="theme-color" content="#1a1a1a" />
 
+    <!-- Persistent theme flag - read by public/theme-init.js before React hydrates.
+         Injected at build time to avoid duplicating PERSISTENCE_CONFIG.ALLOW_PERSISTENT_THEME in HTML. -->
+    <meta name="allow-persistent-theme" content="%VITE_ALLOW_PERSISTENT_THEME%" />
+
     <!-- Font Awesome icons are loaded via @fortawesome/fontawesome-svg-core in JavaScript -->
     <!-- This approach is CSP-compliant and doesn't require external CDN resources -->
+
+    <!-- Preload variable fonts served from /fonts/ (outside the Rollup bundle).
+         Bundled Inter woff2 files are preloaded at build time by fontPreloadPlugin in vite.config.ts.
+         Together these break the HTML→CSS→fonts depth-2 critical-request chain that
+         fails the network-dependency-tree-insight Lighthouse assertion. -->
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/PlayfairDisplay-Variable.woff2"
+      crossorigin
+    />
 
     <!-- Preload critical above-the-fold image for better LCP -->
     <link rel="preload" as="image" type="image/avif" href="/mockups/notes-list.avif" />
 
+    <!-- Theme initialization - loaded synchronously to prevent flash of wrong theme.
+         Must run before React hydrates so the correct data-theme is applied immediately.
+         Mirrors the logic in src/hooks/useTheme.ts. -->
+    <script src="/theme-init.js"></script>
     <!-- Schema.org Structured Data (JSON-LD) -->
     <script type="application/ld+json">
       {

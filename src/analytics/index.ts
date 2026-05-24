@@ -23,6 +23,9 @@
 
 import type { AnalyticsConfig, AnalyticsEvent, AnalyticsProvider } from './types'
 import { PlausibleProvider } from './providers/plausible'
+import { FathomProvider } from './providers/fathom'
+import { UmamiProvider } from './providers/umami'
+import { SimpleAnalyticsProvider } from './providers/simple'
 import { initWebVitals } from './webVitals'
 import { createScrollTracker } from './scrollDepth'
 
@@ -88,24 +91,22 @@ class Analytics {
       case 'plausible':
         return new PlausibleProvider()
       case 'fathom':
+        return new FathomProvider()
       case 'umami':
+        return new UmamiProvider()
       case 'simple':
+        return new SimpleAnalyticsProvider()
       case 'custom':
-        // TODO: Implement additional analytics providers
-        // Track progress at: https://github.com/shazzar00ni/paperlyte-v2/issues/[ISSUE_NUMBER]
-        // Required providers: Fathom, Umami, Simple Analytics, Custom
-        // See src/analytics/README.md for implementation requirements
         throw new Error(
-          `[Analytics] Provider "${provider}" is not yet implemented. ` +
-            `Please use "plausible" for now. ` +
-            `Track implementation progress at: https://github.com/shazzar00ni/paperlyte-v2/issues`
+          `[Analytics] Provider "custom" requires a custom implementation. ` +
+            `Extend AnalyticsProvider and wire it in before calling analytics.init().`
         )
       default:
-        // Fallback to Plausible for any other value (with warning in dev)
+        // Fallback to Plausible for any unknown value (with warning in dev)
         if (import.meta.env.DEV) {
           console.warn(
             `[Analytics] Unknown provider "${provider}", falling back to Plausible. ` +
-              `Supported providers: plausible`
+              `Supported built-in providers: plausible, fathom, umami, simple`
           )
         }
         return new PlausibleProvider()
@@ -125,10 +126,7 @@ class Analytics {
     this.provider?.trackPageView(url)
 
     if (this.config?.debug) {
-      console.log(
-        '[Analytics] Page view tracked:',
-        url || (typeof window !== 'undefined' ? window.location.pathname : '/')
-      )
+      console.log('[Analytics] Page view tracked:', url)
     }
   }
 
@@ -149,10 +147,6 @@ class Analytics {
     }
 
     this.provider?.trackEvent(eventWithTimestamp)
-
-    if (this.config?.debug) {
-      console.log('[Analytics] Event tracked:', eventWithTimestamp)
-    }
   }
 
   /**
@@ -235,7 +229,9 @@ class Analytics {
       return
     }
 
-    const debug = this.config?.debug
+    if (this.config?.debug) {
+      console.log('[Analytics] Disabled')
+    }
 
     // Disable provider
     this.provider?.disable()
@@ -256,10 +252,6 @@ class Analytics {
     this.initialized = false
     this.config = null
     this.provider = null
-
-    if (debug) {
-      console.log('[Analytics] Disabled')
-    }
   }
 
   /**
@@ -267,8 +259,6 @@ class Analytics {
    * Unconditionally clears all internal state - useful for testing
    */
   reset(): void {
-    const debug = this.config?.debug
-
     // Disable provider regardless of state
     if (this.provider) {
       this.provider.disable()
@@ -290,10 +280,6 @@ class Analytics {
     // Clear all state unconditionally
     this.initialized = false
     this.config = null
-
-    if (debug) {
-      console.log('[Analytics] Reset')
-    }
   }
 
   /**

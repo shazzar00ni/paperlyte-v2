@@ -1,8 +1,8 @@
-import React from 'react'
 import { Section } from '@components/layout/Section'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { CounterAnimation } from '@components/ui/CounterAnimation'
 import { SVGPathAnimation } from '@components/ui/SVGPathAnimation'
+import { WAITLIST_COUNT, WAITLIST_COUNT_NUMERIC } from '@constants/waitlist'
 import styles from './Statistics.module.css'
 
 /**
@@ -28,9 +28,9 @@ interface StatisticItem {
  */
 const statistics: StatisticItem[] = [
   {
-    value: 50000,
+    value: WAITLIST_COUNT_NUMERIC,
     suffix: '+',
-    label: 'Active Users',
+    label: 'Waitlist Members',
     icon: 'fa-users',
   },
   {
@@ -56,6 +56,11 @@ const statistics: StatisticItem[] = [
 ]
 
 /**
+ * Props for the Statistics section component
+ */
+export type StatisticsProps = Record<string, never>
+
+/**
  * Statistics section displaying animated counters showcasing product metrics
  *
  * Features:
@@ -66,13 +71,15 @@ const statistics: StatisticItem[] = [
  */
 export const Statistics = (): React.ReactElement => {
   return (
-    <Section id="statistics" className={styles.statistics} background="surface">
+    <Section id="statistics" className={styles.statistics} background="primary">
       <div className={styles.container}>
         <AnimatedElement animation="fadeIn">
           <div className={styles.header}>
-            <h2 className={styles.title}>Join thousands who've simplified their notes</h2>
+            <h2 className={styles.title}>
+              Join {WAITLIST_COUNT} professionals writing without friction
+            </h2>
             <p className={styles.subtitle}>
-              Real people, real productivity gains, real peace of mind.
+              Trusted by writers, developers, and thinkers who value their time.
             </p>
           </div>
         </AnimatedElement>

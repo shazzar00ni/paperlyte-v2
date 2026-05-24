@@ -1,4 +1,4 @@
-import { safePropertyAccess } from '../../../utils/security'
+import { safePropertyAccess } from '@utils/security'
 
 // Lightweight SVG icon paths to replace Font Awesome CDN
 // Only includes icons actually used in the app
@@ -31,6 +31,9 @@ export const iconPaths: Record<string, string> = {
     'M17 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z M12 18h.01',
   'fa-shield-halved': 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z M12 2v20',
 
+  // Navigation
+  'fa-home': 'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z M9 22V12h6v10',
+
   // UI States
   'fa-triangle-exclamation':
     'M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z M12 9v4 M12 17h.01',
@@ -42,6 +45,7 @@ export const iconPaths: Record<string, string> = {
 
   // Buttons (via Button component icon prop)
   'fa-download': 'M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4 M7 10l5 5 5-5 M12 15V3',
+  'fa-arrow-right': 'M5 12h14 M12 5l7 7-7 7',
   'fa-apple':
     'M12 20.94c1.5 0 2.75 1.06 4.5 2.03V21c0-.5-.5-1-.5-1s-1.5-.5-4-.5-4 .5-4 .5-.5.5-.5 1v2c1.75-1 3-2.03 4.5-2.03z M12 12a6.5 6.5 0 0 1-6.5-6.5A6.5 6.5 0 0 1 12 0a6.5 6.5 0 0 1 6.5 6.5A6.5 6.5 0 0 1 12 12z',
   'fa-windows':
@@ -67,3 +71,15 @@ export const iconViewBox: Record<string, string> = {
 export const getIconViewBox = (name: string): string => {
   return safePropertyAccess(iconViewBox, name) ?? '0 0 24 24'
 }
+
+/**
+ * Icons that use closed shapes requiring fill="none" on path elements
+ * so that the stroke renders correctly without the fill obscuring it.
+ * Add icon names here when the path data describes a closed filled shape
+ * that should appear as an outline only.
+ */
+export const strokeOnlyIcons = new Set<string>([
+  'fa-circle-check',
+  'fa-circle-exclamation',
+  'fa-shield-halved',
+])

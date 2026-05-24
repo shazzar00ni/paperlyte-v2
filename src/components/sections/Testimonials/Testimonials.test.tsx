@@ -1,5 +1,6 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { Testimonials } from './Testimonials'
 
 describe('Testimonials', () => {
@@ -17,40 +18,71 @@ describe('Testimonials', () => {
     expect(screen.getByText('What people are saying')).toBeInTheDocument()
   })
 
-  it.each(['light', 'dark'])('should render the testimonial quote in %s theme', (theme) => {
-    document.documentElement.dataset.theme = theme
-    render(<Testimonials />)
+  describe('theme variants', () => {
+    beforeEach(() => {
+      document.documentElement.dataset.theme = 'light'
+    })
 
-    // Should render the first testimonial quote (Sarah Chen's, index 0)
-    expect(screen.getByText(/Paperlyte transformed how I capture ideas/i)).toBeInTheDocument()
+    afterEach(() => {
+      delete document.documentElement.dataset.theme
+    })
 
-    delete document.documentElement.dataset.theme
+    it.each(['light', 'dark'])('should render the testimonial quote in %s theme', (theme) => {
+      document.documentElement.dataset.theme = theme
+      render(<Testimonials />)
+
+      // Should render the first testimonial quote (Sarah Chen's, index 0)
+      expect(screen.getByText(/Paperlyte transformed how I capture ideas/i)).toBeInTheDocument()
+    })
+
+    it.each(['light', 'dark'])('should render placeholder author name in %s theme', (theme) => {
+      document.documentElement.dataset.theme = theme
+      render(<Testimonials />)
+
+      // Should render Sarah Chen's name (testimonial-1, index 0)
+      expect(screen.getByText('Sarah Chen')).toBeInTheDocument()
+    })
+
+    it.each(['light', 'dark'])('should render placeholder author role in %s theme', (theme) => {
+      document.documentElement.dataset.theme = theme
+      render(<Testimonials />)
+
+      // Should render Sarah Chen's role
+      expect(screen.getByText(/Product Manager/)).toBeInTheDocument()
+    })
   })
 
-  it.each(['light', 'dark'])('should render placeholder author name in %s theme', (theme) => {
-    document.documentElement.dataset.theme = theme
-    render(<Testimonials />)
+  describe('carousel navigation', () => {
+    it('should advance to the next slide when next button is clicked', async () => {
+      const user = userEvent.setup()
+      render(<Testimonials />)
 
-    // Should render Sarah Chen's name (testimonial-1, index 0)
-    expect(screen.getByText('Sarah Chen')).toBeInTheDocument()
+      // First dot is active initially
+      const dots = screen.getAllByRole('tab')
+      expect(dots[0]).toHaveAttribute('aria-selected', 'true')
+      expect(dots[1]).toHaveAttribute('aria-selected', 'false')
 
-    delete document.documentElement.dataset.theme
-  })
+      await user.click(screen.getByRole('button', { name: 'Next testimonial' }))
 
-  it.each(['light', 'dark'])('should render placeholder author role in %s theme', (theme) => {
-    document.documentElement.dataset.theme = theme
-    render(<Testimonials />)
+      expect(dots[0]).toHaveAttribute('aria-selected', 'false')
+      expect(dots[1]).toHaveAttribute('aria-selected', 'true')
+    })
 
-    // Should render Sarah Chen's role (displayed as "Product Manager • TechCorp")
-    expect(screen.getByText(/Product Manager/)).toBeInTheDocument()
+    it('should go back to the previous slide when previous button is clicked', async () => {
+      const user = userEvent.setup()
+      render(<Testimonials />)
 
-    delete document.documentElement.dataset.theme
+      await user.click(screen.getByRole('button', { name: 'Next testimonial' }))
+      await user.click(screen.getByRole('button', { name: 'Previous testimonial' }))
+
+      const dots = screen.getAllByRole('tab')
+      expect(dots[0]).toHaveAttribute('aria-selected', 'true')
+    })
   })
 
   it('should render note about beta testimonials', () => {
     render(<Testimonials />)
 
-    // Should render the subtitle about real feedback
     expect(
       screen.getByText(/Real feedback from people who switched to Paperlyte/i)
     ).toBeInTheDocument()

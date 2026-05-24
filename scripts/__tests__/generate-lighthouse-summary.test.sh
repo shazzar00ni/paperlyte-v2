@@ -123,7 +123,9 @@ trap 'rm -rf "$T"' EXIT
 # Only create the config; no .lighthouseci directory at all
 make_lighthouserc "$T"
 
-(cd "$T" && run_script_capture "$T")
+pushd "$T" > /dev/null
+run_script_capture "$T"
+popd > /dev/null
 output="$LAST_OUTPUT"
 exit_code="$LAST_EXIT_CODE"
 
@@ -152,7 +154,9 @@ make_lighthouserc "$T"
 make_lhr "$LHR" "0.08"
 make_manifest "$T" "$LHR"
 
-(cd "$T" && run_script_capture "$T")
+pushd "$T" > /dev/null
+run_script_capture "$T"
+popd > /dev/null
 output="$LAST_OUTPUT"
 
 assert_contains \
@@ -175,7 +179,9 @@ make_lighthouserc "$T"
 make_lhr "$LHR" "0.15"
 make_manifest "$T" "$LHR"
 
-(cd "$T" && run_script_capture "$T")
+pushd "$T" > /dev/null
+run_script_capture "$T"
+popd > /dev/null
 output="$LAST_OUTPUT"
 
 assert_contains \
@@ -198,7 +204,9 @@ make_lighthouserc "$T"   # already has "uses-responsive-images": "warn"
 make_lhr "$LHR" "0.05"
 make_manifest "$T" "$LHR"
 
-(cd "$T" && run_script_capture "$T")
+pushd "$T" > /dev/null
+run_script_capture "$T"
+popd > /dev/null
 output="$LAST_OUTPUT"
 
 assert_contains \
@@ -229,7 +237,9 @@ cat > "$T/.lighthouseci/manifest.json" <<'JSON'
 ]
 JSON
 
-(cd "$T" && run_script_capture "$T")
+pushd "$T" > /dev/null
+run_script_capture "$T"
+popd > /dev/null
 output="$LAST_OUTPUT"
 exit_code="$LAST_EXIT_CODE"
 
@@ -275,7 +285,9 @@ cat > "$T/.lighthouseci/manifest.json" <<'JSON'
 ]
 JSON
 
-(cd "$T" && run_script_capture "$T")
+pushd "$T" > /dev/null
+run_script_capture "$T"
+popd > /dev/null
 output="$LAST_OUTPUT"
 exit_code="$LAST_EXIT_CODE"
 
@@ -286,6 +298,42 @@ assert_eq \
 
 assert_contains \
   "summary contains ❌ error message when jsonPath is null" \
+  "❌ No representative run found in Lighthouse manifest" \
+  "$output"
+
+rm -rf "$T"; trap - EXIT
+
+# ─── Test 5: Manifest is an empty array [] → exit 1 ──────────────────────────
+#
+# For an empty manifest, jq produces no output and REPORT_FILE becomes an empty
+# string. The [ -z "$REPORT_FILE" ] guard should therefore trigger the same
+# hard-failure path as other "no representative run" scenarios.
+
+echo ""
+echo "Test 5: manifest is [] so REPORT_FILE is empty → exit 1"
+
+T=$(mktemp -d)
+trap 'rm -rf "$T"' EXIT
+
+make_lighthouserc "$T"
+mkdir -p "$T/.lighthouseci"
+cat > "$T/.lighthouseci/manifest.json" <<'JSON'
+[]
+JSON
+
+pushd "$T" > /dev/null
+run_script_capture "$T"
+popd > /dev/null
+output="$LAST_OUTPUT"
+exit_code="$LAST_EXIT_CODE"
+
+assert_eq \
+  "script exits 1 when manifest is [] (REPORT_FILE is empty)" \
+  "1" \
+  "$exit_code"
+
+assert_contains \
+  "summary contains ❌ error message when manifest is []" \
   "❌ No representative run found in Lighthouse manifest" \
   "$output"
 

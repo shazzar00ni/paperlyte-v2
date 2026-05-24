@@ -1,6 +1,6 @@
 ---
 name: 'Follow-up: Guard fuzzing.yml against unnecessary write permissions'
-about: Keep the Jazzer.js fuzzing job least-privileged unless a write permission is justified by SARIF upload.
+about: Keep the fuzz job least-privileged unless a write permission is justified by a SARIF upload step.
 title: 'ci(fuzzing): guard against unnecessary write permissions in fuzzing.yml'
 labels: ['ci', 'security', 'good first issue']
 assignees: []
@@ -10,7 +10,7 @@ assignees: []
 
 Regression guard from PR #820.
 
-The `jazzer` job in `.github/workflows/fuzzing.yml` currently grants only
+The `fuzz` job in `.github/workflows/fuzzing.yml` currently grants only
 `contents: read`, which is the least-privilege configuration since the
 workflow does not upload SARIF to GitHub Code Scanning. File this issue if
 a future change adds `security-events: write` (or other write scopes) to

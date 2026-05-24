@@ -36,7 +36,7 @@ sonar.test.inclusions=**/*.test.ts,**/*.test.tsx
 
 ## Supply-Chain Security Conventions (established in PR #820)
 
-- **Workflow permissions:** top-level `permissions: {}` (deny-all), with minimum permissions granted at the **job level**. All workflows follow this pattern, including `scorecard.yml`.
+- **Workflow permissions:** top-level `permissions: {}` (deny-all), with minimum permissions granted at the **job level**. Workflows added or modified in PR #820 (`deployment-status.yml`, `release.yml`, `paperlyte-weekly-report.yml`, `scorecard.yml`, `fuzzing.yml`) follow this pattern. Several pre-existing workflows (e.g. `ci.yml`, `copilot-setup-steps.yml`, `stale.yml`) have not yet been migrated; hardening those is a future step.
 - **Pinned action SHAs:** all third-party actions are pinned by full commit SHA with a trailing `# vX.Y.Z` comment.
 - **Release signing:** release tarballs are signed with cosign keyless (Sigstore). The bundle file is named `paperlyte-<version>.tar.gz.sigstore.json` (Sigstore convention) and uploaded as a release asset. Verification instructions live in `SECURITY.md` → "Verifying Release Artifacts".
 - **Code scanning SARIF uploads:** every workflow that uploads SARIF must set a distinct `category:` on `github/codeql-action/upload-sarif` (e.g. `ossf-scorecard`, `snyk`) so findings from different scanners don't collide.

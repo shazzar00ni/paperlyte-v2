@@ -172,6 +172,25 @@ jobs:
           when: always
           command: exit $(cat /tmp/e2e-exit-code 2>/dev/null || echo 1)
 
+  deploy:
+    executor: node-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Install Netlify CLI
+          command: npm install --global netlify-cli
+      - run:
+          name: Deploy to Netlify (production)
+          # NETLIFY_AUTH_TOKEN and NETLIFY_SITE_ID must be set as CircleCI
+          # project environment variables (or via a context).
+          command: |
+            netlify deploy \
+              --dir=dist \
+              --prod \
+              --message "CircleCI deploy — ${CIRCLE_SHA1}"
+
 workflows:
   ci:
     jobs:
@@ -198,3 +217,10 @@ workflows:
               only:
                 - main
                 - /claude\/.*/
+      - deploy:
+          requires:
+            - e2e
+          filters:
+            branches:
+              only:
+                - main

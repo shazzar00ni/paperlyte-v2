@@ -240,7 +240,7 @@ describe('FAQ', () => {
       let icon = questionButton.querySelector('svg')
       expect(icon).toHaveAttribute('aria-labelledby')
       const titleIdCollapsed = icon!.getAttribute('aria-labelledby')!
-      expect(questionButton.querySelector(`#${titleIdCollapsed}`)).toHaveTextContent('Expand answer')
+      expect(document.getElementById(titleIdCollapsed)).toHaveTextContent('Expand answer')
 
       await user.click(questionButton)
 
@@ -248,7 +248,7 @@ describe('FAQ', () => {
       icon = questionButton.querySelector('svg')
       expect(icon).toHaveAttribute('aria-labelledby')
       const titleIdExpanded = icon!.getAttribute('aria-labelledby')!
-      expect(questionButton.querySelector(`#${titleIdExpanded}`)).toHaveTextContent('Collapse answer')
+      expect(document.getElementById(titleIdExpanded)).toHaveTextContent('Collapse answer')
     })
   })
 

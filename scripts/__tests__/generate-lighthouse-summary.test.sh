@@ -48,8 +48,9 @@ run_script() {
 run_script_exit_code() {
   local tmpdir="$1"
   local summary_file="$tmpdir/summary.txt"
-  GITHUB_STEP_SUMMARY="$summary_file" bash "$SCRIPT" 2>/dev/null
-  echo $?
+  local code=0
+  GITHUB_STEP_SUMMARY="$summary_file" bash "$SCRIPT" 2>/dev/null || code=$?
+  echo "$code"
 }
 
 # ─── Fixture helpers ──────────────────────────────────────────────────────────
@@ -128,7 +129,7 @@ trap 'rm -rf "$T"' EXIT
 make_lighthouserc "$T"
 
 output=$(cd "$T" && run_script "$T")
-exit_code=$(cd "$T" && run_script_exit_code "$T" || echo $?)
+exit_code=$(cd "$T" && run_script_exit_code "$T")
 
 assert_contains \
   "summary contains graceful error message" \
@@ -205,6 +206,95 @@ assert_contains \
   "script produces a Scores table despite string-format assertions" \
   "Lighthouse Scores" \
   "$output"
+
+rm -rf "$T"; trap - EXIT
+
+# ─── Test 3: manifest present, no entry has isRepresentativeRun: true → exit 1 ─
+
+echo ""
+echo "Test 3: manifest present but no entry has isRepresentativeRun: true"
+
+T=$(mktemp -d)
+trap 'rm -rf "$T"' EXIT
+
+make_lighthouserc "$T"
+mkdir -p "$T/.lighthouseci"
+cat > "$T/.lighthouseci/manifest.json" <<JSON
+[
+  { "url": "http://localhost/", "isRepresentativeRun": false, "jsonPath": "$T/.lighthouseci/lhr-1.json" }
+]
+JSON
+
+output=$(cd "$T" && run_script "$T")
+exit_code=$(cd "$T" && run_script_exit_code "$T")
+
+assert_contains \
+  "output contains ❌ no-representative-run message" \
+  "❌ No representative run found in Lighthouse manifest" \
+  "$output"
+
+assert_eq \
+  "script exits 1 (hard failure, not graceful)" \
+  "1" \
+  "$exit_code"
+
+rm -rf "$T"; trap - EXIT
+
+# ─── Test 4: manifest has representative run with null jsonPath → exit 1 ───────
+
+echo ""
+echo "Test 4: representative run present but jsonPath is null"
+
+T=$(mktemp -d)
+trap 'rm -rf "$T"' EXIT
+
+make_lighthouserc "$T"
+mkdir -p "$T/.lighthouseci"
+cat > "$T/.lighthouseci/manifest.json" <<JSON
+[
+  { "url": "http://localhost/", "isRepresentativeRun": true, "jsonPath": null }
+]
+JSON
+
+output=$(cd "$T" && run_script "$T")
+exit_code=$(cd "$T" && run_script_exit_code "$T")
+
+assert_contains \
+  "output contains ❌ no-representative-run message" \
+  "❌ No representative run found in Lighthouse manifest" \
+  "$output"
+
+assert_eq \
+  "script exits 1 (hard failure, not graceful)" \
+  "1" \
+  "$exit_code"
+
+rm -rf "$T"; trap - EXIT
+
+# ─── Test 5: empty manifest array → exit 1 ────────────────────────────────────
+
+echo ""
+echo "Test 5: empty manifest array []"
+
+T=$(mktemp -d)
+trap 'rm -rf "$T"' EXIT
+
+make_lighthouserc "$T"
+mkdir -p "$T/.lighthouseci"
+echo '[]' > "$T/.lighthouseci/manifest.json"
+
+output=$(cd "$T" && run_script "$T")
+exit_code=$(cd "$T" && run_script_exit_code "$T")
+
+assert_contains \
+  "output contains ❌ no-representative-run message" \
+  "❌ No representative run found in Lighthouse manifest" \
+  "$output"
+
+assert_eq \
+  "script exits 1 (hard failure, not graceful)" \
+  "1" \
+  "$exit_code"
 
 rm -rf "$T"; trap - EXIT
 

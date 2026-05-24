@@ -5,7 +5,6 @@ import * as monitoring from '@utils/monitoring'
 // Font Awesome icon library (tree-shaken, ~150-180 KB savings)
 // Only icons actually used in the app are imported
 import './utils/iconLibrary'
-import '@fontsource/inter/variable.css'
 import './index.css'
 import App from './App.tsx'
 import { updateMetaTags } from './utils/env'

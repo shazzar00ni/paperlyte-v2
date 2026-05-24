@@ -60,19 +60,20 @@ const ATTACK_SIGNATURES: RegExp[] = [
   // File type probing (this site has no server-side scripts)
   /\.(php|asp|aspx|jsp|cgi|cfm|pl|py|rb|sh)(?:\?|$)/i,
   // SQL injection probes (split into individual patterns to keep complexity low)
-  /union\s+all\s+select/i,
-  /union\s+select/i,
-  /select\s+\S{1,128}\s+from/i,
-  /insert\s+into/i,
-  /drop\s+(?:table|database)/i,
-  /alter\s+table/i,
-  /exec(?:ute)?\s*\(/i,
+  // Bounded whitespace quantifiers prevent super-linear backtracking on crafted inputs.
+  /union\s{1,100}all\s{1,100}select/i,
+  /union\s{1,100}select/i,
+  /select\s{1,100}\S{1,128}\s{1,100}from/i,
+  /insert\s{1,100}into/i,
+  /drop\s{1,100}(?:table|database)/i,
+  /alter\s{1,100}table/i,
+  /exec(?:ute)?\s{0,100}\(/i,
   /xp_cmdshell/i,
   // XSS probes in URL
   /<script[\s>]/i,
-  /javascript\s*:/i,
-  /vbscript\s*:/i,
-  /on(?:load|error|click|mouse|focus|blur|change)\s*=/i,
+  /javascript\s{0,100}:/i,
+  /vbscript\s{0,100}:/i,
+  /on(?:load|error|click|mouse|focus|blur|change)\s{0,100}=/i,
   // SSRF / open-redirect probes
   /(?:file|dict|gopher|ldap|ftp):\/\//i,
 ];

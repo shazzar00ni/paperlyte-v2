@@ -7,6 +7,7 @@ const isBrowser = typeof window !== 'undefined'
 const THEME_STORAGE_KEY = 'theme'
 const USER_PREFERENCE_KEY = 'theme-user-preference'
 
+/** Narrows a nullable string to the `Theme` union (`'light' | 'dark'`). */
 const isValidTheme = (value: string | null): value is Theme => {
   return value === 'light' || value === 'dark'
 }

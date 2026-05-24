@@ -268,3 +268,28 @@
     width: 100%;
   }
 }
+
+/* Extra small screens */
+@media (max-width: 480px) {
+  .title,
+  .successTitle {
+    font-size: var(--font-size-2xl);
+  }
+
+  .subtitle,
+  .successText {
+    font-size: var(--font-size-base);
+  }
+
+  .benefit {
+    font-size: var(--font-size-sm);
+  }
+
+  .nextSteps {
+    padding: var(--spacing-md);
+  }
+
+  .nextStepsTitle {
+    font-size: var(--font-size-lg);
+  }
+}

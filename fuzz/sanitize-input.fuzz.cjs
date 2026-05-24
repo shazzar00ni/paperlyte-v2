@@ -26,6 +26,13 @@ const SEEDS = [
   '\n\t\r',
 ];
 
+/**
+ * Applies a random byte-level mutation to a string input.
+ * One of four operations is chosen at random: flip a byte, insert a byte,
+ * delete a byte, or duplicate a trailing section.
+ * @param {string} input - The seed string to mutate.
+ * @returns {string} A mutated copy of the input.
+ */
 function mutate(input) {
   const { randomBytes } = require('crypto');
   const buf = Buffer.from(input, 'utf-8');
@@ -58,6 +65,14 @@ function mutate(input) {
   }
 }
 
+/**
+ * Runs the fuzzer for the given number of iterations.
+ * Feeds seed strings and random mutations into sanitizeInput, asserting that
+ * the function never throws, always returns a string, and never returns a
+ * value longer than 500 characters. Exits the process with code 1 on any
+ * invariant violation.
+ * @param {number} iterations - Number of fuzz iterations to execute.
+ */
 function runFuzzer(iterations) {
   for (let i = 0; i < iterations; i++) {
     const seed = SEEDS[i % SEEDS.length];

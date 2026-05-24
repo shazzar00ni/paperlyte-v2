@@ -39,6 +39,6 @@ sonar.test.inclusions=**/*.test.ts,**/*.test.tsx
 - **Workflow permissions:** top-level `permissions: {}` (deny-all), with minimum permissions granted at the **job level**. All workflows follow this pattern, including `scorecard.yml`.
 - **Pinned action SHAs:** all third-party actions are pinned by full commit SHA with a trailing `# vX.Y.Z` comment.
 - **Release signing:** release tarballs are signed with cosign keyless (Sigstore). The bundle file is named `paperlyte-<version>.tar.gz.sigstore.json` (Sigstore convention) and uploaded as a release asset. Verification instructions live in `SECURITY.md` → "Verifying Release Artifacts".
-- **Code scanning SARIF uploads:** every workflow that uploads SARIF must set a distinct `category:` on `github/codeql-action/upload-sarif` (e.g. `ossf-scorecard`, `snyk-security`) so findings from different scanners don't collide.
+- **Code scanning SARIF uploads:** every workflow that uploads SARIF must set a distinct `category:` on `github/codeql-action/upload-sarif` (e.g. `ossf-scorecard`, `snyk`) so findings from different scanners don't collide.
 - **Python deps in workflows:** pinned to exact `==` versions (e.g. `requests==2.32.4`). Hash-pinning via `--require-hashes` is a possible future hardening step.
 - **Fuzz target file extension:** the project is ESM (`"type": "module"` in `package.json`), so CommonJS fuzz targets must use the `.cjs` extension (see `fuzz/sanitize-input.fuzz.cjs`).

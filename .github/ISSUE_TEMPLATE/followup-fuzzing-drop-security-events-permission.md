@@ -1,7 +1,7 @@
 ---
-name: 'Follow-up: Drop unused `security-events: write` from fuzzing.yml'
-about: Remove the unused `security-events: write` permission from the Jazzer.js fuzzing job.
-title: 'ci(fuzzing): remove unused `security-events: write` permission'
+name: 'Follow-up: Guard fuzzing.yml against unnecessary write permissions'
+about: Keep the Jazzer.js fuzzing job least-privileged unless a write permission is justified by SARIF upload.
+title: 'ci(fuzzing): guard against unnecessary write permissions in fuzzing.yml'
 labels: ['ci', 'security', 'good first issue']
 assignees: []
 ---

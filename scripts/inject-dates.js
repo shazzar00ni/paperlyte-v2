@@ -23,8 +23,8 @@ const BUILD_DATE = new Date().toLocaleDateString("en-US", {
 
 // Configuration for production site
 const SITE_URL = "https://paperlyte.app";
-const OG_IMAGE_URL = "https://paperlyte.app/og-image.jpg";
-const TWITTER_IMAGE_URL = "https://paperlyte.app/twitter-image.jpg";
+const OG_IMAGE_URL = "https://paperlyte.app/og-image.svg";
+const TWITTER_IMAGE_URL = "https://paperlyte.app/twitter-image.svg";
 const META_KEYWORDS = "note-taking app, distraction-free notes, offline notes, fast note app, tag-based organization, simple notes, privacy-focused notes, cross-platform notes, real-time sync, minimalist note app";
 
 const LEGAL_FILES = ["privacy.html", "terms.html"];

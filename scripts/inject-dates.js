@@ -3,7 +3,7 @@
 /**
  * Injects build-time values into HTML files
  * - Replaces {{BUILD_DATE}} placeholder with formatted date in legal pages
- * - Replaces __META_KEYWORDS__, __SITE_URL__, __OG_IMAGE_URL__ in index.html
+ * - Replaces __META_KEYWORDS__, __SITE_URL__, __OG_IMAGE_URL__, __TWITTER_IMAGE_URL__ in index.html
  */
 
 import { readFileSync, writeFileSync } from "fs";

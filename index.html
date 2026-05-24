@@ -46,16 +46,14 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
 
-    <!-- Theme Color -->
-    <meta name="theme-color" content="#1a1a1a" />
-
     <!-- Canonical URL -->
     <link rel="canonical" href="__SITE_URL__/" />
 
-    <!-- SEO Keywords -->
+    <!-- SEO Keywords (runtime updateMetaTags() rewrites this at JS execution time) -->
     <meta name="keywords" content="__META_KEYWORDS__" />
 
-    <!-- Search engine indexing: index/follow is the crawler default; no robots meta needed -->
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#1a1a1a" />
 
     <!-- Font Awesome icons are loaded via @fortawesome/fontawesome-svg-core in JavaScript -->
     <!-- This approach is CSP-compliant and doesn't require external CDN resources -->

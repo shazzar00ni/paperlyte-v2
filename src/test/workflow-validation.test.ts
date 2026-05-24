@@ -218,10 +218,9 @@ describe('pr-quality-check.yml – permission structure', () => {
     for (const jobId of jobsWithExplicitPermissions) {
       const block = assertJobExists(content, jobId, 'pr-quality-check.yml')
       const hasPermissionsBlock = /^\s{4}permissions:/m.test(block)
-      expect(
-        hasPermissionsBlock,
-        `Job "${jobId}" is missing an explicit permissions block`
-      ).toBe(true)
+      expect(hasPermissionsBlock, `Job "${jobId}" is missing an explicit permissions block`).toBe(
+        true
+      )
     }
   })
 })

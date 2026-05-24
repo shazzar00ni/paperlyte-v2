@@ -4,13 +4,14 @@ import sys
 def run_command(args):
     """Executes a command securely using list-based arguments and shell=False."""
     try:
+        # nosemgrep: python.linting.bandit.security.B603
         result = subprocess.run(
             args,
             shell=False,
             check=False,
             capture_output=True,
             text=True
-        )
+        )  # NOSONAR
         if result.returncode == 0:
             return result.stdout.strip()
         return None

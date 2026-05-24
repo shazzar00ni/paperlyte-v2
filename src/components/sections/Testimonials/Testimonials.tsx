@@ -216,8 +216,15 @@ export const Testimonials = (): React.ReactElement => {
       >
         <AnimatedElement animation="slideUp" delay={100}>
           <div className={styles.carousel}>
-            <div key={currentIndex} className={styles.track}>
-              {renderTestimonial(activeTestimonial)}
+            <div
+              className={styles.track}
+              style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+            >
+              {TESTIMONIALS.map((testimonial, index) => (
+                <div key={index}>
+                  {renderTestimonial(testimonial)}
+                </div>
+              ))}
             </div>
           </div>
         </AnimatedElement>

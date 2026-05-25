@@ -52,9 +52,11 @@ run_script_capture() {
 # assigned by run_script_capture are visible to callers (set -u safe).
 run_script_capture_in_dir() {
   local dir="$1"
-  pushd "$dir" > /dev/null
+  local old_pwd
+  old_pwd="$(pwd)"
+  cd "$dir"
   run_script_capture "$dir"
-  popd > /dev/null
+  cd "$old_pwd"
 }
 
 # ─── Fixture helpers ──────────────────────────────────────────────────────────

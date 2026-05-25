@@ -56,10 +56,20 @@
     <!-- Font Awesome icons are loaded via @fortawesome/fontawesome-svg-core in JavaScript -->
     <!-- This approach is CSP-compliant and doesn't require external CDN resources -->
 
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://paperlyte.app/" />
+
     <!-- Preload variable fonts served from /fonts/ (outside the Rollup bundle).
          Bundled Inter woff2 files are preloaded at build time by fontPreloadPlugin in vite.config.ts.
          Together these break the HTML→CSS→fonts depth-2 critical-request chain that
          fails the network-dependency-tree-insight Lighthouse assertion. -->
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/Inter-Variable.woff2"
+      crossorigin
+    />
     <link
       rel="preload"
       as="font"
@@ -69,7 +79,7 @@
     />
 
     <!-- Preload critical above-the-fold image for better LCP -->
-    <link rel="preload" as="image" type="image/avif" href="/mockups/notes-list.avif" />
+    <link rel="preload" as="image" type="image/avif" href="/mockups/notes-list.avif" fetchpriority="high" />
 
     <!-- Theme initialization - loaded synchronously to prevent flash of wrong theme.
          Must run before React hydrates so the correct data-theme is applied immediately.
@@ -110,9 +120,6 @@
     </script>
   </head>
   <body>
-    <!-- Skip to main content (accessibility) -->
-    <a href="#main" class="skip-link">Skip to main content</a>
-
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

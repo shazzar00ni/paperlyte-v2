@@ -19,7 +19,7 @@ import styles from './Testimonials.module.css'
  * - Screen reader accessible with ARIA labels
  * - Respects prefers-reduced-motion
  */
-export const Testimonials = (): React.ReactElement => {
+export const Testimonials = (): React.ReactElement | null => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(true)
   const [touchStart, setTouchStart] = useState(0)
@@ -190,6 +190,8 @@ export const Testimonials = (): React.ReactElement => {
     )
   }
 
+  if (TESTIMONIALS.length === 0) return null
+
   return (
     <Section id="testimonials" background="surface">
       <AnimatedElement animation="fadeIn">
@@ -215,14 +217,11 @@ export const Testimonials = (): React.ReactElement => {
           <div className={styles.carousel}>
             <div
               className={styles.track}
-              style={{
-                transform: `translateX(-${currentIndex * 100}%)`,
-                transition: prefersReducedMotion
-                  ? 'none'
-                  : 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
-              }}
+              style={{ transform: `translateX(-${currentIndex * 100}%)` }}
             >
-              {TESTIMONIALS.map((testimonial) => renderTestimonial(testimonial))}
+              {TESTIMONIALS.map((testimonial, index) => (
+                <div key={index}>{renderTestimonial(testimonial)}</div>
+              ))}
             </div>
           </div>
         </AnimatedElement>

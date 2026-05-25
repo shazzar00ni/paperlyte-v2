@@ -6,17 +6,17 @@ set -euo pipefail
   echo ""
 } >> "$GITHUB_STEP_SUMMARY"
 
-if [ -f .lighthouseci/manifest.json ]; then
+if [[ -f .lighthouseci/manifest.json ]]; then
   # Find the representative run from manifest (the one used for assertions)
   REPORT_FILE=$(jq -r '.[] | select(.isRepresentativeRun == true) | .jsonPath' .lighthouseci/manifest.json | head -1)
 
   # Validate that REPORT_FILE is non-empty and not "null"
-  if [ -z "$REPORT_FILE" ] || [ "$REPORT_FILE" = "null" ]; then
+  if [[ -z "$REPORT_FILE" || "$REPORT_FILE" = "null" ]]; then
     echo "⚠️ No representative run found in Lighthouse manifest" >> "$GITHUB_STEP_SUMMARY"
     exit 0
   fi
 
-  if [ -f "$REPORT_FILE" ]; then
+  if [[ -f "$REPORT_FILE" ]]; then
     # Extract thresholds dynamically from .lighthouserc.json with fallback defaults
     # Check type before indexing to handle both array ["error", {...}] and string "warn" formats
     PERF_THRESHOLD=$(jq -r '(.ci.assert.assertions["categories:performance"] | if type == "array" then .[1].minScore else null end // 0.9) * 100 | floor' .lighthouserc.json)
@@ -43,10 +43,10 @@ if [ -f .lighthouseci/manifest.json ]; then
     SEO_SCORE=$(jq -r '(.categories.seo.score // 0) * 100 | floor' "$REPORT_FILE")
 
     # Determine pass/fail with emoji using dynamic thresholds
-    PERF_STATUS=$([ "$PERF_SCORE" -ge "$PERF_THRESHOLD" ] && echo "✅" || echo "❌")
-    A11Y_STATUS=$([ "$A11Y_SCORE" -ge "$A11Y_THRESHOLD" ] && echo "✅" || echo "❌")
-    BP_STATUS=$([ "$BP_SCORE" -ge "$BP_THRESHOLD" ] && echo "✅" || echo "⚠️")
-    SEO_STATUS=$([ "$SEO_SCORE" -ge "$SEO_THRESHOLD" ] && echo "✅" || echo "⚠️")
+    PERF_STATUS=$([[ "$PERF_SCORE" -ge "$PERF_THRESHOLD" ]] && echo "✅" || echo "❌")
+    A11Y_STATUS=$([[ "$A11Y_SCORE" -ge "$A11Y_THRESHOLD" ]] && echo "✅" || echo "❌")
+    BP_STATUS=$([[ "$BP_SCORE" -ge "$BP_THRESHOLD" ]] && echo "✅" || echo "⚠️")
+    SEO_STATUS=$([[ "$SEO_SCORE" -ge "$SEO_THRESHOLD" ]] && echo "✅" || echo "⚠️")
 
     {
       echo "| Category | Score | Status | Target |"
@@ -72,12 +72,12 @@ if [ -f .lighthouseci/manifest.json ]; then
     TTI=$(jq -r '(.audits.interactive.numericValue // 0) | floor' "$REPORT_FILE")
 
     # Determine pass/fail for metrics using dynamic thresholds
-    FCP_STATUS=$([ "$FCP" -le "$FCP_THRESHOLD" ] && echo "✅" || echo "❌")
-    LCP_STATUS=$([ "$LCP" -le "$LCP_THRESHOLD" ] && echo "✅" || echo "❌")
+    FCP_STATUS=$([[ "$FCP" -le "$FCP_THRESHOLD" ]] && echo "✅" || echo "❌")
+    LCP_STATUS=$([[ "$LCP" -le "$LCP_THRESHOLD" ]] && echo "✅" || echo "❌")
     CLS_STATUS=$(awk -v cls="$CLS" -v threshold="$CLS_THRESHOLD" 'BEGIN {print (cls <= threshold) ? "✅" : "❌"}')
-    TBT_STATUS=$([ "$TBT" -le "$TBT_THRESHOLD" ] && echo "✅" || echo "❌")
-    SI_STATUS=$([ "$SI" -le "$SI_THRESHOLD" ] && echo "✅" || echo "❌")
-    TTI_STATUS=$([ "$TTI" -le "$TTI_THRESHOLD" ] && echo "✅" || echo "❌")
+    TBT_STATUS=$([[ "$TBT" -le "$TBT_THRESHOLD" ]] && echo "✅" || echo "❌")
+    SI_STATUS=$([[ "$SI" -le "$SI_THRESHOLD" ]] && echo "✅" || echo "❌")
+    TTI_STATUS=$([[ "$TTI" -le "$TTI_THRESHOLD" ]] && echo "✅" || echo "❌")
 
     {
       echo "| Metric | Value | Status | Budget |"
@@ -93,10 +93,10 @@ if [ -f .lighthouseci/manifest.json ]; then
 
     # Overall status - check all critical metrics including CLS and TTI using dynamic thresholds
     CLS_PASS=$(awk -v cls="$CLS" -v threshold="$CLS_THRESHOLD" 'BEGIN {print (cls <= threshold) ? 1 : 0}')
-    if [ "$PERF_SCORE" -ge "$PERF_THRESHOLD" ] && [ "$A11Y_SCORE" -ge "$A11Y_THRESHOLD" ] && \
-       [ "$FCP" -le "$FCP_THRESHOLD" ] && [ "$LCP" -le "$LCP_THRESHOLD" ] && \
-       [ "$CLS_PASS" -eq 1 ] && [ "$TBT" -le "$TBT_THRESHOLD" ] && [ "$SI" -le "$SI_THRESHOLD" ] && \
-       [ "$TTI" -le "$TTI_THRESHOLD" ]; then
+    if [[ "$PERF_SCORE" -ge "$PERF_THRESHOLD" && "$A11Y_SCORE" -ge "$A11Y_THRESHOLD" && \
+       "$FCP" -le "$FCP_THRESHOLD" && "$LCP" -le "$LCP_THRESHOLD" && \
+       "$CLS_PASS" -eq 1 && "$TBT" -le "$TBT_THRESHOLD" && "$SI" -le "$SI_THRESHOLD" && \
+       "$TTI" -le "$TTI_THRESHOLD" ]]; then
       echo "### ✅ All critical performance budgets met!" >> "$GITHUB_STEP_SUMMARY"
     else
       echo "### ❌ Some performance budgets were not met" >> "$GITHUB_STEP_SUMMARY"

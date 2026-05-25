@@ -1,5 +1,6 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { Testimonials } from './Testimonials'
 
 describe('Testimonials', () => {
@@ -17,31 +18,71 @@ describe('Testimonials', () => {
     expect(screen.getByText('What people are saying')).toBeInTheDocument()
   })
 
-  it('should render the testimonial quote', () => {
-    render(<Testimonials />)
+  describe('theme variants', () => {
+    beforeEach(() => {
+      document.documentElement.dataset.theme = 'light'
+    })
 
-    // Should render at least one testimonial quote (Marcus Johnson's quote)
-    expect(screen.getByText(/I've tried every note app out there/i)).toBeInTheDocument()
+    afterEach(() => {
+      delete document.documentElement.dataset.theme
+    })
+
+    it.each(['light', 'dark'])('should render the testimonial quote in %s theme', (theme) => {
+      document.documentElement.dataset.theme = theme
+      render(<Testimonials />)
+
+      // Should render the first testimonial quote (Sarah Chen's, index 0)
+      expect(screen.getByText(/Paperlyte transformed how I capture ideas/i)).toBeInTheDocument()
+    })
+
+    it.each(['light', 'dark'])('should render placeholder author name in %s theme', (theme) => {
+      document.documentElement.dataset.theme = theme
+      render(<Testimonials />)
+
+      // Should render Sarah Chen's name (testimonial-1, index 0)
+      expect(screen.getByText('Sarah Chen')).toBeInTheDocument()
+    })
+
+    it.each(['light', 'dark'])('should render placeholder author role in %s theme', (theme) => {
+      document.documentElement.dataset.theme = theme
+      render(<Testimonials />)
+
+      // Should render Sarah Chen's role
+      expect(screen.getByText(/Product Manager/)).toBeInTheDocument()
+    })
   })
 
-  it('should render placeholder author name', () => {
-    render(<Testimonials />)
+  describe('carousel navigation', () => {
+    it('should advance to the next slide when next button is clicked', async () => {
+      const user = userEvent.setup()
+      render(<Testimonials />)
 
-    // Should render Marcus Johnson's name (from testimonial-2)
-    expect(screen.getByText('Marcus Johnson')).toBeInTheDocument()
-  })
+      // First dot is active initially
+      const dots = screen.getAllByRole('tab')
+      expect(dots[0]).toHaveAttribute('aria-selected', 'true')
+      expect(dots[1]).toHaveAttribute('aria-selected', 'false')
 
-  it('should render placeholder author role', () => {
-    render(<Testimonials />)
+      await user.click(screen.getByRole('button', { name: 'Next testimonial' }))
 
-    // Should render Marcus Johnson's role
-    expect(screen.getByText('Freelance Writer')).toBeInTheDocument()
+      expect(dots[0]).toHaveAttribute('aria-selected', 'false')
+      expect(dots[1]).toHaveAttribute('aria-selected', 'true')
+    })
+
+    it('should go back to the previous slide when previous button is clicked', async () => {
+      const user = userEvent.setup()
+      render(<Testimonials />)
+
+      await user.click(screen.getByRole('button', { name: 'Next testimonial' }))
+      await user.click(screen.getByRole('button', { name: 'Previous testimonial' }))
+
+      const dots = screen.getAllByRole('tab')
+      expect(dots[0]).toHaveAttribute('aria-selected', 'true')
+    })
   })
 
   it('should render note about beta testimonials', () => {
     render(<Testimonials />)
 
-    // Should render the subtitle about real feedback
     expect(
       screen.getByText(/Real feedback from people who switched to Paperlyte/i)
     ).toBeInTheDocument()

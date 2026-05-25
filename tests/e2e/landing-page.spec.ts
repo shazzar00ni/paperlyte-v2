@@ -265,11 +265,20 @@ test.describe('Landing Page', () => {
     await expect(page.getByText(/You['\u2019]re on the list!/i)).toBeVisible({ timeout: 5000 })
 
     // Assert the component sent the normalised (trimmed + lowercased) email
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(
+            () => (window as unknown as Record<string, unknown>)['__subscribeMockBody'] as string | null
+          ),
+        { message: 'Expected waitlist submit payload to be captured by fetch mock' }
+      )
+      .not.toBeNull()
+
     const capturedPostBody = await page.evaluate(
-      () => (window as unknown as Record<string, unknown>)['__subscribeMockBody'] as string | null
+      () => (window as unknown as Record<string, unknown>)['__subscribeMockBody'] as string
     )
-    expect(capturedPostBody).not.toBeNull()
-    expect(JSON.parse(capturedPostBody!)).toEqual({ email: expectedEmail })
+    expect(JSON.parse(capturedPostBody)).toEqual({ email: expectedEmail })
   })
 
   test('should have accessible keyboard navigation', async ({

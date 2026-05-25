@@ -60,6 +60,8 @@ export const iconNameMap: Record<string, string> = {
   'fa-magnifying-glass': 'magnifying-glass',
   'fa-arrow-right': 'arrow-right',
   'fa-arrow-left': 'arrow-left',
+  'fa-play': 'play',
+  'fa-pause': 'pause',
   'fa-spinner': 'spinner',
   'fa-triangle-exclamation': 'triangle-exclamation',
   'fa-circle-exclamation': 'circle-exclamation',

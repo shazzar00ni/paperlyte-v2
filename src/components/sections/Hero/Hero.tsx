@@ -22,12 +22,12 @@ export const Hero = (): React.ReactElement => {
       <div className={styles.content}>
         <AnimatedElement animation="fadeIn">
           <h1 className={styles.headline}>
-            Your thoughts, <em>organized.</em>
+            Your thoughts, <em>unchained.</em>
           </h1>
         </AnimatedElement>
 
         <AnimatedElement animation="fadeIn" delay={100}>
-          <p className={styles.subheadline}>The minimal workspace for busy professionals.</p>
+          <p className={styles.subheadline}>Note-taking so fast it gets out of your way.</p>
         </AnimatedElement>
 
         <AnimatedElement animation="fadeIn" delay={300}>
@@ -42,7 +42,7 @@ export const Hero = (): React.ReactElement => {
               Start Writing for Free
             </Button>
             <Button variant="secondary" size="large" onClick={() => scrollToSection('features')}>
-              View the Demo
+              See How It Works
             </Button>
           </div>
         </AnimatedElement>
@@ -65,26 +65,26 @@ export const Hero = (): React.ReactElement => {
         <div className={styles.mockupContainer} aria-hidden="true">
           {/* Productivity stat badge */}
           <div className={styles.statBadge}>
-            <span className={styles.statValue}>+120%</span>
-            <span className={styles.statLabel}>PRODUCTIVITY</span>
+            <span className={styles.statValue}>8ms</span>
+            <span className={styles.statLabel}>RESPONSE TIME</span>
           </div>
 
           {/* Primary mockup - Notes list view */}
           <div className={styles.mockupPrimary}>
             <picture>
               <source
-                srcSet="/mockups/notes-list-400w.avif 400w, /mockups/notes-list-800w.avif 800w, /mockups/notes-list.avif 1200w"
-                sizes="(max-width: 480px) 400px, (max-width: 768px) 800px, 1200px"
+                srcSet="/mockups/notes-list-400w.avif 400w, /mockups/notes-list-800w.avif 800w, /mockups/notes-list.avif 1100w"
+                sizes="(max-width: 480px) 85vw, 550px"
                 type="image/avif"
               />
               <source
-                srcSet="/mockups/notes-list-400w.webp 400w, /mockups/notes-list-800w.webp 800w, /mockups/notes-list.webp 1200w"
-                sizes="(max-width: 480px) 400px, (max-width: 768px) 800px, 1200px"
+                srcSet="/mockups/notes-list-400w.webp 400w, /mockups/notes-list-800w.webp 800w, /mockups/notes-list.webp 1100w"
+                sizes="(max-width: 480px) 85vw, 550px"
                 type="image/webp"
               />
               <source
-                srcSet="/mockups/notes-list-400w.png 400w, /mockups/notes-list-800w.png 800w, /mockups/notes-list.png 1200w"
-                sizes="(max-width: 480px) 400px, (max-width: 768px) 800px, 1200px"
+                srcSet="/mockups/notes-list-400w.png 400w, /mockups/notes-list-800w.png 800w, /mockups/notes-list.png 1100w"
+                sizes="(max-width: 480px) 85vw, 550px"
                 type="image/png"
               />
               <img

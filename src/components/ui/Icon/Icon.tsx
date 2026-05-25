@@ -3,7 +3,7 @@ import { iconPaths, getIconViewBox, strokeOnlyIcons } from './icons'
 import { safePropertyAccess } from '@utils/security'
 import './Icon.css'
 
-interface IconProps {
+export interface IconProps {
   name: string
   size?: 'sm' | 'md' | 'lg' | 'xl' | '2x' | '3x'
   variant?: 'solid' | 'brands' | 'regular'
@@ -108,7 +108,7 @@ export const Icon = ({
         strokeLinejoin="round"
         className={svgClassName}
         style={style}
-        data-icon={baseName}
+        data-icon={resolvedKey}
         aria-labelledby={ariaLabel ? titleId : undefined}
         aria-hidden={ariaLabel ? ('false' as const) : ('true' as const)}
         {...(ariaLabel && { role: 'img' })}

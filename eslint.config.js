@@ -46,4 +46,14 @@ export default defineConfig([
       globals: globals.browser,
     },
   },
+  // Node.js globals for build-tool configs and server-side scripts.
+  // These files run in Node, not the browser, so process/Buffer/__dirname etc.
+  // must be available. The TS rules from the block above still apply via
+  // flat-config merging; this block only supplements the globals.
+  {
+    files: ['*.config.ts', 'scripts/**/*.ts', 'netlify/functions/**/*.ts'],
+    languageOptions: {
+      globals: globals.node,
+    },
+  },
 ])

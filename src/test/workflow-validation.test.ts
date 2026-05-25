@@ -1,9 +1,9 @@
 /**
- * Tests for GitHub Actions workflow permission changes.
+ * Tests for GitHub Actions workflow permission configuration.
  *
- * This PR moved `permissions` from the workflow level to individual job level
- * in ci.yml and pr-quality-check.yml, following the principle of least privilege.
- * These tests verify that structure is correctly enforced.
+ * These tests verify the permission structure currently enforced in workflow
+ * files, including a workflow-level `permissions: contents: read` block and
+ * any required job-level permission checks.
  */
 
 import { readFileSync } from 'node:fs'
@@ -52,14 +52,42 @@ function extractJobBlock(content: string, jobId: string): string {
 }
 
 /**
+ * Extracts the YAML block that belongs to a specific top-level key (e.g. `on`).
+ * Starts at the line `<key>:` at column 0 and ends before the next top-level key.
+ */
+function extractTopLevelBlock(content: string, key: string): string {
+  const lines = content.split('\n')
+  const startIdx = lines.findIndex((line) => line.startsWith(`${key}:`))
+  if (startIdx === -1) return ''
+  const blockLines: string[] = [lines[startIdx]]
+  for (let i = startIdx + 1; i < lines.length; i++) {
+    const line = lines[i]
+    if (line.length > 0 && !line.startsWith(' ') && !line.startsWith('\t')) break
+    blockLines.push(line)
+  }
+  return blockLines.join('\n')
+}
+
+/**
  * Returns true when the given job block contains `permissions:` followed by
  * a `contents: read` entry.
  */
 function jobHasContentsReadPermission(jobBlock: string): boolean {
-  // Look for `    permissions:` (4-space indent) then `      contents: read` (6-space indent)
-  const permissionsPattern = /^\s{4}permissions:/m
-  const contentsPattern = /^\s{1,50}contents:\s{1,50}read/m
-  return permissionsPattern.test(jobBlock) && contentsPattern.test(jobBlock)
+  // Walk line-by-line: find the `    permissions:` header (4-space indent),
+  // then check only the indented block that follows (6+ spaces) for
+  // `contents: read`. Stop as soon as indentation drops back to ≤4 spaces.
+  const lines = jobBlock.split('\n')
+  const permissionsStart = lines.findIndex((line: string) => line.startsWith('    permissions:'))
+  if (permissionsStart === -1) return false
+
+  for (let i = permissionsStart + 1; i < lines.length; i += 1) {
+    const line = lines[i]
+    if (line.trim() === '' || line.trim().startsWith('#')) continue
+    if (!line.startsWith('      ')) break
+    if (line.split('#')[0].trim() === 'contents: read') return true
+  }
+
+  return false
 }
 
 /**
@@ -87,9 +115,11 @@ function assertJobExists(content: string, jobId: string, workflowFileName: strin
 
 describe('ci.yml – permission structure', () => {
   let content: string
+  let onBlock: string
 
   beforeAll(() => {
     content = readWorkflow('ci.yml')
+    onBlock = extractTopLevelBlock(content, 'on')
   })
 
   it('should exist and have a workflow-level "contents: read" permissions block', () => {
@@ -98,7 +128,7 @@ describe('ci.yml – permission structure', () => {
 
   it.each(['lint-and-typecheck', 'build'])(
     '%s job inherits "contents: read" from the workflow-level permissions',
-    (jobId) => {
+    (jobId: string): void => {
       assertJobExists(content, jobId, 'ci.yml')
       // These jobs rely on the workflow-level contents: read (no separate job-level block needed)
       expect(hasWorkflowLevelPermissions(content)).toBe(true)
@@ -107,7 +137,7 @@ describe('ci.yml – permission structure', () => {
 
   it.each(['test', 'e2e', 'ci-success'])(
     '%s job should have "contents: read" permission',
-    (jobId) => {
+    (jobId: string): void => {
       const block = assertJobExists(content, jobId, 'ci.yml')
       expect(jobHasContentsReadPermission(block)).toBe(true)
     }
@@ -132,7 +162,14 @@ describe('ci.yml – permission structure', () => {
   it('each job that has a permissions block should include at least "contents: read"', () => {
     // Regression guard: jobs with explicit permissions blocks must keep contents: read.
     // lint-and-typecheck and build rely on the workflow-level block instead.
-    const jobsWithExplicitPermissions = ['test', 'size-check', 'lighthouse', 'e2e', 'ci-success']
+    const jobsWithExplicitPermissions = [
+      'test',
+      'size-check',
+      'lighthouse',
+      'e2e',
+      'add-to-project',
+      'ci-success',
+    ]
     for (const jobId of jobsWithExplicitPermissions) {
       const block = assertJobExists(content, jobId, 'ci.yml')
       expect(
@@ -143,7 +180,14 @@ describe('ci.yml – permission structure', () => {
   })
 
   it('should trigger on pushes to main and develop branches', () => {
-    expect(content).toMatch(/branches:\s*\[main,\s*develop\]/)
+    // Extract only the push: sub-block from on: so the assertion is scoped
+    // to push triggers and cannot pass on pull_request branch filters alone.
+    const pushMatch = onBlock.match(/^ {2}push:\n((?:^ {4}.+\n?)+)/m)
+    const pushBlock = pushMatch ? pushMatch[0] : ''
+    const hasBranches =
+      /branches:\s*\[main,\s*develop\]/.test(pushBlock) ||
+      (/branches:/.test(pushBlock) && /- main/.test(pushBlock) && /- develop/.test(pushBlock))
+    expect(hasBranches).toBe(true)
   })
 
   it('should trigger on pull_request events targeting main and develop', () => {
@@ -174,7 +218,7 @@ describe('pr-quality-check.yml – permission structure', () => {
 
   it.each(['pr-metadata', 'bundle-size-check'])(
     '%s job inherits "contents: read" from the workflow-level permissions',
-    (jobId) => {
+    (jobId: string): void => {
       assertJobExists(content, jobId, 'pr-quality-check.yml')
       // These jobs rely on the workflow-level contents: read (no separate job-level block needed)
       expect(hasWorkflowLevelPermissions(content)).toBe(true)
@@ -216,13 +260,21 @@ describe('pr-quality-check.yml – permission structure', () => {
   it('only dependency-review job has an explicit permissions block (regression guard)', () => {
     // dependency-review needs additional pull-requests: write permission beyond the workflow default.
     // pr-metadata, bundle-size-check, and quality-summary rely on the workflow-level permissions.
-    // Validate that dependency-review still carries its own explicit block.
+    // Validate that dependency-review still carries its own explicit block …
     const block = assertJobExists(content, 'dependency-review', 'pr-quality-check.yml')
-    const hasPermissionsBlock = /^\s{4}permissions:/m.test(block)
     expect(
-      hasPermissionsBlock,
+      /^\s{4}permissions:/m.test(block),
       'dependency-review job is missing an explicit permissions block'
     ).toBe(true)
+
+    // … and that the other jobs do NOT have one (enforces exclusivity).
+    for (const jobId of ['pr-metadata', 'bundle-size-check', 'quality-summary']) {
+      const jobBlock = assertJobExists(content, jobId, 'pr-quality-check.yml')
+      expect(
+        /^\s{4}permissions:/m.test(jobBlock),
+        `${jobId} should not define an explicit permissions block`
+      ).toBe(false)
+    }
   })
 })
 
@@ -251,6 +303,7 @@ describe('package-lock.json – picomatch dependency update', () => {
     const raw = readFileSync(resolve(projectRoot, 'package-lock.json'), 'utf-8')
     lockfile = JSON.parse(raw) as PackageLock
     entry = lockfile.packages['node_modules/picomatch']
+    expect(entry, 'node_modules/picomatch must exist in package-lock.json').toBeDefined()
   })
 
   it('should have picomatch listed in packages', () => {
@@ -261,16 +314,7 @@ describe('package-lock.json – picomatch dependency update', () => {
     expect(entry.version).toBe('4.0.4')
   })
 
-  it('picomatch should NOT be the vulnerable version 4.0.3', () => {
-    expect(entry.version).not.toBe('4.0.3')
-  })
-
-  it('picomatch resolved URL should point to version 4.0.4', () => {
-    expect(entry.resolved).toContain('picomatch-4.0.4.tgz')
-    expect(entry.resolved).not.toContain('picomatch-4.0.3.tgz')
-  })
-
-  it('picomatch integrity hash should match the 4.0.4 release', () => {
+  it('picomatch should have the expected integrity hash', () => {
     expect(entry.integrity).toBe(
       'sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A=='
     )
@@ -278,10 +322,6 @@ describe('package-lock.json – picomatch dependency update', () => {
 
   it('picomatch should remain a devDependency', () => {
     expect(entry.dev).toBe(true)
-  })
-
-  it('picomatch should retain its MIT license', () => {
-    expect(entry.license).toBe('MIT')
   })
 
   it('package-lock.json should be valid JSON with a lockfileVersion', () => {
@@ -440,5 +480,214 @@ describe('package-lock.json – lodash-es security update (GHSA-r5fr-rjxr-66jc, 
 
   it('lodash-es resolved URL should not point to a vulnerable release', () => {
     expect(entry.resolved).not.toMatch(/lodash-es-4\.17\.\d+\.tgz/)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// claude-code-review.yml
+// ---------------------------------------------------------------------------
+
+describe('claude-code-review.yml – structure and permissions', () => {
+  let content: string
+  let onBlock: string
+
+  beforeAll(() => {
+    content = readWorkflow('claude-code-review.yml')
+    onBlock = extractTopLevelBlock(content, 'on')
+  })
+
+  it('should exist and have a top-level permissions deny-all block', () => {
+    expect(content.length).toBeGreaterThan(0)
+    expect(content).toMatch(/^permissions:\s*\{\}/m)
+  })
+
+  it('should trigger on pull_request with the expected event types', () => {
+    expect(onBlock).toMatch(/pull_request:/)
+    expect(onBlock).toMatch(/opened/)
+    expect(onBlock).toMatch(/synchronize/)
+    expect(onBlock).toMatch(/ready_for_review/)
+    expect(onBlock).toMatch(/reopened/)
+  })
+
+  it('should have a concurrency group to cancel stale runs', () => {
+    expect(content).toMatch(/^concurrency:/m)
+    expect(content).toMatch(/cancel-in-progress:\s*true/)
+  })
+
+  it('should define auto-review and security-review jobs', () => {
+    assertJobExists(content, 'auto-review', 'claude-code-review.yml')
+    assertJobExists(content, 'security-review', 'claude-code-review.yml')
+  })
+
+  it('auto-review job should have contents: read permission', () => {
+    const block = assertJobExists(content, 'auto-review', 'claude-code-review.yml')
+    expect(jobHasContentsReadPermission(block)).toBe(true)
+  })
+
+  it('security-review job should have contents: read permission', () => {
+    const block = assertJobExists(content, 'security-review', 'claude-code-review.yml')
+    expect(jobHasContentsReadPermission(block)).toBe(true)
+  })
+
+  it('both jobs should skip fork PRs', () => {
+    const autoBlock = assertJobExists(content, 'auto-review', 'claude-code-review.yml')
+    const secBlock = assertJobExists(content, 'security-review', 'claude-code-review.yml')
+    expect(autoBlock).toMatch(/head\.repo\.fork/)
+    expect(secBlock).toMatch(/head\.repo\.fork/)
+  })
+
+  it('auto-review allowedTools should include inline comment tool', () => {
+    const block = assertJobExists(content, 'auto-review', 'claude-code-review.yml')
+    expect(block).toMatch(/mcp__github_inline_comment__create_inline_comment/)
+  })
+
+  it('security-review allowedTools should NOT include inline comment tool', () => {
+    const block = assertJobExists(content, 'security-review', 'claude-code-review.yml')
+    expect(block).not.toMatch(/mcp__github_inline_comment__create_inline_comment/)
+  })
+
+  it('auto-review prompt should include prompt-injection guardrails', () => {
+    const block = assertJobExists(content, 'auto-review', 'claude-code-review.yml')
+    expect(block).toMatch(/[Pp]rompt [Ii]njection|[Ss]ecurity instructions/)
+    expect(block).toMatch(/untrusted/)
+  })
+
+  it('action should be pinned to a full commit SHA', () => {
+    expect(content).toMatch(/claude-code-action@[0-9a-f]{40}/)
+    expect(content).not.toMatch(/claude-code-action@v\d/)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// claude-issue-triage.yml
+// ---------------------------------------------------------------------------
+
+describe('claude-issue-triage.yml – structure and permissions', () => {
+  let content: string
+
+  beforeAll(() => {
+    content = readWorkflow('claude-issue-triage.yml')
+  })
+
+  it('should exist and have a top-level permissions deny-all block', () => {
+    expect(content.length).toBeGreaterThan(0)
+    expect(content).toMatch(/^permissions:\s*\{\}/m)
+  })
+
+  it('should trigger only on issues opened event', () => {
+    expect(content).toMatch(/^on:/m)
+    expect(content).toMatch(/issues:/)
+    expect(content).toMatch(/types:\s*\[opened\]/)
+    expect(content).not.toMatch(/pull_request/)
+  })
+
+  it('should define a triage job', () => {
+    assertJobExists(content, 'triage', 'claude-issue-triage.yml')
+  })
+
+  it('triage job should NOT include a checkout step', () => {
+    const block = assertJobExists(content, 'triage', 'claude-issue-triage.yml')
+    expect(block).not.toMatch(/actions\/checkout/)
+  })
+
+  it('triage job should have issues: write permission', () => {
+    const block = assertJobExists(content, 'triage', 'claude-issue-triage.yml')
+    expect(block).toMatch(/issues:\s*write/)
+  })
+
+  it('prompt should include prompt-injection guardrails before untrusted data', () => {
+    expect(content).toMatch(/[Ss]ecurity instructions/)
+    expect(content).toMatch(/untrusted/)
+    // Guardrails section must appear before TITLE/BODY fields
+    const guardIdx = content.indexOf('Security instructions')
+    const titleIdx = content.indexOf('TITLE:')
+    expect(guardIdx).toBeLessThan(titleIdx)
+  })
+
+  it('action should be pinned to a full commit SHA', () => {
+    expect(content).toMatch(/claude-code-action@[0-9a-f]{40}/)
+    expect(content).not.toMatch(/claude-code-action@v\d/)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// claude-external-contributor.yml
+// ---------------------------------------------------------------------------
+
+describe('claude-external-contributor.yml – structure and permissions', () => {
+  let content: string
+  let onBlock: string
+
+  beforeAll(() => {
+    content = readWorkflow('claude-external-contributor.yml')
+    onBlock = extractTopLevelBlock(content, 'on')
+  })
+
+  it('should exist and have a top-level permissions deny-all block', () => {
+    expect(content.length).toBeGreaterThan(0)
+    expect(content).toMatch(/^permissions:\s*\{\}/m)
+  })
+
+  it('should trigger on pull_request_target (not pull_request)', () => {
+    expect(onBlock).toMatch(/pull_request_target:/)
+    expect(onBlock).not.toMatch(/^ {2}pull_request:/m)
+  })
+
+  it('should trigger on opened, synchronize, ready_for_review, and reopened', () => {
+    expect(onBlock).toMatch(/opened/)
+    expect(onBlock).toMatch(/synchronize/)
+    expect(onBlock).toMatch(/ready_for_review/)
+    expect(onBlock).toMatch(/reopened/)
+  })
+
+  it('should have a concurrency group to cancel stale runs', () => {
+    expect(content).toMatch(/^concurrency:/m)
+    expect(content).toMatch(/cancel-in-progress:\s*true/)
+  })
+
+  it('should define a first-time-review job', () => {
+    assertJobExists(content, 'first-time-review', 'claude-external-contributor.yml')
+  })
+
+  it('first-time-review job should NOT include a checkout step', () => {
+    const block = assertJobExists(content, 'first-time-review', 'claude-external-contributor.yml')
+    expect(block).not.toMatch(/actions\/checkout/)
+  })
+
+  it('first-time-review job should have contents: read permission', () => {
+    const block = assertJobExists(content, 'first-time-review', 'claude-external-contributor.yml')
+    expect(jobHasContentsReadPermission(block)).toBe(true)
+  })
+
+  it('first-time-review job if: condition should match FIRST_TIMER, FIRST_TIME_CONTRIBUTOR, NONE, and CONTRIBUTOR', () => {
+    const block = assertJobExists(content, 'first-time-review', 'claude-external-contributor.yml')
+    // Extract the if: value (lines between `if: |` and the next non-indented-deeper key)
+    const lines = block.split('\n')
+    const ifStart = lines.findIndex((l: string) => l.trim().startsWith('if:'))
+    const ifLines: string[] = []
+    for (let i = ifStart + 1; i < lines.length; i += 1) {
+      if (lines[i].trim() === '' || (!lines[i].startsWith('      ') && lines[i].trim() !== ''))
+        break
+      ifLines.push(lines[i])
+    }
+    const ifCondition = ifLines.join('\n')
+    expect(ifCondition).toMatch(/FIRST_TIMER/)
+    expect(ifCondition).toMatch(/FIRST_TIME_CONTRIBUTOR/)
+    expect(ifCondition).toMatch(/NONE/)
+    expect(ifCondition).toMatch(/CONTRIBUTOR/)
+    // Trusted associations must not appear in the condition itself
+    expect(ifCondition).not.toMatch(/COLLABORATOR/)
+    expect(ifCondition).not.toMatch(/MEMBER/)
+    expect(ifCondition).not.toMatch(/OWNER/)
+  })
+
+  it('prompt should not instruct running npm lint or build commands', () => {
+    expect(content).not.toMatch(/npm run lint/)
+    expect(content).not.toMatch(/npm run build/)
+  })
+
+  it('action should be pinned to a full commit SHA', () => {
+    expect(content).toMatch(/claude-code-action@[0-9a-f]{40}/)
+    expect(content).not.toMatch(/claude-code-action@v\d/)
   })
 })

@@ -32,8 +32,14 @@ describe('iconLibrary', () => {
 
     it('should have all brand icons from iconNameMap in brandIconNames', () => {
       const expectedBrandIcons = [
-        'github', 'twitter', 'x-twitter', 'instagram',
-        'facebook', 'linkedin', 'apple', 'windows',
+        'github',
+        'twitter',
+        'x-twitter',
+        'instagram',
+        'facebook',
+        'linkedin',
+        'apple',
+        'windows',
       ]
 
       expectedBrandIcons.forEach((iconName) => {

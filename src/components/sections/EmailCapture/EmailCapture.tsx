@@ -138,12 +138,7 @@ export const EmailCapture = (): React.ReactElement => {
             <div className={styles.shareSection}>
               <p className={styles.shareText}>{COPY.shareText}</p>
               <div className={styles.socialButtons}>
-                <Button
-                  variant="secondary"
-                  size="medium"
-                  icon="fa-twitter"
-                  href={twitterShareUrl}
-                >
+                <Button variant="secondary" size="medium" icon="fa-twitter" href={twitterShareUrl}>
                   Twitter
                 </Button>
                 <Button

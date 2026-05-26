@@ -30,10 +30,22 @@ export function scrollToSection(sectionId: string): void {
     return
   }
 
+  // Respect prefers-reduced-motion: use instant scroll when the user prefers
+  // reduced motion. This also ensures Playwright tests (which emulate
+  // reducedMotion: 'reduce') get an instant scroll, preventing WebKit from
+  // cancelling an in-flight smooth scroll when focus() is called.
+  // The typeof matchMedia guard handles jsdom (unit tests), which doesn't
+  // implement matchMedia, keeping unit test behaviour unchanged (smooth).
+  const prefersReducedMotion =
+    typeof window !== 'undefined' &&
+    typeof window.matchMedia === 'function' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  const behavior: ScrollBehavior = prefersReducedMotion ? 'instant' : 'smooth'
+
   const element = document.getElementById(sectionId)
   if (element) {
     cancelPendingScroll(sectionId)
-    element.scrollIntoView({ behavior: 'smooth' })
+    element.scrollIntoView({ behavior })
     return
   }
 
@@ -47,7 +59,7 @@ export function scrollToSection(sectionId: string): void {
     const el = document.getElementById(sectionId)
     if (el) {
       cancelPendingScroll(sectionId)
-      el.scrollIntoView({ behavior: 'smooth' })
+      el.scrollIntoView({ behavior })
     }
   })
 

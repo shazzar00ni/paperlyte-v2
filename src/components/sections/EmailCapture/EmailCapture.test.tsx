@@ -36,7 +36,7 @@ describe('EmailCapture Section', () => {
     expect(screen.getByText(/Get early access before public launch/)).toBeInTheDocument()
     expect(screen.getByText(/Influence features and design decisions/)).toBeInTheDocument()
     expect(screen.getByText(/Lock in founder pricing/)).toBeInTheDocument()
-    expect(screen.getByText(/Receive exclusive productivity tips and updates/)).toBeInTheDocument()
+    expect(screen.getByText(/Get early product updates and insider tips/)).toBeInTheDocument()
   })
 
   it('renders privacy notice', () => {
@@ -82,9 +82,7 @@ describe('EmailCapture Section', () => {
     await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
 
     await waitFor(() => {
-      expect(screen.getByRole('alert')).toHaveTextContent(
-        /Failed to join waitlist\. Please try again\./
-      )
+      expect(screen.getByRole('alert')).toHaveTextContent(/Couldn't add you to the waitlist/i)
     })
   })
 
@@ -134,9 +132,7 @@ describe('EmailCapture Section', () => {
     await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
 
     await waitFor(() => {
-      expect(screen.getByRole('alert')).toHaveTextContent(
-        /Network error. Please check your connection/
-      )
+      expect(screen.getByRole('alert')).toHaveTextContent(/Connection error. Check your internet/)
     })
   })
 
@@ -144,6 +140,38 @@ describe('EmailCapture Section', () => {
     render(<EmailCapture />)
     const emailInput = screen.getByPlaceholderText('your@email.com') as HTMLInputElement
     expect(emailInput.required).toBe(true)
+  })
+
+  describe('Error handling', () => {
+    afterEach(() => {
+      vi.restoreAllMocks()
+    })
+
+    it('shows a network error message when a network failure occurs', async () => {
+      fetchMock.mockRejectedValueOnce(new TypeError('network request failed'))
+
+      const user = userEvent.setup()
+      render(<EmailCapture />)
+      await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
+      await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+
+      await waitFor(() => {
+        expect(screen.getByRole('alert')).toHaveTextContent(/Connection error/i)
+      })
+    })
+
+    it('shows a validation error message when email is flagged as invalid', async () => {
+      fetchMock.mockRejectedValueOnce(new Error('invalid email address'))
+
+      const user = userEvent.setup()
+      render(<EmailCapture />)
+      await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
+      await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+
+      await waitFor(() => {
+        expect(screen.getByRole('alert')).toHaveTextContent(/doesn't look right/i)
+      })
+    })
   })
 
   it('email input has aria-invalid=false and no aria-describedby when there is no error', () => {

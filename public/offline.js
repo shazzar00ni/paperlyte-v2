@@ -1,5 +1,6 @@
 'use strict'
 ;(function () {
+  // Keep in sync with the static <svg> inside #retry-btn in offline.html
   function createRetryIcon() {
     var svgNS = 'http://www.w3.org/2000/svg'
     var svg = document.createElementNS(svgNS, 'svg')

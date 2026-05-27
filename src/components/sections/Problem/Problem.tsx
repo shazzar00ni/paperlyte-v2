@@ -22,16 +22,21 @@ const COMPARISON_DATA: ComparisonItem[] = [
   },
   {
     competitor: 'You',
-    issues: ['Just want to write', 'Ideas that are vanishing', 'Simplicity that works'],
+    issues: [
+      'Just want to write',
+      'Ideas slipping away before you capture them',
+      'Simplicity that works',
+    ],
   },
 ]
 
+/** Renders the Problem section contrasting Paperlyte against overcomplicated competitor tools. */
 export const Problem = (): React.ReactElement => {
   return (
     <Section id="problem" background="surface">
       <div className={styles.container}>
         <AnimatedElement animation="fadeIn">
-          <h2 className={styles.title}>Why note-taking apps suck right now</h2>
+          <h2 className={styles.title}>Why note-taking apps keep slowing you down</h2>
         </AnimatedElement>
 
         <AnimatedElement animation="fadeIn" delay={100}>

@@ -33,7 +33,7 @@ Replace all placeholders with actual values before launch. If you see `**_**`, i
 
 ## Overview
 
-**Last Updated**: November 28, 2025
+**Last Updated**: May 27, 2026
 **Status**: 🟡 In Progress
 
 Use this checklist to track your progress toward legal compliance and production readiness.
@@ -1505,4 +1505,4 @@ When setting targets for compliance metrics, consider:
 
 ---
 
-Last Updated: March 28, 2026
+Last Updated: May 27, 2026

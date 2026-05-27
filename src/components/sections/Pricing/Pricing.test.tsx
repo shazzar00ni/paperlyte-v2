@@ -96,7 +96,9 @@ describe('Pricing', () => {
 
     const starIcon = container.querySelector('[data-icon="fa-star"]')
     expect(starIcon).toBeInTheDocument()
-    expect(starIcon).toHaveAttribute('aria-label', 'Most popular')
+    expect(starIcon).toHaveAttribute('aria-labelledby')
+    const titleId = starIcon!.getAttribute('aria-labelledby')!
+    expect(document.getElementById(titleId)).toHaveTextContent('Most popular')
   })
 
   it('should render plan icons', () => {
@@ -139,7 +141,9 @@ describe('Pricing', () => {
     expect(checkmarks.length).toBe(totalFeatures)
 
     checkmarks.forEach((checkmark) => {
-      expect(checkmark).toHaveAttribute('aria-label', 'Included')
+      expect(checkmark).toHaveAttribute('aria-labelledby')
+      const titleId = checkmark.getAttribute('aria-labelledby')!
+      expect(document.getElementById(titleId)).toHaveTextContent('Included')
     })
   })
 

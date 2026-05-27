@@ -232,9 +232,11 @@ test.describe('Landing Page', () => {
             if (last) lcp = last.renderTime || last.loadTime || last.startTime
           }
 
-          for (const entry of performance.getEntriesByType('layout-shift')) {
-            const ls = entry as PerformanceEntry & { hadRecentInput?: boolean; value: number }
-            if (!ls.hadRecentInput) cls += ls.value
+          if (cls === 0) {
+            for (const entry of performance.getEntriesByType('layout-shift')) {
+              const ls = entry as PerformanceEntry & { hadRecentInput?: boolean; value: number }
+              if (!ls.hadRecentInput) cls += ls.value
+            }
           }
 
           resolve({ fcp, lcp, cls })

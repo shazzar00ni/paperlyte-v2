@@ -2,6 +2,7 @@ import { Section } from '@components/layout/Section'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
 import styles from './Problem.module.css'
 
+/** Shape of a single competitor comparison entry in the Problem section. */
 interface ComparisonItem {
   competitor: string
   issues: string[]

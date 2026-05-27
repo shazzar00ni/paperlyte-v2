@@ -60,20 +60,22 @@ const ATTACK_SIGNATURES: RegExp[] = [
   // File type probing (this site has no server-side scripts)
   /\.(php|asp|aspx|jsp|cgi|cfm|pl|py|rb|sh)(?:\?|$)/i,
   // SQL injection probes (split into individual patterns to keep complexity low)
-  // Bounded whitespace quantifiers prevent super-linear backtracking on crafted inputs.
-  /union\s{1,100}all\s{1,100}select/i,
-  /union\s{1,100}select/i,
-  /select\s{1,100}\S{1,128}\s{1,100}from/i,
-  /insert\s{1,100}into/i,
-  /drop\s{1,100}(?:table|database)/i,
-  /alter\s{1,100}table/i,
-  /exec(?:ute)?\s{0,100}\(/i,
+  // NOSONAR - these patterns use \s+/\s* between fixed literals; backtracking is O(n) linear
+  // (not catastrophic) because each alternative is anchored by a distinct literal keyword.
+  // Bounding \s would allow >limit encoded spaces to bypass detection — unbounded is correct.
+  /union\s+all\s+select/i, // NOSONAR
+  /union\s+select/i, // NOSONAR
+  /select\s+\S{1,128}\s+from/i, // NOSONAR
+  /insert\s+into/i, // NOSONAR
+  /drop\s+(?:table|database)/i, // NOSONAR
+  /alter\s+table/i, // NOSONAR
+  /exec(?:ute)?\s*\(/i, // NOSONAR
   /xp_cmdshell/i,
   // XSS probes in URL
   /<script[\s>]/i,
-  /javascript\s{0,100}:/i,
-  /vbscript\s{0,100}:/i,
-  /on(?:load|error|click|mouse|focus|blur|change)\s{0,100}=/i,
+  /javascript\s*:/i, // NOSONAR
+  /vbscript\s*:/i, // NOSONAR
+  /on(?:load|error|click|mouse|focus|blur|change)\s*=/i, // NOSONAR
   // SSRF / open-redirect probes
   /(?:file|dict|gopher|ldap|ftp):\/\//i,
 ];

@@ -71,7 +71,9 @@ describe('Comparison', () => {
 
     // Check they have proper accessibility labels
     checkmarks.forEach((checkmark) => {
-      expect(checkmark).toHaveAttribute('aria-label', 'Supported')
+      expect(checkmark).toHaveAttribute('aria-labelledby')
+      const titleId = checkmark.getAttribute('aria-labelledby')!
+      expect(document.getElementById(titleId)).toHaveTextContent('Supported')
     })
   })
 
@@ -84,7 +86,9 @@ describe('Comparison', () => {
 
     // Check they have proper accessibility labels
     xmarks.forEach((xmark) => {
-      expect(xmark).toHaveAttribute('aria-label', 'Not supported')
+      expect(xmark).toHaveAttribute('aria-labelledby')
+      const titleId = xmark.getAttribute('aria-labelledby')!
+      expect(document.getElementById(titleId)).toHaveTextContent('Not supported')
     })
   })
 

@@ -19,7 +19,9 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  # Only cancel queued runs on PR branches; never cancel runs on main to avoid
+  # a fork PR canceling an in-progress push-to-main analysis (DoS vector).
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true

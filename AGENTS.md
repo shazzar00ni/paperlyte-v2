@@ -811,5 +811,6 @@ function Features() {
 - **README.md** - Project overview and setup instructions
 - **docs/DESIGN-SYSTEM.md** - Comprehensive design system documentation
 - **docs/ACCESSIBILITY.md** - Accessibility guidelines and checklist
-- **CONTRIBUTING.md** - Contribution guidelines
-- **SECURITY.md** - Security practices and vulnerability reporting
+- **docs/CONTRIBUTING.md** - Contribution guidelines
+- **docs/SECURITY-POLICY.md** - Security policy and vulnerability reporting
+- **docs/SECURITY.md** - Security practices for contributors

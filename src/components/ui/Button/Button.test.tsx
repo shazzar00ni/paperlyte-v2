@@ -78,10 +78,10 @@ describe('Button', () => {
   it('should render with icon', () => {
     const { container } = render(<Button icon="fa-download">Download</Button>)
 
-    // FontAwesome renders SVG, not CSS classes
-    const svg = container.querySelector('svg')
-    expect(svg).toBeInTheDocument()
-    expect(svg).toHaveAttribute('aria-hidden', 'true')
+    // Icon component renders with data-icon attribute on both SVG and Font Awesome fallback
+    const icon = container.querySelector('[data-icon="fa-download"]')
+    expect(icon).toBeInTheDocument()
+    expect(icon).toHaveAttribute('aria-hidden', 'true')
   })
 
   it('should apply custom className', () => {
@@ -182,6 +182,48 @@ describe('Button', () => {
       const link = screen.getByRole('link')
       expect(link).toBeInTheDocument()
       expect(link).toHaveAttribute('href', '../parent')
+    })
+
+    it('should render mailto: links as disabled buttons (not anchor links)', () => {
+      render(<Button href="mailto:user@example.com">Email us</Button>)
+
+      // mailto: is not http/https and not a relative path, so isSafeUrl rejects it
+      const button = screen.getByRole('button')
+      expect(button).toBeInTheDocument()
+      expect(button).toBeDisabled()
+    })
+
+    it('should render tel: links as disabled buttons (not anchor links)', () => {
+      render(<Button href="tel:+15551234567">Call us</Button>)
+
+      // tel: is not http/https and not a relative path, so isSafeUrl rejects it
+      const button = screen.getByRole('button')
+      expect(button).toBeInTheDocument()
+      expect(button).toBeDisabled()
+    })
+
+    it('should render hash-only anchor links as internal links without target="_blank"', () => {
+      render(<Button href="#features">Features</Button>)
+
+      // #features resolves to same origin, so isSafeUrl allows it
+      const link = screen.getByRole('link')
+      expect(link).toBeInTheDocument()
+      expect(link).toHaveAttribute('href', '#features')
+      // Hash links are same-page, so they must NOT open in a new tab
+      expect(link).not.toHaveAttribute('target')
+      expect(link).not.toHaveAttribute('rel')
+    })
+
+    it('should render as a plain button (not a link) for empty href', () => {
+      render(<Button href="">Empty</Button>)
+
+      // href="" is falsy, so the link branch is skipped entirely
+      // The component falls through to the plain <button> render path
+      const button = screen.getByRole('button')
+      expect(button).toBeInTheDocument()
+      expect(button.tagName).toBe('BUTTON')
+      // No href attribute should be present on a <button>
+      expect(button).not.toHaveAttribute('href')
     })
 
     it('should warn in development mode for unsafe URLs', () => {

@@ -2124,4 +2124,4 @@ This document should be reviewed and updated under the following circumstances:
 ---
 
 **Maintained by:** Paperlyte Engineering Team
-**Questions?** See [CONTRIBUTING.md](../CONTRIBUTING.md) for contribution guidelines.
+**Questions?** See [CONTRIBUTING.md](./CONTRIBUTING.md) for contribution guidelines.

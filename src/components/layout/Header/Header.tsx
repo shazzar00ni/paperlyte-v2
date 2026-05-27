@@ -42,7 +42,7 @@ export const Header = (): React.ReactElement => {
   const closeMobileMenu = useCallback((): void => {
     if (!mobileMenuOpen) return
     setMobileMenuOpen(false)
-    menuButtonRef.current?.focus()
+    menuButtonRef.current?.focus({ preventScroll: true })
   }, [mobileMenuOpen])
 
   const scrollToSection = useCallback(

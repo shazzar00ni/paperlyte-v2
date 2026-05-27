@@ -370,8 +370,13 @@ describe('package-lock.json – basic-ftp security update (GHSA-chqc-8p9q-pq6q, 
     expect(lockfile.packages).toHaveProperty('node_modules/basic-ftp')
   })
 
-  it('basic-ftp should NOT be the vulnerable version 5.2.0', () => {
-    expect(entry.version).not.toBe('5.2.0')
+  it('basic-ftp should NOT be in the vulnerable range (<= 5.3.0)', () => {
+    const [major, minor, patch] = entry.version.split('.').map(Number)
+    const isVulnerable =
+      major < 5 || (major === 5 && minor < 3) || (major === 5 && minor === 3 && patch <= 0)
+    expect(isVulnerable, `basic-ftp ${entry.version} is in the vulnerable range (<= 5.3.0)`).toBe(
+      false
+    )
   })
 
   it('basic-ftp version should be >= 5.3.1 (minimum safe for all known CVEs)', () => {

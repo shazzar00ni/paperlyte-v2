@@ -97,12 +97,17 @@ jobs:
         run: npm ci
 
       - name: Run tests with coverage
-        # Generate coverage even when tests fail to track coverage trends
+        # Generate coverage even when tests fail to track coverage trends.
+        # NODE_OPTIONS caps Node.js heap at 6 GB (ubuntu-latest has 7 GB total)
+        # to prevent silent OOM kills from V8 coverage instrumentation with 77+
+        # test files — an OOM kill produces zero output and no JUnit/coverage artifacts.
+        env:
+          NODE_OPTIONS: "--max-old-space-size=6144"
         run: npm run test:coverage -- --run --coverage.reportOnFailure
 
       - name: Upload coverage to Codecov
         if: ${{ !cancelled() }}
-        uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6.0.0
+        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354 # v6.0.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage/coverage-final.json
@@ -112,10 +117,10 @@ jobs:
 
       - name: Upload test results to Codecov
         if: ${{ !cancelled() }}
-        uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6.0.0
+        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354 # v6.0.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: "./junit.xml"
+          files: "test-results/junit.xml"
           report_type: test_results
           verbose: true
           fail_ci_if_error: false

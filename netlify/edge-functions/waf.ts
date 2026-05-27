@@ -231,6 +231,10 @@ function decodeIteratively(raw: string): string {
  * `decodeURIComponent` does not convert them. Without this step, payloads like
  * `union+select` would bypass whitespace-sensitive signatures.
  *
+ * A third canonicalized form (all `\s+` runs collapsed to a single space) is
+ * also checked so that multi-space padding — e.g. `union+++select` or
+ * `union%20%20%20select` — cannot bypass `\s+`-based signatures.
+ *
  * @param url - Parsed URL of the request.
  * @returns `forbidden()` on a signature match, `badRequest()` on malformed
  *   encoding, or `null` to continue.
@@ -245,7 +249,16 @@ function checkUrlSignatures(url: URL): Response | null {
     return badRequest();
   }
 
-  const targets = decoded === raw ? [raw] : [raw, decoded];
+  // Collapse all whitespace runs to a single space so that multi-space padding
+  // (e.g. "union   select" via repeated + or %20) cannot bypass \s+ signatures.
+  const canonicalized = decoded.replace(/\s+/g, " ");
+
+  // Build a deduplicated list: raw → decoded → canonicalized.
+  const seen = new Set<string>([raw]);
+  const targets: string[] = [raw];
+  if (!seen.has(decoded)) { seen.add(decoded); targets.push(decoded); }
+  if (!seen.has(canonicalized)) { targets.push(canonicalized); }
+
   for (const t of targets) {
     for (const pattern of ATTACK_SIGNATURES) {
       if (pattern.test(t)) return forbidden();

@@ -1,3 +1,5 @@
+<img width="1731" height="909" alt="1000012243" src="https://github.com/user-attachments/assets/b34a46a4-0f8b-402b-8ebe-271407834e5c" />
+
 # Paperlyte Landing Page
 
 > **Your thoughts, unchained.**

@@ -23,7 +23,7 @@ jobs:
           python-version: "3.x"
 
       - name: Install Python deps
-        run: pip install requests pandas
+        run: pip install requests==2.32.4 pandas==2.2.3
 
       - name: Generate weekly report
         env:

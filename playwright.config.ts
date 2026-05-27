@@ -6,7 +6,11 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 2 : undefined,
-  reporter: process.env.CI ? [['html'], ['github']] : 'list',
+  reporter: process.env.CI
+    ? process.env.GITHUB_ACTIONS
+      ? [['html'], ['github'], ['junit', { outputFile: 'test-results/e2e-junit.xml' }]]
+      : [['html'], ['junit', { outputFile: 'test-results/e2e-junit.xml' }]]
+    : 'list',
 
   // CI runners are slower: lazy-chunk loading + IntersectionObserver callbacks
   // can consume 2-3s of the default 5s budget. 10s prevents flaky timeouts
@@ -19,6 +23,9 @@ export default defineConfig({
     baseURL: process.env.BASE_URL ?? 'http://localhost:4173',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
+    // Force light color scheme so useTheme and theme-init.js start in a known
+    // state across all CI environments and headless browsers.
+    colorScheme: 'light',
   },
 
   projects: [

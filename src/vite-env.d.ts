@@ -22,6 +22,8 @@ interface ImportMetaEnv {
   readonly VITE_ANALYTICS_SCRIPT_URL?: string
   /** Enable debug mode for analytics */
   readonly VITE_ANALYTICS_DEBUG?: string
+  /** Allow theme preference to be persisted across visits. 'false' disables persistence; any other value (including absent) enables it. Must match the meta tag in index.html. */
+  readonly VITE_ALLOW_PERSISTENT_THEME?: string
 }
 
 interface ImportMeta {

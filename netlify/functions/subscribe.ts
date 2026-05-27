@@ -230,7 +230,7 @@ export const handler: Handler = async (event: HandlerEvent) => {
     // canonical form — matches the client's ordering in EmailCapture.
     const normalizedEmail = email.trim().toLowerCase();
 
-    const validation = validateEmail(normalizedEmail);
+    const validation = validateEmail(normalizedEmail); // NOSONAR - EMAIL_REGEX (validation.ts) has disjoint alternation branches; no ReDoS risk
     if (!validation.isValid) {
       return {
         statusCode: 400,

@@ -138,18 +138,13 @@ export const EmailCapture = (): React.ReactElement => {
             <div className={styles.shareSection}>
               <p className={styles.shareText}>{COPY.shareText}</p>
               <div className={styles.socialButtons}>
-                <Button
-                  variant="secondary"
-                  size="medium"
-                  icon="fa-brands fa-twitter"
-                  href={twitterShareUrl}
-                >
+                <Button variant="secondary" size="medium" icon="fa-twitter" href={twitterShareUrl}>
                   Twitter
                 </Button>
                 <Button
                   variant="secondary"
                   size="medium"
-                  icon="fa-brands fa-facebook"
+                  icon="fa-facebook"
                   href={facebookShareUrl}
                 >
                   Facebook
@@ -157,7 +152,7 @@ export const EmailCapture = (): React.ReactElement => {
                 <Button
                   variant="secondary"
                   size="medium"
-                  icon="fa-brands fa-linkedin"
+                  icon="fa-linkedin"
                   href={linkedinShareUrl}
                 >
                   LinkedIn
@@ -217,7 +212,7 @@ export const EmailCapture = (): React.ReactElement => {
               >
                 {isLoading ? COPY.loadingText : COPY.submitText}
                 {!isLoading && (
-                  <i className="fa-solid fa-arrow-right" style={{ marginLeft: '0.5rem' }} />
+                  <Icon name="fa-arrow-right" size="sm" style={{ marginLeft: '0.5rem' }} />
                 )}
               </button>
             </div>

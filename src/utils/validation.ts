@@ -30,7 +30,7 @@ export interface ValidationResult {
  * This eliminates overlapping quantifiers by making choices mutually exclusive.
  */
 export const EMAIL_REGEX =
-  /^[a-zA-Z0-9](?:[a-zA-Z0-9]|[._+-][a-zA-Z0-9])*@[a-zA-Z0-9](?:[a-zA-Z0-9]|[.-][a-zA-Z0-9])*\.[a-zA-Z]{2,}$/
+  /^[a-zA-Z0-9](?:[a-zA-Z0-9]|[._+-][a-zA-Z0-9])*@[a-zA-Z0-9](?:[a-zA-Z0-9]|[.-][a-zA-Z0-9])*\.[a-zA-Z]{2,}$/ // NOSONAR - safe: alternation branches have disjoint leading chars ([a-zA-Z0-9] vs [._+-]/[.-]), so the engine never backtracks; O(n) complexity
 
 /**
  * Predicate wrapper around validateEmail.

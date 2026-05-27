@@ -1,0 +1,61 @@
+Type,Title,Last Visited,Host
+Pull Request,test(flaky): fix landing-page.spec.ts.Landing Page › should submit waitlist email and show success state,2026-05-24T22:25:58Z,github.com
+Pull Request,docs: daily PR audit summary and maintenance system restoration (2026-05-24),2026-05-24T10:44:18Z,github.com
+Pull Request,fix(security): resolve SonarCloud regex ReDoS hotspots,2026-05-24T08:11:18Z,github.com
+Pull Request,ci: cap Node.js heap at 6 GB in GitHub Actions test step,2026-05-24T06:57:08Z,github.com
+Pull Request,ci: raise Node.js heap limit to 4 GB in test job,2026-05-24T08:16:58Z,github.com
+Pull Request,ci: add Netlify deploy job to CircleCI workflow,2026-05-24T08:22:59Z,github.com
+Pull Request,Reject backslash-normalized protocol-relative URLs in navigation helpers,2026-05-24T08:27:30Z,github.com
+Pull Request,tests: add capture helper and empty-manifest test for Lighthouse summary script,2026-05-24T04:09:02Z,github.com
+Issue,fix hero section and font size ,2026-05-23T16:02:29Z,github.com
+Pull Request,Fix flaky waitlist E2E fetch mock to capture Request bodies,2026-05-23T13:20:06Z,github.com
+Pull Request,docs: automated daily PR audit summary (2026-05-23) and CI fixes,2026-05-23T10:37:00Z,github.com
+Pull Request,chore(deps): bump qs and express,2026-05-23T13:27:58Z,github.com
+Pull Request,fix: block '/\\' protocol-relative normalization in isSafeUrl,2026-05-23T20:12:27Z,github.com
+Pull Request,Lazy-load below-the-fold sections and defer Sentry Replay initialization,2026-05-22T12:20:55Z,github.com
+Pull Request,Automate Daily PR Review and Audit Summary,2026-05-22T11:10:13Z,github.com
+Issue,"This Week In Paperlyte-V2 - May 15 - May 22, 2026",2026-05-22T15:42:14Z,github.com
+Issue,"This Week In Paperlyte-V2 - May 8 - May 14, 2026",2026-05-22T08:17:56Z,github.com
+Pull Request,Fix security header rule ordering,2026-05-22T12:19:31Z,github.com
+Pull Request,"Daily PR Review and Audit - May 21, 2026",2026-05-21T10:50:45Z,github.com
+Pull Request,Daily PR Review Summary - 2026-05-20,2026-05-20T11:38:54Z,github.com
+Pull Request,Daily PR Review Summary and Automation Restoration (2026-05-19),2026-05-19T11:23:55Z,github.com
+Pull Request,ci: bump anthropics/claude-code-action from 1.0.120 to 1.0.123,2026-05-20T03:05:10Z,github.com
+Pull Request,ci: bump mikepenz/release-changelog-builder-action from 6.2.1 to 6.2.2,2026-05-20T04:05:10Z,github.com
+Pull Request,ci: bump actions/stale from 5 to 10,2026-05-20T04:08:18Z,github.com
+Pull Request,ci: bump actions/labeler from 6.0.1 to 6.1.0,2026-05-20T04:08:57Z,github.com
+Pull Request,ci: bump github/codeql-action from 4.35.4 to 4.35.5,2026-05-20T04:09:40Z,github.com
+Pull Request,chore(deps-dev): bump @playwright/test from 1.59.1 to 1.60.0,2026-05-23T19:12:25Z,github.com
+Pull Request,chore(deps-dev): bump the development-dependencies group across 1 directory with 4 updates,2026-05-22T12:17:37Z,github.com
+Pull Request,chore(deps-dev): bump vitest from 4.1.5 to 4.1.7,2026-05-23T16:09:49Z,github.com
+Pull Request,chore(deps-dev): bump @vitest/coverage-v8 from 4.1.5 to 4.1.6,2026-05-20T04:33:41Z,github.com
+Commit,Merge pull request #1007 from shazzar00ni/claude/intelligent-lamport-YegzL,2026-05-24T06:57:05Z,github.com
+Commit,ci: cap Node.js heap at 6 GB in GitHub Actions test step,2026-05-24T04:59:18Z,github.com
+Commit,Merge pull request #982 from shazzar00ni/dependabot/npm_and_yarn/vitest-4.1.6,2026-05-23T16:03:13Z,github.com
+Commit,Merge branch 'main' into dependabot/npm_and_yarn/vitest-4.1.6,2026-05-23T16:02:09Z,github.com
+Commit,Merge pull request #999 from shazzar00ni/dependabot/npm_and_yarn/multi-f792d6d6d9,2026-05-23T13:22:44Z,github.com
+Commit,Merge branch 'main' into dependabot/npm_and_yarn/multi-f792d6d6d9,2026-05-23T13:21:36Z,github.com
+Commit,Merge pull request #1001 from shazzar00ni/codex/fix-waitlist-email-submission-test,2026-05-23T13:20:03Z,github.com
+Commit,Update tests/e2e/landing-page.spec.ts,2026-05-23T12:13:33Z,github.com
+Commit,Fix waitlist E2E fetch mock body capture for Request inputs,2026-05-23T12:07:58Z,github.com
+Commit,Merge branch 'main' into dependabot/npm_and_yarn/vitest-4.1.6,2026-05-23T11:47:15Z,github.com
+Commit,chore(deps): bump qs and express,2026-05-23T04:57:29Z,github.com
+Commit,Merge pull request #933 from shazzar00ni/dependabot/npm_and_yarn/terser-5.47.1,2026-05-23T04:56:24Z,github.com
+Commit,Merge branch 'main' into dependabot/npm_and_yarn/terser-5.47.1,2026-05-23T04:55:26Z,github.com
+Commit,Merge pull request #651 from shazzar00ni/claude/enhance-mobile-responsiveness-GCMC6,2026-05-22T16:52:02Z,github.com
+Commit,Merge branch 'main' into claude/enhance-mobile-responsiveness-GCMC6,2026-05-22T16:51:37Z,github.com
+Commit,chore(deps-dev): bump terser from 5.46.2 to 5.48.0,2026-05-22T12:19:51Z,github.com
+Commit,chore(deps-dev): bump vitest from 4.1.5 to 4.1.7,2026-05-22T12:19:43Z,github.com
+Commit,Merge pull request #983 from shazzar00ni/dependabot/npm_and_yarn/development-dependencies-1359f535e9,2026-05-22T12:17:35Z,github.com
+Commit,"fix: address review feedback on font name, px units, and keyboard focus",2026-05-22T08:06:08Z,github.com
+Commit,chore(deps-dev): bump the development-dependencies group across 1 directory with 4 updates,2026-05-22T08:05:48Z,github.com
+Commit,Update src/components/sections/Pricing/Pricing.module.css,2026-05-22T08:04:16Z,github.com
+Commit,Merge branch 'main' into claude/enhance-mobile-responsiveness-GCMC6,2026-05-22T08:03:16Z,github.com
+Commit,Merge pull request #720 from shazzar00ni/claude/add-circleci-config-OrVJ4,2026-05-22T08:02:48Z,github.com
+Commit,merge: sync with main; fix reducedMotion TS error and align lighthouserc,2026-05-22T07:40:51Z,github.com
+Commit,Merge pull request #653 from shazzar00ni/claude/fix-codebase-review-issues-kjZsN,2026-05-21T10:24:10Z,github.com
+Commit,"fix(problem,solution): replace raw rem values with design tokens in 480px blocks",2026-05-21T10:24:02Z,github.com
+Commit,fix(config): restore as const to PERSISTENCE_CONFIG,2026-05-21T10:22:40Z,github.com
+Commit,Merge branch 'main' into claude/fix-codebase-review-issues-kjZsN,2026-05-21T10:22:25Z,github.com
+Commit,fix(a11y): restore focus-return to menu button on mobile nav-link click,2026-05-21T10:17:50Z,github.com
+Commit,"fix(privacy,terms): replace undefined CSS tokens with defined palette equivalents",2026-05-21T10:17:29Z,github.com

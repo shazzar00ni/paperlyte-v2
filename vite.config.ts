@@ -1,8 +1,60 @@
 import { defineConfig } from 'vite'
-import type { Plugin } from 'vite'
+import type { Plugin, IndexHtmlTransformContext, HtmlTagDescriptor } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 import { codecovRollupPlugin } from '@codecov/rollup-plugin'
+
+/**
+ * Regular expression that matches only the Inter latin static font files
+ * explicitly imported in main.tsx:
+ *   @fontsource/inter/latin-400.css → inter-latin-400-normal-[hash].woff2
+ *   @fontsource/inter/latin-500.css → inter-latin-500-normal-[hash].woff2
+ *   @fontsource/inter/latin-600.css → inter-latin-600-normal-[hash].woff2
+ *   @fontsource/inter/latin-700.css → inter-latin-700-normal-[hash].woff2
+ */
+const INTER_FONT_PATTERN = /inter-latin-\d+-normal-[^/]+\.woff2$/
+
+/**
+ * Vite plugin that injects `<link rel="preload">` tags for bundled Inter latin
+ * woff2 fonts into the production HTML.
+ *
+ * Fonts discovered via CSS `@font-face` create a depth-2 critical-request chain
+ * (HTML → CSS → fonts) that fails the `network-dependency-tree-insight` Lighthouse
+ * assertion. Preloading moves the fonts to depth 1 so they load in parallel with CSS.
+ *
+ * Only the four Inter latin weights imported in `main.tsx` are preloaded (matched by
+ * {@link INTER_FONT_PATTERN}). Preloading every `.woff2` in the bundle would
+ * unnecessarily prioritise fonts not needed for the initial render.
+ *
+ * @returns A Vite {@link Plugin} that runs during the `build` phase only.
+ */
+function fontPreloadPlugin(): Plugin {
+  return {
+    name: 'font-preload',
+    apply: 'build',
+    transformIndexHtml: {
+      order: 'post',
+      handler(_html: string, ctx: IndexHtmlTransformContext): HtmlTagDescriptor[] | void {
+        const bundle = ctx.bundle
+        if (!bundle) return
+        return Object.keys(bundle)
+          .filter((key) => INTER_FONT_PATTERN.test(key))
+          .sort()
+          .map((key) => ({
+            tag: 'link',
+            attrs: {
+              rel: 'preload',
+              href: `/${key}`,
+              as: 'font',
+              type: 'font/woff2',
+              crossorigin: 'anonymous',
+            },
+            injectTo: 'head' as const,
+          }))
+      },
+    },
+  }
+}
 
 /**
  * Plugin to inject development-only Content Security Policy
@@ -52,8 +104,8 @@ function cspPlugin(): Plugin {
       // - 'unsafe-inline' is required for Vite's dev server CSS injection during HMR
       // - ws: wss: enables WebSocket connections for Vite dev server HMR
       // - All fonts and icons are self-hosted (no external CDN dependencies)
-      // - Fonts: @fontsource/inter, Icons: @fortawesome/fontawesome-free
-      const devCSP = `default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' ws: wss:; frame-ancestors 'none'; base-uri 'self'; form-action 'self';`
+      // - Fonts: @fontsource/inter, Icons: bundled custom SVG paths
+      const devCSP = `default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' ws: wss:; worker-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';`
 
       // Inject CSP meta tag before closing </head> tag (dev only)
       const cspMetaTag = `    <!-- Content Security Policy (development only) -->
@@ -89,13 +141,14 @@ function cspPlugin(): Plugin {
 export default defineConfig({
   // React plugin with Fast Refresh for instant Hot Module Replacement
   // CSP plugin for environment-aware security headers
-  // Codecov Rollup plugin for bundle analysis (Vite 7 compatible)
+  // Codecov Rollup plugin for bundle analysis (Vite 8 compatible)
   // Note: Using @codecov/rollup-plugin instead of @codecov/vite-plugin
-  // because the Vite plugin only supports Vite 4.x-6.x (project uses Vite 7.3.0)
-  // Rollup plugin works with Vite 7 since Vite uses Rollup ^4.43.0 internally
+  // because the Vite plugin only supports Vite 4.x-6.x (project uses Vite 8.0.10)
+  // Rollup plugin works with Vite 8 since Vite uses Rollup ^4.43.0 internally
   plugins: [
     react(),
     cspPlugin(),
+    fontPreloadPlugin(),
     // Only instantiate Codecov plugin when token is present (CI environment)
     ...(process.env.CODECOV_TOKEN
       ? [
@@ -127,7 +180,7 @@ export default defineConfig({
   build: {
     // Split CSS into separate files for better caching
     cssCodeSplit: true,
-    // Use esbuild for minification (explicit devDependency, supported by Vite 7)
+    // Use esbuild for minification (explicit devDependency, supported by Vite 8)
     minify: 'esbuild',
     // Target modern browsers for smaller bundle sizes
     target: 'es2020',
@@ -142,10 +195,6 @@ export default defineConfig({
           // React vendor bundle (~190KB) - changes rarely, good cache hit rate
           if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
             return 'react-vendor'
-          }
-          // Font Awesome is large (~100KB+), split it out
-          if (id.includes('node_modules/@fortawesome')) {
-            return 'fontawesome'
           }
           // Keep app code together for better tree-shaking and compression
           // Small chunks (constants, utils, UI components) stay in main bundle

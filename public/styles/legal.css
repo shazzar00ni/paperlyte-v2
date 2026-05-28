@@ -5,7 +5,6 @@
   font-weight: 100 900;
   font-display: swap;
   src: url('/fonts/Inter-Variable.woff2') format('woff2-variations');
-  font-named-instance: 'Regular';
 }
 
 /* Self-hosted Playfair Display Variable Font */
@@ -25,7 +24,7 @@
 
 :root {
   --color-primary: #7c3aed;
-  --color-background: #ffffff;
+  --color-background: #fff;
   --color-surface: #f9fafb;
   --color-text: #111827;
   --color-text-secondary: #6b7280;

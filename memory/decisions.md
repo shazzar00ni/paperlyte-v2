@@ -156,6 +156,18 @@ This file tracks key architectural, design, and technical decisions made during 
 - **Rationale**: The Vite config uses `react()` with no Babel plugin or `babel-plugin-react-compiler` dependency, so automatic compiler memoization cannot be assumed. Avoid adding manual memoization by default — only add it when a measured performance problem exists. Note: some code comments in the repo incorrectly state the compiler is active; these are aspirational/stale and should be corrected when encountered.
 - **Alternatives considered**: Enable React Compiler via `babel-plugin-react-compiler`, manual memoization everywhere
 
+## Tooling / Dependencies
+
+- **Date**: 2026-05-28
+- **Decision**: `eslint` and `@eslint/js` use caret range `^10` (not pinned patch versions) in `package.json`
+- **Rationale**: PR #652 — pinned versions prevented Dependabot from picking up patch/minor security fixes. `eslint-plugin-react-hooks@^7.1.1` (on main) officially supports `eslint@^10.0.0`, removing the former blocker. ESLint ^10 also resolves the `brace-expansion` moderate CVE chain present in ^9.
+- **Alternatives considered**: Pinned versions (previous state), downgrade to ^9 (rejected — unfixable moderate CVEs)
+
+- **Date**: 2026-05-28
+- **Decision**: When regenerating `package-lock.json` (e.g. during rebase conflict resolution), always verify cross-platform optional native bindings are present — specifically `@esbuild/*`, `@rolldown/binding-*`, `lightningcss-*`, `@img/sharp-*` for all platforms (darwin, win32, linux ARM, etc.)
+- **Rationale**: `npm install` on Linux x64 can produce a platform-pruned lockfile that makes `npm ci` fail on macOS/Windows CI or developer machines. Correct approach: copy main's lockfile and apply only the intended diff, or run `npm install --prefer-offline` from a clean state that fetches all optional metadata.
+- **Alternatives considered**: Platform-specific CI matrices (not needed — the lockfile should be cross-platform)
+
 ## CSS / Theming
 
 - **Date**: 2026-04-29

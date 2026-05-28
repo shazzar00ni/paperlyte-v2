@@ -428,16 +428,28 @@ test.describe('Landing Page', () => {
     const hasBoxShadow = outline.boxShadow.trim() !== '' && outline.boxShadow.trim() !== 'none'
     expect(hasOutline || hasBoxShadow).toBeTruthy()
 
-    // Verify Tab moves focus forward to the next interactive element (not body/html).
-    await page.keyboard.press('Tab')
-    const afterTabTag = await page.evaluate(() => document.activeElement?.tagName.toLowerCase())
-    expect(['a', 'button', 'input', 'select', 'textarea'].includes(afterTabTag ?? '')).toBe(true)
-
-    // Verify Shift+Tab moves focus backward to an interactive element.
-    await page.keyboard.press('Shift+Tab')
-    const afterShiftTabTag = await page.evaluate(() => document.activeElement?.tagName.toLowerCase())
-    expect(['a', 'button', 'input', 'select', 'textarea'].includes(afterShiftTabTag ?? '')).toBe(
-      true
+    // Verify Tab moves focus forward to the next interactive element.
+    // Snapshot the element's identity before pressing Tab — checking only the
+    // tag after the keypress would pass even if focus got stuck (e.g. the
+    // already-focused Features link is already an <a> tag).
+    const beforeTabHtml = await page.evaluate(
+      () => (document.activeElement as HTMLElement | null)?.outerHTML.slice(0, 200) ?? null
     )
+    await page.keyboard.press('Tab')
+    const afterTab = await page.evaluate(() => ({
+      tag: document.activeElement?.tagName.toLowerCase() ?? '',
+      html: (document.activeElement as HTMLElement | null)?.outerHTML.slice(0, 200) ?? null,
+    }))
+    expect(afterTab.html, 'Tab should move focus to a new element').not.toBe(beforeTabHtml)
+    expect(['a', 'button', 'input', 'select', 'textarea'].includes(afterTab.tag)).toBe(true)
+
+    // Verify Shift+Tab moves focus backward (to a different element than current).
+    await page.keyboard.press('Shift+Tab')
+    const afterShiftTab = await page.evaluate(() => ({
+      tag: document.activeElement?.tagName.toLowerCase() ?? '',
+      html: (document.activeElement as HTMLElement | null)?.outerHTML.slice(0, 200) ?? null,
+    }))
+    expect(afterShiftTab.html, 'Shift+Tab should move focus to a new element').not.toBe(afterTab.html)
+    expect(['a', 'button', 'input', 'select', 'textarea'].includes(afterShiftTab.tag)).toBe(true)
   })
 })

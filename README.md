@@ -28,6 +28,7 @@ Lightning-fast, distraction-free note-taking app — landing page built with Rea
 ![React](https://img.shields.io/badge/React-19.2.0-blue)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-blue)
 ![Vite](https://img.shields.io/badge/Vite-7.2.4-646CFF)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fshazzar00ni%2Fpaperlyte-v2.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fshazzar00ni%2Fpaperlyte-v2?ref=badge_shield)
 
 > **Security:** See our [Security Practices](./docs/SECURITY.md) for vulnerability reporting, contributor guidelines, and supply chain security.
 
@@ -319,6 +320,9 @@ This project is licensed under the MIT License - see the [LICENSE](./LICENSE) fi
 ---
 
 Built with by the Paperlyte team. Questions? Open an issue or contact us at [hello@paperlyte.app](mailto:hello@paperlyte.app).
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fshazzar00ni%2Fpaperlyte-v2.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fshazzar00ni%2Fpaperlyte-v2?ref=badge_large)
 
 ## Lighthouse CI: Configurable numberOfRuns for Local vs. CI
 

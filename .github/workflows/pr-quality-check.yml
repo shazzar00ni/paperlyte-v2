@@ -22,11 +22,13 @@ jobs:
           fetch-depth: 0
 
       - name: PR Size Check
+        env:
+          BASE_REF: ${{ github.base_ref }}
         run: |
           # Count changed files and lines
-          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | wc -l)
-          ADDED_LINES=$(git diff --numstat origin/${{ github.base_ref }}...HEAD | awk '{added+=$1} END {print added}')
-          DELETED_LINES=$(git diff --numstat origin/${{ github.base_ref }}...HEAD | awk '{deleted+=$2} END {print deleted}')
+          CHANGED_FILES=$(git diff --name-only "origin/$BASE_REF"...HEAD | wc -l)
+          ADDED_LINES=$(git diff --numstat "origin/$BASE_REF"...HEAD | awk '{added+=$1} END {print added}')
+          DELETED_LINES=$(git diff --numstat "origin/$BASE_REF"...HEAD | awk '{deleted+=$2} END {print deleted}')
           TOTAL_CHANGES=$((ADDED_LINES + DELETED_LINES))
 
           echo "## 📊 PR Size Analysis" >> $GITHUB_STEP_SUMMARY

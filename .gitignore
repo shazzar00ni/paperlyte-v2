@@ -55,3 +55,12 @@ public/favicon.ico
 # Lighthouse CI local run artifacts
 .lighthouseci/
 .lighthouseci-*
+
+# PR Audit Artifacts
+audit_results.json
+daily_summary.txt
+manual_feedback.txt
+
+# Python
+__pycache__/
+*.pyc

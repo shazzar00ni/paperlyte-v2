@@ -253,6 +253,14 @@ test.describe('Landing Page', () => {
       .locator('#email-capture')
       .getByRole('button', { name: /join the waitlist/i })
 
+    // Scroll #email-capture into view so the IntersectionObserver fires for every
+    // AnimatedElement wrapping the form, and wait for the submit button to be
+    // visible before interacting. Without this, headless CI browsers start with
+    // the section below the fold; the observer never fires, the animated wrapper
+    // stays at opacity:0, and Playwright can miss the click or the field fill.
+    await page.locator('#email-capture').scrollIntoViewIfNeeded()
+    await expect(submitButton).toBeVisible()
+
     // Use mixed-case to verify the component normalises (trim + lowercase) before POSTing.
     // Use a unique timestamp to avoid duplicate-rejection flakiness if pointed at a real backend.
     const timestamp = Date.now()

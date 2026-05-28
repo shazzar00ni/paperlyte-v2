@@ -18,6 +18,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
 
       - name: Label based on changed files
         uses: actions/labeler@f27b608878404679385c85cfa523b85ccb86e213  # v6.1.0

@@ -194,8 +194,8 @@ export const handler: Handler = async (event: HandlerEvent) => {
   try {
     // Get IP address for rate limiting
     const ip =
-      event.headers["x-forwarded-for"]?.split(",")[0]?.trim() ??
-      event.headers["client-ip"]?.trim() ??
+      event.headers["x-forwarded-for"]?.split(",")[0]?.trim() ||
+      event.headers["client-ip"]?.trim() ||
       "unknown";
 
     // Check rate limit

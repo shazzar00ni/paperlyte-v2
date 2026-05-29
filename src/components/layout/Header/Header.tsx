@@ -13,6 +13,8 @@ import {
 import { scrollToSection as scrollToSectionUtil } from '@utils/navigation'
 import styles from './Header.module.css'
 
+type SectionId = 'features' | 'download'
+
 /**
  * Main navigation header component with responsive mobile menu
  * Features smooth scrolling to sections, keyboard navigation, focus trap, and theme toggle
@@ -30,8 +32,6 @@ import styles from './Header.module.css'
  * </main>
  * ```
  */
-type SectionId = 'features' | 'download'
-
 export const Header = (): React.ReactElement => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const menuButtonRef = useRef<HTMLButtonElement>(null)

@@ -5,6 +5,7 @@ import { safeNavigate } from '@/utils/navigation'
 import { BUTTON_LABELS } from './constants'
 import styles from './ServerErrorPage.module.css'
 
+/** Props for the {@link ServerErrorPage} 500 error component. */
 interface ServerErrorPageProps {
   /**
    * Custom error message to display (optional)

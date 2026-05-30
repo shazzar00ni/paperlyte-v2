@@ -3,6 +3,7 @@ import { Icon } from '@/components/ui/Icon'
 import { logError } from '@/utils/monitoring'
 import styles from './OfflinePage.module.css'
 
+/** Props for the {@link OfflinePage} offline fallback component. */
 interface OfflinePageProps {
   /**
    * Custom message to display (optional)

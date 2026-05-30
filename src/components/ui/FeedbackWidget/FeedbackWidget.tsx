@@ -11,11 +11,13 @@ interface Focusable {
   focus: () => void
 }
 
+/** Data submitted by the user through the feedback form. */
 interface FeedbackFormData {
   type: FeedbackType
   message: string
 }
 
+/** Props for the {@link FeedbackWidget} floating feedback button and modal. */
 interface FeedbackWidgetProps {
   onSubmit?: (data: FeedbackFormData) => Promise<void> | void
 }

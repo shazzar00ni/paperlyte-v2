@@ -3,6 +3,7 @@ import { Icon } from '@/components/ui/Icon'
 import { safeNavigate } from '@/utils/navigation'
 import styles from './NotFoundPage.module.css'
 
+/** Props for the {@link NotFoundPage} 404 error component. */
 interface NotFoundPageProps {
   /**
    * Custom message to display (optional)

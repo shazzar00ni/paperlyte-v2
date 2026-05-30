@@ -39,11 +39,11 @@ interface CounterAnimationProps {
 /**
  * Easing functions for smooth animations
  */
-const easingFunctions = {
-  linear: (t: number) => t,
-  easeOutQuart: (t: number) => 1 - Math.pow(1 - t, 4),
-  easeOutExpo: (t: number) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t)),
-}
+const easingFunctions = new Map<string, (t: number) => number>([
+  ['linear', (t: number) => t],
+  ['easeOutQuart', (t: number) => 1 - Math.pow(1 - t, 4)],
+  ['easeOutExpo', (t: number) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t))],
+])
 
 /**
  * Format number with thousands separator
@@ -125,7 +125,8 @@ export const CounterAnimation = ({
 
         const elapsed = timestamp - startTime.current
         const progress = Math.min(elapsed / animDuration, 1)
-        const easedProgress = easingFunctions[animEasing](progress)
+        const easingFn = easingFunctions.get(animEasing) ?? easingFunctions.get('linear')!
+        const easedProgress = easingFn(progress)
         const currentValue = animStart + (animEnd - animStart) * easedProgress
 
         setAnimatedValue(currentValue)

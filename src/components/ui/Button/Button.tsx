@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react'
+import { type ReactNode, memo } from 'react'
 import { Icon } from '@components/ui/Icon'
 import { isSafeUrl } from '@utils/navigation'
 import styles from './Button.module.css'
@@ -51,7 +51,7 @@ interface ButtonProps {
  * <Button disabled onClick={handleClick}>Submit</Button>
  * ```
  */
-export const Button = ({
+const ButtonComponent = ({
   children,
   variant = 'primary',
   size = 'medium',
@@ -101,6 +101,8 @@ export const Button = ({
           disabled={true}
           aria-label={ariaLabel}
           aria-disabled="true"
+          data-variant={variant}
+          data-size={size}
         >
           {content}
         </button>
@@ -114,6 +116,8 @@ export const Button = ({
         aria-label={ariaLabel}
         aria-disabled={disabled ? 'true' : 'false'}
         onClick={disabled ? (e) => e.preventDefault() : onClick}
+        data-variant={variant}
+        data-size={size}
         {...(href.startsWith('http') && {
           target: '_blank',
           rel: 'noopener noreferrer',
@@ -131,8 +135,13 @@ export const Button = ({
       onClick={onClick}
       disabled={disabled}
       aria-label={ariaLabel}
+      data-variant={variant}
+      data-size={size}
     >
       {content}
     </button>
   )
 }
+
+export const Button = memo(ButtonComponent)
+Button.displayName = 'Button'

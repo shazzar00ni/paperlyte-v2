@@ -8,9 +8,6 @@ import '@fontsource/inter/latin-400.css'
 import '@fontsource/inter/latin-500.css'
 import '@fontsource/inter/latin-600.css'
 import '@fontsource/inter/latin-700.css'
-// Font Awesome icon library (tree-shaken, ~150-180 KB savings)
-// Only icons actually used in the app are imported
-import './utils/iconLibrary'
 import './index.css'
 import App from './App.tsx'
 import { updateMetaTags } from './utils/env'
@@ -67,6 +64,21 @@ if (import.meta.env.PROD && import.meta.env.VITE_SENTRY_DSN) {
 
 // Initialize environment-aware meta tags
 updateMetaTags()
+
+// Register service worker for PWA offline support (production only)
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('/sw.js', { updateViaCache: 'none' })
+      .catch((error: unknown) => {
+        monitoring.logError(
+          error instanceof Error ? error : new Error('Service worker registration failed'),
+          { severity: 'low', tags: { action: 'register' } },
+          'serviceWorker'
+        )
+      })
+  })
+}
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

@@ -26,14 +26,13 @@
   },
   "dependencies": {
     "@fontsource/inter": "^5.2.8",
-    "@sentry/react": "^10.51.0",
-    "@testing-library/dom": "^10.4.1",
+    "@sentry/react": "^10.54.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5"
   },
   "devDependencies": {
     "@codecov/rollup-plugin": "^2.0.1",
-    "@eslint/js": "10.0.1",
+    "@eslint/js": "^10",
     "@lhci/cli": "^0.15.1",
     "@netlify/functions": "^5.2.0",
     "@playwright/test": "1.59.1",
@@ -49,7 +48,7 @@
     "@vitest/coverage-v8": "^4.1.6",
     "autoprefixer": "^10.5.0",
     "esbuild": "^0.28.0",
-    "eslint": "10.4.0",
+    "eslint": "^10",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",
     "eslint-plugin-react-hooks": "^7.1.1",
@@ -90,7 +89,7 @@
     "lodash": "^4.18.1",
     "lodash-es": "^4.18.1",
     "path-to-regexp": "^0.1.13",
-    "tmp": "^0.2.5",
+    "tmp": "^0.2.6",
     "undici": "^7.20.0",
     "extract-zip": {
       "yauzl": "^3.2.1"

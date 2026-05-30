@@ -2,7 +2,7 @@
   "mcpServers": {
     "playwright": {
       "command": "npx",
-      "args": ["@playwright/mcp@latest"],
+      "args": ["@playwright/mcp@0.0.75", "--caps=devtools"],
       "env": {
         "PLAYWRIGHT_BROWSERS_PATH": "0"
       }

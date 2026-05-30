@@ -1,18 +1,10 @@
 {
   "mcpServers": {
-    "chrome-devtools": {
+    "playwright": {
       "command": "npx",
-      "args": [
-        "-y",
-        "chrome-devtools-mcp@latest",
-        "--headless",
-        "--isolated",
-        "--viewport=1440x900",
-        "--no-usage-statistics",
-        "--no-performance-crux"
-      ],
+      "args": ["-y", "@playwright/mcp@0.0.75", "--caps=devtools", "--browser=chrome"],
       "env": {
-        "CHROME_DEVTOOLS_MCP_NO_UPDATE_CHECKS": "true"
+        "PLAYWRIGHT_BROWSERS_PATH": "0"
       }
     }
   }

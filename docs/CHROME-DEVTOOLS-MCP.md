@@ -1,37 +1,34 @@
 # Chrome DevTools MCP
 
-This repository includes a project-level MCP configuration for Chrome DevTools in `.mcp.json`.
-MCP-capable clients that support project configuration can load the `chrome-devtools` server from the repository root.
+This repository includes a project-level MCP configuration in `.mcp.json` for Playwright MCP with Chrome DevTools capability enabled. Claude Code can load the `playwright` server from the repository root because `.claude/settings.json` explicitly enables that project MCP server.
 
 ## Server configuration
 
 The configured server runs:
 
 ```bash
-npx -y chrome-devtools-mcp@latest --headless --isolated --viewport=1440x900 --no-usage-statistics --no-performance-crux
+npx -y @playwright/mcp@0.0.75 --caps=devtools --browser=chrome
 ```
 
-The flags are intentional:
+The configuration is intentional:
 
-- `--headless` keeps browser automation compatible with non-interactive development environments.
-- `--isolated` creates a temporary Chrome profile for each session and cleans it up when the browser closes.
-- `--viewport=1440x900` gives screenshots and layout checks a predictable desktop viewport.
-- `--no-usage-statistics` opts out of Chrome DevTools MCP usage telemetry.
-- `--no-performance-crux` prevents performance tools from sending traced URLs to the CrUX API for field data lookup.
-- `CHROME_DEVTOOLS_MCP_NO_UPDATE_CHECKS=true` disables background update checks for reproducible agent runs.
+- `@playwright/mcp@0.0.75` pins the current Playwright MCP package instead of floating on `latest`, keeping agent runs reproducible.
+- `--caps=devtools` enables the Chrome DevTools capability set for inspection and debugging workflows.
+- `--browser=chrome` requests Chrome instead of relying on the package default.
+- `PLAYWRIGHT_BROWSERS_PATH=0` makes Playwright resolve project-local browser installs when available.
+- `.claude/settings.json` lists `playwright` in `enabledMcpjsonServers`, so Claude Code can approve this project-level MCP server without requiring every developer to configure it manually.
 
 ## Requirements
 
-Chrome DevTools MCP requires Node.js, npm, and a supported Google Chrome or Chrome for Testing installation.
-If your local machine or CI image does not include Chrome, install it before starting the MCP server.
+Playwright MCP requires Node.js, npm, and a Chrome or Chrome-compatible browser installation. If your local machine or CI image does not include Chrome, install it before starting the MCP server.
 
 ## Quick validation
 
-From the repository root, validate the checked-in MCP JSON and the installed package entry point with:
+From the repository root, validate the checked-in JSON files and the pinned MCP package entry point with:
 
 ```bash
-node -e "JSON.parse(require('node:fs').readFileSync('.mcp.json', 'utf8'))"
-npx -y chrome-devtools-mcp@latest --version
+node -e "for (const file of ['.mcp.json', '.claude/settings.json']) JSON.parse(require('node:fs').readFileSync(file, 'utf8'))"
+npx -y @playwright/mcp@0.0.75 --version
 ```
 
-A full browser session also requires an MCP client to launch the server and a Chrome binary available on the host.
+A full browser session also requires an MCP-capable client to launch the server and a Chrome binary available on the host.

@@ -88,6 +88,21 @@ jobs:
           path: test-results
           destination: test-results
       - run:
+          # Upload JUnit XML to Codacy so their Test Results dashboard reflects
+          # actual run data. store_test_results only stores results in CircleCI
+          # Insights; Codacy requires a separate upload via their Coverage Reporter.
+          name: Upload test results to Codacy
+          when: always
+          command: |
+            if [ -f test-results/junit.xml ] && [ -n "${CODACY_PROJECT_TOKEN:-}" ]; then
+              bash <(curl -Ls https://coverage.codacy.com/get.sh) report \
+                -r test-results/junit.xml \
+                --test-results \
+                --commit-uuid "$CIRCLE_SHA1"
+            else
+              echo "Skipping Codacy test results upload (junit.xml missing or CODACY_PROJECT_TOKEN not set)"
+            fi
+      - run:
           name: Report test status
           when: always
           command: exit $(cat /tmp/test-exit-code 2>/dev/null || echo 1)

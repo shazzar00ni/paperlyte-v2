@@ -109,23 +109,26 @@ async function subscribeToConvertKit(
 
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 10000);
+  try {
+    const response = await fetch(
+      `https://api.convertkit.com/v3/forms/${formId}/subscribe`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(buildConvertKitBody(apiKey, email)),
+        signal: controller.signal,
+      }
+    );
 
-  const response = await fetch(
-    `https://api.convertkit.com/v3/forms/${formId}/subscribe`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(buildConvertKitBody(apiKey, email)),
-      signal: controller.signal,
+    if (!response.ok) {
+      console.error("ConvertKit API error: HTTP", response.status);
+      throw new Error("Failed to subscribe email");
     }
-  ).finally(() => clearTimeout(timeoutId));
 
-  if (!response.ok) {
-    console.error("ConvertKit API error: HTTP", response.status);
-    throw new Error("Failed to subscribe email");
+    return parseConvertKitResponse(response);
+  } finally {
+    clearTimeout(timeoutId);
   }
-
-  return parseConvertKitResponse(response);
 }
 
 // --- Handler helpers ---

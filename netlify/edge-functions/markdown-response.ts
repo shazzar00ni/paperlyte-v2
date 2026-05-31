@@ -61,8 +61,14 @@ const EXCLUDED_PREFIXES: readonly string[] = [
 ]
 
 // Structural chrome tags whose entire subtree (tag + all descendants) should
-// be dropped so nav links, header text, footer content, and noscript fallback
-// text do not bleed into the Markdown output.
+// be dropped so nav links, footer boilerplate, and noscript fallback text do
+// not bleed into the Markdown output.
+//
+// `header` is intentionally NOT listed here: static pages (privacy.html,
+// terms.html) use `<header>` to wrap the page title and last-updated metadata
+// — content that should be preserved.  The SPA shell (index.html) contains no
+// `<header>` element at all (only <div id="root">), so omitting it from this
+// set has no effect on SPA routes.
 //
 // IMPORTANT: sanitize-html's exclusiveFilter callback is ONLY invoked for tags
 // that appear in allowedTags.  Tags that are NOT in allowedTags are handled by
@@ -72,7 +78,6 @@ const EXCLUDED_PREFIXES: readonly string[] = [
 // drop both the tag and all descendants.
 const DROP_WITH_CHILDREN: ReadonlySet<string> = new Set([
   'nav',
-  'header',
   'footer',
   'aside',
   'noscript',
@@ -91,11 +96,13 @@ td.remove(['svg', 'canvas', 'template'])
 // Tags whose content Turndown can convert to useful Markdown.
 // Everything not in this list is discarded by sanitize-html.
 //
-// Note: 'nav', 'header', 'footer', 'aside', and 'noscript' are listed here
-// even though their subtrees are ultimately dropped by exclusiveFilter
-// (via DROP_WITH_CHILDREN).  They must be in allowedTags so that
-// exclusiveFilter is invoked for them; if omitted, disallowedTagsMode:'discard'
-// would strip the wrapper tag but silently pass children through to Markdown.
+// Note: 'nav', 'footer', 'aside', and 'noscript' are listed here even though
+// their subtrees are ultimately dropped by exclusiveFilter (via
+// DROP_WITH_CHILDREN).  They must be in allowedTags so that exclusiveFilter is
+// invoked for them; if omitted, disallowedTagsMode:'discard' would strip the
+// wrapper tag but silently pass children through to Markdown.
+// 'header' is listed here as a normal allowed tag (not in DROP_WITH_CHILDREN);
+// its content (page titles on static pages) should be preserved.
 const ALLOWED_TAGS: readonly string[] = [
   'h1',
   'h2',
@@ -149,8 +156,9 @@ const ALLOWED_TAGS: readonly string[] = [
   'summary',
   'figure',
   'figcaption',
-  // Structural chrome — listed here so exclusiveFilter can drop them WITH
-  // their children. See DROP_WITH_CHILDREN and its comment for the rationale.
+  // 'nav', 'footer', 'aside', 'noscript' — listed here so exclusiveFilter can
+  // drop them WITH their children. See DROP_WITH_CHILDREN for the rationale.
+  // 'header' is also listed but as a normal allowed tag (page-title content).
   'nav',
   'header',
   'footer',

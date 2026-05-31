@@ -476,11 +476,15 @@ describe('markdown-response edge function', () => {
       expect(body).not.toContain('Home')
     })
 
-    it('strips <header> and <footer> tags', async () => {
+    it('preserves <header> content; strips <footer> content', async () => {
+      // <header> is NOT in DROP_WITH_CHILDREN: static pages (privacy, terms)
+      // use <header> for the page title and last-updated metadata that agents
+      // need.  The SPA shell has no <header> at all so this change is safe.
+      // <footer> IS still dropped (copyright boilerplate adds no value).
       const req = makeRequest('https://example.com/', mdHeaders)
       const ctx = makeContext(
         htmlResponse(
-          '<header><h1>Site Header</h1></header>' +
+          '<header><h1>Privacy Policy</h1><p>Last Updated: 2025-01-01</p></header>' +
             '<main><p>Body</p></main>' +
             '<footer><p>Footer</p></footer>'
         )
@@ -490,7 +494,8 @@ describe('markdown-response edge function', () => {
       const body = await result.text()
 
       expect(body).toContain('Body')
-      expect(body).not.toContain('Site Header')
+      expect(body).toContain('Privacy Policy')
+      expect(body).toContain('Last Updated')
       expect(body).not.toContain('Footer')
     })
 

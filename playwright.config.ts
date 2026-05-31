@@ -12,6 +12,13 @@ export default defineConfig({
       : [['html'], ['junit', { outputFile: 'test-results/e2e-junit.xml' }]]
     : 'list',
 
+  // CI runners are slower: lazy-chunk loading + IntersectionObserver callbacks
+  // can consume 2-3s of the default 5s budget. 10s prevents flaky timeouts
+  // without hiding real failures (retries:2 still catches genuine regressions).
+  expect: {
+    timeout: process.env.CI ? 10000 : 5000,
+  },
+
   use: {
     baseURL: process.env.BASE_URL ?? 'http://localhost:4173',
     trace: 'on-first-retry',

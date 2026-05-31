@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { Solution } from './Solution'
 import { WAITLIST_COUNT } from '@/constants/waitlist'
+import { escapeRegExp } from '@utils/test/regexHelpers'
 
 describe('Solution Section', () => {
   it('renders the section title', () => {
@@ -32,9 +33,8 @@ describe('Solution Section', () => {
 
   it('renders CTA microcopy', () => {
     render(<Solution />)
-    const escapedCount = WAITLIST_COUNT.replace('+', '\\+')
     expect(
-      screen.getByText(new RegExp(`${escapedCount} people already ahead of you`))
+      screen.getByText(new RegExp(`${escapeRegExp(WAITLIST_COUNT)} people already ahead of you`))
     ).toBeInTheDocument()
   })
 })

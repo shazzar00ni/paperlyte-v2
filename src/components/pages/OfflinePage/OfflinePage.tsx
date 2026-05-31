@@ -121,13 +121,10 @@ export const OfflinePage: FC<OfflinePageProps> = ({
       const isAbort = (error as Error).name === 'AbortError'
       const isExpected = isAbort || error instanceof TypeError
       if (!isExpected) {
-        logError(
-          error instanceof Error ? error : new Error('Connectivity retry failed'),
-          {
-            severity: 'low',
-            tags: { context: 'OfflinePage.handleRetry' },
-          }
-        )
+        logError(error instanceof Error ? error : new Error('Connectivity retry failed'), {
+          severity: 'low',
+          tags: { context: 'OfflinePage.handleRetry' },
+        })
       }
       setRetryError(
         isAbort

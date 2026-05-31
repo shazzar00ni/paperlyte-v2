@@ -179,16 +179,18 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Install Netlify CLI
-          command: npm install --global netlify-cli
-      - run:
           name: Deploy to Netlify (production)
           # NETLIFY_AUTH_TOKEN and NETLIFY_SITE_ID must be set as CircleCI
           # project environment variables (or via a context).
+          # --no-build publishes the workspace dist/ artifact as-is so the
+          # deployed code is identical to what passed build and e2e.
+          # --context production ensures Netlify resolves production
+          # environment variables and redirect rules.
           command: |
-            netlify deploy \
+            npx netlify deploy \
               --dir=dist \
               --no-build \
+              --context production \
               --prod \
               --message "CircleCI deploy — ${CIRCLE_SHA1}"
 

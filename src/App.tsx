@@ -1,7 +1,10 @@
 import { useRef, useCallback, lazy, Suspense } from 'react'
+import { Route, Routes } from 'react-router-dom'
 import { ErrorBoundary } from '@components/ErrorBoundary'
 import { Header } from '@components/layout/Header'
 import { Footer } from '@components/layout/Footer'
+import { Privacy } from '@components/pages/Privacy'
+import { Terms } from '@components/pages/Terms'
 import { Hero } from '@components/sections/Hero'
 import { Problem } from '@components/sections/Problem'
 import { Solution } from '@components/sections/Solution'
@@ -44,49 +47,60 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <a href="#main" className="skip-link" onClick={handleSkipToMain}>
-        Skip to main content
-      </a>
-      <Header />
-      <main id="main" tabIndex={-1} ref={mainRef}>
-        <Hero />
-        <Problem />
-        <Solution />
-        <Features />
-        <Mobile />
-        <ErrorBoundary fallback={<></>}>
-          <Suspense fallback={null}>
-            <Statistics />
-          </Suspense>
-        </ErrorBoundary>
-        <ErrorBoundary fallback={<></>}>
-          <Suspense fallback={null}>
-            <Comparison />
-          </Suspense>
-        </ErrorBoundary>
-        <ErrorBoundary fallback={<></>}>
-          <Suspense fallback={null}>
-            <Testimonials />
-          </Suspense>
-        </ErrorBoundary>
-        <ErrorBoundary fallback={<></>}>
-          <Suspense fallback={null}>
-            <EmailCapture />
-          </Suspense>
-        </ErrorBoundary>
-        <ErrorBoundary fallback={<></>}>
-          <Suspense fallback={null}>
-            <FAQ />
-          </Suspense>
-        </ErrorBoundary>
-        <ErrorBoundary fallback={<></>}>
-          <Suspense fallback={null}>
-            <CTA />
-          </Suspense>
-        </ErrorBoundary>
-      </main>
-      <Footer />
-      <FeedbackWidget />
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              <a href="#main" className="skip-link" onClick={handleSkipToMain}>
+                Skip to main content
+              </a>
+              <Header />
+              <main id="main" tabIndex={-1} ref={mainRef}>
+                <Hero />
+                <Problem />
+                <Solution />
+                <Features />
+                <Mobile />
+                <ErrorBoundary fallback={<></>}>
+                  <Suspense fallback={null}>
+                    <Statistics />
+                  </Suspense>
+                </ErrorBoundary>
+                <ErrorBoundary fallback={<></>}>
+                  <Suspense fallback={null}>
+                    <Comparison />
+                  </Suspense>
+                </ErrorBoundary>
+                <ErrorBoundary fallback={<></>}>
+                  <Suspense fallback={null}>
+                    <Testimonials />
+                  </Suspense>
+                </ErrorBoundary>
+                <ErrorBoundary fallback={<></>}>
+                  <Suspense fallback={null}>
+                    <EmailCapture />
+                  </Suspense>
+                </ErrorBoundary>
+                <ErrorBoundary fallback={<></>}>
+                  <Suspense fallback={null}>
+                    <FAQ />
+                  </Suspense>
+                </ErrorBoundary>
+                <ErrorBoundary fallback={<></>}>
+                  <Suspense fallback={null}>
+                    <CTA />
+                  </Suspense>
+                </ErrorBoundary>
+              </main>
+              <Footer />
+              <FeedbackWidget />
+            </>
+          }
+        />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/terms" element={<Terms />} />
+      </Routes>
     </ErrorBoundary>
   )
 }

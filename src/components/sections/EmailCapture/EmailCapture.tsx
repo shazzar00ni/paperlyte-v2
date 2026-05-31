@@ -212,7 +212,7 @@ export const EmailCapture = (): React.ReactElement => {
               >
                 {isLoading ? COPY.loadingText : COPY.submitText}
                 {!isLoading && (
-                  <i className="fa-solid fa-arrow-right" style={{ marginLeft: '0.5rem' }} />
+                  <Icon name="fa-arrow-right" size="sm" style={{ marginLeft: '0.5rem' }} />
                 )}
               </button>
             </div>

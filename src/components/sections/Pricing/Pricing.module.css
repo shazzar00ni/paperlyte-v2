@@ -57,8 +57,8 @@
   left: 50%;
   transform: translateX(-50%);
   background: var(--color-primary);
-  color: var(--color-white);
-  padding: 4px 16px;
+  color: var(--color-text-on-primary);
+  padding: 0.25rem 1rem;
   border-radius: var(--border-radius-full);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);
@@ -102,7 +102,7 @@
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-secondary);
-  margin-right: 2px;
+  margin-right: 0.125rem;
 }
 
 .price {
@@ -188,6 +188,29 @@
     flex-direction: column;
     text-align: center;
     font-size: var(--font-size-sm);
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+  .title {
+    font-size: var(--font-size-xl);
+  }
+
+  .subtitle {
+    font-size: var(--font-size-sm);
+  }
+
+  .card {
+    padding: var(--spacing-md);
+  }
+
+  .price {
+    font-size: var(--font-size-2xl);
+  }
+
+  .planName {
+    font-size: var(--font-size-xl);
   }
 }
 

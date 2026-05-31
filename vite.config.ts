@@ -60,10 +60,11 @@ function fontPreloadPlugin(): Plugin {
  * Plugin to inject development-only Content Security Policy
  *
  * Development: Relaxed CSP meta tag to allow Vite HMR (WebSockets + unsafe-eval)
- * Production: CSP delivered via HTTP headers in vercel.json (supports frame-ancestors)
+ * Production: CSP delivered via HTTP headers in netlify.toml (and vercel.json as a
+ * secondary reference). HTTP headers support frame-ancestors; meta tags do not.
  *
  * Note: Meta tag CSP cannot enforce frame-ancestors and lacks initial-response protection.
- * Production uses proper HTTP headers configured in vercel.json.
+ * Production uses proper HTTP headers configured in netlify.toml.
  *
  * SECURITY NOTICE - Development unsafe-eval:
  * The development CSP includes 'unsafe-eval' which permits eval() execution. This is
@@ -73,7 +74,7 @@ function fontPreloadPlugin(): Plugin {
  * malicious browser extension), unsafe-eval could be exploited for code execution.
  *
  * Mitigation:
- * - Production CSP (vercel.json) does NOT include unsafe-eval (strict policy)
+ * - Production CSP (netlify.toml) does NOT include unsafe-eval (strict policy)
  * - Only run trusted code in development environment
  * - Regularly audit dependencies with `npm audit`
  * - Use lock files (package-lock.json) to prevent supply chain attacks
@@ -94,7 +95,7 @@ function cspPlugin(): Plugin {
     },
     transformIndexHtml(html) {
       // Only inject CSP meta tag in development mode
-      // Production CSP is delivered via HTTP headers in vercel.json
+      // Production CSP is delivered via HTTP headers in netlify.toml
       if (!isDev) {
         return html
       }

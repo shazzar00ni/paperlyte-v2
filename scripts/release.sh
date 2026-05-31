@@ -81,6 +81,15 @@ bump_version() {
 
 if [[ "$BUMP" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
   NEW_VERSION="$BUMP"
+  # Exact version must be strictly greater than the current version to prevent
+  # accidental downgrades (e.g. ./release.sh 0.9.0 from 1.0.0).
+  if [[ "$NEW_VERSION" == "$CURRENT_VERSION" ]]; then
+    error "Version '${NEW_VERSION}' is already the current version '${CURRENT_VERSION}'."
+  fi
+  LOWER="$(printf '%s\n%s' "$CURRENT_VERSION" "$NEW_VERSION" | sort -V | head -1)"
+  if [[ "$LOWER" != "$CURRENT_VERSION" ]]; then
+    error "Exact version '${NEW_VERSION}' must be greater than current version '${CURRENT_VERSION}'."
+  fi
 elif [[ "$BUMP" =~ ^(patch|minor|major)$ ]]; then
   NEW_VERSION="$(bump_version "$CURRENT_VERSION" "$BUMP")"
 else

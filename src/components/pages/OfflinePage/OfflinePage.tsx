@@ -47,6 +47,7 @@ export const OfflinePage: FC<OfflinePageProps> = ({
    */
   const handleOnline = useCallback((): void => {
     setIsOnline(true)
+    setRetryError(null)
     if (onConnectionRestored) {
       onConnectionRestored()
     }
@@ -115,17 +116,17 @@ export const OfflinePage: FC<OfflinePageProps> = ({
       // Connection still not available — expected outcome when the user is offline.
       // AbortError = our own 5-second timeout; TypeError = network failure.
       // Skip Sentry for these to avoid noise; only log truly unexpected errors.
+      // Check .name directly to handle both DOMException and plain Error (jsdom unreliability).
       clearTimeout(timeoutId)
-      const isAbort = error instanceof DOMException && error.name === 'AbortError'
+      const isAbort = (error as Error).name === 'AbortError'
       const isExpected = isAbort || error instanceof TypeError
       if (!isExpected) {
         logError(
           error instanceof Error ? error : new Error('Connectivity retry failed'),
           {
             severity: 'low',
-            tags: { action: 'connectivityRetry', page: 'OfflinePage' },
-          },
-          'OfflinePage'
+            tags: { context: 'OfflinePage.handleRetry' },
+          }
         )
       }
       setRetryError(

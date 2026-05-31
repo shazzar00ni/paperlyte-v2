@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { Comparison } from './Comparison'
 import { COMPARISON_FEATURES, COMPETITORS } from '@constants/comparison'
+import { escapeRegExp } from '@utils/test/regexHelpers'
 
 describe('Comparison', () => {
   it('should render as a section with correct id', () => {
@@ -71,7 +72,9 @@ describe('Comparison', () => {
 
     // Check they have proper accessibility labels
     checkmarks.forEach((checkmark) => {
-      expect(checkmark).toHaveAttribute('aria-label', 'Supported')
+      expect(checkmark).toHaveAttribute('aria-labelledby')
+      const titleId = checkmark.getAttribute('aria-labelledby')!
+      expect(document.getElementById(titleId)).toHaveTextContent('Supported')
     })
   })
 
@@ -84,7 +87,9 @@ describe('Comparison', () => {
 
     // Check they have proper accessibility labels
     xmarks.forEach((xmark) => {
-      expect(xmark).toHaveAttribute('aria-label', 'Not supported')
+      expect(xmark).toHaveAttribute('aria-labelledby')
+      const titleId = xmark.getAttribute('aria-labelledby')!
+      expect(document.getElementById(titleId)).toHaveTextContent('Not supported')
     })
   })
 
@@ -116,7 +121,7 @@ describe('Comparison', () => {
     expect(
       screen.getByText(
         new RegExp(
-          `Comparison data accurate as of ${currentDate}\\.\\s*Competitor features may vary by plan and region\\.`
+          `Comparison data accurate as of ${escapeRegExp(currentDate)}\\.\\s*Competitor features may vary by plan and region\\.`
         )
       )
     ).toBeInTheDocument()

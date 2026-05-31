@@ -46,6 +46,18 @@ const easingFunctions = {
 }
 
 /**
+ * Returns the easing function for the given name using static dispatch,
+ * avoiding unsafe dynamic property access on the easingFunctions object.
+ */
+const getEasingFunction = (
+  name: 'linear' | 'easeOutQuart' | 'easeOutExpo',
+): ((t: number) => number) => {
+  if (name === 'easeOutQuart') return easingFunctions.easeOutQuart
+  if (name === 'easeOutExpo') return easingFunctions.easeOutExpo
+  return easingFunctions.linear
+}
+
+/**
  * Format number with thousands separator
  */
 const formatNumber = (num: number, decimals: number, separator: boolean): string => {
@@ -125,7 +137,7 @@ export const CounterAnimation = ({
 
         const elapsed = timestamp - startTime.current
         const progress = Math.min(elapsed / animDuration, 1)
-        const easedProgress = easingFunctions[animEasing](progress)
+        const easedProgress = getEasingFunction(animEasing)(progress)
         const currentValue = animStart + (animEnd - animStart) * easedProgress
 
         setAnimatedValue(currentValue)

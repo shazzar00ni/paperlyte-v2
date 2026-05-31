@@ -192,7 +192,10 @@ export const iconNameMap: Record<string, string> = {
   'fa-arrow-left': 'arrow-left', // Navigation back.
   'fa-spinner': 'spinner', // Loading states.
   'fa-circle-check': 'circle-check', // Checkmark/success indicator.
-  // New icons added to custom SVG set
+  // New icons added to custom SVG set.
+  // Alias entries (fa-house → home, fa-check-circle → circle-check) enable
+  // the Icon component's step-2 resolution without duplicating SVG data.
+  // Remaining entries also register their converted names in validIconNames.
   'fa-house': 'home', // alias → fa-home
   'fa-check-circle': 'circle-check', // alias → fa-circle-check
   'fa-circle-info': 'circle-info',

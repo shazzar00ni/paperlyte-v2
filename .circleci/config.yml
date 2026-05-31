@@ -188,6 +188,7 @@ jobs:
           command: |
             netlify deploy \
               --dir=dist \
+              --no-build \
               --prod \
               --message "CircleCI deploy — ${CIRCLE_SHA1}"
 

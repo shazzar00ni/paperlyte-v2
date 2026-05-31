@@ -110,7 +110,6 @@ export const Icon = ({
         className={svgClassName}
         style={style}
         data-icon={resolvedKey}
-        aria-label={ariaLabel}
         aria-labelledby={ariaLabel ? titleId : undefined}
         aria-hidden={ariaLabel ? ('false' as const) : ('true' as const)}
         {...(ariaLabel && { role: 'img' })}

@@ -65,7 +65,7 @@ export const Icon = ({
   // Parse multi-token names: "fa-spinner fa-spin" → base "fa-spinner", modifiers ["fa-spin"]
   // Extra tokens (e.g. animation classes) are appended to the rendered element's className
   const tokens = name.trim().split(/\s+/)
-  const baseName = tokens[0]
+  const baseName = tokens.at(0) ?? name
   const modifierClasses = tokens.slice(1).join(' ')
 
   // Resolve the iconPaths lookup key, supporting both "fa-bolt" and "bolt" formats.

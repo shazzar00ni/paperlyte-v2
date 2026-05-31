@@ -232,7 +232,9 @@ export function safeNavigate(url: string): boolean {
     return false
   }
 
-  window.location.href = url
+  const target = new URL(url, window.location.origin)
+  // Use canonical same-origin target to avoid open-redirect style abuse via crafted input
+  window.location.assign(`${target.pathname}${target.search}${target.hash}`)
   return true
 }
 

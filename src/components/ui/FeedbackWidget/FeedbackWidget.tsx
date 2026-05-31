@@ -161,7 +161,7 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
       const newIndex = handleArrowNavigation(event, focusableElements, currentIndex, 'horizontal')
       if (newIndex !== null) {
         event.preventDefault()
-        focusableElements[newIndex]?.focus()
+        focusableElements.at(newIndex)?.focus()
       }
     }
 
@@ -191,8 +191,8 @@ export const FeedbackWidget = ({ onSubmit }: FeedbackWidgetProps): React.ReactEl
         const focusableElements = modal.querySelectorAll<HTMLElement>(
           'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
         )
-        const firstElement = focusableElements[0]
-        const lastElement = focusableElements[focusableElements.length - 1]
+        const firstElement = focusableElements.item(0)
+        const lastElement = focusableElements.item(focusableElements.length - 1)
 
         if (e.shiftKey && document.activeElement === firstElement) {
           // Shift+Tab on first element - go to last element

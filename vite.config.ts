@@ -113,14 +113,14 @@ function cspPlugin(): Plugin {
     <meta http-equiv="Content-Security-Policy" content="${devCSP}" />
   </head>`
 
-      const modifiedHtml = html.replace('</head>', cspMetaTag)
-
-      // Warn if injection failed (no </head> tag found)
-      if (modifiedHtml === html) {
-        console.warn(
-          '[csp-plugin] Warning: Could not inject CSP meta tag - </head> tag not found in HTML'
-        )
+      const headCloseTag = '</head>'
+      const headCloseIndex = html.indexOf(headCloseTag)
+      if (headCloseIndex === -1) {
+        console.warn('[csp-plugin] Warning: Could not inject CSP meta tag - </head> tag not found in HTML')
+        return html
       }
+
+      const modifiedHtml = `${html.slice(0, headCloseIndex)}${cspMetaTag}${html.slice(headCloseIndex + headCloseTag.length)}`
 
       return modifiedHtml
     },

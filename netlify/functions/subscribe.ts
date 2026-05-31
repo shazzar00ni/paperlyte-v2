@@ -23,6 +23,11 @@ export type ConvertKitResponse = z.infer<typeof ConvertKitResponseSchema>;
 
 // --- Rate limiting ---
 
+/**
+ * Removes expired entries from the rate limit store, then evicts the oldest
+ * entry via FIFO if the store is still at or above MAX_STORE_SIZE.
+ * @param now - Current timestamp in milliseconds
+ */
 function evictForCapacity(now: number): void {
   for (const [key, rec] of rateLimitStore.entries()) {
     if (now > rec.resetTime) {
@@ -37,6 +42,12 @@ function evictForCapacity(now: number): void {
   }
 }
 
+/**
+ * Enforces the per-IP rate limit and updates the in-memory store.
+ * Evicts expired or oldest entries when the store is at capacity.
+ * @param ip - Client IP address used as the rate-limiting key
+ * @returns `true` if the request is within the limit, `false` if exceeded
+ */
 function checkRateLimit(ip: string): boolean {
   const now = Date.now();
 
@@ -66,6 +77,12 @@ function checkRateLimit(ip: string): boolean {
 
 type ConvertKitBody = { api_key: string; email: string; tags?: string[] };
 
+/**
+ * Builds the JSON body for the ConvertKit subscribe API request.
+ * Appends CONVERTKIT_TAG_ID to the tags array when configured.
+ * @param apiKey - ConvertKit API key
+ * @param email - Subscriber's email address
+ */
 function buildConvertKitBody(apiKey: string, email: string): ConvertKitBody {
   const body: ConvertKitBody = { api_key: apiKey, email };
   const tagId = process.env.CONVERTKIT_TAG_ID;
@@ -75,6 +92,12 @@ function buildConvertKitBody(apiKey: string, email: string): ConvertKitBody {
   return body;
 }
 
+/**
+ * Parses and validates the ConvertKit API response against the expected schema.
+ * @param response - The raw fetch Response from the ConvertKit API
+ * @returns The validated ConvertKit response object
+ * @throws If the response body is not valid JSON or does not match the schema
+ */
 async function parseConvertKitResponse(
   response: Response
 ): Promise<ConvertKitResponse> {
@@ -97,6 +120,13 @@ async function parseConvertKitResponse(
   }
 }
 
+/**
+ * Subscribes an email address to the configured ConvertKit form.
+ * Uses a 10-second abort timeout to guard against hung requests.
+ * @param email - The subscriber's email address
+ * @returns The validated ConvertKit response containing the subscription ID
+ * @throws If API credentials are missing, the request fails, or the response is invalid
+ */
 async function subscribeToConvertKit(
   email: string
 ): Promise<ConvertKitResponse> {
@@ -133,6 +163,11 @@ async function subscribeToConvertKit(
 
 // --- Handler helpers ---
 
+/**
+ * Builds CORS response headers, conditionally setting Access-Control-Allow-Origin
+ * only when the request origin matches ALLOWED_ORIGIN.
+ * @param origin - The Origin header value from the incoming request
+ */
 function getCorsHeaders(origin: string): Record<string, string> {
   const allowedOrigin = process.env.ALLOWED_ORIGIN ?? "https://paperlyte.com";
   return {
@@ -145,6 +180,11 @@ function getCorsHeaders(origin: string): Record<string, string> {
   };
 }
 
+/**
+ * Extracts the client IP address from request headers.
+ * Prefers the first value in x-forwarded-for, falls back to client-ip, then "unknown".
+ * @param headers - The incoming request headers
+ */
 function getClientIp(headers: HandlerEvent["headers"]): string {
   return (
     headers["x-forwarded-for"]?.split(",")[0] ??
@@ -153,6 +193,11 @@ function getClientIp(headers: HandlerEvent["headers"]): string {
   );
 }
 
+/**
+ * Parses the raw request body string as JSON.
+ * @param raw - The raw request body, or null if absent
+ * @returns The parsed SubscribeRequest, or null if the body is invalid JSON
+ */
 function parseRequestBody(raw: string | null): SubscribeRequest | null {
   try {
     return JSON.parse(raw ?? "{}") as SubscribeRequest;
@@ -161,6 +206,11 @@ function parseRequestBody(raw: string | null): SubscribeRequest | null {
   }
 }
 
+/**
+ * Validates and normalises an email field from the request body.
+ * @param email - The raw email value (may be any type)
+ * @returns An object with `normalizedEmail` on success, or `error` on failure
+ */
 function validateEmailInput(
   email: unknown
 ): { error: string } | { normalizedEmail: string } {
@@ -177,6 +227,7 @@ function validateEmailInput(
 
 // --- Handler ---
 
+/** Netlify serverless function handler for newsletter subscription requests. */
 export const handler: Handler = async (event: HandlerEvent) => {
   const origin = event.headers.origin ?? event.headers.Origin ?? "";
   const headers = getCorsHeaders(origin);

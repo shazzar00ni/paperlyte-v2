@@ -1,10 +1,24 @@
-import { defineConfig } from 'vitest/config'
+import { defineConfig, type Plugin } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 
+// Vite treats `npm:pkg@version` as a URL with the "npm:" scheme, so
+// vite:import-analysis rejects it during URL normalisation before any
+// resolveId hook fires.  A pre-enforce transform rewrites these specifiers
+// to bare package names BEFORE import-analysis sees the file, letting
+// Vite's normal node_modules resolver take over.
+const resolveDenoNpmSpecifiers: Plugin = {
+  name: 'resolve-deno-npm-specifiers',
+  enforce: 'pre',
+  transform(code) {
+    if (!code.includes('npm:')) return null
+    return code.replace(/(['"])npm:([^@'"]+)@[^'"]+\1/g, '$1$2$1')
+  },
+}
+
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), resolveDenoNpmSpecifiers],
   // @vercel/analytics uses __IS_VERCEL_DEPLOYMENT__ as a build-time constant.
   // Vite replaces it during production builds, but the test environment does
   // not — resulting in a ReferenceError when the <Analytics /> component is
@@ -70,9 +84,6 @@ export default defineConfig({
       '@constants': path.resolve(__dirname, './src/constants'),
       '@styles': path.resolve(__dirname, './src/styles'),
       '@utils': path.resolve(__dirname, './src/utils'),
-      // Resolve Deno-style npm: specifiers used by edge functions to local node_modules
-      'npm:turndown@7.1.2': 'turndown',
-      'npm:sanitize-html@2.13.1': 'sanitize-html',
       // Stub the Netlify Edge Runtime type-only import (stripped at compile time)
       'https://edge.netlify.com': path.resolve(
         __dirname,

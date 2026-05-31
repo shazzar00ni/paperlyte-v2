@@ -91,6 +91,9 @@ jobs:
           # Upload JUnit XML to Codacy so their Test Results dashboard reflects
           # actual run data. store_test_results only stores results in CircleCI
           # Insights; Codacy requires a separate upload via their Coverage Reporter.
+          # `|| true` makes this step non-blocking: when: always only controls
+          # *when* the step runs, not whether its non-zero exit fails the job.
+          # A Codacy outage, missing token, or unsupported flag must never block CI.
           name: Upload test results to Codacy
           when: always
           command: |
@@ -98,7 +101,7 @@ jobs:
               bash <(curl -Ls https://coverage.codacy.com/get.sh) report \
                 -r test-results/junit.xml \
                 --test-results \
-                --commit-uuid "$CIRCLE_SHA1"
+                --commit-uuid "$CIRCLE_SHA1" || true
             else
               echo "Skipping Codacy test results upload (junit.xml missing or CODACY_PROJECT_TOKEN not set)"
             fi

@@ -88,16 +88,6 @@ jobs:
           path: test-results
           destination: test-results
       - run:
-          name: Upload coverage to Codacy
-          when: always
-          command: |
-            if [ -z "${CODACY_PROJECT_TOKEN}" ]; then
-              echo "CODACY_PROJECT_TOKEN not set, skipping Codacy upload"
-              exit 0
-            fi
-            bash <(curl -Ls https://coverage.codacy.com/get.sh) report \
-              -r coverage/lcov.info || true
-      - run:
           name: Report test status
           when: always
           command: exit $(cat /tmp/test-exit-code 2>/dev/null || echo 1)

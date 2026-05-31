@@ -112,15 +112,15 @@ info "New version: ${TAG}"
 read -r -p "Release ${TAG}? [y/N] " confirm
 [[ "$confirm" =~ ^[Yy]$ ]] || error "Aborted."
 
-# ── Update CHANGELOG.md ───────────────────────────────────────────────────────
-# NOTE: CHANGELOG.md is the authoritative human-readable changelog for the repo.
+# ── Update CHANGELOG ──────────────────────────────────────────────────────────
+# NOTE: docs/CHANGELOG-PROJECT.md is the authoritative human-readable changelog.
 # GitHub Release bodies are auto-generated separately by
 # mikepenz/release-changelog-builder-action in .github/workflows/release.yml and
-# are based on PR labels/titles — not CHANGELOG.md entries. Both are intentionally
-# maintained: CHANGELOG.md for the repository history, GitHub Releases for the
-# release page. If you change the CHANGELOG format, update the release-changelog-
-# builder configuration at .github/changelog-config.json accordingly.
-CHANGELOG="CHANGELOG.md"
+# are based on PR labels/titles — not CHANGELOG entries. Both are intentionally
+# maintained: docs/CHANGELOG-PROJECT.md for the repository history, GitHub
+# Releases for the release page. If you change the CHANGELOG format, update the
+# release-changelog-builder configuration at .github/changelog-config.json.
+CHANGELOG="docs/CHANGELOG-PROJECT.md"
 TODAY="$(date +%Y-%m-%d)"
 
 if ! grep -q "## \[Unreleased\]" "$CHANGELOG"; then
@@ -149,7 +149,7 @@ if [[ -n "$REMOTE_URL" ]]; then
   #   HTTPS: https://github.com/owner/repo.git → https://github.com/owner/repo
   #   HTTPS: https://github.com/owner/repo/  → https://github.com/owner/repo
   # The .git suffix and trailing slash are both stripped in every case.
-  REPO_URL="$(printf '%s' "$REMOTE_URL" | perl -pe 's#^git@github\.com:(.+?)(?:\.git)?$#https://github.com/$1#; s#^https?://github\.com/(.+?)(?:\.git)?$#https://github.com/$1#; s#/$##;')"
+  REPO_URL="$(printf '%s' "$REMOTE_URL" | perl -pe 's#^git\@github\.com:(.+?)(?:\.git)?$#https://github.com/$1#; s#^https?://github\.com/(.+?)(?:\.git)?$#https://github.com/$1#; s#/$##;')"
   PREVIOUS_TAG="v${CURRENT_VERSION}"
 
   info "Updating changelog comparison links..."

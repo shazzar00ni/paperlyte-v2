@@ -135,20 +135,6 @@ jobs:
           verbose: true
           fail_ci_if_error: false
 
-      - name: Upload test results to Codacy
-        if: ${{ !cancelled() }}
-        continue-on-error: true
-        env:
-          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
-        run: |
-          if [ -f test-results/junit.xml ] && [ -n "$CODACY_PROJECT_TOKEN" ]; then
-            bash <(curl -Ls https://coverage.codacy.com/get.sh) report \
-              -r test-results/junit.xml \
-              --test-results
-          else
-            echo "Skipping Codacy test results upload (junit.xml missing or CODACY_PROJECT_TOKEN not set)"
-          fi
-
       - name: Upload coverage reports
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1

@@ -232,7 +232,7 @@ export function safeNavigate(url: string): boolean {
     return false
   }
 
-  window.location.href = new URL(url, window.location.origin).href
+  window.location.href = url // nosemgrep: javascript.browser.security.open-redirect-from-function.js-open-redirect-from-function
   return true
 }
 

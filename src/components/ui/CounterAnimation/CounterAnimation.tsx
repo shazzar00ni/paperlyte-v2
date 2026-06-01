@@ -118,6 +118,13 @@ export const CounterAnimation = ({
       const animStart = start
       const animEasing = easing
 
+      const easeFn: (t: number) => number =
+        animEasing === 'linear'
+          ? easingFunctions.linear
+          : animEasing === 'easeOutExpo'
+            ? easingFunctions.easeOutExpo
+            : easingFunctions.easeOutQuart
+
       const animate = (timestamp: number) => {
         if (startTime.current === null) {
           startTime.current = timestamp
@@ -125,12 +132,6 @@ export const CounterAnimation = ({
 
         const elapsed = timestamp - startTime.current
         const progress = Math.min(elapsed / animDuration, 1)
-        const easeFn: (t: number) => number =
-          animEasing === 'linear'
-            ? easingFunctions.linear
-            : animEasing === 'easeOutExpo'
-              ? easingFunctions.easeOutExpo
-              : easingFunctions.easeOutQuart
         const easedProgress = easeFn(progress)
         const currentValue = animStart + (animEnd - animStart) * easedProgress
 

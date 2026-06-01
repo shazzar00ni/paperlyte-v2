@@ -24,13 +24,13 @@ describe('Testimonials', () => {
     expect(screen.getByText(/I've tried every note app out there/i)).toBeInTheDocument()
   })
 
-  it('should render placeholder author name', () => {
+  it('should render testimonial author name', () => {
     render(<Testimonials />)
 
     expect(screen.getByText('Marcus Johnson')).toBeInTheDocument()
   })
 
-  it('should render placeholder author role', () => {
+  it('should render testimonial author role', () => {
     render(<Testimonials />)
 
     expect(screen.getByText('Freelance Writer')).toBeInTheDocument()
@@ -122,9 +122,10 @@ describe('Testimonials — Navigation', () => {
     render(<Testimonials />)
 
     const dots = screen.getAllByRole('tab')
-    fireEvent.click(dots[4])
+    const midIndex = Math.floor(TESTIMONIALS.length / 2)
+    fireEvent.click(dots[midIndex])
 
-    expect(dots[4]).toHaveAttribute('aria-selected', 'true')
+    expect(dots[midIndex]).toHaveAttribute('aria-selected', 'true')
     expect(dots[0]).toHaveAttribute('aria-selected', 'false')
   })
 
@@ -373,18 +374,17 @@ describe('Testimonials — Accessibility / ARIA', () => {
 
 describe('Testimonials — Testimonial Card Content', () => {
   it('should render initials when no avatar URL is present', () => {
-    const { container } = render(<Testimonials />)
+    render(<Testimonials />)
 
-    // All current testimonials have no avatar; initials spans should be present
-    const initialsEls = container.querySelectorAll('[class*="initials"]')
-    expect(initialsEls.length).toBeGreaterThan(0)
+    const testimonialWithoutAvatar = TESTIMONIALS.find((t) => !t.avatar)!
+    expect(screen.getByText(testimonialWithoutAvatar.initials)).toBeInTheDocument()
   })
 
   it('should render company name alongside role when provided', () => {
     render(<Testimonials />)
 
-    // Sarah Chen belongs to TechCorp
-    expect(screen.getByText(/TechCorp/)).toBeInTheDocument()
+    const testimonialWithCompany = TESTIMONIALS.find((t) => t.company)!
+    expect(screen.getByText(new RegExp(testimonialWithCompany.company!))).toBeInTheDocument()
   })
 
   it('should render all testimonial author names', () => {

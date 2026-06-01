@@ -25,7 +25,7 @@ jobs:
       - name: Analyze with SonarCloud
 
         # uses: SonarSource/sonarcloud-github-action@v2.2.0
-        uses: SonarSource/sonarcloud-github-action@ffc3010689be73b8e5ae0c57ce35968afd7909e8
+        uses: SonarSource/sonarcloud-github-action@ffc3010689be73b8e5ae0c57ce35968afd7909e8 # nosemgrep: generic.secrets.security.detected-sonarqube-docs-api-key
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:

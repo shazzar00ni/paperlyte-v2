@@ -232,7 +232,7 @@ export function safeNavigate(url: string): boolean {
     return false
   }
 
-  window.location.href = url
+  window.location.href = new URL(url, window.location.origin).href
   return true
 }
 

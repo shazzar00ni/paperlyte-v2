@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent, act } from '@testing-library/react'
-import { Testimonials } from './Testimonials'
 import { TESTIMONIALS } from '@constants/testimonials'
+import { Testimonials } from './Testimonials'
 
 describe('Testimonials', () => {
   it('should render as a section with correct id', () => {

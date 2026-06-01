@@ -2,7 +2,9 @@
   align-items: center;
   background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-background) 100%);
   display: flex;
-  min-height: calc(100vh - var(--header-height));
+  min-height: 0;
+  padding-bottom: var(--spacing-3xl);
+  padding-top: var(--spacing-3xl);
   overflow: hidden;
   position: relative;
 }
@@ -22,16 +24,16 @@
   position: relative;
   z-index: 1;
   text-align: center;
-  max-width: 980px;
+  max-width: 100%;
   margin: 0 auto;
 }
 
 .headline {
   color: var(--color-text-primary);
   font-family: var(--font-family-serif);
-  font-size: var(--font-size-7xl);
+  font-size: var(--font-size-3xl);
   font-weight: var(--font-weight-bold);
-  line-height: 1.05;
+  line-height: var(--line-height-tight);
   margin-bottom: var(--spacing-md);
 }
 
@@ -42,18 +44,25 @@
 
 .subheadline {
   color: var(--color-text-secondary);
-  font-size: var(--font-size-xl);
+  font-size: var(--font-size-base);
   line-height: var(--line-height-relaxed);
   margin: 0 auto var(--spacing-xl);
   max-width: 560px;
 }
 
 .ctas {
+  align-items: stretch;
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
   gap: var(--spacing-md);
   justify-content: center;
   margin-bottom: var(--spacing-xl);
+}
+
+.ctas button,
+.ctas a {
+  width: 100%;
 }
 
 .trustedBy {
@@ -78,7 +87,7 @@
 .companies {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--spacing-md) var(--spacing-lg);
+  gap: var(--spacing-sm) var(--spacing-md);
   justify-content: center;
   list-style: none;
   margin: 0;
@@ -87,7 +96,7 @@
 
 .company {
   color: var(--color-text-secondary);
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);
 }
 
@@ -101,7 +110,7 @@
   margin-left: auto;
   margin-right: auto;
   margin-top: var(--spacing-3xl);
-  max-width: 700px;
+  max-width: 500px;
   /* Fallback for browsers that don't support aspect-ratio */
   min-height: 260px;
   /* Add padding to accommodate floating secondary mockup overflow */
@@ -125,7 +134,7 @@
   padding-left: var(--spacing-lg);
   padding-right: var(--spacing-lg);
   border-radius: var(--border-radius-lg);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--shadow-elevation-3);
   text-align: center;
 }
 
@@ -194,61 +203,29 @@
   border-radius: 0;
 }
 
-/* Mobile styles */
-@media (max-width: 1024px) {
-  .content {
-    text-align: center;
-  }
-
-  .headline {
-    font-size: var(--font-size-5xl);
-  }
-
-  .subheadline {
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .ctas {
-    justify-content: center;
-  }
+/* Mobile-first responsive enhancements */
+.mockupContainer {
+  aspect-ratio: 4 / 3;
+  margin-top: var(--spacing-2xl);
 }
 
-@media (max-width: 768px) {
-  .hero {
-    min-height: 0;
-    padding-top: var(--spacing-3xl);
-    padding-bottom: var(--spacing-3xl);
-  }
+.mockupPrimary {
+  width: 90%;
+}
 
+.mockupSecondary {
+  width: 55%;
+  bottom: -2%;
+  right: -2%;
+}
+
+@media (min-width: 481px) {
   .headline {
     font-size: var(--font-size-4xl);
   }
 
   .subheadline {
     font-size: var(--font-size-lg);
-  }
-
-  .ctas {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .ctas button,
-  .ctas a {
-    width: 100%;
-  }
-
-  .companies {
-    gap: var(--spacing-sm) var(--spacing-md);
-  }
-
-  .mockupContainer {
-    margin-bottom: 0;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: var(--spacing-2xl);
-    max-width: 500px;
   }
 
   .mockupSecondary {
@@ -258,33 +235,58 @@
   }
 }
 
-/* Extra small screens */
-@media (max-width: 480px) {
-  .headline {
-    font-size: var(--font-size-3xl);
-    line-height: var(--line-height-tight);
+@media (min-width: 769px) {
+  .hero {
+    min-height: calc(100vh - var(--header-height));
+    padding-bottom: 0;
+    padding-top: 0;
   }
 
-  .subheadline {
-    font-size: var(--font-size-base);
+  .headline {
+    font-size: var(--font-size-5xl);
+  }
+
+  .companies {
+    gap: var(--spacing-md) var(--spacing-lg);
   }
 
   .company {
-    font-size: var(--font-size-xs);
+    font-size: var(--font-size-sm);
   }
 
   .mockupContainer {
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 16 / 10;
+    margin-top: var(--spacing-3xl);
+    max-width: 700px;
   }
 
   .mockupPrimary {
-    width: 90%;
+    width: 85%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .content {
+    max-width: 980px;
   }
 
-  .mockupSecondary {
-    width: 55%;
-    bottom: -2%;
-    right: -2%;
+  .headline {
+    font-size: var(--font-size-7xl);
+    line-height: 1.05;
+  }
+
+  .subheadline {
+    font-size: var(--font-size-xl);
+  }
+
+  .ctas {
+    align-items: center;
+    flex-direction: row;
+  }
+
+  .ctas button,
+  .ctas a {
+    width: auto;
   }
 }
 

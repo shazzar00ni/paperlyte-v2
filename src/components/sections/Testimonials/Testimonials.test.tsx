@@ -384,7 +384,9 @@ describe('Testimonials — Testimonial Card Content', () => {
     render(<Testimonials />)
 
     const testimonialWithCompany = TESTIMONIALS.find((t) => t.company)!
-    expect(screen.getByText(new RegExp(testimonialWithCompany.company!))).toBeInTheDocument()
+    expect(
+      screen.getByText((content) => content.includes(testimonialWithCompany.company!))
+    ).toBeInTheDocument()
   })
 
   it('should render all testimonial author names', () => {

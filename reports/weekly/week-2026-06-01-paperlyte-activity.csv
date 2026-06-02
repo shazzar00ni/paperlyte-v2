@@ -1,0 +1,61 @@
+Type,Title,Last Visited,Host
+Issue,"This Week In Paperlyte-V2 - May 22 - May 31, 2026",2026-05-31T21:00:37Z,github.com
+Pull Request,test(testimonials): expand coverage from 55% to 100% lines,2026-05-31T19:08:24Z,github.com
+Pull Request,fix: upload test results to Codacy to resolve 0 test results error,2026-05-31T18:14:47Z,github.com
+Pull Request,Fix Codacy markdown linting issues,2026-05-31T18:36:24Z,github.com
+Pull Request,Refactor subscribe.ts to reduce cyclomatic complexity,2026-05-31T18:03:42Z,github.com
+Pull Request,fix(a11y): replace hardcoded color:white with var(--color-text-on-primary),2026-05-31T17:27:53Z,github.com
+Pull Request,Change network-dependency-tree-insight assertion from off to warn,2026-05-31T18:44:37Z,github.com
+Pull Request,Add Atlassian remote MCP server configuration,2026-05-31T19:08:05Z,github.com
+Pull Request,Add Codacy local analysis configuration (tuned for React/TS stack),2026-05-31T12:11:26Z,github.com
+Pull Request,refactor: convert easingFunctions to typed Map with safe .get() lookup,2026-05-31T12:38:59Z,github.com
+Pull Request,chore: add Chrome DevTools MCP config,2026-05-30T20:34:58Z,github.com
+Pull Request,Guard Sentry Replay CSP configuration,2026-05-31T21:11:32Z,github.com
+Pull Request,feat(codecov): complete Components setup with default_rules and display names,2026-05-30T13:51:38Z,github.com
+Pull Request,fix(csp): resolve inline-style and MIME-type console errors,2026-05-30T19:25:45Z,github.com
+Pull Request,feat: add Playwright MCP server for Chrome DevTools control,2026-05-31T07:54:17Z,github.com
+Pull Request,"docs: refresh ACTION_PLAN, record navigation changes, and add issue drafts",2026-05-29T21:52:17Z,github.com
+Pull Request,Split Codacy SARIF runs to preserve tool-specific Code Scanning analyses,2026-05-29T21:38:51Z,github.com
+Pull Request,chore(deps): remove duplicate @testing-library/dom from dependencies,2026-05-30T08:14:07Z,github.com
+Issue,"docs(vite.config): Stale comment references incorrect Vite version (says 8.0.10 / 4.x–6.x, project uses Vite 7.2.4)",2026-05-29T18:07:12Z,github.com
+Issue,chore(deps): Remove duplicate @testing-library/dom listed in both dependencies and devDependencies,2026-05-30T08:14:06Z,github.com
+Pull Request,chore: silence configured meta injection warning,2026-05-31T13:16:36Z,github.com
+Pull Request,[Follow-up to #1025] fix(ci): repair malformed checkout step in CodeScan workflow,2026-05-29T14:15:34Z,github.com
+Pull Request,Add license scan report and status,2026-05-29T18:01:06Z,github.com
+Pull Request,perf: reduce landing-page TTFB by scoping WAF edge execution,2026-05-29T18:10:54Z,github.com
+Pull Request,fix(ci): restore scorecard permissions and fix invalid action SHA pins,2026-05-29T06:00:13Z,github.com
+Pull Request,fix: remediate shell injection via github context interpolation in run steps,2026-05-29T14:32:09Z,github.com
+Pull Request,fix: use escapeRegExp for non-literal RegExp construction in tests,2026-05-28T17:39:56Z,github.com
+Pull Request,chore(deps): bump qs and express,2026-05-27T05:41:25Z,github.com
+Pull Request,chore(deps-dev): bump tmp from 0.2.5 to 0.2.6,2026-05-27T05:24:49Z,github.com
+Pull Request,docs(security): triage Socket @sentry/core obfuscation warning,2026-05-26T06:46:54Z,github.com
+Commit,Merge pull request #1046 from shazzar00ni/claude/code-review-ew6Pa,2026-05-31T18:36:21Z,github.com
+Commit,Remove Codacy upload step from CircleCI test job,2026-05-31T18:16:49Z,github.com
+Commit,Add correct Codacy coverage reporting to GitHub Actions and CircleCI,2026-05-31T18:14:15Z,github.com
+Commit,Fix Codacy markdown linting issues,2026-05-31T18:00:12Z,github.com
+Commit,Merge pull request #1044 from shazzar00ni/claude/lighthouse-assertion-regression-9p68R,2026-05-31T17:27:51Z,github.com
+Commit,Merge branch 'main' into claude/lighthouse-assertion-regression-9p68R,2026-05-31T16:11:24Z,github.com
+Commit,Create 3RD-PARTY-SOFTWARE.md for dependencies,2026-05-31T13:07:13Z,github.com
+Commit,Add SonarQube Cloud badge to README,2026-05-31T12:59:43Z,github.com
+Commit,fix(a11y): replace hardcoded color:white with var(--color-text-on-primary),2026-05-31T12:56:27Z,github.com
+Commit,Merge pull request #1035 from shazzar00ni/claude/chrome-devtools-mpc-setup-tZFeC,2026-05-31T07:54:15Z,github.com
+Commit,Merge branch 'main' into claude/chrome-devtools-mpc-setup-tZFeC,2026-05-30T19:30:44Z,github.com
+Commit,Merge pull request #1036 from shazzar00ni/claude/csp-console-errors-bJ3Uh,2026-05-30T19:25:43Z,github.com
+Commit,Merge branch 'main' into claude/csp-console-errors-bJ3Uh,2026-05-30T14:23:32Z,github.com
+Commit,Merge pull request #1037 from shazzar00ni/claude/codecov-components-setup-btUhe,2026-05-30T13:51:36Z,github.com
+Commit,feat(codecov): complete Components setup with default_rules and display names,2026-05-30T08:39:20Z,github.com
+Commit,fix: pin @playwright/mcp to 0.0.75 and enable devtools capability,2026-05-30T08:37:23Z,github.com
+Commit,fix(csp): resolve inline-style and MIME-type console errors,2026-05-30T08:32:19Z,github.com
+Commit,feat: add Playwright MCP server for Chrome DevTools control,2026-05-30T08:29:08Z,github.com
+Commit,Merge pull request #1032 from shazzar00ni/claude/fervent-bohr-xm3VL,2026-05-30T08:14:04Z,github.com
+Commit,style: fix README.md formatting to pass Prettier check,2026-05-29T21:14:44Z,github.com
+Commit,chore(deps): regenerate lockfile after removing @testing-library/dom from dependencies,2026-05-29T21:12:17Z,github.com
+Commit,Merge branch 'main' into claude/fervent-bohr-xm3VL,2026-05-29T21:11:58Z,github.com
+Commit,Add FOSSA status badge to README,2026-05-29T20:51:34Z,github.com
+Commit,Merge branch 'main' into claude/fervent-bohr-xm3VL,2026-05-29T15:38:35Z,github.com
+Commit,Merge pull request #1024 from shazzar00ni/claude/github-actions-shell-injection-T4VOU,2026-05-29T14:26:22Z,github.com
+Commit,Merge branch 'main' into claude/github-actions-shell-injection-T4VOU,2026-05-29T14:25:39Z,github.com
+Commit,chore(deps): remove duplicate @testing-library/dom from dependencies,2026-05-29T14:22:16Z,github.com
+Commit,Merge pull request #1028 from shazzar00ni/codex/fix-high-priority-bug-in-codescan.yml,2026-05-29T14:15:30Z,github.com
+Commit,Merge branch 'main' into codex/fix-high-priority-bug-in-codescan.yml,2026-05-29T14:06:30Z,github.com
+Commit,Merge pull request #1013 from shazzar00ni/codex/fix-waitlist-email-submission-test,2026-05-29T13:42:46Z,github.com

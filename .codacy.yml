@@ -14,10 +14,6 @@ engines:
   # --- Enabled engines (well under the 20-run SARIF limit) ---
   semgrep:
     enabled: true
-    exclude_paths:
-      # The 40-char hex SHA pinning sonarqube-scan-action is falsely detected
-      # as a SonarQube API key. Excluding this file from Semgrep only.
-      - '.github/workflows/sonarcloud.yml'
   # eslint-9: authoritative ESLint engine — uses eslint.config.js (flat config, ESLint 9+).
   eslint-9:
     enabled: true
@@ -86,6 +82,9 @@ exclude_paths:
   - 'scripts/**'
   - '**/*.min.js'
   - 'docs/**'
+  # sonarcloud.yml contains a 40-char hex SHA (action pin) that Semgrep falsely
+  # detects as a SonarQube API key. The file has no JS/TS code or shell scripts.
+  - '.github/workflows/sonarcloud.yml'
 
 # Note: semgrep may report false positives for non-literal RegExp patterns in tests.
 # All RegExp inputs are sanitized via escapeRegExp(); input sources are constants, not user input.

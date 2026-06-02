@@ -28,6 +28,63 @@ const META_KEYWORDS = "note-taking app, distraction-free notes, offline notes, f
 
 const LEGAL_FILES = ["privacy.html", "terms.html"];
 
+const getHtmlAttribute = (tag, attributeName) => {
+  const match = tag.match(new RegExp(`\\b${attributeName}\\s*=\\s*["']([^"']*)["']`, "i"));
+  return match ? match[1] : null;
+};
+
+const getMetaContent = (html, selectorAttribute, selectorValue) => {
+  const metaTags = html.match(/<meta\b[^>]*>/gi) || [];
+
+  for (const tag of metaTags) {
+    if (getHtmlAttribute(tag, selectorAttribute) === selectorValue) {
+      return getHtmlAttribute(tag, "content");
+    }
+  }
+
+  return null;
+};
+
+const validateConfiguredIndexMeta = (html) => {
+  const expectedMeta = [
+    {
+      label: 'meta[name="keywords"]',
+      actual: getMetaContent(html, "name", "keywords"),
+      expected: META_KEYWORDS,
+    },
+    {
+      label: 'meta[property="og:url"]',
+      actual: getMetaContent(html, "property", "og:url"),
+      expected: `${SITE_URL}/`,
+    },
+    {
+      label: 'meta[property="og:image"]',
+      actual: getMetaContent(html, "property", "og:image"),
+      expected: OG_IMAGE_URL,
+    },
+    {
+      label: 'meta[name="twitter:url"]',
+      actual: getMetaContent(html, "name", "twitter:url"),
+      expected: `${SITE_URL}/`,
+    },
+    {
+      label: 'meta[name="twitter:image"]',
+      actual: getMetaContent(html, "name", "twitter:image"),
+      expected: OG_IMAGE_URL,
+    },
+  ];
+
+  const invalidMeta = expectedMeta.filter((meta) => meta.actual !== meta.expected);
+
+  if (invalidMeta.length > 0) {
+    console.error('✗ index.html is missing required configured meta values:');
+    invalidMeta.forEach((meta) => {
+      console.error(`  - ${meta.label} expected "${meta.expected}" but found "${meta.actual || 'missing'}"`);
+    });
+    process.exit(1);
+  }
+};
+
 console.log(`Injecting build values...`);
 console.log(`- Build date: ${BUILD_DATE}`);
 console.log(`- Site URL: ${SITE_URL}`);
@@ -73,16 +130,19 @@ try {
   content = content.replace(/__SITE_URL__/g, SITE_URL);
   content = content.replace(/__OG_IMAGE_URL__/g, OG_IMAGE_URL);
 
-  // Verify that placeholders were replaced
+  // Verify whether placeholders were present before validating the final configured values
   const replacements = [
     { placeholder: "__META_KEYWORDS__", found: originalContent.includes("__META_KEYWORDS__") },
     { placeholder: "__SITE_URL__", found: originalContent.includes("__SITE_URL__") },
     { placeholder: "__OG_IMAGE_URL__", found: originalContent.includes("__OG_IMAGE_URL__") },
   ];
 
-  const foundPlaceholders = replacements.filter(r => r.found);
+  const foundPlaceholders = replacements.filter((replacement) => replacement.found);
+
+  validateConfiguredIndexMeta(content);
+
   if (foundPlaceholders.length === 0) {
-    console.warn('⚠ Warning: No meta placeholders found in index.html');
+    console.log('✓ index.html meta values already configured');
   } else {
     writeFileSync(indexPath, content, "utf8");
     console.log('✓ Updated index.html (replaced', foundPlaceholders.length, 'placeholder types)');

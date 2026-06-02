@@ -6,8 +6,8 @@ import path from 'path'
 // replaces the default runner and reporter so CircleCI Smarter Testing can
 // build the test-impact coverage map.  Install the plugin first:
 //   npx jsr@latest add @circleci/vitest-circleci-coverage
-// The env var is set automatically by `circleci run testsuite` when running the
-// `analysis` command defined in .circleci/test-suites.yml.
+// Then uncomment the `analysis` command in .circleci/test-suites.yml, which
+// sets CIRCLECI_COVERAGE to the output path before invoking vitest.
 const circleCICoverage = process.env.CIRCLECI_COVERAGE
 
 // https://vitejs.dev/config/

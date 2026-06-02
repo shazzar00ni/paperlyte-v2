@@ -29,6 +29,7 @@ Lightning-fast, distraction-free note-taking app — landing page built with Rea
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-blue)
 ![Vite](https://img.shields.io/badge/Vite-7.2.4-646CFF)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fshazzar00ni%2Fpaperlyte-v2.svg?type=large&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fshazzar00ni%2Fpaperlyte-v2?ref=badge_large&issueType=license)
+
 > **Security:** See our [Security Practices](./docs/SECURITY.md) for vulnerability reporting, contributor guidelines, and supply chain security.
 
 ## Table of Contents

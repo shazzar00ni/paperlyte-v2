@@ -10,7 +10,7 @@ const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
 const MAX_STORE_SIZE = 1000;
 
 interface SubscribeRequest {
-  email: string;
+  email?: unknown;
 }
 
 const ConvertKitResponseSchema = z.object({
@@ -177,6 +177,7 @@ function getCorsHeaders(origin: string): Record<string, string> {
     "Access-Control-Allow-Headers": "Content-Type",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Content-Type": "application/json",
+    Vary: "Origin",
   };
 }
 
@@ -187,7 +188,7 @@ function getCorsHeaders(origin: string): Record<string, string> {
  */
 function getClientIp(headers: HandlerEvent["headers"]): string {
   return (
-    headers["x-forwarded-for"]?.split(",")[0] ??
+    headers["x-forwarded-for"]?.split(",")[0]?.trim() ??
     headers["client-ip"] ??
     "unknown"
   );

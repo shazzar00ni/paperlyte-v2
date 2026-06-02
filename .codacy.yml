@@ -68,6 +68,11 @@ exclude_patterns:
   - identifier: "Security/detect-non-literal-regexp"
     paths:
       - "src/utils/validation-utils.test.ts"
+  # False positive: the 40-char hex string is a git commit SHA pinning the
+  # SonarSource GitHub Action, not a SonarQube API key.
+  - identifier: "Semgrep_generic.secrets.security.detected-sonarqube-docs-api-key.detected-sonarqube-docs-api-key"
+    paths:
+      - ".github/workflows/sonarcloud.yml"
 
 # Exclude paths from code analysis
 exclude_paths:

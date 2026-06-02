@@ -1,0 +1,51 @@
+---
+name: unit-tests
+
+# Discover all unit test files managed by Vitest (honours vitest.config.ts
+# include/exclude patterns).  The --filesOnly flag outputs one file path per
+# line, giving CircleCI one "atom" per file for dynamic splitting.
+discover:
+  command: npx vitest list --filesOnly
+
+# Run the atoms assigned to this node.  << test.atoms >> is substituted with
+# the space-separated list of test files assigned by CircleCI's queue.
+# NODE_OPTIONS and CI are set in the job step environment and are inherited
+# by this subprocess.
+run:
+  command: >-
+    npx vitest run
+    --reporter=default
+    --reporter=junit
+    "--outputFile.junit=<< outputs.junit >>"
+    << test.atoms >>
+
+# (Optional) Analysis command collects per-test code coverage so CircleCI
+# can power Test Impact Analysis on future runs.  Requires the
+# @circleci/vitest-circleci-coverage package (JSR: jsr:@circleci/vitest-circleci-coverage).
+# Install it with:  npx jsr@latest add @circleci/vitest-circleci-coverage
+# Then add runner/reporter to vitest.config.ts as described in the README,
+# and uncomment the block below.
+#
+# analysis:
+#   command: >-
+#     CIRCLECI_COVERAGE="<< outputs.coverage >>"
+#     npx vitest run << test.atoms >>
+
+outputs:
+  junit: test-results/junit.xml
+  # coverage: test-results/circleci-coverage.json  # uncomment with analysis block
+
+# Always run the full suite when these files change so the coverage map
+# stays accurate and timing data remains valid.
+full_test_triggers:
+  - package-lock.json
+  - vite.config.ts
+  - vitest.config.ts
+
+options:
+  # Select only tests impacted by the current code changes (requires coverage
+  # map built by the analysis command above).
+  adaptive_testing: true
+  # Pull work from a shared queue rather than pre-dividing tests, which keeps
+  # all parallel nodes busy even when test durations vary.
+  dynamic_batching: true

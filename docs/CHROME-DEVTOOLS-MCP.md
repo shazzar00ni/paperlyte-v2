@@ -7,20 +7,21 @@ This repository includes a project-level MCP configuration in `.mcp.json` for Pl
 The configured server runs:
 
 ```bash
-npx -y @playwright/mcp@0.0.75 --caps=devtools --browser=chrome
+npx -y @playwright/mcp@0.0.75 --caps=devtools --browser=chrome --headless
 ```
 
 The configuration is intentional:
 
-- `@playwright/mcp@0.0.75` pins the current Playwright MCP package instead of floating on `latest`, keeping agent runs reproducible.
+- `@playwright/mcp@0.0.75` pins the reviewed MCP package instead of floating on `latest`, keeping agent runs reproducible and avoiding surprise tool upgrades.
 - `--caps=devtools` enables the Chrome DevTools capability set for inspection and debugging workflows.
 - `--browser=chrome` requests Chrome instead of relying on the package default.
+- `--headless` keeps browser launch compatible with non-interactive CI, remote containers, and IDE worker processes that do not provide a display server.
 - `PLAYWRIGHT_BROWSERS_PATH=0` makes Playwright resolve project-local browser installs when available.
 - `.claude/settings.json` lists `playwright` in `enabledMcpjsonServers`, so Claude Code can approve this project-level MCP server without requiring every developer to configure it manually.
 
 ## Requirements
 
-Playwright MCP requires Node.js, npm, and a Chrome or Chrome-compatible browser installation. If your local machine or CI image does not include Chrome, install it before starting the MCP server.
+Playwright MCP requires Node.js, npm, and a Chrome or Chrome-compatible browser installation. The pinned `@playwright/mcp@0.0.75` package declares `node >=18`, so it is compatible with the repository's documented Node 20.x baseline, including Node 20.0 through 20.18. If your local machine or CI image does not include Chrome, install it before starting the MCP server.
 
 ## Quick validation
 

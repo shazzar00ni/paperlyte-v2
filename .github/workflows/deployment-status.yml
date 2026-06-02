@@ -9,6 +9,7 @@ jobs:
   notify-deployment:
     name: Deployment Notification
     runs-on: ubuntu-latest
+    # Required only to post a PR comment via github.rest.issues.createComment.
     permissions:
       issues: write
     if: github.event.deployment_status.state != 'pending'

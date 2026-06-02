@@ -14,6 +14,10 @@ engines:
   # --- Enabled engines (well under the 20-run SARIF limit) ---
   semgrep:
     enabled: true
+    exclude_paths:
+      # The 40-char hex SHA pinning sonarqube-scan-action is falsely detected
+      # as a SonarQube API key. Excluding this file from Semgrep only.
+      - '.github/workflows/sonarcloud.yml'
   # eslint-9: authoritative ESLint engine — uses eslint.config.js (flat config, ESLint 9+).
   eslint-9:
     enabled: true
@@ -68,11 +72,6 @@ exclude_patterns:
   - identifier: "Security/detect-non-literal-regexp"
     paths:
       - "src/utils/validation-utils.test.ts"
-  # False positive: the 40-char hex strings are git commit SHAs pinning the
-  # SonarSource GitHub Action, not SonarQube API keys.
-  - identifier: "generic.secrets.security.detected-sonarqube-docs-api-key.detected-sonarqube-docs-api-key"
-    paths:
-      - ".github/workflows/sonarcloud.yml"
 
 # Exclude paths from code analysis
 exclude_paths:

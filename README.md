@@ -12,6 +12,7 @@ Lightning-fast, distraction-free note-taking app — landing page built with Rea
 [![Deployment Status](https://github.com/shazzar00ni/paperlyte-v2/actions/workflows/deployment-status.yml/badge.svg)](https://github.com/shazzar00ni/paperlyte-v2/actions/workflows/deployment-status.yml) [![codecov](https://codecov.io/github/shazzar00ni/paperlyte-v2/graph/badge.svg?token=yQtvXFB0KF)](https://codecov.io/github/shazzar00ni/paperlyte-v2) [![CircleCI](https://dl.circleci.com/status-badge/img/gh/shazzar00ni/paperlyte-v2/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/shazzar00ni/paperlyte-v2/tree/main) ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 [![Claude Code](https://github.com/shazzar00ni/paperlyte-v2/actions/workflows/claude.yml/badge.svg)](https://github.com/shazzar00ni/paperlyte-v2/actions/workflows/claude.yml)
 ![React](https://img.shields.io/badge/React-19.2.0-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-blue) ![Vite](https://img.shields.io/badge/Vite-7.2.4-646CFF)
+[![SonarQube Cloud](https://sonarcloud.io/images/project_badges/sonarcloud-dark.svg)](https://sonarcloud.io/summary/new_code?id=shazzar00ni_paperlyte-v2)
 
 <!-- ADD A SCREENSHOT HERE -->
 <img width="1024" height="1536" alt="1000005261" src="https://github.com/user-attachments/assets/7ba39c13-5df8-4c25-a29e-54ddd65d2cac" />
@@ -29,6 +30,7 @@ Lightning-fast, distraction-free note-taking app — landing page built with Rea
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-blue)
 ![Vite](https://img.shields.io/badge/Vite-7.2.4-646CFF)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fshazzar00ni%2Fpaperlyte-v2.svg?type=large&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fshazzar00ni%2Fpaperlyte-v2?ref=badge_large&issueType=license)
+
 > **Security:** See our [Security Practices](./docs/SECURITY.md) for vulnerability reporting, contributor guidelines, and supply chain security.
 
 ## Table of Contents

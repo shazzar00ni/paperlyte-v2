@@ -207,7 +207,7 @@ No further implementation is needed on this branch. The navigation utility now i
 No `.eslintrc.json` should be added for the current setup. The current branch already has:
 
 - `eslint.config.js` as the source of truth for local and flat-config-aware ESLint runs
-- `.eslintrc.cjs` for Codacy's `codacy-eslint-legacy` engine and other legacy tools
+- `.eslintrc.cjs` for Codacy's legacy ESLint runner (the `eslint` engine in `.codacy.yml`) and other legacy tools
 
 Only add another legacy config file if a specific external tool is confirmed to require that exact
 filename/format and cannot consume either `eslint.config.js` or `.eslintrc.cjs`.

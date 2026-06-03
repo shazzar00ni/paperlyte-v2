@@ -385,8 +385,12 @@ describe('CounterAnimation', () => {
       const counter = screen.getByLabelText('100')
 
       if (rafCallback) {
-        act(() => { rafCallback!(0) })
-        act(() => { rafCallback!(500) })
+        act(() => {
+          rafCallback!(0)
+        })
+        act(() => {
+          rafCallback!(500)
+        })
       }
 
       // Unknown easing falls back to easeOutQuart: 1 - (1-0.5)^4 = 0.9375 → value 94

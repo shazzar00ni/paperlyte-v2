@@ -26,7 +26,7 @@ Last updated: 2026-05-29
 - PR #422 is implemented in the codebase (`@types/node` and `@types/react` are updated).
 - PR #425 is handled via the existing legacy `.eslintrc.cjs`, not `.eslintrc.json`:
   - `eslint.config.js` remains the authoritative config for local/flat-config-aware ESLint runs.
-  - `.eslintrc.cjs` is explicitly documented for Codacy's `codacy-eslint-legacy` engine and other
+  - `.eslintrc.cjs` is explicitly documented for Codacy's legacy ESLint runner (the `eslint` engine in `.codacy.yml`) and other
     legacy tools that cannot consume flat config.
 
 ### Still open / not completed on this branch

@@ -41,8 +41,8 @@ PR must be verified before merge.
 
 ```bash
 git fetch --all --prune
-# Repeat per branch:
-git diff --name-status main...origin/<branch-name> -- .npmrc docs/ROADMAP.md docs/gitVersionControl.md docs/review.md src/utils/navigation.ts
+# Repeat per branch (replace BRANCH_NAME):
+git diff --name-status main...origin/BRANCH_NAME -- .npmrc docs/ROADMAP.md docs/gitVersionControl.md docs/review.md src/utils/navigation.ts
 ```
 
 ## Suggested Labels

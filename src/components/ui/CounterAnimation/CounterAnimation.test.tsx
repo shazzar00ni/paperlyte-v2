@@ -369,6 +369,32 @@ describe('CounterAnimation', () => {
       expect(counter.textContent).toBe(expectedValue.toString())
     })
 
+    it('should fall back to easeOutQuart for an unrecognized easing name', () => {
+      mockReducedMotion(false)
+      mockIntersectionObserver(true)
+
+      let rafCallback: FrameRequestCallback | null = null
+      vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+        rafCallback = cb
+        return 1
+      })
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      render(<CounterAnimation end={100} start={0} easing={'unknown' as any} duration={1000} />)
+
+      const counter = screen.getByLabelText('100')
+
+      if (rafCallback) {
+        act(() => { rafCallback!(0) })
+        act(() => { rafCallback!(500) })
+      }
+
+      // Unknown easing falls back to easeOutQuart: 1 - (1-0.5)^4 = 0.9375 → value 94
+      const easedProgress = 1 - Math.pow(1 - 0.5, 4)
+      const expectedValue = Math.round(0 + (100 - 0) * easedProgress)
+      expect(counter.textContent).toBe(expectedValue.toString())
+    })
+
     it('should apply easeOutExpo easing function', () => {
       mockReducedMotion(false)
       mockIntersectionObserver(true)

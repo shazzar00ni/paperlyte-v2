@@ -61,7 +61,6 @@ async function applyReducedMotion(page: Page): Promise<void> {
 }
 
 test.describe('Landing Page', () => {
-
   test('should load and display hero section', async ({ page }: { page: Page }): Promise<void> => {
     await applyReducedMotion(page)
     await page.goto('/')
@@ -175,16 +174,18 @@ test.describe('Landing Page', () => {
     // page.goto waits for the load event; give the LCP observer time to fire.
     // Polling __cwv.lcp is more reliable than waitForLoadState('networkidle'),
     // which can time out when the app makes background requests (analytics, etc.).
-    await page.waitForFunction(
-      () => {
-        const cwv = (window as Window & { __cwv?: { lcp: number | null } }).__cwv
-        return cwv !== undefined && cwv.lcp !== null
-      },
-      { timeout: 8000 }
-    ).catch(() => {
-      // If LCP never fires (e.g. observer missed it), fall through —
-      // the null-guard below will skip the assertions gracefully.
-    })
+    await page
+      .waitForFunction(
+        () => {
+          const cwv = (window as Window & { __cwv?: { lcp: number | null } }).__cwv
+          return cwv !== undefined && cwv.lcp !== null
+        },
+        { timeout: 8000 }
+      )
+      .catch(() => {
+        // If LCP never fires (e.g. observer missed it), fall through —
+        // the null-guard below will skip the assertions gracefully.
+      })
 
     interface CoreWebVitalsMetrics {
       fcp: number | null
@@ -198,12 +199,18 @@ test.describe('Landing Page', () => {
       (): CoreWebVitalsMetrics => (window as Window & { __cwv: CoreWebVitalsMetrics }).__cwv
     )
     const { fcp, lcp, cls } = metrics
-    expect(fcp, 'FCP metric was not collected — PerformanceObserver/timeline pipeline may be broken').not.toBeNull()
-    expect(lcp, 'LCP metric was not collected — PerformanceObserver/timeline pipeline may be broken').not.toBeNull()
+    expect(
+      fcp,
+      'FCP metric was not collected — PerformanceObserver/timeline pipeline may be broken'
+    ).not.toBeNull()
+    expect(
+      lcp,
+      'LCP metric was not collected — PerformanceObserver/timeline pipeline may be broken'
+    ).not.toBeNull()
 
     expect(fcp!).toBeLessThan(2000) // FCP < 2s
     expect(lcp!).toBeLessThan(2500) // LCP < 2.5s (good threshold)
-    expect(cls).toBeLessThan(0.1)   // CLS < 0.1 (good threshold)
+    expect(cls).toBeLessThan(0.1) // CLS < 0.1 (good threshold)
   })
 
   test('should show mobile-specific UI on small screens', async ({
@@ -347,7 +354,7 @@ test.describe('Landing Page', () => {
     const emailInput = page.locator('#email-capture input[type="email"]')
     const submitButton = page
       .locator('#email-capture')
-      .getByRole('button', { name: /join the waitlist/i })
+      .getByRole('button', { name: /claim early access/i })
 
     // Scroll the section into view before interacting. This (a) fires IntersectionObserver
     // so AnimatedElement wrappers become visible and actionable \u2014 no force:true needed,
@@ -374,7 +381,8 @@ test.describe('Landing Page', () => {
       .poll(
         async () =>
           page.evaluate(
-            () => (window as unknown as Record<string, unknown>)['__subscribeMockBody'] as string | null
+            () =>
+              (window as unknown as Record<string, unknown>)['__subscribeMockBody'] as string | null
           ),
         { message: 'Expected waitlist submit payload to be captured by fetch mock' }
       )
@@ -458,7 +466,9 @@ test.describe('Landing Page', () => {
       tag: document.activeElement?.tagName.toLowerCase() ?? '',
       html: (document.activeElement as HTMLElement | null)?.outerHTML.slice(0, 200) ?? null,
     }))
-    expect(afterShiftTab.html, 'Shift+Tab should move focus to a new element').not.toBe(afterTab.html)
+    expect(afterShiftTab.html, 'Shift+Tab should move focus to a new element').not.toBe(
+      afterTab.html
+    )
     expect(['a', 'button', 'input', 'select', 'textarea'].includes(afterShiftTab.tag)).toBe(true)
   })
 })

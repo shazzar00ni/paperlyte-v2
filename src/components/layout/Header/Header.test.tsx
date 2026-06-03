@@ -6,7 +6,7 @@ import { getFocusableElements } from '@utils/keyboard'
 // ------------------------------------------------------------------
 // Test Helpers
 // ------------------------------------------------------------------
-const MOCK_SECTION_IDS = ['features', 'download']
+const MOCK_SECTION_IDS = ['features', 'email-capture']
 
 function setupScrollIntoViewMock(): ReturnType<typeof vi.fn> {
   if (!Element.prototype.scrollIntoView) {
@@ -61,12 +61,12 @@ describe('Header', () => {
     render(<Header />)
 
     expect(screen.getByRole('link', { name: 'Features' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Download' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Waitlist' })).toBeInTheDocument()
   })
 
-  it('should render Get Started CTA button', () => {
+  it('should render Join Waitlist CTA button', () => {
     render(<Header />)
-    const ctaButtons = screen.getAllByRole('button', { name: /get started/i })
+    const ctaButtons = screen.getAllByRole('button', { name: /join waitlist/i })
     expect(ctaButtons.length).toBeGreaterThan(0)
   })
 
@@ -136,17 +136,17 @@ describe('Header', () => {
     expect(scrollIntoViewMock).toHaveBeenCalledWith({ behavior: 'smooth' })
   })
 
-  it('should scroll to download section from Get Started', async () => {
+  it('should scroll to waitlist section from Join Waitlist', async () => {
     render(<Header />)
     const user = userEvent.setup()
 
-    const getStartedButtons = screen.getAllByRole('button', { name: /get started/i })
-    await user.click(getStartedButtons[0])
+    const joinWaitlistButtons = screen.getAllByRole('button', { name: /join waitlist/i })
+    await user.click(joinWaitlistButtons[0])
 
     expect(scrollIntoViewMock).toHaveBeenCalled()
   })
 
-  it('should scroll to download section and close mobile menu when Download link is clicked', async () => {
+  it('should scroll to waitlist section and close mobile menu when Waitlist link is clicked', async () => {
     render(<Header />)
     const user = userEvent.setup()
 
@@ -155,8 +155,8 @@ describe('Header', () => {
     await user.click(menuButton)
     expect(menuButton).toHaveAttribute('aria-expanded', 'true')
 
-    const downloadLink = screen.getByRole('link', { name: 'Download' })
-    await user.click(downloadLink)
+    const waitlistLink = screen.getByRole('link', { name: 'Waitlist' })
+    await user.click(waitlistLink)
 
     expect(scrollIntoViewMock).toHaveBeenCalledWith({ behavior: 'smooth' })
     // Menu should be closed after navigating
@@ -173,7 +173,7 @@ describe('Header', () => {
     render(<Header />)
 
     expect(screen.getByRole('link', { name: 'Features' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Download' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Waitlist' })).toBeInTheDocument()
     expect(screen.getByLabelText(/open menu|close menu/i)).toBeInTheDocument()
   })
 
@@ -228,8 +228,8 @@ describe('Header', () => {
 
       await user.keyboard('{ArrowRight}')
 
-      const downloadLink = screen.getByRole('link', { name: 'Download' })
-      expect(document.activeElement).toBe(downloadLink)
+      const waitlistLink = screen.getByRole('link', { name: 'Waitlist' })
+      expect(document.activeElement).toBe(waitlistLink)
     })
 
     it('should navigate to previous item with ArrowLeft', async () => {
@@ -240,8 +240,8 @@ describe('Header', () => {
       const menuButton = screen.getByRole('button', { name: /open menu/i })
       await user.click(menuButton)
 
-      const downloadLink = screen.getByRole('link', { name: 'Download' })
-      downloadLink.focus()
+      const waitlistLink = screen.getByRole('link', { name: 'Waitlist' })
+      waitlistLink.focus()
 
       await user.keyboard('{ArrowLeft}')
 
@@ -260,8 +260,8 @@ describe('Header', () => {
       // Get the menu element and nav items
       const menu = document.getElementById('main-menu')!
       const featuresLink = screen.getByRole('link', { name: 'Features' })
-      const downloadLink = screen.getByRole('link', { name: 'Download' })
-      const getStartedButton = screen.getByRole('button', { name: /get started/i })
+      const waitlistLink = screen.getByRole('link', { name: 'Waitlist' })
+      const joinWaitlistButton = screen.getByRole('button', { name: /join waitlist/i })
 
       // Verify the menu has a keydown listener attached (event handler exists)
       // by checking the menu element exists and has the expected structure
@@ -273,8 +273,8 @@ describe('Header', () => {
       // Verify all expected nav items are in the focusable elements
       expect(focusableElements).toHaveLength(3)
       expect(focusableElements).toContain(featuresLink)
-      expect(focusableElements).toContain(downloadLink)
-      expect(focusableElements).toContain(getStartedButton)
+      expect(focusableElements).toContain(waitlistLink)
+      expect(focusableElements).toContain(joinWaitlistButton)
 
       // The Home key navigates to focusableElements[0]
       // Verify that this element exists and is focusable
@@ -283,9 +283,9 @@ describe('Header', () => {
 
       // Verify focus can be set on menu items
       act(() => {
-        downloadLink.focus()
+        waitlistLink.focus()
       })
-      expect(document.activeElement).toBe(downloadLink)
+      expect(document.activeElement).toBe(waitlistLink)
 
       // Note: jsdom doesn't properly handle Home/End key simulation.
       // The keyboard utility functions (handleHomeEndNavigation) are tested
@@ -303,8 +303,8 @@ describe('Header', () => {
       // Get the menu element and nav items
       const menu = document.getElementById('main-menu')!
       const featuresLink = screen.getByRole('link', { name: 'Features' })
-      const downloadLink = screen.getByRole('link', { name: 'Download' })
-      const getStartedButton = screen.getByRole('button', { name: /get started/i })
+      const waitlistLink = screen.getByRole('link', { name: 'Waitlist' })
+      const joinWaitlistButton = screen.getByRole('button', { name: /join waitlist/i })
 
       // Verify the menu has a keydown listener attached (event handler exists)
       // by checking the menu element exists and has the expected structure
@@ -316,8 +316,8 @@ describe('Header', () => {
       // Verify all expected nav items are in the focusable elements
       expect(focusableElements).toHaveLength(3)
       expect(focusableElements).toContain(featuresLink)
-      expect(focusableElements).toContain(downloadLink)
-      expect(focusableElements).toContain(getStartedButton)
+      expect(focusableElements).toContain(waitlistLink)
+      expect(focusableElements).toContain(joinWaitlistButton)
 
       // The End key navigates to focusableElements[length - 1]
       // Verify that this element exists and is focusable
@@ -343,8 +343,8 @@ describe('Header', () => {
       const menuButton = screen.getByRole('button', { name: /open menu/i })
       await user.click(menuButton)
 
-      const getStartedButton = screen.getByRole('button', { name: /get started/i })
-      getStartedButton.focus()
+      const joinWaitlistButton = screen.getByRole('button', { name: /join waitlist/i })
+      joinWaitlistButton.focus()
 
       // ArrowRight from last item should wrap to first
       await user.keyboard('{ArrowRight}')
@@ -366,9 +366,9 @@ describe('Header', () => {
 
       await user.keyboard('{ArrowLeft}')
 
-      // Should wrap to last item (Get Started)
-      const getStartedButton = screen.getByRole('button', { name: /get started/i })
-      expect(document.activeElement).toBe(getStartedButton)
+      // Should wrap to last item (Join Waitlist)
+      const joinWaitlistButton = screen.getByRole('button', { name: /join waitlist/i })
+      expect(document.activeElement).toBe(joinWaitlistButton)
     })
 
     it('should close menu and return focus to toggle when Escape is pressed', async () => {

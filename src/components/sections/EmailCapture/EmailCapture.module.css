@@ -4,6 +4,15 @@
   text-align: center;
 }
 
+.eyebrow {
+  margin: 0 0 0.75rem;
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
 .title {
   font-size: 2.5rem;
   font-weight: 700;
@@ -15,14 +24,28 @@
 .subtitle {
   font-size: 1.25rem;
   color: var(--color-text-secondary);
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   line-height: 1.6;
+}
+
+.socialProof {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0 2rem;
+  padding: 0.625rem 1rem;
+  color: var(--color-text-primary);
+  background: var(--color-primary-fainter);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-full);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
 }
 
 .benefits {
   list-style: none;
   padding: 0;
-  margin: 0 0 3rem 0;
+  margin: 0 0 2.5rem 0;
   text-align: left;
   max-width: 600px;
   margin-left: auto;
@@ -48,6 +71,15 @@
   margin: 0 auto;
 }
 
+.label {
+  display: block;
+  margin-bottom: 0.75rem;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  text-align: left;
+}
+
 .inputGroup {
   display: flex;
   gap: 1rem;
@@ -59,7 +91,7 @@
   padding: 1rem 1.5rem;
   font-size: 1rem;
   border: 2px solid var(--color-border);
-  border-radius: 8px;
+  border-radius: var(--border-radius-md);
   background: var(--color-background-primary);
   color: var(--color-text-primary);
 }
@@ -80,7 +112,7 @@
   color: var(--color-text-on-primary);
   background: var(--color-primary);
   border: none;
-  border-radius: 8px;
+  border-radius: var(--border-radius-md);
   cursor: pointer;
   white-space: nowrap;
   display: flex;
@@ -137,6 +169,31 @@
   color: var(--color-error);
   margin: 0.5rem 0;
   font-weight: 500;
+}
+
+.assurances {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem 1rem;
+  list-style: none;
+  margin: 1rem 0 0.75rem;
+  padding: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.assurances li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.assurances li::before {
+  content: '✓';
+  color: var(--color-success);
+  font-weight: var(--font-weight-bold);
 }
 
 .privacy {
@@ -244,12 +301,21 @@
     font-size: 1.125rem;
   }
 
+  .socialProof {
+    border-radius: var(--border-radius-lg);
+  }
+
   .benefits {
     margin-bottom: 2rem;
   }
 
   .benefit {
     font-size: 1rem;
+  }
+
+  .assurances {
+    align-items: center;
+    flex-direction: column;
   }
 
   .inputGroup {

@@ -179,19 +179,23 @@ export const Header = (): React.ReactElement => {
             </li>
             <li>
               <a
-                href="#download"
+                href="#email-capture"
                 onClick={(e) => {
                   e.preventDefault()
-                  scrollToSection('download')
+                  scrollToSection('email-capture')
                 }}
                 className={styles.navLink}
               >
-                Download
+                Waitlist
               </a>
             </li>
             <li className={styles.navCta}>
-              <Button variant="primary" size="small" onClick={() => scrollToSection('download')}>
-                Get Started
+              <Button
+                variant="primary"
+                size="small"
+                onClick={() => scrollToSection('email-capture')}
+              >
+                Join Waitlist
               </Button>
             </li>
           </ul>

@@ -201,9 +201,8 @@ describe('Icon', () => {
   })
 
   describe('Alias resolution', () => {
-    it('should resolve fa-check-circle to fa-circle-check via iconNameMap without warning', () => {
-      // fa-check-circle is not in iconPaths; convertIconName maps it to 'circle-check',
-      // so aliasedKey becomes 'fa-circle-check' which IS in iconPaths (step 2)
+    it('should render fa-check-circle without warning when present in iconPaths', () => {
+      // fa-check-circle is present in iconPaths, so it should render as a custom SVG without warnings
       const { container } = render(<Icon name="fa-check-circle" />)
 
       const svg = container.querySelector('svg.icon-svg')
@@ -211,9 +210,8 @@ describe('Icon', () => {
       expect(consoleWarnSpy).toHaveBeenCalledTimes(0)
     })
 
-    it('should resolve fa-house to fa-home via iconNameMap without warning', () => {
-      // fa-house is not in iconPaths; convertIconName maps it to 'home',
-      // so aliasedKey becomes 'fa-home' which IS in iconPaths (step 2)
+    it('should render fa-house without warning when present in iconPaths', () => {
+      // fa-house is present in iconPaths, so it should render as a custom SVG without warnings
       const { container } = render(<Icon name="fa-house" />)
 
       const svg = container.querySelector('svg.icon-svg')

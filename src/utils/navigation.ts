@@ -1,6 +1,26 @@
+const SCROLL_RETRY_TIMEOUT_MS = 5000
+
+// Tracks in-flight observers keyed by sectionId — ensures rapid repeat calls to
+// the same target cancel the previous observer instead of accumulating observers.
+const pendingScrollObservers = new Map<
+  string,
+  { observer: MutationObserver; timeoutId: ReturnType<typeof setTimeout> }
+>()
+
+function cancelPendingScroll(sectionId: string): void {
+  const pending = pendingScrollObservers.get(sectionId)
+  if (pending) {
+    pending.observer.disconnect()
+    clearTimeout(pending.timeoutId)
+    pendingScrollObservers.delete(sectionId)
+  }
+}
+
 /**
  * Scrolls smoothly to a section identified by its ID.
- * If the section doesn't exist or running in SSR, the function does nothing.
+ * If the section is not yet in the DOM (e.g. still loading as a lazy chunk),
+ * waits up to 5 s for it to appear before scrolling. Rapid repeat calls for
+ * the same target cancel the previous pending scroll to avoid stacking observers.
  *
  * @param sectionId - The ID of the section to scroll to (without the # prefix)
  */
@@ -10,9 +30,50 @@ export function scrollToSection(sectionId: string): void {
     return
   }
 
+  // Respect prefers-reduced-motion: use instant scroll when the user prefers
+  // reduced motion. This also ensures Playwright tests (which emulate
+  // reducedMotion: 'reduce') get an instant scroll, preventing WebKit from
+  // cancelling an in-flight smooth scroll when focus() is called.
+  // The typeof matchMedia guard handles jsdom (unit tests), which doesn't
+  // implement matchMedia, keeping unit test behaviour unchanged (smooth).
+  const prefersReducedMotion =
+    typeof window !== 'undefined' &&
+    typeof window.matchMedia === 'function' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  const behavior: ScrollBehavior = prefersReducedMotion ? 'instant' : 'smooth'
+
   const element = document.getElementById(sectionId)
   if (element) {
-    element.scrollIntoView({ behavior: 'smooth' })
+    cancelPendingScroll(sectionId)
+    element.scrollIntoView({ behavior })
+    return
+  }
+
+  // Cancel any previous pending observer for this target before creating a new one
+  cancelPendingScroll(sectionId)
+
+  // Section not yet mounted — observe DOM until it appears (handles lazy chunks).
+  // Scope to #main to avoid firing on unrelated mutations (header, overlays, etc.).
+  const root = document.getElementById('main') ?? document.body
+  const observer = new MutationObserver(() => {
+    const el = document.getElementById(sectionId)
+    if (el) {
+      cancelPendingScroll(sectionId)
+      el.scrollIntoView({ behavior })
+    }
+  })
+
+  const timeoutId = setTimeout(() => cancelPendingScroll(sectionId), SCROLL_RETRY_TIMEOUT_MS)
+  // unref() prevents the timer from keeping the Node.js/JSDOM event loop alive in tests
+  ;(timeoutId as unknown as { unref?: () => void }).unref?.()
+  pendingScrollObservers.set(sectionId, { observer, timeoutId })
+  observer.observe(root, { childList: true, subtree: true })
+}
+
+/** @internal For use in tests only — cancels all in-flight scroll observers. */
+export function _clearPendingScrollObservers(): void {
+  for (const sectionId of [...pendingScrollObservers.keys()]) {
+    cancelPendingScroll(sectionId)
   }
 }
 
@@ -132,19 +193,24 @@ export function isSafeUrl(url: string): boolean {
   return isAllowedAbsoluteUrl(trimmedUrl)
 }
 
+function isSameOriginUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url, window.location.origin)
+    return parsed.origin === window.location.origin
+  } catch {
+    /* v8 ignore next -- URL() with a valid base never throws in practice */
+    return false
+  }
+}
+
 /**
- * Safely navigates to a URL by validating it first.
- * Allows relative URLs, HTTP/HTTPS URLs (including external), and blocks dangerous protocols
- * like javascript:, data:, vbscript:, etc.
+ * Safely navigates to same-origin and relative URLs only.
+ * Blocks dangerous protocols (javascript:, data:, vbscript:, etc.) and external origins
+ * to prevent open redirect attacks.
  *
- * SECURITY NOTE: This function allows external HTTP/HTTPS URLs. For use cases requiring
- * same-origin navigation only (to prevent open redirects), implement additional domain
- * validation before calling this function or use a different approach.
+ * For legitimate external navigation, use safeNavigateExternal() instead.
  *
- * Safe usage: Only call with hardcoded URLs or URLs from trusted sources. Never pass
- * user-controlled query parameters directly to this function without domain validation.
- *
- * @param url - The URL to navigate to
+ * @param url - The URL to navigate to (must be same-origin or relative)
  * @returns true if navigation was performed, false if URL was rejected or navigation not needed (SSR)
  */
 export function safeNavigate(url: string): boolean {
@@ -161,6 +227,34 @@ export function safeNavigate(url: string): boolean {
     return false
   }
 
-  window.location.href = url
+  if (!isSameOriginUrl(url)) {
+    if (import.meta.env.DEV) console.warn(`safeNavigate blocked non-same-origin URL: "${url}"`)
+    return false
+  }
+
+  window.location.href = url // nosemgrep: javascript.browser.security.open-redirect-from-function.js-open-redirect-from-function
   return true
+}
+
+/**
+ * Safely opens an external URL in a new tab with noopener,noreferrer.
+ * Allows only http: and https: absolute URLs. Blocks dangerous protocols,
+ * relative paths, and non-HTTP schemes.
+ *
+ * @param url - The external URL to open
+ * @returns true if the window was opened, false if the URL was rejected or in SSR
+ */
+export function safeNavigateExternal(url: string): boolean {
+  if (typeof window === 'undefined') return false
+  if (!isSafeUrl(url)) {
+    if (import.meta.env.DEV) console.warn(`External navigation blocked: "${url}"`)
+    return false
+  }
+  try {
+    const parsed = new URL(url)
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return false
+  } catch {
+    return false
+  }
+  return window.open(url, '_blank', 'noopener,noreferrer') !== null
 }

@@ -35,11 +35,13 @@
  * • This site is a React SPA; the static HTML shell is minimal. The edge
  *   function faithfully converts whatever HTML the origin returns, so
  *   SSR or pre-rendered pages will produce richer Markdown output.
- * • Both Turndown and sanitize-html are imported via the `npm:` specifier
- *   supported by the Netlify Edge Runtime (Deno-based), so the deployed
- *   Edge Function does not require a separate `npm install` step.
- * • For local Node/Vitest tests and other build tooling, these packages
- *   are also present in `devDependencies` and must exist in `node_modules`.
+ * • Turndown and sanitize-html are imported via the `npm:` specifier
+ *   supported by the Netlify Edge Runtime (Deno-based).  At deploy time,
+ *   Netlify resolves `npm:pkg@version` directly — no `npm install` is
+ *   needed on the Netlify build side for the edge function itself.
+ *   However, these packages ARE listed in `devDependencies` and MUST be
+ *   present in `node_modules` for local Vitest tests, TypeScript type
+ *   checking, and other Node-based build tooling to work.
  * • sanitize-html is the primary sanitizer: it parses HTML into a real node
  *   tree and applies an allowlist, which is far more robust than regex.
  */
@@ -234,8 +236,9 @@ export default async function handler(request: Request, context: Context): Promi
 
     // ── 5. Sanitize with allowlist parser ─────────────────────────────────
     // sanitize-html parses HTML into a real node tree and applies a strict
-    // allowlist (script, style, nav, header, footer, iframe, object, embed,
-    // applet, noscript etc. are excluded).  Using an allowlist-based parser
+    // allowlist (script, style, nav, footer, iframe, object, embed, applet,
+    // noscript etc. are excluded; <header> is preserved so page titles on
+    // static pages are not lost).  Using an allowlist-based parser
     // is far more robust than regex: it handles malformed markup, nested tag
     // obfuscation, and whitespace in closing tags (e.g. </script\t\n bar>).
     //
@@ -243,9 +246,10 @@ export default async function handler(request: Request, context: Context): Promi
     //   • allowedSchemes / allowedSchemesByTag — blocks javascript: and
     //     data: URIs from leaking into Markdown links/images.
     //   • allowProtocolRelative: false — blocks //evil.com style URLs.
-    //   • exclusiveFilter — drops nav/header/footer/aside together with ALL
+    //   • exclusiveFilter — drops nav/footer/aside/noscript together with ALL
     //     their descendants, so navigation links and UI chrome never bleed
-    //     into the Markdown output.
+    //     into the Markdown output.  <header> is intentionally preserved so
+    //     page titles on static pages (privacy.html, terms.html) survive.
     // sanitizeHtml IS the sanitizer: passing untrusted HTML to it is exactly
     // correct.  Static analysers that flag "untrusted HTML reaches sanitizeHtml"
     // as a sink are producing a false positive here.

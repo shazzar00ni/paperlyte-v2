@@ -1,96 +1,33 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
-# This workflow helps you trigger a SonarCloud analysis of your code and populates
-# GitHub Code Scanning alerts with the vulnerabilities found.
-# Free for open source project.
-
-# 1. Login to SonarCloud.io using your GitHub account
-
-# 2. Import your project on SonarCloud
-#     * Add your GitHub organization first, then add your repository as a new project.
-#     * Please note that many languages are eligible for automatic analysis,
-#       which means that the analysis will start automatically without the need to set up GitHub Actions.
-#     * This behavior can be changed in Administration > Analysis Method.
-#
-# 3. Follow the SonarCloud in-product tutorial
-#     * a. Copy/paste the Project Key and the Organization Key into the args parameter below
-#          (You'll find this information in SonarCloud. Click on "Information" at the bottom left)
-#
-#     * b. Generate a new token and add it to your Github repository's secrets using the name SONAR_TOKEN
-#          (On SonarCloud, click on your avatar on top-right > My account > Security
-#           or go directly to https://sonarcloud.io/account/security/)
-
-# Feel free to take a look at our documentation (https://docs.sonarcloud.io/getting-started/github/)
-# or reach out to our community forum if you need some help (https://community.sonarsource.com/c/help/sc/9)
-
 name: SonarCloud analysis
 
 on:
   push:
-    branches: ['main']
+    branches: [ "main" ]
   pull_request:
-    branches: ['main']
+    branches: [ "main" ]
   workflow_dispatch:
 
-permissions:
-  contents: read # allows actions/checkout to fetch the repository
-  pull-requests: read # allows SonarCloud to decorate PRs with analysis results
+permissions: {}
 
 jobs:
   Analysis:
     runs-on: ubuntu-latest
-    # Expose the token as a job-level env so steps can gate on its presence.
-    # When SONAR_TOKEN is not configured the env var is an empty string and
-    # the analysis step is skipped rather than failing the whole workflow.
-    env:
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    permissions:
+      contents: read
+      pull-requests: read # allows SonarCloud to decorate PRs with analysis results
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # Pinned checkout commit for this workflow (aligned with repo pattern)
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          fetch-depth: 0 # Full history required for SonarCloud blame data and new-code detection
+          fetch-depth: 0  # Full history required for SonarCloud blame data and new-code detection
 
       - name: Analyze with SonarCloud
-        # Skip gracefully when the token or project identifiers are not
-        # configured (e.g., forks or repositories that haven't set up SonarCloud).
-        # Uses the job-level env variable to make the missing-secret case explicit
-        # and reusable here; when SONAR_TOKEN is unavailable (such as in forks or
-        # unconfigured repositories), it resolves to an empty string and this step skips.
-        if: env.SONAR_TOKEN != '' && vars.SONAR_PROJECT_KEY != '' && vars.SONAR_ORGANIZATION != ''
-        id: sonar-analysis
-        # Fail only on direct pushes to main (protects the merge gate).
-        # PRs, workflow_dispatch on feature branches, and scheduled runs are
-        # advisory so transient scanner issues do not block development.
-        continue-on-error: ${{ github.ref != 'refs/heads/main' }}
-
-        # You can pin the exact commit or the version.
-        # uses: SonarSource/sonarcloud-github-action@v2.2.0
-        uses: SonarSource/sonarcloud-github-action@4006f663ecaf1f8093e8e4abb9227f6041f52216
+        uses: SonarSource/sonarqube-scan-action@7006c4492b2e0ee0f816d36501671557c97f5995 # v8.1.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
-          # Additional arguments for the SonarScanner CLI
           args: >
             -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }}
             -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
-          # When you need the analysis to take place in a directory other than the one from which it was launched, default is .
           projectBaseDir: .
-
-      - name: SonarCloud Analysis Summary
-        if: always()
-        run: |
-          echo "## 🔬 SonarCloud Analysis" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          if [ "${{ steps.sonar-analysis.outcome }}" == "success" ]; then
-            echo "✅ **SonarCloud:** Analysis completed successfully" >> $GITHUB_STEP_SUMMARY
-          elif [ "${{ steps.sonar-analysis.outcome }}" == "skipped" ]; then
-            echo "⏭️ **SonarCloud:** Skipped — SONAR_TOKEN / project vars not configured" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "To enable: add \`SONAR_TOKEN\` secret and \`SONAR_PROJECT_KEY\` / \`SONAR_ORGANIZATION\` variables." >> $GITHUB_STEP_SUMMARY
-          else
-            echo "⚠️ **SonarCloud:** Analysis encountered an issue — check the step log above" >> $GITHUB_STEP_SUMMARY
-          fi
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "📊 View findings in the **Security** tab once configured." >> $GITHUB_STEP_SUMMARY

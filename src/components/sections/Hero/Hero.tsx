@@ -22,12 +22,12 @@ export const Hero = (): React.ReactElement => {
       <div className={styles.content}>
         <AnimatedElement animation="fadeIn">
           <h1 className={styles.headline}>
-            Your thoughts, <em>organized.</em>
+            Your thoughts, <em>unchained.</em>
           </h1>
         </AnimatedElement>
 
         <AnimatedElement animation="fadeIn" delay={100}>
-          <p className={styles.subheadline}>The minimal workspace for busy professionals.</p>
+          <p className={styles.subheadline}>Note-taking so fast it gets out of your way.</p>
         </AnimatedElement>
 
         <AnimatedElement animation="fadeIn" delay={300}>
@@ -42,7 +42,7 @@ export const Hero = (): React.ReactElement => {
               Start Writing for Free
             </Button>
             <Button variant="secondary" size="large" onClick={() => scrollToSection('features')}>
-              View the Demo
+              See How It Works
             </Button>
           </div>
         </AnimatedElement>
@@ -65,18 +65,30 @@ export const Hero = (): React.ReactElement => {
         <div className={styles.mockupContainer} aria-hidden="true">
           {/* Productivity stat badge */}
           <div className={styles.statBadge}>
-            <span className={styles.statValue}>+120%</span>
-            <span className={styles.statLabel}>PRODUCTIVITY</span>
+            <span className={styles.statValue}>8ms</span>
+            <span className={styles.statLabel}>RESPONSE TIME</span>
           </div>
 
           {/* Primary mockup - Notes list view */}
           <div className={styles.mockupPrimary}>
             <picture>
-              <source srcSet="/mockups/notes-list.avif" type="image/avif" />
-              <source srcSet="/mockups/notes-list.webp" type="image/webp" />
-              <source srcSet="/mockups/notes-list.png" type="image/png" />
+              <source
+                srcSet="/mockups/notes-list-400w.avif 400w, /mockups/notes-list-800w.avif 800w, /mockups/notes-list.avif 1100w"
+                sizes="(max-width: 480px) 85vw, 550px"
+                type="image/avif"
+              />
+              <source
+                srcSet="/mockups/notes-list-400w.webp 400w, /mockups/notes-list-800w.webp 800w, /mockups/notes-list.webp 1100w"
+                sizes="(max-width: 480px) 85vw, 550px"
+                type="image/webp"
+              />
+              <source
+                srcSet="/mockups/notes-list-400w.png 400w, /mockups/notes-list-800w.png 800w, /mockups/notes-list.png 1100w"
+                sizes="(max-width: 480px) 85vw, 550px"
+                type="image/png"
+              />
               <img
-                src="/mockups/notes-list.svg"
+                src="/mockups/notes-list.png"
                 alt="Paperlyte notes list showing Today's Notes with three items: Project Ideas for brainstorming, Meeting Notes with key takeaways, and Quick Thoughts being written"
                 width={1100}
                 height={800}
@@ -90,11 +102,23 @@ export const Hero = (): React.ReactElement => {
           {/* Secondary mockup - Note detail view (floating) */}
           <div className={styles.mockupSecondary}>
             <picture>
-              <source srcSet="/mockups/note-detail.avif" type="image/avif" />
-              <source srcSet="/mockups/note-detail.webp" type="image/webp" />
-              <source srcSet="/mockups/note-detail.png" type="image/png" />
+              <source
+                srcSet="/mockups/note-detail-400w.avif 400w, /mockups/note-detail-800w.avif 800w"
+                sizes="(max-width: 480px) 240px, 320px"
+                type="image/avif"
+              />
+              <source
+                srcSet="/mockups/note-detail-400w.webp 400w, /mockups/note-detail-800w.webp 800w"
+                sizes="(max-width: 480px) 240px, 320px"
+                type="image/webp"
+              />
+              <source
+                srcSet="/mockups/note-detail-400w.png 400w, /mockups/note-detail-800w.png 800w"
+                sizes="(max-width: 480px) 240px, 320px"
+                type="image/png"
+              />
               <img
-                src="/mockups/note-detail.svg"
+                src="/mockups/note-detail.png"
                 alt="Paperlyte note editor with bullet points including quick project ideas, meeting reminders, and presentation notes"
                 width={800}
                 height={600}

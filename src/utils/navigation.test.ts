@@ -8,6 +8,7 @@ import {
   hasDangerousProtocol,
   isRelativeUrl,
   isAllowedAbsoluteUrl,
+  isSameOriginAbsoluteUrl,
 } from './navigation'
 
 describe('navigation utilities', () => {
@@ -145,13 +146,18 @@ describe('navigation utilities', () => {
   })
 
   describe('isAllowedAbsoluteUrl', () => {
-    it('should allow http: URLs', () => {
-      expect(isAllowedAbsoluteUrl('http://example.com')).toBe(true)
+    it('should allow same-origin http: URLs', () => {
+      const currentOrigin = window.location.origin
+      expect(isAllowedAbsoluteUrl(currentOrigin)).toBe(true)
     })
 
-    it('should allow https: URLs', () => {
+    it('should allow external https: URLs', () => {
       expect(isAllowedAbsoluteUrl('https://example.com')).toBe(true)
       expect(isAllowedAbsoluteUrl('https://github.com/path')).toBe(true)
+    })
+
+    it('should allow external http: URLs', () => {
+      expect(isAllowedAbsoluteUrl('http://example.com')).toBe(true)
     })
 
     it('should allow same-origin URLs', () => {
@@ -165,6 +171,24 @@ describe('navigation utilities', () => {
       // However, with a base (window.location.origin), most strings parse.
       // We rely on the outer isSafeUrl checks for those cases.
       expect(isAllowedAbsoluteUrl('http://')).toBe(false)
+    })
+  })
+
+  describe('isSameOriginAbsoluteUrl', () => {
+    it('should allow same-origin absolute URLs', () => {
+      const currentOrigin = window.location.origin
+      expect(isSameOriginAbsoluteUrl(currentOrigin)).toBe(true)
+      expect(isSameOriginAbsoluteUrl(`${currentOrigin}/`)).toBe(true)
+      expect(isSameOriginAbsoluteUrl(`${currentOrigin}/page`)).toBe(true)
+    })
+
+    it('should reject external URLs', () => {
+      expect(isSameOriginAbsoluteUrl('https://example.com')).toBe(false)
+      expect(isSameOriginAbsoluteUrl('http://evil.com')).toBe(false)
+    })
+
+    it('should reject unparseable URLs', () => {
+      expect(isSameOriginAbsoluteUrl('http://')).toBe(false)
     })
   })
 
@@ -214,7 +238,7 @@ describe('navigation utilities', () => {
       expect(isSafeUrl('/path/with://protocol')).toBe(false)
     })
 
-    it('should allow external HTTP/HTTPS URLs (for linking to external resources)', () => {
+    it('should allow external HTTP/HTTPS URLs', () => {
       expect(isSafeUrl('http://example.com')).toBe(true)
       expect(isSafeUrl('https://example.com/page')).toBe(true)
       expect(isSafeUrl('https://github.com')).toBe(true)
@@ -343,8 +367,9 @@ describe('navigation utilities', () => {
 
     it('should navigate to same-origin absolute URL', () => {
       const mock = mockLocation({ href: '', origin: 'http://localhost' })
-      expect(safeNavigate('http://localhost/page')).toBe(true)
-      expect(mock.href).toBe('http://localhost/page')
+      const sameOriginUrl = `${mock.origin}/page`
+      expect(safeNavigate(sameOriginUrl)).toBe(true)
+      expect(mock.href).toBe(sameOriginUrl)
     })
 
     // --- Same-origin enforcement: external URLs blocked ---
@@ -358,9 +383,10 @@ describe('navigation utilities', () => {
     })
 
     it('should block external HTTPS URL', () => {
-      mockLocation()
+      const mock = mockLocation()
       const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
       expect(safeNavigate('https://example.com')).toBe(false)
+      expect(mock.href).toBe('')
       warnSpy.mockRestore()
     })
 

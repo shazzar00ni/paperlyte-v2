@@ -130,16 +130,25 @@ export function isRelativeUrl(url: string): boolean {
 }
 
 /**
- * Checks whether a parsed absolute URL uses an allowed protocol or is same-origin.
+ * Checks whether a parsed absolute URL is allowed for linking.
+ * Allows legitimate external HTTP/HTTPS URLs while excluding other schemes.
  */
 export function isAllowedAbsoluteUrl(url: string): boolean {
   try {
     const parsedUrl = new URL(url, window.location.origin)
+    return parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:'
+  } catch {
+    return false
+  }
+}
 
-    if (parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:') {
-      return true
-    }
-
+/**
+ * Checks whether a parsed absolute URL is same-origin.
+ * Use this for navigation flows that must not leave the current origin.
+ */
+export function isSameOriginAbsoluteUrl(url: string): boolean {
+  try {
+    const parsedUrl = new URL(url, window.location.origin)
     return parsedUrl.origin === window.location.origin
   } catch {
     return false
@@ -193,22 +202,15 @@ export function isSafeUrl(url: string): boolean {
   return isAllowedAbsoluteUrl(trimmedUrl)
 }
 
-function isSameOriginUrl(url: string): boolean {
-  try {
-    const parsed = new URL(url, window.location.origin)
-    return parsed.origin === window.location.origin
-  } catch {
-    /* v8 ignore next -- URL() with a valid base never throws in practice */
-    return false
-  }
-}
-
 /**
  * Safely navigates to same-origin and relative URLs only.
  * Blocks dangerous protocols (javascript:, data:, vbscript:, etc.) and external origins
  * to prevent open redirect attacks.
  *
  * For legitimate external navigation, use safeNavigateExternal() instead.
+ *
+ * Safe usage: Only call with hardcoded URLs or URLs from trusted same-origin sources.
+ * Never pass user-controlled input directly to this function.
  *
  * @param url - The URL to navigate to (must be same-origin or relative)
  * @returns true if navigation was performed, false if URL was rejected or navigation not needed (SSR)
@@ -227,12 +229,21 @@ export function safeNavigate(url: string): boolean {
     return false
   }
 
-  if (!isSameOriginUrl(url)) {
-    if (import.meta.env.DEV) console.warn(`safeNavigate blocked non-same-origin URL: "${url}"`)
+  const trimmedUrl = url.trim()
+  // Restrict absolute URLs to same-origin to prevent open-redirect attacks.
+  // Relative URLs are implicitly same-origin and skip this check.
+  if (!isRelativeUrl(trimmedUrl) && !isSameOriginAbsoluteUrl(trimmedUrl)) {
+    if (import.meta.env.DEV) {
+      console.warn(`Navigation blocked: URL "${trimmedUrl}" is not same-origin`)
+    }
     return false
   }
 
-  window.location.href = url
+  // nosemgrep: javascript.browser.security.open-redirect.js-open-redirect
+  // URL is validated above: isSafeUrl() blocks dangerous protocols and
+  // isSameOriginAbsoluteUrl() restricts absolute URLs to the current origin,
+  // so only safe relative or same-origin URLs reach this assignment.
+  window.location.href = trimmedUrl
   return true
 }
 

@@ -633,13 +633,13 @@ describe('markdown-response edge function', () => {
       expect(tokens).toBe(Math.ceil(body.length / 4))
     })
 
-    it('preserves absence of Cache-Control when origin does not provide it', async () => {
+    it('sets Cache-Control to no-store', async () => {
       const req = makeRequest('https://example.com/', mdHeaders)
       const ctx = makeContext(htmlResponse('<p>Hi</p>'))
 
       const result = await handler(req, ctx)
 
-      expect(result.headers.get('Cache-Control')).toBeNull()
+      expect(result.headers.get('Cache-Control')).toBe('no-store')
     })
 
     it('sets Vary to Accept', async () => {

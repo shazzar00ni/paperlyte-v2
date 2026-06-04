@@ -35,10 +35,10 @@
  * • This site is a React SPA; the static HTML shell is minimal. The edge
  *   function faithfully converts whatever HTML the origin returns, so
  *   SSR or pre-rendered pages will produce richer Markdown output.
- * • Turndown and sanitize-html are imported via the `npm:` specifier
- *   supported by the Netlify Edge Runtime (Deno-based).  At deploy time,
- *   Netlify resolves `npm:pkg@version` directly — no `npm install` is
- *   needed on the Netlify build side for the edge function itself.
+ * • Turndown and sanitize-html are imported via `https://esm.sh/` URLs,
+ *   which the Netlify Edge Runtime (Deno-based) fetches at deploy time and
+ *   bundles into the edge function.  No `npm install` is needed on the
+ *   Netlify build side for the edge function itself.
  *   However, these packages ARE listed in `devDependencies` and MUST be
  *   present in `node_modules` for local Vitest tests, TypeScript type
  *   checking, and other Node-based build tooling to work.
@@ -46,8 +46,8 @@
  *   tree and applies an allowlist, which is far more robust than regex.
  */
 
-import TurndownService from 'npm:turndown@7.1.2'
-import sanitizeHtml from 'npm:sanitize-html@2.13.1'
+import TurndownService from 'https://esm.sh/turndown@7.1.2'
+import sanitizeHtml from 'https://esm.sh/sanitize-html@2.13.1'
 import type { Context } from 'https://edge.netlify.com'
 
 // Paths that should never be converted even if accidentally matched.
@@ -285,12 +285,13 @@ export default async function handler(request: Request, context: Context): Promi
     // ── 7. Compute estimated token count (chars / 4) ──────────────────────
     const tokenEstimate = String(Math.ceil(markdown.length / 4))
 
-    // Start from all origin headers so we preserve unrelated metadata
-    // (e.g. any existing Cache-Control policy, CORS headers, etc.).  We
-    // then remove validators and entity headers that describe the HTML
-    // payload — they are now stale for the rewritten Markdown body and
-    // must be stripped to prevent clients / CDNs from mis-handling the
-    // response (wrong Content-Length, mismatched ETag, etc.).
+    // Start from all origin headers to preserve unrelated metadata
+    // (e.g. CORS headers, X-* headers, etc.).  Remove validators and
+    // entity headers that describe the HTML payload — they are now stale
+    // for the rewritten Markdown body and must be stripped to prevent
+    // clients / CDNs from mis-handling the response (wrong Content-Length,
+    // mismatched ETag, etc.).  Cache-Control is unconditionally overridden
+    // below; the origin value is intentionally discarded.
     const headers = new Headers(originResponse.headers)
     headers.delete('Content-Length')
     headers.delete('Content-Encoding')

@@ -379,8 +379,8 @@ describe('CounterAnimation', () => {
         return 1
       })
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      render(<CounterAnimation end={100} start={0} easing={'unknown' as any} duration={1000} />)
+      const invalidEasing = 'unknown' as unknown as Parameters<typeof CounterAnimation>[0]['easing']
+      render(<CounterAnimation end={100} start={0} easing={invalidEasing} duration={1000} />)
 
       const counter = screen.getByLabelText('100')
 

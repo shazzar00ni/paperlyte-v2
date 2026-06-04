@@ -18,7 +18,7 @@ describe('AnimatedElement', () => {
     expect(screen.getByText('Test content')).toBeInTheDocument()
   })
 
-  it('should apply animation delay', () => {
+  it('should apply a CSP-safe animation delay class', () => {
     const { container } = render(
       <AnimatedElement delay={200}>
         <div>Delayed content</div>
@@ -26,11 +26,11 @@ describe('AnimatedElement', () => {
     )
 
     const wrapper = container.firstChild as HTMLElement
-    // Check CSS custom property (CSS variable)
-    expect(wrapper.style.getPropertyValue('--animation-delay')).toBe('200ms')
+    expect(wrapper.className).toContain('delay200')
+    expect(wrapper).not.toHaveAttribute('style')
   })
 
-  it('should use default animation delay of 0ms', () => {
+  it('should use the default CSP-safe animation delay class', () => {
     const { container } = render(
       <AnimatedElement>
         <div>Content</div>
@@ -38,8 +38,8 @@ describe('AnimatedElement', () => {
     )
 
     const wrapper = container.firstChild as HTMLElement
-    // Check CSS custom property (CSS variable)
-    expect(wrapper.style.getPropertyValue('--animation-delay')).toBe('0ms')
+    expect(wrapper.className).toContain('delay0')
+    expect(wrapper).not.toHaveAttribute('style')
   })
 
   it('should apply custom className', () => {
@@ -76,8 +76,8 @@ describe('AnimatedElement', () => {
 
     // Should not have animation class when reduced motion is preferred
     expect(wrapper).not.toHaveClass('fadeIn')
-    // --animation-delay CSS variable should be cleared in reduced-motion mode
-    expect(wrapper.style.getPropertyValue('--animation-delay')).toBe('')
+    expect(wrapper.className).not.toContain('delay0')
+    expect(wrapper).not.toHaveAttribute('style')
   })
 
   it('should apply visible class when IntersectionObserver fires with isIntersecting=true', () => {

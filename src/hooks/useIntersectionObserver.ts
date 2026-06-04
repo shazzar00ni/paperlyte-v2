@@ -4,6 +4,7 @@ interface UseIntersectionObserverOptions {
   threshold?: number
   rootMargin?: string
   triggerOnce?: boolean
+  initialVisible?: boolean
 }
 
 /**
@@ -15,6 +16,7 @@ interface UseIntersectionObserverOptions {
  * @param options.threshold - Percentage of element visibility required to trigger (0-1, default: 0.1)
  * @param options.rootMargin - Margin around viewport for early/late triggering (default: '0px')
  * @param options.triggerOnce - Whether to trigger only once and then disconnect (default: true)
+ * @param options.initialVisible - Whether to start in the visible state before the observer runs (default: false)
  * @returns Object containing ref to attach to element and isVisible boolean state
  *
  * @example
@@ -31,11 +33,20 @@ interface UseIntersectionObserverOptions {
 export const useIntersectionObserver = <T extends HTMLElement = HTMLDivElement>(
   options: UseIntersectionObserverOptions = {}
 ) => {
-  const { threshold = 0.1, rootMargin = '0px', triggerOnce = true } = options
+  const {
+    threshold = 0.1,
+    rootMargin = '0px',
+    triggerOnce = true,
+    initialVisible = false,
+  } = options
   const ref = useRef<T>(null)
-  const [isVisible, setIsVisible] = useState(false)
+  const [isVisible, setIsVisible] = useState(initialVisible)
 
   useEffect(() => {
+    if (initialVisible && triggerOnce) {
+      return undefined
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -61,7 +72,7 @@ export const useIntersectionObserver = <T extends HTMLElement = HTMLDivElement>(
       }
       observer.disconnect()
     }
-  }, [threshold, rootMargin, triggerOnce])
+  }, [threshold, rootMargin, triggerOnce, initialVisible])
 
   return { ref, isVisible }
 }

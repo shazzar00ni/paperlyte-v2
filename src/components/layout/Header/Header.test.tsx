@@ -1,4 +1,4 @@
-import { render, screen, act } from '@testing-library/react'
+import { render, screen, act, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Header } from './Header'
 import { getFocusableElements } from '@utils/keyboard'
@@ -215,6 +215,23 @@ describe('Header', () => {
       expect(closeButton).toHaveAttribute('aria-expanded', 'true')
     })
 
+    it('should wrap focus to the last item when Shift+Tab starts on the first menu item', async () => {
+      const user = userEvent.setup()
+      render(<Header />)
+
+      const menuButton = screen.getByRole('button', { name: /open menu/i })
+      await user.click(menuButton)
+
+      const menu = document.getElementById('main-menu')!
+      const featuresLink = screen.getByRole('link', { name: 'Features' })
+      const joinWaitlistButton = screen.getByRole('button', { name: /join waitlist/i })
+
+      expect(document.activeElement).toBe(featuresLink)
+
+      fireEvent.keyDown(menu, { key: 'Tab', shiftKey: true })
+      expect(document.activeElement).toBe(joinWaitlistButton)
+    })
+
     it('should navigate to next item with ArrowRight', async () => {
       const user = userEvent.setup()
       render(<Header />)
@@ -287,9 +304,8 @@ describe('Header', () => {
       })
       expect(document.activeElement).toBe(waitlistLink)
 
-      // Note: jsdom doesn't properly handle Home/End key simulation.
-      // The keyboard utility functions (handleHomeEndNavigation) are tested
-      // in keyboard.test.ts and verified to work correctly.
+      fireEvent.keyDown(menu, { key: 'Home' })
+      expect(document.activeElement).toBe(featuresLink)
     })
 
     it('should navigate to last item with End key', async () => {
@@ -330,9 +346,8 @@ describe('Header', () => {
       })
       expect(document.activeElement).toBe(featuresLink)
 
-      // Note: jsdom doesn't properly handle Home/End key simulation.
-      // The keyboard utility functions (handleHomeEndNavigation) are tested
-      // in keyboard.test.ts and verified to work correctly.
+      fireEvent.keyDown(menu, { key: 'End' })
+      expect(document.activeElement).toBe(joinWaitlistButton)
     })
 
     it('should wrap around to first item when pressing ArrowRight at end', async () => {

@@ -1,10 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
+import type { RefObject } from 'react'
 import { Button } from '@components/ui/Button'
+import { BrandLogo } from '@components/ui/BrandLogo'
 import { Icon } from '@components/ui/Icon'
 import { ThemeToggle } from '@components/ui/ThemeToggle'
-import logoAvifSrc from '@/assets/logo.avif'
-import logoPngSrc from '@/assets/logo.png'
-import logoWebpSrc from '@/assets/logo.webp'
 import {
   getFocusableElements,
   handleArrowNavigation,
@@ -13,24 +12,111 @@ import {
 import { scrollToSection as scrollToSectionUtil } from '@utils/navigation'
 import styles from './Header.module.css'
 
-/**
- * Main navigation header component with responsive mobile menu
- * Features smooth scrolling to sections, keyboard navigation, focus trap, and theme toggle
- * Implements ARIA best practices for accessible navigation and menu behavior
- *
- * @returns Header element with navigation, logo, and theme toggle
- *
- * @example
- * ```tsx
- * // In your App or layout component
- * <Header />
- * <main>
- *   <section id="features">Features</section>
- *   <section id="pricing">Pricing</section>
- * </main>
- * ```
- */
-export const Header = (): React.ReactElement => {
+interface HeaderMenuControls {
+  mobileMenuOpen: boolean
+  menuButtonRef: RefObject<HTMLButtonElement | null>
+  menuRef: RefObject<HTMLUListElement | null>
+  toggleMobileMenu: () => void
+  scrollToSection: (sectionId: string) => void
+}
+
+interface HeaderNavigationProps {
+  menuRef: RefObject<HTMLUListElement | null>
+  mobileMenuOpen: boolean
+  scrollToSection: (sectionId: string) => void
+}
+
+interface HeaderActionsProps {
+  menuButtonRef: RefObject<HTMLButtonElement | null>
+  mobileMenuOpen: boolean
+  toggleMobileMenu: () => void
+}
+
+const useEscapeKey = (mobileMenuOpen: boolean, closeMobileMenu: () => void): void => {
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent): void => {
+      if (event.key === 'Escape' && mobileMenuOpen) {
+        closeMobileMenu()
+      }
+    }
+
+    document.addEventListener('keydown', handleEscape)
+    return () => {
+      document.removeEventListener('keydown', handleEscape)
+    }
+  }, [mobileMenuOpen, closeMobileMenu])
+}
+
+const useFocusTrap = (
+  mobileMenuOpen: boolean,
+  menuRef: RefObject<HTMLUListElement | null>
+): void => {
+  useEffect(() => {
+    if (!mobileMenuOpen || !menuRef.current) return
+
+    const menu = menuRef.current
+    const focusableElements = getFocusableElements(menu)
+    const firstFocusable = focusableElements[0]
+    const lastFocusable = focusableElements[focusableElements.length - 1]
+
+    const handleTabKey = (event: KeyboardEvent): void => {
+      if (event.key !== 'Tab') return
+
+      if (event.shiftKey && document.activeElement === firstFocusable) {
+        event.preventDefault()
+        lastFocusable?.focus()
+        return
+      }
+
+      if (!event.shiftKey && document.activeElement === lastFocusable) {
+        event.preventDefault()
+        firstFocusable?.focus()
+      }
+    }
+
+    menu.addEventListener('keydown', handleTabKey)
+    firstFocusable?.focus()
+
+    return () => {
+      menu.removeEventListener('keydown', handleTabKey)
+    }
+  }, [mobileMenuOpen, menuRef])
+}
+
+const useMenuKeyboardNavigation = (menuRef: RefObject<HTMLUListElement | null>): void => {
+  useEffect(() => {
+    if (!menuRef.current) return
+
+    const menu = menuRef.current
+    const handleArrowKeys = (event: KeyboardEvent): void => {
+      const focusableElements = getFocusableElements(menu)
+      if (focusableElements.length === 0) return
+
+      const homeEndIndex = handleHomeEndNavigation(event, focusableElements)
+      if (homeEndIndex !== null) {
+        event.preventDefault()
+        focusableElements[homeEndIndex]?.focus()
+        return
+      }
+
+      const currentIndex = focusableElements.findIndex((el) => el === document.activeElement)
+      if (currentIndex === -1) return
+
+      const newIndex = handleArrowNavigation(event, focusableElements, currentIndex, 'horizontal')
+      if (newIndex !== null) {
+        event.preventDefault()
+        focusableElements[newIndex]?.focus()
+      }
+    }
+
+    menu.addEventListener('keydown', handleArrowKeys)
+    return () => {
+      menu.removeEventListener('keydown', handleArrowKeys)
+    }
+  }, [menuRef])
+}
+
+const useHeaderMenu = (): HeaderMenuControls => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const menuButtonRef = useRef<HTMLButtonElement>(null)
   const menuRef = useRef<HTMLUListElement>(null)
@@ -53,167 +139,120 @@ export const Header = (): React.ReactElement => {
     [closeMobileMenu]
   )
 
-  // Handle Escape key to close menu
-  useEffect(() => {
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && mobileMenuOpen) {
-        closeMobileMenu()
-      }
-    }
+  useEscapeKey(mobileMenuOpen, closeMobileMenu)
+  useFocusTrap(mobileMenuOpen, menuRef)
+  useMenuKeyboardNavigation(menuRef)
 
-    document.addEventListener('keydown', handleEscape)
-    return () => {
-      document.removeEventListener('keydown', handleEscape)
-    }
-  }, [mobileMenuOpen, closeMobileMenu])
+  return { mobileMenuOpen, menuButtonRef, menuRef, toggleMobileMenu, scrollToSection }
+}
 
-  // Focus trap for mobile menu
-  useEffect(() => {
-    if (!mobileMenuOpen || !menuRef.current) return
+const HeaderNavigation = ({
+  menuRef,
+  mobileMenuOpen,
+  scrollToSection,
+}: HeaderNavigationProps): React.ReactElement => {
+  return (
+    <nav className={styles.nav} aria-label="Main navigation">
+      <ul
+        id="main-menu"
+        ref={menuRef}
+        className={`${styles.navList} ${mobileMenuOpen ? styles.navListOpen : ''}`}
+      >
+        <li>
+          <a
+            href="#features"
+            onClick={(e) => {
+              e.preventDefault()
+              scrollToSection('features')
+            }}
+            className={styles.navLink}
+          >
+            Features
+          </a>
+        </li>
+        <li>
+          <a
+            href="#email-capture"
+            onClick={(e) => {
+              e.preventDefault()
+              scrollToSection('email-capture')
+            }}
+            className={styles.navLink}
+          >
+            Waitlist
+          </a>
+        </li>
+        <li className={styles.navCta}>
+          <Button variant="primary" size="small" onClick={() => scrollToSection('email-capture')}>
+            Join Waitlist
+          </Button>
+        </li>
+      </ul>
+    </nav>
+  )
+}
 
-    const menu = menuRef.current
-    const focusableElements = getFocusableElements(menu)
-    const firstFocusable = focusableElements[0]
-    const lastFocusable = focusableElements[focusableElements.length - 1]
+const HeaderActions = ({
+  menuButtonRef,
+  mobileMenuOpen,
+  toggleMobileMenu,
+}: HeaderActionsProps): React.ReactElement => {
+  return (
+    <div className={styles.navActions}>
+      <ThemeToggle />
+      <button
+        ref={menuButtonRef}
+        className={styles.mobileMenuButton}
+        onClick={toggleMobileMenu}
+        aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+        aria-expanded={mobileMenuOpen}
+        aria-controls="main-menu"
+      >
+        <Icon name={mobileMenuOpen ? 'fa-xmark' : 'fa-bars'} size="lg" />
+      </button>
+    </div>
+  )
+}
 
-    const handleTabKey = (event: KeyboardEvent) => {
-      if (event.key !== 'Tab') return
-
-      if (event.shiftKey) {
-        // Shift + Tab
-        if (document.activeElement === firstFocusable) {
-          event.preventDefault()
-          lastFocusable?.focus()
-        }
-      } else {
-        // Tab
-        if (document.activeElement === lastFocusable) {
-          event.preventDefault()
-          firstFocusable?.focus()
-        }
-      }
-    }
-
-    menu.addEventListener('keydown', handleTabKey)
-
-    // Focus first element when menu opens
-    firstFocusable?.focus()
-
-    return () => {
-      menu.removeEventListener('keydown', handleTabKey)
-    }
-  }, [mobileMenuOpen])
-
-  // Arrow key navigation for menu items
-  useEffect(() => {
-    if (!menuRef.current) return
-
-    const menu = menuRef.current
-
-    const handleArrowKeys = (event: KeyboardEvent) => {
-      const focusableElements = getFocusableElements(menu)
-      if (focusableElements.length === 0) return
-
-      // Handle Home/End keys first (these work regardless of current focus position)
-      const homeEndIndex = handleHomeEndNavigation(event, focusableElements)
-      if (homeEndIndex !== null) {
-        event.preventDefault()
-        focusableElements[homeEndIndex]?.focus()
-        return
-      }
-
-      // For arrow keys, we need to know the current index
-      const currentIndex = focusableElements.findIndex((el) => el === document.activeElement)
-      if (currentIndex === -1) return
-
-      // Handle Arrow keys (horizontal navigation)
-      const newIndex = handleArrowNavigation(event, focusableElements, currentIndex, 'horizontal')
-      if (newIndex !== null) {
-        event.preventDefault()
-        focusableElements[newIndex]?.focus()
-      }
-    }
-
-    menu.addEventListener('keydown', handleArrowKeys)
-
-    return () => {
-      menu.removeEventListener('keydown', handleArrowKeys)
-    }
-  }, [mobileMenuOpen])
+/**
+ * Main navigation header component with responsive mobile menu
+ * Features smooth scrolling to sections, keyboard navigation, focus trap, and theme toggle
+ * Implements ARIA best practices for accessible navigation and menu behavior
+ *
+ * @returns Header element with navigation, logo, and theme toggle
+ *
+ * @example
+ * ```tsx
+ * // In your App or layout component
+ * <Header />
+ * <main>
+ *   <section id="features">Features</section>
+ *   <section id="pricing">Pricing</section>
+ * </main>
+ * ```
+ */
+export const Header = (): React.ReactElement => {
+  const { mobileMenuOpen, menuButtonRef, menuRef, toggleMobileMenu, scrollToSection } =
+    useHeaderMenu()
 
   return (
     <header className={styles.header}>
       <div className={styles.container}>
-        <div className={styles.logo}>
-          <picture>
-            <source srcSet={logoAvifSrc} type="image/avif" />
-            <source srcSet={logoWebpSrc} type="image/webp" />
-            <img
-              src={logoPngSrc}
-              alt="Paperlyte logo"
-              width="32"
-              height="32"
-              className={styles.logoImage}
-            />
-          </picture>
-          <span className={styles.logoText}>Paperlyte</span>
-        </div>
-
-        <nav className={styles.nav} aria-label="Main navigation">
-          <ul
-            id="main-menu"
-            ref={menuRef}
-            className={`${styles.navList} ${mobileMenuOpen ? styles.navListOpen : ''}`}
-          >
-            <li>
-              <a
-                href="#features"
-                onClick={(e) => {
-                  e.preventDefault()
-                  scrollToSection('features')
-                }}
-                className={styles.navLink}
-              >
-                Features
-              </a>
-            </li>
-            <li>
-              <a
-                href="#email-capture"
-                onClick={(e) => {
-                  e.preventDefault()
-                  scrollToSection('email-capture')
-                }}
-                className={styles.navLink}
-              >
-                Waitlist
-              </a>
-            </li>
-            <li className={styles.navCta}>
-              <Button
-                variant="primary"
-                size="small"
-                onClick={() => scrollToSection('email-capture')}
-              >
-                Join Waitlist
-              </Button>
-            </li>
-          </ul>
-        </nav>
-
-        <div className={styles.navActions}>
-          <ThemeToggle />
-          <button
-            ref={menuButtonRef}
-            className={styles.mobileMenuButton}
-            onClick={toggleMobileMenu}
-            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
-            aria-expanded={mobileMenuOpen}
-            aria-controls="main-menu"
-          >
-            <Icon name={mobileMenuOpen ? 'fa-xmark' : 'fa-bars'} size="lg" />
-          </button>
-        </div>
+        <BrandLogo
+          className={styles.logo}
+          imageClassName={styles.logoImage}
+          textClassName={styles.logoText}
+        />
+        <HeaderNavigation
+          menuRef={menuRef}
+          mobileMenuOpen={mobileMenuOpen}
+          scrollToSection={scrollToSection}
+        />
+        <HeaderActions
+          menuButtonRef={menuButtonRef}
+          mobileMenuOpen={mobileMenuOpen}
+          toggleMobileMenu={toggleMobileMenu}
+        />
       </div>
     </header>
   )

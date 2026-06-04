@@ -19,6 +19,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
+      - name: Validate branch name format
+        env:
+          BRANCH: ${{ inputs.branch }}
+        run: |
+          if ! [[ "$BRANCH" =~ ^[a-zA-Z0-9._/-]+$ ]]; then
+            echo "❌ Error: Invalid branch name. Branch names may only contain alphanumeric characters, dots, underscores, hyphens, and forward slashes."
+            exit 1
+          fi
+          if ! git check-ref-format --branch "$BRANCH" > /dev/null; then
+            echo "❌ Error: Invalid branch name format."
+            exit 1
+          fi
+
       - name: Validate branch exists
         env:
           BRANCH: main

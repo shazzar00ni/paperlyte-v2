@@ -10,6 +10,9 @@ on:
   pull_request:
     types: [opened, synchronize, labeled]
 
+permissions:
+  contents: read
+
 jobs:
   claude:
     name: Claude Code Agent

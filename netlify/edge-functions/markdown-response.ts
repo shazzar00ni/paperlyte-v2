@@ -283,6 +283,8 @@ export default async function handler(request: Request, context: Context): Promi
     // sanitize-html above and only normalise surrounding whitespace here.
     const markdown = td.turndown(sanitized).trim()
 
+    // Normalize again after scrub so length and output use canonical Markdown.
+    markdown = markdown.trim()
     // ── 7. Compute estimated token count (chars / 4) ──────────────────────
     const tokenEstimate = String(Math.ceil(markdown.length / 4))
 

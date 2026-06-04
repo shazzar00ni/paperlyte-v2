@@ -207,7 +207,7 @@ function getClientIp(headers: HandlerEvent["headers"]): string {
 /**
  * Parses the raw request body string as JSON.
  * @param raw - The raw request body, or null if absent
- * @returns The parsed SubscribeRequest, or null if the body is invalid JSON
+ * @returns The parsed SubscribeRequest, or null if the body is invalid JSON or not an object
  */
 function parseRequestBody(raw: string | null): SubscribeRequest | null {
   try {

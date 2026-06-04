@@ -186,7 +186,9 @@ function getCorsHeaders(origin: string): Record<string, string> {
     "Access-Control-Allow-Headers": "Content-Type",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Content-Type": "application/json",
+    Vary: "Origin",
   };
+}
 
 /**
  * Extracts the client IP address from request headers.
@@ -278,17 +280,25 @@ async function processSubscription(
     };
   }
 
-  const result = await subscribeToConvertKit(emailResult.normalizedEmail);
-  console.log("Successfully subscribed user to newsletter");
-  return {
-    statusCode: 200,
-    headers,
-    body: JSON.stringify({
-      success: true,
-      message: "Successfully subscribed! Please check your email to confirm.",
-      subscriptionId: result.subscription.id,
-    }),
-  };
+  try {
+    const result = await subscribeToConvertKit(emailResult.normalizedEmail);
+    console.log("Successfully subscribed user to newsletter");
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({
+        success: true,
+        message: "Successfully subscribed! Please check your email to confirm.",
+        subscriptionId: result.subscription.id,
+      }),
+    };
+  } catch (error) {
+    console.error(
+      "ConvertKit subscription failed:",
+      error instanceof Error ? error.message : "Unknown error"
+    );
+    throw new Error("Failed to process subscription");
+  }
 }
 
 /** Netlify serverless function handler for newsletter subscription requests. */

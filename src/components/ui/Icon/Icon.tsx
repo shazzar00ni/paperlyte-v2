@@ -1,6 +1,7 @@
 import { useMemo, useId } from 'react'
 import { iconPaths, getIconViewBox, strokeOnlyIcons } from './icons'
 import { safePropertyAccess } from '@utils/security'
+import { convertIconName } from '@utils/iconLibrary'
 import './Icon.css'
 
 export interface IconProps {
@@ -69,10 +70,12 @@ export const Icon = ({
   const modifierClasses = tokens.slice(1).join(' ')
 
   // Resolve the iconPaths lookup key:
-  // 1. Direct match (e.g. "fa-bolt", "fa-circle-check", "fa-check-circle")
-  // 2. Bare-name convenience prefix (e.g. "bolt" → "fa-bolt")
-  const fallbackKey = baseName.startsWith('fa-') ? baseName : `fa-${baseName}`
-  const resolvedKey = safePropertyAccess(iconPaths, baseName) !== undefined ? baseName : fallbackKey
+  // 1. Direct match (e.g. "fa-bolt", "fa-circle-check")
+  // 2. convertIconName alias + bare-name fallback via "fa-" prefix
+  //    e.g. "fa-check-circle" → convertIconName → "circle-check" → "fa-circle-check"
+  //    e.g. "bolt" → convertIconName → "bolt" → "fa-bolt"
+  const aliasedKey = `fa-${convertIconName(baseName)}`
+  const resolvedKey = safePropertyAccess(iconPaths, baseName) !== undefined ? baseName : aliasedKey
 
   // Safely check if icon exists in iconPaths to prevent prototype pollution
   const paths = safePropertyAccess(iconPaths, resolvedKey)

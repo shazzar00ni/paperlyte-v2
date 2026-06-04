@@ -187,7 +187,6 @@ function getCorsHeaders(origin: string): Record<string, string> {
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Content-Type": "application/json",
   };
-}
 
 /**
  * Extracts the client IP address from request headers.

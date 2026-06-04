@@ -183,6 +183,7 @@ function getCorsHeaders(origin: string): Record<string, string> {
     ...(origin === allowedOrigin && {
       "Access-Control-Allow-Origin": allowedOrigin,
     }),
+    "Vary": "Origin",
     "Access-Control-Allow-Headers": "Content-Type",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Content-Type": "application/json",

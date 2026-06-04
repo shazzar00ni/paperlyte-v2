@@ -1,8 +1,25 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { CTA } from './CTA'
 
 describe('CTA', () => {
+  let scrollIntoViewMock: ReturnType<typeof vi.fn>
+  let originalScrollIntoView: typeof Element.prototype.scrollIntoView
+
+  beforeEach(() => {
+    originalScrollIntoView = Element.prototype.scrollIntoView
+    scrollIntoViewMock = vi.fn()
+    Element.prototype.scrollIntoView = scrollIntoViewMock
+  })
+
+  afterEach(() => {
+    Element.prototype.scrollIntoView = originalScrollIntoView
+    vi.clearAllMocks()
+    document.getElementById('email-capture')?.remove()
+    document.getElementById('features')?.remove()
+  })
+
   it('should render as a section with correct id', () => {
     const { container } = render(<CTA />)
 
@@ -38,6 +55,32 @@ describe('CTA', () => {
 
     const button = screen.getByRole('button', { name: /Review the features/i })
     expect(button).toBeInTheDocument()
+  })
+
+  it('should scroll to the waitlist form when Get Early Access is clicked', async () => {
+    const user = userEvent.setup()
+    const emailCaptureSection = document.createElement('div')
+    emailCaptureSection.id = 'email-capture'
+    document.body.appendChild(emailCaptureSection)
+
+    render(<CTA />)
+
+    await user.click(screen.getByRole('button', { name: /Get Early Access/i }))
+
+    expect(scrollIntoViewMock).toHaveBeenCalledWith({ behavior: 'smooth' })
+  })
+
+  it('should scroll to features when Review the features is clicked', async () => {
+    const user = userEvent.setup()
+    const featuresSection = document.createElement('div')
+    featuresSection.id = 'features'
+    document.body.appendChild(featuresSection)
+
+    render(<CTA />)
+
+    await user.click(screen.getByRole('button', { name: /Review the features/i }))
+
+    expect(scrollIntoViewMock).toHaveBeenCalledWith({ behavior: 'smooth' })
   })
 
   it('should render microcopy with launch details', () => {

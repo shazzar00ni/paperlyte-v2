@@ -33,6 +33,10 @@ jobs:
             echo "❌ Error: Invalid branch name. Branch names may only contain alphanumeric characters, dots, underscores, hyphens, and forward slashes."
             exit 1
           fi
+          if ! git check-ref-format --branch "$BRANCH" > /dev/null; then
+            echo "❌ Error: Invalid branch name format."
+            exit 1
+          fi
 
       - name: Validate branch exists
         env:

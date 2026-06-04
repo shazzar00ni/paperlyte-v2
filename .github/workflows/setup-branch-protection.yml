@@ -21,7 +21,7 @@ jobs:
 
       - name: Validate branch name format
         env:
-          BRANCH: ${{ inputs.branch }}
+          BRANCH: main
         run: |
           if ! [[ "$BRANCH" =~ ^[a-zA-Z0-9._/-]+$ ]]; then
             echo "❌ Error: Invalid branch name. Branch names may only contain alphanumeric characters, dots, underscores, hyphens, and forward slashes."

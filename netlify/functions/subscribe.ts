@@ -297,7 +297,7 @@ async function processSubscription(
       "ConvertKit subscription failed:",
       error instanceof Error ? error.message : "Unknown error"
     );
-    throw new Error("Failed to process subscription");
+    throw new Error("Failed to process subscription", { cause: error });
   }
 }
 

@@ -1,4 +1,4 @@
-import type { Handler, HandlerEvent } from "@netlify/functions";
+import type { Handler, HandlerEvent, HandlerResponse } from "@netlify/functions";
 import { z } from "zod";
 import { validateEmail } from "../../src/utils/validation";
 
@@ -164,6 +164,15 @@ async function subscribeToConvertKit(
 // --- Handler helpers ---
 
 /**
+ * Extracts the Origin header value from request headers, case-insensitively.
+ * Returns an empty string if neither `origin` nor `Origin` is present.
+ * @param headers - The incoming request headers
+ */
+function getOriginHeader(headers: HandlerEvent["headers"]): string {
+  return headers["origin"] || headers["Origin"] || "";
+}
+
+/**
  * Builds CORS response headers, conditionally setting Access-Control-Allow-Origin
  * only when the request origin matches ALLOWED_ORIGIN.
  * @param origin - The Origin header value from the incoming request
@@ -228,15 +237,66 @@ function validateEmailInput(
 
 // --- Handler ---
 
+/**
+ * Processes a validated POST subscription request: enforces rate-limiting,
+ * parses the body, validates the email, and calls ConvertKit.
+ * @param event - The incoming Netlify handler event
+ * @param headers - Pre-built CORS response headers to include in all responses
+ */
+async function processSubscription(
+  event: HandlerEvent,
+  headers: Record<string, string>
+): Promise<HandlerResponse> {
+  const ip = getClientIp(event.headers);
+  if (!checkRateLimit(ip)) {
+    return {
+      statusCode: 429,
+      headers,
+      body: JSON.stringify({
+        error: "Too many requests. Please try again in a minute.",
+      }),
+    };
+  }
+
+  const body = parseRequestBody(event.body);
+  if (!body) {
+    return {
+      statusCode: 400,
+      headers,
+      body: JSON.stringify({ error: "Invalid request body" }),
+    };
+  }
+
+  const emailResult = validateEmailInput(body.email);
+  if ("error" in emailResult) {
+    return {
+      statusCode: 400,
+      headers,
+      body: JSON.stringify({ error: emailResult.error }),
+    };
+  }
+
+  const result = await subscribeToConvertKit(emailResult.normalizedEmail);
+  console.log("Successfully subscribed user to newsletter");
+  return {
+    statusCode: 200,
+    headers,
+    body: JSON.stringify({
+      success: true,
+      message: "Successfully subscribed! Please check your email to confirm.",
+      subscriptionId: result.subscription.id,
+    }),
+  };
+}
+
 /** Netlify serverless function handler for newsletter subscription requests. */
 export const handler: Handler = async (event: HandlerEvent) => {
-  const origin = event.headers.origin ?? event.headers.Origin ?? "";
+  const origin = getOriginHeader(event.headers);
   const headers = getCorsHeaders(origin);
 
   if (event.httpMethod === "OPTIONS") {
     return { statusCode: 204, headers, body: "" };
   }
-
   if (event.httpMethod !== "POST") {
     return {
       statusCode: 405,
@@ -246,47 +306,7 @@ export const handler: Handler = async (event: HandlerEvent) => {
   }
 
   try {
-    const ip = getClientIp(event.headers);
-    if (!checkRateLimit(ip)) {
-      return {
-        statusCode: 429,
-        headers,
-        body: JSON.stringify({
-          error: "Too many requests. Please try again in a minute.",
-        }),
-      };
-    }
-
-    const body = parseRequestBody(event.body);
-    if (!body) {
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({ error: "Invalid request body" }),
-      };
-    }
-
-    const emailResult = validateEmailInput(body.email);
-    if ("error" in emailResult) {
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({ error: emailResult.error }),
-      };
-    }
-
-    const result = await subscribeToConvertKit(emailResult.normalizedEmail);
-    console.log("Successfully subscribed user to newsletter");
-
-    return {
-      statusCode: 200,
-      headers,
-      body: JSON.stringify({
-        success: true,
-        message: "Successfully subscribed! Please check your email to confirm.",
-        subscriptionId: result.subscription.id,
-      }),
-    };
+    return await processSubscription(event, headers);
   } catch (error) {
     console.error(
       "Subscription error:",

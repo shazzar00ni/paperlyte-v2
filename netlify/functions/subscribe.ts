@@ -183,7 +183,6 @@ function getCorsHeaders(origin: string): Record<string, string> {
     ...(origin === allowedOrigin && {
       "Access-Control-Allow-Origin": allowedOrigin,
     }),
-    "Vary": "Origin",
     "Access-Control-Allow-Headers": "Content-Type",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Content-Type": "application/json",
@@ -207,7 +206,7 @@ function getClientIp(headers: HandlerEvent["headers"]): string {
 /**
  * Parses the raw request body string as JSON.
  * @param raw - The raw request body, or null if absent
- * @returns The parsed SubscribeRequest, or null if the body is invalid JSON or not an object
+ * @returns The parsed SubscribeRequest, or null if the body is invalid JSON or not a plain object
  */
 function parseRequestBody(raw: string | null): SubscribeRequest | null {
   try {

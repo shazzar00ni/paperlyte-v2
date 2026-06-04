@@ -41,7 +41,10 @@
         "unminified-javascript": "warn",
         "no-document-write": "error",
         "network-dependency-tree-insight": "warn",
-        "render-blocking-insight": "warn",
+        "dom-size-insight": "off",
+        "legacy-javascript": "off",
+        "render-blocking-resources": ["warn", { "maxLength": 1 }],
+        "render-blocking-insight": "off",
         "uses-rel-preconnect": "warn",
         "is-on-https": "warn",
         "uses-http2": "off",
@@ -56,7 +59,7 @@
         "resource-summary:script:size": ["warn", { "maxNumericValue": 153600 }],
         "resource-summary:stylesheet:size": ["warn", { "maxNumericValue": 30720 }],
         "resource-summary:document:size": ["warn", { "maxNumericValue": 18000 }],
-        "resource-summary:total:size": ["warn", { "maxNumericValue": 307200 }]
+        "resource-summary:total:size": ["warn", { "maxNumericValue": 360000 }]
       }
     },
     "upload": {

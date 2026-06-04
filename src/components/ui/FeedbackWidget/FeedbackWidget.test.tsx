@@ -2,12 +2,6 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { FeedbackWidget } from './FeedbackWidget'
-import * as monitoringModule from '@utils/monitoring'
-
-// Mock monitoring so we can assert logError is called
-vi.mock('@utils/monitoring', () => ({
-  logError: vi.fn(),
-}))
 
 describe('FeedbackWidget', () => {
   beforeEach(() => {
@@ -188,7 +182,7 @@ describe('FeedbackWidget', () => {
 
     it('submits feedback and shows confirmation', async () => {
       const user = userEvent.setup()
-      render(<FeedbackWidget />)
+      render(<FeedbackWidget onSubmit={vi.fn().mockResolvedValue(undefined)} />)
 
       // Open modal
       const openButton = screen.getByRole('button', { name: /open feedback form/i })
@@ -215,7 +209,7 @@ describe('FeedbackWidget', () => {
       })
     })
 
-    it('stores feedback in localStorage by default', async () => {
+    it('shows unavailable error when no onSubmit provided', async () => {
       const user = userEvent.setup()
       render(<FeedbackWidget />)
 
@@ -235,19 +229,12 @@ describe('FeedbackWidget', () => {
       const submitButton = screen.getByRole('button', { name: /send feedback/i })
       await user.click(submitButton)
 
-      // Check localStorage
+      // Should show an error — no handler wired, no localStorage (landing page has no data layer)
       await waitFor(() => {
-        const storedFeedback = localStorage.getItem('paperlyte_feedback')
-        expect(storedFeedback).toBeTruthy()
-
-        const feedbackArray = JSON.parse(storedFeedback!)
-        expect(feedbackArray).toHaveLength(1)
-        expect(feedbackArray[0]).toMatchObject({
-          type: 'bug',
-          message: 'Test feedback message',
-        })
-        expect(feedbackArray[0].timestamp).toBeTruthy()
+        expect(screen.getByText(/not yet available/i)).toBeInTheDocument()
       })
+      expect(screen.queryByText(/thank you!/i)).not.toBeInTheDocument()
+      expect(localStorage.getItem('paperlyte_feedback')).toBeNull()
     })
 
     it('calls custom onSubmit handler when provided', async () => {
@@ -301,7 +288,7 @@ describe('FeedbackWidget', () => {
       await user.click(submitButton)
 
       await waitFor(() => {
-        expect(screen.getByText(/failed to submit feedback/i)).toBeInTheDocument()
+        expect(screen.getByText(/couldn't send your feedback/i)).toBeInTheDocument()
       })
     })
 
@@ -340,7 +327,7 @@ describe('FeedbackWidget', () => {
       vi.useFakeTimers()
 
       try {
-        render(<FeedbackWidget />)
+        render(<FeedbackWidget onSubmit={vi.fn().mockResolvedValue(undefined)} />)
 
         // Open modal
         const openButton = screen.getByRole('button', { name: /open feedback form/i })
@@ -382,7 +369,7 @@ describe('FeedbackWidget', () => {
       vi.useFakeTimers()
 
       try {
-        render(<FeedbackWidget />)
+        render(<FeedbackWidget onSubmit={vi.fn().mockResolvedValue(undefined)} />)
 
         // Open modal
         const openButton = screen.getByRole('button', { name: /open feedback form/i })
@@ -449,7 +436,7 @@ describe('FeedbackWidget', () => {
         const textarea = screen.getByRole('textbox')
         expect(textarea).toHaveAttribute('id', 'feedback-message')
 
-        const label = screen.getByText(/describe the issue you encountered/i)
+        const label = screen.getByText(/what went wrong/i)
         expect(label).toHaveAttribute('for', 'feedback-message')
       })
     })
@@ -564,94 +551,6 @@ describe('FeedbackWidget', () => {
       await user.keyboard('{ArrowLeft}')
 
       expect(featureButton).toHaveFocus()
-    })
-  })
-
-  describe('localStorage write error', () => {
-    it('shows submission error and calls logError when setItem throws', async () => {
-      const user = userEvent.setup()
-      vi.spyOn(Storage.prototype, 'setItem').mockImplementationOnce(() => {
-        throw new DOMException('QuotaExceededError')
-      })
-
-      render(<FeedbackWidget />)
-
-      const openButton = screen.getByRole('button', { name: /open feedback form/i })
-      await user.click(openButton)
-      await waitFor(() => expect(screen.getByRole('dialog')).toBeInTheDocument())
-
-      const textarea = screen.getByRole('textbox')
-      await user.type(textarea, 'Test storage write error')
-
-      // Reset mock so we can assert only the calls from this submit action
-      vi.mocked(monitoringModule.logError).mockClear()
-
-      const submitButton = screen.getByRole('button', { name: /send feedback/i })
-      await user.click(submitButton)
-
-      await waitFor(() => {
-        expect(screen.getByText(/failed to submit feedback/i)).toBeInTheDocument()
-        // logError is called exactly once by handleSubmit's catch (saveFeedbackLocally throws without logging)
-        expect(vi.mocked(monitoringModule.logError)).toHaveBeenCalledTimes(1)
-        expect(vi.mocked(monitoringModule.logError)).toHaveBeenCalledWith(
-          expect.any(Error),
-          expect.objectContaining({ tags: { action: 'handleSubmit' } }),
-          'feedback_submission'
-        )
-      })
-    })
-  })
-
-  describe('localStorage non-array value', () => {
-    it('resets to empty array and appends when stored value is valid JSON but not an array', async () => {
-      // Pre-seed with valid JSON that is not an array (e.g., a plain object)
-      localStorage.setItem('paperlyte_feedback', '{"corrupted": true}')
-
-      render(<FeedbackWidget />)
-
-      const openButton = screen.getByRole('button', { name: /open feedback form/i })
-      fireEvent.click(openButton)
-      await waitFor(() => expect(screen.getByRole('dialog')).toBeInTheDocument())
-
-      const textarea = screen.getByRole('textbox')
-      fireEvent.change(textarea, { target: { value: 'Test non-array reset' } })
-      fireEvent.click(screen.getByRole('button', { name: /send feedback/i }))
-
-      await waitFor(() => {
-        const stored = localStorage.getItem('paperlyte_feedback')
-        expect(stored).toBeTruthy()
-        const parsed = JSON.parse(stored!)
-        expect(Array.isArray(parsed)).toBe(true)
-        expect(parsed).toHaveLength(1)
-        expect(parsed[0]).toMatchObject({ message: 'Test non-array reset' })
-      })
-    })
-  })
-
-  describe('localStorage parse error', () => {
-    it('calls logError when stored feedback JSON is invalid', async () => {
-      // Pre-seed localStorage with invalid JSON
-      localStorage.setItem('paperlyte_feedback', 'not-valid-json{{{')
-
-      render(<FeedbackWidget />)
-
-      // Open modal and submit feedback so the component reads localStorage
-      const openButton = screen.getByRole('button', { name: /open feedback form/i })
-      fireEvent.click(openButton)
-      await waitFor(() => expect(screen.getByRole('dialog')).toBeInTheDocument())
-
-      const textarea = screen.getByRole('textbox')
-      fireEvent.change(textarea, { target: { value: 'Test parse error path' } })
-      const submitButton = screen.getByRole('button', { name: /send feedback/i })
-      fireEvent.click(submitButton)
-
-      await waitFor(() => {
-        expect(vi.mocked(monitoringModule.logError)).toHaveBeenCalledWith(
-          expect.objectContaining({ message: 'Failed to load stored feedback' }),
-          expect.objectContaining({ tags: { context: 'feedback-storage-parse' } }),
-          'feedback_widget'
-        )
-      })
     })
   })
 })

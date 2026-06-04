@@ -30,10 +30,22 @@ export function scrollToSection(sectionId: string): void {
     return
   }
 
+  // Respect prefers-reduced-motion: use instant scroll when the user prefers
+  // reduced motion. This also ensures Playwright tests (which emulate
+  // reducedMotion: 'reduce') get an instant scroll, preventing WebKit from
+  // cancelling an in-flight smooth scroll when focus() is called.
+  // The typeof matchMedia guard handles jsdom (unit tests), which doesn't
+  // implement matchMedia, keeping unit test behaviour unchanged (smooth).
+  const prefersReducedMotion =
+    typeof window !== 'undefined' &&
+    typeof window.matchMedia === 'function' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  const behavior: ScrollBehavior = prefersReducedMotion ? 'instant' : 'smooth'
+
   const element = document.getElementById(sectionId)
   if (element) {
     cancelPendingScroll(sectionId)
-    element.scrollIntoView({ behavior: 'smooth' })
+    element.scrollIntoView({ behavior })
     return
   }
 
@@ -47,7 +59,7 @@ export function scrollToSection(sectionId: string): void {
     const el = document.getElementById(sectionId)
     if (el) {
       cancelPendingScroll(sectionId)
-      el.scrollIntoView({ behavior: 'smooth' })
+      el.scrollIntoView({ behavior })
     }
   })
 
@@ -189,7 +201,7 @@ export function isSafeUrl(url: string): boolean {
  */
 function isSameOriginUrl(url: string): boolean {
   try {
-    const parsed = new URL(url, window.location.href)
+    const parsed = new URL(url, window.location.origin)
     return parsed.origin === window.location.origin
   } catch {
     return false
@@ -197,11 +209,13 @@ function isSameOriginUrl(url: string): boolean {
 }
 
 /**
- * Safely navigates to a same-origin or relative URL.
- * External (cross-origin) URLs are rejected — use `safeNavigateExternal` for those.
- * Blocks dangerous protocols like javascript:, data:, vbscript:, etc.
+ * Safely navigates to same-origin and relative URLs only.
+ * Blocks dangerous protocols (javascript:, data:, vbscript:, etc.) and external origins
+ * to prevent open redirect attacks.
  *
- * @param url - The relative or same-origin URL to navigate to
+ * For legitimate external navigation, use safeNavigateExternal() instead.
+ *
+ * @param url - The URL to navigate to (must be same-origin or relative)
  * @returns true if navigation was performed, false if URL was rejected or navigation not needed (SSR)
  */
 export function safeNavigate(url: string): boolean {
@@ -227,7 +241,7 @@ export function safeNavigate(url: string): boolean {
     return false
   }
 
-  window.location.href = new URL(trimmedUrl, window.location.href).href
+  window.location.href = trimmedUrl
   return true
 }
 
@@ -235,6 +249,11 @@ export function safeNavigate(url: string): boolean {
  * Safely navigates to an external URL by opening it in a new tab.
  * Only HTTP and HTTPS URLs are allowed; relative paths and other protocols are rejected.
  * Uses `noopener,noreferrer` to prevent tab-napping attacks.
+ *
+ * Note: `window.open` with `noopener` returns `null` in standards-compliant browsers
+ * even when the new tab is opened successfully (the caller cannot access the opened window).
+ * This function therefore always returns `true` after calling `window.open` rather than
+ * checking the return value, which would produce false negatives in Chrome/Firefox.
  *
  * @param url - The external HTTP/HTTPS URL to open
  * @returns true if navigation was attempted via window.open, false if the URL was rejected

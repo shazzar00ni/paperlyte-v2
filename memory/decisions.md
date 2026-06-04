@@ -72,10 +72,15 @@ This file tracks key architectural, design, and technical decisions made during 
 - **Rationale**: Site is deployed on Netlify; `/_vercel/insights/script.js` does not exist there, causing a MIME-type console error that degraded the Lighthouse Best Practices score
 - **Alternatives considered**: Conditional rendering per platform, keeping it for a future Vercel deployment
 
-- **Date**: 2026-04-20 (known pre-existing issue)
-- **Decision**: `worker-src 'none'` in production CSP — Sentry Session Replay likely silently disabled
-- **Rationale**: Sentry `replayIntegration()` is configured in `src/main.tsx` but its web-worker transport is blocked by the current CSP. This is a pre-existing issue unrelated to the CSP/analytics PR. To enable Replay, `worker-src 'self' blob:` would need to be added to both `netlify.toml` and `vercel.json`.
-- **Alternatives considered**: `worker-src 'self' blob:` (would enable Replay), removing `replayIntegration()` entirely
+- **Date**: 2026-04-20 (known pre-existing issue, resolved 2026-05-30)
+- **Decision**: `worker-src 'self' blob:'` in production CSP — enables Sentry Session Replay workers
+- **Rationale**: Sentry `replayIntegration()` uses blob: URL workers. Updated from `worker-src 'none'` to `worker-src 'self' blob:` in both `netlify.toml` and `vercel.json` to unblock it.
+- **Alternatives considered**: `worker-src 'none'` (silently disables Replay), removing `replayIntegration()` entirely
+
+- **Date**: 2026-05-30
+- **Decision**: Resolved two CSP console errors: (1) Font Awesome JS inline-style violation; (2) Vercel analytics MIME-type error
+- **Rationale**: Font Awesome JS was removed and replaced with custom bundled SVG paths (`src/components/ui/Icon/icons.ts`). Font Awesome JS injected inline styles via `setAttribute('style', ...)`, which the strict `style-src 'self'` CSP blocked. `@vercel/analytics` was removed because the site runs on Netlify — the script URL `/_vercel/insights/script.js` returns HTML 404, causing a MIME-type rejection. Both fixes were already on `main`; this PR documents and deploys them.
+- **Alternatives considered**: Adding `'unsafe-inline'` to `style-src` (weakens CSP), adding the specific sha256 hash for the Font Awesome style (fragile — breaks on library updates)
 
 ## Security
 
@@ -91,8 +96,8 @@ This file tracks key architectural, design, and technical decisions made during 
 - **Alternatives considered**: No validation (unsafe), allow-list of domains
 
 - **Date**: 2026-05-06
-- **Decision**: `.npmrc` (content must be exactly `legacy-peer-deps=true`), `docs/ROADMAP.md`, `gitVersionControl.md`, `review.md`, and the `hasDangerousProtocol`/`isRelativeUrl` helpers in `src/utils/navigation.ts` are required files that must never be deleted from any branch
-- **Rationale**: Accidental deletion of these files on several branches blocked their PRs from merging (Issue #876). Restoration is done via `git checkout origin/main -- .npmrc docs/ROADMAP.md gitVersionControl.md review.md src/utils/navigation.ts`.
+- **Decision**: `.npmrc` (content must be exactly `legacy-peer-deps=true`), `docs/ROADMAP.md`, `docs/gitVersionControl.md`, `docs/review.md`, and the `hasDangerousProtocol`/`isRelativeUrl` helpers in `src/utils/navigation.ts` are required files that must never be deleted from any branch
+- **Rationale**: Accidental deletion of these files on several branches blocked their PRs from merging (Issue #876). Restoration is done via `git checkout origin/main -- .npmrc docs/ROADMAP.md docs/gitVersionControl.md docs/review.md src/utils/navigation.ts`.
 - **Alternatives considered**: Manual re-creation of file content
 
 ## Email / Waitlist

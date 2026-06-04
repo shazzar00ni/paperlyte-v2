@@ -272,7 +272,7 @@ export function safeNavigateExternal(url: string): boolean {
 
   if (!isSafeUrl(trimmedUrl)) {
     if (import.meta.env.DEV) {
-      console.warn(`External navigation blocked: URL "${url}" failed security validation`)
+      console.warn(`External navigation blocked: URL "${trimmedUrl}" failed security validation`)
     }
     return false
   }

@@ -1,6 +1,6 @@
-# Chrome DevTools MCP
+# Playwright MCP (Chrome DevTools capability)
 
-This repository includes a project-level MCP configuration in `.mcp.json` for Playwright MCP with Chrome DevTools capability enabled. Claude Code can load the `playwright` server from the repository root because `.claude/settings.json` explicitly enables that project MCP server.
+This repository includes a project-level MCP configuration in `.mcp.json` for Playwright MCP with the Chrome DevTools capability enabled. Claude Code can load the `playwright` server from the repository root because `.claude/settings.json` explicitly enables that project MCP server.
 
 ## Server configuration
 

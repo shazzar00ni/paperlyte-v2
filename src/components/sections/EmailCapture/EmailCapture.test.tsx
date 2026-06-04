@@ -28,9 +28,12 @@ describe('EmailCapture Section', () => {
     ).toBeInTheDocument()
   })
 
-  it('renders the form with email input and submit button', () => {
+  it('renders the form with an explicitly associated email label and submit button', () => {
     render(<EmailCapture />)
-    expect(screen.getByPlaceholderText('you@example.com')).toBeInTheDocument()
+    const emailInput = screen.getByLabelText('Work email or personal email')
+
+    expect(emailInput).toHaveAttribute('id', 'email')
+    expect(emailInput).toHaveAttribute('type', 'email')
     expect(screen.getByRole('button', { name: /Claim Early Access/i })).toBeInTheDocument()
   })
 

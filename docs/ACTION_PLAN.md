@@ -237,7 +237,7 @@ Run these checks before considering the remaining codebase tasks closed:
 
 ```bash
 npm ci
-npx tsc --noEmit
+npx tsc -b --noEmit
 npm run lint
 npm test
 rg "safeNavigateExternal" src/utils/navigation.ts src/utils/navigation.test.ts

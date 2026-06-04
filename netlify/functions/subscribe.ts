@@ -197,8 +197,8 @@ function getCorsHeaders(origin: string): Record<string, string> {
  */
 function getClientIp(headers: HandlerEvent["headers"]): string {
   return (
-    headers["x-forwarded-for"]?.split(",")[0]?.trim() ??
-    headers["client-ip"] ??
+    headers["x-forwarded-for"]?.split(",")[0]?.trim() ||
+    headers["client-ip"]?.trim() ||
     "unknown"
   );
 }
@@ -210,7 +210,11 @@ function getClientIp(headers: HandlerEvent["headers"]): string {
  */
 function parseRequestBody(raw: string | null): SubscribeRequest | null {
   try {
-    return JSON.parse(raw ?? "{}") as SubscribeRequest;
+    const parsed: unknown = JSON.parse(raw ?? "{}");
+    if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) {
+      return null;
+    }
+    return parsed as SubscribeRequest;
   } catch {
     return null;
   }

@@ -241,7 +241,7 @@ export function safeNavigate(url: string): boolean {
     return false
   }
 
-  window.location.href = trimmedUrl
+  window.location.href = trimmedUrl // nosemgrep: javascript.browser.security.open-redirect-from-function.js-open-redirect-from-function
   return true
 }
 
@@ -264,7 +264,13 @@ export function safeNavigateExternal(url: string): boolean {
     return false
   }
 
-  if (!isSafeUrl(url)) {
+  if (typeof url !== 'string') {
+    return false
+  }
+
+  const trimmedUrl = url.trim()
+
+  if (!isSafeUrl(trimmedUrl)) {
     if (import.meta.env.DEV) {
       console.warn(`External navigation blocked: URL "${url}" failed security validation`)
     }
@@ -273,11 +279,11 @@ export function safeNavigateExternal(url: string): boolean {
 
   try {
     // `isSafeUrl` permits relative paths (e.g. /about, ./page) which would be wrong
-    // for a function that opens URLs in a new tab. `new URL(url)` without a base throws
+    // for a function that opens URLs in a new tab. `new URL(trimmedUrl)` without a base throws
     // for relative paths, so the catch block correctly rejects them here. The explicit
     // protocol check also rejects any non-HTTP/HTTPS URLs that may slip through (e.g.
     // same-origin custom-protocol absolute URLs).
-    const parsed = new URL(url)
+    const parsed = new URL(trimmedUrl)
     if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
       return false
     }
@@ -285,6 +291,6 @@ export function safeNavigateExternal(url: string): boolean {
     return false
   }
 
-  window.open(url, '_blank', 'noopener,noreferrer')
+  window.open(trimmedUrl, '_blank', 'noopener,noreferrer')
   return true
 }

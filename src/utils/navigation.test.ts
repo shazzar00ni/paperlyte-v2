@@ -567,6 +567,20 @@ describe('navigation utilities', () => {
       warnSpy.mockRestore()
     })
 
+    it('should return false for non-string input from untyped boundaries', () => {
+      expect(safeNavigateExternal(undefined as unknown as string)).toBe(false)
+      expect(openSpy).not.toHaveBeenCalled()
+    })
+
+    it('should trim URLs before validating and opening', () => {
+      expect(safeNavigateExternal('  https://example.com/path  ')).toBe(true)
+      expect(openSpy).toHaveBeenCalledWith(
+        'https://example.com/path',
+        '_blank',
+        'noopener,noreferrer'
+      )
+    })
+
     it('should return true when window.open returns null with noopener behavior', () => {
       // window.open with noopener returns null in standards-compliant browsers even when
       // the new tab is successfully opened; the function must still return true.

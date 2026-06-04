@@ -21,7 +21,7 @@ The configuration is intentional:
 
 ## Requirements
 
-Playwright MCP requires Node.js, npm, and a Chrome or Chrome-compatible browser installation. The pinned `@playwright/mcp@0.0.75` package declares `node >=18`, so it is compatible with the repository's documented Node 20.x baseline, including Node 20.0 through 20.18. If your local machine or CI image does not include Chrome, install it before starting the MCP server.
+Playwright MCP requires Node.js, npm, and a Chrome or Chrome-compatible browser installation. The pinned `@playwright/mcp@0.0.75` package declares `node >=18`, so it is compatible with the repository's documented Node.js 20.x baseline (and newer). If your local machine or CI image does not include Chrome, install it before starting the MCP server.
 
 ## Quick validation
 

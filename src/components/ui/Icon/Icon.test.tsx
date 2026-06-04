@@ -210,9 +210,8 @@ describe('Icon', () => {
       expect(consoleWarnSpy).toHaveBeenCalledTimes(0)
     })
 
-    it('should resolve fa-house to fa-home via iconNameMap without warning', () => {
-      // fa-house is not in iconPaths; convertIconName maps it to 'home',
-      // so aliasedKey becomes 'fa-home' which IS in iconPaths (step 2)
+    it('should render fa-house without warning when present in iconPaths', () => {
+      // fa-house is present in iconPaths, so it should render as a custom SVG without warnings
       const { container } = render(<Icon name="fa-house" />)
 
       const svg = container.querySelector('svg.icon-svg')

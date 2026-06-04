@@ -36,6 +36,8 @@ interface CounterAnimationProps {
   minWidth?: string
 }
 
+type EasingName = NonNullable<CounterAnimationProps['easing']>
+
 /**
  * Easing functions for smooth animations
  */
@@ -49,12 +51,19 @@ const easingFunctions = {
  * Returns the easing function for the given name using static dispatch,
  * avoiding unsafe dynamic property access on the easingFunctions object.
  */
-const getEasingFunction = (
-  name: 'linear' | 'easeOutQuart' | 'easeOutExpo',
-): ((t: number) => number) => {
-  if (name === 'easeOutQuart') return easingFunctions.easeOutQuart
-  if (name === 'easeOutExpo') return easingFunctions.easeOutExpo
-  return easingFunctions.linear
+const getEasingFunction = (name: EasingName): ((t: number) => number) => {
+  switch (name) {
+    case 'linear':
+      return easingFunctions.linear
+    case 'easeOutQuart':
+      return easingFunctions.easeOutQuart
+    case 'easeOutExpo':
+      return easingFunctions.easeOutExpo
+    default: {
+      const unreachableEasing: never = name
+      throw new Error(`Unsupported easing function: ${String(unreachableEasing)}`)
+    }
+  }
 }
 
 /**
@@ -129,6 +138,7 @@ export const CounterAnimation = ({
       const animEnd = end
       const animStart = start
       const animEasing = easing
+      const easingFunction = getEasingFunction(animEasing)
 
       const animate = (timestamp: number) => {
         if (startTime.current === null) {
@@ -137,7 +147,7 @@ export const CounterAnimation = ({
 
         const elapsed = timestamp - startTime.current
         const progress = Math.min(elapsed / animDuration, 1)
-        const easedProgress = getEasingFunction(animEasing)(progress)
+        const easedProgress = easingFunction(progress)
         const currentValue = animStart + (animEnd - animStart) * easedProgress
 
         setAnimatedValue(currentValue)

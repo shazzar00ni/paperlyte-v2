@@ -66,11 +66,21 @@ jobs:
           # The merged single-run file is uploaded in the step below instead.
           upload: "false"
 
-      # Merge multiple SARIF runs into a single run to stay within GitHub Code Scanning's
-      # 20-run limit per SARIF upload. Codacy generates one run per tool (23 tools = 23 runs).
-      # We must merge before uploading, and only upload when merge succeeds.
+      # Split Codacy's multi-tool SARIF into one file per tool for GitHub Code Scanning.
+      # Uploading the merged single-run SARIF would change the driver name to "Codacy",
+      # leaving tool-specific analyses such as Csslint stale in the Security tab.
+      # Each split file receives a unique runAutomationDetails.id so upload-sarif can
+      # upload the directory without duplicate tool/category analyses.
+      - name: Split SARIF runs for GitHub Code Scanning
+        id: split-sarif
+        if: steps.codacy-run.conclusion == 'success'
+        run: bash ./scripts/split-sarif-runs.sh results.sarif codacy-sarif
+
+      # Merge multiple SARIF runs into a single run only for the Codacy platform upload.
+      # Codacy rejects uploads containing more than 20 runs; the raw output typically
+      # contains one run per tool (23+). GitHub Code Scanning uses the split files above.
       # See: https://github.blog/changelog/2025-07-21-code-scanning-will-stop-combining-multiple-sarif-runs-uploaded-in-the-same-sarif-file/
-      - name: Merge SARIF runs into single run
+      - name: Merge SARIF runs for Codacy platform upload
         id: merge-sarif
         if: steps.codacy-run.conclusion == 'success'
         run: bash ./scripts/merge-sarif-runs.sh results.sarif
@@ -131,17 +141,16 @@ jobs:
             exit 1
           fi
 
-      # Upload the SARIF file only after successful merge.
-      # Using step outcome instead of hashFiles() ensures we never upload the
-      # raw 23-run file when the merge step fails or is skipped.
-      - name: Upload SARIF results file
+      # Upload the split SARIF directory so GitHub refreshes each Codacy tool's
+      # analysis independently (for example, Csslint remains a Csslint analysis
+      # instead of becoming a generic Codacy analysis).
+      - name: Upload SARIF results files
         id: upload-sarif
         uses: github/codeql-action/upload-sarif@7211b7c8077ea37d8641b6271f6a365a22a5fbfa  # v4.36.0
-        if: steps.merge-sarif.conclusion == 'success'
+        if: steps.split-sarif.conclusion == 'success'
         continue-on-error: true
         with:
-          sarif_file: results.sarif
-          category: codacy
+          sarif_file: codacy-sarif
 
       - name: Codacy Security Summary
         if: always()
@@ -161,9 +170,9 @@ jobs:
           elif [ "${{ steps.upload-sarif.outcome }}" == "failure" ]; then
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "⚠️ **SARIF upload failed.** Check the upload step logs for details." >> $GITHUB_STEP_SUMMARY
-          elif [ "${{ steps.merge-sarif.conclusion }}" != "success" ]; then
+          elif [ "${{ steps.split-sarif.conclusion }}" != "success" ]; then
             echo "" >> $GITHUB_STEP_SUMMARY
-            echo "⚠️ **SARIF upload skipped** – merge step did not succeed." >> $GITHUB_STEP_SUMMARY
+            echo "⚠️ **SARIF upload skipped** – split step did not succeed." >> $GITHUB_STEP_SUMMARY
           fi
           
           echo "" >> $GITHUB_STEP_SUMMARY

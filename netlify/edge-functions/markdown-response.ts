@@ -278,6 +278,30 @@ function htmlToMarkdown(html: string): string {
 }
 
 /**
+ * Returns true when the request's Accept header includes `text/markdown` with
+ * a non-zero q-value (or no q-value). Respects RFC 7231 §5.3 rules:
+ * media-type tokens are case-insensitive and optional whitespace is allowed
+ * around the `=` sign (so `Q=0` and `q = 0` are valid opt-outs).
+ */
+function acceptsMarkdownHeader(request: Request): boolean {
+  return (request.headers.get('Accept') ?? '').split(',').some((token) => {
+    const [type, ...params] = token.trim().split(';')
+    if (type.trim().toLowerCase() !== 'text/markdown') return false
+    const qParamValue = params
+      .map((p) => p.trim())
+      .map((p) => {
+        const eqIdx = p.indexOf('=')
+        if (eqIdx === -1) return undefined
+        const name = p.slice(0, eqIdx).trim().toLowerCase()
+        const value = p.slice(eqIdx + 1).trim()
+        return name === 'q' ? value : undefined
+      })
+      .find((value): value is string => value !== undefined)
+    return qParamValue === undefined || parseFloat(qParamValue) > 0
+  })
+}
+
+/**
  * Serve a sanitized Markdown representation of the origin page when the
  * request carries `Accept: text/markdown`; otherwise delegate unchanged.
  *
@@ -298,29 +322,7 @@ export default async function handler(request: Request, context: Context): Promi
   }
 
   // ── 2. Gate on Accept header ────────────────────────────────────────────
-  // Parse the Accept header properly, respecting q=0 (explicit opt-out).
-  // A token is accepted if:
-  //   • its media type is text/markdown (case-insensitive), AND
-  //   • it has no q parameter OR its q value is > 0.
-  const acceptsMarkdown = (request.headers.get('Accept') ?? '').split(',').some((token) => {
-    const [type, ...params] = token.trim().split(';')
-    if (type.trim().toLowerCase() !== 'text/markdown') return false
-    // RFC 7231 §5.3: parameter names are case-insensitive and optional
-    // whitespace is allowed around the '=' sign, so 'Q=0' and 'q = 0' are
-    // valid opt-outs that must be recognised.
-    const qParamValue = params
-      .map((p) => p.trim())
-      .map((p) => {
-        const eqIdx = p.indexOf('=')
-        if (eqIdx === -1) return undefined
-        const name = p.slice(0, eqIdx).trim().toLowerCase()
-        const value = p.slice(eqIdx + 1).trim()
-        return name === 'q' ? value : undefined
-      })
-      .find((value): value is string => value !== undefined)
-    return qParamValue === undefined || parseFloat(qParamValue) > 0
-  })
-  if (!acceptsMarkdown) {
+  if (!acceptsMarkdownHeader(request)) {
     return context.next()
   }
 
@@ -404,19 +406,11 @@ export default async function handler(request: Request, context: Context): Promi
     })
   } catch (err) {
     // ── 7. Fallback: pass through to origin unchanged ─────────────────────
-    // Log the failure so it appears in Netlify edge function logs.
-    // console.error is the correct logging mechanism in the Deno-based Edge
-    // Runtime; src/utils/monitoring.ts cannot be imported here because it
-    // depends on @sentry/react and Vite's import.meta.env.
     // Log pathname only — never request.url — to avoid persisting sensitive
     // query parameters (tokens, emails, campaign IDs) in edge logs.
-    const message = err instanceof Error ? err.message : String(err)
-    const stack = err instanceof Error && err.stack ? err.stack : undefined
-    console.error('[markdown-response] Markdown conversion failed; falling back to HTML', {
-      pathname,
-      error: message,
-      ...(stack !== undefined ? { stack } : {}),
-    })
+    // console.error is the correct logging mechanism in the Deno-based Edge
+    // Runtime; src/utils/monitoring.ts cannot be imported here.
+    console.error('[markdown-response] Markdown conversion failed; falling back to HTML', pathname, err)
     if (originResponse) return originResponse
     // context.next() threw before any origin response was received; calling it
     // again would double origin traffic and could throw a second unhandled error.

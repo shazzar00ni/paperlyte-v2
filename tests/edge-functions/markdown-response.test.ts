@@ -462,7 +462,7 @@ describe('markdown-response edge function', () => {
       expect(body).not.toContain('evil.com')
     })
 
-    it('strips <nav> tags via exclusiveFilter (DROP_WITH_CHILDREN)', async () => {
+    it('strips <nav> tags via regex sanitiser (REMOVE_TAGS)', async () => {
       const req = makeRequest('https://example.com/', mdHeaders)
       const ctx = makeContext(
         htmlResponse('<nav><a href="/">Home</a></nav><main><p>Content</p></main>')
@@ -477,10 +477,10 @@ describe('markdown-response edge function', () => {
     })
 
     it('preserves <header> content; strips <footer> content', async () => {
-      // <header> is NOT in DROP_WITH_CHILDREN: static pages (privacy, terms)
-      // use <header> for the page title and last-updated metadata that agents
-      // need.  The SPA shell has no <header> at all so this change is safe.
-      // <footer> IS still dropped (copyright boilerplate adds no value).
+      // <header> is NOT in REMOVE_TAGS: static pages (privacy, terms) use
+      // <header> for the page title and last-updated metadata that agents
+      // need.  The SPA shell has no <header> at all so this is safe.
+      // <footer> IS in REMOVE_TAGS (copyright boilerplate adds no value).
       const req = makeRequest('https://example.com/', mdHeaders)
       const ctx = makeContext(
         htmlResponse(
@@ -531,7 +531,7 @@ describe('markdown-response edge function', () => {
     const mdHeaders = { Accept: 'text/markdown' }
 
     it('removes HTML comments that survive sanitisation', async () => {
-      // sanitize-html strips HTML comments structurally from the parsed tree.
+      // The regex sanitiser strips HTML comments via /<!--[\s\S]*?(?:-->|$)/g.
       const req = makeRequest('https://example.com/', mdHeaders)
       const ctx = makeContext(htmlResponse('<p><!-- hidden comment -->Visible</p>'))
 
@@ -545,8 +545,8 @@ describe('markdown-response edge function', () => {
 
     it('removes bare <script fragments with no closing bracket', async () => {
       const req = makeRequest('https://example.com/', mdHeaders)
-      // sanitize-html strips malformed/partial script tags from the HTML tree
-      // before Turndown ever sees the input.
+      // The regex sanitiser strips malformed/partial script tags via the
+      // partial-opener pattern (/<(?:tag)\b[^>]*>?/gi, closing `>` optional).
       const ctx = makeContext(htmlResponse('<p>Text</p><script'))
 
       const result = await handler(req, ctx)
@@ -556,9 +556,8 @@ describe('markdown-response edge function', () => {
     })
 
     it('removes <noscript> tags and their children', async () => {
-      // Pre-parse regex strips <noscript> blocks before DOMParser sees them
-      // because (with scripting disabled) the parser promotes block-level
-      // children to the parent scope, defeating el.remove() on the wrapper.
+      // The regex sanitiser removes <noscript> complete subtrees via the
+      // iterative tag+children removal loop in sanitizeHtml (REMOVE_TAGS).
       const req = makeRequest('https://example.com/', mdHeaders)
       const ctx = makeContext(htmlResponse('<noscript><p>Enable JS</p></noscript><p>Content</p>'))
 
@@ -800,15 +799,13 @@ describe('markdown-response edge function', () => {
       await handler(req, ctx)
 
       expect(consoleErrorSpy).toHaveBeenCalledOnce()
-      const [label, context] = consoleErrorSpy.mock.calls[0]
+      const [label, loggedPath, loggedErr] = consoleErrorSpy.mock.calls[0]
       expect(label).toContain('markdown-response')
       expect(label).toContain('falling back')
       // pathname only — sensitive query params must not appear in logs
-      expect(context).toMatchObject({
-        pathname: '/privacy',
-        error: 'read error',
-      })
-      expect(context).not.toHaveProperty('url')
+      expect(loggedPath).toBe('/privacy')
+      expect(loggedErr).toBeInstanceOf(Error)
+      expect((loggedErr as Error).message).toBe('read error')
     })
 
     it('returns 502 when context.next() throws before origin response is fetched', async () => {
@@ -837,13 +834,12 @@ describe('markdown-response edge function', () => {
       await handler(req, ctx)
 
       expect(consoleErrorSpy).toHaveBeenCalledOnce()
-      const [label, context] = consoleErrorSpy.mock.calls[0]
+      const [label, loggedPath, loggedErr] = consoleErrorSpy.mock.calls[0]
       expect(label).toContain('markdown-response')
-      expect(context).toMatchObject({
-        pathname: '/',
-        error: 'network error',
-      })
-      expect(context).not.toHaveProperty('url')
+      // pathname only — sensitive query params and full URL must not appear in logs
+      expect(loggedPath).toBe('/')
+      expect(loggedErr).toBeInstanceOf(Error)
+      expect((loggedErr as Error).message).toBe('network error')
     })
 
     it('passes through 206 Partial Content responses unchanged', async () => {

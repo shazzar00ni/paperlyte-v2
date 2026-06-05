@@ -4,8 +4,8 @@
  * The function converts HTML responses to Markdown when the request carries
  * an `Accept: text/markdown` header. All other requests pass through unchanged.
  *
- * Module resolution: vitest.config.ts maps the Deno-style `npm:` specifiers to
- * their local node_modules equivalents so the handler can be imported in Node.
+ * Turndown and linkedom use the same bare package imports in Vitest that
+ * Netlify bundles for the Deno-based Edge Runtime.
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
@@ -530,6 +530,25 @@ describe('markdown-response edge function', () => {
   describe('sanitisation: dangerous tags and content removal', () => {
     const mdHeaders = { Accept: 'text/markdown' }
 
+    it('converts HTML without browser DOMParser or Node globals', async () => {
+      vi.stubGlobal('DOMParser', undefined)
+      vi.stubGlobal('Node', undefined)
+
+      try {
+        const req = makeRequest('https://example.com/', mdHeaders)
+        const ctx = makeContext(htmlResponse('<main><h1>Edge-safe</h1><!-- hidden --></main>'))
+
+        const result = await handler(req, ctx)
+        const body = await result.text()
+
+        expect(result.headers.get('Content-Type')).toBe('text/markdown; charset=utf-8')
+        expect(body).toContain('# Edge-safe')
+        expect(body).not.toContain('hidden')
+      } finally {
+        vi.unstubAllGlobals()
+      }
+    })
+
     it('removes HTML comments that survive sanitisation', async () => {
       // sanitize-html strips HTML comments structurally from the parsed tree.
       const req = makeRequest('https://example.com/', mdHeaders)
@@ -556,7 +575,7 @@ describe('markdown-response edge function', () => {
     })
 
     it('removes <noscript> tags and their children', async () => {
-      // Pre-parse regex strips <noscript> blocks before DOMParser sees them
+      // Pre-parse regex strips <noscript> blocks before the HTML parser sees them
       // because (with scripting disabled) the parser promotes block-level
       // children to the parent scope, defeating el.remove() on the wrapper.
       const req = makeRequest('https://example.com/', mdHeaders)
@@ -575,9 +594,7 @@ describe('markdown-response edge function', () => {
       // whitespace before >) — a valid HTML closing tag form that would
       // otherwise survive the pre-pass and leak noscript content.
       const req = makeRequest('https://example.com/', mdHeaders)
-      const ctx = makeContext(
-        htmlResponse('<noscript ><p>Enable JS</p></noscript ><p>Content</p>')
-      )
+      const ctx = makeContext(htmlResponse('<noscript ><p>Enable JS</p></noscript ><p>Content</p>'))
 
       const result = await handler(req, ctx)
       const body = await result.text()

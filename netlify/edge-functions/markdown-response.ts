@@ -35,11 +35,9 @@
  * • This site is a React SPA; the static HTML shell is minimal. The edge
  *   function faithfully converts whatever HTML the origin returns, so
  *   SSR or pre-rendered pages will produce richer Markdown output.
- * • Turndown and linkedom are imported via esm.sh URLs — the Netlify Edge
- *   Runtime (Deno-based) resolves these as ESM CDN imports at deploy time.
- *   Both packages are also listed in `devDependencies` so Vitest can resolve
- *   the rewritten bare names from node_modules for local testing.
- *   (vitest.config.ts rewrites `https://esm.sh/pkg@ver` → `pkg`.)
+ * • Turndown and linkedom use bare package imports. Netlify bundles installed
+ *   npm packages for the Deno-based Edge Runtime, and Vitest resolves the same
+ *   imports from node_modules without any environment-specific rewriting.
  * • HTML sanitisation uses linkedom's `parseHTML` (not the browser DOMParser
  *   global, which is absent in Deno/Netlify Edge runtime). linkedom implements
  *   the standard DOM API and is safe to use in server-side environments.
@@ -49,8 +47,8 @@
  *   as-is — both code paths go through the same sanitisation logic.
  */
 
-import TurndownService from 'https://esm.sh/turndown@7.1.2'
-import { parseHTML } from 'https://esm.sh/linkedom@0.18.12'
+import { parseHTML } from 'linkedom'
+import TurndownService from 'turndown'
 import type { Context } from 'https://edge.netlify.com'
 
 // Paths that should never be converted even if accidentally matched.
@@ -99,12 +97,7 @@ const ALLOWED_ATTRS: Record<string, readonly string[] | undefined> = {
 }
 
 // Allowed URL protocols for href and src attributes.
-const ALLOWED_URL_PROTOCOLS: ReadonlySet<string> = new Set([
-  'http:',
-  'https:',
-  'ftp:',
-  'mailto:',
-])
+const ALLOWED_URL_PROTOCOLS: ReadonlySet<string> = new Set(['http:', 'https:', 'ftp:', 'mailto:'])
 
 // Turndown instance — initialised once at module scope because the
 // configuration and custom rules are static across all requests.

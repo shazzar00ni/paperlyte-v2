@@ -35,19 +35,16 @@
  * • This site is a React SPA; the static HTML shell is minimal. The edge
  *   function faithfully converts whatever HTML the origin returns, so
  *   SSR or pre-rendered pages will produce richer Markdown output.
- * • Turndown and sanitize-html are imported via `https://esm.sh/` URLs,
- *   which the Netlify Edge Runtime (Deno-based) fetches at deploy time and
- *   bundles into the edge function.  No `npm install` is needed on the
- *   Netlify build side for the edge function itself.
- *   However, these packages ARE listed in `devDependencies` and MUST be
- *   present in `node_modules` for local Vitest tests, TypeScript type
- *   checking, and other Node-based build tooling to work.
- * • sanitize-html is the primary sanitizer: it parses HTML into a real node
- *   tree and applies an allowlist, which is far more robust than regex.
+ * • Turndown is imported via the `npm:` specifier — the Netlify Edge Runtime
+ *   (Deno-based) resolves `npm:` specifiers natively at deploy time.
+ *   Turndown is also listed in `devDependencies` so Vitest can resolve it
+ *   from node_modules for local testing.
+ * • HTML sanitisation uses the native DOMParser Web API (no external
+ *   dependencies).  DOMParser is available in both the Deno-based Netlify
+ *   Edge Runtime and the jsdom Vitest test environment.
  */
 
-import TurndownService from 'https://esm.sh/turndown@7.1.2'
-import sanitizeHtml from 'https://esm.sh/sanitize-html@2.13.1'
+import TurndownService from 'npm:turndown@7.1.2'
 import type { Context } from 'https://edge.netlify.com'
 
 // Paths that should never be converted even if accidentally matched.
@@ -62,27 +59,45 @@ const EXCLUDED_PREFIXES: readonly string[] = [
   '/manifest',
 ]
 
-// Structural chrome tags whose entire subtree (tag + all descendants) should
-// be dropped so nav links, footer boilerplate, and noscript fallback text do
-// not bleed into the Markdown output.
+// Tags whose entire subtree (tag + all children) must be removed before
+// conversion.  Includes dangerous tags (script, style, etc.) and structural
+// noise (nav, footer, aside, noscript) that should never appear in Markdown.
 //
-// `header` is intentionally NOT listed here: static pages (privacy.html,
+// `header` is intentionally NOT included: static pages (privacy.html,
 // terms.html) use `<header>` to wrap the page title and last-updated metadata
-// — content that should be preserved.  The SPA shell (index.html) contains no
+// — content that agents need.  The SPA shell (index.html) contains no
 // `<header>` element at all (only <div id="root">), so omitting it from this
 // set has no effect on SPA routes.
-//
-// IMPORTANT: sanitize-html's exclusiveFilter callback is ONLY invoked for tags
-// that appear in allowedTags.  Tags that are NOT in allowedTags are handled by
-// disallowedTagsMode:'discard', which removes the wrapper tag but KEEPS its
-// children — the opposite of what we want here.  Therefore these tags MUST
-// also appear in ALLOWED_TAGS so that exclusiveFilter can intercept them and
-// drop both the tag and all descendants.
-const DROP_WITH_CHILDREN: ReadonlySet<string> = new Set([
+const REMOVE_WITH_CHILDREN: ReadonlySet<string> = new Set([
+  'script',
+  'style',
+  'iframe',
+  'object',
+  'embed',
+  'applet',
   'nav',
   'footer',
   'aside',
   'noscript',
+  'svg',
+  'canvas',
+  'template',
+])
+
+// Attributes allowed per tag — all others are stripped.
+const ALLOWED_ATTRS: Record<string, readonly string[] | undefined> = {
+  a: ['href', 'title'],
+  img: ['src', 'alt', 'title'],
+  th: ['colspan', 'rowspan', 'scope'],
+  td: ['colspan', 'rowspan'],
+}
+
+// Allowed URL protocols for href and src attributes.
+const ALLOWED_URL_PROTOCOLS: ReadonlySet<string> = new Set([
+  'http:',
+  'https:',
+  'ftp:',
+  'mailto:',
 ])
 
 // Turndown instance — initialised once at module scope because the
@@ -95,78 +110,84 @@ const td = new TurndownService({
 })
 td.remove(['svg', 'canvas', 'template'])
 
-// Tags whose content Turndown can convert to useful Markdown.
-// Everything not in this list is discarded by sanitize-html.
-//
-// Note: 'nav', 'footer', 'aside', and 'noscript' are listed here even though
-// their subtrees are ultimately dropped by exclusiveFilter (via
-// DROP_WITH_CHILDREN).  They must be in allowedTags so that exclusiveFilter is
-// invoked for them; if omitted, disallowedTagsMode:'discard' would strip the
-// wrapper tag but silently pass children through to Markdown.
-// 'header' is listed here as a normal allowed tag (not in DROP_WITH_CHILDREN);
-// its content (page titles on static pages) should be preserved.
-const ALLOWED_TAGS: readonly string[] = [
-  'h1',
-  'h2',
-  'h3',
-  'h4',
-  'h5',
-  'h6',
-  'p',
-  'br',
-  'hr',
-  'strong',
-  'em',
-  'b',
-  'i',
-  'u',
-  's',
-  'del',
-  'ins',
-  'mark',
-  'code',
-  'pre',
-  'kbd',
-  'samp',
-  'cite',
-  'q',
-  'abbr',
-  'time',
-  'ul',
-  'ol',
-  'li',
-  'dl',
-  'dt',
-  'dd',
-  'blockquote',
-  'a',
-  'img',
-  'table',
-  'thead',
-  'tbody',
-  'tfoot',
-  'tr',
-  'th',
-  'td',
-  'caption',
-  'section',
-  'article',
-  'main',
-  'div',
-  'span',
-  'details',
-  'summary',
-  'figure',
-  'figcaption',
-  // 'nav', 'footer', 'aside', 'noscript' — listed here so exclusiveFilter can
-  // drop them WITH their children. See DROP_WITH_CHILDREN for the rationale.
-  // 'header' is also listed but as a normal allowed tag (page-title content).
-  'nav',
-  'header',
-  'footer',
-  'aside',
-  'noscript',
-]
+/**
+ * Sanitize HTML using the native DOMParser API.
+ *
+ * - Removes dangerous tags (script, style, iframe, object, embed, applet)
+ *   together with their entire subtrees.
+ * - Removes structural noise (nav, footer, aside, noscript, svg, canvas,
+ *   template) together with their entire subtrees.
+ * - Strips all element attributes except an explicit per-tag allowlist.
+ * - Blocks unsafe URL schemes (javascript:, data:, etc.) from href/src.
+ * - Blocks protocol-relative URLs (//evil.com) from href/src.
+ * - Removes HTML comment nodes.
+ *
+ * Returns the sanitized innerHTML of the document body.
+ */
+function sanitizeHtml(html: string): string {
+  // Strip <noscript> blocks at the string level before DOMParser sees them.
+  // When scripting is disabled (jsdom and Deno's DOMParser), the HTML5 parser
+  // treats <noscript> content as regular HTML and may promote block-level
+  // children (e.g. <p>) to the parent scope — defeating el.remove() on the
+  // noscript wrapper.  A pre-parse replacement is the most reliable approach
+  // because <noscript> is well-defined (no nesting, predictable content model).
+  const stripped = html.replace(/<noscript[^>]*>[\s\S]*?<\/noscript>/gi, '')
+  const doc = new DOMParser().parseFromString(stripped, 'text/html')
+
+  // Remove entire subtrees for dangerous and noise tags.
+  // querySelectorAll returns a static snapshot so removals during iteration
+  // are safe.
+  const removeSelector = [...REMOVE_WITH_CHILDREN].join(',')
+  for (const el of Array.from(doc.querySelectorAll(removeSelector))) {
+    el.remove()
+  }
+
+  // Strip disallowed attributes and unsafe URL schemes from remaining elements.
+  for (const el of Array.from(doc.body.querySelectorAll('*'))) {
+    const tag = el.tagName.toLowerCase()
+    const allowedForTag = ALLOWED_ATTRS[tag] ?? []
+
+    // Snapshot the attribute list before mutating it.
+    for (const attr of Array.from(el.attributes)) {
+      if (!allowedForTag.includes(attr.name)) {
+        el.removeAttribute(attr.name)
+      }
+    }
+
+    // Validate URL schemes for href and src.
+    for (const urlAttr of ['href', 'src'] as const) {
+      const val = el.getAttribute(urlAttr)
+      if (val === null) continue
+      // Block protocol-relative URLs (//evil.com style).
+      if (val.startsWith('//')) {
+        el.removeAttribute(urlAttr)
+        continue
+      }
+      try {
+        const { protocol } = new URL(val)
+        if (!ALLOWED_URL_PROTOCOLS.has(protocol)) {
+          el.removeAttribute(urlAttr)
+        }
+      } catch {
+        // Relative URL (e.g. /page, ../foo) — keep as-is.
+      }
+    }
+  }
+
+  // Remove HTML comment nodes from the entire body subtree.
+  const removeComments = (node: Node): void => {
+    for (const child of Array.from(node.childNodes)) {
+      if (child.nodeType === Node.COMMENT_NODE) {
+        node.removeChild(child)
+      } else {
+        removeComments(child)
+      }
+    }
+  }
+  removeComments(doc.body)
+
+  return doc.body.innerHTML
+}
 
 /**
  * Serve a sanitized Markdown representation of the origin page when the
@@ -234,53 +255,16 @@ export default async function handler(request: Request, context: Context): Promi
 
     const html = await originResponse.clone().text()
 
-    // ── 5. Sanitize with allowlist parser ─────────────────────────────────
-    // sanitize-html parses HTML into a real node tree and applies a strict
-    // allowlist (script, style, nav, footer, iframe, object, embed, applet,
-    // noscript etc. are excluded; <header> is preserved so page titles on
-    // static pages are not lost).  Using an allowlist-based parser
-    // is far more robust than regex: it handles malformed markup, nested tag
-    // obfuscation, and whitespace in closing tags (e.g. </script\t\n bar>).
-    //
-    // Key hardening options:
-    //   • allowedSchemes / allowedSchemesByTag — blocks javascript: and
-    //     data: URIs from leaking into Markdown links/images.
-    //   • allowProtocolRelative: false — blocks //evil.com style URLs.
-    //   • exclusiveFilter — drops nav/footer/aside/noscript together with ALL
-    //     their descendants, so navigation links and UI chrome never bleed
-    //     into the Markdown output.  <header> is intentionally preserved so
-    //     page titles on static pages (privacy.html, terms.html) survive.
-    // sanitizeHtml IS the sanitizer: passing untrusted HTML to it is exactly
-    // correct.  Static analysers that flag "untrusted HTML reaches sanitizeHtml"
-    // as a sink are producing a false positive here.
-    // nosemgrep: javascript.lang.security.audit.xss.raw-html-concat, javascript.lang.security.audit.xss.raw-html-in-node-js-method
-    const sanitized = sanitizeHtml(html, {
-      allowedTags: ALLOWED_TAGS,
-      allowedAttributes: {
-        a: ['href', 'title'],
-        img: ['src', 'alt', 'title'],
-        th: ['colspan', 'rowspan', 'scope'],
-        td: ['colspan', 'rowspan'],
-      },
-      // Restrict URL schemes to prevent javascript: / vbscript: / data: injection.
-      allowedSchemes: ['http', 'https', 'ftp', 'mailto'],
-      allowedSchemesByTag: {
-        img: ['http', 'https'],
-      },
-      allowProtocolRelative: false,
-      // Remove disallowed tags while generally preserving their child content.
-      disallowedTagsMode: 'discard',
-      // Drop structural chrome together with ALL descendants so navigation
-      // links and other UI chrome do not leak into the Markdown output.
-      exclusiveFilter(frame) {
-        return DROP_WITH_CHILDREN.has(frame.tag)
-      },
-    })
+    // ── 5. Sanitize with DOMParser ─────────────────────────────────────────
+    // Parse HTML into a real DOM tree and sanitize using native Web APIs.
+    // Removes dangerous tags with their entire subtrees, strips disallowed
+    // attributes, and blocks unsafe URL schemes and protocol-relative URLs.
+    const sanitized = sanitizeHtml(html)
 
     // ── 6. HTML → Markdown via Turndown ───────────────────────────────────
     // Convert the sanitized HTML to Markdown. Sanitization must happen on the
     // parsed HTML tree (step 5), not on the final Markdown text, so we rely on
-    // sanitize-html above and only normalise surrounding whitespace here.
+    // sanitizeHtml above and only normalise surrounding whitespace here.
     const markdown = td.turndown(sanitized).trim()
     // ── 7. Compute estimated token count (chars / 4) ──────────────────────
     const tokenEstimate = String(Math.ceil(markdown.length / 4))

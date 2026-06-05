@@ -2,23 +2,18 @@ import { defineConfig, type Plugin } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 
-// Edge functions use Deno-style specifiers that Vite cannot resolve:
-// • `npm:pkg@version` — Vite treats the "npm:" scheme as a URL and rejects it
-//   in import-analysis before any resolveId hook fires.
-// • `https://esm.sh/pkg@version` — Vite would attempt a network fetch instead
-//   of looking in node_modules.
-// A pre-enforce transform rewrites both forms to bare package names BEFORE
-// import-analysis sees the file, letting Vite's normal node_modules resolver
-// take over.
+// Edge functions use `npm:pkg@version` specifiers that Vite cannot resolve:
+// Vite treats the "npm:" scheme as a URL and rejects it in import-analysis
+// before any resolveId hook fires.
+// A pre-enforce transform rewrites `npm:pkg@version` to a bare package name
+// BEFORE import-analysis sees the file, letting Vite's normal node_modules
+// resolver take over.
 const resolveDenoNpmSpecifiers: Plugin = {
   name: 'resolve-deno-npm-specifiers',
   enforce: 'pre',
   transform(code) {
-    const hasNpm = code.includes('npm:')
-    const hasEsmSh = code.includes('esm.sh')
-    if (!hasNpm && !hasEsmSh) return null
-    let result = code.replace(/(['"])npm:([^@'"]+)@[^'"]+\1/g, '$1$2$1')
-    result = result.replace(/(['"])https:\/\/esm\.sh\/([^@'"?/]+)@[^'"?/][^'"]*\1/g, '$1$2$1')
+    if (!code.includes('npm:')) return null
+    const result = code.replace(/(['"])npm:([^@'"]+)@[^'"]+\1/g, '$1$2$1')
     return result !== code ? result : null
   },
 }

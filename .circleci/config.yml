@@ -172,30 +172,11 @@ jobs:
           when: always
           command: exit $(cat /tmp/e2e-exit-code 2>/dev/null || echo 1)
 
-  deploy:
-    executor: node-executor
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Deploy to Netlify (production)
-          # NETLIFY_AUTH_TOKEN and NETLIFY_SITE_ID must be set as CircleCI
-          # project environment variables (or via a context).
-          # --no-build publishes the workspace dist/ artifact as-is so the
-          # deployed code is identical to what passed build and e2e.
-          # --context production ensures Netlify resolves production
-          # environment variables and redirect rules.
-          command: |
-            npx netlify deploy \
-              --dir=dist \
-              --no-build \
-              --context production \
-              --prod \
-              --message "CircleCI deploy — ${CIRCLE_SHA1}"
-
 workflows:
   ci:
+    # Production deploys intentionally remain in .github/workflows/deploy.yml.
+    # That workflow enforces the security gate, protected production
+    # environment approval, and production-deploy concurrency controls.
     jobs:
       - install
       - lint:
@@ -220,10 +201,3 @@ workflows:
               only:
                 - main
                 - /claude\/.*/
-      - deploy:
-          requires:
-            - e2e
-          filters:
-            branches:
-              only:
-                - main

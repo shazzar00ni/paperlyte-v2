@@ -117,21 +117,27 @@ function sanitizeHtml(html: string): string {
   const dangerPattern = REMOVE_TAGS.join('|')
 
   // Remove complete tag+subtree pairs (e.g. <script>…</script>).
-  // Non-greedy [\s\S]*? stops at the first matching closing tag.
+  // Run each replacement in a loop until stable so nested same-type elements
+  // (e.g. <nav>…<nav>inner</nav>tail</nav>) are fully removed rather than
+  // leaving the tail of the outer element behind.
   for (const tag of REMOVE_TAGS) {
-    result = result.replace(
-      new RegExp(`<${tag}(\\s[^>]*)?>([\\s\\S]*?)<\\/${tag}\\s*>`, 'gi'),
-      ''
-    )
+    let prev: string
+    do {
+      prev = result
+      result = result.replace(
+        new RegExp(`<${tag}(\\s[^>]*)?>([\\s\\S]*?)<\\/${tag}\\s*>`, 'gi'), // nosemgrep
+        ''
+      )
+    } while (result !== prev)
   }
 
   // Remove partial/malformed opening tags (e.g. `<script` with no `>`).
   // The `>?` makes the closing bracket optional, catching bare fragments.
-  result = result.replace(new RegExp(`<(?:${dangerPattern})\\b[^>]*>?`, 'gi'), '')
+  result = result.replace(new RegExp(`<(?:${dangerPattern})\\b[^>]*>?`, 'gi'), '') // nosemgrep
 
   // Remove orphaned closing tags (e.g. `</script\t\nbar>`).
   // [^>]* matches whitespace and other chars that follow the tag name.
-  result = result.replace(new RegExp(`<\\/(?:${dangerPattern})\\b[^>]*>`, 'gi'), '')
+  result = result.replace(new RegExp(`<\\/(?:${dangerPattern})\\b[^>]*>`, 'gi'), '') // nosemgrep
 
   // Remove HTML comments, including unclosed ones that reach end of string.
   result = result.replace(/<!--[\s\S]*?(?:-->|$)/g, '')
@@ -177,7 +183,7 @@ function htmlToMarkdown(html: string): string {
   // ATX headings h6→h1 (descending to avoid h1 pattern matching h10, etc.)
   for (let i = 6; i >= 1; i--) {
     md = md.replace(
-      new RegExp(`<h${i}[^>]*>([\\s\\S]*?)<\\/h${i}\\s*>`, 'gi'),
+      new RegExp(`<h${i}[^>]*>([\\s\\S]*?)<\\/h${i}\\s*>`, 'gi'), // nosemgrep
       (_, content: string) => `\n${'#'.repeat(i)} ${stripTags(content)}\n`
     )
   }
@@ -252,10 +258,21 @@ function htmlToMarkdown(html: string): string {
   // Decode HTML entities
   md = decodeEntities(md)
 
-  // Normalize whitespace: collapse horizontal runs, trim line-end spaces, cap blank lines
+  // Protect fenced code block contents from whitespace normalization so that
+  // indentation-significant code (e.g. Python) is preserved correctly.
+  const codeBlocks: string[] = []
+  md = md.replace(/```[\s\S]*?```/g, (match) => {
+    const idx = codeBlocks.push(match) - 1
+    return `\x00CODEBLOCK${idx}\x00`
+  })
+  // Normalize prose whitespace only (code blocks are placeholdered above).
   md = md.replace(/[^\S\n]+/g, ' ')
   md = md.replace(/ +$/gm, '')
   md = md.replace(/\n{3,}/g, '\n\n')
+  // Restore code block contents.
+  for (let i = 0; i < codeBlocks.length; i++) {
+    md = md.replace(`\x00CODEBLOCK${i}\x00`, codeBlocks[i])
+  }
 
   return md.trim()
 }

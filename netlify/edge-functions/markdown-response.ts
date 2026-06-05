@@ -35,16 +35,22 @@
  * • This site is a React SPA; the static HTML shell is minimal. The edge
  *   function faithfully converts whatever HTML the origin returns, so
  *   SSR or pre-rendered pages will produce richer Markdown output.
- * • Turndown is imported via the `npm:` specifier — the Netlify Edge Runtime
- *   (Deno-based) resolves `npm:` specifiers natively at deploy time.
- *   Turndown is also listed in `devDependencies` so Vitest can resolve it
- *   from node_modules for local testing.
- * • HTML sanitisation uses the native DOMParser Web API (no external
- *   dependencies).  DOMParser is available in both the Deno-based Netlify
- *   Edge Runtime and the jsdom Vitest test environment.
+ * • Turndown and linkedom are imported via esm.sh URLs — the Netlify Edge
+ *   Runtime (Deno-based) resolves these as ESM CDN imports at deploy time.
+ *   Both packages are also listed in `devDependencies` so Vitest can resolve
+ *   the rewritten bare names from node_modules for local testing.
+ *   (vitest.config.ts rewrites `https://esm.sh/pkg@ver` → `pkg`.)
+ * • HTML sanitisation uses linkedom's `parseHTML` (not the browser DOMParser
+ *   global, which is absent in Deno/Netlify Edge runtime). linkedom implements
+ *   the standard DOM API and is safe to use in server-side environments.
+ * • `parseHTML` requires an explicit document structure (<html><head><body>)
+ *   to populate `document.body`. HTML fragments from tests are auto-wrapped;
+ *   full HTML documents (as returned by the origin in production) are used
+ *   as-is — both code paths go through the same sanitisation logic.
  */
 
-import TurndownService from 'npm:turndown@7.1.2'
+import TurndownService from 'https://esm.sh/turndown@7.1.2'
+import { parseHTML } from 'https://esm.sh/linkedom@0.18.12'
 import type { Context } from 'https://edge.netlify.com'
 
 // Paths that should never be converted even if accidentally matched.
@@ -110,8 +116,16 @@ const td = new TurndownService({
 })
 td.remove(['svg', 'canvas', 'template'])
 
+// Minimal DOM-node interface used by removeComments — avoids depending on
+// any specific DOM implementation (global, jsdom, or linkedom).
+interface DomNode {
+  nodeType: number
+  childNodes: ArrayLike<DomNode>
+  removeChild(child: DomNode): void
+}
+
 /**
- * Sanitize HTML using the native DOMParser API.
+ * Sanitize HTML using linkedom's parseHTML (server-safe; no browser globals).
  *
  * - Removes dangerous tags (script, style, iframe, object, embed, applet)
  *   together with their entire subtrees.
@@ -125,14 +139,26 @@ td.remove(['svg', 'canvas', 'template'])
  * Returns the sanitized innerHTML of the document body.
  */
 function sanitizeHtml(html: string): string {
-  // Strip <noscript> blocks at the string level before DOMParser sees them.
-  // When scripting is disabled (jsdom and Deno's DOMParser), the HTML5 parser
-  // treats <noscript> content as regular HTML and may promote block-level
-  // children (e.g. <p>) to the parent scope — defeating el.remove() on the
-  // noscript wrapper.  A pre-parse replacement is the most reliable approach
-  // because <noscript> is well-defined (no nesting, predictable content model).
-  const stripped = html.replace(/<noscript[^>]*>[\s\S]*?<\/noscript>/gi, '')
-  const doc = new DOMParser().parseFromString(stripped, 'text/html')
+  // Strip <noscript> blocks at the string level before the HTML parser sees
+  // them.  When scripting is disabled the HTML5 parser treats <noscript>
+  // content as regular HTML and may promote block-level children (e.g. <p>)
+  // to the parent scope — defeating el.remove() on the noscript wrapper.  A
+  // pre-parse replacement is the most reliable approach because <noscript> is
+  // well-defined (no nesting, predictable content model).
+  // \s* allows trailing whitespace in the closing tag (e.g. </noscript >).
+  const stripped = html.replace(/<noscript[^>]*>[\s\S]*?<\/noscript\s*>/gi, '')
+
+  // parseHTML requires an explicit <html><head><body> structure to populate
+  // document.body.  Auto-wrap bare HTML fragments (lacking a DOCTYPE or <html>
+  // opener) so that test cases that pass fragments produce the same behaviour
+  // as the full HTML documents the origin returns in production.
+  const needsWrap = !stripped.trimStart().match(/^<!DOCTYPE|^<html/i)
+  const docHtml = needsWrap
+    ? `<!DOCTYPE html><html><head></head><body>${stripped}</body></html>`
+    : stripped
+  const { document: doc } = parseHTML(docHtml)
+  const body = doc.body
+  if (!body) return ''
 
   // Remove entire subtrees for dangerous and noise tags.
   // querySelectorAll returns a static snapshot so removals during iteration
@@ -143,7 +169,7 @@ function sanitizeHtml(html: string): string {
   }
 
   // Strip disallowed attributes and unsafe URL schemes from remaining elements.
-  for (const el of Array.from(doc.body.querySelectorAll('*'))) {
+  for (const el of Array.from(body.querySelectorAll('*'))) {
     const tag = el.tagName.toLowerCase()
     const allowedForTag = ALLOWED_ATTRS[tag] ?? []
 
@@ -175,18 +201,20 @@ function sanitizeHtml(html: string): string {
   }
 
   // Remove HTML comment nodes from the entire body subtree.
-  const removeComments = (node: Node): void => {
+  // 8 = Node.COMMENT_NODE (standard DOM constant — using literal avoids
+  // importing the Node class alongside parseHTML).
+  const removeComments = (node: DomNode): void => {
     for (const child of Array.from(node.childNodes)) {
-      if (child.nodeType === Node.COMMENT_NODE) {
+      if (child.nodeType === 8) {
         node.removeChild(child)
       } else {
         removeComments(child)
       }
     }
   }
-  removeComments(doc.body)
+  removeComments(body as unknown as DomNode)
 
-  return doc.body.innerHTML
+  return body.innerHTML
 }
 
 /**
@@ -253,10 +281,18 @@ export default async function handler(request: Request, context: Context): Promi
       return originResponse
     }
 
+    // ── 4a. Pass through partial-content responses unchanged ──────────────
+    // A 206 response (or one with Content-Range) is a fragment of the full
+    // document.  Rewriting only that fragment into Markdown and stripping the
+    // range headers would break byte-range semantics for the caller.
+    if (originResponse.status === 206 || originResponse.headers.has('Content-Range')) {
+      return originResponse
+    }
+
     const html = await originResponse.clone().text()
 
-    // ── 5. Sanitize with DOMParser ─────────────────────────────────────────
-    // Parse HTML into a real DOM tree and sanitize using native Web APIs.
+    // ── 5. Sanitize with linkedom parseHTML ───────────────────────────────
+    // Parse HTML into a real DOM tree and sanitize using standard DOM APIs.
     // Removes dangerous tags with their entire subtrees, strips disallowed
     // attributes, and blocks unsafe URL schemes and protocol-relative URLs.
     const sanitized = sanitizeHtml(html)
@@ -280,6 +316,9 @@ export default async function handler(request: Request, context: Context): Promi
     headers.delete('Content-Length')
     headers.delete('Content-Encoding')
     headers.delete('Transfer-Encoding')
+    // Range headers describe the HTML fragment, not the Markdown body.
+    headers.delete('Content-Range')
+    headers.delete('Accept-Ranges')
     headers.delete('ETag')
     headers.delete('Last-Modified')
     headers.set('Content-Type', 'text/markdown; charset=utf-8')
@@ -315,10 +354,11 @@ export default async function handler(request: Request, context: Context): Promi
     // console.error is the correct logging mechanism in the Deno-based Edge
     // Runtime; src/utils/monitoring.ts cannot be imported here because it
     // depends on @sentry/react and Vite's import.meta.env.
+    // Log pathname only — never request.url — to avoid persisting sensitive
+    // query parameters (tokens, emails, campaign IDs) in edge logs.
     const message = err instanceof Error ? err.message : String(err)
     const stack = err instanceof Error && err.stack ? err.stack : undefined
     console.error('[markdown-response] Markdown conversion failed; falling back to HTML', {
-      url: request.url,
       pathname,
       error: message,
       ...(stack !== undefined ? { stack } : {}),

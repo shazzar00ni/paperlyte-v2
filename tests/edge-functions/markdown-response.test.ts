@@ -556,9 +556,9 @@ describe('markdown-response edge function', () => {
     })
 
     it('removes <noscript> tags and their children', async () => {
-      // sanitize-html's disallowedTagsMode:'discard' removes the <noscript>
-      // wrapper but would keep its ALLOWED_TAGS children (e.g. <p>Enable JS</p>).
-      // exclusiveFilter drops the entire subtree via DROP_WITH_CHILDREN.
+      // Pre-parse regex strips <noscript> blocks before DOMParser sees them
+      // because (with scripting disabled) the parser promotes block-level
+      // children to the parent scope, defeating el.remove() on the wrapper.
       const req = makeRequest('https://example.com/', mdHeaders)
       const ctx = makeContext(htmlResponse('<noscript><p>Enable JS</p></noscript><p>Content</p>'))
 
@@ -566,6 +566,22 @@ describe('markdown-response edge function', () => {
       const body = await result.text()
 
       expect(body).not.toContain('<noscript')
+      expect(body).not.toContain('Enable JS')
+      expect(body).toContain('Content')
+    })
+
+    it('removes <noscript> with trailing whitespace in closing tag (</noscript >)', async () => {
+      // Regression: the pre-strip regex must match </noscript > (with trailing
+      // whitespace before >) — a valid HTML closing tag form that would
+      // otherwise survive the pre-pass and leak noscript content.
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(
+        htmlResponse('<noscript ><p>Enable JS</p></noscript ><p>Content</p>')
+      )
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
       expect(body).not.toContain('Enable JS')
       expect(body).toContain('Content')
     })
@@ -660,6 +676,25 @@ describe('markdown-response edge function', () => {
       expect(result.headers.get('Content-Signal')).toBe('ai-train=yes, search=yes, ai-input=yes')
     })
 
+    it('strips Accept-Ranges and Content-Range from rewritten response', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const originWithRangeHeaders = new Response('<p>Content</p>', {
+        status: 200,
+        headers: {
+          'Content-Type': 'text/html',
+          'Accept-Ranges': 'bytes',
+          // Content-Range would be unusual on a 200, but test the deletion path
+        },
+      })
+      const ctx = makeContext(originWithRangeHeaders)
+
+      const result = await handler(req, ctx)
+
+      expect(result.headers.get('Accept-Ranges')).toBeNull()
+      expect(result.headers.get('Content-Range')).toBeNull()
+      expect(result.headers.get('Content-Type')).toBe('text/markdown; charset=utf-8')
+    })
+
     it('preserves the origin status code', async () => {
       const req = makeRequest('https://example.com/not-found', mdHeaders)
       const ctx = makeContext(
@@ -745,8 +780,8 @@ describe('markdown-response edge function', () => {
       expect(result).toBe(brokenResponse)
     })
 
-    it('logs the error with url and pathname when conversion throws', async () => {
-      const req = makeRequest('https://example.com/privacy', mdHeaders)
+    it('logs the error with pathname (not full url) when conversion throws', async () => {
+      const req = makeRequest('https://example.com/privacy?token=secret', mdHeaders)
 
       const brokenResponse = new Response(null, {
         status: 200,
@@ -768,11 +803,12 @@ describe('markdown-response edge function', () => {
       const [label, context] = consoleErrorSpy.mock.calls[0]
       expect(label).toContain('markdown-response')
       expect(label).toContain('falling back')
+      // pathname only — sensitive query params must not appear in logs
       expect(context).toMatchObject({
-        url: 'https://example.com/privacy',
         pathname: '/privacy',
         error: 'read error',
       })
+      expect(context).not.toHaveProperty('url')
     })
 
     it('returns 502 when context.next() throws before origin response is fetched', async () => {
@@ -804,9 +840,47 @@ describe('markdown-response edge function', () => {
       const [label, context] = consoleErrorSpy.mock.calls[0]
       expect(label).toContain('markdown-response')
       expect(context).toMatchObject({
-        url: 'https://example.com/',
+        pathname: '/',
         error: 'network error',
       })
+      expect(context).not.toHaveProperty('url')
+    })
+
+    it('passes through 206 Partial Content responses unchanged', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const partialResponse = new Response('<p>Partial</p>', {
+        status: 206,
+        statusText: 'Partial Content',
+        headers: {
+          'Content-Type': 'text/html',
+          'Content-Range': 'bytes 0-99/500',
+        },
+      })
+      const ctx = makeContext(partialResponse)
+
+      const result = await handler(req, ctx)
+
+      // Must return the origin response without rewriting
+      expect(result.status).toBe(206)
+      expect(result.headers.get('Content-Type')).toBe('text/html')
+      expect(result.headers.get('Content-Type')).not.toBe('text/markdown; charset=utf-8')
+    })
+
+    it('passes through responses with Content-Range header unchanged', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const rangeResponse = new Response('<p>Range</p>', {
+        status: 200,
+        headers: {
+          'Content-Type': 'text/html',
+          'Content-Range': 'bytes 0-99/500',
+        },
+      })
+      const ctx = makeContext(rangeResponse)
+
+      const result = await handler(req, ctx)
+
+      expect(result.headers.get('Content-Type')).toBe('text/html')
+      expect(result.headers.get('Content-Type')).not.toBe('text/markdown; charset=utf-8')
     })
   })
 

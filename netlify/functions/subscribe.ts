@@ -89,10 +89,17 @@ async function subscribeToConvertKit(
   email: string
 ): Promise<ConvertKitResponse> {
   const apiKey = process.env.CONVERTKIT_API_KEY;
-  const formId = process.env.CONVERTKIT_FORM_ID;
+  const rawFormId = process.env.CONVERTKIT_FORM_ID;
 
-  if (!apiKey || !formId) {
+  if (!apiKey || !rawFormId) {
     throw new Error("ConvertKit API credentials not configured");
+  }
+
+  // Trim once so accidental env-var whitespace doesn't break production,
+  // then validate digits-only to prevent path traversal in the API URL.
+  const formId = rawFormId.trim();
+  if (!/^\d+$/.test(formId)) {
+    throw new Error("Invalid ConvertKit form ID configuration");
   }
 
   const tagId = process.env.CONVERTKIT_TAG_ID;
@@ -189,8 +196,8 @@ export const handler: Handler = async (event: HandlerEvent) => {
   try {
     // Get IP address for rate limiting
     const ip =
-      event.headers["x-forwarded-for"]?.split(",")[0] ??
-      event.headers["client-ip"] ??
+      event.headers["x-forwarded-for"]?.split(",")[0]?.trim() ??
+      event.headers["client-ip"]?.trim() ??
       "unknown";
 
     // Check rate limit

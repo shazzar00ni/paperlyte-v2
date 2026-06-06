@@ -26,19 +26,13 @@ describe('Icon', () => {
       expect(fallback).toHaveAttribute('title', 'Icon "definitely-missing-icon" not found')
     })
 
-    it('should warn twice for icons missing from both custom set and Font Awesome library', () => {
+    it('should warn once for icons missing from custom set', () => {
       render(<Icon name="definitely-missing-icon" variant="solid" />)
 
-      // First warning: not in icon set, falling back to Font Awesome
       expect(consoleWarnSpy).toHaveBeenCalledWith(
-        'Icon "definitely-missing-icon" not found in icon set, using Font Awesome fallback'
+        'Icon "definitely-missing-icon" not found in icon set. Add it to icons.ts.'
       )
-      // Second warning: not found in Font Awesome library either
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
-        'Icon "definitely-missing-icon" (converted to "definitely-missing-icon") not found in Font Awesome library. ' +
-          'Rendering empty/decorative fallback span.'
-      )
-      expect(consoleWarnSpy).toHaveBeenCalledTimes(2)
+      expect(consoleWarnSpy).toHaveBeenCalledTimes(1)
     })
 
     it('should render custom SVG for known icons in iconPaths', () => {
@@ -114,8 +108,8 @@ describe('Icon', () => {
       expect(fallback).not.toBeInTheDocument()
     })
 
-    it('should use fab prefix via isBrandIcon() when brand icon falls through to FA fallback', async () => {
-      // Mock iconPaths to omit all custom icons, forcing the FA fallback path
+    it('should render ? fallback for icons not in custom set when iconPaths is empty', async () => {
+      // Mock iconPaths to omit all custom icons
       vi.resetModules()
       vi.doMock('./icons', () => ({
         iconPaths: {},
@@ -127,17 +121,11 @@ describe('Icon', () => {
         const { Icon: FallbackIcon } = await import('./Icon')
         const { container } = render(<FallbackIcon name="fa-github" />)
 
-        // isBrandIcon('github') → true → fab prefix → found in FA library → SVG, not ? placeholder
-        expect(container.querySelector('span.icon-fallback')).not.toBeInTheDocument()
-        const svg = container.querySelector('svg')
-        expect(svg).toBeInTheDocument()
-        // One warning (not in icon set) but NOT the "not found in FA library" warning
+        // Without custom iconPaths, renders ? fallback span
+        expect(container.querySelector('span.icon-fallback')).toBeInTheDocument()
         expect(consoleWarnSpy).toHaveBeenCalledTimes(1)
         expect(consoleWarnSpy).toHaveBeenCalledWith(
-          'Icon "fa-github" not found in icon set, using Font Awesome fallback'
-        )
-        expect(consoleWarnSpy).not.toHaveBeenCalledWith(
-          expect.stringContaining('not found in Font Awesome library')
+          'Icon "fa-github" not found in icon set. Add it to icons.ts.'
         )
       } finally {
         vi.doUnmock('./icons')

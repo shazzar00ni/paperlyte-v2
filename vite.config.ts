@@ -60,10 +60,11 @@ function fontPreloadPlugin(): Plugin {
  * Plugin to inject development-only Content Security Policy
  *
  * Development: Relaxed CSP meta tag to allow Vite HMR (WebSockets + unsafe-eval)
- * Production: CSP delivered via HTTP headers in vercel.json (supports frame-ancestors)
+ * Production: CSP delivered via HTTP headers in netlify.toml (and vercel.json as a
+ * secondary reference). HTTP headers support frame-ancestors; meta tags do not.
  *
  * Note: Meta tag CSP cannot enforce frame-ancestors and lacks initial-response protection.
- * Production uses proper HTTP headers configured in vercel.json.
+ * Production uses proper HTTP headers configured in netlify.toml.
  *
  * SECURITY NOTICE - Development unsafe-eval:
  * The development CSP includes 'unsafe-eval' which permits eval() execution. This is
@@ -73,7 +74,7 @@ function fontPreloadPlugin(): Plugin {
  * malicious browser extension), unsafe-eval could be exploited for code execution.
  *
  * Mitigation:
- * - Production CSP (vercel.json) does NOT include unsafe-eval (strict policy)
+ * - Production CSP (netlify.toml) does NOT include unsafe-eval (strict policy)
  * - Only run trusted code in development environment
  * - Regularly audit dependencies with `npm audit`
  * - Use lock files (package-lock.json) to prevent supply chain attacks
@@ -94,7 +95,7 @@ function cspPlugin(): Plugin {
     },
     transformIndexHtml(html) {
       // Only inject CSP meta tag in development mode
-      // Production CSP is delivered via HTTP headers in vercel.json
+      // Production CSP is delivered via HTTP headers in netlify.toml
       if (!isDev) {
         return html
       }
@@ -104,7 +105,7 @@ function cspPlugin(): Plugin {
       // - 'unsafe-inline' is required for Vite's dev server CSS injection during HMR
       // - ws: wss: enables WebSocket connections for Vite dev server HMR
       // - All fonts and icons are self-hosted (no external CDN dependencies)
-      // - Fonts: @fontsource/inter, Icons: @fortawesome/fontawesome-free
+      // - Fonts: @fontsource/inter, Icons: bundled custom SVG paths
       const devCSP = `default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' ws: wss:; worker-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';`
 
       // Inject CSP meta tag before closing </head> tag (dev only)
@@ -195,10 +196,6 @@ export default defineConfig({
           // React vendor bundle (~190KB) - changes rarely, good cache hit rate
           if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
             return 'react-vendor'
-          }
-          // Font Awesome is large (~100KB+), split it out
-          if (id.includes('node_modules/@fortawesome')) {
-            return 'fontawesome'
           }
           // Keep app code together for better tree-shaking and compression
           // Small chunks (constants, utils, UI components) stay in main bundle

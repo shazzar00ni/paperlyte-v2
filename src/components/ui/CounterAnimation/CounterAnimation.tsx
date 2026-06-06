@@ -118,6 +118,10 @@ export const CounterAnimation = ({
       const animStart = start
       const animEasing = easing
 
+      const easingFn = Object.prototype.hasOwnProperty.call(easingFunctions, animEasing)
+        ? easingFunctions[animEasing as keyof typeof easingFunctions]
+        : easingFunctions.easeOutQuart
+
       const animate = (timestamp: number) => {
         if (startTime.current === null) {
           startTime.current = timestamp
@@ -125,7 +129,7 @@ export const CounterAnimation = ({
 
         const elapsed = timestamp - startTime.current
         const progress = Math.min(elapsed / animDuration, 1)
-        const easedProgress = easingFunctions[animEasing](progress)
+        const easedProgress = easingFn(progress)
         const currentValue = animStart + (animEnd - animStart) * easedProgress
 
         setAnimatedValue(currentValue)

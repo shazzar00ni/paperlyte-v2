@@ -210,6 +210,17 @@ describe('Hero', () => {
       )
       expect(noteDetailImg).toBeDefined()
     })
+
+    it('prioritizes the LCP image and defers the secondary mockup', () => {
+      const { container } = render(<Hero />)
+      const images = container.querySelectorAll('img')
+
+      expect(images[0]).toHaveAttribute('loading', 'eager')
+      expect(images[0]).toHaveAttribute('fetchpriority', 'high')
+      expect(images[0]).toHaveAttribute('decoding', 'sync')
+      expect(images[1]).toHaveAttribute('loading', 'lazy')
+      expect(images[1]).toHaveAttribute('decoding', 'async')
+    })
   })
 
   describe('Button Interactions', () => {

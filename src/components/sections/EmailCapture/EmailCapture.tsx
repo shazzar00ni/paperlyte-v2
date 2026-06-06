@@ -117,7 +117,7 @@ export const EmailCapture = (): React.ReactElement => {
 
   if (isSubmitted) {
     return (
-      <Section id="email-capture" background="surface">
+      <Section id="email-capture" background="surface" className={styles.section}>
         <div className={styles.container}>
           <div className={styles.successContainer}>
             <div className={styles.successIcon}>
@@ -166,7 +166,7 @@ export const EmailCapture = (): React.ReactElement => {
   }
 
   return (
-    <Section id="email-capture" background="surface">
+    <Section id="email-capture" background="surface" className={styles.section}>
       <div className={styles.container}>
         <AnimatedElement animation="fadeIn">
           <h2 className={styles.title}>Join {WAITLIST_COUNT} people on the waitlist</h2>

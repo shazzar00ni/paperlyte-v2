@@ -1,60 +1,8 @@
 import { defineConfig } from 'vite'
-import type { Plugin, IndexHtmlTransformContext, HtmlTagDescriptor } from 'vite'
+import type { Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 import { codecovRollupPlugin } from '@codecov/rollup-plugin'
-
-/**
- * Regular expression that matches only the Inter latin static font files
- * explicitly imported in main.tsx:
- *   @fontsource/inter/latin-400.css → inter-latin-400-normal-[hash].woff2
- *   @fontsource/inter/latin-500.css → inter-latin-500-normal-[hash].woff2
- *   @fontsource/inter/latin-600.css → inter-latin-600-normal-[hash].woff2
- *   @fontsource/inter/latin-700.css → inter-latin-700-normal-[hash].woff2
- */
-const INTER_FONT_PATTERN = /inter-latin-\d+-normal-[^/]+\.woff2$/
-
-/**
- * Vite plugin that injects `<link rel="preload">` tags for bundled Inter latin
- * woff2 fonts into the production HTML.
- *
- * Fonts discovered via CSS `@font-face` create a depth-2 critical-request chain
- * (HTML → CSS → fonts) that fails the `network-dependency-tree-insight` Lighthouse
- * assertion. Preloading moves the fonts to depth 1 so they load in parallel with CSS.
- *
- * Only the four Inter latin weights imported in `main.tsx` are preloaded (matched by
- * {@link INTER_FONT_PATTERN}). Preloading every `.woff2` in the bundle would
- * unnecessarily prioritise fonts not needed for the initial render.
- *
- * @returns A Vite {@link Plugin} that runs during the `build` phase only.
- */
-function fontPreloadPlugin(): Plugin {
-  return {
-    name: 'font-preload',
-    apply: 'build',
-    transformIndexHtml: {
-      order: 'post',
-      handler(_html: string, ctx: IndexHtmlTransformContext): HtmlTagDescriptor[] | void {
-        const bundle = ctx.bundle
-        if (!bundle) return
-        return Object.keys(bundle)
-          .filter((key) => INTER_FONT_PATTERN.test(key))
-          .sort()
-          .map((key) => ({
-            tag: 'link',
-            attrs: {
-              rel: 'preload',
-              href: `/${key}`,
-              as: 'font',
-              type: 'font/woff2',
-              crossorigin: 'anonymous',
-            },
-            injectTo: 'head' as const,
-          }))
-      },
-    },
-  }
-}
 
 /**
  * Plugin to inject development-only Content Security Policy
@@ -105,7 +53,7 @@ function cspPlugin(): Plugin {
       // - 'unsafe-inline' is required for Vite's dev server CSS injection during HMR
       // - ws: wss: enables WebSocket connections for Vite dev server HMR
       // - All fonts and icons are self-hosted (no external CDN dependencies)
-      // - Fonts: @fontsource/inter, Icons: bundled custom SVG paths
+      // - Fonts and icons are served from self-hosted assets
       const devCSP = `default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' ws: wss:; worker-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';`
 
       // Inject CSP meta tag before closing </head> tag (dev only)
@@ -149,7 +97,6 @@ export default defineConfig({
   plugins: [
     react(),
     cspPlugin(),
-    fontPreloadPlugin(),
     // Only instantiate Codecov plugin when token is present (CI environment)
     ...(process.env.CODECOV_TOKEN
       ? [

@@ -191,7 +191,7 @@ export const Testimonials = (): React.ReactElement => {
   }
 
   return (
-    <Section id="testimonials" background="surface">
+    <Section id="testimonials" background="surface" className={styles.section}>
       <AnimatedElement animation="fadeIn">
         <div className={styles.header}>
           <h2 className={styles.title}>What people are saying</h2>

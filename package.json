@@ -25,7 +25,6 @@
     "size": "size-limit"
   },
   "dependencies": {
-    "@fontsource/inter": "^5.2.8",
     "@sentry/react": "^10.55.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"

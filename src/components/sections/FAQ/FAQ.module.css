@@ -1,3 +1,8 @@
+.section {
+  content-visibility: auto;
+  contain-intrinsic-block-size: auto 50rem;
+}
+
 /* FAQ Section Styles */
 
 .header {

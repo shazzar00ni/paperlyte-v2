@@ -37,7 +37,7 @@ const ComparisonCell = ({ value }: { value: boolean | string }): React.ReactElem
  */
 export const Comparison = (): React.ReactElement => {
   return (
-    <Section id="comparison" background="default">
+    <Section id="comparison" background="default" className={styles.section}>
       <div className={styles.header}>
         <AnimatedElement animation="fadeIn">
           <h2 className={styles.title}>See how we compare</h2>

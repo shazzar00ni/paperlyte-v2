@@ -93,7 +93,8 @@ export const Hero = (): React.ReactElement => {
                 width={1100}
                 height={800}
                 loading="eager"
-                decoding="async"
+                fetchPriority="high"
+                decoding="sync"
                 className={styles.mockupImage}
               />
             </picture>

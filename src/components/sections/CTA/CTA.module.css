@@ -1,4 +1,6 @@
 .cta {
+  content-visibility: auto;
+  contain-intrinsic-block-size: auto 50rem;
   position: relative;
   overflow: hidden;
 }

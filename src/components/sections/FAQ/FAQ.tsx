@@ -169,7 +169,7 @@ export const FAQ = (): React.ReactElement => {
   }, [handleKeyDown])
 
   return (
-    <Section id="faq" background="default">
+    <Section id="faq" background="default" className={styles.section}>
       <div className={styles.header}>
         <AnimatedElement animation="fadeIn">
           <h2 className={styles.title}>Questions? We've got answers.</h2>

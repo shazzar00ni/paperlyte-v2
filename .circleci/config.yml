@@ -84,9 +84,11 @@ jobs:
             NODE_OPTIONS: "--max-old-space-size=3072"
       - store_test_results:
           path: test-results
+          when: always
       - store_artifacts:
           path: test-results
           destination: test-results
+          when: always
       - run:
           name: Report test status
           when: always
@@ -164,9 +166,11 @@ jobs:
       - store_test_results:
           # JUnit XML is written by the junit reporter added to playwright.config.ts
           path: test-results
+          when: always
       - store_artifacts:
           path: playwright-report
           destination: playwright-report
+          when: always
       - run:
           name: Report E2E test status
           when: always

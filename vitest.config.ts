@@ -27,10 +27,11 @@ export default defineConfig({
 
     // Add JUnit reporter — write to test-results/ so CircleCI's
     // store_test_results can ingest it for test insights and timing.
-    reporters: ['default', 'junit'],
-    outputFile: {
-      junit: 'test-results/junit.xml',
-    },
+    // Inline reporter config (Vitest 4 recommended form) so the output path is
+    // passed directly to the reporter rather than relying on the top-level
+    // outputFile key-mapping, which can silently fail when the reporter name
+    // doesn't match the internal key.
+    reporters: ['default', ['junit', { outputFile: 'test-results/junit.xml' }]],
 
     // Coverage configuration
     coverage: {

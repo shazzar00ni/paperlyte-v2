@@ -28,7 +28,7 @@ jobs:
       - name: npm audit (save report)
         run: |
           mkdir -p reports
-          npm audit --json > reports/npm-audit.json 2>&1 || true
+          npm audit --json > reports/npm-audit.json || true
 
       - name: npm audit (fail on high/critical)
         run: npm audit --audit-level=high

@@ -49,7 +49,6 @@ export default defineConfig({
     // Global test utilities
     globals: true,
 
-
     // Coverage configuration
     coverage: {
       provider: 'v8',

@@ -25,21 +25,17 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Depcheck
-        uses: dependency-check/Dependency-Check_Action@75ba02d6183445fe0761d26e836bde58b1560600 # v1.1.0
-        id: Depcheck
-        with:
-          project: 'paperlyte-v2'
-          path: '.'
-          format: 'HTML'
-          out: 'reports'
-          args: >
-            --failOnCVSS 7
-            --enableRetired
+      - name: npm audit (save report)
+        run: |
+          mkdir -p reports
+          npm audit --json > reports/npm-audit.json 2>&1 || true
 
-      - name: Upload Depcheck report
-        if: steps.Depcheck.conclusion == 'success' || steps.Depcheck.conclusion == 'failure'
+      - name: npm audit (fail on high/critical)
+        run: npm audit --audit-level=high
+
+      - name: Upload audit report
+        if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: depcheck-report
-          path: ${{github.workspace}}/reports
+          path: reports/

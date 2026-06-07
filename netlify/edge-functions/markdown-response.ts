@@ -35,20 +35,15 @@
  * • This site is a React SPA; the static HTML shell is minimal. The edge
  *   function faithfully converts whatever HTML the origin returns, so
  *   SSR or pre-rendered pages will produce richer Markdown output.
- * • Turndown and linkedom use bare package imports. Netlify bundles installed
- *   npm packages for the Deno-based Edge Runtime, and Vitest resolves the same
- *   imports from node_modules without any environment-specific rewriting.
- * • HTML sanitisation uses linkedom's `parseHTML` (not the browser DOMParser
- *   global, which is absent in Deno/Netlify Edge runtime). linkedom implements
- *   the standard DOM API and is safe to use in server-side environments.
- * • `parseHTML` requires an explicit document structure (<html><head><body>)
- *   to populate `document.body`. HTML fragments from tests are auto-wrapped;
- *   full HTML documents (as returned by the origin in production) are used
- *   as-is — both code paths go through the same sanitisation logic.
+ * • No external runtime dependencies — HTML sanitisation and Markdown
+ *   conversion are implemented inline using only regex and Deno's built-in
+ *   Web APIs. This ensures the function bundles cleanly on Netlify's
+ *   Deno-based edge runtime without CDN URL imports.
+ * • The source HTML is always our own trusted origin (never user input
+ *   displayed in a browser), so regex-based sanitisation is appropriate.
+ *   The output is plain-text Markdown consumed by AI agents, not rendered HTML.
  */
 
-import { parseHTML } from 'linkedom'
-import TurndownService from 'turndown'
 import type { Context } from 'https://edge.netlify.com'
 
 // Paths that should never be converted even if accidentally matched.
@@ -64,15 +59,15 @@ const EXCLUDED_PREFIXES: readonly string[] = [
 ]
 
 // Tags whose entire subtree (tag + all children) must be removed before
-// conversion.  Includes dangerous tags (script, style, etc.) and structural
+// conversion. Includes dangerous tags (script, style, etc.) and structural
 // noise (nav, footer, aside, noscript) that should never appear in Markdown.
 //
 // `header` is intentionally NOT included: static pages (privacy.html,
 // terms.html) use `<header>` to wrap the page title and last-updated metadata
-// — content that agents need.  The SPA shell (index.html) contains no
+// — content that agents need. The SPA shell (index.html) contains no
 // `<header>` element at all (only <div id="root">), so omitting it from this
 // set has no effect on SPA routes.
-const REMOVE_WITH_CHILDREN: ReadonlySet<string> = new Set([
+const REMOVE_TAGS: readonly string[] = [
   'script',
   'style',
   'iframe',
@@ -86,128 +81,224 @@ const REMOVE_WITH_CHILDREN: ReadonlySet<string> = new Set([
   'svg',
   'canvas',
   'template',
-])
+]
 
-// Attributes allowed per tag — all others are stripped.
-const ALLOWED_ATTRS: Record<string, readonly string[] | undefined> = {
-  a: ['href', 'title'],
-  img: ['src', 'alt', 'title'],
-  th: ['colspan', 'rowspan', 'scope'],
-  td: ['colspan', 'rowspan'],
+/** Strip all HTML tags from a string and collapse internal whitespace. */
+function stripTags(html: string): string {
+  return html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim()
 }
 
-// Allowed URL protocols for href and src attributes.
-const ALLOWED_URL_PROTOCOLS: ReadonlySet<string> = new Set(['http:', 'https:', 'ftp:', 'mailto:'])
-
-// Turndown instance — initialised once at module scope because the
-// configuration and custom rules are static across all requests.
-const td = new TurndownService({
-  headingStyle: 'atx',
-  bulletListMarker: '-',
-  codeBlockStyle: 'fenced',
-  hr: '---',
-})
-td.remove(['svg', 'canvas', 'template'])
-
-// Minimal DOM-node interface used by removeComments — avoids depending on
-// any specific DOM implementation (global, jsdom, or linkedom).
-interface DomNode {
-  nodeType: number
-  childNodes: ArrayLike<DomNode>
-  removeChild(child: DomNode): void
+/** Decode common HTML entities to their character equivalents. */
+function decodeEntities(text: string): string {
+  return text
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;|&apos;/g, "'")
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&#(\d+);/g, (_, code: string) => String.fromCharCode(parseInt(code, 10)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, code: string) => String.fromCharCode(parseInt(code, 16)))
 }
 
 /**
- * Sanitize HTML using linkedom's parseHTML (server-safe; no browser globals).
+ * Sanitize HTML by removing dangerous tags and event handler attributes.
  *
- * - Removes dangerous tags (script, style, iframe, object, embed, applet)
- *   together with their entire subtrees.
- * - Removes structural noise (nav, footer, aside, noscript, svg, canvas,
- *   template) together with their entire subtrees.
- * - Strips all element attributes except an explicit per-tag allowlist.
- * - Blocks unsafe URL schemes (javascript:, data:, etc.) from href/src.
- * - Blocks protocol-relative URLs (//evil.com) from href/src.
- * - Removes HTML comment nodes.
+ * - Removes tags in REMOVE_TAGS together with their entire subtrees.
+ * - Removes partial/malformed opening tags (e.g. `<script` with no `>`).
+ * - Removes orphaned closing tags (e.g. `</script\t\nbar>`).
+ * - Removes HTML comment nodes (including unclosed comments at end of string).
+ * - Removes event handler attributes (onclick, onload, etc.).
  *
- * Returns the sanitized innerHTML of the document body.
+ * Returns the sanitized HTML string.
  */
 function sanitizeHtml(html: string): string {
-  // Strip <noscript> blocks at the string level before the HTML parser sees
-  // them.  When scripting is disabled the HTML5 parser treats <noscript>
-  // content as regular HTML and may promote block-level children (e.g. <p>)
-  // to the parent scope — defeating el.remove() on the noscript wrapper.  A
-  // pre-parse replacement is the most reliable approach because <noscript> is
-  // well-defined (no nesting, predictable content model).
-  // \s* allows trailing whitespace in the closing tag (e.g. </noscript >).
-  const stripped = html.replace(/<noscript[^>]*>[\s\S]*?<\/noscript\s*>/gi, '')
+  let result = html
+  const dangerPattern = REMOVE_TAGS.join('|')
 
-  // parseHTML requires an explicit <html><head><body> structure to populate
-  // document.body.  Auto-wrap bare HTML fragments (lacking a DOCTYPE or <html>
-  // opener) so that test cases that pass fragments produce the same behaviour
-  // as the full HTML documents the origin returns in production.
-  const needsWrap = !stripped.trimStart().match(/^<!DOCTYPE|^<html/i)
-  const docHtml = needsWrap
-    ? `<!DOCTYPE html><html><head></head><body>${stripped}</body></html>`
-    : stripped
-  const { document: doc } = parseHTML(docHtml)
-  const body = doc.body
-  if (!body) return ''
-
-  // Remove entire subtrees for dangerous and noise tags.
-  // querySelectorAll returns a static snapshot so removals during iteration
-  // are safe.
-  const removeSelector = [...REMOVE_WITH_CHILDREN].join(',')
-  for (const el of Array.from(doc.querySelectorAll(removeSelector))) {
-    el.remove()
+  // Remove complete tag+subtree pairs (e.g. <script>…</script>).
+  // Run each replacement in a loop until stable so nested same-type elements
+  // (e.g. <nav>…<nav>inner</nav>tail</nav>) are fully removed rather than
+  // leaving the tail of the outer element behind.
+  for (const tag of REMOVE_TAGS) {
+    let prev: string
+    do {
+      prev = result
+      result = result.replace(
+        new RegExp(`<${tag}(\\s[^>]*)?>([\\s\\S]*?)<\\/${tag}\\s*>`, 'gi'), // nosemgrep
+        ''
+      )
+    } while (result !== prev)
   }
 
-  // Strip disallowed attributes and unsafe URL schemes from remaining elements.
-  for (const el of Array.from(body.querySelectorAll('*'))) {
-    const tag = el.tagName.toLowerCase()
-    const allowedForTag = ALLOWED_ATTRS[tag] ?? []
+  // Remove partial/malformed opening tags (e.g. `<script` with no `>`).
+  // The `>?` makes the closing bracket optional, catching bare fragments.
+  result = result.replace(new RegExp(`<(?:${dangerPattern})\\b[^>]*>?`, 'gi'), '') // nosemgrep
 
-    // Snapshot the attribute list before mutating it.
-    for (const attr of Array.from(el.attributes)) {
-      if (!allowedForTag.includes(attr.name)) {
-        el.removeAttribute(attr.name)
-      }
-    }
+  // Remove orphaned closing tags (e.g. `</script\t\nbar>`).
+  // [^>]* matches whitespace and other chars that follow the tag name.
+  result = result.replace(new RegExp(`<\\/(?:${dangerPattern})\\b[^>]*>`, 'gi'), '') // nosemgrep
 
-    // Validate URL schemes for href and src.
-    for (const urlAttr of ['href', 'src'] as const) {
-      const val = el.getAttribute(urlAttr)
-      if (val === null) continue
-      // Block protocol-relative URLs (//evil.com style).
-      if (val.startsWith('//')) {
-        el.removeAttribute(urlAttr)
-        continue
-      }
-      try {
-        const { protocol } = new URL(val)
-        if (!ALLOWED_URL_PROTOCOLS.has(protocol)) {
-          el.removeAttribute(urlAttr)
-        }
-      } catch {
-        // Relative URL (e.g. /page, ../foo) — keep as-is.
-      }
-    }
+  // Remove HTML comments, including unclosed ones that reach end of string.
+  result = result.replace(/<!--[\s\S]*?(?:-->|$)/g, '')
+
+  // Remove event handler attributes (onclick="…", onload='…', etc.).
+  result = result.replace(/\s+on\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]*)/gi, '')
+
+  return result
+}
+
+/**
+ * Convert sanitized HTML to Markdown using regex-based transformations.
+ *
+ * Handles: ATX headings, fenced code blocks, inline code, bold, italic,
+ * links, images, ordered/unordered lists, blockquotes, horizontal rules,
+ * and paragraphs. No external dependencies.
+ */
+function htmlToMarkdown(html: string): string {
+  let md = html
+
+  // Extract <body> content from full HTML documents.
+  const bodyMatch = md.match(/<body[^>]*>([\s\S]*?)<\/body\s*>/i)
+  if (bodyMatch) {
+    md = bodyMatch[1]
+  } else {
+    // Remove <head> section from fragments that include one.
+    md = md.replace(/<head[^>]*>[\s\S]*?<\/head\s*>/gi, '')
   }
 
-  // Remove HTML comment nodes from the entire body subtree.
-  // 8 = Node.COMMENT_NODE (standard DOM constant — using literal avoids
-  // importing the Node class alongside parseHTML).
-  const removeComments = (node: DomNode): void => {
-    for (const child of Array.from(node.childNodes)) {
-      if (child.nodeType === 8) {
-        node.removeChild(child)
-      } else {
-        removeComments(child)
-      }
-    }
-  }
-  removeComments(body as unknown as DomNode)
+  // Fenced code blocks: <pre><code>…</code></pre>
+  md = md.replace(
+    /<pre[^>]*>\s*<code[^>]*>([\s\S]*?)<\/code\s*>\s*<\/pre\s*>/gi,
+    (_, content: string) =>
+      `\n\`\`\`\n${decodeEntities(content.replace(/<[^>]*>/g, ''))}\n\`\`\`\n`
+  )
 
-  return body.innerHTML
+  // Inline code: <code>…</code>
+  md = md.replace(
+    /<code[^>]*>([\s\S]*?)<\/code\s*>/gi,
+    (_, content: string) => `\`${decodeEntities(content.replace(/<[^>]*>/g, ''))}\``
+  )
+
+  // ATX headings h6→h1 (descending to avoid h1 pattern matching h10, etc.)
+  for (let i = 6; i >= 1; i--) {
+    md = md.replace(
+      new RegExp(`<h${i}[^>]*>([\\s\\S]*?)<\\/h${i}\\s*>`, 'gi'), // nosemgrep
+      (_, content: string) => `\n${'#'.repeat(i)} ${stripTags(content)}\n`
+    )
+  }
+
+  // Blockquotes — strip inner tags, prefix each non-empty line with "> "
+  md = md.replace(/<blockquote[^>]*>([\s\S]*?)<\/blockquote\s*>/gi, (_, content: string) => {
+    const lines = stripTags(content)
+      .split('\n')
+      .map((line) => line.trim())
+      .filter((line) => line.length > 0)
+      .map((line) => `> ${line}`)
+    return '\n' + lines.join('\n') + '\n'
+  })
+
+  // Bold: <strong> and <b>
+  md = md.replace(/<(?:strong|b)[^>]*>([\s\S]*?)<\/(?:strong|b)\s*>/gi, '**$1**')
+
+  // Italic: <em> and <i>
+  md = md.replace(/<(?:em|i)[^>]*>([\s\S]*?)<\/(?:em|i)\s*>/gi, '*$1*')
+
+  // Links — preserve href, reject unsafe schemes and protocol-relative URLs
+  md = md.replace(/<a\b([^>]*)>([\s\S]*?)<\/a\s*>/gi, (_, attrs: string, content: string) => {
+    const hrefMatch = attrs.match(/href=["']([^"']*)["']/)
+    if (!hrefMatch) return stripTags(content)
+    const href = hrefMatch[1]
+    if (href.startsWith('//') || /^(?:javascript|data|vbscript):/i.test(href)) {
+      return stripTags(content)
+    }
+    return `[${stripTags(content)}](${href})`
+  })
+
+  // Images — preserve src and alt
+  md = md.replace(/<img\b([^>]*)>/gi, (_, attrs: string) => {
+    const srcMatch = attrs.match(/src=["']([^"']*)["']/)
+    const altMatch = attrs.match(/alt=["']([^"']*)["']/)
+    if (!srcMatch) return ''
+    return `![${altMatch ? altMatch[1] : ''}](${srcMatch[1]})`
+  })
+
+  // Ordered lists — reset counter per <ol>
+  md = md.replace(/<ol[^>]*>([\s\S]*?)<\/ol\s*>/gi, (_, content: string) => {
+    let counter = 0
+    const items = content.replace(
+      /<li[^>]*>([\s\S]*?)<\/li\s*>/gi,
+      (_m: string, item: string) => `${++counter}. ${stripTags(item).trim()}\n`
+    )
+    return '\n' + items.replace(/<[^>]*>/g, '') + '\n'
+  })
+
+  // Unordered lists
+  md = md.replace(/<ul[^>]*>([\s\S]*?)<\/ul\s*>/gi, (_, content: string) => {
+    const items = content.replace(
+      /<li[^>]*>([\s\S]*?)<\/li\s*>/gi,
+      (_m: string, item: string) => `- ${stripTags(item).trim()}\n`
+    )
+    return '\n' + items.replace(/<[^>]*>/g, '') + '\n'
+  })
+
+  // Horizontal rules
+  md = md.replace(/<hr[^>]*\/?>/gi, '\n---\n')
+
+  // Paragraphs — closing tag becomes double newline, opening tag is stripped
+  md = md.replace(/<\/p\s*>/gi, '\n\n')
+  md = md.replace(/<p[^>]*>/gi, '')
+
+  // Line breaks
+  md = md.replace(/<br\s*\/?>/gi, '\n')
+
+  // Strip all remaining HTML tags
+  md = md.replace(/<[^>]*>/g, '')
+
+  // Decode HTML entities
+  md = decodeEntities(md)
+
+  // Protect fenced code block contents from whitespace normalization so that
+  // indentation-significant code (e.g. Python) is preserved correctly.
+  const codeBlocks: string[] = []
+  md = md.replace(/```[\s\S]*?```/g, (match) => {
+    const idx = codeBlocks.push(match) - 1
+    return `\x00CODEBLOCK${idx}\x00`
+  })
+  // Normalize prose whitespace only (code blocks are placeholdered above).
+  md = md.replace(/[^\S\n]+/g, ' ')
+  md = md.replace(/ +$/gm, '')
+  md = md.replace(/\n{3,}/g, '\n\n')
+  // Restore code block contents.
+  for (let i = 0; i < codeBlocks.length; i++) {
+    md = md.replace(`\x00CODEBLOCK${i}\x00`, codeBlocks[i])
+  }
+
+  return md.trim()
+}
+
+/**
+ * Returns true when the request's Accept header includes `text/markdown` with
+ * a non-zero q-value (or no q-value). Respects RFC 7231 §5.3 rules:
+ * media-type tokens are case-insensitive and optional whitespace is allowed
+ * around the `=` sign (so `Q=0` and `q = 0` are valid opt-outs).
+ */
+function acceptsMarkdownHeader(request: Request): boolean {
+  return (request.headers.get('Accept') ?? '').split(',').some((token) => {
+    const [type, ...params] = token.trim().split(';')
+    if (type.trim().toLowerCase() !== 'text/markdown') return false
+    const qParamValue = params
+      .map((p) => p.trim())
+      .map((p) => {
+        const eqIdx = p.indexOf('=')
+        if (eqIdx === -1) return undefined
+        const name = p.slice(0, eqIdx).trim().toLowerCase()
+        const value = p.slice(eqIdx + 1).trim()
+        return name === 'q' ? value : undefined
+      })
+      .find((value): value is string => value !== undefined)
+    return qParamValue === undefined || parseFloat(qParamValue) > 0
+  })
 }
 
 /**
@@ -231,29 +322,7 @@ export default async function handler(request: Request, context: Context): Promi
   }
 
   // ── 2. Gate on Accept header ────────────────────────────────────────────
-  // Parse the Accept header properly, respecting q=0 (explicit opt-out).
-  // A token is accepted if:
-  //   • its media type is text/markdown (case-insensitive), AND
-  //   • it has no q parameter OR its q value is > 0.
-  const acceptsMarkdown = (request.headers.get('Accept') ?? '').split(',').some((token) => {
-    const [type, ...params] = token.trim().split(';')
-    if (type.trim().toLowerCase() !== 'text/markdown') return false
-    // RFC 7231 §5.3: parameter names are case-insensitive and optional
-    // whitespace is allowed around the '=' sign, so 'Q=0' and 'q = 0' are
-    // valid opt-outs that must be recognised.
-    const qParamValue = params
-      .map((p) => p.trim())
-      .map((p) => {
-        const eqIdx = p.indexOf('=')
-        if (eqIdx === -1) return undefined
-        const name = p.slice(0, eqIdx).trim().toLowerCase()
-        const value = p.slice(eqIdx + 1).trim()
-        return name === 'q' ? value : undefined
-      })
-      .find((value): value is string => value !== undefined)
-    return qParamValue === undefined || parseFloat(qParamValue) > 0
-  })
-  if (!acceptsMarkdown) {
+  if (!acceptsMarkdownHeader(request)) {
     return context.next()
   }
 
@@ -276,7 +345,7 @@ export default async function handler(request: Request, context: Context): Promi
 
     // ── 4a. Pass through partial-content responses unchanged ──────────────
     // A 206 response (or one with Content-Range) is a fragment of the full
-    // document.  Rewriting only that fragment into Markdown and stripping the
+    // document. Rewriting only that fragment into Markdown and stripping the
     // range headers would break byte-range semantics for the caller.
     if (originResponse.status === 206 || originResponse.headers.has('Content-Range')) {
       return originResponse
@@ -284,26 +353,20 @@ export default async function handler(request: Request, context: Context): Promi
 
     const html = await originResponse.clone().text()
 
-    // ── 5. Sanitize with linkedom parseHTML ───────────────────────────────
-    // Parse HTML into a real DOM tree and sanitize using standard DOM APIs.
-    // Removes dangerous tags with their entire subtrees, strips disallowed
-    // attributes, and blocks unsafe URL schemes and protocol-relative URLs.
-    const sanitized = sanitizeHtml(html)
+    // ── 5. Sanitize and convert HTML → Markdown ───────────────────────────
+    // Sanitize removes dangerous tags, event handlers, and comments via regex.
+    // htmlToMarkdown converts the sanitized HTML to plain Markdown text.
+    const markdown = htmlToMarkdown(sanitizeHtml(html))
 
-    // ── 6. HTML → Markdown via Turndown ───────────────────────────────────
-    // Convert the sanitized HTML to Markdown. Sanitization must happen on the
-    // parsed HTML tree (step 5), not on the final Markdown text, so we rely on
-    // sanitizeHtml above and only normalise surrounding whitespace here.
-    const markdown = td.turndown(sanitized).trim()
-    // ── 7. Compute estimated token count (chars / 4) ──────────────────────
+    // ── 6. Compute estimated token count (chars / 4) ──────────────────────
     const tokenEstimate = String(Math.ceil(markdown.length / 4))
 
     // Start from all origin headers to preserve unrelated metadata
-    // (e.g. CORS headers, X-* headers, etc.).  Remove validators and
+    // (e.g. CORS headers, X-* headers, etc.). Remove validators and
     // entity headers that describe the HTML payload — they are now stale
     // for the rewritten Markdown body and must be stripped to prevent
     // clients / CDNs from mis-handling the response (wrong Content-Length,
-    // mismatched ETag, etc.).  Cache-Control is unconditionally overridden
+    // mismatched ETag, etc.). Cache-Control is unconditionally overridden
     // below; the origin value is intentionally discarded.
     const headers = new Headers(originResponse.headers)
     headers.delete('Content-Length')
@@ -319,7 +382,7 @@ export default async function handler(request: Request, context: Context): Promi
     headers.set('Content-Signal', 'ai-train=yes, search=yes, ai-input=yes')
     // The Markdown body is a lossy transformation of the HTML; caching it
     // as if it were the canonical resource would return wrong content to
-    // subsequent HTML requests sharing the same cache key.  Force-bypass.
+    // subsequent HTML requests sharing the same cache key. Force-bypass.
     headers.set('Cache-Control', 'no-store')
 
     // Merge Accept into any existing Vary value so CDNs store HTML and
@@ -342,20 +405,12 @@ export default async function handler(request: Request, context: Context): Promi
       headers,
     })
   } catch (err) {
-    // ── 8. Fallback: pass through to origin unchanged ─────────────────────
-    // Log the failure so it appears in Netlify edge function logs.
-    // console.error is the correct logging mechanism in the Deno-based Edge
-    // Runtime; src/utils/monitoring.ts cannot be imported here because it
-    // depends on @sentry/react and Vite's import.meta.env.
+    // ── 7. Fallback: pass through to origin unchanged ─────────────────────
     // Log pathname only — never request.url — to avoid persisting sensitive
     // query parameters (tokens, emails, campaign IDs) in edge logs.
-    const message = err instanceof Error ? err.message : String(err)
-    const stack = err instanceof Error && err.stack ? err.stack : undefined
-    console.error('[markdown-response] Markdown conversion failed; falling back to HTML', {
-      pathname,
-      error: message,
-      ...(stack !== undefined ? { stack } : {}),
-    })
+    // console.error is the correct logging mechanism in the Deno-based Edge
+    // Runtime; src/utils/monitoring.ts cannot be imported here.
+    console.error('[markdown-response] Markdown conversion failed; falling back to HTML', pathname, err)
     if (originResponse) return originResponse
     // context.next() threw before any origin response was received; calling it
     // again would double origin traffic and could throw a second unhandled error.

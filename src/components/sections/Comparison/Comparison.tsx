@@ -92,9 +92,7 @@ export const Comparison = (): React.ReactElement => {
                       className={`${styles.cell} ${competitor.id === 'paperlyte' ? styles.highlightCell : ''}`}
                     >
                       <ComparisonCell
-                        value={
-                          feature[competitor.id as keyof typeof feature] as boolean | string
-                        }
+                        value={feature[competitor.id as keyof typeof feature] as boolean | string}
                       />
                     </td>
                   ))}

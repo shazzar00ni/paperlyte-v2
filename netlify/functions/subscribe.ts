@@ -30,7 +30,7 @@ export type ConvertKitResponse = z.infer<typeof ConvertKitResponseSchema>;
  */
 function evictForCapacity(now: number): void {
   for (const [key, rec] of rateLimitStore.entries()) {
-    if (now > rec.resetTime) {
+    if (now >= rec.resetTime) {
       rateLimitStore.delete(key);
     }
   }
@@ -52,7 +52,7 @@ function checkRateLimit(ip: string): boolean {
   const now = Date.now();
 
   const record = rateLimitStore.get(ip);
-  if (record && now > record.resetTime) {
+  if (record && now >= record.resetTime) {
     rateLimitStore.delete(ip);
   }
 
@@ -312,7 +312,7 @@ export const handler: Handler = async (event: HandlerEvent) => {
   if (event.httpMethod !== "POST") {
     return {
       statusCode: 405,
-      headers,
+      headers: { ...headers, Allow: "POST, OPTIONS" },
       body: JSON.stringify({ error: "Method not allowed" }),
     };
   }

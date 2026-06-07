@@ -98,6 +98,12 @@ export const Comparison = (): React.ReactElement => {
                   <td className={styles.cell}>
                     <ComparisonCell value={feature.onenote} />
                   </td>
+                  <td className={styles.cell}>
+                    <ComparisonCell value={feature.obsidian} />
+                  </td>
+                  <td className={styles.cell}>
+                    <ComparisonCell value={feature.bear} />
+                  </td>
                 </tr>
               ))}
             </tbody>

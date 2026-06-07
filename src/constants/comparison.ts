@@ -12,6 +12,10 @@ export interface ComparisonFeature {
   evernote: boolean | string
   /** Whether OneNote supports this feature */
   onenote: boolean | string
+  /** Whether Obsidian supports this feature */
+  obsidian: boolean | string
+  /** Whether Bear supports this feature */
+  bear: boolean | string
 }
 
 /**
@@ -26,6 +30,8 @@ export const COMPARISON_FEATURES: ComparisonFeature[] = [
     notion: '3-5s',
     evernote: '2-4s',
     onenote: '2-3s',
+    obsidian: '2-3s',
+    bear: '1-2s',
   },
   {
     feature: 'Offline Access',
@@ -33,6 +39,8 @@ export const COMPARISON_FEATURES: ComparisonFeature[] = [
     notion: false,
     evernote: 'Paid only',
     onenote: true,
+    obsidian: true,
+    bear: true,
   },
   {
     feature: 'Tag-Based Organization',
@@ -40,6 +48,8 @@ export const COMPARISON_FEATURES: ComparisonFeature[] = [
     notion: false,
     evernote: true,
     onenote: false,
+    obsidian: true,
+    bear: true,
   },
   {
     feature: 'Distraction-Free UI',
@@ -47,6 +57,8 @@ export const COMPARISON_FEATURES: ComparisonFeature[] = [
     notion: false,
     evernote: false,
     onenote: false,
+    obsidian: true,
+    bear: true,
   },
   {
     feature: 'Real-Time Sync',
@@ -54,6 +66,8 @@ export const COMPARISON_FEATURES: ComparisonFeature[] = [
     notion: true,
     evernote: true,
     onenote: true,
+    obsidian: 'Paid only',
+    bear: 'Paid only',
   },
   {
     feature: 'End-to-End Encryption',
@@ -61,6 +75,8 @@ export const COMPARISON_FEATURES: ComparisonFeature[] = [
     notion: false,
     evernote: false,
     onenote: false,
+    obsidian: 'Paid only',
+    bear: 'Paid only',
   },
   {
     feature: 'Free Tier Features',
@@ -68,6 +84,8 @@ export const COMPARISON_FEATURES: ComparisonFeature[] = [
     notion: 'Limited',
     evernote: 'Very limited',
     onenote: 'Full access',
+    obsidian: 'Full access',
+    bear: 'Limited',
   },
   {
     feature: 'Mobile Performance',
@@ -75,6 +93,8 @@ export const COMPARISON_FEATURES: ComparisonFeature[] = [
     notion: 'Slow',
     evernote: 'Good',
     onenote: 'Good',
+    obsidian: 'Moderate',
+    bear: 'Excellent',
   },
 ]
 
@@ -95,4 +115,6 @@ export const COMPETITORS: Competitor[] = [
   { id: 'notion', name: 'Notion', color: '#000000' },
   { id: 'evernote', name: 'Evernote', color: '#00A82D' },
   { id: 'onenote', name: 'OneNote', color: '#7719AA' },
+  { id: 'obsidian', name: 'Obsidian', color: '#7C3AED' },
+  { id: 'bear', name: 'Bear', color: '#D97706' },
 ]

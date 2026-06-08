@@ -177,6 +177,11 @@ export function isSafeUrl(url: string): boolean {
     return false
   }
 
+  // Block /\ paths — browsers normalise /\evil.com to //evil.com (protocol-relative URL), enabling open redirects
+  if (/^\/\\/.test(trimmedUrl)) {
+    return false
+  }
+
   if (hasDangerousProtocol(trimmedUrl)) {
     return false
   }

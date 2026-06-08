@@ -40,12 +40,16 @@ const CACHEABLE_RE = /\.(png|jpg|jpeg|webp|avif|svg|ico|woff2?)$/
 
 /**
  * Pre-cache critical assets so the offline fallback is available from the first visit.
- * Does NOT call skipWaiting() — the new SW waits until all tabs on the old version
- * are closed before activating, preventing open tabs from losing their cached assets.
+ * Calls skipWaiting() so the new SW activates immediately after install without waiting
+ * for existing tabs to close. This is required for Lighthouse's PWA audit to detect the
+ * SW as "controlling the page", because the audit runs within a single page visit where
+ * a waiting SW would never activate. Combined with clients.claim() in onActivate, the
+ * current page is controlled immediately after install completes.
  * @param {ExtendableEvent} event
  */
 function onInstall(event) {
   event.waitUntil(caches.open(CACHE_VERSION).then((cache) => cache.addAll(PRECACHE)))
+  self.skipWaiting()
 }
 
 /**

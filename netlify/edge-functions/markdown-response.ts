@@ -159,23 +159,28 @@ function sanitizeHtml(html: string): string {
   return result
 }
 
+/** Extract a quoted attribute value from an attribute string, or '' if absent. */
+function extractAttr(attrs: string, re: RegExp): string {
+  return attrs.match(re)?.[1] ?? ''
+}
+
+/** Returns false when the href must not become a link (unsafe scheme or empty). */
+function isSafeHref(href: string): boolean {
+  return Boolean(href) && !/^(\/\/|javascript:|data:|vbscript:)/i.test(href)
+}
+
 /** Convert an `<a>` element to a Markdown link, stripping unsafe href schemes. */
 function buildMarkdownLink(attrs: string, content: string): string {
-  const hrefMatch = attrs.match(/href=["']([^"']*)["']/)
-  if (!hrefMatch) return stripTags(content)
-  const href = hrefMatch[1]
-  if (href.startsWith('//') || /^(?:javascript|data|vbscript):/i.test(href)) {
-    return stripTags(content)
-  }
+  const href = extractAttr(attrs, /href=["']([^"']*)["']/)
+  if (!isSafeHref(href)) return stripTags(content)
   return `[${stripTags(content)}](${href})`
 }
 
 /** Convert an `<img>` element to a Markdown image reference. */
 function buildMarkdownImage(attrs: string): string {
-  const srcMatch = attrs.match(/src=["']([^"']*)["']/)
-  if (!srcMatch) return ''
-  const altMatch = attrs.match(/alt=["']([^"']*)["']/)
-  return `![${altMatch ? altMatch[1] : ''}](${srcMatch[1]})`
+  const src = extractAttr(attrs, /src=["']([^"']*)["']/)
+  if (!src) return ''
+  return `![${extractAttr(attrs, /alt=["']([^"']*)["']/)}](${src})`
 }
 
 /**
@@ -223,7 +228,7 @@ function htmlToMarkdown(html: string): string {
     const lines = stripTags(content)
       .split('\n')
       .map((line) => line.trim())
-      .filter((line) => line.length > 0)
+      .filter(Boolean)
       .map((line) => `> ${line}`)
     return '\n' + lines.join('\n') + '\n'
   })

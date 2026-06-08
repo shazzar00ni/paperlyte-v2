@@ -460,11 +460,16 @@ jobs:
           # Lighthouse is advisory: shared CI runners regularly produce below-threshold
           # scores that do not reflect production performance. It still runs and appears
           # in the summary below, but does not block the merge gate.
+          #
+          # size-check and e2e are required but allow "cancelled": concurrency
+          # (cancel-in-progress: true) can cancel these jobs when a newer push
+          # supersedes the run. A cancelled result means a fresh run is coming,
+          # not that the jobs failed. Only an explicit "failure" blocks the gate.
           if [ "${{ needs.lint-and-typecheck.result }}" != "success" ] || \
              [ "${{ needs.test.result }}" != "success" ] || \
              [ "${{ needs.build.result }}" != "success" ] || \
-             [ "${{ needs.size-check.result }}" != "success" ] || \
-             [ "${{ needs.e2e.result }}" != "success" ]; then
+             [ "${{ needs.size-check.result }}" == "failure" ] || \
+             [ "${{ needs.e2e.result }}" == "failure" ]; then
             echo "❌ CI Pipeline Failed"
             echo "- Lint & Type Check: ${{ needs.lint-and-typecheck.result }}"
             echo "- Tests: ${{ needs.test.result }}"
@@ -514,8 +519,8 @@ jobs:
           if [ "${{ needs.lint-and-typecheck.result }}" == "success" ] && \
              [ "${{ needs.test.result }}" == "success" ] && \
              [ "${{ needs.build.result }}" == "success" ] && \
-             [ "${{ needs.size-check.result }}" == "success" ] && \
-             [ "${{ needs.e2e.result }}" == "success" ]; then
+             [ "${{ needs.size-check.result }}" != "failure" ] && \
+             [ "${{ needs.e2e.result }}" != "failure" ]; then
             echo "### ✅ All required checks passed! Ready to merge." >> $GITHUB_STEP_SUMMARY
           else
             echo "### ❌ Some required checks failed. Please review the issues above." >> $GITHUB_STEP_SUMMARY

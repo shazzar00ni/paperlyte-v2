@@ -71,11 +71,10 @@
     # Disable access to sensitive browser APIs
     Permissions-Policy = "geolocation=(), microphone=(), camera=(), payment=(), usb=(), bluetooth=(), serial=(), magnetometer=(), gyroscope=(), accelerometer=(), ambient-light-sensor=()"
 
-    # Content Security Policy
-    # External origins allowed:
-    #   https://plausible.io              Plausible Analytics script + beacon (VITE_ANALYTICS_PROVIDER=plausible)
-    #   https://*.ingest.sentry.io        Sentry error telemetry (VITE_SENTRY_DSN)
-    Content-Security-Policy = "default-src 'self'; script-src 'self' https://plausible.io; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://plausible.io https://*.ingest.sentry.io; worker-src 'self' blob:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests;"
+    # Content-Security-Policy is intentionally omitted here.
+    # It is injected dynamically by the WAF edge function (netlify/edge-functions/waf.ts)
+    # with a per-request cryptographic nonce + 'strict-dynamic', which eliminates the
+    # host-allowlist bypass vectors that a static header cannot prevent.
 
     # Isolate this page's browsing context group so cross-origin windows opened
     # from this page (or that open this page) cannot access each other's DOM or

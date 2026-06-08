@@ -60,8 +60,11 @@ function fontPreloadPlugin(): Plugin {
  * Plugin to inject development-only Content Security Policy
  *
  * Development: Relaxed CSP meta tag to allow Vite HMR (WebSockets + unsafe-eval)
- * Production: CSP delivered via HTTP headers in netlify.toml (and vercel.json as a
- * secondary reference). HTTP headers support frame-ancestors; meta tags do not.
+ * Production (Netlify): CSP set dynamically by the WAF edge function with a per-request
+ * nonce + 'strict-dynamic'. This eliminates host-allowlist bypass vectors.
+ * Production (Vercel fallback): Static CSP header in vercel.json (host-allowlist only;
+ * nonce injection requires an edge function not yet wired for Vercel).
+ * HTTP headers support frame-ancestors; meta tags do not.
  *
  * Note: Meta tag CSP cannot enforce frame-ancestors and lacks initial-response protection.
  * Production uses proper HTTP headers configured in netlify.toml.
@@ -80,8 +83,9 @@ function fontPreloadPlugin(): Plugin {
  * - Use lock files (package-lock.json) to prevent supply chain attacks
  * - Consider using browser profiles dedicated to development (no untrusted extensions)
  *
- * Alternative approaches (not currently implemented):
- * - Nonce-based CSP: Would require server-side nonce generation for each dev request
+ * Note: Production (Netlify) uses nonce-based CSP via the WAF edge function.
+ * Dev still uses 'unsafe-eval'/'unsafe-inline' — nonces aren't feasible here
+ * because there is no server to generate them on each HMR request.
  * - Disable CSP in dev: Would lose all CSP protection during development
  * Current approach balances security with developer experience (standard Vite practice).
  */

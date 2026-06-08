@@ -88,6 +88,73 @@ const MAX_BODY_BYTES = 512 * 1024;
 const FUNCTION_ALLOWED_METHODS = new Set(["GET", "POST", "OPTIONS", "HEAD"]);
 
 // ---------------------------------------------------------------------------
+// CSP nonce helpers
+// ---------------------------------------------------------------------------
+
+/** Byte length for the CSP nonce — 128 bits of entropy. */
+const NONCE_BYTE_LENGTH = 16;
+
+/**
+ * Generates a cryptographically random base64url-encoded nonce (no padding).
+ * 128 bits of entropy is sufficient to prevent brute-force prediction.
+ */
+function generateNonce(): string {
+  const bytes = new Uint8Array(NONCE_BYTE_LENGTH);
+  crypto.getRandomValues(bytes);
+  return btoa(String.fromCharCode(...bytes))
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=/g, "");
+}
+
+/**
+ * Builds the full Content-Security-Policy value for an HTML response.
+ *
+ * script-src strategy:
+ *   'nonce-{n}'      — trusts every <script nonce="n"> tag in the HTML
+ *   'strict-dynamic' — transitively trusts any scripts those tags load at
+ *                      runtime (covers Plausible, Sentry Session Replay, etc.)
+ *   'self' https://plausible.io — CSP Level 2 fallback for browsers that do
+ *                      not support strict-dynamic; ignored by browsers that do
+ */
+function buildCsp(nonce: string): string {
+  return (
+    `default-src 'self'; ` +
+    `script-src 'nonce-${nonce}' 'strict-dynamic' 'self' https://plausible.io; ` +
+    `style-src 'self'; ` +
+    `font-src 'self'; ` +
+    `img-src 'self' data:; ` +
+    `connect-src 'self' https://plausible.io https://*.ingest.sentry.io; ` +
+    `worker-src 'self' blob:; ` +
+    `frame-src 'none'; ` +
+    `object-src 'none'; ` +
+    `base-uri 'self'; ` +
+    `form-action 'self'; ` +
+    `frame-ancestors 'none'; ` +
+    `upgrade-insecure-requests;`
+  );
+}
+
+/** Returns true when the response carries an HTML body. */
+function isHtmlResponse(response: Response): boolean {
+  const ct = response.headers.get("content-type") ?? "";
+  return ct.includes("text/html");
+}
+
+/**
+ * Injects `nonce="<value>"` into every `<script ...>` opening tag.
+ * Skips tags that already carry a nonce attribute (no duplicates).
+ * Adding a nonce to non-JS types (e.g. application/ld+json) is harmless —
+ * CSP ignores those types — so we keep the replacement unconditional.
+ */
+function injectNonceIntoHtml(html: string, nonce: string): string {
+  return html.replace(/<script([^>]*)>/gi, (_m, attrs: string) => {
+    if (/\bnonce=/i.test(attrs)) return `<script${attrs}>`;
+    return `<script${attrs} nonce="${nonce}">`;
+  });
+}
+
+// ---------------------------------------------------------------------------
 // Response helpers
 // ---------------------------------------------------------------------------
 
@@ -326,6 +393,31 @@ export default async function waf(
 
   try {
     const response = await context.next();
+
+    // For HTML responses: inject a per-request CSP nonce into every <script>
+    // tag and set a nonce-based Content-Security-Policy header.
+    // 'strict-dynamic' causes modern browsers to ignore the host allowlist and
+    // instead trust any script transitively loaded by a nonce-carrying script
+    // (Plausible, Sentry, etc.), eliminating host-allowlist bypass vectors.
+    if (isHtmlResponse(response)) {
+      const nonce = generateNonce();
+      const html = await response.text();
+      const modifiedHtml = injectNonceIntoHtml(html, nonce);
+
+      const headers = new Headers(response.headers);
+      headers.set("Content-Security-Policy", buildCsp(nonce));
+      headers.set("X-Request-ID", requestId);
+      // Body is now uncompressed plain text; remove the encoding hint so the
+      // browser does not attempt to decompress an already-decoded string.
+      headers.delete("Content-Encoding");
+
+      return new Response(modifiedHtml, {
+        status: response.status,
+        statusText: response.statusText,
+        headers,
+      });
+    }
+
     return withRequestId(response, requestId);
   } catch {
     // Origin or network error — return a 502 with the request ID so the

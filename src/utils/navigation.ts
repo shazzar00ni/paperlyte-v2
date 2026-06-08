@@ -193,12 +193,17 @@ export function isSafeUrl(url: string): boolean {
   return isAllowedAbsoluteUrl(trimmedUrl)
 }
 
+/**
+ * Checks whether a URL resolves to the same origin as the current page.
+ * Always parses with the URL constructor (using the current origin as base) so that
+ * browser-normalised paths (e.g. backslash variants) are resolved before the origin
+ * comparison, avoiding open-redirect bypasses that rely on parser quirks.
+ */
 function isSameOriginUrl(url: string): boolean {
   try {
     const parsed = new URL(url, window.location.origin)
     return parsed.origin === window.location.origin
   } catch {
-    /* v8 ignore next -- URL() with a valid base never throws in practice */
     return false
   }
 }
@@ -220,41 +225,72 @@ export function safeNavigate(url: string): boolean {
     return false
   }
 
-  if (!isSafeUrl(url)) {
+  // Normalise once so the same value is used for validation and for the final assignment.
+  // isSafeUrl trims internally, but trimming here avoids a mismatch where a URL with
+  // leading/trailing whitespace passes validation yet is assigned raw to location.href.
+  if (typeof url !== 'string') {
+    return false
+  }
+
+  const trimmedUrl = url.trim()
+
+  if (!isSafeUrl(trimmedUrl) || !isSameOriginUrl(trimmedUrl)) {
     if (import.meta.env.DEV) {
       console.warn(`Navigation blocked: URL "${url}" failed security validation`)
     }
     return false
   }
 
-  if (!isSameOriginUrl(url)) {
-    if (import.meta.env.DEV) console.warn(`safeNavigate blocked non-same-origin URL: "${url}"`)
-    return false
-  }
-
-  window.location.href = url // nosemgrep: javascript.browser.security.open-redirect-from-function.js-open-redirect-from-function
+  window.location.href = trimmedUrl // nosemgrep: javascript.browser.security.open-redirect-from-function.js-open-redirect-from-function
   return true
 }
 
 /**
- * Safely opens an external URL in a new tab with noopener,noreferrer.
- * Allows only http: and https: absolute URLs. Blocks dangerous protocols,
- * relative paths, and non-HTTP schemes.
+ * Safely navigates to an external URL by opening it in a new tab.
+ * Only HTTP and HTTPS URLs are allowed; relative paths and other protocols are rejected.
+ * Uses `noopener,noreferrer` to prevent tab-napping attacks.
  *
- * @param url - The external URL to open
- * @returns true if the window was opened, false if the URL was rejected or in SSR
+ * Note: `window.open` with `noopener` returns `null` in standards-compliant browsers
+ * even when the new tab is opened successfully (the caller cannot access the opened window).
+ * This function therefore always returns `true` after calling `window.open` rather than
+ * checking the return value, which would produce false negatives in Chrome/Firefox.
+ *
+ * @param url - The external HTTP/HTTPS URL to open
+ * @returns true if navigation was attempted via window.open, false if the URL was rejected
+ *   or this is a server-side rendering context
  */
 export function safeNavigateExternal(url: string): boolean {
-  if (typeof window === 'undefined') return false
-  if (!isSafeUrl(url)) {
-    if (import.meta.env.DEV) console.warn(`External navigation blocked: "${url}"`)
+  if (typeof window === 'undefined') {
     return false
   }
+
+  if (typeof url !== 'string') {
+    return false
+  }
+
+  const trimmedUrl = url.trim()
+
+  if (!isSafeUrl(trimmedUrl)) {
+    if (import.meta.env.DEV) {
+      console.warn(`External navigation blocked: URL "${trimmedUrl}" failed security validation`)
+    }
+    return false
+  }
+
   try {
-    const parsed = new URL(url)
-    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return false
+    // `isSafeUrl` permits relative paths (e.g. /about, ./page) which would be wrong
+    // for a function that opens URLs in a new tab. `new URL(trimmedUrl)` without a base throws
+    // for relative paths, so the catch block correctly rejects them here. The explicit
+    // protocol check also rejects any non-HTTP/HTTPS URLs that may slip through (e.g.
+    // same-origin custom-protocol absolute URLs).
+    const parsed = new URL(trimmedUrl)
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+      return false
+    }
   } catch {
     return false
   }
-  return window.open(url, '_blank', 'noopener,noreferrer') !== null
+
+  window.open(trimmedUrl, '_blank', 'noopener,noreferrer')
+  return true
 }

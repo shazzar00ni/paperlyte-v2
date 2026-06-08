@@ -651,6 +651,22 @@ describe('markdown-response edge function', () => {
 
       expect(body).not.toContain('<applet')
     })
+
+    it('removes unclosed excluded tags and all trailing content (no closer = remove to end)', async () => {
+      // Regression: partial opener removal only stripped the <script> tag,
+      // leaving the payload text in the Markdown output.
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(
+        htmlResponse('<p>Safe</p><script>SECRET PAYLOAD with no closing tag')
+      )
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).not.toContain('SECRET')
+      expect(body).not.toContain('PAYLOAD')
+      expect(body).toContain('Safe')
+    })
   })
 
   // ── Response headers ──────────────────────────────────────────────────────
@@ -1015,6 +1031,19 @@ describe('markdown-response edge function', () => {
 
       expect(excludedCtx.next).toHaveBeenCalledOnce()
       expect(excludedBody).toBe('<p>Sitemap</p>')
+    })
+
+    it('decodes supplementary Unicode code points (emoji) via numeric entities', async () => {
+      // String.fromCharCode truncates values above U+FFFF; String.fromCodePoint handles them.
+      const req = makeRequest('https://example.com/', mdHeaders)
+      // &#128512; is U+1F600 😀 (decimal); &#x1F601; is 😁 (hex)
+      const ctx = makeContext(htmlResponse('<p>&#128512; and &#x1F601;</p>'))
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).toContain('😀')
+      expect(body).toContain('😁')
     })
 
     it('handles XSS vectors with mixed-case and whitespace tags', async () => {

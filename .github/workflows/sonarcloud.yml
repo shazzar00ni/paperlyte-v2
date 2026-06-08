@@ -30,7 +30,7 @@ jobs:
         # gate here rather than letting the scanner run.
         # On PRs and branch deploys this is advisory (continue-on-error);
         # pushes to main are the only hard gate.
-        if: vars.SONAR_PROJECT_KEY != '' && vars.SONAR_ORGANIZATION != '' && secrets.SONAR_TOKEN != ''
+        if: vars.SONAR_PROJECT_KEY != '' && vars.SONAR_ORGANIZATION != ''
         id: sonar-analysis
         continue-on-error: ${{ github.ref != 'refs/heads/main' }}
         uses: SonarSource/sonarqube-scan-action@7006c4492b2e0ee0f816d36501671557c97f5995 # v8.1.0

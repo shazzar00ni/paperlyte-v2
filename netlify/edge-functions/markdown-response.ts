@@ -97,8 +97,14 @@ function decodeEntities(text: string): string {
     .replace(/&quot;/g, '"')
     .replace(/&#39;|&apos;/g, "'")
     .replace(/&nbsp;/g, ' ')
-    .replace(/&#(\d+);/g, (_, code: string) => String.fromCharCode(parseInt(code, 10)))
-    .replace(/&#x([0-9a-f]+);/gi, (_, code: string) => String.fromCharCode(parseInt(code, 16)))
+    .replace(/&#(\d+);/g, (_, code: string) => {
+      const n = parseInt(code, 10)
+      return n >= 0 && n <= 0x10ffff ? String.fromCodePoint(n) : ''
+    })
+    .replace(/&#x([0-9a-f]+);/gi, (_, code: string) => {
+      const n = parseInt(code, 16)
+      return n >= 0 && n <= 0x10ffff ? String.fromCodePoint(n) : ''
+    })
 }
 
 /**
@@ -130,6 +136,11 @@ function sanitizeHtml(html: string): string {
       )
     } while (result !== prev)
   }
+
+  // Remove unclosed excluded opening tags and all trailing content. Without
+  // this, a bare <script>payload with no </script> would have only the opener
+  // stripped by the next step, leaking the payload into the Markdown.
+  result = result.replace(new RegExp(`<(?:${dangerPattern})\\b[^>]*>[\\s\\S]*$`, 'gi'), '') // nosemgrep
 
   // Remove partial/malformed opening tags (e.g. `<script` with no `>`).
   // The `>?` makes the closing bracket optional, catching bare fragments.
@@ -311,6 +322,73 @@ function acceptsMarkdownHeader(request: Request): boolean {
   return markdownQ > 0 && (htmlQ < 0 || markdownQ >= htmlQ)
 }
 
+/** Returns true when the response is a byte-range fragment that must not be rewritten. */
+function isPartialContent(response: Response): boolean {
+  return response.status === 206 || response.headers.has('Content-Range')
+}
+
+/**
+ * Build the response headers for the Markdown body, starting from the origin
+ * headers and stripping or updating fields that describe the HTML payload.
+ */
+function buildMarkdownHeaders(origin: Response, tokenEstimate: string): Headers {
+  // Start from all origin headers to preserve unrelated metadata
+  // (e.g. CORS headers, X-* headers, etc.). Remove validators and
+  // entity headers that describe the HTML payload — they are now stale
+  // for the rewritten Markdown body and must be stripped to prevent
+  // clients / CDNs from mis-handling the response (wrong Content-Length,
+  // mismatched ETag, etc.).
+  const headers = new Headers(origin.headers)
+  headers.delete('Content-Length')
+  headers.delete('Content-Encoding')
+  headers.delete('Transfer-Encoding')
+  // Range headers describe the HTML fragment, not the Markdown body.
+  headers.delete('Content-Range')
+  headers.delete('Accept-Ranges')
+  headers.delete('ETag')
+  headers.delete('Last-Modified')
+  headers.set('Content-Type', 'text/markdown; charset=utf-8')
+  headers.set('X-Markdown-Tokens', tokenEstimate)
+  headers.set('Content-Signal', 'ai-train=yes, search=yes, ai-input=yes')
+  // Preserve the origin Cache-Control policy when set. Otherwise prevent
+  // caches from storing this Markdown transformation as if it were the
+  // canonical HTML resource, which would return wrong content to subsequent
+  // HTML requests sharing the same cache key.
+  if (!headers.has('Cache-Control')) headers.set('Cache-Control', 'no-store')
+  // Merge Accept into any existing Vary value so CDNs store HTML and
+  // Markdown as separate cache entries without losing other Vary tokens
+  // (e.g. Accept-Encoding) the origin already set.
+  const originVary = headers.get('Vary') ?? ''
+  const varyParts = originVary.split(',').map((v: string) => v.trim()).filter(Boolean)
+  const normalizedVaryParts = varyParts.map((v: string) => v.toLowerCase())
+  headers.set(
+    'Vary',
+    normalizedVaryParts.includes('accept') ? originVary : [...varyParts, 'Accept'].join(', ')
+  )
+  return headers
+}
+
+/**
+ * Convert a fetched origin response to Markdown, or pass it through unchanged
+ * when the content-type or status makes conversion inappropriate.
+ */
+async function convertOriginToMarkdown(originResponse: Response): Promise<Response> {
+  const contentType = (originResponse.headers.get('Content-Type') ?? '').toLowerCase()
+  if (!contentType.includes('text/html')) return originResponse
+  // A 206 response (or one with Content-Range) is a fragment of the full
+  // document. Rewriting only that fragment into Markdown and stripping the
+  // range headers would break byte-range semantics for the caller.
+  if (isPartialContent(originResponse)) return originResponse
+  const html = await originResponse.clone().text()
+  const markdown = htmlToMarkdown(sanitizeHtml(html))
+  const tokenEstimate = String(Math.ceil(markdown.length / 4))
+  return new Response(markdown, {
+    status: originResponse.status,
+    statusText: originResponse.statusText,
+    headers: buildMarkdownHeaders(originResponse, tokenEstimate),
+  })
+}
+
 /**
  * Serve a sanitized Markdown representation of the origin page when the
  * request carries `Accept: text/markdown`; otherwise delegate unchanged.
@@ -345,77 +423,11 @@ export default async function handler(request: Request, context: Context): Promi
   let originResponse: Response | undefined
 
   try {
-    // ── 4. Fetch HTML from origin ─────────────────────────────────────────
+    // ── 4. Fetch from origin and convert ─────────────────────────────────
     originResponse = await context.next()
-    const contentType = (originResponse.headers.get('Content-Type') ?? '').toLowerCase()
-
-    if (!contentType.includes('text/html')) {
-      return originResponse
-    }
-
-    // ── 4a. Pass through partial-content responses unchanged ──────────────
-    // A 206 response (or one with Content-Range) is a fragment of the full
-    // document. Rewriting only that fragment into Markdown and stripping the
-    // range headers would break byte-range semantics for the caller.
-    if (originResponse.status === 206 || originResponse.headers.has('Content-Range')) {
-      return originResponse
-    }
-
-    const html = await originResponse.clone().text()
-
-    // ── 5. Sanitize and convert HTML → Markdown ───────────────────────────
-    // Sanitize removes dangerous tags, event handlers, and comments via regex.
-    // htmlToMarkdown converts the sanitized HTML to plain Markdown text.
-    const markdown = htmlToMarkdown(sanitizeHtml(html))
-
-    // ── 6. Compute estimated token count (chars / 4) ──────────────────────
-    const tokenEstimate = String(Math.ceil(markdown.length / 4))
-
-    // Start from all origin headers to preserve unrelated metadata
-    // (e.g. CORS headers, X-* headers, etc.). Remove validators and
-    // entity headers that describe the HTML payload — they are now stale
-    // for the rewritten Markdown body and must be stripped to prevent
-    // clients / CDNs from mis-handling the response (wrong Content-Length,
-    // mismatched ETag, etc.).
-    const headers = new Headers(originResponse.headers)
-    headers.delete('Content-Length')
-    headers.delete('Content-Encoding')
-    headers.delete('Transfer-Encoding')
-    // Range headers describe the HTML fragment, not the Markdown body.
-    headers.delete('Content-Range')
-    headers.delete('Accept-Ranges')
-    headers.delete('ETag')
-    headers.delete('Last-Modified')
-    headers.set('Content-Type', 'text/markdown; charset=utf-8')
-    headers.set('X-Markdown-Tokens', tokenEstimate)
-    headers.set('Content-Signal', 'ai-train=yes, search=yes, ai-input=yes')
-    // Preserve the origin Cache-Control policy when set. Otherwise prevent
-    // caches from storing this Markdown transformation as if it were the
-    // canonical HTML resource, which would return wrong content to subsequent
-    // HTML requests sharing the same cache key.
-    if (!headers.has('Cache-Control')) headers.set('Cache-Control', 'no-store')
-
-    // Merge Accept into any existing Vary value so CDNs store HTML and
-    // Markdown as separate cache entries without losing other Vary tokens
-    // (e.g. Accept-Encoding) the origin already set.
-    const originVary = headers.get('Vary') ?? ''
-    const varyParts = originVary
-      .split(',')
-      .map((v) => v.trim())
-      .filter(Boolean)
-    const normalizedVaryParts = varyParts.map((v) => v.toLowerCase())
-    headers.set(
-      'Vary',
-      normalizedVaryParts.includes('accept') ? originVary : [...varyParts, 'Accept'].join(', ')
-    )
-
-    return new Response(markdown, {
-      status: originResponse.status,
-      statusText: originResponse.statusText,
-      headers,
-    })
+    return await convertOriginToMarkdown(originResponse)
   } catch (err) {
-    // ── 7. Fallback: pass through to origin unchanged ─────────────────────
+    // ── 5. Fallback: pass through to origin unchanged ─────────────────────
     // Log pathname only — never request.url — to avoid persisting sensitive
     // query parameters (tokens, emails, campaign IDs) in edge logs.
     // console.error is the correct logging mechanism in the Deno-based Edge

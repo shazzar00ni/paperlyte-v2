@@ -2,7 +2,7 @@ import { Section } from '@components/layout/Section'
 import styles from './Terms.module.css'
 
 // Last updated date for the terms of service
-const LAST_UPDATED = 'March 7, 2026'
+const LAST_UPDATED = 'June 5, 2026'
 
 /**
  * Terms of Service page component.

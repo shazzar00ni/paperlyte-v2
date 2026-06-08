@@ -24,9 +24,12 @@ jobs:
 
       - name: Download SonarScanner CLI
         run: |
-          wget -q "https://repo1.maven.org/maven2/org/sonarsource/scanner/cli/sonar-scanner-cli/7.0.2.4839/sonar-scanner-cli-7.0.2.4839.zip" -O sonar-scanner.zip
-          unzip -q sonar-scanner.zip
-          echo "${{ github.workspace }}/sonar-scanner-7.0.2.4839/bin" >> $GITHUB_PATH
+          BASE_URL="https://repo1.maven.org/maven2/org/sonarsource/scanner/cli/sonar-scanner-cli/7.0.2.4839/sonar-scanner-cli-7.0.2.4839.zip"
+          wget -q "${BASE_URL}" -O "$RUNNER_TEMP/sonar-scanner.zip"
+          wget -q "${BASE_URL}.sha256" -O "$RUNNER_TEMP/sonar-scanner.zip.sha256"
+          echo "$(cat $RUNNER_TEMP/sonar-scanner.zip.sha256)  $RUNNER_TEMP/sonar-scanner.zip" | sha256sum -c -
+          unzip -q "$RUNNER_TEMP/sonar-scanner.zip" -d "$RUNNER_TEMP/sonar-scanner"
+          echo "$RUNNER_TEMP/sonar-scanner/sonar-scanner-7.0.2.4839/bin" >> $GITHUB_PATH
 
       - name: Analyze with SonarCloud
         env:

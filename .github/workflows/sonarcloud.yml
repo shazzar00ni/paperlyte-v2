@@ -29,7 +29,7 @@ jobs:
           SONAR_SHA256="ef72465a66f519e5da9f1d0731de073d35755a9893591cae4821faebb6e58dd8"
           SONAR_ARCHIVE="$RUNNER_TEMP/sonar-scanner.zip"
           SONAR_INSTALL_DIR="$RUNNER_TEMP/sonar-scanner"
-          wget -q "https://repo1.maven.org/maven2/org/sonarsource/scanner/cli/sonar-scanner-cli/${SONAR_VERSION}/sonar-scanner-cli-${SONAR_VERSION}.zip" -O "${SONAR_ARCHIVE}"
+          wget -q --timeout=60 --tries=3 "https://repo1.maven.org/maven2/org/sonarsource/scanner/cli/sonar-scanner-cli/${SONAR_VERSION}/sonar-scanner-cli-${SONAR_VERSION}.zip" -O "${SONAR_ARCHIVE}"
           echo "${SONAR_SHA256}  ${SONAR_ARCHIVE}" | sha256sum -c -
           unzip -q "${SONAR_ARCHIVE}" -d "${SONAR_INSTALL_DIR}"
           echo "${SONAR_INSTALL_DIR}/sonar-scanner-${SONAR_VERSION}/bin" >> $GITHUB_PATH
@@ -37,9 +37,11 @@ jobs:
       - name: Analyze with SonarCloud
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_PROJECT_KEY: ${{ vars.SONAR_PROJECT_KEY }}
+          SONAR_ORG: ${{ vars.SONAR_ORGANIZATION }}
         run: |
           sonar-scanner \
-            -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }} \
-            -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }} \
+            -Dsonar.projectKey="${SONAR_PROJECT_KEY}" \
+            -Dsonar.organization="${SONAR_ORG}" \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.projectBaseDir=.

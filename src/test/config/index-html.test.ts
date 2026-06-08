@@ -83,6 +83,29 @@ describe('index.html structure', () => {
     })
   })
 
+  describe('build-time meta placeholders', () => {
+    it('should include the keywords placeholder for SEO metadata injection', () => {
+      const keywords = document.querySelector('meta[name="keywords"]')
+      expect(keywords?.getAttribute('content')).toBe('__META_KEYWORDS__')
+    })
+
+    it('should include site URL placeholders for social URL metadata injection', () => {
+      const ogUrl = document.querySelector('meta[property="og:url"]')
+      const twitterUrl = document.querySelector('meta[name="twitter:url"]')
+
+      expect(ogUrl?.getAttribute('content')).toBe('__SITE_URL__/')
+      expect(twitterUrl?.getAttribute('content')).toBe('__SITE_URL__/')
+    })
+
+    it('should include image placeholders for social image metadata injection', () => {
+      const ogImage = document.querySelector('meta[property="og:image"]')
+      const twitterImage = document.querySelector('meta[name="twitter:image"]')
+
+      expect(ogImage?.getAttribute('content')).toBe('__OG_IMAGE_URL__')
+      expect(twitterImage?.getAttribute('content')).toBe('__OG_IMAGE_URL__')
+    })
+  })
+
   describe('no external font CDN references', () => {
     it('should not reference Google Fonts', () => {
       const fontLinks = document.querySelectorAll('link[href*="fonts.googleapis.com"]')

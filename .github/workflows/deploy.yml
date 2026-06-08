@@ -1,5 +1,7 @@
 # .github/workflows/deploy.yml
 name: Deploy
+permissions:
+  contents: read
 
 on:
   push:

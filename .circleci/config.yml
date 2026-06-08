@@ -112,8 +112,8 @@ jobs:
   e2e:
     docker:
       # Pinned to digest for reproducible, secure builds (avoids mutable-tag risk).
-      # Tag: v1.59.1-noble
-      - image: mcr.microsoft.com/playwright:v1.59.1-noble@sha256:eac9b0a5312cdab40ee8c2429df5bf19bffdccf8f3bf3c42268e173f97541645
+      # Tag: v1.59.1-noble (omitted from reference — CircleCI task-agent rejects tag+digest combos)
+      - image: mcr.microsoft.com/playwright@sha256:eac9b0a5312cdab40ee8c2429df5bf19bffdccf8f3bf3c42268e173f97541645
     resource_class: medium
     steps:
       - checkout

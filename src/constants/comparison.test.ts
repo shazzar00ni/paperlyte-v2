@@ -40,6 +40,10 @@ describe('Comparison Constants', () => {
         expect(feature, `Feature at index ${index} should have onenote value`).toHaveProperty(
           'onenote'
         )
+        expect(feature, `Feature at index ${index} should have obsidian value`).toHaveProperty(
+          'obsidian'
+        )
+        expect(feature, `Feature at index ${index} should have bear value`).toHaveProperty('bear')
       })
     })
 
@@ -64,6 +68,14 @@ describe('Comparison Constants', () => {
         expect(
           validateValue(feature.onenote),
           `OneNote value for "${feature.feature}" should be boolean or string`
+        ).toBe(true)
+        expect(
+          validateValue(feature.obsidian),
+          `Obsidian value for "${feature.feature}" should be boolean or string`
+        ).toBe(true)
+        expect(
+          validateValue(feature.bear),
+          `Bear value for "${feature.feature}" should be boolean or string`
         ).toBe(true)
       })
     })
@@ -116,8 +128,8 @@ describe('Comparison Constants', () => {
       expect(Array.isArray(COMPETITORS)).toBe(true)
     })
 
-    it('should have exactly 4 competitors', () => {
-      expect(COMPETITORS.length).toBe(4)
+    it('should have exactly 6 competitors', () => {
+      expect(COMPETITORS.length).toBe(6)
     })
 
     it('should have all required fields for each competitor', () => {
@@ -166,6 +178,18 @@ describe('Comparison Constants', () => {
       const onenote = COMPETITORS.find((c) => c.id === 'onenote')
       expect(onenote).toBeDefined()
       expect(onenote?.name).toBe('OneNote')
+    })
+
+    it('should include Obsidian', () => {
+      const obsidian = COMPETITORS.find((c) => c.id === 'obsidian')
+      expect(obsidian).toBeDefined()
+      expect(obsidian?.name).toBe('Obsidian')
+    })
+
+    it('should include Bear', () => {
+      const bear = COMPETITORS.find((c) => c.id === 'bear')
+      expect(bear).toBeDefined()
+      expect(bear?.name).toBe('Bear')
     })
 
     it('should have valid color values', () => {

@@ -2,7 +2,7 @@ import { Section } from '@components/layout/Section'
 import styles from './Privacy.module.css'
 
 // Last updated date for the privacy policy
-const LAST_UPDATED = 'March 7, 2026'
+const LAST_UPDATED = 'June 5, 2026'
 
 /**
  * Privacy Policy page component.

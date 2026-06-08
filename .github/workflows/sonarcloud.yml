@@ -22,12 +22,18 @@ jobs:
         with:
           fetch-depth: 0  # Full history required for SonarCloud blame data and new-code detection
 
+      - name: Download SonarScanner CLI
+        run: |
+          wget -q "https://repo1.maven.org/maven2/org/sonarsource/scanner/cli/sonar-scanner-cli/7.0.2.4839/sonar-scanner-cli-7.0.2.4839.zip" -O sonar-scanner.zip
+          unzip -q sonar-scanner.zip
+          echo "${{ github.workspace }}/sonar-scanner-7.0.2.4839/bin" >> $GITHUB_PATH
+
       - name: Analyze with SonarCloud
-        uses: SonarSource/sonarqube-scan-action@7006c4492b2e0ee0f816d36501671557c97f5995 # v8.1.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          args: >
-            -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }}
-            -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
-          projectBaseDir: .
+        run: |
+          sonar-scanner \
+            -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }} \
+            -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }} \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.projectBaseDir=.

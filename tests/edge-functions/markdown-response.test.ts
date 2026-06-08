@@ -230,6 +230,32 @@ describe('markdown-response edge function', () => {
       const result = await ctx.next.mock.results[0].value
       expect(result.headers.get('Content-Type')).not.toBe('text/markdown; charset=utf-8')
     })
+
+    it('passes through when text/html has a strictly higher q-value than text/markdown', async () => {
+      // RFC 7231 content negotiation: prefer HTML when its q-value exceeds markdown's
+      const req = makeRequest('https://example.com/', {
+        Accept: 'text/html, text/markdown;q=0.5',
+      })
+      const ctx = makeContext(htmlResponse('<p>Page</p>'))
+
+      await handler(req, ctx)
+
+      expect(ctx.next).toHaveBeenCalledOnce()
+      const result = await ctx.next.mock.results[0].value
+      expect(result.headers.get('Content-Type')).not.toBe('text/markdown; charset=utf-8')
+    })
+
+    it('serves Markdown when text/markdown and text/html share an equal q-value', async () => {
+      // Equal q-values: edge function preference breaks the tie in favour of Markdown
+      const req = makeRequest('https://example.com/', {
+        Accept: 'text/html;q=0.9, text/markdown;q=0.9',
+      })
+      const ctx = makeContext(htmlResponse('<p>Page</p>'))
+
+      const result = await handler(req, ctx)
+
+      expect(result.headers.get('Content-Type')).toBe('text/markdown; charset=utf-8')
+    })
   })
 
   // ── Excluded-path gating ──────────────────────────────────────────────────
@@ -476,6 +502,24 @@ describe('markdown-response edge function', () => {
       expect(body).not.toContain('Home')
     })
 
+    it('fully removes nested same-type excluded elements (inner closer must not leave a tail)', async () => {
+      // Regression: non-greedy regex matched the inner pair first, leaving the
+      // text after the inner closer ("tail") outside any tag and leaking it into output.
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(
+        htmlResponse('<p>Before</p><nav>outer<nav>inner</nav>tail</nav><p>After</p>')
+      )
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).not.toContain('outer')
+      expect(body).not.toContain('inner')
+      expect(body).not.toContain('tail')
+      expect(body).toContain('Before')
+      expect(body).toContain('After')
+    })
+
     it('preserves <header> content; strips <footer> content', async () => {
       // <header> is NOT in REMOVE_TAGS: static pages (privacy, terms) use
       // <header> for the page title and last-updated metadata that agents
@@ -648,13 +692,29 @@ describe('markdown-response edge function', () => {
       expect(tokens).toBe(Math.ceil(body.length / 4))
     })
 
-    it('sets Cache-Control to no-store', async () => {
+    it('sets Cache-Control to no-store when origin does not include one', async () => {
       const req = makeRequest('https://example.com/', mdHeaders)
       const ctx = makeContext(htmlResponse('<p>Hi</p>'))
 
       const result = await handler(req, ctx)
 
       expect(result.headers.get('Cache-Control')).toBe('no-store')
+    })
+
+    it('preserves origin Cache-Control when already set', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const originWithCache = new Response('<p>Hi</p>', {
+        status: 200,
+        headers: {
+          'Content-Type': 'text/html',
+          'Cache-Control': 'public, max-age=3600',
+        },
+      })
+      const ctx = makeContext(originWithCache)
+
+      const result = await handler(req, ctx)
+
+      expect(result.headers.get('Cache-Control')).toBe('public, max-age=3600')
     })
 
     it('sets Vary to Accept', async () => {

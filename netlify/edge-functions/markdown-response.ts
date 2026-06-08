@@ -125,7 +125,7 @@ function sanitizeHtml(html: string): string {
     do {
       prev = result
       result = result.replace(
-        new RegExp(`<${tag}(\\s[^>]*)?>([\\s\\S]*?)<\\/${tag}\\s*>`, 'gi'), // nosemgrep
+        new RegExp(`<${tag}(\\s[^>]*)?>(?:(?!<${tag}[\\s>])[\\s\\S])*?<\\/${tag}\\s*>`, 'gi'), // nosemgrep
         ''
       )
     } while (result !== prev)
@@ -277,28 +277,38 @@ function htmlToMarkdown(html: string): string {
   return md.trim()
 }
 
+/** Parse the q-value from a list of trimmed Accept media-type parameters. */
+function parseQ(params: string[]): number {
+  for (const p of params) {
+    const eqIdx = p.indexOf('=')
+    if (eqIdx !== -1 && p.slice(0, eqIdx).trim().toLowerCase() === 'q') {
+      const v = parseFloat(p.slice(eqIdx + 1).trim())
+      return Number.isNaN(v) ? 1.0 : v
+    }
+  }
+  return 1.0
+}
+
 /**
  * Returns true when the request's Accept header includes `text/markdown` with
- * a non-zero q-value (or no q-value). Respects RFC 7231 §5.3 rules:
- * media-type tokens are case-insensitive and optional whitespace is allowed
- * around the `=` sign (so `Q=0` and `q = 0` are valid opt-outs).
+ * a positive q-value that is at least as high as text/html's q-value. Respects
+ * RFC 7231 §5.3: media-type tokens are case-insensitive and optional whitespace
+ * is allowed around the `=` sign (so `Q=0` and `q = 0` are valid opt-outs).
+ * When text/html has a strictly higher q-value the client prefers HTML and the
+ * request passes through unchanged.
  */
 function acceptsMarkdownHeader(request: Request): boolean {
-  return (request.headers.get('Accept') ?? '').split(',').some((token) => {
-    const [type, ...params] = token.trim().split(';')
-    if (type.trim().toLowerCase() !== 'text/markdown') return false
-    const qParamValue = params
-      .map((p) => p.trim())
-      .map((p) => {
-        const eqIdx = p.indexOf('=')
-        if (eqIdx === -1) return undefined
-        const name = p.slice(0, eqIdx).trim().toLowerCase()
-        const value = p.slice(eqIdx + 1).trim()
-        return name === 'q' ? value : undefined
-      })
-      .find((value): value is string => value !== undefined)
-    return qParamValue === undefined || parseFloat(qParamValue) > 0
-  })
+  const accept = request.headers.get('Accept') ?? ''
+  let markdownQ = -1
+  let htmlQ = -1
+  for (const token of accept.split(',')) {
+    const parts = token.trim().split(';')
+    const mediaType = parts[0].trim().toLowerCase()
+    const q = parseQ(parts.slice(1).map((p: string) => p.trim()))
+    if (mediaType === 'text/markdown') markdownQ = Math.max(markdownQ, q)
+    else if (mediaType === 'text/html') htmlQ = Math.max(htmlQ, q)
+  }
+  return markdownQ > 0 && (htmlQ < 0 || markdownQ >= htmlQ)
 }
 
 /**
@@ -366,8 +376,7 @@ export default async function handler(request: Request, context: Context): Promi
     // entity headers that describe the HTML payload — they are now stale
     // for the rewritten Markdown body and must be stripped to prevent
     // clients / CDNs from mis-handling the response (wrong Content-Length,
-    // mismatched ETag, etc.). Cache-Control is unconditionally overridden
-    // below; the origin value is intentionally discarded.
+    // mismatched ETag, etc.).
     const headers = new Headers(originResponse.headers)
     headers.delete('Content-Length')
     headers.delete('Content-Encoding')
@@ -380,10 +389,11 @@ export default async function handler(request: Request, context: Context): Promi
     headers.set('Content-Type', 'text/markdown; charset=utf-8')
     headers.set('X-Markdown-Tokens', tokenEstimate)
     headers.set('Content-Signal', 'ai-train=yes, search=yes, ai-input=yes')
-    // The Markdown body is a lossy transformation of the HTML; caching it
-    // as if it were the canonical resource would return wrong content to
-    // subsequent HTML requests sharing the same cache key. Force-bypass.
-    headers.set('Cache-Control', 'no-store')
+    // Preserve the origin Cache-Control policy when set. Otherwise prevent
+    // caches from storing this Markdown transformation as if it were the
+    // canonical HTML resource, which would return wrong content to subsequent
+    // HTML requests sharing the same cache key.
+    if (!headers.has('Cache-Control')) headers.set('Cache-Control', 'no-store')
 
     // Merge Accept into any existing Vary value so CDNs store HTML and
     // Markdown as separate cache entries without losing other Vary tokens

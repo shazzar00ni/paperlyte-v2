@@ -11,7 +11,7 @@ import path from 'path'
 const resolveDenoNpmSpecifiers: Plugin = {
   name: 'resolve-deno-npm-specifiers',
   enforce: 'pre',
-  transform(code: string): { code: string } | null {
+  transform(code: string, id?: string): { code: string } | null {
     if (!code.includes('npm:') && !code.includes('esm.sh')) return null
     let result = code
     // npm:pkg@version → pkg

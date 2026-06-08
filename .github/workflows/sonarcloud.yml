@@ -21,6 +21,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0  # Full history required for SonarCloud blame data and new-code detection
+          persist-credentials: false
 
       - name: Analyze with SonarCloud
         # Skip gracefully when project key / org aren't configured (forks,
@@ -29,7 +30,7 @@ jobs:
         # gate here rather than letting the scanner run.
         # On PRs and branch deploys this is advisory (continue-on-error);
         # pushes to main are the only hard gate.
-        if: vars.SONAR_PROJECT_KEY != '' && vars.SONAR_ORGANIZATION != ''
+        if: vars.SONAR_PROJECT_KEY != '' && vars.SONAR_ORGANIZATION != '' && secrets.SONAR_TOKEN != ''
         id: sonar-analysis
         continue-on-error: ${{ github.ref != 'refs/heads/main' }}
         uses: SonarSource/sonarqube-scan-action@7006c4492b2e0ee0f816d36501671557c97f5995 # v8.1.0

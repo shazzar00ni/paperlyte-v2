@@ -1,5 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { BrowserRouter } from 'react-router-dom'
 import * as Sentry from '@sentry/react'
 import * as monitoring from '@utils/monitoring'
 // Self-hosted Google Fonts (Inter) for better security and performance
@@ -82,6 +83,8 @@ if (import.meta.env.PROD && 'serviceWorker' in navigator) {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </StrictMode>
 )

@@ -83,11 +83,7 @@
     "global": [
       ".github/workflows/sonarcloud.yml"
     ],
-    "perTool": {
-      "Stylelint": [
-        "src/styles/reset.css"
-      ]
-    }
+    "perTool": {}
   },
   "securityCoverage": {
     "deduplication": [
@@ -107,6 +103,7 @@
   "importResults": null,
   "notes": [
     "localConfigurationFile paths changed from absolute (/home/user/paperlyte-v2/...) to repo-relative to ensure portability across environments.",
-    ".github/workflows/sonarcloud.yml added to global exclude to prevent Semgrep false-positive on pinned action SHA."
+    ".github/workflows/sonarcloud.yml added to global exclude to prevent Semgrep false-positive on pinned action SHA.",
+    "Stylelint reset.css exclusion narrowed: removed tool-level file exclusion, added inline stylelint-disable/enable for declaration-no-important around the prefers-reduced-motion block only. All other 86 Stylelint patterns now run on reset.css."
   ]
 }

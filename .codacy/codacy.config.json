@@ -1943,9 +1943,6 @@
         {
           "patternId": "Stylelint_value-no-vendor-prefix"
         }
-      ],
-      "exclude": [
-        "src/styles/reset.css"
       ]
     },
     {

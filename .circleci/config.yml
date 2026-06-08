@@ -172,6 +172,9 @@ jobs:
 
 workflows:
   ci:
+    # Production deploys intentionally remain in .github/workflows/deploy.yml.
+    # That workflow enforces the security gate, protected production
+    # environment approval, and production-deploy concurrency controls.
     jobs:
       - install
       - lint:

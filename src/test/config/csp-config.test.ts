@@ -133,10 +133,9 @@ describe('deployment Content Security Policy', () => {
     const sharedDirectiveNames = [...vercelDirectives.keys()].filter((d) => d !== 'script-src')
 
     for (const directive of sharedDirectiveNames) {
-      expect(
-        wafDirectives.get(directive),
-        `${directive} in WAF CSP must match vercel.json`
-      ).toBe(vercelDirectives.get(directive))
+      expect(wafDirectives.get(directive), `${directive} in WAF CSP must match vercel.json`).toBe(
+        vercelDirectives.get(directive)
+      )
     }
   })
 

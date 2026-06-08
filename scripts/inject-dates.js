@@ -87,12 +87,13 @@ try {
     { placeholder: "__OG_IMAGE_URL__", found: originalContent.includes("__OG_IMAGE_URL__") },
   ];
 
-  const foundPlaceholders = replacements.filter(r => r.found);
-  if (foundPlaceholders.length === 0) {
-    console.warn('⚠ Warning: No meta placeholders found in index.html');
-  } else {
+  const foundPlaceholders = replacements.filter((replacement) => replacement.found);
+
+  if (foundPlaceholders.length > 0) {
     writeFileSync(indexPath, content, "utf8");
     console.log('✓ Updated index.html (replaced', foundPlaceholders.length, 'placeholder types)');
+  } else {
+    console.log('✓ index.html meta values already configured');
   }
 } catch (error) {
   console.error('✗ Failed to process index.html:', error.message);

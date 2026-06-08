@@ -159,6 +159,25 @@ function sanitizeHtml(html: string): string {
   return result
 }
 
+/** Convert an `<a>` element to a Markdown link, stripping unsafe href schemes. */
+function buildMarkdownLink(attrs: string, content: string): string {
+  const hrefMatch = attrs.match(/href=["']([^"']*)["']/)
+  if (!hrefMatch) return stripTags(content)
+  const href = hrefMatch[1]
+  if (href.startsWith('//') || /^(?:javascript|data|vbscript):/i.test(href)) {
+    return stripTags(content)
+  }
+  return `[${stripTags(content)}](${href})`
+}
+
+/** Convert an `<img>` element to a Markdown image reference. */
+function buildMarkdownImage(attrs: string): string {
+  const srcMatch = attrs.match(/src=["']([^"']*)["']/)
+  if (!srcMatch) return ''
+  const altMatch = attrs.match(/alt=["']([^"']*)["']/)
+  return `![${altMatch ? altMatch[1] : ''}](${srcMatch[1]})`
+}
+
 /**
  * Convert sanitized HTML to Markdown using regex-based transformations.
  *
@@ -216,23 +235,12 @@ function htmlToMarkdown(html: string): string {
   md = md.replace(/<(?:em|i)[^>]*>([\s\S]*?)<\/(?:em|i)\s*>/gi, '*$1*')
 
   // Links — preserve href, reject unsafe schemes and protocol-relative URLs
-  md = md.replace(/<a\b([^>]*)>([\s\S]*?)<\/a\s*>/gi, (_, attrs: string, content: string) => {
-    const hrefMatch = attrs.match(/href=["']([^"']*)["']/)
-    if (!hrefMatch) return stripTags(content)
-    const href = hrefMatch[1]
-    if (href.startsWith('//') || /^(?:javascript|data|vbscript):/i.test(href)) {
-      return stripTags(content)
-    }
-    return `[${stripTags(content)}](${href})`
-  })
+  md = md.replace(/<a\b([^>]*)>([\s\S]*?)<\/a\s*>/gi, (_, attrs: string, content: string) =>
+    buildMarkdownLink(attrs, content)
+  )
 
   // Images — preserve src and alt
-  md = md.replace(/<img\b([^>]*)>/gi, (_, attrs: string) => {
-    const srcMatch = attrs.match(/src=["']([^"']*)["']/)
-    const altMatch = attrs.match(/alt=["']([^"']*)["']/)
-    if (!srcMatch) return ''
-    return `![${altMatch ? altMatch[1] : ''}](${srcMatch[1]})`
-  })
+  md = md.replace(/<img\b([^>]*)>/gi, (_, attrs: string) => buildMarkdownImage(attrs))
 
   // Ordered lists — reset counter per <ol>
   md = md.replace(/<ol[^>]*>([\s\S]*?)<\/ol\s*>/gi, (_, content: string) => {

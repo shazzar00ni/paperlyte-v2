@@ -24,12 +24,15 @@ jobs:
 
       - name: Download SonarScanner CLI
         run: |
-          BASE_URL="https://repo1.maven.org/maven2/org/sonarsource/scanner/cli/sonar-scanner-cli/7.0.2.4839/sonar-scanner-cli-7.0.2.4839.zip"
-          wget -q "${BASE_URL}" -O "$RUNNER_TEMP/sonar-scanner.zip"
-          wget -q "${BASE_URL}.sha256" -O "$RUNNER_TEMP/sonar-scanner.zip.sha256"
-          echo "$(cat $RUNNER_TEMP/sonar-scanner.zip.sha256)  $RUNNER_TEMP/sonar-scanner.zip" | sha256sum -c -
-          unzip -q "$RUNNER_TEMP/sonar-scanner.zip" -d "$RUNNER_TEMP/sonar-scanner"
-          echo "$RUNNER_TEMP/sonar-scanner/sonar-scanner-7.0.2.4839/bin" >> $GITHUB_PATH
+          set -euo pipefail
+          SONAR_VERSION="7.0.2.4839"
+          SONAR_SHA256="ef72465a66f519e5da9f1d0731de073d35755a9893591cae4821faebb6e58dd8"
+          SONAR_ARCHIVE="$RUNNER_TEMP/sonar-scanner.zip"
+          SONAR_INSTALL_DIR="$RUNNER_TEMP/sonar-scanner"
+          wget -q "https://repo1.maven.org/maven2/org/sonarsource/scanner/cli/sonar-scanner-cli/${SONAR_VERSION}/sonar-scanner-cli-${SONAR_VERSION}.zip" -O "${SONAR_ARCHIVE}"
+          echo "${SONAR_SHA256}  ${SONAR_ARCHIVE}" | sha256sum -c -
+          unzip -q "${SONAR_ARCHIVE}" -d "${SONAR_INSTALL_DIR}"
+          echo "${SONAR_INSTALL_DIR}/sonar-scanner-${SONAR_VERSION}/bin" >> $GITHUB_PATH
 
       - name: Analyze with SonarCloud
         env:

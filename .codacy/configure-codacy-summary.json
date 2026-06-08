@@ -13,7 +13,7 @@
       "after": 276
     },
     "analysisRuntime": {
-      "before": null,
+      "before": 77500,
       "after": 12803
     }
   },

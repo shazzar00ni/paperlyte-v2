@@ -69,28 +69,32 @@
           "after": "75"
         }
       ]
+    },
+    {
+      "patternId": "Biome_lint_security_noSecrets",
+      "toolId": "Biome",
+      "action": "disabled",
+      "reason": "100% false positives in this codebase (SVG path data, CSS selectors, DOM attribute names); security concern fully covered by Trivy_secret and Semgrep credential patterns. Per-file exclusions were removed in favour of disabling the pattern to avoid silencing other Biome checks on those files.",
+      "delta": -8,
+      "parameters": []
     }
   ],
   "fileExclusions": {
-    "global": [],
+    "global": [
+      ".github/workflows/sonarcloud.yml"
+    ],
     "perTool": {
       "Stylelint": [
         "src/styles/reset.css"
-      ],
-      "Biome": [
-        "public/offline.js",
-        "src/utils/env.ts",
-        "src/utils/keyboard.ts",
-        "src/utils/metaTags.ts"
       ]
     }
   },
   "securityCoverage": {
-    "deduplication": [],
+    "deduplication": [
+      "Biome_lint_security_noSecrets disabled \u2014 same concern covered by Trivy_secret and Semgrep gitleaks/detected-* patterns. All 8 hits were false positives (SVG strings, CSS selectors, DOM attribute names)."
+    ],
     "newCoverage": [],
-    "noisyButKept": [
-      "Biome_lint_security_noSecrets: 8 false positives (SVG path data, CSS selectors, DOM attribute names) excluded per-file. Pattern kept active for future code changes. Covered files excluded: public/offline.js, src/utils/env.ts, src/utils/keyboard.ts, src/utils/metaTags.ts"
-    ]
+    "noisyButKept": []
   },
   "keyImprovements": [
     "Removed 56 noise issues from Stylelint color-no-hex \u2014 the entire design system intentionally uses hex colors (#1a1a1a, #ffffff palette), this rule is incompatible with the project's design conventions.",
@@ -100,5 +104,9 @@
     "Removed PMD7 (Java/Kotlin linter) \u2014 has no valid targets in this TypeScript/React codebase.",
     "Analysis runtime dropped from 77.5s to 12.8s (83% faster) due to removal of PMD7 and dependency caching."
   ],
-  "importResults": null
+  "importResults": null,
+  "notes": [
+    "localConfigurationFile paths changed from absolute (/home/user/paperlyte-v2/...) to repo-relative to ensure portability across environments.",
+    ".github/workflows/sonarcloud.yml added to global exclude to prevent Semgrep false-positive on pinned action SHA."
+  ]
 }

@@ -34,7 +34,7 @@
     },
     {
       "toolId": "markdownlint",
-      "localConfigurationFile": "/home/user/paperlyte-v2/.markdownlint.json",
+      "localConfigurationFile": ".markdownlint.json",
       "useLocalConfigurationFile": true,
       "patterns": []
     },
@@ -2231,7 +2231,7 @@
     },
     {
       "toolId": "ESLint9",
-      "localConfigurationFile": "/home/user/paperlyte-v2/eslint.config.js",
+      "localConfigurationFile": "eslint.config.js",
       "useLocalConfigurationFile": true,
       "patterns": []
     },
@@ -6821,9 +6821,6 @@
           "patternId": "Biome_lint_security_noGlobalEval"
         },
         {
-          "patternId": "Biome_lint_security_noSecrets"
-        },
-        {
           "patternId": "Biome_lint_style_noDescendingSpecificity"
         },
         {
@@ -7090,12 +7087,6 @@
         {
           "patternId": "Biome_lint_suspicious_useNamespaceKeyword"
         }
-      ],
-      "exclude": [
-        "public/offline.js",
-        "src/utils/env.ts",
-        "src/utils/keyboard.ts",
-        "src/utils/metaTags.ts"
       ]
     },
     {
@@ -7421,6 +7412,7 @@
     "src/test/**",
     "scripts/**",
     "**/*.min.js",
-    "docs/**"
+    "docs/**",
+    ".github/workflows/sonarcloud.yml"
   ]
 }

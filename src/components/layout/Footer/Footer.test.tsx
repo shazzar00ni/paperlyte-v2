@@ -32,7 +32,7 @@ describe('Footer', () => {
 
     const pricingLink = screen.getByRole('link', { name: 'Pricing' })
     expect(pricingLink).toBeInTheDocument()
-    expect(pricingLink).toHaveAttribute('href', '#pricing')
+    expect(pricingLink).toHaveAttribute('href', '#email-capture')
   })
 
   it('should render Company link group', () => {

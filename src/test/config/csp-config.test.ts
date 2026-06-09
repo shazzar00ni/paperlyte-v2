@@ -118,20 +118,43 @@ const getVercelCspHeaders = (): CspHeaderSource[] => {
   return cspHeaders
 }
 
+const getNetlifyStaticCspHeader = (): CspHeaderSource => {
+  const tomlPath = join(process.cwd(), 'netlify.toml')
+  const content = readFileSync(tomlPath, 'utf-8')
+
+  const match = content.match(/^\s*Content-Security-Policy\s*=\s*"([^"]+)"/m)
+  if (!match) {
+    throw new Error('Content-Security-Policy not found in netlify.toml')
+  }
+
+  return { source: 'netlify.toml', value: match[1] }
+}
+
 describe('deployment Content Security Policy', () => {
-  it('WAF edge function and vercel.json share aligned non-script-src directives', () => {
-    // The Netlify WAF CSP and the Vercel static CSP intentionally diverge on
-    // script-src: the WAF adds 'nonce-{n}' and 'strict-dynamic' at runtime.
-    // All other directives must remain identical across both platforms.
+  it('all deployed CSP sources share aligned non-script-src directives', () => {
+    // The WAF nonce-based CSP intentionally diverges from the static CSPs on
+    // script-src (it adds 'nonce-{n}' and 'strict-dynamic' at runtime).
+    // The two static CSPs (netlify.toml fallback and vercel.json) must be
+    // identical. All non-script-src directives must match across all three.
     const wafCsp = getWafCspTemplate()
+    const netlifyStaticCsp = getNetlifyStaticCspHeader()
     const [vercelCsp] = getVercelCspHeaders()
 
     const wafDirectives = parseCspDirectives(wafCsp.value).directives
+    const netlifyDirectives = parseCspDirectives(netlifyStaticCsp.value).directives
     const vercelDirectives = parseCspDirectives(vercelCsp.value).directives
 
-    // Directives that must match between the two platforms.
-    const sharedDirectiveNames = [...vercelDirectives.keys()].filter((d) => d !== 'script-src')
+    // The two static CSPs must be identical in every directive.
+    const allNetlifyDirectiveNames = [...netlifyDirectives.keys()]
+    for (const directive of allNetlifyDirectiveNames) {
+      expect(
+        vercelDirectives.get(directive),
+        `${directive}: netlify.toml and vercel.json static CSPs must match`
+      ).toBe(netlifyDirectives.get(directive))
+    }
 
+    // WAF and static CSPs must agree on every directive except script-src.
+    const sharedDirectiveNames = [...vercelDirectives.keys()].filter((d) => d !== 'script-src')
     for (const directive of sharedDirectiveNames) {
       expect(wafDirectives.get(directive), `${directive} in WAF CSP must match vercel.json`).toBe(
         vercelDirectives.get(directive)
@@ -141,9 +164,10 @@ describe('deployment Content Security Policy', () => {
 
   it('allows Sentry Session Replay workers in every deployed CSP header', () => {
     const wafCsp = getWafCspTemplate()
+    const netlifyStaticCsp = getNetlifyStaticCspHeader()
     const vercelCspHeaders = getVercelCspHeaders()
 
-    for (const cspHeader of [wafCsp, ...vercelCspHeaders]) {
+    for (const cspHeader of [wafCsp, netlifyStaticCsp, ...vercelCspHeaders]) {
       const { directives, duplicates } = parseCspDirectives(cspHeader.value)
       const workerSrc = directives.get(WORKER_SRC_DIRECTIVE)
 

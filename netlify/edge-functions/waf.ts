@@ -400,16 +400,40 @@ export default async function waf(
     // instead trust any script transitively loaded by a nonce-carrying script
     // (Plausible, Sentry, etc.), eliminating host-allowlist bypass vectors.
     if (isHtmlResponse(response)) {
+      // Skip body transformation for HEAD requests and bodyless status codes.
+      // A 304 Not Modified tells the browser to reuse its cached copy — that
+      // copy already carries the nonce from the original 200 response. Issuing
+      // a new nonce here would mismatch against the cached body and block every
+      // script on the next load. The Fetch API also rejects a non-null body on
+      // a 304 response, which would convert a routine cache revalidation into a
+      // 502 error. HEAD responses likewise carry no body to inject nonces into.
+      const hasBody =
+        request.method !== "HEAD" &&
+        response.status !== 304 &&
+        response.status !== 204;
+
+      if (!hasBody) {
+        return withRequestId(response, requestId);
+      }
+
       const nonce = generateNonce();
+      // Deno's Fetch implementation transparently decompresses Content-Encoding
+      // (gzip / br / zstd) before .text() returns, matching browser behaviour.
+      // `html` is therefore always valid UTF-8 text regardless of the encoding
+      // the origin set on the response.
       const html = await response.text();
       const modifiedHtml = injectNonceIntoHtml(html, nonce);
 
       const headers = new Headers(response.headers);
       headers.set("Content-Security-Policy", buildCsp(nonce));
       headers.set("X-Request-ID", requestId);
-      // Body is now uncompressed plain text; remove the encoding hint so the
-      // browser does not attempt to decompress an already-decoded string.
+      // The reconstructed body is a plain UTF-8 string, not a compressed byte
+      // stream. Delete Content-Encoding so the browser does not try to
+      // decompress already-decoded content.
       headers.delete("Content-Encoding");
+      // Injecting nonce attributes changes the body byte length; delete the
+      // stale Content-Length so the browser does not truncate the modified HTML.
+      headers.delete("Content-Length");
 
       return new Response(modifiedHtml, {
         status: response.status,

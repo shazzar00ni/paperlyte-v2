@@ -1,0 +1,61 @@
+Type,Title,Last Visited,Host
+Pull Request,fix: replace Docker-based OWASP dep-check with npm audit,2026-06-07T12:33:30Z,github.com
+Pull Request,Add Obsidian and Bear to competitor comparison table,2026-06-07T12:46:32Z,github.com
+Pull Request,fix(ci): resolve recurring store_test_results warning in CircleCI,2026-06-07T10:57:48Z,github.com
+Pull Request,perf: reduce font and below-the-fold rendering overhead,2026-06-06T08:12:11Z,github.com
+Pull Request,Fix Netlify Edge Markdown runtime compatibility for #684,2026-06-07T14:54:07Z,github.com
+Pull Request,chore: update Privacy and Terms revision dates,2026-06-07T14:35:24Z,github.com
+Pull Request,fix(ci): skip CodeScan analysis gracefully when secrets are not configured,2026-06-05T10:39:52Z,github.com
+Pull Request,fix: upgrade codescan-scanner-action to Node.js 24 (Pre-release-3.0),2026-06-07T14:22:58Z,github.com
+Pull Request,"Add Playwright MCP for Chrome DevTools, bump deps, expand tests, and add Codacy CI upload",2026-06-04T21:00:23Z,github.com
+Pull Request,"CSP-safe animation delays, initial visibility flag, deferred theme-init, and hero image prioritization",2026-06-05T06:03:16Z,github.com
+Pull Request,fix(ci): remove SHA digest from Playwright Docker image reference,2026-06-07T13:16:30Z,github.com
+Pull Request,fix: harden dynamic easing lookup and workflow branch-name input validation,2026-06-04T03:45:44Z,github.com
+Pull Request,Improve waitlist CTA clarity,2026-06-05T16:37:15Z,github.com
+Pull Request,Add DAILY-PM-REPORTING.md: daily Senior Engineer / PM report cadence and template,2026-06-03T13:11:24Z,github.com
+Pull Request,"Refactor Hero styles for mobile-first responsiveness, typography, and mockup layout",2026-06-05T10:29:40Z,github.com
+Pull Request,Introduce build-time meta placeholders and validation for index.html,2026-06-02T18:47:45Z,github.com
+Pull Request,Add jiti devDependency to allow ESLint to load TypeScript configs,2026-06-02T18:26:48Z,github.com
+Pull Request,feat(ci): implement CircleCI Smarter Testing,2026-06-07T12:53:18Z,github.com
+Pull Request,style: fix Prettier formatting in OfflinePage.tsx,2026-06-04T10:54:02Z,github.com
+Pull Request,chore(deps-dev): bump @netlify/functions from 5.2.2 to 5.3.0,2026-06-02T08:53:02Z,github.com
+Pull Request,chore(deps): bump @sentry/react from 10.54.0 to 10.55.0,2026-06-02T09:02:10Z,github.com
+Pull Request,chore(deps-dev): bump vitest from 4.1.7 to 4.1.8,2026-06-02T09:03:12Z,github.com
+Pull Request,chore(deps-dev): bump @vitest/coverage-v8 from 4.1.7 to 4.1.8,2026-06-02T09:04:11Z,github.com
+Pull Request,chore(deps): bump the production-dependencies group across 1 directory with 2 updates,2026-06-02T09:04:46Z,github.com
+Pull Request,chore(deps-dev): bump the development-dependencies group across 1 directory with 4 updates,2026-06-02T09:06:20Z,github.com
+Pull Request,fix(a11y): dynamic aria-label and decorative icon on OfflinePage retry button,2026-06-04T18:09:55Z,github.com
+Pull Request,"fix: resolve Codacy security findings (CKV_GHA_7, open-redirect, unsafe-dynamic-method, secret FP)",2026-06-04T10:01:03Z,github.com
+Pull Request,Fix hero headline typography and trusted-by styles,2026-06-02T18:37:35Z,github.com
+Pull Request,test(testimonials): expand coverage from 55% to 100% lines,2026-06-01T08:13:58Z,github.com
+Pull Request,fix: ensure JUnit output directory exists to resolve Codacy 0 test results,2026-06-04T12:31:53Z,github.com
+Commit,Merge pull request #1070 from shazzar00ni/claude/nodejs-20-deprecation-s1c7V,2026-06-07T14:22:55Z,github.com
+Commit,Merge branch 'main' into claude/nodejs-20-deprecation-s1c7V,2026-06-07T12:54:52Z,github.com
+Commit,Merge pull request #1005 from shazzar00ni/claude/relaxed-tesla-clv9T,2026-06-07T12:42:26Z,github.com
+Commit,Merge branch 'main' into claude/relaxed-tesla-clv9T,2026-06-07T12:39:59Z,github.com
+Commit,Merge pull request #1076 from shazzar00ni/claude/feature-comparison-table-0GuVy,2026-06-07T12:38:45Z,github.com
+Commit,Merge branch 'main' into claude/feature-comparison-table-0GuVy,2026-06-07T12:35:10Z,github.com
+Commit,Merge pull request #1045 from shazzar00ni/claude/refactor-subscribe-function-Fm3m8,2026-06-07T12:10:13Z,github.com
+Commit,fix(subscribe): add Allow header to 405 and tighten rate-limit boundary,2026-06-07T11:41:39Z,github.com
+Commit,Merge branch 'main' into claude/refactor-subscribe-function-Fm3m8,2026-06-07T11:33:39Z,github.com
+Commit,Merge pull request #1075 from shazzar00ni/claude/laughing-edison-87BnK,2026-06-07T10:57:15Z,github.com
+Commit,Merge branch 'main' into claude/refactor-subscribe-function-Fm3m8,2026-06-07T10:19:21Z,github.com
+Commit,fix(test): add top-level outputFile as fallback for JUnit reporter,2026-06-07T10:11:33Z,github.com
+Commit,Fix Prettier formatting in Comparison.tsx,2026-06-07T09:04:33Z,github.com
+Commit,Fix tests and refactor Comparison table body to be data-driven,2026-06-07T09:03:34Z,github.com
+Commit,Add Obsidian and Bear to competitor comparison table,2026-06-07T08:57:55Z,github.com
+Commit,chore(ci): remove when: always from store_test_results/store_artifacts steps,2026-06-07T08:49:50Z,github.com
+Commit,fix(ci): resolve store_test_results warning by fixing JUnit reporter config,2026-06-06T14:43:30Z,github.com
+Commit,Merge branch 'main' into claude/relaxed-tesla-clv9T,2026-06-06T14:23:47Z,github.com
+Commit,Merge branch 'main' into claude/nodejs-20-deprecation-s1c7V,2026-06-06T08:37:38Z,github.com
+Commit,Update README.md,2026-06-06T08:12:16Z,github.com
+Commit,Merge branch 'main' into claude/relaxed-tesla-clv9T,2026-06-05T19:50:57Z,github.com
+Commit,fix(ci): keep production deploy behind GitHub security gate,2026-06-05T19:46:56Z,github.com
+Commit,Merge branch 'main' into claude/nodejs-20-deprecation-s1c7V,2026-06-05T18:15:23Z,github.com
+Commit,Create NEW-ROADMAP.md,2026-06-05T17:29:18Z,github.com
+Commit,fix: upgrade codescan-scanner-action to Pre-release-3.0 for Node.js 24,2026-06-05T06:02:24Z,github.com
+Commit,ci: pin netlify-cli version and add --context production to deploy,2026-05-31T08:23:20Z,github.com
+Commit,ci: add --no-build to netlify deploy to enforce artifact immutability,2026-05-31T08:21:07Z,github.com
+Commit,ci: add Netlify deploy job to CircleCI workflow,2026-05-24T04:51:18Z,github.com
+Commit,fix(subscribe): attach cause to rethrown error in processSubscription,2026-06-04T12:32:19Z,github.com
+Commit,Merge pull request #1047 from shazzar00ni/claude/codacy-test-results-error-AyXei,2026-06-04T12:31:50Z,github.com

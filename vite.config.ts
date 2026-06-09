@@ -127,19 +127,32 @@ function cspPlugin(): Plugin {
           return modifiedHtml
         }
 
-        // Production: stamp every <script> tag that lacks a nonce attribute
-        // with the build-time placeholder 'CSP_NONCE'. The WAF edge function
-        // (netlify/edge-functions/waf.ts) replaces this placeholder with a
-        // per-request cryptographic nonce at runtime.
+        // Production: stamp nonce="CSP_NONCE" onto every <script> and
+        // <link rel="modulepreload"> tag that lacks a nonce. The WAF edge
+        // function (netlify/edge-functions/waf.ts) replaces this placeholder
+        // with a per-request cryptographic nonce at runtime.
         //
-        // Only these pre-audited build-artifact scripts receive the nonce.
-        // Any <script> injected into the HTML after the build does not carry
-        // the placeholder and is therefore blocked by the nonce-based CSP,
-        // preserving XSS protection even if foreign content is later rendered.
-        return html.replace(/<script([^>]*)>/gi, (_match: string, attrs: string) => {
+        // <link rel="modulepreload"> requires explicit nonces because
+        // 'strict-dynamic' only propagates trust to scripts created
+        // dynamically by nonce-bearing scripts — it does NOT cover static
+        // HTML preload hints. Without a nonce, Chrome logs a CSP issue for
+        // each preload, which fails the Lighthouse inspector-issues audit.
+        //
+        // Only these pre-audited build-artifact tags receive the placeholder.
+        // Tags injected after the build do not carry it and are therefore
+        // blocked by the nonce-based CSP, preserving XSS protection.
+        let stamped = html.replace(/<script([^>]*)>/gi, (_match: string, attrs: string) => {
           if (/\bnonce=/i.test(attrs)) return `<script${attrs}>`
           return `<script${attrs} nonce="CSP_NONCE">`
         })
+        stamped = stamped.replace(
+          /(<link\b[^>]*\brel=["']modulepreload["'][^>]*)(>)/gi,
+          (_match: string, before: string, close: string) => {
+            if (/\bnonce=/i.test(before)) return `${before}${close}`
+            return `${before} nonce="CSP_NONCE"${close}`
+          }
+        )
+        return stamped
       },
     },
   }

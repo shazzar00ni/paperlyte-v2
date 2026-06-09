@@ -5,7 +5,7 @@
  * Blocks malicious requests: scanner user agents, path traversal, injection
  * probes, oversized payloads, and known attack signatures.
  */
-import type { Config, Context } from "https://edge.netlify.com";
+import type { Config, Context } from 'https://edge.netlify.com'
 
 // ---------------------------------------------------------------------------
 // Blocked user-agent patterns (vulnerability scanners & automated attack tools)
@@ -31,7 +31,7 @@ const BLOCKED_USER_AGENTS: RegExp[] = [
   /\bhydra\b/i,
   /appscan/i,
   /webinspect/i,
-];
+]
 
 // ---------------------------------------------------------------------------
 // Attack signature patterns (checked against decoded path + query string)
@@ -78,33 +78,33 @@ const ATTACK_SIGNATURES: RegExp[] = [
   /on(?:load|error|click|mouse|focus|blur|change)\s*=/i, // NOSONAR
   // SSRF / open-redirect probes
   /(?:file|dict|gopher|ldap|ftp):\/\//i,
-];
+]
 
 // Maximum accepted Content-Length (512 KB) — generous for a form submit,
 // protective against payload-stuffing attacks on serverless functions.
-const MAX_BODY_BYTES = 512 * 1024;
+const MAX_BODY_BYTES = 512 * 1024
 
 // Allowed HTTP methods for serverless function endpoints.
-const FUNCTION_ALLOWED_METHODS = new Set(["GET", "POST", "OPTIONS", "HEAD"]);
+const FUNCTION_ALLOWED_METHODS = new Set(['GET', 'POST', 'OPTIONS', 'HEAD'])
 
 // ---------------------------------------------------------------------------
 // CSP nonce helpers
 // ---------------------------------------------------------------------------
 
 /** Byte length for the CSP nonce — 128 bits of entropy. */
-const NONCE_BYTE_LENGTH = 16;
+const NONCE_BYTE_LENGTH = 16
 
 /**
  * Generates a cryptographically random base64url-encoded nonce (no padding).
  * 128 bits of entropy is sufficient to prevent brute-force prediction.
  */
 function generateNonce(): string {
-  const bytes = new Uint8Array(NONCE_BYTE_LENGTH);
-  crypto.getRandomValues(bytes);
+  const bytes = new Uint8Array(NONCE_BYTE_LENGTH)
+  crypto.getRandomValues(bytes)
   return btoa(String.fromCharCode(...bytes))
-    .replace(/\+/g, "-")
-    .replace(/\//g, "_")
-    .replace(/=/g, "");
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=/g, '')
 }
 
 /**
@@ -132,26 +132,25 @@ function buildCsp(nonce: string): string {
     `form-action 'self'; ` +
     `frame-ancestors 'none'; ` +
     `upgrade-insecure-requests;`
-  );
+  )
 }
 
 /** Returns true when the response carries an HTML body. */
 function isHtmlResponse(response: Response): boolean {
-  const ct = response.headers.get("content-type") ?? "";
-  return ct.includes("text/html");
+  const ct = response.headers.get('content-type') ?? ''
+  return ct.includes('text/html')
 }
 
 /**
- * Injects `nonce="<value>"` into every `<script ...>` opening tag.
- * Skips tags that already carry a nonce attribute (no duplicates).
- * Adding a nonce to non-JS types (e.g. application/ld+json) is harmless —
- * CSP ignores those types — so we keep the replacement unconditional.
+ * Replaces the build-time `nonce="CSP_NONCE"` placeholder stamped by the
+ * Vite `cspPlugin` with the per-request cryptographic nonce.
+ *
+ * Only `<script>` tags that were present in the trusted build artifact carry
+ * the placeholder; tags injected into the response after the build do not and
+ * are therefore blocked by the nonce-based CSP, preserving XSS protection.
  */
 function injectNonceIntoHtml(html: string, nonce: string): string {
-  return html.replace(/<script([^>]*)>/gi, (_m, attrs: string) => {
-    if (/\bnonce=/i.test(attrs)) return `<script${attrs}>`;
-    return `<script${attrs} nonce="${nonce}">`;
-  });
+  return html.replaceAll('nonce="CSP_NONCE"', `nonce="${nonce}"`)
 }
 
 // ---------------------------------------------------------------------------
@@ -167,28 +166,28 @@ function injectNonceIntoHtml(html: string, nonce: string): string {
  * @param requestId - UUID generated at the start of the WAF handler.
  */
 function withRequestId(response: Response, requestId: string): Response {
-  const headers = new Headers(response.headers);
-  headers.set("X-Request-ID", requestId);
+  const headers = new Headers(response.headers)
+  headers.set('X-Request-ID', requestId)
   return new Response(response.body, {
     status: response.status,
     statusText: response.statusText,
     headers,
-  });
+  })
 }
 
 /** Returns a 403 Forbidden response with no body. */
 function forbidden(): Response {
-  return new Response(null, { status: 403 });
+  return new Response(null, { status: 403 })
 }
 
 /** Returns a 400 Bad Request response with no body. */
 function badRequest(): Response {
-  return new Response(null, { status: 400 });
+  return new Response(null, { status: 400 })
 }
 
 /** Returns a 413 Content Too Large response with no body. */
 function payloadTooLarge(): Response {
-  return new Response(null, { status: 413 });
+  return new Response(null, { status: 413 })
 }
 
 /**
@@ -200,8 +199,8 @@ function payloadTooLarge(): Response {
 function methodNotAllowed(allowed: string[]): Response {
   return new Response(null, {
     status: 405,
-    headers: { Allow: allowed.join(", ") },
-  });
+    headers: { Allow: allowed.join(', ') },
+  })
 }
 
 // ---------------------------------------------------------------------------
@@ -216,9 +215,9 @@ function methodNotAllowed(allowed: string[]): Response {
  */
 function checkUserAgent(ua: string): Response | null {
   for (const pattern of BLOCKED_USER_AGENTS) {
-    if (pattern.test(ua)) return forbidden();
+    if (pattern.test(ua)) return forbidden()
   }
-  return null;
+  return null
 }
 
 /**
@@ -234,37 +233,35 @@ function checkUserAgent(ua: string): Response | null {
  *   the body cannot be read, or `null` if the size is within the limit.
  */
 async function checkBodySize(request: Request): Promise<Response | null> {
-  const contentLength = Number(request.headers.get("content-length") ?? "0");
-  if (contentLength > MAX_BODY_BYTES) return payloadTooLarge();
+  const contentLength = Number(request.headers.get('content-length') ?? '0')
+  if (contentLength > MAX_BODY_BYTES) return payloadTooLarge()
 
-  const hasBody = request.body !== null
-    && request.method !== "GET"
-    && request.method !== "HEAD";
+  const hasBody = request.body !== null && request.method !== 'GET' && request.method !== 'HEAD'
 
-  if (!hasBody) return null;
+  if (!hasBody) return null
 
   try {
-    const stream = request.clone().body;
-    if (stream === null) return null;
+    const stream = request.clone().body
+    if (stream === null) return null
 
-    const reader = stream.getReader();
-    let total = 0;
-    let chunk = await reader.read();
+    const reader = stream.getReader()
+    let total = 0
+    let chunk = await reader.read()
 
     while (!chunk.done) {
-      total += chunk.value.byteLength;
+      total += chunk.value.byteLength
       if (total > MAX_BODY_BYTES) {
         // Cancel both the clone's branch and the original to release queued data.
-        await Promise.all([reader.cancel(), request.body.cancel()]);
-        return payloadTooLarge();
+        await Promise.all([reader.cancel(), request.body.cancel()])
+        return payloadTooLarge()
       }
-      chunk = await reader.read();
+      chunk = await reader.read()
     }
   } catch {
-    return badRequest();
+    return badRequest()
   }
 
-  return null;
+  return null
 }
 
 /**
@@ -277,13 +274,13 @@ async function checkBodySize(request: Request): Promise<Response | null> {
  * @throws {URIError} If `raw` contains malformed percent-encoding.
  */
 function decodeIteratively(raw: string): string {
-  let decoded = raw;
+  let decoded = raw
   for (let i = 0; i < 3; i++) {
-    const next = decodeURIComponent(decoded);
-    if (next === decoded) break; // stable — no further encoding layers
-    decoded = next;
+    const next = decodeURIComponent(decoded)
+    if (next === decoded) break // stable — no further encoding layers
+    decoded = next
   }
-  return decoded;
+  return decoded
 }
 
 /**
@@ -308,30 +305,35 @@ function decodeIteratively(raw: string): string {
  */
 function checkUrlSignatures(url: URL): Response | null {
   // Translate + to space in the query portion only (path + is literal, not a space).
-  const raw = url.pathname + url.search.replaceAll("+", " ");
-  let decoded: string;
+  const raw = url.pathname + url.search.replaceAll('+', ' ')
+  let decoded: string
   try {
-    decoded = decodeIteratively(raw);
+    decoded = decodeIteratively(raw)
   } catch {
-    return badRequest();
+    return badRequest()
   }
 
   // Collapse all whitespace runs to a single space so that multi-space padding
   // (e.g. "union   select" via repeated + or %20) cannot bypass \s+ signatures.
-  const canonicalized = decoded.replace(/\s+/g, " ");
+  const canonicalized = decoded.replace(/\s+/g, ' ')
 
   // Build a deduplicated list: raw → decoded → canonicalized.
-  const seen = new Set<string>([raw]);
-  const targets: string[] = [raw];
-  if (!seen.has(decoded)) { seen.add(decoded); targets.push(decoded); }
-  if (!seen.has(canonicalized)) { targets.push(canonicalized); }
+  const seen = new Set<string>([raw])
+  const targets: string[] = [raw]
+  if (!seen.has(decoded)) {
+    seen.add(decoded)
+    targets.push(decoded)
+  }
+  if (!seen.has(canonicalized)) {
+    targets.push(canonicalized)
+  }
 
   for (const t of targets) {
     for (const pattern of ATTACK_SIGNATURES) {
-      if (pattern.test(t)) return forbidden();
+      if (pattern.test(t)) return forbidden()
     }
   }
-  return null;
+  return null
 }
 
 /**
@@ -344,12 +346,12 @@ function checkUrlSignatures(url: URL): Response | null {
  *   endpoint, or `null` to continue.
  */
 function checkFunctionMethod(pathname: string, method: string): Response | null {
-  const isFunctionEndpoint = pathname.startsWith("/.netlify/functions/");
-  const isMethodAllowed = FUNCTION_ALLOWED_METHODS.has(method);
+  const isFunctionEndpoint = pathname.startsWith('/.netlify/functions/')
+  const isMethodAllowed = FUNCTION_ALLOWED_METHODS.has(method)
   if (isFunctionEndpoint && !isMethodAllowed) {
-    return methodNotAllowed([...FUNCTION_ALLOWED_METHODS]);
+    return methodNotAllowed([...FUNCTION_ALLOWED_METHODS])
   }
-  return null;
+  return null
 }
 
 // ---------------------------------------------------------------------------
@@ -372,27 +374,24 @@ function checkFunctionMethod(pathname: string, method: string): Response | null 
  * @returns A `Response` — either a block response (4xx) or the origin response,
  *   always carrying an `X-Request-ID` header.
  */
-export default async function waf(
-  request: Request,
-  context: Context,
-): Promise<Response> {
-  const url = new URL(request.url);
-  const requestId = crypto.randomUUID();
+export default async function waf(request: Request, context: Context): Promise<Response> {
+  const url = new URL(request.url)
+  const requestId = crypto.randomUUID()
 
-  const uaBlock = checkUserAgent(request.headers.get("user-agent") ?? "");
-  if (uaBlock) return withRequestId(uaBlock, requestId);
+  const uaBlock = checkUserAgent(request.headers.get('user-agent') ?? '')
+  if (uaBlock) return withRequestId(uaBlock, requestId)
 
-  const bodySizeBlock = await checkBodySize(request);
-  if (bodySizeBlock) return withRequestId(bodySizeBlock, requestId);
+  const bodySizeBlock = await checkBodySize(request)
+  if (bodySizeBlock) return withRequestId(bodySizeBlock, requestId)
 
-  const signatureBlock = checkUrlSignatures(url);
-  if (signatureBlock) return withRequestId(signatureBlock, requestId);
+  const signatureBlock = checkUrlSignatures(url)
+  if (signatureBlock) return withRequestId(signatureBlock, requestId)
 
-  const methodBlock = checkFunctionMethod(url.pathname, request.method);
-  if (methodBlock) return withRequestId(methodBlock, requestId);
+  const methodBlock = checkFunctionMethod(url.pathname, request.method)
+  if (methodBlock) return withRequestId(methodBlock, requestId)
 
   try {
-    const response = await context.next();
+    const response = await context.next()
 
     // For HTML responses: inject a per-request CSP nonce into every <script>
     // tag and set a nonce-based Content-Security-Policy header.
@@ -400,71 +399,84 @@ export default async function waf(
     // instead trust any script transitively loaded by a nonce-carrying script
     // (Plausible, Sentry, etc.), eliminating host-allowlist bypass vectors.
     if (isHtmlResponse(response)) {
-      // Skip body transformation for HEAD requests and bodyless status codes.
-      // A 304 Not Modified tells the browser to reuse its cached copy — that
-      // copy already carries the nonce from the original 200 response. Issuing
-      // a new nonce here would mismatch against the cached body and block every
-      // script on the next load. The Fetch API also rejects a non-null body on
-      // a 304 response, which would convert a routine cache revalidation into a
-      // 502 error. HEAD responses likewise carry no body to inject nonces into.
-      const hasBody =
-        request.method !== "HEAD" &&
-        response.status !== 304 &&
-        response.status !== 204;
-
-      if (!hasBody) {
-        return withRequestId(response, requestId);
+      // HEAD and certain status codes require special handling — skip or
+      // adjust before any body transformation.
+      //
+      // HEAD: no body to inject nonces into.
+      // 204 No Content / 206 Partial Content: no complete body; injecting
+      //   nonces into a partial range body would corrupt Content-Range offsets.
+      if (request.method === 'HEAD' || response.status === 204 || response.status === 206) {
+        return withRequestId(response, requestId)
       }
 
-      const nonce = generateNonce();
+      // 304 Not Modified: the browser reuses its cached body, which already
+      // carries the original per-request nonce from the initial 200 response.
+      // The Fetch API also rejects a non-null body on a 304, so transforming
+      // would produce a 502. Crucially, 304 headers update the browser's cached
+      // response metadata — passing the static netlify.toml fallback CSP would
+      // downgrade the cached entry from the nonce-based policy to the weaker
+      // host-allowlist policy. Strip CSP from 304s so the cached 200 response
+      // keeps its original nonce-based policy intact.
+      if (response.status === 304) {
+        const headers = new Headers(response.headers)
+        headers.delete('Content-Security-Policy')
+        headers.set('X-Request-ID', requestId)
+        return new Response(null, {
+          status: 304,
+          statusText: response.statusText,
+          headers,
+        })
+      }
+
+      const nonce = generateNonce()
       // Deno's Fetch implementation transparently decompresses Content-Encoding
       // (gzip / br / zstd) before .text() returns, matching browser behaviour.
       // `html` is therefore always valid UTF-8 text regardless of the encoding
       // the origin set on the response.
-      const html = await response.text();
-      const modifiedHtml = injectNonceIntoHtml(html, nonce);
+      const html = await response.text()
+      const modifiedHtml = injectNonceIntoHtml(html, nonce)
 
-      const headers = new Headers(response.headers);
-      headers.set("Content-Security-Policy", buildCsp(nonce));
-      headers.set("X-Request-ID", requestId);
+      const headers = new Headers(response.headers)
+      headers.set('Content-Security-Policy', buildCsp(nonce))
+      headers.set('X-Request-ID', requestId)
       // The reconstructed body is a plain UTF-8 string, not a compressed byte
       // stream. Delete Content-Encoding so the browser does not try to
       // decompress already-decoded content.
-      headers.delete("Content-Encoding");
+      headers.delete('Content-Encoding')
       // Injecting nonce attributes changes the body byte length; delete the
       // stale Content-Length so the browser does not truncate the modified HTML.
-      headers.delete("Content-Length");
+      headers.delete('Content-Length')
 
       return new Response(modifiedHtml, {
         status: response.status,
         statusText: response.statusText,
         headers,
-      });
+      })
     }
 
-    return withRequestId(response, requestId);
+    return withRequestId(response, requestId)
   } catch {
     // Origin or network error — return a 502 with the request ID so the
     // failed request remains traceable in edge logs alongside blocked traffic.
-    return withRequestId(new Response(null, { status: 502 }), requestId);
+    return withRequestId(new Response(null, { status: 502 }), requestId)
   }
 }
 
 export const config: Config = {
-  path: "/*",
+  path: '/*',
   // Skip WAF on static assets served directly from the CDN cache.
   // Fonts live under /fonts/ (e.g. /fonts/Inter-Variable.woff2); root-level
   // font globs would never match those URLs, so /fonts/* is used instead.
   excludedPath: [
-    "/assets/*",
-    "/fonts/*",
-    "/*.ico",
-    "/*.png",
-    "/*.jpg",
-    "/*.jpeg",
-    "/*.webp",
-    "/*.avif",
-    "/*.svg",
-    "/*.gif",
+    '/assets/*',
+    '/fonts/*',
+    '/*.ico',
+    '/*.png',
+    '/*.jpg',
+    '/*.jpeg',
+    '/*.webp',
+    '/*.avif',
+    '/*.svg',
+    '/*.gif',
   ],
-};
+}

@@ -97,36 +97,50 @@ function cspPlugin(): Plugin {
     configResolved(config) {
       isDev = config.mode === 'development'
     },
-    transformIndexHtml(html) {
-      // Only inject CSP meta tag in development mode
-      // Production CSP is delivered via HTTP headers in netlify.toml
-      if (!isDev) {
-        return html
-      }
+    transformIndexHtml: {
+      // Run after Vite has injected its own <script> tags (e.g. the module
+      // entry point) so they receive the nonce placeholder alongside the
+      // hand-authored ones from index.html.
+      order: 'post',
+      handler(html) {
+        if (isDev) {
+          // Development CSP: Allow WebSockets for HMR and unsafe-eval for fast refresh
+          // - 'unsafe-eval' is required for Vite's HMR and React Fast Refresh (development only)
+          // - 'unsafe-inline' is required for Vite's dev server CSS injection during HMR
+          // - ws: wss: enables WebSocket connections for Vite dev server HMR
+          // - All fonts and icons are self-hosted (no external CDN dependencies)
+          // - Fonts: @fontsource/inter, Icons: bundled custom SVG paths
+          const devCSP = `default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' ws: wss:; worker-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';`
 
-      // Development CSP: Allow WebSockets for HMR and unsafe-eval for fast refresh
-      // - 'unsafe-eval' is required for Vite's HMR and React Fast Refresh (development only)
-      // - 'unsafe-inline' is required for Vite's dev server CSS injection during HMR
-      // - ws: wss: enables WebSocket connections for Vite dev server HMR
-      // - All fonts and icons are self-hosted (no external CDN dependencies)
-      // - Fonts: @fontsource/inter, Icons: bundled custom SVG paths
-      const devCSP = `default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' ws: wss:; worker-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';`
-
-      // Inject CSP meta tag before closing </head> tag (dev only)
-      const cspMetaTag = `    <!-- Content Security Policy (development only) -->
+          const cspMetaTag = `    <!-- Content Security Policy (development only) -->
     <meta http-equiv="Content-Security-Policy" content="${devCSP}" />
   </head>`
 
-      const modifiedHtml = html.replace('</head>', cspMetaTag)
+          const modifiedHtml = html.replace('</head>', cspMetaTag)
 
-      // Warn if injection failed (no </head> tag found)
-      if (modifiedHtml === html) {
-        console.warn(
-          '[csp-plugin] Warning: Could not inject CSP meta tag - </head> tag not found in HTML'
-        )
-      }
+          if (modifiedHtml === html) {
+            console.warn(
+              '[csp-plugin] Warning: Could not inject CSP meta tag - </head> tag not found in HTML'
+            )
+          }
 
-      return modifiedHtml
+          return modifiedHtml
+        }
+
+        // Production: stamp every <script> tag that lacks a nonce attribute
+        // with the build-time placeholder 'CSP_NONCE'. The WAF edge function
+        // (netlify/edge-functions/waf.ts) replaces this placeholder with a
+        // per-request cryptographic nonce at runtime.
+        //
+        // Only these pre-audited build-artifact scripts receive the nonce.
+        // Any <script> injected into the HTML after the build does not carry
+        // the placeholder and is therefore blocked by the nonce-based CSP,
+        // preserving XSS protection even if foreign content is later rendered.
+        return html.replace(/<script([^>]*)>/gi, (_match: string, attrs: string) => {
+          if (/\bnonce=/i.test(attrs)) return `<script${attrs}>`
+          return `<script${attrs} nonce="CSP_NONCE">`
+        })
+      },
     },
   }
 }

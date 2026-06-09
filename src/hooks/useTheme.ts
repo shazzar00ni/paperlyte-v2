@@ -13,6 +13,7 @@ const USER_PREFERENCE_STORAGE_NAME = `${STORAGE_NS}:theme-user-preference`
 
 const toError = (e: unknown): Error => (e instanceof Error ? e : new Error(String(e)))
 
+/** Narrows a nullable string to the `Theme` union (`'light' | 'dark'`). */
 const isValidTheme = (value: string | null): value is Theme => {
   return value === 'light' || value === 'dark'
 }

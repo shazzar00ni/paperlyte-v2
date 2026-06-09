@@ -35,6 +35,7 @@ export const Header = (): React.ReactElement => {
   const menuButtonRef = useRef<HTMLButtonElement>(null)
   const menuRef = useRef<HTMLUListElement>(null)
 
+  /** Toggles the mobile menu open/closed state. */
   const toggleMobileMenu = useCallback((): void => {
     setMobileMenuOpen((prev) => !prev)
   }, [])

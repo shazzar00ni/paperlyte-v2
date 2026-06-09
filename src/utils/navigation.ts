@@ -172,8 +172,9 @@ export function isSafeUrl(url: string): boolean {
     return false
   }
 
-  // Block protocol-relative URLs (//example.com)
-  if (trimmedUrl.startsWith('//')) {
+  // Block //, /\, \/, \\ — any two-char slash/backslash prefix normalises to a
+  // protocol-relative URL in browsers (e.g. \/evil.com → //evil.com), enabling open redirects
+  if (/^[/\\]{2}/.test(trimmedUrl)) {
     return false
   }
 

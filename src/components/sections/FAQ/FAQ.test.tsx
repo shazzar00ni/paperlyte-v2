@@ -244,7 +244,7 @@ describe('FAQ', () => {
 
       await user.click(questionButton)
 
-      // When expanded, should show "Collapse answer"
+      // When expanded, should show "Collapse answer" via aria-labelledby + <title>
       icon = questionButton.querySelector('svg')
       expect(icon).toHaveAttribute('aria-labelledby')
       const titleIdExpanded = icon!.getAttribute('aria-labelledby')!

@@ -10,6 +10,7 @@ import {
 } from '@utils/keyboard'
 import styles from './FAQ.module.css'
 
+/** Props for an individual accordion FAQ item in the FAQ section. */
 interface FAQItemProps {
   question: string
   answer: string

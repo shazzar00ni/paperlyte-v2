@@ -38,28 +38,11 @@ const CACHEABLE_RE = /\.(png|jpg|jpeg|webp|avif|svg|ico|woff2?)$/
 
 // ─── Lifecycle ───────────────────────────────────────────────────────────────
 
-/**
- * Pre-cache critical assets so the offline fallback is available from the first visit.
- *
- * skipWaiting() is called ONLY on a fresh install (no existing active worker).
- * This satisfies the Lighthouse PWA "controls page and start_url" audit, which runs
- * within a single page visit where a waiting SW would never activate.
- *
- * On updates (active worker already present) skipWaiting() is intentionally omitted.
- * Calling it unconditionally on updates would cause the new SW to activate immediately,
- * delete the old versioned cache, and claim open tabs that still run the old JS. Those
- * tabs could then request old content-hashed lazy chunks (e.g. Statistics, FAQ, Sentry
- * replay) that are no longer cached and may 404 in the new deployment.
- *
- * Combined with clients.claim() in onActivate, a fresh install controls the current
- * page immediately without a reload.
- * @param {ExtendableEvent} event
- */
+// skipWaiting only on first install: satisfies Lighthouse PWA audit without risking
+// 404s for lazy-loaded chunks in tabs that loaded before an update was deployed.
 function onInstall(event) {
   event.waitUntil(caches.open(CACHE_VERSION).then((cache) => cache.addAll(PRECACHE)))
-  if (!self.registration.active) {
-    self.skipWaiting()
-  }
+  if (!self.registration.active) self.skipWaiting()
 }
 
 /**

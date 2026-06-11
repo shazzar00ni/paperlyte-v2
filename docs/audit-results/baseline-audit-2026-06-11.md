@@ -88,7 +88,8 @@ Split section chunks (via `React.lazy()`):
 - ✅ App mockups in AVIF/WebP/PNG with responsive variants (400w / 800w / full) in `public/mockups/`
 - ✅ `srcset`/`imagesrcset` responsive image preloading in `index.html`
 - ✅ AVIF/WebP icon variants (android-chrome 192/512)
-- ✅ SVG favicon, OG image, and Twitter card image
+- ✅ SVG favicon
+- ❌ Social-card images missing: `index.html` and the metadata injection publish `/og-image.jpg` and `/twitter-image.jpg`, but only the SVG sources exist in `public/` (`SOCIAL-IMAGE-GENERATION.md` marks the JPG conversions as still needed) — shared links currently render no preview image
 
 **PWA / Offline (NEW since December):**
 
@@ -192,7 +193,7 @@ All of these now have co-located test files, which mitigates the December mainta
 - ✅ **0 dependency vulnerabilities** (`npm audit` clean)
 - ✅ **CRITICAL-001 RESOLVED**: `.env` patterns now in `.gitignore` (lines 24–29) — December's only critical security finding
 - ✅ **MEDIUM-001 (SRI on Google Fonts) RESOLVED by elimination**: all fonts are now self-hosted (`@fontsource/inter` + local variable fonts); no Google Fonts CDN requests remain
-- ✅ Defense-in-depth now spans five layers: WAF edge function (`netlify/edge-functions/waf.ts`), HTTP security headers (`netlify.toml`/`vercel.json`), two-tier CSP (dev meta tag / strict prod headers), app-boundary URL validation (`isSafeUrl()`) + prototype-pollution guards, and input validation/sanitization + rate limiting (3 req/min/IP) + Zod schema validation in serverless functions
+- ✅ Defense-in-depth now spans five layers: WAF edge function (`netlify/edge-functions/waf.ts`), HTTP security headers (`netlify.toml`/`vercel.json`), two-tier CSP (dev meta tag / strict prod headers), app-boundary URL validation (`isSafeUrl()`) + prototype-pollution guards, and input validation/sanitization + best-effort rate limiting + Zod schema validation in serverless functions. Note: the 3 req/min/IP rate limit in `netlify/functions/subscribe.ts` uses a process-local in-memory `Map` that resets on cold start and is not shared across scaled instances — treat it as best-effort, not a hard guarantee; a durable/edge store would be needed for real enforcement
 - ✅ Font Awesome JS replaced with bundled SVG paths — removed the inline-style CSP violation
 - ✅ TypeScript strict mode; one known `any` exception remains (`ref as React.RefObject<any>` in `src/components/ui/TextReveal/TextReveal.tsx:107`, contrary to the project's no-`any` guideline — should be typed concretely); automated scanning in CI (Snyk, Scorecard, SonarCloud, CodeQL-style codescan, fuzzing workflow)
 
@@ -252,7 +253,11 @@ All of these now have co-located test files, which mitigates the December mainta
 3. **Production analytics is disconnected (NEW):** every runtime tracking call goes through `@utils/analytics`, whose functions return early unless `window.gtag` exists — but **no production file loads the gtag script** (it appears only as a type declaration and guarded calls). Meanwhile the provider framework in `src/analytics/` (`analytics.init()`, `getAnalyticsConfig()`) is never initialized outside tests. Net effect: waitlist, CTA, navigation, and scroll-depth events are all silent no-ops in production — conversion measurement is not just "pending a Plausible migration", it is currently absent. Either load gtag, wire the Plausible provider into runtime initialization, or consciously accept no analytics until Phase 2.
 4. **Store URLs unverified (carry-over from December's "Download URLs Incomplete" finding):** the GitHub-release URLs are fixed, but the iOS (`apps.apple.com/app/paperlyte`) and Android (`play.google.com/store/apps/details?id=com.paperlyte.app`) URLs point to listings that won't resolve until the apps are published. This portion of the December finding remains open; verify before launch.
 
-**Resolved since December:** Analytics test coverage ✅, Lighthouse CI ✅ (runs in GitHub Actions on every PR), keyboard-handler concerns addressed with tested keyboard utilities ✅, desktop/Linux download URLs ✅ (store listings still pending, above).
+5. **Waitlist is Netlify-only — broken on Vercel (NEW):** both email-capture implementations POST to `/.netlify/functions/subscribe`, but `vercel.json` defines only a catch-all SPA rewrite and the repo has no Vercel/API function. On the documented Vercel deployment option the primary conversion flow cannot create subscriptions. Either add a Vercel function/proxy or document the deployment as Netlify-only.
+6. **FeedbackWidget ships with no submission handler (NEW):** `App.tsx` renders `<FeedbackWidget />` without an `onSubmit` prop, and the widget's submit path then shows "Feedback submission is not yet available." Every user who opens the floating feedback form hits a guaranteed failure — wire a handler or hide the widget until one exists.
+7. **Desktop download URLs cannot resolve (carry-over, corrected):** `downloads.ts` expects `Paperlyte-macOS.dmg` / `Paperlyte-Windows.exe` on the latest GitHub release, but `.github/workflows/release.yml` builds and uploads only `paperlyte-<tag>.tar.gz` (+ Sigstore bundle), and no producer for the desktop binaries exists in the repo. The macOS/Windows links will 404 even after a release; the Linux link opens a release containing only the landing-page archive. December's "Download URLs Incomplete" finding therefore remains open for desktop *and* store URLs.
+
+**Resolved since December:** Analytics test coverage ✅, Lighthouse CI ✅ (runs in GitHub Actions on every PR), keyboard-handler concerns addressed with tested keyboard utilities ✅. (The earlier claim that GitHub-release download URLs were fixed was wrong — only the repo URL itself was fixed; see item 7.)
 
 ### 🟡 Medium Priority
 
@@ -285,14 +290,17 @@ All of these now have co-located test files, which mitigates the December mainta
 1. **Production analytics disconnected** — gtag is never loaded and the provider framework is never initialized; all conversion events are no-ops in production
 2. **Production-domain mismatch** — `scripts/generate-sitemap.cjs` hardcodes `paperlyte.com` while everything else uses `paperlyte.app`; sitemap directs search indexing at the wrong domain
 3. **Corrupted `Inter-Variable.woff2`** (HTML masquerading as a font) — replace the file; visitors currently preload a broken asset
-4. **App Store / Play Store URLs unverified** — carry-over from December's "Download URLs Incomplete"; confirm listings before launch
+4. **Download URLs unresolved (carry-over)** — release workflow produces no desktop binaries (macOS/Windows links will 404) and App/Play Store listings are unverified
+5. **Waitlist broken on Vercel** — subscribe endpoint exists only as a Netlify function; Vercel deployments have no backend for the primary conversion flow
+6. **FeedbackWidget unwired** — rendered without `onSubmit`; submission always fails with "not yet available"
 
 ### 🟡 MEDIUM
 
 1. Dual font-loading strategy — consolidate after fixing the variable font
-2. Untested production serverless/edge code — `netlify/functions/subscribe.ts`, `netlify/edge-functions/waf.ts` (outside Vitest coverage scope)
-3. Stale security/tech-debt documentation — refresh `SECURITY_REVIEW.md`, `TECHNICAL-DEBT.md`, `ACCESSIBILITY.md` (target date passed)
-4. GA4 → privacy-first analytics migration still pending (brand-promise gap)
+2. Untested production serverless/edge code — `netlify/functions/subscribe.ts`, `netlify/edge-functions/waf.ts` (outside Vitest coverage scope); rate limiting is best-effort (process-local store)
+3. Missing social-card images — `/og-image.jpg` and `/twitter-image.jpg` are published in meta tags but don't exist (only SVG sources); link previews are broken
+4. Stale security/tech-debt documentation — refresh `SECURITY_REVIEW.md`, `TECHNICAL-DEBT.md`, `ACCESSIBILITY.md` (target date passed)
+5. GA4 → privacy-first analytics migration still pending (brand-promise gap)
 
 ### 🟢 LOW
 
@@ -308,7 +316,10 @@ All of these now have co-located test files, which mitigates the December mainta
 - [ ] Complete and publish the four policy documents (cookie policy is a WIP outline, DMCA is a stub, accessibility statement has a placeholder owner): finish content, convert/copy into the served site (like the `public/privacy.html` pipeline — `docs/` itself is not published), then update `LEGAL_CONFIG.documents`
 - [ ] Decide and implement analytics for launch: load gtag or wire the existing Plausible provider into runtime init — production currently records no conversion events at all
 - [ ] Replace corrupted `public/fonts/Inter-Variable.woff2` with a valid subsetted Inter variable font
-- [ ] Verify App Store / Play Store listing URLs resolve (or hide those buttons until launch)
+- [ ] Fix download delivery: produce desktop artifacts (`Paperlyte-macOS.dmg`, `Paperlyte-Windows.exe`) in the release workflow or hide/replace those download buttons; verify App Store / Play Store listing URLs resolve (or hide them until launch)
+- [ ] Wire `FeedbackWidget` to a submission backend or remove it from `App.tsx` until one exists
+- [ ] Generate `og-image.jpg` / `twitter-image.jpg` from the existing SVGs (see `public/SOCIAL-IMAGE-GENERATION.md`) so social link previews work
+- [ ] Decide Vercel support: add a subscribe function/proxy for Vercel or document the deployment as Netlify-only
 - [ ] Update `docs/ACCESSIBILITY.md` — the March 31, 2026 conformance target has passed; publish audit results or revise the date
 - [ ] Run Lighthouse against production [paperlyte.app](https://paperlyte.app) (field conditions) to confirm localhost scores hold
 
@@ -342,7 +353,7 @@ All of these now have co-located test files, which mitigates the December mainta
 **Technical Debt:** ✅ SUBSTANTIALLY REDUCED
 
 - Critical: 14 legal placeholders (4 also need content written and published) + broken/contradictory shipped static legal pages (was 16 items incl. security)
-- High: 4 — analytics disconnected, domain mismatch, corrupted font (new), store URLs (carry-over from December)
+- High: 7 — analytics disconnected, domain mismatch, corrupted font, Vercel waitlist gap, unwired FeedbackWidget (new); download URLs incl. desktop artifacts (carry-over)
 - December's high-priority engineering items resolved except the store-listing portion of "Download URLs Incomplete"
 
 **Test Coverage:** ✅ EXCELLENT (was "needs improvement")
@@ -362,8 +373,8 @@ All of these now have co-located test files, which mitigates the December mainta
 
 **Production Readiness:** ⚠️ BLOCKED (narrower than December)
 
-- Remaining blockers: legal content (constants placeholders, unwritten/unpublished policy docs, shipped static legal pages), the sitemap domain mismatch, and disconnected analytics (+ store-URL verification)
-- December's other blockers (.env, GitHub-release download URLs, test coverage, Lighthouse verification) all cleared
+- Remaining blockers: legal content (constants placeholders, unwritten/unpublished policy docs, shipped static legal pages), the sitemap domain mismatch, disconnected analytics, download delivery (desktop artifacts + store listings), the unwired FeedbackWidget, missing social-card images, and the Vercel waitlist gap (if Vercel remains a supported target)
+- December's other blockers (.env, test coverage, Lighthouse verification) cleared
 
 ---
 

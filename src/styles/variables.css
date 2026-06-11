@@ -37,6 +37,8 @@
   --font-size-3xl: clamp(1.5rem, 1.1786rem + 1.6071vw, 1.875rem); /* 24px to 30px */
   --font-size-4xl: clamp(1.75rem, 1.2143rem + 2.6786vw, 2.25rem); /* 28px to 36px */
   --font-size-5xl: clamp(2rem, 1.2857rem + 3.5714vw, 3rem); /* 32px to 48px */
+  --font-size-6xl: clamp(2.5rem, 1.4286rem + 5.3571vw, 4rem); /* 40px to 64px */
+  --font-size-7xl: clamp(3rem, 1.5714rem + 7.1429vw, 5rem); /* 48px to 80px */
   --font-weight-normal: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
@@ -83,6 +85,7 @@
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-elevation-3: 0 8px 24px rgba(0, 0, 0, 0.12);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
 
   /* Transitions (automatically disabled for users with prefers-reduced-motion) */

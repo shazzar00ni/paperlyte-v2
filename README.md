@@ -14,9 +14,7 @@ Lightning-fast, distraction-free note-taking app — landing page built with Rea
 
 <!-- ADD A SCREENSHOT HERE -->
 
-### Paperlyte Deep Wiki:
-
-https://app.devin.ai/org/shannon-lockett/wiki/shazzar00ni/paperlyte-v2?branch=main
+**Paperlyte Deep Wiki:** [app.devin.ai/…/paperlyte-v2](https://app.devin.ai/org/shannon-lockett/wiki/shazzar00ni/paperlyte-v2?branch=main)
 
 <img width="1024" height="1536" alt="1000005261" src="https://github.com/user-attachments/assets/7ba39c13-5df8-4c25-a29e-54ddd65d2cac" />
 

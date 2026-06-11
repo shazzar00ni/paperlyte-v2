@@ -3,9 +3,9 @@
 **Date:** June 11, 2026
 **Auditor:** Claude Code (Automated Baseline Audit)
 **Repository:** [paperlyte-v2](https://github.com/shazzar00ni/paperlyte-v2)
-**Production Site:** [paperlyte.com](https://paperlyte.com)
+**Production Site:** [paperlyte.app](https://paperlyte.app) — see new finding: the repo references `paperlyte.app` consistently (README, `index.html`, `robots.txt`, metadata injection) but `scripts/generate-sitemap.cjs` hardcodes `paperlyte.com`, and the previous audit treated `.com` as authoritative
 **Previous Audit:** [baseline-audit-2025-12-22.md](./baseline-audit-2025-12-22.md)
-**Commits since previous audit:** ~1,496
+**Commits since previous audit:** ~1,497 reachable commits (`git rev-list --count 6d0af3f..HEAD`; 265 first-parent, 960 excluding merges)
 
 ## Audit Methodology
 
@@ -24,7 +24,7 @@ This updated audit re-runs the December 22, 2025 baseline methodology against th
 
 The codebase has improved dramatically since the December 2025 baseline. **Every high-priority engineering finding from the previous audit has been resolved**: test coverage went from large zero-coverage gaps to 95% lines across 1,757 passing tests; code splitting, image optimization (AVIF/WebP + srcset), coverage thresholds, and Lighthouse CI are all implemented; the critical `.gitignore`/`.env` security issue is fixed; and local Lighthouse runs now score **100/100/100/100** across all categories.
 
-**Production launch remains blocked by one category of issue: 14 legal placeholders in `src/constants/legal.ts`.** Two new issues were also found: a corrupted font file shipped to production (`public/fonts/Inter-Variable.woff2` is an HTML document, not a font) and a redundant dual font-loading strategy.
+**Production launch remains blocked by legal-content issues: 14 placeholders in `src/constants/legal.ts`, plus visible placeholders and a governing-law contradiction in the shipped static legal pages (`public/privacy.html` / `public/terms.html`).** Other new findings: a corrupted font file shipped to production (`public/fonts/Inter-Variable.woff2` is an HTML document, not a font), a redundant dual font-loading strategy, and a production-domain mismatch (`paperlyte.app` everywhere except the sitemap generator, which hardcodes `paperlyte.com`).
 
 ## Build Performance Metrics
 
@@ -60,8 +60,8 @@ Lazy-loaded chunks (below-the-fold sections, via `React.lazy()`):
 
 **Build Time:**
 
-- Total build time: **0.63 seconds** ✅ (was 3.85s in December — Vite 8 / Rolldown bundler upgrade)
-- Post-build steps: legal-date injection into privacy.html/terms.html, sitemap generation
+- Vite bundling time: **0.63 seconds** ✅ (was 3.85s in December, same Vite-reported metric — Vite 8 / Rolldown bundler upgrade; varies up to ~2.2s run-to-run)
+- Full `npm run build` lifecycle: **~38 seconds** — includes `prebuild` icon/mockup generation, `tsc -b`, Vite bundling, legal-date injection, and `postbuild` sitemap generation; the Vite timer above excludes all of these, so CI/deploy duration should be budgeted against the lifecycle figure
 
 ### Comparison vs. December 2025 Baseline
 
@@ -70,7 +70,7 @@ Lazy-loaded chunks (below-the-fold sections, via `React.lazy()`):
 | Initial JS (gzipped)    | 97.13 KB      | 88.70 KB                   | ✅ −9% |
 | Total JS (gzipped)      | 97.13 KB      | 101.14 KB                  | +4% (now split) |
 | Total CSS (gzipped)     | 7.34 KB       | 13.15 KB                   | +79% (within budget) |
-| Build time              | 3.85s         | 0.63s                      | ✅ −84% |
+| Vite bundling time      | 3.85s         | 0.63s                      | ✅ −84% (same Vite-reported metric in both audits) |
 | Code splitting          | ❌ None       | ✅ 6 lazy section chunks   | Resolved |
 | Lighthouse runnable     | ❌ No Chrome  | ✅ 3 runs, all 100s        | Resolved |
 
@@ -134,13 +134,13 @@ Lazy-loaded chunks (below-the-fold sections, via `React.lazy()`):
 
 **Caveat:** These are localhost results — no real network latency, CDN, or third-party scripts (Sentry/analytics inactive without env vars). Real-world scores will be somewhat lower. Lighthouse CI now also runs on every PR (`.github/workflows/ci.yml` `lighthouse` job), closing December's "no automated performance monitoring" gap.
 
-**Corroborating CDN data point:** Netlify's Lighthouse plugin, run against the live deploy preview of this audit branch (real CDN, production headers), scored **Performance 97 / Accessibility 100 / Best Practices 92 / SEO 100 / PWA 100** — confirming the localhost results hold under real network conditions. Periodic field-data checks (CrUX / RUM) against [paperlyte.com](https://paperlyte.com) remain recommended.
+**Corroborating CDN data point:** Netlify's Lighthouse plugin, run against the live deploy preview of this audit branch (real CDN, production headers), scored **Performance 97 / Accessibility 100 / Best Practices 92 / SEO 100 / PWA 100** — confirming the localhost results hold under real network conditions. Periodic field-data checks (CrUX / RUM) against the production domain ([paperlyte.app](https://paperlyte.app)) remain recommended.
 
 ## Code Quality
 
 **Lint:** ✅ `npm run lint` passes with zero errors/warnings (ESLint 10, flat config).
 
-**TODO comments in `src/`:** 1 (was 25+ in December) — a single explanatory note in `validation-email.test.ts` documenting an accepted email-regex limitation. All December TODO items in `src/analytics/index.ts`, `Privacy.tsx`, `Terms.tsx`, and `vite.config.ts` are resolved. (54 TODO mentions remain across `docs/*.md`, mostly mirroring the legal placeholders.)
+**TODO comments in `src/`:** 1 (was 25+ in December) — a single explanatory note in `validation-email.test.ts` documenting an accepted email-regex limitation. All December TODO items in `src/analytics/index.ts`, `Privacy.tsx`, `Terms.tsx`, and `vite.config.ts` are resolved. In documentation, `grep -rn TODO docs --include='*.md'` matches 53 lines (79 including the audit reports in `docs/audit-results/`, which quote TODO items), mostly mirroring the legal placeholders.
 
 **Tech stack (upgraded since December):** React 19.2.7, TypeScript 6.0.3 (strict), Vite 8.0.16 (Rolldown), Vitest 4.1.8, ESLint 10, Playwright 1.59.1, Sentry 10.56.
 
@@ -176,9 +176,12 @@ All of these now have co-located test files, which mitigates the December mainta
 | Privacy/Terms/EmailCapture untested                | ✅ RESOLVED — all have co-located test files                  |
 | No coverage thresholds in vitest.config.ts         | ✅ RESOLVED — 70% thresholds enforced; JUnit + lcov reporters wired into CI |
 
-**Remaining weak spots (minor):**
+**Coverage scope caveat:** the percentages above cover `src/**/*.{ts,tsx}` only (per `vitest.config.ts` include). Two production entry points live outside that scope and have **no tests at all**: `netlify/functions/subscribe.ts` (email subscribe — validation, rate limiting, ConvertKit integration) and `netlify/edge-functions/waf.ts` (edge WAF). The 95% figure is frontend coverage, not codebase-wide.
 
-- `src/hooks/useAnalytics.ts`: 64% statements / 29% functions — lowest-covered module
+**Remaining weak spots:**
+
+- `netlify/functions/subscribe.ts` and `netlify/edge-functions/waf.ts`: 0% — untested production serverless/edge code (see caveat above)
+- `src/hooks/useAnalytics.ts`: 64% statements / 29% functions — lowest-covered frontend module
 - `src/components/sections/CTA/CTA.tsx`: 50% statements (lines 41–47 uncovered)
 
 ## Security Posture
@@ -190,7 +193,7 @@ All of these now have co-located test files, which mitigates the December mainta
 - ✅ **MEDIUM-001 (SRI on Google Fonts) RESOLVED by elimination**: all fonts are now self-hosted (`@fontsource/inter` + local variable fonts); no Google Fonts CDN requests remain
 - ✅ Defense-in-depth now spans five layers: WAF edge function (`netlify/edge-functions/waf.ts`), HTTP security headers (`netlify.toml`/`vercel.json`), two-tier CSP (dev meta tag / strict prod headers), app-boundary URL validation (`isSafeUrl()`) + prototype-pollution guards, and input validation/sanitization + rate limiting (3 req/min/IP) + Zod schema validation in serverless functions
 - ✅ Font Awesome JS replaced with bundled SVG paths — removed the inline-style CSP violation
-- ✅ TypeScript strict mode; no `any`; automated scanning in CI (Snyk, Scorecard, SonarCloud, CodeQL-style codescan, fuzzing workflow)
+- ✅ TypeScript strict mode; one known `any` exception remains (`ref as React.RefObject<any>` in `src/components/ui/TextReveal/TextReveal.tsx:107`, contrary to the project's no-`any` guideline — should be typed concretely); automated scanning in CI (Snyk, Scorecard, SonarCloud, CodeQL-style codescan, fuzzing workflow)
 
 **Documentation staleness:** `docs/SECURITY_REVIEW.md` is dated 2025-11-29 and still marks MEDIUM-002 (CSP) and MEDIUM-003 (security headers) as UNRESOLVED, although both are implemented in `netlify.toml`/`vercel.json`. The document should be refreshed to reflect current state. Pre-production security testing (line ~340) also remains marked TODO.
 
@@ -199,7 +202,7 @@ All of these now have co-located test files, which mitigates the December mainta
 ### Current Status: ⚠️ STRONG FOUNDATION, STATEMENT OVERDUE
 
 - ✅ **Lighthouse Accessibility: 100/100** (all 3 runs) — exceeds the ≥95 target
-- ✅ 266 ARIA attributes across components; semantic HTML; skip link; 2px focus outlines
+- ✅ 81 `aria-*` attribute occurrences across non-test production components (266 including test files, which assert on them); semantic HTML; skip link; 2px focus outlines
 - ✅ `prefers-reduced-motion` honored via `useReducedMotion` (tested)
 - ✅ Keyboard utilities with dedicated tests (`src/utils/keyboard.test.ts`); FeedbackWidget, Header, FAQ have keyboard interaction tests
 - ✅ Accessibility statement exists (`docs/ACCESSIBILITY.md`)
@@ -231,12 +234,19 @@ All of these now have co-located test files, which mitigates the December mainta
 13. `metadata.jurisdiction`: `'[State/Country]'`
 14. `metadata.governingLaw`: `'[State] law'`
 
+**Shipped static legal pages contradict the tested React components (NEW):** the footer links users to `/privacy.html` and `/terms.html` — static files copied from `public/` into `dist` — not to the React `Privacy`/`Terms` components that the test suite covers. The shipped pages have their own problems:
+
+- `public/privacy.html` displays visible `[e.g., Amazon Web Services, Google Cloud]`-style processor placeholders and an internal warning to replace placeholders before publishing
+- `public/terms.html` declares **Australian** governing law while the React `Terms.tsx` declares **Delaware, United States** — the two cannot both be right, and which one users see depends on which artifact they reach
+- Neither static page is covered by any test, so the "Privacy/Terms now tested" improvement does not extend to what production actually serves
+
 **Resolved since December:** `social.github` (now the real repo URL — this also fixed the Windows/macOS/Linux download URL construction), `social.twitter` (now `x.com/paperlyte`), Instagram added, and Privacy/Terms revision dates are now injected at build time (no stale-date TODOs).
 
-### 🟠 High Priority (down from 4 items to 2)
+### 🟠 High Priority
 
-1. **Corrupted production font file (NEW):** `public/fonts/Inter-Variable.woff2` is an HTML document (1.6 KB, begins `<!DOCTYPE`), not a WOFF2 font. It is preloaded in `index.html` and referenced by the primary `Inter` `@font-face` in `src/styles/typography.css`. The font silently fails to parse and the site falls back to the `@fontsource/inter` static files (so rendering is unaffected), but every visitor preloads a broken asset and the variable-font strategy is non-functional. Replace with a valid Inter variable WOFF2 — `PlayfairDisplay-Variable.woff2` (38.4 KB, valid) shows the intended pattern.
-2. **Store URLs unverified:** `downloads.ts` iOS (`apps.apple.com/app/paperlyte`) and Android (`play.google.com/store/apps/details?id=com.paperlyte.app`) URLs are now populated but point to listings that won't resolve until the apps are published. Verify before launch.
+1. **Production-domain mismatch (NEW):** the repo consistently uses `paperlyte.app` (README, `index.html` canonical/OG tags, `public/robots.txt`, the build-time metadata injection), but `scripts/generate-sitemap.cjs:10` hardcodes `https://paperlyte.com` — so the generated sitemap points search engines at the wrong domain. Align the sitemap generator (and confirm which domain is canonical) before launch; the December audit also treated `.com` as authoritative and should be read with that caveat.
+2. **Corrupted production font file (NEW):** `public/fonts/Inter-Variable.woff2` is an HTML document (1.6 KB, begins `<!DOCTYPE`), not a WOFF2 font. It is preloaded in `index.html` and referenced by the primary `Inter` `@font-face` in `src/styles/typography.css`. The font silently fails to parse and the site falls back to the `@fontsource/inter` static files (so rendering is unaffected), but every visitor preloads a broken asset and the variable-font strategy is non-functional. Replace with a valid Inter variable WOFF2 — `PlayfairDisplay-Variable.woff2` (38.4 KB, valid) shows the intended pattern.
+3. **Store URLs unverified:** `downloads.ts` iOS (`apps.apple.com/app/paperlyte`) and Android (`play.google.com/store/apps/details?id=com.paperlyte.app`) URLs are now populated but point to listings that won't resolve until the apps are published. Verify before launch.
 
 **Resolved since December:** Analytics test coverage ✅, Lighthouse CI ✅ (runs in GitHub Actions on every PR), keyboard-handler concerns addressed with tested keyboard utilities ✅.
 
@@ -262,16 +272,22 @@ All of these now have co-located test files, which mitigates the December mainta
    - Note: 4 of the 14 are pure link-wiring (policy documents already written)
    - Owner: Legal & Compliance; ETA: required before launch
 
+2. **Shipped static legal pages broken/contradictory** — `public/privacy.html` / `public/terms.html`
+   - Impact: footer links serve these untested static files; shipped privacy page shows visible `[e.g., ...]` placeholders; shipped terms declares Australian governing law vs Delaware in the React component
+   - Owner: Legal & Compliance + Engineering; ETA: required before launch
+
 ### 🟠 HIGH
 
-1. **Corrupted `Inter-Variable.woff2`** (HTML masquerading as a font) — replace the file; visitors currently preload a broken asset
-2. **App Store / Play Store URLs unverified** — confirm listings before launch
+1. **Production-domain mismatch** — `scripts/generate-sitemap.cjs` hardcodes `paperlyte.com` while everything else uses `paperlyte.app`; sitemap directs search indexing at the wrong domain
+2. **Corrupted `Inter-Variable.woff2`** (HTML masquerading as a font) — replace the file; visitors currently preload a broken asset
+3. **App Store / Play Store URLs unverified** — confirm listings before launch
 
 ### 🟡 MEDIUM
 
 1. Dual font-loading strategy — consolidate after fixing the variable font
-2. Stale security/tech-debt documentation — refresh `SECURITY_REVIEW.md`, `TECHNICAL-DEBT.md`, `ACCESSIBILITY.md` (target date passed)
-3. GA4 → privacy-first analytics migration still pending (brand-promise gap)
+2. Untested production serverless/edge code — `netlify/functions/subscribe.ts`, `netlify/edge-functions/waf.ts` (outside Vitest coverage scope)
+3. Stale security/tech-debt documentation — refresh `SECURITY_REVIEW.md`, `TECHNICAL-DEBT.md`, `ACCESSIBILITY.md` (target date passed)
+4. GA4 → privacy-first analytics migration still pending (brand-promise gap)
 
 ### 🟢 LOW
 
@@ -282,11 +298,13 @@ All of these now have co-located test files, which mitigates the December mainta
 ### Phase 1: Pre-Production Critical Path
 
 - [ ] Resolve all 14 legal placeholders in `src/constants/legal.ts` (entity, address, jurisdiction, governing law, LinkedIn/Discord or remove the links)
+- [ ] Reconcile the shipped static legal pages with the React components: remove the `[e.g., ...]` placeholders from `public/privacy.html`, resolve the Australia-vs-Delaware governing-law contradiction between `public/terms.html` and `Terms.tsx`, and decide on a single source of truth for legal content
+- [ ] Fix the production-domain mismatch: update `scripts/generate-sitemap.cjs` from `paperlyte.com` to the canonical domain (`paperlyte.app` per all other references) and regenerate the sitemap
 - [ ] Wire the four existing policy docs (cookies, security, DMCA, accessibility) to public URLs and update `LEGAL_CONFIG.documents`
 - [ ] Replace corrupted `public/fonts/Inter-Variable.woff2` with a valid subsetted Inter variable font
 - [ ] Verify App Store / Play Store listing URLs resolve (or hide those buttons until launch)
 - [ ] Update `docs/ACCESSIBILITY.md` — the March 31, 2026 conformance target has passed; publish audit results or revise the date
-- [ ] Run Lighthouse against production [paperlyte.com](https://paperlyte.com) (field conditions) to confirm localhost scores hold
+- [ ] Run Lighthouse against production [paperlyte.app](https://paperlyte.app) (field conditions) to confirm localhost scores hold
 
 ### Phase 2: Quick Wins
 
@@ -317,14 +335,14 @@ All of these now have co-located test files, which mitigates the December mainta
 
 **Technical Debt:** ✅ SUBSTANTIALLY REDUCED
 
-- Critical: 14 legal placeholders (was 16 items incl. security)
-- High: 2 (was 4) — both new findings, not carry-overs
+- Critical: 14 legal placeholders + broken/contradictory shipped static legal pages (was 16 items incl. security)
+- High: 3 (was 4) — all new findings (domain mismatch, corrupted font, store URLs), not carry-overs
 - Every December high-priority engineering item resolved
 
 **Test Coverage:** ✅ EXCELLENT (was "needs improvement")
 
 - 1,757 tests, 0 failures; 95.1% lines / 93.7% statements / 86.5% branches
-- 70% thresholds enforced; zero-coverage modules eliminated
+- 70% thresholds enforced; zero-coverage modules eliminated within the frontend scope (Netlify serverless/edge functions remain untested)
 
 **Security:** 🟢 GOOD (improved)
 
@@ -338,7 +356,7 @@ All of these now have co-located test files, which mitigates the December mainta
 
 **Production Readiness:** ⚠️ BLOCKED (narrower than December)
 
-- Sole remaining blocker class: legal placeholders (+ store-URL verification)
+- Remaining blockers: legal content (constants placeholders + shipped static legal pages) and the sitemap domain mismatch (+ store-URL verification)
 - December's other blockers (.env, downloads URL construction, test coverage, Lighthouse verification) all cleared
 
 ---

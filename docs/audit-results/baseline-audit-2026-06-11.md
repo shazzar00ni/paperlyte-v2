@@ -22,7 +22,7 @@ This updated audit re-runs the December 22, 2025 baseline methodology against th
 
 ## Executive Summary
 
-The codebase has improved dramatically since the December 2025 baseline. **Nearly every high-priority engineering finding from the previous audit has been resolved** (the app-store-listing portion of "Download URLs Incomplete" carries over): test coverage went from large zero-coverage gaps to 95% lines across 1,757 passing tests; image optimization (AVIF/WebP + srcset), coverage thresholds, and Lighthouse CI are implemented; code splitting is in place (though all chunks are still fetched on initial load — see caveat); the critical `.gitignore`/`.env` security issue is fixed; and local Lighthouse runs now score **100/100/100/100** across all categories.
+The codebase has improved dramatically since the December 2025 baseline. **Nearly every high-priority engineering finding from the previous audit has been resolved** (the "Download URLs Incomplete" finding carries over for both desktop artifacts — which the release workflow never produces — and app-store listings): test coverage went from large zero-coverage gaps to 95% lines across 1,757 passing tests; image optimization (AVIF/WebP + srcset), coverage thresholds, and Lighthouse CI are implemented; code splitting is in place (though all chunks are still fetched on initial load — see caveat); the critical `.gitignore`/`.env` security issue is fixed; and local Lighthouse runs now score **100/100/100/100** across all categories.
 
 **Production launch remains blocked by legal-content issues: 14 placeholders in `src/constants/legal.ts`, plus visible placeholders and a governing-law contradiction in the shipped static legal pages (`public/privacy.html` / `public/terms.html`).** Other new findings: a corrupted font file shipped to production (`public/fonts/Inter-Variable.woff2` is an HTML document, not a font), a redundant dual font-loading strategy, a production-domain mismatch (`paperlyte.app` everywhere except the sitemap generator, which hardcodes `paperlyte.com`), and **production analytics that is entirely disconnected** — no gtag script is ever loaded and the provider framework is never initialized, so all conversion events are silent no-ops.
 
@@ -95,6 +95,7 @@ Split section chunks (via `React.lazy()`):
 
 - ✅ Service worker (`public/sw.js`) with versioned cache and offline fallback page
 - ⚠️ Asset-cache eviction is incomplete: `pruneAssetEntries()` (60-entry cap) runs only in `onActivate()`, while `cacheFirst()` misses keep adding entries between activations — a long-lived worker can exceed the cap until the next `CACHE_VERSION` bump
+- ⚠️ Cache versioning is manual and has never been bumped: `CACHE_VERSION` is the literal `'paperlyte-v1'` since introduction, and no build/release step updates it. The SW's own comment warns that when the precached shell changes, the installing and active workers share the same cache name and can mix old runtime assets with the new shell. Automate the bump (e.g., inject the build hash) or make it a required release step
 - ✅ `offline.html` + dedicated offline CSS/JS
 - ✅ Web manifest
 
@@ -193,7 +194,7 @@ All of these now have co-located test files, which mitigates the December mainta
 - ✅ **0 dependency vulnerabilities** (`npm audit` clean)
 - ✅ **CRITICAL-001 RESOLVED**: `.env` patterns now in `.gitignore` (lines 24–29) — December's only critical security finding
 - ✅ **MEDIUM-001 (SRI on Google Fonts) RESOLVED by elimination**: all fonts are now self-hosted (`@fontsource/inter` + local variable fonts); no Google Fonts CDN requests remain
-- ✅ Defense-in-depth now spans five layers: WAF edge function (`netlify/edge-functions/waf.ts`), HTTP security headers (`netlify.toml`/`vercel.json`), two-tier CSP (dev meta tag / strict prod headers), app-boundary URL validation (`isSafeUrl()`) + prototype-pollution guards, and input validation/sanitization + best-effort rate limiting + Zod schema validation in serverless functions. Note: the 3 req/min/IP rate limit in `netlify/functions/subscribe.ts` uses a process-local in-memory `Map` that resets on cold start and is not shared across scaled instances — treat it as best-effort, not a hard guarantee; a durable/edge store would be needed for real enforcement
+- ✅ Defense-in-depth spans five layers **on Netlify** (the Vercel deployment option lacks layer 1 — `netlify/edge-functions/waf.ts` cannot run there, so scanner-UA, attack-signature, payload-size, and method checks are absent; only the header policy in `vercel.json` applies): WAF edge function (`netlify/edge-functions/waf.ts`), HTTP security headers (`netlify.toml`/`vercel.json`), two-tier CSP (dev meta tag / strict prod headers), app-boundary URL validation (`isSafeUrl()`) + prototype-pollution guards, and input validation/sanitization + best-effort rate limiting + Zod schema validation in serverless functions. Note: the 3 req/min/IP rate limit in `netlify/functions/subscribe.ts` uses a process-local in-memory `Map` that resets on cold start and is not shared across scaled instances — treat it as best-effort, not a hard guarantee; a durable/edge store would be needed for real enforcement
 - ✅ Font Awesome JS replaced with bundled SVG paths — removed the inline-style CSP violation
 - ✅ TypeScript strict mode; one known `any` exception remains (`ref as React.RefObject<any>` in `src/components/ui/TextReveal/TextReveal.tsx:107`, contrary to the project's no-`any` guideline — should be typed concretely); automated scanning in CI (Snyk, Scorecard, SonarCloud, CodeQL-style codescan, fuzzing workflow)
 
@@ -244,6 +245,14 @@ All of these now have co-located test files, which mitigates the December mainta
 - `public/terms.html` declares **Australian** governing law while the React `Terms.tsx` declares **Delaware, United States** — the two cannot both be right, and which one users see depends on which artifact they reach
 - Neither static page is covered by any test, so the "Privacy/Terms now tested" improvement does not extend to what production actually serves
 
+**Unsubstantiated social proof shipped on the landing page (NEW):** for a pre-launch waitlist product, the page presents fabricated or unverifiable claims as fact — a material consumer-trust and potential legal (false advertising) risk:
+
+- `Hero.tsx:54-58` shows a "trusted by" company list of placeholder names: "Acme Corp", "Global", "Nebula", "Vertex", "Horizon"
+- `Statistics.tsx` advertises 10M+ notes created, 99.9% uptime, and a 4.9/5 rating — none of which can exist before launch
+- `src/constants/testimonials.ts` attributes endorsements to named people at real organizations including MIT (line 53) and Stripe (line 63)
+
+Verify with real data, clearly label as illustrative, or remove before launch.
+
 **Resolved since December:** `social.github` (now the real repo URL — this also fixed the Windows/macOS/Linux download URL construction), `social.twitter` (now `x.com/paperlyte`), Instagram added, and Privacy/Terms revision dates are now injected at build time (no stale-date TODOs).
 
 ### 🟠 High Priority
@@ -285,6 +294,11 @@ All of these now have co-located test files, which mitigates the December mainta
    - Impact: footer links serve these untested static files; shipped privacy page shows visible `[e.g., ...]` placeholders; shipped terms declares Australian governing law vs Delaware in the React component
    - Owner: Legal & Compliance + Engineering; ETA: required before launch
 
+3. **Unsubstantiated social proof** — `Hero.tsx`, `Statistics.tsx`, `testimonials.ts`
+   - Impact: placeholder "trusted by" logos, fabricated usage/uptime/rating statistics, and testimonials attributed to real organizations (MIT, Stripe) ship as fact on a pre-launch page
+   - Risk: consumer trust, false-advertising exposure
+   - Owner: Product + Legal; ETA: required before launch
+
 ### 🟠 HIGH
 
 1. **Production analytics disconnected** — gtag is never loaded and the provider framework is never initialized; all conversion events are no-ops in production
@@ -319,7 +333,9 @@ All of these now have co-located test files, which mitigates the December mainta
 - [ ] Fix download delivery: produce desktop artifacts (`Paperlyte-macOS.dmg`, `Paperlyte-Windows.exe`) in the release workflow or hide/replace those download buttons; verify App Store / Play Store listing URLs resolve (or hide them until launch)
 - [ ] Wire `FeedbackWidget` to a submission backend or remove it from `App.tsx` until one exists
 - [ ] Generate `og-image.jpg` / `twitter-image.jpg` from the existing SVGs (see `public/SOCIAL-IMAGE-GENERATION.md`) so social link previews work
-- [ ] Decide Vercel support: add a subscribe function/proxy for Vercel or document the deployment as Netlify-only
+- [ ] Decide Vercel support: add a subscribe function/proxy for Vercel or document the deployment as Netlify-only (note the WAF edge layer is also Netlify-only)
+- [ ] Replace or remove unsubstantiated social proof: placeholder trust logos (`Hero.tsx`), fabricated statistics (`Statistics.tsx`), and unverified testimonials attributed to MIT/Stripe (`testimonials.ts`)
+- [ ] Automate `CACHE_VERSION` bumps in `public/sw.js` (or add a release checklist step) so shell changes can't mix caches
 - [ ] Update `docs/ACCESSIBILITY.md` — the March 31, 2026 conformance target has passed; publish audit results or revise the date
 - [ ] Run Lighthouse against production [paperlyte.app](https://paperlyte.app) (field conditions) to confirm localhost scores hold
 
@@ -352,7 +368,7 @@ All of these now have co-located test files, which mitigates the December mainta
 
 **Technical Debt:** ✅ SUBSTANTIALLY REDUCED
 
-- Critical: 14 legal placeholders (4 also need content written and published) + broken/contradictory shipped static legal pages (was 16 items incl. security)
+- Critical: 14 legal placeholders (4 also need content written and published) + broken/contradictory shipped static legal pages + unsubstantiated social proof (was 16 items incl. security)
 - High: 7 — analytics disconnected, domain mismatch, corrupted font, Vercel waitlist gap, unwired FeedbackWidget (new); download URLs incl. desktop artifacts (carry-over)
 - December's high-priority engineering items resolved except the store-listing portion of "Download URLs Incomplete"
 
@@ -373,7 +389,7 @@ All of these now have co-located test files, which mitigates the December mainta
 
 **Production Readiness:** ⚠️ BLOCKED (narrower than December)
 
-- Remaining blockers: legal content (constants placeholders, unwritten/unpublished policy docs, shipped static legal pages), the sitemap domain mismatch, disconnected analytics, download delivery (desktop artifacts + store listings), the unwired FeedbackWidget, missing social-card images, and the Vercel waitlist gap (if Vercel remains a supported target)
+- Remaining blockers: legal content (constants placeholders, unwritten/unpublished policy docs, shipped static legal pages), unsubstantiated social proof (placeholder logos, fabricated stats, unverified testimonials), the sitemap domain mismatch, disconnected analytics, download delivery (desktop artifacts + store listings), the unwired FeedbackWidget, missing social-card images, and the Vercel waitlist gap (if Vercel remains a supported target)
 - December's other blockers (.env, test coverage, Lighthouse verification) cleared
 
 ---

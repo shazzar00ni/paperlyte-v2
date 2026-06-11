@@ -22,7 +22,7 @@ This file tracks information about the user's goals, context, and working style.
 ## Tech Stack Summary
 
 - **Category**: Stack
-- **Notes** (updated 2026-06-11): React 19.2.7, TypeScript 6.0 (strict), Vite 8 (Rolldown bundler — builds in ~0.6s), Vitest 4, ESLint 10, Playwright 1.59. Analytics: Google Analytics/gtag via `@utils/analytics` (Plausible migration still planned, not wired). Errors: Sentry 10. Email: Netlify Functions. Fonts: self-hosted — @fontsource/inter static weights plus variable-font files in `public/fonts/` (Playfair Display variable valid; Inter variable file corrupted as of 2026-06-11). Icons: custom bundled SVG paths (`src/components/ui/Icon/icons.ts`). Service worker (`public/sw.js`) provides offline support.
+- **Notes** (updated 2026-06-11): React 19.2.7, TypeScript 6.0 (strict), Vite 8 (Rolldown — bundling timer ~0.6s, but the full `npm run build` lifecycle incl. prebuild asset generation, tsc, injection and sitemap is ~38s), Vitest 4, ESLint 10, Playwright 1.59. Analytics: Google Analytics/gtag via `@utils/analytics` (Plausible migration still planned, not wired). Errors: Sentry 10. Email: Netlify Functions. Fonts: self-hosted — @fontsource/inter static weights plus variable-font files in `public/fonts/` (Playfair Display variable valid; Inter variable file corrupted as of 2026-06-11). Icons: custom bundled SVG paths (`src/components/ui/Icon/icons.ts`). Service worker (`public/sw.js`) provides offline support.
 
 ## Hosting / Deployment
 

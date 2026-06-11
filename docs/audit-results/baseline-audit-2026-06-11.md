@@ -22,9 +22,9 @@ This updated audit re-runs the December 22, 2025 baseline methodology against th
 
 ## Executive Summary
 
-The codebase has improved dramatically since the December 2025 baseline. **Every high-priority engineering finding from the previous audit has been resolved**: test coverage went from large zero-coverage gaps to 95% lines across 1,757 passing tests; code splitting, image optimization (AVIF/WebP + srcset), coverage thresholds, and Lighthouse CI are all implemented; the critical `.gitignore`/`.env` security issue is fixed; and local Lighthouse runs now score **100/100/100/100** across all categories.
+The codebase has improved dramatically since the December 2025 baseline. **Nearly every high-priority engineering finding from the previous audit has been resolved** (the app-store-listing portion of "Download URLs Incomplete" carries over): test coverage went from large zero-coverage gaps to 95% lines across 1,757 passing tests; image optimization (AVIF/WebP + srcset), coverage thresholds, and Lighthouse CI are implemented; code splitting is in place (though all chunks are still fetched on initial load — see caveat); the critical `.gitignore`/`.env` security issue is fixed; and local Lighthouse runs now score **100/100/100/100** across all categories.
 
-**Production launch remains blocked by legal-content issues: 14 placeholders in `src/constants/legal.ts`, plus visible placeholders and a governing-law contradiction in the shipped static legal pages (`public/privacy.html` / `public/terms.html`).** Other new findings: a corrupted font file shipped to production (`public/fonts/Inter-Variable.woff2` is an HTML document, not a font), a redundant dual font-loading strategy, and a production-domain mismatch (`paperlyte.app` everywhere except the sitemap generator, which hardcodes `paperlyte.com`).
+**Production launch remains blocked by legal-content issues: 14 placeholders in `src/constants/legal.ts`, plus visible placeholders and a governing-law contradiction in the shipped static legal pages (`public/privacy.html` / `public/terms.html`).** Other new findings: a corrupted font file shipped to production (`public/fonts/Inter-Variable.woff2` is an HTML document, not a font), a redundant dual font-loading strategy, a production-domain mismatch (`paperlyte.app` everywhere except the sitemap generator, which hardcodes `paperlyte.com`), and **production analytics that is entirely disconnected** — no gtag script is ever loaded and the provider framework is never initialized, so all conversion events are silent no-ops.
 
 ## Build Performance Metrics
 
@@ -32,14 +32,14 @@ The codebase has improved dramatically since the December 2025 baseline. **Every
 
 **JavaScript Bundles (gzipped):**
 
-Initial (critical path):
+Render-critical chunks:
 
 - `react-vendor-CPSICD2v.js`: 60.60 KB
 - `index-axir51bO.js`: 27.74 KB
 - `rolldown-runtime-xSXa1GVp.js`: 0.36 KB
-- **Initial JS (gzipped): 88.70 KB** ✅ (Target: ≤150 KB)
+- Subtotal: 88.70 KB
 
-Lazy-loaded chunks (below-the-fold sections, via `React.lazy()`):
+Split section chunks (via `React.lazy()`):
 
 - `EmailCapture`: 2.82 KB
 - `FAQ`: 2.65 KB
@@ -49,7 +49,8 @@ Lazy-loaded chunks (below-the-fold sections, via `React.lazy()`):
 - `CTA`: 0.78 KB
 
 - **Total JS (gzipped): 101.14 KB** ✅ (Target: ≤150 KB)
-- **Status:** PASSING — 33% under budget; initial payload is 9% smaller than December (88.7 KB vs 97.1 KB) despite total growth, thanks to code splitting
+- **Status:** PASSING — 33% under budget
+- **Splitting caveat:** `App.tsx` renders all six lazy sections unconditionally on first render, so React starts every dynamic import immediately — the full 101.14 KB is fetched during initial page load, not deferred until scroll. The split still helps (section chunks load async without blocking first paint, and cache independently), but it is not a reduced initial payload. Viewport-triggered rendering would be needed to actually defer the section chunks.
 
 **CSS Bundles (gzipped):**
 
@@ -67,11 +68,10 @@ Lazy-loaded chunks (below-the-fold sections, via `React.lazy()`):
 
 | Metric                  | Dec 2025      | Jun 2026                   | Change |
 | ----------------------- | ------------- | -------------------------- | ------ |
-| Initial JS (gzipped)    | 97.13 KB      | 88.70 KB                   | ✅ −9% |
-| Total JS (gzipped)      | 97.13 KB      | 101.14 KB                  | +4% (now split) |
+| Total JS (gzipped)      | 97.13 KB      | 101.14 KB                  | +4% (all fetched on load — see splitting caveat) |
 | Total CSS (gzipped)     | 7.34 KB       | 13.15 KB                   | +79% (within budget) |
 | Vite bundling time      | 3.85s         | 0.63s                      | ✅ −84% (same Vite-reported metric in both audits) |
-| Code splitting          | ❌ None       | ✅ 6 lazy section chunks   | Resolved |
+| Code splitting          | ❌ None       | ⚠️ 6 chunks, fetched eagerly | Partial — chunks split for caching/non-blocking load, but not deferred (all imports start on first render) |
 | Lighthouse runnable     | ❌ No Chrome  | ✅ 3 runs, all 100s        | Resolved |
 
 ### Asset Inventory
@@ -92,7 +92,8 @@ Lazy-loaded chunks (below-the-fold sections, via `React.lazy()`):
 
 **PWA / Offline (NEW since December):**
 
-- ✅ Service worker (`public/sw.js`) with versioned cache, offline fallback page, and asset-cache eviction (max 60 entries)
+- ✅ Service worker (`public/sw.js`) with versioned cache and offline fallback page
+- ⚠️ Asset-cache eviction is incomplete: `pruneAssetEntries()` (60-entry cap) runs only in `onActivate()`, while `cacheFirst()` misses keep adding entries between activations — a long-lived worker can exceed the cap until the next `CACHE_VERSION` bump
 - ✅ `offline.html` + dedicated offline CSS/JS
 - ✅ Web manifest
 
@@ -103,7 +104,7 @@ Lazy-loaded chunks (below-the-fold sections, via `React.lazy()`):
 | No WebP/AVIF format support               | ✅ RESOLVED — AVIF/WebP variants generated for mockups and icons    |
 | No responsive images (srcset)             | ✅ RESOLVED — 400w/800w/full variants with srcset                   |
 | No lazy loading for images                | ✅ RESOLVED — below-fold images lazy; hero image preloaded          |
-| No React.lazy() / code splitting          | ✅ RESOLVED — 6 sections lazy-loaded with Suspense                  |
+| No React.lazy() / code splitting          | ⚠️ PARTIAL — 6 sections split with `React.lazy()`/Suspense, but all are rendered unconditionally so every chunk is fetched on initial load (see splitting caveat above) |
 | Limited React.memo usage                  | ✅ ADDRESSED — `Section`, `AnimatedElement`, `Button` memoized; per project decision (2026-04-29), further memoization only when profiling shows need |
 | `chunkSizeWarningLimit` raised to 1000 KB | ✅ RESOLVED — TODO removed from `vite.config.ts`; manual chunking in place |
 
@@ -225,10 +226,12 @@ All of these now have co-located test files, which mitigates the December mainta
 4. `address.state`: `'[State]'`
 5. `address.zip`: `'[ZIP]'`
 6. `address.country`: `'[Country]'`
-7. `documents.cookies`: `'#'` — note: `docs/COOKIE-POLICY.md` **exists**; only the link wiring is missing
-8. `documents.security`: `'#'` — `docs/SECURITY-POLICY.md` exists; link wiring missing
-9. `documents.dmca`: `'#'` — `docs/DMCA.md` exists; link wiring missing
-10. `documents.accessibility`: `'#'` — `docs/ACCESSIBILITY.md` exists; link wiring missing
+7. `documents.cookies`: `'#'` — `docs/COOKIE-POLICY.md` is an explicit **work-in-progress outline** (overdue TODO, target was 2025-12-15); content must be written, not just linked
+8. `documents.security`: `'#'` — `docs/SECURITY-POLICY.md` exists but needs review before publishing
+9. `documents.dmca`: `'#'` — `docs/DMCA.md` is a **3-line stub** ("under development"); content must be written
+10. `documents.accessibility`: `'#'` — `docs/ACCESSIBILITY.md` exists but names a placeholder owner ("Jane Doe") and its conformance date has passed
+
+**Publishing gap for items 7–10:** these documents live only under `docs/`, which is **not part of the site build** — Vite copies `public/` into `dist` and nothing publishes `docs/`. Resolving the `'#'` links therefore requires completing the content *and* converting/copying each document into a publicly served artifact (like the existing `public/privacy.html`/`terms.html` pipeline), not merely updating `LEGAL_CONFIG.documents` paths.
 11. `social.linkedin`: `'#'`
 12. `social.discord`: `'#'`
 13. `metadata.jurisdiction`: `'[State/Country]'`
@@ -246,15 +249,16 @@ All of these now have co-located test files, which mitigates the December mainta
 
 1. **Production-domain mismatch (NEW):** the repo consistently uses `paperlyte.app` (README, `index.html` canonical/OG tags, `public/robots.txt`, the build-time metadata injection), but `scripts/generate-sitemap.cjs:10` hardcodes `https://paperlyte.com` — so the generated sitemap points search engines at the wrong domain. Align the sitemap generator (and confirm which domain is canonical) before launch; the December audit also treated `.com` as authoritative and should be read with that caveat.
 2. **Corrupted production font file (NEW):** `public/fonts/Inter-Variable.woff2` is an HTML document (1.6 KB, begins `<!DOCTYPE`), not a WOFF2 font. It is preloaded in `index.html` and referenced by the primary `Inter` `@font-face` in `src/styles/typography.css`. The font silently fails to parse and the site falls back to the `@fontsource/inter` static files (so rendering is unaffected), but every visitor preloads a broken asset and the variable-font strategy is non-functional. Replace with a valid Inter variable WOFF2 — `PlayfairDisplay-Variable.woff2` (38.4 KB, valid) shows the intended pattern.
-3. **Store URLs unverified:** `downloads.ts` iOS (`apps.apple.com/app/paperlyte`) and Android (`play.google.com/store/apps/details?id=com.paperlyte.app`) URLs are now populated but point to listings that won't resolve until the apps are published. Verify before launch.
+3. **Production analytics is disconnected (NEW):** every runtime tracking call goes through `@utils/analytics`, whose functions return early unless `window.gtag` exists — but **no production file loads the gtag script** (it appears only as a type declaration and guarded calls). Meanwhile the provider framework in `src/analytics/` (`analytics.init()`, `getAnalyticsConfig()`) is never initialized outside tests. Net effect: waitlist, CTA, navigation, and scroll-depth events are all silent no-ops in production — conversion measurement is not just "pending a Plausible migration", it is currently absent. Either load gtag, wire the Plausible provider into runtime initialization, or consciously accept no analytics until Phase 2.
+4. **Store URLs unverified (carry-over from December's "Download URLs Incomplete" finding):** the GitHub-release URLs are fixed, but the iOS (`apps.apple.com/app/paperlyte`) and Android (`play.google.com/store/apps/details?id=com.paperlyte.app`) URLs point to listings that won't resolve until the apps are published. This portion of the December finding remains open; verify before launch.
 
-**Resolved since December:** Analytics test coverage ✅, Lighthouse CI ✅ (runs in GitHub Actions on every PR), keyboard-handler concerns addressed with tested keyboard utilities ✅.
+**Resolved since December:** Analytics test coverage ✅, Lighthouse CI ✅ (runs in GitHub Actions on every PR), keyboard-handler concerns addressed with tested keyboard utilities ✅, desktop/Linux download URLs ✅ (store listings still pending, above).
 
 ### 🟡 Medium Priority
 
 1. **Dual font-loading strategy (NEW):** both `@fontsource/inter` static weights (4 weights × WOFF2+WOFF ≈ 222 KB of font files in `dist/assets/`) and a self-hosted Inter variable font are declared for the same `font-family: 'Inter'`. Once the corrupted variable font is fixed, drop one strategy — consolidating on the variable font would remove ~8 static font files from the build.
 2. **Stale audit/security docs:** `docs/SECURITY_REVIEW.md` (2025-11-29) and `docs/TECHNICAL-DEBT.md` (2025-12-29) predate major fixes and overstate current debt (e.g., both still list the resolved `.gitignore` and zero-coverage issues). Refresh or mark superseded.
-3. **`useAnalytics` hook coverage (64%)** and the GA4→Plausible provider migration (decision logged 2026-04-18) remain open.
+3. **`useAnalytics` hook coverage (64%)** remains open; the GA4→Plausible provider decision (logged 2026-04-18) is superseded by the High-priority finding that analytics is currently disconnected entirely.
 4. **DOM size:** 881 elements (Lighthouse score 0.5, warning only). Worth watching as Phase 2 sections are added.
 
 ### 🟢 Low Priority
@@ -269,7 +273,7 @@ All of these now have co-located test files, which mitigates the December mainta
 
 1. **14 Legal Placeholders** — `src/constants/legal.ts`
    - Impact: Cannot launch without legal entity, address, jurisdiction, governing law
-   - Note: 4 of the 14 are pure link-wiring (policy documents already written)
+   - Note: the 4 document links additionally require writing the content (cookie policy is a WIP outline, DMCA is a stub) and publishing it — `docs/` is not part of the site build
    - Owner: Legal & Compliance; ETA: required before launch
 
 2. **Shipped static legal pages broken/contradictory** — `public/privacy.html` / `public/terms.html`
@@ -278,9 +282,10 @@ All of these now have co-located test files, which mitigates the December mainta
 
 ### 🟠 HIGH
 
-1. **Production-domain mismatch** — `scripts/generate-sitemap.cjs` hardcodes `paperlyte.com` while everything else uses `paperlyte.app`; sitemap directs search indexing at the wrong domain
-2. **Corrupted `Inter-Variable.woff2`** (HTML masquerading as a font) — replace the file; visitors currently preload a broken asset
-3. **App Store / Play Store URLs unverified** — confirm listings before launch
+1. **Production analytics disconnected** — gtag is never loaded and the provider framework is never initialized; all conversion events are no-ops in production
+2. **Production-domain mismatch** — `scripts/generate-sitemap.cjs` hardcodes `paperlyte.com` while everything else uses `paperlyte.app`; sitemap directs search indexing at the wrong domain
+3. **Corrupted `Inter-Variable.woff2`** (HTML masquerading as a font) — replace the file; visitors currently preload a broken asset
+4. **App Store / Play Store URLs unverified** — carry-over from December's "Download URLs Incomplete"; confirm listings before launch
 
 ### 🟡 MEDIUM
 
@@ -300,7 +305,8 @@ All of these now have co-located test files, which mitigates the December mainta
 - [ ] Resolve all 14 legal placeholders in `src/constants/legal.ts` (entity, address, jurisdiction, governing law, LinkedIn/Discord or remove the links)
 - [ ] Reconcile the shipped static legal pages with the React components: remove the `[e.g., ...]` placeholders from `public/privacy.html`, resolve the Australia-vs-Delaware governing-law contradiction between `public/terms.html` and `Terms.tsx`, and decide on a single source of truth for legal content
 - [ ] Fix the production-domain mismatch: update `scripts/generate-sitemap.cjs` from `paperlyte.com` to the canonical domain (`paperlyte.app` per all other references) and regenerate the sitemap
-- [ ] Wire the four existing policy docs (cookies, security, DMCA, accessibility) to public URLs and update `LEGAL_CONFIG.documents`
+- [ ] Complete and publish the four policy documents (cookie policy is a WIP outline, DMCA is a stub, accessibility statement has a placeholder owner): finish content, convert/copy into the served site (like the `public/privacy.html` pipeline — `docs/` itself is not published), then update `LEGAL_CONFIG.documents`
+- [ ] Decide and implement analytics for launch: load gtag or wire the existing Plausible provider into runtime init — production currently records no conversion events at all
 - [ ] Replace corrupted `public/fonts/Inter-Variable.woff2` with a valid subsetted Inter variable font
 - [ ] Verify App Store / Play Store listing URLs resolve (or hide those buttons until launch)
 - [ ] Update `docs/ACCESSIBILITY.md` — the March 31, 2026 conformance target has passed; publish audit results or revise the date
@@ -315,7 +321,7 @@ All of these now have co-located test files, which mitigates the December mainta
 
 ### Phase 3: Ongoing
 
-- [ ] Execute GA4 → Plausible (privacy-first) analytics migration per 2026-04-18 decision
+- [ ] Move from the launch analytics decision (Phase 1) to the privacy-first Plausible provider per the 2026-04-18 decision — the `src/analytics/` framework exists but is not initialized in runtime
 - [ ] Monitor DOM size and bundle budgets as Phase 2 (conversion) sections land
 - [ ] Refactor 300+ line components opportunistically when touched
 - [ ] Quarterly re-audit cadence (next: ~September 2026 or at production launch, whichever first)
@@ -324,9 +330,9 @@ All of these now have co-located test files, which mitigates the December mainta
 
 **Bundle Performance:** ✅ EXCELLENT
 
-- Initial JS: 41% under budget (88.7 KB / 150 KB), code-split into 6 lazy chunks
+- Total JS: 33% under budget (101.1 KB / 150 KB), split into 6 section chunks (all fetched on initial load — see splitting caveat)
 - CSS: 56% under budget (13.2 KB / 30 KB)
-- Build time: 0.63s (−84% vs December)
+- Vite bundling time: 0.63s (−84% vs December, same metric); full `npm run build` lifecycle: ~38s
 
 **Lighthouse (local production build, 3 runs):** ✅ EXCELLENT — *new capability since December*
 
@@ -335,9 +341,9 @@ All of these now have co-located test files, which mitigates the December mainta
 
 **Technical Debt:** ✅ SUBSTANTIALLY REDUCED
 
-- Critical: 14 legal placeholders + broken/contradictory shipped static legal pages (was 16 items incl. security)
-- High: 3 (was 4) — all new findings (domain mismatch, corrupted font, store URLs), not carry-overs
-- Every December high-priority engineering item resolved
+- Critical: 14 legal placeholders (4 also need content written and published) + broken/contradictory shipped static legal pages (was 16 items incl. security)
+- High: 4 — analytics disconnected, domain mismatch, corrupted font (new), store URLs (carry-over from December)
+- December's high-priority engineering items resolved except the store-listing portion of "Download URLs Incomplete"
 
 **Test Coverage:** ✅ EXCELLENT (was "needs improvement")
 
@@ -356,8 +362,8 @@ All of these now have co-located test files, which mitigates the December mainta
 
 **Production Readiness:** ⚠️ BLOCKED (narrower than December)
 
-- Remaining blockers: legal content (constants placeholders + shipped static legal pages) and the sitemap domain mismatch (+ store-URL verification)
-- December's other blockers (.env, downloads URL construction, test coverage, Lighthouse verification) all cleared
+- Remaining blockers: legal content (constants placeholders, unwritten/unpublished policy docs, shipped static legal pages), the sitemap domain mismatch, and disconnected analytics (+ store-URL verification)
+- December's other blockers (.env, GitHub-release download URLs, test coverage, Lighthouse verification) all cleared
 
 ---
 

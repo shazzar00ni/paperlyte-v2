@@ -22,7 +22,7 @@ This file tracks information about the user's goals, context, and working style.
 ## Tech Stack Summary
 
 - **Category**: Stack
-- **Notes**: React 19.2, TypeScript 5.9 (strict), Vite 7.3. Testing: Vitest + Playwright. Analytics: Google Analytics/gtag via `@utils/analytics` (Plausible may be planned, but is not currently wired into the runtime). Errors: Sentry. Performance: Vercel Analytics. Email: Netlify Functions. Fonts: @fontsource/inter (self-hosted Latin subset). Icons: Font Awesome SVG core.
+- **Notes** (updated 2026-06-11): React 19.2.7, TypeScript 6.0 (strict), Vite 8 (Rolldown bundler — builds in ~0.6s), Vitest 4, ESLint 10, Playwright 1.59. Analytics: Google Analytics/gtag via `@utils/analytics` (Plausible migration still planned, not wired). Errors: Sentry 10. Email: Netlify Functions. Fonts: self-hosted — @fontsource/inter static weights plus variable-font files in `public/fonts/` (Playfair Display variable valid; Inter variable file corrupted as of 2026-06-11). Icons: custom bundled SVG paths (`src/components/ui/Icon/icons.ts`). Service worker (`public/sw.js`) provides offline support.
 
 ## Hosting / Deployment
 
@@ -47,4 +47,4 @@ This file tracks information about the user's goals, context, and working style.
 ## Known Tech Debt (Pre-Launch Blockers)
 
 - **Category**: Tech debt
-- **Notes**: `src/constants/legal.ts` contains critical TODO placeholders (legal entity name, address, jurisdiction, governing law) — blocks production launch. `src/constants/downloads.ts` constructs GitHub Releases download URLs from `LEGAL_CONFIG.social.github`, but that value is currently a placeholder (`#`), so all download links are broken until the repo URL and release artifacts are in place. `React.lazy()` is not yet used for large components such as `Privacy`, `Terms`, and `FeedbackWidget` — known optimization gap. Full inventory in `docs/TECHNICAL-DEBT.md`.
+- **Notes** (updated 2026-06-11, see `docs/audit-results/baseline-audit-2026-06-11.md`): `src/constants/legal.ts` still has 14 placeholders (legal entity name, address, jurisdiction, governing law, linkedin/discord, and 4 document links whose target docs already exist in `docs/`) — sole remaining launch-blocker class. `social.github`/`twitter` are now real, so download URL construction works; iOS/Android store URLs are populated but unverified until store listings exist. NEW finding: `public/fonts/Inter-Variable.woff2` is a corrupted file (HTML, not WOFF2) — preloaded but silently falls back to `@fontsource/inter`; also a redundant dual Inter loading strategy (fontsource static + variable font). December 2025 audit gaps (test coverage, code splitting, image optimization, Lighthouse CI, `.env` in `.gitignore`) are all resolved; coverage is now ~95% lines across 1,757 tests and local Lighthouse scores are 100/100/100/100.

@@ -121,10 +121,10 @@ This file tracks key architectural, design, and technical decisions made during 
 
 ## PWA
 
-- **Date**: YYYY-MM-DD (unknown)
-- **Decision**: Web manifest present but no service worker implemented yet
-- **Rationale**: PWA manifest enables "add to home screen" and branding; SW deferred until offline-first is a real requirement
-- **Alternatives considered**: Full PWA with Workbox from the start
+- **Date**: YYYY-MM-DD (unknown), superseded by 2026-06-11 observation
+- **Decision**: Web manifest present; a hand-rolled service worker (`public/sw.js`) is now implemented — versioned cache name, offline.html fallback, cache-first for hashed `/assets/*` with eviction (max 60 entries)
+- **Rationale**: PWA manifest enables "add to home screen"; SW added to deliver the offline-first brand promise on the landing page
+- **Alternatives considered**: Workbox, no service worker
 
 ## Infrastructure / Edge
 

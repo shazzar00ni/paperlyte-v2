@@ -122,9 +122,14 @@ This file tracks key architectural, design, and technical decisions made during 
 ## PWA
 
 - **Date**: YYYY-MM-DD (unknown)
-- **Decision**: Web manifest present but no service worker implemented yet
-- **Rationale**: PWA manifest enables "add to home screen" and branding; SW deferred until offline-first is a real requirement
+- **Decision**: Web manifest present and service worker (`public/sw.js`) fully implemented with cache-first, stale-while-revalidate, and network-first-with-offline-fallback strategies
+- **Rationale**: SW provides offline fallback page and caches critical assets; registered in `main.tsx` on `load` event (production only)
 - **Alternatives considered**: Full PWA with Workbox from the start
+
+- **Date**: 2026-06-08
+- **Decision**: Added conditional `self.skipWaiting()` (guarded by `!self.registration.active`) to the SW `onInstall` handler
+- **Rationale**: Without `skipWaiting()`, the SW enters a "waiting" state after install and never activates during the same page visit. Lighthouse's PWA audit ("Does not register a service worker that controls page and start_url") runs within a single visit, so it would never see the SW as active. The `!self.registration.active` guard restricts the call to first installs only — skipping it on updates avoids forcing immediate activation while existing tabs still reference lazy-loaded chunks from the prior cache, which would cause 404s. On first install there is no active SW, so the guard fires and `skipWaiting()` + existing `clients.claim()` ensures the SW activates and controls the page immediately.
+- **Alternatives considered**: Unconditional `skipWaiting()` (risks update-time 404s for lazy chunks); remove large fonts from PRECACHE (speeds install, but doesn't fix the fundamental waiting-state issue)
 
 ## Infrastructure / Edge
 

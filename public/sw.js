@@ -38,14 +38,11 @@ const CACHEABLE_RE = /\.(png|jpg|jpeg|webp|avif|svg|ico|woff2?)$/
 
 // ─── Lifecycle ───────────────────────────────────────────────────────────────
 
-/**
- * Pre-cache critical assets so the offline fallback is available from the first visit.
- * Does NOT call skipWaiting() — the new SW waits until all tabs on the old version
- * are closed before activating, preventing open tabs from losing their cached assets.
- * @param {ExtendableEvent} event
- */
+// skipWaiting only on first install: satisfies Lighthouse PWA audit without risking
+// 404s for lazy-loaded chunks in tabs that loaded before an update was deployed.
 function onInstall(event) {
   event.waitUntil(caches.open(CACHE_VERSION).then((cache) => cache.addAll(PRECACHE)))
+  if (!self.registration.active) self.skipWaiting()
 }
 
 /**

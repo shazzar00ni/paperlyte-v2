@@ -132,7 +132,9 @@ Lazy-loaded chunks (below-the-fold sections, via `React.lazy()`):
 - `unused-javascript`: ~21 KB of `react-vendor` (58.5 KB) unused on initial load — inherent to React runtime, low priority
 - `network-dependency-tree-insight`: informational critical-request-chain notice
 
-**Caveat:** These are localhost results — no real network latency, CDN, or third-party scripts (Sentry/analytics inactive without env vars). Real-world scores will be somewhat lower. Lighthouse CI now also runs on every PR (`.github/workflows/ci.yml` `lighthouse` job), closing December's "no automated performance monitoring" gap. Periodic field-data checks (CrUX / RUM) against [paperlyte.com](https://paperlyte.com) remain recommended.
+**Caveat:** These are localhost results — no real network latency, CDN, or third-party scripts (Sentry/analytics inactive without env vars). Real-world scores will be somewhat lower. Lighthouse CI now also runs on every PR (`.github/workflows/ci.yml` `lighthouse` job), closing December's "no automated performance monitoring" gap.
+
+**Corroborating CDN data point:** Netlify's Lighthouse plugin, run against the live deploy preview of this audit branch (real CDN, production headers), scored **Performance 97 / Accessibility 100 / Best Practices 92 / SEO 100 / PWA 100** — confirming the localhost results hold under real network conditions. Periodic field-data checks (CrUX / RUM) against [paperlyte.com](https://paperlyte.com) remain recommended.
 
 ## Code Quality
 

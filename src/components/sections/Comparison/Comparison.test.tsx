@@ -100,7 +100,7 @@ describe('Comparison', () => {
     const startupTimes = screen.getAllByText(/\b<1s\b|\b\d+-\d+s\b/i) // Matches "<1s", "3-5s", etc.
     expect(startupTimes.length).toBeGreaterThan(0)
 
-    expect(screen.getByText('Paid only')).toBeInTheDocument() // Evernote offline access
+    expect(screen.getAllByText('Paid only').length).toBeGreaterThan(0) // Multiple competitors have paid-only features
 
     const fullAccess = screen.getAllByText('Full access') // Appears in multiple rows
     expect(fullAccess.length).toBeGreaterThan(0)
@@ -153,8 +153,8 @@ describe('Comparison', () => {
     const headerRow = container.querySelector('thead tr')
     const headers = headerRow?.querySelectorAll('th')
 
-    // Should have 1 feature column + 4 competitor columns
-    expect(headers).toHaveLength(5)
+    // Should have 1 feature column + all competitor columns
+    expect(headers).toHaveLength(1 + COMPETITORS.length)
   })
 
   it('should use proper scope attributes for accessibility', () => {

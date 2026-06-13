@@ -141,18 +141,12 @@ function cspPlugin(): Plugin {
         // Only these pre-audited build-artifact tags receive the placeholder.
         // Tags injected after the build do not carry it and are therefore
         // blocked by the nonce-based CSP, preserving XSS protection.
-        let stamped = html.replace(/<script([^>]*)>/gi, (_match: string, attrs: string) => {
-          if (/\bnonce=/i.test(attrs)) return `<script${attrs}>`
-          return `<script${attrs} nonce="CSP_NONCE">`
-        })
-        stamped = stamped.replace(
-          /(<link\b[^>]*\brel=["']modulepreload["'][^>]*)(>)/gi,
-          (_match: string, before: string, close: string) => {
-            if (/\bnonce=/i.test(before)) return `${before}${close}`
-            return `${before} nonce="CSP_NONCE"${close}`
-          }
-        )
-        return stamped
+        return html
+          .replace(/<script(?![^>]*\bnonce=)([^>]*)>/gi, '<script$1 nonce="CSP_NONCE">')
+          .replace(
+            /<link(?=[^>]*\brel=["']modulepreload["'])(?![^>]*\bnonce=)([^>]*)>/gi,
+            '<link$1 nonce="CSP_NONCE">'
+          )
       },
     },
   }

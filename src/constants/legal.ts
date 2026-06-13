@@ -39,6 +39,7 @@ export const LEGAL_CONFIG = {
   documents: {
     privacy: '/privacy.html',
     terms: '/terms.html',
+    gdpr: '/gdpr.html',
     cookies: '#',
     security: '#',
     dmca: '#',

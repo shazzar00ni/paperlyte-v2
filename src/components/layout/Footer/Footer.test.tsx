@@ -55,6 +55,9 @@ describe('Footer', () => {
 
     const termsLink = screen.getByRole('link', { name: 'Terms of Service' })
     expect(termsLink).toBeInTheDocument()
+
+    const gdprLink = screen.getByRole('link', { name: 'GDPR Statement' })
+    expect(gdprLink).toBeInTheDocument()
   })
 
   it('should render Connect link group with social links', () => {

@@ -5,7 +5,7 @@
 
 ## Summary
 
-Analysis of Jules' (google-labs-jules[bot]) daily PR reviews in `PR_REVIEW_SUMMARY.md` identified two instances where file deletions were flagged — one confirmed accidental, one a deliberate harmful regression.
+Analysis of Jules' (google-labs-jules[bot]) daily PR reviews in `PR_REVIEW_SUMMARY.md` identified two instances where potential accidental file changes/rollbacks or deletions were flagged — one confirmed accidental, one a deliberate harmful regression.
 
 ---
 

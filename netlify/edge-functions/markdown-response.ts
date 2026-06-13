@@ -88,6 +88,12 @@ function stripTags(html: string): string {
   return html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim()
 }
 
+/** Decode a numeric HTML entity code point to a character (or '' if out of range). */
+function decodeNumericEntity(code: string, base: 10 | 16): string {
+  const n = parseInt(code, base)
+  return n >= 0 && n <= 0x10ffff ? String.fromCodePoint(n) : ''
+}
+
 /** Decode common HTML entities to their character equivalents. */
 function decodeEntities(text: string): string {
   return text
@@ -97,14 +103,8 @@ function decodeEntities(text: string): string {
     .replace(/&quot;/g, '"')
     .replace(/&#39;|&apos;/g, "'")
     .replace(/&nbsp;/g, ' ')
-    .replace(/&#(\d+);/g, (_, code: string) => {
-      const n = parseInt(code, 10)
-      return n >= 0 && n <= 0x10ffff ? String.fromCodePoint(n) : ''
-    })
-    .replace(/&#x([0-9a-f]+);/gi, (_, code: string) => {
-      const n = parseInt(code, 16)
-      return n >= 0 && n <= 0x10ffff ? String.fromCodePoint(n) : ''
-    })
+    .replace(/&#(\d+);/g, (_, code: string) => decodeNumericEntity(code, 10))
+    .replace(/&#x([0-9a-f]+);/gi, (_, code: string) => decodeNumericEntity(code, 16))
 }
 
 /**
@@ -301,16 +301,25 @@ function htmlToMarkdown(html: string): string {
   return md.trim()
 }
 
-/** Parse the q-value from a list of trimmed Accept media-type parameters. */
-function parseQ(params: string[]): number {
-  for (const p of params) {
-    const eqIdx = p.indexOf('=')
-    if (eqIdx !== -1 && p.slice(0, eqIdx).trim().toLowerCase() === 'q') {
-      const v = parseFloat(p.slice(eqIdx + 1).trim())
-      return Number.isNaN(v) ? 1.0 : v
-    }
-  }
-  return 1.0
+/**
+ * Parse the q-value from a single Accept token string, e.g. "text/markdown;q=0.9".
+ * RFC 7231 §5.3: 'q' is case-insensitive; optional whitespace around '='.
+ */
+function parseQValue(token: string): number {
+  const m = /;\s*q\s*=\s*([\d.]+)/i.exec(token)
+  if (!m) return 1.0
+  const v = parseFloat(m[1])
+  return Number.isNaN(v) ? 1.0 : v
+}
+
+/**
+ * Return true when markdown is preferred over HTML given their respective
+ * q-values. markdown must have a positive q; HTML either absent (q=-1) or
+ * at most equal to markdown's q.
+ */
+function prefersMarkdownOverHtml(markdownQ: number, htmlQ: number): boolean {
+  if (markdownQ <= 0) return false
+  return htmlQ < 0 || markdownQ >= htmlQ
 }
 
 /**
@@ -326,13 +335,12 @@ function acceptsMarkdownHeader(request: Request): boolean {
   let markdownQ = -1
   let htmlQ = -1
   for (const token of accept.split(',')) {
-    const parts = token.trim().split(';')
-    const mediaType = parts[0].trim().toLowerCase()
-    const q = parseQ(parts.slice(1).map((p: string) => p.trim()))
+    const mediaType = token.trim().split(';')[0].trim().toLowerCase()
+    const q = parseQValue(token.trim())
     if (mediaType === 'text/markdown') markdownQ = Math.max(markdownQ, q)
     else if (mediaType === 'text/html') htmlQ = Math.max(htmlQ, q)
   }
-  return markdownQ > 0 && (htmlQ < 0 || markdownQ >= htmlQ)
+  return prefersMarkdownOverHtml(markdownQ, htmlQ)
 }
 
 /** Returns true when the response is a byte-range fragment that must not be rewritten. */

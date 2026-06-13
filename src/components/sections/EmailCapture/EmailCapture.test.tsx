@@ -258,4 +258,17 @@ describe('EmailCapture Section', () => {
     expect(screen.getByRole('link', { name: /Facebook/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /LinkedIn/i })).toBeInTheDocument()
   })
+
+  it('moves focus to the success heading so the result is announced to screen readers', async () => {
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
+    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+
+    await waitFor(() => {
+      const heading = screen.getByRole('heading', { name: /You're on the list!/i })
+      expect(heading).toHaveFocus()
+    })
+  })
 })

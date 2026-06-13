@@ -50,7 +50,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install cosign
-        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+        uses: step-security/cosign-installer@7d5ca7d0ecba292387fa6f81cde2c05e53a2a6d7 # v4.1.2
 
       - name: Sign release artifact
         run: |
@@ -59,7 +59,7 @@ jobs:
             paperlyte-${{ github.ref_name }}.tar.gz
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3.0.0
+        uses: step-security/action-gh-release@277bfa82abcfdb73e5bbb19e213fd76532ee2be5 # v3.0.0
         with:
           body: ${{ steps.changelog.outputs.changelog }}
           files: |

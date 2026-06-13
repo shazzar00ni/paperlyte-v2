@@ -1,0 +1,76 @@
+name: Claude Code (External Contributor)
+
+# Triggered when a maintainer applies the 'claude' label to a fork PR.
+# Comment-based triggers are intentionally omitted: any user can post a comment,
+# so allowing issue_comment / pull_request_review_comment / pull_request_review here
+# would let untrusted actors invoke a write-privileged job via pull_request_target.
+# Internal collaborators (write+) are handled by the main claude.yml workflow instead.
+# The labeler's permission is verified at runtime to guard against triage-role labeling.
+on:
+  pull_request_target:
+    types: [labeled]
+
+permissions:
+  contents: read
+
+jobs:
+  claude-external:
+    name: Claude Code Agent (External Contributor)
+    runs-on: ubuntu-latest
+    concurrency:
+      group: claude-external-${{ github.event.pull_request.number || github.run_id }}
+      cancel-in-progress: true
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      id-token: write
+    if: >
+      github.event.label.name == 'claude' &&
+      github.event.pull_request.head.repo.full_name != github.repository
+    steps:
+      - name: Check actor repository permission
+        id: permission_check
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
+        with:
+          script: |
+            const allowedPermissions = new Set(['admin', 'maintain', 'write']);
+            const { owner, repo } = context.repo;
+            const username = context.actor;
+
+            const { data } = await github.rest.repos.getCollaboratorPermissionLevel({
+              owner,
+              repo,
+              username
+            });
+
+            const permission = data.permission;
+            const allowed = allowedPermissions.has(permission);
+
+            core.info(`Actor ${username} has repository permission: ${permission}`);
+            core.setOutput('allowed', allowed ? 'true' : 'false');
+
+            if (!allowed) {
+              core.warning(`Actor ${username} is not authorized to run Claude. Required: write, maintain, or admin.`);
+            }
+
+      - name: Checkout repository
+        if: steps.permission_check.outputs.allowed == 'true'
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          fetch-depth: 0
+
+      - name: Run Claude Code Action
+        if: steps.permission_check.outputs.allowed == 'true'
+        uses: anthropics/claude-code-action@fbda2eb1bdc90d319b8d853f5deb53bca199a7c1  # v1.0.140
+        with:
+          trigger_phrase: "@claude"
+          label_trigger: claude
+          branch_prefix: claude/
+          use_bedrock: false
+          use_vertex: false
+          use_sticky_comment: false
+          use_commit_signing: false
+          track_progress: false
+          include_fix_links: true
+          show_full_output: false

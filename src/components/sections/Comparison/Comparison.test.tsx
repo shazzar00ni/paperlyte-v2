@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { Comparison } from './Comparison'
 import { COMPARISON_FEATURES, COMPETITORS } from '@constants/comparison'
+import { escapeRegExp } from '@utils/test/regexHelpers'
 
 describe('Comparison', () => {
   it('should render as a section with correct id', () => {
@@ -14,15 +15,13 @@ describe('Comparison', () => {
 
   it('should render main heading', () => {
     render(<Comparison />)
-    expect(screen.getByText('See How We Compare')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /See How We Compare/i })).toBeInTheDocument()
   })
 
   it('should render subtitle', () => {
     render(<Comparison />)
     expect(
-      screen.getByText(
-        "We believe in transparency. Here's how Paperlyte stacks up against the competition."
-      )
+      screen.getByText(/We believe in transparency.*stacks up against the competition/i)
     ).toBeInTheDocument()
   })
 
@@ -41,7 +40,6 @@ describe('Comparison', () => {
 
     // Check all competitor headers
     COMPETITORS.forEach((competitor) => {
-      // Simpler approach: use string matching instead of RegExp
       const header = screen.getByRole('columnheader', {
         name: (content) => content.includes(competitor.name),
       })
@@ -66,19 +64,33 @@ describe('Comparison', () => {
   })
 
   it('should render checkmark icons for true boolean values', () => {
-    render(<Comparison />)
+    const { container } = render(<Comparison />)
 
-    // Find all checkmarks by aria-label
-    const checkmarks = screen.getAllByLabelText('Supported')
+    // Find all checkmarks using data-icon token match for resilience
+    const checkmarks = container.querySelectorAll('[data-icon~="fa-check"]')
     expect(checkmarks.length).toBeGreaterThan(0)
+
+    // Check they have proper accessibility labels
+    checkmarks.forEach((checkmark) => {
+      expect(checkmark).toHaveAttribute('aria-labelledby')
+      const titleId = checkmark.getAttribute('aria-labelledby')!
+      expect(document.getElementById(titleId)).toHaveTextContent('Supported')
+    })
   })
 
   it('should render X icons for false boolean values', () => {
-    render(<Comparison />)
+    const { container } = render(<Comparison />)
 
-    // Find all X marks by aria-label
-    const xmarks = screen.getAllByLabelText('Not supported')
+    // Find all X marks using data-icon token match for resilience
+    const xmarks = container.querySelectorAll('[data-icon~="fa-xmark"]')
     expect(xmarks.length).toBeGreaterThan(0)
+
+    // Check they have proper accessibility labels
+    xmarks.forEach((xmark) => {
+      expect(xmark).toHaveAttribute('aria-labelledby')
+      const titleId = xmark.getAttribute('aria-labelledby')!
+      expect(document.getElementById(titleId)).toHaveTextContent('Not supported')
+    })
   })
 
   it('should render text values for string comparisons', () => {
@@ -88,7 +100,7 @@ describe('Comparison', () => {
     const startupTimes = screen.getAllByText(/\b<1s\b|\b\d+-\d+s\b/i) // Matches "<1s", "3-5s", etc.
     expect(startupTimes.length).toBeGreaterThan(0)
 
-    expect(screen.getByText('Paid only')).toBeInTheDocument() // Evernote offline access
+    expect(screen.getAllByText('Paid only').length).toBeGreaterThan(0) // Multiple competitors have paid-only features
 
     const fullAccess = screen.getAllByText('Full access') // Appears in multiple rows
     expect(fullAccess.length).toBeGreaterThan(0)
@@ -109,7 +121,7 @@ describe('Comparison', () => {
     expect(
       screen.getByText(
         new RegExp(
-          `Comparison data accurate as of ${currentDate}\\.\\s*Competitor features may vary by plan and region\\.`
+          `Comparison data accurate as of ${escapeRegExp(currentDate)}\\.\\s*Competitor features may vary by plan and region\\.`
         )
       )
     ).toBeInTheDocument()
@@ -141,8 +153,8 @@ describe('Comparison', () => {
     const headerRow = container.querySelector('thead tr')
     const headers = headerRow?.querySelectorAll('th')
 
-    // Should have 1 feature column + 4 competitor columns
-    expect(headers).toHaveLength(5)
+    // Should have 1 feature column + all competitor columns
+    expect(headers).toHaveLength(1 + COMPETITORS.length)
   })
 
   it('should use proper scope attributes for accessibility', () => {

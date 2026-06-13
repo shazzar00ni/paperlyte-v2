@@ -87,7 +87,6 @@ function trackFID(callback: ReportCallback): void {
       const entries = list.getEntries()
       const firstEntry = entries[0] as PerformanceEntry & {
         processingStart?: number
-        startTime?: number
       }
 
       if (firstEntry) {
@@ -166,10 +165,8 @@ function trackCLS(callback: ReportCallback): MetricTracker {
 
     // Cleanup function to disconnect observer
     const cleanup = () => {
-      if (observer) {
-        observer.disconnect()
-        observer = null
-      }
+      observer?.disconnect()
+      observer = null
     }
 
     return { finalize, cleanup }
@@ -191,7 +188,7 @@ function trackTTFB(callback: ReportCallback): void {
       | (PerformanceEntry & { responseStart?: number })
       | undefined
 
-    if (navigationEntry && navigationEntry.responseStart) {
+    if (navigationEntry?.responseStart) {
       const value = navigationEntry.responseStart
       callback({
         name: 'TTFB',
@@ -260,10 +257,18 @@ function trackINP(callback: ReportCallback): MetricTracker {
         const eventEntry = entry as PerformanceEntry & {
           processingStart?: number
           processingEnd?: number
-          startTime?: number
         }
 
-        if (eventEntry.processingStart && eventEntry.processingEnd) {
+        if (
+          typeof eventEntry.processingStart === 'number' &&
+          typeof eventEntry.processingEnd === 'number' &&
+          typeof eventEntry.startTime === 'number' &&
+          Number.isFinite(eventEntry.processingStart) &&
+          Number.isFinite(eventEntry.processingEnd) &&
+          Number.isFinite(eventEntry.startTime) &&
+          eventEntry.startTime <= eventEntry.processingStart &&
+          eventEntry.processingStart <= eventEntry.processingEnd
+        ) {
           const duration = eventEntry.processingEnd - eventEntry.startTime
           interactions.push(duration)
         }
@@ -299,10 +304,8 @@ function trackINP(callback: ReportCallback): MetricTracker {
 
     // Cleanup function to disconnect observer
     const cleanup = () => {
-      if (observer) {
-        observer.disconnect()
-        observer = null
-      }
+      observer?.disconnect()
+      observer = null
     }
 
     return { finalize, cleanup }

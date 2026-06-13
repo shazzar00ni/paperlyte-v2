@@ -31,8 +31,8 @@ exports[`Legal Constants > Snapshot Tests > should match LEGAL_CONFIG snapshot 1
   "metadata": {
     "governingLaw": "[State] law",
     "jurisdiction": "[State/Country]",
-    "privacyLastUpdated": "2025-11-28",
-    "termsLastUpdated": "2025-11-28",
+    "privacyLastUpdated": "2026-06-05",
+    "termsLastUpdated": "2026-06-05",
     "termsVersion": "1.0",
   },
   "social": {
@@ -49,8 +49,19 @@ exports[`Legal Constants > Snapshot Tests > should match needsLegalReview result
 
 exports[`Legal Constants > Snapshot Tests > should match placeholder fields snapshot 1`] = `
 [
-  "Company Legal Name",
-  "Physical Address",
-  "Jurisdiction/Governing Law",
+  "company.legalName",
+  "address.street",
+  "address.city",
+  "address.state",
+  "address.zip",
+  "address.country",
+  "documents.cookies",
+  "documents.security",
+  "documents.dmca",
+  "documents.accessibility",
+  "social.linkedin",
+  "social.discord",
+  "metadata.jurisdiction",
+  "metadata.governingLaw",
 ]
 `;

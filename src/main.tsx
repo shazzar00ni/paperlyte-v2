@@ -1,15 +1,13 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import * as Sentry from '@sentry/react'
+import * as monitoring from '@utils/monitoring'
 // Self-hosted Google Fonts (Inter) for better security and performance
 // Using Latin-only subset to reduce bundle size (~800 KB savings)
 import '@fontsource/inter/latin-400.css'
 import '@fontsource/inter/latin-500.css'
 import '@fontsource/inter/latin-600.css'
 import '@fontsource/inter/latin-700.css'
-// Font Awesome icon library (tree-shaken, ~150-180 KB savings)
-// Only icons actually used in the app are imported
-import './utils/iconLibrary'
 import './index.css'
 import App from './App.tsx'
 import { updateMetaTags } from './utils/env'
@@ -19,13 +17,7 @@ if (import.meta.env.PROD && import.meta.env.VITE_SENTRY_DSN) {
   Sentry.init({
     dsn: import.meta.env.VITE_SENTRY_DSN,
     environment: import.meta.env.VITE_SENTRY_ENVIRONMENT || import.meta.env.MODE,
-    integrations: [
-      Sentry.browserTracingIntegration(),
-      Sentry.replayIntegration({
-        maskAllText: true,
-        blockAllMedia: true,
-      }),
-    ],
+    integrations: [Sentry.browserTracingIntegration()],
     // Performance monitoring
     tracesSampleRate: parseFloat(import.meta.env.VITE_SENTRY_SAMPLE_RATE || '0.1'),
     // Session replay
@@ -45,10 +37,48 @@ if (import.meta.env.PROD && import.meta.env.VITE_SENTRY_DSN) {
       return event
     },
   })
+
+  const loadReplay = () => {
+    import('@sentry/browser')
+      .then(({ replayIntegration }) => {
+        Sentry.addIntegration(replayIntegration({ maskAllText: true, blockAllMedia: true }))
+      })
+      .catch((error: unknown) => {
+        monitoring.logError(
+          error instanceof Error ? error : new Error(String(error)),
+          { errorInfo: { component: 'loadReplay', action: 'import-replay' }, severity: 'medium' },
+          'loadReplay'
+        )
+      })
+  }
+
+  if (typeof window.requestIdleCallback === 'function') {
+    // Timeout ensures replay eventually loads even on a busy main thread
+    window.requestIdleCallback(loadReplay, { timeout: 2000 })
+  } else if (document.readyState === 'complete') {
+    window.setTimeout(loadReplay, 0)
+  } else {
+    window.addEventListener('load', loadReplay, { once: true })
+  }
 }
 
 // Initialize environment-aware meta tags
 updateMetaTags()
+
+// Register service worker for PWA offline support (production only)
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('/sw.js', { updateViaCache: 'none' })
+      .catch((error: unknown) => {
+        monitoring.logError(
+          error instanceof Error ? error : new Error('Service worker registration failed'),
+          { severity: 'low', tags: { action: 'register' } },
+          'serviceWorker'
+        )
+      })
+  })
+}
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

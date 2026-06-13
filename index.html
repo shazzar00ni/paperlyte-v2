@@ -8,31 +8,33 @@
     <title>Paperlyte - Lightning-Fast, Distraction-Free Notes</title>
     <meta
       name="description"
-      content="Your thoughts, unchained from complexity. The simplest, fastest note-taking app with offline-first sync and tag-based organization."
+      content="The fastest, simplest note-taking app. Capture ideas in milliseconds, organize with tags, and work offline across all your devices."
     />
+    <meta name="keywords" content="%VITE_SEO_KEYWORDS%" />
+    <link rel="canonical" href="%VITE_BASE_URL%" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://paperlyte.app/" />
+    <meta property="og:url" content="%VITE_BASE_URL%" />
     <meta property="og:title" content="Paperlyte - Lightning-Fast, Distraction-Free Notes" />
     <meta
       property="og:description"
-      content="Your thoughts, unchained from complexity. The simplest, fastest note-taking app with offline-first sync and tag-based organization."
+      content="The fastest, simplest note-taking app. Capture ideas in milliseconds, organize with tags, and work offline across all your devices."
     />
-    <meta property="og:image" content="https://paperlyte.app/og-image.jpg" />
+    <meta property="og:image" content="%VITE_OG_IMAGE%" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:locale" content="en_US" />
 
     <!-- Twitter Card Tags -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="https://paperlyte.app/" />
+    <meta name="twitter:url" content="%VITE_BASE_URL%" />
     <meta name="twitter:title" content="Paperlyte - Lightning-Fast, Distraction-Free Notes" />
     <meta
       name="twitter:description"
-      content="Your thoughts, unchained from complexity. The simplest, fastest note-taking app with offline-first sync and tag-based organization."
+      content="The fastest, simplest note-taking app. Capture ideas in milliseconds, organize with tags, and work offline across all your devices."
     />
-    <meta name="twitter:image" content="https://paperlyte.app/twitter-image.jpg" />
+    <meta name="twitter:image" content="%VITE_OG_IMAGE%" />
     <meta
       name="twitter:image:alt"
       content="Paperlyte app preview showing minimalist notes interface"
@@ -49,12 +51,21 @@
     <!-- Theme Color -->
     <meta name="theme-color" content="#1a1a1a" />
 
-    <!-- Font Awesome icons are loaded via @fortawesome/fontawesome-svg-core in JavaScript -->
-    <!-- This approach is CSP-compliant and doesn't require external CDN resources -->
+    <!-- Persistent theme flag - read by public/theme-init.js before React hydrates.
+         Injected at build time to avoid duplicating PERSISTENCE_CONFIG.ALLOW_PERSISTENT_THEME in HTML. -->
+    <meta name="allow-persistent-theme" content="%VITE_ALLOW_PERSISTENT_THEME%" />
 
-    <!-- Preload critical above-the-fold image for better LCP -->
-    <link rel="preload" as="image" type="image/avif" href="/mockups/notes-list.avif" />
+    <!-- Preload critical fonts to eliminate render-blocking FOUT -->
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/Inter-Variable.woff2" crossorigin="anonymous" />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/PlayfairDisplay-Variable.woff2" crossorigin="anonymous" />
 
+    <!-- Preload critical above-the-fold hero image for better LCP -->
+    <link rel="preload" as="image" type="image/avif" href="/mockups/notes-list.avif" imagesrcset="/mockups/notes-list-400w.avif 400w, /mockups/notes-list-800w.avif 800w, /mockups/notes-list.avif 1100w" imagesizes="(max-width: 480px) 85vw, 550px" />
+
+    <!-- Theme initialization - loaded synchronously to prevent flash of wrong theme.
+         Must run before React hydrates so the correct data-theme is applied immediately.
+         Mirrors the logic in src/hooks/useTheme.ts. -->
+    <script src="/theme-init.js"></script>
     <!-- Schema.org Structured Data (JSON-LD) -->
     <script type="application/ld+json">
       {
@@ -70,8 +81,8 @@
           "priceCurrency": "USD",
           "availability": "https://schema.org/InStock"
         },
-        "url": "https://paperlyte.app",
-        "screenshot": "https://paperlyte.app/og-image.jpg",
+        "url": "%VITE_BASE_URL%",
+        "screenshot": "%VITE_OG_IMAGE%",
         "featureList": [
           "Lightning-fast performance with instant startup",
           "Tag-based organization without rigid folder structures",
@@ -84,7 +95,7 @@
         "author": {
           "@type": "Organization",
           "name": "Paperlyte",
-          "url": "https://paperlyte.app"
+          "url": "%VITE_BASE_URL%"
         }
       }
     </script>

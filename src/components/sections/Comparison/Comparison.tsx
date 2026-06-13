@@ -40,7 +40,7 @@ export const Comparison = (): React.ReactElement => {
     <Section id="comparison" background="default">
       <div className={styles.header}>
         <AnimatedElement animation="fadeIn">
-          <h2 className={styles.title}>See How We Compare</h2>
+          <h2 className={styles.title}>See how we compare</h2>
         </AnimatedElement>
         <AnimatedElement animation="fadeIn" delay={100}>
           <p className={styles.subtitle}>
@@ -57,6 +57,7 @@ export const Comparison = (): React.ReactElement => {
                 <th className={styles.featureHeader} scope="col">
                   Feature
                 </th>
+                {/* accessibility-fix: issue-811 - competitor.color applied inline without contrast validation */}
                 {COMPETITORS.map((competitor) => (
                   <th
                     key={competitor.id}
@@ -76,6 +77,7 @@ export const Comparison = (): React.ReactElement => {
                     )}
                   </th>
                 ))}
+                {/* /accessibility-fix */}
               </tr>
             </thead>
             <tbody>
@@ -84,18 +86,16 @@ export const Comparison = (): React.ReactElement => {
                   <th className={styles.featureCell} scope="row">
                     {feature.feature}
                   </th>
-                  <td className={`${styles.cell} ${styles.highlightCell}`}>
-                    <ComparisonCell value={feature.paperlyte} />
-                  </td>
-                  <td className={styles.cell}>
-                    <ComparisonCell value={feature.notion} />
-                  </td>
-                  <td className={styles.cell}>
-                    <ComparisonCell value={feature.evernote} />
-                  </td>
-                  <td className={styles.cell}>
-                    <ComparisonCell value={feature.onenote} />
-                  </td>
+                  {COMPETITORS.map((competitor) => (
+                    <td
+                      key={competitor.id}
+                      className={`${styles.cell} ${competitor.id === 'paperlyte' ? styles.highlightCell : ''}`}
+                    >
+                      <ComparisonCell
+                        value={feature[competitor.id as keyof typeof feature] as boolean | string}
+                      />
+                    </td>
+                  ))}
                 </tr>
               ))}
             </tbody>

@@ -16,15 +16,15 @@ We release patches for security vulnerabilities for the following versions:
 
 ## Reporting a Vulnerability
 
-### Please DO NOT:
+### Please DO NOT
 
 - Open a public GitHub issue for security vulnerabilities
 - Disclose the vulnerability publicly before it has been addressed
 - Exploit the vulnerability in any way
 
-### Please DO:
+### Please DO
 
-1. **Email us privately** at **security@paperlyte.com** with:
+1. **Email us privately** at **<security@paperlyte.com>** with:
    - A detailed description of the vulnerability
    - Steps to reproduce the issue
    - Potential impact of the vulnerability
@@ -73,14 +73,14 @@ If you prefer not to email:
 
 ## Security Update Policy
 
-### For Critical Vulnerabilities:
+### For Critical Vulnerabilities
 
 - **Immediate patch** released as soon as fix is ready
 - **Security advisory** published on GitHub
 - **Email notification** to known users/deployments
 - **Public disclosure** after patch is available
 
-### For Non-Critical Vulnerabilities:
+### For Non-Critical Vulnerabilities
 
 - **Patch included** in next scheduled release
 - **Security advisory** published with release
@@ -132,6 +132,30 @@ We follow responsible disclosure principles:
 - Follow GDPR and privacy best practices
 - Minimize data collection and retention
 
+## Verifying Release Artifacts
+
+Release tarballs published under [GitHub Releases](https://github.com/shazzar00ni/paperlyte-v2/releases) are signed using [Sigstore](https://www.sigstore.dev/) keyless signing via [cosign](https://github.com/sigstore/cosign) in our [release workflow](.github/workflows/release.yml). Each release includes a `.sigstore.json` bundle file containing the signature, Fulcio certificate, and Rekor transparency-log inclusion proof — enabling fully offline verification.
+
+### Verifying a release
+
+1. Download both the artifact and its bundle from the GitHub release page:
+   - `paperlyte-<version>.tar.gz`
+   - `paperlyte-<version>.tar.gz.sigstore.json`
+
+2. [Install cosign](https://docs.sigstore.dev/system_config/installation/) (v2.0+ recommended).
+
+3. Verify the artifact:
+
+   ```bash
+   cosign verify-blob \
+     --bundle paperlyte-<version>.tar.gz.sigstore.json \
+     --certificate-identity-regexp '^https://github\.com/shazzar00ni/paperlyte-v2/\.github/workflows/release\.yml@refs/tags/v' \
+     --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+     paperlyte-<version>.tar.gz
+   ```
+
+A successful run prints `Verified OK`, confirming the artifact was produced by the official release workflow at a `v*` tag and has not been tampered with.
+
 ## Security Features in Paperlyte
 
 ### Current Implementation
@@ -141,6 +165,7 @@ We follow responsible disclosure principles:
 - **Content Security Policy** - Protect against XSS attacks
 - **Secure external links** - All external links use `rel="noopener noreferrer"`
 - **Input sanitization** - All user input is validated and sanitized
+- **Signed releases** - Release tarballs signed with cosign keyless (Sigstore); see [Verifying Release Artifacts](#verifying-release-artifacts)
 
 ### Planned Security Features
 
@@ -277,7 +302,7 @@ Error monitoring is fully configured and ready to activate. To enable Sentry int
 6. **Verification**:
 
    After deployment with `VITE_SENTRY_DSN` configured:
-   - Errors appear in Sentry dashboard at https://sentry.io
+   - Errors appear in Sentry dashboard at <https://sentry.io>
    - Session replays available for debugging
    - Performance metrics tracked automatically
    - Breadcrumbs show user actions leading to errors
@@ -390,7 +415,7 @@ If you have questions about:
 - How to report a vulnerability
 - The status of a reported vulnerability
 
-Please email: **security@paperlyte.com**
+Please email: **<security@paperlyte.com>**
 
 ---
 

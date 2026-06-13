@@ -4,14 +4,22 @@
  * The function converts HTML responses to Markdown when the request carries
  * an `Accept: text/markdown` header. All other requests pass through unchanged.
  *
- * Module resolution: vitest.config.ts maps the Deno-style `npm:` specifiers to
- * their local node_modules equivalents so the handler can be imported in Node.
+ * The handler has no external runtime dependencies, so Vitest exercises the
+ * same dependency-free conversion code that runs in Netlify's Edge Runtime.
  */
+
+import { readFileSync } from 'node:fs'
+import path from 'node:path'
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import type { Context } from '../../netlify/edge-functions/__stubs__/edge-netlify'
 
 // ── Helpers ────────────────────────────────────────────────────────────────
+
+interface PackageManifest {
+  dependencies?: Record<string, string>
+  devDependencies?: Record<string, string>
+}
 
 /** Build a minimal Request with the given URL and optional headers. */
 function makeRequest(url: string, headers: Record<string, string> = {}): Request {
@@ -56,6 +64,24 @@ import handler from '../../netlify/edge-functions/markdown-response'
 // ── Test suites ─────────────────────────────────────────────────────────────
 
 describe('markdown-response edge function', () => {
+  describe('deployment compatibility', () => {
+    it('does not rely on removed Turndown or Linkedom runtime packages', () => {
+      const source = readFileSync(
+        path.join(process.cwd(), 'netlify/edge-functions/markdown-response.ts'),
+        'utf8'
+      )
+      const manifest = JSON.parse(
+        readFileSync(path.join(process.cwd(), 'package.json'), 'utf8')
+      ) as PackageManifest
+
+      expect(source).not.toMatch(/from\s+['"](?:turndown|linkedom)['"]/)
+      expect(manifest.dependencies).not.toHaveProperty('turndown')
+      expect(manifest.dependencies).not.toHaveProperty('linkedom')
+      expect(manifest.devDependencies).not.toHaveProperty('turndown')
+      expect(manifest.devDependencies).not.toHaveProperty('linkedom')
+    })
+  })
+
   // ── Method gating ─────────────────────────────────────────────────────────
 
   describe('method gate', () => {
@@ -653,6 +679,25 @@ describe('markdown-response edge function', () => {
   describe('sanitisation: dangerous tags and content removal', () => {
     const mdHeaders = { Accept: 'text/markdown' }
 
+    it('converts HTML without browser DOMParser or Node globals', async () => {
+      vi.stubGlobal('DOMParser', undefined)
+      vi.stubGlobal('Node', undefined)
+
+      try {
+        const req = makeRequest('https://example.com/', mdHeaders)
+        const ctx = makeContext(htmlResponse('<main><h1>Edge-safe</h1><!-- hidden --></main>'))
+
+        const result = await handler(req, ctx)
+        const body = await result.text()
+
+        expect(result.headers.get('Content-Type')).toBe('text/markdown; charset=utf-8')
+        expect(body).toContain('# Edge-safe')
+        expect(body).not.toContain('hidden')
+      } finally {
+        vi.unstubAllGlobals()
+      }
+    })
+
     it('removes HTML comments that survive sanitisation', async () => {
       // The regex sanitiser strips HTML comments via /<!--[\s\S]*?(?:-->|$)/g.
       const req = makeRequest('https://example.com/', mdHeaders)
@@ -693,13 +738,10 @@ describe('markdown-response edge function', () => {
     })
 
     it('removes <noscript> with trailing whitespace in closing tag (</noscript >)', async () => {
-      // Regression: the pre-strip regex must match </noscript > (with trailing
-      // whitespace before >) — a valid HTML closing tag form that would
-      // otherwise survive the pre-pass and leak noscript content.
+      // Regression: subtree removal must match </noscript > with trailing
+      // whitespace, a valid closing-tag form that must not leak fallback content.
       const req = makeRequest('https://example.com/', mdHeaders)
-      const ctx = makeContext(
-        htmlResponse('<noscript ><p>Enable JS</p></noscript ><p>Content</p>')
-      )
+      const ctx = makeContext(htmlResponse('<noscript ><p>Enable JS</p></noscript ><p>Content</p>'))
 
       const result = await handler(req, ctx)
       const body = await result.text()

@@ -1,30 +1,10 @@
-import { defineConfig, type Plugin } from 'vitest/config'
+import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 
-// Edge functions use Deno-compatible specifiers that Vite/Node cannot resolve:
-//   npm:pkg@version          — Deno npm protocol
-//   https://esm.sh/pkg@ver  — ESM CDN URL (used for Netlify edge runtime)
-// A pre-enforce transform rewrites both forms to bare package names BEFORE
-// import-analysis sees the file, letting Vite's normal node_modules resolver
-// take over so local tests can import the edge function under test.
-const resolveDenoNpmSpecifiers: Plugin = {
-  name: 'resolve-deno-npm-specifiers',
-  enforce: 'pre',
-  transform(code: string): { code: string } | null {
-    if (!code.includes('npm:') && !code.includes('esm.sh')) return null
-    let result = code
-    // npm:pkg@version → pkg
-    result = result.replace(/(['"])npm:([^@'"]+)@[^'"]+\1/g, '$1$2$1')
-    // https://esm.sh/pkg@version → pkg
-    result = result.replace(/(['"])https:\/\/esm\.sh\/([^@/'"]+)@[^'"]+\1/g, '$1$2$1')
-    return result !== code ? { code: result } : null
-  },
-}
-
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), resolveDenoNpmSpecifiers],
+  plugins: [react()],
   test: {
     // Use jsdom for browser-like environment
     environment: 'jsdom',

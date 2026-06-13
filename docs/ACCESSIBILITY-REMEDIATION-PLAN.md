@@ -71,19 +71,19 @@ The following accessibility limitations have been identified and are prioritized
 
 ### Medium Priority (P1) - Important Issues
 
-4. **Incomplete Alt Text for Images**
+1. **Incomplete Alt Text for Images**
    - **Impact**: Screen reader users miss important visual information
    - **WCAG Criteria**: 1.1.1 Non-text Content (Level A)
    - **Owner**: Content Team
    - **Target**: February 28, 2026
 
-5. **Form Validation Accessibility**
+2. **Form Validation Accessibility**
    - **Impact**: Users may not understand validation errors
    - **WCAG Criteria**: 3.3.1 Error Identification (Level A), 3.3.3 Error Suggestion (Level AA)
    - **Owner**: Development Team
    - **Target**: February 28, 2026
 
-6. **Focus Indicators**
+3. **Focus Indicators**
    - **Impact**: Keyboard users cannot see where focus is
    - **WCAG Criteria**: 2.4.7 Focus Visible (Level AA)
    - **Owner**: Design Team
@@ -91,13 +91,13 @@ The following accessibility limitations have been identified and are prioritized
 
 ### Low Priority (P2) - Nice to Have
 
-7. **Third-Party Widget Accessibility**
+1. **Third-Party Widget Accessibility**
    - **Impact**: Some embedded content may not be fully accessible
    - **WCAG Criteria**: Various
    - **Owner**: Development Team
    - **Target**: March 31, 2026
 
-8. **PDF Document Accessibility**
+2. **PDF Document Accessibility**
    - **Impact**: Downloadable documents may not be screen reader friendly
    - **WCAG Criteria**: Various
    - **Owner**: Content Team

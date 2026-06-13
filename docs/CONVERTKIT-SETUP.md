@@ -137,9 +137,11 @@ The API enforces rate limiting: **3 requests per minute per IP address**
 
 1. Submit 3 requests quickly - all should succeed
 2. Submit a 4th request - should fail with:
-   ```
+
+   ```text
    "Too many requests. Please try again in a minute."
    ```
+
 3. Wait 60 seconds from your first request
 4. Submit again - should succeed (new window)
 
@@ -165,7 +167,7 @@ The API enforces rate limiting: **3 requests per minute per IP address**
 
 ### Endpoint
 
-```
+```text
 POST /.netlify/functions/subscribe
 ```
 
@@ -189,7 +191,7 @@ POST /.netlify/functions/subscribe
 
 ### Error Responses
 
-**400 - Invalid Email**
+#### 400 - Invalid Email
 
 ```json
 {
@@ -197,7 +199,7 @@ POST /.netlify/functions/subscribe
 }
 ```
 
-**429 - Rate Limited**
+#### 429 - Rate Limited
 
 ```json
 {
@@ -205,7 +207,7 @@ POST /.netlify/functions/subscribe
 }
 ```
 
-**500 - Server Error**
+#### 500 - Server Error
 
 ```json
 {
@@ -261,7 +263,8 @@ The serverless function implements Cross-Origin Resource Sharing (CORS) to preve
 1. Go to Site settings → Environment variables
 2. Add `ALLOWED_ORIGIN` with your domain value
 3. For local development, add to `.env`:
-   ```
+
+   ```bash
    ALLOWED_ORIGIN=http://localhost:5173
    ```
 

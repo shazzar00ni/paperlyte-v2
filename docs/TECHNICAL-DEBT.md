@@ -292,10 +292,9 @@ coverage: {
 **Recommendation:**
 
 1. **FeedbackWidget.tsx:** Split into:
-
-- `FeedbackButton.tsx` (trigger)
-- `FeedbackForm.tsx` (modal content)
-- `FeedbackSuccess.tsx` (confirmation state)
+   - `FeedbackButton.tsx` (trigger)
+   - `FeedbackForm.tsx` (modal content)
+   - `FeedbackSuccess.tsx` (confirmation state)
 
 2. **Terms.tsx:** Extract content to:
    - Markdown files in `/public/legal/`
@@ -365,9 +364,9 @@ export default memo(ParallaxLayer)
 
 1. **No WebP/AVIF formats:** All images are PNG
 
-- `android-chrome-192x192.png` (5.2 KB)
-- `android-chrome-512x512.png` (28 KB)
-- `apple-touch-icon.png` (5.0 KB)
+   - `android-chrome-192x192.png` (5.2 KB)
+   - `android-chrome-512x512.png` (28 KB)
+   - `apple-touch-icon.png` (5.0 KB)
 
 2. **No responsive images:** No `srcset` or `<picture>` elements found in `.tsx` files
 

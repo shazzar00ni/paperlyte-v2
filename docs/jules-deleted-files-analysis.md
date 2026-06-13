@@ -29,7 +29,7 @@ Analysis of Jules' (google-labs-jules[bot]) daily PR reviews in `PR_REVIEW_SUMMA
 **Jules' Note:**
 > "...includes a path traversal vulnerability, a prototype pollution vulnerability, a weakened Content Security Policy (CSP), and **the removal of important security headers**."
 
-**What happened:** The PR deleted/weakened security headers in `vercel.json`. Specifically Jules flagged that `'unsafe-inline'` was added to `script-src` and the Vercel Analytics domain was removed from `script-src`, breaking analytics and weakening CSP. These were not accidental — they were deliberate but harmful regressions.
+**What happened:** The PR deleted/weakened security headers in `vercel.json`. From the PR diff, `'unsafe-inline'` was added to `script-src` and the Vercel Analytics domain was removed from `script-src`, breaking analytics and weakening CSP. These were not accidental — they were deliberate but harmful regressions.
 
 **Outcome:** PR #275 was rejected outright. The security headers were preserved on `main`. A follow-up review (2026-02-06) confirmed the most dangerous changes had since been removed but the PR was still not recommended for merge.
 

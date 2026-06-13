@@ -56,26 +56,14 @@
 [[headers]]
   for = "/*"
   [headers.values]
-    # Prevent clickjacking
-    X-Frame-Options = "DENY"
-
-    # Prevent MIME type sniffing
-    X-Content-Type-Options = "nosniff"
-
-    # Referrer policy
-    Referrer-Policy = "strict-origin-when-cross-origin"
-
-    # Strict Transport Security (2 years, include subdomains, preload-eligible)
-    Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
-
-    # Disable access to sensitive browser APIs
-    Permissions-Policy = "geolocation=(), microphone=(), camera=(), payment=(), usb=(), bluetooth=(), serial=(), magnetometer=(), gyroscope=(), accelerometer=(), ambient-light-sensor=()"
-
     # Content Security Policy
     # External origins allowed:
     #   https://plausible.io              Plausible Analytics script + beacon (VITE_ANALYTICS_PROVIDER=plausible)
     #   https://*.ingest.sentry.io        Sentry error telemetry (VITE_SENTRY_DSN)
-    Content-Security-Policy = "default-src 'self'; script-src 'self' https://plausible.io; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://plausible.io https://*.ingest.sentry.io; worker-src 'self' blob:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests;"
+    Content-Security-Policy = "base-uri 'self'; connect-src 'self' https://plausible.io https://*.ingest.sentry.io; default-src 'self'; font-src 'self'; form-action 'self'; frame-ancestors 'none'; frame-src 'none'; img-src 'self' data:; object-src 'none'; script-src 'self' https://plausible.io; style-src 'self'; upgrade-insecure-requests; worker-src 'self' blob:;"
+
+    # Cross-Origin-Embedder-Policy disabled to avoid blocking third-party analytics
+    Cross-Origin-Embedder-Policy = "unsafe-none"
 
     # Isolate this page's browsing context group so cross-origin windows opened
     # from this page (or that open this page) cannot access each other's DOM or
@@ -85,8 +73,20 @@
     # Prevent other origins from loading this site's resources
     Cross-Origin-Resource-Policy = "same-origin"
 
-    # Cross-Origin-Embedder-Policy disabled to avoid blocking third-party analytics
-    Cross-Origin-Embedder-Policy = "unsafe-none"
+    # Disable access to sensitive browser APIs
+    Permissions-Policy = "accelerometer=(), ambient-light-sensor=(), bluetooth=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), serial=(), usb=()"
+
+    # Referrer policy
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+    # Strict Transport Security (2 years, include subdomains, preload-eligible)
+    Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
+
+    # Prevent MIME type sniffing
+    X-Content-Type-Options = "nosniff"
+
+    # Prevent clickjacking
+    X-Frame-Options = "DENY"
 
     # Block Adobe/Silverlight cross-domain policy files
     X-Permitted-Cross-Domain-Policies = "none"

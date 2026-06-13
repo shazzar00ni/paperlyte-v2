@@ -1,0 +1,1 @@
+export { BrandLogo } from './BrandLogo'

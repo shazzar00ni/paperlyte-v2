@@ -136,9 +136,13 @@ describe('App Integration', () => {
     await waitFor(() => expect(container.querySelector('#download')).toBeInTheDocument())
 
     // Verify specific CTA content is present
-    expect(screen.getByText(/Stop fighting your tools/i)).toBeInTheDocument()
+    expect(screen.getByText(/Ready when your thoughts are/i)).toBeInTheDocument()
     // Check that at least one "Join the Waitlist" button exists
-    expect(screen.getAllByRole('button', { name: /Join the Waitlist/i }).length).toBeGreaterThan(0)
+    expect(
+      screen.getAllByRole('button', {
+        name: /Join the Waitlist|Claim Early Access|Get Early Access/i,
+      }).length
+    ).toBeGreaterThan(0)
   })
 
   it('should render Footer component', () => {
@@ -156,10 +160,14 @@ describe('App Integration', () => {
     await waitFor(() => expect(container.querySelector('#download')).toBeInTheDocument())
 
     // Check for actual CTA buttons (there may be multiple "Join the Waitlist" buttons across sections)
-    expect(screen.getAllByRole('button', { name: /Join the Waitlist/i }).length).toBeGreaterThan(0)
+    expect(
+      screen.getAllByRole('button', {
+        name: /Join the Waitlist|Claim Early Access|Get Early Access/i,
+      }).length
+    ).toBeGreaterThan(0)
 
-    // Check for demo button (use flexible pattern to handle different wording)
-    const demoButtons = screen.getAllByRole('button', { name: /Watch the Demo|View the Demo/i })
+    // Check for secondary CTA button (use flexible pattern to handle different wording)
+    const demoButtons = screen.getAllByRole('button', { name: /Review the features/i })
     expect(demoButtons.length).toBeGreaterThan(0)
   })
 

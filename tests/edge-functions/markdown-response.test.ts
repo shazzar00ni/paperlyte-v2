@@ -8,10 +8,18 @@
  * same dependency-free conversion code that runs in Netlify's Edge Runtime.
  */
 
+import { readFileSync } from 'node:fs'
+import path from 'node:path'
+
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import type { Context } from '../../netlify/edge-functions/__stubs__/edge-netlify'
 
 // ── Helpers ────────────────────────────────────────────────────────────────
+
+interface PackageManifest {
+  dependencies?: Record<string, string>
+  devDependencies?: Record<string, string>
+}
 
 /** Build a minimal Request with the given URL and optional headers. */
 function makeRequest(url: string, headers: Record<string, string> = {}): Request {
@@ -56,6 +64,24 @@ import handler from '../../netlify/edge-functions/markdown-response'
 // ── Test suites ─────────────────────────────────────────────────────────────
 
 describe('markdown-response edge function', () => {
+  describe('deployment compatibility', () => {
+    it('does not rely on removed Turndown or Linkedom runtime packages', () => {
+      const source = readFileSync(
+        path.join(process.cwd(), 'netlify/edge-functions/markdown-response.ts'),
+        'utf8'
+      )
+      const manifest = JSON.parse(
+        readFileSync(path.join(process.cwd(), 'package.json'), 'utf8')
+      ) as PackageManifest
+
+      expect(source).not.toMatch(/from\s+['"](?:turndown|linkedom)['"]/)
+      expect(manifest.dependencies).not.toHaveProperty('turndown')
+      expect(manifest.dependencies).not.toHaveProperty('linkedom')
+      expect(manifest.devDependencies).not.toHaveProperty('turndown')
+      expect(manifest.devDependencies).not.toHaveProperty('linkedom')
+    })
+  })
+
   // ── Method gating ─────────────────────────────────────────────────────────
 
   describe('method gate', () => {

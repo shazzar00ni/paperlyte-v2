@@ -1,6 +1,6 @@
 /**
- * Theme initialization script - loaded synchronously in <head> to prevent
- * a flash of unstyled content (FOUC) when the page first loads.
+ * Theme initialization script - loaded with defer so it does not block
+ * first paint while still applying persisted theme before React hydration completes.
  *
  * This script runs before React hydrates and applies the correct theme
  * to <html> so the page renders in the right theme immediately.

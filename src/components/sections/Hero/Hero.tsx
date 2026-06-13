@@ -20,17 +20,17 @@ export const Hero = (): React.ReactElement => {
   return (
     <Section id="hero" className={styles.hero} padding="large">
       <div className={styles.content}>
-        <AnimatedElement animation="fadeIn">
+        <AnimatedElement animation="fadeIn" initiallyVisible>
           <h1 className={styles.headline}>
             Your thoughts, <em>unchained.</em>
           </h1>
         </AnimatedElement>
 
-        <AnimatedElement animation="fadeIn" delay={100}>
+        <AnimatedElement animation="fadeIn" initiallyVisible>
           <p className={styles.subheadline}>Note-taking so fast it gets out of your way.</p>
         </AnimatedElement>
 
-        <AnimatedElement animation="fadeIn" delay={300}>
+        <AnimatedElement animation="fadeIn" initiallyVisible>
           <div className={styles.ctas}>
             <Button
               variant="primary"
@@ -47,7 +47,7 @@ export const Hero = (): React.ReactElement => {
           </div>
         </AnimatedElement>
 
-        <AnimatedElement animation="fadeIn" delay={450}>
+        <AnimatedElement animation="fadeIn" initiallyVisible>
           <div className={styles.trustedBy}>
             <p className={styles.trustedByLabel}>TRUSTED BY TEAMS AT</p>
             <ul className={styles.companies}>
@@ -61,7 +61,7 @@ export const Hero = (): React.ReactElement => {
         </AnimatedElement>
       </div>
 
-      <AnimatedElement animation="fadeIn" delay={400}>
+      <AnimatedElement animation="fadeIn" initiallyVisible>
         <div className={styles.mockupContainer} aria-hidden="true">
           {/* Productivity stat badge */}
           <div className={styles.statBadge}>
@@ -93,6 +93,7 @@ export const Hero = (): React.ReactElement => {
                 width={1100}
                 height={800}
                 loading="eager"
+                fetchPriority="high"
                 decoding="async"
                 className={styles.mockupImage}
               />

@@ -8,7 +8,74 @@
   transition:
     opacity var(--transition-slow),
     transform var(--transition-slow);
-  transition-delay: var(--animation-delay, 0ms);
+}
+
+.delay0 {
+  transition-delay: 0ms;
+}
+
+.delay75 {
+  transition-delay: 75ms;
+}
+
+.delay100 {
+  transition-delay: 100ms;
+}
+
+.delay150 {
+  transition-delay: 150ms;
+}
+
+.delay200 {
+  transition-delay: 200ms;
+}
+
+.delay225 {
+  transition-delay: 225ms;
+}
+
+.delay250 {
+  transition-delay: 250ms;
+}
+
+.delay300 {
+  transition-delay: 300ms;
+}
+
+.delay350 {
+  transition-delay: 350ms;
+}
+
+.delay375 {
+  transition-delay: 375ms;
+}
+
+.delay400 {
+  transition-delay: 400ms;
+}
+
+.delay450 {
+  transition-delay: 450ms;
+}
+
+.delay500 {
+  transition-delay: 500ms;
+}
+
+.delay600 {
+  transition-delay: 600ms;
+}
+
+.delay700 {
+  transition-delay: 700ms;
+}
+
+.delay800 {
+  transition-delay: 800ms;
+}
+
+.delay900 {
+  transition-delay: 900ms;
 }
 
 /* Animation specific transforms */

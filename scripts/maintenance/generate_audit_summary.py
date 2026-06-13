@@ -66,7 +66,7 @@ def main():
             for issue in issues:
                 comment += f'- {issue}\n'
             comment += '\nPlease restore these critical files or security helpers before merging.'
-            run_command(['gh', 'pr', 'comment', str(pr_num), '--body', comment, '--edit-last', '--create-if-none'])
+            run_command(['gh', 'pr', 'comment', str(pr_num), '--body', comment])
 
     # Generate Markdown Summary
     date_str = datetime.now().strftime('%Y-%m-%d')

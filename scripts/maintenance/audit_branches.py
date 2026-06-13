@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import subprocess
-
+import os
 import sys
 import re
 import signal
@@ -45,7 +45,7 @@ def main():
     branches_raw = run_command(["git", "branch", "-r", "--no-merged", "origin/main"])
     if not branches_raw:
         print(json.dumps({"error": "No unmerged branches found or error during git branch command."}))
-        sys.exit(1)
+        return
 
     # Filter out empty lines and the symbolic HEAD ref
     branches = [b.strip() for b in branches_raw.split('\n') if b.strip() and "origin/HEAD" not in b]
@@ -85,7 +85,7 @@ def main():
         else:
             issues.append("Could not read src/utils/navigation.ts")
 
-        branch_name = branch.removeprefix("origin/")
+        branch_name = branch.replace("origin/", "")
         if issues:
             audit_data["blocked"].append({
                 "branch": branch_name,

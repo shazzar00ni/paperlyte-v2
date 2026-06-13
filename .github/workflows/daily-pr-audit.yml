@@ -55,18 +55,5 @@ jobs:
           git config --local user.email "actions@github.com"
           git config --local user.name "github-actions[bot]"
           git add PR_REVIEW_SUMMARY.md
-          if git commit -m "docs: automated daily PR audit summary ($(date +%Y-%m-%d))"; then
-            for attempt in 1 2 3; do
-              git pull --rebase origin HEAD
-              if git push origin HEAD; then
-                break
-              fi
-
-              if [ "$attempt" -eq 3 ]; then
-                echo "Failed to push changes after 3 attempts"
-                exit 1
-              fi
-            done
-          else
-            echo "No changes to commit"
-          fi
+          git commit -m "docs: automated daily PR audit summary ($(date +%Y-%m-%d))" || echo "No changes to commit"
+          git push

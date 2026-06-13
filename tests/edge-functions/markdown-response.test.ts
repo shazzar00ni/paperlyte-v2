@@ -386,6 +386,20 @@ describe('markdown-response edge function', () => {
       expect(body).toContain('`npm install`')
     })
 
+    it('uses a longer backtick delimiter when inline code contains a backtick', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(htmlResponse('<p><code>a`b</code></p>'))
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      // Single-backtick delimiters would break — must use `` `` `` or longer.
+      expect(body).toContain('``')
+      expect(body).toContain('a`b')
+      // The literal text must not appear as a bare inline-code fragment.
+      expect(body).not.toMatch(/[^`]`a`b`[^`]|^`a`b`$/)
+    })
+
     it('converts code blocks with fenced style', async () => {
       const req = makeRequest('https://example.com/', mdHeaders)
       const ctx = makeContext(htmlResponse('<pre><code>const x = 1;\nconst y = 2;</code></pre>'))
@@ -395,6 +409,18 @@ describe('markdown-response edge function', () => {
 
       expect(body).toContain('```')
       expect(body).toContain('const x = 1;')
+    })
+
+    it('converts bare <pre> blocks (without nested <code>) to fenced code', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(htmlResponse('<pre>  indented\n  text</pre>'))
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).toContain('```')
+      expect(body).toContain('indented')
+      expect(body).toContain('text')
     })
 
     it('converts bold text to **strong**', async () => {
@@ -427,6 +453,35 @@ describe('markdown-response edge function', () => {
       expect(body).toContain('> A quote')
     })
 
+    it('preserves paragraph boundaries inside blockquotes', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(
+        htmlResponse('<blockquote><p>First paragraph</p><p>Second paragraph</p></blockquote>')
+      )
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).toContain('> First paragraph')
+      expect(body).toContain('> Second paragraph')
+    })
+
+    it('converts tables to Markdown pipe tables', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(
+        htmlResponse(
+          '<table><tr><th>Feature</th><th>Supported</th></tr>' +
+            '<tr><td>Sync</td><td>Yes</td></tr></table>'
+        )
+      )
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).toContain('| Feature | Supported |')
+      expect(body).toContain('| Sync | Yes |')
+    })
+
     it('preserves image alt text and src', async () => {
       const req = makeRequest('https://example.com/', mdHeaders)
       const ctx = makeContext(htmlResponse('<img src="/logo.png" alt="Logo">'))
@@ -435,6 +490,30 @@ describe('markdown-response edge function', () => {
       const body = await result.text()
 
       expect(body).toContain('![Logo](/logo.png)')
+    })
+
+    it('strips images with javascript: src', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(htmlResponse('<img src="javascript:alert(1)" alt="xss">'))
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).not.toContain('javascript:')
+      expect(body).not.toContain('![')
+    })
+
+    it('strips images with data: src', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(
+        htmlResponse('<img src="data:image/png;base64,abc" alt="payload">')
+      )
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).not.toContain('data:')
+      expect(body).not.toContain('![')
     })
 
     it('trims leading and trailing whitespace from output', async () => {

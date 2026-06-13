@@ -179,8 +179,21 @@ function buildMarkdownLink(attrs: string, content: string): string {
 /** Convert an `<img>` element to a Markdown image reference. */
 function buildMarkdownImage(attrs: string): string {
   const src = extractAttr(attrs, /src=["']([^"']*)["']/)
-  if (!src) return ''
+  if (!src || !isSafeHref(src)) return ''
   return `![${extractAttr(attrs, /alt=["']([^"']*)["']/)}](${src})`
+}
+
+/**
+ * Wrap inline code text in backtick delimiters long enough that no backtick
+ * run inside the content closes the span prematurely (CommonMark §6.1).
+ */
+function buildInlineCode(content: string): string {
+  const text = decodeEntities(content.replace(/<[^>]*>/g, ''))
+  const runs = text.match(/`+/g) ?? []
+  const len = runs.length > 0 ? Math.max(...runs.map((r) => r.length)) + 1 : 1
+  const delim = '`'.repeat(len)
+  const pad = text.startsWith('`') || text.endsWith('`') ? ' ' : ''
+  return `${delim}${pad}${text}${pad}${delim}`
 }
 
 /**
@@ -209,10 +222,19 @@ function htmlToMarkdown(html: string): string {
       `\n\`\`\`\n${decodeEntities(content.replace(/<[^>]*>/g, ''))}\n\`\`\`\n`
   )
 
+  // Bare <pre> blocks without a nested <code>: treat as fenced code.
+  // This runs after the <pre><code> handler so combined patterns are already
+  // consumed; remaining <pre>…</pre> tags are bare preformatted blocks.
+  md = md.replace(
+    /<pre[^>]*>([\s\S]*?)<\/pre\s*>/gi,
+    (_, content: string) =>
+      `\n\`\`\`\n${decodeEntities(content.replace(/<[^>]*>/g, ''))}\n\`\`\`\n`
+  )
+
   // Inline code: <code>…</code>
   md = md.replace(
     /<code[^>]*>([\s\S]*?)<\/code\s*>/gi,
-    (_, content: string) => `\`${decodeEntities(content.replace(/<[^>]*>/g, ''))}\``
+    (_, content: string) => buildInlineCode(content)
   )
 
   // ATX headings h6→h1 (descending to avoid h1 pattern matching h10, etc.)
@@ -223,9 +245,16 @@ function htmlToMarkdown(html: string): string {
     )
   }
 
-  // Blockquotes — strip inner tags, prefix each non-empty line with "> "
+  // Blockquotes — convert block tags to newlines first so paragraph
+  // boundaries inside <blockquote><p>…</p><p>…</p></blockquote> are preserved.
   md = md.replace(/<blockquote[^>]*>([\s\S]*?)<\/blockquote\s*>/gi, (_, content: string) => {
-    const lines = stripTags(content)
+    const text = content
+      .replace(/<\/p\s*>/gi, '\n')
+      .replace(/<br\s*\/?>/gi, '\n')
+      .replace(/<[^>]*>/g, '')
+      .replace(/[ \t]+/g, ' ')
+      .trim()
+    const lines = text
       .split('\n')
       .map((line) => line.trim())
       .filter(Boolean)
@@ -264,6 +293,26 @@ function htmlToMarkdown(html: string): string {
       (_m: string, item: string) => `- ${stripTags(item).trim()}\n`
     )
     return '\n' + items.replace(/<[^>]*>/g, '') + '\n'
+  })
+
+  // Tables — convert to Markdown pipe tables so structured data (e.g. the
+  // comparison matrix) is legible to AI agents rather than concatenated text.
+  md = md.replace(/<table[^>]*>([\s\S]*?)<\/table\s*>/gi, (_, tableContent: string) => {
+    const rows: string[][] = []
+    tableContent.replace(/<tr[^>]*>([\s\S]*?)<\/tr\s*>/gi, (_m: string, rowContent: string) => {
+      const cells: string[] = []
+      rowContent.replace(/<t[hd][^>]*>([\s\S]*?)<\/t[hd]\s*>/gi, (_c: string, cell: string) => {
+        cells.push(stripTags(cell).trim())
+        return ''
+      })
+      if (cells.length > 0) rows.push(cells)
+      return ''
+    })
+    if (rows.length === 0) return ''
+    const header = rows[0]
+    const separator = header.map(() => '---')
+    const mdRows = [header, separator, ...rows.slice(1)].map((row) => '| ' + row.join(' | ') + ' |')
+    return '\n' + mdRows.join('\n') + '\n'
   })
 
   // Horizontal rules

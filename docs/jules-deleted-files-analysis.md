@@ -18,7 +18,7 @@ Analysis of Jules' (google-labs-jules[bot]) daily PR reviews in `PR_REVIEW_SUMMA
 
 **What happened:** `sitemap.xml` had its `<lastmod>` dates rolled back to older values as an unintended side-effect of the PR. Jules flagged this as likely unintentional since the PR was scoped to icon test fixes and had no reason to touch sitemap dates.
 
-**Current state:** `public/sitemap.xml` was subsequently removed from git tracking entirely in commit `a088020` ("refactor: Move generated files to gitignore") — it is now treated as a build-time generated artifact and is no longer committed to the repository.
+**Current state:** `public/sitemap.xml` is no longer tracked in git; it is treated as a build-time generated artifact and is no longer committed to the repository.
 
 ---
 

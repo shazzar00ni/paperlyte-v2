@@ -88,6 +88,12 @@ function stripTags(html: string): string {
   return html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim()
 }
 
+/** Decode a numeric HTML entity code point to a character (or '' if out of range). */
+function decodeNumericEntity(code: string, base: 10 | 16): string {
+  const n = parseInt(code, base)
+  return n >= 0 && n <= 0x10ffff ? String.fromCodePoint(n) : ''
+}
+
 /** Decode common HTML entities to their character equivalents. */
 function decodeEntities(text: string): string {
   return text
@@ -97,8 +103,8 @@ function decodeEntities(text: string): string {
     .replace(/&quot;/g, '"')
     .replace(/&#39;|&apos;/g, "'")
     .replace(/&nbsp;/g, ' ')
-    .replace(/&#(\d+);/g, (_, code: string) => String.fromCharCode(parseInt(code, 10)))
-    .replace(/&#x([0-9a-f]+);/gi, (_, code: string) => String.fromCharCode(parseInt(code, 16)))
+    .replace(/&#(\d+);/g, (_, code: string) => decodeNumericEntity(code, 10))
+    .replace(/&#x([0-9a-f]+);/gi, (_, code: string) => decodeNumericEntity(code, 16))
 }
 
 /**
@@ -125,11 +131,16 @@ function sanitizeHtml(html: string): string {
     do {
       prev = result
       result = result.replace(
-        new RegExp(`<${tag}(\\s[^>]*)?>([\\s\\S]*?)<\\/${tag}\\s*>`, 'gi'), // nosemgrep
+        new RegExp(`<${tag}(\\s[^>]*)?>(?:(?!<${tag}[\\s>])[\\s\\S])*?<\\/${tag}\\s*>`, 'gi'), // nosemgrep
         ''
       )
     } while (result !== prev)
   }
+
+  // Remove unclosed excluded opening tags and all trailing content. Without
+  // this, a bare <script>payload with no </script> would have only the opener
+  // stripped by the next step, leaking the payload into the Markdown.
+  result = result.replace(new RegExp(`<(?:${dangerPattern})\\b[^>]*>[\\s\\S]*$`, 'gi'), '') // nosemgrep
 
   // Remove partial/malformed opening tags (e.g. `<script` with no `>`).
   // The `>?` makes the closing bracket optional, catching bare fragments.
@@ -146,6 +157,43 @@ function sanitizeHtml(html: string): string {
   result = result.replace(/\s+on\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]*)/gi, '')
 
   return result
+}
+
+/** Extract a quoted attribute value from an attribute string, or '' if absent. */
+function extractAttr(attrs: string, re: RegExp): string {
+  return attrs.match(re)?.[1] ?? ''
+}
+
+/** Returns false when the href must not become a link (unsafe scheme or empty). */
+function isSafeHref(href: string): boolean {
+  return Boolean(href) && !/^(\/\/|javascript:|data:|vbscript:)/i.test(href)
+}
+
+/** Convert an `<a>` element to a Markdown link, stripping unsafe href schemes. */
+function buildMarkdownLink(attrs: string, content: string): string {
+  const href = extractAttr(attrs, /href=["']([^"']*)["']/)
+  if (!isSafeHref(href)) return stripTags(content)
+  return `[${stripTags(content)}](${href})`
+}
+
+/** Convert an `<img>` element to a Markdown image reference. */
+function buildMarkdownImage(attrs: string): string {
+  const src = extractAttr(attrs, /src=["']([^"']*)["']/)
+  if (!src || !isSafeHref(src)) return ''
+  return `![${extractAttr(attrs, /alt=["']([^"']*)["']/)}](${src})`
+}
+
+/**
+ * Wrap inline code text in backtick delimiters long enough that no backtick
+ * run inside the content closes the span prematurely (CommonMark §6.1).
+ */
+function buildInlineCode(content: string): string {
+  const text = decodeEntities(content.replace(/<[^>]*>/g, ''))
+  const runs = text.match(/`+/g) ?? []
+  const len = runs.length > 0 ? Math.max(...runs.map((r) => r.length)) + 1 : 1
+  const delim = '`'.repeat(len)
+  const pad = text.startsWith('`') || text.endsWith('`') ? ' ' : ''
+  return `${delim}${pad}${text}${pad}${delim}`
 }
 
 /**
@@ -174,10 +222,19 @@ function htmlToMarkdown(html: string): string {
       `\n\`\`\`\n${decodeEntities(content.replace(/<[^>]*>/g, ''))}\n\`\`\`\n`
   )
 
+  // Bare <pre> blocks without a nested <code>: treat as fenced code.
+  // This runs after the <pre><code> handler so combined patterns are already
+  // consumed; remaining <pre>…</pre> tags are bare preformatted blocks.
+  md = md.replace(
+    /<pre[^>]*>([\s\S]*?)<\/pre\s*>/gi,
+    (_, content: string) =>
+      `\n\`\`\`\n${decodeEntities(content.replace(/<[^>]*>/g, ''))}\n\`\`\`\n`
+  )
+
   // Inline code: <code>…</code>
   md = md.replace(
     /<code[^>]*>([\s\S]*?)<\/code\s*>/gi,
-    (_, content: string) => `\`${decodeEntities(content.replace(/<[^>]*>/g, ''))}\``
+    (_, content: string) => buildInlineCode(content)
   )
 
   // ATX headings h6→h1 (descending to avoid h1 pattern matching h10, etc.)
@@ -188,12 +245,19 @@ function htmlToMarkdown(html: string): string {
     )
   }
 
-  // Blockquotes — strip inner tags, prefix each non-empty line with "> "
+  // Blockquotes — convert block tags to newlines first so paragraph
+  // boundaries inside <blockquote><p>…</p><p>…</p></blockquote> are preserved.
   md = md.replace(/<blockquote[^>]*>([\s\S]*?)<\/blockquote\s*>/gi, (_, content: string) => {
-    const lines = stripTags(content)
+    const text = content
+      .replace(/<\/p\s*>/gi, '\n')
+      .replace(/<br\s*\/?>/gi, '\n')
+      .replace(/<[^>]*>/g, '')
+      .replace(/[ \t]+/g, ' ')
+      .trim()
+    const lines = text
       .split('\n')
       .map((line) => line.trim())
-      .filter((line) => line.length > 0)
+      .filter(Boolean)
       .map((line) => `> ${line}`)
     return '\n' + lines.join('\n') + '\n'
   })
@@ -205,23 +269,12 @@ function htmlToMarkdown(html: string): string {
   md = md.replace(/<(?:em|i)[^>]*>([\s\S]*?)<\/(?:em|i)\s*>/gi, '*$1*')
 
   // Links — preserve href, reject unsafe schemes and protocol-relative URLs
-  md = md.replace(/<a\b([^>]*)>([\s\S]*?)<\/a\s*>/gi, (_, attrs: string, content: string) => {
-    const hrefMatch = attrs.match(/href=["']([^"']*)["']/)
-    if (!hrefMatch) return stripTags(content)
-    const href = hrefMatch[1]
-    if (href.startsWith('//') || /^(?:javascript|data|vbscript):/i.test(href)) {
-      return stripTags(content)
-    }
-    return `[${stripTags(content)}](${href})`
-  })
+  md = md.replace(/<a\b([^>]*)>([\s\S]*?)<\/a\s*>/gi, (_, attrs: string, content: string) =>
+    buildMarkdownLink(attrs, content)
+  )
 
   // Images — preserve src and alt
-  md = md.replace(/<img\b([^>]*)>/gi, (_, attrs: string) => {
-    const srcMatch = attrs.match(/src=["']([^"']*)["']/)
-    const altMatch = attrs.match(/alt=["']([^"']*)["']/)
-    if (!srcMatch) return ''
-    return `![${altMatch ? altMatch[1] : ''}](${srcMatch[1]})`
-  })
+  md = md.replace(/<img\b([^>]*)>/gi, (_, attrs: string) => buildMarkdownImage(attrs))
 
   // Ordered lists — reset counter per <ol>
   md = md.replace(/<ol[^>]*>([\s\S]*?)<\/ol\s*>/gi, (_, content: string) => {
@@ -240,6 +293,26 @@ function htmlToMarkdown(html: string): string {
       (_m: string, item: string) => `- ${stripTags(item).trim()}\n`
     )
     return '\n' + items.replace(/<[^>]*>/g, '') + '\n'
+  })
+
+  // Tables — convert to Markdown pipe tables so structured data (e.g. the
+  // comparison matrix) is legible to AI agents rather than concatenated text.
+  md = md.replace(/<table[^>]*>([\s\S]*?)<\/table\s*>/gi, (_, tableContent: string) => {
+    const rows: string[][] = []
+    tableContent.replace(/<tr[^>]*>([\s\S]*?)<\/tr\s*>/gi, (_m: string, rowContent: string) => {
+      const cells: string[] = []
+      rowContent.replace(/<t[hd][^>]*>([\s\S]*?)<\/t[hd]\s*>/gi, (_c: string, cell: string) => {
+        cells.push(stripTags(cell).trim())
+        return ''
+      })
+      if (cells.length > 0) rows.push(cells)
+      return ''
+    })
+    if (rows.length === 0) return ''
+    const header = rows[0]
+    const separator = header.map(() => '---')
+    const mdRows = [header, separator, ...rows.slice(1)].map((row) => '| ' + row.join(' | ') + ' |')
+    return '\n' + mdRows.join('\n') + '\n'
   })
 
   // Horizontal rules
@@ -278,26 +351,111 @@ function htmlToMarkdown(html: string): string {
 }
 
 /**
+ * Parse the q-value from a single Accept token string, e.g. "text/markdown;q=0.9".
+ * RFC 7231 §5.3: 'q' is case-insensitive; optional whitespace around '='.
+ */
+function parseQValue(token: string): number {
+  const m = /;\s*q\s*=\s*([\d.]+)/i.exec(token)
+  if (!m) return 1.0
+  const v = parseFloat(m[1])
+  return Number.isNaN(v) ? 1.0 : v
+}
+
+/**
+ * Return true when markdown is preferred over HTML given their respective
+ * q-values. markdown must have a positive q; HTML either absent (q=-1) or
+ * at most equal to markdown's q.
+ */
+function prefersMarkdownOverHtml(markdownQ: number, htmlQ: number): boolean {
+  if (markdownQ <= 0) return false
+  return htmlQ < 0 || markdownQ >= htmlQ
+}
+
+/**
  * Returns true when the request's Accept header includes `text/markdown` with
- * a non-zero q-value (or no q-value). Respects RFC 7231 §5.3 rules:
- * media-type tokens are case-insensitive and optional whitespace is allowed
- * around the `=` sign (so `Q=0` and `q = 0` are valid opt-outs).
+ * a positive q-value that is at least as high as text/html's q-value. Respects
+ * RFC 7231 §5.3: media-type tokens are case-insensitive and optional whitespace
+ * is allowed around the `=` sign (so `Q=0` and `q = 0` are valid opt-outs).
+ * When text/html has a strictly higher q-value the client prefers HTML and the
+ * request passes through unchanged.
  */
 function acceptsMarkdownHeader(request: Request): boolean {
-  return (request.headers.get('Accept') ?? '').split(',').some((token) => {
-    const [type, ...params] = token.trim().split(';')
-    if (type.trim().toLowerCase() !== 'text/markdown') return false
-    const qParamValue = params
-      .map((p) => p.trim())
-      .map((p) => {
-        const eqIdx = p.indexOf('=')
-        if (eqIdx === -1) return undefined
-        const name = p.slice(0, eqIdx).trim().toLowerCase()
-        const value = p.slice(eqIdx + 1).trim()
-        return name === 'q' ? value : undefined
-      })
-      .find((value): value is string => value !== undefined)
-    return qParamValue === undefined || parseFloat(qParamValue) > 0
+  const accept = request.headers.get('Accept') ?? ''
+  let markdownQ = -1
+  let htmlQ = -1
+  for (const token of accept.split(',')) {
+    const mediaType = token.trim().split(';')[0].trim().toLowerCase()
+    const q = parseQValue(token.trim())
+    if (mediaType === 'text/markdown') markdownQ = Math.max(markdownQ, q)
+    else if (mediaType === 'text/html') htmlQ = Math.max(htmlQ, q)
+  }
+  return prefersMarkdownOverHtml(markdownQ, htmlQ)
+}
+
+/** Returns true when the response is a byte-range fragment that must not be rewritten. */
+function isPartialContent(response: Response): boolean {
+  return response.status === 206 || response.headers.has('Content-Range')
+}
+
+/**
+ * Build the response headers for the Markdown body, starting from the origin
+ * headers and stripping or updating fields that describe the HTML payload.
+ */
+function buildMarkdownHeaders(origin: Response, tokenEstimate: string): Headers {
+  // Start from all origin headers to preserve unrelated metadata
+  // (e.g. CORS headers, X-* headers, etc.). Remove validators and
+  // entity headers that describe the HTML payload — they are now stale
+  // for the rewritten Markdown body and must be stripped to prevent
+  // clients / CDNs from mis-handling the response (wrong Content-Length,
+  // mismatched ETag, etc.).
+  const headers = new Headers(origin.headers)
+  headers.delete('Content-Length')
+  headers.delete('Content-Encoding')
+  headers.delete('Transfer-Encoding')
+  // Range headers describe the HTML fragment, not the Markdown body.
+  headers.delete('Content-Range')
+  headers.delete('Accept-Ranges')
+  headers.delete('ETag')
+  headers.delete('Last-Modified')
+  headers.set('Content-Type', 'text/markdown; charset=utf-8')
+  headers.set('X-Markdown-Tokens', tokenEstimate)
+  headers.set('Content-Signal', 'ai-train=yes, search=yes, ai-input=yes')
+  // Preserve the origin Cache-Control policy when set. Otherwise prevent
+  // caches from storing this Markdown transformation as if it were the
+  // canonical HTML resource, which would return wrong content to subsequent
+  // HTML requests sharing the same cache key.
+  if (!headers.has('Cache-Control')) headers.set('Cache-Control', 'no-store')
+  // Merge Accept into any existing Vary value so CDNs store HTML and
+  // Markdown as separate cache entries without losing other Vary tokens
+  // (e.g. Accept-Encoding) the origin already set.
+  const originVary = headers.get('Vary') ?? ''
+  const varyParts = originVary.split(',').map((v: string) => v.trim()).filter(Boolean)
+  const normalizedVaryParts = varyParts.map((v: string) => v.toLowerCase())
+  headers.set(
+    'Vary',
+    normalizedVaryParts.includes('accept') ? originVary : [...varyParts, 'Accept'].join(', ')
+  )
+  return headers
+}
+
+/**
+ * Convert a fetched origin response to Markdown, or pass it through unchanged
+ * when the content-type or status makes conversion inappropriate.
+ */
+async function convertOriginToMarkdown(originResponse: Response): Promise<Response> {
+  const contentType = (originResponse.headers.get('Content-Type') ?? '').toLowerCase()
+  if (!contentType.includes('text/html')) return originResponse
+  // A 206 response (or one with Content-Range) is a fragment of the full
+  // document. Rewriting only that fragment into Markdown and stripping the
+  // range headers would break byte-range semantics for the caller.
+  if (isPartialContent(originResponse)) return originResponse
+  const html = await originResponse.clone().text()
+  const markdown = htmlToMarkdown(sanitizeHtml(html))
+  const tokenEstimate = String(Math.ceil(markdown.length / 4))
+  return new Response(markdown, {
+    status: originResponse.status,
+    statusText: originResponse.statusText,
+    headers: buildMarkdownHeaders(originResponse, tokenEstimate),
   })
 }
 
@@ -335,77 +493,11 @@ export default async function handler(request: Request, context: Context): Promi
   let originResponse: Response | undefined
 
   try {
-    // ── 4. Fetch HTML from origin ─────────────────────────────────────────
+    // ── 4. Fetch from origin and convert ─────────────────────────────────
     originResponse = await context.next()
-    const contentType = (originResponse.headers.get('Content-Type') ?? '').toLowerCase()
-
-    if (!contentType.includes('text/html')) {
-      return originResponse
-    }
-
-    // ── 4a. Pass through partial-content responses unchanged ──────────────
-    // A 206 response (or one with Content-Range) is a fragment of the full
-    // document. Rewriting only that fragment into Markdown and stripping the
-    // range headers would break byte-range semantics for the caller.
-    if (originResponse.status === 206 || originResponse.headers.has('Content-Range')) {
-      return originResponse
-    }
-
-    const html = await originResponse.clone().text()
-
-    // ── 5. Sanitize and convert HTML → Markdown ───────────────────────────
-    // Sanitize removes dangerous tags, event handlers, and comments via regex.
-    // htmlToMarkdown converts the sanitized HTML to plain Markdown text.
-    const markdown = htmlToMarkdown(sanitizeHtml(html))
-
-    // ── 6. Compute estimated token count (chars / 4) ──────────────────────
-    const tokenEstimate = String(Math.ceil(markdown.length / 4))
-
-    // Start from all origin headers to preserve unrelated metadata
-    // (e.g. CORS headers, X-* headers, etc.). Remove validators and
-    // entity headers that describe the HTML payload — they are now stale
-    // for the rewritten Markdown body and must be stripped to prevent
-    // clients / CDNs from mis-handling the response (wrong Content-Length,
-    // mismatched ETag, etc.). Cache-Control is unconditionally overridden
-    // below; the origin value is intentionally discarded.
-    const headers = new Headers(originResponse.headers)
-    headers.delete('Content-Length')
-    headers.delete('Content-Encoding')
-    headers.delete('Transfer-Encoding')
-    // Range headers describe the HTML fragment, not the Markdown body.
-    headers.delete('Content-Range')
-    headers.delete('Accept-Ranges')
-    headers.delete('ETag')
-    headers.delete('Last-Modified')
-    headers.set('Content-Type', 'text/markdown; charset=utf-8')
-    headers.set('X-Markdown-Tokens', tokenEstimate)
-    headers.set('Content-Signal', 'ai-train=yes, search=yes, ai-input=yes')
-    // The Markdown body is a lossy transformation of the HTML; caching it
-    // as if it were the canonical resource would return wrong content to
-    // subsequent HTML requests sharing the same cache key. Force-bypass.
-    headers.set('Cache-Control', 'no-store')
-
-    // Merge Accept into any existing Vary value so CDNs store HTML and
-    // Markdown as separate cache entries without losing other Vary tokens
-    // (e.g. Accept-Encoding) the origin already set.
-    const originVary = headers.get('Vary') ?? ''
-    const varyParts = originVary
-      .split(',')
-      .map((v) => v.trim())
-      .filter(Boolean)
-    const normalizedVaryParts = varyParts.map((v) => v.toLowerCase())
-    headers.set(
-      'Vary',
-      normalizedVaryParts.includes('accept') ? originVary : [...varyParts, 'Accept'].join(', ')
-    )
-
-    return new Response(markdown, {
-      status: originResponse.status,
-      statusText: originResponse.statusText,
-      headers,
-    })
+    return await convertOriginToMarkdown(originResponse)
   } catch (err) {
-    // ── 7. Fallback: pass through to origin unchanged ─────────────────────
+    // ── 5. Fallback: pass through to origin unchanged ─────────────────────
     // Log pathname only — never request.url — to avoid persisting sensitive
     // query parameters (tokens, emails, campaign IDs) in edge logs.
     // console.error is the correct logging mechanism in the Deno-based Edge

@@ -21,6 +21,12 @@ const BUILD_DATE = new Date().toLocaleDateString("en-US", {
   day: "numeric",
 });
 
+// Revision dates per legal page — update the relevant entry when that policy changes, not on every deploy
+const LEGAL_REVISION_DATES = {
+  "privacy.html": "June 5, 2026",
+  "terms.html": "June 5, 2026",
+};
+
 // Configuration for production site
 const SITE_URL = "https://paperlyte.app";
 const OG_IMAGE_URL = "https://paperlyte.app/og-image.jpg";
@@ -30,6 +36,7 @@ const LEGAL_FILES = ["privacy.html", "terms.html"];
 
 console.log(`Injecting build values...`);
 console.log(`- Build date: ${BUILD_DATE}`);
+console.log(`- Legal revision dates: privacy=${LEGAL_REVISION_DATES["privacy.html"]}, terms=${LEGAL_REVISION_DATES["terms.html"]}`);
 console.log(`- Site URL: ${SITE_URL}`);
 
 // Process legal pages (privacy, terms)
@@ -46,8 +53,8 @@ LEGAL_FILES.forEach((file) => {
     const originalContent = readFileSync(filePath, "utf8");
     let content = originalContent;
 
-    // Replace placeholder with actual build date
-    content = content.replace(/{{BUILD_DATE}}/g, BUILD_DATE);
+    // Replace placeholder with this file's revision date (not build date — changes only when policy content changes)
+    content = content.replace(/{{BUILD_DATE}}/g, LEGAL_REVISION_DATES[file]);
 
     // Verify that placeholders were actually replaced
     if (originalContent === content) {

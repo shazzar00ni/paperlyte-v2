@@ -357,6 +357,15 @@ describe('navigation utilities', () => {
       warnSpy.mockRestore()
     })
 
+    it('should block \\/ and \\\\ protocol-relative variants', () => {
+      mockLocation()
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      // Browsers normalise \/ and \\ to // (protocol-relative) for special schemes
+      expect(safeNavigate('\\/evil.com')).toBe(false)
+      expect(safeNavigate('\\\\evil.com')).toBe(false)
+      warnSpy.mockRestore()
+    })
+
     it('should block external HTTPS URL', () => {
       mockLocation()
       const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})

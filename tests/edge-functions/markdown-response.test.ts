@@ -256,6 +256,32 @@ describe('markdown-response edge function', () => {
       const result = await ctx.next.mock.results[0].value
       expect(result.headers.get('Content-Type')).not.toBe('text/markdown; charset=utf-8')
     })
+
+    it('passes through when text/html has a strictly higher q-value than text/markdown', async () => {
+      // RFC 7231 content negotiation: prefer HTML when its q-value exceeds markdown's
+      const req = makeRequest('https://example.com/', {
+        Accept: 'text/html, text/markdown;q=0.5',
+      })
+      const ctx = makeContext(htmlResponse('<p>Page</p>'))
+
+      await handler(req, ctx)
+
+      expect(ctx.next).toHaveBeenCalledOnce()
+      const result = await ctx.next.mock.results[0].value
+      expect(result.headers.get('Content-Type')).not.toBe('text/markdown; charset=utf-8')
+    })
+
+    it('serves Markdown when text/markdown and text/html share an equal q-value', async () => {
+      // Equal q-values: edge function preference breaks the tie in favour of Markdown
+      const req = makeRequest('https://example.com/', {
+        Accept: 'text/html;q=0.9, text/markdown;q=0.9',
+      })
+      const ctx = makeContext(htmlResponse('<p>Page</p>'))
+
+      const result = await handler(req, ctx)
+
+      expect(result.headers.get('Content-Type')).toBe('text/markdown; charset=utf-8')
+    })
   })
 
   // ── Excluded-path gating ──────────────────────────────────────────────────
@@ -386,6 +412,20 @@ describe('markdown-response edge function', () => {
       expect(body).toContain('`npm install`')
     })
 
+    it('uses a longer backtick delimiter when inline code contains a backtick', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(htmlResponse('<p><code>a`b</code></p>'))
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      // Single-backtick delimiters would break — must use `` `` `` or longer.
+      expect(body).toContain('``')
+      expect(body).toContain('a`b')
+      // The literal text must not appear as a bare inline-code fragment.
+      expect(body).not.toMatch(/[^`]`a`b`[^`]|^`a`b`$/)
+    })
+
     it('converts code blocks with fenced style', async () => {
       const req = makeRequest('https://example.com/', mdHeaders)
       const ctx = makeContext(htmlResponse('<pre><code>const x = 1;\nconst y = 2;</code></pre>'))
@@ -395,6 +435,18 @@ describe('markdown-response edge function', () => {
 
       expect(body).toContain('```')
       expect(body).toContain('const x = 1;')
+    })
+
+    it('converts bare <pre> blocks (without nested <code>) to fenced code', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(htmlResponse('<pre>  indented\n  text</pre>'))
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).toContain('```')
+      expect(body).toContain('indented')
+      expect(body).toContain('text')
     })
 
     it('converts bold text to **strong**', async () => {
@@ -427,6 +479,35 @@ describe('markdown-response edge function', () => {
       expect(body).toContain('> A quote')
     })
 
+    it('preserves paragraph boundaries inside blockquotes', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(
+        htmlResponse('<blockquote><p>First paragraph</p><p>Second paragraph</p></blockquote>')
+      )
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).toContain('> First paragraph')
+      expect(body).toContain('> Second paragraph')
+    })
+
+    it('converts tables to Markdown pipe tables', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(
+        htmlResponse(
+          '<table><tr><th>Feature</th><th>Supported</th></tr>' +
+            '<tr><td>Sync</td><td>Yes</td></tr></table>'
+        )
+      )
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).toContain('| Feature | Supported |')
+      expect(body).toContain('| Sync | Yes |')
+    })
+
     it('preserves image alt text and src', async () => {
       const req = makeRequest('https://example.com/', mdHeaders)
       const ctx = makeContext(htmlResponse('<img src="/logo.png" alt="Logo">'))
@@ -435,6 +516,30 @@ describe('markdown-response edge function', () => {
       const body = await result.text()
 
       expect(body).toContain('![Logo](/logo.png)')
+    })
+
+    it('strips images with javascript: src', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(htmlResponse('<img src="javascript:alert(1)" alt="xss">'))
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).not.toContain('javascript:')
+      expect(body).not.toContain('![')
+    })
+
+    it('strips images with data: src', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(
+        htmlResponse('<img src="data:image/png;base64,abc" alt="payload">')
+      )
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).not.toContain('data:')
+      expect(body).not.toContain('![')
     })
 
     it('trims leading and trailing whitespace from output', async () => {
@@ -500,6 +605,24 @@ describe('markdown-response edge function', () => {
       // Nav links stripped but main content preserved
       expect(body).toContain('Content')
       expect(body).not.toContain('Home')
+    })
+
+    it('fully removes nested same-type excluded elements (inner closer must not leave a tail)', async () => {
+      // Regression: non-greedy regex matched the inner pair first, leaving the
+      // text after the inner closer ("tail") outside any tag and leaking it into output.
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(
+        htmlResponse('<p>Before</p><nav>outer<nav>inner</nav>tail</nav><p>After</p>')
+      )
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).not.toContain('outer')
+      expect(body).not.toContain('inner')
+      expect(body).not.toContain('tail')
+      expect(body).toContain('Before')
+      expect(body).toContain('After')
     })
 
     it('preserves <header> content; strips <footer> content', async () => {
@@ -649,6 +772,22 @@ describe('markdown-response edge function', () => {
 
       expect(body).not.toContain('<applet')
     })
+
+    it('removes unclosed excluded tags and all trailing content (no closer = remove to end)', async () => {
+      // Regression: partial opener removal only stripped the <script> tag,
+      // leaving the payload text in the Markdown output.
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(
+        htmlResponse('<p>Safe</p><script>SECRET PAYLOAD with no closing tag')
+      )
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).not.toContain('SECRET')
+      expect(body).not.toContain('PAYLOAD')
+      expect(body).toContain('Safe')
+    })
   })
 
   // ── Response headers ──────────────────────────────────────────────────────
@@ -690,13 +829,29 @@ describe('markdown-response edge function', () => {
       expect(tokens).toBe(Math.ceil(body.length / 4))
     })
 
-    it('sets Cache-Control to no-store', async () => {
+    it('sets Cache-Control to no-store when origin does not include one', async () => {
       const req = makeRequest('https://example.com/', mdHeaders)
       const ctx = makeContext(htmlResponse('<p>Hi</p>'))
 
       const result = await handler(req, ctx)
 
       expect(result.headers.get('Cache-Control')).toBe('no-store')
+    })
+
+    it('preserves origin Cache-Control when already set', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const originWithCache = new Response('<p>Hi</p>', {
+        status: 200,
+        headers: {
+          'Content-Type': 'text/html',
+          'Cache-Control': 'public, max-age=3600',
+        },
+      })
+      const ctx = makeContext(originWithCache)
+
+      const result = await handler(req, ctx)
+
+      expect(result.headers.get('Cache-Control')).toBe('public, max-age=3600')
     })
 
     it('sets Vary to Accept', async () => {
@@ -997,6 +1152,19 @@ describe('markdown-response edge function', () => {
 
       expect(excludedCtx.next).toHaveBeenCalledOnce()
       expect(excludedBody).toBe('<p>Sitemap</p>')
+    })
+
+    it('decodes supplementary Unicode code points (emoji) via numeric entities', async () => {
+      // String.fromCharCode truncates values above U+FFFF; String.fromCodePoint handles them.
+      const req = makeRequest('https://example.com/', mdHeaders)
+      // &#128512; is U+1F600 😀 (decimal); &#x1F601; is 😁 (hex)
+      const ctx = makeContext(htmlResponse('<p>&#128512; and &#x1F601;</p>'))
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).toContain('😀')
+      expect(body).toContain('😁')
     })
 
     it('handles XSS vectors with mixed-case and whitespace tags', async () => {

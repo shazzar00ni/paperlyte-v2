@@ -345,6 +345,7 @@ test.describe('Landing Page', () => {
     await page.goto('/')
 
     const emailInput = page.locator('#email-capture input[type="email"]')
+    const gdprConsentCheckbox = page.locator('#email-capture #gdpr-consent')
     const submitButton = page
       .locator('#email-capture')
       .getByRole('button', { name: /join the waitlist/i })
@@ -361,6 +362,7 @@ test.describe('Landing Page', () => {
     const rawEmail = `E2E-Test-${timestamp}@EXAMPLE.COM`
     const expectedEmail = `e2e-test-${timestamp}@example.com`
     await emailInput.fill(rawEmail)
+    await gdprConsentCheckbox.check()
     await submitButton.click()
 
     // Success banner replaces the form inside the same #email-capture section, which is

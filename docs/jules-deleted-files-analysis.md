@@ -37,7 +37,7 @@ Analysis of Jules' (google-labs-jules[bot]) daily PR reviews in `PR_REVIEW_SUMMA
 
 ## Files Deleted by Jules Himself
 
-Jules' own commits contain **zero file deletions** — he only modified `PR_REVIEW_SUMMARY.md` and occasionally source files when fixing flagged issues (e.g., PR #449 fixed `Hero.tsx`, `Icon.tsx`, `Comparison.tsx`, `Pricing.tsx`).
+Within the scope of this analysis, the Jules-authored commits examined in `PR_REVIEW_SUMMARY.md` showed no file deletions; changes were primarily to review metadata and occasional source code fixes for flagged issues.
 
 ---
 

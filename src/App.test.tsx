@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { MemoryRouter } from 'react-router-dom'
 import App from './App'
 import { _clearPendingScrollObservers } from '@utils/navigation'
 
@@ -12,7 +13,11 @@ describe('App Integration', () => {
   })
 
   it('should render with proper semantic structure and section order', async () => {
-    const { container } = render(<App />)
+    const { container } = render(
+      <MemoryRouter initialEntries={['/']}>
+        <App />
+      </MemoryRouter>
+    )
 
     // Verify semantic landmark regions
     const header = container.querySelector('header')
@@ -70,7 +75,11 @@ describe('App Integration', () => {
   })
 
   it('should have accessible landmark regions with proper roles', () => {
-    render(<App />)
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <App />
+      </MemoryRouter>
+    )
 
     // App has 1 banner region: Main Header
     const EXPECTED_BANNER_COUNT = 1
@@ -94,7 +103,11 @@ describe('App Integration', () => {
   })
 
   it('should render Hero section', () => {
-    const { container } = render(<App />)
+    const { container } = render(
+      <MemoryRouter initialEntries={['/']}>
+        <App />
+      </MemoryRouter>
+    )
 
     // Hero section should be present
     const heroSection = container.querySelector('#hero')
@@ -102,7 +115,11 @@ describe('App Integration', () => {
   })
 
   it('should render Features section', () => {
-    const { container } = render(<App />)
+    const { container } = render(
+      <MemoryRouter initialEntries={['/']}>
+        <App />
+      </MemoryRouter>
+    )
 
     const featuresSection = container.querySelector('#features')
     expect(featuresSection).toBeInTheDocument()
@@ -112,7 +129,11 @@ describe('App Integration', () => {
   })
 
   it('should render Mobile section', () => {
-    const { container } = render(<App />)
+    const { container } = render(
+      <MemoryRouter initialEntries={['/']}>
+        <App />
+      </MemoryRouter>
+    )
 
     const mobileSection = container.querySelector('#mobile')
     expect(mobileSection).toBeInTheDocument()
@@ -122,7 +143,11 @@ describe('App Integration', () => {
   })
 
   it('should render Testimonials section', async () => {
-    const { container } = render(<App />)
+    const { container } = render(
+      <MemoryRouter initialEntries={['/']}>
+        <App />
+      </MemoryRouter>
+    )
 
     await waitFor(() => expect(container.querySelector('#testimonials')).toBeInTheDocument())
 
@@ -131,7 +156,11 @@ describe('App Integration', () => {
   })
 
   it('should render CTA section', async () => {
-    const { container } = render(<App />)
+    const { container } = render(
+      <MemoryRouter initialEntries={['/']}>
+        <App />
+      </MemoryRouter>
+    )
 
     await waitFor(() => expect(container.querySelector('#download')).toBeInTheDocument())
 
@@ -142,7 +171,11 @@ describe('App Integration', () => {
   })
 
   it('should render Footer component', () => {
-    render(<App />)
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <App />
+      </MemoryRouter>
+    )
 
     // Semantic <footer> element provides implicit contentinfo role
     // Verify it's accessible to assistive technologies
@@ -150,7 +183,11 @@ describe('App Integration', () => {
   })
 
   it('should render CTA buttons in download section', async () => {
-    const { container } = render(<App />)
+    const { container } = render(
+      <MemoryRouter initialEntries={['/']}>
+        <App />
+      </MemoryRouter>
+    )
 
     // Wait for the lazy #download section specifically (not a button that also exists in eager sections)
     await waitFor(() => expect(container.querySelector('#download')).toBeInTheDocument())
@@ -164,7 +201,11 @@ describe('App Integration', () => {
   })
 
   it('should render feature cards', () => {
-    render(<App />)
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <App />
+      </MemoryRouter>
+    )
 
     // Check for specific features (using actual feature names)
     // Use getAllByText since features may appear in multiple sections
@@ -174,14 +215,22 @@ describe('App Integration', () => {
   })
 
   it('should render social links in footer', () => {
-    render(<App />)
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <App />
+      </MemoryRouter>
+    )
 
     expect(screen.getByRole('link', { name: 'Follow us on X (Twitter)' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Email us' })).toBeInTheDocument()
   })
 
   it('should render skip link with correct attributes', () => {
-    const { container } = render(<App />)
+    const { container } = render(
+      <MemoryRouter initialEntries={['/']}>
+        <App />
+      </MemoryRouter>
+    )
 
     const skipLink = container.querySelector('.skip-link')
     expect(skipLink).toBeInTheDocument()
@@ -190,7 +239,11 @@ describe('App Integration', () => {
   })
 
   it('should focus main element when skip link is activated', async () => {
-    const { container } = render(<App />)
+    const { container } = render(
+      <MemoryRouter initialEntries={['/']}>
+        <App />
+      </MemoryRouter>
+    )
     const user = userEvent.setup()
 
     const skipLink = container.querySelector('.skip-link') as HTMLElement
@@ -207,7 +260,11 @@ describe('App Integration', () => {
   })
 
   it('should render Problem section', () => {
-    const { container } = render(<App />)
+    const { container } = render(
+      <MemoryRouter initialEntries={['/']}>
+        <App />
+      </MemoryRouter>
+    )
 
     // Problem section should be present
     const problemSection = container.querySelector('#problem')
@@ -215,32 +272,52 @@ describe('App Integration', () => {
   })
 
   it('should render Solution section', () => {
-    const { container } = render(<App />)
+    const { container } = render(
+      <MemoryRouter initialEntries={['/']}>
+        <App />
+      </MemoryRouter>
+    )
 
     const solutionSection = container.querySelector('#solution')
     expect(solutionSection).toBeInTheDocument()
   })
 
   it('should render Statistics section', async () => {
-    const { container } = render(<App />)
+    const { container } = render(
+      <MemoryRouter initialEntries={['/']}>
+        <App />
+      </MemoryRouter>
+    )
 
     await waitFor(() => expect(container.querySelector('#statistics')).toBeInTheDocument())
   })
 
   it('should render Comparison section', async () => {
-    const { container } = render(<App />)
+    const { container } = render(
+      <MemoryRouter initialEntries={['/']}>
+        <App />
+      </MemoryRouter>
+    )
 
     await waitFor(() => expect(container.querySelector('#comparison')).toBeInTheDocument())
   })
 
   it('should render FAQ section', async () => {
-    const { container } = render(<App />)
+    const { container } = render(
+      <MemoryRouter initialEntries={['/']}>
+        <App />
+      </MemoryRouter>
+    )
 
     await waitFor(() => expect(container.querySelector('#faq')).toBeInTheDocument())
   })
 
   it('should render FeedbackWidget component', () => {
-    render(<App />)
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <App />
+      </MemoryRouter>
+    )
 
     // FeedbackWidget renders a floating button with specific aria-label
     const feedbackButton = screen.getByRole('button', { name: /Open feedback form/i })
@@ -248,7 +325,11 @@ describe('App Integration', () => {
   })
 
   it('should not have any duplicate IDs', async () => {
-    const { container } = render(<App />)
+    const { container } = render(
+      <MemoryRouter initialEntries={['/']}>
+        <App />
+      </MemoryRouter>
+    )
 
     // Wait for all lazy sections so their IDs are included in the check
     await waitFor(() => {
@@ -269,7 +350,11 @@ describe('App Integration', () => {
   })
 
   it('should have valid heading hierarchy starting with h1', () => {
-    render(<App />)
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <App />
+      </MemoryRouter>
+    )
 
     // Verify h1 exists (should be in Hero section)
     const h1Elements = screen.getAllByRole('heading', { level: 1 })
@@ -277,7 +362,11 @@ describe('App Integration', () => {
   })
 
   it('should include waitlist form in EmailCapture section', async () => {
-    const { container } = render(<App />)
+    const { container } = render(
+      <MemoryRouter initialEntries={['/']}>
+        <App />
+      </MemoryRouter>
+    )
 
     // Wait for the lazy #email-capture section specifically
     await waitFor(() => expect(container.querySelector('#email-capture')).toBeInTheDocument())
@@ -290,7 +379,11 @@ describe('App Integration', () => {
     const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
 
     try {
-      const { container } = render(<App />)
+      const { container } = render(
+        <MemoryRouter initialEntries={['/']}>
+          <App />
+        </MemoryRouter>
+      )
       // Flush ALL lazy-loaded sections so none resolve after the assertion and emit act() warnings
       await waitFor(() => {
         expect(container.querySelector('#statistics')).toBeInTheDocument()
@@ -308,7 +401,11 @@ describe('App Integration', () => {
   })
 
   it('should render all major UI components', () => {
-    const { container } = render(<App />)
+    const { container } = render(
+      <MemoryRouter initialEntries={['/']}>
+        <App />
+      </MemoryRouter>
+    )
 
     // Verify Header component
     expect(container.querySelector('header')).toBeInTheDocument()

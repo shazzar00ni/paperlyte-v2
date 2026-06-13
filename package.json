@@ -28,7 +28,8 @@
     "@fontsource/inter": "^5.2.8",
     "@sentry/react": "^10.56.0",
     "react": "^19.2.7",
-    "react-dom": "^19.2.7"
+    "react-dom": "^19.2.7",
+    "react-router-dom": "^6.30.4"
   },
   "devDependencies": {
     "@codecov/rollup-plugin": "^2.0.1",

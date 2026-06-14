@@ -60,6 +60,23 @@ function extractJobBlock(content: string, jobId: string): string {
 }
 
 /**
+ * Extracts a named step from a job block, stopping before the next step.
+ */
+function extractStepBlock(jobBlock: string, stepName: string): string {
+  const lines = jobBlock.split('\n')
+  const startIdx = lines.findIndex((line) => line === `      - name: ${stepName}`)
+  if (startIdx === -1) return ''
+
+  const stepLines: string[] = [lines[startIdx]]
+  for (let i = startIdx + 1; i < lines.length; i++) {
+    const line = lines[i]
+    if (line.startsWith('      - name: ')) break
+    stepLines.push(line)
+  }
+  return stepLines.join('\n')
+}
+
+/**
  * Returns true when the given job block contains `permissions:` followed by
  * a `contents: read` entry.
  */
@@ -161,6 +178,16 @@ describe('ci.yml – permission structure', () => {
   it('build job should depend on lint-and-typecheck and test (needs)', () => {
     const buildBlock = extractJobBlock(content, 'build')
     expect(buildBlock).toMatch(/needs:\s*\[lint-and-typecheck,\s*test\]/)
+  })
+
+  it('Lighthouse summary failures should fail the job', () => {
+    const lighthouseBlock = assertJobExists(content, 'lighthouse', 'ci.yml')
+    const summaryStep = extractStepBlock(lighthouseBlock, 'Generate Lighthouse report summary')
+
+    expect(summaryStep).not.toBe('')
+    expect(summaryStep).toContain('if: always()')
+    expect(summaryStep).toContain('run: bash .github/scripts/generate-lighthouse-summary.sh')
+    expect(summaryStep).not.toMatch(/continue-on-error:\s*true/)
   })
 })
 

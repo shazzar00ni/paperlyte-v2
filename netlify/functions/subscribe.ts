@@ -281,7 +281,7 @@ async function processSubscription(
   }
 
   try {
-    const result = await subscribeToConvertKit(emailResult.normalizedEmail);
+    await subscribeToConvertKit(emailResult.normalizedEmail);
     console.log("Successfully subscribed user to newsletter");
     return {
       statusCode: 200,
@@ -289,7 +289,6 @@ async function processSubscription(
       body: JSON.stringify({
         success: true,
         message: "Successfully subscribed! Please check your email to confirm.",
-        subscriptionId: result.subscription.id,
       }),
     };
   } catch (error) {

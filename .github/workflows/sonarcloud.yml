@@ -23,14 +23,25 @@ jobs:
           fetch-depth: 0  # Full history required for SonarCloud blame data and new-code detection
           persist-credentials: false
 
+      - name: Check SonarCloud configuration
+        id: check-sonar
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_PROJECT_KEY: ${{ vars.SONAR_PROJECT_KEY }}
+          SONAR_ORGANIZATION: ${{ vars.SONAR_ORGANIZATION }}
+        run: |
+          if [ -z "$SONAR_TOKEN" ] || \
+             [ -z "$SONAR_PROJECT_KEY" ] || \
+             [ -z "$SONAR_ORGANIZATION" ]; then
+            echo "configured=false" >> $GITHUB_OUTPUT
+            echo "::warning::SonarCloud secrets/variables not configured. Skipping analysis."
+            echo "Required: SONAR_TOKEN (secret), SONAR_PROJECT_KEY (var), SONAR_ORGANIZATION (var)"
+          else
+            echo "configured=true" >> $GITHUB_OUTPUT
+          fi
+
       - name: Analyze with SonarCloud
-        # Skip gracefully when project key / org aren't configured (forks,
-        # repositories that haven't set up SonarCloud).  An empty project key
-        # causes the scanner to fail with a hard validation error, so we must
-        # gate here rather than letting the scanner run.
-        # On PRs and branch deploys this is advisory (continue-on-error);
-        # pushes to main are the only hard gate.
-        if: vars.SONAR_PROJECT_KEY != '' && vars.SONAR_ORGANIZATION != ''
+        if: steps.check-sonar.outputs.configured == 'true'
         id: sonar-analysis
         continue-on-error: ${{ github.ref != 'refs/heads/main' }}
         uses: SonarSource/sonarqube-scan-action@7006c4492b2e0ee0f816d36501671557c97f5995 # v8.1.0

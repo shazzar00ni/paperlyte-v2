@@ -86,18 +86,16 @@ export const Comparison = (): React.ReactElement => {
                   <th className={styles.featureCell} scope="row">
                     {feature.feature}
                   </th>
-                  <td className={`${styles.cell} ${styles.highlightCell}`}>
-                    <ComparisonCell value={feature.paperlyte} />
-                  </td>
-                  <td className={styles.cell}>
-                    <ComparisonCell value={feature.notion} />
-                  </td>
-                  <td className={styles.cell}>
-                    <ComparisonCell value={feature.evernote} />
-                  </td>
-                  <td className={styles.cell}>
-                    <ComparisonCell value={feature.onenote} />
-                  </td>
+                  {COMPETITORS.map((competitor) => (
+                    <td
+                      key={competitor.id}
+                      className={`${styles.cell} ${competitor.id === 'paperlyte' ? styles.highlightCell : ''}`}
+                    >
+                      <ComparisonCell
+                        value={feature[competitor.id as keyof typeof feature] as boolean | string}
+                      />
+                    </td>
+                  ))}
                 </tr>
               ))}
             </tbody>

@@ -402,10 +402,23 @@ export default async function waf(request: Request, context: Context): Promise<R
       // HEAD and certain status codes require special handling — skip or
       // adjust before any body transformation.
       //
-      // HEAD: no body to inject nonces into.
+      // HEAD: no body to inject nonces into. Strip CSP so a HEAD revalidation
+      //   response cannot downgrade a cached nonce-based policy to the weaker
+      //   static host-allowlist fallback from netlify.toml (same rationale as 304).
+      if (request.method === 'HEAD') {
+        const headers = new Headers(response.headers)
+        headers.delete('Content-Security-Policy')
+        headers.set('X-Request-ID', requestId)
+        return new Response(null, {
+          status: response.status,
+          statusText: response.statusText,
+          headers,
+        })
+      }
+
       // 204 No Content / 206 Partial Content: no complete body; injecting
       //   nonces into a partial range body would corrupt Content-Range offsets.
-      if (request.method === 'HEAD' || response.status === 204 || response.status === 206) {
+      if (response.status === 204 || response.status === 206) {
         return withRequestId(response, requestId)
       }
 

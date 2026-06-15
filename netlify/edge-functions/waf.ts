@@ -408,6 +408,13 @@ export default async function waf(request: Request, context: Context): Promise<R
       if (request.method === 'HEAD') {
         const headers = new Headers(response.headers)
         headers.delete('Content-Security-Policy')
+        // Strip the same stale representation metadata removed from GET 200s:
+        // a cache can use HEAD headers to update a stored GET response, which
+        // would reintroduce validators/range support for the pre-nonce body.
+        headers.delete('ETag')
+        headers.delete('Last-Modified')
+        headers.delete('Accept-Ranges')
+        headers.delete('Content-Length')
         headers.set('X-Request-ID', requestId)
         return new Response(null, {
           status: response.status,

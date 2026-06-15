@@ -1,0 +1,61 @@
+Type,Title,Last Visited,Host
+Pull Request,"chore: tune Codacy config — reduce noise, restore critical complexity checks",2026-06-14T10:59:47Z,github.com
+Pull Request,🛡️ Sentinel: [MEDIUM] Remove internal subscription ID from API response,2026-06-14T10:43:59Z,github.com
+Pull Request,fix(deps): bump esbuild to 0.28.1 to resolve high-severity audit advisory,2026-06-13T14:43:32Z,github.com
+Pull Request,⚡ Bolt: memoize Icon resolution to cut per-render work across the page,2026-06-13T14:27:13Z,github.com
+Pull Request,🎨 Palette: Announce waitlist success to screen readers,2026-06-14T11:06:24Z,github.com
+Pull Request,chore(deps-dev): bump esbuild from 0.28.0 to 0.28.1,2026-06-14T10:44:35Z,github.com
+Issue,"[BUG] Dead conversion/navigation controls: footer #pricing link targets nothing; ""Watch the Demo"" CTA just scrolls to hero",2026-06-12T15:42:28Z,github.com
+Issue,"[LAUNCH] Unsubstantiated social proof: placeholder trust logos, fabricated statistics, testimonials naming MIT/Stripe",2026-06-11T08:27:18Z,github.com
+Issue,"[FOLLOW-UP] June 2026 audit: viewport-deferred lazy sections, SW cache eviction, TextReveal any-cast, coverage gaps",2026-06-12T18:27:31Z,github.com
+Issue,"[DOCS] Refresh stale governance docs: ACCESSIBILITY.md (WCAG target passed), SECURITY_REVIEW.md, TECHNICAL-DEBT.md",2026-06-12T03:55:32Z,github.com
+Issue,[TEST] Netlify serverless/edge functions are untested; subscribe rate limiting is process-local best-effort,2026-06-12T03:58:51Z,github.com
+Issue,[BUG] og-image.jpg / twitter-image.jpg are referenced in meta tags but don't exist — social link previews broken,2026-06-12T03:55:06Z,github.com
+Issue,[BUG] Waitlist subscribe endpoint is Netlify-only — broken on Vercel deployments,2026-06-12T03:57:05Z,github.com
+Issue,[LAUNCH] Download delivery broken: release workflow produces no desktop binaries; store URLs unverified,2026-06-12T03:56:12Z,github.com
+Issue,[BUG] FeedbackWidget ships without an onSubmit handler — every submission fails for users,2026-06-12T03:58:33Z,github.com
+Issue,"[LEGAL] Complete and publish the four policy documents behind the '#' footer links (cookies, security, DMCA, accessibility)",2026-06-12T03:57:42Z,github.com
+Issue,[LEGAL] Shipped static privacy/terms pages contain placeholders and contradict the React components (Australia vs Delaware governing law),2026-06-13T19:39:09Z,github.com
+Issue,"[BUG] Production analytics is fully disconnected — gtag never loaded, provider framework never initialized",2026-06-12T03:58:33Z,github.com
+Issue,[BUG] Production domain/metadata broken: .env.production overrides tags to paperlyte.com + missing og-image.png; sitemap never deployed and hardcodes .com,2026-06-12T15:46:36Z,github.com
+Issue,"[BUG] public/fonts/Inter-Variable.woff2 is a corrupted HTML file, not a font (+ consolidate dual Inter loading)",2026-06-13T07:53:42Z,github.com
+Pull Request,"docs(audit): updated baseline audit — June 11, 2026",2026-06-12T15:43:28Z,github.com
+Pull Request,[StepSecurity] Apply security best practices,2026-06-13T16:27:07Z,github.com
+Pull Request,test: wrap Footer/App tests with Router and update Footer to 3‑column layout,2026-06-08T23:31:40Z,github.com
+Issue,Improve Loading and Performance,2026-06-11T04:48:52Z,github.com
+Issue,Complete Manual Infrastructure Configuration Tasks,2026-06-08T22:18:27Z,github.com
+Issue,ci(weekly-report): hash-pin pip dependencies with `--require-hashes`,2026-06-12T15:47:33Z,github.com
+Pull Request,fix(pwa): add skipWaiting() so SW controls page on first install,2026-06-11T02:50:22Z,github.com
+Pull Request,fix(csp): replace host allowlists with per-request nonce + strict-dynamic,2026-06-14T11:14:21Z,github.com
+Pull Request,feat: replace hardcoded meta URLs with Vite env var placeholders,2026-06-12T20:09:57Z,github.com
+Pull Request,fix: block /\ backslash-normalised protocol-relative paths (closes #962),2026-06-09T10:17:45Z,github.com
+Commit,Merge pull request #656 from shazzar00ni/claude/fix-ci-workflow-permissions-emVdO,2026-06-14T11:10:12Z,github.com
+Commit,Merge branch 'main' into claude/fix-ci-workflow-permissions-emVdO,2026-06-14T11:09:07Z,github.com
+Commit,Merge pull request #1060 from shazzar00ni/claude/smarter-testing-setup-RReiU,2026-06-14T11:08:38Z,github.com
+Commit,Merge branch 'main' into claude/smarter-testing-setup-RReiU,2026-06-14T11:07:37Z,github.com
+Commit,Merge pull request #1117 from shazzar00ni/claude/sentinel-security-scan-xf449n,2026-06-14T10:42:10Z,github.com
+Commit,docs: remove subscriptionId from CONVERTKIT-SETUP.md API response example,2026-06-14T10:32:07Z,github.com
+Commit,fix: add blank line after markdown heading in sentinel.md (MD022),2026-06-14T10:30:59Z,github.com
+Commit,"fix: upgrade esbuild to resolve high-severity CVEs (GHSA-g7r4-m6w7-qqqr, GHSA-gv7w-rqvm-qjhr)",2026-06-13T19:30:40Z,github.com
+Commit,🛡️ Sentinel: remove internal ConvertKit subscription ID from API response,2026-06-13T19:27:39Z,github.com
+Commit,Refine hero typography and lighthouse workflow checks,2026-06-13T14:16:20Z,github.com
+Commit,Merge pull request #1090 from shazzar00ni/claude/meta-placeholders-index-0X7hg,2026-06-12T20:09:05Z,github.com
+Commit,fix: set canonical production domain to paperlyte.app,2026-06-12T18:58:34Z,github.com
+Commit,Merge branch 'main' into claude/meta-placeholders-index-0X7hg,2026-06-12T18:13:46Z,github.com
+Commit,Merge pull request #1098 from shazzar00ni/claude/friendly-hawking-3w04u3,2026-06-12T15:42:50Z,github.com
+Commit,docs(audit): address sixth Codex review round (4 of 5 findings verified),2026-06-11T08:41:50Z,github.com
+Commit,docs(audit): address fifth Codex review round,2026-06-11T08:32:31Z,github.com
+Commit,docs(readme): fix markdownlint violations in Deep Wiki link (MD001/MD026/MD034),2026-06-11T08:26:06Z,github.com
+Commit,docs(audit): address fourth Codex review round,2026-06-11T08:24:59Z,github.com
+Commit,style: format README.md with Prettier (fixes lint failure introduced on main),2026-06-11T08:18:03Z,github.com
+Commit,Merge remote-tracking branch 'origin/main' into claude/friendly-hawking-3w04u3,2026-06-11T08:17:54Z,github.com
+Commit,docs(audit): address third Codex review round — five verified findings,2026-06-11T08:16:07Z,github.com
+Commit,Update README.md,2026-06-11T06:18:52Z,github.com
+Commit,docs(audit): address second Codex review round — deeper accuracy fixes,2026-06-11T03:18:46Z,github.com
+Commit,docs(memory): sync tech-debt notes with corrected audit findings,2026-06-11T03:06:37Z,github.com
+Commit,docs(audit): address Codex review — correct metrics and add missed findings,2026-06-11T03:06:04Z,github.com
+Commit,docs(audit): add Netlify deploy-preview Lighthouse scores as CDN data point,2026-06-11T01:28:42Z,github.com
+Commit,docs(audit): add updated baseline audit for 2026-06-11,2026-06-11T01:26:28Z,github.com
+Commit,Merge pull request #1041 from shazzar00ni/claude/codacy-skills-plugin-ymPfh,2026-06-10T19:06:16Z,github.com
+Commit,docs(codacy): add false-positive evidence for Biome_lint_security_noSecrets,2026-06-10T18:53:56Z,github.com
+Commit,Merge branch 'main' into claude/codacy-skills-plugin-ymPfh,2026-06-10T18:46:21Z,github.com

@@ -58,7 +58,7 @@
     "jsdom": "^29.1.1",
     "png-to-ico": "^3.0.1",
     "postcss": "^8.5.13",
-    "prettier": "^3.8.3",
+    "prettier": "^3.8.4",
     "sharp": "^0.34.5",
     "terser": "^5.48.0",
     "typescript": "~6.0.3",

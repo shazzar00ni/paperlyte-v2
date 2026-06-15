@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "@fontsource/inter": "^5.2.8",
-    "@sentry/react": "^10.56.0",
+    "@sentry/react": "^10.57.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   },

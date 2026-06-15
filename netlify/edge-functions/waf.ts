@@ -459,6 +459,14 @@ export default async function waf(request: Request, context: Context): Promise<R
       // Injecting nonce attributes changes the body byte length; delete the
       // stale Content-Length so the browser does not truncate the modified HTML.
       headers.delete('Content-Length')
+      // The nonce makes every rewritten body unique, so the origin's ETag and
+      // Last-Modified no longer describe this representation. Remove them to
+      // prevent a client from sending Range + If-Range with the old validator:
+      // the origin would accept it and return a 206 slice of the pre-nonce HTML,
+      // whose byte offsets no longer align with the cached nonce-expanded body.
+      headers.delete('ETag')
+      headers.delete('Last-Modified')
+      headers.delete('Accept-Ranges')
 
       return new Response(modifiedHtml, {
         status: response.status,

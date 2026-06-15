@@ -23,30 +23,18 @@ module.exports = {
     {
       files: ['**/*.{ts,tsx}'],
       parser: '@typescript-eslint/parser',
-      plugins: ['@typescript-eslint', 'react-hooks', 'react-refresh'],
+      plugins: ['@typescript-eslint', 'react-hooks'],
       extends: [
         'plugin:@typescript-eslint/recommended',
         'plugin:react-hooks/recommended',
         'prettier',
       ],
-      rules: {
-        'react-refresh/only-export-components': [
-          'warn',
-          { allowConstantExport: true },
-        ],
-      },
     },
     // Plain JavaScript files — default parser, no TS rules
     {
       files: ['**/*.{js,jsx}'],
-      plugins: ['react-hooks', 'react-refresh'],
+      plugins: ['react-hooks'],
       extends: ['plugin:react-hooks/recommended', 'prettier'],
-      rules: {
-        'react-refresh/only-export-components': [
-          'warn',
-          { allowConstantExport: true },
-        ],
-      },
     },
     // Build scripts, Node config files, and Netlify serverless functions — add Node globals
     {

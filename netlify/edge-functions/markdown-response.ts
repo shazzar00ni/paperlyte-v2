@@ -58,6 +58,11 @@ const EXCLUDED_PREFIXES: readonly string[] = [
   '/manifest',
 ]
 
+// Void excluded elements that have no closing tag — only the opening tag is
+// removed. Applying the "truncate to end" strategy to void elements would
+// silently delete all document content following the tag.
+const VOID_REMOVE_TAGS: readonly string[] = ['embed']
+
 // Tags whose entire subtree (tag + all children) must be removed before
 // conversion. Includes dangerous tags (script, style, etc.) and structural
 // noise (nav, footer, aside, noscript) that should never appear in Markdown.
@@ -83,9 +88,18 @@ const REMOVE_TAGS: readonly string[] = [
   'template',
 ]
 
+/**
+ * Remove all HTML tags from a string, honoring `>` characters inside quoted
+ * attribute values so that `<p title="1 > 0">` does not leak attribute
+ * content into the output.
+ */
+function removeTags(s: string): string {
+  return s.replace(/<(?:[^>"']*|"[^"]*"|'[^']*')*>/g, '')
+}
+
 /** Strip all HTML tags from a string and collapse internal whitespace. */
 function stripTags(html: string): string {
-  return html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim()
+  return removeTags(html).replace(/\s+/g, ' ').trim()
 }
 
 /** Decode a numeric HTML entity code point to a character (or '' if out of range). */
@@ -111,6 +125,8 @@ function decodeEntities(text: string): string {
  * Sanitize HTML by removing dangerous tags and event handler attributes.
  *
  * - Removes tags in REMOVE_TAGS together with their entire subtrees.
+ * - Removes void excluded elements (VOID_REMOVE_TAGS) — only their tag, not
+ *   trailing content, since they have no closing tag.
  * - Removes partial/malformed opening tags (e.g. `<script` with no `>`).
  * - Removes orphaned closing tags (e.g. `</script\t\nbar>`).
  * - Removes HTML comment nodes (including unclosed comments at end of string).
@@ -120,13 +136,21 @@ function decodeEntities(text: string): string {
  */
 function sanitizeHtml(html: string): string {
   let result = html
-  const dangerPattern = REMOVE_TAGS.join('|')
+
+  // Remove void excluded elements first — they have no closing tag so the
+  // subtree-removal and truncate-to-end steps would over-consume content.
+  for (const tag of VOID_REMOVE_TAGS) {
+    result = result.replace(new RegExp(`<${tag}\\b[^>]*/?>`, 'gi'), '') // nosemgrep
+  }
+
+  const nonVoidRemoveTags = REMOVE_TAGS.filter((t) => !VOID_REMOVE_TAGS.includes(t))
+  const dangerPattern = nonVoidRemoveTags.join('|')
 
   // Remove complete tag+subtree pairs (e.g. <script>…</script>).
   // Run each replacement in a loop until stable so nested same-type elements
   // (e.g. <nav>…<nav>inner</nav>tail</nav>) are fully removed rather than
   // leaving the tail of the outer element behind.
-  for (const tag of REMOVE_TAGS) {
+  for (const tag of nonVoidRemoveTags) {
     let prev: string
     do {
       prev = result
@@ -150,6 +174,11 @@ function sanitizeHtml(html: string): string {
   // [^>]* matches whitespace and other chars that follow the tag name.
   result = result.replace(new RegExp(`<\\/(?:${dangerPattern})\\b[^>]*>`, 'gi'), '') // nosemgrep
 
+  // Also remove orphaned closing tags for void excluded elements.
+  for (const tag of VOID_REMOVE_TAGS) {
+    result = result.replace(new RegExp(`<\\/${tag}\\b[^>]*>`, 'gi'), '') // nosemgrep
+  }
+
   // Remove HTML comments, including unclosed ones that reach end of string.
   result = result.replace(/<!--[\s\S]*?(?:-->|$)/g, '')
 
@@ -159,28 +188,55 @@ function sanitizeHtml(html: string): string {
   return result
 }
 
-/** Extract a quoted attribute value from an attribute string, or '' if absent. */
-function extractAttr(attrs: string, re: RegExp): string {
-  return attrs.match(re)?.[1] ?? ''
+/**
+ * Extract an attribute value from an attribute string.
+ *
+ * Handles:
+ * - Case-insensitive attribute names (`HREF`, `Href`, `href`)
+ * - Optional whitespace around `=` (`href = "..."`)
+ * - Double-quoted, single-quoted, and unquoted values
+ * - Attribute-name boundary so `data-href` does not match `href`
+ */
+function extractAttr(attrs: string, name: string): string {
+  const m = new RegExp(`(?:^|\\s)${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]*))`, 'i').exec(attrs)
+  return m ? (m[1] ?? m[2] ?? m[3] ?? '') : ''
 }
 
-/** Returns false when the href must not become a link (unsafe scheme or empty). */
+/**
+ * Returns false when the href must not become a link (unsafe scheme or empty).
+ * Decodes HTML entities before checking so that encoded schemes like
+ * `javascript&#58;alert(1)` are correctly rejected.
+ */
 function isSafeHref(href: string): boolean {
-  return Boolean(href) && !/^(\/\/|javascript:|data:|vbscript:)/i.test(href)
+  const decoded = decodeEntities(href).trim()
+  return Boolean(decoded) && !/^(\/\/|javascript:|data:|vbscript:)/i.test(decoded)
+}
+
+/**
+ * Escape Markdown link/image destination metacharacters.
+ * Backslash-escapes `)` and `\` so they are treated as literal characters
+ * inside an inline `(…)` destination rather than closing the span or
+ * introducing unintended escape sequences.
+ */
+function safeLinkDest(href: string): string {
+  return href.replace(/\\/g, '\\\\').replace(/\)/g, '\\)')
 }
 
 /** Convert an `<a>` element to a Markdown link, stripping unsafe href schemes. */
 function buildMarkdownLink(attrs: string, content: string): string {
-  const href = extractAttr(attrs, /href=["']([^"']*)["']/)
+  const href = extractAttr(attrs, 'href')
   if (!isSafeHref(href)) return stripTags(content)
-  return `[${stripTags(content)}](${href})`
+  // Convert nested <img> elements first so they appear as Markdown image
+  // syntax rather than being silently stripped by stripTags.
+  const inner = content.replace(/<img\b([^>]*)>/gi, (_, a: string) => buildMarkdownImage(a))
+  return `[${stripTags(inner)}](${safeLinkDest(href)})`
 }
 
 /** Convert an `<img>` element to a Markdown image reference. */
 function buildMarkdownImage(attrs: string): string {
-  const src = extractAttr(attrs, /src=["']([^"']*)["']/)
+  const src = extractAttr(attrs, 'src')
   if (!src || !isSafeHref(src)) return ''
-  return `![${extractAttr(attrs, /alt=["']([^"']*)["']/)}](${src})`
+  return `![${extractAttr(attrs, 'alt')}](${safeLinkDest(src)})`
 }
 
 /**
@@ -188,12 +244,41 @@ function buildMarkdownImage(attrs: string): string {
  * run inside the content closes the span prematurely (CommonMark §6.1).
  */
 function buildInlineCode(content: string): string {
-  const text = decodeEntities(content.replace(/<[^>]*>/g, ''))
+  const text = decodeEntities(removeTags(content))
   const runs = text.match(/`+/g) ?? []
   const len = runs.length > 0 ? Math.max(...runs.map((r) => r.length)) + 1 : 1
   const delim = '`'.repeat(len)
   const pad = text.startsWith('`') || text.endsWith('`') ? ' ' : ''
   return `${delim}${pad}${text}${pad}${delim}`
+}
+
+/**
+ * Convert an ordered `<li>` item's content to a numbered Markdown list entry.
+ * Nested list content (already converted to Markdown) appears on subsequent
+ * lines after the item's own text, preserving boundary between levels.
+ */
+function buildOrderedListItem(item: string, n: number): string {
+  const lines = removeTags(item)
+    .replace(/[ \t]+/g, ' ')
+    .split('\n')
+    .map((l) => l.trim())
+    .filter(Boolean)
+  if (lines.length === 0) return ''
+  return lines.map((l, i) => (i === 0 ? `${n}. ${l}` : l)).join('\n') + '\n'
+}
+
+/**
+ * Convert an unordered `<li>` item's content to a dash Markdown list entry.
+ * Nested list content appears on subsequent lines.
+ */
+function buildUnorderedListItem(item: string): string {
+  const lines = removeTags(item)
+    .replace(/[ \t]+/g, ' ')
+    .split('\n')
+    .map((l) => l.trim())
+    .filter(Boolean)
+  if (lines.length === 0) return ''
+  return lines.map((l, i) => (i === 0 ? `- ${l}` : l)).join('\n') + '\n'
 }
 
 /**
@@ -216,20 +301,30 @@ function htmlToMarkdown(html: string): string {
   }
 
   // Fenced code blocks: <pre><code>…</code></pre>
+  // Choose a fence character-run longer than any backtick run in the content
+  // so that code containing ``` does not close the generated fence early.
   md = md.replace(
     /<pre[^>]*>\s*<code[^>]*>([\s\S]*?)<\/code\s*>\s*<\/pre\s*>/gi,
-    (_, content: string) =>
-      `\n\`\`\`\n${decodeEntities(content.replace(/<[^>]*>/g, ''))}\n\`\`\`\n`
+    (_, content: string) => {
+      const text = decodeEntities(removeTags(content))
+      const runs = text.match(/`+/g) ?? []
+      const fenceLen = Math.max(3, runs.length > 0 ? Math.max(...runs.map((r) => r.length)) + 1 : 3)
+      const fence = '`'.repeat(fenceLen)
+      return `\n${fence}\n${text}\n${fence}\n`
+    }
   )
 
   // Bare <pre> blocks without a nested <code>: treat as fenced code.
   // This runs after the <pre><code> handler so combined patterns are already
   // consumed; remaining <pre>…</pre> tags are bare preformatted blocks.
-  md = md.replace(
-    /<pre[^>]*>([\s\S]*?)<\/pre\s*>/gi,
-    (_, content: string) =>
-      `\n\`\`\`\n${decodeEntities(content.replace(/<[^>]*>/g, ''))}\n\`\`\`\n`
-  )
+  // Dynamic fence length prevents content backticks from closing the fence.
+  md = md.replace(/<pre[^>]*>([\s\S]*?)<\/pre\s*>/gi, (_, content: string) => {
+    const text = decodeEntities(removeTags(content))
+    const runs = text.match(/`+/g) ?? []
+    const fenceLen = Math.max(3, runs.length > 0 ? Math.max(...runs.map((r) => r.length)) + 1 : 3)
+    const fence = '`'.repeat(fenceLen)
+    return `\n${fence}\n${text}\n${fence}\n`
+  })
 
   // Inline code: <code>…</code>
   md = md.replace(
@@ -248,10 +343,9 @@ function htmlToMarkdown(html: string): string {
   // Blockquotes — convert block tags to newlines first so paragraph
   // boundaries inside <blockquote><p>…</p><p>…</p></blockquote> are preserved.
   md = md.replace(/<blockquote[^>]*>([\s\S]*?)<\/blockquote\s*>/gi, (_, content: string) => {
-    const text = content
-      .replace(/<\/p\s*>/gi, '\n')
-      .replace(/<br\s*\/?>/gi, '\n')
-      .replace(/<[^>]*>/g, '')
+    const text = removeTags(
+      content.replace(/<\/p\s*>/gi, '\n').replace(/<br\s*\/?>/gi, '\n')
+    )
       .replace(/[ \t]+/g, ' ')
       .trim()
     const lines = text
@@ -276,24 +370,40 @@ function htmlToMarkdown(html: string): string {
   // Images — preserve src and alt
   md = md.replace(/<img\b([^>]*)>/gi, (_, attrs: string) => buildMarkdownImage(attrs))
 
-  // Ordered lists — reset counter per <ol>
-  md = md.replace(/<ol[^>]*>([\s\S]*?)<\/ol\s*>/gi, (_, content: string) => {
-    let counter = 0
-    const items = content.replace(
-      /<li[^>]*>([\s\S]*?)<\/li\s*>/gi,
-      (_m: string, item: string) => `${++counter}. ${stripTags(item).trim()}\n`
-    )
-    return '\n' + items.replace(/<[^>]*>/g, '') + '\n'
-  })
+  // Ordered and unordered lists — process innermost lists first so that
+  // nested list Markdown is already in place before the outer list converts
+  // its items. The negative lookahead `(?!<(?:ol|ul)[\s>])` prevents the
+  // pattern from consuming an opening nested-list tag, ensuring we always
+  // match the deepest list level in each global-replace pass.
+  {
+    let listPrev: string
+    do {
+      listPrev = md
 
-  // Unordered lists
-  md = md.replace(/<ul[^>]*>([\s\S]*?)<\/ul\s*>/gi, (_, content: string) => {
-    const items = content.replace(
-      /<li[^>]*>([\s\S]*?)<\/li\s*>/gi,
-      (_m: string, item: string) => `- ${stripTags(item).trim()}\n`
-    )
-    return '\n' + items.replace(/<[^>]*>/g, '') + '\n'
-  })
+      md = md.replace(
+        /<ol[^>]*>((?:(?!<(?:ol|ul)[\s>])[\s\S])*?)<\/ol\s*>/gi,
+        (_, content: string) => {
+          let counter = 0
+          const items = content.replace(
+            /<li[^>]*>([\s\S]*?)<\/li\s*>/gi,
+            (_m: string, item: string) => buildOrderedListItem(item, ++counter)
+          )
+          return '\n' + removeTags(items) + '\n'
+        }
+      )
+
+      md = md.replace(
+        /<ul[^>]*>((?:(?!<(?:ol|ul)[\s>])[\s\S])*?)<\/ul\s*>/gi,
+        (_, content: string) => {
+          const items = content.replace(
+            /<li[^>]*>([\s\S]*?)<\/li\s*>/gi,
+            (_m: string, item: string) => buildUnorderedListItem(item)
+          )
+          return '\n' + removeTags(items) + '\n'
+        }
+      )
+    } while (md !== listPrev)
+  }
 
   // Tables — convert to Markdown pipe tables so structured data (e.g. the
   // comparison matrix) is legible to AI agents rather than concatenated text.
@@ -318,15 +428,19 @@ function htmlToMarkdown(html: string): string {
   // Horizontal rules
   md = md.replace(/<hr[^>]*\/?>/gi, '\n---\n')
 
-  // Paragraphs — closing tag becomes double newline, opening tag is stripped
+  // Paragraphs — closing tag becomes double newline, opening tag is stripped.
+  // Use a quote-aware pattern for opening tags so that `>` inside a quoted
+  // attribute (e.g. <p title="1 > 0">) does not terminate the match early
+  // and leak attribute content into the output.
   md = md.replace(/<\/p\s*>/gi, '\n\n')
-  md = md.replace(/<p[^>]*>/gi, '')
+  md = md.replace(/<p(?:[^>"']*|"[^"]*"|'[^']*')*>/gi, '')
 
   // Line breaks
   md = md.replace(/<br\s*\/?>/gi, '\n')
 
-  // Strip all remaining HTML tags
-  md = md.replace(/<[^>]*>/g, '')
+  // Strip all remaining HTML tags (quote-aware so `>` inside attributes
+  // does not leak attribute content into the Markdown output).
+  md = removeTags(md)
 
   // Decode HTML entities
   md = decodeEntities(md)
@@ -439,6 +553,22 @@ function buildMarkdownHeaders(origin: Response, tokenEstimate: string): Headers 
 }
 
 /**
+ * Merge `Accept` into the `Vary` header of an HTML pass-through response so
+ * CDNs know that the same URL may return different representations depending
+ * on the Accept header, preventing stale HTML from being served to markdown
+ * clients that share a cache key.
+ */
+function addVaryAccept(response: Response): Response {
+  const h = new Headers(response.headers)
+  const vary = h.get('Vary') ?? ''
+  const parts = vary.split(',').map((v: string) => v.trim()).filter(Boolean)
+  if (!parts.map((v: string) => v.toLowerCase()).includes('accept')) {
+    h.set('Vary', [...parts, 'Accept'].join(', '))
+  }
+  return new Response(response.body, { status: response.status, statusText: response.statusText, headers: h })
+}
+
+/**
  * Convert a fetched origin response to Markdown, or pass it through unchanged
  * when the content-type or status makes conversion inappropriate.
  */
@@ -481,7 +611,12 @@ export default async function handler(request: Request, context: Context): Promi
 
   // ── 2. Gate on Accept header ────────────────────────────────────────────
   if (!acceptsMarkdownHeader(request)) {
-    return context.next()
+    // Add Vary: Accept to HTML responses so CDNs store HTML and Markdown as
+    // separate cache entries and don't serve a cached HTML response to a
+    // client that requested text/markdown.
+    const resp = await context.next()
+    const ct = (resp.headers.get('Content-Type') ?? '').toLowerCase()
+    return ct.includes('text/html') ? addVaryAccept(resp) : resp
   }
 
   // ── 3. Skip excluded paths ──────────────────────────────────────────────

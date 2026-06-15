@@ -120,13 +120,17 @@ describe('markdown-response edge function', () => {
   describe('Accept-header gate', () => {
     it('passes through when Accept header is absent', async () => {
       const req = makeRequest('https://example.com/')
-      const originalResponse = htmlResponse('<h1>Hello</h1>')
-      const ctx = makeContext(originalResponse)
+      const ctx = makeContext(htmlResponse('<h1>Hello</h1>'))
 
       const result = await handler(req, ctx)
 
       expect(ctx.next).toHaveBeenCalledOnce()
-      expect(result).toBe(await ctx.next.mock.results[0].value)
+      // The body and Content-Type must be unchanged; Vary: Accept is merged in
+      // so CDNs know this URL has separate markdown and HTML representations.
+      expect(result.headers.get('Content-Type')).toBe('text/html; charset=utf-8')
+      expect((result.headers.get('Vary') ?? '').toLowerCase()).toContain('accept')
+      const body = await result.text()
+      expect(body).toBe('<h1>Hello</h1>')
     })
 
     it('passes through for Accept: text/html', async () => {
@@ -524,6 +528,139 @@ describe('markdown-response edge function', () => {
       const body = await result.text()
 
       expect(body).toBe(body.trim())
+    })
+
+    it('backslash-escapes ) in href so it does not terminate the link destination', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(htmlResponse('<a href="https://example.com/a)b">docs</a>'))
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      // ) must be escaped as \) so it is literal inside the (…) destination.
+      expect(body).toContain('[docs](https://example.com/a\\)b)')
+    })
+
+    it('converts linked images to [![alt](src)](href) Markdown syntax', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(
+        htmlResponse('<a href="/full"><img src="/thumb.jpg" alt="Photo"></a>')
+      )
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).toContain('[![Photo](/thumb.jpg)](/full)')
+    })
+
+    it('handles case-insensitive attribute names like HREF', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(htmlResponse('<a HREF="/about">About</a>'))
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).toContain('About')
+      expect(body).toContain('/about')
+    })
+
+    it('handles whitespace around = in attribute assignment', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(htmlResponse('<a href = "/privacy">Privacy</a>'))
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).toContain('Privacy')
+      expect(body).toContain('/privacy')
+    })
+
+    it('handles unquoted attribute values', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(htmlResponse('<a href=/terms>Terms</a>'))
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).toContain('Terms')
+      expect(body).toContain('/terms')
+    })
+
+    it('does not match data-href as href (attribute-name boundary)', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(htmlResponse('<a data-href="/admin">Label</a>'))
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      // No real href — should emit only the label, not a link to /admin
+      expect(body).toContain('Label')
+      expect(body).not.toContain('](/admin)')
+      expect(body).not.toContain('](<')
+    })
+
+    it('handles > inside quoted attributes without leaking attribute content', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(htmlResponse('<p title="1 > 0">Safe</p>'))
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).toContain('Safe')
+      // The attribute value must not bleed into the text output
+      expect(body).not.toContain('0">')
+    })
+
+    it('preserves nested ordered list hierarchy with proper indentation', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(
+        htmlResponse('<ol><li>Parent<ol><li>Child</li></ol></li></ol>')
+      )
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).toContain('1. Parent')
+      expect(body).toContain('Child')
+      // Parent and Child must be on separate lines — the parent item line
+      // must not contain the child text (they must not be merged).
+      const bodyLines = body.split('\n').map((l) => l.trim()).filter(Boolean)
+      const parentLine = bodyLines.find((l) => l.startsWith('1. Parent'))
+      expect(parentLine).toBeDefined()
+      expect(parentLine).not.toContain('Child')
+      expect(body).not.toContain('ParentChild')
+    })
+
+    it('preserves nested unordered list hierarchy with proper indentation', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(
+        htmlResponse('<ul><li>Parent<ul><li>Child</li></ul></li></ul>')
+      )
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).toContain('- Parent')
+      expect(body).toContain('Child')
+      // Must be separate lines, not merged
+      expect(body).not.toMatch(/ParentChild/)
+    })
+
+    it('uses a longer fence when fenced code block content contains backtick runs', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      // Code block content containing ```, which would close a standard ``` fence early
+      const ctx = makeContext(
+        htmlResponse('<pre><code>before\n```\nafter</code></pre>')
+      )
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).toContain('before')
+      expect(body).toContain('after')
+      // The fence must be longer than ``` so content backticks don't close it
+      const fenceMatch = body.match(/^(`{4,})/m)
+      expect(fenceMatch).not.toBeNull()
     })
   })
 
@@ -1153,6 +1290,72 @@ describe('markdown-response edge function', () => {
 
       expect(body).not.toContain('<!--')
       expect(body).toContain('Content')
+    })
+
+    it('rejects entity-encoded javascript: href (e.g. javascript&#58;alert(1))', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(
+        htmlResponse('<a href="javascript&#58;alert(1)">Click</a>')
+      )
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).not.toContain('javascript:')
+      expect(body).not.toContain('javascript&#58;')
+      expect(body).not.toContain('](')
+    })
+
+    it('rejects entity-encoded javascript: img src', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(
+        htmlResponse('<img src="javascript&#58;alert(1)" alt="xss">')
+      )
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).not.toContain('javascript:')
+      expect(body).not.toContain('javascript&#58;')
+      expect(body).not.toContain('![')
+    })
+
+    it('preserves content after a void <embed> excluded element', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      // <embed> is a void element — removing it should not consume trailing content
+      const ctx = makeContext(
+        htmlResponse('<p>Before</p><embed src="plugin.swf"><p>After</p>')
+      )
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).toContain('Before')
+      expect(body).toContain('After')
+      expect(body).not.toContain('plugin.swf')
+    })
+
+    it('adds Vary: Accept to HTML pass-through responses for non-markdown clients', async () => {
+      // A browser (no Accept: text/markdown) should still get Vary: Accept
+      // so CDNs know the same URL may return a different representation for
+      // markdown-requesting clients.
+      const req = makeRequest('https://example.com/')
+      const ctx = makeContext(htmlResponse('<p>Hello</p>'))
+
+      const result = await handler(req, ctx)
+
+      const vary = result.headers.get('Vary') ?? ''
+      expect(vary.toLowerCase()).toContain('accept')
+    })
+
+    it('does not add Vary: Accept to non-HTML pass-through responses', async () => {
+      const req = makeRequest('https://example.com/data.json')
+      const ctx = makeContext(jsonResponse('{"key":"value"}'))
+
+      const result = await handler(req, ctx)
+
+      const vary = result.headers.get('Vary') ?? ''
+      expect(vary.toLowerCase()).not.toContain('accept')
     })
   })
 })

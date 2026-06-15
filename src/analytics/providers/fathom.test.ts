@@ -115,6 +115,7 @@ describe('analytics/providers/fathom', () => {
       const customConfig = {
         ...config,
         scriptUrl: 'https://custom.fathom.com/script.js',
+        allowCustomScriptUrl: true,
       }
 
       provider.init(customConfig)

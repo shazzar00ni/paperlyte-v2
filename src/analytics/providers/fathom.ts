@@ -7,7 +7,7 @@
  * @see https://usefathom.com/docs
  */
 
-import type { AnalyticsEvent, CoreWebVitals } from '../types'
+import type { AnalyticsEvent } from '../types'
 import { BaseAnalyticsProvider } from './base'
 
 /**
@@ -17,10 +17,8 @@ import { BaseAnalyticsProvider } from './base'
 declare global {
   interface Window {
     fathom?: {
-    fathom?: {
       trackPageview: (_opts?: { url?: string; referrer?: string }) => void
       trackEvent: (_name: string, _opts?: { _value?: number }) => void
-    }
     }
   }
 }
@@ -32,13 +30,9 @@ declare global {
 export class FathomProvider extends BaseAnalyticsProvider {
   protected readonly providerName = 'Fathom'
 
-  private static readonly KNOWN_PROVIDERS = new Set([
+  private static readonly KNOWN_HOSTS = new Set([
     'usefathom.com',
     'cdn.usefathom.com',
-    'plausible.io',
-    'analytics.google.com',
-    'umami.is',
-    'simpleanalytics.com',
   ])
 
   /** Log a validation warning when debug mode is active */
@@ -75,7 +69,7 @@ export class FathomProvider extends BaseAnalyticsProvider {
       return false
     }
 
-    if (FathomProvider.KNOWN_PROVIDERS.has(hostname) || this.config?.allowCustomScriptUrl === true) {
+    if (FathomProvider.KNOWN_HOSTS.has(hostname) || this.config?.allowCustomScriptUrl === true) {
       return true
     }
 
@@ -129,7 +123,7 @@ export class FathomProvider extends BaseAnalyticsProvider {
       return scriptUrl
     }
 
-    if (this.config?.debug ?? import.meta.env.DEV) {
+    if (this.config?.debug || import.meta.env.DEV) {
       console.error(
         '[Analytics] Invalid or unsafe script URL. Must be HTTPS and point to a .js file:',
         scriptUrl
@@ -197,35 +191,13 @@ export class FathomProvider extends BaseAnalyticsProvider {
     }
   }
 
-  /**
-   * Track Core Web Vitals
-   * Sends performance metrics as custom events
-   */
-  trackWebVitals(vitals: CoreWebVitals): void {
-    if (!this.isEnabled()) {
-      return
-    }
+  protected formatMetricValue(metric: string, value: number): number {
+    // CLS is typically < 1; multiply by 1000 to preserve precision in Fathom's integer _value
+    return metric === 'CLS' ? Math.round(value * 1000) : Math.round(value)
+  }
 
-    // Track each metric as a separate Fathom event with the value
-    Object.entries(vitals).forEach(([metric, value]) => {
-      if (value !== undefined) {
-        // Preserve sub-integer precision for CLS (typically < 1)
-        // Round to milliseconds for time-based metrics
-        // Fathom _value is in cents, so we multiply CLS by 1000 to preserve precision
-        const formattedValue = metric === 'CLS'
-          ? Math.round(value * 1000)
-          : Math.round(value)
-
-        this.trackEvent({
-          name: `web_vitals_${metric}`,
-          properties: { value: formattedValue },
-        })
-      }
-    })
-
-    if (this.config?.debug) {
-      console.log('[Analytics] Core Web Vitals tracked:', vitals)
-    }
+  protected buildWebVitalsEvent(metric: string, formattedValue: number): AnalyticsEvent {
+    return { name: `web_vitals_${metric}`, properties: { value: formattedValue } }
   }
 
   /**

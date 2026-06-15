@@ -7,7 +7,7 @@
  * @see https://plausible.io/docs
  */
 
-import type { AnalyticsEvent, CoreWebVitals } from '../types'
+import type { AnalyticsEvent } from '../types'
 import { isSafePropertyKey } from '../../utils/security'
 import { BaseAnalyticsProvider } from './base'
 
@@ -113,7 +113,7 @@ export class PlausibleProvider extends BaseAnalyticsProvider {
       return scriptUrl
     }
 
-    if (this.config?.debug ?? import.meta.env.DEV) {
+    if (this.config?.debug || import.meta.env.DEV) {
       console.error(
         '[Analytics] Invalid or unsafe script URL. Must be HTTPS and point to a .js file:',
         scriptUrl
@@ -200,35 +200,8 @@ export class PlausibleProvider extends BaseAnalyticsProvider {
     }
   }
 
-  /**
-   * Track Core Web Vitals
-   * Sends performance metrics as custom events
-   */
-  trackWebVitals(vitals: CoreWebVitals): void {
-    if (!this.isEnabled()) {
-      return
-    }
-
-    // Track each metric separately for better analysis
-    Object.entries(vitals).forEach(([metric, value]) => {
-      if (value !== undefined) {
-        // Preserve sub-integer precision for CLS (typically < 1)
-        // Round to milliseconds for time-based metrics
-        const formattedValue = metric === 'CLS' ? Number(value.toFixed(3)) : Math.round(value)
-
-        this.trackEvent({
-          name: 'web_vitals',
-          properties: {
-            metric,
-            value: formattedValue,
-          },
-        })
-      }
-    })
-
-    if (this.config?.debug) {
-      console.log('[Analytics] Core Web Vitals tracked:', vitals)
-    }
+  protected formatMetricValue(metric: string, value: number): number {
+    return metric === 'CLS' ? Number(value.toFixed(3)) : Math.round(value)
   }
 
   /**

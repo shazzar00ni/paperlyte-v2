@@ -24,8 +24,30 @@ export abstract class BaseAnalyticsProvider implements AnalyticsProvider {
 
   abstract trackPageView(_url?: string): void
   abstract trackEvent(_event: AnalyticsEvent): void
-  abstract trackWebVitals(_vitals: CoreWebVitals): void
   abstract isEnabled(): boolean
+
+  protected abstract formatMetricValue(metric: string, value: number): number
+
+  protected buildWebVitalsEvent(metric: string, formattedValue: number): AnalyticsEvent {
+    return { name: 'web_vitals', properties: { metric, value: formattedValue } }
+  }
+
+  trackWebVitals(vitals: CoreWebVitals): void {
+    if (!this.isEnabled()) {
+      return
+    }
+
+    Object.entries(vitals).forEach(([metric, value]) => {
+      if (value !== undefined) {
+        const formattedValue = this.formatMetricValue(metric, value)
+        this.trackEvent(this.buildWebVitalsEvent(metric, formattedValue))
+      }
+    })
+
+    if (this.config?.debug) {
+      console.log(`[Analytics] Core Web Vitals tracked:`, vitals)
+    }
+  }
 
   init(config: AnalyticsConfig): void {
     if (this.initialized) {

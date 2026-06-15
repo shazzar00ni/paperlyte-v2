@@ -138,24 +138,30 @@ describe('deployment Content Security Policy', () => {
     // identical. All non-script-src directives must match across all three.
     const wafCsp = getWafCspTemplate()
     const netlifyStaticCsp = getNetlifyStaticCspHeader()
-    const [vercelCsp] = getVercelCspHeaders()
+    const vercelCsps = getVercelCspHeaders()
+    expect(vercelCsps, 'Expected exactly one Vercel CSP header source').toHaveLength(1)
+    const [vercelCsp] = vercelCsps
 
     const wafDirectives = parseCspDirectives(wafCsp.value).directives
     const netlifyDirectives = parseCspDirectives(netlifyStaticCsp.value).directives
     const vercelDirectives = parseCspDirectives(vercelCsp.value).directives
 
-    // The two static CSPs must be identical in every directive.
-    const allNetlifyDirectiveNames = [...netlifyDirectives.keys()]
-    for (const directive of allNetlifyDirectiveNames) {
+    // The two static CSPs must be identical in every directive (bidirectional).
+    const staticDirectiveNames = new Set([...netlifyDirectives.keys(), ...vercelDirectives.keys()])
+    for (const directive of staticDirectiveNames) {
       expect(
         vercelDirectives.get(directive),
         `${directive}: netlify.toml and vercel.json static CSPs must match`
       ).toBe(netlifyDirectives.get(directive))
     }
 
-    // WAF and static CSPs must agree on every directive except script-src.
-    const sharedDirectiveNames = [...vercelDirectives.keys()].filter((d) => d !== 'script-src')
-    for (const directive of sharedDirectiveNames) {
+    // WAF and static CSPs must agree on every directive except script-src (bidirectional).
+    const nonScriptDirectiveNames = new Set(
+      [...wafDirectives.keys(), ...vercelDirectives.keys(), ...netlifyDirectives.keys()].filter(
+        (d) => d !== 'script-src'
+      )
+    )
+    for (const directive of nonScriptDirectiveNames) {
       expect(wafDirectives.get(directive), `${directive} in WAF CSP must match vercel.json`).toBe(
         vercelDirectives.get(directive)
       )

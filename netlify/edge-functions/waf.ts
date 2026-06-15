@@ -137,7 +137,7 @@ function buildCsp(nonce: string): string {
 
 /** Returns true when the response carries an HTML body. */
 function isHtmlResponse(response: Response): boolean {
-  const ct = response.headers.get('content-type') ?? ''
+  const ct = response.headers.get('content-type')?.toLowerCase() ?? ''
   return ct.includes('text/html')
 }
 
@@ -476,7 +476,11 @@ export default async function waf(request: Request, context: Context): Promise<R
     }
 
     return withRequestId(response, requestId)
-  } catch {
+  } catch (error) {
+    console.error('WAF origin/network error', {
+      requestId,
+      error: error instanceof Error ? error.message : String(error),
+    })
     // Origin or network error — return a 502 with the request ID so the
     // failed request remains traceable in edge logs alongside blocked traffic.
     return withRequestId(new Response(null, { status: 502 }), requestId)

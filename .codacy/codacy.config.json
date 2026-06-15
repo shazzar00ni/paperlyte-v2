@@ -4,7 +4,7 @@
     "source": "auto",
     "provider": null,
     "organization": null,
-    "autoFilters": "Critical,High,Warning,Minor,AllSecurity,ErrorProne,Performance,BestPractice,UnusedCode,Compatibility,Complexity,Comprehensibility,CodeStyle,Documentation",
+    "autoFilters": "AllCritical,High,Warning,Minor,AllSecurity,ErrorProne,Performance,BestPractice,UnusedCode,Compatibility,Complexity,Comprehensibility,CodeStyle,Documentation",
     "repositoryId": null,
     "repositoryName": null,
     "createdAt": "2026-06-14T10:45:10.706Z",
@@ -115,6 +115,15 @@
         },
         {
           "patternId": "shellcheck_SC2156"
+        },
+        {
+          "patternId": "shellcheck_SC1070"
+        },
+        {
+          "patternId": "shellcheck_SC1073"
+        },
+        {
+          "patternId": "shellcheck_SC2114"
         }
       ]
     },
@@ -6334,6 +6343,12 @@
         },
         {
           "patternId": "Lizard_nloc-critical"
+        },
+        {
+          "patternId": "Lizard_file-nloc-critical"
+        },
+        {
+          "patternId": "Lizard_parameter-count-critical"
         }
       ],
       "exclude": [
@@ -7085,6 +7100,12 @@
         },
         {
           "patternId": "Biome_lint_suspicious_useNamespaceKeyword"
+        },
+        {
+          "patternId": "Biome_lint_correctness_noUndeclaredVariables"
+        },
+        {
+          "patternId": "Biome_lint_correctness_noUnresolvedImports"
         }
       ]
     },

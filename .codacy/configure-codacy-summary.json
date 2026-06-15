@@ -1,6 +1,6 @@
 {
   "summary": {
-    "enabledPatterns": { "before": 2432, "after": 2429 },
+    "enabledPatterns": { "before": 2432, "after": 2436 },
     "enabledTools": { "before": 12, "after": 13 },
     "issues": { "before": 290, "after": 271 },
     "analysisRuntime": { "before": 72763, "after": 14671 }
@@ -92,7 +92,8 @@
     "Disabled Biome noSecrets — all 8 findings are false positives (inline SVG paths and CSS attribute selectors); security concern covered by Trivy_secret and Semgrep credential patterns",
     "Restored 19 Critical-severity Lizard complexity issues across 12 components that were absent from the previous config — these flag genuinely overgrown functions needing refactoring attention",
     "Disabled 19 low-signal Agentlinter informational warnings (undefined technical terms, ambiguous pronouns in dev docs); 22 higher-signal warnings remain including escape-hatch and duplicate-instruction checks",
-    "PMD7 added for ECMAScript best practices; 0 findings confirms the codebase avoids with-statements, inconsistent returns, and similar JS pitfalls"
+    "PMD7 added for ECMAScript best practices; 0 findings confirms the codebase avoids with-statements, inconsistent returns, and similar JS pitfalls",
+    "Restored 7 patterns dropped by AllCritical→Critical filter regression: Lizard_file-nloc-critical, Lizard_parameter-count-critical, shellcheck_SC1070/SC1073/SC2114, Biome noUndeclaredVariables/noUnresolvedImports — these cover oversized files, destructive shell commands, and JS correctness in non-TypeScript files"
   ],
   "localConfigTools": [
     {

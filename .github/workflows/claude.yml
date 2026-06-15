@@ -81,5 +81,4 @@ jobs:
           use_sticky_comment: false
           use_commit_signing: false
           track_progress: false
-          include_fix_links: true
           show_full_output: false

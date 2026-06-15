@@ -11,6 +11,8 @@ repos:
   rev: v8.38.0
   hooks:
   - id: eslint
+    files: \.[jt]sx?$
+    types: [file]
 - repo: https://github.com/pre-commit/pre-commit-hooks
   rev: v4.4.0
   hooks:

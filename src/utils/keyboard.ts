@@ -46,9 +46,7 @@ export function isEndKey(event: KeyEvent): boolean {
  * Get arrow key direction
  * @returns The direction ('up', 'down', 'left', 'right') or null if not an arrow key
  */
-export function getArrowDirection(
-  event: KeyEvent
-): 'up' | 'down' | 'left' | 'right' | null {
+export function getArrowDirection(event: KeyEvent): 'up' | 'down' | 'left' | 'right' | null {
   switch (event.key) {
     case 'ArrowUp':
       return 'up'
@@ -265,10 +263,7 @@ export function findFocusedIndex(elements: HTMLElement[]): number {
  * @param elements - Array of focusable elements
  * @returns Index to focus (0 for Home, last for End), or null if not Home/End
  */
-export function handleHomeEndNavigation(
-  event: KeyEvent,
-  elements: HTMLElement[]
-): number | null {
+export function handleHomeEndNavigation(event: KeyEvent, elements: HTMLElement[]): number | null {
   if (isHomeKey(event)) {
     return 0
   } else if (isEndKey(event)) {

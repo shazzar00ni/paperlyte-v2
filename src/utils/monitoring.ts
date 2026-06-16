@@ -34,6 +34,26 @@ export interface ErrorContext {
   tags?: Record<string, string>
 }
 
+function captureErrorToSentry(
+  error: Error,
+  severity: 'low' | 'medium' | 'high' | 'critical',
+  errorSource: string,
+  context?: ErrorContext
+): void {
+  Sentry.captureException(error, {
+    level: severityToLevel(severity),
+    tags: { source: errorSource, ...context?.tags },
+    extra: { componentStack: context?.componentStack, ...context?.errorInfo },
+    contexts: { error_context: { severity, source: errorSource } },
+  })
+  Sentry.addBreadcrumb({
+    category: 'error',
+    message: `${errorSource}: ${error.message}`,
+    level: severityToLevel(severity),
+    data: context?.tags,
+  })
+}
+
 /**
  * Report an Error and associated metadata to console in development or to analytics and error-monitoring services in production.
  *
@@ -51,15 +71,9 @@ export function logError(error: Error, context?: ErrorContext, source?: string):
   if (import.meta.env.DEV) {
     console.group(`[${severity.toUpperCase()}] Error from ${errorSource}`)
     console.error(error)
-    if (context?.componentStack) {
-      console.log('Component Stack:', context.componentStack)
-    }
-    if (context?.errorInfo) {
-      console.log('Additional Info:', context.errorInfo)
-    }
-    if (context?.tags) {
-      console.log('Tags:', context.tags)
-    }
+    if (context?.componentStack) console.log('Component Stack:', context.componentStack)
+    if (context?.errorInfo) console.log('Additional Info:', context.errorInfo)
+    if (context?.tags) console.log('Tags:', context.tags)
     console.groupEnd()
     return
   }
@@ -67,7 +81,6 @@ export function logError(error: Error, context?: ErrorContext, source?: string):
   // In production, report to monitoring services
   let originalErrorCaptured = false
   try {
-    // Track in analytics
     trackEvent('application_error', {
       error_name: error.name,
       error_message: error.message.slice(0, 200),
@@ -76,39 +89,11 @@ export function logError(error: Error, context?: ErrorContext, source?: string):
       ...context?.tags,
     })
 
-    // Send to error monitoring service (Sentry)
     // Only sends if Sentry is initialized (DSN configured)
     if (import.meta.env.VITE_SENTRY_DSN) {
-      Sentry.captureException(error, {
-        level: severityToLevel(severity),
-        tags: {
-          source: errorSource,
-          ...context?.tags,
-        },
-        extra: {
-          componentStack: context?.componentStack,
-          ...context?.errorInfo,
-        },
-        contexts: {
-          error_context: {
-            severity,
-            source: errorSource,
-          },
-        },
-      })
+      captureErrorToSentry(error, severity, errorSource, context)
       originalErrorCaptured = true
-
-      // Add breadcrumb for tracking error context
-      Sentry.addBreadcrumb({
-        category: 'error',
-        message: `${errorSource}: ${error.message}`,
-        level: severityToLevel(severity),
-        data: context?.tags,
-      })
     }
-
-    // Client-side production: errors are already reported to Sentry/analytics above.
-    // Avoid console.error here to prevent errors-in-console Lighthouse assertion failures.
   } catch (err) {
     // Forward the monitoring failure to Sentry so it isn't silently dropped.
     // A nested try/catch prevents infinite recursion if Sentry itself throws.
@@ -116,25 +101,9 @@ export function logError(error: Error, context?: ErrorContext, source?: string):
       try {
         const monitoringErr = err instanceof Error ? err : new Error(String(err))
         // Only re-capture the original error if it wasn't already sent — avoids duplicate
-        // Sentry events when the pipeline fails after captureException succeeded (e.g. addBreadcrumb throws).
+        // Sentry events when the pipeline fails after captureException succeeded.
         if (!originalErrorCaptured) {
-          Sentry.captureException(error, {
-            level: severityToLevel(severity),
-            tags: {
-              source: errorSource,
-              ...context?.tags,
-            },
-            extra: {
-              componentStack: context?.componentStack,
-              ...context?.errorInfo,
-            },
-            contexts: {
-              error_context: {
-                severity,
-                source: errorSource,
-              },
-            },
-          })
+          captureErrorToSentry(error, severity, errorSource, context)
         }
         Sentry.captureException(monitoringErr)
         Sentry.addBreadcrumb({

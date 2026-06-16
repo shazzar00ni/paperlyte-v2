@@ -7,57 +7,36 @@
  * origin. In production, no changes are made. The canonical URL is intentionally
  * left unchanged and continues to point to production.
  */
+
+function updateMetaAttr(selector: string, attr: string, value: string): void {
+  const el = document.querySelector(selector)
+  if (el) el.setAttribute(attr, value)
+}
+
 export function initializeMetaTags(): void {
-  const isProd = import.meta.env.PROD
+  if (import.meta.env.PROD) return
+
   const currentUrl = window.location.origin
 
-  // In development, prevent search engine indexing and update social sharing URLs
-  if (!isProd) {
-    console.log('[Meta Tags] Initialized for development environment')
-    console.log('  - Robots: noindex, nofollow')
-    console.log('  - Keywords: removed')
-    console.log('  - Canonical URL: unchanged (points to production)')
-    console.log(`  - Open Graph URLs: updated to ${currentUrl}`)
-    console.log(`  - Twitter Card URLs: updated to ${currentUrl}`)
+  console.log('[Meta Tags] Initialized for development environment')
+  console.log('  - Robots: noindex, nofollow')
+  console.log('  - Keywords: removed')
+  console.log('  - Canonical URL: unchanged (points to production)')
+  console.log(`  - Open Graph URLs: updated to ${currentUrl}`)
+  console.log(`  - Twitter Card URLs: updated to ${currentUrl}`)
 
-    // Prevent indexing in development
-    const robotsMeta = document.querySelector('meta[name="robots"]')
-    if (robotsMeta) {
-      robotsMeta.setAttribute('content', 'noindex, nofollow')
-    }
+  updateMetaAttr('meta[name="robots"]', 'content', 'noindex, nofollow')
 
-    // Remove keywords meta tag in development (shouldn't be indexed anyway)
-    const keywordsMeta = document.querySelector('meta[name="keywords"]')
-    if (keywordsMeta) {
-      keywordsMeta.remove()
-    }
+  const keywordsMeta = document.querySelector('meta[name="keywords"]')
+  if (keywordsMeta) keywordsMeta.remove()
 
-    // Add development indicator to title
-    const titleElement = document.querySelector('title')
-    if (titleElement && !titleElement.textContent?.includes('[DEV]')) {
-      titleElement.textContent = `[DEV] ${titleElement.textContent}`
-    }
-
-    // Update Open Graph URLs for testing social sharing
-    const ogUrl = document.querySelector('meta[property="og:url"]')
-    if (ogUrl) {
-      ogUrl.setAttribute('content', currentUrl + '/')
-    }
-
-    const ogImage = document.querySelector('meta[property="og:image"]')
-    if (ogImage) {
-      ogImage.setAttribute('content', currentUrl + '/og-image.png')
-    }
-
-    // Update Twitter Card URLs for testing
-    const twitterUrl = document.querySelector('meta[name="twitter:url"]')
-    if (twitterUrl) {
-      twitterUrl.setAttribute('content', currentUrl + '/')
-    }
-
-    const twitterImage = document.querySelector('meta[name="twitter:image"]')
-    if (twitterImage) {
-      twitterImage.setAttribute('content', currentUrl + '/og-image.png')
-    }
+  const titleElement = document.querySelector('title')
+  if (titleElement && !titleElement.textContent?.includes('[DEV]')) {
+    titleElement.textContent = `[DEV] ${titleElement.textContent}`
   }
+
+  updateMetaAttr('meta[property="og:url"]', 'content', currentUrl + '/')
+  updateMetaAttr('meta[property="og:image"]', 'content', currentUrl + '/og-image.png')
+  updateMetaAttr('meta[name="twitter:url"]', 'content', currentUrl + '/')
+  updateMetaAttr('meta[name="twitter:image"]', 'content', currentUrl + '/og-image.png')
 }

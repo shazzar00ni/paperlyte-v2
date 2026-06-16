@@ -2,6 +2,20 @@
 
 This file tracks key architectural, design, and technical decisions made during development.
 
+## CI / GitHub Actions — SonarCloud (2026-06-16)
+
+- **Decision**: Download SonarScanner CLI from Maven Central (`repo1.maven.org`) instead of `binaries.sonarsource.com` or the `SonarSource/sonarcloud-github-action`.
+- **Rationale**: `binaries.sonarsource.com` returns `403 host_not_allowed` in restricted network environments (e.g. Claude Code remote sessions). Maven Central is accessible and publishes the same artifacts.
+- **Implementation** (`.github/workflows/sonarcloud.yml`):
+  - SHA-256 pinned directly in the workflow (`ef72465a...`) — more secure than fetching `.sha256` at runtime since a compromised Maven Central cannot produce a matching archive without also compromising git history.
+  - Download and extraction happen in `$RUNNER_TEMP` so no scanner files land in the analyzed workspace (`sonar.projectBaseDir=.`).
+  - `set -euo pipefail` for strict error handling; `wget --timeout=60 --tries=3` for resilience.
+  - Sonar vars passed via `env:` block to prevent template injection (zizmor finding).
+- **SonarCloud analysis will fail** until repo owner sets `SONAR_PROJECT_KEY` and `SONAR_ORGANIZATION` under GitHub Settings → Secrets and variables → Actions → Variables, and `SONAR_TOKEN` under Secrets. This is a configuration gap, not a code bug.
+- **CodeRabbit false positive**: flagged `actions/checkout` SHA `df4cb1c...` as not matching v6.0.3. This is a false positive — the API returns the annotated tag object SHA (`9f698171...`), not the commit SHA. Dependabot correctly pins the commit SHA. No change needed.
+- **All bot review findings addressed**: Codex P1 (SHA verification ✅), Codex P2 (RUNNER_TEMP ✅), CodeRabbit wget timeout ✅, CodeRabbit template injection ✅.
+- **PR**: #1085 on branch `claude/clever-pasteur-kzrtI`
+
 ## Format
 
 - **Date**: YYYY-MM-DD

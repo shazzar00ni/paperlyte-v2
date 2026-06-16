@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      actions: write
 
     steps:
       - name: Checkout repo
@@ -97,3 +98,15 @@ jobs:
           git add reports/weekly/*.csv
           git commit -m "Weekly Paperlyte activity report" || echo "No changes"
           git push
+
+      - name: Trigger CI for coverage upload
+        # GITHUB_TOKEN pushes don't trigger other workflows, so Codacy never receives
+        # coverage data for bot commits — causing "not up to standards" on PRs that
+        # use this commit as the ancestor. Dispatching CI via workflow_dispatch IS
+        # permitted from GITHUB_TOKEN and runs tests + uploads coverage for this commit.
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          COMMIT_SHA=$(git rev-parse HEAD)
+          echo "Dispatching CI workflow for commit $COMMIT_SHA on main"
+          gh workflow run ci.yml --ref main

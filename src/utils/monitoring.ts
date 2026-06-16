@@ -91,8 +91,19 @@ export function logError(error: Error, context?: ErrorContext, source?: string):
 
     // Only sends if Sentry is initialized (DSN configured)
     if (import.meta.env.VITE_SENTRY_DSN) {
-      captureErrorToSentry(error, severity, errorSource, context)
+      Sentry.captureException(error, {
+        level: severityToLevel(severity),
+        tags: { source: errorSource, ...context?.tags },
+        extra: { componentStack: context?.componentStack, ...context?.errorInfo },
+        contexts: { error_context: { severity, source: errorSource } },
+      })
       originalErrorCaptured = true
+      Sentry.addBreadcrumb({
+        category: 'error',
+        message: `${errorSource}: ${error.message}`,
+        level: severityToLevel(severity),
+        data: context?.tags,
+      })
     }
   } catch (err) {
     // Forward the monitoring failure to Sentry so it isn't silently dropped.

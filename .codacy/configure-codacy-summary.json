@@ -15,30 +15,6 @@
   ],
   "patternChanges": [
     {
-      "patternId": "Stylelint_color-no-hex",
-      "toolId": "Stylelint",
-      "action": "disabled",
-      "reason": "Convention mismatch — the project design system explicitly uses hex colors (#1a1a1a, #ffffff) as documented in CLAUDE.md. 56 of 56 issues were in the design token file (variables.css). Requiring CSS custom properties instead contradicts established project conventions.",
-      "delta": -56,
-      "parameters": []
-    },
-    {
-      "patternId": "Biome_lint_complexity_noImportantStyles",
-      "toolId": "Biome",
-      "action": "disabled",
-      "reason": "Cross-tool deduplication — Stylelint declaration-no-important covers the same !important concern on the identical CSS module files. Stylelint is the more appropriate specialized CSS tool. Keeping both generates duplicate issues on the same lines.",
-      "delta": -29,
-      "parameters": []
-    },
-    {
-      "patternId": "Biome_lint_security_noSecrets",
-      "toolId": "Biome",
-      "action": "disabled",
-      "reason": "100% false positives in this codebase — all 8 hits are SVG path data strings and CSS attribute selectors (e.g. 'link[rel=\"canonical\"]', 'meta[name=\"keywords\"]') that trigger Biome's entropy heuristic. Security concern remains fully covered by Trivy_secret and Semgrep gitleaks/hard-coded-password patterns.",
-      "delta": -8,
-      "parameters": []
-    },
-    {
       "patternId": "Agentlinter_clarity_undefined-term",
       "toolId": "Agentlinter",
       "action": "disabled",
@@ -53,47 +29,71 @@
       "reason": "Low signal for technical documentation — pronoun usage in developer agent instructions rarely creates genuine ambiguity in context. 3 issues, all Info severity.",
       "delta": -3,
       "parameters": []
-    },
-    {
-      "patternId": "Lizard_ccn-medium",
-      "toolId": "Lizard",
-      "action": "updated",
-      "reason": "Restored threshold of 12 from previous config (new default is 10); reduces noise on established React SPA while keeping meaningfully complex functions flagged.",
-      "delta": -12,
-      "parameters": [
-        { "id": "threshold", "before": "10", "after": "12" }
-      ]
-    },
-    {
-      "patternId": "Lizard_nloc-medium",
-      "toolId": "Lizard",
-      "action": "updated",
-      "reason": "Restored threshold of 75 from previous config; appropriate for a React SPA where some components are legitimately longer than the default 50-line threshold.",
-      "delta": -7,
-      "parameters": [
-        { "id": "threshold", "before": "50", "after": "75" }
-      ]
     }
   ],
+  "inheritedDisabledPatterns": [
+    {
+      "patternId": "Stylelint_color-no-hex",
+      "toolId": "Stylelint",
+      "status": "already-disabled-in-parent",
+      "reason": "Convention mismatch — the project design system explicitly uses hex colors (#1a1a1a, #ffffff) as documented in CLAUDE.md. All 56 issues were in the design token file (variables.css). Requiring CSS custom properties instead contradicts established project conventions.",
+      "parameters": []
+    },
+    {
+      "patternId": "Biome_lint_complexity_noImportantStyles",
+      "toolId": "Biome",
+      "status": "already-disabled-in-parent",
+      "reason": "Cross-tool deduplication — Stylelint declaration-no-important covers the same !important concern on the identical CSS module files. Stylelint is the more appropriate specialized CSS tool. Keeping both generates duplicate issues on the same lines.",
+      "parameters": []
+    },
+    {
+      "patternId": "Biome_lint_security_noSecrets",
+      "toolId": "Biome",
+      "status": "already-disabled-in-parent",
+      "reason": "100% false positives in this codebase — all 8 hits are SVG path data strings and CSS attribute selectors (e.g. 'link[rel=\"canonical\"]', 'meta[name=\"keywords\"]') that trigger Biome's entropy heuristic. Security concern remains fully covered by Trivy_secret and Semgrep gitleaks/hard-coded-password patterns.",
+      "parameters": []
+    }
+  ],
+  "processNotes": {
+    "initFilterRegression": {
+      "description": "codacy-analysis init --auto generated config with 'Critical' in metadata.autoFilters instead of the parent's 'AllCritical'. This caused 9 patterns to be silently dropped from the initial commit.",
+      "patternsTemporarilyDropped": [
+        "Lizard_ccn-critical",
+        "Lizard_nloc-critical",
+        "Lizard_file-nloc-critical",
+        "Lizard_parameter-count-critical",
+        "shellcheck_SC1070",
+        "shellcheck_SC1073",
+        "shellcheck_SC2114",
+        "Biome_lint_correctness_noUndeclaredVariables",
+        "Biome_lint_correctness_noUnresolvedImports"
+      ],
+      "resolution": "All 9 patterns restored in a follow-up commit; autoFilters corrected to AllCritical. Net effect on final config: no change from parent for these patterns.",
+      "warning": "Future runs of 'codacy-analysis init --auto' or 'update-config' on source:auto configs replay initialization and may drop AllCritical patterns again. Always verify autoFilters remains 'AllCritical' after any init/update-config operation."
+    },
+    "pmd7ParserLimitation": {
+      "description": "PMD7 embeds Rhino 1.7.15 which does not support ES2020 optional chaining (?.) and nullish coalescing (??) operators. public/theme-init.js uses both, causing a silent FileError.",
+      "resolution": "public/theme-init.js added to PMD7 per-tool excludes. Revisit when Codacy upgrades PMD7 to Rhino 1.8.0+."
+    }
+  },
   "fileExclusions": null,
   "securityCoverage": {
-    "deduplication": [
-      "Biome noImportantStyles disabled — same CSS !important concern covered by Stylelint declaration-no-important (more appropriate CSS-specific tool)",
-      "Biome noSecrets disabled — 100% false positives (SVG paths, CSS selectors); same concern covered by Trivy_secret and Semgrep hard-coded-password/gitleaks patterns"
+    "inheritedDeduplication": [
+      "Biome noImportantStyles already disabled in parent — same CSS !important concern covered by Stylelint declaration-no-important (more appropriate CSS-specific tool)",
+      "Biome noSecrets already disabled in parent — 100% false positives (SVG paths, CSS selectors); same concern covered by Trivy_secret and Semgrep hard-coded-password/gitleaks patterns"
     ],
-    "newCoverage": [],
+    "newCoverage": [
+      "PMD7 ECMAScript checks now cover public/*.js files for with-statements, inconsistent returns, missing radix in parseInt, assignment in operand, unnecessary blocks, and equality comparisons"
+    ],
     "noisyButKept": [
       "Stylelint declaration-no-important (23 issues, Warning) — kept; !important in CSS animation/reset files is a genuine code smell worth tracking even though the project uses it intentionally in places"
     ]
   },
   "keyImprovements": [
-    "Removed 56 false-positive hex color warnings — the project design system intentionally uses hex colors (#1a1a1a, #ffffff) as documented in CLAUDE.md; all hits were in variables.css",
-    "Eliminated 29 duplicate !important warnings by deduplicating Biome vs Stylelint coverage on the same CSS module files; Stylelint's 23 findings are retained as the authoritative CSS tool",
-    "Disabled Biome noSecrets — all 8 findings are false positives (inline SVG paths and CSS attribute selectors); security concern covered by Trivy_secret and Semgrep credential patterns",
-    "Restored 19 Critical-severity Lizard complexity issues across 12 components that were absent from the previous config — these flag genuinely overgrown functions needing refactoring attention",
-    "Disabled 19 low-signal Agentlinter informational warnings (undefined technical terms, ambiguous pronouns in dev docs); 22 higher-signal warnings remain including escape-hatch and duplicate-instruction checks",
-    "PMD7 added for ECMAScript best practices; 0 findings confirms the codebase avoids with-statements, inconsistent returns, and similar JS pitfalls",
-    "Restored 7 patterns dropped by AllCritical→Critical filter regression: Lizard_file-nloc-critical, Lizard_parameter-count-critical, shellcheck_SC1070/SC1073/SC2114, Biome noUndeclaredVariables/noUnresolvedImports — these cover oversized files, destructive shell commands, and JS correctness in non-TypeScript files"
+    "PMD7 enabled for ECMAScript best practices — 6 patterns covering public/*.js files outside TypeScript/ESLint scope; 0 findings confirms codebase avoids with-statements, inconsistent returns, and similar JS pitfalls",
+    "Disabled 19 low-signal Agentlinter informational warnings (undefined technical terms -16, ambiguous pronouns -3); 22 higher-signal warnings remain including escape-hatch and duplicate-instruction checks",
+    "PMD7 file exclusion added for public/theme-init.js — prevents silent FileError from Rhino 1.7.15 parser (no ES2020 optional chaining/nullish coalescing support)",
+    "Verified AllCritical filter preserved — init --auto regression temporarily dropped 9 critical/correctness patterns (Lizard critical, ShellCheck SC1070/SC1073/SC2114, Biome noUndeclaredVariables/noUnresolvedImports); all restored, metadata.autoFilters corrected to AllCritical"
   ],
   "localConfigTools": [
     {

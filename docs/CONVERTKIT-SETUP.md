@@ -182,8 +182,7 @@ POST /.netlify/functions/subscribe
 ```json
 {
   "success": true,
-  "message": "Successfully subscribed! Please check your email to confirm.",
-  "subscriptionId": 12345
+  "message": "Successfully subscribed! Please check your email to confirm."
 }
 ```
 

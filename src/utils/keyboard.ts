@@ -42,23 +42,19 @@ export function isEndKey(event: KeyEvent): boolean {
   return event.key === 'End'
 }
 
+const ARROW_DIRECTION_MAP: Readonly<Record<string, 'up' | 'down' | 'left' | 'right'>> = {
+  ArrowUp: 'up',
+  ArrowDown: 'down',
+  ArrowLeft: 'left',
+  ArrowRight: 'right',
+}
+
 /**
  * Get arrow key direction
  * @returns The direction ('up', 'down', 'left', 'right') or null if not an arrow key
  */
 export function getArrowDirection(event: KeyEvent): 'up' | 'down' | 'left' | 'right' | null {
-  switch (event.key) {
-    case 'ArrowUp':
-      return 'up'
-    case 'ArrowDown':
-      return 'down'
-    case 'ArrowLeft':
-      return 'left'
-    case 'ArrowRight':
-      return 'right'
-    default:
-      return null
-  }
+  return ARROW_DIRECTION_MAP[event.key] ?? null
 }
 
 /**

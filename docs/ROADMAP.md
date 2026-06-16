@@ -1,13 +1,24 @@
+# Paperlyte Development Roadmap - Landing Page/Waitlist Signup
+
+## Phase 0: Setup & Foundation - Landing Page (Day 1)
+
+- [x] Create GitHub repository with proper structure
+- [x] Set up Next.js project with TypeScript
+- [x] Configure Tailwind CSS for minimal, clean design
+- [x] Set up development environment
+- [x] Create basic project structure (components, pages, lib, utils)
+- [x] Initialize Vercel and Netlify deployment pipelines
+
 # Paperlyte Development Roadmap - MVP to Launch
 
-## Phase 0: Setup & Foundation (Day 1 Morning)
+## Phase 0: Setup & Foundation - Note Editor (Day 1)
 
 - [ ] Create GitHub repository with proper structure
 - [ ] Set up Next.js project with TypeScript
 - [ ] Configure Tailwind CSS for minimal, clean design
 - [ ] Set up development environment
 - [ ] Create basic project structure (components, pages, lib, utils)
-- [ ] Initialize Vercel deployment pipeline
+- [ ] Initialize Vercel and Netlify deployment pipelines
 
 ## Phase 1: Core Editor & Basic Functionality (Day 1-2)
 

@@ -200,6 +200,46 @@ describe('Icon', () => {
     })
   })
 
+  describe('Alias resolution', () => {
+    it('should render fa-check-circle without warning when present in iconPaths', () => {
+      // fa-check-circle is present in iconPaths, so it should render as a custom SVG without warnings
+      const { container } = render(<Icon name="fa-check-circle" />)
+
+      const svg = container.querySelector('svg.icon-svg')
+      expect(svg).toBeInTheDocument()
+      expect(consoleWarnSpy).toHaveBeenCalledTimes(0)
+    })
+
+    it('should render fa-house without warning when present in iconPaths', () => {
+      // fa-house is present in iconPaths, so it should render as a custom SVG without warnings
+      const { container } = render(<Icon name="fa-house" />)
+
+      const svg = container.querySelector('svg.icon-svg')
+      expect(svg).toBeInTheDocument()
+      expect(consoleWarnSpy).toHaveBeenCalledTimes(0)
+    })
+
+    it('should resolve bare icon name without fa- prefix via aliased key', () => {
+      // name="bolt" → baseName="bolt" not in iconPaths directly
+      // convertIconName('bolt') = 'bolt' (no mapping, strips nothing) → aliasedKey='fa-bolt'
+      // 'fa-bolt' IS in iconPaths (step 2), so renders custom SVG without warning
+      const { container } = render(<Icon name="bolt" />)
+
+      const svg = container.querySelector('svg.icon-svg')
+      expect(svg).toBeInTheDocument()
+      expect(consoleWarnSpy).toHaveBeenCalledTimes(0)
+    })
+
+    it('should resolve fa-prefixed name directly when present in iconPaths (step 1)', () => {
+      // Verifies step 1 still works after alias logic was added
+      const { container } = render(<Icon name="fa-circle-check" />)
+
+      const svg = container.querySelector('svg.icon-svg')
+      expect(svg).toBeInTheDocument()
+      expect(consoleWarnSpy).toHaveBeenCalledTimes(0)
+    })
+  })
+
   describe('Styling', () => {
     it('should apply custom className to fallback span', () => {
       const { container } = render(<Icon name="missing-icon" className="custom-class" />)

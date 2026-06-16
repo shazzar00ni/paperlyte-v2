@@ -33,7 +33,7 @@
   top: -40px;
   left: 0;
   background: var(--color-primary);
-  color: white;
+  color: var(--color-text-on-primary);
   padding: var(--spacing-xs) var(--spacing-sm);
   text-decoration: none;
   z-index: 100;

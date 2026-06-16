@@ -72,8 +72,8 @@
       "warning": "Future runs of 'codacy-analysis init --auto' or 'update-config' on source:auto configs replay initialization and may drop AllCritical patterns again. Always verify autoFilters remains 'AllCritical' after any init/update-config operation."
     },
     "pmd7ParserLimitation": {
-      "description": "PMD7 embeds Rhino 1.7.15 which does not support ES2020 optional chaining (?.) and nullish coalescing (??) operators. public/theme-init.js uses both, causing a silent FileError.",
-      "resolution": "public/theme-init.js added to PMD7 per-tool excludes. Revisit when Codacy upgrades PMD7 to Rhino 1.8.0+."
+      "description": "PMD7 embeds Rhino 1.7.15 which does not support ES2020 optional chaining (?.) and nullish coalescing (??) operators. public/theme-init.js (lines 29, 48, 53) and public/sw.js (lines 163-164) both use these operators, causing silent FileErrors.",
+      "resolution": "Both files added to PMD7 per-tool excludes. Revisit when Codacy upgrades PMD7 to Rhino 1.8.0+."
     }
   },
   "fileExclusions": null,

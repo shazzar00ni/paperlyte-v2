@@ -6381,6 +6381,7 @@
         }
       ],
       "exclude": [
+        "public/sw.js",
         "public/theme-init.js"
       ]
     },

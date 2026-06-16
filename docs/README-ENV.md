@@ -63,6 +63,7 @@ console.log(env.isProduction) // true/false
 2. Customize values in `.env.local` (this file is gitignored)
 
 3. Start dev server:
+
    ```bash
    npm run dev
    ```
@@ -79,7 +80,7 @@ npm run build
 
 For deployment platforms, set these in the platform's UI:
 
-```
+```bash
 VITE_BASE_URL=https://paperlyte.com
 VITE_SEO_KEYWORDS=note-taking app, simple notes, fast notes
 VITE_OG_IMAGE=https://paperlyte.com/og-image.png

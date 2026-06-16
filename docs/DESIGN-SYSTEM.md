@@ -1677,7 +1677,7 @@ const prefersDark = useMediaQuery('(prefers-color-scheme: dark)')
 
 All components follow a consistent structure:
 
-```
+```text
 ComponentName/
 ├── index.ts                 # Barrel export
 ├── ComponentName.tsx        # Main component

@@ -202,7 +202,7 @@ The application appears to lack additional security headers that should be set a
 **Recommendation:**
 Configure the following headers in your hosting provider (Vercel, Netlify, etc.):
 
-```
+```text
 X-Frame-Options: DENY
 X-Content-Type-Options: nosniff
 Referrer-Policy: strict-origin-when-cross-origin
@@ -588,32 +588,32 @@ if (!isBrowser) return 'light'
 
 ### Before Production Deployment
 
-2. **Add security headers** (CSP, X-Frame-Options, etc.)
+1. **Add security headers** (CSP, X-Frame-Options, etc.)
    - Implement via hosting provider configuration
    - 30-minute setup
 
-3. **Self-host fonts OR add SRI hashes**
+2. **Self-host fonts OR add SRI hashes**
    - Eliminates CDN supply chain risk
    - Improves performance (self-hosting)
    - 1-hour task
 
-4. **Replace placeholder download links**
+3. **Replace placeholder download links**
    - Not a security issue, but affects credibility
    - 15-minute update
 
 ### Future Enhancements
 
-5. **Implement error logging service**
+1. **Implement error logging service**
    - Use Sentry or similar for production errors
    - Helps identify security issues in production
    - 2-hour integration
 
-6. **Add automated security scanning**
+2. **Add automated security scanning**
    - Dependabot for dependency updates
    - SAST tools (Snyk, CodeQL)
    - 1-hour setup
 
-7. **Set up HSTS and other server hardening**
+3. **Set up HSTS and other server hardening**
    - Force HTTPS connections
    - Add to deployment configuration
    - 30-minute task

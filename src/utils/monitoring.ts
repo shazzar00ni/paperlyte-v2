@@ -34,6 +34,7 @@ export interface ErrorContext {
   tags?: Record<string, string>
 }
 
+/** Send `error` to Sentry with level, tags, extra context, and a breadcrumb. */
 function captureErrorToSentry(
   error: Error,
   severity: 'low' | 'medium' | 'high' | 'critical',

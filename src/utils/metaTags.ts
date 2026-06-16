@@ -8,6 +8,7 @@
  * left unchanged and continues to point to production.
  */
 
+/** Set `attr` to `value` on the first element matching `selector`, if it exists. */
 function updateMetaAttr(selector: string, attr: string, value: string): void {
   const el = document.querySelector(selector)
   if (el) el.setAttribute(attr, value)

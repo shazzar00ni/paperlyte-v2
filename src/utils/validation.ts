@@ -204,14 +204,12 @@ export function encodeHtmlEntities(input: string): string {
 }
 
 /**
- * Cleanse a user-provided string of common HTML/XSS injection vectors.
+ * Repeatedly apply a regex replacement until the output stabilises or `maxIterations` is reached.
  *
- * Removes angle brackets, strips dangerous URI protocols (e.g., `javascript:`, `data:`),
- * removes event-handler attributes (e.g., `onClick=`), encodes `&`, `"` and `'`,
- * trims whitespace, and truncates the result to 500 characters.
- *
- * @param input - The raw input string to sanitize; may be empty or falsy.
- * @returns The sanitized string, or an empty string if `input` is falsy.
+ * @param text - Input string to process.
+ * @param pattern - Regex pattern to remove on each pass.
+ * @param maxIterations - Safety cap to prevent infinite loops (default: 10).
+ * @returns Cleaned string with all non-overlapping matches removed.
  */
 function iterativelyRemove(text: string, pattern: RegExp, maxIterations = 10): string {
   let result = text
@@ -225,6 +223,16 @@ function iterativelyRemove(text: string, pattern: RegExp, maxIterations = 10): s
   return result
 }
 
+/**
+ * Cleanse a user-provided string of common HTML/XSS injection vectors.
+ *
+ * Removes angle brackets, strips dangerous URI protocols (e.g., `javascript:`, `data:`),
+ * removes event-handler attributes (e.g., `onClick=`), encodes `&`, `"` and `'`,
+ * trims whitespace, and truncates the result to 500 characters.
+ *
+ * @param input - The raw input string to sanitize; may be empty or falsy.
+ * @returns The sanitized string, or an empty string if `input` is falsy.
+ */
 export function sanitizeInput(input: string): string {
   if (!input) return ''
 
@@ -236,31 +244,14 @@ export function sanitizeInput(input: string): string {
   return sanitized.trim().slice(0, 500)
 }
 
-/**
- * Validates form data including email, name, and terms acceptance
- * Checks type safety and field-specific validation rules
- *
- * @param formData - Object containing form field values
- * @returns Validation result with isValid boolean and errors object
- *
- * @example
- * ```tsx
- * const result = validateForm({
- *   email: 'user@example.com',
- *   name: 'John Doe',
- *   acceptTerms: true
- * })
- * if (!result.isValid) {
- *   console.error(result.errors)
- * }
- * ```
- */
+/** Validate the email field value; returns an error string or null. */
 function validateEmailField(value: unknown): string | null {
   if (typeof value !== 'string') return 'Email must be a string'
   const result = validateEmail(value)
   return result.isValid ? null : (result.error ?? 'Invalid email')
 }
 
+/** Validate the name field value; returns an error string or null. */
 function validateNameField(value: unknown): string | null {
   if (typeof value !== 'string') return 'Name must be a string'
   const trimmed = value.trim()
@@ -269,12 +260,19 @@ function validateNameField(value: unknown): string | null {
   return null
 }
 
+/** Validate the acceptTerms field value; returns an error string or null. */
 function validateAcceptTermsField(value: unknown): string | null {
   if (typeof value !== 'boolean') return 'Accept terms must be a boolean'
   if (!value) return 'You must accept the terms and conditions'
   return null
 }
 
+/**
+ * Validates form data including email, name, and terms acceptance.
+ *
+ * @param formData - Object containing form field values
+ * @returns Validation result with isValid boolean and errors object
+ */
 export function validateForm(formData: Record<string, unknown>): ValidationResult {
   const errors: Record<string, string> = {}
 

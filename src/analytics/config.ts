@@ -7,8 +7,15 @@
 
 import type { AnalyticsConfig } from './types'
 
+/** Resolve analytics enabled state from `VITE_ANALYTICS_ENABLED`; falls back to `PROD`. */
+function resolveEnabled(enabledEnv: string | undefined): boolean {
+  if (enabledEnv === 'true') return true
+  if (enabledEnv === 'false') return false
+  return Boolean(import.meta.env.PROD)
+}
+
 /**
- * Get analytics configuration from environment variables
+ * Get analytics configuration from environment variables.
  *
  * Environment variables (defined in .env):
  * - VITE_ANALYTICS_ENABLED: Enable/disable analytics
@@ -19,12 +26,6 @@ import type { AnalyticsConfig } from './types'
  * - VITE_ANALYTICS_SCRIPT_URL: Custom script URL (optional)
  * - VITE_ANALYTICS_DEBUG: Enable debug mode (default: false)
  */
-function resolveEnabled(enabledEnv: string | undefined): boolean {
-  if (enabledEnv === 'true') return true
-  if (enabledEnv === 'false') return false
-  return Boolean(import.meta.env.PROD)
-}
-
 export function getAnalyticsConfig(): AnalyticsConfig | null {
   const domain = import.meta.env.VITE_ANALYTICS_DOMAIN
   if (!domain) return null

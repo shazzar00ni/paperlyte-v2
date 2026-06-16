@@ -17,8 +17,7 @@ on:
   schedule:
     - cron: '41 21 * * 5'
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
     CodeScan:
@@ -29,8 +28,26 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout repository
-              uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+              uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+              with:
+                persist-credentials: false
+            - name: Check CodeScan secrets
+              id: check-secrets
+              env:
+                CODESCAN_AUTH_TOKEN: ${{ secrets.CODESCAN_AUTH_TOKEN }}
+                CODESCAN_ORGANIZATION_KEY: ${{ secrets.CODESCAN_ORGANIZATION_KEY }}
+                CODESCAN_PROJECT_KEY: ${{ secrets.CODESCAN_PROJECT_KEY }}
+              run: |
+                  if [ -z "$CODESCAN_AUTH_TOKEN" ] || \
+                     [ -z "$CODESCAN_ORGANIZATION_KEY" ] || \
+                     [ -z "$CODESCAN_PROJECT_KEY" ]; then
+                    echo "configured=false" >> $GITHUB_OUTPUT
+                    echo "::warning::CodeScan secrets not configured. Skipping analysis."
+                  else
+                    echo "configured=true" >> $GITHUB_OUTPUT
+                  fi
             - name: Cache files
+              if: steps.check-secrets.outputs.configured == 'true'
               uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae  # v5.0.5
               with:
                   path: |
@@ -39,15 +56,15 @@ jobs:
                   restore-keys: ${{ runner.os }}-sonar
             - name: Run Analysis
               id: codescan-analysis
-              uses: codescan-io/codescan-scanner-action@955d3d1b4a9e374064189719484005ce8e08a749  # 2.0
-              # Continue even if CodeScan fails (e.g., missing secrets in forks)
+              if: steps.check-secrets.outputs.configured == 'true'
+              uses: codescan-io/codescan-scanner-action@d3afcd071f0fbc29545c15f621229810d94c2511  # Pre-release-3.0
               continue-on-error: true
               with:
                   login: ${{ secrets.CODESCAN_AUTH_TOKEN }}
                   organization: ${{ secrets.CODESCAN_ORGANIZATION_KEY }}
                   projectKey: ${{ secrets.CODESCAN_PROJECT_KEY }}
             - name: Upload SARIF file
-              uses: github/codeql-action/upload-sarif@9e0d7b8d25671d64c341c19c0152d693099fb5ba  # v4.35.5
+              uses: github/codeql-action/upload-sarif@8aad20d150bbac5944a9f9d289da16a4b0d87c1e  # v4.36.2
               # Only upload if SARIF file exists
               if: always() && hashFiles('codescan.sarif') != ''
               continue-on-error: true
@@ -56,21 +73,31 @@ jobs:
                   category: codescan
             - name: CodeScan Summary
               if: always()
+              env:
+                SECRETS_CONFIGURED: ${{ steps.check-secrets.outputs.configured }}
+                ANALYSIS_OUTCOME: ${{ steps.codescan-analysis.outcome }}
               run: |
                   echo "## 🔬 CodeScan Analysis" >> $GITHUB_STEP_SUMMARY
                   echo "" >> $GITHUB_STEP_SUMMARY
 
-                  if [ "${{ steps.codescan-analysis.outcome }}" == "success" ]; then
+                  if [ "$SECRETS_CONFIGURED" != "true" ]; then
+                      echo "⏭️ **CodeScan:** Analysis skipped — secrets not configured" >> $GITHUB_STEP_SUMMARY
+                      echo "" >> $GITHUB_STEP_SUMMARY
+                      echo "Configure the following repository secrets to enable analysis:" >> $GITHUB_STEP_SUMMARY
+                      echo "- \`CODESCAN_AUTH_TOKEN\`" >> $GITHUB_STEP_SUMMARY
+                      echo "- \`CODESCAN_ORGANIZATION_KEY\`" >> $GITHUB_STEP_SUMMARY
+                      echo "- \`CODESCAN_PROJECT_KEY\`" >> $GITHUB_STEP_SUMMARY
+                  elif [ "$ANALYSIS_OUTCOME" == "success" ]; then
                       echo "✅ **CodeScan:** Analysis completed successfully" >> $GITHUB_STEP_SUMMARY
-                  elif [ "${{ steps.codescan-analysis.outcome }}" == "failure" ]; then
+                  elif [ "$ANALYSIS_OUTCOME" == "failure" ]; then
                       echo "⚠️ **CodeScan:** Analysis failed (check authentication/configuration)" >> $GITHUB_STEP_SUMMARY
                       echo "" >> $GITHUB_STEP_SUMMARY
-                      echo "Ensure the following secrets are configured:" >> $GITHUB_STEP_SUMMARY
+                      echo "Ensure the following secrets are correctly configured:" >> $GITHUB_STEP_SUMMARY
                       echo "- \`CODESCAN_AUTH_TOKEN\`" >> $GITHUB_STEP_SUMMARY
                       echo "- \`CODESCAN_ORGANIZATION_KEY\`" >> $GITHUB_STEP_SUMMARY
                       echo "- \`CODESCAN_PROJECT_KEY\`" >> $GITHUB_STEP_SUMMARY
                   else
-                      echo "⏭️ **CodeScan:** Analysis skipped (missing configuration)" >> $GITHUB_STEP_SUMMARY
+                      echo "⏭️ **CodeScan:** Analysis skipped" >> $GITHUB_STEP_SUMMARY
                   fi
 
                   if [ -f "codescan.sarif" ]; then

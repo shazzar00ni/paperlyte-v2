@@ -50,9 +50,10 @@ This file tracks key architectural, design, and technical decisions made during 
 - **Rationale**: Paperlyte brand value is privacy; GA4 is a pragmatic interim choice while the provider-abstraction layer matures
 - **Alternatives considered**: Plausible (target), Fathom, Umami, Mixpanel
 
-- **Date**: YYYY-MM-DD (unknown), later clarified 2026-04-18
-- **Decision**: `useAnalytics()` currently routes analytics events through `@utils/analytics` (gtag/GA4); the Plausible module (`src/analytics/`) exists as an abstraction/provider candidate but is not yet wired into runtime initialization
+- **Date**: YYYY-MM-DD (unknown), later clarified 2026-04-18, corrected 2026-06-11
+- **Decision**: `useAnalytics()` routes analytics events through `@utils/analytics` (gtag/GA4 wrapper); the Plausible module (`src/analytics/`) exists as an abstraction/provider candidate but is not wired into runtime initialization
 - **Rationale**: Reflects the actual current integration state in the codebase while preserving flexibility to switch providers later
+- **Important caveat (2026-06-11 audit)**: production analytics is currently **disconnected end-to-end** — no production file loads the gtag script (`window.gtag` exists only as a type declaration plus guarded calls), and `analytics.init()`/`getAnalyticsConfig()` are called only in tests. All conversion events (waitlist, CTA, navigation, scroll depth) are silent no-ops in production
 - **Alternatives considered**: Plausible as the active provider, Fathom, Umami, Simple Analytics
 
 - **Date**: YYYY-MM-DD (unknown), later clarified 2026-04-18
@@ -72,10 +73,15 @@ This file tracks key architectural, design, and technical decisions made during 
 - **Rationale**: Site is deployed on Netlify; `/_vercel/insights/script.js` does not exist there, causing a MIME-type console error that degraded the Lighthouse Best Practices score
 - **Alternatives considered**: Conditional rendering per platform, keeping it for a future Vercel deployment
 
-- **Date**: 2026-04-20 (known pre-existing issue)
-- **Decision**: `worker-src 'none'` in production CSP — Sentry Session Replay likely silently disabled
-- **Rationale**: Sentry `replayIntegration()` is configured in `src/main.tsx` but its web-worker transport is blocked by the current CSP. This is a pre-existing issue unrelated to the CSP/analytics PR. To enable Replay, `worker-src 'self' blob:` would need to be added to both `netlify.toml` and `vercel.json`.
-- **Alternatives considered**: `worker-src 'self' blob:` (would enable Replay), removing `replayIntegration()` entirely
+- **Date**: 2026-04-20 (known pre-existing issue, resolved 2026-05-30)
+- **Decision**: `worker-src 'self' blob:'` in production CSP — enables Sentry Session Replay workers
+- **Rationale**: Sentry `replayIntegration()` uses blob: URL workers. Updated from `worker-src 'none'` to `worker-src 'self' blob:` in both `netlify.toml` and `vercel.json` to unblock it.
+- **Alternatives considered**: `worker-src 'none'` (silently disables Replay), removing `replayIntegration()` entirely
+
+- **Date**: 2026-05-30
+- **Decision**: Resolved two CSP console errors: (1) Font Awesome JS inline-style violation; (2) Vercel analytics MIME-type error
+- **Rationale**: Font Awesome JS was removed and replaced with custom bundled SVG paths (`src/components/ui/Icon/icons.ts`). Font Awesome JS injected inline styles via `setAttribute('style', ...)`, which the strict `style-src 'self'` CSP blocked. `@vercel/analytics` was removed because the site runs on Netlify — the script URL `/_vercel/insights/script.js` returns HTML 404, causing a MIME-type rejection. Both fixes were already on `main`; this PR documents and deploys them.
+- **Alternatives considered**: Adding `'unsafe-inline'` to `style-src` (weakens CSP), adding the specific sha256 hash for the Font Awesome style (fragile — breaks on library updates)
 
 ## Security
 
@@ -116,10 +122,10 @@ This file tracks key architectural, design, and technical decisions made during 
 
 ## PWA
 
-- **Date**: YYYY-MM-DD (unknown)
-- **Decision**: Web manifest present but no service worker implemented yet
-- **Rationale**: PWA manifest enables "add to home screen" and branding; SW deferred until offline-first is a real requirement
-- **Alternatives considered**: Full PWA with Workbox from the start
+- **Date**: YYYY-MM-DD (unknown), superseded by 2026-06-11 observation
+- **Decision**: Web manifest present; a hand-rolled service worker (`public/sw.js`) is now implemented — versioned cache name, offline.html fallback, cache-first for hashed `/assets/*` with eviction (60-entry cap, but pruning runs only in `onActivate()` — cache can exceed the cap between activations; incomplete eviction noted in 2026-06-11 audit)
+- **Rationale**: PWA manifest enables "add to home screen"; SW added to deliver the offline-first brand promise on the landing page
+- **Alternatives considered**: Workbox, no service worker
 
 ## Infrastructure / Edge
 

@@ -3,13 +3,15 @@ name: Deployment Status
 on:
   deployment_status:
 
+permissions: {}
+
 jobs:
   notify-deployment:
     name: Deployment Notification
     runs-on: ubuntu-latest
+    # Required only to post a PR comment via github.rest.issues.createComment.
     permissions:
-      contents: read
-      pull-requests: write
+      issues: write
     if: github.event.deployment_status.state != 'pending'
 
     steps:

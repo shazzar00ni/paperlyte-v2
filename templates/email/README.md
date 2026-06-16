@@ -71,7 +71,7 @@ All templates use placeholder variables that should be replaced by your email sy
 4. Copy template content
 5. Replace variables with actual values or use Apps Script
 
-#### Using Apps Script for Auto-Variables:
+#### Using Apps Script for Auto-Variables
 
 ```javascript
 function autoResponder(e) {
@@ -134,7 +134,7 @@ Before using these templates, customize:
 
 ## Testing
 
-### Test Each Template:
+### Test Each Template
 
 1. Send test email to each address
 2. Verify auto-responder is sent
@@ -144,7 +144,7 @@ Before using these templates, customize:
 6. Check on mobile devices
 7. Verify deliverability (not in spam)
 
-### Test Deliverability:
+### Test Deliverability
 
 - Send to Gmail, Outlook, Yahoo
 - Check spam folders

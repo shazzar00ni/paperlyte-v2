@@ -39,14 +39,16 @@ describe('index.html structure', () => {
       expect(imagePreload?.getAttribute('type')).toBe('image/avif')
     })
 
-    it('should not define imagesrcset on the preload link', () => {
+    it('should define responsive imagesrcset on the preload link', () => {
       const imagesrcset = imagePreload?.getAttribute('imagesrcset')
-      expect(imagesrcset).toBeNull()
+      expect(imagesrcset).not.toBeNull()
+      expect(imagesrcset).toContain('400w')
+      expect(imagesrcset).toContain('800w')
     })
 
-    it('should not define imagesizes on the preload link', () => {
+    it('should define imagesizes on the preload link', () => {
       const imagesizes = imagePreload?.getAttribute('imagesizes')
-      expect(imagesizes).toBeNull()
+      expect(imagesizes).not.toBeNull()
     })
   })
 

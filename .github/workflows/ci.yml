@@ -5,12 +5,8 @@ on:
     branches: [main, develop]
   pull_request:
     branches: [main, develop]
-  workflow_dispatch:
-    inputs:
-      ref:
-        description: "Git ref (branch or SHA) to run CI against"
-        required: false
-        default: "main"
+  repository_dispatch:
+    types: [run-ci]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

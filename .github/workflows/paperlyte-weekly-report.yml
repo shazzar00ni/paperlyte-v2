@@ -12,7 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      actions: write
 
     steps:
       - name: Checkout repo
@@ -102,11 +101,12 @@ jobs:
       - name: Trigger CI for coverage upload
         # GITHUB_TOKEN pushes don't trigger other workflows, so Codacy never receives
         # coverage data for bot commits — causing "not up to standards" on PRs that
-        # use this commit as the ancestor. Dispatching CI via workflow_dispatch IS
-        # permitted from GITHUB_TOKEN and runs tests + uploads coverage for this commit.
+        # use this commit as the ancestor. repository_dispatch IS permitted from
+        # GITHUB_TOKEN (unlike push) and only requires contents: write, which this
+        # job already holds. CI listens for the run-ci event type and runs tests +
+        # uploads coverage for this commit.
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          COMMIT_SHA=$(git rev-parse HEAD)
-          echo "Dispatching CI workflow for commit $COMMIT_SHA on main"
-          gh workflow run ci.yml --ref main
+          echo "Dispatching CI workflow via repository_dispatch"
+          gh api repos/${{ github.repository }}/dispatches -f event_type=run-ci

@@ -3,8 +3,8 @@
 ## Phase 0: Setup & Foundation - Landing Page (Day 1)
 
 - [x] Create GitHub repository with proper structure
-- [x] Set up Next.js project with TypeScript
-- [x] Configure Tailwind CSS for minimal, clean design
+- [x] Set up Vite + React project with TypeScript
+- [x] Configure CSS Modules for minimal, clean design
 - [x] Set up development environment
 - [x] Create basic project structure (components, pages, lib, utils)
 - [x] Initialize Vercel and Netlify deployment pipelines
@@ -62,7 +62,7 @@
 - [x] Hardware-accelerated CSS transforms
 - [x] `AnimatedElement` wrapper with staggered `--animation-delay`
 
-## Phase 2: Conversion Optimization — _Status: Complete_
+## Phase 2: Conversion Optimization — _Status: Core sections complete; deployment follow-ups deferred to Phase 5_
 
 ### Waitlist / Email Capture
 
@@ -70,8 +70,8 @@
 - [x] Client-side email validation and input sanitization
 - [x] Server-side handling via Netlify function (keeps API keys off client)
 - [x] Success/error states and user feedback
-- [ ] Add a Vercel-compatible subscribe function (currently Netlify-only — breaks on Vercel deploys)
-- [ ] Replace process-local rate limiting with a durable store
+- [ ] Add a Vercel-compatible subscribe function (currently Netlify-only — breaks on Vercel deploys) — _deployment hardening, not a blocker for the Netlify-hosted core; tracked under Phase 5_
+- [ ] Replace process-local rate limiting with a durable store — _deployment hardening, tracked under Phase 5_
 
 ### Testimonials
 
@@ -117,7 +117,7 @@
 - [x] SVG path animations (`SVGPathAnimation`)
 - [x] Counter animations for statistics (`CounterAnimation`)
 
-### Privacy-First Analytics
+### Privacy-First Analytics — _Blocked: scaffolded but not yet wired into runtime; launch-blocking_
 
 - [x] `useAnalytics()` hook centralizing event tracking
 - [x] Provider-abstraction layer scaffolded (`src/analytics/`)
@@ -195,7 +195,7 @@
 ### Launch
 
 - [ ] Final cross-browser and mobile QA pass
-- [ ] Production analytics smoke test (confirm events fire)
+- [ ] Production analytics smoke test (confirm events fire) — _depends on the Phase 3 analytics wiring landing first_
 - [ ] Product Hunt / social launch assets
 - [ ] Monitor Sentry and Core Web Vitals post-deploy
 

@@ -217,7 +217,7 @@ export function handleArrowNavigation(
 
       if (attrDir) {
         isRtl = attrDir === 'rtl'
-      /* v8 ignore next -- guard for non-browser environments; window and getComputedStyle are always present in supported runtimes */
+        /* v8 ignore next -- guard for non-browser environments; window and getComputedStyle are always present in supported runtimes */
       } else if (typeof window !== 'undefined' && docElement && window.getComputedStyle) {
         const computedDirection = window.getComputedStyle(docElement).direction
         isRtl = computedDirection === 'rtl'

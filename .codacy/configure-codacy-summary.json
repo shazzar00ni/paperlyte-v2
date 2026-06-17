@@ -72,8 +72,8 @@
       "warning": "Future runs of 'codacy-analysis init --auto' or 'update-config' on source:auto configs replay initialization and may drop AllCritical patterns again. Always verify autoFilters remains 'AllCritical' after any init/update-config operation."
     },
     "pmd7ParserLimitation": {
-      "description": "PMD7 embeds Rhino 1.7.15 which does not support ES2020 optional chaining (?.) and nullish coalescing (??) operators. public/theme-init.js (lines 29, 48, 53) and public/sw.js (lines 163-164) both use these operators, causing silent FileErrors.",
-      "resolution": "Both files added to PMD7 per-tool excludes. Revisit when Codacy upgrades PMD7 to Rhino 1.8.0+."
+      "description": "PMD7 embeds Rhino 1.7.15 which does not support ES2020 optional chaining (?.) and nullish coalescing (??) operators, nor ESM import/export syntax. public/theme-init.js (lines 29, 48, 53) and public/sw.js (lines 163-164) use optional chaining/nullish coalescing; eslint.config.js and postcss.config.js use ESM import/export default. All four cause silent FileErrors.",
+      "resolution": "All four files added to PMD7 per-tool excludes. Revisit when Codacy upgrades PMD7 to Rhino 1.8.0+."
     }
   },
   "fileExclusions": null,
@@ -92,7 +92,7 @@
   "keyImprovements": [
     "PMD7 enabled for ECMAScript best practices — 6 patterns covering public/*.js files outside TypeScript/ESLint scope; 0 findings confirms codebase avoids with-statements, inconsistent returns, and similar JS pitfalls",
     "Disabled 19 low-signal Agentlinter informational warnings (undefined technical terms -16, ambiguous pronouns -3); 22 higher-signal warnings remain including escape-hatch and duplicate-instruction checks",
-    "PMD7 file exclusion added for public/theme-init.js — prevents silent FileError from Rhino 1.7.15 parser (no ES2020 optional chaining/nullish coalescing support)",
+    "PMD7 file exclusions added for 4 files — eslint.config.js and postcss.config.js (ESM import/export); public/theme-init.js and public/sw.js (ES2020 optional chaining/nullish coalescing); all cause silent Rhino 1.7.15 FileErrors",
     "Verified AllCritical filter preserved — init --auto regression temporarily dropped 9 critical/correctness patterns (Lizard critical, ShellCheck SC1070/SC1073/SC2114, Biome noUndeclaredVariables/noUnresolvedImports); all restored, metadata.autoFilters corrected to AllCritical"
   ],
   "localConfigTools": [

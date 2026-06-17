@@ -6381,6 +6381,8 @@
         }
       ],
       "exclude": [
+        "eslint.config.js",
+        "postcss.config.js",
         "public/sw.js",
         "public/theme-init.js"
       ]

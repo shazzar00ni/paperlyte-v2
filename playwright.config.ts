@@ -1,5 +1,25 @@
 import { defineConfig, devices } from '@playwright/test'
 
+// ---------------------------------------------------------------------------
+// Browser-scoping via tags (keeps the HTML report clean). Scoped tests are not
+// COLLECTED for the projects they don't apply to, so they never appear as
+// "skipped" — unlike in-body test.skip(), which still lists the test as skipped
+// for every project where the guard fired.
+//
+// Tags are declared on individual tests via the `tag` option:
+//   @chromium-only — runs only on the Chromium desktop project
+//   @mobile-only   — runs only on the mobile projects (Pixel 5 / iPhone 12)
+//   @no-ci         — never runs in CI (variable CLS/metric delivery on CI runners;
+//                    Lighthouse CI is the authoritative Core Web Vitals gate)
+//
+// Each project excludes the tags that don't belong to it via grepInvert; in CI,
+// @no-ci is additionally excluded everywhere. Untagged tests run on all projects.
+// ---------------------------------------------------------------------------
+const grepInvert = (...tags: string[]): RegExp | undefined => {
+  const excluded = process.env.CI ? [...tags, '@no-ci'] : tags
+  return excluded.length > 0 ? new RegExp(excluded.join('|')) : undefined
+}
+
 export default defineConfig({
   testDir: './tests/e2e',
   fullyParallel: true,
@@ -32,23 +52,30 @@ export default defineConfig({
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
+      // Runs @chromium-only tests; excludes mobile-scoped tests.
+      grepInvert: grepInvert('@mobile-only'),
     },
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
+      grepInvert: grepInvert('@chromium-only', '@mobile-only'),
     },
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
+      grepInvert: grepInvert('@chromium-only', '@mobile-only'),
     },
     // Mobile viewports
     {
       name: 'Mobile Chrome',
       use: { ...devices['Pixel 5'] },
+      // Runs @mobile-only tests; excludes Chromium-desktop-scoped tests.
+      grepInvert: grepInvert('@chromium-only'),
     },
     {
       name: 'Mobile Safari',
       use: { ...devices['iPhone 12'] },
+      grepInvert: grepInvert('@chromium-only'),
     },
   ],
 

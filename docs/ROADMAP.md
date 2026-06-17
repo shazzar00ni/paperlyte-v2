@@ -182,7 +182,7 @@
 
 ### Domain & SEO
 
-- [ ] Fix `scripts/generate-sitemap.cjs` domain (`paperlyte.com` → canonical `paperlyte.app`)
+- [x] Fix `scripts/generate-sitemap.cjs` domain — defaults to canonical `paperlyte.app`, overridable via `SITE_URL`/`VITE_BASE_URL`
 - [ ] Verify canonical URLs, meta tags, and structured data
 - [ ] Confirm `robots.txt` and sitemap submission
 

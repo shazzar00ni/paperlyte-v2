@@ -120,6 +120,11 @@ This file tracks key architectural, design, and technical decisions made during 
 - **Rationale**: Enforces baseline quality without being prohibitively strict for a landing page
 - **Alternatives considered**: 80%, 60%, no threshold
 
+- **Date**: 2026-06-17
+- **Decision**: The "skipped" E2E tests in the Playwright HTML report (`tests/e2e/landing-page.spec.ts`) are intentional `test.skip()` guards and are kept as-is — confirmed by user. Specifically: `load-performance smoke check (FCP/LCP/CLS)` runs Chromium-desktop only and is deliberately skipped in CI (`!!process.env.CI`); `should show mobile-specific UI` runs on mobile projects only (`!isMobile`); `should have accessible keyboard navigation` runs Chromium-desktop only (`browserName !== 'chromium'` + `isMobile`).
+- **Rationale**: Lighthouse CI is the authoritative Core Web Vitals gate (perf check is flaky on CI runners); mobile-UI assertions require a mobile viewport (un-skipping on desktop would fail); Firefox/WebKit headless don't reliably dispatch Tab-focus events without prior pointer activation. These are normal browser-scoping patterns, not coverage regressions. Note: the report URL filter `#?q=s:skipped` is Playwright HTML-report syntax (not Lighthouse).
+- **Alternatives considered**: Enabling the perf check in CI (rejected — flakiness); broadening keyboard-nav to Firefox/WebKit (rejected — unreliable headless focus)
+
 ## PWA
 
 - **Date**: YYYY-MM-DD (unknown), superseded by 2026-06-11 observation

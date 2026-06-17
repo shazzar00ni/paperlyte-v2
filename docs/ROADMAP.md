@@ -9,6 +9,203 @@
 - [x] Create basic project structure (components, pages, lib, utils)
 - [x] Initialize Vercel and Netlify deployment pipelines
 
+## Phase 1: Core Landing Page (MVP) — _Status: Complete_
+
+### Sticky Navigation Header
+
+- [x] Sticky header with scroll-aware styling
+- [x] Logo/wordmark and primary nav links
+- [x] Mobile hamburger menu with accessible toggle
+- [x] "Join the Waitlist" primary CTA in header
+- [x] Smooth-scroll anchor navigation to sections
+
+### Hero Section
+
+- [x] Headline: "Your thoughts, unchained."
+- [x] Subheadline communicating the value proposition
+- [x] Upcoming-launch / waitlist messaging
+- [x] Primary CTA button
+- [x] Parallax background shapes with blur effects (`useParallax`, `ParallaxLayer`)
+- [x] Floating decorative elements (hidden on mobile)
+
+### Feature Grid
+
+- [x] Six core features with icons and performance metrics
+- [x] Centralized feature content in `src/constants/`
+- [x] Responsive grid layout (mobile-first)
+- [x] Scroll-triggered staggered reveal animations
+
+### Call-to-Action & Waitlist
+
+- [x] Dedicated CTA section reinforcing the value proposition
+- [x] "Join the Waitlist" buttons
+- [x] Email capture wired to Netlify serverless function
+
+### Footer
+
+- [x] Social links
+- [x] Legal links (privacy, terms)
+- [x] Copyright and brand mark
+
+### Accessibility & Semantic Foundation
+
+- [x] Semantic HTML structure throughout
+- [x] "Skip to main content" skip link
+- [x] Keyboard navigation support
+- [x] Screen-reader-friendly markup (aria attributes, roles)
+- [x] 2px focus outlines on interactive elements
+- [x] `prefers-reduced-motion` respected on all animations
+
+### Scroll Animations
+
+- [x] Intersection Observer entrance animations (`useIntersectionObserver`)
+- [x] Hardware-accelerated CSS transforms
+- [x] `AnimatedElement` wrapper with staggered `--animation-delay`
+
+## Phase 2: Conversion Optimization — _Status: Complete_
+
+### Waitlist / Email Capture
+
+- [x] Newsletter/waitlist signup form (`EmailCapture`)
+- [x] Client-side email validation and input sanitization
+- [x] Server-side handling via Netlify function (keeps API keys off client)
+- [x] Success/error states and user feedback
+- [ ] Add a Vercel-compatible subscribe function (currently Netlify-only — breaks on Vercel deploys)
+- [ ] Replace process-local rate limiting with a durable store
+
+### Testimonials
+
+- [x] Accessible testimonial carousel/slider
+- [x] Keyboard navigation (prev/next) and swipe support
+- [x] Centralized testimonial content in `src/constants/testimonials.ts`
+
+### Feature Comparison
+
+- [x] Comparison section vs. competitors (Notion, Evernote, OneNote)
+- [x] Responsive comparison layout
+- [x] Centralized comparison data
+
+### Pricing Teaser
+
+- [x] Pricing section (Free vs. Plus)
+- [x] Centralized pricing data in `src/constants/pricing.ts`
+
+### FAQ
+
+- [x] Accessible FAQ accordion
+- [x] Centralized FAQ content in `src/constants/faq.ts`
+
+### Social Sharing
+
+- [x] Twitter / Facebook / LinkedIn share buttons in `EmailCapture`
+- [x] Pre-filled share text and URL
+
+## Phase 3: Advanced Features & Polish — _Status: In Progress_
+
+### Dark Mode
+
+- [x] Theme engine with CSS custom properties
+- [x] `ThemeToggle` component and `useTheme` hook
+- [x] System preference detection (`prefers-color-scheme`)
+- [x] Explicit choice overrides system preference (`[data-theme]`)
+- [x] Privacy-gated theme persistence (`ALLOW_PERSISTENT_THEME`)
+
+### Advanced Scroll Animations & Parallax
+
+- [x] Parallax layers and scroll-position effects (`useParallax`, `useScrollPosition`)
+- [x] Text reveal animations (`TextReveal`)
+- [x] SVG path animations (`SVGPathAnimation`)
+- [x] Counter animations for statistics (`CounterAnimation`)
+
+### Privacy-First Analytics
+
+- [x] `useAnalytics()` hook centralizing event tracking
+- [x] Provider-abstraction layer scaffolded (`src/analytics/`)
+- [x] Conversion events defined (waitlist, CTA, navigation, scroll depth)
+- [ ] **Wire analytics into runtime** — production currently loads no tracking script, so all events are no-ops
+- [ ] Migrate from GA4 wrapper to the cookie-less Plausible provider (the stated privacy-first target)
+- [ ] Verify GDPR-compliant, cookie-less configuration end-to-end
+
+### PWA / Offline
+
+- [x] Web app manifest for "add to home screen"
+- [x] Service worker (`public/sw.js`) with offline fallback and asset caching
+- [ ] Fix asset-cache eviction (pruning currently runs only on activate; cache can exceed cap)
+
+### Performance
+
+- [x] Manual chunk splitting (`react-vendor`, `fontawesome`)
+- [x] Self-hosted Inter (Latin subset) — no third-party font CDN
+- [x] Bundle-size budgets enforced (main JS <150KB gz, CSS <30KB gz)
+- [x] Code-split sections via `React.lazy`
+- [ ] Defer lazy chunk loading (sections are split but rendered unconditionally, so all chunks fetch on initial load)
+- [ ] Replace corrupted `public/fonts/Inter-Variable.woff2` (silently falls back today)
+
+## Phase 4: Testing & Quality Assurance — _Status: Mostly Complete_
+
+### Automated Testing
+
+- [x] Vitest unit/component tests (~95% line coverage, 1,700+ tests)
+- [x] Coverage threshold enforced (70% minimum)
+- [x] Playwright E2E setup
+- [ ] Bring serverless functions (`subscribe.ts`) and WAF edge function into coverage scope
+- [ ] Wire `FeedbackWidget` `onSubmit` (currently rendered without it — submissions fail)
+
+### Accessibility Audit
+
+- [x] WCAG 2.1 AA color contrast verified
+- [x] Local Lighthouse accessibility score 100
+- [ ] Screen-reader pass across NVDA / VoiceOver
+- [ ] Keyboard-only journey audit on mobile
+
+### Performance / Lighthouse
+
+- [x] Lighthouse CI configured
+- [x] Local Lighthouse scores 100/100/100/100
+- [x] Core Web Vitals monitored
+- [ ] Confirm <2s load and >90 performance on production hardware/CDN
+
+## Phase 5: Pre-Launch Readiness — _Status: Blocked / In Progress_
+
+### Legal & Compliance
+
+- [ ] Replace 14 placeholders in `src/constants/legal.ts` (entity name, address, jurisdiction, governing law, social links, doc links)
+- [ ] Remove `[e.g., ...]` placeholders from `public/privacy.html`
+- [ ] Resolve governing-law mismatch (terms.html: Australia vs. `Terms.tsx`: Delaware)
+- [ ] Finish WIP policy docs (COOKIE-POLICY, DMCA stub, ACCESSIBILITY placeholder owner)
+- [ ] Publish policy docs via the build (currently `docs/` is not deployed)
+
+### Image & Brand Assets
+
+- [ ] Add `og-image.jpg` / `twitter-image.jpg` (only SVGs exist; meta tags 404 today)
+- [ ] Verify favicon and app icon set across sizes
+
+### Domain & SEO
+
+- [ ] Fix `scripts/generate-sitemap.cjs` domain (`paperlyte.com` → canonical `paperlyte.app`)
+- [ ] Verify canonical URLs, meta tags, and structured data
+- [ ] Confirm `robots.txt` and sitemap submission
+
+### CTA Link Integrity
+
+- [ ] Verify download CTA URLs (iOS/Android store + desktop links currently unverified/404)
+
+## Phase 6: Launch & Post-Launch — _Status: Pending_
+
+### Launch
+
+- [ ] Final cross-browser and mobile QA pass
+- [ ] Production analytics smoke test (confirm events fire)
+- [ ] Product Hunt / social launch assets
+- [ ] Monitor Sentry and Core Web Vitals post-deploy
+
+### Post-Launch Iteration
+
+- [ ] A/B test hero copy and CTA placement for waitlist conversion
+- [ ] Analyze scroll-depth and drop-off to refine section order
+- [ ] Iterate on testimonials and pricing copy from real feedback
+- [ ] Track bounce rate (<45% target) and session time (>2 min target)
+
 # Paperlyte Development Roadmap - MVP to Launch
 
 ## Phase 0: Setup & Foundation - Note Editor (Day 1)

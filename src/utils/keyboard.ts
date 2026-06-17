@@ -89,6 +89,7 @@ export function getFocusableElements(container: HTMLElement): HTMLElement[] {
     // Defensive return for edge cases (e.g., disconnected nodes).
     // In practice, this branch is unreachable when sorting elements from querySelectorAll
     // since all returned nodes are connected and have a defined document order.
+    /* v8 ignore next */
     return 0
   })
 
@@ -216,6 +217,7 @@ export function handleArrowNavigation(
 
       if (attrDir) {
         isRtl = attrDir === 'rtl'
+      /* v8 ignore next -- guard for non-browser environments; window and getComputedStyle are always present in supported runtimes */
       } else if (typeof window !== 'undefined' && docElement && window.getComputedStyle) {
         const computedDirection = window.getComputedStyle(docElement).direction
         isRtl = computedDirection === 'rtl'

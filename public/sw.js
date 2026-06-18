@@ -18,7 +18,7 @@ const PRECACHE = [
   '/offline.css',
   '/offline.js',
   '/site.webmanifest',
-  '/fonts/Inter-Variable.woff2',
+  '/fonts/Inter-Variable-v2.woff2',
   '/fonts/PlayfairDisplay-Variable.woff2',
 ]
 

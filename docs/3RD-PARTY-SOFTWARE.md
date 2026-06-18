@@ -96,7 +96,7 @@ Copyright (c)  OpenJS Foundation and other contributors, <www.openjsf.org>
 ---
 
 ### [Inter Variable Font (self-hosted)](https://rsms.me/inter/)
-Latin-subsetted Inter variable WOFF2 font, self-hosted at `public/fonts/Inter-Variable.woff2`. Previously bundled via `@fontsource/inter`; now sourced directly from Google Fonts (Latin subset, variable weight 100–900).
+Latin-subsetted Inter variable WOFF2 font, self-hosted at `public/fonts/Inter-Variable-v2.woff2`. Previously bundled via `@fontsource/inter`; now sourced directly from Google Fonts (Latin subset, variable weight 100–900).
 **Usage**: Bundled static asset
 #### Concluded Licenses
 OFL-1.1

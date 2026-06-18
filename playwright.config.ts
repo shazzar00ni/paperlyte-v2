@@ -22,7 +22,7 @@ const CHROMIUM_ONLY = /@chromium-only/
 const MOBILE_ONLY = /@mobile-only/
 const NO_CI = /@no-ci/
 
-const grepInvert = (...patterns: RegExp[]): RegExp[] | undefined => {
+function grepInvert(...patterns: RegExp[]): RegExp[] | undefined {
   const excluded = process.env.CI ? [...patterns, NO_CI] : patterns
   return excluded.length > 0 ? excluded : undefined
 }

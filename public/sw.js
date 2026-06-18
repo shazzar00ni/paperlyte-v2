@@ -38,11 +38,16 @@ const CACHEABLE_RE = /\.(png|jpg|jpeg|webp|avif|svg|ico|woff2?)$/
 
 // ─── Lifecycle ───────────────────────────────────────────────────────────────
 
-// skipWaiting only on first install: satisfies Lighthouse PWA audit without risking
-// 404s for lazy-loaded chunks in tabs that loaded before an update was deployed.
+// Skip waiting only when there is no active worker. This lets a fresh install
+// control the page immediately, while updates remain waiting until tabs using
+// the previous worker have closed and can no longer request its lazy chunks.
 function onInstall(event) {
-  event.waitUntil(caches.open(CACHE_VERSION).then((cache) => cache.addAll(PRECACHE)))
-  if (!self.registration.active) self.skipWaiting()
+  const precache = caches.open(CACHE_VERSION).then((cache) => cache.addAll(PRECACHE))
+  const installation = self.registration.active
+    ? precache
+    : precache.then(() => self.skipWaiting())
+
+  event.waitUntil(installation)
 }
 
 /**

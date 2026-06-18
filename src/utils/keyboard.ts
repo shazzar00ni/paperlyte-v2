@@ -84,15 +84,14 @@ export function getFocusableElements(container: HTMLElement): HTMLElement[] {
     if (position & Node.DOCUMENT_POSITION_FOLLOWING) {
       return -1 // a comes before b
     }
-    // Defensive comparison for edge cases (e.g., disconnected nodes). In practice
-    // this is unreachable: nodes returned by querySelectorAll are always connected
-    // and have a defined document order, so one of the comparisons always matches.
-    /* v8 ignore start -- unreachable defensive comparator fall-through (see comment above) */
     if (position & Node.DOCUMENT_POSITION_PRECEDING) {
       return 1 // b comes before a
     }
+    // Defensive fall-through for disconnected nodes. Unreachable in practice:
+    // querySelectorAll returns connected nodes with a defined document order, so
+    // one of the comparisons above always matches.
+    /* v8 ignore next -- unreachable defensive fall-through (see comment above) */
     return 0
-    /* v8 ignore stop */
   })
 
   return elementsArray

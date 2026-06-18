@@ -82,6 +82,8 @@ jobs:
             # runs.  3 GB leaves ~1 GB headroom for the Vitest process, OS,
             # and Docker overhead.
             NODE_OPTIONS: "--max-old-space-size=3072"
+      # CircleCI storage steps run after failed steps automatically and only
+      # accept their documented storage parameters; do not add `when` here.
       - store_test_results:
           path: test-results
       - store_artifacts:
@@ -161,6 +163,8 @@ jobs:
           environment:
             CI: "true"
             BASE_URL: "http://127.0.0.1:4173"
+      # CircleCI storage steps run after failed steps automatically and only
+      # accept their documented storage parameters; do not add `when` here.
       - store_test_results:
           # JUnit XML is written by the junit reporter added to playwright.config.ts
           path: test-results

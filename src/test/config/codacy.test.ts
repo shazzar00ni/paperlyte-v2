@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest'
-import { readFileSync } from 'fs'
+import { existsSync, readFileSync } from 'fs'
 import { join } from 'path'
 
 describe('.codacy.yml configuration', () => {
@@ -12,71 +12,35 @@ describe('.codacy.yml configuration', () => {
     lines = content.split('\n')
   })
 
-  describe('legacy eslint engine configuration', () => {
-    it('should keep the legacy eslint engine entry', () => {
-      const legacyEslintPattern = /^\s*eslint:\s*$/m
-      expect(content).toMatch(legacyEslintPattern)
+  describe('analysis CLI integration', () => {
+    it('keeps the configuration at the repository root', () => {
+      expect(existsSync(join(process.cwd(), '.codacy.yml'))).toBe(true)
     })
 
-    it('should keep legacy eslint disabled to avoid duplicate analysis', () => {
-      expect(content).toMatch(/eslint:\s*\n\s*enabled:\s*false/)
+    it('does not retain an unconsumed Cloud CLI import file', () => {
+      expect(existsSync(join(process.cwd(), '.codacy/codacy.config.json'))).toBe(false)
     })
 
-    it('should define the legacy eslint engine only once', () => {
-      const eslintEngineMatches = lines.filter((line) => line.match(/^\s*eslint:\s*$/))
-      expect(eslintEngineMatches.length).toBe(1)
+    it('does not claim that .codacy.yml controls tool enablement', () => {
+      expect(content).not.toMatch(/^\s*enabled:\s*(?:true|false)\s*$/m)
     })
   })
 
-  describe('eslint-9 engine (retained)', () => {
-    it('should have eslint-9 engine enabled', () => {
-      expect(content).toMatch(/eslint-9:\s*\n\s*enabled:\s*true/)
+  describe('eslint-9 engine', () => {
+    it('should configure eslint-9 exactly once', () => {
+      const eslintEngineMatches = lines.filter((line) => line.match(/^\s*eslint-9:\s*$/))
+      expect(eslintEngineMatches.length).toBe(1)
     })
 
-    it('should have a comment indicating eslint-9 flat config usage', () => {
+    it('should have a comment indicating ESLint 9 flat config usage', () => {
       expect(content).toMatch(/eslint-9 only|flat config|eslint\.config\.js/)
     })
   })
 
-  describe('other enabled engines', () => {
-    it('should have semgrep enabled', () => {
-      expect(content).toMatch(/semgrep:\s*\n\s*enabled:\s*true/)
-    })
-
-    it('should have lizard enabled', () => {
-      expect(content).toMatch(/lizard:\s*\n\s*enabled:\s*true/)
-    })
-
-    it('should have shellcheck enabled', () => {
-      expect(content).toMatch(/shellcheck:\s*\n\s*enabled:\s*true/)
-    })
-  })
-
-  describe('disabled engines', () => {
-    it('should have csslint disabled', () => {
-      expect(content).toMatch(/csslint:\s*\n\s*enabled:\s*false/)
-    })
-
-    it('should have stylelint disabled', () => {
-      expect(content).toMatch(/stylelint:\s*\n\s*enabled:\s*false/)
-    })
-
-    it('should have tslint disabled', () => {
-      expect(content).toMatch(/tslint:\s*\n\s*enabled:\s*false/)
-    })
-  })
-
-  describe('coverage configuration', () => {
-    it('should reference lcov.info coverage report', () => {
-      expect(content).toContain('coverage/lcov.info')
-    })
-
-    it('should have overall coverage threshold of 70', () => {
-      expect(content).toMatch(/overall:\s*70/)
-    })
-
-    it('should have per-file coverage threshold of 70', () => {
-      expect(content).toMatch(/file:\s*70/)
+  describe('tool-specific exclusions', () => {
+    it('should configure lizard and shellcheck', () => {
+      expect(content).toMatch(/^\s*lizard:\s*$/m)
+      expect(content).toMatch(/^\s*shellcheck:\s*$/m)
     })
   })
 

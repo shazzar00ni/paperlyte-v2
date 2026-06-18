@@ -2,12 +2,36 @@ import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 
+// When CIRCLECI_COVERAGE is set, the @circleci/vitest-circleci-coverage plugin
+// replaces the default runner and reporter so CircleCI Smarter Testing can
+// build the test-impact coverage map.  Install the plugin first:
+//   npx jsr@latest add @circleci/vitest-circleci-coverage
+// Then uncomment the `analysis` command in .circleci/test-suites.yml, which
+// sets CIRCLECI_COVERAGE to the output path before invoking vitest.
+const circleCICoverage = process.env.CIRCLECI_COVERAGE
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
   test: {
     // Use jsdom for browser-like environment
     environment: 'jsdom',
+
+    // CircleCI Smarter Testing: use coverage runner/reporter when collecting
+    // the test-impact map; fall back to the standard reporters otherwise.
+    // The two configurations are mutually exclusive — circleCICoverage takes
+    // over completely so the coverage map is built without conflicting output.
+    ...(circleCICoverage
+      ? {
+          runner: '@circleci/vitest-circleci-coverage/runner',
+          reporters: ['@circleci/vitest-circleci-coverage/reporter'],
+        }
+      : {
+          // JUnit report lets CircleCI store_test_results ingest pass/fail
+          // history and feed timing data back to dynamic_batching.
+          reporters: ['default', 'junit'],
+          outputFile: { junit: 'test-results/junit.xml' },
+        }),
 
     // Setup files to run before each test file
     setupFiles: ['./src/test/setup.ts'],
@@ -24,16 +48,6 @@ export default defineConfig({
 
     // Global test utilities
     globals: true,
-
-    // Add JUnit reporter — write to test-results/ so CircleCI's
-    // store_test_results can ingest it for test insights and timing.
-    // Belt-and-suspenders: inline options (Vitest 4 constructor path) AND the
-    // top-level outputFile mapping (documented Vitest approach) so the file is
-    // written regardless of which mechanism this version of Vitest uses.
-    reporters: ['default', ['junit', { outputFile: 'test-results/junit.xml' }]],
-    outputFile: {
-      junit: 'test-results/junit.xml',
-    },
 
     // Coverage configuration
     coverage: {

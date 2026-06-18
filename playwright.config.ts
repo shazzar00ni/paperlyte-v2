@@ -12,12 +12,19 @@ import { defineConfig, devices } from '@playwright/test'
 //   @no-ci         — never runs in CI (variable CLS/metric delivery on CI runners;
 //                    Lighthouse CI is the authoritative Core Web Vitals gate)
 //
-// Each project excludes the tags that don't belong to it via grepInvert; in CI,
-// @no-ci is additionally excluded everywhere. Untagged tests run on all projects.
+// Each project excludes the tag patterns that don't belong to it via grepInvert;
+// in CI, @no-ci is additionally excluded everywhere. Untagged tests run on all
+// projects. Patterns are literal RegExps — Playwright excludes a test when it
+// matches ANY pattern in the array, the same OR semantics as a single
+// alternation, without building a RegExp from a dynamic string.
 // ---------------------------------------------------------------------------
-const grepInvert = (...tags: string[]): RegExp | undefined => {
-  const excluded = process.env.CI ? [...tags, '@no-ci'] : tags
-  return excluded.length > 0 ? new RegExp(excluded.join('|')) : undefined
+const CHROMIUM_ONLY = /@chromium-only/
+const MOBILE_ONLY = /@mobile-only/
+const NO_CI = /@no-ci/
+
+const grepInvert = (...patterns: RegExp[]): RegExp[] | undefined => {
+  const excluded = process.env.CI ? [...patterns, NO_CI] : patterns
+  return excluded.length > 0 ? excluded : undefined
 }
 
 export default defineConfig({
@@ -53,29 +60,29 @@ export default defineConfig({
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
       // Runs @chromium-only tests; excludes mobile-scoped tests.
-      grepInvert: grepInvert('@mobile-only'),
+      grepInvert: grepInvert(MOBILE_ONLY),
     },
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
-      grepInvert: grepInvert('@chromium-only', '@mobile-only'),
+      grepInvert: grepInvert(CHROMIUM_ONLY, MOBILE_ONLY),
     },
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
-      grepInvert: grepInvert('@chromium-only', '@mobile-only'),
+      grepInvert: grepInvert(CHROMIUM_ONLY, MOBILE_ONLY),
     },
     // Mobile viewports
     {
       name: 'Mobile Chrome',
       use: { ...devices['Pixel 5'] },
       // Runs @mobile-only tests; excludes Chromium-desktop-scoped tests.
-      grepInvert: grepInvert('@chromium-only'),
+      grepInvert: grepInvert(CHROMIUM_ONLY),
     },
     {
       name: 'Mobile Safari',
       use: { ...devices['iPhone 12'] },
-      grepInvert: grepInvert('@chromium-only'),
+      grepInvert: grepInvert(CHROMIUM_ONLY),
     },
   ],
 

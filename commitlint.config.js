@@ -9,6 +9,21 @@
  * Inspect the rules:    npx commitlint --print-config json
  */
 export default {
+  // Mirror @commitlint/config-conventional's parser (conventional-changelog-conventionalcommits)
+  // inline so Conventional Commits breaking-change shorthand (`feat!:`, `feat(scope)!:`) parses
+  // correctly. Without this, commitlint falls back to the angular preset, whose header pattern has
+  // no `!`, so those valid commits are wrongly rejected as empty type/subject.
+  parserPreset: {
+    parserOpts: {
+      headerPattern: /^(\w*)(?:\((.*)\))?!?: (.*)$/,
+      breakingHeaderPattern: /^(\w*)(?:\((.*)\))?!: (.*)$/,
+      headerCorrespondence: ['type', 'scope', 'subject'],
+      noteKeywords: ['BREAKING CHANGE', 'BREAKING-CHANGE'],
+      revertPattern: /^(?:Revert|revert:)\s"?([\s\S]+?)"?\s*This reverts commit (\w*)\./i,
+      revertCorrespondence: ['header', 'hash'],
+      issuePrefixes: ['#'],
+    },
+  },
   rules: {
     // Body / footer formatting
     'body-leading-blank': [1, 'always'],

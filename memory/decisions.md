@@ -120,15 +120,15 @@ This file tracks key architectural, design, and technical decisions made during 
 - **Rationale**: Enforces baseline quality without being prohibitively strict for a landing page
 - **Alternatives considered**: 80%, 60%, no threshold
 
-- **Date**: 2026-06-18
-- **Decision**: Suppress coverage for genuinely *unreachable* defensive branches with `/* v8 ignore ... */` (pattern already used at `src/utils/navigation.ts:202`). For **branch** coverage (not just statement/line), a single `/* v8 ignore next */` above the statement is NOT enough — the implicit-`else` branch is anchored to the `if`/`else if` line. Use a `/* v8 ignore start ... stop */` region around the unreachable block instead (see `keyboard.ts` `getFocusableElements` comparator fall-through). Only suppress branches that are truly unreachable; leave reachable-but-untested branches visible so coverage stays honest (do not suppress them to inflate the metric).
-- **Rationale**: Keeps the branch-coverage number meaningful without masking real test gaps
-- **Alternatives considered**: ignore-next per line (doesn't catch the branch), wrapping whole guard blocks (over-reaches and hides tested logic), adding tests for genuinely unreachable defensive code (impossible)
+- **Date**: 2026-06-18 (refined 2026-06-19 after PR #1167 review)
+- **Decision**: Suppress coverage for genuinely *unreachable* defensive code with `/* v8 ignore ... */` (pattern already used at `src/utils/navigation.ts:202`). Mechanics matter: `/* v8 ignore next */` suppresses the **statement/line** but NOT the implicit-`else` **branch** (which is anchored to the `if`/`else if` line). A `/* v8 ignore start ... stop */` region *can* drop the branch — but only by also removing the sibling **reachable** arm from measurement, so it must never wrap an `if` whose taken arm is exercised by tests (that hides real coverage; it was flagged in review). Concretely, `keyboard.ts` `getFocusableElements` uses `/* v8 ignore next */` on just the impossible `return 0` fall-through; the reachable `if (PRECEDING) return 1` stays measured, and the branch metric honestly shows the impossible else-arm rather than masking the reachable one. Only suppress code that is truly unreachable; leave reachable-but-untested branches visible (add tests, don't hide).
+- **Rationale**: Keeps coverage honest — suppress unreachable statements without masking reachable branches
+- **Alternatives considered**: `start...stop` region around the comparator (over-reaches — hides the reachable reverse-order `return 1` branch; reverted after review), wrapping whole guard blocks (hides tested logic), adding tests for genuinely unreachable defensive code (impossible)
 
 ## Tooling / Commit Convention
 
 - **Date**: 2026-06-18
-- **Decision**: `commitlint.config.js` declares Conventional Commits rules **inline** (no `extends: ['@commitlint/config-conventional']`) and commitlint is intentionally NOT a package.json dependency
+- **Decision**: `commitlint.config.js` declares Conventional Commits rules **inline** (no `extends: ['@commitlint/config-conventional']`) and commitlint is intentionally NOT a package.json dependency. It also inlines the conventionalcommits `parserPreset` (header pattern with optional `!`) so breaking-change shorthand like `feat!:`/`feat(scope)!:` validates — without it, commitlint's default angular parser rejects those as empty type/subject (caught in PR #1167 review)
 - **Rationale**: CLAUDE.md documents an on-demand `npx commitlint` workflow (`--print-config json`, `printf … | npx commitlint`). The repo previously had no config at all, so `npx commitlint` failed with `[empty-rules]`. An inline ruleset makes that workflow function with bare `npx commitlint` (no extra package needed to resolve an extended config), and adds zero dependencies — consistent with the project's dependency-consciousness. There is no commit-msg git hook installed; validation is manual/ad-hoc, not enforced on `git commit`.
 - **Alternatives considered**: `extends` config-conventional + devDependency (adds a large transitive dep tree and on-disk install requirement), husky commit-msg hook (out of scope; repo doesn't use husky)
 

@@ -42,7 +42,8 @@
 # WAF edge function — runs on every request before the origin
 [[edge_functions]]
   function = "waf"
-  path = "/*"
+  # Apply WAF only to dynamic function traffic to keep landing-page HTML TTFB low
+  path = "/.netlify/functions/*"
 
 # Redirect rules for SPA routing
 [[redirects]]

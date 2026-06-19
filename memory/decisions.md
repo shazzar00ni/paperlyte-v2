@@ -127,10 +127,10 @@ This file tracks key architectural, design, and technical decisions made during 
 
 ## Tooling / Commit Convention
 
-- **Date**: 2026-06-18
-- **Decision**: `commitlint.config.js` declares Conventional Commits rules **inline** (no `extends: ['@commitlint/config-conventional']`) and commitlint is intentionally NOT a package.json dependency. It also inlines the conventionalcommits `parserPreset` (header pattern with optional `!`) so breaking-change shorthand like `feat!:`/`feat(scope)!:` validates — without it, commitlint's default angular parser rejects those as empty type/subject (caught in PR #1167 review)
-- **Rationale**: CLAUDE.md documents an on-demand `npx commitlint` workflow (`--print-config json`, `printf … | npx commitlint`). The repo previously had no config at all, so `npx commitlint` failed with `[empty-rules]`. An inline ruleset makes that workflow function with bare `npx commitlint` (no extra package needed to resolve an extended config), and adds zero dependencies — consistent with the project's dependency-consciousness. There is no commit-msg git hook installed; validation is manual/ad-hoc, not enforced on `git commit`.
-- **Alternatives considered**: `extends` config-conventional + devDependency (adds a large transitive dep tree and on-disk install requirement), husky commit-msg hook (out of scope; repo doesn't use husky)
+- **Date**: 2026-06-18 (revised 2026-06-19 in PR #1167 review)
+- **Decision**: `commitlint.config.js` uses `extends: ['@commitlint/config-conventional']`, and both `@commitlint/cli` and `@commitlint/config-conventional` are devDependencies (^21). config-conventional supplies the standard Conventional Commits ruleset **and** the conventionalcommits parser, so breaking-change shorthand like `feat!:`/`feat(scope)!:` validates. There is no commit-msg git hook installed; validation is the manual/ad-hoc `npx commitlint` workflow documented in CLAUDE.md (now backed by the local install, so it runs offline on a clean checkout — no on-the-fly fetch).
+- **Rationale**: The repo originally had no commitlint config, so `npx commitlint` failed with `[empty-rules]`. The first fix was a self-contained inline config (zero deps) to keep with the project's dependency-consciousness, but review (Codex P2) noted `npx commitlint` isn't runnable on a fully offline/clean checkout without the CLI installed, and inline rules also needed a hand-maintained parserPreset to handle `!`. Adding the CLI + config-conventional as devDeps is the standard, robust setup and removes the hand-maintained rules/parser. `npm audit` stays clean (0 vulns) after the add.
+- **Alternatives considered**: self-contained inline rules + inline parserPreset, zero deps (initial approach; reverted — not offline-runnable, parser hand-maintained), husky commit-msg hook to enforce on `git commit` (out of scope; repo doesn't use husky)
 
 ## PWA
 

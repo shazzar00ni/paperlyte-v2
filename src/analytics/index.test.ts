@@ -532,14 +532,17 @@ describe('analytics/index', () => {
       // Mock scroll properties
       Object.defineProperty(document.documentElement, 'scrollHeight', {
         writable: true,
+        configurable: true,
         value: 1000,
       })
       Object.defineProperty(document.documentElement, 'clientHeight', {
         writable: true,
+        configurable: true,
         value: 500,
       })
       Object.defineProperty(window, 'scrollY', {
         writable: true,
+        configurable: true,
         value: 250,
       })
 

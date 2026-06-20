@@ -6,8 +6,14 @@ const fs = require('fs');
 const path = require('path');
 const { spawnSync } = require('child_process');
 
-// Base domain for sitemap URLs
-const DOMAIN = 'https://paperlyte.com';
+// Base domain for sitemap URLs. Configurable via env (SITE_URL or VITE_BASE_URL)
+// so non-production deploys can override it; defaults to the canonical production
+// domain. A trailing slash is stripped to avoid double slashes in page URLs.
+const DOMAIN = (
+  process.env.SITE_URL ||
+  process.env.VITE_BASE_URL ||
+  'https://paperlyte.app'
+).replace(/\/+$/, '');
 
 // Map URLs to their source files for lastmod tracking
 const pages = [

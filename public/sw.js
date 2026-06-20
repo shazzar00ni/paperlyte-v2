@@ -38,8 +38,14 @@ const CACHEABLE_RE = /\.(png|jpg|jpeg|webp|avif|svg|ico|woff2?)$/
 
 // ─── Lifecycle ───────────────────────────────────────────────────────────────
 
-// skipWaiting only on first install: satisfies Lighthouse PWA audit without risking
-// 404s for lazy-loaded chunks in tabs that loaded before an update was deployed.
+/**
+ * Pre-cache critical assets so the offline fallback is available from the first visit.
+ * On the first install only, call skipWaiting() after precaching succeeds so Lighthouse
+ * sees an activated, controlling SW during the initial page visit. During updates,
+ * leave the new SW waiting until old tabs close so those tabs keep their matching
+ * versioned cache and content-hashed chunks.
+ * @param {ExtendableEvent} event
+ */
 function onInstall(event) {
   const isInitialInstall = !self.registration.active
 

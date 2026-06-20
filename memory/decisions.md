@@ -50,9 +50,10 @@ This file tracks key architectural, design, and technical decisions made during 
 - **Rationale**: Paperlyte brand value is privacy; GA4 is a pragmatic interim choice while the provider-abstraction layer matures
 - **Alternatives considered**: Plausible (target), Fathom, Umami, Mixpanel
 
-- **Date**: YYYY-MM-DD (unknown), later clarified 2026-04-18
-- **Decision**: `useAnalytics()` currently routes analytics events through `@utils/analytics` (gtag/GA4); the Plausible module (`src/analytics/`) exists as an abstraction/provider candidate but is not yet wired into runtime initialization
+- **Date**: YYYY-MM-DD (unknown), later clarified 2026-04-18, corrected 2026-06-11
+- **Decision**: `useAnalytics()` routes analytics events through `@utils/analytics` (gtag/GA4 wrapper); the Plausible module (`src/analytics/`) exists as an abstraction/provider candidate but is not wired into runtime initialization
 - **Rationale**: Reflects the actual current integration state in the codebase while preserving flexibility to switch providers later
+- **Important caveat (2026-06-11 audit)**: production analytics is currently **disconnected end-to-end** — no production file loads the gtag script (`window.gtag` exists only as a type declaration plus guarded calls), and `analytics.init()`/`getAnalyticsConfig()` are called only in tests. All conversion events (waitlist, CTA, navigation, scroll depth) are silent no-ops in production
 - **Alternatives considered**: Plausible as the active provider, Fathom, Umami, Simple Analytics
 
 - **Date**: YYYY-MM-DD (unknown), later clarified 2026-04-18
@@ -121,10 +122,10 @@ This file tracks key architectural, design, and technical decisions made during 
 
 ## PWA
 
-- **Date**: YYYY-MM-DD (unknown)
-- **Decision**: Web manifest present and service worker (`public/sw.js`) fully implemented with cache-first, stale-while-revalidate, and network-first-with-offline-fallback strategies
-- **Rationale**: SW provides offline fallback page and caches critical assets; registered in `main.tsx` on `load` event (production only)
-- **Alternatives considered**: Full PWA with Workbox from the start
+- **Date**: YYYY-MM-DD (unknown), superseded by 2026-06-11 observation
+- **Decision**: Web manifest present; a hand-rolled service worker (`public/sw.js`) is now implemented — versioned cache name, offline.html fallback, cache-first for hashed `/assets/*` with eviction (60-entry cap, but pruning runs only in `onActivate()` — cache can exceed the cap between activations; incomplete eviction noted in 2026-06-11 audit)
+- **Rationale**: PWA manifest enables "add to home screen"; SW added to deliver the offline-first brand promise on the landing page and is registered in `main.tsx` on the `load` event in production
+- **Alternatives considered**: Workbox, no service worker
 
 - **Date**: 2026-06-08
 - **Decision**: Added conditional `self.skipWaiting()` (guarded by `!self.registration.active`) to the SW `onInstall` handler
@@ -172,3 +173,11 @@ This file tracks key architectural, design, and technical decisions made during 
 - **Decision**: Dark-mode CSS tokens are intentionally duplicated in two blocks in `src/styles/variables.css`
 - **Rationale**: Two distinct use cases require separate selectors: (1) `[data-theme='dark']` for explicit user toggle, (2) `@media (prefers-color-scheme: dark) { :root:not([data-theme='light']) }` for system preference when no explicit choice has been made. The `:root:not([data-theme='light'])` guard is critical — it prevents system preference from overriding an explicit light-mode choice. Any palette change must update both blocks in sync; drift is a known bug source.
 - **Alternatives considered**: Single CSS custom property override, JavaScript-only theming
+
+## Documentation / Roadmap
+
+- **Date**: 2026-06-17
+- **Decision**: `docs/ROADMAP.md` holds **two** separate roadmaps under two top-level headings: "Landing Page/Waitlist Signup" and "MVP to Launch" (the note-editor app). The landing-page roadmap was expanded from a lone Phase 0 to full Phases 0–6 with per-feature status labels (PR #1142)
+- **Rationale**: The landing-page roadmap previously stopped at Phase 0; Phases 1–6 now document shipped vs. pending work so the doc reflects reality. Statuses derived from the actual codebase + the 2026-06-11 audit
+- **Note**: Phase 0 originally mis-stated the stack as "Next.js" + "Tailwind CSS"; corrected to **Vite + React / CSS Modules** (the actual stack per `package.json` and project guidelines). When editing, do not conflate the two roadmaps — the MVP-to-Launch (editor) roadmap is intentionally separate
+- **Alternatives considered**: Splitting into two files (rejected — `docs/ROADMAP.md` is a required, never-delete file per Issue #876)

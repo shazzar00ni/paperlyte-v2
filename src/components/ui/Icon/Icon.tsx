@@ -63,23 +63,43 @@ export const Icon = ({
   const iconSize = SIZE_MAP[size]
   const titleId = useId()
 
-  // Parse multi-token names: "fa-spinner fa-spin" → base "fa-spinner", modifiers ["fa-spin"]
-  // Extra tokens (e.g. animation classes) are appended to the rendered element's className
-  const tokens = name.trim().split(/\s+/)
-  const baseName = tokens[0]
-  const modifierClasses = tokens.slice(1).join(' ')
+  // Resolve everything that depends only on `name` in a single memoized pass.
+  // Perf: the React Compiler is NOT enabled in the Vite build, so without this
+  // memo every re-render would re-run the regex tokenize, the convertIconName
+  // alias lookup, two prototype-pollution-safe property accesses, and the split
+  // of the (potentially long) SVG path string. Icon renders 60+ times across the
+  // page, so this work was repeated on every parent re-render (theme toggle,
+  // mobile-menu open/close, FAQ accordion, etc.). Keyed on the stable `name`
+  // prop, the resolution now runs once per distinct icon.
+  const { modifierClasses, resolvedKey, paths, viewBox, pathArray } = useMemo(() => {
+    // Parse multi-token names: "fa-spinner fa-spin" → base "fa-spinner", modifiers ["fa-spin"]
+    // Extra tokens (e.g. animation classes) are appended to the rendered element's className
+    const tokens = name.trim().split(/\s+/)
+    const baseName = tokens[0]
+    const modifiers = tokens.slice(1).join(' ')
 
-  // Resolve the iconPaths lookup key:
-  // 1. Direct match (e.g. "fa-bolt", "fa-circle-check")
-  // 2. convertIconName alias + bare-name fallback via "fa-" prefix
-  //    e.g. "fa-check-circle" → convertIconName → "circle-check" → "fa-circle-check"
-  //    e.g. "bolt" → convertIconName → "bolt" → "fa-bolt"
-  const aliasedKey = `fa-${convertIconName(baseName)}`
-  const resolvedKey = safePropertyAccess(iconPaths, baseName) !== undefined ? baseName : aliasedKey
+    // Resolve the iconPaths lookup key:
+    // 1. Direct match (e.g. "fa-bolt", "fa-circle-check")
+    // 2. convertIconName alias + bare-name fallback via "fa-" prefix
+    //    e.g. "fa-check-circle" → convertIconName → "circle-check" → "fa-circle-check"
+    //    e.g. "bolt" → convertIconName → "bolt" → "fa-bolt"
+    const aliasedKey = `fa-${convertIconName(baseName)}`
+    const key = safePropertyAccess(iconPaths, baseName) !== undefined ? baseName : aliasedKey
 
-  // Safely check if icon exists in iconPaths to prevent prototype pollution
-  const paths = safePropertyAccess(iconPaths, resolvedKey)
-  const viewBox = getIconViewBox(resolvedKey)
+    // Safely check if icon exists in iconPaths to prevent prototype pollution
+    const resolvedPaths = safePropertyAccess(iconPaths, key)
+
+    // Split the path string on " M " to get individual sub-paths.
+    const splitPaths = resolvedPaths ? resolvedPaths.split(' M ') : []
+
+    return {
+      modifierClasses: modifiers,
+      resolvedKey: key,
+      paths: resolvedPaths,
+      viewBox: getIconViewBox(key),
+      pathArray: splitPaths,
+    }
+  }, [name])
 
   // Normalize color: detect bare hex strings (3 or 6 hex digits) and prepend "#"
   const normalizedColor = useMemo(() => {
@@ -90,11 +110,6 @@ export const Icon = ({
     }
     return color
   }, [color])
-
-  // Split the path string on " M " to get individual sub-paths.
-  // paths is already computed above — no need for a separate safePropertyAccess call.
-  // Manual useMemo is omitted here; the React Compiler handles memoization automatically.
-  const pathArray = paths ? paths.split(' M ') : []
 
   // Render custom SVG if icon found in our set
   if (paths) {

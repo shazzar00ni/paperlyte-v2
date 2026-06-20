@@ -14,6 +14,8 @@ Lightning-fast, distraction-free note-taking app — landing page built with Rea
 
 <!-- ADD A SCREENSHOT HERE -->
 
+**Paperlyte Deep Wiki:** [app.devin.ai/…/paperlyte-v2](https://app.devin.ai/org/shannon-lockett/wiki/shazzar00ni/paperlyte-v2?branch=main)
+
 <img width="1024" height="1536" alt="1000005261" src="https://github.com/user-attachments/assets/7ba39c13-5df8-4c25-a29e-54ddd65d2cac" />
 
 <!-- ![Paperlyte Screenshot](./docs/screenshot.png) -->
@@ -138,6 +140,16 @@ npm run lint
 npm run generate:icons
 npm run generate:mockups
 ```
+
+## Commit convention
+
+This repository enforces its commit convention with commitlint.
+
+- Read the rules before committing: `npx commitlint --print-config json`
+- Validate a message before using it: `printf '%s' "<message>" | npx commitlint`
+  (exit 0 = valid)
+- If the commit-msg hook rejects a commit, fix the rules named in brackets
+  (e.g. `[subject-case]`) and retry. Never use `git commit --no-verify`.
 
 ## Image Optimization
 

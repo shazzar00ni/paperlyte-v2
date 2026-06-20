@@ -139,6 +139,31 @@ async function cacheFirst(request) {
 }
 
 /**
+ * Validate and build a safe URL for navigation requests
+ * @param {string} requestUrl
+ * @returns {string}
+ */
+function buildValidatedNavigationUrl(requestUrl) {
+  try {
+    // Minimal path validation
+    if (requestUrl.includes('/../') || /\/%2e%2e\//i.test(requestUrl)) {
+      throw new Error('Invalid path');
+    }
+    
+    const url = new URL(requestUrl);
+    
+    // Ensure same origin (additional safety check)
+    if (url.origin !== self.location.origin) {
+      throw new Error('Invalid origin');
+    }
+    
+    return url.href;
+  } catch {
+    throw new Error('Invalid URL');
+  }
+}
+
+/**
  * Network-first strategy for navigation requests.
  * All navigation URLs on this SPA serve the same shell; responses are stored under
  * the canonical key '/' (pathname-only) so that UTM/query-string variants don't
@@ -151,7 +176,8 @@ async function navigateFetch(request) {
   // Normalize to pathname to prevent unbounded cache growth from query-string variants
   const cacheKey = new URL(request.url).pathname
   try {
-    const response = await fetch(request)
+    const validatedUrl = buildValidatedNavigationUrl(request.url)
+    const response = await fetch(validatedUrl)
     if (response.ok) {
       const cache = await caches.open(CACHE_VERSION)
       await cache.put(cacheKey, response.clone())

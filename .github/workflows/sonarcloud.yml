@@ -22,7 +22,22 @@ jobs:
         with:
           fetch-depth: 0  # Full history required for SonarCloud blame data and new-code detection
 
+      - name: Check SonarCloud configuration
+        id: check-config
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_PROJECT_KEY: ${{ vars.SONAR_PROJECT_KEY }}
+          SONAR_ORG: ${{ vars.SONAR_ORGANIZATION }}
+        run: |
+          if [ -z "$SONAR_TOKEN" ] || [ -z "$SONAR_PROJECT_KEY" ] || [ -z "$SONAR_ORG" ]; then
+            echo "configured=false" >> $GITHUB_OUTPUT
+            echo "::warning::SonarCloud secrets/variables not configured. Skipping analysis."
+          else
+            echo "configured=true" >> $GITHUB_OUTPUT
+          fi
+
       - name: Download SonarScanner CLI
+        if: steps.check-config.outputs.configured == 'true'
         run: |
           set -euo pipefail
           SONAR_VERSION="7.0.2.4839"
@@ -36,6 +51,7 @@ jobs:
           echo "${SONAR_INSTALL_DIR}/sonar-scanner-${SONAR_VERSION}/bin" >> "${GITHUB_PATH}"
 
       - name: Analyze with SonarCloud
+        if: steps.check-config.outputs.configured == 'true'
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_PROJECT_KEY: ${{ vars.SONAR_PROJECT_KEY }}

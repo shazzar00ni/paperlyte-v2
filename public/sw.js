@@ -41,8 +41,16 @@ const CACHEABLE_RE = /\.(png|jpg|jpeg|webp|avif|svg|ico|woff2?)$/
 // skipWaiting only on first install: satisfies Lighthouse PWA audit without risking
 // 404s for lazy-loaded chunks in tabs that loaded before an update was deployed.
 function onInstall(event) {
-  event.waitUntil(caches.open(CACHE_VERSION).then((cache) => cache.addAll(PRECACHE)))
-  if (!self.registration.active) self.skipWaiting()
+  const isInitialInstall = !self.registration.active
+
+  event.waitUntil(
+    caches
+      .open(CACHE_VERSION)
+      .then((cache) => cache.addAll(PRECACHE))
+      .then(() => {
+        if (isInitialInstall) return self.skipWaiting()
+      })
+  )
 }
 
 /**

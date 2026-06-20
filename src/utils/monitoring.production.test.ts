@@ -47,6 +47,9 @@ describe('monitoring (production paths)', () => {
   })
 
   beforeEach(async () => {
+    // Reset module registry so the fresh import below re-evaluates import.meta.env.DEV
+    // with the stub already in place (set by beforeAll).
+    vi.resetModules()
     vi.clearAllMocks()
     consoleSpy = {
       log: vi.spyOn(console, 'log').mockImplementation(() => {}),
@@ -73,31 +76,49 @@ describe('monitoring (production paths)', () => {
 
   describe('logWarning in production', () => {
     it('calls trackEvent with application_warning in production', () => {
-      // In production (DEV=false), logWarning calls trackEvent
-      // Note: since vitest runs in "development" mode, import.meta.env.DEV
-      // will be true in the actual module unless we use vi.stubEnv properly.
-      // We test the function directly and verify observable side effects.
-      expect(() => logWarning('Test warning')).not.toThrow()
+      logWarning('Test warning')
+      expect(trackEvent).toHaveBeenCalledWith('application_warning', { message: 'Test warning' })
+      expect(consoleSpy.warn).not.toHaveBeenCalled()
     })
 
-    it('handles logWarning with context without throwing', () => {
-      expect(() =>
-        logWarning('Warning with context', { component: 'Test', line: 42 })
-      ).not.toThrow()
+    it('spreads context into the trackEvent payload', () => {
+      logWarning('Warning with context', { component: 'Test', line: 42 })
+      expect(trackEvent).toHaveBeenCalledWith('application_warning', {
+        message: 'Warning with context',
+        component: 'Test',
+        line: 42,
+      })
+      expect(consoleSpy.warn).not.toHaveBeenCalled()
     })
   })
 
   describe('logPerformance in production', () => {
-    it('does not throw when called in production', () => {
-      expect(() => logPerformance('render', 100)).not.toThrow()
+    it('calls trackEvent with performance_metric and default ms unit', () => {
+      logPerformance('render', 100)
+      expect(trackEvent).toHaveBeenCalledWith('performance_metric', {
+        metric: 'render',
+        value: 100,
+        unit: 'ms',
+      })
+      expect(consoleSpy.log).not.toHaveBeenCalled()
     })
 
-    it('does not throw with bytes unit', () => {
-      expect(() => logPerformance('bundle', 50000, 'bytes')).not.toThrow()
+    it('calls trackEvent with bytes unit', () => {
+      logPerformance('bundle', 50000, 'bytes')
+      expect(trackEvent).toHaveBeenCalledWith('performance_metric', {
+        metric: 'bundle',
+        value: 50000,
+        unit: 'bytes',
+      })
     })
 
-    it('does not throw with count unit', () => {
-      expect(() => logPerformance('requests', 10, 'count')).not.toThrow()
+    it('calls trackEvent with count unit', () => {
+      logPerformance('requests', 10, 'count')
+      expect(trackEvent).toHaveBeenCalledWith('performance_metric', {
+        metric: 'requests',
+        value: 10,
+        unit: 'count',
+      })
     })
   })
 

@@ -16,8 +16,8 @@ export default defineConfig({
     // 5s limit on slower CI runners, especially when v8 coverage instrumentation
     // is enabled (adds significant per-test overhead).
     testTimeout: process.env.CI ? 30000 : 5000,
-    hookTimeout: process.env.CI ? 30000 : 5000,
-    teardownTimeout: process.env.CI ? 30000 : 5000,
+    hookTimeout: process.env.CI ? 30000 : undefined,
+    teardownTimeout: process.env.CI ? 30000 : undefined,
 
     // Global test utilities
     globals: true,
@@ -63,14 +63,14 @@ export default defineConfig({
       },
     },
 
-    // fileParallelism: false limits Vitest to a single worker process in CI to
-    // keep peak RAM within CircleCI's 4 GB medium class limit.
-    // In Vitest 4 the old poolOptions.forks.singleFork was removed; setting
-    // fileParallelism: false is the direct replacement (it sets maxWorkers to 1).
+    // Preserve the old poolOptions.forks.singleFork behavior in CI: run all
+    // test files in one non-isolated fork to keep peak RAM within CircleCI's
+    // 4 GB medium class limit. Vitest 4 replaces singleFork with these options.
     ...(process.env.CI
       ? {
           pool: 'forks',
-          fileParallelism: false,
+          maxWorkers: 1,
+          isolate: false,
         }
       : {}),
 

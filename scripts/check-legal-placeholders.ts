@@ -55,6 +55,25 @@ function findPlaceholders(filePath: string): PlaceholderMatch[] {
   const placeholders: PlaceholderMatch[] = [];
 
   try {
+    const validatedPath = path.resolve(filePath);
+    if (validatedPath.includes('..') || path.isAbsolute(filePath) && (filePath.startsWith('/') || /^[a-zA-Z]:/.test(filePath))) {
+      if (path.isAbsolute(filePath) && (filePath.startsWith('/') || /^[a-zA-Z]:/.test(filePath) || filePath.startsWith('\\\\'))) {
+        console.error(
+          `${colors.red}Error reading file:${colors.reset}`,
+          filePath,
+          new Error('Invalid file path')
+        );
+        return placeholders;
+      }
+    }
+    if (filePath.includes('..') || path.isAbsolute(filePath)) {
+      console.error(
+        `${colors.red}Error reading file:${colors.reset}`,
+        filePath,
+        new Error('Invalid file path')
+      );
+      return placeholders;
+    }
     const content = fs.readFileSync(filePath, "utf-8");
     const lines = content.split("\n");
 

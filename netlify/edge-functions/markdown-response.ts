@@ -62,10 +62,18 @@ function getDeployUrl(): string | undefined {
   return deno?.env.get("DEPLOY_PRIME_URL") ?? deno?.env.get("URL");
 }
 
+/**
+ * Netlify edge function: serves `public/index.md` as `text/markdown` when the
+ * client explicitly requests it, otherwise passes through to the origin.
+ */
 export default async function markdownResponse(
   request: Request,
   context: Context,
 ): Promise<Response> {
+  if (request.method !== "GET") {
+    return context.next();
+  }
+
   const accept = request.headers.get("accept") ?? "";
 
   if (!acceptsMarkdown(accept)) {

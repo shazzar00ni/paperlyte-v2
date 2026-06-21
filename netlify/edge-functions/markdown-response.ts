@@ -37,9 +37,12 @@ export default async function markdownResponse(
     // Use Netlify's URL env var (server-controlled deploy URL) as the fetch
     // base so the origin is never derived from the user-supplied request.url.
     // Falls back to the request origin only when the env var is absent (local dev).
+    type GlobalWithDeno = typeof globalThis & {
+      Deno?: { env: { get(key: string): string | undefined } };
+    };
     const deployUrl =
-      // deno-lint-ignore no-explicit-any
-      (globalThis as any).Deno?.env?.get("URL") ?? new URL(request.url).origin;
+      (globalThis as GlobalWithDeno).Deno?.env?.get("URL") ??
+      new URL(request.url).origin;
     const mdResponse = await fetch(`${deployUrl}/index.md`);
 
     if (!mdResponse.ok) {

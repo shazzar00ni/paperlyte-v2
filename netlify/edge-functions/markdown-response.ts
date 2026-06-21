@@ -1,5 +1,9 @@
 import type { Config, Context } from "https://edge.netlify.com";
 
+type GlobalWithDeno = typeof globalThis & {
+  Deno?: { env: { get(key: string): string | undefined } };
+};
+
 /**
  * Parses an Accept header and returns true if `text/markdown` is an accepted
  * media type (including wildcard `text/*` and `*\/*` forms).
@@ -7,7 +11,6 @@ import type { Config, Context } from "https://edge.netlify.com";
  * Handles quality values (q=0.9) and multiple comma-separated entries.
  */
 function acceptsMarkdown(acceptHeader: string): boolean {
-  // Split on comma and evaluate each media-range + quality pair.
   const types = acceptHeader.split(",").map((t) => t.trim().toLowerCase());
   for (const entry of types) {
     // Strip quality value and parameters (e.g. "; q=0.9")
@@ -33,16 +36,16 @@ export default async function markdownResponse(
     return context.next();
   }
 
+  // Use Netlify's URL env var (server-controlled deploy URL) as the fetch
+  // base. This env var is set by the platform and is never derived from
+  // user-supplied input, eliminating any SSRF risk.
+  // If absent (local dev without Netlify CLI), fall through to normal response.
+  const deployUrl = (globalThis as GlobalWithDeno).Deno?.env?.get("URL");
+  if (!deployUrl) {
+    return context.next();
+  }
+
   try {
-    // Use Netlify's URL env var (server-controlled deploy URL) as the fetch
-    // base so the origin is never derived from the user-supplied request.url.
-    // Falls back to the request origin only when the env var is absent (local dev).
-    type GlobalWithDeno = typeof globalThis & {
-      Deno?: { env: { get(key: string): string | undefined } };
-    };
-    const deployUrl =
-      (globalThis as GlobalWithDeno).Deno?.env?.get("URL") ??
-      new URL(request.url).origin;
     const mdResponse = await fetch(`${deployUrl}/index.md`);
 
     if (!mdResponse.ok) {

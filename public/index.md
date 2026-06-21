@@ -57,7 +57,7 @@ Type `#project` or `#idea` anywhere in a note and it's organized. No drag-and-dr
 
 ### Works Everywhere
 
-Mac, Windows, Linux, iOS, Android, and the web—one codebase, one sync, zero friction. Start a thought on your phone during your commute and finish it on your laptop without touching a cable or a cloud dashboard.
+The responsive web app works on Mac, Windows, Linux, iOS, and Android today—start a thought on your phone during your commute and finish it on your laptop. Native iOS and Android apps arrive Q2 2026.
 
 ---
 
@@ -138,10 +138,10 @@ No spam. Unsubscribe anytime.
 
 **Paperlyte** — Your thoughts, unchained.
 
-- [Privacy Policy](/privacy)
-- [Terms of Service](/terms)
+- [Privacy Policy](/privacy.html)
+- [Terms of Service](/terms.html)
 - Contact: hello@paperlyte.com
-- [Twitter / X](https://twitter.com/paperlyte)
-- [GitHub](https://github.com/paperlyte)
+- [Twitter / X](https://x.com/paperlyte)
+- [GitHub](https://github.com/shazzar00ni/paperlyte-v2)
 
 © 2026 Paperlyte. All rights reserved.

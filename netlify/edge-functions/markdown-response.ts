@@ -4,26 +4,46 @@ type GlobalWithDeno = typeof globalThis & {
   Deno?: { env: { get(key: string): string | undefined } };
 };
 
+// Security headers mirroring the static [[headers]] in netlify.toml.
+// Netlify header rules do not apply to edge-function responses, so they
+// must be set explicitly here.
+const SECURITY_HEADERS: Record<string, string> = {
+  "X-Frame-Options": "DENY",
+  "X-Content-Type-Options": "nosniff",
+  "Referrer-Policy": "strict-origin-when-cross-origin",
+  "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
+  "Cross-Origin-Opener-Policy": "same-origin",
+  "Cross-Origin-Resource-Policy": "same-origin",
+  "Cross-Origin-Embedder-Policy": "unsafe-none",
+  "X-Permitted-Cross-Domain-Policies": "none",
+  "X-XSS-Protection": "1; mode=block",
+};
+
 /**
- * Parses an Accept header and returns true if `text/markdown` is an accepted
- * media type (including wildcard `text/*` and `*\/*` forms).
- *
- * Handles quality values (q=0.9) and multiple comma-separated entries.
+ * Returns true only when `text/markdown` is explicitly requested AND preferred
+ * over `text/html`. Wildcards (`text/*`, `*\/*`) are intentionally excluded:
+ * browser navigation sends `Accept: text/html,...,*\/*` which would otherwise
+ * match and serve the Markdown mirror to normal users.
  */
 function acceptsMarkdown(acceptHeader: string): boolean {
-  const types = acceptHeader.split(",").map((t) => t.trim().toLowerCase());
-  for (const entry of types) {
-    // Strip quality value and parameters (e.g. "; q=0.9")
-    const mediaType = entry.split(";")[0].trim();
-    if (
-      mediaType === "text/markdown" ||
-      mediaType === "text/*" ||
-      mediaType === "*/*"
-    ) {
-      return true;
-    }
-  }
-  return false;
+  type AcceptEntry = { mediaType: string; q: number };
+  const entries: AcceptEntry[] = acceptHeader.split(",").map((t) => {
+    const parts = t.trim().toLowerCase().split(";");
+    const mediaType = parts[0].trim();
+    const qPart = parts.find((p) => p.trim().startsWith("q="));
+    const q = qPart ? parseFloat(qPart.trim().slice(2)) : 1.0;
+    return { mediaType, q: isNaN(q) ? 1.0 : q };
+  });
+
+  const md = entries.find((e) => e.mediaType === "text/markdown");
+  if (!md || md.q === 0) return false;
+
+  // Prefer HTML over Markdown when both are explicitly listed at equal or
+  // higher quality — e.g. `Accept: text/html, text/markdown;q=0.9`.
+  const html = entries.find((e) => e.mediaType === "text/html");
+  if (html && html.q >= md.q) return false;
+
+  return true;
 }
 
 export default async function markdownResponse(
@@ -62,6 +82,10 @@ export default async function markdownResponse(
       headers: {
         "Content-Type": "text/markdown; charset=utf-8",
         "Cache-Control": "public, max-age=300",
+        // Vary: Accept so caches distinguish HTML vs Markdown representations
+        // of the same URL and never serve the wrong content type.
+        "Vary": "Accept",
+        ...SECURITY_HEADERS,
       },
     });
   } catch (err) {

@@ -69,7 +69,7 @@ These files **are** tracked in Git:
 **When to update `index.md`:** Any time the following source constants change, `index.md` must be updated to stay in sync:
 
 | Section in `index.md` | Source file |
-|---|---|
+| --- | --- |
 | Features | `src/constants/features.ts` |
 | Mobile | `src/components/sections/Mobile/Mobile.tsx` |
 | Statistics | `src/components/sections/Statistics/Statistics.tsx` |

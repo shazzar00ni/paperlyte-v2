@@ -1,3 +1,6 @@
+Your thoughts, unchained
+========================
+
 <!--
   This file is the AI-facing Markdown representation of the Paperlyte landing page.
   It mirrors the content rendered client-side by the React SPA and MUST be updated
@@ -13,14 +16,8 @@
     - src/components/sections/Statistics/Statistics.tsx (Statistics section)
 -->
 
----
-title: "Paperlyte — Your thoughts, unchained"
-description: "Lightning-fast, distraction-free note-taking. Zero-lag typing, tag-based organization, and local-first privacy across every device."
----
-
-# Your thoughts, unchained
-
-## Hero
+Hero
+----
 
 **Paperlyte** is the note-taking app built for speed, not spectacle.
 
@@ -32,7 +29,8 @@ Start writing in under a second. Organize with inline `#tags`. Stay focused with
 
 ---
 
-## Problem
+Problem
+-------
 
 Most note-taking apps have forgotten what notes are for.
 
@@ -46,25 +44,21 @@ Note-taking software should disappear. Instead, it became a second job.
 
 ---
 
-## Solution
+Solution
+--------
 
 Paperlyte does three things—and only three things—exceptionally well.
 
-### Zero-Lag Typing
+**Zero-Lag Typing** — Sub-10 ms keystroke response. No debounce delays, no spinners, no "saving…" toasts. Your thoughts hit the screen the moment you think them. Even documents with tens of thousands of words stay instant.
 
-Sub-10 ms keystroke response. No debounce delays, no spinners, no "saving…" toasts. Your thoughts hit the screen the moment you think them. Even documents with tens of thousands of words stay instant.
+**Tag-Based Organization** — Type `#project` or `#idea` anywhere in a note and it's organized. No drag-and-drop folder hierarchies. No nested notebooks. Tags adapt to how your brain works, not the other way around.
 
-### Tag-Based Organization
-
-Type `#project` or `#idea` anywhere in a note and it's organized. No drag-and-drop folder hierarchies. No nested notebooks. Tags adapt to how your brain works, not the other way around.
-
-### Works Everywhere
-
-The responsive web app works on Mac, Windows, Linux, iOS, and Android today—start a thought on your phone during your commute and finish it on your laptop. Native iOS and Android apps arrive Q2 2026.
+**Works Everywhere** — The responsive web app works on Mac, Windows, Linux, iOS, and Android today—start a thought on your phone during your commute and finish it on your laptop. Native iOS and Android apps arrive Q2 2026.
 
 ---
 
-## Features
+Features
+--------
 
 - **Lightning Speed** — Instant startup and real-time sync. No loading spinners, no waiting. Your thoughts captured at the speed of thinking.
 - **Beautiful Simplicity** — Paper-inspired design that feels natural and distraction-free. Just you and your thoughts, the way it should be.
@@ -75,7 +69,8 @@ The responsive web app works on Mac, Windows, Linux, iOS, and Android today—st
 
 ---
 
-## Mobile
+Mobile
+------
 
 **Capture inspiration, wherever you are.**
 
@@ -85,14 +80,15 @@ iOS & Android apps — coming soon
 
 ---
 
-## Statistics
+Statistics
+----------
 
 Join 500+ professionals writing without friction.
 
 Trusted by writers, developers, and thinkers who value their time.
 
 | Metric | Value |
-|---|---|
+| --- | --- |
 | Waitlist Members | 500+ |
 | Notes Created | 10M+ |
 | Uptime | 99.9% |
@@ -100,12 +96,13 @@ Trusted by writers, developers, and thinkers who value their time.
 
 ---
 
-## Comparison
+Comparison
+----------
 
 How Paperlyte stacks up against the competition:
 
 | Feature | Paperlyte | Notion | Evernote | OneNote | Obsidian | Bear |
-|---|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- | --- |
 | Startup Time | <1s | 3–5s | 2–4s | 2–3s | 2–3s | 1–2s |
 | Offline Access | ✓ | ✗ | Paid only | ✓ | ✓ | ✓ |
 | Tag-Based Organization | ✓ | ✗ | ✓ | ✗ | ✓ | ✓ |
@@ -117,29 +114,31 @@ How Paperlyte stacks up against the competition:
 
 ---
 
-## Testimonials
+Testimonials
+------------
 
 > "Paperlyte transformed how I capture ideas during meetings. No more fumbling with complex tools—just fast, simple note-taking that actually works."
 > — **Sarah Chen**, Product Manager, TechCorp ★★★★★
-
+>
 > "I've tried every note app out there. Paperlyte is the first one that doesn't get in my way. It's like writing on paper, but better."
 > — **Marcus Johnson**, Freelance Writer ★★★★★
-
+>
 > "The offline-first feature is a lifesaver. I can take notes anywhere—on the subway, in the library—without worrying about connectivity."
 > — **Emily Rodriguez**, Graduate Student, MIT ★★★★
-
+>
 > "Finally, a note app that respects my time. Instant startup, real-time sync, and tags that make sense. This is what modern note-taking should be."
 > — **David Park**, Software Engineer, Stripe ★★★★★
-
+>
 > "The simplicity is revolutionary. No overwhelming features, no clutter—just beautiful, distraction-free writing. Paperlyte gets design right."
 > — **Jennifer Taylor**, UX Designer ★★★★★
-
+>
 > "I switched from Notion and haven't looked back. Paperlyte's speed and tag-based organization match how my brain actually works."
 > — **Alex Kumar**, Entrepreneur, StartupLab ★★★★
 
 ---
 
-## Join the Waitlist
+Join the Waitlist
+-----------------
 
 Enter your email to get early access 2 weeks before public launch, lock in 50% off the Plus plan for life, and shape what features ship first.
 
@@ -154,7 +153,8 @@ We respect your privacy. Unsubscribe anytime. No spam, ever.
 
 ---
 
-## FAQ
+FAQ
+---
 
 **When will Paperlyte launch?**
 We're targeting Q2 2026 for public launch. Waitlist members get early access 2 weeks before everyone else.
@@ -181,11 +181,12 @@ Speed: Paperlyte is built to load and respond faster than tools like Notion that
 The core app will be free forever for personal use. No trial needed — no credit card, no expiration.
 
 **What if I have more questions?**
-Email us at hello@paperlyte.com. We read every message and typically respond within 24 hours.
+Email us at <hello@paperlyte.com>. We read every message and typically respond within 24 hours.
 
 ---
 
-## CTA
+CTA
+---
 
 **Join the waitlist for Paperlyte.**
 
@@ -199,13 +200,14 @@ No spam. Unsubscribe anytime.
 
 ---
 
-## Footer
+Footer
+------
 
 **Paperlyte** — Your thoughts, unchained.
 
 - [Privacy Policy](/privacy.html)
 - [Terms of Service](/terms.html)
-- Contact: hello@paperlyte.com
+- Contact: <hello@paperlyte.com>
 - [Twitter / X](https://x.com/paperlyte)
 - [GitHub](https://github.com/shazzar00ni/paperlyte-v2)
 

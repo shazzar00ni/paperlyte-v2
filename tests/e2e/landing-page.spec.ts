@@ -242,10 +242,11 @@ test.describe('Landing Page', () => {
     await submitButton.click()
 
     // Accept both straight (U+0027) and typographic (U+2019) apostrophes for cross-environment robustness.
-    // Use section-scoped text assertion to avoid WebKit flakiness from animation-driven visibility timing.
-    await expect(page.locator('#email-capture')).toContainText(/You['\u2019]re on the list!/i, {
-      timeout: 5000,
-    })
+    // Use section-scoped locator to avoid WebKit flakiness from animation-driven visibility timing while
+    // still asserting the element is visible to the user.
+    await expect(
+      page.locator('#email-capture').getByText(/You['\u2019]re on the list!/i)
+    ).toBeVisible({ timeout: 5000 })
 
     // Assert the component sent the normalised (trimmed + lowercased) email
     expect(capturedPostBody).not.toBeNull()

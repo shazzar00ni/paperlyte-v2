@@ -1,5 +1,9 @@
 import { defineConfig, devices } from '@playwright/test'
 
+// Tag-based browser scoping — keeps scoped tests from showing as "skipped" in the
+// HTML report. See ./playwright.tags for the tag definitions and rationale.
+import { CHROMIUM_ONLY, MOBILE_ONLY, grepInvert } from './playwright.tags'
+
 export default defineConfig({
   testDir: './tests/e2e',
   fullyParallel: true,
@@ -32,23 +36,30 @@ export default defineConfig({
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
+      // Runs @chromium-only tests; excludes mobile-scoped tests.
+      grepInvert: grepInvert(MOBILE_ONLY),
     },
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
+      grepInvert: grepInvert(CHROMIUM_ONLY, MOBILE_ONLY),
     },
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
+      grepInvert: grepInvert(CHROMIUM_ONLY, MOBILE_ONLY),
     },
     // Mobile viewports
     {
       name: 'Mobile Chrome',
       use: { ...devices['Pixel 5'] },
+      // Runs @mobile-only tests; excludes Chromium-desktop-scoped tests.
+      grepInvert: grepInvert(CHROMIUM_ONLY),
     },
     {
       name: 'Mobile Safari',
       use: { ...devices['iPhone 12'] },
+      grepInvert: grepInvert(CHROMIUM_ONLY),
     },
   ],
 

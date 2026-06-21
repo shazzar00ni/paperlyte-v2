@@ -71,7 +71,11 @@ These files **are** tracked in Git:
 | Section in `index.md` | Source file |
 |---|---|
 | Features | `src/constants/features.ts` |
+| Mobile | `src/components/sections/Mobile/Mobile.tsx` |
+| Statistics | `src/components/sections/Statistics/Statistics.tsx` |
 | Comparison table | `src/constants/comparison.ts` |
+| Testimonials | `src/constants/testimonials.ts` |
+| Join the Waitlist (EmailCapture) | `src/components/sections/EmailCapture/emailCapture.data.ts` |
 | FAQ | `src/constants/faq.ts` |
 | Launch quarter / waitlist count | `src/constants/waitlist.ts` |
 

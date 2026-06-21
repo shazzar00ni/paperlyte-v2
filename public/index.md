@@ -4,10 +4,13 @@
   whenever marketing copy changes on the live landing page.
 
   Source constants to consult when updating:
-    - src/constants/features.ts   (Features section)
-    - src/constants/faq.ts        (FAQ section)
-    - src/constants/comparison.ts (Comparison table)
-    - src/constants/waitlist.ts   (Launch quarter / waitlist count)
+    - src/constants/features.ts      (Features section)
+    - src/constants/faq.ts           (FAQ section)
+    - src/constants/comparison.ts    (Comparison table)
+    - src/constants/waitlist.ts      (Launch quarter / waitlist count)
+    - src/constants/testimonials.ts  (Testimonials section)
+    - src/components/sections/Mobile/Mobile.tsx     (Mobile section copy)
+    - src/components/sections/Statistics/Statistics.tsx (Statistics section)
 -->
 
 ---
@@ -72,6 +75,31 @@ The responsive web app works on Mac, Windows, Linux, iOS, and Android today—st
 
 ---
 
+## Mobile
+
+**Capture inspiration, wherever you are.**
+
+Our mobile app is designed for speed. Open, type, close. Everything syncs to your desktop instantly so you never lose a fleeting thought.
+
+iOS & Android apps — coming soon
+
+---
+
+## Statistics
+
+Join 500+ professionals writing without friction.
+
+Trusted by writers, developers, and thinkers who value their time.
+
+| Metric | Value |
+|---|---|
+| Waitlist Members | 500+ |
+| Notes Created | 10M+ |
+| Uptime | 99.9% |
+| User Rating | 4.9/5 |
+
+---
+
 ## Comparison
 
 How Paperlyte stacks up against the competition:
@@ -86,6 +114,43 @@ How Paperlyte stacks up against the competition:
 | End-to-End Encryption | ✓ | ✗ | ✗ | ✗ | Paid only | Paid only |
 | Free Tier Features | Full access | Limited | Very limited | Full access | Full access | Limited |
 | Mobile Performance | Excellent | Slow | Good | Good | Moderate | Excellent |
+
+---
+
+## Testimonials
+
+> "Paperlyte transformed how I capture ideas during meetings. No more fumbling with complex tools—just fast, simple note-taking that actually works."
+> — **Sarah Chen**, Product Manager, TechCorp ★★★★★
+
+> "I've tried every note app out there. Paperlyte is the first one that doesn't get in my way. It's like writing on paper, but better."
+> — **Marcus Johnson**, Freelance Writer ★★★★★
+
+> "The offline-first feature is a lifesaver. I can take notes anywhere—on the subway, in the library—without worrying about connectivity."
+> — **Emily Rodriguez**, Graduate Student, MIT ★★★★
+
+> "Finally, a note app that respects my time. Instant startup, real-time sync, and tags that make sense. This is what modern note-taking should be."
+> — **David Park**, Software Engineer, Stripe ★★★★★
+
+> "The simplicity is revolutionary. No overwhelming features, no clutter—just beautiful, distraction-free writing. Paperlyte gets design right."
+> — **Jennifer Taylor**, UX Designer ★★★★★
+
+> "I switched from Notion and haven't looked back. Paperlyte's speed and tag-based organization match how my brain actually works."
+> — **Alex Kumar**, Entrepreneur, StartupLab ★★★★
+
+---
+
+## Join the Waitlist
+
+Enter your email to get early access 2 weeks before public launch, lock in 50% off the Plus plan for life, and shape what features ship first.
+
+Benefits of joining:
+
+- Get early access before public launch
+- Influence features and design decisions
+- Lock in founder pricing (save 50% for life)
+- Get early product updates and insider tips
+
+We respect your privacy. Unsubscribe anytime. No spam, ever.
 
 ---
 

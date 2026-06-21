@@ -1,4 +1,4 @@
-import type { Config, Context } from "https://edge.netlify.com";
+import type { Context } from "https://edge.netlify.com";
 
 type GlobalWithDeno = typeof globalThis & {
   Deno?: { env: { get(key: string): string | undefined } };
@@ -56,11 +56,15 @@ export default async function markdownResponse(
     return context.next();
   }
 
-  // Use Netlify's URL env var (server-controlled deploy URL) as the fetch
-  // base. This env var is set by the platform and is never derived from
-  // user-supplied input, eliminating any SSRF risk.
+  // Use Netlify's per-deploy URL env vars as the fetch base so that deploy
+  // previews and branch deploys read index.md from themselves rather than
+  // production. DEPLOY_PRIME_URL reflects the current context (preview/branch/
+  // production); URL is the canonical production domain and is the fallback.
+  // These env vars are set by the platform and never derived from user input,
+  // eliminating SSRF risk.
   // If absent (local dev without Netlify CLI), fall through to normal response.
-  const deployUrl = (globalThis as GlobalWithDeno).Deno?.env?.get("URL");
+  const env = (globalThis as GlobalWithDeno).Deno?.env;
+  const deployUrl = env?.get("DEPLOY_PRIME_URL") ?? env?.get("URL");
   if (!deployUrl) {
     return context.next();
   }
@@ -94,6 +98,8 @@ export default async function markdownResponse(
   }
 }
 
-export const config: Config = {
-  path: "/",
-};
+// Path is declared solely in netlify.toml so the explicit WAF-first ordering
+// is authoritative. When both an inline config and a toml declaration exist,
+// Netlify resolves same-path conflicts alphabetically (markdown-response < waf),
+// which would run this function before the WAF. Omitting the inline config
+// avoids that conflict and lets netlify.toml control execution order.

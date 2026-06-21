@@ -4,6 +4,8 @@ type GlobalWithDeno = typeof globalThis & {
   Deno?: { env: { get(key: string): string | undefined } };
 };
 
+type AcceptEntry = { mediaType: string; q: number };
+
 // Security headers mirroring the static [[headers]] in netlify.toml.
 // Netlify header rules do not apply to edge-function responses, so they
 // must be set explicitly here.
@@ -19,6 +21,14 @@ const SECURITY_HEADERS: Record<string, string> = {
   "X-XSS-Protection": "1; mode=block",
 };
 
+/** Parses the `q=` parameter from a split Accept entry. Defaults to 1.0. */
+function parseQValue(parts: string[]): number {
+  const qPart = parts.find((p) => p.trim().startsWith("q="));
+  if (!qPart) return 1.0;
+  const q = parseFloat(qPart.trim().slice(2));
+  return isNaN(q) ? 1.0 : q;
+}
+
 /**
  * Returns true only when `text/markdown` is explicitly requested AND preferred
  * over `text/html`. Wildcards (`text/*`, `*\/*`) are intentionally excluded:
@@ -26,13 +36,9 @@ const SECURITY_HEADERS: Record<string, string> = {
  * match and serve the Markdown mirror to normal users.
  */
 function acceptsMarkdown(acceptHeader: string): boolean {
-  type AcceptEntry = { mediaType: string; q: number };
   const entries: AcceptEntry[] = acceptHeader.split(",").map((t) => {
     const parts = t.trim().toLowerCase().split(";");
-    const mediaType = parts[0].trim();
-    const qPart = parts.find((p) => p.trim().startsWith("q="));
-    const q = qPart ? parseFloat(qPart.trim().slice(2)) : 1.0;
-    return { mediaType, q: isNaN(q) ? 1.0 : q };
+    return { mediaType: parts[0].trim(), q: parseQValue(parts) };
   });
 
   const md = entries.find((e) => e.mediaType === "text/markdown");
@@ -41,9 +47,19 @@ function acceptsMarkdown(acceptHeader: string): boolean {
   // Prefer HTML over Markdown when both are explicitly listed at equal or
   // higher quality — e.g. `Accept: text/html, text/markdown;q=0.9`.
   const html = entries.find((e) => e.mediaType === "text/html");
-  if (html && html.q >= md.q) return false;
+  return !html || html.q < md.q;
+}
 
-  return true;
+/**
+ * Reads the best available Netlify deploy-root URL from the Deno environment.
+ * DEPLOY_PRIME_URL reflects the current context (preview/branch/production);
+ * URL is the canonical production domain and serves as fallback.
+ * Both are set by the platform and never derived from user input (no SSRF).
+ * Returns undefined in local dev where neither variable is set.
+ */
+function getDeployUrl(): string | undefined {
+  const deno = (globalThis as GlobalWithDeno).Deno;
+  return deno?.env.get("DEPLOY_PRIME_URL") ?? deno?.env.get("URL");
 }
 
 export default async function markdownResponse(
@@ -56,15 +72,8 @@ export default async function markdownResponse(
     return context.next();
   }
 
-  // Use Netlify's per-deploy URL env vars as the fetch base so that deploy
-  // previews and branch deploys read index.md from themselves rather than
-  // production. DEPLOY_PRIME_URL reflects the current context (preview/branch/
-  // production); URL is the canonical production domain and is the fallback.
-  // These env vars are set by the platform and never derived from user input,
-  // eliminating SSRF risk.
   // If absent (local dev without Netlify CLI), fall through to normal response.
-  const env = (globalThis as GlobalWithDeno).Deno?.env;
-  const deployUrl = env?.get("DEPLOY_PRIME_URL") ?? env?.get("URL");
+  const deployUrl = getDeployUrl();
   if (!deployUrl) {
     return context.next();
   }
@@ -86,8 +95,7 @@ export default async function markdownResponse(
       headers: {
         "Content-Type": "text/markdown; charset=utf-8",
         "Cache-Control": "public, max-age=300",
-        // Vary: Accept so caches distinguish HTML vs Markdown representations
-        // of the same URL and never serve the wrong content type.
+        // Vary: Accept so caches distinguish HTML vs Markdown for the same URL.
         "Vary": "Accept",
         ...SECURITY_HEADERS,
       },
@@ -98,8 +106,6 @@ export default async function markdownResponse(
   }
 }
 
-// Path is declared solely in netlify.toml so the explicit WAF-first ordering
-// is authoritative. When both an inline config and a toml declaration exist,
-// Netlify resolves same-path conflicts alphabetically (markdown-response < waf),
-// which would run this function before the WAF. Omitting the inline config
-// avoids that conflict and lets netlify.toml control execution order.
+// Path declared solely in netlify.toml (not inline) so WAF-first ordering
+// in netlify.toml is authoritative; inline + toml declarations on the same
+// path resolve alphabetically, which would put markdown-response before waf.

@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "ci": "npm run lint && vitest run && npm run build",
     "generate:icons": "node scripts/generate-icons.js",
     "generate:mockups": "node scripts/generate-mockups.js",
     "generate-icons": "node scripts/generate-icons.js",
@@ -25,7 +26,6 @@
     "size": "size-limit"
   },
   "dependencies": {
-    "@fontsource/inter": "^5.2.8",
     "@sentry/react": "^10.57.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
@@ -74,13 +74,15 @@
       "name": "Main bundle (JS)",
       "path": "dist/assets/*.js",
       "limit": "150 KB",
-      "gzip": true
+      "gzip": true,
+      "running": false
     },
     {
       "name": "Main bundle (CSS)",
       "path": "dist/assets/*.css",
       "limit": "30 KB",
-      "gzip": true
+      "gzip": true,
+      "running": false
     }
   ],
   "overrides": {

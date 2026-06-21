@@ -39,6 +39,12 @@
   command = "npm run build"
   publish = "dist"
 
+# Markdown edge function — serves /index.md for Accept: text/markdown requests to /
+# Must run before the WAF so Markdown detection executes first.
+[[edge_functions]]
+  function = "markdown-response"
+  path = "/"
+
 # WAF edge function — runs on every request before the origin
 [[edge_functions]]
   function = "waf"

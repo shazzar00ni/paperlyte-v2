@@ -70,7 +70,9 @@ function injectDevCsp(html: string): string {
   </head>`
   const modified = html.replace('</head>', cspMetaTag)
   if (modified === html) {
-    console.warn('[csp-plugin] Warning: Could not inject CSP meta tag - </head> tag not found in HTML')
+    console.warn(
+      '[csp-plugin] Warning: Could not inject CSP meta tag - </head> tag not found in HTML'
+    )
   }
   return modified
 }

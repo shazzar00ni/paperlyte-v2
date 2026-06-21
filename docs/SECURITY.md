@@ -1,7 +1,5 @@
 # Security Practices
 
-[![Tracked Issue](https://img.shields.io/github/issues/detail?id=shazzar00ni/paperlyte-v2/50&label=SECURITY.md%20Tracking%20Issue)](https://github.com/shazzar00ni/paperlyte-v2/issues/50)
-
 **Status:** In progress — see [issue #50](https://github.com/shazzar00ni/paperlyte-v2/issues/50) for details and updates.  
 **Last updated:** December 2, 2025
 

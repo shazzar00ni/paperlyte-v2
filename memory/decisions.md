@@ -120,6 +120,11 @@ This file tracks key architectural, design, and technical decisions made during 
 - **Rationale**: Enforces baseline quality without being prohibitively strict for a landing page
 - **Alternatives considered**: 80%, 60%, no threshold
 
+- **Date**: 2026-06-17
+- **Decision**: Browser-scoped E2E tests in `tests/e2e/landing-page.spec.ts` are scoped via Playwright **tags + per-project `grepInvert`** (in `playwright.config.ts`) instead of in-body `test.skip()`. This keeps the run sets identical but stops the scoped tests from appearing as "skipped" in the Playwright HTML report (scoped tests are simply not *collected* for projects they don't apply to). Tags: `@chromium-only` (Chromium desktop only — used by `load-performance smoke check` and `should have accessible keyboard navigation`), `@mobile-only` (mobile projects only — used by `should show mobile-specific UI`), `@no-ci` (excluded in CI — used by the perf check). `grepInvert(...)` helper appends `@no-ci` to every project's exclusions when `process.env.CI` is set. Verified via `playwright test --list`: 29 tests collected locally / 28 in CI, zero skipped.
+- **Rationale**: User asked to "reduce skip noise in the report" without changing what runs. Underlying scoping reasons unchanged: Lighthouse CI is the authoritative Core Web Vitals gate (perf check is flaky on CI runners); mobile-UI assertions require a mobile viewport (would fail on desktop); Firefox/WebKit headless don't reliably dispatch Tab-focus events without prior pointer activation. Note: the report URL filter `#?q=s:skipped` is Playwright HTML-report syntax (not Lighthouse).
+- **Alternatives considered**: Keeping `test.skip()` guards (rejected — produces the skip noise the user wanted gone); enabling the perf check in CI or broadening keyboard-nav to Firefox/WebKit (rejected — flakiness / unreliable headless focus)
+
 ## PWA
 
 - **Date**: YYYY-MM-DD (unknown), superseded by 2026-06-11 observation
@@ -168,3 +173,11 @@ This file tracks key architectural, design, and technical decisions made during 
 - **Decision**: Dark-mode CSS tokens are intentionally duplicated in two blocks in `src/styles/variables.css`
 - **Rationale**: Two distinct use cases require separate selectors: (1) `[data-theme='dark']` for explicit user toggle, (2) `@media (prefers-color-scheme: dark) { :root:not([data-theme='light']) }` for system preference when no explicit choice has been made. The `:root:not([data-theme='light'])` guard is critical — it prevents system preference from overriding an explicit light-mode choice. Any palette change must update both blocks in sync; drift is a known bug source.
 - **Alternatives considered**: Single CSS custom property override, JavaScript-only theming
+
+## Documentation / Roadmap
+
+- **Date**: 2026-06-17
+- **Decision**: `docs/ROADMAP.md` holds **two** separate roadmaps under two top-level headings: "Landing Page/Waitlist Signup" and "MVP to Launch" (the note-editor app). The landing-page roadmap was expanded from a lone Phase 0 to full Phases 0–6 with per-feature status labels (PR #1142)
+- **Rationale**: The landing-page roadmap previously stopped at Phase 0; Phases 1–6 now document shipped vs. pending work so the doc reflects reality. Statuses derived from the actual codebase + the 2026-06-11 audit
+- **Note**: Phase 0 originally mis-stated the stack as "Next.js" + "Tailwind CSS"; corrected to **Vite + React / CSS Modules** (the actual stack per `package.json` and project guidelines). When editing, do not conflate the two roadmaps — the MVP-to-Launch (editor) roadmap is intentionally separate
+- **Alternatives considered**: Splitting into two files (rejected — `docs/ROADMAP.md` is a required, never-delete file per Issue #876)

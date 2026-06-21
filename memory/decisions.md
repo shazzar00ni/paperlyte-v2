@@ -120,6 +120,11 @@ This file tracks key architectural, design, and technical decisions made during 
 - **Rationale**: Enforces baseline quality without being prohibitively strict for a landing page
 - **Alternatives considered**: 80%, 60%, no threshold
 
+- **Date**: 2026-06-17
+- **Decision**: Browser-scoped E2E tests in `tests/e2e/landing-page.spec.ts` are scoped via Playwright **tags + per-project `grepInvert`** (in `playwright.config.ts`) instead of in-body `test.skip()`. This keeps the run sets identical but stops the scoped tests from appearing as "skipped" in the Playwright HTML report (scoped tests are simply not *collected* for projects they don't apply to). Tags: `@chromium-only` (Chromium desktop only — used by `load-performance smoke check` and `should have accessible keyboard navigation`), `@mobile-only` (mobile projects only — used by `should show mobile-specific UI`), `@no-ci` (excluded in CI — used by the perf check). `grepInvert(...)` helper appends `@no-ci` to every project's exclusions when `process.env.CI` is set. Verified via `playwright test --list`: 29 tests collected locally / 28 in CI, zero skipped.
+- **Rationale**: User asked to "reduce skip noise in the report" without changing what runs. Underlying scoping reasons unchanged: Lighthouse CI is the authoritative Core Web Vitals gate (perf check is flaky on CI runners); mobile-UI assertions require a mobile viewport (would fail on desktop); Firefox/WebKit headless don't reliably dispatch Tab-focus events without prior pointer activation. Note: the report URL filter `#?q=s:skipped` is Playwright HTML-report syntax (not Lighthouse).
+- **Alternatives considered**: Keeping `test.skip()` guards (rejected — produces the skip noise the user wanted gone); enabling the perf check in CI or broadening keyboard-nav to Firefox/WebKit (rejected — flakiness / unreliable headless focus)
+
 ## PWA
 
 - **Date**: YYYY-MM-DD (unknown), superseded by 2026-06-11 observation

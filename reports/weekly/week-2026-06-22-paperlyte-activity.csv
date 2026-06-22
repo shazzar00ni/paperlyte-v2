@@ -1,0 +1,61 @@
+Type,Title,Last Visited,Host
+Pull Request,[StepSecurity] Apply security best practices,2026-06-21T18:01:28Z,github.com
+Pull Request,docs(memory): record undici fix + FOSSA dev-tooling baseline investigation,2026-06-21T15:02:32Z,github.com
+Issue,ci: pre-existing License Compliance and Dependency Quality failures on all PRs,2026-06-21T14:04:24Z,github.com
+Pull Request,[StepSecurity] Apply security best practices,2026-06-21T08:04:50Z,github.com
+Pull Request,[StepSecurity] Apply security best practices,2026-06-21T08:03:56Z,github.com
+Pull Request,[StepSecurity] Apply security best practices,2026-06-21T17:54:26Z,github.com
+Issue,bug: `npm run lint` fails locally — @eslint/js package missing from node_modules,2026-06-21T07:35:58Z,github.com
+Issue,ci: Snyk and CodeRabbit quota exhausted — PR checks blocked by billing limits,2026-06-21T07:34:52Z,github.com
+Issue,ci: Mintlify deployment fails on every PR — missing docs.json / mint.json,2026-06-21T07:34:51Z,github.com
+Pull Request,feat(edge): serve Markdown at / via static index.md fallback,2026-06-21T15:01:38Z,github.com
+Pull Request,ci: tolerate transient Codacy upload timeouts in PR review job,2026-06-21T07:26:46Z,github.com
+Pull Request,test: isolate theme hook shared state,2026-06-21T15:40:16Z,github.com
+Pull Request,fix(pwa): restrict skipWaiting to initial installs,2026-06-21T13:15:13Z,github.com
+Pull Request,fix(pwa): restrict skipWaiting to initial installs,2026-06-20T14:30:53Z,github.com
+Pull Request,fix(test): preserve Vitest single-fork semantics and local timeout defaults,2026-06-20T14:14:08Z,github.com
+Pull Request,[Aikido] AI Fix for Potential file inclusion attack via reading file,2026-06-21T14:32:51Z,github.com
+Pull Request,[Aikido] AI Fix for HTTP request might enable SSRF attack,2026-06-21T14:37:08Z,github.com
+Pull Request,perf(ci): optimize CircleCI build for speed and reliability,2026-06-20T08:24:19Z,github.com
+Pull Request,[Aikido] AI Fix for Template Injection in GitHub Workflows Action,2026-06-21T14:16:19Z,github.com
+Pull Request,[StepSecurity] Apply security best practices,2026-06-21T17:53:49Z,github.com
+Pull Request,[StepSecurity] Apply security best practices,2026-06-20T07:55:40Z,github.com
+Pull Request,[StepSecurity] Apply security best practices,2026-06-19T18:06:43Z,github.com
+Pull Request,[StepSecurity] Apply security best practices,2026-06-19T18:05:37Z,github.com
+Pull Request,[StepSecurity] Apply security best practices,2026-06-19T18:01:16Z,github.com
+Issue,feat: serve meaningful Markdown from `/` route (SPA shell yields empty conversion),2026-06-21T07:29:20Z,github.com
+Pull Request,fix(deps): patch high-severity undici advisories (bump override to ^7.28.0),2026-06-21T13:51:23Z,github.com
+Pull Request,fix(pwa): keep service worker updates waiting safely,2026-06-18T17:40:57Z,github.com
+Pull Request,fix(deps): override js-yaml to 4.2.0 to resolve Dependabot alert #68,2026-06-19T11:41:27Z,github.com
+Pull Request,[StepSecurity] Apply security best practices,2026-06-19T04:13:06Z,github.com
+Pull Request,[StepSecurity] Apply security best practices,2026-06-18T14:09:07Z,github.com
+Commit,Merge pull request #1180 from shazzar00ni/fix/aikido-security-sast-52447041-2fhy,2026-06-21T14:15:28Z,github.com
+Commit,Merge pull request #1173 from shazzar00ni/claude/bold-hamilton-d3gnug,2026-06-21T13:50:45Z,github.com
+Commit,Merge branch 'main' into claude/bold-hamilton-d3gnug,2026-06-21T13:14:36Z,github.com
+Commit,Merge pull request #1164 from shazzar00ni/claude/intelligent-bardeen-9x7wzk,2026-06-21T07:24:15Z,github.com
+Commit,Merge branch 'main' into claude/intelligent-bardeen-9x7wzk,2026-06-21T07:21:38Z,github.com
+Commit,Merge pull request #1165 from shazzar00ni/claude/festive-bardeen-sjl9s1,2026-06-21T07:21:10Z,github.com
+Commit,Merge branch 'main' into claude/bold-hamilton-d3gnug,2026-06-20T16:52:45Z,github.com
+Commit,Merge remote-tracking branch 'origin/main' into claude/intelligent-bardeen-9x7wzk,2026-06-20T16:51:28Z,github.com
+Commit,Merge branch 'main' into claude/festive-bardeen-sjl9s1,2026-06-20T16:49:54Z,github.com
+Commit,Merge pull request #1138 from shazzar00ni/codex/fix-npm-run-size-launcher-issue,2026-06-20T16:41:23Z,github.com
+Commit,Merge branch 'main' into codex/fix-npm-run-size-launcher-issue,2026-06-20T14:29:06Z,github.com
+Commit,Merge pull request #1115 from shazzar00ni/claude/bolt-performance-optimization-2a3kzx,2026-06-20T14:11:29Z,github.com
+Commit,Merge branch 'main' into claude/bolt-performance-optimization-2a3kzx,2026-06-20T07:51:21Z,github.com
+Commit,fix(security): autofix Template Injection in GitHub Workflows Action,2026-06-19T22:21:20Z,github.com
+Commit,[StepSecurity] Apply security best practices (#1179),2026-06-19T21:05:19Z,github.com
+Commit,Merge branch 'main' into claude/bolt-performance-optimization-2a3kzx,2026-06-19T20:59:12Z,github.com
+Commit,[StepSecurity] Apply security best practices,2026-06-19T18:02:16Z,github.com
+Commit,Merge pull request #1118 from shazzar00ni/claude/optimistic-cannon-cla4u0,2026-06-19T17:32:12Z,github.com
+Commit,fix(deps): bump undici override to ^7.28.0 to patch high-severity advisories,2026-06-19T17:25:47Z,github.com
+Commit,fix(deps): resolve undici high-severity vulnerability via npm audit fix,2026-06-19T17:06:27Z,github.com
+Commit,Merge branch 'main' into claude/optimistic-cannon-cla4u0,2026-06-19T16:59:37Z,github.com
+Commit,fix(deps): bump undici to 7.28.0 to clear high-severity advisory,2026-06-19T11:40:06Z,github.com
+Commit,refactor(e2e): extract tag scoping into playwright.tags module,2026-06-19T11:33:09Z,github.com
+Commit,Merge pull request #1171 from shazzar00ni/claude/tender-clarke-m0a7vz,2026-06-19T11:32:46Z,github.com
+Commit,Merge branch 'main' into claude/tender-clarke-m0a7vz,2026-06-19T11:32:32Z,github.com
+Commit,Merge pull request #916 from shazzar00ni/copilot/fix-unsafe-dynamic-method,2026-06-18T15:04:28Z,github.com
+Commit,Merge branch 'main' into copilot/fix-unsafe-dynamic-method,2026-06-18T15:03:17Z,github.com
+Commit,refactor(e2e): declare grepInvert as a function declaration,2026-06-18T14:56:07Z,github.com
+Commit,fix(deps): override js-yaml to 4.2.0 to resolve DoS advisory GHSA-h67p-54hq-rp68,2026-06-18T14:43:20Z,github.com
+Commit,Merge pull request #1140 from shazzar00ni/codex/review-security-alert-for-eslint-plugin-mkpvlu,2026-06-18T13:53:34Z,github.com

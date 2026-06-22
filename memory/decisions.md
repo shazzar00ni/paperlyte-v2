@@ -181,3 +181,18 @@ This file tracks key architectural, design, and technical decisions made during 
 - **Rationale**: The landing-page roadmap previously stopped at Phase 0; Phases 1–6 now document shipped vs. pending work so the doc reflects reality. Statuses derived from the actual codebase + the 2026-06-11 audit
 - **Note**: Phase 0 originally mis-stated the stack as "Next.js" + "Tailwind CSS"; corrected to **Vite + React / CSS Modules** (the actual stack per `package.json` and project guidelines). When editing, do not conflate the two roadmaps — the MVP-to-Launch (editor) roadmap is intentionally separate
 - **Alternatives considered**: Splitting into two files (rejected — `docs/ROADMAP.md` is a required, never-delete file per Issue #876)
+
+## Dependency Security & Licensing
+
+- **Date**: 2026-06-21
+- **Decision**: `undici` override floor raised `^7.20.0` → `^7.28.0` (PR #1173) to clear a high-severity npm-audit advisory cluster (GHSA-vmh5-mc38-953g TLS bypass, GHSA-pr7r-676h-xcf6 shared-cache disclosure, and others spanning the vulnerable range 7.0.0–7.27.2)
+- **Rationale**: The existing `^7.20.0` override resolved to 7.24.1, inside the vulnerable range. 7.28.0 is the next patched 7.x release and still satisfies `jsdom`'s `^7.25.0` requirement, so it stays on the 7.x line (no major jump). undici is a **dev-only** transitive dep (jsdom/vitest + `@actions/*`). After the bump: `npm audit` → 0 vulnerabilities; full suite (1758 tests) green
+- **Alternatives considered**: bump to 8.x (rejected — needless major jump for a dev-only dep), `npm audit fix` (a parallel branch used this; the override approach won out on merge)
+
+- **Date**: 2026-06-21
+- **Decision**: The FOSSA **License Compliance** (14 issues) and **Dependency Quality** (63 issues) PR checks are accepted **dev-tooling baselines**, not blockers — they are pre-existing on `main`, non-required (PR mergeable state is `unstable`, not `blocked`), and not introduced by dependency changes in PR #1173
+- **Rationale (investigation 2026-06-21)**:
+  - License Compliance's 14 issues are **exactly** the 14 `@img/sharp-*` binaries carrying LGPL-3.0-or-later (10 `sharp-libvips-*`, 3 `sharp-win32-*`, 1 `sharp-wasm32`), pulled by **`sharp`** — a devDependency used only by `scripts/generate-icons.js` / `generate-mockups.js` at build time. `libvips` (the LGPL component) is a separate shared library (LGPL permits this) and is **never in the production bundle**, so there is no license violation in the distributed product
+  - Dependency Quality's 63 are mostly FOSSA composite "outdated/maintenance" scoring across the ~750-pkg tree. The only hard deprecation flags are 3 packages in a single chain — `@lhci/cli` (dev) → `chrome-launcher` → `rimraf@3.0.2` → `glob@7.2.3` → `inflight@1.0.6`. Overriding to newer rimraf/glob risks breaking chrome-launcher (v4+/v9+ are breaking majors), so leave to upstream
+- **Recommended remediation (not yet applied — needs owner decision)**: handle in the FOSSA dashboard — allow LGPL-3.0 or ignore dev-only issues; or, if FOSSA runs via CLI, scope analysis to `--production`. Code-side alternatives (replace `sharp` with jimp/MIT or `@resvg/resvg-js`; wait for `@lhci/cli` to update chrome-launcher) are heavier and deferred
+- **Alternatives considered**: adding a `.fossa.yml` (may not affect the FOSSA GitHub-app checks, only CLI runs), replacing `sharp` outright (rejected for now — dev-only, build-time)

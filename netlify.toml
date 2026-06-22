@@ -48,7 +48,7 @@
   function = "waf"
   path = "/*"
   # Skip WAF on static assets served directly from the CDN cache.
-  excluded_path = ["/assets/*", "/fonts/*", "/*.ico", "/*.png", "/*.jpg", "/*.jpeg", "/*.webp", "/*.avif", "/*.svg", "/*.gif"]
+  excludedPath = ["/assets/*", "/fonts/*", "/*.ico", "/*.png", "/*.jpg", "/*.jpeg", "/*.webp", "/*.avif", "/*.svg", "/*.gif"]
 
 # Markdown edge function — serves /index.md for Accept: text/markdown requests to /
 # Declared after WAF so all requests are screened by the WAF first.

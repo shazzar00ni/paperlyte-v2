@@ -46,4 +46,21 @@ export default defineConfig([
       globals: globals.browser,
     },
   },
+  {
+    // Node-executed scripts, build config, and serverless functions
+    files: [
+      'scripts/**/*.{ts,tsx,js,mjs,cjs}',
+      'netlify/functions/**/*.{ts,tsx,js,mjs,cjs}',
+      'vite.config.{ts,js,mjs,cjs}',
+      'vitest.config.{ts,js,mjs,cjs}',
+      'eslint.config.{js,mjs,cjs}',
+    ],
+    languageOptions: {
+      // Preserve browser globals from the base config while adding Node globals
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+      },
+    },
+  },
 ])

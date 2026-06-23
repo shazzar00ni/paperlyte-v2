@@ -5,7 +5,7 @@
  * Blocks malicious requests: scanner user agents, path traversal, injection
  * probes, oversized payloads, and known attack signatures.
  */
-import type { Config, Context } from 'https://edge.netlify.com'
+import type { Context } from 'https://edge.netlify.com'
 
 // ---------------------------------------------------------------------------
 // Blocked user-agent patterns (vulnerability scanners & automated attack tools)
@@ -492,23 +492,4 @@ export default async function waf(request: Request, context: Context): Promise<R
     // failed request remains traceable in edge logs alongside blocked traffic.
     return withRequestId(new Response(null, { status: 502 }), requestId)
   }
-}
-
-export const config: Config = {
-  path: '/*',
-  // Skip WAF on static assets served directly from the CDN cache.
-  // Fonts live under /fonts/ (e.g. /fonts/Inter-Variable.woff2); root-level
-  // font globs would never match those URLs, so /fonts/* is used instead.
-  excludedPath: [
-    '/assets/*',
-    '/fonts/*',
-    '/*.ico',
-    '/*.png',
-    '/*.jpg',
-    '/*.jpeg',
-    '/*.webp',
-    '/*.avif',
-    '/*.svg',
-    '/*.gif',
-  ],
 }

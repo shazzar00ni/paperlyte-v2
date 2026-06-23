@@ -39,10 +39,22 @@
   command = "npm run build"
   publish = "dist"
 
-# WAF edge function — runs on every request before the origin
+# WAF edge function — runs first on every request before the origin.
+# It calls context.next() for clean requests, which invokes markdown-response
+# (declared next) for / routes, then falls through to the origin.
+# Both functions are declared here (TOML-only, no inline export const config) so
+# Netlify's TOML-order guarantee makes WAF run before markdown-response.
 [[edge_functions]]
   function = "waf"
   path = "/*"
+  # Skip WAF on static assets served directly from the CDN cache.
+  excludedPath = ["/assets/*", "/fonts/*", "/*.ico", "/*.png", "/*.jpg", "/*.jpeg", "/*.webp", "/*.avif", "/*.svg", "/*.gif"]
+
+# Markdown edge function — serves /index.md for Accept: text/markdown requests to /
+# Declared after WAF so all requests are screened by the WAF first.
+[[edge_functions]]
+  function = "markdown-response"
+  path = "/"
 
 # Redirect rules for SPA routing
 [[redirects]]

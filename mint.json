@@ -1,0 +1,9 @@
+{
+  "name": "Paperlyte",
+  "navigation": [
+    {
+      "group": "Getting Started",
+      "pages": ["README"]
+    }
+  ]
+}

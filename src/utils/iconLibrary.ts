@@ -12,12 +12,7 @@
  * 3. Use it in components via the Icon component with the icon name (without 'fa-' prefix)
  */
 
-import { library, config } from '@fortawesome/fontawesome-svg-core'
-import '@fortawesome/fontawesome-svg-core/styles.css'
-
-// Prevent FA from injecting a <style> tag (blocked by strict style-src CSP).
-// The styles.css import above serves the same CSS as a proper bundled stylesheet.
-config.autoAddCss = false
+import { library } from '@fortawesome/fontawesome-svg-core'
 
 // Solid icons (from free-solid-svg-icons)
 import {

@@ -111,7 +111,7 @@
 .textLink {
   background: none;
   border: none;
-  color: var(--color-text-on-primary);
+  color: var(--color-primary);
   font-size: var(--font-size-base);
   text-decoration: underline;
   cursor: pointer;

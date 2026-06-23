@@ -83,10 +83,13 @@
     # Disable access to sensitive browser APIs
     Permissions-Policy = "geolocation=(), microphone=(), camera=(), payment=(), usb=(), bluetooth=(), serial=(), magnetometer=(), gyroscope=(), accelerometer=(), ambient-light-sensor=()"
 
-    # Content Security Policy
-    # External origins allowed:
-    #   https://plausible.io              Plausible Analytics script + beacon (VITE_ANALYTICS_PROVIDER=plausible)
-    #   https://*.ingest.sentry.io        Sentry error telemetry (VITE_SENTRY_DSN)
+    # Static fallback CSP — host-allowlist only, no nonce.
+    # For HTML responses on non-excluded paths the WAF edge function (waf.ts)
+    # overrides this with a stronger nonce-based CSP ('strict-dynamic' + per-
+    # request nonce). This fallback applies to the edge cases where the WAF is
+    # not invoked: paths excluded from the edge function (/assets/*, /fonts/*,
+    # image types) that nonetheless resolve to index.html via the SPA rewrite
+    # rule when no matching static file exists.
     Content-Security-Policy = "default-src 'self'; script-src 'self' https://plausible.io; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://plausible.io https://*.ingest.sentry.io; worker-src 'self' blob:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests;"
 
     # Isolate this page's browsing context group so cross-origin windows opened

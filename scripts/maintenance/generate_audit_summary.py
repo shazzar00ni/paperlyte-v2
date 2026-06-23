@@ -102,7 +102,7 @@ def main():
                 try:
                     comments = json.loads(existing_comments).get('comments', [])
                     for c in comments:
-                        if '### ⚠️ Systemic Regressions Detected' in c['body']:
+                        if '### ⚠️ Systemic Regressions Detected' in c.get('body', ''):
                             already_commented = True
                             break
                 except json.JSONDecodeError:

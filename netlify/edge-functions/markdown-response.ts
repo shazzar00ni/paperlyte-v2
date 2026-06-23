@@ -1,7 +1,7 @@
 import type { Context } from "https://edge.netlify.com";
 
-type GlobalWithDeno = typeof globalThis & {
-  Deno?: { env: { get(key: string): string | undefined } };
+type GlobalWithNetlify = typeof globalThis & {
+  Netlify?: { env: { get(key: string): string | undefined } };
 };
 
 type AcceptEntry = { mediaType: string; q: number };
@@ -51,15 +51,15 @@ function acceptsMarkdown(acceptHeader: string): boolean {
 }
 
 /**
- * Reads the best available Netlify deploy-root URL from the Deno environment.
- * DEPLOY_PRIME_URL reflects the current context (preview/branch/production);
- * URL is the canonical production domain and serves as fallback.
- * Both are set by the platform and never derived from user input (no SSRF).
- * Returns undefined in local dev where neither variable is set.
+ * Reads the best available Netlify deploy-root URL from the Netlify runtime
+ * environment. DEPLOY_PRIME_URL reflects the current deploy context
+ * (preview/branch/production); URL is the canonical production domain and
+ * serves as fallback. Both are set by the platform and never derived from
+ * user input (no SSRF). Returns undefined in local dev where neither is set.
  */
 function getDeployUrl(): string | undefined {
-  const deno = (globalThis as GlobalWithDeno).Deno;
-  return deno?.env.get("DEPLOY_PRIME_URL") ?? deno?.env.get("URL");
+  const netlify = (globalThis as GlobalWithNetlify).Netlify;
+  return netlify?.env.get("DEPLOY_PRIME_URL") ?? netlify?.env.get("URL");
 }
 
 /**

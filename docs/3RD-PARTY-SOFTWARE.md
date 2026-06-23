@@ -17,7 +17,7 @@ Package|Licenses|Concluded Licenses
 -------|--------|------------------
 **[@codecov/rollup-plugin (2.0.1)](#codecovrollup-plugin-201)**|MIT|MIT
 **[@eslint/js (10.0.1)](#eslintjs-1001)**|MIT|MIT
-**[@fontsource/inter (5.2.8)](#fontsourceinter-528)**|OFL-1.1|OFL-1.1
+**[Inter Variable Font (self-hosted)](#inter-variable-font-self-hosted)**|OFL-1.1|OFL-1.1
 **[@lhci/cli (0.15.1)](#lhcicli-0151)**|Apache-2.0|Apache-2.0
 **[@netlify/functions (5.2.2)](#netlifyfunctions-522)**|MIT|MIT
 **[@playwright/test (1.59.1)](#playwrighttest-1591)**|Apache-2.0|Apache-2.0
@@ -95,9 +95,9 @@ Copyright (c)  OpenJS Foundation and other contributors, <www.openjsf.org>
 
 ---
 
-### [@fontsource/inter (5.2.8)](https://fontsource.org/fonts/inter)
-Self-host the Inter font in a neatly bundled NPM package.
-**Usage**: Direct
+### [Inter Variable Font (self-hosted)](https://rsms.me/inter/)
+Latin-subsetted Inter variable WOFF2 font, self-hosted at `public/fonts/Inter-Variable-v2.woff2`. Previously bundled via `@fontsource/inter`; now sourced directly from Google Fonts (Latin subset, variable weight 100–900).
+**Usage**: Bundled static asset
 #### Concluded Licenses
 OFL-1.1
 #### Declared Licenses
@@ -105,14 +105,7 @@ OFL-1.1
 
 #### Copyrights
   License: OFL-1.1
-Copyright (c) 2016 The Inter Project Authors (https://github.com/rsms/inter) Inter-Italic[opsz,wght].ttf: Copyright 2016 The Inter Project Authors (https://github.com/rsms/inter)
-### Package Info
-
-**Authors**: declininglotus@gmail.com, dev@jwr.one
-**Package Manager**: NPM
-**Package Homepage**: https://fontsource.org/fonts/inter
-**Package Download URL**: https://registry.npmjs.org/@fontsource/inter/-/inter-5.2.8.tgz
-**Dependency Paths**: @fontsource/inter
+Copyright (c) 2016 The Inter Project Authors (https://github.com/rsms/inter)
 
 ---
 

@@ -134,6 +134,24 @@ This file tracks key architectural, design, and technical decisions made during 
 - **Rationale**: Enforces baseline quality without being prohibitively strict for a landing page
 - **Alternatives considered**: 80%, 60%, no threshold
 
+- **Date**: 2026-06-17
+- **Decision**: Browser-scoped E2E tests in `tests/e2e/landing-page.spec.ts` are scoped via Playwright **tags + per-project `grepInvert`** (in `playwright.config.ts`) instead of in-body `test.skip()`. This keeps the run sets identical but stops the scoped tests from appearing as "skipped" in the Playwright HTML report (scoped tests are simply not *collected* for projects they don't apply to). Tags: `@chromium-only` (Chromium desktop only — used by `load-performance smoke check` and `should have accessible keyboard navigation`), `@mobile-only` (mobile projects only — used by `should show mobile-specific UI`), `@no-ci` (excluded in CI — used by the perf check). `grepInvert(...)` helper appends `@no-ci` to every project's exclusions when `process.env.CI` is set. Verified via `playwright test --list`: 29 tests collected locally / 28 in CI, zero skipped.
+- **Rationale**: User asked to "reduce skip noise in the report" without changing what runs. Underlying scoping reasons unchanged: Lighthouse CI is the authoritative Core Web Vitals gate (perf check is flaky on CI runners); mobile-UI assertions require a mobile viewport (would fail on desktop); Firefox/WebKit headless don't reliably dispatch Tab-focus events without prior pointer activation. Note: the report URL filter `#?q=s:skipped` is Playwright HTML-report syntax (not Lighthouse).
+- **Alternatives considered**: Keeping `test.skip()` guards (rejected — produces the skip noise the user wanted gone); enabling the perf check in CI or broadening keyboard-nav to Firefox/WebKit (rejected — flakiness / unreliable headless focus)
+
+- **Date**: 2026-06-18 (refined 2026-06-19 after PR #1167 review)
+- **Decision**: Suppress coverage for genuinely *unreachable* defensive code with `/* v8 ignore ... */` (pattern already used at `src/utils/navigation.ts:202`). Mechanics matter: `/* v8 ignore next */` suppresses the **statement/line** but NOT the implicit-`else` **branch** (which is anchored to the `if`/`else if` line). A `/* v8 ignore start ... stop */` region *can* drop the branch — but only by also removing the sibling **reachable** arm from measurement, so it must never wrap an `if` whose taken arm is exercised by tests (that hides real coverage; it was flagged in review). Concretely, `keyboard.ts` `getFocusableElements` uses `/* v8 ignore next */` on just the impossible `return 0` fall-through; the reachable `if (PRECEDING) return 1` stays measured, and the branch metric honestly shows the impossible else-arm rather than masking the reachable one. Only suppress code that is truly unreachable; leave reachable-but-untested branches visible (add tests, don't hide).
+- **Rationale**: Keeps coverage honest — suppress unreachable statements without masking reachable branches
+- **Alternatives considered**: `start...stop` region around the comparator (over-reaches — hides the reachable reverse-order `return 1` branch; reverted after review), wrapping whole guard blocks (hides tested logic), adding tests for genuinely unreachable defensive code (impossible)
+
+## Tooling / Commit Convention
+
+- **Date**: 2026-06-18 (revised 2026-06-19 in PR #1167 review)
+- **Decision**: `commitlint.config.js` uses `extends: ['@commitlint/config-conventional']`, and both `@commitlint/cli` and `@commitlint/config-conventional` are devDependencies pinned to **^20** (NOT ^21 — see Node note below). config-conventional supplies the standard Conventional Commits ruleset **and** the conventionalcommits parser, so breaking-change shorthand like `feat!:`/`feat(scope)!:` validates. There is no commit-msg git hook installed; validation is the manual/ad-hoc `npx commitlint` workflow documented in CLAUDE.md. **Caveat (2026-06-20)**: the local install only helps *after* `npm ci`/`npm install` has populated `node_modules`. On a freshly cloned checkout with deps not yet installed, a bare `npx commitlint` does NOT use the (uninstalled) local CLI — it fetches a generic transient `commitlint` from the registry, which can't resolve the local `@commitlint/config-conventional` and misreports "missing rules". Fix: the documented command uses `npx --no-install commitlint`, which errors clearly ("command not found") instead of silently fetching, making the "run `npm ci` first" prerequisite obvious. **Node compatibility**: commitlint **v21 requires Node >=22.12**, but this repo's deploy/CI runtime is **Node 20** (`netlify.toml` NODE_VERSION="20"; nearly all GitHub Actions workflows pin node-version "20"). commitlint v20 declares `engines.node >=v18`, so it's compatible across the repo's Node 20 (GH Actions/Netlify), 22 (CircleCI), and 24 (pr-quality-check) runtimes. Stay on v20 until the repo's baseline Node is raised to ≥22.12.
+- **Socket Security (commitlint transitive deps)**: commitlint's CLI tree bundles minified deps that trip Socket's "obfuscated code" heuristic (false positives, ~90% confidence). Handling pattern: prefer deduping to a version already trusted in the repo; otherwise Socket-ignore the specific package. Applied: `jiti` (pulled via `cosmiconfig-typescript-loader`) is deduped to the repo's existing `^2.7.0` through an `overrides` entry; `yargs@17.7.3` (pulled by `@commitlint/cli`; repo already trusts `yargs@17.7.2` via lighthouse/size-limit) is accepted as risk via a `@SocketSecurity ignore npm/yargs@17.7.3` PR comment (PR #1167) rather than another brittle exact-pin override. All are dev-only deps, never shipped.
+- **Rationale**: The repo originally had no commitlint config, so `npx commitlint` failed with `[empty-rules]`. The first fix was a self-contained inline config (zero deps) to keep with the project's dependency-consciousness, but review (Codex P2) noted `npx commitlint` isn't runnable on a fully offline/clean checkout without the CLI installed, and inline rules also needed a hand-maintained parserPreset to handle `!`. Adding the CLI + config-conventional as devDeps is the standard, robust setup and removes the hand-maintained rules/parser. `npm audit` stays clean (0 vulns) after the add.
+- **Alternatives considered**: self-contained inline rules + inline parserPreset, zero deps (initial approach; reverted — not offline-runnable, parser hand-maintained), husky commit-msg hook to enforce on `git commit` (out of scope; repo doesn't use husky)
+
 ## PWA
 
 - **Date**: YYYY-MM-DD (unknown), superseded by 2026-06-11 observation
@@ -147,6 +165,19 @@ This file tracks key architectural, design, and technical decisions made during 
 - **Decision**: Netlify WAF edge function runs on every non-asset request before origin
 - **Rationale**: Blocks scanner UAs, path traversal, SQL/XSS injection signatures, oversized payloads (>512 KB), and illegal HTTP methods on `/.netlify/functions/*` at the CDN edge before any serverless function cold-start cost is incurred. Static assets (`/assets/*`, `/fonts/*`, images) are excluded via `excludedPath`. Every response — blocked or forwarded — receives an `X-Request-ID` UUID for log correlation.
 - **Alternatives considered**: Application-level middleware, Netlify's built-in DDoS protection only
+
+- **Date**: 2026-06-15
+- **Decision**: WAF nonce-based CSP — per-request 128-bit nonce replaces host-allowlist `script-src`; `netlify.toml` and `vercel.json` keep a static fallback CSP for non-WAF paths. PR #1091 (`claude/content-security-policy-issues-sHVSm`), merged clean with all 18 review threads resolved and CI green on commit `603aafc`.
+- **Key implementation details**:
+  - Nonce injected via `buildCsp(nonce)` in `netlify/edge-functions/waf.ts`; placeholder `nonce="CSP_NONCE"` stamped into HTML at build time by `vite.config.ts` `transformIndexHtml` plugin (post-order hook) and into `public/offline.html` and `public/privacy.html` manually
+  - 200 HTML responses: strip `ETag`, `Last-Modified`, `Accept-Ranges`, `Content-Length` — the nonce makes every body unique so origin validators no longer describe the response; a stale `ETag`+`If-Range` could cause the origin to return a 206 slice of placeholder HTML whose offsets don't align with the cached nonce-expanded body
+  - HEAD HTML responses: strip the same four headers PLUS `Content-Security-Policy` — a cache can use HEAD headers to update a stored GET response, which would reintroduce stale validators or the static fallback CSP
+  - 304 responses: returned unchanged (no body to rewrite; cached nonce stays in effect)
+  - 206 responses: passed through unchanged (nonce rewriting only on complete 200s)
+  - `isHtmlResponse()` lowercases `Content-Type` before matching to catch mixed-case origins
+  - 502 catch block logs `console.error('WAF origin/network error', { requestId, error })` for edge log traceability
+  - `netlify.toml` and `vercel.json` CSPs must remain identical on all non-`script-src` directives; enforced by `src/test/config/csp-config.test.ts` with bidirectional union-key assertions
+- **Alternatives considered**: Static CSP only (no nonces), server-side rendering with inline nonces
 
 ## Privacy / Storage
 
@@ -190,3 +221,18 @@ This file tracks key architectural, design, and technical decisions made during 
 - **Rationale**: The landing-page roadmap previously stopped at Phase 0; Phases 1–6 now document shipped vs. pending work so the doc reflects reality. Statuses derived from the actual codebase + the 2026-06-11 audit
 - **Note**: Phase 0 originally mis-stated the stack as "Next.js" + "Tailwind CSS"; corrected to **Vite + React / CSS Modules** (the actual stack per `package.json` and project guidelines). When editing, do not conflate the two roadmaps — the MVP-to-Launch (editor) roadmap is intentionally separate
 - **Alternatives considered**: Splitting into two files (rejected — `docs/ROADMAP.md` is a required, never-delete file per Issue #876)
+
+## Dependency Security & Licensing
+
+- **Date**: 2026-06-21
+- **Decision**: `undici` override floor raised `^7.20.0` → `^7.28.0` (PR #1173) to clear a high-severity npm-audit advisory cluster (GHSA-vmh5-mc38-953g TLS bypass, GHSA-pr7r-676h-xcf6 shared-cache disclosure, and others spanning the vulnerable range 7.0.0–7.27.2)
+- **Rationale**: The existing `^7.20.0` override resolved to 7.24.1, inside the vulnerable range. 7.28.0 is the next patched 7.x release and still satisfies `jsdom`'s `^7.25.0` requirement, so it stays on the 7.x line (no major jump). undici is a **dev-only** transitive dep (jsdom/vitest + `@actions/*`). After the bump: `npm audit` → 0 vulnerabilities; full suite (1758 tests) green
+- **Alternatives considered**: bump to 8.x (rejected — needless major jump for a dev-only dep), `npm audit fix` (a parallel branch used this; the override approach won out on merge)
+
+- **Date**: 2026-06-21
+- **Decision**: The FOSSA **License Compliance** (14 issues) and **Dependency Quality** (63 issues) PR checks are accepted **dev-tooling baselines**, not blockers — they are pre-existing on `main`, non-required (PR mergeable state is `unstable`, not `blocked`), and not introduced by dependency changes in PR #1173
+- **Rationale (investigation 2026-06-21)**:
+  - License Compliance's 14 issues are **exactly** the 14 `@img/sharp-*` binaries carrying LGPL-3.0-or-later (10 `sharp-libvips-*`, 3 `sharp-win32-*`, 1 `sharp-wasm32`), pulled by **`sharp`** — a devDependency used only by `scripts/generate-icons.js` / `generate-mockups.js` at build time. `libvips` (the LGPL component) is a separate shared library (LGPL permits this) and is **never in the production bundle**, so there is no license violation in the distributed product
+  - Dependency Quality's 63 are mostly FOSSA composite "outdated/maintenance" scoring across the ~750-pkg tree. The only hard deprecation flags are 3 packages in a single chain — `@lhci/cli` (dev) → `chrome-launcher` → `rimraf@3.0.2` → `glob@7.2.3` → `inflight@1.0.6`. Overriding to newer rimraf/glob risks breaking chrome-launcher (v4+/v9+ are breaking majors), so leave to upstream
+- **Recommended remediation (not yet applied — needs owner decision)**: handle in the FOSSA dashboard — allow LGPL-3.0 or ignore dev-only issues; or, if FOSSA runs via CLI, scope analysis to `--production`. Code-side alternatives (replace `sharp` with jimp/MIT or `@resvg/resvg-js`; wait for `@lhci/cli` to update chrome-launcher) are heavier and deferred
+- **Alternatives considered**: adding a `.fossa.yml` (may not affect the FOSSA GitHub-app checks, only CLI runs), replacing `sharp` outright (rejected for now — dev-only, build-time)

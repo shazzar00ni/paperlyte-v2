@@ -170,9 +170,13 @@ jobs:
           echo "📊 View detailed security findings in the **Security** tab." >> $GITHUB_STEP_SUMMARY
 
   codacy-pr-review:
-    # Runs only on non-fork pull requests. Uploads analysis to the Codacy platform
-    # so it can post inline PR review comments. Separate from the SARIF job above
-    # because format:sarif and upload:true are mutually exclusive in the CLI.
+    # Runs only on non-fork pull requests. Analyzes the PR and uploads results to
+    # the Codacy platform so it can post inline PR review comments.
+    # Mirrors the codacy-security-scan structure: the analysis step runs fail-fast
+    # (a genuine analysis crash or config error fails this check), while ONLY the
+    # upload to Codacy is fault-tolerant — a transient "Read timed out" talking to
+    # api.codacy.com must not block the PR. This keeps flaky connectivity from
+    # blocking PRs without letting a broken analysis silently pass review.
     # Skipped on fork PRs because CODACY_PROJECT_TOKEN is not available there.
     # The Codacy GitHub App posts comments via its own installation token, so
     # pull-requests: write on GITHUB_TOKEN is not needed here.
@@ -188,15 +192,83 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Run Codacy Analysis CLI (upload to platform)
-        # Tolerate transient upload failures (e.g. "Read timed out" talking to
-        # api.codacy.com) so flaky platform connectivity does not block the PR.
-        # This mirrors the continue-on-error tolerance on the upload steps in the
-        # codacy-security-scan job above. Real findings are surfaced by Codacy's
-        # PR review comments, not by failing this check.
-        continue-on-error: true
+      # Run analysis and generate SARIF. upload:false keeps this step fail-fast:
+      # a genuine analysis failure (action crash, invalid config) fails the job,
+      # so the PR-review path can't silently stop producing results. Transient
+      # upload flakiness is tolerated separately in the upload step below.
+      - name: Run Codacy Analysis CLI
+        id: codacy-run
         uses: codacy/codacy-analysis-cli-action@562ee3e92b8e92df8b67e0a5ff8aa8e261919c08  # v4.4.7
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-          upload: true
+          output: results.sarif
+          format: sarif
+          gh-code-scanning-compat: true
+          # Force 0 exit code on findings; PR gating is handled by Codacy, not by
+          # failing this step. Genuine tool/config errors still fail the step.
           max-allowed-issues: 2147483647
+          # Upload is performed by the fault-tolerant curl step below, not here.
+          upload: "false"
+
+      # Merge multiple SARIF runs into a single run. Codacy emits one run per tool
+      # and the upload endpoint rejects more than 20 runs. Gated on analysis success.
+      - name: Merge SARIF runs into single run
+        id: merge-sarif
+        if: steps.codacy-run.conclusion == 'success'
+        run: bash ./scripts/merge-sarif-runs.sh results.sarif
+
+      # Upload the merged SARIF to Codacy so it can post inline PR review comments.
+      # continue-on-error: ONLY transient upload connectivity issues are tolerated
+      # here — the analysis step above already failed the job on real errors.
+      - name: Upload SARIF to Codacy
+        if: steps.merge-sarif.conclusion == 'success'
+        continue-on-error: true
+        env:
+          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          ORG: ${{ github.repository_owner }}
+          REPO: ${{ github.event.repository.name }}
+          COMMIT_UUID: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          if [ -z "$CODACY_PROJECT_TOKEN" ]; then
+            echo "CODACY_PROJECT_TOKEN not set, skipping Codacy upload"
+            exit 0
+          fi
+          RUN_COUNT=$(jq '.runs | length' results.sarif)
+          echo "SARIF run count before upload: $RUN_COUNT"
+          if [ "$RUN_COUNT" -ne 1 ]; then
+            echo "Error: expected exactly 1 run after merging, got $RUN_COUNT. Skipping Codacy upload to avoid rejection."
+            exit 1
+          fi
+          # Use the PR head SHA on pull_request events; github.sha is the synthetic
+          # merge commit in that context and Codacy would attach results to a non-head commit.
+          echo "Uploading merged SARIF to Codacy..."
+          HTTP_STATUS=""
+          CURL_EXIT=0
+          HTTP_STATUS=$(curl -sS \
+            --connect-timeout 10 \
+            --max-time 90 \
+            --retry 3 \
+            --retry-delay 2 \
+            --retry-connrefused \
+            -o /tmp/codacy_upload_response.txt -w "%{http_code}" -X POST \
+            "https://api.codacy.com/api/v3/analysis/organizations/gh/$ORG/repositories/$REPO/upload" \
+            -H "project-token: $CODACY_PROJECT_TOKEN" \
+            -F "commitUuid=$COMMIT_UUID" \
+            -F "results=@results.sarif;type=application/json") || CURL_EXIT=$?
+          if [ "$CURL_EXIT" -ne 0 ]; then
+            echo "Error: curl failed while uploading SARIF to Codacy (exit code $CURL_EXIT)."
+            if [ -n "$HTTP_STATUS" ]; then
+              echo "Codacy upload HTTP status (if any): $HTTP_STATUS"
+            fi
+            echo "Codacy upload response (if any):"
+            cat /tmp/codacy_upload_response.txt 2>/dev/null || true
+            exit 1
+          fi
+          echo "Codacy upload HTTP status: $HTTP_STATUS"
+          cat /tmp/codacy_upload_response.txt || true
+          if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ]; then
+            echo "Codacy upload succeeded."
+          else
+            echo "Warning: Codacy upload returned HTTP $HTTP_STATUS"
+            exit 1
+          fi

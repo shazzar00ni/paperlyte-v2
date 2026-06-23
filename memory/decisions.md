@@ -152,6 +152,19 @@ This file tracks key architectural, design, and technical decisions made during 
 - **Rationale**: Blocks scanner UAs, path traversal, SQL/XSS injection signatures, oversized payloads (>512 KB), and illegal HTTP methods on `/.netlify/functions/*` at the CDN edge before any serverless function cold-start cost is incurred. Static assets (`/assets/*`, `/fonts/*`, images) are excluded via `excludedPath`. Every response — blocked or forwarded — receives an `X-Request-ID` UUID for log correlation.
 - **Alternatives considered**: Application-level middleware, Netlify's built-in DDoS protection only
 
+- **Date**: 2026-06-15
+- **Decision**: WAF nonce-based CSP — per-request 128-bit nonce replaces host-allowlist `script-src`; `netlify.toml` and `vercel.json` keep a static fallback CSP for non-WAF paths. PR #1091 (`claude/content-security-policy-issues-sHVSm`), merged clean with all 18 review threads resolved and CI green on commit `603aafc`.
+- **Key implementation details**:
+  - Nonce injected via `buildCsp(nonce)` in `netlify/edge-functions/waf.ts`; placeholder `nonce="CSP_NONCE"` stamped into HTML at build time by `vite.config.ts` `transformIndexHtml` plugin (post-order hook) and into `public/offline.html` and `public/privacy.html` manually
+  - 200 HTML responses: strip `ETag`, `Last-Modified`, `Accept-Ranges`, `Content-Length` — the nonce makes every body unique so origin validators no longer describe the response; a stale `ETag`+`If-Range` could cause the origin to return a 206 slice of placeholder HTML whose offsets don't align with the cached nonce-expanded body
+  - HEAD HTML responses: strip the same four headers PLUS `Content-Security-Policy` — a cache can use HEAD headers to update a stored GET response, which would reintroduce stale validators or the static fallback CSP
+  - 304 responses: returned unchanged (no body to rewrite; cached nonce stays in effect)
+  - 206 responses: passed through unchanged (nonce rewriting only on complete 200s)
+  - `isHtmlResponse()` lowercases `Content-Type` before matching to catch mixed-case origins
+  - 502 catch block logs `console.error('WAF origin/network error', { requestId, error })` for edge log traceability
+  - `netlify.toml` and `vercel.json` CSPs must remain identical on all non-`script-src` directives; enforced by `src/test/config/csp-config.test.ts` with bidirectional union-key assertions
+- **Alternatives considered**: Static CSP only (no nonces), server-side rendering with inline nonces
+
 ## Privacy / Storage
 
 - **Date**: 2026-04-29

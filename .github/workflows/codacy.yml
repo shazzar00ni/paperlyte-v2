@@ -83,6 +83,9 @@ jobs:
         continue-on-error: true
         env:
           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          ORG: ${{ github.repository_owner }}
+          REPO: ${{ github.event.repository.name }}
+          COMMIT_UUID: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
           if [ -z "$CODACY_PROJECT_TOKEN" ]; then
             echo "CODACY_PROJECT_TOKEN not set, skipping Codacy upload"
@@ -94,11 +97,8 @@ jobs:
             echo "Error: expected exactly 1 run after merging, got $RUN_COUNT. Skipping Codacy upload to avoid rejection."
             exit 1
           fi
-          ORG="${{ github.repository_owner }}"
-          REPO="${{ github.event.repository.name }}"
           # Use the PR head SHA on pull_request events; github.sha is the synthetic
           # merge commit in that context and Codacy would attach results to a non-head commit.
-          COMMIT_UUID="${{ github.event.pull_request.head.sha || github.sha }}"
           echo "Uploading merged SARIF to Codacy..."
           HTTP_STATUS=""
           CURL_EXIT=0

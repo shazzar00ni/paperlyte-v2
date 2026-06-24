@@ -78,6 +78,7 @@ jobs:
       # Upload the merged single-run SARIF to Codacy.
       # This replaces the auto-upload that was disabled above, ensuring Codacy receives results
       # while staying within its 20-run-per-upload limit.
+      # Shared with codacy-pr-review via scripts/upload-sarif-to-codacy.sh.
       - name: Upload merged SARIF to Codacy
         if: steps.merge-sarif.conclusion == 'success'
         continue-on-error: true
@@ -86,50 +87,7 @@ jobs:
           ORG: ${{ github.repository_owner }}
           REPO: ${{ github.event.repository.name }}
           COMMIT_UUID: ${{ github.event.pull_request.head.sha || github.sha }}
-        run: |
-          if [ -z "$CODACY_PROJECT_TOKEN" ]; then
-            echo "CODACY_PROJECT_TOKEN not set, skipping Codacy upload"
-            exit 0
-          fi
-          RUN_COUNT=$(jq '.runs | length' results.sarif)
-          echo "SARIF run count before upload: $RUN_COUNT"
-          if [ "$RUN_COUNT" -ne 1 ]; then
-            echo "Error: expected exactly 1 run after merging, got $RUN_COUNT. Skipping Codacy upload to avoid rejection."
-            exit 1
-          fi
-          # Use the PR head SHA on pull_request events; github.sha is the synthetic
-          # merge commit in that context and Codacy would attach results to a non-head commit.
-          echo "Uploading merged SARIF to Codacy..."
-          HTTP_STATUS=""
-          CURL_EXIT=0
-          HTTP_STATUS=$(curl -sS \
-            --connect-timeout 10 \
-            --max-time 90 \
-            --retry 3 \
-            --retry-delay 2 \
-            --retry-connrefused \
-            -o /tmp/codacy_upload_response.txt -w "%{http_code}" -X POST \
-            "https://api.codacy.com/api/v3/analysis/organizations/gh/$ORG/repositories/$REPO/upload" \
-            -H "project-token: $CODACY_PROJECT_TOKEN" \
-            -F "commitUuid=$COMMIT_UUID" \
-            -F "results=@results.sarif;type=application/json") || CURL_EXIT=$?
-          if [ "$CURL_EXIT" -ne 0 ]; then
-            echo "Error: curl failed while uploading SARIF to Codacy (exit code $CURL_EXIT)."
-            if [ -n "$HTTP_STATUS" ]; then
-              echo "Codacy upload HTTP status (if any): $HTTP_STATUS"
-            fi
-            echo "Codacy upload response (if any):"
-            cat /tmp/codacy_upload_response.txt 2>/dev/null || true
-            exit 1
-          fi
-          echo "Codacy upload HTTP status: $HTTP_STATUS"
-          cat /tmp/codacy_upload_response.txt || true
-          if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ]; then
-            echo "Codacy upload succeeded."
-          else
-            echo "Warning: Codacy upload returned HTTP $HTTP_STATUS"
-            exit 1
-          fi
+        run: bash ./scripts/upload-sarif-to-codacy.sh results.sarif
 
       # Upload the SARIF file only after successful merge.
       # Using step outcome instead of hashFiles() ensures we never upload the
@@ -220,6 +178,7 @@ jobs:
       # Upload the merged SARIF to Codacy so it can post inline PR review comments.
       # continue-on-error: ONLY transient upload connectivity issues are tolerated
       # here — the analysis step above already failed the job on real errors.
+      # Shared with codacy-security-scan via scripts/upload-sarif-to-codacy.sh.
       - name: Upload SARIF to Codacy
         if: steps.merge-sarif.conclusion == 'success'
         continue-on-error: true
@@ -228,47 +187,4 @@ jobs:
           ORG: ${{ github.repository_owner }}
           REPO: ${{ github.event.repository.name }}
           COMMIT_UUID: ${{ github.event.pull_request.head.sha || github.sha }}
-        run: |
-          if [ -z "$CODACY_PROJECT_TOKEN" ]; then
-            echo "CODACY_PROJECT_TOKEN not set, skipping Codacy upload"
-            exit 0
-          fi
-          RUN_COUNT=$(jq '.runs | length' results.sarif)
-          echo "SARIF run count before upload: $RUN_COUNT"
-          if [ "$RUN_COUNT" -ne 1 ]; then
-            echo "Error: expected exactly 1 run after merging, got $RUN_COUNT. Skipping Codacy upload to avoid rejection."
-            exit 1
-          fi
-          # Use the PR head SHA on pull_request events; github.sha is the synthetic
-          # merge commit in that context and Codacy would attach results to a non-head commit.
-          echo "Uploading merged SARIF to Codacy..."
-          HTTP_STATUS=""
-          CURL_EXIT=0
-          HTTP_STATUS=$(curl -sS \
-            --connect-timeout 10 \
-            --max-time 90 \
-            --retry 3 \
-            --retry-delay 2 \
-            --retry-connrefused \
-            -o /tmp/codacy_upload_response.txt -w "%{http_code}" -X POST \
-            "https://api.codacy.com/api/v3/analysis/organizations/gh/$ORG/repositories/$REPO/upload" \
-            -H "project-token: $CODACY_PROJECT_TOKEN" \
-            -F "commitUuid=$COMMIT_UUID" \
-            -F "results=@results.sarif;type=application/json") || CURL_EXIT=$?
-          if [ "$CURL_EXIT" -ne 0 ]; then
-            echo "Error: curl failed while uploading SARIF to Codacy (exit code $CURL_EXIT)."
-            if [ -n "$HTTP_STATUS" ]; then
-              echo "Codacy upload HTTP status (if any): $HTTP_STATUS"
-            fi
-            echo "Codacy upload response (if any):"
-            cat /tmp/codacy_upload_response.txt 2>/dev/null || true
-            exit 1
-          fi
-          echo "Codacy upload HTTP status: $HTTP_STATUS"
-          cat /tmp/codacy_upload_response.txt || true
-          if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ]; then
-            echo "Codacy upload succeeded."
-          else
-            echo "Warning: Codacy upload returned HTTP $HTTP_STATUS"
-            exit 1
-          fi
+        run: bash ./scripts/upload-sarif-to-codacy.sh results.sarif

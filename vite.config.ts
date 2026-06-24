@@ -1,37 +1,108 @@
 import { defineConfig } from 'vite'
-import type { Plugin } from 'vite'
+import type { Plugin, IndexHtmlTransformContext, HtmlTagDescriptor } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 import { codecovRollupPlugin } from '@codecov/rollup-plugin'
 
 /**
- * Plugin to inject development-only Content Security Policy
+ * Regular expression that matches only the Inter latin static font files
+ * explicitly imported in main.tsx:
+ *   @fontsource/inter/latin-400.css → inter-latin-400-normal-[hash].woff2
+ *   @fontsource/inter/latin-500.css → inter-latin-500-normal-[hash].woff2
+ *   @fontsource/inter/latin-600.css → inter-latin-600-normal-[hash].woff2
+ *   @fontsource/inter/latin-700.css → inter-latin-700-normal-[hash].woff2
+ */
+const INTER_FONT_PATTERN = /inter-latin-\d+-normal-[^/]+\.woff2$/
+
+/**
+ * Vite plugin that injects `<link rel="preload">` tags for bundled Inter latin
+ * woff2 fonts into the production HTML.
  *
- * Development: Relaxed CSP meta tag to allow Vite HMR (WebSockets + unsafe-eval)
- * Production: CSP delivered via HTTP headers in netlify.toml (and vercel.json as a
- * secondary reference). HTTP headers support frame-ancestors; meta tags do not.
+ * Fonts discovered via CSS `@font-face` create a depth-2 critical-request chain
+ * (HTML → CSS → fonts) that fails the `network-dependency-tree-insight` Lighthouse
+ * assertion. Preloading moves the fonts to depth 1 so they load in parallel with CSS.
  *
- * Note: Meta tag CSP cannot enforce frame-ancestors and lacks initial-response protection.
- * Production uses proper HTTP headers configured in netlify.toml.
+ * Only the four Inter latin weights imported in `main.tsx` are preloaded (matched by
+ * {@link INTER_FONT_PATTERN}). Preloading every `.woff2` in the bundle would
+ * unnecessarily prioritise fonts not needed for the initial render.
  *
- * SECURITY NOTICE - Development unsafe-eval:
- * The development CSP includes 'unsafe-eval' which permits eval() execution. This is
- * required for Vite's Hot Module Replacement (HMR) and React Fast Refresh to function.
+ * @returns A Vite {@link Plugin} that runs during the `build` phase only.
+ */
+function fontPreloadPlugin(): Plugin {
+  return {
+    name: 'font-preload',
+    apply: 'build',
+    transformIndexHtml: {
+      order: 'post',
+      handler(_html: string, ctx: IndexHtmlTransformContext): HtmlTagDescriptor[] | void {
+        const bundle = ctx.bundle
+        if (!bundle) return
+        return Object.keys(bundle)
+          .filter((key) => INTER_FONT_PATTERN.test(key))
+          .sort()
+          .map((key) => ({
+            tag: 'link',
+            attrs: {
+              rel: 'preload',
+              href: `/${key}`,
+              as: 'font',
+              type: 'font/woff2',
+              crossorigin: 'anonymous',
+            },
+            injectTo: 'head' as const,
+          }))
+      },
+    },
+  }
+}
+
+// Development-only CSP meta tag value.
+// 'unsafe-eval' and 'unsafe-inline' are required by Vite HMR and React Fast Refresh.
+// ws:/wss: allows the dev server WebSocket connection. Never present in production.
+const DEV_CSP = `default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' ws: wss:; worker-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';`
+
+// Inject a <meta http-equiv="Content-Security-Policy"> into dev HTML.
+// Nonces are not feasible in dev (no per-request server), so the meta tag
+// approach with relaxed directives is the standard Vite practice.
+function injectDevCsp(html: string): string {
+  const cspMetaTag = `    <!-- Content Security Policy (development only) -->
+    <meta http-equiv="Content-Security-Policy" content="${DEV_CSP}" />
+  </head>`
+  const modified = html.replace('</head>', cspMetaTag)
+  if (modified === html) {
+    console.warn(
+      '[csp-plugin] Warning: Could not inject CSP meta tag - </head> tag not found in HTML'
+    )
+  }
+  return modified
+}
+
+// Stamp nonce="CSP_NONCE" onto every <script> and <link rel="modulepreload">
+// that lacks a nonce. The WAF edge function replaces this placeholder with a
+// per-request cryptographic nonce at runtime.
+//
+// <link rel="modulepreload"> needs an explicit nonce because 'strict-dynamic'
+// only propagates trust to dynamically created scripts — not static preload hints.
+// Without a nonce, Chrome logs a CSP issue that fails the Lighthouse audit.
+//
+// Only pre-audited build-artifact tags receive the placeholder; tags injected
+// after the build do not carry it and are blocked by the nonce-based CSP.
+function injectProdNonces(html: string): string {
+  return html
+    .replace(/<script(?![^>]*\bnonce=)([^>]*)>/gi, '<script$1 nonce="CSP_NONCE">')
+    .replace(
+      /<link(?=[^>]*\brel=["']modulepreload["'])(?![^>]*\bnonce=)([^>]*)>/gi,
+      '<link$1 nonce="CSP_NONCE">'
+    )
+}
+
+/**
+ * Plugin to inject development-only Content Security Policy, and to stamp
+ * nonce="CSP_NONCE" placeholders into production HTML for the WAF to replace.
  *
- * Risk: If malicious code is introduced during development (e.g., compromised npm package,
- * malicious browser extension), unsafe-eval could be exploited for code execution.
- *
- * Mitigation:
- * - Production CSP (netlify.toml) does NOT include unsafe-eval (strict policy)
- * - Only run trusted code in development environment
- * - Regularly audit dependencies with `npm audit`
- * - Use lock files (package-lock.json) to prevent supply chain attacks
- * - Consider using browser profiles dedicated to development (no untrusted extensions)
- *
- * Alternative approaches (not currently implemented):
- * - Nonce-based CSP: Would require server-side nonce generation for each dev request
- * - Disable CSP in dev: Would lose all CSP protection during development
- * Current approach balances security with developer experience (standard Vite practice).
+ * Production (Netlify): nonce-based CSP injected by WAF edge function.
+ * Production (Vercel): static CSP header in vercel.json.
+ * Development: relaxed CSP meta tag to allow Vite HMR.
  */
 function cspPlugin(): Plugin {
   let isDev = false
@@ -41,36 +112,12 @@ function cspPlugin(): Plugin {
     configResolved(config) {
       isDev = config.mode === 'development'
     },
-    transformIndexHtml(html) {
-      // Only inject CSP meta tag in development mode
-      // Production CSP is delivered via HTTP headers in netlify.toml
-      if (!isDev) {
-        return html
-      }
-
-      // Development CSP: Allow WebSockets for HMR and unsafe-eval for fast refresh
-      // - 'unsafe-eval' is required for Vite's HMR and React Fast Refresh (development only)
-      // - 'unsafe-inline' is required for Vite's dev server CSS injection during HMR
-      // - ws: wss: enables WebSocket connections for Vite dev server HMR
-      // - All fonts and icons are self-hosted (no external CDN dependencies)
-      // - Fonts: self-hosted variable fonts in public/fonts/, Icons: bundled custom SVG paths
-      const devCSP = `default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' ws: wss:; worker-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';`
-
-      // Inject CSP meta tag before closing </head> tag (dev only)
-      const cspMetaTag = `    <!-- Content Security Policy (development only) -->
-    <meta http-equiv="Content-Security-Policy" content="${devCSP}" />
-  </head>`
-
-      const modifiedHtml = html.replace('</head>', cspMetaTag)
-
-      // Warn if injection failed (no </head> tag found)
-      if (modifiedHtml === html) {
-        console.warn(
-          '[csp-plugin] Warning: Could not inject CSP meta tag - </head> tag not found in HTML'
-        )
-      }
-
-      return modifiedHtml
+    transformIndexHtml: {
+      // Post-order so Vite's own injected <script> tags also receive the placeholder.
+      order: 'post',
+      handler(html) {
+        return isDev ? injectDevCsp(html) : injectProdNonces(html)
+      },
     },
   }
 }
@@ -97,6 +144,7 @@ export default defineConfig({
   plugins: [
     react(),
     cspPlugin(),
+    fontPreloadPlugin(),
     // Only instantiate Codecov plugin when token is present (CI environment)
     ...(process.env.CODECOV_TOKEN
       ? [

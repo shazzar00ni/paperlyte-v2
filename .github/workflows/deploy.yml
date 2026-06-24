@@ -28,10 +28,18 @@ jobs:
       contents: read
 
     steps:
-      - name: Harden the runner (Audit all outbound calls)
+      - name: Harden the runner (Block unexpected egress)
         uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
         with:
-          egress-policy: audit
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443
+            api.github.com:443
+            objects.githubusercontent.com:443
+            codeload.github.com:443
+            raw.githubusercontent.com:443
+            registry.npmjs.org:443
+            nodejs.org:443
 
       - name: Checkout code
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -126,10 +134,19 @@ jobs:
       deployments: write
 
     steps:
-      - name: Harden the runner (Audit all outbound calls)
+      - name: Harden the runner (Block unexpected egress)
         uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
         with:
-          egress-policy: audit
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443
+            api.github.com:443
+            objects.githubusercontent.com:443
+            codeload.github.com:443
+            raw.githubusercontent.com:443
+            registry.npmjs.org:443
+            nodejs.org:443
+            api.netlify.com:443
 
       - name: Checkout code
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0

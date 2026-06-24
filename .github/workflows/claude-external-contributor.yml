@@ -29,6 +29,11 @@ jobs:
       github.event.label.name == 'claude' &&
       github.event.pull_request.head.repo.full_name != github.repository
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        with:
+          egress-policy: audit
+
       - name: Check actor repository permission
         id: permission_check
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0

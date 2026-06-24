@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "ci": "npm run lint && vitest run && npm run build",
     "generate:icons": "node scripts/generate-icons.js",
     "generate:mockups": "node scripts/generate-mockups.js",
     "generate-icons": "node scripts/generate-icons.js",
@@ -25,13 +26,14 @@
     "size": "size-limit"
   },
   "dependencies": {
-    "@fontsource/inter": "^5.2.8",
-    "@sentry/react": "^10.57.0",
+    "@sentry/react": "^10.59.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   },
   "devDependencies": {
     "@codecov/rollup-plugin": "^2.0.1",
+    "@commitlint/cli": "^20.5.3",
+    "@commitlint/config-conventional": "^20.5.3",
     "@eslint/js": "^10",
     "@lhci/cli": "^0.15.1",
     "@netlify/functions": "^5.3.0",
@@ -41,7 +43,7 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
-    "@types/node": "^25.9.3",
+    "@types/node": "^26.0.0",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.4",
@@ -72,13 +74,15 @@
       "name": "Main bundle (JS)",
       "path": "dist/assets/*.js",
       "limit": "150 KB",
-      "gzip": true
+      "gzip": true,
+      "running": false
     },
     {
       "name": "Main bundle (CSS)",
       "path": "dist/assets/*.css",
       "limit": "30 KB",
-      "gzip": true
+      "gzip": true,
+      "running": false
     }
   ],
   "overrides": {
@@ -87,11 +91,13 @@
     "ip-address": "^10.1.1",
     "brace-expansion": "^5.0.5",
     "flatted": "^3.4.2",
+    "jiti": "^2.7.0",
+    "js-yaml": "^4.2.0",
     "lodash": "^4.18.1",
     "lodash-es": "^4.18.1",
     "path-to-regexp": "^0.1.13",
     "tmp": "^0.2.7",
-    "undici": "^7.20.0",
+    "undici": "^7.28.0",
     "extract-zip": {
       "yauzl": "^3.2.1"
     },

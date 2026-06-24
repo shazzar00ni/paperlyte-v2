@@ -2,12 +2,6 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import * as Sentry from '@sentry/react'
 import * as monitoring from '@utils/monitoring'
-// Self-hosted Google Fonts (Inter) for better security and performance
-// Using Latin-only subset to reduce bundle size (~800 KB savings)
-import '@fontsource/inter/latin-400.css'
-import '@fontsource/inter/latin-500.css'
-import '@fontsource/inter/latin-600.css'
-import '@fontsource/inter/latin-700.css'
 import './index.css'
 import App from './App.tsx'
 import { updateMetaTags } from './utils/env'

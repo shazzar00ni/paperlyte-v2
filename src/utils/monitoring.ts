@@ -6,7 +6,7 @@
  */
 
 import * as Sentry from '@sentry/react'
-import { trackEvent } from './analytics'
+import { trackEvent } from '@utils/analytics'
 
 /**
  * Map application severity levels to Sentry log levels

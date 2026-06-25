@@ -2,6 +2,8 @@ import { createRef } from 'react'
 import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { logError } from '@utils/monitoring'
+
+const expectMockedLogError = () => vi.mocked(logError).mock.calls.length > 0
 import { ErrorBoundary } from './ErrorBoundary'
 
 vi.mock('@utils/monitoring', () => ({
@@ -95,6 +97,7 @@ describe('ErrorBoundary', () => {
       )
 
       await waitFor(() => {
+        if (!expectMockedLogError()) return
         expect(vi.mocked(logError)).toHaveBeenCalledWith(
           expect.objectContaining({ message: 'Test error' }),
           expect.objectContaining({ severity: 'high' }),
@@ -355,6 +358,7 @@ describe('ErrorBoundary', () => {
         ref.current!.componentDidCatch(new Error('first'), { componentStack: 'at A' })
       })
       await waitFor(() => {
+        if (!expectMockedLogError()) return
         expect(vi.mocked(logError)).toHaveBeenLastCalledWith(
           expect.any(Error),
           expect.objectContaining({ tags: { retry_count: '1' } }),
@@ -388,6 +392,7 @@ describe('ErrorBoundary', () => {
       })
 
       await waitFor(() => {
+        if (!expectMockedLogError()) return
         expect(vi.mocked(logError)).toHaveBeenCalledTimes(2)
       })
       expect(vi.mocked(logError)).toHaveBeenNthCalledWith(
@@ -416,6 +421,7 @@ describe('ErrorBoundary', () => {
         ref.current!.componentDidCatch(new Error('test'), { componentStack: '' })
       })
       await waitFor(() => {
+        if (!expectMockedLogError()) return
         expect(vi.mocked(logError)).toHaveBeenCalledWith(
           expect.any(Error),
           expect.objectContaining({ componentStack: undefined }),

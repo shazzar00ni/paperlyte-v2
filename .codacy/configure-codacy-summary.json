@@ -1,0 +1,115 @@
+{
+  "summary": {
+    "enabledPatterns": { "before": 2432, "after": 2436 },
+    "enabledTools": { "before": 12, "after": 13 },
+    "issues": { "before": 290, "after": 271 },
+    "analysisRuntime": { "before": 72763, "after": 14671 }
+  },
+  "toolChanges": [
+    {
+      "toolId": "PMD7",
+      "action": "enabled",
+      "reason": "Added by init --auto for ECMAScript best practices (AvoidWithStatement, ConsistentReturn, UseBaseWithParseInt, AssignmentInOperand, UnnecessaryBlock, EqualComparison); 0 issues found — confirms good JavaScript fundamentals.",
+      "patternsAffected": 6
+    }
+  ],
+  "patternChanges": [
+    {
+      "patternId": "Agentlinter_clarity_undefined-term",
+      "toolId": "Agentlinter",
+      "action": "disabled",
+      "reason": "Convention mismatch for developer documentation — technical terms like HMR, ESLint, Vite, TypeScript are standard vocabulary in a developer-oriented project. Flagging them as undefined acronyms does not add actionable value.",
+      "delta": -16,
+      "parameters": []
+    },
+    {
+      "patternId": "Agentlinter_clarity_ambiguous-pronoun",
+      "toolId": "Agentlinter",
+      "action": "disabled",
+      "reason": "Low signal for technical documentation — pronoun usage in developer agent instructions rarely creates genuine ambiguity in context. 3 issues, all Info severity.",
+      "delta": -3,
+      "parameters": []
+    }
+  ],
+  "inheritedDisabledPatterns": [
+    {
+      "patternId": "Stylelint_color-no-hex",
+      "toolId": "Stylelint",
+      "status": "already-disabled-in-parent",
+      "reason": "Convention mismatch — the project design system explicitly uses hex colors (#1a1a1a, #ffffff) as documented in CLAUDE.md. All 56 issues were in the design token file (variables.css). Requiring CSS custom properties instead contradicts established project conventions.",
+      "parameters": []
+    },
+    {
+      "patternId": "Biome_lint_complexity_noImportantStyles",
+      "toolId": "Biome",
+      "status": "already-disabled-in-parent",
+      "reason": "Cross-tool deduplication — Stylelint declaration-no-important covers the same !important concern on the identical CSS module files. Stylelint is the more appropriate specialized CSS tool. Keeping both generates duplicate issues on the same lines.",
+      "parameters": []
+    },
+    {
+      "patternId": "Biome_lint_security_noSecrets",
+      "toolId": "Biome",
+      "status": "already-disabled-in-parent",
+      "reason": "100% false positives in this codebase — all 8 hits are SVG path data strings and CSS attribute selectors (e.g. 'link[rel=\"canonical\"]', 'meta[name=\"keywords\"]') that trigger Biome's entropy heuristic. Security concern remains fully covered by Trivy_secret and Semgrep gitleaks/hard-coded-password patterns.",
+      "parameters": []
+    }
+  ],
+  "processNotes": {
+    "initFilterRegression": {
+      "description": "codacy-analysis init --auto generated config with 'Critical' in metadata.autoFilters instead of the parent's 'AllCritical'. This caused 9 patterns to be silently dropped from the initial commit.",
+      "patternsTemporarilyDropped": [
+        "Lizard_ccn-critical",
+        "Lizard_nloc-critical",
+        "Lizard_file-nloc-critical",
+        "Lizard_parameter-count-critical",
+        "shellcheck_SC1070",
+        "shellcheck_SC1073",
+        "shellcheck_SC2114",
+        "Biome_lint_correctness_noUndeclaredVariables",
+        "Biome_lint_correctness_noUnresolvedImports"
+      ],
+      "resolution": "All 9 patterns restored in a follow-up commit; autoFilters corrected to AllCritical. Net effect on final config: no change from parent for these patterns.",
+      "warning": "Future runs of 'codacy-analysis init --auto' or 'update-config' on source:auto configs replay initialization and may drop AllCritical patterns again. Always verify autoFilters remains 'AllCritical' after any init/update-config operation."
+    },
+    "pmd7ParserLimitation": {
+      "description": "PMD7 embeds Rhino 1.7.15 which does not support ES2020 optional chaining (?.) and nullish coalescing (??) operators, nor ESM import/export syntax. public/theme-init.js (lines 29, 48, 53) and public/sw.js (lines 163-164) use optional chaining/nullish coalescing; eslint.config.js and postcss.config.js use ESM import/export default. All four cause silent FileErrors.",
+      "resolution": "All four files added to PMD7 per-tool excludes. Revisit when Codacy upgrades PMD7 to Rhino 1.8.0+."
+    }
+  },
+  "fileExclusions": null,
+  "securityCoverage": {
+    "inheritedDeduplication": [
+      "Biome noImportantStyles already disabled in parent — same CSS !important concern covered by Stylelint declaration-no-important (more appropriate CSS-specific tool)",
+      "Biome noSecrets already disabled in parent — 100% false positives (SVG paths, CSS selectors); same concern covered by Trivy_secret and Semgrep hard-coded-password/gitleaks patterns"
+    ],
+    "newCoverage": [
+      "PMD7 ECMAScript checks now cover public/*.js files for with-statements, inconsistent returns, missing radix in parseInt, assignment in operand, unnecessary blocks, and equality comparisons"
+    ],
+    "noisyButKept": [
+      "Stylelint declaration-no-important (23 issues, Warning) — kept; !important in CSS animation/reset files is a genuine code smell worth tracking even though the project uses it intentionally in places"
+    ]
+  },
+  "keyImprovements": [
+    "PMD7 enabled for ECMAScript best practices — 6 patterns covering public/*.js files outside TypeScript/ESLint scope; 0 findings confirms codebase avoids with-statements, inconsistent returns, and similar JS pitfalls",
+    "Disabled 19 low-signal Agentlinter informational warnings (undefined technical terms -16, ambiguous pronouns -3); 22 higher-signal warnings remain including escape-hatch and duplicate-instruction checks",
+    "PMD7 file exclusions added for 4 files — eslint.config.js and postcss.config.js (ESM import/export); public/theme-init.js and public/sw.js (ES2020 optional chaining/nullish coalescing); all cause silent Rhino 1.7.15 FileErrors",
+    "Verified AllCritical filter preserved — init --auto regression temporarily dropped 9 critical/correctness patterns (Lizard critical, ShellCheck SC1070/SC1073/SC2114, Biome noUndeclaredVariables/noUnresolvedImports); all restored, metadata.autoFilters corrected to AllCritical"
+  ],
+  "localConfigTools": [
+    {
+      "toolId": "ESLint9",
+      "configFile": "eslint.config.js",
+      "issueCount": 0,
+      "note": "ESLint9 runs with the project's own eslint.config.js. Issues from this tool are controlled by that config, not Codacy patterns. The partial run status (1 error, 120 files analyzed) may indicate a missing dependency — run npm install if ESLint issues are expected."
+    },
+    {
+      "toolId": "markdownlint",
+      "configFile": ".markdownlint.json",
+      "issueCount": 17,
+      "note": "markdownlint runs with the project's own .markdownlint.json. The 17 findings (MD007 list indentation, MD032 list spacing, MD040 fenced code blocks) are governed by that config. Edit .markdownlint.json to adjust these rules."
+    }
+  ],
+  "codacyYaml": null,
+  "importResults": null,
+  "cloudVerification": null
+}

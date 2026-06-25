@@ -108,6 +108,7 @@ ol {
  * Uses 0.01ms instead of 0ms to prevent breaking some animations
  * See: https://web.dev/prefers-reduced-motion/
  */
+/* stylelint-disable declaration-no-important */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -125,3 +126,4 @@ ol {
     scroll-behavior: auto !important;
   }
 }
+/* stylelint-enable declaration-no-important */

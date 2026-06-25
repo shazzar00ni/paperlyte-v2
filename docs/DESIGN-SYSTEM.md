@@ -325,7 +325,7 @@ import styles from './Alert.module.css'
 
 ### Type Scale
 
-Font sizes use `clamp()` for fluid responsive scaling — they grow smoothly between a minimum (mobile) and maximum (desktop) value without requiring media-query overrides.
+The fluid font-size tokens (`lg` through `7xl`) use `clamp()` — they grow smoothly between a minimum (mobile) and maximum (desktop) value without requiring media-query overrides. The smaller tokens (`base`, `sm`, `xs`) are fixed values.
 
 | Name     | Token              | Mobile → Desktop  | Line Height    | Use Case                        |
 | -------- | ------------------ | ----------------- | -------------- | ------------------------------- |
@@ -1331,7 +1331,7 @@ interface SectionProps {
 
 - `default` - Uses `--color-background`
 - `surface` - Uses `--color-surface` (subtle gray)
-- `primary` - Uses `--color-primary` (blue accent)
+- `primary` - Uses `--color-primary` (monochrome primary)
 
 **Padding Sizes:**
 

@@ -1,9 +1,9 @@
 # Paperlyte Design System
 
-> **Version:** 2.1.0
-> **Last Updated:** December 20, 2025
+> **Version:** 2.2.0
+> **Last Updated:** June 25, 2026
 
-A comprehensive design system for Paperlyte - a lightning-fast, distraction-free note-taking application that prioritizes simplicity and performance through a clean, modern aesthetic with a blue accent color.
+A comprehensive design system for Paperlyte - a lightning-fast, distraction-free note-taking application that prioritizes simplicity and performance through a sophisticated monochrome aesthetic with near-black (#1a1a1a) and pure white (#ffffff) as the primary palette.
 
 ---
 
@@ -46,24 +46,24 @@ A comprehensive design system for Paperlyte - a lightning-fast, distraction-free
 
 ## Color Palette
 
-**Design Philosophy:** Paperlyte uses a clean, paper-inspired palette with blue (#3B82F6) as the primary accent color. The design emphasizes clarity and readability with high-contrast neutral colors, while the blue accent adds visual interest to interactive elements and calls-to-action.
+**Design Philosophy:** Paperlyte uses a sophisticated monochrome palette — near-black (#1a1a1a) in light mode, pure white (#ffffff) in dark mode — as the primary brand color. This inverted approach creates a clean, paper-like aesthetic that reinforces the writing-focused product. High contrast neutrals ensure maximum readability.
 
 ### Primary Colors
 
 ```css
 /* Light Mode */
---color-primary: #3b82f6; /* Blue 500 - Main brand color */
---color-primary-dark: #2563eb; /* Blue 600 - Hover states */
---color-primary-light: #93c5fd; /* Blue 300 - Accents */
---color-primary-faint: rgba(59, 130, 246, 0.1); /* 10% opacity for backgrounds */
---color-primary-fainter: rgba(59, 130, 246, 0.05); /* 5% opacity for subtle backgrounds */
+--color-primary: #1a1a1a;                    /* Near black - Main brand color */
+--color-primary-dark: #000000;               /* Pure black - Hover states */
+--color-primary-light: #333333;              /* Dark gray - Accents */
+--color-primary-faint: rgba(26, 26, 26, 0.1);  /* 10% opacity for backgrounds */
+--color-primary-fainter: rgba(26, 26, 26, 0.05); /* 5% opacity for subtle backgrounds */
 ```
 
 #### Color Usage
 
-- **Primary (#3b82f6)** - CTAs, primary buttons, links, interactive elements
-- **Primary Dark (#2563eb)** - Hover states on primary elements
-- **Primary Light (#93c5fd)** - Subtle accents, secondary highlights
+- **Primary (#1a1a1a)** - CTAs, primary buttons, links, interactive elements
+- **Primary Dark (#000000)** - Hover states on primary elements
+- **Primary Light (#333333)** - Subtle accents, secondary highlights
 - **Primary Faint** - Background tints for focus states, subtle backgrounds
 - **Primary Fainter** - Very subtle backgrounds, hover states
 
@@ -71,55 +71,67 @@ A comprehensive design system for Paperlyte - a lightning-fast, distraction-free
 
 ```css
 /* Light Mode */
---color-background: #ffffff; /* Pure white - Main background */
---color-surface: #f9fafb; /* Gray 50 - Card backgrounds */
+--color-background: #ffffff;  /* Pure white - Main background */
+--color-surface: #f9fafb;     /* Gray 50 - Card backgrounds */
+--color-surface-dark: #18181b; /* Zinc 900 - Dark surface sections (e.g. inverted CTA) */
 --color-text-primary: #111827; /* Gray 900 - Headings, body text */
 --color-text-secondary: #6b7280; /* Gray 500 - Supporting text */
---color-text-on-primary: #ffffff; /* White text on primary backgrounds */
---color-border: #e5e7eb; /* Gray 200 - Borders, dividers */
+--color-text-tertiary: #737373;  /* Neutral 500 - Muted text (WCAG AA 4.5:1 on white) */
+--color-text-on-primary: #ffffff; /* White text on dark primary backgrounds */
+--color-text-on-dark: #ffffff;    /* White text on dark surfaces */
+--color-text-on-dark-secondary: rgba(255, 255, 255, 0.7); /* Semi-transparent white */
+--color-border: #e5e7eb;       /* Gray 200 - Borders, dividers */
+--color-border-light: #f3f4f6; /* Gray 100 - Subtle borders */
 ```
 
 ### Dark Mode Colors
 
-**Dark Mode Philosophy:** In dark mode, the palette maintains readability while providing a comfortable low-light experience. The blue accent remains consistent for brand recognition.
+**Dark Mode Philosophy:** In dark mode, the primary color inverts to pure white (#ffffff), maintaining the monochrome brand identity while providing a comfortable low-light experience. The dark background shifts to Slate 900.
 
 ```css
 /* Dark Mode */
---color-primary: #3b82f6; /* Blue 500 - Consistent brand color */
---color-primary-dark: #2563eb; /* Blue 600 - Hover states */
---color-primary-light: #60a5fa; /* Blue 400 - Accents */
---color-primary-faint: rgba(59, 130, 246, 0.1); /* 10% opacity for backgrounds */
---color-primary-fainter: rgba(59, 130, 246, 0.05); /* 5% opacity for subtle backgrounds */
---color-background: #0f172a; /* Slate 900 - Dark background */
---color-surface: #1e293b; /* Slate 800 - Card backgrounds */
+--color-primary: #ffffff;      /* Pure white - Primary in dark mode */
+--color-primary-dark: #f1f5f9; /* Slate 100 - Hover states */
+--color-primary-light: #e2e8f0; /* Slate 200 - Accents */
+--color-primary-faint: rgba(255, 255, 255, 0.1);  /* 10% opacity for backgrounds */
+--color-primary-fainter: rgba(255, 255, 255, 0.05); /* 5% opacity for subtle backgrounds */
+--color-background: #0f172a;   /* Slate 900 - Dark background */
+--color-surface: #1e293b;      /* Slate 800 - Card backgrounds */
+--color-surface-dark: #0f172a; /* Slate 900 - Dark sections */
 --color-text-primary: #f1f5f9; /* Slate 100 - Light text */
 --color-text-secondary: #94a3b8; /* Slate 400 - Supporting text */
---color-border: #334155; /* Slate 700 - Borders */
+--color-text-tertiary: #64748b;  /* Slate 500 - Muted text */
+--color-text-on-primary: #000000; /* Black text on white primary (dark mode) */
+--color-text-on-dark: #ffffff;
+--color-text-on-dark-secondary: rgba(255, 255, 255, 0.7);
+--color-border: #334155;       /* Slate 700 - Borders */
+--color-border-light: #1e293b; /* Slate 800 - Subtle borders */
 ```
 
 ### WCAG Compliance Matrix
 
 All colors have been tested for WCAG 2.1 compliance. The table below shows key color combinations and their contrast ratios.
 
-#### Primary Color Combinations
+#### Primary Color Combinations (Light Mode)
 
-| Foreground                  | Background             | Contrast Ratio | WCAG Level | Use Case                                                    |
-| --------------------------- | ---------------------- | -------------- | ---------- | ----------------------------------------------------------- |
-| `#111827` (Text Primary)    | `#FFFFFF` (Background) | 16.1:1         | AAA        | Body text (light mode)                                      |
-| `#6B7280` (Text Secondary)  | `#FFFFFF` (Background) | 4.6:1          | AA         | Supporting text (light mode)                                |
-| `#3b82f6` (Primary)         | `#FFFFFF` (Background) | 4.5:1          | AA\*       | Interactive elements and large text only (18pt+/14pt+ bold) |
-| `#FFFFFF` (Text on Primary) | `#3b82f6` (Primary)    | 4.5:1          | AA\*       | Large text on primary buttons only (18pt+/14pt+ bold)       |
-| `#2563eb` (Primary Dark)    | `#FFFFFF` (Background) | 7.8:1          | AAA        | Hover states, emphasized elements                           |
-| `#93c5fd` (Primary Light)   | `#FFFFFF` (Background) | 3.1:1          | AA\*       | Large text only (18pt+/14pt+ bold)                          |
+| Foreground                   | Background             | Contrast Ratio | WCAG Level | Use Case                         |
+| ---------------------------- | ---------------------- | -------------- | ---------- | -------------------------------- |
+| `#111827` (Text Primary)     | `#FFFFFF` (Background) | 16.1:1         | AAA        | Body text (light mode)           |
+| `#6B7280` (Text Secondary)   | `#FFFFFF` (Background) | 4.6:1          | AA         | Supporting text (light mode)     |
+| `#737373` (Text Tertiary)    | `#FFFFFF` (Background) | 4.5:1          | AA         | Muted text (light mode)          |
+| `#1A1A1A` (Primary)          | `#FFFFFF` (Background) | 18.1:1         | AAA        | Buttons, interactive elements    |
+| `#FFFFFF` (Text on Primary)  | `#1A1A1A` (Primary)    | 18.1:1         | AAA        | Text on dark primary buttons     |
+| `#000000` (Primary Dark)     | `#FFFFFF` (Background) | 21:1           | AAA        | Hover states (max contrast)      |
 
-#### Dark Mode Combinations
+#### Primary Color Combinations (Dark Mode)
 
-| Foreground                 | Background             | Contrast Ratio | WCAG Level | Use Case                                                    |
-| -------------------------- | ---------------------- | -------------- | ---------- | ----------------------------------------------------------- |
-| `#F1F5F9` (Text Primary)   | `#0F172A` (Background) | 15.8:1         | AAA        | Body text (dark mode)                                       |
-| `#94A3B8` (Text Secondary) | `#0F172A` (Background) | 7.2:1          | AAA        | Supporting text (dark mode)                                 |
-| `#3b82f6` (Primary)        | `#0F172A` (Background) | 5.6:1          | AA         | Interactive elements and large text only (18pt+/14pt+ bold) |
-| `#FFFFFF` (Text)           | `#1E293B` (Surface)    | 14.8:1         | AAA        | Text on surface (dark mode)                                 |
+| Foreground                   | Background             | Contrast Ratio | WCAG Level | Use Case                          |
+| ---------------------------- | ---------------------- | -------------- | ---------- | --------------------------------- |
+| `#F1F5F9` (Text Primary)     | `#0F172A` (Background) | 15.8:1         | AAA        | Body text (dark mode)             |
+| `#94A3B8` (Text Secondary)   | `#0F172A` (Background) | 7.2:1          | AAA        | Supporting text (dark mode)       |
+| `#FFFFFF` (Primary)          | `#0F172A` (Background) | 19.6:1         | AAA        | Buttons, interactive (dark mode)  |
+| `#000000` (Text on Primary)  | `#FFFFFF` (Primary)    | 21:1           | AAA        | Text on white primary (dark mode) |
+| `#FFFFFF` (Text)             | `#1E293B` (Surface)    | 14.8:1         | AAA        | Text on surface (dark mode)       |
 
 #### Semantic Color Combinations
 
@@ -135,12 +147,10 @@ All colors have been tested for WCAG 2.1 compliance. The table below shows key c
 - AA\* = Meets AA standards for large text (18pt/14pt bold) and UI components (3:1 minimum)
 - Normal text requires 4.5:1 contrast (AA) or 7:1 (AAA)
 - Large text and UI components require 3:1 contrast (AA)
-- **Important:** the blue primary color (#3b82f6) provides 4.5:1 contrast on white and 5.6:1 on dark backgrounds
-- the blue primary color should **only** be used for interactive elements (buttons, links) and large text, **NOT for normal body text**
-- For normal body text, use `--color-text-primary` (#111827 light mode, #F1F5F9 dark mode) which provides 16+ contrast ratio
+- The monochrome primary (#1a1a1a / #ffffff) provides extremely high contrast (18:1+) — use freely for all text sizes
+- `--color-text-tertiary` was raised from #9ca3af (~2.85:1) to #737373 (~4.5:1) to meet WCAG AA for normal text
 - Contrast ratios calculated using WCAG 2.1 relative luminance formula
 - Semantic colors (success, error) are always paired with icons and descriptive text for accessibility
-- All background/border variants use very low opacity and are not intended for text contrast
 
 **Testing Tools:**
 
@@ -154,7 +164,7 @@ All colors have been tested for WCAG 2.1 compliance. The table below shows key c
 
 ```css
 /* Primary Button Hover */
-background-color: var(--color-primary-dark); /* #2563eb */
+background-color: var(--color-primary-dark); /* #000000 (light) / #f1f5f9 (dark) */
 transform: translateY(-1px);
 box-shadow: var(--shadow-md);
 
@@ -186,15 +196,15 @@ cursor: not-allowed;
 
 ✅ **DO:**
 
-- Use primary color (#3b82f6) for CTAs and important interactive elements
-- Leverage high contrast of neutral colors for readability
+- Use primary color (#1a1a1a / #ffffff) for CTAs and important interactive elements
+- Leverage the high contrast of the monochrome palette for readability
 - Use text-secondary (#6B7280) for supporting information
 - Test colors in both light and dark modes
-- Use blue sparingly to draw attention to key actions
+- Use `--color-text-tertiary` for truly muted/metadata text
 
 ❌ **DON'T:**
 
-- Overuse the blue accent - it should highlight, not overwhelm
+- Use the old blue (#3b82f6) — this palette has been replaced with monochrome
 - Place secondary text on colored backgrounds without checking contrast
 - Use color alone to convey information (add icons or text)
 - Override focus outline colors (accessibility requirement)
@@ -275,41 +285,77 @@ import styles from './Alert.module.css'
 
 ## Typography
 
-**Typography Philosophy:** Paperlyte uses Inter, a clean and highly readable sans-serif font family, for all text. This creates a consistent, professional appearance across the application while maintaining excellent legibility at all sizes.
+**Typography Philosophy:** Paperlyte uses a dual-font system. Inter (variable, sans-serif) handles UI components, body text, navigation, and buttons. Playfair Display (variable, serif) is used for all headings (h1–h6), giving editorial weight to headlines while keeping the interface clean.
 
 ### Font Families
 
 ```css
 --font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+--font-family-serif: 'Playfair Display', Georgia, serif;
 ```
 
-**Primary:** Inter (Variable Font) - Clean, readable sans-serif for all text
+**Primary (UI/body):** Inter (Variable Font, weight 100–900) — clean, readable sans-serif for body text, buttons, nav, labels
+**Display (headings):** Playfair Display (Variable Font, weight 400–900) — applied to all `h1`–`h6` elements globally via `typography.css`
 **Fallback:** System fonts for fast loading and graceful degradation
 
-**Loading Strategy:**
+**Self-hosted fonts (from `src/styles/typography.css`):**
 
-```html
-<!-- Preload critical font for faster rendering -->
-<link rel="preload" as="font" type="font/woff2" href="/fonts/Inter-Variable.woff2" crossorigin />
+```css
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/Inter-Variable-v2.woff2') format('woff2-variations');
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url('/fonts/PlayfairDisplay-Variable.woff2') format('woff2-variations');
+}
 ```
 
 **Font Usage Guidelines:**
 
-- **Inter**: All text - navigation, buttons, headings, body text, UI components
+- **Inter**: UI text — navigation, buttons, body paragraphs, labels, captions, form elements
+- **Playfair Display**: All semantic headings (h1–h6), applied automatically via global `typography.css`
 
 ### Type Scale
 
-| Name     | Size               | rem      | px   | Line Height    | Use Case                       |
-| -------- | ------------------ | -------- | ---- | -------------- | ------------------------------ |
-| **5xl**  | `--font-size-5xl`  | 3rem     | 48px | 1.25 (tight)   | Hero headlines                 |
-| **4xl**  | `--font-size-4xl`  | 2.25rem  | 36px | 1.25 (tight)   | Page titles                    |
-| **3xl**  | `--font-size-3xl`  | 1.875rem | 30px | 1.25 (tight)   | Section headers                |
-| **2xl**  | `--font-size-2xl`  | 1.5rem   | 24px | 1.25 (tight)   | Subsection headers             |
-| **XL**   | `--font-size-xl`   | 1.25rem  | 20px | 1.25 (normal)  | Card titles                    |
-| **LG**   | `--font-size-lg`   | 1.125rem | 18px | 1.5 (normal)   | Small headers, emphasized text |
-| **Base** | `--font-size-base` | 1rem     | 16px | 1.75 (relaxed) | Body text, paragraphs          |
-| **SM**   | `--font-size-sm`   | 0.875rem | 14px | 1.5 (normal)   | Captions, labels, small text   |
-| **XS**   | `--font-size-xs`   | 0.75rem  | 12px | 1.5 (normal)   | Metadata, timestamps           |
+Font sizes use `clamp()` for fluid responsive scaling — they grow smoothly between a minimum (mobile) and maximum (desktop) value without requiring media-query overrides.
+
+| Name     | Token              | Mobile → Desktop  | Line Height    | Use Case                        |
+| -------- | ------------------ | ----------------- | -------------- | ------------------------------- |
+| **7xl**  | `--font-size-7xl`  | 48px → 80px       | 1.25 (tight)   | Extra-large display headlines   |
+| **6xl**  | `--font-size-6xl`  | 40px → 64px       | 1.25 (tight)   | Large display headlines         |
+| **5xl**  | `--font-size-5xl`  | 32px → 48px       | 1.25 (tight)   | Hero headlines (h1)             |
+| **4xl**  | `--font-size-4xl`  | 28px → 36px       | 1.25 (tight)   | Page titles (h2)                |
+| **3xl**  | `--font-size-3xl`  | 24px → 30px       | 1.25 (tight)   | Section headers (h3)            |
+| **2xl**  | `--font-size-2xl`  | 20px → 24px       | 1.25 (tight)   | Subsection headers (h4)         |
+| **XL**   | `--font-size-xl`   | 18px → 20px       | 1.5 (normal)   | Card titles (h5)                |
+| **LG**   | `--font-size-lg`   | 16px → 18px       | 1.5 (normal)   | Small headers (h6), emphasis    |
+| **Base** | `--font-size-base` | 16px (fixed)      | 1.75 (relaxed) | Body text, paragraphs           |
+| **SM**   | `--font-size-sm`   | 14px (fixed)      | 1.5 (normal)   | Captions, labels, small text    |
+| **XS**   | `--font-size-xs`   | 12px (fixed)      | 1.5 (normal)   | Metadata, timestamps            |
+
+**CSS custom property values (from `variables.css`):**
+
+```css
+--font-size-xs:   0.75rem;                                        /* 12px */
+--font-size-sm:   0.875rem;                                       /* 14px */
+--font-size-base: 1rem;                                           /* 16px - minimum to prevent iOS zoom */
+--font-size-lg:   clamp(1rem, 0.9286rem + 0.3571vw, 1.125rem);   /* 16px–18px */
+--font-size-xl:   clamp(1.125rem, 1.0179rem + 0.5357vw, 1.25rem); /* 18px–20px */
+--font-size-2xl:  clamp(1.25rem, 1.0714rem + 0.8929vw, 1.5rem);  /* 20px–24px */
+--font-size-3xl:  clamp(1.5rem, 1.1786rem + 1.6071vw, 1.875rem); /* 24px–30px */
+--font-size-4xl:  clamp(1.75rem, 1.2143rem + 2.6786vw, 2.25rem); /* 28px–36px */
+--font-size-5xl:  clamp(2rem, 1.2857rem + 3.5714vw, 3rem);       /* 32px–48px */
+--font-size-6xl:  clamp(2.5rem, 1.4286rem + 5.3571vw, 4rem);     /* 40px–64px */
+--font-size-7xl:  clamp(3rem, 1.5714rem + 7.1429vw, 5rem);       /* 48px–80px */
+```
 
 ### Font Weights
 
@@ -323,30 +369,30 @@ import styles from './Alert.module.css'
 ### Line Heights
 
 ```css
---line-height-tight: 1.25; /* Headings */
---line-height-normal: 1.5; /* UI elements, small text */
+--line-height-tight: 1.25;   /* Headings */
+--line-height-snug: 1.375;   /* Subheadings, tight paragraphs */
+--line-height-normal: 1.5;   /* UI elements, small text */
 --line-height-relaxed: 1.75; /* Body text, paragraphs */
 ```
 
 ### Responsive Typography
 
-Typography automatically adjusts on mobile devices for better readability and space efficiency:
+Font sizes are fluid by default using `clamp()` — they scale continuously between mobile and desktop viewports with no media queries required for font size. This means `--font-size-5xl` grows from 32px on a 320px screen to 48px on a 1280px screen automatically.
+
+**Spacing** (not font sizes) is the only thing adjusted via media queries:
 
 ```css
 @media (max-width: 768px) {
-  --font-size-4xl: 1.875rem; /* 36px → 30px */
-  --font-size-5xl: 2.25rem; /* 48px → 36px */
-  --spacing-3xl: 4rem; /* 96px → 64px */
+  --spacing-3xl: 4rem; /* 96px → 64px on tablet/mobile */
 }
 
 @media (max-width: 480px) {
-  --font-size-3xl: 1.5rem; /* 30px → 24px */
-  --font-size-4xl: 1.75rem; /* 30px → 28px */
-  --font-size-5xl: 2rem; /* 36px → 32px */
+  --spacing-md: 1rem;  /* 24px → 16px on small phones */
+  --spacing-2xl: 3rem; /* 64px → 48px */
+  --spacing-3xl: 3rem; /* 96px → 48px */
+  --spacing-4xl: 5rem; /* 128px → 80px */
 }
 ```
-
-**Note:** Hero headlines reduce significantly on mobile to maintain visual balance and prevent overwhelming small screens.
 
 ### Typography Examples
 
@@ -377,19 +423,27 @@ import styles from './Component.module.css'
 
 ```css
 /* Component.module.css */
+/* NOTE: h1–h6 elements get Playfair Display automatically via global typography.css */
 .hero {
-  font-family: var(--font-family);
-  font-size: var(--font-size-5xl); /* 48px */
+  font-family: var(--font-family-serif); /* Playfair Display */
+  font-size: var(--font-size-5xl); /* 32px–48px fluid */
   font-weight: var(--font-weight-bold); /* 700 */
   line-height: var(--line-height-tight); /* 1.25 */
   letter-spacing: -0.01em;
 }
 
 .sectionTitle {
-  font-family: var(--font-family);
-  font-size: var(--font-size-3xl); /* 30px */
+  font-family: var(--font-family-serif); /* Playfair Display */
+  font-size: var(--font-size-3xl); /* 24px–30px fluid */
   font-weight: var(--font-weight-bold); /* 700 */
   line-height: var(--line-height-tight); /* 1.25 */
+}
+
+/* UI text uses Inter (the default --font-family) */
+.label {
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
 }
 ```
 
@@ -405,19 +459,19 @@ import styles from './Component.module.css'
 
 ✅ **DO:**
 
-- Use Inter for all text consistently
-- Use semantic HTML headings (h1-h6) in hierarchical order
+- Use Playfair Display (`--font-family-serif`) for headings and display text
+- Use Inter (`--font-family`) for body copy, UI elements, and navigation
+- Use semantic HTML headings (h1-h6) in hierarchical order — they get Playfair Display automatically
 - Use relaxed line-height (1.75) for body text
 - Limit line length to 60-80 characters for readability
-- Use font-weight variations (medium, semibold, bold) to create hierarchy
 
 ❌ **DON'T:**
 
-- Mix multiple font families
+- Use Inter for large headline text (it will lose the editorial feel)
+- Use Playfair Display for small UI elements, buttons, or captions
 - Skip heading levels (h1 → h3)
 - Use font sizes smaller than 12px (--font-size-xs)
 - Set line-height below 1.25 (readability issues)
-- Use more than 2-3 font weights in a single section
 
 ---
 
@@ -572,10 +626,11 @@ section {
 ### Border Radius
 
 ```css
---border-radius-sm: 0.25rem; /* 4px  - Small elements, checkboxes */
---border-radius-md: 0.5rem; /* 8px  - Cards, inputs */
---border-radius-lg: 1rem; /* 16px - Large cards, feature boxes */
---border-radius-full: 9999px; /* Full - Pills, badges, primary buttons */
+--border-radius-sm:   0.25rem; /* 4px   - Small elements, checkboxes */
+--border-radius-md:   0.5rem;  /* 8px   - Cards, inputs */
+--border-radius-lg:   1rem;    /* 16px  - Large cards, feature boxes */
+--border-radius-xl:   1.5rem;  /* 24px  - Extra-large containers */
+--border-radius-full: 9999px;  /* Full  - Pills, badges, primary buttons */
 ```
 
 **Usage Notes:**
@@ -583,6 +638,14 @@ section {
 - **Full border-radius** is the signature style for buttons and badges in the Paperlyte design
 - Cards and inputs use moderate radius (md) for a clean, professional look
 - Large radius (lg) is reserved for prominent content containers
+- XL radius (xl) is used for hero mockup containers and major decorative elements
+
+### Icon Sizes
+
+```css
+--icon-size-sm:   3.5rem; /* 56px - Standard feature icons */
+--icon-size-base: 4rem;   /* 64px - Large feature icons */
+```
 
 ### Shadows
 
@@ -656,6 +719,8 @@ Components are organized into three categories:
 **Section Components** - Pre-composed page sections
 
 - [Hero](#hero) - Hero section
+- [Problem](#problem) - Problem statement / pain points
+- [Solution](#solution) - Solution showcase
 - [Features](#features) - Feature grid
 - [Pricing](#pricing) - Pricing plans
 - [Testimonials](#testimonials) - Customer reviews
@@ -1219,8 +1284,8 @@ interface SVGPathAnimationProps {
 <SVGPathAnimation
   width={200}
   height={200}
-  strokeColor="#3b82f6"
-  fillColor="#3b82f6"
+  strokeColor="var(--color-primary)"
+  fillColor="var(--color-primary)"
   animateFill
 >
   <path d="M100 10 L190 90 L10 90 Z" />
@@ -1360,7 +1425,7 @@ Section components are pre-composed layouts for specific page sections.
 
 **Location:** `src/components/sections/Hero`
 
-**Purpose:** Hero section with headline, subheading, email capture, and tags.
+**Purpose:** Hero section with headline, subheading, email capture, and floating icon decorations.
 
 **Props:** None
 
@@ -1370,6 +1435,26 @@ Section components are pre-composed layouts for specific page sections.
 - EmailCapture component
 - Icon tags for key features
 - Smooth scroll to features section
+
+---
+
+#### Problem
+
+**Location:** `src/components/sections/Problem`
+
+**Purpose:** Communicates the pain points and frustrations that Paperlyte solves — sets up the narrative before the solution.
+
+**Props:** None
+
+---
+
+#### Solution
+
+**Location:** `src/components/sections/Solution`
+
+**Purpose:** Showcases how Paperlyte solves the problems described in the Problem section.
+
+**Props:** None
 
 ---
 
@@ -1881,8 +1966,8 @@ All components must meet WCAG 2.1 AA standards:
 
 ```css
 .primary {
-  background-color: var(--color-primary); /* #3b82f6 */
-  color: var(--color-text-on-primary); /* #ffffff */
+  background-color: var(--color-primary); /* #1a1a1a light / #ffffff dark */
+  color: var(--color-text-on-primary); /* #ffffff light / #000000 dark */
   border: 1px solid transparent;
   border-radius: var(--border-radius-full); /* 9999px - pill shape */
   min-height: 44px;
@@ -1890,7 +1975,7 @@ All components must meet WCAG 2.1 AA standards:
 }
 
 .primary:hover {
-  background-color: var(--color-primary-dark); /* #2563eb */
+  background-color: var(--color-primary-dark); /* #000000 light / #f1f5f9 dark */
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
 }
@@ -2048,7 +2133,7 @@ textarea:focus,
 select:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 0 3px var(--color-primary-faint);
 }
 ```
 
@@ -2711,14 +2796,21 @@ function FeatureSection() {
 
 ### Responsive Typography
 
-Font sizes automatically reduce on mobile:
+Font sizes scale automatically using `clamp()` — **no media query overrides are needed** for font sizes. Only spacing adjustments happen in media queries:
 
 ```css
 @media (max-width: 768px) {
   :root {
-    --font-size-4xl: 1.875rem; /* 36px → 30px */
-    --font-size-5xl: 2.25rem; /* 48px → 36px */
-    --spacing-3xl: 4rem; /* 96px → 64px */
+    --spacing-3xl: 4rem; /* 96px → 64px on tablet/mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --spacing-md:  1rem;  /* 24px → 16px */
+    --spacing-2xl: 3rem;  /* 64px → 48px */
+    --spacing-3xl: 3rem;  /* 96px → 48px */
+    --spacing-4xl: 5rem;  /* 128px → 80px */
   }
 }
 ```
@@ -2894,7 +2986,7 @@ Small, pill-shaped badges for announcements or status indicators:
 
 .headlineItalic {
   font-style: italic;
-  color: var(--color-primary); /* blue accent for emphasis */
+  color: var(--color-primary); /* near-black (light) / white (dark) — inherits brand color */
 }
 ```
 
@@ -2909,7 +3001,7 @@ Blurred, gradient shapes that move at different speeds on scroll. These create s
   background: radial-gradient(
     circle,
     var(--color-primary) 0%,
-    /* Blue center */ transparent 70% /* Fades to transparent */
+    /* Near-black/white center */ transparent 70% /* Fades to transparent */
   );
   filter: blur(60px); /* Heavy blur creates soft gradient */
   opacity: 0.03; /* Very subtle - barely visible */
@@ -2923,7 +3015,7 @@ Blurred, gradient shapes that move at different speeds on scroll. These create s
 }
 ```
 
-**Visual Effect:** The heavy blur (60px) combined with low opacity (0.03) creates extremely subtle, soft blue halos that add depth without being distracting. Blur is reduced to 40px on mobile for better performance.
+**Visual Effect:** The heavy blur (60px) combined with low opacity (0.03) creates extremely subtle, soft halos (near-black in light mode, white in dark mode) that add depth without being distracting. Blur is reduced to 40px on mobile for better performance.
 
 **Reduced Motion:** Parallax effects are disabled when `prefers-reduced-motion` is active.
 
@@ -2943,7 +3035,7 @@ Animated icons positioned absolutely, floating with subtle motion:
   background-color: var(--color-background);
   border: 1px solid var(--color-border);
   box-shadow: var(--shadow-md);
-  color: var(--color-primary);
+  color: var(--color-text-primary); /* Near-black in light mode, slate-100 in dark mode */
 }
 ```
 
@@ -3256,70 +3348,75 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#3b82f6', // Blue 500
-          dark: '#2563eb', // Blue 600
-          light: '#93c5fd', // Blue 300
-          faint: 'rgba(59, 130, 246, 0.1)',
-          fainter: 'rgba(59, 130, 246, 0.05)',
+          DEFAULT: '#1a1a1a',                    // Near black (light mode)
+          dark: '#000000',                         // Pure black - hover
+          light: '#333333',                        // Dark gray - accents
+          faint: 'rgba(26, 26, 26, 0.1)',
+          fainter: 'rgba(26, 26, 26, 0.05)',
         },
         background: {
           DEFAULT: '#FFFFFF',
-          dark: '#0F172A', // Slate 900 (dark mode)
+          dark: '#0F172A',   // Slate 900 (dark mode)
         },
         surface: {
           DEFAULT: '#F9FAFB',
-          dark: '#1E293B', // Slate 800 (dark mode)
+          'surface-dark': '#18181B', // Zinc 900 - dark accent sections
+          dark: '#1E293B',           // Slate 800 (dark mode)
         },
         text: {
           primary: '#111827',
           secondary: '#6B7280',
+          tertiary: '#737373',       // Neutral 500 - muted (WCAG AA)
+          'on-dark': '#FFFFFF',
+          'on-dark-secondary': 'rgba(255,255,255,0.7)',
         },
         border: {
           DEFAULT: '#E5E7EB',
+          light: '#F3F4F6',          // Subtle borders
         },
         success: {
           DEFAULT: '#22c55e', // Green 500
-          dark: '#4ade80', // Green 400 (dark mode)
+          dark: '#4ade80',    // Green 400 (dark mode)
         },
         error: {
           DEFAULT: '#dc2626', // Red 600
-          dark: '#f87171', // Red 400 (dark mode)
+          dark: '#f87171',    // Red 400 (dark mode)
         },
       },
       fontFamily: {
-        sans: [
-          'Inter',
-          'system-ui',
-          '-apple-system',
-          'BlinkMacSystemFont',
-          'Segoe UI',
-          'sans-serif',
-        ],
+        sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+        serif: ['Playfair Display', 'Georgia', 'serif'],
       },
+      // Note: this project uses CSS clamp() tokens — static Tailwind font sizes
+      // won't match exactly. Prefer CSS custom properties for font sizes.
       fontSize: {
-        xs: '0.75rem', // 12px
-        sm: '0.875rem', // 14px
-        base: '1rem', // 16px
-        lg: '1.125rem', // 18px
-        xl: '1.25rem', // 20px
-        '2xl': '1.5rem', // 24px
-        '3xl': '1.875rem', // 30px
-        '4xl': '2.25rem', // 36px
-        '5xl': '3rem', // 48px
+        xs: '0.75rem',   // 12px
+        sm: '0.875rem',  // 14px
+        base: '1rem',    // 16px
+        lg: '1.125rem',  // 18px (fluid in CSS: 16–18px)
+        xl: '1.25rem',   // 20px (fluid in CSS: 18–20px)
+        '2xl': '1.5rem', // 24px (fluid in CSS: 20–24px)
+        '3xl': '1.875rem', // 30px (fluid in CSS: 24–30px)
+        '4xl': '2.25rem',  // 36px (fluid in CSS: 28–36px)
+        '5xl': '3rem',     // 48px (fluid in CSS: 32–48px)
+        '6xl': '4rem',     // 64px (fluid in CSS: 40–64px)
+        '7xl': '5rem',     // 80px (fluid in CSS: 48–80px)
       },
       spacing: {
-        xs: '0.5rem', // 8px
-        sm: '1rem', // 16px
-        md: '1.5rem', // 24px
-        lg: '2rem', // 32px
-        xl: '3rem', // 48px
-        '2xl': '4rem', // 64px
-        '3xl': '6rem', // 96px
+        xs: '0.5rem',   // 8px
+        sm: '1rem',     // 16px
+        md: '1.5rem',   // 24px
+        lg: '2rem',     // 32px
+        xl: '3rem',     // 48px
+        '2xl': '4rem',  // 64px
+        '3xl': '6rem',  // 96px
+        '4xl': '8rem',  // 128px
       },
       borderRadius: {
-        sm: '0.25rem', // 4px
-        md: '0.5rem', // 8px
-        lg: '1rem', // 16px
+        sm: '0.25rem',  // 4px
+        md: '0.5rem',   // 8px
+        lg: '1rem',     // 16px
+        xl: '1.5rem',   // 24px
         full: '9999px', // Pill shape
       },
       boxShadow: {
@@ -3337,7 +3434,8 @@ module.exports = {
 
 The design uses CSS custom properties that automatically respond to dark mode. In dark mode:
 
-- Primary: `#3b82f6` (blue remains consistent for brand recognition)
+- Primary: `#1a1a1a` → `#ffffff` (inverts — white becomes the brand color)
+- Text on Primary: `#ffffff` → `#000000` (inverts — black text on white buttons)
 - Background: `#ffffff` → `#0F172A` (slate 900)
 - Surface: `#F9FAFB` → `#1E293B` (slate 800)
 - Text Primary: `#111827` → `#F1F5F9` (slate 100)
@@ -3351,8 +3449,9 @@ This is handled automatically via the CSS variables in `src/styles/variables.css
 
 | Version | Date       | Changes                                                                                                                                                                                                                                                                                                 |
 | ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2.2.0   | 2026-06-25 | **Sync with implementation**: Corrected color palette from blue (#3b82f6) to monochrome (#1a1a1a/#ffffff). Updated typography to dual-font system (Inter + Playfair Display). Added fluid clamp() type scale including 6xl/7xl. Added missing tokens (surface-dark, text-tertiary, text-on-dark, border-light, border-radius-xl, icon-size, line-height-snug). Fixed dark mode text-on-primary (#ffffff → #000000). Added Problem and Solution section components. Updated WCAG contrast matrix. Fixed responsive spacing docs. |
 | 2.1.0   | 2025-12-20 | **Major expansion**: Added comprehensive component library documentation (28 components), TypeScript prop interfaces, detailed hook documentation (useMediaQuery, useParallax, etc.), architectural patterns, responsive utility classes, CSS vs programmatic patterns, and enhanced cross-referencing. |
-| 1.0.0   | 2025-12-20 | Updated documentation to match current implementation: blue accent color (#3b82f6), Inter-only typography, accurate WCAG contrast ratios, current breakpoints, and comprehensive component library documentation.                                                                                       |
+| 1.0.0   | 2025-12-20 | Initial release: blue accent color (#3b82f6), Inter-only typography, WCAG contrast ratios, breakpoints, and component library documentation.                                                                                                                                                           |
 
 ---
 
@@ -3360,6 +3459,7 @@ This is handled automatically via the CSS variables in `src/styles/variables.css
 
 - **Tailwind CSS:** <https://tailwindcss.com/docs/customizing-colors>
 - **Inter Font:** <https://fonts.google.com/specimen/Inter>
+- **Playfair Display Font:** <https://fonts.google.com/specimen/Playfair+Display>
 - **Font Awesome:** <https://fontawesome.com/search?o=r&m=free&s=solid>
 - **WCAG 2.1 Guidelines:** <https://www.w3.org/WAI/WCAG21/quickref/>
 - **Material Design (Reference):** <https://material.io/design/typography/>

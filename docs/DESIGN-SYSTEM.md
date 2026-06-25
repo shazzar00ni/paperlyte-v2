@@ -377,7 +377,7 @@ Font sizes use `clamp()` for fluid responsive scaling — they grow smoothly bet
 
 ### Responsive Typography
 
-Font sizes are fluid by default using `clamp()` — they scale continuously between mobile and desktop viewports with no media queries required for font size. This means `--font-size-5xl` grows from 32px on a 320px screen to 48px on a 1280px screen automatically.
+Font sizes are fluid by default using `clamp()` — they scale continuously between their minimum and maximum values with no media queries required for font size. For example, `--font-size-5xl` scales from 32px (minimum) to 48px (maximum) as the viewport grows.
 
 **Spacing** (not font sizes) is the only thing adjusted via media queries:
 
@@ -2977,8 +2977,8 @@ Small, pill-shaped badges for announcements or status indicators:
 
 ```css
 .headline {
-  font-family: var(--font-family); /* Inter */
-  font-size: var(--font-size-5xl); /* 48px */
+  font-family: var(--font-family-serif); /* Playfair Display */
+  font-size: var(--font-size-5xl); /* 32px–48px fluid */
   font-weight: var(--font-weight-bold); /* 700 */
   line-height: var(--line-height-tight); /* 1.25 */
   letter-spacing: -0.01em; /* Slightly tight tracking */

@@ -9,7 +9,7 @@ export default defineConfig({
     globals: true,
     // Don't use the src/test/setup.ts file which is for jsdom
     setupFiles: [],
-    include: ['**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    include: ['scripts/__tests__/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts}'],
   },
   resolve: {
     alias: {

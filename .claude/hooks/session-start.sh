@@ -15,9 +15,11 @@ npm install
 # with code 100, which makes `playwright install --with-deps` fail before it
 # can install anything. Disabling them first lets the rest of apt work normally.
 echo "Disabling unreachable PPAs..."
-sudo rm -f \
-  /etc/apt/sources.list.d/deadsnakes-ubuntu-ppa-noble.sources \
-  /etc/apt/sources.list.d/ondrej-ubuntu-php-noble.sources
+if command -v sudo &> /dev/null; then
+  sudo rm -f \
+    /etc/apt/sources.list.d/deadsnakes-ubuntu-ppa-noble.sources \
+    /etc/apt/sources.list.d/ondrej-ubuntu-php-noble.sources
+fi
 
 # Install WebKit browser + its OS-level system libraries.
 # `--with-deps` is required: `playwright install webkit` alone downloads the

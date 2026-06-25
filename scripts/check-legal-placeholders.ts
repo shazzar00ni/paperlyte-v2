@@ -9,39 +9,39 @@
  * Usage: npx ts-node scripts/check-legal-placeholders.ts
  */
 
-import * as fs from "fs";
-import * as path from "path";
-import { isPathSafe } from "./utils/filenameValidation.js";
+import * as fs from 'fs'
+import * as path from 'path'
+import { isPathSafe } from './utils/filenameValidation.js'
 
 // Colors for terminal output
 const colors = {
-  reset: "\x1b[0m",
-  red: "\x1b[31m",
-  green: "\x1b[32m",
-  yellow: "\x1b[33m",
-  blue: "\x1b[34m",
-  magenta: "\x1b[35m",
-  cyan: "\x1b[36m",
-};
+  reset: '\x1b[0m',
+  red: '\x1b[31m',
+  green: '\x1b[32m',
+  yellow: '\x1b[33m',
+  blue: '\x1b[34m',
+  magenta: '\x1b[35m',
+  cyan: '\x1b[36m',
+}
 
 interface PlaceholderMatch {
-  file: string;
-  line: number;
-  content: string;
-  placeholder: string;
+  file: string
+  line: number
+  content: string
+  placeholder: string
 }
 
 interface FileCheck {
-  path: string;
-  exists: boolean;
-  placeholders: PlaceholderMatch[];
+  path: string
+  exists: boolean
+  placeholders: PlaceholderMatch[]
 }
 
 const filesToCheck = [
-  "src/constants/legal.ts",
-  "docs/PRIVACY-POLICY.md",
-  "docs/TERMS-OF-SERVICE.md",
-];
+  'src/constants/legal.ts',
+  'docs/PRIVACY-POLICY.md',
+  'docs/TERMS-OF-SERVICE.md',
+]
 
 /**
  * Finds unresolved square-bracket placeholders in the given file.
@@ -52,64 +52,49 @@ const filesToCheck = [
  * @returns An array of `PlaceholderMatch` objects describing each found placeholder (file, 1-based line number, trimmed line content, and the exact bracketed placeholder)
  */
 function findPlaceholders(filePath: string): PlaceholderMatch[] {
-  const placeholders: PlaceholderMatch[] = [];
+  const placeholders: PlaceholderMatch[] = []
 
   try {
-    const validatedPath = path.resolve(filePath);
-    if (validatedPath.includes('..') || path.isAbsolute(filePath) && (filePath.startsWith('/') || /^[a-zA-Z]:/.test(filePath))) {
-      if (path.isAbsolute(filePath) && (filePath.startsWith('/') || /^[a-zA-Z]:/.test(filePath) || filePath.startsWith('\\\\'))) {
-        console.error(
-          `${colors.red}Error reading file:${colors.reset}`,
-          filePath,
-          new Error('Invalid file path')
-        );
-        return placeholders;
-      }
-    }
-    if (filePath.includes('..') || path.isAbsolute(filePath)) {
+    if (filePath.includes('..') || path.isAbsolute(filePath) || path.win32.isAbsolute(filePath)) {
       console.error(
         `${colors.red}Error reading file:${colors.reset}`,
         filePath,
         new Error('Invalid file path')
-      );
-      return placeholders;
+      )
+      return placeholders
     }
-    const content = fs.readFileSync(filePath, "utf-8");
-    const lines = content.split("\n");
+    const content = fs.readFileSync(filePath, 'utf-8')
+    const lines = content.split('\n')
 
     // Match patterns like [Something] or [Something Text]
-    const placeholderRegex = /\[([^\]]+)\]/g;
+    const placeholderRegex = /\[([^\]]+)\]/g
 
     lines.forEach((line, index) => {
-      const matches = line.matchAll(placeholderRegex);
+      const matches = line.matchAll(placeholderRegex)
       for (const match of matches) {
         // Skip markdown links and legitimate brackets
-        const afterMatch = line.substring(match.index + match[0].length);
-        const isMarkdownLink = afterMatch.trimStart().startsWith("(");
+        const afterMatch = line.substring(match.index + match[0].length)
+        const isMarkdownLink = afterMatch.trimStart().startsWith('(')
 
         if (
           !isMarkdownLink && // Not a markdown link
           !match[1].match(/^\d+$/) && // Not a number reference
-          !match[1].includes("http") // Not a URL inside brackets
+          !match[1].includes('http') // Not a URL inside brackets
         ) {
           placeholders.push({
             file: filePath,
             line: index + 1,
             content: line.trim(),
             placeholder: match[0],
-          });
+          })
         }
       }
-    });
+    })
   } catch (error) {
-    console.error(
-      `${colors.red}Error reading file:${colors.reset}`,
-      filePath,
-      error
-    );
+    console.error(`${colors.red}Error reading file:${colors.reset}`, filePath, error)
   }
 
-  return placeholders;
+  return placeholders
 }
 
 /**
@@ -121,19 +106,19 @@ function checkFiles(): FileCheck[] {
   return filesToCheck.map((file) => {
     // Validate path safety before processing
     if (!isPathSafe(file)) {
-      console.error(`${colors.red}Error: Invalid file path detected:${colors.reset}`, file);
-      process.exit(1);
+      console.error(`${colors.red}Error: Invalid file path detected:${colors.reset}`, file)
+      process.exit(1)
     }
 
-    const fullPath = path.join(process.cwd(), file);
-    const exists = fs.existsSync(fullPath);
+    const fullPath = path.join(process.cwd(), file)
+    const exists = fs.existsSync(fullPath)
 
     return {
       path: file,
       exists,
-      placeholders: exists ? findPlaceholders(fullPath) : [],
-    };
-  });
+      placeholders: exists ? findPlaceholders(file) : [],
+    }
+  })
 }
 
 /**
@@ -144,73 +129,61 @@ function checkFiles(): FileCheck[] {
  * @param results - Array of file check results where each entry contains the file path, an existence flag, and any detected placeholder matches used to generate the report
  */
 function printResults(results: FileCheck[]): void {
-  console.log("\n" + "=".repeat(70));
-  console.log(`${colors.cyan}Legal Placeholder Check Results${colors.reset}`);
-  console.log("=".repeat(70) + "\n");
+  console.log('\n' + '='.repeat(70))
+  console.log(`${colors.cyan}Legal Placeholder Check Results${colors.reset}`)
+  console.log('='.repeat(70) + '\n')
 
-  let totalPlaceholders = 0;
-  let hasIssues = false;
+  let totalPlaceholders = 0
+  let hasIssues = false
 
   results.forEach((result) => {
     if (!result.exists) {
-      console.log(
-        `${colors.red}✗ ${result.path} - File not found!${colors.reset}`
-      );
-      hasIssues = true;
-      return;
+      console.log(`${colors.red}✗ ${result.path} - File not found!${colors.reset}`)
+      hasIssues = true
+      return
     }
 
     if (result.placeholders.length === 0) {
-      console.log(
-        `${colors.green}✓ ${result.path} - No placeholders found${colors.reset}`
-      );
+      console.log(`${colors.green}✓ ${result.path} - No placeholders found${colors.reset}`)
     } else {
       console.log(
         `${colors.yellow}⚠ ${result.path} - ${result.placeholders.length} placeholder(s) found${colors.reset}`
-      );
-      totalPlaceholders += result.placeholders.length;
-      hasIssues = true;
+      )
+      totalPlaceholders += result.placeholders.length
+      hasIssues = true
 
       result.placeholders.forEach((p) => {
-        console.log(
-          `  ${colors.blue}Line ${p.line}:${colors.reset} ${p.placeholder}`
-        );
-        console.log(`    ${colors.magenta}${p.content}${colors.reset}`);
-      });
-      console.log();
+        console.log(`  ${colors.blue}Line ${p.line}:${colors.reset} ${p.placeholder}`)
+        console.log(`    ${colors.magenta}${p.content}${colors.reset}`)
+      })
+      console.log()
     }
-  });
+  })
 
-  console.log("=".repeat(70));
+  console.log('='.repeat(70))
 
   if (!hasIssues) {
-    console.log(
-      `\n${colors.green}✓ All checks passed! Ready for production.${colors.reset}\n`
-    );
-    process.exit(0);
+    console.log(`\n${colors.green}✓ All checks passed! Ready for production.${colors.reset}\n`)
+    process.exit(0)
   } else {
     console.log(
       `\n${colors.yellow}⚠ Found ${totalPlaceholders} placeholder(s) that need attention.${colors.reset}`
-    );
-    console.log(`\n${colors.cyan}Next steps:${colors.reset}`);
-    console.log(
-      `  1. Update src/constants/legal.ts with your company information`
-    );
-    console.log(`  2. Replace placeholders in docs/PRIVACY-POLICY.md`);
-    console.log(`  3. Replace placeholders in docs/TERMS-OF-SERVICE.md`);
-    console.log(`  4. Run this script again to verify`);
-    console.log(`  5. Have an attorney review all documents\n`);
+    )
+    console.log(`\n${colors.cyan}Next steps:${colors.reset}`)
+    console.log(`  1. Update src/constants/legal.ts with your company information`)
+    console.log(`  2. Replace placeholders in docs/PRIVACY-POLICY.md`)
+    console.log(`  3. Replace placeholders in docs/TERMS-OF-SERVICE.md`)
+    console.log(`  4. Run this script again to verify`)
+    console.log(`  5. Have an attorney review all documents\n`)
 
-    console.log(`${colors.cyan}Reference:${colors.reset}`);
-    console.log(`  See docs/LEGAL-SETUP.md for detailed instructions\n`);
+    console.log(`${colors.cyan}Reference:${colors.reset}`)
+    console.log(`  See docs/LEGAL-SETUP.md for detailed instructions\n`)
 
-    process.exit(1);
+    process.exit(1)
   }
 }
 
 // Main execution
-console.log(
-  `${colors.cyan}Checking legal documents for placeholders...${colors.reset}\n`
-);
-const results = checkFiles();
-printResults(results);
+console.log(`${colors.cyan}Checking legal documents for placeholders...${colors.reset}\n`)
+const results = checkFiles()
+printResults(results)

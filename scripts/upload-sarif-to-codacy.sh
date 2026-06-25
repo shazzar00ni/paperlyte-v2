@@ -24,7 +24,7 @@
 #   0 - Upload succeeded, or skipped because no token is configured
 #   1 - Validation failed, curl failed, or Codacy returned a non-2xx status
 
-set -e
+set -euo pipefail
 
 SARIF_FILE="${1:-}"
 if [ -z "$SARIF_FILE" ]; then
@@ -36,6 +36,13 @@ if [ -z "${CODACY_PROJECT_TOKEN:-}" ]; then
   echo "CODACY_PROJECT_TOKEN not set, skipping Codacy upload"
   exit 0
 fi
+
+for var in ORG REPO COMMIT_UUID; do
+  if [ -z "${!var:-}" ]; then
+    echo "Error: required environment variable $var is not set." >&2
+    exit 1
+  fi
+done
 
 RUN_COUNT=$(jq '.runs | length' "$SARIF_FILE")
 echo "SARIF run count before upload: $RUN_COUNT"

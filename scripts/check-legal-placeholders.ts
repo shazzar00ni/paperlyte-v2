@@ -11,6 +11,7 @@
 
 import * as fs from 'fs'
 import * as path from 'path'
+import { fileURLToPath } from 'url'
 import { isPathSafe } from './utils/filenameValidation.js'
 
 // Colors for terminal output
@@ -24,14 +25,14 @@ const colors = {
   cyan: '\x1b[36m',
 }
 
-interface PlaceholderMatch {
+export interface PlaceholderMatch {
   file: string
   line: number
   content: string
   placeholder: string
 }
 
-interface FileCheck {
+export interface FileCheck {
   path: string
   exists: boolean
   placeholders: PlaceholderMatch[]
@@ -51,16 +52,25 @@ const filesToCheck = [
  * @param filePath - Path to the file to scan
  * @returns An array of `PlaceholderMatch` objects describing each found placeholder (file, 1-based line number, trimmed line content, and the exact bracketed placeholder)
  */
-function findPlaceholders(filePath: string): PlaceholderMatch[] {
+export function validateLegalFilePath(filePath: string): { valid: boolean; error?: Error } {
+  if (filePath.includes('..') || path.isAbsolute(filePath) || path.win32.isAbsolute(filePath)) {
+    return { valid: false, error: new Error('Invalid file path') }
+  }
+
+  return { valid: true }
+}
+
+function logInvalidFilePath(filePath: string, error: Error): void {
+  console.error(`${colors.red}Error reading file:${colors.reset}`, filePath, error)
+}
+
+export function findPlaceholders(filePath: string): PlaceholderMatch[] {
   const placeholders: PlaceholderMatch[] = []
 
   try {
-    if (filePath.includes('..') || path.isAbsolute(filePath) || path.win32.isAbsolute(filePath)) {
-      console.error(
-        `${colors.red}Error reading file:${colors.reset}`,
-        filePath,
-        new Error('Invalid file path')
-      )
+    const validation = validateLegalFilePath(filePath)
+    if (!validation.valid) {
+      logInvalidFilePath(filePath, validation.error as Error)
       return placeholders
     }
     const content = fs.readFileSync(filePath, 'utf-8')
@@ -102,7 +112,7 @@ function findPlaceholders(filePath: string): PlaceholderMatch[] {
  *
  * @returns An array of `FileCheck` objects where `path` is the relative file path, `exists` indicates whether the file exists, and `placeholders` contains any found `PlaceholderMatch` entries (empty if none or if the file does not exist)
  */
-function checkFiles(): FileCheck[] {
+export function checkFiles(): FileCheck[] {
   return filesToCheck.map((file) => {
     // Validate path safety before processing
     if (!isPathSafe(file)) {
@@ -183,7 +193,12 @@ function printResults(results: FileCheck[]): void {
   }
 }
 
-// Main execution
-console.log(`${colors.cyan}Checking legal documents for placeholders...${colors.reset}\n`)
-const results = checkFiles()
-printResults(results)
+export function runLegalPlaceholderCheck(): void {
+  console.log(`${colors.cyan}Checking legal documents for placeholders...${colors.reset}\n`)
+  const results = checkFiles()
+  printResults(results)
+}
+
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  runLegalPlaceholderCheck()
+}

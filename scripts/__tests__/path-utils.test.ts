@@ -1,6 +1,8 @@
 /**
  * Test suite for path traversal protection utilities
  * Ensures that malicious path inputs are properly blocked
+ * 
+ * @vitest-environment node
  */
 
 import { describe, it, expect } from 'vitest'

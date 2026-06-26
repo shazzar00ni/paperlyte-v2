@@ -22,8 +22,8 @@ function severityToLevel(
     case 'medium':
       return 'warning'
     case 'low':
-    /* v8 ignore next */
     default:
+      /* v8 ignore next */
       return 'info'
   }
 }

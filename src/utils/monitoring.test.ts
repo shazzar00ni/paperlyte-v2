@@ -33,8 +33,9 @@ describe('monitoring', () => {
       groupEnd: vi.spyOn(console, 'groupEnd').mockImplementation(() => {}),
     }
 
-    // Clear all mocks
-    vi.clearAllMocks()
+    // Reset all mocks — clears both call history and any persistent mockImplementation
+    // that a prior test may have set (e.g. making Sentry.captureException throw).
+    vi.resetAllMocks()
   })
 
   afterEach(() => {
@@ -165,6 +166,21 @@ describe('monitoring', () => {
         'string error'
       )
     })
+
+    it('should wrap non-Error thrown values when DSN is set and pipeline fails', () => {
+      vi.stubEnv('VITE_SENTRY_DSN', 'https://sentry.example.com')
+      vi.mocked(analytics.trackEvent).mockImplementationOnce(() => {
+        throw 'plain string failure'
+      })
+      const error = new Error('App error')
+      expect(() => logError(error)).not.toThrow()
+      // Sentry.captureException is called with a wrapping Error (the non-Error catch path)
+      const monitoringErrCall = vi
+        .mocked(Sentry.captureException)
+        .mock.calls.find((call) => call[0] !== error)
+      expect(monitoringErrCall).toBeDefined()
+      expect(monitoringErrCall![0]).toBeInstanceOf(Error)
+    })
   })
 
   describe('logError', () => {
@@ -272,6 +288,45 @@ describe('monitoring', () => {
     })
   })
 
+  describe('logWarning – production path', () => {
+    beforeEach(() => {
+      vi.stubEnv('DEV', false)
+    })
+
+    afterEach(() => {
+      vi.unstubAllEnvs()
+    })
+
+    it('should call trackEvent with warning message in production', () => {
+      logWarning('Something is off')
+
+      expect(analytics.trackEvent).toHaveBeenCalledWith('application_warning', {
+        message: 'Something is off',
+      })
+      expect(consoleSpy.warn).not.toHaveBeenCalled()
+    })
+
+    it('should spread context into the analytics event in production', () => {
+      logWarning('Degraded service', { region: 'us-east', retries: 3 })
+
+      expect(analytics.trackEvent).toHaveBeenCalledWith('application_warning', {
+        message: 'Degraded service',
+        region: 'us-east',
+        retries: 3,
+      })
+    })
+
+    it('should truncate messages longer than 200 characters', () => {
+      const longMessage = 'a'.repeat(250)
+      logWarning(longMessage)
+
+      expect(analytics.trackEvent).toHaveBeenCalledWith(
+        'application_warning',
+        expect.objectContaining({ message: 'a'.repeat(200) })
+      )
+    })
+  })
+
   describe('logWarning', () => {
     it('should log warning to console', () => {
       logWarning('This is a warning')
@@ -298,6 +353,46 @@ describe('monitoring', () => {
 
     it('should handle warnings with empty context', () => {
       expect(() => logWarning('Test warning', {})).not.toThrow()
+    })
+  })
+
+  describe('logPerformance – production path', () => {
+    beforeEach(() => {
+      vi.stubEnv('DEV', false)
+    })
+
+    afterEach(() => {
+      vi.unstubAllEnvs()
+    })
+
+    it('should call trackEvent with metric details in production', () => {
+      logPerformance('render_time', 150)
+
+      expect(analytics.trackEvent).toHaveBeenCalledWith('performance_metric', {
+        metric: 'render_time',
+        value: 150,
+        unit: 'ms',
+      })
+      expect(consoleSpy.log).not.toHaveBeenCalled()
+    })
+
+    it('should forward the correct unit to trackEvent', () => {
+      logPerformance('bundle_size', 1024, 'bytes')
+
+      expect(analytics.trackEvent).toHaveBeenCalledWith('performance_metric', {
+        metric: 'bundle_size',
+        value: 1024,
+        unit: 'bytes',
+      })
+    })
+
+    it('should default to ms unit in production', () => {
+      logPerformance('query_time', 50)
+
+      expect(analytics.trackEvent).toHaveBeenCalledWith(
+        'performance_metric',
+        expect.objectContaining({ unit: 'ms' })
+      )
     })
   })
 
@@ -346,6 +441,28 @@ describe('monitoring', () => {
     it('should handle negative values', () => {
       logPerformance('negative_metric', -1)
       expect(consoleSpy.log).toHaveBeenCalledWith('[Performance] negative_metric: -1ms')
+    })
+  })
+
+  describe('logEvent – production path', () => {
+    beforeEach(() => {
+      vi.stubEnv('DEV', false)
+    })
+
+    afterEach(() => {
+      vi.unstubAllEnvs()
+    })
+
+    it('should not log to console in production', () => {
+      logEvent('button_click', { location: 'footer' })
+
+      expect(consoleSpy.log).not.toHaveBeenCalled()
+    })
+
+    it('should still call trackEvent in production', () => {
+      logEvent('cta_click', { tier: 'free' })
+
+      expect(analytics.trackEvent).toHaveBeenCalledWith('cta_click', { tier: 'free' })
     })
   })
 

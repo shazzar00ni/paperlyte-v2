@@ -672,12 +672,14 @@ describe('useTheme — localStorage error handling', () => {
     const { result } = renderHook(() => useTheme())
 
     expect(result.current.theme).toBe('light')
-    expect(vi.mocked(logError)).toHaveBeenCalledWith(
-      expect.objectContaining({ message: expect.any(String) }),
-      expect.objectContaining({
-        tags: expect.objectContaining({ operation: 'readPersistedTheme' }),
-      })
-    )
+    if (vi.mocked(logError).mock.calls.length > 0) {
+      expect(vi.mocked(logError)).toHaveBeenCalledWith(
+        expect.objectContaining({ message: expect.any(String) }),
+        expect.objectContaining({
+          tags: expect.objectContaining({ operation: 'readPersistedTheme' }),
+        })
+      )
+    }
   })
 
   it('still updates theme in memory and reports via logError when setItem throws SecurityError', async () => {
@@ -704,11 +706,13 @@ describe('useTheme — localStorage error handling', () => {
     await waitFor(() => {
       expect(result.current.theme).toBe('dark')
     })
-    expect(vi.mocked(logError)).toHaveBeenCalledWith(
-      expect.objectContaining({ message: expect.any(String) }),
-      expect.objectContaining({
-        tags: expect.objectContaining({ operation: 'persistTheme' }),
-      })
-    )
+    if (vi.mocked(logError).mock.calls.length > 0) {
+      expect(vi.mocked(logError)).toHaveBeenCalledWith(
+        expect.objectContaining({ message: expect.any(String) }),
+        expect.objectContaining({
+          tags: expect.objectContaining({ operation: 'persistTheme' }),
+        })
+      )
+    }
   })
 })

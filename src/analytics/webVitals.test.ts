@@ -9,9 +9,11 @@ import { mockPerformanceObserver } from '../test/analytics-helpers'
 
 describe('analytics/webVitals', () => {
   let onReport: ReturnType<typeof vi.fn<[CoreWebVitals], void>>
+  let originalPerformance: Performance
 
   beforeEach(() => {
     onReport = vi.fn()
+    originalPerformance = window.performance
 
     // Mock PerformanceObserver as a class
     global.PerformanceObserver = class {
@@ -37,6 +39,11 @@ describe('analytics/webVitals', () => {
   afterEach(() => {
     vi.clearAllTimers()
     vi.restoreAllMocks()
+    Object.defineProperty(window, 'performance', {
+      writable: true,
+      configurable: true,
+      value: originalPerformance,
+    })
   })
 
   describe('initWebVitals', () => {

@@ -1,20 +1,19 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import * as Sentry from '@sentry/react'
-import { logError, logWarning, logPerformance, logEvent } from './monitoring'
-import * as analytics from './analytics'
+import type * as SentryModule from '@sentry/react'
+import type * as analyticsModule from '@utils/analytics'
+import type * as monitoringModule from '@utils/monitoring'
 
-// Mock Sentry
-vi.mock('@sentry/react', () => ({
-  captureException: vi.fn(),
-  addBreadcrumb: vi.fn(),
-}))
-
-// Mock analytics
-vi.mock('./analytics', () => ({
-  trackEvent: vi.fn(),
-}))
+type MonitoringExports = typeof monitoringModule
+type AnalyticsExports = typeof analyticsModule
+type SentryExports = typeof SentryModule
 
 describe('monitoring', () => {
+  let Sentry: Pick<SentryExports, 'captureException' | 'addBreadcrumb'>
+  let analytics: Pick<AnalyticsExports, 'trackEvent'>
+  let logError: MonitoringExports['logError']
+  let logWarning: MonitoringExports['logWarning']
+  let logPerformance: MonitoringExports['logPerformance']
+  let logEvent: MonitoringExports['logEvent']
   let consoleSpy: {
     log: ReturnType<typeof vi.spyOn>
     warn: ReturnType<typeof vi.spyOn>
@@ -23,7 +22,21 @@ describe('monitoring', () => {
     groupEnd: ReturnType<typeof vi.spyOn>
   }
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    vi.resetModules()
+    vi.stubEnv('DEV', true)
+    vi.doMock('@sentry/react', () => ({
+      captureException: vi.fn(),
+      addBreadcrumb: vi.fn(),
+    }))
+    vi.doMock('@utils/analytics', () => ({
+      trackEvent: vi.fn(),
+    }))
+
+    Sentry = await import('@sentry/react')
+    analytics = await import('@utils/analytics')
+    ;({ logError, logWarning, logPerformance, logEvent } = await import('@utils/monitoring'))
+
     // Mock console methods
     consoleSpy = {
       log: vi.spyOn(console, 'log').mockImplementation(() => {}),
@@ -32,14 +45,15 @@ describe('monitoring', () => {
       group: vi.spyOn(console, 'group').mockImplementation(() => {}),
       groupEnd: vi.spyOn(console, 'groupEnd').mockImplementation(() => {}),
     }
-
-    // Clear all mocks
-    vi.clearAllMocks()
   })
 
   afterEach(() => {
     // Restore all mocks
     Object.values(consoleSpy).forEach((spy) => spy.mockRestore())
+    vi.unstubAllEnvs()
+    vi.doUnmock('@sentry/react')
+    vi.doUnmock('@utils/analytics')
+    vi.resetModules()
   })
 
   describe('logError – production path', () => {

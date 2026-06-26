@@ -8,7 +8,8 @@
  */
 
 import type { AnalyticsEvent } from '../types'
-import { isSafePropertyKey } from '../../utils/security'
+import { isSafePropertyKey } from '@utils/security'
+import { logWarning } from '@utils/monitoring'
 import { BaseAnalyticsProvider } from './base'
 
 /**
@@ -25,50 +26,61 @@ export class PlausibleProvider extends BaseAnalyticsProvider {
    * @param url - The URL to validate
    * @returns true if URL is valid and safe, false otherwise
    */
+  private static readonly KNOWN_HOSTS = new Set([
+    'plausible.io',
+    'cdn.plausible.io',
+  ])
+
+  private static isKnownHost(hostname: string): boolean {
+    return Array.from(PlausibleProvider.KNOWN_HOSTS).some(
+      (host) => hostname === host || hostname.endsWith('.' + host)
+    )
+  }
+
   private isValidScriptUrl(url: string): boolean {
+    let parsedUrl: URL
     try {
-      const parsedUrl = new URL(url)
-
-      // Only allow HTTPS for security
-      if (parsedUrl.protocol !== 'https:') {
-        if (this.config?.debug) {
-          console.warn('[Analytics] Script URL must use HTTPS protocol:', url)
-        }
-        return false
-      }
-
-      // Whitelist known analytics providers or allow any HTTPS domain
-      // This prevents obviously malicious URLs while allowing self-hosted instances
-      const knownProviders = [
-        'plausible.io',
-        'analytics.google.com',
-        'fathom.com',
-        'umami.is',
-        'simpleanalytics.com',
-      ]
-
-      const isKnownProvider = knownProviders.some((provider) =>
-        parsedUrl.hostname.endsWith(provider)
-      )
-      const hasValidPath = parsedUrl.pathname.endsWith('.js')
-
-      if (!hasValidPath) {
-        if (this.config?.debug) {
-          console.warn('[Analytics] Script URL must point to a .js file:', url)
-        }
-        return false
-      }
-
-      // Allow known providers or any HTTPS URL pointing to a .js file
-      // (for self-hosted instances)
-      return isKnownProvider || parsedUrl.protocol === 'https:'
-    } catch (error) {
-      // Invalid URL format
+      parsedUrl = new URL(url)
+    } catch {
+      logWarning('[Analytics] Invalid script URL format', {
+        module: 'PlausibleProvider',
+        fn: 'isValidScriptUrl',
+        url,
+      })
       if (this.config?.debug) {
-        console.warn('[Analytics] Invalid script URL format:', url, error)
+        console.warn('[Analytics] Invalid script URL format:', url)
       }
       return false
     }
+
+    if (parsedUrl.protocol !== 'https:') {
+      if (this.config?.debug) {
+        console.warn('[Analytics] Script URL must use HTTPS protocol:', url)
+      }
+      return false
+    }
+
+    const hasValidPath = parsedUrl.pathname.endsWith('.js')
+
+    if (!hasValidPath) {
+      if (this.config?.debug) {
+        console.warn('[Analytics] Script URL must point to a .js file:', url)
+      }
+      return false
+    }
+
+    if (PlausibleProvider.isKnownHost(parsedUrl.hostname) || this.config?.allowCustomScriptUrl === true) {
+      return true
+    }
+
+    if (this.config?.debug) {
+      console.warn(
+        '[Analytics] Script host is not in the whitelist:',
+        parsedUrl.hostname,
+        '— set allowCustomScriptUrl: true to allow self-hosted scripts'
+      )
+    }
+    return false
   }
 
   /**
@@ -87,6 +99,11 @@ export class PlausibleProvider extends BaseAnalyticsProvider {
 
     script.onerror = () => {
       this.scriptLoaded = false
+      logWarning('[Analytics] Failed to load Plausible script', {
+        module: 'PlausibleProvider',
+        fn: 'createScriptElement',
+        url: scriptUrl,
+      })
       if (this.config?.debug) {
         console.warn('[Analytics] Failed to load Plausible script')
       }
@@ -113,6 +130,11 @@ export class PlausibleProvider extends BaseAnalyticsProvider {
       return scriptUrl
     }
 
+    logWarning('[Analytics] Invalid or unsafe script URL', {
+      module: 'PlausibleProvider',
+      fn: 'getValidatedScriptUrl',
+      url: scriptUrl,
+    })
     if (this.config?.debug || import.meta.env.DEV) {
       console.error(
         '[Analytics] Invalid or unsafe script URL. Must be HTTPS and point to a .js file:',

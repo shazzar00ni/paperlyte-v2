@@ -8,6 +8,7 @@
  */
 
 import type { AnalyticsEvent } from '../types'
+import { logWarning } from '@utils/monitoring'
 import { BaseAnalyticsProvider } from './base'
 
 /**
@@ -35,8 +36,8 @@ export class FathomProvider extends BaseAnalyticsProvider {
     'cdn.usefathom.com',
   ])
 
-  /** Log a validation warning when debug mode is active */
   private debugWarn(message: string, ...args: unknown[]): void {
+    logWarning(message, { module: 'FathomProvider', details: args })
     if (this.config?.debug) {
       console.warn(message, ...args)
     }
@@ -97,6 +98,11 @@ export class FathomProvider extends BaseAnalyticsProvider {
 
     script.onerror = () => {
       this.scriptLoaded = false
+      logWarning('[Analytics] Failed to load Fathom script', {
+        module: 'FathomProvider',
+        fn: 'createScriptElement',
+        url: scriptUrl,
+      })
       if (this.config?.debug) {
         console.warn('[Analytics] Failed to load Fathom script')
       }
@@ -123,6 +129,11 @@ export class FathomProvider extends BaseAnalyticsProvider {
       return scriptUrl
     }
 
+    logWarning('[Analytics] Invalid or unsafe script URL', {
+      module: 'FathomProvider',
+      fn: 'getValidatedScriptUrl',
+      url: scriptUrl,
+    })
     if (this.config?.debug || import.meta.env.DEV) {
       console.error(
         '[Analytics] Invalid or unsafe script URL. Must be HTTPS and point to a .js file:',

@@ -122,6 +122,7 @@ describe('analytics/providers/plausible', () => {
       const customConfig = {
         ...config,
         scriptUrl: 'https://custom.analytics.com/script.js',
+        allowCustomScriptUrl: true,
       }
 
       provider.init(customConfig)

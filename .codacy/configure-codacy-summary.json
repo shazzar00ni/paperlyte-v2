@@ -1,7 +1,7 @@
 {
   "summary": {
     "enabledPatterns": { "before": 2432, "after": 2430 },
-    "enabledTools": { "before": 12, "after": 12 },
+    "enabledTools": { "before": 12, "after": 11 },
     "issues": { "before": 290, "after": 271 },
     "analysisRuntime": { "before": 72763, "after": 14671 }
   },

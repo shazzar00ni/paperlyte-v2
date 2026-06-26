@@ -85,6 +85,9 @@ describe('analytics/providers/fathom', () => {
 
       provider.init(config)
       expect(provider.isEnabled()).toBe(false)
+
+      const script = document.querySelector('script[data-site]')
+      expect(script).toBeNull()
     })
 
     it('should ignore DNT when respectDNT is false', () => {
@@ -140,6 +143,28 @@ describe('analytics/providers/fathom', () => {
       expect(script).toBeNull()
       expect(consoleErrorSpy).toHaveBeenCalled()
 
+      consoleErrorSpy.mockRestore()
+      vi.unstubAllEnvs()
+    })
+
+    it('should block non-whitelisted hosts when allowCustomScriptUrl is false', () => {
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+      vi.stubEnv('DEV', true)
+
+      const nonWhitelistedConfig = {
+        ...config,
+        debug: true,
+        scriptUrl: 'https://evil-analytics.com/script.js',
+        allowCustomScriptUrl: false,
+      }
+
+      provider.init(nonWhitelistedConfig)
+
+      const script = document.querySelector('script[data-site]')
+      expect(script).toBeNull()
+
+      consoleWarnSpy.mockRestore()
       consoleErrorSpy.mockRestore()
       vi.unstubAllEnvs()
     })

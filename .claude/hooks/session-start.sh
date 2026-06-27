@@ -15,7 +15,11 @@ npm install
 # with code 100, which makes `playwright install --with-deps` fail before it
 # can install anything. Disabling them first lets the rest of apt work normally.
 echo "Disabling unreachable PPAs..."
-if command -v sudo &> /dev/null; then
+if [ "$(id -u)" -eq 0 ]; then
+  rm -f \
+    /etc/apt/sources.list.d/deadsnakes-ubuntu-ppa-noble.sources \
+    /etc/apt/sources.list.d/ondrej-ubuntu-php-noble.sources
+elif command -v sudo >/dev/null 2>&1; then
   sudo rm -f \
     /etc/apt/sources.list.d/deadsnakes-ubuntu-ppa-noble.sources \
     /etc/apt/sources.list.d/ondrej-ubuntu-php-noble.sources

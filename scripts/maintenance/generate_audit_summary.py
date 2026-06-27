@@ -7,7 +7,7 @@ from scripts.maintenance.utils import run_command
 
 MAPPING = {
     'Orphan branch': 'Orphan', 'Missing .npmrc': 'NPMRC', 'Missing docs/ROADMAP.md': 'ROADMAP',
-    'Missing gitVersionControl.md': 'GVC', 'Missing review.md': 'REVIEW',
+    'Missing docs/gitVersionControl.md': 'GVC', 'Missing docs/review.md': 'REVIEW',
     'security helper': 'HELPERS', 'Could not read src/utils/navigation.ts': 'UNREADABLE'
 }
 
@@ -67,8 +67,8 @@ def generate_markdown_summary(total, stats):
     summary += f'| Orphan Branches                | {stats["Orphan"]}   | 🔴 Critical | No common ancestor with `main`.                                          |\n'
     summary += f'| Missing `.npmrc`               | {stats["NPMRC"]}    | 🔴 Critical | Breaks dependency resolution.                                            |\n'
     summary += f'| Missing `docs/ROADMAP.md`      | {stats["ROADMAP"]}    | 🟠 High     | Core project documentation.                                              |\n'
-    summary += f'| Missing `gitVersionControl.md` | {stats["GVC"]}   | 🟠 High     | Core Git workflow documentation.                                         |\n'
-    summary += f'| Missing `review.md`            | {stats["REVIEW"]}   | 🟡 Medium   | AI PR reviewer instructions.                                             |\n'
+    summary += f'| Missing `docs/gitVersionControl.md` | {stats["GVC"]}   | 🟠 High     | Core Git workflow documentation.                                         |\n'
+    summary += f'| Missing `docs/review.md`            | {stats["REVIEW"]}   | 🟡 Medium   | AI PR reviewer instructions.                                             |\n'
     summary += f'| Reverted Security Helpers      | {stats["HELPERS"]}   | 🔴 Critical | `hasDangerousProtocol` and `isRelativeUrl` helpers.                      |\n'
     summary += f'| Unreadable navigation.ts       | {stats["UNREADABLE"]}     | 🔴 Critical | File missing or unreadable.                                              |\n\n'
     summary += '- **Action Required:** ALL affected branches MUST restore these critical files and security helpers.\n\n'

@@ -24,6 +24,11 @@ describe('monitoring', () => {
   }
 
   beforeEach(() => {
+    // Reset all mocks first — clears both call history and any persistent mockImplementation
+    // that a prior test may have set (e.g. making Sentry.captureException throw).
+    // Must run before installing spies so the reset doesn't clear their silent implementations.
+    vi.resetAllMocks()
+
     // Mock console methods
     consoleSpy = {
       log: vi.spyOn(console, 'log').mockImplementation(() => {}),
@@ -32,10 +37,6 @@ describe('monitoring', () => {
       group: vi.spyOn(console, 'group').mockImplementation(() => {}),
       groupEnd: vi.spyOn(console, 'groupEnd').mockImplementation(() => {}),
     }
-
-    // Reset all mocks — clears both call history and any persistent mockImplementation
-    // that a prior test may have set (e.g. making Sentry.captureException throw).
-    vi.resetAllMocks()
   })
 
   afterEach(() => {
@@ -164,6 +165,17 @@ describe('monitoring', () => {
       expect(consoleSpy.warn).toHaveBeenCalledWith(
         '[monitoring] Error reporting failed:',
         'string error'
+      )
+    })
+
+    it('should call Sentry with info level for low severity', () => {
+      vi.stubEnv('VITE_SENTRY_DSN', 'https://sentry.example.com')
+      const error = new Error('Low severity error')
+      logError(error, { severity: 'low' }, 'LowSeverityComponent')
+
+      expect(Sentry.captureException).toHaveBeenCalledWith(
+        error,
+        expect.objectContaining({ level: 'info' })
       )
     })
 

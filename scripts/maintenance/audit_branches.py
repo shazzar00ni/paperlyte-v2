@@ -8,7 +8,7 @@ from scripts.maintenance.utils import run_command
 signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 
 # Critical files that must be present in all branches
-CRITICAL_FILES = [".npmrc", "docs/ROADMAP.md", "gitVersionControl.md", "review.md"]
+CRITICAL_FILES = [".npmrc", "docs/ROADMAP.md", "docs/gitVersionControl.md", "docs/review.md"]
 
 # Essential security helpers that should not be reverted
 SECURITY_HELPERS = ["hasDangerousProtocol", "isRelativeUrl"]

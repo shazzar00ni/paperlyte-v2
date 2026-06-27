@@ -1,8 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
 
 interface UseIntersectionObserverOptions {
+  /** Percentage of the element that must be visible to trigger (0–1). @default 0.1 */
   threshold?: number
+  /** Margin around the root viewport used to grow or shrink the intersection area. @default '0px' */
   rootMargin?: string
+  /**
+   * When true, the observer disconnects after the first intersection and `isVisible`
+   * never reverts to false. Set to false for toggle-on-scroll effects.
+   * @default true
+   */
   triggerOnce?: boolean
 }
 

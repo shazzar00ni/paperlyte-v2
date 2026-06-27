@@ -7,8 +7,15 @@
 
 import type { AnalyticsConfig } from './types'
 
+/** Resolve analytics enabled state from `VITE_ANALYTICS_ENABLED`; falls back to `PROD`. */
+function resolveEnabled(enabledEnv: string | undefined): boolean {
+  if (enabledEnv === 'true') return true
+  if (enabledEnv === 'false') return false
+  return Boolean(import.meta.env.PROD)
+}
+
 /**
- * Get analytics configuration from environment variables
+ * Get analytics configuration from environment variables.
  *
  * Environment variables (defined in .env):
  * - VITE_ANALYTICS_ENABLED: Enable/disable analytics
@@ -21,35 +28,9 @@ import type { AnalyticsConfig } from './types'
  */
 export function getAnalyticsConfig(): AnalyticsConfig | null {
   const domain = import.meta.env.VITE_ANALYTICS_DOMAIN
+  if (!domain) return null
+  if (!resolveEnabled(import.meta.env.VITE_ANALYTICS_ENABLED)) return null
 
-  // If no domain is provided, analytics cannot be enabled
-  if (!domain) {
-    return null
-  }
-
-  // Determine if analytics is enabled based on environment
-  // Default behavior: enabled in production, disabled in development
-  let enabled: boolean
-  const enabledEnv = import.meta.env.VITE_ANALYTICS_ENABLED
-
-  if (enabledEnv === 'true') {
-    // Explicitly enabled
-    enabled = true
-  } else if (enabledEnv === 'false') {
-    // Explicitly disabled
-    enabled = false
-  } else {
-    // Not set - use default based on environment
-    // Enable in production, disable in development
-    enabled = import.meta.env.PROD
-  }
-
-  // Analytics is disabled if not enabled
-  if (!enabled) {
-    return null
-  }
-
-  // Validate and set analytics provider
   const validProviders = ['plausible', 'fathom', 'umami', 'simple', 'custom'] as const
   const rawProvider = import.meta.env.VITE_ANALYTICS_PROVIDER || 'plausible'
   const provider: AnalyticsConfig['provider'] = validProviders.includes(
@@ -57,6 +38,7 @@ export function getAnalyticsConfig(): AnalyticsConfig | null {
   )
     ? (rawProvider as AnalyticsConfig['provider'])
     : 'plausible'
+
   const scriptUrl = import.meta.env.VITE_ANALYTICS_SCRIPT_URL
   const debug =
     import.meta.env.VITE_ANALYTICS_DEBUG === 'true' ||

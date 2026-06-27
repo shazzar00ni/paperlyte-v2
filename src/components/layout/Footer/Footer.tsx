@@ -99,9 +99,9 @@ export const Footer = (): React.ReactElement => {
                     className={styles.link}
                     target="_blank"
                     rel="noopener noreferrer"
+                    aria-label="Privacy Policy (opens in new tab)"
                   >
                     Privacy Policy
-                    <span className="sr-only"> (opens in new tab)</span>
                   </a>
                 </li>
                 <li>
@@ -110,9 +110,9 @@ export const Footer = (): React.ReactElement => {
                     className={styles.link}
                     target="_blank"
                     rel="noopener noreferrer"
+                    aria-label="Terms of Service (opens in new tab)"
                   >
                     Terms of Service
-                    <span className="sr-only"> (opens in new tab)</span>
                   </a>
                 </li>
                 <li>
@@ -121,9 +121,9 @@ export const Footer = (): React.ReactElement => {
                     className={styles.link}
                     target="_blank"
                     rel="noopener noreferrer"
+                    aria-label="Cookie Policy (opens in new tab)"
                   >
                     Cookie Policy
-                    <span className="sr-only"> (opens in new tab)</span>
                   </a>
                 </li>
                 <li>
@@ -132,9 +132,9 @@ export const Footer = (): React.ReactElement => {
                     className={styles.link}
                     target="_blank"
                     rel="noopener noreferrer"
+                    aria-label="Security (opens in new tab)"
                   >
                     Security
-                    <span className="sr-only"> (opens in new tab)</span>
                   </a>
                 </li>
                 <li>
@@ -143,9 +143,9 @@ export const Footer = (): React.ReactElement => {
                     className={styles.link}
                     target="_blank"
                     rel="noopener noreferrer"
+                    aria-label="DMCA (opens in new tab)"
                   >
                     DMCA
-                    <span className="sr-only"> (opens in new tab)</span>
                   </a>
                 </li>
                 <li>
@@ -154,9 +154,9 @@ export const Footer = (): React.ReactElement => {
                     className={styles.link}
                     target="_blank"
                     rel="noopener noreferrer"
+                    aria-label="Accessibility (opens in new tab)"
                   >
                     Accessibility
-                    <span className="sr-only"> (opens in new tab)</span>
                   </a>
                 </li>
               </ul>

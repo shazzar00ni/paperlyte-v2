@@ -101,6 +101,7 @@ export const Footer = (): React.ReactElement => {
                     rel="noopener noreferrer"
                   >
                     Privacy Policy
+                    <span className="sr-only"> (opens in new tab)</span>
                   </a>
                 </li>
                 <li>
@@ -111,6 +112,7 @@ export const Footer = (): React.ReactElement => {
                     rel="noopener noreferrer"
                   >
                     Terms of Service
+                    <span className="sr-only"> (opens in new tab)</span>
                   </a>
                 </li>
                 <li>
@@ -121,6 +123,7 @@ export const Footer = (): React.ReactElement => {
                     rel="noopener noreferrer"
                   >
                     Cookie Policy
+                    <span className="sr-only"> (opens in new tab)</span>
                   </a>
                 </li>
                 <li>
@@ -131,6 +134,7 @@ export const Footer = (): React.ReactElement => {
                     rel="noopener noreferrer"
                   >
                     Security
+                    <span className="sr-only"> (opens in new tab)</span>
                   </a>
                 </li>
                 <li>
@@ -141,6 +145,7 @@ export const Footer = (): React.ReactElement => {
                     rel="noopener noreferrer"
                   >
                     DMCA
+                    <span className="sr-only"> (opens in new tab)</span>
                   </a>
                 </li>
                 <li>
@@ -151,6 +156,7 @@ export const Footer = (): React.ReactElement => {
                     rel="noopener noreferrer"
                   >
                     Accessibility
+                    <span className="sr-only"> (opens in new tab)</span>
                   </a>
                 </li>
               </ul>

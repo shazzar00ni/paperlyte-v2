@@ -50,10 +50,10 @@ describe('Footer', () => {
 
     expect(screen.getByText('Legal')).toBeInTheDocument()
 
-    const privacyLink = screen.getByRole('link', { name: 'Privacy Policy' })
+    const privacyLink = screen.getByRole('link', { name: /Privacy Policy/ })
     expect(privacyLink).toBeInTheDocument()
 
-    const termsLink = screen.getByRole('link', { name: 'Terms of Service' })
+    const termsLink = screen.getByRole('link', { name: /Terms of Service/ })
     expect(termsLink).toBeInTheDocument()
   })
 

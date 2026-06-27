@@ -1,5 +1,7 @@
 import type { KeyboardEvent as ReactKeyboardEvent } from 'react'
 
+type KeyEvent = KeyboardEvent | ReactKeyboardEvent
+
 /**
  * Keyboard navigation utilities for accessibility support
  * Provides helper functions for detecting key presses and managing focus
@@ -8,57 +10,51 @@ import type { KeyboardEvent as ReactKeyboardEvent } from 'react'
 /**
  * Check if the pressed key is Enter or Space (standard activation keys)
  */
-export function isActivationKey(event: KeyboardEvent | ReactKeyboardEvent): boolean {
+export function isActivationKey(event: KeyEvent): boolean {
   return event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar'
 }
 
 /**
  * Check if the pressed key is Escape
  */
-export function isEscapeKey(event: KeyboardEvent | ReactKeyboardEvent): boolean {
+export function isEscapeKey(event: KeyEvent): boolean {
   return event.key === 'Escape' || event.key === 'Esc'
 }
 
 /**
  * Check if the pressed key is an arrow key
  */
-export function isArrowKey(event: KeyboardEvent | ReactKeyboardEvent): boolean {
+export function isArrowKey(event: KeyEvent): boolean {
   return ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)
 }
 
 /**
  * Check if the pressed key is the Home key
  */
-export function isHomeKey(event: KeyboardEvent | ReactKeyboardEvent): boolean {
+export function isHomeKey(event: KeyEvent): boolean {
   return event.key === 'Home'
 }
 
 /**
  * Check if the pressed key is the End key
  */
-export function isEndKey(event: KeyboardEvent | ReactKeyboardEvent): boolean {
+export function isEndKey(event: KeyEvent): boolean {
   return event.key === 'End'
+}
+
+const ARROW_DIRECTION_MAP: Readonly<Record<string, 'up' | 'down' | 'left' | 'right'>> = {
+  ArrowUp: 'up',
+  ArrowDown: 'down',
+  ArrowLeft: 'left',
+  ArrowRight: 'right',
 }
 
 /**
  * Get arrow key direction
  * @returns The direction ('up', 'down', 'left', 'right') or null if not an arrow key
  */
-export function getArrowDirection(
-  event: KeyboardEvent | ReactKeyboardEvent
-): 'up' | 'down' | 'left' | 'right' | null {
-  switch (event.key) {
-    case 'ArrowUp':
-      return 'up'
-    case 'ArrowDown':
-      return 'down'
-    case 'ArrowLeft':
-      return 'left'
-    case 'ArrowRight':
-      return 'right'
-    default:
-      return null
-  }
+export function getArrowDirection(event: KeyEvent): 'up' | 'down' | 'left' | 'right' | null {
+  return ARROW_DIRECTION_MAP[event.key] ?? null
 }
 
 /**
@@ -83,12 +79,14 @@ export function getFocusableElements(container: HTMLElement): HTMLElement[] {
     const position = a.compareDocumentPosition(b)
     if (position & Node.DOCUMENT_POSITION_FOLLOWING) {
       return -1 // a comes before b
-    } else if (position & Node.DOCUMENT_POSITION_PRECEDING) {
+    }
+    if (position & Node.DOCUMENT_POSITION_PRECEDING) {
       return 1 // b comes before a
     }
-    // Defensive return for edge cases (e.g., disconnected nodes).
-    // In practice, this branch is unreachable when sorting elements from querySelectorAll
-    // since all returned nodes are connected and have a defined document order.
+    // Defensive fall-through for disconnected nodes. Unreachable in practice:
+    // querySelectorAll returns connected nodes with a defined document order, so
+    // one of the comparisons above always matches.
+    /* v8 ignore next -- unreachable defensive fall-through (see comment above) */
     return 0
   })
 
@@ -177,6 +175,24 @@ export function createFocusTrap(container: HTMLElement): () => void {
 }
 
 /**
+ * Detect whether the document is rendered in right-to-left direction.
+ */
+function detectDocumentRtl(): boolean {
+  if (typeof document === 'undefined') return false
+  const docElement = document.documentElement
+  const attrDir = (
+    document.dir ||
+    (docElement && docElement.getAttribute('dir')) ||
+    ''
+  ).toLowerCase()
+  if (attrDir) return attrDir === 'rtl'
+  if (typeof window !== 'undefined' && docElement && window.getComputedStyle) {
+    return window.getComputedStyle(docElement).direction === 'rtl'
+  }
+  return false
+}
+
+/**
  * Compute the next focusable element index in response to an arrow-key press.
  *
  * @param event - Keyboard event used to determine arrow direction
@@ -188,7 +204,7 @@ export function createFocusTrap(container: HTMLElement): () => void {
  *   or no navigation should occur
  */
 export function handleArrowNavigation(
-  event: KeyboardEvent | ReactKeyboardEvent,
+  event: KeyEvent,
   elements: HTMLElement[],
   currentIndex: number,
   orientation: 'horizontal' | 'vertical' = 'horizontal'
@@ -202,32 +218,11 @@ export function handleArrowNavigation(
   // Normalize direction for RTL in horizontal navigation:
   // In RTL, ArrowRight should move to the previous element and ArrowLeft to the next.
   let effectiveDirection = direction
-  if (isHorizontal) {
-    let isRtl = false
-
-    if (typeof document !== 'undefined') {
-      // Prefer explicit dir attribute if present
-      const docElement = document.documentElement
-      const attrDir = (
-        document.dir ||
-        (docElement && docElement.getAttribute('dir')) ||
-        ''
-      ).toLowerCase()
-
-      if (attrDir) {
-        isRtl = attrDir === 'rtl'
-      } else if (typeof window !== 'undefined' && docElement && window.getComputedStyle) {
-        const computedDirection = window.getComputedStyle(docElement).direction
-        isRtl = computedDirection === 'rtl'
-      }
-    }
-
-    if (isRtl) {
-      if (direction === 'left') {
-        effectiveDirection = 'right'
-      } else if (direction === 'right') {
-        effectiveDirection = 'left'
-      }
+  if (isHorizontal && detectDocumentRtl()) {
+    if (direction === 'left') {
+      effectiveDirection = 'right'
+    } else if (direction === 'right') {
+      effectiveDirection = 'left'
     }
   }
 
@@ -266,10 +261,7 @@ export function findFocusedIndex(elements: HTMLElement[]): number {
  * @param elements - Array of focusable elements
  * @returns Index to focus (0 for Home, last for End), or null if not Home/End
  */
-export function handleHomeEndNavigation(
-  event: KeyboardEvent | ReactKeyboardEvent,
-  elements: HTMLElement[]
-): number | null {
+export function handleHomeEndNavigation(event: KeyEvent, elements: HTMLElement[]): number | null {
   if (isHomeKey(event)) {
     return 0
   } else if (isEndKey(event)) {

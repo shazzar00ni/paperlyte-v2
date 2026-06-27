@@ -146,6 +146,12 @@ jobs:
         if: ${{ !cancelled() }}
         continue-on-error: true
         uses: codacy/codacy-coverage-reporter-action@89d6c85cfafaec52c72b6c5e8b2878d33104c699  # v1.3.0
+        env:
+          # For repository_dispatch runs the Codacy reporter may fall back to
+          # GITHUB_SHA (the default-branch HEAD at dispatch time) instead of the
+          # checked-out commit. COMMIT_UUID overrides that so coverage is always
+          # attributed to the correct bot commit SHA.
+          COMMIT_UUID: ${{ github.event.client_payload.sha || github.sha }}
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           coverage-reports: coverage/lcov.info

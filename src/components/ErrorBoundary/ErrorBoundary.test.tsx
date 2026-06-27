@@ -97,7 +97,10 @@ describe('ErrorBoundary', () => {
       )
 
       await waitFor(() => {
-        if (!expectMockedLogError()) return
+await waitFor(() => {
+  expect(vi.mocked(logError)).toHaveBeenCalled()
+})
+expect(vi.mocked(logError)).toHaveBeenLastCalledWith(...)
         expect(vi.mocked(logError)).toHaveBeenCalledWith(
           expect.objectContaining({ message: 'Test error' }),
           expect.objectContaining({ severity: 'high' }),

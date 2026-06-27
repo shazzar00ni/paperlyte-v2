@@ -48,13 +48,18 @@ jobs:
       # upload: "false" prevents the action from auto-uploading the raw SARIF to Codacy at this point.
       # Codacy rejects uploads containing more than 20 runs; the raw output typically contains one run per
       # tool (23+). We merge all runs into one below and upload the merged file instead.
+      #
+      # project-token is intentionally omitted here. When project-token is provided the CLI downloads
+      # the server-side tool configuration which currently has Trivy enabled. The Trivy Docker image
+      # bundled by Codacy now outputs CycloneDX SBOM format; Codacy's own plugin parser expects the old
+      # security-findings JSON format (with a "filename" field) and fails with a JsResultException.
+      # Running without project-token forces the CLI to use the local .codacy.yml where
+      # trivy: enabled: false is set, preventing the parse error. Results are still uploaded to Codacy
+      # via the upload-sarif-to-codacy.sh step below.
       - name: Run Codacy Analysis CLI
         id: codacy-run
         uses: codacy/codacy-analysis-cli-action@562ee3e92b8e92df8b67e0a5ff8aa8e261919c08  # v4.4.7
         with:
-          # Check https://github.com/codacy/codacy-analysis-cli#project-token to get your project token from your Codacy repository
-          # You can also omit the token and run the tools that support default configurations
-          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           output: results.sarif
           format: sarif
           # Adjust severity of non-security issues
@@ -154,11 +159,17 @@ jobs:
       # a genuine analysis failure (action crash, invalid config) fails the job,
       # so the PR-review path can't silently stop producing results. Transient
       # upload flakiness is tolerated separately in the upload step below.
+      #
+      # project-token is intentionally omitted: when it is present the CLI downloads
+      # Codacy's server-side tool config (Trivy enabled) and Codacy's Trivy Docker
+      # image now emits CycloneDX SBOM format instead of the expected security-findings
+      # JSON, causing a JsResultException parse error. Without project-token the CLI
+      # uses the local .codacy.yml (trivy: enabled: false). Results are still uploaded
+      # to Codacy via the curl step below, enabling inline PR review comments.
       - name: Run Codacy Analysis CLI
         id: codacy-run
         uses: codacy/codacy-analysis-cli-action@562ee3e92b8e92df8b67e0a5ff8aa8e261919c08  # v4.4.7
         with:
-          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           output: results.sarif
           format: sarif
           gh-code-scanning-compat: true

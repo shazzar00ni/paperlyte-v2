@@ -25,6 +25,10 @@ const BUILD_DATE = new Date().toLocaleDateString("en-US", {
 const LEGAL_REVISION_DATES = {
   "privacy.html": "June 5, 2026",
   "terms.html": "June 5, 2026",
+  "cookies.html": "June 27, 2026",
+  "security.html": "June 27, 2026",
+  "dmca.html": "June 27, 2026",
+  "accessibility.html": "June 27, 2026",
 };
 
 // Configuration for production site
@@ -32,11 +36,22 @@ const SITE_URL = "https://paperlyte.app";
 const OG_IMAGE_URL = "https://paperlyte.app/og-image.jpg";
 const META_KEYWORDS = "note-taking app, distraction-free notes, offline notes, fast note app, tag-based organization, simple notes, privacy-focused notes, cross-platform notes, real-time sync, minimalist note app";
 
-const LEGAL_FILES = ["privacy.html", "terms.html"];
+const LEGAL_FILES = [
+  "privacy.html",
+  "terms.html",
+  "cookies.html",
+  "security.html",
+  "dmca.html",
+  "accessibility.html",
+];
 
 console.log(`Injecting build values...`);
 console.log(`- Build date: ${BUILD_DATE}`);
-console.log(`- Legal revision dates: privacy=${LEGAL_REVISION_DATES["privacy.html"]}, terms=${LEGAL_REVISION_DATES["terms.html"]}`);
+console.log(
+  `- Legal revision dates: ${LEGAL_FILES.map(
+    (file) => `${file.replace(/\.html$/, "")}=${LEGAL_REVISION_DATES[file]}`
+  ).join(", ")}`
+);
 console.log(`- Site URL: ${SITE_URL}`);
 
 // Process legal pages (privacy, terms)

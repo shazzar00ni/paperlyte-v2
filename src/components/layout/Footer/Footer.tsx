@@ -113,6 +113,46 @@ export const Footer = (): React.ReactElement => {
                     Terms of Service
                   </a>
                 </li>
+                <li>
+                  <a
+                    href={LEGAL_CONFIG.documents.cookies}
+                    className={styles.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Cookie Policy
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href={LEGAL_CONFIG.documents.security}
+                    className={styles.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Security
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href={LEGAL_CONFIG.documents.dmca}
+                    className={styles.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    DMCA
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href={LEGAL_CONFIG.documents.accessibility}
+                    className={styles.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Accessibility
+                  </a>
+                </li>
               </ul>
             </div>
 

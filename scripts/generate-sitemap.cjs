@@ -35,6 +35,30 @@ const pages = [
     changefreq: 'monthly',
     priority: '0.5',
   },
+  {
+    url: `${DOMAIN}/cookies`,
+    file: path.join(__dirname, '../public/cookies.html'),
+    changefreq: 'monthly',
+    priority: '0.5',
+  },
+  {
+    url: `${DOMAIN}/security`,
+    file: path.join(__dirname, '../public/security.html'),
+    changefreq: 'monthly',
+    priority: '0.5',
+  },
+  {
+    url: `${DOMAIN}/dmca`,
+    file: path.join(__dirname, '../public/dmca.html'),
+    changefreq: 'monthly',
+    priority: '0.5',
+  },
+  {
+    url: `${DOMAIN}/accessibility`,
+    file: path.join(__dirname, '../public/accessibility.html'),
+    changefreq: 'monthly',
+    priority: '0.5',
+  },
 ];
 
 /**

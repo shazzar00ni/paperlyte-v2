@@ -93,9 +93,8 @@ export function useAnalytics(enableScrollTracking = true) {
    * PRIVACY: Does not send email or PII. Only tracks conversion success.
    */
   const trackWaitlistSuccess = useCallback(() => {
-    track(AnalyticsEvents.WAITLIST_SUCCESS, {
-      // No PII - only track that signup was successful
-    })
+    // No PII - only track that signup was successful
+    track(AnalyticsEvents.WAITLIST_SUCCESS)
   }, [track])
 
   const trackWaitlistError = useCallback(

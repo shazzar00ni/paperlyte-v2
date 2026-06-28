@@ -178,8 +178,8 @@ export const EmailCapture = (): React.ReactElement => {
 
         <AnimatedElement animation="fadeIn" delay={200}>
           <ul className={styles.benefits}>
-            {BENEFITS.map((benefit, index) => (
-              <li key={index} className={styles.benefit}>
+            {BENEFITS.map((benefit) => (
+              <li key={benefit} className={styles.benefit}>
                 <Icon name="fa-check" size="sm" color="var(--color-primary)" />
                 <span>{benefit}</span>
               </li>

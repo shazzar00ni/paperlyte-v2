@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { memo, useState, useRef, useEffect, useCallback } from 'react'
 import { Section } from '@components/layout/Section'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { Icon } from '@components/ui/Icon'
@@ -25,13 +25,13 @@ interface FAQItemProps {
  * @param props - FAQ item props
  * @returns An animated accordion item for FAQ
  */
-const FAQItemComponent = ({
+const FAQItemComponent = memo(function FAQItemComponent({
   question,
   answer,
   isOpen,
   onToggle,
   delay,
-}: FAQItemProps): React.ReactElement => {
+}: FAQItemProps): React.ReactElement {
   const sanitizedQuestion = question
     .replace(/[^a-zA-Z0-9\s]/g, '')
     .replace(/\s+/g, '-')
@@ -72,7 +72,7 @@ const FAQItemComponent = ({
       </article>
     </AnimatedElement>
   )
-}
+})
 
 /** Renders the FAQ section with an accessible, keyboard-navigable accordion of common questions. */
 export const FAQ = (): React.ReactElement => {
@@ -81,7 +81,7 @@ export const FAQ = (): React.ReactElement => {
   const gridRef = useRef<HTMLDivElement>(null)
   const announcementTimeoutRef = useRef<number | null>(null)
 
-  const toggleItem = (id: string): void => {
+  const toggleItem = useCallback((id: string): void => {
     setOpenItems((prev) => {
       const newSet = new Set(prev)
       const isOpening = !newSet.has(id)
@@ -111,7 +111,11 @@ export const FAQ = (): React.ReactElement => {
 
       return newSet
     })
-  }
+  }, [])
+
+  // Memoized per-item toggler factory to avoid creating a new closure on every
+  // render for every FAQ item (keeps the memoized FAQItemComponent stable).
+  const handleToggle = useCallback((id: string) => () => toggleItem(id), [toggleItem])
 
   // Cleanup timeout on unmount to prevent memory leaks
   useEffect(() => {
@@ -192,9 +196,7 @@ export const FAQ = (): React.ReactElement => {
             question={item.question}
             answer={item.answer}
             isOpen={openItems.has(item.id)}
-            onToggle={() => {
-              toggleItem(item.id)
-            }}
+            onToggle={handleToggle(item.id)}
             delay={150 + index * 50}
           />
         ))}

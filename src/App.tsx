@@ -1,5 +1,6 @@
-import { useRef, useCallback, lazy, Suspense } from 'react'
+import { useRef, useCallback, lazy } from 'react'
 import { ErrorBoundary } from '@components/ErrorBoundary'
+import { LazySection } from '@components/layout/LazySection'
 import { Header } from '@components/layout/Header'
 import { Footer } from '@components/layout/Footer'
 import { Hero } from '@components/sections/Hero'
@@ -54,36 +55,24 @@ function App() {
         <Solution />
         <Features />
         <Mobile />
-        <ErrorBoundary fallback={<></>}>
-          <Suspense fallback={null}>
-            <Statistics />
-          </Suspense>
-        </ErrorBoundary>
-        <ErrorBoundary fallback={<></>}>
-          <Suspense fallback={null}>
-            <Comparison />
-          </Suspense>
-        </ErrorBoundary>
-        <ErrorBoundary fallback={<></>}>
-          <Suspense fallback={null}>
-            <Testimonials />
-          </Suspense>
-        </ErrorBoundary>
-        <ErrorBoundary fallback={<></>}>
-          <Suspense fallback={null}>
-            <EmailCapture />
-          </Suspense>
-        </ErrorBoundary>
-        <ErrorBoundary fallback={<></>}>
-          <Suspense fallback={null}>
-            <FAQ />
-          </Suspense>
-        </ErrorBoundary>
-        <ErrorBoundary fallback={<></>}>
-          <Suspense fallback={null}>
-            <CTA />
-          </Suspense>
-        </ErrorBoundary>
+        <LazySection>
+          <Statistics />
+        </LazySection>
+        <LazySection>
+          <Comparison />
+        </LazySection>
+        <LazySection>
+          <Testimonials />
+        </LazySection>
+        <LazySection>
+          <EmailCapture />
+        </LazySection>
+        <LazySection>
+          <FAQ />
+        </LazySection>
+        <LazySection>
+          <CTA />
+        </LazySection>
       </main>
       <Footer />
       <FeedbackWidget />

@@ -8,7 +8,7 @@
 // old runtime code with a new shell before activation handoff completes.
 // onActivate then deletes every cache whose name differs from this value,
 // so old caches are cleaned up once the new SW takes over.
-const CACHE_VERSION = 'paperlyte-v1'
+const CACHE_VERSION = 'paperlyte-v2'
 const OFFLINE_PAGE = '/offline.html'
 
 // Pre-cache these on install so offline fallback is always available
@@ -18,7 +18,7 @@ const PRECACHE = [
   '/offline.css',
   '/offline.js',
   '/site.webmanifest',
-  '/fonts/Inter-Variable.woff2',
+  '/fonts/Inter-Variable-v2.woff2',
   '/fonts/PlayfairDisplay-Variable.woff2',
 ]
 
@@ -38,14 +38,16 @@ const CACHEABLE_RE = /\.(png|jpg|jpeg|webp|avif|svg|ico|woff2?)$/
 
 // ─── Lifecycle ───────────────────────────────────────────────────────────────
 
-/**
- * Pre-cache critical assets so the offline fallback is available from the first visit.
- * Does NOT call skipWaiting() — the new SW waits until all tabs on the old version
- * are closed before activating, preventing open tabs from losing their cached assets.
- * @param {ExtendableEvent} event
- */
+// Skip waiting only when there is no active worker. This lets a fresh install
+// control the page immediately, while updates remain waiting until tabs using
+// the previous worker have closed and can no longer request its lazy chunks.
 function onInstall(event) {
-  event.waitUntil(caches.open(CACHE_VERSION).then((cache) => cache.addAll(PRECACHE)))
+  const precache = caches.open(CACHE_VERSION).then((cache) => cache.addAll(PRECACHE))
+  const installation = self.registration.active
+    ? precache
+    : precache.then(() => self.skipWaiting())
+
+  event.waitUntil(installation)
 }
 
 /**

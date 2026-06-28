@@ -51,12 +51,19 @@ npm run preview
 
 ## Commit convention
 
-This repository enforces its commit convention with commitlint.
+This repository follows the Conventional Commits convention, configured via
+`commitlint.config.js` (extends `@commitlint/config-conventional`). There is
+**no** commit-msg git hook wired up, so commitlint is not auto-enforced on
+`git commit` — validate messages manually before committing.
 
-- Read the rules before committing: `npx commitlint --print-config json`
-- Validate a message before using it: `printf '%s' "<message>" | npx commitlint`
+- First install dev deps (`npm ci`). Without them, a bare `npx commitlint`
+  silently fetches a generic `commitlint` from the registry that can't resolve
+  the local config and misreports "missing rules" — so always pass
+  `--no-install`, which fails clearly when deps aren't installed.
+- Read the rules: `npx --no-install commitlint --print-config json`
+- Validate a message: `printf '%s' "<message>" | npx --no-install commitlint`
   (exit 0 = valid)
-- If the commit-msg hook rejects a commit, fix the rules named in brackets
+- If validation reports problems, fix the rules named in brackets
   (e.g. `[subject-case]`) and retry. Never use `git commit --no-verify`.
 
 ---

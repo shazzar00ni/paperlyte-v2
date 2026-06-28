@@ -11,10 +11,11 @@ import {
 import styles from './FAQ.module.css'
 
 interface FAQItemProps {
+  id: string
   question: string
   answer: string
   isOpen: boolean
-  onToggle: () => void
+  onToggle: (id: string) => void
   delay: number
 }
 
@@ -26,6 +27,7 @@ interface FAQItemProps {
  * @returns An animated accordion item for FAQ
  */
 const FAQItemComponent = memo(function FAQItemComponent({
+  id,
   question,
   answer,
   isOpen,
@@ -47,7 +49,7 @@ const FAQItemComponent = memo(function FAQItemComponent({
             id={questionId}
             type="button"
             className={styles.question}
-            onClick={onToggle}
+            onClick={() => onToggle(id)}
             aria-expanded={isOpen}
             aria-controls={answerId}
           >
@@ -112,10 +114,6 @@ export const FAQ = (): React.ReactElement => {
       return newSet
     })
   }, [])
-
-  // Memoized per-item toggler factory to avoid creating a new closure on every
-  // render for every FAQ item (keeps the memoized FAQItemComponent stable).
-  const handleToggle = useCallback((id: string) => () => toggleItem(id), [toggleItem])
 
   // Cleanup timeout on unmount to prevent memory leaks
   useEffect(() => {
@@ -193,10 +191,11 @@ export const FAQ = (): React.ReactElement => {
         {FAQ_ITEMS.map((item, index) => (
           <FAQItemComponent
             key={item.id}
+            id={item.id}
             question={item.question}
             answer={item.answer}
             isOpen={openItems.has(item.id)}
-            onToggle={handleToggle(item.id)}
+            onToggle={toggleItem}
             delay={150 + index * 50}
           />
         ))}

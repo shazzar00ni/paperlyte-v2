@@ -67,7 +67,9 @@ describe('Solution Constants', () => {
     })
 
     it('should interpolate LAUNCH_QUARTER in the cross-platform value proposition', () => {
-      const crossPlatform = SOLUTION_VALUE_PROPS.find((p) => p.headline === 'Works Everywhere, Always')
+      const crossPlatform = SOLUTION_VALUE_PROPS.find(
+        (p) => p.headline === 'Works Everywhere, Always'
+      )
       expect(crossPlatform).toBeDefined()
       expect(crossPlatform?.proof).toContain(LAUNCH_QUARTER)
       expect(crossPlatform?.body.some((p) => p.includes(LAUNCH_QUARTER))).toBe(true)

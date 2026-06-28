@@ -3,12 +3,14 @@ import { Icon } from '@components/ui/Icon'
 import { logError } from '@utils/monitoring'
 import styles from './ErrorBoundary.module.css'
 
+/** Props for the {@link ErrorBoundary} component. */
 interface ErrorBoundaryProps {
   children: ReactNode
   fallback?: ReactNode
   maxRetries?: number
 }
 
+/** Internal state tracked by the {@link ErrorBoundary} component. */
 interface ErrorBoundaryState {
   hasError: boolean
   error: Error | null

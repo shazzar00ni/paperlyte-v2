@@ -3,6 +3,10 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0",
+    "npm": ">=8"
+  },
   "scripts": {
     "dev": "vite",
     "ci": "npm run lint && vitest run && npm run build",
@@ -23,7 +27,10 @@
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:report": "playwright show-report",
     "lighthouse": "npm run build && npx @lhci/cli autorun",
-    "size": "size-limit"
+    "size": "size-limit",
+    "release:patch": "bash scripts/release.sh patch",
+    "release:minor": "bash scripts/release.sh minor",
+    "release:major": "bash scripts/release.sh major"
   },
   "dependencies": {
     "@sentry/react": "^10.59.0",

@@ -1,26 +1,30 @@
-import { Suspense, type ReactNode } from 'react'
+import { Suspense, lazy, type ComponentType } from 'react'
 import { ErrorBoundary } from '@components/ErrorBoundary'
 
-interface LazySectionProps {
-  /** The lazily-loaded section content to render. */
-  children: ReactNode
-}
+/** Dynamic import resolving to a module whose `default` export is the section component. */
+type SectionLoader = () => Promise<{ default: ComponentType }>
 
 /**
- * Wraps a lazily-loaded section in an ErrorBoundary and Suspense boundary.
+ * Creates a code-split section component, pairing `React.lazy` with `Suspense`
+ * and an `ErrorBoundary` in a single place.
  *
- * Centralizes the boilerplate previously repeated for every code-split section
- * in `App.tsx`: a failed load renders nothing (empty fallback) instead of
- * crashing the page, and a pending load renders nothing until ready.
+ * Call this at module scope so the returned component has a stable identity: a
+ * failed load renders nothing (empty fallback) instead of crashing the page,
+ * and a pending load renders nothing until the chunk arrives.
  *
- * @param props - Component props.
- * @param props.children - The lazily-loaded section content to render.
- * @returns The children wrapped in error and suspense boundaries.
+ * @param load - Dynamic import resolving to `{ default: Component }`.
+ * @returns A component that renders the lazily-loaded section behind the boundaries.
  */
-export function LazySection({ children }: LazySectionProps): React.ReactElement {
-  return (
-    <ErrorBoundary fallback={<></>}>
-      <Suspense fallback={null}>{children}</Suspense>
-    </ErrorBoundary>
-  )
+export function createLazySection(load: SectionLoader): ComponentType {
+  const LazyComponent = lazy(load)
+
+  return function LazySection(): React.ReactElement {
+    return (
+      <ErrorBoundary fallback={<></>}>
+        <Suspense fallback={null}>
+          <LazyComponent />
+        </Suspense>
+      </ErrorBoundary>
+    )
+  }
 }

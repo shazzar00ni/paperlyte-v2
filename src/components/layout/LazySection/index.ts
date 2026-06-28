@@ -1,1 +1,1 @@
-export { LazySection } from './LazySection'
+export { createLazySection } from './LazySection'

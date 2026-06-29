@@ -469,3 +469,105 @@ describe('package-lock.json – lodash-es security update (GHSA-r5fr-rjxr-66jc, 
     expect(entry.resolved).not.toMatch(/lodash-es-4\.17\.\d+\.tgz/)
   })
 })
+
+// ---------------------------------------------------------------------------
+// .github/workflows/codacy.yml – upload simplification
+// PR changes:
+//   - Removed `upload: "false"` from the Run Codacy Analysis CLI step
+//   - Removed the entire "Upload merged SARIF to Codacy" step (manual curl upload)
+//   - The merge-sarif step and GitHub Code Scanning upload step are retained
+// ---------------------------------------------------------------------------
+
+describe('.github/workflows/codacy.yml – upload step removal', () => {
+  let content: string
+
+  beforeAll(() => {
+    content = readFileSync(resolve(projectRoot, '.github/workflows/codacy.yml'), 'utf-8')
+  })
+
+  it('should exist and be non-empty', () => {
+    expect(content.length).toBeGreaterThan(0)
+  })
+
+  it('should define the codacy-security-scan job', () => {
+    expect(content).toMatch(/codacy-security-scan:/)
+  })
+
+  it('should define the codacy-pr-review job', () => {
+    expect(content).toMatch(/codacy-pr-review:/)
+  })
+
+  it('codacy-security-scan should NOT have upload: "false" (was removed to allow default upload)', () => {
+    // The PR removed the explicit `upload: "false"` override from the Run Codacy Analysis CLI step.
+    // Verify it is no longer present to prevent regression.
+    const securityScanBlock = (() => {
+      const lines = content.split('\n')
+      const startIdx = lines.findIndex((l) => l.startsWith('  codacy-security-scan:'))
+      if (startIdx === -1) return ''
+      const jobLines: string[] = [lines[startIdx]]
+      for (let i = startIdx + 1; i < lines.length; i++) {
+        const line = lines[i]
+        if (line.startsWith('  ') && line.length > 2 && line[2] !== ' ' && line[2] !== '\t') break
+        jobLines.push(line)
+      }
+      return jobLines.join('\n')
+    })()
+
+    expect(securityScanBlock).not.toMatch(/upload:\s*["']false["']/)
+  })
+
+  it('should NOT contain a step named "Upload merged SARIF to Codacy" (manual curl step was removed)', () => {
+    expect(content).not.toContain('Upload merged SARIF to Codacy')
+  })
+
+  it('should NOT contain a manual curl upload to api.codacy.com (manual upload removed)', () => {
+    expect(content).not.toContain('api.codacy.com')
+  })
+
+  it('should NOT reference CODACY_PROJECT_TOKEN in a curl command (manual upload removed)', () => {
+    // The old manual curl step used CODACY_PROJECT_TOKEN; it must not appear in curl context.
+    // Note: it may still appear as a project-token input to the official action, which is fine.
+    expect(content).not.toMatch(/curl[\s\S]{0,200}CODACY_PROJECT_TOKEN/)
+  })
+
+  it('should retain the Merge SARIF runs step', () => {
+    expect(content).toContain('Merge SARIF runs into single run')
+    expect(content).toContain('merge-sarif-runs.sh')
+  })
+
+  it('should retain the Upload SARIF results file step for GitHub Code Scanning', () => {
+    expect(content).toContain('Upload SARIF results file')
+    expect(content).toContain('github/codeql-action/upload-sarif')
+  })
+
+  it('upload-sarif step should be conditional on merge-sarif success', () => {
+    expect(content).toMatch(/steps\.merge-sarif\.conclusion\s*==\s*['"]success['"]/)
+  })
+
+  it('codacy-pr-review job should still have upload: true for PR inline comments', () => {
+    const lines = content.split('\n')
+    const startIdx = lines.findIndex((l) => l.startsWith('  codacy-pr-review:'))
+    if (startIdx === -1) {
+      throw new Error('codacy-pr-review job not found')
+    }
+    const jobLines: string[] = [lines[startIdx]]
+    for (let i = startIdx + 1; i < lines.length; i++) {
+      const line = lines[i]
+      if (line.startsWith('  ') && line.length > 2 && line[2] !== ' ' && line[2] !== '\t') break
+      jobLines.push(line)
+    }
+    const prReviewBlock = jobLines.join('\n')
+    expect(prReviewBlock).toMatch(/upload:\s*true/)
+  })
+
+  it('workflow should trigger on push to main, pull_request, and schedule', () => {
+    expect(content).toMatch(/push:/)
+    expect(content).toMatch(/pull_request:/)
+    expect(content).toMatch(/schedule:/)
+  })
+
+  it('codacy-security-scan job should skip pull_request events', () => {
+    // The job has a condition to run only on push/schedule (not PRs, which use codacy-pr-review)
+    expect(content).toMatch(/github\.event_name\s*!=\s*['"]pull_request['"]/)
+  })
+})

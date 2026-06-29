@@ -49,7 +49,7 @@ describe('Hero', () => {
     it('should render CTA buttons', () => {
       render(<Hero />)
 
-      expect(screen.getByRole('button', { name: /start writing for free/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /join the waitlist/i })).toBeInTheDocument()
       expect(screen.getByRole('button', { name: /see how it works/i })).toBeInTheDocument()
     })
 
@@ -64,10 +64,10 @@ describe('Hero', () => {
   })
 
   describe('CTA Buttons', () => {
-    it('should have Start Writing for Free button with primary variant', () => {
+    it('should have Join the Waitlist button with primary variant', () => {
       render(<Hero />)
 
-      const button = screen.getByRole('button', { name: /start writing for free/i })
+      const button = screen.getByRole('button', { name: /join the waitlist/i })
       // Verify primary variant by checking class contains 'primary' (CSS module hash)
       const classList = Array.from(button.classList)
       expect(classList.some((cls) => cls.includes('primary'))).toBe(true)
@@ -82,10 +82,10 @@ describe('Hero', () => {
       expect(classList.some((cls) => cls.includes('secondary'))).toBe(true)
     })
 
-    it('should render arrow icon on Start Writing for Free button', () => {
+    it('should render arrow icon on Join the Waitlist button', () => {
       render(<Hero />)
 
-      const button = screen.getByRole('button', { name: /start writing for free/i })
+      const button = screen.getByRole('button', { name: /join the waitlist/i })
       const icon = button.querySelector('svg')
 
       expect(icon).toBeInTheDocument()
@@ -93,17 +93,17 @@ describe('Hero', () => {
   })
 
   describe('Scroll Behavior', () => {
-    it('should scroll to download section when Start Writing for Free is clicked', async () => {
+    it('should scroll to email capture section when Join the Waitlist is clicked', async () => {
       const user = userEvent.setup()
 
-      // Create mock download section
-      const downloadSection = document.createElement('div')
-      downloadSection.id = 'download'
-      document.body.appendChild(downloadSection)
+      // Create mock email capture section
+      const emailCaptureSection = document.createElement('div')
+      emailCaptureSection.id = 'email-capture'
+      document.body.appendChild(emailCaptureSection)
 
       render(<Hero />)
 
-      const button = screen.getByRole('button', { name: /start writing for free/i })
+      const button = screen.getByRole('button', { name: /join the waitlist/i })
       await user.click(button)
 
       expect(scrollIntoViewMock).toHaveBeenCalledWith(
@@ -113,7 +113,7 @@ describe('Hero', () => {
       )
 
       // Cleanup
-      document.body.removeChild(downloadSection)
+      document.body.removeChild(emailCaptureSection)
     })
 
     it('should scroll to features section when See How It Works is clicked', async () => {
@@ -141,7 +141,7 @@ describe('Hero', () => {
       const user = userEvent.setup()
       render(<Hero />)
 
-      const button = screen.getByRole('button', { name: /start writing for free/i })
+      const button = screen.getByRole('button', { name: /join the waitlist/i })
 
       // Should not throw error when section doesn't exist
       await expect(user.click(button)).resolves.not.toThrow()
@@ -151,7 +151,7 @@ describe('Hero', () => {
       const user = userEvent.setup()
       render(<Hero />)
 
-      const button = screen.getByRole('button', { name: /start writing for free/i })
+      const button = screen.getByRole('button', { name: /join the waitlist/i })
       await user.click(button)
 
       // scrollIntoView should not be called if element doesn't exist
@@ -218,12 +218,12 @@ describe('Hero', () => {
 
       // Create mock section
       const section = document.createElement('div')
-      section.id = 'download'
+      section.id = 'email-capture'
       document.body.appendChild(section)
 
       render(<Hero />)
 
-      const button = screen.getByRole('button', { name: /start writing for free/i })
+      const button = screen.getByRole('button', { name: /join the waitlist/i })
 
       button.focus()
       expect(button).toHaveFocus()
@@ -288,7 +288,7 @@ describe('Hero', () => {
     it('should have accessible button labels', () => {
       render(<Hero />)
 
-      expect(screen.getByRole('button', { name: /start writing for free/i })).toHaveAccessibleName()
+      expect(screen.getByRole('button', { name: /join the waitlist/i })).toHaveAccessibleName()
       expect(screen.getByRole('button', { name: /see how it works/i })).toHaveAccessibleName()
     })
 
@@ -323,12 +323,12 @@ describe('Hero', () => {
       const buttons = screen.getAllByRole('button')
       const buttonTexts = buttons.map((btn) => btn.textContent)
 
-      const startIndex = buttonTexts.findIndex((text) => text?.includes('Start Writing'))
+      const startIndex = buttonTexts.findIndex((text) => text?.includes('Join the Waitlist'))
       const demoIndex = buttonTexts.findIndex((text) =>
         text?.toLowerCase().includes('see how it works')
       )
 
-      // Start Writing should come before See How It Works
+      // Join the Waitlist should come before See How It Works
       expect(startIndex).toBeLessThan(demoIndex)
     })
 

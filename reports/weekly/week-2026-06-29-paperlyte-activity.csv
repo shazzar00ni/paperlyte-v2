@@ -1,0 +1,61 @@
+Type,Title,Last Visited,Host
+Pull Request,[StepSecurity] Apply security best practices,2026-06-28T13:18:49Z,github.com
+Pull Request,"refactor: extract LazySection, centralize section data, and apply hygiene fixes",2026-06-28T15:37:54Z,github.com
+Pull Request,"feat(legal): publish cookie, security, DMCA, and accessibility pages",2026-06-27T19:18:14Z,github.com
+Issue,chore: remove/guard non-essential console.* statements in production source (audit HIGH-002),2026-06-27T14:58:03Z,github.com
+Pull Request,docs: finalize security and legal/compliance documentation,2026-06-27T14:52:44Z,github.com
+Pull Request,fix(deps): pin eslint and @eslint/js to concrete minimum versions,2026-06-27T10:16:55Z,github.com
+Issue,Action refactoring report ,2026-06-28T09:34:07Z,github.com
+Pull Request,test: add coverage for untested/under-tested source modules,2026-06-27T12:55:11Z,github.com
+Pull Request,docs: add and improve JSDoc for key functions and components,2026-06-27T09:17:24Z,github.com
+Pull Request,"fix: three bugs in Statistics icons, FAQ updater, and SW offline fallback",2026-06-27T09:16:35Z,github.com
+Pull Request,Fix daily audit to check docs-scoped critical files,2026-06-27T08:55:14Z,github.com
+Pull Request,Fix daily audit to check docs-scoped critical files,2026-06-27T08:55:05Z,github.com
+Pull Request,Guard `window.matchMedia` in Vitest setup to avoid Node env ReferenceError,2026-06-27T08:32:37Z,github.com
+Pull Request,test: stabilize shared monitoring module tests,2026-06-27T19:20:39Z,github.com
+Pull Request,fix: simplify legal placeholder path validation,2026-06-26T23:36:52Z,github.com
+Pull Request,Fix service worker navigation validation handling,2026-06-25T18:02:16Z,github.com
+Pull Request,Stabilize non-isolated monitoring tests,2026-06-27T19:55:43Z,github.com
+Pull Request,CodeRabbit Generated Unit Tests: Add unit tests for PR changes,2026-06-27T08:42:00Z,github.com
+Pull Request,Fix legal placeholder path validation and restrict script vitest config to scripts,2026-06-25T12:30:42Z,github.com
+Pull Request,Fix legal placeholder path validation and restrict script vitest config to scripts,2026-06-25T12:29:11Z,github.com
+Pull Request,fix(ci): prevent Codacy Trivy CycloneDX parse error,2026-06-27T19:26:32Z,github.com
+Pull Request,docs: sync DESIGN-SYSTEM.md with current implementation,2026-06-28T09:05:32Z,github.com
+Issue,Implement global tag index in localStorage,2026-06-24T18:46:17Z,github.com
+Issue,Build tag autocomplete dropdown with fuzzy matching,2026-06-24T18:46:11Z,github.com
+Issue,Implement # character detection and tag creation mode,2026-06-24T18:46:11Z,github.com
+Issue,Implement storage quota detection and warning toast,2026-06-24T18:46:34Z,github.com
+Issue,"Design note data schema (id, content, tags, timestamps)",2026-06-24T18:46:02Z,github.com
+Issue,Implement debounced localStorage write function (500ms),2026-06-24T18:46:05Z,github.com
+Issue,Set up performance benchmarks and automated keystroke latency tests,2026-06-24T18:46:34Z,github.com
+Issue,Implement base editor component with minimal React reconciliation,2026-06-24T18:45:58Z,github.com
+Commit,Merge pull request #1178 from shazzar00ni/chore/GHA-191801-stepsecurity-remediation,2026-06-28T13:23:07Z,github.com
+Commit,Merge branch 'main' into chore/GHA-191801-stepsecurity-remediation,2026-06-28T13:19:40Z,github.com
+Commit,Merge pull request #1248 from shazzar00ni/chore/GHA-281312-stepsecurity-remediation,2026-06-28T13:17:19Z,github.com
+Commit,[StepSecurity] Apply security best practices,2026-06-28T13:12:29Z,github.com
+Commit,Merge pull request #1227 from shazzar00ni/claude/design-system-doc-qiqjs4,2026-06-28T09:03:44Z,github.com
+Commit,Merge branch 'main' into claude/design-system-doc-qiqjs4,2026-06-27T19:24:01Z,github.com
+Commit,Merge pull request #1228 from shazzar00ni/claude/codacy-json-parse-error-9dwre2,2026-06-27T19:23:27Z,github.com
+Commit,Merge branch 'main' into claude/codacy-json-parse-error-9dwre2,2026-06-27T19:21:26Z,github.com
+Commit,Merge pull request #1130 from shazzar00ni/claude/coverage-report-ancestor-w6f54s,2026-06-27T19:18:50Z,github.com
+Commit,Merge branch 'main' into claude/coverage-report-ancestor-w6f54s,2026-06-27T19:18:01Z,github.com
+Commit,Merge pull request #1235 from shazzar00ni/claude/stabilize-monitoring-tests-sez2q0,2026-06-27T19:17:40Z,github.com
+Commit,Merge branch 'main' into claude/stabilize-monitoring-tests-sez2q0,2026-06-27T17:00:28Z,github.com
+Commit,Merge pull request #1206 from shazzar00ni/claude/webkit-runtime-deps-1m7dk9,2026-06-27T16:55:48Z,github.com
+Commit,fix(ci): handle root UID in PPA removal alongside sudo check,2026-06-27T16:54:50Z,github.com
+Commit,Merge branch 'main' into claude/webkit-runtime-deps-1m7dk9,2026-06-27T16:41:44Z,github.com
+Commit,Merge pull request #1231 from shazzar00ni/coderabbitai/utg/892ec13,2026-06-27T08:41:08Z,github.com
+Commit,test(monitoring): fix mock reset order and cover low-severity Sentry path,2026-06-27T08:36:04Z,github.com
+Commit,Merge pull request #1236 from shazzar00ni/codex/github-mention-coderabbit-generated-unit-tests-add-unit-te,2026-06-27T08:31:57Z,github.com
+Commit,Merge branch 'coderabbitai/utg/892ec13' into codex/github-mention-coderabbit-generated-unit-tests-add-unit-te,2026-06-27T08:31:21Z,github.com
+Commit,test: guard browser globals in setup,2026-06-27T08:31:02Z,github.com
+Commit,ci: pin Codacy coverage upload to dispatched bot commit SHA,2026-06-27T08:30:47Z,github.com
+Commit,Merge branch 'main' into coderabbitai/utg/892ec13,2026-06-27T08:29:49Z,github.com
+Commit,Merge branch 'main' into claude/stabilize-monitoring-tests-sez2q0,2026-06-27T08:28:51Z,github.com
+Commit,Update bug_report.md,2026-06-27T08:24:30Z,github.com
+Commit,Update bug_report.md,2026-06-27T08:22:31Z,github.com
+Commit,ci: pin repository_dispatch to bot commit SHA; skip dispatch on no-change weeks,2026-06-27T08:19:44Z,github.com
+Commit,Merge branch 'main' into claude/coverage-report-ancestor-w6f54s,2026-06-27T08:12:39Z,github.com
+Commit,Merge pull request #1092 from shazzar00ni/claude/friendly-goodall-gfukrx,2026-06-26T23:18:57Z,github.com
+Commit,Merge branch 'main' into claude/friendly-goodall-gfukrx,2026-06-26T15:14:13Z,github.com
+Commit,Merge branch 'main' into claude/coverage-report-ancestor-w6f54s,2026-06-26T03:46:28Z,github.com

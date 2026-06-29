@@ -137,6 +137,12 @@ function decodeEntities(text: string): string {
 function sanitizeHtml(html: string): string {
   let result = html
 
+  // Remove HTML comments first so that excluded-tag patterns in later steps
+  // are not triggered by tag names that only appear inside comment text.
+  // e.g. <!-- don't add <script> here --> would otherwise match the
+  // unclosed-tag truncation and delete all following content.
+  result = result.replace(/<!--[\s\S]*?(?:-->|$)/g, '')
+
   // Remove void excluded elements first — they have no closing tag so the
   // subtree-removal and truncate-to-end steps would over-consume content.
   for (const tag of VOID_REMOVE_TAGS) {
@@ -178,9 +184,6 @@ function sanitizeHtml(html: string): string {
   for (const tag of VOID_REMOVE_TAGS) {
     result = result.replace(new RegExp(`<\\/${tag}\\b[^>]*>`, 'gi'), '') // nosemgrep
   }
-
-  // Remove HTML comments, including unclosed ones that reach end of string.
-  result = result.replace(/<!--[\s\S]*?(?:-->|$)/g, '')
 
   // Remove event handler attributes (onclick="…", onload='…', etc.).
   result = result.replace(/\s+on\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]*)/gi, '')
@@ -438,6 +441,11 @@ function htmlToMarkdown(html: string): string {
   // Line breaks
   md = md.replace(/<br\s*\/?>/gi, '\n')
 
+  // Insert paragraph breaks for block-level container closing tags that have
+  // no explicit Markdown equivalent, preventing adjacent text nodes from
+  // running together (e.g. <div>10M+</div><div>Notes</div> → "10M+Notes").
+  md = md.replace(/<\/(?:div|section|article|figure|details|summary)\b[^>]*>/gi, '\n')
+
   // Strip all remaining HTML tags (quote-aware so `>` inside attributes
   // does not leak attribute content into the Markdown output).
   md = removeTags(md)
@@ -445,10 +453,12 @@ function htmlToMarkdown(html: string): string {
   // Decode HTML entities
   md = decodeEntities(md)
 
-  // Protect fenced code block contents from whitespace normalization so that
-  // indentation-significant code (e.g. Python) is preserved correctly.
+  // Protect all backtick-delimited spans (inline code and fenced blocks) from
+  // whitespace normalization. Uses a backreference so that a 4-backtick fence
+  // is closed by 4 backticks rather than the first triple-backtick run inside
+  // the content, and inline code spans with significant spaces are preserved.
   const codeBlocks: string[] = []
-  md = md.replace(/```[\s\S]*?```/g, (match) => {
+  md = md.replace(/(`+)[\s\S]*?\1/g, (match) => {
     const idx = codeBlocks.push(match) - 1
     return `\x00CODEBLOCK${idx}\x00`
   })

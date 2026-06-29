@@ -32,7 +32,7 @@ exports[`Solution Constants > Snapshot Tests > should match SOLUTION_VALUE_PROPS
     "emoji": "📱",
     "headline": "Works Everywhere, Always",
     "icon": "fa-globe",
-    "proof": "Web, Mac, Windows, Linux available now | Native iOS & Android coming Q2 2026 | Offline-first",
+    "proof": "Web, Mac, Windows, Linux at launch | Native iOS & Android coming Q2 2026 | Offline-first",
     "title": "Airplane mode? No problem.",
   },
 ]

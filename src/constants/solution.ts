@@ -57,6 +57,6 @@ export const SOLUTION_VALUE_PROPS: ValueProp[] = [
       `Real-time sync across web, Mac, Windows, and Linux at launch. Native iOS & Android apps coming ${LAUNCH_QUARTER}. But unlike cloud-dependent apps, Paperlyte works offline-first.`,
       "On a plane? Underground subway? Spotty café WiFi? Keep writing. Everything syncs automatically when you're back online.",
     ],
-    proof: `Web, Mac, Windows, Linux available now | Native iOS & Android coming ${LAUNCH_QUARTER} | Offline-first`,
+    proof: `Web, Mac, Windows, Linux at launch | Native iOS & Android coming ${LAUNCH_QUARTER} | Offline-first`,
   },
 ]

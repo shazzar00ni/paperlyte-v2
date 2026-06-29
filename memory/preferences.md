@@ -36,6 +36,7 @@ This file tracks coding style, design, and workflow preferences for this project
 
 ## Workflow
 
+- **Review comments must be marked "resolved"**: Whenever a code review comment is completed/fixed in a session, it MUST be marked as "resolved" — both by resolving the review thread on GitHub (`mcp__github__resolve_review_thread`) and by recording it here in memory. Do this in every session; the user has repeatedly emphasized it. (Added 2026-06-16)
 - Vitest for unit/component tests, Playwright for E2E
 - Coverage thresholds: 70% minimum overall in Vitest (lines, functions, branches, statements) and 80% patch coverage target in Codecov for PR changes
 - ESLint flat config format; Prettier for formatting

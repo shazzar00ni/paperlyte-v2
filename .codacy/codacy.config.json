@@ -7,8 +7,8 @@
     "autoFilters": "AllCritical,High,Warning,Minor,AllSecurity,ErrorProne,Performance,BestPractice,UnusedCode,Compatibility,Complexity,Comprehensibility,CodeStyle,Documentation",
     "repositoryId": null,
     "repositoryName": null,
-    "createdAt": "2026-05-31T08:08:16.831Z",
-    "updatedAt": "2026-05-31T08:08:16.831Z",
+    "createdAt": "2026-06-14T10:45:10.706Z",
+    "updatedAt": "2026-06-14T10:45:10.706Z",
     "languages": [
       "CSS",
       "HTML",
@@ -41,12 +41,6 @@
     {
       "toolId": "shellcheck",
       "patterns": [
-        {
-          "patternId": "shellcheck_SC1070"
-        },
-        {
-          "patternId": "shellcheck_SC1073"
-        },
         {
           "patternId": "shellcheck_SC2001"
         },
@@ -114,9 +108,6 @@
           "patternId": "shellcheck_SC2092"
         },
         {
-          "patternId": "shellcheck_SC2114"
-        },
-        {
           "patternId": "shellcheck_SC2115"
         },
         {
@@ -124,29 +115,15 @@
         },
         {
           "patternId": "shellcheck_SC2156"
-        }
-      ]
-    },
-    {
-      "toolId": "Trivy",
-      "patterns": [
-        {
-          "patternId": "Trivy_malicious_packages"
         },
         {
-          "patternId": "Trivy_secret"
+          "patternId": "shellcheck_SC1070"
         },
         {
-          "patternId": "Trivy_vulnerability_critical"
+          "patternId": "shellcheck_SC1073"
         },
         {
-          "patternId": "Trivy_vulnerability_high"
-        },
-        {
-          "patternId": "Trivy_vulnerability_medium"
-        },
-        {
-          "patternId": "Trivy_vulnerability_minor"
+          "patternId": "shellcheck_SC2114"
         }
       ]
     },
@@ -6315,9 +6292,6 @@
       "toolId": "Lizard",
       "patterns": [
         {
-          "patternId": "Lizard_ccn-critical"
-        },
-        {
           "patternId": "Lizard_ccn-medium",
           "parameters": [
             {
@@ -6327,13 +6301,7 @@
           ]
         },
         {
-          "patternId": "Lizard_file-nloc-critical"
-        },
-        {
           "patternId": "Lizard_file-nloc-medium"
-        },
-        {
-          "patternId": "Lizard_nloc-critical"
         },
         {
           "patternId": "Lizard_nloc-medium",
@@ -6345,17 +6313,55 @@
           ]
         },
         {
-          "patternId": "Lizard_parameter-count-critical"
+          "patternId": "Lizard_parameter-count-medium"
         },
         {
-          "patternId": "Lizard_parameter-count-medium"
+          "patternId": "Lizard_ccn-critical"
+        },
+        {
+          "patternId": "Lizard_nloc-critical"
+        },
+        {
+          "patternId": "Lizard_file-nloc-critical"
+        },
+        {
+          "patternId": "Lizard_parameter-count-critical"
         }
       ],
       "exclude": [
-        "**/*.test.tsx",
-        "**/*.test.ts",
+        "**/*.spec.ts",
         "**/*.spec.tsx",
-        "**/*.spec.ts"
+        "**/*.test.ts",
+        "**/*.test.tsx"
+      ]
+    },
+    {
+      "toolId": "PMD7",
+      "patterns": [
+        {
+          "patternId": "PMD7_category_ecmascript_bestpractices_AvoidWithStatement"
+        },
+        {
+          "patternId": "PMD7_category_ecmascript_bestpractices_ConsistentReturn"
+        },
+        {
+          "patternId": "PMD7_category_ecmascript_bestpractices_UseBaseWithParseInt"
+        },
+        {
+          "patternId": "PMD7_category_ecmascript_codestyle_AssignmentInOperand"
+        },
+        {
+          "patternId": "PMD7_category_ecmascript_codestyle_UnnecessaryBlock"
+        },
+        {
+          "patternId": "PMD7_category_ecmascript_errorprone_EqualComparison"
+        }
+      ],
+      "exclude": [
+        "eslint.config.js",
+        "postcss.config.js",
+        "public/sw.js",
+        "public/theme-init.js"
       ]
     },
     {
@@ -6647,9 +6653,6 @@
           "patternId": "Biome_lint_correctness_noSwitchDeclarations"
         },
         {
-          "patternId": "Biome_lint_correctness_noUndeclaredVariables"
-        },
-        {
           "patternId": "Biome_lint_correctness_noUnknownFunction"
         },
         {
@@ -6678,9 +6681,6 @@
         },
         {
           "patternId": "Biome_lint_correctness_noUnreachableSuper"
-        },
-        {
-          "patternId": "Biome_lint_correctness_noUnresolvedImports"
         },
         {
           "patternId": "Biome_lint_correctness_noUnsafeFinally"
@@ -7083,6 +7083,12 @@
         },
         {
           "patternId": "Biome_lint_suspicious_useNamespaceKeyword"
+        },
+        {
+          "patternId": "Biome_lint_correctness_noUndeclaredVariables"
+        },
+        {
+          "patternId": "Biome_lint_correctness_noUnresolvedImports"
         }
       ]
     },
@@ -7103,9 +7109,6 @@
         },
         {
           "patternId": "Agentlinter_clarity_action-without-context"
-        },
-        {
-          "patternId": "Agentlinter_clarity_ambiguous-pronoun"
         },
         {
           "patternId": "Agentlinter_clarity_compound-instruction"
@@ -7148,9 +7151,6 @@
         },
         {
           "patternId": "Agentlinter_clarity_token-efficiency-score"
-        },
-        {
-          "patternId": "Agentlinter_clarity_undefined-term"
         },
         {
           "patternId": "Agentlinter_claude-code_agent-focus"
@@ -7399,17 +7399,17 @@
     }
   ],
   "exclude": [
-    "node_modules/**",
-    "dist/**",
-    "coverage/**",
-    "**/*.test.ts",
-    "**/*.test.tsx",
+    "**/*.min.js",
     "**/*.spec.ts",
     "**/*.spec.tsx",
-    "src/test/**",
-    "scripts/**",
-    "**/*.min.js",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    ".github/workflows/sonarcloud.yml",
+    "coverage/**",
+    "dist/**",
     "docs/**",
-    ".github/workflows/sonarcloud.yml"
+    "node_modules/**",
+    "scripts/**",
+    "src/test/**"
   ]
 }

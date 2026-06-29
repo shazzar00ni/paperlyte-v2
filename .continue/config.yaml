@@ -1,0 +1,38 @@
+name: Paperlyte v2
+version: 0.0.1
+schema: v1
+
+models:
+  - name: Claude Sonnet
+    provider: anthropic
+    model: claude-sonnet-4-6
+
+rules:
+  - file: rules/code-style.md
+  - file: rules/design-system.md
+  - file: rules/testing.md
+  - file: rules/accessibility.md
+  - file: rules/security.md
+  - file: rules/performance.md
+
+context:
+  providers:
+    - type: code
+    - type: docs
+    - type: diff
+    - type: terminal
+    - type: problems
+    - type: folder
+    - type: codebase
+
+slashCommands:
+  - name: commit
+    description: Generate a conventional commit message for staged changes
+  - name: review
+    description: Review the current file against all codebase rules
+  - name: test
+    description: Write a Vitest unit test for the selected component or function
+  - name: a11y
+    description: Check selected code for WCAG 2.1 AA accessibility issues
+  - name: perf
+    description: Check selected code for performance issues against bundle budget

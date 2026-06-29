@@ -88,8 +88,11 @@ jobs:
             # and Docker overhead.
             NODE_OPTIONS: "--max-old-space-size=3072"
       - store_test_results:
+          # Storage steps run even after a preceding step fails; `when` is not
+          # part of the store_test_results schema.
           path: test-results
       - store_artifacts:
+          # Keep this mapping limited to the supported path/destination keys.
           path: test-results
           destination: test-results
       - run:
@@ -168,8 +171,10 @@ jobs:
             BASE_URL: "http://127.0.0.1:4173"
       - store_test_results:
           # JUnit XML is written by the junit reporter added to playwright.config.ts
+          # and this storage step runs after failed test steps without `when`.
           path: test-results
       - store_artifacts:
+          # Keep this mapping limited to the supported path/destination keys.
           path: playwright-report
           destination: playwright-report
       - run:

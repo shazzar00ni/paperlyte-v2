@@ -108,17 +108,30 @@ function decodeNumericEntity(code: string, base: 10 | 16): string {
   return n >= 0 && n <= 0x10ffff ? String.fromCodePoint(n) : ''
 }
 
-/** Decode common HTML entities to their character equivalents. */
+/**
+ * Decode common HTML entities to their character equivalents.
+ * Uses a single combined regex so that `&amp;lt;` decodes to the literal
+ * text `&lt;` rather than `<` (which a sequential chain would produce by
+ * first replacing `&amp;` → `&` and then matching the resulting `&lt;`).
+ */
 function decodeEntities(text: string): string {
-  return text
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;|&apos;/g, "'")
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&#(\d+);/g, (_, code: string) => decodeNumericEntity(code, 10))
-    .replace(/&#x([0-9a-f]+);/gi, (_, code: string) => decodeNumericEntity(code, 16))
+  return text.replace(
+    /&(?:amp|lt|gt|quot|apos|nbsp|#39|#(\d+)|#x([0-9a-f]+));/gi,
+    (match, dec: string | undefined, hex: string | undefined): string => {
+      if (dec !== undefined) return decodeNumericEntity(dec, 10)
+      if (hex !== undefined) return decodeNumericEntity(hex, 16)
+      switch (match.toLowerCase()) {
+        case '&amp;': return '&'
+        case '&lt;': return '<'
+        case '&gt;': return '>'
+        case '&quot;': return '"'
+        case '&apos;':
+        case '&#39;': return "'"
+        case '&nbsp;': return ' '
+        default: return match
+      }
+    }
+  )
 }
 
 /**
@@ -232,7 +245,10 @@ function buildMarkdownLink(attrs: string, content: string): string {
   // Convert nested <img> elements first so they appear as Markdown image
   // syntax rather than being silently stripped by stripTags.
   const inner = content.replace(/<img\b([^>]*)>/gi, (_, a: string) => buildMarkdownImage(a))
-  return `[${stripTags(inner)}](${safeLinkDest(href)})`
+  // Decode entities in href before safeLinkDest so that e.g. &#41; → ) → \)
+  // rather than surviving into the final decodeEntities pass and breaking the
+  // Markdown link syntax after it has already been emitted.
+  return `[${stripTags(inner)}](${safeLinkDest(decodeEntities(href))})`
 }
 
 /** Convert an `<img>` element to a Markdown image reference. */
@@ -359,11 +375,21 @@ function htmlToMarkdown(html: string): string {
     return '\n' + lines.join('\n') + '\n'
   })
 
-  // Bold: <strong> and <b>
-  md = md.replace(/<(?:strong|b)[^>]*>([\s\S]*?)<\/(?:strong|b)\s*>/gi, '**$1**')
+  // Bold: <strong> and <b>. The \b word boundary prevents <br> from matching
+  // as an opening <b> tag, which would then consume content up to the next
+  // </strong> and corrupt the output.
+  md = md.replace(/<(?:strong|b)\b(?:[^>]*)>([\s\S]*?)<\/(?:strong|b)\s*>/gi, '**$1**')
 
-  // Italic: <em> and <i>
-  md = md.replace(/<(?:em|i)[^>]*>([\s\S]*?)<\/(?:em|i)\s*>/gi, '*$1*')
+  // Italic: <em> and <i>. Skip aria-hidden elements (e.g. Font Awesome icon
+  // <i> tags) and empty spans — both would produce stray `*` or `**` markers.
+  // The \b word boundary prevents <ins> or <input> from matching as <i>.
+  md = md.replace(
+    /<(?:em|i)\b([^>]*?)>([\s\S]*?)<\/(?:em|i)\s*>/gi,
+    (_match: string, attrs: string, content: string): string => {
+      if (/aria-hidden\s*=\s*["']true["']/i.test(attrs) || content.trim() === '') return ''
+      return `*${content}*`
+    }
+  )
 
   // Links — preserve href, reject unsafe schemes and protocol-relative URLs
   md = md.replace(/<a\b([^>]*)>([\s\S]*?)<\/a\s*>/gi, (_, attrs: string, content: string) =>

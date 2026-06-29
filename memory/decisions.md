@@ -16,6 +16,13 @@ This file tracks key architectural, design, and technical decisions made during 
 - **All bot review findings addressed**: Codex P1 (SHA verification ✅), Codex P2 (RUNNER_TEMP ✅), CodeRabbit wget timeout ✅, CodeRabbit template injection ✅.
 - **PR**: #1085 on branch `claude/clever-pasteur-kzrtI`
 
+## Analytics — trackSocialClick platform normalization (2026-06-29)
+
+- **Decision**: `trackSocialClick(platform)` normalizes its argument by trimming whitespace and lowercasing (`platform.trim().toLowerCase()`) before reporting, with a docstring stating the behavior explicitly.
+- **Rationale**: The lowercasing was pre-existing on `main`, but CodeRabbit's "Out of Scope Changes" pre-merge check on #1247 kept flagging it (false positive — not introduced by that refactor). Per CodeRabbit's own suggested resolution, the normalization was moved into a dedicated, properly-scoped PR (#1249) so it is intentional and documented, laying the recurring warning to rest. Trimming was added as a genuine robustness improvement so the change carries real scope.
+- **Tests**: Added a whitespace-trimming case alongside the existing lowercase tests in `src/utils/analytics.test.ts`.
+- **PR**: #1249 (merged) on branch `claude/tracksocialclick-lowercase-alert-ypgzfn`. All substantive CI gates green; only red statuses were external quota/billing bots (Snyk, CodeRabbit, Codex) and pre-existing repo-wide scans (Dependency Quality, License Compliance, Mintlify config) unrelated to the 2-file diff.
+
 ## Format
 
 - **Date**: YYYY-MM-DD

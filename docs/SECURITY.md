@@ -1,7 +1,7 @@
 # Security Practices
 
-**Status:** In progress — see [issue #50](https://github.com/shazzar00ni/paperlyte-v2/issues/50) for details and updates.  
-**Last updated:** December 2, 2025
+**Status:** Active — maintained alongside the full [Security Policy](./SECURITY-POLICY.md). History tracked in [issue #50](https://github.com/shazzar00ni/paperlyte-v2/issues/50).  
+**Last updated:** June 27, 2026
 
 ---
 

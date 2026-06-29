@@ -21,6 +21,37 @@ This security review analyzed the Paperlyte v2 landing page application for comm
 
 ---
 
+## Resolution Update — 2026-06-27
+
+This report was originally written on 2025-11-29. The findings below have since
+been addressed; statuses inline in each finding have been updated accordingly.
+Verified against the current codebase:
+
+- **CRITICAL-001** (`.env` in `.gitignore`) — ✅ Resolved (already marked).
+- **MEDIUM-001** (SRI on external resources) — ✅ Resolved / no longer
+  applicable. External CDNs removed: Font Awesome replaced with bundled SVG
+  icons (`src/components/ui/Icon/icons.ts`); fonts self-hosted
+  (`public/fonts/*.woff2`, preloaded in `index.html`). No third-party CSS/JS
+  remains to require SRI.
+- **MEDIUM-002** (Content Security Policy) — ✅ Resolved. Strict CSP configured
+  in `netlify.toml` and `vercel.json`.
+- **MEDIUM-003** (Security headers) — ✅ Resolved. `X-Frame-Options`,
+  `X-Content-Type-Options`, `Referrer-Policy`, `Strict-Transport-Security`, and
+  `Permissions-Policy` are all set in `netlify.toml`/`vercel.json`.
+- **LOW-003** (Placeholder download links) — ✅ Resolved for store links
+  (`src/constants/downloads.ts` now uses real App Store / Play Store URLs).
+  Desktop artifact delivery and store-listing verification remain tracked in the
+  later [June 2026 baseline audit](./audit-results/baseline-audit-2026-06-11.md).
+- **Error monitoring** — ✅ Configured. `@sentry/react` is now a project
+  dependency and initialized in `src/main.tsx` (activates when `VITE_SENTRY_DSN`
+  is set).
+
+Still open / out of scope for this review: pre-production penetration testing
+and the broader launch action items tracked in
+[baseline-audit-2026-06-11.md](./audit-results/baseline-audit-2026-06-11.md).
+
+---
+
 ## Critical Issues (Fix Immediately)
 
 ### 🔴 CRITICAL-001: Missing .env in .gitignore
@@ -126,7 +157,7 @@ Font Awesome is loaded from cdnjs.cloudflare.com with integrity hash, but Google
 - CSS injection is less dangerous than JS injection
 - Current implementation includes crossorigin for Font Awesome
 
-**Status:** ⚠️ UNRESOLVED
+**Status:** ✅ RESOLVED (2026-06-27) — No longer applicable. External CDN resources removed: Font Awesome replaced with bundled SVG icons (`src/components/ui/Icon/icons.ts`), fonts self-hosted (`public/fonts/*.woff2`). No third-party CSS/JS requiring SRI remains.
 
 ---
 
@@ -173,7 +204,7 @@ Add CSP meta tag to `index.html` or configure server headers:
 
 **Note:** `'unsafe-inline'` for styles is required for React's CSS-in-JS. Consider moving to CSS Modules fully to remove this.
 
-**Status:** ⚠️ UNRESOLVED
+**Status:** ✅ RESOLVED (2026-06-27) — Strict CSP configured in `netlify.toml` and `vercel.json` (`default-src 'self'`, scoped `script-src`/`connect-src`, `frame-ancestors 'none'`, `upgrade-insecure-requests`).
 
 ---
 
@@ -228,7 +259,7 @@ X-XSS-Protection: 1; mode=block
 }
 ```
 
-**Status:** ⚠️ UNRESOLVED
+**Status:** ✅ RESOLVED (2026-06-27) — `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `Strict-Transport-Security`, and `Permissions-Policy` are all set in `netlify.toml`/`vercel.json`.
 
 ---
 
@@ -337,7 +368,7 @@ Before production deployment:
 2. Implement download tracking analytics
 3. Add fallback for browsers/platforms not supported
 
-**Status:** ⚠️ TODO (pre-production)
+**Status:** ✅ RESOLVED (2026-06-27) for store links — `src/constants/downloads.ts` now uses real App Store / Play Store URLs. Desktop artifact delivery and store-listing verification remain tracked in [baseline-audit-2026-06-11.md](./audit-results/baseline-audit-2026-06-11.md).
 
 ---
 

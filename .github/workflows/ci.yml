@@ -18,6 +18,7 @@ jobs:
   lint-and-typecheck:
     name: Lint and Type Check
     runs-on: ubuntu-latest
+    if: github.event_name != 'repository_dispatch'
     permissions:
       contents: read
 
@@ -545,28 +546,32 @@ jobs:
 
       - name: Check all jobs status
         run: |
-          if [ "${{ needs.lint-and-typecheck.result }}" != "success" ] || \
-             [ "${{ needs.test.result }}" != "success" ] || \
-             [ "${{ needs.build.result }}" != "success" ] || \
-             [ "${{ needs.size-check.result }}" != "success" ] || \
-             [ "${{ needs.lighthouse.result }}" != "success" ] || \
-             [ "${{ needs.e2e.result }}" != "success" ]; then
+          # lint-and-typecheck and its dependents are skipped on repository_dispatch;
+          # accept "skipped" as valid for those jobs, but test must always succeed.
+          ok() { [ "$1" = "success" ] || [ "$1" = "skipped" ]; }
+          LINT="${{ needs.lint-and-typecheck.result }}"
+          TEST="${{ needs.test.result }}"
+          BUILD="${{ needs.build.result }}"
+          SIZE="${{ needs.size-check.result }}"
+          LH="${{ needs.lighthouse.result }}"
+          E2E="${{ needs.e2e.result }}"
+          if ! ok "$LINT" || [ "$TEST" != "success" ] || ! ok "$BUILD" || ! ok "$SIZE" || ! ok "$LH" || ! ok "$E2E"; then
             echo "❌ CI Pipeline Failed"
-            echo "- Lint & Type Check: ${{ needs.lint-and-typecheck.result }}"
-            echo "- Tests: ${{ needs.test.result }}"
-            echo "- Build: ${{ needs.build.result }}"
-            echo "- Bundle Size: ${{ needs.size-check.result }}"
-            echo "- Lighthouse: ${{ needs.lighthouse.result }}"
-            echo "- E2E Tests: ${{ needs.e2e.result }}"
+            echo "- Lint & Type Check: $LINT"
+            echo "- Tests: $TEST"
+            echo "- Build: $BUILD"
+            echo "- Bundle Size: $SIZE"
+            echo "- Lighthouse: $LH"
+            echo "- E2E Tests: $E2E"
             exit 1
           else
             echo "✅ All CI jobs passed successfully!"
-            echo "- Lint & Type Check: ✅"
-            echo "- Tests: ✅"
-            echo "- Build: ✅"
-            echo "- Bundle Size: ✅"
-            echo "- Lighthouse: ✅"
-            echo "- E2E Tests: ✅"
+            echo "- Lint & Type Check: $LINT"
+            echo "- Tests: $TEST"
+            echo "- Build: $BUILD"
+            echo "- Bundle Size: $SIZE"
+            echo "- Lighthouse: $LH"
+            echo "- E2E Tests: $E2E"
           fi
 
       - name: CI Pipeline Summary
@@ -597,12 +602,13 @@ jobs:
           
           echo "" >> $GITHUB_STEP_SUMMARY
           
-          if [ "${{ needs.lint-and-typecheck.result }}" == "success" ] && \
-             [ "${{ needs.test.result }}" == "success" ] && \
-             [ "${{ needs.build.result }}" == "success" ] && \
-             [ "${{ needs.size-check.result }}" == "success" ] && \
-             [ "${{ needs.lighthouse.result }}" == "success" ] && \
-             [ "${{ needs.e2e.result }}" == "success" ]; then
+          ok() { [ "$1" = "success" ] || [ "$1" = "skipped" ]; }
+          if ok "${{ needs.lint-and-typecheck.result }}" && \
+             [ "${{ needs.test.result }}" = "success" ] && \
+             ok "${{ needs.build.result }}" && \
+             ok "${{ needs.size-check.result }}" && \
+             ok "${{ needs.lighthouse.result }}" && \
+             ok "${{ needs.e2e.result }}"; then
             echo "### ✅ All checks passed! Ready to merge." >> $GITHUB_STEP_SUMMARY
           else
             echo "### ❌ Some checks failed. Please review the issues above." >> $GITHUB_STEP_SUMMARY

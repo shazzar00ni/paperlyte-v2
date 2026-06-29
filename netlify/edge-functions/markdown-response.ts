@@ -453,22 +453,27 @@ function htmlToMarkdown(html: string): string {
   // Decode HTML entities
   md = decodeEntities(md)
 
-  // Protect all backtick-delimited spans (inline code and fenced blocks) from
-  // whitespace normalization. Uses a backreference so that a 4-backtick fence
-  // is closed by 4 backticks rather than the first triple-backtick run inside
-  // the content, and inline code spans with significant spaces are preserved.
+  // Protect backtick-delimited spans from whitespace normalization:
+  // - Multi-backtick fences (`` ` ``{2,}): use a backreference so a 4-backtick
+  //   fence is closed by 4 backticks, not the first triple-backtick inside.
+  //   These span multiple lines so [\s\S] is used.
+  // - Single-backtick inline code: restricted to the same line ([^\n`]) so that
+  //   two unrelated backticks in prose do not accidentally shield multi-line
+  //   content from whitespace normalization.
   const codeBlocks: string[] = []
-  md = md.replace(/(`+)[\s\S]*?\1/g, (match) => {
+  const protect = (match: string): string => {
     const idx = codeBlocks.push(match) - 1
     return `\x00CODEBLOCK${idx}\x00`
-  })
+  }
+  md = md.replace(/(`{2,})[\s\S]*?\1/g, protect)
+  md = md.replace(/`[^\n`]+`/g, protect)
   // Normalize prose whitespace only (code blocks are placeholdered above).
   md = md.replace(/[^\S\n]+/g, ' ')
   md = md.replace(/ +$/gm, '')
   md = md.replace(/\n{3,}/g, '\n\n')
-  // Restore code block contents.
+  // Restore code block contents (function replacer avoids $-pattern interpretation).
   for (let i = 0; i < codeBlocks.length; i++) {
-    md = md.replace(`\x00CODEBLOCK${i}\x00`, codeBlocks[i])
+    md = md.replace(`\x00CODEBLOCK${i}\x00`, () => codeBlocks[i])
   }
 
   return md.trim()

@@ -94,7 +94,7 @@ const REMOVE_TAGS: readonly string[] = [
  * content into the output.
  */
 function removeTags(s: string): string {
-  return s.replace(/<(?:[^>"']*|"[^"]*"|'[^']*')*>/g, '')
+  return s.replace(/<(?:[^>"']+|"[^"]*"|'[^']*')*>/g, '')
 }
 
 /** Strip all HTML tags from a string and collapse internal whitespace. */
@@ -433,7 +433,7 @@ function htmlToMarkdown(html: string): string {
   // attribute (e.g. <p title="1 > 0">) does not terminate the match early
   // and leak attribute content into the output.
   md = md.replace(/<\/p\s*>/gi, '\n\n')
-  md = md.replace(/<p(?:[^>"']*|"[^"]*"|'[^']*')*>/gi, '')
+  md = md.replace(/<p(?:[^>"']+|"[^"]*"|'[^']*')*>/gi, '')
 
   // Line breaks
   md = md.replace(/<br\s*\/?>/gi, '\n')

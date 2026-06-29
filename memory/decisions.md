@@ -191,6 +191,13 @@ This file tracks key architectural, design, and technical decisions made during 
   - `netlify.toml` and `vercel.json` CSPs must remain identical on all non-`script-src` directives; enforced by `src/test/config/csp-config.test.ts` with bidirectional union-key assertions
 - **Alternatives considered**: Static CSP only (no nonces), server-side rendering with inline nonces
 
+- **Date**: 2026-06-29
+- **Decision**: Netlify's auto-injected Real User Metrics scripts (`/proxy.js`, `/auto-events.js`) are **intentionally blocked** by the WAF nonce-based CSP — the strict-dynamic policy rejects any post-build injected `<script>` that lacks the per-request nonce. The "Content security policy" entries they produce in the DevTools Issues panel are the policy working as designed, NOT a regression. No CSP change made.
+- **Rationale**: Loosening the policy to admit these scripts would forfeit the "block all post-build injected scripts" XSS guarantee the entire nonce architecture exists to provide, and it contradicts the privacy-first stance (cookie-less Plausible is the chosen analytics; Netlify RUM is unwanted platform tracking). The scripts are same-origin but Netlify injects them at the CDN layer after the build, so they never carry the build-time `nonce="CSP_NONCE"` placeholder.
+- **Actual remediation (owner action, not repo-side)**: to stop the injection at the source and silence the Issues panel, disable Netlify RUM in the Netlify dashboard (Site configuration → Monitoring / Analytics). This cannot be toggled from `netlify.toml` or any repo file. Note the reported deploy URL was a deploy permalink (`6a4020ae…--paperlyte-v2.netlify.app`); such injection is largely deploy-context noise and harmless to site function.
+- **Repo change**: clarifying comment added above `buildCsp()` in `netlify/edge-functions/waf.ts` documenting that these scripts are deliberately blocked and must not be allowlisted.
+- **Alternatives considered**: nonce-stamping Netlify's injected scripts in the WAF or adding `'self'` without `'strict-dynamic'` (both rejected — materially weaken the XSS guarantee for a tracking feature the project doesn't want)
+
 ## Privacy / Storage
 
 - **Date**: 2026-04-29

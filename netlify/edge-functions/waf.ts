@@ -116,6 +116,17 @@ function generateNonce(): string {
  *                      runtime (covers Plausible, Sentry Session Replay, etc.)
  *   'self' https://plausible.io — CSP Level 2 fallback for browsers that do
  *                      not support strict-dynamic; ignored by browsers that do
+ *
+ * Intentionally blocked: any <script> Netlify injects into the response after
+ * the build — notably its Real User Metrics beacon (/proxy.js, /auto-events.js)
+ * — carries no per-request nonce, so 'strict-dynamic' rejects it. The resulting
+ * "Content security policy" entries in the DevTools Issues panel are the policy
+ * working as designed, not a regression. This aligns with the project's
+ * privacy-first stance (Plausible, cookie-less). To stop the injection at the
+ * source (and silence the Issues panel), disable Netlify RUM in the Netlify
+ * dashboard — it cannot be toggled from this repo. Do NOT loosen the policy to
+ * admit these scripts: that would forfeit the "block all post-build injected
+ * scripts" XSS guarantee this nonce architecture exists to provide.
  */
 function buildCsp(nonce: string): string {
   return (

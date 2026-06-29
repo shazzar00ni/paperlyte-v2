@@ -219,12 +219,31 @@ function extractAttr(attrs: string, name: string): string {
 }
 
 /**
+ * Decode HTML entities to a fixed point (loop until the string stops changing).
+ * A single decode pass cannot stop a double-encoded payload like `&amp;#58;`
+ * from surviving a scheme check — it would decode to `&#58;` on the first pass
+ * and then `:` on a subsequent pass in the global `decodeEntities(md)` call.
+ * Decoding to a fixed point ensures both the safety check and the emitted URL
+ * see the same fully-resolved string, so the trailing document decode pass
+ * cannot resurrect a hidden unsafe scheme.
+ */
+function decodeEntitiesFully(text: string): string {
+  let prev: string
+  let cur = text
+  do {
+    prev = cur
+    cur = decodeEntities(cur)
+  } while (cur !== prev)
+  return cur
+}
+
+/**
  * Returns false when the href must not become a link (unsafe scheme or empty).
- * Decodes HTML entities before checking so that encoded schemes like
- * `javascript&#58;alert(1)` are correctly rejected.
+ * Decodes HTML entities to a fixed point before checking so that multi-encoded
+ * schemes like `javascript&amp;#58;alert(1)` are correctly rejected.
  */
 function isSafeHref(href: string): boolean {
-  const decoded = decodeEntities(href).trim()
+  const decoded = decodeEntitiesFully(href).trim()
   return Boolean(decoded) && !/^(\/\/|javascript:|data:|vbscript:)/i.test(decoded)
 }
 
@@ -245,17 +264,17 @@ function buildMarkdownLink(attrs: string, content: string): string {
   // Convert nested <img> elements first so they appear as Markdown image
   // syntax rather than being silently stripped by stripTags.
   const inner = content.replace(/<img\b([^>]*)>/gi, (_, a: string) => buildMarkdownImage(a))
-  // Decode entities in href before safeLinkDest so that e.g. &#41; → ) → \)
-  // rather than surviving into the final decodeEntities pass and breaking the
-  // Markdown link syntax after it has already been emitted.
-  return `[${stripTags(inner)}](${safeLinkDest(decodeEntities(href))})`
+  // Fully decode href to a fixed point before safeLinkDest so the emitted URL
+  // is already resolved and the trailing decodeEntities(md) pass has nothing
+  // left to decode — preventing multi-encoded schemes from slipping through.
+  return `[${stripTags(inner)}](${safeLinkDest(decodeEntitiesFully(href))})`
 }
 
 /** Convert an `<img>` element to a Markdown image reference. */
 function buildMarkdownImage(attrs: string): string {
   const src = extractAttr(attrs, 'src')
   if (!src || !isSafeHref(src)) return ''
-  return `![${extractAttr(attrs, 'alt')}](${safeLinkDest(src)})`
+  return `![${extractAttr(attrs, 'alt')}](${safeLinkDest(decodeEntitiesFully(src))})`
 }
 
 /**

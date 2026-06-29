@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { Icon } from '@components/ui/Icon'
 import { LEGAL_CONFIG } from '@/constants/legal'
 import logoAvifSrc from '@/assets/logo.avif'
@@ -48,44 +49,29 @@ export const Footer = (): React.ReactElement => {
                   </a>
                 </li>
                 <li>
+                  <a href="#roadmap" className={styles.link}>
+                    Roadmap
+                  </a>
+                </li>
+                <li>
                   <a href="#pricing" className={styles.link}>
                     Pricing
                   </a>
                 </li>
                 <li>
-                  <span className={styles.linkComingSoon}>
-                    Roadmap
-                    <span className="sr-only"> (coming soon)</span>
-                  </span>
-                </li>
-                <li>
-                  <span className={styles.linkComingSoon}>
+                  <a href="#changelog" className={styles.link}>
                     Changelog
-                    <span className="sr-only"> (coming soon)</span>
-                  </span>
-                </li>
-              </ul>
-            </div>
-
-            <div className={styles.linkGroup}>
-              <h3 className={styles.linkGroupTitle}>Company</h3>
-              <ul className={styles.linkList}>
-                <li>
-                  <a href={`mailto:${LEGAL_CONFIG.company.email}`} className={styles.link}>
-                    Contact
                   </a>
                 </li>
                 <li>
-                  <span className={styles.linkComingSoon}>
-                    About
-                    <span className="sr-only"> (coming soon)</span>
-                  </span>
-                </li>
-                <li>
-                  <span className={styles.linkComingSoon}>
-                    Blog
-                    <span className="sr-only"> (coming soon)</span>
-                  </span>
+                  <a
+                    href={LEGAL_CONFIG.social.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.link}
+                  >
+                    GitHub
+                  </a>
                 </li>
               </ul>
             </div>
@@ -94,23 +80,18 @@ export const Footer = (): React.ReactElement => {
               <h3 className={styles.linkGroupTitle}>Legal</h3>
               <ul className={styles.linkList}>
                 <li>
-                  <a
-                    href={LEGAL_CONFIG.documents.privacy}
-                    className={styles.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
+                  <Link to="/privacy" className={styles.link}>
                     Privacy Policy
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
-                    href={LEGAL_CONFIG.documents.terms}
-                    className={styles.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
+                  <Link to="/terms" className={styles.link}>
                     Terms of Service
+                  </Link>
+                </li>
+                <li>
+                  <a href={`mailto:${LEGAL_CONFIG.company.email}`} className={styles.link}>
+                    Contact
                   </a>
                 </li>
               </ul>
@@ -119,17 +100,6 @@ export const Footer = (): React.ReactElement => {
             <div className={styles.linkGroup}>
               <h3 className={styles.linkGroupTitle}>Connect</h3>
               <ul className={styles.socialIcons} aria-label="Social media links">
-                <li>
-                  <a
-                    href={LEGAL_CONFIG.social.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={styles.socialLink}
-                    aria-label="Follow us on GitHub"
-                  >
-                    <Icon name="fa-github" variant="brands" size="xl" />
-                  </a>
-                </li>
                 <li>
                   <a
                     href={LEGAL_CONFIG.social.twitter}
@@ -164,7 +134,6 @@ export const Footer = (): React.ReactElement => {
               </ul>
             </div>
           </nav>
-
           <div className={styles.bottom}>
             <p className={styles.copyright}>
               © {currentYear} {LEGAL_CONFIG.company.name}. All rights reserved.

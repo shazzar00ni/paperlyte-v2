@@ -28,7 +28,8 @@
   "dependencies": {
     "@sentry/react": "^10.59.0",
     "react": "^19.2.7",
-    "react-dom": "^19.2.7"
+    "react-dom": "^19.2.7",
+    "react-router-dom": "^6.30.4"
   },
   "devDependencies": {
     "@codecov/rollup-plugin": "^2.0.1",

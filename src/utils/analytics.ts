@@ -375,6 +375,12 @@ export function trackExternalLink(url: string, linkText: string): void {
 /**
  * Track social media link clicks
  *
+ * The platform name is normalized — trimmed of surrounding whitespace and
+ * lowercased — before it is reported. This keeps analytics segments consistent
+ * regardless of how callers capitalize or pad the value, so `'Twitter'`,
+ * `'GITHUB'`, and `' LinkedIn '` all report as `'twitter'`, `'github'`, and
+ * `'linkedin'`.
+ *
  * @param platform - Social media platform (e.g., 'twitter', 'github')
  *
  * @example
@@ -384,7 +390,7 @@ export function trackExternalLink(url: string, linkText: string): void {
  */
 export function trackSocialClick(platform: string): void {
   trackEvent(AnalyticsEvents.SOCIAL_LINK_CLICK, {
-    platform: platform.toLowerCase(),
+    platform: platform.trim().toLowerCase(),
   })
 }
 

@@ -118,7 +118,8 @@
   --color-surface-dark: #0f172a; /* Slate 900 - Dark sections */
   --color-text-primary: #f1f5f9; /* Slate 100 - Light text */
   --color-text-secondary: #94a3b8; /* Slate 400 - Supporting text */
-  --color-text-tertiary: #64748b; /* Slate 500 - Muted text */
+  /* accessibility-fixed: raised from `#64748b` to `#8fa1b5` to preserve hierarchy while keeping muted text AA-compliant on dark surfaces */
+  --color-text-tertiary: #8fa1b5; /* Muted text - distinct from secondary while remaining accessible in dark mode */
   --color-text-on-primary: #000000; /* Black text on white primary (dark mode) */
   --color-text-on-dark: #ffffff; /* White text on dark surfaces */
   --color-text-on-dark-secondary: rgba(255, 255, 255, 0.7); /* Semi-transparent white */
@@ -161,7 +162,8 @@
     --color-surface-dark: #0f172a; /* Slate 900 - Dark sections */
     --color-text-primary: #f1f5f9; /* Slate 100 - Light text */
     --color-text-secondary: #94a3b8; /* Slate 400 - Supporting text */
-    --color-text-tertiary: #64748b; /* Slate 500 - Muted text */
+    /* accessibility-fixed: raised from `#64748b` to `#8b9bb0` to keep tertiary distinct from secondary while preserving AA contrast on dark surfaces */
+    --color-text-tertiary: #8b9bb0; /* Muted slate text - distinct tertiary tier for dark mode */
     --color-text-on-primary: #000000; /* Black text on white primary (dark mode) */
     --color-text-on-dark: #ffffff; /* White text on dark surfaces */
     --color-text-on-dark-secondary: rgba(255, 255, 255, 0.7); /* Semi-transparent white */

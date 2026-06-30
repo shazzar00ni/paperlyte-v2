@@ -16,6 +16,13 @@ This file tracks key architectural, design, and technical decisions made during 
 - **All bot review findings addressed**: Codex P1 (SHA verification ✅), Codex P2 (RUNNER_TEMP ✅), CodeRabbit wget timeout ✅, CodeRabbit template injection ✅.
 - **PR**: #1085 on branch `claude/clever-pasteur-kzrtI`
 
+## Analytics — trackSocialClick platform normalization (2026-06-29)
+
+- **Decision**: `trackSocialClick(platform)` normalizes its argument by trimming whitespace and lowercasing (`platform.trim().toLowerCase()`) before reporting, with a docstring stating the behavior explicitly.
+- **Rationale**: The lowercasing was pre-existing on `main`, but CodeRabbit's "Out of Scope Changes" pre-merge check on #1247 kept flagging it (false positive — not introduced by that refactor). Per CodeRabbit's own suggested resolution, the normalization was moved into a dedicated, properly-scoped PR (#1249) so it is intentional and documented, laying the recurring warning to rest. Trimming was added as a genuine robustness improvement so the change carries real scope.
+- **Tests**: Added a whitespace-trimming case alongside the existing lowercase tests in `src/utils/analytics.test.ts`.
+- **PR**: #1249 (merged) on branch `claude/tracksocialclick-lowercase-alert-ypgzfn`. All substantive CI gates green; only red statuses were external quota/billing bots (Snyk, CodeRabbit, Codex) and pre-existing repo-wide scans (Dependency Quality, License Compliance, Mintlify config) unrelated to the 2-file diff.
+
 ## Format
 
 - **Date**: YYYY-MM-DD
@@ -158,6 +165,11 @@ This file tracks key architectural, design, and technical decisions made during 
 - **Decision**: Web manifest present; a hand-rolled service worker (`public/sw.js`) is now implemented — versioned cache name, offline.html fallback, cache-first for hashed `/assets/*` with eviction (60-entry cap, but pruning runs only in `onActivate()` — cache can exceed the cap between activations; incomplete eviction noted in 2026-06-11 audit)
 - **Rationale**: PWA manifest enables "add to home screen"; SW added to deliver the offline-first brand promise on the landing page
 - **Alternatives considered**: Workbox, no service worker
+
+- **Date**: 2026-06-08
+- **Decision**: Added conditional `self.skipWaiting()` (guarded by `!self.registration.active`) to the SW `onInstall` handler
+- **Rationale**: Without `skipWaiting()`, the SW enters a "waiting" state after install and never activates during the same page visit. Lighthouse's PWA audit ("Does not register a service worker that controls page and start_url") runs within a single visit, so it would never see the SW as active. The `!self.registration.active` guard restricts the call to first installs only — skipping it on updates avoids forcing immediate activation while existing tabs still reference lazy-loaded chunks from the prior cache, which would cause 404s. On first install there is no active SW, so the guard fires and `skipWaiting()` + existing `clients.claim()` ensures the SW activates and controls the page immediately.
+- **Alternatives considered**: Unconditional `skipWaiting()` (risks update-time 404s for lazy chunks); remove large fonts from PRECACHE (speeds install, but doesn't fix the fundamental waiting-state issue)
 
 ## Infrastructure / Edge
 

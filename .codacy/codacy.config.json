@@ -128,29 +128,6 @@
       ]
     },
     {
-      "toolId": "Trivy",
-      "patterns": [
-        {
-          "patternId": "Trivy_malicious_packages"
-        },
-        {
-          "patternId": "Trivy_secret"
-        },
-        {
-          "patternId": "Trivy_vulnerability_critical"
-        },
-        {
-          "patternId": "Trivy_vulnerability_high"
-        },
-        {
-          "patternId": "Trivy_vulnerability_medium"
-        },
-        {
-          "patternId": "Trivy_vulnerability_minor"
-        }
-      ]
-    },
-    {
       "toolId": "Semgrep",
       "patterns": [
         {

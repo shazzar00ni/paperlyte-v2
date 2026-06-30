@@ -2,6 +2,14 @@
 
 This file tracks key architectural, design, and technical decisions made during development.
 
+## CSP — `auto-events.js` / `proxy.js` console errors are extension noise (2026-06-30)
+
+- **Decision**: Do **not** change the CSP in response to console errors of the form "Refused to load the script `https://<deploy>/auto-events.js` (or `/proxy.js`) because it violates ... `script-src 'nonce-…' 'strict-dynamic' 'self' https://plausible.io`". No code fix is warranted — the policy is behaving exactly as designed.
+- **Diagnosis**: Neither `auto-events.js` nor `proxy.js` exists in or is referenced by this project (not in the repo, `public/`, `index.html`, or any source), and neither is a Plausible script variant. They are injected into the page by a **browser extension** in the visitor's browser (a classic root-path injection pattern). Because they are parser-inserted outside our trusted nonce chain, `'strict-dynamic'` correctly refuses them.
+- **Why there's no safe fix**: `'strict-dynamic'` disables host-based allowlisting by design (the console message says so), so the `'self'`/`https://plausible.io` entries cannot "allow" these scripts. The only way to unblock them would be to drop `'strict-dynamic'`, which would gut the nonce-based XSS protection built in PR #1091 (`netlify/edge-functions/waf.ts` `buildCsp`). Our own scripts are unaffected: `index.html` scripts carry the per-request nonce, and analytics providers load a single validated `.js` via `document.createElement('script')`, which `'strict-dynamic'` transitively trusts.
+- **How to confirm**: Load the deploy in a clean/incognito profile with extensions disabled — the errors disappear. They only appear for visitors who have the injecting extension installed and are harmless (no effect on site functionality).
+- **Action for future sessions**: Treat these specific errors as external noise. Do not weaken the CSP to silence them.
+
 ## CI / GitHub Actions — SonarCloud (2026-06-16)
 
 - **Decision**: Download SonarScanner CLI from Maven Central (`repo1.maven.org`) instead of `binaries.sonarsource.com` or the `SonarSource/sonarcloud-github-action`.

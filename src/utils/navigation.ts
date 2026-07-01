@@ -178,6 +178,12 @@ export function isSafeUrl(url: string): boolean {
     return false
   }
 
+  // Block "/\" paths because browsers normalize them to "//"
+  // (protocol-relative URLs), which can enable open redirect attacks.
+  if (/^\/\\/.test(trimmedUrl)) {
+    return false
+  }
+
   if (hasDangerousProtocol(trimmedUrl)) {
     return false
   }

@@ -54,6 +54,11 @@
       "pattern": "^chore\\(deps.*\\):",
       "on_property": "title",
       "target": "dependencies"
+    },
+    {
+      "pattern": "^chore\\(ci.*\\):",
+      "on_property": "title",
+      "target": "ci"
     }
   ]
 }

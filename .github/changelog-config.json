@@ -26,33 +26,33 @@
     }
   ],
   "duplicate_secondary_categories": false,
-  "template": "${{CHANGELOG}}\n\n${{UNCATEGORIZED_CHANGELOG}}\n\n**Full Changelog**: ${{RELEASE_DIFF}}",
+  "template": "${{CHANGELOG}}\n\n${{UNCATEGORIZED}}\n\n**Full Changelog**: ${{RELEASE_DIFF}}",
   "pr_template": "- ${{TITLE}} (#${{NUMBER}})",
   "empty_template": "- No changes",
   "label_extractor": [
     {
       "pattern": "^(feat|feature)(\\(.*\\))?:",
-      "on_property": ["title"],
+      "on_property": "title",
       "target": "type: feature"
     },
     {
       "pattern": "^(fix|bugfix)(\\(.*\\))?:",
-      "on_property": ["title"],
+      "on_property": "title",
       "target": "type: bugfix"
     },
     {
       "pattern": "^docs(\\(.*\\))?:",
-      "on_property": ["title"],
+      "on_property": "title",
       "target": "documentation"
     },
     {
       "pattern": "^(security|sec)(\\(.*\\))?:",
-      "on_property": ["title"],
+      "on_property": "title",
       "target": "security"
     },
     {
       "pattern": "^chore\\(deps.*\\):",
-      "on_property": ["title"],
+      "on_property": "title",
       "target": "dependencies"
     }
   ]

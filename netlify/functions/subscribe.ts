@@ -178,7 +178,7 @@ function getOriginHeader(headers: HandlerEvent["headers"]): string {
  * @param origin - The Origin header value from the incoming request
  */
 function getCorsHeaders(origin: string): Record<string, string> {
-  const allowedOrigin = process.env.ALLOWED_ORIGIN ?? "https://paperlyte.com";
+  const allowedOrigin = process.env.ALLOWED_ORIGIN ?? "https://paperlyte.app";
   return {
     ...(origin === allowedOrigin && {
       "Access-Control-Allow-Origin": allowedOrigin,

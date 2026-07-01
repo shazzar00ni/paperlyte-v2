@@ -33,7 +33,7 @@ if (import.meta.env.PROD && import.meta.env.VITE_SENTRY_DSN) {
   })
 
   const loadReplay = () => {
-    import('@sentry/browser')
+    import('@sentry/react')
       .then(({ replayIntegration }) => {
         Sentry.addIntegration(replayIntegration({ maskAllText: true, blockAllMedia: true }))
       })
@@ -49,10 +49,8 @@ if (import.meta.env.PROD && import.meta.env.VITE_SENTRY_DSN) {
   if (typeof window.requestIdleCallback === 'function') {
     // Timeout ensures replay eventually loads even on a busy main thread
     window.requestIdleCallback(loadReplay, { timeout: 2000 })
-  } else if (document.readyState === 'complete') {
-    window.setTimeout(loadReplay, 0)
   } else {
-    window.addEventListener('load', loadReplay, { once: true })
+    window.setTimeout(loadReplay, 0)
   }
 }
 

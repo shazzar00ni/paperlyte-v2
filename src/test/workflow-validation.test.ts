@@ -1,9 +1,9 @@
 /**
  * Tests for GitHub Actions workflow permission changes.
  *
- * This PR moved `permissions` from the workflow level to individual job level
- * in ci.yml and pr-quality-check.yml, following the principle of least privilege.
- * These tests verify that structure is correctly enforced.
+ * This PR moves `permissions` to the job level in ci.yml and pr-quality-check.yml,
+ * and adds `permissions: {}` at the workflow level across all modified workflows,
+ * following the principle of least privilege.
  */
 
 import { readFileSync } from 'node:fs'
@@ -21,11 +21,19 @@ function readWorkflow(filename: string): string {
 }
 
 /**
- * Returns true when the YAML file contains a top-level `permissions:` block,
+ * Returns true when the YAML file contains a top-level `permissions:` key,
  * i.e. a line that starts with `permissions:` at column 0 (no indentation).
  */
 function hasWorkflowLevelPermissions(content: string): boolean {
   return content.split('\n').some((line) => line.startsWith('permissions:'))
+}
+
+/**
+ * Returns true when the workflow has `permissions: {}` at the top level,
+ * which explicitly sets the deny-all default.
+ */
+function hasEmptyWorkflowPermissions(content: string): boolean {
+  return content.split('\n').some((line) => /^permissions:\s*\{\}/.test(line))
 }
 
 /**
@@ -52,6 +60,23 @@ function extractJobBlock(content: string, jobId: string): string {
 }
 
 /**
+ * Extracts a named step from a job block, stopping before the next step.
+ */
+function extractStepBlock(jobBlock: string, stepName: string): string {
+  const lines = jobBlock.split('\n')
+  const startIdx = lines.findIndex((line) => line === `      - name: ${stepName}`)
+  if (startIdx === -1) return ''
+
+  const stepLines: string[] = [lines[startIdx]]
+  for (let i = startIdx + 1; i < lines.length; i++) {
+    const line = lines[i]
+    if (line.startsWith('      - name: ')) break
+    stepLines.push(line)
+  }
+  return stepLines.join('\n')
+}
+
+/**
  * Returns true when the given job block contains `permissions:` followed by
  * a `contents: read` entry.
  */
@@ -63,13 +88,13 @@ function jobHasContentsReadPermission(jobBlock: string): boolean {
 }
 
 /**
- * Asserts that a workflow file is non-empty and has a workflow-level
- * `permissions: contents: read` block.
+ * Asserts that a workflow file is non-empty and has `permissions: {}` at the
+ * workflow level (deny-all default, with grants delegated to individual jobs).
  */
-function assertWorkflowLevelContentsRead(content: string): void {
+function assertEmptyWorkflowPermissions(content: string): void {
   expect(content.length).toBeGreaterThan(0)
   expect(hasWorkflowLevelPermissions(content)).toBe(true)
-  expect(content).toMatch(/^permissions:[ \t]*\n[ \t]+contents:[ \t]+read/m)
+  expect(hasEmptyWorkflowPermissions(content)).toBe(true)
 }
 
 /**
@@ -92,21 +117,12 @@ describe('ci.yml – permission structure', () => {
     content = readWorkflow('ci.yml')
   })
 
-  it('should exist and have a workflow-level "contents: read" permissions block', () => {
-    assertWorkflowLevelContentsRead(content)
+  it('should exist and have a workflow-level "permissions: {}" block', () => {
+    assertEmptyWorkflowPermissions(content)
   })
 
-  it.each(['lint-and-typecheck', 'build'])(
-    '%s job inherits "contents: read" from the workflow-level permissions',
-    (jobId) => {
-      assertJobExists(content, jobId, 'ci.yml')
-      // These jobs rely on the workflow-level contents: read (no separate job-level block needed)
-      expect(hasWorkflowLevelPermissions(content)).toBe(true)
-    }
-  )
-
-  it.each(['test', 'e2e', 'ci-success'])(
-    '%s job should have "contents: read" permission',
+  it.each(['lint-and-typecheck', 'build', 'test', 'e2e', 'ci-success'])(
+    '%s job should have an explicit "contents: read" permission at job level',
     (jobId) => {
       const block = assertJobExists(content, jobId, 'ci.yml')
       expect(jobHasContentsReadPermission(block)).toBe(true)
@@ -129,11 +145,19 @@ describe('ci.yml – permission structure', () => {
     }
   })
 
-  it('each job that has a permissions block should include at least "contents: read"', () => {
-    // Regression guard: jobs with explicit permissions blocks must keep contents: read.
-    // lint-and-typecheck and build rely on the workflow-level block instead.
-    const jobsWithExplicitPermissions = ['test', 'size-check', 'lighthouse', 'e2e', 'ci-success']
-    for (const jobId of jobsWithExplicitPermissions) {
+  it('every job with a permissions block should include at least "contents: read"', () => {
+    // Regression guard: all jobs with explicit permissions must keep contents: read.
+    const allJobs = [
+      'lint-and-typecheck',
+      'test',
+      'build',
+      'size-check',
+      'lighthouse',
+      'e2e',
+      'add-to-project',
+      'ci-success',
+    ]
+    for (const jobId of allJobs) {
       const block = assertJobExists(content, jobId, 'ci.yml')
       expect(
         jobHasContentsReadPermission(block),
@@ -155,6 +179,16 @@ describe('ci.yml – permission structure', () => {
     const buildBlock = extractJobBlock(content, 'build')
     expect(buildBlock).toMatch(/needs:\s*\[lint-and-typecheck,\s*test\]/)
   })
+
+  it('Lighthouse summary failures should fail the job', () => {
+    const lighthouseBlock = assertJobExists(content, 'lighthouse', 'ci.yml')
+    const summaryStep = extractStepBlock(lighthouseBlock, 'Generate Lighthouse report summary')
+
+    expect(summaryStep).not.toBe('')
+    expect(summaryStep).toContain('if: always()')
+    expect(summaryStep).toContain('run: bash .github/scripts/generate-lighthouse-summary.sh')
+    expect(summaryStep).not.toMatch(/continue-on-error:\s*true/)
+  })
 })
 
 // ---------------------------------------------------------------------------
@@ -168,24 +202,17 @@ describe('pr-quality-check.yml – permission structure', () => {
     content = readWorkflow('pr-quality-check.yml')
   })
 
-  it('should exist and have a workflow-level "contents: read" permissions block', () => {
-    assertWorkflowLevelContentsRead(content)
+  it('should exist and have a workflow-level "permissions: {}" block', () => {
+    assertEmptyWorkflowPermissions(content)
   })
 
-  it.each(['pr-metadata', 'bundle-size-check'])(
-    '%s job inherits "contents: read" from the workflow-level permissions',
+  it.each(['pr-metadata', 'bundle-size-check', 'dependency-review'])(
+    '%s job should have an explicit "contents: read" permission at job level',
     (jobId) => {
-      assertJobExists(content, jobId, 'pr-quality-check.yml')
-      // These jobs rely on the workflow-level contents: read (no separate job-level block needed)
-      expect(hasWorkflowLevelPermissions(content)).toBe(true)
+      const block = assertJobExists(content, jobId, 'pr-quality-check.yml')
+      expect(jobHasContentsReadPermission(block)).toBe(true)
     }
   )
-
-  it('dependency-review job should retain its existing permissions', () => {
-    const block = assertJobExists(content, 'dependency-review', 'pr-quality-check.yml')
-    // dependency-review already had job-level permissions before this PR
-    expect(jobHasContentsReadPermission(block)).toBe(true)
-  })
 
   it('should define all expected jobs', () => {
     const expectedJobs = [
@@ -213,16 +240,16 @@ describe('pr-quality-check.yml – permission structure', () => {
     expect(block).toMatch(/needs:\s*\[pr-metadata,\s*dependency-review,\s*bundle-size-check\]/)
   })
 
-  it('only dependency-review job has an explicit permissions block (regression guard)', () => {
-    // dependency-review needs additional pull-requests: write permission beyond the workflow default.
-    // pr-metadata, bundle-size-check, and quality-summary rely on the workflow-level permissions.
-    // Validate that dependency-review still carries its own explicit block.
-    const block = assertJobExists(content, 'dependency-review', 'pr-quality-check.yml')
-    const hasPermissionsBlock = /^\s{4}permissions:/m.test(block)
-    expect(
-      hasPermissionsBlock,
-      'dependency-review job is missing an explicit permissions block'
-    ).toBe(true)
+  it('every job should have an explicit permissions block (regression guard)', () => {
+    // With permissions: {} at workflow level, every job must declare its own grants.
+    const allJobs = ['pr-metadata', 'dependency-review', 'bundle-size-check', 'quality-summary']
+    for (const jobId of allJobs) {
+      const block = assertJobExists(content, jobId, 'pr-quality-check.yml')
+      const hasPermissionsBlock = /^\s{4}permissions:/m.test(block)
+      expect(hasPermissionsBlock, `Job "${jobId}" is missing an explicit permissions block`).toBe(
+        true
+      )
+    }
   })
 })
 
@@ -370,8 +397,13 @@ describe('package-lock.json – basic-ftp security update (GHSA-chqc-8p9q-pq6q, 
     expect(lockfile.packages).toHaveProperty('node_modules/basic-ftp')
   })
 
-  it('basic-ftp should NOT be the vulnerable version 5.2.0', () => {
-    expect(entry.version).not.toBe('5.2.0')
+  it('basic-ftp should NOT be in the vulnerable range (<= 5.3.0)', () => {
+    const [major, minor, patch] = entry.version.split('.').map(Number)
+    const isVulnerable =
+      major < 5 || (major === 5 && minor < 3) || (major === 5 && minor === 3 && patch <= 0)
+    expect(isVulnerable, `basic-ftp ${entry.version} is in the vulnerable range (<= 5.3.0)`).toBe(
+      false
+    )
   })
 
   it('basic-ftp version should be >= 5.3.1 (minimum safe for all known CVEs)', () => {

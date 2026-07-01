@@ -32,8 +32,8 @@ exports[`Legal Constants > Snapshot Tests > should match LEGAL_CONFIG snapshot 1
   "metadata": {
     "governingLaw": "[State] law",
     "jurisdiction": "[State/Country]",
-    "privacyLastUpdated": "2025-11-28",
-    "termsLastUpdated": "2025-11-28",
+    "privacyLastUpdated": "2026-06-05",
+    "termsLastUpdated": "2026-06-05",
     "termsVersion": "1.0",
   },
   "social": {

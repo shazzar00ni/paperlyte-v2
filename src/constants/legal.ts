@@ -53,8 +53,8 @@ export const LEGAL_CONFIG = {
     discord: '#',
   },
   metadata: {
-    privacyLastUpdated: '2025-11-28',
-    termsLastUpdated: '2025-11-28',
+    privacyLastUpdated: '2026-06-05',
+    termsLastUpdated: '2026-06-05',
     termsVersion: '1.0',
     jurisdiction: '[State/Country]',
     governingLaw: '[State] law',

@@ -47,12 +47,33 @@ npm run lint
 npm run preview
 ```
 
+---
+
+## Commit convention
+
+This repository follows the Conventional Commits convention, configured via
+`commitlint.config.js` (extends `@commitlint/config-conventional`). There is
+**no** commit-msg git hook wired up, so commitlint is not auto-enforced on
+`git commit` — validate messages manually before committing.
+
+- First install dev deps (`npm ci`). Without them, a bare `npx commitlint`
+  silently fetches a generic `commitlint` from the registry that can't resolve
+  the local config and misreports "missing rules" — so always pass
+  `--no-install`, which fails clearly when deps aren't installed.
+- Read the rules: `npx --no-install commitlint --print-config json`
+- Validate a message: `printf '%s' "<message>" | npx --no-install commitlint`
+  (exit 0 = valid)
+- If validation reports problems, fix the rules named in brackets
+  (e.g. `[subject-case]`) and retry. Never use `git commit --no-verify`.
+
+---
+
 ## Tech Stack
 
-- **React**: 19.2.0 (with React DOM 19.2.0)
+- **React**: ^19.2.4 (with React DOM ^19.2.4)
 - **TypeScript**: ~5.9.3 with strict mode enabled
 - **Build Tool**: Vite 7.2.4 with @vitejs/plugin-react
-- **Linting**: ESLint ^10.0.0 (currently 10.0.2) with TypeScript ESLint, React Hooks, and React Refresh plugins
+- **Linting**: ESLint ^10 with TypeScript ESLint, React Hooks, and React Refresh plugins
 
 ## Project Structure
 

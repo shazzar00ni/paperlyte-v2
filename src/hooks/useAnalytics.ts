@@ -98,6 +98,10 @@ export function useAnalytics(enableScrollTracking = true) {
     })
   }, [track])
 
+  /**
+   * Track a waitlist form error.
+   * PRIVACY: Only sends an error code and form location — no PII or raw error messages.
+   */
   const trackWaitlistError = useCallback(
     (errorCode: string, location: string) => {
       track(AnalyticsEvents.WAITLIST_ERROR, {

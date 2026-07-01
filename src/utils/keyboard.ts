@@ -8,35 +8,52 @@ type KeyEvent = KeyboardEvent | ReactKeyboardEvent
  */
 
 /**
- * Check if the pressed key is Enter or Space (standard activation keys)
+ * Check if the pressed key is Enter or Space (standard ARIA activation keys).
+ * Includes the legacy `'Spacebar'` value for IE 11 compatibility.
+ *
+ * @param event - Keyboard or React keyboard event
+ * @returns `true` when the event should activate a button-like element
  */
 export function isActivationKey(event: KeyEvent): boolean {
   return event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar'
 }
 
 /**
- * Check if the pressed key is Escape
+ * Check if the pressed key is Escape.
+ * Includes the legacy `'Esc'` value for older browsers.
+ *
+ * @param event - Keyboard or React keyboard event
+ * @returns `true` when the user pressed Escape
  */
 export function isEscapeKey(event: KeyEvent): boolean {
   return event.key === 'Escape' || event.key === 'Esc'
 }
 
 /**
- * Check if the pressed key is an arrow key
+ * Check if the pressed key is one of the four arrow keys.
+ *
+ * @param event - Keyboard or React keyboard event
+ * @returns `true` for ArrowUp, ArrowDown, ArrowLeft, or ArrowRight
  */
 export function isArrowKey(event: KeyEvent): boolean {
   return ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)
 }
 
 /**
- * Check if the pressed key is the Home key
+ * Check if the pressed key is Home.
+ *
+ * @param event - Keyboard or React keyboard event
+ * @returns `true` when the user pressed Home
  */
 export function isHomeKey(event: KeyEvent): boolean {
   return event.key === 'Home'
 }
 
 /**
- * Check if the pressed key is the End key
+ * Check if the pressed key is End.
+ *
+ * @param event - Keyboard or React keyboard event
+ * @returns `true` when the user pressed End
  */
 export function isEndKey(event: KeyEvent): boolean {
   return event.key === 'End'
@@ -58,7 +75,11 @@ export function getArrowDirection(event: KeyEvent): 'up' | 'down' | 'left' | 'ri
 }
 
 /**
- * Standard selector for all focusable elements
+ * CSS selector that matches every element that can receive keyboard focus.
+ * Covers interactive elements (buttons, links, inputs, selects, textareas),
+ * elements with a non-negative tabindex, contenteditable regions, and media
+ * controls. Excludes disabled elements and elements hidden from tab order
+ * (`tabindex="-1"` or `contenteditable="false"`).
  */
 export const FOCUSABLE_SELECTOR =
   'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), ' +
@@ -67,7 +88,10 @@ export const FOCUSABLE_SELECTOR =
   'video[controls], details > summary'
 
 /**
- * Get all focusable elements within a container, sorted by document order
+ * Get all focusable elements within a container, sorted by document order.
+ *
+ * @param container - The parent element to search within
+ * @returns Array of focusable elements in DOM order
  */
 export function getFocusableElements(container: HTMLElement): HTMLElement[] {
   const elements = container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)

@@ -128,6 +128,11 @@ export function logError(error: Error, context?: ErrorContext, source?: string):
  *
  * @param message - Human-readable warning text; in production this is truncated to 200 characters.
  * @param context - Optional additional metadata to include with the warning (logged to console in development or merged into the telemetry event in production)
+ *
+ * @example
+ * ```ts
+ * logWarning('Feature flag not recognized', { flag: 'beta_editor' })
+ * ```
  */
 export function logWarning(message: string, context?: Record<string, unknown>): void {
   if (import.meta.env.DEV) {
@@ -171,6 +176,11 @@ export function logPerformance(
  *
  * @param eventName - Name of the event to record
  * @param properties - Optional key-value properties to include with the event
+ *
+ * @example
+ * ```ts
+ * logEvent('theme_changed', { theme: 'dark' })
+ * ```
  */
 export function logEvent(
   eventName: string,

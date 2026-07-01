@@ -40,9 +40,20 @@ class Analytics {
   private webVitalsCleanup: (() => void) | null = null
 
   /**
-   * Initialize analytics with configuration
+   * Initialize analytics with configuration. Must be called once before any
+   * tracking. Subsequent calls are no-ops (a warning is logged in development).
    *
    * @param config - Analytics configuration
+   *
+   * @example
+   * ```ts
+   * analytics.init({
+   *   provider: 'plausible',
+   *   siteId: 'paperlyte.com',
+   *   trackScrollDepth: true,
+   *   trackWebVitals: true,
+   * })
+   * ```
    */
   init(config: AnalyticsConfig): void {
     if (this.initialized) {

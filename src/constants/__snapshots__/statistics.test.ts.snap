@@ -1,0 +1,32 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Statistics Constants > Snapshot Tests > should match STATISTICS snapshot 1`] = `
+[
+  {
+    "icon": "fa-users",
+    "label": "Waitlist Members",
+    "suffix": "+",
+    "value": 500,
+  },
+  {
+    "icon": "fa-note-sticky",
+    "label": "Notes Created",
+    "suffix": "M+",
+    "value": 10,
+  },
+  {
+    "decimals": 1,
+    "icon": "fa-server",
+    "label": "Uptime",
+    "suffix": "%",
+    "value": 99.9,
+  },
+  {
+    "decimals": 1,
+    "icon": "fa-star",
+    "label": "User Rating",
+    "suffix": "/5",
+    "value": 4.9,
+  },
+]
+`;

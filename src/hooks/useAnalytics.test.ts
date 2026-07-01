@@ -68,4 +68,12 @@ describe('useAnalytics', () => {
     expect(typeof result.current.trackWaitlistError).toBe('function')
     expect(typeof result.current.trackFAQExpand).toBe('function')
   })
+
+  it('fires WAITLIST_SUCCESS event with no params (no PII) when trackWaitlistSuccess is called', () => {
+    const { result } = renderHook(() => useAnalytics())
+
+    result.current.trackWaitlistSuccess()
+
+    expect(trackEvent).toHaveBeenCalledWith(AnalyticsEvents.WAITLIST_SUCCESS, undefined)
+  })
 })

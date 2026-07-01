@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { memo, useState, useRef, useEffect, useCallback } from 'react'
 import { Section } from '@components/layout/Section'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { Icon } from '@components/ui/Icon'
@@ -11,10 +11,11 @@ import {
 import styles from './FAQ.module.css'
 
 interface FAQItemProps {
+  id: string
   question: string
   answer: string
   isOpen: boolean
-  onToggle: () => void
+  onToggle: (id: string) => void
   delay: number
 }
 
@@ -25,13 +26,14 @@ interface FAQItemProps {
  * @param props - FAQ item props
  * @returns An animated accordion item for FAQ
  */
-const FAQItemComponent = ({
+const FAQItemComponent = memo(function FAQItemComponent({
+  id,
   question,
   answer,
   isOpen,
   onToggle,
   delay,
-}: FAQItemProps): React.ReactElement => {
+}: FAQItemProps): React.ReactElement {
   const sanitizedQuestion = question
     .replace(/[^a-zA-Z0-9\s]/g, '')
     .replace(/\s+/g, '-')
@@ -47,7 +49,7 @@ const FAQItemComponent = ({
             id={questionId}
             type="button"
             className={styles.question}
-            onClick={onToggle}
+            onClick={() => onToggle(id)}
             aria-expanded={isOpen}
             aria-controls={answerId}
           >
@@ -72,7 +74,7 @@ const FAQItemComponent = ({
       </article>
     </AnimatedElement>
   )
-}
+})
 
 /** Renders the FAQ section with an accessible, keyboard-navigable accordion of common questions. */
 export const FAQ = (): React.ReactElement => {
@@ -81,7 +83,7 @@ export const FAQ = (): React.ReactElement => {
   const gridRef = useRef<HTMLDivElement>(null)
   const announcementTimeoutRef = useRef<number | null>(null)
 
-  const toggleItem = (id: string): void => {
+  const toggleItem = useCallback((id: string): void => {
     setOpenItems((prev) => {
       const newSet = new Set(prev)
       const isOpening = !newSet.has(id)
@@ -111,7 +113,7 @@ export const FAQ = (): React.ReactElement => {
 
       return newSet
     })
-  }
+  }, [])
 
   // Cleanup timeout on unmount to prevent memory leaks
   useEffect(() => {
@@ -189,12 +191,11 @@ export const FAQ = (): React.ReactElement => {
         {FAQ_ITEMS.map((item, index) => (
           <FAQItemComponent
             key={item.id}
+            id={item.id}
             question={item.question}
             answer={item.answer}
             isOpen={openItems.has(item.id)}
-            onToggle={() => {
-              toggleItem(item.id)
-            }}
+            onToggle={toggleItem}
             delay={150 + index * 50}
           />
         ))}

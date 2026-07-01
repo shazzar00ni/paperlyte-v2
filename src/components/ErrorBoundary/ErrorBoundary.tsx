@@ -4,14 +4,27 @@ import { logError } from '@utils/monitoring'
 import styles from './ErrorBoundary.module.css'
 
 interface ErrorBoundaryProps {
+  /** Subtree to render when no error is present */
   children: ReactNode
+  /**
+   * UI to render instead of the default error card when an error is caught.
+   * Pass `null` or an empty fragment to render nothing on error.
+   * When omitted, the built-in retry/reload card is shown.
+   */
   fallback?: ReactNode
+  /**
+   * Maximum number of in-place retries before falling back to a full page reload.
+   * @default 3
+   */
   maxRetries?: number
 }
 
 interface ErrorBoundaryState {
+  /** Whether a rendering error has been caught and the boundary is in its error state */
   hasError: boolean
+  /** The most recently caught error, or `null` when no error is active */
   error: Error | null
+  /** Number of times the user has pressed "Try Again" since the last successful render */
   retryCount: number
 }
 
@@ -43,14 +56,23 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     }
   }
 
+  /**
+   * React lifecycle — called during rendering when a descendant throws.
+   * Returns state updates that switch the boundary into error mode so the
+   * next render shows the fallback UI.
+   */
   static getDerivedStateFromError(error: Error): Partial<ErrorBoundaryState> {
-    // Update state so the next render will show the fallback UI
     return {
       hasError: true,
       error,
     }
   }
 
+  /**
+   * React lifecycle — called after the boundary has rendered its fallback UI.
+   * Increments the retry counter and forwards the error to `logError` so it is
+   * reported to Sentry (production) or the console (development).
+   */
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     let newRetryCount: number
     this.setState(
@@ -77,6 +99,11 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     )
   }
 
+  /**
+   * Attempts an in-place recovery by resetting error state so the child tree
+   * re-renders. After `maxRetries` attempts the page is fully reloaded instead,
+   * preventing an infinite error loop.
+   */
   handleReset = (): void => {
     const maxRetries = this.props.maxRetries ?? 3
 
@@ -95,6 +122,11 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     })
   }
 
+  /**
+   * Renders children when no error is active. On error, renders either the
+   * consumer-supplied `fallback` prop or the built-in error card with retry
+   * and reload actions.
+   */
   render(): ReactNode {
     if (this.state.hasError) {
       // Use custom fallback if provided (including null to render nothing)

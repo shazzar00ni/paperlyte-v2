@@ -5,10 +5,15 @@
  */
 
 interface EnvConfig {
+  /** Canonical base URL of the site (from `VITE_BASE_URL`, falls back to `window.location.origin`) */
   baseUrl: string
+  /** Comma-separated SEO keyword string for the `<meta name="keywords">` tag */
   seoKeywords: string
+  /** Absolute URL of the Open Graph image used for social sharing previews */
   ogImage: string
+  /** `true` when running in the Vite development server (`import.meta.env.DEV`) */
   isDevelopment: boolean
+  /** `true` when running a production build (`import.meta.env.PROD`) */
   isProduction: boolean
 }
 
@@ -59,8 +64,12 @@ export const env: EnvConfig = {
 }
 
 /**
- * Update meta tags dynamically based on environment
- * Call this in your main.tsx or App.tsx
+ * Applies environment-derived values to several `<head>` meta tags at runtime.
+ *
+ * Updates the canonical link, `<meta name="keywords">`, `<meta property="og:url">`,
+ * and `<meta property="og:image">` elements to reflect `env.baseUrl` and `env.ogImage`.
+ * In development mode, logs the resolved values to the console.
+ * Call once during app initialization (e.g. in `main.tsx`).
  */
 export const updateMetaTags = (): void => {
   if (import.meta.env.DEV) {

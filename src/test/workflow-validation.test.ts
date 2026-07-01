@@ -1,9 +1,9 @@
 /**
  * Tests for GitHub Actions workflow permission changes.
  *
- * This PR moved `permissions` from the workflow level to individual job level
- * in ci.yml and pr-quality-check.yml, following the principle of least privilege.
- * These tests verify that structure is correctly enforced.
+ * This PR moves `permissions` to the job level in ci.yml and pr-quality-check.yml,
+ * and adds `permissions: {}` at the workflow level across all modified workflows,
+ * following the principle of least privilege.
  */
 
 import { readFileSync } from 'node:fs'
@@ -21,11 +21,19 @@ function readWorkflow(filename: string): string {
 }
 
 /**
- * Returns true when the YAML file contains a top-level `permissions:` block,
+ * Returns true when the YAML file contains a top-level `permissions:` key,
  * i.e. a line that starts with `permissions:` at column 0 (no indentation).
  */
 function hasWorkflowLevelPermissions(content: string): boolean {
   return content.split('\n').some((line) => line.startsWith('permissions:'))
+}
+
+/**
+ * Returns true when the workflow has `permissions: {}` at the top level,
+ * which explicitly sets the deny-all default.
+ */
+function hasEmptyWorkflowPermissions(content: string): boolean {
+  return content.split('\n').some((line) => /^permissions:\s*\{\}/.test(line))
 }
 
 /**
@@ -52,6 +60,23 @@ function extractJobBlock(content: string, jobId: string): string {
 }
 
 /**
+ * Extracts a named step from a job block, stopping before the next step.
+ */
+function extractStepBlock(jobBlock: string, stepName: string): string {
+  const lines = jobBlock.split('\n')
+  const startIdx = lines.findIndex((line) => line === `      - name: ${stepName}`)
+  if (startIdx === -1) return ''
+
+  const stepLines: string[] = [lines[startIdx]]
+  for (let i = startIdx + 1; i < lines.length; i++) {
+    const line = lines[i]
+    if (line.startsWith('      - name: ')) break
+    stepLines.push(line)
+  }
+  return stepLines.join('\n')
+}
+
+/**
  * Returns true when the given job block contains `permissions:` followed by
  * a `contents: read` entry.
  */
@@ -63,13 +88,13 @@ function jobHasContentsReadPermission(jobBlock: string): boolean {
 }
 
 /**
- * Asserts that a workflow file is non-empty and has a workflow-level
- * `permissions: contents: read` block.
+ * Asserts that a workflow file is non-empty and has `permissions: {}` at the
+ * workflow level (deny-all default, with grants delegated to individual jobs).
  */
-function assertWorkflowLevelContentsRead(content: string): void {
+function assertEmptyWorkflowPermissions(content: string): void {
   expect(content.length).toBeGreaterThan(0)
   expect(hasWorkflowLevelPermissions(content)).toBe(true)
-  expect(content).toMatch(/^permissions:[ \t]*\n[ \t]+contents:[ \t]+read/m)
+  expect(hasEmptyWorkflowPermissions(content)).toBe(true)
 }
 
 /**
@@ -92,21 +117,12 @@ describe('ci.yml – permission structure', () => {
     content = readWorkflow('ci.yml')
   })
 
-  it('should exist and have a workflow-level "contents: read" permissions block', () => {
-    assertWorkflowLevelContentsRead(content)
+  it('should exist and have a workflow-level "permissions: {}" block', () => {
+    assertEmptyWorkflowPermissions(content)
   })
 
-  it.each(['lint-and-typecheck', 'build'])(
-    '%s job inherits "contents: read" from the workflow-level permissions',
-    (jobId) => {
-      assertJobExists(content, jobId, 'ci.yml')
-      // These jobs rely on the workflow-level contents: read (no separate job-level block needed)
-      expect(hasWorkflowLevelPermissions(content)).toBe(true)
-    }
-  )
-
-  it.each(['test', 'e2e', 'ci-success'])(
-    '%s job should have "contents: read" permission',
+  it.each(['lint-and-typecheck', 'build', 'test', 'e2e', 'ci-success'])(
+    '%s job should have an explicit "contents: read" permission at job level',
     (jobId) => {
       const block = assertJobExists(content, jobId, 'ci.yml')
       expect(jobHasContentsReadPermission(block)).toBe(true)
@@ -129,11 +145,19 @@ describe('ci.yml – permission structure', () => {
     }
   })
 
-  it('each job that has a permissions block should include at least "contents: read"', () => {
-    // Regression guard: jobs with explicit permissions blocks must keep contents: read.
-    // lint-and-typecheck and build rely on the workflow-level block instead.
-    const jobsWithExplicitPermissions = ['test', 'size-check', 'lighthouse', 'e2e', 'ci-success']
-    for (const jobId of jobsWithExplicitPermissions) {
+  it('every job with a permissions block should include at least "contents: read"', () => {
+    // Regression guard: all jobs with explicit permissions must keep contents: read.
+    const allJobs = [
+      'lint-and-typecheck',
+      'test',
+      'build',
+      'size-check',
+      'lighthouse',
+      'e2e',
+      'add-to-project',
+      'ci-success',
+    ]
+    for (const jobId of allJobs) {
       const block = assertJobExists(content, jobId, 'ci.yml')
       expect(
         jobHasContentsReadPermission(block),
@@ -155,6 +179,16 @@ describe('ci.yml – permission structure', () => {
     const buildBlock = extractJobBlock(content, 'build')
     expect(buildBlock).toMatch(/needs:\s*\[lint-and-typecheck,\s*test\]/)
   })
+
+  it('Lighthouse summary failures should fail the job', () => {
+    const lighthouseBlock = assertJobExists(content, 'lighthouse', 'ci.yml')
+    const summaryStep = extractStepBlock(lighthouseBlock, 'Generate Lighthouse report summary')
+
+    expect(summaryStep).not.toBe('')
+    expect(summaryStep).toContain('if: always()')
+    expect(summaryStep).toContain('run: bash .github/scripts/generate-lighthouse-summary.sh')
+    expect(summaryStep).not.toMatch(/continue-on-error:\s*true/)
+  })
 })
 
 // ---------------------------------------------------------------------------
@@ -168,24 +202,17 @@ describe('pr-quality-check.yml – permission structure', () => {
     content = readWorkflow('pr-quality-check.yml')
   })
 
-  it('should exist and have a workflow-level "contents: read" permissions block', () => {
-    assertWorkflowLevelContentsRead(content)
+  it('should exist and have a workflow-level "permissions: {}" block', () => {
+    assertEmptyWorkflowPermissions(content)
   })
 
-  it.each(['pr-metadata', 'bundle-size-check'])(
-    '%s job inherits "contents: read" from the workflow-level permissions',
+  it.each(['pr-metadata', 'bundle-size-check', 'dependency-review'])(
+    '%s job should have an explicit "contents: read" permission at job level',
     (jobId) => {
-      assertJobExists(content, jobId, 'pr-quality-check.yml')
-      // These jobs rely on the workflow-level contents: read (no separate job-level block needed)
-      expect(hasWorkflowLevelPermissions(content)).toBe(true)
+      const block = assertJobExists(content, jobId, 'pr-quality-check.yml')
+      expect(jobHasContentsReadPermission(block)).toBe(true)
     }
   )
-
-  it('dependency-review job should retain its existing permissions', () => {
-    const block = assertJobExists(content, 'dependency-review', 'pr-quality-check.yml')
-    // dependency-review already had job-level permissions before this PR
-    expect(jobHasContentsReadPermission(block)).toBe(true)
-  })
 
   it('should define all expected jobs', () => {
     const expectedJobs = [
@@ -213,16 +240,16 @@ describe('pr-quality-check.yml – permission structure', () => {
     expect(block).toMatch(/needs:\s*\[pr-metadata,\s*dependency-review,\s*bundle-size-check\]/)
   })
 
-  it('only dependency-review job has an explicit permissions block (regression guard)', () => {
-    // dependency-review needs additional pull-requests: write permission beyond the workflow default.
-    // pr-metadata, bundle-size-check, and quality-summary rely on the workflow-level permissions.
-    // Validate that dependency-review still carries its own explicit block.
-    const block = assertJobExists(content, 'dependency-review', 'pr-quality-check.yml')
-    const hasPermissionsBlock = /^\s{4}permissions:/m.test(block)
-    expect(
-      hasPermissionsBlock,
-      'dependency-review job is missing an explicit permissions block'
-    ).toBe(true)
+  it('every job should have an explicit permissions block (regression guard)', () => {
+    // With permissions: {} at workflow level, every job must declare its own grants.
+    const allJobs = ['pr-metadata', 'dependency-review', 'bundle-size-check', 'quality-summary']
+    for (const jobId of allJobs) {
+      const block = assertJobExists(content, jobId, 'pr-quality-check.yml')
+      const hasPermissionsBlock = /^\s{4}permissions:/m.test(block)
+      expect(hasPermissionsBlock, `Job "${jobId}" is missing an explicit permissions block`).toBe(
+        true
+      )
+    }
   })
 })
 
@@ -291,12 +318,18 @@ describe('package-lock.json – picomatch dependency update', () => {
 })
 
 // ---------------------------------------------------------------------------
-// package-lock.json – axios SSRF fix (GHSA-3p68-rc4w-qgx5)
-// Axios < 1.15.0 has a NO_PROXY hostname normalisation bypass that can lead
-// to SSRF. The override in package.json forces >= 1.15.0.
+// package-lock.json – axios multiple CVE fix
+// Axios 1.0.0 – 1.15.1 carries a broad set of high-severity vulnerabilities
+// (prototype pollution, SSRF, CRLF injection, header injection, DoS, etc.).
+// The override in package.json forces >= 1.15.2.
+// Relevant advisories include: GHSA-3p68-rc4w-qgx5, GHSA-w9j2-pvgh-6h63,
+// GHSA-pmwg-cvhr-8vh7, GHSA-3w6x-2g7m-8v23, GHSA-q8qp-cvcw-x6jj,
+// GHSA-xhjh-pmcv-23jw, GHSA-445q-vr5w-6q77, GHSA-m7pr-hjqh-92cm,
+// GHSA-62hf-57xw-28j9, GHSA-5c9x-8gcm-mpgx, GHSA-vf2m-468p-8v99,
+// GHSA-pf86-5x62-jrwf, GHSA-6chq-wfr3-2hj9, GHSA-xx6v-rp6x-q39c.
 // ---------------------------------------------------------------------------
 
-describe('package-lock.json – axios security update (GHSA-3p68-rc4w-qgx5)', () => {
+describe('package-lock.json – axios security update (multiple CVEs)', () => {
   interface PackageLock {
     lockfileVersion: number
     packages: Record<string, { version: string; resolved: string; dev?: boolean }>
@@ -315,32 +348,37 @@ describe('package-lock.json – axios security update (GHSA-3p68-rc4w-qgx5)', ()
     expect(lockfile.packages).toHaveProperty('node_modules/axios')
   })
 
-  it('axios version should be >= 1.15.0 (not vulnerable)', () => {
+  it('axios version should be >= 1.15.2 (minimum safe version)', () => {
     const [major, minor, patch] = entry.version.split('.').map(Number)
-    const isAtLeast1_15_0 =
-      major > 1 || (major === 1 && minor > 15) || (major === 1 && minor === 15 && patch >= 0)
-    expect(isAtLeast1_15_0, `axios ${entry.version} is below the minimum safe version 1.15.0`).toBe(
-      true
-    )
+    const isAtLeast1_15_2 =
+      major > 1 || (major === 1 && minor > 15) || (major === 1 && minor === 15 && patch >= 2)
+    expect(
+      isAtLeast1_15_2,
+      `axios ${entry.version} is in the vulnerable range 1.0.0 – 1.15.1`
+    ).toBe(true)
   })
 
-  it('axios should NOT be the vulnerable version range (< 1.15.0)', () => {
-    const [major, minor] = entry.version.split('.').map(Number)
-    expect(major === 1 && minor < 15).toBe(false)
+  it('axios should NOT be in the vulnerable range (1.0.0 – 1.15.1)', () => {
+    const [major, minor, patch] = entry.version.split('.').map(Number)
+    const isVulnerable = major === 1 && (minor < 15 || (minor === 15 && patch < 2))
+    expect(isVulnerable).toBe(false)
   })
 
   it('axios resolved URL should point to a non-vulnerable release', () => {
-    expect(entry.resolved).toContain(`axios-${entry.version}`)
+    // Verify URL version matches the installed version (>= 1.15.2 already checked above).
+    // Avoids hardcoding a specific patch version that breaks on future bumps.
+    expect(entry.resolved).toContain(`axios-${entry.version}.tgz`)
   })
 })
 
 // ---------------------------------------------------------------------------
-// package-lock.json – basic-ftp FTP command injection fix (GHSA-chqc-8p9q-pq6q)
-// basic-ftp 5.2.0 allows FTP command injection via CRLF sequences.
-// The override in package.json forces >= 5.2.1.
+// package-lock.json – basic-ftp security fixes
+// GHSA-chqc-8p9q-pq6q: FTP command injection via CRLF in basic-ftp 5.2.0, fixed >= 5.2.1
+// GHSA-rpmf-866q-6p89: DoS via unbounded multiline control response in <= 5.3.0, fixed >= 5.3.1
+// The override in package.json forces >= 5.3.1.
 // ---------------------------------------------------------------------------
 
-describe('package-lock.json – basic-ftp security update (GHSA-chqc-8p9q-pq6q)', () => {
+describe('package-lock.json – basic-ftp security update (GHSA-chqc-8p9q-pq6q, GHSA-rpmf-866q-6p89)', () => {
   interface PackageLock {
     lockfileVersion: number
     packages: Record<string, { version: string; resolved: string; dev?: boolean }>
@@ -359,22 +397,28 @@ describe('package-lock.json – basic-ftp security update (GHSA-chqc-8p9q-pq6q)'
     expect(lockfile.packages).toHaveProperty('node_modules/basic-ftp')
   })
 
-  it('basic-ftp should NOT be the vulnerable version 5.2.0', () => {
-    expect(entry.version).not.toBe('5.2.0')
+  it('basic-ftp should NOT be in the vulnerable range (<= 5.3.0)', () => {
+    const [major, minor, patch] = entry.version.split('.').map(Number)
+    const isVulnerable =
+      major < 5 || (major === 5 && minor < 3) || (major === 5 && minor === 3 && patch <= 0)
+    expect(isVulnerable, `basic-ftp ${entry.version} is in the vulnerable range (<= 5.3.0)`).toBe(
+      false
+    )
   })
 
-  it('basic-ftp version should be >= 5.2.1 (not vulnerable)', () => {
+  it('basic-ftp version should be >= 5.3.1 (minimum safe for all known CVEs)', () => {
     const [major, minor, patch] = entry.version.split('.').map(Number)
-    const isAtLeast5_2_1 =
-      major > 5 || (major === 5 && minor > 2) || (major === 5 && minor === 2 && patch >= 1)
+    const isAtLeast5_3_1 =
+      major > 5 || (major === 5 && minor > 3) || (major === 5 && minor === 3 && patch >= 1)
     expect(
-      isAtLeast5_2_1,
-      `basic-ftp ${entry.version} is below the minimum safe version 5.2.1`
+      isAtLeast5_3_1,
+      `basic-ftp ${entry.version} is below the minimum safe version 5.3.1`
     ).toBe(true)
   })
 
-  it('basic-ftp resolved URL should not point to the vulnerable 5.2.0 release', () => {
+  it('basic-ftp resolved URL should not point to a vulnerable release', () => {
     expect(entry.resolved).not.toContain('basic-ftp-5.2.0.tgz')
+    expect(entry.resolved).not.toContain('basic-ftp-5.3.0.tgz')
   })
 })
 

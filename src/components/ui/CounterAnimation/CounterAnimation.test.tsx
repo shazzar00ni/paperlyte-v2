@@ -369,6 +369,17 @@ describe('CounterAnimation', () => {
       expect(counter.textContent).toBe(expectedValue.toString())
     })
 
+    it('should throw for an unrecognized easing name', () => {
+      mockReducedMotion(false)
+      mockIntersectionObserver(true)
+
+      const invalidEasing = 'unknown' as unknown as Parameters<typeof CounterAnimation>[0]['easing']
+
+      expect(() =>
+        render(<CounterAnimation end={100} start={0} easing={invalidEasing} duration={1000} />)
+      ).toThrow('Unsupported easing function: unknown')
+    })
+
     it('should apply easeOutExpo easing function', () => {
       mockReducedMotion(false)
       mockIntersectionObserver(true)

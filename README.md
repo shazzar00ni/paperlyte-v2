@@ -1,21 +1,27 @@
+<img width="1731" height="909" alt="1000012243" src="https://github.com/user-attachments/assets/b34a46a4-0f8b-402b-8ebe-271407834e5c" />
+
 # Paperlyte Landing Page
 
-> **Your thoughts, unchained.**
+**Your thoughts, unchained.**
 
 Lightning-fast, distraction-free note-taking app — landing page built with React, TypeScript, and Vite.
 
-🌐 **Live site:** [paperlyte.app](https://paperlyte.app)
-[![Netlify Status](https://api.netlify.com/api/v1/badges/a51f0b4b-0c40-4fd1-8821-73adb9a48d64/deploy-status)](https://app.netlify.com/projects/paperlyte-v2/deploys)
+---
 
-[![Deployment Status](https://github.com/shazzar00ni/paperlyte-v2/actions/workflows/deployment-status.yml/badge.svg)](https://github.com/shazzar00ni/paperlyte-v2/actions/workflows/deployment-status.yml) [![codecov](https://codecov.io/github/shazzar00ni/paperlyte-v2/graph/badge.svg?token=yQtvXFB0KF)](https://codecov.io/github/shazzar00ni/paperlyte-v2) [![CircleCI](https://dl.circleci.com/status-badge/img/gh/shazzar00ni/paperlyte-v2/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/shazzar00ni/paperlyte-v2/tree/main) ![License](https://img.shields.io/badge/license-MIT-blue.svg)
-[![Claude Code](https://github.com/shazzar00ni/paperlyte-v2/actions/workflows/claude.yml/badge.svg)](https://github.com/shazzar00ni/paperlyte-v2/actions/workflows/claude.yml)
-![React](https://img.shields.io/badge/React-19.2.0-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-blue) ![Vite](https://img.shields.io/badge/Vite-7.2.4-646CFF)
+🌐 **Live site:** [paperlyte.app](https://paperlyte.app)
+
+---
 
 <!-- ADD A SCREENSHOT HERE -->
+
+**Paperlyte Deep Wiki:** [app.devin.ai/…/paperlyte-v2](https://app.devin.ai/org/shannon-lockett/wiki/shazzar00ni/paperlyte-v2?branch=main)
+
 <img width="1024" height="1536" alt="1000005261" src="https://github.com/user-attachments/assets/7ba39c13-5df8-4c25-a29e-54ddd65d2cac" />
-<!-- ![Paperlyte Screenshot](./docs/screenshot.png) --># Paperlyte Landing Page
+
+<!-- ![Paperlyte Screenshot](./docs/screenshot.png) -->
 
 [![Deployment Status](https://github.com/shazzar00ni/paperlyte-v2/actions/workflows/deployment-status.yml/badge.svg)](https://github.com/shazzar00ni/paperlyte-v2/actions/workflows/deployment-status.yml)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/a51f0b4b-0c40-4fd1-8821-73adb9a48d64/deploy-status)](https://app.netlify.com/projects/paperlyte-v2/deploys)
 ![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/shazzar00ni/paperlyte-v2?utm_source=oss&utm_medium=github&utm_campaign=shazzar00ni%2Fpaperlyte-v2&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
 [![Claude Code](https://github.com/shazzar00ni/paperlyte-v2/actions/workflows/claude.yml/badge.svg)](https://github.com/shazzar00ni/paperlyte-v2/actions/workflows/claude.yml)
 [![PR Quality Check](https://github.com/shazzar00ni/paperlyte-v2/actions/workflows/pr-quality-check.yml/badge.svg)](https://github.com/shazzar00ni/paperlyte-v2/actions/workflows/pr-quality-check.yml)
@@ -26,8 +32,12 @@ Lightning-fast, distraction-free note-taking app — landing page built with Rea
 ![React](https://img.shields.io/badge/React-19.2.0-blue)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-blue)
 ![Vite](https://img.shields.io/badge/Vite-7.2.4-646CFF)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fshazzar00ni%2Fpaperlyte-v2.svg?type=large&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fshazzar00ni%2Fpaperlyte-v2?ref=badge_large&issueType=license)
+[![SonarQube Cloud](https://sonarcloud.io/images/project_badges/sonarcloud-dark.svg)](https://sonarcloud.io/summary/new_code?id=shazzar00ni_paperlyte-v2)
 
-> **Security:** See our [Security Practices](./docs/SECURITY.md) for vulnerability reporting, contributor guidelines, and supply chain security.
+---
+
+**Security:** See our [Security Practices](./docs/SECURITY.md) for vulnerability reporting, contributor guidelines, and supply chain security.
 
 ## Table of Contents
 
@@ -130,6 +140,16 @@ npm run lint
 npm run generate:icons
 npm run generate:mockups
 ```
+
+## Commit convention
+
+This repository enforces its commit convention with commitlint.
+
+- Read the rules before committing: `npx commitlint --print-config json`
+- Validate a message before using it: `printf '%s' "<message>" | npx commitlint`
+  (exit 0 = valid)
+- If the commit-msg hook rejects a commit, fix the rules named in brackets
+  (e.g. `[subject-case]`) and retry. Never use `git commit --no-verify`.
 
 ## Image Optimization
 

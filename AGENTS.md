@@ -73,6 +73,20 @@ npm run lighthouse       # Run Lighthouse CI performance audit
 npm audit                # Audit dependencies for vulnerabilities (native npm command)
 ```
 
+---
+
+## Commit convention
+
+This repository enforces its commit convention with commitlint.
+
+- Read the rules before committing: `npx commitlint --print-config json`
+- Validate a message before using it: `printf '%s' "<message>" | npx commitlint`
+  (exit 0 = valid)
+- If the commit-msg hook rejects a commit, fix the rules named in brackets
+  (e.g. `[subject-case]`) and retry. Never use `git commit --no-verify`.
+
+---
+
 ## Code Style Guidelines
 
 ### TypeScript
@@ -811,5 +825,6 @@ function Features() {
 - **README.md** - Project overview and setup instructions
 - **docs/DESIGN-SYSTEM.md** - Comprehensive design system documentation
 - **docs/ACCESSIBILITY.md** - Accessibility guidelines and checklist
-- **CONTRIBUTING.md** - Contribution guidelines
-- **SECURITY.md** - Security practices and vulnerability reporting
+- **docs/CONTRIBUTING.md** - Contribution guidelines
+- **docs/SECURITY-POLICY.md** - Security policy and vulnerability reporting
+- **docs/SECURITY.md** - Security practices for contributors

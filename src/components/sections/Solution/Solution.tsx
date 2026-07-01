@@ -37,13 +37,13 @@ const VALUE_PROPS: ValueProp[] = [
       'Type #project, #urgent, or #ideas anywhere in your note. Paperlyte instantly recognizes it. Search by tag. Filter by multiple tags. Let your organization emerge naturally instead of forcing it upfront.',
     ],
     proof:
-      'No more "Where did I save that note?" panic. Tags are faster, more flexible, and actually match how your brain works.',
+      'Find any note in under 3 seconds · No folder hierarchy needed · Tags complete as you type',
   },
   {
     icon: 'fa-globe',
     emoji: '📱',
     headline: 'Works Everywhere, Always',
-    title: 'Plane mode? No problem.',
+    title: 'Airplane mode? No problem.',
     body: [
       `Real-time sync across web, Mac, Windows, and Linux at launch. Native iOS & Android apps coming ${LAUNCH_QUARTER}. But unlike cloud-dependent apps, Paperlyte works offline-first.`,
       "On a plane? Underground subway? Spotty café WiFi? Keep writing. Everything syncs automatically when you're back online.",
@@ -113,7 +113,7 @@ export const Solution = (): React.ReactElement => {
               Join the Waitlist
             </Button>
             <p className={styles.ctaMicrocopy}>
-              {WAITLIST_COUNT} people already ahead of you. Don't miss early access.
+              {WAITLIST_COUNT} people already ahead of you. Join them for early access.
             </p>
           </div>
         </AnimatedElement>

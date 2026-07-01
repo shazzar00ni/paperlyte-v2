@@ -7,16 +7,16 @@ export const EMAIL_CAPTURE_CONTENT = {
   successText: 'Check your inbox—we just sent you a welcome email with next steps.',
   nextStepsTitle: 'What happens next:',
   nextSteps: [
-    "We'll email you product updates as we build",
+    "We'll send occasional product updates — no spam",
     "You'll get early access 2 weeks before public launch",
-    "We'll ask for your feedback to make Paperlyte better",
+    "You'll shape the product — we'll ask for your input as we build",
   ],
-  shareText: 'Share Paperlyte with friends',
+  shareText: "Know someone who'd love this? Share Paperlyte:",
 } as const
 
 export const BENEFITS = [
   'Get early access before public launch',
   'Influence features and design decisions',
   'Lock in founder pricing (save 50% for life)',
-  'Receive exclusive productivity tips and updates',
+  'Get early product updates and insider tips',
 ] as const

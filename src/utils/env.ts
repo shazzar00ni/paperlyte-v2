@@ -13,15 +13,21 @@ interface EnvConfig {
 }
 
 /**
- * Get the base URL for the application
- * Falls back to window.location.origin if not set
+ * Get the base URL for the application.
+ * Falls back to `window.location.origin` when `VITE_BASE_URL` is not set,
+ * so local dev builds always resolve links against the dev server.
+ *
+ * @returns Absolute base URL (e.g. `"https://paperlyte.com"` or `"http://localhost:3000"`)
  */
 export const getBaseUrl = (): string => {
   return import.meta.env.VITE_BASE_URL || window.location.origin
 }
 
 /**
- * Get SEO keywords for meta tags
+ * Get the comma-separated SEO keyword string for the `<meta name="keywords">` tag.
+ * Falls back to a sensible default set when `VITE_SEO_KEYWORDS` is not defined.
+ *
+ * @returns Keyword string suitable for a meta `content` attribute
  */
 export const getSeoKeywords = (): string => {
   return (
@@ -31,8 +37,12 @@ export const getSeoKeywords = (): string => {
 }
 
 /**
- * Get Open Graph image URL
- * Returns absolute URL for production, relative for development
+ * Get the absolute Open Graph image URL.
+ * If `VITE_OG_IMAGE` is already an absolute URL it is returned unchanged;
+ * otherwise the value is prefixed with `getBaseUrl()` so OG crawlers receive
+ * a fully-qualified URL regardless of the deployment environment.
+ *
+ * @returns Absolute URL to the OG image (e.g. `"https://paperlyte.com/og-image.png"`)
  */
 export const getOgImage = (): string => {
   const ogImage = import.meta.env.VITE_OG_IMAGE || '/og-image.png'
@@ -59,8 +69,18 @@ export const env: EnvConfig = {
 }
 
 /**
- * Update meta tags dynamically based on environment
- * Call this in your main.tsx or App.tsx
+ * Rewrite environment-specific meta tags in the live document.
+ *
+ * Updates canonical URL, Open Graph URL, Open Graph image, and keyword meta
+ * to values derived from the current environment. Intended to be called once
+ * from `main.tsx` after the DOM is ready. No-ops in SSR (no `document`).
+ *
+ * @example
+ * ```ts
+ * // main.tsx
+ * import { updateMetaTags } from '@utils/env'
+ * updateMetaTags()
+ * ```
  */
 export const updateMetaTags = (): void => {
   if (import.meta.env.DEV) {

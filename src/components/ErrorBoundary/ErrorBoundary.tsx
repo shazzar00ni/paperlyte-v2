@@ -51,6 +51,11 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     }
   }
 
+  /**
+   * React lifecycle: called after the component tree throws.
+   * Increments the retry counter first so the logged `retry_count` tag
+   * reflects the attempt that just failed rather than the previous render.
+   */
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     let newRetryCount: number
     this.setState(
@@ -77,12 +82,15 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     )
   }
 
+  /**
+   * Attempt to recover from the error by resetting error state and re-rendering
+   * children. Forces a full page reload once `maxRetries` is exhausted to break
+   * an otherwise-infinite error → retry → error loop.
+   */
   handleReset = (): void => {
     const maxRetries = this.props.maxRetries ?? 3
 
-    // Prevent infinite retry loops
     if (this.state.retryCount >= maxRetries) {
-      // Too many retries - force page reload
       globalThis.location.reload()
       return
     }

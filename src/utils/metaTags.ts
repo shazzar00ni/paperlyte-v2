@@ -14,6 +14,21 @@ function updateMetaAttr(selector: string, attr: string, value: string): void {
   if (el) el.setAttribute(attr, value)
 }
 
+/**
+ * Apply development-only overrides to document meta tags.
+ *
+ * Sets robots to `noindex, nofollow` and rewrites Open Graph / Twitter URLs to
+ * the current dev-server origin so preview cards resolve locally. The canonical
+ * `<link>` is intentionally left unchanged so it always points to production.
+ * Call once from `main.tsx`; no-ops in production builds.
+ *
+ * @example
+ * ```ts
+ * // main.tsx
+ * import { initializeMetaTags } from '@utils/metaTags'
+ * initializeMetaTags()
+ * ```
+ */
 export function initializeMetaTags(): void {
   if (import.meta.env.PROD) return
 

@@ -50,7 +50,7 @@ console.log(
 );
 console.log(`- Site URL: ${SITE_URL}`);
 
-// Process legal pages (privacy, terms)
+// Process all legal pages (see LEGAL_REVISION_DATES)
 LEGAL_FILES.forEach((file) => {
   // Validate filename
   if (!isFilenameSafe(file)) {
@@ -63,10 +63,13 @@ LEGAL_FILES.forEach((file) => {
   try {
     const originalContent = readFileSync(filePath, "utf8");
 
-    // Warn specifically about the revision-date placeholder so adding the
-    // BUILD_YEAR replacement below can't mask a missing {{BUILD_DATE}}.
+    // Warn per placeholder independently so a replacement of one can never mask
+    // the absence of the other.
     if (!originalContent.includes("{{BUILD_DATE}}")) {
       console.warn('⚠ Warning: No {{BUILD_DATE}} placeholder found in', file);
+    }
+    if (!originalContent.includes("{{BUILD_YEAR}}")) {
+      console.warn('⚠ Warning: No {{BUILD_YEAR}} placeholder found in', file);
     }
 
     const content = originalContent

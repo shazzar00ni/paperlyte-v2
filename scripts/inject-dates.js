@@ -20,11 +20,16 @@ const BUILD_DATE = new Date().toLocaleDateString("en-US", {
   month: "long",
   day: "numeric",
 });
+const BUILD_YEAR = String(new Date().getFullYear());
 
 // Revision dates per legal page — update the relevant entry when that policy changes, not on every deploy
 const LEGAL_REVISION_DATES = {
   "privacy.html": "June 5, 2026",
   "terms.html": "June 5, 2026",
+  "cookies.html": "June 27, 2026",
+  "security.html": "June 27, 2026",
+  "dmca.html": "June 27, 2026",
+  "accessibility.html": "June 27, 2026",
 };
 
 // Configuration for production site
@@ -32,14 +37,20 @@ const SITE_URL = "https://paperlyte.app";
 const OG_IMAGE_URL = "https://paperlyte.app/og-image.jpg";
 const META_KEYWORDS = "note-taking app, distraction-free notes, offline notes, fast note app, tag-based organization, simple notes, privacy-focused notes, cross-platform notes, real-time sync, minimalist note app";
 
-const LEGAL_FILES = ["privacy.html", "terms.html"];
+// Derive from LEGAL_REVISION_DATES so the two lists cannot drift and a missing
+// revision date can never inject "undefined" into a page.
+const LEGAL_FILES = Object.keys(LEGAL_REVISION_DATES);
 
 console.log(`Injecting build values...`);
 console.log(`- Build date: ${BUILD_DATE}`);
-console.log(`- Legal revision dates: privacy=${LEGAL_REVISION_DATES["privacy.html"]}, terms=${LEGAL_REVISION_DATES["terms.html"]}`);
+console.log(
+  `- Legal revision dates: ${LEGAL_FILES.map(
+    (file) => `${file.replace(/\.html$/, "")}=${LEGAL_REVISION_DATES[file]}`
+  ).join(", ")}`
+);
 console.log(`- Site URL: ${SITE_URL}`);
 
-// Process legal pages (privacy, terms)
+// Process all legal pages (see LEGAL_REVISION_DATES)
 LEGAL_FILES.forEach((file) => {
   // Validate filename
   if (!isFilenameSafe(file)) {
@@ -51,15 +62,23 @@ LEGAL_FILES.forEach((file) => {
 
   try {
     const originalContent = readFileSync(filePath, "utf8");
-    let content = originalContent;
 
-    // Replace placeholder with this file's revision date (not build date — changes only when policy content changes)
-    content = content.replace(/{{BUILD_DATE}}/g, LEGAL_REVISION_DATES[file]);
-
-    // Verify that placeholders were actually replaced
-    if (originalContent === content) {
+    // Warn per placeholder independently so a replacement of one can never mask
+    // the absence of the other.
+    if (!originalContent.includes("{{BUILD_DATE}}")) {
       console.warn('⚠ Warning: No {{BUILD_DATE}} placeholder found in', file);
-    } else {
+    }
+    if (!originalContent.includes("{{BUILD_YEAR}}")) {
+      console.warn('⚠ Warning: No {{BUILD_YEAR}} placeholder found in', file);
+    }
+
+    const content = originalContent
+      // Replace placeholder with this file's revision date (not build date — changes only when policy content changes)
+      .replace(/{{BUILD_DATE}}/g, LEGAL_REVISION_DATES[file])
+      // Replace copyright year placeholder with the current build year
+      .replace(/{{BUILD_YEAR}}/g, BUILD_YEAR);
+
+    if (content !== originalContent) {
       writeFileSync(filePath, content, "utf8");
       console.log('✓ Updated', file);
     }

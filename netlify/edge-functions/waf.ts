@@ -117,11 +117,15 @@ function generateNonce(): string {
  *   'self' https://plausible.io — CSP Level 2 fallback for browsers that do
  *                      not support strict-dynamic; ignored by browsers that do
  *
- * Intentionally blocked: any root-path <script> that is parser-inserted into
- * the page outside our trusted nonce chain — e.g. the /auto-events.js and
- * /proxy.js requests injected by a visitor's browser extension — carries no
- * per-request nonce, so 'strict-dynamic' rejects it. Neither file exists in or
- * is referenced by this project. The resulting "Content security policy"
+ * Intentionally blocked: any root-path <script> injected into the page from
+ * outside our trusted nonce chain — e.g. the /auto-events.js and /proxy.js
+ * requests added by a visitor's browser extension. These are dynamically
+ * created via the DOM (document.createElement + appendChild), not nonce-tagged
+ * markup; under 'strict-dynamic' a dynamically created script is trusted only
+ * when its creator is itself a nonce/hash-trusted script. An extension content
+ * script carries no nonce, so trust never propagates to what it inserts and the
+ * load is rejected. Neither file exists in or is referenced by this project.
+ * The resulting "Content security policy"
  * entries in the DevTools Issues panel are the policy working as designed, not
  * a regression; they appear only for visitors who have the injecting extension
  * installed and have no effect on site functionality. Do NOT loosen the policy

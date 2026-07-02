@@ -141,6 +141,48 @@ async function cacheFirst(request) {
 }
 
 /**
+ * Error type used to keep intentional URL blocks separate from transient
+ * network failures that should use the offline fallback.
+ */
+class NavigationValidationError extends Error {
+  /**
+   * @param {string} message
+   */
+  constructor(message) {
+    super(message)
+    this.name = 'NavigationValidationError'
+  }
+}
+
+/**
+ * Validate a navigation request URL before fetching it.
+ * @param {string} requestUrl
+ * @returns {URL}
+ */
+function validateNavigationUrl(requestUrl) {
+  try {
+    const url = new URL(requestUrl)
+
+    // Ensure same origin (additional safety check)
+    if (url.origin !== self.location.origin) {
+      throw new NavigationValidationError('Invalid origin')
+    }
+
+    // Check only the pathname component so redirect/campaign query parameters
+    // such as ?next=/../privacy are not mistaken for path traversal attempts.
+    const rawPathname = requestUrl.slice(url.origin.length).split(/[?#]/, 1)[0] || '/'
+    if (rawPathname.includes('/../') || /\/%2e%2e\//i.test(rawPathname)) {
+      throw new NavigationValidationError('Invalid path')
+    }
+
+    return url
+  } catch (error) {
+    if (error instanceof NavigationValidationError) throw error
+    throw new NavigationValidationError('Invalid URL')
+  }
+}
+
+/**
  * Network-first strategy for navigation requests.
  * All navigation URLs on this SPA serve the same shell; responses are stored under
  * the canonical key '/' (pathname-only) so that UTM/query-string variants don't
@@ -150,8 +192,15 @@ async function cacheFirst(request) {
  * @returns {Promise<Response>}
  */
 async function navigateFetch(request) {
+  let url
+  try {
+    url = validateNavigationUrl(request.url)
+  } catch (error) {
+    return new Response('Invalid navigation URL', { status: 400, statusText: 'Bad Request' })
+  }
+
   // Normalize to pathname to prevent unbounded cache growth from query-string variants
-  const cacheKey = new URL(request.url).pathname
+  const cacheKey = url.pathname
   try {
     const response = await fetch(request)
     if (response.ok) {

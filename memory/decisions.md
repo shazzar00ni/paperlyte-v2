@@ -2,6 +2,15 @@
 
 This file tracks key architectural, design, and technical decisions made during development.
 
+## CSP — `auto-events.js` / `proxy.js` console errors are extension noise (2026-06-30)
+
+- **Decision**: Do **not** change the CSP in response to console errors of the form "Refused to load the script `https://<deploy>/auto-events.js` (or `/proxy.js`) because it violates ... `script-src 'nonce-…' 'strict-dynamic' 'self' https://plausible.io`". No code fix is warranted — the policy is behaving exactly as designed.
+- **Diagnosis**: Neither `auto-events.js` nor `proxy.js` exists in or is referenced by this project (not in the repo, `public/`, `index.html`, or any source), and neither is a Plausible script variant. They are injected into the page by a **browser extension** in the visitor's browser (a classic root-path injection pattern). Because they are parser-inserted outside our trusted nonce chain, `'strict-dynamic'` correctly refuses them.
+- **Why there's no safe fix**: `'strict-dynamic'` disables host-based allowlisting by design (the console message says so), so the `'self'`/`https://plausible.io` entries cannot "allow" these scripts. The only way to unblock them would be to drop `'strict-dynamic'`, which would gut the nonce-based XSS protection built in PR #1091 (`netlify/edge-functions/waf.ts` `buildCsp`). Our own scripts are unaffected: `index.html` scripts carry the per-request nonce, and analytics providers load a single validated `.js` via `document.createElement('script')`, which `'strict-dynamic'` transitively trusts.
+- **How to confirm**: Load the deploy in a clean/incognito profile with extensions disabled — the errors disappear. They only appear for visitors who have the injecting extension installed and are harmless (no effect on site functionality).
+- **Observability**: There is currently no CSP reporting directive (`report-uri`/`report-to`) or `securitypolicyviolation` listener, so these violations are console-only and do not reach Sentry. If CSP violation reporting is ever wired up to Sentry/LogRocket or similar, these same extension-injected `auto-events.js`/`proxy.js` violations will be captured there too — filter or ignore them rather than triaging them as production issues.
+- **Action for future sessions**: Treat these specific errors as external noise. Do not weaken the CSP to silence them.
+
 ## CI / GitHub Actions — SonarCloud (2026-06-16)
 
 - **Decision**: Download SonarScanner CLI from Maven Central (`repo1.maven.org`) instead of `binaries.sonarsource.com` or the `SonarSource/sonarcloud-github-action`.
@@ -15,6 +24,13 @@ This file tracks key architectural, design, and technical decisions made during 
 - **CodeRabbit false positive**: flagged `actions/checkout` SHA `df4cb1c...` as not matching v6.0.3. This is a false positive — the API returns the annotated tag object SHA (`9f698171...`), not the commit SHA. Dependabot correctly pins the commit SHA. No change needed.
 - **All bot review findings addressed**: Codex P1 (SHA verification ✅), Codex P2 (RUNNER_TEMP ✅), CodeRabbit wget timeout ✅, CodeRabbit template injection ✅.
 - **PR**: #1085 on branch `claude/clever-pasteur-kzrtI`
+
+## Analytics — trackSocialClick platform normalization (2026-06-29)
+
+- **Decision**: `trackSocialClick(platform)` normalizes its argument by trimming whitespace and lowercasing (`platform.trim().toLowerCase()`) before reporting, with a docstring stating the behavior explicitly.
+- **Rationale**: The lowercasing was pre-existing on `main`, but CodeRabbit's "Out of Scope Changes" pre-merge check on #1247 kept flagging it (false positive — not introduced by that refactor). Per CodeRabbit's own suggested resolution, the normalization was moved into a dedicated, properly-scoped PR (#1249) so it is intentional and documented, laying the recurring warning to rest. Trimming was added as a genuine robustness improvement so the change carries real scope.
+- **Tests**: Added a whitespace-trimming case alongside the existing lowercase tests in `src/utils/analytics.test.ts`.
+- **PR**: #1249 (merged) on branch `claude/tracksocialclick-lowercase-alert-ypgzfn`. All substantive CI gates green; only red statuses were external quota/billing bots (Snyk, CodeRabbit, Codex) and pre-existing repo-wide scans (Dependency Quality, License Compliance, Mintlify config) unrelated to the 2-file diff.
 
 ## Format
 

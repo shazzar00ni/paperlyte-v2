@@ -116,6 +116,21 @@ function generateNonce(): string {
  *                      runtime (covers Plausible, Sentry Session Replay, etc.)
  *   'self' https://plausible.io — CSP Level 2 fallback for browsers that do
  *                      not support strict-dynamic; ignored by browsers that do
+ *
+ * Intentionally blocked: any root-path <script> injected into the page from
+ * outside our trusted nonce chain — e.g. the /auto-events.js and /proxy.js
+ * requests added by a visitor's browser extension. Whatever the exact
+ * injection mechanism, such a script is neither nonce-tagged nor created by an
+ * already-trusted (nonce/hash) script, so 'strict-dynamic' never extends trust
+ * to it and the load is rejected. Neither file exists in or is referenced by
+ * this project. The resulting Content-Security-Policy violation entries in the
+ * DevTools Issues panel are the policy working as designed, not a regression;
+ * they appear only for visitors who have the injecting extension installed and
+ * have no effect on site functionality. Do NOT loosen the policy to admit
+ * these scripts: that would forfeit the "block all injected scripts" XSS
+ * guarantee this nonce architecture exists to provide. See the "auto-events.js
+ * / proxy.js console errors are extension noise" entry in memory/decisions.md
+ * for the full diagnosis and how to confirm.
  */
 function buildCsp(nonce: string): string {
   return (

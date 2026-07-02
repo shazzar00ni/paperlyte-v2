@@ -135,7 +135,7 @@ jobs:
 
       - name: Upload coverage to Codecov
         if: ${{ !cancelled() }}
-        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
+        uses: step-security/codecov-action@v6
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage/coverage-final.json
@@ -145,7 +145,7 @@ jobs:
 
       - name: Upload test results to Codecov
         if: ${{ !cancelled() }}
-        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
+        uses: step-security/codecov-action@v6
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: "test-results/junit.xml"
@@ -398,7 +398,7 @@ jobs:
 
       - name: Install Chrome
         id: setup-chrome
-        uses: browser-actions/setup-chrome@2e1d749697dd1612b833dba4a722266286fbefcd # v2.1.2
+        uses: step-security/setup-chrome@v2
         with:
           chrome-version: stable
 

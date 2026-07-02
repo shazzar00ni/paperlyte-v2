@@ -59,6 +59,21 @@ describe('Footer', () => {
       name: 'Terms of Service (opens in new tab)',
     })
     expect(termsLink).toBeInTheDocument()
+
+    const newLegalLinks = [
+      { name: 'Cookie Policy', href: LEGAL_CONFIG.documents.cookies },
+      { name: 'Security', href: LEGAL_CONFIG.documents.security },
+      { name: 'DMCA', href: LEGAL_CONFIG.documents.dmca },
+      { name: 'Accessibility', href: LEGAL_CONFIG.documents.accessibility },
+    ]
+
+    newLegalLinks.forEach(({ name, href }) => {
+      const link = screen.getByRole('link', {
+        name: `${name} (opens in new tab)`,
+      })
+      expect(link).toBeInTheDocument()
+      expect(link).toHaveAttribute('href', href)
+    })
   })
 
   it('should render Connect link group with social links', () => {

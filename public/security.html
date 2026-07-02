@@ -43,16 +43,9 @@
         src: url('/fonts/PlayfairDisplay-Variable.woff2') format('woff2-variations');
       }
 
-      .policy-note {
-        background: #f9f9f9;
-        border: 1px solid #ddd;
-        padding: 1em;
-        margin-bottom: 1.5em;
-        font-size: 0.95em;
-      }
       .footer-note {
         font-size: 0.9em;
-        color: #888;
+        color: var(--color-text-secondary);
         margin-top: 0.5em;
       }
       * {
@@ -335,7 +328,7 @@
       </main>
 
       <footer>
-        <p>&copy; 2025 Paperlyte. All rights reserved.</p>
+        <p>&copy; {{BUILD_YEAR}} Paperlyte. All rights reserved.</p>
         <p class="footer-note">
           This security page was last updated on
           <strong>{{BUILD_DATE}}</strong>.

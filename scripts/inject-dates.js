@@ -20,6 +20,7 @@ const BUILD_DATE = new Date().toLocaleDateString("en-US", {
   month: "long",
   day: "numeric",
 });
+const BUILD_YEAR = String(new Date().getFullYear());
 
 // Revision dates per legal page — update the relevant entry when that policy changes, not on every deploy
 const LEGAL_REVISION_DATES = {
@@ -36,14 +37,9 @@ const SITE_URL = "https://paperlyte.app";
 const OG_IMAGE_URL = "https://paperlyte.app/og-image.jpg";
 const META_KEYWORDS = "note-taking app, distraction-free notes, offline notes, fast note app, tag-based organization, simple notes, privacy-focused notes, cross-platform notes, real-time sync, minimalist note app";
 
-const LEGAL_FILES = [
-  "privacy.html",
-  "terms.html",
-  "cookies.html",
-  "security.html",
-  "dmca.html",
-  "accessibility.html",
-];
+// Derive from LEGAL_REVISION_DATES so the two lists cannot drift and a missing
+// revision date can never inject "undefined" into a page.
+const LEGAL_FILES = Object.keys(LEGAL_REVISION_DATES);
 
 console.log(`Injecting build values...`);
 console.log(`- Build date: ${BUILD_DATE}`);
@@ -70,6 +66,9 @@ LEGAL_FILES.forEach((file) => {
 
     // Replace placeholder with this file's revision date (not build date — changes only when policy content changes)
     content = content.replace(/{{BUILD_DATE}}/g, LEGAL_REVISION_DATES[file]);
+
+    // Replace copyright year placeholder with the current build year
+    content = content.replace(/{{BUILD_YEAR}}/g, BUILD_YEAR);
 
     // Verify that placeholders were actually replaced
     if (originalContent === content) {

@@ -43,19 +43,12 @@
         src: url('/fonts/PlayfairDisplay-Variable.woff2') format('woff2-variations');
       }
 
-      .policy-note {
-        background: #f9f9f9;
-        border: 1px solid #ddd;
-        padding: 1em;
-        margin-bottom: 1.5em;
-        font-size: 0.95em;
-      }
       .placeholder {
-        color: #888;
+        color: var(--color-text-secondary);
       }
       .footer-note {
         font-size: 0.9em;
-        color: #888;
+        color: var(--color-text-secondary);
         margin-top: 0.5em;
       }
       * {
@@ -253,12 +246,11 @@
 
         <h3>2.3 Analytics Cookies</h3>
         <p>
-          We use privacy-first, cookie-less analytics
-          (<a href="https://plausible.io/" target="_blank" rel="noopener noreferrer">Plausible</a>)
-          to understand aggregate, anonymized usage of our site so we can
-          improve it. Plausible does not use cookies, does not collect personal
-          data, and does not track you across sites or devices. We do not use
-          third-party advertising or marketing cookies.
+          Where we measure how our site is used, we use privacy-focused,
+          cookie-less analytics to understand aggregate, anonymized traffic so we
+          can improve the site. This does not set cookies, does not collect
+          personal data, and does not track you across sites or devices. We do
+          not use third-party advertising or marketing cookies.
         </p>
 
         <h3>2.4 Cookies We Do Not Use</h3>
@@ -293,7 +285,7 @@
             </tr>
             <tr>
               <td>Analytics</td>
-              <td>Anonymous, aggregate usage statistics (Plausible)</td>
+              <td>Anonymous, aggregate usage statistics</td>
               <td>No cookies set</td>
               <td>Not applicable (cookie-less)</td>
             </tr>
@@ -317,19 +309,9 @@
         </p>
         <ul>
           <li>
-            Manage your preferences at any time using our
-            <button
-              type="button"
-              id="cookie-preferences-btn"
-              aria-label="Open cookie preferences dialog"
-              class="cookie-preferences-btn"
-            >
-              cookie preferences
-              <span class="visually-hidden">Open cookie preferences dialog</span></button>.
-          </li>
-          <li>
             Control or delete cookies through your browser settings. Most
-            browsers let you block or remove cookies and clear local storage.
+            browsers let you block or remove cookies and clear local storage at
+            any time.
           </li>
           <li>
             Use browser "Do Not Track" or Global Privacy Control signals; because
@@ -368,23 +350,12 @@
       </main>
 
       <footer>
-        <p>&copy; 2025 Paperlyte. All rights reserved.</p>
+        <p>&copy; {{BUILD_YEAR}} Paperlyte. All rights reserved.</p>
         <p class="footer-note">
           This cookie policy is effective as of
           <strong>{{BUILD_DATE}}</strong>.
         </p>
       </footer>
     </div>
-    <script nonce="CSP_NONCE">
-      // Attach cookie preferences handler for CSP compliance
-      const cookieBtn = document.getElementById('cookie-preferences-btn');
-      if (cookieBtn) {
-        cookieBtn.addEventListener('click', function () {
-          if (window.cookieConsent && typeof window.cookieConsent.open === 'function') {
-            window.cookieConsent.open();
-          }
-        });
-      }
-    </script>
   </body>
 </html>

@@ -1,0 +1,64 @@
+{
+  "categories": [
+    {
+      "title": "## 🚀 Features",
+      "labels": ["type: feature"]
+    },
+    {
+      "title": "## 🐛 Bug Fixes",
+      "labels": ["type: bugfix"]
+    },
+    {
+      "title": "## 📚 Documentation",
+      "labels": ["documentation"]
+    },
+    {
+      "title": "## 🔒 Security",
+      "labels": ["security"]
+    },
+    {
+      "title": "## 📦 Dependencies",
+      "labels": ["dependencies"]
+    },
+    {
+      "title": "## 🧹 CI/CD & Config",
+      "labels": ["ci/cd", "ci", "config"]
+    }
+  ],
+  "duplicate_secondary_categories": false,
+  "template": "${{CHANGELOG}}\n\n${{UNCATEGORIZED}}\n\n**Full Changelog**: ${{RELEASE_DIFF}}",
+  "pr_template": "- ${{TITLE}} (#${{NUMBER}})",
+  "empty_template": "- No changes",
+  "label_extractor": [
+    {
+      "pattern": "^(feat|feature)(\\(.*\\))?:",
+      "on_property": "title",
+      "target": "type: feature"
+    },
+    {
+      "pattern": "^(fix|bugfix)(\\(.*\\))?:",
+      "on_property": "title",
+      "target": "type: bugfix"
+    },
+    {
+      "pattern": "^docs(\\(.*\\))?:",
+      "on_property": "title",
+      "target": "documentation"
+    },
+    {
+      "pattern": "^(security|sec)(\\(.*\\))?:",
+      "on_property": "title",
+      "target": "security"
+    },
+    {
+      "pattern": "^chore\\(deps.*\\):",
+      "on_property": "title",
+      "target": "dependencies"
+    },
+    {
+      "pattern": "^chore\\(ci.*\\):",
+      "on_property": "title",
+      "target": "ci"
+    }
+  ]
+}

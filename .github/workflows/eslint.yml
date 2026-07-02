@@ -66,6 +66,14 @@ jobs:
           ESLINT_EXIT_CODE=$?
           echo "exit_code=${ESLINT_EXIT_CODE}" >> "$GITHUB_OUTPUT"
 
+      - name: Merge SARIF runs
+        run: |
+          if [ -s eslint-results.sarif ]; then
+            ./scripts/merge-sarif-runs.sh eslint-results.sarif
+          else
+            echo "No SARIF file found or file is empty, skipping merge"
+          fi
+
       - name: Ensure SARIF file exists
         if: always()
         # Exit code semantics:

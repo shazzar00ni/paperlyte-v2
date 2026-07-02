@@ -62,18 +62,20 @@ LEGAL_FILES.forEach((file) => {
 
   try {
     const originalContent = readFileSync(filePath, "utf8");
-    let content = originalContent;
 
-    // Replace placeholder with this file's revision date (not build date — changes only when policy content changes)
-    content = content.replace(/{{BUILD_DATE}}/g, LEGAL_REVISION_DATES[file]);
-
-    // Replace copyright year placeholder with the current build year
-    content = content.replace(/{{BUILD_YEAR}}/g, BUILD_YEAR);
-
-    // Verify that placeholders were actually replaced
-    if (originalContent === content) {
+    // Warn specifically about the revision-date placeholder so adding the
+    // BUILD_YEAR replacement below can't mask a missing {{BUILD_DATE}}.
+    if (!originalContent.includes("{{BUILD_DATE}}")) {
       console.warn('⚠ Warning: No {{BUILD_DATE}} placeholder found in', file);
-    } else {
+    }
+
+    const content = originalContent
+      // Replace placeholder with this file's revision date (not build date — changes only when policy content changes)
+      .replace(/{{BUILD_DATE}}/g, LEGAL_REVISION_DATES[file])
+      // Replace copyright year placeholder with the current build year
+      .replace(/{{BUILD_YEAR}}/g, BUILD_YEAR);
+
+    if (content !== originalContent) {
       writeFileSync(filePath, content, "utf8");
       console.log('✓ Updated', file);
     }

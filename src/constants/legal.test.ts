@@ -260,7 +260,7 @@ describe('Legal Constants', () => {
       expect(placeholders).toContain('metadata.jurisdiction')
     })
 
-    it('should include sentinel # links as placeholder fields', () => {
+    it('should include unset social links (sentinel #) as placeholder fields', () => {
       const placeholders = getPlaceholderFields()
       expect(placeholders).toContain('social.linkedin')
       expect(placeholders).toContain('social.discord')

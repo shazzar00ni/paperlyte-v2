@@ -11,16 +11,20 @@ This file tracks key architectural, design, and technical decisions made during 
 - **Observability**: There is currently no CSP reporting directive (`report-uri`/`report-to`) or `securitypolicyviolation` listener, so these violations are console-only and do not reach Sentry. If CSP violation reporting is ever wired up to Sentry/LogRocket or similar, these same extension-injected `auto-events.js`/`proxy.js` violations will be captured there too — filter or ignore them rather than triaging them as production issues.
 - **Action for future sessions**: Treat these specific errors as external noise. Do not weaken the CSP to silence them.
 
-## CI / GitHub Actions — SonarCloud (2026-06-16)
+## CI / GitHub Actions — SonarCloud (2026-06-16, reversed 2026-07-02)
 
-- **Decision**: Download SonarScanner CLI from Maven Central (`repo1.maven.org`) instead of `binaries.sonarsource.com` or the `SonarSource/sonarcloud-github-action`.
-- **Rationale**: `binaries.sonarsource.com` returns `403 host_not_allowed` in restricted network environments (e.g. Claude Code remote sessions). Maven Central is accessible and publishes the same artifacts.
-- **Implementation** (`.github/workflows/sonarcloud.yml`):
+- **Superseded 2026-07-02**: A security review flagged the hand-rolled `wget` + SHA-256 download as risky (self-referential checksum — the digest verifying the binary lived in the same file an attacker with write access could also edit). Switched to `SonarSource/sonarqube-scan-action`, pinned to a commit SHA (`713881670b6b3676cda39549040e2d88c70d582e`, `v8.2.0`), which delegates binary retrieval/integrity to the upstream-maintained action.
+  - This reverses the 2026-06-16 decision below to avoid that action class. The original rationale (`binaries.sonarsource.com` returning `403 host_not_allowed`) was verified to be specific to the **restricted proxy this Claude Code session runs behind**, not the actual GitHub-hosted runners where the workflow executes (confirmed by `curl`-ing the endpoint directly from a Claude Code session vs. checking that GitHub-hosted runners have unrestricted outbound access by default). If this workflow ever moves to self-hosted or network-restricted runners, re-verify `binaries.sonarsource.com` reachability before relying on this action.
+  - `SONAR_PROJECT_KEY`/`SONAR_ORGANIZATION` are still passed as `-D` args (now via the action's `args:` input, quoted — `-Dsonar.projectKey="${{ vars.SONAR_PROJECT_KEY }}"` — to preserve the zizmor-motivated safety property below and avoid word-splitting if a value ever contains spaces).
+  - **PR**: #1274 on branch `claude/sonarscanner-download-security-fzxqi9`
+- **Original decision (2026-06-16, no longer in effect)**: Download SonarScanner CLI from Maven Central (`repo1.maven.org`) instead of `binaries.sonarsource.com` or the `SonarSource/sonarcloud-github-action`.
+- **Original rationale**: `binaries.sonarsource.com` returns `403 host_not_allowed` in restricted network environments (e.g. Claude Code remote sessions). Maven Central is accessible and publishes the same artifacts.
+- **Original implementation** (superseded, kept for history):
   - SHA-256 pinned directly in the workflow (`ef72465a...`) — more secure than fetching `.sha256` at runtime since a compromised Maven Central cannot produce a matching archive without also compromising git history.
   - Download and extraction happen in `$RUNNER_TEMP` so no scanner files land in the analyzed workspace (`sonar.projectBaseDir=.`).
   - `set -euo pipefail` for strict error handling; `wget --timeout=60 --tries=3` for resilience.
   - Sonar vars passed via `env:` block to prevent template injection (zizmor finding).
-- **SonarCloud analysis will fail** until repo owner sets `SONAR_PROJECT_KEY` and `SONAR_ORGANIZATION` under GitHub Settings → Secrets and variables → Actions → Variables, and `SONAR_TOKEN` under Secrets. This is a configuration gap, not a code bug.
+- **SonarCloud analysis will fail** until repo owner sets `SONAR_PROJECT_KEY` and `SONAR_ORGANIZATION` under GitHub Settings → Secrets and variables → Actions → Variables, and `SONAR_TOKEN` under Secrets. This is a configuration gap, not a code bug — still true after the 2026-07-02 change.
 - **CodeRabbit false positive**: flagged `actions/checkout` SHA `df4cb1c...` as not matching v6.0.3. This is a false positive — the API returns the annotated tag object SHA (`9f698171...`), not the commit SHA. Dependabot correctly pins the commit SHA. No change needed.
 - **All bot review findings addressed**: Codex P1 (SHA verification ✅), Codex P2 (RUNNER_TEMP ✅), CodeRabbit wget timeout ✅, CodeRabbit template injection ✅.
 - **PR**: #1085 on branch `claude/clever-pasteur-kzrtI`

@@ -124,29 +124,52 @@ export function mockScrollAPI(
 
   return {
     setScrollY: (value: number) => {
-      Object.defineProperty(window, 'scrollY', { value, writable: true })
-      Object.defineProperty(document.documentElement, 'scrollTop', { value, writable: true })
+      Object.defineProperty(window, 'scrollY', { value, writable: true, configurable: true })
+      Object.defineProperty(document.documentElement, 'scrollTop', {
+        value,
+        writable: true,
+        configurable: true,
+      })
     },
     setScrollHeight: (value: number) => {
-      Object.defineProperty(document.documentElement, 'scrollHeight', { value, writable: true })
+      Object.defineProperty(document.documentElement, 'scrollHeight', {
+        value,
+        writable: true,
+        configurable: true,
+      })
     },
     setClientHeight: (value: number) => {
-      Object.defineProperty(document.documentElement, 'clientHeight', { value, writable: true })
+      Object.defineProperty(document.documentElement, 'clientHeight', {
+        value,
+        writable: true,
+        configurable: true,
+      })
     },
     cleanup: () => {
-      Object.defineProperty(window, 'scrollY', { value: originalScrollY, writable: true })
-      Object.defineProperty(window, 'innerHeight', { value: originalInnerHeight, writable: true })
+      Object.defineProperty(window, 'scrollY', {
+        value: originalScrollY,
+        writable: true,
+        configurable: true,
+      })
+      Object.defineProperty(window, 'innerHeight', {
+        value: originalInnerHeight,
+        writable: true,
+        configurable: true,
+      })
       Object.defineProperty(document.documentElement, 'scrollHeight', {
         value: originalScrollHeight,
         writable: true,
+        configurable: true,
       })
       Object.defineProperty(document.documentElement, 'clientHeight', {
         value: originalClientHeight,
         writable: true,
+        configurable: true,
       })
       Object.defineProperty(document.documentElement, 'scrollTop', {
         value: originalScrollTop,
         writable: true,
+        configurable: true,
       })
     },
   }

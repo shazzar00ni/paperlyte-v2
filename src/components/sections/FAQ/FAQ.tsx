@@ -82,35 +82,37 @@ export const FAQ = (): React.ReactElement => {
   const announcementTimeoutRef = useRef<number | null>(null)
 
   const toggleItem = (id: string): void => {
+    // Capture before the state update so the announcement matches the action being taken.
+    // toggleItem is only ever called from user event handlers (never inside a render or
+    // updater), so reading openItems here is always the current committed state.
+    const isOpening = !openItems.has(id)
+
+    // Keep the updater pure — state-only, no side effects.
     setOpenItems((prev) => {
       const newSet = new Set(prev)
-      const isOpening = !newSet.has(id)
-
-      if (isOpening) {
-        newSet.add(id)
-      } else {
+      if (newSet.has(id)) {
         newSet.delete(id)
+      } else {
+        newSet.add(id)
       }
-
-      // Announce the change for screen readers
-      const item = FAQ_ITEMS.find((item) => item.id === id)
-      if (item) {
-        // Clear any pending timeout to prevent memory leaks
-        if (announcementTimeoutRef.current !== null) {
-          clearTimeout(announcementTimeoutRef.current)
-        }
-
-        setAnnouncement(`${item.question} ${isOpening ? 'expanded' : 'collapsed'}`)
-        // Clear announcement after sufficient time for screen readers (3 seconds)
-        // This ensures users with slower reading speeds or busy screen readers can hear the announcement
-        announcementTimeoutRef.current = window.setTimeout(() => {
-          setAnnouncement('')
-          announcementTimeoutRef.current = null
-        }, 3000)
-      }
-
       return newSet
     })
+
+    // Side effects run outside the updater to satisfy React's purity requirement.
+    // Placing them inside the updater would cause double execution in StrictMode.
+    const item = FAQ_ITEMS.find((faqItem) => faqItem.id === id)
+    if (item) {
+      if (announcementTimeoutRef.current !== null) {
+        clearTimeout(announcementTimeoutRef.current)
+      }
+      setAnnouncement(`${item.question} ${isOpening ? 'expanded' : 'collapsed'}`)
+      // Clear announcement after sufficient time for screen readers (3 seconds)
+      // This ensures users with slower reading speeds or busy screen readers can hear the announcement
+      announcementTimeoutRef.current = window.setTimeout(() => {
+        setAnnouncement('')
+        announcementTimeoutRef.current = null
+      }, 3000)
+    }
   }
 
   // Cleanup timeout on unmount to prevent memory leaks

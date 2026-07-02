@@ -24,6 +24,7 @@ exports[`Legal Constants > Snapshot Tests > should match LEGAL_CONFIG snapshot 1
     "accessibility": "#",
     "cookies": "#",
     "dmca": "#",
+    "gdpr": "/gdpr.html",
     "privacy": "/privacy.html",
     "security": "#",
     "terms": "/terms.html",

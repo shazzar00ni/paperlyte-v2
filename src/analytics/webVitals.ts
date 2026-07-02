@@ -185,8 +185,7 @@ function trackTTFB(callback: ReportCallback): void {
 
   try {
     const navigationEntry = performance.getEntriesByType('navigation')[0] as
-      | (PerformanceEntry & { responseStart?: number })
-      | undefined
+      (PerformanceEntry & { responseStart?: number }) | undefined
 
     if (navigationEntry?.responseStart) {
       const value = navigationEntry.responseStart

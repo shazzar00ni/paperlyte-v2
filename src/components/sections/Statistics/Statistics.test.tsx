@@ -42,8 +42,13 @@ describe('Statistics', () => {
 
   it('should render counter animations with accessible labels', () => {
     render(<Statistics />)
-    // aria-label on each CounterAnimation output element is always the end value
-    expect(screen.getByLabelText(`${WAITLIST_COUNT_NUMERIC}+`)).toBeInTheDocument()
+    // aria-label on each CounterAnimation output element is always the formatted end value
+    // (formatNumber applies comma thousands separators, matching CounterAnimation's internal logic)
+    const formattedWaitlistCount = WAITLIST_COUNT_NUMERIC.toFixed(0).replace(
+      /\B(?=(\d{3})+(?!\d))/g,
+      ','
+    )
+    expect(screen.getByLabelText(`${formattedWaitlistCount}+`)).toBeInTheDocument()
     expect(screen.getByLabelText('10M+')).toBeInTheDocument()
     expect(screen.getByLabelText('99.9%')).toBeInTheDocument()
     expect(screen.getByLabelText('4.9/5')).toBeInTheDocument()

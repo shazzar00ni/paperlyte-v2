@@ -225,13 +225,15 @@ async function navigateFetch(request) {
  */
 function buildValidatedUrl(requestUrl) {
   try {
-    // Minimal path validation
-    if (requestUrl.includes('/../') || /\/%2e%2e\//i.test(requestUrl)) {
+    const url = new URL(requestUrl)
+
+    // Check only the pathname component so query/hash values such as
+    // ?next=/../privacy are not rejected as traversal attempts.
+    const rawPathname = requestUrl.slice(url.origin.length).split(/[?#]/, 1)[0] || '/'
+    if (rawPathname.includes('/../') || /\/%2e%2e\//i.test(rawPathname)) {
       throw new Error('Invalid path')
     }
-    
-    const url = new URL(requestUrl)
-    
+
     // Protocol + host checks
     if (url.origin !== self.location.origin) {
       throw new Error('Invalid host')
@@ -239,7 +241,7 @@ function buildValidatedUrl(requestUrl) {
     if (!['http:', 'https:'].includes(url.protocol)) {
       throw new Error('Invalid protocol')
     }
-    
+
     return url.href
   } catch {
     throw new Error('Invalid URL')

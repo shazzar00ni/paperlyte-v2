@@ -7,7 +7,10 @@ interface PackageManifest {
 }
 
 interface PackageLock {
-  packages: Record<string, { version?: string; resolved?: string; devDependencies?: Record<string, string> }>
+  packages: Record<
+    string,
+    { version?: string; resolved?: string; devDependencies?: Record<string, string> }
+  >
 }
 
 describe('package manifests – eslint runtime dependencies', () => {
@@ -15,7 +18,9 @@ describe('package manifests – eslint runtime dependencies', () => {
   let packageLock: PackageLock
 
   beforeAll(() => {
-    packageJson = JSON.parse(readFileSync(resolve(process.cwd(), 'package.json'), 'utf-8')) as PackageManifest
+    packageJson = JSON.parse(
+      readFileSync(resolve(process.cwd(), 'package.json'), 'utf-8')
+    ) as PackageManifest
     packageLock = JSON.parse(
       readFileSync(resolve(process.cwd(), 'package-lock.json'), 'utf-8')
     ) as PackageLock

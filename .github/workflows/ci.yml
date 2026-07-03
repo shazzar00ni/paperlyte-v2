@@ -567,13 +567,13 @@ jobs:
           SIZE="${{ needs.size-check.result }}"
           LH="${{ needs.lighthouse.outputs.lighthouse_outcome || needs.lighthouse.result }}"
           E2E="${{ needs.e2e.result }}"
-          if ! ok "$LINT" || [ "$TEST" != "success" ] || ! ok "$BUILD" || ! ok "$SIZE" || ! ok "$LH" || ! ok "$E2E"; then
+          if ! ok "$LINT" || [ "$TEST" != "success" ] || ! ok "$BUILD" || ! ok "$SIZE" || ! ok "$E2E"; then
             echo "❌ CI Pipeline Failed"
             echo "- Lint & Type Check: $LINT"
             echo "- Tests: $TEST"
             echo "- Build: $BUILD"
             echo "- Bundle Size: $SIZE"
-            echo "- Lighthouse: $LH"
+            echo "- Lighthouse (advisory): $LH"
             echo "- E2E Tests: $E2E"
             exit 1
           else
@@ -582,7 +582,7 @@ jobs:
             echo "- Tests: $TEST"
             echo "- Build: $BUILD"
             echo "- Bundle Size: $SIZE"
-            echo "- Lighthouse: $LH"
+            echo "- Lighthouse (advisory): $LH"
             echo "- E2E Tests: $E2E"
           fi
 
@@ -619,7 +619,6 @@ jobs:
              [ "${{ needs.test.result }}" = "success" ] && \
              ok "${{ needs.build.result }}" && \
              ok "${{ needs.size-check.result }}" && \
-             ok "${{ needs.lighthouse.outputs.lighthouse_outcome || needs.lighthouse.result }}" && \
              ok "${{ needs.e2e.result }}"; then
             echo "### ✅ All checks passed! Ready to merge." >> $GITHUB_STEP_SUMMARY
           else

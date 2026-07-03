@@ -25,7 +25,6 @@
       "labels": ["ci/cd", "ci", "config"]
     }
   ],
-  "duplicate_secondary_categories": false,
   "template": "${{CHANGELOG}}\n\n${{UNCATEGORIZED}}\n\n**Full Changelog**: ${{RELEASE_DIFF}}",
   "pr_template": "- ${{TITLE}} (#${{NUMBER}})",
   "empty_template": "- No changes",
@@ -59,6 +58,11 @@
       "pattern": "^chore\\(ci.*\\):",
       "on_property": "title",
       "target": "ci"
+    },
+    {
+      "pattern": "^chore\\(config.*\\):",
+      "on_property": "title",
+      "target": "config"
     }
   ]
 }

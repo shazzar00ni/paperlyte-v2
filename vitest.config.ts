@@ -14,10 +14,10 @@ const resolveDenoNpmSpecifiers: Plugin = {
   transform(code: string): { code: string } | null {
     if (!code.includes('npm:') && !code.includes('esm.sh')) return null
     let result = code
-    // npm:pkg@version → pkg
-    result = result.replace(/(['"])npm:([^@'"]+)@[^'"]+\1/g, '$1$2$1')
-    // https://esm.sh/pkg@version → pkg
-    result = result.replace(/(['"])https:\/\/esm\.sh\/([^@/'"]+)@[^'"]+\1/g, '$1$2$1')
+    // npm:pkg@version or npm:@scope/pkg@version → pkg or @scope/pkg
+    result = result.replace(/(['"])npm:((?:@[^/'"]+\/)?[^@'"]+)@[^'"]+\1/g, '$1$2$1')
+    // https://esm.sh/pkg@version or https://esm.sh/@scope/pkg@version → pkg or @scope/pkg
+    result = result.replace(/(['"])https:\/\/esm\.sh\/((?:@[^/'"]+\/)?[^@/'"]+)@[^'"]+\1/g, '$1$2$1')
     return result !== code ? { code: result } : null
   },
 }

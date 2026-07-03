@@ -302,7 +302,9 @@ function buildOrderedListItem(item: string, n: number): string {
     .map((l) => l.trim())
     .filter(Boolean)
   if (lines.length === 0) return ''
-  return lines.map((l, i) => (i === 0 ? `${n}. ${l}` : l)).join('\n') + '\n'
+  const prefix = `${n}. `
+  const indent = ' '.repeat(prefix.length)
+  return lines.map((l, i) => (i === 0 ? `${prefix}${l}` : `${indent}${l}`)).join('\n') + '\n'
 }
 
 /**
@@ -316,7 +318,7 @@ function buildUnorderedListItem(item: string): string {
     .map((l) => l.trim())
     .filter(Boolean)
   if (lines.length === 0) return ''
-  return lines.map((l, i) => (i === 0 ? `- ${l}` : l)).join('\n') + '\n'
+  return lines.map((l, i) => (i === 0 ? `- ${l}` : `  ${l}`)).join('\n') + '\n'
 }
 
 /**

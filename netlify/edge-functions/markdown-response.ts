@@ -329,6 +329,20 @@ function buildUnorderedListItem(item: string): string {
 function htmlToMarkdown(html: string): string {
   let md = html
 
+  // Code blocks and inline code are placeholdered at the point of conversion so
+  // that no backtick sequences ever appear in `md` during whitespace normalization.
+  // This prevents two classes of bugs:
+  //   1. A backtick run in prose (e.g. ``` from an earlier conversion) matching as
+  //      a prefix of a longer generated fence, so the lazy protection regex would
+  //      close the span prematurely and leave fence content unprotected.
+  //   2. Whitespace inside generated inline code spans being collapsed by the
+  //      prose normalization pass before the protection regex could shield them.
+  const codeBlocks: string[] = []
+  const protectCode = (rendered: string): string => {
+    const idx = codeBlocks.push(rendered) - 1
+    return `\x00CODEBLOCK${idx}\x00`
+  }
+
   // Extract <body> content from full HTML documents.
   const bodyMatch = md.match(/<body[^>]*>([\s\S]*?)<\/body\s*>/i)
   if (bodyMatch) {
@@ -341,6 +355,7 @@ function htmlToMarkdown(html: string): string {
   // Fenced code blocks: <pre><code>…</code></pre>
   // Choose a fence character-run longer than any backtick run in the content
   // so that code containing ``` does not close the generated fence early.
+  // Immediately placeholder the result so no backtick sequences appear in md.
   md = md.replace(
     /<pre[^>]*>\s*<code[^>]*>([\s\S]*?)<\/code\s*>\s*<\/pre\s*>/gi,
     (_, content: string) => {
@@ -348,7 +363,7 @@ function htmlToMarkdown(html: string): string {
       const runs = text.match(/`+/g) ?? []
       const fenceLen = Math.max(3, runs.length > 0 ? Math.max(...runs.map((r) => r.length)) + 1 : 3)
       const fence = '`'.repeat(fenceLen)
-      return `\n${fence}\n${text}\n${fence}\n`
+      return protectCode(`\n${fence}\n${text}\n${fence}\n`)
     }
   )
 
@@ -361,13 +376,14 @@ function htmlToMarkdown(html: string): string {
     const runs = text.match(/`+/g) ?? []
     const fenceLen = Math.max(3, runs.length > 0 ? Math.max(...runs.map((r) => r.length)) + 1 : 3)
     const fence = '`'.repeat(fenceLen)
-    return `\n${fence}\n${text}\n${fence}\n`
+    return protectCode(`\n${fence}\n${text}\n${fence}\n`)
   })
 
-  // Inline code: <code>…</code>
+  // Inline code: <code>…</code> — placeholder immediately to preserve internal
+  // whitespace (e.g. <code>a  b</code> must not have its spaces collapsed).
   md = md.replace(
     /<code[^>]*>([\s\S]*?)<\/code\s*>/gi,
-    (_, content: string) => buildInlineCode(content)
+    (_, content: string) => protectCode(buildInlineCode(content))
   )
 
   // ATX headings h6→h1 (descending to avoid h1 pattern matching h10, etc.)
@@ -498,21 +514,8 @@ function htmlToMarkdown(html: string): string {
   // Decode HTML entities
   md = decodeEntities(md)
 
-  // Protect backtick-delimited spans from whitespace normalization:
-  // - Multi-backtick fences (`` ` ``{2,}): use a backreference so a 4-backtick
-  //   fence is closed by 4 backticks, not the first triple-backtick inside.
-  //   These span multiple lines so [\s\S] is used.
-  // - Single-backtick inline code: restricted to the same line ([^\n`]) so that
-  //   two unrelated backticks in prose do not accidentally shield multi-line
-  //   content from whitespace normalization.
-  const codeBlocks: string[] = []
-  const protect = (match: string): string => {
-    const idx = codeBlocks.push(match) - 1
-    return `\x00CODEBLOCK${idx}\x00`
-  }
-  md = md.replace(/(`{2,})[\s\S]*?\1/g, protect)
-  md = md.replace(/`[^\n`]+`/g, protect)
-  // Normalize prose whitespace only (code blocks are placeholdered above).
+  // Normalize prose whitespace. Code blocks and inline code are already
+  // placeholdered (see top of function) so their internal whitespace is intact.
   md = md.replace(/[^\S\n]+/g, ' ')
   md = md.replace(/ +$/gm, '')
   md = md.replace(/\n{3,}/g, '\n\n')

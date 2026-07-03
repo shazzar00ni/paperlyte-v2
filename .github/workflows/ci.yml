@@ -18,10 +18,16 @@ jobs:
   lint-and-typecheck:
     name: Lint and Type Check
     runs-on: ubuntu-latest
+    if: github.event_name != 'repository_dispatch'
     permissions:
       contents: read
 
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        with:
+          egress-policy: audit
+
       - name: Checkout code
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
@@ -93,6 +99,11 @@ jobs:
       contents: read
 
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        with:
+          egress-policy: audit
+
       - name: Checkout code
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
@@ -182,6 +193,11 @@ jobs:
       contents: read
 
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        with:
+          egress-policy: audit
+
       - name: Checkout code
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
@@ -244,6 +260,11 @@ jobs:
       pull-requests: write
 
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        with:
+          egress-policy: audit
+
       - name: Checkout code
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
@@ -275,16 +296,59 @@ jobs:
 
       - name: Check bundle size
         id: size-limit
-        env:
-          CHROME_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
-        run: npm run size
+        run: |
+          set -o pipefail
+          npm run size 2>&1 | tee /tmp/size-output.txt
 
-      - name: Compare bundle sizes
-        if: github.event_name == 'pull_request'
-        uses: andresz1/size-limit-action@94bc357df29c36c8f8d50ea497c3e225c3c95d1d # v1.8.0.6.1.8.0
+      - name: Post size report to PR
+        if: ${{ always() && github.event_name == 'pull_request' }}
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          skip_step: install
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const output = fs.existsSync('/tmp/size-output.txt')
+              ? fs.readFileSync('/tmp/size-output.txt', 'utf8').trim()
+              : 'Size output not available.';
+            const body = [
+              '## \u{1F4E6} Bundle Size Report',
+              '',
+              '```',
+              output,
+              '```',
+            ].join('\n');
+            const marker = '## \u{1F4E6} Bundle Size Report';
+            const comments = await github.paginate(
+              github.rest.issues.listComments,
+              {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                per_page: 100,
+              }
+            );
+            const existing = comments.find(
+              c => c.user?.login === 'github-actions[bot]' && c.body?.includes(marker)
+            );
+            try {
+              if (existing) {
+                await github.rest.issues.updateComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: existing.id,
+                  body,
+                });
+              } else {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  body,
+                });
+              }
+            } catch (err) {
+              core.warning(`Size report comment skipped: ${err.message}`);
+            }
 
       - name: Bundle Size Summary
         if: always()
@@ -318,6 +382,11 @@ jobs:
       pull-requests: write
 
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        with:
+          egress-policy: audit
+
       - name: Checkout code
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
@@ -378,6 +447,11 @@ jobs:
       contents: read
 
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        with:
+          egress-policy: audit
+
       - name: Checkout code
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
@@ -455,6 +529,11 @@ jobs:
       pull-requests: write
 
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        with:
+          egress-policy: audit
+
       - name: Add To GitHub Projects
         uses: actions/add-to-project@5afcf98fcd03f1c2f92c3c83f58ae24323cc57fd # v2.0.0
         continue-on-error: true
@@ -472,38 +551,40 @@ jobs:
       contents: read
 
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        with:
+          egress-policy: audit
+
       - name: Check all jobs status
         run: |
-          # Lighthouse is advisory: shared CI runners regularly produce below-threshold
-          # scores that do not reflect production performance. It still runs and appears
-          # in the summary below, but does not block the merge gate.
-          #
-          # All required jobs (lint-and-typecheck, test, build, size-check, e2e) must
-          # succeed. Cancelled counts as a gate failure — a manual cancel of the latest
-          # run should not leave the branch mergeable. Concurrency-cancelled runs for
-          # superseded commits do not need a green gate because the newer commit
-          # receives its own workflow run.
-          if [ "${{ needs.lint-and-typecheck.result }}" != "success" ] || \
-             [ "${{ needs.test.result }}" != "success" ] || \
-             [ "${{ needs.build.result }}" != "success" ] || \
-             [ "${{ needs.size-check.result }}" != "success" ] || \
-             [ "${{ needs.e2e.result }}" != "success" ]; then
+          # lint-and-typecheck and its dependents are skipped on repository_dispatch;
+          # accept "skipped" as valid for those jobs, but test must always succeed.
+          ok() { [ "$1" = "success" ] || [ "$1" = "skipped" ]; }
+          LINT="${{ needs.lint-and-typecheck.result }}"
+          TEST="${{ needs.test.result }}"
+          BUILD="${{ needs.build.result }}"
+          SIZE="${{ needs.size-check.result }}"
+          LH="${{ needs.lighthouse.result }}"
+          E2E="${{ needs.e2e.result }}"
+          if ! ok "$LINT" || [ "$TEST" != "success" ] || ! ok "$BUILD" || ! ok "$SIZE" || ! ok "$LH" || ! ok "$E2E"; then
             echo "❌ CI Pipeline Failed"
-            echo "- Lint & Type Check: ${{ needs.lint-and-typecheck.result }}"
-            echo "- Tests: ${{ needs.test.result }}"
-            echo "- Build: ${{ needs.build.result }}"
-            echo "- Bundle Size: ${{ needs.size-check.result }}"
-            echo "- Lighthouse (advisory): ${{ needs.lighthouse.outputs.lighthouse_outcome || needs.lighthouse.result }}"
-            echo "- E2E Tests: ${{ needs.e2e.result }}"
+            echo "- Lint & Type Check: $LINT"
+            echo "- Tests: $TEST"
+            echo "- Build: $BUILD"
+            echo "- Bundle Size: $SIZE"
+            echo "- Lighthouse: $LH"
+            echo "- E2E Tests: $E2E"
             exit 1
           else
-            echo "✅ All required CI jobs passed successfully!"
-            echo "- Lint & Type Check: ✅"
-            echo "- Tests: ✅"
-            echo "- Build: ✅"
-            echo "- Bundle Size: ✅"
-            echo "- Lighthouse (advisory): ${{ needs.lighthouse.outputs.lighthouse_outcome || needs.lighthouse.result }}"
-            echo "- E2E Tests: ✅"
+            echo "✅ All CI jobs passed successfully!"
+            echo "- Lint & Type Check: $LINT"
+            echo "- Tests: $TEST"
+            echo "- Build: $BUILD"
+            echo "- Bundle Size: $SIZE"
+            echo "- Lighthouse: $LH"
+            echo "- E2E Tests: $E2E"
+          fi
           fi
 
       - name: CI Pipeline Summary
@@ -533,13 +614,15 @@ jobs:
           echo "| E2E Tests | $(get_status ${{ needs.e2e.result }}) |" >> $GITHUB_STEP_SUMMARY
 
           echo "" >> $GITHUB_STEP_SUMMARY
-
-          if [ "${{ needs.lint-and-typecheck.result }}" == "success" ] && \
-             [ "${{ needs.test.result }}" == "success" ] && \
-             [ "${{ needs.build.result }}" == "success" ] && \
-             [ "${{ needs.size-check.result }}" == "success" ] && \
-             [ "${{ needs.e2e.result }}" == "success" ]; then
-            echo "### ✅ All required checks passed! Ready to merge." >> $GITHUB_STEP_SUMMARY
+          
+          ok() { [ "$1" = "success" ] || [ "$1" = "skipped" ]; }
+          if ok "${{ needs.lint-and-typecheck.result }}" && \
+             [ "${{ needs.test.result }}" = "success" ] && \
+             ok "${{ needs.build.result }}" && \
+             ok "${{ needs.size-check.result }}" && \
+             ok "${{ needs.lighthouse.result }}" && \
+             ok "${{ needs.e2e.result }}"; then
+            echo "### ✅ All checks passed! Ready to merge." >> $GITHUB_STEP_SUMMARY
           else
             echo "### ❌ Some required checks failed. Please review the issues above." >> $GITHUB_STEP_SUMMARY
           fi

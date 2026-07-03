@@ -17,7 +17,10 @@ const resolveDenoNpmSpecifiers: Plugin = {
     // npm:pkg@version or npm:@scope/pkg@version → pkg or @scope/pkg
     result = result.replace(/(['"])npm:((?:@[^/'"]+\/)?[^@'"]+)@[^'"]+\1/g, '$1$2$1')
     // https://esm.sh/pkg@version or https://esm.sh/@scope/pkg@version → pkg or @scope/pkg
-    result = result.replace(/(['"])https:\/\/esm\.sh\/((?:@[^/'"]+\/)?[^@/'"]+)@[^'"]+\1/g, '$1$2$1')
+    result = result.replace(
+      /(['"])https:\/\/esm\.sh\/((?:@[^/'"]+\/)?[^@/'"]+)@[^'"]+\1/g,
+      '$1$2$1'
+    )
     return result !== code ? { code: result } : null
   },
 }

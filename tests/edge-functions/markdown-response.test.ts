@@ -19,10 +19,10 @@ function makeRequest(url: string, headers: Record<string, string> = {}): Request
 }
 
 /** Build a mock Context whose next() returns the supplied Response. */
-function makeContext(response: Response): Context {
+function makeContext(response: Response) {
   return {
     next: vi.fn<Context['next']>().mockResolvedValue(response),
-  }
+  } satisfies Context
 }
 
 /** Build a plain HTML Response. */
@@ -611,7 +611,7 @@ describe('markdown-response edge function', () => {
       expect(body).not.toContain('0">')
     })
 
-    it('preserves nested ordered list hierarchy with proper indentation', async () => {
+    it('preserves nested ordered list hierarchy with parent and child on separate lines', async () => {
       const req = makeRequest('https://example.com/', mdHeaders)
       const ctx = makeContext(
         htmlResponse('<ol><li>Parent<ol><li>Child</li></ol></li></ol>')
@@ -631,7 +631,7 @@ describe('markdown-response edge function', () => {
       expect(body).not.toContain('ParentChild')
     })
 
-    it('preserves nested unordered list hierarchy with proper indentation', async () => {
+    it('preserves nested unordered list hierarchy with parent and child on separate lines', async () => {
       const req = makeRequest('https://example.com/', mdHeaders)
       const ctx = makeContext(
         htmlResponse('<ul><li>Parent<ul><li>Child</li></ul></li></ul>')

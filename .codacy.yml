@@ -68,8 +68,9 @@ exclude_patterns:
   - identifier: "Security/detect-non-literal-regexp"
     paths:
       - "src/utils/validation-utils.test.ts"
-  # False positive: sanitizeHtml IS the sanitizer (allowlist-based HTML parser).
-  # Passing untrusted HTML to sanitizeHtml is the correct, intended usage.
+  # False positive: sanitizeHtml IS the sanitizer (regex-based, removes disallowed
+  # tag subtrees and event-handler attributes). Passing untrusted HTML to it is
+  # the correct, intended usage — it is the sink, not the source of the problem.
   # Semgrep's raw-html-concat rules treat it as a sink; nosemgrep suppresses
   # the inline finding, and this entry suppresses it in the Codacy Platform check.
   - identifier: "javascript.lang.security.audit.xss.raw-html-concat"

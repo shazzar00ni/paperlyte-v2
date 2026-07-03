@@ -41,8 +41,8 @@
 
 # WAF edge function — runs first on every request before the origin.
 # It calls context.next() for clean requests, which invokes markdown-response
-# (declared next) for /* routes, then falls through to the origin.
-# Both functions are declared here (TOML-only, no inline export const config) so
+# (registered below) for /* routes, then falls through to the origin.
+# Both functions are declared in this file (TOML-only, no inline export const config) so
 # Netlify's TOML-order guarantee makes WAF run before markdown-response.
 [[edge_functions]]
   function = "waf"

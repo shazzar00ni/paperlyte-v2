@@ -22,82 +22,73 @@
   position: relative;
   z-index: 1;
   text-align: center;
-  max-width: 800px;
+  max-width: 980px;
   margin: 0 auto;
 }
 
 .headline {
   color: var(--color-text-primary);
-  font-family: 'Playfair Display', serif;
-  font-size: var(--font-size-5xl);
+  font-family: var(--font-family-serif);
+  font-size: var(--font-size-7xl);
   font-weight: var(--font-weight-bold);
-  line-height: var(--line-height-tight);
+  line-height: 1.05;
   margin-bottom: var(--spacing-md);
+}
+
+.headline em {
+  color: var(--color-primary);
+  font-style: italic;
 }
 
 .subheadline {
   color: var(--color-text-secondary);
   font-size: var(--font-size-xl);
   line-height: var(--line-height-relaxed);
-  margin-bottom: var(--spacing-md);
-  max-width: 480px;
-}
-
-.microcopy {
-  color: var(--color-text-tertiary);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  margin-bottom: var(--spacing-xl);
-  max-width: 480px;
-}
-
-/* Shared centering for CTAs */
-:is(.emailWrapper, .secondaryCta) {
-  display: flex;
-  justify-content: center;
-}
-
-.emailWrapper {
-  margin-bottom: var(--spacing-md);
-}
-
-.secondaryCta {
-  margin-bottom: var(--spacing-xl);
+  margin: 0 auto var(--spacing-xl);
+  max-width: 560px;
 }
 
 .ctas {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--spacing-md);
   justify-content: center;
-  flex-wrap: wrap;
-  margin-bottom: var(--spacing-2xl);
+  margin-bottom: var(--spacing-xl);
 }
 
-.tags {
-  display: flex;
-  gap: var(--spacing-md);
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.tag {
+.trustedBy {
   align-items: center;
-  background-color: var(--color-background);
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-lg);
+}
+
+.trustedByLabel {
   color: var(--color-text-secondary);
-  display: inline-flex;
+  font-family: var(--font-family);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.1em;
+  line-height: var(--line-height-normal);
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.companies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md) var(--spacing-lg);
+  justify-content: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.company {
+  color: var(--color-text-secondary);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
-  gap: var(--spacing-xs);
-  padding-bottom: var(--spacing-xs);
-  padding-left: var(--spacing-md);
-  padding-right: var(--spacing-md);
-  padding-top: var(--spacing-xs);
-}
-
-.tag i {
-  color: var(--color-primary);
 }
 
 /* App Mockup Container */
@@ -120,6 +111,39 @@
   padding-top: 0;
   position: relative;
   width: 100%;
+}
+
+/* Productivity stat badge */
+.statBadge {
+  position: absolute;
+  top: 10%;
+  right: 5%;
+  z-index: 10;
+  background: var(--color-background);
+  padding-top: var(--spacing-sm);
+  padding-bottom: var(--spacing-sm);
+  padding-left: var(--spacing-lg);
+  padding-right: var(--spacing-lg);
+  border-radius: var(--border-radius-lg);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  text-align: center;
+}
+
+.statValue {
+  display: block;
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.statLabel {
+  display: block;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  margin-top: var(--spacing-xs);
+  letter-spacing: 0.05em;
 }
 
 /* Primary mockup (Notes list) - Main focus */
@@ -172,22 +196,12 @@
 
 /* Mobile styles */
 @media (max-width: 1024px) {
-  .container {
-    grid-template-columns: 1fr;
-    gap: var(--spacing-2xl);
-  }
-
   .content {
     text-align: center;
   }
 
-  .badge {
-    margin-left: auto;
-    margin-right: auto;
-  }
-
   .headline {
-    font-size: var(--font-size-6xl);
+    font-size: var(--font-size-5xl);
   }
 
   .subheadline {
@@ -195,29 +209,8 @@
     margin-right: auto;
   }
 
-  .microcopy {
-    margin-left: auto;
-    margin-right: auto;
-  }
-
   .ctas {
     justify-content: center;
-  }
-
-  .mockup {
-    max-width: 500px;
-    margin: 0 auto;
-  }
-
-  .trusted {
-    flex-direction: column;
-    text-align: center;
-    gap: var(--spacing-md);
-  }
-
-  .trustedLogos {
-    justify-content: center;
-    gap: var(--spacing-lg);
   }
 }
 
@@ -246,6 +239,10 @@
     width: 100%;
   }
 
+  .companies {
+    gap: var(--spacing-sm) var(--spacing-md);
+  }
+
   .mockupContainer {
     margin-bottom: 0;
     margin-left: auto;
@@ -272,13 +269,8 @@
     font-size: var(--font-size-base);
   }
 
-  .tags {
-    gap: var(--spacing-xs);
-  }
-
-  .tag {
+  .company {
     font-size: var(--font-size-xs);
-    padding: var(--spacing-xs) var(--spacing-sm);
   }
 
   .mockupContainer {
@@ -302,18 +294,10 @@
     /* Enhance gradient visibility in dark mode */
     background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
   }
-
-  .tag {
-    background-color: var(--color-surface);
-  }
 }
 
 [data-theme='dark'] .hero::before {
   background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
-}
-
-[data-theme='dark'] .tag {
-  background-color: var(--color-surface);
 }
 
 /* Reduced motion support */
@@ -328,37 +312,4 @@
   .mockupSecondary:hover {
     transform: none;
   }
-}
-
-/* Productivity stat badge */
-.statBadge {
-  position: absolute;
-  top: 10%;
-  right: 5%;
-  z-index: 10;
-  background: var(--color-background);
-  padding-top: var(--spacing-sm);
-  padding-bottom: var(--spacing-sm);
-  padding-left: var(--spacing-lg);
-  padding-right: var(--spacing-lg);
-  border-radius: var(--border-radius-lg);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-  text-align: center;
-}
-
-.statValue {
-  display: block;
-  font-size: var(--font-size-3xl);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-primary);
-  line-height: 1;
-}
-
-.statLabel {
-  display: block;
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-secondary);
-  margin-top: var(--spacing-xs);
-  letter-spacing: 0.05em;
 }

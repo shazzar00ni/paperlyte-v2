@@ -133,17 +133,18 @@ test.describe('Landing Page', () => {
   // since those require real user interaction). Lighthouse CI is the authoritative
   // Core Web Vitals monitor for this project.
   //
+  // Scoped with tags (see playwright.config.ts) instead of in-body test.skip(), so the
+  // test is simply not collected for non-Chromium/mobile projects or in CI — it never
+  // appears as "skipped" in the report:
+  //   @chromium-only — Chromium desktop only (browser + viewport scope)
+  //   @no-ci         — excluded in CI: runners produce variable CLS from lazy-loaded
+  //                    sections and slower metric delivery; Lighthouse CI gates CWV there
+  //
   // Reduced-motion is intentionally NOT applied here. Forcing prefers-reduced-motion
   // disables entrance animations/transforms, producing artificially better FCP/LCP/CLS
   // readings that can mask genuine regressions. This test must reflect the default
   // user experience.
-  test('load-performance smoke check (FCP/LCP/CLS)', async ({ page, browserName, isMobile }) => {
-    test.skip(browserName !== 'chromium', 'Performance test runs on chromium only')
-    test.skip(isMobile, 'Performance budgets target desktop viewport')
-    // CI runners produce variable CLS from lazy-loaded sections and slower metrics
-    // delivery; Lighthouse CI is the authoritative performance gate for this project.
-    test.skip(!!process.env.CI, 'Skip performance smoke check in CI to avoid flakiness')
-
+  test('load-performance smoke check (FCP/LCP/CLS)', { tag: ['@chromium-only', '@no-ci'] }, async ({ page }) => {
     // Inject observers before navigation so every paint/LCP/CLS event is captured.
     // Setting them up post-load with buffered:true is unreliable in fast headless CI
     // because the LCP observation window may close before evaluate() runs.
@@ -206,16 +207,14 @@ test.describe('Landing Page', () => {
     expect(cls).toBeLessThan(0.1)   // CLS < 0.1 (good threshold)
   })
 
-  test('should show mobile-specific UI on small screens', async ({
+  // Scoped to the mobile projects via the @mobile-only tag (see playwright.config.ts):
+  // desktop browsers render the regular nav, not the mobile menu, so this test is not
+  // collected for them — keeping it out of the "skipped" list on desktop projects.
+  test('should show mobile-specific UI on small screens', { tag: '@mobile-only' }, async ({
     page,
-    isMobile,
   }: {
     page: Page
-    isMobile: boolean
   }): Promise<void> => {
-    // Skip on desktop browsers since mobile projects already test mobile viewports
-    test.skip(!isMobile, 'Mobile UI test runs on mobile projects only')
-
     await applyReducedMotion(page)
     await page.goto('/')
 
@@ -386,22 +385,15 @@ test.describe('Landing Page', () => {
     expect(JSON.parse(capturedPostBody)).toEqual({ email: expectedEmail })
   })
 
-  test('should have accessible keyboard navigation', async ({
+  // Scoped to Chromium desktop via the @chromium-only tag (see playwright.config.ts).
+  // Firefox and WebKit headless do not reliably dispatch Tab-key focus events without
+  // prior pointer interaction (user-activation requirement), and keyboard nav is a
+  // desktop concern. Tag-based scoping keeps it from showing as "skipped" elsewhere.
+  test('should have accessible keyboard navigation', { tag: '@chromium-only' }, async ({
     page,
-    browserName,
-    isMobile,
   }: {
     page: Page
-    browserName: string
-    isMobile: boolean
   }): Promise<void> => {
-    // Firefox and WebKit headless do not reliably dispatch Tab-key focus events
-    // without prior pointer interaction (user-activation requirement). Limit to
-    // Chromium where keyboard focus handling is consistent in headless mode —
-    // the same scope restriction used by the performance smoke check above.
-    test.skip(browserName !== 'chromium', 'Keyboard navigation test runs on chromium only')
-    test.skip(isMobile, 'Keyboard navigation test runs on desktop only')
-
     await applyReducedMotion(page)
     await page.goto('/')
     // Wait for initial render so all interactive elements are present in the DOM.

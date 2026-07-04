@@ -207,6 +207,17 @@ describe('Analytics Utility', () => {
         platform: 'github',
       })
     })
+
+    it('should trim surrounding whitespace from the platform name', () => {
+      const mockGtag = vi.fn()
+      ;(window as Window & { gtag?: typeof mockGtag }).gtag = mockGtag
+
+      trackSocialClick('  LinkedIn  ')
+
+      expect(mockGtag).toHaveBeenCalledWith('event', AnalyticsEvents.SOCIAL_LINK_CLICK, {
+        platform: 'linkedin',
+      })
+    })
   })
 
   describe('AnalyticsEvents', () => {

@@ -14,8 +14,8 @@ The landing page includes: Hero, Problem/Solution, Features, Mobile, Statistics,
 
 ## Tech Stack
 
-- **React** ^19.2.4 with TypeScript ~5.9.3 (strict mode)
-- **Vite** 7.2.4 with @vitejs/plugin-react
+- **React** ^19.2.7 with TypeScript ~6.0.3 (strict mode)
+- **Vite** 8.1.0 with @vitejs/plugin-react
 - **CSS Modules** for component styling (no Tailwind)
 - **Vitest** for unit/integration tests, **Playwright** for E2E
 - **ESLint** ^10 with TypeScript ESLint

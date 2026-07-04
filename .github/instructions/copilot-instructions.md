@@ -76,9 +76,10 @@ import styles from './Component.module.css'
 // @/            → src/
 // @components/  → src/components/
 // @hooks/       → src/hooks/
+// @styles/      → src/styles/
+// @types/       → src/types/
 // @constants/   → src/constants/
 // @utils/       → src/utils/
-// @styles/      → src/styles/
 ```
 
 ### React Patterns

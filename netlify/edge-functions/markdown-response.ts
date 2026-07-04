@@ -121,14 +121,21 @@ function decodeEntities(text: string): string {
       if (dec !== undefined) return decodeNumericEntity(dec, 10)
       if (hex !== undefined) return decodeNumericEntity(hex, 16)
       switch (match.toLowerCase()) {
-        case '&amp;': return '&'
-        case '&lt;': return '<'
-        case '&gt;': return '>'
-        case '&quot;': return '"'
+        case '&amp;':
+          return '&'
+        case '&lt;':
+          return '<'
+        case '&gt;':
+          return '>'
+        case '&quot;':
+          return '"'
         case '&apos;':
-        case '&#39;': return "'"
-        case '&nbsp;': return ' '
-        default: return match
+        case '&#39;':
+          return "'"
+        case '&nbsp;':
+          return ' '
+        default:
+          return match
       }
     }
   )
@@ -214,7 +221,9 @@ function sanitizeHtml(html: string): string {
  * - Attribute-name boundary so `data-href` does not match `href`
  */
 function extractAttr(attrs: string, name: string): string {
-  const m = new RegExp(`(?:^|\\s)${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]*))`, 'i').exec(attrs)
+  const m = new RegExp(`(?:^|\\s)${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]*))`, 'i').exec(
+    attrs
+  )
   return m ? (m[1] ?? m[2] ?? m[3] ?? '') : ''
 }
 
@@ -243,7 +252,13 @@ function decodeEntitiesFully(text: string): string {
  * schemes like `javascript&amp;#58;alert(1)` are correctly rejected.
  */
 function isSafeHref(href: string): boolean {
-  const decoded = decodeEntitiesFully(href).trim()
+  // Strip C0 controls (U+0000–U+001F) and DEL (U+007F) before scheme checks.
+  // Browsers/URL parsers strip these before scheme resolution, so a href like
+  // `java\nscript:` canonicalises to `javascript:` and bypasses trim()-only.
+  // eslint-disable-next-line no-control-regex
+  const decoded = decodeEntitiesFully(href)
+    .replace(/[\x00-\x1F\x7F]/g, '')
+    .trim()
   return Boolean(decoded) && !/^(\/\/|javascript:|data:|vbscript:)/i.test(decoded)
 }
 
@@ -296,7 +311,10 @@ function buildInlineCode(content: string): string {
  * lines after the item's own text, preserving boundary between levels.
  */
 function buildOrderedListItem(item: string, n: number): string {
-  const lines = removeTags(item)
+  // Convert block-level tags to newlines before stripping so that content like
+  // <p>First</p><p>Second</p> or <br> is not concatenated into one line.
+  const text = item.replace(/<br\s*\/?>/gi, '\n').replace(/<\/p>|<\/li>/gi, '\n')
+  const lines = removeTags(text)
     .replace(/[ \t]+/g, ' ')
     .split('\n')
     .map((l) => l.trim())
@@ -312,7 +330,10 @@ function buildOrderedListItem(item: string, n: number): string {
  * Nested list content appears on subsequent lines.
  */
 function buildUnorderedListItem(item: string): string {
-  const lines = removeTags(item)
+  // Convert block-level tags to newlines before stripping so that content like
+  // <p>First</p><p>Second</p> or <br> is not concatenated into one line.
+  const text = item.replace(/<br\s*\/?>/gi, '\n').replace(/<\/p>|<\/li>/gi, '\n')
+  const lines = removeTags(text)
     .replace(/[ \t]+/g, ' ')
     .split('\n')
     .map((l) => l.trim())
@@ -383,9 +404,8 @@ function htmlToMarkdown(html: string): string {
 
   // Inline code: <code>…</code> — placeholder immediately to preserve internal
   // whitespace (e.g. <code>a  b</code> must not have its spaces collapsed).
-  md = md.replace(
-    /<code[^>]*>([\s\S]*?)<\/code\s*>/gi,
-    (_, content: string) => protectCode(buildInlineCode(content))
+  md = md.replace(/<code[^>]*>([\s\S]*?)<\/code\s*>/gi, (_, content: string) =>
+    protectCode(buildInlineCode(content))
   )
 
   // ATX headings h6→h1 (descending to avoid h1 pattern matching h10, etc.)
@@ -399,9 +419,7 @@ function htmlToMarkdown(html: string): string {
   // Blockquotes — convert block tags to newlines first so paragraph
   // boundaries inside <blockquote><p>…</p><p>…</p></blockquote> are preserved.
   md = md.replace(/<blockquote[^>]*>([\s\S]*?)<\/blockquote\s*>/gi, (_, content: string) => {
-    const text = removeTags(
-      content.replace(/<\/p\s*>/gi, '\n').replace(/<br\s*\/?>/gi, '\n')
-    )
+    const text = removeTags(content.replace(/<\/p\s*>/gi, '\n').replace(/<br\s*\/?>/gi, '\n'))
       .replace(/[ \t]+/g, ' ')
       .trim()
     const lines = text
@@ -608,7 +626,10 @@ function buildMarkdownHeaders(origin: Response, tokenEstimate: string): Headers 
   // Markdown as separate cache entries without losing other Vary tokens
   // (e.g. Accept-Encoding) the origin already set.
   const originVary = headers.get('Vary') ?? ''
-  const varyParts = originVary.split(',').map((v: string) => v.trim()).filter(Boolean)
+  const varyParts = originVary
+    .split(',')
+    .map((v: string) => v.trim())
+    .filter(Boolean)
   const normalizedVaryParts = varyParts.map((v: string) => v.toLowerCase())
   headers.set(
     'Vary',
@@ -626,11 +647,18 @@ function buildMarkdownHeaders(origin: Response, tokenEstimate: string): Headers 
 function addVaryAccept(response: Response): Response {
   const h = new Headers(response.headers)
   const vary = h.get('Vary') ?? ''
-  const parts = vary.split(',').map((v: string) => v.trim()).filter(Boolean)
+  const parts = vary
+    .split(',')
+    .map((v: string) => v.trim())
+    .filter(Boolean)
   if (!parts.map((v: string) => v.toLowerCase()).includes('accept')) {
     h.set('Vary', [...parts, 'Accept'].join(', '))
   }
-  return new Response(response.body, { status: response.status, statusText: response.statusText, headers: h })
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers: h,
+  })
 }
 
 /**
@@ -702,7 +730,11 @@ export default async function handler(request: Request, context: Context): Promi
     // query parameters (tokens, emails, campaign IDs) in edge logs.
     // console.error is the correct logging mechanism in the Deno-based Edge
     // Runtime; src/utils/monitoring.ts cannot be imported here.
-    console.error('[markdown-response] Markdown conversion failed; falling back to HTML', pathname, err)
+    console.error(
+      '[markdown-response] Markdown conversion failed; falling back to HTML',
+      pathname,
+      err
+    )
     if (originResponse) return originResponse
     // context.next() threw before any origin response was received; calling it
     // again would double origin traffic and could throw a second unhandled error.

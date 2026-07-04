@@ -257,23 +257,16 @@ function buildValidatedUrl(requestUrl) {
  * @returns {Promise<Response>}
  */
 async function staleWhileRevalidate(request) {
-  const validatedUrl = buildValidatedUrl(request.url)
-  const validatedRequest = new Request(validatedUrl, {
-    method: request.method,
-    headers: request.headers,
-    body: request.body,
-    mode: request.mode,
-    credentials: request.credentials,
-    cache: request.cache,
-    redirect: request.redirect,
-    referrer: request.referrer,
-    integrity: request.integrity
-  })
-  
+  try {
+    buildValidatedUrl(request.url)
+  } catch {
+    return await fetch(request)
+  }
+
   const cache = await caches.open(CACHE_VERSION)
-  const cached = await cache.match(validatedRequest)
-  const fetchPromise = fetch(validatedRequest).then(async (response) => {
-    if (response.ok) await cache.put(validatedRequest, response.clone())
+  const cached = await cache.match(request)
+  const fetchPromise = fetch(request).then(async (response) => {
+    if (response.ok) await cache.put(request, response.clone())
     return response
   })
   if (cached) {

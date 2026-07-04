@@ -228,4 +228,4 @@ High-priority additions:
 ## Related Agent Instructions
 
 - **AGENTS.md** - Comprehensive instructions for AI coding agents
-- **.github/instructions/copilot-instructions.md** - GitHub Copilot-specific instructions
+- **.github/copilot-instructions.md** - GitHub Copilot-specific instructions

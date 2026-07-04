@@ -1,7 +1,3 @@
----
-applyTo: "**"
----
-
 # Copilot Instructions for Paperlyte
 
 ## Project Overview

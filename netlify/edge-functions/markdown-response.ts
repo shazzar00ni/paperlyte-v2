@@ -279,7 +279,7 @@ function buildMarkdownLink(attrs: string, content: string): string {
   if (!isSafeHref(href)) return stripTags(content)
   // Convert nested <img> elements first so they appear as Markdown image
   // syntax rather than being silently stripped by stripTags.
-  const inner = content.replace(/<img\b((?:[^>"']*|"[^"]*"|'[^']*')*)>/gi, (_, a: string) => buildMarkdownImage(a))
+  const inner = content.replace(/<img\b((?:[^>"']|"[^"]*"|'[^']*')*)>/gi, (_, a: string) => buildMarkdownImage(a))
   // Fully decode href to a fixed point before safeLinkDest so the emitted URL
   // is already resolved and the trailing decodeEntities(md) pass has nothing
   // left to decode — preventing multi-encoded schemes from slipping through.
@@ -448,12 +448,12 @@ function htmlToMarkdown(html: string): string {
   )
 
   // Links — preserve href, reject unsafe schemes and protocol-relative URLs
-  md = md.replace(/<a\b((?:[^>"']*|"[^"]*"|'[^']*')*)>([\s\S]*?)<\/a\s*>/gi, (_, attrs: string, content: string) =>
+  md = md.replace(/<a\b((?:[^>"']|"[^"]*"|'[^']*')*)>([\s\S]*?)<\/a\s*>/gi, (_, attrs: string, content: string) =>
     buildMarkdownLink(attrs, content)
   )
 
   // Images — preserve src and alt
-  md = md.replace(/<img\b((?:[^>"']*|"[^"]*"|'[^']*')*)>/gi, (_, attrs: string) => buildMarkdownImage(attrs))
+  md = md.replace(/<img\b((?:[^>"']|"[^"]*"|'[^']*')*)>/gi, (_, attrs: string) => buildMarkdownImage(attrs))
 
   // Ordered and unordered lists — process innermost lists first so that
   // nested list Markdown is already in place before the outer list converts

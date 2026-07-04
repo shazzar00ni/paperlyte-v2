@@ -26,7 +26,7 @@ The landing page includes: Hero, Problem/Solution, Features, Mobile, Statistics,
 ```bash
 npm run dev              # Dev server (port 3000)
 npm run build            # TypeScript check + Vite build + inject dates
-npm run lint             # ESLint (warnings as errors)
+npm run lint             # ESLint
 npm run format           # Prettier format
 npm run test             # Vitest (watch mode)
 npm run test:coverage    # Tests with coverage

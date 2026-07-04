@@ -39,10 +39,10 @@ export const LEGAL_CONFIG = {
   documents: {
     privacy: '/privacy.html',
     terms: '/terms.html',
-    cookies: '#',
-    security: '#',
-    dmca: '#',
-    accessibility: '#',
+    cookies: '/cookies.html',
+    security: '/security.html',
+    dmca: '/dmca.html',
+    accessibility: '/accessibility.html',
   },
   social: {
     github: 'https://github.com/shazzar00ni/paperlyte-v2',

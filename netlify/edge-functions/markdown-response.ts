@@ -255,8 +255,8 @@ function isSafeHref(href: string): boolean {
   // Strip C0 controls (U+0000–U+001F) and DEL (U+007F) before scheme checks.
   // Browsers/URL parsers strip these before scheme resolution, so a href like
   // `java\nscript:` canonicalises to `javascript:` and bypasses trim()-only.
-  // eslint-disable-next-line no-control-regex
   const decoded = decodeEntitiesFully(href)
+    // eslint-disable-next-line no-control-regex
     .replace(/[\x00-\x1F\x7F]/g, '')
     .trim()
   return Boolean(decoded) && !/^(\/\/|javascript:|data:|vbscript:)/i.test(decoded)
@@ -269,7 +269,8 @@ function isSafeHref(href: string): boolean {
  * introducing unintended escape sequences.
  */
 function safeLinkDest(href: string): string {
-  return href.replace(/\\/g, '\\\\').replace(/\)/g, '\\)')
+  // eslint-disable-next-line no-control-regex
+  return href.replace(/[\x00-\x1F\x7F]/g, '').replace(/\\/g, '\\\\').replace(/\)/g, '\\)')
 }
 
 /** Convert an `<a>` element to a Markdown link, stripping unsafe href schemes. */
@@ -278,7 +279,7 @@ function buildMarkdownLink(attrs: string, content: string): string {
   if (!isSafeHref(href)) return stripTags(content)
   // Convert nested <img> elements first so they appear as Markdown image
   // syntax rather than being silently stripped by stripTags.
-  const inner = content.replace(/<img\b([^>]*)>/gi, (_, a: string) => buildMarkdownImage(a))
+  const inner = content.replace(/<img\b((?:[^>"']*|"[^"]*"|'[^']*')*)>/gi, (_, a: string) => buildMarkdownImage(a))
   // Fully decode href to a fixed point before safeLinkDest so the emitted URL
   // is already resolved and the trailing decodeEntities(md) pass has nothing
   // left to decode — preventing multi-encoded schemes from slipping through.
@@ -447,12 +448,12 @@ function htmlToMarkdown(html: string): string {
   )
 
   // Links — preserve href, reject unsafe schemes and protocol-relative URLs
-  md = md.replace(/<a\b([^>]*)>([\s\S]*?)<\/a\s*>/gi, (_, attrs: string, content: string) =>
+  md = md.replace(/<a\b((?:[^>"']*|"[^"]*"|'[^']*')*)>([\s\S]*?)<\/a\s*>/gi, (_, attrs: string, content: string) =>
     buildMarkdownLink(attrs, content)
   )
 
   // Images — preserve src and alt
-  md = md.replace(/<img\b([^>]*)>/gi, (_, attrs: string) => buildMarkdownImage(attrs))
+  md = md.replace(/<img\b((?:[^>"']*|"[^"]*"|'[^']*')*)>/gi, (_, attrs: string) => buildMarkdownImage(attrs))
 
   // Ordered and unordered lists — process innermost lists first so that
   // nested list Markdown is already in place before the outer list converts

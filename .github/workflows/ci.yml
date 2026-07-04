@@ -620,7 +620,11 @@ jobs:
              ok "${{ needs.build.result }}" && \
              ok "${{ needs.size-check.result }}" && \
              ok "${{ needs.e2e.result }}"; then
-            echo "### ✅ All checks passed! Ready to merge." >> $GITHUB_STEP_SUMMARY
+            if ok "${{ needs.lighthouse.outputs.lighthouse_outcome || needs.lighthouse.result }}"; then
+              echo "### ✅ All required checks passed! Ready to merge." >> $GITHUB_STEP_SUMMARY
+            else
+              echo "### ⚠️ Required checks passed, but Lighthouse advisory failed. Please review the issues above." >> $GITHUB_STEP_SUMMARY
+            fi
           else
             echo "### ❌ Some required checks failed. Please review the issues above." >> $GITHUB_STEP_SUMMARY
           fi

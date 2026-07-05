@@ -292,16 +292,19 @@ export function trackEvent(eventName: string, eventParams?: AnalyticsEventParams
   if (!isAnalyticsAvailable()) {
     return
   }
+import * as Sentry from '`@sentry/react`'
 
-  try {
-    window.gtag!('event', eventName, sanitizedParams)
-  } catch (error) {
-    // Not routed through `monitoring.logError`: monitoring.ts imports trackEvent
-    // from this module, so importing logError back here would create a cycle.
-    // Left unguarded (not DEV-only): `error` is allowed everywhere by the
-    // no-console rule, and production visibility into gtag failures matters.
+try {
+  window.gtag!('event', eventName, sanitizedParams)
+} catch (error) {
+  // Not routed through `monitoring.logError`: monitoring.ts imports trackEvent
+  // from this module, so importing logError back here would create a cycle.
+  if (import.meta.env.DEV) {
     console.error('[Analytics] Error tracking event:', error)
+  } else {
+    Sentry.captureException(error, { tags: { source: 'analytics.trackEvent' } })
   }
+}
 }
 
 /**

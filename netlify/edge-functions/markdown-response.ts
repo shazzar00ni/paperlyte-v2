@@ -167,8 +167,9 @@ function sanitizeHtml(html: string): string {
   // subtree-removal and truncate-to-end steps would over-consume content.
   for (const tag of VOID_REMOVE_TAGS) {
     result = result.replace(new RegExp(`<${tag}\\b[^>]*\\/?>`, 'gi'), '') // nosemgrep
-    // Also strip truncated tags that reach end-of-string without a closing >.
-    result = result.replace(new RegExp(`<${tag}\\b[^>]*$`, 'gi'), '')
+    // Also strip truncated tags with no closing >: terminate at the next opening
+    // < (start of another tag) or end of string, whichever comes first.
+    result = result.replace(new RegExp(`<${tag}\\b[^<>]*(?=<|$)`, 'gi'), '')
   }
 
   const nonVoidRemoveTags = REMOVE_TAGS.filter((t) => !VOID_REMOVE_TAGS.includes(t))

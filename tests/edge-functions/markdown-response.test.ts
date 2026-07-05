@@ -858,6 +858,29 @@ describe('markdown-response edge function', () => {
       expect(body).not.toContain('<embed')
     })
 
+    it('removes truncated <embed> at end of string (no closing >)', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(htmlResponse('<p>Before</p><embed src="evil"'))
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).not.toContain('<embed')
+      expect(body).toContain('Before')
+    })
+
+    it('removes truncated <embed> mid-document (> inside next tag terminates fragment)', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(htmlResponse('<p>Before</p><embed src="evil"\n<p>After</p>'))
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).not.toContain('<embed')
+      expect(body).toContain('Before')
+      expect(body).toContain('After')
+    })
+
     it('removes <applet> tags', async () => {
       const req = makeRequest('https://example.com/', mdHeaders)
       const ctx = makeContext(htmlResponse('<applet code="App.class"></applet><p>Content</p>'))

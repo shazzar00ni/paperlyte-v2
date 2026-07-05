@@ -64,6 +64,51 @@ function logInvalidFilePath(filePath: string, error: Error): void {
   console.error(`${colors.red}Error reading file:${colors.reset}`, filePath, error)
 }
 
+function getMarkdownPlaceholders(line: string): string[] {
+  const placeholders: string[] = []
+  const placeholderRegex = /\[([^\]]+)\]/g
+
+  for (const match of line.matchAll(placeholderRegex)) {
+    const afterMatch = line.substring(match.index + match[0].length)
+    const isMarkdownLink = afterMatch.trimStart().startsWith('(')
+
+    if (
+      !isMarkdownLink && // Not a markdown link
+      !match[1].match(/^\d+$/) && // Not a number reference
+      !match[1].includes('http') // Not a URL inside brackets
+    ) {
+      placeholders.push(match[0])
+    }
+  }
+
+  return placeholders
+}
+
+function getTypeScriptStringPlaceholders(line: string): string[] {
+  const placeholders: string[] = []
+  const stringLiteralRegex = /(['"`])((?:\\.|(?!\1).)*)\1/g
+
+  for (const stringMatch of line.matchAll(stringLiteralRegex)) {
+    const literalValue = stringMatch[2]
+
+    placeholders.push(...getMarkdownPlaceholders(literalValue))
+
+    if (literalValue === '#') {
+      placeholders.push('#')
+    }
+  }
+
+  return placeholders
+}
+
+function getLinePlaceholders(filePath: string, line: string): string[] {
+  if (filePath.endsWith('.ts') || filePath.endsWith('.tsx')) {
+    return getTypeScriptStringPlaceholders(line)
+  }
+
+  return getMarkdownPlaceholders(line)
+}
+
 export function findPlaceholders(filePath: string): PlaceholderMatch[] {
   const placeholders: PlaceholderMatch[] = []
 
@@ -76,29 +121,15 @@ export function findPlaceholders(filePath: string): PlaceholderMatch[] {
     const content = fs.readFileSync(filePath, 'utf-8')
     const lines = content.split('\n')
 
-    // Match patterns like [Something] or [Something Text]
-    const placeholderRegex = /\[([^\]]+)\]/g
-
     lines.forEach((line, index) => {
-      const matches = line.matchAll(placeholderRegex)
-      for (const match of matches) {
-        // Skip markdown links and legitimate brackets
-        const afterMatch = line.substring(match.index + match[0].length)
-        const isMarkdownLink = afterMatch.trimStart().startsWith('(')
-
-        if (
-          !isMarkdownLink && // Not a markdown link
-          !match[1].match(/^\d+$/) && // Not a number reference
-          !match[1].includes('http') // Not a URL inside brackets
-        ) {
-          placeholders.push({
-            file: filePath,
-            line: index + 1,
-            content: line.trim(),
-            placeholder: match[0],
-          })
-        }
-      }
+      getLinePlaceholders(filePath, line).forEach((placeholder) => {
+        placeholders.push({
+          file: filePath,
+          line: index + 1,
+          content: line.trim(),
+          placeholder,
+        })
+      })
     })
   } catch (error) {
     console.error(`${colors.red}Error reading file:${colors.reset}`, filePath, error)

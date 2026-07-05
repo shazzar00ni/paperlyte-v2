@@ -96,6 +96,38 @@ describe('check-legal-placeholders - Path Traversal Protection', () => {
       ])
     })
 
+    it('only reports TypeScript string-literal placeholders and ignores normal syntax brackets', () => {
+      createTempRepo({
+        'src/constants/legal.ts': [
+          'const allConfigEntries = (): Array<[string, string]> => {',
+          '  const entries: Array<[string, string]> = []',
+          "  for (const [section, values] of Object.entries({ company: { name: 'Paperlyte' } })) {",
+          '    entries.push([`${section}.name`, values.name])',
+          '  }',
+          '  return entries',
+          '}',
+          "const legalName = '[Company Legal Name]'",
+          "const cookies = '#'",
+          '',
+        ].join('\n'),
+      })
+
+      expect(findPlaceholders('src/constants/legal.ts')).toEqual([
+        {
+          file: 'src/constants/legal.ts',
+          line: 8,
+          content: "const legalName = '[Company Legal Name]'",
+          placeholder: '[Company Legal Name]',
+        },
+        {
+          file: 'src/constants/legal.ts',
+          line: 9,
+          content: "const cookies = '#'",
+          placeholder: '#',
+        },
+      ])
+    })
+
     it('does not read rejected paths', () => {
       createTempRepo({
         'docs/PRIVACY-POLICY.md': 'Contact [Company Email]',
@@ -110,8 +142,17 @@ describe('check-legal-placeholders - Path Traversal Protection', () => {
   describe('checkFiles', () => {
     it('checks the configured legal files through the real checkFiles to find placeholders', () => {
       createTempRepo({
-        'src/constants/legal.ts': 'export const LEGAL = { company: "Paperlyte" }\n',
-        'docs/PRIVACY-POLICY.md': 'Privacy contact: [Company Email]\n',
+        'src/constants/legal.ts': [
+          'const allConfigEntries = (): Array<[string, string]> => {',
+          '  const entries: Array<[string, string]> = []',
+          "  for (const [section, values] of Object.entries({ company: { name: 'Paperlyte' } })) {",
+          '    entries.push([`${section}.name`, values.name])',
+          '  }',
+          '  return entries',
+          '}',
+          '',
+        ].join('\n'),
+        'docs/PRIVACY-POLICY.md': 'Privacy contact: Paperlyte\n',
         'docs/TERMS-OF-SERVICE.md': 'Terms for Paperlyte\n',
       })
 
@@ -126,14 +167,7 @@ describe('check-legal-placeholders - Path Traversal Protection', () => {
         {
           path: 'docs/PRIVACY-POLICY.md',
           exists: true,
-          placeholders: [
-            {
-              file: 'docs/PRIVACY-POLICY.md',
-              line: 1,
-              content: 'Privacy contact: [Company Email]',
-              placeholder: '[Company Email]',
-            },
-          ],
+          placeholders: [],
         },
         {
           path: 'docs/TERMS-OF-SERVICE.md',

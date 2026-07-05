@@ -99,6 +99,7 @@ export const Footer = (): React.ReactElement => {
                     className={styles.link}
                     target="_blank"
                     rel="noopener noreferrer"
+                    aria-label="Privacy Policy (opens in new tab)"
                   >
                     Privacy Policy
                   </a>
@@ -109,8 +110,53 @@ export const Footer = (): React.ReactElement => {
                     className={styles.link}
                     target="_blank"
                     rel="noopener noreferrer"
+                    aria-label="Terms of Service (opens in new tab)"
                   >
                     Terms of Service
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href={LEGAL_CONFIG.documents.cookies}
+                    className={styles.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Cookie Policy (opens in new tab)"
+                  >
+                    Cookie Policy
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href={LEGAL_CONFIG.documents.security}
+                    className={styles.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Security (opens in new tab)"
+                  >
+                    Security
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href={LEGAL_CONFIG.documents.dmca}
+                    className={styles.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="DMCA (opens in new tab)"
+                  >
+                    DMCA
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href={LEGAL_CONFIG.documents.accessibility}
+                    className={styles.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Accessibility (opens in new tab)"
+                  >
+                    Accessibility
                   </a>
                 </li>
               </ul>

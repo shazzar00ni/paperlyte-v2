@@ -23,7 +23,7 @@ function createHarness(hasActiveWorker: boolean): ServiceWorkerHarness {
     }),
   }
 
-  runInNewContext(readFileSync('public/sw.js', 'utf8'), {
+  runInNewContext(readFileSync(new URL('../../public/sw.js', import.meta.url), 'utf8'), {
     URL,
     caches: {
       open: vi.fn(() => Promise.resolve(cache)),

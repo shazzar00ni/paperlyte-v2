@@ -1,0 +1,61 @@
+Type,Title,Last Visited,Host
+Pull Request,docs: add GitHub Copilot instructions file in .github/instructions,2026-07-04T20:59:39Z,github.com
+Pull Request,chore: remove/guard non-essential console.* statements (audit HIGH-002),2026-07-05T08:14:00Z,github.com
+Pull Request,Guard explicit `@eslint/js` dependency for local ESLint installs,2026-07-04T07:46:53Z,github.com
+Pull Request,chore(ci): point Add to GitHub Projects at project 19,2026-07-05T07:35:56Z,github.com
+Pull Request,[Aikido] AI Fix for HTTP request might enable SSRF attack,2026-07-04T08:13:22Z,github.com
+Pull Request,fix(ci): use official SonarQube scan action instead of manual CLI download,2026-07-03T06:38:46Z,github.com
+Pull Request,[StepSecurity] Apply security best practices,2026-07-03T17:07:45Z,github.com
+Pull Request,style: fix Prettier formatting in webVitals.ts,2026-07-03T17:14:40Z,github.com
+Pull Request,fix(security): prevent shell injection in release workflow,2026-07-02T02:52:15Z,github.com
+Pull Request,fix: FAQ state updater purity and CORS default domain,2026-07-02T02:18:41Z,github.com
+Pull Request,test: add missing Statistics section and useAnalytics tracking tests,2026-07-03T17:12:56Z,github.com
+Pull Request,docs: improve JSDoc for key functions and components,2026-07-04T07:47:18Z,github.com
+Pull Request,chore(ci): add missing changelog-config.json for release workflow,2026-07-03T16:01:30Z,github.com
+Pull Request,chore: update package-lock.json for environment npm version,2026-06-30T16:37:46Z,github.com
+Pull Request,chore: remove libc fields from optional deps in package-lock.json,2026-06-30T14:32:34Z,github.com
+Pull Request,docs(memory): record CSP auto-events/proxy errors as extension noise,2026-06-30T14:37:20Z,github.com
+Pull Request,chore: update package-lock.json to remove libc fields from optional deps,2026-07-01T03:02:50Z,github.com
+Pull Request,CodeRabbit Generated Unit Tests: Add unit tests for PR changes,2026-06-30T04:51:26Z,github.com
+Pull Request,docs(csp): document that injected /proxy.js & /auto-events.js scripts are intentionally blocked,2026-07-02T15:01:40Z,github.com
+Pull Request,docs(memory): record trackSocialClick normalization decision,2026-06-29T12:37:39Z,github.com
+Pull Request,chore(deps-dev): bump globals from 17.6.0 to 17.7.0,2026-06-30T04:44:26Z,github.com
+Pull Request,chore(deps): bump @sentry/react from 10.59.0 to 10.62.0,2026-06-30T04:45:37Z,github.com
+Pull Request,chore(deps-dev): bump prettier from 3.8.4 to 3.9.4,2026-07-01T03:02:57Z,github.com
+Pull Request,chore(deps-dev): bump postcss from 8.5.15 to 8.5.16,2026-07-01T02:58:27Z,github.com
+Pull Request,chore(deps-dev): bump @commitlint/cli from 20.5.3 to 21.1.0,2026-06-30T04:40:06Z,github.com
+Pull Request,ci: bump actions/setup-python from 6.2.0 to 6.3.0,2026-06-29T09:26:09Z,github.com
+Pull Request,ci: bump anthropics/claude-code-action from 1.0.153 to 1.0.159,2026-07-01T03:04:14Z,github.com
+Pull Request,chore(deps-dev): bump autoprefixer from 10.5.0 to 10.5.2,2026-07-04T07:48:01Z,github.com
+Pull Request,ci: bump actions/cache from 5.0.5 to 6.1.0,2026-06-29T09:19:08Z,github.com
+Pull Request,chore(deps-dev): bump the development-dependencies group across 1 directory with 4 updates,2026-06-30T05:24:08Z,github.com
+Commit,Merge pull request #1276 from shazzar00ni/claude/github-projects-action-2y7k1o,2026-07-05T07:30:59Z,github.com
+Commit,Merge branch 'main' into claude/github-projects-action-2y7k1o,2026-07-05T07:29:58Z,github.com
+Commit,Merge pull request #1275 from shazzar00ni/fix/aikido-security-sast-59512222-jvl4,2026-07-04T08:07:56Z,github.com
+Commit,Merge branch 'main' into fix/aikido-security-sast-59512222-jvl4,2026-07-04T08:07:20Z,github.com
+Commit,fix: bypass invalid sw cache requests,2026-07-04T07:40:54Z,github.com
+Commit,Merge pull request #1243 from shazzar00ni/claude/github-issue-1192-256cj4,2026-07-04T07:35:56Z,github.com
+Commit,Merge branch 'main' into claude/github-issue-1192-256cj4,2026-07-04T07:34:55Z,github.com
+Commit,Merge branch 'main' into fix/aikido-security-sast-59512222-jvl4,2026-07-04T07:31:29Z,github.com
+Commit,Merge pull request #1269 from shazzar00ni/chunk/add-statistics-analytics-tests,2026-07-03T17:12:53Z,github.com
+Commit,Merge pull request #1273 from shazzar00ni/chore/GHA-021129-stepsecurity-remediation,2026-07-03T17:07:44Z,github.com
+Commit,Merge pull request #1246 from shazzar00ni/claude/paperlyte-issue-1103-qerd15,2026-07-03T16:35:02Z,github.com
+Commit,Merge branch 'main' into claude/paperlyte-issue-1103-qerd15,2026-07-03T16:34:40Z,github.com
+Commit,docs(cookies): make analytics wording provider-agnostic,2026-07-03T16:31:10Z,github.com
+Commit,Merge branch 'main' into claude/github-projects-action-2y7k1o,2026-07-03T16:18:25Z,github.com
+Commit,Merge pull request #1267 from shazzar00ni/claude/github-workflows-plan-review-jnddrn,2026-07-03T16:00:03Z,github.com
+Commit,chore(ci): point Add to GitHub Projects at project 19,2026-07-03T15:59:05Z,github.com
+Commit,fix: narrow sw path validation,2026-07-03T06:54:01Z,github.com
+Commit,Merge branch 'main' into fix/aikido-security-sast-59512222-jvl4,2026-07-03T06:41:58Z,github.com
+Commit,fix(ci): remove nonexistent config key and add config label_extractor,2026-07-03T06:41:56Z,github.com
+Commit,Merge branch 'main' into claude/github-workflows-plan-review-jnddrn,2026-07-03T06:37:46Z,github.com
+Commit,Merge pull request #1274 from shazzar00ni/claude/sonarscanner-download-security-fzxqi9,2026-07-03T06:37:19Z,github.com
+Commit,fix(ci): quote sonar args and record decisions.md reversal,2026-07-02T20:04:39Z,github.com
+Commit,fix(security): autofix HTTP request might enable SSRF attack,2026-07-02T19:31:40Z,github.com
+Commit,Merge branch 'main' into claude/github-workflows-plan-review-jnddrn,2026-07-02T19:28:59Z,github.com
+Commit,chore(build): warn on missing BUILD_YEAR and fix stale legal-pages comment,2026-07-02T19:27:19Z,github.com
+Commit,fix(build): warn on missing BUILD_DATE independently of BUILD_YEAR,2026-07-02T19:20:40Z,github.com
+Commit,style(legal): align legal-page accent with monochrome brand,2026-07-02T19:18:22Z,github.com
+Commit,style(cookies): remove CSS orphaned by cookie-preferences button removal,2026-07-02T19:15:42Z,github.com
+Commit,fix(ci): use official SonarQube scan action instead of manual CLI download,2026-07-02T19:13:10Z,github.com
+Commit,fix(legal): resolve review findings on legal pages and footer,2026-07-02T19:12:25Z,github.com

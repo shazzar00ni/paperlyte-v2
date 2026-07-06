@@ -219,6 +219,36 @@ async function navigateFetch(request) {
 }
 
 /**
+ * Validate a request URL for stale-while-revalidate strategy.
+ * @param {string} requestUrl
+ * @returns {string}
+ */
+function buildValidatedUrl(requestUrl) {
+  try {
+    const url = new URL(requestUrl)
+
+    // Check only the pathname component so query/hash values such as
+    // ?next=/../privacy are not rejected as traversal attempts.
+    const rawPathname = requestUrl.slice(url.origin.length).split(/[?#]/, 1)[0] || '/'
+    if (rawPathname.includes('/../') || /\/%2e%2e\//i.test(rawPathname)) {
+      throw new Error('Invalid path')
+    }
+
+    // Protocol + host checks
+    if (url.origin !== self.location.origin) {
+      throw new Error('Invalid host')
+    }
+    if (!['http:', 'https:'].includes(url.protocol)) {
+      throw new Error('Invalid protocol')
+    }
+
+    return url.href
+  } catch {
+    throw new Error('Invalid URL')
+  }
+}
+
+/**
  * Stale-while-revalidate strategy: return cached response immediately if available,
  * while refreshing the cache in the background. Falls through to the network when
  * no cached entry exists. The background fetch rejection is explicitly suppressed
@@ -227,6 +257,12 @@ async function navigateFetch(request) {
  * @returns {Promise<Response>}
  */
 async function staleWhileRevalidate(request) {
+  try {
+    buildValidatedUrl(request.url)
+  } catch {
+    return await fetch(request)
+  }
+
   const cache = await caches.open(CACHE_VERSION)
   const cached = await cache.match(request)
   const fetchPromise = fetch(request).then(async (response) => {

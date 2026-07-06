@@ -131,6 +131,17 @@ describe('Legal Constants', () => {
       expect(LEGAL_CONFIG.documents.privacy).toBe('/privacy.html')
       expect(LEGAL_CONFIG.documents.terms).toBe('/terms.html')
     })
+
+    it('should have all policy documents pointing to served pages (no sentinel links)', () => {
+      expect(LEGAL_CONFIG.documents.cookies).toBe('/cookies.html')
+      expect(LEGAL_CONFIG.documents.security).toBe('/security.html')
+      expect(LEGAL_CONFIG.documents.dmca).toBe('/dmca.html')
+      expect(LEGAL_CONFIG.documents.accessibility).toBe('/accessibility.html')
+
+      Object.entries(LEGAL_CONFIG.documents).forEach(([doc, link]) => {
+        expect(link, `Document link for "${doc}" should not be a '#' sentinel`).not.toBe('#')
+      })
+    })
   })
 
   describe('Social Section', () => {
@@ -249,10 +260,18 @@ describe('Legal Constants', () => {
       expect(placeholders).toContain('metadata.jurisdiction')
     })
 
-    it('should include sentinel # links as placeholder fields', () => {
+    it('should include unset social links (sentinel #) as placeholder fields', () => {
       const placeholders = getPlaceholderFields()
-      expect(placeholders).toContain('documents.cookies')
       expect(placeholders).toContain('social.linkedin')
+      expect(placeholders).toContain('social.discord')
+    })
+
+    it('should not flag published policy documents as placeholders', () => {
+      const placeholders = getPlaceholderFields()
+      expect(placeholders).not.toContain('documents.cookies')
+      expect(placeholders).not.toContain('documents.security')
+      expect(placeholders).not.toContain('documents.dmca')
+      expect(placeholders).not.toContain('documents.accessibility')
     })
   })
 

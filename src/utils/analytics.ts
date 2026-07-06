@@ -298,9 +298,10 @@ export function trackEvent(eventName: string, eventParams?: AnalyticsEventParams
   } catch (error) {
     // Not routed through `monitoring.logError`: monitoring.ts imports trackEvent
     // from this module, so importing logError back here would create a cycle.
-    // Left unguarded (not DEV-only): `error` is allowed everywhere by the
-    // no-console rule, and production visibility into gtag failures matters.
-    console.error('[Analytics] Error tracking event:', error)
+    // Falls back to a DEV-guarded console.error per issue #1245.
+    if (import.meta.env.DEV) {
+      console.error('[Analytics] Error tracking event:', error)
+    }
   }
 }
 
@@ -333,9 +334,10 @@ export function trackPageView(pagePath: string, pageTitle?: string): void {
     })
   } catch (error) {
     // See trackEvent's catch block: not routed through monitoring.logError
-    // (circular import) and left unguarded since `error` is allowed
-    // everywhere by the no-console rule.
-    console.error('[Analytics] Error tracking page view:', error)
+    // (circular import); falls back to a DEV-guarded console.error.
+    if (import.meta.env.DEV) {
+      console.error('[Analytics] Error tracking page view:', error)
+    }
   }
 }
 

@@ -51,11 +51,11 @@
         font-size: 0.95em;
       }
       .placeholder {
-        color: #888;
+        color: var(--color-text-secondary);
       }
       .footer-note {
         font-size: 0.9em;
-        color: #888;
+        color: var(--color-text-secondary);
         margin-top: 0.5em;
       }
       * {
@@ -64,7 +64,7 @@
         padding: 0;
       }
       :root {
-        --color-primary: #7c3aed;
+        --color-primary: #1a1a1a;
         --color-background: #ffffff;
         --color-surface: #f9fafb;
         --color-text: #111827;
@@ -720,7 +720,7 @@
         </p>
       </main>
       <footer>
-        <p>&copy; 2025 Paperlyte. All rights reserved.</p>
+        <p>&copy; {{BUILD_YEAR}} Paperlyte. All rights reserved.</p>
         <p class="footer-note">
           This privacy policy was legally reviewed. Effective date:
           <strong>{{BUILD_DATE}}</strong>

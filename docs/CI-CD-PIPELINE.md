@@ -299,14 +299,14 @@ Add these variables in repository settings (Settings â†’ Secrets and variables â
 
 | Variable Name | Required | Purpose                                             | Default Value                                     |
 | ------------- | -------- | --------------------------------------------------- | ------------------------------------------------- |
-| `PROJECT_URL` | Optional | GitHub Projects board URL for automatic PR addition | `https://github.com/users/shazzar00ni/projects/1` |
+| `PROJECT_URL` | Optional | GitHub Projects board URL for automatic PR addition | `https://github.com/users/shazzar00ni/projects/19` |
 
 **Note:** The CI pipeline will run without these tokens, but some features will be limited:
 
 - Without `CODECOV_TOKEN`: Coverage reports won't be uploaded to Codecov (still available as artifacts)
 - Without `LHCI_GITHUB_APP_TOKEN`: Lighthouse results won't be commented on PRs (still available as artifacts)
 - Without `ADD_TO_PROJECT_PAT`: PRs won't be automatically added to GitHub Projects board
-- Without `PROJECT_URL`: Uses default project URL (`https://github.com/users/shazzar00ni/projects/1`)
+- Without `PROJECT_URL`: Uses default project URL (`https://github.com/users/shazzar00ni/projects/19`)
 
 #### 2. Branch Protection Rules
 

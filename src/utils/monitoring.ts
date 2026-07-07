@@ -3,6 +3,13 @@
  *
  * Centralized error logging and monitoring utility.
  * Handles error reporting to analytics and external services.
+ *
+ * Logging convention: this module and `src/analytics/**` are the sanctioned
+ * `console.log` locations (see the `no-console` overrides in eslint.config.js
+ * and .eslintrc.cjs). `console.warn`/`console.error` are reserved everywhere
+ * for genuine production diagnostics. All other modules must route logging
+ * through `logError`/`logWarning`/`logEvent` below, or guard ad-hoc debug
+ * output behind `import.meta.env.DEV`.
  */
 
 import * as Sentry from '@sentry/react'

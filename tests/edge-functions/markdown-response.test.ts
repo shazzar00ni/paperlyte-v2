@@ -646,6 +646,32 @@ describe('markdown-response edge function', () => {
       expect(body).not.toMatch(/ParentChild/)
     })
 
+    it('handles > inside a quoted heading attribute without leaking attribute content', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(htmlResponse('<h1 title="1 > 0">Safe heading</h1>'))
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).toContain('# Safe heading')
+      // The attribute value must not bleed into the heading text
+      expect(body).not.toContain('0">')
+      expect(body).not.toContain('1 > 0')
+    })
+
+    it('replaces <br> inside headings with a space so words do not merge', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(htmlResponse('<h2>Capture inspiration,<br />wherever you are.</h2>'))
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).toContain('## Capture inspiration,')
+      expect(body).toContain('wherever you are.')
+      // The two parts must not be fused into one word
+      expect(body).not.toMatch(/inspiration,wherever/)
+    })
+
     it('uses a longer fence when fenced code block content contains backtick runs', async () => {
       const req = makeRequest('https://example.com/', mdHeaders)
       // Code block content containing ```, which would close a standard ``` fence early

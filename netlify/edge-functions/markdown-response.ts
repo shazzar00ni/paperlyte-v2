@@ -413,10 +413,15 @@ function htmlToMarkdown(html: string): string {
   )
 
   // ATX headings h6→h1 (descending to avoid h1 pattern matching h10, etc.)
+  // Quote-aware opening-tag match so `>` inside a quoted attribute (e.g.
+  // <h1 title="1 > 0">) does not truncate the match and leak attribute content.
+  // <br> inside heading content is replaced with a space before tag-stripping so
+  // multi-line headings (e.g. "Foo,<br/>Bar") don't merge into "Foo,Bar".
   for (let i = 6; i >= 1; i--) {
     md = md.replace(
-      new RegExp(`<h${i}[^>]*>([\\s\\S]*?)<\\/h${i}\\s*>`, 'gi'), // nosemgrep
-      (_, content: string) => `\n${'#'.repeat(i)} ${stripTags(content)}\n`
+      new RegExp(`<h${i}((?:[^>"']|"[^"]*"|'[^']*')*)>([\\s\\S]*?)<\\/h${i}\\s*>`, 'gi'), // nosemgrep
+      (_match: string, _attrs: string, content: string) =>
+        `\n${'#'.repeat(i)} ${stripTags(content.replace(/<br\s*\/?>/gi, ' '))}\n`
     )
   }
 

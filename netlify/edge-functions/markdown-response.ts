@@ -412,6 +412,15 @@ function htmlToMarkdown(html: string): string {
     protectCode(buildInlineCode(content))
   )
 
+  // Strip leading horizontal whitespace that originates from the source HTML's
+  // human-readable indentation (e.g. text inside <p> blocks indented 10 spaces).
+  // Code content is already placeholdered above so it is not affected.
+  // List-builder functions (buildOrderedListItem / buildUnorderedListItem) run
+  // below and add their OWN intentional indentation afterwards; the lookbehind
+  // normalisation pass further below then preserves only that intentional
+  // indentation, not the HTML-source indentation we strip here.
+  md = md.replace(/^[^\S\n]+/gm, '')
+
   // ATX headings h6→h1 (descending to avoid h1 pattern matching h10, etc.)
   // Quote-aware opening-tag match so `>` inside a quoted attribute (e.g.
   // <h1 title="1 > 0">) does not truncate the match and leak attribute content.

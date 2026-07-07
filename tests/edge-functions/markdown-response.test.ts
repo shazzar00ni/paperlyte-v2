@@ -682,6 +682,33 @@ describe('markdown-response edge function', () => {
       expect(leadingSpaces).toBeGreaterThanOrEqual(2)
     })
 
+    it('does not render HTML-indented prose as a CommonMark indented code block', async () => {
+      // Real-world HTML (e.g. public/privacy.html) is formatted with human-readable
+      // indentation.  Text inside <p> blocks may have 10+ leading spaces.
+      // CommonMark treats any line with ≥4 leading spaces as an indented code
+      // block; the whitespace normalisation pass must strip HTML-source leading
+      // spaces before that threshold is crossed.
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(
+        htmlResponse(
+          '<p>\n          Welcome to Paperlyte. We respect your privacy.\n          Protecting your personal data.\n      </p>'
+        )
+      )
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).toContain('Welcome to Paperlyte')
+      // Must not be wrapped in a fenced or indented code block
+      expect(body).not.toContain('```')
+      const lines = body.split('\n').filter((l) => l.includes('Welcome'))
+      expect(lines.length).toBeGreaterThan(0)
+      for (const line of lines) {
+        const spaces = line.match(/^ */)?.[0].length ?? 0
+        expect(spaces).toBeLessThan(4)
+      }
+    })
+
     it('handles > inside a quoted heading attribute without leaking attribute content', async () => {
       const req = makeRequest('https://example.com/', mdHeaders)
       const ctx = makeContext(htmlResponse('<h1 title="1 > 0">Safe heading</h1>'))

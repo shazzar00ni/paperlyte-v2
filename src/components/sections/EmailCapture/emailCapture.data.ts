@@ -1,3 +1,4 @@
+/** UI copy and configuration for the Email Capture section. */
 export const EMAIL_CAPTURE_CONTENT = {
   placeholder: 'your@email.com',
   submitText: 'Join the Waitlist',
@@ -14,6 +15,7 @@ export const EMAIL_CAPTURE_CONTENT = {
   shareText: "Know someone who'd love this? Share Paperlyte:",
 } as const
 
+/** Benefit bullet points shown in the waitlist signup form. */
 export const BENEFITS = [
   'Get early access before public launch',
   'Influence features and design decisions',

@@ -143,5 +143,6 @@ const ButtonComponent = ({
   )
 }
 
+/** Memoized {@link ButtonComponent} — skips re-render when props are unchanged. */
 export const Button = memo(ButtonComponent)
 Button.displayName = 'Button'

@@ -4,9 +4,10 @@ import userEvent from '@testing-library/user-event'
 import { logError } from '@utils/monitoring'
 import { ErrorBoundary } from './ErrorBoundary'
 
-vi.mock('@utils/monitoring', () => ({
-  logError: vi.fn(),
-}))
+// Resolves to the canonical mock in @utils/__mocks__/monitoring.ts so this
+// file's `logError` reference stays in sync with the module registry even
+// when it's shared across test files.
+vi.mock('@utils/monitoring')
 
 // Component that throws an error
 const ThrowError = ({ shouldThrow = false }: { shouldThrow?: boolean }) => {

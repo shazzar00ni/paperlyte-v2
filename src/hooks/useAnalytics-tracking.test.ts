@@ -21,16 +21,10 @@ vi.mock('@/analytics/scrollDepth', () => ({
   createScrollTracker: vi.fn(() => ({ disable: vi.fn() })),
 }))
 
-vi.mock('@utils/analytics', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@utils/analytics')>()
-  return {
-    ...actual,
-    trackEvent: vi.fn(),
-    trackCTAClick: vi.fn(),
-    trackExternalLink: vi.fn(),
-    trackSocialClick: vi.fn(),
-  }
-})
+// Resolves to the canonical mock in @utils/__mocks__/analytics.ts so this
+// file's tracked functions stay in sync with the module registry even when
+// it's shared across test files.
+vi.mock('@utils/analytics')
 
 describe('useAnalytics — tracking function behavior', () => {
   beforeEach(() => {

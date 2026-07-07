@@ -22,7 +22,7 @@
   # that devDependencies (e.g. sharp, png-to-ico used by prebuild scripts) are
   # installed even when Netlify sets NODE_ENV=production. Avoids running a
   # second `npm ci` inside the build command, which would double install time.
-  environment = { NODE_VERSION = "20", NPM_FLAGS = "--include=dev" }
+  environment = { NODE_VERSION = "20.19.0", NPM_FLAGS = "--include=dev" }
 
 # Production context: all deploys from the main branch
 [context.production]

@@ -646,6 +646,42 @@ describe('markdown-response edge function', () => {
       expect(body).not.toMatch(/ParentChild/)
     })
 
+    it('nested ordered list child line is indented enough for CommonMark nesting (≥3 spaces)', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(
+        htmlResponse('<ol><li>Parent<ol><li>Child</li></ol></li></ol>')
+      )
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      // CommonMark: continuation content under "1. " (3 chars) must be indented
+      // by at least 3 spaces so the child item renders as nested, not as a new
+      // top-level item.  The whitespace normalisation pass must not collapse
+      // this indentation to a single space.
+      const childLine = body.split('\n').find((l) => l.trimStart().startsWith('1. Child'))
+      expect(childLine).toBeDefined()
+      const leadingSpaces = childLine!.match(/^ */)?.[0].length ?? 0
+      expect(leadingSpaces).toBeGreaterThanOrEqual(3)
+    })
+
+    it('nested unordered list child line is indented enough for CommonMark nesting (≥2 spaces)', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(
+        htmlResponse('<ul><li>Parent<ul><li>Child</li></ul></li></ul>')
+      )
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      // CommonMark: continuation content under "- " (2 chars) must be indented
+      // by at least 2 spaces.
+      const childLine = body.split('\n').find((l) => l.trimStart().startsWith('- Child'))
+      expect(childLine).toBeDefined()
+      const leadingSpaces = childLine!.match(/^ */)?.[0].length ?? 0
+      expect(leadingSpaces).toBeGreaterThanOrEqual(2)
+    })
+
     it('handles > inside a quoted heading attribute without leaking attribute content', async () => {
       const req = makeRequest('https://example.com/', mdHeaders)
       const ctx = makeContext(htmlResponse('<h1 title="1 > 0">Safe heading</h1>'))

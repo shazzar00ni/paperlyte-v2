@@ -545,7 +545,11 @@ function htmlToMarkdown(html: string): string {
 
   // Normalize prose whitespace. Code blocks and inline code are already
   // placeholdered (see top of function) so their internal whitespace is intact.
-  md = md.replace(/[^\S\n]+/g, ' ')
+  // Only collapse runs that follow a non-whitespace character: leading spaces at
+  // the start of a line are intentional list-continuation indentation
+  // (buildOrderedListItem/buildUnorderedListItem add them so CommonMark parsers
+  // render child items at the correct nesting level).
+  md = md.replace(/(?<=\S)[^\S\n]+/g, ' ')
   md = md.replace(/ +$/gm, '')
   md = md.replace(/\n{3,}/g, '\n\n')
   // Restore code block contents (function replacer avoids $-pattern interpretation).

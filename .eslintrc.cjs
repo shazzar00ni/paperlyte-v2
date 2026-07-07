@@ -18,6 +18,12 @@ module.exports = {
     ecmaFeatures: { jsx: true },
   },
   ignorePatterns: ['dist'],
+  rules: {
+    // Production console statements should be routed through the `monitoring`
+    // utility or guarded behind `import.meta.env.DEV`. `warn`/`error` are
+    // allowed everywhere as genuine production diagnostics.
+    'no-console': ['error', { allow: ['warn', 'error'] }],
+  },
   overrides: [
     // TypeScript source files — apply TS parser and rules
     {
@@ -60,6 +66,12 @@ module.exports = {
         node: true,
         browser: false,
       },
+      // CLI scripts and serverless functions legitimately log to stdout/stderr;
+      // the no-console audit (HIGH-002) is scoped to browser-side production
+      // source (src/**), not Node build tooling.
+      rules: {
+        'no-console': 'off',
+      },
     },
     // Netlify Edge Functions run in an edge/Web runtime, not Node.js
     {
@@ -67,6 +79,14 @@ module.exports = {
       env: {
         browser: true,
         node: false,
+      },
+    },
+    // Sanctioned logging locations: `monitoring` and `analytics/**` are the
+    // centralized, designated places where `console.log` is permitted.
+    {
+      files: ['src/utils/monitoring.ts', 'src/analytics/**'],
+      rules: {
+        'no-console': ['error', { allow: ['warn', 'error', 'log', 'group', 'groupEnd'] }],
       },
     },
   ],

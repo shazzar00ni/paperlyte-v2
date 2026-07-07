@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Accessibility Statement - Paperlyte</title>
+    <meta
+      name="description"
+      content="Paperlyte Accessibility Statement - Our commitment to WCAG 2.1 AA, supported assistive technologies, known limitations, and how to give feedback."
+    />
+    <!-- Self-hosted fonts for security -->
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/Inter-Variable-v2.woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/PlayfairDisplay-Variable.woff2"
+      crossorigin
+    />
+    <style>
+      /* Self-hosted Inter Variable Font */
+      @font-face {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 100 900;
+        font-display: swap;
+        src: url('/fonts/Inter-Variable-v2.woff2') format('woff2-variations');
+        font-named-instance: 'Regular';
+      }
+
+      /* Self-hosted Playfair Display Variable Font */
+      @font-face {
+        font-family: 'Playfair Display';
+        font-style: normal;
+        font-weight: 400 900;
+        font-display: swap;
+        src: url('/fonts/PlayfairDisplay-Variable.woff2') format('woff2-variations');
+      }
+
+      .footer-note {
+        font-size: 0.9em;
+        color: var(--color-text-secondary);
+        margin-top: 0.5em;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --color-primary: #1a1a1a;
+        --color-background: #ffffff;
+        --color-surface: #f9fafb;
+        --color-text: #111827;
+        --color-text-secondary: #6b7280;
+        --color-border: #e5e7eb;
+      }
+      body {
+        font-family:
+          "Inter",
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+        line-height: 1.6;
+        color: var(--color-text);
+        background: var(--color-background);
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem;
+      }
+      header {
+        margin-bottom: 3rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 2px solid var(--color-border);
+      }
+      h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: var(--color-text);
+      }
+      .last-updated {
+        color: var(--color-text-secondary);
+        font-size: 0.9rem;
+      }
+      h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.75rem;
+        font-weight: 600;
+        margin: 2.5rem 0 1rem;
+        color: var(--color-text);
+      }
+      h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 1.5rem 0 0.75rem;
+        color: var(--color-text);
+      }
+      p {
+        margin-bottom: 1rem;
+        color: var(--color-text-secondary);
+      }
+      ul,
+      ol {
+        margin: 1rem 0 1rem 1.5rem;
+        color: var(--color-text-secondary);
+      }
+      li {
+        margin-bottom: 0.5rem;
+      }
+      strong {
+        color: var(--color-text);
+        font-weight: 600;
+      }
+      a {
+        color: var(--color-primary);
+      }
+      .contact-block {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: 8px;
+        padding: 1rem 1.25rem;
+        margin: 1rem 0 1.5rem;
+        color: var(--color-text-secondary);
+      }
+      .back-link {
+        display: inline-block;
+        color: var(--color-primary);
+        text-decoration: none;
+        margin-bottom: 1rem;
+        font-weight: 500;
+      }
+      .back-link:hover {
+        text-decoration: underline;
+      }
+      footer {
+        margin-top: 4rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--color-border);
+        text-align: center;
+        color: var(--color-text-secondary);
+        font-size: 0.9rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <a href="/" class="back-link">← Back to Paperlyte</a>
+
+      <header>
+        <h1>Accessibility Statement</h1>
+        <p class="last-updated">Last Updated: {{BUILD_DATE}}</p>
+      </header>
+
+      <main>
+        <h2>Commitment to Accessibility</h2>
+        <p>
+          Paperlyte is committed to ensuring digital accessibility for all users,
+          including people with disabilities. We are continually improving the
+          user experience and applying relevant accessibility standards. This
+          statement is public and applies to all users of the Paperlyte platform
+          and website.
+        </p>
+
+        <h2>Conformance Status</h2>
+        <p>
+          Our goal is to conform to
+          <a
+            href="https://www.w3.org/WAI/standards-guidelines/wcag/"
+            target="_blank"
+            rel="noopener noreferrer"
+            >WCAG 2.1 Level AA</a
+          >
+          standards. We are working toward full conformance and treat
+          accessibility as an ongoing commitment rather than a one-time
+          milestone. Some areas of the site may not yet fully conform; where we
+          identify gaps, we prioritize and address them, and we update this
+          statement as our conformance status changes.
+        </p>
+
+        <h2>Supported Assistive Technologies &amp; Testing</h2>
+        <p>We aim to support users with:</p>
+        <ul>
+          <li>Screen readers (tested with VoiceOver, NVDA, and JAWS)</li>
+          <li>Keyboard-only navigation</li>
+          <li>Browser zoom and text resizing</li>
+          <li>High-contrast and dark mode settings</li>
+        </ul>
+        <p>
+          Testing is performed using automated tools (axe, Lighthouse, WAVE) and
+          manual checks on major browsers and operating systems.
+        </p>
+
+        <h2>Known Limitations</h2>
+        <p>
+          While we strive for full accessibility, some known limitations may
+          exist:
+        </p>
+        <ul>
+          <li>Some third-party widgets or embedded content may not be fully accessible.</li>
+          <li>Occasional missing or incorrect ARIA labels.</li>
+          <li>Incomplete alt text for decorative images.</li>
+          <li>Downloadable documents may not be fully tagged for accessibility.</li>
+        </ul>
+        <p>
+          We are actively working to address these issues. If you encounter a
+          problem not listed here, please let us know.
+        </p>
+
+        <h2>Feedback &amp; Contact</h2>
+        <p>
+          If you experience difficulty accessing any part of the Paperlyte
+          platform, or wish to request an accommodation, report a bug, or provide
+          feedback, please contact us. We aim to respond to accessibility
+          requests within 5 business days.
+        </p>
+        <div class="contact-block">
+          <strong>Accessibility contact</strong><br />
+          Email:
+          <a href="mailto:accessibility@paperlyte.com">accessibility@paperlyte.com</a><br />
+          Alternate:
+          <a href="mailto:legal@paperlyte.com">legal@paperlyte.com</a>
+        </div>
+
+        <h2>Responsible Owner</h2>
+        <p>
+          Accessibility at Paperlyte is owned by our
+          <strong>Accessibility Team Lead</strong>, reachable at
+          <a href="mailto:accessibility@paperlyte.com">accessibility@paperlyte.com</a>.
+          We continue to work toward full WCAG 2.1 AA conformance and review our
+          progress on a recurring basis.
+        </p>
+
+        <h2>Statement Updates</h2>
+        <p>
+          We review and update this statement as improvements are made and as our
+          conformance status changes. The "Last Updated" date above reflects the
+          most recent revision.
+        </p>
+      </main>
+
+      <footer>
+        <p>&copy; {{BUILD_YEAR}} Paperlyte. All rights reserved.</p>
+        <p class="footer-note">
+          This accessibility statement was last updated on
+          <strong>{{BUILD_DATE}}</strong>.
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>

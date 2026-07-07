@@ -23,8 +23,10 @@ function isUnsupportedWindowsAbsolutePath(filePath: string): boolean {
 }
 
 function isPathWithinCwd(filePath: string): boolean {
-  const resolvedPath = path.resolve(filePath)
-  const resolvedCwd = path.resolve(process.cwd())
+  // Safe: this IS the security validation check under test, resolving the
+  // candidate path only to verify it stays within cwd (mirrors filenameValidation.js).
+  const resolvedPath = path.resolve(filePath) // nosemgrep: javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal
+  const resolvedCwd = path.resolve(process.cwd()) // nosemgrep: javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal
   return resolvedPath === resolvedCwd || resolvedPath.startsWith(resolvedCwd + path.sep)
 }
 

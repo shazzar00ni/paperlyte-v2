@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Security - Paperlyte</title>
+    <meta
+      name="description"
+      content="Paperlyte Security - Our security practices, how to report a vulnerability, supported versions, and the protections built into Paperlyte."
+    />
+    <!-- Self-hosted fonts for security -->
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/Inter-Variable-v2.woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/PlayfairDisplay-Variable.woff2"
+      crossorigin
+    />
+    <style>
+      /* Self-hosted Inter Variable Font */
+      @font-face {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 100 900;
+        font-display: swap;
+        src: url('/fonts/Inter-Variable-v2.woff2') format('woff2-variations');
+        font-named-instance: 'Regular';
+      }
+
+      /* Self-hosted Playfair Display Variable Font */
+      @font-face {
+        font-family: 'Playfair Display';
+        font-style: normal;
+        font-weight: 400 900;
+        font-display: swap;
+        src: url('/fonts/PlayfairDisplay-Variable.woff2') format('woff2-variations');
+      }
+
+      .footer-note {
+        font-size: 0.9em;
+        color: var(--color-text-secondary);
+        margin-top: 0.5em;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --color-primary: #1a1a1a;
+        --color-background: #ffffff;
+        --color-surface: #f9fafb;
+        --color-text: #111827;
+        --color-text-secondary: #6b7280;
+        --color-border: #e5e7eb;
+      }
+      body {
+        font-family:
+          "Inter",
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+        line-height: 1.6;
+        color: var(--color-text);
+        background: var(--color-background);
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem;
+      }
+      header {
+        margin-bottom: 3rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 2px solid var(--color-border);
+      }
+      h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: var(--color-text);
+      }
+      .last-updated {
+        color: var(--color-text-secondary);
+        font-size: 0.9rem;
+      }
+      h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.75rem;
+        font-weight: 600;
+        margin: 2.5rem 0 1rem;
+        color: var(--color-text);
+      }
+      h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 1.5rem 0 0.75rem;
+        color: var(--color-text);
+      }
+      p {
+        margin-bottom: 1rem;
+        color: var(--color-text-secondary);
+      }
+      ul,
+      ol {
+        margin: 1rem 0 1rem 1.5rem;
+        color: var(--color-text-secondary);
+      }
+      li {
+        margin-bottom: 0.5rem;
+      }
+      strong {
+        color: var(--color-text);
+        font-weight: 600;
+      }
+      a {
+        color: var(--color-primary);
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0 1.5rem;
+        font-size: 0.95rem;
+      }
+      th,
+      td {
+        border: 1px solid var(--color-border);
+        padding: 0.6rem 0.75rem;
+        text-align: left;
+        vertical-align: top;
+        color: var(--color-text-secondary);
+      }
+      th {
+        background: var(--color-surface);
+        color: var(--color-text);
+        font-weight: 600;
+      }
+      .contact-block {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: 8px;
+        padding: 1rem 1.25rem;
+        margin: 1rem 0 1.5rem;
+        color: var(--color-text-secondary);
+      }
+      .back-link {
+        display: inline-block;
+        color: var(--color-primary);
+        text-decoration: none;
+        margin-bottom: 1rem;
+        font-weight: 500;
+      }
+      .back-link:hover {
+        text-decoration: underline;
+      }
+      footer {
+        margin-top: 4rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--color-border);
+        text-align: center;
+        color: var(--color-text-secondary);
+        font-size: 0.9rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <a href="/" class="back-link">← Back to Paperlyte</a>
+
+      <header>
+        <h1>Security</h1>
+        <p class="last-updated">Last Updated: {{BUILD_DATE}}</p>
+      </header>
+
+      <main>
+        <h2>Our Commitment</h2>
+        <p>
+          Security and privacy are core values of Paperlyte. We take the security
+          of our code, our infrastructure, and our users' data seriously. This
+          page summarizes our security practices and explains how to report a
+          vulnerability. For the complete, technical policy, see our
+          <a
+            href="https://github.com/shazzar00ni/paperlyte-v2/blob/main/docs/SECURITY-POLICY.md"
+            target="_blank"
+            rel="noopener noreferrer"
+            >full Security Policy on GitHub</a
+          >.
+        </p>
+
+        <h2>1. Supported Versions</h2>
+        <p>
+          We release patches for security vulnerabilities for the following
+          versions:
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Version</th>
+              <th scope="col">Supported</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>0.x.x</td>
+              <td>✅ Yes</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>
+          As we are in early development (pre-1.0), we currently support only the
+          latest version. Once we reach 1.0, we will provide security updates for
+          multiple versions.
+        </p>
+
+        <h2>2. Reporting a Vulnerability</h2>
+        <p>
+          If you believe you have found a security vulnerability in Paperlyte, we
+          encourage you to let us know right away through responsible disclosure.
+        </p>
+        <div class="contact-block">
+          <strong>Report security issues to</strong><br />
+          <a href="mailto:security@paperlyte.com">security@paperlyte.com</a>
+        </div>
+
+        <h3>Please do</h3>
+        <ul>
+          <li>
+            Email us privately with a detailed description, steps to reproduce,
+            and the potential impact of the issue.
+          </li>
+          <li>
+            Include the type of vulnerability, affected files or locations, and
+            any proof-of-concept if available.
+          </li>
+          <li>Give us reasonable time to investigate and address the issue.</li>
+        </ul>
+
+        <h3>Please do not</h3>
+        <ul>
+          <li>Open a public GitHub issue for security vulnerabilities.</li>
+          <li>
+            Disclose the vulnerability publicly before it has been addressed.
+          </li>
+          <li>Access, modify, or destroy data that is not yours, or exploit the issue in any way.</li>
+        </ul>
+        <p>
+          You may also use GitHub's private vulnerability reporting feature as an
+          alternative to email.
+        </p>
+
+        <h2>3. Responsible Disclosure Process</h2>
+        <p>When you report an issue, here is what you can expect from us:</p>
+        <ul>
+          <li>
+            <strong>Acknowledgment</strong> of your report within 48 hours.
+          </li>
+          <li>
+            <strong>A detailed response</strong> within 7 days as we investigate
+            and validate the issue.
+          </li>
+          <li>
+            <strong>Resolution and coordinated disclosure</strong>, including
+            crediting you in our security advisory if you wish.
+          </li>
+        </ul>
+
+        <h2>4. Current Security Measures</h2>
+        <ul>
+          <li>
+            <strong>TypeScript strict mode</strong> to catch type-related bugs at
+            compile time.
+          </li>
+          <li>
+            <strong>Static analysis with ESLint</strong> — TypeScript ESLint,
+            React Hooks, and React Refresh rules to catch common mistakes early.
+          </li>
+          <li>
+            <strong>Content Security Policy (CSP)</strong> to help protect against
+            cross-site scripting (XSS).
+          </li>
+          <li>
+            <strong>Secure external links</strong> using
+            <code>rel="noopener noreferrer"</code>.
+          </li>
+          <li>
+            <strong>Dependency hygiene</strong> — a pinned dependency lockfile for
+            deterministic, reproducible builds.
+          </li>
+        </ul>
+
+        <h2>5. Planned Improvements</h2>
+        <ul>
+          <li>End-to-end encryption for note data</li>
+          <li>Two-factor authentication (2FA)</li>
+          <li>Regular security audits and penetration testing</li>
+        </ul>
+
+        <h2>6. Current Limitations</h2>
+        <p>
+          As we are in early development, some protections are not yet in place,
+          including user authentication, encryption at rest, and backend API
+          security. These will be addressed as the project matures. For the full
+          and most current details, please refer to our
+          <a
+            href="https://github.com/shazzar00ni/paperlyte-v2/blob/main/docs/SECURITY-POLICY.md"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Security Policy on GitHub</a
+          >.
+        </p>
+
+        <h2>7. Questions</h2>
+        <p>
+          If you have questions about our security practices or a report you have
+          submitted, contact us at
+          <a href="mailto:security@paperlyte.com">security@paperlyte.com</a>.
+        </p>
+      </main>
+
+      <footer>
+        <p>&copy; {{BUILD_YEAR}} Paperlyte. All rights reserved.</p>
+        <p class="footer-note">
+          This security page was last updated on
+          <strong>{{BUILD_DATE}}</strong>.
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>

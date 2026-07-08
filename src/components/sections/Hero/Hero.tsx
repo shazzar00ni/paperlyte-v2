@@ -37,9 +37,9 @@ export const Hero = (): React.ReactElement => {
               size="large"
               icon="fa-arrow-right"
               iconAriaLabel="Arrow icon"
-              onClick={() => scrollToSection('download')}
+              onClick={() => scrollToSection('email-capture')}
             >
-              Start Writing for Free
+              Join the Waitlist
             </Button>
             <Button variant="secondary" size="large" onClick={() => scrollToSection('features')}>
               See How It Works

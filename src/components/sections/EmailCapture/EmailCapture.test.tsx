@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { EmailCapture } from './EmailCapture'
-import { WAITLIST_COUNT } from '@/constants/waitlist'
+import { LAUNCH_QUARTER, WAITLIST_COUNT } from '@/constants/waitlist'
 
 describe('EmailCapture Section', () => {
   let fetchMock: ReturnType<typeof vi.fn>
@@ -22,27 +22,37 @@ describe('EmailCapture Section', () => {
 
   it('renders the section title', () => {
     render(<EmailCapture />)
-    expect(screen.getByText(`Join ${WAITLIST_COUNT} people on the waitlist`)).toBeInTheDocument()
+    expect(screen.getByText('Get Paperlyte before public launch')).toBeInTheDocument()
+    expect(
+      screen.getByText(`Launching ${LAUNCH_QUARTER} · ${WAITLIST_COUNT} already waiting`)
+    ).toBeInTheDocument()
   })
 
-  it('renders the form with email input and submit button', () => {
+  it('renders the form with an explicitly associated email label and submit button', () => {
     render(<EmailCapture />)
-    expect(screen.getByPlaceholderText('your@email.com')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /Join the Waitlist/i })).toBeInTheDocument()
+    const emailInput = screen.getByLabelText('Work email or personal email')
+
+    expect(emailInput).toHaveAttribute('id', 'email')
+    expect(emailInput).toHaveAttribute('type', 'email')
+    expect(screen.getByRole('button', { name: /Claim Early Access/i })).toBeInTheDocument()
   })
 
   it('renders all benefits', () => {
     render(<EmailCapture />)
-    expect(screen.getByText(/Get early access before public launch/)).toBeInTheDocument()
-    expect(screen.getByText(/Influence features and design decisions/)).toBeInTheDocument()
-    expect(screen.getByText(/Lock in founder pricing/)).toBeInTheDocument()
-    expect(screen.getByText(/Get early product updates and insider tips/)).toBeInTheDocument()
+    expect(
+      screen.getByText(/Early invite before the public launch queue opens/)
+    ).toBeInTheDocument()
+    expect(screen.getByText(/Founder pricing: save 50% for life/)).toBeInTheDocument()
+    expect(screen.getByText(/Product updates focused on launch progress/)).toBeInTheDocument()
+    expect(screen.getByText(/A chance to influence the editor/)).toBeInTheDocument()
   })
 
   it('renders privacy notice', () => {
     render(<EmailCapture />)
     expect(
-      screen.getByText(/We respect your privacy. Unsubscribe anytime. No spam, ever./)
+      screen.getByText(
+        /No spam. One-click unsubscribe. We only use your email for Paperlyte updates./
+      )
     ).toBeInTheDocument()
   })
 
@@ -50,8 +60,8 @@ describe('EmailCapture Section', () => {
     const user = userEvent.setup()
     render(<EmailCapture />)
 
-    const emailInput = screen.getByPlaceholderText('your@email.com')
-    const submitButton = screen.getByRole('button', { name: /Join the Waitlist/i })
+    const emailInput = screen.getByPlaceholderText('you@example.com')
+    const submitButton = screen.getByRole('button', { name: /Claim Early Access/i })
 
     await user.type(emailInput, 'test@example.com')
     await user.click(submitButton)
@@ -78,8 +88,8 @@ describe('EmailCapture Section', () => {
     const user = userEvent.setup()
     render(<EmailCapture />)
 
-    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
-    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+    await user.type(screen.getByPlaceholderText('you@example.com'), 'test@example.com')
+    await user.click(screen.getByRole('button', { name: /Claim Early Access/i }))
 
     await waitFor(() => {
       expect(screen.getByRole('alert')).toHaveTextContent(/Couldn't add you to the waitlist/i)
@@ -96,8 +106,8 @@ describe('EmailCapture Section', () => {
     const user = userEvent.setup()
     render(<EmailCapture />)
 
-    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
-    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+    await user.type(screen.getByPlaceholderText('you@example.com'), 'test@example.com')
+    await user.click(screen.getByRole('button', { name: /Claim Early Access/i }))
 
     await waitFor(() => {
       expect(screen.getByRole('alert')).toHaveTextContent('Invalid email address')
@@ -114,8 +124,8 @@ describe('EmailCapture Section', () => {
     const user = userEvent.setup()
     render(<EmailCapture />)
 
-    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
-    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+    await user.type(screen.getByPlaceholderText('you@example.com'), 'test@example.com')
+    await user.click(screen.getByRole('button', { name: /Claim Early Access/i }))
 
     await waitFor(() => {
       expect(screen.getByRole('alert')).toHaveTextContent(/Too many requests/)
@@ -128,8 +138,8 @@ describe('EmailCapture Section', () => {
     const user = userEvent.setup()
     render(<EmailCapture />)
 
-    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
-    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+    await user.type(screen.getByPlaceholderText('you@example.com'), 'test@example.com')
+    await user.click(screen.getByRole('button', { name: /Claim Early Access/i }))
 
     await waitFor(() => {
       expect(screen.getByRole('alert')).toHaveTextContent(/Connection error. Check your internet/)
@@ -138,7 +148,7 @@ describe('EmailCapture Section', () => {
 
   it('validates email input is required', () => {
     render(<EmailCapture />)
-    const emailInput = screen.getByPlaceholderText('your@email.com') as HTMLInputElement
+    const emailInput = screen.getByPlaceholderText('you@example.com') as HTMLInputElement
     expect(emailInput.required).toBe(true)
   })
 
@@ -152,8 +162,8 @@ describe('EmailCapture Section', () => {
 
       const user = userEvent.setup()
       render(<EmailCapture />)
-      await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
-      await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+      await user.type(screen.getByPlaceholderText('you@example.com'), 'test@example.com')
+      await user.click(screen.getByRole('button', { name: /Claim Early Access/i }))
 
       await waitFor(() => {
         expect(screen.getByRole('alert')).toHaveTextContent(/Connection error/i)
@@ -165,8 +175,8 @@ describe('EmailCapture Section', () => {
 
       const user = userEvent.setup()
       render(<EmailCapture />)
-      await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
-      await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+      await user.type(screen.getByPlaceholderText('you@example.com'), 'test@example.com')
+      await user.click(screen.getByRole('button', { name: /Claim Early Access/i }))
 
       await waitFor(() => {
         expect(screen.getByRole('alert')).toHaveTextContent(/doesn't look right/i)
@@ -176,7 +186,7 @@ describe('EmailCapture Section', () => {
 
   it('email input has aria-invalid=false and no aria-describedby when there is no error', () => {
     render(<EmailCapture />)
-    const emailInput = screen.getByPlaceholderText('your@email.com')
+    const emailInput = screen.getByPlaceholderText('you@example.com')
     expect(emailInput).toHaveAttribute('aria-invalid', 'false')
     expect(emailInput).not.toHaveAttribute('aria-describedby')
   })
@@ -185,11 +195,11 @@ describe('EmailCapture Section', () => {
     const user = userEvent.setup()
     render(<EmailCapture />)
 
-    await user.type(screen.getByPlaceholderText('your@email.com'), 'user..name@example.com')
-    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+    await user.type(screen.getByPlaceholderText('you@example.com'), 'user..name@example.com')
+    await user.click(screen.getByRole('button', { name: /Claim Early Access/i }))
 
     await waitFor(() => {
-      const emailInput = screen.getByPlaceholderText('your@email.com')
+      const emailInput = screen.getByPlaceholderText('you@example.com')
       expect(emailInput).toHaveAttribute('aria-invalid', 'true')
       expect(emailInput).toHaveAttribute('aria-describedby', 'email-error')
       expect(screen.getByRole('alert')).toHaveAttribute('id', 'email-error')
@@ -200,10 +210,10 @@ describe('EmailCapture Section', () => {
     const user = userEvent.setup()
     render(<EmailCapture />)
 
-    const emailInput = screen.getByPlaceholderText('your@email.com')
+    const emailInput = screen.getByPlaceholderText('you@example.com')
     // Type an invalid email that passes HTML5 type="email" but fails our validator
     await user.type(emailInput, 'user..name@example.com')
-    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+    await user.click(screen.getByRole('button', { name: /Claim Early Access/i }))
 
     await waitFor(() => {
       expect(screen.getByRole('alert')).toHaveTextContent(/valid email address/)
@@ -225,14 +235,14 @@ describe('EmailCapture Section', () => {
     const user = userEvent.setup()
     render(<EmailCapture />)
 
-    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
+    await user.type(screen.getByPlaceholderText('you@example.com'), 'test@example.com')
 
     // Click but don't await — submission is in-flight
-    void user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+    void user.click(screen.getByRole('button', { name: /Claim Early Access/i }))
 
     // Loading state should appear while fetch is pending
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /Joining\.\.\./i })).toBeDisabled()
+      expect(screen.getByRole('button', { name: /Saving your spot\.\.\./i })).toBeDisabled()
     })
 
     // Resolve so component finishes cleanly and avoids unmounted-state warnings
@@ -246,8 +256,8 @@ describe('EmailCapture Section', () => {
     const user = userEvent.setup()
     render(<EmailCapture />)
 
-    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
-    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+    await user.type(screen.getByPlaceholderText('you@example.com'), 'test@example.com')
+    await user.click(screen.getByRole('button', { name: /Claim Early Access/i }))
 
     await waitFor(() => {
       expect(screen.getByText(/You're on the list!/)).toBeInTheDocument()

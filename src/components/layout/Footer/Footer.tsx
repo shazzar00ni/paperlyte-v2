@@ -1,8 +1,6 @@
 import { Icon } from '@components/ui/Icon'
+import { BrandLogo } from '@components/ui/BrandLogo'
 import { LEGAL_CONFIG } from '@/constants/legal'
-import logoAvifSrc from '@/assets/logo.avif'
-import logoPngSrc from '@/assets/logo.png'
-import logoWebpSrc from '@/assets/logo.webp'
 import styles from './Footer.module.css'
 
 /** Renders the site footer with navigation links, social links, and legal information. */
@@ -14,20 +12,12 @@ export const Footer = (): React.ReactElement => {
       <div className={styles.container}>
         <div className={styles.grid}>
           <div className={styles.brand}>
-            <div className={styles.logo}>
-              <picture>
-                <source srcSet={logoAvifSrc} type="image/avif" />
-                <source srcSet={logoWebpSrc} type="image/webp" />
-                <img
-                  src={logoPngSrc}
-                  alt="Paperlyte logo"
-                  width="32"
-                  height="32"
-                  className={styles.logoImage}
-                />
-              </picture>
-              <span className={styles.logoText}>Paperlyte.</span>
-            </div>
+            <BrandLogo
+              className={styles.logo}
+              imageClassName={styles.logoImage}
+              textClassName={styles.logoText}
+              text="Paperlyte."
+            />
             <p className={styles.tagline}>Your thoughts, unchained.</p>
             <p className={styles.taglineSecondary}>
               Built with{' '}

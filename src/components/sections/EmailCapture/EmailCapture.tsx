@@ -9,6 +9,7 @@ import { Icon } from '@components/ui/Icon'
 import { WAITLIST_COUNT, LAUNCH_QUARTER } from '@constants/waitlist'
 import {
   EMAIL_CAPTURE_CONTENT as COPY,
+  ASSURANCES,
   BENEFITS,
 } from '@components/sections/EmailCapture/emailCapture.data'
 import styles from './EmailCapture.module.css'
@@ -182,17 +183,21 @@ export const EmailCapture = (): React.ReactElement => {
     <Section id="email-capture" background="surface">
       <div className={styles.container}>
         <AnimatedElement animation="fadeIn">
-          <h2 className={styles.title}>Join {WAITLIST_COUNT} people on the waitlist</h2>
+          <p className={styles.eyebrow}>{COPY.eyebrow}</p>
+          <h2 className={styles.title}>{COPY.title}</h2>
         </AnimatedElement>
 
         <AnimatedElement animation="fadeIn" delay={100}>
-          <p className={styles.subtitle}>Launching {LAUNCH_QUARTER}. Join the waitlist to:</p>
+          <p className={styles.subtitle}>{COPY.subtitle}</p>
+          <p className={styles.socialProof}>
+            Launching {LAUNCH_QUARTER} · {WAITLIST_COUNT} already waiting
+          </p>
         </AnimatedElement>
 
         <AnimatedElement animation="fadeIn" delay={200}>
           <ul className={styles.benefits}>
-            {BENEFITS.map((benefit, index) => (
-              <li key={index} className={styles.benefit}>
+            {BENEFITS.map((benefit) => (
+              <li key={benefit} className={styles.benefit}>
                 <Icon name="fa-check" size="sm" color="var(--color-primary)" />
                 <span>{benefit}</span>
               </li>
@@ -202,6 +207,9 @@ export const EmailCapture = (): React.ReactElement => {
 
         <AnimatedElement animation="fadeIn" delay={300}>
           <form onSubmit={handleSubmit} className={styles.form} noValidate>
+            <label htmlFor="email" className={styles.label}>
+              {COPY.label}
+            </label>
             <div className={styles.inputGroup}>
               <input
                 type="email"
@@ -214,7 +222,6 @@ export const EmailCapture = (): React.ReactElement => {
                 }}
                 required
                 className={styles.input}
-                aria-label="Email address"
                 aria-invalid={!!error}
                 aria-describedby={error ? 'email-error' : undefined}
               />
@@ -234,6 +241,11 @@ export const EmailCapture = (): React.ReactElement => {
                 {error}
               </p>
             )}
+            <ul className={styles.assurances} aria-label="Signup assurances">
+              {ASSURANCES.map((assurance) => (
+                <li key={assurance}>{assurance}</li>
+              ))}
+            </ul>
             <p className={styles.privacy}>{COPY.privacy}</p>
           </form>
         </AnimatedElement>

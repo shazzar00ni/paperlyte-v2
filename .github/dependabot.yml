@@ -17,6 +17,9 @@ updates:
     commit-message:
       prefix: "chore"
       include: "scope"
+    # Wait before proposing updates to newly published versions
+    cooldown:
+      default-days: 7
     # Group minor and patch updates together to reduce PR noise
     groups:
       development-dependencies:
@@ -49,3 +52,6 @@ updates:
       - "automated"
     commit-message:
       prefix: "ci"
+    # Wait before proposing updates to newly published versions
+    cooldown:
+      default-days: 7

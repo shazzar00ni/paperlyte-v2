@@ -3,6 +3,9 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "engines": {
+    "node": "^20.19.0 || ^22.13.0 || >=24"
+  },
   "scripts": {
     "dev": "vite",
     "ci": "npm run lint && vitest run && npm run build",
@@ -32,7 +35,7 @@
   },
   "devDependencies": {
     "@codecov/rollup-plugin": "^2.0.1",
-    "@commitlint/cli": "^21.1.0",
+    "@commitlint/cli": "^20.5.3",
     "@commitlint/config-conventional": "^20.5.3",
     "@eslint/js": "^10.0.1",
     "@lhci/cli": "^0.15.1",

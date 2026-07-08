@@ -188,6 +188,21 @@ function removeAriaHiddenSubtrees(html: string): string {
     const start = match.index
     const afterOpen = start + match[0].length
 
+    // Preserve elements with a non-decorative ARIA role even when they carry
+    // aria-hidden="true". Accordion panels (role="region"), dialogs, groups,
+    // and similar content areas use aria-hidden to hide from screen readers
+    // while collapsed — that is a UX interaction pattern, not decoration.
+    // Only role="none" / role="presentation" (explicitly decorative roles) and
+    // the absence of a role (implicit generic element) indicate decoration.
+    const roleAttr = /\brole\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]*))/i.exec(match[0])
+    if (roleAttr) {
+      const roleValue = (roleAttr[1] ?? roleAttr[2] ?? roleAttr[3] ?? '').toLowerCase().trim()
+      if (roleValue !== 'none' && roleValue !== 'presentation') {
+        // lastIndex is already past this match; continue scanning forward.
+        continue
+      }
+    }
+
     if (ARIA_HIDDEN_VOID_ELEMENTS.has(tagName)) {
       // Void elements have no closing tag: remove only the matched opening tag.
       // Running the depth-counter walk would set pos=result.length on the first
@@ -806,6 +821,12 @@ async function convertOriginToMarkdown(originResponse: Response): Promise<Respon
   // document. Rewriting only that fragment into Markdown and stripping the
   // range headers would break byte-range semantics for the caller.
   if (isPartialContent(originResponse)) return originResponse
+  // A 304 Not Modified response has no body — the conditional GET was sent
+  // against the HTML origin's ETag, but the Markdown ETag is unrelated and
+  // unknown here. Pass through unchanged: the client's cache holds the previous
+  // HTML representation and will use it. Attempting to build a Markdown 304
+  // from an empty body would produce a malformed response and mislead caches.
+  if (originResponse.status === 304) return originResponse
   const html = await originResponse.clone().text()
   const markdown = htmlToMarkdown(sanitizeHtml(html))
   const tokenEstimate = String(Math.ceil(markdown.length / 4))

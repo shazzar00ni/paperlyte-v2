@@ -1581,6 +1581,38 @@ describe('markdown-response edge function', () => {
       expect(body).not.toContain('deco.png')
     })
 
+    it('preserves aria-hidden="true" elements with non-decorative role (e.g. accordion panels with role="region")', async () => {
+      // FAQ accordion panels use aria-hidden={!isOpen}; in the prerendered
+      // HTML all items start closed so every answer has aria-hidden="true".
+      // role="region" signals meaningful content, not decoration — these panels
+      // must survive sanitization so AI agents can read the FAQ answers.
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(
+        htmlResponse(
+          '<div id="faq-1" role="region" aria-hidden="true">' +
+            '<p>Answer text that must be preserved</p>' +
+            '</div>'
+        )
+      )
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).toContain('Answer text that must be preserved')
+    })
+
+    it('still drops decorative aria-hidden="true" elements with role="presentation"', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(
+        htmlResponse('<div role="presentation" aria-hidden="true"><span>Decorative</span></div>')
+      )
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).not.toContain('Decorative')
+    })
+
     it('does not drop elements with aria-hidden="false"', async () => {
       const req = makeRequest('https://example.com/', mdHeaders)
       const ctx = makeContext(
@@ -1667,6 +1699,24 @@ describe('markdown-response edge function', () => {
 
       const vary = result.headers.get('Vary') ?? ''
       expect(vary.toLowerCase()).not.toContain('accept')
+    })
+
+    it('passes through 304 Not Modified responses without attempting Markdown conversion', async () => {
+      // A conditional GET forwarded to the HTML origin may return 304. The
+      // converter cannot produce a valid Markdown ETag or body for a 304, so
+      // it must pass through unchanged rather than building a malformed response.
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(
+        new Response(null, {
+          status: 304,
+          headers: { 'Content-Type': 'text/html; charset=utf-8', ETag: '"abc123"' },
+        })
+      )
+
+      const result = await handler(req, ctx)
+
+      expect(result.status).toBe(304)
+      expect(result.headers.get('Content-Type')).toBe('text/html; charset=utf-8')
     })
   })
 })

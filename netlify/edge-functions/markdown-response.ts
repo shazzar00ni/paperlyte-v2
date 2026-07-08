@@ -194,10 +194,14 @@ function removeAriaHiddenSubtrees(html: string): string {
     // while collapsed — that is a UX interaction pattern, not decoration.
     // Only role="none" / role="presentation" (explicitly decorative roles) and
     // the absence of a role (implicit generic element) indicate decoration.
-    const roleAttr = /\brole\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]*))/i.exec(match[0])
+    // Anchor to a true attribute boundary so data-role="…" and role-like text
+    // inside a quoted attribute value (e.g. title="the region below") are not
+    // captured as the ARIA role. An empty role value is treated as decorative
+    // because role="" is invalid and confers no semantic meaning.
+    const roleAttr = /(?:^|[\s"'>])role\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]*))/i.exec(match[0])
     if (roleAttr) {
       const roleValue = (roleAttr[1] ?? roleAttr[2] ?? roleAttr[3] ?? '').toLowerCase().trim()
-      if (roleValue !== 'none' && roleValue !== 'presentation') {
+      if (roleValue !== '' && roleValue !== 'none' && roleValue !== 'presentation') {
         // lastIndex is already past this match; continue scanning forward.
         continue
       }

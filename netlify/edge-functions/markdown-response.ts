@@ -142,6 +142,67 @@ function decodeEntities(text: string): string {
 }
 
 /**
+ * Remove elements with `aria-hidden="true"` and their entire subtrees.
+ *
+ * Decorative containers (mockup screenshots, stat badges, icon sprites) are
+ * hidden from the accessibility tree with `aria-hidden="true"` but still
+ * present in the raw HTML. Including them in the Markdown output would add
+ * noise for AI agents processing page content.
+ *
+ * Uses a depth-counter scan so that nested elements of the same tag type
+ * inside the aria-hidden container are handled correctly — a regex-only
+ * approach cannot track arbitrary nesting depth.
+ */
+function removeAriaHiddenSubtrees(html: string): string {
+  // Quote-aware opening-tag pattern: captures the tag name and requires the
+  // aria-hidden="true" attribute anywhere in the attribute list.
+  const ARIA_HIDDEN_OPEN =
+    /<([\w][\w-]*)(?:[^>"']|"[^"]*"|'[^']*')*\baria-hidden\s*=\s*["']true["'](?:[^>"']|"[^"]*"|'[^']*')*>/gi
+
+  let result = html
+
+  let match: RegExpExecArray | null
+  while ((match = ARIA_HIDDEN_OPEN.exec(result)) !== null) {
+    const tagName = match[1].toLowerCase()
+    const start = match.index
+    const afterOpen = start + match[0].length
+
+    // Walk forward with a depth counter to locate the matching closing tag,
+    // correctly skipping over nested elements of the same type.
+    const openTagRe = new RegExp(`<${tagName}[\\s>]`, 'gi')
+    const closeTagRe = new RegExp(`<\\/${tagName}\\s*>`, 'gi')
+    let depth = 1
+    let pos = afterOpen
+
+    while (depth > 0 && pos < result.length) {
+      openTagRe.lastIndex = pos
+      closeTagRe.lastIndex = pos
+      const nextOpen = openTagRe.exec(result)
+      const nextClose = closeTagRe.exec(result)
+
+      if (!nextClose) {
+        pos = result.length
+        break
+      }
+      if (nextOpen && nextOpen.index < nextClose.index) {
+        depth++
+        pos = nextOpen.index + nextOpen[0].length
+      } else {
+        depth--
+        pos = nextClose.index + nextClose[0].length
+      }
+    }
+
+    result = result.slice(0, start) + result.slice(pos)
+    // Reset so the next exec() starts from where the removed subtree began,
+    // not from the now-stale lastIndex position.
+    ARIA_HIDDEN_OPEN.lastIndex = 0
+  }
+
+  return result
+}
+
+/**
  * Sanitize HTML by removing dangerous tags and event handler attributes.
  *
  * - Removes tags in REMOVE_TAGS together with their entire subtrees.
@@ -151,6 +212,8 @@ function decodeEntities(text: string): string {
  * - Removes orphaned closing tags (e.g. `</script\t\nbar>`).
  * - Removes HTML comment nodes (including unclosed comments at end of string).
  * - Removes event handler attributes (onclick, onload, etc.).
+ * - Removes aria-hidden="true" subtrees (decorative containers that should
+ *   not appear as content in the Markdown output).
  *
  * Returns the sanitized HTML string.
  */
@@ -162,6 +225,12 @@ function sanitizeHtml(html: string): string {
   // e.g. <!-- don't add <script> here --> would otherwise match the
   // unclosed-tag truncation and delete all following content.
   result = result.replace(/<!--[\s\S]*?(?:-->|$)/g, '')
+
+  // Remove decorative aria-hidden="true" subtrees. These are elements that
+  // are intentionally excluded from the accessibility tree (mockup images,
+  // stat badges, icon sprites); they must not appear as page content in the
+  // Markdown output.
+  result = removeAriaHiddenSubtrees(result)
 
   // Remove void excluded elements first — they have no closing tag so the
   // subtree-removal and truncate-to-end steps would over-consume content.
@@ -592,23 +661,36 @@ function prefersMarkdownOverHtml(markdownQ: number, htmlQ: number): boolean {
 
 /**
  * Returns true when the request's Accept header includes `text/markdown` with
- * a positive q-value that is at least as high as text/html's q-value. Respects
- * RFC 7231 §5.3: media-type tokens are case-insensitive and optional whitespace
- * is allowed around the `=` sign (so `Q=0` and `q = 0` are valid opt-outs).
- * When text/html has a strictly higher q-value the client prefers HTML and the
- * request passes through unchanged.
+ * a positive q-value that is at least as high as text/html's effective q-value.
+ * Respects RFC 7231 §5.3: media-type tokens are case-insensitive and optional
+ * whitespace is allowed around the `=` sign (so `Q=0` and `q = 0` are valid
+ * opt-outs). When text/html has a strictly higher effective q-value the client
+ * prefers HTML and the request passes through unchanged.
+ *
+ * Wildcard handling follows RFC 7231 most-specific-wins: an explicit text/html
+ * token overrides text/STAR, which overrides STAR/STAR. Wildcards are only used
+ * to derive an effective HTML q-value when no more-specific token is present, so
+ * Accept: text/markdown;q=0.5, STAR/STAR;q=1 does NOT serve Markdown (HTML is
+ * acceptable at q=1 via the wildcard, outranking markdown at q=0.5).
  */
 function acceptsMarkdownHeader(request: Request): boolean {
   const accept = request.headers.get('Accept') ?? ''
   let markdownQ = -1
   let htmlQ = -1
+  let textWildQ = -1
+  let anyWildQ = -1
   for (const token of accept.split(',')) {
     const mediaType = token.trim().split(';')[0].trim().toLowerCase()
     const q = parseQValue(token.trim())
     if (mediaType === 'text/markdown') markdownQ = Math.max(markdownQ, q)
     else if (mediaType === 'text/html') htmlQ = Math.max(htmlQ, q)
+    else if (mediaType === 'text/*') textWildQ = Math.max(textWildQ, q)
+    else if (mediaType === '*/*') anyWildQ = Math.max(anyWildQ, q)
   }
-  return prefersMarkdownOverHtml(markdownQ, htmlQ)
+  // Apply RFC 7231 most-specific-wins: only fall back to a wildcard when a
+  // more-specific token is absent.
+  const effectiveHtmlQ = htmlQ >= 0 ? htmlQ : textWildQ >= 0 ? textWildQ : anyWildQ
+  return prefersMarkdownOverHtml(markdownQ, effectiveHtmlQ)
 }
 
 /** Returns true when the response is a byte-range fragment that must not be rewritten. */
@@ -715,12 +797,12 @@ async function convertOriginToMarkdown(originResponse: Response): Promise<Respon
  */
 export default async function handler(request: Request, context: Context): Promise<Response> {
   // ── 1. Gate on HTTP method ──────────────────────────────────────────────
-  // Only GET requests should enter the conversion path.
-  // HEAD responses must not include a message body, so pass them through
-  // unchanged instead of rewriting them into Markdown.
-  // Non-GET requests may also be non-idempotent; replaying them via
-  // context.next() inside the error catch block would be unsafe.
-  if (request.method !== 'GET') {
+  // Non-GET, non-HEAD requests (POST, PUT, DELETE, etc.) are passed through
+  // unchanged — they may be non-idempotent so replaying them via context.next()
+  // inside the error catch block would be unsafe.
+  // HEAD requests participate in content negotiation (steps 2–3) and then
+  // return the Markdown headers a GET would have returned, but with a null body.
+  if (request.method !== 'GET' && request.method !== 'HEAD') {
     return context.next()
   }
 
@@ -740,14 +822,41 @@ export default async function handler(request: Request, context: Context): Promi
     return context.next()
   }
 
+  // ── 4. HEAD: return negotiated headers without a body ───────────────────
+  // Crawlers and HTTP metadata tools commonly send HEAD before GET to discover
+  // the Content-Type of a resource. Passing HEAD through unchanged would
+  // advertise text/html even though a GET with the same Accept header would
+  // deliver text/markdown. Returning Markdown headers (with a null body) keeps
+  // what HEAD advertises in sync with what GET delivers, so Markdown-aware
+  // clients and caches can correctly decide whether to issue the full GET.
+  if (request.method === 'HEAD') {
+    try {
+      const headOrigin = await context.next()
+      const headCt = (headOrigin.headers.get('Content-Type') ?? '').toLowerCase()
+      if (!headCt.includes('text/html') || isPartialContent(headOrigin)) return headOrigin
+      // Token estimate is 0: no body conversion is performed for HEAD.
+      return new Response(null, {
+        status: headOrigin.status,
+        statusText: headOrigin.statusText,
+        headers: buildMarkdownHeaders(headOrigin, '0'),
+      })
+    } catch {
+      return new Response(null, {
+        status: 502,
+        statusText: 'Bad Gateway',
+        headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+      })
+    }
+  }
+
   let originResponse: Response | undefined
 
   try {
-    // ── 4. Fetch from origin and convert ─────────────────────────────────
+    // ── 5. Fetch from origin and convert ─────────────────────────────────
     originResponse = await context.next()
     return await convertOriginToMarkdown(originResponse)
   } catch (err) {
-    // ── 5. Fallback: pass through to origin unchanged ─────────────────────
+    // ── 6. Fallback: pass through to origin unchanged ─────────────────────
     // Log pathname only — never request.url — to avoid persisting sensitive
     // query parameters (tokens, emails, campaign IDs) in edge logs.
     // console.error is the correct logging mechanism in the Deno-based Edge

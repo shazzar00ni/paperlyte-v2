@@ -98,20 +98,67 @@ describe('markdown-response edge function', () => {
       expect(result.headers.get('Content-Type')).toBe('text/markdown; charset=utf-8')
     })
 
-    it('passes through HEAD requests unchanged (HEAD responses must not include a body)', async () => {
+    it('returns text/markdown headers for HEAD + Accept: text/markdown (no body)', async () => {
       const req = new Request('https://example.com/', {
         method: 'HEAD',
         headers: { Accept: 'text/markdown' },
       })
       const ctx = makeContext(htmlResponse('<p>Home</p>'))
 
+      const result = await handler(req, ctx)
+
+      // HEAD should expose the same Content-Type a GET would return so that
+      // crawlers and CDN probers learn Markdown availability without fetching
+      // the full body. The response body must be empty (null).
+      expect(result.headers.get('Content-Type')).toBe('text/markdown; charset=utf-8')
+      expect(result.headers.get('Vary')?.toLowerCase()).toContain('accept')
+      expect(await result.text()).toBe('')
+    })
+
+    it('adds Vary: Accept to HTML HEAD responses when Accept: text/markdown is absent', async () => {
+      const req = new Request('https://example.com/', { method: 'HEAD' })
+      const ctx = makeContext(htmlResponse('<p>Home</p>'))
+
+      const result = await handler(req, ctx)
+
+      expect(result.headers.get('Content-Type')).toBe('text/html; charset=utf-8')
+      expect((result.headers.get('Vary') ?? '').toLowerCase()).toContain('accept')
+    })
+
+    it('passes HEAD requests on excluded paths through unchanged', async () => {
+      const req = new Request('https://example.com/assets/logo.png', {
+        method: 'HEAD',
+        headers: { Accept: 'text/markdown' },
+      })
+      const ctx = makeContext(
+        new Response(null, {
+          status: 200,
+          headers: { 'Content-Type': 'image/png' },
+        })
+      )
+
       await handler(req, ctx)
 
-      // HEAD responses must not include a message body, so the handler passes
-      // HEAD through unchanged rather than converting it to Markdown.
       expect(ctx.next).toHaveBeenCalledOnce()
       const result = await ctx.next.mock.results[0].value
-      expect(result.headers.get('Content-Type')).not.toBe('text/markdown; charset=utf-8')
+      expect(result.headers.get('Content-Type')).toBe('image/png')
+    })
+
+    it('passes HEAD requests through unchanged for non-HTML origin responses', async () => {
+      const req = new Request('https://example.com/data.json', {
+        method: 'HEAD',
+        headers: { Accept: 'text/markdown' },
+      })
+      const ctx = makeContext(
+        new Response(null, {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        })
+      )
+
+      const result = await handler(req, ctx)
+
+      expect(result.headers.get('Content-Type')).toBe('application/json')
     })
   })
 
@@ -253,6 +300,73 @@ describe('markdown-response edge function', () => {
       // Equal q-values: edge function preference breaks the tie in favour of Markdown
       const req = makeRequest('https://example.com/', {
         Accept: 'text/html;q=0.9, text/markdown;q=0.9',
+      })
+      const ctx = makeContext(htmlResponse('<p>Page</p>'))
+
+      const result = await handler(req, ctx)
+
+      expect(result.headers.get('Content-Type')).toBe('text/markdown; charset=utf-8')
+    })
+
+    it('passes through when */* has a higher q-value than text/markdown (RFC 7231 wildcard)', async () => {
+      // */* at q=1 outranks text/markdown at q=0.5 — HTML is the more specific
+      // representation and is preferred via the wildcard.
+      const req = makeRequest('https://example.com/', {
+        Accept: 'text/markdown;q=0.5, */*;q=1',
+      })
+      const ctx = makeContext(htmlResponse('<p>Page</p>'))
+
+      await handler(req, ctx)
+
+      expect(ctx.next).toHaveBeenCalledOnce()
+      const result = await ctx.next.mock.results[0].value
+      expect(result.headers.get('Content-Type')).not.toBe('text/markdown; charset=utf-8')
+    })
+
+    it('passes through when text/* has a higher q-value than text/markdown', async () => {
+      // text/* at q=1 implies text/html at q=1, outranking text/markdown at q=0.5.
+      const req = makeRequest('https://example.com/', {
+        Accept: 'text/markdown;q=0.5, text/*;q=1',
+      })
+      const ctx = makeContext(htmlResponse('<p>Page</p>'))
+
+      await handler(req, ctx)
+
+      expect(ctx.next).toHaveBeenCalledOnce()
+      const result = await ctx.next.mock.results[0].value
+      expect(result.headers.get('Content-Type')).not.toBe('text/markdown; charset=utf-8')
+    })
+
+    it('serves Markdown when text/markdown q-value exceeds */* q-value', async () => {
+      // text/markdown at q=1 beats */* at q=0.5 even though wildcard covers HTML.
+      const req = makeRequest('https://example.com/', {
+        Accept: 'text/markdown, */*;q=0.5',
+      })
+      const ctx = makeContext(htmlResponse('<p>Page</p>'))
+
+      const result = await handler(req, ctx)
+
+      expect(result.headers.get('Content-Type')).toBe('text/markdown; charset=utf-8')
+    })
+
+    it('serves Markdown when text/markdown and */* share an equal q-value (tie)', async () => {
+      // When q-values are equal, the edge function preference breaks the tie in
+      // favour of Markdown.
+      const req = makeRequest('https://example.com/', {
+        Accept: 'text/markdown, */*',
+      })
+      const ctx = makeContext(htmlResponse('<p>Page</p>'))
+
+      const result = await handler(req, ctx)
+
+      expect(result.headers.get('Content-Type')).toBe('text/markdown; charset=utf-8')
+    })
+
+    it('respects explicit text/html q-value over text/* wildcard (most-specific-wins)', async () => {
+      // text/html;q=0.3 overrides text/*;q=1 — explicit token is more specific.
+      // text/markdown;q=0.9 > text/html;q=0.3, so Markdown should be served.
+      const req = makeRequest('https://example.com/', {
+        Accept: 'text/markdown;q=0.9, text/html;q=0.3, text/*;q=1',
       })
       const ctx = makeContext(htmlResponse('<p>Page</p>'))
 
@@ -1402,6 +1516,70 @@ describe('markdown-response edge function', () => {
 
       expect(body).not.toContain('<!--')
       expect(body).toContain('Content')
+    })
+
+    it('drops aria-hidden="true" subtrees so decorative content is excluded from Markdown', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(
+        htmlResponse(
+          '<p>Visible</p>' +
+            '<div aria-hidden="true"><span>8ms</span><span>RESPONSE TIME</span></div>' +
+            '<p>After</p>'
+        )
+      )
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).toContain('Visible')
+      expect(body).toContain('After')
+      expect(body).not.toContain('8ms')
+      expect(body).not.toContain('RESPONSE TIME')
+    })
+
+    it('drops aria-hidden="true" subtrees that contain nested same-type elements', async () => {
+      // The container is a <div aria-hidden="true"> that wraps nested <div> children.
+      // A depth-counter approach (not a simple regex) is needed to find the matching
+      // closing tag without stopping at the first inner </div>.
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(
+        htmlResponse(
+          '<p>Before</p>' +
+            '<div aria-hidden="true">' +
+            '<div class="inner"><span>Hidden stat</span></div>' +
+            '</div>' +
+            '<p>After</p>'
+        )
+      )
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).toContain('Before')
+      expect(body).toContain('After')
+      expect(body).not.toContain('Hidden stat')
+    })
+
+    it('does not drop elements with aria-hidden="false"', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(
+        htmlResponse('<div aria-hidden="false"><p>Visible content</p></div>')
+      )
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).toContain('Visible content')
+    })
+
+    it('does not drop elements without aria-hidden', async () => {
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(htmlResponse('<div class="hero"><p>Main content</p></div>'))
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).toContain('Main content')
     })
 
     it('rejects entity-encoded javascript: href (e.g. javascript&#58;alert(1))', async () => {

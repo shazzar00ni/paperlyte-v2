@@ -45,7 +45,7 @@ jobs:
         if: steps.check-config.outputs.configured == 'true'
         uses: SonarSource/sonarqube-scan-action@713881670b6b3676cda39549040e2d88c70d582e # v8.2.0
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # nosemgrep: generic.secrets.security.detected-sonarqube-docs-api-key.detected-sonarqube-docs-api-key
         with:
           args: >
             -Dsonar.projectKey="${{ vars.SONAR_PROJECT_KEY }}"

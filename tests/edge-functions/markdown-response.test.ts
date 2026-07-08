@@ -1560,6 +1560,27 @@ describe('markdown-response edge function', () => {
       expect(body).not.toContain('Hidden stat')
     })
 
+    it('drops aria-hidden="true" void elements (img, hr, br) without consuming the rest of the document', async () => {
+      // Void elements have no closing tag. Without a void-element guard the
+      // depth-counter walk sets pos=result.length on the first iteration
+      // (nextClose is null) and silently drops everything after the element.
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(
+        htmlResponse(
+          '<p>Before</p>' +
+            '<img aria-hidden="true" src="deco.png" alt="">' +
+            '<p>After</p>'
+        )
+      )
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).toContain('Before')
+      expect(body).toContain('After')
+      expect(body).not.toContain('deco.png')
+    })
+
     it('does not drop elements with aria-hidden="false"', async () => {
       const req = makeRequest('https://example.com/', mdHeaders)
       const ctx = makeContext(

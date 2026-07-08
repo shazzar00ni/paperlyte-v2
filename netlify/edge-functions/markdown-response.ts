@@ -153,6 +153,27 @@ function decodeEntities(text: string): string {
  * inside the aria-hidden container are handled correctly — a regex-only
  * approach cannot track arbitrary nesting depth.
  */
+// HTML void elements — they have no closing tag so the depth-counter subtree
+// walk must never be applied to them. Mirroring the hazard documented for
+// VOID_REMOVE_TAGS: scanning for a closing tag that can never arrive would
+// consume `pos = result.length` and silently delete the rest of the document.
+const ARIA_HIDDEN_VOID_ELEMENTS = new Set([
+  'area',
+  'base',
+  'br',
+  'col',
+  'embed',
+  'hr',
+  'img',
+  'input',
+  'link',
+  'meta',
+  'param',
+  'source',
+  'track',
+  'wbr',
+])
+
 function removeAriaHiddenSubtrees(html: string): string {
   // Quote-aware opening-tag pattern: captures the tag name and requires the
   // aria-hidden="true" attribute anywhere in the attribute list.
@@ -166,6 +187,15 @@ function removeAriaHiddenSubtrees(html: string): string {
     const tagName = match[1].toLowerCase()
     const start = match.index
     const afterOpen = start + match[0].length
+
+    if (ARIA_HIDDEN_VOID_ELEMENTS.has(tagName)) {
+      // Void elements have no closing tag: remove only the matched opening tag.
+      // Running the depth-counter walk would set pos=result.length on the first
+      // iteration (nextClose is null) and silently drop the rest of the document.
+      result = result.slice(0, start) + result.slice(afterOpen)
+      ARIA_HIDDEN_OPEN.lastIndex = 0
+      continue
+    }
 
     // Walk forward with a depth counter to locate the matching closing tag,
     // correctly skipping over nested elements of the same type.

@@ -825,11 +825,10 @@ async function convertOriginToMarkdown(originResponse: Response): Promise<Respon
   // document. Rewriting only that fragment into Markdown and stripping the
   // range headers would break byte-range semantics for the caller.
   if (isPartialContent(originResponse)) return originResponse
-  // A 304 Not Modified response has no body — the conditional GET was sent
-  // against the HTML origin's ETag, but the Markdown ETag is unrelated and
-  // unknown here. Pass through unchanged: the client's cache holds the previous
-  // HTML representation and will use it. Attempting to build a Markdown 304
-  // from an empty body would produce a malformed response and mislead caches.
+  // Defensive guard: the handler calls context.next({ sendConditionalRequest: false })
+  // so the origin should never return 304 for Markdown requests. If one arrives
+  // anyway (e.g. an intermediary ignores the flag), pass it through rather than
+  // trying to build a Markdown response from an empty body.
   if (originResponse.status === 304) return originResponse
   const html = await originResponse.clone().text()
   const markdown = htmlToMarkdown(sanitizeHtml(html))
@@ -886,7 +885,7 @@ export default async function handler(request: Request, context: Context): Promi
   // clients and caches can correctly decide whether to issue the full GET.
   if (request.method === 'HEAD') {
     try {
-      const headOrigin = await context.next()
+      const headOrigin = await context.next({ sendConditionalRequest: false })
       const headCt = (headOrigin.headers.get('Content-Type') ?? '').toLowerCase()
       if (!headCt.includes('text/html') || isPartialContent(headOrigin)) return headOrigin
       // Token estimate is 0: no body conversion is performed for HEAD.
@@ -908,7 +907,10 @@ export default async function handler(request: Request, context: Context): Promi
 
   try {
     // ── 5. Fetch from origin and convert ─────────────────────────────────
-    originResponse = await context.next()
+    // sendConditionalRequest: false strips If-None-Match / If-Modified-Since so
+    // the origin always returns a full 200 body we can convert. Forwarding those
+    // headers could cause a 304 with no body, making conversion impossible.
+    originResponse = await context.next({ sendConditionalRequest: false })
     return await convertOriginToMarkdown(originResponse)
   } catch (err) {
     // ── 6. Fallback: pass through to origin unchanged ─────────────────────

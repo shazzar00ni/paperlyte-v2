@@ -1701,10 +1701,34 @@ describe('markdown-response edge function', () => {
       expect(vary.toLowerCase()).not.toContain('accept')
     })
 
+    it('passes sendConditionalRequest: false to context.next for Markdown GET requests', async () => {
+      // Forwarding If-None-Match / If-Modified-Since to the HTML origin can cause
+      // a 304 with no body, making conversion impossible. The handler must disable
+      // conditional forwarding so the origin always returns a full 200 body.
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(htmlResponse('<p>Hello</p>'))
+
+      await handler(req, ctx)
+
+      expect(ctx.next).toHaveBeenCalledWith({ sendConditionalRequest: false })
+    })
+
+    it('passes sendConditionalRequest: false to context.next for Markdown HEAD requests', async () => {
+      const req = new Request('https://example.com/', {
+        method: 'HEAD',
+        headers: mdHeaders,
+      })
+      const ctx = makeContext(htmlResponse(''))
+
+      await handler(req, ctx)
+
+      expect(ctx.next).toHaveBeenCalledWith({ sendConditionalRequest: false })
+    })
+
     it('passes through 304 Not Modified responses without attempting Markdown conversion', async () => {
-      // A conditional GET forwarded to the HTML origin may return 304. The
-      // converter cannot produce a valid Markdown ETag or body for a 304, so
-      // it must pass through unchanged rather than building a malformed response.
+      // Defensive guard: with sendConditionalRequest:false the origin should not
+      // return 304, but if it does (e.g. an intermediary injects one), the handler
+      // must pass it through rather than building a malformed response from an empty body.
       const req = makeRequest('https://example.com/', mdHeaders)
       const ctx = makeContext(
         new Response(null, {

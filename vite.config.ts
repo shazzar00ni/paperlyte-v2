@@ -3,6 +3,7 @@ import type { Plugin, IndexHtmlTransformContext, HtmlTagDescriptor } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 import { codecovRollupPlugin } from '@codecov/rollup-plugin'
+import { sentryVitePlugin } from '@sentry/vite-plugin'
 
 /**
  * Regular expression that matches only the Inter latin static font files
@@ -155,6 +156,23 @@ export default defineConfig({
           }),
         ]
       : []),
+    // Only instantiate the Sentry plugin when an auth token is present (CI/deploy
+    // environment). Uploads source maps so production stack traces resolve to real
+    // file/line info instead of minified code, then deletes the local .map files so
+    // they are never published alongside the deployed bundle. Must be listed last so
+    // it sees the fully bundled output from the other plugins.
+    ...(process.env.SENTRY_AUTH_TOKEN
+      ? [
+          sentryVitePlugin({
+            org: process.env.SENTRY_ORG,
+            project: process.env.SENTRY_PROJECT,
+            authToken: process.env.SENTRY_AUTH_TOKEN,
+            sourcemaps: {
+              filesToDeleteAfterUpload: ['dist/**/*.js.map'],
+            },
+          }),
+        ]
+      : []),
   ],
 
   // Path resolution configuration
@@ -174,6 +192,11 @@ export default defineConfig({
 
   // Production build configuration
   build: {
+    // Hidden source maps: generated for Sentry to upload (readable stack traces in
+    // production) but not referenced via a //# sourceMappingURL comment in the
+    // shipped JS, so browsers/tools never try to fetch them from the public bundle.
+    // The Sentry plugin above deletes the local .map files after upload.
+    sourcemap: 'hidden',
     // Split CSS into separate files for better caching
     cssCodeSplit: true,
     // Use esbuild for minification (explicit devDependency, supported by Vite 8)

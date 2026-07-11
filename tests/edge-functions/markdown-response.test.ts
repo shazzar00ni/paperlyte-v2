@@ -1628,8 +1628,8 @@ describe('markdown-response edge function', () => {
       expect(body).not.toContain('Decorative')
     })
 
-    it('preserves inline-text aria-hidden="true" elements such as CounterAnimation display spans', async () => {
-      // CounterAnimation renders the visible statistic number inside
+    it('preserves classless inline aria-hidden="true" spans (CounterAnimation display-value pattern)', async () => {
+      // CounterAnimation renders the visible statistic number inside a classless
       // `<span aria-hidden="true">5,000</span>` while placing the accessible
       // text on the parent <output> via aria-label. Removing the span would
       // leave only an empty placeholder in the Markdown; the span must survive.
@@ -1646,6 +1646,31 @@ describe('markdown-response edge function', () => {
       const body = await result.text()
 
       expect(body).toContain('5,000')
+    })
+
+    it('strips class-bearing inline aria-hidden="true" elements (ligature icon font pattern)', async () => {
+      // Icon fonts (Material Icons, Font Awesome glyph mode, etc.) render icons
+      // by placing a ligature keyword inside a class-bearing inline element:
+      // `<i class="material-icons" aria-hidden="true">menu</i>`. The class
+      // triggers the glyph; the text "menu" is purely decorative and must not
+      // appear in the converted Markdown output.
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(
+        htmlResponse(
+          '<div>' +
+            '<i class="material-icons" aria-hidden="true">menu</i>' +
+            '<span class="icon" aria-hidden="true">delete</span>' +
+            '<p>Real content</p>' +
+            '</div>'
+        )
+      )
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).not.toContain('menu')
+      expect(body).not.toContain('delete')
+      expect(body).toContain('Real content')
     })
 
     it('does not drop elements with aria-hidden="false"', async () => {

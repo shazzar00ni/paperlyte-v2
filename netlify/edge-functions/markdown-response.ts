@@ -243,12 +243,18 @@ function removeAriaHiddenSubtrees(html: string): string {
     }
 
     // Inline phrasing elements (span, em, strong, etc.) with aria-hidden="true"
-    // are typically used to hide a formatted display value while the accessible
-    // text lives on a parent via aria-label (pattern used by CounterAnimation).
-    // Removing the element would also remove the visible text that Markdown
-    // readers see, so preserve the entire subtree as-is.
+    // are sometimes used to hide a formatted display value while the accessible
+    // text lives on a parent via aria-label (CounterAnimation pattern:
+    // `<span aria-hidden="true">5,000</span>`). Preserving these lets Markdown
+    // readers see the numeric value. However, ligature icon fonts (Material Icons,
+    // etc.) use the same pattern with a class attribute to trigger the glyph:
+    // `<i class="material-icons" aria-hidden="true">menu</i>`. Emitting "menu"
+    // into Markdown is spurious. Only preserve classless inline elements — class-
+    // bearing ones are treated as decorative and removed as normal.
     if (ARIA_HIDDEN_INLINE_TEXT_ELEMENTS.has(tagName)) {
-      continue
+      if (extractAttr(match[0], 'class') === '') {
+        continue
+      }
     }
 
     if (ARIA_HIDDEN_VOID_ELEMENTS.has(tagName)) {

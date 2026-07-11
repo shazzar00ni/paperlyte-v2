@@ -43,10 +43,8 @@ jobs:
           node-version: "20"
           cache: "npm"
 
-      # npm's min-release-age (.npmrc) is only honored by npm >=11.10, which
-      # is newer than what Node 20 bundles.
       - name: Upgrade npm
-        run: npm install -g npm@11.10.0
+        uses: ./.github/actions/upgrade-npm
 
       - name: Install dependencies
         run: npm ci
@@ -121,10 +119,8 @@ jobs:
           node-version: "20"
           cache: "npm"
 
-      # npm's min-release-age (.npmrc) is only honored by npm >=11.10, which
-      # is newer than what Node 20 bundles.
       - name: Upgrade npm
-        run: npm install -g npm@11.10.0
+        uses: ./.github/actions/upgrade-npm
 
       - name: Install dependencies
         run: npm ci
@@ -220,10 +216,8 @@ jobs:
           node-version: "20"
           cache: "npm"
 
-      # npm's min-release-age (.npmrc) is only honored by npm >=11.10, which
-      # is newer than what Node 20 bundles.
       - name: Upgrade npm
-        run: npm install -g npm@11.10.0
+        uses: ./.github/actions/upgrade-npm
 
       - name: Install dependencies
         run: npm ci
@@ -292,10 +286,8 @@ jobs:
           node-version: "20"
           cache: "npm"
 
-      # npm's min-release-age (.npmrc) is only honored by npm >=11.10, which
-      # is newer than what Node 20 bundles.
       - name: Upgrade npm
-        run: npm install -g npm@11.10.0
+        uses: ./.github/actions/upgrade-npm
 
       - name: Install dependencies
         run: npm ci
@@ -407,10 +399,8 @@ jobs:
           node-version: "20"
           cache: "npm"
 
-      # npm's min-release-age (.npmrc) is only honored by npm >=11.10, which
-      # is newer than what Node 20 bundles.
       - name: Upgrade npm
-        run: npm install -g npm@11.10.0
+        uses: ./.github/actions/upgrade-npm
 
       - name: Install dependencies
         run: npm ci
@@ -481,10 +471,8 @@ jobs:
           node-version: "20"
           cache: "npm"
 
-      # npm's min-release-age (.npmrc) is only honored by npm >=11.10, which
-      # is newer than what Node 20 bundles.
       - name: Upgrade npm
-        run: npm install -g npm@11.10.0
+        uses: ./.github/actions/upgrade-npm
 
       - name: Install dependencies
         run: npm ci

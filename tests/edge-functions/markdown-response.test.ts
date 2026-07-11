@@ -986,6 +986,21 @@ describe('markdown-response edge function', () => {
       expect(body).not.toContain('data-track=')
       expect(body).toContain('[Link](/page)')
     })
+
+    it('uses the real href when an earlier attribute value contains the word "href"', async () => {
+      // extractAttr must not match "href=/tracking" inside title="see href=/tracking here"
+      // — it should scan attribute pairs in order and only match the real href attribute.
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(
+        htmlResponse('<a title="see href=/tracking here" href="/real">docs</a>')
+      )
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).toContain('[docs](/real)')
+      expect(body).not.toContain('/tracking')
+    })
   })
 
   // ── Sanitisation: dangerous tags and content removal ─────────────────────
@@ -1611,6 +1626,26 @@ describe('markdown-response edge function', () => {
       const body = await result.text()
 
       expect(body).not.toContain('Decorative')
+    })
+
+    it('preserves inline-text aria-hidden="true" elements such as CounterAnimation display spans', async () => {
+      // CounterAnimation renders the visible statistic number inside
+      // `<span aria-hidden="true">5,000</span>` while placing the accessible
+      // text on the parent <output> via aria-label. Removing the span would
+      // leave only an empty placeholder in the Markdown; the span must survive.
+      const req = makeRequest('https://example.com/', mdHeaders)
+      const ctx = makeContext(
+        htmlResponse(
+          '<output aria-label="5000 notes created">' +
+            '<span aria-hidden="true">5,000</span>' +
+            '</output>'
+        )
+      )
+
+      const result = await handler(req, ctx)
+      const body = await result.text()
+
+      expect(body).toContain('5,000')
     })
 
     it('does not drop elements with aria-hidden="false"', async () => {

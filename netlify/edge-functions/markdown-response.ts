@@ -174,6 +174,41 @@ const ARIA_HIDDEN_VOID_ELEMENTS = new Set([
   'wbr',
 ])
 
+// Inline phrasing elements that may carry aria-hidden="true" to hide a
+// formatted presentation value while the accessible value lives on an ancestor
+// (e.g. CounterAnimation renders the display number in
+// `<span aria-hidden="true">5,000</span>` and puts the accessible number on an
+// outer <output> via aria-label). Removing these would drop the visible text
+// from the converted Markdown without any accessible alternative surviving.
+// Skip them in removeAriaHiddenSubtrees so their text content is preserved.
+const ARIA_HIDDEN_INLINE_TEXT_ELEMENTS = new Set([
+  'abbr',
+  'acronym',
+  'b',
+  'bdi',
+  'bdo',
+  'cite',
+  'code',
+  'data',
+  'dfn',
+  'em',
+  'i',
+  'kbd',
+  'mark',
+  'output',
+  'q',
+  's',
+  'samp',
+  'small',
+  'span',
+  'strong',
+  'sub',
+  'sup',
+  'time',
+  'u',
+  'var',
+])
+
 function removeAriaHiddenSubtrees(html: string): string {
   // Quote-aware opening-tag pattern: captures the tag name and requires the
   // aria-hidden="true" attribute anywhere in the attribute list.
@@ -205,6 +240,15 @@ function removeAriaHiddenSubtrees(html: string): string {
         // lastIndex is already past this match; continue scanning forward.
         continue
       }
+    }
+
+    // Inline phrasing elements (span, em, strong, etc.) with aria-hidden="true"
+    // are typically used to hide a formatted display value while the accessible
+    // text lives on a parent via aria-label (pattern used by CounterAnimation).
+    // Removing the element would also remove the visible text that Markdown
+    // readers see, so preserve the entire subtree as-is.
+    if (ARIA_HIDDEN_INLINE_TEXT_ELEMENTS.has(tagName)) {
+      continue
     }
 
     if (ARIA_HIDDEN_VOID_ELEMENTS.has(tagName)) {
@@ -342,10 +386,18 @@ function sanitizeHtml(html: string): string {
  * - Attribute-name boundary so `data-href` does not match `href`
  */
 function extractAttr(attrs: string, name: string): string {
-  const m = new RegExp(`(?:^|\\s)${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]*))`, 'i').exec(
-    attrs
-  )
-  return m ? (m[1] ?? m[2] ?? m[3] ?? '') : ''
+  // Iterate through all attribute name=value pairs in order so that a target
+  // attribute name cannot be matched against text embedded inside an earlier
+  // quoted attribute value (e.g. title="see href=/tracking here" followed by
+  // href="/real" must return "/real", not "/tracking").
+  const re = /(?:^|\s)([\w-]+)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]*))/gi
+  let m: RegExpExecArray | null
+  while ((m = re.exec(attrs)) !== null) {
+    if (m[1].toLowerCase() === name.toLowerCase()) {
+      return m[2] ?? m[3] ?? m[4] ?? ''
+    }
+  }
+  return ''
 }
 
 /**

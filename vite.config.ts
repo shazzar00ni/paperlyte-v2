@@ -156,19 +156,22 @@ export default defineConfig({
           }),
         ]
       : []),
-    // Only instantiate the Sentry plugin when an auth token is present (CI/deploy
-    // environment). Uploads source maps so production stack traces resolve to real
-    // file/line info instead of minified code, then deletes the local .map files so
-    // they are never published alongside the deployed bundle. Must be listed last so
-    // it sees the fully bundled output from the other plugins.
-    ...(process.env.SENTRY_AUTH_TOKEN
+    // Only instantiate the Sentry plugin when org, project, and auth token are all
+    // present (CI/deploy environment) — a partial config (e.g. token set before the
+    // org/project vars) would otherwise make @sentry/vite-plugin fail the build.
+    // Uploads source maps so production stack traces resolve to real file/line info
+    // instead of minified code, then deletes the local .map files (JS today; the glob
+    // covers CSS too in case cssMinify config ever starts emitting them) so nothing is
+    // published alongside the deployed bundle. Must be listed last so it sees the
+    // fully bundled output from the other plugins.
+    ...(process.env.SENTRY_AUTH_TOKEN && process.env.SENTRY_ORG && process.env.SENTRY_PROJECT
       ? [
           sentryVitePlugin({
             org: process.env.SENTRY_ORG,
             project: process.env.SENTRY_PROJECT,
             authToken: process.env.SENTRY_AUTH_TOKEN,
             sourcemaps: {
-              filesToDeleteAfterUpload: ['dist/**/*.js.map'],
+              filesToDeleteAfterUpload: ['dist/**/*.map'],
             },
           }),
         ]

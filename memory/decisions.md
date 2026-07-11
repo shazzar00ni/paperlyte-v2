@@ -36,6 +36,13 @@ This file tracks key architectural, design, and technical decisions made during 
 - **Tests**: Added a whitespace-trimming case alongside the existing lowercase tests in `src/utils/analytics.test.ts`.
 - **PR**: #1249 (merged) on branch `claude/tracksocialclick-lowercase-alert-ypgzfn`. All substantive CI gates green; only red statuses were external quota/billing bots (Snyk, CodeRabbit, Codex) and pre-existing repo-wide scans (Dependency Quality, License Compliance, Mintlify config) unrelated to the 2-file diff.
 
+## Sentry / Source Maps (2026-07-11)
+
+- **Decision**: Added `@sentry/vite-plugin` to `vite.config.ts`, instantiated only when `SENTRY_AUTH_TOKEN` env var is present (same conditional pattern as the existing Codecov plugin). `build.sourcemap` set to `'hidden'` (maps generated locally, no `sourceMappingURL` comment shipped in the public JS) and `filesToDeleteAfterUpload: ['dist/**/*.js.map']` removes local `.map` files after upload so they're never published. `SENTRY_AUTH_TOKEN`/`SENTRY_ORG`/`SENTRY_PROJECT` are deliberately **not** `VITE_`-prefixed (build-time only, never bundled to the client) and documented in `.env.example`. Wired through `.github/workflows/ci.yml`'s build step via `secrets.SENTRY_AUTH_TOKEN`/`vars.SENTRY_ORG`/`vars.SENTRY_PROJECT` (currently unset — a config gap for the repo owner, same pattern as the SonarCloud vars gap above).
+- **Context**: The Sentry React SDK (`@sentry/react` in `src/main.tsx`, `src/utils/monitoring.ts`, `ErrorBoundary`) was already fully set up before this session — init, tracing, lazy-loaded session replay, sensitive query-param stripping, CSP already allowing `*.ingest.sentry.io`/`worker-src blob:`. The only gap versus Sentry's current recommended setup was source maps: without them, production stack traces show minified code. This change closes that gap.
+- **Note**: `skills.sentry.dev` is blocked by this session's organization egress policy (403 on CONNECT, confirmed via both `curl` and `WebFetch`) — could not fetch the official Sentry "instrument" skill content. The source-map-upload approach above is based on general Sentry/`@sentry/vite-plugin` knowledge, not that specific doc. If a future session can reach `skills.sentry.dev`, worth diffing against it for anything else it recommends.
+- **Alternatives considered**: `sourcemap: true` (rejected — leaves a `sourceMappingURL` comment referencing a file that gets deleted post-upload, and briefly exposes source before deletion in some setups); unconditional plugin instantiation (rejected — would fail/no-op noisily on every local dev build without a token).
+
 ## Format
 
 - **Date**: YYYY-MM-DD

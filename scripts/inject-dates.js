@@ -2,8 +2,11 @@
 
 /**
  * Injects build-time values into HTML files
- * - Replaces {{BUILD_DATE}} placeholder with formatted date in legal pages
- * - Replaces __META_KEYWORDS__, __SITE_URL__, __OG_IMAGE_URL__ in index.html
+ * - Replaces {{BUILD_DATE}} and {{BUILD_YEAR}} placeholders in legal pages
+ *
+ * index.html's meta tags (%VITE_SEO_KEYWORDS%, %VITE_BASE_URL%, %VITE_OG_IMAGE%)
+ * are handled natively by Vite's built-in env replacement during `vite build`,
+ * not by this script.
  */
 
 import { readFileSync, writeFileSync } from "fs";
@@ -34,8 +37,6 @@ const LEGAL_REVISION_DATES = {
 
 // Configuration for production site
 const SITE_URL = "https://paperlyte.app";
-const OG_IMAGE_URL = "https://paperlyte.app/og-image.jpg";
-const META_KEYWORDS = "note-taking app, distraction-free notes, offline notes, fast note app, tag-based organization, simple notes, privacy-focused notes, cross-platform notes, real-time sync, minimalist note app";
 
 // Derive from LEGAL_REVISION_DATES so the two lists cannot drift and a missing
 // revision date can never inject "undefined" into a page.
@@ -87,35 +88,5 @@ LEGAL_FILES.forEach((file) => {
     process.exit(1);
   }
 });
-
-// Process index.html (meta tags)
-const indexPath = join(DIST_DIR, "index.html");
-try {
-  const originalContent = readFileSync(indexPath, "utf8");
-  let content = originalContent;
-
-  // Replace meta placeholders
-  content = content.replace(/__META_KEYWORDS__/g, META_KEYWORDS);
-  content = content.replace(/__SITE_URL__/g, SITE_URL);
-  content = content.replace(/__OG_IMAGE_URL__/g, OG_IMAGE_URL);
-
-  // Verify that placeholders were replaced
-  const replacements = [
-    { placeholder: "__META_KEYWORDS__", found: originalContent.includes("__META_KEYWORDS__") },
-    { placeholder: "__SITE_URL__", found: originalContent.includes("__SITE_URL__") },
-    { placeholder: "__OG_IMAGE_URL__", found: originalContent.includes("__OG_IMAGE_URL__") },
-  ];
-
-  const foundPlaceholders = replacements.filter(r => r.found);
-  if (foundPlaceholders.length === 0) {
-    console.warn('⚠ Warning: No meta placeholders found in index.html');
-  } else {
-    writeFileSync(indexPath, content, "utf8");
-    console.log('✓ Updated index.html (replaced', foundPlaceholders.length, 'placeholder types)');
-  }
-} catch (error) {
-  console.error('✗ Failed to process index.html:', error.message);
-  process.exit(1);
-}
 
 console.log("Injection complete!");

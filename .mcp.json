@@ -10,6 +10,10 @@
       "env": {
         "PLAYWRIGHT_BROWSERS_PATH": "0"
       }
+    },
+    "supabase": {
+      "type": "http",
+      "url": "https://mcp.supabase.com/mcp?project_ref=yzrvtzgljsaxetmctplb"
     }
   }
 }

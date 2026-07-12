@@ -296,7 +296,12 @@ export function trackEvent(eventName: string, eventParams?: AnalyticsEventParams
   try {
     window.gtag!('event', eventName, sanitizedParams)
   } catch (error) {
-    console.error('[Analytics] Error tracking event:', error)
+    // Not routed through `monitoring.logError`: monitoring.ts imports trackEvent
+    // from this module, so importing logError back here would create a cycle.
+    // Falls back to a DEV-guarded console.error per issue #1245.
+    if (import.meta.env.DEV) {
+      console.error('[Analytics] Error tracking event:', error)
+    }
   }
 }
 
@@ -314,6 +319,9 @@ export function trackEvent(eventName: string, eventParams?: AnalyticsEventParams
 export function trackPageView(pagePath: string, pageTitle?: string): void {
   if (!isAnalyticsAvailable()) {
     if (import.meta.env.DEV) {
+      // Not routed through monitoring.logEvent: would create a circular
+      // import with monitoring.ts (see trackEvent's catch block above).
+      // eslint-disable-next-line no-console
       console.log('[Analytics] Page View:', pagePath, pageTitle)
     }
     return
@@ -325,7 +333,11 @@ export function trackPageView(pagePath: string, pageTitle?: string): void {
       page_title: pageTitle,
     })
   } catch (error) {
-    console.error('[Analytics] Error tracking page view:', error)
+    // See trackEvent's catch block: not routed through monitoring.logError
+    // (circular import); falls back to a DEV-guarded console.error.
+    if (import.meta.env.DEV) {
+      console.error('[Analytics] Error tracking page view:', error)
+    }
   }
 }
 

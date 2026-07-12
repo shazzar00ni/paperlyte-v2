@@ -39,10 +39,10 @@ export const LEGAL_CONFIG = {
   documents: {
     privacy: '/privacy.html',
     terms: '/terms.html',
-    cookies: '#',
-    security: '#',
-    dmca: '#',
-    accessibility: '#',
+    cookies: '/cookies.html',
+    security: '/security.html',
+    dmca: '/dmca.html',
+    accessibility: '/accessibility.html',
   },
   social: {
     github: 'https://github.com/shazzar00ni/paperlyte-v2',
@@ -52,8 +52,8 @@ export const LEGAL_CONFIG = {
     discord: '#',
   },
   metadata: {
-    privacyLastUpdated: '2025-11-28',
-    termsLastUpdated: '2025-11-28',
+    privacyLastUpdated: '2026-06-05',
+    termsLastUpdated: '2026-06-05',
     termsVersion: '1.0',
     jurisdiction: '[State/Country]',
     governingLaw: '[State] law',

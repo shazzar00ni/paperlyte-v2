@@ -271,6 +271,16 @@ analytics.init({
 
 ## Development
 
+### Logging Convention
+
+This directory (`src/analytics/**`) and `src/utils/monitoring.ts` are the
+sanctioned locations for `console.log` in production source — enforced by a
+`no-console` ESLint override in `eslint.config.js`/`.eslintrc.cjs`.
+`console.warn`/`console.error` remain reserved for genuine production
+diagnostics everywhere. Other modules should route logging through
+`monitoring`'s `logError`/`logWarning`/`logEvent`, or guard ad-hoc debug output
+behind `import.meta.env.DEV`.
+
 ### Debug Mode
 
 Enable debug mode to see analytics events in the console:
@@ -341,7 +351,7 @@ A: Plausible is recommended for its lightweight script, privacy features, and ea
 A: Yes, Plausible and Umami both support self-hosting.
 
 **Q: How do I view analytics data?**
-A: Log into your analytics provider's dashboard (e.g., https://plausible.io).
+A: Log into your analytics provider's dashboard (e.g., <https://plausible.io>).
 
 ## Resources
 

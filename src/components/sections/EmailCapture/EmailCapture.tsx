@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import type { FormEvent } from 'react'
 import { logError } from '@utils/monitoring'
 import { validateEmail } from '@utils/validation'
@@ -19,6 +19,17 @@ export const EmailCapture = (): React.ReactElement => {
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const successHeadingRef = useRef<HTMLHeadingElement>(null)
+
+  // Move focus to the confirmation heading once the form is replaced by the
+  // success view. This announces the result to screen readers (heading + level)
+  // and lands keyboard focus inside the new content, so the next Tab reaches the
+  // share buttons instead of being lost on the now-unmounted submit button.
+  useEffect(() => {
+    if (isSubmitted) {
+      successHeadingRef.current?.focus()
+    }
+  }, [isSubmitted])
 
   // Safe origin for SSR compatibility
   const origin = typeof window !== 'undefined' ? window.location.origin : ''
@@ -119,54 +130,49 @@ export const EmailCapture = (): React.ReactElement => {
     return (
       <Section id="email-capture" background="surface">
         <div className={styles.container}>
-          <AnimatedElement animation="fadeIn">
-            <div className={styles.successContainer}>
-              <div className={styles.successIcon}>
-                <Icon name="fa-check-circle" size="xl" color="var(--color-success)" />
-              </div>
-              <h2 className={styles.successTitle}>{COPY.successTitle}</h2>
-              <p className={styles.successText}>{COPY.successText}</p>
+          <div className={styles.successContainer}>
+            <div className={styles.successIcon}>
+              <Icon name="fa-check-circle" size="xl" color="var(--color-success)" />
+            </div>
+            <h2 ref={successHeadingRef} tabIndex={-1} className={styles.successTitle}>
+              {COPY.successTitle}
+            </h2>
+            <p className={styles.successText}>{COPY.successText}</p>
 
-              <div className={styles.nextSteps}>
-                <h3 className={styles.nextStepsTitle}>{COPY.nextStepsTitle}</h3>
-                <ul className={styles.nextStepsList}>
-                  {COPY.nextSteps.map((step) => (
-                    <li key={step}>{step}</li>
-                  ))}
-                </ul>
-              </div>
+            <div className={styles.nextSteps}>
+              <h3 className={styles.nextStepsTitle}>{COPY.nextStepsTitle}</h3>
+              <ul className={styles.nextStepsList}>
+                {COPY.nextSteps.map((step) => (
+                  <li key={step}>{step}</li>
+                ))}
+              </ul>
+            </div>
 
-              <div className={styles.shareSection}>
-                <p className={styles.shareText}>{COPY.shareText}</p>
-                <div className={styles.socialButtons}>
-                  <Button
-                    variant="secondary"
-                    size="medium"
-                    icon="fa-brands fa-twitter"
-                    href={twitterShareUrl}
-                  >
-                    Twitter
-                  </Button>
-                  <Button
-                    variant="secondary"
-                    size="medium"
-                    icon="fa-brands fa-facebook"
-                    href={facebookShareUrl}
-                  >
-                    Facebook
-                  </Button>
-                  <Button
-                    variant="secondary"
-                    size="medium"
-                    icon="fa-brands fa-linkedin"
-                    href={linkedinShareUrl}
-                  >
-                    LinkedIn
-                  </Button>
-                </div>
+            <div className={styles.shareSection}>
+              <p className={styles.shareText}>{COPY.shareText}</p>
+              <div className={styles.socialButtons}>
+                <Button variant="secondary" size="medium" icon="fa-twitter" href={twitterShareUrl}>
+                  Twitter
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="medium"
+                  icon="fa-facebook"
+                  href={facebookShareUrl}
+                >
+                  Facebook
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="medium"
+                  icon="fa-linkedin"
+                  href={linkedinShareUrl}
+                >
+                  LinkedIn
+                </Button>
               </div>
             </div>
-          </AnimatedElement>
+          </div>
         </div>
       </Section>
     )
@@ -219,7 +225,7 @@ export const EmailCapture = (): React.ReactElement => {
               >
                 {isLoading ? COPY.loadingText : COPY.submitText}
                 {!isLoading && (
-                  <i className="fa-solid fa-arrow-right" style={{ marginLeft: '0.5rem' }} />
+                  <Icon name="fa-arrow-right" size="sm" style={{ marginLeft: '0.5rem' }} />
                 )}
               </button>
             </div>

@@ -13,7 +13,7 @@
       rel="preload"
       as="font"
       type="font/woff2"
-      href="/fonts/Inter-Variable.woff2"
+      href="/fonts/Inter-Variable-v2.woff2"
       crossorigin
     />
     <link
@@ -30,7 +30,7 @@
         font-style: normal;
         font-weight: 100 900;
         font-display: swap;
-        src: url('/fonts/Inter-Variable.woff2') format('woff2-variations');
+        src: url('/fonts/Inter-Variable-v2.woff2') format('woff2-variations');
         font-named-instance: 'Regular';
       }
 
@@ -51,11 +51,11 @@
         font-size: 0.95em;
       }
       .placeholder {
-        color: #888;
+        color: var(--color-text-secondary);
       }
       .footer-note {
         font-size: 0.9em;
-        color: #888;
+        color: var(--color-text-secondary);
         margin-top: 0.5em;
       }
       * {
@@ -64,7 +64,7 @@
         padding: 0;
       }
       :root {
-        --color-primary: #7c3aed;
+        --color-primary: #1a1a1a;
         --color-background: #ffffff;
         --color-surface: #f9fafb;
         --color-text: #111827;
@@ -720,14 +720,14 @@
         </p>
       </main>
       <footer>
-        <p>&copy; 2025 Paperlyte. All rights reserved.</p>
+        <p>&copy; {{BUILD_YEAR}} Paperlyte. All rights reserved.</p>
         <p class="footer-note">
           This privacy policy was legally reviewed. Effective date:
           <strong>{{BUILD_DATE}}</strong>
         </p>
       </footer>
     </div>
-    <script>
+    <script nonce="CSP_NONCE">
       // Attach cookie preferences handler for CSP compliance
       const cookieBtn = document.getElementById('cookie-preferences-btn');
       if (cookieBtn) {

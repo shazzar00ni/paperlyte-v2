@@ -3,6 +3,7 @@ import type { Plugin, IndexHtmlTransformContext, HtmlTagDescriptor } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 import { codecovRollupPlugin } from '@codecov/rollup-plugin'
+import { sentryVitePlugin } from '@sentry/vite-plugin'
 
 /**
  * Regular expression that matches only the Inter latin static font files
@@ -56,33 +57,53 @@ function fontPreloadPlugin(): Plugin {
   }
 }
 
+// Development-only CSP meta tag value.
+// 'unsafe-eval' and 'unsafe-inline' are required by Vite HMR and React Fast Refresh.
+// ws:/wss: allows the dev server WebSocket connection. Never present in production.
+const DEV_CSP = `default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' ws: wss:; worker-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';`
+
+// Inject a <meta http-equiv="Content-Security-Policy"> into dev HTML.
+// Nonces are not feasible in dev (no per-request server), so the meta tag
+// approach with relaxed directives is the standard Vite practice.
+function injectDevCsp(html: string): string {
+  const cspMetaTag = `    <!-- Content Security Policy (development only) -->
+    <meta http-equiv="Content-Security-Policy" content="${DEV_CSP}" />
+  </head>`
+  const modified = html.replace('</head>', cspMetaTag)
+  if (modified === html) {
+    console.warn(
+      '[csp-plugin] Warning: Could not inject CSP meta tag - </head> tag not found in HTML'
+    )
+  }
+  return modified
+}
+
+// Stamp nonce="CSP_NONCE" onto every <script> and <link rel="modulepreload">
+// that lacks a nonce. The WAF edge function replaces this placeholder with a
+// per-request cryptographic nonce at runtime.
+//
+// <link rel="modulepreload"> needs an explicit nonce because 'strict-dynamic'
+// only propagates trust to dynamically created scripts — not static preload hints.
+// Without a nonce, Chrome logs a CSP issue that fails the Lighthouse audit.
+//
+// Only pre-audited build-artifact tags receive the placeholder; tags injected
+// after the build do not carry it and are blocked by the nonce-based CSP.
+function injectProdNonces(html: string): string {
+  return html
+    .replace(/<script(?![^>]*\bnonce=)([^>]*)>/gi, '<script$1 nonce="CSP_NONCE">')
+    .replace(
+      /<link(?=[^>]*\brel=["']modulepreload["'])(?![^>]*\bnonce=)([^>]*)>/gi,
+      '<link$1 nonce="CSP_NONCE">'
+    )
+}
+
 /**
- * Plugin to inject development-only Content Security Policy
+ * Plugin to inject development-only Content Security Policy, and to stamp
+ * nonce="CSP_NONCE" placeholders into production HTML for the WAF to replace.
  *
- * Development: Relaxed CSP meta tag to allow Vite HMR (WebSockets + unsafe-eval)
- * Production: CSP delivered via HTTP headers in vercel.json (supports frame-ancestors)
- *
- * Note: Meta tag CSP cannot enforce frame-ancestors and lacks initial-response protection.
- * Production uses proper HTTP headers configured in vercel.json.
- *
- * SECURITY NOTICE - Development unsafe-eval:
- * The development CSP includes 'unsafe-eval' which permits eval() execution. This is
- * required for Vite's Hot Module Replacement (HMR) and React Fast Refresh to function.
- *
- * Risk: If malicious code is introduced during development (e.g., compromised npm package,
- * malicious browser extension), unsafe-eval could be exploited for code execution.
- *
- * Mitigation:
- * - Production CSP (vercel.json) does NOT include unsafe-eval (strict policy)
- * - Only run trusted code in development environment
- * - Regularly audit dependencies with `npm audit`
- * - Use lock files (package-lock.json) to prevent supply chain attacks
- * - Consider using browser profiles dedicated to development (no untrusted extensions)
- *
- * Alternative approaches (not currently implemented):
- * - Nonce-based CSP: Would require server-side nonce generation for each dev request
- * - Disable CSP in dev: Would lose all CSP protection during development
- * Current approach balances security with developer experience (standard Vite practice).
+ * Production (Netlify): nonce-based CSP injected by WAF edge function.
+ * Production (Vercel): static CSP header in vercel.json.
+ * Development: relaxed CSP meta tag to allow Vite HMR.
  */
 function cspPlugin(): Plugin {
   let isDev = false
@@ -92,36 +113,12 @@ function cspPlugin(): Plugin {
     configResolved(config) {
       isDev = config.mode === 'development'
     },
-    transformIndexHtml(html) {
-      // Only inject CSP meta tag in development mode
-      // Production CSP is delivered via HTTP headers in vercel.json
-      if (!isDev) {
-        return html
-      }
-
-      // Development CSP: Allow WebSockets for HMR and unsafe-eval for fast refresh
-      // - 'unsafe-eval' is required for Vite's HMR and React Fast Refresh (development only)
-      // - 'unsafe-inline' is required for Vite's dev server CSS injection during HMR
-      // - ws: wss: enables WebSocket connections for Vite dev server HMR
-      // - All fonts and icons are self-hosted (no external CDN dependencies)
-      // - Fonts: @fontsource/inter, Icons: @fortawesome/fontawesome-free
-      const devCSP = `default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' ws: wss:; worker-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';`
-
-      // Inject CSP meta tag before closing </head> tag (dev only)
-      const cspMetaTag = `    <!-- Content Security Policy (development only) -->
-    <meta http-equiv="Content-Security-Policy" content="${devCSP}" />
-  </head>`
-
-      const modifiedHtml = html.replace('</head>', cspMetaTag)
-
-      // Warn if injection failed (no </head> tag found)
-      if (modifiedHtml === html) {
-        console.warn(
-          '[csp-plugin] Warning: Could not inject CSP meta tag - </head> tag not found in HTML'
-        )
-      }
-
-      return modifiedHtml
+    transformIndexHtml: {
+      // Post-order so Vite's own injected <script> tags also receive the placeholder.
+      order: 'post',
+      handler(html) {
+        return isDev ? injectDevCsp(html) : injectProdNonces(html)
+      },
     },
   }
 }
@@ -138,6 +135,14 @@ function cspPlugin(): Plugin {
  *
  * @see https://vite.dev/config/
  */
+// Source maps are only worth generating when they'll actually be uploaded to Sentry
+// (org + project + auth token all present). Otherwise `dist/` would ship .map files
+// with no cleanup step to remove them, publicly exposing original source via
+// directly-fetchable, discoverable URLs (e.g. index-HASH.js.map next to index-HASH.js).
+const sentryConfigured = Boolean(
+  process.env.SENTRY_AUTH_TOKEN && process.env.SENTRY_ORG && process.env.SENTRY_PROJECT
+)
+
 export default defineConfig({
   // React plugin with Fast Refresh for instant Hot Module Replacement
   // CSP plugin for environment-aware security headers
@@ -156,6 +161,26 @@ export default defineConfig({
             enableBundleAnalysis: true,
             bundleName: 'paperlyte-v2',
             uploadToken: process.env.CODECOV_TOKEN,
+          }),
+        ]
+      : []),
+    // Only instantiate the Sentry plugin when org, project, and auth token are all
+    // present (CI/deploy environment) — a partial config (e.g. token set before the
+    // org/project vars) would otherwise make @sentry/vite-plugin fail the build.
+    // Uploads source maps so production stack traces resolve to real file/line info
+    // instead of minified code, then deletes the local .map files (JS today; the glob
+    // covers CSS too in case cssMinify config ever starts emitting them) so nothing is
+    // published alongside the deployed bundle. Must be listed last so it sees the
+    // fully bundled output from the other plugins.
+    ...(sentryConfigured
+      ? [
+          sentryVitePlugin({
+            org: process.env.SENTRY_ORG,
+            project: process.env.SENTRY_PROJECT,
+            authToken: process.env.SENTRY_AUTH_TOKEN,
+            sourcemaps: {
+              filesToDeleteAfterUpload: ['dist/**/*.map'],
+            },
           }),
         ]
       : []),
@@ -178,6 +203,14 @@ export default defineConfig({
 
   // Production build configuration
   build: {
+    // Hidden source maps only when Sentry upload is actually configured: generated
+    // for Sentry to upload (readable stack traces in production) but not referenced
+    // via a //# sourceMappingURL comment in the shipped JS, so browsers/tools never
+    // try to fetch them from the public bundle. The Sentry plugin above deletes the
+    // local .map files after upload. When unconfigured, skip sourcemap generation
+    // entirely — otherwise the .map files would have no upload/cleanup step and
+    // would ship publicly in dist/ as-is.
+    sourcemap: sentryConfigured ? 'hidden' : false,
     // Split CSS into separate files for better caching
     cssCodeSplit: true,
     // Use esbuild for minification (explicit devDependency, supported by Vite 8)
@@ -195,10 +228,6 @@ export default defineConfig({
           // React vendor bundle (~190KB) - changes rarely, good cache hit rate
           if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
             return 'react-vendor'
-          }
-          // Font Awesome is large (~100KB+), split it out
-          if (id.includes('node_modules/@fortawesome')) {
-            return 'fontawesome'
           }
           // Keep app code together for better tree-shaking and compression
           // Small chunks (constants, utils, UI components) stay in main bundle

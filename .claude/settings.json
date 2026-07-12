@@ -1,0 +1,15 @@
+{
+  "enabledMcpjsonServers": ["playwright", "atlassian"],
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PROJECT_DIR:-$PWD}/.claude/hooks/session-start.sh\""
+          }
+        ]
+      }
+    ]
+  }
+}

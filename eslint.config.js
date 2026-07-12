@@ -45,6 +45,13 @@ export default defineConfig([
       // Browser globals (window, document, etc.)
       globals: globals.browser,
     },
+
+    rules: {
+      // Production console statements should be routed through the `monitoring`
+      // utility or guarded behind `import.meta.env.DEV`. `warn`/`error` are
+      // allowed everywhere as genuine production diagnostics.
+      'no-console': ['error', { allow: ['warn', 'error'] }],
+    },
   },
   // Node.js globals for build-tool configs and server-side scripts.
   // These files run in Node, not the browser, so process/Buffer/__dirname etc.
@@ -54,6 +61,20 @@ export default defineConfig([
     files: ['*.config.ts', 'scripts/**/*.ts', 'netlify/functions/**/*.ts'],
     languageOptions: {
       globals: globals.node,
+    },
+    // CLI scripts and serverless functions legitimately log to stdout/stderr;
+    // the no-console audit (HIGH-002) is scoped to browser-side production
+    // source (src/**), not Node build tooling.
+    rules: {
+      'no-console': 'off',
+    },
+  },
+  // Sanctioned logging locations: `monitoring` and `analytics/**` are the
+  // centralized, designated places where `console.log` is permitted.
+  {
+    files: ['src/utils/monitoring.ts', 'src/analytics/**'],
+    rules: {
+      'no-console': ['error', { allow: ['warn', 'error', 'log', 'group', 'groupEnd'] }],
     },
   },
 ])

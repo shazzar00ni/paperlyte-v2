@@ -6,8 +6,14 @@ const fs = require('fs');
 const path = require('path');
 const { spawnSync } = require('child_process');
 
-// Base domain for sitemap URLs
-const DOMAIN = 'https://paperlyte.com';
+// Base domain for sitemap URLs. Configurable via env (SITE_URL or VITE_BASE_URL)
+// so non-production deploys can override it; defaults to the canonical production
+// domain. A trailing slash is stripped to avoid double slashes in page URLs.
+const DOMAIN = (
+  process.env.SITE_URL ||
+  process.env.VITE_BASE_URL ||
+  'https://paperlyte.app'
+).replace(/\/+$/, '');
 
 // Map URLs to their source files for lastmod tracking
 const pages = [
@@ -18,14 +24,38 @@ const pages = [
     priority: '1.0',
   },
   {
-    url: `${DOMAIN}/privacy`,
+    url: `${DOMAIN}/privacy.html`,
     file: path.join(__dirname, '../public/privacy.html'),
     changefreq: 'monthly',
     priority: '0.5',
   },
   {
-    url: `${DOMAIN}/terms`,
+    url: `${DOMAIN}/terms.html`,
     file: path.join(__dirname, '../public/terms.html'),
+    changefreq: 'monthly',
+    priority: '0.5',
+  },
+  {
+    url: `${DOMAIN}/cookies.html`,
+    file: path.join(__dirname, '../public/cookies.html'),
+    changefreq: 'monthly',
+    priority: '0.5',
+  },
+  {
+    url: `${DOMAIN}/security.html`,
+    file: path.join(__dirname, '../public/security.html'),
+    changefreq: 'monthly',
+    priority: '0.5',
+  },
+  {
+    url: `${DOMAIN}/dmca.html`,
+    file: path.join(__dirname, '../public/dmca.html'),
+    changefreq: 'monthly',
+    priority: '0.5',
+  },
+  {
+    url: `${DOMAIN}/accessibility.html`,
+    file: path.join(__dirname, '../public/accessibility.html'),
     changefreq: 'monthly',
     priority: '0.5',
   },

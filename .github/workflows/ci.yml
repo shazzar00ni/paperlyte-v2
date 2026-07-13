@@ -217,6 +217,9 @@ jobs:
         id: build-step
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ vars.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
         run: npm run build
 
       - name: Upload build artifacts

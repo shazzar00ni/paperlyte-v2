@@ -1,0 +1,61 @@
+Type,Title,Last Visited,Host
+Pull Request,fix(ci): resolve dependency-check warnings and enforce CVSS gate,2026-07-13T00:18:52Z,github.com
+Pull Request,chore(mcp): add Supabase MCP server to project config,2026-07-12T23:33:48Z,github.com
+Pull Request,feat(monitoring): upload Sentry source maps on production builds,2026-07-12T08:58:38Z,github.com
+Pull Request,ci: bump anthropics/claude-code-action from 1.0.159 to 1.0.162,2026-07-10T07:33:03Z,github.com
+Pull Request,chore(npm): set min-release-age to 7 days in .npmrc,2026-07-12T09:18:13Z,github.com
+Pull Request,ci: add 7-day cooldown to dependabot updates,2026-07-08T12:11:55Z,github.com
+Pull Request,fix(security): remove hardcoded credential-like literals in analytics test,2026-07-07T04:28:14Z,github.com
+Pull Request,fix(deps): enforce compliant Node engine to prevent @eslint/js resolution failures,2026-07-07T20:13:49Z,github.com
+Pull Request,test: use canonical __mocks__ files for shared analytics/monitoring mocks,2026-07-07T04:08:21Z,github.com
+Pull Request,chore(deps-dev): bump @vitest/coverage-v8 from 4.1.9 to 4.1.10,2026-07-08T15:45:21Z,github.com
+Pull Request,chore(deps-dev): bump @commitlint/cli from 21.1.0 to 21.2.0,2026-07-08T15:48:12Z,github.com
+Pull Request,ci: bump anthropics/claude-code-action from 1.0.159 to 1.0.165,2026-07-08T12:11:28Z,github.com
+Pull Request,chore(deps): bump @sentry/react from 10.62.0 to 10.63.0,2026-07-08T15:47:37Z,github.com
+Pull Request,ci: bump github/codeql-action/upload-sarif from 4.36.2 to 4.36.3,2026-07-12T09:00:22Z,github.com
+Pull Request,chore(deps-dev): bump @commitlint/config-conventional from 20.5.3 to 21.2.0,2026-07-09T09:30:37Z,github.com
+Pull Request,chore(deps-dev): bump vitest from 4.1.9 to 4.1.10,2026-07-11T13:37:24Z,github.com
+Pull Request,chore(deps-dev): bump the development-dependencies group across 1 directory with 2 updates,2026-07-08T15:45:17Z,github.com
+Pull Request,docs: add GitHub Copilot instructions file in .github/instructions,2026-07-06T18:21:07Z,github.com
+Pull Request,chore: remove/guard non-essential console.* statements (audit HIGH-002),2026-07-07T03:33:40Z,github.com
+Pull Request,chore(ci): add missing changelog-config.json for release workflow,2026-07-06T18:21:37Z,github.com
+Pull Request,chore: remove libc fields from optional deps in package-lock.json,2026-07-06T18:48:21Z,github.com
+Pull Request,ci: bump actions/setup-python from 6.2.0 to 6.3.0,2026-07-10T07:45:08Z,github.com
+Pull Request,chore(deps-dev): bump autoprefixer from 10.5.0 to 10.5.2,2026-07-12T19:18:21Z,github.com
+Pull Request,ci: bump actions/cache from 5.0.5 to 6.1.0,2026-07-10T07:45:18Z,github.com
+Pull Request,"refactor: extract LazySection, centralize section data, and apply hygiene fixes",2026-07-07T04:03:07Z,github.com
+Issue,chore: remove/guard non-essential console.* statements in production source (audit HIGH-002),2026-07-07T03:31:09Z,github.com
+Pull Request,docs: add and improve JSDoc for key functions and components,2026-07-07T03:55:21Z,github.com
+Issue,Set up performance benchmarks and automated keystroke latency tests,2026-07-06T18:30:51Z,github.com
+Issue,feat(editor): Implement sub-10ms keystroke response,2026-07-06T18:28:28Z,github.com
+Pull Request,[StepSecurity] Apply security best practices,2026-07-10T07:47:29Z,github.com
+Commit,Merge pull request #1252 from shazzar00ni/dependabot/npm_and_yarn/autoprefixer-10.5.2,2026-07-12T19:16:58Z,github.com
+Commit,Merge pull request #1283 from shazzar00ni/dependabot/github_actions/github/codeql-action/upload-sarif-4.36.3,2026-07-12T08:56:25Z,github.com
+Commit,Merge branch 'main' into dependabot/github_actions/github/codeql-action/upload-sarif-4.36.3,2026-07-12T08:56:15Z,github.com
+Commit,Merge pull request #1294 from shazzar00ni/claude/sentry-react-sdk-setup-ts6p06,2026-07-12T08:55:32Z,github.com
+Commit,docs(memory): record CodeRabbit sourcemap-leak review resolution,2026-07-11T09:29:22Z,github.com
+Commit,fix(monitoring): skip Sentry sourcemap generation when unconfigured,2026-07-11T09:28:51Z,github.com
+Commit,fix(monitoring): guard Sentry sourcemap upload on org/project too,2026-07-11T09:26:15Z,github.com
+Commit,docs(memory): record Sentry source-map decision and blocked-host note,2026-07-11T09:22:35Z,github.com
+Commit,feat(monitoring): upload Sentry source maps on production builds,2026-07-11T09:22:15Z,github.com
+Commit,Merge pull request #1198 from shazzar00ni/chore/GHA-211755-stepsecurity-remediation,2026-07-10T07:46:29Z,github.com
+Commit,Merge pull request #1251 from shazzar00ni/dependabot/github_actions/actions/cache-6.1.0,2026-07-10T07:43:06Z,github.com
+Commit,Merge pull request #1254 from shazzar00ni/dependabot/github_actions/actions/setup-python-6.3.0,2026-07-10T07:41:58Z,github.com
+Commit,Merge pull request #1282 from shazzar00ni/dependabot/npm_and_yarn/commitlint/config-conventional-21.2.0,2026-07-09T09:28:48Z,github.com
+Commit,chore(deps-dev): bump @commitlint/config-conventional,2026-07-08T15:47:28Z,github.com
+Commit,Merge pull request #1286 from shazzar00ni/dependabot/npm_and_yarn/commitlint/cli-21.2.0,2026-07-08T15:46:12Z,github.com
+Commit,chore(deps-dev): bump autoprefixer from 10.5.0 to 10.5.2,2026-07-08T15:45:13Z,github.com
+Commit,Merge pull request #1284 from shazzar00ni/dependabot/npm_and_yarn/sentry/react-10.63.0,2026-07-08T15:45:10Z,github.com
+Commit,Merge pull request #1293 from shazzar00ni/dependabot/github_actions/anthropics/claude-code-action-1.0.162,2026-07-08T15:43:58Z,github.com
+Commit,Merge pull request #1287 from shazzar00ni/dependabot/npm_and_yarn/vitest/coverage-v8-4.1.10,2026-07-08T15:43:12Z,github.com
+Commit,Merge pull request #1280 from shazzar00ni/dependabot/npm_and_yarn/development-dependencies-01bc418827,2026-07-08T15:42:40Z,github.com
+Commit,Merge branch 'main' into dependabot/npm_and_yarn/vitest/coverage-v8-4.1.10,2026-07-08T12:18:03Z,github.com
+Commit,chore(deps-dev): bump the development-dependencies group across 1 directory with 2 updates,2026-07-08T12:11:46Z,github.com
+Commit,ci: bump anthropics/claude-code-action from 1.0.159 to 1.0.162,2026-07-08T12:11:20Z,github.com
+Commit,Merge pull request #1291 from shazzar00ni/claude/dependabot-missing-cooldown-d1nhjz,2026-07-08T12:10:26Z,github.com
+Commit,ci: add 7-day cooldown to dependabot updates,2026-07-07T20:18:48Z,github.com
+Commit,Merge pull request #1278 from shazzar00ni/claude/github-issue-1245-5dr5l4,2026-07-07T03:31:07Z,github.com
+Commit,chore(deps-dev): bump @vitest/coverage-v8 from 4.1.9 to 4.1.10,2026-07-06T09:10:52Z,github.com
+Commit,chore(deps-dev): bump @commitlint/cli from 21.1.0 to 21.2.0,2026-07-06T09:10:34Z,github.com
+Commit,chore(deps): bump @sentry/react from 10.62.0 to 10.63.0,2026-07-06T09:10:15Z,github.com
+Commit,ci: bump github/codeql-action/upload-sarif from 4.36.2 to 4.36.3,2026-07-06T09:10:12Z,github.com

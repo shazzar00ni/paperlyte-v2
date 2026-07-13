@@ -157,3 +157,7 @@
 [[edge_functions]]
   path = "/*"
   function = "markdown-response"
+  # Skip static assets — they will never be converted to Markdown and invoking
+  # the edge function on every image/font/JS/CSS request just to call
+  # context.next() wastes edge invocations and adds latency.
+  excludedPath = ["/assets/*", "/fonts/*", "/*.ico", "/*.png", "/*.jpg", "/*.jpeg", "/*.webp", "/*.avif", "/*.svg", "/*.gif", "/*.woff2", "/*.woff", "/*.ttf", "/*.eot", "/*.js", "/*.css", "/*.map"]

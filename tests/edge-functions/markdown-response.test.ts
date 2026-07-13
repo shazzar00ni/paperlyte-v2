@@ -1628,16 +1628,16 @@ describe('markdown-response edge function', () => {
       expect(body).not.toContain('Decorative')
     })
 
-    it('preserves classless inline aria-hidden="true" spans (CounterAnimation display-value pattern)', async () => {
-      // CounterAnimation renders the visible statistic number inside a classless
-      // `<span aria-hidden="true">5,000</span>` while placing the accessible
-      // text on the parent <output> via aria-label. Removing the span would
-      // leave only an empty placeholder in the Markdown; the span must survive.
+    it('extracts aria-label from <output> elements (CounterAnimation accessible value)', async () => {
+      // CounterAnimation renders the final statistic on the <output> aria-label
+      // while the animated span inside starts at the animation's start value (0)
+      // in prerendered HTML. The aria-label gives the correct final value;
+      // using the span text would emit "0" / "0+" instead of the real count.
       const req = makeRequest('https://example.com/', mdHeaders)
       const ctx = makeContext(
         htmlResponse(
-          '<output aria-label="5000 notes created">' +
-            '<span aria-hidden="true">5,000</span>' +
+          '<output aria-label="5,000 notes created">' +
+            '<span aria-hidden="true">0</span>' +
             '</output>'
         )
       )
@@ -1645,7 +1645,8 @@ describe('markdown-response edge function', () => {
       const result = await handler(req, ctx)
       const body = await result.text()
 
-      expect(body).toContain('5,000')
+      expect(body).toContain('5,000 notes created')
+      expect(body).not.toContain(' 0 ')
     })
 
     it('strips class-bearing inline aria-hidden="true" elements (ligature icon font pattern)', async () => {

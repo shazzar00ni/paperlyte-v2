@@ -325,6 +325,18 @@ function sanitizeHtml(html: string): string {
   // unclosed-tag truncation and delete all following content.
   result = result.replace(/<!--[\s\S]*?(?:-->|$)/g, '')
 
+  // Replace <output aria-label="…">…</output> elements with their accessible
+  // name. CounterAnimation renders the final statistic on the aria-label of
+  // the <output> wrapper while the visible span inside starts at the animation
+  // start value (0) in prerendered HTML. Using the aria-label gives the correct
+  // final value; using the span content would emit "0" / "0+" / "0M+" instead.
+  // This must run before removeAriaHiddenSubtrees so the inner
+  // aria-hidden span is already gone by the time that pass runs.
+  result = result.replace(
+    /<output(?:[^>"']|"[^"]*"|'[^']*')*\baria-label\s*=\s*(?:"([^"]*)"|'([^']*)')(?:[^>"']|"[^"]*"|'[^']*')*>[\s\S]*?<\/output>/gi,
+    (_match: string, dq: string | undefined, sq: string | undefined) => dq ?? sq ?? ''
+  )
+
   // Remove decorative aria-hidden="true" subtrees. These are elements that
   // are intentionally excluded from the accessibility tree (mockup images,
   // stat badges, icon sprites); they must not appear as page content in the

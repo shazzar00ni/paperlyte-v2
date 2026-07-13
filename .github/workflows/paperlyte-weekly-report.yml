@@ -14,11 +14,16 @@ jobs:
       contents: write
 
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
+        with:
+          egress-policy: audit
+
       - name: Checkout repo
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
       - name: Set up Python
-        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405  # v6.2.0
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1  # v6.3.0
         with:
           python-version: "3.x"
 
@@ -91,9 +96,37 @@ jobs:
           EOF
 
       - name: Commit report
+        id: commit
         run: |
           git config user.name "Paperlyte Bot"
           git config user.email "actions@github.com"
           git add reports/weekly/*.csv
-          git commit -m "Weekly Paperlyte activity report" || echo "No changes"
-          git push
+          if git commit -m "Weekly Paperlyte activity report"; then
+            git push
+            echo "committed=true" >> "$GITHUB_OUTPUT"
+            echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          else
+            echo "No changes to commit"
+            echo "committed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Trigger CI for coverage upload
+        # GITHUB_TOKEN pushes don't trigger other workflows, so Codacy never receives
+        # coverage data for bot commits — causing "not up to standards" on PRs that
+        # use this commit as the ancestor. repository_dispatch IS permitted from
+        # GITHUB_TOKEN (unlike push) and only requires contents: write, which this
+        # job already holds. CI listens for the run-ci event type and runs tests +
+        # uploads coverage for this commit.
+        # Only dispatches when a report commit was actually created; skips no-change weeks.
+        # SHA is passed via client_payload so CI checks out the exact bot commit rather
+        # than racing onto a newer default-branch HEAD.
+        if: steps.commit.outputs.committed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          COMMIT_SHA: ${{ steps.commit.outputs.sha }}
+        run: |
+          echo "Dispatching CI workflow via repository_dispatch for commit ${COMMIT_SHA}"
+          gh api "repos/${REPO}/dispatches" \
+            -f event_type=run-ci \
+            -f "client_payload[sha]=${COMMIT_SHA}"

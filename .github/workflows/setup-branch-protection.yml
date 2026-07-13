@@ -5,12 +5,6 @@ name: Setup Branch Protection
 
 on:
   workflow_dispatch:
-    inputs:
-      branch:
-        description: 'Branch to protect'
-        required: true
-        default: 'main'
-        type: string
 
 permissions: {}
 
@@ -22,12 +16,30 @@ jobs:
       contents: read
 
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
+        with:
+          egress-policy: audit
+
       - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Validate branch name format
+        env:
+          BRANCH: main
+        run: |
+          if ! [[ "$BRANCH" =~ ^[a-zA-Z0-9._/-]+$ ]]; then
+            echo "❌ Error: Invalid branch name. Branch names may only contain alphanumeric characters, dots, underscores, hyphens, and forward slashes."
+            exit 1
+          fi
+          if ! git check-ref-format --branch "$BRANCH" > /dev/null; then
+            echo "❌ Error: Invalid branch name format."
+            exit 1
+          fi
 
       - name: Validate branch exists
         env:
-          BRANCH: ${{ inputs.branch }}
+          BRANCH: main
         run: |
           git fetch origin
           if git show-ref --verify --quiet "refs/remotes/origin/$BRANCH"; then
@@ -40,7 +52,7 @@ jobs:
       - name: Configure branch protection
         env:
           GITHUB_TOKEN: ${{ secrets.BRANCH_PROTECTION_TOKEN }}
-          BRANCH: ${{ inputs.branch }}
+          BRANCH: main
         run: |
           if [ -z "$GITHUB_TOKEN" ]; then
             echo "❌ Error: BRANCH_PROTECTION_TOKEN secret is not configured"

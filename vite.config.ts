@@ -3,6 +3,7 @@ import type { Plugin, IndexHtmlTransformContext, HtmlTagDescriptor } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 import { codecovRollupPlugin } from '@codecov/rollup-plugin'
+import { sentryVitePlugin } from '@sentry/vite-plugin'
 
 /**
  * Regular expression that matches only the Inter latin static font files
@@ -134,6 +135,14 @@ function cspPlugin(): Plugin {
  *
  * @see https://vite.dev/config/
  */
+// Source maps are only worth generating when they'll actually be uploaded to Sentry
+// (org + project + auth token all present). Otherwise `dist/` would ship .map files
+// with no cleanup step to remove them, publicly exposing original source via
+// directly-fetchable, discoverable URLs (e.g. index-HASH.js.map next to index-HASH.js).
+const sentryConfigured = Boolean(
+  process.env.SENTRY_AUTH_TOKEN && process.env.SENTRY_ORG && process.env.SENTRY_PROJECT
+)
+
 export default defineConfig({
   // React plugin with Fast Refresh for instant Hot Module Replacement
   // CSP plugin for environment-aware security headers
@@ -152,6 +161,26 @@ export default defineConfig({
             enableBundleAnalysis: true,
             bundleName: 'paperlyte-v2',
             uploadToken: process.env.CODECOV_TOKEN,
+          }),
+        ]
+      : []),
+    // Only instantiate the Sentry plugin when org, project, and auth token are all
+    // present (CI/deploy environment) — a partial config (e.g. token set before the
+    // org/project vars) would otherwise make @sentry/vite-plugin fail the build.
+    // Uploads source maps so production stack traces resolve to real file/line info
+    // instead of minified code, then deletes the local .map files (JS today; the glob
+    // covers CSS too in case cssMinify config ever starts emitting them) so nothing is
+    // published alongside the deployed bundle. Must be listed last so it sees the
+    // fully bundled output from the other plugins.
+    ...(sentryConfigured
+      ? [
+          sentryVitePlugin({
+            org: process.env.SENTRY_ORG,
+            project: process.env.SENTRY_PROJECT,
+            authToken: process.env.SENTRY_AUTH_TOKEN,
+            sourcemaps: {
+              filesToDeleteAfterUpload: ['dist/**/*.map'],
+            },
           }),
         ]
       : []),
@@ -174,6 +203,14 @@ export default defineConfig({
 
   // Production build configuration
   build: {
+    // Hidden source maps only when Sentry upload is actually configured: generated
+    // for Sentry to upload (readable stack traces in production) but not referenced
+    // via a //# sourceMappingURL comment in the shipped JS, so browsers/tools never
+    // try to fetch them from the public bundle. The Sentry plugin above deletes the
+    // local .map files after upload. When unconfigured, skip sourcemap generation
+    // entirely — otherwise the .map files would have no upload/cleanup step and
+    // would ship publicly in dist/ as-is.
+    sourcemap: sentryConfigured ? 'hidden' : false,
     // Split CSS into separate files for better caching
     cssCodeSplit: true,
     // Use esbuild for minification (explicit devDependency, supported by Vite 8)

@@ -90,17 +90,19 @@ export const Statistics = (): React.ReactElement => {
             <AnimatedElement key={stat.label} animation="slideUp" delay={100 + index * 100}>
               <div className={styles.card}>
                 <div className={styles.iconWrapper}>
-                  <SVGPathAnimation
-                    width={48}
-                    height={48}
-                    duration={1500}
-                    delay={200 + index * 150}
-                    strokeColor="var(--color-primary)"
-                    strokeWidth={2}
-                  >
-                    <path d="M 24 4 A 20 20 0 1 1 23.99 4" fill="none" />
-                  </SVGPathAnimation>
-                  <Icon name={stat.icon} size="lg" />
+                  <div className={styles.ring}>
+                    <SVGPathAnimation
+                      width={48}
+                      height={48}
+                      duration={1500}
+                      delay={200 + index * 150}
+                      strokeColor="var(--color-primary)"
+                      strokeWidth={2}
+                    >
+                      <path d="M 24 4 A 20 20 0 1 1 23.99 4" fill="none" />
+                    </SVGPathAnimation>
+                  </div>
+                  <Icon name={stat.icon} size="lg" className={styles.statIcon} />
                 </div>
 
                 <div className={styles.value}>

@@ -37,9 +37,12 @@ jobs:
           project: 'paperlyte-v2'
           path: '.'
           format: 'HTML'
-          others: >
-            --failOnCVSS 7
-            --enableRetired
+          # This action passes `others` through as a single argv token (no shell
+          # re-splitting), so only one GNU-style `--opt=value` flag fits here —
+          # `--failOnCVSS 7 --enableRetired` as two space-separated flags would
+          # arrive as one unrecognized token. Keep the CVSS gate; --enableRetired
+          # can't be combined into the same slot.
+          others: '--failOnCVSS=7'
 
       - name: Upload Depcheck report
         if: steps.Depcheck.conclusion == 'success' || steps.Depcheck.conclusion == 'failure'

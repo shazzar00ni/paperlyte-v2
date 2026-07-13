@@ -1,5 +1,11 @@
 import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { runInNewContext } from 'node:vm'
+
+const SERVICE_WORKER_SOURCE = readFileSync(
+  fileURLToPath(new URL('../../public/sw.js', new URL(import.meta.url, 'file://'))),
+  'utf8'
+)
 
 interface ServiceWorkerHarness {
   install: (event: { waitUntil: (promise: Promise<unknown>) => void }) => void
@@ -7,11 +13,14 @@ interface ServiceWorkerHarness {
   waitUntil: ReturnType<typeof vi.fn>
 }
 
-function createHarness(hasActiveWorker: boolean): ServiceWorkerHarness {
+function createHarness(
+  hasActiveWorker: boolean,
+  addAllResult: () => Promise<void> = () => Promise.resolve()
+): ServiceWorkerHarness {
   const listeners = new Map<string, (event: never) => void>()
   const skipWaiting = vi.fn(() => Promise.resolve())
   const waitUntil = vi.fn()
-  const cache = { addAll: vi.fn(() => Promise.resolve()) }
+  const cache = { addAll: vi.fn(addAllResult) }
 
   const self = {
     registration: { active: hasActiveWorker ? {} : null },
@@ -23,7 +32,7 @@ function createHarness(hasActiveWorker: boolean): ServiceWorkerHarness {
     }),
   }
 
-  runInNewContext(readFileSync(new URL('../../public/sw.js', import.meta.url), 'utf8'), {
+  runInNewContext(SERVICE_WORKER_SOURCE, {
     URL,
     caches: {
       open: vi.fn(() => Promise.resolve(cache)),
@@ -60,6 +69,15 @@ describe('service worker installation', () => {
 
     harness.install({ waitUntil: harness.waitUntil })
     await harness.waitUntil.mock.calls[0][0]
+
+    expect(harness.skipWaiting).not.toHaveBeenCalled()
+  })
+
+  it('does not skip waiting when precaching fails', async () => {
+    const harness = createHarness(false, () => Promise.reject(new Error('precache failed')))
+
+    harness.install({ waitUntil: harness.waitUntil })
+    await expect(harness.waitUntil.mock.calls[0][0]).rejects.toThrow('precache failed')
 
     expect(harness.skipWaiting).not.toHaveBeenCalled()
   })

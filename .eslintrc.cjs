@@ -5,7 +5,6 @@
 'use strict'
 
 module.exports = {
-  root: true,
   // Base rules for all files (JS, JSX, config scripts, etc.)
   env: {
     browser: true,
@@ -30,10 +29,7 @@ module.exports = {
         'prettier',
       ],
       rules: {
-        'react-refresh/only-export-components': [
-          'warn',
-          { allowConstantExport: true },
-        ],
+        'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
       },
     },
     // Plain JavaScript files — default parser, no TS rules
@@ -42,10 +38,7 @@ module.exports = {
       plugins: ['react-hooks', 'react-refresh'],
       extends: ['plugin:react-hooks/recommended', 'prettier'],
       rules: {
-        'react-refresh/only-export-components': [
-          'warn',
-          { allowConstantExport: true },
-        ],
+        'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
       },
     },
     // Build scripts, Node config files, and Netlify serverless functions — add Node globals

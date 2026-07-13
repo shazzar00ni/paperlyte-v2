@@ -1,4 +1,4 @@
-import { useRef, useCallback, lazy, Suspense } from 'react'
+import { useRef, useCallback, lazy, Suspense, type ReactNode } from 'react'
 import { ErrorBoundary } from '@components/ErrorBoundary'
 import { Header } from '@components/layout/Header'
 import { Footer } from '@components/layout/Footer'
@@ -24,6 +24,14 @@ const EmailCapture = lazy(() =>
 )
 const FAQ = lazy(() => import('@components/sections/FAQ').then((m) => ({ default: m.FAQ })))
 const CTA = lazy(() => import('@components/sections/CTA').then((m) => ({ default: m.CTA })))
+
+function LazySection({ children }: { children: ReactNode }) {
+  return (
+    <ErrorBoundary fallback={<></>}>
+      <Suspense fallback={null}>{children}</Suspense>
+    </ErrorBoundary>
+  )
+}
 
 /**
  * Application root component that composes the page layout and sections.
@@ -54,36 +62,12 @@ function App() {
         <Solution />
         <Features />
         <Mobile />
-        <ErrorBoundary fallback={<></>}>
-          <Suspense fallback={null}>
-            <Statistics />
-          </Suspense>
-        </ErrorBoundary>
-        <ErrorBoundary fallback={<></>}>
-          <Suspense fallback={null}>
-            <Comparison />
-          </Suspense>
-        </ErrorBoundary>
-        <ErrorBoundary fallback={<></>}>
-          <Suspense fallback={null}>
-            <Testimonials />
-          </Suspense>
-        </ErrorBoundary>
-        <ErrorBoundary fallback={<></>}>
-          <Suspense fallback={null}>
-            <EmailCapture />
-          </Suspense>
-        </ErrorBoundary>
-        <ErrorBoundary fallback={<></>}>
-          <Suspense fallback={null}>
-            <FAQ />
-          </Suspense>
-        </ErrorBoundary>
-        <ErrorBoundary fallback={<></>}>
-          <Suspense fallback={null}>
-            <CTA />
-          </Suspense>
-        </ErrorBoundary>
+        <LazySection><Statistics /></LazySection>
+        <LazySection><Comparison /></LazySection>
+        <LazySection><Testimonials /></LazySection>
+        <LazySection><EmailCapture /></LazySection>
+        <LazySection><FAQ /></LazySection>
+        <LazySection><CTA /></LazySection>
       </main>
       <Footer />
       <FeedbackWidget />

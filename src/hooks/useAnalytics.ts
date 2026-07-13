@@ -45,21 +45,9 @@ export function useAnalytics(enableScrollTracking = true) {
     // exhaustive-deps correctly does not require them in this array.
   }, [enableScrollTracking])
 
-  // Memoized tracking functions to prevent unnecessary re-renders
+  // Memoized tracking function to prevent unnecessary re-renders in consumers
   const track = useCallback((eventName: string, params?: AnalyticsEventParams) => {
     trackEvent(eventName, params)
-  }, [])
-
-  const trackCTA = useCallback((buttonText: string, buttonLocation: string) => {
-    trackCTAClick(buttonText, buttonLocation)
-  }, [])
-
-  const trackExternal = useCallback((url: string, linkText: string) => {
-    trackExternalLink(url, linkText)
-  }, [])
-
-  const trackSocial = useCallback((platform: string) => {
-    trackSocialClick(platform)
   }, [])
 
   /**
@@ -131,12 +119,12 @@ export function useAnalytics(enableScrollTracking = true) {
     // Generic event tracking
     trackEvent: track,
 
-    // CTA tracking
-    trackCTA,
+    // CTA tracking — stable module-level references, no useCallback wrapper needed
+    trackCTA: trackCTAClick,
 
     // Link tracking
-    trackExternal,
-    trackSocial,
+    trackExternal: trackExternalLink,
+    trackSocial: trackSocialClick,
     trackNavigation,
 
     // Waitlist tracking

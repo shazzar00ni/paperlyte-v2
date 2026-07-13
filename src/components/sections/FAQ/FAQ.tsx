@@ -81,7 +81,7 @@ export const FAQ = (): React.ReactElement => {
   const gridRef = useRef<HTMLDivElement>(null)
   const announcementTimeoutRef = useRef<number | null>(null)
 
-  const toggleItem = (id: string): void => {
+  const toggleItem = useCallback((id: string): void => {
     setOpenItems((prev) => {
       const newSet = new Set(prev)
       const isOpening = !newSet.has(id)
@@ -102,7 +102,6 @@ export const FAQ = (): React.ReactElement => {
 
         setAnnouncement(`${item.question} ${isOpening ? 'expanded' : 'collapsed'}`)
         // Clear announcement after sufficient time for screen readers (3 seconds)
-        // This ensures users with slower reading speeds or busy screen readers can hear the announcement
         announcementTimeoutRef.current = window.setTimeout(() => {
           setAnnouncement('')
           announcementTimeoutRef.current = null
@@ -111,7 +110,7 @@ export const FAQ = (): React.ReactElement => {
 
       return newSet
     })
-  }
+  }, [])
 
   // Cleanup timeout on unmount to prevent memory leaks
   useEffect(() => {
@@ -192,9 +191,7 @@ export const FAQ = (): React.ReactElement => {
             question={item.question}
             answer={item.answer}
             isOpen={openItems.has(item.id)}
-            onToggle={() => {
-              toggleItem(item.id)
-            }}
+            onToggle={() => toggleItem(item.id)}
             delay={150 + index * 50}
           />
         ))}

@@ -57,7 +57,9 @@ class Analytics {
    */
   init(config: AnalyticsConfig): void {
     if (this.initialized) {
-      console.warn('[Analytics] Already initialized')
+      if (import.meta.env.DEV) {
+        console.warn('[Analytics] Already initialized')
+      }
       return
     }
 

@@ -83,6 +83,8 @@ export const env: EnvConfig = {
  * ```
  */
 export const updateMetaTags = (): void => {
+  if (typeof document === 'undefined') return
+
   if (import.meta.env.DEV) {
     // DEV-only diagnostic output, stripped from production builds; not routed
     // through `monitoring.logEvent` since this is informational setup logging,

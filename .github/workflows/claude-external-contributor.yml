@@ -67,7 +67,7 @@ jobs:
 
       - name: Run Claude Code Action
         if: steps.permission_check.outputs.allowed == 'true'
-        uses: anthropics/claude-code-action@6c0083bb7289c31716797a039b6367b3079cc46e  # v1.0.162
+        uses: anthropics/claude-code-action@f87768c6d25f92ae6efa7175e223ef77d4cbf97f  # v1.0.166
         with:
           trigger_phrase: "@claude"
           label_trigger: claude

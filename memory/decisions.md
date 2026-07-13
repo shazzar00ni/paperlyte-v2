@@ -270,3 +270,19 @@ This file tracks key architectural, design, and technical decisions made during 
   - Dependency Quality's 63 are mostly FOSSA composite "outdated/maintenance" scoring across the ~750-pkg tree. The only hard deprecation flags are 3 packages in a single chain — `@lhci/cli` (dev) → `chrome-launcher` → `rimraf@3.0.2` → `glob@7.2.3` → `inflight@1.0.6`. Overriding to newer rimraf/glob risks breaking chrome-launcher (v4+/v9+ are breaking majors), so leave to upstream
 - **Recommended remediation (not yet applied — needs owner decision)**: handle in the FOSSA dashboard — allow LGPL-3.0 or ignore dev-only issues; or, if FOSSA runs via CLI, scope analysis to `--production`. Code-side alternatives (replace `sharp` with jimp/MIT or `@resvg/resvg-js`; wait for `@lhci/cli` to update chrome-launcher) are heavier and deferred
 - **Alternatives considered**: adding a `.fossa.yml` (may not affect the FOSSA GitHub-app checks, only CLI runs), replacing `sharp` outright (rejected for now — dev-only, build-time)
+
+## Docs Audit Pass — Security & Legal/Compliance (2026-06-27)
+
+- **Date**: 2026-06-27
+- **Decision**: Finalized security + legal/compliance docs to reflect current reality (branch `claude/docs-audit-updates-b53ea4`). Filled two stub docs (`COOKIE-POLICY.md`, `DMCA.md`) with full content; added dated resolution addenda to historical reports rather than rewriting their point-in-time numbers
+- **Rationale**: User asked to "ensure all docs are completed"; chosen intent was *finalize to reflect reality without fabricating unverified work*. Historical audits are snapshots, so resolved items were documented via dated addenda + verifiable file references, not by editing past measurements
+- **What changed**:
+  - `COOKIE-POLICY.md`: rewritten from WIP stub → full policy (types, GDPR/CCPA, controls, retention, contacts) consistent with `PRIVACY-POLICY.md` §6
+  - `DMCA.md`: rewritten from stub → full notice/counter-notice/repeat-infringer policy; agent contact `legal@paperlyte.com`
+  - `SECURITY.md`: status "In progress" → "Active"; date → 2026-06-27
+  - `AI-POLICY.md`: header version 1.0 → 1.1 (matched version-history table); status note added
+  - `SECURITY_REVIEW.md` (2025-11-29): added 2026-06-27 resolution addendum; flipped MEDIUM-001 (SRI/no external CDN), MEDIUM-002 (CSP), MEDIUM-003 (headers), LOW-003 (download links) to RESOLVED with evidence
+  - `AUDIT-REPORT.md` (Jan 2026): added resolution addendum + ticked verified post-launch items (Font Awesome→SVG, self-hosted fonts, Lighthouse CI, React.lazy, service worker)
+  - `SECURITY-POLICY.md`: noted `@sentry/react` is already a dependency
+- **Verified against codebase**: CSP + security headers in `netlify.toml`/`vercel.json`; fonts self-hosted (`public/fonts/*.woff2`); no Font Awesome / `@vercel/analytics` deps; `@sentry/react` installed + init in `main.tsx`; Lighthouse CI in `ci.yml`; `React.lazy` in `App.tsx`; `public/sw.js` present; real store URLs in `src/constants/downloads.ts`
+- **Deliberately NOT changed (owner-only / unverifiable)**: `[primary region]` and entity/jurisdiction placeholders in `PRIVACY-POLICY.md`/`TERMS`/`LEGAL-COMPLIANCE-CHECKLIST`; AI-POLICY approval signatures/CTO names/intranet links; `LEGAL-SETUP.md` instructional `[...]` examples; open backlog in `baseline-audit-2026-06-11.md`; HIGH-002 console.log removal (still present in source)

@@ -645,13 +645,10 @@ PGP: [9A3B 2C1D 7E4F 5A6B 8C9D 1E2F 3A4B 5C6D 7E8F 9A0B](https://paperlyte.com/p
 
 - [Privacy Policy](./PRIVACY-POLICY.md) — Last Updated: November 28, 2025
 - [Acceptable Use Policy](./ACCEPTABLE-USE.md)
-- [Security Practices](./SECURITY.md) — Last Updated: December 2, 2025
+- [Security Practices](./SECURITY.md) — Last Updated: June 27, 2026
 - [Accessibility Statement](./ACCESSIBILITY.md) — As of December 2, 2025 (audit in progress)
-
-<!-- The following documents are not yet published or are incomplete. Remove or update these links before public release: -->
-
-- [Cookie Policy](./COOKIE-POLICY.md) <!-- IN PROGRESS: Not yet a final policy. -->
-- [DMCA Policy](./DMCA.md) <!-- IN PROGRESS: Not yet published. -->
+- [Cookie Policy](./COOKIE-POLICY.md) — Last Updated: June 27, 2026
+- [DMCA Policy](./DMCA.md) — Last Updated: June 27, 2026
 
 For questions about these policies, contact [legal@paperlyte.com](mailto:legal@paperlyte.com)
 

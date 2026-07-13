@@ -42,6 +42,38 @@ This comprehensive technical audit establishes performance baselines and identif
 
 ---
 
+## Resolution Update — 2026-06-27
+
+This audit was originally produced in January 2026. Several findings below have
+since been addressed. The point-in-time measurements in this report are retained
+as a historical baseline; the items below are verified resolved against the
+current codebase:
+
+- **Font Awesome CDN dependency (84.4 KB)** — ✅ Resolved. Font Awesome was
+  removed entirely and replaced with bundled SVG icons
+  (`src/components/ui/Icon/icons.ts`). No `font-awesome` dependency remains in
+  `package.json`.
+- **External CDN dependencies (Google Fonts / Font Awesome)** — ✅ Resolved.
+  Fonts are now self-hosted as subsetted variable WOFF2 files
+  (`public/fonts/*.woff2`, preloaded in `index.html`); there are no external
+  font/CSS CDN requests.
+- **HIGH-003 Lighthouse CI** — ✅ Resolved. Lighthouse CI runs in
+  `.github/workflows/ci.yml` (`npx @lhci/cli autorun --config=./.lighthouserc.json`).
+- **HIGH-004 Code splitting** — ✅ Resolved. `React.lazy()` is now used in
+  `src/App.tsx`.
+- **MEDIUM-003 Service worker** — ✅ Resolved. A service worker is present at
+  `public/sw.js`.
+- **Vercel analytics MIME-type issue** (noted post-audit) — ✅ Resolved.
+  `@vercel/analytics` was removed from `package.json` (site runs on Netlify).
+
+Still open (verified **not** resolved): **HIGH-002 console statements** —
+`console.*` calls remain in production source (e.g. `src/utils/*.ts`,
+`src/components/ui/*`). Manual Lighthouse/accessibility verification items in the
+checklists below also remain open. The current authoritative open backlog is
+[baseline-audit-2026-06-11.md](./audit-results/baseline-audit-2026-06-11.md).
+
+---
+
 ## 1. Performance Audit (Lighthouse)
 
 ### Build Performance Metrics
@@ -670,13 +702,13 @@ https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css
 
 ### 🎯 Post-Launch Optimizations
 
-- [ ] Implement Font Awesome tree-shaking
-- [ ] Add service worker for PWA offline support
-- [ ] Set up Lighthouse CI in GitHub Actions
+- [x] ~~Implement Font Awesome tree-shaking~~ ✅ Replaced Font Awesome with bundled SVG icons (2026-06-27)
+- [x] Add service worker for PWA offline support ✅ `public/sw.js` (2026-06-27)
+- [x] Set up Lighthouse CI in GitHub Actions ✅ `.github/workflows/ci.yml` (2026-06-27)
 - [ ] Add test coverage for analytics module
-- [ ] Implement React.lazy() code splitting
+- [x] Implement React.lazy() code splitting ✅ `src/App.tsx` (2026-06-27)
 - [ ] Add React.memo to pure components
-- [ ] Subset fonts to reduce payload
+- [x] Subset fonts to reduce payload ✅ Self-hosted subsetted variable WOFF2 (2026-06-27)
 - [ ] Set up performance monitoring (Core Web Vitals)
 
 ---

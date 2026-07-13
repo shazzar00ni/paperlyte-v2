@@ -1,8 +1,8 @@
 # Paperlyte AI Policy
 
-**Version:** 1.0
+**Version:** 1.1
 **Last Updated:** 2026-05-13
-**Status:** Draft
+**Status:** Draft — pending policy approval (see Policy Approval section)
 
 ---
 

@@ -178,7 +178,7 @@ A successful run prints `Verified OK`, confirming the artifact was produced by t
 
 Error monitoring is fully configured and ready to activate. To enable Sentry integration:
 
-1. **Install Sentry SDK**:
+1. **Install Sentry SDK** (already included — `@sentry/react` is a dependency in `package.json`; this step is only needed in a fresh setup):
 
    ```bash
    npm install --save @sentry/react

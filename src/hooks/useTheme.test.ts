@@ -2,9 +2,10 @@ import { renderHook, act, waitFor } from '@testing-library/react'
 import { logError } from '@utils/monitoring'
 import { useTheme } from './useTheme'
 
-vi.mock('@utils/monitoring', () => ({
-  logError: vi.fn(),
-}))
+// Resolves to the canonical mock in @utils/__mocks__/monitoring.ts so this
+// file's `logError` reference stays in sync with the module registry even
+// when it's shared across test files.
+vi.mock('@utils/monitoring')
 
 // Mock the config module
 vi.mock('@constants/config', () => ({

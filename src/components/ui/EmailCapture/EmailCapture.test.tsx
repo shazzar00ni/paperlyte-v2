@@ -3,8 +3,10 @@ import userEvent from '@testing-library/user-event'
 import { vi } from 'vitest'
 import { EmailCapture } from './EmailCapture'
 
-vi.mock('@utils/analytics', () => ({ trackEvent: vi.fn() }))
-vi.mock('@utils/monitoring', () => ({ logError: vi.fn() }))
+// Resolve to the canonical mocks in @utils/__mocks__/ so these stay in sync
+// with the module registry even when it's shared across test files.
+vi.mock('@utils/analytics')
+vi.mock('@utils/monitoring')
 
 const fillAndSubmit = async (
   user: ReturnType<typeof userEvent.setup>,

@@ -9,10 +9,11 @@ vi.mock('@sentry/react', () => ({
   addBreadcrumb: vi.fn(),
 }))
 
-// Mock analytics
-vi.mock('./analytics', () => ({
-  trackEvent: vi.fn(),
-}))
+// Mock analytics — resolves to the canonical mock in ./__mocks__/analytics.ts
+// so this file's `analytics.trackEvent` reference is guaranteed to be the same
+// instance the real `monitoring.ts` (imported unmocked above) calls internally,
+// even when the module registry is shared across test files.
+vi.mock('./analytics')
 
 describe('monitoring', () => {
   let consoleSpy: {

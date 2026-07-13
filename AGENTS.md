@@ -823,6 +823,7 @@ function Features() {
 
 - **CLAUDE.md** - High-level design philosophy and guidance
 - **README.md** - Project overview and setup instructions
+- **.github/copilot-instructions.md** - GitHub Copilot-specific instructions
 - **docs/DESIGN-SYSTEM.md** - Comprehensive design system documentation
 - **docs/ACCESSIBILITY.md** - Accessibility guidelines and checklist
 - **docs/CONTRIBUTING.md** - Contribution guidelines

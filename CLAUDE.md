@@ -224,3 +224,8 @@ High-priority additions:
 - **Accessibility Required**: Not optional - every feature must be accessible
 - **Performance Budget**: If a feature slows the page, it doesn't ship
 - **Reduced Motion**: Always respect `prefers-reduced-motion` for animations
+
+## Related Agent Instructions
+
+- **AGENTS.md** - Comprehensive instructions for AI coding agents
+- **.github/copilot-instructions.md** - GitHub Copilot-specific instructions

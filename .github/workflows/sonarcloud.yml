@@ -17,6 +17,11 @@ jobs:
       pull-requests: read # allows SonarCloud to decorate PRs with analysis results
 
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
+        with:
+          egress-policy: audit
+
       - name: Checkout repository
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
@@ -36,29 +41,14 @@ jobs:
             echo "configured=true" >> $GITHUB_OUTPUT
           fi
 
-      - name: Download SonarScanner CLI
-        if: steps.check-config.outputs.configured == 'true'
-        run: |
-          set -euo pipefail
-          SONAR_VERSION="7.0.2.4839"
-          # Keep this digest pinned to the checksum published by Maven Central.
-          SONAR_SHA256="ef72465a66f519e5da9f1d0731de073d35755a9893591cae4821faebb6e58dd8"
-          SONAR_ARCHIVE="$RUNNER_TEMP/sonar-scanner.zip"
-          SONAR_INSTALL_DIR="$RUNNER_TEMP/sonar-scanner"
-          wget -q --timeout=60 --tries=3 "https://repo1.maven.org/maven2/org/sonarsource/scanner/cli/sonar-scanner-cli/${SONAR_VERSION}/sonar-scanner-cli-${SONAR_VERSION}.zip" -O "${SONAR_ARCHIVE}"
-          echo "${SONAR_SHA256}  ${SONAR_ARCHIVE}" | sha256sum -c -
-          unzip -q "${SONAR_ARCHIVE}" -d "${SONAR_INSTALL_DIR}"
-          echo "${SONAR_INSTALL_DIR}/sonar-scanner-${SONAR_VERSION}/bin" >> "${GITHUB_PATH}"
-
       - name: Analyze with SonarCloud
         if: steps.check-config.outputs.configured == 'true'
+        uses: SonarSource/sonarqube-scan-action@713881670b6b3676cda39549040e2d88c70d582e # v8.2.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_PROJECT_KEY: ${{ vars.SONAR_PROJECT_KEY }}
-          SONAR_ORG: ${{ vars.SONAR_ORGANIZATION }}
-        run: |
-          sonar-scanner \
-            -Dsonar.projectKey="${SONAR_PROJECT_KEY}" \
-            -Dsonar.organization="${SONAR_ORG}" \
-            -Dsonar.host.url=https://sonarcloud.io \
+        with:
+          args: >
+            -Dsonar.projectKey="${{ vars.SONAR_PROJECT_KEY }}"
+            -Dsonar.organization="${{ vars.SONAR_ORGANIZATION }}"
+            -Dsonar.host.url=https://sonarcloud.io
             -Dsonar.projectBaseDir=.

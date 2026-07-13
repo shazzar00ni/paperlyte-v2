@@ -1,7 +1,7 @@
 {
   "summary": {
-    "enabledPatterns": { "before": 2432, "after": 2436 },
-    "enabledTools": { "before": 12, "after": 13 },
+    "enabledPatterns": { "before": 2432, "after": 2430 },
+    "enabledTools": { "before": 12, "after": 11 },
     "issues": { "before": 290, "after": 271 },
     "analysisRuntime": { "before": 72763, "after": 14671 }
   },
@@ -78,9 +78,13 @@
   },
   "fileExclusions": null,
   "securityCoverage": {
+    "trivyDisabled": {
+      "reason": "Trivy removed from codacy.config.json and disabled in .codacy.yml. Codacy's Trivy Docker image now outputs CycloneDX SBOM format (bomFormat: CycloneDXJSON) instead of the security-findings JSON format with 'filename' fields that Codacy's plugin parser expects, causing a JsResultException parse error (CodacyPlugins:11) on every run. Secret scanning coverage maintained by Semgrep gitleaks and hard-coded-password patterns. Vulnerability scanning coverage gap acknowledged — reinstate Trivy once Codacy ships a compatible plugin version.",
+      "affectedPatterns": ["Trivy_malicious_packages", "Trivy_secret", "Trivy_vulnerability_critical", "Trivy_vulnerability_high", "Trivy_vulnerability_medium", "Trivy_vulnerability_minor"]
+    },
     "inheritedDeduplication": [
       "Biome noImportantStyles already disabled in parent — same CSS !important concern covered by Stylelint declaration-no-important (more appropriate CSS-specific tool)",
-      "Biome noSecrets already disabled in parent — 100% false positives (SVG paths, CSS selectors); same concern covered by Trivy_secret and Semgrep hard-coded-password/gitleaks patterns"
+      "Biome noSecrets already disabled in parent — 100% false positives (SVG paths, CSS selectors); same concern covered by Semgrep hard-coded-password/gitleaks patterns (Trivy_secret removed, see trivyDisabled)"
     ],
     "newCoverage": [
       "PMD7 ECMAScript checks now cover public/*.js files for with-statements, inconsistent returns, missing radix in parseInt, assignment in operand, unnecessary blocks, and equality comparisons"

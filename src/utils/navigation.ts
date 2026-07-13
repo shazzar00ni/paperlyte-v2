@@ -7,6 +7,13 @@ const pendingScrollObservers = new Map<
   { observer: MutationObserver; timeoutId: ReturnType<typeof setTimeout> }
 >()
 
+/**
+ * Cancels any pending scroll observer registered for `sectionId`, disconnecting
+ * the MutationObserver and clearing the timeout. Idempotent — safe to call when
+ * no pending observer exists.
+ *
+ * @param sectionId - ID of the section whose pending scroll should be cancelled
+ */
 function cancelPendingScroll(sectionId: string): void {
   const pending = pendingScrollObservers.get(sectionId)
   if (pending) {
@@ -85,6 +92,10 @@ const DANGEROUS_PROTOCOL_PATTERN = /^(javascript|data|vbscript|file|about):/i
 /**
  * Checks whether a URL string contains a dangerous protocol, accounting for
  * whitespace obfuscation and percent-encoding.
+ *
+ * @param url - The raw URL string to inspect
+ * @returns `true` if the URL uses a dangerous protocol such as `javascript:`,
+ *   `data:`, `vbscript:`, `file:`, or `about:`; `false` otherwise
  */
 export function hasDangerousProtocol(url: string): boolean {
   // Direct check
@@ -114,8 +125,11 @@ export function hasDangerousProtocol(url: string): boolean {
 }
 
 /**
- * Checks whether a URL is a safe relative path (/, ./, or ../ prefixed)
- * without embedded protocol injection.
+ * Checks whether a URL is a safe relative path (`/`, `./`, or `../` prefixed)
+ * without embedded protocol injection (e.g. `://` embedded in a slash-relative path).
+ *
+ * @param url - The URL string to inspect
+ * @returns `true` if the URL is a relative path with no protocol injection; `false` otherwise
  */
 export function isRelativeUrl(url: string): boolean {
   const isSlashRelative = url.startsWith('/') && !url.startsWith('//')
@@ -130,7 +144,12 @@ export function isRelativeUrl(url: string): boolean {
 }
 
 /**
- * Checks whether a parsed absolute URL uses an allowed protocol or is same-origin.
+ * Checks whether a parsed absolute URL uses an allowed protocol (`http:` or `https:`)
+ * or resolves to the same origin as the current page.
+ *
+ * @param url - The absolute URL string to validate
+ * @returns `true` if the URL is http/https or same-origin; `false` if parsing fails
+ *   or the protocol is disallowed
  */
 export function isAllowedAbsoluteUrl(url: string): boolean {
   try {
@@ -194,6 +213,12 @@ export function isSafeUrl(url: string): boolean {
   return isAllowedAbsoluteUrl(trimmedUrl)
 }
 
+/**
+ * Returns `true` when `url` resolves to the same origin as the current page.
+ *
+ * @param url - Absolute or relative URL to check
+ * @returns `true` if same-origin; `false` if cross-origin or parsing fails
+ */
 function isSameOriginUrl(url: string): boolean {
   try {
     const parsed = new URL(url, window.location.origin)

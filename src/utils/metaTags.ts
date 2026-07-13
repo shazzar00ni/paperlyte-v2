@@ -8,12 +8,30 @@
  * left unchanged and continues to point to production.
  */
 
-/** Set `attr` to `value` on the first element matching `selector`, if it exists. */
+/**
+ * Sets `attr` to `value` on the first element matching `selector`.
+ * A no-op when no matching element exists.
+ *
+ * @param selector - CSS selector for the target `<meta>` or `<link>` element
+ * @param attr - Attribute name to update (e.g. `'content'`, `'href'`)
+ * @param value - New attribute value
+ */
 function updateMetaAttr(selector: string, attr: string, value: string): void {
   const el = document.querySelector(selector)
   if (el) el.setAttribute(attr, value)
 }
 
+/**
+ * Configures `<head>` meta tags for the development environment.
+ *
+ * In production this function is a no-op. In development it:
+ * - Sets `meta[name="robots"]` to `"noindex, nofollow"` so search engines ignore dev builds
+ * - Removes `meta[name="keywords"]` (irrelevant in dev)
+ * - Prefixes `<title>` with `[DEV]` if not already present
+ * - Rewrites Open Graph and Twitter Card `url`/`image` properties to use the current origin
+ *
+ * Call once during app initialization (e.g. in `main.tsx`).
+ */
 export function initializeMetaTags(): void {
   if (import.meta.env.PROD) return
 

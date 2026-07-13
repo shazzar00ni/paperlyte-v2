@@ -34,12 +34,19 @@ export function initializeMetaTags(): void {
 
   const currentUrl = window.location.origin
 
-  console.log('[Meta Tags] Initialized for development environment')
-  console.log('  - Robots: noindex, nofollow')
-  console.log('  - Keywords: removed')
-  console.log('  - Canonical URL: unchanged (points to production)')
-  console.log(`  - Open Graph URLs: updated to ${currentUrl}`)
-  console.log(`  - Twitter Card URLs: updated to ${currentUrl}`)
+  if (import.meta.env.DEV) {
+    // DEV-only diagnostic output, stripped from production builds; not routed
+    // through `monitoring.logEvent` since this is informational setup logging,
+    // not an application event.
+    /* eslint-disable no-console */
+    console.log('[Meta Tags] Initialized for development environment')
+    console.log('  - Robots: noindex, nofollow')
+    console.log('  - Keywords: removed')
+    console.log('  - Canonical URL: unchanged (points to production)')
+    console.log(`  - Open Graph URLs: updated to ${currentUrl}`)
+    console.log(`  - Twitter Card URLs: updated to ${currentUrl}`)
+    /* eslint-enable no-console */
+  }
 
   updateMetaAttr('meta[name="robots"]', 'content', 'noindex, nofollow')
 

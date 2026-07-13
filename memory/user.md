@@ -54,6 +54,11 @@ This file tracks information about the user's goals, context, and working style.
 - **Category**: Issue tracking
 - **Notes** (2026-06-17): The pre-launch blockers above are **already filed as open GitHub issues** (June 2026 audit batch — do NOT open duplicates): corrupted Inter font **#1099**, domain/sitemap+metadata **#1100**, analytics disconnected **#1101** (Plausible migration **#949**), legal static-page placeholders + AU vs Delaware governing law **#1102**, four `'#'` policy docs **#1103**, `FeedbackWidget` onSubmit **#1104**, Vercel-only subscribe endpoint **#1106**, missing og/twitter images **#1107**, serverless functions untested + process-local rate limit **#1108**, June-2026 follow-ups (viewport-deferred lazy sections, SW cache eviction, `TextReveal` any-cast, coverage gaps) **#1110**. Also relevant: Production Readiness Checklist **#745**, Launch Checklist **#36**.
 
+## Blocked Hosts (this session's egress policy)
+
+- **Category**: Environment constraint
+- **Notes** (2026-07-11): `skills.sentry.dev` returns 403 on CONNECT through this session's proxy (organization egress policy denial, confirmed via `curl` and `WebFetch`, not a site-side issue) — cannot fetch Sentry's official "instrument" skill doc from remote sessions with this policy. Per proxy README: do not retry/route around policy denials, report them.
+
 ## CI / Bots
 
 - **Category**: CI integrations

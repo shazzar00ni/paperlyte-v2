@@ -5,6 +5,10 @@ executors:
     docker:
       - image: cimg/node:22.18.0
     resource_class: medium
+  node-executor-large:
+    docker:
+      - image: cimg/node:22.18.0
+    resource_class: large
 
 jobs:
   install:
@@ -22,6 +26,7 @@ jobs:
       - run:
           name: Install dependencies
           command: npm ci
+          no_output_timeout: 10m
       - save_cache:
           key: node-npm-cache-v1-{{ checksum "package-lock.json" }}
           paths:
@@ -52,7 +57,8 @@ jobs:
           at: .
       - run:
           name: TypeScript type check
-          command: npx tsc -b --noEmit
+          # Use the workspace-installed binary directly to avoid npx overhead.
+          command: ./node_modules/.bin/tsc -b --noEmit
 
   # Runs the unit test suite via CircleCI Smarter Testing.
   # - Dynamic test splitting: tests are distributed across parallel nodes via a
@@ -98,14 +104,65 @@ jobs:
           command: exit $(cat /tmp/test-exit-code 2>/dev/null || echo 1)
 
   build:
-    executor: node-executor
+    executor: node-executor-large
     steps:
       - checkout
       - attach_workspace:
           at: .
+      # Hash all source files consumed by generate:icons and generate:mockups so
+      # the generated assets (PNG/WebP/AVIF variants) are cached independently of
+      # the main source build.  The combined fingerprint invalidates when any
+      # source SVG or generation script changes.
       - run:
-          name: Build
-          command: npm run build
+          name: Fingerprint asset generation sources
+          command: |
+            cat public/favicon.svg \
+                scripts/generate-icons.js \
+                scripts/generate-mockups.js \
+                scripts/path-utils.js \
+                public/mockups/note-detail.svg \
+                public/mockups/notes-list.svg \
+                > /tmp/asset-sources-fingerprint
+      - restore_cache:
+          keys:
+            - generated-assets-v1-{{ checksum "/tmp/asset-sources-fingerprint" }}
+      - run:
+          name: Generate icons and mockups
+          # Skip generation when all outputs are present (cache hit); regenerate
+          # on first run or whenever any source file changes (cache miss).
+          command: |
+            if [ ! -f public/favicon-16x16.png ]; then
+              npm run generate:icons && npm run generate:mockups
+            else
+              echo "Using cached generated assets — skipping generation"
+            fi
+      - save_cache:
+          key: generated-assets-v1-{{ checksum "/tmp/asset-sources-fingerprint" }}
+          paths:
+            - public/favicon.ico
+            - public/favicon-16x16.png
+            - public/favicon-32x32.png
+            - public/apple-touch-icon.png
+            - public/android-chrome-192x192.png
+            - public/android-chrome-192x192.webp
+            - public/android-chrome-192x192.avif
+            - public/android-chrome-512x512.png
+            - public/android-chrome-512x512.webp
+            - public/android-chrome-512x512.avif
+            - public/mockups
+      # Run the core build steps directly (bypassing npm pre/postbuild hooks which
+      # have already been handled above and below) so each step is independently
+      # timed and surfaced in CircleCI's step output.
+      - run:
+          name: TypeScript compile and Vite bundle
+          command: |
+            ./node_modules/.bin/tsc -b && \
+            ./node_modules/.bin/vite build && \
+            node scripts/inject-dates.js
+          no_output_timeout: 12m
+      - run:
+          name: Generate sitemap
+          command: node scripts/generate-sitemap.cjs
       - persist_to_workspace:
           root: .
           paths:
@@ -166,6 +223,7 @@ jobs:
           environment:
             CI: "true"
             BASE_URL: "http://127.0.0.1:4173"
+          no_output_timeout: 8m
       - store_test_results:
           # JUnit XML is written by the junit reporter added to playwright.config.ts
           path: test-results

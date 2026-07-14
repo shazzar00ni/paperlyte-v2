@@ -47,6 +47,12 @@ jobs:
           node-version: "20"
           cache: "npm"
 
+      # Only the SARIF formatter install below resolves a fresh version and is
+      # gated by .npmrc's min-release-age (npm ci loads straight from the
+      # lockfile and never consults it, regardless of npm version).
+      - name: Upgrade npm
+        uses: ./.github/actions/upgrade-npm
+
       - name: Install dependencies
         run: npm ci
 

@@ -5,6 +5,7 @@ This file tracks key architectural, design, and technical decisions made during 
 ## Supabase MCP server added at project scope (2026-07-12)
 
 - **Decision**: Added a `supabase` entry to `.mcp.json` (`type: "http"`, url pointing at `https://mcp.supabase.com/mcp?project_ref=yzrvtzgljsaxetmctplb`), matching what `claude mcp add --scope project --transport http supabase ...` would generate.
+- **Update (2026-07-14)**: Added `&read_only=true` to the URL per Codex PR review — Supabase's own MCP docs recommend defaulting to read-only (runs SQL via a read-only role, disables migrations/function-deploy/branch-ops) so agent sessions can't accidentally mutate the shared project. A writable config can be added explicitly if a dev-only session needs it.
 - **Not done (needs a human, interactive session)**: OAuth authentication (`claude /mcp` → select `supabase` → Authenticate) can't run in a non-interactive remote session. Optional `npx skills add supabase/agent-skills` step was also left undone — it's marked optional in the setup instructions and wasn't requested beyond the standard 3-step guide.
 - **Action for future sessions**: If Supabase MCP tools appear unauthenticated/unavailable, that's expected until a user runs `claude /mcp` locally to complete the OAuth flow.
 

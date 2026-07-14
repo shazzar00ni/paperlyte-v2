@@ -13,7 +13,7 @@
     },
     "supabase": {
       "type": "http",
-      "url": "https://mcp.supabase.com/mcp?project_ref=yzrvtzgljsaxetmctplb"
+      "url": "https://mcp.supabase.com/mcp?project_ref=yzrvtzgljsaxetmctplb&read_only=true"
     }
   }
 }

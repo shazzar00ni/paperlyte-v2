@@ -164,24 +164,36 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-xs);
+  gap: 0.25rem;
   margin-top: var(--spacing-lg);
 }
 
 .dot {
-  width: 10px;
-  height: 10px;
+  position: relative;
+  width: 24px;
+  height: 24px;
   padding: 0;
   border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.dot::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
   border-radius: var(--border-radius-full);
   background: var(--color-border);
-  cursor: pointer;
+  transform: translate(-50%, -50%);
   transition:
     background-color var(--transition-fast),
     transform var(--transition-fast);
 }
 
-.dot:hover {
+.dot:hover::after {
   background: var(--color-text-secondary);
 }
 
@@ -190,9 +202,9 @@
   outline-offset: 2px;
 }
 
-.dotActive {
+.dotActive::after {
   background: var(--color-primary);
-  transform: scale(1.25);
+  transform: translate(-50%, -50%) scale(1.25);
 }
 
 /* Play/pause control */
@@ -231,6 +243,7 @@
   margin: -1px;
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
   white-space: nowrap;
   border-width: 0;
 }
@@ -266,7 +279,7 @@
 /* Extra small screens */
 @media (max-width: 480px) {
   .carouselWrapper {
-    padding: 0 var(--spacing-2xl);
+    padding: 0 var(--spacing-md);
   }
 
   .quote {

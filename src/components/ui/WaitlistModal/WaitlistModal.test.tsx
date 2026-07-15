@@ -82,6 +82,7 @@ describe('WaitlistModal', () => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: 'test@example.com' }),
+      signal: expect.any(AbortSignal),
     })
   })
 
@@ -96,5 +97,47 @@ describe('WaitlistModal', () => {
       expect(screen.getByRole('alert')).toBeInTheDocument()
     })
     expect(fetchMock).not.toHaveBeenCalled()
+  })
+
+  it('discards a stale response if the modal is closed and reopened before it resolves', async () => {
+    // Never resolves on its own — only settles (or rejects) via the abort signal —
+    // so we can control exactly when the "server" responds relative to close/reopen.
+    let rejectFirstRequest!: (reason: unknown) => void
+    fetchMock.mockImplementationOnce(
+      (_url: string, options: RequestInit) =>
+        new Promise((_resolve, reject) => {
+          rejectFirstRequest = reject
+          options.signal?.addEventListener('abort', () => {
+            reject(new DOMException('Aborted', 'AbortError'))
+          })
+        })
+    )
+
+    const user = userEvent.setup()
+    const onClose = vi.fn()
+    const { rerender } = render(<WaitlistModal isOpen={true} onClose={onClose} />)
+
+    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
+    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /Joining/i })).toBeDisabled()
+    })
+
+    // Close mid-submission (aborts the in-flight request) and reopen
+    fireEvent.click(screen.getByRole('button', { name: /close/i }))
+    rerender(<WaitlistModal isOpen={true} onClose={onClose} />)
+
+    // The reopened modal shows a fresh form, not a stale success/error from the
+    // request that was in flight when it closed
+    expect(screen.getByPlaceholderText('your@email.com')).toHaveValue('')
+    expect(screen.queryByText(/You're on the list!/)).not.toBeInTheDocument()
+
+    // Letting the original request's promise settle after the abort must not
+    // resurrect the success state on the now-reopened modal
+    rejectFirstRequest(new DOMException('Aborted', 'AbortError'))
+    await Promise.resolve()
+    expect(screen.queryByText(/You're on the list!/)).not.toBeInTheDocument()
+    expect(screen.getByPlaceholderText('your@email.com')).toHaveValue('')
   })
 })

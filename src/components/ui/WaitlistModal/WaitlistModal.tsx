@@ -16,7 +16,10 @@ interface WaitlistModalProps {
  * they're on. Shares its submission logic with the EmailCapture section via
  * useWaitlistSubscribe.
  */
-export const WaitlistModal = ({ isOpen, onClose }: WaitlistModalProps): React.ReactElement | null => {
+export const WaitlistModal = ({
+  isOpen,
+  onClose,
+}: WaitlistModalProps): React.ReactElement | null => {
   const { email, setEmail, isSubmitted, isLoading, error, handleSubmit, reset } =
     useWaitlistSubscribe('WaitlistModal')
   const triggerElementRef = useRef<HTMLElement | null>(null)

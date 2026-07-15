@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { logError } from '@utils/monitoring'
 import { validateEmail } from '@utils/validation'
@@ -23,8 +23,13 @@ export function useWaitlistSubscribe(componentName: string): UseWaitlistSubscrib
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  // Tracks the in-flight request so reset() (e.g. closing a modal mid-submit)
+  // can cancel it — otherwise a late response could overwrite fresh state
+  // after the form has already been reset or resubmitted.
+  const abortControllerRef = useRef<AbortController | null>(null)
 
   const reset = (): void => {
+    abortControllerRef.current?.abort()
     setEmail('')
     setIsSubmitted(false)
     setIsLoading(false)
@@ -43,6 +48,10 @@ export function useWaitlistSubscribe(componentName: string): UseWaitlistSubscrib
       return
     }
 
+    abortControllerRef.current?.abort()
+    const abortController = new AbortController()
+    abortControllerRef.current = abortController
+
     setIsLoading(true)
 
     try {
@@ -50,6 +59,7 @@ export function useWaitlistSubscribe(componentName: string): UseWaitlistSubscrib
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: normalizedEmail }),
+        signal: abortController.signal,
       })
 
       if (!res.ok) {
@@ -81,6 +91,12 @@ export function useWaitlistSubscribe(componentName: string): UseWaitlistSubscrib
       setIsLoading(false)
       setIsSubmitted(true)
     } catch (err) {
+      // Aborted by a subsequent reset()/resubmit — the requester no longer
+      // cares about this result, so don't touch state or log it as an error.
+      if (err instanceof DOMException && err.name === 'AbortError') {
+        return
+      }
+
       const error = err instanceof Error ? err : new Error(String(err))
       logError(
         error,

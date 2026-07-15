@@ -253,7 +253,7 @@
         <p class="subtitle">
           Answers to common questions about getting started, the waitlist, features, and privacy.
         </p>
-        <form class="search" role="search" onsubmit="return false">
+        <form class="search" role="search" id="help-search-form">
           <label for="help-search" class="visually-hidden">Search help articles</label>
           <input
             type="search"
@@ -455,6 +455,13 @@
         var categories = Array.prototype.slice.call(document.querySelectorAll('.category'));
 
         if (!input) return;
+
+        var form = document.getElementById('help-search-form');
+        if (form) {
+          form.addEventListener('submit', function (e) {
+            e.preventDefault();
+          });
+        }
 
         input.addEventListener('input', function () {
           var query = input.value.trim().toLowerCase();

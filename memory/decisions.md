@@ -2,6 +2,13 @@
 
 This file tracks key architectural, design, and technical decisions made during development.
 
+## Supabase MCP server added at project scope (2026-07-12)
+
+- **Decision**: Added a `supabase` entry to `.mcp.json` (`type: "http"`, url pointing at `https://mcp.supabase.com/mcp?project_ref=yzrvtzgljsaxetmctplb`), matching what `claude mcp add --scope project --transport http supabase ...` would generate.
+- **Update (2026-07-14)**: Added `&read_only=true` to the URL per Codex PR review — Supabase's own MCP docs recommend defaulting to read-only (runs SQL via a read-only role, disables migrations/function-deploy/branch-ops) so agent sessions can't accidentally mutate the shared project. A writable config can be added explicitly if a dev-only session needs it.
+- **Not done (needs a human, interactive session)**: OAuth authentication (`claude /mcp` → select `supabase` → Authenticate) can't run in a non-interactive remote session. Optional `npx skills add supabase/agent-skills` step was also left undone — it's marked optional in the setup instructions and wasn't requested beyond the standard 3-step guide.
+- **Action for future sessions**: If Supabase MCP tools appear unauthenticated/unavailable, that's expected until a user runs `claude /mcp` locally to complete the OAuth flow.
+
 ## CSP — `auto-events.js` / `proxy.js` console errors are extension noise (2026-06-30)
 
 - **Decision**: Do **not** change the CSP in response to console errors of the form "Refused to load the script `https://<deploy>/auto-events.js` (or `/proxy.js`) because it violates ... `script-src 'nonce-…' 'strict-dynamic' 'self' https://plausible.io`". No code fix is warranted — the policy is behaving exactly as designed.

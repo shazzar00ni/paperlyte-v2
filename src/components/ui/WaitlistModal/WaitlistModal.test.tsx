@@ -56,6 +56,44 @@ describe('WaitlistModal', () => {
     expect(onClose).toHaveBeenCalledTimes(1)
   })
 
+  it('traps Tab focus: tabbing past the last element wraps to the first', () => {
+    render(<WaitlistModal isOpen={true} onClose={vi.fn()} />)
+
+    const closeButton = screen.getByRole('button', { name: /close/i })
+    const submitButton = screen.getByRole('button', { name: /Join the Waitlist/i })
+
+    submitButton.focus()
+    expect(submitButton).toHaveFocus()
+
+    fireEvent.keyDown(document, { key: 'Tab' })
+    expect(closeButton).toHaveFocus()
+  })
+
+  it('traps Tab focus: shift+Tab on the first element wraps to the last', () => {
+    render(<WaitlistModal isOpen={true} onClose={vi.fn()} />)
+
+    const closeButton = screen.getByRole('button', { name: /close/i })
+    const submitButton = screen.getByRole('button', { name: /Join the Waitlist/i })
+
+    closeButton.focus()
+    expect(closeButton).toHaveFocus()
+
+    fireEvent.keyDown(document, { key: 'Tab', shiftKey: true })
+    expect(submitButton).toHaveFocus()
+  })
+
+  it('does not trap focus when Tab lands on a middle element', () => {
+    render(<WaitlistModal isOpen={true} onClose={vi.fn()} />)
+
+    const emailInput = screen.getByPlaceholderText('your@email.com')
+    emailInput.focus()
+    expect(emailInput).toHaveFocus()
+
+    // Tab from the middle element should be left alone (no wrap, no preventDefault)
+    fireEvent.keyDown(document, { key: 'Tab' })
+    expect(emailInput).toHaveFocus()
+  })
+
   it('locks body scroll while open', () => {
     const { rerender } = render(<WaitlistModal isOpen={false} onClose={vi.fn()} />)
     expect(document.body.style.overflow).toBe('')

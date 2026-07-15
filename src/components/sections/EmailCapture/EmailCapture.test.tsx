@@ -123,6 +123,64 @@ describe('EmailCapture Section', () => {
     })
   })
 
+  it('falls back to a default message for a 5xx response with no error field', async () => {
+    fetchMock.mockResolvedValueOnce({
+      ok: false,
+      status: 500,
+      json: () => Promise.resolve({}),
+    })
+
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
+    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toHaveTextContent(/Couldn't add you to the waitlist/i)
+    })
+  })
+
+  it('falls back to a default message for a 429 response with no error field', async () => {
+    fetchMock.mockResolvedValueOnce({
+      ok: false,
+      status: 429,
+      json: () => Promise.resolve({}),
+    })
+
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
+    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toHaveTextContent(
+        'Too many requests. Please try again later.'
+      )
+    })
+  })
+
+  it('falls back to a default message for a 400 response with no error field', async () => {
+    fetchMock.mockResolvedValueOnce({
+      ok: false,
+      status: 400,
+      json: () => Promise.resolve({}),
+    })
+
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
+    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toHaveTextContent(
+        'Invalid email address. Please check and try again.'
+      )
+    })
+  })
+
   it('shows a network error message when fetch throws', async () => {
     fetchMock.mockRejectedValueOnce(new TypeError('Failed to fetch'))
 

@@ -308,14 +308,14 @@ describe('FAQ', () => {
       render(<FAQ />)
 
       const helpLink = screen.getByRole('link', { name: /help center/i })
-      expect(helpLink).toHaveAttribute('href', '#help')
+      expect(helpLink).toHaveAttribute('href', '/help.html')
     })
 
     it('should render community forum link with correct href', () => {
       render(<FAQ />)
 
       const forumLink = screen.getByRole('link', { name: /community forum/i })
-      expect(forumLink).toHaveAttribute('href', '#community')
+      expect(forumLink).toHaveAttribute('href', '/community.html')
     })
   })
 

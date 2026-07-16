@@ -290,6 +290,7 @@
 @media (prefers-reduced-motion: reduce) {
   .navButton,
   .dot,
+  .dot::after,
   .playPauseButton {
     transition: none;
   }

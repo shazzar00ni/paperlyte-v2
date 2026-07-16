@@ -82,16 +82,15 @@ describe('WaitlistModal', () => {
     expect(submitButton).toHaveFocus()
   })
 
-  it('does not trap focus when Tab lands on a middle element', () => {
+  it('allows Tab to advance from a middle element', async () => {
     render(<WaitlistModal isOpen={true} onClose={vi.fn()} />)
+    const user = userEvent.setup()
 
     const emailInput = screen.getByPlaceholderText('your@email.com')
+    const submitButton = screen.getByRole('button', { name: /Join the Waitlist/i })
     emailInput.focus()
-    expect(emailInput).toHaveFocus()
-
-    // Tab from the middle element should be left alone (no wrap, no preventDefault)
-    fireEvent.keyDown(document, { key: 'Tab' })
-    expect(emailInput).toHaveFocus()
+    await user.tab()
+    expect(submitButton).toHaveFocus()
   })
 
   it('locks body scroll while open', () => {

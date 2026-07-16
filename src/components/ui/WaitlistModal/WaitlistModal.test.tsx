@@ -137,13 +137,14 @@ describe('WaitlistModal', () => {
   })
 
   it('discards a stale response if the modal is closed and reopened before it resolves', async () => {
-    // Never resolves on its own — only settles (or rejects) via the abort signal —
-    // so we can control exactly when the "server" responds relative to close/reopen.
-    let rejectFirstRequest!: (reason: unknown) => void
+    // Never resolves on its own — only settles via its own AbortSignal's 'abort'
+    // listener — so the test proves the close flow actually calls abort(),
+    // rather than passing merely because we manually rejected the promise.
+    let capturedSignal: AbortSignal | undefined
     fetchMock.mockImplementationOnce(
       (_url: string, options: RequestInit) =>
         new Promise((_resolve, reject) => {
-          rejectFirstRequest = reject
+          capturedSignal = options.signal ?? undefined
           options.signal?.addEventListener('abort', () => {
             reject(new DOMException('Aborted', 'AbortError'))
           })
@@ -161,8 +162,12 @@ describe('WaitlistModal', () => {
       expect(screen.getByRole('button', { name: /Joining/i })).toBeDisabled()
     })
 
-    // Close mid-submission (aborts the in-flight request) and reopen
+    // Close mid-submission and reopen
     fireEvent.click(screen.getByRole('button', { name: /close/i }))
+
+    // Prove the close flow actually aborted the in-flight request
+    expect(capturedSignal?.aborted).toBe(true)
+
     rerender(<WaitlistModal isOpen={true} onClose={onClose} />)
 
     // The reopened modal shows a fresh form, not a stale success/error from the
@@ -170,9 +175,8 @@ describe('WaitlistModal', () => {
     expect(screen.getByPlaceholderText('your@email.com')).toHaveValue('')
     expect(screen.queryByText(/You're on the list!/)).not.toBeInTheDocument()
 
-    // Letting the original request's promise settle after the abort must not
-    // resurrect the success state on the now-reopened modal
-    rejectFirstRequest(new DOMException('Aborted', 'AbortError'))
+    // Let the abort listener's rejection settle naturally; it must not
+    // resurrect success state on the now-reopened modal
     await Promise.resolve()
     expect(screen.queryByText(/You're on the list!/)).not.toBeInTheDocument()
     expect(screen.getByPlaceholderText('your@email.com')).toHaveValue('')

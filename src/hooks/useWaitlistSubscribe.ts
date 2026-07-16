@@ -63,7 +63,15 @@ export function useWaitlistSubscribe(componentName: string): UseWaitlistSubscrib
       })
 
       if (!res.ok) {
-        const data: unknown = await res.json().catch(() => ({}))
+        const data: unknown = await res.json().catch((err: unknown) => {
+          // Propagate an abort instead of masking it as an empty body — otherwise
+          // the code below falls through to a generic thrown Error, which the
+          // catch block's AbortError check no longer matches.
+          if (err instanceof DOMException && err.name === 'AbortError') {
+            throw err
+          }
+          return {}
+        })
         const serverMessage =
           typeof data === 'object' &&
           data !== null &&

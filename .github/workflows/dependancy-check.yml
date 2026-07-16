@@ -37,13 +37,21 @@ jobs:
           project: 'paperlyte-v2'
           path: '.'
           format: 'HTML'
-          out: 'reports'
-          args: >
-            --failOnCVSS 7
-            --enableRetired
+          # This action passes `others` through as a single argv token (no shell
+          # re-splitting), so only one GNU-style `--opt=value` flag fits here —
+          # `--failOnCVSS 7 --enableRetired` as two space-separated flags would
+          # arrive as one unrecognized token. Keep the CVSS gate; --enableRetired
+          # can't be combined into the same slot.
+          others: '--failOnCVSS=7'
 
       - name: Upload Depcheck report
-        if: steps.Depcheck.conclusion == 'success' || steps.Depcheck.conclusion == 'failure'
+        # A bare comparison here would be implicitly ANDed with success() by
+        # GitHub Actions (conditions without a status-check function default
+        # to requiring success), so the report would never upload on the
+        # CVSS-gate failures it's meant to help diagnose. always() overrides
+        # that default; the explicit conclusion check still skips upload if
+        # the step never ran (e.g. an earlier step failed first).
+        if: always() && (steps.Depcheck.conclusion == 'success' || steps.Depcheck.conclusion == 'failure')
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: depcheck-report

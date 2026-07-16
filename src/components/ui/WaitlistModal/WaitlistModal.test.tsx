@@ -123,6 +123,24 @@ describe('WaitlistModal', () => {
     })
   })
 
+  it('keeps focus trapped inside the modal after a successful submission', async () => {
+    const user = userEvent.setup()
+    render(<WaitlistModal isOpen={true} onClose={vi.fn()} />)
+
+    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
+    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+
+    const successHeading = await screen.findByRole('heading', { name: /You're on the list!/i })
+    expect(successHeading).toHaveFocus()
+
+    // The success view's only tabbable element (per getFocusableElements) is the
+    // close button — the heading itself is tabIndex={-1}. Tab from it must wrap
+    // to the close button instead of escaping the still-open modal.
+    const closeButton = screen.getByRole('button', { name: /close/i })
+    fireEvent.keyDown(document, { key: 'Tab' })
+    expect(closeButton).toHaveFocus()
+  })
+
   it('shows a validation error for an invalid email without calling the API', async () => {
     const user = userEvent.setup()
     render(<WaitlistModal isOpen={true} onClose={vi.fn()} />)

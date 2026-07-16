@@ -70,10 +70,18 @@ export const WaitlistModal = ({
         const lastElement = focusableElements[focusableElements.length - 1]
         if (!firstElement || !lastElement) return
 
-        if (e.shiftKey && document.activeElement === firstElement) {
+        // Focus can sit on a non-tabbable anchor within the modal (e.g. the
+        // tabIndex={-1} success heading, focused programmatically for screen
+        // readers). getFocusableElements excludes tabindex="-1", so such an
+        // element never equals firstElement/lastElement — without this check,
+        // Tab from it wouldn't be trapped and would escape to the page behind.
+        const activeElement = document.activeElement
+        const isActiveElementTracked = focusableElements.includes(activeElement as HTMLElement)
+
+        if (e.shiftKey && (activeElement === firstElement || !isActiveElementTracked)) {
           e.preventDefault()
           lastElement.focus()
-        } else if (!e.shiftKey && document.activeElement === lastElement) {
+        } else if (!e.shiftKey && (activeElement === lastElement || !isActiveElementTracked)) {
           e.preventDefault()
           firstElement.focus()
         }

@@ -37,8 +37,7 @@ jobs:
           project: 'paperlyte-v2'
           path: '.'
           format: 'HTML'
-          out: 'reports'
-          args: >
+          others: >
             --failOnCVSS 7
             --enableRetired
             --disableNodeAudit

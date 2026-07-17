@@ -209,11 +209,15 @@ async function navigateFetch(request) {
     }
     return response
   } catch {
-    // Offline: serve the cached shell or the offline page
+    // Offline: serve the cached shell or the offline page.
+    // Response.error() is the last-resort fallback for the rare case where the
+    // cache is empty (e.g. storage eviction before any page visit); without it
+    // event.respondWith() would receive undefined and throw a TypeError.
     return (
       (await caches.match(cacheKey)) ??
       (await caches.match('/')) ??
-      (await caches.match(OFFLINE_PAGE))
+      (await caches.match(OFFLINE_PAGE)) ??
+      Response.error()
     )
   }
 }

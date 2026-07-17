@@ -1,0 +1,10 @@
+name: Upgrade npm
+description: >
+  Upgrade npm to the version required for .npmrc's min-release-age setting
+  (requires npm >=11.10, newer than what Node 20 bundles).
+
+runs:
+  using: composite
+  steps:
+    - run: npm install -g npm@11.10.0
+      shell: bash

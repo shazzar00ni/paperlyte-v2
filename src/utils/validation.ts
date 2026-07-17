@@ -293,6 +293,22 @@ export function validateForm(formData: Record<string, unknown>): ValidationResul
 }
 
 /**
+ * Common email domain typos mapped to their corrected domains.
+ * Hoisted to module level so the object literal is created once rather than
+ * on every `suggestEmailCorrection` call.
+ */
+const COMMON_TYPOS: Record<string, string> = {
+  'gmial.com': 'gmail.com',
+  'gmai.com': 'gmail.com',
+  'gnail.com': 'gmail.com',
+  'yahooo.com': 'yahoo.com',
+  'yaho.com': 'yahoo.com',
+  'hotmial.com': 'hotmail.com',
+  'outlok.com': 'outlook.com',
+  'outloook.com': 'outlook.com',
+}
+
+/**
  * Suggests corrections for common email domain typos
  * Helps users fix mistakes like gmial.com → gmail.com
  *
@@ -309,21 +325,10 @@ export function validateForm(formData: Record<string, unknown>): ValidationResul
  * ```
  */
 export function suggestEmailCorrection(email: string): string | null {
-  const commonTypos: Record<string, string> = {
-    'gmial.com': 'gmail.com',
-    'gmai.com': 'gmail.com',
-    'gnail.com': 'gmail.com',
-    'yahooo.com': 'yahoo.com',
-    'yaho.com': 'yahoo.com',
-    'hotmial.com': 'hotmail.com',
-    'outlok.com': 'outlook.com',
-    'outloook.com': 'outlook.com',
-  }
-
   const domain = email.split('@')[1]?.toLowerCase()
   if (!domain) return null
 
-  const suggestion = commonTypos[domain]
+  const suggestion = COMMON_TYPOS[domain]
   if (!suggestion) return null
 
   const localPart = email.split('@')[0]

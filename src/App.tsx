@@ -1,5 +1,6 @@
-import { useRef, useCallback, lazy, Suspense } from 'react'
+import { useRef, useCallback } from 'react'
 import { ErrorBoundary } from '@components/ErrorBoundary'
+import { createLazySection } from '@components/layout/LazySection'
 import { Header } from '@components/layout/Header'
 import { Footer } from '@components/layout/Footer'
 import { Hero } from '@components/sections/Hero'
@@ -10,20 +11,27 @@ import { Mobile } from '@components/sections/Mobile'
 import { FeedbackWidget } from '@components/ui/FeedbackWidget'
 import { useAnalytics } from '@hooks/useAnalytics'
 
-const Statistics = lazy(() =>
+// Code-split below-the-fold sections. createLazySection pairs React.lazy with a
+// Suspense + ErrorBoundary boundary; called at module scope so each component
+// has a stable identity.
+const Statistics = createLazySection(() =>
   import('@components/sections/Statistics').then((m) => ({ default: m.Statistics }))
 )
-const Comparison = lazy(() =>
+const Comparison = createLazySection(() =>
   import('@components/sections/Comparison').then((m) => ({ default: m.Comparison }))
 )
-const Testimonials = lazy(() =>
+const Testimonials = createLazySection(() =>
   import('@components/sections/Testimonials').then((m) => ({ default: m.Testimonials }))
 )
-const EmailCapture = lazy(() =>
+const EmailCapture = createLazySection(() =>
   import('@components/sections/EmailCapture').then((m) => ({ default: m.EmailCapture }))
 )
-const FAQ = lazy(() => import('@components/sections/FAQ').then((m) => ({ default: m.FAQ })))
-const CTA = lazy(() => import('@components/sections/CTA').then((m) => ({ default: m.CTA })))
+const FAQ = createLazySection(() =>
+  import('@components/sections/FAQ').then((m) => ({ default: m.FAQ }))
+)
+const CTA = createLazySection(() =>
+  import('@components/sections/CTA').then((m) => ({ default: m.CTA }))
+)
 
 /**
  * Application root component that composes the page layout and sections.
@@ -54,36 +62,12 @@ function App() {
         <Solution />
         <Features />
         <Mobile />
-        <ErrorBoundary fallback={<></>}>
-          <Suspense fallback={null}>
-            <Statistics />
-          </Suspense>
-        </ErrorBoundary>
-        <ErrorBoundary fallback={<></>}>
-          <Suspense fallback={null}>
-            <Comparison />
-          </Suspense>
-        </ErrorBoundary>
-        <ErrorBoundary fallback={<></>}>
-          <Suspense fallback={null}>
-            <Testimonials />
-          </Suspense>
-        </ErrorBoundary>
-        <ErrorBoundary fallback={<></>}>
-          <Suspense fallback={null}>
-            <EmailCapture />
-          </Suspense>
-        </ErrorBoundary>
-        <ErrorBoundary fallback={<></>}>
-          <Suspense fallback={null}>
-            <FAQ />
-          </Suspense>
-        </ErrorBoundary>
-        <ErrorBoundary fallback={<></>}>
-          <Suspense fallback={null}>
-            <CTA />
-          </Suspense>
-        </ErrorBoundary>
+        <Statistics />
+        <Comparison />
+        <Testimonials />
+        <EmailCapture />
+        <FAQ />
+        <CTA />
       </main>
       <Footer />
       <FeedbackWidget />

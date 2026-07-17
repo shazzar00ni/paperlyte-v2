@@ -2,63 +2,9 @@ import { Section } from '@components/layout/Section'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { CounterAnimation } from '@components/ui/CounterAnimation'
 import { SVGPathAnimation } from '@components/ui/SVGPathAnimation'
-import { WAITLIST_COUNT, WAITLIST_COUNT_NUMERIC } from '@constants/waitlist'
+import { WAITLIST_COUNT } from '@constants/waitlist'
+import { STATISTICS } from '@constants/statistics'
 import styles from './Statistics.module.css'
-
-/**
- * Represents a single statistic item for the counter animations
- */
-interface StatisticItem {
-  /** The numeric value to count up to */
-  value: number
-  /** Display label shown below the counter */
-  label: string
-  /** Font Awesome icon class (e.g., 'fa-users') */
-  icon: string
-  /** Text displayed after the number (e.g., '+', '%', 'M+') */
-  suffix?: string
-  /** Text displayed before the number (e.g., '$') */
-  prefix?: string
-  /** Number of decimal places to display */
-  decimals?: number
-}
-
-/**
- * Statistics data for the counter animations
- */
-const statistics: StatisticItem[] = [
-  {
-    value: WAITLIST_COUNT_NUMERIC,
-    suffix: '+',
-    label: 'Waitlist Members',
-    icon: 'fa-users',
-  },
-  {
-    value: 10,
-    suffix: 'M+',
-    label: 'Notes Created',
-    icon: 'fa-note-sticky',
-  },
-  {
-    value: 99.9,
-    suffix: '%',
-    decimals: 1,
-    label: 'Uptime',
-    icon: 'fa-server',
-  },
-  {
-    value: 4.9,
-    suffix: '/5',
-    decimals: 1,
-    label: 'User Rating',
-    icon: 'fa-star',
-  },
-]
-
-/**
- * Props for the Statistics section component
- */
-export type StatisticsProps = Record<string, never>
 
 /**
  * Statistics section displaying animated counters showcasing product metrics
@@ -85,7 +31,7 @@ export const Statistics = (): React.ReactElement => {
         </AnimatedElement>
 
         <div className={styles.grid}>
-          {statistics.map((stat, index) => (
+          {STATISTICS.map((stat, index) => (
             <AnimatedElement key={stat.label} animation="slideUp" delay={100 + index * 100}>
               <div className={styles.card}>
                 <div className={styles.iconWrapper}>

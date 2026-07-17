@@ -136,7 +136,10 @@ export function logError(error: Error, context?: ErrorContext, source?: string):
  * @param message - Human-readable warning text; in production this is truncated to 200 characters.
  * @param context - Optional additional metadata to include with the warning (logged to console in development or merged into the telemetry event in production)
  */
-export function logWarning(message: string, context?: Record<string, unknown>): void {
+export function logWarning(
+  message: string,
+  context?: Record<string, string | number | boolean | undefined>
+): void {
   if (import.meta.env.DEV) {
     console.warn(message, context)
     return

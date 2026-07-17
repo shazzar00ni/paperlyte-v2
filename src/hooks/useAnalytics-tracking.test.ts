@@ -94,7 +94,8 @@ describe('useAnalytics — tracking function behavior', () => {
   it('trackWaitlistSuccess fires WAITLIST_SUCCESS with no PII params', () => {
     const { result } = renderHook(() => useAnalytics(false))
     result.current.trackWaitlistSuccess()
-    expect(trackEvent).toHaveBeenCalledWith(AnalyticsEvents.WAITLIST_SUCCESS, {})
+    // No params object is passed (trackEvent tolerates undefined); see issue #1242.
+    expect(trackEvent).toHaveBeenCalledWith(AnalyticsEvents.WAITLIST_SUCCESS, undefined)
   })
 
   it('trackWaitlistError fires WAITLIST_ERROR with error_code and form_location', () => {

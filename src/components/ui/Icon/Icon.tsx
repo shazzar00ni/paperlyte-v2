@@ -4,6 +4,7 @@ import { safePropertyAccess } from '@utils/security'
 import { convertIconName } from '@utils/iconLibrary'
 import './Icon.css'
 
+/** Props for the {@link Icon} SVG icon component. */
 export interface IconProps {
   name: string
   size?: 'sm' | 'md' | 'lg' | 'xl' | '2x' | '3x'

@@ -6,6 +6,7 @@ import { scrollToSection } from '@/utils/navigation'
 import { WAITLIST_COUNT, LAUNCH_QUARTER } from '@constants/waitlist'
 import styles from './Solution.module.css'
 
+/** Shape of a single value proposition card in the Solution section. */
 interface ValueProp {
   icon: string
   emoji: string
@@ -15,6 +16,7 @@ interface ValueProp {
   proof: string
 }
 
+/** Value proposition cards displayed in the Solution section. */
 const VALUE_PROPS: ValueProp[] = [
   {
     icon: 'fa-bolt',

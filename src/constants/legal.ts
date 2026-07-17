@@ -5,6 +5,7 @@
  * (for temporary document/social links) must be reviewed and replaced before launch.
  */
 
+/** Company identity and contact details used across legal pages and the footer. */
 export interface CompanyConfig {
   name: string
   legalName: string
@@ -17,6 +18,10 @@ export interface CompanyConfig {
   arbitrationOptOutEmail: string
 }
 
+/**
+ * Centralised legal configuration for Paperlyte.
+ * Update placeholder values (marked with `[...]`, e.g. `[Company Legal Name]`) before public launch.
+ */
 export const LEGAL_CONFIG = {
   company: {
     name: 'Paperlyte',

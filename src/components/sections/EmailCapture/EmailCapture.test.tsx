@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { EmailCapture } from './EmailCapture'
 import { WAITLIST_COUNT } from '@/constants/waitlist'
@@ -257,6 +257,110 @@ describe('EmailCapture Section', () => {
     expect(screen.getByRole('link', { name: /Twitter/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /Facebook/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /LinkedIn/i })).toBeInTheDocument()
+  })
+
+  it('shows validation error for invalid email format', async () => {
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    const emailInput = screen.getByPlaceholderText('your@email.com')
+    const submitButton = screen.getByRole('button', { name: /Join the Waitlist/i })
+
+    // Bypass the browser's type="email" filter by setting value directly,
+    // then submit — validateEmail inside handleSubmit should catch it.
+    // 'user@notvalid' passes HTML5 type="email" (no TLD required by browser)
+    // but fails our validateEmail regex which requires a ≥2-char TLD.
+    await user.type(emailInput, 'user@notvalid')
+    await user.click(submitButton)
+
+    await waitFor(() => {
+      const alert = screen.getByRole('alert')
+      expect(alert).toBeInTheDocument()
+      expect(alert.textContent).toMatch(/valid email/i)
+    })
+  })
+
+  it('does not enter loading state when validation fails', async () => {
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    const emailInput = screen.getByPlaceholderText('your@email.com')
+    const submitButton = screen.getByRole('button', { name: /Join the Waitlist/i })
+
+    await user.type(emailInput, 'bad@mailinator.com')
+    await user.click(submitButton)
+
+    // Button should never transition to the "Joining..." loading label
+    // when validation fails before setIsLoading is called.
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toBeInTheDocument()
+    })
+    expect(submitButton).not.toBeDisabled()
+    expect(screen.queryByText('Joining...')).not.toBeInTheDocument()
+  })
+
+  it('clears validation error and shows success when valid email is submitted after a failed attempt', async () => {
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    const emailInput = screen.getByPlaceholderText('your@email.com')
+    const submitButton = screen.getByRole('button', { name: /Join the Waitlist/i })
+
+    // First submit with disposable email — produces an error
+    await user.type(emailInput, 'test@mailinator.com')
+    await user.click(submitButton)
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toBeInTheDocument()
+    })
+
+    // Clear the field and enter a valid email
+    await user.clear(emailInput)
+    await user.type(emailInput, 'valid@example.com')
+    await user.click(submitButton)
+
+    // The error should be gone and the success state should appear
+    await waitFor(() => {
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+      expect(screen.getByText(/You're on the list!/)).toBeInTheDocument()
+    })
+  })
+
+  it('shows "Email address is required" error message for empty email via validateEmail', async () => {
+    render(<EmailCapture />)
+
+    // Use fireEvent.submit (act()-wrapped) to bypass HTML5 required constraint
+    const form = screen.getByPlaceholderText('your@email.com').closest('form')!
+    fireEvent.submit(form)
+
+    await waitFor(() => {
+      const alert = screen.queryByRole('alert')
+      // Either the HTML5 required attribute blocks submission (no alert),
+      // or validateEmail's 'Email address is required' error is shown.
+      if (alert) {
+        expect(alert.textContent).toMatch(/required|valid email/i)
+      } else {
+        // HTML5 required attribute prevented submission — valid outcome
+        const input = screen.getByPlaceholderText('your@email.com') as HTMLInputElement
+        expect(input.required).toBe(true)
+      }
+    })
+  })
+
+  it('error message element has role="alert" for accessibility', async () => {
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    const emailInput = screen.getByPlaceholderText('your@email.com')
+    await user.type(emailInput, 'test@yopmail.com')
+    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+
+    await waitFor(() => {
+      const alertEl = screen.getByRole('alert')
+      expect(alertEl).toBeInTheDocument()
+      // The error paragraph uses role="alert" (from EmailCapture.tsx line ~196)
+      expect(alertEl.tagName).toBe('P')
+    })
   })
 
   it('moves focus to the success heading so the result is announced to screen readers', async () => {

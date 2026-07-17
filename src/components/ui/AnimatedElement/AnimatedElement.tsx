@@ -70,5 +70,6 @@ const AnimatedElementComponent = ({
   )
 }
 
+/** Memoized {@link AnimatedElementComponent} — skips re-render when props are unchanged. */
 export const AnimatedElement = memo(AnimatedElementComponent)
 AnimatedElement.displayName = 'AnimatedElement'

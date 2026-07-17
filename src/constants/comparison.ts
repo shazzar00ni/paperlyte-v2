@@ -110,6 +110,7 @@ export interface Competitor {
   color: string
 }
 
+/** Competitor entries displayed in the feature comparison table. */
 export const COMPETITORS: Competitor[] = [
   { id: 'paperlyte', name: 'Paperlyte', color: 'var(--color-primary)' },
   { id: 'notion', name: 'Notion', color: '#000000' },

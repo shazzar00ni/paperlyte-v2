@@ -41,6 +41,14 @@ export const EmailCapture = (): React.ReactElement => {
   const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedOrigin}`
   const linkedinShareUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${encodedOrigin}&title=${encodeURIComponent(shareTitle)}`
 
+  /**
+   * Handles waitlist form submission. Prevents the default form action, calls the
+   * (currently simulated) API, and transitions to the success state. On failure it
+   * classifies the error as a network issue or validation problem and sets an
+   * appropriate user-facing message.
+   *
+   * @param e - The form submission event.
+   */
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault()
     setError(null)

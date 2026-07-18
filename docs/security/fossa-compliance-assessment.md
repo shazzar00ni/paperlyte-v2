@@ -34,13 +34,16 @@ production landing page bundle shipped to end users (verify with
 `npm ls sharp` — it resolves only under `devDependencies`, and the build
 output in `dist/` contains no native binaries).
 
-## Dependency Quality (63 issues)
+## Dependency Quality (63–66 issues)
 
 **Root cause:** the majority are FOSSA's composite outdated/maintenance
 scoring applied across the ~750-package resolved tree — not concrete defects.
-The one hard deprecation chain is:
+This count drifts by a few issues over time purely from FOSSA re-scoring the
+existing tree (63 at the original 2026-06-21 investigation, 66 as of this PR),
+without any corresponding change to this repo's dependencies. The one hard
+deprecation chain, unchanged across both counts, is:
 
-```
+```text
 @lhci/cli (dev) > chrome-launcher > rimraf@3.0.2 > glob@7.2.3 > inflight@1.0.6
 ```
 

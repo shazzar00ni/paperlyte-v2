@@ -143,7 +143,7 @@ Feature data lives in `src/constants/features.ts`. Each card contains:
 | ------------ | --------------------------------------------------------------------------------- |
 | Icon         | `Icon` component, size `2x`, `color: var(--color-primary)`                        |
 | Icon wrapper | `64px` circle, `--color-primary-faint` background                                 |
-| Title (h3)   | Instrument Sans semibold, `--font-size-xl`                                                  |
+| Title (h3)   | Playfair Display semibold (inherited from the global `h3` rule), `--font-size-xl`           |
 | Description  | Instrument Sans normal, `--font-size-base`, `--color-text-secondary`, `line-height-relaxed` |
 
 ### Section Header

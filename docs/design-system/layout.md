@@ -123,13 +123,15 @@ Every page section follows a consistent vertical rhythm:
 
 ### Section Background Variants
 
-| Variant   | Background                       | Foreground                                                                         |
-| --------- | -------------------------------- | ---------------------------------------------------------------------------------- |
-| `default` | `--color-background` (#fcfcfa)   | Standard text colours                                                                  |
-| `surface` | `--color-surface` (#f4f2ec)      | Standard text colours                                                                  |
-| `primary` | `--color-surface-dark` (#14110f) | `--color-text-on-dark` (off-white) — used for dark, high-contrast sections like Mobile |
+| Variant   | Background                       | Foreground                                                                             |
+| --------- | --------------------------------- | ---------------------------------------------------------------------------------------- |
+| `default` | `--color-background` (#fcfcfa)   | Standard text colours                                                                    |
+| `surface` | `--color-surface` (#f4f2ec)      | Standard text colours                                                                    |
+| `primary` | `--color-primary` (#14110f)      | `--color-text-on-primary` (off-white) — the `Section` component's dark, high-contrast variant |
 
-Alternate section backgrounds (default → surface → primary → default…) to create visual rhythm without adding colour. Use the `primary` variant when you want a dark `--color-surface-dark` section with `--color-text-on-dark` contrast, as in the Mobile section.
+Alternate section backgrounds (default → surface → primary → default…) to create visual rhythm without adding colour. Use the `primary` variant when you want a dark `--color-primary` section with `--color-text-on-primary` contrast.
+
+The Mobile section is a special case: instead of the `primary` variant, it overrides its background directly in `Mobile.module.css` with `--color-surface-dark`, a separate dark tone reserved for that section rather than the shared `primary` variant.
 
 ---
 

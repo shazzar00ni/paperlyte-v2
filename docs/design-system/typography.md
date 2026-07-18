@@ -15,7 +15,7 @@ font-family: 'Playfair Display', serif;
 - **Role:** All headings (h1–h6), section titles, pull quotes
 - **Weights used:** Bold (700), occasionally ExtraBold (800) for hero headlines
 - **Style notes:** Italic variants are encouraged for emphasis phrases within headlines — they add warmth and editorial feel without requiring colour
-- **Source:** Self-hosted variable font at `/fonts/PlayfairDisplay-Variable.woff2`
+- **Source:** Self-hosted variable fonts — normal at `/fonts/PlayfairDisplay-Variable.woff2`, true italic at `/fonts/PlayfairDisplay-Italic-Variable.woff2` (both registered as the same `'Playfair Display'` family with `font-style: normal` / `italic`, so `<em>` and `font-style: italic` render true italic glyphs rather than a browser-synthesized slant)
 - **Font display:** `swap` — body text renders first; Playfair Display swaps in
 
 **Why Playfair Display?** It evokes the tactile quality of paper and print — reinforcing "Paperlyte" as a product that feels like writing on a premium surface. Its high contrast strokes feel fast and sharp at large sizes.

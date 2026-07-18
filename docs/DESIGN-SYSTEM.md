@@ -121,7 +121,7 @@ All colors have been tested for WCAG 2.1 compliance. The table below shows key c
 | `#6F685E` (Text Tertiary)    | `#FCFCFA` (Background) | 5.4:1          | AA         | Muted text (light mode)          |
 | `#14110F` (Primary)          | `#FCFCFA` (Background) | 18.3:1         | AAA        | Buttons, interactive elements    |
 | `#FCFCFA` (Text on Primary)  | `#14110F` (Primary)    | 18.3:1         | AAA        | Text on dark primary buttons     |
-| `#050403` (Primary Dark)     | `#FCFCFA` (Background) | 19.7:1         | AAA        | Hover states (max contrast)      |
+| `#050403` (Primary Dark)     | `#FCFCFA` (Background) | 19.9:1         | AAA        | Hover states (max contrast)      |
 
 #### Primary Color Combinations (Dark Mode)
 
@@ -137,19 +137,19 @@ All colors have been tested for WCAG 2.1 compliance. The table below shows key c
 
 | Foreground               | Background             | Contrast Ratio | WCAG Level | Use Case                               |
 | ------------------------- | ----------------------- | -------------- | ---------- | --------------------------------------- |
-| `#22c55e` (Success)      | `#FCFCFA` (Background) | 3.0:1          | AA\*       | Success icons/badges (large text only) |
-| `#dc2626` (Error)        | `#FCFCFA` (Background) | 5.7:1          | AA         | Error messages, alerts                 |
-| `#4ade80` (Success Dark) | `#14110F` (Background) | 10.9:1         | AAA        | Success states (dark mode)             |
-| `#f87171` (Error Dark)   | `#14110F` (Background) | 6.4:1          | AA         | Error states (dark mode)               |
+| `#22c55e` (Success)      | `#FCFCFA` (Background) | 2.2:1          | Fail\*\*   | Success icons/badges only — never text  |
+| `#dc2626` (Error)        | `#FCFCFA` (Background) | 4.7:1          | AA         | Error messages, alerts                 |
+| `#4ade80` (Success Dark) | `#14110F` (Background) | 10.8:1         | AAA        | Success states (dark mode)             |
+| `#f87171` (Error Dark)   | `#14110F` (Background) | 6.8:1          | AA         | Error states (dark mode)               |
 
 **Notes:**
 
-- AA\* = Meets AA standards for large text (18pt/14pt bold) and UI components (3:1 minimum)
 - Normal text requires 4.5:1 contrast (AA) or 7:1 (AAA)
 - Large text and UI components require 3:1 contrast (AA)
 - The monochrome primary (#14110f / #fcfcfa) provides extremely high contrast (18:1+) — use freely for all text sizes
 - `--color-text-tertiary` (#6f685e light / #8f897e dark) meets WCAG AA (4.5:1+) on both `--color-background` and `--color-surface` in its theme
 - Contrast ratios calculated using WCAG 2.1 relative luminance formula
+- \*\* `--color-success` (#22c55e) does not reach the 3:1 UI-component minimum on the light background (2.2:1) — use it only for icon/graphic accents (e.g. a filled checkmark glyph), never for text or as a standalone status indicator. Pair success/error states with an icon plus descriptive text in `--color-text-primary`, not with color alone
 - Semantic colors (success, error) are always paired with icons and descriptive text for accessibility
 
 **Testing Tools:**
@@ -315,6 +315,14 @@ import styles from './Alert.module.css'
   font-weight: 400 900;
   font-display: swap;
   src: url('/fonts/PlayfairDisplay-Variable.woff2') format('woff2-variations');
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: italic;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url('/fonts/PlayfairDisplay-Italic-Variable.woff2') format('woff2-variations');
 }
 ```
 

@@ -70,6 +70,8 @@ This deliberate constraint:
 | `--color-error-bg`        | `rgba(239,68,68, 0.10)`   | `rgba(248,113,113, 0.15)`   | Error alert backgrounds                                     |
 | `--color-error-border`    | `rgba(239,68,68, 0.30)`   | `rgba(248,113,113, 0.35)`   | Error alert borders                                         |
 
+> **Caution:** Light-mode `--color-success` (`#22c55e`) is only 2.2:1 on `--color-background` — below the 3:1 UI-component minimum. Use it for icon/graphic accents only, never for text or as a standalone indicator. Light-mode `--color-error` (`#dc2626`) is 4.7:1 (AA). Both dark-mode variants exceed AA (10.8:1 / 6.8:1).
+
 ### WCAG Contrast Matrix
 
 | Foreground | Background | Ratio  | Level | Notes                              |

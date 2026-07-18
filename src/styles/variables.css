@@ -1,22 +1,22 @@
 :root {
-  /* Colors - Monochrome palette (Light Mode) */
-  --color-primary: #1a1a1a; /* Near black - Main brand color */
-  --color-primary-dark: #000000; /* Pure black - Hover states */
-  --color-primary-light: #333333; /* Dark gray - Accents */
-  --color-primary-faint: rgba(26, 26, 26, 0.1); /* 10% opacity for backgrounds */
-  --color-primary-fainter: rgba(26, 26, 26, 0.05); /* 5% opacity for subtle backgrounds */
-  --color-background: #ffffff; /* Pure white - Main background */
-  --color-surface: #f9fafb; /* Gray 50 - Card backgrounds */
-  --color-surface-dark: #18181b; /* Zinc 900 - Dark surface sections */
-  --color-text-primary: #111827; /* Gray 900 - Headings, body text */
-  --color-text-secondary: #6b7280; /* Gray 500 - Supporting text */
-  /* accessibility-fixed: issue-809 - raised from #9ca3af (~2.85:1) to #737373 (~4.6:1 on white, distinct from secondary) */
-  --color-text-tertiary: #737373; /* Neutral 500 - Muted text (meets WCAG AA 4.5:1 on white) */
-  --color-text-on-primary: #ffffff; /* White text on primary backgrounds */
-  --color-text-on-dark: #ffffff; /* White text on dark surfaces */
-  --color-text-on-dark-secondary: rgba(255, 255, 255, 0.7); /* Semi-transparent white */
-  --color-border: #e5e7eb; /* Gray 200 - Borders, dividers */
-  --color-border-light: #f3f4f6; /* Gray 100 - Subtle borders */
+  /* Colors - Warm monochrome "Editorial" palette (Light Mode) */
+  --color-primary: #14110f; /* Warm near-black - Main brand color */
+  --color-primary-dark: #050403; /* Deeper black - Hover states */
+  --color-primary-light: #3a352e; /* Warm dark gray - Accents */
+  --color-primary-faint: rgba(20, 17, 15, 0.08); /* 8% opacity for backgrounds */
+  --color-primary-fainter: rgba(20, 17, 15, 0.04); /* 4% opacity for subtle backgrounds */
+  --color-background: #fcfcfa; /* Warm off-white - Main background */
+  --color-surface: #f4f2ec; /* Warm paper - Card backgrounds */
+  --color-surface-dark: #14110f; /* Warm near-black - Dark surface sections */
+  --color-text-primary: #14110f; /* Warm near-black - Headings, body text */
+  --color-text-secondary: #57524b; /* Warm gray - Supporting text */
+  /* AA-verified: #6f685e on #fcfcfa is ~5.4:1, on #f4f2ec is ~4.9:1 */
+  --color-text-tertiary: #6f685e; /* Warm taupe - Muted text (meets WCAG AA 4.5:1) */
+  --color-text-on-primary: #fcfcfa; /* Off-white text on primary backgrounds */
+  --color-text-on-dark: #fcfcfa; /* Off-white text on dark surfaces */
+  --color-text-on-dark-secondary: rgba(252, 252, 250, 0.72); /* Semi-transparent off-white */
+  --color-border: #e2dfd6; /* Warm hairline - Borders, dividers */
+  --color-border-light: #ecebe3; /* Warm hairline - Subtle borders */
 
   /* Semantic Colors */
   --color-success: #22c55e; /* Green 500 */
@@ -27,7 +27,8 @@
   --color-error-border: rgba(239, 68, 68, 0.3);
 
   /* Typography - Fluid sizing using clamp() for responsive design */
-  --font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-family: 'Instrument Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    sans-serif;
   --font-size-xs: 0.75rem; /* 12px */
   --font-size-sm: 0.875rem; /* 14px */
   --font-size-base: 1rem; /* 16px - minimum to prevent iOS zoom */
@@ -107,23 +108,23 @@
 
 /* Dark Mode */
 [data-theme='dark'] {
-  /* Colors - Monochrome palette (Dark Mode - inverted) */
-  --color-primary: #ffffff; /* Pure white - Primary in dark mode */
-  --color-primary-dark: #f1f5f9; /* Slate 100 - Hover states */
-  --color-primary-light: #e2e8f0; /* Slate 200 - Accents */
-  --color-primary-faint: rgba(255, 255, 255, 0.1); /* 10% opacity for backgrounds */
-  --color-primary-fainter: rgba(255, 255, 255, 0.05); /* 5% opacity for subtle backgrounds */
-  --color-background: #0f172a; /* Slate 900 - Dark background */
-  --color-surface: #1e293b; /* Slate 800 - Card backgrounds */
-  --color-surface-dark: #0f172a; /* Slate 900 - Dark sections */
-  --color-text-primary: #f1f5f9; /* Slate 100 - Light text */
-  --color-text-secondary: #94a3b8; /* Slate 400 - Supporting text */
-  --color-text-tertiary: #64748b; /* Slate 500 - Muted text */
-  --color-text-on-primary: #000000; /* Black text on white primary (dark mode) */
-  --color-text-on-dark: #ffffff; /* White text on dark surfaces */
-  --color-text-on-dark-secondary: rgba(255, 255, 255, 0.7); /* Semi-transparent white */
-  --color-border: #334155; /* Slate 700 - Borders */
-  --color-border-light: #1e293b; /* Slate 800 - Subtle borders */
+  /* Colors - Warm monochrome "Editorial" palette (Dark Mode - inverted) */
+  --color-primary: #fcfcfa; /* Warm off-white - Primary in dark mode */
+  --color-primary-dark: #f1efe9; /* Dimmer off-white - Hover states */
+  --color-primary-light: #e6e3dc; /* Warm light gray - Accents */
+  --color-primary-faint: rgba(252, 252, 250, 0.1); /* 10% opacity for backgrounds */
+  --color-primary-fainter: rgba(252, 252, 250, 0.05); /* 5% opacity for subtle backgrounds */
+  --color-background: #14110f; /* Warm near-black - Dark background */
+  --color-surface: #201c18; /* Warm dark surface - Card backgrounds */
+  --color-surface-dark: #0a0806; /* Deepest warm surface - Dark sections */
+  --color-text-primary: #f5f3ee; /* Warm off-white - Light text */
+  --color-text-secondary: #a69f92; /* Warm light gray - Supporting text */
+  --color-text-tertiary: #8f897e; /* Warm taupe - Muted text (meets WCAG AA 4.5:1) */
+  --color-text-on-primary: #14110f; /* Warm near-black text on off-white primary (dark mode) */
+  --color-text-on-dark: #fcfcfa; /* Off-white text on dark surfaces */
+  --color-text-on-dark-secondary: rgba(252, 252, 250, 0.72); /* Semi-transparent off-white */
+  --color-border: #33302a; /* Warm dark border */
+  --color-border-light: #24211c; /* Warm subtle border */
 
   /* Semantic Colors - Dark Mode */
   --color-success: #4ade80; /* Green 400 - higher contrast for dark backgrounds */
@@ -151,22 +152,22 @@
  */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --color-primary: #ffffff; /* Pure white - Primary in dark mode */
-    --color-primary-dark: #f1f5f9; /* Slate 100 - Hover states */
-    --color-primary-light: #e2e8f0; /* Slate 200 - Accents */
-    --color-primary-faint: rgba(255, 255, 255, 0.1); /* 10% opacity for backgrounds */
-    --color-primary-fainter: rgba(255, 255, 255, 0.05); /* 5% opacity for subtle backgrounds */
-    --color-background: #0f172a; /* Slate 900 - Dark background */
-    --color-surface: #1e293b; /* Slate 800 - Card backgrounds */
-    --color-surface-dark: #0f172a; /* Slate 900 - Dark sections */
-    --color-text-primary: #f1f5f9; /* Slate 100 - Light text */
-    --color-text-secondary: #94a3b8; /* Slate 400 - Supporting text */
-    --color-text-tertiary: #64748b; /* Slate 500 - Muted text */
-    --color-text-on-primary: #000000; /* Black text on white primary (dark mode) */
-    --color-text-on-dark: #ffffff; /* White text on dark surfaces */
-    --color-text-on-dark-secondary: rgba(255, 255, 255, 0.7); /* Semi-transparent white */
-    --color-border: #334155; /* Slate 700 - Borders */
-    --color-border-light: #1e293b; /* Slate 800 - Subtle borders */
+    --color-primary: #fcfcfa; /* Warm off-white - Primary in dark mode */
+    --color-primary-dark: #f1efe9; /* Dimmer off-white - Hover states */
+    --color-primary-light: #e6e3dc; /* Warm light gray - Accents */
+    --color-primary-faint: rgba(252, 252, 250, 0.1); /* 10% opacity for backgrounds */
+    --color-primary-fainter: rgba(252, 252, 250, 0.05); /* 5% opacity for subtle backgrounds */
+    --color-background: #14110f; /* Warm near-black - Dark background */
+    --color-surface: #201c18; /* Warm dark surface - Card backgrounds */
+    --color-surface-dark: #0a0806; /* Deepest warm surface - Dark sections */
+    --color-text-primary: #f5f3ee; /* Warm off-white - Light text */
+    --color-text-secondary: #a69f92; /* Warm light gray - Supporting text */
+    --color-text-tertiary: #8f897e; /* Warm taupe - Muted text (meets WCAG AA 4.5:1) */
+    --color-text-on-primary: #14110f; /* Warm near-black text on off-white primary (dark mode) */
+    --color-text-on-dark: #fcfcfa; /* Off-white text on dark surfaces */
+    --color-text-on-dark-secondary: rgba(252, 252, 250, 0.72); /* Semi-transparent off-white */
+    --color-border: #33302a; /* Warm dark border */
+    --color-border-light: #24211c; /* Warm subtle border */
 
     /* Semantic Colors - Dark Mode */
     --color-success: #4ade80;

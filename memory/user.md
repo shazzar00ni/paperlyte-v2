@@ -59,6 +59,16 @@ This file tracks information about the user's goals, context, and working style.
 - **Category**: Environment constraint
 - **Notes** (2026-07-11): `skills.sentry.dev` returns 403 on CONNECT through this session's proxy (organization egress policy denial, confirmed via `curl` and `WebFetch`, not a site-side issue) — cannot fetch Sentry's official "instrument" skill doc from remote sessions with this policy. Per proxy README: do not retry/route around policy denials, report them.
 
+## Interactive Tools (this session type)
+
+- **Category**: Environment constraint
+- **Notes** (2026-07-18): In this GitHub-triggered/remote-execution session, `AskUserQuestion` and the Playwright MCP browser tools both failed identically every attempt: `Tool permission request failed: AbortError: Tool permission stream closed before response received`. This appears to be a non-interactive context where permission-gated tool calls can't complete (no live user to approve them) — not a bug in the request itself. Don't retry these more than once or two; fall back to autonomous best-judgment decisions (documented in `memory/decisions.md`) and non-interactive verification (build output inspection, curl, automated tests) instead of live browser screenshots.
+
+## Pending Decisions
+
+- **Category**: Awaiting user sign-off
+- **Notes** (2026-07-18): The "Editorial" visual redesign (see `memory/decisions.md` → "Visual Redesign") was implemented autonomously because `AskUserQuestion` was unavailable to let the user pick between the 4 prototyped directions (Editorial/Warm Paper/Dark Premium/Swiss) supplied via zip upload. Flag this choice for explicit confirmation next time the user is reachable interactively — they may prefer one of the other 3 directions instead.
+
 ## CI / Bots
 
 - **Category**: CI integrations

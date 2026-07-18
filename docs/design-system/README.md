@@ -47,16 +47,16 @@ Core content renders and is readable without JavaScript. Animations and interact
 
 ## Brand Snapshot
 
-| Attribute          | Value                                         |
-| ------------------ | --------------------------------------------- |
-| Brand name         | Paperlyte                                     |
-| Tagline            | "Your thoughts, unchained."                   |
-| Aesthetic          | Monochrome minimalism — paper meets dark mode |
-| Accent strategy    | No accent color; contrast is the accent       |
-| Primary typeface   | Playfair Display (headlines)                  |
-| Secondary typeface | Inter (UI / body)                             |
-| Button shape       | Full pill (`border-radius: 9999px`)           |
-| Dark mode          | Inverted monochrome (white becomes primary)   |
+| Attribute          | Value                                              |
+| ------------------ | --------------------------------------------------- |
+| Brand name         | Paperlyte                                            |
+| Tagline            | "Your thoughts, unchained."                          |
+| Aesthetic          | Warm monochrome minimalism — paper meets dark mode   |
+| Accent strategy    | No accent color; contrast is the accent              |
+| Primary typeface   | Playfair Display (headlines)                         |
+| Secondary typeface | Instrument Sans (UI / body)                          |
+| Button shape       | Full pill (`border-radius: 9999px`)                  |
+| Dark mode          | Inverted warm monochrome (off-white becomes primary) |
 
 ---
 
@@ -65,23 +65,23 @@ Core content renders and is readable without JavaScript. Animations and interact
 ### Color Roles (Light Mode)
 
 ```text
-Background  #ffffff   Pure white canvas
-Surface     #f9fafb   Card / panel lift
-Primary     #1a1a1a   All interactive elements
-Text        #111827   Headings, body
-Secondary   #6b7280   Supporting copy
-Border      #e5e7eb   Dividers, outlines
+Background  #fcfcfa   Warm off-white canvas
+Surface     #f4f2ec   Card / panel lift
+Primary     #14110f   All interactive elements
+Text        #14110f   Headings, body
+Secondary   #57524b   Supporting copy
+Border      #e2dfd6   Dividers, outlines
 ```
 
 ### Color Roles (Dark Mode)
 
 ```text
-Background  #0f172a   Deep slate
-Surface     #1e293b   Card lift
-Primary     #ffffff   All interactive elements
-Text        #f1f5f9   Headings, body
-Secondary   #94a3b8   Supporting copy
-Border      #334155   Dividers, outlines
+Background  #14110f   Warm near-black
+Surface     #201c18   Card lift
+Primary     #fcfcfa   All interactive elements
+Text        #f5f3ee   Headings, body
+Secondary   #a69f92   Supporting copy
+Border      #33302a   Dividers, outlines
 ```
 
 ### Type Scale (abbreviated)

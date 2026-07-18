@@ -1,12 +1,12 @@
 /* Typography styles and utilities */
 
-/* Self-hosted Inter Variable Font */
+/* Self-hosted Instrument Sans Variable Font */
 @font-face {
-  font-family: 'Inter';
+  font-family: 'Instrument Sans';
   font-style: normal;
-  font-weight: 100 900;
+  font-weight: 400 700;
   font-display: swap;
-  src: url('/fonts/Inter-Variable-v2.woff2') format('woff2-variations');
+  src: url('/fonts/Instrument-Sans-Variable.woff2') format('woff2-variations');
   font-named-instance: 'Regular';
 }
 
@@ -17,6 +17,15 @@
   font-weight: 400 900;
   font-display: swap;
   src: url('/fonts/PlayfairDisplay-Variable.woff2') format('woff2-variations');
+}
+
+/* Self-hosted Playfair Display Italic Variable Font — true italic glyphs for emphasis */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: italic;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url('/fonts/PlayfairDisplay-Italic-Variable.woff2') format('woff2-variations');
 }
 
 h1,

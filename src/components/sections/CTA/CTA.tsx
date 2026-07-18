@@ -1,6 +1,8 @@
+import { useState } from 'react'
 import { Section } from '@components/layout/Section'
 import { Button } from '@components/ui/Button'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
+import { WaitlistModal } from '@components/ui/WaitlistModal'
 import { scrollToSection } from '@/utils/navigation'
 import { WAITLIST_COUNT, LAUNCH_QUARTER } from '@constants/waitlist'
 import styles from './CTA.module.css'
@@ -18,6 +20,8 @@ import styles from './CTA.module.css'
  * ```
  */
 export const CTA = (): React.ReactElement => {
+  const [isWaitlistModalOpen, setIsWaitlistModalOpen] = useState(false)
+
   return (
     <Section id="download" background="primary" className={styles.cta}>
       <div className={styles.content}>
@@ -38,7 +42,13 @@ export const CTA = (): React.ReactElement => {
 
         <AnimatedElement animation="fadeIn" delay={300}>
           <div className={styles.buttons}>
-            <Button variant="primary" size="large" onClick={() => scrollToSection('email-capture')}>
+            <Button
+              variant="primary"
+              size="large"
+              onClick={() => {
+                setIsWaitlistModalOpen(true)
+              }}
+            >
               Join the Waitlist
             </Button>
             <button
@@ -57,6 +67,13 @@ export const CTA = (): React.ReactElement => {
           </p>
         </AnimatedElement>
       </div>
+
+      <WaitlistModal
+        isOpen={isWaitlistModalOpen}
+        onClose={() => {
+          setIsWaitlistModalOpen(false)
+        }}
+      />
     </Section>
   )
 }

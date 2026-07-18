@@ -26,13 +26,13 @@
 .title {
   font-size: var(--font-size-4xl);
   font-weight: var(--font-weight-bold);
-  color: white;
+  color: var(--color-text-on-primary);
   margin-bottom: var(--spacing-md);
 }
 
 .subtitle {
   font-size: var(--font-size-xl);
-  color: rgba(255, 255, 255, 0.9);
+  color: color-mix(in srgb, var(--color-text-on-primary) 90%, transparent);
   line-height: var(--line-height-relaxed);
   margin-bottom: var(--spacing-2xl);
 }

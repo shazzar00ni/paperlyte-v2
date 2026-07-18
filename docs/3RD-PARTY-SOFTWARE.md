@@ -4,6 +4,12 @@
 
 The following 3rd-party software packages may be used by or distributed with **paperlyte-v2**.  Any information relevant to third-party vendors listed below are collected using common, reasonable means.
 
+This report covers direct and top-level transitive dependencies. It does not
+enumerate every transitive package in the tree — notably the LGPL-3.0-or-later
+and MPL-2.0 packages below, which are called out separately because they carry
+copyleft licenses. See [`docs/security/fossa-compliance-assessment.md`](security/fossa-compliance-assessment.md)
+for the full FOSSA license/quality check investigation.
+
 
 Date generated | Revision ID
 :---: | :---:
@@ -898,3 +904,39 @@ Copyright (c) 2015 Jeff Barczewski
 **Dependency Paths**: wait-on
 
 ---
+
+## Build-Time Native Dependencies
+
+Transitive dependencies of `sharp` (devDependency, used only by
+`scripts/generate-icons.js` / `scripts/generate-mockups.js` at build time)
+carry `LGPL-3.0-or-later` for their bundled `libvips` shared library.
+`libvips` is dynamically linked — permitted usage under LGPL — and none of
+these packages are distributed with the production landing page. See
+[`docs/security/fossa-compliance-assessment.md`](security/fossa-compliance-assessment.md)
+for the full rationale.
+
+Package | License | Notes
+--------|---------|------
+`@img/sharp-libvips-darwin-arm64` (1.2.4) | LGPL-3.0-or-later | libvips shared library
+`@img/sharp-libvips-darwin-x64` (1.2.4) | LGPL-3.0-or-later | libvips shared library
+`@img/sharp-libvips-linux-arm` (1.2.4) | LGPL-3.0-or-later | libvips shared library
+`@img/sharp-libvips-linux-arm64` (1.2.4) | LGPL-3.0-or-later | libvips shared library
+`@img/sharp-libvips-linux-ppc64` (1.2.4) | LGPL-3.0-or-later | libvips shared library
+`@img/sharp-libvips-linux-riscv64` (1.2.4) | LGPL-3.0-or-later | libvips shared library
+`@img/sharp-libvips-linux-s390x` (1.2.4) | LGPL-3.0-or-later | libvips shared library
+`@img/sharp-libvips-linux-x64` (1.2.4) | LGPL-3.0-or-later | libvips shared library
+`@img/sharp-libvips-linuxmusl-arm64` (1.2.4) | LGPL-3.0-or-later | libvips shared library
+`@img/sharp-libvips-linuxmusl-x64` (1.2.4) | LGPL-3.0-or-later | libvips shared library
+`@img/sharp-win32-arm64` (0.34.5) | Apache-2.0 AND LGPL-3.0-or-later | bundles libvips + sharp glue code
+`@img/sharp-win32-ia32` (0.34.5) | Apache-2.0 AND LGPL-3.0-or-later | bundles libvips + sharp glue code
+`@img/sharp-win32-x64` (0.34.5) | Apache-2.0 AND LGPL-3.0-or-later | bundles libvips + sharp glue code
+`@img/sharp-wasm32` (0.34.5) | Apache-2.0 AND LGPL-3.0-or-later AND MIT | bundles libvips + sharp glue code
+
+Two further transitive packages carry `MPL-2.0`, a weak-copyleft license that
+only requires disclosure for modified MPL-licensed files, not the whole
+program:
+
+Package | License | Pulled in by | Notes
+--------|---------|---------------|------
+`lightningcss` (1.32.0) | MPL-2.0 | `vite` | Minifies CSS during production build; unmodified
+`axe-core` (4.11.1) | MPL-2.0 | `@lhci/cli` (devDependency) | Accessibility audits in Lighthouse CI; dev/CI-only, unmodified

@@ -137,7 +137,7 @@ All colors have been tested for WCAG 2.1 compliance. The table below shows key c
 
 | Foreground               | Background             | Contrast Ratio | WCAG Level | Use Case                               |
 | ------------------------- | ----------------------- | -------------- | ---------- | --------------------------------------- |
-| `#22c55e` (Success)      | `#FCFCFA` (Background) | 2.2:1          | Fail\*\*   | Success icons/badges only — never text  |
+| `#22c55e` (Success)      | `#FCFCFA` (Background) | 2.2:1          | Fail\*\*   | Success icon glyphs only — never text or badges |
 | `#dc2626` (Error)        | `#FCFCFA` (Background) | 4.7:1          | AA         | Error messages, alerts                 |
 | `#4ade80` (Success Dark) | `#14110F` (Background) | 10.8:1         | AAA        | Success states (dark mode)             |
 | `#f87171` (Error Dark)   | `#14110F` (Background) | 6.8:1          | AA         | Error states (dark mode)               |
@@ -149,7 +149,7 @@ All colors have been tested for WCAG 2.1 compliance. The table below shows key c
 - The monochrome primary (#14110f / #fcfcfa) provides extremely high contrast (18:1+) — use freely for all text sizes
 - `--color-text-tertiary` (#6f685e light / #8f897e dark) meets WCAG AA (4.5:1+) on both `--color-background` and `--color-surface` in its theme
 - Contrast ratios calculated using WCAG 2.1 relative luminance formula
-- \*\* `--color-success` (#22c55e) does not reach the 3:1 UI-component minimum on the light background (2.2:1) — use it only for icon/graphic accents (e.g. a filled checkmark glyph), never for text or as a standalone status indicator. Pair success/error states with an icon plus descriptive text in `--color-text-primary`, not with color alone
+- \*\* `--color-success` (#22c55e) does not reach the 3:1 UI-component minimum on the light background (2.2:1) — it fails for badges, borders, and any UI-component use, not just text. Use it only as a decorative accent on an icon glyph (e.g. a filled checkmark), always paired with descriptive text in `--color-text-primary`, not as a standalone status indicator
 - Semantic colors (success, error) are always paired with icons and descriptive text for accessibility
 
 **Testing Tools:**
@@ -3372,9 +3372,10 @@ module.exports = {
           dark: '#201C18',           // Warm dark surface (dark mode)
         },
         text: {
-          primary: '#14110f',
-          secondary: '#57524B',
-          tertiary: '#6F685E',       // Warm taupe - muted (WCAG AA)
+          primary: { DEFAULT: '#14110f', dark: '#F5F3EE' },
+          secondary: { DEFAULT: '#57524B', dark: '#A69F92' },
+          tertiary: { DEFAULT: '#6F685E', dark: '#8F897E' }, // Warm taupe - muted (WCAG AA)
+          'on-primary': { DEFAULT: '#FCFCFA', dark: '#14110F' },
           'on-dark': '#FCFCFA',
           'on-dark-secondary': 'rgba(252,252,250,0.72)',
         },

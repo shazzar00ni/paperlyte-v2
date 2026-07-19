@@ -108,6 +108,11 @@ h2 {
 .channel:focus-visible {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
 }
+@media (prefers-reduced-motion: reduce) {
+  .channel {
+    transition: none;
+  }
+}
 .channel-icon {
   flex-shrink: 0;
   width: 2.5rem;

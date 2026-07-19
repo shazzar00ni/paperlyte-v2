@@ -792,7 +792,7 @@ function Features() {
 ### Fonts and Icons
 
 - **All assets are self-hosted** (no external CDNs)
-- Fonts: @fontsource/inter package for UI text
+- Fonts: self-hosted Instrument Sans + Playfair Display variable fonts (`public/fonts/`)
 - Icons: @fortawesome packages (not CDN)
 - This is critical for CSP compliance and performance
 

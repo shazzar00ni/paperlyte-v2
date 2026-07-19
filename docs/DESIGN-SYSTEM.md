@@ -3344,12 +3344,12 @@ Always respect `prefers-reduced-motion`:
 
 ## Design Tokens (Tailwind Config Ready)
 
-**Note:** This project uses **CSS Custom Properties** for dynamic theming (see src/styles/variables.css). Dark mode is handled automatically via CSS variables that respond to `[data-theme='dark']` and `@media (prefers-color-scheme: dark)`.
+**Note:** This project uses **CSS Custom Properties** for dynamic theming (see src/styles/variables.css) and **CSS Modules** for component styles. Tailwind CSS is **not used and must not be added** — see `AGENTS.md`. Dark mode is handled automatically via CSS variables that respond to `[data-theme='dark']` and `@media (prefers-color-scheme: dark)`.
 
-If you prefer to use Tailwind's built-in dark mode instead, here's the configuration:
+> **Reference only — not an implementation path.** The Tailwind config below exists purely as an equivalent token mapping for teams porting this palette to a Tailwind-based project. It documents the same values as `variables.css` in a different format; it is not wired into this codebase and should not be copied in.
 
 ```js
-// tailwind.config.js
+// tailwind.config.js — reference only, do not add to this repo
 module.exports = {
   darkMode: 'class', // or 'media' for automatic system preference
   theme: {

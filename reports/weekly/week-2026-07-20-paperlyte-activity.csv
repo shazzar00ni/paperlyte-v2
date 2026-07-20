@@ -1,0 +1,61 @@
+Type,Title,Last Visited,Host
+Issue,"Static support pages (privacy, terms, help, community, etc.) don't support dark mode",2026-07-19T08:52:12Z,github.com
+Issue,sitemap.xml never reaches dist/ on a clean build (postbuild runs after Vite's public/ copy),2026-07-19T08:51:57Z,github.com
+Pull Request,"Redesign: warm the visual identity to the ""Editorial"" direction",2026-07-19T08:28:49Z,github.com
+Issue,Production CSP (style-src 'self') blocks inline <style> blocks on all static HTML pages,2026-07-18T09:55:13Z,github.com
+Pull Request,docs(deps): document FOSSA license compliance findings and add .fossa.yml,2026-07-19T08:52:16Z,github.com
+Pull Request,fix(ci): disable node audit analyzer in dependency-check workflow,2026-07-17T09:09:10Z,github.com
+Pull Request,fix(cta): repair dark-mode text contrast and open waitlist modal inline,2026-07-18T07:24:27Z,github.com
+Pull Request,Add Help Center and Community Forum pages,2026-07-19T08:53:31Z,github.com
+Pull Request,fix(testimonials): restyle carousel to match component markup,2026-07-17T09:06:04Z,github.com
+Issue,Suggestion: monetize this MCP server with x402 micropayments,2026-07-15T03:28:47Z,github.com
+Pull Request,tests: enhance scroll-depth mock and consolidate useTheme test setup,2026-07-14T16:16:54Z,github.com
+Pull Request,"refactor: improve maintainability across App, hooks, and sections",2026-07-13T11:18:46Z,github.com
+Pull Request,ci: bump step-security/harden-runner from 2.19.4 to 2.20.0,2026-07-13T11:00:33Z,github.com
+Pull Request,ci: bump anthropics/claude-code-action from 1.0.162 to 1.0.166,2026-07-15T07:51:28Z,github.com
+Pull Request,chore(deps-dev): bump png-to-ico from 3.0.1 to 3.0.2,2026-07-13T10:59:29Z,github.com
+Pull Request,ci: bump actions/labeler from 6.1.0 to 6.2.0,2026-07-15T08:34:17Z,github.com
+Pull Request,chore(deps-dev): bump vite from 8.1.2 to 8.1.3 in the development-dependencies group,2026-07-17T17:15:46Z,github.com
+Pull Request,fix(ci): resolve dependency-check warnings and enforce CVSS gate,2026-07-16T07:51:39Z,github.com
+Pull Request,chore(mcp): add Supabase MCP server to project config,2026-07-15T07:37:13Z,github.com
+Pull Request,chore(npm): set min-release-age to 7 days in .npmrc,2026-07-14T04:43:09Z,github.com
+Pull Request,fix(security): remove hardcoded credential-like literals in analytics test,2026-07-13T05:53:31Z,github.com
+Pull Request,style: fix Prettier formatting in webVitals.ts,2026-07-13T11:02:12Z,github.com
+Pull Request,fix: FAQ state updater purity and CORS default domain,2026-07-13T11:14:17Z,github.com
+Pull Request,docs: improve JSDoc for key functions and components,2026-07-19T08:34:09Z,github.com
+Pull Request,test: add coverage for untested/under-tested source modules,2026-07-13T05:52:42Z,github.com
+Pull Request,"fix: three bugs in Statistics icons, FAQ updater, and SW offline fallback",2026-07-13T11:19:27Z,github.com
+Issue,ci: pre-existing License Compliance and Dependency Quality failures on all PRs,2026-07-19T09:08:23Z,github.com
+Pull Request,chore(deps-dev): bump sharp from 0.34.5 to 0.35.1,2026-07-17T17:15:15Z,github.com
+Pull Request,feat(release): implement semantic versioning and release automation,2026-07-13T21:55:15Z,github.com
+Pull Request,docs: bring SECURITY.md up to standard + fix lodash/lodash-es/basic-ftp high-severity vulnerabilities,2026-07-16T17:49:36Z,github.com
+Commit,Merge pull request #1307 from shazzar00ni/claude/dark-mode-text-waitlist-button-nuxnwi,2026-07-18T07:23:28Z,github.com
+Commit,Merge branch 'main' into claude/dark-mode-text-waitlist-button-nuxnwi,2026-07-17T17:26:28Z,github.com
+Commit,Merge pull request #1297 from shazzar00ni/dependabot/npm_and_yarn/development-dependencies-78f5677d33,2026-07-17T17:13:41Z,github.com
+Commit,Merge pull request #1308 from shazzar00ni/claude/npm-audit-api-failure-ktwzhh,2026-07-17T09:04:51Z,github.com
+Commit,Merge branch 'main' into claude/npm-audit-api-failure-ktwzhh,2026-07-17T09:04:30Z,github.com
+Commit,Merge pull request #1305 from shazzar00ni/claude/testimonial-visibility-dark-light-s5kdyi,2026-07-17T09:04:00Z,github.com
+Commit,fix(ci): pass only a single supported flag to dependency-check,2026-07-17T03:42:56Z,github.com
+Commit,fix(ci): pass dependency-check args via the 'others' input,2026-07-17T03:38:06Z,github.com
+Commit,fix(ci): disable node audit analyzer in dependency-check workflow,2026-07-16T07:52:04Z,github.com
+Commit,fix(testimonials): disable dot pseudo-element transition under reduced motion,2026-07-16T07:50:05Z,github.com
+Commit,Merge branch 'main' into claude/testimonial-visibility-dark-light-s5kdyi,2026-07-16T07:44:07Z,github.com
+Commit,fix(a11y): keep focus trapped in the waitlist modal after success,2026-07-16T04:28:36Z,github.com
+Commit,fix(hooks): propagate AbortError instead of swallowing it in error parsing,2026-07-16T04:19:13Z,github.com
+Commit,Update src/components/ui/WaitlistModal/WaitlistModal.test.tsx,2026-07-16T04:16:20Z,github.com
+Commit,Merge branch 'main' into claude/dark-mode-text-waitlist-button-nuxnwi,2026-07-16T04:09:54Z,github.com
+Commit,Merge pull request #1298 from shazzar00ni/dependabot/github_actions/actions/labeler-6.2.0,2026-07-15T08:32:16Z,github.com
+Commit,test(waitlist): cover tab-trap and default-message fallback branches,2026-07-15T07:53:54Z,github.com
+Commit,Merge pull request #1300 from shazzar00ni/dependabot/github_actions/anthropics/claude-code-action-1.0.166,2026-07-15T07:49:38Z,github.com
+Commit,fix(cta): run prettier and cancel stale waitlist requests on close,2026-07-15T07:41:13Z,github.com
+Commit,Merge pull request #1295 from shazzar00ni/claude/supabase-mcp-setup-8dqy7p,2026-07-15T07:34:56Z,github.com
+Commit,fix(cta): repair dark-mode text contrast and open waitlist modal inline,2026-07-15T07:29:59Z,github.com
+Commit,fix(testimonials): enlarge dot touch targets and fix mobile padding,2026-07-15T04:50:19Z,github.com
+Commit,fix(testimonials): restyle carousel to match component markup,2026-07-15T04:34:05Z,github.com
+Commit,Merge branch 'main' into claude/supabase-mcp-setup-8dqy7p,2026-07-15T03:26:05Z,github.com
+Commit,fix(mcp): default supabase MCP server to read-only mode,2026-07-14T17:08:21Z,github.com
+Commit,Merge pull request #1301 from shazzar00ni/dependabot/github_actions/step-security/harden-runner-2.20.0,2026-07-13T10:58:36Z,github.com
+Commit,Merge pull request #1299 from shazzar00ni/dependabot/npm_and_yarn/png-to-ico-3.0.2,2026-07-13T10:57:04Z,github.com
+Commit,ci: bump step-security/harden-runner from 2.19.4 to 2.20.0,2026-07-13T09:14:30Z,github.com
+Commit,ci: bump anthropics/claude-code-action from 1.0.162 to 1.0.166,2026-07-13T09:13:30Z,github.com
+Commit,chore(deps-dev): bump png-to-ico from 3.0.1 to 3.0.2,2026-07-13T09:11:59Z,github.com

@@ -29,6 +29,18 @@
   --color-text: #111827;
   --color-text-secondary: #6b7280;
   --color-border: #e5e7eb;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-primary: #ffffff;
+    --color-background: #0f172a;
+    --color-surface: #1e293b;
+    --color-text: #f1f5f9;
+    --color-text-secondary: #94a3b8;
+    --color-border: #334155;
+    color-scheme: dark;
+  }
 }
 body {
   font-family:

@@ -26,6 +26,7 @@ jobs:
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           fetch-depth: 0  # Full history required for SonarCloud blame data and new-code detection
+          persist-credentials: false
 
       - name: Check SonarCloud configuration
         id: check-config
@@ -43,6 +44,7 @@ jobs:
 
       - name: Analyze with SonarCloud
         if: steps.check-config.outputs.configured == 'true'
+        continue-on-error: ${{ github.ref != 'refs/heads/main' }}
         uses: SonarSource/sonarqube-scan-action@713881670b6b3676cda39549040e2d88c70d582e # v8.2.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

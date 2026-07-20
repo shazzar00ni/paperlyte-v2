@@ -132,7 +132,7 @@ export const iconViewBox: Record<string, string> = {
   'fa-windows': '0 0 23 24',
 }
 
-// Returns the viewBox for the given icon, defaulting to "0 0 24 24" for icons not listed above
+/** Returns the viewBox for the given icon, defaulting to `0 0 24 24` for icons not in the override map. */
 export const getIconViewBox = (name: string): string => {
   return safePropertyAccess(iconViewBox, name) ?? '0 0 24 24'
 }

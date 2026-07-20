@@ -81,6 +81,7 @@ export const FAQ = (): React.ReactElement => {
   const gridRef = useRef<HTMLDivElement>(null)
   const announcementTimeoutRef = useRef<number | null>(null)
 
+  /** Toggles the open/closed state of the FAQ item with the given ID. */
   const toggleItem = (id: string): void => {
     setOpenItems((prev) => {
       const newSet = new Set(prev)

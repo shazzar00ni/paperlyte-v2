@@ -30,6 +30,7 @@ export const ServerErrorPage: FC<ServerErrorPageProps> = ({
   onRetry,
   showSupport = true,
 }) => {
+  /** Triggers the retry action: calls `onRetry` if provided, otherwise reloads the page. */
   const handleRetry = (): void => {
     if (onRetry) {
       onRetry()
@@ -41,6 +42,7 @@ export const ServerErrorPage: FC<ServerErrorPageProps> = ({
     }
   }
 
+  /** Navigates safely to the homepage. */
   const handleGoHome = (): void => {
     // Full page navigation to homepage using safe navigation
     // This validates the URL to prevent open redirect vulnerabilities

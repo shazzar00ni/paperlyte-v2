@@ -41,20 +41,14 @@
 
 # WAF edge function — runs first on every request before the origin.
 # It calls context.next() for clean requests, which invokes markdown-response
-# (declared next) for / routes, then falls through to the origin.
-# Both functions are declared here (TOML-only, no inline export const config) so
+# (registered below) for /* routes, then falls through to the origin.
+# Both functions are declared in this file (TOML-only, no inline export const config) so
 # Netlify's TOML-order guarantee makes WAF run before markdown-response.
 [[edge_functions]]
   function = "waf"
   path = "/*"
   # Skip WAF on static assets served directly from the CDN cache.
   excludedPath = ["/assets/*", "/fonts/*", "/*.ico", "/*.png", "/*.jpg", "/*.jpeg", "/*.webp", "/*.avif", "/*.svg", "/*.gif"]
-
-# Markdown edge function — serves /index.md for Accept: text/markdown requests to /
-# Declared after WAF so all requests are screened by the WAF first.
-[[edge_functions]]
-  function = "markdown-response"
-  path = "/"
 
 # Redirect rules for SPA routing
 [[redirects]]
@@ -141,3 +135,29 @@
 # Skip Netlify's build processing since Vite handles bundling and optimization
 [build.processing]
   skip_processing = true
+
+# ─── Edge Functions: Markdown-for-AI ──────────────────────────────────────────
+#
+# The `markdown-response` edge function intercepts requests that carry
+# `Accept: text/markdown` and returns a token-efficient Markdown version of
+# each page instead of the full HTML.
+#
+# `path = "/*"` is intentional: it must cover ALL paths so that unknown URLs
+# that would otherwise hit the SPA catch-all redirect are also intercepted.
+# Registering on only specific routes (e.g. /, /privacy, /terms) would silently
+# return HTML for every other path even when the caller requests Markdown.
+#
+# Edge functions run BEFORE Netlify redirects, so `/*` works correctly without
+# interfering with normal browser traffic.  Non-content paths (assets, API
+# routes, etc.) are filtered inside the function via EXCLUDED_PREFIXES; only
+# GET requests with a non-zero-q `Accept: text/markdown` token are converted.
+#
+# To exclude a path: add its prefix to EXCLUDED_PREFIXES in markdown-response.ts.
+# To test locally:   netlify dev  →  curl -H "Accept: text/markdown" http://localhost:8888/
+[[edge_functions]]
+  path = "/*"
+  function = "markdown-response"
+  # Skip static assets — they will never be converted to Markdown and invoking
+  # the edge function on every image/font/JS/CSS request just to call
+  # context.next() wastes edge invocations and adds latency.
+  excludedPath = ["/assets/*", "/fonts/*", "/*.ico", "/*.png", "/*.jpg", "/*.jpeg", "/*.webp", "/*.avif", "/*.svg", "/*.gif", "/*.woff2", "/*.woff", "/*.ttf", "/*.eot", "/*.js", "/*.css", "/*.map"]

@@ -27,11 +27,14 @@ All of the following CI checks must pass before a pull request can be merged:
    - Verifies no build errors
    - Generates production artifacts
 
-3. **Lighthouse CI** (`lighthouse`)
+3. **Lighthouse CI** (`lighthouse`) ⚠️ *Advisory only — not a blocking gate*
    - Performance testing (target: >90 score)
    - Accessibility testing (target: >95 score)
    - Best practices validation
    - SEO checks
+   - Runs with `continue-on-error: true` and is **not** included in the CI
+     Success gate. Failures are visible in the PR checks panel but do not
+     block merging. The required check is "CI Success" (below).
 
 4. **CI Success** (`ci-success`)
    - Aggregate check that ensures ALL CI jobs pass

@@ -1,6 +1,29 @@
-import { defineConfig } from 'vitest/config'
+import { defineConfig, type Plugin } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import path from 'path'
+
+// Edge functions use Deno-compatible specifiers that Vite/Node cannot resolve:
+//   npm:pkg@version          — Deno npm protocol
+//   https://esm.sh/pkg@ver  — ESM CDN URL (used for Netlify edge runtime)
+// A pre-enforce transform rewrites both forms to bare package names BEFORE
+// import-analysis sees the file, letting Vite's normal node_modules resolver
+// take over so local tests can import the edge function under test.
+const resolveDenoNpmSpecifiers: Plugin = {
+  name: 'resolve-deno-npm-specifiers',
+  enforce: 'pre',
+  transform(code: string): { code: string } | null {
+    if (!code.includes('npm:') && !code.includes('esm.sh')) return null
+    let result = code
+    // npm:pkg@version or npm:@scope/pkg@version → pkg or @scope/pkg
+    result = result.replace(/(['"])npm:((?:@[^/'"]+\/)?[^@'"]+)@[^'"]+\1/g, '$1$2$1')
+    // https://esm.sh/pkg@version or https://esm.sh/@scope/pkg@version → pkg or @scope/pkg
+    result = result.replace(
+      /(['"])https:\/\/esm\.sh\/((?:@[^/'"]+\/)?[^@/'"]+)@[^'"]+\1/g,
+      '$1$2$1'
+    )
+    return result !== code ? { code: result } : null
+  },
+}
 
 // When CIRCLECI_COVERAGE is set, the @circleci/vitest-circleci-coverage plugin
 // replaces the default runner and reporter so CircleCI Smarter Testing can
@@ -12,7 +35,7 @@ const circleCICoverage = process.env.CIRCLECI_COVERAGE
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), resolveDenoNpmSpecifiers],
   test: {
     // Use jsdom for browser-like environment
     environment: 'jsdom',
@@ -104,6 +127,11 @@ export default defineConfig({
       '@constants': path.resolve(__dirname, './src/constants'),
       '@styles': path.resolve(__dirname, './src/styles'),
       '@utils': path.resolve(__dirname, './src/utils'),
+      // Stub the Netlify Edge Runtime type-only import (stripped at compile time)
+      'https://edge.netlify.com': path.resolve(
+        __dirname,
+        './netlify/edge-functions/__stubs__/edge-netlify.ts'
+      ),
     },
   },
 })

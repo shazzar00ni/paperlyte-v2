@@ -20,12 +20,12 @@ export const WaitlistModal = ({
   isOpen,
   onClose,
 }: WaitlistModalProps): React.ReactElement | null => {
-  const { email, setEmail, isSubmitted, isLoading, error, handleSubmit, reset } =
+  const { name, setName, email, setEmail, isSubmitted, isLoading, error, handleSubmit, reset } =
     useWaitlistSubscribe('WaitlistModal')
   const triggerElementRef = useRef<HTMLElement | null>(null)
   const modalRef = useRef<HTMLDivElement>(null)
   const closeButtonRef = useRef<HTMLButtonElement>(null)
-  const emailInputRef = useRef<HTMLInputElement>(null)
+  const nameInputRef = useRef<HTMLInputElement>(null)
   const successHeadingRef = useRef<HTMLHeadingElement>(null)
 
   // Remember what had focus before opening, so it can be restored on close
@@ -42,13 +42,13 @@ export const WaitlistModal = ({
     triggerElementRef.current?.focus()
   }
 
-  // Focus the email input on open, or the success heading once submitted
+  // Focus the name input on open, or the success heading once submitted
   useEffect(() => {
     if (!isOpen) return
     if (isSubmitted) {
       successHeadingRef.current?.focus()
     } else {
-      emailInputRef.current?.focus()
+      nameInputRef.current?.focus()
     }
   }, [isOpen, isSubmitted])
 
@@ -146,12 +146,31 @@ export const WaitlistModal = ({
         ) : (
           <form onSubmit={handleSubmit} className={styles.form} noValidate>
             <p className={styles.subtitle}>Launching {LAUNCH_QUARTER}. Join the waitlist to:</p>
+            <div className={styles.nameGroup}>
+              <label htmlFor="waitlist-modal-name" className="sr-only">
+                Full name
+              </label>
+              <input
+                ref={nameInputRef}
+                type="text"
+                id="waitlist-modal-name"
+                name="name"
+                placeholder={COPY.namePlaceholder}
+                value={name}
+                onChange={(e) => {
+                  setName(e.target.value)
+                }}
+                required
+                className={styles.input}
+                aria-invalid={!!error}
+                aria-describedby={error ? 'waitlist-modal-error' : undefined}
+              />
+            </div>
             <div className={styles.inputGroup}>
               <label htmlFor="waitlist-modal-email" className="sr-only">
                 Email address
               </label>
               <input
-                ref={emailInputRef}
                 type="email"
                 id="waitlist-modal-email"
                 name="email"

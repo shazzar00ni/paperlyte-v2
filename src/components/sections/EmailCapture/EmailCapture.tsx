@@ -13,7 +13,7 @@ import styles from './EmailCapture.module.css'
 
 /** Renders the Email Capture section with a waitlist signup form and benefit highlights. */
 export const EmailCapture = (): React.ReactElement => {
-  const { email, setEmail, isSubmitted, isLoading, error, handleSubmit } =
+  const { name, setName, email, setEmail, isSubmitted, isLoading, error, handleSubmit } =
     useWaitlistSubscribe('EmailCapture')
   const successHeadingRef = useRef<HTMLHeadingElement>(null)
 
@@ -113,6 +113,23 @@ export const EmailCapture = (): React.ReactElement => {
 
         <AnimatedElement animation="fadeIn" delay={300}>
           <form onSubmit={handleSubmit} className={styles.form} noValidate>
+            <div className={styles.nameGroup}>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                placeholder={COPY.namePlaceholder}
+                value={name}
+                onChange={(e) => {
+                  setName(e.target.value)
+                }}
+                required
+                className={styles.input}
+                aria-label="Full name"
+                aria-invalid={!!error}
+                aria-describedby={error ? 'email-error' : undefined}
+              />
+            </div>
             <div className={styles.inputGroup}>
               <input
                 type="email"

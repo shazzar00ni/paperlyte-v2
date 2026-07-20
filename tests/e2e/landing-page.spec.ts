@@ -343,6 +343,7 @@ test.describe('Landing Page', () => {
 
     await page.goto('/')
 
+    const nameInput = page.locator('#email-capture input[name="name"]')
     const emailInput = page.locator('#email-capture input[type="email"]')
     const submitButton = page
       .locator('#email-capture')
@@ -359,6 +360,7 @@ test.describe('Landing Page', () => {
     const timestamp = Date.now()
     const rawEmail = `E2E-Test-${timestamp}@EXAMPLE.COM`
     const expectedEmail = `e2e-test-${timestamp}@example.com`
+    await nameInput.fill('E2E Test User')
     await emailInput.fill(rawEmail)
     await submitButton.click()
 
@@ -382,7 +384,10 @@ test.describe('Landing Page', () => {
     const capturedPostBody = await page.evaluate(
       () => (window as unknown as Record<string, unknown>)['__subscribeMockBody'] as string
     )
-    expect(JSON.parse(capturedPostBody)).toEqual({ email: expectedEmail })
+    expect(JSON.parse(capturedPostBody)).toEqual({
+      name: 'E2E Test User',
+      email: expectedEmail,
+    })
   })
 
   // Scoped to Chromium desktop via the @chromium-only tag (see playwright.config.ts).

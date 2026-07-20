@@ -48,6 +48,10 @@
   margin: 0 auto;
 }
 
+.nameGroup {
+  margin-bottom: 1rem;
+}
+
 .inputGroup {
   display: flex;
   gap: 1rem;

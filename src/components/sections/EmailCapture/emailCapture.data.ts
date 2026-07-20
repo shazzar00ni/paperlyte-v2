@@ -1,4 +1,5 @@
 export const EMAIL_CAPTURE_CONTENT = {
+  namePlaceholder: 'Your name',
   placeholder: 'your@email.com',
   submitText: 'Join the Waitlist',
   loadingText: 'Joining...',

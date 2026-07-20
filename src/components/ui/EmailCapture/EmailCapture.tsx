@@ -3,22 +3,24 @@ import { Button } from '@components/ui/Button'
 import { Icon } from '@components/ui/Icon'
 import { trackEvent } from '@utils/analytics'
 import { logError } from '@utils/monitoring'
-import { validateEmail } from '@utils/validation'
+import { validateEmail, validateName } from '@utils/validation'
 import styles from './EmailCapture.module.css'
 
 interface EmailCaptureProps {
   variant?: 'inline' | 'centered'
+  namePlaceholder?: string
   placeholder?: string
   buttonText?: string
 }
 
 /**
  * Email capture form component for collecting waitlist signups
- * Features email validation, GDPR consent, spam protection, and Netlify function integration
+ * Features name + email validation, GDPR consent, spam protection, and Netlify function integration
  * Displays success/error states and tracks signup events via analytics
  *
  * @param props - Component props
  * @param props.variant - Form layout variant: 'inline' (default) or 'centered'
+ * @param props.namePlaceholder - Name input placeholder text (default: 'Your name')
  * @param props.placeholder - Email input placeholder text (default: 'Enter your email')
  * @param props.buttonText - Submit button text (default: 'Join Waitlist')
  * @returns Email capture form element
@@ -34,14 +36,16 @@ interface EmailCaptureProps {
  */
 export const EmailCapture = ({
   variant = 'inline',
+  namePlaceholder = 'Your name',
   placeholder = 'Enter your email',
   buttonText = 'Join Waitlist',
 }: EmailCaptureProps): React.ReactElement => {
+  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [honeypot, setHoneypot] = useState('') // Spam protection
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [errorMessage, setErrorMessage] = useState('')
-  const [errorField, setErrorField] = useState<'email' | 'other' | null>(null)
+  const [errorField, setErrorField] = useState<'name' | 'email' | 'other' | null>(null)
   const [gdprConsent, setGdprConsent] = useState(false)
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -52,9 +56,18 @@ export const EmailCapture = ({
       return
     }
 
+    const normalizedName = name.trim()
     const normalizedEmail = email.trim().toLowerCase()
 
     // Validation
+    const { isValid: isNameValid, error: nameValidationError } = validateName(normalizedName)
+    if (!isNameValid) {
+      setStatus('error')
+      setErrorField('name')
+      setErrorMessage(nameValidationError ?? 'Please enter your name.')
+      return
+    }
+
     const { isValid, error: validationError } = validateEmail(normalizedEmail)
     if (!isValid) {
       setStatus('error')
@@ -79,7 +92,7 @@ export const EmailCapture = ({
       const response = await fetch('/.netlify/functions/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: normalizedEmail }),
+        body: JSON.stringify({ name: normalizedName, email: normalizedEmail }),
       })
 
       if (!response.ok) {
@@ -107,6 +120,7 @@ export const EmailCapture = ({
       }
 
       setStatus('success')
+      setName('')
       setEmail('')
       setGdprConsent(false)
 
@@ -167,6 +181,27 @@ export const EmailCapture = ({
           className={styles.honeypot}
           aria-hidden="true"
         />
+
+        <div className={styles.nameGroup}>
+          <label htmlFor="name" className={styles.visuallyHidden}>
+            Full name
+          </label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value={name}
+            onChange={(e) => {
+              setName(e.target.value)
+            }}
+            placeholder={namePlaceholder}
+            className={styles.input}
+            disabled={status === 'loading'}
+            required
+            aria-invalid={errorField === 'name'}
+            aria-describedby={errorField === 'name' ? 'email-error' : undefined}
+          />
+        </div>
 
         <div className={styles.inputGroup}>
           <label htmlFor="email" className={styles.visuallyHidden}>

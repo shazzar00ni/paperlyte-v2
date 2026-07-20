@@ -3,6 +3,17 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { WaitlistModal } from './WaitlistModal'
 
+const fillAndSubmit = async (
+  user: ReturnType<typeof userEvent.setup>,
+  { name = 'Ada Lovelace', email }: { name?: string; email: string }
+) => {
+  if (name) {
+    await user.type(screen.getByLabelText('Full name'), name)
+  }
+  await user.type(screen.getByPlaceholderText('your@email.com'), email)
+  await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+}
+
 describe('WaitlistModal', () => {
   let fetchMock: ReturnType<typeof vi.fn>
 
@@ -28,6 +39,7 @@ describe('WaitlistModal', () => {
     const dialog = screen.getByRole('dialog')
     expect(dialog).toHaveAttribute('aria-modal', 'true')
     expect(dialog).toHaveAttribute('aria-labelledby', 'waitlist-modal-title')
+    expect(screen.getByLabelText('Full name')).toBeInTheDocument()
     expect(screen.getByPlaceholderText('your@email.com')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /Join the Waitlist/i })).toBeInTheDocument()
   })
@@ -104,12 +116,11 @@ describe('WaitlistModal', () => {
     expect(document.body.style.overflow).toBe('')
   })
 
-  it('submits the email and shows a success confirmation without leaving the page', async () => {
+  it('submits the name and email and shows a success confirmation without leaving the page', async () => {
     const user = userEvent.setup()
     render(<WaitlistModal isOpen={true} onClose={vi.fn()} />)
 
-    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
-    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+    await fillAndSubmit(user, { email: 'test@example.com' })
 
     await waitFor(() => {
       expect(screen.getByText(/You're on the list!/)).toBeInTheDocument()
@@ -118,7 +129,7 @@ describe('WaitlistModal', () => {
     expect(fetchMock).toHaveBeenCalledWith('/.netlify/functions/subscribe', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: 'test@example.com' }),
+      body: JSON.stringify({ name: 'Ada Lovelace', email: 'test@example.com' }),
       signal: expect.any(AbortSignal),
     })
   })
@@ -127,8 +138,7 @@ describe('WaitlistModal', () => {
     const user = userEvent.setup()
     render(<WaitlistModal isOpen={true} onClose={vi.fn()} />)
 
-    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
-    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+    await fillAndSubmit(user, { email: 'test@example.com' })
 
     const successHeading = await screen.findByRole('heading', { name: /You're on the list!/i })
     expect(successHeading).toHaveFocus()
@@ -145,7 +155,19 @@ describe('WaitlistModal', () => {
     const user = userEvent.setup()
     render(<WaitlistModal isOpen={true} onClose={vi.fn()} />)
 
-    await user.type(screen.getByPlaceholderText('your@email.com'), 'not-an-email')
+    await fillAndSubmit(user, { email: 'not-an-email' })
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toBeInTheDocument()
+    })
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
+
+  it('shows a validation error for a missing name without calling the API', async () => {
+    const user = userEvent.setup()
+    render(<WaitlistModal isOpen={true} onClose={vi.fn()} />)
+
+    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
     await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
 
     await waitFor(() => {
@@ -173,8 +195,7 @@ describe('WaitlistModal', () => {
     const onClose = vi.fn()
     const { rerender } = render(<WaitlistModal isOpen={true} onClose={onClose} />)
 
-    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
-    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+    await fillAndSubmit(user, { email: 'test@example.com' })
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: /Joining/i })).toBeDisabled()

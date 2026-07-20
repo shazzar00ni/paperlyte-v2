@@ -1,0 +1,39 @@
+version: 3
+
+# Documents this repo's license policy in-repo for any future FOSSA CLI runs.
+# The hosted FOSSA GitHub App check (installation 1014311) is configured via
+# its web dashboard, not this file — see docs/security/fossa-compliance-assessment.md
+# for the dashboard steps needed to fully silence the App-side checks.
+analyze:
+  targets:
+    only:
+      - type: npm
+        path: .
+    exclude:
+      - type: npm
+        path: node_modules/.bin
+  # Test/dev-only tooling is still analyzed (the LGPL/MPL packages below live
+  # there), but production distribution is what the license policy cares about.
+  path-filters:
+    exclude:
+      - '**/*.test.ts'
+      - '**/*.test.tsx'
+      - '**/e2e/**'
+
+policy:
+  license:
+    allow:
+      - MIT
+      - Apache-2.0
+      - BSD-2-Clause
+      - BSD-3-Clause
+      - ISC
+      - OFL-1.1
+      - MPL-2.0
+      # LGPL-3.0-or-later is pulled in only by @img/sharp-* (libvips) and used
+      # exclusively at build time by scripts/generate-icons.js and
+      # scripts/generate-mockups.js. libvips is dynamically linked (permitted
+      # under LGPL) and is never bundled into the distributed landing page, so
+      # it's allowlisted rather than blocked. See the compliance assessment
+      # doc for the full rationale.
+      - LGPL-3.0-or-later
